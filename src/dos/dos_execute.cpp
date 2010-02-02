@@ -373,6 +373,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 	/* Load the executable */
 	loadaddress=PhysMake(loadseg,0);
 
+	Bit16u relocate;
 	if (iscom) {	/* COM Load 64k - 256 bytes max */
 		pos=0;DOS_SeekFile(fhandle,&pos,DOS_SEEK_SET);	
 		readsize=0xffff-256;
@@ -392,7 +393,6 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 //			if (readsize!=imagesize) LOG(LOG_EXEC,LOG_NORMAL)("Illegal header");
 		}
 		/* Relocate the exe image */
-		Bit16u relocate;
 		if (flags==OVERLAY) relocate=block.overlay.relocation;
 		else relocate=loadseg;
 		pos=head.reloctable;DOS_SeekFile(fhandle,&pos,0);
@@ -421,7 +421,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		mem_writew(PhysMake(pspseg,0xfffe),0);
 	} else {
 		//Enable Hook for "Schicksalsklinge/Blade of Destiny"
-		init_schick(name);
+		init_schick(name, relocate);
 
 		csip=RealMake(loadseg+head.initCS,head.initIP);
 		sssp=RealMake(loadseg+head.initSS,head.initSP);

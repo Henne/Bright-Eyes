@@ -7,19 +7,25 @@
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
-//Is the game running?
+// Is the game running?
 static int running=0;
-//Is gen called from the game?
+// Is gen called from the game?
 static int gen=0;
-//Is file schick.dat ?
+// Is file schick.dat ?
 static int dathandle = 0;
-//Was an interesting function called?
+// Was an interesting function called?
 static int call=0;
+// Supress this many random()-calls
+static int supress_rnd=0;
+// Segment relocation
+static unsigned short relocation;
+
+// Debugging Mode (Bitfield): Bit 1=File Operations, Bit 2=Proben
+static int dbg_mode=2;
 
 //Initializer - is startet if executed file is SCHICKM.EXE
-void init_schick(char *name)
+void init_schick(char *name, unsigned short reloc)
 {
-
 	//This happens only if the game starts another program
 	if (running)
 	{
@@ -31,9 +37,11 @@ void init_schick(char *name)
 		}
 		return;
 	}
-	if (!strstr(name, "schickm.exe") && !strstr(name, "BLADEM.EXE")) return;
+	if (!strstr(name, "SCHICKM.EXE") && !strstr(name, "BLADEM.EXE")
+	    && !strstr(name, "schickm.exe") && !strstr(name, "bladem.exe")) return;
 
-	fprintf(stderr, "DSA1 Schicksalsklinge gefunden\nStarte Profiler\n");
+	fprintf(stderr, "DSA1 Schicksalsklinge gefunden\nStarte Profiler (reloc %06p)\n", reloc);
+	relocation = reloc;
 	running++;
 }
 
@@ -55,7 +63,7 @@ void exit_schick(unsigned char exit)
 void schick_open(const char *name, unsigned char flags, unsigned int handle)
 {
 
-	if (!running) return;
+	if (!running || !(dbg_mode & 1) ) return;
 
 	if (strstr(name, "SCHICK.DAT")) dathandle=handle;
 
@@ -65,7 +73,7 @@ void schick_open(const char *name, unsigned char flags, unsigned int handle)
 
 void schick_close(unsigned handle)
 {
-	if (!running) return;
+	if (!running || !(dbg_mode & 1) ) return;
 
 	if (handle == dathandle) dathandle=0;
 
@@ -74,14 +82,14 @@ void schick_close(unsigned handle)
 
 void schick_read(unsigned handle, unsigned char *data, unsigned short len)
 {
-	if (!running) return;
+	if (!running || !(dbg_mode & 1) ) return;
 
 	fprintf(stderr, "ReadFile\tHandle %d\tLen: %d\n", handle, len);
 }
 
 void schick_write(unsigned handle, unsigned char *data, unsigned short len)
 {
-	if (!running) return;
+	if (!running || !(dbg_mode & 1) ) return;
 
 	fprintf(stderr, "WriteFile\tHandle %d\tLen: %d\n", handle, len);
 }
@@ -90,7 +98,7 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 {
 	char file[20];
 
-	if (!running) return;
+	if (!running || !(dbg_mode & 1) ) return;
 	if (handle != dathandle)
 	{
 		fprintf(stderr,"Seek File\tHandle %x\tPos %ld\tType %x\n",
@@ -409,7 +417,8 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 			handle, pos, type, file);
 }
 
-char* arr_eig[] = {"MU", "KL", "IN", "CH", "FF", "GE", "KK"};
+//char* arr_eig[] = {"MU", "KL", "IN", "CH", "FF", "GE", "KK"};
+char* arr_eig[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
 char* arr_tal[] = {
     "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Aexte", "Speere", "Zweihaender", "Schusswaffen", "Wurfwaffen",
     "Akrobatik", "Klettern", "Koerperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
@@ -420,20 +429,45 @@ char* arr_tal[] = {
     "Gefahrensinn", "Sinnenschaerfe",
     "DUMMY"
 };
+int fies=0;
 
 // Intercept far CALLs (both 32 and 16 bit)
-void schick_callf(unsigned selector,unsigned offset,unsigned oldeip) {
-    if (!running) return;
+void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
+    if (!running || !(dbg_mode & 2) ) return;
 
     char talentname[32];
-    if (selector == 4161 && offset == 0x002B) {
-	unsigned p1 = CPU_Pop16();
+    unsigned short segm = selector-relocation;
+    if (segm == 0xEF8 && offs == 0x000B) {
+	signed p1 = CPU_Pop16();
+	signed p2 = CPU_Pop16();
+	CPU_Push16(p2);
 	CPU_Push16(p1);
-	printf("calling random(%d) = ", p1);
+	printf("randomInterval %d - %d : ", p1, p2);
+    }
+    if (segm == 0x0EF8 && offs == 0x002B) {
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	unsigned p3 = CPU_Pop16();
+	CPU_Push16(p3);
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	if (supress_rnd == 0) printf("randomF(%d) =", p1);
+	else supress_rnd--;
+	if (p1==100) fies=1;
+	else fies=0;
 	call++;
 	return;
     }
-    if (selector == 1639 && offset == 0x504E) {
+    if (segm == 0x0EF8 && offs == 0x007A) {
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	unsigned p3 = CPU_Pop16();
+	CPU_Push16(p3);
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	if (p1 < 10) printf("wuerfel %dW%d+%d\n", p1, p2, p3);
+    }
+    if (segm == 0x051E && offs == 0x504E) { // Talent-/Zauber-Probe
 	unsigned p0 = CPU_Pop32();
 	unsigned p1 = CPU_Pop16();
 	unsigned p2 = CPU_Pop16();
@@ -446,8 +480,48 @@ void schick_callf(unsigned selector,unsigned offset,unsigned oldeip) {
 	CPU_Push32(p0);
 	p4 &= 255;
 	signed char p4_r = -p4;
-	printf("Probe[%p] auf %s/%s/%s+%d\n", oldeip,
-	       arr_eig[p1], arr_eig[p2], arr_eig[p3], p4_r);
+	printf("->(%s/%s/%s)-%d:", arr_eig[p1], arr_eig[p2], arr_eig[p3], p4_r);
+	supress_rnd=3;
+	return;
+    }
+    if (segm == 0x051E && offs == 0x4FF9) { // Eigenschaftsprobe
+	unsigned p0 = CPU_Pop32();
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	CPU_Push32(p0);
+	signed p2_r = -p2;
+	printf("Eigenschaftsprobe auf %s+%d: ", arr_eig[p1], p2_r);
+	supress_rnd=1;
+	return;
+    }
+    if (segm == 0x147b && offs == 0x0020) { // Talentprobe
+	unsigned p0 = CPU_Pop32();
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	CPU_Push32(p0);
+	signed char p2_r = p2 & 0xFF;
+	printf("Talentprobe: %s +%d ", arr_tal[p1], p2_r);
+	return;
+    }
+}
+
+// Intercept far JMPs (both 32 and 16 bit)
+void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
+    if (offs == 0x0E1F) { // Zauberprobe
+	unsigned pIP= CPU_Pop32();
+	unsigned p0 = CPU_Pop32();
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	CPU_Push32(p0);
+	CPU_Push32(pIP);
+	signed char p2_r = p2 & 0xFF;
+	printf("Zauberprobe[JMP]: #%d +%d ", p1, p2_r);
 	return;
     }
 }
@@ -455,29 +529,33 @@ void schick_callf(unsigned selector,unsigned offset,unsigned oldeip) {
 // Intercept RETurn and print the return value. Simple hack.
 // Works only correct for Routines containing no unintercepted CALLs
 void schick_ret() {
-    if (!running || !call) return;
-    printf("%d\n", reg_ax);
+    if (!running || !(dbg_mode & 2) || !call) return;
+    if (fies) {
+	fies=0;
+	reg_ax = 1;
+    }
+    if (supress_rnd) printf(" %d", reg_ax);
+    else             printf(" %d\n", reg_ax);
     call--;
 }
 
 // Intercept near CALLs, 16-Bit
 void schick_calln16(unsigned un1) {
-    if (!running) return;
-    int offs = reg_ip+(signed short)un1;
-    if (offs == 0x040F) {
+    if (!running || !(dbg_mode & 2) ) return;
+    unsigned short segm = Segs.phys[cs]-relocation;
+    unsigned short offs = reg_ip+(signed short)un1;
+    
+    if (offs == 0x002B) { // Random-Funktion
 	unsigned pIP= CPU_Pop32();
-	unsigned p0 = CPU_Pop32();
 	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	CPU_Push16(p2);
 	CPU_Push16(p1);
-	CPU_Push32(p0);
 	CPU_Push32(pIP);
-	signed char p2_r = p2 & 0xFF;
-	printf("Talentprobe @ %p: %s + %d\n", reg_ip, arr_tal[p1], p2_r);
+	if (supress_rnd == 0) printf("randomN(%d) =", p1);
+	else supress_rnd--;
+	call++;
 	return;
     }
-    if (offs == 0x0E1F) {
+    if (offs == 0x040F) { // Talentprobe
 	unsigned pIP= CPU_Pop32();
 	unsigned p0 = CPU_Pop32();
 	unsigned p1 = CPU_Pop16();
@@ -487,7 +565,26 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(p0);
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
-	printf("Zauberprobe @ %p: #%d + %d\n", reg_ip, p1, p2_r);
+	printf("Talentprobe[%06p:%06p]: %s +%d ", segm, offs, arr_tal[p1], p2_r);
+	return;
+    }
+    //if (segm == 0x2744 && offs == 0x0E1F) { // Zauberprobe
+    if (offs == 0x0E1F) { // Zauberprobe
+	unsigned pIP= CPU_Pop32();
+	unsigned p0 = CPU_Pop32();
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	CPU_Push32(p0);
+	CPU_Push32(pIP);
+	signed char p2_r = p2 & 0xFF;
+	printf("Zauberprobe[%06p:%06p]: #%d +%d ", segm, offs, p1, p2_r);
+	return;
+    }
+    //if (segm == 0x2744 && offs == 0x0386) { // Unbekannte Probefunktion
+    if (offs == 0x0386) { // Unbekannte Probefunktion
+	printf("?-Probe[%06p:%06p]", segm, reg_ip);
 	return;
     }
 }
