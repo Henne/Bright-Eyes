@@ -29,7 +29,7 @@ void init_schick(char *name, unsigned short reloc)
 	//This happens only if the game starts another program
 	if (running)
 	{
-		if (strstr(name, "gen.exe"))
+		if (!strcasecmp(name, "gen.exe"))
 		{
 			running--;
 			gen++;
@@ -37,8 +37,9 @@ void init_schick(char *name, unsigned short reloc)
 		}
 		return;
 	}
-	if (!strstr(name, "SCHICKM.EXE") && !strstr(name, "BLADEM.EXE")
-	    && !strstr(name, "schickm.exe") && !strstr(name, "bladem.exe")) return;
+	printf("executing %s\n", name);
+	if (strcasecmp(name,"schickm.exe") && strcasecmp(name,"bladem.exe"))
+	    return;
 
 	fprintf(stderr, "DSA1 Schicksalsklinge gefunden\nStarte Profiler (reloc %06p)\n", reloc);
 	relocation = reloc;
@@ -417,19 +418,35 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 			handle, pos, type, file);
 }
 
-//char* arr_eig[] = {"MU", "KL", "IN", "CH", "FF", "GE", "KK"};
 char* arr_eig[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
 char* arr_tal[] = {
-    "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Aexte", "Speere", "Zweihaender", "Schusswaffen", "Wurfwaffen",
-    "Akrobatik", "Klettern", "Koerperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
-    "Bekehren", "Betoeren", "Feilschen", "Gassenwissen", "Luegen", "Menschenkenntnis", "Schaetzen",
-    "Faehrtensuchen", "Fesseln", "Orientierung", "Pflanzenkunde", "Tierkunde", "Wildnisleben",
-    "Alchimie", "Alte Sprachen", "Geographie", "Geschichte", "Goetter/Kulte", "Kriegskunst", "Lesen", "Magiekunde", "Sprachen",
-    "Abrichten", "Fahrzeuge", "Falschspiel", "Heilen Gift", "Heilen Krankheit", "Heilen Wunden", "Musizieren", "Schloesser", "Taschendieb",
-    "Gefahrensinn", "Sinnenschaerfe",
-    "DUMMY"
+    "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Äxte", "Speere", "Zweihänder", "Schusswaffen", "Wurfwaffen",
+    "Akrobatik", "Klettern", "Körperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
+    "Bekehren", "Betören", "Feilschen", "Gassenwissen", "Lügen", "Menschenkenntnis", "Schätzen",
+    "Fährtensuchen", "Fesseln", "Orientierung", "Pflanzenkunde", "Tierkunde", "Wildnisleben",
+    "Alchimie", "Alte Sprachen", "Geographie", "Geschichte", "Götter/Kulte", "Kriegskunst", "Lesen", "Magiekunde", "Sprachen",
+    "Abrichten", "Fahrzeuge", "Falschspiel", "Heilen Gift", "Heilen Krankheit", "Heilen Wunden", "Musizieren", "Schlösser", "Taschendieb",
+    "Gefahrensinn", "Sinnenschärfe"
 };
-int fies=0;
+char* arr_zaub[] = {
+    "DUMMY",
+    "Beherrschung brechen", "Destructibo", "Gardianum", "Illusionen zerstören", "Verwandlung beenden", // Antimagie
+    "Band & Fessel", "Bannbaladin", "Böser Blick", "Große Gier", "Große Verwirrung", "Herr der Tiere", "Horriphobus", "Mag. Raub", "Respondami", "Sanftmut", "Somnigravis", "Zwingtanz", // Beherrschung
+    "Furor Blut", "Geister bannen", "Geister rufen", "Heptagon", "Krähenruf", "Skelettarius", // Dämonologie
+    "Elementar herbeirufen", "Nihilatio Gravitas", "Solidrid Farbenspiel", // Elementarmagie
+    "Axxeleraus", "Foramen", "Motoricus", "Spurlos, Trittlos", "Transversalis", "Über Eis", // Bewegung
+    "Balsam", "Hexenspeichel", "Klarum Purum", "Ruhe Körper", "Tiere heilen", // Heilung
+    "Adleraug", "Analüs", "Eigenschaften", "Exposami", "Odem Arcanum", "Penetrizzel", "Sensibar", // Hellsicht
+    "Chamaelioni", "Duplicatus", "Harmlos", "Hexenknoten", // Illusion
+    "Blitz", "Ecliptifactus", "Eisenrost", "Fulminictus", "Ignifaxius", "Plumbumbarum", "Radau", "Saft, Kraft, Monstermacht", "Scharfes Auge", // Kampf
+    "Hexenblick", "Nekropathia", // Verständigung
+    "Adler, Wolf", "Arcano Psychostabilis", "Armatrutz", "CH steigern", "Feuerbann", "FF steigern", "GE steigern", "IN steigern", "KK steigern", "KL steigern", "MU steigern", "Mutabili", "Paralü", "Salander", "See & Fluss", "Visibili", // Verwandlung
+    "Abvenenum", "Aeolitus", "Brenne", "Claudibus", "Dunkelheit", "Erstarre", "Flim Flam", "Schmelze", "Silentium", "Sturmgebrüll" // Veränderung
+};
+
+Bit8u* schick_getCharname(unsigned p) {
+    return MemBase+Real2Phys(p)+16;
+}
 
 // Intercept far CALLs (both 32 and 16 bit)
 void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
@@ -437,7 +454,7 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 
     char talentname[32];
     unsigned short segm = selector-relocation;
-    if (segm == 0xEF8 && offs == 0x000B) {
+    if (segm == 0x0EF8 && offs == 0x000B) {
 	signed p1 = CPU_Pop16();
 	signed p2 = CPU_Pop16();
 	CPU_Push16(p2);
@@ -451,10 +468,8 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p3);
 	CPU_Push16(p2);
 	CPU_Push16(p1);
-	if (supress_rnd == 0) printf("randomF(%d) =", p1);
+	if (supress_rnd == 0) printf("random(%d) =", p1);
 	else supress_rnd--;
-	if (p1==100) fies=1;
-	else fies=0;
 	call++;
 	return;
     }
@@ -478,9 +493,8 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p2);
 	CPU_Push16(p1);
 	CPU_Push32(p0);
-	p4 &= 255;
-	signed char p4_r = -p4;
-	printf("->(%s/%s/%s)-%d:", arr_eig[p1], arr_eig[p2], arr_eig[p3], p4_r);
+	signed char p4_r = p4 & 0xFF;
+	printf("->(%s/%s/%s) + %d:", arr_eig[p1], arr_eig[p2], arr_eig[p3], p4_r);
 	supress_rnd=3;
 	return;
     }
@@ -491,8 +505,8 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p2);
 	CPU_Push16(p1);
 	CPU_Push32(p0);
-	signed p2_r = -p2;
-	printf("Eigenschaftsprobe auf %s+%d: ", arr_eig[p1], p2_r);
+	signed p2_r = p2 & 0xFF;
+	printf("Eigenschaftsprobe %s auf %s + %d: ", schick_getCharname(p0), arr_eig[p1], p2_r);
 	supress_rnd=1;
 	return;
     }
@@ -504,7 +518,7 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p1);
 	CPU_Push32(p0);
 	signed char p2_r = p2 & 0xFF;
-	printf("Talentprobe: %s +%d ", arr_tal[p1], p2_r);
+	printf("Talentprobe %s: %s +%d ", schick_getCharname(p0), arr_tal[p1], p2_r);
 	return;
     }
 }
@@ -521,7 +535,7 @@ void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push32(p0);
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
-	printf("Zauberprobe[JMP]: #%d +%d ", p1, p2_r);
+	printf("Zauberprobe %s: %s +%d ", schick_getCharname(p0), arr_zaub[p1], p2_r);
 	return;
     }
 }
@@ -530,10 +544,6 @@ void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
 // Works only correct for Routines containing no unintercepted CALLs
 void schick_ret() {
     if (!running || !(dbg_mode & 2) || !call) return;
-    if (fies) {
-	fies=0;
-	reg_ax = 1;
-    }
     if (supress_rnd) printf(" %d", reg_ax);
     else             printf(" %d\n", reg_ax);
     call--;
@@ -542,7 +552,12 @@ void schick_ret() {
 // Intercept near CALLs, 16-Bit
 void schick_calln16(unsigned un1) {
     if (!running || !(dbg_mode & 2) ) return;
-    unsigned short segm = Segs.phys[cs]-relocation;
+    /* TODO: Das Segment kann hier seltsamerweise wechseln.
+     * Für die Zauberprobe z.B. habe ich in der verfallenen Herberge einen Aufruf
+     * im Segment 0x2572 (der kühle Raum) und einen von 0x272E (Zauber aus dem
+     * Charakterbildschirm) gekriegt.
+     */
+    unsigned short segm = SegValue(cs)-relocation;
     unsigned short offs = reg_ip+(signed short)un1;
     
     if (offs == 0x002B) { // Random-Funktion
@@ -550,7 +565,7 @@ void schick_calln16(unsigned un1) {
 	unsigned p1 = CPU_Pop16();
 	CPU_Push16(p1);
 	CPU_Push32(pIP);
-	if (supress_rnd == 0) printf("randomN(%d) =", p1);
+	if (supress_rnd == 0) printf("random(%d) =", p1);
 	else supress_rnd--;
 	call++;
 	return;
@@ -565,10 +580,10 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(p0);
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
-	printf("Talentprobe[%06p:%06p]: %s +%d ", segm, offs, arr_tal[p1], p2_r);
+	printf("Talentprobe %s: %s +%d ",
+	       schick_getCharname(p0), arr_tal[p1], p2_r);
 	return;
     }
-    //if (segm == 0x2744 && offs == 0x0E1F) { // Zauberprobe
     if (offs == 0x0E1F) { // Zauberprobe
 	unsigned pIP= CPU_Pop32();
 	unsigned p0 = CPU_Pop32();
@@ -579,12 +594,12 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(p0);
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
-	printf("Zauberprobe[%06p:%06p]: #%d +%d ", segm, offs, p1, p2_r);
+	printf("Zauberprobe %s: %s +%d ",
+	       schick_getCharname(p0), arr_zaub[p1], p2_r);
 	return;
     }
-    //if (segm == 0x2744 && offs == 0x0386) { // Unbekannte Probefunktion
     if (offs == 0x0386) { // Unbekannte Probefunktion
-	printf("?-Probe[%06p:%06p]", segm, reg_ip);
+	printf("?-Probe[%06p:%06p] ", segm, reg_ip);
 	return;
     }
 }
