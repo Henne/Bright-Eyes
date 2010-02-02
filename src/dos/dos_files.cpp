@@ -525,7 +525,7 @@ bool DOS_OpenFile(char const * name,Bit8u flags,Bit16u * entry) {
 	/* First check for devices */
 	if (flags>2) LOG(LOG_FILES,LOG_ERROR)("Special file open command %X file %s",flags,name);
 	else LOG(LOG_FILES,LOG_NORMAL)("file open command %X file %s",flags,name);
-	
+
 	DOS_PSP psp(dos.psp());
 	Bit16u attr = 0;
 	Bit8u devnum = DOS_FindDevice(name);
@@ -548,7 +548,7 @@ bool DOS_OpenFile(char const * name,Bit8u flags,Bit16u * entry) {
 			handle=i;
 			break;
 		}
-	};
+	}
 	if (handle==255) {
 		DOS_SetError(DOSERR_TOO_MANY_OPEN_FILES);
 		return false;

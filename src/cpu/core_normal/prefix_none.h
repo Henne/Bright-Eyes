@@ -561,9 +561,6 @@
 		{ 
 			FillFlags();
 			Bit16u newip=Fetchw();Bit16u newcs=Fetchw();
-//			if (newcs != 0xf100 && newcs != 0x168 && newcs !=0x614 && newcs != 0x686 && !(newcs == 0x1533 && newip == 0x20))
-//				fprintf(stderr, "far call 0x%x:0x%x\n",
-//						newcs, newip);
 			CPU_CALL(false,newcs,newip,GETIP);
 #if CPU_TRAP_CHECK
 			if (GETFLAG(TF)) {	
@@ -612,21 +609,12 @@
 	CASE_B(0xa2)												/* MOV Ob,AL */
 		{
 			GetEADirect;
-//			fprintf(stderr, "BaseDS: 0x%x\n", BaseDS);
-//			if (BaseDS == 0x16640) /*ohne debugger */
-//			if (BaseDS == 0x200c0) /*mit debugger */
-//				fprintf(stderr, "mov [0x%x],al\n", eaa-BaseDS);
 			SaveMb(eaa,reg_al);
 		}
 		break;
 	CASE_W(0xa3)												/* MOV Ow,AX */
 		{
 			GetEADirect;
-
-//			fprintf(stderr, "BaseDS: 0x%x\n", BaseDS);
-//			if (BaseDS == 0x16640) /*ohne debugger */
-//			if (BaseDS == 0x200c0) /*mit debugger */
-//				fprintf(stderr, "mov [0x%x],ax\n", eaa-BaseDS);
 			SaveMw(eaa,reg_ax);
 		}
 		break;
@@ -766,7 +754,6 @@
 	CASE_B(0xcd)												/* INT Ib */	
 		{
 			Bit8u num=Fetchb();
-//			fprintf(stderr, "INT 0x%X\n", num);
 #if C_DEBUG
 			FillFlags();
 			if (DEBUG_IntBreakpoint(num)) {
