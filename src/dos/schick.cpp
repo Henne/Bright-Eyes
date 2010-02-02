@@ -482,6 +482,27 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p1);
 	if (p1 < 10) printf("wuerfel %dW%d+%d\n", p1, p2, p3);
     }
+    if (segm == 0x0EF8 && offs == 0x0119) {
+        unsigned p1 = CPU_Pop16();
+	char n,m,x;
+        CPU_Push16(p1);
+        n = (p1 & 0xf000) >> 12;
+        x = (p1 & 0x00ff);
+        switch ((p1 & 0x0f00) >> 8) {
+		case 1:
+			m = 6;
+			break;
+		case 2:
+			m = 20;
+			break;
+		case 3:
+			m = 3;
+			break;
+		default:
+			m = 4;
+	}
+        printf("Wuerfel %dW%d%+d\n", n, m, x);
+    }
     if (segm == 0x051E && offs == 0x504E) { // Talent-/Zauber-Probe
 	unsigned p0 = CPU_Pop32();
 	unsigned p1 = CPU_Pop16();

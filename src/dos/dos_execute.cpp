@@ -104,7 +104,7 @@ void DOS_UpdatePSPName(void) {
 
 void DOS_Terminate(Bit16u pspseg,bool tsr,Bit8u exitcode) {
 
-	//Disable Hook for "Schicksalklinge/Blade of Destiny"
+	//Disable Hook for "Schicksalsklinge/Blade of Destiny"
 	exit_schick(exitcode);
 
 	dos.return_code=exitcode;
