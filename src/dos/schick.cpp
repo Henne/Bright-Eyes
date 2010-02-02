@@ -418,8 +418,8 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 			handle, pos, type, file);
 }
 
-char* arr_eig[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
-char* arr_tal[] = {
+static const char* arr_eig[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
+static const char* arr_tal[] = {
     "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Äxte", "Speere", "Zweihänder", "Schusswaffen", "Wurfwaffen",
     "Akrobatik", "Klettern", "Körperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
     "Bekehren", "Betören", "Feilschen", "Gassenwissen", "Lügen", "Menschenkenntnis", "Schätzen",
@@ -428,7 +428,7 @@ char* arr_tal[] = {
     "Abrichten", "Fahrzeuge", "Falschspiel", "Heilen Gift", "Heilen Krankheit", "Heilen Wunden", "Musizieren", "Schlösser", "Taschendieb",
     "Gefahrensinn", "Sinnenschärfe"
 };
-char* arr_zaub[] = {
+static const char* arr_zaub[] = {
     "DUMMY",
     "Beherrschung brechen", "Destructibo", "Gardianum", "Illusionen zerstören", "Verwandlung beenden", // Antimagie
     "Band & Fessel", "Bannbaladin", "Böser Blick", "Große Gier", "Große Verwirrung", "Herr der Tiere", "Horriphobus", "Mag. Raub", "Respondami", "Sanftmut", "Somnigravis", "Zwingtanz", // Beherrschung
