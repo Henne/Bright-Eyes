@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "schick.h"
+#include "cpu.h"
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
@@ -12,6 +13,8 @@ static int running=0;
 static int gen=0;
 //Is file schick.dat ?
 static int dathandle = 0;
+//Was an interesting function called?
+static int call=0;
 
 //Initializer - is startet if executed file is SCHICKM.EXE
 void init_schick(char *name)
@@ -20,7 +23,7 @@ void init_schick(char *name)
 	//This happens only if the game starts another program
 	if (running)
 	{
-		if (strstr(name, "GEN.EXE"))
+		if (strstr(name, "gen.exe"))
 		{
 			running--;
 			gen++;
@@ -28,8 +31,7 @@ void init_schick(char *name)
 		}
 		return;
 	}
-
-	if (!strstr(name, "SCHICKM.EXE") && !strstr(name, "BLADEM.EXE")) return;
+	if (!strstr(name, "schickm.exe") && !strstr(name, "BLADEM.EXE")) return;
 
 	fprintf(stderr, "DSA1 Schicksalsklinge gefunden\nStarte Profiler\n");
 	running++;
@@ -92,7 +94,7 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 	if (handle != dathandle)
 	{
 		fprintf(stderr,"Seek File\tHandle %x\tPos %ld\tType %x\n",
-			handle, pos, type);
+  handle, pos, type);
 		return;
 	}
 
@@ -407,3 +409,85 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 			handle, pos, type, file);
 }
 
+char* arr_eig[] = {"MU", "KL", "IN", "CH", "FF", "GE", "KK"};
+char* arr_tal[] = {
+    "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Aexte", "Speere", "Zweihaender", "Schusswaffen", "Wurfwaffen",
+    "Akrobatik", "Klettern", "Koerperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
+    "Bekehren", "Betoeren", "Feilschen", "Gassenwissen", "Luegen", "Menschenkenntnis", "Schaetzen",
+    "Faehrtensuchen", "Fesseln", "Orientierung", "Pflanzenkunde", "Tierkunde", "Wildnisleben",
+    "Alchimie", "Alte Sprachen", "Geographie", "Geschichte", "Goetter/Kulte", "Kriegskunst", "Lesen", "Magiekunde", "Sprachen",
+    "Abrichten", "Fahrzeuge", "Falschspiel", "Heilen Gift", "Heilen Krankheit", "Heilen Wunden", "Musizieren", "Schloesser", "Taschendieb",
+    "Gefahrensinn", "Sinnenschaerfe",
+    "DUMMY"
+};
+
+// Intercept far CALLs (both 32 and 16 bit)
+void schick_callf(unsigned selector,unsigned offset,unsigned oldeip) {
+    if (!running) return;
+
+    char talentname[32];
+    if (selector == 4161 && offset == 0x002B) {
+	unsigned p1 = CPU_Pop16();
+	CPU_Push16(p1);
+	printf("calling random(%d) = ", p1);
+	call++;
+	return;
+    }
+    if (selector == 1639 && offset == 0x504E) {
+	unsigned p0 = CPU_Pop32();
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	unsigned p3 = CPU_Pop16();
+	unsigned p4 = CPU_Pop16();
+	CPU_Push16(p4);
+	CPU_Push16(p3);
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	CPU_Push32(p0);
+	p4 &= 255;
+	signed char p4_r = -p4;
+	printf("Probe[%p] auf %s/%s/%s+%d\n", oldeip,
+	       arr_eig[p1], arr_eig[p2], arr_eig[p3], p4_r);
+	return;
+    }
+}
+
+// Intercept RETurn and print the return value. Simple hack.
+// Works only correct for Routines containing no unintercepted CALLs
+void schick_ret() {
+    if (!running || !call) return;
+    printf("%d\n", reg_ax);
+    call--;
+}
+
+// Intercept near CALLs, 16-Bit
+void schick_calln16(unsigned un1) {
+    if (!running) return;
+    int offs = reg_ip+(signed short)un1;
+    if (offs == 0x040F) {
+	unsigned pIP= CPU_Pop32();
+	unsigned p0 = CPU_Pop32();
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	CPU_Push32(p0);
+	CPU_Push32(pIP);
+	signed char p2_r = p2 & 0xFF;
+	printf("Talentprobe @ %p: %s + %d\n", reg_ip, arr_tal[p1], p2_r);
+	return;
+    }
+    if (offs == 0x0E1F) {
+	unsigned pIP= CPU_Pop32();
+	unsigned p0 = CPU_Pop32();
+	unsigned p1 = CPU_Pop16();
+	unsigned p2 = CPU_Pop16();
+	CPU_Push16(p2);
+	CPU_Push16(p1);
+	CPU_Push32(p0);
+	CPU_Push32(pIP);
+	signed char p2_r = p2 & 0xFF;
+	printf("Zauberprobe @ %p: #%d + %d\n", reg_ip, p1, p2_r);
+	return;
+    }
+}

@@ -316,6 +316,7 @@ switch (inst.code.op) {
 	case O_CALLNw:
 		SaveIP();
 		Push_16(reg_ip);
+		schick_calln16(inst_op1_d);
 		break;
 	case O_CALLNd:
 		SaveIP();

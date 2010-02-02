@@ -27,6 +27,7 @@
 #include "debug.h"
 #include "inout.h"
 #include "callback.h"
+#include "../dos/schick.h"
 
 
 typedef PhysPt EAPoint;
