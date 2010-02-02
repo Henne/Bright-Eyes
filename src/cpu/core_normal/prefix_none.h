@@ -561,7 +561,7 @@
 		{ 
 			FillFlags();
 			Bit16u newip=Fetchw();Bit16u newcs=Fetchw();
-//			if (newcs != 0xf100)
+//			if (newcs != 0xf100 && newcs != 0x168 && newcs !=0x614 && newcs != 0x686 && !(newcs == 0x1533 && newip == 0x20))
 //				fprintf(stderr, "far call 0x%x:0x%x\n",
 //						newcs, newip);
 			CPU_CALL(false,newcs,newip,GETIP);

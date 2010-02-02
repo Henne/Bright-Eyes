@@ -28,6 +28,9 @@
 #include "debug.h"
 #include "cpu.h"
 
+// Include for "Schicksalsklinge/Blade of Destiny"
+#include "schick.h"
+
 const char * RunningProgram="DOSBOX";
 
 #ifdef _MSC_VER
@@ -100,6 +103,9 @@ void DOS_UpdatePSPName(void) {
 }
 
 void DOS_Terminate(Bit16u pspseg,bool tsr,Bit8u exitcode) {
+
+	//Disable Hook for "Schicksalklinge/Blade of Destiny"
+	exit_schick(exitcode);
 
 	dos.return_code=exitcode;
 	dos.return_mode=(tsr)?(Bit8u)RETURN_TSR:(Bit8u)RETURN_EXIT;
@@ -414,6 +420,9 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		sssp=RealMake(pspseg,0xfffe);
 		mem_writew(PhysMake(pspseg,0xfffe),0);
 	} else {
+		//Enable Hook for "Schicksalsklinge/Blade of Destiny"
+		init_schick(name);
+
 		csip=RealMake(loadseg+head.initCS,head.initIP);
 		sssp=RealMake(loadseg+head.initSS,head.initSP);
 		if (head.initSP<4) LOG(LOG_EXEC,LOG_ERROR)("stack underflow/wrap at EXEC");
