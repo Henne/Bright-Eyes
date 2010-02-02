@@ -480,7 +480,7 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p3);
 	CPU_Push16(p2);
 	CPU_Push16(p1);
-	if (p1 < 10) printf("wuerfel %dW%d+%d\n", p1, p2, p3);
+	if (p1 < 10) printf("wuerfel %dW%d%+d\n", p1, p2, p3);
     }
     if (segm == 0x0EF8 && offs == 0x0119) {
         unsigned p1 = CPU_Pop16();
@@ -527,7 +527,7 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p1);
 	CPU_Push32(p0);
 	signed p2_r = p2 & 0xFF;
-	printf("Eigenschaftsprobe %s auf %s + %d: ", schick_getCharname(p0), arr_eig[p1], p2_r);
+	printf("Eigenschaftsprobe %s auf %s %+d: ", schick_getCharname(p0), arr_eig[p1], p2_r);
 	supress_rnd=1;
 	return;
     }
@@ -539,7 +539,7 @@ void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push16(p1);
 	CPU_Push32(p0);
 	signed char p2_r = p2 & 0xFF;
-	printf("Talentprobe %s: %s +%d ", schick_getCharname(p0), arr_tal[p1], p2_r);
+	printf("Talentprobe %s: %s %+d ", schick_getCharname(p0), arr_tal[p1], p2_r);
 	return;
     }
 }
@@ -556,7 +556,7 @@ void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
 	CPU_Push32(p0);
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
-	printf("Zauberprobe %s: %s +%d ", schick_getCharname(p0), arr_zaub[p1], p2_r);
+	printf("Zauberprobe %s: %s %+d ", schick_getCharname(p0), arr_zaub[p1], p2_r);
 	return;
     }
 }
@@ -601,7 +601,7 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(p0);
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
-	printf("Talentprobe %s: %s +%d ",
+	printf("Talentprobe %s: %s %+d ",
 	       schick_getCharname(p0), arr_tal[p1], p2_r);
 	return;
     }
@@ -615,7 +615,7 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(p0);
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
-	printf("Zauberprobe %s: %s +%d ",
+	printf("Zauberprobe %s: %s %+d ",
 	       schick_getCharname(p0), arr_zaub[p1], p2_r);
 	return;
     }
