@@ -1,3 +1,36 @@
+#define SCHICK_INFO
+//#define SCHICK_LOG
+#define SCHICK_TRAC
+//#define SCHICK_GFX
+
+#define D1_ERR(...) fprintf(stderr, __VA_ARGS__)
+
+#ifdef SCHICK_LOG
+#define D1_LOG(...) fprintf(stderr, __VA_ARGS__)
+#else
+static inline void D1_LOG(...) { }
+#endif
+
+#ifdef SCHICK_INFO
+#define D1_INFO(...) fprintf(stderr, __VA_ARGS__)
+#else
+static inline void D1_INFO(...) { }
+#endif
+
+#ifdef SCHICK_TRAC
+#define D1_TRAC(...) fprintf(stderr, __VA_ARGS__)
+#else
+static inline void D1_TRAC(...) { }
+#endif
+
+#ifdef SCHICK_GFX
+#define D1_GFX(...) fprintf(stderr, __VA_ARGS__)
+#else
+static inline void D1_GFX(...) { }
+#endif
+
+
+
 extern void init_schick(char *, unsigned short reloc);
 extern void exit_schick(unsigned char);
 
