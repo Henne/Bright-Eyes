@@ -1065,7 +1065,7 @@ CODE_jmp:
 
 
 void CPU_CALL(bool use32,Bitu selector,Bitu offset,Bitu oldeip) {
-	schick_callf(selector,offset,oldeip);
+	schick_callf(selector, offset, SegValue(ss), reg_sp);
 	if (!cpu.pmode || (reg_flags & FLAG_VM)) {
 		if (!use32) {
 			CPU_Push16(SegValue(cs));

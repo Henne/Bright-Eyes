@@ -450,7 +450,8 @@ Bit8u* schick_getCharname(unsigned p) {
 }
 
 // Intercept far CALLs (both 32 and 16 bit)
-void schick_callf(unsigned selector,unsigned offs,unsigned oldeip) {
+void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
+{
     if (!running || !(dbg_mode & 2) ) return;
 
     char talentname[32];
