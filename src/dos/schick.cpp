@@ -43,7 +43,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	    return;
 
 	D1_INFO("DSA1 Schicksalsklinge gefunden\n");
-	D1_INFO("Starte Profiler (reloc %06p)\n", reloc);
+	D1_INFO("Starte Profiler (reloc 0x%06x)\n", reloc);
 	relocation = reloc;
 	running++;
 }
@@ -630,7 +630,7 @@ void schick_calln16(unsigned un1) {
 	return;
     }
     if (offs == 0x0386) { // Unbekannte Probefunktion
-	D1_INFO("?-Probe[%06p:%06p] ", segm, reg_ip);
+	D1_INFO("?-Probe[0x%06x:0x%06x] ", segm, reg_ip);
 	return;
     }
 }
