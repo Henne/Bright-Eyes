@@ -63,6 +63,14 @@ void exit_schick(unsigned char exit)
 	D1_INFO("DSA1 Fehlercode %d\nProfiler beendet\n", exit);
 }
 
+void schick_create(const char *name, unsigned char flags, unsigned int handle)
+{
+
+	if (!running || !(dbg_mode & 1) ) return;
+
+	D1_ERR("Create File\tHandle %d\t%s\tFlags\n", handle, name, flags);
+}
+
 void schick_open(const char *name, unsigned char flags, unsigned int handle)
 {
 

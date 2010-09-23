@@ -509,6 +509,10 @@ bool DOS_CreateFile(char const * name,Bit16u attributes,Bit16u * entry) {
 		return false;
 	}
 	bool foundit=Drives[drive]->FileCreate(&Files[handle],fullname,attributes);
+
+	//Hook for "Schicksalsklinge/Blade of Destiny"
+	schick_create(name, attributes, handle);
+
 	if (foundit) { 
 		Files[handle]->SetDrive(drive);
 		Files[handle]->AddRef();
