@@ -421,7 +421,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		mem_writew(PhysMake(pspseg,0xfffe),0);
 	} else {
 		//Enable Hook for "Schicksalsklinge/Blade of Destiny"
-		init_schick(name, relocate);
+		init_schick(name, relocate, head.initCS, head.initIP);
 
 		csip=RealMake(loadseg+head.initCS,head.initIP);
 		sssp=RealMake(loadseg+head.initSS,head.initSP);

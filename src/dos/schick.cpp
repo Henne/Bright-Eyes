@@ -25,7 +25,7 @@ static unsigned short relocation;
 static int dbg_mode=2;
 
 //Initializer - is startet if executed file is SCHICKM.EXE
-void init_schick(char *name, unsigned short reloc)
+void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short _ip)
 {
 	//This happens only if the game starts another program
 	if (running)

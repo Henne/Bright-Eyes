@@ -31,7 +31,7 @@ static inline void D1_GFX(...) { }
 
 
 
-extern void init_schick(char *, unsigned short reloc);
+extern void init_schick(char *, unsigned short, unsigned short, unsigned short);
 extern void exit_schick(unsigned char);
 
 extern void schick_create(const char *, unsigned char, unsigned);
