@@ -504,7 +504,7 @@ Bit8u* schick_getCharname(unsigned p) {
 }
 
 // Intercept far CALLs (both 32 and 16 bit)
-void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
+void schick_farcall_v302(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
 {
     if (!running || !schick || !(dbg_mode & 2) ) return;
 
@@ -598,6 +598,18 @@ void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
 	D1_INFO("Talentprobe %s: %s %+d ", schick_getCharname(p0), arr_tal[p1], p2_r);
 	return;
     }
+}
+
+void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
+{
+	if (!running)
+		return;
+
+	if (schick && !fromgame) {
+		schick_farcall_v302(selector, offs, ss, sp);
+		return;
+	}
+
 }
 
 // Intercept far JMPs (both 32 and 16 bit)
