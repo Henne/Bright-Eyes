@@ -28,11 +28,11 @@ static unsigned short relocation;
 // Debugging Mode (Bitfield): Bit 1=File Operations, Bit 2=Proben
 static int dbg_mode=2;
 
-//Registers
-static unsigned short codeseg,ip,datseg;
+//Datasegment
+static unsigned short datseg;
 
 //Initializer - is startet if executed file is SCHICKM.EXE/BLADEM.EXE or GEN.EXE
-void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short _ip)
+void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
 {
 
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
@@ -57,14 +57,15 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
        /* Check CS:IP in the EXE-Header are 0:0
         * and the first executed instruction is mov dx,i16 */
-       if (_cs != 0 || _ip != 0 || real_readb(codeseg=reloc+_cs, ip=_ip) != 0xba)
+       if (_cs != 0 || ip != 0 || real_readb(reloc+_cs, ip) != 0xba)
                return;
 
        /* Show CS:IP on the virtual machine and the pointer to 0:0 */
-       D1_INFO("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", codeseg, ip, MemBase);
+       D1_INFO("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
 
-       /* Read and show the Datasegment */
-       D1_INFO("Dseg: 0x%X\n", datseg=real_readw(codeseg, ip+1));
+	/* Read and show the Datasegment */
+	datseg = real_readw(reloc, ip+1);
+	D1_INFO("Dseg: 0x%X\n", datseg=real_readw(reloc, ip+1));
 
        /* Check if the start of the Datasegment is Borland C++ */
        if (real_readd(datseg, 0) != 0 || strcmp((char*)MemBase+(datseg<<4)+4, borsig))
