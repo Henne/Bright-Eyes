@@ -499,105 +499,932 @@ static const char* arr_zaub[] = {
     "Abvenenum", "Aeolitus", "Brenne", "Claudibus", "Dunkelheit", "Erstarre", "Flim Flam", "Schmelze", "Silentium", "Sturmgebrüll" // Veränderung
 };
 
-Bit8u* schick_getCharname(unsigned p) {
+static inline Bit8u* schick_getCharname(unsigned p) {
     return MemBase+Real2Phys(p)+16;
+}
+
+static inline Bit8u* getString(unsigned p) {
+	return MemBase+Real2Phys(p);
 }
 
 // Intercept far CALLs (both 32 and 16 bit)
 void schick_farcall_v302(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
 {
-    if (!running || !schick || !(dbg_mode & 2) ) return;
 
-    char talentname[32];
-    unsigned short segm = selector-relocation;
-    if (segm == 0x0EF8 && offs == 0x000B) {
-	signed p1 = CPU_Pop16();
-	signed p2 = CPU_Pop16();
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	D1_INFO("randomInterval %d - %d : ", p1, p2);
-    }
-    if (segm == 0x0EF8 && offs == 0x002B) {
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	unsigned p3 = CPU_Pop16();
-	CPU_Push16(p3);
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	if (supress_rnd == 0) D1_INFO("random(%d) =", p1);
-	else supress_rnd--;
-	call++;
-	return;
-    }
-    if (segm == 0x0EF8 && offs == 0x007A) {
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	unsigned p3 = CPU_Pop16();
-	CPU_Push16(p3);
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	if (p1 < 10) D1_INFO("wuerfel %dW%d%+d\n", p1, p2, p3);
-    }
-    if (segm == 0x0EF8 && offs == 0x0119) {
-        unsigned p1 = CPU_Pop16();
-	char n,m,x;
-        CPU_Push16(p1);
-        n = (p1 & 0xf000) >> 12;
-        x = (p1 & 0x00ff);
-        switch ((p1 & 0x0f00) >> 8) {
-		case 1:
-			m = 6;
-			break;
-		case 2:
-			m = 20;
-			break;
-		case 3:
-			m = 3;
-			break;
-		default:
-			m = 4;
+	if (!running || !schick || !(dbg_mode & 2) ) return;
+
+	unsigned short segm = selector-relocation;
+
+	/* There are no farcalls from the game to segments behind DS*/
+	if (segm >= datseg) return;
+
+	//this is for mouse handling and spams the log
+	if (segm == 0xb2a)	{
+		//D1_LOG("Segment 0xb2a:0x%04x\n", offs);
+		return;
 	}
-        D1_INFO("Wuerfel %dW%d%+d\n", n, m, x);
-    }
-    if (segm == 0x051E && offs == 0x504E) { // Talent-/Zauber-Probe
-	unsigned p0 = CPU_Pop32();
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	unsigned p3 = CPU_Pop16();
-	unsigned p4 = CPU_Pop16();
-	CPU_Push16(p4);
-	CPU_Push16(p3);
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	CPU_Push32(p0);
-	signed char p4_r = p4 & 0xFF;
-	D1_INFO("->(%s/%s/%s) + %d:", arr_eig[p1], arr_eig[p2], arr_eig[p3], p4_r);
-	supress_rnd=3;
-	return;
-    }
-    if (segm == 0x051E && offs == 0x4FF9) { // Eigenschaftsprobe
-	unsigned p0 = CPU_Pop32();
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	CPU_Push32(p0);
-	signed p2_r = p2 & 0xFF;
-	D1_INFO("Eigenschaftsprobe %s auf %s %+d: ", schick_getCharname(p0), arr_eig[p1], p2_r);
-	supress_rnd=1;
-	return;
-    }
-    if (segm == 0x147b && offs == 0x0020) { // Talentprobe
-	unsigned p0 = CPU_Pop32();
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	CPU_Push32(p0);
-	signed char p2_r = p2 & 0xFF;
-	D1_INFO("Talentprobe %s: %s %+d ", schick_getCharname(p0), arr_tal[p1], p2_r);
-	return;
-    }
+
+	if (segm == 0xf18)	{
+		if (offs == 0x8) {
+			D1_GFX("SwapU16(val=0x%x);\n",
+					real_readw(ss, sp));
+			return;
+		}
+		if (offs == 0x14) {
+			D1_GFX("SetVideoMode(mode=0x%x);\n",
+					real_readw(ss, sp));
+				return;
+		}
+		if (offs == 0x2a) {
+			D1_GFX("SetDisplayPage(page=0x%x);\n",
+				real_readw(ss, sp));
+				return;
+		}
+		if (offs == 0x40) {
+			D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
+				real_readw(ss, sp+2), real_readw(ss, sp));
+				return;
+		}
+		if (offs == 0xea) {
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short off=real_readw(ss, sp);
+
+			D1_GFX("SetColor(rgb=0x%x:0x%x, color=0x%x);\n",
+				seg, off, real_readw(ss, sp+4));
+			D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
+				real_readb(seg, off), real_readb(seg, off+1),
+				real_readb(seg, off+2));
+
+				return;
+		}
+		if (offs == 0x119) {
+
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short first_color=real_readw(ss, sp+4);
+			unsigned short colors=real_readw(ss, sp+6);
+			unsigned short i;
+
+			D1_GFX("SetPalette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
+				seg, off, first_color, colors);
+
+			if (seg == ds)
+				D1_LOG("Palette at DS:0x%x\n", off);
+			for (i=0; i<colors; i++)
+				D1_GFX("\"\\%02d\\%02d\\%02d\"..\n",
+					real_readb(seg, off+i*3),
+					real_readb(seg, off+i*3+1),
+					real_readb(seg, off+i*3+2));
+			return;
+		}
+		if (offs == 0x14d) {
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short len=real_readw(ss, sp+4);
+			unsigned short color=real_readw(ss, sp+6);
+
+			if (seg == 0xa000)
+				D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
+					off%320, off/320, len, color);
+			else
+				D1_GFX("HLine(0x%04x:0x%04x,len=%u,color=0x%02x);\n",
+					seg, off, len, color);
+			return;
+		}
+		if (offs == 0x1af) {
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short cnt=real_readw(ss, sp+4);
+			unsigned char color=real_readb(ss, sp+6);
+			unsigned short space=real_readw(ss, sp+8);
+
+			if (seg == 0xa000)
+				D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
+					off%320, off/320, cnt, color, space);
+			else
+				D1_GFX("HSpacedDots(0x%04x:0x%04x,0x%04x,0x%02x);\n",
+					seg, off, cnt, color, space);
+			return;
+		}
+		if (offs == 0x219) {
+			unsigned short off_dest=real_readw(ss, sp);
+			unsigned short seg_dest=real_readw(ss, sp+2);
+			unsigned short x1=real_readw(ss, sp+4);
+			unsigned short y1=real_readw(ss, sp+6);
+			unsigned short x2=real_readw(ss, sp+8);
+			unsigned short y2=real_readw(ss, sp+10);
+
+			unsigned short val12=real_readw(ss, sp+12);
+			unsigned short val14=real_readw(ss, sp+14);
+			unsigned short val16=real_readw(ss, sp+16);
+			unsigned short val18=real_readw(ss, sp+18);
+
+			unsigned short width=real_readw(ss, sp+20);
+			unsigned short height=real_readw(ss, sp+22);
+			unsigned short off_src=real_readw(ss, sp+24);
+			unsigned short seg_src=real_readw(ss, sp+26);
+
+			if (seg_dest == 0xa000)
+				D1_GFX("PicCopy(X=%03u,Y=%03u,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x)\n",
+					off_dest%320, off_dest/320,
+					x1, y1,	x2, y2,
+					val12, val14, val16, val18,
+					width, height, seg_src, off_src);
+			else
+				D1_GFX("PicCopy(dest=0x%04x:0x%04x,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x)\n",
+					seg_dest, off_dest,
+					x1, y1,	x2, y2,
+					val12, val14, val16, val18,
+					width, height, seg_src, off_src);
+			return;
+		}
+		if (offs == 0x655) {
+			unsigned short seg_src=real_readw(ss, sp);
+			unsigned short off_src=real_readw(ss, sp+2);
+			unsigned short off_dst=real_readw(ss, sp+4);
+			unsigned short seg_dst=real_readw(ss, sp+6);
+			unsigned short width=real_readw(ss, sp+8);
+			unsigned short height=real_readw(ss, sp+10);
+
+			if (seg_src == 0xa000)
+			D1_GFX("SaveScreen(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
+					off_src%320, off_src/320,
+					seg_dst, off_dst,
+					width, height);
+			else
+			D1_GFX("SaveScreen(src=0x%04x:0x%04x,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
+					seg_src, off_src,
+					seg_dst, off_dst,
+					width, height);
+			return;
+		}
+		if (offs == 0x68c) {
+			unsigned short seg=real_readw(ss, sp);
+			unsigned short off=real_readw(ss, sp+2);
+			unsigned short color=real_readw(ss, sp+4);
+			unsigned short width=real_readw(ss, sp+6);
+			unsigned short height=real_readw(ss, sp+8);
+
+			if (seg == 0xa000)
+
+				D1_GFX("FillRect(X=%u,Y=%u,color=%u,width=%u,height=%u)\n",
+					off%320, off/320, color, width, height);
+			else
+				D1_GFX("FillRect(dest=0x%04x:0x%04x,color=%u,cnt=%u,%u)\n",
+					seg, off, color, width, height);
+			return;
+		}
+		if (offs == 0x6c5) {
+			unsigned short off_dst=real_readw(ss, sp);
+			unsigned short seg_dst=real_readw(ss, sp+2);
+			unsigned short off_src=real_readw(ss, sp+4);
+			unsigned short seg_src=real_readw(ss, sp+6);
+			unsigned short val1=real_readw(ss, sp+8);
+			unsigned short val2=real_readw(ss, sp+10);
+			unsigned short val3=real_readw(ss, sp+12);
+			unsigned short val4=real_readw(ss, sp+16);
+
+			D1_GFX("0x6c5(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,%u,%u,%u,%u)\n",
+					seg_dst, off_dst,
+					seg_src, off_src,
+					val1, val2, val3, val4);
+			return;
+		}
+		/* used often in cities and dungeons */
+		if (offs == 0x816) {
+			unsigned short off_dst=real_readw(ss, sp);
+			unsigned short seg_dst=real_readw(ss, sp+2);
+			unsigned short off_src=real_readw(ss, sp+4);
+			unsigned short seg_src=real_readw(ss, sp+6);
+			unsigned short val1=real_readw(ss, sp+8);
+			unsigned short val2=real_readw(ss, sp+10);
+			unsigned short val3=real_readw(ss, sp+12);
+			unsigned short val4=real_readw(ss, sp+14);
+
+			D1_GFX("0x816(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,%u,%u,%u,%u)\n",
+					seg_dst, off_dst,
+					seg_src, off_src,
+					val1, val2, val3, val4
+					);
+			return;
+		}
+		if (offs == 0x967){
+			D1_GFX("RLE(width=%d, height=%d, src_pp=0x%x:0x%x, dst=0x%x:0x%x, src_rle=0x%x:0x%x, mode=%d)\n",
+				real_readw(ss, sp), real_readw(ss, sp+2),
+				real_readw(ss, sp+6), real_readw(ss, sp+4),
+				real_readw(ss, sp+10), real_readw(ss, sp+8),
+				real_readw(ss, sp+14),real_readw(ss, sp+12),
+				real_readw(ss, sp+16));
+				return;
+		}
+		D1_GFX("Rasterlib:0x%x\n", offs);
+		return;
+	}
+
+	if (segm == 0x4ac) return;
+
+	//4 funcs of this sement are called every 0.18s and spam the log
+	if (segm == 0x51e) {
+		if (offs == 0x06fe) return;
+		/* GUI Radio */
+		if (offs == 0x0832) return;
+
+		if (offs == 0x0c28) {
+			unsigned short index=real_readw(ss, sp);
+			D1_LOG("ReadDatfile()\n");
+			return;
+		}
+		if (offs == 0x0d27) {
+			unsigned short index=real_readw(ss, sp);
+			D1_LOG("OpenAndSeekDatfile(%u)\n", index);
+			return;
+		}
+		if (offs == 0x0ed2) return;
+		if (offs == 0x1634) return;
+		if (offs == 0x1802) return;
+		if (offs == 0x1921) return;
+		if (offs == 0x192b) return;
+		if (offs == 0x1a34) return;
+		if (offs == 0x1d67) return;
+		if (offs == 0x1ecc) return;
+		if (offs == 0x232a) return;
+		if (offs == 0x274e) return;
+		if (offs == 0x37c4) return;
+		if (offs == 0x3ebb) return;
+		/* Kopierschutzabfrage */
+		if (offs == 0x4016) return;
+		if (offs == 0x40d1) return;
+		if (offs == 0x44aa) return;
+
+		if (offs == 0x48b1) {
+			unsigned int  ptr=real_readd(ss, sp);
+			D1_INFO("istHeldBeiSinnen(%s)\n", schick_getCharname(ptr));
+			return;
+		}
+		if (offs == 0x49d8) {
+			unsigned int  ptr=real_readd(ss, sp);
+			D1_INFO("istHeldBeiSinnenUndGruppe(%s)\n", schick_getCharname(ptr));
+			return;
+		}
+
+		if (offs == 0x4ff9) { // Eigenschaftsprobe
+			unsigned p0 = CPU_Pop32();
+			unsigned p1 = CPU_Pop16();
+			unsigned p2 = CPU_Pop16();
+			CPU_Push16(p2);
+			CPU_Push16(p1);
+			CPU_Push32(p0);
+
+			signed p2_r = p2 & 0xFF;
+			D1_INFO("Eigenschaftsprobe %s auf %s %+d: ",
+					schick_getCharname(p0),
+					arr_eig[p1], p2_r);
+			supress_rnd=1;
+			return;
+		}
+		if (offs == 0x504e) { // Talent-/Zauber-Probe
+			unsigned p0 = CPU_Pop32();
+			unsigned p1 = CPU_Pop16();
+			unsigned p2 = CPU_Pop16();
+			unsigned p3 = CPU_Pop16();
+			unsigned p4 = CPU_Pop16();
+			CPU_Push16(p4);
+			CPU_Push16(p3);
+			CPU_Push16(p2);
+			CPU_Push16(p1);
+			CPU_Push32(p0);
+			signed char p4_r = p4 & 0xFF;
+			D1_INFO("->(%s/%s/%s) + %d:",
+					arr_eig[p1], arr_eig[p2],
+					arr_eig[p3], p4_r);
+			supress_rnd=3;
+			return;
+		}
+		if (offs == 0x5816) {
+			unsigned short argc=real_readw(ss, sp);
+			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
+			return;
+		}
+		if (offs == 0x5a68) {
+			D1_LOG("alloc_byte(%d)\n", real_readw(ss, sp));
+			return;
+		}
+		D1_LOG("Segment 0x51e:0x%04x\n", offs);
+		return;
+	}
+	if (segm == 0x0ae7) return;
+	if (segm == 0x0c85) return;
+	if (segm == 0x0e41) return;
+	if (segm == 0x0ef8) {
+
+		if (offs == 0x000b) {
+			signed p1 = CPU_Pop16();
+			signed p2 = CPU_Pop16();
+			CPU_Push16(p2);
+			CPU_Push16(p1);
+
+			D1_INFO("randomInterval %d - %d : ", p1, p2);
+			return;
+		}
+		if (offs == 0x002b) {
+			unsigned p1 = CPU_Pop16();
+			unsigned p2 = CPU_Pop16();
+			unsigned p3 = CPU_Pop16();
+			CPU_Push16(p3);
+			CPU_Push16(p2);
+			CPU_Push16(p1);
+
+			if (supress_rnd == 0)
+				D1_INFO("random(%d) =", p1);
+			else
+				supress_rnd--;
+			call++;
+			return;
+		}
+		if (offs == 0x007a) {
+			unsigned p1 = CPU_Pop16();
+			unsigned p2 = CPU_Pop16();
+			unsigned p3 = CPU_Pop16();
+			CPU_Push16(p3);
+			CPU_Push16(p2);
+			CPU_Push16(p1);
+
+			if (p1 < 10)
+				D1_INFO("wuerfel %dW%d%+d\n", p1, p2, p3);
+			return;
+		}
+		if (offs == 0x0119) {
+		        unsigned p1 = CPU_Pop16();
+			char n,m,x;
+		        CPU_Push16(p1);
+		        n = (p1 & 0xf000) >> 12;
+		        x = (p1 & 0x00ff);
+		        switch ((p1 & 0x0f00) >> 8) {
+				case 1:
+					m = 6;
+					break;
+				case 2:
+					m = 20;
+					break;
+				case 3:
+					m = 3;
+					break;
+				default:
+					m = 4;
+			}
+		        D1_INFO("Wuerfel %dW%d%+d\n", n, m, x);
+			return;
+		}
+		return;
+	}
+
+	if (segm == 0x0ff1) return;
+	if (segm == 0x1030) return;
+	/* No overlay */
+	if (segm == 0x1042) return;
+	if (segm == 0x1112) return;
+
+	if (segm == 0x12db) return;
+	if (segm == 0x12de) return;
+
+	/* All functions make an output here, but they aren't complete */
+	if (segm == 0x12e5) {
+		D1_LOG("Segment 0x12e5\t");
+		if (offs == 0x0020) {
+			D1_LOG("ip=0x%04X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x0025) {
+			D1_LOG("ip=0x%04X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x002a) {
+			D1_LOG("ip=0x%04X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x002f) {
+			D1_LOG("short ChooseLoadSavegame(void)\n");
+			return;
+		}
+		if (offs == 0x0034) {
+			D1_LOG("ip=0x%04X ChooseSaveSavegame()\n", offs);
+			return;
+		}
+		if (offs == 0x0039) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x003e) {
+			D1_LOG("ip=0x%4X ReleaseHero()\n", offs);
+			return;
+		}
+		if (offs == 0x0043) {
+			D1_LOG("ip=0x%4X ChooseFreeHero()\n", offs);
+			return;
+		}
+		if (offs == 0x0048) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x004d) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x0052) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x0057) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x005c) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x0061) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		if (offs == 0x0066) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return;
+		}
+		return;
+	}
+	if (segm == 0x12ec) return;
+	if (segm == 0x12f1) return;
+	if (segm == 0x12f9) return;
+	/* Spielstand und Zeit */
+	if (segm == 0x12ff) return;
+	if (segm == 0x1303) return;
+	if (segm == 0x1309) return;
+	if (segm == 0x130f) return;
+	/* Kampf */
+	if (segm == 0x1312) return;
+	/* Kampf Loot + AP*/
+	if (segm == 0x1316) return;
+	/* Kampf */
+	if (segm == 0x131a) return;
+	/* Kampf */
+	if (segm == 0x131f) return;
+	if (segm == 0x1324) return;
+	/* Kampf */
+	if (segm == 0x1328) return;
+	/* Kampf */
+	if (segm == 0x132d) return;
+	/* Werte Prüfen */
+	if (segm == 0x1330) return;
+	if (segm == 0x1335) return;
+	/* Kampf */
+	if (segm == 0x1338) return;
+	/* Kampf */
+	if (segm == 0x133b) return;
+	/* Kampf */
+	if (segm == 0x133f) return;
+	/* Zustand */
+	if (segm == 0x1344) return;
+	/* Wächter aussuchen */
+	if (segm == 0x1348) return;
+	if (segm == 0x1350) return;
+	if (segm == 0x1353) return;
+	/* Steigern */
+	if (segm == 0x1358) return;
+	/*Vorräte auffüllen */
+	if (segm == 0x135c) return;
+	if (segm == 0x135f) return;
+	if (segm == 0x1362) return;
+	if (segm == 0x1365) return;
+	if (segm == 0x1369) return;
+	/* Waren kaufen */
+	if (segm == 0x136d) return;
+	/* Waren verkaufen */
+	if (segm == 0x1370) return;
+	/* Dialog mit SCHMIED */
+	if (segm == 0x1373) return;
+	if (segm == 0x1377) return;
+	if (segm == 0x137b) return;
+	/* Held Löschen*/
+	if (segm == 0x137e) return;
+	/* Wunder erbitten */
+	if (segm == 0x1383) return;
+	if (segm == 0x1386) return;
+	/* Hafen */
+	if (segm == 0x138a) return;
+	if (segm == 0x1392) return;
+	/* Zufallsnachrichten */
+	if (segm == 0x139a) return;
+	/* Magierakademie + Stoerrebrandt */
+	if (segm == 0x13a1) return;
+	if (segm == 0x13a8) return;
+	if (segm == 0x13b4) return;
+	/* */
+	if (segm == 0x13b9)  {
+
+		if (offs == 0x20) {
+			char city=real_readb(ds, 0x2d67);
+			unsigned char ww=real_readb(ds, 0x7c9d+city);
+			D1_INFO("Merkwürdige Funktion\n");
+			D1_INFO("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
+			return;
+		}
+		if (offs == 0x25) return;
+		if (offs == 0x2a) return;
+		if (offs == 0x2f) return;
+
+		return;
+	}
+	/* Automap */
+	if (segm == 0x13bd) return;
+	/* Dungeon betreten */
+	if (segm == 0x13c3) return;
+	if (segm == 0x13cb) return;
+	/* Kampf "Verfallene Herberge" */
+	if (segm == 0x13d7) return;
+	if (segm == 0x13e4) return;
+	if (segm == 0x13e9) return;
+	if (segm == 0x1401) return;
+	if (segm == 0x1408) return;
+	/* Kampf */
+	if (segm == 0x140b) return;
+	if (segm == 0x1417) return;
+	if (segm == 0x1420) return;
+	if (segm == 0x1429) return;
+	if (segm == 0x142c) return;
+	if (segm == 0x1432) return;
+	if (segm == 0x1438) {
+		if (offs == 0x0052) {
+			unsigned int  ptr=real_readd(ss, sp);
+			D1_INFO("drawString(%s)\n", getString(ptr));
+			return;
+		}
+		if (offs == 0x007f) {
+			unsigned int  ptr=real_readd(ss, sp);
+			D1_INFO("drawLocName(%s)\n", getString(ptr));
+			return;
+		}
+		return;
+	}
+	/* stub097 */
+	if (segm == 0x1442) {
+		if (offs == 0x0039) {
+			unsigned int  ptr=real_readd(ss, sp);
+			D1_INFO("dialog_schmal(%s)\n", getString(ptr));
+			return;
+		}
+		return;
+	}
+	if (segm == 0x1449) {
+		if (offs == 0x0020) {
+			D1_INFO("Menu: Magie Anwenden\n");
+			return;
+		}
+		return;
+	}
+	/* Kampf Gegner zaubert */
+	if (segm == 0x1472) return;
+	/* Talent anwenden*/
+	if (segm == 0x147b) {
+		if (offs == 0x0020) { // Talentprobe
+			unsigned p0 = CPU_Pop32();
+			unsigned p1 = CPU_Pop16();
+			unsigned p2 = CPU_Pop16();
+			CPU_Push16(p2);
+			CPU_Push16(p1);
+			CPU_Push32(p0);
+
+			signed char p2_r = p2 & 0xFF;
+			D1_INFO("Talentprobe %s: %s %+d ",
+						schick_getCharname(p0),
+						arr_tal[p1], p2_r);
+			return;
+		}
+		if (offs == 0x0025) return;
+		D1_INFO("\t\tTalent:0x%x\n", offs);
+		return;
+	}
+
+	if (segm == 0x1480) return;
+	if (segm == 0x1485) return;
+	if (segm == 0x148c) return;
+	if (segm == 0x1491) return;
+	/* Essen */
+	if (segm == 0x1498) return;
+	if (segm == 0x149b) return;
+
+	if (segm == 0x14d1) return;
+	if (segm == 0x14d8) return;
+	if (segm == 0x14e0) return;
+	if (segm == 0x14e7) return;
+	if (segm == 0x14ed) return;
+	if (segm == 0x14f0) return;
+	if (segm == 0x14f6) return;
+	if (segm == 0x14f9) return;
+
+	/* Borland C++ runtime */
+	if (segm == 0x0)
+	{
+		if (offs == 0x2f7) return;
+		if (offs == 0x31b) return;
+		if (offs == 0x61e) return;
+		if (offs == 0x654) return;
+
+		if (offs == 0x6d0) {
+			D1_LOG("C-Lib exit(%d)\n", real_readw(ss, sp));
+			return;
+		}
+		if (offs == 0x6df) {//Not Called
+			D1_LOG("_exit(%d)\n", real_readw(ss, sp));
+			return;	}
+
+		if (offs == 0x70b){
+			D1_LOG("Mul unsigned long\n");
+			return;	}
+
+		if (offs == 0x722) return;
+		if (offs == 0x73e) return;
+		if (offs == 0x781) return;
+		if (offs == 0x79b) return;
+		if (offs == 0x7ed) return;
+		if (offs == 0x816) {
+			D1_TRAC("_dos_getvect(int=0x%x)\n", real_readw(ss,sp));
+			return;
+		}
+		if (offs == 0x0825) {
+			D1_TRAC("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
+				real_readw(ss, sp), real_readw(ss, sp+4),
+				real_readw(ss, sp+2));
+			return;
+		}
+		if (offs == 0x839) return;
+		if (offs == 0x840) {
+			D1_LOG("Div unsigned long\n");
+			return;
+		}
+		if (offs == 0x848) return;
+		if (offs == 0x850) { //not called
+			D1_LOG("Mod unsigned long\n");
+			return;
+		}
+		if (offs == 0x8e7) return;
+		if (offs == 0x908) return;
+		if (offs == 0x928) return;
+		if (offs == 0x9b0) return;
+		if (offs == 0xa10) return;
+		if (offs == 0xb33) {
+			/*seek()*/
+			D1_LOG("__seek(Handle=0x%x, pos=%u, Mode=%d)\n",
+			real_readw(ss, sp), real_readw(ss, sp+4)<<16+
+			real_readw(ss, sp+2), real_readw(ss, sp+6));
+			return;
+		}
+		if (offs == 0xb5c) return;
+		if (offs == 0xbac) {
+			unsigned short val=real_readw(ss, sp);
+			D1_TRAC("C-Lib srand(%d)\n", val);
+			return;
+		}
+		if (offs == 0xbbd) {
+			D1_LOG("rand()\n");
+			return;
+		}
+		if (offs == 0x0be3) {
+			/*read()*/
+			D1_LOG("_read(fd=0x%x, buffer=0x%x:0x%x, len=%d)\n",
+			real_readw(ss, sp), real_readw(ss, sp+4),
+			real_readw(ss, sp+2), real_readw(ss, sp+6));
+			return;
+		}
+		if (offs == 0x1123) {
+			/* time(), user for randomize */
+			unsigned short hi=real_readw(ss, sp);
+			unsigned short lo=real_readw(ss, sp+2);
+			D1_TRAC("C-Lib time(0x%04x)\n", hi<<16+lo);
+			return;
+		}
+		if (offs == 0x117b) return;
+		if (offs == 0x11a7) return;
+		if (offs == 0x176d) return;
+		if (offs == 0x1792) return;
+		if (offs == 0x1e55) {
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			D1_LOG("free(0x%04x:0x%04x)\n", seg, off);
+			return;		}
+		if (offs == 0x1f69) {
+			unsigned short lo=real_readw(ss, sp);
+			unsigned short hi=real_readw(ss, sp+2);
+			D1_LOG("farmalloc(%d)\n", hi<<16+lo);
+			return;		}
+		if (offs == 0x20c6) {//Not Called
+			D1_LOG("realloc()\n");
+			return;	}
+		if (offs == 0x2287) {
+			unsigned short nl=real_readw(ss, sp);
+			unsigned short nh=real_readw(ss, sp+2);
+			unsigned short lo=real_readw(ss, sp+4);
+			unsigned short hi=real_readw(ss, sp+6);
+
+			D1_LOG("calloc(%d, 0x%x)\n",
+					(nh<<16)+nl, (hi<<16)+lo);
+			return;
+		}
+		if (offs == 0x2315) return;
+		if (offs == 0x2411) return;
+		if (offs == 0x2596) return;
+		if (offs == 0x2d82) {
+			unsigned short i=4;
+			unsigned short off=real_readw(ss, sp+i);
+			unsigned short seg=real_readw(ss, sp+i+2);
+
+			D1_LOG("C-Lib exec?(\"%s\", ",
+					MemBase+(seg<<4)+off);
+			/*
+			do {
+				i+=4;
+				off=real_readw(ss, sp+i);
+				seg=real_readw(ss, sp+i+2);
+				if ((seg<<4)+off > 0)
+						D1_LOG("\"%s\", ",
+						MemBase+(seg<<4)+off);
+					else
+						D1_LOG("\"%s\")\n",
+						MemBase+(seg<<4)+off);
+			} while ((seg<<4)+off > 0);
+			*/
+			return;
+		}
+		if (offs == 0x2dff) return;
+		if (offs == 0x2eb2) {
+			D1_LOG("C-Lib close(%d)\n", real_readw(ss, sp));
+			return;
+		}
+		if (offs == 0x2eda) return;
+		if (offs == 0x2f25) return;
+		if (offs == 0x3040) return;
+		if (offs == 0x3073) return;
+		if (offs == 0x30a0) return;
+		if (offs == 0x30e2){ // Not Called
+			D1_LOG("fprintf(stderr, ...)");
+			return;	}
+		if (offs == 0x3350) {
+			/*itoa()*/
+			unsigned short val=real_readw(ss, sp);
+			unsigned short off=real_readw(ss, sp+2);
+			unsigned short seg=real_readw(ss, sp+4);
+			unsigned short rad=real_readw(ss, sp+6);
+			D1_LOG("itoa(%d, 0x%04x:0x%04x, %d)\n",
+					val, seg, off ,rad);
+			return;
+		}
+		if (offs == 0x33c0) {
+			/*memcpy()*/
+			unsigned short o1=real_readw(ss, sp);
+			unsigned short s1=real_readw(ss, sp+2);
+			unsigned short o2=real_readw(ss, sp+4);
+			unsigned short s2=real_readw(ss, sp+6);
+			unsigned short len=real_readw(ss, sp+8);
+
+			D1_LOG("memcpy(0x%04x:0x%04x, 0x%04x:0x%04x, %u)\n",
+					s1, o1, s2, o2, len);
+			return;
+		}
+		if (offs == 0x3408) {
+			/*memset()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short val=real_readw(ss, sp+4);
+			unsigned short cnt=real_readw(ss, sp+6);
+			D1_LOG("memset(0x%04x:0x%04x, 0x%02x, %u)\n",
+					seg, off, val, cnt);
+			return;
+		}
+		if (offs == 0x3479) {
+			/* write(handle) */
+			unsigned short handle=real_readw(ss, sp);
+			D1_LOG("write_0(%d)\n", handle);
+			return;
+		}
+		if (offs == 0x34c7) {
+			/*open()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short mode=real_readw(ss, sp+4);
+
+			D1_LOG("open(\"%s\",\"%04x\")\n",
+					MemBase+(seg<<4)+off, mode);
+			return;
+		}
+		if (offs == 0x3636) {
+			/* sortof open() */
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short mode=real_readw(ss, sp+4);
+
+			D1_LOG("C-Lib Unkn(\"%s\", 0x%04x)\n",
+					MemBase+(seg<<4)+off, mode);
+			return;
+		}
+		if (offs == 0x36dd) {
+			/*printf()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+
+			D1_LOG("printf(\"%s\")\n", MemBase+(seg<<4)+off);
+			return; }
+		if (offs == 0x3d74) return;
+			/* ret 0x000a */
+		if (offs == 0x41d2) {
+			unsigned short	o1=real_readw(ss, sp);
+			unsigned short	s1=real_readw(ss, sp+2);
+			unsigned short	o2=real_readw(ss, sp+4);
+			unsigned short	s2=real_readw(ss, sp+6);
+			unsigned short	o3=real_readw(ss, sp+8);
+			unsigned short	s3=real_readw(ss, sp+10);
+			unsigned short	o4=real_readw(ss, sp+12);
+			unsigned short	s4=real_readw(ss, sp+14);
+			D1_LOG("C-Lib sprintf(0x%04x:0x%04x, \"%s\", 0x%04x:0x%04x, 0x%04x:0x%04x)\n",
+					s1, o1, MemBase+(s2<<4)+o2,
+					s3, o3, s4, o4);
+
+			return;
+		}
+		if (offs == 0x4215) {
+			/*strcat()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short s_off=real_readw(ss, sp+4);
+			unsigned short s_seg=real_readw(ss, sp+6);
+
+			D1_LOG("strcat(\"%s\", \"%s\")\n", MemBase+(seg<<4)+off,
+					MemBase+(s_seg<<4)+s_off);
+
+			return;
+		}
+		if (offs == 0x4254) {
+			/*strcmp()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short s_off=real_readw(ss, sp+4);
+			unsigned short s_seg=real_readw(ss, sp+6);
+
+			D1_LOG("strcmp(\"%s\", \"%s\")\n",
+					MemBase+(seg<<4)+off,
+					MemBase+(s_seg<<4)+s_off);
+			return;
+		}
+		if (offs == 0x4284) {
+			/*strcpy()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short s_off=real_readw(ss, sp+4);
+			unsigned short s_seg=real_readw(ss, sp+6);
+
+			D1_LOG("strcpy(0x%04x:0x%04x, \"%s\")\n", seg, off,
+					MemBase+(s_seg<<4)+s_off);
+
+			return;
+		}
+		if (offs == 0x42ad) {
+			/*strlen()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+
+			D1_LOG("strlen(\"%s\")\n", MemBase+(seg<<4)+off);
+			return;
+		}
+		if (offs == 0x42cc) {
+			/*strcpy()*/
+			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short s_off=real_readw(ss, sp+4);
+			unsigned short s_seg=real_readw(ss, sp+6);
+			unsigned short len=real_readw(ss, sp+8);
+			char txt[1024]="";
+
+			strncpy(txt, (const char*)MemBase+(s_seg<<4)+s_off, len);
+			txt[len]=0;
+
+			D1_LOG("strncpy(0x%04x:0x%04x, \"%s\", %u)\n", seg, off,
+					txt, len);
+
+			return;
+		}
+		if (offs == 0x4a85) {
+			/*write()*/
+			unsigned short handle=real_readw(ss, sp);
+			unsigned short off=real_readw(ss, sp+2);
+			unsigned short seg=real_readw(ss, sp+4);
+			unsigned short val=real_readw(ss, sp+6);
+			D1_LOG("C-Lib __write(Handle=0x%x, Buffer=0x%x:0x%x, Len=%d)\n", handle, seg ,off, val);
+			return;
+		}
+
+		D1_LOG("\t\tC-Lib:0x%x\n", offs);
+		return;
+	}
+	D1_TRAC("Unfetched Segment: 0x%04x\n", segm);
+
 }
 
 void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
@@ -655,7 +1482,7 @@ void schick_calln16(unsigned un1) {
      */
     unsigned short segm = SegValue(cs)-relocation;
     unsigned short offs = reg_ip+(signed short)un1;
-    
+
     if (offs == 0x002B) { // Random-Funktion
 	unsigned pIP= CPU_Pop32();
 	unsigned p1 = CPU_Pop16();
