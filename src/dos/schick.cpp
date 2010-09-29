@@ -8,10 +8,14 @@
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
-// Is the game running?
+// Is the profiler running?
 static int running=0;
+// Is the game running?
+static int schick = 0;
 // Is gen called from the game?
 static int gen=0;
+//Has the game called gen?
+static int fromgame = 0;
 // Is file schick.dat ?
 static int dathandle = 0;
 // Was an interesting function called?
@@ -24,26 +28,60 @@ static unsigned short relocation;
 // Debugging Mode (Bitfield): Bit 1=File Operations, Bit 2=Proben
 static int dbg_mode=2;
 
-//Initializer - is startet if executed file is SCHICKM.EXE
+//Registers
+static unsigned short codeseg,ip,datseg;
+
+//Initializer - is startet if executed file is SCHICKM.EXE/BLADEM.EXE or GEN.EXE
 void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short _ip)
 {
+
+	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
+
+	D1_INFO("%s\n", name);
 	//This happens only if the game starts another program
-	if (running)
+	if (!fromgame && running && schick && !gen)
 	{
-		if (!strcasecmp(name, "gen.exe"))
+		if (strcasestr(name, "gen.exe"))
 		{
-			running--;
+			schick--;
+			fromgame++;
 			gen++;
 			D1_INFO("Gen gestartet\nProfiling angehalten\n");
 		}
 		return;
 	}
 	D1_INFO("executing %s\n", name);
-	if (strcasecmp(name,"schickm.exe") && strcasecmp(name,"bladem.exe"))
-	    return;
+	if (!strcasestr(name, "schickm.exe")
+			&& !strcasestr(name, "bladem.exe")
+			&& !strcasestr(name, "gen.exe")) return;
+
+       /* Check CS:IP in the EXE-Header are 0:0
+        * and the first executed instruction is mov dx,i16 */
+       if (_cs != 0 || _ip != 0 || real_readb(codeseg=reloc+_cs, ip=_ip) != 0xba)
+               return;
+
+       /* Show CS:IP on the virtual machine and the pointer to 0:0 */
+       D1_INFO("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", codeseg, ip, MemBase);
+
+       /* Read and show the Datasegment */
+       D1_INFO("Dseg: 0x%X\n", datseg=real_readw(codeseg, ip+1));
+
+       /* Check if the start of the Datasegment is Borland C++ */
+       if (real_readd(datseg, 0) != 0 || strcmp((char*)MemBase+(datseg<<4)+4, borsig))
+       {
+               D1_ERR("Kein Borland C++ Kompilat!\n");
+               return;
+       }
 
 	D1_INFO("DSA1 Schicksalsklinge gefunden\n");
 	D1_INFO("Starte Profiler (reloc 0x%06x)\n", reloc);
+
+	if (strcasestr(name, "schickm.exe") || strcasestr(name, "bladem.exe"))
+		schick++;
+
+	if (strcasestr(name, "gen.exe"))
+		gen++;
+
 	relocation = reloc;
 	running++;
 }
@@ -51,14 +89,21 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 void exit_schick(unsigned char exit)
 {
-	if (!running && !gen) return;
-	if (gen)
+	if (!running) return;
+
+	if (fromgame)
 	{
 		gen--;
-		running++;
+		fromgame--;
+		schick++;
 		D1_INFO("Gen beendet\nProfiling geht weiter\n");
 		return;
 	}
+
+	if (gen)
+		gen--;
+	if (schick)
+		schick--;
 	running--;
 	D1_INFO("DSA1 Fehlercode %d\nProfiler beendet\n", exit);
 }
@@ -66,7 +111,7 @@ void exit_schick(unsigned char exit)
 void schick_create(const char *name, unsigned char flags, unsigned int handle)
 {
 
-	if (!running || !(dbg_mode & 1) ) return;
+	if (!running || !schick || !(dbg_mode & 1) ) return;
 
 	D1_ERR("Create File\tHandle %d\t%s\tFlags\n", handle, name, flags);
 }
@@ -74,7 +119,7 @@ void schick_create(const char *name, unsigned char flags, unsigned int handle)
 void schick_open(const char *name, unsigned char flags, unsigned int handle)
 {
 
-	if (!running || !(dbg_mode & 1) ) return;
+	if (!running || !schick || !(dbg_mode & 1) ) return;
 
 	if (strstr(name, "SCHICK.DAT")) dathandle=handle;
 
@@ -83,7 +128,7 @@ void schick_open(const char *name, unsigned char flags, unsigned int handle)
 
 void schick_close(unsigned handle)
 {
-	if (!running || !(dbg_mode & 1) ) return;
+	if (!running || !schick || !(dbg_mode & 1) ) return;
 
 	if (handle == dathandle) dathandle=0;
 
@@ -92,14 +137,14 @@ void schick_close(unsigned handle)
 
 void schick_read(unsigned handle, unsigned char *data, unsigned short len)
 {
-	if (!running || !(dbg_mode & 1) ) return;
+	if (!running || !schick || !(dbg_mode & 1) ) return;
 
 	D1_LOG("ReadFile\tHandle %d\tLen: %d\n", handle, len);
 }
 
 void schick_write(unsigned handle, unsigned char *data, unsigned short len)
 {
-	if (!running || !(dbg_mode & 1) ) return;
+	if (!running || !schick || !(dbg_mode & 1) ) return;
 
 	D1_LOG("WriteFile\tHandle %d\tLen: %d\n", handle, len);
 }
@@ -108,7 +153,8 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 {
 	char file[20];
 
-	if (!running || !(dbg_mode & 1) ) return;
+	if (!running || !schick || !(dbg_mode & 1) ) return;
+
 	if (handle != dathandle)
 	{
 		D1_LOG("Seek File\tHandle %x\tPos %ld\tType %x\n",
@@ -460,7 +506,7 @@ Bit8u* schick_getCharname(unsigned p) {
 // Intercept far CALLs (both 32 and 16 bit)
 void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
 {
-    if (!running || !(dbg_mode & 2) ) return;
+    if (!running || !schick || !(dbg_mode & 2) ) return;
 
     char talentname[32];
     unsigned short segm = selector-relocation;
@@ -556,6 +602,9 @@ void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
 
 // Intercept far JMPs (both 32 and 16 bit)
 void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
+
+    if (!running || !schick || !(dbg_mode & 2) ) return;
+
     if (offs == 0x0E1F) { // Zauberprobe
 	unsigned pIP= CPU_Pop32();
 	unsigned p0 = CPU_Pop32();
@@ -574,7 +623,9 @@ void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
 // Intercept RETurn and print the return value. Simple hack.
 // Works only correct for Routines containing no unintercepted CALLs
 void schick_ret() {
-    if (!running || !(dbg_mode & 2) || !call) return;
+
+    if (!running || !schick || !(dbg_mode & 2) || !call) return;
+
     if (supress_rnd) D1_INFO(" %d", reg_ax);
     else             D1_INFO(" %d\n", reg_ax);
     call--;
@@ -582,7 +633,9 @@ void schick_ret() {
 
 // Intercept near CALLs, 16-Bit
 void schick_calln16(unsigned un1) {
-    if (!running || !(dbg_mode & 2) ) return;
+
+    if (!running || !schick || !(dbg_mode & 2)) return;
+
     /* TODO: Das Segment kann hier seltsamerweise wechseln.
      * Für die Zauberprobe z.B. habe ich in der verfallenen Herberge einen Aufruf
      * im Segment 0x2572 (der kühle Raum) und einen von 0x272E (Zauber aus dem
