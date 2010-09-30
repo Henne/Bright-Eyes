@@ -509,12 +509,8 @@ static inline Bit8u* getString(unsigned p) {
 }
 
 // Intercept far CALLs (both 32 and 16 bit)
-void schick_farcall_v302(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
+void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 {
-
-	if (!running || !schick || !(dbg_mode & 2) ) return;
-
-	unsigned short segm = selector-relocation;
 
 	/* There are no farcalls from the game to segments behind DS*/
 	if (segm >= datseg) return;
@@ -1430,11 +1426,17 @@ void schick_farcall_v302(unsigned selector, unsigned offs, unsigned ss, unsigned
 
 void schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)
 {
-	if (!running)
-		return;
+	if (!running || !(dbg_mode & 2)) return;
+
+	unsigned short segm = selector - relocation;
 
 	if (schick && !fromgame) {
-		schick_farcall_v302(selector, offs, ss, sp);
+		schick_farcall_v302(segm, offs, ss, sp);
+		return;
+	}
+
+	if (gen) {
+		schick_farcall_gen105(segm, offs, ss, sp);
 		return;
 	}
 

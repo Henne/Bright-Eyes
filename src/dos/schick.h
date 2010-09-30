@@ -46,3 +46,5 @@ extern void schick_callf(unsigned, unsigned, unsigned, unsigned);
 extern void schick_jmpf(unsigned, unsigned, unsigned);
 extern void schick_ret();
 extern void schick_calln16(unsigned);
+
+extern void schick_farcall_gen105(unsigned, unsigned, unsigned, unsigned);
