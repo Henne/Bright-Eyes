@@ -77,8 +77,10 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	D1_INFO("DSA1 Schicksalsklinge gefunden\n");
 	D1_INFO("Starte Profiler (reloc 0x%06x)\n", reloc);
 
-	if (strcasestr(name, "schickm.exe") || strcasestr(name, "bladem.exe"))
+	if (strcasestr(name, "schickm.exe") || strcasestr(name, "bladem.exe")) {
 		schick++;
+		schick_status_init(datseg);
+	}
 
 	if (strcasestr(name, "gen.exe"))
 		gen++;
@@ -103,8 +105,10 @@ void exit_schick(unsigned char exit)
 
 	if (gen)
 		gen--;
-	if (schick)
+	if (schick) {
 		schick--;
+		schick_status_exit();
+	}
 	running--;
 	D1_INFO("DSA1 Fehlercode %d\nProfiler beendet\n", exit);
 }
@@ -120,25 +124,32 @@ void schick_create(const char *name, unsigned char flags, unsigned int handle)
 void schick_open(const char *name, unsigned char flags, unsigned int handle)
 {
 
-	if (!running || !schick || !(dbg_mode & 1) ) return;
+	if (!running || !schick) return;
 
 	if (strstr(name, "SCHICK.DAT")) dathandle=handle;
 
+	if (!(dbg_mode & 1)) return;
 	D1_ERR("Open File\tHandle %d\t%s\tFlags\n", handle, name, flags);
 }
 
 void schick_close(unsigned handle)
 {
-	if (!running || !schick || !(dbg_mode & 1) ) return;
+	if (!running || !schick) return;
 
 	if (handle == dathandle) dathandle=0;
 
+	if (!(dbg_mode & 1)) return;
 	D1_LOG("Close File\tHandle %d\n\n", handle);
 }
 
 void schick_read(unsigned handle, unsigned char *data, unsigned short len)
 {
-	if (!running || !schick || !(dbg_mode & 1) ) return;
+	if (!running || !schick) return;
+
+	if ((len == 5744 || len == 5952) && dathandle == 0)
+			schick_status_update(data, len);
+
+	if (!(dbg_mode & 1)) return;
 
 	D1_LOG("ReadFile\tHandle %d\tLen: %d\n", handle, len);
 }

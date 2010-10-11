@@ -48,3 +48,7 @@ extern void schick_ret();
 extern void schick_calln16(unsigned);
 
 extern void schick_farcall_gen105(unsigned, unsigned, unsigned, unsigned);
+
+extern void schick_status_init(unsigned short);
+extern void schick_status_exit();
+extern void schick_status_update(unsigned char*, unsigned short);

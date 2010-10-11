@@ -355,10 +355,6 @@ bool DOS_FindNext(void) {
 
 bool DOS_ReadFile(Bit16u entry,Bit8u * data,Bit16u * amount) {
 	Bit32u handle=RealHandle(entry);
-
-	//Hook for "Schicksalsklinge/Blade of Destiny"
-	schick_read(handle, data, *amount);
-
 	if (handle>=DOS_FILES) {
 		DOS_SetError(DOSERR_INVALID_HANDLE);
 		return false;
@@ -375,6 +371,10 @@ bool DOS_ReadFile(Bit16u entry,Bit8u * data,Bit16u * amount) {
 */
 	Bit16u toread=*amount;
 	bool ret=Files[handle]->Read(data,&toread);
+
+	//Hook for "Schicksalsklinge/Blade of Destiny"
+	schick_read(handle, data, *amount);
+
 	*amount=toread;
 	return ret;
 }
