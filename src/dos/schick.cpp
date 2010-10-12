@@ -761,8 +761,11 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x3ebb) return;
 		/* Kopierschutzabfrage */
 		if (offs == 0x4016) return;
+		if (offs == 0x404f) return;
 		if (offs == 0x40d1) return;
 		if (offs == 0x44aa) return;
+		if (offs == 0x4559) return;
+		if (offs == 0x472b) return;
 
 		if (offs == 0x48b1) {
 			unsigned int  ptr=real_readd(ss, sp);
