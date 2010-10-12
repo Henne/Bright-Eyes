@@ -4,7 +4,7 @@
 #include "schick.h"
 
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
-void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
+int schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 {
 
 	/* _decomp() */
@@ -15,9 +15,9 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 				real_readw(ss, sp+2), real_readw(ss, sp),
 				real_readw(ss, sp+6), real_readw(ss, sp+4),
 				real_readd(ss, sp+8));
-			return;
+			return 0;
 		}
-		return;
+		return 0;
 	}
 
 	/* Rasterlib */
@@ -26,17 +26,17 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 		if (offs == 0x8) {
 			D1_GFX("SetVideoMode(mode=0x%x);\n",
 				real_readw(ss, sp));
-				return;
+				return 0;
 		}
 		if (offs == 0x1e) {
 			D1_GFX("SetDisplayPage(page=0x%x);\n",
 				real_readw(ss, sp));
-				return;
+				return 0;
 		}
 		if (offs == 0x34) {
 			D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
 				real_readw(ss, sp+2), real_readw(ss, sp));
-				return;
+				return 0;
 		}
 		if (offs == 0xde) {
 			unsigned short seg=real_readw(ss, sp+2);
@@ -47,7 +47,7 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 			D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
 				real_readb(seg, off), real_readb(seg, off+1),
 				real_readb(seg, off+2));
-				return;
+				return 0;
 		}
 		if (offs == 0x100) {
 			unsigned short off=real_readw(ss, sp);
@@ -65,7 +65,7 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 					real_readb(seg, off+i*3+1),
 					real_readb(seg, off+i*3+2));
 			}
-			return;
+			return 0;
 		}
 
 		if (offs == 0x184) {
@@ -77,7 +77,7 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 			D1_GFX("DrawDots(offset=0x%x, n=0x%x, color=0x%x, space=%d);\t/*X=%d Y=%d*/\n",
 				offset, n, color, space,
 				offset%320, offset/320);
-			return;
+			return 0;
 		}
 
 		if (offs == 0x1f3)
@@ -88,7 +88,7 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 				real_readw(ss, sp+20), real_readw(ss, sp+22),
 				real_readw(ss, sp+26), real_readw(ss, sp+24),
 				real_readw(ss, sp+28));
-			return;
+			return 0;
 		}
 		if (offs == 0x2e3) {
 			unsigned short off=real_readw(ss, sp+2);
@@ -104,7 +104,7 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 			else
 				D1_GFX("\n");
 
-			return;
+			return 0;
 		}
 
 		if (offs == 0x39f) {
@@ -113,34 +113,34 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 				real_readw(ss, sp+6), real_readw(ss, sp+4),
 				real_readw(ss, sp+8), real_readw(ss, sp+10),
 				real_readw(ss, sp+12));
-			return;
+			return 0;
 		}
 		D1_GFX("Rasterlib:0x%x\n", offs);
-		return;
+		return 0;
 	}
 
 
 	if (segm == 0x0) {
 		if (offs == 0x0438) {
 			D1_TRAC("_dos_getvect(intnr=0x%x)\n", real_readw(ss,sp));
-			return;
+			return 0;
 		}
 		if (offs == 0x0447) {
 			D1_TRAC("_dos_setvect(intnr=0x%x, *isr=0x%x:0x%x)\n",
 				real_readw(ss, sp), real_readw(ss, sp+4),
 				real_readw(ss, sp+2));
-			return;
+			return 0;
 		}
 		if (offs == 0x07c5) {
 			D1_LOG(
 			"__read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d)\n",
 			real_readw(ss, sp), real_readw(ss, sp+4),
 			real_readw(ss, sp+2), real_readw(ss, sp+6));
-			return;
+			return 0;
 		}
 		if (offs == 0x20bc) {
 			D1_LOG("close(Handle=0x%x)\n", real_readw(ss, sp));
-			return;
+			return 0;
 		}
 		if (offs == 0x254e) {
 			D1_LOG(
@@ -148,14 +148,14 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 				real_readw(ss, sp+2), real_readw(ss, sp),
 				real_readw(ss, sp+6), real_readw(ss, sp+4),
 				real_readw(ss, sp+8));
-			return;
+			return 0;
 		}
 		if (offs == 0x2596) {
 			D1_LOG(
 			"memset(__dest=0x%x:0x%x, __c=0x%x, __n=0x%x)\n",
 				real_readw(ss, sp+2), real_readw(ss, sp),
 				real_readw(ss, sp+4), real_readw(ss, sp+6));
-			return;
+			return 0;
 		}
 		if (offs == 0x2607) {
 			D1_LOG(
@@ -163,18 +163,18 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 				real_readw(ss, sp+2), real_readw(ss, sp),
 				real_readw(ss, sp+6), real_readw(ss, sp+4),
 				real_readw(ss, sp+8));
-			return;
+			return 0;
 		}
 		if (offs == 0x2655) {
 			D1_LOG("open()\n");
-			return;
+			return 0;
 		}
 		if (offs == 0x2dd5) {
 			D1_LOG(
 			"strcpy(__s1=0x%x:0x%x, __s2=0x%x:0x%x)\n",
 				real_readw(ss, sp+2), real_readw(ss, sp),
 				real_readw(ss, sp+6), real_readw(ss, sp+4));
-			return;
+			return 0;
 		}
 		if (offs == 0x2e1d) {
 			D1_LOG(
@@ -182,7 +182,7 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 				real_readw(ss, sp+2), real_readw(ss, sp),
 				real_readw(ss, sp+6), real_readw(ss, sp+4),
 				real_readw(ss, sp+8));
-			return;
+			return 0;
 		}
 		if (offs == 0x2e55) {
 			D1_LOG(
@@ -190,7 +190,7 @@ void schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned s
 				real_readw(ss, sp+2), real_readw(ss, sp),
 				real_readw(ss, sp+6), real_readw(ss, sp+4),
 				real_readw(ss, sp+8));
-			return;
+			return 0;
 		}
 	}
 
