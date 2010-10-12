@@ -5,6 +5,7 @@
 #include "schick.h"
 #include "cpu.h"
 
+#include "schick_rewrite/seg003.h"
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
@@ -823,7 +824,18 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		D1_LOG("Segment 0x51e:0x%04x\n", offs);
 		return 0;
 	}
-	if (segm == 0x0ae7) return 0;
+	if (segm == 0x0ae7) {
+		if (offs == 0x000c) {
+			unsigned short mod = CPU_Pop16();
+			CPU_Push16(mod);
+
+			D1_LOG("update_direction(%d)\n", mod);
+
+			reg_ax = update_direction(mod);
+			return 1;
+		}
+		return 0;
+	}
 	if (segm == 0x0c85) return 0;
 	if (segm == 0x0e41) return 0;
 	if (segm == 0x0ef8) {
