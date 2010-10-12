@@ -1113,6 +1113,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		}
 		return 0;
 	}
+	if (segm == 0x145e) return 0;
+	if (segm == 0x1467) return 0;
 	/* Kampf Gegner zaubert */
 	if (segm == 0x1472) return 0;
 	/* Talent anwenden*/
