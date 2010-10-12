@@ -968,7 +968,7 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			char ani = CPU_Pop16();
 			CPU_Push16(ani);
 
-			D1_LOG("ANI 0x02d angefordert\n", ani);
+			D1_LOG("ANI 0x%02d angefordert\n", ani);
 			return;
 		}
 		return;
