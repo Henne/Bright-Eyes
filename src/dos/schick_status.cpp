@@ -411,14 +411,14 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 		if (i == 0x09) {
-			D1_INFO("Blickrichtung %s\n", dir[status_ingame[i]]);
+			D1_LOG("Blickrichtung %s\n", dir[status_ingame[i]]);
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
 		}
 
 		if (i == 0x10 || i == 0x12) {
-			D1_INFO("Koordinaten Ziel (%u/%u)\n",
+			D1_LOG("Koordinaten Ziel (%u/%u)\n",
 					status_ingame[0x10],
 					status_ingame[0x12]);
 			status_copy[i]=status_ingame[i];
@@ -426,14 +426,14 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 		if (i == 0x48) {
-			D1_INFO("alte Blickrichtung %s\n",
+			D1_LOG("alte Blickrichtung %s\n",
 					dir[status_ingame[i]]);
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
 		}
 		if (i == 0x4f || i == 0x51) {
-			D1_INFO("Koordinaten (%u/%u)\n",
+			D1_LOG("Koordinaten (%u/%u)\n",
 					status_ingame[0x4f],
 					status_ingame[0x51]);
 			status_copy[i]=status_ingame[i];

@@ -769,7 +769,7 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 		if (offs == 0x48b1) {
 			unsigned int  ptr=real_readd(ss, sp);
-			D1_INFO("istHeldBeiSinnen(%s)\n", schick_getCharname(ptr));
+			D1_LOG("istHeldBeiSinnen(%s)\n", schick_getCharname(ptr));
 			return;
 		}
 		if (offs == 0x49d8) {
