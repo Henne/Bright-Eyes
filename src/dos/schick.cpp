@@ -1158,10 +1158,20 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	/* Borland C++ runtime */
 	if (segm == 0x0)
 	{
-		if (offs == 0x2f7) return 0;
+		if (offs == 0x2c9) return 0;
+		if (offs == 0x2f7) {
+			/* int chdir(const char* __path) */
+			RealPt path = CPU_Pop32();
+			CPU_Push32(path);
+
+			D1_INFO("chdir(%s)\n", (char*)MemBase+Real2Phys(path));
+
+			return 0;
+		}
 		if (offs == 0x31b) return 0;
 		if (offs == 0x61e) return 0;
 		if (offs == 0x654) return 0;
+		if (offs == 0x678) return 0;
 
 		if (offs == 0x6d0) {
 			D1_LOG("C-Lib exit(%d)\n", real_readw(ss, sp));
@@ -1303,12 +1313,16 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;	}
 		if (offs == 0x3350) {
 			/*itoa()*/
-			unsigned short val=real_readw(ss, sp);
-			unsigned short off=real_readw(ss, sp+2);
-			unsigned short seg=real_readw(ss, sp+4);
-			unsigned short rad=real_readw(ss, sp+6);
-			D1_LOG("itoa(%d, 0x%04x:0x%04x, %d)\n",
-					val, seg, off ,rad);
+			short value = CPU_Pop16();
+			RealPt string = CPU_Pop32();
+			short radix = CPU_Pop16();
+			CPU_Push16(radix);
+			CPU_Push32(string);
+			CPU_Push16(value);
+
+			D1_INFO("itoa(%d, 0x%04x:0x%04x, %d)\n",
+					value, RealSeg(string),
+					RealOff(string), radix);
 			return 0;
 		}
 		if (offs == 0x33c0) {
@@ -1428,7 +1442,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			CPU_Push32(s2);
 			CPU_Push32(s1);
 
-			D1_INFO("strcmp(0x%04x:0x%04x, 0x%04x:0x%04x)\n",
+			D1_LOG("strcmp(0x%04x:0x%04x, 0x%04x:0x%04x)\n",
 					RealSeg(s1), RealOff(s1),
 					RealSeg(s2), RealSeg(s2));
 
@@ -1496,6 +1510,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			D1_LOG("C-Lib __write(Handle=0x%x, Buffer=0x%x:0x%x, Len=%d)\n", handle, seg ,off, val);
 			return 0;
 		}
+		if (offs == 0x4a85) return 0;
+		if (offs == 0x4a88) return 0;
 
 		D1_LOG("\t\tC-Lib:0x%x\n", offs);
 		return 0;
