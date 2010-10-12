@@ -1559,7 +1559,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		return 0;
 	}
 	D1_TRAC("Unfetched Segment: 0x%04x\n", segm);
-
+	return 0;
 }
 
 int schick_callf(unsigned selector, unsigned offs, unsigned ss, unsigned sp)

@@ -193,5 +193,6 @@ int schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned sp
 			return 0;
 		}
 	}
+	return 0;
 
 }
