@@ -1203,9 +1203,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 		if (offs == 0x0825) {
+			unsigned short interruptno = CPU_Pop16();
+			RealPt isr = CPU_Pop32();
+			CPU_Push32(isr);
+			CPU_Push16(interruptno);
+
 			D1_TRAC("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
-				real_readw(ss, sp), real_readw(ss, sp+4),
-				real_readw(ss, sp+2));
+				interruptno, RealSeg(isr) - relocation,
+				RealOff(isr));
 			return 0;
 		}
 		if (offs == 0x839) return 0;
