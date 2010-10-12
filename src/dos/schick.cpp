@@ -965,10 +965,10 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	}
 	if (segm == 0x12ec) {
 		if (offs = 0x0025) {
-			char ani = CPU_Pop16();
+			short ani = CPU_Pop16();
 			CPU_Push16(ani);
 
-			D1_LOG("ANI 0x%02d angefordert\n", ani);
+			D1_LOG("ANI %02d angefordert\n", ani);
 			return;
 		}
 		return;
