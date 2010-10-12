@@ -5,6 +5,7 @@
 #include "schick.h"
 #include "cpu.h"
 
+#include "schick_rewrite/seg002.h"
 #include "schick_rewrite/seg003.h"
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
@@ -766,6 +767,16 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x40d1) return 0;
 		if (offs == 0x44aa) return 0;
 		if (offs == 0x4559) return 0;
+		if (offs == 0x45db) {
+			short val = CPU_Pop16();
+			CPU_Push16(val);
+
+			D1_INFO("div16(%d)\n", val);
+
+			reg_ax = div16(val);
+
+			return 1;
+		}
 		if (offs == 0x472b) return 0;
 
 		if (offs == 0x48b1) {
