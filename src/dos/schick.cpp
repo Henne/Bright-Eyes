@@ -1310,26 +1310,45 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 		if (offs == 0x33c0) {
-			/*memcpy()*/
-			unsigned short o1=real_readw(ss, sp);
-			unsigned short s1=real_readw(ss, sp+2);
-			unsigned short o2=real_readw(ss, sp+4);
-			unsigned short s2=real_readw(ss, sp+6);
-			unsigned short len=real_readw(ss, sp+8);
+			/*void *memcpy(void *dest, const void *src, size_t n)*/
+			RealPt dest = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			unsigned short n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push32(src);
+			CPU_Push32(dest);
 
 			D1_LOG("memcpy(0x%04x:0x%04x, 0x%04x:0x%04x, %u)\n",
-					s1, o1, s2, o2, len);
-			return 0;
+					RealSeg(dest), RealOff(dest),
+					RealSeg(src), RealSeg(src), n);
+
+			memcpy(MemBase + Real2Phys(dest), MemBase + Real2Phys(src), n);
+
+			reg_ax = RealOff(dest);
+			reg_dx = RealSeg(dest);
+
+			return 1;
 		}
 		if (offs == 0x3408) {
-			/*memset()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short val=real_readw(ss, sp+4);
-			unsigned short cnt=real_readw(ss, sp+6);
+			/*void* memset(void *s, int c, size_t n)*/
+			RealPt s = CPU_Pop32();
+			short c = CPU_Pop16();
+			unsigned short n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push16(c);
+			CPU_Push32(s);
+
 			D1_LOG("memset(0x%04x:0x%04x, 0x%02x, %u)\n",
-					seg, off, val, cnt);
-			return 0;
+					RealSeg(s), RealOff(s), c, n);
+			// No bypass on graphic memory
+			if (RealSeg(s) == 0xa000)
+				return 0;
+
+			memset(MemBase+Real2Phys(s), c, n);
+
+			reg_ax = RealOff(s);
+			reg_dx = RealSeg(s);
+			return 1;
 		}
 		if (offs == 0x3479) {
 			/* write(handle) */
@@ -1382,65 +1401,89 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 		if (offs == 0x4215) {
-			/*strcat()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short s_off=real_readw(ss, sp+4);
-			unsigned short s_seg=real_readw(ss, sp+6);
+			/*char *strcat(char* dest, const char* src)*/
+			RealPt dest = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			CPU_Push32(src);
+			CPU_Push32(dest);
 
-			D1_LOG("strcat(\"%s\", \"%s\")\n", MemBase+(seg<<4)+off,
-					MemBase+(s_seg<<4)+s_off);
+			D1_LOG("strcat(0x%04x:0x%04x, 0x%04x:0x%04x)\n",
+					RealSeg(dest), RealOff(dest),
+					RealSeg(src), RealSeg(src));
 
-			return 0;
+			strcat((char*)MemBase + Real2Phys(dest),
+				(char*)MemBase + Real2Phys(src));
+
+			reg_ax = RealOff(dest);
+			reg_dx = RealSeg(dest);
+
+			return 1;
 		}
 		if (offs == 0x4254) {
-			/*strcmp()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short s_off=real_readw(ss, sp+4);
-			unsigned short s_seg=real_readw(ss, sp+6);
+			/*int strcmp(const char* s1, const char* s2)*/
+			RealPt s1 = CPU_Pop32();
+			RealPt s2 = CPU_Pop32();
+			CPU_Push32(s2);
+			CPU_Push32(s1);
 
-			D1_LOG("strcmp(\"%s\", \"%s\")\n",
-					MemBase+(seg<<4)+off,
-					MemBase+(s_seg<<4)+s_off);
-			return 0;
+			D1_INFO("strcmp(0x%04x:0x%04x, 0x%04x:0x%04x)\n",
+					RealSeg(s1), RealOff(s1),
+					RealSeg(s2), RealSeg(s2));
+
+			reg_ax = strcmp((char*)MemBase + Real2Phys(s1),
+					(char*)MemBase + Real2Phys(s2));
+
+			return 1;
 		}
 		if (offs == 0x4284) {
-			/*strcpy()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short s_off=real_readw(ss, sp+4);
-			unsigned short s_seg=real_readw(ss, sp+6);
+			/*char *strcpy(char* dest, const char* src)*/
+			RealPt dest = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			CPU_Push32(src);
+			CPU_Push32(dest);
 
-			D1_LOG("strcpy(0x%04x:0x%04x, \"%s\")\n", seg, off,
-					MemBase+(s_seg<<4)+s_off);
+			D1_LOG("strcpy(0x%04x:0x%04x, 0x%04x:0x%04x)\n",
+					RealSeg(dest), RealOff(dest),
+					RealSeg(src), RealSeg(src));
 
-			return 0;
+			strcpy((char*)MemBase + Real2Phys(dest),
+				(char*)MemBase + Real2Phys(src));
+
+			reg_ax = RealOff(dest);
+			reg_dx = RealSeg(dest);
+
+			return 1;
 		}
 		if (offs == 0x42ad) {
 			/*strlen()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
+			RealPt str = CPU_Pop32();
+			CPU_Push32(str);
 
-			D1_LOG("strlen(\"%s\")\n", MemBase+(seg<<4)+off);
-			return 0;
+			D1_LOG("strlen(\"%s\")\n", getString(str));
+			reg_ax = strlen((char*)getString(str));
+
+			return 1;
 		}
 		if (offs == 0x42cc) {
-			/*strcpy()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short s_off=real_readw(ss, sp+4);
-			unsigned short s_seg=real_readw(ss, sp+6);
-			unsigned short len=real_readw(ss, sp+8);
-			char txt[1024]="";
+			/*char *strncpy(char* dest, const char* src, size_t n)*/
+			RealPt dest = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			unsigned short n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push32(src);
+			CPU_Push32(dest);
 
-			strncpy(txt, (const char*)MemBase+(s_seg<<4)+s_off, len);
-			txt[len]=0;
+			D1_LOG("strncpy(0x%04x:0x%04x, 0x%04x:0x%04x, %u)\n",
+					RealSeg(dest), RealOff(dest),
+					RealSeg(src), RealSeg(src), n);
 
-			D1_LOG("strncpy(0x%04x:0x%04x, \"%s\", %u)\n", seg, off,
-					txt, len);
+			strncpy((char*)MemBase + Real2Phys(dest),
+				(char*)MemBase + Real2Phys(src), n);
 
-			return 0;
+			reg_ax = RealOff(dest);
+			reg_dx = RealSeg(dest);
+
+			return 1;
 		}
 		if (offs == 0x4a85) {
 			/*write()*/
