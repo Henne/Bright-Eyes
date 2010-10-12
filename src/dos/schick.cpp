@@ -1004,7 +1004,19 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	/*Vorräte auffüllen */
 	if (segm == 0x135c) return;
 	if (segm == 0x135f) return;
-	if (segm == 0x1362) return;
+	/* Heiler stub053 */
+	if (segm == 0x1362) {
+		if (offs == 0x20) {
+			unsigned short typi = real_readb(datseg, 0x4224);
+			char v1 = real_readb(datseg, typi * 2 + 0x66ea);
+			char v2 = real_readb(datseg, typi * 2 + 0x66ea + 1);
+			D1_INFO("Heiler: 0x%02x Rabatt: %d%% Qualität: %d\n",
+								typi, v1, v2);
+			return;
+		}
+		return;
+	}
+
 	if (segm == 0x1365) return;
 	if (segm == 0x1369) return;
 	/* Waren kaufen */
