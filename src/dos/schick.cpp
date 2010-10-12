@@ -576,7 +576,7 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			D1_GFX("SetPalette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
 				seg, off, first_color, colors);
 
-			if (seg == ds)
+			if (seg == datseg)
 				D1_LOG("Palette at DS:0x%x\n", off);
 			for (i=0; i<colors; i++)
 				D1_GFX("\"\\%02d\\%02d\\%02d\"..\n",
@@ -1030,8 +1030,8 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	if (segm == 0x13b9)  {
 
 		if (offs == 0x20) {
-			char city=real_readb(ds, 0x2d67);
-			unsigned char ww=real_readb(ds, 0x7c9d+city);
+			char city=real_readb(datseg, 0x2d67);
+			unsigned char ww=real_readb(datseg, 0x7c9d+city);
 			D1_INFO("Merkwürdige Funktion\n");
 			D1_INFO("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
 			return;
