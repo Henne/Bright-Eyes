@@ -1158,6 +1158,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	/* Borland C++ runtime */
 	if (segm == 0x0)
 	{
+		/* nullsub */
 		if (offs == 0x2c9) return 0;
 		if (offs == 0x2f7) {
 			/* int chdir(const char* __path) */
@@ -1168,8 +1169,11 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 			return 0;
 		}
+		/* close() */
 		if (offs == 0x31b) return 0;
+		/* open() */
 		if (offs == 0x61e) return 0;
+		/* read() */
 		if (offs == 0x654) return 0;
 		if (offs == 0x678) return 0;
 
@@ -1186,9 +1190,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;	}
 
 		if (offs == 0x722) return 0;
+		/* getcurdir() */
 		if (offs == 0x73e) return 0;
+		/* getdisk() */
 		if (offs == 0x781) return 0;
+		/* setdisk() */
 		if (offs == 0x79b) return 0;
+		/* dos_getdiskfree() */
 		if (offs == 0x7ed) return 0;
 		if (offs == 0x816) {
 			D1_TRAC("_dos_getvect(int=0x%x)\n", real_readw(ss,sp));
@@ -1211,6 +1219,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 		if (offs == 0x8e7) return 0;
+		/* rshift() */
 		if (offs == 0x908) return 0;
 		if (offs == 0x928) return 0;
 		if (offs == 0x9b0) return 0;
@@ -1222,6 +1231,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			real_readw(ss, sp+2), real_readw(ss, sp+6));
 			return 0;
 		}
+		/* mkdir() */
 		if (offs == 0xb5c) return 0;
 		if (offs == 0xbac) {
 			unsigned short val=real_readw(ss, sp);
@@ -1247,6 +1257,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 		if (offs == 0x117b) return 0;
+		/* delete() */
 		if (offs == 0x11a7) return 0;
 		if (offs == 0x176d) return 0;
 		if (offs == 0x1792) return 0;
@@ -1260,9 +1271,6 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			unsigned short hi=real_readw(ss, sp+2);
 			D1_LOG("farmalloc(%d)\n", hi<<16+lo);
 			return 0;		}
-		if (offs == 0x20c6) {//Not Called
-			D1_LOG("realloc()\n");
-			return 0;	}
 		if (offs == 0x2287) {
 			unsigned short nl=real_readw(ss, sp);
 			unsigned short nh=real_readw(ss, sp+2);
@@ -1322,9 +1330,6 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x3040) return 0;
 		if (offs == 0x3073) return 0;
 		if (offs == 0x30a0) return 0;
-		if (offs == 0x30e2){ // Not Called
-			D1_LOG("fprintf(stderr, ...)");
-			return 0;	}
 		if (offs == 0x3350) {
 			/* char* itoa(int __value, char* string, int radix);
 			radix is everytime 10 in this game*/
@@ -1521,6 +1526,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 			return 1;
 		}
+		if (offs == 0x462b) return 0;
 		if (offs == 0x4a85) {
 			/*write()*/
 			unsigned short handle=real_readw(ss, sp);
@@ -1530,7 +1536,6 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			D1_LOG("C-Lib __write(Handle=0x%x, Buffer=0x%x:0x%x, Len=%d)\n", handle, seg ,off, val);
 			return 0;
 		}
-		if (offs == 0x4a85) return 0;
 		if (offs == 0x4a88) return 0;
 
 		D1_LOG("\t\tC-Lib:0x%x\n", offs);
