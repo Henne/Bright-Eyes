@@ -1298,7 +1298,21 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			*/
 			return 0;
 		}
-		if (offs == 0x2dff) return 0;
+		if (offs == 0x2dff) {
+			/* long atol(const char* s) */
+			int val;
+			RealPt s = CPU_Pop32();
+			CPU_Push32(s);
+
+			D1_INFO("atol(%s)\n", getString(s));
+
+			val = atol((char*)getString(s));
+
+			reg_ax = val && 0xffff;
+			reg_dx = (val>>16) && 0xffff;
+
+			return 1;
+		}
 		if (offs == 0x2eb2) {
 			D1_LOG("C-Lib close(%d)\n", real_readw(ss, sp));
 			return 0;
@@ -1312,7 +1326,9 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			D1_LOG("fprintf(stderr, ...)");
 			return 0;	}
 		if (offs == 0x3350) {
-			/*itoa()*/
+			/* char* itoa(int __value, char* string, int radix);
+			radix is everytime 10 in this game*/
+
 			short value = CPU_Pop16();
 			RealPt string = CPU_Pop32();
 			short radix = CPU_Pop16();
@@ -1320,10 +1336,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			CPU_Push32(string);
 			CPU_Push16(value);
 
-			D1_INFO("itoa(%d, 0x%04x:0x%04x, %d)\n",
+			D1_LOG("itoa(%d, 0x%04x:0x%04x, %d)\n",
 					value, RealSeg(string),
 					RealOff(string), radix);
-			return 0;
+			sprintf((char*)MemBase+Real2Phys(string), "%d", value);
+
+			reg_ax = RealOff(string);
+			reg_dx = RealSeg(string);
+			return 1;
 		}
 		if (offs == 0x33c0) {
 			/*void *memcpy(void *dest, const void *src, size_t n)*/
