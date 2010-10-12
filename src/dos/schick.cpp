@@ -963,7 +963,16 @@ void schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		}
 		return;
 	}
-	if (segm == 0x12ec) return;
+	if (segm == 0x12ec) {
+		if (offs = 0x0025) {
+			char ani = CPU_Pop16();
+			CPU_Push16(ani);
+
+			D1_LOG("ANI 0x02d angefordert\n", ani);
+			return;
+		}
+		return;
+	}
 	if (segm == 0x12f1) return;
 	if (segm == 0x12f9) return;
 	/* Spielstand und Zeit */
