@@ -29,7 +29,7 @@ static unsigned short relocation;
 static int dbg_mode=2;
 
 //Datasegment
-static unsigned short datseg;
+unsigned short datseg;
 
 //Initializer - is startet if executed file is SCHICKM.EXE/BLADEM.EXE or GEN.EXE
 void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
@@ -79,7 +79,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	if (strcasestr(name, "schickm.exe") || strcasestr(name, "bladem.exe")) {
 		schick++;
-		schick_status_init(datseg);
+		schick_status_init();
 	}
 
 	if (strcasestr(name, "gen.exe"))

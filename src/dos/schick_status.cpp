@@ -120,8 +120,6 @@ static unsigned char *status_copy = NULL;
 static unsigned int status_len = 0;
 static unsigned short status_offset = 0;
 
-static unsigned short datseg = 0;
-
 static char slots[12] = { 0,0,0,0,0,0,0,0,0,0,0,0};
 
 static void schick_log_timer32(const char *text, char *flag,
@@ -565,14 +563,13 @@ void schick_status_update(unsigned char *data, unsigned short len)
 }
 
 /* Enable the timer for checking game_state changes */
-void schick_status_init(unsigned short ds)
+void schick_status_init()
 {
 
 	status_ingame = NULL;
 	status_copy = NULL;
 	status_len = 0;
 	status_offset = 0;
-	datseg = ds;
 
 	/* Disable delay and set status manually (german CD-version) */
 	if (real_readw(datseg, 0x4b66) == 0x4)

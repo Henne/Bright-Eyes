@@ -30,6 +30,7 @@ static inline void D1_GFX(...) { }
 #endif
 
 
+extern unsigned short datseg;
 
 extern void init_schick(char *, unsigned short, unsigned short, unsigned short);
 extern void exit_schick(unsigned char);
@@ -49,6 +50,6 @@ extern void schick_calln16(unsigned);
 
 extern int schick_farcall_gen105(unsigned, unsigned, unsigned, unsigned);
 
-extern void schick_status_init(unsigned short);
+extern void schick_status_init();
 extern void schick_status_exit();
 extern void schick_status_update(unsigned char*, unsigned short);
