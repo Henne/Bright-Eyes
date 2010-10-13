@@ -1352,12 +1352,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			RealPt s = CPU_Pop32();
 			CPU_Push32(s);
 
-			D1_INFO("atol(%s)\n", getString(s));
+			D1_LOG("atol(\"%s\") = ", getString(s));
 
-			val = atol((char*)getString(s));
+			val = atoi((char*)getString(s));
+			D1_LOG("%d\n", val);
 
-			reg_ax = val && 0xffff;
-			reg_dx = (val>>16) && 0xffff;
+			reg_ax = val & 0xffff;
+			reg_dx = (val>>16) & 0xffff;
 
 			return 1;
 		}
