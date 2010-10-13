@@ -39,7 +39,6 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
 
-	D1_INFO("%s\n", name);
 	//This happens only if the game starts another program
 	if (!fromgame && running && schick && !gen)
 	{
@@ -783,7 +782,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			short val = CPU_Pop16();
 			CPU_Push16(val);
 
-			D1_INFO("div16(%d)\n", val);
+			D1_LOG("div16(%d)\n", val);
 
 			reg_ax = div16(val);
 
@@ -1091,8 +1090,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x20) {
 			char city=real_readb(datseg, 0x2d67);
 			unsigned char ww=real_readb(datseg, 0x7c9d+city);
-			D1_INFO("Merkwürdige Funktion\n");
-			D1_INFO("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
+			D1_LOG("Merkwürdige Funktion\n");
+			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
 			return 0;
 		}
 		if (offs == 0x25) return 0;
@@ -1122,12 +1121,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	if (segm == 0x1438) {
 		if (offs == 0x0052) {
 			unsigned int  ptr=real_readd(ss, sp);
-			D1_INFO("drawString(%s)\n", getString(ptr));
+			D1_LOG("drawString(%s)\n", getString(ptr));
 			return 0;
 		}
 		if (offs == 0x007f) {
 			unsigned int  ptr=real_readd(ss, sp);
-			D1_INFO("drawLocName(%s)\n", getString(ptr));
+			D1_LOG("drawLocName(%s)\n", getString(ptr));
 			return 0;
 		}
 		return 0;
@@ -1136,14 +1135,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	if (segm == 0x1442) {
 		if (offs == 0x0039) {
 			unsigned int  ptr=real_readd(ss, sp);
-			D1_INFO("dialog_schmal(%s)\n", getString(ptr));
+			D1_LOG("dialog_schmal(%s)\n", getString(ptr));
 			return 0;
 		}
 		return 0;
 	}
 	if (segm == 0x1449) {
 		if (offs == 0x0020) {
-			D1_INFO("Menu: Magie Anwenden\n");
+			D1_LOG("Menu: Magie Anwenden\n");
 			return 0;
 		}
 		return 0;
@@ -1200,7 +1199,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			RealPt path = CPU_Pop32();
 			CPU_Push32(path);
 
-			D1_INFO("chdir(%s)\n", (char*)MemBase+Real2Phys(path));
+			D1_LOG("chdir(%s)\n", (char*)MemBase+Real2Phys(path));
 
 			return 0;
 		}
