@@ -735,9 +735,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	//4 funcs of this sement are called every 0.18s and spam the log
 	if (segm == 0x51e) {
 		if (offs == 0x0017) return 0;
+		if (offs == 0x0209) return 0;
 		if (offs == 0x06fe) return 0;
 		/* GUI Radio */
 		if (offs == 0x0832) return 0;
+		/* Betrunken */
+		if (offs == 0x0856) return 0;
 		if (offs == 0x0c0e) {
 			short index = CPU_Pop16();
 			CPU_Push16(index);
@@ -756,6 +759,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 		if (offs == 0x0c72) return 0;
+		if (offs == 0x0cb6) return 0;
 		if (offs == 0x0d27) {
 			unsigned short index=real_readw(ss, sp);
 			D1_LOG("OpenAndSeekDatfile(%u)\n", index);
@@ -778,6 +782,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			D1_INFO("ds:299e = %d\n", real_readw(ds, 0x299e));
 			return 0;
 		}
+		if (offs == 0x16fd) return 0;
 		if (offs == 0x1802) return 0;
 		/* Leaf Function */
 		if (offs == 0x18b3) return 0;
@@ -790,9 +795,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x232a) return 0;
 		if (offs == 0x25ce) return 0;
 		if (offs == 0x274e) return 0;
+		if (offs == 0x3230) return 0;
 		if (offs == 0x37c4) return 0;
 		if (offs == 0x3b4f) return 0;
 		if (offs == 0x3ca6) return 0;
+		/* Schiffsfahrt */
+		if (offs == 0x3dbb) return 0;
 		if (offs == 0x3ebb) return 0;
 		/* Kopierschutzabfrage */
 		if (offs == 0x4016) return 0;
@@ -813,6 +821,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 			return 1;
 		}
+		if (offs == 0x45ea) return 0;
 		if (offs == 0x472b) return 0;
 
 		if (offs == 0x48b1) {
@@ -826,6 +835,9 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 
+		if (offs == 0x4a05) return 0;
+		if (offs == 0x4a87) return 0;
+		if (offs == 0x4adc) return 0;
 		if (offs == 0x4ff9) { // Eigenschaftsprobe
 			unsigned p0 = CPU_Pop32();
 			unsigned p1 = CPU_Pop16();
@@ -885,6 +897,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 			return 1;
 		}
+		/* Krakenangriff */
+		if (offs == 0x53e8) return 0;
+		/* Essen & Trinken */
+		if (offs == 0x54e9) return 0;
 		if (offs == 0x5520) {
 			/* int get_item_pos(hero_ptr *hero, unsigned short item)*/
 			RealPt hero = CPU_Pop32();
@@ -899,7 +915,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 						item, (short)reg_ax);
 			return 1;
 		}
+		/* Krakenangriff */
+		if (offs == 0x5615) return 0;
 		if (offs == 0x5667) return 0;
+		if (offs == 0x5799) return 0;
 		if (offs == 0x5816) {
 			unsigned short argc=real_readw(ss, sp);
 			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
