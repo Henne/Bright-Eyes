@@ -525,7 +525,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 {
 
 	/* There are no farcalls from the game to segments behind DS*/
-	if (segm >= datseg) return 0;
+	if (segm >= datseg - relocation) return 0;
 
 	//this is for mouse handling and spams the log
 	if (segm == 0xb2a)	{
@@ -734,10 +734,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 	//4 funcs of this sement are called every 0.18s and spam the log
 	if (segm == 0x51e) {
+		if (offs == 0x0017) return 0;
 		if (offs == 0x06fe) return 0;
 		/* GUI Radio */
 		if (offs == 0x0832) return 0;
-
 		if (offs == 0x0c0e) {
 			short index = CPU_Pop16();
 			CPU_Push16(index);
@@ -755,27 +755,52 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			D1_LOG("ReadDatfile()\n");
 			return 0;
 		}
+		if (offs == 0x0c72) return 0;
 		if (offs == 0x0d27) {
 			unsigned short index=real_readw(ss, sp);
 			D1_LOG("OpenAndSeekDatfile(%u)\n", index);
 			return 0;
 		}
 		if (offs == 0x0ed2) return 0;
-		if (offs == 0x1634) return 0;
+		/* Leaf Function */
+		if (offs == 0x1634) {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			unsigned short v4 = CPU_Pop16();
+			CPU_Push16(v4);
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_INFO("???(%d, %d, %d, %d);\n", v1, v2, v3, v4);
+			D1_INFO("ds:299c = %d\n", real_readw(ds, 0x299c));
+			D1_INFO("ds:299e = %d\n", real_readw(ds, 0x299e));
+			return 0;
+		}
 		if (offs == 0x1802) return 0;
+		/* Leaf Function */
+		if (offs == 0x18b3) return 0;
 		if (offs == 0x1921) return 0;
 		if (offs == 0x192b) return 0;
 		if (offs == 0x1a34) return 0;
 		if (offs == 0x1d67) return 0;
 		if (offs == 0x1ecc) return 0;
+		if (offs == 0x21ab) return 0;
 		if (offs == 0x232a) return 0;
+		if (offs == 0x25ce) return 0;
 		if (offs == 0x274e) return 0;
 		if (offs == 0x37c4) return 0;
+		if (offs == 0x3b4f) return 0;
+		if (offs == 0x3ca6) return 0;
 		if (offs == 0x3ebb) return 0;
 		/* Kopierschutzabfrage */
 		if (offs == 0x4016) return 0;
 		if (offs == 0x404f) return 0;
 		if (offs == 0x40d1) return 0;
+		if (offs == 0x41cd) return 0;
+		if (offs == 0x43e7) return 0;
+		if (offs == 0x43fd) return 0;
 		if (offs == 0x44aa) return 0;
 		if (offs == 0x4559) return 0;
 		if (offs == 0x45db) {
@@ -834,6 +859,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			supress_rnd=3;
 			return 0;
 		}
+		if (offs == 0x515e) return 0;
 		if (offs == 0x51c2) {
 			unsigned int money;
 
@@ -845,6 +871,9 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 			return 1;
 		}
+		if (offs == 0x5221) return 0;
+		if (offs == 0x5331) return 0;
+		if (offs == 0x5667) return 0;
 		if (offs == 0x5816) {
 			unsigned short argc=real_readw(ss, sp);
 			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
