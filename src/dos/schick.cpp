@@ -834,6 +834,17 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			supress_rnd=3;
 			return 0;
 		}
+		if (offs == 0x51c2) {
+			unsigned int money;
+
+			money = get_party_money();
+			D1_LOG("get_party_money() = %d\n", money);
+
+			reg_ax = money & 0xffff;
+			reg_dx = (money>>16) & 0xffff;
+
+			return 1;
+		}
 		if (offs == 0x5816) {
 			unsigned short argc=real_readw(ss, sp);
 			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
