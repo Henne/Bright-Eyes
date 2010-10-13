@@ -853,7 +853,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			CPU_Push16(p1);
 			CPU_Push32(p0);
 			signed char p4_r = p4 & 0xFF;
-			D1_INFO("->(%s/%s/%s) + %d:",
+			D1_INFO("->(%s/%s/%s) %+d:",
 					arr_eig[p1], arr_eig[p2],
 					arr_eig[p3], p4_r);
 			supress_rnd=3;
