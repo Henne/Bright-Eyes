@@ -30,3 +30,13 @@ unsigned int get_party_money() {
 
 	return sum;
 }
+
+int get_item_pos(Bit8u *hero, unsigned short item) {
+	int i;
+
+	for (i = 0; i < 0x17; i++) {
+		if (item == host_readw(hero + i*14 + 0x196))
+			return i;
+	}
+	return -1;
+}

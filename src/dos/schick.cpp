@@ -873,6 +873,20 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		}
 		if (offs == 0x5221) return 0;
 		if (offs == 0x5331) return 0;
+		if (offs == 0x5520) {
+			/* int get_item_pos(hero_ptr *hero, unsigned short item)*/
+			RealPt hero = CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			reg_ax = get_item_pos(MemBase + Real2Phys(hero), item);
+
+			D1_LOG("get_item_pos(%s, 0x%04x) = %d\n",
+						schick_getCharname(hero),
+						item, (short)reg_ax);
+			return 1;
+		}
 		if (offs == 0x5667) return 0;
 		if (offs == 0x5816) {
 			unsigned short argc=real_readw(ss, sp);
