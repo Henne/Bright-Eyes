@@ -739,6 +739,18 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		/* GUI Radio */
 		if (offs == 0x0832) return 0;
 
+		if (offs == 0x0c0e) {
+			short index = CPU_Pop16();
+			CPU_Push16(index);
+
+			unsigned int retval = get_readlength2(index);
+			D1_LOG("get_readlength2(%d) = %d\n", index, retval);
+
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval>>16) & 0xffff;
+
+			return 1;
+		}
 		if (offs == 0x0c28) {
 			unsigned short index=real_readw(ss, sp);
 			D1_LOG("ReadDatfile()\n");
