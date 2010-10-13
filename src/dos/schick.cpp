@@ -873,6 +873,18 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		}
 		if (offs == 0x5221) return 0;
 		if (offs == 0x5331) return 0;
+		if (offs == 0x5349) {
+			RealPt hero = CPU_Pop32();
+			int ap = CPU_Pop32();
+			CPU_Push32(ap);
+			CPU_Push32(hero);
+
+			D1_LOG("add_hero_ap(%s, %d)\n",
+						schick_getCharname(hero), ap);
+			add_hero_ap(MemBase+Real2Phys(hero), ap);
+
+			return 1;
+		}
 		if (offs == 0x5520) {
 			/* int get_item_pos(hero_ptr *hero, unsigned short item)*/
 			RealPt hero = CPU_Pop32();

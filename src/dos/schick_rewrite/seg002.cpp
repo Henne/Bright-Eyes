@@ -31,6 +31,16 @@ unsigned int get_party_money() {
 	return sum;
 }
 
+/**
+	add_hero_ap - add AP
+*/
+void add_hero_ap(Bit8u *hero, int ap) {
+	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
+}
+
+/**
+	get_item_pos - gets item position
+*/
 int get_item_pos(Bit8u *hero, unsigned short item) {
 	int i;
 
