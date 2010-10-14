@@ -2,13 +2,19 @@
 #include "../schick.h"
 
 /*
-	 6/140 Functions complete
+	 7/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : real_readd(datseg, 0xbce7);
 }
 
+unsigned short mod_timer(short val) {
+	if (real_readd(datseg, 0x2dbb) % val == 0)
+		return 1;
+
+	return 0;
+}
 unsigned short div16(unsigned char val) {
 	return val >> 4;
 }

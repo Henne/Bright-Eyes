@@ -809,6 +809,16 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x41cd) return 0;
 		if (offs == 0x43e7) return 0;
 		if (offs == 0x43fd) return 0;
+		if (offs == 0x4485) {
+			short val = CPU_Pop16();
+			CPU_Push16(val);
+
+			reg_ax = mod_timer(val);
+
+			D1_INFO("mod_timer(%d) = %d\n", val, reg_eax);
+
+			return 1;
+		}
 		if (offs == 0x44aa) return 0;
 		if (offs == 0x4559) return 0;
 		if (offs == 0x45db) {
