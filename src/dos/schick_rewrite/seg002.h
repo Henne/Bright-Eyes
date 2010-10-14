@@ -1,4 +1,5 @@
 extern unsigned int get_readlength2(signed short index);
+extern void set_to_ff();
 extern unsigned short mod_timer(short val);
 extern unsigned short div16(unsigned char val);
 extern unsigned int get_party_money();

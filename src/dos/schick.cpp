@@ -811,7 +811,11 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x404f) return 0;
 		if (offs == 0x40d1) return 0;
 		if (offs == 0x41cd) return 0;
-		if (offs == 0x43e7) return 0;
+		if (offs == 0x43e7) {
+			D1_LOG("set_to_ff()\n");
+			set_to_ff();
+			return 1;
+		}
 		if (offs == 0x43fd) return 0;
 		if (offs == 0x4485) {
 			short val = CPU_Pop16();

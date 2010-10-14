@@ -2,11 +2,18 @@
 #include "../schick.h"
 
 /*
-	 7/140 Functions complete
+	 8/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : real_readd(datseg, 0xbce7);
+}
+
+void set_to_ff() {
+	unsigned i;
+
+	for (i = 0; i < 9; i++)
+		real_writeb(datseg, 0xbd38+i, 0xff);
 }
 
 unsigned short mod_timer(short val) {
