@@ -850,9 +850,15 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x472b) return 0;
 
 		if (offs == 0x48b1) {
-			unsigned int  ptr=real_readd(ss, sp);
-			D1_LOG("istHeldBeiSinnen(%s)\n", schick_getCharname(ptr));
-			return 0;
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			reg_ax = check_hero(MemBase + Real2Phys(hero));
+
+			D1_LOG("check_hero(%s) = %d\n",
+				schick_getCharname(hero), reg_ax);
+
+			return 1;
 		}
 		if (offs == 0x49d8) {
 			unsigned int  ptr=real_readd(ss, sp);

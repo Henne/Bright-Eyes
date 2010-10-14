@@ -2,7 +2,7 @@
 #include "../schick.h"
 
 /*
-	 9/140 Functions complete
+	 12/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -24,6 +24,84 @@ unsigned short mod_timer(short val) {
 }
 unsigned short div16(unsigned char val) {
 	return val >> 4;
+}
+
+/**
+	check_hero - returns true if heros not dead, stoned or unconscious
+	should be static
+*/
+unsigned short check_hero(Bit8u *hero) {
+
+	/* Check if hero has a class */
+	if (host_readb(hero+0x21) == 0)
+		return 0;
+	/* Check if sleeping */
+	if ((host_readb(hero+0xaa) >> 1) & 1)
+		return 0;
+	/* Check if dead */
+	if (host_readb(hero+0xaa) & 1 )
+		return 0;
+	/* Check if stoned */
+	if ((host_readb(hero+0xaa) >> 2) & 1)
+		return 0;
+	/* Check if unconscious */
+	if ((host_readb(hero+0xaa) >> 6) & 1)
+		return 0;
+	/* Check if ??? */
+	if ((host_readb(hero+0xaa) >> 5) & 1)
+		return 0;
+	/* Check if ??? */
+	if (host_readb(hero+0x84) == 0x10)
+		return 0;
+
+	return 1;
+}
+
+/**
+	check_hero_no2 - returns true if heros not dead, stoned or unconscious
+	should be static
+*/
+unsigned short check_hero_no2(Bit8u *hero) {
+
+	/* Check if hero has a class */
+	if (host_readb(hero+0x21) == 0)
+		return 0;
+	/* Check if dead */
+	if (host_readb(hero+0xaa) & 1 )
+		return 0;
+	/* Check if stoned */
+	if ((host_readb(hero+0xaa) >> 2) & 1)
+		return 0;
+	/* Check if unconscious */
+	if ((host_readb(hero+0xaa) >> 6) & 1)
+		return 0;
+	/* Check if ??? */
+	if ((host_readb(hero+0xaa) >> 5) & 1)
+		return 0;
+
+	return 1;
+}
+
+/**
+	check_hero_no3 - returns true if heros not dead, stoned or unconscious
+	should be static
+*/
+unsigned short check_hero_no3(Bit8u *hero) {
+
+	/* Check if hero has a class */
+	if (host_readb(hero+0x21) == 0)
+		return 0;
+	/* Check if dead */
+	if (host_readb(hero+0xaa) & 1 )
+		return 0;
+	/* Check if stoned */
+	if ((host_readb(hero+0xaa) >> 2) & 1)
+		return 0;
+	/* Check if unconscious */
+	if ((host_readb(hero+0xaa) >> 6) & 1)
+		return 0;
+
+	return 1;
 }
 
 /**
