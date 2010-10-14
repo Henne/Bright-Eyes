@@ -2,7 +2,7 @@
 #include "../schick.h"
 
 /*
-	 12/140 Functions complete
+	 13/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -183,4 +183,28 @@ int get_item_pos(Bit8u *hero, unsigned short item) {
 			return i;
 	}
 	return -1;
+}
+/**
+	count_heroes_available_in_group
+*/
+
+unsigned short count_heroes_available_in_group() {
+	Bit8u *hero_i = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
+	char i, heroes = 0;
+
+	for (i=0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class */
+		if (host_readb(hero_i+0x21) == 0)
+			continue;
+		/* Check if in current group */
+		if (host_readb(hero_i+0x87) != real_readb(datseg, 0x2d35))
+			continue;
+		/* Check if hero is available */
+		if (check_hero_no2(hero_i) == 0)
+			continue;
+
+		heroes++;
+	}
+
+	return heroes;
 }

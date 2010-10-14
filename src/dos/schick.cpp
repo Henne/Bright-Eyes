@@ -985,7 +985,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		/* Krakenangriff */
 		if (offs == 0x5615) return 0;
 		if (offs == 0x5667) return 0;
-		if (offs == 0x5799) return 0;
+		if (offs == 0x5799) {
+
+			reg_ax = count_heroes_available_in_group();
+			D1_LOG("count_heroes_available_in_group() = %d\n",
+				reg_ax);
+
+			return 1;
+		}
 		if (offs == 0x5816) {
 			unsigned short argc=real_readw(ss, sp);
 			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
