@@ -1,6 +1,10 @@
 #include <mem.h>
 #include "../schick.h"
 
+/*
+	 6/140 Functions complete
+*/
+
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : real_readd(datseg, 0xbce7);
 }
@@ -36,6 +40,20 @@ unsigned int get_party_money() {
 */
 void add_hero_ap(Bit8u *hero, int ap) {
 	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
+}
+
+/**
+	get_hero_index - gets hero index
+*/
+
+unsigned short get_hero_index(Bit8u *hero) {
+	Bit8u *first_hero = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
+	int i = 0;
+
+	while (hero != first_hero + i*0x6da)
+		i++;
+	return i;
+
 }
 
 /**

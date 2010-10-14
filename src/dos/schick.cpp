@@ -900,7 +900,16 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		/* Krakenangriff */
 		if (offs == 0x53e8) return 0;
 		/* Essen & Trinken */
-		if (offs == 0x54e9) return 0;
+		if (offs == 0x54e9) {
+			/* unsigned short get_hero_index(hero_ptr *hero); */
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			reg_ax = get_hero_index(MemBase+Real2Phys(hero));
+			D1_LOG("get_hero_index(%s) = (%d)\n",
+					schick_getCharname(hero), reg_ax);
+			return 1;
+		}
 		if (offs == 0x5520) {
 			/* int get_item_pos(hero_ptr *hero, unsigned short item)*/
 			RealPt hero = CPU_Pop32();
