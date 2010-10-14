@@ -908,11 +908,20 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			CPU_Push32(ap);
 			CPU_Push32(hero);
 
-			D1_LOG("add_hero_ap(%s, %d)\n",
+			D1_INFO("%s erhält %d AP\n",
 						schick_getCharname(hero), ap);
 			add_hero_ap(MemBase+Real2Phys(hero), ap);
 
 			return 1;
+		}
+		/* APs verteilen */
+		if (offs == 0x535f) {
+			int group_ap = CPU_Pop32();
+			CPU_Push32(group_ap);
+
+			D1_INFO("Gruppe erhält %d AP\n", group_ap);
+
+			return 0;
 		}
 		/* Krakenangriff */
 		if (offs == 0x53e8) return 0;
