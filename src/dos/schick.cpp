@@ -840,7 +840,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 			return 1;
 		}
+		/* Leaf Function - far only */
 		if (offs == 0x45ea) return 0;
+		/* Leaf Function - far only */
+		if (offs == 0x4658) return 0;
+		/* Leaf Function - far & near */
+		if (offs == 0x4707) return 0;
+		/* No Leaf - far only, calls only 0x4707 */
 		if (offs == 0x472b) return 0;
 
 		if (offs == 0x48b1) {
@@ -855,6 +861,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		}
 
 		if (offs == 0x4a05) return 0;
+		/* Leaf Function - far only */
 		if (offs == 0x4a87) return 0;
 		if (offs == 0x4adc) return 0;
 		/* Wunder TSA heilt ganze Gruppe 6x */
