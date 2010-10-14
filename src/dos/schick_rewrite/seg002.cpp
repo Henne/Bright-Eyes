@@ -2,7 +2,7 @@
 #include "../schick.h"
 
 /*
-	 8/140 Functions complete
+	 9/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -24,6 +24,31 @@ unsigned short mod_timer(short val) {
 }
 unsigned short div16(unsigned char val) {
 	return val >> 4;
+}
+
+/**
+	add_hero_ae - add AE points to heros current AE
+*/
+void add_hero_ae(Bit8u* hero, short ae) {
+
+	short tmp;
+
+	/* dont add AE if hero is dead or ae = 0 */
+	if ( (*(hero+0xaa) & 1) || ae == 0)
+		return;
+
+	tmp = real_readw(datseg, 0xc3cb);
+	real_writew(datseg, 0xc3cb, 0);
+
+	/* add AE to heros current AE */
+	host_writew(hero+0x64, host_readw(hero+0x64) + ae);
+
+	/* if current AE is greater than AE maximum
+		set current AE to AE maximum */
+	if (host_readw(hero+0x64) > host_readw(hero+0x62))
+		host_writew(hero+0x64, host_readw(hero+0x62));
+
+	real_writew(datseg, 0xc3cb, tmp);
 }
 /**
 	get_party_money - summs up the money of the current party

@@ -861,8 +861,19 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		}
 
 		if (offs == 0x4a05) return 0;
-		/* Leaf Function - far only */
-		if (offs == 0x4a87) return 0;
+		if (offs == 0x4a87) {
+			RealPt hero = CPU_Pop32();
+			short val = CPU_Pop16();
+			CPU_Push16(val);
+			CPU_Push32(hero);
+
+			add_hero_ae(MemBase + Real2Phys(hero), val);
+
+			D1_LOG("add_hero_ae(%s, %d)\n",
+					schick_getCharname(hero), val);
+
+			return 1;
+		}
 		if (offs == 0x4adc) return 0;
 		/* Wunder TSA heilt ganze Gruppe 6x */
 		if (offs == 0x4df3) return 0;
