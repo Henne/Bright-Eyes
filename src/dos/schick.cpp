@@ -795,6 +795,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x232a) return 0;
 		if (offs == 0x25ce) return 0;
 		if (offs == 0x274e) return 0;
+		/* Wunder Rondra: Starker Schwertarm */
+		if (offs == 0x2e26) return 0;
+		/* Wunder Rondra: Starker Schwertarm  Leaf Function */
+		if (offs == 0x2e69) return 0;
 		if (offs == 0x3230) return 0;
 		if (offs == 0x37c4) return 0;
 		if (offs == 0x3b4f) return 0;
@@ -820,6 +824,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 1;
 		}
 		if (offs == 0x44aa) return 0;
+		/* Leaf Function - far only */
 		if (offs == 0x4559) return 0;
 		if (offs == 0x45db) {
 			short val = CPU_Pop16();
@@ -848,6 +853,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 		if (offs == 0x4a05) return 0;
 		if (offs == 0x4a87) return 0;
 		if (offs == 0x4adc) return 0;
+		/* Wunder TSA heilt ganze Gruppe 6x */
+		if (offs == 0x4df3) return 0;
 		if (offs == 0x4ff9) { // Eigenschaftsprobe
 			unsigned p0 = CPU_Pop32();
 			unsigned p1 = CPU_Pop16();
@@ -934,6 +941,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 						item, (short)reg_ax);
 			return 1;
 		}
+		/* Leaf Function - far only */
+		if (offs == 0x554c) return 0;
+		/* Leaf Function - near only */
+		if (offs == 0x55b1) return 0;
 		/* Krakenangriff */
 		if (offs == 0x5615) return 0;
 		if (offs == 0x5667) return 0;
