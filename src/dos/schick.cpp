@@ -7,6 +7,7 @@
 
 #include "schick_rewrite/seg002.h"
 #include "schick_rewrite/seg003.h"
+#include "schick_rewrite/seg007.h"
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
@@ -1022,20 +1023,20 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 	if (segm == 0x0ef8) {
 
 		if (offs == 0x000b) {
-			signed p1 = CPU_Pop16();
-			signed p2 = CPU_Pop16();
-			CPU_Push16(p2);
-			CPU_Push16(p1);
+			signed lo = CPU_Pop16();
+			signed hi = CPU_Pop16();
+			CPU_Push16(hi);
+			CPU_Push16(lo);
 
-			D1_INFO("randomInterval %d - %d : ", p1, p2);
-			return 0;
+			reg_ax = random_interval(lo, hi);
+
+			D1_INFO("randomInterval %d - %d : %d\n",
+				lo, hi, reg_ax);
+
+			return 1;
 		}
 		if (offs == 0x002b) {
 			unsigned p1 = CPU_Pop16();
-			unsigned p2 = CPU_Pop16();
-			unsigned p3 = CPU_Pop16();
-			CPU_Push16(p3);
-			CPU_Push16(p2);
 			CPU_Push16(p1);
 
 			if (supress_rnd == 0)
@@ -1046,16 +1047,38 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 0;
 		}
 		if (offs == 0x007a) {
-			unsigned p1 = CPU_Pop16();
-			unsigned p2 = CPU_Pop16();
-			unsigned p3 = CPU_Pop16();
-			CPU_Push16(p3);
-			CPU_Push16(p2);
-			CPU_Push16(p1);
+			unsigned n = CPU_Pop16();
+			unsigned m = CPU_Pop16();
+			unsigned x = CPU_Pop16();
+			CPU_Push16(x);
+			CPU_Push16(m);
+			CPU_Push16(n);
 
-			if (p1 < 10)
-				D1_INFO("wuerfel %dW%d%+d\n", p1, p2, p3);
-			return 0;
+			reg_ax = dice_roll(n, m, x);
+
+			D1_INFO("wuerfel %dW%d%+d = %d\n",
+				n, m, x, (short)reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x00a0) {
+			signed n = CPU_Pop16();
+			unsigned m = CPU_Pop16();
+			signed x = CPU_Pop16();
+			RealPt pmin = CPU_Pop32();
+			RealPt pmax = CPU_Pop32();
+			CPU_Push32(pmax);
+			CPU_Push32(pmin);
+			CPU_Push16(x);
+			CPU_Push16(m);
+			CPU_Push16(n);
+
+			calc_damage_range(n, m, x, MemBase+Real2Phys(pmin),
+				MemBase+Real2Phys(pmax));
+
+			D1_LOG("calc_damage_range(%d, %d, %d)\n", n, m, x);
+
+			return 1;
 		}
 		if (offs == 0x0119) {
 		        unsigned p1 = CPU_Pop16();

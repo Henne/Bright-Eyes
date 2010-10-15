@@ -10,4 +10,5 @@ libdos_a_SOURCES = dos.cpp dos_devices.cpp dos_execute.cpp dos_files.cpp dos_ioc
 		   cdrom_ioctl_os2.cpp schick.cpp schick.h schick_gen105.cpp\
 		schick_status.cpp\
 		schick_rewrite/seg002.cpp schick_rewrite/seg002.h\
-		schick_rewrite/seg003.cpp schick_rewrite/seg003.h
+		schick_rewrite/seg003.cpp schick_rewrite/seg003.h\
+		schick_rewrite/seg007.cpp schick_rewrite/seg007.h
