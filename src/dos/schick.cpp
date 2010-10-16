@@ -527,8 +527,6 @@ static inline Bit8u* getString(unsigned p) {
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 {
-	unsigned sp = reg_sp;
-
 	/* There are no farcalls from the game to segments behind DS*/
 	if (segm >= datseg - relocation) return 0;
 
@@ -541,30 +539,30 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0xf18)	{
 		if (offs == 0x8) {
 			D1_GFX("SwapU16(val=0x%x);\n",
-					real_readw(ss, sp));
+					real_readw(ss, reg_sp));
 			return 0;
 		}
 		if (offs == 0x14) {
 			D1_GFX("SetVideoMode(mode=0x%x);\n",
-					real_readw(ss, sp));
+					real_readw(ss, reg_sp));
 				return 0;
 		}
 		if (offs == 0x2a) {
 			D1_GFX("SetDisplayPage(page=0x%x);\n",
-				real_readw(ss, sp));
+				real_readw(ss, reg_sp));
 				return 0;
 		}
 		if (offs == 0x40) {
 			D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
-				real_readw(ss, sp+2), real_readw(ss, sp));
+				real_readw(ss, reg_sp+2), real_readw(ss, reg_sp));
 				return 0;
 		}
 		if (offs == 0xea) {
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short off=real_readw(ss, sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
+			unsigned short off=real_readw(ss, reg_sp);
 
 			D1_GFX("SetColor(rgb=0x%x:0x%x, color=0x%x);\n",
-				seg, off, real_readw(ss, sp+4));
+				seg, off, real_readw(ss, reg_sp+4));
 			D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
 				real_readb(seg, off), real_readb(seg, off+1),
 				real_readb(seg, off+2));
@@ -573,10 +571,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		}
 		if (offs == 0x119) {
 
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short first_color=real_readw(ss, sp+4);
-			unsigned short colors=real_readw(ss, sp+6);
+			unsigned short off=real_readw(ss, reg_sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
+			unsigned short first_color=real_readw(ss, reg_sp+4);
+			unsigned short colors=real_readw(ss, reg_sp+6);
 			unsigned short i;
 
 			D1_GFX("SetPalette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
@@ -592,10 +590,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x14d) {
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short len=real_readw(ss, sp+4);
-			unsigned short color=real_readw(ss, sp+6);
+			unsigned short off=real_readw(ss, reg_sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
+			unsigned short len=real_readw(ss, reg_sp+4);
+			unsigned short color=real_readw(ss, reg_sp+6);
 
 			if (seg == 0xa000)
 				D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
@@ -606,11 +604,11 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x1af) {
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short cnt=real_readw(ss, sp+4);
-			unsigned char color=real_readb(ss, sp+6);
-			unsigned short space=real_readw(ss, sp+8);
+			unsigned short off=real_readw(ss, reg_sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
+			unsigned short cnt=real_readw(ss, reg_sp+4);
+			unsigned char color=real_readb(ss, reg_sp+6);
+			unsigned short space=real_readw(ss, reg_sp+8);
 
 			if (seg == 0xa000)
 				D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
@@ -621,22 +619,22 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x219) {
-			unsigned short off_dest=real_readw(ss, sp);
-			unsigned short seg_dest=real_readw(ss, sp+2);
-			unsigned short x1=real_readw(ss, sp+4);
-			unsigned short y1=real_readw(ss, sp+6);
-			unsigned short x2=real_readw(ss, sp+8);
-			unsigned short y2=real_readw(ss, sp+10);
+			unsigned short off_dest=real_readw(ss, reg_sp);
+			unsigned short seg_dest=real_readw(ss, reg_sp+2);
+			unsigned short x1=real_readw(ss, reg_sp+4);
+			unsigned short y1=real_readw(ss, reg_sp+6);
+			unsigned short x2=real_readw(ss, reg_sp+8);
+			unsigned short y2=real_readw(ss, reg_sp+10);
 
-			unsigned short val12=real_readw(ss, sp+12);
-			unsigned short val14=real_readw(ss, sp+14);
-			unsigned short val16=real_readw(ss, sp+16);
-			unsigned short val18=real_readw(ss, sp+18);
+			unsigned short val12=real_readw(ss, reg_sp+12);
+			unsigned short val14=real_readw(ss, reg_sp+14);
+			unsigned short val16=real_readw(ss, reg_sp+16);
+			unsigned short val18=real_readw(ss, reg_sp+18);
 
-			unsigned short width=real_readw(ss, sp+20);
-			unsigned short height=real_readw(ss, sp+22);
-			unsigned short off_src=real_readw(ss, sp+24);
-			unsigned short seg_src=real_readw(ss, sp+26);
+			unsigned short width=real_readw(ss, reg_sp+20);
+			unsigned short height=real_readw(ss, reg_sp+22);
+			unsigned short off_src=real_readw(ss, reg_sp+24);
+			unsigned short seg_src=real_readw(ss, reg_sp+26);
 
 			if (seg_dest == 0xa000)
 				D1_GFX("PicCopy(X=%03u,Y=%03u,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x)\n",
@@ -653,12 +651,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x655) {
-			unsigned short seg_src=real_readw(ss, sp);
-			unsigned short off_src=real_readw(ss, sp+2);
-			unsigned short off_dst=real_readw(ss, sp+4);
-			unsigned short seg_dst=real_readw(ss, sp+6);
-			unsigned short width=real_readw(ss, sp+8);
-			unsigned short height=real_readw(ss, sp+10);
+			unsigned short seg_src=real_readw(ss, reg_sp);
+			unsigned short off_src=real_readw(ss, reg_sp+2);
+			unsigned short off_dst=real_readw(ss, reg_sp+4);
+			unsigned short seg_dst=real_readw(ss, reg_sp+6);
+			unsigned short width=real_readw(ss, reg_sp+8);
+			unsigned short height=real_readw(ss, reg_sp+10);
 
 			if (seg_src == 0xa000)
 			D1_GFX("SaveScreen(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
@@ -673,11 +671,11 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x68c) {
-			unsigned short seg=real_readw(ss, sp);
-			unsigned short off=real_readw(ss, sp+2);
-			unsigned short color=real_readw(ss, sp+4);
-			unsigned short width=real_readw(ss, sp+6);
-			unsigned short height=real_readw(ss, sp+8);
+			unsigned short seg=real_readw(ss, reg_sp);
+			unsigned short off=real_readw(ss, reg_sp+2);
+			unsigned short color=real_readw(ss, reg_sp+4);
+			unsigned short width=real_readw(ss, reg_sp+6);
+			unsigned short height=real_readw(ss, reg_sp+8);
 
 			if (seg == 0xa000)
 
@@ -689,14 +687,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x6c5) {
-			unsigned short off_dst=real_readw(ss, sp);
-			unsigned short seg_dst=real_readw(ss, sp+2);
-			unsigned short off_src=real_readw(ss, sp+4);
-			unsigned short seg_src=real_readw(ss, sp+6);
-			unsigned short val1=real_readw(ss, sp+8);
-			unsigned short val2=real_readw(ss, sp+10);
-			unsigned short val3=real_readw(ss, sp+12);
-			unsigned short val4=real_readw(ss, sp+16);
+			unsigned short off_dst=real_readw(ss, reg_sp);
+			unsigned short seg_dst=real_readw(ss, reg_sp+2);
+			unsigned short off_src=real_readw(ss, reg_sp+4);
+			unsigned short seg_src=real_readw(ss, reg_sp+6);
+			unsigned short val1=real_readw(ss, reg_sp+8);
+			unsigned short val2=real_readw(ss, reg_sp+10);
+			unsigned short val3=real_readw(ss, reg_sp+12);
+			unsigned short val4=real_readw(ss, reg_sp+16);
 
 			D1_GFX("0x6c5(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,%u,%u,%u,%u)\n",
 					seg_dst, off_dst,
@@ -706,14 +704,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		}
 		/* used often in cities and dungeons */
 		if (offs == 0x816) {
-			unsigned short off_dst=real_readw(ss, sp);
-			unsigned short seg_dst=real_readw(ss, sp+2);
-			unsigned short off_src=real_readw(ss, sp+4);
-			unsigned short seg_src=real_readw(ss, sp+6);
-			unsigned short val1=real_readw(ss, sp+8);
-			unsigned short val2=real_readw(ss, sp+10);
-			unsigned short val3=real_readw(ss, sp+12);
-			unsigned short val4=real_readw(ss, sp+14);
+			unsigned short off_dst=real_readw(ss, reg_sp);
+			unsigned short seg_dst=real_readw(ss, reg_sp+2);
+			unsigned short off_src=real_readw(ss, reg_sp+4);
+			unsigned short seg_src=real_readw(ss, reg_sp+6);
+			unsigned short val1=real_readw(ss, reg_sp+8);
+			unsigned short val2=real_readw(ss, reg_sp+10);
+			unsigned short val3=real_readw(ss, reg_sp+12);
+			unsigned short val4=real_readw(ss, reg_sp+14);
 
 			D1_GFX("0x816(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,%u,%u,%u,%u)\n",
 					seg_dst, off_dst,
@@ -724,11 +722,11 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		}
 		if (offs == 0x967){
 			D1_GFX("RLE(width=%d, height=%d, src_pp=0x%x:0x%x, dst=0x%x:0x%x, src_rle=0x%x:0x%x, mode=%d)\n",
-				real_readw(ss, sp), real_readw(ss, sp+2),
-				real_readw(ss, sp+6), real_readw(ss, sp+4),
-				real_readw(ss, sp+10), real_readw(ss, sp+8),
-				real_readw(ss, sp+14),real_readw(ss, sp+12),
-				real_readw(ss, sp+16));
+				real_readw(ss, reg_sp), real_readw(ss, reg_sp+2),
+				real_readw(ss, reg_sp+6), real_readw(ss, reg_sp+4),
+				real_readw(ss, reg_sp+10), real_readw(ss, reg_sp+8),
+				real_readw(ss, reg_sp+14),real_readw(ss, reg_sp+12),
+				real_readw(ss, reg_sp+16));
 				return 0;
 		}
 		D1_GFX("Rasterlib:0x%x\n", offs);
@@ -759,14 +757,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x0c28) {
-			unsigned short index=real_readw(ss, sp);
+			unsigned short index=real_readw(ss, reg_sp);
 			D1_LOG("ReadDatfile()\n");
 			return 0;
 		}
 		if (offs == 0x0c72) return 0;
 		if (offs == 0x0cb6) return 0;
 		if (offs == 0x0d27) {
-			unsigned short index=real_readw(ss, sp);
+			unsigned short index=real_readw(ss, reg_sp);
 			D1_LOG("OpenAndSeekDatfile(%u)\n", index);
 			return 0;
 		}
@@ -866,7 +864,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x49d8) {
-			unsigned int  ptr=real_readd(ss, sp);
+			unsigned int  ptr=real_readd(ss, reg_sp);
 			D1_INFO("istHeldBeiSinnenUndGruppe(%s)\n", schick_getCharname(ptr));
 			return 0;
 		}
@@ -999,12 +997,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x5816) {
-			unsigned short argc=real_readw(ss, sp);
+			unsigned short argc=real_readw(ss, reg_sp);
 			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
 			return 0;
 		}
 		if (offs == 0x5a68) {
-			D1_LOG("alloc_byte(%d)\n", real_readw(ss, sp));
+			D1_LOG("alloc_byte(%d)\n", real_readw(ss, reg_sp));
 			return 0;
 		}
 		D1_LOG("Segment 0x51e:0x%04x\n", offs);
@@ -1344,12 +1342,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x1432) return 0;
 	if (segm == 0x1438) {
 		if (offs == 0x0052) {
-			unsigned int  ptr=real_readd(ss, sp);
+			unsigned int  ptr=real_readd(ss, reg_sp);
 			D1_LOG("drawString(%s)\n", getString(ptr));
 			return 0;
 		}
 		if (offs == 0x007f) {
-			unsigned int  ptr=real_readd(ss, sp);
+			unsigned int  ptr=real_readd(ss, reg_sp);
 			D1_LOG("drawLocName(%s)\n", getString(ptr));
 			return 0;
 		}
@@ -1358,7 +1356,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 	/* stub097 */
 	if (segm == 0x1442) {
 		if (offs == 0x0039) {
-			unsigned int  ptr=real_readd(ss, sp);
+			unsigned int  ptr=real_readd(ss, reg_sp);
 			D1_LOG("dialog_schmal(%s)\n", getString(ptr));
 			return 0;
 		}
@@ -1414,8 +1412,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x14f9) return 0;
 
 	/* Borland C++ runtime */
-	if (segm == 0x0)
-	{
+	if (segm == 0x0) {
 		/* nullsub */
 		if (offs == 0x2c9) return 0;
 		if (offs == 0x2f7) {
@@ -1436,11 +1433,11 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x678) return 0;
 
 		if (offs == 0x6d0) {
-			D1_LOG("C-Lib exit(%d)\n", real_readw(ss, sp));
+			D1_LOG("C-Lib exit(%d)\n", real_readw(ss, reg_sp));
 			return 0;
 		}
 		if (offs == 0x6df) {//Not Called
-			D1_LOG("_exit(%d)\n", real_readw(ss, sp));
+			D1_LOG("_exit(%d)\n", real_readw(ss, reg_sp));
 			return 0;	}
 
 		if (offs == 0x70b){
@@ -1457,7 +1454,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		/* dos_getdiskfree() */
 		if (offs == 0x7ed) return 0;
 		if (offs == 0x816) {
-			D1_TRAC("_dos_getvect(int=0x%x)\n", real_readw(ss,sp));
+			D1_TRAC("_dos_getvect(int=0x%x)\n", real_readw(ss,reg_sp));
 			return 0;
 		}
 		if (offs == 0x0825) {
@@ -1490,14 +1487,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0xb33) {
 			/*seek()*/
 			D1_LOG("__seek(Handle=0x%x, pos=%u, Mode=%d)\n",
-			real_readw(ss, sp), real_readw(ss, sp+4)<<16+
-			real_readw(ss, sp+2), real_readw(ss, sp+6));
+			real_readw(ss, reg_sp), real_readw(ss, reg_sp+4)<<16+
+			real_readw(ss, reg_sp+2), real_readw(ss, reg_sp+6));
 			return 0;
 		}
 		/* mkdir() */
 		if (offs == 0xb5c) return 0;
 		if (offs == 0xbac) {
-			unsigned short val=real_readw(ss, sp);
+			unsigned short val=real_readw(ss, reg_sp);
 			D1_TRAC("C-Lib srand(%d)\n", val);
 			return 0;
 		}
@@ -1508,14 +1505,14 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x0be3) {
 			/*read()*/
 			D1_LOG("_read(fd=0x%x, buffer=0x%x:0x%x, len=%d)\n",
-			real_readw(ss, sp), real_readw(ss, sp+4),
-			real_readw(ss, sp+2), real_readw(ss, sp+6));
+			real_readw(ss, reg_sp), real_readw(ss, reg_sp+4),
+			real_readw(ss, reg_sp+2), real_readw(ss, reg_sp+6));
 			return 0;
 		}
 		if (offs == 0x1123) {
 			/* time(), user for randomize */
-			unsigned short hi=real_readw(ss, sp);
-			unsigned short lo=real_readw(ss, sp+2);
+			unsigned short hi=real_readw(ss, reg_sp);
+			unsigned short lo=real_readw(ss, reg_sp+2);
 			D1_TRAC("C-Lib time(0x%04x)\n", hi<<16+lo);
 			return 0;
 		}
@@ -1525,20 +1522,20 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x176d) return 0;
 		if (offs == 0x1792) return 0;
 		if (offs == 0x1e55) {
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short off=real_readw(ss, reg_sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
 			D1_LOG("free(0x%04x:0x%04x)\n", seg, off);
 			return 0;		}
 		if (offs == 0x1f69) {
-			unsigned short lo=real_readw(ss, sp);
-			unsigned short hi=real_readw(ss, sp+2);
+			unsigned short lo=real_readw(ss, reg_sp);
+			unsigned short hi=real_readw(ss, reg_sp+2);
 			D1_LOG("farmalloc(%d)\n", hi<<16+lo);
 			return 0;		}
 		if (offs == 0x2287) {
-			unsigned short nl=real_readw(ss, sp);
-			unsigned short nh=real_readw(ss, sp+2);
-			unsigned short lo=real_readw(ss, sp+4);
-			unsigned short hi=real_readw(ss, sp+6);
+			unsigned short nl=real_readw(ss, reg_sp);
+			unsigned short nh=real_readw(ss, reg_sp+2);
+			unsigned short lo=real_readw(ss, reg_sp+4);
+			unsigned short hi=real_readw(ss, reg_sp+6);
 
 			D1_LOG("calloc(%d, 0x%x)\n",
 					(nh<<16)+nl, (hi<<16)+lo);
@@ -1549,16 +1546,16 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x2596) return 0;
 		if (offs == 0x2d82) {
 			unsigned short i=4;
-			unsigned short off=real_readw(ss, sp+i);
-			unsigned short seg=real_readw(ss, sp+i+2);
+			unsigned short off=real_readw(ss, reg_sp+i);
+			unsigned short seg=real_readw(ss, reg_sp+i+2);
 
 			D1_LOG("C-Lib exec?(\"%s\", ",
 					MemBase+(seg<<4)+off);
 			/*
 			do {
 				i+=4;
-				off=real_readw(ss, sp+i);
-				seg=real_readw(ss, sp+i+2);
+				off=real_readw(ss, reg_sp+i);
+				seg=real_readw(ss, reg_sp+i+2);
 				if ((seg<<4)+off > 0)
 						D1_LOG("\"%s\", ",
 						MemBase+(seg<<4)+off);
@@ -1586,7 +1583,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x2eb2) {
-			D1_LOG("C-Lib close(%d)\n", real_readw(ss, sp));
+			D1_LOG("C-Lib close(%d)\n", real_readw(ss, reg_sp));
 			return 0;
 		}
 		if (offs == 0x2eda) return 0;
@@ -1657,15 +1654,15 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		}
 		if (offs == 0x3479) {
 			/* write(handle) */
-			unsigned short handle=real_readw(ss, sp);
+			unsigned short handle=real_readw(ss, reg_sp);
 			D1_LOG("write_0(%d)\n", handle);
 			return 0;
 		}
 		if (offs == 0x34c7) {
 			/*open()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short mode=real_readw(ss, sp+4);
+			unsigned short off=real_readw(ss, reg_sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
+			unsigned short mode=real_readw(ss, reg_sp+4);
 
 			D1_LOG("open(\"%s\",\"%04x\")\n",
 					MemBase+(seg<<4)+off, mode);
@@ -1673,9 +1670,9 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		}
 		if (offs == 0x3636) {
 			/* sortof open() */
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
-			unsigned short mode=real_readw(ss, sp+4);
+			unsigned short off=real_readw(ss, reg_sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
+			unsigned short mode=real_readw(ss, reg_sp+4);
 
 			D1_LOG("C-Lib Unkn(\"%s\", 0x%04x)\n",
 					MemBase+(seg<<4)+off, mode);
@@ -1683,22 +1680,22 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		}
 		if (offs == 0x36dd) {
 			/*printf()*/
-			unsigned short off=real_readw(ss, sp);
-			unsigned short seg=real_readw(ss, sp+2);
+			unsigned short off=real_readw(ss, reg_sp);
+			unsigned short seg=real_readw(ss, reg_sp+2);
 
 			D1_LOG("printf(\"%s\")\n", MemBase+(seg<<4)+off);
 			return 0; }
 		if (offs == 0x3d74) return 0;
 			/* ret 0x000a */
 		if (offs == 0x41d2) {
-			unsigned short	o1=real_readw(ss, sp);
-			unsigned short	s1=real_readw(ss, sp+2);
-			unsigned short	o2=real_readw(ss, sp+4);
-			unsigned short	s2=real_readw(ss, sp+6);
-			unsigned short	o3=real_readw(ss, sp+8);
-			unsigned short	s3=real_readw(ss, sp+10);
-			unsigned short	o4=real_readw(ss, sp+12);
-			unsigned short	s4=real_readw(ss, sp+14);
+			unsigned short	o1=real_readw(ss, reg_sp);
+			unsigned short	s1=real_readw(ss, reg_sp+2);
+			unsigned short	o2=real_readw(ss, reg_sp+4);
+			unsigned short	s2=real_readw(ss, reg_sp+6);
+			unsigned short	o3=real_readw(ss, reg_sp+8);
+			unsigned short	s3=real_readw(ss, reg_sp+10);
+			unsigned short	o4=real_readw(ss, reg_sp+12);
+			unsigned short	s4=real_readw(ss, reg_sp+14);
 			D1_LOG("C-Lib sprintf(0x%04x:0x%04x, \"%s\", 0x%04x:0x%04x, 0x%04x:0x%04x)\n",
 					s1, o1, MemBase+(s2<<4)+o2,
 					s3, o3, s4, o4);
