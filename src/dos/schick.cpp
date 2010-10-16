@@ -1790,10 +1790,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x462b) return 0;
 		if (offs == 0x4a85) {
 			/*write()*/
-			unsigned short handle=real_readw(ss, sp);
-			unsigned short off=real_readw(ss, sp+2);
-			unsigned short seg=real_readw(ss, sp+4);
-			unsigned short val=real_readw(ss, sp+6);
+			unsigned short handle=real_readw(ss, reg_sp);
+			unsigned short off=real_readw(ss, reg_sp+2);
+			unsigned short seg=real_readw(ss, reg_sp+4);
+			unsigned short val=real_readw(ss, reg_sp+6);
 			D1_LOG("C-Lib __write(Handle=0x%x, Buffer=0x%x:0x%x, Len=%d)\n", handle, seg ,off, val);
 			return 0;
 		}
