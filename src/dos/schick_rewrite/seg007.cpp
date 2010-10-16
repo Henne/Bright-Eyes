@@ -1,5 +1,7 @@
-#include <stdio.h>
-
+/*
+	Rewrite of DSA1 v3.02_de functions of segment 007
+	Function rewritten: complete
+*/
 #include "mem.h"
 
 #include "../schick.h"
@@ -50,7 +52,6 @@ unsigned short random_schick(short val) {
 /**
 	dice_roll - rolls a dice: n*Wm+x
 */
-
 short dice_roll(unsigned short n, unsigned short m, short x) {
 	unsigned short i;
 	unsigned short sum = 0;
@@ -69,3 +70,106 @@ void calc_damage_range(unsigned short n, unsigned short m, short x, Bit8u *min, 
 	host_writew(max, n*m+x);
 }
 
+/**
+	is_in_word_array - checks if val is in a word array
+*/
+unsigned short is_in_word_array(unsigned short val, Bit8u *p) {
+
+	unsigned short i;
+	Bit8u *p_tmp;
+
+	for (i = 1; (short)host_readw(p) >= 0; i++) {
+		p_tmp = p;
+		p += 2;
+		if (host_readw(p_tmp) == val)
+			return i;
+	}
+
+	return 0;
+}
+
+/**
+	is_in_byte_array - checks if val is in a byte array
+*/
+unsigned short is_in_byte_array(char val, Bit8u *p) {
+
+	unsigned short i;
+	Bit8u *p_tmp;
+
+	for (i = 1; (char)host_readb(p) != -1; i++) {
+		p_tmp = p;
+		p += 1;
+		if (host_readb(p_tmp) == val)
+			return i;
+	}
+
+	return 0;
+}
+
+/**
+	dice_template - rolls a dice from enemy templates
+*/
+short dice_template(unsigned short val) {
+	unsigned short n, m;
+	char x;
+	unsigned short i, sum = 0;
+
+	/* get dice formula n*Wm+x */
+	n = (val & 0xf000) >> 12;
+
+	switch ((val & 0x0f00) >> 8) {
+		case 1:	m = 6;
+			break;
+		case 2: m = 20;
+			break;
+		case 3: m = 3;
+			break;
+		default:
+			m = 4;
+	}
+
+	x = (val & 0xff);
+
+	/* roll the dices */
+	for (i = 0; i < n; i++)
+		sum += random_schick(m);
+
+	return sum + x;
+}
+
+/**
+	damage_range_template - writes damage range from enemy templates to mem
+*/
+void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max) {
+	unsigned short n, m;
+	char x;
+	unsigned short i;
+
+	/* get dice formula n*Wm+x */
+	n = (val & 0xf000) >> 12;
+
+	switch ((val & 0x0f00) >> 8) {
+		case 1:	m = 6;
+			break;
+		case 2: m = 20;
+			break;
+		case 3: m = 3;
+			break;
+		default:
+			m = 4;
+	}
+
+	x = (val & 0xff);
+
+	/* set vars to 0 */
+	host_writew(max, 0);
+	host_writew(min, 0);
+
+	for (i = 0; i < n; i++) {
+		host_writew(min, host_readw(min) + 1); /* *min++; */
+		host_writew(max, host_readw(max) + m); /* *max += m; */
+	}
+
+	host_writew(min, host_readw(min) + x);
+	host_writew(max, host_readw(max) + x);
+}

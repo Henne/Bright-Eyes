@@ -11,6 +11,9 @@
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
+/* dice table */
+static char dice_tab[4] = {6, 20, 3, 4};
+
 // Is the profiler running?
 static int running=0;
 // Is the game running?
@@ -1061,6 +1064,31 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 
 			return 1;
 		}
+		if (offs == 0x00c4) {
+			unsigned val = CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+			CPU_Push16(val);
+
+			reg_ax = is_in_word_array(val, MemBase + Real2Phys(p));
+
+			D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
+				val, RealSeg(p), RealOff(p), reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x00ef) {
+			unsigned val = CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+			CPU_Push16(val);
+
+			reg_ax = is_in_byte_array((char)val, MemBase+Real2Phys(p));
+			D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
+				val, RealSeg(p), RealOff(p), reg_ax);
+
+			return 1;
+		}
 		if (offs == 0x00a0) {
 			signed n = CPU_Pop16();
 			unsigned m = CPU_Pop16();
@@ -1081,27 +1109,40 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
 			return 1;
 		}
 		if (offs == 0x0119) {
-		        unsigned p1 = CPU_Pop16();
-			char n,m,x;
-		        CPU_Push16(p1);
-		        n = (p1 & 0xf000) >> 12;
-		        x = (p1 & 0x00ff);
-		        switch ((p1 & 0x0f00) >> 8) {
-				case 1:
-					m = 6;
-					break;
-				case 2:
-					m = 20;
-					break;
-				case 3:
-					m = 3;
-					break;
-				default:
-					m = 4;
-			}
-		        D1_INFO("Wuerfel %dW%d%+d\n", n, m, x);
-			return 0;
+		        unsigned val = CPU_Pop16();
+		        CPU_Push16(val);
+
+			unsigned short m = ((val & 0x0f00) >> 8) - 1;
+			if (m > 3)
+				m = 3;
+
+			m = dice_tab[m];
+
+			reg_ax = dice_template(val);
+
+		        D1_INFO("Wuerfel %dW%d%+d = %d\n",
+				(val & 0xf000) >> 12, m,
+				(char)(val & 0xff), (short)reg_ax);
+
+			return 1;
 		}
+		if (offs == 0x0186) {
+			unsigned short val = CPU_Pop16();
+			RealPt min = CPU_Pop32();
+			RealPt max = CPU_Pop32();
+			CPU_Push32(max);
+			CPU_Push32(min);
+			CPU_Push16(val);
+
+			damage_range_template(val,MemBase + Real2Phys(min),
+				MemBase + Real2Phys(max));
+
+			D1_LOG("damage_range_template() Untested\n");
+
+			return 1;
+		}
+		D1_ERR("Uncatched call to Segment seg007:0x%04x\n", offs);
+		exit(1);
 		return 0;
 	}
 
