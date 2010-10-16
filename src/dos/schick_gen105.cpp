@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <mem.h>
 
+#include "regs.h"
+
 #include "schick.h"
 
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
-int schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss, unsigned sp)
+int schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss)
 {
+	unsigned sp = reg_sp;
 
 	/* _decomp() */
 	if (segm == 0xb39) {

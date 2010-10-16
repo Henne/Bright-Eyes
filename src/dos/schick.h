@@ -43,12 +43,12 @@ extern void schick_read(unsigned, unsigned char*, unsigned short);
 extern void schick_write(unsigned, unsigned char*, unsigned short);
 
 extern void schick_seek(unsigned, unsigned, unsigned);
-extern int schick_callf(unsigned, unsigned, unsigned, unsigned);
+extern int schick_callf(unsigned, unsigned, unsigned);
 extern void schick_jmpf(unsigned, unsigned, unsigned);
 extern void schick_ret();
 extern void schick_calln16(unsigned);
 
-extern int schick_farcall_gen105(unsigned, unsigned, unsigned, unsigned);
+extern int schick_farcall_gen105(unsigned, unsigned, unsigned);
 
 extern void schick_status_init();
 extern void schick_status_exit();
