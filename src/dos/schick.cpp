@@ -831,8 +831,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x44aa) return 0;
-		/* Leaf Function - far only */
-		if (offs == 0x4559) return 0;
+		if (offs == 0x4559) {
+
+			reg_ax = can_merge_group();
+			D1_INFO("can_merge_group() = %d\n", (short)reg_ax);
+
+			return 1;
+		}
 		if (offs == 0x45db) {
 			short val = CPU_Pop16();
 			CPU_Push16(val);

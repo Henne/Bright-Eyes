@@ -1,8 +1,8 @@
-#include <mem.h>
+#include "mem.h"
 #include "../schick.h"
 
 /*
-	 13/140 Functions complete
+	 14/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -22,6 +22,46 @@ unsigned short mod_timer(short val) {
 
 	return 0;
 }
+
+short can_merge_group() {
+	short retval = -1;
+	char cur_heroes;
+	short i;
+
+	cur_heroes = real_readb(datseg, (short)real_readb(datseg, 0x2d35) + 0x2d36);
+	if (cur_heroes == real_readb(datseg, 0x2d3c))
+		return retval;
+
+	for (i = 0; i < 6; i++) {
+		if (i == (char)real_readb(datseg, 0x2d35))
+			continue;
+		if (0 == real_readb(datseg, i + 0x2d36))
+			continue;
+		/* check XTarget */
+		if (real_readw(datseg, i * 2 + 0x2d48) != real_readw(datseg, 0x2d44))
+			continue;
+		/* check YTarget */
+		if (real_readw(datseg, i * 2 + 0x2d54) != real_readw(datseg, 0x2d46))
+			continue;
+		/* check Location */
+		if (real_readb(datseg, 0x2d61) != real_readb(datseg, 0x2d60))
+			continue;
+		/* check currentTown */
+		if (real_readb(datseg, 0x2d68) != real_readb(datseg, 0x2d67))
+			continue;
+		/* check DungeonIndex */
+		if (real_readb(datseg, 0x2d6f) != real_readb(datseg, 0x2d6e))
+			continue;
+		/* check DungeonLevel */
+		if (real_readb(datseg, 0x2d76) != real_readb(datseg, 0x2d75))
+			continue;
+
+		retval = i;
+	}
+
+	return retval;
+}
+
 unsigned short div16(unsigned char val) {
 	return val >> 4;
 }

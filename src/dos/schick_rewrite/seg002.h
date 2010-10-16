@@ -1,6 +1,7 @@
 extern unsigned int get_readlength2(signed short index);
 extern void set_to_ff();
 extern unsigned short mod_timer(short val);
+extern short can_merge_group();
 extern unsigned short div16(unsigned char val);
 extern unsigned short check_hero(Bit8u* hero);
 extern void add_hero_ae(Bit8u* hero, short ae);
