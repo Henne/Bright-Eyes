@@ -2,8 +2,10 @@
 
 #include "../schick.h"
 
+#include "seg007.h"
+
 /*
-	 14/140 Functions complete
+	 15/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -169,6 +171,35 @@ void add_hero_ae(Bit8u* hero, short ae) {
 
 	real_writew(datseg, 0xc3cb, tmp);
 }
+
+/**
+	test_attrib - make an attribute test
+
+	A test is positive if the return value is greater than zero.
+*/
+short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
+
+	short si = random_schick(20);
+	short tmp;
+
+	D1_INFO("Eigenschaftsprobe %s auf %s %+d: W20 = %d",
+		(char*)(hero+0x10), names_attrib[attrib], bonus, si);
+
+	if (si == 20)
+		return -99;
+
+	si += bonus;
+
+	tmp = host_readb(hero + attrib*3 + 0x35);
+	tmp += host_readb(hero + attrib*3 + 0x36);
+	tmp -= si + 1;
+
+	D1_INFO(" -> %s mit %d\n",
+		tmp > 0 ? "bestanden" : "nicht bestanden", tmp);
+
+	return tmp;
+}
+
 /**
 	get_party_money - summs up the money of the current party
 */

@@ -893,20 +893,19 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x4adc) return 0;
 		/* Wunder TSA heilt ganze Gruppe 6x */
 		if (offs == 0x4df3) return 0;
-		if (offs == 0x4ff9) { // Eigenschaftsprobe
-			unsigned p0 = CPU_Pop32();
-			unsigned p1 = CPU_Pop16();
-			unsigned p2 = CPU_Pop16();
-			CPU_Push16(p2);
-			CPU_Push16(p1);
-			CPU_Push32(p0);
+		if (offs == 0x4ff9) {
+			/* Eigenschaftsprobe */
+			RealPt hero = CPU_Pop32();
+			unsigned attrib = CPU_Pop16();
+			signed bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(attrib);
+			CPU_Push32(hero);
 
-			signed p2_r = p2 & 0xFF;
-			D1_INFO("Eigenschaftsprobe %s auf %s %+d: ",
-					schick_getCharname(p0),
-					arr_eig[p1], p2_r);
-			supress_rnd=1;
-			return 0;
+			reg_ax = test_attrib(MemBase + Real2Phys(hero),
+					attrib, bonus);
+
+			return 1;
 		}
 		if (offs == 0x504e) { // Talent-/Zauber-Probe
 			unsigned p0 = CPU_Pop32();
