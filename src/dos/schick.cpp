@@ -1397,7 +1397,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			signed char p2_r = p2 & 0xFF;
 			D1_INFO("Talentprobe %s: %s %+d ",
 						schick_getCharname(p0),
-						names_attrib[p1], p2_r);
+						arr_tal[p1], p2_r);
 			return 0;
 		}
 		if (offs == 0x0025) return 0;
