@@ -31,6 +31,7 @@ static inline void D1_TRAC(...) { }
 static inline void D1_GFX(...) { }
 #endif
 
+extern const char *arr_eig[];
 
 extern unsigned short datseg;
 

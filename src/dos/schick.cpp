@@ -490,7 +490,7 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 			handle, pos, type, file);
 }
 
-static const char* arr_eig[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
+const char* arr_eig[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
 static const char* arr_tal[] = {
     "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Äxte", "Speere", "Zweihänder", "Schusswaffen", "Wurfwaffen",
     "Akrobatik", "Klettern", "Körperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
