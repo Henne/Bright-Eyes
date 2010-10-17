@@ -490,7 +490,9 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 			handle, pos, type, file);
 }
 
-const char* arr_eig[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
+const char* names_attrib[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
+#define arr_eig names_attrib
+
 static const char* arr_tal[] = {
     "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Äxte", "Speere", "Zweihänder", "Schusswaffen", "Wurfwaffen",
     "Akrobatik", "Klettern", "Körperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
@@ -919,8 +921,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			CPU_Push32(p0);
 			signed char p4_r = p4 & 0xFF;
 			D1_INFO("->(%s/%s/%s) %+d:",
-					arr_eig[p1], arr_eig[p2],
-					arr_eig[p3], p4_r);
+					names_attrib[p1], names_attrib[p2],
+					names_attrib[p3], p4_r);
 			supress_rnd=3;
 			return 0;
 		}
@@ -1391,7 +1393,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			signed char p2_r = p2 & 0xFF;
 			D1_INFO("Talentprobe %s: %s %+d ",
 						schick_getCharname(p0),
-						arr_tal[p1], p2_r);
+						names_attrib[p1], p2_r);
 			return 0;
 		}
 		if (offs == 0x0025) return 0;
