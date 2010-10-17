@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #define SCHICK_INFO
 //#define SCHICK_LOG
 #define SCHICK_TRAC
