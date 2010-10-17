@@ -804,6 +804,9 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x2e26) return 0;
 		/* Wunder Rondra: Starker Schwertarm  Leaf Function */
 		if (offs == 0x2e69) return 0;
+		/* Leaf Function - near&far */
+		if (offs == 0x2f7a) return 0;
+		if (offs == 0x3071) return 0;
 		if (offs == 0x3230) return 0;
 		if (offs == 0x37c4) return 0;
 		if (offs == 0x3b4f) return 0;
@@ -994,6 +997,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		/* Krakenangriff */
 		if (offs == 0x5615) return 0;
 		if (offs == 0x5667) return 0;
+		/* Tür einschlagen */
+		if (offs == 0x56d6) return 0;
 		if (offs == 0x5799) {
 
 			reg_ax = count_heroes_available_in_group();
