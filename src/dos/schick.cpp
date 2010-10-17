@@ -490,8 +490,8 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 			handle, pos, type, file);
 }
 
-const char* names_attrib[] = {"MU", "KL", "CH", "FF", "GE", "IN", "KK"};
-#define arr_eig names_attrib
+const char* names_attrib[] = {	"MU", "KL", "CH", "FF", "GE", "IN", "KK",
+				"AG", "HA", "RA", "GG", "TA", "NG", "JZ"};
 
 static const char* arr_tal[] = {
     "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Äxte", "Speere", "Zweihänder", "Schusswaffen", "Wurfwaffen",
