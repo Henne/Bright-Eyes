@@ -5,7 +5,7 @@
 #include "seg007.h"
 
 /*
-	 15/140 Functions complete
+	 16/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -192,6 +192,54 @@ short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
 
 	tmp = host_readb(hero + attrib*3 + 0x35);
 	tmp += host_readb(hero + attrib*3 + 0x36);
+	tmp -= si + 1;
+
+	D1_INFO(" -> %s mit %d\n",
+		tmp > 0 ? "bestanden" : "nicht bestanden", tmp);
+
+	return tmp;
+}
+
+/**
+	test_attrib3 - make three attribute tests
+
+	A test is positive if the return value is greater than zero.
+*/
+short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, short bonus) {
+
+	short si = 0;
+	unsigned short zw = 0;
+	unsigned short i;
+	short tmp;
+
+	D1_INFO("%s -> (%s/%s/%s) %+d: ",
+		(char*)(hero+0x10), names_attrib[attrib1],
+		names_attrib[attrib2], names_attrib[attrib3], bonus);
+
+	for (i = 0; i < 3; i++) {
+		tmp = random_schick(20);
+
+		D1_INFO("%d ", tmp);
+
+		if (tmp == 20) {
+			zw++;
+			if (zw == 2) {
+				D1_INFO(" -> UNGLÜCKLICH! nicht bestanden\n");
+				return -99;
+			}
+		}
+		si += tmp;
+	}
+
+	si += bonus;
+
+	tmp = (char)host_readb(hero + attrib1*3 + 0x35);
+	tmp += (char)host_readb(hero + attrib1*3 + 0x36);
+	tmp += (char)host_readb(hero + attrib2*3 + 0x35);
+	tmp += (char)host_readb(hero + attrib2*3 + 0x36);
+	tmp += (char)host_readb(hero + attrib3*3 + 0x35);
+	tmp += (char)host_readb(hero + attrib3*3 + 0x36);
+
 	tmp -= si + 1;
 
 	D1_INFO(" -> %s mit %d\n",

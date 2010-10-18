@@ -24,8 +24,6 @@ static int gen=0;
 static int fromgame = 0;
 // Is file schick.dat ?
 static int dathandle = 0;
-// Supress this many random()-calls
-static int supress_rnd=0;
 // Segment relocation
 static unsigned short relocation;
 
@@ -908,23 +906,23 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 
 			return 1;
 		}
-		if (offs == 0x504e) { // Talent-/Zauber-Probe
-			unsigned p0 = CPU_Pop32();
-			unsigned p1 = CPU_Pop16();
-			unsigned p2 = CPU_Pop16();
-			unsigned p3 = CPU_Pop16();
-			unsigned p4 = CPU_Pop16();
-			CPU_Push16(p4);
-			CPU_Push16(p3);
-			CPU_Push16(p2);
-			CPU_Push16(p1);
-			CPU_Push32(p0);
-			signed char p4_r = p4 & 0xFF;
-			D1_INFO("->(%s/%s/%s) %+d:",
-					names_attrib[p1], names_attrib[p2],
-					names_attrib[p3], p4_r);
-			supress_rnd=3;
-			return 0;
+		if (offs == 0x504e) {
+			/* Talent-/Zauber-Probe */
+			unsigned hero = CPU_Pop32();
+			unsigned short attrib1 = CPU_Pop16();
+			unsigned short attrib2 = CPU_Pop16();
+			unsigned short attrib3 = CPU_Pop16();
+			signed short bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(attrib3);
+			CPU_Push16(attrib2);
+			CPU_Push16(attrib1);
+			CPU_Push32(hero);
+
+			reg_ax = test_attrib3(MemBase + Real2Phys(hero),
+					attrib1, attrib2, attrib3, bonus);
+
+			return 1;
 		}
 		if (offs == 0x515e) return 0;
 		if (offs == 0x51c2) {
@@ -1052,14 +1050,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 
 			reg_ax = random_schick(p1);
 
-			if (supress_rnd == 0)
-				D1_INFO("random(%d) = %d\n", p1, reg_ax);
-			else {
-				if (supress_rnd-- == 1)
-					D1_INFO(" %d\n", reg_ax);
-				else
-					D1_INFO(" %d", reg_ax);
-			}
+			D1_INFO("random(%d) = %d\n", p1, reg_ax);
 
 			return 1;
 		}
