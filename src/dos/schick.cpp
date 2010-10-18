@@ -24,8 +24,6 @@ static int gen=0;
 static int fromgame = 0;
 // Is file schick.dat ?
 static int dathandle = 0;
-// Was an interesting function called?
-static int call=0;
 // Supress this many random()-calls
 static int supress_rnd=0;
 // Segment relocation
@@ -1052,12 +1050,18 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			unsigned p1 = CPU_Pop16();
 			CPU_Push16(p1);
 
+			reg_ax = random_schick(p1);
+
 			if (supress_rnd == 0)
-				D1_INFO("random(%d) =", p1);
-			else
-				supress_rnd--;
-			call++;
-			return 0;
+				D1_INFO("random(%d) = %d\n", p1, reg_ax);
+			else {
+				if (supress_rnd-- == 1)
+					D1_INFO(" %d\n", reg_ax);
+				else
+					D1_INFO(" %d", reg_ax);
+			}
+
+			return 1;
 		}
 		if (offs == 0x007a) {
 			unsigned n = CPU_Pop16();
@@ -1857,15 +1861,11 @@ void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
     }
 }
 
-// Intercept RETurn and print the return value. Simple hack.
-// Works only correct for Routines containing no unintercepted CALLs
+// Intercept RETurn.
 void schick_ret() {
 
-    if (!running || !schick || !(dbg_mode & 2) || !call) return;
-
-    if (supress_rnd) D1_INFO(" %d", reg_ax);
-    else             D1_INFO(" %d\n", reg_ax);
-    call--;
+	if (!running || !schick || !(dbg_mode & 2))
+		return;
 }
 
 // Intercept near CALLs, 16-Bit
