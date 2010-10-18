@@ -32,6 +32,7 @@ static inline void D1_GFX(...) { }
 #endif
 
 extern const char* names_attrib[];
+extern const char* names_skill[];
 
 extern unsigned short datseg;
 

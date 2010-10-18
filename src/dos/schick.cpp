@@ -493,7 +493,7 @@ void schick_seek(unsigned handle, unsigned pos, unsigned type)
 const char* names_attrib[] = {	"MU", "KL", "CH", "FF", "GE", "IN", "KK",
 				"AG", "HA", "RA", "GG", "TA", "NG", "JZ"};
 
-static const char* arr_tal[] = {
+const char* names_skill[] = {
     "Waffenlos", "Hiebwaffen", "Stichwaffen", "Schwerter", "Äxte", "Speere", "Zweihänder", "Schusswaffen", "Wurfwaffen",
     "Akrobatik", "Klettern", "Körperbeh.", "Reiten", "Schleichen", "Schwimmen", "Selbstbeh.", "Tanzen", "Verstecken", "Zechen",
     "Bekehren", "Betören", "Feilschen", "Gassenwissen", "Lügen", "Menschenkenntnis", "Schätzen",
@@ -1397,7 +1397,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			signed char p2_r = p2 & 0xFF;
 			D1_INFO("Talentprobe %s: %s %+d ",
 						schick_getCharname(p0),
-						arr_tal[p1], p2_r);
+						names_skill[p1], p2_r);
 			return 0;
 		}
 		if (offs == 0x0025) return 0;
@@ -1902,7 +1902,7 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(pIP);
 	signed char p2_r = p2 & 0xFF;
 	D1_INFO("Talentprobe %s: %s %+d ",
-	       schick_getCharname(p0), arr_tal[p1], p2_r);
+	       schick_getCharname(p0), names_skill[p1], p2_r);
 	return;
     }
     if (offs == 0x0E1F) { // Zauberprobe
