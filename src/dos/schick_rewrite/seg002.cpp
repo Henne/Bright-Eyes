@@ -205,7 +205,7 @@ short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
 
 	A test is positive if the return value is greater than zero.
 */
-short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, short bonus) {
+short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, char bonus) {
 
 	short si = 0;
 	unsigned short zw = 0;
