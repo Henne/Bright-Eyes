@@ -5,7 +5,7 @@
 #include "seg007.h"
 
 /*
-	 16/140 Functions complete
+	 17/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -275,6 +275,36 @@ unsigned int get_party_money() {
 	add_hero_ap - add AP
 */
 void add_hero_ap(Bit8u *hero, int ap) {
+	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
+}
+/**
+	add_hero_ap_all - add AP
+
+	add AP to every hero
+*/
+void add_hero_ap_all(Bit8u *hero, int ap) {
+	Bit8u *hero_i;
+	int i;
+
+	if (ap < 0)
+		return;
+
+	for (hero_i = hero, i = 0; i < 6; hero_i += 0x6da, i++) {
+		/* Check class */
+		if (host_readb(hero_i + 0x21) == 0)
+			continue;
+		/* Check in group */
+		if (host_readw(hero_i + 0x87) != real_readd(datseg, 0x2d35))
+			continue;
+		/* Check if dead */
+		if (host_readb(hero_i + 0xaa) & 1)
+			continue;
+
+		D1_INFO("%s erhält %d AP\n",(char*)(hero+0x10), ap);
+
+		add_hero_ap(hero_i, ap);
+	}
+
 	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
 }
 
