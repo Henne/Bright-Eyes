@@ -1881,16 +1881,6 @@ void schick_calln16(unsigned un1) {
     unsigned short segm = SegValue(cs)-relocation;
     unsigned short offs = reg_ip+(signed short)un1;
 
-    if (offs == 0x002B) { // Random-Funktion
-	unsigned pIP= CPU_Pop32();
-	unsigned p1 = CPU_Pop16();
-	CPU_Push16(p1);
-	CPU_Push32(pIP);
-	if (supress_rnd == 0) D1_INFO("random(%d) =", p1);
-	else supress_rnd--;
-	call++;
-	return;
-    }
     if (offs == 0x040F) { // Talentprobe
 	unsigned pIP= CPU_Pop32();
 	unsigned p0 = CPU_Pop32();
