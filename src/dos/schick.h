@@ -33,6 +33,7 @@ static inline void D1_GFX(...) { }
 
 extern const char* names_attrib[];
 extern const char* names_skill[];
+extern const char* arr_zaub[];
 
 extern unsigned short datseg;
 
