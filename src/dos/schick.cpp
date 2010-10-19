@@ -8,6 +8,7 @@
 #include "schick_rewrite/seg002.h"
 #include "schick_rewrite/seg003.h"
 #include "schick_rewrite/seg007.h"
+#include "schick_rewrite/seg098.h"
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
@@ -1377,11 +1378,88 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		}
 		return 0;
 	}
+	/* stub098 */
 	if (segm == 0x1449) {
 		if (offs == 0x0020) {
-			D1_LOG("Menu: Magie Anwenden\n");
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			D1_INFO("Menu: Magie Anwenden %s\n",
+					schick_getCharname(hero));
+
 			return 0;
 		}
+		if (offs == 0x0025) {
+			/* Zauberprobe */
+			RealPt hero = CPU_Pop32();
+			unsigned short spell = CPU_Pop16();
+			signed short bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(spell);
+			CPU_Push32(hero);
+
+			reg_ax = test_spell(MemBase + Real2Phys(hero), spell, bonus);
+			D1_INFO("Zauberprobe : %s %+d ", arr_zaub[spell], (char)bonus);
+			return 1;
+		}
+		if (offs == 0x002a) {
+			/* Zauber auswählen */
+			RealPt hero = CPU_Pop32();
+			unsigned short a1 = CPU_Pop16();
+			unsigned short a2 = CPU_Pop16();
+			CPU_Push16(a2);
+			CPU_Push16(a1);
+			CPU_Push32(hero);
+
+			D1_INFO("Menu: Zauber auswählen(%s, %d, %d)\n",
+				schick_getCharname(hero), a1, a2);
+
+			return 0;
+		}
+		if (offs == 0x002f) {
+			D1_INFO("Seg098:0x%04x()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0039) {
+			D1_INFO("Seg098:0x%04x()\n", offs);
+			return 0;
+		}
+		if (offs == 0x003e) {
+			/* Untested */
+			D1_INFO("seg098_3e()\n");
+			/*reg_ax = seg098_3e(); */
+			return 0;
+		}
+		if (offs == 0x0048) {
+			unsigned short spell = CPU_Pop16();
+			unsigned short half_cost = CPU_Pop16();
+			CPU_Push16(half_cost);
+			CPU_Push16(spell);
+
+			reg_ax = get_spell_cost(spell, half_cost);
+
+			D1_INFO("get_spell_cost(%s, %d) = %d\n",
+				arr_zaub[spell], half_cost, (short)reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x0052) {
+			unsigned short spell = CPU_Pop16();
+			signed short bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(spell);
+
+			D1_INFO("Zauberprobe für alle\n");
+			reg_ax = test_spell_group(spell, bonus);
+
+			return 1;
+		}
+		if (offs == 0x0057) {
+			D1_INFO("Menu: Zauberer auswählen\n", offs);
+			return 0;
+		}
+		D1_ERR("Uncatched call to Segment seg098:0x%04x\n", offs);
+		exit(1);
 		return 0;
 	}
 	if (segm == 0x145e) return 0;
