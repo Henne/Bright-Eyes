@@ -2015,7 +2015,7 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(hero);
 	CPU_Push32(pIP);
 
-	D1_INFO("Talentprobe near : %s %+d ", names_skill[skill], bonus);
+	D1_INFO("Talentprobe near : %s %+d ", names_skill[skill], (char)bonus);
 	return;
     }
     if (offs == 0x0E1F) { // Zauberprobe
