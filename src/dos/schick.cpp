@@ -779,10 +779,15 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			D1_INFO("???(%d, %d, %d, %d);\n", v1, v2, v3, v4);
-			D1_INFO("ds:299c = %d\n", real_readw(ds, 0x299c));
-			D1_INFO("ds:299e = %d\n", real_readw(ds, 0x299e));
-			return 0;
+			D1_LOG("cmp_smth(%d, %d, %d, %d);\n", v1, v2, v3, v4);
+			D1_LOG("ds:299c = %d\n", real_readw(ds, 0x299c));
+			D1_LOG("ds:299e = %d\n", real_readw(ds, 0x299e));
+
+			short retval = cmp_smth(v1, v2, v3, v4);
+			D1_LOG("Should return %d\n", retval);
+			reg_ax = retval;
+
+			return 1;
 		}
 		if (offs == 0x16fd) return 0;
 		if (offs == 0x1802) return 0;

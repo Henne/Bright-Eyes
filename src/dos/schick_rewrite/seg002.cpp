@@ -5,11 +5,25 @@
 #include "seg007.h"
 
 /*
-	 17/140 Functions complete
+	 18/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : real_readd(datseg, 0xbce7);
+}
+
+short cmp_smth(unsigned short v1, unsigned short v2,
+				unsigned short v3, unsigned short v4) {
+	unsigned short d;
+	unsigned short b;
+
+	d = real_readw(datseg, 0x299c);
+	b = real_readw(datseg, 0x299e);
+
+	if ((d < v1) || (d > v3) || (b < v2) || (b > v4))
+		return 0;
+
+	return 1;
 }
 
 void set_to_ff() {
