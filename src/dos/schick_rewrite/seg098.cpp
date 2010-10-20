@@ -102,7 +102,7 @@ short test_spell(Bit8u *hero, unsigned short spell, char bonus) {
 
 	bonus -= (char)host_readb(hero + spell + 0x13d);
 
-	D1_INFO("Zauberprobe : %s %+d ", arr_zaub[spell], (char)bonus);
+	D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], (char)bonus);
 
 	retval = test_attrib3(hero, host_readb(spell_desc+1),
 		host_readb(spell_desc+2), host_readb(spell_desc+3), bonus);

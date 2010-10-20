@@ -499,7 +499,7 @@ const char* names_skill[] = {
     "Abrichten", "Fahrzeuge", "Falschspiel", "Heilen Gift", "Heilen Krankheit", "Heilen Wunden", "Musizieren", "Schlösser", "Taschendieb",
     "Gefahrensinn", "Sinnenschärfe"
 };
-const char* arr_zaub[] = {
+const char* names_spell[] = {
     "DUMMY",
     "Beherrschung brechen", "Destructibo", "Gardianum", "Illusionen zerstören", "Verwandlung beenden", // Antimagie
     "Band & Fessel", "Bannbaladin", "Böser Blick", "Große Gier", "Große Verwirrung", "Herr der Tiere", "Horriphobus", "Mag. Raub", "Respondami", "Sanftmut", "Somnigravis", "Zwingtanz", // Beherrschung
@@ -1429,7 +1429,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			CPU_Push32(hero);
 
 			reg_ax = test_spell(MemBase + Real2Phys(hero), spell, bonus);
-			D1_INFO("Zauberprobe : %s %+d ", arr_zaub[spell], (char)bonus);
+			D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], (char)bonus);
 			return 1;
 		}
 		if (offs == 0x002a) {
@@ -1469,7 +1469,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			reg_ax = get_spell_cost(spell, half_cost);
 
 			D1_INFO("get_spell_cost(%s, %d) = %d\n",
-				arr_zaub[spell], half_cost, (short)reg_ax);
+				names_spell[spell], half_cost, (short)reg_ax);
 
 			return 1;
 		}
@@ -1993,7 +1993,7 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(hero);
 	CPU_Push32(pIP);
 
-	D1_INFO("Zauberprobe near: %s %+d ", arr_zaub[spell], bonus);
+	D1_INFO("Zauberprobe near: %s %+d ", names_spell[spell], (char)bonus);
 	return;
     }
     if (offs == 0x0386) { // Unbekannte Probefunktion
