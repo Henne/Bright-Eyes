@@ -1555,6 +1555,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		return 0;
 	}
 
+	/* Reise Skjal-Orvil */
+	if (segm == 0x14b4) return 0;
+	/* Reise Skjal-Orvil */
+	if (segm == 0x14c2) return 0;
+	/* Reise Orvil-Rovik "Wölfe" */
+	if (segm == 0x14cb) return 0;
 	if (segm == 0x14d1) return 0;
 	if (segm == 0x14d8) return 0;
 	if (segm == 0x14e0) return 0;
