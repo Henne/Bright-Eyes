@@ -1100,7 +1100,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 
 			reg_ax = is_in_byte_array((char)val, MemBase+Real2Phys(p));
 			D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
-				val, RealSeg(p), RealOff(p), reg_ax);
+				(char)val, RealSeg(p), RealOff(p), reg_ax);
 
 			return 1;
 		}
