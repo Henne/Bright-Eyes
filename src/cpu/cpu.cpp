@@ -997,7 +997,6 @@ void CPU_IRET(bool use32,Bitu oldeip) {
 
 
 void CPU_JMP(bool use32,Bitu selector,Bitu offset,Bitu oldeip) {
-	schick_jmpf(selector,offset,oldeip);
 	if (!cpu.pmode || (reg_flags & FLAG_VM)) {
 		if (!use32) {
 			reg_eip=offset&0xffff;

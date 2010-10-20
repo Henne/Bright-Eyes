@@ -1919,26 +1919,6 @@ int schick_callf(unsigned selector, unsigned offs, unsigned ss)
 	return ret;
 }
 
-// Intercept far JMPs (both 32 and 16 bit)
-void schick_jmpf(unsigned selector,unsigned offs,unsigned oldeip) {
-
-    if (!running || !schick || !(dbg_mode & 2) ) return;
-
-    if (offs == 0x0E1F) { // Zauberprobe
-	unsigned pIP= CPU_Pop32();
-	unsigned p0 = CPU_Pop32();
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	CPU_Push32(p0);
-	CPU_Push32(pIP);
-	signed char p2_r = p2 & 0xFF;
-	D1_INFO("Zauberprobe %s: %s %+d ", schick_getCharname(p0), arr_zaub[p1], p2_r);
-	return;
-    }
-}
-
 // Intercept RETurn.
 void schick_ret() {
 
