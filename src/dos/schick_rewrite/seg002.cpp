@@ -5,7 +5,7 @@
 #include "seg007.h"
 
 /*
-	 18/140 Functions complete
+	 19/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -291,35 +291,71 @@ unsigned int get_party_money() {
 void add_hero_ap(Bit8u *hero, int ap) {
 	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
 }
+
 /**
 	add_hero_ap_all - add AP
 
 	add AP to every hero
 */
-void add_hero_ap_all(Bit8u *hero, int ap) {
+void add_hero_ap_all(short ap) {
 	Bit8u *hero_i;
 	int i;
 
 	if (ap < 0)
 		return;
 
-	for (hero_i = hero, i = 0; i < 6; hero_i += 0x6da, i++) {
+	hero_i = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
+	for (i = 0; i <= 6; hero_i += 0x6da, i++) {
 		/* Check class */
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check in group */
-		if (host_readw(hero_i + 0x87) != real_readd(datseg, 0x2d35))
+		if (host_readb(hero_i + 0x87) != real_readb(datseg, 0x2d35))
 			continue;
 		/* Check if dead */
 		if (host_readb(hero_i + 0xaa) & 1)
 			continue;
 
-		D1_INFO("%s erhält %d AP\n",(char*)(hero+0x10), ap);
+		D1_INFO("%s erhält %d AP\n",(char*)(hero_i+0x10), ap);
 
 		add_hero_ap(hero_i, ap);
 	}
+}
 
-	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
+/**
+	sub_hero_ap_all - sub AP
+
+	sub AP from every hero
+*/
+void sub_hero_ap_all(short ap) {
+	Bit8u *hero_i;
+	int i;
+
+	if (ap < 0)
+		return;
+
+	hero_i = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
+	for (i = 0; i <= 6; hero_i += 0x6da, i++) {
+		/* Check class */
+		if (host_readb(hero_i + 0x21) == 0)
+			continue;
+		/* Check in group */
+		if (host_readb(hero_i + 0x87) != real_readb(datseg, 0x2d35))
+			continue;
+		/* Check if dead */
+		if (host_readb(hero_i + 0xaa) & 1)
+			continue;
+
+		if (ap <= host_readd(hero_i+0x28)) {
+			ap = -ap;
+			D1_INFO("%s erhält %+d AP\n",(char*)(hero_i+0x10), ap);
+			add_hero_ap(hero_i, ap);
+		} else {
+			D1_INFO("%s wird auf 0 AP gesetzt\n",(char*)(hero_i+0x10));
+			host_writed(hero_i+0x28, 0);
+		}
+	}
+
 }
 
 /**

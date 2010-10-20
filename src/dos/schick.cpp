@@ -982,13 +982,20 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x53e8) {
-			RealPt hero = CPU_Pop32();
 			signed short ap = CPU_Pop16();
 			CPU_Push16(ap);
-			CPU_Push32(hero);
 
-			D1_INFO("add_hero_ap_all()\n");
-			add_hero_ap_all(MemBase + Real2Phys(hero), ap);
+			D1_INFO("add_hero_ap_all(%+d)\n", ap);
+			add_hero_ap_all(ap);
+
+			return 1;
+		}
+		if (offs == 0x5452) {
+			signed short ap = CPU_Pop16();
+			CPU_Push16(ap);
+
+			D1_INFO("sub_hero_ap_all(%+d)\n", ap);
+			sub_hero_ap_all(ap);
 
 			return 1;
 		}
