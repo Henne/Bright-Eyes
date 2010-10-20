@@ -5,7 +5,7 @@
 #include "seg007.h"
 
 /*
-	 19/140 Functions complete
+	 20/140 Functions complete
 */
 
 unsigned int get_readlength2(signed short index) {
@@ -384,6 +384,28 @@ int get_item_pos(Bit8u *hero, unsigned short item) {
 	}
 	return -1;
 }
+
+short get_first_hero_with_item(unsigned short item) {
+	Bit8u *hero_i = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
+	int i,j;
+
+	for (i = 0; i <= 6; i++ , hero_i += 0x6da) {
+		/* Check class */
+		if (host_readb(hero_i+0x21) == 0)
+			continue;
+		/* Check if in current group */
+		if (host_readb(hero_i+0x87) != real_readb(datseg, 0x2d35))
+			continue;
+		/* Search inventar */
+		for (j = 0; j < 17; j++)
+			if (host_readw(hero_i + j * 14 + 0x196) == item)
+				return i;
+	}
+
+	return -1;
+};
+
+
 /**
 	count_heroes_available_in_group
 */

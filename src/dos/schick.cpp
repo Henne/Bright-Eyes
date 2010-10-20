@@ -1024,8 +1024,16 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 						item, (short)reg_ax);
 			return 1;
 		}
-		/* Leaf Function - far only */
-		if (offs == 0x554c) return 0;
+		if (offs == 0x554c) {
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+
+			reg_ax = get_first_hero_with_item(item);
+			D1_INFO("get_first_hero_with_item(%d) = %d\n",
+				item, reg_ax);
+
+			return 1;
+		}
 		/* Leaf Function - near only */
 		if (offs == 0x55b1) return 0;
 		/* Krakenangriff */

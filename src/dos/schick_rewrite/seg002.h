@@ -14,4 +14,5 @@ extern void add_hero_ap_all(short ap);
 extern void sub_hero_ap_all(short ap);
 extern unsigned short get_hero_index(Bit8u* hero);
 extern int get_item_pos(Bit8u* hero, unsigned short item);
+extern short get_first_hero_with_item(unsigned short item);
 extern unsigned short count_heroes_available_in_group();
