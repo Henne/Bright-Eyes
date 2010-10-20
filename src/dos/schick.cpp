@@ -841,7 +841,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x4559) {
 
 			reg_ax = can_merge_group();
-			D1_INFO("can_merge_group() = %d\n", (short)reg_ax);
+			D1_LOG("can_merge_group() = %d\n", (short)reg_ax);
 
 			return 1;
 		}
