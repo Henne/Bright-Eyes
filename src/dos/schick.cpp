@@ -1288,7 +1288,16 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 	/* Spielstand und Zeit */
 	if (segm == 0x12ff) return 0;
 	if (segm == 0x1303) return 0;
-	if (segm == 0x1309) return 0;
+	if (segm == 0x1309) {
+		if (offs == 0x0020) {
+			unsigned short v1 = CPU_Pop16();
+			CPU_Push16(v1);
+
+			D1_INFO("Kampf 0x%02x\n", v1);
+			return 0;
+		}
+		return 0;
+	}
 	if (segm == 0x130f) return 0;
 	/* Kampf */
 	if (segm == 0x1312) return 0;
@@ -1532,7 +1541,19 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x1491) return 0;
 	/* Essen */
 	if (segm == 0x1498) return 0;
-	if (segm == 0x149b) return 0;
+	/* Kampf Orvil-Rovik Wölfe */
+	if (segm == 0x149b) {
+		if (offs == 0x0020) {
+			unsigned short kampf = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(kampf);
+
+			D1_INFO("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
+			return 0;
+		}
+		return 0;
+	}
 
 	if (segm == 0x14d1) return 0;
 	if (segm == 0x14d8) return 0;
