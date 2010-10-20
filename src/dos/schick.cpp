@@ -930,15 +930,31 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			unsigned int money;
 
 			money = get_party_money();
-			D1_LOG("get_party_money() = %d\n", money);
+			D1_INFO("Aktuelles Gruppenvermögen = %dD %dS %dH\n",
+				money / 100, (money % 100) / 10, money % 10);
 
 			reg_ax = money & 0xffff;
 			reg_dx = (money>>16) & 0xffff;
 
 			return 1;
 		}
-		if (offs == 0x5221) return 0;
-		if (offs == 0x5331) return 0;
+		if (offs == 0x5221) {
+			unsigned int money = CPU_Pop32();
+			CPU_Push32(money);
+
+			D1_INFO("Setze Gruppenvermögen = %dD %dS %dH\n",
+				money / 100, (money % 100) / 10, money % 10);
+
+			return 0;
+		}
+		if (offs == 0x5331) {
+			unsigned int money = CPU_Pop32();
+			CPU_Push32(money);
+
+			D1_INFO("Ändere Gruppenvermögen = %dD %dS %dH\n",
+				money / 100, (money % 100) / 10, money % 10);
+			return 0;
+		}
 		if (offs == 0x5349) {
 			RealPt hero = CPU_Pop32();
 			int ap = CPU_Pop32();
