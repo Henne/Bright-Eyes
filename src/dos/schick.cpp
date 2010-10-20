@@ -1005,6 +1005,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x5667) return 0;
 		/* Tür einschlagen */
 		if (offs == 0x56d6) return 0;
+		/* Alle Tot */
+		if (offs == 0x573e) return 0;
 		if (offs == 0x5799) {
 
 			reg_ax = count_heroes_available_in_group();
@@ -1462,6 +1464,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		exit(1);
 		return 0;
 	}
+	if (segm == 0x144f) return 0;
 	if (segm == 0x145e) return 0;
 	if (segm == 0x1467) return 0;
 	/* Kampf Gegner zaubert */
