@@ -28,6 +28,8 @@
 #include "fpu.h"
 #include "paging.h"
 
+#include "../dos/schick.h"
+
 #if C_DEBUG
 #include "debug.h"
 #endif
