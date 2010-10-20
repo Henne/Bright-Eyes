@@ -1960,31 +1960,25 @@ void schick_calln16(unsigned un1) {
     unsigned short offs = reg_ip+(signed short)un1;
 
     if (offs == 0x040F) { // Talentprobe
-	unsigned pIP= CPU_Pop32();
-	unsigned p0 = CPU_Pop32();
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	CPU_Push32(p0);
-	CPU_Push32(pIP);
-	signed char p2_r = p2 & 0xFF;
-	D1_INFO("Talentprobe %s: %s %+d ",
-	       schick_getCharname(p0), names_skill[p1], p2_r);
+	unsigned hero = CPU_Pop32();
+	unsigned skill = CPU_Pop16();
+	signed bonus = CPU_Pop16();
+	CPU_Push16(bonus);
+	CPU_Push16(skill);
+	CPU_Push32(hero);
+
+	D1_INFO("Talentprobe near : %s %+d ", names_skill[skill], bonus);
 	return;
     }
     if (offs == 0x0E1F) { // Zauberprobe
-	unsigned pIP= CPU_Pop32();
-	unsigned p0 = CPU_Pop32();
-	unsigned p1 = CPU_Pop16();
-	unsigned p2 = CPU_Pop16();
-	CPU_Push16(p2);
-	CPU_Push16(p1);
-	CPU_Push32(p0);
-	CPU_Push32(pIP);
-	signed char p2_r = p2 & 0xFF;
-	D1_INFO("Zauberprobe %s: %s %+d ",
-	       schick_getCharname(p0), arr_zaub[p1], p2_r);
+	unsigned hero = CPU_Pop32();
+	unsigned spell = CPU_Pop16();
+	signed bonus = CPU_Pop16();
+	CPU_Push16(bonus);
+	CPU_Push16(spell);
+	CPU_Push32(hero);
+
+	D1_INFO("Zauberprobe near: %s %+d ", arr_zaub[spell], bonus);
 	return;
     }
     if (offs == 0x0386) { // Unbekannte Probefunktion
