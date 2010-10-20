@@ -1940,23 +1940,27 @@ void schick_calln16(unsigned un1) {
     unsigned short offs = reg_ip+(signed short)un1;
 
     if (offs == 0x040F) { // Talentprobe
+	unsigned pIP = CPU_Pop32();
 	unsigned hero = CPU_Pop32();
 	unsigned skill = CPU_Pop16();
 	signed bonus = CPU_Pop16();
 	CPU_Push16(bonus);
 	CPU_Push16(skill);
 	CPU_Push32(hero);
+	CPU_Push32(pIP);
 
 	D1_INFO("Talentprobe near : %s %+d ", names_skill[skill], bonus);
 	return;
     }
     if (offs == 0x0E1F) { // Zauberprobe
+	unsigned pIP = CPU_Pop32();
 	unsigned hero = CPU_Pop32();
 	unsigned spell = CPU_Pop16();
 	signed bonus = CPU_Pop16();
 	CPU_Push16(bonus);
 	CPU_Push16(spell);
 	CPU_Push32(hero);
+	CPU_Push32(pIP);
 
 	D1_INFO("Zauberprobe near: %s %+d ", arr_zaub[spell], bonus);
 	return;
