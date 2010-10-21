@@ -12,6 +12,349 @@
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
 
+static int seg002(unsigned short offs) {
+	switch (offs) {
+
+	case 0x0017:
+	case 0x0045:	/* wird bei Musikmenu aufgerufen */
+	case 0x0209:
+	case 0x06fe:
+	case 0x0832:	/* GUI Radio */
+	case 0x0856:	/* Betrunken */
+		return 0;
+	case 0x0c0e: {
+		short index = CPU_Pop16();
+		CPU_Push16(index);
+
+		unsigned int retval = get_readlength2(index);
+		D1_LOG("get_readlength2(%d) = %d\n", index, retval);
+
+		reg_ax = retval & 0xffff;
+		reg_dx = (retval>>16) & 0xffff;
+
+		return 1;
+	}
+	case 0x0c28: {
+		unsigned short index = CPU_Pop16();
+		CPU_Push16(index);
+
+		D1_LOG("ReadDatfile()\n");
+		return 0;
+	}
+	case 0x0c72:
+	case 0x0cb6:
+			return 0;
+	case 0x0d27: {
+		unsigned short index = CPU_Pop16();
+		CPU_Push16(index);
+		D1_LOG("OpenAndSeekDatfile(%u)\n", index);
+		return 0;
+	}
+	case 0x0ed2:
+			return 0;
+	case 0x1634: {
+		/* Leaf Function */
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		unsigned short v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("cmp_smth(%d, %d, %d, %d);\n", v1, v2, v3, v4);
+		D1_LOG("ds:299c = %d\n", real_readw(ds, 0x299c));
+		D1_LOG("ds:299e = %d\n", real_readw(ds, 0x299e));
+
+		short retval = cmp_smth(v1, v2, v3, v4);
+		D1_LOG("Should return %d\n", retval);
+		reg_ax = retval;
+
+		return 1;
+	}
+	case 0x16fd:
+	case 0x1802:
+	case 0x18b3:	/* Leaf Function */
+	case 0x1921:
+	case 0x192b:
+	case 0x1a34:
+	case 0x1d67:
+	case 0x1ecc:
+	case 0x21ab:
+	case 0x232a:
+			 return 0;
+	case 0x25ce: {
+		reg_ax = get_current_season();
+		return 1;
+		}
+	case 0x274e:
+	case 0x2e26:	/* Wunder Rondra: Starker Schwertarm */
+	case 0x2e69:	/* Wunder Rondra: Starker Schwertarm  Leaf Function */
+	case 0x2f7a:	/* Leaf Function - near&far */
+	case 0x3071:
+	case 0x3230:
+	case 0x37c4:
+			return 0;
+
+	case 0x3b4f:  {
+		D1_INFO("set_and_spin_lock()\n");
+		return 1;
+	}
+	case 0x3ca6:
+	case 0x3dbb:	/* Schiffsfahrt */
+	case 0x3ebb:
+	case 0x4016:	/* Kopierschutzabfrage */
+	case 0x404f:
+	case 0x40d1:
+	case 0x41cd:
+		return 0;
+
+	case 0x43e7: {
+		D1_LOG("set_to_ff()\n");
+		set_to_ff();
+		return 1;
+	}
+	case 0x43fd:
+		return 0;
+	case 0x4485: {
+		short val = CPU_Pop16();
+		CPU_Push16(val);
+
+		reg_ax = mod_timer(val);
+		D1_INFO("mod_timer(%d) = %d\n", val, reg_eax);
+		return 1;
+	}
+	case 0x44aa:
+		 return 0;
+	case 0x4559: {
+
+		reg_ax = can_merge_group();
+		D1_LOG("can_merge_group() = %d\n", (short)reg_ax);
+
+		return 1;
+	}
+	case 0x45db: {
+		short val = CPU_Pop16();
+		CPU_Push16(val);
+
+		D1_LOG("div16(%d)\n", val);
+
+		reg_ax = div16(val);
+
+		return 1;
+	}
+	case 0x45ea:	/* Leaf Function - far only */
+	case 0x4658:	/* Leaf Function - far only */
+	case 0x4707:	/* Leaf Function - far & near */
+	case 0x472b:	/* No Leaf - far only, calls only 0x4707 */
+		return 0;
+
+	case 0x48b1: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = check_hero(MemBase + Real2Phys(hero));
+
+		D1_LOG("check_hero(%s) = %d\n",
+			schick_getCharname(hero), reg_ax);
+
+		return 1;
+	}
+	case 0x49d8: {
+		RealPt  ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+
+		D1_INFO("istHeldBeiSinnenUndGruppe(%s)\n",
+			schick_getCharname(ptr));
+		return 0;
+	}
+	case 0x4a05:
+		return 0;
+	case 0x4a87: {
+		RealPt hero = CPU_Pop32();
+		short val = CPU_Pop16();
+		CPU_Push16(val);
+		CPU_Push32(hero);
+
+		add_hero_ae(MemBase + Real2Phys(hero), val);
+
+		D1_LOG("add_hero_ae(%s, %d)\n",
+				schick_getCharname(hero), val);
+
+		return 1;
+	}
+	case 0x4adc:
+	case 0x4df3:
+		/* Wunder TSA heilt ganze Gruppe 6x */
+		return 0;
+	case 0x4ff9: {
+		/* Eigenschaftsprobe */
+		RealPt hero = CPU_Pop32();
+		unsigned attrib = CPU_Pop16();
+		signed bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(attrib);
+		CPU_Push32(hero);
+
+		reg_ax = test_attrib(MemBase + Real2Phys(hero),
+				attrib, bonus);
+
+		return 1;
+	}
+	case 0x504e: {
+		/* Talent-/Zauber-Probe */
+		unsigned hero = CPU_Pop32();
+		unsigned short attrib1 = CPU_Pop16();
+		unsigned short attrib2 = CPU_Pop16();
+		unsigned short attrib3 = CPU_Pop16();
+		signed short bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(attrib3);
+		CPU_Push16(attrib2);
+		CPU_Push16(attrib1);
+		CPU_Push32(hero);
+
+		reg_ax = test_attrib3(MemBase + Real2Phys(hero),
+				attrib1, attrib2, attrib3, bonus);
+
+		return 1;
+	}
+	case 0x515e:
+		 return 0;
+	case 0x51c2: {
+		unsigned int money;
+
+		money = get_party_money();
+		D1_INFO("Aktuelles Gruppenvermögen = %dD %dS %dH\n",
+			money / 100, (money % 100) / 10, money % 10);
+
+		reg_ax = money & 0xffff;
+		reg_dx = (money>>16) & 0xffff;
+
+		return 1;
+	}
+	case 0x5221: {
+		unsigned int money = CPU_Pop32();
+		CPU_Push32(money);
+
+		D1_INFO("Setze Gruppenvermögen = %dD %dS %dH\n",
+			money / 100, (money % 100) / 10, money % 10);
+
+		return 0;
+	}
+	case 0x5331: {
+		unsigned int money = CPU_Pop32();
+		CPU_Push32(money);
+
+		D1_INFO("Ändere Gruppenvermögen = %dD %dS %dH\n",
+			money / 100, (money % 100) / 10, money % 10);
+		return 0;
+	}
+	case 0x5349: {
+		RealPt hero = CPU_Pop32();
+		int ap = CPU_Pop32();
+		CPU_Push32(ap);
+		CPU_Push32(hero);
+
+		D1_INFO("%s erhält %d AP\n",
+					schick_getCharname(hero), ap);
+		add_hero_ap(MemBase+Real2Phys(hero), ap);
+
+		return 1;
+	}
+	case 0x535f: {
+		/* APs verteilen */
+		int group_ap = CPU_Pop32();
+		CPU_Push32(group_ap);
+
+		D1_INFO("Gruppe erhält %d AP\n", group_ap);
+
+		return 0;
+	}
+	case 0x53e8: {
+		signed short ap = CPU_Pop16();
+		CPU_Push16(ap);
+
+		D1_INFO("add_hero_ap_all(%+d)\n", ap);
+		add_hero_ap_all(ap);
+
+		return 1;
+	}
+	case 0x5452: {
+		signed short ap = CPU_Pop16();
+		CPU_Push16(ap);
+
+		D1_INFO("sub_hero_ap_all(%+d)\n", ap);
+		sub_hero_ap_all(ap);
+
+		return 1;
+	}
+	case 0x54e9: {
+		/* unsigned short get_hero_index(hero_ptr *hero); */
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = get_hero_index(MemBase+Real2Phys(hero));
+		D1_LOG("get_hero_index(%s) = (%d)\n",
+				schick_getCharname(hero), reg_ax);
+		return 1;
+	}
+	case 0x5520: {
+		/* int get_item_pos(hero_ptr *hero, unsigned short item)*/
+		RealPt hero = CPU_Pop32();
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		reg_ax = get_item_pos(MemBase + Real2Phys(hero), item);
+
+		D1_LOG("get_item_pos(%s, 0x%04x) = %d\n",
+					schick_getCharname(hero),
+					item, (short)reg_ax);
+		return 1;
+	}
+	case 0x554c: {
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+
+		reg_ax = get_first_hero_with_item(item);
+		D1_INFO("get_first_hero_with_item(%d) = %d\n",
+			item, reg_ax);
+
+		return 1;
+	}
+	case 0x55b1:	/* Leaf Function - near only */
+	case 0x5615:	/* Krakenangriff */
+	case 0x5667:
+	case 0x56d6:	/* Tür einschlagen */
+	case 0x573e:	/* Alle Tot */
+			return 0;
+	case 0x5799: {
+		reg_ax = count_heroes_available_in_group();
+		D1_LOG("count_heroes_available_in_group() = %d\n",
+			reg_ax);
+		return 1;
+	}
+	case 0x5816: {
+		unsigned short argc = CPU_Pop16();
+		CPU_Push16(argc);
+		D1_TRAC("main(argc=0x%04x, ...)\n", argc);
+		return 0;
+	}
+	case 0x5a68: {
+		unsigned short bytes = CPU_Pop16();
+		CPU_Push16(bytes);
+
+		D1_LOG("alloc_byte(%d)\n", bytes);
+		return 0;
+	}
+	default:
+		D1_TRAC("Segment 0x51e:0x%04x\n", offs);
+		return 0;
+	}
+}
+
 static int seg098(unsigned short offs) {
 	switch (offs) {
 
@@ -101,6 +444,11 @@ static int seg098(unsigned short offs) {
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 {
+	if (segm == 0x4ac)
+		return 0;
+	if (segm == 0x51e)
+		return seg002(offs);
+
 	//this is for mouse handling and spams the log
 	if (segm == 0xb2a)	{
 		//D1_LOG("Segment 0xb2a:0x%04x\n", offs);
@@ -358,355 +706,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		return 0;
 	}
 
-	if (segm == 0x4ac) return 0;
 
-	//4 funcs of this segment are called every 0.18s and spam the log
-	if (segm == 0x51e) {
-		if (offs == 0x0017) return 0;
-		/* wird bei Musikmenu aufgerufen */
-		if (offs == 0x0045) return 0;
-		if (offs == 0x0209) return 0;
-		if (offs == 0x06fe) return 0;
-		/* GUI Radio */
-		if (offs == 0x0832) return 0;
-		/* Betrunken */
-		if (offs == 0x0856) return 0;
-		if (offs == 0x0c0e) {
-			short index = CPU_Pop16();
-			CPU_Push16(index);
-
-			unsigned int retval = get_readlength2(index);
-			D1_LOG("get_readlength2(%d) = %d\n", index, retval);
-
-			reg_ax = retval & 0xffff;
-			reg_dx = (retval>>16) & 0xffff;
-
-			return 1;
-		}
-		if (offs == 0x0c28) {
-			unsigned short index = CPU_Pop16();
-			CPU_Push16(index);
-
-			D1_LOG("ReadDatfile()\n");
-			return 0;
-		}
-		if (offs == 0x0c72) return 0;
-		if (offs == 0x0cb6) return 0;
-		if (offs == 0x0d27) {
-			unsigned short index = CPU_Pop16();
-			CPU_Push16(index);
-			D1_LOG("OpenAndSeekDatfile(%u)\n", index);
-			return 0;
-		}
-		if (offs == 0x0ed2) return 0;
-		/* Leaf Function */
-		if (offs == 0x1634) {
-			unsigned short v1 = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			unsigned short v3 = CPU_Pop16();
-			unsigned short v4 = CPU_Pop16();
-			CPU_Push16(v4);
-			CPU_Push16(v3);
-			CPU_Push16(v2);
-			CPU_Push16(v1);
-
-			D1_LOG("cmp_smth(%d, %d, %d, %d);\n", v1, v2, v3, v4);
-			D1_LOG("ds:299c = %d\n", real_readw(ds, 0x299c));
-			D1_LOG("ds:299e = %d\n", real_readw(ds, 0x299e));
-
-			short retval = cmp_smth(v1, v2, v3, v4);
-			D1_LOG("Should return %d\n", retval);
-			reg_ax = retval;
-
-			return 1;
-		}
-		if (offs == 0x16fd) return 0;
-		if (offs == 0x1802) return 0;
-		/* Leaf Function */
-		if (offs == 0x18b3) return 0;
-		if (offs == 0x1921) return 0;
-		if (offs == 0x192b) return 0;
-		if (offs == 0x1a34) return 0;
-		if (offs == 0x1d67) return 0;
-		if (offs == 0x1ecc) return 0;
-		if (offs == 0x21ab) return 0;
-		if (offs == 0x232a) return 0;
-		if (offs == 0x25ce) {
-			reg_ax = get_current_season();
-			return 1;
-		}
-		if (offs == 0x274e) return 0;
-		/* Wunder Rondra: Starker Schwertarm */
-		if (offs == 0x2e26) return 0;
-		/* Wunder Rondra: Starker Schwertarm  Leaf Function */
-		if (offs == 0x2e69) return 0;
-		/* Leaf Function - near&far */
-		if (offs == 0x2f7a) return 0;
-		if (offs == 0x3071) return 0;
-		if (offs == 0x3230) return 0;
-		if (offs == 0x37c4) return 0;
-		if (offs == 0x3b4f) {
-			D1_INFO("set_and_spin_lock()\n");
-			return 1;
-		}
-		if (offs == 0x3ca6) return 0;
-		/* Schiffsfahrt */
-		if (offs == 0x3dbb) return 0;
-		if (offs == 0x3ebb) return 0;
-		/* Kopierschutzabfrage */
-		if (offs == 0x4016) return 0;
-		if (offs == 0x404f) return 0;
-		if (offs == 0x40d1) return 0;
-		if (offs == 0x41cd) return 0;
-		if (offs == 0x43e7) {
-			D1_LOG("set_to_ff()\n");
-			set_to_ff();
-			return 1;
-		}
-		if (offs == 0x43fd) return 0;
-		if (offs == 0x4485) {
-			short val = CPU_Pop16();
-			CPU_Push16(val);
-
-			reg_ax = mod_timer(val);
-
-			D1_INFO("mod_timer(%d) = %d\n", val, reg_eax);
-
-			return 1;
-		}
-		if (offs == 0x44aa) return 0;
-		if (offs == 0x4559) {
-
-			reg_ax = can_merge_group();
-			D1_LOG("can_merge_group() = %d\n", (short)reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x45db) {
-			short val = CPU_Pop16();
-			CPU_Push16(val);
-
-			D1_LOG("div16(%d)\n", val);
-
-			reg_ax = div16(val);
-
-			return 1;
-		}
-		/* Leaf Function - far only */
-		if (offs == 0x45ea) return 0;
-		/* Leaf Function - far only */
-		if (offs == 0x4658) return 0;
-		/* Leaf Function - far & near */
-		if (offs == 0x4707) return 0;
-		/* No Leaf - far only, calls only 0x4707 */
-		if (offs == 0x472b) return 0;
-
-		if (offs == 0x48b1) {
-			RealPt hero = CPU_Pop32();
-			CPU_Push32(hero);
-
-			reg_ax = check_hero(MemBase + Real2Phys(hero));
-
-			D1_LOG("check_hero(%s) = %d\n",
-				schick_getCharname(hero), reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x49d8) {
-			RealPt  ptr = CPU_Pop32();
-			CPU_Push32(ptr);
-
-			D1_INFO("istHeldBeiSinnenUndGruppe(%s)\n",
-				schick_getCharname(ptr));
-			return 0;
-		}
-
-		if (offs == 0x4a05) return 0;
-		if (offs == 0x4a87) {
-			RealPt hero = CPU_Pop32();
-			short val = CPU_Pop16();
-			CPU_Push16(val);
-			CPU_Push32(hero);
-
-			add_hero_ae(MemBase + Real2Phys(hero), val);
-
-			D1_LOG("add_hero_ae(%s, %d)\n",
-					schick_getCharname(hero), val);
-
-			return 1;
-		}
-		if (offs == 0x4adc) return 0;
-		/* Wunder TSA heilt ganze Gruppe 6x */
-		if (offs == 0x4df3) return 0;
-		if (offs == 0x4ff9) {
-			/* Eigenschaftsprobe */
-			RealPt hero = CPU_Pop32();
-			unsigned attrib = CPU_Pop16();
-			signed bonus = CPU_Pop16();
-			CPU_Push16(bonus);
-			CPU_Push16(attrib);
-			CPU_Push32(hero);
-
-			reg_ax = test_attrib(MemBase + Real2Phys(hero),
-					attrib, bonus);
-
-			return 1;
-		}
-		if (offs == 0x504e) {
-			/* Talent-/Zauber-Probe */
-			unsigned hero = CPU_Pop32();
-			unsigned short attrib1 = CPU_Pop16();
-			unsigned short attrib2 = CPU_Pop16();
-			unsigned short attrib3 = CPU_Pop16();
-			signed short bonus = CPU_Pop16();
-			CPU_Push16(bonus);
-			CPU_Push16(attrib3);
-			CPU_Push16(attrib2);
-			CPU_Push16(attrib1);
-			CPU_Push32(hero);
-
-			reg_ax = test_attrib3(MemBase + Real2Phys(hero),
-					attrib1, attrib2, attrib3, bonus);
-
-			return 1;
-		}
-		if (offs == 0x515e) return 0;
-		if (offs == 0x51c2) {
-			unsigned int money;
-
-			money = get_party_money();
-			D1_INFO("Aktuelles Gruppenvermögen = %dD %dS %dH\n",
-				money / 100, (money % 100) / 10, money % 10);
-
-			reg_ax = money & 0xffff;
-			reg_dx = (money>>16) & 0xffff;
-
-			return 1;
-		}
-		if (offs == 0x5221) {
-			unsigned int money = CPU_Pop32();
-			CPU_Push32(money);
-
-			D1_INFO("Setze Gruppenvermögen = %dD %dS %dH\n",
-				money / 100, (money % 100) / 10, money % 10);
-
-			return 0;
-		}
-		if (offs == 0x5331) {
-			unsigned int money = CPU_Pop32();
-			CPU_Push32(money);
-
-			D1_INFO("Ändere Gruppenvermögen = %dD %dS %dH\n",
-				money / 100, (money % 100) / 10, money % 10);
-			return 0;
-		}
-		if (offs == 0x5349) {
-			RealPt hero = CPU_Pop32();
-			int ap = CPU_Pop32();
-			CPU_Push32(ap);
-			CPU_Push32(hero);
-
-			D1_INFO("%s erhält %d AP\n",
-						schick_getCharname(hero), ap);
-			add_hero_ap(MemBase+Real2Phys(hero), ap);
-
-			return 1;
-		}
-		/* APs verteilen */
-		if (offs == 0x535f) {
-			int group_ap = CPU_Pop32();
-			CPU_Push32(group_ap);
-
-			D1_INFO("Gruppe erhält %d AP\n", group_ap);
-
-			return 0;
-		}
-		if (offs == 0x53e8) {
-			signed short ap = CPU_Pop16();
-			CPU_Push16(ap);
-
-			D1_INFO("add_hero_ap_all(%+d)\n", ap);
-			add_hero_ap_all(ap);
-
-			return 1;
-		}
-		if (offs == 0x5452) {
-			signed short ap = CPU_Pop16();
-			CPU_Push16(ap);
-
-			D1_INFO("sub_hero_ap_all(%+d)\n", ap);
-			sub_hero_ap_all(ap);
-
-			return 1;
-		}
-		/* Essen & Trinken */
-		if (offs == 0x54e9) {
-			/* unsigned short get_hero_index(hero_ptr *hero); */
-			RealPt hero = CPU_Pop32();
-			CPU_Push32(hero);
-
-			reg_ax = get_hero_index(MemBase+Real2Phys(hero));
-			D1_LOG("get_hero_index(%s) = (%d)\n",
-					schick_getCharname(hero), reg_ax);
-			return 1;
-		}
-		if (offs == 0x5520) {
-			/* int get_item_pos(hero_ptr *hero, unsigned short item)*/
-			RealPt hero = CPU_Pop32();
-			unsigned short item = CPU_Pop16();
-			CPU_Push16(item);
-			CPU_Push32(hero);
-
-			reg_ax = get_item_pos(MemBase + Real2Phys(hero), item);
-
-			D1_LOG("get_item_pos(%s, 0x%04x) = %d\n",
-						schick_getCharname(hero),
-						item, (short)reg_ax);
-			return 1;
-		}
-		if (offs == 0x554c) {
-			unsigned short item = CPU_Pop16();
-			CPU_Push16(item);
-
-			reg_ax = get_first_hero_with_item(item);
-			D1_INFO("get_first_hero_with_item(%d) = %d\n",
-				item, reg_ax);
-
-			return 1;
-		}
-		/* Leaf Function - near only */
-		if (offs == 0x55b1) return 0;
-		/* Krakenangriff */
-		if (offs == 0x5615) return 0;
-		if (offs == 0x5667) return 0;
-		/* Tür einschlagen */
-		if (offs == 0x56d6) return 0;
-		/* Alle Tot */
-		if (offs == 0x573e) return 0;
-		if (offs == 0x5799) {
-
-			reg_ax = count_heroes_available_in_group();
-			D1_LOG("count_heroes_available_in_group() = %d\n",
-				reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x5816) {
-			unsigned short argc = CPU_Pop16();
-			CPU_Push16(argc);
-			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
-			return 0;
-		}
-		if (offs == 0x5a68) {
-			unsigned short bytes = CPU_Pop16();
-			CPU_Push16(bytes);
-
-			D1_LOG("alloc_byte(%d)\n", bytes);
-			return 0;
-		}
-		D1_TRAC("Segment 0x51e:0x%04x\n", offs);
-		return 0;
-	}
 	if (segm == 0x0ae7) {
 		if (offs == 0x000c) {
 			unsigned short mod = CPU_Pop16();
