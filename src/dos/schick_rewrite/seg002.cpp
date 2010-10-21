@@ -1,12 +1,14 @@
+/*
+	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
+	Functions rewritten: 22/136
+*/
+
 #include "mem.h"
 
 #include "../schick.h"
 
 #include "seg007.h"
 
-/*
-	 20/140 Functions complete
-*/
 
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : real_readd(datseg, 0xbce7);
