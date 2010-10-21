@@ -792,6 +792,8 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 	//4 funcs of this sement are called every 0.18s and spam the log
 	if (segm == 0x51e) {
 		if (offs == 0x0017) return 0;
+		/* wird bei Musikmenu aufgerufen */
+		if (offs == 0x0045) return 0;
 		if (offs == 0x0209) return 0;
 		if (offs == 0x06fe) return 0;
 		/* GUI Radio */
