@@ -360,7 +360,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 
 	if (segm == 0x4ac) return 0;
 
-	//4 funcs of this sement are called every 0.18s and spam the log
+	//4 funcs of this segment are called every 0.18s and spam the log
 	if (segm == 0x51e) {
 		if (offs == 0x0017) return 0;
 		/* wird bei Musikmenu aufgerufen */
@@ -384,14 +384,17 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x0c28) {
-			unsigned short index=real_readw(ss, reg_sp);
+			unsigned short index = CPU_Pop16();
+			CPU_Push16(index);
+
 			D1_LOG("ReadDatfile()\n");
 			return 0;
 		}
 		if (offs == 0x0c72) return 0;
 		if (offs == 0x0cb6) return 0;
 		if (offs == 0x0d27) {
-			unsigned short index=real_readw(ss, reg_sp);
+			unsigned short index = CPU_Pop16();
+			CPU_Push16(index);
 			D1_LOG("OpenAndSeekDatfile(%u)\n", index);
 			return 0;
 		}
@@ -510,8 +513,11 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x49d8) {
-			unsigned int  ptr=real_readd(ss, reg_sp);
-			D1_INFO("istHeldBeiSinnenUndGruppe(%s)\n", schick_getCharname(ptr));
+			RealPt  ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			D1_INFO("istHeldBeiSinnenUndGruppe(%s)\n",
+				schick_getCharname(ptr));
 			return 0;
 		}
 
@@ -686,12 +692,16 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x5816) {
-			unsigned short argc=real_readw(ss, reg_sp);
+			unsigned short argc = CPU_Pop16();
+			CPU_Push16(argc);
 			D1_TRAC("main(argc=0x%04x, ...)\n", argc);
 			return 0;
 		}
 		if (offs == 0x5a68) {
-			D1_LOG("alloc_byte(%d)\n", real_readw(ss, reg_sp));
+			unsigned short bytes = CPU_Pop16();
+			CPU_Push16(bytes);
+
+			D1_LOG("alloc_byte(%d)\n", bytes);
 			return 0;
 		}
 		D1_TRAC("Segment 0x51e:0x%04x\n", offs);
