@@ -79,6 +79,7 @@ static int seg002(unsigned short offs) {
 	case 0x1921:
 	case 0x192b:
 	case 0x1a34:
+	case 0x1cf2:	/* Shop: Item zurücklegen */
 	case 0x1d67:
 	case 0x1ecc:
 	case 0x21ab:
@@ -122,7 +123,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(val);
 
 		reg_ax = mod_timer(val);
-		D1_INFO("mod_timer(%d) = %d\n", val, reg_eax);
+		D1_LOG("mod_timer(%d) = %d\n", val, reg_eax);
 		return 1;
 	}
 	case 0x44aa:
@@ -165,7 +166,7 @@ static int seg002(unsigned short offs) {
 		RealPt  ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		D1_INFO("istHeldBeiSinnenUndGruppe(%s)\n",
+		D1_LOG("istHeldBeiSinnenUndGruppe(%s)\n",
 			schick_getCharname(ptr));
 		return 0;
 	}
@@ -362,7 +363,7 @@ static int seg098(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		D1_INFO("Menu: Magie Anwenden %s\n", schick_getCharname(hero));
+		D1_LOG("Menu: Magie Anwenden %s\n", schick_getCharname(hero));
 
 		return 0;
 	}
@@ -388,7 +389,7 @@ static int seg098(unsigned short offs) {
 		CPU_Push16(a1);
 		CPU_Push32(hero);
 
-		D1_INFO("Menu: Zauber auswählen(%s, %d, %d)\n",
+		D1_LOG("Menu: Zauber auswählen(%s, %d, %d)\n",
 			schick_getCharname(hero), a1, a2);
 
 		return 0;
@@ -415,7 +416,7 @@ static int seg098(unsigned short offs) {
 
 		reg_ax = get_spell_cost(spell, half_cost);
 
-		D1_INFO("get_spell_cost(%s, %d) = %d\n",
+		D1_LOG("get_spell_cost(%s, %d) = %d\n",
 			names_spell[spell], half_cost, (short)reg_ax);
 
 		return 1;
@@ -426,13 +427,13 @@ static int seg098(unsigned short offs) {
 		CPU_Push16(bonus);
 		CPU_Push16(spell);
 
-		D1_INFO("Zauberprobe für alle\n");
+		D1_LOG("Zauberprobe für alle\n");
 		reg_ax = test_spell_group(spell, bonus);
 
 		return 1;
 	}
 	case 0x57: {
-		D1_INFO("Menu: Zauberer auswählen\n");
+		D1_LOG("Menu: Zauberer auswählen\n");
 		return 0;
 	}
 	default:
@@ -441,6 +442,7 @@ static int seg098(unsigned short offs) {
 	}
 	return 0;
 }
+
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 {
@@ -449,13 +451,13 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x51e)
 		return seg002(offs);
 
-	//this is for mouse handling and spams the log
 	if (segm == 0xb2a)	{
+		//this is for mouse handling and spams the log
 		//D1_LOG("Segment 0xb2a:0x%04x\n", offs);
 		return 0;
 	}
 
-	if (segm == 0xf18)	{
+	if (segm == 0xf18) {
 		if (offs == 0x8) {
 			unsigned short val = CPU_Pop16();
 			CPU_Push16(val);
@@ -831,7 +833,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			CPU_Push32(min);
 			CPU_Push16(val);
 
-			damage_range_template(val,MemBase + Real2Phys(min),
+			damage_range_template(val, MemBase + Real2Phys(min),
 				MemBase + Real2Phys(max));
 
 			D1_LOG("damage_range_template() Untested\n");
@@ -852,9 +854,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x12db) return 0;
 	if (segm == 0x12de) return 0;
 
-	/* All functions make an output here, but they aren't complete */
+	/* stub026 */
 	if (segm == 0x12e5) {
-		D1_LOG("Segment 0x12e5\t");
 		if (offs == 0x0020) {
 			D1_LOG("ip=0x%04X unknown()\n", offs);
 			return 0;
@@ -907,10 +908,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			D1_LOG("ip=0x%4X unknown()\n", offs);
 			return 0;
 		}
-		if (offs == 0x0061) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
 		if (offs == 0x0066) {
 			D1_LOG("ip=0x%4X unknown()\n", offs);
 			return 0;
@@ -937,7 +934,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			unsigned short v1 = CPU_Pop16();
 			CPU_Push16(v1);
 
-			D1_INFO("Kampf 0x%02x\n", v1);
+			D1_LOG("Kampf 0x%02x\n", v1);
 			return 0;
 		}
 		return 0;
@@ -1158,14 +1155,15 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			D1_LOG("C-Lib exit(%d)\n", real_readw(ss, reg_sp));
 			return 0;
 		}
-		if (offs == 0x6df) {//Not Called
+		if (offs == 0x6df) {
+			/* Not Called from far */
 			D1_LOG("_exit(%d)\n", real_readw(ss, reg_sp));
-			return 0;	}
-
+			return 0;
+		}
 		if (offs == 0x70b){
 			unsigned long retval;
 			retval = (reg_dx << 16 | reg_ax) * (reg_cx << 16 | reg_bx);
-			D1_INFO("Mul unsigned long %u * %u = %lu\n",
+			D1_LOG("Mul unsigned long %u * %u = %lu\n",
 				reg_dx << 16 | reg_ax,
 				reg_cx << 16 | reg_bx,
 				retval);
