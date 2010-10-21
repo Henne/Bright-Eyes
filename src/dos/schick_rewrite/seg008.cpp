@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of segment 008 (Rasterlib)
-        Functions rewritten: 7/14
+        Functions rewritten: 9/14
 */
 
 #include "mem.h"
@@ -44,6 +44,14 @@ void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, u
 	for (i = 0; i < count; i++) {
 		mem_writeb_inline(ptr, color);
 		ptr += space;
+	}
+}
+
+void save_rect(PhysPt src, PhysPt dest, unsigned short width, unsigned short height) {
+	for (; height; height--) {
+		mem_memcpy(dest, src, width);
+		src += 320;
+		dest += width;
 	}
 }
 

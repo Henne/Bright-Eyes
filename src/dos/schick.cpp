@@ -687,24 +687,31 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x655) {
-			unsigned short seg_src=real_readw(ss, reg_sp);
-			unsigned short off_src=real_readw(ss, reg_sp+2);
-			unsigned short off_dst=real_readw(ss, reg_sp+4);
-			unsigned short seg_dst=real_readw(ss, reg_sp+6);
-			unsigned short width=real_readw(ss, reg_sp+8);
-			unsigned short height=real_readw(ss, reg_sp+10);
+			RealPt rptr = CPU_Pop32();
+			RealPt dst = CPU_Pop32();
+			unsigned short width = CPU_Pop16();
+			unsigned short height = CPU_Pop16();
+			CPU_Push16(height);
+			CPU_Push16(width);
+			CPU_Push32(dst);
+			CPU_Push32(rptr);
 
-			if (seg_src == 0xa000)
-			D1_GFX("SaveScreen(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
-					off_src%320, off_src/320,
-					seg_dst, off_dst,
+			/* Seg and Off are swapped */
+			rptr = (rptr >> 16) | (rptr << 16);
+
+			save_rect(Real2Phys(rptr), Real2Phys(dst), width, height);
+			if (RealSeg(rptr) == 0xa000)
+			D1_GFX("save_rect(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
+					RealOff(rptr) % 320,
+					RealOff(rptr) / 320,
+					RealSeg(dst), RealOff(dst),
 					width, height);
 			else
-			D1_GFX("SaveScreen(src=0x%04x:0x%04x,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
-					seg_src, off_src,
-					seg_dst, off_dst,
+			D1_GFX("save_rect(src=0x%04x:0x%04x,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
+					RealSeg(rptr), RealOff(rptr),
+					RealSeg(dst), RealOff(dst),
 					width, height);
-			return 0;
+			return 1;
 		}
 		if (offs == 0x68c) {
 			RealPt rptr = CPU_Pop32();
