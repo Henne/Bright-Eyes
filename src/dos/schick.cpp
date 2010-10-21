@@ -707,20 +707,31 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x68c) {
-			unsigned short seg=real_readw(ss, reg_sp);
-			unsigned short off=real_readw(ss, reg_sp+2);
-			unsigned short color=real_readw(ss, reg_sp+4);
-			unsigned short width=real_readw(ss, reg_sp+6);
-			unsigned short height=real_readw(ss, reg_sp+8);
+			RealPt rptr = CPU_Pop32();
+			unsigned short color = CPU_Pop16();
+			unsigned short width = CPU_Pop16();
+			unsigned short height = CPU_Pop16();
+			CPU_Push16(height);
+			CPU_Push16(width);
+			CPU_Push16(color);
+			CPU_Push32(rptr);
 
-			if (seg == 0xa000)
+			/* Seg and Off are swapped */
+			rptr = (rptr >> 16) | (rptr << 16);
+
+			fill_rect(Real2Phys(rptr), color, width, height);
+
+			if (RealSeg(rptr) == 0xa000)
 
 				D1_GFX("FillRect(X=%u,Y=%u,color=%u,width=%u,height=%u)\n",
-					off%320, off/320, color, width, height);
+					RealOff(rptr) % 320,
+					RealOff(rptr) / 320,
+					color, width, height);
 			else
 				D1_GFX("FillRect(dest=0x%04x:0x%04x,color=%u,cnt=%u,%u)\n",
-					seg, off, color, width, height);
-			return 0;
+					RealSeg(rptr), RealOff(rptr),
+					color, width, height);
+			return 1;
 		}
 		if (offs == 0x6c5) {
 			unsigned short off_dst=real_readw(ss, reg_sp);

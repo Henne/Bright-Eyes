@@ -47,3 +47,10 @@ void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, u
 	}
 }
 
+void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height) {
+	unsigned short x,y;
+
+	for (y = 0; y < height; y++)
+		for (x = 0; x < width; x++)
+			mem_writeb_inline(ptr + y*320 + x, color);
+}
