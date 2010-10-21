@@ -547,9 +547,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x14) {
-			D1_GFX("SetVideoMode(mode=0x%x);\n",
-					real_readw(ss, reg_sp));
-				return 0;
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+
+			D1_GFX("SetVideoMode(mode=0x%x);\n", mode);
+			set_video_mode(mode);
+
+			return 1;
 		}
 		if (offs == 0x2a) {
 			D1_GFX("SetDisplayPage(page=0x%x);\n",
