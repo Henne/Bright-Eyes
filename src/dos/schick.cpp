@@ -518,6 +518,7 @@ static inline Bit8u* getString(unsigned p) {
 int schick_callf(unsigned selector, unsigned offs, unsigned ss)
 {
 	if (!running || !(dbg_mode & 2)) return 0;
+	if (selector >= datseg) return 0;
 
 	unsigned short segm = selector - relocation;
 	int ret = 0;
