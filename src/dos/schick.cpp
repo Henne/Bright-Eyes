@@ -556,9 +556,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x2a) {
-			D1_GFX("SetDisplayPage(page=0x%x);\n",
-				real_readw(ss, reg_sp));
-				return 0;
+			unsigned short page = CPU_Pop16();
+			CPU_Push16(page);
+
+			D1_GFX("set_display_page(page=0x%x);\n", page);
+			set_video_page(page);
+
+			return 1;
 		}
 		if (offs == 0x40) {
 			D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",

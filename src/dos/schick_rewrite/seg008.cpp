@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of segment 008 (Rasterlib)
-        Functions rewritten: 2/14
+        Functions rewritten: 3/14
 */
 
 #include "mem.h"
@@ -13,4 +13,8 @@ unsigned short swap_u16(unsigned short val) {
 
 void set_video_mode(unsigned char mode) {
 	INT10_SetVideoMode(mode);
+}
+
+void set_video_page(unsigned char mode) {
+	INT10_SetActivePage(mode);
 }
