@@ -1663,8 +1663,19 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x70b){
 			D1_LOG("Mul unsigned long\n");
 			return 0;	}
+		/* struct copy*/
+		if (offs == 0x722) {
+			RealPt src = CPU_Pop32();
+			RealPt dst = CPU_Pop32();
+			CPU_Push32(dst);
+			CPU_Push32(src);
 
-		if (offs == 0x722) return 0;
+			D1_LOG("F_SCOPY()");
+			memcpy(MemBase + Real2Phys(dst),
+				MemBase + Real2Phys(src), reg_cx);
+
+			return 1;
+		}
 		/* getcurdir() */
 		if (offs == 0x73e) return 0;
 		/* getdisk() */
