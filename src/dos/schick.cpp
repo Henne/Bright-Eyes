@@ -570,36 +570,46 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 				return 0;
 		}
 		if (offs == 0xea) {
-			unsigned short seg=real_readw(ss, reg_sp+2);
-			unsigned short off=real_readw(ss, reg_sp);
+			RealPt ptr = CPU_Pop32();
+			unsigned short color = CPU_Pop16();
+			CPU_Push16(color);
+			CPU_Push32(ptr);
 
-			D1_GFX("SetColor(rgb=0x%x:0x%x, color=0x%x);\n",
-				seg, off, real_readw(ss, reg_sp+4));
+			D1_GFX("set_color(rgb=0x%x:0x%x, color=0x%x);\n",
+				RealSeg(ptr), RealOff(ptr), color);
+
+			set_color(MemBase + Real2Phys(ptr), color);
+
 			D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
-				real_readb(seg, off), real_readb(seg, off+1),
-				real_readb(seg, off+2));
+				real_readb(RealSeg(ptr), RealOff(ptr)),
+				real_readb(RealSeg(ptr), RealOff(ptr) + 1),
+				real_readb(RealSeg(ptr), RealOff(ptr) + 2));
 
-				return 0;
+			return 1;
 		}
 		if (offs == 0x119) {
+			RealPt ptr = CPU_Pop32();
+			unsigned short first_color = CPU_Pop16();
+			unsigned short colors = CPU_Pop16();
+			CPU_Push16(colors);
+			CPU_Push16(first_color);
+			CPU_Push32(ptr);
 
-			unsigned short off=real_readw(ss, reg_sp);
-			unsigned short seg=real_readw(ss, reg_sp+2);
-			unsigned short first_color=real_readw(ss, reg_sp+4);
-			unsigned short colors=real_readw(ss, reg_sp+6);
 			unsigned short i;
 
-			D1_GFX("SetPalette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
-				seg, off, first_color, colors);
+			D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
+				RealSeg(ptr), RealOff(ptr), first_color, colors);
 
-			if (seg == datseg)
-				D1_LOG("Palette at DS:0x%x\n", off);
+			set_palette(MemBase + Real2Phys(ptr), first_color, colors);
+
+			if (RealSeg(ptr) == datseg)
+				D1_LOG("Palette at DS:0x%x\n", RealSeg(ptr));
 			for (i=0; i<colors; i++)
 				D1_GFX("\"\\%02d\\%02d\\%02d\"..\n",
-					real_readb(seg, off+i*3),
-					real_readb(seg, off+i*3+1),
-					real_readb(seg, off+i*3+2));
-			return 0;
+					host_readb(MemBase + Real2Phys(ptr)+i*3),
+					host_readb(MemBase + Real2Phys(ptr)+i*3+1),
+					host_readb(MemBase + Real2Phys(ptr)+i*3+2));
+			return 1;
 		}
 		if (offs == 0x14d) {
 			unsigned short off=real_readw(ss, reg_sp);
