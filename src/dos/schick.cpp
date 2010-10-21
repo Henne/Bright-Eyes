@@ -616,18 +616,23 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x14d) {
-			unsigned short off=real_readw(ss, reg_sp);
-			unsigned short seg=real_readw(ss, reg_sp+2);
-			unsigned short len=real_readw(ss, reg_sp+4);
-			unsigned short color=real_readw(ss, reg_sp+6);
+			RealPt rptr = CPU_Pop32();
+			unsigned short cnt = CPU_Pop16();
+			unsigned short color = CPU_Pop16();
+			CPU_Push16(color);
+			CPU_Push16(cnt);
+			CPU_Push32(rptr);
 
-			if (seg == 0xa000)
+			draw_h_line(Real2Phys(rptr), cnt, color);
+
+			if (RealSeg(rptr) == 0xa000)
 				D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
-					off%320, off/320, len, color);
+					RealOff(rptr) % 320,
+					RealOff(rptr) / 320, cnt, color);
 			else
 				D1_GFX("HLine(0x%04x:0x%04x,len=%u,color=0x%02x);\n",
-					seg, off, len, color);
-			return 0;
+					RealSeg(rptr), RealOff(rptr), cnt, color);
+			return 1;
 		}
 		if (offs == 0x1af) {
 			RealPt rptr = CPU_Pop32();
