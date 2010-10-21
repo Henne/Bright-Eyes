@@ -12,6 +12,92 @@
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
 
+static int seg098(unsigned short offs) {
+	switch (offs) {
+
+	case 0x20: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		D1_INFO("Menu: Magie Anwenden %s\n", schick_getCharname(hero));
+
+		return 0;
+	}
+	case 0x25: {
+		/* Zauberprobe */
+		RealPt hero = CPU_Pop32();
+		unsigned short spell = CPU_Pop16();
+		signed short bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(spell);
+		CPU_Push32(hero);
+
+		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, bonus);
+		D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], (char)bonus);
+		return 1;
+	}
+	case 0x2a: {
+		/* Zauber auswählen */
+		RealPt hero = CPU_Pop32();
+		unsigned short a1 = CPU_Pop16();
+		unsigned short a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		CPU_Push32(hero);
+
+		D1_INFO("Menu: Zauber auswählen(%s, %d, %d)\n",
+			schick_getCharname(hero), a1, a2);
+
+		return 0;
+	}
+	case 0x2f: {
+		D1_INFO("Seg098:0x%04x()\n", offs);
+		return 0;
+	}
+	case 0x39: {
+		D1_INFO("Seg098:0x%04x()\n", offs);
+		return 0;
+	}
+	case 0x3e: {
+		/* Untested */
+		D1_INFO("seg098_3e()\n");
+		/*reg_ax = seg098_3e(); */
+		return 0;
+	}
+	case 0x48: {
+		unsigned short spell = CPU_Pop16();
+		unsigned short half_cost = CPU_Pop16();
+		CPU_Push16(half_cost);
+		CPU_Push16(spell);
+
+		reg_ax = get_spell_cost(spell, half_cost);
+
+		D1_INFO("get_spell_cost(%s, %d) = %d\n",
+			names_spell[spell], half_cost, (short)reg_ax);
+
+		return 1;
+	}
+	case 0x52: {
+		unsigned short spell = CPU_Pop16();
+		signed short bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(spell);
+
+		D1_INFO("Zauberprobe für alle\n");
+		reg_ax = test_spell_group(spell, bonus);
+
+		return 1;
+	}
+	case 0x57: {
+		D1_INFO("Menu: Zauberer auswählen\n");
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment seg098:0x%04x\n", offs);
+		exit(1);
+	}
+	return 0;
+}
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 {
@@ -974,89 +1060,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		return 0;
 	}
 	/* stub098 */
-	if (segm == 0x1449) {
-		if (offs == 0x0020) {
-			RealPt hero = CPU_Pop32();
-			CPU_Push32(hero);
-
-			D1_INFO("Menu: Magie Anwenden %s\n",
-					schick_getCharname(hero));
-
-			return 0;
-		}
-		if (offs == 0x0025) {
-			/* Zauberprobe */
-			RealPt hero = CPU_Pop32();
-			unsigned short spell = CPU_Pop16();
-			signed short bonus = CPU_Pop16();
-			CPU_Push16(bonus);
-			CPU_Push16(spell);
-			CPU_Push32(hero);
-
-			reg_ax = test_spell(MemBase + Real2Phys(hero), spell, bonus);
-			D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], (char)bonus);
-			return 1;
-		}
-		if (offs == 0x002a) {
-			/* Zauber auswählen */
-			RealPt hero = CPU_Pop32();
-			unsigned short a1 = CPU_Pop16();
-			unsigned short a2 = CPU_Pop16();
-			CPU_Push16(a2);
-			CPU_Push16(a1);
-			CPU_Push32(hero);
-
-			D1_INFO("Menu: Zauber auswählen(%s, %d, %d)\n",
-				schick_getCharname(hero), a1, a2);
-
-			return 0;
-		}
-		if (offs == 0x002f) {
-			D1_INFO("Seg098:0x%04x()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0039) {
-			D1_INFO("Seg098:0x%04x()\n", offs);
-			return 0;
-		}
-		if (offs == 0x003e) {
-			/* Untested */
-			D1_INFO("seg098_3e()\n");
-			/*reg_ax = seg098_3e(); */
-			return 0;
-		}
-		if (offs == 0x0048) {
-			unsigned short spell = CPU_Pop16();
-			unsigned short half_cost = CPU_Pop16();
-			CPU_Push16(half_cost);
-			CPU_Push16(spell);
-
-			reg_ax = get_spell_cost(spell, half_cost);
-
-			D1_INFO("get_spell_cost(%s, %d) = %d\n",
-				names_spell[spell], half_cost, (short)reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x0052) {
-			unsigned short spell = CPU_Pop16();
-			signed short bonus = CPU_Pop16();
-			CPU_Push16(bonus);
-			CPU_Push16(spell);
-
-			D1_INFO("Zauberprobe für alle\n");
-			reg_ax = test_spell_group(spell, bonus);
-
-			return 1;
-		}
-		if (offs == 0x0057) {
-			D1_INFO("Menu: Zauberer auswählen\n", offs);
-			return 0;
-		}
-		D1_ERR("Uncatched call to Segment seg098:0x%04x\n", offs);
-		exit(1);
-		return 0;
-	}
+	if (segm == 0x1449)
+		return seg098(offs);
 	if (segm == 0x144f) return 0;
 	if (segm == 0x145e) return 0;
 	if (segm == 0x1467) return 0;
