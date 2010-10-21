@@ -1163,8 +1163,17 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			return 0;	}
 
 		if (offs == 0x70b){
-			D1_LOG("Mul unsigned long\n");
-			return 0;	}
+			unsigned long retval;
+			retval = (reg_dx << 16 | reg_ax) * (reg_cx << 16 | reg_bx);
+			D1_INFO("Mul unsigned long %u * %u = %lu\n",
+				reg_dx << 16 | reg_ax,
+				reg_cx << 16 | reg_bx,
+				retval);
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			return 1;
+		}
 		/* struct copy*/
 		if (offs == 0x722) {
 			RealPt src = CPU_Pop32();
