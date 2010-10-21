@@ -36,6 +36,7 @@ extern const char* names_skill[];
 extern const char* names_spell[];
 
 extern unsigned short datseg;
+extern unsigned short relocation;
 
 extern void init_schick(char *, unsigned short, unsigned short, unsigned short);
 extern void exit_schick(unsigned char);
@@ -53,6 +54,7 @@ extern void schick_ret();
 extern void schick_calln16(unsigned);
 
 extern int schick_farcall_gen105(unsigned, unsigned, unsigned);
+extern int schick_farcall_v302de(unsigned, unsigned, unsigned);
 
 extern void schick_status_init();
 extern void schick_status_exit();
