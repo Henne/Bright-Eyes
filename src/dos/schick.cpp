@@ -805,7 +805,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x1ecc) return 0;
 		if (offs == 0x21ab) return 0;
 		if (offs == 0x232a) return 0;
-		if (offs == 0x25ce) return 0;
+		if (offs == 0x25ce) {
+			reg_ax = get_current_season();
+			return 1;
+		}
 		if (offs == 0x274e) return 0;
 		/* Wunder Rondra: Starker Schwertarm */
 		if (offs == 0x2e26) return 0;
@@ -816,7 +819,10 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x3071) return 0;
 		if (offs == 0x3230) return 0;
 		if (offs == 0x37c4) return 0;
-		if (offs == 0x3b4f) return 0;
+		if (offs == 0x3b4f) {
+			D1_INFO("set_and_spin_lock()\n");
+			return 1;
+		}
 		if (offs == 0x3ca6) return 0;
 		/* Schiffsfahrt */
 		if (offs == 0x3dbb) return 0;

@@ -26,6 +26,24 @@ short cmp_smth(unsigned short v1, unsigned short v2,
 	return 1;
 }
 
+unsigned short get_current_season() {
+	/* Check Winter */
+	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x463e)))
+		return 0;
+	/* Check Summer */
+	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x4642)))
+		return 2;
+	/* Check Spring */
+	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x463a)))
+		return 1;
+
+	return 3;
+}
+
+void set_and_spin_lock() {
+	real_writew(datseg, 0xbcd6, 1);
+	while (real_readw(datseg, 0xbcd6)) {};
+}
 void set_to_ff() {
 	unsigned i;
 
