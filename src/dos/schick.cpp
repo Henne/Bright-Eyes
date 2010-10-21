@@ -730,12 +730,12 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 
 			if (RealSeg(rptr) == 0xa000)
 
-				D1_GFX("FillRect(X=%u,Y=%u,color=%u,width=%u,height=%u)\n",
+				D1_GFX("fill_rect(X=%u,Y=%u,color=%u,width=%u,height=%u)\n",
 					RealOff(rptr) % 320,
 					RealOff(rptr) / 320,
 					color, width, height);
 			else
-				D1_GFX("FillRect(dest=0x%04x:0x%04x,color=%u,cnt=%u,%u)\n",
+				D1_GFX("fill_rect(dest=0x%04x:0x%04x,color=%u,cnt=%u,%u)\n",
 					RealSeg(rptr), RealOff(rptr),
 					color, width, height);
 			return 1;

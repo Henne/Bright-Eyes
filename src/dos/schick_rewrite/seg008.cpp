@@ -56,9 +56,11 @@ void save_rect(PhysPt src, PhysPt dest, unsigned short width, unsigned short hei
 }
 
 void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height) {
-	unsigned short x,y;
+	unsigned short x;
 
-	for (y = 0; y < height; y++)
+	for (; height; height--) {
 		for (x = 0; x < width; x++)
-			mem_writeb_inline(ptr + y*320 + x, color);
+			mem_writeb_inline(ptr++ , color);
+	ptr += 320 - width;
+	}
 }
