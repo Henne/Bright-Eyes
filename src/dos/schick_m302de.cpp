@@ -1169,7 +1169,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			D1_LOG("F_SCOPY()");
 			memcpy(MemBase + Real2Phys(dst),
 				MemBase + Real2Phys(src), reg_cx);
-
+			RET(8);
 			return 1;
 		}
 		/* getcurdir() */

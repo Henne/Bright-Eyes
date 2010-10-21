@@ -1,5 +1,9 @@
 #include <stdio.h>
 
+
+#include "cpu.h"
+#include "mem.h"
+
 #define SCHICK_INFO
 //#define SCHICK_LOG
 #define SCHICK_TRAC
@@ -30,6 +34,12 @@ static inline void D1_TRAC(...) { }
 #else
 static inline void D1_GFX(...) { }
 #endif
+
+
+/* Stack cleanup for ret i16 (not typical in C) */
+static inline void RET(unsigned short val) {
+	reg_sp += val;
+}
 
 extern const char* names_attrib[];
 extern const char* names_skill[];
