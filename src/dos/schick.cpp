@@ -542,7 +542,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			CPU_Push16(val);
 
 			reg_ax = swap_u16(val);
-			D1_GFX("SwapU16(val=0x%04x); = 0x%04x\n", val, reg_ax);
+			D1_GFX("swap_u16(val=0x%04x); = 0x%04x\n", val, reg_ax);
 
 			return 1;
 		}
@@ -550,7 +550,7 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			unsigned short mode = CPU_Pop16();
 			CPU_Push16(mode);
 
-			D1_GFX("SetVideoMode(mode=0x%x);\n", mode);
+			D1_GFX("set_video_mode(mode=0x%x);\n", mode);
 			set_video_mode(mode);
 
 			return 1;
@@ -565,9 +565,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x40) {
+			RealPt addr = CPU_Pop32();
+			CPU_Push32(addr);
+
 			D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
-				real_readw(ss, reg_sp+2), real_readw(ss, reg_sp));
-				return 0;
+				RealSeg(addr), RealOff(addr));
+
+			return 0;
 		}
 		if (offs == 0xea) {
 			RealPt ptr = CPU_Pop32();
