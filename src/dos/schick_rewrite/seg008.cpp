@@ -4,6 +4,7 @@
 */
 
 #include "mem.h"
+#include "paging.h"
 
 #include "../../ints/int10.h"
 
@@ -29,3 +30,13 @@ void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors){
 		INT10_SetSingleDacRegister(first_color + i,
 			ptr[i*3], ptr[i*3+1], ptr[i*3+2]);
 }
+
+void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space) {
+	unsigned short i;
+
+	for (i = 0; i < count; i++) {
+		mem_writeb_inline(ptr, color);
+		ptr += space;
+	}
+}
+

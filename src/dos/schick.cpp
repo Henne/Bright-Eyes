@@ -630,19 +630,24 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x1af) {
-			unsigned short off=real_readw(ss, reg_sp);
-			unsigned short seg=real_readw(ss, reg_sp+2);
-			unsigned short cnt=real_readw(ss, reg_sp+4);
-			unsigned char color=real_readb(ss, reg_sp+6);
-			unsigned short space=real_readw(ss, reg_sp+8);
+			RealPt rptr = CPU_Pop32();
+			unsigned short cnt = CPU_Pop16();
+			unsigned short color = CPU_Pop16();
+			unsigned short space = CPU_Pop16();
+			CPU_Push16(space);
+			CPU_Push16(color);
+			CPU_Push16(cnt);
+			CPU_Push32(rptr);
 
-			if (seg == 0xa000)
+			draw_h_spaced_dots(Real2Phys(rptr), cnt, color, space);
+			if (RealSeg(rptr) == 0xa000)
 				D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
-					off%320, off/320, cnt, color, space);
+					RealOff(rptr) % 320,
+					RealOff(rptr) / 320, cnt, color, space);
 			else
-				D1_GFX("HSpacedDots(0x%04x:0x%04x,0x%04x,0x%02x);\n",
-					seg, off, cnt, color, space);
-			return 0;
+				D1_GFX("HSpacedDots(0x%04x:0x%04x,0x%04x,0x%02x,0x%04x);\n",
+					RealSeg(rptr), RealOff(rptr), cnt, color, space);
+			return 1;
 		}
 		if (offs == 0x219) {
 			unsigned short off_dest=real_readw(ss, reg_sp);
