@@ -8,6 +8,7 @@
 #include "schick_rewrite/seg002.h"
 #include "schick_rewrite/seg003.h"
 #include "schick_rewrite/seg007.h"
+#include "schick_rewrite/seg008.h"
 #include "schick_rewrite/seg098.h"
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
@@ -537,9 +538,13 @@ int schick_farcall_v302(unsigned segm, unsigned offs, unsigned ss)
 
 	if (segm == 0xf18)	{
 		if (offs == 0x8) {
-			D1_GFX("SwapU16(val=0x%x);\n",
-					real_readw(ss, reg_sp));
-			return 0;
+			unsigned short val = CPU_Pop16();
+			CPU_Push16(val);
+
+			reg_ax = swap_u16(val);
+			D1_GFX("SwapU16(val=0x%04x); = 0x%04x\n", val, reg_ax);
+
+			return 1;
 		}
 		if (offs == 0x14) {
 			D1_GFX("SetVideoMode(mode=0x%x);\n",
