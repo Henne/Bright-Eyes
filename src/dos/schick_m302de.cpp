@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "schick.h"
-#include "cpu.h"
 
 #include "schick_rewrite/seg002.h"
 #include "schick_rewrite/seg003.h"
@@ -12,14 +11,6 @@
 
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
-
-static inline Bit8u* schick_getCharname(unsigned p) {
-    return MemBase+Real2Phys(p)+16;
-}
-
-static inline Bit8u* getString(unsigned p) {
-	return MemBase+Real2Phys(p);
-}
 
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)

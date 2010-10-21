@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "schick.h"
-#include "cpu.h"
 
 #define SCHICK_DAT(pos, name)	case pos: strcpy(file, name); break;
 
@@ -506,14 +505,6 @@ const char* names_spell[] = {
     "Adler, Wolf", "Arcano Psychostabilis", "Armatrutz", "CH steigern", "Feuerbann", "FF steigern", "GE steigern", "IN steigern", "KK steigern", "KL steigern", "MU steigern", "Mutabili", "Paralü", "Salander", "See & Fluss", "Visibili", // Verwandlung
     "Abvenenum", "Aeolitus", "Brenne", "Claudibus", "Dunkelheit", "Erstarre", "Flim Flam", "Schmelze", "Silentium", "Sturmgebrüll" // Veränderung
 };
-
-static inline Bit8u* schick_getCharname(unsigned p) {
-    return MemBase+Real2Phys(p)+16;
-}
-
-static inline Bit8u* getString(unsigned p) {
-	return MemBase+Real2Phys(p);
-}
 
 int schick_callf(unsigned selector, unsigned offs, unsigned ss)
 {
