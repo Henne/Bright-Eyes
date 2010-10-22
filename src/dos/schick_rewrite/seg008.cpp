@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of segment 008 (Rasterlib)
-        Functions rewritten: 9/14
+        Functions rewritten: 10/14
 */
 
 #include "mem.h"
@@ -63,4 +63,56 @@ void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned s
 			mem_writeb_inline(ptr++ , color);
 	ptr += 320 - width;
 	}
+}
+
+void decomp_rle(unsigned short width, unsigned short height, Bit8u *dst,
+	Bit8u *src, Bit8u *tmp_buffer, unsigned short mode) {
+
+	Bit8u *my_dst;
+	unsigned short i,x;
+	unsigned char tmp;
+	unsigned char cnt;
+
+	/* select destination buffer */
+	if (mode == 5 || mode == 4)
+		my_dst = tmp_buffer;
+	else
+		my_dst = dst;
+
+	do {
+		/* decode one line */
+		x = width;
+		do {
+			tmp = *src++;
+			if (tmp == 0x7f) {
+				cnt = *src++;
+				tmp = *src++;
+				for (i = 0; i < cnt; i++)
+					*my_dst++ = tmp;
+				x -= cnt;
+			} else {
+				*my_dst++ = tmp;
+				x--;
+			}
+		} while (x);
+
+		/* reverse line */
+		if (mode == 5 || mode == 4) {
+			my_dst--;
+			for (i = width; i; i--)
+				*dst++ = *my_dst--;
+		}
+
+		/* set destination to next line */
+		switch (mode) {
+		case	5:	break;
+		case	3:	dst += width;
+				break;
+		case	2:	dst += 320;
+				break;
+		case	4:	dst += 320 - width;
+				break;
+		}
+
+	} while (--height);
 }

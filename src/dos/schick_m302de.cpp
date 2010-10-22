@@ -696,13 +696,29 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			return 0;
 		}
 		if (offs == 0x967){
-			D1_GFX("RLE(width=%d, height=%d, src_pp=0x%x:0x%x, dst=0x%x:0x%x, src_rle=0x%x:0x%x, mode=%d)\n",
-				real_readw(ss, reg_sp), real_readw(ss, reg_sp+2),
-				real_readw(ss, reg_sp+6), real_readw(ss, reg_sp+4),
-				real_readw(ss, reg_sp+10), real_readw(ss, reg_sp+8),
-				real_readw(ss, reg_sp+14),real_readw(ss, reg_sp+12),
-				real_readw(ss, reg_sp+16));
-				return 0;
+			unsigned short width = CPU_Pop16();
+			unsigned short height = CPU_Pop16();
+			RealPt dst = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			RealPt tmp_buffer = CPU_Pop32();
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+			CPU_Push32(tmp_buffer);
+			CPU_Push32(src);
+			CPU_Push32(dst);
+			CPU_Push16(height);
+			CPU_Push16(width);
+
+			D1_GFX("decomp_rle(width=%d, height=%d, dst=0x%x:0x%x, src=0x%x:0x%x, tmp_buffer=0x%x:0x%x, mode=%d)\n",
+				width, height,	RealSeg(dst), RealOff(dst),
+				RealSeg(src), RealOff(src), RealSeg(tmp_buffer),
+				RealOff(tmp_buffer), mode);
+
+			decomp_rle(width, height, MemBase + Real2Phys(dst),
+				MemBase + Real2Phys(src),
+				MemBase + Real2Phys(tmp_buffer), mode);
+
+			return 1;
 		}
 		D1_GFX("Rasterlib:0x%x\n", offs);
 		return 0;

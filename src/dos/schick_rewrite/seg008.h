@@ -8,3 +8,6 @@ extern void draw_h_line(PhysPt ptr, unsigned short count, unsigned char color);
 extern void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space);
 extern void save_rect(PhysPt src, PhysPt dest, unsigned short width, unsigned short height);
 extern void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height);
+
+extern void decomp_rle(unsigned short width, unsigned short height,
+	Bit8u *dst, Bit8u *src, Bit8u *tmp_buffer, unsigned short mode);
