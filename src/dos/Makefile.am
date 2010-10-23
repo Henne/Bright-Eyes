@@ -11,6 +11,7 @@ libdos_a_SOURCES = dos.cpp dos_devices.cpp dos_execute.cpp dos_files.cpp dos_ioc
 		schick_status.cpp schick_m302de.cpp\
 		schick_rewrite/seg002.cpp schick_rewrite/seg002.h\
 		schick_rewrite/seg003.cpp schick_rewrite/seg003.h\
+		schick_rewrite/seg004.cpp schick_rewrite/seg004.h\
 		schick_rewrite/seg007.cpp schick_rewrite/seg007.h\
 		schick_rewrite/seg008.cpp schick_rewrite/seg008.h\
 		schick_rewrite/seg098.cpp schick_rewrite/seg098.h

@@ -5,6 +5,7 @@
 
 #include "schick_rewrite/seg002.h"
 #include "schick_rewrite/seg003.h"
+#include "schick_rewrite/seg004.h"
 #include "schick_rewrite/seg007.h"
 #include "schick_rewrite/seg008.h"
 #include "schick_rewrite/seg098.h"
@@ -356,6 +357,29 @@ static int seg002(unsigned short offs) {
 	}
 }
 
+static int seg004(unsigned short offs) {
+	switch (offs) {
+	case 0x134:
+		D1_LOG("set_var_to_zero()\n");
+		set_var_to_zero();
+		return 1;
+	case 0x1190:
+		D1_LOG("schick_set_video()\n");
+		schick_set_video();
+		return 1;
+	case 0x11c1:
+		D1_LOG("schick_reset_video()\n");
+		schick_reset_video();
+		return 1;
+	case 0x144c:
+		D1_LOG("do_save_rect()\n");
+		do_save_rect();
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 static int seg098(unsigned short offs) {
 	switch (offs) {
 
@@ -450,12 +474,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		return 0;
 	if (segm == 0x51e)
 		return seg002(offs);
-
-	if (segm == 0xb2a)	{
-		//this is for mouse handling and spams the log
-		//D1_LOG("Segment 0xb2a:0x%04x\n", offs);
-		return 0;
-	}
+	if (segm == 0xb2a)
+		return seg004(offs);
 
 	if (segm == 0xf18) {
 		if (offs == 0x8) {
@@ -467,6 +487,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 
 			return 1;
 		}
+#if 0
 		if (offs == 0x14) {
 			unsigned short mode = CPU_Pop16();
 			CPU_Push16(mode);
@@ -480,11 +501,12 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			unsigned short page = CPU_Pop16();
 			CPU_Push16(page);
 
-			D1_GFX("set_display_page(page=0x%x);\n", page);
+			D1_GFX("set_video_page(page=0x%x);\n", page);
 			set_video_page(page);
 
 			return 1;
 		}
+#endif
 		if (offs == 0x40) {
 			RealPt addr = CPU_Pop32();
 			CPU_Push32(addr);
@@ -607,6 +629,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 					width, height, seg_src, off_src);
 			return 0;
 		}
+#if 0
 		if (offs == 0x655) {
 			RealPt rptr = CPU_Pop32();
 			RealPt dst = CPU_Pop32();
@@ -616,8 +639,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			CPU_Push16(width);
 			CPU_Push32(dst);
 			CPU_Push32(rptr);
-
 			/* Seg and Off are swapped */
+
 			rptr = (rptr >> 16) | (rptr << 16);
 
 			save_rect(Real2Phys(rptr), Real2Phys(dst), width, height);
@@ -634,6 +657,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 					width, height);
 			return 1;
 		}
+#endif
 		if (offs == 0x68c) {
 			RealPt rptr = CPU_Pop32();
 			unsigned short color = CPU_Pop16();
