@@ -662,20 +662,32 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x6c5) {
-			unsigned short off_dst=real_readw(ss, reg_sp);
-			unsigned short seg_dst=real_readw(ss, reg_sp+2);
-			unsigned short off_src=real_readw(ss, reg_sp+4);
-			unsigned short seg_src=real_readw(ss, reg_sp+6);
-			unsigned short val1=real_readw(ss, reg_sp+8);
-			unsigned short val2=real_readw(ss, reg_sp+10);
-			unsigned short val3=real_readw(ss, reg_sp+12);
-			unsigned short val4=real_readw(ss, reg_sp+16);
+			RealPt dst = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			unsigned short width_to_copy = CPU_Pop16();
+			unsigned short height = CPU_Pop16();
+			unsigned short dst_width = CPU_Pop16();
+			unsigned short src_width = CPU_Pop16();
+			unsigned short solid = CPU_Pop16();
+			CPU_Push16(solid);
+			CPU_Push16(src_width);
+			CPU_Push16(dst_width);
+			CPU_Push16(height);
+			CPU_Push16(width_to_copy);
+			CPU_Push32(src);
+			CPU_Push32(dst);
 
-			D1_GFX("0x6c5(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,%u,%u,%u,%u)\n",
-					seg_dst, off_dst,
-					seg_src, off_src,
-					val1, val2, val3, val4);
-			return 0;
+			D1_GFX("copy_solid_permuted(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,width_to_copy=%u,height=%u,dst_width=%u,src_width=%u,solid=%u)\n",
+					RealSeg(dst), RealOff(dst),
+					RealSeg(src), RealOff(src),
+					width_to_copy, height, dst_width,
+					src_width, solid);
+
+			copy_solid_permuted(MemBase + Real2Phys(dst),
+				MemBase + Real2Phys(src), width_to_copy,
+				height,	dst_width, src_width, solid);
+
+			return 1;
 		}
 		/* used often in cities and dungeons */
 		if (offs == 0x816) {

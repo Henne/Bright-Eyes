@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of segment 008 (Rasterlib)
-        Functions rewritten: 11/14
+        Functions rewritten: 12/14
 */
 
 #include "mem.h"
@@ -63,6 +63,24 @@ void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned s
 			mem_writeb_inline(ptr++ , color);
 	ptr += 320 - width;
 	}
+}
+
+void copy_solid_permuted(Bit8u *dst, Bit8u *src, unsigned short width_to_copy,
+	unsigned short height, unsigned short dst_width,
+	unsigned short src_width, unsigned short solid) {
+
+	Bit8u *s, *d;
+	unsigned short y,x;
+
+	s = src;
+	d = dst;
+	for (y = 0; y < height; y++, s = src += src_width, d = dst += dst_width)
+		for (x = width_to_copy; x ; x--) {
+			if (*s != solid)
+				*d = *s;
+			d++;
+			s--;
+		}
 }
 
 void copy_solid(Bit8u *dst, Bit8u *src, unsigned short width_to_copy,
