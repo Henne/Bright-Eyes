@@ -743,7 +743,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 
 			return 1;
 		}
-		D1_GFX("Rasterlib:0x%x\n", offs);
+		D1_ERR("Uncatched call to Segment seg008:0x%04x\n", offs);
+		exit(1);
 		return 0;
 	}
 
