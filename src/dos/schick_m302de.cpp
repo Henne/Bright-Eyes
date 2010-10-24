@@ -55,7 +55,10 @@ static int seg002(unsigned short offs) {
 	case 0x0d27: {
 		unsigned short index = CPU_Pop16();
 		CPU_Push16(index);
-		D1_LOG("OpenAndSeekDatfile(%u)\n", index);
+
+		RealPt fname = real_readd(datseg, 0x4c8c + index * 4);
+
+		D1_INFO("OpenAndSeekDatfile(0x%x) %s\n", index, getString(fname));
 		return 0;
 	}
 	case 0x0ed2:
@@ -386,6 +389,7 @@ static int seg004(unsigned short offs) {
 		return 0;
 	}
 }
+
 static int seg005(unsigned short offs) {
 	/* seg005 has only one func called by far */
 	switch (offs) {
