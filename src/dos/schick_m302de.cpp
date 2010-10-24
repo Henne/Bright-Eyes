@@ -379,6 +379,17 @@ static int seg004(unsigned short offs) {
 		return 0;
 	}
 }
+static int seg005(unsigned short offs) {
+	/* seg005 has only one func called by far */
+	switch (offs) {
+		case 0x598:
+			return 0;
+		default:
+			D1_ERR("Uncatched call to Segment seg005:0x%04x\n",
+				offs);
+			exit(1);
+	}
+}
 
 static int seg098(unsigned short offs) {
 	switch (offs) {
@@ -476,6 +487,12 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		return seg002(offs);
 	if (segm == 0xb2a)
 		return seg004(offs);
+	if (segm == 0xbce)
+		return seg005(offs);
+	if (segm == 0xc85)
+		return 0;
+	if (segm == 0xe41)
+		return 0;
 
 	if (segm == 0xf18) {
 		if (offs == 0x8) {
@@ -785,8 +802,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		}
 		return 0;
 	}
-	if (segm == 0x0c85) return 0;
-	if (segm == 0x0e41) return 0;
 	if (segm == 0x0ef8) {
 
 		if (offs == 0x000b) {
