@@ -46,7 +46,7 @@ static int seg002(unsigned short offs) {
 		unsigned short index = CPU_Pop16();
 		CPU_Push16(index);
 
-		D1_LOG("ReadDatfile()\n");
+		D1_LOG("ReadDatfile(%d)\n", index);
 		return 0;
 	}
 	case 0x0c72:
