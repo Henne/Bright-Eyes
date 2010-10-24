@@ -1428,7 +1428,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 					RealSeg(dest), RealOff(dest),
 					RealSeg(src), RealSeg(src), n);
 
-			memcpy(MemBase + Real2Phys(dest), MemBase + Real2Phys(src), n);
+			mem_memcpy(Real2Phys(dest), Real2Phys(src), n);
 
 			reg_ax = RealOff(dest);
 			reg_dx = RealSeg(dest);
