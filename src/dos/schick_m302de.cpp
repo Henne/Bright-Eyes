@@ -16,9 +16,16 @@ static char dice_tab[4] = {6, 20, 3, 4};
 static int seg002(unsigned short offs) {
 	switch (offs) {
 
-	case 0x0017:
+	case 0x0017: {
+		unsigned short track = CPU_Pop16();
+		CPU_Push16(track);
+
+		D1_LOG("set_cda_track(%d);\n", track);
+		return 0;
+	}
 	case 0x0045:	/* wird bei Musikmenu aufgerufen */
 	case 0x0209:
+		return 0;
 	case 0x06fe:
 	case 0x0832:	/* GUI Radio */
 	case 0x0856:	/* Betrunken */
