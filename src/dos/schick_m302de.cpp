@@ -8,6 +8,7 @@
 #include "schick_rewrite/seg004.h"
 #include "schick_rewrite/seg007.h"
 #include "schick_rewrite/seg008.h"
+#include "schick_rewrite/seg009.h"
 #include "schick_rewrite/seg098.h"
 
 /* dice table */
@@ -395,6 +396,36 @@ static int seg005(unsigned short offs) {
 	switch (offs) {
 		case 0x598:
 			return 0;
+		default:
+			D1_ERR("Uncatched call to Segment seg005:0x%04x\n",
+				offs);
+			exit(1);
+	}
+}
+
+static int seg009(unsigned short offs) {
+	switch (offs) {
+		case 0x8: {
+			RealPt p1 = CPU_Pop32();
+			RealPt p2 = CPU_Pop32();
+			RealPt p3 = CPU_Pop32();
+			unsigned int len = CPU_Pop32();
+			CPU_Push32(len);
+			CPU_Push32(p3);
+			CPU_Push32(p2);
+			CPU_Push32(p1);
+
+			D1_LOG("decomp_pp20(0x%04x:0x%04x, 0x%04x:0x%04x, 0x%04x:0x%04x, %u)\n",
+				RealSeg(p1), RealOff(p1),
+				RealSeg(p2), RealOff(p2),
+				RealSeg(p3), RealOff(p3), len);
+
+			decomp_pp20(MemBase + Real2Phys(p1),
+				MemBase + Real2Phys(p2),
+				MemBase + Real2Phys(p3), len);
+
+			return 1;
+		}
 		default:
 			D1_ERR("Uncatched call to Segment seg005:0x%04x\n",
 				offs);
@@ -963,7 +994,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		return 0;
 	}
 
-	if (segm == 0x0ff1) return 0;
+	if (segm == 0x0ff1)
+		return seg009(offs);
 	if (segm == 0x1030) return 0;
 	/* No overlay */
 	if (segm == 0x1042) return 0;
