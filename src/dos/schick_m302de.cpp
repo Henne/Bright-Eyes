@@ -478,6 +478,34 @@ static int seg098(unsigned short offs) {
 	return 0;
 }
 
+static int seg103(unsigned short offs) {
+	switch (offs) {
+		case 0x20: { // Talentprobe
+			unsigned p0 = CPU_Pop32();
+			unsigned p1 = CPU_Pop16();
+			unsigned p2 = CPU_Pop16();
+			CPU_Push16(p2);
+			CPU_Push16(p1);
+			CPU_Push32(p0);
+
+			signed char p2_r = p2 & 0xFF;
+			D1_INFO("Talentprobe %s: %s %+d ",
+						schick_getCharname(p0),
+						names_skill[p1], p2_r);
+			return 0;
+		}
+		case 0x25:
+		case 0x2a:
+		case 0x34:
+		case 0x43:
+			 return 0;
+		default:
+			D1_ERR("Uncatched call to Segment seg103:0x%04x\n",
+				offs);
+			exit(1);
+	}
+}
+
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 {
@@ -1154,26 +1182,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	/* Kampf Gegner zaubert */
 	if (segm == 0x1472) return 0;
 	/* Talent anwenden*/
-	if (segm == 0x147b) {
-		if (offs == 0x0020) { // Talentprobe
-			unsigned p0 = CPU_Pop32();
-			unsigned p1 = CPU_Pop16();
-			unsigned p2 = CPU_Pop16();
-			CPU_Push16(p2);
-			CPU_Push16(p1);
-			CPU_Push32(p0);
-
-			signed char p2_r = p2 & 0xFF;
-			D1_INFO("Talentprobe %s: %s %+d ",
-						schick_getCharname(p0),
-						names_skill[p1], p2_r);
-			return 0;
-		}
-		if (offs == 0x0025) return 0;
-		D1_INFO("\t\tTalent:0x%x\n", offs);
-		return 0;
-	}
-
+	if (segm == 0x147b)
+		return seg103(offs);
 	if (segm == 0x1480) return 0;
 	if (segm == 0x1485) return 0;
 	if (segm == 0x148c) return 0;
