@@ -56,7 +56,7 @@ void pic_copy(PhysPt dst, unsigned short x1, unsigned short y1,
 	Bit8u *src, unsigned short mode) {
 
 	unsigned short ds_3, ds_1, ds_2, ds_4;
-	unsigned short cur_height, cur_width;
+	short cur_height, cur_width;
 	unsigned short lv1, lv2, lv3, lv4, lv5;
 
 	cur_width = src_width;
@@ -114,7 +114,7 @@ void pic_copy(PhysPt dst, unsigned short x1, unsigned short y1,
 
 	switch (mode) {
 	case 1: {
-		unsigned short bx, cols, lines;
+		short bx, cols, lines;
 
 		lines = cur_height;
 		bx = 320 - cur_width;
@@ -140,31 +140,32 @@ void pic_copy(PhysPt dst, unsigned short x1, unsigned short y1,
 			}
 			dst += bx;
 			src += lv5;
-		} while (--lines);
+		} while (--lines > 0);
 
 		break;
 	}
 	case 2: {
-		unsigned short bx, lines, cols;
+		short bx, lines, cols;
 
 		lines = cur_height;
 		bx = 320 - cur_width;
+
 		do {
 			cols = cur_width;
-			while (cols--) {
+			do {
 				if (*src != 0)
 					mem_writeb_inline(dst, *src);
 				src++;
 				dst++;
-			}
+			} while (--cols);
 			dst += bx;
 			src += lv5;
-		} while (--lines);
+		} while (--lines > 0);
 
 		break;
 	}
 	case 3: {
-		unsigned short bx, lines, cols;
+		short bx, lines, cols;
 
 		src += val2 * 320 + val1;
 
@@ -179,7 +180,7 @@ void pic_copy(PhysPt dst, unsigned short x1, unsigned short y1,
 		break;
 	}
 	default: {
-		unsigned short bx, lines, cols;
+		short bx, lines, cols;
 
 		lines = cur_height;
 		bx = 320 - cur_width;
