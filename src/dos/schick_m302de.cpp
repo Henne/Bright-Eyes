@@ -889,6 +889,14 @@ static int seg103(unsigned short offs) {
 	}
 }
 
+/*
+	In seg122 is only an empty function.
+	We bypass it and avoid unneccesarry overlay magic.
+*/
+static inline int seg122(unsigned short offs) {
+	return 1;
+}
+
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 {
@@ -1309,7 +1317,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x14ed) return 0;
 	if (segm == 0x14f0) return 0;
 	if (segm == 0x14f6) return 0;
-	if (segm == 0x14f9) return 0;
+	if (segm == 0x14f9)
+		return seg122(offs);
 
 	/* Borland C++ runtime */
 	if (segm == 0x0) {
