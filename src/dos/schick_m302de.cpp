@@ -433,6 +433,34 @@ static int seg009(unsigned short offs) {
 	}
 }
 
+static int seg012(unsigned short offs) {
+	/*
+		seg012 has only one func called by far directly.
+		The fcall to the func at 0xd29 must be done by a jump to
+		a pointer value.
+	 */
+	switch (offs) {
+		case 0x8ed: {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_LOG("seg12_8ed(%u, %u, %u);\n", v1, v2, v3);
+			return 0;
+		}
+		case 0xd29:
+			D1_LOG("seg12_d29();\n");
+			return 0;
+		default:
+			D1_ERR("Uncatched call to Segment seg012:0x%04x\n",
+				offs);
+			exit(1);
+	}
+}
+
 static int seg098(unsigned short offs) {
 	switch (offs) {
 
@@ -999,7 +1027,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x1030) return 0;
 	/* No overlay */
 	if (segm == 0x1042) return 0;
-	if (segm == 0x1112) return 0;
+	if (segm == 0x1112)
+		return seg012(offs);
 
 	if (segm == 0x12db) return 0;
 	if (segm == 0x12de) return 0;
