@@ -403,6 +403,316 @@ static int seg005(unsigned short offs) {
 	}
 }
 
+static int seg008(unsigned short offs) {
+
+	switch (offs) {
+
+	case 0x8: {
+		unsigned short val = CPU_Pop16();
+		CPU_Push16(val);
+
+		reg_ax = swap_u16(val);
+		D1_GFX("swap_u16(val=0x%04x); = 0x%04x\n", val, reg_ax);
+
+		return 1;
+	}
+#if 0
+	case 0x14: {
+		unsigned short mode = CPU_Pop16();
+		CPU_Push16(mode);
+
+		D1_GFX("set_video_mode(mode=0x%x);\n", mode);
+		set_video_mode(mode);
+
+		return 1;
+	}
+	case 0x2a: {
+		unsigned short page = CPU_Pop16();
+		CPU_Push16(page);
+
+		D1_GFX("set_video_page(page=0x%x);\n", page);
+		set_video_page(page);
+
+		return 1;
+	}
+#endif
+	case 0x40: {
+		RealPt addr = CPU_Pop32();
+		CPU_Push32(addr);
+
+		D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
+			RealSeg(addr), RealOff(addr));
+
+		return 0;
+	}
+	case 0xea: {
+		RealPt ptr = CPU_Pop32();
+		unsigned short color = CPU_Pop16();
+		CPU_Push16(color);
+		CPU_Push32(ptr);
+
+		D1_GFX("set_color(rgb=0x%x:0x%x, color=0x%x);\n",
+			RealSeg(ptr), RealOff(ptr), color);
+
+		set_color(MemBase + Real2Phys(ptr), color);
+
+		D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
+			real_readb(RealSeg(ptr), RealOff(ptr)),
+			real_readb(RealSeg(ptr), RealOff(ptr) + 1),
+			real_readb(RealSeg(ptr), RealOff(ptr) + 2));
+
+		return 1;
+	}
+	case 0x119: {
+		RealPt ptr = CPU_Pop32();
+		unsigned short first_color = CPU_Pop16();
+		unsigned short colors = CPU_Pop16();
+		CPU_Push16(colors);
+		CPU_Push16(first_color);
+		CPU_Push32(ptr);
+
+		unsigned short i;
+
+		D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
+			RealSeg(ptr), RealOff(ptr), first_color, colors);
+
+		set_palette(MemBase + Real2Phys(ptr), first_color, colors);
+
+		if (RealSeg(ptr) == datseg)
+			D1_LOG("Palette at DS:0x%x\n", RealSeg(ptr));
+		for (i=0; i<colors; i++)
+			D1_GFX("\"\\%02d\\%02d\\%02d\"..\n",
+				host_readb(MemBase + Real2Phys(ptr)+i*3),
+				host_readb(MemBase + Real2Phys(ptr)+i*3+1),
+				host_readb(MemBase + Real2Phys(ptr)+i*3+2));
+		return 1;
+	}
+	case 0x14d: {
+		RealPt rptr = CPU_Pop32();
+		unsigned short cnt = CPU_Pop16();
+		unsigned short color = CPU_Pop16();
+		CPU_Push16(color);
+		CPU_Push16(cnt);
+		CPU_Push32(rptr);
+
+		draw_h_line(Real2Phys(rptr), cnt, color);
+
+		if (RealSeg(rptr) == 0xa000)
+			D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
+				RealOff(rptr) % 320,
+				RealOff(rptr) / 320, cnt, color);
+		else
+			D1_GFX("HLine(0x%04x:0x%04x,len=%u,color=0x%02x);\n",
+				RealSeg(rptr), RealOff(rptr), cnt, color);
+		return 1;
+	}
+	case 0x1af: {
+		RealPt rptr = CPU_Pop32();
+		unsigned short cnt = CPU_Pop16();
+		unsigned short color = CPU_Pop16();
+		unsigned short space = CPU_Pop16();
+		CPU_Push16(space);
+		CPU_Push16(color);
+		CPU_Push16(cnt);
+		CPU_Push32(rptr);
+
+		draw_h_spaced_dots(Real2Phys(rptr), cnt, color, space);
+		if (RealSeg(rptr) == 0xa000)
+			D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
+				RealOff(rptr) % 320,
+				RealOff(rptr) / 320, cnt, color, space);
+		else
+			D1_GFX("HSpacedDots(0x%04x:0x%04x,0x%04x,0x%02x,0x%04x);\n",
+				RealSeg(rptr), RealOff(rptr), cnt, color, space);
+		return 1;
+	}
+	case 0x219: {
+		RealPt dst = CPU_Pop32();
+		unsigned short x1 = CPU_Pop16();
+		unsigned short y1 = CPU_Pop16();
+		unsigned short x2 = CPU_Pop16();
+		unsigned short y2 = CPU_Pop16();
+		unsigned short val12 = CPU_Pop16();
+		unsigned short val14 = CPU_Pop16();
+		unsigned short val16 = CPU_Pop16();
+		unsigned short val18 = CPU_Pop16();
+		unsigned short width = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		RealPt src = CPU_Pop32();
+		unsigned short mode = CPU_Pop16();
+		CPU_Push16(mode);
+		CPU_Push32(src);
+		CPU_Push16(height);
+		CPU_Push16(width);
+		CPU_Push16(val18);
+		CPU_Push16(val16);
+		CPU_Push16(val14);
+		CPU_Push16(val12);
+		CPU_Push16(y2);
+		CPU_Push16(x2);
+		CPU_Push16(y1);
+		CPU_Push16(x1);
+		CPU_Push32(dst);
+
+		if (RealSeg(dst) == 0xa000)
+			D1_GFX("pic_copy(X=%03u,Y=%03u,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x, val5=%d)\n",
+				RealOff(dst) %320, RealOff(dst) / 320,
+				x1, y1,	x2, y2,
+				val12, val14, val16, val18,
+				width, height,
+				RealSeg(src), RealOff(src), mode);
+		else
+			D1_GFX("pic_copy(dest=0x%04x:0x%04x,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x,val5=%d)\n",
+				RealSeg(dst), RealOff(dst),
+				x1, y1,	x2, y2,
+				val12, val14, val16, val18,
+				width, height, RealSeg(src), RealOff(src), mode);
+
+		pic_copy(Real2Phys(dst), x1, y1, x2, y2, val12, val14,
+			val16, val18, width, height,
+			MemBase+Real2Phys(src), mode);
+
+		return 1;
+	}
+#if 0
+	case 0x655: {
+		RealPt rptr = CPU_Pop32();
+		RealPt dst = CPU_Pop32();
+		unsigned short width = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		CPU_Push16(height);
+		CPU_Push16(width);
+		CPU_Push32(dst);
+		CPU_Push32(rptr);
+		/* Seg and Off are swapped */
+
+		rptr = (rptr >> 16) | (rptr << 16);
+
+		save_rect(Real2Phys(rptr), Real2Phys(dst), width, height);
+
+		if (RealSeg(rptr) == 0xa000)
+			D1_GFX("save_rect(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
+				RealOff(rptr) % 320, RealOff(rptr) / 320,
+				RealSeg(dst), RealOff(dst),
+				width, height);
+		else
+			D1_GFX("save_rect(src=0x%04x:0x%04x,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
+				RealSeg(rptr), RealOff(rptr),
+				RealSeg(dst), RealOff(dst),
+				width, height);
+		return 1;
+	}
+#endif
+	case 0x68c: {
+		RealPt rptr = CPU_Pop32();
+		unsigned short color = CPU_Pop16();
+		unsigned short width = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		CPU_Push16(height);
+		CPU_Push16(width);
+		CPU_Push16(color);
+		CPU_Push32(rptr);
+
+		/* Seg and Off are swapped */
+		rptr = (rptr >> 16) | (rptr << 16);
+
+		fill_rect(Real2Phys(rptr), color, width, height);
+
+		if (RealSeg(rptr) == 0xa000)
+
+			D1_GFX("fill_rect(X=%u,Y=%u,color=%u,width=%u,height=%u)\n",
+				RealOff(rptr) % 320,
+				RealOff(rptr) / 320,
+				color, width, height);
+		else
+			D1_GFX("fill_rect(dest=0x%04x:0x%04x,color=%u,cnt=%u,%u)\n",
+				RealSeg(rptr), RealOff(rptr),
+				color, width, height);
+		return 1;
+	}
+	case 0x6c5: {
+		RealPt dst = CPU_Pop32();
+		RealPt src = CPU_Pop32();
+		unsigned short width_to_copy = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		unsigned short dst_width = CPU_Pop16();
+		unsigned short src_width = CPU_Pop16();
+		unsigned short solid = CPU_Pop16();
+		CPU_Push16(solid);
+		CPU_Push16(src_width);
+		CPU_Push16(dst_width);
+		CPU_Push16(height);
+		CPU_Push16(width_to_copy);
+		CPU_Push32(src);
+		CPU_Push32(dst);
+
+		D1_GFX("copy_solid_permuted(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,width_to_copy=%u,height=%u,dst_width=%u,src_width=%u,solid=%u)\n",
+			RealSeg(dst), RealOff(dst), RealSeg(src), RealOff(src),
+			width_to_copy, height, dst_width, src_width, solid);
+
+		copy_solid_permuted(MemBase + Real2Phys(dst),
+			MemBase + Real2Phys(src), width_to_copy,
+			height,	dst_width, src_width, solid);
+
+		return 1;
+	}
+	/* used often in cities and dungeons */
+	case 0x816: {
+		RealPt dst = CPU_Pop32();
+		RealPt src = CPU_Pop32();
+		unsigned short width_to_copy = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		unsigned short dst_width = CPU_Pop16();
+		unsigned short src_width = CPU_Pop16();
+		unsigned short solid = CPU_Pop16();
+		CPU_Push16(solid);
+		CPU_Push16(src_width);
+		CPU_Push16(dst_width);
+		CPU_Push16(height);
+		CPU_Push16(width_to_copy);
+		CPU_Push32(src);
+		CPU_Push32(dst);
+
+		D1_GFX("copy_solid(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,width_to_copy=%u,height=%u,dst_width=%u,src_width=%u,solid=%u)\n",
+			RealSeg(dst), RealOff(dst), RealSeg(src), RealOff(src),
+			width_to_copy, height, dst_width, src_width, solid);
+
+		copy_solid(MemBase + Real2Phys(dst), MemBase + Real2Phys(src),
+			width_to_copy, height, dst_width, src_width, solid);
+
+		return 1;
+	}
+	case 0x967: {
+		unsigned short width = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		RealPt dst = CPU_Pop32();
+		RealPt src = CPU_Pop32();
+		RealPt tmp_buffer = CPU_Pop32();
+		unsigned short mode = CPU_Pop16();
+		CPU_Push16(mode);
+		CPU_Push32(tmp_buffer);
+		CPU_Push32(src);
+		CPU_Push32(dst);
+		CPU_Push16(height);
+		CPU_Push16(width);
+
+		D1_GFX("decomp_rle(width=%d, height=%d, dst=0x%x:0x%x, src=0x%x:0x%x, tmp_buffer=0x%x:0x%x, mode=%d)\n",
+			width, height,	RealSeg(dst), RealOff(dst),
+			RealSeg(src), RealOff(src), RealSeg(tmp_buffer),
+			RealOff(tmp_buffer), mode);
+
+		decomp_rle(width, height, MemBase + Real2Phys(dst),
+			MemBase + Real2Phys(src),
+			MemBase + Real2Phys(tmp_buffer), mode);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment seg008:0x%04x\n", offs);
+		exit(1);
+	}
+}
+
 static int seg009(unsigned short offs) {
 	switch (offs) {
 		case 0x8: {
@@ -592,316 +902,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0xe41)
 		return 0;
 
-	if (segm == 0xf18) {
-		if (offs == 0x8) {
-			unsigned short val = CPU_Pop16();
-			CPU_Push16(val);
-
-			reg_ax = swap_u16(val);
-			D1_GFX("swap_u16(val=0x%04x); = 0x%04x\n", val, reg_ax);
-
-			return 1;
-		}
-#if 0
-		if (offs == 0x14) {
-			unsigned short mode = CPU_Pop16();
-			CPU_Push16(mode);
-
-			D1_GFX("set_video_mode(mode=0x%x);\n", mode);
-			set_video_mode(mode);
-
-			return 1;
-		}
-		if (offs == 0x2a) {
-			unsigned short page = CPU_Pop16();
-			CPU_Push16(page);
-
-			D1_GFX("set_video_page(page=0x%x);\n", page);
-			set_video_page(page);
-
-			return 1;
-		}
-#endif
-		if (offs == 0x40) {
-			RealPt addr = CPU_Pop32();
-			CPU_Push32(addr);
-
-			D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
-				RealSeg(addr), RealOff(addr));
-
-			return 0;
-		}
-		if (offs == 0xea) {
-			RealPt ptr = CPU_Pop32();
-			unsigned short color = CPU_Pop16();
-			CPU_Push16(color);
-			CPU_Push32(ptr);
-
-			D1_GFX("set_color(rgb=0x%x:0x%x, color=0x%x);\n",
-				RealSeg(ptr), RealOff(ptr), color);
-
-			set_color(MemBase + Real2Phys(ptr), color);
-
-			D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
-				real_readb(RealSeg(ptr), RealOff(ptr)),
-				real_readb(RealSeg(ptr), RealOff(ptr) + 1),
-				real_readb(RealSeg(ptr), RealOff(ptr) + 2));
-
-			return 1;
-		}
-		if (offs == 0x119) {
-			RealPt ptr = CPU_Pop32();
-			unsigned short first_color = CPU_Pop16();
-			unsigned short colors = CPU_Pop16();
-			CPU_Push16(colors);
-			CPU_Push16(first_color);
-			CPU_Push32(ptr);
-
-			unsigned short i;
-
-			D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
-				RealSeg(ptr), RealOff(ptr), first_color, colors);
-
-			set_palette(MemBase + Real2Phys(ptr), first_color, colors);
-
-			if (RealSeg(ptr) == datseg)
-				D1_LOG("Palette at DS:0x%x\n", RealSeg(ptr));
-			for (i=0; i<colors; i++)
-				D1_GFX("\"\\%02d\\%02d\\%02d\"..\n",
-					host_readb(MemBase + Real2Phys(ptr)+i*3),
-					host_readb(MemBase + Real2Phys(ptr)+i*3+1),
-					host_readb(MemBase + Real2Phys(ptr)+i*3+2));
-			return 1;
-		}
-		if (offs == 0x14d) {
-			RealPt rptr = CPU_Pop32();
-			unsigned short cnt = CPU_Pop16();
-			unsigned short color = CPU_Pop16();
-			CPU_Push16(color);
-			CPU_Push16(cnt);
-			CPU_Push32(rptr);
-
-			draw_h_line(Real2Phys(rptr), cnt, color);
-
-			if (RealSeg(rptr) == 0xa000)
-				D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
-					RealOff(rptr) % 320,
-					RealOff(rptr) / 320, cnt, color);
-			else
-				D1_GFX("HLine(0x%04x:0x%04x,len=%u,color=0x%02x);\n",
-					RealSeg(rptr), RealOff(rptr), cnt, color);
-			return 1;
-		}
-		if (offs == 0x1af) {
-			RealPt rptr = CPU_Pop32();
-			unsigned short cnt = CPU_Pop16();
-			unsigned short color = CPU_Pop16();
-			unsigned short space = CPU_Pop16();
-			CPU_Push16(space);
-			CPU_Push16(color);
-			CPU_Push16(cnt);
-			CPU_Push32(rptr);
-
-			draw_h_spaced_dots(Real2Phys(rptr), cnt, color, space);
-			if (RealSeg(rptr) == 0xa000)
-				D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
-					RealOff(rptr) % 320,
-					RealOff(rptr) / 320, cnt, color, space);
-			else
-				D1_GFX("HSpacedDots(0x%04x:0x%04x,0x%04x,0x%02x,0x%04x);\n",
-					RealSeg(rptr), RealOff(rptr), cnt, color, space);
-			return 1;
-		}
-		if (offs == 0x219) {
-			RealPt dst = CPU_Pop32();
-			unsigned short x1 = CPU_Pop16();
-			unsigned short y1 = CPU_Pop16();
-			unsigned short x2 = CPU_Pop16();
-			unsigned short y2 = CPU_Pop16();
-			unsigned short val12 = CPU_Pop16();
-			unsigned short val14 = CPU_Pop16();
-			unsigned short val16 = CPU_Pop16();
-			unsigned short val18 = CPU_Pop16();
-			unsigned short width = CPU_Pop16();
-			unsigned short height = CPU_Pop16();
-			RealPt src = CPU_Pop32();
-			unsigned short mode = CPU_Pop16();
-			CPU_Push16(mode);
-			CPU_Push32(src);
-			CPU_Push16(height);
-			CPU_Push16(width);
-			CPU_Push16(val18);
-			CPU_Push16(val16);
-			CPU_Push16(val14);
-			CPU_Push16(val12);
-			CPU_Push16(y2);
-			CPU_Push16(x2);
-			CPU_Push16(y1);
-			CPU_Push16(x1);
-			CPU_Push32(dst);
-
-			if (RealSeg(dst) == 0xa000)
-				D1_GFX("pic_copy(X=%03u,Y=%03u,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x, val5=%d)\n",
-					RealOff(dst) %320, RealOff(dst) / 320,
-					x1, y1,	x2, y2,
-					val12, val14, val16, val18,
-					width, height,
-					RealSeg(src), RealOff(src), mode);
-			else
-				D1_GFX("pic_copy(dest=0x%04x:0x%04x,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x,val5=%d)\n",
-					RealSeg(dst), RealOff(dst),
-					x1, y1,	x2, y2,
-					val12, val14, val16, val18,
-					width, height, RealSeg(src), RealOff(src), mode);
-
-			pic_copy(Real2Phys(dst), x1, y1, x2, y2, val12, val14,
-				val16, val18, width, height,
-				MemBase+Real2Phys(src), mode);
-
-			return 1;
-		}
-#if 0
-		if (offs == 0x655) {
-			RealPt rptr = CPU_Pop32();
-			RealPt dst = CPU_Pop32();
-			unsigned short width = CPU_Pop16();
-			unsigned short height = CPU_Pop16();
-			CPU_Push16(height);
-			CPU_Push16(width);
-			CPU_Push32(dst);
-			CPU_Push32(rptr);
-			/* Seg and Off are swapped */
-
-			rptr = (rptr >> 16) | (rptr << 16);
-
-			save_rect(Real2Phys(rptr), Real2Phys(dst), width, height);
-			if (RealSeg(rptr) == 0xa000)
-			D1_GFX("save_rect(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
-					RealOff(rptr) % 320,
-					RealOff(rptr) / 320,
-					RealSeg(dst), RealOff(dst),
-					width, height);
-			else
-			D1_GFX("save_rect(src=0x%04x:0x%04x,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
-					RealSeg(rptr), RealOff(rptr),
-					RealSeg(dst), RealOff(dst),
-					width, height);
-			return 1;
-		}
-#endif
-		if (offs == 0x68c) {
-			RealPt rptr = CPU_Pop32();
-			unsigned short color = CPU_Pop16();
-			unsigned short width = CPU_Pop16();
-			unsigned short height = CPU_Pop16();
-			CPU_Push16(height);
-			CPU_Push16(width);
-			CPU_Push16(color);
-			CPU_Push32(rptr);
-
-			/* Seg and Off are swapped */
-			rptr = (rptr >> 16) | (rptr << 16);
-
-			fill_rect(Real2Phys(rptr), color, width, height);
-
-			if (RealSeg(rptr) == 0xa000)
-
-				D1_GFX("fill_rect(X=%u,Y=%u,color=%u,width=%u,height=%u)\n",
-					RealOff(rptr) % 320,
-					RealOff(rptr) / 320,
-					color, width, height);
-			else
-				D1_GFX("fill_rect(dest=0x%04x:0x%04x,color=%u,cnt=%u,%u)\n",
-					RealSeg(rptr), RealOff(rptr),
-					color, width, height);
-			return 1;
-		}
-		if (offs == 0x6c5) {
-			RealPt dst = CPU_Pop32();
-			RealPt src = CPU_Pop32();
-			unsigned short width_to_copy = CPU_Pop16();
-			unsigned short height = CPU_Pop16();
-			unsigned short dst_width = CPU_Pop16();
-			unsigned short src_width = CPU_Pop16();
-			unsigned short solid = CPU_Pop16();
-			CPU_Push16(solid);
-			CPU_Push16(src_width);
-			CPU_Push16(dst_width);
-			CPU_Push16(height);
-			CPU_Push16(width_to_copy);
-			CPU_Push32(src);
-			CPU_Push32(dst);
-
-			D1_GFX("copy_solid_permuted(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,width_to_copy=%u,height=%u,dst_width=%u,src_width=%u,solid=%u)\n",
-					RealSeg(dst), RealOff(dst),
-					RealSeg(src), RealOff(src),
-					width_to_copy, height, dst_width,
-					src_width, solid);
-
-			copy_solid_permuted(MemBase + Real2Phys(dst),
-				MemBase + Real2Phys(src), width_to_copy,
-				height,	dst_width, src_width, solid);
-
-			return 1;
-		}
-		/* used often in cities and dungeons */
-		if (offs == 0x816) {
-			RealPt dst = CPU_Pop32();
-			RealPt src = CPU_Pop32();
-			unsigned short width_to_copy = CPU_Pop16();
-			unsigned short height = CPU_Pop16();
-			unsigned short dst_width = CPU_Pop16();
-			unsigned short src_width = CPU_Pop16();
-			unsigned short solid = CPU_Pop16();
-			CPU_Push16(solid);
-			CPU_Push16(src_width);
-			CPU_Push16(dst_width);
-			CPU_Push16(height);
-			CPU_Push16(width_to_copy);
-			CPU_Push32(src);
-			CPU_Push32(dst);
-
-			D1_GFX("copy_solid(dst=0x%04x:0x%04x,src=0x%04x:0x%04x,width_to_copy=%u,height=%u,dst_width=%u,src_width=%u,solid=%u)\n",
-					RealSeg(dst), RealOff(dst),
-					RealSeg(src), RealOff(src),
-					width_to_copy, height, dst_width,
-					src_width, solid);
-
-			copy_solid(MemBase + Real2Phys(dst),
-				MemBase + Real2Phys(src), width_to_copy,
-				height,	dst_width, src_width, solid);
-
-			return 1;
-		}
-		if (offs == 0x967){
-			unsigned short width = CPU_Pop16();
-			unsigned short height = CPU_Pop16();
-			RealPt dst = CPU_Pop32();
-			RealPt src = CPU_Pop32();
-			RealPt tmp_buffer = CPU_Pop32();
-			unsigned short mode = CPU_Pop16();
-			CPU_Push16(mode);
-			CPU_Push32(tmp_buffer);
-			CPU_Push32(src);
-			CPU_Push32(dst);
-			CPU_Push16(height);
-			CPU_Push16(width);
-
-			D1_GFX("decomp_rle(width=%d, height=%d, dst=0x%x:0x%x, src=0x%x:0x%x, tmp_buffer=0x%x:0x%x, mode=%d)\n",
-				width, height,	RealSeg(dst), RealOff(dst),
-				RealSeg(src), RealOff(src), RealSeg(tmp_buffer),
-				RealOff(tmp_buffer), mode);
-
-			decomp_rle(width, height, MemBase + Real2Phys(dst),
-				MemBase + Real2Phys(src),
-				MemBase + Real2Phys(tmp_buffer), mode);
-
-			return 1;
-		}
-		D1_ERR("Uncatched call to Segment seg008:0x%04x\n", offs);
-		exit(1);
-		return 0;
-	}
 
 
 	if (segm == 0x0ae7) {
@@ -1037,7 +1037,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		exit(1);
 		return 0;
 	}
-
+	if (segm == 0xf18)
+		return seg008(offs);
 	if (segm == 0x0ff1)
 		return seg009(offs);
 	if (segm == 0x1030) return 0;
