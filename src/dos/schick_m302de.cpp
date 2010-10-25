@@ -737,7 +737,7 @@ static int seg009(unsigned short offs) {
 			return 1;
 		}
 		default:
-			D1_ERR("Uncatched call to Segment seg005:0x%04x\n",
+			D1_ERR("Uncatched call to Segment seg009:0x%04x\n",
 				offs);
 			exit(1);
 	}
