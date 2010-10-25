@@ -746,10 +746,13 @@ static int seg009(unsigned short offs) {
 static int seg012(unsigned short offs) {
 	/*
 		seg012 has only one func called by far directly.
-		The fcall to the func at 0xd29 must be done by a jump to
-		a pointer value.
+		The fcalls to the func at 0x195 and 0xd29 must
+		be done by a jump to a pointer value.
 	 */
 	switch (offs) {
+		case 0x195:
+			D1_LOG("seg12_195();\n");
+			return 0;
 		case 0x8ed: {
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
