@@ -713,36 +713,52 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			return 1;
 		}
 		if (offs == 0x219) {
-			unsigned short off_dest=real_readw(ss, reg_sp);
-			unsigned short seg_dest=real_readw(ss, reg_sp+2);
-			unsigned short x1=real_readw(ss, reg_sp+4);
-			unsigned short y1=real_readw(ss, reg_sp+6);
-			unsigned short x2=real_readw(ss, reg_sp+8);
-			unsigned short y2=real_readw(ss, reg_sp+10);
+			RealPt dst = CPU_Pop32();
+			unsigned short x1 = CPU_Pop16();
+			unsigned short y1 = CPU_Pop16();
+			unsigned short x2 = CPU_Pop16();
+			unsigned short y2 = CPU_Pop16();
+			unsigned short val12 = CPU_Pop16();
+			unsigned short val14 = CPU_Pop16();
+			unsigned short val16 = CPU_Pop16();
+			unsigned short val18 = CPU_Pop16();
+			unsigned short width = CPU_Pop16();
+			unsigned short height = CPU_Pop16();
+			RealPt src = CPU_Pop32();
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+			CPU_Push32(src);
+			CPU_Push16(height);
+			CPU_Push16(width);
+			CPU_Push16(val18);
+			CPU_Push16(val16);
+			CPU_Push16(val14);
+			CPU_Push16(val12);
+			CPU_Push16(y2);
+			CPU_Push16(x2);
+			CPU_Push16(y1);
+			CPU_Push16(x1);
+			CPU_Push32(dst);
 
-			unsigned short val12=real_readw(ss, reg_sp+12);
-			unsigned short val14=real_readw(ss, reg_sp+14);
-			unsigned short val16=real_readw(ss, reg_sp+16);
-			unsigned short val18=real_readw(ss, reg_sp+18);
-
-			unsigned short width=real_readw(ss, reg_sp+20);
-			unsigned short height=real_readw(ss, reg_sp+22);
-			unsigned short off_src=real_readw(ss, reg_sp+24);
-			unsigned short seg_src=real_readw(ss, reg_sp+26);
-
-			if (seg_dest == 0xa000)
-				D1_GFX("PicCopy(X=%03u,Y=%03u,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x)\n",
-					off_dest%320, off_dest/320,
+			if (RealSeg(dst) == 0xa000)
+				D1_GFX("pic_copy(X=%03u,Y=%03u,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x, val5=%d)\n",
+					RealOff(dst) %320, RealOff(dst) / 320,
 					x1, y1,	x2, y2,
 					val12, val14, val16, val18,
-					width, height, seg_src, off_src);
+					width, height,
+					RealSeg(src), RealOff(src), mode);
 			else
-				D1_GFX("PicCopy(dest=0x%04x:0x%04x,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x)\n",
-					seg_dest, off_dest,
+				D1_GFX("pic_copy(dest=0x%04x:0x%04x,x1=%03u,y1=%03u,x2=%u,y2=%u,val12=%u,val14=%u,val16=%u,val18=%u,width=%03u,height=%03u,src=0x%04x:0x%04x,val5=%d)\n",
+					RealSeg(dst), RealOff(dst),
 					x1, y1,	x2, y2,
 					val12, val14, val16, val18,
-					width, height, seg_src, off_src);
-			return 0;
+					width, height, RealSeg(src), RealOff(src), mode);
+
+			pic_copy(Real2Phys(dst), x1, y1, x2, y2, val12, val14,
+				val16, val18, width, height,
+				MemBase+Real2Phys(src), mode);
+
+			return 1;
 		}
 #if 0
 		if (offs == 0x655) {
