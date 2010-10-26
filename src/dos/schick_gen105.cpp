@@ -176,7 +176,7 @@ int schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss)
 	}
 
 	if (segm == 0xb6b)
-		seg005(offs, ss);
+		return seg005(offs, ss);
 
 
 	if (segm == 0x0) {
