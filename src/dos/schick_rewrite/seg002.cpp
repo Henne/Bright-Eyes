@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 22/136
+	Functions rewritten: 23/136
 */
 
 #include "mem.h"
@@ -280,6 +280,38 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 		tmp > 0 ? "bestanden" : "nicht bestanden", tmp);
 
 	return tmp;
+}
+
+/**
+	get_random_hero - return index of a randomly choden hero
+*/
+unsigned short get_random_hero() {
+	Bit8u *hero;
+	unsigned short cur_hero;
+	char cur_group;
+
+	do {
+		/* get number of current group */
+		cur_group = real_readb(datseg, 0x2d35);
+		cur_hero = random_schick(real_readb(datseg, 0x2d36 + cur_group) );
+		cur_hero--;
+
+		hero = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
+		hero += cur_hero + 0x6da;
+
+		/* Check if hero has a class */
+		if (host_readb(hero+0x21) == 0)
+			continue;
+		/* Check if in current group */
+		if (host_readb(hero+0x87) != cur_group)
+			continue;
+		/* Check if dead */
+		if (host_readb(hero+0xaa) & 1 )
+			continue;
+
+		return cur_hero;
+
+	} while (1);
 }
 
 /**

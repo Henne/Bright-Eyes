@@ -233,8 +233,13 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x515e:
-		 return 0;
+	case 0x515e: {
+		reg_ax = get_random_hero();
+
+		D1_LOG("get_random_hero(); -> %s\n",
+			schick_getCharname(real_readd(datseg, 0xbd34) + reg_ax *0x6da));
+		return 1;
+	}
 	case 0x51c2: {
 		unsigned int money;
 
