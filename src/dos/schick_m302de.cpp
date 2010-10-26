@@ -9,6 +9,7 @@
 #include "schick_rewrite/seg007.h"
 #include "schick_rewrite/seg008.h"
 #include "schick_rewrite/seg009.h"
+#include "schick_rewrite/seg096.h"
 #include "schick_rewrite/seg098.h"
 
 /* dice table */
@@ -804,8 +805,28 @@ static int seg096(unsigned short offs) {
 	case 0x66:
 	case 0x6b:
 	case 0x70:
-	case 0x75:
-	case 0x7a:
+	case 0x75: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("GUI_set_smth(%d, %d);\n", v1, v2);
+		GUI_set_smth(v1, v2);
+
+		return 1;
+	}
+	case 0x7a: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		D1_LOG("GUI_get_smth();\n");
+		GUI_get_smth(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+
+		return 1;
+	}
 	case 0x7f: {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
