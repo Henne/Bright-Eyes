@@ -1,8 +1,38 @@
+#include <stdlib.h>
+
 #include "regs.h"
 
 #include "schick.h"
 
 #include "schick_rewrite/seg008.h"
+#include "schick_rewrite/seg009.h"
+
+static int seg004(unsigned short offs) {
+
+	switch (offs) {
+	case 0xc: {
+		RealPt dst = CPU_Pop32();
+		RealPt src = CPU_Pop32();
+		unsigned int len = CPU_Pop32();
+		CPU_Push32(len);
+		CPU_Push32(src);
+		CPU_Push32(dst);
+
+		D1_INFO("decomp_pp20(dst=0x%04x:0x%04x, src=0x%04x:0x%04x, %u)\n",
+			RealSeg(dst), RealOff(dst),
+			RealSeg(src), RealOff(src), len);
+
+		decomp_pp20(MemBase + Real2Phys(src),
+			MemBase + Real2Phys(dst),
+			MemBase + Real2Phys(src) + 8, len);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
 
 /* Rasterlib */
 static int seg005(unsigned short offs, unsigned short ss) {
@@ -163,18 +193,8 @@ static int seg005(unsigned short offs, unsigned short ss) {
 int schick_farcall_gen105(unsigned segm, unsigned offs, unsigned ss)
 {
 	/* _decomp() */
-	if (segm == 0xb39) {
-		if (offs == 0xc)
-		{
-			D1_LOG("_decomp(%x:%x, %x:%x, 0x%lx)\n",
-				real_readw(ss, reg_sp+2), real_readw(ss, reg_sp),
-				real_readw(ss, reg_sp+6), real_readw(ss, reg_sp+4),
-				real_readd(ss, reg_sp+8));
-			return 0;
-		}
-		return 0;
-	}
-
+	if (segm == 0xb39)
+		return seg004(offs);
 	if (segm == 0xb6b)
 		return seg005(offs, ss);
 
