@@ -6,8 +6,7 @@ extern void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short co
 extern void draw_h_line(PhysPt ptr, unsigned short count, unsigned char color);
 extern void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space);
 
-extern void pic_copy(PhysPt dst, unsigned short x1, unsigned short y1,
-        unsigned short x2, unsigned short y2,
+extern void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
         unsigned short val1, unsigned short val2,
         unsigned short val3, unsigned short val4,
         unsigned short width, unsigned short height,

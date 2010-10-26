@@ -48,16 +48,15 @@ void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, u
 	}
 }
 
-void pic_copy(PhysPt dst, unsigned short x1, unsigned short y1,
-	unsigned short x2, unsigned short y2,
+void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 	unsigned short val1, unsigned short val2,
 	unsigned short val3, unsigned short val4,
 	unsigned short src_width, unsigned short src_height,
 	Bit8u *src, unsigned short mode) {
 
-	unsigned short ds_3, ds_1, ds_2, ds_4;
+	signed short ds_3, ds_1, ds_2, ds_4;
 	short cur_height, cur_width;
-	unsigned short lv1, lv2, lv3, lv4, lv5;
+	signed short lv1, lv2, lv3, lv4, lv5;
 
 	cur_width = src_width;
 	cur_height = src_height;
@@ -104,7 +103,7 @@ void pic_copy(PhysPt dst, unsigned short x1, unsigned short y1,
 	dst += ds_1 * 320 + ds_2;
 
 	if (y1 > ds_1)
-		dst += (y1 - ds_1) *320;
+		dst += (y1 - ds_1) * 320;
 
 	if (x1 > ds_2)
 		dst += x1 - ds_2;

@@ -534,10 +534,10 @@ static int seg008(unsigned short offs) {
 	}
 	case 0x219: {
 		RealPt dst = CPU_Pop32();
-		unsigned short x1 = CPU_Pop16();
-		unsigned short y1 = CPU_Pop16();
-		unsigned short x2 = CPU_Pop16();
-		unsigned short y2 = CPU_Pop16();
+		short x1 = CPU_Pop16();
+		short y1 = CPU_Pop16();
+		short x2 = CPU_Pop16();
+		short y2 = CPU_Pop16();
 		unsigned short val12 = CPU_Pop16();
 		unsigned short val14 = CPU_Pop16();
 		unsigned short val16 = CPU_Pop16();
