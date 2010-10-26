@@ -1252,6 +1252,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	/* Kampf */
 	if (segm == 0x140b) return 0;
 	if (segm == 0x1417) return 0;
+	if (segm == 0x141b) return 0;
 	if (segm == 0x1420) return 0;
 	if (segm == 0x1429) return 0;
 	if (segm == 0x142c) return 0;
