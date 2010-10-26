@@ -799,10 +799,14 @@ static int seg096(unsigned short offs) {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		D1_LOG("drawString(%s)\n", getString(ptr));
-		return 0;
+		reg_ax = GUI_count_lines(MemBase + Real2Phys(ptr));
+		D1_LOG("GUI_count_lines() = %d\n", (unsigned short)reg_ax);
+
+		return 1;
 	}
-	case 0x66:
+	case 0x66: {
+		GUI_set_something();
+	}
 	case 0x6b:
 	case 0x70:
 	case 0x75: {
