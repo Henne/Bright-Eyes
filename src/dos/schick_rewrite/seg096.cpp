@@ -3,6 +3,35 @@
 #include "../schick.h"
 
 #include "seg096.h"
+//330
+/**
+*/
+RealPt GUI_get_ptr(unsigned short v1, unsigned short v2) {
+
+	if (v1 == 0) {
+		switch (v2) {
+			case 0:
+				return RealMake(datseg, 0xa9f3);
+			case 1:
+				return RealMake(datseg, 0xa9fd);
+			case 3:
+				return RealMake(datseg, 0xaa0a);
+			default:
+				return RealMake(datseg, 0xaa06);
+		}
+	} else {
+		switch (v2) {
+			case 0:
+				return RealMake(datseg, 0xa9f6);
+			case 1:
+				return RealMake(datseg, 0xaa02);
+			case 3:
+				return RealMake(datseg, 0xaa02);
+			default:
+				return RealMake(datseg, 0xa9f6);
+		}
+	}
+}
 
 //442
 /**
