@@ -779,6 +779,52 @@ static int seg012(unsigned short offs) {
 	}
 }
 
+static int seg096(unsigned short offs) {
+	/*
+		Handles Strings and Fonts
+	*/
+	switch (offs)	{
+	case 0x25:
+	case 0x2a:
+	case 0x2f:
+	case 0x34:
+	case 0x39:
+	case 0x3e:
+	case 0x43:
+	case 0x48:
+	case 0x4d:
+		return 0;
+	case 0x52: {
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+
+		D1_LOG("drawString(%s)\n", getString(ptr));
+		return 0;
+	}
+	case 0x66:
+	case 0x6b:
+	case 0x70:
+	case 0x75:
+	case 0x7a:
+	case 0x7f: {
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+
+		D1_LOG("drawLocName(%s)\n", getString(ptr));
+		return 0;
+	}
+	case 0x84:
+	case 0x89:
+	case 0x8e: {
+		return 0;
+	}
+	default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg098(unsigned short offs) {
 	switch (offs) {
 
@@ -1257,19 +1303,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x1429) return 0;
 	if (segm == 0x142c) return 0;
 	if (segm == 0x1432) return 0;
-	if (segm == 0x1438) {
-		if (offs == 0x0052) {
-			unsigned int  ptr=real_readd(ss, reg_sp);
-			D1_LOG("drawString(%s)\n", getString(ptr));
-			return 0;
-		}
-		if (offs == 0x007f) {
-			unsigned int  ptr=real_readd(ss, reg_sp);
-			D1_LOG("drawLocName(%s)\n", getString(ptr));
-			return 0;
-		}
-		return 0;
-	}
+	if (segm == 0x1438)
+			return seg096(offs);
 	/* stub097 */
 	if (segm == 0x1442) {
 		if (offs == 0x0039) {
