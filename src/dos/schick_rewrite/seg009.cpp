@@ -119,7 +119,6 @@ void decomp_pp20(Bit8u *src, Bit8u *dst, Bit8u *p3, unsigned int plen) {
 		D1_ERR("PP20: No PP20 file\n");
 	}
 	ppDecrunch(&src[8],  dst, &src[4], plen - 12, unplen, src[plen -1]);
-//	ppdepack(src, dst, plen, unplen);
 
 	return;
 }
