@@ -80,12 +80,12 @@ void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned sh
 */
 unsigned short GUI_count_lines(Bit8u *str) {
 	Bit8u *str_loc;
-	unsigned short v6, v8;
+	unsigned short v6, lines;
 	short si, di;
 	unsigned short max_line_width, width_char, width_line;
 	unsigned short ax;
 
-	v8 = 0;
+	lines = 0;
 
 	if (str == NULL || str == MemBase)
 		return 0;
@@ -97,18 +97,18 @@ unsigned short GUI_count_lines(Bit8u *str) {
 
 	str_loc = str;
 	si = di = v6 = 0;
-	max_line_width = real_readw(datseg, 0xd2d5);
+	max_line_width = ds_readw(0xd2d5);
 
-	ax = real_readw(datseg, 0xe4db);
-	if (ax != 0)
-		real_writew(datseg, 0xd2d5, real_readw(datseg, 0xd2d5) - ax);
+	if (ds_readw(0xe4db) != 0)
+		ds_writew(0xd2d5, ds_readw(0xd2d5) - ds_readw(0xe4db));
+
 	width_line = 0;
 
-	while (str_loc[si]) {
+	for ( ; str_loc[si]; si++) {
 		GUI_lookup_char(str_loc[si], &width_char);
 		width_line += width_char;
 
-		if (width_line >=  real_readw(datseg, 0xd2d5)) {
+		if (width_line >=  ds_readw(0xd2d5)) {
 			if ( di != v6) {
 				str_loc[di] = 0x0d;
 				str_loc += di;
@@ -116,39 +116,37 @@ unsigned short GUI_count_lines(Bit8u *str) {
 				str_loc[si] = 0x0d;
 				str_loc += si + 1;
 			}
-			if (++v8 == real_readw(datseg, 0xe4d9))
-				real_writew(datseg, 0xd2d5, real_readw(datseg, 0xd2d5) + real_readw(datseg, 0xe4db));
+			if (++lines == ds_readw(0xe4d9))
+				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
 
-		v6 = si = di = width_line = 0;
+			v6 = si = di = width_line = 0;
 		}
 
 		if (str_loc[si] == 0x20)
 			di = si;
 
 		if (str_loc[si] == 0x40) {
-			str_loc = str_loc + si + 1;
+			str_loc += si + 1;
 			si = -1;
 			v6 = di = width_line = 0;
-			if (++v8 == real_readw(datseg, 0xe4d9))
-				real_writew(datseg, 0xd2d5, real_readw(datseg, 0xd2d5) + real_readw(datseg, 0xe4db));
+			if (++lines == ds_readw(0xe4d9))
+				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
 		}
-
-		si++;
 	}
 
-	if (width_line >= real_readw(datseg, 0xd2d5)) {
+	if (width_line >= ds_readw(0xd2d5)) {
 
 		if (v6 == di)
 			str_loc[si - 1] = 0;
 		else {
 			str_loc[di] = 0x0d;
-			if (++v8 == real_readw(datseg, 0xe4d9))
-				real_writew(datseg, 0xd2d5, real_readw(datseg, 0xd2d5) + real_readw(datseg, 0xe4db));
+			if (++lines == ds_readw(0xe4d9))
+				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
 		}
 	}
 
-	real_writew(datseg, 0xd2d5, max_line_width);
-	return ++v8;
+	ds_writew(0xd2d5, max_line_width);
+	return ++lines;
 }
 //7f0
 unsigned short GUI_print_char(char c, unsigned short x, unsigned short y) {
