@@ -30,7 +30,8 @@
 #include "paging.h"
 #include "lazyflags.h"
 #include "support.h"
-#include "../dos/schick.h"
+
+#include "../dos/schick_hooks.h"
 
 Bitu DEBUG_EnableDebugger(void);
 extern void GFX_SetTitle(Bit32s cycles ,Bits frameskip,bool paused);

@@ -30,7 +30,7 @@
 #include "fpu.h"
 #include "paging.h"
 
-#include "../dos/schick.h"
+#include "../dos/schick_hooks.h"
 
 #if C_DEBUG
 #include "debug.h"

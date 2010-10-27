@@ -27,7 +27,7 @@
 #include "pic.h"
 #include "fpu.h"
 
-#include "../dos/schick.h"
+#include "../dos/schick_hooks.h"
 
 #if C_DEBUG
 #include "debug.h"
