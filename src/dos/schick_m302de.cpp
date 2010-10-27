@@ -822,8 +822,29 @@ static int seg096(unsigned short offs) {
 			reg_dx = RealSeg(retval);
 			return 1;
 	}
-	case 0x43:
-	case 0x48:
+	case 0x43: {
+		RealPt s = CPU_Pop32();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(s);
+
+		D1_LOG("GUI_print_string(%s, %d, %d);\n", getString(s), x, y);
+		return 0;
+	}
+	case 0x48: {
+		unsigned short c = CPU_Pop16();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push16(c);
+
+		D1_INFO("GUI_print_char(%c, %d, %d);\n", c & 0xff, x, y);
+		reg_ax = GUI_print_char(c & 0xff, x, y);
+		return 1;
+	}
 	case 0x4d:
 		return 0;
 	case 0x52: {
@@ -836,10 +857,34 @@ static int seg096(unsigned short offs) {
 		return 1;
 	}
 	case 0x66: {
-		GUI_set_something();
+		GUI_blank_char();
+		return 1;
 	}
-	case 0x6b:
-	case 0x70:
+	case 0x6b: {
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+
+		D1_LOG("GUI_font_to_buf(0x%x:0x%x)\n", RealSeg(p), RealOff(p));
+		GUI_font_to_buf(MemBase + Real2Phys(p));
+
+		return 1;
+	}
+	case 0x70: {
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		unsigned short char_height = CPU_Pop16();
+		unsigned short char_width = CPU_Pop16();
+		CPU_Push16(char_width);
+		CPU_Push16(char_height);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		D1_LOG("GUI_write_char_to_screen_xy(%d, %d, %d, %d);\n",
+			x, y, char_height, char_width);
+		GUI_write_char_to_screen_xy(x, y, char_height, char_width);
+
+		return 1;
+	}
 	case 0x75: {
 		unsigned short v1 = CPU_Pop16();
 		unsigned short v2 = CPU_Pop16();
