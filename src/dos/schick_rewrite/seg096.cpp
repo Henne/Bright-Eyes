@@ -3,6 +3,23 @@
 #include "../schick.h"
 
 #include "seg096.h"
+
+//290
+RealPt GUI_name_singular(Bit8u *s) {
+	PhysPt p = PhysMake(datseg, 0xe4e3);
+	char tmp;
+
+	while ((tmp = *s++) && (tmp != 0x2e))
+		mem_writeb_inline(p++, tmp);
+
+	while ((*s) && (*s != 0x2e))
+		mem_writeb_inline(p++, *s++);
+
+	mem_writeb_inline(p, 0);
+	return RealMake(datseg, 0xe4e3);
+}
+//2f2
+
 //330
 /**
 */

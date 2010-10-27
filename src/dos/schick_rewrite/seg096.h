@@ -1,5 +1,7 @@
 //20
 extern void GUI_write_char_to_screen(PhysPt dst, unsigned short v1, unsigned short v2);
+//2f
+extern RealPt GUI_name_singular(Bit8u *s);
 //39
 extern RealPt GUI_get_ptr(unsigned short v1, unsigned short v2);
 //3e

@@ -787,7 +787,21 @@ static int seg096(unsigned short offs) {
 	switch (offs)	{
 	case 0x25:
 	case 0x2a:
-	case 0x2f:
+		D1_INFO("%s:0x%x\n", __func__, offs);
+		return 0;
+	case 0x2f: {
+		RealPt s = CPU_Pop32();
+		CPU_Push32(s);
+		RealPt retval;
+
+		retval = GUI_name_singular(MemBase + Real2Phys(s));
+		D1_LOG("GUI_name_singular(%x:%x)\n", RealSeg(s), RealOff(s));
+
+		reg_dx = RealSeg(retval);
+		reg_ax = RealOff(retval);
+
+		return 1;
+	}
 	case 0x34:
 		return 0;
 	case 0x39: {
