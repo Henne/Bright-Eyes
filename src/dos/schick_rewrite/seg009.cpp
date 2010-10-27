@@ -65,6 +65,7 @@ int ppDecrunch(uint8 *src, uint8 *dest, uint8 *offset_lens,
   uint32 bit_buffer = 0, x, todo, offbits, offset, written=0;
 
   if (src == NULL || dest == NULL || offset_lens == NULL) return 0;
+  if (src == MemBase || dest == MemBase) return 0;
 
   /* set up input and output pointers */
   buf_src = src + src_len;
