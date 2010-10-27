@@ -56,6 +56,25 @@ extern const char* names_spell[];
 extern unsigned short datseg;
 extern unsigned short relocation;
 
+static inline Bit8u ds_readb(unsigned short offs) {
+	return real_readb(datseg, offs);
+}
+static inline Bit16u ds_readw(unsigned short offs) {
+	return real_readw(datseg, offs);
+}
+static inline Bit32u ds_readd(unsigned short offs) {
+	return real_readd(datseg, offs);
+}
+static void ds_writeb(unsigned short offs, Bit8u val) {
+	real_writeb(datseg, offs, val);
+}
+static void ds_writew(unsigned short offs, Bit16u val) {
+	real_writeb(datseg, offs, val);
+}
+static void ds_writed(unsigned short offs, Bit32u val) {
+	real_writed(datseg, offs, val);
+}
+
 extern void init_schick(char *, unsigned short, unsigned short, unsigned short);
 extern void exit_schick(unsigned char);
 
