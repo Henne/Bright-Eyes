@@ -60,7 +60,7 @@ static int seg002(unsigned short offs) {
 
 		RealPt fname = real_readd(datseg, 0x4c8c + index * 4);
 
-		D1_INFO("OpenAndSeekDatfile(0x%x) %s\n", index, getString(fname));
+		D1_LOG("OpenAndSeekDatfile(0x%x) %s\n", index, getString(fname));
 		return 0;
 	}
 	case 0x0ed2:
