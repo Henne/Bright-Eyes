@@ -1,5 +1,7 @@
 //39
 extern RealPt GUI_get_ptr(unsigned short v1, unsigned short v2);
+//3e
+extern RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2);
 //52
 extern unsigned short GUI_count_lines(Bit8u *str);
 //57

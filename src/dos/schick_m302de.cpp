@@ -806,7 +806,22 @@ static int seg096(unsigned short offs) {
 			reg_dx = RealSeg(retval);
 			return 1;
 	}
-	case 0x3e:
+	case 0x3e: {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			RealPt retval;
+
+			retval = GUI_get_ptr2(v1, v2);
+			D1_INFO("GUI_get_ptr2(%d,%d) = 0x%04x:0x%04x\n", v1, v2,
+				RealSeg(retval), RealOff(retval));
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+			return 1;
+	}
 	case 0x43:
 	case 0x48:
 	case 0x4d:

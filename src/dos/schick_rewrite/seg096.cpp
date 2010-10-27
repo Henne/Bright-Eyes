@@ -33,6 +33,36 @@ RealPt GUI_get_ptr(unsigned short v1, unsigned short v2) {
 	}
 }
 
+//394
+/**
+*/
+RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2) {
+
+	if (v1 == 0) {
+		switch (v2) {
+			case 0:
+				return RealMake(datseg, 0xa8d4);
+			case 1:
+				return RealMake(datseg, 0xa8e0);
+			case 3:
+				return RealMake(datseg, 0xa8e8);
+			default:
+				return RealMake(datseg, 0xa8e4);
+		}
+	} else {
+		switch (v2) {
+			case 0:
+				return RealMake(datseg, 0xa8d8);
+			case 1:
+				return RealMake(datseg, 0xa8d4);
+			case 3:
+				return RealMake(datseg, 0xa8d4);
+			default:
+				return RealMake(datseg, 0xa8d4);
+		}
+	}
+}
+
 //442
 /**
 	GUI_count_lines - return the number of lines a string needs on a screen
