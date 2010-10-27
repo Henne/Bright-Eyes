@@ -87,7 +87,7 @@ unsigned short GUI_count_lines(Bit8u *str) {
 
 	v8 = 0;
 
-	if (str == NULL)
+	if (str == NULL || str == MemBase)
 		return 0;
 
 	/* replace all CR and CL with Whitespaces */
