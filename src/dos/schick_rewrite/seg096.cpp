@@ -156,7 +156,7 @@ unsigned short GUI_print_char(char c, unsigned short x, unsigned short y) {
 
 	ds_writeb(0xe4d8, c);
 	font_index = GUI_lookup_char(c, &char_width);
-	D1_INFO("GUI_lookup_char(%c); w=%d, fi=%d\n", c, char_width, font_index);
+	D1_LOG("GUI_lookup_char(%c); w=%d, fi=%d\n", c, char_width, font_index);
 	GUI_write_fonti_to_screen(font_index, char_width, x, y);
 
 	return char_width;
@@ -185,7 +185,7 @@ unsigned short GUI_lookup_char(char c, unsigned short *p){
 void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_width, unsigned short x, unsigned short y) {
 	PhysPt p_font6 = ds_readd(0xd2c1);
 
-	D1_INFO("GUI_write_fonti_to_screen(fi=%d, cw=%d,x=%d, y=%d)\n", font_index, char_width, x, y);
+	D1_LOG("GUI_write_fonti_to_screen(fi=%d, cw=%d,x=%d, y=%d)\n", font_index, char_width, x, y);
 	GUI_blank_char();
 	GUI_font_to_buf(MemBase + Real2Phys(p_font6) + font_index * 8);
 	GUI_write_char_to_screen_xy(x, y, 7, char_width);
@@ -199,7 +199,7 @@ void GUI_blank_char() {
 	unsigned char color = ds_readb(0xd2c7);
 	unsigned char i,j;
 
-	D1_INFO("ptr = 0x%x color = 0x%x\n", ptr, color);
+	D1_LOG("ptr = 0x%x color = 0x%x\n", ptr, color);
 
 	for (i = 0; i < 8; ptr += 8, i++) {
 		for (j = 0; j < 8; j++)

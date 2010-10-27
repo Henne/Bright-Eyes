@@ -841,7 +841,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(x);
 		CPU_Push16(c);
 
-		D1_INFO("GUI_print_char(%c, %d, %d);\n", c & 0xff, x, y);
+		D1_LOG("GUI_print_char(%c, %d, %d);\n", c & 0xff, x, y);
 		reg_ax = GUI_print_char(c & 0xff, x, y);
 		return 1;
 	}
