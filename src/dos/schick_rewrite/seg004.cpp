@@ -22,14 +22,14 @@ void do_pic_copy(unsigned short mode) {
 	short x2, y2;
 	short v1, v2, v3, v4;
 	short width, height;
-	RealPt v12, v16;
+	RealPt src, dst;
 	short x1, y1;
 
 	x1 = ds_readw(0xc011);
 	y1 = ds_readw(0xc013);
-
 	x2 = ds_readw(0xc015);
 	y2 = ds_readw(0xc017);
+
 	v1 = ds_readw(0xc01d);
 	v2 = ds_readw(0xc01f);
 	v3 = ds_readw(0xc021);
@@ -38,10 +38,10 @@ void do_pic_copy(unsigned short mode) {
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	v12 = ds_readd(0xc019);
-	v16 = ds_readd(0xc00d);
+	src = ds_readd(0xc019);
+	dst = ds_readd(0xc00d);
 
-	pic_copy(Real2Phys(v16), x1, y1, x2, y2, v1, v2, v3, v4, width, height, MemBase + Real2Phys(v12), mode);
+	pic_copy(Real2Phys(dst), x1, y1, x2, y2, v1, v2, v3, v4, width, height, MemBase + Real2Phys(src), mode);
 }
 
 void do_save_rect() {
