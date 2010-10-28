@@ -986,7 +986,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(p_height);
 		CPU_Push16(c);
 
-		reg_ax = GUI_lookup_char_height(c & 0xff, MemBase + Real2Phys(p_height));
+		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)MemBase + Real2Phys(p_height));
 		D1_INFO("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 		return 1;
 	}
