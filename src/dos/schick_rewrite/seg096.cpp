@@ -415,6 +415,11 @@ unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned s
 }
 
 //A93
+/**
+	GUI_draw_popup_line - draws a line of a popup window
+	@line: number of the current line
+	@type: type of line 0 = top / 1 = middle normal / 2 = middle radio / 3 =bottom
+*/
 void GUI_draw_popup_line(unsigned short line, unsigned short type) {
 	short i, popup_middle, popup_right, y;
 	short x, popup_left;
