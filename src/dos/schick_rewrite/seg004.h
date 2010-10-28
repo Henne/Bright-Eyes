@@ -1,4 +1,5 @@
 extern void set_var_to_zero();
+extern void clear_ani();
 extern void schick_set_video();
 extern void schick_reset_video();
 extern void do_pic_copy(unsigned short mode);

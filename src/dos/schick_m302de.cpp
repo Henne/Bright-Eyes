@@ -381,6 +381,10 @@ static int seg004(unsigned short offs) {
 		D1_LOG("set_var_to_zero()\n");
 		set_var_to_zero();
 		return 1;
+	case 0x15b:
+		D1_LOG("clear_ani()\n");
+		clear_ani();
+		return 1;
 	case 0x1190:
 		D1_LOG("schick_set_video()\n");
 		schick_set_video();

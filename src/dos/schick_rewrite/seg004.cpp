@@ -8,6 +8,36 @@ void set_var_to_zero() {
 	real_writew(datseg, 0x29ae, 0);
 }
 
+void clear_ani() {
+	unsigned short i,j;
+
+	ds_writew(0xc3e7, 0);
+	ds_writeb(0xc3ed, 0);
+	ds_writeb(0xc3ee, 0);
+	ds_writed(0xce35, 0);
+	ds_writew(0xce3d, 0);
+	ds_writew(0xce3c, 0);
+
+	for (i = 0; i < 10; i++) {
+		ds_writew(0xc3f4 + i * 0x107, 0);
+		ds_writeb(0xc3f6 + i * 0x107, 0);
+		ds_writew(0xc3f8 + i * 0x107, 0);
+		ds_writeb(0xc3f7 + i * 0x107, 0);
+		ds_writeb(0xc3fa + i * 0x107, 0);
+		ds_writeb(0xc3fb + i * 0x107, 0);
+		ds_writew(0xc44c + i * 0x107, 0);
+		ds_writeb(0xc3f3 + i * 0x107, 0);
+
+		for (j = 0; j < 20; j++)
+			ds_writed(0xc3fc + i * 0x107 + (j << 2), 0);
+
+		for (j = 0; j < 42; j++) {
+			ds_writew(0xc44e + i * 0x107 + (j << 2), 0);
+			ds_writew(0xc450 + i * 0x107 + (j << 2), 0);
+		}
+	 }
+}
+
 void schick_set_video() {
 	set_video_mode(0x13);
 	set_color(MemBase + PhysMake(datseg, 0x4b03), 0xff);
