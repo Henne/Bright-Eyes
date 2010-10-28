@@ -3,6 +3,111 @@
 #include "../schick.h"
 
 #include "seg096.h"
+//000
+/**
+	GUI_names_grammar - makes a grammatical wordgroup
+	@flag:
+	@index: index of the word of which a worgroup should be made
+	@type: if index is true the index is an enemy, if not it is an item
+*/
+RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned short type) {
+	Bit8u *lp1;
+	unsigned short l2;
+	RealPt p_name;
+	char *p_name1;
+	short l4;
+	short *lp5;
+
+	l2 = 0;
+	lp5 = (short*)(MemBase + PhysMake(datseg, 0xa9ed));
+
+	if (type == 0) {
+		/* string_array_itemnames */
+		p_name = ds_readd(0xe22f) + index * 4;
+		p_name = mem_readd(Real2Phys(p_name));
+
+		flag += lp5[ds_readb(0x02ac + index)];
+
+		lp1 = MemBase + PhysMake(datseg, 0x270);
+		do {
+			l4 = host_readw(lp1);
+			lp1 += 2;
+		} while (l4 != -1 && l4 != index);
+
+		if (l4 == index) {
+			flag += 4;
+			flag &= 0x7fff;
+			flag |= 0x4000;
+			if (flag & 1)
+				l2 = 1;
+		}
+	} else {
+		p_name = ds_readd(0xe129) + index * 4;
+		p_name = mem_readd(Real2Phys(p_name));
+		flag += lp5[ds_readb(0x0925 + index)];
+	}
+
+	if (flag & 0x8000)
+		lp1 = MemBase + PhysMake(datseg, 0xa953 + (flag & 0xf) * 6);
+	else if (flag & 0x4000)
+			lp1 = MemBase + PhysMake(datseg, 0xa9b3);
+		else
+			lp1 = MemBase + PhysMake(datseg, 0xa983 + (flag & 0xf) * 6);
+
+
+
+	sprintf((char*)MemBase + PhysMake(datseg, 0xe50b + ds_readw(0xa9eb) *40),
+		(l2 == 0) ? (char*)MemBase + Real2Phys(ds_readd(0xa9e3)) : (char*)MemBase + Real2Phys(0xa9e7),
+		(char*)MemBase + Real2Phys(ds_readd(0xa917 + (host_readw(lp1 + ((((flag & 0x3000) - 1) >> 12) << 1)) << 2))),
+		(char*)MemBase + Real2Phys(GUI_name_plural(flag, MemBase + Real2Phys(p_name))));
+
+	p_name = RealMake(datseg, ds_readw(0xa9eb) * 40 + 0xe50b);
+
+	if (mem_readb(Real2Phys(p_name)) == 0x20){
+		do {
+			p_name++;
+			l4 = mem_readb(Real2Phys(p_name));
+			mem_writeb(Real2Phys(p_name) - 1, l4);
+		} while (l4 != 0);
+	};
+
+	l4 = ds_readw(0xa9eb);
+	ds_writew(0xa9eb, ds_readw(0xa9eb) + 1);
+
+	if (ds_readw(0xa9eb) == 4)
+		ds_writew(0xa9eb, 0);
+
+	D1_INFO("%s\n", (char*)MemBase + PhysMake(datseg, 0xe50b + l4 * 40));
+	return RealMake(datseg, 0xe50b + l4 * 40);
+}
+
+//1a7
+RealPt GUI_name_plural(unsigned short v1, Bit8u *s) {
+	PhysPt p = PhysMake(datseg, 0xe4e3);
+	char tmp;
+
+	while ((tmp = *s++) && (tmp != 0x2e))
+		mem_writeb_inline(p++, tmp);
+
+	if (v1 & 4)
+		while ((tmp = *s++) && (tmp != 0x2e));
+
+	while ((tmp = *s++) && (tmp != 0x2e))
+		mem_writeb_inline(p++, tmp);
+
+	if ((v1 & 0x0f) == 1 && (v1 & 0x3000) != 0x2000) {
+		if (mem_readb(p-1) == 'B' || mem_readb(p-1) == 'D')
+			mem_writeb_inline(p++, 'E');
+		mem_writeb_inline(p++, 'S');
+	} else {
+		if (((v1 & 0x0f) == 7) && (mem_readb(p-1) != 'N' || mem_readb(p-1) != 'S'))
+				mem_writeb_inline(p++, 'N');
+	}
+
+	mem_writeb_inline(p, 0);
+	return RealMake(datseg, 0xe4e3);
+}
+
 
 //290
 RealPt GUI_name_singular(Bit8u *s) {

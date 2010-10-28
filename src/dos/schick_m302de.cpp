@@ -785,10 +785,40 @@ static int seg096(unsigned short offs) {
 		Handles Strings and Fonts
 	*/
 	switch (offs)	{
-	case 0x25:
-	case 0x2a:
-		D1_INFO("%s:0x%x\n", __func__, offs);
+	case 0x25: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		RealPt retval;
+
+		D1_LOG("GUI_names_grammar(%x,%x,%x)\n", v1 ,v2,v3);
+		retval = GUI_names_grammar(v1, v2, v3);
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
 		return 0;
+	}
+	case 0x2a: {
+		unsigned short v1 = CPU_Pop16();
+		RealPt s = CPU_Pop32();
+		CPU_Push32(s);
+		CPU_Push16(v1);
+
+		RealPt retval;
+
+		retval = GUI_name_plural(v1, MemBase + Real2Phys(s));
+		D1_LOG("GUI_name_singular(%x, %s)\n",
+			v1, getString(s));
+
+		reg_dx = RealSeg(retval);
+		reg_ax = RealOff(retval);
+
+		return 1;
+	}
 	case 0x2f: {
 		RealPt s = CPU_Pop32();
 		CPU_Push32(s);
