@@ -10,6 +10,7 @@
 #include "schick_rewrite/seg008.h"
 #include "schick_rewrite/seg009.h"
 #include "schick_rewrite/seg096.h"
+#include "schick_rewrite/seg097.h"
 #include "schick_rewrite/seg098.h"
 
 /* dice table */
@@ -977,6 +978,29 @@ static int seg096(unsigned short offs) {
 	}
 }
 
+static int seg097(unsigned short offs) {
+	switch (offs) {
+	case 0x25: {
+		unsigned short c = CPU_Pop16();
+		RealPt p_height = CPU_Pop32();
+		CPU_Push32(p_height);
+		CPU_Push16(c);
+
+		reg_ax = GUI_lookup_char_height(c & 0xff, MemBase + Real2Phys(p_height));
+		D1_INFO("GUI_lookup_char_height() = %d\n", (char)reg_ax);
+		return 1;
+	}
+	case 0x39: {
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+
+		D1_LOG("dialog_schmal(%s)\n", getString(ptr));
+		return 0;
+	}
+	default:
+		return 0;
+	}
+}
 static int seg098(unsigned short offs) {
 	switch (offs) {
 
@@ -1456,16 +1480,10 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	if (segm == 0x142c) return 0;
 	if (segm == 0x1432) return 0;
 	if (segm == 0x1438)
-			return seg096(offs);
+		return seg096(offs);
 	/* stub097 */
-	if (segm == 0x1442) {
-		if (offs == 0x0039) {
-			unsigned int  ptr=real_readd(ss, reg_sp);
-			D1_LOG("dialog_schmal(%s)\n", getString(ptr));
-			return 0;
-		}
-		return 0;
-	}
+	if (segm == 0x1442)
+		return seg097(offs);
 	/* stub098 */
 	if (segm == 0x1449)
 		return seg098(offs);
