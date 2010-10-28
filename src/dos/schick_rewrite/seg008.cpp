@@ -66,10 +66,10 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 	lv3 = 0;
 	lv4 = 0;
 
-	ds_1 = real_readw(datseg, 0x2990);
-	ds_2 = real_readw(datseg, 0x2992);
-	ds_3 = real_readw(datseg, 0x2994);
-	ds_4 = real_readw(datseg, 0x2996);
+	ds_1 = ds_readw(0x2990);
+	ds_2 = ds_readw(0x2992);
+	ds_3 = ds_readw(0x2994);
+	ds_4 = ds_readw(0x2996);
 
 	if (y1 < ds_1) {
 		lv3 = ds_1 - y1;
@@ -94,10 +94,10 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 		cur_width -= lv2;
 	}
 
-	if (cur_height <= 0)
+	if (cur_height < 0)
 		return;
 
-	if (cur_width <= 0)
+	if (cur_width < 0)
 		return;
 
 	dst += ds_1 * 320 + ds_2;
