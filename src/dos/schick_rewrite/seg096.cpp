@@ -2,7 +2,9 @@
 
 #include "../schick.h"
 
+#include "seg004.h"
 #include "seg096.h"
+#include "seg097.h"
 //000
 /**
 	GUI_names_grammar - makes a grammatical wordgroup
@@ -376,4 +378,73 @@ unsigned short GUI_unused(Bit8u *str) {
 
 	return lines;
 }
+//A26
+unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned short v2, unsigned short dir) {
+	unsigned short tmp, i;
 
+	for (i = 0; *p && *p != 0x40 ; i += tmp) {
+		if (dir)
+			GUI_lookup_char_height(*p++, &tmp);
+		else
+			GUI_lookup_char_width(*p++, &tmp);
+	}
+
+	return (v2 - i) / 2 + x;
+}
+
+//A93
+void GUI_draw_popup_line(unsigned short line, unsigned short type) {
+	short i, popup_middle, popup_right, y;
+	short x, popup_left;
+
+	/* set the offsets in the popup.dat buffer */
+	switch (type) {
+		case 0:
+			popup_left = 0;
+			popup_middle = 0x380;
+			popup_right = 0x80;
+			break;
+		case 1:
+			popup_left = 0x100;
+			popup_middle = 0x480;
+			popup_right = 0x180;
+			break;
+		case 2:
+			popup_left = 0x200;
+			popup_middle = 0x480;
+			popup_right = 0x180;
+			break;
+		case 3:
+			popup_left = 0x280;
+			popup_middle = 0x580;
+			popup_right = 0x300;
+			break;
+	}
+
+	x = ds_readw(0xbfff);
+	y = (line * 8) + ds_readw(0xc001);
+	ds_writew(0xc011, x);
+	ds_writew(0xc013, y);
+	ds_writew(0xc015, x + 15);
+	ds_writew(0xc017, y + 7);
+	ds_writed(0xc019, ds_readd(0xd2ad) + popup_left);
+
+	do_pic_copy(0);
+
+	ds_writed(0xc019, ds_readd(0xd2ad) + popup_middle);
+
+	x += 16;
+
+	for (i = 0; i < ds_readw(0xbffd); i++) {
+		ds_writew(0xc011, x);
+		ds_writew(0xc015, x + 31);
+		do_pic_copy(0);
+		x += 32;
+	}
+
+	ds_writed(0xc019, ds_readd(0xd2ad) + popup_right);
+	ds_writew(0xc011, x);
+	ds_writew(0xc015, x + 15);
+
+	do_pic_copy(0);
+};

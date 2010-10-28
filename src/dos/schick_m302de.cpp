@@ -897,8 +897,22 @@ static int seg096(unsigned short offs) {
 		reg_ax = GUI_print_char(c & 0xff, x, y);
 		return 1;
 	}
-	case 0x4d:
-		return 0;
+	case 0x4d: {
+		RealPt p = CPU_Pop32();
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = GUI_get_first_pos_centered(MemBase + Real2Phys(p), v1, v2, v3);
+		D1_LOG("GUI_get_first_pos_centered(%s,%d,%d,%d) = %d\n", getString(p),
+			v1, v2, v3, reg_ax);
+
+		return 1;
+	}
 	case 0x52: {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
@@ -969,6 +983,13 @@ static int seg096(unsigned short offs) {
 	case 0x84:
 	case 0x89:
 	case 0x8e: {
+		unsigned short line = CPU_Pop16();
+		unsigned short type = CPU_Pop16();
+		CPU_Push16(type);
+		CPU_Push16(line);
+
+//		D1_INFO("GUI_draw_popup_line(%d, %d)\n", line, type);
+//		GUI_draw_popup_line(line, type);
 		return 0;
 	}
 	default:
