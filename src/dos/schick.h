@@ -69,7 +69,7 @@ static void ds_writeb(unsigned short offs, Bit8u val) {
 	real_writeb(datseg, offs, val);
 }
 static void ds_writew(unsigned short offs, Bit16u val) {
-	real_writeb(datseg, offs, val);
+	real_writew(datseg, offs, val);
 }
 static void ds_writed(unsigned short offs, Bit32u val) {
 	real_writed(datseg, offs, val);
