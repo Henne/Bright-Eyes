@@ -1019,9 +1019,9 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(type);
 		CPU_Push16(line);
 
-//		D1_INFO("GUI_draw_popup_line(%d, %d)\n", line, type);
-//		GUI_draw_popup_line(line, type);
-		return 0;
+		D1_LOG("GUI_draw_popup_line(%d, %d)\n", line, type);
+		GUI_draw_popup_line(line, type);
+		return 1;
 	}
 	default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
