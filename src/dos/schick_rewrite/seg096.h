@@ -6,6 +6,8 @@ extern RealPt GUI_names_grammar(unsigned short v1, unsigned short v2, unsigned s
 extern RealPt GUI_name_plural(unsigned short v1, Bit8u *s);
 //2f
 extern RealPt GUI_name_singular(Bit8u *s);
+//34
+extern RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3);
 //39
 extern RealPt GUI_get_ptr(unsigned short v1, unsigned short v2);
 //3e

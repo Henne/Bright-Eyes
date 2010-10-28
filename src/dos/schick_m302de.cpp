@@ -844,8 +844,23 @@ static int seg096(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x34:
-		return 0;
+	case 0x34: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		RealPt retval;
+
+		retval = GUI_2f2(v1, v2, v3);
+		D1_INFO("GUI_2f2(%d, %d, %d)\n", v1, v2, v3);
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
 	case 0x39: {
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();

@@ -126,6 +126,14 @@ RealPt GUI_name_singular(Bit8u *s) {
 	return RealMake(datseg, 0xe4e3);
 }
 //2f2
+RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3) {
+	short l, tmp;
+
+	l = (v3 == 0) ? ds_readb(0x2ac + v2) : ds_readb(0x925);
+	tmp = ds_readb(0xaa30 + v1 * 3 + l);
+
+	return ds_readd(0xaa14 + tmp * 4);
+}
 
 //330
 /**
