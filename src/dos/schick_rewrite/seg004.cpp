@@ -18,6 +18,32 @@ void schick_reset_video() {
 	set_video_page(real_readw(datseg, 0xd30b));
 }
 
+void do_pic_copy(unsigned short mode) {
+	short x2, y2;
+	short v1, v2, v3, v4;
+	short width, height;
+	RealPt v12, v16;
+	short x1, y1;
+
+	x1 = ds_readw(0xc011);
+	y1 = ds_readw(0xc013);
+
+	x2 = ds_readw(0xc015);
+	y2 = ds_readw(0xc017);
+	v1 = ds_readw(0xc01d);
+	v2 = ds_readw(0xc01f);
+	v3 = ds_readw(0xc021);
+	v4 = ds_readw(0xc023);
+
+	width = x2 - x1 + 1;
+	height = y2 - y1 + 1;
+
+	v12 = ds_readd(0xc019);
+	v16 = ds_readd(0xc00d);
+
+	pic_copy(Real2Phys(v16), x1, y1, x2, y2, v1, v2, v3, v4, width, height, MemBase + Real2Phys(v12), mode);
+}
+
 void do_save_rect() {
 	unsigned short width,height,x1,y1,x2,y2;
 	RealPt dst,src;

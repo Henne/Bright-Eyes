@@ -388,6 +388,13 @@ static int seg004(unsigned short offs) {
 		D1_LOG("schick_reset_video()\n");
 		schick_reset_video();
 		return 1;
+	case 0x13b7: {
+		unsigned short mode = CPU_Pop16();
+		CPU_Push16(mode);
+		D1_LOG("do_pic_copy(%d);\n", mode);
+		do_pic_copy(mode);
+		return 1;
+	}
 	case 0x144c:
 		D1_LOG("do_save_rect()\n");
 		do_save_rect();
