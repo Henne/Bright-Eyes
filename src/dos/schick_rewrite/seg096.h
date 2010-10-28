@@ -31,5 +31,7 @@ extern void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsi
 //75
 extern void GUI_set_smth(unsigned short v1, unsigned short v2);
 extern void GUI_get_smth(Bit8u *p1, Bit8u *p2);
-//83
+//89
+extern unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir);
+//8e
 extern void GUI_draw_popup_line(unsigned short line, unsigned short type);

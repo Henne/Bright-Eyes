@@ -378,6 +378,20 @@ unsigned short GUI_unused(Bit8u *str) {
 
 	return lines;
 }
+//9D6
+unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir) {
+	unsigned short sum, tmp;
+
+	for (sum = 0; *p; sum += tmp)
+		if (dir) {
+			GUI_lookup_char_height(*p++, &tmp);
+			D1_INFO("%d\n", tmp); }
+		else
+			GUI_lookup_char_width(*p++, &tmp);
+
+	return sum;
+}
+
 //A26
 unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned short v2, unsigned short dir) {
 	unsigned short tmp, i;

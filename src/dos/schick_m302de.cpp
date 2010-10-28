@@ -985,7 +985,19 @@ static int seg096(unsigned short offs) {
 		return 0;
 	}
 	case 0x84:
-	case 0x89:
+		return 0;
+	case 0x89: {
+		RealPt p = CPU_Pop32();
+		unsigned short v1 = CPU_Pop16();
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = GUI_get_space_for_string(MemBase + Real2Phys(p), (char)v1);
+		D1_LOG("GUI_get_space_for_string(%s, %d) = %d\n",
+			getString(p), v1, reg_ax);
+
+		return 1;
+	}
 	case 0x8e: {
 		unsigned short line = CPU_Pop16();
 		unsigned short type = CPU_Pop16();
