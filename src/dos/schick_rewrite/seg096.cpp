@@ -227,7 +227,7 @@ unsigned short GUI_count_lines(Bit8u *str) {
 	width_line = 0;
 
 	for ( ; str_loc[si]; si++) {
-		GUI_lookup_char(str_loc[si], &width_char);
+		GUI_lookup_char_width(str_loc[si], &width_char);
 		width_line += width_char;
 
 		if (width_line >=  ds_readw(0xd2d5)) {
@@ -275,14 +275,14 @@ unsigned short GUI_print_char(char c, unsigned short x, unsigned short y) {
 	unsigned short char_width, font_index;
 
 	ds_writeb(0xe4d8, c);
-	font_index = GUI_lookup_char(c, &char_width);
-	D1_LOG("GUI_lookup_char(%c); w=%d, fi=%d\n", c, char_width, font_index);
+	font_index = GUI_lookup_char_width(c, &char_width);
+	D1_LOG("GUI_lookup_char_width(%c); w=%d, fi=%d\n", c, char_width, font_index);
 	GUI_write_fonti_to_screen(font_index, char_width, x, y);
 
 	return char_width;
 }
 //82b
-unsigned short GUI_lookup_char(char c, unsigned short *p){
+unsigned short GUI_lookup_char_width(char c, unsigned short *p){
 	unsigned short i;
 
 	for (i = 0; i != 75*3; i += 3) {

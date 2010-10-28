@@ -15,7 +15,7 @@ extern unsigned short GUI_print_char(char c, unsigned short x, unsigned short y)
 //52
 extern unsigned short GUI_count_lines(Bit8u *str);
 //57
-extern unsigned short GUI_lookup_char(char c, unsigned short *p);
+extern unsigned short GUI_lookup_char_width(char c, unsigned short *p);
 //5c
 extern unsigned short GUI_unused(Bit8u *str);
 //61
