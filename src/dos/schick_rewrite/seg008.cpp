@@ -175,12 +175,11 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 				mem_writeb_inline(dst++, *src++);
 			dst += bx;
 			src += bx;
-		} while (--lines);
+		} while (--lines > 0);
 		break;
 	}
 	default: {
 		short bx, lines, cols;
-
 		lines = cur_height;
 		bx = 320 - cur_width;
 		do {
@@ -188,7 +187,7 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 				mem_writeb_inline(dst++, *src++);
 			dst += bx;
 			src += lv5;
-		} while (--lines);
+		} while (--lines > 0);
 	}
 	}
 }
