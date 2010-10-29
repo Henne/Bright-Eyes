@@ -385,6 +385,10 @@ static int seg004(unsigned short offs) {
 		D1_LOG("clear_ani()\n");
 		clear_ani();
 		return 1;
+	case 0xcb1:
+		D1_LOG("restore_mouse_bg()\n");
+		restore_mouse_bg();
+		return 1;
 	case 0x1190:
 		D1_LOG("schick_set_video()\n");
 		schick_set_video();
