@@ -90,7 +90,11 @@ static int seg002(unsigned short offs) {
 	case 0x16fd:
 	case 0x1802:
 	case 0x18b3:	/* Leaf Function */
+		return 0;
 	case 0x1921:
+		D1_LOG("update_mouse_cursor();\n");
+		update_mouse_cursor();
+		return 1;
 	case 0x192b:
 	case 0x1a34:
 	case 0x1cf2:	/* Shop: Item zurücklegen */

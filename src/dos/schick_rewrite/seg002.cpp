@@ -7,6 +7,8 @@
 
 #include "../schick.h"
 
+#include "seg002.h"
+#include "seg004.h"
 #include "seg007.h"
 
 
@@ -40,6 +42,21 @@ unsigned short get_current_season() {
 		return 1;
 
 	return 3;
+}
+
+void update_mouse_cursor() {
+	update_mouse_cursor1();
+}
+
+void update_mouse_cursor1() {
+	if (ds_readw(0x2998) == 0) {
+		if  (ds_readw(0x299a) == 0) {
+			ds_writew(0x2998, 1);
+			restore_mouse_bg();
+			ds_writew(0x2998, 0);
+		}
+		ds_writew(0x299a, ds_readw(0x299a) - 1);
+	}
 }
 
 void set_and_spin_lock() {
