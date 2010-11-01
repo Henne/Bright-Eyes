@@ -1171,6 +1171,29 @@ static int seg103(unsigned short offs) {
 			exit(1);
 	}
 }
+static int seg109(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			unsigned short kampf = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(kampf);
+
+			D1_INFO("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
+			return 0;
+		}
+		case 0x2a: {
+			unsigned short tevent = CPU_Pop16();
+			CPU_Push16(tevent);
+
+			D1_INFO("Reisebegegnung %d\n", tevent);
+			return 0;
+		}
+		default:
+			return 0;
+	}
+}
+
 
 /*
 	In seg122 is only an empty function.
@@ -1558,19 +1581,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 	/* Essen */
 	if (segm == 0x1498) return 0;
 	/* Kampf Orvil-Rovik Wölfe */
-	if (segm == 0x149b) {
-		if (offs == 0x0020) {
-			unsigned short kampf = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			CPU_Push16(v2);
-			CPU_Push16(kampf);
-
-			D1_INFO("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
-			return 0;
-		}
-		return 0;
-	}
-
+	if (segm == 0x149b)
+		return seg109(offs);
 	/* Reise Skjal-Orvil */
 	if (segm == 0x14b4) return 0;
 	/* Reise Skjal-Orvil */
