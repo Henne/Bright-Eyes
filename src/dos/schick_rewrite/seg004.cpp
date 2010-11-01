@@ -40,12 +40,12 @@ void clear_ani() {
 }
 
 void restore_mouse_bg() {
-	PhysPt p;
+	PhysPt dst;
 	short v2, v3, v4;
 	short si, di, j;
 
 	/* gfx memory */
-	p = Real2Phys(ds_readd(0xd2ff));
+	dst = Real2Phys(ds_readd(0xd2ff));
 	di = ds_readw(0x29a0) - ds_readw(0x29aa);
 	v2 = ds_readw(0x29a2) - ds_readw(0x29ac);
 	v4 = v3 = 16;
@@ -56,11 +56,12 @@ void restore_mouse_bg() {
 	if (v2 > 184)
 		v4 = 200 - v2;
 
-	p += (v2 * 320) + di;
+	dst += (v2 * 320) + di;
 
-	for (si = 0; si < v4; p += 320, si++)
+	for (si = 0; si < v4; dst += 320, si++)
 		for (j = 0; j < v3; j++)
-			mem_writeb_inline(p + j,ds_readb(0xcf0f + si*16 +j));
+			mem_writeb_inline(dst + j, ds_readb(0xcf0f + si*16 + j));
+
 }
 
 void schick_set_video() {
