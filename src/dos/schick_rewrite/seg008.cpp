@@ -94,10 +94,10 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 		cur_width -= lv2;
 	}
 
-	if (cur_height < 0)
+	if (cur_height <= 0)
 		return;
 
-	if (cur_width < 0)
+	if (cur_width <= 0)
 		return;
 
 	dst += ds_1 * 320 + ds_2;
