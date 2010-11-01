@@ -1673,7 +1673,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 			CPU_Push16(interruptno);
 
 			D1_TRAC("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
-				interruptno, RealSeg(isr) - relocation,
+				interruptno, (unsigned short)(RealSeg(isr) - relocation),
 				RealOff(isr));
 			return 0;
 		}
