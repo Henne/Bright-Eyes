@@ -1182,7 +1182,7 @@ static int seg109(unsigned short offs) {
 			D1_INFO("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
 			return 0;
 		}
-		case 0x2a: {
+		case 0xa2: {
 			unsigned short tevent = CPU_Pop16();
 			CPU_Push16(tevent);
 
