@@ -281,7 +281,7 @@ unsigned short GUI_count_lines(Bit8u *str) {
 	return ++lines;
 }
 //7f0
-unsigned short GUI_print_char(char c, unsigned short x, unsigned short y) {
+unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short y) {
 	unsigned short char_width, font_index;
 
 	ds_writeb(0xe4d8, c);
@@ -292,7 +292,7 @@ unsigned short GUI_print_char(char c, unsigned short x, unsigned short y) {
 	return char_width;
 }
 //82b
-unsigned short GUI_lookup_char_width(char c, unsigned short *p){
+unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p){
 	unsigned short i;
 
 	for (i = 0; i != 75*3; i += 3) {

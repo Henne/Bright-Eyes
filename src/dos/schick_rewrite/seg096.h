@@ -13,13 +13,13 @@ extern RealPt GUI_get_ptr(unsigned short v1, unsigned short v2);
 //3e
 extern RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2);
 //48
-extern unsigned short GUI_print_char(char c, unsigned short x, unsigned short y);
+extern unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short y);
 //4d
 extern unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short v1, unsigned short v2, unsigned short v3);
 //52
 extern unsigned short GUI_count_lines(Bit8u *str);
 //57
-extern unsigned short GUI_lookup_char_width(char c, unsigned short *p);
+extern unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p);
 //5c
 extern unsigned short GUI_unused(Bit8u *str);
 //61
