@@ -423,6 +423,24 @@ static int seg004(unsigned short offs) {
 		D1_LOG("do_save_rect()\n");
 		do_save_rect();
 		return 1;
+	case 0x14bd: {
+		RealPt dst = CPU_Pop32();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		unsigned short w = CPU_Pop16();
+		unsigned short h = CPU_Pop16();
+		unsigned short color = CPU_Pop16();
+		CPU_Push16(color);
+		CPU_Push16(h);
+		CPU_Push16(w);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(dst);
+
+		D1_LOG("do_fill_rect(%d);\n", color);
+		do_fill_rect(dst, x, y, w, h, color);
+		return 1;
+	}
 	default:
 		return 0;
 	}

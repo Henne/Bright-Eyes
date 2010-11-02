@@ -3,6 +3,7 @@
 
 #include "../schick.h"
 
+#include "seg002.h"
 #include "seg008.h"
 
 void set_var_to_zero() {
@@ -172,4 +173,17 @@ void do_save_rect() {
 	height = y2 - y1 + 1;
 
 	save_rect(PhysMake(RealSeg(dst), RealOff(dst) + v10), Real2Phys(src), width, height);
+}
+
+void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned short color) {
+	unsigned short width, height;
+
+	width = w - x + 1;
+	height = h - y + 1;
+
+	dst += y * 320 + x;
+
+	update_mouse_cursor();
+	fill_rect(Real2Phys(dst), color, width, height);
+	refresh_screen_size();
 }
