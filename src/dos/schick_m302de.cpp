@@ -921,7 +921,8 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(s);
 
 		D1_LOG("GUI_print_string(%s, %d, %d);\n", getString(s), x, y);
-		return 0;
+		GUI_print_string(MemBase + Real2Phys(s), x, y);
+		return 1;
 	}
 	case 0x48: {
 		unsigned short c = CPU_Pop16();

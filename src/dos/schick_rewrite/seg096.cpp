@@ -2,6 +2,7 @@
 
 #include "../schick.h"
 
+#include "seg002.h"
 #include "seg004.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -280,6 +281,73 @@ unsigned short GUI_count_lines(Bit8u *str) {
 	ds_writew(0xd2d5, max_line_width);
 	return ++lines;
 }
+//691
+void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y) {
+	unsigned short l1, l2, l3;
+	unsigned char l4;
+	unsigned short si, di;
+
+	si = x;
+	di = y;
+
+	l1 = 0;
+	l2 = 0;
+
+	update_mouse_cursor();
+
+	if (ds_readw(0xd2d1) == 1) {
+		l3 = si = GUI_get_first_pos_centered(str, x, ds_readw(0xd2d5), 0);
+	} else
+		if (ds_readw(0xe4db))
+			l3 = si += x + ds_readw(0xe4db);
+
+	while (l4 = str[l2++]) {
+		/* handle line breaks */
+		if (l4 == 0x0d || l4 == 0x40) {
+			if (++l1 == ds_readw(0xe4d9)) {
+				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
+				l3 -= ds_readw(0xe4db);
+			}
+			di += 7;
+			if (ds_readw(0xd2d1) == 1)
+				si = GUI_get_first_pos_centered(str + l2, ds_readw(0xd2d9), ds_readw(0xd2d5), 0);
+			else
+				si = l3;
+
+			continue;
+		}
+
+		if (l4 == 0x7e) {
+			if (si < ds_readw(0xd313))
+				si = ds_readw(0xd313);
+			else if (si < ds_readw(0xd315))
+				si = ds_readw(0xd315);
+			else if (si < ds_readw(0xd317))
+				si = ds_readw(0xd317);
+			else if (si < ds_readw(0xd319))
+				si = ds_readw(0xd319);
+			else if (si < ds_readw(0xd31b))
+				si = ds_readw(0xd31b);
+			else if (si < ds_readw(0xd31d))
+				si = ds_readw(0xd31d);
+			else if (si < ds_readw(0xd31f))
+				si = ds_readw(0xd31f);
+			continue;
+		}
+
+		if (l4 == 0xf0 || l4 == 0xf1 || l4 == 0xf2 || l4 == 0xf3) {
+			ds_writew(0xd2c5, l4 - 0xf0);
+			continue;
+		}
+
+		if (l4 == 0x3c)
+			l4 = 0x3e;
+
+		si += GUI_print_char(l4, si, di);
+	}
+	refresh_screen_size();
+}
+
 //7f0
 unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short y) {
 	unsigned short char_width, font_index;

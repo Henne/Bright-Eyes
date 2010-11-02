@@ -12,6 +12,8 @@ extern RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3);
 extern RealPt GUI_get_ptr(unsigned short v1, unsigned short v2);
 //3e
 extern RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2);
+//43
+extern void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y);
 //48
 extern unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short y);
 //4d
