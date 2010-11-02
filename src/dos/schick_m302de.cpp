@@ -9,6 +9,7 @@
 #include "schick_rewrite/seg007.h"
 #include "schick_rewrite/seg008.h"
 #include "schick_rewrite/seg009.h"
+#include "schick_rewrite/seg029.h"
 #include "schick_rewrite/seg096.h"
 #include "schick_rewrite/seg097.h"
 #include "schick_rewrite/seg098.h"
@@ -828,6 +829,16 @@ static int seg012(unsigned short offs) {
 			exit(1);
 	}
 }
+static int seg029(unsigned short offs) {
+	switch (offs) {
+	case 0x39:
+		D1_LOG("clear_loc_line();\n");
+		clear_loc_line();
+		return 1;
+	default:
+		return 0;
+	}
+}
 
 static int seg096(unsigned short offs) {
 	/*
@@ -1478,7 +1489,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		return 0;
 	}
 	if (segm == 0x12f1) return 0;
-	if (segm == 0x12f9) return 0;
+	if (segm == 0x12f9)
+		return seg029(offs);
 	/* Spielstand und Zeit */
 	if (segm == 0x12ff) return 0;
 	if (segm == 0x1303) return 0;
