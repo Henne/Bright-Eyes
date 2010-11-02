@@ -38,6 +38,35 @@ void clear_ani() {
 		}
 	 }
 }
+
+void draw_mouse_cursor() {
+	short mask, x, y, width, height;
+	PhysPt dst;
+	short *mouse_cursor;
+	char i,j;
+
+	dst = Real2Phys(ds_readd(0xd2ff));
+	mouse_cursor = (short*)(MemBase + Real2Phys(ds_readd(0xcecb)) + 32);
+
+	x = ds_readw(0x299c) - ds_readw(0x29a6);
+	y = ds_readw(0x299e) - ds_readw(0x29a8);
+
+	width = height = 16;
+
+	if (x > 304)
+		width = 320 - x;
+
+	if (y > 184)
+		height = 200 - y;
+
+	dst += y * 320 + x;
+
+	for (i = 0; i < height; dst += 320, i++)
+		for (mask = *mouse_cursor++, j = 0; j < width; j++)
+			if ((0x8000 >> j) & mask)
+				mem_writeb_inline(dst + j, 0xff);
+}
+
 void save_mouse_bg() {
 	PhysPt src;
 	short di,v6,v8,va;

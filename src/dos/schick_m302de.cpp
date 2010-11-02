@@ -389,6 +389,10 @@ static int seg004(unsigned short offs) {
 		D1_LOG("clear_ani()\n");
 		clear_ani();
 		return 1;
+	case 0xb6b:
+		D1_LOG("draw_mouse_cursor()\n");
+		draw_mouse_cursor();
+		return 1;
 	case 0xc26:
 		D1_LOG("save_mouse_bg()\n");
 		save_mouse_bg();
