@@ -6,7 +6,7 @@
 #include "seg008.h"
 
 void set_var_to_zero() {
-	real_writew(datseg, 0x29ae, 0);
+	ds_writew(0x29ae, 0);
 }
 
 void clear_ani() {
@@ -70,8 +70,8 @@ void schick_set_video() {
 }
 
 void schick_reset_video() {
-	set_video_mode(real_readw(datseg, 0xd30d));
-	set_video_page(real_readw(datseg, 0xd30b));
+	set_video_mode(ds_readw(0xd30d));
+	set_video_page(ds_readw(0xd30b));
 }
 
 void do_pic_copy(unsigned short mode) {
@@ -105,14 +105,14 @@ void do_save_rect() {
 	RealPt dst,src;
 	unsigned short v10;
 
-	x1 = real_readw(datseg, 0xc011);
-	y1 = real_readw(datseg, 0xc013);
+	x1 = ds_readw(0xc011);
+	y1 = ds_readw(0xc013);
 
-	x2 = real_readw(datseg, 0xc015);
-	y2 = real_readw(datseg, 0xc017);
+	x2 = ds_readw(0xc015);
+	y2 = ds_readw(0xc017);
 
-	src = real_readd(datseg, 0xc019);
-	dst = real_readd(datseg, 0xc00d);
+	src = ds_readd(0xc019);
+	dst = ds_readd(0xc00d);
 
 	v10 = y1 * 320 + x1;
 	width = x2 - x1 + 1;
