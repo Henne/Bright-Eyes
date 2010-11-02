@@ -1,5 +1,5 @@
 extern unsigned int get_readlength2(signed short index);
-extern unsigned short cmp_smth(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
+extern short cmp_smth(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
 extern unsigned short get_current_season();
 extern void update_mouse_cursor();
 extern void update_mouse_cursor1();
