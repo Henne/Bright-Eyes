@@ -47,6 +47,9 @@ unsigned short get_current_season() {
 void update_mouse_cursor() {
 	update_mouse_cursor1();
 }
+void refresh_screen_size() {
+	refresh_screen_size1();
+}
 
 void update_mouse_cursor1() {
 	if (ds_readw(0x2998) == 0) {
@@ -57,6 +60,43 @@ void update_mouse_cursor1() {
 		}
 		ds_writew(0x299a, ds_readw(0x299a) - 1);
 	}
+}
+
+void refresh_screen_size1() {
+
+	/* check lock */
+	if (ds_readw(0x2998))
+		return;
+
+	ds_writew(0x299a, ds_readw(0x299a) + 1);
+
+	if (ds_readw(0x299a))
+		return;
+
+	/* get lock */
+	ds_writew(0x2998, 1);
+
+	if (ds_readw(0x299c) < ds_readw(0x29a6))
+		ds_writew(0x299c, ds_readw(0x29a6));
+
+	if (ds_readw(0x299c) > 315)
+		ds_writew(0x299c, 315);
+
+	if (ds_readw(0x299e) < ds_readw(0x29a8))
+		ds_writew(0x299e, ds_readw(0x29a8));
+
+	if (ds_readw(0x299e > 195))
+		ds_writew(0x299e, 195);
+
+	save_mouse_bg();
+	ds_writew(0x29a0, ds_readw(0x299c));
+	ds_writew(0x29a2, ds_readw(0x299e));
+	ds_writew(0x29aa, ds_readw(0x29a6));
+	ds_writew(0x29ac, ds_readw(0x29a8));
+	draw_mouse_cursor();
+
+	/* put lock */
+	ds_writew(0x2998, 0);
 }
 
 void set_and_spin_lock() {

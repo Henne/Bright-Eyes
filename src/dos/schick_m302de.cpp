@@ -96,6 +96,9 @@ static int seg002(unsigned short offs) {
 		update_mouse_cursor();
 		return 1;
 	case 0x192b:
+		D1_LOG("refresh_screen_size();\n");
+		refresh_screen_size();
+		return 1;
 	case 0x1a34:
 	case 0x1cf2:	/* Shop: Item zurücklegen */
 	case 0x1d67:
