@@ -4,6 +4,7 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg029.h"
 #include "seg096.h"
 #include "seg097.h"
 //000
@@ -292,6 +293,32 @@ unsigned short GUI_print_header(Bit8u *str) {
 	refresh_screen_size();
 
 	return retval;
+}
+
+//614
+void GUI_print_loc_line(Bit8u * str) {
+	short tmp1, tmp2;
+	unsigned short l1, l2, l3;
+
+	GUI_get_smth(&tmp1, &tmp2);
+	GUI_set_smth(0xff, 0);
+
+	l1 = ds_readw(0xd2d9);
+	l2 = ds_readw(0xd2d7);
+	l3 = ds_readw(0xd2d5);
+
+	ds_writew(0xd2d9, 6);
+	ds_writew(0xd2d7, 143);
+	ds_writew(0xd2d5, 307);
+
+	clear_loc_line();
+	GUI_print_header(str);
+
+	ds_writew(0xd2d9, l1);
+	ds_writew(0xd2d7, l2);
+	ds_writew(0xd2d5, l3);
+
+	GUI_set_smth(tmp1, tmp2);
 }
 
 //691

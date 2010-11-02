@@ -35,6 +35,8 @@ extern void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsi
 //75
 extern void GUI_set_smth(unsigned short v1, unsigned short v2);
 extern void GUI_get_smth(short *p1, short *p2);
+//7f
+extern void GUI_print_loc_line(Bit8u *str);
 //84
 extern unsigned short GUI_print_header(Bit8u *str);
 //89
