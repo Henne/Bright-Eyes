@@ -657,7 +657,6 @@ static int seg008(unsigned short offs) {
 				width, height);
 		return 1;
 	}
-#endif
 	case 0x68c: {
 		RealPt rptr = CPU_Pop32();
 		unsigned short color = CPU_Pop16();
@@ -685,6 +684,7 @@ static int seg008(unsigned short offs) {
 				color, width, height);
 		return 1;
 	}
+#endif
 	case 0x6c5: {
 		RealPt dst = CPU_Pop32();
 		RealPt src = CPU_Pop32();
