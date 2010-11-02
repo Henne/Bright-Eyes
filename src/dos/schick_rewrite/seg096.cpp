@@ -281,6 +281,19 @@ unsigned short GUI_count_lines(Bit8u *str) {
 	ds_writew(0xd2d5, max_line_width);
 	return ++lines;
 }
+
+//5d7
+unsigned short GUI_print_header(Bit8u *str) {
+	unsigned short retval = 1;
+
+	update_mouse_cursor();
+	retval = GUI_count_lines(str);
+	GUI_print_string(str, ds_readw(0xd2d9), ds_readw(0xd2d7));
+	refresh_screen_size();
+
+	return retval;
+}
+
 //691
 void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y) {
 	unsigned short l1, l2, l3;

@@ -1019,8 +1019,14 @@ static int seg096(unsigned short offs) {
 		D1_LOG("drawLocName(%s)\n", getString(ptr));
 		return 0;
 	}
-	case 0x84:
-		return 0;
+	case 0x84: {
+		RealPt str = CPU_Pop32();
+		CPU_Push32(str);
+
+		D1_LOG("GUI_print_header(%s)\n", getString(str));
+		GUI_print_header(MemBase + Real2Phys(str));
+		return 1;
+	}
 	case 0x89: {
 		RealPt p = CPU_Pop32();
 		unsigned short v1 = CPU_Pop16();
