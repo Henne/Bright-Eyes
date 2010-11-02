@@ -453,9 +453,9 @@ void GUI_set_smth(unsigned short v1, unsigned short v2) {
 	real_writew(datseg, 0xd2c7, v2);
 }
 
-void GUI_get_smth(Bit8u *p1, Bit8u *p2) {
-	host_writew(p1, real_readw(datseg, 0xd2c9));
-	host_writew(p2, real_readw(datseg, 0xd2c7));
+void GUI_get_smth(short *p1, short *p2) {
+	host_writew((Bit8u*)p1, real_readw(datseg, 0xd2c9));
+	host_writew((Bit8u*)p2, real_readw(datseg, 0xd2c7));
 }
 
 unsigned short GUI_unused(Bit8u *str) {

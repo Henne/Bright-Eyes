@@ -34,7 +34,7 @@ extern void GUI_font_to_buf(Bit8u *p);
 extern void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width);
 //75
 extern void GUI_set_smth(unsigned short v1, unsigned short v2);
-extern void GUI_get_smth(Bit8u *p1, Bit8u *p2);
+extern void GUI_get_smth(short *p1, short *p2);
 //84
 extern unsigned short GUI_print_header(Bit8u *str);
 //89

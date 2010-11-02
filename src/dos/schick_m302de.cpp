@@ -1037,7 +1037,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("GUI_get_smth();\n");
-		GUI_get_smth(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+		GUI_get_smth((short*)(MemBase + Real2Phys(p1)), (short*)(MemBase + Real2Phys(p2)));
 
 		return 1;
 	}
