@@ -38,6 +38,30 @@ void clear_ani() {
 		}
 	 }
 }
+void save_mouse_bg() {
+	PhysPt src;
+	short di,v6,v8,va;
+	short si, j;
+
+	src = Real2Phys(ds_readd(0xd2ff));
+
+	di = ds_readw(0x299c) - ds_readw(0x29a6);
+	v6 = ds_readw(0x299e) - ds_readw(0x29a8);
+
+	v8 = va = 16;
+
+	if (di > 304)
+		v8 = 320 - di;
+
+	if (v6 > 184)
+		va = 200 - v6;
+
+	src += v6 * 320 + di;
+
+	for (si = 0; si < va; src += 320, si++)
+		for (j = 0; j < v8; j++)
+			ds_writeb(0xcf0f + si * 16 + j , mem_readb_inline(src + j));
+}
 
 void restore_mouse_bg() {
 	PhysPt dst;
