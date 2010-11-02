@@ -472,7 +472,7 @@ unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir) {
 unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned short v2, unsigned short dir) {
 	unsigned short tmp, i;
 
-	for (i = 0; *p && *p != 0x40 ; i += tmp) {
+	for (i = 0; *p && *p != 0x40 && *p != 0x0d; i += tmp) {
 		if (dir)
 			GUI_lookup_char_height(*p++, &tmp);
 		else
