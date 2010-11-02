@@ -296,10 +296,11 @@ void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y) {
 	update_mouse_cursor();
 
 	if (ds_readw(0xd2d1) == 1) {
-		l3 = si = GUI_get_first_pos_centered(str, x, ds_readw(0xd2d5), 0);
+		si = GUI_get_first_pos_centered(str, x, ds_readw(0xd2d5), 0);
 	} else
 		if (ds_readw(0xe4db))
-			l3 = si += x + ds_readw(0xe4db);
+			si += ds_readw(0xe4db);
+	l3 = si;
 
 	while (l4 = str[l2++]) {
 		/* handle line breaks */
