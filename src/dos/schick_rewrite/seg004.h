@@ -5,6 +5,7 @@ extern void save_mouse_bg();
 extern void restore_mouse_bg();
 extern void schick_set_video();
 extern void schick_reset_video();
+extern void do_h_line(PhysPt ptr,unsigned short x1, unsigned short x2, unsigned short y, char color);
 extern void do_v_line(PhysPt ptr, unsigned short x, unsigned short y1, unsigned short y2, char color);
 extern void do_pic_copy(unsigned short mode);
 extern void do_save_rect();
