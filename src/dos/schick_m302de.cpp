@@ -423,6 +423,24 @@ static int seg004(unsigned short offs) {
 		D1_LOG("schick_reset_video()\n");
 		schick_reset_video();
 		return 1;
+	case 0x12e8: {
+		RealPt dst = CPU_Pop32();
+		unsigned short x = CPU_Pop16();
+		unsigned short y1 = CPU_Pop16();
+		unsigned short y2 = CPU_Pop16();
+		unsigned short color = CPU_Pop16();
+		CPU_Push16(color);
+		CPU_Push16(y2);
+		CPU_Push16(y1);
+		CPU_Push16(x);
+		CPU_Push32(dst);
+
+		D1_LOG("do_v_line(0x%04x:0x%04x, %d, %d, %d, 0x%02x);\n",
+			RealSeg(dst), RealOff(dst), x, y1, y2,
+			(unsigned char)color);
+		do_v_line(Real2Phys(dst), x, y1, y2, (unsigned char)color);
+		return 1;
+	}
 	case 0x13b7: {
 		unsigned short mode = CPU_Pop16();
 		CPU_Push16(mode);

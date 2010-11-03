@@ -128,6 +128,26 @@ void schick_reset_video() {
 	set_video_page(ds_readw(0xd30b));
 }
 
+void do_v_line(PhysPt ptr, unsigned short x, unsigned short y1, unsigned short y2, char color) {
+
+	unsigned short count, tmp;
+	PhysPt dst;
+
+	if (y1 == y2)
+		return;
+
+	if (y1 > y2) {
+		tmp = y2;
+		y2 = y1;
+		y1 = tmp;
+	}
+
+	count = y2 - y1 + 1;
+	dst = y1 * 320 + x + ptr;
+
+	draw_h_spaced_dots(dst, count, color, 320);
+}
+
 void do_pic_copy(unsigned short mode) {
 	short x2, y2;
 	short v1, v2, v3, v4;
