@@ -130,9 +130,21 @@ static int seg002(unsigned short offs) {
 	case 0x4016:	/* Kopierschutzabfrage */
 	case 0x404f:
 	case 0x40d1:
-	case 0x41cd:
 		return 0;
+	case 0x41cd: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
 
+		unsigned int retval;
+
+		retval = swap_u32(v1, v2);
+
+		reg_ax = retval & 0xffff;
+		reg_dx = (retval >> 16) & 0xffff;
+		return 1;
+	}
 	case 0x43e7: {
 		D1_LOG("set_to_ff()\n");
 		set_to_ff();

@@ -10,6 +10,7 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
+#include "seg008.h"
 
 
 unsigned int get_readlength2(signed short index) {
@@ -103,6 +104,12 @@ void set_and_spin_lock() {
 	real_writew(datseg, 0xbcd6, 1);
 	while (real_readw(datseg, 0xbcd6)) {};
 }
+
+unsigned int swap_u32(unsigned short v1, unsigned short v2) {
+	return (swap_u16(v1) << 16 | swap_u16(v2));
+
+};
+
 void set_to_ff() {
 	unsigned i;
 

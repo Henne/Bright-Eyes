@@ -6,6 +6,7 @@ extern void refresh_screen_size();
 extern void update_mouse_cursor1();
 extern void refresh_screen_size1();
 extern void set_and_spin_lock();
+extern unsigned int swap_u32(unsigned short v1, unsigned short v2);
 extern void set_to_ff();
 extern unsigned short mod_timer(short val);
 extern short can_merge_group();
