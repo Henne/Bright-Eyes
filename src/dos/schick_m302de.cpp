@@ -474,6 +474,7 @@ static int seg005(unsigned short offs) {
 static int seg008(unsigned short offs) {
 
 	switch (offs) {
+#if 0
 
 	case 0x8: {
 		unsigned short val = CPU_Pop16();
@@ -484,7 +485,6 @@ static int seg008(unsigned short offs) {
 
 		return 1;
 	}
-#if 0
 	case 0x14: {
 		unsigned short mode = CPU_Pop16();
 		CPU_Push16(mode);
