@@ -132,14 +132,12 @@ static int seg002(unsigned short offs) {
 	case 0x40d1:
 		return 0;
 	case 0x41cd: {
-		unsigned short v1 = CPU_Pop16();
-		unsigned short v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(v1);
+		unsigned int v = CPU_Pop32();
+		CPU_Push32(v);
 
 		unsigned int retval;
 
-		retval = swap_u32(v1, v2);
+		retval = swap_u32(v);
 
 		reg_ax = retval & 0xffff;
 		reg_dx = (retval >> 16) & 0xffff;
