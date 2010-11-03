@@ -40,6 +40,20 @@ void clear_ani() {
 	 }
 }
 
+void restore_rect(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, char n, char m) {
+
+	unsigned short i, j;
+	char c;
+
+	dst += y * 320 + x;
+
+	for (i = 0; i < m; dst += 320, i++)
+		for (j = 0; j < n; j++)
+			if (c = *src++)
+				mem_writeb_inline(dst + j, c);
+}
+
+
 void draw_mouse_cursor() {
 	short mask, x, y, width, height;
 	PhysPt dst;
