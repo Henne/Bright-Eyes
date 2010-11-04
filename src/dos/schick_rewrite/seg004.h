@@ -5,6 +5,7 @@ extern void restore_rect_rle(PhysPt ptr1, Bit8u *ptr2, unsigned short x, unsigne
 extern void draw_mouse_cursor();
 extern void save_mouse_bg();
 extern void restore_mouse_bg();
+extern void array_add(PhysPt dst, unsigned short len, unsigned char op, unsigned short flag);
 extern void schick_set_video();
 extern void schick_reset_video();
 extern void do_h_line(PhysPt ptr,unsigned short x1, unsigned short x2, unsigned short y, char color);

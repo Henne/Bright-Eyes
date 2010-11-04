@@ -157,6 +157,26 @@ void restore_mouse_bg() {
 			mem_writeb_inline(dst + j, ds_readb(0xcf0f + si*16 + j));
 
 }
+/**
+	array_add - adds op to each element of an array
+	@dst:	pointer to array
+	@len:	length of array
+	@op:	operator
+	@flag:	if 2, op will not be added if array element is 0
+*/
+void array_add(PhysPt dst, unsigned short len, unsigned char op, unsigned short flag) {
+	unsigned short i;
+	char tmp;
+
+	for (i = 0; i < len; i++) {
+		tmp = mem_readb(dst+i);
+
+		if (flag == 2 && !tmp)
+			continue;
+
+		mem_writeb(dst + i, tmp + op);
+	}
+}
 
 void schick_set_video() {
 	set_video_mode(0x13);

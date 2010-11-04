@@ -456,6 +456,21 @@ static int seg004(unsigned short offs) {
 		D1_LOG("restore_mouse_bg()\n");
 		restore_mouse_bg();
 		return 1;
+	case 0x1147: {
+		RealPt dst = CPU_Pop32();
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(dst);
+
+		D1_LOG("array_add(0x%04x:0x%04x, len=%d, op=%d, flag=%d);\n",
+			RealSeg(dst), RealOff(dst), v1, (char)v2, v3);
+		array_add(Real2Phys(dst), v1, (char)v2, v3);
+		return 1;
+	}
 	case 0x1190:
 		D1_LOG("schick_set_video()\n");
 		schick_set_video();
