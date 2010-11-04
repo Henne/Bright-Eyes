@@ -53,6 +53,32 @@ void restore_rect(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, ch
 				mem_writeb_inline(dst + j, c);
 }
 
+void restore_rect_rle(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, char width, char height, unsigned short v1) {
+	unsigned short i, si, di;
+	unsigned char c, cnt, tmp;
+
+	dst += y * 320 + x;
+	update_mouse_cursor();
+
+	for (i = 0; i < height; dst += 320, i++) {
+		si = 0;
+		while (si < width) {
+			if ((c = *src++) == 0x7f) {
+				cnt = *src++;
+				tmp = *src++;
+				if (tmp || v1 != 2)
+					for (di = 0; di < cnt; di++)
+						mem_writeb(dst + si + di, tmp);
+				si += cnt;
+				continue;
+			}
+			if (c || v1 != 2)
+				mem_writeb(dst + si, c);
+			si++;
+		}
+	}
+	refresh_screen_size();
+}
 
 void draw_mouse_cursor() {
 	short mask, x, y, width, height;

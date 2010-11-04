@@ -1,6 +1,7 @@
 extern void set_var_to_zero();
 extern void clear_ani();
 extern void restore_rect(PhysPt ptr1, Bit8u *ptr2, unsigned short x, unsigned short y, char n, char m);
+extern void restore_rect_rle(PhysPt ptr1, Bit8u *ptr2, unsigned short x, unsigned short y, char n ,char m, unsigned short v1);
 extern void draw_mouse_cursor();
 extern void save_mouse_bg();
 extern void restore_mouse_bg();

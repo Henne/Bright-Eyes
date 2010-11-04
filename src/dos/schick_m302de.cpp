@@ -422,6 +422,28 @@ static int seg004(unsigned short offs) {
 			(char)n, (char)m);
 		return 1;
 	}
+	case 0xaa4: {
+		RealPt ptr1 = CPU_Pop32();
+		RealPt ptr2 = CPU_Pop32();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		unsigned short w = CPU_Pop16();
+		unsigned short h = CPU_Pop16();
+		unsigned short v1 = CPU_Pop16();
+		CPU_Push16(v1);
+		CPU_Push16(h);
+		CPU_Push16(w);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(ptr2);
+		CPU_Push32(ptr1);
+
+		D1_LOG("restore_rect_rle(%d %d %d %d %d)\n", x, y , w, h, v1);
+
+		restore_rect_rle(Real2Phys(ptr1), MemBase + Real2Phys(ptr2),
+			x, y, (char)w, (char)h, v1);
+		return 1;
+	}
 	case 0xb6b:
 		D1_LOG("draw_mouse_cursor()\n");
 		draw_mouse_cursor();
