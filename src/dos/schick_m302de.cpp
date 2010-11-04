@@ -482,6 +482,26 @@ static int seg004(unsigned short offs) {
 		do_v_line(Real2Phys(dst), x, y1, y2, (unsigned char)color);
 		return 1;
 	}
+	case 0x1342: {
+		RealPt dst = CPU_Pop32();
+		unsigned short x1 = CPU_Pop16();
+		unsigned short x2 = CPU_Pop16();
+		unsigned short y1 = CPU_Pop16();
+		unsigned short y2 = CPU_Pop16();
+		unsigned short color = CPU_Pop16();
+		CPU_Push16(color);
+		CPU_Push16(y2);
+		CPU_Push16(y1);
+		CPU_Push16(x2);
+		CPU_Push16(x1);
+		CPU_Push32(dst);
+
+		D1_LOG("do_border(0x%04x:0x%04x, %d, %d, %d, %d, 0x%02x);\n",
+			RealSeg(dst), RealOff(dst), x1, x2, y1, y2,
+			(unsigned char)color);
+		do_border(Real2Phys(dst), x1, x2, y1, y2, (unsigned char)color);
+		return 1;
+	}
 	case 0x13b7: {
 		unsigned short mode = CPU_Pop16();
 		CPU_Push16(mode);

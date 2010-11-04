@@ -207,6 +207,15 @@ void do_v_line(PhysPt ptr, unsigned short x, unsigned short y1, unsigned short y
 	draw_h_spaced_dots(dst, count, color, 320);
 }
 
+void do_border(PhysPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color) {
+	update_mouse_cursor();
+	do_h_line(dst, x1, x2, y1, color);
+	do_h_line(dst, x1, x2, y2, color);
+	do_v_line(dst, x1, y1, y2, color);
+	do_v_line(dst, x2, y1, y2, color);
+	refresh_screen_size();
+}
+
 void do_pic_copy(unsigned short mode) {
 	short x2, y2;
 	short v1, v2, v3, v4;
