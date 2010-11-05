@@ -81,7 +81,7 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 	if (ds_readw(0xa9eb) == 4)
 		ds_writew(0xa9eb, 0);
 
-	D1_INFO("%s\n", (char*)MemBase + PhysMake(datseg, 0xe50b + l4 * 40));
+	D1_LOG("%s\n", (char*)MemBase + PhysMake(datseg, 0xe50b + l4 * 40));
 	return RealMake(datseg, 0xe50b + l4 * 40);
 }
 
