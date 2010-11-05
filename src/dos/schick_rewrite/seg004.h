@@ -1,5 +1,6 @@
 extern void set_var_to_zero();
 extern void clear_ani();
+extern void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode);
 extern void restore_rect(PhysPt ptr1, Bit8u *ptr2, unsigned short x, unsigned short y, char n, char m);
 extern void restore_rect_rle(PhysPt ptr1, Bit8u *ptr2, unsigned short x, unsigned short y, char n ,char m, unsigned short v1);
 extern void draw_mouse_cursor();

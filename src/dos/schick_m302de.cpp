@@ -403,6 +403,22 @@ static int seg004(unsigned short offs) {
 		D1_LOG("clear_ani()\n");
 		clear_ani();
 		return 1;
+	case 0x8e9: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		unsigned short v4 = CPU_Pop16();
+		unsigned short v5 = CPU_Pop16();
+		CPU_Push16(v5);
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("draw_bar(%d,%d,%d,%d,%d)\n", v1, v2, v3, v4, v5);
+		draw_bar(v1, v2, v3, v4, v5);
+		return 1;
+	}
 	case 0xa39: {
 		RealPt ptr1 = CPU_Pop32();
 		RealPt ptr2 = CPU_Pop32();

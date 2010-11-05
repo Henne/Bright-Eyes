@@ -4,6 +4,7 @@
 #include "../schick.h"
 
 #include "seg002.h"
+#include "seg004.h"
 #include "seg008.h"
 
 void set_var_to_zero() {
@@ -38,6 +39,63 @@ void clear_ani() {
 			ds_writew(0xc450 + i * 0x107 + (j << 2), 0);
 		}
 	 }
+}
+/**
+	draw_bar - draws a bar to visualize LE or AE
+	@type:		0 = LE / 1 = AE
+	@hero:		number of hero when mode is zero
+	@pts_cur:	current points
+	@pts_max:	maximum points
+	@mode:		0 on game mask, 1 in fight
+
+	It should be used, either hero or mode is zero,
+	since in fight mode only the active hero is shown.
+*/
+void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode) {
+	PhysPt dst;
+	unsigned short x, lost;
+	unsigned short i, y_min;
+
+	if (mode == 0)
+		update_mouse_cursor();
+
+	if (mode == 0) {
+		x = ds_readw(0x2d01 + hero * 2) + type * 4 + 34;
+		y_min = 188;
+		dst = Real2Phys(ds_readd(0xd2ff));
+	} else {
+		x = type * 4 + 36;
+		y_min = 42;
+		dst = Real2Phys(ds_readd(0xd303));
+	}
+
+	if (pts_cur == 0) {
+		/* draw 4 black vertical lines */
+		for (i = 0; i < 3; i++)
+			do_v_line(dst, x + i, y_min - 30, y_min, 0);
+	} else
+		if (pts_cur == pts_max) {
+			/* draw 4 full lines in the color of the type */
+			for (i = 0; i < 3; i++)
+				do_v_line(dst, x + i, y_min - 30, y_min,
+					ds_readb(0x4a94 + type * 2));
+		} else {
+			lost = 30 * pts_cur / pts_max;
+
+			if (lost == 0)
+				lost++;
+			/* draw visible part */
+			for (i = 0; i < 3; i++)
+				do_v_line(dst, x + i, y_min - lost, y_min,
+					ds_readb(0x4a94 + type * 2));
+			/* draw black part */
+			for (i = 0; i < 3; i++)
+				do_v_line(dst, x + i, y_min - 30,
+					y_min - lost - 1, 0);
+		}
+
+	if (mode == 0)
+		refresh_screen_size();
 }
 
 void restore_rect(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, char n, char m) {
