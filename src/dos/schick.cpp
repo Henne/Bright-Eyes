@@ -18,6 +18,8 @@ static int fromgame = 0;
 static int dathandle = 0;
 // Segment relocation
 unsigned short relocation;
+// Segment relocation from game if gen is called
+unsigned short relocation_bak;
 
 // Debugging Mode (Bitfield): Bit 1=File Operations, Bit 2=Proben
 static int dbg_mode=2;
@@ -39,7 +41,9 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 			schick--;
 			fromgame++;
 			gen++;
-			D1_INFO("Gen gestartet\nProfiling angehalten\n");
+			relocation_bak = relocation;
+			relocation = reloc;
+			D1_INFO("Gen gestartet\nreloc (0x%x)\n", reloc);
 		}
 		return;
 	}
@@ -92,6 +96,8 @@ void exit_schick(unsigned char exit)
 		gen--;
 		fromgame--;
 		schick++;
+		relocation = relocation_bak;
+		relocation_bak = 0;
 		D1_INFO("Gen beendet\nProfiling geht weiter\n");
 		return;
 	}
@@ -508,8 +514,12 @@ const char* names_spell[] = {
 
 int schick_callf(unsigned selector, unsigned offs)
 {
-	if (!running || !(dbg_mode & 2)) return 0;
-	if (selector >= datseg) return 0;
+	if (!running || !(dbg_mode & 2))
+		return 0;
+	if (selector == SegValue(ss))
+		return 0;
+	if (selector >= 0xa000)
+		return 0;
 
 	unsigned short segm = selector - relocation;
 	int ret = 0;
