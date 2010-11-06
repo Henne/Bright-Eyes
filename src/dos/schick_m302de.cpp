@@ -1901,7 +1901,14 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		if (offs == 0x117b) return 0;
 		/* delete() */
 		if (offs == 0x11a7) return 0;
-		if (offs == 0x176d) return 0;
+		if (offs == 0x176d) {
+			unsigned short cmd = CPU_Pop16();
+			CPU_Push16(cmd);
+
+			D1_LOG("bioskey(%d);\n", (char) cmd);
+
+			return 0;
+		}
 		if (offs == 0x1792) return 0;
 		if (offs == 0x1e55) {
 			unsigned short off=real_readw(ss, reg_sp);
