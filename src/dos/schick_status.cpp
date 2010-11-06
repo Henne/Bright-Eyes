@@ -494,6 +494,26 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			i++;
 			continue;
 		}
+		if (i == 0x622) {
+			short newval = host_readw(status_ingame + i);
+			D1_INFO("Quest: Zwingfeste Thorwal ");
+			switch (newval) {
+				case 1:
+					D1_INFO("Auftrag angenommen\n");
+					break;
+				case 3:
+					D1_INFO("Auftrag ausgeführt\n");
+					break;
+				case 4:
+					D1_INFO("Quest abgeschlossen\n");
+				default:
+					D1_INFO("Fehler\n");
+					exit(1);
+			}
+			host_writew(status_copy + i, newval);
+			i += 2;
+			continue;
+		}
 		if (i >= 0x6cc && i <= 0x715) {
 			D1_INFO("Ihr habt Herberge (0x%02lx) beleidigt\n",
 					i - 0x6cc);
