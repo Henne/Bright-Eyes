@@ -1067,7 +1067,7 @@ CODE_jmp:
 void CPU_CALL(bool use32,Bitu selector,Bitu offset,Bitu oldeip) {
 
 	/* if schick_callf() is not 0 we just increment the IP */
-	if (schick_callf(selector, offset, SegValue(ss))) {
+	if (schick_callf(selector, offset)) {
 		reg_ip +=5;
 		return;
 	}

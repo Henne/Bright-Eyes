@@ -506,7 +506,7 @@ const char* names_spell[] = {
     "Abvenenum", "Aeolitus", "Brenne", "Claudibus", "Dunkelheit", "Erstarre", "Flim Flam", "Schmelze", "Silentium", "Sturmgebrüll" // Veränderung
 };
 
-int schick_callf(unsigned selector, unsigned offs, unsigned ss)
+int schick_callf(unsigned selector, unsigned offs)
 {
 	if (!running || !(dbg_mode & 2)) return 0;
 	if (selector >= datseg) return 0;
@@ -515,12 +515,12 @@ int schick_callf(unsigned selector, unsigned offs, unsigned ss)
 	int ret = 0;
 
 	if (schick && !fromgame) {
-		ret = schick_farcall_v302de(segm, offs, ss);
+		ret = schick_farcall_v302de(segm, offs);
 		return ret;
 	}
 
 	if (gen) {
-		ret = schick_farcall_gen105(segm, offs, ss);
+		ret = schick_farcall_gen105(segm, offs);
 		return ret;
 	}
 
