@@ -1664,11 +1664,11 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	/* Heiler stub053 */
 	if (segm == 0x1362) {
 		if (offs == 0x20) {
-			unsigned short typi = real_readb(datseg, 0x4224);
-			char v1 = real_readb(datseg, typi * 2 + 0x66ea);
-			char v2 = real_readb(datseg, typi * 2 + 0x66ea + 1);
-			D1_INFO("Heiler: 0x%02x Rabatt: %d%% Qualität: %d\n",
-								typi, v1, v2);
+			unsigned short typi = ds_readb(0x4224);
+			char price = real_readb(datseg, typi * 2 + 0x66ea);
+			char qual = real_readb(datseg, typi * 2 + 0x66ea + 1);
+			D1_INFO("Heiler: 0x%02x Preis: %d% Qualität: %d\n",
+				typi, 100 + price, qual);
 			return 0;
 		}
 		return 0;
