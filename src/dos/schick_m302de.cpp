@@ -1506,14 +1506,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		return 0;
 	if (segm == 0x51e)
 		return seg002(offs);
-	if (segm == 0xb2a)
-		return seg004(offs);
-	if (segm == 0xbce)
-		return seg005(offs);
-	if (segm == 0xc85)
-		return 0;
-	if (segm == 0xe41)
-		return 0;
 	if (segm == 0x0ae7) {
 		if (offs == 0x000c) {
 			unsigned short mod = CPU_Pop16();
@@ -1526,6 +1518,12 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		}
 		return 0;
 	}
+	if (segm == 0xb2a)
+		return seg004(offs);
+	if (segm == 0xc85)
+		return seg005(offs);
+	if (segm == 0x0e41)
+		return 0;
 	if (segm == 0x0ef8)
 		return seg007(offs);
 	if (segm == 0xf18)
