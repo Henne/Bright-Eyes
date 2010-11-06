@@ -1893,9 +1893,11 @@ int schick_farcall_v302de(unsigned segm, unsigned offs, unsigned ss)
 		}
 		if (offs == 0x1123) {
 			/* time(), user for randomize */
-			unsigned short hi=real_readw(ss, reg_sp);
-			unsigned short lo=real_readw(ss, reg_sp+2);
-			D1_TRAC("C-Lib time(0x%04x)\n", hi<<16+lo);
+			unsigned int time= CPU_Pop32();
+			CPU_Push32(time);
+
+			D1_LOG("C-Lib time(0x%04x)\n", time);
+
 			return 0;
 		}
 		if (offs == 0x117b) return 0;
