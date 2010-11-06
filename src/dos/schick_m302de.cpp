@@ -581,6 +581,128 @@ static int seg005(unsigned short offs) {
 	}
 }
 
+static int seg007(unsigned short offs) {
+
+		if (offs == 0x000b) {
+			signed lo = CPU_Pop16();
+			signed hi = CPU_Pop16();
+			CPU_Push16(hi);
+			CPU_Push16(lo);
+
+			reg_ax = random_interval(lo, hi);
+
+			D1_INFO("randomInterval %d - %d : %d\n",
+				lo, hi, reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x002b) {
+			unsigned p1 = CPU_Pop16();
+			CPU_Push16(p1);
+
+			reg_ax = random_schick(p1);
+
+			D1_INFO("random(%d) = %d\n", p1, reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x007a) {
+			unsigned n = CPU_Pop16();
+			unsigned m = CPU_Pop16();
+			unsigned x = CPU_Pop16();
+			CPU_Push16(x);
+			CPU_Push16(m);
+			CPU_Push16(n);
+
+			reg_ax = dice_roll(n, m, x);
+
+			D1_INFO("wuerfel %dW%d%+d = %d\n",
+				n, m, x, (short)reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x00c4) {
+			unsigned val = CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+			CPU_Push16(val);
+
+			reg_ax = is_in_word_array(val, MemBase + Real2Phys(p));
+
+			D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
+				val, RealSeg(p), RealOff(p), reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x00ef) {
+			unsigned val = CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+			CPU_Push16(val);
+
+			reg_ax = is_in_byte_array((char)val, MemBase+Real2Phys(p));
+			D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
+				(char)val, RealSeg(p), RealOff(p), reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x00a0) {
+			signed n = CPU_Pop16();
+			unsigned m = CPU_Pop16();
+			signed x = CPU_Pop16();
+			RealPt pmin = CPU_Pop32();
+			RealPt pmax = CPU_Pop32();
+			CPU_Push32(pmax);
+			CPU_Push32(pmin);
+			CPU_Push16(x);
+			CPU_Push16(m);
+			CPU_Push16(n);
+
+			calc_damage_range(n, m, x, MemBase+Real2Phys(pmin),
+				MemBase+Real2Phys(pmax));
+
+			D1_LOG("calc_damage_range(%d, %d, %d)\n", n, m, x);
+
+			return 1;
+		}
+		if (offs == 0x0119) {
+		        unsigned val = CPU_Pop16();
+		        CPU_Push16(val);
+
+			unsigned short m = ((val & 0x0f00) >> 8) - 1;
+			if (m > 3)
+				m = 3;
+
+			m = dice_tab[m];
+
+			reg_ax = dice_template(val);
+
+		        D1_INFO("Wuerfel %dW%d%+d = %d\n",
+				(val & 0xf000) >> 12, m,
+				(char)(val & 0xff), (short)reg_ax);
+
+			return 1;
+		}
+		if (offs == 0x0186) {
+			unsigned short val = CPU_Pop16();
+			RealPt min = CPU_Pop32();
+			RealPt max = CPU_Pop32();
+			CPU_Push32(max);
+			CPU_Push32(min);
+			CPU_Push16(val);
+
+			damage_range_template(val, MemBase + Real2Phys(min),
+				MemBase + Real2Phys(max));
+
+			D1_LOG("damage_range_template() Untested\n");
+
+			return 1;
+		}
+	D1_ERR("Uncatched call to Segment seg007:0x%04x\n", offs);
+	exit(1);
+	return 0;
+}
+
 static int seg008(unsigned short offs) {
 
 	switch (offs) {
@@ -1392,9 +1514,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		return 0;
 	if (segm == 0xe41)
 		return 0;
-
-
-
 	if (segm == 0x0ae7) {
 		if (offs == 0x000c) {
 			unsigned short mod = CPU_Pop16();
@@ -1407,127 +1526,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		}
 		return 0;
 	}
-	if (segm == 0x0ef8) {
-
-		if (offs == 0x000b) {
-			signed lo = CPU_Pop16();
-			signed hi = CPU_Pop16();
-			CPU_Push16(hi);
-			CPU_Push16(lo);
-
-			reg_ax = random_interval(lo, hi);
-
-			D1_INFO("randomInterval %d - %d : %d\n",
-				lo, hi, reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x002b) {
-			unsigned p1 = CPU_Pop16();
-			CPU_Push16(p1);
-
-			reg_ax = random_schick(p1);
-
-			D1_INFO("random(%d) = %d\n", p1, reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x007a) {
-			unsigned n = CPU_Pop16();
-			unsigned m = CPU_Pop16();
-			unsigned x = CPU_Pop16();
-			CPU_Push16(x);
-			CPU_Push16(m);
-			CPU_Push16(n);
-
-			reg_ax = dice_roll(n, m, x);
-
-			D1_INFO("wuerfel %dW%d%+d = %d\n",
-				n, m, x, (short)reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x00c4) {
-			unsigned val = CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			CPU_Push32(p);
-			CPU_Push16(val);
-
-			reg_ax = is_in_word_array(val, MemBase + Real2Phys(p));
-
-			D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
-				val, RealSeg(p), RealOff(p), reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x00ef) {
-			unsigned val = CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			CPU_Push32(p);
-			CPU_Push16(val);
-
-			reg_ax = is_in_byte_array((char)val, MemBase+Real2Phys(p));
-			D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
-				(char)val, RealSeg(p), RealOff(p), reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x00a0) {
-			signed n = CPU_Pop16();
-			unsigned m = CPU_Pop16();
-			signed x = CPU_Pop16();
-			RealPt pmin = CPU_Pop32();
-			RealPt pmax = CPU_Pop32();
-			CPU_Push32(pmax);
-			CPU_Push32(pmin);
-			CPU_Push16(x);
-			CPU_Push16(m);
-			CPU_Push16(n);
-
-			calc_damage_range(n, m, x, MemBase+Real2Phys(pmin),
-				MemBase+Real2Phys(pmax));
-
-			D1_LOG("calc_damage_range(%d, %d, %d)\n", n, m, x);
-
-			return 1;
-		}
-		if (offs == 0x0119) {
-		        unsigned val = CPU_Pop16();
-		        CPU_Push16(val);
-
-			unsigned short m = ((val & 0x0f00) >> 8) - 1;
-			if (m > 3)
-				m = 3;
-
-			m = dice_tab[m];
-
-			reg_ax = dice_template(val);
-
-		        D1_INFO("Wuerfel %dW%d%+d = %d\n",
-				(val & 0xf000) >> 12, m,
-				(char)(val & 0xff), (short)reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x0186) {
-			unsigned short val = CPU_Pop16();
-			RealPt min = CPU_Pop32();
-			RealPt max = CPU_Pop32();
-			CPU_Push32(max);
-			CPU_Push32(min);
-			CPU_Push16(val);
-
-			damage_range_template(val, MemBase + Real2Phys(min),
-				MemBase + Real2Phys(max));
-
-			D1_LOG("damage_range_template() Untested\n");
-
-			return 1;
-		}
-		D1_ERR("Uncatched call to Segment seg007:0x%04x\n", offs);
-		exit(1);
-		return 0;
-	}
+	if (segm == 0x0ef8)
+		return seg007(offs);
 	if (segm == 0xf18)
 		return seg008(offs);
 	if (segm == 0x0ff1)
