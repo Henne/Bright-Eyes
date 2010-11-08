@@ -1665,7 +1665,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 			unsigned short typi = ds_readb(0x4224);
 			char price = real_readb(datseg, typi * 2 + 0x66ea);
 			char qual = real_readb(datseg, typi * 2 + 0x66ea + 1);
-			D1_INFO("Heiler: 0x%02x Preis: %d% Qualität: %d\n",
+			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualität: %d\n",
 				typi, 100 + price, qual);
 			return 0;
 		}
