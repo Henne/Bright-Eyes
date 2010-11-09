@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 23/136
+	Functions rewritten: 30/136
 */
 
 #include "mem.h"
