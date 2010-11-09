@@ -164,6 +164,72 @@ static void schick_log_timer32(const char *text, char *flag,
 						*flag, oldval, newval);
 	host_writed(status_copy+offset, newval);
 }
+static void schick_status_dng_thorwal(unsigned long i) {
+
+	D1_INFO("Dungeon (%s): ", dungeon[14]);
+	switch (i) {
+
+	case 0x1282:
+		D1_INFO("Phexschrein geplündert 0x0204\n");
+		break;
+	case 0x1283:
+		D1_INFO("Alarm ausgelöst 0x0503\n");
+		break;
+	case 0x1284:
+	case 0x1285:
+	case 0x1286:
+	case 0x1287:
+	case 0x1288:
+		D1_INFO("Geheimtür ");
+		switch (i) {
+		case 0x1284:
+			D1_INFO("0x040b ");
+			break;
+		case 0x1285:
+			D1_INFO("0x0b07 ");
+			break;
+		case 0x1286:
+			D1_INFO("0x1109 ");
+			break;
+		case 0x1287:
+			D1_INFO("0x170a ");
+			break;
+		case 0x1288:
+			D1_INFO("0x2e05 ");
+			break;
+		}
+		switch (status_ingame[i]) {
+		case 0:
+			D1_INFO("versteckt?\n");
+			break;
+		case 1:
+			D1_INFO("gefunden\n");
+			break;
+		case 2:
+			D1_INFO("geöffnet\n");
+			break;
+		}
+		break;
+	case 0x1289:
+		switch (status_ingame[i]) {
+		case 1:
+			D1_INFO("Giftfalle 0x0d07 aktiviert\n");
+			break;
+		case 0:
+		case 2:
+			D1_INFO("Giftfalle 0x0d07 deaktiviert\n");
+			break;
+		}
+	case 0x128a:
+		D1_INFO("Hauptkampf erledigt\n");
+		break;
+	default:
+		D1_INFO("(0x%04x) von %x auf %x\n", i, status_copy[i],
+			status_ingame[i]);
+	}
+
+	status_copy[i]=status_ingame[i];
+}
 
 static Uint32 schick_cmp_status(Uint32 interval, void *param)
 {
@@ -522,6 +588,11 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 
+		if (i >= 0x1282 && i <= 0x1292) {
+			schick_status_dng_thorwal(i);
+			i = 0x1293;
+			continue;
+		}
 		/* Extendet-Status */
 		/* Texte aus STORY.LTX */
 		if (i >= 0x1672 && i <= 0x1682) {
