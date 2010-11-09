@@ -605,7 +605,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		/* Ingame Diary */
 		if (i >= 0x1686) {
 			status_copy[i]=status_ingame[i];
-
+			i++;
 			continue;
 		}
 
