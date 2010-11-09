@@ -11,6 +11,8 @@ extern void set_to_ff();
 extern unsigned short mod_timer(short val);
 extern short can_merge_group();
 extern unsigned short div16(unsigned char val);
+extern void set_automap_tile(unsigned short x, unsigned short y);
+extern void set_automap_tiles(unsigned short x, unsigned short y);
 extern unsigned short check_hero(Bit8u* hero);
 extern void add_hero_ae(Bit8u* hero, short ae);
 extern short test_attrib(Bit8u* hero, unsigned short attrib, short bonus);

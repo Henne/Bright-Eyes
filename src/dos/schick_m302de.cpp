@@ -181,10 +181,29 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x45ea:	/* Leaf Function - far only */
 	case 0x4658:	/* Leaf Function - far only */
-	case 0x4707:	/* Leaf Function - far & near */
-	case 0x472b:	/* No Leaf - far only, calls only 0x4707 */
 		return 0;
+	case 0x4707: {
+		/* Leaf Function - far & near */
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
 
+		D1_LOG("set_map_tile(%d, %d)\n", x, y);
+		set_automap_tile(x, y);
+		return 1;
+	}
+	case 0x472b: {
+		/* No Leaf - far only, calls only 0x4707 */
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		D1_LOG("set_automap_tiles(%d, %d)\n", x, y);
+		set_automap_tiles(x, y);
+		return 1;
+	}
 	case 0x48b1: {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);

@@ -169,6 +169,54 @@ unsigned short div16(unsigned char val) {
 }
 
 /**
+	set_automap_tile - marks a tile in the automap as seen
+	@x:	X xoordinate
+	@y:	Y xoordinate
+*/
+void set_automap_tile(unsigned short x, unsigned short y) {
+	unsigned short offs;
+	char bit, tiles;
+
+	offs = y * 4 + x / 8;
+	bit = ds_readb(0x7d4a + (x & 7));
+	tiles = ds_readb(0xe442 + offs);
+	ds_writeb(0xe442 + offs, tiles | bit);
+}
+
+/**
+	set_automap_tile - marks all sourrounding tiles in the automap as seen
+	@x:	X xoordinate
+	@y:	Y xoordinate
+*/
+void set_automap_tiles(unsigned short x, unsigned short y) {
+
+	/* set upper line */
+	if (y > 0) {
+		if (x > 0)
+			set_automap_tile(x - 1, y - 1);
+		set_automap_tile(x, y - 1);
+		if (ds_readb(0xbd94) - 1 > x)
+			set_automap_tile(x + 1, y - 1);
+	}
+
+	/* set middle line */
+	if (x > 0)
+		set_automap_tile(x - 1, y);
+	set_automap_tile(x, y);
+	if (ds_readb(0xbd94) - 1 > y)
+		set_automap_tile(x + 1, y);
+
+	/* set lower line */
+	if (y < 15) {
+		if (x > 0)
+			set_automap_tile(x - 1, y + 1);
+		set_automap_tile(x, y + 1);
+		if (ds_readb(0xbd94) - 1 > x)
+			set_automap_tile(x + 1, y + 1);
+	}
+}
+
+/**
 	check_hero - returns true if heros not dead, stoned or unconscious
 	should be static
 */
