@@ -1708,6 +1708,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	if (segm == 0x1386) return 0;
 	/* Hafen */
 	if (segm == 0x138a) return 0;
+	/* stub056 */
+	if (segm == 0x138e) return 0;
 	if (segm == 0x1392) return 0;
 	/* Zufallsnachrichten */
 	if (segm == 0x139a) return 0;
