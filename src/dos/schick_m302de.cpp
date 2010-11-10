@@ -8,6 +8,7 @@
 #include "schick_rewrite/seg002.h"
 #include "schick_rewrite/seg003.h"
 #include "schick_rewrite/seg004.h"
+#include "schick_rewrite/seg006.h"
 #include "schick_rewrite/seg007.h"
 #include "schick_rewrite/seg008.h"
 #include "schick_rewrite/seg009.h"
@@ -616,44 +617,83 @@ static int seg006(unsigned short offs) {
 			D1_LOG("seg006_07f()\n");
 			return 0;
 		case 0x236:
-			D1_LOG("seg006_236()\n");
-			return 0;
+			D1_INFO("FIG_set_gfx()\n");
+			FIG_set_gfx();
+			return 1;
 		case 0x29e:
 			D1_LOG("seg006_29e()\n");
 			return 0;
 		case 0x2a8:
-			D1_LOG("seg006_2a8()\n");
+			D1_LOG("FIG_draw_pic();\n");
+//			FIG_draw_pic();
 			return 0;
 		case 0x2fa:
 			D1_LOG("seg006_2fa()\n");
 			return 0;
-		case 0x33c:
-			D1_LOG("seg006_33c()\n");
-			return 0;
-		case 0x36c:
-			D1_LOG("seg006_36c()\n");
-			return 0;
+		case 0x33c: {
+			short v = CPU_Pop16();
+			CPU_Push16(v);
+
+			RealPt retval = seg006_033c(v);
+			D1_LOG("seg006_33c(0x%x); = %x\n", v , retval);
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+
+			return 1;
+		}
+		case 0x36c: {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			seg006_36c((char)v1, (char)v2);
+			D1_INFO("seg006_36c(%d, %d)\n", (char)v1, (char)v2);
+			return 1;
+		}
 		case 0x3bb:
 			D1_LOG("seg006_3bb()\n");
 			return 0;
 		case 0x443:
 			D1_LOG("seg006_443()\n");
 			return 0;
-		case 0x4cb:
-			D1_LOG("seg006_4cb()\n");
-			return 0;
+		case 0x4cb: {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			seg006_4cb((char)v1, (char)v2);
+			D1_INFO("seg006_4cb(%d, %d)\n", (char)v1, (char)v2);
+			return 1;
+		}
 		case 0x512:
 			D1_LOG("seg006_512()\n");
 			return 0;
 		case 0x637:
 			D1_LOG("seg006_637()\n");
 			return 0;
-		case 0x82b:
-			D1_LOG("seg006_82b()\n");
+		case 0x82b: {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_INFO("FIG_draw_char_pic(%d, %d)\n", v1, v2);
+			FIG_draw_char_pic(v1, v2);
+			return 1;
+		}
+		case 0x99f: {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_LOG("FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
+			//FIG_draw_enemy_pic(v1, v2);
 			return 0;
-		case 0x99f:
-			D1_LOG("seg006_99f()\n");
-			return 0;
+		}
 		default:
 			D1_ERR("Uncatched call to Segment seg006:0x%04x\n",
 				offs);

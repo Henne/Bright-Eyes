@@ -1,0 +1,112 @@
+#include "mem.h"
+
+#include "../schick.h"
+
+#include "seg002.h"
+#include "seg004.h"
+#include "seg006.h"
+#include "seg096.h"
+
+void FIG_draw_pic() {
+	mem_memcpy(Real2Phys(ds_readd(0xd303)), Real2Phys(ds_readd(0xc3a9)), 64000);
+	ds_writeb(0x26af, 1);
+
+	if (ds_readw(0x26b3))
+		FIG_draw_char_pic(0, ds_readw(0x26b3));
+	else if (ds_readw(0x26b5))
+		FIG_draw_enemy_pic(0, ds_readw(0x26b3));
+}
+void FIG_set_gfx() {
+	RealPt ptr_bak;
+
+	ptr_bak = ds_readd(0xc00d);
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 319);
+	ds_writew(0xc017, 199);
+	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+	update_mouse_cursor();
+	do_pic_copy(0);
+	refresh_screen_size();
+	ds_writed(0xc00d, ptr_bak);
+}
+
+RealPt seg006_033c(short v) {
+	unsigned short i;
+
+	for (i = 0; i < 20; i++) {
+		if (v == (char)ds_readb(0xd371 + i * 62))
+			return RealMake(datseg, 0xd34b + i * 62);
+	}
+
+	return 0;
+}
+
+void seg006_36c(char v1, char v2) {
+	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
+
+	while (host_readb(ptr + 0x10) != v1) {
+		if (host_readd(ptr + 0x1b) == 0)
+			return;
+		ptr = MemBase + Real2Phys(host_readd(ptr + 0x1b));
+	}
+	host_writeb(ptr + 0x0e, v2);
+}
+
+void seg006_4cb(char v1, char v2) {
+	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
+
+	while (host_readb(ptr + 0x10) != v1) {
+		if (host_readd(ptr + 0x1b) == 0)
+			return;
+		ptr = MemBase + Real2Phys(host_readd(ptr + 0x1b));
+	}
+	host_writeb(ptr + 0x0f, v2);
+}
+/**
+	FIG_draw_char_pic - draws the heroes picture to the fight screen
+	@pos:		0 upper left / 1 lower left
+	@hero_nr:	number of the hero
+*/
+void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
+	RealPt hero;
+	short bak1, bak2;
+
+	hero = ds_readd(0xbd34) + (hero_nr - 1)  * 0x6da;
+	ds_writed(0xc019, hero + 0x2da);
+
+	GUI_get_smth(&bak1, &bak2);
+	GUI_set_smth(0xff, 0);
+
+	ds_writed(0xc00d, ds_readd(0xd303));
+	ds_writed(0xd2fb, ds_readd(0xd303));
+
+	if (pos == 0) {
+
+		do_border(Real2Phys(ds_readd(0xd303)), 1, 9, 34, 42, 29);
+		ds_writew(0xc011, 2);
+		ds_writew(0xc013, 10);
+		ds_writew(0xc015, 33);
+		ds_writew(0xc017, 41);
+		GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 1);
+		draw_bar(0, 0, mem_readw(Real2Phys(hero+0x60)), mem_readw(Real2Phys(hero+0x5e)), 1);
+		draw_bar(1, 0, mem_readw(Real2Phys(hero+0x62)), mem_readw(Real2Phys(hero+0x64)), 1);
+	} else {
+		do_border(Real2Phys(ds_readd(0xd303)), 1, 157, 34, 190, 29);
+		ds_writew(0xc011, 2);
+		ds_writew(0xc013, 158);
+		ds_writew(0xc015, 33);
+		ds_writew(0xc017, 189);
+		GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 193);
+	}
+
+	do_pic_copy(0);
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(0xd2fb, ds_readd(0xd2ff));
+	GUI_set_smth(bak1, bak2);
+}
+
+void FIG_draw_enemy_pic(unsigned short v1, unsigned short v2) {
+}
+
