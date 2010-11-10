@@ -607,6 +607,63 @@ static int seg005(unsigned short offs) {
 	}
 }
 
+static int seg006(unsigned short offs) {
+	switch (offs) {
+		case 0x00e:
+			D1_LOG("seg006_00e()\n");
+			return 0;
+		case 0x05a:
+			D1_LOG("seg006_05a()\n");
+			return 0;
+		case 0x07f:
+			D1_LOG("seg006_07f()\n");
+			return 0;
+		case 0x236:
+			D1_LOG("seg006_236()\n");
+			return 0;
+		case 0x29e:
+			D1_LOG("seg006_29e()\n");
+			return 0;
+		case 0x2a8:
+			D1_LOG("seg006_2a8()\n");
+			return 0;
+		case 0x2fa:
+			D1_LOG("seg006_2fa()\n");
+			return 0;
+		case 0x33c:
+			D1_LOG("seg006_33c()\n");
+			return 0;
+		case 0x36c:
+			D1_LOG("seg006_36c()\n");
+			return 0;
+		case 0x3bb:
+			D1_LOG("seg006_3bb()\n");
+			return 0;
+		case 0x443:
+			D1_LOG("seg006_443()\n");
+			return 0;
+		case 0x4cb:
+			D1_LOG("seg006_4cb()\n");
+			return 0;
+		case 0x512:
+			D1_LOG("seg006_512()\n");
+			return 0;
+		case 0x637:
+			D1_LOG("seg006_637()\n");
+			return 0;
+		case 0x82b:
+			D1_LOG("seg006_82b()\n");
+			return 0;
+		case 0x99f:
+			D1_LOG("seg006_99f()\n");
+			return 0;
+		default:
+			D1_ERR("Uncatched call to Segment seg006:0x%04x\n",
+				offs);
+			exit(1);
+	}
+}
+
 static int seg007(unsigned short offs) {
 
 		if (offs == 0x000b) {
@@ -1622,7 +1679,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	if (segm == 0xc85)
 		return seg005(offs);
 	if (segm == 0x0e41)
-		return 0;
+		return seg006(offs);
 	if (segm == 0x0ef8)
 		return seg007(offs);
 	if (segm == 0xf18)
