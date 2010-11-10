@@ -612,9 +612,6 @@ static int seg006(unsigned short offs) {
 		case 0x00e:
 			D1_LOG("seg006_00e()\n");
 			return 0;
-		case 0x05a:
-			D1_LOG("seg006_05a()\n");
-			return 0;
 		case 0x07f:
 			D1_LOG("seg006_07f()\n");
 			return 0;
