@@ -1357,6 +1357,9 @@ static int seg096(unsigned short offs) {
 }
 
 static int seg097(unsigned short offs) {
+
+	char buffer[20];
+
 	switch (offs) {
 	case 0x25: {
 		unsigned short c = CPU_Pop16();
@@ -1368,17 +1371,87 @@ static int seg097(unsigned short offs) {
 		D1_INFO("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 		return 1;
 	}
+	case 0x34: {
+		RealPt ptr = CPU_Pop32();
+		unsigned short s = CPU_Pop16();
+		CPU_Push16(s);
+		CPU_Push32(ptr);
+
+		strncpy(buffer, (char*)getString(ptr), 20);
+		D1_LOG("GUI_EnterText(%s..., %d)\n", buffer, s);
+		return 0;
+	}
 	case 0x39: {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		D1_LOG("dialog_schmal(%s)\n", getString(ptr));
+		strncpy(buffer, (char*)getString(ptr), 20);
+		D1_LOG("GUI_InfoBox(%s...)\n", buffer);
+		return 0;
+	}
+	case 0x3e: {
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+
+		strncpy(buffer, (char*)getString(ptr), 20);
+		D1_LOG("GUI_AskBool(%s...)\n", buffer);
+		return 0;
+	}
+	case 0x5c: {
+		RealPt pic = CPU_Pop32();
+		RealPt name = CPU_Pop32();
+		RealPt text = CPU_Pop32();
+		unsigned short options = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(options);
+		CPU_Push32(text);
+		CPU_Push32(name);
+		CPU_Push32(pic);
+
+		if (name)
+			strncpy(buffer, (char*)getString(name), 20);
+		else
+			strncpy(buffer, "(NULL)", 20);
+
+		D1_LOG("GUI_DialogBox(pic=0x%x, %s,", pic, buffer);
+		strncpy(buffer, (char*)getString(text), 20);
+		D1_LOG("%s..., %d, %d)\n", buffer, (char)options, v2);
+		return 0;
+	}
+	case 0x43: {
+		RealPt text = CPU_Pop32();
+		unsigned short options = CPU_Pop16();
+
+		unsigned short i;
+
+		strncpy(buffer, (char*)getString(text), 20);
+		D1_LOG("GUI_RadioBox(%s..., %d", buffer, (char)options);
+
+		for (i = 0; i < (char)options; i++) {
+			strncpy(buffer, (char*)getString(real_readd(SegValue(ss), reg_sp + i *4)), 20);
+			D1_LOG(", %s...", buffer);
+		}
+
+		D1_LOG(");\n");
+		CPU_Push16(options);
+		CPU_Push32(text);
+		return 0;
+	}
+	case 0x66: {
+		unsigned short fight = CPU_Pop16();
+		CPU_Push16(fight);
+
+		D1_LOG("GUI_Dungeon(0x%x)\n", fight);
 		return 0;
 	}
 	default:
-		return 0;
+		D1_ERR("Uncatched call to Segment seg098:0x%04x\n", offs);
+		exit(1);
 	}
+	return 0;
 }
+
 static int seg098(unsigned short offs) {
 	switch (offs) {
 
