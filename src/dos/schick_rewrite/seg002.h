@@ -1,6 +1,7 @@
 extern unsigned int get_readlength2(signed short index);
 extern short cmp_smth(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
 extern unsigned short get_current_season();
+extern void make_ggst_cursor(Bit8u *p);
 extern void update_mouse_cursor();
 extern void refresh_screen_size();
 extern void update_mouse_cursor1();

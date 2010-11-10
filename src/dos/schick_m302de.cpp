@@ -92,8 +92,15 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x16fd:
 	case 0x1802:
-	case 0x18b3:	/* Leaf Function */
 		return 0;
+	case 0x18b3: {
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+
+		D1_LOG("make_ggst_cursor(%x)\n", Real2Phys(p));
+		make_ggst_cursor(MemBase + Real2Phys(p));
+		return 1;
+	}
 	case 0x1921:
 		D1_LOG("update_mouse_cursor();\n");
 		update_mouse_cursor();

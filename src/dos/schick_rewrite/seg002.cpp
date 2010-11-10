@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 30/136
+	Functions rewritten: 31/136
 */
 
 #include "mem.h"
@@ -43,6 +43,23 @@ unsigned short get_current_season() {
 		return 1;
 
 	return 3;
+}
+void make_ggst_cursor(Bit8u *p) {
+	unsigned short i, j;
+	unsigned short tmp;
+
+	for (i = 0; i < 16; i++)
+		ds_writew(0xceef + i * 2, 0);
+
+	for (i = 0; i < 16; i++)
+		for (j = 0; j < 16; j++)
+			if (*p++ != 0x40) {
+				tmp = ds_readw(0xceef + i * 2);
+				ds_writew(0xceef + i * 2, tmp | (0x8000 >> j));
+			}
+
+	for (i = 0; i < 16; i++)
+		ds_writew(0xcecf + i * 2, ~ds_readw(0xceef + i * 2));
 }
 
 void update_mouse_cursor() {
