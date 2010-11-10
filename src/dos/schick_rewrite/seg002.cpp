@@ -44,22 +44,31 @@ unsigned short get_current_season() {
 
 	return 3;
 }
-void make_ggst_cursor(Bit8u *p) {
-	unsigned short i, j;
+
+/**
+	make_ggst_cursor - makes a mouse cursor from a selected item
+	@p:	pointer to the icon of the item
+*/
+void make_ggst_cursor(Bit8u *icon) {
+	unsigned short y, x;
 	unsigned short tmp;
 
-	for (i = 0; i < 16; i++)
-		ds_writew(0xceef + i * 2, 0);
+	/* clear the bitmask */
+	for (y = 0; y < 16; y++)
+		ds_writew(0xceef + y * 2, 0);
 
-	for (i = 0; i < 16; i++)
-		for (j = 0; j < 16; j++)
-			if (*p++ != 0x40) {
-				tmp = ds_readw(0xceef + i * 2);
-				ds_writew(0xceef + i * 2, tmp | (0x8000 >> j));
+	/* make a bitmask from the icon */
+	for (y = 0; y < 16; y++)
+		for (x = 0; x < 16; x++)
+			/* if pixelcolor of the icon is not black */
+			if (*icon++ != 0x40) {
+				tmp = ds_readw(0xceef + y * 2);
+				ds_writew(0xceef + y * 2, tmp | (0x8000 >> x));
 			}
 
-	for (i = 0; i < 16; i++)
-		ds_writew(0xcecf + i * 2, ~ds_readw(0xceef + i * 2));
+	/* copy and negate the bitmask */
+	for (y = 0; y < 16; y++)
+		ds_writew(0xcecf + y * 2, ~ds_readw(0xceef + y * 2));
 }
 
 void update_mouse_cursor() {
