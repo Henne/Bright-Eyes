@@ -14,8 +14,9 @@ void FIG_draw_pic() {
 	if (ds_readw(0x26b3))
 		FIG_draw_char_pic(0, ds_readw(0x26b3));
 	else if (ds_readw(0x26b5))
-		FIG_draw_enemy_pic(0, ds_readw(0x26b3));
+		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
 }
+
 void FIG_set_gfx() {
 	RealPt ptr_bak;
 
