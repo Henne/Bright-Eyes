@@ -75,9 +75,9 @@ static void ds_writed(unsigned short offs, Bit32u val) {
 	real_writed(datseg, offs, val);
 }
 
-extern int schick_farcall_gen105(unsigned, unsigned);
-extern int schick_farcall_v302de(unsigned, unsigned);
+int schick_farcall_gen105(unsigned, unsigned);
+int schick_farcall_v302de(unsigned, unsigned);
 
-extern void schick_status_init();
-extern void schick_status_exit();
-extern void schick_status_update(unsigned char*, unsigned short);
+void schick_status_init();
+void schick_status_exit();
+void schick_status_update(unsigned char*, unsigned short);

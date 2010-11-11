@@ -1,1 +1,1 @@
-extern void clear_loc_line();
+void clear_loc_line();

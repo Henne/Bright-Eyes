@@ -1,1 +1,1 @@
-extern short update_direction(unsigned char mod);
+short update_direction(unsigned char mod);
