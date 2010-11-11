@@ -55,26 +55,27 @@ RealPt seg006_033c(short v) {
 	return 0;
 }
 
-void seg006_36c(char v1, char v2) {
+void FIG_set_0e(char id, char val) {
 	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
 
-	while (host_readb(ptr + 0x10) != v1) {
+	while (host_readb(ptr + 0x10) != id) {
 		if (host_readd(ptr + 0x1b) == 0)
 			return;
 		ptr = MemBase + Real2Phys(host_readd(ptr + 0x1b));
 	}
-	host_writeb(ptr + 0x0e, v2);
+	host_writeb(ptr + 0x0e, val);
+	host_writeb(ptr + 0x12, 1);
 }
 
-void seg006_4cb(char v1, char v2) {
+void FIG_set_0f(char id, char val) {
 	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
 
-	while (host_readb(ptr + 0x10) != v1) {
+	while (host_readb(ptr + 0x10) != id) {
 		if (host_readd(ptr + 0x1b) == 0)
 			return;
 		ptr = MemBase + Real2Phys(host_readd(ptr + 0x1b));
 	}
-	host_writeb(ptr + 0x0f, v2);
+	host_writeb(ptr + 0x0f, val);
 }
 /**
 	FIG_draw_char_pic - draws the heroes picture to the fight screen

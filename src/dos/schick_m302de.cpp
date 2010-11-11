@@ -630,7 +630,7 @@ static int seg006(unsigned short offs) {
 			FIG_set_gfx();
 			return 1;
 		case 0x29e:
-			D1_LOG("seg006_29e()\n");
+			D1_LOG("FIG_do_draw_pic()\n");
 			return 0;
 		case 0x2a8:
 			D1_LOG("FIG_draw_pic();\n");
@@ -657,8 +657,8 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			seg006_36c((char)v1, (char)v2);
-			D1_INFO("seg006_36c(%d, %d)\n", (char)v1, (char)v2);
+			FIG_set_0e((char)v1, (char)v2);
+			D1_INFO("FIG_set_0e(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
 		case 0x3bb:
@@ -673,8 +673,8 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			seg006_4cb((char)v1, (char)v2);
-			D1_INFO("seg006_4cb(%d, %d)\n", (char)v1, (char)v2);
+			FIG_set_0f((char)v1, (char)v2);
+			D1_INFO("FIG_set_0f(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
 		case 0x512:
