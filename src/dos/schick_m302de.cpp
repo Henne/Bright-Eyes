@@ -670,12 +670,22 @@ static int seg006(unsigned short offs) {
 			D1_INFO("FIG_set_0e(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
-		case 0x3bb:
-			D1_LOG("seg006_3bb()\n");
-			return 0;
-		case 0x443:
-			D1_LOG("seg006_443()\n");
-			return 0;
+		case 0x3bb: {
+			unsigned short id = CPU_Pop16();
+			CPU_Push16(id);
+
+			FIG_reset_12_13((char)id);
+			D1_LOG("FIG_reset_12_13(%d)\n", (char)id);
+			return 1;
+		}
+		case 0x443: {
+			unsigned short id = CPU_Pop16();
+			CPU_Push16(id);
+
+			FIG_set_12_13((char)id);
+			D1_LOG("FIG_set_12_13(%d)\n", (char)id);
+			return 1;
+		}
 		case 0x4cb: {
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
@@ -686,9 +696,17 @@ static int seg006(unsigned short offs) {
 			D1_INFO("FIG_set_0f(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
-		case 0x512:
-			D1_LOG("seg006_512()\n");
-			return 0;
+		case 0x512: {
+			unsigned short id = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(id);
+
+			D1_LOG("FIG_remove_from_list(%d, %d)\n",
+				(char)id, (char)v2);
+			FIG_remove_from_list((char)id, (char)v2);
+			return 1;
+		}
 		case 0x637:
 			D1_LOG("seg006_637()\n");
 			return 0;
