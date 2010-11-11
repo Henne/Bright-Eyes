@@ -610,9 +610,18 @@ static int seg005(unsigned short offs) {
 
 static int seg006(unsigned short offs) {
 	switch (offs) {
-		case 0x00e:
-			D1_LOG("seg006_00e()\n");
-			return 0;
+		case 0x00e: {
+			unsigned short v1 = CPU_Pop16();
+			CPU_Push16(v1);
+
+			RealPt retval;
+			retval = FIG_get_ptr((char)v1);
+			D1_INFO("FIG_get_ptr(%d); = 0x%x\n", v1, retval);
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+			return 1;
+		}
 		case 0x07f:
 			D1_LOG("seg006_07f()\n");
 			return 0;

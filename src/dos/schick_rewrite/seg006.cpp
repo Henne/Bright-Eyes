@@ -7,6 +7,17 @@
 #include "seg006.h"
 #include "seg096.h"
 
+RealPt FIG_get_ptr(char v1) {
+	RealPt ptr = ds_readd(0xe108);
+
+	while (mem_readb(Real2Phys(ptr + 0x10)) != v1) {
+		if (mem_readd(Real2Phys(ptr + 0x1b)) == 0)
+			return ds_readd(0xe108);
+		ptr = mem_readd(Real2Phys(ptr + 0x1b));
+	}
+	return ptr;
+}
+
 void FIG_draw_pic() {
 	mem_memcpy(Real2Phys(ds_readd(0xd303)), Real2Phys(ds_readd(0xc3a9)), 64000);
 	ds_writeb(0x26af, 1);

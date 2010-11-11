@@ -1,3 +1,4 @@
+RealPt FIG_get_ptr(char v1);
 void FIG_set_gfx();
 void FIG_draw_pic();
 RealPt seg006_033c(short v);
