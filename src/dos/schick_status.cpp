@@ -224,7 +224,7 @@ static void schick_status_dng_thorwal(unsigned long i) {
 		D1_INFO("Hauptkampf erledigt\n");
 		break;
 	default:
-		D1_INFO("(0x%04x) von %x auf %x\n", i, status_copy[i],
+		D1_INFO("(0x%04lx) von %x auf %x\n", i, status_copy[i],
 			status_ingame[i]);
 	}
 
