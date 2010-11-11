@@ -18,16 +18,6 @@ RealPt FIG_get_ptr(char v1) {
 	return ptr;
 }
 
-void FIG_draw_pic() {
-	mem_memcpy(Real2Phys(ds_readd(0xd303)), Real2Phys(ds_readd(0xc3a9)), 64000);
-	ds_writeb(0x26af, 1);
-
-	if (ds_readw(0x26b3))
-		FIG_draw_char_pic(0, ds_readw(0x26b3));
-	else if (ds_readw(0x26b5))
-		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
-}
-
 void FIG_set_gfx() {
 	RealPt ptr_bak;
 
@@ -42,6 +32,16 @@ void FIG_set_gfx() {
 	do_pic_copy(0);
 	refresh_screen_size();
 	ds_writed(0xc00d, ptr_bak);
+}
+
+void FIG_draw_pic() {
+	mem_memcpy(Real2Phys(ds_readd(0xd303)), Real2Phys(ds_readd(0xc3a9)), 64000);
+	ds_writeb(0x26af, 1);
+
+	if (ds_readw(0x26b3))
+		FIG_draw_char_pic(0, ds_readw(0x26b3));
+	else if (ds_readw(0x26b5))
+		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
 }
 
 RealPt seg006_033c(short v) {
