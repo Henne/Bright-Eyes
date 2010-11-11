@@ -44,6 +44,16 @@ void FIG_draw_pic() {
 		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
 }
 
+RealPt FIG_get_hero_ptr(unsigned short v1) {
+	RealPt heros = ds_readd(0xbd34);
+	unsigned short i;
+
+	for (i = 0; i <= 6; i++)
+		if (mem_readb(Real2Phys(heros) + i * 0x6da + 0x81) == v1)
+			return heros + i * 0x6da;
+	return heros;
+}
+
 RealPt seg006_033c(short v) {
 	unsigned short i;
 

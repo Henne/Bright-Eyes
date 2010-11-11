@@ -636,9 +636,18 @@ static int seg006(unsigned short offs) {
 			D1_LOG("FIG_draw_pic();\n");
 //			FIG_draw_pic();
 			return 0;
-		case 0x2fa:
-			D1_LOG("seg006_2fa()\n");
-			return 0;
+		case 0x2fa: {
+			unsigned short v1 = CPU_Pop16();
+			CPU_Push16(v1);
+
+			RealPt retval;
+			retval = FIG_get_hero_ptr((char)v1);
+			D1_INFO("FIG_get_hero_ptr(%d); = 0x%x\n", v1, retval);
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+			return 1;
+		}
 		case 0x33c: {
 			short v = CPU_Pop16();
 			CPU_Push16(v);
