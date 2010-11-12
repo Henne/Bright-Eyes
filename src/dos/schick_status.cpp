@@ -315,7 +315,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			unsigned int cnt=real_readd(datseg, s_of);
 			unsigned short sp=real_readw(datseg, s_of+4);
 			unsigned char tar=real_readb(datseg, s_of+6);
-			char bon=real_readb(datseg, s_of+7);
+			signed char bon=real_readb(datseg, s_of+7);
 
 			i = 0xf8 + s_nr*8;
 			/* Zauber beendet */

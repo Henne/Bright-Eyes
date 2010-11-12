@@ -17,7 +17,7 @@ void set_automap_tiles(unsigned short x, unsigned short y);
 unsigned short check_hero(Bit8u* hero);
 void add_hero_ae(Bit8u* hero, short ae);
 short test_attrib(Bit8u* hero, unsigned short attrib, short bonus);
-short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, char bonus);
+short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, signed char bonus);
 unsigned short get_random_hero();
 unsigned int get_party_money();
 void add_hero_ap(Bit8u* hero, int ap);

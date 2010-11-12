@@ -835,7 +835,7 @@ static int seg007(unsigned short offs) {
 
 		        D1_INFO("Wuerfel %dW%d%+d = %d\n",
 				(val & 0xf000) >> 12, m,
-				(char)(val & 0xff), (short)reg_ax);
+				(signed char)(val & 0xff), (short)reg_ax);
 
 			return 1;
 		}
@@ -1892,8 +1892,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	if (segm == 0x1362) {
 		if (offs == 0x20) {
 			unsigned short typi = ds_readb(0x4224);
-			char price = real_readb(datseg, typi * 2 + 0x66ea);
-			char qual = real_readb(datseg, typi * 2 + 0x66ea + 1);
+			signed char price = ds_readb(typi * 2 + 0x66ea);
+			unsigned char qual = ds_readb(typi * 2 + 0x66ea + 1);
 			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualität: %d\n",
 				typi, 100 + price, qual);
 			return 0;
@@ -1931,7 +1931,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	if (segm == 0x13b9)  {
 
 		if (offs == 0x20) {
-			char city=real_readb(datseg, 0x2d67);
+			unsigned char city=real_readb(datseg, 0x2d67);
 			unsigned char ww=real_readb(datseg, 0x7c9d+city);
 			D1_LOG("Merkwürdige Funktion\n");
 			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);

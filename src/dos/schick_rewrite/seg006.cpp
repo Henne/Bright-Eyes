@@ -9,7 +9,7 @@
 #include "seg006.h"
 #include "seg096.h"
 
-RealPt FIG_get_ptr(char v1) {
+RealPt FIG_get_ptr(signed char v1) {
 	RealPt ptr = ds_readd(0xe108);
 
 	while (mem_readb(Real2Phys(ptr + 0x10)) != v1) {
@@ -60,14 +60,14 @@ RealPt seg006_033c(short v) {
 	unsigned short i;
 
 	for (i = 0; i < 20; i++) {
-		if (v == (char)ds_readb(0xd371 + i * 62))
+		if (v == (signed char)ds_readb(0xd371 + i * 62))
 			return RealMake(datseg, 0xd34b + i * 62);
 	}
 
 	return 0;
 }
 
-void FIG_set_0e(char id, char val) {
+void FIG_set_0e(signed char id, signed char val) {
 	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
 
 	while (host_readb(ptr + 0x10) != id) {
@@ -80,7 +80,7 @@ void FIG_set_0e(char id, char val) {
 }
 
 /* Used by range attack and spells with more than 1 field distance */
-void FIG_reset_12_13(char id) {
+void FIG_reset_12_13(signed char id) {
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = MemBase + Real2Phys(ds_readd(0xe108));
@@ -103,7 +103,7 @@ void FIG_reset_12_13(char id) {
 	host_writeb(ptr2 + 0x12, 0);
 }
 
-void FIG_set_12_13(char id) {
+void FIG_set_12_13(signed char id) {
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = MemBase + Real2Phys(ds_readd(0xe108));
@@ -126,7 +126,7 @@ void FIG_set_12_13(char id) {
 	host_writeb(ptr2 + 0x12, 1);
 }
 
-void FIG_set_0f(char id, char val) {
+void FIG_set_0f(signed char id, signed char val) {
 	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
 
 	while (host_readb(ptr + 0x10) != id) {
@@ -137,7 +137,7 @@ void FIG_set_0f(char id, char val) {
 	host_writeb(ptr + 0x0f, val);
 }
 
-void FIG_remove_from_list(char id, char v2) {
+void FIG_remove_from_list(signed char id, signed char v2) {
 	PhysPt p = Real2Phys(ds_readd(0xe108));
 
 	/* NULL check */

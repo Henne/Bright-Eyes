@@ -12,7 +12,7 @@
 
 short seg098_3e() {
 	Bit8u *ptr = MemBase + Real2Phys(real_readd(datseg, 0xe5bc));
-	char tmp = host_readb(ptr + 0x86);
+	signed char tmp = host_readb(ptr + 0x86);
 
 	if (tmp < 10) {
 		RealPt hero = real_readd(datseg, 0xbd34);
@@ -45,7 +45,7 @@ short seg098_3e() {
 */
 short get_spell_cost(unsigned short spell, unsigned short half_cost) {
 
-	char ret;
+	signed char ret;
 
 	ret = real_readb(datseg, spell * 10 + 0x9a1);
 
@@ -64,7 +64,7 @@ short get_spell_cost(unsigned short spell, unsigned short half_cost) {
 /**
 	test_spell - makes a spell test
 */
-short test_spell(Bit8u *hero, unsigned short spell, char bonus) {
+short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 
 	Bit8u *spell_desc;
 	signed short retval;
@@ -105,9 +105,10 @@ short test_spell(Bit8u *hero, unsigned short spell, char bonus) {
 	if (spell < 1 || spell > 85)
 		return 0;
 
-	bonus -= (char)host_readb(hero + spell + 0x13d);
+	bonus -= (signed char)host_readb(hero + spell + 0x13d);
 
-	D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], (char)bonus);
+	D1_INFO("Zauberprobe : %s %+d ",
+		names_spell[spell], (signed char)bonus);
 
 	retval = test_attrib3(hero, host_readb(spell_desc+1),
 		host_readb(spell_desc+2), host_readb(spell_desc+3), bonus);
@@ -121,7 +122,7 @@ short test_spell(Bit8u *hero, unsigned short spell, char bonus) {
 /**
 	test_spell_group - makes a spell test for all magic users in the current group
 */
-unsigned short test_spell_group(unsigned short spell, char bonus) {
+unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 
 	Bit8u *hero_i = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
 	short i;

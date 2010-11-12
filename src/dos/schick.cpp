@@ -567,7 +567,8 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(hero);
 	CPU_Push32(pIP);
 
-	D1_INFO("Talentprobe near : %s %+d ", names_skill[skill], (char)bonus);
+	D1_INFO("Talentprobe near : %s %+d ",
+		names_skill[skill], (signed char)bonus);
 	return;
     }
     if (offs == 0x0E1F) { // Zauberprobe
@@ -580,7 +581,8 @@ void schick_calln16(unsigned un1) {
 	CPU_Push32(hero);
 	CPU_Push32(pIP);
 
-	D1_INFO("Zauberprobe near: %s %+d ", names_spell[spell], (char)bonus);
+	D1_INFO("Zauberprobe near: %s %+d ",
+		names_spell[spell], (signed char)bonus);
 	return;
     }
     if (offs == 0x0386) { // Unbekannte Probefunktion
