@@ -900,8 +900,11 @@
 		{ 
 			Bit16u addip=Fetchws();
 			SAVEIP;
+
 			Push_16(reg_eip);
-			schick_calln16(addip);
+			if (schick_calln16((Bit16u)(reg_eip+addip))) {
+				break;
+			}
 			reg_eip=(Bit16u)(reg_eip+addip);
 			continue;
 		}

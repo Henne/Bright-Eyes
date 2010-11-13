@@ -274,3 +274,7 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 	}
 	return 0;
 }
+
+int schick_nearcall_gen105(unsigned offs) {
+	return 0;
+}

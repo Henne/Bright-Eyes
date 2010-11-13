@@ -11,4 +11,4 @@ void schick_write(unsigned, unsigned char*, unsigned short);
 void schick_seek(unsigned, unsigned, unsigned);
 int schick_callf(unsigned, unsigned);
 void schick_ret();
-void schick_calln16(unsigned);
+int schick_calln16(unsigned);

@@ -545,48 +545,26 @@ void schick_ret() {
 }
 
 // Intercept near CALLs, 16-Bit
-void schick_calln16(unsigned un1) {
+int schick_calln16(unsigned offs) {
 
-    if (!running || !schick || !(dbg_mode & 2)) return;
+	if (!running || !(dbg_mode & 2))
+		return 0;
+	if (SegValue(cs) == SegValue(ss))
+		return 0;
+	if (SegValue(cs) >= 0xa000)
+		return 0;
 
-    /* TODO: Das Segment kann hier seltsamerweise wechseln.
-     * Für die Zauberprobe z.B. habe ich in der verfallenen Herberge einen Aufruf
-     * im Segment 0x2572 (der kühle Raum) und einen von 0x272E (Zauber aus dem
-     * Charakterbildschirm) gekriegt.
-     */
-    unsigned short segm = SegValue(cs)-relocation;
-    unsigned short offs = reg_ip+(signed short)un1;
+	int ret = 0;
 
-    if (offs == 0x040F) { // Talentprobe
-	unsigned pIP = CPU_Pop32();
-	unsigned hero = CPU_Pop32();
-	unsigned skill = CPU_Pop16();
-	signed bonus = CPU_Pop16();
-	CPU_Push16(bonus);
-	CPU_Push16(skill);
-	CPU_Push32(hero);
-	CPU_Push32(pIP);
+	if (schick && !fromgame) {
+		ret = schick_nearcall_v302de(offs);
+		return ret;
+	}
 
-	D1_INFO("Talentprobe near : %s %+d ",
-		names_skill[skill], (signed char)bonus);
-	return;
-    }
-    if (offs == 0x0E1F) { // Zauberprobe
-	unsigned pIP = CPU_Pop32();
-	unsigned hero = CPU_Pop32();
-	unsigned spell = CPU_Pop16();
-	signed bonus = CPU_Pop16();
-	CPU_Push16(bonus);
-	CPU_Push16(spell);
-	CPU_Push32(hero);
-	CPU_Push32(pIP);
+	if (gen) {
+		ret = schick_nearcall_gen105(offs);
+		return ret;
+	}
 
-	D1_INFO("Zauberprobe near: %s %+d ",
-		names_spell[spell], (signed char)bonus);
-	return;
-    }
-    if (offs == 0x0386) { // Unbekannte Probefunktion
-	D1_INFO("?-Probe[0x%06x:0x%06x] ", segm, reg_ip);
-	return;
-    }
+	return ret;
 }

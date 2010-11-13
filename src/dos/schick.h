@@ -76,7 +76,9 @@ static void ds_writed(unsigned short offs, Bit32u val) {
 }
 
 int schick_farcall_gen105(unsigned, unsigned);
+int schick_nearcall_gen105(unsigned);
 int schick_farcall_v302de(unsigned, unsigned);
+int schick_nearcall_v302de(unsigned);
 
 void schick_status_init();
 void schick_status_exit();
