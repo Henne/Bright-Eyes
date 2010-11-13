@@ -2438,6 +2438,18 @@ int schick_nearcall_v302de(unsigned offs) {
 	*/
 	unsigned short segm = SegValue(cs)-relocation;
 
+
+	if ((segm == 0xe41) && (offs == 0x5a)) {
+		RealPt pIP = CPU_Pop32();
+
+		D1_LOG("caller 0x%04x:0x%04x\n",
+			RealSeg(pIP) - relocation , RealOff(pIP));
+
+		reg_ax = FIG_set_array();
+
+		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
+		return 1;
+	}
 	if (offs == 0x040F) { // Talentprobe
 		RealPt pIP = CPU_Pop32();
 		RealPt hero = CPU_Pop32();

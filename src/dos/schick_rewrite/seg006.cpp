@@ -20,6 +20,18 @@ RealPt FIG_get_ptr(signed char v1) {
 	return ptr;
 }
 
+//static
+ char FIG_set_array() {
+	char i;
+
+	/* find first element that is zero */
+	for (i = 0; ds_readb(0xe089 + i) != 0; i++);
+	/* make it 1 */
+	ds_writeb(0xe089 + i, 1);
+	/* return the number of the index */
+	return i;
+}
+
 void FIG_set_gfx() {
 	RealPt ptr_bak;
 
