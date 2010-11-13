@@ -2438,6 +2438,9 @@ int schick_nearcall_v302de(unsigned offs) {
 	*/
 	unsigned short segm = SegValue(cs)-relocation;
 
+	/* C-Lib nearcalls are uninteresting for us */
+	if (segm == 0)
+		return 0;
 
 	if ((segm == 0xe41) && (offs == 0x5a)) {
 		RealPt pIP = CPU_Pop32();
