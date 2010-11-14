@@ -131,7 +131,7 @@ void seg002_3b63() {
 	unsigned short locvar;
 	unsigned short di,i;
 
-	char tmp;
+	signed char tmp;
 
 	p = MemBase + PhysMake(datseg, 0x6f00);
 
