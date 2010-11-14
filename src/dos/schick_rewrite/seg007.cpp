@@ -96,7 +96,7 @@ unsigned short is_in_byte_array(char val, Bit8u *p) {
 	unsigned short i;
 	Bit8u *p_tmp;
 
-	for (i = 1; (char)host_readb(p) != -1; i++) {
+	for (i = 1; (signed char)host_readb(p) != -1; i++) {
 		p_tmp = p;
 		p += 1;
 		if (host_readb(p_tmp) == val)
