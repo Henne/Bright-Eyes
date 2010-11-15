@@ -13,6 +13,7 @@
 #include "schick_rewrite/seg008.h"
 #include "schick_rewrite/seg009.h"
 #include "schick_rewrite/seg029.h"
+#include "schick_rewrite/seg041.h"
 #include "schick_rewrite/seg096.h"
 #include "schick_rewrite/seg097.h"
 #include "schick_rewrite/seg098.h"
@@ -1249,7 +1250,9 @@ static int seg041(unsigned short offs) {
 		return 0;
 	}
 	case 0x2a: {
-		return 0;
+		D1_LOG("seg041_1fd();\n");
+		seg041_1fd();
+		return 1;
 	}
 	case 0x2f: {
 		return 0;
