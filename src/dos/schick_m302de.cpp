@@ -1255,7 +1255,13 @@ static int seg041(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f: {
-		return 0;
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		D1_INFO("seg041_218(v1=0x%04x, v2=0x%04x);\n", v1, v2);
+		seg041_218(v1, v2);
+		return 1;
 	}
 	case 0x34: {
 		return 0;
