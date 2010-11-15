@@ -1273,7 +1273,9 @@ static int seg041(unsigned short offs) {
 		return 0;
 	}
 	case 0x48: {
-		return 0;
+		D1_LOG("seg041_8c8();\n");
+		seg041_8c8();
+		return 1;
 	}
 	case 0x3e: {
 		return 0;
