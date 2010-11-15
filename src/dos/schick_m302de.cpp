@@ -1240,6 +1240,41 @@ static int seg029(unsigned short offs) {
 	}
 }
 
+static int seg041(unsigned short offs) {
+	switch(offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment seg041:0x%04x\n", offs);
+		exit(1);
+	}
+}
+
 static int seg096(unsigned short offs) {
 	/*
 		Handles Strings and Fonts
@@ -1869,7 +1904,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	/* Kampf */
 	if (segm == 0x132d) return 0;
 	/* Werte Prüfen */
-	if (segm == 0x1330) return 0;
+	if (segm == 0x1330)
+		return seg041(offs);
 	if (segm == 0x1335) return 0;
 	/* Kampf */
 	if (segm == 0x1338) return 0;
