@@ -419,7 +419,7 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	default:
-		D1_TRAC("Segment 0x51e:0x%04x\n", offs);
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 		return 0;
 	}
 }
@@ -604,8 +604,8 @@ static int seg005(unsigned short offs) {
 		case 0x598:
 			return 0;
 		default:
-			D1_ERR("Uncatched call to Segment seg005:0x%04x\n",
-				offs);
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
 			exit(1);
 	}
 }
@@ -733,8 +733,8 @@ static int seg006(unsigned short offs) {
 			return 0;
 		}
 		default:
-			D1_ERR("Uncatched call to Segment seg006:0x%04x\n",
-				offs);
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
 			exit(1);
 	}
 }
@@ -856,7 +856,7 @@ static int seg007(unsigned short offs) {
 
 			return 1;
 		}
-	D1_ERR("Uncatched call to Segment seg007:0x%04x\n", offs);
+	D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 	exit(1);
 	return 0;
 }
@@ -1166,7 +1166,7 @@ static int seg008(unsigned short offs) {
 		return 1;
 	}
 	default:
-		D1_ERR("Uncatched call to Segment seg008:0x%04x\n", offs);
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 		exit(1);
 	}
 }
@@ -1195,8 +1195,8 @@ static int seg009(unsigned short offs) {
 			return 1;
 		}
 		default:
-			D1_ERR("Uncatched call to Segment seg009:0x%04x\n",
-				offs);
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
 			exit(1);
 	}
 }
@@ -1226,8 +1226,8 @@ static int seg012(unsigned short offs) {
 			D1_LOG("seg12_d29();\n");
 			return 0;
 		default:
-			D1_ERR("Uncatched call to Segment seg012:0x%04x\n",
-				offs);
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
 			exit(1);
 	}
 }
@@ -1282,7 +1282,7 @@ static int seg041(unsigned short offs) {
 		return 0;
 	}
 	default:
-		D1_ERR("Uncatched call to Segment seg041:0x%04x\n", offs);
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
 		exit(1);
 	}
 }
@@ -1623,7 +1623,7 @@ static int seg097(unsigned short offs) {
 		return 0;
 	}
 	default:
-		D1_ERR("Uncatched call to Segment seg098:0x%04x\n", offs);
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
 		exit(1);
 	}
 	return 0;
@@ -1710,7 +1710,7 @@ static int seg098(unsigned short offs) {
 		return 0;
 	}
 	default:
-		D1_ERR("Uncatched call to Segment seg098:0x%04x\n", offs);
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
 		exit(1);
 	}
 	return 0;
@@ -1738,8 +1738,8 @@ static int seg103(unsigned short offs) {
 		case 0x43:
 			 return 0;
 		default:
-			D1_ERR("Uncatched call to Segment seg103:0x%04x\n",
-				offs);
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
 			exit(1);
 	}
 }
