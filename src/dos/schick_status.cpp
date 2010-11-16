@@ -407,8 +407,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 		if (i == 0x8e0) {
 			if (status_ingame[i] != 0)
-				D1_INFO("Reisemodus aktiviert (0x%02x)\n",
-						status_ingame[i]);
+				D1_INFO("Reisemodus aktiviert\n");
 			else
 				D1_INFO("Reisemodus deaktiviert\n");
 			status_copy[i]=status_ingame[i];
