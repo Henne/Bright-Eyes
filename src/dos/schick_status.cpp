@@ -270,7 +270,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			if (!status_ingame[0x8d])
 				continue;
 			if (status_ingame[0x8c] > 0)
-				D1_INFO("Es ist %s der %d.%s im Jahre %d Hal\n",
+				D1_LOG("Es ist %s der %d.%s im Jahre %d Hal\n",
 						week[status_ingame[0x8b]],
 						status_ingame[0x8c],
 						god[status_ingame[0x8d]],
@@ -407,9 +407,9 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 		if (i == 0x8e0) {
 			if (status_ingame[i] != 0)
-				D1_INFO("Reisemodus aktiviert\n");
+				D1_LOG("Reisemodus aktiviert\n");
 			else
-				D1_INFO("Reisemodus deaktiviert\n");
+				D1_LOG("Reisemodus deaktiviert\n");
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
