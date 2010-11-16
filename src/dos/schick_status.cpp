@@ -32,7 +32,7 @@ static const char dungeon[][25] = {	"",
 				"Die alte Zwingfeste",
 				"Eine Burgruine" };
 
-static const char location[][15] = {	"3D-Ansicht",
+static const char location[][15] = {	"",
 					"Automap",
 					"Tempel",
 					"Taverne",
@@ -364,9 +364,13 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 		if (i == 0x2c) {
-			D1_INFO("Locationwechsel von %s (0x%x) -> %s (0x%x)\n",
-				location[status_copy[i]], status_copy[i],
-				location[status_ingame[i]], status_ingame[i]);
+			if (status_ingame[i])
+				D1_INFO("Location betreten: %s\n",
+					location[status_ingame[i]]);
+			else
+				D1_INFO("Location verlassen: %s\n",
+					location[status_copy[i]]);
+
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
