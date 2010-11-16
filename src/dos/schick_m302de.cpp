@@ -742,8 +742,8 @@ static int seg006(unsigned short offs) {
 static int seg007(unsigned short offs) {
 
 		if (offs == 0x000b) {
-			signed lo = CPU_Pop16();
-			signed hi = CPU_Pop16();
+			unsigned lo = CPU_Pop16();
+			unsigned hi = CPU_Pop16();
 			CPU_Push16(hi);
 			CPU_Push16(lo);
 
@@ -755,7 +755,7 @@ static int seg007(unsigned short offs) {
 			return 1;
 		}
 		if (offs == 0x002b) {
-			unsigned p1 = CPU_Pop16();
+			signed short p1 = CPU_Pop16();
 			CPU_Push16(p1);
 
 			reg_ax = random_schick(p1);
@@ -767,7 +767,7 @@ static int seg007(unsigned short offs) {
 		if (offs == 0x007a) {
 			unsigned n = CPU_Pop16();
 			unsigned m = CPU_Pop16();
-			unsigned x = CPU_Pop16();
+			signed short x = CPU_Pop16();
 			CPU_Push16(x);
 			CPU_Push16(m);
 			CPU_Push16(n);
@@ -775,12 +775,12 @@ static int seg007(unsigned short offs) {
 			reg_ax = dice_roll(n, m, x);
 
 			D1_INFO("wuerfel %dW%d%+d = %d\n",
-				n, m, x, (short)reg_ax);
+				n, m, x, reg_ax);
 
 			return 1;
 		}
 		if (offs == 0x00c4) {
-			unsigned val = CPU_Pop16();
+			unsigned short val = CPU_Pop16();
 			RealPt p = CPU_Pop32();
 			CPU_Push32(p);
 			CPU_Push16(val);
