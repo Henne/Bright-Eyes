@@ -110,7 +110,7 @@ void FIG_reset_12_13(signed char id) {
 	ptr2 = MemBase + Real2Phys(ds_readd(0xe108));
 
 	while (ds_readb(0xe35a + host_readb(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
-		ptr2 = MemBase + Real2Phys(host_readd(ptr1 + 0x1b));
+		ptr2 = MemBase + Real2Phys(host_readd(ptr2 + 0x1b));
 	}
 	host_writeb(ptr2 + 0x12, 0);
 }
@@ -133,7 +133,7 @@ void FIG_set_12_13(signed char id) {
 	ptr2 = MemBase + Real2Phys(ds_readd(0xe108));
 
 	while (ds_readb(0xe35a + host_readb(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
-		ptr2 = MemBase + Real2Phys(host_readd(ptr1 + 0x1b));
+		ptr2 = MemBase + Real2Phys(host_readd(ptr2 + 0x1b));
 	}
 	host_writeb(ptr2 + 0x12, 1);
 }
