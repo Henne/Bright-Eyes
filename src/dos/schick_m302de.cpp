@@ -17,6 +17,7 @@
 #include "schick_rewrite/seg096.h"
 #include "schick_rewrite/seg097.h"
 #include "schick_rewrite/seg098.h"
+#include "schick_rewrite/seg103.h"
 
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
@@ -1718,18 +1719,18 @@ static int seg098(unsigned short offs) {
 static int seg103(unsigned short offs) {
 	switch (offs) {
 		case 0x20: { // Talentprobe
-			unsigned p0 = CPU_Pop32();
-			unsigned p1 = CPU_Pop16();
-			unsigned p2 = CPU_Pop16();
-			CPU_Push16(p2);
-			CPU_Push16(p1);
-			CPU_Push32(p0);
+			RealPt hero = CPU_Pop32();
+			unsigned short skill = CPU_Pop16();
+			signed short bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(skill);
+			CPU_Push32(hero);
 
-			signed char p2_r = p2 & 0xFF;
-			D1_INFO("Talentprobe %s: %s %+d ",
-						schick_getCharname(p0),
-						names_skill[p1], p2_r);
-			return 0;
+			D1_LOG("Talentprobe : %s %+d ",
+				names_skill[skill], (signed char)bonus);
+
+			reg_ax = test_skill(MemBase + Real2Phys(hero), skill, bonus);
+			return 1;
 		}
 		case 0x25:
 		case 0x2a:
@@ -2520,11 +2521,13 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Push16(bonus);
 		CPU_Push16(skill);
 		CPU_Push32(hero);
-		CPU_Push32(pIP);
 
-		D1_INFO("Talentprobe near : %s %+d ",
+		D1_INFO("Talentprobe near : %s %+d\n ",
 			names_skill[skill], (char)bonus);
-		return 0;
+
+		reg_ax = test_skill(MemBase + Real2Phys(hero), skill, bonus);
+
+		return 1;
 	}
 	if (offs == 0x0E1F) { // Zauberprobe
 		RealPt pIP = CPU_Pop32();
