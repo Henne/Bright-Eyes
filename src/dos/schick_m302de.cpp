@@ -2493,6 +2493,12 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0)
 		return 0;
 
+	if ((segm == 0x51e) && (offs == 0x2177)) {
+		CPU_Pop32();
+		seg002_2177();
+		D1_LOG("seg002_2177();\n");
+		return 1;
+	}
 	if ((segm == 0xe41) && (offs == 0x5a)) {
 		RealPt pIP = CPU_Pop32();
 

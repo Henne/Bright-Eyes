@@ -8,6 +8,8 @@ void update_mouse_cursor1();
 void refresh_screen_size1();
 void set_and_spin_lock();
 //static
+void seg002_2177();
+//static
 void seg002_3b63();
 unsigned int swap_u32(unsigned int v);
 void set_to_ff();

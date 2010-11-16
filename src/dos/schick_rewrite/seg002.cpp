@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 31/136
+	Functions rewritten: 33/136
 */
 
 #include "mem.h"
@@ -126,6 +126,12 @@ void refresh_screen_size1() {
 	ds_writew(0x2998, 0);
 }
 
+void seg002_2177() {
+	unsigned short i;
+
+	for (i = 0; ds_readw(0x70a8 + i * 8) != 0xffff; i++)
+		ds_writew(0x70ae + i * 8, random_interval(ds_readw(0x70a8 + i * 8), 20));
+}
 void seg002_3b63() {
 	Bit8u *p;
 	unsigned short locvar;
