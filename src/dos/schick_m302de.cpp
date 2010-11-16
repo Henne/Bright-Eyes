@@ -133,7 +133,7 @@ static int seg002(unsigned short offs) {
 			return 0;
 
 	case 0x3b4f:  {
-		D1_INFO("set_and_spin_lock()\n");
+		D1_LOG("set_and_spin_lock()\n");
 		return 1;
 	}
 	case 0x3ca6:
@@ -345,7 +345,7 @@ static int seg002(unsigned short offs) {
 		signed short ap = CPU_Pop16();
 		CPU_Push16(ap);
 
-		D1_INFO("add_hero_ap_all(%+d)\n", ap);
+		D1_INFO("Jeder Held erhält %+d AP\n", ap);
 		add_hero_ap_all(ap);
 
 		return 1;
@@ -354,7 +354,7 @@ static int seg002(unsigned short offs) {
 		signed short ap = CPU_Pop16();
 		CPU_Push16(ap);
 
-		D1_INFO("sub_hero_ap_all(%+d)\n", ap);
+		D1_INFO("Jeder Held erhält %+d\n", ap);
 		sub_hero_ap_all(ap);
 
 		return 1;
@@ -408,7 +408,7 @@ static int seg002(unsigned short offs) {
 	case 0x5816: {
 		unsigned short argc = CPU_Pop16();
 		CPU_Push16(argc);
-		D1_TRAC("main(argc=0x%04x, ...)\n", argc);
+		D1_LOG("main(argc=0x%04x, ...)\n", argc);
 		return 0;
 	}
 	case 0x5a68: {
@@ -618,7 +618,7 @@ static int seg006(unsigned short offs) {
 
 			RealPt retval;
 			retval = FIG_get_ptr((char)v1);
-			D1_INFO("FIG_get_ptr(%d); = 0x%x\n", v1, retval);
+			D1_LOG("FIG_get_ptr(%d); = 0x%x\n", v1, retval);
 
 			reg_ax = RealOff(retval);
 			reg_dx = RealSeg(retval);
@@ -628,7 +628,7 @@ static int seg006(unsigned short offs) {
 			D1_LOG("seg006_07f()\n");
 			return 0;
 		case 0x236:
-			D1_INFO("FIG_set_gfx()\n");
+			D1_LOG("FIG_set_gfx()\n");
 			FIG_set_gfx();
 			return 1;
 		case 0x29e:
@@ -644,7 +644,7 @@ static int seg006(unsigned short offs) {
 
 			RealPt retval;
 			retval = FIG_get_hero_ptr((char)v1);
-			D1_INFO("FIG_get_hero_ptr(%d); = 0x%x\n", v1, retval);
+			D1_LOG("FIG_get_hero_ptr(%d); = 0x%x\n", v1, retval);
 
 			reg_ax = RealOff(retval);
 			reg_dx = RealSeg(retval);
@@ -669,7 +669,7 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v1);
 
 			FIG_set_0e((char)v1, (char)v2);
-			D1_INFO("FIG_set_0e(%d, %d)\n", (char)v1, (char)v2);
+			D1_LOG("FIG_set_0e(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
 		case 0x3bb: {
@@ -695,7 +695,7 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v1);
 
 			FIG_set_0f((char)v1, (char)v2);
-			D1_INFO("FIG_set_0f(%d, %d)\n", (char)v1, (char)v2);
+			D1_LOG("FIG_set_0f(%d, %d)\n", (char)v1, (char)v2);
 			return 1;
 		}
 		case 0x512: {
@@ -718,7 +718,7 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			D1_INFO("FIG_draw_char_pic(%d, %d)\n", v1, v2);
+			D1_LOG("FIG_draw_char_pic(%d, %d)\n", v1, v2);
 			FIG_draw_char_pic(v1, v2);
 			return 1;
 		}
@@ -1260,7 +1260,7 @@ static int seg041(unsigned short offs) {
 		unsigned short v2 = CPU_Pop16();
 		CPU_Push16(v2);
 		CPU_Push16(v1);
-		D1_INFO("seg041_218(v1=0x%04x, v2=0x%04x);\n", v1, v2);
+		D1_LOG("seg041_218(v1=0x%04x, v2=0x%04x);\n", v1, v2);
 		seg041_218(v1, v2);
 		return 1;
 	}
@@ -1350,7 +1350,7 @@ static int seg096(unsigned short offs) {
 		RealPt retval;
 
 		retval = GUI_2f2(v1, v2, v3);
-		D1_INFO("GUI_2f2(%d, %d, %d)\n", v1, v2, v3);
+		D1_LOG("GUI_2f2(%d, %d, %d)\n", v1, v2, v3);
 		reg_ax = RealOff(retval);
 		reg_dx = RealSeg(retval);
 
@@ -1365,7 +1365,7 @@ static int seg096(unsigned short offs) {
 			RealPt retval;
 
 			retval = GUI_get_ptr(v1, v2);
-			D1_INFO("GUI_get_ptr(%d,%d) = 0x%04x:0x%04x\n", v1, v2,
+			D1_LOG("GUI_get_ptr(%d,%d) = 0x%04x:0x%04x\n", v1, v2,
 				RealSeg(retval), RealOff(retval));
 
 			reg_ax = RealOff(retval);
@@ -1381,7 +1381,7 @@ static int seg096(unsigned short offs) {
 			RealPt retval;
 
 			retval = GUI_get_ptr2(v1, v2);
-			D1_INFO("GUI_get_ptr2(%d,%d) = 0x%04x:0x%04x\n", v1, v2,
+			D1_LOG("GUI_get_ptr2(%d,%d) = 0x%04x:0x%04x\n", v1, v2,
 				RealSeg(retval), RealOff(retval));
 
 			reg_ax = RealOff(retval);
@@ -1545,7 +1545,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push16(c);
 
 		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)MemBase + Real2Phys(p_height));
-		D1_INFO("GUI_lookup_char_height() = %d\n", (char)reg_ax);
+		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 		return 1;
 	}
 	case 0x34: {
@@ -1574,6 +1574,25 @@ static int seg097(unsigned short offs) {
 		D1_LOG("GUI_AskBool(%s...)\n", buffer);
 		return 0;
 	}
+	case 0x43: {
+		RealPt text = CPU_Pop32();
+		unsigned short options = CPU_Pop16();
+
+		unsigned short i;
+
+		strncpy(buffer, (char*)getString(text), 20);
+		D1_LOG("GUI_RadioBox(%s..., %d", buffer, (char)options);
+
+		for (i = 0; i < (char)options; i++) {
+			strncpy(buffer, (char*)getString(real_readd(SegValue(ss), reg_sp + i *4)), 20);
+			D1_LOG(", %s...", buffer);
+		}
+
+		D1_LOG(");\n");
+		CPU_Push16(options);
+		CPU_Push32(text);
+		return 0;
+	}
 	case 0x5c: {
 		RealPt pic = CPU_Pop32();
 		RealPt name = CPU_Pop32();
@@ -1596,30 +1615,14 @@ static int seg097(unsigned short offs) {
 		D1_LOG("%s..., %d, %d)\n", buffer, (char)options, v2);
 		return 0;
 	}
-	case 0x43: {
-		RealPt text = CPU_Pop32();
-		unsigned short options = CPU_Pop16();
-
-		unsigned short i;
-
-		strncpy(buffer, (char*)getString(text), 20);
-		D1_LOG("GUI_RadioBox(%s..., %d", buffer, (char)options);
-
-		for (i = 0; i < (char)options; i++) {
-			strncpy(buffer, (char*)getString(real_readd(SegValue(ss), reg_sp + i *4)), 20);
-			D1_LOG(", %s...", buffer);
-		}
-
-		D1_LOG(");\n");
-		CPU_Push16(options);
-		CPU_Push32(text);
-		return 0;
-	}
 	case 0x66: {
 		unsigned short fight = CPU_Pop16();
 		CPU_Push16(fight);
 
 		D1_LOG("GUI_Dungeon(0x%x)\n", fight);
+		return 0;
+	}
+	case 0x6b: {
 		return 0;
 	}
 	default:
@@ -2115,7 +2118,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		/* dos_getdiskfree() */
 		if (offs == 0x7ed) return 0;
 		if (offs == 0x816) {
-			D1_TRAC("_dos_getvect(int=0x%x)\n", real_readw(SegValue(ss),reg_sp));
+			D1_LOG("_dos_getvect(int=0x%x)\n", real_readw(SegValue(ss),reg_sp));
 			return 0;
 		}
 		if (offs == 0x0825) {
@@ -2124,7 +2127,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 			CPU_Push32(isr);
 			CPU_Push16(interruptno);
 
-			D1_TRAC("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
+			D1_LOG("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
 				interruptno, (unsigned short)(RealSeg(isr) - relocation),
 				RealOff(isr));
 			return 0;
@@ -2156,7 +2159,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		if (offs == 0xb5c) return 0;
 		if (offs == 0xbac) {
 			unsigned short val=real_readw(SegValue(ss), reg_sp);
-			D1_TRAC("C-Lib srand(%d)\n", val);
+			D1_LOG("C-Lib srand(%d)\n", val);
 			return 0;
 		}
 		if (offs == 0xbbd) {
@@ -2505,12 +2508,12 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		RealPt pIP = CPU_Pop32();
 
-		D1_INFO("caller 0x%04x:0x%04x\n",
+		D1_LOG("caller 0x%04x:0x%04x\n",
 			RealSeg(pIP) - relocation , RealOff(pIP));
 
 		seg002_3b63();
 
-		D1_INFO("seg002_3b63();\n");
+		D1_LOG("seg002_3b63();\n");
 		return 1;
 	}
 	if (offs == 0x040F) { // Talentprobe

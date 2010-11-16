@@ -279,7 +279,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			else {};
 			*/
 			if (status_ingame[0x8f])
-				D1_INFO("Besonderer Tag\n");
+				D1_LOG("Besonderer Tag\n");
 			continue;
 		}
 		/* frequently often changed timer timer-= 256 */
@@ -420,7 +420,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			unsigned long s_nr = (i - 0x8e4)/38;
 			memcpy(status_copy+0x8e4+s_nr*38,
 					status_ingame+0x8e4+s_nr*38, 38);
-			D1_INFO("Dialogpartner Slot %ld geändert\n", s_nr);
+			D1_LOG("Dialogpartner Slot %ld geändert\n", s_nr);
 			i = 0x8e4 + s_nr * 38;
 			continue;
 
@@ -430,7 +430,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			unsigned long s_nr = (i - 0xa60)/8;
 			memcpy(status_copy+0xa60+s_nr*8,
 					status_ingame+0xa60+s_nr*8, 8);
-			D1_INFO("Dialoglayout Slot %ld geändert\n", s_nr);
+			D1_LOG("Dialoglayout Slot %ld geändert\n", s_nr);
 			i = 0xa60 + s_nr * 8;
 			continue;
 		}
@@ -510,7 +510,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 		if (i == 0x5da || i == 0x5db) {
 			/* Ist Word */
-			D1_INFO("Dungeonkoordinaten (0x%x/0x%x)\n",
+			D1_LOG("Dungeonkoordinaten (0x%x/0x%x)\n",
 					status_ingame[0x5db],
 					status_ingame[0x5da]);
 			status_copy[i]=status_ingame[i];
@@ -518,7 +518,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 		if (i == 0x72) {
-			D1_INFO("Stadt betreten: %s (0x%02x)\n", "",
+			D1_LOG("Stadt betreten: %s (0x%02x)\n", "",
 					status_ingame[i]);
 			status_copy[i]=status_ingame[i];
 			i++;
@@ -582,7 +582,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 				case 4:
 					D1_INFO("Quest abgeschlossen\n");
 				default:
-					D1_INFO("Fehler\n");
+					D1_ERR("Fehler\n");
 					exit(1);
 			}
 			host_writew(status_copy + i, newval);
@@ -605,7 +605,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		/* Extendet-Status */
 		/* Texte aus STORY.LTX */
 		if (i >= 0x1672 && i <= 0x1682) {
-			D1_INFO("Story Hinweis (0x%02lx) erhalten\n", i-0x1672);
+			D1_LOG("Story Hinweis (0x%02lx) erhalten\n", i-0x1672);
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
@@ -621,7 +621,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		if (i >= 0x1670)
 			D1_INFO("Extendet-");
 
-		D1_INFO("Status[0x%lx] von %x -> %x\n",
+		D1_LOG("Status[0x%lx] von %x -> %x\n",
 				i, status_copy[i], status_ingame[i]);
 
 		status_copy[i]=status_ingame[i];
