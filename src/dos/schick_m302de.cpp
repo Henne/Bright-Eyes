@@ -1433,7 +1433,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		reg_ax = GUI_count_lines(MemBase + Real2Phys(ptr));
-		D1_LOG("GUI_count_lines() = %d\n", (unsigned short)reg_ax);
+		D1_LOG("GUI_count_lines(%s) = %d\n", getString(ptr),(unsigned short)reg_ax);
 
 		return 1;
 	}
