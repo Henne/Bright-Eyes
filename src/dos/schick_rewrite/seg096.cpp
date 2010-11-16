@@ -475,9 +475,10 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }
 
-void GUI_set_smth(unsigned short v1, unsigned short v2) {
-	real_writew(datseg, 0xd2c9, v1);
-	real_writew(datseg, 0xd2c7, v2);
+void GUI_set_smth(unsigned short col_text, unsigned short col_bg) {
+	real_writew(datseg, 0xd2c9, col_text);
+	real_writew(datseg, 0xd2c7, col_bg);
+
 }
 
 void GUI_get_smth(short *p1, short *p2) {
