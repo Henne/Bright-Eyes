@@ -2542,11 +2542,5 @@ int schick_nearcall_v302de(unsigned offs) {
 		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, (signed char)bonus);
 		return 1;
 	}
-
-	if (offs == 0x0386) { // Unbekannte Probefunktion
-		D1_INFO("?-Probe[0x%06x:0x%06x] ", segm, reg_ip);
-		return 0;
-	}
-
 	return 0;
 }
