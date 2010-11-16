@@ -1649,8 +1649,8 @@ static int seg098(unsigned short offs) {
 		CPU_Push16(spell);
 		CPU_Push32(hero);
 
-		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, bonus);
-		D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], (char)bonus);
+		D1_LOG("Zauberprobe : %s %+d ", names_spell[spell], (signed char)bonus);
+		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, (signed char)bonus);
 		return 1;
 	}
 	case 0x2a: {
@@ -2537,11 +2537,10 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Push16(bonus);
 		CPU_Push16(spell);
 		CPU_Push32(hero);
-		CPU_Push32(pIP);
 
-		D1_INFO("Zauberprobe near: %s %+d ",
-			names_spell[spell], (char)bonus);
-		return 0;
+		D1_LOG("Zauberprobe : %s %+d ", names_spell[spell], (signed char)bonus);
+		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, (signed char)bonus);
+		return 1;
 	}
 
 	if (offs == 0x0386) { // Unbekannte Probefunktion
