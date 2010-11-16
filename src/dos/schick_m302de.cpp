@@ -2067,6 +2067,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 
 			return 0;
 		}
+		if (offs == 0x30f) return 0;
 		/* close() */
 		if (offs == 0x31b) return 0;
 		/* open() */
