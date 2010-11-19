@@ -678,7 +678,7 @@ void schick_status_init()
 	{
 		/*disable delay */
 		real_writew(datseg, 0x4b66, 0x0000);
-		D1_INFO("Verzögerungsfaktor ausgeschalten V3.02_de\n");
+		D1_INFO("Verzögerungsfaktor ausgeschalten\n");
 
 		/*set status manually */
 		status_len = 0x1740;
@@ -713,7 +713,7 @@ void schick_status_init()
 	if (schick_is_en()) {
 		/*disable delay */
 		real_writew(datseg, 0x4c5a, 0x0000);
-		D1_INFO("Verzögerungsfaktor ausgeschalten V3.0x_en\n");
+		D1_INFO("Verzögerungsfaktor ausgeschalten\n");
 
 		/*set status manually */
 		status_len = 0x1740;
