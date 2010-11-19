@@ -664,6 +664,9 @@ void schick_status_update(unsigned char *data, unsigned short len)
 /* Enable the timer for checking game_state changes */
 void schick_status_init()
 {
+	int ver;
+
+	ver = schick_get_version((char*)MemBase + (datseg<<4));
 
 	status_ingame = NULL;
 	status_copy = NULL;
@@ -671,7 +674,7 @@ void schick_status_init()
 	status_offset = 0;
 
 	/* Disable delay and set status manually (german CD-version) */
-	if (real_readw(datseg, 0x4b66) == 0x4)
+	if (ver == 302 && !schick_is_en())
 	{
 		/*disable delay */
 		real_writew(datseg, 0x4b66, 0x0000);
@@ -694,8 +697,45 @@ void schick_status_init()
 		if (cmp_status_timer == NULL)
 			D1_ERR("Konnte den Status Timer nicht initialisieren\n");
 	}
+
+	/* set status manually (V1.0x german floppy versions) */
+	if (ver < 300 && !schick_is_en())
+	{
+		/*set status manually */
+		status_len = 0x1670;
+		switch (ver) {
+
+			case 100:
+					status_offset = 0x2b56;
+					break;
+			case 104:
+					status_offset = 0x2b5a;
+					break;
+			case 107:
+					status_offset = 0x2b56;
+					break;
+			default:
+					D1_ERR("Status kann nicht gesetzt werden\n");
+					D1_ERR("Unbekannte Floppy Version\n");
+
+					return;
+		}
+		status_ingame = GetMemBase() + PhysMake(datseg, status_offset);
+
+		if (!status_copy)
+		{
+			status_copy = (unsigned char*)calloc(status_len, 1);
+			if (status_copy == NULL)
+				error(1, ENOMEM, "");
+		}
+		memcpy(status_copy, status_ingame, status_len);
+		D1_INFO("Status manuell gesetzt DS:0x%04x\n", status_offset);
+		cmp_status_timer=SDL_AddTimer(1000, schick_cmp_status, NULL);
+		if (cmp_status_timer == NULL)
+			D1_ERR("Konnte den Status Timer nicht initialisieren\n");
+	}
 	/* Disable delay and set status manually (english version) */
-	if (real_readw(datseg, 0x4c5a) == 0x4)
+	if (schick_is_en())
 	{
 		/*disable delay */
 		real_writew(datseg, 0x4c5a, 0x0000);

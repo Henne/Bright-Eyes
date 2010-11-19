@@ -112,6 +112,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 {
 
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
+	int ver;
 
 	//This happens only if the game starts another program
 	if (!fromgame && running && schick && !gen)
@@ -145,22 +146,53 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	D1_INFO("Dseg: 0x%X\n", datseg=real_readw(reloc, ip+1));
 
        /* Check if the start of the Datasegment is Borland C++ */
-       if (real_readd(datseg, 0) != 0 || strcmp((char*)MemBase+(datseg<<4)+4, borsig))
+       if (real_readd(datseg, 0) != 0 || strcmp((char*)MemBase+PhysMake(datseg, 4), borsig))
        {
                D1_ERR("Kein Borland C++ Kompilat!\n");
                return;
-       }
+	}
 
-	D1_INFO("DSA1 Schicksalsklinge gefunden\n");
-	D1_INFO("Starte Profiler (reloc 0x%06x)\n", reloc);
-
+	/* check for the game program */
 	if (strcasestr(name, "schickm.exe") || strcasestr(name, "bladem.exe")) {
-		schick++;
+
+		ver = schick_get_version((char*)MemBase + PhysMake(datseg, 0));
+
+		if (ver == 0) {
+			D1_ERR("Unbekannte Version von DSA1\n");
+			return;
+		}
+
+		D1_INFO("DSA1 Schicksalsklinge gefunden V%d.%02d %s\n",
+			ver / 100, ver % 100, schick_is_en() ? "en": "de");
+
+		/* enable profiler only on this version */
+		if (ver == 302 && !schick_is_en()) {
+			D1_INFO("Starte Profiler\n", reloc);
+			schick++;
+		}
+
+		/* enable status comperator */
 		schick_status_init();
 	}
 
-	if (strcasestr(name, "gen.exe"))
-		gen++;
+	/* check for the character generation program */
+	if (strcasestr(name, "gen.exe")) {
+		ver = schick_gen_get_version((char*)MemBase + PhysMake(datseg, 0));
+
+		if (ver == 0) {
+			D1_ERR("Unbekannte Version von DSA1 Generierung\n");
+			return;
+		}
+
+		D1_INFO("DSA1 Generierung gefunden V%d.%02d %s\n",
+			ver / 100, ver % 100, schick_gen_is_en() ? "en": "de");
+
+		/* enable profiler only on this version */
+		if (ver == 105 && !schick_is_en()) {
+			D1_INFO("Starte Profiler\n", reloc);
+			gen++;
+		}
+	}
 
 	relocation = reloc;
 	running++;
