@@ -6,7 +6,7 @@
 
 #define SCHICK_INFO
 //#define SCHICK_LOG
-#define SCHICK_TRAC
+//#define SCHICK_TRAC
 //#define SCHICK_GFX
 
 #define D1_ERR(...) fprintf(stderr, __VA_ARGS__)
