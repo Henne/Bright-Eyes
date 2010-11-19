@@ -753,7 +753,7 @@ void schick_status_init()
 				error(1, ENOMEM, "");
 		}
 		memcpy(status_copy, status_ingame, status_len);
-		D1_INFO("Status manuell gesetzt DS:0x04x\n", status_offset);
+		D1_INFO("Status manuell gesetzt DS:0x%04x\n", status_offset);
 		cmp_status_timer=SDL_AddTimer(1000, schick_cmp_status, NULL);
 		if (cmp_status_timer == NULL)
 			D1_ERR("Konnte den Status Timer nicht initialisieren\n");
