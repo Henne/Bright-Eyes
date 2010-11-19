@@ -159,7 +159,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 			return;
 		}
 
-		D1_INFO("DSA1 Schicksalsklinge gefunden V%d.%02d_%s\n",
+		D1_INFO("\nDSA1 Schicksalsklinge gefunden V%d.%02d_%s\n",
 			ver / 100, ver % 100, schick_is_en() ? "en": "de");
 
 		/* enable profiler only on this version */
