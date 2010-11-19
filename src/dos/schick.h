@@ -80,6 +80,9 @@ int schick_nearcall_gen105(unsigned);
 int schick_farcall_v302de(unsigned, unsigned);
 int schick_nearcall_v302de(unsigned);
 
+int schick_get_version(char *);
+int schick_is_en();
+
 void schick_status_init();
 void schick_status_exit();
 void schick_status_update(unsigned char*, unsigned short);

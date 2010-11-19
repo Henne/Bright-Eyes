@@ -27,6 +27,52 @@ static int dbg_mode=2;
 //Datasegment
 unsigned short datseg;
 
+static short schick_en = 0;
+
+/**
+	schick_is_en - returns 1 if the game language is english
+*/
+int schick_is_en() {
+	return schick_en;
+}
+
+/**
+	schick_get_version - returns the version number of the game
+	@p:	pointer to the start of the datasegment
+*/
+int schick_get_version(char *p) {
+
+	/* V3.02_de, the common CD-version */
+	if (!strncmp(p + 0x46ec, "V3.02", 6))
+		return 302;
+
+	/* V1.00_de, initial floppy version */
+	if (!strncmp(p + 0x4529, "V1.00", 6))
+		return 100;
+	/* V1.04_de, a floppy version */
+	if (!strncmp(p + 0x452d, "V1.04", 6))
+		return 104;
+	/* V1.07_de, last german floppy version taken from PC-Joker 01/2001  */
+	if (!strncmp(p + 0x4439, "V1.07", 6))
+		return 107;
+
+	/* V3.0x english floppy versions */
+	if (!strncmp(p + 0x4512, "V3.00", 6)) {
+		schick_en = 1;
+		return 300;
+	}
+	if (!strncmp(p + 0x4512, "V3.02", 6)) {
+		schick_en = 1;
+		return 302;
+	}
+	if (!strncmp(p + 0x4512, "V3.09", 6)) {
+		schick_en = 1;
+		return 309;
+	}
+
+	return 0;
+}
+
 //Initializer - is startet if executed file is SCHICKM.EXE/BLADEM.EXE or GEN.EXE
 void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
 {
