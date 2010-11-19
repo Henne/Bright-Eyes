@@ -1671,16 +1671,16 @@ static int seg098(unsigned short offs) {
 		return 0;
 	}
 	case 0x2f: {
-		D1_INFO("Seg098:0x%04x()\n", offs);
+		D1_TRAC("Seg098:0x%04x()\n", offs);
 		return 0;
 	}
 	case 0x39: {
-		D1_INFO("Seg098:0x%04x()\n", offs);
+		D1_TRAC("Seg098:0x%04x()\n", offs);
 		return 0;
 	}
 	case 0x3e: {
 		/* Untested */
-		D1_INFO("seg098_3e()\n");
+		D1_TRAC("seg098_3e()\n");
 		/*reg_ax = seg098_3e(); */
 		return 0;
 	}
@@ -1709,7 +1709,7 @@ static int seg098(unsigned short offs) {
 		return 1;
 	}
 	case 0x57: {
-		D1_LOG("Menu: Zauberer auswählen\n");
+		D1_TRAC("Menu: Zauberer auswählen\n");
 		return 0;
 	}
 	default:

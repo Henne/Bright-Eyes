@@ -115,10 +115,8 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	int ver;
 
 	//This happens only if the game starts another program
-	if (!fromgame && running && schick && !gen)
-	{
-		if (strcasestr(name, "gen.exe"))
-		{
+	if (!fromgame && running && schick && !gen) {
+		if (strcasestr(name, "gen.exe")) {
 			schick--;
 			fromgame++;
 			gen++;
@@ -128,28 +126,27 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		}
 		return;
 	}
-	D1_INFO("executing %s\n", name);
+	D1_TRAC("executing %s\n", name);
 	if (!strcasestr(name, "schickm.exe")
 			&& !strcasestr(name, "bladem.exe")
 			&& !strcasestr(name, "gen.exe")) return;
 
-       /* Check CS:IP in the EXE-Header are 0:0
-        * and the first executed instruction is mov dx,i16 */
-       if (_cs != 0 || ip != 0 || real_readb(reloc+_cs, ip) != 0xba)
-               return;
+	/* Check CS:IP in the EXE-Header are 0:0
+	 * and the first executed instruction is mov dx,i16 */
+	if (_cs != 0 || ip != 0 || real_readb(reloc+_cs, ip) != 0xba)
+		return;
 
-       /* Show CS:IP on the virtual machine and the pointer to 0:0 */
-       D1_INFO("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
+	/* Show CS:IP on the virtual machine and the pointer to 0:0 */
+	D1_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
 
 	/* Read and show the Datasegment */
 	datseg = real_readw(reloc, ip+1);
-	D1_INFO("Dseg: 0x%X\n", datseg=real_readw(reloc, ip+1));
+	D1_TRAC("Dseg: 0x%X\n", datseg=real_readw(reloc, ip+1));
 
-       /* Check if the start of the Datasegment is Borland C++ */
-       if (real_readd(datseg, 0) != 0 || strcmp((char*)MemBase+PhysMake(datseg, 4), borsig))
-       {
-               D1_ERR("Kein Borland C++ Kompilat!\n");
-               return;
+	/* Check if the start of the Datasegment is Borland C++ */
+	if (real_readd(datseg, 0) != 0 || strcmp((char*)MemBase+PhysMake(datseg, 4), borsig)) {
+		D1_ERR("Kein Borland C++ Kompilat!\n");
+		return;
 	}
 
 	/* check for the game program */
@@ -162,7 +159,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 			return;
 		}
 
-		D1_INFO("DSA1 Schicksalsklinge gefunden V%d.%02d %s\n",
+		D1_INFO("DSA1 Schicksalsklinge gefunden V%d.%02d_%s\n",
 			ver / 100, ver % 100, schick_is_en() ? "en": "de");
 
 		/* enable profiler only on this version */
@@ -184,7 +181,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 			return;
 		}
 
-		D1_INFO("DSA1 Generierung gefunden V%d.%02d %s\n",
+		D1_INFO("DSA1 Generierung gefunden V%d.%02d_%s\n",
 			ver / 100, ver % 100, schick_gen_is_en() ? "en": "de");
 
 		/* enable profiler only on this version */
