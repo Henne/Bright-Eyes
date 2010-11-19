@@ -28,12 +28,19 @@ static int dbg_mode=2;
 unsigned short datseg;
 
 static short schick_en = 0;
+static short gen_en = 0;
 
 /**
 	schick_is_en - returns 1 if the game language is english
 */
 int schick_is_en() {
 	return schick_en;
+}
+/**
+	schick_gen_is_en - returns 1 if the language of the character generator is english
+*/
+int schick_gen_is_en() {
+	return gen_en;
 }
 
 /**
@@ -70,6 +77,33 @@ int schick_get_version(char *p) {
 		return 309;
 	}
 
+	return 0;
+}
+
+/**
+	schick_gen_get_version - returns the version number of the character generator
+	@p:	pointer to the start of the datasegment
+*/
+int schick_gen_get_version(char *p) {
+
+	/* V1.05_de, the common CD-version */
+	if (!strncmp(p + 0x1cb3, "V1.05", 6))
+		return 105;
+
+	/* V1.01_de, a german floppy version */
+	if (!strncmp(p + 0x1e7e, "V1.01", 6))
+		return 101;
+	/* V1.03_de, a german floppy version */
+	if (!strncmp(p + 0x1e7e, "V1.03", 6))
+		return 103;
+	/* V1.04_de, a german floppy version */
+	if (!strncmp(p + 0x1e80, "V1.04", 6))
+		return 104;
+	/* V3.00_en, an english floppy version */
+	if (!strncmp(p + 0x1bf1, "V3.00", 6)) {
+		gen_en = 1;
+		return 300;
+	}
 	return 0;
 }
 
