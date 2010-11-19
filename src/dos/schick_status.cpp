@@ -678,24 +678,11 @@ void schick_status_init()
 	{
 		/*disable delay */
 		real_writew(datseg, 0x4b66, 0x0000);
-		D1_INFO("Verzögerungsfaktor ausgeschalten de_V3.02\n");
+		D1_INFO("Verzögerungsfaktor ausgeschalten V3.02_de\n");
 
 		/*set status manually */
 		status_len = 0x1740;
 		status_offset = 0x2d34;
-		status_ingame = GetMemBase() + PhysMake(datseg, status_offset);
-
-		if (!status_copy)
-		{
-			status_copy = (unsigned char*)calloc(status_len, 1);
-			if (status_copy == NULL)
-				error(1, ENOMEM, "");
-		}
-		memcpy(status_copy, status_ingame, status_len);
-		D1_INFO("Status manuell gesetzt DS:0x%04x\n", status_offset);
-		cmp_status_timer=SDL_AddTimer(1000, schick_cmp_status, NULL);
-		if (cmp_status_timer == NULL)
-			D1_ERR("Konnte den Status Timer nicht initialisieren\n");
 	}
 
 	/* set status manually (V1.0x german floppy versions) */
@@ -720,45 +707,36 @@ void schick_status_init()
 
 					return;
 		}
-		status_ingame = GetMemBase() + PhysMake(datseg, status_offset);
-
-		if (!status_copy)
-		{
-			status_copy = (unsigned char*)calloc(status_len, 1);
-			if (status_copy == NULL)
-				error(1, ENOMEM, "");
-		}
-		memcpy(status_copy, status_ingame, status_len);
-		D1_INFO("Status manuell gesetzt DS:0x%04x\n", status_offset);
-		cmp_status_timer=SDL_AddTimer(1000, schick_cmp_status, NULL);
-		if (cmp_status_timer == NULL)
-			D1_ERR("Konnte den Status Timer nicht initialisieren\n");
 	}
+
 	/* Disable delay and set status manually (english version) */
-	if (schick_is_en())
-	{
+	if (schick_is_en()) {
 		/*disable delay */
 		real_writew(datseg, 0x4c5a, 0x0000);
-		D1_INFO("Verzögerungsfaktor ausgeschalten en_V3.0x\n");
+		D1_INFO("Verzögerungsfaktor ausgeschalten V3.0x_en\n");
 
 		/*set status manually */
 		status_len = 0x1740;
 		status_offset = 0x2b5c;
-		status_ingame = GetMemBase() + PhysMake(datseg, status_offset);
-
-		if (!status_copy)
-		{
-			status_copy = (unsigned char*)calloc(status_len, 1);
-			if (status_copy == NULL)
-				error(1, ENOMEM, "");
-		}
-		memcpy(status_copy, status_ingame, status_len);
-		D1_INFO("Status manuell gesetzt DS:0x%04x\n", status_offset);
-		cmp_status_timer=SDL_AddTimer(1000, schick_cmp_status, NULL);
-		if (cmp_status_timer == NULL)
-			D1_ERR("Konnte den Status Timer nicht initialisieren\n");
 	}
+
+	status_ingame = GetMemBase() + PhysMake(datseg, status_offset);
+
+	if (!status_copy) {
+		status_copy = (unsigned char*)calloc(status_len, 1);
+		if (status_copy == NULL)
+			error(1, ENOMEM, "");
+	}
+
+	memcpy(status_copy, status_ingame, status_len);
+	D1_TRAC("Status manuell gesetzt DS:0x%04x\n", status_offset);
+	cmp_status_timer=SDL_AddTimer(1000, schick_cmp_status, NULL);
+	if (cmp_status_timer == NULL)
+		D1_ERR("Konnte den Status Timer nicht initialisieren\n");
+
+	D1_INFO("Statusvergleich aktiviert\n");
 }
+
 /* Disable the timer for checking game_state changes */
 void schick_status_exit()
 {
