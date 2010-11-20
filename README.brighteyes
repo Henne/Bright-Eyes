@@ -1,0 +1,40 @@
+			Bright Eyes / (ehem. freeDSA)
+
+
+
+This is a fork of DOSBox 0.74 with customiziations for "Das schwarze Auge - Die Schicksalsklinge" (aka "Realms of Arkania - Blade of Destiny").
+
+The projects goal is to make that game runnable on newer computers,
+with focus on:
+
+*	logging	(show how the game makes decisions),
+*	bugfixing (wipe out the last bugs to make the game ultra stable),
+*	power consumption (let your laptop (or n900) not waste that much power, 	like running an unpatched DOSBox)
+
+This is done by tracing function calls.
+If a function is interesting for the gamer we print a logging output.
+If we already know the exact behavior of a function, we can replace it.
+E.g. instead letting DOSBox emulate a known decompression function
+we decompress it on our own host processor (incredible fast)
+and skip the emulation.
+
+
+Prequisites:
+
+*	the original game (currently the german CD V3.02, other may follow)
+	(Bright Eyes will never run without the original.
+	Make sure you own a copy of it.	DSA1 is no abandonware.)
+
+*	at least one newer computer with an operating system
+	like (Linux, BSD, MaxOS, Windows)
+
+*	a toolchain for building DOSBox (C++ compiler, SDL, SDL_Sound),
+	since atm no precompiled binaries are available.
+
+
+Links:
+
+git-tree:	git://github.com/Henne/Bright-Eyes.git
+githhub:	https://github.com/Henne/Bright-Eyes
+Documentation:	http://freedsa.schattenkind.net
+Forum:		http://www.crystals-dsa-foren.de
