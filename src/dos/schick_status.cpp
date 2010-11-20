@@ -399,7 +399,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 		if (i == 0x8df) {
-			D1_INFO("Dungeonbeleuchtung %s\n",
+			D1_LOG("Dungeonbeleuchtung %s\n",
 					status_ingame[i]?"aus":"an");
 			status_copy[i]=status_ingame[i];
 			i++;
@@ -461,10 +461,10 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		*/
 		if (i == 0x33) {
 			if (status_ingame[i] != 0)
-				D1_INFO("Stadtmodus aktiviert (0x%02x)\n",
+				D1_LOG("Stadtmodus aktiviert (0x%02x)\n",
 						status_ingame[i]);
 			else
-				D1_INFO("Stadtmodus deaktiviert\n");
+				D1_LOG("Stadtmodus deaktiviert\n");
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
