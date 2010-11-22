@@ -35,6 +35,10 @@ static inline void D1_TRAC(...) { }
 static inline void D1_GFX(...) { }
 #endif
 
+/* help Visual C++ to know __func__ */
+#if _MSC_VER >= 1300
+	#define __func__ __FUNCTION__
+#endif
 
 /* Stack cleanup for ret i16 (not typical in C) */
 static inline void RET(unsigned short val) {
