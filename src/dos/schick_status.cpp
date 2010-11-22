@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <error.h>
-#include <errno.h>
 #include <unistd.h>
 
 #include <mem.h>
@@ -640,8 +638,10 @@ void schick_status_update(unsigned char *data, unsigned short len)
 	if (!status_copy)
 	{
 		status_copy = (unsigned char*)calloc(status_len, 1);
-		if (status_copy == NULL)
-			error(1, ENOMEM, "");
+		if (status_copy == NULL) {
+			D1_ERR("Kein Speicher um eine Kopie des Statusbereiches zu erstellen\n");
+			exit(1);
+		}
 	}
 
 
@@ -724,8 +724,10 @@ void schick_status_init()
 
 	if (!status_copy) {
 		status_copy = (unsigned char*)calloc(status_len, 1);
-		if (status_copy == NULL)
-			error(1, ENOMEM, "");
+		if (status_copy == NULL) {
+			D1_ERR("Kein Speicher um eine Kopie des Statusbereiches zu erstellen\n");
+			exit(1);
+		}
 	}
 
 	memcpy(status_copy, status_ingame, status_len);
