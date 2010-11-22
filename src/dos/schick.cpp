@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "schick.h"
 
@@ -105,6 +106,29 @@ int schick_gen_get_version(char *p) {
 		return 300;
 	}
 	return 0;
+}
+
+/**
+	schick_get_fname - copies the filename from src to dst
+	@src:	pathname to a file
+	@dst:	string where the filename shoukld be stored
+*/
+void schick_get_fname(char *dst, char *src) {
+	char *p = NULL;
+	char *c = src;
+
+	while (*c != '\0') {
+		if (*c == '\\')
+			p = c + 1;
+		c++;
+	}
+
+	/* No backslash in src*/
+	if (p == NULL)
+		p = src;
+
+	while (*dst++ = tolower(*p++));
+	*dst = '\0';
 }
 
 //Initializer - is startet if executed file is SCHICKM.EXE/BLADEM.EXE or GEN.EXE
