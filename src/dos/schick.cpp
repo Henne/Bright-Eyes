@@ -136,11 +136,14 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 {
 
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
+	char fname[13];
 	int ver;
+
+	schick_get_fname(fname, name);
 
 	//This happens only if the game starts another program
 	if (!fromgame && running && schick && !gen) {
-		if (strcasestr(name, "gen.exe")) {
+		if (!strcmp(fname, "gen.exe")) {
 			schick--;
 			fromgame++;
 			gen++;
@@ -151,9 +154,9 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		return;
 	}
 	D1_TRAC("executing %s\n", name);
-	if (!strcasestr(name, "schickm.exe")
-			&& !strcasestr(name, "bladem.exe")
-			&& !strcasestr(name, "gen.exe")) return;
+	if (strcmp(fname, "schickm.exe")
+			&& strcmp(fname, "bladem.exe")
+			&& strcmp(fname, "gen.exe")) return;
 
 	/* Check CS:IP in the EXE-Header are 0:0
 	 * and the first executed instruction is mov dx,i16 */
@@ -174,7 +177,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	}
 
 	/* check for the game program */
-	if (strcasestr(name, "schickm.exe") || strcasestr(name, "bladem.exe")) {
+	if (!strcmp(fname, "schickm.exe") || !strcmp(fname, "bladem.exe")) {
 
 		ver = schick_get_version((char*)MemBase + PhysMake(datseg, 0));
 
@@ -197,7 +200,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	}
 
 	/* check for the character generation program */
-	if (strcasestr(name, "gen.exe")) {
+	if (!strcmp(fname, "gen.exe")) {
 		ver = schick_gen_get_version((char*)MemBase + PhysMake(datseg, 0));
 
 		if (ver == 0) {
