@@ -120,15 +120,14 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 		do {
 			cols = cur_width;
 			if (real_readw(datseg, 0x4a92)) {
-				while (cols--) {
-					/* TODO 357 - 37d only check dst in
-					special positions */
-					if (mem_readb_inline(dst) < 0xc8)
-						mem_writeb_inline(dst, *src);
+				do {
+					if (lines >= 40 || cols <= 75 || cols >= 150)
+						if (mem_readb_inline(dst) >= 0xc8)
+							continue;
 
-				src++;
-				dst++;
-				}
+					mem_writeb_inline(dst, *src);
+
+				} while (src++ && dst++ && --cols);
 			} else {
 				while (cols--) {
 					if (mem_readb_inline(dst) < 0xc8)
