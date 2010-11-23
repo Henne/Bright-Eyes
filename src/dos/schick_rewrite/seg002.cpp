@@ -1,20 +1,139 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 33/136
+	Functions rewritten: 34/136
 */
+#include <string.h>
 
 #include "mem.h"
 
 #include "../schick.h"
 
+#include "schick_common.h"
+
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
 #include "seg008.h"
+#include "seg009.h"
 
 
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : real_readd(datseg, 0xbce7);
+}
+
+signed int process_nvf(Bit8u *nvf) {
+	signed char nvf_type;
+	Bit8u *src, *dst;
+	int p_size;
+	int offs;
+	signed int retval;
+	short va;
+	short height;
+	short pics;
+	short width;
+	short i;
+
+	struct nvf_desc d;
+
+	d.dst = host_readd(nvf);
+	d.src = host_readd(nvf+4);
+	d.nr = host_readw(nvf+8);
+	d.type = host_readb(nvf+10);
+	d.p_height = host_readd(nvf+11);
+	d.p_width = host_readd(nvf+15);
+
+	Bit8u *p = MemBase + Real2Phys(d.src);
+	dst = MemBase + Real2Phys(d.dst);
+
+	nvf_type = host_readb(p);
+	va = nvf_type & 0x80;
+	nvf_type &= 0x7f;
+
+	pics = host_readw(p + 1);
+
+	if (d.nr < 0)
+		d.nr = 0;
+
+	if (d.nr > pics - 1)
+		d.nr = pics - 1;
+
+	switch (nvf_type) {
+
+	case 0x00:
+		width = host_readw(p + 3);
+		height = host_readw(p + 5);
+		p_size = height * width;
+		src =  p + d.nr * p_size + 7;
+		break;
+
+	case 0x01:
+		offs = pics * 4 + 3;
+		for (i = 0; i < d.nr; i++)
+			offs += width * height;
+
+		width = host_readw(p + d.nr * 4 + 3);
+		height = host_readw(p + d.nr * 4 + 5);
+		p_size = width * height;
+		src = p + offs;
+		break;
+
+	case 0x02: case 0x04:
+		width = host_readw(p + 3);
+		height = host_readw(p + 5);
+		offs = pics * 4 + 7;
+		for (i = 0; i < d.nr; i++)
+			offs += host_readd(p  + (i * 4) + 7);
+
+		p_size = host_readd(p + d.nr * 4 + 7);
+		src = p + offs;
+		break;
+
+	case 0x03: case 0x05:
+		offs = pics * 8 + 3;
+		for (i = 0; i < d.nr; i++)
+			offs += host_readd(p  + (i * 8) + 7);
+
+		width = host_readw(p + d.nr * 8 + 3);
+		height = host_readw(p + d.nr * 8 + 5);
+		p_size = host_readd(p + i * 8 + 7);
+		src = p + offs;
+		break;
+	}
+
+	switch (d.type) {
+
+	case 0:
+		/* PP20 decompression */
+
+		if (va != 0) {
+			/* get size from unpacked picture */
+			retval = host_readd(src);
+			retval = host_readd(src + (retval - 4));
+			retval = swap_u32(retval) >> 8;
+
+		} else
+			retval = width * height;
+
+		decomp_pp20(src, dst, src + 4, p_size);
+		break;
+
+	case 2 ... 5:
+		/* RLE decompression */
+		decomp_rle(width, height, dst, src,
+			MemBase + Real2Phys(ds_readd(0xd2eb)), d.type);
+		/* Yes, retval is not set here */
+		break;
+
+	default:
+		/* No decompression, just copy */
+		memmove(MemBase + Real2Phys(d.dst), src, (short)p_size);
+		retval = p_size;
+	}
+
+	mem_writew(Real2Phys(d.p_width), width);
+	mem_writew(Real2Phys(d.p_height), height);
+
+	return retval;
 }
 
 short cmp_smth(unsigned short v1, unsigned short v2,

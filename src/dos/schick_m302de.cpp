@@ -70,8 +70,23 @@ static int seg002(unsigned short offs) {
 		D1_LOG("OpenAndSeekDatfile(0x%x) %s\n", index, getString(fname));
 		return 0;
 	}
-	case 0x0ed2:
-			return 0;
+	case 0x0ed2: {
+			RealPt nvf = CPU_Pop32();
+			CPU_Push32(nvf);
+
+			signed int retval;
+
+			D1_LOG("process_nvf(0x%04x:0x%04x);\n",
+				RealSeg(nvf), RealOff(nvf));
+
+			retval = process_nvf(MemBase + Real2Phys(nvf));
+
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			return 1;
+
+	}
 	case 0x1634: {
 		/* Leaf Function */
 		unsigned short v1 = CPU_Pop16();
@@ -2498,6 +2513,19 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Pop32();
 		seg002_2177();
 		D1_LOG("seg002_2177();\n");
+		return 1;
+	}
+	if ((segm == 0x51e) && (offs == 0xed2)) {
+		CPU_Pop32();
+		RealPt nvf = CPU_Pop32();
+		CPU_Push32(nvf);
+
+		signed int retval;
+		process_nvf(MemBase + Real2Phys(nvf));
+
+		reg_ax = RealSeg(retval);
+		reg_dx = RealOff(retval);
+
 		return 1;
 	}
 	if ((segm == 0xe41) && (offs == 0x5a)) {

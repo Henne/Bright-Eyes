@@ -1,4 +1,5 @@
 unsigned int get_readlength2(signed short index);
+signed int process_nvf(Bit8u *p);
 short cmp_smth(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
 unsigned short get_current_season();
 void make_ggst_cursor(Bit8u *icon);
