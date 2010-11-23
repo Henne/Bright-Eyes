@@ -119,7 +119,7 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 		bx = 320 - cur_width;
 		do {
 			cols = cur_width;
-			if (real_readw(datseg, 0x4a92)) {
+			if (ds_readw(0x4a92)) {
 				do {
 					if (lines >= 40 || cols <= 75 || cols >= 150)
 						if (mem_readb_inline(dst) >= 0xc8)
