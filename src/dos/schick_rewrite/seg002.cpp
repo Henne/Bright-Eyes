@@ -39,8 +39,8 @@ signed int process_nvf(Bit8u *nvf) {
 	d.src = host_readd(nvf+4);
 	d.nr = host_readw(nvf+8);
 	d.type = host_readb(nvf+10);
-	d.p_height = host_readd(nvf+11);
-	d.p_width = host_readd(nvf+15);
+	d.p_width = host_readd(nvf+11);
+	d.p_height = host_readd(nvf+15);
 
 	Bit8u *p = MemBase + Real2Phys(d.src);
 	dst = MemBase + Real2Phys(d.dst);

@@ -12,6 +12,6 @@ struct nvf_desc {
 	RealPt dst;
 	short nr;
 	signed char type;
-	RealPt p_height;
 	RealPt p_width;
+	RealPt p_height;
 };
