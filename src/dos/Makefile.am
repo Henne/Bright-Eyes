@@ -9,6 +9,7 @@ libdos_a_SOURCES = dos.cpp dos_devices.cpp dos_execute.cpp dos_files.cpp dos_ioc
 		   cdrom.h cdrom.cpp cdrom_ioctl_win32.cpp cdrom_aspi_win32.cpp cdrom_ioctl_linux.cpp cdrom_image.cpp \
 		   cdrom_ioctl_os2.cpp schick.cpp schick.h schick_hooks.h\
 		schick_gen105.cpp schick_status.cpp schick_m302de.cpp\
+		schick_rewrite/schick_common.h\
 		schick_rewrite/seg002.cpp schick_rewrite/seg002.h\
 		schick_rewrite/seg003.cpp schick_rewrite/seg003.h\
 		schick_rewrite/seg004.cpp schick_rewrite/seg004.h\
