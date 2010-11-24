@@ -2517,19 +2517,6 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("seg002_2177();\n");
 		return 1;
 	}
-	if ((segm == 0x51e) && (offs == 0xed2)) {
-		CPU_Pop32();
-		RealPt nvf = CPU_Pop32();
-		CPU_Push32(nvf);
-
-		signed int retval;
-		process_nvf(MemBase + Real2Phys(nvf));
-
-		reg_ax = RealSeg(retval);
-		reg_dx = RealOff(retval);
-
-		return 1;
-	}
 	if ((segm == 0xe41) && (offs == 0x5a)) {
 		RealPt pIP = CPU_Pop32();
 
