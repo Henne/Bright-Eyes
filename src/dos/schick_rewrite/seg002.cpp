@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 34/136
+	Functions rewritten: 35/136
 */
 #include <string.h>
 
@@ -333,6 +333,54 @@ unsigned short mod_timer(short val) {
 		return 1;
 
 	return 0;
+}
+
+void draw_compass() {
+//	struct nvf_desc n;
+	/* ugly hack to provide the layout of struct nvf_desc */
+	char nvf[18];
+	Bit8u *n = (Bit8u*)nvf;
+
+	/* No compass in a location */
+	if (ds_readb(0x2d60))
+		return;
+	/* Has something to do with traveling */
+	if (ds_readb(0xb132))
+		return;
+	/* Not in town or dungeon */
+	if (!ds_readb(0x2d6e) && !ds_readb(0x2d67))
+		return;
+	/* I have no clue */
+	if (ds_readb(0x4475) == 2)
+		return;
+	/* set src */
+	host_writed(n + 0, ds_readd(0xd2f7));
+	/* set dst */
+	host_writed(n + 4, ds_readd(0xd2b1));
+	/* set nr */
+	host_writew(n + 8, ds_readb(0x2d3d));
+	/* set type*/
+	host_writew(n + 10, 0);
+	/* place somwhere on unused DOS stack */
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	/* process the nvf */
+	process_nvf(n);
+
+	/* set x and y values */
+	ds_writew(0xc011, 94);
+	ds_writew(0xc013, 115);
+	ds_writew(0xc015, 145);
+	ds_writew(0xc017, 136);
+
+	/* set source */
+	ds_writed(0xc019, ds_readd(0xd2f7));
+
+	update_mouse_cursor();
+	do_pic_copy(2);
+	refresh_screen_size();
+
 }
 
 short can_merge_group() {

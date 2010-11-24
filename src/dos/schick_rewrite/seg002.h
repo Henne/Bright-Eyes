@@ -15,6 +15,7 @@ void seg002_3b63();
 unsigned int swap_u32(unsigned int v);
 void set_to_ff();
 unsigned short mod_timer(short val);
+void draw_compass();
 short can_merge_group();
 unsigned short div16(unsigned char val);
 void set_automap_tile(unsigned short x, unsigned short y);

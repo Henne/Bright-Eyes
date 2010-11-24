@@ -185,8 +185,10 @@ static int seg002(unsigned short offs) {
 		D1_LOG("mod_timer(%d) = %d\n", val, reg_eax);
 		return 1;
 	}
-	case 0x44aa:
-		 return 0;
+	case 0x44aa: {
+		draw_compass();
+		return 1;
+	}
 	case 0x4559: {
 
 		reg_ax = can_merge_group();
