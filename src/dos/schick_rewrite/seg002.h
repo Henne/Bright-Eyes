@@ -1,15 +1,15 @@
 unsigned int get_readlength2(signed short index);
 signed int process_nvf(Bit8u *p);
 short cmp_smth(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
-unsigned short get_current_season();
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor();
 void refresh_screen_size();
 void update_mouse_cursor1();
 void refresh_screen_size1();
-void set_and_spin_lock();
 //static
 void seg002_2177();
+unsigned short get_current_season();
+void set_and_spin_lock();
 //static
 void seg002_3b63();
 //static

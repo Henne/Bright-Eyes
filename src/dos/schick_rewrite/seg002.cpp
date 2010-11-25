@@ -150,20 +150,6 @@ short cmp_smth(unsigned short v1, unsigned short v2,
 	return 1;
 }
 
-unsigned short get_current_season() {
-	/* Check Winter */
-	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x463e)))
-		return 0;
-	/* Check Summer */
-	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x4642)))
-		return 2;
-	/* Check Spring */
-	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x463a)))
-		return 1;
-
-	return 3;
-}
-
 /**
 	make_ggst_cursor - makes a mouse cursor from a selected item
 	@p:	pointer to the icon of the item
@@ -251,6 +237,26 @@ void seg002_2177() {
 	for (i = 0; ds_readw(0x70a8 + i * 8) != 0xffff; i++)
 		ds_writew(0x70ae + i * 8, random_interval(ds_readw(0x70a8 + i * 8), 20));
 }
+
+unsigned short get_current_season() {
+	/* Check Winter */
+	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x463e)))
+		return 0;
+	/* Check Summer */
+	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x4642)))
+		return 2;
+	/* Check Spring */
+	if (is_in_byte_array(real_readb(datseg, 0x2dc1), MemBase + PhysMake(datseg, 0x463a)))
+		return 1;
+
+	return 3;
+}
+
+void set_and_spin_lock() {
+	real_writew(datseg, 0xbcd6, 1);
+	while (real_readw(datseg, 0xbcd6)) {};
+}
+
 void seg002_3b63() {
 	Bit8u *p;
 	unsigned short locvar;
@@ -310,10 +316,6 @@ void seg002_3b63() {
 		ds_writeb(0x42af, ds_readb(0x42af) - 1);
 }
 
-void set_and_spin_lock() {
-	real_writew(datseg, 0xbcd6, 1);
-	while (real_readw(datseg, 0xbcd6)) {};
-}
 /**
 	draw_splash - draws a splash
 	@index:	on which slot the splash is drawn
