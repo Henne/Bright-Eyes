@@ -12,6 +12,7 @@ unsigned short get_current_season();
 void set_and_spin_lock();
 //static
 void seg002_3b63();
+void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);
 unsigned int swap_u32(unsigned int v);

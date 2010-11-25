@@ -153,7 +153,12 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x3ca6:
 	case 0x3dbb:	/* Schiffsfahrt */
-	case 0x3ebb:
+		return 0;
+	case 0x3ebb: {
+		D1_LOG("dec_splash();\n");
+		dec_splash();
+		return 1;
+	}
 	case 0x4016:	/* Kopierschutzabfrage */
 	case 0x404f:
 	case 0x40d1:

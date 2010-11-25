@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 36/136
+	Functions rewritten: 37/136
 */
 #include <string.h>
 
@@ -314,6 +314,37 @@ void seg002_3b63() {
 
 	if (ds_readb(0x42ae) == 0xaa)
 		ds_writeb(0x42af, ds_readb(0x42af) - 1);
+}
+
+/**
+	restore_splash - decrements splash timer and restores picture
+*/
+void dec_splash() {
+	unsigned char i;
+
+	for (i = 0; i <= 6; i++) {
+		/* I have no clue */
+		if (ds_readb(0x2c98))
+			continue;
+		/* Check if splash timer is 0 */
+		if (ds_readb(0xbccf + i) == 0)
+			continue;
+		/* decrement splash timer */
+		ds_writeb(0xbcff + i, ds_readb(0xbcff + i) - 1);
+		/* Check splash timer again if 0 */
+		if (ds_readb(0xbccf + i) == 0)
+			continue;
+		/* I have no clue */
+		/* Could be in fight */
+		if (ds_readb(0x2845))
+			continue;
+		/* check if hero is dead */
+		if (mem_readb(Real2Phys(ds_readd(0xbd34)) + i * 0x6da + 0xaa) & 1)
+			continue;
+
+		restore_rect(Real2Phys(ds_readd(0xd2ff)), MemBase + Real2Phys(ds_readd(0xbd34)) + i * 0x6da + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
+
+	}
 }
 
 /**
