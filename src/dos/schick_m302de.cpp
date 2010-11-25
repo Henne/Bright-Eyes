@@ -2517,6 +2517,18 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("seg002_2177();\n");
 		return 1;
 	}
+	/* Callers: 2 */
+	if ((segm == 0x51e) && (offs == 0x3f3e)) {
+		CPU_Pop32();
+		unsigned short index = CPU_Pop16();
+		unsigned short type = CPU_Pop16();
+		CPU_Push16(type);
+		CPU_Push16(index);
+
+		D1_LOG("draw_splash(%d, %d);\n", index, type);
+		draw_splash(index, type);
+		return 1;
+	}
 	if ((segm == 0xe41) && (offs == 0x5a)) {
 		RealPt pIP = CPU_Pop32();
 

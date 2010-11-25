@@ -12,6 +12,8 @@ void set_and_spin_lock();
 void seg002_2177();
 //static
 void seg002_3b63();
+//static
+void draw_splash(unsigned short index, unsigned short type);
 unsigned int swap_u32(unsigned int v);
 void set_to_ff();
 unsigned short mod_timer(short val);

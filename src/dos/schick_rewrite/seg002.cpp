@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 35/136
+	Functions rewritten: 36/136
 */
 #include <string.h>
 
@@ -313,6 +313,31 @@ void seg002_3b63() {
 void set_and_spin_lock() {
 	real_writew(datseg, 0xbcd6, 1);
 	while (real_readw(datseg, 0xbcd6)) {};
+}
+/**
+	draw_splash - draws a splash
+	@index:	on which slot the splash is drawn
+	@type:	kind of damage (0 = LE / !0 = AE)
+*/
+//static
+void draw_splash(unsigned short index, unsigned short type) {
+	Bit8u *splash;
+
+	/* Could be in fight */
+	if (ds_readb(0x2845))
+		return;
+
+	if (type == 0)
+		/* splash 1 / red / LE */
+		splash = MemBase + Real2Phys(ds_readd(0xbccb));
+	else
+		/* splash 2 / yellow / AE */
+		splash = MemBase + Real2Phys(ds_readd(0xbcc7));
+
+	restore_rect_rle(Real2Phys(ds_readd(0xd2ff)), splash, ds_readw(0x2d01 + index*2), 157, 32, 32, 2);
+
+	/* how long the splash should be displayed */
+	ds_writeb(0xbccf + index, 10);
 }
 
 unsigned int swap_u32(unsigned int v) {
