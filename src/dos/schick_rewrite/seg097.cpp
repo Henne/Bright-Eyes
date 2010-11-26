@@ -1,4 +1,4 @@
-#include "../schick.h"
+#include "schick.h"
 
 #include "seg096.h"
 

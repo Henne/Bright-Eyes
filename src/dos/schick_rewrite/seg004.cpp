@@ -1,7 +1,7 @@
 #include "mem.h"
 #include "paging.h"
 
-#include "../schick.h"
+#include "schick.h"
 
 #include "seg002.h"
 #include "seg004.h"

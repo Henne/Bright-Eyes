@@ -1,6 +1,6 @@
 #include "mem.h"
 
-#include "../schick.h"
+#include "schick.h"
 
 short update_direction(unsigned char mod) {
 	unsigned char dir = real_readb(datseg, 0x2d3d);

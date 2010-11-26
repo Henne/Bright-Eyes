@@ -12,7 +12,7 @@
  *   - further detection based on code by Georg Hoermann
  */
 
-#include "../schick.h"
+#include "schick.h"
 
 static inline unsigned int val(const unsigned char *p) {
 	return (p[0]<<16 | p[1] << 8 | p[2]);

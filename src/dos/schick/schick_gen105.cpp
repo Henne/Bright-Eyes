@@ -4,8 +4,8 @@
 
 #include "schick.h"
 
-#include "schick_rewrite/seg008.h"
-#include "schick_rewrite/seg009.h"
+#include "seg008.h"
+#include "seg009.h"
 
 static int seg004(unsigned short offs) {
 

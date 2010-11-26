@@ -5,19 +5,19 @@
 
 #include "schick.h"
 
-#include "schick_rewrite/seg002.h"
-#include "schick_rewrite/seg003.h"
-#include "schick_rewrite/seg004.h"
-#include "schick_rewrite/seg006.h"
-#include "schick_rewrite/seg007.h"
-#include "schick_rewrite/seg008.h"
-#include "schick_rewrite/seg009.h"
-#include "schick_rewrite/seg029.h"
-#include "schick_rewrite/seg041.h"
-#include "schick_rewrite/seg096.h"
-#include "schick_rewrite/seg097.h"
-#include "schick_rewrite/seg098.h"
-#include "schick_rewrite/seg103.h"
+#include "seg002.h"
+#include "seg003.h"
+#include "seg004.h"
+#include "seg006.h"
+#include "seg007.h"
+#include "seg008.h"
+#include "seg009.h"
+#include "seg029.h"
+#include "seg041.h"
+#include "seg096.h"
+#include "seg097.h"
+#include "seg098.h"
+#include "seg103.h"
 
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};

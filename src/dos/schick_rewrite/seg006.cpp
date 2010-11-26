@@ -2,7 +2,7 @@
 
 #include "mem.h"
 
-#include "../schick.h"
+#include "schick.h"
 
 #include "seg002.h"
 #include "seg004.h"

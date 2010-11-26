@@ -4,7 +4,7 @@
 */
 #include "mem.h"
 
-#include "../schick.h"
+#include "schick.h"
 #include "seg007.h"
 
 static inline

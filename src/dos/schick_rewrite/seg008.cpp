@@ -7,7 +7,7 @@
 
 #include "../../ints/int10.h"
 
-#include "../schick.h"
+#include "schick.h"
 
 unsigned short swap_u16(unsigned short val) {
 	return (val << 8) | (val >> 8);

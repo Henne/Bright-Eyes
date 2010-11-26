@@ -6,7 +6,7 @@
 
 #include "mem.h"
 
-#include "../schick.h"
+#include "schick.h"
 
 #include "schick_common.h"
 
