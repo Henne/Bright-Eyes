@@ -28,8 +28,6 @@
 #include "inout.h"
 #include "callback.h"
 
-#include "schick_hooks.h"
-
 
 typedef PhysPt EAPoint;
 #define SegBase(c)	SegPhys(c)
