@@ -1,5 +1,7 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include
 
+SUBDIRS = schick_rewrite
+
 noinst_LIBRARIES = libdos.a
 EXTRA_DIST = scsidefs.h wnaspi32.h dos_codepages.h dos_keyboard_layout_data.h
 libdos_a_SOURCES = dos.cpp dos_devices.cpp dos_execute.cpp dos_files.cpp dos_ioctl.cpp dos_memory.cpp \
@@ -8,18 +10,4 @@ libdos_a_SOURCES = dos.cpp dos_devices.cpp dos_execute.cpp dos_files.cpp dos_ioc
 		   drive_iso.cpp dev_con.h dos_mscdex.cpp dos_keyboard_layout.cpp \
 		   cdrom.h cdrom.cpp cdrom_ioctl_win32.cpp cdrom_aspi_win32.cpp cdrom_ioctl_linux.cpp cdrom_image.cpp \
 		   cdrom_ioctl_os2.cpp schick.cpp schick.h schick_hooks.h\
-		schick_gen105.cpp schick_status.cpp schick_m302de.cpp\
-		schick_rewrite/schick_common.h\
-		schick_rewrite/seg002.cpp schick_rewrite/seg002.h\
-		schick_rewrite/seg003.cpp schick_rewrite/seg003.h\
-		schick_rewrite/seg004.cpp schick_rewrite/seg004.h\
-		schick_rewrite/seg006.cpp schick_rewrite/seg006.h\
-		schick_rewrite/seg007.cpp schick_rewrite/seg007.h\
-		schick_rewrite/seg008.cpp schick_rewrite/seg008.h\
-		schick_rewrite/seg009.cpp schick_rewrite/seg009.h\
-		schick_rewrite/seg029.cpp schick_rewrite/seg029.h\
-		schick_rewrite/seg041.cpp schick_rewrite/seg041.h\
-		schick_rewrite/seg096.cpp schick_rewrite/seg096.h\
-		schick_rewrite/seg097.cpp schick_rewrite/seg097.h\
-		schick_rewrite/seg098.cpp schick_rewrite/seg098.h\
-		schick_rewrite/seg103.cpp schick_rewrite/seg103.h
+		schick_gen105.cpp schick_status.cpp schick_m302de.cpp
