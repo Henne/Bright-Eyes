@@ -396,7 +396,7 @@ unsigned short mod_timer(short val) {
 void draw_compass() {
 //	struct nvf_desc n;
 	/* ugly hack to provide the layout of struct nvf_desc */
-	char nvf[18];
+	char nvf[19];
 	Bit8u *n = (Bit8u*)nvf;
 
 	/* No compass in a location */
