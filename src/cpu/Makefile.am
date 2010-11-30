@@ -1,5 +1,5 @@
 SUBDIRS = core_full core_normal core_dyn_x86 core_dynrec
-AM_CPPFLAGS = -I$(top_srcdir)/include -I../dos/schick/
+AM_CPPFLAGS = -I$(top_srcdir)/include
 
 noinst_LIBRARIES = libcpu.a
 libcpu_a_SOURCES = callback.cpp cpu.cpp flags.cpp modrm.cpp modrm.h core_full.cpp instructions.h	\

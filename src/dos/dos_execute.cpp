@@ -29,7 +29,7 @@
 #include "cpu.h"
 
 // Include for "Schicksalsklinge/Blade of Destiny"
-#include "schick_hooks.h"
+#include "custom_hooks.h"
 
 const char * RunningProgram="DOSBOX";
 

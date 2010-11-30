@@ -28,7 +28,7 @@
 #include "fpu.h"
 #include "paging.h"
 
-#include "schick_hooks.h"
+#include "custom_hooks.h"
 
 #if C_DEBUG
 #include "debug.h"

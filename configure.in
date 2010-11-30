@@ -534,7 +534,8 @@ src/platform/visualc/Makefile
 visualc_net/Makefile
 include/Makefile
 docs/Makefile
-src/dos/schick/Makefile
-src/dos/schick_rewrite/Makefile
+src/custom/Makefile
+src/custom/schick/Makefile
+src/custom/schick_rewrite/Makefile
 ])
 AC_OUTPUT

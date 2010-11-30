@@ -31,7 +31,7 @@
 #include "drives.h"
 #include "cross.h"
 
-#include "schick_hooks.h"
+#include "custom_hooks.h"
 
 #define DOS_FILESTART 4
 
