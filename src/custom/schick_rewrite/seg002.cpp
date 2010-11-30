@@ -117,7 +117,7 @@ signed int process_nvf(Bit8u *nvf) {
 		decomp_pp20(src, dst, src + 4, p_size);
 		break;
 
-	case 2 ... 5:
+	case 2: case 3: case 4: case 5:
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
 			MemBase + Real2Phys(ds_readd(0xd2eb)), d.type);
