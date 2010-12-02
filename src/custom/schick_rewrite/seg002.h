@@ -9,6 +9,7 @@ void refresh_screen_size1();
 //static
 void seg002_2177();
 unsigned short get_current_season();
+void sub_ingame_timers(unsigned int);
 void set_and_spin_lock();
 //static
 void seg002_3b63();

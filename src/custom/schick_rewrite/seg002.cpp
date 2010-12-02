@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 37/136
+	Functions rewritten: 38/136
 */
 #include <string.h>
 
@@ -250,6 +250,30 @@ unsigned short get_current_season() {
 		return 1;
 
 	return 3;
+}
+
+/**
+	sub_ingame_timers - subtracts val from the ingame timers
+	@val:	vaule to subtract from the ingame timers
+*/
+void sub_ingame_timers(unsigned int val) {
+
+	short i = 0;
+
+	if (ds_readw(0x2c99))
+		return;
+
+	for (i = 0; i < 26; i++) {
+		/* dont sub if already zero */
+		if (ds_readd(0x2dc4 + i * 4) == 0)
+			continue;
+		/* subtract val from timer*/
+		ds_writed(0x2dc4 + i * 4, ds_readd(0x2dc4 + i * 4) - val);
+
+		/* if the timer is lower zero set to zero */
+		if ((int)ds_readd(0x2dc4 + i * 4) < 0)
+			ds_writed(0x2dc4 + i * 4, 0);
+	}
 }
 
 void set_and_spin_lock() {
