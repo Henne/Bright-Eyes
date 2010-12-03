@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 38/136
+	Functions rewritten: 39/136
 */
 #include <string.h>
 
@@ -273,6 +273,73 @@ void sub_ingame_timers(unsigned int val) {
 		/* if the timer is lower zero set to zero */
 		if ((int)ds_readd(0x2dc4 + i * 4) < 0)
 			ds_writed(0x2dc4 + i * 4, 0);
+	}
+}
+
+/**
+ *	sub_light_timers - decrements the light timers
+ *	@quarter:	the time in quarters of an hour
+ *	@v2:		atm unknown
+ *
+ *	This function decrements the timers of burning torches and lanterns.
+ *	If the time of the lightsource is up the toch is removed from the
+ *	inventory and the lantern is turned off.
+*/
+void sub_light_timers(unsigned short quarter, signed short v2) {
+	PhysPt hero_i;
+	unsigned short i,j;
+	unsigned char tmp;
+
+	if (ds_readw(0x2c99))
+		return;
+
+	hero_i = Real2Phys(ds_readd(0xbd34));
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* check class */
+		if (mem_readb(hero_i + 0x21) == 0)
+			continue;
+
+		if (v2 > 0 || (!v2 && quarter > 120))
+			tmp = 120;
+		else
+			tmp = quarter & 0xff;
+
+		for (j = 0; j < 23; j++) {
+			signed char cur;
+			if (mem_readw(hero_i + 0x196 + 14 * j) == 0x16) {
+				/* Torch, burning */
+
+				cur = mem_readb(hero_i + 0x19e + 14 * j);
+				cur -= tmp;
+				mem_writeb(hero_i + 0x19e + 14 * j, cur);
+
+				if (cur <= 0) {
+					signed short tmp_1;
+					mem_writeb(hero_i + 0x20, mem_readb(hero_i + 0x20) - 1);
+
+					tmp_1 = mem_readw(Real2Phys(ds_readd(0xe22b)) + 0x10d);
+					mem_writew(hero_i + 0x2d8, mem_readb(hero_i + 0x2d8) - tmp_1);
+
+					/* Remove Torch from inventory */
+					memset(MemBase + hero_i + 0x196 + 14 * j, 0, 14);
+				}
+			} else if (mem_readw(hero_i + 0x196 + j * 14) == 0xf9) {
+				/* Lantern, burning */
+				cur = mem_readb(hero_i + 0x19e + 14 * j);
+				cur -= tmp;
+				mem_writeb(hero_i + 0x19e + 14 * j, cur);
+
+				if (cur <= 0) {
+					/* Set timer to 0 */
+					mem_writeb(hero_i + 0x19e + j * 14, 0);
+					/* Set burning lantern to a not burning lantern */
+					mem_writew(hero_i + 0x196 + j * 14, 0x19);
+				}
+			}
+
+		}
+
 	}
 }
 
