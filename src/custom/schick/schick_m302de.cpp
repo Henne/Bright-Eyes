@@ -98,13 +98,11 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 
-		D1_LOG("cmp_smth(%d, %d, %d, %d);\n", v1, v2, v3, v4);
-		D1_LOG("ds:299c = %d\n", real_readw(ds, 0x299c));
-		D1_LOG("ds:299e = %d\n", real_readw(ds, 0x299e));
 
-		short retval = cmp_smth(v1, v2, v3, v4);
-		D1_LOG("Should return %d\n", retval);
-		reg_ax = retval;
+		reg_ax = is_mouse_in_rect(v1, v2, v3, v4);
+
+		D1_LOG("is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
+			v1, v2, v3, v4, reg_ax);
 
 		return 1;
 	}
@@ -2536,6 +2534,24 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0)
 		return 0;
 
+	/* Callers: 2 */
+	if ((segm = 0x51e) && (offs == 0x1634)) {
+		CPU_Pop32();
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		unsigned short v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax  = is_mouse_in_rect(v1, v2, v3, v4);
+		D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
+			v1, v2, v3, v4, reg_ax);
+
+		return 1;
+	}
 	if ((segm == 0x51e) && (offs == 0x2177)) {
 		CPU_Pop32();
 		seg002_2177();

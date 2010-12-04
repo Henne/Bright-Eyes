@@ -1,6 +1,6 @@
 unsigned int get_readlength2(signed short index);
 signed int process_nvf(Bit8u *p);
-short cmp_smth(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
+short is_mouse_in_rect(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor();
 void refresh_screen_size();

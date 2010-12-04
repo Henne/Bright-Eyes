@@ -135,16 +135,24 @@ signed int process_nvf(Bit8u *nvf) {
 
 	return retval;
 }
+/**
+ *	is_mouse_in_rect - checks if the mouse cursor is in a rectangle
+ *	@x1:	upper left x coordinate
+ *	@y1:	upper left y coordinate
+ *	@x2:	bottom right x coordinate
+ *	@y2:	bottom right y coordinate
+ *
+ * Returns 0 if the pointer is not in this rectangle, otherwise 1.
+ */
+short is_mouse_in_rect(unsigned short x1, unsigned short y1,
+				unsigned short x2, unsigned short y2) {
+	unsigned short m_x;
+	unsigned short m_y;
 
-short cmp_smth(unsigned short v1, unsigned short v2,
-				unsigned short v3, unsigned short v4) {
-	unsigned short d;
-	unsigned short b;
+	m_x = ds_readw(0x299c);
+	m_y = ds_readw(0x299e);
 
-	d = real_readw(datseg, 0x299c);
-	b = real_readw(datseg, 0x299e);
-
-	if ((d < v1) || (d > v3) || (b < v2) || (b > v4))
+	if ((m_x < x1) || (m_x > x2) || (m_y < y1) || (m_y > y2))
 		return 0;
 
 	return 1;
