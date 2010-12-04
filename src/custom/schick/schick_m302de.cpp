@@ -2621,7 +2621,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Push16(skill);
 		CPU_Push32(hero);
 
-		D1_INFO("Talentprobe near : %s %+d\n ",
+		D1_LOG("Talentprobe: %s %+d\n ",
 			names_skill[skill], (char)bonus);
 
 		reg_ax = test_skill(MemBase + Real2Phys(hero), skill, bonus);
