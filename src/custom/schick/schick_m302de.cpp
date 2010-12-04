@@ -2529,8 +2529,10 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0)
 		return 0;
 
+	if (segm == 0x51e) {
+
 	/* Callers: 2 */
-	if ((segm == 0x51e) && (offs == 0x1634)) {
+	if (offs == 0x1634) {
 		CPU_Pop32();
 		unsigned short v1 = CPU_Pop16();
 		unsigned short v2 = CPU_Pop16();
@@ -2547,14 +2549,14 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
-	if ((segm == 0x51e) && (offs == 0x2177)) {
+	if (offs == 0x2177) {
 		CPU_Pop32();
 		seg002_2177();
 		D1_LOG("seg002_2177();\n");
 		return 1;
 	}
 	/* Callers: 4 */
-	if ((segm == 0x51e) && (offs == 0x2bf6)) {
+	if (offs == 0x2bf6) {
 		CPU_Pop32();
 		unsigned int val = CPU_Pop32();
 		CPU_Push32(val);
@@ -2564,7 +2566,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		return 1;
 	}
 	/* Callers: 4 */
-	if ((segm == 0x51e) && (offs == 0x3071)) {
+	if (offs == 0x3071) {
 		RealPt pIP = CPU_Pop32();
 		unsigned short quarter = CPU_Pop16();
 		signed short v2 = CPU_Pop16();
@@ -2576,7 +2578,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
-	if ((segm == 0x51e) && (offs == 0x3b63)) {
+	if (offs == 0x3b63) {
 
 		RealPt pIP = CPU_Pop32();
 
@@ -2589,7 +2591,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		return 1;
 	}
 	/* Callers: 2 */
-	if ((segm == 0x51e) && (offs == 0x3f3e)) {
+	if (offs == 0x3f3e) {
 		CPU_Pop32();
 		unsigned short index = CPU_Pop16();
 		unsigned short type = CPU_Pop16();
@@ -2600,6 +2602,10 @@ int schick_nearcall_v302de(unsigned offs) {
 		draw_splash(index, type);
 		return 1;
 	}
+
+		return 0;
+	} /* segm == 0x51e */
+
 	if ((segm == 0xe41) && (offs == 0x5a)) {
 		RealPt pIP = CPU_Pop32();
 
