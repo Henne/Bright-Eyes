@@ -2523,11 +2523,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 
 int schick_nearcall_v302de(unsigned offs) {
 
-	/* TODO: Das Segment kann hier seltsamerweise wechseln.
-	* Für die Zauberprobe z.B. habe ich in der verfallenen Herberge
-	* einen Aufruf im Segment 0x2572 (der kühle Raum) und
-	* einen von 0x272E (Zauber aus dem Charakterbildschirm) gekriegt.
-	*/
 	unsigned short segm = SegValue(cs)-relocation;
 
 	/* C-Lib nearcalls are uninteresting for us */
@@ -2643,7 +2638,9 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Push16(spell);
 		CPU_Push32(hero);
 
-		D1_LOG("Zauberprobe : %s %+d ", names_spell[spell], (signed char)bonus);
+		D1_LOG("Zauberprobe: %s %+d ",
+			names_spell[spell], (signed char)bonus);
+
 		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, (signed char)bonus);
 		return 1;
 	}
