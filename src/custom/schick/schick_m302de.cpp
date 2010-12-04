@@ -2616,7 +2616,8 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
 		return 1;
 	}
-	if (offs == 0x040F) { // Talentprobe
+	if (is_ovrseg(0x147b) && (offs == 0x040F)) {
+		// Talentprobe
 		RealPt pIP = CPU_Pop32();
 		RealPt hero = CPU_Pop32();
 		unsigned skill = CPU_Pop16();
@@ -2632,7 +2633,8 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
-	if (offs == 0x0E1F) { // Zauberprobe
+	if (is_ovrseg(0x1449) && (offs == 0x0e1f)) {
+		// Zauberprobe
 		RealPt pIP = CPU_Pop32();
 		RealPt hero = CPU_Pop32();
 		unsigned spell = CPU_Pop16();
