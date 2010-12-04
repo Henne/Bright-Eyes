@@ -2581,6 +2581,18 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
+	if ((segm == 0x51e) && (offs == 0x3b63)) {
+
+		RealPt pIP = CPU_Pop32();
+
+		D1_LOG("caller 0x%04x:0x%04x\n",
+			RealSeg(pIP) - relocation , RealOff(pIP));
+
+		seg002_3b63();
+
+		D1_LOG("seg002_3b63();\n");
+		return 1;
+	}
 	/* Callers: 2 */
 	if ((segm == 0x51e) && (offs == 0x3f3e)) {
 		CPU_Pop32();
@@ -2602,18 +2614,6 @@ int schick_nearcall_v302de(unsigned offs) {
 		reg_ax = FIG_set_array();
 
 		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
-		return 1;
-	}
-	if ((segm == 0x51e) && (offs == 0x3b63)) {
-
-		RealPt pIP = CPU_Pop32();
-
-		D1_LOG("caller 0x%04x:0x%04x\n",
-			RealSeg(pIP) - relocation , RealOff(pIP));
-
-		seg002_3b63();
-
-		D1_LOG("seg002_3b63();\n");
 		return 1;
 	}
 	if (offs == 0x040F) { // Talentprobe
