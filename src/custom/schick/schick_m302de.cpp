@@ -2530,7 +2530,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		return 0;
 
 	/* Callers: 2 */
-	if ((segm = 0x51e) && (offs == 0x1634)) {
+	if ((segm == 0x51e) && (offs == 0x1634)) {
 		CPU_Pop32();
 		unsigned short v1 = CPU_Pop16();
 		unsigned short v2 = CPU_Pop16();
