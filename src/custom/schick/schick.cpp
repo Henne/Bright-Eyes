@@ -648,6 +648,34 @@ const char* names_spell[] = {
     "Abvenenum", "Aeolitus", "Brenne", "Claudibus", "Dunkelheit", "Erstarre", "Flim Flam", "Schmelze", "Silentium", "Sturmgebrüll" // Veränderung
 };
 
+/**
+ *	get_ovrseg - returns segment of an overlay segment
+ *	@stub_seg:	segment of the overlay stub
+ *
+ * Borland uses a technique called overlay to load code on demand.
+ * At runtime you have a small stub segment where farcalls to this
+ * segment are directed to. If the segment is not in memory an
+ * interrupt 0x3f is generated, the code is loaded from the binarym
+ * and the stub is ajusted with far jumps to the corrosponding funcs.
+ */
+int get_ovrseg(unsigned short stub_seg) {
+	Bit8u *p = MemBase + (relocation<<4) + (stub_seg<<4);
+
+	if (host_readw(p) != 0x3fcd) {
+		D1_ERR("Error: %x is not an overlay segment\n", stub_seg);
+		return 0;
+	}
+	if (host_readw(p + 0x20) == 0x3fcd) {
+	//	D1_ERR("Error: %x is not in memory\n", stub_seg);
+		return 0;
+	}
+	if (host_readb(p + 0x20) != 0xea) {
+		D1_ERR("No farjump in overlay segment\n");
+		return 0;
+	}
+	return host_readw(p + 0x23);
+}
+
 int schick_callf(unsigned selector, unsigned offs)
 {
 	if (!running || !(dbg_mode & 2))
