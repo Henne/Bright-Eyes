@@ -140,6 +140,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	//This happens only if the game starts another program
 	if (!fromgame && running && schick && !gen) {
 		if (!strcmp(fname, "gen.exe")) {
+			schick_status_disable();
 			schick--;
 			fromgame++;
 			gen++;
@@ -231,6 +232,7 @@ void exit_schick(unsigned char exit)
 		relocation = relocation_bak;
 		relocation_bak = 0;
 		D1_INFO("Gen beendet\nProfiling geht weiter\n");
+		schick_status_enable();
 		return;
 	}
 
