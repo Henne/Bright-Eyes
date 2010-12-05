@@ -165,10 +165,10 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	/* Read and show the Datasegment */
 	datseg = real_readw(reloc, ip+1);
-	D1_TRAC("Dseg: 0x%X\n", datseg=real_readw(reloc, ip+1));
+	D1_TRAC("Dseg: 0x%X\n", datseg);
 
 	/* Check if the start of the Datasegment is Borland C++ */
-	if (real_readd(datseg, 0) != 0 || strcmp((char*)MemBase+PhysMake(datseg, 4), borsig)) {
+	if (ds_readd(0) != 0 || strcmp((char*)MemBase+PhysMake(datseg, 4), borsig)) {
 		D1_ERR("Kein Borland C++ Kompilat!\n");
 		return;
 	}

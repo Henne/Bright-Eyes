@@ -310,10 +310,10 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			unsigned long s_nr=(i-0xf8)/8;
 			unsigned long s_of=status_offset+s_nr*8+0xf8;
 
-			unsigned int cnt=real_readd(datseg, s_of);
-			unsigned short sp=real_readw(datseg, s_of+4);
-			unsigned char tar=real_readb(datseg, s_of+6);
-			signed char bon=real_readb(datseg, s_of+7);
+			unsigned int cnt = ds_readd(s_of);
+			unsigned short sp = ds_readw(s_of + 4);
+			unsigned char tar = ds_readb(s_of + 6);
+			signed char bon = ds_readb(s_of + 7);
 
 			i = 0xf8 + s_nr*8;
 			/* Zauber beendet */
@@ -718,7 +718,7 @@ void schick_status_init()
 	if (ver == 302 && !schick_is_en())
 	{
 		/*disable delay */
-		real_writew(datseg, 0x4b66, 0x0000);
+		ds_writew(0x4b66, 0x0000);
 		D1_INFO("Verzögerungsfaktor ausgeschalten\n");
 
 		/*set status manually */
@@ -753,7 +753,7 @@ void schick_status_init()
 	/* Disable delay and set status manually (english version) */
 	if (schick_is_en()) {
 		/*disable delay */
-		real_writew(datseg, 0x4c5a, 0x0000);
+		ds_writew(0x4c5a, 0x0000);
 		D1_INFO("Verzögerungsfaktor ausgeschalten\n");
 
 		/*set status manually */

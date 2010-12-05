@@ -69,7 +69,7 @@ static int seg002(unsigned short offs) {
 		unsigned short index = CPU_Pop16();
 		CPU_Push16(index);
 
-		RealPt fname = real_readd(datseg, 0x4c8c + index * 4);
+		RealPt fname = ds_readd(0x4c8c + index * 4);
 
 		D1_LOG("OpenAndSeekDatfile(0x%x) %s\n", index, getString(fname));
 		return 0;
@@ -333,7 +333,7 @@ static int seg002(unsigned short offs) {
 		reg_ax = get_random_hero();
 
 		D1_LOG("get_random_hero(); -> %s\n",
-			schick_getCharname(real_readd(datseg, 0xbd34) + reg_ax *0x6da));
+			schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
 		return 1;
 	}
 	case 0x51c2: {
@@ -2027,8 +2027,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	if (segm == 0x13b9)  {
 
 		if (offs == 0x20) {
-			unsigned char city=real_readb(datseg, 0x2d67);
-			unsigned char ww=real_readb(datseg, 0x7c9d+city);
+			unsigned char city = ds_readb(0x2d67);
+			unsigned char ww = ds_readb(0x7c9d + city);
 			D1_LOG("Merkwürdige Funktion\n");
 			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
 			return 0;
