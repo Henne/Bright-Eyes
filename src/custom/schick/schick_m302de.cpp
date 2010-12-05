@@ -33,11 +33,15 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	case 0x0045:	/* wird bei Musikmenu aufgerufen */
+	case 0x00e6:
+	case 0x01e0:
 	case 0x0209:
 		return 0;
 	case 0x06fe:
+	case 0x079f:
 	case 0x0832:	/* GUI Radio */
 	case 0x0856:	/* Betrunken */
+	case 0x0890:
 		return 0;
 	case 0x0c0e: {
 		short index = CPU_Pop16();
@@ -106,6 +110,7 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
+	case 0x165e:
 	case 0x16fd:
 	case 0x1802:
 		return 0;
