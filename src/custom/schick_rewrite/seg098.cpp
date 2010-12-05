@@ -11,17 +11,17 @@
 #include "seg007.h"
 
 short seg098_3e() {
-	Bit8u *ptr = MemBase + Real2Phys(real_readd(datseg, 0xe5bc));
+	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe5bc));
 	signed char tmp = host_readb(ptr + 0x86);
 
 	if (tmp < 10) {
-		RealPt hero = real_readd(datseg, 0xbd34);
+		RealPt hero = ds_readd(0xbd34);
 		Bit8u *hptr;
 		short ax, dx;
 
-		real_writew(datseg, 0xe5b4+2, RealSeg(hero));
-		real_writew(datseg, 0xe5b4, RealOff(hero) + (tmp - 1) * 0x6da);
-		hero = real_readd(datseg, 0xe5b4);
+		ds_writew(0xe5b4+2, RealSeg(hero));
+		ds_writew(0xe5b4, RealOff(hero) + (tmp - 1) * 0x6da);
+		hero = ds_readd(0xe5b4);
 		hptr = MemBase + Real2Phys(hero);
 
 		/* PA Wert ausrechnen */
@@ -34,8 +34,8 @@ short seg098_3e() {
 		ax -= dx;
 		return ax;
 	} else {
-		real_writew(datseg, 0xe5b4+2, datseg);
-		real_writew(datseg, 0xe5b4, tmp * 62 + 0xd0df);
+		ds_writew(0xe5b4+2, datseg);
+		ds_writew(0xe5b4, tmp * 62 + 0xd0df);
 		return (char)host_readb(ptr + 0x1d);
 	}
 }
@@ -47,7 +47,7 @@ short get_spell_cost(unsigned short spell, unsigned short half_cost) {
 
 	signed char ret;
 
-	ret = real_readb(datseg, spell * 10 + 0x9a1);
+	ret = ds_readb(spell * 10 + 0x9a1);
 
 	if (half_cost) {
 		if (ret == -1)
@@ -91,10 +91,10 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 		if ((char)host_readb(hero+0x86) >= 10) {
 
 			addr = (char)host_readb(hero+0x86) * 62 + 0xd0f8;
-			bonus += real_readb(datseg, addr);
+			bonus += ds_readb(addr);
 
 			addr = (char)host_readb(hero+0x86) * 62 + 0xd110;
-			if ((real_readb(datseg, addr) >> 6) & 1)
+			if ((ds_readb(addr) >> 6) & 1)
 				return 0;
 		} else {
 			addr = ((char)host_readb(hero+0x86) - 1) * 0x6da;
@@ -123,7 +123,7 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 */
 unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 
-	Bit8u *hero_i = MemBase + Real2Phys(real_readd(datseg, 0xbd34));
+	Bit8u *hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
 	short i;
 	short tmp;
 
@@ -135,7 +135,7 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check in group */
-		if (host_readb(hero_i + 0x87) != real_readb(datseg, 0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check if dead */
 		if (host_readb(hero_i + 0xaa) & 1)

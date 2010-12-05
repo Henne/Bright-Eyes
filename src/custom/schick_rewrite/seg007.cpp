@@ -29,22 +29,22 @@ unsigned short random_schick(short val) {
 	if (val == 0)
 		return 0;
 
-	ax = real_readw(datseg, 0x4ba0);	/* get rand_seed */
-	ax = ax ^ real_readw(datseg, 0xc3bf);	/* XOR with rand_seed2 */
-	ax = my_rol16(ax, 2);			/* ROL ax */
-	ax = ax + real_readw(datseg, 0xc3bf);	/* ADD rand_seed2 */
-	ax = ax ^ real_readw(datseg, 0x4ba0);	/* XOR with rand_seed */
+	ax = ds_readw(0x4ba0);		/* get rand_seed */
+	ax = ax ^ ds_readw(0xc3bf);	/* XOR with rand_seed2 */
+	ax = my_rol16(ax, 2);		/* ROL ax */
+	ax = ax + ds_readw(0xc3bf);	/* ADD rand_seed2 */
+	ax = ax ^ ds_readw(0x4ba0);	/* XOR with rand_seed */
 	ax = my_rol16(ax, 3);
 	bx = ax;
-	dx = (ax < 0) ? -1 : 0;			/* emulate CWD */
+	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
 	ax = (ax ^ dx) - dx + 1 ;
-	real_writew(datseg, 0x4ba0, ax);	/* update rand_seed */
+	ds_writew(0x4ba0, ax);		/* update rand_seed */
 	ax = bx;
-	dx = (ax < 0) ? -1 : 0;			/* emulate CWD */
+	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
 	ax = (ax ^ dx) - dx;
-	dx = (ax < 0) ? -1 : 0;			/* emulate CWD */
+	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
 
-	ax = ((dx << 16) | ax) % val;		/* emulate a dx_ax register */
+	ax = ((dx << 16) | ax) % val;	/* emulate a dx_ax register */
 
 	return ax + 1;
 };

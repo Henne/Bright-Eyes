@@ -405,11 +405,11 @@ unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p){
 	unsigned short i;
 
 	for (i = 0; i != 75*3; i += 3) {
-		if (c != real_readb(datseg, 0xaa51 + i))
+		if (c != ds_readb(0xaa51 + i))
 			continue;
 
-		host_writew((Bit8u*)p, real_readb(datseg, 0xaa51 + i + 2) & 0xff);
-		return real_readb(datseg, 0xaa51 + i + 1) & 0xff;
+		host_writew((Bit8u*)p, ds_readb(0xaa51 + i + 2) & 0xff);
+		return ds_readb(0xaa51 + i + 1) & 0xff;
 	}
 
 	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
@@ -476,14 +476,14 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
 }
 
 void GUI_set_smth(unsigned short col_text, unsigned short col_bg) {
-	real_writew(datseg, 0xd2c9, col_text);
-	real_writew(datseg, 0xd2c7, col_bg);
+	ds_writew(0xd2c9, col_text);
+	ds_writew(0xd2c7, col_bg);
 
 }
 
 void GUI_get_smth(short *p1, short *p2) {
-	host_writew((Bit8u*)p1, real_readw(datseg, 0xd2c9));
-	host_writew((Bit8u*)p2, real_readw(datseg, 0xd2c7));
+	host_writew((Bit8u*)p1, ds_readw(0xd2c9));
+	host_writew((Bit8u*)p2, ds_readw(0xd2c7));
 }
 
 unsigned short GUI_unused(Bit8u *str) {
