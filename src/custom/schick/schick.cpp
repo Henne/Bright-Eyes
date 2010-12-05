@@ -13,8 +13,6 @@ static int schick = 0;
 static int gen=0;
 //Has the game called gen?
 static int fromgame = 0;
-// Is file schick.dat ?
-static int dathandle = 0;
 // Segment relocation
 unsigned short relocation;
 // Segment relocation from game if gen is called
@@ -254,24 +252,19 @@ void schick_create(const char *name, unsigned char flags, unsigned int handle)
 	D1_ERR("Create File\tHandle %d\t%s\tFlags\n", handle, name, flags);
 }
 
-void schick_open(const char *name, unsigned char flags, unsigned int handle)
-{
+void schick_open(const char *name, unsigned char flags, unsigned int handle) {
 
-	if (!running || !schick) return;
+	if (!running || !schick || !(dbg_mode & 1))
+		return;
 
-	if (strstr(name, "SCHICK.DAT")) dathandle=handle;
-
-	if (!(dbg_mode & 1)) return;
 	D1_ERR("Open File\tHandle %d\t%s\tFlags\n", handle, name, flags);
 }
 
 void schick_close(unsigned handle)
 {
-	if (!running || !schick) return;
+	if (!running || !schick || !(dbg_mode & 1))
+		return;
 
-	if (handle == dathandle) dathandle=0;
-
-	if (!(dbg_mode & 1)) return;
 	D1_LOG("Close File\tHandle %d\n\n", handle);
 }
 
@@ -279,7 +272,7 @@ void schick_read(unsigned handle, unsigned char *data, unsigned short len)
 {
 	if (!running || !schick) return;
 
-	if ((len == 5744 || len == 5952) && dathandle == 0)
+	if (len == 5744 || len == 5952)
 			schick_status_update(data, len);
 
 	if (!(dbg_mode & 1)) return;
