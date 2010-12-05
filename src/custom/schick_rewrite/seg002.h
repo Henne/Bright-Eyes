@@ -10,6 +10,7 @@ void refresh_screen_size1();
 void timers_daily();
 //static
 void seg002_2177();
+void pal_fade(PhysPt dst, PhysPt p2);
 unsigned short get_current_season();
 void sub_ingame_timers(unsigned int);
 void sub_light_timers(unsigned short quarter, signed short v2);

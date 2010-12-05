@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 40/136
+	Functions rewritten: 41/136
 */
 #include <string.h>
 
@@ -293,6 +293,45 @@ void seg002_2177() {
 
 	for (i = 0; ds_readw(0x70a8 + i * 8) != 0xffff; i++)
 		ds_writew(0x70ae + i * 8, random_interval(ds_readw(0x70a8 + i * 8), 20));
+}
+
+void pal_fade(PhysPt dst, PhysPt p2) {
+	unsigned short i;
+
+	for (i = 0; i < 32; i++) {
+		signed char v1;
+		signed char v2;
+
+		v1 = mem_readb(dst + i * 3);
+		v2 = mem_readb(p2 + i * 3);
+
+		if (v2 < v1 && v1 > 0)
+			mem_writeb(dst + i * 3, v1 - 1);
+		else {
+			if (v2 > v1 && v1 < 0x3f)
+				mem_writeb(dst + i * 3, v1 + 1);
+		};
+
+		v1 = mem_readb(dst + i * 3 + 1);
+		v2 = mem_readb(p2 + i * 3 + 1);
+
+		if (v2 < v1 && v1 > 0)
+			mem_writeb(dst + i * 3 + 1, v1 - 1);
+		else {
+			if (v2 > v1 && v1 < 0x3f)
+				mem_writeb(dst + i * 3 + 1, v1 + 1);
+		};
+
+		v1 = mem_readb(dst + i * 3 + 2);
+		v2 = mem_readb(p2 + i * 3 + 2);
+
+		if (v2 < v1 && v1 > 0)
+			mem_writeb(dst + i * 3 + 2, v1 - 1);
+		else {
+			if (v2 > v1 && v1 < 0x3f)
+				mem_writeb(dst + i * 3 + 2, v1 + 1);
+		};
+	}
 }
 
 unsigned short get_current_season() {

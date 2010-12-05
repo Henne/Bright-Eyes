@@ -134,7 +134,17 @@ static int seg002(unsigned short offs) {
 	case 0x1cf2:	/* Shop: Item zurücklegen */
 	case 0x1d67:
 	case 0x1ecc:
-	case 0x21ab:
+		return 0;
+	case 0x21ab: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		D1_LOG("pal_fade(%x,%x);\n", p1, p2);
+		pal_fade(Real2Phys(p1), Real2Phys(p2));
+		return 1;
+	}
 	case 0x232a:
 			 return 0;
 	case 0x25ce: {
@@ -2566,6 +2576,18 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Pop32();
 		seg002_2177();
 		D1_LOG("seg002_2177();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	if (offs == 0x21ab) {
+		CPU_Pop32();
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		D1_INFO("pal_fade(%x,%x);\n", p1, p2);
+		pal_fade(Real2Phys(p1), Real2Phys(p2));
 		return 1;
 	}
 	/* Callers: 4 */
