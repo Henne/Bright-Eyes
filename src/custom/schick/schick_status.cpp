@@ -661,7 +661,48 @@ void schick_status_update(unsigned char *data, unsigned short len)
 	}
 }
 
-/* Enable the timer for checking game_state changes */
+/**
+ *	schick_status_enable -  enable status timer
+ *
+ * Enable the timer for checking changes in the game state
+ */
+void schick_status_enable()
+{
+	if (cmp_status_timer) {
+		D1_ERR("Tried to enable an already enabled timer\n");
+		return;
+	}
+
+	cmp_status_timer = SDL_AddTimer(1000, schick_cmp_status, NULL);
+
+	if (cmp_status_timer == NULL) {
+		D1_ERR("Konnte den Status Timer nicht initialisieren\n");
+		return;
+	}
+
+	D1_INFO("Statusvergleich aktiviert\n");
+}
+
+/**
+ *	schick_status_disable -  disable status timer
+ *
+ * Disable the timer for checking changes in the game state
+ */
+void schick_status_disable()
+{
+	if (cmp_status_timer == NULL) {
+		D1_ERR("Tried to disable a already disabled timer\n");
+		return;
+	}
+
+	SDL_RemoveTimer(cmp_status_timer);
+	cmp_status_timer = NULL;
+
+	D1_INFO("Statusvergleich deaktiviert\n");
+}
+
+
+/* Initialize a timer for checking game_state changes */
 void schick_status_init()
 {
 	int ver;

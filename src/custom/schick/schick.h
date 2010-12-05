@@ -96,4 +96,6 @@ int schick_gen_is_en();
 
 void schick_status_init();
 void schick_status_exit();
+void schick_status_enable();
+void schick_status_disable();
 void schick_status_update(unsigned char*, unsigned short);
