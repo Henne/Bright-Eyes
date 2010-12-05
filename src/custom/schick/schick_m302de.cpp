@@ -2591,6 +2591,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
+	/* Callers: 1 */
 	if (offs == 0x3b63) {
 
 		RealPt pIP = CPU_Pop32();
@@ -2619,6 +2620,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		return 0;
 	} /* segm == 0x51e */
 
+	/* Callers: 1 */
 	if ((segm == 0xe41) && (offs == 0x5a)) {
 		RealPt pIP = CPU_Pop32();
 
@@ -2630,6 +2632,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
 		return 1;
 	}
+	/* Callers: 2 */
 	if (is_ovrseg(0x147b) && (offs == 0x040F)) {
 		// Talentprobe
 		RealPt pIP = CPU_Pop32();
@@ -2647,6 +2650,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
+	/* Callers: 1 */
 	if (is_ovrseg(0x1449) && (offs == 0x0e1f)) {
 		// Zauberprobe
 		RealPt pIP = CPU_Pop32();
