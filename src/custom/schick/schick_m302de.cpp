@@ -2586,7 +2586,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 
-		D1_INFO("pal_fade(%x,%x);\n", p1, p2);
+		D1_LOG("pal_fade(%x,%x);\n", p1, p2);
 		pal_fade(Real2Phys(p1), Real2Phys(p2));
 		return 1;
 	}
