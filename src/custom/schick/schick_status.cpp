@@ -616,7 +616,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 
 		if (i >= 0x1670)
-			D1_INFO("Extendet-");
+			D1_LOG("Extendet-");
 
 		D1_LOG("Status[0x%lx] von %x -> %x\n",
 				i, status_copy[i], status_ingame[i]);
