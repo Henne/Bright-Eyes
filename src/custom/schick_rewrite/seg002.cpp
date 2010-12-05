@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 39/136
+	Functions rewritten: 40/136
 */
 #include <string.h>
 
@@ -239,6 +239,55 @@ void refresh_screen_size1() {
 	ds_writew(0x2998, 0);
 }
 
+//static
+void timers_daily() {
+	unsigned short i = 0;
+	PhysPt hero_i;
+
+	/* Smith / items to repair */
+	for (i = 0; i < 50; i++) {
+		if (ds_readw(0x31e2 + i * 6)) {
+			/* set state to zero */
+			ds_writew(0x31e4 + i * 6, 0);
+			/* set time to 6:00 am */
+			ds_writew(0x31e4 + i * 4, 32400);
+		}
+	}
+
+	/* reset insulted merchants */
+	for (i = 0; i < 94; i++)
+		ds_writeb(0x3592 + i, 0);
+
+	hero_i = Real2Phys(ds_readd(0xbd34));
+	for (i = 0; i <=6; i++, hero_i += 0x6da) {
+		if (mem_readb(hero_i + 0x21) == 0)
+			continue;
+		if ((signed char)mem_readb(hero_i + 0x94) <= 0)
+			continue;
+
+		mem_writeb(hero_i + 0x94, mem_readb(hero_i + 0x94) - 1);
+	}
+
+	ds_writew(0x26b9, 1);
+
+	/* Decrase monthly credit cens timer (bank) */
+	if ((signed short)ds_readw(0x335e) > 0) {
+		ds_writew(0x335e, ds_readw(0x335e) - 1);
+		D1_INFO("%d %d\n", ds_readw(0x335e), ds_readw(0x3350));
+		if (ds_readw(0x335e) == 0)
+			ds_writew(0x3350, 0);
+	}
+
+	/* Something with the bank and merchant*/
+	if ((signed short)ds_readw(0x3360) > 0) {
+		ds_writew(0x3360, ds_readw(0x3360) - 1);
+
+		if (ds_readw(0x3360) == 0)
+			ds_writew(0x3360, -1);
+	}
+}
+
+//static
 void seg002_2177() {
 	unsigned short i;
 

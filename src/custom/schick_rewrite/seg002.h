@@ -7,6 +7,8 @@ void refresh_screen_size();
 void update_mouse_cursor1();
 void refresh_screen_size1();
 //static
+void timers_daily();
+//static
 void seg002_2177();
 unsigned short get_current_season();
 void sub_ingame_timers(unsigned int);

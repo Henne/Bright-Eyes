@@ -2554,6 +2554,14 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
+	/* Callers: 1 */
+	if (offs == 0x20bd) {
+		CPU_Pop32();
+		timers_daily();
+		D1_LOG("timers_daily();\n");
+		return 1;
+	}
+	/* Callers: 1 */
 	if (offs == 0x2177) {
 		CPU_Pop32();
 		seg002_2177();
