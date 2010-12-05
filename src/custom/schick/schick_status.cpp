@@ -773,20 +773,15 @@ void schick_status_init()
 
 	memcpy(status_copy, status_ingame, status_len);
 	D1_TRAC("Status manuell gesetzt DS:0x%04x\n", status_offset);
-	cmp_status_timer=SDL_AddTimer(1000, schick_cmp_status, NULL);
-	if (cmp_status_timer == NULL)
-		D1_ERR("Konnte den Status Timer nicht initialisieren\n");
 
-	D1_INFO("Statusvergleich aktiviert\n");
+	schick_status_enable();
 }
 
-/* Disable the timer for checking game_state changes */
+
+/* Exit the timer for checking game_state changes */
 void schick_status_exit()
 {
-	if (cmp_status_timer) {
-		SDL_RemoveTimer(cmp_status_timer);
-		cmp_status_timer = NULL;
-	}
+	schick_status_disable();
 
 	status_ingame = NULL;
 	status_len = 0;
