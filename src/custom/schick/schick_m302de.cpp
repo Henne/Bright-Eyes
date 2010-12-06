@@ -145,8 +145,22 @@ static int seg002(unsigned short offs) {
 		pal_fade(Real2Phys(p1), Real2Phys(p2));
 		return 1;
 	}
-	case 0x232a:
-			 return 0;
+	case 0x232a: {
+		RealPt dst = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		unsigned short v3 = CPU_Pop16();
+		unsigned short colors = CPU_Pop16();
+		CPU_Push16(colors);
+		CPU_Push16(v3);
+		CPU_Push32(p2);
+		CPU_Push32(dst);
+
+		D1_LOG("pal_fade_in(%x,%x,%x,%x);\n", dst, p2, v3, colors);
+
+		pal_fade_in(Real2Phys(dst), Real2Phys(p2), v3, colors);
+
+		return 1;
+	}
 	case 0x25ce: {
 		reg_ax = get_current_season();
 		return 1;

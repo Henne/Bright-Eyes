@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 41/136
+	Functions rewritten: 42/136
 */
 #include <string.h>
 
@@ -331,6 +331,35 @@ void pal_fade(PhysPt dst, PhysPt p2) {
 			if (v2 > v1 && v1 < 0x3f)
 				mem_writeb(dst + i * 3 + 2, v1 + 1);
 		};
+	}
+}
+
+void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors) {
+	unsigned short i, si;
+
+	signed char c1, c2;
+
+	si = 0x40 - v3;
+
+	for (i = 0; i < colors; i++) {
+
+		c1 = mem_readb(dst + i * 3);
+		c2 = mem_readb(p2 + i * 3);
+
+		if ((c2 >= si) && (c2 > c1))
+			mem_writeb(dst + i * 3, c1 + 1);
+
+		c1 = mem_readb(dst + i * 3 + 1);
+		c2 = mem_readb(p2 + i * 3 + 1);
+
+		if ((c2 >= si) && (c2 > c1))
+			mem_writeb(dst + i * 3 + 1, c1 + 1);
+
+		c1 = mem_readb(dst + i * 3 + 2);
+		c2 = mem_readb(p2 + i * 3 + 2);
+
+		if ((c2 >= si) && (c2 > c1))
+			mem_writeb(dst + i * 3 + 2, c1 + 1);
 	}
 }
 
