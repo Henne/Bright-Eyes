@@ -723,9 +723,6 @@ unsigned short div16(unsigned char val) {
 void seg002_45ea(PhysPt p1, PhysPt p2) {
 	unsigned short i;
 
-	D1_INFO("ds:0xc3c7 == %x\n", ds_readw(0xc3c7));
-
-
 	/* something mouse related */
 	if (ds_readw(0xc3c7) != 2)
 		return;
