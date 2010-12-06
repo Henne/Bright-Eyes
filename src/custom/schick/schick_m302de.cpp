@@ -2640,6 +2640,19 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("seg002_3b63();\n");
 		return 1;
 	}
+	/* Callers: 1 */
+	if (offs == 0x3c63) {
+
+		RealPt pIP = CPU_Pop32();
+
+		D1_LOG("caller 0x%04x:0x%04x\n",
+			RealSeg(pIP) - relocation , RealOff(pIP));
+
+		seg002_3c63();
+
+		D1_INFO("seg002_3c63();\n");
+		return 1;
+	}
 	/* Callers: 2 */
 	if (offs == 0x3f3e) {
 		CPU_Pop32();

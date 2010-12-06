@@ -528,8 +528,27 @@ void seg002_3b63() {
 
 	}
 
+	/* If a passage is hired decrement Passage timer */
 	if (ds_readb(0x42ae) == 0xaa)
 		ds_writeb(0x42af, ds_readb(0x42af) - 1);
+}
+
+void seg002_3c63() {
+	PhysPt p;
+	unsigned short i;
+
+	p = PhysMake(datseg, 0x6f00);
+
+	/* Orig-BUG: the loop operates only on the first element
+		sizeof(element) == 8 */
+
+	for (i = 0; i < 45; i++)
+		if (mem_readb(p + 4) == 0)
+			mem_writeb(p + 4, -1);
+
+	/* If a passage is hired and the timer is zero, reset the passage */
+	if ((ds_readb(0x42ae) == 170) && (ds_readb(0x42af) == 0))
+		ds_writeb(0x42ae, 0);
 }
 
 /**

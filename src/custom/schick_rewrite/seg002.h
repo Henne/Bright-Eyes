@@ -18,6 +18,8 @@ void sub_light_timers(unsigned short quarter, signed short v2);
 void set_and_spin_lock();
 //static
 void seg002_3b63();
+//static
+void seg002_3c63();
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);
