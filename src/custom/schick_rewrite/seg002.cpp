@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 42/136
+	Functions rewritten: 44/136
 */
 #include <string.h>
 
@@ -717,6 +717,34 @@ short can_merge_group() {
 
 unsigned short div16(unsigned char val) {
 	return val >> 4;
+}
+
+/* This function is called in shops at sell/buy screens */
+void seg002_45ea(PhysPt p1, PhysPt p2) {
+	unsigned short i;
+
+	D1_INFO("ds:0xc3c7 == %x\n", ds_readw(0xc3c7));
+
+
+	/* something mouse related */
+	if (ds_readw(0xc3c7) != 2)
+		return;
+
+	for (i = 0; i < 15; i++) {
+		if (ds_readw(0x46a3 + i * 2) > ds_readw(0x299c))
+			continue;
+		if (ds_readw(0x46a3 + i * 2) + 50 < ds_readw(0x299c))
+			continue;
+		if (ds_readw(0x46c1 + i * 2) > ds_readw(0x299e))
+			continue;
+		if (ds_readw(0x46c1 + i * 2) + 17 < ds_readw(0x299e))
+			continue;
+		if (mem_readw(p2 + i * 7) == 0)
+			continue;
+
+		mem_writew(p1, i);
+		return;
+	}
 }
 
 /**

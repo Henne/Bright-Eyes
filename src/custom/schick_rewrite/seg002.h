@@ -29,6 +29,7 @@ unsigned short mod_timer(short val);
 void draw_compass();
 short can_merge_group();
 unsigned short div16(unsigned char val);
+void seg002_45ea(PhysPt p1, PhysPt p2);
 void set_automap_tile(unsigned short x, unsigned short y);
 void set_automap_tiles(unsigned short x, unsigned short y);
 unsigned short check_hero(Bit8u* hero);
