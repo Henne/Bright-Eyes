@@ -33,6 +33,7 @@ void seg002_45ea(PhysPt p1, PhysPt p2);
 void set_automap_tile(unsigned short x, unsigned short y);
 void set_automap_tiles(unsigned short x, unsigned short y);
 unsigned short check_hero(Bit8u* hero);
+unsigned short is_hero_available_in_group(Bit8u* hero);
 void add_hero_ae(Bit8u* hero, short ae);
 short test_attrib(Bit8u* hero, unsigned short attrib, short bonus);
 short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, signed char bonus);

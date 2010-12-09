@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 46/136
+	Functions rewritten: 47/136
 */
 #include <string.h>
 
@@ -872,6 +872,18 @@ unsigned short check_hero_no3(Bit8u *hero) {
 
 	return 1;
 }
+
+unsigned short is_hero_available_in_group(Bit8u *hero) {
+
+	if (check_hero(hero) == 0)
+		return 0;
+	/* Check if in group */
+	if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+		return 0;
+
+	return 1;
+}
+
 
 /**
 	add_hero_ae - add AE points to heros current AE

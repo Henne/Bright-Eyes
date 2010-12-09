@@ -306,12 +306,14 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x49d8: {
-		RealPt  ptr = CPU_Pop32();
-		CPU_Push32(ptr);
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
 
-		D1_LOG("istHeldBeiSinnenUndGruppe(%s)\n",
-			schick_getCharname(ptr));
-		return 0;
+		reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
+		D1_INFO("is_hero_available_in_group(%s) = %d\n",
+			schick_getCharname(hero), reg_ax);
+
+		return 1;
 	}
 	case 0x4a05:
 		return 0;
@@ -2689,7 +2691,18 @@ int schick_nearcall_v302de(unsigned offs) {
 		draw_splash(index, type);
 		return 1;
 	}
+	/* Callers: 2 */
+	if (offs == 0x49d8) {
+		CPU_Pop32();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
 
+		reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
+		D1_INFO("is_hero_available_in_group(%s) = %d\n",
+			schick_getCharname(hero), reg_ax);
+
+		return 1;
+	}
 	/* Callers: 2 */
 	if (offs == 0x573e) {
 		RealPt pIP = CPU_Pop32();
