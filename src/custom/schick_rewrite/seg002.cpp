@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 45/136
+	Functions rewritten: 46/136
 */
 #include <string.h>
 
@@ -1148,6 +1148,33 @@ short get_first_hero_with_item(unsigned short item) {
 
 	return -1;
 };
+
+RealPt get_second_hero_available_in_group() {
+	RealPt hero_i;
+	unsigned short i, tmp;
+
+	hero_i = ds_readd(0xbd34);
+	tmp = 0;
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class */
+		if (mem_readb(Real2Phys(hero_i) + 0x21) == 0)
+			continue;
+		/* Check group */
+		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(0x2d35))
+			continue;
+		/* Check if hero is available */
+		if (check_hero(MemBase + Real2Phys(hero_i)) == 0)
+			continue;
+
+		if (tmp)
+			return hero_i;
+
+		tmp++;
+	}
+
+	return 0;
+}
 
 unsigned short count_heros_available() {
 	Bit8u *hero_i;
