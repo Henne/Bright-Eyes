@@ -484,9 +484,11 @@ void seg002_3b63() {
 
 	switch (get_current_season()) {
 		case 2:
+			/* summer */
 			locvar = 2;
 			break;
 		case 0:
+			/* winter */
 			locvar = 4;
 			break;
 		default:
