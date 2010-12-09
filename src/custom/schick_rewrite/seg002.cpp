@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 47/136
+	Functions rewritten: 48/136
 */
 #include <string.h>
 
@@ -884,6 +884,38 @@ unsigned short is_hero_available_in_group(Bit8u *hero) {
 	return 1;
 }
 
+/*
+ *	sub_ae_splash -	subtract current ae with a splash
+ *	@hero:	the magicuser
+ *	@ae:	astralenergy to subtract
+ */
+void sub_ae_splash(Bit8u *hero, signed short ae) {
+
+	unsigned short tmp;
+
+	if (host_readb(hero + 0xaa) & 1 || ae <= 0)
+		return;
+
+	tmp = ds_readw(0xc3cb);
+	ds_writew(0xc3cb, 0);
+
+	/* If Mage has 4th Staffspell */
+	if (host_readb(hero + 0x21) == 9 && host_readb(hero + 0x195) >= 4) {
+		ae -= 2;
+		if (ae < 0)
+			ae = 0;
+	}
+
+	/* Calc new AE */
+	host_writew(hero + 0x64, (signed short)(host_readw(hero + 0x64) - ae));
+	/* Draw the splash */
+	draw_splash(get_hero_index(hero), 1);
+	/* set AE to 0 if they have gotten lower than 0 */
+	if ((signed short)host_readw(hero + 0x64) < 0)
+		host_writew(hero + 0x64, 0);
+
+	ds_writew(0xc3cb, tmp);
+}
 
 /**
 	add_hero_ae - add AE points to heros current AE

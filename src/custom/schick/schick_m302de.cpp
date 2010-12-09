@@ -315,8 +315,19 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x4a05:
-		return 0;
+	case 0x4a05: {
+		RealPt hero = CPU_Pop32();
+		signed short type = CPU_Pop16();
+		CPU_Push16(type);
+		CPU_Push32(hero);
+
+		D1_INFO("sub_ae_splash(%s, %d);\n",
+			schick_getCharname(hero), type);
+
+		sub_ae_splash(MemBase + Real2Phys(hero), type);
+
+		return 1;
+	}
 	case 0x4a87: {
 		RealPt hero = CPU_Pop32();
 		short val = CPU_Pop16();
