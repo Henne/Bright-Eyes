@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 44/136
+	Functions rewritten: 45/136
 */
 #include <string.h>
 
@@ -543,8 +543,9 @@ void seg002_3c63() {
 
 	/* Orig-BUG: the loop operates only on the first element
 		sizeof(element) == 8 */
+	/* for (i = 0; i < 45; i++) */
 
-	for (i = 0; i < 45; i++)
+	for (i = 0; i < 45; p += 8, i++)
 		if (mem_readb(p + 4) == 0)
 			mem_writeb(p + 4, -1);
 
@@ -1148,6 +1149,27 @@ short get_first_hero_with_item(unsigned short item) {
 	return -1;
 };
 
+unsigned short count_heros_available() {
+	Bit8u *hero_i;
+	unsigned short retval;
+	unsigned short i;
+
+	retval = 0;
+	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class */
+		if (host_readb(hero_i+0x21) == 0)
+			continue;
+		/* Check if hero is available */
+		if (!check_hero(hero_i)|| !check_hero_no2(hero_i))
+			continue;
+
+		retval++;
+	}
+
+	return retval;
+}
 
 /**
 	count_heroes_available_in_group

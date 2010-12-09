@@ -477,12 +477,15 @@ static int seg002(unsigned short offs) {
 	case 0x5615:	/* Krakenangriff */
 	case 0x5667:
 	case 0x56d6:	/* Tür einschlagen */
-	case 0x573e:	/* Alle Tot */
 			return 0;
+	case 0x573e: {
+		reg_ax = count_heros_available();
+		D1_LOG("count_heros_available() = %d\n", reg_ax);
+		return 1;
+	}
 	case 0x5799: {
 		reg_ax = count_heroes_available_in_group();
-		D1_LOG("count_heroes_available_in_group() = %d\n",
-			reg_ax);
+		D1_LOG("count_heroes_available_in_group() = %d\n", reg_ax);
 		return 1;
 	}
 	case 0x5816: {
@@ -2674,6 +2677,16 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		D1_LOG("draw_splash(%d, %d);\n", index, type);
 		draw_splash(index, type);
+		return 1;
+	}
+
+	/* Callers: 2 */
+	if (offs == 0x573e) {
+		RealPt pIP = CPU_Pop32();
+
+		reg_ax = count_heros_available();
+
+		D1_LOG("count_heros_available() = %d;\n", reg_ax);
 		return 1;
 	}
 
