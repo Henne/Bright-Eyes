@@ -1185,7 +1185,7 @@ short get_first_hero_with_item(unsigned short item) {
 		if (host_readb(hero_i+0x87) != ds_readb(0x2d35))
 			continue;
 		/* Search inventar */
-		for (j = 0; j < 17; j++)
+		for (j = 0; j < 23; j++)
 			if (host_readw(hero_i + j * 14 + 0x196) == item)
 				return i;
 	}
