@@ -486,7 +486,6 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x55b1:	/* Leaf Function - near only */
 	case 0x5615:	/* Krakenangriff */
 			return 0;
 	case 0x5667: {
@@ -2721,6 +2720,22 @@ int schick_nearcall_v302de(unsigned offs) {
 		reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
 		D1_INFO("is_hero_available_in_group(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	if (offs == 0x55b1) {
+		RealPt pIP = CPU_Pop32();
+
+		unsigned short item = CPU_Pop16();
+		unsigned short group = CPU_Pop16() & 0xff;
+		CPU_Push16(group);
+		CPU_Push16(item);
+
+		reg_ax = get_first_hero_with_item_in_group(item, group);
+
+		D1_LOG("get_first_hero_with_item_in_group(%s, %d) = %d\n",
+			item, group, (short)reg_ax);
 
 		return 1;
 	}

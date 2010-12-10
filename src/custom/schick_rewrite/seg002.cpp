@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 49/136
+	Functions rewritten: 50/136
 */
 #include <string.h>
 
@@ -1191,7 +1191,27 @@ short get_first_hero_with_item(unsigned short item) {
 	}
 
 	return -1;
-};
+}
+
+signed short get_first_hero_with_item_in_group(unsigned short item, signed char group) {
+	Bit8u *hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	int i,j;
+
+	for (i = 0; i <= 6; i++ , hero_i += 0x6da) {
+		/* Check class */
+		if (host_readb(hero_i+0x21) == 0)
+			continue;
+		/* Check if in that group */
+		if (host_readb(hero_i+0x87) != group)
+			continue;
+		/* Search inventar */
+		for (j = 0; j < 23; j++)
+			if (host_readw(hero_i + j * 14 + 0x196) == item)
+				return i;
+	}
+
+	return -1;
+}
 
 /**
  * get_first_hero_available_in_group - return a pointer to the first available hero
