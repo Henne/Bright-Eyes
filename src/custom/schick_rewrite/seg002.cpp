@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 48/136
+	Functions rewritten: 49/136
 */
 #include <string.h>
 
@@ -1192,6 +1192,38 @@ short get_first_hero_with_item(unsigned short item) {
 
 	return -1;
 };
+
+/**
+ * get_first_hero_available_in_group - return a pointer to the first available hero
+ *
+ * Returns a pointer to the first available hero in the current group.
+ * If none in available it returns a pointer to the first hero
+ */
+RealPt get_first_hero_available_in_group() {
+	RealPt hero_i;
+	unsigned short i;
+
+	hero_i = ds_readd(0xbd34);
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class */
+		if (mem_readb(Real2Phys(hero_i) + 0x21) == 0)
+			continue;
+		/* Check group */
+		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(0x2d35))
+			continue;
+		/* Check dead BOGUS */
+		if (mem_readb(Real2Phys(hero_i) + 0xaa) & 1)
+			continue;
+		/* Check if hero is available */
+		if (check_hero(MemBase + Real2Phys(hero_i)) == 0)
+			continue;
+
+		return hero_i;
+	}
+
+	return ds_readd(0xbd34);
+}
 
 RealPt get_second_hero_available_in_group() {
 	RealPt hero_i;

@@ -488,8 +488,18 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x55b1:	/* Leaf Function - near only */
 	case 0x5615:	/* Krakenangriff */
-	case 0x5667:
 			return 0;
+	case 0x5667: {
+		RealPt retval = get_first_hero_available_in_group();
+
+		D1_LOG("get_first_hero_available_in_group() = %s\n",
+			schick_getCharname(retval));
+
+		reg_ax = RealSeg(retval);
+		reg_dx = RealOff(retval);
+
+		return 1;
+	}
 	case 0x56d6: {
 		RealPt retval = get_second_hero_available_in_group();
 
