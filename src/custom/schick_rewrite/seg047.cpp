@@ -120,6 +120,23 @@ void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 }
 
 /**
+ * hero_gets_diseased - diseases a hero
+ * @hero:	the hero which gets diseased
+ * @disease:	the kind of disease
+ */
+void hero_gets_diseased(Bit8u *hero, unsigned short disease) {
+
+	if (*(hero + 0xaa) & 1)
+		return;
+
+	host_writeb(hero + disease * 5 + 0xae, 0xff);
+	host_writeb(hero + disease * 5 + 0xaf, 0x00);
+	host_writeb(hero + disease * 5 + 0xb0, 0x00);
+	host_writeb(hero + disease * 5 + 0xb1, 0x00);
+	host_writeb(hero + disease * 5 + 0xb2, 0x00);
+}
+
+/**
  * count_heroes_in_group - counts the heroes in the current group
  */
 unsigned short count_heroes_in_group() {
