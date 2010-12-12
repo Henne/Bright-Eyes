@@ -1446,7 +1446,9 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x5c: {
-		return 0;
+		reg_ax = get_hero_CH_best();
+		D1_LOG("get_hero_CH_best() = %d\n", reg_ax);
+		return 1;
 	}
 	case 0x61: {
 		return 0;
