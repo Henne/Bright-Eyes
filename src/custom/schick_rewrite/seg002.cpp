@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 50/136
+	Functions rewritten: 51/136
 */
 #include <string.h>
 
@@ -1079,6 +1079,37 @@ unsigned int get_party_money() {
 */
 void add_hero_ap(Bit8u *hero, int ap) {
 	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
+}
+
+/**
+ *	add_group_ap - divides AP to the current group
+ *	@ap:	AP to divide
+ */
+void add_group_ap(signed int ap) {
+
+	PhysPt hero_i;
+	unsigned short i;
+
+	if (ap < 0)
+		return;
+
+	ap = ap / count_heroes_in_group();
+
+	hero_i = Real2Phys(ds_readd(0xbd34));
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class */
+		if (mem_readb(hero_i + 0x21) == 0)
+			continue;
+		/* Check if in current group */
+		if (mem_readb(hero_i + 0x87) != ds_readb(0x2d35))
+			continue;
+		/* Check if hero is dead */
+		if (mem_readb(hero_i + 0xaa) & 1)
+			continue;
+
+		add_hero_ap(MemBase + hero_i, ap);
+	}
 }
 
 /**
