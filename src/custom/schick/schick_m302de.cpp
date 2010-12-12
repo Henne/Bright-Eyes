@@ -495,8 +495,8 @@ static int seg002(unsigned short offs) {
 		D1_LOG("get_first_hero_available_in_group() = %s\n",
 			schick_getCharname(retval));
 
-		reg_ax = RealSeg(retval);
-		reg_dx = RealOff(retval);
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
 
 		return 1;
 	}
@@ -506,8 +506,8 @@ static int seg002(unsigned short offs) {
 		D1_LOG("get_second_hero_available_in_group() = %s\n",
 			schick_getCharname(retval));
 
-		reg_ax = RealSeg(retval);
-		reg_dx = RealOff(retval);
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
 
 		return 1;
 	}
