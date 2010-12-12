@@ -1432,7 +1432,13 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x3e: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = hero_is_poisoned(MemBase + Real2Phys(hero));
+		D1_LOG("hero_is_poisoned(%s) = %d\n",
+			schick_getCharname(hero), reg_ax);
+		return 1;
 	}
 	case 0x43: {
 		return 0;

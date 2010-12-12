@@ -1,5 +1,7 @@
 /* 39 */
 unsigned short hero_is_diseased(Bit8u *hero);
+/* 3e */
+unsigned short hero_is_poisoned(Bit8u *hero);
 /* 57 */
 unsigned short count_heroes_in_group();
 /* 5c */

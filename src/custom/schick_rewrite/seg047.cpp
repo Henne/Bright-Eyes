@@ -87,6 +87,22 @@ unsigned short hero_is_diseased(Bit8u *hero) {
 }
 
 /**
+ * hero_is_poisoned - returns the poison number the hero has
+ * @hero:	the hero which should be checked
+ *
+ * Only the first poison is returned here.
+ */
+unsigned short hero_is_poisoned(Bit8u *hero) {
+	unsigned short i;
+
+	for (i = 0; i <= 9; i++)
+		if (*(hero + 0xd6 + i * 5) == 0xff)
+			return i;
+
+	return 0;
+}
+
+/**
  * count_heroes_in_group - counts the heroes in the current group
  */
 unsigned short count_heroes_in_group() {
