@@ -1451,7 +1451,9 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x61: {
-		return 0;
+		reg_ax = get_hero_KK_best();
+		D1_LOG("get_hero_KK_best() = %d\n", reg_ax);
+		return 1;
 	}
 	case 0x66: {
 		return 0;
