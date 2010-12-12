@@ -1401,6 +1401,69 @@ static int seg041(unsigned short offs) {
 		exit(1);
 	}
 }
+static int seg047(unsigned short offs) {
+	switch(offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+/*	not called
+	case 0x2f: {
+		return 0;
+	}
+*/
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	case 0x66: {
+		return 0;
+	}
+	case 0x6b: {
+		return 0;
+	}
+	case 0x70: {
+		return 0;
+	}
+	case 0x75: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
 
 static int seg096(unsigned short offs) {
 	/*
@@ -2045,8 +2108,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	if (segm == 0x133f) return 0;
 	/* Zustand */
 	if (segm == 0x1344) return 0;
-	/* Wächter aussuchen */
-	if (segm == 0x1348) return 0;
+	if (segm == 0x1348)
+		return seg047(offs);
 	if (segm == 0x1350) return 0;
 	if (segm == 0x1353) return 0;
 	/* Steigern */
