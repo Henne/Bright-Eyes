@@ -71,6 +71,22 @@ unsigned short get_hero_KK_best() {
 }
 
 /**
+ * hero_is_diseased - returns the disease number the hero has
+ * @hero:	the hero which should be checked
+ *
+ * Only the first disease is returned here.
+ */
+unsigned short hero_is_diseased(Bit8u *hero) {
+	unsigned short i;
+
+	for (i = 0; i <= 7; i++)
+		if (*(hero + 0xae + i * 5) == 0xff)
+			return i;
+
+	return 0;
+}
+
+/**
  * count_heroes_in_group - counts the heroes in the current group
  */
 unsigned short count_heroes_in_group() {

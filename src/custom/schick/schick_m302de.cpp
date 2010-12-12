@@ -1423,7 +1423,13 @@ static int seg047(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = hero_is_diseased(MemBase + Real2Phys(hero));
+		D1_LOG("hero_is_diseased(%s) = %d\n",
+			schick_getCharname(hero), reg_ax);
+		return 1;
 	}
 	case 0x3e: {
 		return 0;
