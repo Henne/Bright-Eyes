@@ -8,3 +8,5 @@ unsigned short count_heroes_in_group();
 unsigned short get_hero_CH_best();
 /* 61 */
 unsigned short get_hero_KK_best();
+/* 66 */
+void hero_gets_poisoned(Bit8u *hero, unsigned short poison);

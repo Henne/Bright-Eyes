@@ -1468,7 +1468,15 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x66: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		unsigned short poison = CPU_Pop16();
+		CPU_Push16(poison);
+		CPU_Push32(hero);
+
+		hero_gets_poisoned(MemBase + Real2Phys(hero), poison);
+		D1_INFO("%s wurde vergiftet %d\n",
+			schick_getCharname(hero), poison);
+		return 1;
 	}
 	case 0x6b: {
 		return 0;

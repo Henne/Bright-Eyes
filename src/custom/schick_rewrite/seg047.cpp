@@ -103,6 +103,23 @@ unsigned short hero_is_poisoned(Bit8u *hero) {
 }
 
 /**
+ * hero_gets_poisoned - poison a hero
+ * @hero:	the hero which gets poisoned
+ * @poison:	the kind of poison
+ */
+void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
+
+	if (*(hero + 0xaa) & 1)
+		return;
+
+	host_writeb(hero + poison * 5 + 0xd6, 0xff);
+	host_writeb(hero + poison * 5 + 0xd7, 0x00);
+	host_writeb(hero + poison * 5 + 0xd8, 0x00);
+	host_writeb(hero + poison * 5 + 0xd9, 0x00);
+	host_writeb(hero + poison * 5 + 0xda, 0x00);
+}
+
+/**
  * count_heroes_in_group - counts the heroes in the current group
  */
 unsigned short count_heroes_in_group() {
