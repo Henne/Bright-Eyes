@@ -14,6 +14,7 @@
 #include "seg009.h"
 #include "seg029.h"
 #include "seg041.h"
+#include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
@@ -1439,7 +1440,9 @@ static int seg047(unsigned short offs) {
 		return 0;
 	}
 	case 0x57: {
-		return 0;
+		reg_ax = count_heroes_in_group();
+		D1_LOG("count_heroes_in_group() = %d\n", reg_ax);
+		return 1;
 	}
 	case 0x5c: {
 		return 0;

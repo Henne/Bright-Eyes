@@ -15,6 +15,7 @@
 #include "seg007.h"
 #include "seg008.h"
 #include "seg009.h"
+#include "seg047.h"
 
 
 unsigned int get_readlength2(signed short index) {
