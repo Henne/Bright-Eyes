@@ -389,7 +389,7 @@ static int seg002(unsigned short offs) {
 		unsigned int money;
 
 		money = get_party_money();
-		D1_INFO("Aktuelles Gruppenvermögen = %dD %dS %dH\n",
+		D1_INFO("Aktuelles Gruppenvermoegen = %dD %dS %dH\n",
 			money / 100, (money % 100) / 10, money % 10);
 
 		reg_ax = money & 0xffff;
@@ -401,7 +401,8 @@ static int seg002(unsigned short offs) {
 		unsigned int money = CPU_Pop32();
 		CPU_Push32(money);
 
-		D1_INFO("Setze Gruppenvermögen = %dD %dS %dH\n",
+		D1_INFO("Setze Gruppenvermoegen = %dD %dS %dH\n",
+
 			money / 100, (money % 100) / 10, money % 10);
 
 		return 0;
@@ -410,7 +411,7 @@ static int seg002(unsigned short offs) {
 		unsigned int money = CPU_Pop32();
 		CPU_Push32(money);
 
-		D1_INFO("Ändere Gruppenvermögen = %dD %dS %dH\n",
+		D1_INFO("Ändere Gruppenvermoegen = %dD %dS %dH\n",
 			money / 100, (money % 100) / 10, money % 10);
 		return 0;
 	}
@@ -420,7 +421,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(ap);
 		CPU_Push32(hero);
 
-		D1_INFO("%s erhält %d AP\n",
+		D1_INFO("%s erhaelt %d AP\n",
 					schick_getCharname(hero), ap);
 		add_hero_ap(MemBase+Real2Phys(hero), ap);
 
@@ -431,7 +432,7 @@ static int seg002(unsigned short offs) {
 		signed int group_ap = CPU_Pop32();
 		CPU_Push32(group_ap);
 
-		D1_INFO("Gruppe erhält %d AP\n", group_ap);
+		D1_INFO("Gruppe erhaelt %d AP\n", group_ap);
 		add_group_ap(group_ap);
 
 		return 1;
@@ -440,7 +441,7 @@ static int seg002(unsigned short offs) {
 		signed short ap = CPU_Pop16();
 		CPU_Push16(ap);
 
-		D1_INFO("Jeder Held erhält %+d AP\n", ap);
+		D1_INFO("Jeder Held erhaelt %+d AP\n", ap);
 		add_hero_ap_all(ap);
 
 		return 1;
@@ -449,7 +450,7 @@ static int seg002(unsigned short offs) {
 		signed short ap = CPU_Pop16();
 		CPU_Push16(ap);
 
-		D1_INFO("Jeder Held erhält %+d\n", ap);
+		D1_INFO("Jeder Held erhaelt %+d\n", ap);
 		sub_hero_ap_all(ap);
 
 		return 1;
@@ -1881,7 +1882,7 @@ static int seg098(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
-		/* Zauber auswählen */
+		/* Zauber auswaehlen */
 		RealPt hero = CPU_Pop32();
 		unsigned short a1 = CPU_Pop16();
 		unsigned short a2 = CPU_Pop16();
@@ -1889,7 +1890,7 @@ static int seg098(unsigned short offs) {
 		CPU_Push16(a1);
 		CPU_Push32(hero);
 
-		D1_LOG("Menu: Zauber auswählen(%s, %d, %d)\n",
+		D1_LOG("Menu: Zauber auswaehlen(%s, %d, %d)\n",
 			schick_getCharname(hero), a1, a2);
 
 		return 0;
@@ -1927,13 +1928,13 @@ static int seg098(unsigned short offs) {
 		CPU_Push16(bonus);
 		CPU_Push16(spell);
 
-		D1_LOG("Zauberprobe für alle\n");
+		D1_LOG("Zauberprobe fuer alle\n");
 		reg_ax = test_spell_group(spell, bonus);
 
 		return 1;
 	}
 	case 0x57: {
-		D1_TRAC("Menu: Zauberer auswählen\n");
+		D1_TRAC("Menu: Zauberer auswaehlen\n");
 		return 0;
 	}
 	default:
@@ -2160,7 +2161,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 	if (segm == 0x1353) return 0;
 	/* Steigern */
 	if (segm == 0x1358) return 0;
-	/*Vorräte auffüllen */
+	/*Vorraete auffüllen */
 	if (segm == 0x135c) return 0;
 	if (segm == 0x135f) return 0;
 	/* Heiler stub053 */
@@ -2169,7 +2170,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 			unsigned short typi = ds_readb(0x4224);
 			signed char price = ds_readb(typi * 2 + 0x66ea);
 			unsigned char qual = ds_readb(typi * 2 + 0x66ea + 1);
-			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualität: %d\n",
+			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualitaet: %d\n",
 				typi, 100 + price, qual);
 			return 0;
 		}
@@ -2208,7 +2209,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		if (offs == 0x20) {
 			unsigned char city = ds_readb(0x2d67);
 			unsigned char ww = ds_readb(0x7c9d + city);
-			D1_LOG("Merkwürdige Funktion\n");
+			D1_LOG("Merkwuerdige Funktion\n");
 			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
 			return 0;
 		}
