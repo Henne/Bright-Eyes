@@ -2,6 +2,8 @@
 
 #include "schick.h"
 
+#include "seg007.h"
+
 /**
  * get_hero_CH_best - get the index of the hero with the best CH value
  *
@@ -134,6 +136,24 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease) {
 	host_writeb(hero + disease * 5 + 0xb0, 0x00);
 	host_writeb(hero + disease * 5 + 0xb1, 0x00);
 	host_writeb(hero + disease * 5 + 0xb2, 0x00);
+}
+
+/**
+ * hero_disease_test - the hero may get a disease
+ * @hero:	the hero which may gets diseased
+ * @disease:	the kind of disease
+ * @probability: the probability to get diseased in percent
+ */
+void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short probability) {
+
+	/* check the probability */
+	if (random_schick(100) > probability)
+		return;
+	/* check if the hero already has the disease */
+	if (host_readb(hero + disease * 5 + 0xae) == 0xff)
+		return;
+
+	hero_gets_diseased(hero, disease);
 }
 
 /**

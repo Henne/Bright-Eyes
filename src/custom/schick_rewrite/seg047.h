@@ -12,3 +12,5 @@ unsigned short get_hero_KK_best();
 void hero_gets_poisoned(Bit8u *hero, unsigned short poison);
 /* 6b */
 void hero_gets_diseased(Bit8u *hero, unsigned short diseased);
+/* 70 */
+void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short probability);

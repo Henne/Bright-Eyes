@@ -1490,7 +1490,17 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x70: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		unsigned short disease = CPU_Pop16();
+		unsigned short probability = CPU_Pop16();
+		CPU_Push16(probability);
+		CPU_Push16(disease);
+		CPU_Push32(hero);
+
+		hero_disease_test(MemBase + Real2Phys(hero), disease, probability);
+		D1_INFO("%s koennte zu %d%% erkranken %d\n",
+			schick_getCharname(hero), probability, disease);
+		return 1;
 	}
 	case 0x75: {
 		return 0;
