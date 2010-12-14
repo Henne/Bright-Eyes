@@ -531,7 +531,7 @@ void seg002_3b63() {
 
 	}
 
-	/* If a passage is hired decrement Passage timer */
+	/* If a passage is hired decrement Passage days timer */
 	if (ds_readb(0x42ae) == 0xaa)
 		ds_writeb(0x42af, ds_readb(0x42af) - 1);
 }
@@ -1136,7 +1136,7 @@ void add_hero_ap_all(short ap) {
 		if (host_readb(hero_i + 0xaa) & 1)
 			continue;
 
-		D1_INFO("%s erhält %d AP\n",(char*)(hero_i+0x10), ap);
+		D1_INFO("%s erhaelt %d AP\n",(char*)(hero_i+0x10), ap);
 
 		add_hero_ap(hero_i, ap);
 	}
@@ -1168,7 +1168,7 @@ void sub_hero_ap_all(short ap) {
 
 		if (ap <= host_readd(hero_i+0x28)) {
 			ap = -ap;
-			D1_INFO("%s erhält %+d AP\n",(char*)(hero_i+0x10), ap);
+			D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i+0x10), ap);
 			add_hero_ap(hero_i, ap);
 		} else {
 			D1_INFO("%s wird auf 0 AP gesetzt\n",(char*)(hero_i+0x10));

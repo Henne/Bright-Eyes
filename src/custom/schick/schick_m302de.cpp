@@ -317,7 +317,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(hero);
 
 		reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
-		D1_INFO("is_hero_available_in_group(%s) = %d\n",
+		D1_LOG("is_hero_available_in_group(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
 
 		return 1;

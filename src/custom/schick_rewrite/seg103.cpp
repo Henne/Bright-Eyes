@@ -96,12 +96,12 @@ signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
 
 		/* Unlucky */
 		if (tmp == 20) {
-			D1_INFO("Unglücklich\n");
+			D1_INFO("Ungluecklich\n");
 			return -1;
 		}
 		/* Lucky */
 		if (tmp == 1) {
-			D1_INFO("Glücklich\n");
+			D1_INFO("Gluecklich\n");
 			return 99;
 		}
 		/* test unsuccessful */

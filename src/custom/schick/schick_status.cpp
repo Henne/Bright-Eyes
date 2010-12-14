@@ -16,15 +16,15 @@ static const char god[][9] = {"Neu-Gott", "Praios", "Rondra", "Efferd",
 static const char dungeon[][25] = {	"",
 				"Das Totenschiff",
 				"Eine verfallene Herberge",
-				"Die Spinnenhöhle",
+				"Die Spinnenhoehle",
 				"Der Wolfsbau",
-				"Eine Höhle",
-				"Eine Höhle",
+				"Eine Hoehle",
+				"Eine Hoehle",
 				"Eine Ruine",
-				"Eine Höhle",
-				"Ein Gewölbe",
-				"Eine Höhle",
-				"Eine Piratenhöhle",
+				"Eine Hoehle",
+				"Ein Gewoelbe",
+				"Eine Hoehle",
+				"Eine Piratenhoehle",
 				"Ein Dungeon",
 				"Eine verlassene Miene",
 				"Die alte Zwingfeste",
@@ -35,7 +35,7 @@ static const char location[][15] = {	"",
 					"Tempel",
 					"Taverne",
 					"Heiler",
-					"Händler",
+					"Haendler",
 					"Wildniscamp",
 					"Herberge",
 					"Schmied",
@@ -51,7 +51,7 @@ static const char location[][15] = {	"",
 					"Stadtcamp",
 };
 
-static const char dir[][5] = { "Nord", "Ost", "Süd", "West" };
+static const char dir[][5] = { "Nord", "Ost", "Sued", "West" };
 
 static const char week[][10] = {	"Rohalstag", "Feuertag",
 					"Wassertag", "Windstag",
@@ -68,7 +68,7 @@ static const char informer[][30] = {	"Jurge Torfinnson",
 					"Eliane Windenbeck",
 					"Olvir Gundridsson",
 					"Swafnild Egilsdotter",
-					"Händler Kolberg",
+					"Haendler Kolberg",
 					"Einhorn",
 					"Algrid Trondesdotter",
 					"Tiomar Swafnildsson"};
@@ -77,7 +77,7 @@ static const char map[][25] = {		"oben links", "oben mitte",
 					"oben rechts", "mitte links",
 					"mitte", "mitte rechts", "unten links",
 					"unten mitte", "unten rechts",
-					"unten links (Fälschung)" };
+					"unten links (Faelschung)" };
 #define NR_TIMER (26)
 static char timer_flags[NR_TIMER] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 								0,0,0,0,0,0};
@@ -85,7 +85,7 @@ static char timer_flags[NR_TIMER] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 static const char timer_desc[NR_TIMER][40] = {	"Wunder Rondra: Schutz vor Magie",
 					"Wunder Efferd: Wasser finden",
 					"Wunder Efferd: Schutz auf Wasser",
-					"Wunder Firun/Ifirn: Glück bei der Jagd",
+					"Wunder Firun/Ifirn: Glueck bei der Jagd",
 					"Wunder Travia: Schutz in der Nacht",
 					"Unbekannt1",
 					"Akrobatik",
@@ -102,7 +102,7 @@ static const char timer_desc[NR_TIMER][40] = {	"Wunder Rondra: Schutz vor Magie"
 					"Unbekannt7",
 					"Wunder Ifirn: Kein Hunger&Durst",
 					"Wunder Phex: Diebesherzen",
-					"Wunder Phex: Krämerseele",
+					"Wunder Phex: Kraemerseele",
 					"Wunder Phex: Zauber auf die Finger",
 					"Unbekannt9",
 					"Unbekannt10",
@@ -168,17 +168,17 @@ static void schick_status_dng_thorwal(unsigned long i) {
 	switch (i) {
 
 	case 0x1282:
-		D1_INFO("Phexschrein geplündert 0x0204\n");
+		D1_INFO("Phexschrein gepluendert 0x0204\n");
 		break;
 	case 0x1283:
-		D1_INFO("Alarm ausgelöst 0x0503\n");
+		D1_INFO("Alarm ausgeloest 0x0503\n");
 		break;
 	case 0x1284:
 	case 0x1285:
 	case 0x1286:
 	case 0x1287:
 	case 0x1288:
-		D1_INFO("Geheimtür ");
+		D1_INFO("Geheimtuer ");
 		switch (i) {
 		case 0x1284:
 			D1_INFO("0x040b ");
@@ -204,7 +204,7 @@ static void schick_status_dng_thorwal(unsigned long i) {
 			D1_INFO("gefunden\n");
 			break;
 		case 2:
-			D1_INFO("geöffnet\n");
+			D1_INFO("geoeffnet\n");
 			break;
 		}
 		break;
@@ -264,7 +264,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		if (i == 0x8b || i == 0x8c) {
 			memcpy(status_copy+0x8b, status_ingame+0x8b, 5);
 			i = 0x90;
-			/* Der Monat 0 ist nicht gültig */
+			/* Der Monat 0 ist nicht gueltig */
 			if (!status_ingame[0x8d])
 				continue;
 			if (status_ingame[0x8c] > 0)
@@ -417,7 +417,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			unsigned long s_nr = (i - 0x8e4)/38;
 			memcpy(status_copy+0x8e4+s_nr*38,
 					status_ingame+0x8e4+s_nr*38, 38);
-			D1_LOG("Dialogpartner Slot %ld geändert\n", s_nr);
+			D1_LOG("Dialogpartner Slot %ld geaendert\n", s_nr);
 			i = 0x8e4 + s_nr * 38;
 			continue;
 
@@ -427,7 +427,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			unsigned long s_nr = (i - 0xa60)/8;
 			memcpy(status_copy+0xa60+s_nr*8,
 					status_ingame+0xa60+s_nr*8, 8);
-			D1_LOG("Dialoglayout Slot %ld geändert\n", s_nr);
+			D1_LOG("Dialoglayout Slot %ld geaendert\n", s_nr);
 			i = 0xa60 + s_nr * 8;
 			continue;
 		}
@@ -444,14 +444,14 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 		if (i >= 0x8ea && i < 0x908) {
-			D1_INFO("Gesprächspartner: %s\n", status_ingame+0x8ea);
+			D1_INFO("Gespraechspartner: %s\n", status_ingame+0x8ea);
 			memcpy(status_copy+0x8ea, status_ingame+0x8ea, 0x1e);
 			i = 0x908;
 			continue;
 		}
 		if (i == 0x908 || i == 0x909) {
 			unsigned short val=host_readw(status_ingame+0x908);
-			D1_INFO("Gesprächspartner: Bild 0x%02x\n", val);
+			D1_INFO("Gespraechspartner: Bild 0x%02x\n", val);
 			host_writew(status_copy+0x908, val);
 			i = 0x90a;
 			continue;
@@ -470,7 +470,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 
 		/* Gruppenmanagement */
 		if (i == 0x01) {
-			D1_INFO("Gruppe %u ausgewählt\n", status_ingame[i]);
+			D1_INFO("Gruppe %u ausgewaehlt\n", status_ingame[i]);
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
@@ -524,7 +524,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		if (i >= 0x14de && i <= 0x14e4) {
 			switch (status_ingame[i]) {
 				case 0:	break;
-				case 1: D1_INFO("Held %lu wird ohnmächtig\n",
+				case 1: D1_INFO("Held %lu wird ohnmaechtig\n",
 							i - 0x14de + 1);
 					break;
 				default:
@@ -574,7 +574,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 					D1_INFO("Auftrag angenommen\n");
 					break;
 				case 3:
-					D1_INFO("Auftrag ausgeführt\n");
+					D1_INFO("Auftrag ausgefuehrt\n");
 					break;
 				case 4:
 					D1_INFO("Quest abgeschlossen\n");
@@ -719,7 +719,7 @@ void schick_status_init()
 	{
 		/*disable delay */
 		ds_writew(0x4b66, 0x0000);
-		D1_INFO("Verzögerungsfaktor ausgeschalten\n");
+		D1_INFO("Verzoegerungsfaktor ausgeschalten\n");
 
 		/*set status manually */
 		status_len = 0x1740;
@@ -754,7 +754,7 @@ void schick_status_init()
 	if (schick_is_en()) {
 		/*disable delay */
 		ds_writew(0x4c5a, 0x0000);
-		D1_INFO("Verzögerungsfaktor ausgeschalten\n");
+		D1_INFO("Verzoegerungsfaktor ausgeschalten\n");
 
 		/*set status manually */
 		status_len = 0x1740;
