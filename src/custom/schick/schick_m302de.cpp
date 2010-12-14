@@ -23,6 +23,12 @@
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
 
+static char* schick_getItemname(unsigned short item) {
+	PhysPt iptr = Real2Phys(ds_readd(0xe22f));
+
+	return (char*)MemBase + Real2Phys(mem_readd(iptr + item * 4));
+}
+
 static int seg002(unsigned short offs) {
 	switch (offs) {
 
