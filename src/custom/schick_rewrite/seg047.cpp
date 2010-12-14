@@ -157,6 +157,25 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short proba
 }
 
 /**
+ *	hero_check_KK_unused
+ *
+ *	This function is not used in the game!
+ */
+short hero_check_KK_unused(short val) {
+
+	PhysPt hero;
+
+	hero = Real2Phys(ds_readd(0xbd34));
+
+	if ((short)mem_readb(hero + 0x47) + (short)mem_readb(hero + 0x48) < val)
+		return 0;
+	else
+		return 1;
+
+}
+
+
+/**
  * count_heroes_in_group - counts the heroes in the current group
  */
 unsigned short count_heroes_in_group() {

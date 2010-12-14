@@ -1,3 +1,5 @@
+/* 34 */
+signed short check_hero_KK_unused(signed short val);
 /* 39 */
 unsigned short hero_is_diseased(Bit8u *hero);
 /* 3e */
