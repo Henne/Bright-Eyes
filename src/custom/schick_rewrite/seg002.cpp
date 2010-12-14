@@ -956,8 +956,10 @@ short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
 	D1_INFO("Eigenschaftsprobe %s auf %s %+d: W20 = %d",
 		(char*)(hero+0x10), names_attrib[attrib], bonus, si);
 
-	if (si == 20)
+	if (si == 20) {
+		D1_INFO("Ungluecklich\n");
 		return -99;
+	}
 
 	si += bonus;
 
