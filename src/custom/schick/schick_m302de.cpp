@@ -480,8 +480,9 @@ static int seg002(unsigned short offs) {
 
 		reg_ax = get_item_pos(MemBase + Real2Phys(hero), item);
 
-		D1_LOG("get_item_pos(%s, 0x%04x) = %d\n",
+		D1_LOG("get_item_pos(%s, %s = (0x%d)) = %d\n",
 					schick_getCharname(hero),
+					schick_getItemname(item),
 					item, (short)reg_ax);
 		return 1;
 	}
@@ -490,8 +491,8 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(item);
 
 		reg_ax = get_first_hero_with_item(item);
-		D1_INFO("get_first_hero_with_item(%d) = %d\n",
-			item, reg_ax);
+		D1_LOG("get_first_hero_with_item(%s = (%d)) = %d\n",
+			schick_getItemname(item), item, (signed short)reg_ax);
 
 		return 1;
 	}
@@ -2850,8 +2851,8 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		reg_ax = get_first_hero_with_item_in_group(item, group);
 
-		D1_LOG("get_first_hero_with_item_in_group(%s, %d) = %d\n",
-			item, group, (short)reg_ax);
+		D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
+			schick_getItemname(item), item, group, (short)reg_ax);
 
 		return 1;
 	}
