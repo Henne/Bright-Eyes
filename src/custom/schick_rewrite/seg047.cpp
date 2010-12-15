@@ -174,6 +174,42 @@ short hero_check_KK_unused(short val) {
 
 }
 
+/**
+ *	check_heros_KK
+ *	@val:	value to compare KK with
+ *
+ *	This function, like hero_check_KK_unused, is buggy!
+ *	It does not check if the first slot is a valid hero.
+ */
+short check_heros_KK(short val) {
+
+	PhysPt hero;
+	signed short sum;
+
+	hero = Real2Phys(ds_readd(0xbd34));
+
+	/* Orig-BUG: not checked if hero is valid */
+	sum = (short)mem_readb(hero + 0x47) + (short)mem_readb(hero + 0x48);
+
+	hero += 0x6da;
+
+	/* check class, group and dead status of hero in slot 2*/
+	if (mem_readb(hero + 0x21) && mem_readb(hero + 0x87) == ds_readb(0x2d35) && !(mem_readb(hero + 0xaa) & 1)) {
+		sum += (short)mem_readb(hero + 0x47);
+		sum += (short)mem_readb(hero + 0x48);
+	}
+
+	D1_INFO("Pruefe KK der ersten beiden Helden (%d) >= %d: ", sum, val);
+
+	if (sum >= val) {
+		D1_INFO("gelungen\n");
+		return 1;
+	}
+
+	D1_INFO("mislungen\n");
+	return 0;
+}
+
 
 /**
  * count_heroes_in_group - counts the heroes in the current group

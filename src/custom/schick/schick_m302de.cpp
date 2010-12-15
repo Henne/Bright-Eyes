@@ -1428,7 +1428,13 @@ static int seg047(unsigned short offs) {
 	}
 */
 	case 0x34: {
-		return 0;
+		signed short val = CPU_Pop16();
+		CPU_Push16(val);
+
+		reg_ax = check_heros_KK(val);
+		D1_LOG("check_heros_KK(%d); = %d\n", val, reg_ax);
+
+		return 1;
 	}
 	case 0x39: {
 		RealPt hero = CPU_Pop32();
