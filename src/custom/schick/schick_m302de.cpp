@@ -1425,7 +1425,12 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		hero_get_sober(MemBase + Real2Phys(hero));
+
+		return 1;
 	}
 	case 0x2a: {
 		return 0;

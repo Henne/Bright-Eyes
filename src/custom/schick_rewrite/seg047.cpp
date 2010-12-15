@@ -274,4 +274,40 @@ unsigned short count_heroes_in_group() {
 	return retval;
 }
 
+/**
+ *	hero_get_sober	-	makes a drunken hero sober
+ *	@hero:	pointer to the hero
+ *
+ */
+void hero_get_sober(Bit8u *hero) {
+	/* This is checked twice */
+	/* Is hero drunken ? */
+	if (host_readb(hero + 0xa1) == 0)
+		return;
 
+	D1_INFO("%s ist wieder nuechtern\n", (char*)hero + 0x10);
+
+	/* set hero sober */
+	host_writeb(hero + 0xa1, 0);
+
+	/* Reset good attributes */
+	host_writeb(hero + 0x35, host_readb(hero + 0x35) - 1);
+	host_writeb(hero + 0x38, host_readb(hero + 0x38) + 1);
+	host_writeb(hero + 0x3b, host_readb(hero + 0x3b) + 1);
+	host_writeb(hero + 0x3e, host_readb(hero + 0x3e) + 1);
+	host_writeb(hero + 0x41, host_readb(hero + 0x41) + 1);
+	host_writeb(hero + 0x44, host_readb(hero + 0x44) - 1);
+	host_writeb(hero + 0x47, host_readb(hero + 0x47) - 1);
+
+	/* Reset bad attributes */
+	host_writeb(hero + 0x4a, host_readb(hero + 0x4a) - 1);
+	host_writeb(hero + 0x4d, host_readb(hero + 0x4d) + 1);
+	host_writeb(hero + 0x50, host_readb(hero + 0x50) + 1);
+	host_writeb(hero + 0x53, host_readb(hero + 0x53) - 1);
+	host_writeb(hero + 0x56, host_readb(hero + 0x56) + 1);
+	host_writeb(hero + 0x59, host_readb(hero + 0x59) - 1);
+	host_writeb(hero + 0x5c, host_readb(hero + 0x5c) - 1);
+
+	if (ds_readb(0x2845) == 20)
+		ds_writew(0x2846, 1);
+}
