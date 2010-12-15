@@ -1433,6 +1433,11 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		D1_LOG("%s ist betrunken\n", schick_getCharname(hero));
+
 		return 0;
 	}
 /*	not called
