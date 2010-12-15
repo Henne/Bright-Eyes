@@ -1414,7 +1414,15 @@ static int seg041(unsigned short offs) {
 static int seg047(unsigned short offs) {
 	switch(offs) {
 	case 0x20: {
-		return 0;
+		RealPt s_ptr = CPU_Pop32();
+		unsigned int money = CPU_Pop32();
+		CPU_Push32(money);
+		CPU_Push32(s_ptr);
+
+		D1_LOG("make_valuta_str(%x, %d);\n", s_ptr, money);
+		make_valuta_str((char*)MemBase + Real2Phys(s_ptr), money);
+
+		return 1;
 	}
 	case 0x25: {
 		return 0;

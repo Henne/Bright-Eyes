@@ -1,3 +1,5 @@
+/* 20 */
+void make_valuta_str(char* dst, unsigned int money);
 /* 2f */
 signed short check_hero_KK_unused(signed short val);
 /* 34 */
