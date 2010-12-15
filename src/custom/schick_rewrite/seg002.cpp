@@ -403,6 +403,46 @@ void sub_ingame_timers(unsigned int val) {
 }
 
 /**
+ *
+ *	@fmin:	five minutes
+ */
+void seg002_2f7a(unsigned int fmin) {
+
+	Bit8u *hero_i;
+	unsigned short i;
+
+	if (ds_readw(0x2c99) != 0)
+		return;
+
+	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* check class */
+		if (host_readb(hero_i + 0x21) == 0)
+			continue;
+
+		/* I have no clue what is at offset 0x8b */
+		if ((int)host_readd(hero_i + 0x8b) > 0) {
+			D1_INFO("%s 8b = %d\n", (char*)hero_i + 0x10,
+				host_readd(hero_i + 0x8b));
+			host_writed(hero_i + 0x8b, host_readd(hero_i + 0x8b) - fmin * 450);
+			if ((int)host_readd(hero_i + 0x8b) < 0)
+				host_writed(hero_i + 0x8b, 0);
+		}
+		/* I have no clue what is at offset 0x8f */
+		if ((int)host_readd(hero_i + 0x8f) > 0) {
+			D1_INFO("%s 8f = %d\n", (char*)(hero_i + 0x10),
+				host_readd(hero_i + 0x8f));
+			host_writed(hero_i + 0x8f, host_readd(hero_i + 0x8f) - fmin * 450);
+			if ((int)host_readd(hero_i + 0x8f) < 0)
+				host_writed(hero_i + 0x8f, 0);
+		}
+
+		ds_writew(0x26bb, 1);
+	}
+}
+
+/**
  *	sub_light_timers - decrements the light timers
  *	@quarter:	the time in quarters of an hour
  *	@v2:		atm unknown
