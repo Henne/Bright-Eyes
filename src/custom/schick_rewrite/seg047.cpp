@@ -157,11 +157,11 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short proba
 }
 
 /**
- *	hero_check_KK_unused
+ *	check_hero_KK_unused
  *
  *	This function is not used in the game!
  */
-short hero_check_KK_unused(short val) {
+short check_hero_KK_unused(short val) {
 
 	PhysPt hero;
 
