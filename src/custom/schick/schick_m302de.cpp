@@ -138,7 +138,22 @@ static int seg002(unsigned short offs) {
 		refresh_screen_size();
 		return 1;
 	case 0x1a34:
-	case 0x1cf2:	/* Shop: Item zurücklegen */
+		return 0;
+	case 0x1cf2: {
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = get_mouse_action(x, y, MemBase + Real2Phys(p));
+
+		D1_LOG("get_mouse_action(x=%d, y=%d, p=%x); = %x\n",
+			x, y, p, reg_ax);
+
+		return 1;
+	}
 	case 0x1d67:
 	case 0x1ecc:
 		return 0;
@@ -2777,6 +2792,22 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
 			v1, v2, v3, v4, reg_ax);
 
+		return 1;
+	}
+	/* Callers: 2 */
+	if (offs ==  0x1cf2) {
+		CPU_Pop32();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = get_mouse_action(x, y, MemBase + Real2Phys(p));
+
+		D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
+			x, y, p, reg_ax);
 		return 1;
 	}
 	/* Callers: 1 */

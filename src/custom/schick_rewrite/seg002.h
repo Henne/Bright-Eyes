@@ -6,6 +6,7 @@ void update_mouse_cursor();
 void refresh_screen_size();
 void update_mouse_cursor1();
 void refresh_screen_size1();
+unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p);
 //static
 void timers_daily();
 //static

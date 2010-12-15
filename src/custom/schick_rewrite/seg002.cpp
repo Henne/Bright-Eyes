@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 51/136
+	Functions rewritten: 53/136
 */
 #include <string.h>
 
@@ -238,6 +238,27 @@ void refresh_screen_size1() {
 
 	/* put lock */
 	ds_writew(0x2998, 0);
+}
+
+unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {
+
+	unsigned short i;
+
+	for (i = 0; host_readw(p + i * 10) != 0xffff; i++) {
+
+		if (host_readw(p + i * 10) > x)
+			continue;
+		if (host_readw(p + i * 10 + 4) < x)
+			continue;
+		if (host_readw(p + i * 10 + 2) > y)
+			continue;
+		if (host_readw(p + i * 10 + 6) < y)
+			continue;
+
+		return host_readw(p + i * 10 + 8);
+
+	}
+	return 0;
 }
 
 //static
