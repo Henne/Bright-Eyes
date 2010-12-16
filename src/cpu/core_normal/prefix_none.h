@@ -903,7 +903,7 @@
 
 			Push_16(reg_eip);
 			if (schick_calln16((Bit16u)(reg_eip+addip))) {
-				break;
+				continue;
 			}
 			reg_eip=(Bit16u)(reg_eip+addip);
 			continue;

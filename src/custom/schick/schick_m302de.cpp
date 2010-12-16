@@ -2825,16 +2825,16 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0x4ac) {
 		/* Callers: 1 */
 		if (offs == 0x35) {
+			CPU_Pop32();
 			reg_ax = CD_set_drive_nr();
 			D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
 			return 1;
 		}
 		/* Callers: 6 */
 		if (offs == 0x5c) {
-			RealPt pIP = CPU_Pop32();
+			CPU_Pop32();
 			RealPt req = CPU_Pop32();
 			CPU_Push32(req);
-			CPU_Push32(pIP);
 
 			CD_driver_request(req);
 			D1_LOG("CD_driver_request();\n");
@@ -2842,6 +2842,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 4 */
 		if (offs == 0xb2) {
+			CPU_Pop32();
 			unsigned int retval;
 
 			retval = CD_get_tod();
