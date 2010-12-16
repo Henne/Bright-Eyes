@@ -5,6 +5,7 @@
 
 #include "schick.h"
 
+#include "seg001.h"
 #include "seg002.h"
 #include "seg003.h"
 #include "seg004.h"
@@ -27,6 +28,52 @@ static char* schick_getItemname(unsigned short item) {
 	PhysPt iptr = Real2Phys(ds_readd(0xe22f));
 
 	return (char*)MemBase + Real2Phys(mem_readd(iptr + item * 4));
+}
+
+static int seg001(unsigned short offs) {
+	switch (offs) {
+	case 0x2c4: {
+		D1_TRAC("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x30e: {
+		/* bioskey() caller */
+		D1_LOG("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x34f: {
+		D1_TRAC("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x37a: {
+		/* CDA off */
+		D1_LOG("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x3d5: {
+		/* CDA on */
+		D1_LOG("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x4f4: {
+		/* CDA set track */
+		D1_LOG("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x681: {
+		/* check if DSA1 CD is in drive */
+		D1_LOG("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x6c6: {
+		/* init CD drive */
+		D1_LOG("%s:%x()\n", __func__, offs);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		return 0;
+	}
 }
 
 static int seg002(unsigned short offs) {
@@ -2067,7 +2114,7 @@ static inline int seg122(unsigned short offs) {
 int schick_farcall_v302de(unsigned segm, unsigned offs)
 {
 	if (segm == 0x4ac)
-		return 0;
+		return seg001(offs);
 	if (segm == 0x51e)
 		return seg002(offs);
 	if (segm == 0x0ae7) {
@@ -2774,6 +2821,40 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0)
 		return 0;
 
+	/* seg001 - CD_library */
+	if (segm == 0x4ac) {
+		/* Callers: 1 */
+		if (offs == 0x35) {
+			reg_ax = CD_set_drive_nr();
+			D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
+			return 1;
+		}
+		/* Callers: 6 */
+		if (offs == 0x5c) {
+			RealPt pIP = CPU_Pop32();
+			RealPt req = CPU_Pop32();
+			CPU_Push32(req);
+			CPU_Push32(pIP);
+
+			CD_driver_request(req);
+			D1_LOG("CD_driver_request();\n");
+			return 1;
+		}
+		/* Callers: 4 */
+		if (offs == 0xb2) {
+			unsigned int retval;
+
+			retval = CD_get_tod();
+
+			D1_LOG("CD_get_tod(); = %d\n", retval);
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+			return 1;
+		}
+		return 0;
+	}
+
+	/* seg002 - often used */
 	if (segm == 0x51e) {
 
 	/* Callers: 2 */
