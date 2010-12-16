@@ -7,3 +7,6 @@ unsigned short CD_set_drive_nr();
 void CD_driver_request(RealPt req);
 //static
 unsigned int CD_get_tod();
+
+//static
+void seg001_0322();

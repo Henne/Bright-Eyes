@@ -63,3 +63,12 @@ unsigned int CD_get_tod() {
 
 	return (reg_dx << 16) | reg_ax;
 }
+
+void seg001_0322() {
+	if (ds_readw(0x95) == 0)
+		return;
+
+	real_writew(relocation + 0x1238, 3, 0);
+	CD_driver_request(RealMake(relocation + 0x1238, 0));
+	ds_writew(0x9b, 0);
+}

@@ -2852,6 +2852,13 @@ int schick_nearcall_v302de(unsigned offs) {
 			reg_dx = (retval >> 16) & 0xffff;
 			return 1;
 		}
+		/* Callers: 3 */
+		if (offs == 0x322) {
+			CPU_Pop32();
+			D1_LOG("seg001_0322()\n");
+			seg001_0322();
+			return 1;
+		}
 		return 0;
 	}
 
