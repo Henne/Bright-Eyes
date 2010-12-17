@@ -2062,6 +2062,20 @@ static int seg029(unsigned short offs) {
 	}
 }
 
+static int seg032(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			unsigned short v1 = CPU_Pop16();
+			CPU_Push16(v1);
+
+			D1_LOG("Kampf 0x%02x\n", v1);
+			return 0;
+		}
+		default:
+			return 0;
+	}
+}
+
 static int seg041(unsigned short offs) {
 	switch(offs) {
 	case 0x20: {
@@ -2775,16 +2789,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 	/* Spielstand und Zeit */
 	if (segm == 0x12ff) return 0;
 	if (segm == 0x1303) return 0;
-	if (segm == 0x1309) {
-		if (offs == 0x0020) {
-			unsigned short v1 = CPU_Pop16();
-			CPU_Push16(v1);
-
-			D1_LOG("Kampf 0x%02x\n", v1);
-			return 0;
-		}
-		return 0;
-	}
+	if (segm == 0x1309)
+		return seg032(offs);
 	if (segm == 0x130f) return 0;
 	/* Kampf */
 	if (segm == 0x1312) return 0;
