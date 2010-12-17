@@ -1153,6 +1153,22 @@ static int seg002(unsigned short offs) {
 	}
 }
 
+static int seg003(unsigned short offs) {
+	switch (offs) {
+		case  0x000c: {
+			unsigned short mod = CPU_Pop16();
+			CPU_Push16(mod);
+
+			D1_LOG("update_direction(%d)\n", mod);
+
+			reg_ax = update_direction(mod);
+			return 1;
+		}
+	default:
+		return 0;
+	}
+}
+
 static int seg004(unsigned short offs) {
 	switch (offs) {
 	case 0x134:
@@ -2713,18 +2729,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		return seg001(offs);
 	if (segm == 0x51e)
 		return seg002(offs);
-	if (segm == 0x0ae7) {
-		if (offs == 0x000c) {
-			unsigned short mod = CPU_Pop16();
-			CPU_Push16(mod);
-
-			D1_LOG("update_direction(%d)\n", mod);
-
-			reg_ax = update_direction(mod);
-			return 1;
-		}
-		return 0;
-	}
+	if (segm == 0x0ae7)
+		return seg003(offs);
 	if (segm == 0xb2a)
 		return seg004(offs);
 	if (segm == 0xc85)
