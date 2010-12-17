@@ -1960,6 +1960,67 @@ static int seg012(unsigned short offs) {
 			exit(1);
 	}
 }
+
+static int seg026(unsigned short offs) {
+		if (offs == 0x0020) {
+			D1_LOG("ip=0x%04X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0025) {
+			D1_LOG("ip=0x%04X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x002a) {
+			D1_LOG("ip=0x%04X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x002f) {
+			D1_LOG("short ChooseLoadSavegame(void)\n");
+			return 0;
+		}
+		if (offs == 0x0034) {
+			D1_LOG("ip=0x%04X ChooseSaveSavegame()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0039) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x003e) {
+			D1_LOG("ip=0x%4X ReleaseHero()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0043) {
+			D1_LOG("ip=0x%4X ChooseFreeHero()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0048) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x004d) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0052) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0057) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x005c) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return 0;
+		}
+		if (offs == 0x0066) {
+			D1_LOG("ip=0x%4X unknown()\n", offs);
+			return 0;
+		}
+		return 0;
+}
+
 static int seg029(unsigned short offs) {
 	switch (offs) {
 	case 0x39:
@@ -2684,67 +2745,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 
 	if (segm == 0x12db) return 0;
 	if (segm == 0x12de) return 0;
-
-	/* stub026 */
-	if (segm == 0x12e5) {
-		if (offs == 0x0020) {
-			D1_LOG("ip=0x%04X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0025) {
-			D1_LOG("ip=0x%04X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x002a) {
-			D1_LOG("ip=0x%04X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x002f) {
-			D1_LOG("short ChooseLoadSavegame(void)\n");
-			return 0;
-		}
-		if (offs == 0x0034) {
-			D1_LOG("ip=0x%04X ChooseSaveSavegame()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0039) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x003e) {
-			D1_LOG("ip=0x%4X ReleaseHero()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0043) {
-			D1_LOG("ip=0x%4X ChooseFreeHero()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0048) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x004d) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0052) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0057) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x005c) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0066) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		return 0;
-	}
+	if (segm == 0x12e5)
+		return seg026(offs);
 	if (segm == 0x12ec) {
 		if (offs = 0x0025) {
 			short ani = CPU_Pop16();
