@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I../schick
 noinst_LIBRARIES = libschick_rewrite.a
 
 libschick_rewrite_a_SOURCES = schick_common.h\
+		seg000.cpp seg000.h\
 		seg001.cpp seg001.h\
 		seg002.cpp seg002.h\
 		seg003.cpp seg003.h\
