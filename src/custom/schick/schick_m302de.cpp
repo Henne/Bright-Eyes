@@ -2037,6 +2037,20 @@ static int seg026(unsigned short offs) {
 		return 0;
 }
 
+static int seg027(unsigned short offs) {
+	switch (offs) {
+		case 0x25: {
+			short ani = CPU_Pop16();
+			CPU_Push16(ani);
+
+			D1_LOG("ANI %02d angefordert\n", ani);
+			return 0;
+		}
+	default:
+		return 0;
+	}
+}
+
 static int seg029(unsigned short offs) {
 	switch (offs) {
 	case 0x39:
@@ -2753,16 +2767,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 	if (segm == 0x12de) return 0;
 	if (segm == 0x12e5)
 		return seg026(offs);
-	if (segm == 0x12ec) {
-		if (offs = 0x0025) {
-			short ani = CPU_Pop16();
-			CPU_Push16(ani);
-
-			D1_LOG("ANI %02d angefordert\n", ani);
-			return 0;
-		}
-		return 0;
-	}
+	if (segm == 0x12ec)
+		return seg027(offs);
 	if (segm == 0x12f1) return 0;
 	if (segm == 0x12f9)
 		return seg029(offs);
