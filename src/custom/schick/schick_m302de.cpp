@@ -66,13 +66,18 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x6d0: {
-			D1_LOG("C-Lib exit(%d)\n",
-				real_readw(SegValue(ss), reg_sp));
+			unsigned short val = CPU_Pop16();
+			CPU_Push16(val);
+
+			D1_LOG("C-Lib exit(%d)\n", val);
 			return 0;
 		}
 		case 0x6df: {
 			/* Not Called from far */
-			D1_LOG("_exit(%d)\n", real_readw(SegValue(ss), reg_sp));
+			unsigned short val = CPU_Pop16();
+			CPU_Push16(val);
+
+			D1_LOG("_exit(%d)\n", val);
 			return 0;
 		}
 		case 0x70b: {
@@ -185,7 +190,9 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0xbac: {
-			unsigned short val=real_readw(SegValue(ss), reg_sp);
+			unsigned short val = CPU_Pop16();
+			CPU_Push16(val);
+
 			D1_LOG("C-Lib srand(%d)\n", val);
 			return 0;
 		}
@@ -195,9 +202,16 @@ static int seg000(unsigned short offs) {
 		}
 		case 0x0be3: {
 			/*read()*/
+			unsigned short fd = CPU_Pop16();
+			RealPt buf = CPU_Pop32();
+			unsigned short len = CPU_Pop16();
+			CPU_Push16(len);
+			CPU_Push32(buf);
+			CPU_Push16(fd);
+
 			D1_LOG("_read(fd=0x%x, buffer=0x%x:0x%x, len=%d)\n",
-			real_readw(SegValue(ss), reg_sp), real_readw(SegValue(ss), reg_sp+4),
-			real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp+6));
+				fd, buf, len);
+
 			return 0;
 		}
 		case 0x1123: {
@@ -228,24 +242,28 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x1e55: {
-			unsigned short off=real_readw(SegValue(ss), reg_sp);
-			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
-			D1_LOG("free(0x%04x:0x%04x)\n", seg, off);
-			return 0;		}
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			D1_LOG("free(0x%04x:0x%04x)\n",
+				RealSeg(ptr), RealOff(ptr));
+			return 0;
+		}
 		case 0x1f69: {
-			unsigned short lo=real_readw(SegValue(ss), reg_sp);
-			unsigned short hi=real_readw(SegValue(ss), reg_sp+2);
-			D1_LOG("farmalloc(%d)\n", hi<<16+lo);
+			unsigned int size = CPU_Pop32();
+			CPU_Push32(size);
+
+			D1_LOG("farmalloc(%d)\n", size);
 			return 0;
 		}
 		case 0x2287: {
-			unsigned short nl=real_readw(SegValue(ss), reg_sp);
-			unsigned short nh=real_readw(SegValue(ss), reg_sp+2);
-			unsigned short lo=real_readw(SegValue(ss), reg_sp+4);
-			unsigned short hi=real_readw(SegValue(ss), reg_sp+6);
+			unsigned int nmem = CPU_Pop32();
+			unsigned int size = CPU_Pop32();
+			CPU_Push32(size);
+			CPU_Push32(nmem);
 
-			D1_LOG("calloc(%d, 0x%x)\n",
-					(nh<<16)+nl, (hi<<16)+lo);
+			D1_LOG("calloc(%d, 0x%x)\n", nmem, size);
+
 			return 0;
 		}
 		case 0x2315: {
@@ -281,14 +299,13 @@ static int seg000(unsigned short offs) {
 		}
 		case 0x2dff: {
 			/* long atol(const char* s) */
-			int val;
 			RealPt s = CPU_Pop32();
 			CPU_Push32(s);
 
-			D1_LOG("atol(\"%s\") = ", getString(s));
+			int val;
 
 			val = atoi((char*)getString(s));
-			D1_LOG("%d\n", val);
+			D1_LOG("atol(\"%s\") = %d\n", getString(s), val);
 
 			reg_ax = val & 0xffff;
 			reg_dx = (val>>16) & 0xffff;
@@ -296,7 +313,10 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		case 0x2eb2: {
-			D1_LOG("C-Lib close(%d)\n", real_readw(SegValue(ss), reg_sp));
+			unsigned short handle = CPU_Pop16();
+			CPU_Push16(handle);
+
+			D1_LOG("C-Lib close(%d)\n", handle);
 			return 0;
 		}
 		case 0x2eda: {
@@ -377,36 +397,40 @@ static int seg000(unsigned short offs) {
 		}
 		case 0x3479: {
 			/* write(handle) */
-			unsigned short handle=real_readw(SegValue(ss), reg_sp);
+			unsigned short handle = CPU_Pop16();
+			CPU_Push16(handle);
+
 			D1_LOG("write_0(%d)\n", handle);
 			return 0;
 		}
 		case 0x34c7: {
 			/*open()*/
-			unsigned short off=real_readw(SegValue(ss), reg_sp);
-			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
-			unsigned short mode=real_readw(SegValue(ss), reg_sp+4);
+			RealPt fname = CPU_Pop32();
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+			CPU_Push32(fname);
 
 			D1_LOG("open(\"%s\",\"%04x\")\n",
-					MemBase+(seg<<4)+off, mode);
+					MemBase + Real2Phys(fname), mode);
 			return 0;
 		}
 		case 0x3636: {
 			/* sortof open() */
-			unsigned short off=real_readw(SegValue(ss), reg_sp);
-			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
-			unsigned short mode=real_readw(SegValue(ss), reg_sp+4);
+			RealPt fname = CPU_Pop32();
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+			CPU_Push32(fname);
 
 			D1_LOG("C-Lib Unkn(\"%s\", 0x%04x)\n",
-					MemBase+(seg<<4)+off, mode);
+					MemBase + Real2Phys(fname), mode);
 			return 0;
 		}
 		case 0x36dd: {
 			/*printf()*/
-			unsigned short off=real_readw(SegValue(ss), reg_sp);
-			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
 
-			D1_LOG("printf(\"%s\")\n", MemBase+(seg<<4)+off);
+			D1_LOG("printf(\"%s\")\n", MemBase + Real2Phys(p));
 			return 0;
 		}
 		case 0x3d74: {
@@ -414,17 +438,14 @@ static int seg000(unsigned short offs) {
 		}
 		/* ret 0x000a */
 		case 0x41d2: {
-			unsigned short	o1=real_readw(SegValue(ss), reg_sp);
-			unsigned short	s1=real_readw(SegValue(ss), reg_sp+2);
-			unsigned short	o2=real_readw(SegValue(ss), reg_sp+4);
-			unsigned short	s2=real_readw(SegValue(ss), reg_sp+6);
-			unsigned short	o3=real_readw(SegValue(ss), reg_sp+8);
-			unsigned short	s3=real_readw(SegValue(ss), reg_sp+10);
-			unsigned short	o4=real_readw(SegValue(ss), reg_sp+12);
-			unsigned short	s4=real_readw(SegValue(ss), reg_sp+14);
-			D1_LOG("C-Lib sprintf(0x%04x:0x%04x, \"%s\", 0x%04x:0x%04x, 0x%04x:0x%04x)\n",
-					s1, o1, MemBase+(s2<<4)+o2,
-					s3, o3, s4, o4);
+			RealPt str = CPU_Pop32();
+			RealPt format = CPU_Pop32();
+			CPU_Push32(format);
+			CPU_Push32(str);
+
+			D1_LOG("C-Lib sprintf(0x%04x:0x%04x, \"%s\", ...)\n",
+					RealSeg(str), RealOff(str),
+					MemBase + Real2Phys(format));
 
 			return 0;
 		}
@@ -518,11 +539,16 @@ static int seg000(unsigned short offs) {
 		}
 		case 0x4a85: {
 			/*write()*/
-			unsigned short handle=real_readw(SegValue(ss), reg_sp);
-			unsigned short off=real_readw(SegValue(ss), reg_sp+2);
-			unsigned short seg=real_readw(SegValue(ss), reg_sp+4);
-			unsigned short val=real_readw(SegValue(ss), reg_sp+6);
-			D1_LOG("C-Lib __write(Handle=0x%x, Buffer=0x%x:0x%x, Len=%d)\n", handle, seg ,off, val);
+			unsigned short handle = CPU_Pop16();
+			RealPt buf = CPU_Pop32();
+			unsigned short val = CPU_Pop16();
+			CPU_Push16(val);
+			CPU_Push32(buf);
+			CPU_Push16(handle);
+
+			D1_LOG("C-Lib __write(handle=0x%x, buffer=0x%x:0x%x, len=%d)\n",
+				handle, RealSeg(buf), RealOff(buf), val);
+
 			return 0;
 		}
 		case 0x4a88: {
