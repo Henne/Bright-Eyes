@@ -10,3 +10,5 @@ unsigned int CD_get_tod();
 
 //static
 void seg001_0322();
+//static
+void seg001_034f();

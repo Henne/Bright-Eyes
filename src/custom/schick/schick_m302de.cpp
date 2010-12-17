@@ -575,8 +575,9 @@ static int seg001(unsigned short offs) {
 		return 0;
 	}
 	case 0x34f: {
-		D1_TRAC("%s:%x()\n", __func__, offs);
-		return 0;
+		D1_LOG("%s:%x()\n", __func__, offs);
+		seg001_034f();
+		return 1;
 	}
 	case 0x37a: {
 		/* CDA off */
@@ -2969,6 +2970,13 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Pop32();
 			D1_LOG("seg001_0322()\n");
 			seg001_0322();
+			return 1;
+		}
+		/* Callers: 1 */
+		if (offs == 0x34f) {
+			CPU_Pop32();
+			D1_LOG("seg001_034f()\n");
+			seg001_034f();
 			return 1;
 		}
 		return 0;

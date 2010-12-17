@@ -72,3 +72,12 @@ void seg001_0322() {
 	CD_driver_request(RealMake(relocation + 0x1238, 0));
 	ds_writew(0x9b, 0);
 }
+
+void seg001_034f() {
+	if (ds_readw(0x95) == 0)
+		return;
+
+	seg001_0322();
+	real_writew(relocation + 0x1238, 0x1f, 0);
+	CD_driver_request(RealMake(relocation + 0x1238, 0x1c));
+}
