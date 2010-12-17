@@ -2258,6 +2258,39 @@ static int seg047(unsigned short offs) {
 	}
 }
 
+static int seg053(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			unsigned short typi = ds_readb(0x4224);
+			signed char price = ds_readb(typi * 2 + 0x66ea);
+			unsigned char qual = ds_readb(typi * 2 + 0x66ea + 1);
+			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualitaet: %d\n",
+				typi, 100 + price, qual);
+			return 0;
+		}
+		default:
+			return 0;
+	}
+}
+
+static int seg073(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			unsigned char city = ds_readb(0x2d67);
+			unsigned char ww = ds_readb(0x7c9d + city);
+			D1_LOG("Merkwuerdige Funktion\n");
+			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
+			return 0;
+		}
+		case 0x25:
+		case 0x2a:
+		case 0x2f:
+			return 0;
+		default:
+			return 0;
+	}
+}
+
 static int seg096(unsigned short offs) {
 	/*
 		Handles Strings and Fonts
@@ -2827,18 +2860,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 	if (segm == 0x135c) return 0;
 	if (segm == 0x135f) return 0;
 	/* Heiler stub053 */
-	if (segm == 0x1362) {
-		if (offs == 0x20) {
-			unsigned short typi = ds_readb(0x4224);
-			signed char price = ds_readb(typi * 2 + 0x66ea);
-			unsigned char qual = ds_readb(typi * 2 + 0x66ea + 1);
-			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualitaet: %d\n",
-				typi, 100 + price, qual);
-			return 0;
-		}
-		return 0;
-	}
-
+	if (segm == 0x1362)
+		return seg053(offs);
 	if (segm == 0x1365) return 0;
 	if (segm == 0x1369) return 0;
 	/* Waren kaufen */
@@ -2866,21 +2889,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 	if (segm == 0x13a8) return 0;
 	if (segm == 0x13b4) return 0;
 	/* */
-	if (segm == 0x13b9)  {
-
-		if (offs == 0x20) {
-			unsigned char city = ds_readb(0x2d67);
-			unsigned char ww = ds_readb(0x7c9d + city);
-			D1_LOG("Merkwuerdige Funktion\n");
-			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
-			return 0;
-		}
-		if (offs == 0x25) return 0;
-		if (offs == 0x2a) return 0;
-		if (offs == 0x2f) return 0;
-
-		return 0;
-	}
+	if (segm == 0x13b9)
+		return seg073(offs);
 	/* Automap */
 	if (segm == 0x13bd) return 0;
 	/* Dungeon betreten */
