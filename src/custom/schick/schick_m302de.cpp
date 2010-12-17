@@ -32,9 +32,13 @@ static char* schick_getItemname(unsigned short item) {
 
 /* Borland C++ runtime */
 static int seg000(unsigned short offs) {
+
+	switch (offs) {
 		/* nullsub */
-		if (offs == 0x2c9) return 0;
-		if (offs == 0x2f7) {
+		case 0x2c9: {
+			return 0;
+		}
+		case 0x2f7: {
 			/* int chdir(const char* __path) */
 			RealPt path = CPU_Pop32();
 			CPU_Push32(path);
@@ -43,25 +47,35 @@ static int seg000(unsigned short offs) {
 
 			return 0;
 		}
-		if (offs == 0x30f) return 0;
-		/* close() */
-		if (offs == 0x31b) return 0;
-		/* open() */
-		if (offs == 0x61e) return 0;
-		/* read() */
-		if (offs == 0x654) return 0;
-		if (offs == 0x678) return 0;
-
-		if (offs == 0x6d0) {
-			D1_LOG("C-Lib exit(%d)\n", real_readw(SegValue(ss), reg_sp));
+		case 0x30f: {
 			return 0;
 		}
-		if (offs == 0x6df) {
+		/* close() */
+		case 0x31b: {
+			return 0;
+		}
+		/* open() */
+		case 0x61e: {
+			return 0;
+		}
+		/* read() */
+		case 0x654: {
+			return 0;
+		}
+		case 0x678: {
+			return 0;
+		}
+		case 0x6d0: {
+			D1_LOG("C-Lib exit(%d)\n",
+				real_readw(SegValue(ss), reg_sp));
+			return 0;
+		}
+		case 0x6df: {
 			/* Not Called from far */
 			D1_LOG("_exit(%d)\n", real_readw(SegValue(ss), reg_sp));
 			return 0;
 		}
-		if (offs == 0x70b){
+		case 0x70b: {
 			unsigned long retval;
 			retval = (reg_dx << 16 | reg_ax) * (reg_cx << 16 | reg_bx);
 			D1_LOG("Mul unsigned long %u * %u = %lu\n",
@@ -74,7 +88,7 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		/* struct copy*/
-		if (offs == 0x722) {
+		case 0x722: {
 			RealPt src = CPU_Pop32();
 			RealPt dst = CPU_Pop32();
 			CPU_Push32(dst);
@@ -87,82 +101,122 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		/* getcurdir() */
-		if (offs == 0x73e) return 0;
+		case 0x73e: {
+			 return 0;
+		}
 		/* getdisk() */
-		if (offs == 0x781) return 0;
-		/* setdisk() */
-		if (offs == 0x79b) return 0;
-		/* dos_getdiskfree() */
-		if (offs == 0x7ed) return 0;
-		if (offs == 0x816) {
-			D1_LOG("_dos_getvect(int=0x%x)\n", real_readw(SegValue(ss),reg_sp));
+		case 0x781: {
 			return 0;
 		}
-		if (offs == 0x0825) {
+		/* setdisk() */
+		case 0x79b: {
+			return 0;
+		}
+		/* dos_getdiskfree() */
+		case 0x7ed: {
+			return 0;
+		}
+		case 0x816: {
+			unsigned short interruptno = CPU_Pop16();
+			CPU_Push16(interruptno);
+
+			D1_LOG("_dos_getvect(int=0x%x)\n", interruptno);
+
+			return 0;
+		}
+		case 0x825: {
 			unsigned short interruptno = CPU_Pop16();
 			RealPt isr = CPU_Pop32();
 			CPU_Push32(isr);
 			CPU_Push16(interruptno);
 
 			D1_LOG("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
-				interruptno, (unsigned short)(RealSeg(isr) - relocation),
+				interruptno,
+				(unsigned short)(RealSeg(isr) - relocation),
 				RealOff(isr));
 			return 0;
 		}
-		if (offs == 0x839) return 0;
-		if (offs == 0x840) {
+		case 0x839: {
+			return 0;
+		}
+		case 0x840: {
 			D1_LOG("Div unsigned long\n");
 			return 0;
 		}
-		if (offs == 0x848) return 0;
-		if (offs == 0x850) { //not called
+		case 0x848: {
+			return 0;
+		}
+		case 0x850: { //not called
 			D1_LOG("Mod unsigned long\n");
 			return 0;
 		}
-		if (offs == 0x8e7) return 0;
+		case 0x8e7: {
+			return 0;
+		}
 		/* rshift() */
-		if (offs == 0x908) return 0;
-		if (offs == 0x928) return 0;
-		if (offs == 0x9b0) return 0;
-		if (offs == 0xa10) return 0;
-		if (offs == 0xb33) {
+		case 0x908: {
+			return 0;
+		}
+		case 0x928: {
+			return 0;
+		}
+		case 0x9b0: {
+			return 0;
+		}
+		case 0xa10: {
+			return 0;
+		}
+		case 0xb33: {
 			/*seek()*/
+			unsigned short handle = CPU_Pop16();
+			signed int pos = CPU_Pop32();
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+			CPU_Push32(pos);
+			CPU_Push16(handle);
+
 			D1_LOG("__seek(Handle=0x%x, pos=%u, Mode=%d)\n",
-			real_readw(SegValue(ss), reg_sp), real_readw(SegValue(ss), reg_sp+4)<<16+
-			real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp+6));
+				handle, pos, mode);
+
 			return 0;
 		}
 		/* mkdir() */
-		if (offs == 0xb5c) return 0;
-		if (offs == 0xbac) {
+		case 0xb5c: {
+			return 0;
+		}
+		case 0xbac: {
 			unsigned short val=real_readw(SegValue(ss), reg_sp);
 			D1_LOG("C-Lib srand(%d)\n", val);
 			return 0;
 		}
-		if (offs == 0xbbd) {
+		case 0xbbd: {
 			D1_LOG("rand()\n");
 			return 0;
 		}
-		if (offs == 0x0be3) {
+		case 0x0be3: {
 			/*read()*/
 			D1_LOG("_read(fd=0x%x, buffer=0x%x:0x%x, len=%d)\n",
 			real_readw(SegValue(ss), reg_sp), real_readw(SegValue(ss), reg_sp+4),
 			real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp+6));
 			return 0;
 		}
-		if (offs == 0x1123) {
+		case 0x1123: {
 			/* time(), user for randomize */
-			unsigned int time= CPU_Pop32();
+			unsigned int time = CPU_Pop32();
 			CPU_Push32(time);
 
 			D1_LOG("C-Lib time(0x%04x)\n", time);
 
 			return 0;
 		}
-		if (offs == 0x117b) return 0;
+		case 0x117b: {
+			return 0;
+		}
 		/* delete() */
-		if (offs == 0x11a7) return 0;
-		if (offs == 0x176d) {
+		case 0x11a7: {
+			return 0;
+		}
+		case 0x176d: {
 			unsigned short cmd = CPU_Pop16();
 			CPU_Push16(cmd);
 
@@ -170,18 +224,21 @@ static int seg000(unsigned short offs) {
 
 			return 0;
 		}
-		if (offs == 0x1792) return 0;
-		if (offs == 0x1e55) {
+		case 0x1792: {
+			return 0;
+		}
+		case 0x1e55: {
 			unsigned short off=real_readw(SegValue(ss), reg_sp);
 			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
 			D1_LOG("free(0x%04x:0x%04x)\n", seg, off);
 			return 0;		}
-		if (offs == 0x1f69) {
+		case 0x1f69: {
 			unsigned short lo=real_readw(SegValue(ss), reg_sp);
 			unsigned short hi=real_readw(SegValue(ss), reg_sp+2);
 			D1_LOG("farmalloc(%d)\n", hi<<16+lo);
-			return 0;		}
-		if (offs == 0x2287) {
+			return 0;
+		}
+		case 0x2287: {
 			unsigned short nl=real_readw(SegValue(ss), reg_sp);
 			unsigned short nh=real_readw(SegValue(ss), reg_sp+2);
 			unsigned short lo=real_readw(SegValue(ss), reg_sp+4);
@@ -191,10 +248,16 @@ static int seg000(unsigned short offs) {
 					(nh<<16)+nl, (hi<<16)+lo);
 			return 0;
 		}
-		if (offs == 0x2315) return 0;
-		if (offs == 0x2411) return 0;
-		if (offs == 0x2596) return 0;
-		if (offs == 0x2d82) {
+		case 0x2315: {
+			return 0;
+		}
+		case 0x2411: {
+			return 0;
+		}
+		case 0x2596: {
+			return 0;
+		}
+		case 0x2d82: {
 			unsigned short i=4;
 			unsigned short off=real_readw(SegValue(ss), reg_sp+i);
 			unsigned short seg=real_readw(SegValue(ss), reg_sp+i+2);
@@ -216,7 +279,7 @@ static int seg000(unsigned short offs) {
 			*/
 			return 0;
 		}
-		if (offs == 0x2dff) {
+		case 0x2dff: {
 			/* long atol(const char* s) */
 			int val;
 			RealPt s = CPU_Pop32();
@@ -232,16 +295,26 @@ static int seg000(unsigned short offs) {
 
 			return 1;
 		}
-		if (offs == 0x2eb2) {
+		case 0x2eb2: {
 			D1_LOG("C-Lib close(%d)\n", real_readw(SegValue(ss), reg_sp));
 			return 0;
 		}
-		if (offs == 0x2eda) return 0;
-		if (offs == 0x2f25) return 0;
-		if (offs == 0x3040) return 0;
-		if (offs == 0x3073) return 0;
-		if (offs == 0x30a0) return 0;
-		if (offs == 0x3350) {
+		case 0x2eda: {
+			return 0;
+		}
+		case 0x2f25: {
+			return 0;
+		}
+		case 0x3040: {
+			return 0;
+		}
+		case 0x3073: {
+			return 0;
+		}
+		case 0x30a0: {
+			return 0;
+		}
+		case 0x3350: {
 			/* char* itoa(int __value, char* string, int radix);
 			radix is everytime 10 in this game*/
 
@@ -261,7 +334,7 @@ static int seg000(unsigned short offs) {
 			reg_dx = RealSeg(string);
 			return 1;
 		}
-		if (offs == 0x33c0) {
+		case 0x33c0: {
 			/*void *memcpy(void *dest, const void *src, size_t n)*/
 			RealPt dest = CPU_Pop32();
 			RealPt src = CPU_Pop32();
@@ -281,7 +354,7 @@ static int seg000(unsigned short offs) {
 
 			return 1;
 		}
-		if (offs == 0x3408) {
+		case 0x3408: {
 			/*void* memset(void *s, int c, size_t n)*/
 			RealPt s = CPU_Pop32();
 			short c = CPU_Pop16();
@@ -302,13 +375,13 @@ static int seg000(unsigned short offs) {
 			reg_dx = RealSeg(s);
 			return 1;
 		}
-		if (offs == 0x3479) {
+		case 0x3479: {
 			/* write(handle) */
 			unsigned short handle=real_readw(SegValue(ss), reg_sp);
 			D1_LOG("write_0(%d)\n", handle);
 			return 0;
 		}
-		if (offs == 0x34c7) {
+		case 0x34c7: {
 			/*open()*/
 			unsigned short off=real_readw(SegValue(ss), reg_sp);
 			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
@@ -318,7 +391,7 @@ static int seg000(unsigned short offs) {
 					MemBase+(seg<<4)+off, mode);
 			return 0;
 		}
-		if (offs == 0x3636) {
+		case 0x3636: {
 			/* sortof open() */
 			unsigned short off=real_readw(SegValue(ss), reg_sp);
 			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
@@ -328,16 +401,19 @@ static int seg000(unsigned short offs) {
 					MemBase+(seg<<4)+off, mode);
 			return 0;
 		}
-		if (offs == 0x36dd) {
+		case 0x36dd: {
 			/*printf()*/
 			unsigned short off=real_readw(SegValue(ss), reg_sp);
 			unsigned short seg=real_readw(SegValue(ss), reg_sp+2);
 
 			D1_LOG("printf(\"%s\")\n", MemBase+(seg<<4)+off);
-			return 0; }
-		if (offs == 0x3d74) return 0;
-			/* ret 0x000a */
-		if (offs == 0x41d2) {
+			return 0;
+		}
+		case 0x3d74: {
+			return 0;
+		}
+		/* ret 0x000a */
+		case 0x41d2: {
 			unsigned short	o1=real_readw(SegValue(ss), reg_sp);
 			unsigned short	s1=real_readw(SegValue(ss), reg_sp+2);
 			unsigned short	o2=real_readw(SegValue(ss), reg_sp+4);
@@ -352,7 +428,7 @@ static int seg000(unsigned short offs) {
 
 			return 0;
 		}
-		if (offs == 0x4215) {
+		case 0x4215: {
 			/*char *strcat(char* dest, const char* src)*/
 			RealPt dest = CPU_Pop32();
 			RealPt src = CPU_Pop32();
@@ -371,7 +447,7 @@ static int seg000(unsigned short offs) {
 
 			return 1;
 		}
-		if (offs == 0x4254) {
+		case 0x4254: {
 			/*int strcmp(const char* s1, const char* s2)*/
 			RealPt s1 = CPU_Pop32();
 			RealPt s2 = CPU_Pop32();
@@ -387,7 +463,7 @@ static int seg000(unsigned short offs) {
 
 			return 1;
 		}
-		if (offs == 0x4284) {
+		case 0x4284: {
 			/*char *strcpy(char* dest, const char* src)*/
 			RealPt dest = CPU_Pop32();
 			RealPt src = CPU_Pop32();
@@ -406,7 +482,7 @@ static int seg000(unsigned short offs) {
 
 			return 1;
 		}
-		if (offs == 0x42ad) {
+		case 0x42ad: {
 			/*strlen()*/
 			RealPt str = CPU_Pop32();
 			CPU_Push32(str);
@@ -416,7 +492,7 @@ static int seg000(unsigned short offs) {
 
 			return 1;
 		}
-		if (offs == 0x42cc) {
+		case 0x42cc: {
 			/*char *strncpy(char* dest, const char* src, size_t n)*/
 			RealPt dest = CPU_Pop32();
 			RealPt src = CPU_Pop32();
@@ -437,8 +513,10 @@ static int seg000(unsigned short offs) {
 
 			return 1;
 		}
-		if (offs == 0x462b) return 0;
-		if (offs == 0x4a85) {
+		case 0x462b: {
+			return 0;
+		}
+		case 0x4a85: {
 			/*write()*/
 			unsigned short handle=real_readw(SegValue(ss), reg_sp);
 			unsigned short off=real_readw(SegValue(ss), reg_sp+2);
@@ -447,10 +525,14 @@ static int seg000(unsigned short offs) {
 			D1_LOG("C-Lib __write(Handle=0x%x, Buffer=0x%x:0x%x, Len=%d)\n", handle, seg ,off, val);
 			return 0;
 		}
-		if (offs == 0x4a88) return 0;
-
-		D1_TRAC("\t\tC-Lib:0x%x\n", offs);
-		return 0;
+		case 0x4a88: {
+			return 0;
+		}
+		default: {
+			D1_TRAC("\t\tC-Lib:0x%x\n", offs);
+			return 0;
+		}
+	}
 }
 
 static int seg001(unsigned short offs) {
