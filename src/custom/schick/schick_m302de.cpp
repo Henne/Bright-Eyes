@@ -232,12 +232,13 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x176d: {
-			unsigned short cmd = CPU_Pop16();
+			signed short cmd = CPU_Pop16();
 			CPU_Push16(cmd);
 
+			reg_ax = bioskey(cmd);
 			D1_LOG("bioskey(%d);\n", (char) cmd);
 
-			return 0;
+			return 1;
 		}
 		case 0x1792: {
 			return 0;
