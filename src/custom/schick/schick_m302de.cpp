@@ -2784,175 +2784,113 @@ static inline int seg122(unsigned short offs) {
 
 // Intercept far CALLs (both 32 and 16 bit)
 int schick_farcall_v302de(unsigned segm, unsigned offs) {
-	if (segm == 0x0)
-		return seg000(offs);
-	if (segm == 0x4ac)
-		return seg001(offs);
-	if (segm == 0x51e)
-		return seg002(offs);
-	if (segm == 0x0ae7)
-		return seg003(offs);
-	if (segm == 0xb2a)
-		return seg004(offs);
-	if (segm == 0xc85)
-		return seg005(offs);
-	if (segm == 0x0e41)
-		return seg006(offs);
-	if (segm == 0x0ef8)
-		return seg007(offs);
-	if (segm == 0xf18)
-		return seg008(offs);
-	if (segm == 0x0ff1)
-		return seg009(offs);
-	if (segm == 0x1030) return 0;
-	/* No overlay */
-	if (segm == 0x1042) return 0;
-	if (segm == 0x1112)
-		return seg012(offs);
 
-	if (segm == 0x12db) return 0;
-	if (segm == 0x12de) return 0;
-	if (segm == 0x12e5)
-		return seg026(offs);
-	if (segm == 0x12ec)
-		return seg027(offs);
-	if (segm == 0x12f1) return 0;
-	if (segm == 0x12f9)
-		return seg029(offs);
-	/* Spielstand und Zeit */
-	if (segm == 0x12ff) return 0;
-	if (segm == 0x1303) return 0;
-	if (segm == 0x1309)
-		return seg032(offs);
-	if (segm == 0x130f) return 0;
-	/* Kampf */
-	if (segm == 0x1312) return 0;
-	/* Kampf Loot + AP*/
-	if (segm == 0x1316) return 0;
-	/* Kampf */
-	if (segm == 0x131a) return 0;
-	/* Kampf */
-	if (segm == 0x131f) return 0;
-	if (segm == 0x1324) return 0;
-	/* Kampf */
-	if (segm == 0x1328) return 0;
-	/* Kampf */
-	if (segm == 0x132d) return 0;
-	/* Werte Prüfen */
-	if (segm == 0x1330)
-		return seg041(offs);
-	if (segm == 0x1335) return 0;
-	/* Kampf */
-	if (segm == 0x1338) return 0;
-	/* Kampf */
-	if (segm == 0x133b) return 0;
-	/* Kampf */
-	if (segm == 0x133f) return 0;
-	/* Zustand */
-	if (segm == 0x1344) return 0;
-	if (segm == 0x1348)
-		return seg047(offs);
-	if (segm == 0x1350) return 0;
-	if (segm == 0x1353) return 0;
-	/* Steigern */
-	if (segm == 0x1358) return 0;
-	/*Vorraete auffüllen */
-	if (segm == 0x135c) return 0;
-	if (segm == 0x135f) return 0;
-	/* Heiler stub053 */
-	if (segm == 0x1362)
-		return seg053(offs);
-	if (segm == 0x1365) return 0;
-	if (segm == 0x1369) return 0;
-	/* Waren kaufen */
-	if (segm == 0x136d) return 0;
-	/* Waren verkaufen */
-	if (segm == 0x1370) return 0;
-	/* Dialog mit SCHMIED */
-	if (segm == 0x1373) return 0;
-	if (segm == 0x1377) return 0;
-	if (segm == 0x137b) return 0;
-	/* Held Löschen*/
-	if (segm == 0x137e) return 0;
-	/* Wunder erbitten */
-	if (segm == 0x1383) return 0;
-	if (segm == 0x1386) return 0;
-	/* Hafen */
-	if (segm == 0x138a) return 0;
-	/* stub056 */
-	if (segm == 0x138e) return 0;
-	if (segm == 0x1392) return 0;
-	/* Zufallsnachrichten */
-	if (segm == 0x139a) return 0;
-	/* Magierakademie + Stoerrebrandt */
-	if (segm == 0x13a1) return 0;
-	if (segm == 0x13a8) return 0;
-	if (segm == 0x13b4) return 0;
-	/* */
-	if (segm == 0x13b9)
-		return seg073(offs);
-	/* Automap */
-	if (segm == 0x13bd) return 0;
-	/* Dungeon betreten */
-	if (segm == 0x13c3) return 0;
-	if (segm == 0x13cb) return 0;
-	/* Kampf "Verfallene Herberge" */
-	if (segm == 0x13d7) return 0;
-	if (segm == 0x13e4) return 0;
-	if (segm == 0x13e9) return 0;
-	if (segm == 0x1401) return 0;
-	if (segm == 0x1408) return 0;
-	/* Kampf */
-	if (segm == 0x140b) return 0;
-	if (segm == 0x1417) return 0;
-	if (segm == 0x141b) return 0;
-	if (segm == 0x1420) return 0;
-	if (segm == 0x1429) return 0;
-	if (segm == 0x142c) return 0;
-	if (segm == 0x1432) return 0;
-	if (segm == 0x1438)
-		return seg096(offs);
-	/* stub097 */
-	if (segm == 0x1442)
-		return seg097(offs);
-	/* stub098 */
-	if (segm == 0x1449)
-		return seg098(offs);
-	if (segm == 0x144f) return 0;
-	if (segm == 0x145e) return 0;
-	if (segm == 0x1467) return 0;
-	/* Kampf Gegner zaubert */
-	if (segm == 0x1472) return 0;
-	/* Talent anwenden*/
-	if (segm == 0x147b)
-		return seg103(offs);
-	if (segm == 0x1480) return 0;
-	if (segm == 0x1485) return 0;
-	if (segm == 0x148c) return 0;
-	if (segm == 0x1491) return 0;
-	/* Essen */
-	if (segm == 0x1498) return 0;
-	/* Kampf Orvil-Rovik Wölfe */
-	if (segm == 0x149b)
-		return seg109(offs);
-	/* Reise Skjal-Orvil */
-	if (segm == 0x14b4) return 0;
-	/* Reise Skjal-Orvil */
-	if (segm == 0x14c2) return 0;
-	/* Reise Orvil-Rovik "Wölfe" */
-	if (segm == 0x14cb) return 0;
-	if (segm == 0x14d1) return 0;
-	if (segm == 0x14d8) return 0;
-	if (segm == 0x14e0) return 0;
-	if (segm == 0x14e7) return 0;
-	if (segm == 0x14ed) return 0;
-	if (segm == 0x14f0) return 0;
-	if (segm == 0x14f6) return 0;
-	if (segm == 0x14f9)
-		return seg122(offs);
-
-	D1_TRAC("Unfetched Segment: 0x%04x\n", segm);
-	return 0;
+	switch (segm) {
+		case 0x0000:	return seg000(offs);
+		case 0x04ac:	return seg001(offs);
+		case 0x051e:	return seg002(offs);
+		case 0x0ae7:	return seg003(offs);
+		case 0x0b2a:	return seg004(offs);
+		case 0x0c85:	return seg005(offs);
+		case 0x0e41:	return seg006(offs);
+		case 0x0ef8:	return seg007(offs);
+		case 0x0f18:	return seg008(offs);
+		case 0x0ff1:	return seg009(offs);
+		case 0x1030:	return 0;
+		case 0x1042:	return 0;
+		case 0x1112:	return seg012(offs);
+		case 0x12db:	return 0;
+		case 0x12de:	return 0;
+		case 0x12e5:	return seg026(offs);
+		case 0x12ec:	return seg027(offs);
+		case 0x12f1:	return 0;
+		case 0x12f9:	return seg029(offs);
+		case 0x12ff:	return 0;
+		case 0x1303:	return 0;
+		case 0x1309:	return seg032(offs);
+		case 0x130f:	return 0;
+		case 0x1312:	return 0;
+		case 0x1316:	return 0;
+		case 0x131a:	return 0;
+		case 0x131f:	return 0;
+		case 0x1324:	return 0;
+		case 0x1328:	return 0;
+		case 0x132d:	return 0;
+		case 0x1330:	return seg041(offs);
+		case 0x1335:	return 0;
+		case 0x1338:	return 0;
+		case 0x133b:	return 0;
+		case 0x133f:	return 0;
+		case 0x1344:	return 0;
+		case 0x1348:	return seg047(offs);
+		case 0x1350:	return 0;
+		case 0x1353:	return 0;
+		case 0x1358:	return 0;
+		case 0x135c:	return 0;
+		case 0x135f:	return 0;
+		case 0x1362:	return seg053(offs);
+		case 0x1365:	return 0;
+		case 0x1369:	return 0;
+		case 0x136d:	return 0;
+		case 0x1370:	return 0;
+		case 0x1373:	return 0;
+		case 0x1377:	return 0;
+		case 0x137b:	return 0;
+		case 0x137e:	return 0;
+		case 0x1383:	return 0;
+		case 0x1386:	return 0;
+		case 0x138a:	return 0;
+		case 0x138e:	return 0;
+		case 0x1392:	return 0;
+		case 0x139a:	return 0;
+		case 0x13a1:	return 0;
+		case 0x13a8:	return 0;
+		case 0x13b4:	return 0;
+		case 0x13b9:	return seg073(offs);
+		case 0x13bd:	return 0;
+		case 0x13c3:	return 0;
+		case 0x13cb:	return 0;
+		case 0x13d7:	return 0;
+		case 0x13e4:	return 0;
+		case 0x13e9:	return 0;
+		case 0x1401:	return 0;
+		case 0x1408:	return 0;
+		case 0x140b:	return 0;
+		case 0x1417:	return 0;
+		case 0x141b:	return 0;
+		case 0x1420:	return 0;
+		case 0x1429:	return 0;
+		case 0x142c:	return 0;
+		case 0x1432:	return 0;
+		case 0x1438:	return seg096(offs);
+		case 0x1442:	return seg097(offs);
+		case 0x1449:	return seg098(offs);
+		case 0x144f:	return 0;
+		case 0x145e:	return 0;
+		case 0x1467:	return 0;
+		case 0x1472:	return 0;
+		case 0x147b:	return seg103(offs);
+		case 0x1480:	return 0;
+		case 0x1485:	return 0;
+		case 0x148c:	return 0;
+		case 0x1491:	return 0;
+		case 0x1498:	return 0;
+		case 0x149b:	return seg109(offs);
+		case 0x14b4:	return 0;
+		case 0x14c2:	return 0;
+		case 0x14cb:	return 0;
+		case 0x14d1:	return 0;
+		case 0x14d8:	return 0;
+		case 0x14e0:	return 0;
+		case 0x14e7:	return 0;
+		case 0x14ed:	return 0;
+		case 0x14f0:	return 0;
+		case 0x14f6:	return 0;
+		case 0x14f9:	return seg122(offs);
+		default:
+			D1_TRAC("Unfetched Segment: 0x%04x\n", segm);
+			return 0;
+	}
 }
 
 
