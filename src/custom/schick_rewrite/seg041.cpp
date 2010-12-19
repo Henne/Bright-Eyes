@@ -4,6 +4,7 @@
 
 void seg041_1fd() {
 	memset(MemBase + PhysMake(datseg, 0xd333), 0 , 20);
+	ds_writew(0x26ad, 0);
 }
 
 void seg041_218(unsigned short v1, unsigned short v2) {
