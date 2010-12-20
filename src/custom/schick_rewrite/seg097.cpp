@@ -1,5 +1,6 @@
 #include "schick.h"
 
+#include "seg004.h"
 #include "seg096.h"
 
 //000
@@ -34,3 +35,12 @@ void GUI_1c2(unsigned short v1, unsigned short v2, RealPt v3) {
 	GUI_write_char_to_screen(v3, 8, v2);
 }
 
+//564
+void GUI_copy_smth(unsigned short width, unsigned short height) {
+	ds_writew(0xc011, ds_readw(0xbfff));
+	ds_writew(0xc013, ds_readw(0xc001));
+	ds_writew(0xc015, ds_readw(0xbfff) + width - 1);
+	ds_writew(0xc017, ds_readw(0xc001) + height - 1);
+	ds_writed(0xc019, ds_readd(0xbff9));
+	do_pic_copy(0);
+}

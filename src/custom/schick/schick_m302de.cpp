@@ -3147,6 +3147,19 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
 		return 1;
 	}
+	/* Callers: 3 */
+	if (is_ovrseg(0x1442) && (offs == 0x564)) {
+		CPU_Pop32();
+		unsigned short width = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		CPU_Push16(height);
+		CPU_Push16(width);
+
+		D1_INFO("GUI_copy_head(%d, %d)\n", width, height);
+		GUI_copy_smth(width, height);
+
+		return 1;
+	}
 	/* Callers: 2 */
 	if (is_ovrseg(0x147b) && (offs == 0x040F)) {
 		// Talentprobe
