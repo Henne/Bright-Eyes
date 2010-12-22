@@ -571,9 +571,11 @@ static int seg001(unsigned short offs) {
 		return 1;
 	}
 	case 0x30e: {
-		/* bioskey() caller */
-		D1_LOG("%s:%x()\n", __func__, offs);
-		return 0;
+		unsigned short val = CPU_Pop16();
+		CPU_Push16(val);
+		reg_ax = CD_bioskey(val);
+		D1_LOG("CD_bioskey(%x) = %x\n", val, reg_ax);
+		return 1;
 	}
 	case 0x34f: {
 		D1_LOG("%s:%x()\n", __func__, offs);
