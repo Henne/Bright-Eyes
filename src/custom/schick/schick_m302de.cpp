@@ -1021,7 +1021,7 @@ static int seg002(unsigned short offs) {
 		unsigned int money = CPU_Pop32();
 		CPU_Push32(money);
 
-		D1_INFO("Ändere Gruppenvermoegen = %dD %dS %dH\n",
+		D1_INFO("Aendere Gruppenvermoegen = %dD %dS %dH\n",
 			money / 100, (money % 100) / 10, money % 10);
 		return 0;
 	}
