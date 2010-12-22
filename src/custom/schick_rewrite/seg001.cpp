@@ -100,7 +100,6 @@ void seg001_00c1(unsigned short track_nr) {
 	}
 	track_end = tmp;
 
-	D1_INFO("track_start %x\ttrack_end %x\n", track_start, track_end);
 	track_len = track_end - track_start;
 	real_writed(relocation + 0x1238, 0x9e, track_len - 150);
 
