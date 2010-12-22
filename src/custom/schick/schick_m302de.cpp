@@ -566,8 +566,9 @@ static int seg000(unsigned short offs) {
 static int seg001(unsigned short offs) {
 	switch (offs) {
 	case 0x2c4: {
-		D1_TRAC("%s:%x()\n", __func__, offs);
-		return 0;
+		D1_LOG("%s:%x()\n", __func__, offs);
+		seg001_02c4();
+		return 1;
 	}
 	case 0x30e: {
 		/* bioskey() caller */
