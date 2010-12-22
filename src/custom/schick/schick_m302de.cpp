@@ -2933,6 +2933,15 @@ int schick_nearcall_v302de(unsigned offs) {
 			reg_dx = (retval >> 16) & 0xffff;
 			return 1;
 		}
+		/* Callers: 2 */
+		if (offs == 0xc1) {
+			CPU_Pop32();
+			unsigned short track_nr = CPU_Pop16();
+			CPU_Push16(track_nr);
+			D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
+			seg001_00c1(track_nr);
+			return 1;
+		}
 		/* Callers: 3 */
 		if (offs == 0x322) {
 			CPU_Pop32();
