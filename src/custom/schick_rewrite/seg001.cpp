@@ -175,3 +175,22 @@ void CD_audio_pause() {
 	CD_driver_request(RealMake(relocation + 0x1238, 0xa8));
 }
 
+void CD_audio_play() {
+	/* Is CD initialized ? */
+	if (ds_readw(0x95) == 0)
+		return;
+
+	/* Is CD paused ? */
+	if (ds_readw(0xa1) == 0)
+		return;
+
+	//CD_check();
+
+	/* reset CD pause */
+	ds_writew(0xa1, 0);
+	ds_writed(0xbc4e, ds_readd(0xbc38));
+	ds_writed(0xbc4a, CD_get_tod() - ds_readd(0xbc3c) + ds_readd(0xbc4a));
+
+	real_writew(relocation + 0x1238, 0xc7, 0);
+	CD_driver_request(RealMake(relocation + 0x1238, 0xc4));
+}

@@ -590,8 +590,9 @@ static int seg001(unsigned short offs) {
 	}
 	case 0x3d5: {
 		/* CDA on */
-		D1_LOG("%s:%x()\n", __func__, offs);
-		return 0;
+		CD_audio_play();
+		D1_LOG("CD_audio_play()\n");
+		return 1;
 	}
 	case 0x4f4: {
 		/* CDA set track */
