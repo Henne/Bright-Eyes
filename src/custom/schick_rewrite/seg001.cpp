@@ -5,6 +5,9 @@
 
 #include "schick.h"
 
+#include "seg000.h"
+#include "seg001.h"
+
 unsigned short CD_has_drives() {
 
 	reg_ax = 0x1500;
@@ -104,6 +107,33 @@ void seg001_00c1(unsigned short track_nr) {
 	CD_driver_request(RealMake(relocation + 0x1238, 0x8c));
 	ds_writed(0xbc4e, ((track_len - 150) * 0x1234e) / 0x4b000);
 	ds_writed(0xbc4a, CD_get_tod());
+}
+
+void seg001_02c4() {
+
+	signed int val;
+
+	if (ds_readw(0x95) == 0)
+		return;
+
+	val = CD_get_tod();
+	val -= ds_readd(0xbc4a);
+
+	if (val < ds_readd(0xbc4e))
+		return;
+
+	if (ds_readw(0x9b) != 1)
+		return;
+
+	seg001_0322();
+	seg001_0322();
+	seg001_00c1(ds_readw(0xbc40));
+	ds_writew(0x9b, 1);
+}
+
+signed short CD_bioskey(signed short cmd) {
+	seg001_02c4();
+	return bioskey(cmd);
 }
 
 void seg001_0322() {
