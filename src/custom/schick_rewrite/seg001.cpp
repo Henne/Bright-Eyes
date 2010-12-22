@@ -153,3 +153,25 @@ void seg001_034f() {
 	real_writew(relocation + 0x1238, 0x1f, 0);
 	CD_driver_request(RealMake(relocation + 0x1238, 0x1c));
 }
+
+void CD_audio_pause() {
+	/* Is CD initialized ? */
+	if (ds_readw(0x95) == 0)
+		return;
+
+	/* Is CD already paused ? */
+	if (ds_readw(0xa1) != 0)
+		return;
+
+	/* set CD pause */
+	ds_writew(0xa1, 1);
+	ds_writed(0xbc3c, CD_get_tod());
+	/* save current position */
+	ds_writed(0xbc38, ds_readd(0xbc4e));
+	/* set current position to maximum singned int */
+	ds_writed(0xbc4e, 0x7fffffff);
+
+	real_writew(relocation + 0x1238, 0xab, 0);
+	CD_driver_request(RealMake(relocation + 0x1238, 0xa8));
+}
+

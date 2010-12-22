@@ -15,3 +15,4 @@ signed short CD_bioskey(signed short);
 void seg001_0322();
 //static
 void seg001_034f();
+void CD_audio_pause();
