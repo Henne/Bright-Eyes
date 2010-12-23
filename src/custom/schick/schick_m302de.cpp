@@ -3171,6 +3171,54 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* seg005 */
 	if (segm == 0xc85) {
 		switch (offs) {
+		case 0x181: {
+			CPU_Pop32();
+			unsigned short type = CPU_Pop16();
+			unsigned short pos = CPU_Pop16();
+			CPU_Push16(pos);
+			CPU_Push16(type);
+
+			RealPt retval = FIG_name_3rd_case(type, pos);
+			D1_LOG("FIG_name_3rd_case(%d,%d) = %s\n",
+				type, pos, getString(retval));
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+
+			return 1;
+		}
+		case 0x1b6: {
+			CPU_Pop32();
+			unsigned short type = CPU_Pop16();
+			unsigned short pos = CPU_Pop16();
+			CPU_Push16(pos);
+			CPU_Push16(type);
+
+			RealPt retval = FIG_name_4th_case(type, pos);
+			D1_LOG("FIG_name_4th_case(%d,%d) = %s\n",
+				type, pos, getString(retval));
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+
+			return 1;
+		}
+		case 0x1eb: {
+			CPU_Pop32();
+			unsigned short type = CPU_Pop16();
+			unsigned short pos = CPU_Pop16();
+			CPU_Push16(pos);
+			CPU_Push16(type);
+
+			RealPt retval = FIG_name_1st_case(type, pos);
+			D1_LOG("FIG_name_1st_case(%d,%d) = %s\n",
+				type, pos, getString(retval));
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+
+			return 1;
+		}
 		case 0x1ba7: {
 			CPU_Pop32();
 			set_delay_timer();
