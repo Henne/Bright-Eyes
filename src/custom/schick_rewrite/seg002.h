@@ -7,6 +7,7 @@ void refresh_screen_size();
 void update_mouse_cursor1();
 void refresh_screen_size1();
 unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p);
+void wait_for_keyboard1();
 //static
 void timers_daily();
 //static
@@ -25,6 +26,7 @@ void seg002_3c63();
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);
+void wait_for_keyboard2();
 unsigned int swap_u32(unsigned int v);
 void set_to_ff();
 unsigned short mod_timer(short val);

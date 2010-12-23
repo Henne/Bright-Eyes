@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 53/136
+	Functions rewritten: 55/136
 */
 #include <string.h>
 
@@ -10,6 +10,8 @@
 
 #include "schick_common.h"
 
+#include "seg000.h"
+#include "seg001.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
@@ -259,6 +261,13 @@ unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {
 
 	}
 	return 0;
+}
+
+void wait_for_keyboard1() {
+	while (CD_bioskey(1)) {
+		D1_LOG("loop in %s\n", __func__);
+		bioskey(0);
+	}
 }
 
 //static
@@ -671,6 +680,13 @@ void draw_splash(unsigned short index, unsigned short type) {
 
 	/* how long the splash should be displayed */
 	ds_writeb(0xbccf + index, 10);
+}
+
+void wait_for_keyboard2() {
+	while (CD_bioskey(1)) {
+		D1_LOG("loop in %s\n", __func__);
+		bioskey(0);
+	}
 }
 
 unsigned int swap_u32(unsigned int v) {

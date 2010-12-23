@@ -741,8 +741,12 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x1d67:
-	case 0x1ecc:
 		return 0;
+	case 0x1ecc: {
+		D1_LOG("wait_for_keyboard1()\n");
+		wait_for_keyboard1();
+		return 1;
+	}
 	case 0x21ab: {
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
@@ -822,7 +826,11 @@ static int seg002(unsigned short offs) {
 		dec_splash();
 		return 1;
 	}
-	case 0x4016:	/* Kopierschutzabfrage */
+	case 0x4016: {
+		D1_LOG("wait_for_keyboard2()\n");
+		wait_for_keyboard2();
+		return 1;
+	}
 	case 0x404f:
 	case 0x40d1:
 		return 0;
@@ -3097,6 +3105,13 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		D1_LOG("draw_splash(%d, %d);\n", index, type);
 		draw_splash(index, type);
+		return 1;
+	}
+	/* Callers: 1 */
+	if (offs == 0x4016) {
+		CPU_Pop32();
+		D1_LOG("near wait_for_keyboard2()\n");
+		wait_for_keyboard2();
 		return 1;
 	}
 	/* Callers: 2 */
