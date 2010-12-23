@@ -125,7 +125,6 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 
 	Bit8u *hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
 	short i;
-	short tmp;
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class is magicuser */

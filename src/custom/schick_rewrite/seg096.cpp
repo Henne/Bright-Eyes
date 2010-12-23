@@ -18,7 +18,6 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 	Bit8u *lp1;
 	unsigned short l2;
 	RealPt p_name;
-	char *p_name1;
 	short l4;
 	short *lp5;
 
@@ -217,7 +216,6 @@ unsigned short GUI_count_lines(Bit8u *str) {
 	unsigned short v6, lines;
 	short si, di;
 	unsigned short max_line_width, width_char, width_line;
-	unsigned short ax;
 
 	lines = 0;
 
