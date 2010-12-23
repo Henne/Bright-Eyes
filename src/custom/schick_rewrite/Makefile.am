@@ -8,6 +8,7 @@ libschick_rewrite_a_SOURCES = schick_common.h\
 		seg002.cpp seg002.h\
 		seg003.cpp seg003.h\
 		seg004.cpp seg004.h\
+		seg005.cpp seg005.h\
 		seg006.cpp seg006.h\
 		seg007.cpp seg007.h\
 		seg008.cpp seg008.h\
