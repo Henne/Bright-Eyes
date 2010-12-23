@@ -225,7 +225,11 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x117b: {
-			return 0;
+			signed short c = CPU_Pop16();
+			CPU_Push16(c);
+			reg_ax = toupper(c);
+			D1_LOG("toupper(%c) == %c\n", c, reg_ax);
+			return 1;
 		}
 		/* delete() */
 		case 0x11a7: {
