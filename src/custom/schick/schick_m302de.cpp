@@ -3172,6 +3172,21 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* seg005 */
 	if (segm == 0xc85) {
 		switch (offs) {
+		case 0x144: {
+			CPU_Pop32();
+			RealPt p = CPU_Pop32();
+			unsigned short count = CPU_Pop16();
+			unsigned short val = CPU_Pop16();
+			CPU_Push16(val);
+			CPU_Push16(count);
+			CPU_Push32(p);
+
+			FIG_set_star_color(Real2Phys(p), count, val & 0xff);
+			D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
+				p, count, val & 0xff);
+
+			return 1;
+		}
 		case 0x181: {
 			CPU_Pop32();
 			unsigned short type = CPU_Pop16();

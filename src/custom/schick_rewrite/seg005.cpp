@@ -1,11 +1,29 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg005 (fight)
- *	Functions rewritten: 4/9
+ *	Functions rewritten: 5/9
  */
 
 #include "schick.h"
 
 #include "seg096.h"
+
+/**
+ *	FIG_set_star_color - set the color of the star in fights
+ *	@ptr:	pointer to the star template
+ *	@count: number of bytes the star has
+ *	@color: 1=red/2=green/3=blue/4=yellow/11=darkbrown/12=lightbrown/13=pink
+ *
+ *	Sets the color of the star which shows fight activities,
+ *	like damage, in fights.
+ */
+void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color) {
+
+	color += 0x80;
+	for (; --count; ptr++) {
+		if (mem_readb(ptr))
+			mem_writeb(ptr, color);
+	}
+}
 
 /*
  *	FIG_name_3rd_case - returns name in the 3rd german case
