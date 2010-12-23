@@ -10,6 +10,7 @@
 #include "seg002.h"
 #include "seg003.h"
 #include "seg004.h"
+#include "seg005.h"
 #include "seg006.h"
 #include "seg007.h"
 #include "seg008.h"
@@ -3169,7 +3170,16 @@ int schick_nearcall_v302de(unsigned offs) {
 	} /* segm == 0x51e */
 	/* seg005 */
 	if (segm == 0xc85) {
-		return 0;
+		switch (offs) {
+		case 0x1ba7: {
+			CPU_Pop32();
+			set_delay_timer();
+			D1_LOG("set_delay_timer()\n");
+			return 1;
+		}
+		default:
+			return 0;
+		}
 	}
 	/* Callers: 1 */
 	if ((segm == 0xe41) && (offs == 0x5a)) {
