@@ -2264,7 +2264,7 @@ static int seg047(unsigned short offs) {
 		CPU_Push32(hero);
 
 		hero_disease_test(MemBase + Real2Phys(hero), disease, probability);
-		D1_INFO("%s koennte zu %d%% erkranken %d\n",
+		D1_INFO("%s koennte zu %d%% an %d erkranken\n",
 			schick_getCharname(hero), probability, disease);
 		return 1;
 	}
