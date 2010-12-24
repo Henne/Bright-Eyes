@@ -951,7 +951,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(type);
 		CPU_Push32(hero);
 
-		D1_INFO("sub_ae_splash(%s, %d);\n",
+		D1_LOG("sub_ae_splash(%s, %d);\n",
 			schick_getCharname(hero), type);
 
 		sub_ae_splash(MemBase + Real2Phys(hero), type);
@@ -2777,7 +2777,7 @@ static int seg109(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(kampf);
 
-			D1_INFO("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
+			D1_LOG("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
 			return 0;
 		}
 		case 0xa2: {
@@ -3098,7 +3098,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		seg002_3c63();
 
-		D1_INFO("seg002_3c63();\n");
+		D1_LOG("seg002_3c63();\n");
 		return 1;
 	}
 	/* Callers: 2 */
@@ -3127,7 +3127,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Push32(hero);
 
 		reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
-		D1_INFO("is_hero_available_in_group(%s) = %d\n",
+		D1_LOG("is_hero_available_in_group(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
 
 		return 1;
@@ -3265,7 +3265,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		CPU_Push16(height);
 		CPU_Push16(width);
 
-		D1_INFO("GUI_copy_head(%d, %d)\n", width, height);
+		D1_LOG("GUI_copy_head(%d, %d)\n", width, height);
 		GUI_copy_smth(width, height);
 
 		return 1;

@@ -304,7 +304,6 @@ void timers_daily() {
 	/* Decrase monthly credit cens timer (bank) */
 	if ((signed short)ds_readw(0x335e) > 0) {
 		ds_writew(0x335e, ds_readw(0x335e) - 1);
-		D1_INFO("%d %d\n", ds_readw(0x335e), ds_readw(0x3350));
 		if (ds_readw(0x335e) == 0)
 			ds_writew(0x3350, 0);
 	}

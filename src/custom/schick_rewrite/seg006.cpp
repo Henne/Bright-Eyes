@@ -171,7 +171,6 @@ void FIG_remove_from_list(signed char id, signed char v2) {
 
 	/* check if p == HEAD */
 	if (p == Real2Phys(ds_readd(0xe108))) {
-		D1_INFO("p == head\n");
 		/* Set HEAD: head = p->next;*/
 		ds_writed(0xe108, mem_readd(p + 0x1b));
 		if (ds_readd(0xe108) != 0)
