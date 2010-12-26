@@ -8,6 +8,67 @@
 #include "seg096.h"
 
 /**
+ *
+ *	@p:	pointer to an object 35 byte
+ *	@x:	x coordinate on the screen
+ *	@y:	y coordinate on the screen
+ *
+*/
+unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y) {
+
+	Bit8u *i;
+
+	if (host_readb(p + 0x12) == 0)
+		return 0;
+
+	if (host_readb(p + 0xe) != 0xff || host_readb(p + 0x12) == 3) {
+
+		if (host_readb(p + 0x12) == 1)
+			host_writeb(p + 0x12, 2);
+
+		return 1;
+	}
+
+	i = MemBase + Real2Phys(ds_readd(0xe108));
+
+	/* i = i->next; */
+	for (; i != p; i = MemBase + Real2Phys(host_readd(i + 0x1b))) {
+
+		if (host_readb(i + 0x12) < 2)
+			continue;
+
+		signed short i3, i4, i5, i6, i7, i8;
+		signed short osx, osy;
+
+		i3 = (signed char)host_readb(i + 3);
+		i4 = (signed char)host_readb(i + 4);
+		i5 = (signed char)host_readb(i + 5);
+		i6 = (signed char)host_readb(i + 6);
+		i7 = (signed char)host_readb(i + 7);
+		i8 = (signed char)host_readb(i + 8);
+
+		osx = 10 - i8 / 2 + (i3 + i4) * 10 + i5;
+		osy = 118 - i7 + (i3 - i4) * 5 + i6;
+
+		D1_LOG("3=%d 4=%d 5=%d 6=%d 7=%d 8=%d osx=%d osy=%d\n",
+			i3, i4, i5, i6, i7, i8, osx, osy);
+
+		if (x + i8 < osx || x - i8 > osx)
+			continue;
+
+		if (y + i7 < osy || y - i7 > osy)
+			continue;
+
+		if (host_readb(p + 0x12) == 1)
+			host_writeb(p + 0x12, 2);
+
+		return 1;
+	}
+
+	return 0;
+}
+
+/**
  *	FIG_set_star_color - set the color of the star in fights
  *	@ptr:	pointer to the star template
  *	@count: number of bytes the star has

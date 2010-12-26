@@ -3172,6 +3172,21 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* seg005 */
 	if (segm == 0xc85) {
 		switch (offs) {
+		case 0xb: {
+			CPU_Pop32();
+			RealPt p = CPU_Pop32();
+			signed short x = CPU_Pop16();
+			signed short y = CPU_Pop16();
+			CPU_Push16(y);
+			CPU_Push16(x);
+			CPU_Push32(p);
+
+			reg_ax = FIG_obj_needs_refresh(MemBase + Real2Phys(p), x, y);
+			D1_INFO("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
+				p, x, y, reg_ax);
+
+			return 1;
+		}
 		case 0x144: {
 			CPU_Pop32();
 			RealPt p = CPU_Pop32();
