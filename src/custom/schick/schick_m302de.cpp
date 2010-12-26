@@ -3182,7 +3182,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p);
 
 			reg_ax = FIG_obj_needs_refresh(MemBase + Real2Phys(p), x, y);
-			D1_INFO("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
+			D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
 				p, x, y, reg_ax);
 
 			return 1;
