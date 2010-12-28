@@ -44,6 +44,7 @@ short test_attrib(Bit8u* hero, unsigned short attrib, short bonus);
 short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, signed char bonus);
 unsigned short get_random_hero();
 unsigned int get_party_money();
+void set_party_money(signed int money);
 void add_hero_ap(Bit8u* hero, int ap);
 void add_group_ap(signed int ap);
 void add_hero_ap_all(short ap);

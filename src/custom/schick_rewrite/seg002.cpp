@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 55/136
+	Functions rewritten: 56/136
 */
 #include <string.h>
 
@@ -1150,6 +1150,58 @@ unsigned int get_party_money() {
 	}
 
 	return sum;
+}
+
+/**
+ *	set_party_money -	shares money between current party members
+ *	@money:		the money to share
+ *
+ *	If only a NPC is in that party, he gets all the money.
+ *	If a hero is dead an in the current party, his money is set to 0.
+*/
+void set_party_money(signed int money) {
+	Bit8u *hero;
+	signed int hero_money;
+	unsigned short i, heroes = 0;
+
+	if (money < 0)
+		money = 0;
+
+	heroes = count_heroes_in_group();
+
+	/* set hero to NPC */
+	hero = MemBase + Real2Phys(ds_readd(0xbd34)) + 6 * 0x6da;
+	/* if we have an NPC in current group and alive */
+	if (host_readb(hero + 0x21) &&
+		host_readb(hero + 0x87) == ds_readb(0x2d35) &&
+		(host_readb(hero + 0xaa) & 1) == 0) {
+
+		/* If only the NPC is in that group give him all the money */
+		if (heroes <= 1) {
+			host_writed(hero + 0x2c, host_readd(hero + 0x2c) + money);
+			heroes = 0;
+		} else
+			heroes--;
+	}
+
+	if (heroes == 0)
+		return;
+
+	hero_money = money / heroes;
+
+	hero = MemBase + Real2Phys(ds_readd(0xbd34));
+
+	for (i = 0; i < 6; i++, hero += 0x6da) {
+
+		if (host_readb(hero + 0x21) &&
+			host_readb(hero + 0x87) == ds_readb(0x2d35) &&
+			(host_readb(hero + 0xaa) & 1) == 0) {
+			/* account the money to hero */
+			host_writed(hero + 0x2c, hero_money);
+		} else
+			if (host_readb(hero + 0x87) == ds_readb(0x2d35))
+				host_writed(hero + 0x2c, 0);
+	}
 }
 
 /**

@@ -1031,10 +1031,10 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(money);
 
 		D1_INFO("Setze Gruppenvermoegen = %dD %dS %dH\n",
-
 			money / 100, (money % 100) / 10, money % 10);
+		set_party_money(money);
 
-		return 0;
+		return 1;
 	}
 	case 0x5331: {
 		unsigned int money = CPU_Pop32();
