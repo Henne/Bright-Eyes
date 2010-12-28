@@ -858,6 +858,54 @@ void seg002_45ea(PhysPt p1, PhysPt p2) {
 	}
 }
 
+void seg002_4658(Bit8u *p1, Bit8u *p2) {
+	unsigned short dx;
+
+	dx = host_readw(p1);
+
+	switch (ds_readw(0xc3d9)) {
+
+		case 'H': {
+			if (dx) {
+				dx--;
+			} else {
+				dx = 14;
+				while (host_readw(p2 + dx * 7) == 0) {
+					dx--;
+				}
+			}
+			break;
+		}
+		case 'P': {
+			if (dx > 14) {
+				if (host_readw(p2 + (dx + 1) * 7) != 0)
+					dx++;
+				else
+					dx = 0;
+			} else
+				dx = 0;
+			break;
+		}
+		case 'M': {
+			if (dx < 10) {
+				if (host_readw(p2 + (dx + 5) * 7) != 0)
+					dx += 5;
+			} else
+				dx -= 10;
+			break;
+		}
+		case 'K': {
+			if (dx <= 4) {
+				if (host_readw(p2 + (dx + 10) * 7) != 0)
+					dx += 10;
+			} else
+				dx -= 5;
+		}
+	}
+
+	host_writew(p1, dx);
+}
+
 /**
 	set_automap_tile - marks a tile in the automap as seen
 	@x:	X xoordinate

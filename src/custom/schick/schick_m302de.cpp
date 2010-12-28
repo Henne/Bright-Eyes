@@ -904,8 +904,17 @@ static int seg002(unsigned short offs) {
 		return 1;
 
 	}
-	case 0x4658:	/* Leaf Function - far only */
-		return 0;
+	case 0x4658: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		D1_INFO("seg002_4658(%x,%x);\n", p1, p2);
+		seg002_4658(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+
+		return 1;
+	}
 	case 0x4707: {
 		/* Leaf Function - far & near */
 		unsigned short x = CPU_Pop16();

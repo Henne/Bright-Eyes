@@ -35,6 +35,7 @@ void draw_compass();
 short can_merge_group();
 unsigned short div16(unsigned char val);
 void seg002_45ea(PhysPt p1, PhysPt p2);
+void seg002_4658(Bit8u *p1, Bit8u *p2);
 void set_automap_tile(unsigned short x, unsigned short y);
 void set_automap_tiles(unsigned short x, unsigned short y);
 void seg002_47e2();
