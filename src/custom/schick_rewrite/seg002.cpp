@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 57/136
+	Functions rewritten: 59/136
 */
 #include <string.h>
 
@@ -18,6 +18,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg047.h"
+#include "seg096.h"
 
 
 unsigned int get_readlength2(signed short index) {
@@ -870,6 +871,57 @@ void set_automap_tiles(unsigned short x, unsigned short y) {
 		if (ds_readb(0xbd94) - 1 > x)
 			set_automap_tile(x + 1, y + 1);
 	}
+}
+
+/**
+*/
+void seg002_47e2() {
+	char bak[24];
+
+	/* save gfx settings to stack */
+	memcpy(&bak, MemBase + PhysMake(datseg, 0xc00d), 24);
+
+	/* set range 0,0 - 7,7 */
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 7);
+	ds_writew(0xc017, 7);
+
+	/* set destination */
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+	/* set source */
+	ds_writed(0xc019, RealMake(datseg, 0xbc63));
+
+	do_save_rect();
+
+	GUI_print_char('P', 0, 0);
+	/* restore gfx settings from stack */
+	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
+}
+
+/**
+*/
+void seg002_484f() {
+	char bak[24];
+
+	/* save gfx settings to stack */
+	memcpy(&bak, MemBase + PhysMake(datseg, 0xc00d), 24);
+
+	/* set range 0,0 - 7,7 */
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 7);
+	ds_writew(0xc017, 7);
+
+	/* set destination */
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+	/* set source */
+	ds_writed(0xc019, RealMake(datseg, 0xbc63));
+
+	do_pic_copy(0);
+
+	/* restore gfx settings from stack */
+	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
 }
 
 /**

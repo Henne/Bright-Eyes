@@ -3122,6 +3122,20 @@ int schick_nearcall_v302de(unsigned offs) {
 		return 1;
 	}
 	/* Callers: 2 */
+	if (offs == 0x47e2) {
+		CPU_Pop32();
+		seg002_47e2();
+		D1_INFO("seg002_47e2();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	if (offs == 0x484f) {
+		CPU_Pop32();
+		seg002_484f();
+		D1_INFO("seg002_484f();\n");
+		return 1;
+	}
+	/* Callers: 2 */
 	if (offs == 0x49d8) {
 		CPU_Pop32();
 		RealPt hero = CPU_Pop32();
