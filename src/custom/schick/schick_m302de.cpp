@@ -1042,7 +1042,8 @@ static int seg002(unsigned short offs) {
 
 		D1_INFO("Aendere Gruppenvermoegen = %dD %dS %dH\n",
 			money / 100, (money % 100) / 10, money % 10);
-		return 0;
+		add_party_money(money);
+		return 1;
 	}
 	case 0x5349: {
 		RealPt hero = CPU_Pop32();

@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 56/136
+	Functions rewritten: 57/136
 */
 #include <string.h>
 
@@ -1202,6 +1202,14 @@ void set_party_money(signed int money) {
 			if (host_readb(hero + 0x87) == ds_readb(0x2d35))
 				host_writed(hero + 0x2c, 0);
 	}
+}
+
+/**
+ *	add_party_money	-	adds money to the current group
+ *	@money:		money to add
+*/
+void add_party_money(signed int money) {
+	set_party_money(get_party_money() + money);
 }
 
 /**
