@@ -3185,6 +3185,15 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("count_heroes_available_in_group() = %d;\n", reg_ax);
 		return 1;
 	}
+	/* Callers: 1 */
+	if (offs == 0x5a81) {
+		CPU_Pop32();
+
+		reg_ax = 1;
+
+		D1_LOG("Kopierschutz umgangen\n");
+		return 1;
+	}
 
 		return 0;
 	} /* segm == 0x51e */
