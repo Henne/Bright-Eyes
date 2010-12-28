@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 59/136
+	Functions rewritten: 60/136
 */
 #include <string.h>
 
@@ -687,6 +687,39 @@ void wait_for_keyboard2() {
 		D1_LOG("loop in %s\n", __func__);
 		bioskey(0);
 	}
+}
+
+void wait_for_keypress() {
+
+	unsigned short si;
+	/* flushall() */
+
+	ds_writew(0xc3d5, 0);
+
+	do {
+		if (!CD_bioskey(1))
+			continue;
+
+		si = bioskey(0);
+
+		if ((si & 0xff) != 0x20)
+			continue;
+		if (ds_readw(0xc3c5) != 0)
+			continue;
+
+		seg002_47e2();
+
+		do {} while (!CD_bioskey(1));
+
+		seg002_484f();
+		break;
+
+	} while (!CD_bioskey(1) && ds_readw(0xc3d5) == 0);
+
+	if (CD_bioskey(1))
+		si = bioskey(0);
+
+	ds_writew(0xc3d5, 0);
 }
 
 unsigned int swap_u32(unsigned int v) {

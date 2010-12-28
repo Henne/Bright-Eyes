@@ -27,6 +27,7 @@ void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);
 void wait_for_keyboard2();
+void wait_for_keypress();
 unsigned int swap_u32(unsigned int v);
 void set_to_ff();
 unsigned short mod_timer(short val);

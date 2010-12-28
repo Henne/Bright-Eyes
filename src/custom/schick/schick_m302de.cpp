@@ -837,7 +837,11 @@ static int seg002(unsigned short offs) {
 		wait_for_keyboard2();
 		return 1;
 	}
-	case 0x404f:
+	case 0x404f: {
+		D1_LOG("seg002_404f()\n");
+		wait_for_keypress();
+		return 1;
+	}
 	case 0x40d1:
 		return 0;
 	case 0x41cd: {
