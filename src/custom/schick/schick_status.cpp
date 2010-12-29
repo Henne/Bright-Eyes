@@ -578,6 +578,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 					break;
 				case 4:
 					D1_INFO("Quest abgeschlossen\n");
+					break;
 				default:
 					D1_ERR("Fehler\n");
 					exit(1);
