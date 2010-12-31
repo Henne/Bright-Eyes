@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 60/136
+	Functions rewritten: 61/136
 */
 #include <string.h>
 
@@ -834,7 +834,7 @@ unsigned short div16(unsigned char val) {
 }
 
 /* This function is called in shops at sell/buy screens */
-void seg002_45ea(PhysPt p1, PhysPt p2) {
+void select_with_mouse(Bit8u *p1, Bit8u *p2) {
 	unsigned short i;
 
 	/* something mouse related */
@@ -850,60 +850,60 @@ void seg002_45ea(PhysPt p1, PhysPt p2) {
 			continue;
 		if (ds_readw(0x46c1 + i * 2) + 17 < ds_readw(0x299e))
 			continue;
-		if (mem_readw(p2 + i * 7) == 0)
+		if (host_readw(p2 + i * 7) == 0)
 			continue;
 
-		mem_writew(p1, i);
+		host_writew(p1, i);
 		return;
 	}
 }
 
-void seg002_4658(Bit8u *p1, Bit8u *p2) {
-	unsigned short dx;
+void select_with_keyboard(Bit8u *p1, Bit8u *p2) {
+	unsigned short pos;
 
-	dx = host_readw(p1);
+	pos = host_readw(p1);
 
 	switch (ds_readw(0xc3d9)) {
-
+		/* Key UP */
 		case 'H': {
-			if (dx) {
-				dx--;
+			if (pos) {
+				pos--;
 			} else {
-				dx = 14;
-				while (host_readw(p2 + dx * 7) == 0) {
-					dx--;
+				pos = 14;
+				while (host_readw(p2 + pos * 7) == 0) {
+					pos--;
 				}
 			}
 			break;
 		}
+		/* Key DOWN */
 		case 'P': {
-			if (dx > 14) {
-				if (host_readw(p2 + (dx + 1) * 7) != 0)
-					dx++;
-				else
-					dx = 0;
-			} else
-				dx = 0;
+			if (pos < 14 && (host_readw(p2 + (pos + 1) * 7) != 0))
+				pos++;
+			else
+				pos = 0;
 			break;
 		}
+		/* Key RIGHT */
 		case 'M': {
-			if (dx < 10) {
-				if (host_readw(p2 + (dx + 5) * 7) != 0)
-					dx += 5;
+			if (pos < 10) {
+				if (host_readw(p2 + (pos + 5) * 7) != 0)
+					pos += 5;
 			} else
-				dx -= 10;
+				pos -= 10;
 			break;
 		}
+		/* Key LEFT */
 		case 'K': {
-			if (dx <= 4) {
-				if (host_readw(p2 + (dx + 10) * 7) != 0)
-					dx += 10;
+			if (pos <= 4) {
+				if (host_readw(p2 + (pos + 10) * 7) != 0)
+					pos += 10;
 			} else
-				dx -= 5;
+				pos -= 5;
 		}
 	}
 
-	host_writew(p1, dx);
+	host_writew(p1, pos);
 }
 
 /**

@@ -898,8 +898,8 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 
-		D1_LOG("seg002_45ea(%x,%x);\n", p1, p2);
-		seg002_45ea(Real2Phys(p1), Real2Phys(p2));
+		D1_LOG("select_with_mouse(%x,%x);\n", p1, p2);
+		select_with_mouse(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
 
 		return 1;
 
@@ -910,8 +910,8 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 
-		D1_INFO("seg002_4658(%x,%x);\n", p1, p2);
-		seg002_4658(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+		D1_LOG("select_with_keyboard(%x,%x);\n", p1, p2);
+		select_with_keyboard(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
 
 		return 1;
 	}
