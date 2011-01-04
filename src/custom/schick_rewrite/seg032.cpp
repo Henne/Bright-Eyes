@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten 7/12
+ *	Functions rewritten 8/12
 */
 
 #include "schick.h"
@@ -215,4 +215,23 @@ unsigned short seg032_02db() {
 	}
 
 	return 0;
+}
+
+//static
+unsigned short FIG_fight_continues() {
+
+	if (seg032_02db()) {
+		ds_writew(0x5f14, 1);
+		return 0;
+	}
+
+	if (FIG_get_first_active_hero() == -1) {
+		ds_writew(0xc3c1, 1);
+		return 0;
+	}
+
+	if (FIG_count_active_enemies() == 0)
+		return 0;
+
+	return 1;
 }

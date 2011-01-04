@@ -3409,6 +3409,13 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("near seg032_02db() = %d\n", reg_ax);
 			return 1;
 		}
+		/* Callers: 1 */
+		case 0x349: {
+			CPU_Pop32();
+			reg_ax = FIG_fight_continues();
+			D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
+			return 1;
+		}
 		default:
 			return 0;
 		}
