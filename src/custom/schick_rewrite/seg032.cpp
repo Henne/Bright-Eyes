@@ -53,6 +53,7 @@ unsigned short FIG_choose_next_hero() {
  *	FIG_choose_next_enemy	-	chooses the next enemy on turn
  *
  *	This is simply done randomly.
+ *	Orig_BUG: I had this loop running infinitely.
  */
 unsigned short FIG_choose_next_enemy() {
 
@@ -61,10 +62,9 @@ unsigned short FIG_choose_next_enemy() {
 
 	do {
 		retval = random_schick(ds_readw(0xd872)) - 1;
-		enemy = MemBase + retval * 62;
+		enemy = MemBase + PhysMake(datseg, 0xd34b) + retval * 62;
 
-	} while (host_readb(enemy + PhysMake(datseg, 0xd34b)) == 0 ||
-			host_readb(enemy + PhysMake(datseg, 0xd373)) == 0);
+	} while (host_readb(enemy) == 0 || host_readb(enemy + 0x28) == 0);
 
 	return retval;
 }
