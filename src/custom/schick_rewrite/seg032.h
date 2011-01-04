@@ -10,3 +10,5 @@ unsigned short FIG_count_active_enemies();
 unsigned short FIG_is_enemy_active(Bit8u *);
 //0x43
 signed short FIG_get_first_active_hero();
+//0x48
+unsigned short seg032_02db();

@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten 6/12
+ *	Functions rewritten 7/12
 */
 
 #include "schick.h"
@@ -177,4 +177,42 @@ signed short FIG_get_first_active_hero() {
 	}
 
 	return -1;
+}
+
+/**
+ *	seg032_02db -	currently unknown
+ *
+ *	Returns 1 if FIG_get_first_active_hero() returns -1
+ *	and at least one hero in the group is not dead and has
+ *	something at offset 0x84 set (maybe sleeping).
+ *
+ */
+//static
+unsigned short seg032_02db() {
+
+	Bit8u *hero_i;
+	unsigned short i;
+
+	if (FIG_get_first_active_hero() != -1)
+		return 0;
+
+	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* check class */
+		if (host_readb(hero_i + 0x21) == 0)
+			continue;
+		/* check group */
+		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+			continue;
+		/* hero is dead */
+		if (host_readb(hero_i + 0xaa) & 1)
+			continue;
+		/* unknown */
+		if (host_readb(hero_i + 0x84) != 0x10)
+			continue;
+
+		return 1;
+	}
+
+	return 0;
 }

@@ -3402,6 +3402,13 @@ int schick_nearcall_v302de(unsigned offs) {
 				reg_ax != -1 ? (char*)schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
 			return 1;
 		}
+		/* Callers: 1 */
+		case 0x2db: {
+			CPU_Pop32();
+			reg_ax = seg032_02db();
+			D1_LOG("near seg032_02db() = %d\n", reg_ax);
+			return 1;
+		}
 		default:
 			return 0;
 		}
