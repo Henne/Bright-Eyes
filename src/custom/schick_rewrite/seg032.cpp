@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten 1/12
+ *	Functions rewritten 3/12
 */
 
 #include "schick.h"
@@ -46,6 +46,25 @@ unsigned short FIG_choose_next_hero() {
 	} while (host_readb(hero + 0x21) == 0 ||
 			host_readb(hero + 0x87) != ds_readb(0x2d35) ||
 			host_readb(hero + 0x83) == 0);
+
+	return retval;
+}
+/**
+ *	FIG_choose_next_enemy	-	chooses the next enemy on turn
+ *
+ *	This is simply done randomly.
+ */
+unsigned short FIG_choose_next_enemy() {
+
+	Bit8u *enemy;
+	unsigned short retval;
+
+	do {
+		retval = random_schick(ds_readw(0xd872)) - 1;
+		enemy = MemBase + retval * 62;
+
+	} while (host_readb(enemy + PhysMake(datseg, 0xd34b)) == 0 ||
+			host_readb(enemy + PhysMake(datseg, 0xd373)) == 0);
 
 	return retval;
 }

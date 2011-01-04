@@ -3364,6 +3364,13 @@ int schick_nearcall_v302de(unsigned offs) {
 				schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
 			return 1;
 		}
+		/* Callers: 1 */
+		case 0xfc: {
+			CPU_Pop32();
+			reg_ax = FIG_choose_next_enemy();
+			D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
+			return 1;
+		}
 		default:
 			return 0;
 		}
