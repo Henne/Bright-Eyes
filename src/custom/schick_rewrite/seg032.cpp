@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten 4/12
+ *	Functions rewritten 5/12
 */
 
 #include "schick.h"
@@ -106,4 +106,34 @@ unsigned short FIG_count_active_enemies() {
 	}
 
 	return retval;
+}
+
+/**
+ *	FIG_is_enemy_active -	checks if an enemy is active
+ *	@enemy:	pointer to the enemy sheet
+ *
+ *	Returns 1 if enemy can act or 0 if not.
+ */
+//static
+unsigned short FIG_is_enemy_active(Bit8u *enemy) {
+
+		if ((host_readb(enemy + 0x31) >> 1) & 1)
+			return 0;
+		/* check if enemy is dead */
+		if ((host_readb(enemy + 0x31)) & 1)
+			return 0;
+		if ((host_readb(enemy + 0x31) >> 2) & 1)
+			return 0;
+		if ((host_readb(enemy + 0x32) >> 3) & 1)
+			return 0;
+		if ((host_readb(enemy + 0x31) >> 6) & 1)
+			return 0;
+		if ((host_readb(enemy + 0x31) >> 3) & 1)
+			return 0;
+		if ((host_readb(enemy + 0x32)) & 1)
+			return 0;
+		if (((signed char)host_readb(enemy + 0x35)) > 0)
+			return 0;
+
+		return 1;
 }

@@ -3380,6 +3380,16 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
 			return 1;
 		}
+		/* Callers: 1 */
+		case 0x1ba: {
+			CPU_Pop32();
+			RealPt enemy = CPU_Pop32();
+			CPU_Push32(enemy);
+
+			reg_ax = FIG_is_enemy_active(MemBase + Real2Phys(enemy) );
+			D1_LOG("near FIG_is_enemy_active(); = %d\n", reg_ax);
+			return 1;
+		}
 		default:
 			return 0;
 		}
