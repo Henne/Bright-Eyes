@@ -3356,6 +3356,16 @@ int schick_nearcall_v302de(unsigned offs) {
 				row, col, obj);
 			return 1;
 		}
+		/* Callers: 1 */
+		case 0xa8: {
+			CPU_Pop32();
+			reg_ax = FIG_choose_next_hero();
+			D1_LOG("FIG_choose_next_hero() = %s\n",
+				schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
+			return 1;
+		}
+		default:
+			return 0;
 		}
 	}
 	/* Callers: 3 */
