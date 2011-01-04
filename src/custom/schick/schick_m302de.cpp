@@ -17,6 +17,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg029.h"
+#include "seg032.h"
 #include "seg041.h"
 #include "seg047.h"
 #include "seg096.h"
@@ -2105,7 +2106,19 @@ static int seg032(unsigned short offs) {
 			return 0;
 		}
 		case 0x25: {
-			return 0;
+			signed short row = CPU_Pop16();
+			signed short col = CPU_Pop16();
+			signed short object = CPU_Pop16();
+			CPU_Push16(object);
+			CPU_Push16(col);
+			CPU_Push16(row);
+
+			signed char obj = object & 0xff;
+
+			FIG_set_cb_field(row, col, obj);
+			D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
+				row, col, obj);
+			return 1;
 		}
 		case 0x2a: {
 			return 0;
