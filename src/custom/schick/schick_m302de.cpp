@@ -18,6 +18,7 @@
 #include "seg009.h"
 #include "seg029.h"
 #include "seg032.h"
+#include "seg039.h"
 #include "seg041.h"
 #include "seg047.h"
 #include "seg096.h"
@@ -2148,7 +2149,13 @@ static int seg039(unsigned short offs) {
 			return 0;
 		}
 		case 0x25: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			reg_ax = seg039_0023(MemBase + Real2Phys(hero));
+			D1_LOG("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
+
+			return 1;
 		}
 		case 0x2a: {
 			return 0;
@@ -3444,6 +3451,22 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Pop32();
 			reg_ax = FIG_fight_continues();
 			D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
+			return 1;
+		}
+		default:
+			return 0;
+		}
+	}
+	if (is_ovrseg(0x1328)) {
+		switch(offs) {
+		case 0x23: {
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			reg_ax = seg039_0023(MemBase + Real2Phys(hero));
+			D1_INFO("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
+
 			return 1;
 		}
 		default:
