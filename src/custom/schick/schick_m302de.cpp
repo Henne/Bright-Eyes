@@ -2104,8 +2104,22 @@ static int seg032(unsigned short offs) {
 			D1_LOG("Kampf 0x%02x\n", v1);
 			return 0;
 		}
-		default:
+		case 0x25: {
 			return 0;
+		}
+		case 0x2a: {
+			return 0;
+		}
+		case 0x39: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
 	}
 }
 
