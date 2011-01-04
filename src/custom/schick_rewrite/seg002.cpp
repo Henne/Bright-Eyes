@@ -125,7 +125,11 @@ signed int process_nvf(Bit8u *nvf) {
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
 			MemBase + Real2Phys(ds_readd(0xd2eb)), d.type);
-		/* Yes, retval is not set here */
+		/* retval was originally neither set nor used here.
+			VC++2008 complains about an uninitialized variable
+			on a Debug build, so we fix this for debuggings sake */
+		/* Orig-Fix */
+		retval = p_size;
 		break;
 
 	default:
