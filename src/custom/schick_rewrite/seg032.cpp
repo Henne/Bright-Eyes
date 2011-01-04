@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten 3/12
+ *	Functions rewritten 4/12
 */
 
 #include "schick.h"
@@ -65,6 +65,45 @@ unsigned short FIG_choose_next_enemy() {
 
 	} while (host_readb(enemy + PhysMake(datseg, 0xd34b)) == 0 ||
 			host_readb(enemy + PhysMake(datseg, 0xd373)) == 0);
+
+	return retval;
+}
+
+/**
+ *	FIG_count_active_enemies -	return the number of active enemies
+ *
+ */
+unsigned short FIG_count_active_enemies() {
+
+	Bit8u *enemy;
+	unsigned short i, retval = 0;
+
+	for (i = 0; i < 20; i++) {
+		enemy = MemBase + PhysMake(datseg, 0xd34b) + i * 62;
+
+		/* if enemy has no monster class */
+		if (host_readb(enemy) == 0)
+			continue;
+
+		/* check flags */
+		/* enemy is dead */
+		if ((host_readb(enemy + 0x31)) & 1)
+			continue;
+		if ((host_readb(enemy + 0x31) >> 2) & 1)
+			continue;
+		if ((host_readb(enemy + 0x31) >> 5) & 1)
+			continue;
+		if ((host_readb(enemy + 0x31) >> 6) & 1)
+			continue;
+		if ((host_readb(enemy + 0x31) >> 3) & 1)
+			continue;
+
+		/* unknown */
+		if (host_readb(enemy + 0x35))
+			continue;
+
+		retval++;
+	}
 
 	return retval;
 }

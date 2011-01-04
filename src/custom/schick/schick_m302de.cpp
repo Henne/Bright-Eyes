@@ -2124,7 +2124,9 @@ static int seg032(unsigned short offs) {
 			return 0;
 		}
 		case 0x39: {
-			return 0;
+			reg_ax = FIG_count_active_enemies();
+			D1_LOG("FIG_count_active_enemies() = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x43: {
 			return 0;
@@ -3369,6 +3371,13 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Pop32();
 			reg_ax = FIG_choose_next_enemy();
 			D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x12c: {
+			CPU_Pop32();
+			reg_ax = FIG_count_active_enemies();
+			D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
 			return 1;
 		}
 		default:
