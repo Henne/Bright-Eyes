@@ -218,6 +218,7 @@ static void schick_status_dng_thorwal(unsigned long i) {
 			D1_INFO("Giftfalle 0x0d07 deaktiviert\n");
 			break;
 		}
+		break;
 	case 0x128a:
 		D1_INFO("Hauptkampf erledigt\n");
 		break;
