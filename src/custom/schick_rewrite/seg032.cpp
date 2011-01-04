@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten 5/12
+ *	Functions rewritten 6/12
 */
 
 #include "schick.h"
@@ -136,4 +136,45 @@ unsigned short FIG_is_enemy_active(Bit8u *enemy) {
 			return 0;
 
 		return 1;
+}
+
+/**
+ *	FIG_get_first_active_hero -	returns the first active hero
+ *
+ *	Returns the index of the firsta active hero.
+ */
+signed short FIG_get_first_active_hero() {
+
+	Bit8u *hero_i;
+	unsigned short i;
+
+	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* check class */
+		if (host_readb(hero_i + 0x21) == 0)
+			continue;
+		/* check group */
+		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+			continue;
+		/* hero is dead */
+		if (host_readb(hero_i + 0xaa) & 1)
+			continue;
+		/* hero is stoned */
+		if ((host_readb(hero_i + 0xaa) >> 2) & 1)
+			continue;
+		/* unknown */
+		if ((host_readb(hero_i + 0xaa) >> 5) & 1)
+			continue;
+		/* unknown */
+		if (host_readb(hero_i + 0xab) & 1)
+			continue;
+		/* hero is unconscious */
+		if ((host_readb(hero_i + 0xaa) >> 6) & 1)
+			continue;
+
+		return i;
+	}
+
+	return -1;
 }

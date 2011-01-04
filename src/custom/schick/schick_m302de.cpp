@@ -2129,7 +2129,11 @@ static int seg032(unsigned short offs) {
 			return 1;
 		}
 		case 0x43: {
-			return 0;
+			reg_ax = FIG_get_first_active_hero();
+
+			D1_LOG("FIG_get_first_active_hero(); = %s\n",
+				reg_ax != -1 ? (char*)schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -3388,6 +3392,14 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			reg_ax = FIG_is_enemy_active(MemBase + Real2Phys(enemy) );
 			D1_LOG("near FIG_is_enemy_active(); = %d\n", reg_ax);
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x242: {
+			CPU_Pop32();
+			reg_ax = FIG_get_first_active_hero();
+			D1_LOG("near FIG_get_first_active_hero() = %s\n",
+				reg_ax != -1 ? (char*)schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
 			return 1;
 		}
 		default:
