@@ -3336,6 +3336,28 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
 		return 1;
 	}
+	/* seg032 */
+	if (is_ovrseg(0x1309)) {
+		switch (offs) {
+		/* Callers: 1 */
+		case 0x25: {
+			CPU_Pop32();
+			signed short row = CPU_Pop16();
+			signed short col = CPU_Pop16();
+			signed short object = CPU_Pop16();
+			CPU_Push16(object);
+			CPU_Push16(col);
+			CPU_Push16(row);
+
+			signed char obj = object & 0xff;
+
+			FIG_set_cb_field(row, col, obj);
+			D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
+				row, col, obj);
+			return 1;
+		}
+		}
+	}
 	/* Callers: 3 */
 	if (is_ovrseg(0x1442) && (offs == 0x564)) {
 		CPU_Pop32();
