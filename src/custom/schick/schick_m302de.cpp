@@ -987,9 +987,18 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x4adc:
-	case 0x4df3:
-		/* Wunder TSA heilt ganze Gruppe 6x */
 		return 0;
+	case 0x4df3: {
+		RealPt hero = CPU_Pop32();
+		signed short le = CPU_Pop16();
+		CPU_Push16(le);
+		CPU_Push32(hero);
+
+		D1_INFO("%s erhaelt %d LE\n", schick_getCharname(hero), le);
+		add_hero_le(MemBase + Real2Phys(hero), le);
+
+		return 1;
+	}
 	case 0x4ff9: {
 		/* Eigenschaftsprobe */
 		RealPt hero = CPU_Pop32();

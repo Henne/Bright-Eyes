@@ -44,6 +44,7 @@ unsigned short check_hero(Bit8u* hero);
 unsigned short is_hero_available_in_group(Bit8u* hero);
 void sub_ae_splash(Bit8u *hero, signed short type);
 void add_hero_ae(Bit8u* hero, short ae);
+void add_hero_le(Bit8u *hero, signed short le);
 short test_attrib(Bit8u* hero, unsigned short attrib, short bonus);
 short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, signed char bonus);
 unsigned short get_random_hero();

@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 61/136
+	Functions rewritten: 62/136
 */
 #include <string.h>
 
@@ -14,9 +14,11 @@
 #include "seg001.h"
 #include "seg002.h"
 #include "seg004.h"
+#include "seg006.h"
 #include "seg007.h"
 #include "seg008.h"
 #include "seg009.h"
+#include "seg039.h"
 #include "seg047.h"
 #include "seg096.h"
 
@@ -1154,6 +1156,65 @@ void add_hero_ae(Bit8u* hero, short ae) {
 		host_writew(hero+0x64, host_readw(hero+0x62));
 
 	ds_writew(0xc3cb, tmp);
+}
+
+/**
+ *	add_hero_le	-	regenerates LE of a hero
+ *	@hero:		pointer to the hero
+ *	@le:		LE to be regenerated
+ *
+ *	This functions does some magic in fights under circumstances.
+ */
+void add_hero_le(Bit8u *hero, signed short le) {
+
+	RealPt ptr;
+	unsigned short val_bak, tmp, ret;
+
+	/* dead heroes never get LE */
+	if (host_readb(hero + 0xaa) & 1)
+		return;
+	/* this function is only for adding */
+	if (le <= 0)
+		return;
+
+	val_bak = ds_readw(0xc3cb);
+	ds_writew(0xc3cb, 0);
+
+	/* add LE */
+	host_writew(hero + 0x60, host_readw(hero + 0x60) + le);
+
+	/* set LE to maximum if greater than maximum */
+	if (host_readw(hero + 0x60) > host_readw(hero + 0x5e))
+		host_writew(hero + 0x60, host_readw(hero + 0x5e));
+
+	/* if current LE is >= 5 and the hero is unconscissous */
+	if (host_readw(hero + 0x60) >= 5 &&
+			((host_readb(hero + 0xaa) >> 6) & 1) == 0) {
+
+		/* awake */
+		host_writeb(hero + 0xaa, host_readb(hero + 0xaa) & 0xbf);
+
+		/* maybe if we are in a fight */
+		if (ds_readw(0x2cd5)) {
+			ptr = FIG_get_ptr(host_readb(hero + 0x81));
+			ret = seg039_0023(hero);
+
+			if (ret != -1) {
+				tmp = (signed char)host_readb(hero + 0x9b) * 12;
+				tmp += 4 * ret;
+				tmp +=(signed char)host_readb(hero + 0x82);
+				mem_writeb(Real2Phys(ptr) + 2, ds_readb(0x10d0 + tmp));
+			} else {
+				mem_writeb(Real2Phys(ptr) + 2, host_readb(hero + 0x82));
+			}
+			mem_writeb(Real2Phys(ptr) + 0x0d, 0xff);
+			mem_writeb(Real2Phys(ptr) + 5, 0x00);
+			mem_writeb(Real2Phys(ptr) + 6, 0x00);
+		}
+	}
+
+
+	ds_writew(0xc3cb, val_bak);
 }
 
 /**
