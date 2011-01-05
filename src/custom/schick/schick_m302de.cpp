@@ -999,6 +999,15 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
+	case 0x4efb: {
+		signed short le = CPU_Pop16();
+		CPU_Push16(le);
+
+		D1_INFO("Jeder Held der Gruppe erhaelt %d LE\n", le);
+		add_group_le(le);
+
+		return 1;
+	}
 	case 0x4ff9: {
 		/* Eigenschaftsprobe */
 		RealPt hero = CPU_Pop32();

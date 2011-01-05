@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 62/136
+	Functions rewritten: 63/136
 */
 #include <string.h>
 
@@ -1215,6 +1215,29 @@ void add_hero_le(Bit8u *hero, signed short le) {
 
 
 	ds_writew(0xc3cb, val_bak);
+}
+
+/**
+ *	add_group_le	-	regenerates LE of a group
+ *	@le:		LE to be regenerated
+ *
+ */
+void add_group_le(signed short le) {
+
+	Bit8u *hero;
+	unsigned short i;
+
+	hero = MemBase + Real2Phys(ds_readd(0xbd34));
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+		/* check class */
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+		/* check group */
+		if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+			continue;
+
+		add_hero_le(hero, le);
+	}
 }
 
 /**
