@@ -2075,10 +2075,12 @@ static int seg010(unsigned short offs) {
 		}
 		case 0xfd: {
 			reg_ax = EMS_init();
-			if (reg_ax)
+			if (reg_ax) {
 				D1_INFO("EMS initialisiert Segment 0x%x\n",
 					ds_readw(0x4bac));
-			else
+
+				//ds_writeb(0x26ab, 1);
+			} else
 				D1_INFO("EMS nicht vorhanden\n");
 
 			return 1;
