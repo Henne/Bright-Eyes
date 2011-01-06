@@ -16,6 +16,7 @@
 #include "seg007.h"
 #include "seg008.h"
 #include "seg009.h"
+#include "seg010.h"
 #include "seg029.h"
 #include "seg032.h"
 #include "seg039.h"
@@ -2017,7 +2018,14 @@ static int seg010(unsigned short offs) {
 		return 0;
 		}
 		case 0xfd: {
-		return 0;
+			reg_ax = EMS_init();
+			if (reg_ax)
+				D1_INFO("EMS initialisiert Segment 0x%x\n",
+					ds_readw(0x4bac));
+			else
+				D1_INFO("EMS nicht vorhanden\n");
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
