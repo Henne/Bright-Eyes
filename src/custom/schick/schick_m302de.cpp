@@ -3604,10 +3604,48 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x1344)) {
 		switch (offs) {
 		case 0x000: {
-			return 0;
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			unsigned short spell = CPU_Pop16();
+			unsigned short fsig = CPU_Pop16();
+			unsigned short x1 = CPU_Pop16();
+			unsigned short x2 = CPU_Pop16();
+			unsigned short yg = CPU_Pop16();
+			CPU_Push16(yg);
+			CPU_Push16(x2);
+			CPU_Push16(x1);
+			CPU_Push16(fsig);
+			CPU_Push16(spell);
+			CPU_Push32(hero);
+
+			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
+				schick_getCharname(hero), spell, fsig, x1, x2, yg);
+			status_show_spell(MemBase + Real2Phys(hero), spell,
+				fsig, x1, x2, yg);
+
+			return 1;
 		}
 		case 0x08d: {
-			return 0;
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			unsigned short talent = CPU_Pop16();
+			unsigned short ftig = CPU_Pop16();
+			unsigned short x1 = CPU_Pop16();
+			unsigned short x2 = CPU_Pop16();
+			unsigned short yg = CPU_Pop16();
+			CPU_Push16(yg);
+			CPU_Push16(x2);
+			CPU_Push16(x1);
+			CPU_Push16(ftig);
+			CPU_Push16(talent);
+			CPU_Push32(hero);
+
+			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
+				schick_getCharname(hero), talent, ftig, x1, x2, yg);
+			status_show_talent(MemBase + Real2Phys(hero), talent,
+				ftig, x1, x2, yg);
+
+			return 1;
 		}
 		case 0x11a: {
 			return 0;
