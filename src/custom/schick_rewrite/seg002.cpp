@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 63/136
+	Functions rewritten: 64/136
 */
 #include <string.h>
 
@@ -18,6 +18,7 @@
 #include "seg007.h"
 #include "seg008.h"
 #include "seg009.h"
+#include "seg010.h"
 #include "seg039.h"
 #include "seg047.h"
 #include "seg096.h"
@@ -733,6 +734,35 @@ unsigned int swap_u32(unsigned int v) {
 		((v >> 8) & 0xff) << 16 | (v&0xff) << 24;
 
 };
+
+/**
+ *	alloc_EMS -	allocates EMS memory
+ *	@bytes:		bytes to allocate
+ *
+ *	Returns an EMS handle, to access the memory.
+ */
+unsigned short alloc_EMS(unsigned int bytes) {
+
+	unsigned short pages;
+	unsigned short handle;
+
+	pages = (bytes / 0x4000) + 1;
+
+	if (EMS_get_num_pages_unalloced() < pages) {
+		D1_ERR("EMS out of free pages %d/%d\n",
+			pages, EMS_get_num_pages_unalloced());
+		return 0;
+	}
+
+	handle = EMS_alloc_pages(pages);
+
+	if (handle == 0) {
+		D1_ERR("EMS cant alloc %d pages\n", pages);
+		return 0;
+	}
+
+	return handle;
+}
 
 void set_to_ff() {
 	unsigned i;

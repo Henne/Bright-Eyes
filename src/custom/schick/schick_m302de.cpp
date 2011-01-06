@@ -859,6 +859,19 @@ static int seg002(unsigned short offs) {
 		reg_dx = (retval >> 16) & 0xffff;
 		return 1;
 	}
+	/* 3 EMS functions (all disabled in v3.02_de) */
+	case 0x4253: {
+		unsigned int bytes = CPU_Pop32();
+		CPU_Push32(bytes);
+
+		reg_ax = alloc_EMS(bytes);
+		D1_INFO("alloc_EMS(%d) = %d\n", bytes, reg_ax);
+
+		return 1;
+	}
+	case 0x428b:
+	case 0x4339:
+		return 0;
 	case 0x43e7: {
 		D1_LOG("set_to_ff()\n");
 		set_to_ff();
