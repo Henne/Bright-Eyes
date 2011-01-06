@@ -21,6 +21,7 @@
 #include "seg032.h"
 #include "seg039.h"
 #include "seg041.h"
+#include "seg046.h"
 #include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -2334,6 +2335,20 @@ static int seg041(unsigned short offs) {
 		exit(1);
 	}
 }
+
+static int seg046(unsigned short offs) {
+
+	switch (offs) {
+
+	case 0x20: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int seg047(unsigned short offs) {
 	switch(offs) {
 	case 0x20: {
@@ -3035,7 +3050,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1338:	return 0;
 		case 0x133b:	return 0;
 		case 0x133f:	return 0;
-		case 0x1344:	return 0;
+		case 0x1344:	return seg046(offs);
 		case 0x1348:	return seg047(offs);
 		case 0x1350:	return 0;
 		case 0x1353:	return 0;
@@ -3568,6 +3583,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 	}
+	/* seg039 */
 	if (is_ovrseg(0x1328)) {
 		switch(offs) {
 		case 0x23: {
@@ -3582,6 +3598,24 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		default:
 			return 0;
+		}
+	}
+	/* seg046 */
+	if (is_ovrseg(0x1344)) {
+		switch (offs) {
+		case 0x000: {
+			return 0;
+		}
+		case 0x08d: {
+			return 0;
+		}
+		case 0x11a: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg046", offs);
+			exit(1);
 		}
 	}
 	/* Callers: 3 */
