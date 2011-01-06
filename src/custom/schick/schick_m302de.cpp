@@ -2003,13 +2003,33 @@ static int seg009(unsigned short offs) {
 static int seg010(unsigned short offs) {
 	switch (offs) {
 		case 0x55: {
-		return 0;
+			reg_ax = EMS_get_num_pages_unalloced();
+			D1_INFO("EMS nichtallokierte Seiten %d\n",
+				reg_ax);
+
+			return 1;
 		}
 		case 0x71: {
-		return 0;
+			unsigned short pages = CPU_Pop16();
+			CPU_Push16(pages);
+
+			reg_ax = EMS_alloc_pages(pages);
+
+			D1_INFO("EMS %d Seiten angefordert, Handle = %d\n",
+				pages, reg_ax);
+
+			return 1;
 		}
 		case 0x90: {
-		return 0;
+			unsigned short handle = CPU_Pop16();
+			CPU_Push16(handle);
+
+			reg_ax = EMS_free_pages(handle);
+
+			D1_INFO("EMS Handle %d freigegeben, Fehlercode = %d\n",
+				handle, reg_ax);
+
+			return 1;
 		}
 		case 0xa9: {
 		return 0;
