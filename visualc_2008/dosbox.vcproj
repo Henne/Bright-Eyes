@@ -1148,6 +1148,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schick_rewrite\seg046.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick_rewrite\seg046.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schick_rewrite\seg047.cpp"
 						>
 					</File>
