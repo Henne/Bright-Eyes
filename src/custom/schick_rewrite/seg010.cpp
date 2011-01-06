@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg010 (EMS)
-	Functions rewritten: 6/8
+	Functions rewritten: 7/8
 */
 #include <string.h>
 
@@ -64,6 +64,18 @@ unsigned short EMS_alloc_pages(unsigned short pages) {
 unsigned short EMS_free_pages(unsigned short handle) {
 
 	reg_ax = 0x4500;
+	reg_dx = handle;
+	CALLBACK_RunRealInt(0x67);
+
+	reg_ah = reg_al;
+	return reg_ax;
+}
+
+unsigned short EMS_map_memory(unsigned short handle, unsigned short lpage, unsigned char ppage) {
+
+	reg_ax = 0x4400;
+	reg_al = ppage;
+	reg_bx = lpage;
 	reg_dx = handle;
 	CALLBACK_RunRealInt(0x67);
 

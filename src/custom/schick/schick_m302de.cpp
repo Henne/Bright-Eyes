@@ -2032,7 +2032,21 @@ static int seg010(unsigned short offs) {
 			return 1;
 		}
 		case 0xa9: {
-		return 0;
+			unsigned short handle = CPU_Pop16();
+			unsigned short lpage = CPU_Pop16();
+			unsigned short ppage = CPU_Pop16();
+			CPU_Push16(ppage);
+			CPU_Push16(lpage);
+			CPU_Push16(handle);
+
+			unsigned char p = ppage & 0xff;
+
+			reg_ax = EMS_map_memory(handle, lpage, p);
+
+			D1_INFO("EMS_map_memory(%d, %d, %d) = 0x%x\n",
+				handle, lpage, p, reg_ax);
+
+			return 1;
 		}
 		case 0xc8: {
 		return 0;
