@@ -2049,7 +2049,16 @@ static int seg010(unsigned short offs) {
 			return 1;
 		}
 		case 0xc8: {
-		return 0;
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+
+			RealPt retval = EMS_norm_ptr(p);
+
+			D1_INFO("EMS_norm_ptr(%p) = %p\n", p, retval);
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+
+			return 1;
 		}
 		case 0xfd: {
 			reg_ax = EMS_init();

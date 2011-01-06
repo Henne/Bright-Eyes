@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg010 (EMS)
-	Functions rewritten: 7/8
+	Functions rewritten: 8/8
 */
 #include <string.h>
 
@@ -81,6 +81,17 @@ unsigned short EMS_map_memory(unsigned short handle, unsigned short lpage, unsig
 
 	reg_ah = reg_al;
 	return reg_ax;
+}
+
+RealPt EMS_norm_ptr(RealPt p) {
+	RealPt retval;
+
+	retval = RealSeg(p) << 4;
+	retval += RealOff(p);
+	retval = retval << 12;
+	retval |= (RealOff(p) & 0x0f);
+
+	return retval;
 }
 
 unsigned short EMS_init() {
