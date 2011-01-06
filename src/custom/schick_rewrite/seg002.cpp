@@ -309,6 +309,9 @@ void timers_daily() {
 
 	ds_writew(0x26b9, 1);
 
+	/* Orig-BUG: Reenable identifying item in the academy */
+	ds_writew(0x335a, 0);
+
 	/* Decrase monthly credit cens timer (bank) */
 	if ((signed short)ds_readw(0x335e) > 0) {
 		ds_writew(0x335e, ds_readw(0x335e) - 1);
