@@ -1,3 +1,6 @@
+#ifndef SCHICK_H
+#define SCHICK_H
+
 #include <stdio.h>
 
 
@@ -99,3 +102,4 @@ void schick_status_exit();
 void schick_status_enable();
 void schick_status_disable();
 void schick_status_update(unsigned char*, unsigned short);
+#endif
