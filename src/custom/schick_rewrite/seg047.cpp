@@ -1,6 +1,7 @@
 #include "mem.h"
 
 #include "schick.h"
+#include "v302de.h"
 
 #include "seg007.h"
 
@@ -243,9 +244,7 @@ void make_valuta_str(char *dst, unsigned int money) {
 		money -= 10;
 	}
 
-	sprintf(dst,
-	(char*)MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(0xc3b5)) + 0xbb0)),
-	d, s, money);
+	sprintf(dst, (char*)get_ltx(0xbb0), d, s, money);
 }
 
 /**

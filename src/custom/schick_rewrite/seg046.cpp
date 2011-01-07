@@ -4,6 +4,7 @@
 */
 
 #include "schick.h"
+#include "v302de.h"
 
 #include "seg096.h"
 
@@ -18,9 +19,7 @@
  */
 void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 			unsigned short x1, unsigned short x2, unsigned short gy) {
-	Bit8u* sn;
 	char str[10];
-	PhysPt spellnames;
 	unsigned short group;
 	unsigned short y;
 
@@ -28,9 +27,7 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 	y = group * 7 + gy;
 
 	/* print spellname */
-	spellnames = Real2Phys(ds_readd(0xc3b5));
-	sn = MemBase + Real2Phys(mem_readd(spellnames + (spell + 0x6a) * 4));
-	GUI_print_string(sn, x1, y);
+	GUI_print_string(get_ltx((spell + 0x6a) * 4), x1, y);
 
 	/* convert value to string */
 	sprintf(str, "%d", (signed char)host_readb(hero + 0x13d + spell));
@@ -50,9 +47,7 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
  */
 void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
 			unsigned short x1, unsigned short x2, unsigned short gy) {
-	Bit8u* tn;
 	char str[10];
-	PhysPt talentnames;
 	unsigned short group;
 	unsigned short y;
 
@@ -60,9 +55,7 @@ void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
 	y = group * 7 + gy;
 
 	/* print talentname */
-	talentnames = Real2Phys(ds_readd(0xc3b5));
-	tn = MemBase + Real2Phys(mem_readd(talentnames + (talent + 0x30) * 4));
-	GUI_print_string(tn, x1, y);
+	GUI_print_string(get_ltx((talent + 0x30) * 4), x1, y);
 
 	/* convert value to string */
 	sprintf(str, "%d", (signed char)host_readb(hero + 0x108 + talent));
