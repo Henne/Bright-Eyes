@@ -3648,7 +3648,16 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x11a: {
-			return 0;
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			D1_LOG("status_show_talents(%s);\n",
+				schick_getCharname(hero));
+
+			status_show_talents(MemBase + Real2Phys(hero));
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
