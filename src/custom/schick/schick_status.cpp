@@ -306,41 +306,53 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 
-		if (i >= 0xf8 && i <= 0x187) //Zauberslots
-		{
+		if (i >= 0xf8 && i < 0x418) {
+			//modification slots 100x8 byte
 			unsigned long s_nr=(i-0xf8)/8;
 			unsigned long s_of=status_offset+s_nr*8+0xf8;
 
 			unsigned int cnt = ds_readd(s_of);
-			unsigned short sp = ds_readw(s_of + 4);
+			unsigned short off = ds_readw(s_of + 4);
 			unsigned char tar = ds_readb(s_of + 6);
-			signed char bon = ds_readb(s_of + 7);
+			signed char mod = ds_readb(s_of + 7);
 
+			/* align i to the mod slot */
 			i = 0xf8 + s_nr*8;
-			/* Zauber beendet */
-			if (sp != 0 && cnt == 0 && host_readd(status_copy+s_nr*8+0xf8) != 0)
+
+			/* deactivate mod slot */
+			if (cnt == 0 && host_readd(status_copy+s_nr*8+0xf8))
 			{
-				D1_INFO("Zauber %ld beendet\n", s_nr+1);
-				memcpy(status_copy+s_nr*8+0xf8, status_ingame+s_nr*8+0xf8, 8);
+				D1_INFO("Mod Timer %ld beendet\n", s_nr);
+				memcpy(status_copy+s_nr*8+0xf8,
+					status_ingame+s_nr*8+0xf8, 8);
+				i += 8;
 				continue;
 			}
 
-			/* Alles ausser der Counter bleiben gleich */
-			if (sp == host_readw(status_copy+s_nr*8+0xf8+4) ||
+			/* only subtract the timer */
+			if (off == host_readw(status_copy+s_nr*8+0xf8+4) ||
 				tar == host_readb(status_copy+s_nr*8+0xf8+6) ||
-				bon == host_readb(status_copy+s_nr*8+0xf8+7))
+				mod == host_readb(status_copy+s_nr*8+0xf8+7))
 			{
 				host_writed(status_copy+s_nr*8+0xf8, cnt);
+				i += 8;
 				continue;
 			}
 
-			if ( sp != 0 && !host_readw(status_copy+s_nr*8+0xf8+4)) {
-				D1_INFO("Zauber in Slot %ld aktiviert\n",
-						s_nr+1);
-				D1_INFO("Zauber: 0x%x\tBonus %d auf %d\n",
-						sp, bon, tar);
-				memcpy(status_copy+s_nr*8+0xf8, status_ingame+s_nr*8+0xf8, 8);
+			/* activate a new slot */
+			if (off != 0 && !host_readw(status_copy+s_nr*8+0xf8+4)) {
+				D1_INFO("Mod Timer in Slot %ld aktiviert\n",
+						s_nr);
+				D1_INFO("Offset: 0x%x\tBonus %d auf %d\n",
+						off, mod, tar);
+				memcpy(status_copy+s_nr*8+0xf8,
+					status_ingame+s_nr*8+0xf8, 8);
+				i += 8;
+				continue;
 			}
+
+			D1_ERR("Broken Mod Timer logic\n");
+			i += 8;
 			continue;
 		}
 		/* check gods estimation */
