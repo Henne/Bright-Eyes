@@ -1,10 +1,11 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 64/136
+	Functions rewritten: 65/136
 */
 #include <string.h>
 
-#include "mem.h"
+#include "callback.h"
+#include "regs.h"
 
 #include "schick.h"
 
@@ -146,6 +147,89 @@ signed int process_nvf(Bit8u *nvf) {
 
 	return retval;
 }
+
+/**
+ * mouse_action -	does mouse programming
+ * @p1:		function AX
+ * @p2:		depends on AX
+ * @p3:		depends on AX
+ * @p4:		depends on AX
+ * @p5:		depends on AX
+ *
+ * This function differs a bit. Borlands C-Library has a special function
+ * to call interrupts. We use the one of DOSBox, which means, that we
+ * put the values in the emulated registers, instead in a structure.
+ */
+void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
+
+	if ((signed short)host_readw(p1) < 0)
+		return;
+
+	unsigned short ba, bb, bc, bd, be, bsi, bdi;
+
+	/* save register content */
+	ba = reg_ax;
+	bb = reg_bx;
+	bc = reg_cx;
+	bd = reg_dx;
+	be = SegValue(es);
+	bsi = reg_si;
+	bdi = reg_di;
+
+	/* write paramters to registers */
+	reg_ax = host_readw(p1);
+	reg_bx = host_readw(p2);
+	reg_cx = host_readw(p3);
+
+	/* respect special functions */
+	switch (reg_ax) {
+		case 0x9:	/* define Cursor in graphic mode */
+		case 0xc:	/* install event handler */
+		case 0x14:	/* swap event handler */
+		case 0x16:	/* save mouse state */
+		case 0x17:	/* load mouse state */
+			reg_dx = host_readw(p4);
+			SegSet16(es, host_readw(p5));
+			break;
+		case 0x10:	/* define screen region for update */
+			reg_cx = host_readw(p2);
+			reg_dx = host_readw(p3);
+			reg_si = host_readw(p4);
+			reg_di = host_readw(p5);
+			break;
+		default:
+			reg_dx = host_readw(p4);
+
+	D1_INFO("%x %x %x %x %x\n", host_readw(p1), host_readw(p2),
+		host_readw(p3),	host_readw(p4),	host_readw(p5));
+
+	}
+
+	/* Call the interrupt */
+	CALLBACK_RunRealInt(0x33);
+
+	/* write the return values */
+	if (reg_ax == 0x14)
+		host_writew(p2, SegValue(es));
+	else
+		host_writew(p2, reg_bx);
+
+	host_writew(p1, reg_ax);
+	host_writew(p3, reg_cx);
+	host_writew(p4, reg_dx);
+
+	/* restore register values */
+	reg_ax = ba;
+	reg_bx = bb;
+	reg_cx = bc;
+	reg_dx = bd;
+	SegSet16(es, be);
+	reg_si = bsi;
+	reg_di = bdi;
+
+	return;
+}
+
 /**
  *	is_mouse_in_rect - checks if the mouse cursor is in a rectangle
  *	@x1:	upper left x coordinate

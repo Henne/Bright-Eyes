@@ -3191,6 +3191,31 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* seg002 - often used */
 	if (segm == 0x51e) {
 
+		switch (offs) {
+		case 0x1361: {
+			CPU_Pop32();
+			RealPt p1 = CPU_Pop32();
+			RealPt p2 = CPU_Pop32();
+			RealPt p3 = CPU_Pop32();
+			RealPt p4 = CPU_Pop32();
+			RealPt p5 = CPU_Pop32();
+			CPU_Push32(p5);
+			CPU_Push32(p4);
+			CPU_Push32(p3);
+			CPU_Push32(p2);
+			CPU_Push32(p1);
+
+			D1_LOG("mouse_action()\n");
+
+			mouse_action(MemBase + Real2Phys(p1),
+				MemBase + Real2Phys(p2),
+				MemBase + Real2Phys(p3),
+				MemBase + Real2Phys(p4),
+				MemBase + Real2Phys(p5));
+
+			return 1;
+		}
+		}
 	/* Callers: 2 */
 	if (offs == 0x1634) {
 		CPU_Pop32();

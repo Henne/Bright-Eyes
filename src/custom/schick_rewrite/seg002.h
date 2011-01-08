@@ -1,5 +1,7 @@
 unsigned int get_readlength2(signed short index);
 signed int process_nvf(Bit8u *p);
+//static
+void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
 short is_mouse_in_rect(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor();
