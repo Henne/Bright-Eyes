@@ -3224,6 +3224,24 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		/* Callers: 2 */
+		case 0x1634: {
+			CPU_Pop32();
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			unsigned short v4 = CPU_Pop16();
+			CPU_Push16(v4);
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			reg_ax  = is_mouse_in_rect(v1, v2, v3, v4);
+			D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
+				v1, v2, v3, v4, reg_ax);
+
+			return 1;
+		}
+		/* Callers: 2 */
 		case 0x19dc: {
 			CPU_Pop32();
 
@@ -3231,218 +3249,203 @@ int schick_nearcall_v302de(unsigned offs) {
 			mouse_19dc();
 			return 1;
 		}
+		/* Callers: 2 */
+		case 0x1cf2: {
+			CPU_Pop32();
+			unsigned short x = CPU_Pop16();
+			unsigned short y = CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+			CPU_Push16(y);
+			CPU_Push16(x);
+
+			reg_ax = get_mouse_action(x, y, MemBase + Real2Phys(p));
+
+			D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
+				x, y, p, reg_ax);
+			return 1;
 		}
-	/* Callers: 2 */
-	if (offs == 0x1634) {
-		CPU_Pop32();
-		unsigned short v1 = CPU_Pop16();
-		unsigned short v2 = CPU_Pop16();
-		unsigned short v3 = CPU_Pop16();
-		unsigned short v4 = CPU_Pop16();
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
+		/* Callers: 1 */
+		case 0x20bd: {
+			CPU_Pop32();
+			timers_daily();
+			D1_LOG("timers_daily();\n");
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x2177: {
+			CPU_Pop32();
+			seg002_2177();
+			D1_LOG("seg002_2177();\n");
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x21ab: {
+			CPU_Pop32();
+			RealPt p1 = CPU_Pop32();
+			RealPt p2 = CPU_Pop32();
+			CPU_Push32(p2);
+			CPU_Push32(p1);
 
-		reg_ax  = is_mouse_in_rect(v1, v2, v3, v4);
-		D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
-			v1, v2, v3, v4, reg_ax);
+			D1_LOG("pal_fade(%x,%x);\n", p1, p2);
+			pal_fade(Real2Phys(p1), Real2Phys(p2));
+			return 1;
+		}
+		/* Callers: 4 */
+		case 0x2bf6: {
+			CPU_Pop32();
+			unsigned int val = CPU_Pop32();
+			CPU_Push32(val);
 
-		return 1;
-	}
-	/* Callers: 2 */
-	if (offs ==  0x1cf2) {
-		CPU_Pop32();
-		unsigned short x = CPU_Pop16();
-		unsigned short y = CPU_Pop16();
-		RealPt p = CPU_Pop32();
-		CPU_Push32(p);
-		CPU_Push16(y);
-		CPU_Push16(x);
+			D1_LOG("near sub_ingame_timers(val = %u);\n", val);
+			sub_ingame_timers(val);
+			return 1;
+		}
+		/* Callers: 4 */
+		case 0x2f7a: {
+			CPU_Pop32();
+			unsigned int val = CPU_Pop32();
+			CPU_Push32(val);
 
-		reg_ax = get_mouse_action(x, y, MemBase + Real2Phys(p));
+			D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
+			seg002_2f7a(val);
 
-		D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
-			x, y, p, reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	if (offs == 0x20bd) {
-		CPU_Pop32();
-		timers_daily();
-		D1_LOG("timers_daily();\n");
-		return 1;
-	}
-	/* Callers: 1 */
-	if (offs == 0x2177) {
-		CPU_Pop32();
-		seg002_2177();
-		D1_LOG("seg002_2177();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	if (offs == 0x21ab) {
-		CPU_Pop32();
-		RealPt p1 = CPU_Pop32();
-		RealPt p2 = CPU_Pop32();
-		CPU_Push32(p2);
-		CPU_Push32(p1);
+			return 1;
+		}
+		/* Callers: 4 */
+		case 0x3071: {
+			RealPt pIP = CPU_Pop32();
+			unsigned short quarter = CPU_Pop16();
+			signed short v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(quarter);
 
-		D1_LOG("pal_fade(%x,%x);\n", p1, p2);
-		pal_fade(Real2Phys(p1), Real2Phys(p2));
-		return 1;
-	}
-	/* Callers: 4 */
-	if (offs == 0x2bf6) {
-		CPU_Pop32();
-		unsigned int val = CPU_Pop32();
-		CPU_Push32(val);
+			D1_LOG("near sub_light_timers(quarter=%d, v2=%d);\n",
+				quarter, v2);
+			sub_light_timers(quarter, v2);
 
-		D1_LOG("near sub_ingame_timers(val = %u);\n", val);
-		sub_ingame_timers(val);
-		return 1;
-	}
-	/* Callers: 4 */
-	if (offs == 0x2f7a) {
-		CPU_Pop32();
-		unsigned int val = CPU_Pop32();
-		CPU_Push32(val);
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x3b63: {
 
-		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
-		seg002_2f7a(val);
+			RealPt pIP = CPU_Pop32();
 
-		return 1;
-	}
-	/* Callers: 4 */
-	if (offs == 0x3071) {
-		RealPt pIP = CPU_Pop32();
-		unsigned short quarter = CPU_Pop16();
-		signed short v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(quarter);
+			D1_LOG("caller 0x%04x:0x%04x\n",
+				RealSeg(pIP) - relocation , RealOff(pIP));
 
-		D1_LOG("near sub_light_timers(quarter=%d, v2=%d);\n", quarter, v2);
-		sub_light_timers(quarter, v2);
+			seg002_3b63();
 
-		return 1;
-	}
-	/* Callers: 1 */
-	if (offs == 0x3b63) {
+			D1_LOG("seg002_3b63();\n");
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x3c63: {
 
-		RealPt pIP = CPU_Pop32();
+			RealPt pIP = CPU_Pop32();
 
-		D1_LOG("caller 0x%04x:0x%04x\n",
-			RealSeg(pIP) - relocation , RealOff(pIP));
+			D1_LOG("caller 0x%04x:0x%04x\n",
+				RealSeg(pIP) - relocation , RealOff(pIP));
 
-		seg002_3b63();
+			seg002_3c63();
 
-		D1_LOG("seg002_3b63();\n");
-		return 1;
-	}
-	/* Callers: 1 */
-	if (offs == 0x3c63) {
+			D1_LOG("seg002_3c63();\n");
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x3f3e: {
+			CPU_Pop32();
+			unsigned short index = CPU_Pop16();
+			unsigned short type = CPU_Pop16();
+			CPU_Push16(type);
+			CPU_Push16(index);
 
-		RealPt pIP = CPU_Pop32();
+			D1_LOG("draw_splash(%d, %d);\n", index, type);
+			draw_splash(index, type);
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x4016: {
+			CPU_Pop32();
+			D1_LOG("near wait_for_keyboard2()\n");
+			wait_for_keyboard2();
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x47e2: {
+			CPU_Pop32();
+			seg002_47e2();
+			D1_INFO("seg002_47e2();\n");
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x484f: {
+			CPU_Pop32();
+			seg002_484f();
+			D1_INFO("seg002_484f();\n");
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x49d8: {
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
 
-		D1_LOG("caller 0x%04x:0x%04x\n",
-			RealSeg(pIP) - relocation , RealOff(pIP));
-
-		seg002_3c63();
-
-		D1_LOG("seg002_3c63();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	if (offs == 0x3f3e) {
-		CPU_Pop32();
-		unsigned short index = CPU_Pop16();
-		unsigned short type = CPU_Pop16();
-		CPU_Push16(type);
-		CPU_Push16(index);
-
-		D1_LOG("draw_splash(%d, %d);\n", index, type);
-		draw_splash(index, type);
-		return 1;
-	}
-	/* Callers: 1 */
-	if (offs == 0x4016) {
-		CPU_Pop32();
-		D1_LOG("near wait_for_keyboard2()\n");
-		wait_for_keyboard2();
-		return 1;
-	}
-	/* Callers: 2 */
-	if (offs == 0x47e2) {
-		CPU_Pop32();
-		seg002_47e2();
-		D1_INFO("seg002_47e2();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	if (offs == 0x484f) {
-		CPU_Pop32();
-		seg002_484f();
-		D1_INFO("seg002_484f();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	if (offs == 0x49d8) {
-		CPU_Pop32();
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-
-		reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
-		D1_LOG("is_hero_available_in_group(%s) = %d\n",
+			reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
+			D1_LOG("is_hero_available_in_group(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
 
-		return 1;
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x55b1: {
+			RealPt pIP = CPU_Pop32();
+
+			unsigned short item = CPU_Pop16();
+			unsigned short group = CPU_Pop16() & 0xff;
+			CPU_Push16(group);
+			CPU_Push16(item);
+
+			reg_ax = get_first_hero_with_item_in_group(item, group);
+
+			D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
+				schick_getItemname(item), item, group,
+				(short)reg_ax);
+
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x573e: {
+			RealPt pIP = CPU_Pop32();
+
+			reg_ax = count_heros_available();
+
+			D1_LOG("count_heros_available() = %d;\n", reg_ax);
+			return 1;
+		}
+		/* Callers: 3 */
+		case 0x5799: {
+			RealPt pIP = CPU_Pop32();
+
+			reg_ax = count_heroes_available_in_group();
+
+			D1_LOG("count_heroes_available_in_group() = %d;\n",
+				reg_ax);
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x5a81: {
+			CPU_Pop32();
+
+			reg_ax = 1;
+
+			D1_LOG("Kopierschutz umgangen\n");
+			return 1;
+		}
+		default:
+			return 0;
+		}
 	}
-	/* Callers: 1 */
-	if (offs == 0x55b1) {
-		RealPt pIP = CPU_Pop32();
-
-		unsigned short item = CPU_Pop16();
-		unsigned short group = CPU_Pop16() & 0xff;
-		CPU_Push16(group);
-		CPU_Push16(item);
-
-		reg_ax = get_first_hero_with_item_in_group(item, group);
-
-		D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
-			schick_getItemname(item), item, group, (short)reg_ax);
-
-		return 1;
-	}
-	/* Callers: 2 */
-	if (offs == 0x573e) {
-		RealPt pIP = CPU_Pop32();
-
-		reg_ax = count_heros_available();
-
-		D1_LOG("count_heros_available() = %d;\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 3 */
-	if (offs == 0x5799) {
-		RealPt pIP = CPU_Pop32();
-
-		reg_ax = count_heroes_available_in_group();
-
-		D1_LOG("count_heroes_available_in_group() = %d;\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	if (offs == 0x5a81) {
-		CPU_Pop32();
-
-		reg_ax = 1;
-
-		D1_LOG("Kopierschutz umgangen\n");
-		return 1;
-	}
-
-		return 0;
-	} /* segm == 0x51e */
 	/* seg005 */
 	if (segm == 0xc85) {
 		switch (offs) {
