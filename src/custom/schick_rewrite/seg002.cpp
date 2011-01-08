@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 68/136
+	Functions rewritten: 69/136
 */
 #include <string.h>
 
@@ -665,6 +665,25 @@ void sub_mod_timers(unsigned int val) {
 		host_writeb(sp + 6, 0);
 		host_writew(sp + 4, 0);
 	}
+}
+
+unsigned short get_free_mod_slot() {
+	unsigned short i;
+
+	for (i = 0; i < 100; i++) {
+		if (ds_readw(0x2e2c + i * 8 + 4))
+			continue;
+		break;
+	}
+
+	if (i != 100)
+		return i;
+
+	/* set timer of slot 0 to 1 */
+	mem_writed(PhysMake(datseg, 0x2e2c), 1);
+	/* subtract one */
+	sub_mod_timers(1);
+	return 0;
 }
 
 /**

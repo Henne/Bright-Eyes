@@ -813,7 +813,11 @@ static int seg002(unsigned short offs) {
 		sub_mod_timers(val);
 		return 1;
 	}
-	case 0x2e26:	/* Wunder Rondra: Starker Schwertarm */
+	case 0x2e26: {
+		reg_ax = get_free_mod_slot();
+		D1_LOG("get_free_mod_slot() = %d\n", reg_ax);
+		return 1;
+	}
 	case 0x2e69:	/* Wunder Rondra: Starker Schwertarm  Leaf Function */
 		return 0;
 	case 0x2f7a: {
