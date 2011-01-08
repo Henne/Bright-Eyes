@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 69/136
+	Functions rewritten: 70/136
 */
 #include <string.h>
 
@@ -684,6 +684,54 @@ unsigned short get_free_mod_slot() {
 	/* subtract one */
 	sub_mod_timers(1);
 	return 0;
+}
+
+void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
+	signed char mod, signed char who) {
+
+	Bit8u *mod_ptr;
+	unsigned short i, j;
+	unsigned short new_target;
+	signed char target;
+
+	if (who == -1)
+		/* mod slot is on savegame */
+		mod_ptr = MemBase + PhysMake(datseg, 0x2d34);
+	else {
+		/* mod slot is on a hero/npc */
+		mod_ptr = MemBase + Real2Phys(ds_readd(0xbd34)) + who * 0x6da;
+
+		if (host_readb(mod_ptr + 0x7b) != 0) {
+			/* hero/npc has a target number */
+			target = host_readb(mod_ptr + 0x7b);
+		} else {
+			/* hero/npc has no target number */
+
+		for (i = 1; i < 8; i++) {
+			new_target = 1;
+			for (j = 0; j <= 6; j++) {
+				if (i != mem_readb(Real2Phys(ds_readd(0xbd34)) + j * 0x6da + 0x7b))
+					continue;
+				new_target = 0;
+			}
+
+			if (new_target) {
+				target = i;
+				break;
+			}
+		}
+
+		mem_writeb(Real2Phys(ds_readd(0xbd34)) + who * 0x6da + 0x7b,
+			target);
+		}
+
+		ds_writeb(0x2e2c + slot_nr * 8 + 6, target);
+	}
+
+	ds_writeb(0x2e2c + slot_nr * 8 + 7, mod);
+	ds_writew(0x2e2c + slot_nr * 8 + 4, ptr - mod_ptr);
+	ds_writed(0x2e2c + slot_nr * 8, timer_value);
+	host_writeb(ptr, host_readb(ptr) + mod);
 }
 
 /**

@@ -23,6 +23,7 @@ unsigned short get_current_season();
 void sub_ingame_timers(unsigned int);
 void sub_mod_timers(unsigned int);
 unsigned short get_free_mod_slot();
+void set_mod_slot(unsigned short, unsigned int, Bit8u *, signed char, signed char);
 void seg002_2f7a(unsigned int fmin);
 void sub_light_timers(unsigned short quarter, signed short v2);
 void set_and_spin_lock();

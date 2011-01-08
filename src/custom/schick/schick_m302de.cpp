@@ -818,8 +818,27 @@ static int seg002(unsigned short offs) {
 		D1_LOG("get_free_mod_slot() = %d\n", reg_ax);
 		return 1;
 	}
-	case 0x2e69:	/* Wunder Rondra: Starker Schwertarm  Leaf Function */
-		return 0;
+	case 0x2e69: {
+		unsigned short slot_nr = CPU_Pop16();
+		unsigned int timer = CPU_Pop32();
+		RealPt ptr = CPU_Pop32();
+		signed short mod16 = CPU_Pop16();
+		signed short who16 = CPU_Pop16();
+		CPU_Push16(who16);
+		CPU_Push16(mod16);
+		CPU_Push32(ptr);
+		CPU_Push32(timer);
+		CPU_Push16(slot_nr);
+
+		signed char mod = (signed char)(mod16 & 0xff);
+		signed char who = (signed char)(who16 & 0xff);
+
+		D1_LOG("set_mod_slot(%d, %d, 0x%x, %+d, %d)\n",
+			slot_nr, timer, ptr, mod, who);
+		set_mod_slot(slot_nr, timer, MemBase + Real2Phys(ptr), mod, who);
+
+		return 1;
+	}
 	case 0x2f7a: {
 		unsigned int v1 = CPU_Pop32();
 		CPU_Push32(v1);
