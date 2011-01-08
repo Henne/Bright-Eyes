@@ -3297,6 +3297,12 @@ int schick_nearcall_v302de(unsigned offs) {
 			pal_fade(Real2Phys(p1), Real2Phys(p2));
 			return 1;
 		}
+		/* Callers: 1 */
+		case 0x25ce: {
+			CPU_Pop32();
+			reg_ax = get_current_season();
+			return 1;
+		}
 		/* Callers: 4 */
 		case 0x2bf6: {
 			CPU_Pop32();
