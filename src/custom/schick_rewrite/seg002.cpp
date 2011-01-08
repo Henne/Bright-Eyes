@@ -200,8 +200,9 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 		default:
 			reg_dx = host_readw(p4);
 
-	D1_INFO("%x %x %x %x %x\n", host_readw(p1), host_readw(p2),
-		host_readw(p3),	host_readw(p4),	host_readw(p5));
+			D1_LOG("%x %x %x %x %x\n", host_readw(p1),
+				host_readw(p2), host_readw(p3),
+				host_readw(p4),	host_readw(p5));
 
 	}
 
