@@ -715,8 +715,16 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x165e:
 	case 0x16fd:
-	case 0x1802:
 		return 0;
+	case 0x1802: {
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		D1_LOG("mouse_move_cursor(x=%d, y=%d);\n", x, y);
+		return 1;
+	}
 	case 0x18b3: {
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);

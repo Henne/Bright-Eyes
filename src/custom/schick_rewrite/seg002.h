@@ -3,6 +3,7 @@ signed int process_nvf(Bit8u *p);
 //static
 void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
 short is_mouse_in_rect(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
+void mouse_move_cursor(unsigned short x, unsigned short y);
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor();
 void refresh_screen_size();

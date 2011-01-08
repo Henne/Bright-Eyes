@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 65/136
+	Functions rewritten: 66/136
 */
 #include <string.h>
 
@@ -251,6 +251,18 @@ short is_mouse_in_rect(unsigned short x1, unsigned short y1,
 		return 0;
 
 	return 1;
+}
+
+/**
+ * mouse_move_cursor -	move the mouse cursor to a position
+ * @x:	X - coordinate
+ * @y:	Y - coordinate
+ */
+void mouse_move_cursor(unsigned short x, unsigned short y) {
+	unsigned short v1 = 4;
+	unsigned short v2 = 0xdead;
+
+	mouse_action((Bit8u*)v1, (Bit8u*)v2, (Bit8u*)x, (Bit8u*)y, (Bit8u*)v2);
 }
 
 /**
