@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 67/136
+	Functions rewritten: 68/136
 */
 #include <string.h>
 
@@ -562,6 +562,108 @@ void sub_ingame_timers(unsigned int val) {
 		/* if the timer is lower zero set to zero */
 		if ((int)ds_readd(0x2dc4 + i * 4) < 0)
 			ds_writed(0x2dc4 + i * 4, 0);
+	}
+}
+
+/**
+	sub_mod_timers - subtracts val from the modification timers
+	@val:	vaule to subtract from the modification timers
+*/
+void sub_mod_timers(unsigned int val) {
+	Bit8u *sp;
+	Bit8u *mp;
+	unsigned short i, j;
+	signed short h_index;
+	unsigned char target;
+	unsigned char reset_target;
+
+	h_index = -1;
+
+	if (ds_readw(0x2c99))
+		return;
+
+	for (i = 0; i < 100; i++) {
+		/* make a pointer to the slot */
+		sp = MemBase + PhysMake(datseg, 0x2e2c + i * 8);
+
+		/* if timer is 0 continue */
+		if (host_readd(sp) == 0)
+			continue;
+
+		/* subtract diff from timer */
+		host_writed(sp, host_readd(sp) - val);
+
+		/* if timer > 0 continue */
+		if ((signed int)host_readd(sp) > 0)
+			continue;
+
+		D1_LOG("Mod Timer %d rueckgesetzt\n", i);
+
+		/* set timer to 0 */
+		host_writed(sp, 0);
+
+		if (host_readb(sp + 6) != 0) {
+			/* target is a hero/npc */
+
+			/* get the hero index from the target */
+			target = host_readb(sp + 6);
+			for (j = 0; j <= 6; j++) {
+				if (mem_readb(Real2Phys(ds_readd(0xbd34) + j * 0x6da) + 0x7b) != target)
+					continue;
+				h_index = j;
+				break;
+			}
+
+			if (h_index != -1) {
+				/* if a hero/npc is determined */
+
+				mp = MemBase + Real2Phys(ds_readd(0xbd34)) + 0x6da * h_index;
+				/* make a pointer to the heros attribute mod */
+				mp += host_readw(sp + 4);
+				/* subtract the mod */
+				host_writeb(mp, host_readb(mp) - host_readb(sp + 7));
+
+				if (ds_readb(0x2845) == 20)
+					ds_writew(0x2846, 1);
+
+				/* reset target */
+				host_writeb(sp + 6, 0);
+
+				/* reset target if no other slots of target */
+				reset_target = 1;
+				for (j = 0; j < 100; j++) {
+					if (ds_readb(0x2e32 + j * 8) != target)
+						continue;
+					reset_target = 0;
+					break;
+				}
+
+				if (reset_target)
+					mem_writeb(Real2Phys(ds_readd(0xbd34)) + 0x6da * h_index + 0x7b, 0);
+			} else {
+				D1_ERR("Invalid Mod Timer Target %d\n", target);
+
+				/* reset all slots of invalid target */
+				for (j = 0; j < 100; j++) {
+					if (ds_readb(0x2d32 + j * 8) != target)
+						continue;
+					host_writeb(sp + 7, 0);
+					host_writeb(sp + 6, 0);
+					host_writew(sp + 4, 0);
+				}
+			}
+
+		} else {
+			/* target affects the savegame */
+			mp = MemBase + PhysMake(datseg, 0x2d34);
+			mp += host_readw(sp + 4);
+			host_writeb(mp, host_readb(mp) - host_readb(sp + 7));
+		}
+
+		/* reset offset, target, and modificator */
+		host_writeb(sp + 7, 0);
+		host_writeb(sp + 6, 0);
+		host_writew(sp + 4, 0);
 	}
 }
 

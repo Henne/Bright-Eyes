@@ -805,6 +805,14 @@ static int seg002(unsigned short offs) {
 		sub_ingame_timers(val);
 		return 1;
 	}
+	case 0x2c5e: {
+		unsigned int val = CPU_Pop32();
+		CPU_Push32(val);
+
+		D1_LOG("sub_mod_timers(%d);\n", val);
+		sub_mod_timers(val);
+		return 1;
+	}
 	case 0x2e26:	/* Wunder Rondra: Starker Schwertarm */
 	case 0x2e69:	/* Wunder Rondra: Starker Schwertarm  Leaf Function */
 		return 0;
@@ -3296,6 +3304,16 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(val);
 			D1_LOG("near sub_ingame_timers(val = %u);\n", val);
 			sub_ingame_timers(val);
+			return 1;
+		}
+		/* Callers: 4 */
+		case 0x2c5e: {
+			CPU_Pop32();
+			unsigned int val = CPU_Pop32();
+			CPU_Push32(val);
+
+			D1_LOG("sub_mod_timers(%d);\n", val);
+			sub_mod_timers(val);
 			return 1;
 		}
 		/* Callers: 4 */
