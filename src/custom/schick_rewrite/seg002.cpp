@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 66/136
+	Functions rewritten: 67/136
 */
 #include <string.h>
 
@@ -345,6 +345,32 @@ void refresh_screen_size1() {
 
 	/* put lock */
 	ds_writew(0x2998, 0);
+}
+
+void mouse_19dc() {
+
+	/* return if mouse was not moved and the cursor remains */
+	if (ds_readw(0x29a4) == 0 && ds_readd(0xcec7) == ds_readd(0xcecb))
+		return;
+
+	/* set new cursor */
+	ds_writed(0xcec7, ds_readd(0xcecb));
+
+	/* check if the new cursor is the default cursor */
+	if (ds_readd(0xcecb) == RealMake(datseg, 0x2848)) {
+		/* set cursor size 0x0 */
+		ds_writew(0x29a8, 0);
+		ds_writew(0x29a6, 0);
+	} else {
+		/* set cursor size 8x8 */
+		ds_writew(0x29a8, 8);
+		ds_writew(0x29a6, 8);
+	}
+
+	/* reset mouse was moved */
+	ds_writew(0x29a4, 0);
+	update_mouse_cursor1();
+	refresh_screen_size1();
 }
 
 unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {

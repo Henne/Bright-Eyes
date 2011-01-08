@@ -3223,6 +3223,14 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			return 1;
 		}
+		/* Callers: 2 */
+		case 0x19dc: {
+			CPU_Pop32();
+
+			D1_LOG("mouse_19dc()\n");
+			mouse_19dc();
+			return 1;
+		}
 		}
 	/* Callers: 2 */
 	if (offs == 0x1634) {
