@@ -3244,7 +3244,6 @@ int schick_nearcall_v302de(unsigned offs) {
 		/* Callers: 2 */
 		case 0x19dc: {
 			CPU_Pop32();
-
 			D1_LOG("mouse_19dc()\n");
 			mouse_19dc();
 			return 1;
@@ -3286,7 +3285,6 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt p2 = CPU_Pop32();
 			CPU_Push32(p2);
 			CPU_Push32(p1);
-
 			D1_LOG("pal_fade(%x,%x);\n", p1, p2);
 			pal_fade(Real2Phys(p1), Real2Phys(p2));
 			return 1;
@@ -3296,7 +3294,6 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Pop32();
 			unsigned int val = CPU_Pop32();
 			CPU_Push32(val);
-
 			D1_LOG("near sub_ingame_timers(val = %u);\n", val);
 			sub_ingame_timers(val);
 			return 1;
@@ -3306,15 +3303,13 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Pop32();
 			unsigned int val = CPU_Pop32();
 			CPU_Push32(val);
-
 			D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
 			seg002_2f7a(val);
-
 			return 1;
 		}
 		/* Callers: 4 */
 		case 0x3071: {
-			RealPt pIP = CPU_Pop32();
+			CPU_Pop32();
 			unsigned short quarter = CPU_Pop16();
 			signed short v2 = CPU_Pop16();
 			CPU_Push16(v2);
@@ -3328,27 +3323,15 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x3b63: {
-
-			RealPt pIP = CPU_Pop32();
-
-			D1_LOG("caller 0x%04x:0x%04x\n",
-				RealSeg(pIP) - relocation , RealOff(pIP));
-
+			CPU_Pop32();
 			seg002_3b63();
-
 			D1_LOG("seg002_3b63();\n");
 			return 1;
 		}
 		/* Callers: 1 */
 		case 0x3c63: {
-
-			RealPt pIP = CPU_Pop32();
-
-			D1_LOG("caller 0x%04x:0x%04x\n",
-				RealSeg(pIP) - relocation , RealOff(pIP));
-
+			CPU_Pop32();
 			seg002_3c63();
-
 			D1_LOG("seg002_3c63();\n");
 			return 1;
 		}
@@ -3399,15 +3382,13 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x55b1: {
-			RealPt pIP = CPU_Pop32();
-
+			CPU_Pop32();
 			unsigned short item = CPU_Pop16();
 			unsigned short group = CPU_Pop16() & 0xff;
 			CPU_Push16(group);
 			CPU_Push16(item);
 
 			reg_ax = get_first_hero_with_item_in_group(item, group);
-
 			D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
 				schick_getItemname(item), item, group,
 				(short)reg_ax);
@@ -3416,19 +3397,15 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 2 */
 		case 0x573e: {
-			RealPt pIP = CPU_Pop32();
-
+			CPU_Pop32();
 			reg_ax = count_heros_available();
-
 			D1_LOG("count_heros_available() = %d;\n", reg_ax);
 			return 1;
 		}
 		/* Callers: 3 */
 		case 0x5799: {
-			RealPt pIP = CPU_Pop32();
-
+			CPU_Pop32();
 			reg_ax = count_heroes_available_in_group();
-
 			D1_LOG("count_heroes_available_in_group() = %d;\n",
 				reg_ax);
 			return 1;
@@ -3436,10 +3413,8 @@ int schick_nearcall_v302de(unsigned offs) {
 		/* Callers: 1 */
 		case 0x5a81: {
 			CPU_Pop32();
-
 			reg_ax = 1;
-
-			D1_LOG("Kopierschutz umgangen\n");
+			D1_LOG("Kopierschutzabfrage umgangen\n");
 			return 1;
 		}
 		default:
