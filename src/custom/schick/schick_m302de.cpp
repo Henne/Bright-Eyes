@@ -2107,7 +2107,7 @@ static int seg010(unsigned short offs) {
 
 			RealPt retval = EMS_norm_ptr(p);
 
-			D1_INFO("EMS_norm_ptr(%p) = %p\n", p, retval);
+			D1_INFO("EMS_norm_ptr(0x%x) = 0x%x\n", p, retval);
 			reg_ax = RealOff(retval);
 			reg_dx = RealSeg(retval);
 
