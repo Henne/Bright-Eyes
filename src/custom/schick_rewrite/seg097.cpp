@@ -1,3 +1,11 @@
+/*
+ *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
+ *      Functions called rewritten 3/16
+ *
+ *      Functions called rewritten 2/13
+ *      Functions uncalled rewritten 1/3
+*/
+
 #include "schick.h"
 
 #include "seg004.h"
