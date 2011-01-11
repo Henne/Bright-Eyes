@@ -443,7 +443,8 @@ void timers_daily() {
 			ds_writew(0x3350, 0);
 	}
 
-	/* Something with the bank and merchant*/
+	/* Days until you run in trouble, if you have more
+		than 1000S debt at the bank */
 	if ((signed short)ds_readw(0x3360) > 0) {
 		ds_writew(0x3360, ds_readw(0x3360) - 1);
 

@@ -89,6 +89,7 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 
 	c = 0;
 	while (c != 0xd || pos == 0) {
+		/* This loop is evil */
 		do {} while (CD_bioskey(1) == 0 && ds_readw(0xc3d1) == 0);
 
 		if (ds_readw(0xc3d1) != 0) {
