@@ -3326,6 +3326,13 @@ int schick_nearcall_v302de(unsigned offs) {
 			reg_ax = get_current_season();
 			return 1;
 		}
+		/* Callers: 1 */
+		case 0x2628: {
+			CPU_Pop32();
+			D1_LOG("do_census();\n");
+			do_census();
+			return 1;
+		}
 		/* Callers: 4 */
 		case 0x2bf6: {
 			CPU_Pop32();

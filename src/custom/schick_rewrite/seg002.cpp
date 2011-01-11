@@ -1,7 +1,8 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 70/136
+	Functions rewritten: 71/136
 */
+#include <stdlib.h>
 #include <string.h>
 
 #include "callback.h"
@@ -539,6 +540,59 @@ unsigned short get_current_season() {
 		return 1;
 
 	return 3;
+}
+
+/**
+ * do_census -	calc census for the bank depot
+ *
+ * If you put money on the bank, you get 5%.
+ * If you borrowed money you pay 15%.
+ */
+//static
+void do_census() {
+
+	signed int val;
+	signed short si = 0;
+	signed short deposit;
+
+	deposit = ds_readw(0x335c);
+
+	if (deposit > 0)
+		si = 1;
+	else if (deposit < 0)
+			si = -1;
+
+	/* bank transactions, no census */
+	if (si == 0)
+		return;
+
+	/* convert to heller */
+	val = deposit * 10;
+	val += (signed short)ds_readw(0x4646);
+
+	if (val < 0)
+		/* 15% Interest for borrowed money */
+		val += val * 15 / 100 / 12;
+	else if (val > 0)
+		/* 5% Interest for deposited money */
+			val += val * 5 / 100 / 12;
+
+	/* remember the heller */
+	ds_writew(0x4646, val % 10);
+
+	if (val < 0) {
+		ds_writew(0x4646, -abs((signed short)ds_readw(0x4646)));
+	}
+
+	/* save the new deposit */
+	ds_writew(0x335c, deposit = val / 10);
+
+	/* fixup over- and underflows */
+	if (deposit < 0 && si == 1)
+		ds_writew(0x335c, 32760);
+	else if (deposit > 0 && si == -1)
+			ds_writew(0x335c, -32760);
+
 }
 
 /**
