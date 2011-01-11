@@ -3731,18 +3731,68 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	/* Callers: 3 */
-	if (is_ovrseg(0x1442) && (offs == 0x564)) {
-		CPU_Pop32();
-		unsigned short width = CPU_Pop16();
-		unsigned short height = CPU_Pop16();
-		CPU_Push16(height);
-		CPU_Push16(width);
+	/* seg097 */
+	if (is_ovrseg(0x1442)) {
+		switch (offs) {
+#if 0
+		/* Callers: 0 */
+		case 0x000:
+		/* Callers: 1 */
+		case 0x129:
+			return 0;
+		/* Callers: 1 */
+		case 0x15e: {
+			CPU_Pop32();
+			unsigned short c = CPU_Pop16();
+			RealPt p_height = CPU_Pop32();
+			CPU_Push32(p_height);
+			CPU_Push16(c);
 
-		D1_LOG("GUI_copy_head(%d, %d)\n", width, height);
-		GUI_copy_smth(width, height);
+			reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)MemBase + Real2Phys(p_height));
+			D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x1c2:
+#endif
+		/* Callers: 1 */
+		case 0x1f8: {
+			return 0;
+		}
+		/* Callers: 3 */
+		case 0x4ae:
+			return 0;
+		/* Callers: 3 */
+		case 0x564: {
+			CPU_Pop32();
+			unsigned short width = CPU_Pop16();
+			unsigned short height = CPU_Pop16();
+			CPU_Push16(height);
+			CPU_Push16(width);
 
-		return 1;
+			D1_LOG("GUI_copy_smth(%d, %d)\n", width, height);
+			GUI_copy_smth(width, height);
+
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x59f:
+		/* Callers: 1 */
+		case 0x5b4:
+		/* Callers: 1 */
+		case 0x7f4:
+		/* Callers: 1 */
+		case 0x839:
+		/* Callers: 2 */
+		case 0xb43:
+		/* Callers: 1 */
+		case 0xd45:
+			   return 0;
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg097", offs);
+			exit(1);
+		}
 	}
 	/* Callers: 2 */
 	if (is_ovrseg(0x147b) && (offs == 0x040F)) {
