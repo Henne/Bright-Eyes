@@ -3818,7 +3818,7 @@ int schick_nearcall_v302de(unsigned offs) {
 #endif
 		/* Callers: 1 */
 		case 0x1f8: {
-			RealPt pIP = CPU_Pop32();
+			CPU_Pop32();
 			RealPt dst = CPU_Pop32();
 			unsigned short x = CPU_Pop16();
 			unsigned short y = CPU_Pop16();
@@ -3829,8 +3829,6 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(y);
 			CPU_Push16(x);
 			CPU_Push32(dst);
-			CPU_Push32(pIP);
-
 
 			D1_LOG("GUI_1f8(0x%x, %d, %d, %d, %d);",
 				dst, x, y, num, v4);
