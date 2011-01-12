@@ -37,3 +37,27 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 
 	return 0;
 }
+
+/**
+ * item_pleasing_ingerimm - checks if Ingerimm accepts this item as sacrifice
+ * @item:	the item
+ *
+ */
+//static
+unsigned short item_pleasing_ingerimm(unsigned short item) {
+
+	Bit8u *p_item;
+
+	p_item = MemBase + Real2Phys(0xe22b) + item * 12;
+
+	if (((host_readb(p_item + 2) >> 1) & 1) && host_readb(p_item + 3) == 4)
+		return 1;
+
+	if ((host_readb(p_item + 2) & 1) == 0)
+		return 0;
+
+	if ((signed char)ds_readb((signed char)host_readb(p_item + 4) * 2 + 0x877) <= 1)
+		return 0;
+
+	return 1;
+}

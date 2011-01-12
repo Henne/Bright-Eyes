@@ -3924,7 +3924,15 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x675: {
-			return 0;
+			CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+
+			reg_ax = item_pleasing_ingerimm(item);
+			D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
+				schick_getItemname(item), reg_ax);
+
+			return 1;
 		}
 		case 0x6d9: {
 			return 0;
