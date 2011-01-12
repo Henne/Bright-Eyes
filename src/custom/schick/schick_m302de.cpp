@@ -3864,7 +3864,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		/* Callers: 1 */
 		case 0x7f4:
 		/* Callers: 1 */
-		case 0x839:
+		case 0x893:
 		/* Callers: 2 */
 		case 0xb43:
 		/* Callers: 1 */
