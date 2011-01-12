@@ -3057,7 +3057,17 @@ static int seg105(unsigned short offs) {
 			return 0;
 		}
 		case 0x57: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			reg_ax = hero_count_item(MemBase + Real2Phys(hero), item);
+			D1_INFO("far hero_count_item(%s, %s) = %d\n",
+				schick_getCharname(hero),
+				schick_getItemname(item), reg_ax);
+
+			return 1;
 		}
 		case 0x5c: {
 			return 0;
@@ -3936,7 +3946,18 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0xada: {
-			return 0;
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			reg_ax = hero_count_item(MemBase + Real2Phys(hero), item);
+			D1_INFO("hero_count_item(%s, %s) = %d\n",
+				schick_getCharname(hero),
+				schick_getItemname(item), reg_ax)
+;
+			return 1;
 		}
 		case 0xc10: {
 			return 0;
