@@ -1,9 +1,9 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 4/14
+ *      Functions rewritten 5/14
  *
  *      Functions called rewritten 4/13
- *      Functions uncalled rewritten 0/1
+ *      Functions uncalled rewritten 1/1
 */
 
 #include "schick.h"
@@ -36,6 +36,25 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 		return 1;
 
 	return 0;
+}
+
+/**
+ * has_hero_equipped - returns the position of an equipped item
+ * @hero:	the hero
+ * @item:	the item
+ *
+ * Returns the position of item, if equipped, otherwise -1.
+ * Is not used in the game.
+ */
+signed short has_hero_equipped(Bit8u *hero, unsigned short item) {
+
+	unsigned short i;
+
+	for (i = 0; i < 7; i++)
+		if (host_readw(hero + 0x196 + item * 14) == item)
+			return i;
+
+	return -1;
 }
 
 /**
