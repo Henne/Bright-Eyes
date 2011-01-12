@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 5/14
+ *      Functions rewritten 6/14
  *
- *      Functions called rewritten 4/13
+ *      Functions called rewritten 5/13
  *      Functions uncalled rewritten 1/1
 */
 
@@ -53,6 +53,33 @@ signed short has_hero_equipped(Bit8u *hero, unsigned short item) {
 	for (i = 0; i < 7; i++)
 		if (host_readw(hero + 0x196 + item * 14) == item)
 			return i;
+
+	return -1;
+}
+
+/**
+ * has_hero_stacked - returns the posotion of a non-full item stack
+ * @hero:	the hero
+ * @item:	the item
+ *
+ * Returns the postition of a non-full (<99) item stack or -1 if
+ * the hero doesn't own this item or has only full stacks of them.
+ */
+//static
+signed short has_hero_stacked(Bit8u *hero, unsigned short item) {
+
+	unsigned short i;
+
+	for (i = 0; i < 23; i++) {
+		/* has the hero the item */
+		if (host_readw(hero + 0x196 + i * 14) != item)
+			continue;
+		/* is the number of items < 99 */
+		if (host_readw(hero + 0x198 + i * 14) >= 99)
+			continue;
+
+		return i;
+	}
 
 	return -1;
 }

@@ -3933,7 +3933,18 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x3aa: {
-			return 0;
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			reg_ax = has_hero_stacked(MemBase + Real2Phys(hero), item);
+			D1_LOG("has_hero_stacked(%s, %s) = %d\n",
+				schick_getCharname(hero),
+				schick_getItemname(item), (signed short)reg_ax)
+;
+			return 1;
 		}
 		case 0x3e8: {
 			return 0;
