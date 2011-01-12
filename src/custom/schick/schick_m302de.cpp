@@ -27,6 +27,7 @@
 #include "seg097.h"
 #include "seg098.h"
 #include "seg103.h"
+#include "seg105.h"
 
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
@@ -3037,7 +3038,17 @@ static int seg105(unsigned short offs) {
 			return 0;
 		}
 		case 0x3e: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			reg_ax = can_hero_use_item(MemBase + Real2Phys(hero), item);
+			D1_LOG("can_hero_use_item(%s, %s); = %d\n",
+				schick_getCharname(hero),
+				schick_getItemname(item), reg_ax);
+
+			return 1;
 		}
 		case 0x43: {
 			return 0;
