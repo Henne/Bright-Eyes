@@ -1195,6 +1195,14 @@
 						RelativePath="..\src\custom\schick_rewrite\seg103.h"
 						>
 					</File>
+					<File
+						RelativePath="..\src\custom\schick_rewrite\seg105.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick_rewrite\seg105.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
