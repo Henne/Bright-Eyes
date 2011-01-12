@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 3/14
+ *      Functions rewritten 4/14
  *
- *      Functions called rewritten 3/13
+ *      Functions called rewritten 4/13
  *      Functions uncalled rewritten 0/1
 */
 
@@ -75,6 +75,28 @@ unsigned short hero_count_item(Bit8u *hero, unsigned short item) {
 	for (i = 0; i < 23; i++)
 		if (host_readw(hero + 0x196 + i * 14) == item)
 			ret++;
+
+	return ret;
+}
+/**
+ * group_count_item -	returns how many items of one type the current group has
+ * @item:	the item
+ */
+unsigned short group_count_item(unsigned short item) {
+
+	Bit8u *hero_i;
+	unsigned short i;
+	unsigned short ret = 0;
+
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* check class */
+		if (host_readb(hero_i + 0x21) == 0)
+			continue;
+		/* check group */
+		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+			continue;
+		ret += hero_count_item(hero_i, item);
+	}
 
 	return ret;
 }

@@ -3070,7 +3070,14 @@ static int seg105(unsigned short offs) {
 			return 1;
 		}
 		case 0x5c: {
-			return 0;
+			unsigned short item = CPU_Pop16();
+			CPU_Push16(item);
+
+			reg_ax = group_count_item(item);
+			D1_INFO("group_count_item(%s) = %d\n",
+				schick_getItemname(item), reg_ax);
+
+			return 1;
 		}
 		case 0x61: {
 			 return 0;
