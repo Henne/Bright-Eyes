@@ -3018,6 +3018,49 @@ static int seg103(unsigned short offs) {
 			exit(1);
 	}
 }
+
+static int seg105(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x25: {
+			return 0;
+		}
+		case 0x2f: {
+			return 0;
+		}
+		case 0x34: {
+			return 0;
+		}
+		case 0x39: {
+			return 0;
+		}
+		case 0x3e: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
+		case 0x52: {
+			return 0;
+		}
+		case 0x57: {
+			return 0;
+		}
+		case 0x5c: {
+			return 0;
+		}
+		case 0x61: {
+			 return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg109(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -3139,7 +3182,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1472:	return 0;
 		case 0x147b:	return seg103(offs);
 		case 0x1480:	return 0;
-		case 0x1485:	return 0;
+		case 0x1485:	return seg105(offs);
 		case 0x148c:	return 0;
 		case 0x1491:	return 0;
 		case 0x1498:	return 0;
@@ -3857,5 +3900,36 @@ int schick_nearcall_v302de(unsigned offs) {
 		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, (signed char)bonus);
 		return 1;
 	}
+	/* seg105 */
+	if (is_ovrseg(0x1485)) {
+		switch (offs) {
+		case 0x000: {
+			return 0;
+		}
+		case 0x3aa: {
+			return 0;
+		}
+		case 0x3e8: {
+			return 0;
+		}
+		case 0x675: {
+			return 0;
+		}
+		case 0x6d9: {
+			return 0;
+		}
+		case 0xada: {
+			return 0;
+		}
+		case 0xc10: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg105", offs);
+			exit(1);
+		}
+	}
+
 	return 0;
 }
