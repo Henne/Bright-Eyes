@@ -5,6 +5,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg007.h"
 
 /**
@@ -39,7 +41,7 @@ unsigned short FIG_choose_next_hero() {
 
 	do {
 		retval = random_schick(7) - 1;
-		hero = MemBase + Real2Phys(ds_readd(0xbd34)) + retval * 0x6da;
+		hero = get_hero(retval);
 
 	/* search fo a hero who is not dead, in the current group and
 		something still unknown */
@@ -148,7 +150,7 @@ signed short FIG_get_first_active_hero() {
 	Bit8u *hero_i;
 	unsigned short i;
 
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
@@ -196,7 +198,7 @@ unsigned short seg032_02db() {
 	if (FIG_get_first_active_hero() != -1)
 		return 0;
 
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
 		if (host_readb(hero_i + 0x21) == 0)

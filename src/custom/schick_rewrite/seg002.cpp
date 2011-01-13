@@ -422,7 +422,7 @@ void timers_daily() {
 	for (i = 0; i < 94; i++)
 		ds_writeb(0x3592 + i, 0);
 
-	hero_i = Real2Phys(ds_readd(0xbd34));
+	hero_i = Real2Phys(ds_readd(HEROS));
 	for (i = 0; i <=6; i++, hero_i += 0x6da) {
 		if (mem_readb(hero_i + 0x21) == 0)
 			continue;
@@ -664,7 +664,7 @@ void sub_mod_timers(unsigned int val) {
 			/* get the hero index from the target */
 			target = host_readb(sp + 6);
 			for (j = 0; j <= 6; j++) {
-				if (mem_readb(Real2Phys(ds_readd(0xbd34) + j * 0x6da) + 0x7b) != target)
+				if (host_readb(get_hero(j) + 0x7b) != target)
 					continue;
 				h_index = j;
 				break;
@@ -673,7 +673,7 @@ void sub_mod_timers(unsigned int val) {
 			if (h_index != -1) {
 				/* if a hero/npc is determined */
 
-				mp = MemBase + Real2Phys(ds_readd(0xbd34)) + 0x6da * h_index;
+				mp = get_hero(h_index);
 				/* make a pointer to the heros attribute mod */
 				mp += host_readw(sp + 4);
 				/* subtract the mod */
@@ -695,7 +695,7 @@ void sub_mod_timers(unsigned int val) {
 				}
 
 				if (reset_target)
-					mem_writeb(Real2Phys(ds_readd(0xbd34)) + 0x6da * h_index + 0x7b, 0);
+					host_writeb(get_hero(h_index) + 0x7b, 0);
 			} else {
 				D1_ERR("Invalid Mod Timer Target %d\n", target);
 
@@ -755,7 +755,7 @@ void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
 		mod_ptr = MemBase + PhysMake(datseg, 0x2d34);
 	else {
 		/* mod slot is on a hero/npc */
-		mod_ptr = MemBase + Real2Phys(ds_readd(0xbd34)) + who * 0x6da;
+		mod_ptr = get_hero(who);
 
 		if (host_readb(mod_ptr + 0x7b) != 0) {
 			/* hero/npc has a target number */
@@ -766,7 +766,7 @@ void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
 		for (i = 1; i < 8; i++) {
 			new_target = 1;
 			for (j = 0; j <= 6; j++) {
-				if (i != mem_readb(Real2Phys(ds_readd(0xbd34)) + j * 0x6da + 0x7b))
+				if (i != host_readb(get_hero(j) + 0x7b))
 					continue;
 				new_target = 0;
 			}
@@ -777,8 +777,7 @@ void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
 			}
 		}
 
-		mem_writeb(Real2Phys(ds_readd(0xbd34)) + who * 0x6da + 0x7b,
-			target);
+		host_writeb(get_hero(who) + 0x7b, target);
 		}
 
 		ds_writeb(0x2e2c + slot_nr * 8 + 6, target);
@@ -802,7 +801,7 @@ void seg002_2f7a(unsigned int fmin) {
 	if (ds_readw(0x2c99) != 0)
 		return;
 
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
@@ -847,7 +846,7 @@ void sub_light_timers(unsigned short quarter, signed short v2) {
 	if (ds_readw(0x2c99))
 		return;
 
-	hero_i = Real2Phys(ds_readd(0xbd34));
+	hero_i = Real2Phys(ds_readd(HEROS));
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
@@ -1006,10 +1005,10 @@ void dec_splash() {
 		if (ds_readb(0x2845))
 			continue;
 		/* check if hero is dead */
-		if (mem_readb(Real2Phys(ds_readd(0xbd34)) + i * 0x6da + 0xaa) & 1)
+		if (host_readb(get_hero(i) + 0xaa) & 1)
 			continue;
 
-		restore_rect(Real2Phys(ds_readd(0xd2ff)), MemBase + Real2Phys(ds_readd(0xbd34)) + i * 0x6da + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
+		restore_rect(Real2Phys(ds_readd(0xd2ff)), get_hero(i) + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
 
 	}
 }
@@ -1608,7 +1607,7 @@ void add_group_le(signed short le) {
 	Bit8u *hero;
 	unsigned short i;
 
-	hero = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
 		/* check class */
 		if (host_readb(hero + 0x21) == 0)
@@ -1713,7 +1712,7 @@ unsigned short get_random_hero() {
 		cur_hero = random_schick(ds_readb(0x2d36 + cur_group) );
 		cur_hero--;
 
-		hero = MemBase + Real2Phys(ds_readd(0xbd34));
+		hero = get_hero(0);
 		hero += cur_hero + 0x6da;
 
 		/* Check if hero has a class */
@@ -1739,7 +1738,7 @@ unsigned int get_party_money() {
 	unsigned int sum, i;
 
 	sum = 0;
-	hero = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero = get_hero(0);
 
 	for (i=0; i < 6; i++, hero+=0x6da) {
 		/* Check if hero has a class */
@@ -1772,7 +1771,7 @@ void set_party_money(signed int money) {
 	heroes = count_heroes_in_group();
 
 	/* set hero to NPC */
-	hero = MemBase + Real2Phys(ds_readd(0xbd34)) + 6 * 0x6da;
+	hero = get_hero(6);
 	/* if we have an NPC in current group and alive */
 	if (host_readb(hero + 0x21) &&
 		host_readb(hero + 0x87) == ds_readb(0x2d35) &&
@@ -1791,7 +1790,7 @@ void set_party_money(signed int money) {
 
 	hero_money = money / heroes;
 
-	hero = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero = get_hero(0);
 
 	for (i = 0; i < 6; i++, hero += 0x6da) {
 
@@ -1835,7 +1834,7 @@ void add_group_ap(signed int ap) {
 
 	ap = ap / count_heroes_in_group();
 
-	hero_i = Real2Phys(ds_readd(0xbd34));
+	hero_i = Real2Phys(ds_readd(HEROS));
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
@@ -1864,7 +1863,7 @@ void add_hero_ap_all(short ap) {
 	if (ap < 0)
 		return;
 
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 	for (i = 0; i <= 6; hero_i += 0x6da, i++) {
 		/* Check class */
 		if (host_readb(hero_i + 0x21) == 0)
@@ -1894,7 +1893,7 @@ void sub_hero_ap_all(short ap) {
 	if (ap < 0)
 		return;
 
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 	for (i = 0; i <= 6; hero_i += 0x6da, i++) {
 		/* Check class */
 		if (host_readb(hero_i + 0x21) == 0)
@@ -1923,7 +1922,7 @@ void sub_hero_ap_all(short ap) {
 */
 
 unsigned short get_hero_index(Bit8u *hero) {
-	Bit8u *first_hero = MemBase + Real2Phys(ds_readd(0xbd34));
+	Bit8u *first_hero = get_hero(0);
 	int i = 0;
 
 	while (hero != first_hero + i*0x6da)
@@ -1946,7 +1945,7 @@ int get_item_pos(Bit8u *hero, unsigned short item) {
 }
 
 short get_first_hero_with_item(unsigned short item) {
-	Bit8u *hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	Bit8u *hero_i = get_hero(0);
 	int i,j;
 
 	for (i = 0; i <= 6; i++ , hero_i += 0x6da) {
@@ -1966,7 +1965,7 @@ short get_first_hero_with_item(unsigned short item) {
 }
 
 signed short get_first_hero_with_item_in_group(unsigned short item, signed char group) {
-	Bit8u *hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	Bit8u *hero_i = get_hero(0);
 	int i,j;
 
 	for (i = 0; i <= 6; i++ , hero_i += 0x6da) {
@@ -1995,7 +1994,7 @@ RealPt get_first_hero_available_in_group() {
 	RealPt hero_i;
 	unsigned short i;
 
-	hero_i = ds_readd(0xbd34);
+	hero_i = ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
@@ -2014,14 +2013,14 @@ RealPt get_first_hero_available_in_group() {
 		return hero_i;
 	}
 
-	return ds_readd(0xbd34);
+	return ds_readd(HEROS);
 }
 
 RealPt get_second_hero_available_in_group() {
 	RealPt hero_i;
 	unsigned short i, tmp;
 
-	hero_i = ds_readd(0xbd34);
+	hero_i = ds_readd(HEROS);
 	tmp = 0;
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
@@ -2050,7 +2049,7 @@ unsigned short count_heros_available() {
 	unsigned short i;
 
 	retval = 0;
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
@@ -2071,7 +2070,7 @@ unsigned short count_heros_available() {
 */
 
 unsigned short count_heroes_available_in_group() {
-	Bit8u *hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	Bit8u *hero_i = get_hero(0);
 	char i, heroes = 0;
 
 	for (i=0; i <= 6; i++, hero_i += 0x6da) {

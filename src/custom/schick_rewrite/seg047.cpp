@@ -16,7 +16,7 @@ unsigned short get_hero_CH_best() {
 	unsigned short i, retval;
 	signed short ch_val = -1;
 
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
@@ -50,7 +50,7 @@ unsigned short get_hero_KK_best() {
 	unsigned short i, retval;
 	signed short kk_val = -1;
 
-	hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
@@ -166,7 +166,7 @@ short check_hero_KK_unused(short val) {
 
 	PhysPt hero;
 
-	hero = Real2Phys(ds_readd(0xbd34));
+	hero = Real2Phys(ds_readd(HEROS));
 
 	if ((short)mem_readb(hero + 0x47) + (short)mem_readb(hero + 0x48) < val)
 		return 0;
@@ -187,7 +187,7 @@ short check_heros_KK(short val) {
 	PhysPt hero;
 	signed short sum;
 
-	hero = Real2Phys(ds_readd(0xbd34));
+	hero = Real2Phys(ds_readd(HEROS));
 
 	/* Orig-BUG: not checked if hero is valid */
 	sum = (short)mem_readb(hero + 0x47) + (short)mem_readb(hero + 0x48);
@@ -254,7 +254,7 @@ unsigned short count_heroes_in_group() {
 	PhysPt hero_i;
 	unsigned short i, retval = 0;
 
-	hero_i = Real2Phys(ds_readd(0xbd34));
+	hero_i = Real2Phys(ds_readd(HEROS));
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */

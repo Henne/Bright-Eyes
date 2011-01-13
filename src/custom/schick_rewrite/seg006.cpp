@@ -4,6 +4,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg002.h"
 #include "seg004.h"
 #include "seg006.h"
@@ -59,7 +61,7 @@ void FIG_draw_pic() {
 }
 
 RealPt FIG_get_hero_ptr(unsigned short v1) {
-	RealPt heros = ds_readd(0xbd34);
+	RealPt heros = ds_readd(HEROS);
 	unsigned short i;
 
 	for (i = 0; i <= 6; i++)
@@ -202,7 +204,7 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	RealPt hero;
 	short bak1, bak2;
 
-	hero = ds_readd(0xbd34) + (hero_nr - 1)  * 0x6da;
+	hero = ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
 	ds_writed(0xc019, hero + 0x2da);
 
 	GUI_get_smth(&bak1, &bak2);

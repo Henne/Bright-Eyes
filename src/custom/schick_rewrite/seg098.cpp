@@ -7,6 +7,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg002.h"
 #include "seg007.h"
 
@@ -15,7 +17,7 @@ short seg098_3e() {
 	signed char tmp = host_readb(ptr + 0x86);
 
 	if (tmp < 10) {
-		RealPt hero = ds_readd(0xbd34);
+		RealPt hero = ds_readd(HEROS);
 		Bit8u *hptr;
 		short ax, dx;
 
@@ -98,7 +100,8 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 				return 0;
 		} else {
 			addr = ((char)host_readb(hero+0x86) - 1) * 0x6da;
-			bonus += host_readb(MemBase + PhysMake(datseg, 0xbd34) + addr + 0x66);
+			bonus += host_readb(MemBase + PhysMake(datseg, HEROS) + addr + 0x66);
+
 		}
 	}
 
@@ -123,7 +126,7 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 */
 unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 
-	Bit8u *hero_i = MemBase + Real2Phys(ds_readd(0xbd34));
+	Bit8u *hero_i = get_hero(0);
 	short i;
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {

@@ -6,6 +6,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg002.h"
 #include "seg007.h"
 
@@ -20,7 +22,7 @@ RealPt get_proper_hero(unsigned short skill) {
 	signed short tmp, dx;
 
 	best = -1;
-	hero_i = ds_readd(0xbd34);
+	hero_i = ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
