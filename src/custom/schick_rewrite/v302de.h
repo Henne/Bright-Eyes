@@ -8,8 +8,13 @@
 
 #include "schick.h"
 
+#define HEROS		(0xbd34)
 #define TEXT_LTX	(0xc3b5)
 #define ITEMSDAT	(0xe22b)
+
+static inline Bit8u *get_hero(unsigned short index) {
+	return MemBase + Real2Phys(ds_readd(HEROS)) + index * 0x6da;
+}
 
 static inline Bit8u *get_ltx(unsigned short off) {
 	return MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(TEXT_LTX) + off)));
