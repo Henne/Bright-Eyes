@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 7/14
+ *      Functions rewritten 8/14
  *
- *      Functions called rewritten 6/13
+ *      Functions called rewritten 7/13
  *      Functions uncalled rewritten 1/1
 */
 
@@ -89,6 +89,58 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 	array = MemBase + Real2Phys(ds_readd(0x634 + typus * 4));
 
 	if (!is_in_word_array(item, array))
+		return 1;
+
+	return 0;
+}
+
+/**
+ * can_item_at_pos - checks if an item is equipable at a body position
+ * @item:	the item
+ * @pos:	ths position at the body
+ *
+ * Returns 1 if equipping is possible or 0 if not.
+ */
+unsigned short can_item_at_pos(unsigned short item, unsigned short pos) {
+
+	Bit8u *item_p;
+
+	item_p = get_itemsdat(item);
+
+	/* if item is an armor ? */
+	if (host_readb(item_p + 2) & 1)	{
+		unsigned char v = host_readb(item_p + 3);
+		D1_INFO("Ruestung %d\n", v);
+
+		/* can be weared on the head */
+		if (pos == 0 && v == 0)
+			return 1;
+		/* can be weared on the torso */
+		if (pos == 2 && v == 2)
+			return 1;
+		/* can be weared at the feet */
+		if (pos == 6 && v == 6)
+			return 1;
+		/* can be weared at the arms */
+		if (pos == 1 && v == 1)
+			return 1;
+		/* can be weared at the legs */
+		if (pos == 5 && v == 5)
+			return 1;
+		/* can be weared at the left hand */
+		if (pos == 4 && v == 9)
+			return 1;
+
+		return 0;
+	}
+
+	/* Strinreif (3 types) can be weared at the head */
+	if (item == 217 || item == 171 || item == 245)
+		if (pos == 0)
+			return 1;
+
+	/* you can take everything else in the hands */
+	if (pos == 3 || pos == 4)
 		return 1;
 
 	return 0;

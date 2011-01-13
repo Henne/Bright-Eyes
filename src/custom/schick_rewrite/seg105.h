@@ -2,6 +2,8 @@
 void unequip(Bit8u *hero, unsigned short item, unsigned short pos);
 //3e
 unsigned short can_hero_use_item(Bit8u *, unsigned short);
+//43
+unsigned short can_item_at_pos(unsigned short item, unsigned short pos);
 //48
 signed short has_hero_stacked(Bit8u *, unsigned short);
 //4d

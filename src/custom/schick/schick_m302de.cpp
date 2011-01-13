@@ -3064,7 +3064,17 @@ static int seg105(unsigned short offs) {
 			return 1;
 		}
 		case 0x43: {
-			return 0;
+			unsigned short item = CPU_Pop16();
+			unsigned short pos = CPU_Pop16();
+			CPU_Push16(pos);
+			CPU_Push16(item);
+
+			reg_ax = can_item_at_pos(item, pos);
+
+			D1_LOG("can_item_at_pos(%s=%d, %d); = %d\n",
+				schick_getItemname(item), item, pos, reg_ax);
+
+			return 1;
 		}
 		case 0x52: {
 			return 0;
