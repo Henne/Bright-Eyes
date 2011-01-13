@@ -3951,22 +3951,54 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
-	/* Callers: 1 */
-	if (is_ovrseg(0x1449) && (offs == 0x0e1f)) {
-		// Zauberprobe
-		CPU_Pop16();
-		RealPt hero = CPU_Pop32();
-		unsigned spell = CPU_Pop16();
-		signed bonus = CPU_Pop16();
-		CPU_Push16(bonus);
-		CPU_Push16(spell);
-		CPU_Push32(hero);
+	/* seg098 */
+	if (is_ovrseg(0x1449)) {
+		switch (offs) {
 
-		D1_LOG("Zauberprobe: %s %+d ",
-			names_spell[spell], (signed char)bonus);
+		/* Callers: 1 */
+		case 0x0000 : {
+			return 0;
+		}
+		/* Callers: 4 */
+		case 0x0339 : {
+			/* get_spell_cost() */
+			return 0;
+		}
+		/* Callers: 1 */
+		case 0x071d : {
+			return 0;
+		}
+		/* Callers: 1 */
+		case 0x0786 : {
+			return 0;
+		}
+		/* Callers: 1 */
+		case 0x0e1f : {
+			// Zauberprobe
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			unsigned spell = CPU_Pop16();
+			signed bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(spell);
+			CPU_Push32(hero);
 
-		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, (signed char)bonus);
-		return 1;
+			D1_LOG("Zauberprobe: %s %+d ",
+				names_spell[spell], (signed char)bonus);
+
+			reg_ax = test_spell(MemBase + Real2Phys(hero),
+				spell, (signed char)bonus);
+			return 1;
+		}
+		/* Callers: 2 */
+		case 0x1000 : {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg098", offs);
+			exit(1);
+		}
 	}
 	/* seg105 */
 	if (is_ovrseg(0x1485)) {
