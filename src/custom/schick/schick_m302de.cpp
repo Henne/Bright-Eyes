@@ -2298,7 +2298,20 @@ static int seg032(unsigned short offs) {
 static int seg039(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			unsigned short v4 = CPU_Pop16();
+			CPU_Push16(v4);
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			reg_ax = seg039_0000(v1, v2, v3, v4);
+			D1_LOG("seg039(%d,%d,%d,%d); = %d\n",
+				v1, v2, v3, v4, reg_ax);
+
+			return 1;
 		}
 		case 0x25: {
 			RealPt hero = CPU_Pop32();

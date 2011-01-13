@@ -1,11 +1,18 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg039 (fight)
- *	Functions rewritten 1/7
+ *	Functions rewritten 2/7
 */
+
+#include <stdlib.h>
 
 #include "schick.h"
 
 #include "v302de.h"
+
+/* is used at selecting a target */
+signed short seg039_0000(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4) {
+	return abs(v1 - v3) + abs(v2 - v4);
+}
 
 signed short seg039_0023(Bit8u *hero) {
 	Bit8u *ptr;
