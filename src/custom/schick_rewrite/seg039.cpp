@@ -5,6 +5,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 signed short seg039_0023(Bit8u *hero) {
 	Bit8u *ptr;
 	signed short retval = -1;
@@ -13,7 +15,7 @@ signed short seg039_0023(Bit8u *hero) {
 	/* get equipped weapon of the hero */
 	weapon = host_readw(hero + 0x1c0);
 	/* make a pointer to the entry of ITEMS.DAT */
-	ptr = MemBase + Real2Phys(ds_readd(0xe22b)) + weapon * 12;
+	ptr = get_itemsdat(weapon);
 
 	D1_LOG("weapon 0x%x +2 0x%x +3 0x%x\n", weapon,
 		host_readb(ptr + 2), host_readb(ptr + 3));

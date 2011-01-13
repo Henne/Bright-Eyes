@@ -11,6 +11,7 @@
 #include "schick.h"
 
 #include "schick_common.h"
+#include "v302de.h"
 
 #include "seg000.h"
 #include "seg001.h"
@@ -871,7 +872,7 @@ void sub_light_timers(unsigned short quarter, signed short v2) {
 					signed short tmp_1;
 					mem_writeb(hero_i + 0x20, mem_readb(hero_i + 0x20) - 1);
 
-					tmp_1 = mem_readw(Real2Phys(ds_readd(0xe22b)) + 0x10d);
+					tmp_1 = mem_readw(Real2Phys(ds_readd(ITEMSDAT)) + 0x10d);
 					mem_writew(hero_i + 0x2d8, mem_readb(hero_i + 0x2d8) - tmp_1);
 
 					/* Remove Torch from inventory */

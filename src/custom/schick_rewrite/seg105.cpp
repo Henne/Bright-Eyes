@@ -8,6 +8,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg007.h"
 
 /**
@@ -94,7 +96,7 @@ unsigned short item_pleasing_ingerimm(unsigned short item) {
 
 	Bit8u *p_item;
 
-	p_item = MemBase + Real2Phys(0xe22b) + item * 12;
+	p_item = get_itemsdat(item);
 
 	if (((host_readb(p_item + 2) >> 1) & 1) && host_readb(p_item + 3) == 4)
 		return 1;
