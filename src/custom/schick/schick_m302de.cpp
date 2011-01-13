@@ -3961,8 +3961,18 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 4 */
 		case 0x0339 : {
-			/* get_spell_cost() */
-			return 0;
+			CPU_Pop16();
+			unsigned short spell = CPU_Pop16();
+			unsigned short half_cost = CPU_Pop16();
+			CPU_Push16(half_cost);
+			CPU_Push16(spell);
+
+			reg_ax = get_spell_cost(spell, half_cost);
+
+			D1_LOG("get_spell_cost(%s, %d) = %d\n",
+				names_spell[spell], half_cost, (short)reg_ax);
+
+			return 1;
 		}
 		/* Callers: 1 */
 		case 0x071d : {
