@@ -2359,6 +2359,17 @@ static int seg041(unsigned short offs) {
 	case 0x39: {
 		return 0;
 	}
+	case 0x3e: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = weapon_check(MemBase + Real2Phys(hero));
+
+		D1_INFO("weapon_check(%s); = %d\n", schick_getCharname(hero),
+			(signed short)reg_ax);
+
+		return 1;
+	}
 	case 0x43: {
 		return 0;
 	}
@@ -2366,9 +2377,6 @@ static int seg041(unsigned short offs) {
 		D1_LOG("seg041_8c8();\n");
 		seg041_8c8();
 		return 1;
-	}
-	case 0x3e: {
-		return 0;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
@@ -3784,6 +3792,27 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		default:
 			return 0;
+		}
+	}
+	/* seg041 */
+	if (is_ovrseg(0x1330)) {
+		switch (offs) {
+		case 0x8f1: {
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			reg_ax = weapon_check(MemBase + Real2Phys(hero));
+
+			D1_INFO("near weapon_check(%s); = %d\n",
+				schick_getCharname(hero), (signed short)reg_ax);
+
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg041", offs);
+			exit(1);
 		}
 	}
 	/* seg046 */
