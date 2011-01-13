@@ -1,3 +1,9 @@
+/*
+ *      Rewrite of DSA1 v3.02_de functions of seg103 (talents)
+ *      Functions rewritten 3/8
+ *
+*/
+
 #include "schick.h"
 
 #include "seg002.h"
@@ -123,3 +129,53 @@ signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
 
 }
 
+/**
+ *	bargain -	does a bargain throw
+ *	@hero:		the hero who bargain
+ *	@items:		the number of different goods
+ *	@price:		the total price
+ *	@percent:	how many percent the player wants to get
+ *	@mod_init:	initial value for the modificator
+ *
+ *	Returns the result of the throw. A value greater than zero
+ *	means success, below or zero means failed.
+ */
+signed short bargain(Bit8u *hero, unsigned short items, signed int price,
+	signed short percent, signed char mod_init) {
+
+	signed char mod;
+
+	mod = mod_init;
+
+	/* maybe a special NPC ? */
+	if (host_readb(MemBase + Real2Phys(ds_readd(0xbd34)) + 0x29a5) == 2)
+		mod -= 2;
+
+	/* the more different items you buy, the easier the bargain */
+	if (items == 1)
+		mod += 2;
+	else if (items == 2)
+		mod += 1;
+	else if (items < 5)
+		mod += 0;
+	else if (items < 9)
+		mod -= 1;
+	else mod -= 2;
+
+	/* the higher the price, the easier the bargain */
+	if (price < 100)
+		mod += 2;
+	if (price < 500)
+		mod += 1;
+	if (price < 1000)
+		mod += 0;
+	if (price < 2000)
+		mod -= 1;
+	else
+		mod -= 2;
+
+	/* the lower the percent, the easier the bargain */
+	mod += percent / 5 + 1;
+
+	return test_skill(hero, 0x15, mod);
+}

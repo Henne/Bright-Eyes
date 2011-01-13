@@ -3008,7 +3008,29 @@ static int seg103(unsigned short offs) {
 			reg_ax = test_skill(MemBase + Real2Phys(hero), skill, bonus);
 			return 1;
 		}
-		case 0x25:
+		case 0x25: {
+			RealPt hero = CPU_Pop32();
+			unsigned short items = CPU_Pop16();
+			signed int price = CPU_Pop32();
+			signed short percent = CPU_Pop16();
+			unsigned short mod_init = CPU_Pop16();
+			CPU_Push16(mod_init);
+			CPU_Push16(percent);
+			CPU_Push32(price);
+			CPU_Push32(items);
+			CPU_Push32(hero);
+
+			signed char m_init = (signed char) (mod_init & 0xff);
+
+			reg_ax = bargain(MemBase + Real2Phys(hero), items,
+					price, percent, m_init);
+
+			D1_LOG("bargain(%s,%d,%d,%d,%d);\n",
+				schick_getCharname(hero),
+				items, price, percent, m_init);
+
+			return 1;
+		}
 		case 0x2a:
 		case 0x34:
 		case 0x43:
