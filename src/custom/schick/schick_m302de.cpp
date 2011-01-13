@@ -3258,14 +3258,14 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0x4ac) {
 		/* Callers: 1 */
 		if (offs == 0x35) {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = CD_set_drive_nr();
 			D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
 			return 1;
 		}
 		/* Callers: 6 */
 		if (offs == 0x5c) {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt req = CPU_Pop32();
 			CPU_Push32(req);
 
@@ -3275,7 +3275,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 4 */
 		if (offs == 0xb2) {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned int retval;
 
 			retval = CD_get_tod();
@@ -3287,7 +3287,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 2 */
 		if (offs == 0xc1) {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short track_nr = CPU_Pop16();
 			CPU_Push16(track_nr);
 			D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
@@ -3296,14 +3296,14 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 3 */
 		if (offs == 0x322) {
-			CPU_Pop32();
+			CPU_Pop16();
 			D1_LOG("seg001_0322()\n");
 			seg001_0322();
 			return 1;
 		}
 		/* Callers: 1 */
 		if (offs == 0x34f) {
-			CPU_Pop32();
+			CPU_Pop16();
 			D1_LOG("seg001_034f()\n");
 			seg001_034f();
 			return 1;
@@ -3316,7 +3316,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		switch (offs) {
 		case 0x1361: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt p1 = CPU_Pop32();
 			RealPt p2 = CPU_Pop32();
 			RealPt p3 = CPU_Pop32();
@@ -3340,7 +3340,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 2 */
 		case 0x1634: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
 			unsigned short v3 = CPU_Pop16();
@@ -3358,14 +3358,14 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 2 */
 		case 0x19dc: {
-			CPU_Pop32();
+			CPU_Pop16();
 			D1_LOG("mouse_19dc()\n");
 			mouse_19dc();
 			return 1;
 		}
 		/* Callers: 2 */
 		case 0x1cf2: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short x = CPU_Pop16();
 			unsigned short y = CPU_Pop16();
 			RealPt p = CPU_Pop32();
@@ -3381,21 +3381,21 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x20bd: {
-			CPU_Pop32();
+			CPU_Pop16();
 			timers_daily();
 			D1_LOG("timers_daily();\n");
 			return 1;
 		}
 		/* Callers: 1 */
 		case 0x2177: {
-			CPU_Pop32();
+			CPU_Pop16();
 			seg002_2177();
 			D1_LOG("seg002_2177();\n");
 			return 1;
 		}
 		/* Callers: 2 */
 		case 0x21ab: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt p1 = CPU_Pop32();
 			RealPt p2 = CPU_Pop32();
 			CPU_Push32(p2);
@@ -3406,20 +3406,20 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x25ce: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = get_current_season();
 			return 1;
 		}
 		/* Callers: 1 */
 		case 0x2628: {
-			CPU_Pop32();
+			CPU_Pop16();
 			D1_LOG("do_census();\n");
 			do_census();
 			return 1;
 		}
 		/* Callers: 4 */
 		case 0x2bf6: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned int val = CPU_Pop32();
 			CPU_Push32(val);
 			D1_LOG("near sub_ingame_timers(val = %u);\n", val);
@@ -3428,7 +3428,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 4 */
 		case 0x2c5e: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned int val = CPU_Pop32();
 			CPU_Push32(val);
 
@@ -3438,7 +3438,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 4 */
 		case 0x2f7a: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned int val = CPU_Pop32();
 			CPU_Push32(val);
 			D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
@@ -3447,7 +3447,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 4 */
 		case 0x3071: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short quarter = CPU_Pop16();
 			signed short v2 = CPU_Pop16();
 			CPU_Push16(v2);
@@ -3461,21 +3461,21 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x3b63: {
-			CPU_Pop32();
+			CPU_Pop16();
 			seg002_3b63();
 			D1_LOG("seg002_3b63();\n");
 			return 1;
 		}
 		/* Callers: 1 */
 		case 0x3c63: {
-			CPU_Pop32();
+			CPU_Pop16();
 			seg002_3c63();
 			D1_LOG("seg002_3c63();\n");
 			return 1;
 		}
 		/* Callers: 2 */
 		case 0x3f3e: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short index = CPU_Pop16();
 			unsigned short type = CPU_Pop16();
 			CPU_Push16(type);
@@ -3487,28 +3487,28 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x4016: {
-			CPU_Pop32();
+			CPU_Pop16();
 			D1_LOG("near wait_for_keyboard2()\n");
 			wait_for_keyboard2();
 			return 1;
 		}
 		/* Callers: 2 */
 		case 0x47e2: {
-			CPU_Pop32();
+			CPU_Pop16();
 			seg002_47e2();
 			D1_INFO("seg002_47e2();\n");
 			return 1;
 		}
 		/* Callers: 2 */
 		case 0x484f: {
-			CPU_Pop32();
+			CPU_Pop16();
 			seg002_484f();
 			D1_INFO("seg002_484f();\n");
 			return 1;
 		}
 		/* Callers: 2 */
 		case 0x49d8: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
@@ -3520,7 +3520,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x55b1: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short item = CPU_Pop16();
 			unsigned short group = CPU_Pop16() & 0xff;
 			CPU_Push16(group);
@@ -3535,14 +3535,14 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 2 */
 		case 0x573e: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = count_heros_available();
 			D1_LOG("count_heros_available() = %d;\n", reg_ax);
 			return 1;
 		}
 		/* Callers: 3 */
 		case 0x5799: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = count_heroes_available_in_group();
 			D1_LOG("count_heroes_available_in_group() = %d;\n",
 				reg_ax);
@@ -3550,7 +3550,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x5a81: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = 1;
 			D1_LOG("Kopierschutzabfrage umgangen\n");
 			return 1;
@@ -3563,7 +3563,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0xc85) {
 		switch (offs) {
 		case 0xb: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt p = CPU_Pop32();
 			signed short x = CPU_Pop16();
 			signed short y = CPU_Pop16();
@@ -3578,7 +3578,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x144: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt p = CPU_Pop32();
 			unsigned short count = CPU_Pop16();
 			unsigned short val = CPU_Pop16();
@@ -3593,7 +3593,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x181: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short type = CPU_Pop16();
 			unsigned short pos = CPU_Pop16();
 			CPU_Push16(pos);
@@ -3609,7 +3609,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x1b6: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short type = CPU_Pop16();
 			unsigned short pos = CPU_Pop16();
 			CPU_Push16(pos);
@@ -3625,7 +3625,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x1eb: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short type = CPU_Pop16();
 			unsigned short pos = CPU_Pop16();
 			CPU_Push16(pos);
@@ -3641,7 +3641,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x1ba7: {
-			CPU_Pop32();
+			CPU_Pop16();
 			set_delay_timer();
 			D1_LOG("set_delay_timer()\n");
 			return 1;
@@ -3652,10 +3652,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	}
 	/* Callers: 1 */
 	if ((segm == 0xe41) && (offs == 0x5a)) {
-		RealPt pIP = CPU_Pop32();
-
-		D1_LOG("caller 0x%04x:0x%04x\n",
-			RealSeg(pIP) - relocation , RealOff(pIP));
+		CPU_Pop16();
 
 		reg_ax = FIG_set_array();
 
@@ -3667,7 +3664,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		switch (offs) {
 		/* Callers: 1 */
 		case 0x25: {
-			CPU_Pop32();
+			CPU_Pop16();
 			signed short row = CPU_Pop16();
 			signed short col = CPU_Pop16();
 			signed short object = CPU_Pop16();
@@ -3684,7 +3681,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0xa8: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = FIG_choose_next_hero();
 			D1_LOG("FIG_choose_next_hero() = %s\n",
 				schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
@@ -3692,21 +3689,21 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0xfc: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = FIG_choose_next_enemy();
 			D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
 			return 1;
 		}
 		/* Callers: 1 */
 		case 0x12c: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = FIG_count_active_enemies();
 			D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
 			return 1;
 		}
 		/* Callers: 1 */
 		case 0x1ba: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt enemy = CPU_Pop32();
 			CPU_Push32(enemy);
 
@@ -3716,7 +3713,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 2 */
 		case 0x242: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = FIG_get_first_active_hero();
 			D1_LOG("near FIG_get_first_active_hero() = %s\n",
 				reg_ax != -1 ? (char*)schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
@@ -3724,14 +3721,14 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x2db: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = seg032_02db();
 			D1_LOG("near seg032_02db() = %d\n", reg_ax);
 			return 1;
 		}
 		/* Callers: 1 */
 		case 0x349: {
-			CPU_Pop32();
+			CPU_Pop16();
 			reg_ax = FIG_fight_continues();
 			D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
 			return 1;
@@ -3744,7 +3741,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x1328)) {
 		switch(offs) {
 		case 0x23: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
@@ -3761,7 +3758,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x1344)) {
 		switch (offs) {
 		case 0x000: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			unsigned short spell = CPU_Pop16();
 			unsigned short fsig = CPU_Pop16();
@@ -3783,7 +3780,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x08d: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			unsigned short talent = CPU_Pop16();
 			unsigned short ftig = CPU_Pop16();
@@ -3805,7 +3802,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x11a: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
@@ -3833,7 +3830,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		/* Callers: 1 */
 		case 0x15e: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short c = CPU_Pop16();
 			RealPt p_height = CPU_Pop32();
 			CPU_Push32(p_height);
@@ -3848,7 +3845,7 @@ int schick_nearcall_v302de(unsigned offs) {
 #endif
 		/* Callers: 1 */
 		case 0x1f8: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt dst = CPU_Pop32();
 			unsigned short x = CPU_Pop16();
 			unsigned short y = CPU_Pop16();
@@ -3874,7 +3871,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		/* Callers: 3 */
 		case 0x564: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short width = CPU_Pop16();
 			unsigned short height = CPU_Pop16();
 			CPU_Push16(height);
@@ -3907,7 +3904,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* Callers: 2 */
 	if (is_ovrseg(0x147b) && (offs == 0x040F)) {
 		// Talentprobe
-		RealPt pIP = CPU_Pop32();
+		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		unsigned skill = CPU_Pop16();
 		signed bonus = CPU_Pop16();
@@ -3925,7 +3922,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* Callers: 1 */
 	if (is_ovrseg(0x1449) && (offs == 0x0e1f)) {
 		// Zauberprobe
-		RealPt pIP = CPU_Pop32();
+		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		unsigned spell = CPU_Pop16();
 		signed bonus = CPU_Pop16();
@@ -3943,7 +3940,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x1485)) {
 		switch (offs) {
 		case 0x000: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			unsigned short item = CPU_Pop16();
 			unsigned short pos = CPU_Pop16();
@@ -3959,7 +3956,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x3aa: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			unsigned short item = CPU_Pop16();
 			CPU_Push16(item);
@@ -3976,7 +3973,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x675: {
-			CPU_Pop32();
+			CPU_Pop16();
 			unsigned short item = CPU_Pop16();
 			CPU_Push16(item);
 
@@ -3990,7 +3987,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0xada: {
-			CPU_Pop32();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			unsigned short item = CPU_Pop16();
 			CPU_Push16(item);
