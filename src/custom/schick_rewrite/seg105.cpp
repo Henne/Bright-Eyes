@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 6/14
+ *      Functions rewritten 7/14
  *
- *      Functions called rewritten 5/13
+ *      Functions called rewritten 6/13
  *      Functions uncalled rewritten 1/1
 */
 
@@ -11,6 +11,60 @@
 #include "v302de.h"
 
 #include "seg007.h"
+
+/**
+ *	@hero:	the hero
+ *	@item:	the item which gets unequipped
+ *	@pos:	the position of the item
+ */
+void unequip(Bit8u *hero, unsigned short item, unsigned short pos) {
+
+	Bit8u *item_p;
+
+	/* unequip of item 0 is not allowed */
+	if (item == 0)
+		return;
+
+	item_p = get_itemsdat(item);
+
+	/* if item is an armor ? */
+	if (host_readb(item_p + 2) & 1) {
+		signed char rs_mod;
+
+		rs_mod = ds_readb(host_readb(item_p + 4) + 0x877);
+		host_writeb(hero + 0x30, host_readb(hero + 0x30) - rs_mod);
+
+		rs_mod = host_readb(hero + 0x19d + pos * 14);
+		host_writeb(hero + 0x30, host_readb(hero + 0x30) + rs_mod);
+
+		rs_mod = ds_readb(host_readb(item_p + 4) + 0x878);
+		host_writeb(hero + 0x32, host_readb(hero + 0x32) - rs_mod);
+	}
+	/* if item is a weapon and in the right hand ? */
+	if (((host_readb(item_p + 2) >> 1) & 1) && pos == 3) {
+		host_writeb(hero + 0x78, 0);
+		host_writeb(hero + 0x77, 0);
+		host_writeb(hero + 0x76, 0);
+	}
+	/* unequip Kraftguertel KK - 5 */
+	if (item == 183)
+		host_writeb(hero + 0x47, host_readb(hero + 0x47) - 5);
+	/* unequip Helm CH + 1 (cursed) */
+	if (item == 196)
+		host_writeb(hero + 0x3b, host_readb(hero + 0x3b) + 1);
+	/* unequip Silberschmuck TA + 1 */
+	if (item == 215)
+		host_writeb(hero + 0x56, host_readb(hero + 0x56) + 2);
+	/* unequip Stirnreif or Ring MR - 2 */
+	if (item == 217 || item == 165)
+		host_writeb(hero + 0x66, host_readb(hero + 0x66) - 2);
+	/* unequip Totenkopfguertel TA + 4 */
+	if (item == 182)
+		host_writeb(hero + 0x56, host_readb(hero + 0x56) + 4);
+	/* unequip Kristallkugel Gefahrensinn - 2 */
+	if (item == 70)
+		host_writeb(hero + 0x13a, host_readb(hero + 0x13a) - 2);
+}
 
 /**
  * can_hero_use_item -	checks if a hero can use an item

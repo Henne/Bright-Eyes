@@ -1,3 +1,5 @@
+//20
+void unequip(Bit8u *hero, unsigned short item, unsigned short pos);
 //3e
 unsigned short can_hero_use_item(Bit8u *, unsigned short);
 //48

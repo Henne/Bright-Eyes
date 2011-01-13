@@ -3023,7 +3023,20 @@ static int seg103(unsigned short offs) {
 static int seg105(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			unsigned short val = CPU_Pop16();
+			CPU_Push16(val);
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			D1_LOG("unequip(%s, %s=%d, %d);\n",
+				schick_getCharname(hero),
+				schick_getItemname(item), item, val);
+
+			unequip(MemBase + Real2Phys(hero), item, val);
+
+			return 1;
 		}
 		case 0x25: {
 			return 0;
@@ -3930,7 +3943,20 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x1485)) {
 		switch (offs) {
 		case 0x000: {
-			return 0;
+			CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			unsigned short item = CPU_Pop16();
+			unsigned short pos = CPU_Pop16();
+			CPU_Push16(pos);
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			D1_LOG("unequip(%s, %s, %d);\n",
+				schick_getCharname(hero),
+				schick_getItemname(item), pos);
+			unequip(MemBase + Real2Phys(hero), item, pos);
+
+			return 1;
 		}
 		case 0x3aa: {
 			CPU_Pop32();
