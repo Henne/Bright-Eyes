@@ -2323,7 +2323,22 @@ static int seg039(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			unsigned short sheet_nr = CPU_Pop16();
+			unsigned short enemy_id_16 = CPU_Pop16();
+			unsigned short round_16 = CPU_Pop16();
+			CPU_Push16(round_16);
+			CPU_Push16(enemy_id_16);
+			CPU_Push16(sheet_nr);
+
+			signed char enemy = (signed char)(enemy_id_16 & 0xff);
+			signed char round = (signed char)(round_16 & 0xff);
+
+			D1_INFO("fill_enemy_sheet(%d, %d, %d);\n",
+				sheet_nr, enemy, round);
+
+			fill_enemy_sheet(sheet_nr, enemy, round);
+
+			return 1;
 		}
 		case 0x2f: {
 			return 0;
@@ -3800,6 +3815,25 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			reg_ax = seg039_0023(MemBase + Real2Phys(hero));
 			D1_INFO("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
+
+			return 1;
+		}
+		case 0x97: {
+			CPU_Pop16();
+			unsigned short sheet_nr = CPU_Pop16();
+			unsigned short enemy_id_16 = CPU_Pop16();
+			unsigned short round_16 = CPU_Pop16();
+			CPU_Push16(round_16);
+			CPU_Push16(enemy_id_16);
+			CPU_Push16(sheet_nr);
+
+			signed char enemy = (signed char)(enemy_id_16 & 0xff);
+			signed char round = (signed char)(round_16 & 0xff);
+
+			D1_INFO("near fill_enemy_sheet(%d, %d, %d);\n",
+				sheet_nr, enemy, round);
+
+			fill_enemy_sheet(sheet_nr, enemy, round);
 
 			return 1;
 		}
