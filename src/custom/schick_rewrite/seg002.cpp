@@ -1569,7 +1569,7 @@ void add_hero_le(Bit8u *hero, signed short le) {
 
 	/* if current LE is >= 5 and the hero is unconscissous */
 	if (host_readw(hero + 0x60) >= 5 &&
-			((host_readb(hero + 0xaa) >> 6) & 1) == 0) {
+			(host_readb(hero + 0xaa) >> 6) & 1) {
 
 		/* awake */
 		host_writeb(hero + 0xaa, host_readb(hero + 0xaa) & 0xbf);
