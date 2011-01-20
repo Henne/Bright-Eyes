@@ -61,6 +61,7 @@ extern const char* names_skill[];
 extern const char* names_spell[];
 
 extern unsigned short datseg;
+extern Bit8u *p_datseg;
 extern unsigned short relocation;
 
 static inline Bit8u ds_readb(unsigned short offs) {

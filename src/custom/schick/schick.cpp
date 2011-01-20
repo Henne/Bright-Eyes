@@ -23,6 +23,7 @@ static int dbg_mode=2;
 
 //Datasegment
 unsigned short datseg;
+Bit8u *p_datseg = NULL;
 
 static short schick_en = 0;
 static short gen_en = 0;
@@ -165,6 +166,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	/* Read and show the Datasegment */
 	datseg = real_readw(reloc, ip+1);
+	p_datseg = MemBase + PhysMake(datseg, 0);
 	D1_TRAC("Dseg: 0x%X\n", datseg);
 
 	/* Check if the start of the Datasegment is Borland C++ */
