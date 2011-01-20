@@ -816,7 +816,7 @@ void seg002_2f7a(unsigned int fmin) {
 			if ((int)host_readd(hero_i + 0x8b) < 0)
 				host_writed(hero_i + 0x8b, 0);
 		}
-		/* I have no clue what is at offset 0x8f */
+		/* Timer set after Staffspell */
 		if ((int)host_readd(hero_i + 0x8f) > 0) {
 			D1_INFO("%s 8f = %d\n", (char*)(hero_i + 0x10),
 				host_readd(hero_i + 0x8f));

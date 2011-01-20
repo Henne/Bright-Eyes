@@ -31,6 +31,7 @@ signed short seg039_0023(Bit8u *hero) {
 	D1_LOG("weapon 0x%x +2 0x%x +3 0x%x\n", weapon,
 		host_readb(ptr + 2), host_readb(ptr + 3));
 
+	/* not a weapon */
 	if (((host_readb(ptr + 2) >> 1) & 1) == 0)
 		return retval;
 

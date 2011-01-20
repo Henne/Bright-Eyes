@@ -44,7 +44,7 @@ unsigned short FIG_choose_next_hero() {
 		retval = random_schick(7) - 1;
 		hero = get_hero(retval);
 
-	/* search fo a hero who is not dead, in the current group and
+	/* search for a hero who has a class, is in the current group and
 		something still unknown */
 	} while (host_readb(hero + 0x21) == 0 ||
 			host_readb(hero + 0x87) != ds_readb(0x2d35) ||
