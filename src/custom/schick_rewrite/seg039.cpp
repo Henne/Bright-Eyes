@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg039 (fight)
- *	Functions rewritten 3/7
+ *	Functions rewritten 4/7
 */
 
 #include <stdlib.h>
@@ -11,6 +11,7 @@
 #include "v302de.h"
 
 #include "seg007.h"
+#include "seg032.h"
 
 /* is used at selecting a target */
 signed short seg039_0000(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4) {
@@ -166,4 +167,82 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		set a flag */
 	if (ds_readw(0xe316) == 0x5e && host_readb(sheet) == 0x38)
 		host_writeb(sheet + 0x32, host_readb(sheet + 0x32) | 4);
+}
+
+/**
+ *	place_obj_on_cb -	places an object on the chessboard
+ *	@x:		X-Coordinate
+ *	@y:		Y-Coordinate
+ *	@object:	object number
+ *	@type:		typus for heros, monster_id for enemies
+ *	@dir:		looking direction
+ *
+ *	Returns 1 if the placement was successful or 0 if not.
+ */
+unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short object, signed char type, signed char dir) {
+
+	unsigned short i;
+
+	/* check if an object is already on that field */
+	if (get_cb_val(x, y) > 0)
+		return 0;
+
+	/* check if the object nr is valid */
+	if (object < 0)
+		return 0;
+
+	/* check if the object is decoration */
+	if (object >= 50) {
+		if (object == 57 || object == 56 || object == 62) {
+			FIG_set_cb_field(y + 1, x, object);
+			FIG_set_cb_field(y + 1, x - 1, object);
+			FIG_set_cb_field(y, x - 1, object);
+		} else if (type == 9) {
+				FIG_set_cb_field(y, x + 1, object);
+				FIG_set_cb_field(y - 1, x, object);
+		} else if (type == 43 || type == 44 || type == 48 ||
+				type == 49 || type == 50 || type == 51 ||
+				type == 52 || type == 53 || type == 54 ||
+				type == 55) {
+
+				FIG_set_cb_field(y + 1, x, object);
+		} else if (type == 60) {
+			for (i = 0; i < 7; i++)
+				FIG_set_cb_field(y + i, x, object);
+		} else if (type == 61) {
+			for (i = 0; i < 7; i++)
+				FIG_set_cb_field(y, x + i, object);
+		}
+	} else {
+		/* if object is an enemy an needs 2 fields */
+		if (object >= 10 &&
+			is_in_byte_array(type, MemBase + PhysMake(datseg, 0x25f9)))
+		{
+			signed short x_diff, y_diff;
+
+			x_diff = ds_readw(0x6018 + dir * 4);
+			y_diff = ds_readw(0x601a + dir * 4);
+
+			/* check if field is empty */
+			if (get_cb_val(y + y_diff, x + x_diff) != 0)
+				return 0;
+
+			x_diff += x;
+			y_diff += y;
+
+			/* check if y is in the borders */
+			if (y_diff < 0 || y_diff > 23)
+				return 0;
+			/* check if x is in the borders */
+			if (x_diff < 0 || x_diff > 23)
+				return 0;
+
+			FIG_set_cb_field(y_diff, x_diff, object + 20);
+		}
+	}
+
+	/* set the object to the chessboard */
+	FIG_set_cb_field(y, x, object);
+
+	return 1;
 }

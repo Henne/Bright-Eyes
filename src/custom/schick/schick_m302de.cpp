@@ -2341,7 +2341,25 @@ static int seg039(unsigned short offs) {
 			return 1;
 		}
 		case 0x2f: {
-			return 0;
+			unsigned short x = CPU_Pop16();
+			unsigned short y = CPU_Pop16();
+			signed short object = CPU_Pop16();
+			unsigned short v2_16 = CPU_Pop16();
+			unsigned short dir_16 = CPU_Pop16();
+			CPU_Push16(dir_16);
+			CPU_Push16(v2_16);
+			CPU_Push16(object);
+			CPU_Push16(y);
+			CPU_Push16(x);
+
+			signed char v2 = (signed char)(v2_16 & 0xff);
+			signed char dir = (signed char)(dir_16 & 0xff);
+
+			reg_ax = place_obj_on_cb(x, y, object, v2, dir);
+			D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
+				x, y, object, v2, dir, reg_ax);
+
+			return 1;
 		}
 		case 0x34: {
 			return 0;
@@ -3834,6 +3852,28 @@ int schick_nearcall_v302de(unsigned offs) {
 				sheet_nr, enemy, round);
 
 			fill_enemy_sheet(sheet_nr, enemy, round);
+
+			return 1;
+		}
+		case 0x317: {
+			CPU_Pop16();
+			unsigned short x = CPU_Pop16();
+			unsigned short y = CPU_Pop16();
+			signed short object = CPU_Pop16();
+			unsigned short v2_16 = CPU_Pop16();
+			unsigned short dir_16 = CPU_Pop16();
+			CPU_Push16(dir_16);
+			CPU_Push16(v2_16);
+			CPU_Push16(object);
+			CPU_Push16(y);
+			CPU_Push16(x);
+
+			signed char v2 = (signed char)(v2_16 & 0xff);
+			signed char dir = (signed char)(dir_16 & 0xff);
+
+			reg_ax = place_obj_on_cb(x, y, object, v2, dir);
+			D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
+				x, y, object, v2, dir, reg_ax);
 
 			return 1;
 		}
