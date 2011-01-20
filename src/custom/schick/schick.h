@@ -65,22 +65,22 @@ extern Bit8u *p_datseg;
 extern unsigned short relocation;
 
 static inline Bit8u ds_readb(unsigned short offs) {
-	return real_readb(datseg, offs);
+	return host_readb(p_datseg + offs);
 }
 static inline Bit16u ds_readw(unsigned short offs) {
-	return real_readw(datseg, offs);
+	return host_readw(p_datseg + offs);
 }
 static inline Bit32u ds_readd(unsigned short offs) {
-	return real_readd(datseg, offs);
+	return host_readd(p_datseg + offs);
 }
 static void ds_writeb(unsigned short offs, Bit8u val) {
-	real_writeb(datseg, offs, val);
+	host_writeb(p_datseg + offs, val);
 }
 static void ds_writew(unsigned short offs, Bit16u val) {
-	real_writew(datseg, offs, val);
+	host_writew(p_datseg + offs, val);
 }
 static void ds_writed(unsigned short offs, Bit32u val) {
-	real_writed(datseg, offs, val);
+	host_writed(p_datseg + offs, val);
 }
 
 int schick_farcall_gen105(unsigned, unsigned);
