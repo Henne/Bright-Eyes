@@ -11,23 +11,24 @@
 
 /**
  *	FIG_set_cb_field - sets an object to a chessboard position
- *	@row:		the row on the chessboard (iso_y)
- *	@col:		the column on the chessboard (iso_y)
+ *	@y:		the Y-Coordinate on the chessboard
+ *	@x:		the X-Coordinate on the chessboard
  *	@object:	number of the object
- *			0=free, 1-6=heroes, >10=enemys,
+ *			0=free, 1-6=heroes, >10=enemies,
  *			>50walls, trees, etc
  *			-3 = flee
  *
- *	This function is called multiple timeswhen an entrant in a fight
+ *	This function is called multiple times when an entrant in a fight
  *	is moving. The initial placements of static objects are also done
  *	with this function.
  */
-void FIG_set_cb_field(signed short row, signed short col, signed char object) {
-	if (row < 0 || row > 24 || col < 0 || col > 24)
+void FIG_set_cb_field(signed short y, signed short x, signed char object) {
+
+	/* check that the object is in the borders */
+	if (y < 0 || y > 24 || x < 0 || x > 24)
 		return;
 
-	host_writeb(MemBase + Real2Phys(ds_readd(0xd852)) + row * 25 + col,
-		object);
+	set_cb_val(x, y, object);
 }
 
 /**
