@@ -20,7 +20,6 @@ signed short seg039_0000(unsigned short v1, unsigned short v2, unsigned short v3
 
 signed short seg039_0023(Bit8u *hero) {
 	Bit8u *ptr;
-	signed short retval = -1;
 	unsigned short weapon;
 
 	/* get equipped weapon of the hero */
@@ -33,7 +32,7 @@ signed short seg039_0023(Bit8u *hero) {
 
 	/* not a weapon */
 	if (((host_readb(ptr + 2) >> 1) & 1) == 0)
-		return retval;
+		return -1;
 
 	/* weapons are not MagicStaffs or Fightstaffs */
 	if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45)
