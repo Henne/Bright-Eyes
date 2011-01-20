@@ -178,7 +178,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	/* check for the game program */
 	if (!strcmp(fname, "schickm.exe") || !strcmp(fname, "bladem.exe")) {
 
-		ver = schick_get_version((char*)MemBase + PhysMake(datseg, 0));
+		ver = schick_get_version((char*)p_datseg);
 
 		if (ver == 0) {
 			D1_ERR("Unbekannte Version von DSA1\n");
@@ -200,7 +200,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	/* check for the character generation program */
 	if (!strcmp(fname, "gen.exe")) {
-		ver = schick_gen_get_version((char*)MemBase + PhysMake(datseg, 0));
+		ver = schick_gen_get_version((char*)p_datseg);
 
 		if (ver == 0) {
 			D1_ERR("Unbekannte Version von DSA1 Generierung\n");
