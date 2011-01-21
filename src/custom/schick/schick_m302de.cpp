@@ -2299,7 +2299,22 @@ static int seg032(unsigned short offs) {
 static int seg038(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			signed short obj = CPU_Pop16();
+			RealPt px = CPU_Pop32();
+			RealPt py = CPU_Pop32();
+			CPU_Push32(py);
+			CPU_Push32(px);
+			CPU_Push16(obj);
+
+			reg_ax = FIG_search_obj_on_cb(obj,
+					MemBase + Real2Phys(px),
+					MemBase + Real2Phys(py));
+
+			D1_LOG("far FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
+				obj, mem_readw(Real2Phys(px)),
+				mem_readw(Real2Phys(py)), reg_ax);
+
+			return 1;
 		}
 		case 0x25: {
 			return 0;
@@ -3846,7 +3861,23 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x1324)) {
 		switch (offs) {
 		case 0x000: {
-			return 0;
+			CPU_Pop16();
+			signed short obj = CPU_Pop16();
+			RealPt px = CPU_Pop32();
+			RealPt py = CPU_Pop32();
+			CPU_Push32(py);
+			CPU_Push32(px);
+			CPU_Push16(obj);
+
+			reg_ax = FIG_search_obj_on_cb(obj,
+					MemBase + Real2Phys(px),
+					MemBase + Real2Phys(py));
+
+			D1_LOG("near FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
+				obj, mem_readw(Real2Phys(px)),
+				mem_readw(Real2Phys(py)), reg_ax);
+
+			return 1;
 		}
 		case 0x143: {
 			return 0;
