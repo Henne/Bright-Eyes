@@ -2273,7 +2273,16 @@ static int seg029(unsigned short offs) {
 		return 0;
 	}
 	case 0x48: {
-		return 0;
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		copy_forename(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+		D1_LOG("copy_forename(%s, %s)\n",
+			(char*)MemBase + Real2Phys(p1),
+			(char*)MemBase + Real2Phys(p2));
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -3823,6 +3832,20 @@ int schick_nearcall_v302de(unsigned offs) {
 		case 0x000: {
 			return 0;
 		}
+		case 0x0e8: {
+			CPU_Pop16();
+			RealPt p1 = CPU_Pop32();
+			RealPt p2 = CPU_Pop32();
+			CPU_Push32(p2);
+			CPU_Push32(p1);
+
+			copy_forename(MemBase + Real2Phys(p1),
+				MemBase + Real2Phys(p2));
+			D1_LOG("near copy_forename(%s, %s)\n",
+				(char*)MemBase + Real2Phys(p1),
+				(char*)MemBase + Real2Phys(p2));
+			return 1;
+		}
 		case 0x127: {
 			return 0;
 		}
@@ -3837,9 +3860,6 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("near clear_loc_line();\n");
 			clear_loc_line();
 			return 1;
-		}
-		case 0x0e8: {
-			return 0;
 		}
 		case 0x492: {
 			return 0;
