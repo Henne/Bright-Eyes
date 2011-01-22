@@ -2267,7 +2267,12 @@ static int seg029(unsigned short offs) {
 		return 1;
 	}
 	case 0x3e: {
-		return 0;
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+
+		select_hero_icon(pos);
+		D1_LOG("select_hero_icon(%d);\n", pos);
+		return 1;
 	}
 	case 0x43: {
 		return 0;
