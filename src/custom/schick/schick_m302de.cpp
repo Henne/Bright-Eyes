@@ -2252,12 +2252,33 @@ static int seg027(unsigned short offs) {
 
 static int seg029(unsigned short offs) {
 	switch (offs) {
-	case 0x39:
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x39: {
 		D1_LOG("clear_loc_line();\n");
 		clear_loc_line();
 		return 1;
-	default:
+	}
+	case 0x3e: {
 		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
 	}
 }
 
