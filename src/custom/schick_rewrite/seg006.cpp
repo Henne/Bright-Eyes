@@ -23,7 +23,7 @@ RealPt FIG_get_ptr(signed char v1) {
 }
 
 //static
- char FIG_set_array() {
+signed char FIG_set_array() {
 	char i;
 
 	/* find first element that is zero */

@@ -1,5 +1,5 @@
 RealPt FIG_get_ptr(signed char v1);
-char FIG_set_array();
+signed char FIG_set_array();
 void FIG_set_gfx();
 void FIG_draw_pic();
 RealPt FIG_get_hero_ptr(unsigned short v1);
