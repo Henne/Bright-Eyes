@@ -907,7 +907,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(bytes);
 
 		reg_ax = alloc_EMS(bytes);
-		D1_INFO("alloc_EMS(%d) = %d\n", bytes, reg_ax);
+		D1_LOG("alloc_EMS(%d) = %d\n", bytes, reg_ax);
 
 		return 1;
 	}
@@ -2378,7 +2378,7 @@ static int seg039(unsigned short offs) {
 			signed char enemy = (signed char)(enemy_id_16 & 0xff);
 			signed char round = (signed char)(round_16 & 0xff);
 
-			D1_INFO("fill_enemy_sheet(%d, %d, %d);\n",
+			D1_LOG("fill_enemy_sheet(%d, %d, %d);\n",
 				sheet_nr, enemy, round);
 
 			fill_enemy_sheet(sheet_nr, enemy, round);
@@ -2456,7 +2456,7 @@ static int seg041(unsigned short offs) {
 
 		reg_ax = weapon_check(MemBase + Real2Phys(hero));
 
-		D1_INFO("weapon_check(%s); = %d\n", schick_getCharname(hero),
+		D1_LOG("weapon_check(%s); = %d\n", schick_getCharname(hero),
 			(signed short)reg_ax);
 
 		return 1;
@@ -3911,7 +3911,8 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(hero);
 
 			reg_ax = seg039_0023(MemBase + Real2Phys(hero));
-			D1_INFO("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
+			D1_LOG("seg039_0023(%s) = %d\n",
+				schick_getCharname(hero), (signed short)reg_ax);
 
 			return 1;
 		}
@@ -3927,7 +3928,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			signed char enemy = (signed char)(enemy_id_16 & 0xff);
 			signed char round = (signed char)(round_16 & 0xff);
 
-			D1_INFO("near fill_enemy_sheet(%d, %d, %d);\n",
+			D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
 				sheet_nr, enemy, round);
 
 			fill_enemy_sheet(sheet_nr, enemy, round);
@@ -3970,7 +3971,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			reg_ax = weapon_check(MemBase + Real2Phys(hero));
 
-			D1_INFO("near weapon_check(%s); = %d\n",
+			D1_LOG("near weapon_check(%s); = %d\n",
 				schick_getCharname(hero), (signed short)reg_ax);
 
 			return 1;
