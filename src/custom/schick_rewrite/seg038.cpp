@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg038 (Fight)
- *      Functions rewritten 2/6
+ *      Functions rewritten 3/6
  *
- *      Functions called rewritten 2/5
+ *      Functions called rewritten 3/5
  *      Functions uncalled rewritten 0/1
 */
 
@@ -68,4 +68,23 @@ void FIG_init_list_elem(signed short obj) {
 	ds_writeb(0xe079, -1);
 
 	ds_writeb(0xe38e, FIG_add_to_list(-1));
+}
+
+//static
+unsigned short FIG_count_smth(Bit8u *p) {
+
+	unsigned short count, i;
+
+	i = 0;
+	count = 0;
+
+	if (host_readb(p) == 0xff)
+		return 99;
+
+	while (host_readb(p + ++i) != 0xff) {
+		if (host_readb(p + i - 1) != host_readb(p + i))
+			count++;
+	}
+
+	return count;
 }

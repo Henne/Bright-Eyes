@@ -3900,7 +3900,14 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x457: {
-			return 0;
+			CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+
+			reg_ax = FIG_count_smth(MemBase + Real2Phys(p));
+			D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
