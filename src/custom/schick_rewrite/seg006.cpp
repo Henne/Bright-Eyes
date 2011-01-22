@@ -1,3 +1,9 @@
+/*
+ *      Rewrite of DSA1 v3.02_de functions of seg006 (Fight)
+ *      Functions rewritten 13/16
+ *
+*/
+
 #include "string.h"
 
 #include "mem.h"
@@ -193,6 +199,98 @@ void FIG_remove_from_list(signed char id, signed char v2) {
 	}
 	memset(MemBase + p, 0, 35);
 	mem_writeb(p + 0x10, 0xff);
+}
+
+signed char FIG_add_to_list(signed char v) {
+	Bit8u *fls;
+	RealPt p1;
+	RealPt p2;
+	signed short x, y;
+
+	p1 = ds_readd(0xe37c);
+	x = (signed char)ds_readb(0xe069);
+	y = (signed char)ds_readb(0xe06a);
+
+	/* FIG_list_start == NULL */
+	if (ds_readd(0xe108) == 0) {
+
+		ds_writed(0xe108, ds_readd(0xe37c));
+
+		fls = MemBase + Real2Phys(ds_readd(0xe108));
+
+		memcpy(fls, MemBase + PhysMake(datseg, 0xe066), 35);
+
+		if (v == -1)
+			host_writeb(fls + 0x10,	FIG_set_array());
+
+		host_writed(fls + 0x1f, 0);
+		host_writed(fls + 0x1b, 0);
+
+		D1_LOG("\tlist created x = %d, y = %d\n", x, y);
+
+		return host_readb(fls + 0x10);
+	}
+
+	while ((signed char)mem_readb(Real2Phys(p1) + 0x10) != -1) {
+		p1 += 35;
+	}
+
+	memcpy(MemBase + Real2Phys(p1), MemBase + PhysMake(datseg, 0xe066), 35);
+
+	if (v == -1)
+		host_writeb(MemBase + Real2Phys(p1) + 0x10, FIG_set_array());
+	else
+		host_writeb(MemBase + Real2Phys(p1) + 0x10, v);
+
+	p2 = ds_readd(0xe108);
+
+	if ((signed char)ds_readb(0xe077) != -1)
+		for (; (signed char)mem_readb(Real2Phys(p2) + 3) <= x &&
+		((signed char)mem_readb(Real2Phys(p2) + 3) != x ||
+		(signed char)mem_readb(Real2Phys(p2) + 4) >= y) &&
+		((signed char)mem_readb(Real2Phys(p2) + 3) != x ||
+		(signed char)mem_readb(Real2Phys(p2) + 4) != y ||
+		(signed char)mem_readb(Real2Phys(p2) + 0x11) <= (signed char)ds_readb(0xe077))
+				/* p2 = p2->next */
+			 ; p2 = mem_readd(Real2Phys(p2) + 0x1b)) {
+
+			/* p2->next != NULL */
+			if (mem_readd(Real2Phys(p2) + 0x1b) != 0)
+				continue;
+
+			/* append to end of the list */
+
+			/* p2->next = p1 */
+			mem_writed(Real2Phys(p2) + 0x1b, p1);
+			/* p1->prev = p2 */
+			mem_writed(Real2Phys(p1) + 0x1f, p2);
+			/* p1->next = NULL */
+			mem_writed(Real2Phys(p1) + 0x1b, 0);
+
+			D1_LOG("\tlist appended x = %d, y = %d\n", x, y);
+
+			return mem_readb(Real2Phys(p1) + 0x10);
+		}
+
+	/* p1->prev = p2->prev; */
+	mem_writed(Real2Phys(p1) + 0x1f, mem_readd(Real2Phys(p2) + 0x1f));
+
+	/* if (p2->prev) */
+	if (mem_readd(Real2Phys(p2) + 0x1f) != 0)
+		/* p2->prev->next = p1 */
+		mem_writed(Real2Phys(mem_readd(Real2Phys(p2) + 0x1f)) + 0x1b, p1);
+	else
+		/* FIG_list_start = p1 */
+		ds_writed(0xe108, p1);
+
+	/* p2->prev = p1 */
+	mem_writed(Real2Phys(p2) + 0x1f, p1);
+	/* p1->next = p2 */
+	mem_writed(Real2Phys(p1) + 0x1b, p2);
+
+	D1_LOG("\tlist insert x = %d, y = %d\n", x, y);
+
+	return mem_readb(Real2Phys(p1) + 0x10);
 }
 
 /**

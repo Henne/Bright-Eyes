@@ -9,5 +9,6 @@ void FIG_reset_12_13(signed char id);
 void FIG_set_12_13(signed char id);
 void FIG_set_0f(signed char id, signed char val);
 void FIG_remove_from_list(signed char id, signed char v2);
+signed char FIG_add_to_list(signed char);
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr);
 void FIG_draw_enemy_pic(unsigned short pos, unsigned short enemy_nr);

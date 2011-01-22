@@ -1563,9 +1563,20 @@ static int seg006(unsigned short offs) {
 			FIG_remove_from_list((char)id, (char)v2);
 			return 1;
 		}
-		case 0x637:
-			D1_LOG("seg006_637()\n");
-			return 0;
+		case 0x637: {
+			unsigned short v16 = CPU_Pop16();
+			CPU_Push16(v16);
+
+			signed char v = (signed char)(v16 & 0xff);
+
+			D1_LOG("FIG_add_to_list(%d)\n", v);
+
+			reg_ax = FIG_add_to_list(v);
+
+			D1_LOG("returns (%d)\n", (signed char)reg_ax);
+
+			return 1;
+		}
 		case 0x82b: {
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
