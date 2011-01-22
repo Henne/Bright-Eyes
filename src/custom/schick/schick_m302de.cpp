@@ -3833,7 +3833,10 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x5ff: {
-			return 0;
+			CPU_Pop16();
+			D1_LOG("near clear_loc_line();\n");
+			clear_loc_line();
+			return 1;
 		}
 		case 0x0e8: {
 			return 0;
