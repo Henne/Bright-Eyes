@@ -1,14 +1,16 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg038 (Fight)
- *      Functions rewritten 1/6
+ *      Functions rewritten 2/6
  *
- *      Functions called rewritten 1/5
+ *      Functions called rewritten 2/5
  *      Functions uncalled rewritten 0/1
 */
 
 #include "schick.h"
 
 #include "v302de.h"
+
+#include "seg006.h"
 
 /**
  * FIG_search_obj_on_cb - searches an object on the chessboard
@@ -34,4 +36,36 @@ unsigned short FIG_search_obj_on_cb(signed short obj, Bit8u *px, Bit8u* py) {
 	host_writew(px, x);
 	host_writew(py, y);
 	return 0;
+}
+
+void FIG_init_list_elem(signed short obj) {
+
+	signed short x, y;
+
+	FIG_search_obj_on_cb(obj, (Bit8u*)&x, (Bit8u*)&y);
+
+	/* This initializes a 35 byte structure at DS:0x3066 */
+	ds_writew(0xe066, 0);
+	ds_writeb(0xe068, 0);
+	ds_writeb(0xe069, x);
+	ds_writeb(0xe06a, y);
+	ds_writeb(0xe06b, 0);
+	ds_writeb(0xe06c, 4);
+	ds_writeb(0xe06d, 11);
+	ds_writeb(0xe06e, 22);
+	ds_writeb(0xe06f, 0);
+	ds_writeb(0xe070, 0);
+	ds_writeb(0xe071, 21);
+	ds_writeb(0xe072, 10);
+	ds_writeb(0xe07b, 0);
+	ds_writeb(0xe073, 0);
+	ds_writeb(0xe075, -1);
+	ds_writeb(0xe074, -1);
+
+	ds_writed(0xe07d, ds_readd(0xd862));
+	ds_writeb(0xe077, 0);
+	ds_writeb(0xe078, 1);
+	ds_writeb(0xe079, -1);
+
+	ds_writeb(0xe38e, FIG_add_to_list(-1));
 }

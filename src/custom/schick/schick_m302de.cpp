@@ -2328,7 +2328,13 @@ static int seg038(unsigned short offs) {
 			return 1;
 		}
 		case 0x25: {
-			return 0;
+			signed short obj = CPU_Pop16();
+			CPU_Push16(obj);
+
+			FIG_init_list_elem(obj);
+			D1_LOG("FIG_init_list_elem(%d);\n", obj);
+
+			return 1;
 		}
 		case 0x39: {
 			return 0;
