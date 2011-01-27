@@ -3859,10 +3859,16 @@ int schick_nearcall_v302de(unsigned offs) {
 		case 0x127: {
 			return 0;
 		}
-		case 0x4fd: {
-			return 0;
-		}
 		case 0x417: {
+			CPU_Pop16();
+			unsigned short pos = CPU_Pop16();
+			CPU_Push16(pos);
+
+			clear_hero_icon(pos);
+			D1_LOG("clear_hero_icon(%d)\n", pos);
+			return 1;
+		}
+		case 0x4fd: {
 			return 0;
 		}
 		case 0x5ff: {

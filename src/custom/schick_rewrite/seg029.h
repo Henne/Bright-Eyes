@@ -1,3 +1,5 @@
+//0x34
+void clear_hero_icon(unsigned short);
 //0x39
 void clear_loc_line();
 //0x3e

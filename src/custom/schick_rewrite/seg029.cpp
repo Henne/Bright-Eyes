@@ -28,6 +28,25 @@ void copy_forename(Bit8u *dst, Bit8u *name) {
 	host_writeb(dst + 7, 0);
 }
 
+/**
+ * clear_hero_icon - fills hero icon and bars with black color
+ * @pos:	position of the hero
+ */
+void clear_hero_icon(unsigned short pos) {
+
+	/* fill icon area black */
+	do_fill_rect(ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2), 157,
+		ds_readw(0x2d01 + pos * 2) + 31, 188, 0);
+
+	/* return if the hero has a class */
+	if (host_readb(get_hero(pos) + 0x21))
+		return;
+
+	/* fill bars area black */
+	do_fill_rect(ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
+		ds_readw(0x2d01 + pos * 2) + 39, 188, 0);
+}
+
 void clear_loc_line() {
 	update_mouse_cursor();
 	do_fill_rect(ds_readd(0xd2ff), 3, 140, 316, 153, 0);
