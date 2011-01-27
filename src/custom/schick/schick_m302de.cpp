@@ -2275,7 +2275,12 @@ static int seg029(unsigned short offs) {
 		return 1;
 	}
 	case 0x43: {
-		return 0;
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+
+		deselect_hero_icon(pos);
+		D1_LOG("deselect_hero_icon(%d);\n", pos);
+		return 1;
 	}
 	case 0x48: {
 		RealPt p1 = CPU_Pop32();

@@ -73,3 +73,44 @@ void select_hero_icon(unsigned short pos) {
 	/* restore textcolors */
 	GUI_set_smth(fg, bg);
 }
+
+/**
+ * deselect_hero_icon - deselect a heros icon in the playmask
+ * @pos:	position of the hero
+ *
+ * This function is only used from sell- and repair screens.
+ */
+/* TODO: this function an select_hero_icon() can be merged into one. */
+void deselect_hero_icon(unsigned short pos) {
+
+	short fg, bg;
+
+	/* paint a gray border for the pic and bars */
+	do_border(Real2Phys(ds_readd(0xd2ff)),
+		ds_readw(0x2d01 + pos * 2) - 1, 156,
+		ds_readw(0x2d01 + pos * 2) + 42, 189, 0xe6);
+
+	/* paint a gray border for the name */
+	do_border(Real2Phys(ds_readd(0xd2ff)),
+		ds_readw(0x2d01 + pos * 2) - 1, 189,
+		ds_readw(0x2d01 + pos * 2) + 42, 198, 0xe6);
+
+	/* save the textcolors */
+	GUI_get_smth(&fg, &bg);
+
+	/* copy the heros forename */
+	copy_forename(MemBase + Real2Phys(ds_readd(0xd2f3)),
+		get_hero(pos) + 0x10);
+
+	/* set the textcolors */
+	GUI_set_smth(0xff, 0);
+
+	/* print forename */
+	GUI_print_string(MemBase + Real2Phys(ds_readd(0xd2f3)),
+		GUI_get_first_pos_centered(MemBase + Real2Phys(ds_readd(0xd2f3)),
+			ds_readw(0x2d01 + pos * 2), 43, 0), 190);
+
+
+	/* restore textcolors */
+	GUI_set_smth(fg, bg);
+}
