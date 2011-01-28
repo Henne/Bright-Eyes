@@ -27,6 +27,7 @@
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
+#include "seg101.h"
 #include "seg102.h"
 #include "seg103.h"
 #include "seg105.h"
@@ -3206,34 +3207,40 @@ static int seg101(unsigned short offs) {
 		return 0;
 	}
 	case 0x70: {
-		return 0;
+		spell_abvenenum();
+		return 1;
 	}
 	case 0x75: {
-		return 0;
+		spell_aeolitus();
+		return 1;
 	}
 	case 0x7a: {
 		return 0;
 	}
 	case 0x7f: {
-		return 0;
+		spell_claudibus();
+		return 1;
 	}
 	case 0x84: {
 		return 0;
 	}
 	case 0x89: {
-		return 0;
+		spell_erstarre();
+		return 1;
 	}
 	case 0x8e: {
 		return 0;
 	}
 	case 0x93: {
-		return 0;
+		spell_schmelze();
+		return 1;
 	}
 	case 0x98: {
 		return 0;
 	}
 	case 0x9d: {
-		return 0;
+		spell_sturmgebr();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
