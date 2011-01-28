@@ -9,6 +9,7 @@
 #include "schick.h"
 
 #define HEROS		(0xbd34)
+#define DIALOG_TEXT	(0xc3b1)
 #define TEXT_LTX	(0xc3b5)
 #define CHESSBOARD	(0xd852)
 #define ITEMSDAT	(0xe22b)
@@ -24,6 +25,10 @@ static inline Bit8u *get_spelluser() {
 
 static inline Bit8u *get_ltx(unsigned short off) {
 	return MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(TEXT_LTX) + off)));
+}
+
+static inline Bit8u *get_dtp(unsigned short off) {
+	return MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(DIALOG_TEXT) + off)));
 }
 
 static inline signed char get_cb_val(unsigned short x, unsigned short y) {
