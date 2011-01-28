@@ -1699,8 +1699,9 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 }
 
 /**
-	get_random_hero - return index of a randomly choden hero
+	get_random_hero - return index of a randomly choosen hero
 */
+/* Original-Bug: can loop forever */
 unsigned short get_random_hero() {
 	Bit8u *hero;
 	unsigned short cur_hero;
