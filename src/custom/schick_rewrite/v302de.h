@@ -12,9 +12,14 @@
 #define TEXT_LTX	(0xc3b5)
 #define CHESSBOARD	(0xd852)
 #define ITEMSDAT	(0xe22b)
+#define SPELLUSER	(0xe5bc)
 
 static inline Bit8u *get_hero(unsigned short index) {
 	return MemBase + Real2Phys(ds_readd(HEROS)) + index * 0x6da;
+}
+
+static inline Bit8u *get_spelluser() {
+	return MemBase + Real2Phys(ds_readd(SPELLUSER));
 }
 
 static inline Bit8u *get_ltx(unsigned short off) {
