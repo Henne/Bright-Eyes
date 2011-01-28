@@ -12,6 +12,8 @@ void spell_aeolitus();
 void spell_claudibus();
 //0x89
 void spell_erstarre();
+//0x8e
+void spell_flimflam();
 //0x93
 void spell_schmelze();
 //0x9d

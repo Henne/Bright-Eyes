@@ -3232,7 +3232,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x8e: {
-		return 0;
+		spell_flimflam();
+		return 1;
 	}
 	case 0x93: {
 		spell_schmelze();

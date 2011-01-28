@@ -1,11 +1,15 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 9/26
+ *	Functions rewritten 10/26
  *
 */
 
 #include "schick.h"
+
+#include "string.h"
+
+#include "v302de.h"
 
 /* Transformation / Verwandlung */
 void spell_adler() {
@@ -40,6 +44,19 @@ void spell_claudibus() {
 
 void spell_erstarre() {
 	D1_INFO("Zauberspruch \"Erstarre\" ist nicht implementiert\n");
+}
+
+void spell_flimflam() {
+
+	signed char level = host_readb(get_spelluser() + 0x27);
+
+	/* set flim flam duration (level + 3) hours */
+	ds_writed(0x2dc4 + 0x20, (level + 3) * 0x1518);
+
+	/* copy message text */
+	strcpy((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+		(char*)get_dtp(110 * 4));
+
 }
 
 void spell_schmelze() {
