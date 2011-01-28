@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 10/26
+ *	Functions rewritten 11/26
  *
 */
 
@@ -40,6 +40,19 @@ void spell_aeolitus() {
 
 void spell_claudibus() {
 	D1_INFO("Zauberspruch \"Claudibus\" ist nicht implementiert\n");
+}
+
+void spell_dunkelheit() {
+
+	signed char level = host_readb(get_spelluser() + 0x27);
+
+	/* set dunkelheit duration (level + 3) hours */
+	ds_writed(0x2dc4 + 0x24, (level + 3) * 0x1518);
+
+	/* copy message text */
+	strcpy((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+		(char*)get_dtp(109 * 4));
+
 }
 
 void spell_erstarre() {

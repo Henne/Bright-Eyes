@@ -10,6 +10,8 @@ void spell_abvenenum();
 void spell_aeolitus();
 //0x7f
 void spell_claudibus();
+//0x84
+void spell_dunkelheit();
 //0x89
 void spell_erstarre();
 //0x8e

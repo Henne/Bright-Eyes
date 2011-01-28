@@ -3225,7 +3225,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x84: {
-		return 0;
+		spell_dunkelheit();
+		return 1;
 	}
 	case 0x89: {
 		spell_erstarre();
