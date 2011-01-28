@@ -3159,7 +3159,8 @@ static int seg101(unsigned short offs) {
 	D1_INFO("%s:0x%x()\n", __func__, offs);
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		spell_adler();
+		return 1;
 	}
 	case 0x25: {
 		return 0;
@@ -3192,7 +3193,8 @@ static int seg101(unsigned short offs) {
 		return 0;
 	}
 	case 0x57: {
-		return 0;
+		spell_mutabili();
+		return 1;
 	}
 	case 0x5c: {
 		return 0;
@@ -3201,7 +3203,8 @@ static int seg101(unsigned short offs) {
 		return 0;
 	}
 	case 0x66: {
-		return 0;
+		spell_see();
+		return 1;
 	}
 	case 0x6b: {
 		return 0;
