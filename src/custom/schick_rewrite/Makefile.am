@@ -24,6 +24,7 @@ libschick_rewrite_a_SOURCES = schick_common.h v302de.h\
 		seg096.cpp seg096.h\
 		seg097.cpp seg097.h\
 		seg098.cpp seg098.h\
+		seg101.cpp seg101.h\
 		seg102.cpp seg102.h\
 		seg103.cpp seg103.h\
 		seg105.cpp seg105.h
