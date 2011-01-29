@@ -6,6 +6,8 @@ void spell_arcano();
 void spell_inc_ch();
 //0x39
 void spell_inc_ff();
+//0x3e
+void spell_inc_ge();
 //0x4d
 void spell_inc_kl();
 //0x52
