@@ -20,6 +20,30 @@ void spell_adler() {
 	D1_INFO("Zauberspruch \"Adler, Wolf und Hammerhai\" ist nicht implementiert\n");
 }
 
+void spell_arcano() {
+
+	Bit8u *tp;
+	unsigned short slot;
+	signed short target;
+
+	/* get the spell target */
+	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+
+	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
+	tp = MemBase + Real2Phys(ds_readd(0xe5b8));
+
+	/* get a free mod_slot */
+	slot = get_free_mod_slot();
+
+	/* MR + 2 for 1 h */
+	set_mod_slot(slot, 0x1518, tp + 0x66, 2, target);
+
+	/* "Die Magieresistenz von %s steigt um 2 Punkte." */
+	sprintf((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+		(char*)get_dtp(98 * 4),
+		(char*)tp + 0x10);
+}
+
 void spell_inc_mu() {
 
 	Bit8u *tp;
