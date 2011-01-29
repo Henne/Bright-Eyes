@@ -10,6 +10,8 @@ void spell_inc_ff();
 void spell_inc_ge();
 //0x43
 void spell_inc_in();
+//0x48
+void spell_inc_kk();
 //0x4d
 void spell_inc_kl();
 //0x52

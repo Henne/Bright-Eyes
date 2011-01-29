@@ -2122,7 +2122,7 @@ static int seg010(unsigned short offs) {
 
 			RealPt retval = EMS_norm_ptr(p);
 
-			D1_INFO("EMS_norm_ptr(0x%x) = 0x%x\n", p, retval);
+			D1_LOG("EMS_norm_ptr(0x%x) = 0x%x\n", p, retval);
 			reg_ax = RealOff(retval);
 			reg_dx = RealSeg(retval);
 
@@ -2131,12 +2131,12 @@ static int seg010(unsigned short offs) {
 		case 0xfd: {
 			reg_ax = EMS_init();
 			if (reg_ax) {
-				D1_INFO("EMS initialisiert Segment 0x%x\n",
+				D1_LOG("EMS initialisiert Segment 0x%x\n",
 					ds_readw(0x4bac));
 
 				//ds_writeb(0x26ab, 1);
 			} else
-				D1_INFO("EMS nicht vorhanden\n");
+				D1_LOG("EMS nicht vorhanden\n");
 
 			return 1;
 		}
@@ -3156,7 +3156,6 @@ static int seg098(unsigned short offs) {
 }
 
 static int seg101(unsigned short offs) {
-	D1_INFO("%s:0x%x()\n", __func__, offs);
 	switch (offs) {
 	case 0x20: {
 		spell_adler();
@@ -3189,7 +3188,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x48: {
-		return 0;
+		spell_inc_kk();
+		return 1;
 	}
 	case 0x4d: {
 		spell_inc_kl();
