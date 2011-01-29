@@ -3177,7 +3177,8 @@ static int seg101(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		return 0;
+		spell_inc_ff();
+		return 1;
 	}
 	case 0x3e: {
 		return 0;
