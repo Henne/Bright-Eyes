@@ -2,6 +2,8 @@
 void spell_adler();
 //0x25
 void spell_arcano();
+//0x2f
+void spell_inc_ch();
 //0x4d
 void spell_inc_kl();
 //0x52

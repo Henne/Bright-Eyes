@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 14/26
+ *	Functions rewritten 15/26
  *
 */
 
@@ -42,6 +42,53 @@ void spell_arcano() {
 	sprintf((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
 		(char*)get_dtp(98 * 4),
 		(char*)tp + 0x10);
+}
+
+void spell_inc_ch() {
+
+	Bit8u *tp;
+	unsigned short slot;
+	signed short target;
+
+	/* get the spell target */
+	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+
+	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
+	tp = MemBase + Real2Phys(ds_readd(0xe5b8));
+
+	/* check if the target is the spelluser */
+	if (tp == get_spelluser()) {
+
+		/* set AP costs to 0 */
+		ds_writew(0xac0e, 0);
+
+		/* copy message text */
+		strcpy((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+			(char*)get_dtp(112 * 4));
+
+		return;
+	}
+
+	/* check if CH was already increased */
+	if (host_readb(tp + 0x3b) > host_readb(tp + 0x3a)) {
+		/* "Bei %s ist %s schon magisch gesteigert" */
+		sprintf((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+			(char*)get_dtp(113 * 4),
+			(char*)tp + 0x10,
+			(char*)get_ltx(414 * 4));
+	} else {
+		/* get a free mod_slot */
+		slot = get_free_mod_slot();
+
+		/* CH + 2 for 2 hours */
+		set_mod_slot(slot, 0x2a30, tp + 0x3b, 2, target);
+
+		/* "Bei %s steigt %s um 2 Punkte" */
+		sprintf((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+			(char*)get_dtp(101 * 4),
+			(char*)tp + 0x10,
+			(char*)get_ltx(414 * 4));
+	}
 }
 
 void spell_inc_kl() {
