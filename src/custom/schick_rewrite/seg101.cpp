@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 11/26
+ *	Functions rewritten 12/26
  *
 */
 
@@ -10,6 +10,8 @@
 #include "string.h"
 
 #include "v302de.h"
+
+#include "seg002.h"
 
 /* Transformation / Verwandlung */
 void spell_adler() {
@@ -74,6 +76,39 @@ void spell_flimflam() {
 
 void spell_schmelze() {
 	D1_INFO("Zauberspruch \"Schmelze\" ist nicht implementiert\n");
+}
+
+void spell_silentium() {
+
+	Bit8u *hero;
+	unsigned short i;
+	unsigned short slot;
+
+	hero = get_hero(0);
+
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+		/* check class */
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+		/* check group */
+		if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+			continue;
+		/* check dead */
+		if (host_readb(hero + 0xaa) & 1)
+			continue;
+
+		/* get a free mod_slot */
+		slot = get_free_mod_slot();
+		/* skill stealth + 10 for 12 minutes */
+		set_mod_slot(slot, 0x1c2, hero + 0x115, 10, i);
+	}
+
+	/* set AP cost */
+	ds_writew(0xac0e, 5);
+
+	/* copy message text */
+	strcpy((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+		(char*)get_dtp(111 * 4));
 }
 
 void spell_sturmgebr() {

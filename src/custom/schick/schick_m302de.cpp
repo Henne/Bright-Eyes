@@ -3241,7 +3241,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x98: {
-		return 0;
+		spell_silentium();
+		return 1;
 	}
 	case 0x9d: {
 		spell_sturmgebr();

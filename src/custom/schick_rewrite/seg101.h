@@ -18,5 +18,7 @@ void spell_erstarre();
 void spell_flimflam();
 //0x93
 void spell_schmelze();
+//0x98
+void spell_silentium();
 //0x9d
 void spell_sturmgebr();
