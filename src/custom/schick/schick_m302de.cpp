@@ -3190,7 +3190,8 @@ static int seg101(unsigned short offs) {
 		return 0;
 	}
 	case 0x52: {
-		return 0;
+		spell_inc_mu();
+		return 1;
 	}
 	case 0x57: {
 		spell_mutabili();

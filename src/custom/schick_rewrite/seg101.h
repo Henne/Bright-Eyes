@@ -1,5 +1,7 @@
 //0x20
 void spell_adler();
+//0x52
+void spell_inc_mu();
 //0x57
 void spell_mutabili();
 //0x66

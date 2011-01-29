@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 12/26
+ *	Functions rewritten 13/26
  *
 */
 
@@ -18,6 +18,53 @@ void spell_adler() {
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
 	D1_INFO("Zauberspruch \"Adler, Wolf und Hammerhai\" ist nicht implementiert\n");
+}
+
+void spell_inc_mu() {
+
+	Bit8u *tp;
+	unsigned short slot;
+	signed short target;
+
+	/* get the spell target */
+	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+
+	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
+	tp = MemBase + Real2Phys(ds_readd(0xe5b8));
+
+	/* check if the target is the spelluser */
+	if (tp == get_spelluser()) {
+
+		/* set AP costs to 0 */
+		ds_writew(0xac0e, 0);
+
+		/* copy message text */
+		strcpy((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+			(char*)get_dtp(112 * 4));
+
+		return;
+	}
+
+	/* check if MU was already increased */
+	if (host_readb(tp + 0x35) > host_readb(tp + 0x34)) {
+		/* "Bei %s ist %s schon magisch gesteigert" */
+		sprintf((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+			(char*)get_dtp(113 * 4),
+			(char*)tp + 0x10,
+			(char*)get_ltx(412 * 4));
+	} else {
+		/* get a free mod_slot */
+		slot = get_free_mod_slot();
+
+		/* MU + 2 for 2 hours */
+		set_mod_slot(slot, 0x2a30, tp + 0x35, 2, target);
+
+		/* "Bei %s steigt %s um 2 Punkte" */
+		sprintf((char*)MemBase + Real2Phys(ds_readd(0xd2f3)),
+			(char*)get_dtp(101 * 4),
+			(char*)tp + 0x10,
+			(char*)get_ltx(412 * 4));
+	}
 }
 
 void spell_mutabili() {
