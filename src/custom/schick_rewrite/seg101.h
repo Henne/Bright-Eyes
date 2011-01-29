@@ -8,6 +8,8 @@ void spell_inc_ch();
 void spell_inc_ff();
 //0x3e
 void spell_inc_ge();
+//0x43
+void spell_inc_in();
 //0x4d
 void spell_inc_kl();
 //0x52
