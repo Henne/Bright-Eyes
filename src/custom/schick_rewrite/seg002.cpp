@@ -1701,20 +1701,39 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 /**
 	get_random_hero - return index of a randomly choosen hero
 */
-/* Original-Bug: can loop forever */
+/* Original-Bug: can loop forever if the position is greater than the
+	number of heroes in the group */
 unsigned short get_random_hero() {
 	Bit8u *hero;
 	unsigned short cur_hero;
+	unsigned short i, pos = 0;
 	char cur_group;
 
 	do {
 		/* get number of current group */
 		cur_group = ds_readb(0x2d35);
-		cur_hero = random_schick(ds_readb(0x2d36 + cur_group) );
+		cur_hero = random_schick(ds_readb(0x2d36 + cur_group));
 		cur_hero--;
 
+		/* Original-Bugfix */
 		hero = get_hero(0);
-		hero += cur_hero + 0x6da;
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+			/* Check if hero has a class */
+			if (host_readb(hero+0x21) == 0)
+				continue;
+			/* Check if in current group */
+			if (host_readb(hero + 0x87) != cur_group)
+				continue;
+
+			if (pos == cur_hero) {
+				pos = i;
+				break;
+			}
+
+			pos++;
+		}
+
+		hero = get_hero(pos);
 
 		/* Check if hero has a class */
 		if (host_readb(hero+0x21) == 0)
@@ -1726,7 +1745,7 @@ unsigned short get_random_hero() {
 		if (host_readb(hero+0xaa) & 1 )
 			continue;
 
-		return cur_hero;
+		return pos;
 
 	} while (1);
 }
