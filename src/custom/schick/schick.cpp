@@ -342,13 +342,6 @@ int schick_callf(unsigned selector, unsigned offs)
 	return ret;
 }
 
-// Intercept RETurn.
-void schick_ret() {
-
-	if (!running || !schick)
-		return;
-}
-
 // Intercept near CALLs, 16-Bit
 int schick_calln16(unsigned offs) {
 
