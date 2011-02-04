@@ -3616,6 +3616,19 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0x51e) {
 
 		switch (offs) {
+		case 0x0b7e: {
+			CPU_Pop16();
+			unsigned short fileindex = CPU_Pop16();
+			CPU_Push16(fileindex);
+
+			reg_ax = open_and_seek_dat(fileindex);
+
+			RealPt fname = ds_readd(0x4c8c + fileindex * 4);
+
+			D1_LOG("open_and_seek_dat(%s);\n", getString(fname));
+
+			return 1;
+		}
 		case 0x1361: {
 			CPU_Pop16();
 			RealPt p1 = CPU_Pop32();

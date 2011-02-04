@@ -1,3 +1,5 @@
+//static
+Bit16u open_and_seek_dat(unsigned short);
 unsigned int get_readlength2(signed short index);
 signed int process_nvf(Bit8u *p);
 //static

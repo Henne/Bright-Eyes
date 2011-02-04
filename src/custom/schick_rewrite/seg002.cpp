@@ -1,12 +1,13 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 71/136
+	Functions rewritten: 72/136
 */
 #include <stdlib.h>
 #include <string.h>
 
 #include "callback.h"
 #include "regs.h"
+#include "dos_inc.h"
 
 #include "schick.h"
 
@@ -26,6 +27,49 @@
 #include "seg047.h"
 #include "seg096.h"
 
+/**
+ * open_and_seek_dat - opens SCHICK.DAT and seeks to desired position
+ * @fileindex: the index of the file in SCHICK.DAT
+ *
+ * Returns the filehandle or 0xffff.
+ */
+//static
+Bit16u open_and_seek_dat(unsigned short fileindex) {
+	Bit32u pos;
+	Bit16u fd;
+	Bit16u readsize;
+	unsigned int start, end;
+
+
+	/* open SCHICK.DAT */
+	if (!DOS_OpenFile("SCHICK.DAT", OPEN_READ, &fd))
+		return 0xffff;
+
+	/* seek to the fileindex position in the offset table */
+	pos = fileindex * 4;
+	DOS_SeekFile(fd, &pos, DOS_SEEK_SET);
+
+	/* read the start offset of the desired file */
+	readsize = 4;
+	DOS_ReadFile(fd, (Bit8u*)&start, &readsize);
+
+	/* read the start offset of the next file */
+	readsize = 4;
+	DOS_ReadFile(fd, (Bit8u*)&end, &readsize);
+
+	/* seek to the desired file */
+	pos = start;
+	DOS_SeekFile(fd, &pos, DOS_SEEK_SET);
+
+	/* save the offset of the desired file */
+	ds_writed(0xbcdf, start);
+
+	/* save the length of the desired file in 2 variables */
+	ds_writed(0xbce3, end - start);
+	ds_writed(0xbce7, end - start);
+
+	return fd;
+}
 
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : ds_readd(0xbce7);
