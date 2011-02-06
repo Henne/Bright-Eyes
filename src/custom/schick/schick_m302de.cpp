@@ -6,6 +6,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg000.h"
 #include "seg001.h"
 #include "seg002.h"
@@ -676,9 +678,9 @@ static int seg002(unsigned short offs) {
 		unsigned short index = CPU_Pop16();
 		CPU_Push16(index);
 
-		RealPt fname = ds_readd(0x4c8c + index * 4);
+		D1_LOG("OpenAndSeekDatfile(0x%x) %s\n", index,
+			get_fname(index));
 
-		D1_LOG("OpenAndSeekDatfile(0x%x) %s\n", index, getString(fname));
 		return 0;
 	}
 	case 0x0ed2: {
@@ -3623,9 +3625,8 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			reg_ax = open_and_seek_dat(fileindex);
 
-			RealPt fname = ds_readd(0x4c8c + fileindex * 4);
-
-			D1_LOG("open_and_seek_dat(%s);\n", getString(fname));
+			D1_LOG("open_and_seek_dat(%s);\n",
+				get_fname(fileindex));
 
 			return 1;
 		}

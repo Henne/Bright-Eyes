@@ -8,6 +8,7 @@
 
 #include "schick.h"
 
+#define FNAMES		(0x4c8c)
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
 #define TEXT_LTX	(0xc3b5)
@@ -21,6 +22,10 @@ static inline Bit8u *get_hero(unsigned short index) {
 
 static inline Bit8u *get_spelluser() {
 	return MemBase + Real2Phys(ds_readd(SPELLUSER));
+}
+
+static inline Bit8u *get_fname(unsigned short off) {
+	return MemBase + Real2Phys(ds_readd(FNAMES + off * 4));
 }
 
 static inline Bit8u *get_ltx(unsigned short off) {
