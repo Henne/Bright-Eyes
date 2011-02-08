@@ -18,6 +18,17 @@ Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
 }
 
+Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
+
+	if ((ds_readw(0xb788 + handle * 2) & 2))
+		return -1;
+
+	if (!DOS_ReadFile(handle, buf, &count))
+		return -1;
+
+	return (Bit16s)count;
+}
+
 signed short bioskey(signed short cmd) {
 	reg_ah = cmd &  0xff;
 	reg_al = 0;

@@ -218,18 +218,19 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x0be3: {
-			/*read()*/
-			unsigned short fd = CPU_Pop16();
+			Bit16u handle = CPU_Pop16();
 			RealPt buf = CPU_Pop32();
-			unsigned short len = CPU_Pop16();
-			CPU_Push16(len);
+			Bit16u count = CPU_Pop16();
+			CPU_Push16(count);
 			CPU_Push32(buf);
-			CPU_Push16(fd);
+			CPU_Push16(handle);
 
-			D1_LOG("_read(fd=0x%x, buffer=0x%x:0x%x, len=%d)\n",
-				fd, buf, len);
+			D1_LOG("C-Lib _read(handle=%d, buffer=0x%x, len=%d)\n",
+				handle, buf, count);
 
-			return 0;
+			reg_ax = bc__read(handle, MemBase + Real2Phys(buf), count);
+
+			return 1;
 		}
 		case 0x1123: {
 			/* time(), user for randomize */
