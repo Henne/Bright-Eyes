@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 72/136
+	Functions rewritten: 73/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -67,6 +67,26 @@ Bit16u open_and_seek_dat(unsigned short fileindex) {
 unsigned int get_readlength2(signed short index) {
 	return index == -1 ? 0 : ds_readd(0xbce7);
 }
+
+unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len) {
+
+	Bit16u readsize;
+
+	readsize = len;
+
+	/* no need to read */
+	if (ds_readd(0xbce3) == 0)
+		return 0;
+
+	/* adjust number of bytes to read */
+	if (len > ds_readd(0xbce3))
+		readsize = ds_readd(0xbce3) & 0xffff;
+
+	ds_writed(0xbce3, ds_readd(0xbce3) - readsize);
+
+	return bc__read(handle, buffer, readsize);
+}
+
 
 signed int process_nvf(Bit8u *nvf) {
 	signed char nvf_type;

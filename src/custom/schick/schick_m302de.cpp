@@ -680,11 +680,19 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x0c28: {
-		unsigned short index = CPU_Pop16();
-		CPU_Push16(index);
+		Bit16u handle = CPU_Pop16();
+		RealPt buf = CPU_Pop32();
+		Bit16u len = CPU_Pop16();
+		CPU_Push16(len);
+		CPU_Push32(buf);
+		CPU_Push16(handle);
 
-		D1_LOG("ReadDatfile(%d)\n", index);
-		return 0;
+		D1_LOG("read_archive_file(%d, %x, %d);\n",
+			handle, buf, len);
+		reg_ax = read_archive_file(handle,
+				MemBase + Real2Phys(buf), len);
+
+		return 1;
 	}
 	case 0x0c72:
 	case 0x0cb6:
@@ -3664,6 +3672,22 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("open_and_seek_dat(%s);\n",
 				get_fname(fileindex));
+
+			return 1;
+		}
+		case 0x0c28: {
+			CPU_Pop16();
+			Bit16u handle = CPU_Pop16();
+			RealPt buf = CPU_Pop32();
+			Bit16u len = CPU_Pop16();
+			CPU_Push16(len);
+			CPU_Push32(buf);
+			CPU_Push16(handle);
+
+			D1_LOG("near read_archive_file(%d, %x, %d);\n",
+				handle, buf, len);
+			reg_ax = read_archive_file(handle,
+					MemBase + Real2Phys(buf), len);
 
 			return 1;
 		}
