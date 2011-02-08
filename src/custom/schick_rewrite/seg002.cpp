@@ -35,10 +35,8 @@
  */
 //static
 Bit16u open_and_seek_dat(unsigned short fileindex) {
+	Bit32u start, end;
 	Bit16u fd;
-	Bit16u readsize;
-	unsigned int start, end;
-
 
 	/* open SCHICK.DAT */
 	if (!DOS_OpenFile("SCHICK.DAT", OPEN_READ, &fd))
@@ -48,12 +46,10 @@ Bit16u open_and_seek_dat(unsigned short fileindex) {
 	bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
 
 	/* read the start offset of the desired file */
-	readsize = 4;
-	DOS_ReadFile(fd, (Bit8u*)&start, &readsize);
+	bc__read(fd, (Bit8u*)&start, 4);
 
 	/* read the start offset of the next file */
-	readsize = 4;
-	DOS_ReadFile(fd, (Bit8u*)&end, &readsize);
+	bc__read(fd, (Bit8u*)&end, 4);
 
 	/* seek to the desired file */
 	bc_lseek(fd, start, DOS_SEEK_SET);
