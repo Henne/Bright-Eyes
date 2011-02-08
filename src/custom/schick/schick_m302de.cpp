@@ -331,14 +331,24 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		case 0x2eb2: {
-			unsigned short handle = CPU_Pop16();
+			Bit16u handle = CPU_Pop16();
 			CPU_Push16(handle);
 
-			D1_LOG("C-Lib close(%d)\n", handle);
-			return 0;
+			reg_ax = bc_close(handle);
+			D1_LOG("C-Lib close(%d); = %d\n",
+				handle, (signed short)reg_ax);
+
+			return 1;
 		}
 		case 0x2eda: {
-			return 0;
+			Bit16u handle = CPU_Pop16();
+			CPU_Push16(handle);
+
+			reg_ax = bc__close(handle);
+			D1_LOG("C-Lib _close(%d); = %d\n",
+				handle, (signed short)reg_ax);
+
+			return 1;
 		}
 		case 0x2f25: {
 			return 0;
