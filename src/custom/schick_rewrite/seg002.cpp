@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 73/136
+	Functions rewritten: 74/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -87,6 +87,12 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len) {
 	return bc__read(handle, buffer, readsize);
 }
 
+void seg002_0c72(Bit16u handle, Bit32u off) {
+
+	ds_writed(0xbce3, ds_readd(0xbce7) - off);
+
+	bc_lseek(handle, ds_readd(0xbcdf) + off, DOS_SEEK_SET);
+}
 
 signed int process_nvf(Bit8u *nvf) {
 	signed char nvf_type;

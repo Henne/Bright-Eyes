@@ -694,7 +694,17 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x0c72:
+	case 0x0c72: {
+		Bit16u handle = CPU_Pop16();
+		Bit32u off = CPU_Pop32();
+		CPU_Push32(off);
+		CPU_Push16(handle);
+
+		D1_LOG("seg002_0c72(%d, %d)\n", handle, off);
+		seg002_0c72(handle, off);
+
+		return 1;
+	}
 	case 0x0cb6:
 			return 0;
 	case 0x0d27: {
@@ -3688,6 +3698,18 @@ int schick_nearcall_v302de(unsigned offs) {
 				handle, buf, len);
 			reg_ax = read_archive_file(handle,
 					MemBase + Real2Phys(buf), len);
+
+			return 1;
+		}
+		case 0x0c72: {
+			CPU_Pop16();
+			Bit16u handle = CPU_Pop16();
+			Bit32u off = CPU_Pop32();
+			CPU_Push32(off);
+			CPU_Push16(handle);
+
+			D1_LOG("near seg002_0c72(%d, %d)\n", handle, off);
+			seg002_0c72(handle, off);
 
 			return 1;
 		}
