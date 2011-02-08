@@ -185,18 +185,22 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0xb33: {
-			/*seek()*/
-			unsigned short handle = CPU_Pop16();
-			signed int pos = CPU_Pop32();
-			unsigned short mode = CPU_Pop16();
-			CPU_Push16(mode);
+			Bit16u handle = CPU_Pop16();
+			Bit32u pos = CPU_Pop32();
+			Bit16u whence = CPU_Pop16();
+			CPU_Push16(whence);
 			CPU_Push32(pos);
 			CPU_Push16(handle);
 
-			D1_LOG("__seek(Handle=0x%x, pos=%u, Mode=%d)\n",
-				handle, pos, mode);
+			Bit32s retval = bc_lseek(handle, pos, whence);
 
-			return 0;
+			D1_LOG("C-Lib lseek(Handle=0x%x, pos=%u, whence=%d)\n",
+				handle, pos, whence);
+
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			return 1;
 		}
 		/* mkdir() */
 		case 0xb5c: {
@@ -3563,10 +3567,32 @@ int schick_nearcall_v302de(unsigned offs) {
 
 	unsigned short segm = SegValue(cs)-relocation;
 
-	/* C-Lib nearcalls are uninteresting for us */
-	if (segm == 0)
-		return 0;
+	/* Borland C-Lib */
+	if (segm == 0) {
+		switch (offs) {
+		case 0xb33: {
+			CPU_Pop16();
+			Bit16u handle = CPU_Pop16();
+			Bit32u pos = CPU_Pop32();
+			Bit16u whence = CPU_Pop16();
+			CPU_Push16(whence);
+			CPU_Push32(pos);
+			CPU_Push16(handle);
 
+			Bit32s retval = bc_lseek(handle, pos, whence);
+
+			D1_INFO("C-Lib near lseek(Handle=0x%x, pos=%u, whence=%d)\n",
+				handle, pos, whence);
+
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			return 1;
+		}
+		default:
+			return 0;
+		}
+	}
 	/* seg001 - CD_library */
 	if (segm == 0x4ac) {
 		/* Callers: 1 */

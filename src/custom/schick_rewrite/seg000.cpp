@@ -7,6 +7,17 @@
 
 #include "seg000.h"
 
+Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
+
+	ds_writew(0xb788 + handle * 2, ds_readw(0xb788 + handle * 2) & 0xfdff);
+
+	if (!DOS_SeekFile(handle, &offset, whence))
+		return -1;
+
+	return offset;
+
+}
+
 signed short bioskey(signed short cmd) {
 	reg_ah = cmd &  0xff;
 	reg_al = 0;
