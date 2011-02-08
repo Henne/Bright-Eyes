@@ -35,7 +35,6 @@
  */
 //static
 Bit16u open_and_seek_dat(unsigned short fileindex) {
-	Bit32u pos;
 	Bit16u fd;
 	Bit16u readsize;
 	unsigned int start, end;
@@ -46,8 +45,7 @@ Bit16u open_and_seek_dat(unsigned short fileindex) {
 		return 0xffff;
 
 	/* seek to the fileindex position in the offset table */
-	pos = fileindex * 4;
-	DOS_SeekFile(fd, &pos, DOS_SEEK_SET);
+	bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
 
 	/* read the start offset of the desired file */
 	readsize = 4;
@@ -58,8 +56,7 @@ Bit16u open_and_seek_dat(unsigned short fileindex) {
 	DOS_ReadFile(fd, (Bit8u*)&end, &readsize);
 
 	/* seek to the desired file */
-	pos = start;
-	DOS_SeekFile(fd, &pos, DOS_SEEK_SET);
+	bc_lseek(fd, start, DOS_SEEK_SET);
 
 	/* save the offset of the desired file */
 	ds_writed(0xbcdf, start);
