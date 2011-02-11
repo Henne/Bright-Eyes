@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick_rewrite"
+				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -139,7 +139,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick_rewrite"
+				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1019,214 +1019,214 @@
 						RelativePath="..\src\custom\schick\schick_status.cpp"
 						>
 					</File>
-				</Filter>
 				<Filter
-					Name="schick_rewrite"
+					Name="schick_rewrite_m302de"
 					>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\schick_common.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\schick_common.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg000.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg000.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg000.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg000.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg001.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg001.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg001.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg001.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg002.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg002.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg002.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg002.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg003.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg003.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg003.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg003.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg004.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg004.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg004.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg004.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg005.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg005.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg005.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg005.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg006.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg006.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg006.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg006.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg007.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg007.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg007.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg007.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg008.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg008.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg008.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg008.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg009.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg009.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg009.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg009.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg010.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg010.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg010.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg010.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg029.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg029.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg029.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg029.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg032.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg032.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg032.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg032.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg038.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg038.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg038.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg038.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg039.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg039.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg039.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg039.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg041.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg041.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg041.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg041.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg046.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg046.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg046.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg046.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg047.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg047.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg047.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg047.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg096.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg096.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg096.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg096.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg097.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg097.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg097.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg097.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg098.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg098.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg098.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg098.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg101.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg101.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg101.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg101.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg102.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg102.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg102.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg102.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg103.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg103.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg103.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg103.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg105.cpp"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg105.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schick_rewrite\seg105.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg105.h"
 						>
 					</File>
+				</Filter>
 				</Filter>
 			</Filter>
 		</Filter>

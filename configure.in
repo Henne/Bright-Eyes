@@ -537,6 +537,6 @@ include/Makefile
 docs/Makefile
 src/custom/Makefile
 src/custom/schick/Makefile
-src/custom/schick_rewrite/Makefile
+src/custom/schick/rewrite_m302de/Makefile
 ])
 AC_OUTPUT
