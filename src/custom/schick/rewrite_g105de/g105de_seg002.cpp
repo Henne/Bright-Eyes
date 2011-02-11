@@ -3,6 +3,16 @@
 #include "../schick.h"
 
 /* static */
+RealPt get_gfx_ptr(Bit16u x, Bit16u y) {
+
+	RealPt start;
+
+	start = ds_readd(0x47c7) + 320 * y + x;
+
+	return start;
+}
+
+/* static */
 Bit16u ret_zero() {
 	return 0;
 }

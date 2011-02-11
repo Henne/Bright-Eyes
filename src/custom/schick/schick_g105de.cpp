@@ -293,6 +293,24 @@ int schick_nearcall_gen105(unsigned offs) {
 		/* Main */
 		case  0x3c6: {
 			switch (offs) {
+				case 0x24e6: {
+					CPU_Pop16();
+					Bit16u x = CPU_Pop16();
+					Bit16u y = CPU_Pop16();
+					CPU_Push16(y);
+					CPU_Push16(x);
+
+					RealPt retval;
+
+					retval = get_gfx_ptr(x, y);
+					D1_LOG("get_gfx_ptr(%d, %d) %x\n",
+						x, y, retval);
+
+					reg_ax = RealOff(retval);
+					reg_dx = RealSeg(retval);
+
+					return 1;
+				}
 				case 0x2504: {
 					CPU_Pop16();
 					D1_LOG("ret_zero();\n");
