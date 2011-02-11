@@ -19,6 +19,18 @@ Bit16u ret_zero() {
 
 
 /* static */
+void set_vals(Bit16u v1, Bit16u v2) {
+	ds_writew(0x4781, v1);
+	ds_writew(0x477f, v2);
+}
+
+/* static */
+void get_vals(Bit8u *p1, Bit8u *p2) {
+	host_writew(p1, ds_readw(0x4781));
+	host_writew(p2, ds_readw(0x477f));
+}
+
+/* static */
 void clear_hero() {
 
 	Bit16u i;

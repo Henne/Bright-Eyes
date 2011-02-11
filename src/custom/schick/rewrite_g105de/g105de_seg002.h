@@ -1,3 +1,5 @@
 RealPt get_gfx_ptr(Bit16u, Bit16u);
 Bit16u ret_zero();
+void set_vals(Bit16u, Bit16u);
+void get_vals(Bit8u*, Bit8u*);
 void clear_hero();

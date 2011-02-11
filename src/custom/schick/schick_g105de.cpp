@@ -317,6 +317,31 @@ int schick_nearcall_gen105(unsigned offs) {
 					reg_ax = ret_zero();
 					return 1;
 				}
+				case 0x2523: {
+					CPU_Pop16();
+					Bit16u v1 = CPU_Pop16();
+					Bit16u v2 = CPU_Pop16();
+					CPU_Push16(v2);
+					CPU_Push16(v1);
+
+					set_vals(v1, v2);
+					D1_LOG("set_vals(%d, %d);\n", v1, v2);
+
+					return 1;
+				}
+				case 0x2534: {
+					CPU_Pop16();
+					RealPt p1 = CPU_Pop32();
+					RealPt p2 = CPU_Pop32();
+					CPU_Push32(p2);
+					CPU_Push32(p1);
+
+					get_vals(MemBase + Real2Phys(p1),
+						MemBase + Real2Phys(p2));
+					D1_LOG("get_vals(%x, %x);\n", p1, p2);
+
+					return 1;
+				}
 				case 0x38ae: {
 					CPU_Pop16();
 
