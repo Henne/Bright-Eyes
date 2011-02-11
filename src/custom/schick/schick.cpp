@@ -22,8 +22,11 @@ unsigned short relocation_bak;
 static int dbg_mode=2;
 
 //Datasegment
-unsigned short datseg;
+unsigned short datseg = 0;
 Bit8u *p_datseg = NULL;
+//Datesegment relocation from game if gen is called
+unsigned short datseg_bak = 0;
+Bit8u *p_datseg_bak = NULL;
 
 static short schick_en = 0;
 static short gen_en = 0;
@@ -138,20 +141,6 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	schick_get_fname(fname, name);
 
-	//This happens only if the game starts another program
-	if (!fromgame && running && schick && !gen) {
-		if (!strcmp(fname, "gen.exe")) {
-			schick_status_disable();
-			schick--;
-			fromgame++;
-			gen++;
-			relocation_bak = relocation;
-			relocation = reloc;
-			D1_INFO("Gen gestartet\nreloc (0x%x)\n", reloc);
-		}
-		return;
-	}
-	D1_TRAC("executing %s\n", name);
 	if (strcmp(fname, "schickm.exe")
 			&& strcmp(fname, "bladem.exe")
 			&& strcmp(fname, "gen.exe")) return;
@@ -165,12 +154,16 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	D1_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
 
 	/* Read and show the Datasegment */
+	datseg_bak = datseg;
 	datseg = real_readw(reloc, ip+1);
+	p_datseg_bak = p_datseg;
 	p_datseg = MemBase + PhysMake(datseg, 0);
 	D1_TRAC("Dseg: 0x%X\n", datseg);
 
 	/* Check if the start of the Datasegment is Borland C++ */
-	if (ds_readd(0) != 0 || strcmp((char*)MemBase+PhysMake(datseg, 4), borsig)) {
+	if (host_readd(p_datseg) != 0 ||
+		strcmp((char*)MemBase+PhysMake(datseg, 4), borsig)) {
+
 		D1_ERR("Kein Borland C++ Kompilat!\n");
 		return;
 	}
@@ -190,7 +183,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 		/* enable profiler only on this version */
 		if (ver == 302 && !schick_is_en()) {
-			D1_INFO("Starte Profiler\n", reloc);
+			D1_INFO("Starte Profiler\n");
 			schick++;
 		}
 
@@ -210,13 +203,25 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		D1_INFO("DSA1 Generierung gefunden V%d.%02d_%s\n",
 			ver / 100, ver % 100, schick_gen_is_en() ? "en": "de");
 
+		/* This happens only gen is started from the game.
+		   We have to save some values. */
+
+		if (!fromgame && running && schick && !gen) {
+			schick_status_disable();
+			schick--;
+			fromgame++;
+
+			D1_INFO("Gen gestartet\nreloc (0x%x)\n", relocation);
+		}
+
 		/* enable profiler only on this version */
 		if (ver == 105 && !schick_is_en()) {
-			D1_INFO("Starte Profiler\n", reloc);
+			D1_INFO("Starte Profiler\n");
 			gen++;
 		}
 	}
 
+	relocation_bak = relocation;
 	relocation = reloc;
 	running++;
 }
@@ -233,6 +238,10 @@ void exit_schick(unsigned char exit)
 		schick++;
 		relocation = relocation_bak;
 		relocation_bak = 0;
+		datseg = datseg_bak;
+		datseg_bak = 0;
+		p_datseg = p_datseg_bak;
+		p_datseg_bak = NULL;
 		D1_INFO("Gen beendet\nProfiling geht weiter\n");
 		schick_status_enable();
 		return;
