@@ -1,6 +1,46 @@
 #include "regs.h"
 
 #include "../schick.h"
+/* static */
+void fill_smth() {
+
+	Bit8u *ptr;
+	Bit16u i, j;
+
+	if (ds_readb(0x109a))
+		ptr = MemBase + PhysMake(datseg, 0x45a1);
+	else
+		ptr = MemBase + PhysMake(datseg, 0x45e1);
+
+	for (i = 0; i < 8; i++, ptr += 8)
+		for (j = 0; j < 8; j++)
+			host_writeb(ptr + j, ds_readb(0x477f));
+}
+
+/* static */
+void fill_smth2(Bit8u* ptr) {
+
+	Bit8u *lp;
+	Bit16u i, j;
+	Bit8u lv;
+
+	if (ds_readb(0x109a))
+		lp = MemBase + PhysMake(datseg, 0x45a1);
+	else
+		lp = MemBase + PhysMake(datseg, 0x45e1);
+
+	for (i = 0; i < 8; i++, lp += 8) {
+		lv = host_readb(ptr);
+		ptr++;
+		for (j = 0; j < 8; j++) {
+			if (!((0x80 >> j) & lv))
+				continue;
+
+			host_writeb(lp + j,
+				ds_readb(0x4781 + ds_readw(0x477d) * 2));
+		}
+	}
+}
 
 /* static */
 RealPt get_gfx_ptr(Bit16u x, Bit16u y) {
