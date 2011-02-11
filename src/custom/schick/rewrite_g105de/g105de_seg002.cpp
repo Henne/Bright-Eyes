@@ -81,6 +81,11 @@ void set_vals(Bit16u v1, Bit16u v2) {
 }
 
 /* static */
+void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
+	blit_smth3(dst, v1, v4);
+}
+
+/* static */
 void get_vals(Bit8u *p1, Bit8u *p2) {
 	host_writew(p1, ds_readw(0x4781));
 	host_writew(p2, ds_readw(0x477f));
