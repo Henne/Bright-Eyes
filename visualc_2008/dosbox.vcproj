@@ -1020,6 +1020,18 @@
 						>
 					</File>
 				<Filter
+					Name="schick_rewrite_g105de"
+					>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_g105de\g105de_seg002.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_g105de\g105de_seg002.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
 					Name="schick_rewrite_m302de"
 					>
 					<File

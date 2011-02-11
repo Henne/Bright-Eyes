@@ -1,6 +1,6 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I./rewrite_m302de
 
-SUBDIRS = rewrite_m302de
+SUBDIRS = rewrite_m302de rewrite_g105de
 
 noinst_LIBRARIES = libschick.a
 

@@ -4,6 +4,8 @@
 
 #include "schick.h"
 
+#include "rewrite_g105de/g105de_seg002.h"
+
 #include "seg008.h"
 #include "seg009.h"
 
@@ -18,7 +20,7 @@ static int seg004(unsigned short offs) {
 		CPU_Push32(src);
 		CPU_Push32(dst);
 
-		D1_INFO("decomp_pp20(dst=0x%04x:0x%04x, src=0x%04x:0x%04x, %u)\n",
+		D1_LOG("decomp_pp20(dst=0x%04x:0x%04x, src=0x%04x:0x%04x, %u)\n",
 			RealSeg(dst), RealOff(dst),
 			RealSeg(src), RealOff(src), len);
 
@@ -276,5 +278,40 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 }
 
 int schick_nearcall_gen105(unsigned offs) {
-	return 0;
+
+	unsigned short segm = SegValue(cs)-relocation;
+
+	switch (segm) {
+		/* C-Lib */
+		case  0x000: {
+			return 0;
+		}
+		/* CD */
+		case  0x364: {
+			return 0;
+		}
+		/* Main */
+		case  0x3c6: {
+			switch (offs) {
+				case 0x2504: {
+					CPU_Pop16();
+					D1_LOG("ret_zero();\n");
+					reg_ax = ret_zero();
+					return 1;
+				}
+				case 0x38ae: {
+					CPU_Pop16();
+
+					D1_LOG("clear_hero();\n");
+					clear_hero();
+
+					return 1;
+				}
+				default:
+					return 0;
+			}
+		}
+		default:
+			return 0;
+	}
 }
