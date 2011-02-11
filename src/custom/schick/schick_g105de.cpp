@@ -293,6 +293,21 @@ int schick_nearcall_gen105(unsigned offs) {
 		/* Main */
 		case  0x3c6: {
 			switch (offs) {
+				case 0x2062: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					Bit16u v1 = CPU_Pop16();
+					Bit16u v2 = CPU_Pop16();
+					CPU_Push16(v2);
+					CPU_Push16(v1);
+					CPU_Push32(ptr);
+
+					D1_LOG("seg002_2062(%x, %d, %d);\n",
+						ptr, v1, v2);
+					blit_smth3(Real2Phys(ptr), v1, v2);
+
+					return 1;
+				}
 				case 0x2441: {
 					CPU_Pop16();
 					fill_smth();

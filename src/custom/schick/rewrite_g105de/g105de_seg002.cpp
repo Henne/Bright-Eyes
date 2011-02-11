@@ -1,6 +1,22 @@
 #include "regs.h"
+#include "paging.h"
 
 #include "../schick.h"
+
+
+/* static */
+void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
+
+	Bit8u *src;
+	Bit16u i, j;
+
+	src = MemBase + PhysMake(datseg, 0x45e1);
+
+	for (i = 0; i < v1; src += 8 - v2, ptr += 320, i++)
+		for (j = 0; j < v2; src++, j++)
+			mem_writeb_inline(ptr + j, host_readb(src));
+}
+
 /* static */
 void fill_smth() {
 
