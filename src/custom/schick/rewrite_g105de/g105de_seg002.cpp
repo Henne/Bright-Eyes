@@ -3,7 +3,7 @@
 
 #include "../schick.h"
 
-
+#include "g105de_seg002.h"
 /* static */
 void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 
@@ -15,6 +15,21 @@ void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 	for (i = 0; i < v1; src += 8 - v2, ptr += 320, i++)
 		for (j = 0; j < v2; src++, j++)
 			mem_writeb_inline(ptr + j, host_readb(src));
+}
+
+/* static */
+void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
+
+	PhysPt gfx_ptr;
+	Bit32u bogus;
+
+	fill_smth();
+	fill_smth2(MemBase + Real2Phys(ds_readd(0x4779) + v1 * 8));
+
+	gfx_ptr = get_gfx_ptr(x, y);
+	bogus = ret_zero();
+
+	call_blit_smth3(Real2Phys(gfx_ptr), 7, 0, 0, v2);
 }
 
 /* static */

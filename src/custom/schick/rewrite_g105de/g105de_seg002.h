@@ -1,4 +1,5 @@
 void blit_smth3(PhysPt, Bit16u, Bit16u);
+void call_them_all(Bit16u, Bit16u, Bit16u, Bit16u);
 void fill_smth();
 void fill_smth2(Bit8u*);
 RealPt get_gfx_ptr(Bit16u, Bit16u);
