@@ -293,21 +293,6 @@ int schick_nearcall_gen105(unsigned offs) {
 		/* Main */
 		case  0x3c6: {
 			switch (offs) {
-				case 0x2062: {
-					CPU_Pop16();
-					RealPt ptr = CPU_Pop32();
-					Bit16u v1 = CPU_Pop16();
-					Bit16u v2 = CPU_Pop16();
-					CPU_Push16(v2);
-					CPU_Push16(v1);
-					CPU_Push32(ptr);
-
-					D1_LOG("seg002_2062(%x, %d, %d);\n",
-						ptr, v1, v2);
-					blit_smth3(Real2Phys(ptr), v1, v2);
-
-					return 1;
-				}
 				case 0x23d7: {
 					CPU_Pop16();
 					Bit16u v1 = CPU_Pop16();
@@ -319,72 +304,12 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v2);
 					CPU_Push16(v1);
 
-					D1_INFO("call_them_all(%d,%d,%d,%d);\n",
+					D1_LOG("call_them_all(%d,%d,%d,%d);\n",
 						v1, v2, v3, v4);
 					call_them_all(v1, v2, v3, v4);
 
 					return 1;
 				}
-				case 0x2441: {
-					CPU_Pop16();
-					fill_smth();
-					D1_LOG("fill_smth();\n");
-					return 1;
-				}
-				case 0x2483: {
-					CPU_Pop16();
-					RealPt ptr = CPU_Pop32();
-					CPU_Push32(ptr);
-
-					D1_LOG("fill_smth2(%x);\n", ptr);
-					fill_smth2(MemBase + Real2Phys(ptr));
-
-					return 1;
-				}
-				case 0x24e6: {
-					CPU_Pop16();
-					Bit16u x = CPU_Pop16();
-					Bit16u y = CPU_Pop16();
-					CPU_Push16(y);
-					CPU_Push16(x);
-
-					RealPt retval;
-
-					retval = get_gfx_ptr(x, y);
-					D1_LOG("get_gfx_ptr(%d, %d) %x\n",
-						x, y, retval);
-
-					reg_ax = RealOff(retval);
-					reg_dx = RealSeg(retval);
-
-					return 1;
-				}
-				case 0x2504: {
-					CPU_Pop16();
-					D1_LOG("ret_zero();\n");
-					reg_ax = ret_zero();
-					return 1;
-				}
-				case 0x250b: {
-					CPU_Pop16();
-					RealPt dst = CPU_Pop32();
-					Bit16u v1 = CPU_Pop16();
-					Bit16u v2 = CPU_Pop16();
-					Bit16u v3 = CPU_Pop16();
-					Bit16u v4 = CPU_Pop16();
-					CPU_Push16(v4);
-					CPU_Push16(v3);
-					CPU_Push16(v2);
-					CPU_Push16(v1);
-					CPU_Push32(dst);
-
-					D1_INFO("call_blit_smth3();\n");
-					call_blit_smth3(Real2Phys(dst),
-						v1, v2, v3, v4);
-
-					return 1;
-				}
-
 				case 0x2523: {
 					CPU_Pop16();
 					Bit16u v1 = CPU_Pop16();
