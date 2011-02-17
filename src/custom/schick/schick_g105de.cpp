@@ -81,24 +81,6 @@ static int seg004(unsigned short offs) {
 static int seg005(unsigned short offs) {
 
 	switch (offs) {
-	case 0x008: {
-		unsigned short mode = CPU_Pop16();
-		CPU_Push16(mode);
-
-		D1_GFX("set_video_mode(mode=0x%x);\n", mode);
-		set_video_mode(mode);
-
-		return 1;
-	}
-	case 0x1e: {
-		unsigned short page = CPU_Pop16();
-		CPU_Push16(page);
-
-		D1_GFX("set_video_page(page=0x%x);\n", page);
-		set_video_page(page);
-
-		return 1;
-        }
 	case 0x34: {
 		RealPt addr = CPU_Pop32();
 		CPU_Push32(addr);
@@ -108,24 +90,6 @@ static int seg005(unsigned short offs) {
 
 		return 0;
         }
-	case 0xde: {
-		RealPt ptr = CPU_Pop32();
-		unsigned short color = CPU_Pop16();
-		CPU_Push16(color);
-		CPU_Push32(ptr);
-
-		D1_GFX("set_color(rgb=0x%x:0x%x, color=0x%x);\n",
-			RealSeg(ptr), RealOff(ptr), color);
-
-		set_color(MemBase + Real2Phys(ptr), color);
-
-		D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
-		real_readb(RealSeg(ptr), RealOff(ptr)),
-		real_readb(RealSeg(ptr), RealOff(ptr) + 1),
-		real_readb(RealSeg(ptr), RealOff(ptr) + 2));
-
-		return 1;
-	}
 	case 0x100: {
 		RealPt ptr = CPU_Pop32();
 		unsigned short first_color = CPU_Pop16();
