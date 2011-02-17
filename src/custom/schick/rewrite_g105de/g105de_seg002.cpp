@@ -255,3 +255,18 @@ void init_colors()
 	set_palette(MemBase + PhysMake(datseg, 0x1d70), 0x20, 0x20);
 	set_vals(0xff, 0x0);
 }
+
+void init_stuff()
+{
+	init_colors();
+
+	/* these 3 variables are bogus */
+	ds_writew(0x4783, 0xc8);
+	ds_writew(0x4785, 0xc9);
+	ds_writew(0x4787, 0xca);
+
+	/* number of menu tiles width */
+	ds_writew(0x40b9, 3);
+
+	ds_writed(0x40c1, ds_readd(0x47cb));
+}

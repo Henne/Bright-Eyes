@@ -488,6 +488,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x7635: {
+					CPU_Pop16();
+
+					D1_LOG("init_stuff();\n");
+					init_stuff();
+
+					return 1;
+				}
 				default:
 					return 0;
 			}
