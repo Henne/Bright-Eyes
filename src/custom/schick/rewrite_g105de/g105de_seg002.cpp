@@ -55,6 +55,35 @@ void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 			mem_writeb_inline(ptr + j, host_readb(src));
 }
 
+/**
+ * get_chr_info() - gets font information of a character
+ * @c:		the character
+ * @width:	pointer to save width
+ *
+ * Returns the font index.
+ */
+Bit8u get_chr_info(unsigned char c, Bit8u *ptr) {
+
+	Bit16u i;
+
+	for (i = 0; i != 222; i += 3) {
+		/* search for the character */
+		if (ds_readb(0x1b85 + i) != c)
+			continue;
+
+		host_writew(ptr, ds_readb(0x1b85 + 2 + i));
+		return ds_readb(0x1b85 + 1 + i);
+	}
+
+	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
+		host_writew(ptr, 0);
+		return 0;
+	} else {
+		host_writew(ptr, 6);
+		return 0;
+	}
+}
+
 /* static */
 void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
 
