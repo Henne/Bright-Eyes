@@ -5,9 +5,50 @@
 #include "schick.h"
 
 #include "rewrite_g105de/g105de_seg002.h"
+#include "rewrite_g105de/g105de_seg003.h"
 
-#include "seg008.h"
-#include "seg009.h"
+#include "rewrite_m302de/seg008.h"
+#include "rewrite_m302de/seg009.h"
+
+static int seg003(unsigned short offs) {
+
+	switch (offs) {
+	case 0xb: {
+		Bit16u lo = CPU_Pop16();
+		Bit16u hi = CPU_Pop16();
+		CPU_Push16(hi);
+		CPU_Push16(lo);
+
+		reg_ax = random_interval_gen(lo, hi);
+		D1_LOG("random_interval(%d, %d); = %d\n", lo, hi, reg_ax);
+
+		return 1;
+	}
+	case 0x29: {
+		Bit16u val = CPU_Pop16();
+		CPU_Push16(val);
+
+		reg_ax = random_gen(val);
+		D1_LOG("random_gen(%d); = %d\n", val, reg_ax);
+
+		return 1;
+	}
+	case 0x7d: {
+		Bit16u val = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		CPU_Push16(val);
+
+		reg_ax = is_in_word_array(val, MemBase + Real2Phys(p));
+		D1_LOG("is_in_word_array(%x, %x); = %d\n", val, p, reg_ax);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
 
 static int seg004(unsigned short offs) {
 
@@ -194,6 +235,9 @@ static int seg005(unsigned short offs) {
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
 int schick_farcall_gen105(unsigned segm, unsigned offs)
 {
+	/* seg003 random */
+	if (segm == 0xb2d)
+		return seg003(offs);
 	/* _decomp() */
 	if (segm == 0xb39)
 		return seg004(offs);
