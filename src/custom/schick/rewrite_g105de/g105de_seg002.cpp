@@ -196,6 +196,25 @@ Bit16u get_str_width(char *str) {
 	return sum;
 }
 
+/**
+ * get_line_start_c() - calculates the start positon for a centered line
+ * @str:	the string
+ * @x:		start position of the string
+ * @x_max:	end position of the string
+ *
+ * Returns the X coordinate where the strin must start.
+ */
+Bit16u get_line_start_c(char *str, Bit16u x, Bit16u x_max) {
+
+	Bit16u width, sum = 0;
+
+	while (*str && *str != 0x40 && *str != 0x0d) {
+		get_chr_info(*str++, (Bit8u*)&width);
+		sum += width;
+	}
+	return (x_max - sum) / 2 + x ;
+}
+
 /* static */
 void clear_hero() {
 
