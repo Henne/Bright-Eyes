@@ -55,6 +55,17 @@ void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 			mem_writeb_inline(ptr + j, host_readb(src));
 }
 
+Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
+
+	Bit16u width, idx;
+
+	idx = get_chr_info(c, (Bit8u*)&width);
+
+	call_them_all(idx, width, x, y);
+
+	return width;
+}
+
 /**
  * get_chr_info() - gets font information of a character
  * @c:		the character
