@@ -141,13 +141,6 @@ static int seg005(unsigned short offs) {
 
 		set_palette(MemBase + Real2Phys(ptr), first_color, colors);
 
-		if (RealSeg(ptr) == datseg)
-			D1_LOG("Palette at DS:0x%x\n", RealSeg(ptr));
-		for (i=0; i<colors; i++)
-			D1_GFX("\"\\%02d\\%02d\\%02d\"..\n",
-				host_readb(MemBase + Real2Phys(ptr)+i*3),
-				host_readb(MemBase + Real2Phys(ptr)+i*3+1),
-				host_readb(MemBase + Real2Phys(ptr)+i*3+2));
 		return 1;
 	}
 	case 0x127: {
