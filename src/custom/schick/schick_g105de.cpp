@@ -391,6 +391,18 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x256c: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					CPU_Push32(ptr);
+
+					reg_ax = get_str_width((char*)getString(ptr));
+
+					D1_LOG("get_str_width(%s); = %d\n",
+						(char*)getString(ptr), reg_ax);
+
+					return 1;
+				}
 				case 0x38ae: {
 					CPU_Pop16();
 

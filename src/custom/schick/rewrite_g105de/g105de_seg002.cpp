@@ -173,6 +173,18 @@ void get_vals(Bit8u *p1, Bit8u *p2) {
 	host_writew(p2, ds_readw(0x477f));
 }
 
+Bit16u get_str_width(char *str) {
+
+	Bit16u width, sum = 0;
+
+	while (*str) {
+		get_chr_info(*str++, (Bit8u*)&width);
+		sum += width;
+	}
+
+	return sum;
+}
+
 /* static */
 void clear_hero() {
 

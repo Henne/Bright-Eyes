@@ -11,4 +11,5 @@ Bit16u ret_zero();
 void call_blit_smth3(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u);
 void set_vals(Bit16u, Bit16u);
 void get_vals(Bit8u*, Bit8u*);
+Bit16u get_str_width(char*);
 void clear_hero();
