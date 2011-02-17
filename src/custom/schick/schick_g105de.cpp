@@ -228,6 +228,13 @@ static int seg005(unsigned short offs) {
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
 int schick_farcall_gen105(unsigned segm, unsigned offs)
 {
+	/* seg002 main */
+	if (segm == 0x3c6) {
+		if (offs == 0x1dbe) {
+			exit_video();
+			return 1;
+		}
+	}
 	/* seg003 random */
 	if (segm == 0xb2d)
 		return seg003(offs);
@@ -376,6 +383,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("init_video();\n");
 					init_video();
+
+					return 1;
+				}
+				case 0x1dbe: {
+					CPU_Pop16();
+
+					D1_INFO("exit_video();\n");
+					exit_video();
 
 					return 1;
 				}

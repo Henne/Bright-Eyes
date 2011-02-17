@@ -51,6 +51,14 @@ void init_video()
 	set_color(MemBase + PhysMake(datseg, 0x1b79), 0xff);
 }
 
+void exit_video()
+{
+	/* restore old mode */
+	set_video_mode(ds_readw(0x47dd));
+	/* restore old page */
+	set_video_page(ds_readw(0x47db));
+}
+
 /* static */
 void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 
