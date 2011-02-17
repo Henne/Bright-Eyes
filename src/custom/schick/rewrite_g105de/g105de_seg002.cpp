@@ -7,6 +7,8 @@
 
 #include "g105de_seg002.h"
 
+#include "../rewrite_m302de/seg008.h"
+
 /* static */
 Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 
@@ -242,3 +244,14 @@ void clear_hero() {
 
 	ds_writeb(0x1353, 1);
 };
+
+void init_colors()
+{
+	set_palette(MemBase + PhysMake(datseg, 0x1d4c), 0x00, 1);
+	set_palette(MemBase + PhysMake(datseg, 0x1d49), 0xff, 1);
+	set_palette(MemBase + PhysMake(datseg, 0x1d4f), 0xd8, 8);
+	set_palette(MemBase + PhysMake(datseg, 0x1d67), 0xc8, 3);
+	set_palette(MemBase + PhysMake(datseg, 0x119b), 0x40, 0x20);
+	set_palette(MemBase + PhysMake(datseg, 0x1d70), 0x20, 0x20);
+	set_vals(0xff, 0x0);
+}

@@ -487,6 +487,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x75c1: {
+					CPU_Pop16();
+
+					D1_LOG("init_colors();\n");
+					init_colors();
+
+					return 1;
+				}
 				default:
 					return 0;
 			}
