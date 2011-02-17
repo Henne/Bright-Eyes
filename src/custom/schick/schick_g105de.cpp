@@ -313,6 +313,27 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x1c6f: {
+					CPU_Pop16();
+
+					Bit32s retval;
+					retval = get_filelength();
+
+					reg_ax = retval & 0xffff;
+					reg_dx = (retval>>16) & 0xffff;
+
+					D1_LOG("get_filelength() = %d\n",
+						retval);
+					return 1;
+				}
+				case 0x1c7b: {
+					CPU_Pop16();
+
+					reg_ax = ret_zero1();
+					D1_LOG("ret_zero1();\n");
+
+					return 1;
+				}
 				case 0x23d7: {
 					CPU_Pop16();
 					Bit16u v1 = CPU_Pop16();

@@ -33,6 +33,15 @@ Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 	return -1;
 }
 
+Bit32s get_filelength() {
+
+	return ds_readd(0x3f2a);
+}
+
+Bit16u ret_zero1() {
+	return 0;
+}
+
 /* static */
 void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 
