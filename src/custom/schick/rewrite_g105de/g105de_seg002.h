@@ -1,3 +1,4 @@
+Bit32s get_archive_offset(Bit8u*, Bit8u*);
 void blit_smth3(PhysPt, Bit16u, Bit16u);
 void call_them_all(Bit16u, Bit16u, Bit16u, Bit16u);
 void fill_smth();

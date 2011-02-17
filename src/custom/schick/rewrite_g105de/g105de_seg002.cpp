@@ -1,9 +1,38 @@
+#include <string.h>
+
 #include "regs.h"
 #include "paging.h"
 
 #include "../schick.h"
 
 #include "g105de_seg002.h"
+
+/* static */
+Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
+
+	Bit32s offset, length;
+	Bit16u i;
+
+	for (i = 0; i < 50; i++) {
+
+		/* check the filename */
+		if (strncmp((char*)name, (char*)table + i * 16, 12))
+			continue;
+
+		/* calculate offset and length */
+		offset = host_readd(table + i * 16 + 0x0c);
+		length = host_readd(table + (i + 1) * 16 + 0x0c) - offset;
+
+		/* save length in 2 variables */
+		ds_writed(0x3f2a, length);
+		ds_writed(0x3f2e, length);
+
+		return offset;
+	}
+
+	return -1;
+}
+
 /* static */
 void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 
