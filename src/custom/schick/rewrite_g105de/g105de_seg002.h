@@ -1,6 +1,7 @@
 Bit32s get_archive_offset(Bit8u*, Bit8u*);
 Bit32s get_filelength();
 Bit16u ret_zero1();
+void init_video();
 void blit_smth3(PhysPt, Bit16u, Bit16u);
 Bit16u print_chr(unsigned char, Bit16u, Bit16u);
 Bit8u get_chr_info(unsigned char, Bit8u*);

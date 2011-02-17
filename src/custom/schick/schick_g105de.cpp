@@ -371,6 +371,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x1d8f: {
+					CPU_Pop16();
+
+					D1_LOG("init_video();\n");
+					init_video();
+
+					return 1;
+				}
 				case 0x2346: {
 					CPU_Pop16();
 					Bit16u c = CPU_Pop16();

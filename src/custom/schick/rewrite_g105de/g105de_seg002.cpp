@@ -44,6 +44,13 @@ Bit16u ret_zero1() {
 	return 0;
 }
 
+void init_video()
+{
+	/* set the video mode to 320x200 8bit */
+	set_video_mode(0x13);
+	set_color(MemBase + PhysMake(datseg, 0x1b79), 0xff);
+}
+
 /* static */
 void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 
