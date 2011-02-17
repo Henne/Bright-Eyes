@@ -358,6 +358,24 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x1e86: {
+					CPU_Pop16();
+					Bit16u v1 = CPU_Pop16();
+					Bit16u v2 = CPU_Pop16();
+					Bit16u v3 = CPU_Pop16();
+					Bit16u v4 = CPU_Pop16();
+					CPU_Push16(v4);
+					CPU_Push16(v3);
+					CPU_Push16(v2);
+					CPU_Push16(v1);
+
+					draw_v_line(v1, v2, v3, v4);
+
+					D1_LOG("draw_v_line(%d,%d,%d,%x);\n",
+						v1, v2, v3, v4);
+
+					return 1;
+				}
 				case 0x2346: {
 					CPU_Pop16();
 					Bit16u c = CPU_Pop16();

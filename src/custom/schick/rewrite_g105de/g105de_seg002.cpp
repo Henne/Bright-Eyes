@@ -59,6 +59,22 @@ void exit_video()
 	set_video_page(ds_readw(0x47db));
 }
 
+void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
+{
+	Bit16u tmp, len, off;
+
+	if (y1 > y2) {
+		tmp = y2;
+		y2 = y1;
+		y1 = tmp;
+	}
+
+	len = y2 - y1 + 1;
+	off = y1 * 320 + x;
+
+	draw_h_spaced_dots(PhysMake(0xa000, off), len, color, 320);
+}
+
 /* static */
 void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 
