@@ -131,11 +131,14 @@ static int seg005(unsigned short offs) {
 		CPU_Push16(color);
 		CPU_Push32(ptr);
 
-		D1_INFO("FillRect(ptr=0x%x, color=0x%x, width=%d, height=%d);",
+		/* the segment and offset of ptr must be swapped */
+		fill_rect(PhysMake(RealOff(ptr), RealSeg(ptr)), color, width, height);
+
+		D1_LOG("FillRect(ptr=0x%x, color=0x%x, width=%d, height=%d);\n",
 			ptr, color, width, height);
 
 
-		return 0;
+		return 1;
 	}
 	case 0x386: {
 		unsigned short val = CPU_Pop16();
