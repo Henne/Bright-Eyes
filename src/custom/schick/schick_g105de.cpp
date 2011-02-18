@@ -150,6 +150,23 @@ static int seg005(unsigned short offs) {
 		return 1;
 	}
 
+	case 0x39f: {
+		RealPt src = CPU_Pop32();
+		RealPt dst = CPU_Pop32();
+		Bit16u width = CPU_Pop16();
+		Bit16u height = CPU_Pop16();
+		Bit16u mode = CPU_Pop16();
+		CPU_Push16(mode);
+		CPU_Push16(height);
+		CPU_Push16(width);
+		CPU_Push32(dst);
+		CPU_Push32(src);
+
+		D1_GFX("decomp_rle_gen(src=0x%x, dst=0x%x, w=%d, h=%d, m=%d);\n",
+			src, dst, width, height, mode);
+
+		return 0;
+	}
 	}
 
 	if (offs == 0x1f3)
@@ -163,14 +180,6 @@ static int seg005(unsigned short offs) {
 		return 0;
 	}
 
-	if (offs == 0x39f) {
-		D1_GFX("_39F(src=0x%x:0x%x, dst=0x%x:0x%x, a=%d, b=%d, c=%d);\n",
-			real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp),
-			real_readw(SegValue(ss), reg_sp+6), real_readw(SegValue(ss), reg_sp+4),
-			real_readw(SegValue(ss), reg_sp+8), real_readw(SegValue(ss), reg_sp+10),
-			real_readw(SegValue(ss), reg_sp+12));
-		return 0;
-	}
 	D1_GFX("Rasterlib:0x%x\n", offs);
 	return 0;
 }
