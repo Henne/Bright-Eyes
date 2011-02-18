@@ -6,6 +6,7 @@
 
 #include "rewrite_g105de/g105de_seg002.h"
 #include "rewrite_g105de/g105de_seg003.h"
+#include "rewrite_g105de/g105de_seg005.h"
 
 #include "rewrite_m302de/seg008.h"
 #include "rewrite_m302de/seg009.h"
@@ -189,10 +190,13 @@ static int seg005(unsigned short offs) {
 		CPU_Push32(dst);
 		CPU_Push32(src);
 
-		D1_GFX("decomp_rle_gen(src=0x%x, dst=0x%x, w=%d, h=%d, m=%d);\n",
+		copy_to_screen(Real2Phys(src), Real2Phys(dst), width,
+			height, mode);
+
+		D1_LOG("copy_to_screen(src=0x%x, dst=0x%x, w=%d, h=%d, m=%d);\n",
 			src, dst, width, height, mode);
 
-		return 0;
+		return 1;
 	}
 	default:
 		D1_ERR("Rasterlib:0x%x\n", offs);
