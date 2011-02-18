@@ -121,23 +121,6 @@ static int seg005(unsigned short offs) {
 				ptr % 320, ptr / 320, cnt, color);
 		return 1;
         }
-	case 0x184: {
-		unsigned short ptr = CPU_Pop16();
-		unsigned short cnt = CPU_Pop16();
-		unsigned short color = CPU_Pop16();
-		unsigned short space = CPU_Pop16();
-		CPU_Push16(space);
-		CPU_Push16(color);
-		CPU_Push16(cnt);
-		CPU_Push16(ptr);
-
-		draw_h_spaced_dots(PhysMake(0xa000, ptr), cnt, color, space);
-
-		D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
-			ptr % 320, ptr / 320, cnt, color, space);
-
-		return 1;
-	}
 	case 0x386: {
 		unsigned short val = CPU_Pop16();
 		CPU_Push16(val);
