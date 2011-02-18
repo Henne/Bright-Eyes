@@ -368,7 +368,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x1dbe: {
 					CPU_Pop16();
 
-					D1_INFO("exit_video();\n");
+					D1_LOG("exit_video();\n");
 					exit_video();
 
 					return 1;
