@@ -121,6 +121,34 @@ static int seg005(unsigned short offs) {
 				ptr % 320, ptr / 320, cnt, color);
 		return 1;
         }
+	case 0x1f3: {
+		RealPt dst = CPU_Pop32();
+		Bit16u x = CPU_Pop16();
+		Bit16u y = CPU_Pop16();
+		Bit32u dummy1 = CPU_Pop32();
+		Bit16u width = CPU_Pop16();
+		Bit16u height = CPU_Pop16();
+		Bit32u dummy2 = CPU_Pop32();
+		Bit16u v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		RealPt src = CPU_Pop32();
+		Bit16u mode = CPU_Pop16();
+		CPU_Push16(mode);
+		CPU_Push32(src);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(dummy2);
+		CPU_Push16(height);
+		CPU_Push16(width);
+		CPU_Push32(dummy1);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(dst);
+
+		D1_GFX("DrawPic(dst=0x%x, x=%d, y=%d, ..., w=%d, h=%d, src=0x%x, mode=%d);\n",
+			dst, x, y, width, height, src, mode);
+		return 0;
+	}
 	case 0x2e3: {
 		RealPt ptr = CPU_Pop32();
 		Bit16u color = CPU_Pop16();
@@ -149,7 +177,6 @@ static int seg005(unsigned short offs) {
 
 		return 1;
 	}
-
 	case 0x39f: {
 		RealPt src = CPU_Pop32();
 		RealPt dst = CPU_Pop32();
@@ -167,21 +194,10 @@ static int seg005(unsigned short offs) {
 
 		return 0;
 	}
+	default:
+		D1_ERR("Rasterlib:0x%x\n", offs);
+		exit(0);
 	}
-
-	if (offs == 0x1f3)
-	{
-		D1_GFX("DrawPic(Dest=0x%x:0x%x, X=%d, Y=%d, ..., Breite=%d, Höhe=%d, Src=0x%x:0x%x, Mode=%d);\n",
-			real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp),
-			real_readw(SegValue(ss), reg_sp+4), real_readw(SegValue(ss), reg_sp+6),
-			real_readw(SegValue(ss), reg_sp+20), real_readw(SegValue(ss), reg_sp+22),
-			real_readw(SegValue(ss), reg_sp+26), real_readw(SegValue(ss), reg_sp+24),
-			real_readw(SegValue(ss), reg_sp+28));
-		return 0;
-	}
-
-	D1_GFX("Rasterlib:0x%x\n", offs);
-	return 0;
 }
 
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
