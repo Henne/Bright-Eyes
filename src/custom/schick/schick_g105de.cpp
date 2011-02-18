@@ -121,6 +121,22 @@ static int seg005(unsigned short offs) {
 				ptr % 320, ptr / 320, cnt, color);
 		return 1;
         }
+	case 0x2e3: {
+		RealPt ptr = CPU_Pop32();
+		Bit16u color = CPU_Pop16();
+		Bit16u width = CPU_Pop16();
+		Bit16u height = CPU_Pop16();
+		CPU_Push16(height);
+		CPU_Push16(width);
+		CPU_Push16(color);
+		CPU_Push32(ptr);
+
+		D1_INFO("FillRect(ptr=0x%x, color=0x%x, width=%d, height=%d);",
+			ptr, color, width, height);
+
+
+		return 0;
+	}
 	case 0x386: {
 		unsigned short val = CPU_Pop16();
 		CPU_Push16(val);
@@ -141,22 +157,6 @@ static int seg005(unsigned short offs) {
 			real_readw(SegValue(ss), reg_sp+20), real_readw(SegValue(ss), reg_sp+22),
 			real_readw(SegValue(ss), reg_sp+26), real_readw(SegValue(ss), reg_sp+24),
 			real_readw(SegValue(ss), reg_sp+28));
-		return 0;
-	}
-	if (offs == 0x2e3) {
-		unsigned short off=real_readw(SegValue(ss), reg_sp+2);
-		unsigned short seg=real_readw(SegValue(ss), reg_sp);
-
-		D1_GFX("FillRect(segment=0x%x, offset=0x%x, color=0x%x, width=%d, height=%d);",
-			seg, off, real_readw(SegValue(ss), reg_sp+4),
-			real_readw(SegValue(ss), reg_sp+6), real_readw(SegValue(ss), reg_sp+8));
-
-		if (seg == 0xa000)
-			D1_GFX("\t/*X=%d Y=%d*/\n",
-				off%320, off/320);
-		else
-			D1_GFX("\n");
-
 		return 0;
 	}
 
