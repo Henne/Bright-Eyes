@@ -316,6 +316,23 @@ int schick_nearcall_gen105(unsigned offs) {
 		/* Main */
 		case  0x3c6: {
 			switch (offs) {
+				case 0x0c1c: {
+					CPU_Pop16();
+					Bit16u x = CPU_Pop16();
+					Bit16u y = CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					CPU_Push32(ptr);
+					CPU_Push16(y);
+					CPU_Push16(x);
+
+					reg_ax = get_mouse_action_gen(x, y,
+						MemBase + Real2Phys(ptr));
+
+					D1_LOG("get_mouse_action(%d,%d,%x); = %d\n",
+						x, y, ptr, reg_ax);
+
+					return 1;
+				}
 				case 0x1bb2: {
 					CPU_Pop16();
 					RealPt name = CPU_Pop32();

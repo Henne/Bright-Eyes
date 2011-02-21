@@ -10,6 +10,28 @@
 #include "../rewrite_m302de/seg008.h"
 
 /* static */
+Bit16u get_mouse_action_gen(Bit16u x, Bit16u y, Bit8u *ptr) {
+
+	Bit16u i;
+
+	for (i = 0; host_readw(ptr + i * 10) != 0xffff; i++) {
+
+		if (host_readw(ptr + i * 10 ) > x)
+			continue;
+		if (host_readw(ptr + i * 10 + 4) < x)
+			continue;
+		if (host_readw(ptr + i * 10 + 2) > y)
+			continue;
+		if (host_readw(ptr + i * 10 + 6) < y)
+			continue;
+
+		return host_readw(ptr + i * 10 + 8);
+	}
+
+	return 0;
+}
+
+/* static */
 Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 
 	Bit32s offset, length;
