@@ -2,6 +2,7 @@ Bit16u get_mouse_action_gen(Bit16u, Bit16u, Bit8u*);
 Bit32s get_archive_offset(Bit8u*, Bit8u*);
 Bit32s get_filelength();
 Bit16u ret_zero1();
+Bit32u swap32(Bit16u, Bit16u);
 void init_video();
 void exit_video();
 void draw_v_line(Bit16u, Bit16u, Bit16u, Bit16u);

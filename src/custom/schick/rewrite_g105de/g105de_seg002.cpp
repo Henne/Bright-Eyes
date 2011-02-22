@@ -68,6 +68,10 @@ Bit16u ret_zero1() {
 	return 0;
 }
 
+Bit32u swap32(Bit16u v1, Bit16u v2) {
+	return (swap_u16(v2) << 16 | swap_u16(v1));
+}
+
 void init_video()
 {
 	/* set the video mode to 320x200 8bit */
