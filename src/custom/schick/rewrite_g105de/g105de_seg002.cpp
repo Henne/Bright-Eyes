@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 
 #include "regs.h"
 #include "paging.h"
@@ -269,6 +270,64 @@ Bit16u get_line_start_c(char *str, Bit16u x, Bit16u x_max) {
 		sum += width;
 	}
 	return (x_max - sum) / 2 + x ;
+}
+
+/**
+ * calc_at_pa() - calculate AT and PA values
+ */
+/* static */
+void calc_at_pa() {
+	Bit16u i;
+	Bit16s tmp, base;
+
+	/* base = (GE + IN + KK) / 5 */
+	tmp = (signed char)ds_readb(0x136f);
+	tmp += (signed char)ds_readb(0x1372);
+	tmp += (signed char)ds_readb(0x136c);
+
+	base = tmp / 5;
+
+	/* round up if neccessary */
+	if ((tmp % 5) >= 3)
+		base++;
+
+	/* save AT/PA base value */
+	ds_writeb(0x1393, base);
+
+	for (i = 0; i < 7; i++) {
+		/* set the weapon values to base */
+		ds_writeb(0x139b + i, base);
+		ds_writeb(0x1394 + i, base);
+
+		if ((signed char)ds_readb(0x1434 + i) < 0) {
+			/* calculate ATPA for negative weapon skill */
+			tmp = abs((signed char)ds_readb(0x1434 + i)) / 2;
+
+			/* sub skill / 2 from AT */
+			ds_writeb(0x1394 + i, ds_readb(0x1394 + i) - tmp);
+
+			/* sub skill / 2 from PA */
+			ds_writeb(0x139b + i, ds_readb(0x139b + i) - tmp);
+
+			/* if skill % 2, then decrement PA */
+			if (abs((signed char)ds_readb(0x1434 + i)) != tmp * 2)
+				ds_writeb(0x139b + i, ds_readb(0x139b + i) - 1);
+		} else {
+			/* calculate ATPA for positive weapon skill */
+			tmp = abs((signed char)ds_readb(0x1434 + i)) / 2;
+
+			/* add skill / 2 to AT */
+			ds_writeb(0x1394 + i, ds_readb(0x1394 + i) + tmp);
+
+			/* add skill / 2 to PA */
+			ds_writeb(0x139b + i, ds_readb(0x139b + i) + tmp);
+
+			/* if skill % 2, then increment AT */
+			if (ds_readb(0x1434 + i) != tmp * 2)
+				ds_writeb(0x1394 + i, ds_readb(0x1394 + i) + 1);
+		}
+
+	}
 }
 
 /* static */

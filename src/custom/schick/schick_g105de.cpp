@@ -509,6 +509,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x3bdd: {
+					CPU_Pop16();
+
+					calc_at_pa();
+					D1_LOG("calc_at_pa();\n");
+
+					return 1;
+				}
 				case 0x38ae: {
 					CPU_Pop16();
 
