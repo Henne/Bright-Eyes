@@ -212,6 +212,28 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 		if (offs == 0x1dbe) {
 			exit_video();
 			return 1;
+		} else
+		if (offs == 0x1fe0) {
+			RealPt ptr = CPU_Pop32();
+			Bit16u x1 = CPU_Pop16();
+			Bit16u y1 = CPU_Pop16();
+			Bit16u x2 = CPU_Pop16();
+			Bit16u y2 = CPU_Pop16();
+			Bit16u color = CPU_Pop16();
+			CPU_Push16(color);
+			CPU_Push16(y2);
+			CPU_Push16(x2);
+			CPU_Push16(y1);
+			CPU_Push16(x1);
+			CPU_Push32(ptr);
+
+			call_fill_rect_gen(Real2Phys(ptr),
+				x1, y1, x2, y2, color);
+
+			D1_INFO("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
+				ptr, x1, y1, x2, y2, color);
+
+			return 1;
 		}
 	}
 	/* seg003 random */
@@ -405,6 +427,29 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("draw_v_line(%d,%d,%d,%x);\n",
 						v1, v2, v3, v4);
+
+					return 1;
+				}
+				case 0x1fe0: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					Bit16u x1 = CPU_Pop16();
+					Bit16u y1 = CPU_Pop16();
+					Bit16u x2 = CPU_Pop16();
+					Bit16u y2 = CPU_Pop16();
+					Bit16u color = CPU_Pop16();
+					CPU_Push16(color);
+					CPU_Push16(y2);
+					CPU_Push16(x2);
+					CPU_Push16(y1);
+					CPU_Push16(x1);
+					CPU_Push32(ptr);
+
+					call_fill_rect_gen(Real2Phys(ptr),
+						x1, y1, x2, y2, color);
+
+					D1_INFO("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
+						ptr, x1, y1, x2, y2, color);
 
 					return 1;
 				}

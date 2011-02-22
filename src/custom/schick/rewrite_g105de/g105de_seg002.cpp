@@ -223,6 +223,11 @@ Bit16u ret_zero() {
 	return 0;
 }
 
+void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
+{
+	fill_rect(ptr + y1 * 320 + x1, color, x2 - x1 + 1, y2 - y1 + 1);
+}
+
 /* static */
 void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
 	blit_smth3(dst, v1, v4);
