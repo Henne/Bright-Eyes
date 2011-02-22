@@ -1,3 +1,4 @@
+void draw_mouse_ptr_wrapper();
 void draw_mouse_ptr();
 Bit16u get_mouse_action_gen(Bit16u, Bit16u, Bit8u*);
 void do_draw_mouse_ptr();

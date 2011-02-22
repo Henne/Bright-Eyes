@@ -12,6 +12,12 @@
 #include "../rewrite_m302de/seg008.h"
 
 /* static */
+void draw_mouse_ptr_wrapper() {
+
+	draw_mouse_ptr();
+}
+
+/* static */
 void draw_mouse_ptr()
 {
 	if (ds_readw(0x1248))
