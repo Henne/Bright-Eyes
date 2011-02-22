@@ -153,15 +153,6 @@ static int seg005(unsigned short offs) {
 			dst, x, y, width, height, src, mode);
 		return 0;
 	}
-	case 0x386: {
-		unsigned short val = CPU_Pop16();
-		CPU_Push16(val);
-
-		reg_ax = swap_u16(val);
-		D1_GFX("swap_u16(val=0x%04x); = 0x%04x\n", val, reg_ax);
-
-		return 1;
-	}
 	case 0x39f: {
 		RealPt src = CPU_Pop32();
 		RealPt dst = CPU_Pop32();
