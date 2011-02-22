@@ -517,6 +517,17 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x4291: {
+					CPU_Pop16();
+					Bit16u skill = CPU_Pop16();
+					CPU_Push16(skill);
+
+					D1_LOG("skill_inc_novice(%d);\n",
+						skill);
+					skill_inc_novice(skill);
+
+					return 1;
+				}
 				case 0x75c1: {
 					CPU_Pop16();
 

@@ -19,5 +19,6 @@ void get_vals(Bit8u*, Bit8u*);
 Bit16u get_str_width(char*);
 Bit16u get_line_start_c(char*, Bit16u, Bit16u);
 void clear_hero();
+void skill_inc_novice(Bit16u);
 void init_colors();
 void init_stuff();

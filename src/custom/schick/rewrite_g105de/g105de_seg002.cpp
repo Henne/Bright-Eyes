@@ -6,6 +6,7 @@
 #include "../schick.h"
 
 #include "g105de_seg002.h"
+#include "g105de_seg003.h"
 
 #include "../rewrite_m302de/seg008.h"
 
@@ -297,6 +298,52 @@ void clear_hero() {
 
 	ds_writeb(0x1353, 1);
 };
+
+/**
+ * skill_inc_novice() - tries to increment a skill in novice mode
+ * @skill:	the skill which should be incremented
+ *
+ *
+ */
+void skill_inc_novice(Bit16u skill)
+{
+	Bit16u done = 0;
+
+	while (!done) {
+		/* leave the loop if 3 tries have been done */
+		if (ds_readw(0x400e + skill * 2) == 3) {
+			/* set the flag to leave this loop */
+			done++;
+			continue;
+		}
+
+		/* decrement counter for skill increments */
+		ds_writeb(0x1468, ds_readb(0x1468) - 1);
+
+		/* check if the test is passed */
+		if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1434 + skill)) {
+			/* increment skill */
+			ds_writeb(0x1434 + skill, ds_readb(0x1434 + skill) + 1);
+
+			/* set inc tries for this skill to zero */
+			ds_writew(0x400e + skill * 2, 0);
+
+			/* set the flag to leave this loop */
+			done++;
+
+			if (skill > 6)
+				continue;
+
+			/* set increment the lower AT/PA value */
+			if (ds_readb(0x1394 + skill) > ds_readb(0x139b + skill))
+				ds_writeb(0x139b + skill, ds_readb(0x139b + skill) + 1);
+			else
+				ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
+		} else
+			/* inc tries for that skill */
+			ds_writew(0x400e + skill * 2, ds_readw(0x400e + skill * 2) + 1);
+	}
+}
 
 void init_colors()
 {
