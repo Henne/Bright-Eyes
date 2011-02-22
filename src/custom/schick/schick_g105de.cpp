@@ -339,6 +339,14 @@ int schick_nearcall_gen105(unsigned offs) {
 		/* Main */
 		case  0x3c6: {
 			switch (offs) {
+				case 0x09e5: {
+					CPU_Pop16();
+
+					draw_mouse_ptr();
+					D1_LOG("draw_mouse_ptr();\n");
+
+					return 1;
+				}
 				case 0x0c1c: {
 					CPU_Pop16();
 					Bit16u x = CPU_Pop16();

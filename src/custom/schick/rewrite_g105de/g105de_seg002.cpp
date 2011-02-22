@@ -12,6 +12,20 @@
 #include "../rewrite_m302de/seg008.h"
 
 /* static */
+void draw_mouse_ptr()
+{
+	if (ds_readw(0x1248))
+		return;
+
+	if (ds_readw(0x124a) == 0) {
+		ds_writew(0x1248, 1);
+		do_draw_mouse_ptr();
+		ds_writew(0x1248, 0);
+	}
+	ds_writew(0x124a, ds_readw(0x124a) - 1);
+}
+
+/* static */
 Bit16u get_mouse_action_gen(Bit16u x, Bit16u y, Bit8u *ptr) {
 
 	Bit16u i;
@@ -31,6 +45,33 @@ Bit16u get_mouse_action_gen(Bit16u x, Bit16u y, Bit8u *ptr) {
 	}
 
 	return 0;
+}
+
+/* static */
+void do_draw_mouse_ptr()
+{
+	PhysPt ptr;
+	Bit16u pos_x, pos_y;
+	Bit16u d_x, d_y;
+	Bit16u i, j;
+
+	ptr = Real2Phys(ds_readd(0x47cb));
+
+	pos_x = ds_readw(0x1250) - ds_readw(0x125a);
+	pos_y = ds_readw(0x1252) - ds_readw(0x125c);
+	d_x = d_y = 16;
+
+	if (pos_x > 304)
+		d_x = 320 - pos_x;
+	if (pos_y > 184)
+		d_y = 200 - pos_y;
+
+	ptr += pos_y * 320 + pos_x;
+
+	for (i = 0; i < d_y; ptr += 320, i++)
+		for (j = 0; j < d_x; j++)
+			mem_writeb_inline(ptr + j,
+				ds_readb(0x4669 + i * 16 + j));
 }
 
 /* static */
