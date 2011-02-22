@@ -150,25 +150,6 @@ static int seg005(unsigned short offs) {
 			dst, x, y, width, height, src, mode);
 		return 0;
 	}
-	case 0x2e3: {
-		RealPt ptr = CPU_Pop32();
-		Bit16u color = CPU_Pop16();
-		Bit16u width = CPU_Pop16();
-		Bit16u height = CPU_Pop16();
-		CPU_Push16(height);
-		CPU_Push16(width);
-		CPU_Push16(color);
-		CPU_Push32(ptr);
-
-		/* the segment and offset of ptr must be swapped */
-		fill_rect(PhysMake(RealOff(ptr), RealSeg(ptr)), color, width, height);
-
-		D1_LOG("FillRect(ptr=0x%x, color=0x%x, width=%d, height=%d);\n",
-			ptr, color, width, height);
-
-
-		return 1;
-	}
 	case 0x386: {
 		unsigned short val = CPU_Pop16();
 		CPU_Push16(val);
