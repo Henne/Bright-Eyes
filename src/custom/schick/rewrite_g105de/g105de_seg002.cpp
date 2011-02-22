@@ -223,16 +223,15 @@ Bit16u ret_zero() {
 	return 0;
 }
 
+/* static */
+void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
+	blit_smth3(dst, v1, v4);
+}
 
 /* static */
 void set_vals(Bit16u v1, Bit16u v2) {
 	ds_writew(0x4781, v1);
 	ds_writew(0x477f, v2);
-}
-
-/* static */
-void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
-	blit_smth3(dst, v1, v4);
 }
 
 /* static */
