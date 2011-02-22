@@ -5,12 +5,12 @@
 
 #include "schick.h"
 
+#include "rewrite_g105de/g105de_seg001.h"
 #include "rewrite_g105de/g105de_seg002.h"
 #include "rewrite_g105de/g105de_seg003.h"
 #include "rewrite_g105de/g105de_seg005.h"
 
 #include "rewrite_m302de/seg000.h"
-#include "rewrite_m302de/seg001.h"
 #include "rewrite_m302de/seg008.h"
 #include "rewrite_m302de/seg009.h"
 
@@ -335,7 +335,15 @@ int schick_nearcall_gen105(unsigned offs) {
 		}
 		/* CD */
 		case  0x364: {
-			return 0;
+			switch(offs) {
+				case 0x0038: {
+					CPU_Pop16();
+					reg_ax = gen_CD_set_drive_nr();
+					return 1;
+				}
+				default:
+					return 0;
+			}
 		}
 		/* Main */
 		case  0x3c6: {
