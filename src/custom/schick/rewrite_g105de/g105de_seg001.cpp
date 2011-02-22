@@ -5,7 +5,6 @@
 
 #include "schick.h"
 
-#include "g105de_seg000.h"
 #include "g105de_seg001.h"
 
 static unsigned short CD_has_drives() {
