@@ -9,6 +9,8 @@
 #include "rewrite_g105de/g105de_seg003.h"
 #include "rewrite_g105de/g105de_seg005.h"
 
+#include "rewrite_m302de/seg000.h"
+#include "rewrite_m302de/seg001.h"
 #include "rewrite_m302de/seg008.h"
 #include "rewrite_m302de/seg009.h"
 
@@ -245,6 +247,16 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 			real_readw(SegValue(ss), reg_sp), real_readw(SegValue(ss), reg_sp+4),
 			real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp+6));
 			return 0;
+		}
+		if (offs == 0x0f43) {
+			Bit16u v = CPU_Pop16();
+			CPU_Push16(v);
+
+			reg_ax = bioskey(v);
+
+			D1_LOG("bioskey(%d); = %x\n", v, reg_ax);
+
+			return 1;
 		}
 		if (offs == 0x20bc) {
 			D1_LOG("close(Handle=0x%x)\n", real_readw(SegValue(ss), reg_sp));
