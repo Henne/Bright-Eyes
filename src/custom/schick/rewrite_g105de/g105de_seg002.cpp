@@ -345,6 +345,42 @@ void skill_inc_novice(Bit16u skill)
 	}
 }
 
+/**
+ * spell_inc_novice() - tries to increment a spell in novice mode
+ * @spell:	the spell which should be incremented
+ *
+ *
+ */
+void spell_inc_novice(Bit16u spell)
+{
+	Bit16u done = 0;
+
+	while (!done) {
+		/* leave the loop if 3 tries have been done */
+		if (ds_readw(0x3f62 + spell * 2) == 3) {
+			/* set the flag to leave this loop */
+			done++;
+			continue;
+		}
+
+		/* decrement counter for spell increments */
+		ds_writeb(0x14bf, ds_readb(0x14bf) - 1);
+
+		/* check if the test is passed */
+		if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
+			/* increment spell */
+			ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
+
+			/* set inc tries for this spell to zero */
+			ds_writew(0x3f62 + spell * 2, 0);
+
+			/* set the flag to leave this loop */
+			done++;
+		} else
+			ds_writeb(0x3f62 + spell * 2, ds_readb(0x3f62 + spell * 2) + 1);
+	}
+}
+
 void init_colors()
 {
 	set_palette(MemBase + PhysMake(datseg, 0x1d4c), 0x00, 1);

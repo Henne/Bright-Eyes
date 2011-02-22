@@ -528,6 +528,17 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x4305: {
+					CPU_Pop16();
+					Bit16u spell = CPU_Pop16();
+					CPU_Push16(spell);
+
+					D1_LOG("spell_inc_novice(%d);\n",
+						spell);
+					spell_inc_novice(spell);
+
+					return 1;
+				}
 				case 0x75c1: {
 					CPU_Pop16();
 
