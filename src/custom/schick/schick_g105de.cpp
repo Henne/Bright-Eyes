@@ -230,7 +230,7 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 			call_fill_rect_gen(Real2Phys(ptr),
 				x1, y1, x2, y2, color);
 
-			D1_INFO("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
+			D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
 				ptr, x1, y1, x2, y2, color);
 
 			return 1;
@@ -448,7 +448,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					call_fill_rect_gen(Real2Phys(ptr),
 						x1, y1, x2, y2, color);
 
-					D1_INFO("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
+					D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
 						ptr, x1, y1, x2, y2, color);
 
 					return 1;
