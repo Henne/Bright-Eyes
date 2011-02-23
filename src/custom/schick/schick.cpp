@@ -18,9 +18,6 @@ unsigned short relocation;
 // Segment relocation from game if gen is called
 unsigned short relocation_bak;
 
-// Debugging Mode (Bitfield): Bit 1=File Operations, Bit 2=Proben
-static int dbg_mode=2;
-
 //Datasegment
 unsigned short datseg = 0;
 Bit8u *p_datseg = NULL;
@@ -264,54 +261,6 @@ void exit_schick(unsigned char exit)
 	D1_INFO("DSA1 Fehlercode %d\nProfiler beendet\n", exit);
 }
 
-void schick_create(const char *name, unsigned char flags, unsigned int handle)
-{
-
-	if (!running || !schick || !(dbg_mode & 1) ) return;
-
-	D1_ERR("Create File\tHandle %d\t%s\tFlags\n", handle, name, flags);
-}
-
-void schick_open(const char *name, unsigned char flags, unsigned int handle) {
-
-	if (!running || !schick || !(dbg_mode & 1))
-		return;
-
-	D1_ERR("Open File\tHandle %d\t%s\tFlags\n", handle, name, flags);
-}
-
-void schick_close(unsigned handle)
-{
-	if (!running || !schick || !(dbg_mode & 1))
-		return;
-
-	D1_LOG("Close File\tHandle %d\n\n", handle);
-}
-
-void schick_read(unsigned handle, unsigned char *data, unsigned short len)
-{
-	if (!running || !schick) return;
-
-	if (!(dbg_mode & 1)) return;
-
-	D1_LOG("ReadFile\tHandle %d\tLen: %d\n", handle, len);
-}
-
-void schick_write(unsigned handle, unsigned char *data, unsigned short len)
-{
-	if (!running || !schick || !(dbg_mode & 1) ) return;
-
-	D1_LOG("WriteFile\tHandle %d\tLen: %d\n", handle, len);
-}
-
-void schick_seek(unsigned handle, unsigned pos, unsigned type) {
-
-	if (!running || !schick || !(dbg_mode & 1))
-		return;
-
-	D1_LOG("SeekFile\tHandle %x\tPos %ld\tType %x\n", handle, pos, type);
-}
-
 const char* names_attrib[] = {	"MU", "KL", "CH", "FF", "GE", "IN", "KK",
 				"AG", "HA", "RA", "GG", "TA", "NG", "JZ"};
 
@@ -370,7 +319,7 @@ int get_ovrseg(unsigned short stub_seg) {
 
 int schick_callf(unsigned selector, unsigned offs)
 {
-	if (!running || !(dbg_mode & 2))
+	if (!running)
 		return 0;
 	if (selector == SegValue(ss))
 		return 0;
@@ -396,14 +345,14 @@ int schick_callf(unsigned selector, unsigned offs)
 // Intercept RETurn.
 void schick_ret() {
 
-	if (!running || !schick || !(dbg_mode & 2))
+	if (!running || !schick)
 		return;
 }
 
 // Intercept near CALLs, 16-Bit
 int schick_calln16(unsigned offs) {
 
-	if (!running || !(dbg_mode & 2))
+	if (!running)
 		return 0;
 	if (SegValue(cs) == SegValue(ss))
 		return 0;

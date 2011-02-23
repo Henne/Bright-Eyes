@@ -31,8 +31,6 @@
 #include "drives.h"
 #include "cross.h"
 
-#include "custom_hooks.h"
-
 #define DOS_FILESTART 4
 
 #define FCB_SUCCESS     0
@@ -371,18 +369,12 @@ bool DOS_ReadFile(Bit16u entry,Bit8u * data,Bit16u * amount) {
 */
 	Bit16u toread=*amount;
 	bool ret=Files[handle]->Read(data,&toread);
-
-	//Hook for "Schicksalsklinge/Blade of Destiny"
-	schick_read(handle, data, *amount);
-
 	*amount=toread;
 	return ret;
 }
 
 bool DOS_WriteFile(Bit16u entry,Bit8u * data,Bit16u * amount) {
 	Bit32u handle=RealHandle(entry);
-	//Hook for "Schicksalsklinge/Blade of Destiny"
-	schick_write(handle, data, *amount);
 	if (handle>=DOS_FILES) {
 		DOS_SetError(DOSERR_INVALID_HANDLE);
 		return false;
@@ -405,10 +397,6 @@ bool DOS_WriteFile(Bit16u entry,Bit8u * data,Bit16u * amount) {
 
 bool DOS_SeekFile(Bit16u entry,Bit32u * pos,Bit32u type) {
 	Bit32u handle=RealHandle(entry);
-
-	//Hook for "Schicksalsklinge/Blade of Destiny"
-	schick_seek(handle, *pos, type);
-
 	if (handle>=DOS_FILES) {
 		DOS_SetError(DOSERR_INVALID_HANDLE);
 		return false;
@@ -422,10 +410,6 @@ bool DOS_SeekFile(Bit16u entry,Bit32u * pos,Bit32u type) {
 
 bool DOS_CloseFile(Bit16u entry) {
 	Bit32u handle=RealHandle(entry);
-
-	//Hook for "Schicksalsklinge/Blade of Destiny"
-	schick_close(handle);
-
 	if (handle>=DOS_FILES) {
 		DOS_SetError(DOSERR_INVALID_HANDLE);
 		return false;
@@ -509,10 +493,6 @@ bool DOS_CreateFile(char const * name,Bit16u attributes,Bit16u * entry) {
 		return false;
 	}
 	bool foundit=Drives[drive]->FileCreate(&Files[handle],fullname,attributes);
-
-	//Hook for "Schicksalsklinge/Blade of Destiny"
-	schick_create(name, attributes, handle);
-
 	if (foundit) { 
 		Files[handle]->SetDrive(drive);
 		Files[handle]->AddRef();
@@ -571,10 +551,6 @@ bool DOS_OpenFile(char const * name,Bit8u flags,Bit16u * entry) {
 		exists=Drives[drive]->FileOpen(&Files[handle],fullname,flags);
 		if (exists) Files[handle]->SetDrive(drive);
 	}
-
-	//Hook for "Schicksalsklinge/Blade of Destiny"
-	schick_open(name, flags, handle);
-
 	if (exists || device ) { 
 		Files[handle]->AddRef();
 		psp.SetFileHandle(*entry,handle);
