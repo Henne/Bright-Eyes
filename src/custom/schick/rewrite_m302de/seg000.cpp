@@ -26,6 +26,9 @@ Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
 	if (!DOS_ReadFile(handle, buf, &count))
 		return -1;
 
+	if (count == 5952)
+		schick_status_update(buf, count);
+
 	return (Bit16s)count;
 }
 

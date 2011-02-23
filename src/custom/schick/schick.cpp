@@ -292,9 +292,6 @@ void schick_read(unsigned handle, unsigned char *data, unsigned short len)
 {
 	if (!running || !schick) return;
 
-	if (len == 5744 || len == 5952)
-			schick_status_update(data, len);
-
 	if (!(dbg_mode & 1)) return;
 
 	D1_LOG("ReadFile\tHandle %d\tLen: %d\n", handle, len);
