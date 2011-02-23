@@ -184,11 +184,12 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		/* enable profiler only on this version */
 		if (ver == 302 && !schick_is_en()) {
 			D1_INFO("Starte Profiler\n");
+
+			/* enable status comperator */
+			schick_status_init();
+
 			schick++;
 		}
-
-		/* enable status comperator */
-		schick_status_init();
 	}
 
 	/* check for the character generation program */
@@ -207,7 +208,8 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		   We have to save some values. */
 
 		if (!fromgame && running && schick && !gen) {
-			schick_status_disable();
+			if (ver == 302 && !schick_is_en())
+				schick_status_disable();
 			schick--;
 			fromgame++;
 
@@ -243,7 +245,10 @@ void exit_schick(unsigned char exit)
 		p_datseg = p_datseg_bak;
 		p_datseg_bak = NULL;
 		D1_INFO("Gen beendet\nProfiling geht weiter\n");
-		schick_status_enable();
+
+		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en())
+			schick_status_enable();
+
 		return;
 	}
 
@@ -251,7 +256,9 @@ void exit_schick(unsigned char exit)
 		gen--;
 	if (schick) {
 		schick--;
-		schick_status_exit();
+
+		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en())
+			schick_status_exit();
 	}
 	running--;
 	D1_INFO("DSA1 Fehlercode %d\nProfiler beendet\n", exit);
