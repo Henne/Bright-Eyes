@@ -355,6 +355,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0e6a: {
+					CPU_Pop16();
+
+					D1_LOG("save_mouse_ptr();\n");
+					save_mouse_ptr();
+
+					return 1;
+				}
 				case 0x0c1c: {
 					CPU_Pop16();
 					Bit16u x = CPU_Pop16();

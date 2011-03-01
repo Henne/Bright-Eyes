@@ -54,6 +54,35 @@ Bit16u get_mouse_action_gen(Bit16u x, Bit16u y, Bit8u *ptr) {
 }
 
 /* static */
+void save_mouse_ptr()
+{
+	PhysPt p;
+	Bit16u v6, v8, va, si, di, cx;
+
+	p = Real2Phys(ds_readd(0x47cb));
+
+	/* X - Coordinate */
+	di = ds_readw(0x124c) - ds_readw(0x1256);
+	/* Y - Coordinate */
+	v6 = ds_readw(0x124e) - ds_readw(0x1258);
+
+	va = v8 = 16;
+
+	if (di > 304)
+		v8 = 320 - di;
+
+	if (v6 > 184)
+		va = 200 - v6;
+
+	p += v6 *320 + di;
+
+	for (si = 0; si < va; p += 320, si++)
+		for (cx = 0; cx < v8; cx++)
+			ds_writeb(0x4669 + si * 16 + cx,
+				mem_readb_inline(p + cx));
+}
+
+/* static */
 void do_draw_mouse_ptr()
 {
 	PhysPt ptr;
