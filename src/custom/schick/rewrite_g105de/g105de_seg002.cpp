@@ -163,6 +163,76 @@ void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 			mem_writeb_inline(ptr + j, host_readb(src));
 }
 
+/**
+ * str_splitter() - sets the line breaks for a string
+ * @s:	string
+ *
+ * Returns the number of lines the string needs.
+ */
+/* static */
+Bit16u str_splitter(char *s) {
+
+	char *tp;
+	Bit16u last_space, lines, c_width, l_width, l_width_max;
+	Bit16s i;
+
+	if (s == NULL || s == (char*)MemBase)
+		return 0;
+
+	lines = 1;
+	l_width_max = ds_readw(0x478d);
+
+
+	/* replace all CR and LF with spaces */
+	for (tp = s; *tp; tp++)
+		if (*tp == 0x0d || *tp == 0x0a)
+			*tp = 0x20;
+
+	tp = s;
+
+	l_width = i = last_space = 0;
+
+	while (tp[i]) {
+		get_chr_info(tp[i], (Bit8u*)&c_width);
+		l_width += c_width;
+
+		if (l_width >= l_width_max) {
+
+			if (last_space) {
+				tp[last_space] = 0xd;
+				tp += last_space;
+			} else {
+				tp[i] = 0xd;
+				tp += i + 1;
+			}
+
+			lines++;
+			l_width = last_space = i = 0;
+		}
+
+		/* remember the last i in last_space */
+		if (tp[i] == 0x20)
+			last_space = i;
+
+		if (tp[i] == 0x40) {
+			tp += i + 1;
+			i = -1;
+			l_width = last_space = 0;
+			lines++;
+		}
+		i++;
+	}
+
+	if (l_width >= l_width_max)
+		if (last_space) {
+			tp[last_space] = 0xd;
+			lines++;
+		} else
+			tp[i - 1] = 0;
+
+	return lines;
+}
+
 Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
 
 	Bit16u width, idx;

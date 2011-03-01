@@ -487,6 +487,17 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x20aa: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					CPU_Push32(ptr);
+
+					reg_ax = str_splitter((char*)MemBase + Real2Phys(ptr));
+					D1_LOG("str_splitter(%s); = %d\n",
+						(char*)getString(ptr), reg_ax);
+
+					return 1;
+				}
 				case 0x2346: {
 					CPU_Pop16();
 					Bit16u c = CPU_Pop16();
