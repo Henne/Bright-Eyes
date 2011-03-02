@@ -56,3 +56,12 @@ void G105de::CD_driver_request(RealPt req) {
 	reg_bx = RealOff(req);
 	CALLBACK_RunRealInt(0x2f);
 }
+
+unsigned int G105de::CD_get_tod() {
+	reg_ah = 0;
+	CALLBACK_RunRealInt(0x1a);
+	reg_ax = reg_dx;
+	reg_dx = reg_cx;
+
+	return (reg_dx << 16) | reg_ax;
+}

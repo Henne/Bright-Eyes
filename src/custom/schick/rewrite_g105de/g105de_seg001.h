@@ -5,4 +5,6 @@ namespace G105de {
 
 	//static
 	void CD_driver_request(RealPt req);
+	//static
+	unsigned int CD_get_tod();
 }

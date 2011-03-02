@@ -339,6 +339,15 @@ int schick_nearcall_gen105(unsigned offs) {
 					G105de::CD_driver_request(ptr);
 					return 1;
 				}
+				case 0x00ae: {
+					unsigned int retval;
+					CPU_Pop16();
+					retval = G105de::CD_get_tod();
+
+					reg_ax = retval & 0xffff;
+					reg_dx = (retval>>16) & 0xffff;
+					return 1;
+				}
 				default:
 					return 0;
 			}
