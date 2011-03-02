@@ -273,6 +273,22 @@ void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 }
 
 /* static */
+Bit16u print_line(char *str)
+{
+	Bit16u lines = 1;
+
+	draw_mouse_ptr_wrapper();
+
+	lines = str_splitter(str);
+
+	print_str(str, ds_readw(0x4791), ds_readw(0x478f));
+
+	call_mouse();
+
+	return lines;
+}
+
+/* static */
 void print_str(char *str, Bit16u x, Bit16u y)
 {
 	Bit16u i, x_bak;
