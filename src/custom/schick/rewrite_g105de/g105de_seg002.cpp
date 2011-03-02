@@ -272,6 +272,81 @@ void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 			mem_writeb_inline(ptr + j, host_readb(src));
 }
 
+/* static */
+void print_str(char *str, Bit16u x, Bit16u y)
+{
+	Bit16u i, x_bak;
+	unsigned char c;
+
+	i = 0;
+
+	draw_mouse_ptr_wrapper();
+
+	if (ds_readw(0x4789) == 1)
+		x = get_line_start_c(str, x, ds_readw(0x478d));
+
+	x_bak = x;
+
+	while (c = str[i++]) {
+		switch (c) {
+			case 0x0d: case 0x40: {
+				/* newline */
+				y += 7;
+
+				if (ds_readw(0x4789) == 1)
+					x = get_line_start_c(str + i,
+						ds_readw(0x4791),
+						ds_readw(0x478d));
+				else
+					x = x_bak;
+				break;
+			}
+			case 0x7e: {
+				/* CRUFT */
+				if (x < ds_readw(0x47e3)) {
+					x = ds_readw(0x47e3);
+					continue;
+				}
+				if (x < ds_readw(0x47e5)) {
+					x = ds_readw(0x47e5);
+					continue;
+				}
+				if (x < ds_readw(0x47e7)) {
+					x = ds_readw(0x47e7);
+					continue;
+				}
+				if (x < ds_readw(0x47e9)) {
+					x = ds_readw(0x47e9);
+					continue;
+				}
+				if (x < ds_readw(0x47eb)) {
+					x = ds_readw(0x47eb);
+					continue;
+				}
+				if (x < ds_readw(0x47ed)) {
+					x = ds_readw(0x47ed);
+					continue;
+				}
+				if (x < ds_readw(0x47ef)) {
+					x = ds_readw(0x47ef);
+					continue;
+				}
+				break;
+		}
+		case 0xf0: case 0xf1: case 0xf2: case 0xf3: {
+			/* change text color */
+			ds_writew(0x477d, c - 0xf0);
+			break;
+		}
+		default:
+			/* print normal */
+			x += print_chr(c, x, y);
+		}
+	}
+
+	call_mouse();
+}
+
 /**
  * str_splitter() - sets the line breaks for a string
  * @s:	string

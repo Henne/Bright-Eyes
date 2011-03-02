@@ -14,6 +14,7 @@ void init_video();
 void exit_video();
 void draw_v_line(Bit16u, Bit16u, Bit16u, Bit16u);
 void blit_smth3(PhysPt, Bit16u, Bit16u);
+void print_str(char *, Bit16u, Bit16u);
 Bit16u str_splitter(char *);
 Bit16u print_chr(unsigned char, Bit16u, Bit16u);
 Bit8u get_chr_info(unsigned char, Bit8u*);

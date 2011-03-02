@@ -530,6 +530,21 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x2223: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					Bit16u x = CPU_Pop16();
+					Bit16u y = CPU_Pop16();
+					CPU_Push16(y);
+					CPU_Push16(x);
+					CPU_Push32(ptr);
+
+					D1_LOG("print_str(%s)\n", getString(ptr));
+					print_str((char*)MemBase + Real2Phys(ptr),
+						x, y);
+
+					return 1;
+				}
 				case 0x2346: {
 					CPU_Pop16();
 					Bit16u c = CPU_Pop16();
