@@ -18,6 +18,12 @@ void draw_mouse_ptr_wrapper() {
 }
 
 /* static */
+void call_mouse()
+{
+	mouse();
+}
+
+/* static */
 void draw_mouse_ptr()
 {
 	if (ds_readw(0x1248))
@@ -144,6 +150,43 @@ void do_draw_mouse_ptr()
 		for (j = 0; j < d_x; j++)
 			mem_writeb_inline(ptr + j,
 				ds_readb(0x4669 + i * 16 + j));
+}
+
+/* static */
+void mouse()
+{
+	if (ds_readw(0x1248))
+		return;
+
+	ds_writew(0x124a, ds_readw(0x124a) + 1);
+
+	if (ds_readw(0x124a))
+		return;
+
+	ds_writew(0x1248, 1);
+
+	if (ds_readw(0x124c) < ds_readw(0x1256))
+		ds_writew(0x124c, ds_readw(0x1256));
+
+	if (ds_readw(0x124c) > 315)
+		ds_writew(0x124c, 315);
+
+	if (ds_readw(0x124e) < ds_readw(0x1258))
+		ds_writew(0x124e, ds_readw(0x1258));
+
+	if (ds_readw(0x124e) > 195)
+		ds_writew(0x124e, 195);
+
+	save_mouse_ptr();
+
+	ds_writew(0x1250, ds_readw(0x124c));
+	ds_writew(0x1252, ds_readw(0x124e));
+	ds_writew(0x125a, ds_readw(0x1256));
+	ds_writew(0x125c, ds_readw(0x1258));
+
+	update_mouse_ptr();
+
+	ds_writew(0x1248, 0);
 }
 
 /* static */

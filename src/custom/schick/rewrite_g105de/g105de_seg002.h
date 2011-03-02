@@ -1,5 +1,7 @@
 void draw_mouse_ptr_wrapper();
+void call_mouse();
 void draw_mouse_ptr();
+void mouse();
 Bit16u get_mouse_action_gen(Bit16u, Bit16u, Bit8u*);
 void update_mouse_ptr();
 void save_mouse_ptr();
