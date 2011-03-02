@@ -1,2 +1,6 @@
-//static
-unsigned short gen_CD_set_drive_nr();
+namespace G105de {
+
+	//static
+	unsigned short CD_set_drive_nr();
+
+}

@@ -37,7 +37,7 @@ static unsigned short CD_get_first_drive() {
 	return reg_cx;
 }
 
-unsigned short gen_CD_set_drive_nr() {
+unsigned short G105de::CD_set_drive_nr() {
 
 	if(CD_has_drives() == 0)
 		return 0;

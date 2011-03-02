@@ -329,7 +329,7 @@ int schick_nearcall_gen105(unsigned offs) {
 			switch(offs) {
 				case 0x0038: {
 					CPU_Pop16();
-					reg_ax = gen_CD_set_drive_nr();
+					reg_ax = G105de::CD_set_drive_nr();
 					return 1;
 				}
 				default:
