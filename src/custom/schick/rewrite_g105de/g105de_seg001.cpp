@@ -48,3 +48,11 @@ unsigned short G105de::CD_set_drive_nr() {
 	ds_writew(0x246c, CD_get_first_drive());
 	return 1;
 }
+
+void G105de::CD_driver_request(RealPt req) {
+	reg_ax = 0x1510;
+	reg_cx = ds_readw(0x246c);
+	CPU_SetSegGeneral(es, RealSeg(req));
+	reg_bx = RealOff(req);
+	CALLBACK_RunRealInt(0x2f);
+}

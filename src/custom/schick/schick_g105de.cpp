@@ -332,6 +332,13 @@ int schick_nearcall_gen105(unsigned offs) {
 					reg_ax = G105de::CD_set_drive_nr();
 					return 1;
 				}
+				case 0x005d: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					CPU_Push32(ptr);
+					G105de::CD_driver_request(ptr);
+					return 1;
+				}
 				default:
 					return 0;
 			}
