@@ -506,6 +506,12 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x1c82: {
+					CPU_Pop16();
+					G105de::wait_for_keypress();
+					D1_LOG("wait_for_keypress()\n");
+					return 1;
+				}
 				case 0x1d14: {
 					CPU_Pop16();
 					Bit16u v1 = CPU_Pop16();

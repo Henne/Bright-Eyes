@@ -9,6 +9,9 @@ void do_draw_mouse_ptr();
 Bit32s get_archive_offset(Bit8u*, Bit8u*);
 Bit32s get_filelength();
 Bit16u ret_zero1();
+namespace G105de {
+	void wait_for_keypress();
+}
 Bit32u swap32(Bit16u, Bit16u);
 void init_video();
 void exit_video();

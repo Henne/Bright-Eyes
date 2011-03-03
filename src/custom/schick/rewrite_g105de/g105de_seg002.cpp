@@ -6,6 +6,7 @@
 
 #include "../schick.h"
 
+#include "g105de_seg001.h"
 #include "g105de_seg002.h"
 #include "g105de_seg003.h"
 
@@ -222,6 +223,13 @@ Bit32s get_filelength() {
 
 Bit16u ret_zero1() {
 	return 0;
+}
+
+void G105de::wait_for_keypress()
+{
+	while (G105de::CD_bioskey(1)) {
+		G105de::CD_bioskey(0);
+	}
 }
 
 Bit32u swap32(Bit16u v1, Bit16u v2) {
