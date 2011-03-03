@@ -14,6 +14,23 @@
 #include "rewrite_m302de/seg008.h"
 #include "rewrite_m302de/seg009.h"
 
+static int seg001(unsigned short offs) {
+	switch (offs) {
+		case 0x0300: {
+			Bit16u cmd = CPU_Pop16();
+			CPU_Push16(cmd);
+			reg_ax = G105de::CD_bioskey(cmd);
+			return 1;
+		}
+		case 0x033b: {
+			G105de::seg001_033b();
+			return 1;
+		}
+	default:
+		return 0;
+	}
+}
+
 static int seg003(unsigned short offs) {
 
 	switch (offs) {
@@ -182,6 +199,10 @@ static int seg005(unsigned short offs) {
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
 int schick_farcall_gen105(unsigned segm, unsigned offs)
 {
+	/* seg001 CD */
+	if (segm == 0x364)
+		return seg001(offs);
+
 	/* seg002 main */
 	if (segm == 0x3c6) {
 		if (offs == 0x1dbe) {
@@ -353,6 +374,23 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					reg_ax = retval & 0xffff;
 					reg_dx = (retval>>16) & 0xffff;
+					return 1;
+				}
+				case 0x00bb: {
+					CPU_Pop16();
+					Bit16u track = CPU_Pop16();
+					CPU_Push16(track);
+					G105de::seg001_00bb(track);
+					return 1;
+				}
+				case 0x0312b: {
+					CPU_Pop16();
+					G105de::seg001_0312();
+					return 1;
+				}
+				case 0x033b: {
+					CPU_Pop16();
+					G105de::seg001_033b();
 					return 1;
 				}
 				default:
