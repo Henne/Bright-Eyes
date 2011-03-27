@@ -6,8 +6,8 @@
 /* Define to 1 to enable screenshots, requires libpng */
 #define C_SSHOT 0
 
-/* Define to 1 to enable DSA1 support */
-#define DOSBOX_SCHICK 1
+/* Define to 1 to enable DOSBox custom support */
+#define DOSBOX_CUSTOM 1
 
 /* Define to 1 to use opengl display output support */
 #define C_OPENGL 1

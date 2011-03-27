@@ -436,12 +436,12 @@ AC_CHECK_HEADER([sys/mman.h], [
 AC_CHECK_FUNC([mprotect],[AC_DEFINE(C_HAVE_MPROTECT,1)])
 ])
 
-AH_TEMPLATE(DOSBOX_SCHICK,[Define to 1 to enable DSA1 customization])
-AC_ARG_ENABLE(schick,AC_HELP_STRING([--disable-schick],[Disable DSA1 customization]),, enable_schick=yes)
-AC_MSG_CHECKING(wheter DSA1 customization will be enabled)
-if test x$enable_schick = xyes ; then
+AH_TEMPLATE(DOSBOX_CUSTOM,[Define to 1 to enable DOSBox custom])
+AC_ARG_ENABLE(custom,AC_HELP_STRING([--disable-custom],[Disable DOSBox custom]),, enable_custom=yes)
+AC_MSG_CHECKING(wheter DOSBox custom will be enabled)
+if test x$enable_custom = xyes ; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(DOSBOX_SCHICK, 1)
+	AC_DEFINE(DOSBOX_CUSTOM, 1)
 else
 	AC_MSG_RESULT(no)
 fi
