@@ -964,10 +964,6 @@
 					RelativePath="..\src\misc\support.cpp"
 					>
 				</File>
-				<File
-					RelativePath="..\src\misc\custom.cpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="visualc"
@@ -1000,6 +996,10 @@
 			<Filter
 				Name="custom"
 				>
+				<File
+					RelativePath="..\src\custom\custom.cpp"
+					>
+				</File>
 				<Filter
 					Name="schick"
 					>
