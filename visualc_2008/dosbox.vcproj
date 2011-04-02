@@ -1299,6 +1299,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\custom.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\debug.h"
 				>
 			</File>

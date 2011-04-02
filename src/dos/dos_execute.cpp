@@ -27,9 +27,7 @@
 #include "callback.h"
 #include "debug.h"
 #include "cpu.h"
-
-// Include for "Schicksalsklinge/Blade of Destiny"
-#include "custom_hooks.h"
+#include "custom.h"
 
 const char * RunningProgram="DOSBOX";
 
@@ -104,8 +102,7 @@ void DOS_UpdatePSPName(void) {
 
 void DOS_Terminate(Bit16u pspseg,bool tsr,Bit8u exitcode) {
 
-	//Disable Hook for "Schicksalsklinge/Blade of Destiny"
-	exit_schick(exitcode);
+	custom_exit_prog(exitcode);
 
 	dos.return_code=exitcode;
 	dos.return_mode=(tsr)?(Bit8u)RETURN_TSR:(Bit8u)RETURN_EXIT;
@@ -420,8 +417,7 @@ bool DOS_Execute(char * name,PhysPt block_pt,Bit8u flags) {
 		sssp=RealMake(pspseg,0xfffe);
 		mem_writew(PhysMake(pspseg,0xfffe),0);
 	} else {
-		//Enable Hook for "Schicksalsklinge/Blade of Destiny"
-		init_schick(name, relocate, head.initCS, head.initIP);
+		custom_init_prog(name, relocate, head.initCS, head.initIP);
 
 		csip=RealMake(loadseg+head.initCS,head.initIP);
 		sssp=RealMake(loadseg+head.initSS,head.initSP);

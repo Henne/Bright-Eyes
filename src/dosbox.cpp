@@ -42,6 +42,7 @@
 #include "mapper.h"
 #include "ints/int10.h"
 #include "render.h"
+#include "custom.h"
 
 Config * control;
 MachineType machine;
@@ -673,6 +674,8 @@ void DOSBOX_Init(void) {
 	Pbool = secprop->Add_bool("ipx",Property::Changeable::WhenIdle, false);
 	Pbool->Set_help("Enable ipx over UDP/IP emulation.");
 #endif
+
+	secprop->AddInitFunction(&custom_init);
 //	secprop->AddInitFunction(&CREDITS_Init);
 
 	//TODO ?

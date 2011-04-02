@@ -901,7 +901,7 @@
 			Bit16u addip=Fetchws();
 			SAVEIP;
 
-			if (schick_calln16((Bit16u)(reg_eip+addip))) {
+			if (custom_calln((Bit16u)(reg_eip+addip))) {
 				continue;
 			}
 

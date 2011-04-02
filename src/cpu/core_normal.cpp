@@ -27,8 +27,7 @@
 #include "pic.h"
 #include "fpu.h"
 #include "paging.h"
-
-#include "custom_hooks.h"
+#include "custom.h"
 
 #if C_DEBUG
 #include "debug.h"

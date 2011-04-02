@@ -30,8 +30,7 @@
 #include "paging.h"
 #include "lazyflags.h"
 #include "support.h"
-
-#include "custom_hooks.h"
+#include "custom.h"
 
 Bitu DEBUG_EnableDebugger(void);
 extern void GFX_SetTitle(Bit32s cycles ,Bits frameskip,bool paused);
@@ -1066,9 +1065,12 @@ CODE_jmp:
 
 void CPU_CALL(bool use32,Bitu selector,Bitu offset,Bitu oldeip) {
 
-	/* if schick_callf() is not 0 we just increment the IP */
-	if (schick_callf(selector, offset)) {
-		reg_ip +=5;
+/*
+	if custom_callf() returns true we set the IP to the next instruction
+	and bypass the call
+*/
+	if (custom_callf(selector, offset)) {
+		reg_ip += 5;
 		return;
 	}
 
