@@ -10,6 +10,7 @@
 #include "g105de_seg001.h"
 #include "g105de_seg002.h"
 #include "g105de_seg003.h"
+#include "g105de_seg005.h"
 
 #include "../rewrite_m302de/seg008.h"
 
@@ -735,6 +736,23 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 	*dst = 0;
 	call_mouse();
 	return 0;
+}
+
+/**
+ * enter_name() - enter the name of a hero
+ */
+void enter_name()
+{
+	PhysPt dst;
+
+	dst = Real2Phys(ds_readd(0x47cb) + 12 * 320 + 176);
+
+	draw_mouse_ptr_wrapper();
+	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	enter_string((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12, 15, 1);
+	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	call_mouse();
+	print_str((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12);
 }
 
 /**
