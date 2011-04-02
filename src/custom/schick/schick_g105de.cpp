@@ -724,6 +724,28 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x25e9: {
+					CPU_Pop16();
+					RealPt str = CPU_Pop32();
+					Bit16u x = CPU_Pop16();
+					Bit16u y = CPU_Pop16();
+					Bit16u len = CPU_Pop16();
+					Bit16u zero = CPU_Pop16();
+					CPU_Push16(zero);
+					CPU_Push16(len);
+					CPU_Push16(y);
+					CPU_Push16(x);
+					CPU_Push32(str);
+
+					D1_INFO("enter_string(%p,%d,%d,%d,%d);\n",
+						getString(str), x, y, len, zero);
+
+					reg_ax = enter_string(
+						(char*)MemBase + Real2Phys(str),
+						x, y, len, zero);
+
+					return 1;
+				}
 				case 0x3bdd: {
 					CPU_Pop16();
 

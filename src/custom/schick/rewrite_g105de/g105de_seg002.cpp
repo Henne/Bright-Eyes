@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "regs.h"
 #include "paging.h"
@@ -603,6 +604,137 @@ Bit16u get_line_start_c(char *str, Bit16u x, Bit16u x_max) {
 		sum += width;
 	}
 	return (x_max - sum) / 2 + x ;
+}
+
+Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
+{
+	Bit16u pos, l3, di, si;
+	Bit16s c;
+
+	draw_mouse_ptr_wrapper();
+	di = x;
+	pos = 0;
+
+	if (zero == 0) {
+		for (si = 0; si < num; si++) {
+			print_chr(0x20, di, y);
+			print_chr(0x5f, di, y);
+			di += 6;
+		}
+		di = x;
+	} else {
+		print_chr(0x20, di, y);
+		print_chr(0x5f, di, y);
+	}
+	G105de::wait_for_keypress();
+	ds_writew(0x4597, 0);
+
+	c = 0;
+	while (c != 0xd || pos == 0) {
+		do {
+			do {} while (G105de::CD_bioskey(1) == 0 &&
+				ds_readw(0x4597) == 0);
+
+			if (ds_readw(0x4597)) {
+				ds_writew(0x459d, 0xd);
+				ds_writew(0x459b, 0);
+				ds_writew(0x4597, 0);
+			} else {
+				ds_writew(0x459d, G105de::CD_bioskey(0));
+				ds_writew(0x459f, ds_readw(0x459d) >> 8);
+				ds_writew(0x459d, ds_readw(0x459d) & 0xff);
+			}
+		} while (ds_readw(0x459f) == 0 && ds_readw(0x459d) == 0);
+
+		c = ds_readw(0x459d);
+
+		if (c == 0xd)
+			continue;
+
+		if (ds_readw(0x459f) == 1) {
+			*dst = 0;
+			call_mouse();
+			ds_writew(0x459f, 0);
+			return 1;
+		}
+		if (c == 8) {
+			if (pos <= 0)
+				continue;
+
+			if (zero == 1 && pos != num)
+				print_chr(0x20, di, y);
+			pos--;
+			dst--;
+			get_chr_info(*dst, (Bit8u*)&l3);
+
+			if (zero == 0)
+				di -= 6;
+			else
+				di -= l3;
+		} else {
+			if (!(ds_readb(0x1ff9 + c) & 0x0e) &&
+				(c != 0x84 & 0xff) && (c != 0x94 & 0xff) &&
+				(c != 0x81 & 0xff) && (c != 0x8e & 0xff) &&
+				(c != 0x99 & 0xff) && (c != 0x9a & 0xff) &&
+				(c != 0x20) && (c != 0x2e))
+					continue;
+
+			/* is_alpha(c) */
+			if (ds_readb(0x1ff9 + c) & 0xc)
+				c = toupper(c);
+
+			/* ae */
+			if (c == 0x84)
+				c = 0xff8e;
+			/* oe */
+			if (c == 0x94)
+				c = 0xff99;
+			/* ue */
+			if (c == 0x81)
+				c = 0xff9a;
+
+			/* are we at the end of the input field */
+			if (pos == num) {
+				dst--;
+				get_chr_info(*dst, (Bit8u*)&l3);
+
+				if (zero != 0)
+					di -= l3;
+				else
+					di -= 6;
+
+				pos--;
+			}
+
+			*dst++ = c & 0xff;
+			print_chr(0x20, di, y);
+			print_chr(c & 0xff, di, y);
+			get_chr_info(c & 0xff, (Bit8u*)&l3);
+
+			if (zero != 0)
+				di += l3;
+			else
+				di += 6;
+
+			pos++;
+
+			if (zero != 1 || pos == num)
+				continue;
+		}
+		print_chr(0x20, di, y);
+		print_chr(0x5f, di, y);
+	}
+
+	if (zero == 0)
+		while (pos < num) {
+			print_chr(0x20, di, y);
+			di += 6;
+			pos++;
+		}
+
+	*dst = 0;
+	call_mouse();
+	return 0;
 }
 
 /**
