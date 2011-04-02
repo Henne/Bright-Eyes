@@ -4,7 +4,7 @@
 #ifdef DOSBOX_CUSTOM
 
 /* prototypes for Execution operations */
-void init_schick(char *, unsigned short, unsigned short, unsigned short);
+bool init_schick(char *, unsigned short, unsigned short, unsigned short);
 void exit_schick(unsigned char);
 
 /* prototypes for CPU operations */
@@ -14,7 +14,7 @@ int schick_calln16(unsigned);
 #else /* DOSBOX_CUSTOM */
 
 /* prototypes for Execution operations */
-inline void init_schick(char *, unsigned short, unsigned short, unsigned short) {};
+inline bool init_schick(char *, unsigned short, unsigned short, unsigned short) { return false; };
 inline void exit_schick(unsigned char) {};
 
 /* prototypes for CPU operations */

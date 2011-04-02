@@ -20,10 +20,10 @@ void custom_init_prog(char *name, Bit16u relocate, Bit16u init_cs, Bit16u init_i
 	if (custom_runs)
 		current->suspend();
 */
-	custom_runs++;
 
 	/* run all detectors */
-	init_schick(name, relocate, init_cs, init_ip);
+	if (init_schick(name, relocate, init_cs, init_ip))
+		custom_runs++;
 }
 
 void custom_exit_prog(Bit8u exitcode)

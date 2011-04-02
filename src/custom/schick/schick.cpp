@@ -5,8 +5,6 @@
 
 #include "schick.h"
 
-// Is the profiler running?
-static int running=0;
 // Is the game running?
 static int schick = 0;
 // Is gen called from the game?
@@ -129,7 +127,8 @@ void schick_get_fname(char *dst, char *src) {
 }
 
 //Initializer - is startet if executed file is SCHICKM.EXE/BLADEM.EXE or GEN.EXE
-void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
+//Returns true if the desired programm is started
+bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
 {
 
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
@@ -140,12 +139,12 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	if (strcmp(fname, "schickm.exe")
 			&& strcmp(fname, "bladem.exe")
-			&& strcmp(fname, "gen.exe")) return;
+			&& strcmp(fname, "gen.exe")) return false;
 
 	/* Check CS:IP in the EXE-Header are 0:0
 	 * and the first executed instruction is mov dx,i16 */
 	if (_cs != 0 || ip != 0 || real_readb(reloc+_cs, ip) != 0xba)
-		return;
+		return false;
 
 	/* Show CS:IP on the virtual machine and the pointer to 0:0 */
 	D1_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
@@ -162,7 +161,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		strcmp((char*)MemBase+PhysMake(datseg, 4), borsig)) {
 
 		D1_ERR("Kein Borland C++ Kompilat!\n");
-		return;
+		return false;
 	}
 
 	/* check for the game program */
@@ -172,7 +171,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 		if (ver == 0) {
 			D1_ERR("Unbekannte Version von DSA1\n");
-			return;
+			return false;
 		}
 
 		D1_INFO("\nDSA1 Schicksalsklinge gefunden V%d.%02d_%s\n",
@@ -195,7 +194,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 		if (ver == 0) {
 			D1_ERR("Unbekannte Version von DSA1 Generierung\n");
-			return;
+			return false;
 		}
 
 		D1_INFO("DSA1 Generierung gefunden V%d.%02d_%s\n",
@@ -204,7 +203,7 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		/* This happens only gen is started from the game.
 		   We have to save some values. */
 
-		if (!fromgame && running && schick && !gen) {
+		if (!fromgame && schick && !gen) {
 			if (ver == 302 && !schick_is_en())
 				schick_status_disable();
 			schick--;
@@ -222,14 +221,13 @@ void init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	relocation_bak = relocation;
 	relocation = reloc;
-	running++;
+
+	return true;
 }
 
 
 void exit_schick(unsigned char exit)
 {
-	if (!running) return;
-
 	if (fromgame)
 	{
 		gen--;
@@ -257,7 +255,6 @@ void exit_schick(unsigned char exit)
 		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en())
 			schick_status_exit();
 	}
-	running--;
 	D1_INFO("DSA1 Fehlercode %d\nProfiler beendet\n", exit);
 }
 
@@ -319,8 +316,6 @@ int get_ovrseg(unsigned short stub_seg) {
 
 int schick_callf(unsigned selector, unsigned offs)
 {
-	if (!running)
-		return 0;
 	if (selector == SegValue(ss))
 		return 0;
 	if (selector >= 0xa000)
@@ -345,8 +340,6 @@ int schick_callf(unsigned selector, unsigned offs)
 // Intercept near CALLs, 16-Bit
 int schick_calln16(unsigned offs) {
 
-	if (!running)
-		return 0;
 	if (SegValue(cs) == SegValue(ss))
 		return 0;
 	if (SegValue(cs) >= 0xa000)
