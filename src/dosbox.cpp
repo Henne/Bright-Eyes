@@ -674,8 +674,9 @@ void DOSBOX_Init(void) {
 	Pbool = secprop->Add_bool("ipx",Property::Changeable::WhenIdle, false);
 	Pbool->Set_help("Enable ipx over UDP/IP emulation.");
 #endif
-
+#if DOSBOX_CUSTOM
 	secprop->AddInitFunction(&custom_init);
+#endif
 //	secprop->AddInitFunction(&CREDITS_Init);
 
 	//TODO ?

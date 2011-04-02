@@ -1,11 +1,11 @@
-//#ifdef DOSBOX_CUSTOM
+#include "dosbox.h"
+
+#if DOSBOX_CUSTOM
 
 #include <stdio.h>
 
-#include "dosbox.h"
 #include "custom.h"
 #include "custom_hooks.h"
-
 static Bit8u custom_runs;
 
 //static class custom_prog running_progs[2];
@@ -56,4 +56,4 @@ void custom_init(Section *sec)
 //	custom_prog *p_current = new custom_prog;
 }
 
-//#endif /* DOSBOX_CUSTOM */
+#endif /* DOSBOX_CUSTOM */

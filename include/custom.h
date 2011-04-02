@@ -20,12 +20,12 @@ class custom_prog {
 	private:
 };
 
-#ifdef DOSBOX_CUSTOM
+#if DOSBOX_CUSTOM
 
 void custom_init(Section *sec);
 
 /* prototypes for Execution operations */
-void custom_init_prog(char *, unsigned short, unsigned short, unsigned short);
+void custom_init_prog(char *, Bit16u, Bit16u, Bit16u);
 void custom_exit_prog(Bit8u);
 
 /* prototypes for CPU operations */
