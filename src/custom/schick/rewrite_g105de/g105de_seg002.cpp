@@ -923,6 +923,44 @@ void spell_inc_novice(Bit16u spell)
 	}
 }
 
+/**
+ *	make_valuta_str	-	makes a valuta string
+ *	@dst:	the destination
+ *	@money:	the money in Heller
+ *
+ *	This funcion is buggy.
+ */
+void G105de::make_valuta_str(char *dst, unsigned int money)
+{
+	/* Orig-BUG: d can overflow  on D > 65536*/
+	unsigned short d = 0;
+	unsigned short s = 0;
+
+	/*	These loops are not very performant.
+		They take longer the more money you have.
+		Here is a much better solution.
+	*/
+
+	/*
+	d = money / 100;
+	money -= d * 100;
+
+	s = money / 10;
+	money -= s * 10;
+	*/
+	while (money / 100) {
+		d++;
+		money -= 100;
+	}
+
+	while (money / 10) {
+		s++;
+		money -= 10;
+	}
+
+	sprintf(dst, (char*)MemBase + Real2Phys(ds_readd(0x41ed)), d, s, money);
+}
+
 void init_colors()
 {
 	set_palette(MemBase + PhysMake(datseg, 0x1d4c), 0x00, 1);

@@ -39,5 +39,8 @@ void calc_at_pa();
 void clear_hero();
 void skill_inc_novice(Bit16u);
 void spell_inc_novice(Bit16u);
+namespace G105de {
+	void make_valuta_str(char *, unsigned int);
+}
 void init_colors();
 void init_stuff();

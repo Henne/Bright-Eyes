@@ -792,6 +792,20 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x5abd: {
+					CPU_Pop16();
+					RealPt dst = CPU_Pop32();
+					Bit32u money = CPU_Pop32();
+					CPU_Push32(money);
+					CPU_Push32(dst);
+
+					D1_LOG("make_valuta_str(%d);\n", money);
+
+					G105de::make_valuta_str(
+						(char*)MemBase + Real2Phys(dst),						money);
+
+					return 1;
+				}
 				case 0x75c1: {
 					CPU_Pop16();
 
