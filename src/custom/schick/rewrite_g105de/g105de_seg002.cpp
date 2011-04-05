@@ -82,6 +82,26 @@ void G105de::decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 	Bit16u i, j, n, k;
 	unsigned char val, pix;
 
+	/*
+	 * In Gen V1.05_de this function can an will be tweaked,
+	 * since the only argument which differs is src.
+	 *
+	 * To help the compiler optimizing, we set the arguments to the values,
+	 * we know they will have, so they can be threaten as constants.
+	 *
+	 * With GCC 4.4.5 and the default DOSBox settings (-O2),
+	 * the code of this function shrinked:
+	 * - on my x86_64 machine from 253 to 156 byte (62%).
+	 * - on my x86_32 machine from 276 to 180 byte (65%).
+	 */
+
+	y = x = 0;
+	width = 320;
+	height = 200;
+	mode = 0;
+
+	/* End of the tweaker section. */
+
 	dst_loc = dst + 320 * y + x;
 	draw_mouse_ptr_wrapper();
 
