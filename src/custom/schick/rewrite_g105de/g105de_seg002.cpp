@@ -860,6 +860,45 @@ void enter_name()
 }
 
 /**
+ * change_sex() - changes the sex of the hero
+ *
+ */
+void G105de::change_sex()
+{
+	PhysPt dst, src;
+	signed char tmp;
+
+	/* change sex of the hero */
+	ds_writeb(0x134e, ds_readb(0x134e) ^ 1);
+
+	/* hero has a typus */
+	if (ds_readb(0x134d)) {
+		if (ds_readb(0x134e) != 0) {
+			/* To female */
+			tmp = ds_readb(0x1054 + (signed char)ds_readb(0x40b7));
+
+			ds_writeb(0x40b6, tmp);
+			ds_writeb(0x40b5, tmp);
+			ds_writeb(0x40b4, ds_readb(0x1049 + (signed char)ds_readb(0x40b7)) - 1);
+		} else {
+			/* To male */
+			tmp = ds_readb(0x1048 + (signed char)ds_readb(0x40b7));
+			ds_writeb(0x40b6, tmp);
+			ds_writeb(0x40b5, tmp);
+			ds_writeb(0x40b4, ds_readb(0x1054 + (signed char)ds_readb(0x40b7)) -1);
+		}
+		ds_writew(0x11fe, 1);
+		return;
+	} else {
+		dst = Real2Phys(ds_readd(0x47cb)) + 7 * 320 + 305;
+		src = Real2Phys(ds_readd(0x4769)) + ds_readb(0x134e) * 256;
+		draw_mouse_ptr_wrapper();
+		copy_to_screen(src, dst, 16, 16, 0);
+		call_mouse();
+	}
+}
+
+/**
  * calc_at_pa() - calculate AT and PA values
  */
 /* static */

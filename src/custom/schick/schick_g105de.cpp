@@ -800,6 +800,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x3171: {
+					CPU_Pop16();
+
+					D1_LOG("change_sex();\n");
+					G105de::change_sex();
+
+					return 1;
+				}
 				case 0x3bdd: {
 					CPU_Pop16();
 

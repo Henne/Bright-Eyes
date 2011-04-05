@@ -41,6 +41,9 @@ namespace G105de {
 	void fill_radio_button(Bit16s, Bit16u, Bit16u);
 }
 void enter_name();
+namespace G105de {
+	void change_sex();
+}
 void calc_at_pa();
 void clear_hero();
 void skill_inc_novice(Bit16u);
