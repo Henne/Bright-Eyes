@@ -809,6 +809,40 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 }
 
 /**
+ * fill_radio_button() - marks the active radio button
+ * @old_pos:	the position of the last active button (or -1)
+ * @new_pos:	the position of the current active button
+ * @offset:	the offset of the first radio line
+ *
+ */
+void G105de::fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
+{
+	Bit16u i, x, y;
+
+	draw_mouse_ptr_wrapper();
+
+	/* unmark the old radio button, if any */
+	if (old_pos != -1) {
+		y = ds_readw(0x40bb) + 6;
+
+		x = (offset + old_pos) * 8 + ds_readw(0x40bd) + 2;
+
+		for (i = 0; i < 4; i++)
+			draw_v_line(y + i, x, x + 3, 0xd8);
+	}
+
+	/* mark the new radio button */
+	y = ds_readw(0x40bb) + 6;
+
+	x = (offset + new_pos) * 8 + ds_readw(0x40bd) + 2;
+
+	for (i = 0; i < 4; i++)
+		draw_v_line(y + i, x, x + 3, 0xd9);
+
+	call_mouse();
+}
+
+/**
  * enter_name() - enter the name of a hero
  */
 void enter_name()

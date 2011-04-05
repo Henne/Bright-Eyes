@@ -774,6 +774,24 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x2c0d: {
+					Bit16u pIP = CPU_Pop16();
+					Bit16u old_pos = CPU_Pop16();
+					Bit16u new_pos = CPU_Pop16();
+					Bit16u offset = CPU_Pop16();
+					CPU_Push16(offset);
+					CPU_Push16(new_pos);
+					CPU_Push16(old_pos);
+
+					D1_LOG("fill_radio_button(%x,%x,%x);\n",
+						old_pos, new_pos, offset);
+
+					G105de::fill_radio_button(old_pos,
+						new_pos, offset);
+
+					return 1;
+
+				}
 				case 0x3064: {
 					CPU_Pop16();
 

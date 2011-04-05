@@ -37,6 +37,9 @@ void get_vals(Bit8u*, Bit8u*);
 Bit16u get_str_width(char*);
 Bit16u get_line_start_c(char*, Bit16u, Bit16u);
 Bit16u enter_string(char*, Bit16u, Bit16u, Bit16u, Bit16u);
+namespace G105de {
+	void fill_radio_button(Bit16s, Bit16u, Bit16u);
+}
 void enter_name();
 void calc_at_pa();
 void clear_hero();
