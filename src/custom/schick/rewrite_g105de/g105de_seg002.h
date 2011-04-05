@@ -4,6 +4,7 @@ void draw_mouse_ptr();
 void mouse();
 namespace G105de {
 	Bit16u get_mouse_action(Bit16u, Bit16u, Bit8u*);
+	void decomp_rle(Bit8u*, Bit8u*, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 }
 void update_mouse_ptr();
 void save_mouse_ptr();

@@ -432,6 +432,34 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0cf2: {
+					Bit16u pIP = CPU_Pop16();
+					RealPt dst = CPU_Pop32();
+					RealPt src = CPU_Pop32();
+					Bit16u x = CPU_Pop16();
+					Bit16u y = CPU_Pop16();
+					Bit16u w = CPU_Pop16();
+					Bit16u h = CPU_Pop16();
+					Bit16u m = CPU_Pop16();
+					CPU_Push16(m);
+					CPU_Push16(h);
+					CPU_Push16(w);
+					CPU_Push16(y);
+					CPU_Push16(x);
+					CPU_Push32(src);
+					CPU_Push32(dst);
+
+					D1_LOG("decomp_rle(%x, %x,...);\n",
+						dst, src);
+
+					G105de::decomp_rle(MemBase + Real2Phys(dst),
+						MemBase + Real2Phys(src),
+						x, y, w, h, m);
+
+					return 1;
+				}
+
+
 				case 0x0db1: {
 					CPU_Pop16();
 

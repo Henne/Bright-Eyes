@@ -63,6 +63,55 @@ Bit16u G105de::get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
 	return 0;
 }
 
+/**
+ * decomp_rle() - decompress a RLE compressed picture
+ * @dst:	destination
+ * @src:	source
+ * @y:		y - Coordinate to start
+ * @x:		x - Coordinate to start
+ * @width:	width of the picture
+ * @height:	height of the picture
+ * @mode:	if 2 copy pixels with the value 0
+ *
+*/
+
+void G105de::decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
+				Bit16u width, Bit16u height, Bit16u mode)
+{
+	Bit8u *dst_loc;
+	Bit16u i, j, n, k;
+	unsigned char val, pix;
+
+	dst_loc = dst + 320 * y + x;
+	draw_mouse_ptr_wrapper();
+
+	for (i = 0; i < height; dst_loc += 320, i++) {
+
+		j = 0;
+
+		while (j < width) {
+
+			val = host_readb(src++);
+
+			if (val == 0x7f) {
+				n = host_readb(src++);
+				pix = host_readb(src++);
+
+				if (pix != 0 || mode != 2)
+					for (k = 0; k <= n; k++)
+						host_writeb(dst_loc + j + k, pix);
+				j += n;
+			} else {
+				if (val != 0 || mode != 2)
+					host_writeb(dst_loc + j, val);
+				j++;
+			}
+		}
+	}
+
+	call_mouse();
+}
+
 /* static */
 void update_mouse_ptr()
 {
