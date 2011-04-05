@@ -41,7 +41,8 @@ void draw_mouse_ptr()
 }
 
 /* static */
-Bit16u get_mouse_action_gen(Bit16u x, Bit16u y, Bit8u *ptr) {
+Bit16u G105de::get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
+{
 
 	Bit16u i;
 

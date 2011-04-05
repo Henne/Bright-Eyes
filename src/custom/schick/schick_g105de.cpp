@@ -457,7 +457,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(y);
 					CPU_Push16(x);
 
-					reg_ax = get_mouse_action_gen(x, y,
+					reg_ax = G105de::get_mouse_action(x, y,
 						MemBase + Real2Phys(ptr));
 
 					D1_LOG("get_mouse_action(%d,%d,%x); = %d\n",
