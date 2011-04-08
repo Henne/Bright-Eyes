@@ -846,6 +846,17 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x4cb4: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					CPU_Push32(ptr);
+
+					D1_LOG("restore_picbuf(%x);\n", ptr);
+
+					G105de::restore_picbuf(Real2Phys(ptr));
+
+					return 1;
+				}
 				case 0x5abd: {
 					CPU_Pop16();
 					RealPt dst = CPU_Pop32();

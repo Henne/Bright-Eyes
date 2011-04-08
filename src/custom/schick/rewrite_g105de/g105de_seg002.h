@@ -49,6 +49,7 @@ void clear_hero();
 void skill_inc_novice(Bit16u);
 void spell_inc_novice(Bit16u);
 namespace G105de {
+	void restore_picbuf(PhysPt);
 	void make_valuta_str(char *, unsigned int);
 }
 void init_colors();
