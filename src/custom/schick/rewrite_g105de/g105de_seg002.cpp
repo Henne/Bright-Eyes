@@ -1066,6 +1066,78 @@ void spell_inc_novice(Bit16u spell)
 	}
 }
 
+void G105de::save_picbuf()
+{
+	PhysPt p;
+	Bit16u x_1, x_2, x_3;
+	Bit16u y_1, y_2, y_3;
+	Bit16u w_1, w_2, w_3;
+	Bit16u h_1, h_2, h_3;
+
+	x_1 = 0;
+
+	/* check on which page we are */
+	switch (ds_readw(0x1324)) {
+		/* main page */
+		case 0: {
+			/* name field */
+			x_1 = 176; y_1 = 12; w_1 = 94; h_1 = 8;
+
+			/* positive attributes values */
+			x_2 = 205; y_2 = 73; w_2 = 20; h_2 = 90;
+
+			/* negative attribute values */
+			x_3 = 273; y_3 = 73; w_3 = 20; h_3 = 90;
+			break;
+		}
+		/* skill pages */
+		case 1:	case 2: case 3: {
+			/* remaining skill augmention tries */
+			x_1 = 270; y_1 = 184; w_1 = 15; h_1 = 8;
+
+			/* left row of skills */
+			x_2 = 205; y_2 = 42; w_2 = 20; h_2 = 140;
+
+			/* right row of skills */
+			x_3 = 287; y_3 = 42; w_3 = 20; h_3 = 140;
+			break;
+		}
+		/* ATPA page */
+		case 4: {
+			/* left row AT values */
+			x_2 = 225; y_2 = 48; w_2 = 20; h_2 = 130;
+
+			/* right row PA values */
+			x_3 = 260; y_3 = 48; w_3 = 20; h_3 = 130;
+			break;
+		}
+		/* spell pages */
+		case 5: case 6:	case 7:
+		case 8:	case 9:	case 10: {
+			/* remaining spell augmention tries */
+			x_1 = 215; y_1 = 184; w_1 = 15; h_1 = 8;
+
+			/* left row of spells */
+			x_2 = 141; y_2 = 42; w_2 = 20;	h_2 = 140;
+
+			/* right row of spells */
+			x_3 = 286; y_3 = 42; w_3 = 20;	h_3 = 140;
+			break;
+		}
+	}
+
+	if (x_1) {
+		p = Real2Phys(ds_readd(0x47d3)) + y_1 * 320 + x_1;
+		copy_to_screen(p, Real2Phys(ds_readd(0x479f)), w_1, h_1, 2);
+	}
+
+	p = Real2Phys(ds_readd(0x47d3)) + y_2 * 320 + x_2;
+	copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
+
+	p = Real2Phys(ds_readd(0x47d3)) + y_3 * 320 + x_3;
+	copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
+}
+
 void G105de::restore_picbuf(PhysPt ptr)
 {
 	PhysPt p;
