@@ -765,7 +765,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x);
 					CPU_Push32(str);
 
-					D1_INFO("enter_string(%p,%d,%d,%d,%d);\n",
+					D1_LOG("enter_string(%x,%d,%d,%d,%d);\n",
 						getString(str), x, y, len, zero);
 
 					reg_ax = enter_string(
