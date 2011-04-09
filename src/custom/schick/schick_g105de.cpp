@@ -245,14 +245,29 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 
 	if (segm == 0x0) {
 		if (offs == 0x0438) {
-			D1_TRAC("_dos_getvect(intnr=0x%x)\n", real_readw(SegValue(ss),reg_sp));
-			return 0;
+			Bit16u intnr = CPU_Pop16();
+			CPU_Push16(intnr);
+
+			RealPt addr  = G105de::bc__dos_getvect(intnr);
+			D1_LOG("_dos_getvect(intnr=0x%x) = %x\n", intnr, addr);
+
+			reg_ax = RealOff(addr);
+			reg_dx = RealSeg(addr);
+
+			return 1;
 		}
 		if (offs == 0x0447) {
-			D1_TRAC("_dos_setvect(intnr=0x%x, *isr=0x%x:0x%x)\n",
-				real_readw(SegValue(ss), reg_sp), real_readw(SegValue(ss), reg_sp+4),
-				real_readw(SegValue(ss), reg_sp+2));
-			return 0;
+			Bit16u intnr = CPU_Pop16();
+			RealPt addr = CPU_Pop32();
+			CPU_Push32(addr);
+			CPU_Push16(intnr);
+
+			D1_LOG("_dos_setvect(intnr=0x%x, *isr=0x%x:0x%x)\n",
+				intnr, RealSeg(addr), RealOff(addr));
+
+			G105de::bc__dos_setvect(intnr, addr);
+
+			return 1;
 		}
 		if (offs == 0x072d) {
 			Bit16u handle = CPU_Pop16();

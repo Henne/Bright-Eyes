@@ -9,6 +9,16 @@
 
 namespace G105de {
 
+RealPt bc__dos_getvect(Bit16s intnr)
+{
+	return host_readd(MemBase + intnr * 4);
+}
+
+void bc__dos_setvect(Bit16s intnr, RealPt ptr)
+{
+	host_writed(MemBase + intnr * 4, ptr);
+}
+
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
 	ds_writew(0x2298 + handle * 2, ds_readw(0x2298 + handle * 2) & 0xfdff);
