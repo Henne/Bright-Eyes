@@ -5,6 +5,7 @@
 
 #include "schick.h"
 
+#include "rewrite_g105de/g105de_seg000.h"
 #include "rewrite_g105de/g105de_seg001.h"
 #include "rewrite_g105de/g105de_seg002.h"
 #include "rewrite_g105de/g105de_seg003.h"
@@ -271,8 +272,13 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 			return 1;
 		}
 		if (offs == 0x20bc) {
-			D1_LOG("close(Handle=0x%x)\n", real_readw(SegValue(ss), reg_sp));
-			return 0;
+			Bit16u handle = CPU_Pop16();
+			CPU_Push16(handle);
+
+			reg_ax = G105de::bc_close(handle);
+			D1_LOG("close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
+
+			return 1;
 		}
 		if (offs == 0x254e) {
 			D1_LOG(
