@@ -7,6 +7,7 @@
 
 #include "../schick.h"
 
+#include "g105de_seg000.h"
 #include "g105de_seg001.h"
 #include "g105de_seg002.h"
 #include "g105de_seg003.h"
@@ -306,6 +307,23 @@ Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 	}
 
 	return -1;
+}
+
+namespace G105de {
+
+Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
+{
+
+	if (len > ds_readd(0x3f2e))
+		len = ds_readw(0x3f2e);
+
+	len = bc__read(handle, buf, len);
+
+	ds_writed(0x3f2e, ds_readd(0x3f2e) - len);
+
+	return len;
+}
+
 }
 
 Bit32s get_filelength() {

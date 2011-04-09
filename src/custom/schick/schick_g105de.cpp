@@ -575,6 +575,25 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x1c34: {
+					CPU_Pop16();
+					Bit16u handle = CPU_Pop16();
+					Bit32s buf = CPU_Pop32();
+					Bit16u len = CPU_Pop16();
+					CPU_Push16(len);
+					CPU_Push32(buf);
+					CPU_Push16(handle);
+
+
+					reg_ax = G105de::read_datfile(handle,
+						MemBase + Real2Phys(buf), len);
+
+					D1_LOG("read_datfile(Handle=%x, off=%x, len=%d)\n",
+						handle, buf, len);
+
+
+					return 1;
+				}
 				case 0x1c6f: {
 					CPU_Pop16();
 
