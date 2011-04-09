@@ -280,6 +280,15 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 
 			return 1;
 		}
+		if (offs == 0x20e4) {
+			Bit16u handle = CPU_Pop16();
+			CPU_Push16(handle);
+
+			reg_ax = G105de::bc__close(handle);
+			D1_LOG("_close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
+
+			return 1;
+		}
 		if (offs == 0x254e) {
 			D1_LOG(
 			"memcpy(__dest=0x%x:0x%x, __src=0x%x:0x%x, __n=0x%x)\n",
