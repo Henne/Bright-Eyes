@@ -225,6 +225,26 @@ void do_draw_mouse_ptr()
 				ds_readb(0x4669 + i * 16 + j));
 }
 
+void G105de::split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
+{
+	Bit32u i = 0;
+
+	host_writed(dst, src);
+	dst += 4;
+
+	for (; i != len; src++, i++) {
+		/* continue if not the ned of the string */
+		if (mem_readb(Real2Phys(src)) != 0)
+			continue;
+		/* return if "\0\0" (never happens) */
+		if (mem_readb(Real2Phys(src) + 1) == 0)
+			return;
+		/* write the adress of the next string */
+		host_writed(dst, src + 1);
+		dst += 4;
+	}
+}
+
 /* static */
 void mouse()
 {

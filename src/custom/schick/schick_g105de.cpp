@@ -493,6 +493,22 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0fef: {
+					CPU_Pop16();
+					RealPt p1 = CPU_Pop32();
+					RealPt p2 = CPU_Pop32();
+					RealPt p3 = CPU_Pop32();
+					CPU_Push32(p3);
+					CPU_Push32(p2);
+					CPU_Push32(p1);
+
+					D1_LOG("split_textbuffer(0x%x,0x%x,%d);\n",
+						p1, p2, p3);
+
+					G105de::split_textbuffer(MemBase + Real2Phys(p1), p2, p3);
+
+					return 1;
+				}
 				case 0x1bb2: {
 					CPU_Pop16();
 					RealPt name = CPU_Pop32();

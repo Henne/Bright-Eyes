@@ -9,6 +9,9 @@ namespace G105de {
 void update_mouse_ptr();
 void save_mouse_ptr();
 void do_draw_mouse_ptr();
+namespace G105de {
+	void split_textbuffer(Bit8u*, RealPt, Bit32u);
+}
 Bit32s get_archive_offset(Bit8u*, Bit8u*);
 Bit32s get_filelength();
 Bit16u ret_zero1();
