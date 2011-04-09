@@ -265,7 +265,7 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 			Bit16u v = CPU_Pop16();
 			CPU_Push16(v);
 
-			reg_ax = bioskey(v);
+			reg_ax = G105de::bioskey(v);
 
 			D1_LOG("bioskey(%d); = %x\n", v, reg_ax);
 
