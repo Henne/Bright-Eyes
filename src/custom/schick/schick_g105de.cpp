@@ -255,11 +255,23 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 			return 0;
 		}
 		if (offs == 0x07c5) {
+			Bit16u handle = CPU_Pop16();
+			RealPt buf = CPU_Pop32();
+			Bit16u len = CPU_Pop16();
+			CPU_Push16(len);
+			CPU_Push32(buf);
+			CPU_Push16(handle);
+
+			reg_ax = G105de::bc__read(handle, MemBase + Real2Phys(buf), len);
 			D1_LOG(
-			"__read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d)\n",
-			real_readw(SegValue(ss), reg_sp), real_readw(SegValue(ss), reg_sp+4),
-			real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp+6));
-			return 0;
+			"_read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
+				handle, RealSeg(buf), RealOff(buf),
+				len, reg_ax);
+
+			if (reg_ax != len)
+				D1_ERR("Error while reading\n");
+
+			return 1;
 		}
 		if (offs == 0x0f43) {
 			Bit16u v = CPU_Pop16();
