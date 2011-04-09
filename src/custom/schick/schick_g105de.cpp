@@ -254,6 +254,25 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 				real_readw(SegValue(ss), reg_sp+2));
 			return 0;
 		}
+		if (offs == 0x072d) {
+			Bit16u handle = CPU_Pop16();
+			Bit32s off = CPU_Pop32();
+			Bit16u kind = CPU_Pop16();
+			CPU_Push16(kind);
+			CPU_Push32(off);
+			CPU_Push16(handle);
+
+			Bit32s retval;
+
+			retval = G105de::bc_lseek(handle, off, kind);
+			D1_LOG("lseek(Handle=0x%x, off=%d, kind=%d) = %d\n",
+				handle, off, kind, retval);
+
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			return 1;
+		}
 		if (offs == 0x07c5) {
 			Bit16u handle = CPU_Pop16();
 			RealPt buf = CPU_Pop32();
