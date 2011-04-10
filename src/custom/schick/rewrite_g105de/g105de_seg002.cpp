@@ -890,9 +890,9 @@ void enter_name()
 	dst = Real2Phys(ds_readd(0x47cb) + 12 * 320 + 176);
 
 	draw_mouse_ptr_wrapper();
-	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	G105de::copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
 	enter_string((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12, 15, 1);
-	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	G105de::copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
 	call_mouse();
 	print_str((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12);
 }
@@ -931,7 +931,7 @@ void G105de::change_sex()
 		dst = Real2Phys(ds_readd(0x47cb)) + 7 * 320 + 305;
 		src = Real2Phys(ds_readd(0x4769)) + ds_readb(0x134e) * 256;
 		draw_mouse_ptr_wrapper();
-		copy_to_screen(src, dst, 16, 16, 0);
+		G105de::copy_to_screen(src, dst, 16, 16, 0);
 		call_mouse();
 	}
 }
@@ -1166,14 +1166,15 @@ void G105de::save_picbuf()
 
 	if (x_1) {
 		p = Real2Phys(ds_readd(0x47d3)) + y_1 * 320 + x_1;
-		copy_to_screen(p, Real2Phys(ds_readd(0x479f)), w_1, h_1, 2);
+		G105de::copy_to_screen(p, Real2Phys(ds_readd(0x479f)),
+			w_1, h_1, 2);
 	}
 
 	p = Real2Phys(ds_readd(0x47d3)) + y_2 * 320 + x_2;
-	copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
+	G105de::copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
 
 	p = Real2Phys(ds_readd(0x47d3)) + y_3 * 320 + x_3;
-	copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
+	G105de::copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
 }
 
 void G105de::restore_picbuf(PhysPt ptr)
@@ -1238,14 +1239,15 @@ void G105de::restore_picbuf(PhysPt ptr)
 
 	if (x_1) {
 		p = ptr + y_1 * 320 + x_1;
-		copy_to_screen(Real2Phys(ds_readd(0x479f)), p, w_1, h_1, 0);
+		G105de::copy_to_screen(Real2Phys(ds_readd(0x479f)),
+			p, w_1, h_1, 0);
 	}
 
 	p = ptr + y_2 * 320 + x_2;
-	copy_to_screen(Real2Phys(ds_readd(0x479b)), p, w_2, h_2, 0);
+	G105de::copy_to_screen(Real2Phys(ds_readd(0x479b)), p, w_2, h_2, 0);
 
 	p = ptr + y_3 * 320 + x_3;
-	copy_to_screen(Real2Phys(ds_readd(0x4797)), p, w_3, h_3, 0);
+	G105de::copy_to_screen(Real2Phys(ds_readd(0x4797)), p, w_3, h_3, 0);
 }
 
 /**

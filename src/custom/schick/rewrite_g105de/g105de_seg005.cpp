@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 Generator v1.05_de seg005 (Rasterlib)
-	Functions rewritten: 1/2
+	Functions rewritten: 2/2
 
 	We only rewrite those which differ from the game.
 */
@@ -88,8 +88,6 @@ void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit32u dummy1,
 	}
 }
 
-}
-
 void copy_to_screen(PhysPt src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
 {
 
@@ -117,4 +115,6 @@ void copy_to_screen(PhysPt src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
 			src += v2;
 		}
 	}
+}
+
 }
