@@ -42,6 +42,43 @@ void draw_mouse_ptr()
 }
 
 /* static */
+void mouse()
+{
+	if (ds_readw(0x1248))
+		return;
+
+	ds_writew(0x124a, ds_readw(0x124a) + 1);
+
+	if (ds_readw(0x124a))
+		return;
+
+	ds_writew(0x1248, 1);
+
+	if (ds_readw(0x124c) < ds_readw(0x1256))
+		ds_writew(0x124c, ds_readw(0x1256));
+
+	if (ds_readw(0x124c) > 315)
+		ds_writew(0x124c, 315);
+
+	if (ds_readw(0x124e) < ds_readw(0x1258))
+		ds_writew(0x124e, ds_readw(0x1258));
+
+	if (ds_readw(0x124e) > 195)
+		ds_writew(0x124e, 195);
+
+	save_mouse_ptr();
+
+	ds_writew(0x1250, ds_readw(0x124c));
+	ds_writew(0x1252, ds_readw(0x124e));
+	ds_writew(0x125a, ds_readw(0x1256));
+	ds_writew(0x125c, ds_readw(0x1258));
+
+	update_mouse_ptr();
+
+	ds_writew(0x1248, 0);
+}
+
+/* static */
 Bit16u G105de::get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
 {
 
@@ -247,43 +284,6 @@ void G105de::split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 }
 
 /* static */
-void mouse()
-{
-	if (ds_readw(0x1248))
-		return;
-
-	ds_writew(0x124a, ds_readw(0x124a) + 1);
-
-	if (ds_readw(0x124a))
-		return;
-
-	ds_writew(0x1248, 1);
-
-	if (ds_readw(0x124c) < ds_readw(0x1256))
-		ds_writew(0x124c, ds_readw(0x1256));
-
-	if (ds_readw(0x124c) > 315)
-		ds_writew(0x124c, 315);
-
-	if (ds_readw(0x124e) < ds_readw(0x1258))
-		ds_writew(0x124e, ds_readw(0x1258));
-
-	if (ds_readw(0x124e) > 195)
-		ds_writew(0x124e, 195);
-
-	save_mouse_ptr();
-
-	ds_writew(0x1250, ds_readw(0x124c));
-	ds_writew(0x1252, ds_readw(0x124e));
-	ds_writew(0x125a, ds_readw(0x1256));
-	ds_writew(0x125c, ds_readw(0x1258));
-
-	update_mouse_ptr();
-
-	ds_writew(0x1248, 0);
-}
-
-/* static */
 Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 
 	Bit32s offset, length;
@@ -375,6 +375,11 @@ void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
 	off = y1 * 320 + x;
 
 	draw_h_spaced_dots(PhysMake(0xa000, off), len, color, 320);
+}
+
+void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
+{
+	fill_rect(ptr + y1 * 320 + x1, color, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 /* static */
@@ -660,11 +665,6 @@ RealPt get_gfx_ptr(Bit16u x, Bit16u y) {
 /* static */
 Bit16u ret_zero() {
 	return 0;
-}
-
-void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
-{
-	fill_rect(ptr + y1 * 320 + x1, color, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 /* static */
