@@ -11,7 +11,6 @@
 #include "rewrite_g105de/g105de_seg003.h"
 #include "rewrite_g105de/g105de_seg005.h"
 
-#include "rewrite_m302de/seg000.h"
 #include "rewrite_m302de/seg008.h"
 #include "rewrite_m302de/seg009.h"
 
