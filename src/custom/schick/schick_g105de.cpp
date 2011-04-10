@@ -219,7 +219,7 @@ static int seg000(Bitu offs) {
 	}
 }
 
-static int seg001(unsigned short offs) {
+static int seg001(Bitu offs) {
 	switch (offs) {
 		case 0x0300: {
 			Bit16u cmd = CPU_Pop16();
@@ -270,7 +270,7 @@ static int seg002(Bitu offs)
 	}
 }
 
-static int seg003(unsigned short offs) {
+static int seg003(Bitu offs) {
 
 	switch (offs) {
 	case 0xb: {
@@ -310,7 +310,7 @@ static int seg003(unsigned short offs) {
 	}
 }
 
-static int seg004(unsigned short offs) {
+static int seg004(Bitu offs) {
 
 	switch (offs) {
 	case 0xc: {
@@ -338,7 +338,7 @@ static int seg004(unsigned short offs) {
 }
 
 /* Rasterlib */
-static int seg005(unsigned short offs) {
+static int seg005(Bitu offs) {
 
 	switch (offs) {
 	case 0x34: {
