@@ -236,6 +236,40 @@ static int seg001(unsigned short offs) {
 	}
 }
 
+static int seg002(Bitu offs)
+{
+	switch (offs) {
+		case 0x1dbe: {
+			exit_video();
+			return 1;
+		}
+		case 0x1fe0: {
+			RealPt ptr = CPU_Pop32();
+			Bit16u x1 = CPU_Pop16();
+			Bit16u y1 = CPU_Pop16();
+			Bit16u x2 = CPU_Pop16();
+			Bit16u y2 = CPU_Pop16();
+			Bit16u color = CPU_Pop16();
+			CPU_Push16(color);
+			CPU_Push16(y2);
+			CPU_Push16(x2);
+			CPU_Push16(y1);
+			CPU_Push16(x1);
+			CPU_Push32(ptr);
+
+			call_fill_rect_gen(Real2Phys(ptr),
+				x1, y1, x2, y2, color);
+
+			D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
+				ptr, x1, y1, x2, y2, color);
+
+			return 1;
+		}
+		default:
+			return 0;
+	}
+}
+
 static int seg003(unsigned short offs) {
 
 	switch (offs) {
@@ -415,34 +449,8 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 		return seg001(offs);
 
 	/* seg002 main */
-	if (segm == 0x3c6) {
-		if (offs == 0x1dbe) {
-			exit_video();
-			return 1;
-		} else
-		if (offs == 0x1fe0) {
-			RealPt ptr = CPU_Pop32();
-			Bit16u x1 = CPU_Pop16();
-			Bit16u y1 = CPU_Pop16();
-			Bit16u x2 = CPU_Pop16();
-			Bit16u y2 = CPU_Pop16();
-			Bit16u color = CPU_Pop16();
-			CPU_Push16(color);
-			CPU_Push16(y2);
-			CPU_Push16(x2);
-			CPU_Push16(y1);
-			CPU_Push16(x1);
-			CPU_Push32(ptr);
-
-			call_fill_rect_gen(Real2Phys(ptr),
-				x1, y1, x2, y2, color);
-
-			D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
-				ptr, x1, y1, x2, y2, color);
-
-			return 1;
-		}
-	}
+	if (segm == 0x3c6)
+		return seg002(offs);
 	/* seg003 random */
 	if (segm == 0xb2d)
 		return seg003(offs);
