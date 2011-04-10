@@ -167,9 +167,12 @@ static int seg005(unsigned short offs) {
 		CPU_Push16(x);
 		CPU_Push32(dst);
 
-		D1_GFX("DrawPic(dst=0x%x, x=%d, y=%d, ..., w=%d, h=%d, src=0x%x, mode=%d);\n",
-			dst, x, y, width, height, src, mode);
-		return 0;
+		D1_GFX("DrawPic(dst=0x%x, x=%d, y=%d, ..., v1=%d, v2=%d, w=%d, h=%d, src=0x%x, mode=%d);\n",
+			dst, x, y, width, height, v1, v2, src, mode);
+
+		G105de::draw_pic(Real2Phys(dst), x, y, dummy1, width, height,
+				dummy2, v1, v2, Real2Phys(src), mode);
+		return 1;
 	}
 	case 0x39f: {
 		RealPt src = CPU_Pop32();
