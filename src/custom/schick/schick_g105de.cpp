@@ -441,27 +441,22 @@ static int seg005(unsigned short offs) {
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
 int schick_farcall_gen105(unsigned segm, unsigned offs)
 {
-	/* seg000 Borland C-Lib */
-	if (segm == 0x0)
-		return seg000(offs);
-	/* seg001 CD */
-	if (segm == 0x364)
-		return seg001(offs);
-
-	/* seg002 main */
-	if (segm == 0x3c6)
-		return seg002(offs);
-	/* seg003 random */
-	if (segm == 0xb2d)
-		return seg003(offs);
-	/* _decomp() */
-	if (segm == 0xb39)
-		return seg004(offs);
-	if (segm == 0xb6b)
-		return seg005(offs);
-
-
-	return 0;
+	switch (segm) {
+		/* seg000 Borland C-Lib */
+		case 0x0:	return seg000(offs);
+		/* seg001 CD */
+		case 0x364:	return seg001(offs);
+		/* seg002 main */
+		case 0x3c6:	return seg002(offs);
+		/* seg003 random */
+		case 0xb2d:	return seg003(offs);
+		/* seg004 _decomp() */
+		case 0xb39:	return seg004(offs);
+		/* seg005 Rasterlib */
+		case 0xb6b:	return seg005(offs);
+		default:
+				return 0;
+	}
 }
 
 int schick_nearcall_gen105(unsigned offs) {
