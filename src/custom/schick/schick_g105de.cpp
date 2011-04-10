@@ -339,12 +339,23 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 			return 1;
 		}
 		if (offs == 0x254e) {
+			RealPt dst = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			Bit16u n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push32(src);
+			CPU_Push32(dst);
+
 			D1_LOG(
 			"memcpy(__dest=0x%x:0x%x, __src=0x%x:0x%x, __n=0x%x)\n",
-				real_readw(SegValue(ss), reg_sp+2), real_readw(SegValue(ss), reg_sp),
-				real_readw(SegValue(ss), reg_sp+6), real_readw(SegValue(ss), reg_sp+4),
-				real_readw(SegValue(ss), reg_sp+8));
-			return 0;
+				RealSeg(dst), RealOff(dst),
+				RealSeg(src), RealOff(src), n);
+
+			memcpy(MemBase + Real2Phys(dst), MemBase + Real2Phys(src), n);
+			reg_ax = RealSeg(dst);
+			reg_ax = RealOff(src);
+
+			return 1;
 		}
 		if (offs == 0x2596) {
 			RealPt dst = CPU_Pop32();
