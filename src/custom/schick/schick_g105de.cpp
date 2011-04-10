@@ -15,6 +15,211 @@
 #include "rewrite_m302de/seg008.h"
 #include "rewrite_m302de/seg009.h"
 
+static int seg000(Bitu offs) {
+	switch (offs) {
+		case 0x0438: {
+			Bit16u intnr = CPU_Pop16();
+			CPU_Push16(intnr);
+
+			RealPt addr  = G105de::bc__dos_getvect(intnr);
+			D1_LOG("_dos_getvect(intnr=0x%x) = %x\n", intnr, addr);
+
+			reg_ax = RealOff(addr);
+			reg_dx = RealSeg(addr);
+
+			return 1;
+		}
+		case 0x0447: {
+			Bit16u intnr = CPU_Pop16();
+			RealPt addr = CPU_Pop32();
+			CPU_Push32(addr);
+			CPU_Push16(intnr);
+
+			D1_LOG("_dos_setvect(intnr=0x%x, *isr=0x%x:0x%x)\n",
+				intnr, RealSeg(addr), RealOff(addr));
+
+			G105de::bc__dos_setvect(intnr, addr);
+
+			return 1;
+		}
+		case 0x072d: {
+			Bit16u handle = CPU_Pop16();
+			Bit32s off = CPU_Pop32();
+			Bit16u kind = CPU_Pop16();
+			CPU_Push16(kind);
+			CPU_Push32(off);
+			CPU_Push16(handle);
+
+			Bit32s retval;
+
+			retval = G105de::bc_lseek(handle, off, kind);
+			D1_LOG("lseek(Handle=0x%x, off=%d, kind=%d) = %d\n",
+				handle, off, kind, retval);
+
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			return 1;
+		}
+		case 0x07c5: {
+			Bit16u handle = CPU_Pop16();
+			RealPt buf = CPU_Pop32();
+			Bit16u len = CPU_Pop16();
+			CPU_Push16(len);
+			CPU_Push32(buf);
+			CPU_Push16(handle);
+
+			reg_ax = G105de::bc__read(handle, MemBase + Real2Phys(buf), len);
+			D1_LOG(
+			"_read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
+				handle, RealSeg(buf), RealOff(buf),
+				len, reg_ax);
+
+			if (reg_ax != len)
+				D1_ERR("Error while reading\n");
+
+			return 1;
+		}
+		case 0x0f43: {
+			Bit16u v = CPU_Pop16();
+			CPU_Push16(v);
+
+			reg_ax = G105de::bioskey(v);
+
+			D1_LOG("bioskey(%d); = %x\n", v, reg_ax);
+
+			return 1;
+		}
+		case 0x20bc: {
+			Bit16u handle = CPU_Pop16();
+			CPU_Push16(handle);
+
+			reg_ax = G105de::bc_close(handle);
+			D1_LOG("close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
+
+			return 1;
+		}
+		case 0x20e4: {
+			Bit16u handle = CPU_Pop16();
+			CPU_Push16(handle);
+
+			reg_ax = G105de::bc__close(handle);
+			D1_LOG("_close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
+
+			return 1;
+		}
+		case 0x254e: {
+			RealPt dst = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			Bit16u n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push32(src);
+			CPU_Push32(dst);
+
+			D1_LOG(
+			"memcpy(__dest=0x%x:0x%x, __src=0x%x:0x%x, __n=0x%x)\n",
+				RealSeg(dst), RealOff(dst),
+				RealSeg(src), RealOff(src), n);
+
+			memcpy(MemBase + Real2Phys(dst), MemBase + Real2Phys(src), n);
+			reg_ax = RealSeg(dst);
+			reg_ax = RealOff(src);
+
+			return 1;
+		}
+		case 0x2596: {
+			RealPt dst = CPU_Pop32();
+			Bit16u c = CPU_Pop16();
+			Bit16u n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push16(c);
+			CPU_Push32(dst);
+
+			memset(MemBase + Real2Phys(dst), c, n);
+
+			D1_LOG("memset(__dest=0x%x:0x%x, __c=0x%x, __n=0x%x)\n",
+				RealSeg(dst), RealOff(dst), c, n);
+
+			reg_ax = RealOff(dst);
+			reg_dx = RealSeg(dst);
+
+			return 1;
+		}
+		case 0x2607: {
+			RealPt dst = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			Bit16u n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push32(src);
+			CPU_Push32(dst);
+
+			D1_LOG(
+			"memmove(__dest=0x%x:0x%x, __src=0x%x:0x%x, __n=0x%x)\n",
+				RealSeg(dst), RealOff(dst),
+				RealSeg(src), RealOff(src), n);
+
+			memmove(MemBase + Real2Phys(dst),
+				MemBase + Real2Phys(src), n);
+
+			reg_ax = RealOff(dst);
+			reg_dx = RealSeg(dst);
+
+			return 1;
+		}
+		case 0x2655: {
+			D1_LOG("open()\n");
+			return 0;
+		}
+		case 0x2dd5: {
+			RealPt s1 = CPU_Pop32();
+			RealPt s2 = CPU_Pop32();
+			CPU_Push32(s2);
+			CPU_Push32(s1);
+
+			D1_LOG("strcpy(__s1=0x%x:0x%x, __s2=0x%x:0x%x %s)\n",
+				RealSeg(s1), RealOff(s1),
+				RealSeg(s2), RealOff(s2), getString(s2));
+			strcpy((char*)MemBase + Real2Phys(s1),
+				(char*)MemBase + Real2Phys(s2));
+
+			return 1;
+		}
+		case 0x2e1d: {
+			RealPt s1 = CPU_Pop32();
+			RealPt s2 = CPU_Pop32();
+			Bit16u n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push32(s2);
+			CPU_Push32(s1);
+
+			D1_LOG(
+			"strncmp(__s1=0x%x:0x%x, __s2=0x%x:0x%x, __maxlen=0x%x)\n",
+				RealSeg(s1), RealOff(s1),
+				RealSeg(s2), RealOff(s2), n);
+
+			return 1;
+		}
+		case 0x2e55: {
+			RealPt s1 = CPU_Pop32();
+			RealPt s2 = CPU_Pop32();
+			Bit16u n = CPU_Pop16();
+			CPU_Push16(n);
+			CPU_Push32(s2);
+			CPU_Push32(s1);
+
+			D1_LOG("bc_strncpy(s1=0x%x, \"%s\",  maxlen=%d)\n",
+				s1, getString(s2), n);
+
+			strncpy((char*)MemBase + Real2Phys(s1),
+				(char*)MemBase + Real2Phys(s2), n);
+
+			return 1;
+		}
+		default:
+			return 0;
+	}
+}
+
 static int seg001(unsigned short offs) {
 	switch (offs) {
 		case 0x0300: {
@@ -203,6 +408,9 @@ static int seg005(unsigned short offs) {
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
 int schick_farcall_gen105(unsigned segm, unsigned offs)
 {
+	/* seg000 Borland C-Lib */
+	if (segm == 0x0)
+		return seg000(offs);
 	/* seg001 CD */
 	if (segm == 0x364)
 		return seg001(offs);
@@ -246,206 +454,6 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 		return seg005(offs);
 
 
-	if (segm == 0x0) {
-		if (offs == 0x0438) {
-			Bit16u intnr = CPU_Pop16();
-			CPU_Push16(intnr);
-
-			RealPt addr  = G105de::bc__dos_getvect(intnr);
-			D1_LOG("_dos_getvect(intnr=0x%x) = %x\n", intnr, addr);
-
-			reg_ax = RealOff(addr);
-			reg_dx = RealSeg(addr);
-
-			return 1;
-		}
-		if (offs == 0x0447) {
-			Bit16u intnr = CPU_Pop16();
-			RealPt addr = CPU_Pop32();
-			CPU_Push32(addr);
-			CPU_Push16(intnr);
-
-			D1_LOG("_dos_setvect(intnr=0x%x, *isr=0x%x:0x%x)\n",
-				intnr, RealSeg(addr), RealOff(addr));
-
-			G105de::bc__dos_setvect(intnr, addr);
-
-			return 1;
-		}
-		if (offs == 0x072d) {
-			Bit16u handle = CPU_Pop16();
-			Bit32s off = CPU_Pop32();
-			Bit16u kind = CPU_Pop16();
-			CPU_Push16(kind);
-			CPU_Push32(off);
-			CPU_Push16(handle);
-
-			Bit32s retval;
-
-			retval = G105de::bc_lseek(handle, off, kind);
-			D1_LOG("lseek(Handle=0x%x, off=%d, kind=%d) = %d\n",
-				handle, off, kind, retval);
-
-			reg_ax = retval & 0xffff;
-			reg_dx = (retval >> 16) & 0xffff;
-
-			return 1;
-		}
-		if (offs == 0x07c5) {
-			Bit16u handle = CPU_Pop16();
-			RealPt buf = CPU_Pop32();
-			Bit16u len = CPU_Pop16();
-			CPU_Push16(len);
-			CPU_Push32(buf);
-			CPU_Push16(handle);
-
-			reg_ax = G105de::bc__read(handle, MemBase + Real2Phys(buf), len);
-			D1_LOG(
-			"_read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
-				handle, RealSeg(buf), RealOff(buf),
-				len, reg_ax);
-
-			if (reg_ax != len)
-				D1_ERR("Error while reading\n");
-
-			return 1;
-		}
-		if (offs == 0x0f43) {
-			Bit16u v = CPU_Pop16();
-			CPU_Push16(v);
-
-			reg_ax = G105de::bioskey(v);
-
-			D1_LOG("bioskey(%d); = %x\n", v, reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x20bc) {
-			Bit16u handle = CPU_Pop16();
-			CPU_Push16(handle);
-
-			reg_ax = G105de::bc_close(handle);
-			D1_LOG("close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x20e4) {
-			Bit16u handle = CPU_Pop16();
-			CPU_Push16(handle);
-
-			reg_ax = G105de::bc__close(handle);
-			D1_LOG("_close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
-
-			return 1;
-		}
-		if (offs == 0x254e) {
-			RealPt dst = CPU_Pop32();
-			RealPt src = CPU_Pop32();
-			Bit16u n = CPU_Pop16();
-			CPU_Push16(n);
-			CPU_Push32(src);
-			CPU_Push32(dst);
-
-			D1_LOG(
-			"memcpy(__dest=0x%x:0x%x, __src=0x%x:0x%x, __n=0x%x)\n",
-				RealSeg(dst), RealOff(dst),
-				RealSeg(src), RealOff(src), n);
-
-			memcpy(MemBase + Real2Phys(dst), MemBase + Real2Phys(src), n);
-			reg_ax = RealSeg(dst);
-			reg_ax = RealOff(src);
-
-			return 1;
-		}
-		if (offs == 0x2596) {
-			RealPt dst = CPU_Pop32();
-			Bit16u c = CPU_Pop16();
-			Bit16u n = CPU_Pop16();
-			CPU_Push16(n);
-			CPU_Push16(c);
-			CPU_Push32(dst);
-
-			memset(MemBase + Real2Phys(dst), c, n);
-
-			D1_LOG("memset(__dest=0x%x:0x%x, __c=0x%x, __n=0x%x)\n",
-				RealSeg(dst), RealOff(dst), c, n);
-
-			reg_ax = RealOff(dst);
-			reg_dx = RealSeg(dst);
-
-			return 1;
-		}
-		if (offs == 0x2607) {
-			RealPt dst = CPU_Pop32();
-			RealPt src = CPU_Pop32();
-			Bit16u n = CPU_Pop16();
-			CPU_Push16(n);
-			CPU_Push32(src);
-			CPU_Push32(dst);
-
-			D1_LOG(
-			"memmove(__dest=0x%x:0x%x, __src=0x%x:0x%x, __n=0x%x)\n",
-				RealSeg(dst), RealOff(dst),
-				RealSeg(src), RealOff(src), n);
-
-			memmove(MemBase + Real2Phys(dst),
-				MemBase + Real2Phys(src), n);
-
-			reg_ax = RealOff(dst);
-			reg_dx = RealSeg(dst);
-
-			return 1;
-		}
-		if (offs == 0x2655) {
-			D1_LOG("open()\n");
-			return 0;
-		}
-		if (offs == 0x2dd5) {
-			RealPt s1 = CPU_Pop32();
-			RealPt s2 = CPU_Pop32();
-			CPU_Push32(s2);
-			CPU_Push32(s1);
-
-			D1_LOG("strcpy(__s1=0x%x:0x%x, __s2=0x%x:0x%x %s)\n",
-				RealSeg(s1), RealOff(s1),
-				RealSeg(s2), RealOff(s2), getString(s2));
-			strcpy((char*)MemBase + Real2Phys(s1),
-				(char*)MemBase + Real2Phys(s2));
-
-			return 1;
-		}
-		if (offs == 0x2e1d) {
-			RealPt s1 = CPU_Pop32();
-			RealPt s2 = CPU_Pop32();
-			Bit16u n = CPU_Pop16();
-			CPU_Push16(n);
-			CPU_Push32(s2);
-			CPU_Push32(s1);
-
-			D1_LOG(
-			"strncmp(__s1=0x%x:0x%x, __s2=0x%x:0x%x, __maxlen=0x%x)\n",
-				RealSeg(s1), RealOff(s1),
-				RealSeg(s2), RealOff(s2), n);
-
-			return 1;
-		}
-		if (offs == 0x2e55) {
-			RealPt s1 = CPU_Pop32();
-			RealPt s2 = CPU_Pop32();
-			Bit16u n = CPU_Pop16();
-			CPU_Push16(n);
-			CPU_Push32(s2);
-			CPU_Push32(s1);
-
-			D1_LOG("bc_strncpy(s1=0x%x, \"%s\",  maxlen=%d)\n",
-				s1, getString(s2), n);
-
-			strncpy((char*)MemBase + Real2Phys(s1),
-				(char*)MemBase + Real2Phys(s2), n);
-
-			return 1;
-		}
-	}
 	return 0;
 }
 
