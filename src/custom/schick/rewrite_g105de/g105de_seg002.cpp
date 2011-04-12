@@ -1288,6 +1288,39 @@ void G105de::make_valuta_str(char *dst, unsigned int money)
 	sprintf(dst, (char*)MemBase + Real2Phys(ds_readd(0x41ed)), d, s, money);
 }
 
+void G105de::pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
+{
+	Bit16u i;
+
+	for (i = 0; i < n; i++) {
+		if (host_readb(src + 3 * i) < host_readb(dst + 3 * i)) {
+			host_writeb(dst + 3 * i, host_readb(dst + 3 * i) - 1);
+		} else {
+			if (host_readb(src + i * 3) > host_readb(dst + i * 3))
+				host_writeb(dst + 3 * i,
+					host_readb(dst + 3 * i) + 1);
+		}
+
+		if (host_readb(src + 3 * i + 1) < host_readb(dst + 3 * i + 1)) {
+			host_writeb(dst + 3 * i + 1,
+				host_readb(dst + 3 * i + 1) - 1);
+		} else {
+			if (host_readb(src + i * 3 + 1) > host_readb(dst + i * 3 + 1))
+				host_writeb(dst + 3 * i + 1,
+					host_readb(dst + 3 * i + 1) + 1);
+		}
+
+		if (host_readb(src + 3 * i + 2) < host_readb(dst + 3 * i + 2)) {
+			host_writeb(dst + 3 * i + 2,
+				host_readb(dst + 3 * i + 2) - 1);
+		} else {
+			if (host_readb(src + i * 3 + 2) > host_readb(dst + i * 3 + 2))
+				host_writeb(dst + 3 * i + 2,
+					host_readb(dst + 3 * i + 2) + 1);
+		}
+	}
+}
+
 void init_colors()
 {
 	set_palette(MemBase + PhysMake(datseg, 0x1d4c), 0x00, 1);

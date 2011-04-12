@@ -58,6 +58,7 @@ namespace G105de {
 	void save_picbuf();
 	void restore_picbuf(PhysPt);
 	void make_valuta_str(char *, unsigned int);
+	void pal_fade_out(Bit8u*, Bit8u*, Bit16u);
 }
 void init_colors();
 void init_stuff();
