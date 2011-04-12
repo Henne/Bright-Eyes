@@ -1049,6 +1049,27 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x6c20: {
+					CPU_Pop16();
+
+					RealPt dst = CPU_Pop32();
+					RealPt src = CPU_Pop32();
+					Bit16u col = CPU_Pop16();
+					Bit16u n = CPU_Pop16();
+					CPU_Push16(n);
+					CPU_Push16(col);
+					CPU_Push32(src);
+					CPU_Push32(dst);
+
+					D1_LOG("pal_fade_in(%x, %x, %d, %d);\n",
+						dst, src, col, n);
+
+					G105de::pal_fade_in(MemBase + Real2Phys(dst),
+						MemBase + Real2Phys(src),
+						col, n);
+
+					return 1;
+				}
 				case 0x75c1: {
 					CPU_Pop16();
 
