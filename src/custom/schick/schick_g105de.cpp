@@ -391,10 +391,12 @@ static int seg005(Bitu offs) {
 		RealPt dst = CPU_Pop32();
 		Bit16u x = CPU_Pop16();
 		Bit16u y = CPU_Pop16();
-		Bit32u dummy1 = CPU_Pop32();
+		Bit16u d1 = CPU_Pop16();
+		Bit16u d2 = CPU_Pop16();
 		Bit16u width = CPU_Pop16();
 		Bit16u height = CPU_Pop16();
-		Bit32u dummy2 = CPU_Pop32();
+		Bit16u d3 = CPU_Pop32();
+		Bit16u d4 = CPU_Pop16();
 		Bit16u v1 = CPU_Pop16();
 		Bit16u v2 = CPU_Pop16();
 		RealPt src = CPU_Pop32();
@@ -403,10 +405,12 @@ static int seg005(Bitu offs) {
 		CPU_Push32(src);
 		CPU_Push16(v2);
 		CPU_Push16(v1);
-		CPU_Push32(dummy2);
+		CPU_Push16(d4);
+		CPU_Push16(d3);
 		CPU_Push16(height);
 		CPU_Push16(width);
-		CPU_Push32(dummy1);
+		CPU_Push16(d2);
+		CPU_Push16(d1);
 		CPU_Push16(y);
 		CPU_Push16(x);
 		CPU_Push32(dst);
@@ -414,8 +418,8 @@ static int seg005(Bitu offs) {
 		D1_GFX("DrawPic(dst=0x%x, x=%d, y=%d, ..., v1=%d, v2=%d, w=%d, h=%d, src=0x%x, mode=%d);\n",
 			dst, x, y, width, height, v1, v2, src, mode);
 
-		G105de::draw_pic(Real2Phys(dst), x, y, dummy1, width, height,
-				dummy2, v1, v2, Real2Phys(src), mode);
+		G105de::draw_pic(Real2Phys(dst), x, y, d1, d2, width, height,
+				d3, d4, v1, v2, Real2Phys(src), mode);
 		return 1;
 	}
 	case 0x39f: {

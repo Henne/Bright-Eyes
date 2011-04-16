@@ -13,8 +13,8 @@
 
 namespace G105de {
 
-void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit32u dummy1,
-		Bit16u v1, Bit16u v2, Bit32u dummy2,
+void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
+		Bit16u v1, Bit16u v2, Bit16u d3, Bit16u d4,
 		Bit16u w, Bit16u h, PhysPt src, Bit16u mode)
 {
 	PhysPt d, s;
