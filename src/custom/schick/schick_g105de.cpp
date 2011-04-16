@@ -11,6 +11,7 @@
 #include "rewrite_g105de/g105de_seg003.h"
 #include "rewrite_g105de/g105de_seg005.h"
 
+#include "rewrite_m302de/seg002.h"
 #include "rewrite_m302de/seg008.h"
 #include "rewrite_m302de/seg009.h"
 
@@ -640,6 +641,16 @@ int schick_nearcall_gen105(unsigned offs) {
 						p1, p2, p3);
 
 					G105de::split_textbuffer(MemBase + Real2Phys(p1), p2, p3);
+
+					return 1;
+				}
+				case 0x15df: {
+					Bit16u CS = CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					CPU_Push32(ptr);
+
+					D1_LOG("process_nvf(%x);\n", ptr);
+					process_nvf(MemBase + Real2Phys(ptr));
 
 					return 1;
 				}
