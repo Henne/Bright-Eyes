@@ -328,7 +328,7 @@ void mouse_move_cursor(unsigned short x, unsigned short y) {
 	unsigned short v1 = 4;
 	unsigned short v2 = 0xdead;
 
-	mouse_action((Bit8u*)v1, (Bit8u*)v2, (Bit8u*)x, (Bit8u*)y, (Bit8u*)v2);
+	mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&x, (Bit8u*)&y, (Bit8u*)&v2);
 }
 
 /**
