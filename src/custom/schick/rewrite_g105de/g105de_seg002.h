@@ -28,6 +28,7 @@ void exit_video();
 void draw_v_line(Bit16u, Bit16u, Bit16u, Bit16u);
 namespace G105de {
 	void do_draw_pic(Bit16u);
+	void draw_popup_line(Bit16u, Bit16u);
 }
 void call_fill_rect_gen(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 void blit_smth3(PhysPt, Bit16u, Bit16u);

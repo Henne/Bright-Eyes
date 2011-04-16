@@ -899,6 +899,60 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 	return 0;
 }
 
+namespace G105de {
+
+void draw_popup_line(Bit16u line, Bit16u type)
+{
+	PhysPt dst, src;
+	Bit16u i, popup_right, popup_left, popup_middle;
+
+	/* This is a bit bogus */
+	dst = Real2Phys(ds_readd(0x47cb));
+
+	/* (line * 8 + y) * 320  + x */
+	dst = ((line * 8) + ds_readw(0x40bd)) * 320 + Real2Phys(ds_readd(0x47cb)) + ds_readw(0x40bb);
+
+	switch (type) {
+		case 0: {
+			popup_left = 0;
+			popup_middle = 0x380;
+			popup_right = 0x80;
+			break;
+		}
+		case 1: {
+			popup_left = 0x100;
+			popup_middle = 0x480;
+			popup_right = 0x180;
+			break;
+		}
+		case 2: {
+			popup_left = 0x200;
+			popup_middle = 0x480;
+			popup_right = 0x180;
+			break;
+		}
+		case 3: {
+			popup_left = 0x280;
+			popup_middle = 0x580;
+			popup_right = 0x300;
+			break;
+		}
+	}
+
+	src = Real2Phys(ds_readd(0x476d)) + popup_left;
+	copy_to_screen(src, dst, 16, 8, 0);
+
+	src = Real2Phys(ds_readd(0x476d)) + popup_middle;
+	dst += 16;
+	for (i = 0; i < ds_readw(0x40b9); dst += 32, i++)
+		copy_to_screen(src, dst, 32, 8, 0);
+
+	src = Real2Phys(ds_readd(0x476d)) + popup_right;
+	copy_to_screen(src, dst, 16, 8, 0);
+}
+
+}
+
 /**
  * fill_radio_button() - marks the active radio button
  * @old_pos:	the position of the last active button (or -1)

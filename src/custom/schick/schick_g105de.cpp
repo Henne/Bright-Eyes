@@ -527,6 +527,29 @@ int schick_nearcall_gen105(unsigned offs) {
 		/* Main */
 		case  0x3c6: {
 			switch (offs) {
+				case 0x05a1: {
+					CPU_Pop16();
+					RealPt p1 = CPU_Pop32();
+					RealPt p2 = CPU_Pop32();
+					RealPt p3 = CPU_Pop32();
+					RealPt p4 = CPU_Pop32();
+					RealPt p5 = CPU_Pop32();
+					CPU_Push32(p5);
+					CPU_Push32(p4);
+					CPU_Push32(p3);
+					CPU_Push32(p2);
+					CPU_Push32(p1);
+
+					mouse_action(MemBase + Real2Phys(p1),
+						MemBase + Real2Phys(p2),
+						MemBase + Real2Phys(p3),
+						MemBase + Real2Phys(p4),
+						MemBase + Real2Phys(p5));
+
+					D1_LOG("mouse_action();\n");
+
+					return 1;
+				}
 				case 0x09d1: {
 					CPU_Pop16();
 
@@ -961,6 +984,19 @@ int schick_nearcall_gen105(unsigned offs) {
 					reg_ax = enter_string(
 						(char*)MemBase + Real2Phys(str),
 						x, y, len, zero);
+
+					return 1;
+				}
+				case 0x288a: {
+					CPU_Pop16();
+					Bit16u line = CPU_Pop16();
+					Bit16u type = CPU_Pop16();
+					CPU_Push16(type);
+					CPU_Push16(line);
+
+					D1_LOG("draw_popup_line(%d, %d);\n",
+						line, type);
+					G105de::draw_popup_line(line, type);
 
 					return 1;
 				}
