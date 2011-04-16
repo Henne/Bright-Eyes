@@ -1371,6 +1371,11 @@ void G105de::pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
 	}
 }
 
+void G105de::restore_mouse_isr()
+{
+	bc__dos_setvect(0x1c, ds_readd(0x247c));
+}
+
 void init_colors()
 {
 	set_palette(MemBase + PhysMake(datseg, 0x1d4c), 0x00, 1);

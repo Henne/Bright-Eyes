@@ -265,6 +265,12 @@ static int seg002(Bitu offs)
 
 			return 1;
 		}
+		case 0x730b: {
+			D1_LOG("restore_mouse_isr();\n");
+			G105de::restore_mouse_isr();
+
+			return 1;
+		}
 		default:
 			return 0;
 	}
@@ -1075,6 +1081,14 @@ int schick_nearcall_gen105(unsigned offs) {
 					G105de::pal_fade_in(MemBase + Real2Phys(dst),
 						MemBase + Real2Phys(src),
 						col, n);
+
+					return 1;
+				}
+				case 0x730b: {
+					CPU_Pop16();
+
+					D1_LOG("restore_mouse_isr();\n");
+					G105de::restore_mouse_isr();
 
 					return 1;
 				}

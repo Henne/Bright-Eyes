@@ -61,6 +61,7 @@ namespace G105de {
 	void make_valuta_str(char *, unsigned int);
 	void pal_fade_out(Bit8u*, Bit8u*, Bit16u);
 	void pal_fade_in(Bit8u*, Bit8u*, Bit16u, Bit16u);
+	void restore_mouse_isr();
 }
 void init_colors();
 void init_stuff();
