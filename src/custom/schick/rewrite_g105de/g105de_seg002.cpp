@@ -13,6 +13,7 @@
 #include "g105de_seg003.h"
 #include "g105de_seg005.h"
 
+#include "../rewrite_m302de/seg002.h"
 #include "../rewrite_m302de/seg008.h"
 
 /* static */
@@ -947,6 +948,43 @@ void enter_name()
 	G105de::copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
 	call_mouse();
 	print_str((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12);
+}
+
+
+void G105de::change_head()
+{
+	char nvf[19];
+	Bit8u *n = (Bit8u*)nvf;
+
+	host_writed(n + 0, ds_readd(0x47a3));
+
+	host_writed(n + 4, ds_readd(0x4771));
+
+	host_writew(n + 8, ds_readb(0x40b6));
+
+	host_writew(n + 10, 0);
+
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	process_nvf(n);
+
+	ds_writed(0x40cd, ds_readd(0x47a3));
+
+	ds_writew(0x40c5, 272);
+	ds_writew(0x40c9, 303);
+
+	if (ds_readw(0x1324) == 0) {
+		ds_writew(0x40c7, 8);
+		ds_writew(0x40cb, 39);
+		do_draw_pic(0);
+	} else if (ds_readw(0x1324) > 4) {
+		ds_writew(0x40c7, 4);
+		ds_writew(0x40cb, 35);
+		ds_writew(0x40c7, 8);
+		ds_writew(0x40cb, 39);
+		do_draw_pic(0);
+	}
 }
 
 /**

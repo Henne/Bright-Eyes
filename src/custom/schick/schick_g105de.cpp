@@ -990,6 +990,12 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x30df: {
+					CPU_Pop16();
+					G105de::change_head();
+					D1_LOG("change_head()\n");
+					return 1;
+				}
 				case 0x3171: {
 					CPU_Pop16();
 

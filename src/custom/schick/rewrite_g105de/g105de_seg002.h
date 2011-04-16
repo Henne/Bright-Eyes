@@ -52,6 +52,7 @@ namespace G105de {
 }
 void enter_name();
 namespace G105de {
+	void change_head();
 	void change_sex();
 }
 void calc_at_pa();
