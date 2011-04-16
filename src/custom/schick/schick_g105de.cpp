@@ -760,6 +760,16 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x1ecc: {
+					CPU_Pop16();
+					Bit16u val = CPU_Pop16();
+					CPU_Push16(val);
+
+					D1_LOG("0x1ecc(%d);\n", val);
+					G105de::do_draw_pic(val);
+
+					return 1;
+				}
 				case 0x1fe0: {
 					CPU_Pop16();
 					RealPt ptr = CPU_Pop32();

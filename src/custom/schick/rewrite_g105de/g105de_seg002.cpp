@@ -399,6 +399,36 @@ void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
 	draw_h_spaced_dots(PhysMake(0xa000, off), len, color, 320);
 }
 
+void G105de::do_draw_pic(Bit16u mode)
+{
+	Bit16u x, y, d1, d2, v1, v2;
+	Bit16u d3, d4, w, h;
+	PhysPt dst, src;
+
+	x = ds_readw(0x40c5);
+	y = ds_readw(0x40c7);
+	d1 = ds_readw(0x40c9);
+	d2 = ds_readw(0x40cb);
+	v1 = ds_readw(0x40d1);
+	v2 = ds_readw(0x40d3);
+	d3 = ds_readw(0x40d5);
+	d4 = ds_readw(0x40d7);
+
+	w = d1 - x + 1;
+	h = d2 - y + 1;
+
+	src = Real2Phys(ds_readd(0x40cd));
+	dst = Real2Phys(ds_readd(0x40c1));
+
+	draw_mouse_ptr_wrapper();
+
+	draw_pic(dst, x, y, d1, d2, v1, v2, d3, d4, w, h, src, mode);
+
+	call_mouse();
+
+
+}
+
 void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
 {
 	fill_rect(ptr + y1 * 320 + x1, color, x2 - x1 + 1, y2 - y1 + 1);
