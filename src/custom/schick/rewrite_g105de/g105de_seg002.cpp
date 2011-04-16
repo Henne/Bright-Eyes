@@ -1371,6 +1371,14 @@ void G105de::pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
 	}
 }
 
+void G105de::set_mouse_isr()
+{
+	/* save adress of the old ISR */
+	ds_writed(0x247c, bc__dos_getvect(0x1c));
+	/* set a the new one */
+	bc__dos_setvect(0x1c, RealMake(relocation + 0x3c6, 0x72b3));
+}
+
 void G105de::restore_mouse_isr()
 {
 	bc__dos_setvect(0x1c, ds_readd(0x247c));

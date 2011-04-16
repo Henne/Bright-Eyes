@@ -1084,6 +1084,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x72e7: {
+					CPU_Pop16();
+
+					D1_LOG("set_mouse_isr();\n");
+					G105de::set_mouse_isr();
+
+					return 1;
+				}
 				case 0x730b: {
 					CPU_Pop16();
 
