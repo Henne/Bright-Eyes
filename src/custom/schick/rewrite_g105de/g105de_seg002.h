@@ -3,6 +3,7 @@ void call_mouse();
 void draw_mouse_ptr();
 void mouse();
 namespace G105de {
+	void mouse_compare();
 	Bit16u get_mouse_action(Bit16u, Bit16u, Bit8u*);
 	void decomp_rle(Bit8u*, Bit8u*, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 }

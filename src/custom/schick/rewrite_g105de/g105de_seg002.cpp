@@ -79,6 +79,28 @@ void mouse()
 }
 
 /* static */
+void G105de::mouse_compare()
+{
+	/* these pointers never differ in gen */
+	if (ds_readw(0x1254) || ds_readd(0x4621) != ds_readd(0x4625)) {
+
+		/* copy a pointer */
+		ds_writed(0x4621, ds_readd(0x4625));
+
+		if (PhysMake(datseg, 0x1200) == Real2Phys(ds_readd(0x4625))) {
+			ds_writew(0x1258, 0);
+			ds_writew(0x1256, 0);
+		} else {
+			ds_writew(0x1258, 8);
+			ds_writew(0x1256, 8);
+		}
+		ds_writew(0x1254, 0);
+		draw_mouse_ptr();
+		mouse();
+	}
+}
+
+/* static */
 Bit16u G105de::get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
 {
 

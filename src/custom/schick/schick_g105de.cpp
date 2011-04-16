@@ -548,6 +548,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0a8c: {
+					CPU_Pop16();
+
+					D1_LOG("mouse_compare();\n");
+					G105de::mouse_compare();
+
+					return 1;
+				}
 				case 0x0cf2: {
 					Bit16u pIP = CPU_Pop16();
 					RealPt dst = CPU_Pop32();
