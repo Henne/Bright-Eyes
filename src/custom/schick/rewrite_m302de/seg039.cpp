@@ -224,7 +224,7 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 			y_diff = ds_readw(0x601a + dir * 4);
 
 			/* check if field is empty */
-			if (get_cb_val(y + y_diff, x + x_diff) != 0)
+			if (get_cb_val(x + x_diff, y + y_diff) != 0)
 				return 0;
 
 			x_diff += x;
