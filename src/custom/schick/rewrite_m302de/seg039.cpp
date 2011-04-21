@@ -193,7 +193,7 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 
 	/* check if the object is decoration */
 	if (object >= 50) {
-		if (object == 57 || object == 56 || object == 62) {
+		if (type == 57 || type == 56 || type == 62) {
 			FIG_set_cb_field(y + 1, x, object);
 			FIG_set_cb_field(y + 1, x - 1, object);
 			FIG_set_cb_field(y, x - 1, object);
