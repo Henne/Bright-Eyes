@@ -1078,6 +1078,13 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x4632: {
+					CPU_Pop16();
+					reg_ax = G105de::can_change_attribs();
+					D1_LOG("can_change_attribs() = %d;\n",
+						reg_ax);
+					return 1;
+				}
 				case 0x4b1b: {
 					CPU_Pop16();
 

@@ -1248,6 +1248,67 @@ void spell_inc_novice(Bit16u spell)
 	}
 }
 
+#define INC (1)
+#define DEC (2)
+/**
+ * can_change_attribs() - checks if attribute changes are possible
+ *
+ */
+Bit16u G105de::can_change_attribs()
+{
+	Bit8u *p;
+	Bit16u i;
+	Bit16s pa_inc, pa_dec, na_inc, na_dec;
+
+	na_dec = na_inc = pa_dec = pa_inc = 0;
+
+	for (i = 0; i < 14; i++)
+		D1_LOG("%d ", ds_readb(i + 0x4076));
+	D1_LOG("\n");
+
+
+	for (i = 0; i < 7; i++) {
+		p = p_datseg + 0x1360 + i * 3;
+
+		if (ds_readb(i + 0x4076) != INC && host_readb(p) > 8)
+			pa_dec += 8 - (signed char)host_readb(p);
+		if (ds_readb(i + 0x4076) != DEC && host_readb(p) < 13)
+			pa_inc += 13 - (signed char)host_readb(p);
+	}
+
+	for (i = 7; i < 14; i++) {
+		p = p_datseg + 0x1360 + i * 3;
+
+		if (ds_readb(i + 0x4076) != INC && host_readb(p) > 2)
+			na_dec += 2 - (signed char)host_readb(p);
+		if (ds_readb(i + 0x4076) != DEC && host_readb(p) < 8)
+			na_inc += 8 - (signed char)host_readb(p);
+	}
+
+	D1_LOG("%d %d %d %d\n", pa_inc, pa_dec, na_inc, na_dec);
+
+	/* no values from positive attributes left */
+	if (pa_inc == 0 && pa_dec == 0)
+		return 0;
+
+	if (pa_inc == 0 && na_dec < 2)
+		return 0;
+
+	if (na_inc < 2 && pa_dec == 0)
+		return 0;
+
+	if (na_dec >= 2)
+		return 1;
+
+	if (na_inc >= 2)
+		return 1;
+
+	return 0;
+}
+
+#undef INC
+#undef DEC
+
 void G105de::save_picbuf()
 {
 	PhysPt p;

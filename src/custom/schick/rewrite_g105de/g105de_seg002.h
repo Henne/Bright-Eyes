@@ -61,6 +61,7 @@ void clear_hero();
 void skill_inc_novice(Bit16u);
 void spell_inc_novice(Bit16u);
 namespace G105de {
+	Bit16u can_change_attribs();
 	void save_picbuf();
 	void restore_picbuf(PhysPt);
 	void print_attribs();
