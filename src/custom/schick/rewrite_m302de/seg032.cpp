@@ -2,6 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
  *	Functions rewritten 8/12
 */
+#include <stdlib.h>
 
 #include "schick.h"
 
@@ -39,9 +40,53 @@ void FIG_set_cb_field(signed short y, signed short x, signed char object) {
 unsigned short FIG_choose_next_hero() {
 	Bit8u *hero;
 	unsigned short retval;
+	unsigned short i, loop_cnt = 0;
+	long tries[7] = {0, 0, 0, 0, 0, 0, 0};
 
 	do {
 		retval = random_schick(7) - 1;
+		tries[retval]++;
+
+		if (++loop_cnt > 200) {
+			D1_ERR("Possible infinite loop in %s()\n", __func__);
+			D1_ERR("I'll try to get a possible hero\n");
+
+			retval = 0xffff;
+
+			/*
+			 * print random statistic
+			 */
+			for (i = 0; i < 7; i++)
+				D1_ERR("tries[%d] = %d\n", i, tries[i]);
+
+			/*
+			 * search by hand for a hero and dumpi the
+			 * interesting bits
+			 */
+			hero = get_hero(0);
+			for (i = 0; i < 7; i++, hero += 0x6da) {
+				D1_ERR("Hero %d typus = %x group=%x current_group=%x actions=%x\n",
+					i, host_readb(hero + 0x21),
+					host_readb(hero + 0x87),
+					ds_readb(0x2d35),
+					host_readb(hero + 0x83));
+
+				if (host_readb(hero + 0x21) &&
+					host_readb(hero + 0x87) == ds_readb(0x2d35) &&
+					host_readb(hero + 0x83))
+						retval = i;
+			}
+
+			/* exit if we didnt found a hero */
+			if (retval == 0xffff) {
+				D1_ERR("Sorry, this is an infinite loop.\n");
+				D1_ERR("I'll exit\n");
+				exit(1);
+			}
+
+			return retval;
+		}
+
 		hero = get_hero(retval);
 
 	/* search for a hero who has a class, is in the current group and
@@ -62,9 +107,52 @@ unsigned short FIG_choose_next_enemy() {
 
 	Bit8u *enemy;
 	unsigned short retval;
-
+	unsigned short i, loop_cnt = 0;
+	long tries[20] = {	0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0};
 	do {
+
 		retval = random_schick(ds_readw(0xd872)) - 1;
+		tries[retval]++;
+
+		if (++loop_cnt > 200) {
+			D1_ERR("Possible infinite loop in %s()\n", __func__);
+			D1_ERR("I'll try to get a possible enemy\n");
+
+			retval = 0xffff;
+
+			/*
+			 * print random statistic
+			 */
+			for (i = 0; i < 20; i++)
+				D1_ERR("tries[%d] = %d\n", i, tries[i]);
+
+			/*
+			 * search by hand for an enemy and dump	the
+			 * interesting bits
+			 */
+			enemy = MemBase + PhysMake(datseg, 0xd34b);
+			for (i = 0; i < ds_readw(0xd872); i++, enemy += 62) {
+				D1_ERR("Enemy %02d %x %x\n",
+					i, host_readb(enemy),
+					host_readb(enemy + 0x28));
+
+				if (host_readb(enemy) &&
+					host_readb(enemy + 0x28))
+						retval = i;
+			}
+
+			/* exit if we didnt found an enemy */
+			if (retval == 0xffff) {
+				D1_ERR("Sorry, this is an infinite loop.\n");
+				D1_ERR("I'll exit\n");
+				exit(1);
+			}
+
+			return retval;
+		}
 		enemy = MemBase + PhysMake(datseg, 0xd34b) + retval * 62;
 
 	} while (host_readb(enemy) == 0 || host_readb(enemy + 0x28) == 0);
