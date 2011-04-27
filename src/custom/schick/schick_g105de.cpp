@@ -1098,6 +1098,12 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x4e47: {
+					CPU_Pop16();
+					D1_LOG("print_attribs();\n");
+					G105de::print_attribs();
+					return 1;
+				}
 				case 0x5abd: {
 					CPU_Pop16();
 					RealPt dst = CPU_Pop32();

@@ -63,6 +63,7 @@ void spell_inc_novice(Bit16u);
 namespace G105de {
 	void save_picbuf();
 	void restore_picbuf(PhysPt);
+	void print_attribs();
 	void make_valuta_str(char *, unsigned int);
 	void pal_fade_out(Bit8u*, Bit8u*, Bit16u);
 	void pal_fade_in(Bit8u*, Bit8u*, Bit16u, Bit16u);

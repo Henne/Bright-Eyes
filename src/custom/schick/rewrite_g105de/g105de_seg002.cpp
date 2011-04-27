@@ -1395,6 +1395,32 @@ void G105de::restore_picbuf(PhysPt ptr)
 }
 
 /**
+ * print_attribs() -	print the attribute values
+ *
+ */
+void G105de::print_attribs()
+{
+	Bit8u *p;
+	char buf[10];
+	Bit16u i;
+
+	p = p_datseg + 0x1360;
+
+	for (i = 0; i < 14; p += 3, i++) {
+		/* don't print 0s */
+		if (host_readb(p) == 0)
+			continue;
+
+		/* convert value to string with itoa() */
+		sprintf(buf, "%d", (signed char)host_readb(p));
+
+		/* print it */
+		print_str(buf, ds_readw(i * 4 + 0x105f),
+			ds_readw(i * 4 + 0x1061));
+	}
+}
+
+/**
  *	make_valuta_str	-	makes a valuta string
  *	@dst:	the destination
  *	@money:	the money in Heller
