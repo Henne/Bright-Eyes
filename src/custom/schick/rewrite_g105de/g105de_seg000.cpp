@@ -81,6 +81,20 @@ Bit16s bc__close(Bit16u handle) {
 	return 0;
 }
 
+/* This create function is just a hack and gets replaced later by fopen() */
+Bit16s bc__create(Bit8u *pathP, Bit16u attr)
+{
+	Bit16u handle;
+
+	if (!DOS_CreateFile((char*)pathP, attr, &handle))
+		return -1;
+
+	ds_writew(0x2298 + handle * 2, handle);
+
+	return handle;
+}
+
+
 /* This write function is just a hackand gets replaced later by fwrite() */
 Bit16s bc_write(Bit16u handle, Bit8u *buf, Bit16u count)
 {

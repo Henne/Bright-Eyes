@@ -108,6 +108,19 @@ static int seg000(Bitu offs) {
 
 			return 1;
 		}
+		case 0x212f: {
+			RealPt pathP = CPU_Pop32();
+			Bit16u attr = CPU_Pop16();
+			CPU_Push16(attr);
+			CPU_Push32(pathP);
+
+			reg_ax = G105de::bc__create(MemBase + Real2Phys(pathP), attr);
+			D1_LOG("bc__create(%s, %x) = %d\n",
+				(char*)MemBase + Real2Phys(pathP),
+				attr, reg_ax);
+
+			return 1;
+		}
 		case 0x254e: {
 			RealPt dst = CPU_Pop32();
 			RealPt src = CPU_Pop32();
