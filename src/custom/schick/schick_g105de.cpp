@@ -215,6 +215,25 @@ static int seg000(Bitu offs) {
 
 			return 1;
 		}
+		case 0x360e: {
+			Bit16u handle = CPU_Pop16();
+			RealPt buf = CPU_Pop32();
+			Bit16u len = CPU_Pop16();
+			CPU_Push16(len);
+			CPU_Push32(buf);
+			CPU_Push16(handle);
+
+			reg_ax = G105de::bc_write(handle, MemBase + Real2Phys(buf), len);
+			D1_LOG(
+			"bc_write(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
+				handle, RealSeg(buf), RealOff(buf),
+				len, reg_ax);
+
+			if (reg_ax != len)
+				D1_ERR("Error while writing\n");
+
+			return 1;
+		}
 		default:
 			return 0;
 	}

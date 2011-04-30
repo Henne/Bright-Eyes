@@ -81,4 +81,17 @@ Bit16s bc__close(Bit16u handle) {
 	return 0;
 }
 
+/* This write function is just a hackand gets replaced later by fwrite() */
+Bit16s bc_write(Bit16u handle, Bit8u *buf, Bit16u count)
+{
+
+	if ((ds_readw(0x2298 + handle * 2) & 2))
+		return -1;
+
+	if (!DOS_WriteFile(handle, buf, &count))
+		return -1;
+
+	return (Bit16s)count;
+}
+
 }
