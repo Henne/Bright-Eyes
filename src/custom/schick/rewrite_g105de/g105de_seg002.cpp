@@ -1482,6 +1482,593 @@ void G105de::print_attribs()
 }
 
 /**
+ * print_values() - print the values of the character
+ *
+ */
+void G105de::print_values()
+{
+	char tmp[4];
+	const Bit16u align_left = 222;
+	const Bit16u align_right = 302;
+	Bit16u width;
+	Bit16s i, pos;
+
+
+	switch (ds_readw(0x1324)) {
+
+		case 0: {
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			/* print name */
+			print_str((char*)MemBase + PhysMake(datseg, 0x132c),
+				180, 12);
+
+			/* print attributes */
+			print_attribs();
+
+			/* break if no typus */
+			if (ds_readb(0x134d) == 0)
+				break;
+
+			/* print height */
+			sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				(char*)MemBase + Real2Phys(ds_readd(0x41f1)),
+				ds_readb(0x134f));
+
+			print_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				205, 25);
+
+			/* print weight */
+			sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				(char*)MemBase + Real2Phys(ds_readd(0x41f5)),
+				ds_readw(0x1350));
+
+			print_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				205, 37);
+
+			/* print god name */
+			print_str((char*)MemBase + Real2Phys(ds_readd(0x41b9 + 4 * ds_readb(0x1352))),
+				205, 49);
+
+			/* print money */
+			make_valuta_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				ds_readd(0x1358));
+			print_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				205, 61);
+
+			/* print LE */
+			/* originally it was itoa() */
+			sprintf(tmp, "%d", ds_readw(0x138c));
+			print_str(tmp, 172, 164);
+
+			/* print AE */
+			/* originally it was itoa() */
+			sprintf(tmp, "%d", ds_readw(0x1390));
+			print_str(tmp, 221, 164);
+
+			/* print Endurance */
+			/* originally it was itoa() */
+			sprintf(tmp, "%d",
+				ds_readw(0x138c) + (signed char)ds_readb(0x1373));
+			print_str(tmp, 296, 164);
+
+			/* print MR */
+			/* originally it was itoa() */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x1392));
+			print_str(tmp, 232, 184);
+
+			break;
+		}
+		case 1: {
+			/* SKILLS Page 1/3 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			/* print fight skills */
+			for (i = 0; i < 9; i++) {
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+				width = get_str_width(tmp);
+
+				if (i & 1)
+					/* print in right column */
+					print_str(tmp, align_right - width,
+						(abs(i) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, align_left - width,
+						(abs(i) / 2) * 12 + 42);
+			}
+
+			/* print body skills */
+			for (i = 9; i < 19; i++) {
+				pos = i - 9;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, align_right - width,
+						(abs(pos) / 2) * 12 + 119);
+				else
+					/* print in left column */
+					print_str(tmp, align_left - width,
+						(abs(pos) / 2) * 12 + 119);
+			}
+
+			/* remaining attempts for skills */
+			/* originally it was itoa() */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x1468));
+			print_str(tmp, 271, 184);
+
+			break;
+		}
+		case 2: {
+			/* SKILLS Page 2/3 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			/* print social skills */
+			for (i = 19; i < 26; i++) {
+				pos = i - 19;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, align_right - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, align_left - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+
+			/* print lore skills */
+			for (i = 32; i < 41; i++) {
+				pos = i - 32;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, align_right - width,
+						(abs(pos) / 2) * 12 + 113);
+				else
+					/* print in left column */
+					print_str(tmp, align_left - width,
+						(abs(pos) / 2) * 12 + 113);
+			}
+
+			/* remaining attempts for skills */
+			/* originally it was itoa() */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x1468));
+			print_str(tmp, 271, 184);
+
+			break;
+		}
+		case 3: {
+			/* SKILLS Page 3/3 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			/* print craftmansship skills */
+			for (i = 41; i < 50; i++) {
+				pos = i - 41;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, align_right - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, align_left - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+
+			/* print nature skills */
+			for (i = 26; i < 32; i++) {
+				pos = i - 26;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, align_right - width,
+						(abs(pos) / 2) * 12 + 119);
+				else
+					/* print in left column */
+					print_str(tmp, align_left - width,
+						(abs(pos) / 2) * 12 + 119);
+			}
+
+			/* print intuition skills */
+			for (i = 50; i < 52; i++) {
+				pos = i - 50;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, align_right - width,
+						(abs(pos) / 2) * 12 + 170);
+				else
+					/* print in left column */
+					print_str(tmp, align_left - width,
+						(abs(pos) / 2) * 12 + 170);
+			}
+
+			/* remaining attempts for skills */
+			/* originally it was itoa() */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x1468));
+			print_str(tmp, 271, 184);
+
+			break;
+		}
+		case 4: {
+			/* ATPA Page */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			/* Print base value  2x the same */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x1393));
+			print_str(tmp, 231, 30);
+			sprintf(tmp, "%d", (signed char)ds_readb(0x1393));
+			print_str(tmp, 268, 30);
+
+			for (i = 0; i < 7; i++) {
+				/* print AT value */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1394 + i));
+
+				print_str(tmp, 237 - get_str_width(tmp),
+					i * 12 + 48);
+
+				/* print PA value */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x139b + i));
+
+				print_str(tmp, 274 - get_str_width(tmp),
+					i * 12 + 48);
+
+				/* print skill value */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1434 + i));
+
+				print_str(tmp, 315 - get_str_width(tmp),
+					i * 12 + 48);
+			}
+
+			/* calc range base value (KL+GE+KK)/4 */
+			pos = (signed char)ds_readb(0x1363) +
+				(signed char)ds_readb(0x136c) +
+				(signed char)ds_readb(0x1372);
+			pos /= 4;
+
+			/* print missle weapon value */
+			sprintf(tmp, "%d",
+				(signed char)ds_readb(0x143b) + pos);
+
+			print_str(tmp, 231, 144);
+
+			/* print thrown weapon value */
+			sprintf(tmp, "%d",
+				(signed char)ds_readb(0x143c) + pos);
+			print_str(tmp, 231, 156);
+
+			break;
+		}
+
+		case 5: {
+			/* Spells Page 1/6 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			for (i = 1; i < 6; i++) {
+				pos = i - 1;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+			for (i = 33; i < 38; i++) {
+				pos = i - 33;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 95);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 95);
+			}
+			for (i = 6; i <= 11; i++) {
+				pos = i - 6;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 146);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 146);
+			}
+
+			/* print spell attempts */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			print_str(tmp, 217, 184);
+
+			break;
+		}
+		case 6: {
+			/* Spells Page 2/6 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			for (i = 12; i <= 17; i++) {
+				pos = i - 12;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+			for (i = 18; i < 24; i++) {
+				pos = i - 18;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 95);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 95);
+			}
+			for (i = 24; i < 27; i++) {
+				pos = i - 24;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 146);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 146);
+			}
+
+			/* print spell attempts */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			print_str(tmp, 217, 184);
+
+			break;
+		}
+		case 7: {
+			/* Spells Page 3/6 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			for (i = 27; i < 33; i++) {
+				pos = i - 27;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+
+			for (i = 38; i < 45; i++) {
+				pos = i - 38;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 95);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 95);
+			}
+
+			for (i = 45; i <= 46; i++) {
+				pos = i - 45;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 160);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 160);
+			}
+
+			/* print spell attempts */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			print_str(tmp, 217, 184);
+
+			break;
+		}
+		case 8: {
+			/* Spells Page 4/6 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			for (i = 47; i <= 48; i++) {
+				pos = i - 47;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+
+			for (i = 49; i < 58; i++) {
+				pos = i - 49;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 71);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 71);
+			}
+
+			for (i = 58; i < 60; i++) {
+				pos = i - 58;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 148);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 148);
+			}
+
+			/* print spell attempts */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			print_str(tmp, 217, 184);
+
+			break;
+		}
+		case 9: {
+			/* Spells Page 5/6 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			for (i = 60; i < 76; i++) {
+				pos = i - 60;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+
+			/* print spell attempts */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			print_str(tmp, 217, 184);
+
+			break;
+		}
+		case 10: {
+			/* Spells Page 6/6 */
+			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
+
+			for (i = 76; i < 86; i++) {
+				pos = i - 76;
+				/* originally it was itoa() */
+				sprintf(tmp, "%d",
+					(signed char)ds_readb(0x1469 + i));
+				width = get_str_width(tmp);
+
+				if (pos & 1)
+					/* print in right column */
+					print_str(tmp, 302 - width,
+						(abs(pos) / 2) * 12 + 42);
+				else
+					/* print in left column */
+					print_str(tmp, 157 - width,
+						(abs(pos) / 2) * 12 + 42);
+			}
+
+			/* print spell attempts */
+			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			print_str(tmp, 217, 184);
+
+			break;
+		}
+
+	}
+}
+
+/**
  *	make_valuta_str	-	makes a valuta string
  *	@dst:	the destination
  *	@money:	the money in Heller
