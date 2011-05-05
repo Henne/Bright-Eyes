@@ -204,7 +204,7 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		   We have to save some values. */
 
 		if (!fromgame && schick && !gen) {
-			if (ver == 302 && !schick_is_en())
+			if (schick_get_version((char*)p_datseg_bak) == 302 && !schick_is_en())
 				schick_status_disable();
 			schick--;
 			fromgame++;
