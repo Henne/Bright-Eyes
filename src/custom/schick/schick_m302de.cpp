@@ -1766,7 +1766,6 @@ static int seg007(unsigned short offs) {
 static int seg008(unsigned short offs) {
 
 	switch (offs) {
-#if 0
 
 	case 0x8: {
 		unsigned short val = CPU_Pop16();
@@ -1795,7 +1794,6 @@ static int seg008(unsigned short offs) {
 
 		return 1;
 	}
-#endif
 	case 0x40: {
 		RealPt addr = CPU_Pop32();
 		CPU_Push32(addr);
@@ -1934,7 +1932,6 @@ static int seg008(unsigned short offs) {
 
 		return 1;
 	}
-#if 0
 	case 0x655: {
 		RealPt rptr = CPU_Pop32();
 		RealPt dst = CPU_Pop32();
@@ -1989,7 +1986,6 @@ static int seg008(unsigned short offs) {
 				color, width, height);
 		return 1;
 	}
-#endif
 	case 0x6c5: {
 		RealPt dst = CPU_Pop32();
 		RealPt src = CPU_Pop32();
