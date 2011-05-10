@@ -747,6 +747,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x14f6: {
+					CPU_Pop16();
+
+					D1_LOG("read_common_files();\n");
+					G105de::read_common_files();
+
+					return 1;
+				}
 				case 0x15df: {
 					Bit16u CS = CPU_Pop16();
 					RealPt ptr = CPU_Pop32();

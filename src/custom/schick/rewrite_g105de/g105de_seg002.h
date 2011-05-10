@@ -18,6 +18,7 @@ void do_draw_mouse_ptr();
 namespace G105de {
 	void load_font_and_text();
 	void split_textbuffer(Bit8u*, RealPt, Bit32u);
+	void read_common_files();
 }
 Bit32s get_archive_offset(Bit8u*, Bit8u*);
 namespace G105de {

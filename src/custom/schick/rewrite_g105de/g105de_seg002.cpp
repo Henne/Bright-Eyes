@@ -16,6 +16,7 @@
 
 #include "../rewrite_m302de/seg002.h"
 #include "../rewrite_m302de/seg008.h"
+#include "../rewrite_m302de/seg009.h"
 
 
 static FILE * fd_open_datfile(Bit16u);
@@ -422,6 +423,39 @@ static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
 	ds_writed(0x3f2e, ds_readd(0x3f2e) - len);
 
 	return len;
+}
+
+void G105de::read_common_files()
+{
+	FILE *fd;
+	long len;
+
+	/* load HEADS.DAT */
+	fd = fd_open_datfile(11);
+	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 64000);
+	fclose(fd);
+
+	/* load POPUP.NVF */
+	fd = fd_open_datfile(19);
+	len = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x476d)) - 8,
+		500);
+	fclose(fd);
+	decomp_pp20(MemBase + Real2Phys(ds_readd(0x476d)) - 8,
+		MemBase + Real2Phys(ds_readd(0x476d)), NULL, len);
+
+	/* load SEX.DAT */
+	fd = fd_open_datfile(12);
+	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4769)), 900);
+	fclose(fd);
+
+	/* load DMENGE.DAT */
+	fd = fd_open_datfile(32);
+	len = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47a7)) - 8,
+		25000);
+	fclose(fd);
+	decomp_pp20(MemBase + Real2Phys(ds_readd(0x47a7)) - 8,
+		MemBase + Real2Phys(ds_readd(0x47a7)), NULL, len);
+
 }
 
 /* static */
