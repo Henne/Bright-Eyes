@@ -21,6 +21,21 @@
 static FILE * fd_open_datfile(Bit16u);
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
 
+bool G105de::load_file(Bit16u index)
+{
+	FILE *fd;
+
+	fd = fd_open_datfile(index);
+
+	if (fd == NULL)
+		return false;
+
+	fread(MemBase + Real2Phys(ds_readd(0x3f46)), 1, 32767, fd);
+	fclose(fd);
+
+	return true;
+}
+
 /* static */
 void draw_mouse_ptr_wrapper() {
 

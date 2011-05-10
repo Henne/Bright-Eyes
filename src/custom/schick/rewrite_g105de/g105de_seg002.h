@@ -1,3 +1,7 @@
+namespace G105de {
+	bool load_file(Bit16u);
+}
+
 void draw_mouse_ptr_wrapper();
 void call_mouse();
 void draw_mouse_ptr();
