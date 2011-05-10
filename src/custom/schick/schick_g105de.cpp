@@ -509,7 +509,27 @@ int schick_nearcall_gen105(unsigned offs) {
 	switch (segm) {
 		/* C-Lib */
 		case  0x000: {
-			return 0;
+			switch (offs) {
+				case 0x2572: {
+				Bit16u pIP = CPU_Pop16();
+				RealPt dst = CPU_Pop32();
+				Bit16u n = CPU_Pop16();
+				Bit16u c = CPU_Pop16();
+				CPU_Push16(c);
+				CPU_Push16(n);
+				CPU_Push32(dst);
+
+				memset(MemBase + Real2Phys(dst), (char)c, n);
+
+				D1_LOG("setmem(__dest=0x%x:0x%x, __n=0x%x, __c=0x%x)\n",
+					RealSeg(dst), RealOff(dst), n, c);
+
+
+				return 1;
+			}
+			default:
+				return 0;
+			}
 		}
 		/* CD */
 		case  0x364: {
