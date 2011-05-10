@@ -21,6 +21,11 @@
 static FILE * fd_open_datfile(Bit16u);
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
 
+bool G105de::call_load_file(Bit16u index)
+{
+	return G105de::load_file(index);
+}
+
 bool G105de::load_file(Bit16u index)
 {
 	FILE *fd;

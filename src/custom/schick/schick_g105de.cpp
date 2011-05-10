@@ -559,6 +559,16 @@ int schick_nearcall_gen105(unsigned offs) {
 		/* Main */
 		case  0x3c6: {
 			switch (offs) {
+				case 0x389: {
+					CPU_Pop16();
+					Bit16u index = CPU_Pop16();
+					CPU_Push16(index);
+
+					D1_LOG("call_load_file(%d);\n", index);
+					reg_ax = G105de::load_file(index);
+
+					return 1;
+				}
 				case 0x397: {
 					CPU_Pop16();
 					Bit16u index = CPU_Pop16();
