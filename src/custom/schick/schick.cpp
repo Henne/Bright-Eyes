@@ -247,8 +247,10 @@ void exit_schick(unsigned char exit)
 		return;
 	}
 
-	if (gen)
+	if (gen) {
+		G105de::BE_cleanup();
 		gen--;
+	}
 	if (schick) {
 		schick--;
 

@@ -88,6 +88,10 @@ int schick_nearcall_gen105(unsigned);
 int schick_farcall_v302de(unsigned, unsigned);
 int schick_nearcall_v302de(unsigned);
 
+namespace G105de {
+void BE_cleanup();
+}
+
 int get_ovrseg(unsigned short);
 inline int is_ovrseg(unsigned short stub_seg) {
 	return SegValue(cs) == get_ovrseg(stub_seg);

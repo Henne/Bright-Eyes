@@ -22,6 +22,27 @@
 static FILE * fd_open_datfile(Bit16u);
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
 
+#define MAX_PAGES (11)
+static Bit8u *bg_buffer[MAX_PAGES];
+static long bg_len[MAX_PAGES];
+
+namespace G105de {
+void BE_cleanup()
+{
+	long sum = 0;
+	for (long i = 0; i < MAX_PAGES; i++) {
+		if (bg_buffer[i]) {
+			free(bg_buffer[i]);
+			bg_buffer[i] = NULL;
+		}
+		sum += bg_len[i];
+		bg_len[i] = 0;
+	}
+	D1_INFO("Cleanup %ld bytes freed\n", sum);
+}
+}
+
+
 bool G105de::call_load_file(Bit16u index)
 {
 	return G105de::load_file(index);
@@ -347,6 +368,47 @@ void G105de::split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 		/* write the adress of the next string */
 		host_writed(dst, src + 1);
 		dst += 4;
+	}
+}
+
+void G105de::load_page(Bit16u page)
+{
+	Bit8u *ptr;
+	FILE *fd;
+	Bit16u di;
+
+	if (page <= 10) {
+		/* check if this image is in the buffer */
+		if (bg_buffer[page]) {
+			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
+				bg_buffer[page], 0, 0, 320, 200, 0);
+			return;
+		}
+
+		fd = fd_open_datfile(page);
+		ptr = (Bit8u*)calloc(get_filelength(), sizeof(char));
+
+		if (ptr) {
+			bg_buffer[page] = ptr;
+			bg_len[page] = get_filelength();
+			fd_read_datfile(fd, bg_buffer[page], bg_len[page]);
+			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
+				bg_buffer[page], 0, 0, 320, 200, 0);
+		} else {
+			fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47cf)), 64000);
+			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
+				MemBase + Real2Phys(ds_readd(0x47cf)), 0, 0, 320, 200, 0);
+		}
+		fclose(fd);
+	} else {
+		/* this should not happen */
+		fd = fd_open_datfile(page);
+		fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47d3)) - 8,
+			64000);
+		fclose(fd);
+		decomp_pp20(MemBase + Real2Phys(ds_readd(0x47d3)) - 8,
+			MemBase + Real2Phys(ds_readd(0x47d3)),
+			NULL,  get_filelength());
 	}
 }
 
