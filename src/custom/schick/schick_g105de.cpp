@@ -572,6 +572,12 @@ int schick_nearcall_gen105(unsigned offs) {
 					G105de::seg001_033b();
 					return 1;
 				}
+				case 0x0487: {
+					/* Skip CD-Check for Jowood version */
+					CPU_Pop16();
+					reg_ax = 1;
+					return 1;
+				}
 				default:
 					return 0;
 			}
