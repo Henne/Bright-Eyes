@@ -709,6 +709,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0f7c: {
+					CPU_Pop16();
+
+					D1_LOG("load_font_and_text();\n");
+					G105de::load_font_and_text();
+
+					return 1;
+				}
 				case 0x15df: {
 					Bit16u CS = CPU_Pop16();
 					RealPt ptr = CPU_Pop32();
