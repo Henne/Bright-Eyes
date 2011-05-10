@@ -4,6 +4,7 @@
 
 #include "regs.h"
 #include "paging.h"
+#include "../../../dos/drives.h"
 
 #include "../schick.h"
 
@@ -15,6 +16,10 @@
 
 #include "../rewrite_m302de/seg002.h"
 #include "../rewrite_m302de/seg008.h"
+
+
+static FILE * fd_open_datfile(Bit16u);
+static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
 
 /* static */
 void draw_mouse_ptr_wrapper() {
@@ -304,6 +309,81 @@ void G105de::split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 		host_writed(dst, src + 1);
 		dst += 4;
 	}
+}
+
+static void prepare_path(char *p)
+{
+	while (*p) {
+#ifdef __WIN32__
+		if (*p == '/')
+			*p = '\\';
+#else
+		if (*p == '\\')
+			*p = '/';
+#endif
+		p++;
+	}
+}
+
+static FILE * fd_open_datfile(Bit16u index)
+{
+	FILE *fd;
+	char *pwd;
+	signed long offset;
+	Bit8u buf[800];
+	char fname[800];
+
+	/* build the path to DSAGEN.DAT */
+	Bit8u drive = DOS_GetDefaultDrive();
+
+	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
+
+	dr->GetSystemFilename((char*)buf, "");
+	sprintf(fname, "%s/%s/DSAGEN.DAT", (char*)buf,	Drives[drive]->curdir);
+	prepare_path(fname);
+
+	fd = fopen(fname, "rb");
+
+	if (fd == NULL) {
+		D1_ERR("%s(): failed to open datafile at %s\n",
+			__func__, fname);
+		return NULL;
+	}
+
+	if (fread(buf, 1, 800, fd) != 800) {
+		D1_ERR("%s(): failed to read datafile\n");
+		fclose(fd);
+		return NULL;
+	}
+
+
+	offset = get_archive_offset(MemBase + Real2Phys(ds_readd(0x1ad1 + index * 4)), buf);
+	ds_writew(0x3f36, offset);
+
+
+	if (offset == -1) {
+		D1_ERR("%s(): file not found in archive\n", __func__);
+		fclose(fd);
+		return NULL;
+	}
+
+	fseek(fd, offset, SEEK_SET);
+
+	return fd;
+
+}
+
+static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
+{
+
+	if (len > ds_readd(0x3f2e))
+		len = ds_readw(0x3f2e);
+
+	len = fread(buf, 1, len, fd);
+
+	ds_writed(0x3f2e, ds_readd(0x3f2e) - len);
+
+	return len;
 }
 
 /* static */
