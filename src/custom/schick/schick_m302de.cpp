@@ -2,6 +2,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "SDL.h"
+
 #include "regs.h"
 
 #include "schick.h"
@@ -41,6 +43,56 @@ static char* schick_getItemname(unsigned short item) {
 	PhysPt iptr = Real2Phys(ds_readd(0xe22f));
 
 	return (char*)MemBase + Real2Phys(mem_readd(iptr + item * 4));
+}
+
+static SDL_TimerID irq_timer;
+/* buffer for seed2 code */
+static char irq_bak[17];
+
+static Uint32 schick_irq_timer(Uint32 interval, void *param)
+{
+	/* inc seed2 */
+	Bit16s seed2 = ds_readw(0xc3bf);
+	ds_writew(0xc3bf, ++seed2);
+
+	if (seed2 < 0) {
+		D1_INFO("seed2 set to 0\n");
+		ds_writew(0xc3bf, 0);
+	}
+}
+
+void schick_timer_enable()
+{
+	/* get the adress of the seed2 code */
+	Bit8u *loc = MemBase + PhysMake(reloc_game + 0xb2a, 0x261);
+
+	/* copy seed2 code part */
+	memcpy(irq_bak, loc, 17);
+	/*replace it with NOPs */
+	memset(loc, 0x90, sizeof(char));
+
+	irq_timer = SDL_AddTimer(56, schick_irq_timer, NULL);
+
+	if (irq_timer == NULL) {
+
+		D1_ERR("Konnte den IRQ Timer nicht initialisieren\n");
+
+		/* restore rand 2 code */
+		memcpy(loc, irq_bak, 17);
+	}
+
+	D1_INFO("IRQ timer aktiviert\n");
+}
+
+void schick_timer_disable()
+{
+	SDL_RemoveTimer(irq_timer);
+	irq_timer = NULL;
+
+	/* restore rand 2 code */
+	memcpy(MemBase + PhysMake(reloc_game + 0xb2a, 0x261), irq_bak, 17);
+	memset(irq_bak, 0, 17);
+	D1_INFO("IRQ timer deaktiviert\n");
 }
 
 /* Borland C++ runtime */
@@ -150,7 +202,7 @@ static int seg000(unsigned short offs) {
 
 			D1_LOG("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
 				interruptno,
-				(unsigned short)(RealSeg(isr) - relocation),
+				(unsigned short)(RealSeg(isr) - reloc_game),
 				RealOff(isr));
 			return 0;
 		}
@@ -3580,7 +3632,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 
 int schick_nearcall_v302de(unsigned offs) {
 
-	unsigned short segm = SegValue(cs)-relocation;
+	unsigned short segm = SegValue(cs)-reloc_game;
 
 	/* Borland C-Lib */
 	if (segm == 0) {

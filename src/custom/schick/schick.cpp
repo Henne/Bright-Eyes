@@ -13,8 +13,11 @@ static int gen=0;
 static int fromgame = 0;
 // Segment relocation
 unsigned short relocation;
-// Segment relocation from game if gen is called
-unsigned short relocation_bak;
+
+//Segment relocation of the game
+Bitu reloc_game;
+//Segment relocation of the generator
+Bitu reloc_gen;
 
 //Datasegment
 unsigned short datseg = 0;
@@ -154,6 +157,7 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	datseg = real_readw(reloc, ip+1);
 	p_datseg_bak = p_datseg;
 	p_datseg = MemBase + PhysMake(datseg, 0);
+	relocation = reloc;
 	D1_TRAC("Dseg: 0x%X\n", datseg);
 
 	/* Check if the start of the Datasegment is Borland C++ */
@@ -166,6 +170,8 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 
 	/* check for the game program */
 	if (!strcmp(fname, "schickm.exe") || !strcmp(fname, "bladem.exe")) {
+
+		reloc_game = reloc;
 
 		ver = schick_get_version((char*)p_datseg);
 
@@ -184,12 +190,15 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 			/* enable status comperator */
 			schick_status_init();
 
+			schick_timer_enable();
+
 			schick++;
 		}
 	}
 
 	/* check for the character generation program */
 	if (!strcmp(fname, "gen.exe")) {
+		reloc_gen = reloc;
 		ver = schick_gen_get_version((char*)p_datseg);
 
 		if (ver == 0) {
@@ -204,8 +213,10 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		   We have to save some values. */
 
 		if (!fromgame && schick && !gen) {
-			if (schick_get_version((char*)p_datseg_bak) == 302 && !schick_is_en())
+			if (schick_get_version((char*)p_datseg_bak) == 302 && !schick_is_en()) {
 				schick_status_disable();
+				schick_timer_disable();
+		}
 			schick--;
 			fromgame++;
 
@@ -219,9 +230,6 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 		}
 	}
 
-	relocation_bak = relocation;
-	relocation = reloc;
-
 	return true;
 }
 
@@ -233,16 +241,18 @@ void exit_schick(unsigned char exit)
 		gen--;
 		fromgame--;
 		schick++;
-		relocation = relocation_bak;
-		relocation_bak = 0;
+		relocation = reloc_game;
 		datseg = datseg_bak;
 		datseg_bak = 0;
 		p_datseg = p_datseg_bak;
 		p_datseg_bak = NULL;
+		reloc_gen = 0;
 		D1_INFO("Gen beendet\nProfiling geht weiter\n");
 
-		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en())
+		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en()) {
 			schick_status_enable();
+			schick_timer_enable();
+		}
 
 		return;
 	}
@@ -250,12 +260,16 @@ void exit_schick(unsigned char exit)
 	if (gen) {
 		G105de::BE_cleanup();
 		gen--;
+		reloc_gen = 0;
 	}
 	if (schick) {
 		schick--;
 
-		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en())
+		if (schick_get_version((char*)p_datseg) == 302 && !schick_is_en()) {
 			schick_status_exit();
+			schick_timer_disable();
+			reloc_game = 0;
+		}
 	}
 	D1_INFO("DSA1 Fehlercode %d\nProfiler beendet\n", exit);
 }

@@ -504,7 +504,7 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 
 int schick_nearcall_gen105(unsigned offs) {
 
-	unsigned short segm = SegValue(cs)-relocation;
+	unsigned short segm = SegValue(cs)-reloc_gen;
 
 	switch (segm) {
 		/* C-Lib */

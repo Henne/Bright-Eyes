@@ -63,6 +63,8 @@ extern const char* names_spell[];
 extern unsigned short datseg;
 extern Bit8u *p_datseg;
 extern unsigned short relocation;
+extern Bitu reloc_game;
+extern Bitu reloc_gen;
 
 static inline Bit8u ds_readb(unsigned short offs) {
 	return host_readb(p_datseg + offs);
@@ -107,4 +109,7 @@ void schick_status_exit();
 void schick_status_enable();
 void schick_status_disable();
 void schick_status_update(unsigned char*, unsigned short);
+
+void schick_timer_enable();
+void schick_timer_disable();
 #endif
