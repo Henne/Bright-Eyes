@@ -1,4 +1,5 @@
 namespace G105de {
+	void read_soundcfg();
 	bool call_load_file(Bit16u);
 	bool load_file(Bit16u);
 }

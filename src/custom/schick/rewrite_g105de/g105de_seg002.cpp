@@ -65,6 +65,43 @@ void BE_cleanup()
 	}
 	D1_INFO("Cleanup %ld bytes freed\n", sum);
 }
+
+void read_soundcfg()
+{
+	FILE *fd;
+	Bit8u buf[800];
+	char fname[800];
+	Bit16u tmp;
+
+	/* build the path to DSAGEN.DAT */
+	Bit8u drive = DOS_GetDefaultDrive();
+
+	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
+
+	dr->GetSystemFilename((char*)buf, "");
+	sprintf(fname, "%s/%s/SOUND.CFG", (char*)buf,	Drives[drive]->curdir);
+	prepare_path(fname);
+
+
+	ds_writew(0x1a09, 0);
+	ds_writew(0x1a07, 1);
+
+	fd = fopen(fname, "rb");
+
+	if (fd == NULL) {
+		D1_ERR("Failed to open %s\n", fname);
+		return;
+	}
+
+	fread(&tmp, 2, sizeof(char), fd);
+	fclose(fd);
+
+	ds_writew(0x1a09, 1);
+	ds_writew(0x1a07, 1);
+
+	G105de::seg001_0600();
+}
+
 }
 
 
