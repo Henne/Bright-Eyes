@@ -264,6 +264,11 @@ static int seg001(Bitu offs) {
 			G105de::seg001_033b();
 			return 1;
 		}
+		case 0x0465: {
+			D1_INFO("seg001_0465()\n");
+			G105de::seg001_0465();
+			return 1;
+		}
 	default:
 		return 0;
 	}

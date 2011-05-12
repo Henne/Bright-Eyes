@@ -159,3 +159,12 @@ void G105de::seg001_033b()
 	real_writew(relocation + CDSEG, 0x1f, 0);
 	G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x1c));
 }
+
+void G105de::seg001_0465()
+{
+	G105de::seg001_0312();
+	G105de::seg001_0312();
+	ds_writew(0x245a, 4);
+	G105de::seg001_00bb(ds_readw(0x245a));
+	ds_writew(0x9b, 1);
+}

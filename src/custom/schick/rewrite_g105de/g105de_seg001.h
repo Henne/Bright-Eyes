@@ -15,4 +15,6 @@ namespace G105de {
 	void seg001_0312();
 
 	void seg001_033b();
+
+	void seg001_0465();
 }
