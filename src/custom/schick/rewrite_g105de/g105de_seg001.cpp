@@ -159,6 +159,31 @@ void G105de::seg001_033b()
 	real_writew(relocation + CDSEG, 0x1f, 0);
 	G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x1c));
 }
+void G105de::seg001_03a8()
+{
+	Bit16u v;
+
+	if (ds_readw(0x95) == 0)
+		return;
+
+	real_writew(relocation + CDSEG, 0x3b, 0);
+	real_writew(relocation + CDSEG, 0x48, relocation + CDSEG);
+	real_writew(relocation + CDSEG, 0x46, 0x420);
+	real_writeb(relocation + CDSEG, 0x420, 10);
+	G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x38));
+
+	v = real_readb(relocation + CDSEG, 0x421);
+	for (; real_readb(relocation + CDSEG, 0x422) >= v; v++) {
+		real_writew(relocation + CDSEG, 0x3b, 0);
+		real_writew(relocation + CDSEG, 0x48, relocation + CDSEG);
+		real_writew(relocation + CDSEG, 0x46, 0x108 + v * 8);
+		real_writeb(relocation + CDSEG, v * 8 + 0x108, 11);
+		real_writeb(relocation + CDSEG, v * 8 + 0x109, (unsigned char)v);
+
+		G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x38));
+	}
+
+}
 
 void G105de::seg001_0465()
 {
