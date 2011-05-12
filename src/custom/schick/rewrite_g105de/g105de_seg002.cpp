@@ -45,6 +45,10 @@ static inline void AIL_install_timbre(Bit16u driver, Bit16u bank, Bit16u patch, 
 {
 }
 
+static inline void AIL_start_sequence(Bit16u driver, Bit16u sequence)
+{
+}
+
 static void prepare_path(char *p)
 {
 	while (*p) {
@@ -153,6 +157,14 @@ bool load_seq(Bit16u sequence_num)
 
 }
 
+bool play_sequence(Bit16u sequence_num)
+{
+	if (load_seq(sequence_num) == false)
+		return false;
+
+	AIL_start_sequence(ds_readw(0x3f5c), sequence_num);
+	return true;
+}
 
 Bit8u *get_timbre(Bit16u bank, Bit16u patch)
 {
