@@ -29,6 +29,20 @@ static long bg_len[MAX_PAGES];
 static Bit8u *typus_buffer[MAX_TYPES];
 static long typus_len[MAX_TYPES];
 
+static void prepare_path(char *p)
+{
+	while (*p) {
+#ifdef __WIN32__
+		if (*p == '/')
+			*p = '\\';
+#else
+		if (*p == '\\')
+			*p = '/';
+#endif
+		p++;
+	}
+}
+
 namespace G105de {
 void BE_cleanup()
 {
@@ -461,20 +475,6 @@ void G105de::load_typus(Bit16u typus)
 			NULL, get_filelength());
 	}
 	fclose(fd);
-}
-
-static void prepare_path(char *p)
-{
-	while (*p) {
-#ifdef __WIN32__
-		if (*p == '/')
-			*p = '\\';
-#else
-		if (*p == '\\')
-			*p = '/';
-#endif
-		p++;
-	}
 }
 
 static FILE * fd_open_datfile(Bit16u index)
