@@ -29,6 +29,22 @@ static long bg_len[MAX_PAGES];
 static Bit8u *typus_buffer[MAX_TYPES];
 static long typus_len[MAX_TYPES];
 
+FILE *fd_timbre;
+
+static inline Bit16u AIL_register_sequence(Bit16u driver, Bit8u *FORM_XMID, Bit16u sequence_num, Bit8u *state_table, Bit8u *controller_table)
+{
+	return 0;
+}
+
+static inline Bit16u AIL_timbre_request(Bit16u driver, Bit16u sequence)
+{
+	return 0;
+}
+
+static inline void AIL_install_timbre(Bit16u driver, Bit16u bank, Bit16u patch, Bit8u *src_addr)
+{
+}
+
 static void prepare_path(char *p)
 {
 	while (*p) {
@@ -100,6 +116,60 @@ void read_soundcfg()
 	ds_writew(0x1a07, 1);
 
 	G105de::seg001_0600();
+}
+
+bool load_seq(Bit16u sequence_num)
+{
+	Bit8u *ptr;
+	Bit16u si, di, patch;
+
+	fd_timbre = fd_open_datfile(35);
+
+	if (fd_timbre == NULL)
+		return false;
+
+	ds_writew(0x3f5a, AIL_register_sequence(ds_readw(0x3f5c),
+		MemBase + Real2Phys(ds_readd(0x3f46)), sequence_num,
+		MemBase + Real2Phys(ds_readd(0x3f4e)), NULL));
+
+	if (ds_readw(0x3f5a) == 0xffff) {
+		fclose(fd_timbre);
+		return false;
+	}
+
+	while (si = AIL_timbre_request(ds_readw(0x3f5c), ds_readw(0x3f5a)) != 0xffff)
+	{
+		di = si << 8;
+		patch = si & 0xff;
+		ptr = get_timbre(di, patch);
+		if (ptr == NULL)
+			continue;
+
+		AIL_install_timbre(ds_readw(0x3f5c), di, patch, ptr);
+		free(ptr);
+	}
+	fclose(fd_timbre);
+	return true;
+
+}
+
+
+Bit8u *get_timbre(Bit16u bank, Bit16u patch)
+{
+	Bit8u *ptr;
+	fseek(fd_timbre, ds_readd(0x3f36), SEEK_SET);
+	do {
+		fd_read_datfile(fd_timbre, p_datseg + 0x2476, 6);
+		if (ds_readb(0x2477) == 0xff)
+			return NULL;
+	} while (ds_readb(0x2477) != bank && ds_readb(0x2476) != patch);
+
+	fseek(fd_timbre, ds_readd(0x3f36) + ds_readd(0x2478), SEEK_SET);
+	fd_read_datfile(fd_timbre, p_datseg + 0x2474, 2);
+	ptr = (Bit8u*)calloc(ds_readw(0x2474), sizeof(char));
+	host_writew(ptr, ds_readw(0x2474));
+	fd_read_datfile(fd_timbre, ptr + 2, ds_readw(0x2474) - 2);
+	return ptr;
 }
 
 }
