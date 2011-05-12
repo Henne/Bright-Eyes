@@ -212,6 +212,19 @@ bool load_file(Bit16u index)
 	return true;
 }
 
+void play_midi(Bit16u index)
+{
+	/* Midi disabled */
+	if (ds_readw(0x1a07))
+		return;
+	if (host_readw(MemBase + Real2Phys(ds_readd(0x3f56)) + 2) != 3)
+		return;
+
+	stop_sequence();
+	call_load_file(index);
+	play_sequence(0);
+}
+
 void stop_sequence()
 {
 	/* Midi disabled */
