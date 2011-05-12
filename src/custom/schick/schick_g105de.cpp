@@ -180,7 +180,14 @@ static int seg000(Bitu offs) {
 			return 1;
 		}
 		case 0x2655: {
-			D1_LOG("open()\n");
+			RealPt pathP = CPU_Pop32();
+			Bit16u oflag = CPU_Pop16();
+			CPU_Push16(oflag);
+			CPU_Push32(pathP);
+
+			D1_LOG("bc_open(%s, %x)\n",
+				(char*)MemBase + Real2Phys(pathP), oflag);
+
 			return 0;
 		}
 		case 0x2dd5: {
