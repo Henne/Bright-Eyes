@@ -5,6 +5,7 @@ namespace G105de {
 	Bit8u *get_timbre(Bit16u, Bit16u);
 	bool call_load_file(Bit16u);
 	bool load_file(Bit16u);
+	void stop_sequence();
 }
 
 void draw_mouse_ptr_wrapper();

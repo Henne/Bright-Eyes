@@ -49,6 +49,14 @@ static inline void AIL_start_sequence(Bit16u driver, Bit16u sequence)
 {
 }
 
+static inline void AIL_stop_sequence(Bit16u driver, Bit16u sequence)
+{
+}
+
+static inline void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence)
+{
+}
+
 static void prepare_path(char *p)
 {
 	while (*p) {
@@ -204,8 +212,19 @@ bool load_file(Bit16u index)
 	return true;
 }
 
+void stop_sequence()
+{
+	/* Midi disabled */
+	if (ds_readw(0x1a07))
+		return;
+	if (host_readw(MemBase + Real2Phys(ds_readd(0x3f56)) + 2) != 3)
+		return;
+
+	AIL_stop_sequence(ds_readw(0x3f5c), ds_readw(0x3f5a));
+	AIL_release_sequence_handle(ds_readw(0x3f5c), ds_readw(0x3f5a));
 }
 
+}
 
 /* static */
 void draw_mouse_ptr_wrapper() {
