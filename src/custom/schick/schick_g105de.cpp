@@ -763,6 +763,16 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x11e5: {
+					CPU_Pop16();
+					RealPt val = CPU_Pop16();
+					CPU_Push16(val);
+
+					D1_INFO("load_typus(%d);\n", val);
+					G105de::load_typus(val);
+
+					return 1;
+				}
 				case 0x14f6: {
 					CPU_Pop16();
 

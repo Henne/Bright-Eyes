@@ -19,6 +19,7 @@ namespace G105de {
 	void load_font_and_text();
 	void split_textbuffer(Bit8u*, RealPt, Bit32u);
 	void load_page(Bit16u);
+	void load_typus(Bit16u);
 	void read_common_files();
 }
 Bit32s get_archive_offset(Bit8u*, Bit8u*);

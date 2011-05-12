@@ -25,6 +25,9 @@ static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
 #define MAX_PAGES (11)
 static Bit8u *bg_buffer[MAX_PAGES];
 static long bg_len[MAX_PAGES];
+#define MAX_TYPES (13)
+static Bit8u *typus_buffer[MAX_TYPES];
+static long typus_len[MAX_TYPES];
 
 namespace G105de {
 void BE_cleanup()
@@ -37,6 +40,14 @@ void BE_cleanup()
 		}
 		sum += bg_len[i];
 		bg_len[i] = 0;
+	}
+	for (long i = 0; i < MAX_TYPES; i++) {
+		if (typus_buffer[i]) {
+			free(typus_buffer[i]);
+			typus_buffer[i] = NULL;
+		}
+		sum += typus_len[i];
+		typus_len[i] = 0;
 	}
 	D1_INFO("Cleanup %ld bytes freed\n", sum);
 }
@@ -410,6 +421,46 @@ void G105de::load_page(Bit16u page)
 			MemBase + Real2Phys(ds_readd(0x47d3)),
 			NULL,  get_filelength());
 	}
+}
+
+
+void G105de::load_typus(Bit16u typus)
+{
+	Bit8u *ptr;
+	FILE *fd;
+	Bit16u di, index;
+
+	index = typus + 19;
+
+	/* check if this image is in the buffer */
+	if (typus_buffer[typus]) {
+		decomp_pp20(typus_buffer[typus],
+			MemBase + Real2Phys(ds_readd(0x47b3)),
+			NULL, typus_len[typus]);
+		return;
+	}
+
+	fd = fd_open_datfile(index);
+	ptr = (Bit8u*)calloc(get_filelength(), sizeof(char));
+
+	if (ptr != NULL) {
+		/* load the file into the typus buffer */
+		typus_buffer[typus] = ptr;
+		typus_len[typus] = get_filelength();
+		fd_read_datfile(fd, typus_buffer[typus], typus_len[typus]);
+		decomp_pp20(typus_buffer[typus],
+			MemBase + Real2Phys(ds_readd(0x47b3)),
+			NULL, typus_len[typus]);
+	} else {
+		/* load the file direct */
+		typus_buffer[typus] = ptr;
+		fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47d3)),
+			25000);
+		decomp_pp20(MemBase + Real2Phys(ds_readd(0x47d3)),
+			MemBase + Real2Phys(ds_readd(0x47b3)),
+			NULL, get_filelength());
+	}
+	fclose(fd);
 }
 
 static void prepare_path(char *p)
