@@ -184,15 +184,12 @@ Bit8u *get_timbre(Bit16u bank, Bit16u patch)
 	return ptr;
 }
 
-}
-
-
-bool G105de::call_load_file(Bit16u index)
+bool call_load_file(Bit16u index)
 {
 	return G105de::load_file(index);
 }
 
-bool G105de::load_file(Bit16u index)
+bool load_file(Bit16u index)
 {
 	FILE *fd;
 
@@ -206,6 +203,9 @@ bool G105de::load_file(Bit16u index)
 
 	return true;
 }
+
+}
+
 
 /* static */
 void draw_mouse_ptr_wrapper() {
