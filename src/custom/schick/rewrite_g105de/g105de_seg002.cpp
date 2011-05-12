@@ -94,6 +94,18 @@ void BE_cleanup()
 	D1_INFO("Cleanup %ld bytes freed\n", sum);
 }
 
+void start_music(Bit16u track)
+{
+
+	if (ds_readw(0x1a09) != 0 ) {
+		if (ds_readw(0x1a07))
+			return;
+		play_midi(track);
+	} else {
+		G105de::seg001_0465();
+	}
+}
+
 void read_soundcfg()
 {
 	FILE *fd;
