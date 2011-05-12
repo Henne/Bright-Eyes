@@ -265,7 +265,7 @@ static int seg001(Bitu offs) {
 			return 1;
 		}
 		case 0x0465: {
-			D1_INFO("seg001_0465()\n");
+			D1_LOG("seg001_0465()\n");
 			G105de::seg001_0465();
 			return 1;
 		}
@@ -784,7 +784,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt val = CPU_Pop16();
 					CPU_Push16(val);
 
-					D1_INFO("load_typus(%d);\n", val);
+					D1_LOG("load_typus(%d);\n", val);
 					G105de::load_typus(val);
 
 					return 1;
