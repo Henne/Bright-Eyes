@@ -193,3 +193,16 @@ void G105de::seg001_0465()
 	G105de::seg001_00bb(ds_readw(0x245a));
 	ds_writew(0x9b, 1);
 }
+
+bool G105de::seg001_0600()
+{
+	if (G105de::CD_set_drive_nr() == 0)
+		return false;
+
+	ds_writew(0x95, 1);
+	/* CHECK_CD() would have been called here */
+	G105de::seg001_033b();
+	G105de::seg001_03a8();
+
+	return true;
+}

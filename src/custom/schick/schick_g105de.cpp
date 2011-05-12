@@ -269,6 +269,11 @@ static int seg001(Bitu offs) {
 			G105de::seg001_0465();
 			return 1;
 		}
+		case 0x0600: {
+			D1_LOG("seg001_0600();\n");
+			reg_ax = G105de::seg001_0600();
+			return 1;
+		}
 	default:
 		return 0;
 	}
