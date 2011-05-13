@@ -37,6 +37,10 @@ void *form_xmid;
 void *snd_ptr_unkn1;
 void *state_table;
 
+static inline void AIL_startup()
+{
+}
+
 static inline void AIL_shutdown(char *signoff_msg)
 {
 }
@@ -152,6 +156,17 @@ void read_soundcfg()
 	ds_writew(0x1a07, 1);
 
 	G105de::seg001_0600();
+}
+
+void init_music(unsigned long size)
+{
+	form_xmid = gen_alloc(size);
+
+	if (form_xmid == NULL)
+		return;
+
+	AIL_startup();
+	ds_writew(0x1a07, 1);
 }
 
 void stop_music()

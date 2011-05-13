@@ -624,6 +624,14 @@ int schick_nearcall_gen105(unsigned offs) {
 					G105de::read_soundcfg();
 					return 1;
 				}
+				case 0x0083: {
+					CPU_Pop16();
+					Bit32u size = CPU_Pop32();
+					CPU_Push32(size);
+					D1_LOG("init_music(%d);\n", size);
+					G105de::init_music(size);
+					return 1;
+				}
 				case 0x00ac: {
 					CPU_Pop16();
 					D1_LOG("stop_music();\n");

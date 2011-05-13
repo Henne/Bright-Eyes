@@ -1,6 +1,7 @@
 namespace G105de {
 	void start_music(Bit16u);
 	void read_soundcfg();
+	void init_music(unsigned long);
 	void stop_music();
 	bool load_seq(Bit16u);
 	bool play_sequence(Bit16u);
