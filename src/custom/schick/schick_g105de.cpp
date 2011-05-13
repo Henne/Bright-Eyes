@@ -624,6 +624,12 @@ int schick_nearcall_gen105(unsigned offs) {
 					G105de::read_soundcfg();
 					return 1;
 				}
+				case 0x00ac: {
+					CPU_Pop16();
+					D1_LOG("stop_music();\n");
+					G105de::stop_music();
+					return 1;
+				}
 				case 0x389: {
 					CPU_Pop16();
 					Bit16u index = CPU_Pop16();

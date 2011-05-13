@@ -31,6 +31,16 @@ static long typus_len[MAX_TYPES];
 
 FILE *fd_timbre;
 
+/* DS:0x3f42 */
+void *snd_driver;
+void *form_xmid;
+void *snd_ptr_unkn1;
+void *state_table;
+
+static inline void AIL_shutdown(char *signoff_msg)
+{
+}
+
 static inline Bit16u AIL_register_sequence(Bit16u driver, Bit8u *FORM_XMID, Bit16u sequence_num, Bit8u *state_table, Bit8u *controller_table)
 {
 	return 0;
@@ -136,10 +146,31 @@ void read_soundcfg()
 	fread(&tmp, 2, sizeof(char), fd);
 	fclose(fd);
 
+	D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&tmp));
+
 	ds_writew(0x1a09, 1);
 	ds_writew(0x1a07, 1);
 
 	G105de::seg001_0600();
+}
+
+void stop_music()
+{
+	AIL_shutdown(NULL);
+
+	if (snd_ptr_unkn1)
+		free(snd_ptr_unkn1);
+
+	if (state_table)
+		free(state_table);
+
+	if(form_xmid)
+		free(form_xmid);
+
+	if(snd_driver)
+		free(snd_driver);
+
+	seg001_033b();
 }
 
 bool load_seq(Bit16u sequence_num)
