@@ -709,9 +709,9 @@ void G105de::load_page(Bit16u page)
 			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
 				bg_buffer[page], 0, 0, 320, 200, 0);
 		} else {
-			fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47cf)), 64000);
+			fd_read_datfile(fd, page_buffer, 64000);
 			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
-				MemBase + Real2Phys(ds_readd(0x47cf)), 0, 0, 320, 200, 0);
+				page_buffer, 0, 0, 320, 200, 0);
 		}
 		fclose(fd);
 	} else {
