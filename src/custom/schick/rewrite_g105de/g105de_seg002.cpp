@@ -1210,7 +1210,7 @@ void call_them_all(Bit16u v1, Bit16u v2, Bit16u x, Bit16u y) {
 	Bit32u bogus;
 
 	fill_smth();
-	fill_smth2(MemBase + Real2Phys(ds_readd(0x4779) + v1 * 8));
+	fill_smth2(buffer_font6 + v1 * 8);
 
 	gfx_ptr = get_gfx_ptr(x, y);
 	bogus = ret_zero();
