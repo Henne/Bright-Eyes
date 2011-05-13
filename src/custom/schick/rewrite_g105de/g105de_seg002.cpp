@@ -1478,8 +1478,10 @@ void enter_name()
 	print_str((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12);
 }
 
+namespace G105de {
 
-void G105de::change_head()
+
+void change_head()
 {
 	char nvf[19];
 	Bit8u *n = (Bit8u*)nvf;
@@ -1519,7 +1521,7 @@ void G105de::change_head()
  * change_sex() - changes the sex of the hero
  *
  */
-void G105de::change_sex()
+void change_sex()
 {
 	PhysPt dst, src;
 	signed char tmp;
@@ -1728,7 +1730,7 @@ void spell_inc_novice(Bit16u spell)
  * can_change_attribs() - checks if attribute changes are possible
  *
  */
-Bit16u G105de::can_change_attribs()
+Bit16u can_change_attribs()
 {
 	Bit8u *p;
 	Bit16u i;
@@ -1783,7 +1785,7 @@ Bit16u G105de::can_change_attribs()
 #undef INC
 #undef DEC
 
-void G105de::save_picbuf()
+void save_picbuf()
 {
 	PhysPt p;
 	Bit16u x_1, x_2, x_3;
@@ -1856,7 +1858,7 @@ void G105de::save_picbuf()
 	G105de::copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
 }
 
-void G105de::restore_picbuf(PhysPt ptr)
+void restore_picbuf(PhysPt ptr)
 {
 	PhysPt p;
 	Bit16u x_1, x_2, x_3;
@@ -1933,7 +1935,7 @@ void G105de::restore_picbuf(PhysPt ptr)
  * print_attribs() -	print the attribute values
  *
  */
-void G105de::print_attribs()
+void print_attribs()
 {
 	Bit8u *p;
 	char buf[10];
@@ -1959,7 +1961,7 @@ void G105de::print_attribs()
  * print_values() - print the values of the character
  *
  */
-void G105de::print_values()
+void print_values()
 {
 	char tmp[4];
 	const Bit16u align_left = 222;
@@ -2549,7 +2551,7 @@ void G105de::print_values()
  *
  *	This funcion is buggy.
  */
-void G105de::make_valuta_str(char *dst, unsigned int money)
+void make_valuta_str(char *dst, unsigned int money)
 {
 	/* Orig-BUG: d can overflow  on D > 65536*/
 	unsigned short d = 0;
@@ -2580,7 +2582,7 @@ void G105de::make_valuta_str(char *dst, unsigned int money)
 	sprintf(dst, (char*)MemBase + Real2Phys(ds_readd(0x41ed)), d, s, money);
 }
 
-void G105de::pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
+void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 {
 	Bit16u i;
 
@@ -2613,7 +2615,7 @@ void G105de::pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 	}
 }
 
-void G105de::pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
+void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
 {
 	Bit16u i;
 	Bit16u si;
@@ -2641,7 +2643,7 @@ void G105de::pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
 	}
 }
 
-void G105de::set_mouse_isr()
+void set_mouse_isr()
 {
 	/* save adress of the old ISR */
 	ds_writed(0x247c, bc__dos_getvect(0x1c));
@@ -2649,7 +2651,7 @@ void G105de::set_mouse_isr()
 	bc__dos_setvect(0x1c, RealMake(relocation + 0x3c6, 0x72b3));
 }
 
-void G105de::restore_mouse_isr()
+void restore_mouse_isr()
 {
 	bc__dos_setvect(0x1c, ds_readd(0x247c));
 }
@@ -2680,8 +2682,10 @@ void init_stuff()
 	ds_writed(0x40c1, ds_readd(0x47cb));
 }
 
-void *G105de::gen_alloc(unsigned long size)
+void *gen_alloc(unsigned long size)
 {
 	D1_INFO("HOST gen_alloc(%d);\n", size);
 	return calloc(size, sizeof(char));
+}
+
 }

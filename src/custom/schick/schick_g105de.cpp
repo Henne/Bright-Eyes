@@ -1210,7 +1210,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x3bdd: {
 					CPU_Pop16();
 
-					calc_at_pa();
+					G105de::calc_at_pa();
 					D1_LOG("calc_at_pa();\n");
 
 					return 1;
@@ -1219,7 +1219,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("clear_hero();\n");
-					clear_hero();
+					G105de::clear_hero();
 
 					return 1;
 				}
@@ -1230,7 +1230,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("skill_inc_novice(%d);\n",
 						skill);
-					skill_inc_novice(skill);
+					G105de::skill_inc_novice(skill);
 
 					return 1;
 				}
@@ -1241,7 +1241,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("spell_inc_novice(%d);\n",
 						spell);
-					spell_inc_novice(spell);
+					G105de::spell_inc_novice(spell);
 
 					return 1;
 				}
@@ -1357,7 +1357,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("init_colors();\n");
-					init_colors();
+					G105de::init_colors();
 
 					return 1;
 				}
@@ -1365,7 +1365,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("init_stuff();\n");
-					init_stuff();
+					G105de::init_stuff();
 
 					return 1;
 				}

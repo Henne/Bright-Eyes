@@ -73,12 +73,10 @@ void enter_name();
 namespace G105de {
 	void change_head();
 	void change_sex();
-}
-void calc_at_pa();
-void clear_hero();
-void skill_inc_novice(Bit16u);
-void spell_inc_novice(Bit16u);
-namespace G105de {
+	void calc_at_pa();
+	void clear_hero();
+	void skill_inc_novice(Bit16u);
+	void spell_inc_novice(Bit16u);
 	Bit16u can_change_attribs();
 	void save_picbuf();
 	void restore_picbuf(PhysPt);
@@ -89,10 +87,7 @@ namespace G105de {
 	void pal_fade_in(Bit8u*, Bit8u*, Bit16u, Bit16u);
 	void set_mouse_isr();
 	void restore_mouse_isr();
-}
-void init_colors();
-void init_stuff();
-
-namespace G105de {
+	void init_colors();
+	void init_stuff();
 	void *gen_alloc(unsigned long);
 }
