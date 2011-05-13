@@ -90,3 +90,7 @@ namespace G105de {
 }
 void init_colors();
 void init_stuff();
+
+namespace G105de {
+	void *gen_alloc(unsigned long);
+}

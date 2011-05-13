@@ -198,7 +198,7 @@ Bit8u *get_timbre(Bit16u bank, Bit16u patch)
 
 	fseek(fd_timbre, ds_readd(0x3f36) + ds_readd(0x2478), SEEK_SET);
 	fd_read_datfile(fd_timbre, p_datseg + 0x2474, 2);
-	ptr = (Bit8u*)calloc(ds_readw(0x2474), sizeof(char));
+	ptr = (Bit8u*)gen_alloc(ds_readw(0x2474));
 	host_writew(ptr, ds_readw(0x2474));
 	fd_read_datfile(fd_timbre, ptr + 2, ds_readw(0x2474) - 2);
 	return ptr;
@@ -574,7 +574,7 @@ void G105de::load_page(Bit16u page)
 		}
 
 		fd = fd_open_datfile(page);
-		ptr = (Bit8u*)calloc(get_filelength(), sizeof(char));
+		ptr = (Bit8u*)gen_alloc(get_filelength());
 
 		if (ptr) {
 			bg_buffer[page] = ptr;
@@ -618,7 +618,7 @@ void G105de::load_typus(Bit16u typus)
 	}
 
 	fd = fd_open_datfile(index);
-	ptr = (Bit8u*)calloc(get_filelength(), sizeof(char));
+	ptr = (Bit8u*)gen_alloc(get_filelength());
 
 	if (ptr != NULL) {
 		/* load the file into the typus buffer */
@@ -2632,4 +2632,10 @@ void init_stuff()
 	ds_writew(0x40b9, 3);
 
 	ds_writed(0x40c1, ds_readd(0x47cb));
+}
+
+void *G105de::gen_alloc(unsigned long size)
+{
+	D1_INFO("HOST gen_alloc(%d);\n", size);
+	return calloc(size, sizeof(char));
 }
