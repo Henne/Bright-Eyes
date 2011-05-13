@@ -42,6 +42,7 @@ char *texts[300];
 /* DS:0x4769 */
 Bit8u *buffer_sex_dat;
 Bit8u *buffer_popup_nvf;
+Bit8u *buffer_popup_dis;
 Bit8u *buffer_heads_dat;
 Bit8u *buffer_text;
 Bit8u *buffer_font6;
@@ -2760,6 +2761,7 @@ void alloc_buffers()
 	buffer_heads_dat = (Bit8u*)gen_alloc(39000);
 
 	buffer_popup_nvf = (Bit8u*)gen_alloc(1673);
+	buffer_popup_dis = buffer_popup_nvf + 8;
 
 	buffer_sex_dat = (Bit8u*)gen_alloc(812);
 
