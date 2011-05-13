@@ -27,6 +27,8 @@ void do_draw_mouse_ptr();
 namespace G105de {
 	void load_font_and_text();
 	void split_textbuffer(Bit8u*, RealPt, Bit32u);
+	void load_font_and_text_host();
+	void split_textbuffer_host(char**, char*, Bit32u);
 	void load_page(Bit16u);
 	void load_typus(Bit16u);
 	void read_common_files();
@@ -87,6 +89,7 @@ namespace G105de {
 	void pal_fade_in(Bit8u*, Bit8u*, Bit16u, Bit16u);
 	void set_mouse_isr();
 	void restore_mouse_isr();
+	void alloc_buffers();
 	void init_colors();
 	void init_stuff();
 	void *gen_alloc(unsigned long);

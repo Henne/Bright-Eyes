@@ -1353,6 +1353,18 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x7446: {
+					/*
+					 * Do not bypass! We allocate
+					 * these buffers also on the host
+					 * and start using the host memory.
+					 */
+					Bit16u CS = CPU_Pop16();
+					CPU_Push16(CS);
+					D1_INFO("alloc_buffers();\n");
+					G105de::alloc_buffers();
+					return 0;
+				}
 				case 0x75c1: {
 					CPU_Pop16();
 

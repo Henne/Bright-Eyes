@@ -37,6 +37,34 @@ void *form_xmid;
 void *snd_ptr_unkn1;
 void *state_table;
 
+char *texts[300];
+
+/* DS:0x4769 */
+Bit8u *buffer_sex_dat;
+Bit8u *buffer_popup_nvf;
+Bit8u *buffer_heads_dat;
+Bit8u *buffer_text;
+Bit8u *buffer_font6;
+
+/* DS:0x478d */
+Bit8u *picbuf3;
+Bit8u *picbuf2;
+Bit8u *picbuf1;
+Bit8u *gen_ptr6;
+Bit8u *gen_ptr6_dis;
+Bit8u *buffer_dmenge_dat;
+/* DS:0x47b3 */
+Bit8u *gen_ptr5;
+Bit8u *gen_ptr4;
+Bit8u *gen_ptr3;
+Bit8u *gen_ptr2;
+
+/* DS:0x47cf */
+Bit8u *page_buffer;
+/* DS:0x47f3 */
+Bit8u *gen_ptr1;
+Bit8u *gen_ptr1_dis;
+
 static inline void AIL_startup()
 {
 }
@@ -89,6 +117,25 @@ namespace G105de {
 void BE_cleanup()
 {
 	long sum = 0;
+
+	free(buffer_sex_dat);
+	free(buffer_popup_nvf);
+	free(buffer_heads_dat);
+	free(buffer_text);
+	free(buffer_font6);
+
+	free(picbuf3);
+	free(picbuf2);
+	free(picbuf1);
+	free(gen_ptr6);
+	free(buffer_dmenge_dat);
+	free(gen_ptr5);
+	free(gen_ptr4);
+	free(gen_ptr2);
+
+	free(page_buffer);
+	free(gen_ptr1);
+
 	for (long i = 0; i < MAX_PAGES; i++) {
 		if (bg_buffer[i]) {
 			free(bg_buffer[i]);
@@ -602,6 +649,39 @@ void G105de::split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 		/* write the adress of the next string */
 		host_writed(dst, src + 1);
 		dst += 4;
+	}
+}
+
+void G105de::load_font_and_text_host()
+{
+	FILE *fd;
+	Bit32u len;
+
+	fd = fd_open_datfile(0x0e);
+	fd_read_datfile(fd, buffer_font6, 1000);
+	fclose(fd);
+
+	fd = fd_open_datfile(0x0f);
+	len = fd_read_datfile(fd, buffer_text, 64000);
+	fclose(fd);
+
+	G105de::split_textbuffer_host(texts, (char*)buffer_text, len);
+
+}
+
+void G105de::split_textbuffer_host(char **dst, char *src, Bit32u len)
+{
+	Bit32u i = 0;
+
+	for (i = 0, *dst++ = src; i != len; src++, i++) {
+		/* continue if not the end of the string */
+		if (*src)
+			continue;
+		/* return if "\0\0" (never happens) */
+		if (*(src + 1) == 0)
+			return;
+		/* write the adress of the next string */
+		*dst++ = src + 1;
 	}
 }
 
@@ -2654,6 +2734,50 @@ void set_mouse_isr()
 void restore_mouse_isr()
 {
 	bc__dos_setvect(0x1c, ds_readd(0x247c));
+}
+
+void alloc_buffers()
+{
+	ds_writed(0x47cb, RealMake(0xa0000, 0x0));
+	ds_writed(0x47c7, RealMake(0xa0000, 0x0));
+
+	gen_ptr1 = (Bit8u*)gen_alloc(64108);
+	gen_ptr1_dis = gen_ptr1 + 8;
+
+	page_buffer = (Bit8u*)gen_alloc(50000);
+
+	gen_ptr2 = (Bit8u*)gen_alloc(1524);
+	gen_ptr3 = gen_ptr2 + 1500;
+
+	gen_ptr4 = (Bit8u*)gen_alloc(200);
+
+	buffer_text = (Bit8u*)gen_alloc(6000);
+
+	buffer_font6 = (Bit8u*)gen_alloc(592);
+
+	load_font_and_text_host();
+
+	buffer_heads_dat = (Bit8u*)gen_alloc(39000);
+
+	buffer_popup_nvf = (Bit8u*)gen_alloc(1673);
+
+	buffer_sex_dat = (Bit8u*)gen_alloc(812);
+
+	gen_ptr5 = (Bit8u*)gen_alloc(23660);
+
+	buffer_dmenge_dat = (Bit8u*)gen_alloc(23660);
+
+	picbuf1 = (Bit8u*)gen_alloc(800);
+
+	picbuf2 = (Bit8u*)gen_alloc(2800);
+
+	picbuf3 = (Bit8u*)gen_alloc(2800);
+
+	gen_ptr6 = (Bit8u*)gen_alloc(1100);
+	gen_ptr6_dis = gen_ptr6 + 8;
+
+	if (gen_ptr6_dis == NULL)
+		printf("\nMEMORY MALLOCATION ERROR!");
 }
 
 void init_colors()
