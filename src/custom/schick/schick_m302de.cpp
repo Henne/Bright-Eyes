@@ -59,6 +59,7 @@ static Uint32 schick_irq_timer(Uint32 interval, void *param)
 		D1_INFO("seed2 set to 0\n");
 		ds_writew(0xc3bf, 0);
 	}
+	return interval;
 }
 
 void schick_timer_enable()
