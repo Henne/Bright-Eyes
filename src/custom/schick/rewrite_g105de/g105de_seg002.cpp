@@ -427,6 +427,13 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 	return;
 }
 
+void mouse_disable()
+{
+	if (ds_readw(0x4591) == 2)
+		mouse_do_disable();
+
+}
+
 void mouse_do_disable()
 {
 	Bit16u v1, v2, v3, v4, v5;

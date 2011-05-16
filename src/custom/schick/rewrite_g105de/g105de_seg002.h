@@ -11,6 +11,7 @@ namespace G105de {
 	void play_midi(Bit16u);
 	void stop_sequence();
 	void mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
+	void mouse_disable();
 	void mouse_do_disable();
 }
 
