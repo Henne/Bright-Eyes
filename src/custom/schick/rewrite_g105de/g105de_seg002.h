@@ -10,6 +10,7 @@ namespace G105de {
 	bool load_file(Bit16u);
 	void play_midi(Bit16u);
 	void stop_sequence();
+	void mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
 }
 
 void draw_mouse_ptr_wrapper();
