@@ -1095,6 +1095,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x2024: {
+					CPU_Pop16();
+
+					D1_LOG("WAIT_FOR_VSYNC();\n");
+					G105de::wait_for_vsync();
+
+					return 1;
+				}
 				case 0x2523: {
 					CPU_Pop16();
 					Bit16u v1 = CPU_Pop16();
