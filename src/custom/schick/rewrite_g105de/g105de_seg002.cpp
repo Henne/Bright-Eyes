@@ -427,6 +427,22 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 	return;
 }
 
+void mouse_do_disable()
+{
+	Bit16u v1, v2, v3, v4, v5;
+	mem_writed(0x78 * 4, ds_readd(0x3f32));
+
+	v1 = 0x0c;
+	v3 = 0;
+	v4 = 0;
+	v5 = 0;
+
+	mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3,
+		(Bit8u*)&v4, (Bit8u*)&v5);
+
+	ds_writew(0x1a0b, 0);
+}
+
 }
 
 /* static */
