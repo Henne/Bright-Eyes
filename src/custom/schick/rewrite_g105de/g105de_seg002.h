@@ -44,6 +44,7 @@ Bit32s get_filelength();
 Bit16u ret_zero1();
 namespace G105de {
 	void wait_for_keypress();
+	void error_msg(Bit8u*);
 	void vsync_or_key(Bit16u);
 }
 Bit32u swap32(Bit16u, Bit16u);

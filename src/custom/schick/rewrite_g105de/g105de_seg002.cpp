@@ -1029,6 +1029,11 @@ void G105de::wait_for_keypress()
 
 namespace G105de {
 
+void error_msg(Bit8u *msg)
+{
+	vsync_or_key(print_line((char*)msg) * 150);
+}
+
 void vsync_or_key(Bit16u val)
 {
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1cc8);

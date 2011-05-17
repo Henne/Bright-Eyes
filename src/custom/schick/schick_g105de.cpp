@@ -926,6 +926,16 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("wait_for_keypress()\n");
 					return 1;
 				}
+				case 0x1c9d: {
+					CPU_Pop16();
+					RealPt msg = CPU_Pop32();
+					CPU_Push32(msg);
+
+					D1_LOG("error_msg(%s);\n", MemBase + Real2Phys(msg));
+					G105de::error_msg(MemBase + Real2Phys(msg));
+
+					return 1;
+				}
 				case 0x1cc8: {
 					CPU_Pop16();
 					Bit16u val = CPU_Pop16();
