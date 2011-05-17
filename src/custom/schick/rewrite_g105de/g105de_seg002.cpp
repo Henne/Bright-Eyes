@@ -2998,6 +2998,53 @@ void make_valuta_str(char *dst, unsigned int money)
 	sprintf(dst, (char*)MemBase + Real2Phys(ds_readd(0x41ed)), d, s, money);
 }
 
+void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
+{
+	/* no more increments than the maximum */
+	if (ds_readb(0x400f + skill * 2) >= max) {
+		infobox(msg, 0);
+		return;
+	}
+	/* we just have 3 tries to increment */
+	if (ds_readb(0x400e + skill * 2) == 3) {
+		infobox(MemBase + Real2Phys(ds_readd(0x4335)), 0);
+		return;
+	}
+
+	/* decrement total number of skill inc tries */
+	ds_writeb(0x1468, ds_readb(0x1468) - 1);
+	if (random_interval_gen(2, 12) > (signed char)ds_readb(1434 + skill)) {
+		/* print sucess message */
+		infobox(MemBase + Real2Phys(ds_readd(0x4339)), 0);
+		/* increment skill */
+		ds_writeb(0x1434 + skill, ds_readb(0x1434) + 1);
+		/* reset tries */
+		ds_writeb(0x400e + skill * 2, 0);
+		/* increment skill increments */
+		ds_writeb(0x400f + skill * 2, ds_readb(0x400f + skill * 2) + 1);
+
+		/* check if we have a melee attack skill */
+		if (skill <= 6) {
+			/* check if AT > PA */
+			if ((signed char)ds_readb(0x1394 + skill) > (signed char)ds_readb(0x139b + skill)) {
+				/* inc PA */
+				ds_writeb(0x139b + skill, ds_readb(0x139b + skill) + 1);
+			} else {
+				/* inc AT */
+				ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
+			}
+		}
+	} else {
+		/* print failure message */
+		infobox(MemBase + Real2Phys(ds_readd(0x433d)), 0);
+		/* increment try */
+		ds_writeb(0x400e + skill * 2, ds_readb(0x400e + skill * 2) + 1);
+	}
+
+	refresh_screen();
+
+}
+
 void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 {
 	Bit16u i;

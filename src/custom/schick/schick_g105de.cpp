@@ -1364,6 +1364,20 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x5b21: {
+					CPU_Pop16();
+					Bit16u skill = CPU_Pop16();
+					Bit16u max = CPU_Pop16();
+					RealPt msg = CPU_Pop32();
+					CPU_Push32(msg);
+					CPU_Push16(max);
+					CPU_Push16(skill);
+
+					D1_LOG("inc_skill(%d, %d, %p)\n",
+						skill, max, (char*)MemBase + Real2Phys(msg));
+					G105de::inc_skill(skill, max, MemBase + Real2Phys(msg));
+					return 1;
+				}
 				case 0x6b05: {
 					CPU_Pop16();
 
