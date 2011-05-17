@@ -85,6 +85,7 @@ namespace G105de {
 	void change_head();
 	void change_sex();
 	void calc_at_pa();
+	void refresh_screen();
 	void clear_hero();
 	void skill_inc_novice(Bit16u);
 	void spell_inc_novice(Bit16u);

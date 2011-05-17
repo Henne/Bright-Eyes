@@ -1265,6 +1265,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x35d0: {
+					CPU_Pop16();
+
+					D1_LOG("refresh_screen();\n");
+					G105de::refresh_screen();
+
+					return 1;
+				}
 				case 0x3bdd: {
 					CPU_Pop16();
 

@@ -1916,6 +1916,120 @@ void calc_at_pa() {
 	}
 }
 
+void refresh_screen()
+{
+	PhysPt src, dst;
+
+	if (ds_readw(0x11fe)) {
+		ds_writed(0x47c7, ds_readd(0x47d3));
+		load_page(ds_readw(0x1324));
+		save_picbuf();
+
+		/* page with base values and hero is not male */
+		if (ds_readw(0x1324) == 0 && ds_readb(0x134e) != 0) {
+
+			dst = Real2Phys(ds_readd(0x47d3)) + 7 * 320 + 305;
+			src = Real2Phys(ds_readd(0x4769) + ds_readb(0x134e) * 256);
+
+			copy_to_screen(src, dst, 16, 16, 0);
+		}
+
+		/* page with base values and level is advanced */
+		if (ds_readw(0x1324) == 0 && ds_readw(0x40bf) == 1) {
+			dst = Real2Phys(ds_readd(0x47d3)) + 178 * 320 + 284;
+			src = Real2Phys(ds_readd(0x4769) + 512);
+
+			copy_to_screen(src, dst, 20, 15, 0);
+		}
+		/* if the page is lower than 5 */
+		if (ds_readw(0x1324) < 5) {
+			/* draw DMENGE.DAT or the typus name */
+			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
+			if (ds_readb(0x134d) != 0) {
+				ds_writeb(0x1ca5, 1);
+				copy_to_screen(Real2Phys(ds_readd(0x47b3)),
+					dst, 128, 184, 0);
+
+				if (ds_readb(0x134e) != 0) {
+					char *p;
+					p = (char*)MemBase + Real2Phys(ds_readd(0x4515 + ds_readb(0x134d) * 4));
+
+					print_str(p,
+						get_line_start_c(p, 16, 128),
+						184);
+				} else {
+					char *p;
+					p = (char*)MemBase + Real2Phys(ds_readd(0x411d + ds_readb(0x134d) * 4));
+
+					print_str(p,
+						get_line_start_c(p, 16, 128),
+						184);
+				}
+			} else {
+				if (ds_readb(0x1ca5) != 0) {
+					call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)),
+						16, 8, 143, 191, 0);
+					ds_writeb(0x1ca5, 0);
+				}
+				wait_for_vsync();
+				set_palette(MemBase + Real2Phys(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
+				copy_to_screen(Real2Phys(ds_readd(0x47a7)),
+					dst, 128, 184, 0);
+			}
+		}
+		/* if hero has a typus */
+		if (ds_readb(0x134d) != 0) {
+			/* draw the head */
+			char nvf[19];
+			Bit8u *n =  (Bit8u*)nvf;
+
+			/* set src */
+			host_writed(n + 0, ds_readd(0x47a3));
+			/* set dst */
+			host_writed(n + 4, ds_readd(0x4771));
+			/* set nr */
+			host_writew(n + 8, ds_readb(0x40b6));
+			/* set type */
+			host_writew(n + 10, 0);
+			/* place somewhere on unused DOS stack */
+			host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+			host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+			process_nvf(n);
+
+			ds_writed(0x40cd, ds_readd(0x47a3));
+			ds_writew(0x40c5, 272);
+			ds_writew(0x40c9, 303);
+			ds_writed(0x40c1, ds_readd(0x47d3));
+
+			/* draw the head */
+			if (ds_readw(0x1324) == 0) {
+				/* on the base page */
+				ds_writew(0x40c7, 8);
+				ds_writew(0x40cb, 39);
+				do_draw_pic(0);
+			} else if (ds_readw(0x1324) > 4) {
+				/* on the spell pages */
+				ds_writew(0x40c7, 4);
+				ds_writew(0x40cb, 35);
+				do_draw_pic(0);
+			}
+
+			ds_writed(0x40c1, ds_readd(0x47cb));
+
+		}
+
+		print_values();
+		ds_writed(0x47c7, ds_readd(0x47cb));
+		dst = Real2Phys(ds_readd(0x47cb));
+		src = Real2Phys(ds_readd(0x47d3));
+		draw_mouse_ptr_wrapper();
+		copy_to_screen(src, dst, 320, 200, 0);
+		call_mouse();
+	} else {
+		print_values();
+	}
+}
+
 /* static */
 void clear_hero() {
 
