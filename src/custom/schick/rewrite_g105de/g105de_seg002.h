@@ -54,6 +54,7 @@ void draw_v_line(Bit16u, Bit16u, Bit16u, Bit16u);
 namespace G105de {
 	void do_draw_pic(Bit16u);
 	void draw_popup_line(Bit16u, Bit16u);
+	Bit16u infobox(Bit8u*, Bit16u);
 }
 void call_fill_rect_gen(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 namespace G105de {

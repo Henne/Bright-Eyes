@@ -1638,6 +1638,95 @@ void draw_popup_line(Bit16u line, Bit16u type)
 	copy_to_screen(src, dst, 16, 8, 0);
 }
 
+/**
+ *	infobox() - draws and info- or enter_numberbox
+ *	@msg:		the message for the box
+ *	@enter_num:	number of digits to enter
+ *
+ *	if @digits is zero the function just delays.
+ */
+Bit16u infobox(Bit8u *msg, Bit16u digits)
+{
+	PhysPt src, dst;
+	Bit16u bg, fg;
+	Bit16u retval, v2, v3, v4, i, lines;
+	Bit16s di;
+
+	retval = 0;
+	ds_writew(0x4789, 1);
+	v2 = ds_readw(0x4791);
+	v3 = ds_readw(0x478f);
+	v4 = ds_readw(0x478d);
+
+	di = ds_readw(0x40b9) * 32 + 32;
+	ds_writew(0x40bb, abs(320 - di) / 2 + ds_readw(0x1327));
+	ds_writew(0x4791, abs(320 - di) / 2 + ds_readw(0x1327) + 5);
+	ds_writew(0x478d, di - 10);
+	lines = str_splitter((char*)msg);
+
+	if (digits != 0)
+		lines += 2;
+
+	ds_writew(0x40bd, abs(200 - (lines + 2) * 8) / 2);
+	ds_writew(0x40bd, ds_readw(0x40bd) + ds_readw(0x1329));
+	ds_writew(0x478f, ds_readw(0x40bd) + 7);
+
+	draw_mouse_ptr_wrapper();
+
+	src = Real2Phys(ds_readd(0x47cb));
+	src += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
+	dst = Real2Phys(ds_readd(0x47d3));
+
+	copy_to_screen(src, dst, di, (lines + 2) * 8, 2);
+
+	/* draw the popup box */
+	draw_popup_line(0, 0);
+
+	for (i = 0; i < lines; i++)
+		draw_popup_line(i + 1, 1);
+
+	draw_popup_line(lines + 1, 3);
+
+	get_vals((Bit8u*)&fg, (Bit8u*)&bg);
+	set_vals(0xff, 0xdf);
+
+	print_line((char*)msg);
+
+	ds_writew(0x4599, 0);
+	call_mouse();
+
+	if (digits) {
+		enter_string((char*)MemBase + Real2Phys(ds_readd(0x47bb)),
+			abs(di - digits * 6) / 2 + ds_readw(0x40bb),
+			lines * 8 + ds_readw(0x40bd) - 2, digits, 0);
+
+		retval = atol((char*)MemBase + Real2Phys(ds_readd(0x47bb)));
+	} else {
+		ds_writed(0x1276, RealMake(datseg, 0x1c63));
+		vsync_or_key(150 * lines);
+		ds_writed(0x1276, 0);
+	}
+
+	set_vals(fg, bg);
+	draw_mouse_ptr_wrapper();
+
+	dst = Real2Phys(ds_readd(0x47cb));
+	dst += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
+	src = Real2Phys(ds_readd(0x47d3));
+
+	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
+	call_mouse();
+
+	ds_writew(0x4791, v2);
+	ds_writew(0x478f, v3);
+	ds_writew(0x478d, v4);
+
+	ds_writew(0x4789, 0);
+	ds_writew(0x459f, 0);
+
+	return retval;
+}
+
 }
 
 /**

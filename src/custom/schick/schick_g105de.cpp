@@ -1211,6 +1211,20 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x2993: {
+					CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					Bit16u c = CPU_Pop16();
+					CPU_Push16(c);
+					CPU_Push32(ptr);
+
+
+					reg_ax = G105de::infobox(MemBase + Real2Phys(ptr), c);
+					D1_LOG("infobox(%s,%x); = %d\n",
+						MemBase + Real2Phys(ptr), c , reg_ax);
+
+					return 1;
+				}
 				case 0x2c0d: {
 					Bit16u pIP = CPU_Pop16();
 					Bit16u old_pos = CPU_Pop16();
