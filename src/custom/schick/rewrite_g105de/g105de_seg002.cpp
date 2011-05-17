@@ -1036,7 +1036,9 @@ void error_msg(Bit8u *msg)
 
 void vsync_or_key(Bit16u val)
 {
+	CPU_Push16(val);
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1cc8);
+	CPU_Pop16();
 }
 
 }
