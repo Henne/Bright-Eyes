@@ -1027,6 +1027,15 @@ void G105de::wait_for_keypress()
 	}
 }
 
+namespace G105de {
+
+void vsync_or_key(Bit16u val)
+{
+	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1cc8);
+}
+
+}
+
 Bit32u swap32(Bit16u v1, Bit16u v2) {
 	return (swap_u16(v2) << 16 | swap_u16(v1));
 }
