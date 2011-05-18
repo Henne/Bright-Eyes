@@ -3106,6 +3106,270 @@ void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
 	}
 }
 
+/**
+ *	intro() - play the intro
+ */
+void intro()
+{
+	char nvf[19];
+	Bit8u *n =  (Bit8u*)nvf;
+
+	FILE *fd;
+	Bit8u *pal_dst, *pal_src;
+	Bit16u flen;
+	Bit16u tmp1, tmp2;
+	Bit16s i;
+	Bit8u cnt1;
+	Bit8s cnt2;
+
+	ds_writeb(0x40b8, 1);
+
+	/* load ATTIC */
+	fd = fd_open_datfile(18);
+	if (fd == NULL) {
+		D1_ERR("Failed to open\n");
+		exit(0);
+	}
+	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	fclose(fd);
+
+	/* set src */
+	host_writed(n + 4, ds_readd(0x4771));
+	/* set type */
+	host_writew(n + 10, 0);
+	/* place somewhere on unused DOS stack */
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	for (i = 7; i >= 0; i--) {
+		/* set dst */
+		host_writed(n + 0, ds_readd(0x47d3) + i * 960 + 9600);
+		/* set nr */
+		host_writew(n + 8, i + 1);
+		process_nvf(n);
+
+	}
+	/* set dst */
+	host_writed(n + 0, ds_readd(0x47d3));
+	/* set nr */
+	host_writew(n + 8, 0);
+	process_nvf(n);
+
+	wait_for_vsync();
+
+	set_palette(MemBase + PhysMake(datseg, 0x1cb9), 0, 16);
+
+	cnt1 = 1;
+	cnt2 = 99;
+
+	/* glowing at the bottom */
+	for (i = 0; i < 4; i++) {
+		ds_writew(0x40c5, 112);
+		ds_writew(0x40c7, 140);
+		ds_writew(0x40c9, 207);
+		ds_writew(0x40cb, 149);
+		ds_writed(0x40cd, ds_readd(0x47d3) + i * 960 + 9600);
+		do_draw_pic(0);
+		vsync_or_key(20);
+	}
+
+	/* elevate the attic logo */
+	i = 4;
+	ds_writew(0x459f, 0);
+	while (cnt1 <= 100 && ds_readw(0x459f) == 0) {
+		ds_writew(0x40c5, 0);
+		ds_writew(0x40c7, cnt2 + 60);
+		ds_writew(0x40c9, 95);
+		ds_writew(0x40cb, cnt1 + cnt2 + 59);
+		ds_writed(0x40c1, ds_readd(0x47d3));
+		ds_writed(0x40cd, ds_readd(0x47d3));
+		do_draw_pic(0);
+
+		if (cnt1 != 100) {
+
+			ds_writed(0x40cd, ds_readd(0x47d3) + i * 960 + 9600);
+			if (cnt1 % 4 == 1)
+				i++;
+
+			if (i == 8)
+				i = 4;
+
+			ds_writew(0x40c5, 0);
+			ds_writew(0x40c7, 150);
+			ds_writew(0x40c9, 95);
+			ds_writew(0x40cb, 159);
+			ds_writed(0x40c1, ds_readd(0x47d3));
+			do_draw_pic(2);
+		}
+
+		ds_writew(0x40c5, 112);
+		ds_writew(0x40c7, 50);
+		ds_writew(0x40c9, 207);
+		ds_writew(0x40cb, 149);
+		ds_writed(0x40cd, ds_readd(0x47d3));
+
+		ds_writew(0x40d1, 0);
+		ds_writew(0x40d3, 60);
+		ds_writew(0x40d5, 95);
+		ds_writew(0x40d7, 159);
+		ds_writed(0x40c1, ds_readd(0x47cb));
+		do_draw_pic(3);
+		cnt1++;
+		cnt2--;
+		if (cnt1 < 37)
+			vsync_or_key(2);
+		else
+			vsync_or_key(1);
+	}
+
+	if (ds_readw(0x459f) == 0)
+		vsync_or_key(200);
+
+	/* load FANPRO.NVF */
+	fd = fd_open_datfile(34);
+	if (fd == NULL) {
+		D1_ERR("Failed to open\n");
+		exit(0);
+	}
+	flen = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	fclose(fd);
+
+	/* set dst */
+	host_writed(n + 0, ds_readd(0x47d3));
+	/* set src */
+	host_writed(n + 4, ds_readd(0x4771));
+	/* set nr */
+	host_writew(n + 8, 0);
+	/* set type */
+	host_writew(n + 10, 0);
+	/* place somewhere on unused DOS stack */
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	process_nvf(n);
+
+	/* clear screen */
+	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+	wait_for_vsync();
+
+	/* set palette of FANPRO.NVF */
+	set_palette(MemBase + Real2Phys(ds_readd(0x4771)) + flen - 32*3, 0, 32);
+
+	/* draw the picture */
+	ds_writew(0x40c5, 60);
+	ds_writew(0x40c7, 50);
+	ds_writew(0x40c9, 259);
+	ds_writew(0x40cb, 149);
+	ds_writed(0x40cd, ds_readd(0x47d3));
+	do_draw_pic(0);
+	vsync_or_key(200);
+
+	/* load DSALOGO.DAT */
+	fd = fd_open_datfile(16);
+	if (fd == NULL) {
+		D1_ERR("Failed to open\n");
+		exit(0);
+	}
+	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	fclose(fd);
+
+	/* set dst */
+	host_writed(n + 0, ds_readd(0x47d3));
+	/* set src */
+	host_writed(n + 4, ds_readd(0x4771));
+	/* set nr */
+	host_writew(n + 8, 0);
+	/* set type */
+	host_writew(n + 10, 0);
+	/* place somewhere on unused DOS stack */
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	process_nvf(n);
+
+	/* clear screen */
+	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+	wait_for_vsync();
+
+
+	set_palette(MemBase + PhysMake(datseg, 0x113b), 0, 32);
+
+	/* draw DSALOGO.DAT */
+	ds_writew(0x40c5, 0);
+	ds_writew(0x40c7, 0);
+	ds_writew(0x40c9, 319);
+	ds_writew(0x40cb, 99);
+	ds_writed(0x40cd, ds_readd(0x47d3));
+	do_draw_pic(0);
+
+	/* load GENTIT.DAT */
+	fd = fd_open_datfile(17);
+	if (fd == NULL) {
+		D1_ERR("Failed to open\n");
+		exit(0);
+	}
+	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	fclose(fd);
+
+	/* set dst */
+	host_writed(n + 0, ds_readd(0x47d3));
+	/* set src */
+	host_writed(n + 4, ds_readd(0x4771));
+	/* set nr */
+	host_writew(n + 8, 0);
+	/* set type */
+	host_writew(n + 10, 0);
+	/* place somewhere on unused DOS stack */
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	process_nvf(n);
+
+	/* draw DSALOGO.DAT */
+	ds_writew(0x40c5, 10);
+	ds_writew(0x40c7, 110);
+	ds_writew(0x40c9, 329);
+	ds_writew(0x40cb, 159);
+	ds_writed(0x40cd, ds_readd(0x47d3));
+	do_draw_pic(0);
+
+	memcpy(MemBase + Real2Phys(0x47d3) + 500,
+		MemBase + PhysMake(datseg, 0x1ce9), 96);
+
+	pal_src = MemBase + Real2Phys(0x47d3) + 500;
+	pal_dst = MemBase + Real2Phys(0x47d3);
+	memset(pal_dst, 0, 96);
+
+	for (i = 0; i < 64; i++) {
+		pal_fade_in(pal_dst, pal_src, i, 32);
+		wait_for_vsync();
+		set_palette(pal_dst, 0, 32);
+	}
+
+	set_vals(0xff, 0);
+	print_str((char*)MemBase + PhysMake(datseg, 0x1cb3), 290, 190);
+	vsync_or_key(400);
+
+	memcpy(MemBase + Real2Phys(0x47d3),
+		MemBase + PhysMake(datseg, 0x1ce9), 96);
+
+	pal_src = MemBase + Real2Phys(0x47d3) + 500;
+	pal_dst = MemBase + Real2Phys(0x47d3);
+	memset(pal_src, 0, 96);
+
+	for (i = 0; i < 64; i++) {
+		pal_fade_out(pal_dst, pal_src, 32);
+		wait_for_vsync();
+		set_palette(pal_dst, 0, 32);
+	}
+
+	/* clear screen */
+	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+
+	ds_writeb(0x40b8, 0);
+	return;
+}
+
 void set_mouse_isr()
 {
 	/* save adress of the old ISR */
