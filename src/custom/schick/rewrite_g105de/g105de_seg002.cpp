@@ -3045,6 +3045,64 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 
 }
 
+void inc_spell(Bit16u spell)
+{
+	Bit16u max_incs = 1;
+
+	/* if typus == warlock and the origin of the spell is warlock */
+	if (ds_readb(0x134d) == 7 && ds_readb(0x158 + spell * 5) == 3)
+		max_incs = 2;
+	/* if typus == elf and the origin of the spell is elven */
+	if (ds_readb(0x134d) >= 10 && ds_readb(0x158 + spell * 5) == 2)
+		max_incs = 2;
+	/* if typus == druid and the origin of the spell is druid */
+	if (ds_readb(0x134d) == 8 && ds_readb(0x158 + spell * 5) == 0)
+		max_incs = 2;
+	/* if typus == mage */
+	if (ds_readb(0x134d) == 9) {
+		/* and the origin of the spell is mage */
+		if (ds_readb(0x158 + spell * 5) == 1)
+			max_incs = 2;
+
+		Bit8u *array = MemBase + Real2Phys(ds_readd(0x387 + ds_readb(0x14c0) * 4));
+		/* and is a school spell */
+		if (is_in_word_array(spell, array))
+			max_incs = 3;
+	}
+
+	/* all spell increments used for that spell */
+	if (ds_readb(0x3f63 + spell * 2) >= max_incs) {
+		infobox(MemBase + Real2Phys(ds_readd(0x44dd)), 0);
+		return;
+	}
+	/* all tries used for that spell */
+	if (ds_readb(0x3f62 + spell * 2) == 3) {
+		infobox(MemBase + Real2Phys(ds_readd(0x4335)), 0);
+		return;
+	}
+
+	/* decrement spell attempts */
+	ds_writeb(0x14bf, ds_readb(0x14bf) - 1);
+
+	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
+		/* show success */
+		infobox(MemBase + Real2Phys(ds_readd(0x4339)), 0);
+		/* increment spell value */
+		ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
+		/* reset tries */
+		ds_writeb(0x3f62 + spell * 2, 0);
+		/* increment incs */
+		ds_writeb(0x3f63 + spell * 2, ds_readb(0x3f63 + spell * 2) + 1);
+	} else {
+		/* show failure */
+		infobox(MemBase + Real2Phys(ds_readd(0x433d)), 0);
+		/* increment tries */
+		ds_writeb(0x3f62 + spell * 2, ds_readb(0x3f62 + spell * 2) + 1);
+	}
+
+	refresh_screen();
+}
+
 void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 {
 	Bit16u i;
