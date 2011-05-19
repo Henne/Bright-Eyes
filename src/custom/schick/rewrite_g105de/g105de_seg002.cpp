@@ -602,6 +602,69 @@ void G105de::mouse_compare()
 	}
 }
 
+void G105de::handle_input()
+{
+	Bit16u si, i;
+
+	si = 0;
+	ds_writew(0x459f, 0);
+	ds_writew(0x459d, 0);
+
+	if (CD_bioskey(1)) {
+		si = CD_bioskey(0);
+		ds_writew(0x459d, si & 0xff);
+		si = si >> 8;
+		if (si == 0x24)
+			si = 0x2c;
+
+		if (ds_readw(0x459d) == 0x11 && !ds_readb(0x40b8)) {
+
+			draw_mouse_ptr_wrapper();
+			mouse_disable();
+			stop_music();
+			restore_mouse_isr();
+			exit_video();
+			bc_clrscr();
+			exit(0);
+		}
+	}
+
+	if (ds_readw(0x459b)) {
+		ds_writew(0x459b, 0);
+		si = 0;
+
+		if (ds_readd(0x1276))
+			si = get_mouse_action(ds_readw(0x124c),
+				ds_readw(0x124e),
+				MemBase + Real2Phys(ds_readd(0x1276)));
+		if (si == 0 && ds_readd(0x1272) != 0)
+			si = get_mouse_action(ds_readw(0x124c),
+				ds_readw(0x124e),
+				MemBase + Real2Phys(ds_readd(0x1272)));
+
+		if (ds_readw(0x4591) == 2) {
+			for (i = 0; i < 15; i++)
+				wait_for_vsync();
+
+			if (ds_readw(0x459b) != 0) {
+				ds_writew(0x4595, 1);
+				ds_writew(0x459b, 0);
+			}
+
+			if (si == 0xfd) {
+				si = 0;
+				ds_writew(0x40b9, 4);
+				ds_writew(0x4789, 1);
+				infobox((Bit8u*)texts[267], 0);
+				ds_writew(0x4789, 0);
+				ds_writew(0x40b9, 3);
+			}
+		}
+	}
+	mouse_compare();
+	ds_writew(0x459f, si);
+}
+
 /* static */
 Bit16u G105de::get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
 {
@@ -1109,9 +1172,17 @@ void error_msg(Bit8u *msg)
 
 void vsync_or_key(Bit16u val)
 {
-	CPU_Push16(val);
-	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1cc8);
-	CPU_Pop16();
+	Bit16u i;
+
+	for (i = 0; i < val; i++) {
+		handle_input();
+		if (ds_readw(0x459f) || ds_readw(0x4599)) {
+			ds_writew(0x4599, 0);
+			ds_writew(0x459f, 0x1c);
+			return;
+		}
+		wait_for_vsync();
+	}
 }
 
 }

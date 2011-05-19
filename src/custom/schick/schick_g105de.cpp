@@ -760,6 +760,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0ae4: {
+					CPU_Pop16();
+
+					D1_LOG("handle_input();\n");
+					G105de::handle_input();
+
+					return 1;
+				}
 				case 0x0cf2: {
 					Bit16u pIP = CPU_Pop16();
 					RealPt dst = CPU_Pop32();
