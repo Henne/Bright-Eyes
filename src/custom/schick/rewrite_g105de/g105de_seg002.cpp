@@ -194,7 +194,7 @@ void read_soundcfg()
 	FILE *fd;
 	Bit8u buf[800];
 	char fname[800];
-	Bit16u tmp;
+	Bit16u port;
 
 	/* build the path to DSAGEN.DAT */
 	Bit8u drive = DOS_GetDefaultDrive();
@@ -216,14 +216,22 @@ void read_soundcfg()
 		return;
 	}
 
-	fread(&tmp, 2, sizeof(char), fd);
+	fread(&port, 2, sizeof(char), fd);
 	fclose(fd);
 
-	D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&tmp));
+	D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
+	if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
+		/* disable audio-cd */
+		ds_writew(0x1a09, 0);
+		return;
+	}
 
+	/* enable audio-cd */
 	ds_writew(0x1a09, 1);
+	/* disable midi */
 	ds_writew(0x1a07, 1);
 
+	/* play audio-cd */
 	G105de::seg001_0600();
 }
 
@@ -280,6 +288,7 @@ bool emu_load_seq(Bit16u sequence_num)
 	return reg_ax;
 }
 
+#if 0
 bool load_seq(Bit16u sequence_num)
 {
 	Bit8u *ptr;
@@ -314,10 +323,11 @@ bool load_seq(Bit16u sequence_num)
 	return true;
 
 }
+#endif
 
 bool play_sequence(Bit16u sequence_num)
 {
-	if (load_seq(sequence_num) == false)
+	if (emu_load_seq(sequence_num) == false)
 		return false;
 
 	AIL_start_sequence(ds_readw(0x3f5c), sequence_num);
