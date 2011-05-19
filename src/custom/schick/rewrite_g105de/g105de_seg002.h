@@ -82,7 +82,9 @@ Bit16u get_str_width(char*);
 Bit16u get_line_start_c(char*, Bit16u, Bit16u);
 Bit16u enter_string(char*, Bit16u, Bit16u, Bit16u, Bit16u);
 namespace G105de {
+	Bit16s gui_bool(Bit8u *);
 	void fill_radio_button(Bit16s, Bit16u, Bit16u);
+	Bit16s gui_radio(Bit8u *header, Bit8s pos, ...);
 }
 void enter_name();
 namespace G105de {

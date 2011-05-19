@@ -1256,6 +1256,18 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x2bcb: {
+					CPU_Pop16();
+					RealPt msg = CPU_Pop32();
+					CPU_Push32(msg);
+
+					reg_ax = G105de::gui_bool(MemBase + Real2Phys(msg));
+					D1_LOG("gui_bool(%p) = %d\n",
+						MemBase + Real2Phys(msg),
+						reg_ax);
+
+					return 1;
+				}
 				case 0x2c0d: {
 					Bit16u pIP = CPU_Pop16();
 					Bit16u old_pos = CPU_Pop16();

@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <ctype.h>
 
 #include "regs.h"
@@ -1872,6 +1873,25 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 }
 
 /**
+ * gui_bool() - displays a yes - no radio box
+ * @header:	the header of menu
+ *
+ */
+Bit16s G105de::gui_bool(Bit8u *msg)
+{
+	Bit16s retval;
+
+	ds_writew(0x1c77, 1);
+	retval = gui_radio(msg, 2, texts[4], texts[5]);
+	ds_writew(0x1c77, 0);
+
+	if (retval == 1)
+		return 1;
+	else
+		return 0;
+}
+
+/**
  * fill_radio_button() - marks the active radio button
  * @old_pos:	the position of the last active button (or -1)
  * @new_pos:	the position of the current active button
@@ -1903,6 +1923,179 @@ void G105de::fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 		draw_v_line(y + i, x, x + 3, 0xd9);
 
 	call_mouse();
+}
+
+/**
+ * gui_radio() - displays a radio menu
+ * @header:	the header of the menu
+ * @options:	the number of options
+ *
+ */
+Bit16s G105de::gui_radio(Bit8u *header, Bit8s options, ...)
+{
+	va_list arguments;
+
+	char *str;
+	PhysPt src, dst;
+	Bit16u r3, r4, r5, r6, r7, r8, r9;
+	Bit16u my_bak, mx_bak;
+	Bit16u bak1, bak2, bak3;
+	Bit16u fg_bak, bg_bak;
+	Bit16u lines_header, lines_sum;
+	Bit16s retval;
+	Bit16u di;
+	Bit16u i;
+
+	r5 = 0;
+	r6 = 0xffff;
+	di = 1;
+	bak1 = ds_readw(0x4791);
+	bak2 = ds_readw(0x478f);
+	bak3 = ds_readw(0x478d);
+	r9 = ds_readw(0x40b9) * 32 + 32;
+	ds_writew(0x40bb, (abs(320 - r9) / 2) + ds_readw(0x1327));
+	ds_writew(0x4791, ds_readw(0x40bb) + 5);
+	ds_writew(0x478d, ds_readw(0x40b9) * 32 + 22);
+	lines_header = str_splitter((char*)header);
+	lines_sum = lines_header + options;
+	ds_writew(0x40bd, abs(200 - (lines_sum + 2) * 8) / 2);
+	ds_writew(0x478f, ds_readw(0x40bd) + 7);
+	draw_mouse_ptr_wrapper();
+
+	/* save old background */
+	src = Real2Phys(ds_readd(0x47cb));
+	src += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
+	dst = Real2Phys(ds_readd(0x47d3));
+	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
+
+	/* draw popup */
+	draw_popup_line(0, 0);
+	for (i = 0; i < lines_header; i++)
+		draw_popup_line(i + 1, 1);
+	for (i = 0; options > i; i++)
+		draw_popup_line(i + lines_header + 1, 2);
+	draw_popup_line(lines_sum + 1, 3);
+
+	/* save and set text colors */
+	get_vals((Bit8u*)&fg_bak, (Bit8u*)&bg_bak);
+	set_vals(0xff, 0xdf);
+
+	/* print header */
+	if (lines_header)
+		print_line((char*)header);
+
+	r3 = ds_readw(0x4791) + 8;
+	r4 = (lines_header + 1) * 8 + ds_readw(0x40bd);
+
+	/* print radio options */
+	va_start(arguments, options);
+	for (i = 1; i <= options; r4 += 8, i++) {
+		str = va_arg(arguments, char*);
+		print_str(str, r3, r4);
+	}
+	va_end(arguments);
+
+	/* save and set mouse position */
+	mx_bak = ds_readw(0x124c);
+	my_bak = ds_readw(0x124e);
+	ds_writew(0x124c, ds_readw(0x40bb) + 90);
+	ds_writew(0x1250, ds_readw(0x40bb) + 90);
+	r7 = (lines_header + 1) * 8 + ds_readw(0x40bd);
+	r8 = r7;
+	ds_writew(0x124e, r8);
+	ds_writew(0x1252, r8);
+	mouse_move_cursor(ds_readw(0x124c), r8);
+
+	ds_writew(0x1246, ds_readw(0x40bb) + r9 - 16);
+	ds_writew(0x1242, ds_readw(0x40bb));
+	ds_writew(0x1240, (lines_header + 1) * 8 + ds_readw(0x40bd));
+	ds_writew(0x1244,
+		ds_readw(0x40bd) + options * 8 + (lines_header + 1) * 8 - 1);
+	call_mouse();
+	ds_writew(0x4599, 0);
+
+	while (r5 == 0) {
+		ds_writed(0x1276, RealMake(datseg, 0x1c63));
+		handle_input();
+		ds_writed(0x1276, 0);
+
+		if (di != r6) {
+			fill_radio_button(r6, di, lines_header);
+			r6 = di;
+		}
+		if (ds_readw(0x4599) != 0 ||
+			ds_readw(0x459f) == 1 ||
+			ds_readw(0x459f) == 0x51) {
+			/* has the selection been canceled */
+			retval = 0xffff;
+			r5 = 1;
+			ds_writew(0x4599, 0);
+		}
+		if (ds_readw(0x459f) == 0x1c) {
+			/* has the return key been pressed */
+			retval = di;
+			r5 = 1;
+		}
+		if (ds_readw(0x459f) == 0x48) {
+			/* has the up key been pressed */
+			if (di == 1)
+				di = options;
+			else
+				di--;
+		}
+		if (ds_readw(0x459f) == 0x50) {
+			/* has the down key been pressed */
+			if (di == options)
+				di = 1;
+			else
+				di++;
+		}
+		if (ds_readw(0x124e) != r8) {
+			/* ihas the mouse been moved */
+			r8 = ds_readw(0x124e);
+			di = (r8 - r7) / 8 + 1;
+		}
+		/* is this a bool radiobox ? */
+		if (ds_readw(0x1c77) != 0) {
+			if (ds_readw(0x459f) == 0x2c) {
+				/* has the 'j' key been pressed */
+				retval = 1;
+				r5 = 1;
+			} else if (ds_readw(0x459f) == 0x31) {
+				/* has the 'n' key been pressed */
+				retval = 2;
+				r5 = 1;
+			}
+		}
+	}
+
+	draw_mouse_ptr_wrapper();
+
+	ds_writew(0x124c, mx_bak);
+	ds_writew(0x1250, mx_bak);
+	ds_writew(0x124e, my_bak);
+	ds_writew(0x1252, my_bak);
+
+	ds_writew(0x1246, 319);
+	ds_writew(0x1242, 0);
+	ds_writew(0x1240, 0);
+	ds_writew(0x1244, 199);
+
+	mouse_move_cursor(mx_bak, my_bak);
+
+	dst = Real2Phys(ds_readd(0x47cb));
+	dst += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
+	src = Real2Phys(ds_readd(0x47d3));
+	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
+	call_mouse();
+	set_vals(fg_bak, bg_bak);
+
+	ds_writew(0x4791, bak1);
+	ds_writew(0x478f, bak2);
+	ds_writew(0x478d, bak3);
+	ds_writew(0x459f, 0);
+
+	return retval;
 }
 
 /**
