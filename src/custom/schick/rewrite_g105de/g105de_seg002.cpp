@@ -93,16 +93,32 @@ static inline void AIL_install_timbre(Bit16u driver, Bit16u bank, Bit16u patch, 
 {
 }
 
-static inline void AIL_start_sequence(Bit16u driver, Bit16u sequence)
+static void AIL_start_sequence(Bit16u driver, Bit16u sequence)
 {
+	CPU_Push16(sequence);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc83);
+	CPU_Pop16();
+	CPU_Pop16();
 }
 
-static inline void AIL_stop_sequence(Bit16u driver, Bit16u sequence)
+static void AIL_stop_sequence(Bit16u driver, Bit16u sequence)
 {
+
+	CPU_Push16(sequence);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc89);
+	CPU_Pop16();
+	CPU_Pop16();
 }
 
-static inline void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence)
+static void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence)
 {
+	CPU_Push16(sequence);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc53);
+	CPU_Pop16();
+	CPU_Pop16();
 }
 
 static void prepare_path(char *p)
@@ -344,6 +360,18 @@ bool load_file(Bit16u index)
 	fclose(fd);
 
 	return true;
+}
+
+bool load_driver(RealPt fname, Bit16u type, Bit16u port)
+{
+	CPU_Push16(port);
+	CPU_Push16(type);
+	CPU_Push32(fname);
+	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x3d0);
+	CPU_Pop32();
+	CPU_Pop16();
+	CPU_Pop16();
+	return reg_ax;
 }
 
 void play_midi(Bit16u index)

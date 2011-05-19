@@ -9,6 +9,7 @@ namespace G105de {
 	Bit8u *get_timbre(Bit16u, Bit16u);
 	bool call_load_file(Bit16u);
 	bool load_file(Bit16u);
+	bool load_driver(RealPt, Bit16u, Bit16u);
 	void play_midi(Bit16u);
 	void stop_sequence();
 	void mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
