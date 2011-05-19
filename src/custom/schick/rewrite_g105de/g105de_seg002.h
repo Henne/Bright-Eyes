@@ -40,6 +40,7 @@ namespace G105de {
 }
 Bit32s get_archive_offset(Bit8u*, Bit8u*);
 namespace G105de {
+	Bit16u open_datfile(Bit16u);
 	Bit16u read_datfile(Bit16u, Bit8u*, Bit16u);
 }
 Bit32s get_filelength();

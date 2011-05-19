@@ -939,6 +939,14 @@ void G105de::load_typus(Bit16u typus)
 	fclose(fd);
 }
 
+Bit16u G105de::open_datfile(Bit16u index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1af4);
+	CPU_Pop16();
+	return reg_ax;
+}
+
 static FILE * fd_open_datfile(Bit16u index)
 {
 	FILE *fd;
