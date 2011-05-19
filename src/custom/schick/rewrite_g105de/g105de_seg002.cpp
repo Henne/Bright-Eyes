@@ -67,12 +67,16 @@ Bit8u *page_buffer;
 Bit8u *gen_ptr1;
 Bit8u *gen_ptr1_dis;
 
-static inline void AIL_startup()
+static void AIL_startup()
 {
+	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0x6d7);
 }
 
-static inline void AIL_shutdown(char *signoff_msg)
+static void AIL_shutdown(RealPt signoff_msg)
 {
+	CPU_Push32(signoff_msg);
+	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0x71b);
+	CPU_Pop32();
 }
 
 static inline Bit16u AIL_register_sequence(Bit16u driver, Bit8u *FORM_XMID, Bit16u sequence_num, Bit8u *state_table, Bit8u *controller_table)
@@ -220,7 +224,8 @@ void init_music(unsigned long size)
 
 void stop_music()
 {
-	AIL_shutdown(NULL);
+//	AIL_shutdown(NULL);
+	AIL_shutdown(0);
 
 	if (snd_ptr_unkn1)
 		free(snd_ptr_unkn1);
