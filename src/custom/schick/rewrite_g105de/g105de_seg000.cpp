@@ -60,6 +60,13 @@ signed short bioskey(signed short cmd) {
 	}
 }
 
+void bc_free(RealPt ptr)
+{
+	CPU_Push32(ptr);
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x1295);
+	CPU_Pop32();
+}
+
 Bit16s bc_close(Bit16u handle) {
 
 	if (handle >= ds_readw(0x2296))

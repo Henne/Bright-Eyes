@@ -90,6 +90,13 @@ static int seg000(Bitu offs) {
 
 			return 1;
 		}
+		case 0x1295: {
+			RealPt p = CPU_Pop32();
+			D1_LOG("bc_free(%x);\n", p);
+			G105de::bc_free(p);
+			CPU_Push32(p);
+			return 1;
+		}
 		case 0x20bc: {
 			Bit16u handle = CPU_Pop16();
 			CPU_Push16(handle);
