@@ -60,6 +60,11 @@ signed short bioskey(signed short cmd) {
 	}
 }
 
+void bc_clrscr()
+{
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0xf68);
+}
+
 void bc_free(RealPt ptr)
 {
 	CPU_Push32(ptr);

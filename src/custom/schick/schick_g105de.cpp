@@ -90,6 +90,11 @@ static int seg000(Bitu offs) {
 
 			return 1;
 		}
+		case 0xf68: {
+			G105de::bc_clrscr();
+			D1_LOG("clrscr();\n");
+			return 1;
+		}
 		case 0x1295: {
 			RealPt p = CPU_Pop32();
 			D1_LOG("bc_free(%x);\n", p);
