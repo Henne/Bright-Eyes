@@ -3,6 +3,7 @@ namespace G105de {
 	void read_soundcfg();
 	void init_music(unsigned long);
 	void stop_music();
+	bool emu_load_seq(Bit16u);
 	bool load_seq(Bit16u);
 	bool play_sequence(Bit16u);
 	Bit8u *get_timbre(Bit16u, Bit16u);

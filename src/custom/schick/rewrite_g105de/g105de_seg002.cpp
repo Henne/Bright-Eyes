@@ -242,6 +242,14 @@ void stop_music()
 	seg001_033b();
 }
 
+bool emu_load_seq(Bit16u sequence_num)
+{
+	CPU_Push16(sequence_num);
+	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1e7);
+	CPU_Pop16();
+	return reg_ax;
+}
+
 bool load_seq(Bit16u sequence_num)
 {
 	Bit8u *ptr;
