@@ -214,6 +214,7 @@ void read_soundcfg()
 void init_music(unsigned long size)
 {
 	form_xmid = gen_alloc(size);
+	ds_writed(0x3f46, emu_gen_alloc(size));
 
 	if (form_xmid == NULL)
 		return;
@@ -224,9 +225,22 @@ void init_music(unsigned long size)
 
 void stop_music()
 {
-//	AIL_shutdown(NULL);
+
+/*	AIL_shutdown(NULL); */
 	AIL_shutdown(0);
 
+	/* free the pointers in the emu */
+	if (ds_readd(0x3f4a))
+		bc_free(RealMake(datseg, 0x3f4a));
+	if (ds_readd(0x3f4e))
+		bc_free(RealMake(datseg, 0x3f4e));
+	if (ds_readd(0x3f46))
+		bc_free(RealMake(datseg, 0x3f46));
+	if (ds_readd(0x3f42))
+		bc_free(RealMake(datseg, 0x3f42));
+
+
+	/* free the pointers at the host */
 	if (snd_ptr_unkn1)
 		free(snd_ptr_unkn1);
 
