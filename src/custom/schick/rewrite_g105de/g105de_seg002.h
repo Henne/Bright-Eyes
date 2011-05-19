@@ -106,4 +106,5 @@ namespace G105de {
 	void init_colors();
 	void init_stuff();
 	void *gen_alloc(unsigned long);
+	RealPt emu_gen_alloc(Bit32u);
 }

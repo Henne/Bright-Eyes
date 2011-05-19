@@ -3518,4 +3518,21 @@ void *gen_alloc(unsigned long size)
 	return calloc(size, sizeof(char));
 }
 
+RealPt emu_gen_alloc(Bit32u nelem)
+{
+	/* prepare stack */
+	CPU_Push32(1);
+	CPU_Push32(nelem);
+
+	/* call Borland C-Lib calloc() */
+	CALLBACK_RunRealFar(reloc_gen + 0x0, 0x16c7);
+
+	/* cleanup stack */
+	CPU_Pop32();
+	CPU_Pop32();
+
+	/* return the pointer */
+	return RealMake(reg_dx, reg_ax);
+}
+
 }

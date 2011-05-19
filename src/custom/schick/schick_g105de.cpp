@@ -1479,6 +1479,22 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x7664: {
+					RealPt ret;
+					Bit16u pCS = CPU_Pop16();
+					Bit32u  nelem = CPU_Pop32();
+
+					ret = G105de::emu_gen_alloc(nelem);
+					D1_LOG("emu_gen_alloc(%d) = %x\n",
+						nelem, ret);
+					reg_ax = RealOff(ret);
+					reg_dx = RealSeg(ret);
+
+
+					CPU_Push32(nelem);
+
+					return 1;
+				}
 				default:
 					return 0;
 			}
