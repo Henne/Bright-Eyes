@@ -285,7 +285,7 @@ bool emu_load_seq(Bit16u sequence_num)
 	CPU_Push16(sequence_num);
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1e7);
 	CPU_Pop16();
-	return reg_ax;
+	return reg_ax ? true : false;
 }
 
 #if 0
@@ -381,7 +381,7 @@ bool load_driver(RealPt fname, Bit16u type, Bit16u port)
 	CPU_Pop32();
 	CPU_Pop16();
 	CPU_Pop16();
-	return reg_ax;
+	return reg_ax ? true : false;
 }
 
 void play_midi(Bit16u index)
@@ -925,7 +925,6 @@ void G105de::load_page(Bit16u page)
 {
 	Bit8u *ptr;
 	FILE *fd;
-	Bit16u di;
 
 	if (page <= 10) {
 		/* check if this image is in the buffer */
@@ -967,7 +966,7 @@ void G105de::load_typus(Bit16u typus)
 {
 	Bit8u *ptr;
 	FILE *fd;
-	Bit16u di, index;
+	Bit16u index;
 
 	index = typus + 19;
 
@@ -1013,7 +1012,6 @@ Bit16u G105de::open_datfile(Bit16u index)
 static FILE * fd_open_datfile(Bit16u index)
 {
 	FILE *fd;
-	char *pwd;
 	signed long offset;
 	Bit8u buf[800];
 	char fname[800];
