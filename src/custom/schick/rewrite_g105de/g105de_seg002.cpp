@@ -3377,7 +3377,6 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	}
 
 	refresh_screen();
-
 }
 
 void inc_spell(Bit16u spell)

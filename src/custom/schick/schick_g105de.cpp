@@ -434,12 +434,11 @@ static int seg005(Bitu offs) {
 		CPU_Push16(first_color);
 		CPU_Push32(ptr);
 
-		unsigned short i;
-
 		D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
 			RealSeg(ptr), RealOff(ptr), first_color, colors);
 
-		set_palette(MemBase + Real2Phys(ptr), first_color, colors);
+		set_palette(MemBase + Real2Phys(ptr),
+			(unsigned char)first_color, colors);
 
 		return 1;
 	}
@@ -451,7 +450,7 @@ static int seg005(Bitu offs) {
 		CPU_Push16(cnt);
 		CPU_Push16(ptr);
 
-		draw_h_line(PhysMake(0xa000, ptr), cnt, color);
+		draw_h_line(PhysMake(0xa000, ptr), cnt, (unsigned char)color);
 
 			D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
 				ptr % 320, ptr / 320, cnt, color);
@@ -855,7 +854,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				}
 				case 0x1059: {
 					CPU_Pop16();
-					RealPt val = CPU_Pop16();
+					Bit16u val = CPU_Pop16();
 					CPU_Push16(val);
 
 					D1_LOG("load_page(%d);\n", val);
@@ -865,7 +864,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				}
 				case 0x11e5: {
 					CPU_Pop16();
-					RealPt val = CPU_Pop16();
+					Bit16u val = CPU_Pop16();
 					CPU_Push16(val);
 
 					D1_LOG("load_typus(%d);\n", val);
@@ -1107,7 +1106,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x);
 					CPU_Push16(c);
 
-					reg_ax = print_chr(c, x, y);
+					reg_ax = print_chr((char)c, x, y);
 
 					D1_LOG("print_chr(%c,%d,%d); = %d\n",
 						c, x, y, reg_ax);
@@ -1121,7 +1120,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 					CPU_Push16(c);
 
-					reg_ax = get_chr_info(c,
+					reg_ax = get_chr_info((char)c,
 						MemBase + Real2Phys(ptr));
 
 					D1_LOG("get_chr_info(%c,%x); = %d\n",
