@@ -3438,6 +3438,58 @@ void inc_spell(Bit16u spell)
 	refresh_screen();
 }
 
+void choose_atpa()
+{
+	Bit16u skill, increase;
+
+	ds_writew(0x1327, 0xffb0);
+
+	do {
+		/* print menu with all melee weapons skills */
+		skill = gui_radio((Bit8u*)texts[78], 7,
+			texts[95], texts[96], texts[97], texts[98],
+			texts[99], texts[100], texts[101]) - 1;
+
+		if (skill != 0xfffe) {
+			if ((signed char)ds_readb(0x1434 + skill) > 0) {
+				increase = gui_radio((Bit8u*)texts[254], 2,
+					texts[75], texts[76]);
+				if (increase != 0xffff) {
+					if (increase == 1) {
+						/* increase attack */
+						if ((signed char)ds_readb(0x1434 > 0) ||
+							ds_readb(0x139b + skill) > ds_readb(0x1393)) {
+							/* inc AT */
+							ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
+							/* dec PA */
+							ds_writeb(0x139b + skill, ds_readb(0x139b + skill) - 1);
+							refresh_screen();
+						} else {
+							infobox((Bit8u*)texts[255], 0);
+						}
+					} else {
+						if ((signed char)ds_readb(0x1434 > 0) ||
+							ds_readb(0x1394 + skill) > ds_readb(0x1393)) {
+							/* dec AT */
+							ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) - 1);
+							/* inc PA */
+							ds_writeb(0x139b + skill, ds_readb(0x139b + skill) + 1);
+							refresh_screen();
+						} else {
+							infobox((Bit8u*)texts[256], 0);
+						}
+					}
+				}
+			} else {
+				infobox((Bit8u*)texts[260], 0);
+			}
+		}
+
+	} while (skill != 0xfffe);
+
+	ds_writew(0x1327, 0);
+}
+
 void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 {
 	Bit16u i;

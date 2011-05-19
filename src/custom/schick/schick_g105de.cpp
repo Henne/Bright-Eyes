@@ -1431,6 +1431,12 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x6716: {
+					Bit16u CS = CPU_Pop16();
+					D1_LOG("choose_atpa();\n");
+					G105de::choose_atpa();
+					return 1;
+				}
 				case 0x6b05: {
 					CPU_Pop16();
 
