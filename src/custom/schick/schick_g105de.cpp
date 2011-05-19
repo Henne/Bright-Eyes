@@ -492,6 +492,9 @@ static int seg005(Bitu offs) {
 
 		return 1;
 	}
+	case 0x445: {
+		return 0;
+	}
 	default:
 		D1_ERR("Rasterlib:0x%x\n", offs);
 		exit(0);
