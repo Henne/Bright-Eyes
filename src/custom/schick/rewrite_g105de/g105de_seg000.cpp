@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "dosbox.h"
 #include "regs.h"
 #include "callback.h"
@@ -8,6 +10,11 @@
 #include "g105de_seg000.h"
 
 namespace G105de {
+
+void bc_exit(Bit16u exitval)
+{
+	exit(exitval);
+}
 
 RealPt bc__dos_getvect(Bit16s intnr)
 {

@@ -1,4 +1,5 @@
 namespace G105de {
+void bc_exit(Bit16u);
 RealPt bc__dos_getvect(Bit16s);
 void bc__dos_setvect(Bit16s, RealPt);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);

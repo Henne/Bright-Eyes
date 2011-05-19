@@ -17,6 +17,14 @@
 
 static int seg000(Bitu offs) {
 	switch (offs) {
+		case 0x3a4: {
+			Bit16u ev = CPU_Pop16();
+			CPU_Push16(ev);
+
+			D1_INFO("Bye Bye! We're closing DOSBox\n");
+			G105de::bc_exit(ev);
+			return 1;
+		}
 		case 0x0438: {
 			Bit16u intnr = CPU_Pop16();
 			CPU_Push16(intnr);
