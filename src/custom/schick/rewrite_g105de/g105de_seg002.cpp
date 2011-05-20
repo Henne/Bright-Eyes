@@ -2391,7 +2391,134 @@ void clear_hero() {
 	}
 
 	ds_writeb(0x1353, 1);
-};
+}
+
+/**
+ * new_values() - roll out new attribute values
+ *
+ */
+void new_values()
+{
+	/* Original-Bugfix:	there once was a char[11],
+				which could not hold a char[16] */
+
+	Bit8u *ptr;
+	char name_bak[17];
+	signed char values[8];
+	Bit16u si, di, i, j;
+	Bit8s bv1, bv2, bv3;
+
+	/* set variable if hero has a typus */
+	if (ds_readb(0x134d))
+		ds_writew(0x11fe, 1);
+
+	/* save the name of the hero */
+	/* TODO strncpy() would be better here */
+	strcpy(name_bak, (char*)MemBase + PhysMake(datseg, 0x132c));
+
+	/* save the sex of the hero */
+	bv3 = ds_readb(0x134e);
+
+	/* clear the hero */
+	memset(MemBase + PhysMake(datseg, 0x132c), 0 , 0x6da);
+	clear_hero();
+
+	/* restore the sex of the hero */
+	ds_writeb(0x134e, bv3);
+
+	/* restore the name of the hero */
+	/* TODO strncpy() would be better here */
+	strcpy((char*)MemBase + PhysMake(datseg, 0x132c), name_bak);
+
+	refresh_screen();
+
+	ds_writew(0x11fe, 0);
+	ptr = MemBase + PhysMake(datseg, 0x1360);
+
+	for (j = 0; j < 7; j++) {
+		bv1 = random_interval_gen(8, 13);
+		bv2 = 0;
+
+		for (i = 0; i < 7; i++) {
+			if (host_readb(ptr + i * 3))
+				continue;
+
+			values[bv2] = i;
+			ds_writed(0x4084 + bv2 * 4,
+				ds_readd(0x40d9 + 0x80 + i * 4));
+			bv2++;
+		}
+
+		sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+			texts[46], bv1);
+
+		do {
+			ds_writew(0x1327, 0xffb0);
+
+			di = gui_radio(MemBase + Real2Phys(ds_readd(0x47bf)),
+				bv2,
+				MemBase + Real2Phys(ds_readd(0x4084)),
+				MemBase + Real2Phys(ds_readd(0x4088)),
+				MemBase + Real2Phys(ds_readd(0x408c)),
+				MemBase + Real2Phys(ds_readd(0x4090)),
+				MemBase + Real2Phys(ds_readd(0x4094)),
+				MemBase + Real2Phys(ds_readd(0x4098)),
+				MemBase + Real2Phys(ds_readd(0x409c)));
+
+			ds_writew(0x1327, 0);
+		} while (di == 0xffff);
+		di = values[di - 1];
+		host_writeb(ptr + di * 3 + 1, bv1);
+		host_writeb(ptr + di * 3, bv1);
+		draw_mouse_ptr_wrapper();
+		refresh_screen();
+		call_mouse();
+	}
+
+	ptr = MemBase + PhysMake(datseg, 0x1375);
+	for (j = 0; j < 7; j++) {
+		bv1 = random_interval_gen(2, 7);
+		bv2 = 0;
+
+		for (i = 0; i < 7; i++) {
+			if (host_readb(ptr + i * 3))
+				continue;
+
+			values[bv2] = i;
+			ds_writed(0x4084 + bv2 * 4,
+				ds_readd(0x40d9 + 0x9c + i * 4));
+			bv2++;
+		}
+
+		sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+			texts[46], bv1);
+
+		do {
+			ds_writew(0x1327, 0xffb0);
+
+			di = gui_radio(MemBase + Real2Phys(ds_readd(0x47bf)),
+				bv2,
+				MemBase + Real2Phys(ds_readd(0x4084)),
+				MemBase + Real2Phys(ds_readd(0x4088)),
+				MemBase + Real2Phys(ds_readd(0x408c)),
+				MemBase + Real2Phys(ds_readd(0x4090)),
+				MemBase + Real2Phys(ds_readd(0x4094)),
+				MemBase + Real2Phys(ds_readd(0x4098)),
+				MemBase + Real2Phys(ds_readd(0x409c)));
+
+			ds_writew(0x1327, 0);
+		} while (di == 0xffff);
+		di = values[di - 1];
+		host_writeb(ptr + di * 3 + 1, bv1);
+		host_writeb(ptr + di * 3, bv1);
+		draw_mouse_ptr_wrapper();
+		refresh_screen();
+		call_mouse();
+	}
+
+
+
+}
 
 /**
  * skill_inc_novice() - tries to increment a skill in novice mode

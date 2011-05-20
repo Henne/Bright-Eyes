@@ -1315,6 +1315,14 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x3917: {
+					CPU_Pop16();
+
+					D1_LOG("new_values();\n");
+					G105de::new_values();
+
+					return 1;
+				}
 				case 0x3bdd: {
 					CPU_Pop16();
 
