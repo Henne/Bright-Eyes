@@ -3777,11 +3777,11 @@ void intro()
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
 
-	memcpy(MemBase + Real2Phys(0x47d3) + 500,
+	memcpy(MemBase + Real2Phys(ds_readd(0x47d3)) + 500,
 		MemBase + PhysMake(datseg, 0x1ce9), 96);
 
-	pal_src = MemBase + Real2Phys(0x47d3) + 500;
-	pal_dst = MemBase + Real2Phys(0x47d3);
+	pal_src = MemBase + Real2Phys(ds_readd(0x47d3)) + 500;
+	pal_dst = MemBase + Real2Phys(ds_readd(0x47d3));
 	memset(pal_dst, 0, 96);
 
 	for (i = 0; i < 64; i++) {
@@ -3794,11 +3794,11 @@ void intro()
 	print_str((char*)MemBase + PhysMake(datseg, 0x1cb3), 290, 190);
 	vsync_or_key(400);
 
-	memcpy(MemBase + Real2Phys(0x47d3),
+	memcpy(MemBase + Real2Phys(ds_readd(0x47d3)),
 		MemBase + PhysMake(datseg, 0x1ce9), 96);
 
-	pal_src = MemBase + Real2Phys(0x47d3) + 500;
-	pal_dst = MemBase + Real2Phys(0x47d3);
+	pal_src = MemBase + Real2Phys(ds_readd(0x47d3)) + 500;
+	pal_dst = MemBase + Real2Phys(ds_readd(0x47d3));
 	memset(pal_src, 0, 96);
 
 	for (i = 0; i < 64; i++) {
