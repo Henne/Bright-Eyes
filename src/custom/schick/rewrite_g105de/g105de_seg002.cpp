@@ -2535,7 +2535,6 @@ void fill_values()
 		/* automatic increase spells */
 		for (i = 0; ds_readb(0x14bf) > 0; i++) {
 			v2 = ds_readw(0xe2c + (typus - 7) * 90 + i * 2);
-			D1_INFO("spell_inc_novice(%x %s)\n", v2, texts[i + 168]);
 			spell_inc_novice(v2);
 		}
 	}
