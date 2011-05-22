@@ -91,6 +91,7 @@ namespace G105de {
 	void change_head();
 	void change_sex();
 	void calc_at_pa();
+	void fill_values();
 	void refresh_screen();
 	void clear_hero();
 	void new_values();

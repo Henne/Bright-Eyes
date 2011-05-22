@@ -2251,6 +2251,297 @@ void calc_at_pa() {
 	}
 }
 
+/**
+ * fill_values() - fills the values if typus is chosen
+ *
+ */
+void fill_values()
+{
+	Bit8u *ptr;
+	Bit16u v2, v1, i;
+	Bit16u si, di;
+
+	/* helper vars */
+	Bit8u typus = ds_readb(0x134d);
+
+	/* fill skill values */
+	for (i = 0; i < 52; i++) {
+		Bit8s tval;
+
+		/* get skill value from a char[13][52] */
+		tval = ds_readb(0x437 + typus * 52 + i);
+		ds_writeb(0x1434 + i, tval);
+
+		/* set skill_incs and skill_tries to zero */
+		ds_writeb(0x400f + i * 2, 0);
+		ds_writeb(0x4003 + i * 2, 0);
+	}
+
+	/* set skill_attempts */
+	ds_writeb(0x1468, ds_readb(0xa85 + typus - 1));
+
+	/* do magic user init */
+	if (typus >= 7) {
+		/* fill initial spell values */
+		for (i = 0; i < 86; i++) {
+			Bit8s sval;
+
+			/* get spell value from a char[13][86] */
+			sval = ds_readb(0x481 + typus * 86 + i);
+			ds_writeb(0x1469 + i, sval);
+
+			/* set spell_incs and spell_tries to zero */
+			ds_writeb(0x3f62 + i * 2 + 1, 0);
+			ds_writeb(0x3f62 + i * 2, 0);
+		}
+		/* special mage values */
+		if (typus == 9) {
+			/* set staff spell to level 1 */
+			ds_writeb(0x14c1, 1);
+			/* select mage school */
+			do {
+				ds_writeb(0x14c0, gui_radio((Bit8u*)texts[47], 9,
+							texts[48], texts[49],
+							texts[50], texts[51],
+							texts[52], texts[53],
+							texts[54], texts[55],
+							texts[56]) - 1);
+			} while (ds_readb(0x14c0) == 0xfe);
+
+			/* add magic school modifications */
+			for (i = 0; ds_readb(0xa9d + ds_readb(0x14c0) * 29) > i; i++) {
+				Bit8s school = ds_readb(0x14c0);
+				Bit16s spell, mod;
+
+				spell = ds_readw(0xa9d + 1 + school * 29 + i * 2);
+				mod = ds_readb(0xa9d + 15 + school * 29 + i * 2);
+				ds_writeb(0x1469 + spell,
+					ds_readb(0x1469 + spell) + mod);
+
+
+			}
+		}
+
+		/* set spell attempts */
+		ds_writeb(0x14bf, ds_readb(0xa91 + typus - 7));
+
+		/* get convertable increase attempts */
+		di = ds_readb(0xa97 + typus - 7);
+
+		if (di && ds_readw(0x40bf) == 2 && gui_bool((Bit8u*)texts[269])) {
+			/* create string */
+			sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				texts[270], di);
+
+			i = infobox(MemBase + Real2Phys(ds_readd(0x47bf)), 1);
+
+			if (i > 0) {
+				/* spell attempts to skill attempts */
+				if (i > di)
+					i = di;
+				di -= i;
+				/* change spell attempts */
+				ds_writeb(0x14bf, ds_readb(0x14bf) - i);
+				/* change skill attempts */
+				ds_writeb(0x1468, ds_readb(0x1468) + i);
+			} else {
+
+				/* create string */
+				sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+					texts[271], di);
+
+				i = infobox(MemBase + Real2Phys(ds_readd(0x47bf)), 1);
+				if (i > 0) {
+					if (i > di)
+						i = di;
+					/* change spell attempts */
+					ds_writeb(0x14bf, ds_readb(0x14bf) + i);
+					/* change skill attempts */
+					ds_writeb(0x1468, ds_readb(0x1468) - i);
+				}
+			}
+		}
+
+
+	}
+
+	/* set LE */
+	ds_writew(0x138c, ds_readw(0x8df + typus * 2));
+	ds_writew(0x138a, ds_readw(0x8df + typus * 2));
+
+	/* set AE */
+	ds_writew(0x1390, ds_readw(0x8f9 + typus * 2));
+	ds_writew(0x138e, ds_readw(0x8f9 + typus * 2));
+
+	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
+	if (typus == 9 && ds_readw(0x40bf) && gui_bool((Bit8u*)texts[268])) {
+		/* change spell_attempts */
+		ds_writeb(0x14bf, ds_readb(0x14bf) - 10);
+		ds_writew(0x1390, random_interval_gen(3, 8) + ds_readw(0x1390));
+		ds_writew(0x138e, ds_readw(0x1390));
+	}
+
+	/* roll out size */
+	ds_writeb(0x134f, random_interval_gen(
+				ds_readb(0x913 + typus * 2),
+				ds_readb(0x913 + typus * 2 + 1)));
+
+	/* calculate weight i = (height - weight_mod) * 40 */
+	ds_writew(0x1350, (ds_readb(0x134f) - ds_readb(0x92d + typus)) * 40);
+
+	/* roll out the money */
+	i = random_gen(20);
+	ptr = MemBase + Real2Phys(ds_readd(0xa51 + typus * 4));
+	for (si = 0; host_readw(ptr + si * 6) < i; si++);
+
+	ds_writed(0x1358, random_interval_gen(host_readw(ptr + si * 6 + 2),
+				host_readw(ptr + si * 6 + 4)) * 10);
+
+	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
+	ds_writeb(0x1392,
+		(ds_readb(0x1363) + ds_readb(0x1360) + ds_readb(0x1353)) / 3 -
+		ds_readb(0x1375) * 2);
+	/* add typus MR Modificator */
+	ds_writeb(0x1392, ds_readb(0x1392) + ds_readb(0x93a + typus));
+
+	/* roll out god */
+	ds_writeb(0x1352, random_gen(12));
+
+	/* add gods boni */
+	switch (ds_readb(0x1352)) {
+		case 1 : {
+			/* Praios: MU + 1 */
+			ds_writeb(0x1360, ds_readb(0x1360) + 1);
+			ds_writeb(0x1361, ds_readb(0x1360) + 1);
+			ds_writew(0x2782, 1);
+			break;
+		}
+		case 2 : {
+			/* Rondra: skill swords + 1 */
+			ds_writeb(0x1434 + 3, ds_readb(0x1434 + 3) + 1);
+			break;
+		}
+		case 3 : {
+			/* Efferd: skill swim + 1 */
+			ds_writeb(0x1434 + 14, ds_readb(0x1434 + 14) + 1);
+			break;
+		}
+		case 4 : {
+			/* Travia: skill treat poison + 1 */
+			ds_writeb(0x1434 + 44, ds_readb(0x1434 + 44) + 1);
+			break;
+		}
+		case 5 : {
+			/* Boron: skill human nature + 1 */
+			ds_writeb(0x1434 + 24, ds_readb(0x1434 + 24) + 1);
+			break;
+		}
+		case 6 : {
+			/* Hesinde: skill alchemy + 1 */
+			ds_writeb(0x1434 + 32, ds_readb(0x1434 + 32) + 1);
+			break;
+		}
+		case 7 : {
+			/* Firun: skills track and missle weapons + 1  */
+			ds_writeb(0x1434 + 26, ds_readb(0x1434 + 26) + 1);
+			ds_writeb(0x1434 + 7, ds_readb(0x1434 + 7) + 1);
+			break;
+		}
+		case 8 : {
+			/* Tsa: CH + 1 */
+			ds_writeb(0x1366, ds_readb(0x1366) + 1);
+			ds_writeb(0x1367, ds_readb(0x1367) + 1);
+			ds_writew(0x2780, 1);
+			break;
+		}
+		case 9 : {
+			/* Phex: skills hide and pickpocket + 1 */
+			ds_writeb(0x1434 + 49, ds_readb(0x1434 + 49) + 1);
+			ds_writeb(0x1434 + 13, ds_readb(0x1434 + 13) + 1);
+			break;
+		}
+		case 10 : {
+			/* Peraine: skills treat disease and wounds + 1 */
+			ds_writeb(0x1434 + 45, ds_readb(0x1434 + 45) + 1);
+			ds_writeb(0x1434 + 46, ds_readb(0x1434 + 46) + 1);
+			break;
+		}
+		case 11 : {
+			/* Ingerimm: skill tactics + 1*/
+			ds_writeb(0x1434 + 37, ds_readb(0x1434 + 37) + 1);
+			break;
+		}
+		case 12 : {
+			/* Rhaja: skills dance, seduce and instrument + 1*/
+			ds_writeb(0x1434 + 20, ds_readb(0x1434 + 20) + 1);
+			ds_writeb(0x1434 + 16, ds_readb(0x1434 + 16) + 1);
+			ds_writeb(0x1434 + 47, ds_readb(0x1434 + 47) + 1);
+			break;
+		}
+	}
+	/* calclate AT and PA values */
+	calc_at_pa();
+
+	/* if mode == novice */
+	if (ds_readw(0x40bf) == 1) {
+		/* automatic increase skills */
+		for (i = 0; ds_readb(0x1468) > 0; i++) {
+			v1 = ds_readw(0xba2 + typus * 50 + i * 2);
+			skill_inc_novice(v1);
+		}
+
+		si = 0;
+		/* prepare mage automatic spell list */
+		if (typus == 9) {
+			Bit16u school = ds_readb(0x14c0);
+			/* 1. house spells */
+			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
+				ds_writew(0xe2c + 90 * 2 + si * 2,
+					ds_readw(0xa9d + 1 + school * 29 + i *2));
+			}
+			/* 2. all schools spells */
+			for (i = 0; ds_readw(0x3ab + school * 4 + 2) > i; si++, i++) {
+				ds_writew(0xe2c + 90 * 2 + si * 2,
+					ds_readw(0x3ab + school * 4) + i);
+			}
+			/* 3. five domination spells */
+				/* Herr der Tiere */
+			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x52);
+				/* Horriphobus */
+			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x31);
+				/* Mag. Raub */
+			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x35);
+				/* Respondami */
+			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x21);
+				/* Sanftmut */
+			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x4f);
+
+			/* 4. all schools spells */
+			for (i = 0; ds_readw(0x3ab + school * 4 + 2) > i; si++, i++) {
+				ds_writew(0xe2c + 90 * 2 + si * 2,
+					ds_readw(0x3ab + school *4) + i);
+			}
+			/* 5. all schools spells */
+			for (i = 0; ds_readw(0x3ab + school * 4 + 2) > i; si++, i++) {
+				ds_writew(0xe2c + 90 * 2 + si * 2,
+					ds_readw(0x3ab + school *4) + i);
+			}
+			/* 6. random spells */
+			while (si < 45) {
+				ds_writew(0xe2c + 90 * 2 + si++ * 2,
+					random_gen(85));
+			}
+		}
+		/* automatic increase spells */
+		for (i = 0; ds_readb(0x14bf) > 0; i++) {
+			v2 = ds_readw(0xe2c + (typus - 7) * 90 + i * 2);
+			D1_INFO("spell_inc_novice(%x %s)\n", v2, texts[i + 168]);
+			spell_inc_novice(v2);
+		}
+	}
+}
+
+
 void refresh_screen()
 {
 	PhysPt src, dst;
