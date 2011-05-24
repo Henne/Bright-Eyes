@@ -4501,8 +4501,8 @@ void restore_mouse_isr()
 
 void alloc_buffers()
 {
-	ds_writed(0x47cb, RealMake(0xa0000, 0x0));
-	ds_writed(0x47c7, RealMake(0xa0000, 0x0));
+	ds_writed(0x47cb, RealMake(0xa000, 0x0));
+	ds_writed(0x47c7, RealMake(0xa000, 0x0));
 
 	gen_ptr1 = (Bit8u*)gen_alloc(64108);
 	gen_ptr1_dis = gen_ptr1 + 8;
