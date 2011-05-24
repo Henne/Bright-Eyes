@@ -3906,6 +3906,129 @@ void choose_atpa()
 	ds_writew(0x1327, 0);
 }
 
+/**
+ * choose_typus() - choose a typus manually
+ *
+ */
+void choose_typus()
+{
+	Bit8u *ptr;
+	char name_bak[20];
+	Bit16u randval, i, typus_names;
+	Bit16s choosen_typus;
+	char sex_bak;
+
+	if (!gui_bool((Bit8u*)texts[264]))
+		return;
+
+	if (ds_readb(0x134e))
+		/* famale typus names */
+		typus_names = 271;
+	else
+		/* male tyuse names */
+		typus_names = 17;
+	choosen_typus = gui_radio((Bit8u*)texts[30], 12,
+				texts[typus_names + 1], texts[typus_names + 2],
+				texts[typus_names + 3], texts[typus_names + 4],
+				texts[typus_names + 5], texts[typus_names + 6],
+				texts[typus_names + 7], texts[typus_names + 8],
+				texts[typus_names + 9], texts[typus_names + 10],
+				texts[typus_names + 11], texts[typus_names + 12]);
+
+	if (choosen_typus == -1)
+		return;
+
+	/* clear the hero area with saved name and sex */
+	strcpy(name_bak, (char*)MemBase + PhysMake(datseg, 0x132c));
+	sex_bak = ds_readb(0x134e);
+	memset(MemBase + PhysMake(datseg, 0x132c), 0, 0x6da);
+	clear_hero();
+	ds_writeb(0x134e, sex_bak);
+	strcpy((char*)MemBase + PhysMake(datseg, 0x132c), name_bak);
+
+	/* set typus */
+	ds_writeb(0x134d, choosen_typus);
+
+	/* roll out good attribute values */
+	ptr = MemBase + PhysMake(datseg, 0x1360);
+	for (i = 0; i < 7; i ++) {
+
+		randval = random_interval_gen(8, 13);
+
+		if (randval > 8)
+			randval--;
+
+		host_writeb(ptr + i * 3 + 1, randval);
+		host_writeb(ptr + i * 3,  randval);
+	}
+
+	/* roll out bad attribute values */
+	ptr = MemBase + PhysMake(datseg, 0x1375);
+	for (i = 0; i < 7; i ++) {
+
+		randval = random_interval_gen(2, 7);
+
+		if (randval < 7)
+			randval++;
+
+		host_writeb(ptr + i * 3 + 1, randval);
+		host_writeb(ptr + i * 3,  randval);
+	}
+
+	/* adjust typus attribute requirements */
+	for (i = 0; i < 4; i++) {
+		/* calc pointer to attribute */
+		ptr = MemBase + PhysMake(datseg, 0x1360 +
+			ds_readb(0x3cf + choosen_typus * 8 + i * 2) * 3);
+
+		/* get the required value */
+		randval = ds_readb(0x3cf + 1 + choosen_typus * 8 + i * 2);
+
+		if (randval == 1)
+			continue;
+
+		if (randval & 0x80) {
+			/* attribute upper bound */
+			if ((signed short)host_readb(ptr) <= (randval & 0x7f))
+				continue;
+
+			host_writeb(ptr + 1, randval & 0x7f);
+			host_writeb(ptr, randval & 0x7f);
+		} else {
+			/* attribute lower bound */
+			if ((signed short)host_readb(ptr) >= randval)
+				continue;
+
+			host_writeb(ptr + 1, randval);
+			host_writeb(ptr, randval);
+		}
+	}
+
+	load_typus(ds_readb(0x134d));
+	draw_mouse_ptr_wrapper();
+	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
+	wait_for_vsync();
+	set_palette(MemBase + Real2Phys(ds_readd(0x47b3)) + 0x5c02, 0, 32);
+	call_mouse();
+
+	if (ds_readb(0x134d) > 10)
+		ds_writew(0x40b7, 10);
+	else
+		ds_writew(0x40b7, ds_readb(0x134d));
+
+	if (ds_readb(0x134e)) {
+		ds_writeb(0x40b6, ds_readb(0x1054 + ds_readb(0x40b7)));
+		ds_writeb(0x40b5, ds_readb(0x1054 + ds_readb(0x40b7)));
+		ds_writeb(0x40b4, ds_readb(0x1049 + ds_readb(0x40b7)) - 1);
+	} else {
+		ds_writeb(0x40b6, ds_readb(0x1048 + ds_readb(0x40b7)));
+		ds_writeb(0x40b5, ds_readb(0x1048 + ds_readb(0x40b7)));
+		ds_writeb(0x40b4, ds_readb(0x1054 + ds_readb(0x40b7)) - 1);
+	}
+	fill_values();
+	ds_writew(0x11fe, 1);
+}
+
 void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 {
 	Bit16u i;
