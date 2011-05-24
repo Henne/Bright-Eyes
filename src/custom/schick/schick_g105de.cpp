@@ -310,7 +310,7 @@ static int seg002(Bitu offs)
 {
 	switch (offs) {
 		case 0x1dbe: {
-			exit_video();
+			G105de::exit_video();
 			return 1;
 		}
 		case 0x1fe0: {
@@ -327,7 +327,7 @@ static int seg002(Bitu offs)
 			CPU_Push16(x1);
 			CPU_Push32(ptr);
 
-			call_fill_rect_gen(Real2Phys(ptr),
+			G105de::call_fill_rect_gen(Real2Phys(ptr),
 				x1, y1, x2, y2, color);
 
 			D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
@@ -722,7 +722,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x09d1: {
 					CPU_Pop16();
 
-					draw_mouse_ptr_wrapper();
+					G105de::draw_mouse_ptr_wrapper();
 					D1_LOG("draw_mouse_ptr_wrapper();\n");
 
 					return 1;
@@ -731,14 +731,14 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("call_mouse();\n");
-					call_mouse();
+					G105de::call_mouse();
 
 					return 1;
 				}
 				case 0x09e5: {
 					CPU_Pop16();
 
-					draw_mouse_ptr();
+					G105de::draw_mouse_ptr();
 					D1_LOG("draw_mouse_ptr();\n");
 
 					return 1;
@@ -747,7 +747,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("mouse();\n");
-					mouse();
+					G105de::mouse();
 
 					return 1;
 				}
@@ -799,7 +799,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("update_mouse_ptr();\n");
-					update_mouse_ptr();
+					G105de::update_mouse_ptr();
 
 					return 1;
 				}
@@ -807,7 +807,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("save_mouse_ptr();\n");
-					save_mouse_ptr();
+					G105de::save_mouse_ptr();
 
 					return 1;
 				}
@@ -899,7 +899,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					Bit32s retval;
 
-					retval = get_archive_offset(MemBase + Real2Phys(name), MemBase + Real2Phys(table));
+					retval = G105de::get_archive_offset(MemBase + Real2Phys(name), MemBase + Real2Phys(table));
 
 					D1_LOG("get_archive_offset(%s, %s); = %d\n",
 						getString(name),
@@ -933,7 +933,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					Bit32s retval;
-					retval = get_filelength();
+					retval = G105de::get_filelength();
 
 					reg_ax = retval & 0xffff;
 					reg_dx = (retval>>16) & 0xffff;
@@ -945,7 +945,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x1c7b: {
 					CPU_Pop16();
 
-					reg_ax = ret_zero1();
+					reg_ax = G105de::ret_zero1();
 					D1_LOG("ret_zero1();\n");
 
 					return 1;
@@ -984,7 +984,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v1);
 
 					Bit32u retval;
-					retval = swap32(v1, v2);
+					retval = G105de::swap32(v1, v2);
 
 					D1_INFO("swap32(%x, %x);\n", v1, v2);
 
@@ -997,7 +997,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("init_video();\n");
-					init_video();
+					G105de::init_video();
 
 					return 1;
 				}
@@ -1005,7 +1005,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("exit_video();\n");
-					exit_video();
+					G105de::exit_video();
 
 					return 1;
 				}
@@ -1020,7 +1020,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v2);
 					CPU_Push16(v1);
 
-					draw_v_line(v1, v2, v3, v4);
+					G105de::draw_v_line(v1, v2, v3, v4);
 
 					D1_LOG("draw_v_line(%d,%d,%d,%x);\n",
 						v1, v2, v3, v4);
@@ -1052,7 +1052,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x1);
 					CPU_Push32(ptr);
 
-					call_fill_rect_gen(Real2Phys(ptr),
+					G105de::call_fill_rect_gen(Real2Phys(ptr),
 						x1, y1, x2, y2, color);
 
 					D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
@@ -1065,7 +1065,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
-					reg_ax = str_splitter((char*)MemBase + Real2Phys(ptr));
+					reg_ax = G105de::str_splitter((char*)MemBase + Real2Phys(ptr));
 					D1_LOG("str_splitter(%s); = %d\n",
 						(char*)getString(ptr), reg_ax);
 
@@ -1076,7 +1076,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
-					reg_ax = print_line((char*)MemBase + Real2Phys(ptr));
+					reg_ax = G105de::print_line((char*)MemBase + Real2Phys(ptr));
 					D1_LOG("print_line(%s); = %d\n",
 						(char*)getString(ptr), reg_ax);
 
@@ -1092,7 +1092,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 
 					D1_LOG("print_str(%s)\n", getString(ptr));
-					print_str((char*)MemBase + Real2Phys(ptr),
+					G105de::print_str((char*)MemBase + Real2Phys(ptr),
 						x, y);
 
 					return 1;
@@ -1106,7 +1106,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x);
 					CPU_Push16(c);
 
-					reg_ax = print_chr((char)c, x, y);
+					reg_ax = G105de::print_chr((char)c, x, y);
 
 					D1_LOG("print_chr(%c,%d,%d); = %d\n",
 						c, x, y, reg_ax);
@@ -1120,7 +1120,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 					CPU_Push16(c);
 
-					reg_ax = get_chr_info((char)c,
+					reg_ax = G105de::get_chr_info((char)c,
 						MemBase + Real2Phys(ptr));
 
 					D1_LOG("get_chr_info(%c,%x); = %d\n",
@@ -1141,7 +1141,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("call_them_all(%d,%d,%d,%d);\n",
 						v1, v2, v3, v4);
-					call_them_all(v1, v2, v3, v4);
+					G105de::call_them_all(v1, v2, v3, v4);
 
 					return 1;
 				}
@@ -1160,7 +1160,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v2);
 					CPU_Push16(v1);
 
-					set_vals(v1, v2);
+					G105de::set_vals(v1, v2);
 					D1_LOG("set_vals(%d, %d);\n", v1, v2);
 
 					return 1;
@@ -1172,7 +1172,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(p2);
 					CPU_Push32(p1);
 
-					get_vals(MemBase + Real2Phys(p1),
+					G105de::get_vals(MemBase + Real2Phys(p1),
 						MemBase + Real2Phys(p2));
 					D1_LOG("get_vals(%x, %x);\n", p1, p2);
 
@@ -1183,7 +1183,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
-					reg_ax = get_str_width((char*)getString(ptr));
+					reg_ax = G105de::get_str_width((char*)getString(ptr));
 
 					D1_LOG("get_str_width(%s); = %d\n",
 						(char*)getString(ptr), reg_ax);
@@ -1199,7 +1199,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x);
 					CPU_Push32(str);
 
-					reg_ax = get_line_start_c((char*)getString(str), x, y);
+					reg_ax = G105de::get_line_start_c((char*)getString(str), x, y);
 
 					D1_LOG("get_line_start_c(%s,%d,%d); = %d\n",
 						getString(str), x, y, reg_ax);
@@ -1222,7 +1222,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("enter_string(%x,%d,%d,%d,%d);\n",
 						getString(str), x, y, len, zero);
 
-					reg_ax = enter_string(
+					reg_ax = G105de::enter_string(
 						(char*)MemBase + Real2Phys(str),
 						x, y, len, zero);
 
@@ -1289,7 +1289,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("enter_name();\n");
-					enter_name();
+					G105de::enter_name();
 
 					return 1;
 				}

@@ -22,7 +22,6 @@
 
 
 static FILE * fd_open_datfile(Bit16u);
-static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
 
 #define MAX_PAGES (11)
 static Bit8u *bg_buffer[MAX_PAGES];
@@ -144,6 +143,10 @@ static void prepare_path(char *p)
 }
 
 namespace G105de {
+
+static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
+static FILE * fd_open_datfile(Bit16u index);
+
 void BE_cleanup()
 {
 	long sum = 0;
@@ -279,10 +282,10 @@ void stop_music()
 	if (state_table)
 		free(state_table);
 
-	if(form_xmid)
+	if (form_xmid)
 		free(form_xmid);
 
-	if(snd_driver)
+	if (snd_driver)
 		free(snd_driver);
 
 	seg001_033b();
@@ -362,7 +365,7 @@ Bit8u *get_timbre(Bit16u bank, Bit16u patch)
 
 bool call_load_file(Bit16u index)
 {
-	return G105de::load_file(index);
+	return load_file(index);
 }
 
 bool load_file(Bit16u index)
@@ -523,8 +526,6 @@ void mouse_do_disable()
 	ds_writew(0x1a0b, 0);
 }
 
-}
-
 /* static */
 void draw_mouse_ptr_wrapper() {
 
@@ -589,7 +590,7 @@ void mouse()
 }
 
 /* static */
-void G105de::mouse_compare()
+void mouse_compare()
 {
 	/* these pointers never differ in gen */
 	if (ds_readw(0x1254) || ds_readd(0x4621) != ds_readd(0x4625)) {
@@ -610,7 +611,7 @@ void G105de::mouse_compare()
 	}
 }
 
-void G105de::handle_input()
+void handle_input()
 {
 	Bit16u si, i;
 
@@ -674,7 +675,7 @@ void G105de::handle_input()
 }
 
 /* static */
-Bit16u G105de::get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
+Bit16u get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
 {
 
 	Bit16u i;
@@ -708,7 +709,7 @@ Bit16u G105de::get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
  *
 */
 
-void G105de::decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
+void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 				Bit16u width, Bit16u height, Bit16u mode)
 {
 	Bit8u *dst_loc;
@@ -858,7 +859,7 @@ void do_draw_mouse_ptr()
 				ds_readb(0x4669 + i * 16 + j));
 }
 
-void G105de::load_font_and_text()
+void load_font_and_text()
 {
 	FILE *fd;
 	Bit32u len;
@@ -871,12 +872,12 @@ void G105de::load_font_and_text()
 	len = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4775)), 64000);
 	fclose(fd);
 
-	G105de::split_textbuffer(MemBase + PhysMake(datseg, 0x40d9),
+	split_textbuffer(MemBase + PhysMake(datseg, 0x40d9),
 			ds_readd(0x4775), len);
 
 }
 
-void G105de::split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
+void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
 	Bit32u i = 0;
 
@@ -896,7 +897,7 @@ void G105de::split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 	}
 }
 
-void G105de::load_font_and_text_host()
+void load_font_and_text_host()
 {
 	FILE *fd;
 	Bit32u len;
@@ -909,11 +910,11 @@ void G105de::load_font_and_text_host()
 	len = fd_read_datfile(fd, buffer_text, 64000);
 	fclose(fd);
 
-	G105de::split_textbuffer_host(texts, (char*)buffer_text, len);
+	split_textbuffer_host(texts, (char*)buffer_text, len);
 
 }
 
-void G105de::split_textbuffer_host(char **dst, char *src, Bit32u len)
+void split_textbuffer_host(char **dst, char *src, Bit32u len)
 {
 	Bit32u i = 0;
 
@@ -929,7 +930,7 @@ void G105de::split_textbuffer_host(char **dst, char *src, Bit32u len)
 	}
 }
 
-void G105de::load_page(Bit16u page)
+void load_page(Bit16u page)
 {
 	Bit8u *ptr;
 	FILE *fd;
@@ -970,7 +971,7 @@ void G105de::load_page(Bit16u page)
 }
 
 
-void G105de::load_typus(Bit16u typus)
+void load_typus(Bit16u typus)
 {
 	Bit8u *ptr;
 	FILE *fd;
@@ -1009,7 +1010,7 @@ void G105de::load_typus(Bit16u typus)
 	fclose(fd);
 }
 
-Bit16u G105de::open_datfile(Bit16u index)
+Bit16u open_datfile(Bit16u index)
 {
 	CPU_Push16(index);
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x1af4);
@@ -1077,7 +1078,7 @@ static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
 	return len;
 }
 
-void G105de::read_common_files()
+void read_common_files()
 {
 	FILE *fd;
 	long len;
@@ -1136,8 +1137,6 @@ Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 	return -1;
 }
 
-namespace G105de {
-
 Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 {
 
@@ -1151,8 +1150,6 @@ Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 	return len;
 }
 
-}
-
 Bit32s get_filelength() {
 
 	return ds_readd(0x3f2a);
@@ -1162,14 +1159,12 @@ Bit16u ret_zero1() {
 	return 0;
 }
 
-void G105de::wait_for_keypress()
+void wait_for_keypress()
 {
 	while (G105de::CD_bioskey(1)) {
 		G105de::CD_bioskey(0);
 	}
 }
-
-namespace G105de {
 
 void error_msg(Bit8u *msg)
 {
@@ -1189,8 +1184,6 @@ void vsync_or_key(Bit16u val)
 		}
 		wait_for_vsync();
 	}
-}
-
 }
 
 Bit32u swap32(Bit16u v1, Bit16u v2) {
@@ -1228,7 +1221,7 @@ void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
 	draw_h_spaced_dots(PhysMake(0xa000, off), len, color, 320);
 }
 
-void G105de::do_draw_pic(Bit16u mode)
+void do_draw_pic(Bit16u mode)
 {
 	Bit16u x, y, d1, d2, v1, v2;
 	Bit16u d3, d4, w, h;
@@ -1263,13 +1256,9 @@ void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, 
 	fill_rect(ptr + y1 * 320 + x1, color, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-namespace G105de {
-
 void wait_for_vsync()
 {
 	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x2024);
-}
-
 }
 
 /* static */
@@ -1625,7 +1614,7 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 		print_chr(0x20, di, y);
 		print_chr(0x5f, di, y);
 	}
-	G105de::wait_for_keypress();
+	wait_for_keypress();
 	ds_writew(0x4597, 0);
 
 	c = 0;
@@ -1735,8 +1724,6 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 	call_mouse();
 	return 0;
 }
-
-namespace G105de {
 
 void draw_popup_line(Bit16u line, Bit16u type)
 {
@@ -1877,14 +1864,12 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 	return retval;
 }
 
-}
-
 /**
  * gui_bool() - displays a yes - no radio box
  * @header:	the header of menu
  *
  */
-Bit16s G105de::gui_bool(Bit8u *msg)
+Bit16s gui_bool(Bit8u *msg)
 {
 	Bit16s retval;
 
@@ -1905,7 +1890,7 @@ Bit16s G105de::gui_bool(Bit8u *msg)
  * @offset:	the offset of the first radio line
  *
  */
-void G105de::fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
+void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 {
 	Bit16u i, x, y;
 
@@ -1938,7 +1923,7 @@ void G105de::fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
  * @options:	the number of options
  *
  */
-Bit16s G105de::gui_radio(Bit8u *header, Bit8s options, ...)
+Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 {
 	va_list arguments;
 
@@ -2115,15 +2100,12 @@ void enter_name()
 	dst = Real2Phys(ds_readd(0x47cb) + 12 * 320 + 176);
 
 	draw_mouse_ptr_wrapper();
-	G105de::copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
 	enter_string((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12, 15, 1);
-	G105de::copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
 	call_mouse();
 	print_str((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12);
 }
-
-namespace G105de {
-
 
 void change_head()
 {
@@ -2195,7 +2177,7 @@ void change_sex()
 		dst = Real2Phys(ds_readd(0x47cb)) + 7 * 320 + 305;
 		src = Real2Phys(ds_readd(0x4769)) + ds_readb(0x134e) * 256;
 		draw_mouse_ptr_wrapper();
-		G105de::copy_to_screen(src, dst, 16, 16, 0);
+		copy_to_screen(src, dst, 16, 16, 0);
 		call_mouse();
 	}
 }
@@ -3165,15 +3147,15 @@ void save_picbuf()
 
 	if (x_1) {
 		p = Real2Phys(ds_readd(0x47d3)) + y_1 * 320 + x_1;
-		G105de::copy_to_screen(p, Real2Phys(ds_readd(0x479f)),
+		copy_to_screen(p, Real2Phys(ds_readd(0x479f)),
 			w_1, h_1, 2);
 	}
 
 	p = Real2Phys(ds_readd(0x47d3)) + y_2 * 320 + x_2;
-	G105de::copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
+	copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
 
 	p = Real2Phys(ds_readd(0x47d3)) + y_3 * 320 + x_3;
-	G105de::copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
+	copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
 }
 
 void restore_picbuf(PhysPt ptr)
@@ -3238,15 +3220,15 @@ void restore_picbuf(PhysPt ptr)
 
 	if (x_1) {
 		p = ptr + y_1 * 320 + x_1;
-		G105de::copy_to_screen(Real2Phys(ds_readd(0x479f)),
+		copy_to_screen(Real2Phys(ds_readd(0x479f)),
 			p, w_1, h_1, 0);
 	}
 
 	p = ptr + y_2 * 320 + x_2;
-	G105de::copy_to_screen(Real2Phys(ds_readd(0x479b)), p, w_2, h_2, 0);
+	copy_to_screen(Real2Phys(ds_readd(0x479b)), p, w_2, h_2, 0);
 
 	p = ptr + y_3 * 320 + x_3;
-	G105de::copy_to_screen(Real2Phys(ds_readd(0x4797)), p, w_3, h_3, 0);
+	copy_to_screen(Real2Phys(ds_readd(0x4797)), p, w_3, h_3, 0);
 }
 
 /**
