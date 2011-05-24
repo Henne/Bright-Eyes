@@ -166,8 +166,7 @@ static int seg000(unsigned short offs) {
 			CPU_Push32(src);
 
 			D1_LOG("F_SCOPY()");
-			memcpy(MemBase + Real2Phys(dst),
-				MemBase + Real2Phys(src), reg_cx);
+			memcpy(Real2Host(dst), Real2Host(src), reg_cx);
 			RET(8);
 			return 1;
 		}
@@ -281,7 +280,7 @@ static int seg000(unsigned short offs) {
 			D1_LOG("C-Lib _read(handle=%d, buffer=0x%x, len=%d)\n",
 				handle, buf, count);
 
-			reg_ax = bc__read(handle, MemBase + Real2Phys(buf), count);
+			reg_ax = bc__read(handle, Real2Host(buf), count);
 
 			return 1;
 		}
@@ -743,7 +742,7 @@ static int seg002(unsigned short offs) {
 		D1_LOG("read_archive_file(%d, %x, %d);\n",
 			handle, buf, len);
 		reg_ax = read_archive_file(handle,
-				MemBase + Real2Phys(buf), len);
+				Real2Host(buf), len);
 
 		return 1;
 	}
@@ -778,7 +777,7 @@ static int seg002(unsigned short offs) {
 			D1_LOG("process_nvf(0x%04x:0x%04x);\n",
 				RealSeg(nvf), RealOff(nvf));
 
-			retval = process_nvf(MemBase + Real2Phys(nvf));
+			retval = process_nvf(Real2Host(nvf));
 
 			reg_ax = retval & 0xffff;
 			reg_dx = (retval >> 16) & 0xffff;
@@ -822,7 +821,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(p);
 
 		D1_LOG("make_ggst_cursor(%x)\n", Real2Phys(p));
-		make_ggst_cursor(MemBase + Real2Phys(p));
+		make_ggst_cursor(Real2Host(p));
 		return 1;
 	}
 	case 0x1921:
@@ -843,7 +842,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(y);
 		CPU_Push16(x);
 
-		reg_ax = get_mouse_action(x, y, MemBase + Real2Phys(p));
+		reg_ax = get_mouse_action(x, y, Real2Host(p));
 
 		D1_LOG("get_mouse_action(x=%d, y=%d, p=%x); = %x\n",
 			x, y, p, reg_ax);
@@ -927,7 +926,7 @@ static int seg002(unsigned short offs) {
 
 		D1_LOG("set_mod_slot(%d, %d, 0x%x, %+d, %d)\n",
 			slot_nr, timer, ptr, mod, who);
-		set_mod_slot(slot_nr, timer, MemBase + Real2Phys(ptr), mod, who);
+		set_mod_slot(slot_nr, timer, Real2Host(ptr), mod, who);
 
 		return 1;
 	}
@@ -1047,7 +1046,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("select_with_mouse(%x,%x);\n", p1, p2);
-		select_with_mouse(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+		select_with_mouse(Real2Host(p1), Real2Host(p2));
 
 		return 1;
 
@@ -1059,7 +1058,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("select_with_keyboard(%x,%x);\n", p1, p2);
-		select_with_keyboard(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+		select_with_keyboard(Real2Host(p1), Real2Host(p2));
 
 		return 1;
 	}
@@ -1089,7 +1088,7 @@ static int seg002(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = check_hero(MemBase + Real2Phys(hero));
+		reg_ax = check_hero(Real2Host(hero));
 
 		D1_LOG("check_hero(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
@@ -1100,7 +1099,7 @@ static int seg002(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
+		reg_ax = is_hero_available_in_group(Real2Host(hero));
 		D1_LOG("is_hero_available_in_group(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
 
@@ -1115,7 +1114,7 @@ static int seg002(unsigned short offs) {
 		D1_LOG("sub_ae_splash(%s, %d);\n",
 			schick_getCharname(hero), type);
 
-		sub_ae_splash(MemBase + Real2Phys(hero), type);
+		sub_ae_splash(Real2Host(hero), type);
 
 		return 1;
 	}
@@ -1125,7 +1124,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(val);
 		CPU_Push32(hero);
 
-		add_hero_ae(MemBase + Real2Phys(hero), val);
+		add_hero_ae(Real2Host(hero), val);
 
 		D1_LOG("add_hero_ae(%s, %d)\n",
 				schick_getCharname(hero), val);
@@ -1141,7 +1140,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(hero);
 
 		D1_INFO("%s erhaelt %d LE\n", schick_getCharname(hero), le);
-		add_hero_le(MemBase + Real2Phys(hero), le);
+		add_hero_le(Real2Host(hero), le);
 
 		return 1;
 	}
@@ -1163,7 +1162,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(attrib);
 		CPU_Push32(hero);
 
-		reg_ax = test_attrib(MemBase + Real2Phys(hero),
+		reg_ax = test_attrib(Real2Host(hero),
 				attrib, bonus);
 
 		return 1;
@@ -1181,7 +1180,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(attrib1);
 		CPU_Push32(hero);
 
-		reg_ax = test_attrib3(MemBase + Real2Phys(hero),
+		reg_ax = test_attrib3(Real2Host(hero),
 				attrib1, attrib2, attrib3, bonus);
 
 		return 1;
@@ -1281,7 +1280,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(item);
 		CPU_Push32(hero);
 
-		reg_ax = get_item_pos(MemBase + Real2Phys(hero), item);
+		reg_ax = get_item_pos(Real2Host(hero), item);
 
 		D1_LOG("get_item_pos(%s, %s = (0x%d)) = %d\n",
 					schick_getCharname(hero),
@@ -1409,7 +1408,7 @@ static int seg004(unsigned short offs) {
 		CPU_Push32(ptr1);
 
 		D1_LOG("restore_rect(%d %d %d %d)\n", x, y , n, m);
-		restore_rect(Real2Phys(ptr1), MemBase + Real2Phys(ptr2), x, y,
+		restore_rect(Real2Phys(ptr1), Real2Host(ptr2), x, y,
 			(char)n, (char)m);
 		return 1;
 	}
@@ -1431,7 +1430,7 @@ static int seg004(unsigned short offs) {
 
 		D1_LOG("restore_rect_rle(%d %d %d %d %d)\n", x, y , w, h, v1);
 
-		restore_rect_rle(Real2Phys(ptr1), MemBase + Real2Phys(ptr2),
+		restore_rect_rle(Real2Phys(ptr1), Real2Host(ptr2),
 			x, y, (char)w, (char)h, v1);
 		return 1;
 	}
@@ -1740,7 +1739,7 @@ static int seg007(unsigned short offs) {
 			CPU_Push32(p);
 			CPU_Push16(val);
 
-			reg_ax = is_in_word_array(val, MemBase + Real2Phys(p));
+			reg_ax = is_in_word_array(val, Real2Host(p));
 
 			D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
 				val, RealSeg(p), RealOff(p), reg_ax);
@@ -1804,8 +1803,8 @@ static int seg007(unsigned short offs) {
 			CPU_Push32(min);
 			CPU_Push16(val);
 
-			damage_range_template(val, MemBase + Real2Phys(min),
-				MemBase + Real2Phys(max));
+			damage_range_template(val, Real2Host(min),
+				Real2Host(max));
 
 			D1_LOG("damage_range_template() Untested\n");
 
@@ -1865,7 +1864,7 @@ static int seg008(unsigned short offs) {
 		D1_GFX("set_color(rgb=0x%x:0x%x, color=0x%x);\n",
 			RealSeg(ptr), RealOff(ptr), color);
 
-		set_color(MemBase + Real2Phys(ptr), color);
+		set_color(Real2Host(ptr), color);
 
 		D1_GFX("RGB=(0x%x, 0x%x, 0x%x);\n",
 			real_readb(RealSeg(ptr), RealOff(ptr)),
@@ -1887,15 +1886,15 @@ static int seg008(unsigned short offs) {
 		D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
 			RealSeg(ptr), RealOff(ptr), first_color, colors);
 
-		set_palette(MemBase + Real2Phys(ptr), first_color, colors);
+		set_palette(Real2Host(ptr), first_color, colors);
 
 		if (RealSeg(ptr) == datseg)
 			D1_LOG("Palette at DS:0x%x\n", RealSeg(ptr));
 		for (i=0; i<colors; i++)
 			D1_GFX("\"\\%02d\\%02d\\%02d\"..\n",
-				host_readb(MemBase + Real2Phys(ptr)+i*3),
-				host_readb(MemBase + Real2Phys(ptr)+i*3+1),
-				host_readb(MemBase + Real2Phys(ptr)+i*3+2));
+				host_readb(Real2Host(ptr)+i*3),
+				host_readb(Real2Host(ptr)+i*3+1),
+				host_readb(Real2Host(ptr)+i*3+2));
 		return 1;
 	}
 	case 0x14d: {
@@ -2059,8 +2058,8 @@ static int seg008(unsigned short offs) {
 			RealSeg(dst), RealOff(dst), RealSeg(src), RealOff(src),
 			width_to_copy, height, dst_width, src_width, solid);
 
-		copy_solid_permuted(MemBase + Real2Phys(dst),
-			MemBase + Real2Phys(src), width_to_copy,
+		copy_solid_permuted(Real2Host(dst),
+			Real2Host(src), width_to_copy,
 			height,	dst_width, src_width, solid);
 
 		return 1;
@@ -2086,7 +2085,7 @@ static int seg008(unsigned short offs) {
 			RealSeg(dst), RealOff(dst), RealSeg(src), RealOff(src),
 			width_to_copy, height, dst_width, src_width, solid);
 
-		copy_solid(MemBase + Real2Phys(dst), MemBase + Real2Phys(src),
+		copy_solid(Real2Host(dst), Real2Host(src),
 			width_to_copy, height, dst_width, src_width, solid);
 
 		return 1;
@@ -2110,9 +2109,9 @@ static int seg008(unsigned short offs) {
 			RealSeg(src), RealOff(src), RealSeg(tmp_buffer),
 			RealOff(tmp_buffer), mode);
 
-		decomp_rle(width, height, MemBase + Real2Phys(dst),
-			MemBase + Real2Phys(src),
-			MemBase + Real2Phys(tmp_buffer), mode);
+		decomp_rle(width, height, Real2Host(dst),
+			Real2Host(src),
+			Real2Host(tmp_buffer), mode);
 
 		return 1;
 	}
@@ -2139,9 +2138,9 @@ static int seg009(unsigned short offs) {
 				RealSeg(p2), RealOff(p2),
 				RealSeg(p3), RealOff(p3), len);
 
-			decomp_pp20(MemBase + Real2Phys(p1),
-				MemBase + Real2Phys(p2),
-				MemBase + Real2Phys(p3), len);
+			decomp_pp20(Real2Host(p1),
+				Real2Host(p2),
+				Real2Host(p3), len);
 
 			return 1;
 		}
@@ -2374,10 +2373,10 @@ static int seg029(unsigned short offs) {
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 
-		copy_forename(MemBase + Real2Phys(p1), MemBase + Real2Phys(p2));
+		copy_forename(Real2Host(p1), Real2Host(p2));
 		D1_LOG("copy_forename(%s, %s)\n",
-			(char*)MemBase + Real2Phys(p1),
-			(char*)MemBase + Real2Phys(p2));
+			(char*)Real2Host(p1),
+			(char*)Real2Host(p2));
 		return 1;
 	}
 	default:
@@ -2444,8 +2443,8 @@ static int seg038(unsigned short offs) {
 			CPU_Push16(obj);
 
 			reg_ax = FIG_search_obj_on_cb(obj,
-					MemBase + Real2Phys(px),
-					MemBase + Real2Phys(py));
+					Real2Host(px),
+					Real2Host(py));
 
 			D1_LOG("far FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
 				obj, mem_readw(Real2Phys(px)),
@@ -2494,7 +2493,7 @@ static int seg039(unsigned short offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = seg039_0023(MemBase + Real2Phys(hero));
+			reg_ax = seg039_0023(Real2Host(hero));
 			D1_LOG("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
 
 			return 1;
@@ -2586,7 +2585,7 @@ static int seg041(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = weapon_check(MemBase + Real2Phys(hero));
+		reg_ax = weapon_check(Real2Host(hero));
 
 		D1_LOG("weapon_check(%s); = %d\n", schick_getCharname(hero),
 			(signed short)reg_ax);
@@ -2653,7 +2652,7 @@ static int seg047(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		hero_get_sober(MemBase + Real2Phys(hero));
+		hero_get_sober(Real2Host(hero));
 
 		return 1;
 	}
@@ -2689,7 +2688,7 @@ static int seg047(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = hero_is_diseased(MemBase + Real2Phys(hero));
+		reg_ax = hero_is_diseased(Real2Host(hero));
 		D1_LOG("hero_is_diseased(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
 		return 1;
@@ -2698,7 +2697,7 @@ static int seg047(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = hero_is_poisoned(MemBase + Real2Phys(hero));
+		reg_ax = hero_is_poisoned(Real2Host(hero));
 		D1_LOG("hero_is_poisoned(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
 		return 1;
@@ -2736,7 +2735,7 @@ static int seg047(unsigned short offs) {
 		CPU_Push16(poison);
 		CPU_Push32(hero);
 
-		hero_gets_poisoned(MemBase + Real2Phys(hero), poison);
+		hero_gets_poisoned(Real2Host(hero), poison);
 		D1_INFO("%s wurde vergiftet %d\n",
 			schick_getCharname(hero), poison);
 		return 1;
@@ -2747,7 +2746,7 @@ static int seg047(unsigned short offs) {
 		CPU_Push16(disease);
 		CPU_Push32(hero);
 
-		hero_gets_diseased(MemBase + Real2Phys(hero), disease);
+		hero_gets_diseased(Real2Host(hero), disease);
 		D1_INFO("%s ist erkrankt %d\n",
 			schick_getCharname(hero), disease);
 		return 1;
@@ -2760,7 +2759,7 @@ static int seg047(unsigned short offs) {
 		CPU_Push16(disease);
 		CPU_Push32(hero);
 
-		hero_disease_test(MemBase + Real2Phys(hero), disease, probability);
+		hero_disease_test(Real2Host(hero), disease, probability);
 		D1_INFO("%s koennte zu %d%% an %d erkranken\n",
 			schick_getCharname(hero), probability, disease);
 		return 1;
@@ -2942,7 +2941,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 		CPU_Push32(p);
 
-		reg_ax = GUI_get_first_pos_centered(MemBase + Real2Phys(p), v1, v2, v3);
+		reg_ax = GUI_get_first_pos_centered(Real2Host(p), v1, v2, v3);
 		D1_LOG("GUI_get_first_pos_centered(%s,%d,%d,%d) = %d\n", getString(p),
 			v1, v2, v3, reg_ax);
 
@@ -2966,7 +2965,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p);
 
 		D1_LOG("GUI_font_to_buf(0x%x:0x%x)\n", RealSeg(p), RealOff(p));
-		GUI_font_to_buf(MemBase + Real2Phys(p));
+		GUI_font_to_buf(Real2Host(p));
 
 		return 1;
 	}
@@ -3004,7 +3003,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("GUI_get_smth();\n");
-		GUI_get_smth((short*)(MemBase + Real2Phys(p1)), (short*)(MemBase + Real2Phys(p2)));
+		GUI_get_smth((short*)(Real2Host(p1)), (short*)(Real2Host(p2)));
 
 		return 1;
 	}
@@ -3064,7 +3063,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(p_height);
 		CPU_Push16(c);
 
-		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)MemBase + Real2Phys(p_height));
+		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
 		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 		return 1;
 	}
@@ -3173,7 +3172,7 @@ static int seg098(unsigned short offs) {
 		CPU_Push32(hero);
 
 		D1_LOG("Zauberprobe : %s %+d ", names_spell[spell], (signed char)bonus);
-		reg_ax = test_spell(MemBase + Real2Phys(hero), spell, (signed char)bonus);
+		reg_ax = test_spell(Real2Host(hero), spell, (signed char)bonus);
 		return 1;
 	}
 	case 0x2a: {
@@ -3358,7 +3357,7 @@ static int seg103(unsigned short offs) {
 			D1_LOG("Talentprobe : %s %+d ",
 				names_skill[skill], (signed char)bonus);
 
-			reg_ax = test_skill(MemBase + Real2Phys(hero), skill, bonus);
+			reg_ax = test_skill(Real2Host(hero), skill, bonus);
 			return 1;
 		}
 		case 0x25: {
@@ -3375,7 +3374,7 @@ static int seg103(unsigned short offs) {
 
 			signed char m_init = (signed char) (mod_init & 0xff);
 
-			reg_ax = bargain(MemBase + Real2Phys(hero), items,
+			reg_ax = bargain(Real2Host(hero), items,
 					price, percent, m_init);
 
 			D1_LOG("bargain(%s,%d,%d,%d,%d);\n",
@@ -3409,7 +3408,7 @@ static int seg105(unsigned short offs) {
 				schick_getCharname(hero),
 				schick_getItemname(item), item, val);
 
-			unequip(MemBase + Real2Phys(hero), item, val);
+			unequip(Real2Host(hero), item, val);
 
 			return 1;
 		}
@@ -3431,7 +3430,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = can_hero_use_item(MemBase + Real2Phys(hero), item);
+			reg_ax = can_hero_use_item(Real2Host(hero), item);
 			D1_LOG("can_hero_use_item(%s, %s); = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax);
@@ -3460,7 +3459,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = hero_count_item(MemBase + Real2Phys(hero), item);
+			reg_ax = hero_count_item(Real2Host(hero), item);
 			D1_INFO("far hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax);
@@ -3746,7 +3745,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("near read_archive_file(%d, %x, %d);\n",
 				handle, buf, len);
 			reg_ax = read_archive_file(handle,
-					MemBase + Real2Phys(buf), len);
+					Real2Host(buf), len);
 
 			return 1;
 		}
@@ -3777,11 +3776,11 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("mouse_action()\n");
 
-			mouse_action(MemBase + Real2Phys(p1),
-				MemBase + Real2Phys(p2),
-				MemBase + Real2Phys(p3),
-				MemBase + Real2Phys(p4),
-				MemBase + Real2Phys(p5));
+			mouse_action(Real2Host(p1),
+				Real2Host(p2),
+				Real2Host(p3),
+				Real2Host(p4),
+				Real2Host(p5));
 
 			return 1;
 		}
@@ -3820,7 +3819,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(y);
 			CPU_Push16(x);
 
-			reg_ax = get_mouse_action(x, y, MemBase + Real2Phys(p));
+			reg_ax = get_mouse_action(x, y, Real2Host(p));
 
 			D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
 				x, y, p, reg_ax);
@@ -3959,7 +3958,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = is_hero_available_in_group(MemBase + Real2Phys(hero));
+			reg_ax = is_hero_available_in_group(Real2Host(hero));
 			D1_LOG("is_hero_available_in_group(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
 
@@ -4018,7 +4017,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(x);
 			CPU_Push32(p);
 
-			reg_ax = FIG_obj_needs_refresh(MemBase + Real2Phys(p), x, y);
+			reg_ax = FIG_obj_needs_refresh(Real2Host(p), x, y);
 			D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
 				p, x, y, reg_ax);
 
@@ -4119,11 +4118,11 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p2);
 			CPU_Push32(p1);
 
-			copy_forename(MemBase + Real2Phys(p1),
-				MemBase + Real2Phys(p2));
+			copy_forename(Real2Host(p1),
+				Real2Host(p2));
 			D1_LOG("near copy_forename(%s, %s)\n",
-				(char*)MemBase + Real2Phys(p1),
-				(char*)MemBase + Real2Phys(p2));
+				(char*)Real2Host(p1),
+				(char*)Real2Host(p2));
 			return 1;
 		}
 		case 0x127: {
@@ -4204,7 +4203,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt enemy = CPU_Pop32();
 			CPU_Push32(enemy);
 
-			reg_ax = FIG_is_enemy_active(MemBase + Real2Phys(enemy) );
+			reg_ax = FIG_is_enemy_active(Real2Host(enemy) );
 			D1_LOG("near FIG_is_enemy_active(); = %d\n", reg_ax);
 			return 1;
 		}
@@ -4247,8 +4246,8 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(obj);
 
 			reg_ax = FIG_search_obj_on_cb(obj,
-					MemBase + Real2Phys(px),
-					MemBase + Real2Phys(py));
+					Real2Host(px),
+					Real2Host(py));
 
 			D1_LOG("near FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
 				obj, mem_readw(Real2Phys(px)),
@@ -4264,7 +4263,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt p = CPU_Pop32();
 			CPU_Push32(p);
 
-			reg_ax = FIG_count_smth(MemBase + Real2Phys(p));
+			reg_ax = FIG_count_smth(Real2Host(p));
 			D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
 
 			return 1;
@@ -4283,7 +4282,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = seg039_0023(MemBase + Real2Phys(hero));
+			reg_ax = seg039_0023(Real2Host(hero));
 			D1_LOG("seg039_0023(%s) = %d\n",
 				schick_getCharname(hero), (signed short)reg_ax);
 
@@ -4342,7 +4341,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = weapon_check(MemBase + Real2Phys(hero));
+			reg_ax = weapon_check(Real2Host(hero));
 
 			D1_LOG("near weapon_check(%s); = %d\n",
 				schick_getCharname(hero), (signed short)reg_ax);
@@ -4375,7 +4374,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
 				schick_getCharname(hero), spell, fsig, x1, x2, yg);
-			status_show_spell(MemBase + Real2Phys(hero), spell,
+			status_show_spell(Real2Host(hero), spell,
 				fsig, x1, x2, yg);
 
 			return 1;
@@ -4397,7 +4396,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
 				schick_getCharname(hero), talent, ftig, x1, x2, yg);
-			status_show_talent(MemBase + Real2Phys(hero), talent,
+			status_show_talent(Real2Host(hero), talent,
 				ftig, x1, x2, yg);
 
 			return 1;
@@ -4410,7 +4409,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("status_show_talents(%s);\n",
 				schick_getCharname(hero));
 
-			status_show_talents(MemBase + Real2Phys(hero));
+			status_show_talents(Real2Host(hero));
 
 			return 1;
 		}
@@ -4437,7 +4436,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p_height);
 			CPU_Push16(c);
 
-			reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)MemBase + Real2Phys(p_height));
+			reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
 			D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 			return 1;
 		}
@@ -4461,7 +4460,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("GUI_1f8(0x%x, %d, %d, %d, %d);",
 				dst, x, y, num, v4);
 
-			reg_ax = GUI_enter_text(MemBase + Real2Phys(dst),
+			reg_ax = GUI_enter_text(Real2Host(dst),
 					x, y, num, v4);
 			D1_LOG(" = 0x%x\n", reg_ax);
 
@@ -4516,7 +4515,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("Talentprobe: %s %+d\n ",
 			names_skill[skill], (char)bonus);
 
-		reg_ax = test_skill(MemBase + Real2Phys(hero), skill, bonus);
+		reg_ax = test_skill(Real2Host(hero), skill, bonus);
 
 		return 1;
 	}
@@ -4565,7 +4564,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("Zauberprobe: %s %+d ",
 				names_spell[spell], (signed char)bonus);
 
-			reg_ax = test_spell(MemBase + Real2Phys(hero),
+			reg_ax = test_spell(Real2Host(hero),
 				spell, (signed char)bonus);
 			return 1;
 		}
@@ -4594,7 +4593,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("unequip(%s, %s, %d);\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), pos);
-			unequip(MemBase + Real2Phys(hero), item, pos);
+			unequip(Real2Host(hero), item, pos);
 
 			return 1;
 		}
@@ -4605,7 +4604,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = has_hero_stacked(MemBase + Real2Phys(hero), item);
+			reg_ax = has_hero_stacked(Real2Host(hero), item);
 			D1_LOG("has_hero_stacked(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), (signed short)reg_ax)
@@ -4636,7 +4635,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = hero_count_item(MemBase + Real2Phys(hero), item);
+			reg_ax = hero_count_item(Real2Host(hero), item);
 			D1_INFO("hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax)

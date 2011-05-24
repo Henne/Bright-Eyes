@@ -311,8 +311,8 @@ bool load_seq(Bit16u sequence_num)
 		return false;
 
 	ds_writew(0x3f5a, AIL_register_sequence(ds_readw(0x3f5c),
-		MemBase + Real2Phys(ds_readd(0x3f46)), sequence_num,
-		MemBase + Real2Phys(ds_readd(0x3f4e)), NULL));
+		Real2Host(ds_readd(0x3f46)), sequence_num,
+		Real2Host(ds_readd(0x3f4e)), NULL));
 
 	if (ds_readw(0x3f5a) == 0xffff) {
 		fclose(fd_timbre);
@@ -377,7 +377,7 @@ bool load_file(Bit16u index)
 	if (fd == NULL)
 		return false;
 
-	fread(MemBase + Real2Phys(ds_readd(0x3f46)), 1, 32767, fd);
+	fread(Real2Host(ds_readd(0x3f46)), 1, 32767, fd);
 	fclose(fd);
 
 	return true;
@@ -400,7 +400,7 @@ void play_midi(Bit16u index)
 	/* Midi disabled */
 	if (ds_readw(0x1a07))
 		return;
-	if (host_readw(MemBase + Real2Phys(ds_readd(0x3f56)) + 2) != 3)
+	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
 		return;
 
 	stop_sequence();
@@ -413,7 +413,7 @@ void stop_sequence()
 	/* Midi disabled */
 	if (ds_readw(0x1a07))
 		return;
-	if (host_readw(MemBase + Real2Phys(ds_readd(0x3f56)) + 2) != 3)
+	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
 		return;
 
 	AIL_stop_sequence(ds_readw(0x3f5c), ds_readw(0x3f5a));
@@ -645,11 +645,11 @@ void handle_input()
 		if (ds_readd(0x1276))
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
-				MemBase + Real2Phys(ds_readd(0x1276)));
+				Real2Host(ds_readd(0x1276)));
 		if (si == 0 && ds_readd(0x1272) != 0)
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
-				MemBase + Real2Phys(ds_readd(0x1272)));
+				Real2Host(ds_readd(0x1272)));
 
 		if (ds_readw(0x4591) == 2) {
 			for (i = 0; i < 15; i++)
@@ -865,11 +865,11 @@ void load_font_and_text()
 	Bit32u len;
 
 	fd = fd_open_datfile(0x0e);
-	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4779)), 1000);
+	fd_read_datfile(fd, Real2Host(ds_readd(0x4779)), 1000);
 	fclose(fd);
 
 	fd = fd_open_datfile(0x0f);
-	len = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4775)), 64000);
+	len = fd_read_datfile(fd, Real2Host(ds_readd(0x4775)), 64000);
 	fclose(fd);
 
 	split_textbuffer(MemBase + PhysMake(datseg, 0x40d9),
@@ -938,7 +938,7 @@ void load_page(Bit16u page)
 	if (page <= 10) {
 		/* check if this image is in the buffer */
 		if (bg_buffer[page]) {
-			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
+			decomp_rle(Real2Host(ds_readd(0x47d3)),
 				bg_buffer[page], 0, 0, 320, 200, 0);
 			return;
 		}
@@ -950,22 +950,22 @@ void load_page(Bit16u page)
 			bg_buffer[page] = ptr;
 			bg_len[page] = get_filelength();
 			fd_read_datfile(fd, bg_buffer[page], bg_len[page]);
-			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
+			decomp_rle(Real2Host(ds_readd(0x47d3)),
 				bg_buffer[page], 0, 0, 320, 200, 0);
 		} else {
 			fd_read_datfile(fd, page_buffer, 64000);
-			decomp_rle(MemBase + Real2Phys(ds_readd(0x47d3)),
+			decomp_rle(Real2Host(ds_readd(0x47d3)),
 				page_buffer, 0, 0, 320, 200, 0);
 		}
 		fclose(fd);
 	} else {
 		/* this should not happen */
 		fd = fd_open_datfile(page);
-		fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47d3)) - 8,
+		fd_read_datfile(fd, Real2Host(ds_readd(0x47d3)) - 8,
 			64000);
 		fclose(fd);
-		decomp_pp20(MemBase + Real2Phys(ds_readd(0x47d3)) - 8,
-			MemBase + Real2Phys(ds_readd(0x47d3)),
+		decomp_pp20(Real2Host(ds_readd(0x47d3)) - 8,
+			Real2Host(ds_readd(0x47d3)),
 			NULL,  get_filelength());
 	}
 }
@@ -982,7 +982,7 @@ void load_typus(Bit16u typus)
 	/* check if this image is in the buffer */
 	if (typus_buffer[typus]) {
 		decomp_pp20(typus_buffer[typus],
-			MemBase + Real2Phys(ds_readd(0x47b3)),
+			Real2Host(ds_readd(0x47b3)),
 			NULL, typus_len[typus]);
 		return;
 	}
@@ -996,15 +996,15 @@ void load_typus(Bit16u typus)
 		typus_len[typus] = get_filelength();
 		fd_read_datfile(fd, typus_buffer[typus], typus_len[typus]);
 		decomp_pp20(typus_buffer[typus],
-			MemBase + Real2Phys(ds_readd(0x47b3)),
+			Real2Host(ds_readd(0x47b3)),
 			NULL, typus_len[typus]);
 	} else {
 		/* load the file direct */
 		typus_buffer[typus] = ptr;
-		fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47d3)),
+		fd_read_datfile(fd, Real2Host(ds_readd(0x47d3)),
 			25000);
-		decomp_pp20(MemBase + Real2Phys(ds_readd(0x47d3)),
-			MemBase + Real2Phys(ds_readd(0x47b3)),
+		decomp_pp20(Real2Host(ds_readd(0x47d3)),
+			Real2Host(ds_readd(0x47b3)),
 			NULL, get_filelength());
 	}
 	fclose(fd);
@@ -1049,7 +1049,7 @@ static FILE * fd_open_datfile(Bit16u index)
 	}
 
 
-	offset = get_archive_offset(MemBase + Real2Phys(ds_readd(0x1ad1 + index * 4)), buf);
+	offset = get_archive_offset(Real2Host(ds_readd(0x1ad1 + index * 4)), buf);
 	ds_writew(0x3f36, offset);
 
 
@@ -1085,29 +1085,29 @@ void read_common_files()
 
 	/* load HEADS.DAT */
 	fd = fd_open_datfile(11);
-	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 64000);
+	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 64000);
 	fclose(fd);
 
 	/* load POPUP.NVF */
 	fd = fd_open_datfile(19);
-	len = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x476d)) - 8,
+	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8,
 		500);
 	fclose(fd);
-	decomp_pp20(MemBase + Real2Phys(ds_readd(0x476d)) - 8,
-		MemBase + Real2Phys(ds_readd(0x476d)), NULL, len);
+	decomp_pp20(Real2Host(ds_readd(0x476d)) - 8,
+		Real2Host(ds_readd(0x476d)), NULL, len);
 
 	/* load SEX.DAT */
 	fd = fd_open_datfile(12);
-	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4769)), 900);
+	fd_read_datfile(fd, Real2Host(ds_readd(0x4769)), 900);
 	fclose(fd);
 
 	/* load DMENGE.DAT */
 	fd = fd_open_datfile(32);
-	len = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x47a7)) - 8,
+	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8,
 		25000);
 	fclose(fd);
-	decomp_pp20(MemBase + Real2Phys(ds_readd(0x47a7)) - 8,
-		MemBase + Real2Phys(ds_readd(0x47a7)), NULL, len);
+	decomp_pp20(Real2Host(ds_readd(0x47a7)) - 8,
+		Real2Host(ds_readd(0x47a7)), NULL, len);
 
 }
 
@@ -1833,11 +1833,11 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 	call_mouse();
 
 	if (digits) {
-		enter_string((char*)MemBase + Real2Phys(ds_readd(0x47bb)),
+		enter_string((char*)Real2Host(ds_readd(0x47bb)),
 			abs(di - digits * 6) / 2 + ds_readw(0x40bb),
 			lines * 8 + ds_readw(0x40bd) - 2, digits, 0);
 
-		retval = atol((char*)MemBase + Real2Phys(ds_readd(0x47bb)));
+		retval = atol((char*)Real2Host(ds_readd(0x47bb)));
 	} else {
 		ds_writed(0x1276, RealMake(datseg, 0x1c63));
 		vsync_or_key(150 * lines);
@@ -2319,10 +2319,10 @@ void fill_values()
 
 		if (di && ds_readw(0x40bf) == 2 && gui_bool((Bit8u*)texts[269])) {
 			/* create string */
-			sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+			sprintf((char*)Real2Host(ds_readd(0x47bf)),
 				texts[270], di);
 
-			i = infobox(MemBase + Real2Phys(ds_readd(0x47bf)), 1);
+			i = infobox(Real2Host(ds_readd(0x47bf)), 1);
 
 			if (i > 0) {
 				/* spell attempts to skill attempts */
@@ -2336,10 +2336,10 @@ void fill_values()
 			} else {
 
 				/* create string */
-				sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+				sprintf((char*)Real2Host(ds_readd(0x47bf)),
 					texts[271], di);
 
-				i = infobox(MemBase + Real2Phys(ds_readd(0x47bf)), 1);
+				i = infobox(Real2Host(ds_readd(0x47bf)), 1);
 				if (i > 0) {
 					if (i > di)
 						i = di;
@@ -2380,7 +2380,7 @@ void fill_values()
 
 	/* roll out the money */
 	i = random_gen(20);
-	ptr = MemBase + Real2Phys(ds_readd(0xa51 + typus * 4));
+	ptr = Real2Host(ds_readd(0xa51 + typus * 4));
 	for (si = 0; host_readw(ptr + si * 6) < i; si++);
 
 	ds_writed(0x1358, random_interval_gen(host_readw(ptr + si * 6 + 2),
@@ -2566,14 +2566,14 @@ void refresh_screen()
 
 				if (ds_readb(0x134e) != 0) {
 					char *p;
-					p = (char*)MemBase + Real2Phys(ds_readd(0x4515 + ds_readb(0x134d) * 4));
+					p = (char*)Real2Host(ds_readd(0x4515 + ds_readb(0x134d) * 4));
 
 					print_str(p,
 						get_line_start_c(p, 16, 128),
 						184);
 				} else {
 					char *p;
-					p = (char*)MemBase + Real2Phys(ds_readd(0x411d + ds_readb(0x134d) * 4));
+					p = (char*)Real2Host(ds_readd(0x411d + ds_readb(0x134d) * 4));
 
 					print_str(p,
 						get_line_start_c(p, 16, 128),
@@ -2586,7 +2586,7 @@ void refresh_screen()
 					ds_writeb(0x1ca5, 0);
 				}
 				wait_for_vsync();
-				set_palette(MemBase + Real2Phys(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
+				set_palette(Real2Host(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
 				copy_to_screen(Real2Phys(ds_readd(0x47a7)),
 					dst, 128, 184, 0);
 			}
@@ -2728,21 +2728,21 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+		sprintf((char*)Real2Host(ds_readd(0x47bf)),
 			texts[46], bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
-			di = gui_radio(MemBase + Real2Phys(ds_readd(0x47bf)),
+			di = gui_radio(Real2Host(ds_readd(0x47bf)),
 				bv2,
-				MemBase + Real2Phys(ds_readd(0x4084)),
-				MemBase + Real2Phys(ds_readd(0x4088)),
-				MemBase + Real2Phys(ds_readd(0x408c)),
-				MemBase + Real2Phys(ds_readd(0x4090)),
-				MemBase + Real2Phys(ds_readd(0x4094)),
-				MemBase + Real2Phys(ds_readd(0x4098)),
-				MemBase + Real2Phys(ds_readd(0x409c)));
+				Real2Host(ds_readd(0x4084)),
+				Real2Host(ds_readd(0x4088)),
+				Real2Host(ds_readd(0x408c)),
+				Real2Host(ds_readd(0x4090)),
+				Real2Host(ds_readd(0x4094)),
+				Real2Host(ds_readd(0x4098)),
+				Real2Host(ds_readd(0x409c)));
 
 			ds_writew(0x1327, 0);
 		} while (di == 0xffff);
@@ -2769,21 +2769,21 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+		sprintf((char*)Real2Host(ds_readd(0x47bf)),
 			texts[46], bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
-			di = gui_radio(MemBase + Real2Phys(ds_readd(0x47bf)),
+			di = gui_radio(Real2Host(ds_readd(0x47bf)),
 				bv2,
-				MemBase + Real2Phys(ds_readd(0x4084)),
-				MemBase + Real2Phys(ds_readd(0x4088)),
-				MemBase + Real2Phys(ds_readd(0x408c)),
-				MemBase + Real2Phys(ds_readd(0x4090)),
-				MemBase + Real2Phys(ds_readd(0x4094)),
-				MemBase + Real2Phys(ds_readd(0x4098)),
-				MemBase + Real2Phys(ds_readd(0x409c)));
+				Real2Host(ds_readd(0x4084)),
+				Real2Host(ds_readd(0x4088)),
+				Real2Host(ds_readd(0x408c)),
+				Real2Host(ds_readd(0x4090)),
+				Real2Host(ds_readd(0x4094)),
+				Real2Host(ds_readd(0x4098)),
+				Real2Host(ds_readd(0x409c)));
 
 			ds_writew(0x1327, 0);
 		} while (di == 0xffff);
@@ -2965,18 +2965,18 @@ void select_typus()
 	}
 
 	di = gui_radio((Bit8u*)texts[30], possible_types,
-			MemBase + Real2Phys(ds_readd(0x4084)),
-			MemBase + Real2Phys(ds_readd(0x4088)),
-			MemBase + Real2Phys(ds_readd(0x408c)),
-			MemBase + Real2Phys(ds_readd(0x4090)),
-			MemBase + Real2Phys(ds_readd(0x4094)),
-			MemBase + Real2Phys(ds_readd(0x4098)),
-			MemBase + Real2Phys(ds_readd(0x409c)),
-			MemBase + Real2Phys(ds_readd(0x40a0)),
-			MemBase + Real2Phys(ds_readd(0x40a4)),
-			MemBase + Real2Phys(ds_readd(0x40a8)),
-			MemBase + Real2Phys(ds_readd(0x40ac)),
-			MemBase + Real2Phys(ds_readd(0x40b0)));
+			Real2Host(ds_readd(0x4084)),
+			Real2Host(ds_readd(0x4088)),
+			Real2Host(ds_readd(0x408c)),
+			Real2Host(ds_readd(0x4090)),
+			Real2Host(ds_readd(0x4094)),
+			Real2Host(ds_readd(0x4098)),
+			Real2Host(ds_readd(0x409c)),
+			Real2Host(ds_readd(0x40a0)),
+			Real2Host(ds_readd(0x40a4)),
+			Real2Host(ds_readd(0x40a8)),
+			Real2Host(ds_readd(0x40ac)),
+			Real2Host(ds_readd(0x40b0)));
 
 	/*	restore attibute boni when selection is canceled
 	 *	or the same typus is selected.
@@ -3001,7 +3001,7 @@ void select_typus()
 	draw_mouse_ptr_wrapper();
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
-	set_palette(MemBase + Real2Phys(ds_readd(0x47b3)) + 0x5c02, 0, 32);
+	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
 	call_mouse();
 
 	if (ds_readb(0x134d) > 10)
@@ -3287,29 +3287,29 @@ void print_values()
 				break;
 
 			/* print height */
-			sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
-				(char*)MemBase + Real2Phys(ds_readd(0x41f1)),
+			sprintf((char*)Real2Host(ds_readd(0x47bf)),
+				(char*)Real2Host(ds_readd(0x41f1)),
 				ds_readb(0x134f));
 
-			print_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+			print_str((char*)Real2Host(ds_readd(0x47bf)),
 				205, 25);
 
 			/* print weight */
-			sprintf((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
-				(char*)MemBase + Real2Phys(ds_readd(0x41f5)),
+			sprintf((char*)Real2Host(ds_readd(0x47bf)),
+				(char*)Real2Host(ds_readd(0x41f5)),
 				ds_readw(0x1350));
 
-			print_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+			print_str((char*)Real2Host(ds_readd(0x47bf)),
 				205, 37);
 
 			/* print god name */
-			print_str((char*)MemBase + Real2Phys(ds_readd(0x41b9 + 4 * ds_readb(0x1352))),
+			print_str((char*)Real2Host(ds_readd(0x41b9 + 4 * ds_readb(0x1352))),
 				205, 49);
 
 			/* print money */
-			make_valuta_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+			make_valuta_str((char*)Real2Host(ds_readd(0x47bf)),
 				ds_readd(0x1358));
-			print_str((char*)MemBase + Real2Phys(ds_readd(0x47bf)),
+			print_str((char*)Real2Host(ds_readd(0x47bf)),
 				205, 61);
 
 			/* print LE */
@@ -3879,7 +3879,7 @@ void make_valuta_str(char *dst, unsigned int money)
 		money -= 10;
 	}
 
-	sprintf(dst, (char*)MemBase + Real2Phys(ds_readd(0x41ed)), d, s, money);
+	sprintf(dst, (char*)Real2Host(ds_readd(0x41ed)), d, s, money);
 }
 
 void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
@@ -3891,7 +3891,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	}
 	/* we just have 3 tries to increment */
 	if (ds_readb(0x400e + skill * 2) == 3) {
-		infobox(MemBase + Real2Phys(ds_readd(0x4335)), 0);
+		infobox(Real2Host(ds_readd(0x4335)), 0);
 		return;
 	}
 
@@ -3899,7 +3899,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	ds_writeb(0x1468, ds_readb(0x1468) - 1);
 	if (random_interval_gen(2, 12) > (signed char)ds_readb(1434 + skill)) {
 		/* print sucess message */
-		infobox(MemBase + Real2Phys(ds_readd(0x4339)), 0);
+		infobox(Real2Host(ds_readd(0x4339)), 0);
 		/* increment skill */
 		ds_writeb(0x1434 + skill, ds_readb(0x1434) + 1);
 		/* reset tries */
@@ -3920,7 +3920,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 		}
 	} else {
 		/* print failure message */
-		infobox(MemBase + Real2Phys(ds_readd(0x433d)), 0);
+		infobox(Real2Host(ds_readd(0x433d)), 0);
 		/* increment try */
 		ds_writeb(0x400e + skill * 2, ds_readb(0x400e + skill * 2) + 1);
 	}
@@ -3947,7 +3947,7 @@ void inc_spell(Bit16u spell)
 		if (ds_readb(0x158 + spell * 5) == 1)
 			max_incs = 2;
 
-		Bit8u *array = MemBase + Real2Phys(ds_readd(0x387 + ds_readb(0x14c0) * 4));
+		Bit8u *array = Real2Host(ds_readd(0x387 + ds_readb(0x14c0) * 4));
 		/* and is a school spell */
 		if (is_in_word_array(spell, array))
 			max_incs = 3;
@@ -3955,12 +3955,12 @@ void inc_spell(Bit16u spell)
 
 	/* all spell increments used for that spell */
 	if (ds_readb(0x3f63 + spell * 2) >= max_incs) {
-		infobox(MemBase + Real2Phys(ds_readd(0x44dd)), 0);
+		infobox(Real2Host(ds_readd(0x44dd)), 0);
 		return;
 	}
 	/* all tries used for that spell */
 	if (ds_readb(0x3f62 + spell * 2) == 3) {
-		infobox(MemBase + Real2Phys(ds_readd(0x4335)), 0);
+		infobox(Real2Host(ds_readd(0x4335)), 0);
 		return;
 	}
 
@@ -3969,7 +3969,7 @@ void inc_spell(Bit16u spell)
 
 	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
 		/* show success */
-		infobox(MemBase + Real2Phys(ds_readd(0x4339)), 0);
+		infobox(Real2Host(ds_readd(0x4339)), 0);
 		/* increment spell value */
 		ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
 		/* reset tries */
@@ -3978,7 +3978,7 @@ void inc_spell(Bit16u spell)
 		ds_writeb(0x3f63 + spell * 2, ds_readb(0x3f63 + spell * 2) + 1);
 	} else {
 		/* show failure */
-		infobox(MemBase + Real2Phys(ds_readd(0x433d)), 0);
+		infobox(Real2Host(ds_readd(0x433d)), 0);
 		/* increment tries */
 		ds_writeb(0x3f62 + spell * 2, ds_readb(0x3f62 + spell * 2) + 1);
 	}
@@ -4140,7 +4140,7 @@ void choose_typus()
 	draw_mouse_ptr_wrapper();
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
-	set_palette(MemBase + Real2Phys(ds_readd(0x47b3)) + 0x5c02, 0, 32);
+	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
 	call_mouse();
 
 	if (ds_readb(0x134d) > 10)
@@ -4246,7 +4246,7 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
 	/* set src */
@@ -4347,7 +4347,7 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	flen = fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	flen = fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
 	/* set dst */
@@ -4369,7 +4369,7 @@ void intro()
 	wait_for_vsync();
 
 	/* set palette of FANPRO.NVF */
-	set_palette(MemBase + Real2Phys(ds_readd(0x4771)) + flen - 32*3, 0, 32);
+	set_palette(Real2Host(ds_readd(0x4771)) + flen - 32*3, 0, 32);
 
 	/* draw the picture */
 	ds_writew(0x40c5, 60);
@@ -4386,7 +4386,7 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
 	/* set dst */
@@ -4424,7 +4424,7 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, MemBase + Real2Phys(ds_readd(0x4771)), 20000);
+	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
 	/* set dst */
@@ -4449,11 +4449,11 @@ void intro()
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
 
-	memcpy(MemBase + Real2Phys(ds_readd(0x47d3)) + 500,
+	memcpy(Real2Host(ds_readd(0x47d3)) + 500,
 		MemBase + PhysMake(datseg, 0x1ce9), 96);
 
-	pal_src = MemBase + Real2Phys(ds_readd(0x47d3)) + 500;
-	pal_dst = MemBase + Real2Phys(ds_readd(0x47d3));
+	pal_src = Real2Host(ds_readd(0x47d3)) + 500;
+	pal_dst = Real2Host(ds_readd(0x47d3));
 	memset(pal_dst, 0, 96);
 
 	for (i = 0; i < 64; i++) {
@@ -4466,11 +4466,11 @@ void intro()
 	print_str((char*)MemBase + PhysMake(datseg, 0x1cb3), 290, 190);
 	vsync_or_key(400);
 
-	memcpy(MemBase + Real2Phys(ds_readd(0x47d3)),
+	memcpy(Real2Host(ds_readd(0x47d3)),
 		MemBase + PhysMake(datseg, 0x1ce9), 96);
 
-	pal_src = MemBase + Real2Phys(ds_readd(0x47d3)) + 500;
-	pal_dst = MemBase + Real2Phys(ds_readd(0x47d3));
+	pal_src = Real2Host(ds_readd(0x47d3)) + 500;
+	pal_dst = Real2Host(ds_readd(0x47d3));
 	memset(pal_src, 0, 96);
 
 	for (i = 0; i < 64; i++) {
