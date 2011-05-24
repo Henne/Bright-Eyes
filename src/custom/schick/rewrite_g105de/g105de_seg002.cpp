@@ -31,6 +31,13 @@ static long bg_len[MAX_PAGES];
 static Bit8u *typus_buffer[MAX_TYPES];
 static long typus_len[MAX_TYPES];
 
+/* DS:0x1ca6 */
+struct type_bitmap {
+	char t[13];
+};
+struct type_bitmap empty_bitmap;
+
+/* DS:0x3f3a */
 FILE *fd_timbre;
 
 /* DS:0x3f42 */
@@ -2894,6 +2901,149 @@ void spell_inc_novice(Bit16u spell)
 
 #define INC (1)
 #define DEC (2)
+
+/**
+ * select_typus() - select a possible typus with current attribute values
+ *
+ */
+void select_typus()
+{
+	Bit8s old_typus, possible_types, ltmp2;
+	Bit8u *ptr;
+	bool impossible;
+	Bit16s i, si, di;
+	struct type_bitmap t;
+
+	old_typus = -1;
+	t = empty_bitmap;
+
+	/* check if attribs have bee set */
+	if (ds_readb(0x1360) == 0) {
+		infobox((Bit8u*)texts[265], 0);
+		return;
+	}
+	/* save the old typus */
+	old_typus = ds_readb(0x134d);
+	/* disable MU bonus */
+	if (ds_readw(0x2782)) {
+		ds_writeb(0x1360, ds_readb(0x1360) - 1);
+		ds_writeb(0x1361, ds_readb(0x1360));
+	}
+	/* disable CH bonus */
+	if (ds_readw(0x2780)) {
+		ds_writeb(0x1366, ds_readb(0x1366) - 1);
+		ds_writeb(0x1367, ds_readb(0x1366));
+	}
+	possible_types = 0;
+
+	for (i = 1; i <= 12; i++) {
+		impossible = false;
+		for (si = 0; si < 4; si++) {
+			Bit8u req;
+			ptr = MemBase + PhysMake(datseg, 0x1360 +
+				ds_readb(0x3cf +  i * 8 + si * 2) * 3);
+
+			ltmp2 = host_readb(ptr);
+			req = ds_readb(0x3cf + 1 +  i * 8 + si * 2);
+			if (req & 0x80) {
+				if (ltmp2 <= (req & 0x80))
+					continue;
+				impossible = true;
+			} else {
+				if (req <= ltmp2)
+					continue;
+				impossible = true;
+			}
+		}
+
+		if (impossible)
+			continue;
+
+		if (ds_readb(0x134e))
+			ds_writed(0x4084 + possible_types * 4,
+				ds_readd(0x40d9 + (i + 271) * 4));
+		else
+			ds_writed(0x4084 + possible_types * 4,
+				ds_readd(0x40d9 + (i + 17) * 4));
+
+		t.t[possible_types] = i;
+		possible_types++;
+
+	}
+
+	if (possible_types == 0) {
+		if (can_change_attribs() == 0) {
+			/* totally messed up values */
+			infobox((Bit8u*)texts[284], 0);
+			return;
+		} else {
+			infobox((Bit8u*)texts[31], 0);
+			return;
+		}
+	}
+
+	di = gui_radio((Bit8u*)texts[30], possible_types,
+			MemBase + Real2Phys(ds_readd(0x4084)),
+			MemBase + Real2Phys(ds_readd(0x4088)),
+			MemBase + Real2Phys(ds_readd(0x408c)),
+			MemBase + Real2Phys(ds_readd(0x4090)),
+			MemBase + Real2Phys(ds_readd(0x4094)),
+			MemBase + Real2Phys(ds_readd(0x4098)),
+			MemBase + Real2Phys(ds_readd(0x409c)),
+			MemBase + Real2Phys(ds_readd(0x40a0)),
+			MemBase + Real2Phys(ds_readd(0x40a4)),
+			MemBase + Real2Phys(ds_readd(0x40a8)),
+			MemBase + Real2Phys(ds_readd(0x40ac)),
+			MemBase + Real2Phys(ds_readd(0x40b0)));
+
+	/*	restore attibute boni when selection is canceled
+	 *	or the same typus is selected.
+	 */
+	if (di == -1 || t.t[di - 1] == old_typus) {
+		if (ds_readw(0x2782)) {
+			ds_writeb(0x1360, ds_readb(0x1360) + 1);
+			ds_writeb(0x1361, ds_readb(0x1360));
+		}
+		if (ds_readw(0x2780)) {
+			ds_writeb(0x1366, ds_readb(0x1366) + 1);
+			ds_writeb(0x1367, ds_readb(0x1366));
+		}
+		return;
+	}
+
+	/* set new typus */
+	ds_writeb(0x134d, t.t[di - 1]);
+	ds_writew(0x11fe, 1);
+
+	load_typus(ds_readb(0x134d));
+	draw_mouse_ptr_wrapper();
+	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
+	wait_for_vsync();
+	set_palette(MemBase + Real2Phys(ds_readd(0x47b3)) + 0x5c02, 0, 32);
+	call_mouse();
+
+	if (ds_readb(0x134d) > 10)
+		ds_writew(0x40b7, 10);
+	else
+		ds_writew(0x40b7, ds_readb(0x134d));
+
+	if (ds_readb(0x134e)) {
+		ds_writeb(0x40b6, ds_readb(0x1054 + ds_readb(0x40b7)));
+		ds_writeb(0x40b5, ds_readb(0x1054 + ds_readb(0x40b7)));
+		ds_writeb(0x40b4, ds_readb(0x1049 + ds_readb(0x40b7)) - 1);
+	} else {
+		ds_writeb(0x40b6, ds_readb(0x1048 + ds_readb(0x40b7)));
+		ds_writeb(0x40b5, ds_readb(0x1048 + ds_readb(0x40b7)));
+		ds_writeb(0x40b4, ds_readb(0x1054 + ds_readb(0x40b7)) - 1);
+	}
+
+	/* reset boni falags */
+	ds_writew(0x2780, 0);
+	ds_writew(0x2782, 0);
+	fill_values();
+	return;
+}
+
 /**
  * can_change_attribs() - checks if attribute changes are possible
  *

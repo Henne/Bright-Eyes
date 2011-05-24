@@ -97,6 +97,7 @@ namespace G105de {
 	void new_values();
 	void skill_inc_novice(Bit16u);
 	void spell_inc_novice(Bit16u);
+	void select_typus();
 	Bit16u can_change_attribs();
 	void save_picbuf();
 	void restore_picbuf(PhysPt);
