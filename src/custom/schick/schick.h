@@ -48,12 +48,16 @@ static inline void RET(unsigned short val) {
 	reg_sp += val;
 }
 
-static inline Bit8u* schick_getCharname(unsigned p) {
-    return MemBase+Real2Phys(p)+16;
+static inline Bit8u* schick_getCharname(RealPt p) {
+    return MemBase + Real2Phys(p) + 16;
 }
 
-static inline Bit8u* getString(unsigned p) {
-        return MemBase+Real2Phys(p);
+static inline Bit8u* getString(RealPt p) {
+        return MemBase + Real2Phys(p);
+}
+
+static inline Bit8u* Real2Host(RealPt p) {
+        return MemBase + Real2Phys(p);
 }
 
 extern const char* names_attrib[];
