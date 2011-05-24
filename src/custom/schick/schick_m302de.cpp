@@ -380,7 +380,7 @@ static int seg000(unsigned short offs) {
 
 			int val;
 
-			val = atoi((char*)getString(s));
+			val = atoi(getString(s));
 			D1_LOG("atol(\"%s\") = %d\n", getString(s), val);
 
 			reg_ax = val & 0xffff;
@@ -595,7 +595,7 @@ static int seg000(unsigned short offs) {
 			CPU_Push32(str);
 
 			D1_LOG("strlen(\"%s\")\n", getString(str));
-			reg_ax = strlen((char*)getString(str));
+			reg_ax = strlen(getString(str));
 
 			return 1;
 		}
@@ -2423,7 +2423,7 @@ static int seg032(unsigned short offs) {
 			reg_ax = FIG_get_first_active_hero();
 
 			D1_LOG("FIG_get_first_active_hero(); = %s\n",
-				reg_ax != -1 ? (char*)schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+				reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
 			return 1;
 		}
 		default:
@@ -3074,7 +3074,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push16(s);
 		CPU_Push32(ptr);
 
-		strncpy(buffer, (char*)getString(ptr), 20);
+		strncpy(buffer, getString(ptr), 20);
 		D1_LOG("GUI_EnterText(%s..., %d)\n", buffer, s);
 		return 0;
 	}
@@ -3082,7 +3082,7 @@ static int seg097(unsigned short offs) {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		strncpy(buffer, (char*)getString(ptr), 20);
+		strncpy(buffer, getString(ptr), 20);
 		D1_LOG("GUI_InfoBox(%s...)\n", buffer);
 		return 0;
 	}
@@ -3090,7 +3090,7 @@ static int seg097(unsigned short offs) {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		strncpy(buffer, (char*)getString(ptr), 20);
+		strncpy(buffer, getString(ptr), 20);
 		D1_LOG("GUI_AskBool(%s...)\n", buffer);
 		return 0;
 	}
@@ -3100,11 +3100,11 @@ static int seg097(unsigned short offs) {
 
 		unsigned short i;
 
-		strncpy(buffer, (char*)getString(text), 20);
+		strncpy(buffer, getString(text), 20);
 		D1_LOG("GUI_RadioBox(%s..., %d", buffer, (char)options);
 
 		for (i = 0; i < (char)options; i++) {
-			strncpy(buffer, (char*)getString(real_readd(SegValue(ss), reg_sp + i *4)), 20);
+			strncpy(buffer, getString(real_readd(SegValue(ss), reg_sp + i *4)), 20);
 			D1_LOG(", %s...", buffer);
 		}
 
@@ -3126,12 +3126,12 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(pic);
 
 		if (name)
-			strncpy(buffer, (char*)getString(name), 20);
+			strncpy(buffer, getString(name), 20);
 		else
 			strncpy(buffer, "(NULL)", 20);
 
 		D1_LOG("GUI_DialogBox(pic=0x%x, %s,", pic, buffer);
-		strncpy(buffer, (char*)getString(text), 20);
+		strncpy(buffer, getString(text), 20);
 		D1_LOG("%s..., %d, %d)\n", buffer, (char)options, v2);
 		return 0;
 	}
@@ -4213,7 +4213,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Pop16();
 			reg_ax = FIG_get_first_active_hero();
 			D1_LOG("near FIG_get_first_active_hero() = %s\n",
-				reg_ax != -1 ? (char*)schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+				reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
 			return 1;
 		}
 		/* Callers: 1 */

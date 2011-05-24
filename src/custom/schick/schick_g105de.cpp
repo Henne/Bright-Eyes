@@ -219,8 +219,7 @@ static int seg000(Bitu offs) {
 			D1_LOG("strcpy(__s1=0x%x:0x%x, __s2=0x%x:0x%x %s)\n",
 				RealSeg(s1), RealOff(s1),
 				RealSeg(s2), RealOff(s2), getString(s2));
-			strcpy((char*)MemBase + Real2Phys(s1),
-				(char*)MemBase + Real2Phys(s2));
+			strcpy(getString(s1), getString(s2));
 
 			return 1;
 		}
@@ -250,8 +249,7 @@ static int seg000(Bitu offs) {
 			D1_LOG("bc_strncpy(s1=0x%x, \"%s\",  maxlen=%d)\n",
 				s1, getString(s2), n);
 
-			strncpy((char*)MemBase + Real2Phys(s1),
-				(char*)MemBase + Real2Phys(s2), n);
+			strncpy(getString(s1), getString(s2), n);
 
 			return 1;
 		}
@@ -1067,7 +1065,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					reg_ax = G105de::str_splitter((char*)MemBase + Real2Phys(ptr));
 					D1_LOG("str_splitter(%s); = %d\n",
-						(char*)getString(ptr), reg_ax);
+						getString(ptr), reg_ax);
 
 					return 1;
 				}
@@ -1078,7 +1076,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					reg_ax = G105de::print_line((char*)MemBase + Real2Phys(ptr));
 					D1_LOG("print_line(%s); = %d\n",
-						(char*)getString(ptr), reg_ax);
+						getString(ptr), reg_ax);
 
 					return 1;
 				}
@@ -1183,10 +1181,10 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
-					reg_ax = G105de::get_str_width((char*)getString(ptr));
+					reg_ax = G105de::get_str_width(getString(ptr));
 
 					D1_LOG("get_str_width(%s); = %d\n",
-						(char*)getString(ptr), reg_ax);
+						getString(ptr), reg_ax);
 
 					return 1;
 				}
@@ -1199,7 +1197,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x);
 					CPU_Push32(str);
 
-					reg_ax = G105de::get_line_start_c((char*)getString(str), x, y);
+					reg_ax = G105de::get_line_start_c(getString(str), x, y);
 
 					D1_LOG("get_line_start_c(%s,%d,%d); = %d\n",
 						getString(str), x, y, reg_ax);
