@@ -4371,6 +4371,308 @@ void inc_spell(Bit16u spell)
 	refresh_screen();
 }
 
+void select_spell()
+{
+	Bit16s group, spell;
+
+	do {
+
+		/* check if we have spell attempts */
+		if (ds_readb(0x14bf) == 0) {
+			infobox((Bit8u*)texts[94], 0);
+			ds_writew(0x1327, 0);
+			return;
+		}
+
+		ds_writew(0x1327, 0xffa6);
+
+		switch (ds_readw(0x1324)) {
+			case 5: {
+				group = gui_radio((Bit8u*)texts[155], 3,
+						texts[157], texts[162],
+						texts[158]);
+				if (group == -1)
+					break;
+
+				switch (group) {
+					case 1: {
+						spell = gui_radio((Bit8u*)texts[156], 5,
+								texts[169],
+								texts[170],
+								texts[171],
+								texts[172],
+								texts[173]);
+						spell--;
+						if (spell == -2)
+							break;
+						spell++;
+						inc_spell(spell);
+						break;
+					}
+					case 2: {
+						spell = gui_radio((Bit8u*)texts[156], 5,
+								texts[201],
+								texts[202],
+								texts[203],
+								texts[204],
+								texts[205]);
+						spell--;
+						if (spell == -2)
+							break;
+						spell += 33;
+						inc_spell(spell);
+						break;
+					}
+					case 3: {
+						spell = gui_radio((Bit8u*)texts[156], 6,
+								texts[174],
+								texts[175],
+								texts[176],
+								texts[177],
+								texts[178],
+								texts[179]);
+						spell--;
+						if (spell == -2)
+							break;
+						spell += 6;
+						inc_spell(spell);
+						break;
+					}
+				}
+				break;
+			}
+			case 6: {
+				group = gui_radio((Bit8u*)texts[155], 3,
+						texts[158], texts[159],
+						texts[160]);
+				if (group == -1)
+					break;
+
+				switch (group) {
+					case 1: {
+						spell = gui_radio((Bit8u*)texts[156], 6,
+								texts[180],
+								texts[181],
+								texts[182],
+								texts[183],
+								texts[184],
+								texts[185]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 12;
+						inc_spell(spell);
+						break;
+					}
+					case 2: {
+						spell = gui_radio((Bit8u*)texts[156], 6,
+								texts[186],
+								texts[187],
+								texts[188],
+								texts[189],
+								texts[190],
+								texts[191]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 18;
+						inc_spell(spell);
+						break;
+					}
+					case 3: {
+						spell = gui_radio((Bit8u*)texts[156], 3,
+								texts[192],
+								texts[193],
+								texts[194]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 24;
+						inc_spell(spell);
+						break;
+					}
+				}
+
+				break;
+			}
+			case 7: {
+				group = gui_radio((Bit8u*)texts[155], 3,
+						texts[161], texts[163],
+						texts[164]);
+				if (group == -1)
+					break;
+
+				switch (group) {
+					case 1: {
+						spell = gui_radio((Bit8u*)texts[156], 6,
+								texts[195],
+								texts[196],
+								texts[197],
+								texts[198],
+								texts[199],
+								texts[200]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 27;
+						inc_spell(spell);
+						break;
+					}
+					case 2: {
+						spell = gui_radio((Bit8u*)texts[156], 7,
+								texts[206],
+								texts[207],
+								texts[208],
+								texts[209],
+								texts[210],
+								texts[211],
+								texts[212]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 38;
+						inc_spell(spell);
+						break;
+					}
+					case 3: {
+						spell = gui_radio((Bit8u*)texts[156], 2,
+								texts[213],
+								texts[214]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 45;
+						inc_spell(spell);
+						break;
+					}
+				}
+
+				break;
+			}
+			case 8: {
+				group = gui_radio((Bit8u*)texts[155], 3,
+						texts[164], texts[86],
+						texts[166]);
+				if (group == -1)
+					break;
+
+
+				switch (group) {
+					case 1: {
+						spell = gui_radio((Bit8u*)texts[156], 2,
+								texts[215],
+								texts[216]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 47;
+						inc_spell(spell);
+						break;
+					}
+					case 2: {
+						spell = gui_radio((Bit8u*)texts[156], 9,
+								texts[217],
+								texts[218],
+								texts[219],
+								texts[220],
+								texts[221],
+								texts[222],
+								texts[223],
+								texts[224],
+								texts[225]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 49;
+						inc_spell(spell);
+						break;
+					}
+					case 3: {
+						spell = gui_radio((Bit8u*)texts[156], 2,
+								texts[226],
+								texts[227]);
+
+						spell--;
+
+						if (spell == -2)
+							break;
+
+						spell += 58;
+						inc_spell(spell);
+						break;
+					}
+				}
+				break;
+				/* TODO */
+			}
+			case 9: {
+				spell = gui_radio((Bit8u*)texts[156], 16,
+						texts[228], texts[229],
+						texts[230], texts[231],
+						texts[232], texts[233],
+						texts[234], texts[235],
+						texts[236], texts[237],
+						texts[238], texts[239],
+						texts[240], texts[241],
+						texts[242], texts[243]);
+				spell--;
+
+				if (spell == -2) {
+					group = -1;
+					break;
+				}
+
+				spell += 60;
+				inc_spell(spell);
+				break;
+			}
+			case 10: {
+				spell = gui_radio((Bit8u*)texts[156], 10,
+						texts[244], texts[245],
+						texts[246], texts[247],
+						texts[248], texts[249],
+						texts[250], texts[251],
+						texts[252], texts[253]);
+				spell--;
+
+				if (spell == -2) {
+					group = -1;
+					break;
+				}
+
+				spell += 76;
+				inc_spell(spell);
+				break;
+			}
+		}
+		ds_writew(0x1327, 0);
+	} while (group != -1);
+}
+
 void choose_atpa()
 {
 	Bit16u skill, increase;
