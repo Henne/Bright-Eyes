@@ -4120,6 +4120,199 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	refresh_screen();
 }
 
+void select_skill()
+{
+	Bit16s skill, group;
+
+	do {
+
+		/* check skill attempts */
+		if (ds_readb(0x1468) == 0) {
+			infobox((Bit8u*)texts[94], 0);
+			return;
+		}
+
+		ds_writew(0x1327, 0xffb0);
+
+		switch (ds_readw(0x1324)) {
+			case 1: {
+				group = gui_radio((Bit8u*)texts[93], 2,
+						texts[86], texts[87]);
+				if (group == -1)
+					break;
+
+				switch (group) {
+					case 1: {
+						/* Fight */
+						skill = gui_radio((Bit8u*)texts[147],
+								9,
+								texts[95],
+								texts[96],
+								texts[97],
+								texts[98],
+								texts[99],
+								texts[100],
+								texts[101],
+								texts[102],
+								texts[103]);
+						skill--;
+
+						if (skill == -2)
+							break;
+
+						inc_skill(skill, 1,
+							(Bit8u*)texts[148]);
+
+						break;
+					}
+					case 2: {
+						/* body */
+						skill = gui_radio((Bit8u*)texts[147],
+							10,
+							texts[104], texts[105],
+							texts[106], texts[107],
+							texts[108], texts[109],
+							texts[110], texts[112],
+							texts[112], texts[113]);
+						skill--;
+
+						if (skill == -2)
+							break;
+
+						skill += 9;
+						inc_skill(skill, 2,
+							(Bit8u*)texts[149]);
+						break;
+					}
+				}
+				break;
+			}
+			case 2: {
+				group = gui_radio((Bit8u*)texts[93], 2,
+						texts[88], texts[89]);
+				if (group == -1)
+					break;
+				switch (group) {
+					case 1: {
+						skill = gui_radio((Bit8u*)texts[147],
+								7,
+								texts[114],
+								texts[115],
+								texts[116],
+								texts[117],
+								texts[118],
+								texts[119],
+								texts[120]);
+						skill--;
+
+						if (skill == -2)
+							break;
+
+						skill += 19;
+						inc_skill(skill, 2,
+							(Bit8u*)texts[149]);
+						break;
+					}
+					case 2: {
+						skill = gui_radio((Bit8u*)texts[147],
+								9,
+								texts[127],
+								texts[128],
+								texts[129],
+								texts[130],
+								texts[131],
+								texts[132],
+								texts[133],
+								texts[134],
+								texts[135]);
+						skill--;
+
+						if (skill == -2)
+							break;
+
+						skill += 32;
+						inc_skill(skill, 3,
+							(Bit8u*)texts[150]);
+						break;
+					}
+				}
+				break;
+			}
+			case 3: {
+				group = gui_radio((Bit8u*)texts[93], 3,
+						texts[90], texts[91], texts[92]);
+				if (group == -1)
+					break;
+
+				switch (group) {
+					case 1: {
+						skill = gui_radio((Bit8u*)texts[147],
+								9,
+								texts[136],
+								texts[137],
+								texts[138],
+								texts[139],
+								texts[140],
+								texts[141],
+								texts[142],
+								texts[143],
+								texts[144]);
+
+						skill--;
+
+						if (skill == -2)
+							break;
+
+						skill += 41;
+						inc_skill(skill, 2,
+							(Bit8u*)texts[149]);
+						break;
+					}
+					case 2: {
+						skill = gui_radio((Bit8u*)texts[147],
+								6,
+								texts[121],
+								texts[122],
+								texts[123],
+								texts[124],
+								texts[125],
+								texts[126]);
+
+						skill--;
+
+						if (skill == -2)
+							break;
+
+						skill += 26;
+						inc_skill(skill, 2,
+							(Bit8u*)texts[149]);
+						break;
+					}
+					case 3: {
+						skill = gui_radio((Bit8u*)texts[147],
+								2,
+								texts[145],
+								texts[146]);
+
+						skill--;
+
+						if (skill == -2)
+							break;
+
+						skill += 50;
+						inc_skill(skill, 1,
+							(Bit8u*)texts[148]);
+						break;
+					}
+				}
+				break;
+			}
+		}
+		ds_writew(0x1327, 0);
+
+	} while (group != -1);
+}
+
 void inc_spell(Bit16u spell)
 {
 	Bit16u max_incs = 1;

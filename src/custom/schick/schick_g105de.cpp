@@ -1446,6 +1446,12 @@ int schick_nearcall_gen105(unsigned offs) {
 					G105de::inc_skill(skill, max, MemBase + Real2Phys(msg));
 					return 1;
 				}
+				case 0x5bdd: {
+					CPU_Pop16();
+					D1_LOG("select_skill();\n");
+					G105de::select_skill();
+					return 1;
+				}
 				case 0x5fb5: {
 					CPU_Pop16();
 					Bit16u spell = CPU_Pop16();

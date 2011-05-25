@@ -89,6 +89,7 @@ namespace G105de {
 	void print_values();
 	void make_valuta_str(char *, unsigned int);
 	void inc_skill(Bit16u, Bit16u, Bit8u*);
+	void select_skill();
 	void inc_spell(Bit16u);
 	void choose_atpa();
 	void choose_typus();
