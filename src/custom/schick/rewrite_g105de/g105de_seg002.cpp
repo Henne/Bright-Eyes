@@ -3082,6 +3082,198 @@ Bit16u can_change_attribs()
 	return 0;
 }
 
+/**
+ * change_attribs() - change attributes
+ */
+void change_attribs()
+{
+	Bit8u *ptr1, *ptr2;
+	Bit16s tmp1, tmp2, tmp3, si, di;
+	Bit8u c;
+
+	/* check if attributes have been set */
+	if (ds_readb(0x1360) == 0) {
+		infobox((Bit8u*)texts[16], 0);
+		return;
+	}
+	/* check if changing is possible */
+	if (can_change_attribs() == 0) {
+		infobox((Bit8u*)texts[266], 0);
+		return;
+	}
+	/* if typus != 0 */
+	if (ds_readb(0x134d)) {
+		if (!gui_bool((Bit8u*)texts[73]))
+			return;
+		/* set typus to 0 */
+		ds_writeb(0x134d, 0);
+		/* remove MU boni */
+		if (ds_readw(0x2782)) {
+			ds_writeb(0x1360, ds_readb(0x1360) - 1);
+			ds_writeb(0x1361, ds_readb(0x1360));
+			ds_writew(0x2782, 0);
+		}
+		/* remove CH boni */
+		if (ds_readw(0x2780)) {
+			ds_writeb(0x1366, ds_readb(0x1366) - 1);
+			ds_writeb(0x1367, ds_readb(0x1366));
+			ds_writew(0x2780, 0);
+		}
+		ds_writew(0x11fe, 1);
+		refresh_screen();
+		ds_writew(0x11fe, 0);
+	}
+	/* check again if changing is possible */
+	if (can_change_attribs() == 0) {
+		infobox((Bit8u*)texts[266], 0);
+		return;
+	}
+	/* select a positive attribute to change */
+	ds_writew(0x1327, 0xffb0);
+	tmp2 = gui_radio((Bit8u*)texts[78], 7,
+			texts[32], texts[33], texts[34], texts[35],
+			texts[36], texts[37], texts[38]);
+	ds_writew(0x1327, 0);
+
+	if (tmp2 == -1)
+		return;
+	tmp2--;
+	/* get the modification type */
+	if (ds_readb(0x4076 + tmp2) == 0) {
+		/* ask user if inc or dec */
+		ds_writew(0x1327, 0xffb0);
+		tmp3 = gui_radio((Bit8u*)NULL, 2, texts[75], texts[76]);
+		ds_writew(0x1327, 0);
+
+		if (tmp3 == -1)
+			return;
+	} else {
+		tmp3 = ds_readb(0x4076 + tmp2);
+	}
+
+	ptr1 = MemBase + PhysMake(datseg, 0x1360 + tmp2 * 3);
+	if (tmp3 == INC) {
+		/* increment */
+		if (host_readb(ptr1) == 13) {
+			infobox((Bit8u*)texts[77], 0);
+			return;
+		}
+		c = 0;
+		for (di = 7; di < 14; di++) {
+			if (ds_readb(0x4076 + di) == DEC)
+				continue;
+			ptr2 = MemBase + PhysMake(datseg, 0x1360 + di * 3);
+			if (host_readb(ptr2) >= 8)
+				continue;
+			c += 8 - host_readb(ptr2);
+		}
+		if (c < 2) {
+			infobox((Bit8u*)texts[85], 0);
+			return;
+		}
+		/* increment positive attribute */
+		host_writeb(ptr1 + 1, host_readb(ptr1 + 1) + 1);
+		host_writeb(ptr1, host_readb(ptr1) + 1);
+
+		ds_writeb(0x4076 + tmp2, INC);
+
+		refresh_screen();
+
+		tmp1 = 0;
+		while (tmp1 != 2) {
+			/* ask which negative attribute to increment */
+			ds_writew(0x1327, 0xffb0);
+			si = gui_radio((Bit8u*)texts[80], 7,
+					texts[39], texts[40], texts[41],
+					texts[42], texts[43], texts[44],
+					texts[45]);
+			ds_writew(0x1327, 0);
+
+			if (si == -1)
+				continue;
+
+			si--;
+			/* check if this attribute has been decremented */
+			if (ds_readb(0x407d + si) == DEC) {
+				infobox((Bit8u*)texts[83], 0);
+				continue;
+			}
+			/* check if attribute can be incremented */
+			ptr1 = MemBase + PhysMake(datseg, 0x1375 + si * 3);
+			if (host_readb(ptr1) == 8) {
+				infobox((Bit8u*)texts[77], 0);
+				continue;
+			}
+			/* increment the negative attribute */
+			tmp1++;
+			ds_writeb(0x407d + si, INC);
+			host_writeb(ptr1 + 1, host_readb(ptr1 + 1) + 1);
+			host_writeb(ptr1, host_readb(ptr1) + 1);
+			refresh_screen();
+		}
+	} else {
+		/* decrement */
+		/* check if the positive attribute can be decremented */
+		if (host_readb(ptr1) == 8) {
+			infobox((Bit8u*)texts[81], 0);
+			return;
+		}
+		c = 0;
+		for (di = 7; di < 14; di++) {
+			if (ds_readb(0x4076 + di) == INC)
+				continue;
+			ptr2 = MemBase + PhysMake(datseg, 0x1360 + di * 3);
+			if (host_readb(ptr2) <= 2)
+				continue;
+			c += host_readb(ptr2) - 2;
+		}
+		if (c < 2) {
+			infobox((Bit8u*)texts[84], 0);
+			return;
+		}
+		/* decrement positive attribute */
+		host_writeb(ptr1 + 1, host_readb(ptr1 + 1) - 1);
+		host_writeb(ptr1, host_readb(ptr1) - 1);
+		/* mark this attribute as decremented */
+		ds_writeb(0x4076 + tmp2, 2);
+
+		refresh_screen();
+
+		tmp1 = 0;
+		while (tmp1 != 2) {
+			/* ask which negative attribute to increment */
+			ds_writew(0x1327, 0xffb0);
+			si = gui_radio((Bit8u*)texts[79], 7,
+					texts[39], texts[40], texts[41],
+					texts[42], texts[43], texts[44],
+					texts[45]);
+			ds_writew(0x1327, 0);
+
+			if (si == -1)
+				continue;
+
+			si--;
+			/* check if this attribute has been incremented */
+			if (ds_readb(0x407d + si) == INC) {
+				infobox((Bit8u*)texts[82], 0);
+				continue;
+			}
+			/* check if attribute can be decremented */
+			ptr1 = MemBase + PhysMake(datseg, 0x1375 + si * 3);
+			if (host_readb(ptr1) == 2) {
+				infobox((Bit8u*)texts[81], 0);
+				continue;
+			}
+			/* deccrement the negative attribute */
+			tmp1++;
+			host_writeb(ptr1 + 1, host_readb(ptr1 + 1) - 1);
+			host_writeb(ptr1, host_readb(ptr1) - 1);
+			ds_writeb(0x407d + si, DEC);
+			refresh_screen();
+		}
+	}
+}
+
 #undef INC
 #undef DEC
 

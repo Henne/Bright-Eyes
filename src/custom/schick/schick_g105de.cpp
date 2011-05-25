@@ -1380,6 +1380,12 @@ int schick_nearcall_gen105(unsigned offs) {
 						reg_ax);
 					return 1;
 				}
+				case 0x4718: {
+					CPU_Pop16();
+					D1_LOG("change_attribs();\n");
+					G105de::change_attribs();
+					return 1;
+				}
 				case 0x4b1b: {
 					CPU_Pop16();
 

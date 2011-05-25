@@ -82,6 +82,7 @@ namespace G105de {
 	void spell_inc_novice(Bit16u);
 	void select_typus();
 	Bit16u can_change_attribs();
+	void change_attribs();
 	void save_picbuf();
 	void restore_picbuf(PhysPt);
 	void print_attribs();
