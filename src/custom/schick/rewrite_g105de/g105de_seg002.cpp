@@ -4089,11 +4089,11 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 
 	/* decrement total number of skill inc tries */
 	ds_writeb(0x1468, ds_readb(0x1468) - 1);
-	if (random_interval_gen(2, 12) > (signed char)ds_readb(1434 + skill)) {
+	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1434 + skill)) {
 		/* print sucess message */
 		infobox(Real2Host(ds_readd(0x4339)), 0);
 		/* increment skill */
-		ds_writeb(0x1434 + skill, ds_readb(0x1434) + 1);
+		ds_writeb(0x1434 + skill, ds_readb(0x1434 + skill) + 1);
 		/* reset tries */
 		ds_writeb(0x400e + skill * 2, 0);
 		/* increment skill increments */
