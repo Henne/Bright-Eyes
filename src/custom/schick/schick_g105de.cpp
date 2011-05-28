@@ -870,6 +870,12 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x12fa: {
+					CPU_Pop16();
+					D1_LOG("save_chr();\n");
+					G105de::save_chr();
+					return 1;
+				}
 				case 0x14f6: {
 					CPU_Pop16();
 

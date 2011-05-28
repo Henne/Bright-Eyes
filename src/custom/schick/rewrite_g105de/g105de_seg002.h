@@ -32,6 +32,7 @@ namespace G105de {
 	void split_textbuffer_host(char**, char*, Bit32u);
 	void load_page(Bit16u);
 	void load_typus(Bit16u);
+	void save_chr();
 	void read_common_files();
 	Bit32s get_archive_offset(Bit8u*, Bit8u*);
 	Bit16u open_datfile(Bit16u);

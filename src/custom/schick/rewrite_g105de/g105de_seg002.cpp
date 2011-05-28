@@ -1029,6 +1029,128 @@ void load_typus(Bit16u typus)
 	fclose(fd);
 }
 
+/**
+ * save_chr() - save the hero the a CHR file
+ */
+void save_chr()
+{
+	FILE *fd;
+	char *pwd;
+	char path[80];
+	char filename[20];
+	char nvf[19];
+	Bit8u *n =  (Bit8u*)nvf;
+
+	Bit16u i;
+
+	/* check for typus */
+	if (ds_readb(0x134d) == 0) {
+		infobox((Bit8u*)texts[0x120 / 4], 0);
+		return;
+	}
+	/* check for name */
+	if (ds_readb(0x132c) == 0) {
+		infobox((Bit8u*)texts[0x120 / 4], 0);
+		return;
+	}
+	/* Load picture from nvf */
+	/* TODO: why not just copy? */
+	host_writed(n + 0, ds_readd(0x47d3));
+
+	host_writed(n + 4, ds_readd(0x4771));
+
+	host_writew(n + 8, ds_readb(0x40b6));
+
+	host_writew(n + 10, 0);
+
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	process_nvf(n);
+
+	/* copy picture to the character struct */
+	memcpy(MemBase + PhysMake(datseg, 0x1606),
+		Real2Host(ds_readd(0x47d3)), 1024);
+	/* set an unknown value in the character struct */
+	ds_writeb(0x13b4, 1);
+
+	/* wanna save ? */
+	if (!gui_bool((Bit8u*)texts[3]))
+		return;
+
+	/* copy name to alias */
+	/* TODO: should use strncpy() here */
+	strcpy((char*)MemBase + PhysMake(datseg, 0x133c),
+		(char*)MemBase + PhysMake(datseg, 0x132c));
+	/* copy name to buffer */
+	/* TODO: should use strncpy() here */
+	strcpy((char*)Real2Host(ds_readd(0x47bf)),
+		(char*)MemBase + PhysMake(datseg, 0x132c));
+	/* prepare filename */
+	for (i = 0; i < 8; i++) {
+		char c = host_readb(Real2Host(ds_readd(0x47bf)) + i);
+		/* leave the loop if the string ends */
+		if (c == 0)
+			break;
+		if (isalnum(c))
+			continue;
+		/* replace non alphanumerical characters with underscore */
+		host_writeb(Real2Host(ds_readd(0x47bf)) + i, '_');
+	}
+
+	strncpy(filename, (char*)Real2Host(ds_readd(0x47bf)), 8);
+	filename[8] = 0;
+	strcat(filename, ".CHR");
+
+	pwd = get_pwd();
+	strncat(pwd, filename, 12);
+	prepare_path(pwd);
+
+	/* try to open the filename */
+	fd = fopen(pwd, "rb");
+	free(pwd);
+
+	/* if the file exists ask if should overwrite */
+	if (fd) {
+		/* Original-Bugfix: the file should be closed */
+		fclose(fd);
+
+		if (!gui_bool((Bit8u*)texts[0x414 / 4]))
+			return;
+	}
+
+	/* here originally creat() was used */
+	fd = fopen(filename, "w+");
+
+	if (fd) {
+		/* write the CHR file to the current directory */
+		fwrite(MemBase + PhysMake(datseg, 0x132c), 1, 1754, fd);
+		fclose(fd);
+
+		/* save it to the TEMP dir if called from with arguments */
+		if (ds_readw(0x3f60) != 0) {
+			strcpy(path, "TEMP\\");
+			strcat(path, filename);
+
+			pwd = get_pwd();
+			strncat(pwd, path, 80);
+			prepare_path(pwd);
+
+			fd = fopen(pwd, "w+");
+			free(pwd);
+
+			if (fd) {
+				fwrite(MemBase + PhysMake(datseg, 0x132c),
+					1, 1754, fd);
+				fclose(fd);
+			}
+		}
+	} else {
+		/* should be replaced with infobox() */
+		error_msg(MemBase + PhysMake(datseg, 0x1e09));
+	}
+}
+
 Bit16u open_datfile(Bit16u index)
 {
 	CPU_Push16(index);
