@@ -74,6 +74,7 @@ namespace G105de {
 	void enter_name();
 	void change_head();
 	void change_sex();
+	void do_gen();
 	void calc_at_pa();
 	void fill_values();
 	void refresh_screen();

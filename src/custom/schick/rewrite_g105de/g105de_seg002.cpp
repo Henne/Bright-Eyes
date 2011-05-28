@@ -2321,6 +2321,236 @@ void change_sex()
 	}
 }
 
+void do_gen()
+{
+	Bit16s si, di;
+
+	di = 0;
+
+	ds_writew(0x11fe, 1);
+
+	/* try to set the level from parameters */
+	switch (ds_readw(0x3f5e)) {
+		case 'a': {
+			/* ADVANCED */
+			ds_writew(0x40bf, 2);
+			break;
+		}
+		case 'n': {
+			/* NOVICE */
+			ds_writew(0x40bf, 1);
+			break;
+		}
+		default: {
+			ds_writew(0x40bf, -1);
+		}
+	}
+
+	/* ask for level */
+	while (ds_readw(0x40bf) == 0xffff) {
+		ds_writew(0x40bf,
+			gui_radio((Bit8u*)texts[0], 2, texts[1], texts[2]));
+	}
+
+	ds_writew(0x4599, 1);
+
+	/* main loop */
+	while (!di) {
+		if (ds_readw(0x11fe)) {
+			refresh_screen();
+			ds_writew(0x11fe, 0);
+		}
+
+		ds_writed(0x1276, ds_readd(0x1c79 + ds_readw(0x1324) * 4));
+		handle_input();
+		ds_writed(0x1276, 0);
+
+		if (ds_readw(0x4599) || ds_readw(0x459f) == 0x49) {
+			/* print the menu for each page */
+			switch(ds_readw(0x1324)) {
+				case 0: {
+					si = gui_radio((Bit8u*)texts[0x1c/4], 9,
+						texts[0x28 / 4],
+						texts[0x2c / 4],
+						texts[0x3c / 4],
+						texts[0x20 / 4],
+						texts[0x38 / 4],
+						texts[0x30 / 4],
+						texts[0x418 / 4],
+						texts[0x24 / 4],
+						texts[0x408 / 4]);
+
+					if (si != -1) {
+						if (si >= 4 && si < 6 &&
+							ds_readb(0x1360) &&
+							!gui_bool((Bit8u*)texts[0x34 /4])) {
+							si = 0;
+						}
+						ds_writew(0x459f, 0);
+						switch (si) {
+							case 1: {
+								enter_name();
+								break;
+							}
+							case 2: {
+								change_sex();
+								break;
+							}
+							case 3: {
+								change_attribs();
+								break;
+							}
+							case 4: {
+								memset(MemBase +PhysMake(datseg, 0x132c), 0, 1754);
+								clear_hero();
+								ds_writew(0x4599,
+									1);
+								ds_writew(0x11fe,
+									1);
+								break;
+							}
+							case 5: {
+								new_values();
+								break;
+							}
+							case 6: {
+								select_typus();
+								break;
+							}
+							case 7: {
+								choose_typus();
+								break;
+							}
+							case 8: {
+								save_chr();
+								break;
+							}
+							case 9: {
+								if (gui_bool((Bit8u*)texts[0x40c / 4]))
+									di = 1;
+								break;
+							}
+						}
+					/* TODO: 0x3334 -> 0x33e0 */
+					}
+					break;
+				}
+				case 1:
+				case 2:
+				case 3: {
+					select_skill();
+					break;
+				}
+				case 4: {
+					choose_atpa();
+					break;
+				}
+				case 5:
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+				case 10: {
+					select_spell();
+					break;
+				}
+			}
+		}
+
+		if (ds_readw(0x459f) == 0x60)
+			change_sex();
+
+		if (ds_readw(0x459f) == 0x61)
+			enter_name();
+
+		if (ds_readw(0x459f) == 0x48 && ds_readw(0x1324) == 0) {
+			if (ds_readb(0x134d) == 0) {
+				infobox((Bit8u*)texts[0x44 / 4], 0);
+			} else {
+				if (ds_readb(0x40b6) < ds_readb(0x40b4)) {
+					ds_writeb(0x40b6, ds_readb(0x40b6) + 1);
+				} else {
+					ds_writeb(0x40b6, ds_readb(0x40b5));
+				}
+				change_head();
+			}
+		}
+
+		if (ds_readw(0x459f) == 0x50 && ds_readw(0x1324) == 0) {
+			if (ds_readb(0x134d) == 0) {
+				infobox((Bit8u*)texts[0x44 / 4], 0);
+			} else {
+				if (ds_readb(0x40b6) > ds_readb(0x40b5)) {
+					ds_writeb(0x40b6, ds_readb(0x40b6) - 1);
+				} else {
+					ds_writeb(0x40b6, ds_readb(0x40b4));
+				}
+				change_head();
+			}
+		}
+
+		if (ds_readw(0x459f) == 0x4d && ds_readb(0x40bf) != 1) {
+			if (ds_readb(0x134d) == 0) {
+				infobox((Bit8u*)texts[0x120 / 4], 0);
+			} else {
+				ds_writew(0x11fe, 1);
+
+				if (((ds_readw(0x134d) >= 7) ? 10 : 4) > ds_readb(0x1324))
+					ds_writeb(0x1324, ds_readb(0x1324) + 1);
+				else
+					ds_writeb(0x1324, 0);
+			}
+		}
+
+		if (ds_readw(0x459f) == 0x4b) {
+			if ((Bit16s)ds_readw(0x1324) > 0) {
+				ds_writew(0x11fe, 1);
+				ds_writew(0x1324, ds_readw(0x1324) - 1);
+			} else {
+				if (ds_readw(0x40bf) != 1) {
+					if (ds_readb(0x134d) == 0) {
+						infobox((Bit8u*)texts[0x120 / 4], 0);
+					} else {
+						ds_writew(0x11fe, 1);
+						ds_writew(0x1324, ds_readb(0x134d) < 7 ? 4 : 10);
+					}
+				}
+			}
+		}
+
+		if (ds_readw(0x459f) > 2 &&
+			ds_readw(0x459f) <= 6 &&
+			ds_readw(0x40bf) == 2 &&
+			ds_readb(0x134d)) {
+			switch (ds_readw(0x459f)) {
+				case 2: {
+					si = 0;
+					break;
+				}
+				case 3: {
+					si = 1;
+					break;
+				}
+				case 4: {
+					si = 4;
+					break;
+				}
+				case 5: {
+					si = 5;
+					break;
+				}
+				default: {
+					si = 10;
+				}
+			}
+		}
+		if (si != ds_readw(0x1324) && si >= 5 && ds_readb(0x134d >= 7)) {
+			ds_writew(0x1324, si);
+			ds_writew(0x11fe, 1);
+		}
+	}
+}
+
 /**
  * calc_at_pa() - calculate AT and PA values
  */
