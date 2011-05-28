@@ -142,6 +142,29 @@ static void prepare_path(char *p)
 	}
 }
 
+/**
+ * get_pwd() -  get the path to the current directory
+ *
+ * This must be freed after use.
+ * WARNING: Does only work on mounted drives
+ */
+static char *get_pwd() {
+
+	char *path = (char*)calloc(2048, sizeof(char));
+
+	if (path == NULL)
+		return NULL;
+
+	Bit8u drive = DOS_GetDefaultDrive();
+	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
+	dr->GetSystemFilename((char*)path, "");
+	strcat(path, "/");
+	strcat(path, Drives[drive]->curdir);
+	strcat(path, "/");
+
+	return path;
+}
+
 namespace G105de {
 
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
@@ -203,17 +226,12 @@ void start_music(Bit16u track)
 void read_soundcfg()
 {
 	FILE *fd;
-	Bit8u buf[800];
-	char fname[800];
+	char *fname;
 	Bit16u port;
 
-	/* build the path to DSAGEN.DAT */
-	Bit8u drive = DOS_GetDefaultDrive();
-
-	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
-
-	dr->GetSystemFilename((char*)buf, "");
-	sprintf(fname, "%s/%s/SOUND.CFG", (char*)buf,	Drives[drive]->curdir);
+	/* build the path to SOUND.CFG */
+	fname = get_pwd();
+	strncat(fname, "SOUND.CFG", 9);
 	prepare_path(fname);
 
 
@@ -221,6 +239,7 @@ void read_soundcfg()
 	ds_writew(0x1a07, 1);
 
 	fd = fopen(fname, "rb");
+	free(fname);
 
 	if (fd == NULL) {
 		D1_ERR("Failed to open %s\n", fname);
@@ -1021,20 +1040,18 @@ Bit16u open_datfile(Bit16u index)
 static FILE * fd_open_datfile(Bit16u index)
 {
 	FILE *fd;
+	char *fname;
 	signed long offset;
 	Bit8u buf[800];
-	char fname[800];
+
 
 	/* build the path to DSAGEN.DAT */
-	Bit8u drive = DOS_GetDefaultDrive();
-
-	localDrive *dr = dynamic_cast<localDrive*>(Drives[drive]);
-
-	dr->GetSystemFilename((char*)buf, "");
-	sprintf(fname, "%s/%s/DSAGEN.DAT", (char*)buf,	Drives[drive]->curdir);
+	fname = get_pwd();
+	strncat(fname, "DSAGEN.DAT", 10);
 	prepare_path(fname);
 
 	fd = fopen(fname, "rb");
+	free(fname);
 
 	if (fd == NULL) {
 		D1_ERR("%s(): failed to open datafile at %s\n",
