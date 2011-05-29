@@ -709,6 +709,18 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0874: {
+					CPU_Pop16();
+					Bit16u val = CPU_Pop16();
+					RealPt ptr = CPU_Pop32();
+					CPU_Push32(ptr);
+					CPU_Push16(val);
+
+					G105de::mouse_do_enable(val, ptr);
+					D1_LOG("mouse_do_enable();\n");
+
+					return 1;
+				}
 				case 0x08d4: {
 					CPU_Pop16();
 

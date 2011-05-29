@@ -529,6 +529,27 @@ void mouse_disable()
 
 }
 
+void mouse_do_enable(Bit16u val, RealPt ptr)
+{
+	Bit16u p1, p2, p3, p4, p5;
+
+	p1 = 0x0c;
+	p3 = val;
+
+	p4 = 0x86a;
+	p5 = reloc_gen + 0x3c6;
+	/* save adress of old IRQ 0x78 */
+	ds_writed(0x3f32, RealGetVec(0x78));
+
+	/* set new IRS 0x78 */
+	RealSetVec(0x78, ptr);
+
+	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
+				(Bit8u*)&p4, (Bit8u*)&p5);
+
+	ds_writew(0x1a0b, 1);
+}
+
 void mouse_do_disable()
 {
 	Bit16u v1, v2, v3, v4, v5;

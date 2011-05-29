@@ -14,6 +14,7 @@ namespace G105de {
 	void stop_sequence();
 	void mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
 	void mouse_disable();
+	void mouse_do_enable(Bit16u, RealPt);
 	void mouse_do_disable();
 	void draw_mouse_ptr_wrapper();
 	void call_mouse();
