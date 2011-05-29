@@ -450,6 +450,21 @@ void stop_sequence()
 	AIL_release_sequence_handle(ds_readw(0x3f5c), ds_readw(0x3f5a));
 }
 
+
+void restart_midi()
+{
+	if (ds_readw(0x1a07))
+		return;
+
+	if (host_readw(Real2Host(ds_readd(0x3f56)) + 2) != 3)
+		return;
+
+	if (AIL_sequence_status(ds_readw(0x3f5c), ds_readw(0x3f5a)) != 2)
+		return;
+
+	AIL_start_sequence(ds_readw(0x3f5c), ds_readw(0x3f5a));
+}
+
 /**
  * mouse_action -	does mouse programming
  * @p1:		function AX

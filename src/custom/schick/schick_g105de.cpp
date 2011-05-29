@@ -678,6 +678,12 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x0565: {
+					CPU_Pop16();
+					D1_LOG("restart_midi();\n");
+					G105de::restart_midi();
+					return 1;
+				}
 				case 0x05a1: {
 					CPU_Pop16();
 					RealPt p1 = CPU_Pop32();
