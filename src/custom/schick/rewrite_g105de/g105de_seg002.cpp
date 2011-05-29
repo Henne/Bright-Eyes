@@ -119,6 +119,17 @@ static void AIL_stop_sequence(Bit16u driver, Bit16u sequence)
 	CPU_Pop16();
 }
 
+static Bit16u AIL_sequence_status(Bit16u driver, Bit16u sequence)
+{
+
+	CPU_Push16(sequence);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc95);
+	CPU_Pop16();
+	CPU_Pop16();
+
+	return reg_ax;
+}
 static void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence)
 {
 	CPU_Push16(sequence);
