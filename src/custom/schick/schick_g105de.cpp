@@ -701,6 +701,12 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					return 1;
 				}
+				case 0x078c: {
+					CPU_Pop16();
+					G105de::mouse_enable();
+					D1_LOG("mouse_enable();\n");
+					return 1;
+				}
 				case 0x0829: {
 					CPU_Pop16();
 

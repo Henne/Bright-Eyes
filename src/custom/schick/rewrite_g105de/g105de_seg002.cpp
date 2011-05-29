@@ -522,6 +522,38 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 	return;
 }
 
+void mouse_enable()
+{
+	Bit16u p1, p2, p3, p4, p5;
+
+	if (ds_readw(0x4591) != 2)
+		return;
+
+	p1 = 0;
+
+	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
+				(Bit8u*)&p4, (Bit8u*)&p5);
+
+	if (p1 == 0)
+		ds_writew(0x4591, 0);
+
+	ds_writed(0x4625, RealMake(datseg, 0x1200));
+	ds_writed(0x4621, RealMake(datseg, 0x1200));
+
+	if (ds_readw(0x4591) != 2)
+		return;
+
+	p1 = 4;
+	p3 = ds_readw(0x124c);
+	p4 = ds_readw(0x124e);
+
+	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
+				(Bit8u*)&p4, (Bit8u*)&p5);
+
+	mouse_do_enable(0x1f, RealMake(reloc_gen + 0x3c6, 0x68c));
+}
+
+
 void mouse_disable()
 {
 	if (ds_readw(0x4591) == 2)
