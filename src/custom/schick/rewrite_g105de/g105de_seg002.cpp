@@ -92,8 +92,12 @@ Bit8u *buffer_heads_dat;
 Bit8u *buffer_text;
 Bit8u *buffer_font6;
 
-/* DS:0x4777f */
+/* DS:0x477d */
+static Bit16u col_index;
+/* DS:0x477f */
 static Bit16u bg_color;
+/* DS:0x4781 */
+static Bit16u fg_color[6];
 
 /* DS:0x478d */
 Bit8u *picbuf3;
@@ -1618,7 +1622,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 		}
 		case 0xf0: case 0xf1: case 0xf2: case 0xf3: {
 			/* change text color */
-			ds_writew(0x477d, c - 0xf0);
+			col_index = c - 0xf0;
 			break;
 		}
 		default:
@@ -1790,8 +1794,7 @@ void fill_smth2(Bit8u* ptr) {
 			if (!((0x80 >> j) & lv))
 				continue;
 
-			host_writeb(lp + j,
-				ds_readb(0x4781 + ds_readw(0x477d) * 2));
+			host_writeb(lp + j, fg_color[col_index]);
 		}
 	}
 }
@@ -1818,13 +1821,13 @@ void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
 
 /* static */
 void set_vals(Bit16u v1, Bit16u v2) {
-	ds_writew(0x4781, v1);
+	fg_color[0] = v1;
 	bg_color = v2;
 }
 
 /* static */
 void get_vals(Bit8u *p1, Bit8u *p2) {
-	host_writew(p1, ds_readw(0x4781));
+	host_writew(p1, fg_color[0]);
 	host_writew(p2, bg_color);
 }
 
@@ -5742,9 +5745,9 @@ void init_stuff()
 	init_colors();
 
 	/* these 3 variables are bogus */
-	ds_writew(0x4783, 0xc8);
-	ds_writew(0x4785, 0xc9);
-	ds_writew(0x4787, 0xca);
+	fg_color[1] = 0xc8;
+	fg_color[2] = 0xc9;
+	fg_color[3] = 0xca;
 
 	/* number of menu tiles width */
 	ds_writew(0x40b9, 3);
