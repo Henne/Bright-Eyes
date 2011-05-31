@@ -41,6 +41,8 @@ static bool eh_installed;
 /* DS:0x1c77 */
 static bool bool_mode;
 
+/* DS:0x1ca5 */
+static bool need_refresh = true;
 
 /* DS:0x1ca6 */
 struct type_bitmap {
@@ -3020,7 +3022,7 @@ void refresh_screen()
 			/* draw DMENGE.DAT or the typus name */
 			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
 			if (ds_readb(0x134d) != 0) {
-				ds_writeb(0x1ca5, 1);
+				need_refresh = true;
 				copy_to_screen(Real2Phys(ds_readd(0x47b3)),
 					dst, 128, 184, 0);
 
@@ -3040,10 +3042,10 @@ void refresh_screen()
 						184);
 				}
 			} else {
-				if (ds_readb(0x1ca5) != 0) {
+				if (need_refresh) {
 					call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)),
 						16, 8, 143, 191, 0);
-					ds_writeb(0x1ca5, 0);
+					need_refresh = false;
 				}
 				wait_for_vsync();
 				set_palette(Real2Host(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
