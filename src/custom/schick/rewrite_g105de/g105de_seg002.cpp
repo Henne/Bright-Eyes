@@ -58,6 +58,9 @@ static bool got_ch_bonus;
 /* DS:0x2782 */
 static bool got_mu_bonus;
 
+/* DS0x3f2a */
+static Bit32s flen;
+
 /* DS:0x3f3a */
 FILE *fd_timbre;
 
@@ -1368,7 +1371,7 @@ Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 		length = host_readd(table + (i + 1) * 16 + 0x0c) - offset;
 
 		/* save length in 2 variables */
-		ds_writed(0x3f2a, length);
+		flen = length;
 		ds_writed(0x3f2e, length);
 
 		return offset;
@@ -1392,7 +1395,7 @@ Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 
 Bit32s get_filelength() {
 
-	return ds_readd(0x3f2a);
+	return flen;
 }
 
 Bit16u ret_zero1() {
