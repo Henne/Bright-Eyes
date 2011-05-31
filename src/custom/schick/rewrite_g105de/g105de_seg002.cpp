@@ -53,6 +53,9 @@ struct type_bitmap empty_bitmap;
 /* DS:0x1cb3 */
 static char version[] = "V1.05";
 
+/* DS:0x2780 */
+static bool got_ch_bonus;
+
 /* DS:0x3f3a */
 FILE *fd_timbre;
 
@@ -2905,7 +2908,7 @@ void fill_values()
 			/* Tsa: CH + 1 */
 			ds_writeb(0x1366, ds_readb(0x1366) + 1);
 			ds_writeb(0x1367, ds_readb(0x1367) + 1);
-			ds_writew(0x2780, 1);
+			got_ch_bonus = true;
 			break;
 		}
 		case 9 : {
@@ -3114,7 +3117,7 @@ void clear_hero() {
 
 	Bit16u i;
 
-	ds_writew(0x2780, 0);
+	got_ch_bonus = false;
 	ds_writew(0x2782, 0);
 
 	ds_writeb(0x40b6, 0);
@@ -3377,7 +3380,7 @@ void select_typus()
 		ds_writeb(0x1361, ds_readb(0x1360));
 	}
 	/* disable CH bonus */
-	if (ds_readw(0x2780)) {
+	if (got_ch_bonus) {
 		ds_writeb(0x1366, ds_readb(0x1366) - 1);
 		ds_writeb(0x1367, ds_readb(0x1366));
 	}
@@ -3451,7 +3454,7 @@ void select_typus()
 			ds_writeb(0x1360, ds_readb(0x1360) + 1);
 			ds_writeb(0x1361, ds_readb(0x1360));
 		}
-		if (ds_readw(0x2780)) {
+		if (got_ch_bonus) {
 			ds_writeb(0x1366, ds_readb(0x1366) + 1);
 			ds_writeb(0x1367, ds_readb(0x1366));
 		}
@@ -3485,7 +3488,7 @@ void select_typus()
 	}
 
 	/* reset boni falags */
-	ds_writew(0x2780, 0);
+	got_ch_bonus = false;
 	ds_writew(0x2782, 0);
 	fill_values();
 	return;
@@ -3579,10 +3582,10 @@ void change_attribs()
 			ds_writew(0x2782, 0);
 		}
 		/* remove CH boni */
-		if (ds_readw(0x2780)) {
+		if (got_ch_bonus) {
 			ds_writeb(0x1366, ds_readb(0x1366) - 1);
 			ds_writeb(0x1367, ds_readb(0x1366));
-			ds_writew(0x2780, 0);
+			got_ch_bonus = false;
 		}
 		ds_writew(0x11fe, 1);
 		refresh_screen();
