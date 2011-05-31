@@ -55,6 +55,8 @@ static char version[] = "V1.05";
 
 /* DS:0x2780 */
 static bool got_ch_bonus;
+/* DS:0x2782 */
+static bool got_mu_bonus;
 
 /* DS:0x3f3a */
 FILE *fd_timbre;
@@ -2870,7 +2872,7 @@ void fill_values()
 			/* Praios: MU + 1 */
 			ds_writeb(0x1360, ds_readb(0x1360) + 1);
 			ds_writeb(0x1361, ds_readb(0x1360) + 1);
-			ds_writew(0x2782, 1);
+			got_mu_bonus = true;
 			break;
 		}
 		case 2 : {
@@ -3118,7 +3120,7 @@ void clear_hero() {
 	Bit16u i;
 
 	got_ch_bonus = false;
-	ds_writew(0x2782, 0);
+	got_mu_bonus = false;
 
 	ds_writeb(0x40b6, 0);
 	ds_writeb(0x40b4, 0);
@@ -3375,7 +3377,7 @@ void select_typus()
 	/* save the old typus */
 	old_typus = ds_readb(0x134d);
 	/* disable MU bonus */
-	if (ds_readw(0x2782)) {
+	if (got_mu_bonus) {
 		ds_writeb(0x1360, ds_readb(0x1360) - 1);
 		ds_writeb(0x1361, ds_readb(0x1360));
 	}
@@ -3450,7 +3452,7 @@ void select_typus()
 	 *	or the same typus is selected.
 	 */
 	if (di == -1 || t.t[di - 1] == old_typus) {
-		if (ds_readw(0x2782)) {
+		if (got_mu_bonus) {
 			ds_writeb(0x1360, ds_readb(0x1360) + 1);
 			ds_writeb(0x1361, ds_readb(0x1360));
 		}
@@ -3489,7 +3491,7 @@ void select_typus()
 
 	/* reset boni falags */
 	got_ch_bonus = false;
-	ds_writew(0x2782, 0);
+	got_mu_bonus = false;
 	fill_values();
 	return;
 }
@@ -3576,10 +3578,10 @@ void change_attribs()
 		/* set typus to 0 */
 		ds_writeb(0x134d, 0);
 		/* remove MU boni */
-		if (ds_readw(0x2782)) {
+		if (got_mu_bonus) {
 			ds_writeb(0x1360, ds_readb(0x1360) - 1);
 			ds_writeb(0x1361, ds_readb(0x1360));
-			ds_writew(0x2782, 0);
+			got_mu_bonus = false;
 		}
 		/* remove CH boni */
 		if (got_ch_bonus) {
