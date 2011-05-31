@@ -38,6 +38,10 @@ static bool use_cda;
 /* DS:0x1a0b */
 static bool eh_installed;
 
+/* DS:0x1c77 */
+static bool bool_mode;
+
+
 /* DS:0x1ca6 */
 struct type_bitmap {
 	char t[13];
@@ -2099,9 +2103,9 @@ Bit16s gui_bool(Bit8u *msg)
 {
 	Bit16s retval;
 
-	ds_writew(0x1c77, 1);
+	bool_mode = true;
 	retval = gui_radio(msg, 2, texts[4], texts[5]);
-	ds_writew(0x1c77, 0);
+	bool_mode = false;
 
 	if (retval == 1)
 		return 1;
@@ -2274,7 +2278,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			di = (r8 - r7) / 8 + 1;
 		}
 		/* is this a bool radiobox ? */
-		if (ds_readw(0x1c77) != 0) {
+		if (bool_mode) {
 			if (ds_readw(0x459f) == 0x2c) {
 				/* has the 'j' key been pressed */
 				retval = 1;
