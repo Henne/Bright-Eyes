@@ -58,8 +58,10 @@ static bool got_ch_bonus;
 /* DS:0x2782 */
 static bool got_mu_bonus;
 
-/* DS0x3f2a */
+/* DS:0x3f2a */
 static Bit32s flen;
+/* DS:0x3f2e */
+static Bit32s flen_left;
 
 /* DS:0x3f3a */
 FILE *fd_timbre;
@@ -1318,12 +1320,12 @@ static FILE * fd_open_datfile(Bit16u index)
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
 {
 
-	if (len > ds_readd(0x3f2e))
-		len = ds_readw(0x3f2e);
+	if (len > flen_left)
+		len = flen_left;
 
 	len = fread(buf, 1, len, fd);
 
-	ds_writed(0x3f2e, ds_readd(0x3f2e) - len);
+	flen_left -= len;
 
 	return len;
 }
@@ -1379,7 +1381,7 @@ Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 
 		/* save length in 2 variables */
 		flen = length;
-		ds_writed(0x3f2e, length);
+		flen_left = length;
 
 		return offset;
 	}
@@ -1390,12 +1392,12 @@ Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
 Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 {
 
-	if (len > ds_readd(0x3f2e))
-		len = ds_readw(0x3f2e);
+	if (len > flen_left)
+		len = flen_left;
 
 	len = bc__read(handle, buf, len);
 
-	ds_writed(0x3f2e, ds_readd(0x3f2e) - len);
+	flen_left -= len;
 
 	return len;
 }
