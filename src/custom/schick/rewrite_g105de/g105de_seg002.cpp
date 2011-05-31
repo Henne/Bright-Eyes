@@ -92,6 +92,9 @@ Bit8u *buffer_heads_dat;
 Bit8u *buffer_text;
 Bit8u *buffer_font6;
 
+/* DS:0x4777f */
+static Bit16u bg_color;
+
 /* DS:0x478d */
 Bit8u *picbuf3;
 Bit8u *picbuf2;
@@ -1765,7 +1768,7 @@ void fill_smth() {
 
 	for (i = 0; i < 8; i++, ptr += 8)
 		for (j = 0; j < 8; j++)
-			host_writeb(ptr + j, ds_readb(0x477f));
+			host_writeb(ptr + j, bg_color);
 }
 
 /* static */
@@ -1816,13 +1819,13 @@ void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
 /* static */
 void set_vals(Bit16u v1, Bit16u v2) {
 	ds_writew(0x4781, v1);
-	ds_writew(0x477f, v2);
+	bg_color = v2;
 }
 
 /* static */
 void get_vals(Bit8u *p1, Bit8u *p2) {
 	host_writew(p1, ds_readw(0x4781));
-	host_writew(p2, ds_readw(0x477f));
+	host_writew(p2, bg_color);
 }
 
 Bit16u get_str_width(char *str) {
