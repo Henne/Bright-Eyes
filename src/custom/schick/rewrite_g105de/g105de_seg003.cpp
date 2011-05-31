@@ -9,6 +9,8 @@
 
 #include "g105de_seg003.h"
 
+static Bit16u rand_seed = 0x327b;
+
 static inline
 unsigned short my_rol16(unsigned short op, unsigned char count) {
 	return (op << count) | (op >> (16 - count));
@@ -32,12 +34,12 @@ unsigned short random_gen(short val) {
 	if (val == 0)
 		return 0;
 
-	si = ds_readw(0x1fd6) ^ ds_readw(0x458f);
+	si = rand_seed ^ ds_readw(0x458f);
 	ax = my_rol16(si, 2) + ds_readw(0x458f);
-	ax = ax ^ ds_readw(0x1fd6);
+	ax = ax ^ rand_seed;
 	si = my_rol16(ax, 3);
 
-	ds_writew(0x1fd6, si);		/* update rand_seed */
+	rand_seed = si;		/* update rand_seed */
 	si = abs(si) % val;
 
 	return si + 1;
