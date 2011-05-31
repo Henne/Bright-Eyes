@@ -35,6 +35,8 @@ static Bit16s gen_page;
 
 /* DS:0x1a09 */
 static bool use_cda;
+/* DS:0x1a0b */
+static bool eh_installed;
 
 /* DS:0x1ca6 */
 struct type_bitmap {
@@ -611,7 +613,7 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
-	ds_writew(0x1a0b, 1);
+	eh_installed = true;
 }
 
 void mouse_do_disable()
@@ -627,7 +629,7 @@ void mouse_do_disable()
 	mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3,
 		(Bit8u*)&v4, (Bit8u*)&v5);
 
-	ds_writew(0x1a0b, 0);
+	eh_installed = false;
 }
 
 /* static */
