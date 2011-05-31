@@ -72,13 +72,15 @@ void *form_xmid;
 void *snd_ptr_unkn1;
 void *state_table;
 
-/* DS:0x3f62 */
 struct inc_states {
 	char tries;
 	char incs;
 };
 
+/* DS:0x3f62 */
 static struct inc_states spell_incs[86];
+/* DS:0x400e */
+static struct inc_states skill_incs[52];
 
 char *texts[300];
 
@@ -2752,8 +2754,8 @@ void fill_values()
 		ds_writeb(0x1434 + i, tval);
 
 		/* set skill_incs and skill_tries to zero */
-		ds_writeb(0x400f + i * 2, 0);
-		ds_writeb(0x4003 + i * 2, 0);
+		skill_incs[i].incs = 0;
+		skill_incs[i].tries = 0;
 	}
 
 	/* set skill_attempts */
@@ -3155,8 +3157,8 @@ void clear_hero() {
 		spell_incs[i].tries = 0;
 	}
 	for (i = 0; i < 52; i++) {
-		ds_writeb(0x400f + i * 2, 0);
-		ds_writeb(0x400e + i * 2, 0);
+		skill_incs[i].tries = 0;
+		skill_incs[i].incs = 0;
 	}
 
 	ds_writeb(0x1353, 1);
@@ -3301,7 +3303,7 @@ void skill_inc_novice(Bit16u skill)
 
 	while (!done) {
 		/* leave the loop if 3 tries have been done */
-		if (ds_readw(0x400e + skill * 2) == 3) {
+		if (skill_incs[skill].tries == 3) {
 			/* set the flag to leave this loop */
 			done++;
 			continue;
@@ -3316,7 +3318,7 @@ void skill_inc_novice(Bit16u skill)
 			ds_writeb(0x1434 + skill, ds_readb(0x1434 + skill) + 1);
 
 			/* set inc tries for this skill to zero */
-			ds_writew(0x400e + skill * 2, 0);
+			skill_incs[skill].tries = 0;
 
 			/* set the flag to leave this loop */
 			done++;
@@ -3331,7 +3333,7 @@ void skill_inc_novice(Bit16u skill)
 				ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
 		} else
 			/* inc tries for that skill */
-			ds_writew(0x400e + skill * 2, ds_readw(0x400e + skill * 2) + 1);
+			skill_incs[skill].tries++;
 	}
 }
 
@@ -4567,12 +4569,12 @@ void make_valuta_str(char *dst, unsigned int money)
 void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 {
 	/* no more increments than the maximum */
-	if (ds_readb(0x400f + skill * 2) >= max) {
+	if (skill_incs[skill].incs >= max) {
 		infobox(msg, 0);
 		return;
 	}
 	/* we just have 3 tries to increment */
-	if (ds_readb(0x400e + skill * 2) == 3) {
+	if (skill_incs[skill].tries == 3) {
 		infobox(Real2Host(ds_readd(0x4335)), 0);
 		return;
 	}
@@ -4585,9 +4587,9 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 		/* increment skill */
 		ds_writeb(0x1434 + skill, ds_readb(0x1434 + skill) + 1);
 		/* reset tries */
-		ds_writeb(0x400e + skill * 2, 0);
+		skill_incs[skill].tries = 0;
 		/* increment skill increments */
-		ds_writeb(0x400f + skill * 2, ds_readb(0x400f + skill * 2) + 1);
+		skill_incs[skill].incs++;
 
 		/* check if we have a melee attack skill */
 		if (skill <= 6) {
@@ -4604,7 +4606,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 		/* print failure message */
 		infobox(Real2Host(ds_readd(0x433d)), 0);
 		/* increment try */
-		ds_writeb(0x400e + skill * 2, ds_readb(0x400e + skill * 2) + 1);
+		skill_incs[skill].tries++;
 	}
 
 	refresh_screen();
