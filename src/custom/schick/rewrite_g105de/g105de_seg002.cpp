@@ -72,6 +72,14 @@ void *form_xmid;
 void *snd_ptr_unkn1;
 void *state_table;
 
+/* DS:0x3f62 */
+struct inc_states {
+	char tries;
+	char incs;
+};
+
+static struct inc_states spell_incs[86];
+
 char *texts[300];
 
 /* DS:0x4769 */
@@ -2762,8 +2770,8 @@ void fill_values()
 			ds_writeb(0x1469 + i, sval);
 
 			/* set spell_incs and spell_tries to zero */
-			ds_writeb(0x3f62 + i * 2 + 1, 0);
-			ds_writeb(0x3f62 + i * 2, 0);
+			spell_incs[i].incs = 0;
+			spell_incs[i].tries = 0;
 		}
 		/* special mage values */
 		if (typus == 9) {
@@ -3143,8 +3151,8 @@ void clear_hero() {
 		ds_writeb(0x4076 + i, 0);
 
 	for (i = 0; i < 86; i++) {
-		ds_writeb(0x3f63 + i * 2, 0);
-		ds_writeb(0x3f62 + i * 2, 0);
+		spell_incs[i].incs = 0;
+		spell_incs[i].tries = 0;
 	}
 	for (i = 0; i < 52; i++) {
 		ds_writeb(0x400f + i * 2, 0);
@@ -3339,7 +3347,7 @@ void spell_inc_novice(Bit16u spell)
 
 	while (!done) {
 		/* leave the loop if 3 tries have been done */
-		if (ds_readw(0x3f62 + spell * 2) == 3) {
+		if (spell_incs[spell].tries == 3) {
 			/* set the flag to leave this loop */
 			done++;
 			continue;
@@ -3354,12 +3362,12 @@ void spell_inc_novice(Bit16u spell)
 			ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
 
 			/* set inc tries for this spell to zero */
-			ds_writew(0x3f62 + spell * 2, 0);
+			spell_incs[spell].tries = 0;
 
 			/* set the flag to leave this loop */
 			done++;
 		} else
-			ds_writeb(0x3f62 + spell * 2, ds_readb(0x3f62 + spell * 2) + 1);
+			spell_incs[spell].tries++;
 	}
 }
 
@@ -4821,12 +4829,12 @@ void inc_spell(Bit16u spell)
 	}
 
 	/* all spell increments used for that spell */
-	if (ds_readb(0x3f63 + spell * 2) >= max_incs) {
+	if (spell_incs[spell].incs >= max_incs) {
 		infobox(Real2Host(ds_readd(0x44dd)), 0);
 		return;
 	}
 	/* all tries used for that spell */
-	if (ds_readb(0x3f62 + spell * 2) == 3) {
+	if (spell_incs[spell].tries == 3) {
 		infobox(Real2Host(ds_readd(0x4335)), 0);
 		return;
 	}
@@ -4840,14 +4848,14 @@ void inc_spell(Bit16u spell)
 		/* increment spell value */
 		ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
 		/* reset tries */
-		ds_writeb(0x3f62 + spell * 2, 0);
+		spell_incs[spell].tries = 0;
 		/* increment incs */
-		ds_writeb(0x3f63 + spell * 2, ds_readb(0x3f63 + spell * 2) + 1);
+		spell_incs[spell].incs++;
 	} else {
 		/* show failure */
 		infobox(Real2Host(ds_readd(0x433d)), 0);
 		/* increment tries */
-		ds_writeb(0x3f62 + spell * 2, ds_readb(0x3f62 + spell * 2) + 1);
+		spell_incs[spell].tries++;
 	}
 
 	refresh_screen();
