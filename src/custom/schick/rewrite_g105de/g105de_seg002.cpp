@@ -33,6 +33,9 @@ static long typus_len[MAX_TYPES];
 /* DS:0x1324 */
 static Bit16s gen_page;
 
+/* DS:0x1a09 */
+static bool use_cda;
+
 /* DS:0x1ca6 */
 struct type_bitmap {
 	char t[13];
@@ -228,7 +231,7 @@ void BE_cleanup()
 void start_music(Bit16u track)
 {
 
-	if (ds_readw(0x1a09) == 0 ) {
+	if (!use_cda) {
 		if (ds_readw(0x1a07))
 			return;
 		play_midi(track);
@@ -249,7 +252,7 @@ void read_soundcfg()
 	prepare_path(fname);
 
 
-	ds_writew(0x1a09, 0);
+	use_cda = false;
 	ds_writew(0x1a07, 1);
 
 	fd = fopen(fname, "rb");
@@ -266,12 +269,12 @@ void read_soundcfg()
 	D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
 	if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
 		/* disable audio-cd */
-		ds_writew(0x1a09, 0);
+		use_cda = false;
 		return;
 	}
 
 	/* enable audio-cd */
-	ds_writew(0x1a09, 1);
+	use_cda = true;
 	/* disable midi */
 	ds_writew(0x1a07, 1);
 
