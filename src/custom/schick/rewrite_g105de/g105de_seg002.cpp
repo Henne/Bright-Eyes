@@ -50,6 +50,9 @@ struct type_bitmap {
 };
 struct type_bitmap empty_bitmap;
 
+/* DS:0x1cb3 */
+static char version[] = "V1.05";
+
 /* DS:0x3f3a */
 FILE *fd_timbre;
 
@@ -5612,7 +5615,7 @@ void intro()
 	}
 
 	set_vals(0xff, 0);
-	print_str((char*)MemBase + PhysMake(datseg, 0x1cb3), 290, 190);
+	print_str(version, 290, 190);
 	vsync_or_key(400);
 
 	memcpy(Real2Host(ds_readd(0x47d3)),
