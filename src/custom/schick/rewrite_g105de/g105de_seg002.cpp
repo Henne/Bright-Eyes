@@ -580,6 +580,7 @@ void mouse_enable()
 	if (ds_readw(0x4591) != 2)
 		return;
 
+	/* initialize mouse */
 	p1 = 0;
 
 	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
@@ -594,6 +595,7 @@ void mouse_enable()
 	if (ds_readw(0x4591) != 2)
 		return;
 
+	/* move cursor  to initial position */
 	p1 = 4;
 	p3 = ds_readw(0x124c);
 	p4 = ds_readw(0x124e);
@@ -621,12 +623,14 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 
 	p4 = 0x86a;
 	p5 = reloc_gen + 0x3c6;
+
 	/* save adress of old IRQ 0x78 */
 	ds_writed(0x3f32, RealGetVec(0x78));
 
 	/* set new IRS 0x78 */
 	RealSetVec(0x78, ptr);
 
+	/* set the new mouse event handler */
 	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
@@ -636,8 +640,11 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 void mouse_do_disable()
 {
 	Bit16u v1, v2, v3, v4, v5;
-	mem_writed(0x78 * 4, ds_readd(0x3f32));
 
+	/* restore the old int 0x78 handler */
+	RealSetVec(0x78, ds_readd(0x3f32));
+
+	/* uninstall mouse event handler */
 	v1 = 0x0c;
 	v3 = 0;
 	v4 = 0;
