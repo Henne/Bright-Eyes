@@ -30,6 +30,9 @@ static long bg_len[MAX_PAGES];
 static Bit8u *typus_buffer[MAX_TYPES];
 static long typus_len[MAX_TYPES];
 
+/* DS:0x1324 */
+static Bit16s gen_page;
+
 /* DS:0x1ca6 */
 struct type_bitmap {
 	char t[13];
@@ -2348,11 +2351,11 @@ void change_head()
 	ds_writew(0x40c5, 272);
 	ds_writew(0x40c9, 303);
 
-	if (ds_readw(0x1324) == 0) {
+	if (gen_page == 0) {
 		ds_writew(0x40c7, 8);
 		ds_writew(0x40cb, 39);
 		do_draw_pic(0);
-	} else if (ds_readw(0x1324) > 4) {
+	} else if (gen_page > 4) {
 		ds_writew(0x40c7, 4);
 		ds_writew(0x40cb, 35);
 		ds_writew(0x40c7, 8);
@@ -2440,13 +2443,13 @@ void do_gen()
 			ds_writew(0x11fe, 0);
 		}
 
-		ds_writed(0x1276, ds_readd(0x1c79 + ds_readw(0x1324) * 4));
+		ds_writed(0x1276, ds_readd(0x1c79 + gen_page * 4));
 		handle_input();
 		ds_writed(0x1276, 0);
 
 		if (ds_readw(0x4599) || ds_readw(0x459f) == 0x49) {
 			/* print the menu for each page */
-			switch(ds_readw(0x1324)) {
+			switch(gen_page) {
 				case 0: {
 					si = gui_radio((Bit8u*)texts[0x1c/4], 9,
 						texts[0x28 / 4],
@@ -2542,7 +2545,7 @@ void do_gen()
 		if (ds_readw(0x459f) == 0x61)
 			enter_name();
 
-		if (ds_readw(0x459f) == 0x48 && ds_readw(0x1324) == 0) {
+		if (ds_readw(0x459f) == 0x48 && gen_page == 0) {
 			if (ds_readb(0x134d) == 0) {
 				infobox((Bit8u*)texts[0x44 / 4], 0);
 			} else {
@@ -2555,7 +2558,7 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) == 0x50 && ds_readw(0x1324) == 0) {
+		if (ds_readw(0x459f) == 0x50 && gen_page == 0) {
 			if (ds_readb(0x134d) == 0) {
 				infobox((Bit8u*)texts[0x44 / 4], 0);
 			} else {
@@ -2574,24 +2577,24 @@ void do_gen()
 			} else {
 				ds_writew(0x11fe, 1);
 
-				if (((ds_readw(0x134d) >= 7) ? 10 : 4) > ds_readb(0x1324))
-					ds_writeb(0x1324, ds_readb(0x1324) + 1);
+				if (((ds_readw(0x134d) >= 7) ? 10 : 4) > gen_page)
+					gen_page++;
 				else
-					ds_writeb(0x1324, 0);
+					gen_page = 0;
 			}
 		}
 
 		if (ds_readw(0x459f) == 0x4b) {
-			if ((Bit16s)ds_readw(0x1324) > 0) {
+			if ((Bit16s)gen_page > 0) {
 				ds_writew(0x11fe, 1);
-				ds_writew(0x1324, ds_readw(0x1324) - 1);
+				gen_page--;
 			} else {
 				if (ds_readw(0x40bf) != 1) {
 					if (ds_readb(0x134d) == 0) {
 						infobox((Bit8u*)texts[0x120 / 4], 0);
 					} else {
 						ds_writew(0x11fe, 1);
-						ds_writew(0x1324, ds_readb(0x134d) < 7 ? 4 : 10);
+						gen_page = ds_readb(0x134d) < 7 ? 4 : 10;
 					}
 				}
 			}
@@ -2623,8 +2626,8 @@ void do_gen()
 				}
 			}
 		}
-		if (si != ds_readw(0x1324) && si >= 5 && ds_readb(0x134d >= 7)) {
-			ds_writew(0x1324, si);
+		if (si != gen_page && si >= 5 && ds_readb(0x134d >= 7)) {
+			gen_page = si;
 			ds_writew(0x11fe, 1);
 		}
 	}
@@ -2984,11 +2987,11 @@ void refresh_screen()
 
 	if (ds_readw(0x11fe)) {
 		ds_writed(0x47c7, ds_readd(0x47d3));
-		load_page(ds_readw(0x1324));
+		load_page(gen_page);
 		save_picbuf();
 
 		/* page with base values and hero is not male */
-		if (ds_readw(0x1324) == 0 && ds_readb(0x134e) != 0) {
+		if (gen_page == 0 && ds_readb(0x134e) != 0) {
 
 			dst = Real2Phys(ds_readd(0x47d3)) + 7 * 320 + 305;
 			src = Real2Phys(ds_readd(0x4769) + ds_readb(0x134e) * 256);
@@ -2997,14 +3000,14 @@ void refresh_screen()
 		}
 
 		/* page with base values and level is advanced */
-		if (ds_readw(0x1324) == 0 && ds_readw(0x40bf) == 1) {
+		if (gen_page == 0 && ds_readw(0x40bf) == 1) {
 			dst = Real2Phys(ds_readd(0x47d3)) + 178 * 320 + 284;
 			src = Real2Phys(ds_readd(0x4769) + 512);
 
 			copy_to_screen(src, dst, 20, 15, 0);
 		}
 		/* if the page is lower than 5 */
-		if (ds_readw(0x1324) < 5) {
+		if (gen_page < 5) {
 			/* draw DMENGE.DAT or the typus name */
 			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
 			if (ds_readb(0x134d) != 0) {
@@ -3064,12 +3067,12 @@ void refresh_screen()
 			ds_writed(0x40c1, ds_readd(0x47d3));
 
 			/* draw the head */
-			if (ds_readw(0x1324) == 0) {
+			if (gen_page == 0) {
 				/* on the base page */
 				ds_writew(0x40c7, 8);
 				ds_writew(0x40cb, 39);
 				do_draw_pic(0);
-			} else if (ds_readw(0x1324) > 4) {
+			} else if (gen_page > 4) {
 				/* on the spell pages */
 				ds_writew(0x40c7, 4);
 				ds_writew(0x40cb, 35);
@@ -3736,7 +3739,7 @@ void save_picbuf()
 	x_1 = 0;
 
 	/* check on which page we are */
-	switch (ds_readw(0x1324)) {
+	switch (gen_page) {
 		/* main page */
 		case 0: {
 			/* name field */
@@ -3809,7 +3812,7 @@ void restore_picbuf(PhysPt ptr)
 	x_1 = 0;
 
 	/* check on which page we are */
-	switch (ds_readw(0x1324)) {
+	switch (gen_page) {
 		/* main page */
 		case 0: {
 			/* name field */
@@ -3910,7 +3913,7 @@ void print_values()
 	Bit16s i, pos;
 
 
-	switch (ds_readw(0x1324)) {
+	switch (gen_page) {
 
 		case 0: {
 			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
@@ -4582,7 +4585,7 @@ void select_skill()
 
 		ds_writew(0x1327, 0xffb0);
 
-		switch (ds_readw(0x1324)) {
+		switch (gen_page) {
 			case 1: {
 				group = gui_radio((Bit8u*)texts[93], 2,
 						texts[86], texts[87]);
@@ -4834,7 +4837,7 @@ void select_spell()
 
 		ds_writew(0x1327, 0xffa6);
 
-		switch (ds_readw(0x1324)) {
+		switch (gen_page) {
 			case 5: {
 				group = gui_radio((Bit8u*)texts[155], 3,
 						texts[157], texts[162],
