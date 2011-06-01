@@ -2861,7 +2861,7 @@ void fill_values()
 	ds_writew(0x138e, ds_readw(0x8f9 + typus * 2));
 
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
-	if (typus == 9 && ds_readw(0x40bf) && gui_bool((Bit8u*)texts[268])) {
+	if (typus == 9 && ds_readw(0x40bf) == 2 && gui_bool((Bit8u*)texts[268])) {
 		/* change spell_attempts */
 		ds_writeb(0x14bf, ds_readb(0x14bf) - 10);
 		ds_writew(0x1390, random_interval_gen(3, 8) + ds_readw(0x1390));
