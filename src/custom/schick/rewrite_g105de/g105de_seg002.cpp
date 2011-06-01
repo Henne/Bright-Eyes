@@ -4581,7 +4581,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	}
 	/* we just have 3 tries to increment */
 	if (skill_incs[skill].tries == 3) {
-		infobox(Real2Host(ds_readd(0x4335)), 0);
+		infobox((Bit8u*)texts[151], 0);
 		return;
 	}
 
@@ -4589,7 +4589,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	ds_writeb(0x1468, ds_readb(0x1468) - 1);
 	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1434 + skill)) {
 		/* print sucess message */
-		infobox(Real2Host(ds_readd(0x4339)), 0);
+		infobox((Bit8u*)texts[152], 0);
 		/* increment skill */
 		ds_writeb(0x1434 + skill, ds_readb(0x1434 + skill) + 1);
 		/* reset tries */
@@ -4610,7 +4610,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 		}
 	} else {
 		/* print failure message */
-		infobox(Real2Host(ds_readd(0x433d)), 0);
+		infobox((Bit8u*)texts[153], 0);
 		/* increment try */
 		skill_incs[skill].tries++;
 	}
