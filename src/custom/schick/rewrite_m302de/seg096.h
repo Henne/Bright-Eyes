@@ -9,7 +9,7 @@ RealPt GUI_name_singular(Bit8u *s);
 //34
 RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3);
 //39
-RealPt GUI_get_ptr(unsigned short v1, unsigned short v2);
+RealPt GUI_get_ptr(Bit16u, Bit16u);
 //3e
 RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2);
 //43

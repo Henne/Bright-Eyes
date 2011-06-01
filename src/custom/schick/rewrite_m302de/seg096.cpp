@@ -138,11 +138,14 @@ RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3) {
 
 //330
 /**
+ * GUI_get_ptr() - return a pointer to the personalpronomen
+ * @genus:	gender of the hero
+ * @causus:	the grammatical causus
 */
-RealPt GUI_get_ptr(unsigned short v1, unsigned short v2) {
+RealPt GUI_get_ptr(Bit16u genus, Bit16u causus) {
 
-	if (v1 == 0) {
-		switch (v2) {
+	if (genus == 0) {
+		switch (causus) {
 			case 0:
 				return RealMake(datseg, 0xa9f3);
 			case 1:
@@ -153,7 +156,7 @@ RealPt GUI_get_ptr(unsigned short v1, unsigned short v2) {
 				return RealMake(datseg, 0xaa06);
 		}
 	} else {
-		switch (v2) {
+		switch (causus) {
 			case 0:
 				return RealMake(datseg, 0xa9f6);
 			case 1:
