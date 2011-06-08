@@ -10,6 +10,7 @@
 #include "rewrite_g105de/g105de_seg002.h"
 #include "rewrite_g105de/g105de_seg003.h"
 #include "rewrite_g105de/g105de_seg005.h"
+#include "rewrite_g105de/g105de_seg006.h"
 
 #include "rewrite_m302de/seg002.h"
 #include "rewrite_m302de/seg008.h"
@@ -518,6 +519,75 @@ static int seg005(Bitu offs) {
 	}
 }
 
+static int seg006(Bitu offs) {
+
+	switch (offs) {
+		case 0xa24: {
+			return 0;
+		}
+		case 0xadc: {
+			return 0;
+		}
+		case 0xb02: {
+			return 0;
+		}
+		case 0xb08: {
+			return 0;
+		}
+		case 0xc47: {
+			return 0;
+		}
+		case 0xc4d: {
+			Bit16u driver = CPU_Pop16();
+			RealPt form = CPU_Pop32();
+			Bit16u sequence = CPU_Pop16();
+			RealPt state = CPU_Pop32();
+			RealPt controller = CPU_Pop32();
+
+			D1_LOG("AIL_register_sequence()\n");
+			reg_ax = AIL_register_sequence(driver, form,
+					sequence, state, controller);
+			CPU_Push32(controller);
+			CPU_Push32(state);
+			CPU_Push16(sequence);
+			CPU_Push32(form);
+			CPU_Push16(driver);
+			return 1;
+		}
+		case 0xc59: {
+			return 0;
+		}
+		case 0xc5f: {
+			return 0;
+		}
+		case 0xc65: {
+			Bit16u driver = CPU_Pop16();
+			Bit16u sequence = CPU_Pop16();
+			D1_LOG("AIL_timbre_request()\n");
+			reg_ax = AIL_timbre_request(driver, sequence);
+
+			CPU_Push16(sequence);
+			CPU_Push16(driver);
+			return 1;
+		}
+		case 0xc6b: {
+			Bit16u driver = CPU_Pop16();
+			Bit16u bank = CPU_Pop16();
+			Bit16u patch = CPU_Pop16();
+			RealPt src = CPU_Pop32();
+			D1_LOG("AIL_install_timbre()\n");
+			AIL_install_timbre(driver, bank, patch, src);
+			CPU_Push32(src);
+			CPU_Push16(patch);
+			CPU_Push16(bank);
+			CPU_Push16(driver);
+
+			return 1;
+		}
+	}
+	return 0;
+}
+
 // Hooks for tracing far calls for GEN.EXE(de/V1.05)
 int schick_farcall_gen105(unsigned segm, unsigned offs)
 {
@@ -534,6 +604,8 @@ int schick_farcall_gen105(unsigned segm, unsigned offs)
 		case 0xb39:	return seg004(offs);
 		/* seg005 Rasterlib */
 		case 0xb6b:	return seg005(offs);
+		/* seg006 AIL */
+		case 0xbb2:	return seg006(offs);
 		default:
 				return 0;
 	}
