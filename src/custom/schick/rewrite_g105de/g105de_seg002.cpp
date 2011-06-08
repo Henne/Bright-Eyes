@@ -15,6 +15,7 @@
 #include "g105de_seg002.h"
 #include "g105de_seg003.h"
 #include "g105de_seg005.h"
+#include "g105de_seg006.h"
 
 #include "../rewrite_m302de/seg002.h"
 #include "../rewrite_m302de/seg008.h"
@@ -117,71 +118,6 @@ Bit8u *page_buffer;
 /* DS:0x47f3 */
 Bit8u *gen_ptr1;
 Bit8u *gen_ptr1_dis;
-
-static void AIL_startup()
-{
-	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0x6d7);
-}
-
-static void AIL_shutdown(RealPt signoff_msg)
-{
-	CPU_Push32(signoff_msg);
-	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0x71b);
-	CPU_Pop32();
-}
-
-static inline Bit16u AIL_register_sequence(Bit16u driver, Bit8u *FORM_XMID, Bit16u sequence_num, Bit8u *state_table, Bit8u *controller_table)
-{
-	return 0;
-}
-
-static inline Bit16u AIL_timbre_request(Bit16u driver, Bit16u sequence)
-{
-	return 0;
-}
-
-static inline void AIL_install_timbre(Bit16u driver, Bit16u bank, Bit16u patch, Bit8u *src_addr)
-{
-}
-
-static void AIL_start_sequence(Bit16u driver, Bit16u sequence)
-{
-	CPU_Push16(sequence);
-	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc83);
-	CPU_Pop16();
-	CPU_Pop16();
-}
-
-static void AIL_stop_sequence(Bit16u driver, Bit16u sequence)
-{
-
-	CPU_Push16(sequence);
-	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc89);
-	CPU_Pop16();
-	CPU_Pop16();
-}
-
-static Bit16u AIL_sequence_status(Bit16u driver, Bit16u sequence)
-{
-
-	CPU_Push16(sequence);
-	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc95);
-	CPU_Pop16();
-	CPU_Pop16();
-
-	return reg_ax;
-}
-static void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence)
-{
-	CPU_Push16(sequence);
-	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc53);
-	CPU_Pop16();
-	CPU_Pop16();
-}
 
 static void prepare_path(char *p)
 {
