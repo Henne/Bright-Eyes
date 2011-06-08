@@ -230,6 +230,37 @@ static void schick_status_dng_thorwal(unsigned long i) {
 	status_copy[i]=status_ingame[i];
 }
 
+static void schick_cmp_heros()
+{
+
+	Bit8u *hero = Real2Host(ds_readd(0xbd34));
+	unsigned short i, j, items;
+
+
+	for (i = 0; i < 7; i++, hero += 0x6da) {
+
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+
+		/* check for invalid item counter */
+		items = 0;
+		for (j = 0; j < 23; j++) {
+			if (host_readb(hero + 0x196 + j * 14))
+				items++;
+		}
+
+		if ((signed char)host_readb(hero + 0x20) == items)
+			continue;
+
+		D1_ERR("Original-Bug: %s hat einen ungueltigen Gegenstandszaehler.\n",
+			(char*)(hero + 0x10));
+		D1_ERR("\tKorrigiere den Wert von %d -> %d\n",
+			host_readb(hero + 0x20), items);
+
+		host_writeb(hero + 0x20, items);
+	}
+}
+
 static Uint32 schick_cmp_status(Uint32 interval, void *param)
 {
 
@@ -237,6 +268,8 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 	if (!status_offset) return (interval);
 
 	unsigned long i = 0;
+
+	schick_cmp_heros();
 
 	while (i < status_len)
 	{
