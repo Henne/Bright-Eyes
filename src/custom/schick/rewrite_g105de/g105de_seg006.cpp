@@ -32,6 +32,15 @@ Bit16u AIL_register_sequence(Bit16u driver, RealPt FORM_XMID, Bit16u sequence_nu
 	return reg_ax;
 }
 
+void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence)
+{
+	CPU_Push16(sequence);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc53);
+	CPU_Pop16();
+	CPU_Pop16();
+}
+
 Bit16u AIL_timbre_request(Bit16u driver, Bit16u sequence)
 {
 	CPU_Push16(sequence);
@@ -84,13 +93,4 @@ Bit16u AIL_sequence_status(Bit16u driver, Bit16u sequence)
 	CPU_Pop16();
 
 	return reg_ax;
-}
-
-void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence)
-{
-	CPU_Push16(sequence);
-	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0xc53);
-	CPU_Pop16();
-	CPU_Pop16();
 }
