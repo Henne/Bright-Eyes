@@ -129,6 +129,15 @@ static char attrib_changed[14];
 /* DS:0x40b9 */
 static unsigned short menu_tiles;
 
+/* DS:0x40d1 */
+static unsigned short unkn1;
+/* DS:0x40d3 */
+static unsigned short unkn2;
+/* DS:0x40d5 */
+static unsigned short unkn3;
+/* DS:0x40d7 */
+static unsigned short unkn4;
+
 char *texts[300];
 
 /* DS:0x4769 */
@@ -1482,10 +1491,10 @@ void do_draw_pic(Bit16u mode)
 	y = ds_readw(0x40c7);
 	d1 = ds_readw(0x40c9);
 	d2 = ds_readw(0x40cb);
-	v1 = ds_readw(0x40d1);
-	v2 = ds_readw(0x40d3);
-	d3 = ds_readw(0x40d5);
-	d4 = ds_readw(0x40d7);
+	v1 = unkn1;
+	v2 = unkn2;
+	d3 = unkn3;
+	d4 = unkn4;
 
 	w = d1 - x + 1;
 	h = d2 - y + 1;
@@ -5491,10 +5500,10 @@ void intro()
 		ds_writew(0x40cb, 149);
 		ds_writed(0x40cd, ds_readd(0x47d3));
 
-		ds_writew(0x40d1, 0);
-		ds_writew(0x40d3, 60);
-		ds_writew(0x40d5, 95);
-		ds_writew(0x40d7, 159);
+		unkn1 = 0;
+		unkn2 = 60;
+		unkn3 = 95;
+		unkn4 = 159;
 		ds_writed(0x40c1, ds_readd(0x47cb));
 		do_draw_pic(3);
 		cnt1++;
