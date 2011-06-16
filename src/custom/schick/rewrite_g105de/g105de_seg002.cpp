@@ -39,6 +39,47 @@ static bool use_cda;
 /* DS:0x1a0b */
 static bool eh_installed;
 
+
+/* DS:0x1a7d */
+
+static const char fnames_g105de[][13] = { "GEN1.NVF",
+					"GEN2.NVF",
+					"GEN3.NVF",
+					"GEN4.NVF",
+					"GEN5.NVF",
+					"GEN6.NVF",
+					"GEN7.NVF",
+					"GEN8.NVF",
+					"GEN9.NVF",	/* 0x08 */
+					"GEN10.NVF",
+					"GEN11.NVF",
+					"HEADS.DAT",
+					"SEX.DAT",
+					"TYPPIC.DAT",
+					"FONT6",
+					"GENTEXT",
+					"DSALOGO.DAT",	/* 0x10 */
+					"GENTIT.DAT",
+					"ATTIC",
+					"POPUP.DAT",
+					"DGAUKLER.DAT",
+					"DJAEGER.DAT",
+					"DKRIEGER.DAT",
+					"DSTREUNE.DAT",
+					"DTHORWAL.DAT",	/* 0x18 */
+					"DZWERG.DAT",
+					"DHEXE.DAT",
+					"DDRUIDE.DAT",
+					"DMAGIER.DAT",
+					"DAELF.DAT",
+					"DFELF.DAT",
+					"DWELF.DAT",
+					"DMENGE.DAT",	/* 0x20 */
+					"GEN.XMI",
+					"FANPRO.NVF",
+					"SAMPLE.AD",
+					"MT32EMUL.XMI" };
+
 /* DS:0x1c77 */
 static bool bool_mode;
 
@@ -1254,12 +1295,12 @@ static FILE * fd_open_datfile(Bit16u index)
 	}
 
 
-	offset = get_archive_offset(Real2Host(ds_readd(0x1ad1 + index * 4)), buf);
+	offset = get_archive_offset(fnames_g105de[index], buf);
 	ds_writew(0x3f36, offset);
 
 
 	if (offset == -1) {
-		D1_ERR("%s(): file not found in archive\n", __func__);
+		D1_ERR("FILE %s IS MISSING!", fnames_g105de[index]);
 		fclose(fd);
 		return NULL;
 	}
@@ -1317,7 +1358,7 @@ void read_common_files()
 }
 
 /* static */
-Bit32s get_archive_offset(Bit8u *name, Bit8u *table) {
+Bit32s get_archive_offset(const char *name, Bit8u *table) {
 
 	Bit32s offset, length;
 	Bit16u i;

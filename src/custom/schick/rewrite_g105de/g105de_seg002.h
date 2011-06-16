@@ -37,7 +37,7 @@ namespace G105de {
 	void load_typus(Bit16u);
 	void save_chr();
 	void read_common_files();
-	Bit32s get_archive_offset(Bit8u*, Bit8u*);
+	Bit32s get_archive_offset(const char*, Bit8u*);
 	Bit16u open_datfile(Bit16u);
 	Bit16u read_datfile(Bit16u, Bit8u*, Bit16u);
 	Bit32s get_filelength();

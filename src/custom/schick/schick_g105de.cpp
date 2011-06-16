@@ -999,7 +999,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					Bit32s retval;
 
-					retval = G105de::get_archive_offset(MemBase + Real2Phys(name), MemBase + Real2Phys(table));
+					retval = G105de::get_archive_offset(getString(name), MemBase + Real2Phys(table));
 
 					D1_LOG("get_archive_offset(%s, %s); = %d\n",
 						getString(name),
