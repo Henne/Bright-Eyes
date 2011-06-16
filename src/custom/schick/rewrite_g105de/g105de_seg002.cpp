@@ -1008,24 +1008,6 @@ void do_draw_mouse_ptr()
 				ds_readb(0x4669 + i * 16 + j));
 }
 
-void load_font_and_text()
-{
-	FILE *fd;
-	Bit32u len;
-
-	fd = fd_open_datfile(0x0e);
-	fd_read_datfile(fd, Real2Host(ds_readd(0x4779)), 1000);
-	fclose(fd);
-
-	fd = fd_open_datfile(0x0f);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(0x4775)), 64000);
-	fclose(fd);
-
-	split_textbuffer(MemBase + PhysMake(datseg, 0x40d9),
-			ds_readd(0x4775), len);
-
-}
-
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
 	Bit32u i = 0;
@@ -1046,7 +1028,7 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 	}
 }
 
-void load_font_and_text_host()
+void load_font_and_text()
 {
 	FILE *fd;
 	Bit32u len;
@@ -5703,7 +5685,7 @@ void alloc_buffers()
 
 	buffer_font6 = (Bit8u*)gen_alloc(592);
 
-	load_font_and_text_host();
+	load_font_and_text();
 
 	buffer_heads_dat = (Bit8u*)gen_alloc(39000);
 
