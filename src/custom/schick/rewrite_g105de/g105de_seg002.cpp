@@ -217,6 +217,12 @@ void BE_cleanup()
 	free(buffer_text);
 	free(buffer_font6);
 
+	buffer_sex_dat = NULL;
+	buffer_popup_nvf = NULL;
+	buffer_heads_dat = NULL;
+	buffer_text = NULL;
+	buffer_font6 = NULL;
+
 	free(picbuf3);
 	free(picbuf2);
 	free(picbuf1);
@@ -226,8 +232,20 @@ void BE_cleanup()
 	free(gen_ptr4);
 	free(gen_ptr2);
 
+	picbuf3 = NULL;
+	picbuf2 = NULL;
+	picbuf1 = NULL;
+	gen_ptr6 = NULL;
+	buffer_dmenge_dat = NULL;
+	gen_ptr5 = NULL;
+	gen_ptr4 = NULL;
+	gen_ptr2 = NULL;
+
 	free(page_buffer);
 	free(gen_ptr1);
+
+	page_buffer = NULL;
+	gen_ptr1 = NULL;
 
 	for (long i = 0; i < MAX_PAGES; i++) {
 		if (bg_buffer[i]) {
