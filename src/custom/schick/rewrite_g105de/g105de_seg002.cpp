@@ -123,6 +123,8 @@ struct inc_states {
 static struct inc_states spell_incs[86];
 /* DS:0x400e */
 static struct inc_states skill_incs[52];
+/* DS:0x4076 */
+static char attrib_changed[14];
 
 char *texts[300];
 
@@ -3133,7 +3135,7 @@ void clear_hero() {
 	ds_writeb(0x40b7, 0);
 
 	for (i = 0; i < 14; i++)
-		ds_writeb(0x4076 + i, 0);
+		attrib_changed[i] = 0;
 
 	for (i = 0; i < 86; i++) {
 		spell_incs[i].incs = 0;
@@ -3514,25 +3516,25 @@ Bit16u can_change_attribs()
 	na_dec = na_inc = pa_dec = pa_inc = 0;
 
 	for (i = 0; i < 14; i++)
-		D1_LOG("%d ", ds_readb(i + 0x4076));
+		D1_LOG("%d ", attrib_changed[i]);
 	D1_LOG("\n");
 
 
 	for (i = 0; i < 7; i++) {
 		p = p_datseg + 0x1360 + i * 3;
 
-		if (ds_readb(i + 0x4076) != INC && host_readb(p) > 8)
+		if (attrib_changed[i] != INC && host_readb(p) > 8)
 			pa_dec += 8 - (signed char)host_readb(p);
-		if (ds_readb(i + 0x4076) != DEC && host_readb(p) < 13)
+		if (attrib_changed[i] != DEC && host_readb(p) < 13)
 			pa_inc += 13 - (signed char)host_readb(p);
 	}
 
 	for (i = 7; i < 14; i++) {
 		p = p_datseg + 0x1360 + i * 3;
 
-		if (ds_readb(i + 0x4076) != INC && host_readb(p) > 2)
+		if (attrib_changed[i] != INC && host_readb(p) > 2)
 			na_dec += 2 - (signed char)host_readb(p);
-		if (ds_readb(i + 0x4076) != DEC && host_readb(p) < 8)
+		if (attrib_changed[i] != DEC && host_readb(p) < 8)
 			na_inc += 8 - (signed char)host_readb(p);
 	}
 
@@ -3614,7 +3616,7 @@ void change_attribs()
 		return;
 	tmp2--;
 	/* get the modification type */
-	if (ds_readb(0x4076 + tmp2) == 0) {
+	if (attrib_changed[tmp2] == 0) {
 		/* ask user if inc or dec */
 		ds_writew(0x1327, 0xffb0);
 		tmp3 = gui_radio((Bit8u*)NULL, 2, texts[75], texts[76]);
@@ -3623,7 +3625,7 @@ void change_attribs()
 		if (tmp3 == -1)
 			return;
 	} else {
-		tmp3 = ds_readb(0x4076 + tmp2);
+		tmp3 = attrib_changed[tmp2];
 	}
 
 	ptr1 = MemBase + PhysMake(datseg, 0x1360 + tmp2 * 3);
@@ -3635,7 +3637,7 @@ void change_attribs()
 		}
 		c = 0;
 		for (di = 7; di < 14; di++) {
-			if (ds_readb(0x4076 + di) == DEC)
+			if (attrib_changed[di] == DEC)
 				continue;
 			ptr2 = MemBase + PhysMake(datseg, 0x1360 + di * 3);
 			if (host_readb(ptr2) >= 8)
@@ -3650,7 +3652,7 @@ void change_attribs()
 		host_writeb(ptr1 + 1, host_readb(ptr1 + 1) + 1);
 		host_writeb(ptr1, host_readb(ptr1) + 1);
 
-		ds_writeb(0x4076 + tmp2, INC);
+		attrib_changed[tmp2] = INC;
 
 		refresh_screen();
 
@@ -3669,7 +3671,7 @@ void change_attribs()
 
 			si--;
 			/* check if this attribute has been decremented */
-			if (ds_readb(0x407d + si) == DEC) {
+			if (attrib_changed[si + 7] == DEC) {
 				infobox((Bit8u*)texts[83], 0);
 				continue;
 			}
@@ -3681,7 +3683,7 @@ void change_attribs()
 			}
 			/* increment the negative attribute */
 			tmp1++;
-			ds_writeb(0x407d + si, INC);
+			attrib_changed[si + 7] = INC;
 			host_writeb(ptr1 + 1, host_readb(ptr1 + 1) + 1);
 			host_writeb(ptr1, host_readb(ptr1) + 1);
 			refresh_screen();
@@ -3695,7 +3697,7 @@ void change_attribs()
 		}
 		c = 0;
 		for (di = 7; di < 14; di++) {
-			if (ds_readb(0x4076 + di) == INC)
+			if (attrib_changed[di] == INC)
 				continue;
 			ptr2 = MemBase + PhysMake(datseg, 0x1360 + di * 3);
 			if (host_readb(ptr2) <= 2)
@@ -3710,7 +3712,7 @@ void change_attribs()
 		host_writeb(ptr1 + 1, host_readb(ptr1 + 1) - 1);
 		host_writeb(ptr1, host_readb(ptr1) - 1);
 		/* mark this attribute as decremented */
-		ds_writeb(0x4076 + tmp2, 2);
+		attrib_changed[tmp2] = DEC;
 
 		refresh_screen();
 
@@ -3729,7 +3731,7 @@ void change_attribs()
 
 			si--;
 			/* check if this attribute has been incremented */
-			if (ds_readb(0x407d + si) == INC) {
+			if (attrib_changed[si + 7] == INC) {
 				infobox((Bit8u*)texts[82], 0);
 				continue;
 			}
@@ -3743,7 +3745,7 @@ void change_attribs()
 			tmp1++;
 			host_writeb(ptr1 + 1, host_readb(ptr1 + 1) - 1);
 			host_writeb(ptr1, host_readb(ptr1) - 1);
-			ds_writeb(0x407d + si, DEC);
+			attrib_changed[si + 7] = DEC;
 			refresh_screen();
 		}
 	}
