@@ -31,10 +31,12 @@ static long bg_len[MAX_PAGES];
 static Bit8u *typus_buffer[MAX_TYPES];
 static long typus_len[MAX_TYPES];
 /* DS:0x08df */
-static const unsigned short init_le[13] = {	0, 30, 30, 30, 30, 30, 40,
+static const unsigned short init_le[MAX_TYPES + 1] = {	0,
+						30, 30, 30, 30, 30, 40,
 						25, 30, 25, 25, 30, 25};
 /* DS:0x08f9 */
-static const unsigned short init_ae[13] = {	0, 0, 0, 0, 0, 0, 0,
+static const unsigned short init_ae[MAX_TYPES + 1] = {	0,
+						0, 0, 0, 0, 0, 0,
 						25, 25, 30, 25, 25, 25};
 /* DS:0x0913 */
 struct minmax {
