@@ -147,6 +147,18 @@ static struct inc_states skill_incs[52];
 static char attrib_changed[14];
 /* DS:0x4084 */
 static char *type_names[MAX_TYPES];
+/* DS:0x40B4 */
+/* the index of the last head */
+static signed char head_last;
+/* DS:0x40B5 */
+/* the index of the first head */
+static signed char head_first;
+/* DS:0x40B6 */
+/* the index of the current head */
+static signed char head_current;
+/* DS:0x40B7 */
+/* the typus for the heads e.G. all elves are 10 */
+static signed char head_typus;
 
 /* DS:0x40b9 */
 static unsigned short menu_tiles;
@@ -1202,7 +1214,7 @@ void save_chr()
 
 	host_writed(n + 4, ds_readd(0x4771));
 
-	host_writew(n + 8, ds_readb(0x40b6));
+	host_writew(n + 8, head_current);
 
 	host_writew(n + 10, 0);
 
@@ -2397,7 +2409,7 @@ void change_head()
 
 	host_writed(n + 4, ds_readd(0x4771));
 
-	host_writew(n + 8, ds_readb(0x40b6));
+	host_writew(n + 8, head_current);
 
 	host_writew(n + 10, 0);
 
@@ -2440,17 +2452,17 @@ void change_sex()
 	if (ds_readb(0x134d)) {
 		if (ds_readb(0x134e) != 0) {
 			/* To female */
-			tmp = ds_readb(0x1054 + (signed char)ds_readb(0x40b7));
+			tmp = ds_readb(0x1054 + head_typus);
 
-			ds_writeb(0x40b6, tmp);
-			ds_writeb(0x40b5, tmp);
-			ds_writeb(0x40b4, ds_readb(0x1049 + (signed char)ds_readb(0x40b7)) - 1);
+			head_current = tmp;
+			head_first = tmp;
+			head_last = ds_readb(0x1049 + head_typus) - 1;
 		} else {
 			/* To male */
-			tmp = ds_readb(0x1048 + (signed char)ds_readb(0x40b7));
-			ds_writeb(0x40b6, tmp);
-			ds_writeb(0x40b5, tmp);
-			ds_writeb(0x40b4, ds_readb(0x1054 + (signed char)ds_readb(0x40b7)) -1);
+			tmp = ds_readb(0x1048 + head_typus);
+			head_current = tmp;
+			head_first = tmp;
+			head_last = ds_readb(0x1054 + head_typus) - 1;
 		}
 		ds_writew(0x11fe, 1);
 		return;
@@ -2609,10 +2621,10 @@ void do_gen()
 			if (ds_readb(0x134d) == 0) {
 				infobox((Bit8u*)texts[0x44 / 4], 0);
 			} else {
-				if (ds_readb(0x40b6) < ds_readb(0x40b4)) {
-					ds_writeb(0x40b6, ds_readb(0x40b6) + 1);
+				if (head_current < head_last) {
+					head_current++;
 				} else {
-					ds_writeb(0x40b6, ds_readb(0x40b5));
+					head_current = head_first;
 				}
 				change_head();
 			}
@@ -2622,10 +2634,10 @@ void do_gen()
 			if (ds_readb(0x134d) == 0) {
 				infobox((Bit8u*)texts[0x44 / 4], 0);
 			} else {
-				if (ds_readb(0x40b6) > ds_readb(0x40b5)) {
-					ds_writeb(0x40b6, ds_readb(0x40b6) - 1);
+				if (head_current > head_first) {
+					head_current--;
 				} else {
-					ds_writeb(0x40b6, ds_readb(0x40b4));
+					head_current = head_last;
 				}
 				change_head();
 			}
@@ -3112,7 +3124,7 @@ void refresh_screen()
 			/* set dst */
 			host_writed(n + 4, ds_readd(0x4771));
 			/* set nr */
-			host_writew(n + 8, ds_readb(0x40b6));
+			host_writew(n + 8, head_current);
 			/* set type */
 			host_writew(n + 10, 0);
 			/* place somewhere on unused DOS stack */
@@ -3162,10 +3174,10 @@ void clear_hero() {
 	got_ch_bonus = false;
 	got_mu_bonus = false;
 
-	ds_writeb(0x40b6, 0);
-	ds_writeb(0x40b4, 0);
-	ds_writeb(0x40b5, 0);
-	ds_writeb(0x40b7, 0);
+	head_current = 0;
+	head_last = 0;
+	head_first = 0;
+	head_typus = 0;
 
 	for (i = 0; i < 14; i++)
 		attrib_changed[i] = 0;
@@ -3511,18 +3523,18 @@ void select_typus()
 	call_mouse();
 
 	if (ds_readb(0x134d) > 10)
-		ds_writew(0x40b7, 10);
+		head_typus = 10;
 	else
-		ds_writew(0x40b7, ds_readb(0x134d));
+		head_typus = ds_readb(0x134d);
 
 	if (ds_readb(0x134e)) {
-		ds_writeb(0x40b6, ds_readb(0x1054 + ds_readb(0x40b7)));
-		ds_writeb(0x40b5, ds_readb(0x1054 + ds_readb(0x40b7)));
-		ds_writeb(0x40b4, ds_readb(0x1049 + ds_readb(0x40b7)) - 1);
+		head_current = ds_readb(0x1054 + head_typus);
+		head_first = ds_readb(0x1054 + head_typus);
+		head_last = ds_readb(0x1049 + head_typus) - 1;
 	} else {
-		ds_writeb(0x40b6, ds_readb(0x1048 + ds_readb(0x40b7)));
-		ds_writeb(0x40b5, ds_readb(0x1048 + ds_readb(0x40b7)));
-		ds_writeb(0x40b4, ds_readb(0x1054 + ds_readb(0x40b7)) - 1);
+		head_current = ds_readb(0x1048 + head_typus);
+		head_first = ds_readb(0x1048 + head_typus);
+		head_last = ds_readb(0x1054 + head_typus) - 1;
 	}
 
 	/* reset boni falags */
@@ -5335,18 +5347,18 @@ void choose_typus()
 	call_mouse();
 
 	if (ds_readb(0x134d) > 10)
-		ds_writew(0x40b7, 10);
+		head_typus = 10;
 	else
-		ds_writew(0x40b7, ds_readb(0x134d));
+		head_typus = ds_readb(0x134d);
 
 	if (ds_readb(0x134e)) {
-		ds_writeb(0x40b6, ds_readb(0x1054 + ds_readb(0x40b7)));
-		ds_writeb(0x40b5, ds_readb(0x1054 + ds_readb(0x40b7)));
-		ds_writeb(0x40b4, ds_readb(0x1049 + ds_readb(0x40b7)) - 1);
+		head_current = ds_readb(0x1054 + head_typus);
+		head_first = ds_readb(0x1054 + head_typus);
+		head_last = ds_readb(0x1049 + head_typus) - 1;
 	} else {
-		ds_writeb(0x40b6, ds_readb(0x1048 + ds_readb(0x40b7)));
-		ds_writeb(0x40b5, ds_readb(0x1048 + ds_readb(0x40b7)));
-		ds_writeb(0x40b4, ds_readb(0x1054 + ds_readb(0x40b7)) - 1);
+		head_current = ds_readb(0x1048 + head_typus);
+		head_first = ds_readb(0x1048 + head_typus);
+		head_last = ds_readb(0x1054 + head_typus) - 1;
 	}
 	fill_values();
 	ds_writew(0x11fe, 1);
