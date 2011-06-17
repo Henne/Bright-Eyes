@@ -145,6 +145,8 @@ static struct inc_states spell_incs[86];
 static struct inc_states skill_incs[52];
 /* DS:0x4076 */
 static char attrib_changed[14];
+/* DS:0x4084 */
+static char *type_names[MAX_TYPES];
 
 /* DS:0x40b9 */
 static unsigned short menu_tiles;
@@ -3231,8 +3233,7 @@ void new_values()
 				continue;
 
 			values[bv2] = i;
-			ds_writed(0x4084 + bv2 * 4,
-				ds_readd(0x40d9 + 0x80 + i * 4));
+			type_names[bv2] = texts[0x80 / 4 + i];
 			bv2++;
 		}
 
@@ -3244,13 +3245,13 @@ void new_values()
 
 			di = gui_radio(Real2Host(ds_readd(0x47bf)),
 				bv2,
-				Real2Host(ds_readd(0x4084)),
-				Real2Host(ds_readd(0x4088)),
-				Real2Host(ds_readd(0x408c)),
-				Real2Host(ds_readd(0x4090)),
-				Real2Host(ds_readd(0x4094)),
-				Real2Host(ds_readd(0x4098)),
-				Real2Host(ds_readd(0x409c)));
+				type_names[0],
+				type_names[1],
+				type_names[2],
+				type_names[3],
+				type_names[4],
+				type_names[5],
+				type_names[6]);
 
 			ds_writew(0x1327, 0);
 		} while (di == 0xffff);
@@ -3272,8 +3273,7 @@ void new_values()
 				continue;
 
 			values[bv2] = i;
-			ds_writed(0x4084 + bv2 * 4,
-				ds_readd(0x40d9 + 0x9c + i * 4));
+			type_names[bv2] = texts[0x9c / 4 + i];
 			bv2++;
 		}
 
@@ -3285,13 +3285,13 @@ void new_values()
 
 			di = gui_radio(Real2Host(ds_readd(0x47bf)),
 				bv2,
-				Real2Host(ds_readd(0x4084)),
-				Real2Host(ds_readd(0x4088)),
-				Real2Host(ds_readd(0x408c)),
-				Real2Host(ds_readd(0x4090)),
-				Real2Host(ds_readd(0x4094)),
-				Real2Host(ds_readd(0x4098)),
-				Real2Host(ds_readd(0x409c)));
+				type_names[0],
+				type_names[1],
+				type_names[2],
+				type_names[3],
+				type_names[4],
+				type_names[5],
+				type_names[6]);
 
 			ds_writew(0x1327, 0);
 		} while (di == 0xffff);
@@ -3450,11 +3450,9 @@ void select_typus()
 			continue;
 
 		if (ds_readb(0x134e))
-			ds_writed(0x4084 + possible_types * 4,
-				ds_readd(0x40d9 + (i + 271) * 4));
+			type_names[possible_types] = texts[271 + i];
 		else
-			ds_writed(0x4084 + possible_types * 4,
-				ds_readd(0x40d9 + (i + 17) * 4));
+			type_names[possible_types] = texts[17 + i];
 
 		t.t[possible_types] = i;
 		possible_types++;
@@ -3473,18 +3471,18 @@ void select_typus()
 	}
 
 	di = gui_radio((Bit8u*)texts[30], possible_types,
-			Real2Host(ds_readd(0x4084)),
-			Real2Host(ds_readd(0x4088)),
-			Real2Host(ds_readd(0x408c)),
-			Real2Host(ds_readd(0x4090)),
-			Real2Host(ds_readd(0x4094)),
-			Real2Host(ds_readd(0x4098)),
-			Real2Host(ds_readd(0x409c)),
-			Real2Host(ds_readd(0x40a0)),
-			Real2Host(ds_readd(0x40a4)),
-			Real2Host(ds_readd(0x40a8)),
-			Real2Host(ds_readd(0x40ac)),
-			Real2Host(ds_readd(0x40b0)));
+			type_names[0],
+			type_names[1],
+			type_names[2],
+			type_names[3],
+			type_names[4],
+			type_names[5],
+			type_names[6],
+			type_names[7],
+			type_names[8],
+			type_names[9],
+			type_names[10],
+			type_names[11]);
 
 	/*	restore attibute boni when selection is canceled
 	 *	or the same typus is selected.
