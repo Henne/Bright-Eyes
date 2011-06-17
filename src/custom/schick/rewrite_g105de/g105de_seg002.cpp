@@ -30,7 +30,9 @@ static long bg_len[MAX_PAGES];
 #define MAX_TYPES (13)
 static Bit8u *typus_buffer[MAX_TYPES];
 static long typus_len[MAX_TYPES];
-
+/* DS:0x08df */
+static unsigned short init_le[13] = {	0, 30, 30, 30, 30, 30, 40,
+					25, 30, 25, 25, 30, 25 };
 /* DS:0x1324 */
 static Bit16s gen_page;
 
@@ -2844,8 +2846,8 @@ void fill_values()
 	}
 
 	/* set LE */
-	ds_writew(0x138c, ds_readw(0x8df + typus * 2));
-	ds_writew(0x138a, ds_readw(0x8df + typus * 2));
+	ds_writew(0x138c, init_le[typus]);
+	ds_writew(0x138a, init_le[typus]);
 
 	/* set AE */
 	ds_writew(0x1390, ds_readw(0x8f9 + typus * 2));
