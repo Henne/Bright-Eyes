@@ -36,6 +36,19 @@ static const unsigned short init_le[13] = {	0, 30, 30, 30, 30, 30, 40,
 /* DS:0x08f9 */
 static const unsigned short init_ae[13] = {	0, 0, 0, 0, 0, 0, 0,
 						25, 25, 30, 25, 25, 25};
+/* DS:0x0913 */
+struct minmax {
+	unsigned char min;
+	unsigned char max;
+};
+
+static const struct minmax height_range[13] = {	{0, 0},
+						{150, 188},	{155, 170},
+						{165, 205},	{156, 194},
+						{167, 210},	{130, 140},
+						{154, 188},	{154, 188},
+						{164, 197},	{170, 204},
+						{160, 194},	{170, 210} };
 /* DS:0x1324 */
 static Bit16s gen_page;
 
@@ -2865,9 +2878,8 @@ void fill_values()
 	}
 
 	/* roll out size */
-	ds_writeb(0x134f, random_interval_gen(
-				ds_readb(0x913 + typus * 2),
-				ds_readb(0x913 + typus * 2 + 1)));
+	ds_writeb(0x134f, random_interval_gen(height_range[typus].min,
+				height_range[typus].max));
 
 	/* calculate weight i = (height - weight_mod) * 40 */
 	ds_writew(0x1350, (ds_readb(0x134f) - ds_readb(0x92d + typus)) * 40);
