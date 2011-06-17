@@ -209,8 +209,8 @@ Bit8u *buffer_dmenge_dat;
 /* DS:0x47b3 */
 Bit8u *gen_ptr5;
 Bit8u *gen_ptr4;
-Bit8u *gen_ptr3;
-Bit8u *gen_ptr2;
+char *gen_ptr3;
+char *gen_ptr2;
 
 /* DS:0x47cf */
 Bit8u *page_buffer;
@@ -1249,21 +1249,20 @@ void save_chr()
 		(char*)MemBase + PhysMake(datseg, 0x132c));
 	/* copy name to buffer */
 	/* TODO: should use strncpy() here */
-	strcpy((char*)Real2Host(ds_readd(0x47bf)),
-		(char*)MemBase + PhysMake(datseg, 0x132c));
+	strcpy(gen_ptr2, (const char*)MemBase + PhysMake(datseg, 0x132c));
 	/* prepare filename */
 	for (i = 0; i < 8; i++) {
-		char c = host_readb(Real2Host(ds_readd(0x47bf)) + i);
+		char c = gen_ptr2[i];
 		/* leave the loop if the string ends */
 		if (c == 0)
 			break;
 		if (isalnum(c))
 			continue;
 		/* replace non alphanumerical characters with underscore */
-		host_writeb(Real2Host(ds_readd(0x47bf)) + i, '_');
+		gen_ptr2[i] = '_';
 	}
 
-	strncpy(filename, (char*)Real2Host(ds_readd(0x47bf)), 8);
+	strncpy(filename, gen_ptr2, 8);
 	filename[8] = 0;
 	strcat(filename, ".CHR");
 
@@ -2136,11 +2135,11 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 	call_mouse();
 
 	if (digits) {
-		enter_string((char*)Real2Host(ds_readd(0x47bb)),
+		enter_string(gen_ptr3,
 			abs(di - digits * 6) / 2 + ds_readw(0x40bb),
 			lines * 8 + ds_readw(0x40bd) - 2, digits, 0);
 
-		retval = atol((char*)Real2Host(ds_readd(0x47bb)));
+		retval = atol(gen_ptr3);
 	} else {
 		ds_writed(0x1276, RealMake(datseg, 0x1c63));
 		vsync_or_key(150 * lines);
@@ -2850,10 +2849,10 @@ void fill_values()
 
 		if (di && ds_readw(0x40bf) == 2 && gui_bool((Bit8u*)texts[269])) {
 			/* create string */
-			sprintf((char*)Real2Host(ds_readd(0x47bf)),
+			sprintf(gen_ptr2,
 				texts[270], di);
 
-			i = infobox(Real2Host(ds_readd(0x47bf)), 1);
+			i = infobox((Bit8u*)gen_ptr2, 1);
 
 			if (i > 0) {
 				/* spell attempts to skill attempts */
@@ -2867,10 +2866,10 @@ void fill_values()
 			} else {
 
 				/* create string */
-				sprintf((char*)Real2Host(ds_readd(0x47bf)),
+				sprintf(gen_ptr2,
 					texts[271], di);
 
-				i = infobox(Real2Host(ds_readd(0x47bf)), 1);
+				i = infobox((Bit8u*)gen_ptr2, 1);
 				if (i > 0) {
 					if (i > di)
 						i = di;
@@ -3257,13 +3256,13 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf((char*)Real2Host(ds_readd(0x47bf)),
+		sprintf(gen_ptr2,
 			texts[46], bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
-			di = gui_radio(Real2Host(ds_readd(0x47bf)),
+			di = gui_radio((Bit8u*)gen_ptr2,
 				bv2,
 				type_names[0],
 				type_names[1],
@@ -3297,13 +3296,13 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf((char*)Real2Host(ds_readd(0x47bf)),
+		sprintf(gen_ptr2,
 			texts[46], bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
 
-			di = gui_radio(Real2Host(ds_readd(0x47bf)),
+			di = gui_radio((Bit8u*)gen_ptr2,
 				bv2,
 				type_names[0],
 				type_names[1],
@@ -4005,17 +4004,17 @@ void print_values()
 				break;
 
 			/* print height */
-			sprintf((char*)Real2Host(ds_readd(0x47bf)),
+			sprintf(gen_ptr2,
 				texts[0x118 / 4], ds_readb(0x134f));
 
-			print_str((char*)Real2Host(ds_readd(0x47bf)),
+			print_str(gen_ptr2,
 				205, 25);
 
 			/* print weight */
-			sprintf((char*)Real2Host(ds_readd(0x47bf)),
+			sprintf(gen_ptr2,
 				texts[0x11c / 4], ds_readw(0x1350));
 
-			print_str((char*)Real2Host(ds_readd(0x47bf)),
+			print_str(gen_ptr2,
 				205, 37);
 
 			/* print god name */
@@ -4023,9 +4022,9 @@ void print_values()
 				205, 49);
 
 			/* print money */
-			make_valuta_str((char*)Real2Host(ds_readd(0x47bf)),
+			make_valuta_str(gen_ptr2,
 				ds_readd(0x1358));
-			print_str((char*)Real2Host(ds_readd(0x47bf)),
+			print_str(gen_ptr2,
 				205, 61);
 
 			/* print LE */
@@ -5720,7 +5719,7 @@ void alloc_buffers()
 
 	page_buffer = (Bit8u*)gen_alloc(50000);
 
-	gen_ptr2 = (Bit8u*)gen_alloc(1524);
+	gen_ptr2 = (char*)gen_alloc(1524);
 	gen_ptr3 = gen_ptr2 + 1500;
 
 	gen_ptr4 = (Bit8u*)gen_alloc(200);
