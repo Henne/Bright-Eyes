@@ -3074,14 +3074,14 @@ void refresh_screen()
 
 				if (ds_readb(0x134e) != 0) {
 					char *p;
-					p = (char*)Real2Host(ds_readd(0x4515 + ds_readb(0x134d) * 4));
+					p = texts[0x43c / 4 + ds_readb(0x134d)];
 
 					print_str(p,
 						get_line_start_c(p, 16, 128),
 						184);
 				} else {
 					char *p;
-					p = (char*)Real2Host(ds_readd(0x411d + ds_readb(0x134d) * 4));
+					p = texts[0x44 / 4 + ds_readb(0x134d)];
 
 					print_str(p,
 						get_line_start_c(p, 16, 128),
@@ -3988,22 +3988,20 @@ void print_values()
 
 			/* print height */
 			sprintf((char*)Real2Host(ds_readd(0x47bf)),
-				(char*)Real2Host(ds_readd(0x41f1)),
-				ds_readb(0x134f));
+				texts[0x118 / 4], ds_readb(0x134f));
 
 			print_str((char*)Real2Host(ds_readd(0x47bf)),
 				205, 25);
 
 			/* print weight */
 			sprintf((char*)Real2Host(ds_readd(0x47bf)),
-				(char*)Real2Host(ds_readd(0x41f5)),
-				ds_readw(0x1350));
+				texts[0x11c / 4], ds_readw(0x1350));
 
 			print_str((char*)Real2Host(ds_readd(0x47bf)),
 				205, 37);
 
 			/* print god name */
-			print_str((char*)Real2Host(ds_readd(0x41b9 + 4 * ds_readb(0x1352))),
+			print_str(texts[0xe0 / 4 + ds_readb(0x1352)],
 				205, 49);
 
 			/* print money */
@@ -4579,7 +4577,7 @@ void make_valuta_str(char *dst, unsigned int money)
 		money -= 10;
 	}
 
-	sprintf(dst, (char*)Real2Host(ds_readd(0x41ed)), d, s, money);
+	sprintf(dst, texts[0x114 / 4], d, s, money);
 }
 
 void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
@@ -4848,12 +4846,12 @@ void inc_spell(Bit16u spell)
 
 	/* all spell increments used for that spell */
 	if (spell_incs[spell].incs >= max_incs) {
-		infobox(Real2Host(ds_readd(0x44dd)), 0);
+		infobox((Bit8u*)texts[0x404 / 4], 0);
 		return;
 	}
 	/* all tries used for that spell */
 	if (spell_incs[spell].tries == 3) {
-		infobox(Real2Host(ds_readd(0x4335)), 0);
+		infobox((Bit8u*)texts[0x25c / 4], 0);
 		return;
 	}
 
@@ -4862,7 +4860,7 @@ void inc_spell(Bit16u spell)
 
 	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
 		/* show success */
-		infobox(Real2Host(ds_readd(0x4339)), 0);
+		infobox((Bit8u*)texts[0x260 / 4], 0);
 		/* increment spell value */
 		ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
 		/* reset tries */
@@ -4871,7 +4869,7 @@ void inc_spell(Bit16u spell)
 		spell_incs[spell].incs++;
 	} else {
 		/* show failure */
-		infobox(Real2Host(ds_readd(0x433d)), 0);
+		infobox((Bit8u*)texts[0x264 / 4], 0);
 		/* increment tries */
 		spell_incs[spell].tries++;
 	}
