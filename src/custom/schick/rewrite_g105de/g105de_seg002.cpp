@@ -66,6 +66,8 @@ static const signed char head_first_male[12] = {	0, 0, 6, 12,
 static const signed char head_first_female[11] = {	0, 3, 9, 15,
 							21, 27, 34, 37,
 							46, 51, 58 };
+/* DS:0x1276 */
+static Bit8u *action_table;
 
 /* DS:0x1324 */
 static Bit16s gen_page;
@@ -868,10 +870,10 @@ void handle_input()
 		ds_writew(0x459b, 0);
 		si = 0;
 
-		if (ds_readd(0x1276))
+		if (action_table)
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
-				Real2Host(ds_readd(0x1276)));
+				action_table);
 		if (si == 0 && ds_readd(0x1272) != 0)
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
@@ -2165,9 +2167,9 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 
 		retval = atol(gen_ptr3);
 	} else {
-		ds_writed(0x1276, RealMake(datseg, 0x1c63));
+		action_table = MemBase + PhysMake(datseg, 0x1c63);
 		vsync_or_key(150 * lines);
-		ds_writed(0x1276, 0);
+		action_table = NULL;
 	}
 
 	set_vals(fg, bg);
@@ -2333,9 +2335,9 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	ds_writew(0x4599, 0);
 
 	while (r5 == 0) {
-		ds_writed(0x1276, RealMake(datseg, 0x1c63));
+		action_table = MemBase + PhysMake(datseg, 0x1c63);
 		handle_input();
-		ds_writed(0x1276, 0);
+		action_table = NULL;
 
 		if (di != r6) {
 			fill_radio_button(r6, di, lines_header);
@@ -2546,9 +2548,9 @@ void do_gen()
 			ds_writew(0x11fe, 0);
 		}
 
-		ds_writed(0x1276, ds_readd(0x1c79 + gen_page * 4));
+		action_table = Real2Host(ds_readd(0x1c79 + gen_page * 4));
 		handle_input();
-		ds_writed(0x1276, 0);
+		action_table = NULL;
 
 		if (ds_readw(0x4599) || ds_readw(0x459f) == 0x49) {
 			/* print the menu for each page */
