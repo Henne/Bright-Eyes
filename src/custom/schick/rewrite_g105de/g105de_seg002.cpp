@@ -1521,7 +1521,7 @@ void init_video()
 {
 	/* set the video mode to 320x200 8bit */
 	set_video_mode(0x13);
-	set_color(MemBase + PhysMake(datseg, 0x1b79), 0xff);
+	set_color((Bit8u*)&col_white, 0xff);
 }
 
 void exit_video()
