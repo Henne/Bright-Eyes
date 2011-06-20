@@ -66,8 +66,41 @@ static const signed char head_first_male[12] = {	0, 0, 6, 12,
 static const signed char head_first_female[11] = {	0, 3, 9, 15,
 							21, 27, 34, 37,
 							46, 51, 58 };
+
+/* DS:0x135e */
+static const struct mouse_action action_default[2] = {
+			{ 0, 0, 319, 199, 0xfe},
+			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+
+/* DS:0x1272 */
+static Bit8u* ptr_def_action = (Bit8u*)&action_default;
+
 /* DS:0x1276 */
 static Bit8u *action_table;
+
+/* DS:0x137a */
+static const struct mouse_action action_base[9] = {
+			{ 272, 8, 304, 41, 0xfd},	/* credits */
+			{ 305, 7, 319, 21, 0x60},	/* change sex */
+			{ 145, 13, 175, 21, 0x61},	/* enter name */
+			{ 271, 42, 286, 56, 0x48},	/* previous head */
+			{ 288, 42, 303, 56, 0x50},	/* next head */
+			{ 145, 178, 164, 192, 0x4b},	/* previous page */
+			{ 284, 178, 303, 192, 0x4d},	/* next page */
+			{ 0, 0, 319, 199, 0xfe},
+			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+/* DS:0x13d4 */
+static const struct mouse_action action_skills[4] = {
+			{ 145, 178, 164, 192, 0x4b},	/* previous page */
+			{ 284, 178, 303, 192, 0x4d},	/* next page */
+			{ 0, 0, 319, 199, 0xfe},
+			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
+/* DS:0x13fc */
+static const struct mouse_action action_spells[4] = {
+			{ 16, 178, 35, 192, 0x4b},	/* previous page */
+			{ 284, 178, 303, 192, 0x4d},	/* next page */
+			{ 0, 0, 319, 199, 0xfe},
+			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
 /* DS:0x1324 */
 static Bit16s gen_page;
@@ -118,8 +151,25 @@ static const char fnames_g105de[][13] = { "GEN1.NVF",
 					"SAMPLE.AD",
 					"MT32EMUL.XMI" };
 
+/* DS:0x1c63 */
+static const struct mouse_action action_input[2] = {
+			{ 0, 0, 319, 199, 0x1c},
+			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 /* DS:0x1c77 */
 static bool bool_mode;
+/* DS:0x1c79 */
+static const struct mouse_action *action_page[11] = {
+			(struct mouse_action*)&action_base,
+			(struct mouse_action*)&action_skills,
+			(struct mouse_action*)&action_skills,
+			(struct mouse_action*)&action_skills,
+			(struct mouse_action*)&action_skills,
+			(struct mouse_action*)&action_spells,
+			(struct mouse_action*)&action_spells,
+			(struct mouse_action*)&action_spells,
+			(struct mouse_action*)&action_spells,
+			(struct mouse_action*)&action_spells,
+			(struct mouse_action*)&action_spells };
 
 /* DS:0x1ca5 */
 static bool need_refresh = true;
@@ -874,10 +924,10 @@ void handle_input()
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
 				action_table);
-		if (si == 0 && ds_readd(0x1272) != 0)
+		if (si == 0 && ptr_def_action)
 			si = get_mouse_action(ds_readw(0x124c),
 				ds_readw(0x124e),
-				Real2Host(ds_readd(0x1272)));
+				ptr_def_action);
 
 		if (ds_readw(0x4591) == 2) {
 			for (i = 0; i < 15; i++)
@@ -903,23 +953,23 @@ void handle_input()
 }
 
 /* static */
-Bit16u get_mouse_action(Bit16u x, Bit16u y, Bit8u *ptr)
+Bit16u get_mouse_action(Bit16u x, Bit16u y, Bit8u *act)
 {
-
+	struct mouse_action *ptr = (struct mouse_action*)act;
 	Bit16u i;
 
-	for (i = 0; host_readw(ptr + i * 10) != 0xffff; i++) {
+	for (i = 0; ptr[i].action != 0xffff; i++) {
 
-		if (host_readw(ptr + i * 10 ) > x)
+		if (ptr[i].x1 > x)
 			continue;
-		if (host_readw(ptr + i * 10 + 4) < x)
+		if (ptr[i].x2 < x)
 			continue;
-		if (host_readw(ptr + i * 10 + 2) > y)
+		if (ptr[i].y1 > y)
 			continue;
-		if (host_readw(ptr + i * 10 + 6) < y)
+		if (ptr[i].y2 < y)
 			continue;
 
-		return host_readw(ptr + i * 10 + 8);
+		return ptr[i].action;
 	}
 
 	return 0;
@@ -2167,7 +2217,7 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 
 		retval = atol(gen_ptr3);
 	} else {
-		action_table = MemBase + PhysMake(datseg, 0x1c63);
+		action_table = (Bit8u*)&action_input;
 		vsync_or_key(150 * lines);
 		action_table = NULL;
 	}
@@ -2335,7 +2385,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	ds_writew(0x4599, 0);
 
 	while (r5 == 0) {
-		action_table = MemBase + PhysMake(datseg, 0x1c63);
+		action_table = (Bit8u*)&action_input;
 		handle_input();
 		action_table = NULL;
 
@@ -2548,7 +2598,7 @@ void do_gen()
 			ds_writew(0x11fe, 0);
 		}
 
-		action_table = Real2Host(ds_readd(0x1c79 + gen_page * 4));
+		action_table = (Bit8u*)action_page[gen_page];
 		handle_input();
 		action_table = NULL;
 

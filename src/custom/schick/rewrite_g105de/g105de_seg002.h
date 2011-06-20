@@ -1,4 +1,13 @@
+struct mouse_action {
+	unsigned short x1;
+	unsigned short y1;
+	unsigned short x2;
+	unsigned short y2;
+	unsigned short action;
+};
+
 namespace G105de {
+
 	void start_music(Bit16u);
 	void read_soundcfg();
 	void init_music(unsigned long);
