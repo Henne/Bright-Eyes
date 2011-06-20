@@ -22,6 +22,12 @@
 #include "../rewrite_m302de/seg009.h"
 
 
+struct color_struct {
+	signed char r;
+	signed char g;
+	signed char b;
+};
+
 static FILE * fd_open_datfile(Bit16u);
 
 #define MAX_PAGES (11)
@@ -124,6 +130,24 @@ struct type_bitmap empty_bitmap;
 
 /* DS:0x1cb3 */
 static char version[] = "V1.05";
+
+/* DS:0x1d49 */
+static struct color_struct col_white = { 0x3f, 0x3f, 0x3f };
+/* DS:0x1d4c */
+static struct color_struct col_black = { 0x00, 0x00, 0x00 };
+/* DS:0x1d4f */
+static struct color_struct col_popup[8] = {	{ 0x00, 0x00, 0x00 },
+						{ 0x38, 0x30, 0x28 },
+						{ 0x38, 0x30, 0x10 },
+						{ 0x30, 0x28, 0x0c },
+						{ 0x2c, 0x24, 0x08 },
+						{ 0x28, 0x20, 0x04 },
+						{ 0x18, 0x14, 0x00 },
+						{ 0x0b, 0x19, 0x0c } };
+/* DS:0x1d67 */
+static struct color_struct col_misc[3] = {	{ 0x28, 0x00, 0x00 },
+						{ 0x28, 0x28, 0x00 },
+						{ 0x00, 0x00, 0x28 } };
 
 /* DS:0x2780 */
 static bool got_ch_bonus;
@@ -5756,10 +5780,10 @@ void alloc_buffers()
 
 void init_colors()
 {
-	set_palette(MemBase + PhysMake(datseg, 0x1d4c), 0x00, 1);
-	set_palette(MemBase + PhysMake(datseg, 0x1d49), 0xff, 1);
-	set_palette(MemBase + PhysMake(datseg, 0x1d4f), 0xd8, 8);
-	set_palette(MemBase + PhysMake(datseg, 0x1d67), 0xc8, 3);
+	set_palette((Bit8u*)&col_black, 0x00, 1);
+	set_palette((Bit8u*)&col_white, 0xff, 1);
+	set_palette((Bit8u*)col_popup, 0xd8, 8);
+	set_palette((Bit8u*)col_misc, 0xc8, 3);
 	set_palette(MemBase + PhysMake(datseg, 0x119b), 0x40, 0x20);
 	set_palette(MemBase + PhysMake(datseg, 0x1d70), 0x20, 0x20);
 	set_vals(0xff, 0x0);
