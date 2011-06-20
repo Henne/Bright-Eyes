@@ -30,12 +30,9 @@ struct color_struct {
 
 static FILE * fd_open_datfile(Bit16u);
 
-#define MAX_PAGES (11)
-static Bit8u *bg_buffer[MAX_PAGES];
-static long bg_len[MAX_PAGES];
-#define MAX_TYPES (13)
-static Bit8u *typus_buffer[MAX_TYPES];
-static long typus_len[MAX_TYPES];
+static const Bit16u MAX_PAGES = 11;
+static const Bit16u MAX_TYPES = 13;
+
 /* DS:0x08df */
 static const unsigned short init_le[MAX_TYPES + 1] = {	0,
 						30, 30, 30, 30, 30, 40,
@@ -109,10 +106,15 @@ static Bit16s gen_page;
 static bool use_cda;
 /* DS:0x1a0b */
 static bool eh_installed;
-
-
+/* DS:0x1a11 */
+static Bit8u *bg_buffer[MAX_PAGES];
+/* DS:0x1a3d */
+static long bg_len[MAX_PAGES];
+/* DS:0x1a69 */
+static Bit8u *typus_buffer[MAX_TYPES];
+/* DS:0x1a9d */
+static long typus_len[MAX_TYPES];
 /* DS:0x1a7d */
-
 static const char fnames_g105de[][13] = { "GEN1.NVF",
 					"GEN2.NVF",
 					"GEN3.NVF",
@@ -158,7 +160,7 @@ static const struct mouse_action action_input[2] = {
 /* DS:0x1c77 */
 static bool bool_mode;
 /* DS:0x1c79 */
-static const struct mouse_action *action_page[11] = {
+static const struct mouse_action *action_page[MAX_PAGES] = {
 			(struct mouse_action*)&action_base,
 			(struct mouse_action*)&action_skills,
 			(struct mouse_action*)&action_skills,
