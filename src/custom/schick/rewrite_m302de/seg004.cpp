@@ -247,6 +247,12 @@ void schick_reset_video() {
 	set_video_page(ds_readw(0xd30b));
 }
 
+void set_ani_pal(Bit8u *pal)
+{
+	wait_for_vsync();
+	set_palette(pal, 0, 0x20);
+}
+
 void do_h_line(PhysPt ptr, unsigned short x1, unsigned short x2, unsigned short y, char color) {
 
 	unsigned short count, tmp;

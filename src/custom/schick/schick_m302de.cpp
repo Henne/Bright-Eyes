@@ -1469,6 +1469,13 @@ static int seg004(unsigned short offs) {
 		D1_LOG("schick_reset_video()\n");
 		schick_reset_video();
 		return 1;
+	case 0x1209: {
+		RealPt pal = CPU_Pop32();
+		D1_LOG("set_ani_pal()\n");
+		set_ani_pal(Real2Host(pal));
+		CPU_Push32(pal);
+		return 1;
+	}
 	case 0x12e8: {
 		RealPt dst = CPU_Pop32();
 		unsigned short x = CPU_Pop16();
@@ -4014,6 +4021,14 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* seg004 */
 	if (segm == 0xb2a) {
 		switch (offs) {
+			case 0x1209: {
+				CPU_Pop16();
+				RealPt pal = CPU_Pop32();
+				D1_LOG("set_ani_pal()\n");
+				set_ani_pal(Real2Host(pal));
+				CPU_Push32(pal);
+				return 1;
+			}
 			case 0x150d: {
 				CPU_Pop16();
 				D1_LOG("wait_for_vsync()\n");
