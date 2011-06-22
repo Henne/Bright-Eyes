@@ -1536,6 +1536,12 @@ static int seg004(unsigned short offs) {
 		do_fill_rect(dst, x, y, w, h, color);
 		return 1;
 	}
+	case 0x150d: {
+		D1_LOG("wait_for_vsync()\n");
+		wait_for_vsync();
+		return 1;
+	}
+
 	default:
 		return 0;
 	}
@@ -4003,6 +4009,19 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		default:
 			return 0;
+		}
+	}
+	/* seg004 */
+	if (segm == 0xb2a) {
+		switch (offs) {
+			case 0x150d: {
+				CPU_Pop16();
+				D1_LOG("wait_for_vsync()\n");
+				wait_for_vsync();
+				return 1;
+			}
+			default:
+				return 0;
 		}
 	}
 	/* seg005 */

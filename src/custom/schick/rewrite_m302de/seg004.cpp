@@ -1,5 +1,6 @@
 #include "mem.h"
 #include "paging.h"
+#include "callback.h"
 
 #include "schick.h"
 
@@ -352,4 +353,9 @@ void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short
 	update_mouse_cursor();
 	fill_rect(Real2Phys(dst), color, width, height);
 	refresh_screen_size();
+}
+
+void wait_for_vsync()
+{
+	CALLBACK_RunRealFar(reloc_game + 0xb2a, 0x150d);
 }
