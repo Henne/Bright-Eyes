@@ -9,6 +9,7 @@ void restore_mouse_bg();
 void array_add(PhysPt dst, unsigned short len, unsigned char op, unsigned short flag);
 void schick_set_video();
 void schick_reset_video();
+void clear_ani_pal();
 void set_ani_pal(Bit8u*);
 void do_h_line(PhysPt ptr,unsigned short x1, unsigned short x2, unsigned short y, char color);
 void do_v_line(PhysPt ptr, unsigned short x, unsigned short y1, unsigned short y2, char color);

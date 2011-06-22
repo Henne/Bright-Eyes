@@ -247,6 +247,14 @@ void schick_reset_video() {
 	set_video_page(ds_readw(0xd30b));
 }
 
+void clear_ani_pal()
+{
+	Bit8u * pal = MemBase + PhysMake(datseg, 0x4b06);
+
+	wait_for_vsync();
+	set_palette(pal, 0, 0x20);
+}
+
 void set_ani_pal(Bit8u *pal)
 {
 	wait_for_vsync();
