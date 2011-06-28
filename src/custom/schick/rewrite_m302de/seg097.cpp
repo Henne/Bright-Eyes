@@ -2,7 +2,7 @@
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
  *      Functions rewritten 4/16
  *
- *      Functions called rewritten 3/13
+ *      Functions called rewritten 4/13
  *      Functions uncalled rewritten 1/3
 */
 
@@ -183,6 +183,42 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 	host_writeb(dst, 0);
 	refresh_screen_size();
 	return 0;
+}
+
+//4ae
+//static
+void GUI_draw_radio_bg(Bit16u header, Bit16u options, Bit16u width,
+								Bit16u height)
+{
+	Bit16u i;
+
+	/* set upper left coordinates */
+	ds_writew(0xc011, ds_readw(0xbfff));
+	ds_writew(0xc013, ds_readw(0xc001));
+	/* set lower righti coordinates */
+	ds_writew(0xc015, ds_readw(0xbfff) + width - 1);
+	ds_writew(0xc017, ds_readw(0xc001) + height - 1);
+	/* set pointer */
+	ds_writed(0xc019, ds_readd(0xbff9));
+	do_save_rect();
+
+	/* play FX3.VOC */
+	if (ds_readw(0xbd25) == 0)
+		play_voc(291);
+
+	GUI_draw_popup_line(0, 0);
+
+	for (i = 0; i < header; i++)
+		GUI_draw_popup_line(i + 1, 1);
+
+	if (options != 0)
+		for (i = 0; i < options; i++)
+			GUI_draw_popup_line(header + i + 1, 2);
+
+	GUI_draw_popup_line(header + options + 1, 3);
+
+	GUI_set_smth(0xff, 0xdf);
+	wait_for_keyboard1();
 }
 
 //564

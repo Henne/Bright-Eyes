@@ -4527,8 +4527,24 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		/* Callers: 3 */
-		case 0x4ae:
-			return 0;
+		case 0x4ae: {
+			CPU_Pop16();
+			Bit16u v1 = CPU_Pop16();
+			Bit16u v2 = CPU_Pop16();
+			Bit16u v3 = CPU_Pop16();
+			Bit16u v4 = CPU_Pop16();
+
+			D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
+				v1, v2, v3, v4);
+			GUI_draw_radio_bg(v1, v2, v3, v4);
+
+			CPU_Push16(v4);
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			return 1;
+		}
 		/* Callers: 3 */
 		case 0x564: {
 			CPU_Pop16();
