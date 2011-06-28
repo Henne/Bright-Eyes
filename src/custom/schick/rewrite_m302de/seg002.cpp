@@ -27,6 +27,13 @@
 #include "seg047.h"
 #include "seg096.h"
 
+void play_voc(Bit16u index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x832);
+	CPU_Pop16();
+}
+
 /**
  * open_and_seek_dat - opens SCHICK.DAT and seeks to desired position
  * @fileindex: the index of the file in SCHICK.DAT

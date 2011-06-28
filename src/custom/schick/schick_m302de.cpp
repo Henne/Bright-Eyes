@@ -715,7 +715,14 @@ static int seg002(unsigned short offs) {
 		return 0;
 	case 0x06fe:
 	case 0x079f:
-	case 0x0832:	/* GUI Radio */
+		return 0;
+	case 0x0832: {
+		Bit16u index = CPU_Pop16();
+		D1_LOG("play_voc(FX%d.VOC)\n", index - 288);
+		play_voc(index);
+		CPU_Push16(index);
+		return 1;
+	}
 	case 0x0856:	/* Betrunken */
 	case 0x0890:
 		return 0;
@@ -3739,6 +3746,14 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0x51e) {
 
 		switch (offs) {
+		case 0x0832: {
+			CPU_Pop16();
+			Bit16u index = CPU_Pop16();
+			D1_LOG("near play_voc(FX%d)\n", index - 288);
+			play_voc(index);
+			CPU_Push16(index);
+			return 1;
+		}
 		case 0x0b7e: {
 			CPU_Pop16();
 			unsigned short fileindex = CPU_Pop16();
