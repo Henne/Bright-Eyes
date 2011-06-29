@@ -299,6 +299,10 @@ char *gen_ptr2;
 
 /* DS:0x47cf */
 Bit8u *page_buffer;
+
+/* DS:0x47e3 */
+static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
+
 /* DS:0x47f3 */
 Bit8u *gen_ptr1;
 Bit8u *gen_ptr1_dis;
@@ -1706,32 +1710,32 @@ void print_str(char *str, Bit16u x, Bit16u y)
 			}
 			case 0x7e: {
 				/* CRUFT */
-				if (x < ds_readw(0x47e3)) {
-					x = ds_readw(0x47e3);
+				if (x < ro_var[0]) {
+					x = ro_var[0];
 					continue;
 				}
-				if (x < ds_readw(0x47e5)) {
-					x = ds_readw(0x47e5);
+				if (x < ro_var[1]) {
+					x = ro_var[1];
 					continue;
 				}
-				if (x < ds_readw(0x47e7)) {
-					x = ds_readw(0x47e7);
+				if (x < ro_var[2]) {
+					x = ro_var[2];
 					continue;
 				}
-				if (x < ds_readw(0x47e9)) {
-					x = ds_readw(0x47e9);
+				if (x < ro_var[3]) {
+					x = ro_var[3];
 					continue;
 				}
-				if (x < ds_readw(0x47eb)) {
-					x = ds_readw(0x47eb);
+				if (x < ro_var[4]) {
+					x = ro_var[4];
 					continue;
 				}
-				if (x < ds_readw(0x47ed)) {
-					x = ds_readw(0x47ed);
+				if (x < ro_var[5]) {
+					x = ro_var[5];
 					continue;
 				}
-				if (x < ds_readw(0x47ef)) {
-					x = ds_readw(0x47ef);
+				if (x < ro_var[6]) {
+					x = ro_var[6];
 					continue;
 				}
 				break;
