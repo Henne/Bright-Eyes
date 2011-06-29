@@ -1376,6 +1376,15 @@ static int seg003(unsigned short offs) {
 
 static int seg004(unsigned short offs) {
 	switch (offs) {
+	case 0x55: {
+		Bit16u v1 = CPU_Pop16();
+
+		D1_LOG("init_ani(%d)\n", v1);
+		init_ani(v1);
+
+		CPU_Push16(v1);
+		return 1;
+	}
 	case 0x134:
 		D1_LOG("set_var_to_zero()\n");
 		set_var_to_zero();
@@ -4041,6 +4050,16 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* seg004 */
 	if (segm == 0xb2a) {
 		switch (offs) {
+			case 0x55: {
+				CPU_Pop16();
+				Bit16u v1 = CPU_Pop16();
+
+				D1_LOG("near init_ani(%d)\n", v1);
+				init_ani(v1);
+
+				CPU_Push16(v1);
+				return 1;
+			}
 			case 0x11da: {
 				CPU_Pop16();
 				D1_LOG("clear_ani_pal()\n");

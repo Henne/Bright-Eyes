@@ -1,3 +1,4 @@
+void init_ani(Bit16u);
 void set_var_to_zero();
 void clear_ani();
 void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode);

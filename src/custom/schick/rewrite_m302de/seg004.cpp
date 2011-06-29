@@ -8,6 +8,64 @@
 #include "seg004.h"
 #include "seg008.h"
 
+void init_ani(Bit16u v1)
+{
+
+	Bit16u i;
+
+	/* return if current ani == -1 */
+	if (ds_readw(0x2ccf) == 0xffff)
+		return;
+
+	if ((v1 & 0x7f) != 2) {
+		for (i = 0; i < 10; i++) {
+			ds_writew(0xe260 + i * 2, 0);
+			ds_writew(0xe24c + i * 2, 0xffff);
+			ds_writew(0xe238 + i * 2, 1);
+		}
+
+		if (v1 & 0x80)
+			ds_writeb(0x2cca, 0);
+		else
+			ds_writeb(0x2cca, 1);
+
+		update_mouse_cursor();
+
+		clear_ani_pal();
+
+		/* set flag for pic_copy() */
+		ds_writew(0x4a92, 1);
+
+		/* set uppter left coordinates */
+		ds_writew(0xc011, ds_readw(0xce41));
+		ds_writew(0xc013, ds_readw(0xce3f));
+
+		/* set lower right coordinates */
+		ds_writew(0xc015, ds_readw(0xce41) + ds_readw(0xc3e7) - 1);
+		ds_writew(0xc017, ds_readw(0xce3f) + ds_readb(0xc3ed) - 1);
+
+		/* copy pointer */
+		ds_writed(0xc019, ds_readd(0xce35));
+
+		/* copy the main ani picture */
+		do_pic_copy(1);
+
+		set_ani_pal(Real2Host(ds_readd(0xce3b)));
+
+		/* reset flag for pic_copy() */
+		ds_writew(0x4a92, 0);
+
+		refresh_screen_size();
+	}
+
+	if ((v1 & 0x7f) != 1) {
+		wait_for_vsync();
+		ds_writew(0x29ae, 1);
+	} else {
+		wait_for_vsync();
+	}
+}
+
 void set_var_to_zero() {
 	ds_writew(0x29ae, 0);
 }
