@@ -278,7 +278,7 @@ static Bit16u bg_color;
 static Bit16u fg_color[6];
 
 /* DS:0x478d */
-
+static Bit16u text_x_end;
 /* DS:0x478f */
 static Bit16u text_y;
 /* DS:0x4791 */
@@ -1689,7 +1689,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 	draw_mouse_ptr_wrapper();
 
 	if (ds_readw(0x4789) == 1)
-		x = get_line_start_c(str, x, ds_readw(0x478d));
+		x = get_line_start_c(str, x, text_x_end);
 
 	x_bak = x;
 
@@ -1701,8 +1701,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 
 				if (ds_readw(0x4789) == 1)
 					x = get_line_start_c(str + i,
-						text_x,
-						ds_readw(0x478d));
+						text_x,	text_x_end);
 				else
 					x = x_bak;
 				break;
@@ -1770,7 +1769,7 @@ Bit16u str_splitter(char *s) {
 		return 0;
 
 	lines = 1;
-	l_width_max = ds_readw(0x478d);
+	l_width_max = text_x_end;
 
 
 	/* replace all CR and LF with spaces */
@@ -2180,12 +2179,12 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 	ds_writew(0x4789, 1);
 	v2 = text_x;
 	v3 = text_y;
-	v4 = ds_readw(0x478d);
+	v4 = text_x_end;
 
 	di = (menu_tiles + 1) * 32;
 	ds_writew(0x40bb, abs(320 - di) / 2 + ds_readw(0x1327));
 	text_x = abs(320 - di) / 2 + ds_readw(0x1327) + 5;
-	ds_writew(0x478d, di - 10);
+	text_x_end = di - 10;
 	lines = str_splitter((char*)msg);
 
 	if (digits != 0)
@@ -2243,7 +2242,7 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 
 	text_x = v2;
 	text_y = v3;
-	ds_writew(0x478d, v4);
+	text_x_end = v4;
 
 	ds_writew(0x4789, 0);
 	ds_writew(0x459f, 0);
@@ -2330,11 +2329,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	di = 1;
 	bak1 = text_x;
 	bak2 = text_y;
-	bak3 = ds_readw(0x478d);
+	bak3 = text_x_end;
 	r9 = (menu_tiles + 1) * 32;
 	ds_writew(0x40bb, (abs(320 - r9) / 2) + ds_readw(0x1327));
 	text_x = ds_readw(0x40bb) + 5;
-	ds_writew(0x478d, (menu_tiles + 1) * 32 - 10);
+	text_x_end = (menu_tiles + 1) * 32 - 10;
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
 	ds_writew(0x40bd, abs(200 - (lines_sum + 2) * 8) / 2);
@@ -2471,7 +2470,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	text_x = bak1;
 	text_y = bak2;
-	ds_writew(0x478d, bak3);
+	text_x_end = bak3;
 	ds_writew(0x459f, 0);
 
 	return retval;
