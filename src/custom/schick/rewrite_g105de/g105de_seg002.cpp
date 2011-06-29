@@ -278,6 +278,13 @@ static Bit16u bg_color;
 static Bit16u fg_color[6];
 
 /* DS:0x478d */
+
+/* DS:0x478f */
+static Bit16u text_y;
+/* DS:0x4791 */
+static Bit16u text_x;
+
+/* DS:0x4797 */
 Bit8u *picbuf3;
 Bit8u *picbuf2;
 Bit8u *picbuf1;
@@ -1664,7 +1671,7 @@ Bit16u print_line(char *str)
 
 	lines = str_splitter(str);
 
-	print_str(str, ds_readw(0x4791), ds_readw(0x478f));
+	print_str(str, text_x, text_y);
 
 	call_mouse();
 
@@ -1694,7 +1701,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 
 				if (ds_readw(0x4789) == 1)
 					x = get_line_start_c(str + i,
-						ds_readw(0x4791),
+						text_x,
 						ds_readw(0x478d));
 				else
 					x = x_bak;
@@ -2171,13 +2178,13 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 
 	retval = 0;
 	ds_writew(0x4789, 1);
-	v2 = ds_readw(0x4791);
-	v3 = ds_readw(0x478f);
+	v2 = text_x;
+	v3 = text_y;
 	v4 = ds_readw(0x478d);
 
 	di = (menu_tiles + 1) * 32;
 	ds_writew(0x40bb, abs(320 - di) / 2 + ds_readw(0x1327));
-	ds_writew(0x4791, abs(320 - di) / 2 + ds_readw(0x1327) + 5);
+	text_x = abs(320 - di) / 2 + ds_readw(0x1327) + 5;
 	ds_writew(0x478d, di - 10);
 	lines = str_splitter((char*)msg);
 
@@ -2186,7 +2193,7 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 
 	ds_writew(0x40bd, abs(200 - (lines + 2) * 8) / 2);
 	ds_writew(0x40bd, ds_readw(0x40bd) + ds_readw(0x1329));
-	ds_writew(0x478f, ds_readw(0x40bd) + 7);
+	text_y = ds_readw(0x40bd) + 7;
 
 	draw_mouse_ptr_wrapper();
 
@@ -2234,8 +2241,8 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
 	call_mouse();
 
-	ds_writew(0x4791, v2);
-	ds_writew(0x478f, v3);
+	text_x = v2;
+	text_y = v3;
 	ds_writew(0x478d, v4);
 
 	ds_writew(0x4789, 0);
@@ -2321,17 +2328,17 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	r5 = 0;
 	r6 = 0xffff;
 	di = 1;
-	bak1 = ds_readw(0x4791);
-	bak2 = ds_readw(0x478f);
+	bak1 = text_x;
+	bak2 = text_y;
 	bak3 = ds_readw(0x478d);
 	r9 = (menu_tiles + 1) * 32;
 	ds_writew(0x40bb, (abs(320 - r9) / 2) + ds_readw(0x1327));
-	ds_writew(0x4791, ds_readw(0x40bb) + 5);
+	text_x = ds_readw(0x40bb) + 5;
 	ds_writew(0x478d, (menu_tiles + 1) * 32 - 10);
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
 	ds_writew(0x40bd, abs(200 - (lines_sum + 2) * 8) / 2);
-	ds_writew(0x478f, ds_readw(0x40bd) + 7);
+	text_y = ds_readw(0x40bd) + 7;
 	draw_mouse_ptr_wrapper();
 
 	/* save old background */
@@ -2356,7 +2363,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	if (lines_header)
 		print_line((char*)header);
 
-	r3 = ds_readw(0x4791) + 8;
+	r3 = text_x + 8;
 	r4 = (lines_header + 1) * 8 + ds_readw(0x40bd);
 
 	/* print radio options */
@@ -2462,8 +2469,8 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	call_mouse();
 	set_vals(fg_bak, bg_bak);
 
-	ds_writew(0x4791, bak1);
-	ds_writew(0x478f, bak2);
+	text_x = bak1;
+	text_y = bak2;
 	ds_writew(0x478d, bak3);
 	ds_writew(0x459f, 0);
 
