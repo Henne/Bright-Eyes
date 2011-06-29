@@ -340,6 +340,18 @@ static int seg002(Bitu offs)
 
 			return 1;
 		}
+		case 0x7322: {
+			Bit16u argc = CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			Bit8u *argv = MemBase + Real2Phys(p);
+
+			D1_INFO("main_gen(%d, %p);\n", argc, argv);
+			reg_ax = G105de::main_gen(argc, argv);
+
+			CPU_Push32(p);
+			CPU_Push16(argc);
+			return 1;
+		}
 		default:
 			return 0;
 	}
@@ -1652,15 +1664,15 @@ int schick_nearcall_gen105(unsigned offs) {
 				}
 				case 0x7446: {
 					/*
-					 * Do not bypass! We allocate
-					 * these buffers also on the host
-					 * and start using the host memory.
+					 * We allocate these buffers also on the
+					 * host and start using the host memory.
 					 */
-					Bit16u CS = CPU_Pop16();
-					CPU_Push16(CS);
+					CPU_Pop16();
 					D1_INFO("alloc_buffers();\n");
 					G105de::alloc_buffers();
-					return 0;
+					G105de::alloc_buffers_emu();
+
+					return 1;
 				}
 				case 0x75c1: {
 					CPU_Pop16();

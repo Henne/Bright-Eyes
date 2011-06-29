@@ -5795,6 +5795,89 @@ void restore_mouse_isr()
 	RealSetVec(0x1c, ds_readd(0x247c));
 }
 
+int main_gen(int argc, Bit8u *argv)
+{
+	Bit16u sound_off = 0;
+
+	if (argc > 1)
+		ds_writew(0x3f60, 1);
+
+	if (argc > 2)
+		ds_writew(0x3f3e, mem_readb(Real2Phys(host_readd(argv + 8))));
+
+	if ((argc > 3) && mem_readb(Real2Phys(host_readd(argv + 0xc)) == '0')) {
+		ds_writew(0x1a07, 1);
+		sound_off = 1;
+	};
+
+	ds_writeb(0x40b8, 1);
+
+	if (sound_off == 0)
+		init_music(13000);
+
+	ds_writew(0x47d7, ret_zero1());
+
+	set_mouse_isr();
+
+	bc_randomize();
+
+	save_display_stat(RealMake(datseg, 0x47db));
+
+	alloc_buffers();
+	alloc_buffers_emu();
+
+	ds_writew(0x47d9, 2);
+
+	init_video();
+
+	ds_writew(0x4591, 2);
+
+	mouse_enable();
+
+	if (ds_readw(0x4591) == 0)
+		ds_writew(0x124a, 0xfffe);
+
+	init_stuff();
+
+	read_common_files();
+
+	if (sound_off == 0)
+		read_soundcfg();
+
+	start_music(33);
+
+	if (ds_readw(0x3f60) == 0) {
+		intro();
+		read_common_files();
+	}
+
+	init_colors();
+	wait_for_keypress();
+	call_mouse();
+	do_gen();
+	stop_music();
+	draw_mouse_ptr_wrapper();
+	mouse_disable();
+	restore_mouse_isr();
+
+	if (ds_readw(0x3f60) != 0) {
+		call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
+	} else {
+		exit_video();
+		bc_clrscr();
+	}
+
+	BE_cleanup();
+
+	/* to make MSVC happy */
+	return 0;
+}
+
+void alloc_buffers_emu()
+{
+	CALLBACK_RunRealFar(reloc_gen + 0x3c6, 0x7446);
+}
+
 void alloc_buffers()
 {
 	ds_writed(0x47cb, RealMake(0xa000, 0x0));

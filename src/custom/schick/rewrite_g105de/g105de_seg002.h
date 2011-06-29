@@ -113,6 +113,8 @@ namespace G105de {
 	void intro();
 	void set_mouse_isr();
 	void restore_mouse_isr();
+	int main_gen(int argc, Bit8u *argv);
+	void alloc_buffers_emu();
 	void alloc_buffers();
 	void init_colors();
 	void init_stuff();
