@@ -262,6 +262,8 @@ static unsigned short unkn4;
 
 char *texts[300];
 
+/* DS:0x4669 */
+static char cursor_bak[256];
 /* DS:0x4769 */
 Bit8u *buffer_sex_dat;
 Bit8u *buffer_popup_nvf;
@@ -269,14 +271,12 @@ Bit8u *buffer_popup_dis;
 Bit8u *buffer_heads_dat;
 Bit8u *buffer_text;
 Bit8u *buffer_font6;
-
 /* DS:0x477d */
 static Bit16u col_index;
 /* DS:0x477f */
 static Bit16u bg_color;
 /* DS:0x4781 */
 static Bit16u fg_color[6];
-
 /* DS:0x478d */
 static Bit16u text_x_end;
 /* DS:0x478f */
@@ -1115,8 +1115,7 @@ void save_mouse_ptr()
 
 	for (si = 0; si < va; p += 320, si++)
 		for (cx = 0; cx < v8; cx++)
-			ds_writeb(0x4669 + si * 16 + cx,
-				mem_readb_inline(p + cx));
+			cursor_bak[si * 16 + cx] = mem_readb_inline(p + cx);
 }
 
 /* static */
@@ -1142,8 +1141,7 @@ void do_draw_mouse_ptr()
 
 	for (i = 0; i < d_y; ptr += 320, i++)
 		for (j = 0; j < d_x; j++)
-			mem_writeb_inline(ptr + j,
-				ds_readb(0x4669 + i * 16 + j));
+			mem_writeb_inline(ptr + j, cursor_bak[i * 16 + j]);
 }
 
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
