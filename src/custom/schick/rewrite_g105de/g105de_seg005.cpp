@@ -8,10 +8,18 @@
 #include <stdlib.h>
 
 #include "paging.h"
+#include "callback.h"
 
 #include "schick.h"
 
 namespace G105de {
+
+void save_display_stat(RealPt p)
+{
+	CPU_Push32(p);
+	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0x34);
+	CPU_Pop32();
+}
 
 void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
 		Bit16u v1, Bit16u v2, Bit16u d3, Bit16u d4,

@@ -418,12 +418,11 @@ static int seg005(Bitu offs) {
 	switch (offs) {
 	case 0x34: {
 		RealPt addr = CPU_Pop32();
-		CPU_Push32(addr);
-
 		D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
 			RealSeg(addr), RealOff(addr));
-
-		return 0;
+		G105de::save_display_stat(addr);
+		CPU_Push32(addr);
+		return 1;
         }
 	case 0x100: {
 		RealPt ptr = CPU_Pop32();
