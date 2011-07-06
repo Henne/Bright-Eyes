@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 74/136
+	Functions rewritten: 75/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1548,6 +1548,53 @@ unsigned short is_hero_available_in_group(Bit8u *hero) {
 		return 0;
 
 	return 1;
+}
+
+/**
+ * do_starve_damage() - damages starving heros
+ * @hero:	a pointer to the hero
+ * @index:	the index number of the hero
+ * @type:	the type of message which should be printed
+		0 = hunger / 1 = thirst
+ */
+void do_starve_damage(Bit8u *hero, Bit16u index, Bit16u type)
+{
+	Bit16u bak;
+
+	/* check if the hero is dead */
+	if (host_readb(hero + 0xaa) & 1)
+		return;
+
+	/* save this value locally */
+	bak = ds_readw(0xc3cb);
+	ds_writew(0xc3cb, 0);
+
+	/* decrement the heros LE */
+	host_writew(hero + 0x60, host_readw(hero + 0x60) - 1);
+
+	/* set the message type for the hero */
+	if (type != 0)
+		/* thirst */
+		ds_writeb(0x4219 + index, 1);
+	else
+		/* hunger */
+		ds_writeb(0x4219 + index, 2);
+
+	if (host_readw(hero + 0x60) <= 0) {
+
+		/* don't let the hero die */
+		host_writew(hero + 0x60, 1);
+
+		/* decrement the max LE and save them at 0x7a */
+		if (host_readw(hero + 0x5e) >= 2) {
+			host_writew(hero + 0x5e, host_readw(hero + 0x5e) - 1);
+			host_writeb(hero + 0x7a, host_readb(hero + 0x7a) + 1);
+		}
+	}
+
+	/* restore the locally save value */
+	ds_writew(0xc3cb, bak);
+
 }
 
 /*

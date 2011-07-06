@@ -58,6 +58,7 @@ void seg002_47e2();
 void seg002_484f();
 unsigned short check_hero(Bit8u* hero);
 unsigned short is_hero_available_in_group(Bit8u* hero);
+void do_starve_damage(Bit8u*, Bit16u, Bit16u);
 void sub_ae_splash(Bit8u *hero, signed short type);
 void add_hero_ae(Bit8u* hero, short ae);
 void add_hero_le(Bit8u *hero, signed short le);

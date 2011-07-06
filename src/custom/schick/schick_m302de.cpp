@@ -4007,6 +4007,24 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		/* Callers: 1 */
+		case 0x4f49: {
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16u index = CPU_Pop16();
+			Bit16u type = CPU_Pop16();
+
+			D1_LOG("do_starve_damage(%s, %d, %d);\n",
+				schick_getCharname(hero), index, type);
+
+			do_starve_damage(Real2Host(hero), index, type);
+
+			CPU_Push16(type);
+			CPU_Push16(index);
+			CPU_Push32(hero);
+
+			return 1;
+		}
+		/* Callers: 1 */
 		case 0x55b1: {
 			CPU_Pop16();
 			unsigned short item = CPU_Pop16();
