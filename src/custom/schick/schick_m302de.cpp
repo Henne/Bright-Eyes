@@ -774,13 +774,16 @@ static int seg002(unsigned short offs) {
 	case 0x0cb6:
 			return 0;
 	case 0x0d27: {
-		unsigned short index = CPU_Pop16();
+		Bit16u index = CPU_Pop16();
+
+		reg_ax = load_archive_file(index);
+
+		D1_LOG("load_archive_file(0x%x / %s) = %x\n",
+			index, get_fname(index), reg_ax);
+
 		CPU_Push16(index);
 
-		D1_LOG("OpenAndSeekDatfile(0x%x) %s\n", index,
-			get_fname(index));
-
-		return 0;
+		return 1;
 	}
 	case 0x0ed2: {
 			RealPt nvf = CPU_Pop32();
@@ -1356,7 +1359,7 @@ static int seg002(unsigned short offs) {
 		Bit32u size = CPU_Pop32();
 
 		RealPt p = schick_alloc_emu(size);
-		D1_INFO("schick_alloc_emu(%d)\n", size);
+		D1_LOG("schick_alloc_emu(%d)\n", size);
 
 		CPU_Push32(size);
 
