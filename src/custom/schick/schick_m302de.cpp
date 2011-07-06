@@ -1353,11 +1353,17 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	case 0x5a68: {
-		unsigned short bytes = CPU_Pop16();
-		CPU_Push16(bytes);
+		Bit32u size = CPU_Pop32();
 
-		D1_LOG("alloc_byte(%d)\n", bytes);
-		return 0;
+		RealPt p = schick_alloc_emu(size);
+		D1_INFO("schick_alloc_emu(%d)\n", size);
+
+		CPU_Push32(size);
+
+		reg_ax = RealOff(p);
+		reg_dx = RealSeg(p);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

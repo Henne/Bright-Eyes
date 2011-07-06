@@ -81,3 +81,4 @@ RealPt get_first_hero_available_in_group();
 RealPt get_second_hero_available_in_group();
 unsigned short count_heros_available();
 unsigned short count_heroes_available_in_group();
+RealPt schick_alloc_emu(Bit32u);
