@@ -21,6 +21,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg010.h"
+#include "seg027.h"
 #include "seg029.h"
 #include "seg032.h"
 #include "seg038.h"
@@ -2373,6 +2374,15 @@ static int seg026(unsigned short offs) {
 
 static int seg027(unsigned short offs) {
 	switch (offs) {
+		case 0x20: {
+			Bit16u pic = CPU_Pop16();
+
+			D1_LOG("load_pp20(%03x);\n", pic);
+			load_pp20(pic);
+
+			CPU_Push16(pic);
+			return 1;
+		}
 		case 0x25: {
 			short ani = CPU_Pop16();
 			CPU_Push16(ani);
