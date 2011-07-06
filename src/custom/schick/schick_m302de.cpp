@@ -332,14 +332,21 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x2287: {
-			unsigned int nmem = CPU_Pop32();
-			unsigned int size = CPU_Pop32();
+			Bit32u nmem = CPU_Pop32();
+			Bit32u size = CPU_Pop32();
+			RealPt p;
+
+			p = bc_farcalloc(nmem, size);
+			D1_LOG("calloc(%d, %d) = %08x\n", nmem, size, p);
+
+
 			CPU_Push32(size);
 			CPU_Push32(nmem);
 
-			D1_LOG("calloc(%d, 0x%x)\n", nmem, size);
+			reg_ax = RealOff(p);
+			reg_dx = RealSeg(p);
 
-			return 0;
+			return 1;
 		}
 		case 0x2315: {
 			return 0;

@@ -51,6 +51,17 @@ signed short bioskey(signed short cmd) {
 	}
 }
 
+RealPt bc_farcalloc(Bit32u nmemb, Bit32u size)
+{
+	CPU_Push32(size);
+	CPU_Push32(nmemb);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x2287);
+	CPU_Pop32();
+	CPU_Pop32();
+
+	return RealMake(reg_dx, reg_ax);
+}
+
 Bit16s bc_close(Bit16u handle) {
 
 	if (handle >= ds_readw(0xb786))
