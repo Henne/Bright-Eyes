@@ -2687,7 +2687,14 @@ static int seg046(unsigned short offs) {
 	switch (offs) {
 
 	case 0x20: {
-		return 0;
+		Bit16u index = CPU_Pop16();
+
+		D1_LOG("status_show(%d)\n", index);
+		status_show(index);
+
+		CPU_Push16(index);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
