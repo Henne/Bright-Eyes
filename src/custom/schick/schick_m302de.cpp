@@ -4531,8 +4531,16 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0xae: {
-			D1_LOG("seg44:00ae\n");
-			return 0;
+			CPU_Pop16();
+
+			Bit16s ani = CPU_Pop16();
+
+			reg_ax = M302de::seg044_00ae(ani);
+			D1_LOG("seg44_00ae(%d) = %d\n", ani, reg_ax);
+
+			CPU_Push16(ani);
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
