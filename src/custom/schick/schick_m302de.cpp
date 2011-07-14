@@ -2700,8 +2700,30 @@ static int seg044(unsigned short offs) {
 		return 0;
 	}
 	case 0x2f: {
-		D1_LOG("%s:0x%x\n", __func__, offs);
-		return 0;
+		Bit16u v1 = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16u v2 = CPU_Pop16();
+		Bit16s obj1 = CPU_Pop16();
+		Bit16s obj2 = CPU_Pop16();
+		Bit16u v5 = CPU_Pop16();
+
+		Bit8u *lp1;
+
+		lp1 = MemBase + PhysMake(datseg, 0xd8ce + v1 * 0xf3);
+
+		D1_LOG("seg044_002f(%d, 0x%x, %d, %d, %d, %d)\n",
+			v1, p, v2, obj1, obj2, v5);
+
+		M302de::seg044_002f(v1, Real2Host(p), v2, obj1, obj2, v5);
+
+		CPU_Push16(v5);
+		CPU_Push16(obj2);
+		CPU_Push16(obj1);
+		CPU_Push16(v2);
+		CPU_Push32(p);
+		CPU_Push16(v1);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);

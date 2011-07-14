@@ -1,9 +1,14 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg044 (Fightsystem)
-	Functions rewritten: 2/6
+	Functions rewritten: 3/6
 */
 
+#include "string.h"
+
 #include "schick.h"
+
+#include "seg007.h"
+#include "seg038.h"
 
 namespace M302de {
 
@@ -99,6 +104,140 @@ Bit8s seg044_00ae(Bit16s ani)
 #endif
 
 	return host_readb(p_off);
+}
+
+/**
+ * seg044_002f() - prepares a spell animation
+ * @v1:		0 or 1
+ * @p:		????
+ * @v2:		4 of 99
+ * @target:	the id of the target
+ * @caster:	the id of the caster
+ * @v5:		0 or 1
+ *
+ * This is used for "Blitz", "Fulminictus", "Ignifaxius"
+
+ */
+
+void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
+								Bit16u v5)
+{
+	Bit8u *lp1;		/* mostly written */
+	Bit8u *lp2;		/* read only */
+	Bit16s l1, l2, l3;	/* indicees to lp2 */
+	Bit16u x_target, y_target;
+	Bit16u x_caster, y_caster;
+	Bit16s dir, dir2;
+
+	Bit8u *lp1_bak;
+
+	/* get a pointer from an array where the Monster-ID serves as index */
+	lp2 = Real2Host(ds_readd(0x2555 + host_readb(p + 1) * 4));
+
+	FIG_search_obj_on_cb(caster, (Bit8u*)&x_caster, (Bit8u*)&y_caster);
+	FIG_search_obj_on_cb(target, (Bit8u*)&x_target, (Bit8u*)&y_target);
+
+	if (x_target == x_caster) {
+		if (y_caster < y_target)
+			dir = 1;
+		else
+			dir = 3;
+	} else {
+		if (x_caster < x_target)
+			dir = 2;
+		else
+			dir = 0;
+	}
+
+	if (target == caster)
+		dir = (signed char)host_readb(p + 0x27);
+
+	/* this is true if a monster attacks a hero */
+	if (v2 == 4)
+		l1 = 29;
+	else
+		l1 = 16;
+
+	lp1 = MemBase + PhysMake(datseg, 0xd8cf + v1 * 0xf3);
+	lp1_bak = lp1;
+
+	/* this is true if a monster attacks a hero */
+	if (v2 == 4)
+		l1 += dir;
+	else
+		l1 += (signed char)host_readb(p + 0x27);
+
+	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readw(lp2 + l1 * 2)));
+
+	ds_writeb(0xd9c0 + v1 * 0xf3, host_readb(p + 1));
+
+	if (((signed char)host_readb(p + 0x27) != dir) && (v2 == 4)) {
+
+		ds_writeb(0xd8ce + v1 * 0xf3, 0);
+		l2 = -1;
+		l3 = -1;
+
+		dir2 = (signed char)host_readb(p + 0x27);
+		l3 = dir2;
+		dir2++;
+		if (dir2 == 4)
+			dir2 = 0;
+
+		if (dir2 != dir) {
+
+			l2 = dir2;
+			dir2++;
+			if (dir2 == 4)
+				dir2 = 0;
+			if (dir2 != dir) {
+				l3 = (signed char)host_readb(p + 0x27) + 4;
+				l2 = -1;
+			}
+		}
+
+		host_writeb(p + 0x27, dir);
+
+		lp1 += copy_ani_seq(lp1, host_readw(lp2 + l3 * 2), 1);
+
+		if (l2 != -1)
+			lp1 += copy_ani_seq(lp1, host_readw(lp2 + l2 * 2), 1);
+
+		host_writeb(lp1, 0xfc);
+		lp1++;
+
+		host_writew(lp1, seg044_00ae(host_readw(lp2 + l1 * 2)));
+		lp1++;
+
+		host_writeb(lp1, 0);
+		lp1++;
+	}
+
+	lp1 += copy_ani_seq(lp1, host_readw(lp2 + l1 * 2), 1);
+
+	if (((ds_readw(0xe3a8) != 0) && (v5 == 0)) ||
+		((ds_readw(0xe3a6 != 0) && (v5 == 1)))) {
+
+		host_writeb(lp1, 0xfc);
+		lp1++;
+
+		host_writeb(lp1, seg044_00ae(host_readw(lp2 + 0x28)));
+		lp1++;
+
+		host_writeb(lp1, 0);
+		lp1++;
+
+		host_writew(lp1, copy_ani_seq(lp1, host_readw(lp2 + 0x28), 1));
+	}
+
+	host_writeb(lp1, 0xff);
+
+	/* check if the moster sprite ID needs two fields */
+	if (is_in_byte_array(host_readb(p + 1),
+		MemBase + PhysMake(datseg, 0x25f9))) {
+			memcpy(MemBase + PhysMake(datseg, 0xdab4 + v1 * 0xf3),
+				MemBase + PhysMake(datseg, 0xd8ce + v1 * 0xf3),
+				0xf3);
+	}
 }
 
 }
