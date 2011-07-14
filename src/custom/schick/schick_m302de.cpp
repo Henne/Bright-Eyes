@@ -58,7 +58,7 @@ static Uint32 schick_irq_timer(Uint32 interval, void *param)
 	ds_writew(0xc3bf, ++seed2);
 
 	if (seed2 < 0) {
-		D1_INFO("seed2 set to 0\n");
+		D1_LOG("seed2 set to 0\n");
 		ds_writew(0xc3bf, 0);
 	}
 	return interval;
@@ -2704,7 +2704,7 @@ static int seg044(unsigned short offs) {
 		Bit16u v5 = CPU_Pop16();
 		Bit16u v6 = CPU_Pop16();
 
-		D1_INFO("seg044_002a(%d, %s, %d, %d, %d, %d, %d)\n",
+		D1_LOG("seg044_002a(%d, %s, %d, %d, %d, %d, %d)\n",
 			v1, schick_getCharname(p), v2, obj1, obj2, v5, v6);
 		M302de::seg044_002a(v1, Real2Host(p), v2, obj1, obj2, v5, v6);
 
