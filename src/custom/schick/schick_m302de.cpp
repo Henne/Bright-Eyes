@@ -2696,8 +2696,27 @@ static int seg044(unsigned short offs) {
 		return 0;
 	}
 	case 0x2a: {
-		D1_LOG("%s:0x%x\n", __func__, offs);
-		return 0;
+		Bit16u v1 = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16u v2 = CPU_Pop16();
+		Bit16s obj1 = CPU_Pop16();
+		Bit16s obj2 = CPU_Pop16();
+		Bit16u v5 = CPU_Pop16();
+		Bit16u v6 = CPU_Pop16();
+
+		D1_INFO("seg044_002a(%d, %s, %d, %d, %d, %d, %d)\n",
+			v1, schick_getCharname(p), v2, obj1, obj2, v5, v6);
+		M302de::seg044_002a(v1, Real2Host(p), v2, obj1, obj2, v5, v6);
+
+		CPU_Push16(v6);
+		CPU_Push16(v5);
+		CPU_Push16(obj2);
+		CPU_Push16(obj1);
+		CPU_Push16(v2);
+		CPU_Push32(p);
+		CPU_Push16(v1);
+
+		return 1;
 	}
 	case 0x2f: {
 		Bit16u v1 = CPU_Pop16();

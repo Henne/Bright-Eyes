@@ -1,12 +1,13 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg044 (Fightsystem)
-	Functions rewritten: 3/6
+	Functions rewritten: 4/6
 */
 
 #include "string.h"
 
 #include "schick.h"
 
+#include "seg002.h"
 #include "seg007.h"
 #include "seg038.h"
 
@@ -105,6 +106,120 @@ Bit8s seg044_00ae(Bit16s ani)
 
 	return host_readb(p_off);
 }
+
+void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
+			Bit16u v5, Bit16u v6)
+{
+	Bit8u *lp1, *lp2;
+	Bit16u x_obj1, y_obj1;
+	Bit16u x_obj2, y_obj2;
+	Bit16s dir, l2, l3;
+	Bit16u si, di;
+
+	/* get a pointer from an array where the Monster-ID serves as index */
+	lp2 = Real2Host(ds_readd(0x2555 + host_readb(hero + 0x9b) * 4));
+
+	FIG_search_obj_on_cb(obj2, (Bit8u*)&x_obj2, (Bit8u*)&y_obj2);
+	FIG_search_obj_on_cb(obj1, (Bit8u*)&x_obj1, (Bit8u*)&y_obj1);
+
+	if (x_obj1 == x_obj2) {
+		if (y_obj2 < y_obj1)
+			dir = 1;
+		else
+			dir = 3;
+	} else {
+		if (x_obj2 < x_obj1)
+			dir = 2;
+		else
+			dir = 0;
+	}
+
+	if (obj2 == obj1)
+		dir = host_readb(hero + 0x82);
+
+	if (v2 == 4) {
+		if (v5 == 1)
+			di = 37;
+		else
+			di = 29;
+	} else
+		di = 16;
+
+	if (v2 == 4)
+		di += dir;
+	else
+		di += host_readb(hero + 0x82);
+
+	lp1 = MemBase + PhysMake(datseg, 0xd8cf + v1 * 0xf3);
+
+	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readw(lp2 + di * 2)));
+
+	ds_writeb(0xd9c0 + v1 * 0xf3, host_readb(hero + 0x9b));
+
+
+	if ((host_readb(hero + 0x82) != dir) && (v2 == 4)) {
+
+		ds_writeb(0xd8ce + v1 * 0xf3, 0);
+		l3 = l2 = -1;
+		si = host_readb(hero + 0x82);
+		l3 = si;
+		si++;
+		if (si == 4)
+			si = 0;
+
+		if (si != dir) {
+			l2 = si;
+			si++;
+			if (si == 4)
+				si = 0;
+
+			if (si != dir) {
+				l3 = host_readb(hero + 0x82) + 4;
+				l2 = -1;
+			}
+		}
+
+		host_writeb(hero + 0x82, dir);
+		lp1 += copy_ani_seq(lp1, host_readw(lp2 + l3 * 2), 2);
+
+		if (l2 != -1)
+			lp1 += copy_ani_seq(lp1, host_readw(lp2 + l2 * 2), 2);
+
+		host_writeb(lp1, 0xfc);
+		lp1++;
+
+		host_writeb(lp1, seg044_00ae(host_readw(lp2 + di * 2)));
+		lp1++;
+
+		host_writeb(lp1, 0x00);
+		lp1++;
+	}
+
+	if ((v2 == 4) || (check_hero(hero) != 0) ||
+		((ds_readw(0xe3a8) != 0) && (v6 == 0)) ||
+		((ds_readw(0xe3a6) != 0) && (v6 == 1))) {
+
+		lp1 += copy_ani_seq(lp1, host_readw(lp2 + di * 2), 2);
+	}
+
+	if (((ds_readw(0xe3a8) != 0) && (v6 == 0)) ||
+		((ds_readw(0xe3a6)) && (v6 == 1))) {
+
+		host_writeb(lp1, 0xfc);
+		lp1++;
+
+		host_writeb(lp1, seg044_00ae(host_readb(lp2 + 0x28)));
+		lp1++;
+
+		host_writeb(lp1, 0x00);
+		lp1++;
+
+		lp1 += copy_ani_seq(lp1, host_readw(hero + 0x28), 2);
+	}
+
+	host_writeb(lp1, 0xff);
+}
+
 
 /**
  * seg044_002f() - prepares a spell animation
