@@ -242,6 +242,7 @@ unsigned short group_count_item(unsigned short item) {
 	unsigned short i;
 	unsigned short ret = 0;
 
+	hero_i = get_hero(0);
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
 		if (host_readb(hero_i + 0x21) == 0)
