@@ -4520,8 +4520,8 @@ int schick_nearcall_v302de(unsigned offs) {
 			Bit16s a2 = CPU_Pop16();
 			Bit16u a3 = CPU_Pop16();
 
-			reg_ax = M302de::seg044_0000(Real2Host(p), a2, a3);
-			D1_LOG("seg44_0000(%x, %d, %d) =0x%x\n",
+			reg_ax = M302de::copy_ani_seq(Real2Host(p), a2, a3);
+			D1_LOG("copy_ani_seq(%x, %d, %d) = 0x%x\n",
 				p, a2, a3, reg_ax);
 
 			CPU_Push16(a3);
