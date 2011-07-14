@@ -5529,7 +5529,6 @@ void intro()
 	FILE *fd;
 	Bit8u *pal_dst, *pal_src;
 	Bit16u flen;
-	Bit16u tmp1, tmp2;
 	Bit16s i;
 	Bit8u cnt1;
 	Bit8s cnt2;

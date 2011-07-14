@@ -100,7 +100,7 @@ void copy_to_screen(PhysPt src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
 {
 
 	Bit16u v1, v2;
-	Bit16s i, j;
+	Bit16s i;
 
 	v1 = v2 = 320 - w;
 
