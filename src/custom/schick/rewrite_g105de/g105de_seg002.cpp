@@ -356,7 +356,12 @@ void BE_cleanup()
 	free(buffer_sex_dat);
 	free(buffer_popup_nvf);
 	free(buffer_heads_dat);
-	free(buffer_text);
+
+	if (buffer_text) {
+		free(buffer_text);
+		buffer_text = NULL;
+	}
+
 	free(buffer_font6);
 
 	buffer_sex_dat = NULL;
