@@ -5799,7 +5799,7 @@ void restore_mouse_isr()
 	RealSetVec(0x1c, ds_readd(0x247c));
 }
 
-int main_gen(int argc, Bit8u *argv)
+int main_gen(int argc, char **argv)
 {
 	Bit16u sound_off = 0;
 
@@ -5807,9 +5807,9 @@ int main_gen(int argc, Bit8u *argv)
 		ds_writew(0x3f60, 1);
 
 	if (argc > 2)
-		ds_writew(0x3f3e, mem_readb(Real2Phys(host_readd(argv + 8))));
+		ds_writew(0x3f5e, argv[2][0]);
 
-	if ((argc > 3) && mem_readb(Real2Phys(host_readd(argv + 0xc)) == '0')) {
+	if ((argc > 3) && (argv[3][0] == '0')) {
 		ds_writew(0x1a07, 1);
 		sound_off = 1;
 	};

@@ -343,7 +343,12 @@ static int seg002(Bitu offs)
 		case 0x7322: {
 			Bit16u argc = CPU_Pop16();
 			RealPt p = CPU_Pop32();
-			Bit8u *argv = MemBase + Real2Phys(p);
+			Bit8u *b_argv = Real2Host(p);
+			char *argv[4];
+			Bit16u i;
+
+			for (i = 0; i < argc; i++)
+				argv[i] = getString(host_readd(b_argv + i * 4));
 
 			D1_INFO("main_gen(%d, %p);\n", argc, argv);
 			reg_ax = G105de::main_gen(argc, argv);
