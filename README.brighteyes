@@ -32,6 +32,21 @@ Prequisites:
 	since atm no precompiled binaries are available.
 
 
+Improvements and changes to the Original:
+
+I could not resist to fix some Bugs in this early state.
+
+	Game logic:
+		* broken item counters will be corrected
+		* the schedule for ships was broken
+	Crashes:
+		* infinite loop in get_random_hero()
+
+	Story fixes:
+		* It's not possible to visit Umbrik after finish him
+		* You can identify an item more than once in the academy
+
+
 Links:
 
 git-tree:	git://github.com/Henne/Bright-Eyes.git
