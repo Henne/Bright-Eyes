@@ -41,10 +41,11 @@ I could not resist to fix some Bugs in this early state.
 		* the schedule for ships was broken
 	Crashes:
 		* infinite loop in get_random_hero()
-
 	Story fixes:
 		* It's not possible to visit Umbrik after finish him
 		* You can identify an item more than once in the academy
+	Usability:
+		* If a character has permanent damage LE max is red
 
 
 Links:

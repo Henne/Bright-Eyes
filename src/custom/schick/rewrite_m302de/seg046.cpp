@@ -4,6 +4,7 @@
 */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "schick.h"
 #include "v302de.h"
@@ -120,11 +121,42 @@ void status_show_talents(Bit8u *hero) {
 }
 
 /**
+ * set_status_string() - a helper for an Original Bugfix
+ * @fmt:	format string
+ *
+ * This makes changes to the max LE visible by changing the format string.
+ */
+static void set_status_string(char *fmt)
+{
+	char *fp;
+
+	fp = strstr(fmt, "%d");
+
+	fp[1] = 's';
+}
+
+/**
+ * reset_status_string() - a helper for an Original Bugfix
+ * @fmt:	format string
+ *
+ * This makes changes to the max LE visible by changing the format string.
+ */
+static void reset_status_string(char *fmt)
+{
+	char *fp;
+
+	fp = strstr(fmt, "%s");
+
+	fp[1] = 'd';
+}
+
+/**
  * status_show() - shows the status screen of a hero
  * @index:	index of the hero
 */
 void status_show(Bit16u index)
 {
+	char le_fix[10];
 	Bit8u *hero;
 	char nvf[19];
 	Bit8u *n = (Bit8u*)nvf;
@@ -370,16 +402,31 @@ void status_show(Bit16u index)
 
 			if (ds_readw(0xc003) == 2) {
 				/* advanded mode */
+
+				/* Original-Bugfix: show permanent damage red */
+				set_status_string((char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3ad)) + 0x34)));
+
+				if (host_readb(hero + 0x7a)) {
+					/* print max LE in red if hero has permanent damage */
+					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(hero + 0x5e), 0xf0);
+				} else {
+					/* print max LE in black if hero has no permanent damage */
+					sprintf(le_fix, "%d", host_readw(hero + 0x5e));
+				}
+
 				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 					(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3ad)) + 0x34)),
-					host_readw(hero + 0x60),
-					host_readw(hero + 0x5e),
-					host_readw(hero + 0x64),
-					host_readw(hero + 0x62),
-					(signed char)host_readb(hero + 0x66),
-					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31),
-					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) + (signed char)host_readb(hero + 0x48),
-					host_readw(hero + 0x2d8), bp);
+					host_readw(hero + 0x60), le_fix,			/* LE */
+					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
+					(signed char)host_readb(hero + 0x66),			/* MR */
+					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31), /* RS */
+					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) +
+						(signed char)host_readb(hero + 0x48),		/* Ausdauer*/
+					host_readw(hero + 0x2d8),				/* Last */
+					bp);							/* BP */
+				reset_status_string((char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3ad)) + 0x34)));
+				/* Original-Bugfix end */
+
 				GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 130);
 			} else {
 				/* novice mode */
@@ -416,9 +463,21 @@ void status_show(Bit16u index)
 				if (pa < 0)
 					pa = 0;
 
+				/* Original-Bugfix: show permanent damage in red */
+				set_status_string((char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3ad)) + 0xd0)));
+
+				if (host_readb(hero + 0x7a)) {
+					/* print max LE in red if hero has permanent damage */
+					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(hero + 0x5e), 0xf0);
+				} else {
+					/* print max LE in black if hero has no permanent damage */
+					sprintf(le_fix, "%d", host_readw(hero + 0x5e));
+				}
+
+
 				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 					(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3ad)) + 0xd0)),
-					host_readw(hero + 0x60), host_readw(hero + 0x5e),	/* LE */
+					host_readw(hero + 0x60), le_fix,			/* LE */
 					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
 					at, pa,							/* AT PA */
 					(signed char)host_readb(hero + 0x66),			/* MR */
@@ -427,6 +486,9 @@ void status_show(Bit16u index)
 						(signed char)host_readb(hero + 0x48),		/* Ausdauer */
 					host_readw(hero + 0x2d8),				/* Last */
 					bp);							/* BP */
+
+				reset_status_string((char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3ad)) + 0xd0)));
+				/* Original-Bugfix end */
 
 				GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 124);
 			}
