@@ -274,6 +274,9 @@ static unsigned short unkn4;
 
 char *texts[300];
 
+/* DS:0x4595 */
+static unsigned short wo_var;
+
 /* DS:0x4669 */
 static char cursor_bak[256];
 /* DS:0x4769 */
@@ -964,7 +967,7 @@ void handle_input()
 				wait_for_vsync();
 
 			if (ds_readw(0x459b) != 0) {
-				ds_writew(0x4595, 1);
+				wo_var = 1;
 				ds_writew(0x459b, 0);
 			}
 
