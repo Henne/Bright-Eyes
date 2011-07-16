@@ -260,6 +260,9 @@ static signed char head_typus;
 /* DS:0x40b9 */
 static unsigned short menu_tiles;
 
+/* DS:0x40bf */
+static signed short level;
+
 /* DS:0x40d1 */
 static unsigned short unkn1;
 /* DS:0x40d3 */
@@ -2594,23 +2597,22 @@ void do_gen()
 	switch (param_level) {
 		case 'a': {
 			/* ADVANCED */
-			ds_writew(0x40bf, 2);
+			level = 2;
 			break;
 		}
 		case 'n': {
 			/* NOVICE */
-			ds_writew(0x40bf, 1);
+			level = 1;
 			break;
 		}
 		default: {
-			ds_writew(0x40bf, -1);
+			level = -1;
 		}
 	}
 
 	/* ask for level */
-	while (ds_readw(0x40bf) == 0xffff) {
-		ds_writew(0x40bf,
-			gui_radio((Bit8u*)texts[0], 2, texts[1], texts[2]));
+	while (level == -1) {
+		level = gui_radio((Bit8u*)texts[0], 2, texts[1], texts[2]);
 	}
 
 	ds_writew(0x4599, 1);
@@ -2750,7 +2752,7 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) == 0x4d && ds_readb(0x40bf) != 1) {
+		if (ds_readw(0x459f) == 0x4d && level != 1) {
 			if (ds_readb(0x134d) == 0) {
 				infobox((Bit8u*)texts[0x120 / 4], 0);
 			} else {
@@ -2768,7 +2770,7 @@ void do_gen()
 				ds_writew(0x11fe, 1);
 				gen_page--;
 			} else {
-				if (ds_readw(0x40bf) != 1) {
+				if (level != 1) {
 					if (ds_readb(0x134d) == 0) {
 						infobox((Bit8u*)texts[0x120 / 4], 0);
 					} else {
@@ -2779,10 +2781,8 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) > 2 &&
-			ds_readw(0x459f) <= 6 &&
-			ds_readw(0x40bf) == 2 &&
-			ds_readb(0x134d)) {
+		if (ds_readw(0x459f) > 2 && ds_readw(0x459f) <= 6 &&
+			level == 2 && ds_readb(0x134d)) {
 			switch (ds_readw(0x459f)) {
 				case 2: {
 					si = 0;
@@ -2947,7 +2947,7 @@ void fill_values()
 		/* get convertable increase attempts */
 		di = ds_readb(0xa97 + typus - 7);
 
-		if (di && ds_readw(0x40bf) == 2 && gui_bool((Bit8u*)texts[269])) {
+		if (di && level == 2 && gui_bool((Bit8u*)texts[269])) {
 			/* create string */
 			sprintf(gen_ptr2,
 				texts[270], di);
@@ -2993,7 +2993,7 @@ void fill_values()
 	ds_writew(0x138e, init_ae[typus]);
 
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
-	if (typus == 9 && ds_readw(0x40bf) == 2 && gui_bool((Bit8u*)texts[268])) {
+	if (typus == 9 && level == 2 && gui_bool((Bit8u*)texts[268])) {
 		/* change spell_attempts */
 		ds_writeb(0x14bf, ds_readb(0x14bf) - 10);
 		ds_writew(0x1390, random_interval_gen(3, 8) + ds_readw(0x1390));
@@ -3101,7 +3101,7 @@ void fill_values()
 	calc_at_pa();
 
 	/* if mode == novice */
-	if (ds_readw(0x40bf) == 1) {
+	if (level == 1) {
 		/* automatic increase skills */
 		for (i = 0; ds_readb(0x1468) > 0; i++) {
 			v1 = ds_readw(0xba2 + typus * 50 + i * 2);
@@ -3178,7 +3178,7 @@ void refresh_screen()
 		}
 
 		/* page with base values and level is advanced */
-		if (gen_page == 0 && ds_readw(0x40bf) == 1) {
+		if (gen_page == 0 && level == 1) {
 			dst = Real2Phys(ds_readd(0x47d3)) + 178 * 320 + 284;
 			src = Real2Phys(ds_readd(0x4769) + 512);
 
