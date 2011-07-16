@@ -78,6 +78,9 @@ static Bit8u* ptr_def_action = (Bit8u*)&action_default;
 /* DS:0x1276 */
 static Bit8u *action_table;
 
+/* DS:0x1329 */
+static const Bit16u ro_zero = 0;
+
 /* DS:0x137a */
 static const struct mouse_action action_base[9] = {
 			{ 272, 8, 304, 41, 0xfd},	/* credits */
@@ -2204,7 +2207,7 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 		lines += 2;
 
 	ds_writew(0x40bd, abs(200 - (lines + 2) * 8) / 2);
-	ds_writew(0x40bd, ds_readw(0x40bd) + ds_readw(0x1329));
+	ds_writew(0x40bd, ds_readw(0x40bd) + ro_zero);
 	text_y = ds_readw(0x40bd) + 7;
 
 	draw_mouse_ptr_wrapper();
