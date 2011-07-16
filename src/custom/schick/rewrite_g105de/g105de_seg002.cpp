@@ -317,6 +317,8 @@ Bit8u *page_buffer;
 
 /* DS:0x47d7 */
 static unsigned short wo_var2;
+/* DS:0x47d9 */
+static unsigned short wo_var3;
 
 /* DS:0x47e3 */
 static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -5845,7 +5847,7 @@ int main_gen(int argc, char **argv)
 	alloc_buffers();
 	alloc_buffers_emu();
 
-	ds_writew(0x47d9, 2);
+	wo_var3 = 2;
 
 	init_video();
 
