@@ -225,6 +225,9 @@ void *form_xmid;
 void *snd_ptr_unkn1;
 void *state_table;
 
+/* DS:0x3f5e */
+static Bit8u param_level;
+
 struct inc_states {
 	char tries;
 	char incs;
@@ -2585,7 +2588,7 @@ void do_gen()
 	ds_writew(0x11fe, 1);
 
 	/* try to set the level from parameters */
-	switch (ds_readw(0x3f5e)) {
+	switch (param_level) {
 		case 'a': {
 			/* ADVANCED */
 			ds_writew(0x40bf, 2);
@@ -5810,7 +5813,7 @@ int main_gen(int argc, char **argv)
 		ds_writew(0x3f60, 1);
 
 	if (argc > 2)
-		ds_writew(0x3f5e, argv[2][0]);
+		param_level = argv[2][0];
 
 	if ((argc > 3) && (argv[3][0] == '0')) {
 		ds_writew(0x1a07, 1);
