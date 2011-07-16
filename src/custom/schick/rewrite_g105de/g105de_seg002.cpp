@@ -64,6 +64,9 @@ static const signed char head_first_female[11] = {	0, 3, 9, 15,
 							21, 27, 34, 37,
 							46, 51, 58 };
 
+/* DS:0x124a */
+static Bit16s mouse_var = -1;
+
 /* DS:0x135e */
 static const struct mouse_action action_default[2] = {
 			{ 0, 0, 319, 199, 0xfe},
@@ -840,12 +843,12 @@ void draw_mouse_ptr()
 	if (ds_readw(0x1248))
 		return;
 
-	if (ds_readw(0x124a) == 0) {
+	if (mouse_var == 0) {
 		ds_writew(0x1248, 1);
 		do_draw_mouse_ptr();
 		ds_writew(0x1248, 0);
 	}
-	ds_writew(0x124a, ds_readw(0x124a) - 1);
+	mouse_var--;
 }
 
 /* static */
@@ -854,9 +857,9 @@ void mouse()
 	if (ds_readw(0x1248))
 		return;
 
-	ds_writew(0x124a, ds_readw(0x124a) + 1);
+	mouse_var++;
 
-	if (ds_readw(0x124a))
+	if (mouse_var != 0)
 		return;
 
 	ds_writew(0x1248, 1);
