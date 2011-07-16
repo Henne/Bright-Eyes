@@ -315,6 +315,9 @@ char *gen_ptr2;
 /* DS:0x47cf */
 Bit8u *page_buffer;
 
+/* DS:0x47d7 */
+static unsigned short wo_var2;
+
 /* DS:0x47e3 */
 static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
 
@@ -5831,7 +5834,7 @@ int main_gen(int argc, char **argv)
 	if (sound_off == 0)
 		init_music(13000);
 
-	ds_writew(0x47d7, ret_zero1());
+	wo_var2 = ret_zero1();
 
 	set_mouse_isr();
 
