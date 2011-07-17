@@ -54,6 +54,22 @@ static const signed short house_spells[][8] = {
 	/* Veränderung */
 	{0x4c, 0x4e, 0x4f, 0x50, 0x52, 0x53, 0x54, -1}
 };
+/* DS:03ab */
+struct struct_school_tab {
+	unsigned short first_spell;
+	unsigned short spells;
+};
+static struct struct_school_tab school_tab[] = {
+	{0x01, 0x05},
+	{0x06, 0x0c},
+	{0x12, 0x09},
+	{0x1b, 0x06},
+	{0x21, 0x05},
+	{0x26, 0x07},
+	{0x31, 0x09},
+	{0x3c, 0x10},
+	{0x4c, 0x0a},
+};
 
 /* DS:0x08df */
 static const unsigned short init_le[MAX_TYPES + 1] = {	0,
@@ -3148,9 +3164,9 @@ void fill_values()
 					ds_readw(0xa9d + 1 + school * 29 + i *2));
 			}
 			/* 2. all schools spells */
-			for (i = 0; ds_readw(0x3ab + school * 4 + 2) > i; si++, i++) {
+			for (i = 0; school_tab[school].spells > i; si++, i++) {
 				ds_writew(0xe2c + 90 * 2 + si * 2,
-					ds_readw(0x3ab + school * 4) + i);
+					school_tab[school].first_spell + i);
 			}
 			/* 3. five domination spells */
 				/* Herr der Tiere */
