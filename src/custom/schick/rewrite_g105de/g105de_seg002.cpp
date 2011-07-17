@@ -3142,15 +3142,15 @@ void fill_values()
 				/* Sanftmut */
 			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x4f);
 
-			/* 4. all schools spells */
-			for (i = 0; ds_readw(0x3ab + school * 4 + 2) > i; si++, i++) {
+			/* 4. all house spells */
+			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
 				ds_writew(0xe2c + 90 * 2 + si * 2,
-					ds_readw(0x3ab + school *4) + i);
+					ds_readw(0xa9d + 1 + school * 29 + i * 2));
 			}
-			/* 5. all schools spells */
-			for (i = 0; ds_readw(0x3ab + school * 4 + 2) > i; si++, i++) {
+			/* 5. all house spells */
+			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
 				ds_writew(0xe2c + 90 * 2 + si * 2,
-					ds_readw(0x3ab + school *4) + i);
+					ds_readw(0xa9d + 1 + school * 29 + i * 2));
 			}
 			/* 6. random spells */
 			while (si < 45) {
