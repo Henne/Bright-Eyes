@@ -2726,10 +2726,6 @@ static int seg044(unsigned short offs) {
 		Bit16s obj2 = CPU_Pop16();
 		Bit16u v5 = CPU_Pop16();
 
-		Bit8u *lp1;
-
-		lp1 = MemBase + PhysMake(datseg, 0xd8ce + v1 * 0xf3);
-
 		D1_LOG("seg044_002f(%d, 0x%x, %d, %d, %d, %d)\n",
 			v1, p, v2, obj1, obj2, v5);
 
