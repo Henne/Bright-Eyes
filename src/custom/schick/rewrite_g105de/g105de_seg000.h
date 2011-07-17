@@ -13,5 +13,5 @@ Bit16s bc__create(Bit8u*, Bit16u);
 Bit16s bc_write(Bit16u, Bit8u*, Bit16u);
 
 /* this will set an unused variable, so we put a dummy here */
-static inline void bc_randomize() { };
+static inline void bc_randomize() { }
 }

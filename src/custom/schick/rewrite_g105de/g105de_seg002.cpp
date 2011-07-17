@@ -1496,7 +1496,7 @@ static FILE * fd_open_datfile(Bit16u index)
 	}
 
 	if (fread(buf, 1, 800, fd) != 800) {
-		D1_ERR("%s(): failed to read datafile\n");
+		D1_ERR("%s(): failed to read datafile\n", __func__);
 		fclose(fd);
 		return NULL;
 	}
@@ -1877,12 +1877,14 @@ Bit16u str_splitter(char *s) {
 		i++;
 	}
 
-	if (l_width >= l_width_max)
+	if (l_width >= l_width_max) {
 		if (last_space) {
 			tp[last_space] = 0xd;
 			lines++;
-		} else
+		} else {
 			tp[i - 1] = 0;
+		}
+	}
 
 	return lines;
 }
@@ -6010,7 +6012,7 @@ void init_stuff()
 
 void *gen_alloc(unsigned long size)
 {
-	D1_INFO("HOST gen_alloc(%d);\n", size);
+	D1_INFO("HOST gen_alloc(%ld);\n", size);
 	return calloc(size, sizeof(char));
 }
 

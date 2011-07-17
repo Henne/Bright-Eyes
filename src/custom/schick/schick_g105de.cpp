@@ -350,7 +350,7 @@ static int seg002(Bitu offs)
 			for (i = 0; i < argc; i++)
 				argv[i] = getString(host_readd(b_argv + i * 4));
 
-			D1_INFO("main_gen(%d, %p);\n", argc, argv);
+			D1_LOG("main_gen(%d, %p);\n", argc, (void*)argv);
 			reg_ax = G105de::main_gen(argc, argv);
 
 			CPU_Push32(p);
@@ -397,7 +397,8 @@ static int seg003(Bitu offs) {
 		return 1;
 	}
 	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		D1_ERR("Uncatched call to Segment %s:0x%04lx\n",
+			__func__, offs);
 		exit(1);
 	}
 }
@@ -424,7 +425,8 @@ static int seg004(Bitu offs) {
 		return 1;
 	}
 	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		D1_ERR("Uncatched call to Segment %s:0x%04lx\n",
+			__func__, offs);
 		exit(1);
 	}
 }
@@ -530,7 +532,7 @@ static int seg005(Bitu offs) {
 		return 0;
 	}
 	default:
-		D1_ERR("Rasterlib:0x%x\n", offs);
+		D1_ERR("Rasterlib:0x%lx\n", offs);
 		exit(0);
 	}
 }
@@ -636,7 +638,7 @@ int schick_nearcall_gen105(unsigned offs) {
 		case  0x000: {
 			switch (offs) {
 				case 0x2572: {
-				Bit16u pIP = CPU_Pop16();
+				CPU_Pop16();
 				RealPt dst = CPU_Pop32();
 				Bit16u n = CPU_Pop16();
 				Bit16u c = CPU_Pop16();
@@ -878,7 +880,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					return 1;
 				}
 				case 0x0cf2: {
-					Bit16u pIP = CPU_Pop16();
+					CPU_Pop16();
 					RealPt dst = CPU_Pop32();
 					RealPt src = CPU_Pop32();
 					Bit16u x = CPU_Pop16();
@@ -997,7 +999,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					return 1;
 				}
 				case 0x15df: {
-					Bit16u CS = CPU_Pop16();
+					CPU_Pop16();
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
@@ -1384,7 +1386,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					return 1;
 				}
 				case 0x2c0d: {
-					Bit16u pIP = CPU_Pop16();
+					CPU_Pop16();
 					Bit16u old_pos = CPU_Pop16();
 					Bit16u new_pos = CPU_Pop16();
 					Bit16u offset = CPU_Pop16();
@@ -1492,7 +1494,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					return 1;
 				}
 				case 0x435b: {
-					Bit16u CS = CPU_Pop16();
+					CPU_Pop16();
 					D1_LOG("select_typus();\n");
 					G105de::select_typus();
 					return 1;
@@ -1593,13 +1595,13 @@ int schick_nearcall_gen105(unsigned offs) {
 					return 1;
 				}
 				case 0x6716: {
-					Bit16u CS = CPU_Pop16();
+					CPU_Pop16();
 					D1_LOG("choose_atpa();\n");
 					G105de::choose_atpa();
 					return 1;
 				}
 				case 0x6821: {
-					Bit16u CS = CPU_Pop16();
+					CPU_Pop16();
 					D1_LOG("choose_typus();\n");
 					G105de::choose_typus();
 					return 1;
@@ -1697,7 +1699,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				}
 				case 0x7664: {
 					RealPt ret;
-					Bit16u pCS = CPU_Pop16();
+					CPU_Pop16();
 					Bit32u  nelem = CPU_Pop32();
 
 					ret = G105de::emu_gen_alloc(nelem);
