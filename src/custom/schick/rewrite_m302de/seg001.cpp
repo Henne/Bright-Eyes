@@ -8,7 +8,7 @@
 #include "seg000.h"
 #include "seg001.h"
 
-unsigned short CD_has_drives() {
+static unsigned short CD_has_drives() {
 
 	reg_ax = 0x1500;
 	reg_bx = 0x0000;
@@ -20,7 +20,7 @@ unsigned short CD_has_drives() {
 	return 1;
 }
 
-unsigned short CD_count_drives() {
+static unsigned short CD_count_drives() {
 
 	reg_ax = 0x1500;
 	reg_bx = 0x0000;
@@ -29,7 +29,7 @@ unsigned short CD_count_drives() {
 	return reg_bx;
 }
 
-unsigned short CD_get_first_drive() {
+static unsigned short CD_get_first_drive() {
 
 	reg_ax = 0x1500;
 	reg_bx = 0x0000;
@@ -118,7 +118,7 @@ void seg001_02c4() {
 	val = CD_get_tod();
 	val -= ds_readd(0xbc4a);
 
-	if (val < ds_readd(0xbc4e))
+	if (val < (signed int)ds_readd(0xbc4e))
 		return;
 
 	if (ds_readw(0x9b) != 1)

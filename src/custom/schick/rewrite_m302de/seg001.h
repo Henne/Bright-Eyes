@@ -1,6 +1,3 @@
-static unsigned short CD_has_drives();
-static unsigned short CD_count_drives();
-static unsigned short CD_get_first_drive();
 //static
 unsigned short CD_set_drive_nr();
 //static
