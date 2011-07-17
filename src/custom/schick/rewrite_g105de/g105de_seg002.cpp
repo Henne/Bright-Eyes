@@ -33,6 +33,28 @@ static FILE * fd_open_datfile(Bit16u);
 static const Bit16u MAX_PAGES = 11;
 static const Bit16u MAX_TYPES = 13;
 
+/* DS:0x030b */
+static const signed short house_spells[][8] = {
+	/* Antimagie */
+	{0x01, 0x02, 0x03, 0x04, 0x05, 0x2a, -1},
+	/* Beherrschung */
+	{0x07, 0x0c, 0x0e, 0x10, 0x2c, -1},
+	/* Beschwörung */
+	{0x12, 0x13, 0x15, 0x17, 0x18, 0x3b, -1},
+	/* Bewegung */
+	{0x1b, 0x1c, 0x1d, 0x1e, 0x1f, -1},
+	/* Heilung */
+	{0x21, 0x23, 0x24, 0x3d, 0x46, -1},
+	/* Hellsicht */
+	{0x26, 0x27, 0x29, 0x28, 0x2a, 0x2b, 0x2c, -1},
+	/* Kampf */
+	{0x31, 0x33, 0x34, 0x35, 0x36, 0x39, 0x3e, -1},
+	/* Verwandlung */
+	{0x3c, 0x3e, 0x48, 0x49, 0x4b, -1},
+	/* Veränderung */
+	{0x4c, 0x4e, 0x4f, 0x50, 0x52, 0x53, 0x54, -1}
+};
+
 /* DS:0x08df */
 static const unsigned short init_le[MAX_TYPES + 1] = {	0,
 						30, 30, 30, 30, 30, 40,
@@ -4963,7 +4985,7 @@ void inc_spell(Bit16u spell)
 		if (ds_readb(0x158 + spell * 5) == 1)
 			max_incs = 2;
 
-		Bit8u *array = Real2Host(ds_readd(0x387 + ds_readb(0x14c0) * 4));
+		Bit8u *array = (Bit8u*)house_spells[ds_readb(0x14c0)];
 		/* and is a school spell */
 		if (is_in_word_array(spell, array))
 			max_incs = 3;
