@@ -113,7 +113,7 @@ signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
 			return 99;
 		}
 		/* test unsuccessful */
-		if (ax > tmp) {
+		if (tmp > ax) {
 			D1_INFO(" (%d) -> nicht bestanden\n", tmp);
 			return 0;
 		}
