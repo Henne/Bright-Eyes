@@ -2124,13 +2124,13 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 
 			/* ae */
 			if (c == 0x84)
-				c = 0xff8e;
+				c = (signed short)0xff8e;
 			/* oe */
 			if (c == 0x94)
-				c = 0xff99;
+				c = (signed short)0xff99;
 			/* ue */
 			if (c == 0x81)
-				c = 0xff9a;
+				c = (signed short)0xff9a;
 
 			/* are we at the end of the input field */
 			if (pos == num) {
@@ -2288,7 +2288,7 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 			abs(di - digits * 6) / 2 + ds_readw(0x40bb),
 			lines * 8 + ds_readw(0x40bd) - 2, digits, 0);
 
-		retval = atol(gen_ptr3);
+		retval = (Bit16u)atol(gen_ptr3);
 	} else {
 		action_table = (Bit8u*)&action_input;
 		vsync_or_key(150 * lines);
@@ -2470,7 +2470,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			ds_readw(0x459f) == 1 ||
 			ds_readw(0x459f) == 0x51) {
 			/* has the selection been canceled */
-			retval = 0xffff;
+			retval = -1;
 			r5 = 1;
 			ds_writew(0x4599, 0);
 		}
@@ -3359,7 +3359,7 @@ void new_values()
 	Bit8u *ptr;
 	char name_bak[17];
 	signed char values[8];
-	Bit16u si, di, i, j;
+	Bit16u di, i, j;
 	Bit8s bv1, bv2, bv3;
 
 	/* set variable if hero has a typus */
