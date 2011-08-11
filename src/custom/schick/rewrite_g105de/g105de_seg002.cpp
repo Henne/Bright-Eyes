@@ -33,6 +33,105 @@ static FILE * fd_open_datfile(Bit16u);
 static const Bit16u MAX_PAGES = 11;
 static const Bit16u MAX_TYPES = 13;
 
+struct struct_spelltab {
+	signed char origin;
+	signed char att1;
+	signed char att2;
+	signed char att3;
+	signed char cost;
+};
+
+/* DS:0x0158 */
+static const struct struct_spelltab spelltab[87] = {
+	{ 0, 0, 0, 0, 0},
+	{ 0, 1, 5, 2, -1},
+	{ 1, 1, 5, 3, -1},
+	{ 1, 5, 2, 6, -1},
+	{ 1, 1, 5, 2, -1},
+	{ 3, 0, 1, 2, -1},
+	{ 2, 1, 2, 6, 12},
+	{ 2, 5, 2, 2, 8},
+	{ 0, 0, 2, 2, 8},
+	{ 3, 1, 5, 2, 8},
+	{ 0, 1, 1, 2, -1},
+	{ 0, 0, 0, 2, -1},
+	{ 1, 0, 5, 2, 7},
+	{ 0, 0, 1, 6, 6},
+	{ 1, 1, 5, 2, 5},
+	{ 3, 0, 2, 2, -1},
+	{ 2, 1, 2, 2, 8},
+	{ 0, 0, 1, 2, 6},
+	{ 1, 0, 0, 2, 13},
+	{ 0, 0, 0, 2, 13},
+	{ 0, 0, 0, 2, 11},
+	{ 1, 0, 0, 2, 23},
+	{ 3, 0, 2, 2, 13},
+	{ 1, 0, 0, 2, 15},
+	{ 0, 0, 1, 2, -1},
+	{ 1, 1, 6, 6, 5},
+	{ 2, 5, 4, 6, -1},
+	{ 2, 1, 4, 6, 7},
+	{ 1, 1, 1, 3, -1},
+	{ 1, 1, 3, 6, -1},
+	{ 2, 5, 4, 4, 7},
+	{ 1, 1, 1, 6, -1},
+	{ 2, 1, 4, 6, 5},
+	{ 2, 1, 5, 2, -1},
+	{ 3, 5, 2, 3, -1},
+	{ 1, 1, 1, 2, -1},
+	{ 2, 1, 2, 6, 7},
+	{ 3, 0, 5, 2, -1},
+	{ 2, 1, 5, 3, 5},
+	{ 1, 1, 1, 5, 10},
+	{ 2, 1, 5, 2, 7},
+	{ 2, 1, 1, 5, 5},
+	{ 2, 1, 5, 2, 5},
+	{ 1, 1, 1, 6, -1},
+	{ 2, 1, 5, 2, 5},
+	{ 2, 5, 2, 4, 5},
+	{ 1, 1, 2, 4, 8},
+	{ 3, 1, 2, 4, 6},
+	{ 3, 1, 5, 2, 4},
+	{ 2, 1, 5, 4, 5},
+	{ 1, 0, 1, 6, 5},
+	{ 1, 1, 2, 4, 5},
+	{ 2, 1, 4, 6, -1},
+	{ 1, 1, 4, 3, -1},
+	{ 1, 2, 4, 6, 5},
+	{ 3, 0, 5, 2, 4},
+	{ 1, 0, 5, 2, -1},
+	{ 2, 5, 4, 3, 5},
+	{ 3, 5, 5, 2, 2},
+	{ 1, 0, 1, 2, 11},
+	{ 2, 0, 5, 4, 7},
+	{ 1, 0, 1, 2, 7},
+	{ 2, 5, 4, 6, -1},
+	{ 1, 1, 2, 2, 7},
+	{ 3, 0, 0, 6, 7},
+	{ 2, 1, 2, 3, 7},
+	{ 2, 1, 2, 4, 7},
+	{ 2, 1, 5, 2, 7},
+	{ 2, 1, 2, 6, 7},
+	{ 1, 1, 1, 2, 7},
+	{ 2, 0, 1, 2, 7},
+	{ 1, 1, 4, 6, -1},
+	{ 1, 5, 2, 6, 13},
+	{ 1, 1, 5, 2, -1},
+	{ 2, 0, 1, 6, -1},
+	{ 2, 1, 1, 4, -1},
+	{ 2, 1, 1, 3, 5},
+	{ 2, 1, 2, 6, 5},
+	{ 1, 0, 1, 6, -1},
+	{ 1, 1, 3, 6, -1},
+	{ 0, 1, 1, 3, 3},
+	{ 1, 0, 1, 6, -1},
+	{ 2, 1, 1, 3, 1},
+	{ 1, 0, 1, 6, -1},
+	{ 2, 1, 1, 2, -1},
+	{ 2, 1, 2, 6, 5},
+	{ -1, 0, 0, 0, 0},
+};
+
 /* DS:0x030b */
 static const signed short house_spells[][8] = {
 	/* Antimagie */
@@ -4989,18 +5088,18 @@ void inc_spell(Bit16u spell)
 	Bit16u max_incs = 1;
 
 	/* if typus == warlock and the origin of the spell is warlock */
-	if (ds_readb(0x134d) == 7 && ds_readb(0x158 + spell * 5) == 3)
+	if (ds_readb(0x134d) == 7 && spelltab[spell].origin == 3)
 		max_incs = 2;
 	/* if typus == elf and the origin of the spell is elven */
-	if (ds_readb(0x134d) >= 10 && ds_readb(0x158 + spell * 5) == 2)
+	if (ds_readb(0x134d) >= 10 && spelltab[spell].origin == 2)
 		max_incs = 2;
 	/* if typus == druid and the origin of the spell is druid */
-	if (ds_readb(0x134d) == 8 && ds_readb(0x158 + spell * 5) == 0)
+	if (ds_readb(0x134d) == 8 && spelltab[spell].origin == 0)
 		max_incs = 2;
 	/* if typus == mage */
 	if (ds_readb(0x134d) == 9) {
 		/* and the origin of the spell is mage */
-		if (ds_readb(0x158 + spell * 5) == 1)
+		if (spelltab[spell].origin == 1)
 			max_incs = 2;
 
 		Bit8u *array = (Bit8u*)house_spells[ds_readb(0x14c0)];
