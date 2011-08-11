@@ -85,14 +85,10 @@ signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
 
 	/* special test if skill is a range weapon skill */
 	if ((skill == 7) || (skill == 8)) {
-		/* add current and max attributes together */
-		ax = host_readb(hero + 0x38);
-		ax += host_readb(hero + 0x39);
-		ax += host_readb(hero + 0x41);
-		ax += host_readb(hero + 0x42);
-		ax += host_readb(hero + 0x47);
-		ax += host_readb(hero + 0x48);
-
+		/* add boni and current attributes together */
+		ax = host_readb(hero + 0x38) + host_readb(hero + 0x39);
+		ax += host_readb(hero + 0x41) + host_readb(hero + 0x42);
+		ax += host_readb(hero + 0x47) + host_readb(hero + 0x48);
 		ax = ax / 4;
 
 		/* add skill value */
