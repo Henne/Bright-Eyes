@@ -597,10 +597,7 @@ static Bit8u* ptr_def_action = (Bit8u*)&action_default;
 /* DS:0x1276 */
 static Bit8u *action_table;
 
-/* DS:0x1329 */
-static const Bit16u ro_zero = 0;
-
-/* DS:0x137a */
+/* DS:0x127a */
 static const struct mouse_action action_base[9] = {
 			{ 272, 8, 304, 41, 0xfd},	/* credits */
 			{ 305, 7, 319, 21, 0x60},	/* change sex */
@@ -611,13 +608,13 @@ static const struct mouse_action action_base[9] = {
 			{ 284, 178, 303, 192, 0x4d},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
-/* DS:0x13d4 */
+/* DS:0x12d4 */
 static const struct mouse_action action_skills[4] = {
 			{ 145, 178, 164, 192, 0x4b},	/* previous page */
 			{ 284, 178, 303, 192, 0x4d},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
-/* DS:0x13fc */
+/* DS:0x12fc */
 static const struct mouse_action action_spells[4] = {
 			{ 16, 178, 35, 192, 0x4b},	/* previous page */
 			{ 284, 178, 303, 192, 0x4d},	/* next page */
@@ -626,6 +623,9 @@ static const struct mouse_action action_spells[4] = {
 
 /* DS:0x1324 */
 static Bit16s gen_page;
+
+/* DS:0x1329 */
+static const Bit16u ro_zero = 0;
 
 /* DS:0x1a09 */
 static bool use_cda;
