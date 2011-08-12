@@ -3,6 +3,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 
+#include "hero.h"
+
 #include "regs.h"
 #include "paging.h"
 #include "callback.h"
@@ -626,6 +628,9 @@ static Bit16s gen_page;
 
 /* DS:0x1329 */
 static const Bit16u ro_zero = 0;
+
+/* DS:0x132c */
+static struct struct_hero hero;
 
 /* DS:0x1a09 */
 static bool use_cda;
@@ -6333,6 +6338,13 @@ void restore_mouse_isr()
 int main_gen(int argc, char **argv)
 {
 	Bit16u sound_off = 0;
+
+
+	if (sizeof(struct struct_hero) != 0x6da) {
+		D1_ERR("Error: sizeof(struct_hero) == 0x%x != 0x6da\n",
+			sizeof(struct struct_hero));
+		exit(1);
+	}
 
 	if (argc > 1)
 		ds_writew(0x3f60, 1);
