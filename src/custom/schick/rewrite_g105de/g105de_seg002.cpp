@@ -380,6 +380,178 @@ static const signed char skills[13][52] = {
 	}
 };
 
+/* DS:0x06db */
+static const signed char spells[6][86] = {
+	/* Hexer/ Warlock*/
+	{
+		/* DUMMY */
+		0,
+		/* Antimagie / Dispel */
+		-4, -10, -9, -7, -5,
+		/* Beherrschung / Domination */
+		-6, -10, -6, 1, -8, -8, -10, -15, -6, 2, -6, -12,
+		/* Dämonologie / Demonology */
+		-12, -7, -5, -10, 2, -15,
+		/* Elemente / Elements */
+		-18, -15, -10,
+		/* Bewegung /Movement */
+		-8, -6, -6, -5, -18, -15,
+		/* Heilung / Healing */
+		-8, 5, -8, -10, 3,
+		/* Hellsicht / Clairvoyance */
+		-4, -10, -4, 0, -1, -8, -5,
+		/* Illusion */
+		-7, -6, 2, 0,
+		/* Kampf / Fight */
+		0, -12, -8, -10, -10, -10, 2, -15, -8,
+		/* Verständigung / Communication */
+		5, -8,
+		/* Verwandlung / Transformation */
+		-7, -3, -8, 0, 2, 0, -3, 1, -3, -1, -3, -19, -15, -12, -10, -10,
+		/* Veränderung / Transmutation */
+		-4, -4, -10, -8, -5, -10, 0, -10, -6, -12, },
+	/* Druide/ Druid*/
+	{
+		/* DUMMY */
+		0,
+		/* Antimagie / Dispel */
+		2, -10, -8, -9, -12,
+		/* Beherrschung / Domination */
+		-6, -10, 3, -6, 2, 2, -6, -4, -4, -8, -8, 1,
+		/* Dämonologie / Demonology */
+		-10, -3, -2, -12, -8, -12,
+		/* Elemente / Elements */
+		-15, -15, -12,
+		/* Bewegung /Movement */
+		-10, -8, -12, -5, -19, -15,
+		/* Heilung / Healing */
+		-8, -19, -6, -10, -8,
+		/* Hellsicht / Clairvoyance */
+		-4, -10, -10, -4, -3, -8, -8,
+		/* Illusion */
+		-7, -6, -6, -10,
+		/* Kampf / Fight */
+		1, -8, -3, -8, -12, -7, -19, -10, -8,
+		/* Verständigung / Communication */
+		-19, -6,
+		/* Verwandlung / Transformation */
+		-8, -8, -8, -5, -6, 0, -3, 0, -3, -3, -1, -18, -15, -15, -10, -12,
+		/* Veränderung / Transmutation */
+		-6, -4, -8, -8, -1, -8, 0, -8, -6, -15, },
+	/* Magier/ Magician*/
+	{
+		/* DUMMY */
+		0,
+		/* Antimagie / Dispel */
+		-2, -6, -1, -5, -8,
+		/* Beherrschung / Domination */
+		-6, 0, -6, -9, -12, -10, -2, -10, -2, -10, -3, -15,
+		/* Dämonologie / Demonology */
+		-5, -7, -5, -8, -12, -6,
+		/* Elemente / Elements */
+		-18, -10, -10,
+		/* Bewegung /Movement */
+		-6, 0, -2, -10, -10, -15,
+		/* Heilung / Healing */
+		2, -19, -2, -10, -10,
+		/* Hellsicht / Clairvoyance */
+		-7, -4, -4, -10, 3, 0, 0,
+		/* Illusion */
+		-10, 0, -6, -15,
+		/* Kampf / Fight */
+		2, -6, -2, 0, -3, -1, -19, -3, -4,
+		/* Verständigung / Communication */
+		-19, -6,
+		/* Verwandlung / Transformation */
+		-10, -2, 0, 0, -10, 0, 0, 0, -1, 0, -1, -15, -5, -10, -15, -4,
+		/* Veränderung / Transmutation */
+		-2, 0, -7, 0, -3, -6, 3, -6, -6, -15, },
+	/* Auelf/ Green Elf*/
+	{
+		/* DUMMY */
+		0,
+		/* Antimagie / Dispel */
+		0, -12, -10, -7, -10,
+		/* Beherrschung / Domination */
+		-4, 4, -10, -9, -10, -5, -12, -15, -6, -4, -1, -15,
+		/* Dämonologie / Demonology */
+		-12, -8, -6, -15, -12, -19,
+		/* Elemente / Elements */
+		-19, -13, -8,
+		/* Bewegung /Movement */
+		-2, -6, -6, -2, -15, -7,
+		/* Heilung / Healing */
+		5, -19, -4, -3, -2,
+		/* Hellsicht / Clairvoyance */
+		2, -10, 2, 1, 3, -2, 2,
+		/* Illusion */
+		-1, -8, -6, -15,
+		/* Kampf / Fight */
+		4, -10, -4, 4, -10, -7, -19, -8, -2,
+		/* Verständigung / Communication */
+		-19, -10,
+		/* Verwandlung / Transformation */
+		-6, -4, 4, -1, -8, 2, 0, 1, -1, -1, 0, -19, -15, -15, -2, 2,
+		/* Veränderung / Transmutation */
+		-2, 1, -10, -5, -5, -10, 5, -10, 0, -6, },
+	/* Firnelf/ Ice Elf*/
+	{
+		/* DUMMY */
+		0,
+		/* Antimagie / Dispel */
+		-2, -16, -11, -9, -12,
+		/* Beherrschung / Domination */
+		-2, 0, -10, -9, -10, -7, -12, -15, -6, -4, 0, -15,
+		/* Dämonologie / Demonology */
+		-15, -10, -8, -19, -12, -19,
+		/* Elemente / Elements */
+		-19, -12, -4,
+		/* Bewegung /Movement */
+		-2, -8, -4, -2, -12, -2,
+		/* Heilung / Healing */
+		2, -19, -4, 1, -2,
+		/* Hellsicht / Clairvoyance */
+		1, -10, -2, 2, -1, -2, 1,
+		/* Illusion */
+		0, -8, -8, -15,
+		/* Kampf / Fight */
+		4, -12, -6, 0, -10, -7, -19, -6, -1,
+		/* Verständigung / Communication */
+		-19, -8,
+		/* Verwandlung / Transformation */
+		-5, -4, 2, -1, -12, 1, 0, 1, 0, -1, 1, -19, -15, -15, -4, 1,
+		/* Veränderung / Transmutation */
+		-4, 3, -10, -7, -7, -10, 6, -10, -4, -2, },
+	/* Waldelf/ Silvan Elf*/
+	{
+		/* DUMMY */
+		0,
+		/* Antimagie / Dispel */
+		-1, -14, -10, -8, -11,
+		/* Beherrschung / Domination */
+		0, 2, -10, -9, -10, -5, -12, -15, -6, -2, 1, -15,
+		/* Dämonologie / Demonology */
+		-15, -9, -7, -19, -12, -19,
+		/* Elemente / Elements */
+		-19, -14, -8,
+		/* Bewegung /Movement */
+		2, -7, -5, -1, -15, -7,
+		/* Heilung / Healing */
+		4, -19, -4, -1, 0,
+		/* Hellsicht / Clairvoyance */
+		1, -10, 0, 3, 1, -4, -1,
+		/* Illusion */
+		2, -8, -7, -15,
+		/* Kampf / Fight */
+		5, -11, -5, 2, -10, -7, -19, -7, 0,
+		/* Verständigung / Communication */
+		-19, -9,
+		/* Verwandlung / Transformation */
+		-4, -4, 3, -1, -8, 1, 0, 2, -1, -1, 0, -19, -15, -15, -4, 1,
+		/* Veränderung / Transmutation */
+		0, 1, -10, -6, -6, -10, 5, -10, -2, -6, },
+};
+
 /* DS:0x08df */
 static const unsigned short init_le[MAX_TYPES + 1] = {	0,
 						30, 30, 30, 30, 30, 40,
@@ -3257,11 +3429,7 @@ void fill_values()
 	if (typus >= 7) {
 		/* fill initial spell values */
 		for (i = 0; i < 86; i++) {
-			Bit8s sval;
-
-			/* get spell value from a char[13][86] */
-			sval = ds_readb(0x481 + typus * 86 + i);
-			ds_writeb(0x1469 + i, sval);
+			ds_writeb(0x1469 + i, spells[typus - 7][i]);
 
 			/* set spell_incs and spell_tries to zero */
 			spell_incs[i].incs = 0;
