@@ -171,7 +171,7 @@ static const struct struct_school_tab school_tab[] = {
 };
 
 /* DS:0x0437 */
-static const signed char skilltab[13][52] = {
+static const signed char skills[13][52] = {
 	/* DUMMY */
 	{},
 	/* Gaukler/ Jester*/
@@ -3243,7 +3243,7 @@ void fill_values()
 	/* fill skill values */
 	for (i = 0; i < 52; i++) {
 
-		ds_writeb(0x1434 + i, skilltab[typus][i]);
+		ds_writeb(0x1434 + i, skills[typus][i]);
 
 		/* set skill_incs and skill_tries to zero */
 		skill_incs[i].incs = 0;
