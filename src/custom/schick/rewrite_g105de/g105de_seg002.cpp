@@ -158,7 +158,7 @@ struct struct_school_tab {
 	unsigned short first_spell;
 	unsigned short spells;
 };
-static struct struct_school_tab school_tab[] = {
+static const struct struct_school_tab school_tab[] = {
 	{0x01, 0x05},
 	{0x06, 0x0c},
 	{0x12, 0x09},
