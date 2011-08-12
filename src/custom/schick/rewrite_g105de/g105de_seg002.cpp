@@ -170,6 +170,216 @@ static struct struct_school_tab school_tab[] = {
 	{0x4c, 0x0a},
 };
 
+/* DS:0x0437 */
+static const signed char skilltab[13][52] = {
+	/* DUMMY */
+	{},
+	/* Gaukler/ Jester*/
+	{
+		/* Kampf / Combat */
+		4, 1, 3, 1, 0, 1, -2, 0, 3,
+		/* Körper / Body */
+		5, 5, 5, 3, 4, 1, 0, 5, 4, 2,
+		/* Gesellschaft / Social */
+		-4, 2, 1, 3, 4, 2, 2,
+		/* Natur / Nature */
+		-3, 5, -1, -3, -2, -3,
+		/* Handwerk / Craftsmanship */
+		0, -4, 3, -4, 1, -6, -2, -2, 2,
+		/* Wissen / Lore */
+		3, 0, 4, 0, 0, 2, 4, 2, 2,
+		/* Intuition */
+		1, 1
+	},
+	/* Jäger/ Hunter*/
+	{
+		/* Kampf / Combat */
+		3, 2, 1, 1, 1, 4, -4, 5, 3,
+		/* Körper / Body */
+		-1, 2, 3, 1, 6, 4, 4, -1, 5, 3,
+		/* Gesellschaft / Social */
+		-3, -3, -1, -3, 0, 0, 0,
+		/* Natur / Nature */
+		5, 4, 4, 4, 6, 5,
+		/* Handwerk / Craftsmanship */
+		-5, -3, 2, -4, 0, -4, -1, -3, 1,
+		/* Wissen / Lore */
+		2, -1, 1, 1, 1, 3, -1, -1, -2,
+		/* Intuition */
+		3, 3
+	},
+	/* Krieger/ Warrior*/
+	{
+		/* Kampf / Combat */
+		4, 4, 1, 6, 2, 3, 4, 3, 3,
+		/* Körper / Body */
+		0, 1, 3, 4, 0, 2, 4, 0, -1, 3,
+		/* Gesellschaft / Social */
+		-4, -2, -1, 0, 0, 0, 0,
+		/* Natur / Nature */
+		-1, -2, 1, -3, -2, 2,
+		/* Handwerk / Craftsmanship */
+		-5, -1, 1, 2, 3, 3, 2, 0, 0,
+		/* Wissen / Lore */
+		-2, 0, 0, -1, 0, 2, 0,	0, -2,
+		/* Intuition */
+		0, 0
+	},
+	/* Streuner/ Rogue*/
+	{
+		/* Kampf / Combat */
+		4, 2, 4, 1, 1, 1, -2, -2, 3,
+		/* Körper / Body */
+		1, 3, 4, 1, 4, 0, 1, 2, 4, 3,
+		/* Gesellschaft / Social */
+		2, 4, 3, 7, 5, 3, 3,
+		/* Natur / Nature */
+		-2, 2, 0, -2, -2, -2,
+		/* Handwerk / Craftsmanship */
+		-2, -2, 0, -3, 2, -4, -1, -2, 2,
+		/* Wissen / Lore */
+		-3, 0, 6, 3, 1, 3, 1, 4, 5,
+		/* Intuition */
+		3, 2
+	},
+	/* Thorwaler/ Thorwalian*/
+	{
+		/* Kampf / Combat */
+		4, 3, 0, 1, 4, 2, 2, -3, 2,
+		/* Körper / Body */
+		-1, 3, 2, -1, -1, 5, 4, 0, -2, 6,
+		/* Gesellschaft / Social */
+		-4, 0, -2, -2, -1, 0, 0,
+		/* Natur / Nature */
+		-5, 3, 4, -4, -2, -2,
+		/* Handwerk / Craftsmanship */
+		-4, -1, 2, 0, 2, 0, 1, -3, 1,
+		/* Wissen / Lore */
+		-4, -2, 0, -1, 1, 2, 1,	0, -2,
+		/* Intuition */
+		-3, 2
+	},
+	/* Zwerg/ Dwarf*/
+	{
+		/* Kampf / Combat */
+		3, 3, 0, 2, 4, 3, 1, 2, 2,
+		/* Körper / Body */
+		-2, 4, 1, -5, 0, -5, 5, -4, 3, 5,
+		/* Gesellschaft / Social */
+		-5, -2, 0, -4, -2, -3, 5,
+		/* Natur / Nature */
+		0, 2, 1, 0, -3, 0,
+		/* Handwerk / Craftsmanship */
+		2, 2, -2, 3, 0, 1, 1, 0, -2,
+		/* Wissen / Lore */
+		-3, 0, 0, 2, 3, 3, -1, 3, 0,
+		/* Intuition */
+		2, 4
+	},
+	/* Hexer/ Warlock*/
+	{
+		/* Kampf / Combat */
+		1, 0, 2, -5, -5, 2, -6, 0, 2,
+		/* Körper / Body */
+		-2, 0, 2, -1, 2, 1, 4, 4, 2, 1,
+		/* Gesellschaft / Social */
+		-2, 4, 2, -2, 3, 2, -1,
+		/* Natur / Nature */
+		2, 2, 2, 5, 3, 2,
+		/* Handwerk / Craftsmanship */
+		0, -2, 0, 0, 1, -6, 0, 2, 0,
+		/* Wissen / Lore */
+		2, -2, 3, 4, 3, 1, 2, 0, -2,
+		/* Intuition */
+		2, 3
+	},
+	/* Druide/ Druid*/
+	{
+		/* Kampf / Combat */
+		1, -3, 0, -7, -6, 2, -7, 1, 1,
+		/* Körper / Body */
+		-2, 2, 0, -1, 3, 1, 4, -2, 0, 1,
+		/* Gesellschaft / Social */
+		-7, -3, 0, -2, 2, 1, 0,
+		/* Natur / Nature */
+		2, 2, 2, 5, 4, 3,
+		/* Handwerk / Craftsmanship */
+		0, -4, 1, 2, 1, -4, 0, 4, 0,
+		/* Wissen / Lore */
+		2, -2, -1, 3, 4, 2, 0,-2, -4,
+		/* Intuition */
+		2, 3
+	},
+	/* Magier/ Magician*/
+	{
+		/* Kampf / Combat */
+		1, 0, 2, -4, -5, 3, -5, -3, 0,
+		/* Körper / Body */
+		-3, 1, 0, 1, 0, 0, 2, -1, 0, 1,
+		/* Gesellschaft / Social */
+		-2, 0, 1, 0, 3, 2, 1,
+		/* Natur / Nature */
+		-5, 0, -2, 3, -2, -4,
+		/* Handwerk / Craftsmanship */
+		6, 4, 0, 3, 3, -4, 6, 7, 6,
+		/* Wissen / Lore */
+		-2, 0, 0, 2, 2, 2, -2, 0, -2,
+		/* Intuition */
+		1, 3
+	},
+	/* Auelf/ Green Elf*/
+	{
+		/* Kampf / Combat */
+		1, 2, 3, 3, -1, 2, -1, 4, 2,
+		/* Körper / Body */
+		1, 2, 2, 2, 3, 2, 2, 4, 3, -1,
+		/* Gesellschaft / Social */
+		-1, 3, -1, -3, 3, 0, -2,
+		/* Natur / Nature */
+		3, 1, 2, 2, 2, 2,
+		/* Handwerk / Craftsmanship */
+		-5, 2, -1, 1, 0, -5, 1, 3, 2,
+		/* Wissen / Lore */
+		1, 0, 0, 2, 4, 3, 4, -1, -2,
+		/* Intuition */
+		1, 4
+	},
+	/* Firnelf/ Ice Elf*/
+	{
+		/* Kampf / Combat */
+		3, 2, 2, 2, -2, 4, -5, 2, 4,
+		/* Körper / Body */
+		0, 0, 2, -2, 5, 0, 3, 3, 5, 4,
+		/* Gesellschaft / Social */
+		-3, 2, -3, -7, 3, -2, -2,
+		/* Natur / Nature */
+		2, 0, 5, -2, 1, 3,
+		/* Handwerk / Craftsmanship */
+		-7, 2, -4, -2, -2, -5, 0, 1, 0,
+		/* Wissen / Lore */
+		1, 2, 0, 0, 2, 4, 3, -5, -4,
+		/* Intuition */
+		2, 6
+	},
+	/* Waldelf/ Silvan Elf*/
+	{
+		/* Kampf / Combat */
+		2, 3, 3, 3, -1, 3, -3, 4, 2,
+		/* Körper / Body */
+		2, 5, 3, 0, 4, -2, 2, 4, 5, -2,
+		/* Gesellschaft / Social */
+		-1, 2, -2, -6, 3, -1, -2,
+		/* Natur / Nature */
+		4, 1, 3, 4, 2, 4,
+		/* Handwerk / Craftsmanship */
+		-6, 2, -2, -1, -1, -5, 0, 2, 1,
+		/* Wissen / Lore */
+		2, -2, 0, 3, 4, 3, 3, -3, -3,
+		/* Intuition */
+		2, 5
+	}
+};
+
 /* DS:0x08df */
 static const unsigned short init_le[MAX_TYPES + 1] = {	0,
 						30, 30, 30, 30, 30, 40,
@@ -3032,11 +3242,8 @@ void fill_values()
 
 	/* fill skill values */
 	for (i = 0; i < 52; i++) {
-		Bit8s tval;
 
-		/* get skill value from a char[13][52] */
-		tval = ds_readb(0x437 + typus * 52 + i);
-		ds_writeb(0x1434 + i, tval);
+		ds_writeb(0x1434 + i, skilltab[typus][i]);
 
 		/* set skill_incs and skill_tries to zero */
 		skill_incs[i].incs = 0;
