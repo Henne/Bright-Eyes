@@ -30,8 +30,6 @@ struct color_struct {
 	signed char b;
 };
 
-static FILE * fd_open_datfile(Bit16u);
-
 static const Bit16u MAX_PAGES = 11;
 static const Bit16u MAX_TYPES = 13;
 
@@ -974,7 +972,7 @@ static char *get_pwd() {
 namespace G105de {
 
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
-static FILE * fd_open_datfile(Bit16u index);
+static FILE * fd_open_datfile(Bit16u);
 
 void BE_cleanup()
 {
