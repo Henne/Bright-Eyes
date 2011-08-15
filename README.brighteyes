@@ -36,6 +36,8 @@ Improvements and changes to the Original:
 
 I could not resist to fix some Bugs in this early state.
 
+M302de (Main V3.02 german CD - Version):
+
 	Game logic:
 		* broken item counters will be corrected
 		* the schedule for ships was broken
@@ -46,6 +48,10 @@ I could not resist to fix some Bugs in this early state.
 		* You can identify an item more than once in the academy
 	Usability:
 		* If a character has permanent damage LE max is red
+
+G105de (Generation V1.05 german CD - Version):
+		* avoid negative skill-/spell_attempts in novice mode
+
 
 
 Links:

@@ -4053,6 +4053,11 @@ void skill_inc_novice(Bit16u skill)
 			continue;
 		}
 
+		/* Original-Bugfix: add check if skill_attempts are left */
+		if (ds_readb(0x1468) == 0) {
+			done++;
+			continue;
+		}
 		/* decrement counter for skill increments */
 		ds_writeb(0x1468, ds_readb(0x1468) - 1);
 
@@ -4099,6 +4104,11 @@ void spell_inc_novice(Bit16u spell)
 			continue;
 		}
 
+		/* Original-Bugfix: add check if skill_attempts are left */
+		if (ds_readb(0x14bf) == 0) {
+			done++;
+			continue;
+		}
 		/* decrement counter for spell increments */
 		ds_writeb(0x14bf, ds_readb(0x14bf) - 1);
 
