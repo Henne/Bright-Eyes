@@ -24,6 +24,8 @@
 #include "../rewrite_m302de/seg009.h"
 
 
+namespace G105de {
+
 struct color_struct {
 	signed char r;
 	signed char g;
@@ -968,8 +970,6 @@ static char *get_pwd() {
 
 	return path;
 }
-
-namespace G105de {
 
 static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len);
 static FILE * fd_open_datfile(Bit16u);
