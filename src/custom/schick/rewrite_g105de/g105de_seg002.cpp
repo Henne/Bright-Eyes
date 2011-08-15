@@ -618,6 +618,46 @@ static const unsigned short autoskills[13][25] = {
 		13, 10, 14, 28, 46, 15, 17, 7, 27, 11, 13, 28, 41}
 
 };
+/* DS:0x0e2c */
+static unsigned short autospells[6][45] = {
+	{5, 9, 15, 22, 34, 37, 47, 48,
+	55, 58, 64, 42, 49, 5, 9, 15,
+	22, 34, 37, 47, 48, 55, 58, 64,
+	5, 9, 15, 22, 34, 37, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, },
+	{1, 8, 10, 11, 13, 17, 19, 20,
+	80, 24, 42, 5, 41, 1, 8, 10,
+	11, 13, 17, 19, 20, 80, 24, 1,
+	8, 10, 11, 13, 17, 19, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, },
+	{1, 2, 3, 4, 5, 6, 7, 8,
+	9, 10, 11, 12, 13, 14, 15, 16,
+	17, 18, 19, 20, 21, 22, 23, 24,
+	25, 26, 27, 28, 29, 30, 31, 32,
+	33, 34, 35, 36, 37, 38, 39, 40,
+	41, 42, 43, 44, 45, },
+	{7, 33, 38, 40, 42, 44, 52, 84,
+	62, 74, 75, 82, 49, 27, 7, 33,
+	38, 40, 42, 44, 52, 84, 62, 74,
+	75, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, },
+	{32, 77, 82, 26, 85, 70, 68, 67,
+	65, 45, 49, 38, 32, 77, 82, 26,
+	85, 70, 68, 67, 65, 32, 77, 82,
+	26, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, },
+	{6, 16, 27, 30, 41, 45, 49, 57,
+	76, 60, 62, 52, 38, 6, 16, 27,
+	30, 41, 45, 49, 57, 76, 60, 6,
+	16, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, },
+
+};
 
 /* DS:0x1048 */
 static const signed char head_first_male[12] = {	0, 0, 6, 12,
@@ -3454,7 +3494,7 @@ void calc_at_pa() {
 void fill_values()
 {
 	Bit8u *ptr;
-	Bit16u v2, i;
+	Bit16u i;
 	Bit16u si, di;
 
 	/* helper vars */
@@ -3673,8 +3713,9 @@ void fill_values()
 	/* if mode == novice */
 	if (level == 1) {
 		/* automatic increase skills */
-		for (i = 0; ds_readb(0x1468) > 0; i++) {
-			skill_inc_novice(autoskills[typus][i]);
+		i = 0;
+		while ((signed char)ds_readb(0x1468) > 0) {
+			skill_inc_novice(autoskills[typus][i++]);
 		}
 
 		si = 0;
@@ -3683,46 +3724,45 @@ void fill_values()
 			Bit16u school = ds_readb(0x14c0);
 			/* 1. house spells */
 			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
-				ds_writew(0xe2c + 90 * 2 + si * 2,
-					ds_readw(0xa9d + 1 + school * 29 + i *2));
+				autospells[typus - 7][si] =
+					ds_readw(0xa9d + 1 + school * 29 + i * 2);
 			}
 			/* 2. all schools spells */
 			for (i = 0; school_tab[school].spells > i; si++, i++) {
-				ds_writew(0xe2c + 90 * 2 + si * 2,
-					school_tab[school].first_spell + i);
+				autospells[typus - 7][si] =
+					school_tab[school].first_spell + i;
 			}
 			/* 3. five domination spells */
 				/* Herr der Tiere */
-			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x52);
+			autospells[typus - 7][si++] = 0x52;
 				/* Horriphobus */
-			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x31);
+			autospells[typus - 7][si++] = 0x31;
 				/* Mag. Raub */
-			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x35);
+			autospells[typus - 7][si++] = 0x35;
 				/* Respondami */
-			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x21);
+			autospells[typus - 7][si++] = 0x21;
 				/* Sanftmut */
-			ds_writew(0xe2c + 90 * 2 + si++ * 2, 0x4f);
+			autospells[typus - 7][si++] = 0x4f;
 
 			/* 4. all house spells */
 			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
-				ds_writew(0xe2c + 90 * 2 + si * 2,
-					ds_readw(0xa9d + 1 + school * 29 + i * 2));
+				autospells[typus - 7][si] =
+					ds_readw(0xa9d + 1 + school * 29 + i * 2);
 			}
 			/* 5. all house spells */
 			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
-				ds_writew(0xe2c + 90 * 2 + si * 2,
-					ds_readw(0xa9d + 1 + school * 29 + i * 2));
+				autospells[typus - 7][si] =
+					ds_readw(0xa9d + 1 + school * 29 + i * 2);
 			}
 			/* 6. random spells */
 			while (si < 45) {
-				ds_writew(0xe2c + 90 * 2 + si++ * 2,
-					random_gen(85));
+				autospells[typus - 7][si++] = random_gen(85);
 			}
 		}
 		/* automatic increase spells */
-		for (i = 0; ds_readb(0x14bf) > 0; i++) {
-			v2 = ds_readw(0xe2c + (typus - 7) * 90 + i * 2);
-			spell_inc_novice(v2);
+		i = 0;
+		while ((signed char)ds_readb(0x14bf) > 0) {
+			spell_inc_novice(autospells[typus - 7][i++]);
 		}
 	}
 }
