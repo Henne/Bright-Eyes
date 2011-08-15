@@ -582,6 +582,12 @@ static const unsigned short weight_mod[13] = {
 	120, 110, 100, 110, 100, 90,
 	120, 110, 110, 120, 120, 120
 };
+/* DS:0x093a */
+static const signed char mr_mod[13] = {
+	0,
+	2, 0, 0, 2, -2, 2,
+	2, 2, 2, 3, 4, 3
+};
 
 /* DS:0x1048 */
 static const signed char head_first_male[12] = {	0, 0, 6, 12,
@@ -3554,7 +3560,7 @@ void fill_values()
 		(ds_readb(0x1363) + ds_readb(0x1360) + ds_readb(0x1353)) / 3 -
 		ds_readb(0x1375) * 2);
 	/* add typus MR Modificator */
-	ds_writeb(0x1392, ds_readb(0x1392) + ds_readb(0x93a + typus));
+	ds_writeb(0x1392, ds_readb(0x1392) + mr_mod[typus]);
 
 	/* roll out god */
 	ds_writeb(0x1352, random_gen(12));
