@@ -799,20 +799,23 @@ struct type_bitmap empty_bitmap;
 static char version[] = "V1.05";
 
 /* DS:0x1d49 */
-static struct color_struct col_white = { 0x3f, 0x3f, 0x3f };
+static const struct color_struct col_white = { 0x3f, 0x3f, 0x3f };
 /* DS:0x1d4c */
-static struct color_struct col_black = { 0x00, 0x00, 0x00 };
+static const struct color_struct col_black = { 0x00, 0x00, 0x00 };
 /* DS:0x1d4f */
-static struct color_struct col_popup[8] = {	{ 0x00, 0x00, 0x00 },
+static const struct color_struct col_popup[8] = {
+						{ 0x00, 0x00, 0x00 },
 						{ 0x38, 0x30, 0x28 },
 						{ 0x38, 0x30, 0x10 },
 						{ 0x30, 0x28, 0x0c },
 						{ 0x2c, 0x24, 0x08 },
 						{ 0x28, 0x20, 0x04 },
 						{ 0x18, 0x14, 0x00 },
-						{ 0x0b, 0x19, 0x0c } };
+						{ 0x0b, 0x19, 0x0c }
+};
 /* DS:0x1d67 */
-static struct color_struct col_misc[3] = {	{ 0x28, 0x00, 0x00 },
+static const struct color_struct col_misc[3] = {
+						{ 0x28, 0x00, 0x00 },
 						{ 0x28, 0x28, 0x00 },
 						{ 0x00, 0x00, 0x28 } };
 
@@ -2110,8 +2113,7 @@ void read_common_files()
 
 	/* load POPUP.NVF */
 	fd = fd_open_datfile(19);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8,
-		500);
+	len = fd_read_datfile(fd, Real2Host(ds_readd(0x476d)) - 8, 500);
 	fclose(fd);
 	decomp_pp20(Real2Host(ds_readd(0x476d)) - 8,
 		Real2Host(ds_readd(0x476d)), NULL, len);
@@ -2123,8 +2125,7 @@ void read_common_files()
 
 	/* load DMENGE.DAT */
 	fd = fd_open_datfile(32);
-	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8,
-		25000);
+	len = fd_read_datfile(fd, Real2Host(ds_readd(0x47a7)) - 8, 25000);
 	fclose(fd);
 	decomp_pp20(Real2Host(ds_readd(0x47a7)) - 8,
 		Real2Host(ds_readd(0x47a7)), NULL, len);
