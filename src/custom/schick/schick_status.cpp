@@ -236,7 +236,6 @@ static void schick_cmp_heros()
 	Bit8u *hero = Real2Host(ds_readd(0xbd34));
 	unsigned short i, j, items;
 
-
 	for (i = 0; i < 7; i++, hero += 0x6da) {
 
 		if (host_readb(hero + 0x21) == 0)
@@ -258,6 +257,21 @@ static void schick_cmp_heros()
 			host_readb(hero + 0x20), items);
 
 		host_writeb(hero + 0x20, items);
+	}
+
+	hero = Real2Host(ds_readd(0xbd34));
+	for (i = 0; i < 7; i++, hero += 0x6da) {
+		/* check for invalid skill_attempts */
+		if ((signed char)host_readb(hero + 0x13c) < 0) {
+			D1_ERR("Original-Bug: %s hat negative Talentsteigerungen\n", (char*)(hero + 0x10));
+			host_writeb(hero + 0x13c, 0);
+		}
+
+		/* check for invalid spell_attempts */
+		if ((signed char)host_readb(hero + 0x193) < 0) {
+			D1_ERR("Original-Bug: %s hat negative Talentsteigerungen\n", (char*)(hero + 0x10));
+			host_writeb(hero + 0x193, 0);
+		}
 	}
 }
 
