@@ -574,7 +574,14 @@ static const struct minmax height_range[13] = {	{0, 0},
 						{167, 210},	{130, 140},
 						{154, 188},	{154, 188},
 						{164, 197},	{170, 204},
-						{160, 194},	{170, 210} };
+						{160, 194},	{170, 210}
+};
+/* DS:0x092d */
+static const unsigned short weight_mod[13] = {
+	0,
+	120, 110, 100, 110, 100, 90,
+	120, 110, 110, 120, 120, 120
+};
 
 /* DS:0x1048 */
 static const signed char head_first_male[12] = {	0, 0, 6, 12,
@@ -3532,7 +3539,7 @@ void fill_values()
 				height_range[typus].max));
 
 	/* calculate weight i = (height - weight_mod) * 40 */
-	ds_writew(0x1350, (ds_readb(0x134f) - ds_readb(0x92d + typus)) * 40);
+	ds_writew(0x1350, (ds_readb(0x134f) - weight_mod[typus]) * 40);
 
 	/* roll out the money */
 	i = random_gen(20);
