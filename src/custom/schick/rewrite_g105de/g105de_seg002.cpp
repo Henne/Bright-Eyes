@@ -967,6 +967,7 @@ static void update_hero_out()
 	hero_writeb(0x134f, hero.height);
 	hero_writew(0x1350, hero.weight);
 	hero_writeb(0x1352, hero.god);
+	hero_writeb(0x1353, hero.level);
 }
 
 
@@ -3655,7 +3656,7 @@ void fill_values()
 
 	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
 	ds_writeb(0x1392,
-		(ds_readb(0x1363) + ds_readb(0x1360) + ds_readb(0x1353)) / 3 -
+		(ds_readb(0x1363) + ds_readb(0x1360) + hero.level) / 3 -
 		ds_readb(0x1375) * 2);
 	/* add typus MR Modificator */
 	ds_writeb(0x1392, ds_readb(0x1392) + mr_mod[hero.typus]);
@@ -3935,7 +3936,7 @@ void clear_hero() {
 		skill_incs[i].incs = 0;
 	}
 
-	ds_writeb(0x1353, 1);
+	hero.level = 1;
 }
 
 /**
