@@ -962,6 +962,8 @@ static inline void hero_writed(unsigned off, int v)
 
 static void update_hero_out()
 {
+	unsigned long i;
+
 	hero_writeb(0x134d, hero.typus);
 	hero_writeb(0x134e, hero.sex);
 	hero_writeb(0x134f, hero.height);
@@ -976,6 +978,9 @@ static void update_hero_out()
 	hero_writew(0x1390, hero.ae_max);
 	hero_writeb(0x1392, hero.mr);
 	hero_writeb(0x1393, hero.atpa);
+
+	for (i = 0; i < 7; i++)
+		hero_writeb(0x1394 + i, hero.at[i]);
 }
 
 
@@ -3496,14 +3501,14 @@ void calc_at_pa() {
 	for (i = 0; i < 7; i++) {
 		/* set the weapon values to base */
 		ds_writeb(0x139b + i, base);
-		ds_writeb(0x1394 + i, base);
+		hero.at[i] = base;
 
 		if ((signed char)ds_readb(0x1434 + i) < 0) {
 			/* calculate ATPA for negative weapon skill */
 			tmp = abs((signed char)ds_readb(0x1434 + i)) / 2;
 
 			/* sub skill / 2 from AT */
-			ds_writeb(0x1394 + i, ds_readb(0x1394 + i) - tmp);
+			hero.at[i] -= tmp;
 
 			/* sub skill / 2 from PA */
 			ds_writeb(0x139b + i, ds_readb(0x139b + i) - tmp);
@@ -3516,14 +3521,14 @@ void calc_at_pa() {
 			tmp = abs((signed char)ds_readb(0x1434 + i)) / 2;
 
 			/* add skill / 2 to AT */
-			ds_writeb(0x1394 + i, ds_readb(0x1394 + i) + tmp);
+			hero.at[i] += tmp;
 
 			/* add skill / 2 to PA */
 			ds_writeb(0x139b + i, ds_readb(0x139b + i) + tmp);
 
 			/* if skill % 2, then increment AT */
 			if (ds_readb(0x1434 + i) != tmp * 2)
-				ds_writeb(0x1394 + i, ds_readb(0x1394 + i) + 1);
+				hero.at[i]++;
 		}
 
 	}
@@ -4109,10 +4114,10 @@ void skill_inc_novice(Bit16u skill)
 				continue;
 
 			/* set increment the lower AT/PA value */
-			if (ds_readb(0x1394 + skill) > ds_readb(0x139b + skill))
+			if (hero.at[skill] > ds_readb(0x139b + skill))
 				ds_writeb(0x139b + skill, ds_readb(0x139b + skill) + 1);
 			else
-				ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
+				hero.at[skill]++;
 		} else
 			/* inc tries for that skill */
 			skill_incs[skill].tries++;
@@ -4964,8 +4969,7 @@ void print_values()
 
 			for (i = 0; i < 7; i++) {
 				/* print AT value */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1394 + i));
+				sprintf(tmp, "%d", hero.at[i]);
 
 				print_str(tmp, 237 - get_str_width(tmp),
 					i * 12 + 48);
@@ -5369,12 +5373,12 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 		/* check if we have a melee attack skill */
 		if (skill <= 6) {
 			/* check if AT > PA */
-			if ((signed char)ds_readb(0x1394 + skill) > (signed char)ds_readb(0x139b + skill)) {
+			if (hero.at[skill] > (signed char)ds_readb(0x139b + skill)) {
 				/* inc PA */
 				ds_writeb(0x139b + skill, ds_readb(0x139b + skill) + 1);
 			} else {
 				/* inc AT */
-				ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
+				hero.at[skill]++;
 			}
 		}
 	} else {
@@ -5962,7 +5966,7 @@ void choose_atpa()
 						if ((signed char)ds_readb(0x1434 > 0) ||
 							ds_readb(0x139b + skill) > hero.atpa) {
 							/* inc AT */
-							ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
+							hero.at[skill]++;
 							/* dec PA */
 							ds_writeb(0x139b + skill, ds_readb(0x139b + skill) - 1);
 							refresh_screen();
@@ -5971,9 +5975,9 @@ void choose_atpa()
 						}
 					} else {
 						if ((signed char)ds_readb(0x1434 > 0) ||
-							ds_readb(0x1394 + skill) > hero.atpa) {
+							hero.at[skill] > hero.atpa) {
 							/* dec AT */
-							ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) - 1);
+							hero.at[skill]--;
 							/* inc PA */
 							ds_writeb(0x139b + skill, ds_readb(0x139b + skill) + 1);
 							refresh_screen();
