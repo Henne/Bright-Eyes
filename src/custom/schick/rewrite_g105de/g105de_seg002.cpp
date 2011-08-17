@@ -937,6 +937,34 @@ static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
 Bit8u *gen_ptr1;
 Bit8u *gen_ptr1_dis;
 
+/* New variables */
+
+/*	This is the pointer to the buffer,
+	where the hero is stored in little endian.
+	This is neccessary to support Big Endian machines.
+*/
+static Bit8u *hero_out;
+
+static inline void hero_writeb(unsigned off, char v)
+{
+	host_writeb(hero_out + off - 0x132c, v);
+}
+
+static inline void hero_writew(unsigned off, short v)
+{
+	host_writew(hero_out + off - 0x132c, v);
+}
+
+static inline void hero_writed(unsigned off, int v)
+{
+	host_writed(hero_out + off - 0x132c, v);
+}
+
+static void update_hero_out()
+{
+}
+
+
 static void prepare_path(char *p)
 {
 	while (*p) {
@@ -2008,7 +2036,9 @@ void save_chr()
 
 	if (fd) {
 		/* write the CHR file to the current directory */
-		fwrite(MemBase + PhysMake(datseg, 0x132c), 1, 1754, fd);
+		hero_out = MemBase + PhysMake(datseg, 0x132c);
+		update_hero_out();
+		fwrite(hero_out, 1, 1754, fd);
 		fclose(fd);
 
 		/* save it to the TEMP dir if called from with arguments */
@@ -2024,8 +2054,7 @@ void save_chr()
 			free(pwd);
 
 			if (fd) {
-				fwrite(MemBase + PhysMake(datseg, 0x132c),
-					1, 1754, fd);
+				fwrite(hero_out, 1, 1754, fd);
 				fclose(fd);
 			}
 		}
@@ -3281,6 +3310,7 @@ void do_gen()
 							}
 							case 4: {
 								memset(MemBase +PhysMake(datseg, 0x132c), 0, 1754);
+								memset(&hero, 0, sizeof(hero));
 								clear_hero();
 								ds_writew(0x4599,
 									1);
@@ -3938,6 +3968,7 @@ void new_values()
 
 	/* clear the hero */
 	memset(MemBase + PhysMake(datseg, 0x132c), 0 , 0x6da);
+	memset(&hero, 0 , sizeof(hero));
 	clear_hero();
 
 	/* restore the sex of the hero */
@@ -6003,6 +6034,7 @@ void choose_typus()
 	strcpy(name_bak, (char*)MemBase + PhysMake(datseg, 0x132c));
 	sex_bak = ds_readb(0x134e);
 	memset(MemBase + PhysMake(datseg, 0x132c), 0, 0x6da);
+	memset(&hero, 0, sizeof(hero));
 	clear_hero();
 	ds_writeb(0x134e, sex_bak);
 	strcpy((char*)MemBase + PhysMake(datseg, 0x132c), name_bak);
