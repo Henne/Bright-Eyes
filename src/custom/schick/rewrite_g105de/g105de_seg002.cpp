@@ -964,6 +964,7 @@ static void update_hero_out()
 {
 	hero_writeb(0x134d, hero.typus);
 	hero_writeb(0x134e, hero.sex);
+	hero_writeb(0x134f, hero.height);
 }
 
 
@@ -3636,11 +3637,11 @@ void fill_values()
 	}
 
 	/* roll out size */
-	ds_writeb(0x134f, random_interval_gen(height_range[hero.typus].min,
-				height_range[hero.typus].max));
+	hero.height = random_interval_gen(height_range[hero.typus].min,
+				height_range[hero.typus].max);
 
 	/* calculate weight i = (height - weight_mod) * 40 */
-	ds_writew(0x1350, (ds_readb(0x134f) - weight_mod[hero.typus]) * 40);
+	ds_writew(0x1350, (hero.height - weight_mod[hero.typus]) * 40);
 
 	/* roll out the money */
 	i = random_gen(20);
@@ -4747,8 +4748,7 @@ void print_values()
 				break;
 
 			/* print height */
-			sprintf(gen_ptr2, texts[0x118 / 4], ds_readb(0x134f));
-
+			sprintf(gen_ptr2, texts[0x118 / 4], hero.height);
 			print_str(gen_ptr2, 205, 25);
 
 			/* print weight */
