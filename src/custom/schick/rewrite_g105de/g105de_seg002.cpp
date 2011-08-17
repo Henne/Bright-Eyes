@@ -988,6 +988,7 @@ static void update_hero_out()
 
 	for (i = 0; i < 52; i++)
 		hero_writeb(0x1434 + i, hero.skills[i]);
+	hero_writeb(0x1468, hero.skill_incs);
 }
 
 
@@ -3562,7 +3563,7 @@ void fill_values()
 	}
 
 	/* set skill_attempts */
-	ds_writeb(0x1468, ds_readb(0xa85 + hero.typus - 1));
+	hero.skill_incs = ds_readb(0xa85 + hero.typus - 1);
 
 	/* do magic user init */
 	if (hero.typus >= 7) {
@@ -3622,7 +3623,7 @@ void fill_values()
 				/* change spell attempts */
 				ds_writeb(0x14bf, ds_readb(0x14bf) - i);
 				/* change skill attempts */
-				ds_writeb(0x1468, ds_readb(0x1468) + i);
+				hero.skill_incs += i;
 			} else {
 
 				/* create string */
@@ -3635,7 +3636,7 @@ void fill_values()
 					/* change spell attempts */
 					ds_writeb(0x14bf, ds_readb(0x14bf) + i);
 					/* change skill attempts */
-					ds_writeb(0x1468, ds_readb(0x1468) - i);
+					hero.skill_incs -= i;
 				}
 			}
 		}
@@ -3760,7 +3761,7 @@ void fill_values()
 	if (level == 1) {
 		/* automatic increase skills */
 		i = 0;
-		while ((signed char)ds_readb(0x1468) > 0) {
+		while (hero.skill_incs > 0) {
 			skill_inc_novice(autoskills[hero.typus][i++]);
 		}
 
@@ -4099,12 +4100,12 @@ void skill_inc_novice(Bit16u skill)
 		}
 
 		/* Original-Bugfix: add check if skill_attempts are left */
-		if (ds_readb(0x1468) == 0) {
+		if (hero.skill_incs == 0) {
 			done++;
 			continue;
 		}
 		/* decrement counter for skill increments */
-		ds_writeb(0x1468, ds_readb(0x1468) - 1);
+		hero.skill_incs--;
 
 		/* check if the test is passed */
 		if (random_interval_gen(2, 12) > hero.skills[skill]) {
@@ -4845,7 +4846,7 @@ void print_values()
 
 			/* remaining attempts for skills */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x1468));
+			sprintf(tmp, "%d", hero.skill_incs);
 			print_str(tmp, 271, 184);
 
 			break;
@@ -4890,7 +4891,7 @@ void print_values()
 
 			/* remaining attempts for skills */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x1468));
+			sprintf(tmp, "%d", hero.skill_incs);
 			print_str(tmp, 271, 184);
 
 			break;
@@ -4952,7 +4953,7 @@ void print_values()
 
 			/* remaining attempts for skills */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x1468));
+			sprintf(tmp, "%d", hero.skill_incs);
 			print_str(tmp, 271, 184);
 
 			break;
@@ -5356,7 +5357,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	}
 
 	/* decrement total number of skill inc tries */
-	ds_writeb(0x1468, ds_readb(0x1468) - 1);
+	hero.skill_incs--;
 	if (random_interval_gen(2, 12) > hero.skills[skill]) {
 		/* print sucess message */
 		infobox((Bit8u*)texts[152], 0);
@@ -5395,7 +5396,7 @@ void select_skill()
 	do {
 
 		/* check skill attempts */
-		if (ds_readb(0x1468) == 0) {
+		if (hero.skill_incs == 0) {
 			infobox((Bit8u*)texts[94], 0);
 			return;
 		}
