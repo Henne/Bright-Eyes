@@ -974,6 +974,7 @@ static void update_hero_out()
 	hero_writew(0x138c, hero.le_max);
 	hero_writew(0x138e, hero.ae);
 	hero_writew(0x1390, hero.ae_max);
+	hero_writeb(0x1392, hero.mr);
 }
 
 
@@ -3659,11 +3660,10 @@ void fill_values()
 				host_readw(ptr + si * 6 + 4)) * 10;
 
 	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
-	ds_writeb(0x1392,
-		(ds_readb(0x1363) + ds_readb(0x1360) + hero.level) / 3 -
-		ds_readb(0x1375) * 2);
+	hero.mr = (ds_readb(0x1363) + ds_readb(0x1360) + hero.level) / 3 -
+		ds_readb(0x1375) * 2;
 	/* add typus MR Modificator */
-	ds_writeb(0x1392, ds_readb(0x1392) + mr_mod[hero.typus]);
+	hero.mr += mr_mod[hero.typus];
 
 	/* roll out god */
 	hero.god = random_gen(12);
@@ -4788,7 +4788,7 @@ void print_values()
 
 			/* print MR */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x1392));
+			sprintf(tmp, "%d", hero.mr);
 			print_str(tmp, 232, 184);
 
 			break;
