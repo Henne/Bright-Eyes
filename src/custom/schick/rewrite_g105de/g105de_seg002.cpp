@@ -5441,7 +5441,7 @@ void select_skill()
 							texts[104], texts[105],
 							texts[106], texts[107],
 							texts[108], texts[109],
-							texts[110], texts[112],
+							texts[110], texts[111],
 							texts[112], texts[113]);
 						skill--;
 
