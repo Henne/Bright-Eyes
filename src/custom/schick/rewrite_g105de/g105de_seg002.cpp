@@ -969,6 +969,9 @@ static void update_hero_out()
 	hero_writeb(0x1352, hero.god);
 	hero_writeb(0x1353, hero.level);
 	hero_writed(0x1358, hero.money);
+
+	hero_writew(0x138a, hero.le);
+	hero_writew(0x138c, hero.le_max);
 }
 
 
@@ -3625,8 +3628,7 @@ void fill_values()
 	}
 
 	/* set LE */
-	ds_writew(0x138c, init_le[hero.typus]);
-	ds_writew(0x138a, init_le[hero.typus]);
+	hero.le = hero.le_max = init_le[hero.typus];
 
 	/* set AE */
 	ds_writew(0x1390, init_ae[hero.typus]);
@@ -4769,7 +4771,7 @@ void print_values()
 
 			/* print LE */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", ds_readw(0x138c));
+			sprintf(tmp, "%d", hero.le_max);
 			print_str(tmp, 172, 164);
 
 			/* print AE */
@@ -4780,7 +4782,7 @@ void print_values()
 			/* print Endurance */
 			/* originally it was itoa() */
 			sprintf(tmp, "%d",
-				ds_readw(0x138c) + (signed char)ds_readb(0x1373));
+				hero.le_max + (signed char)ds_readb(0x1373));
 			print_str(tmp, 296, 164);
 
 			/* print MR */

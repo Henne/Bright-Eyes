@@ -34,9 +34,9 @@ struct struct_hero {
 	unsigned char bp_left;
 	struct struct_attribs attribs[14];
 	/* Offset 0x5e */
-	signed short le1;
+	signed short le;
 	/* Offset 0x60 */
-	signed short le2;
+	signed short le_max;
 	signed short ae1;
 	signed short ae2;
 	signed char mr;
