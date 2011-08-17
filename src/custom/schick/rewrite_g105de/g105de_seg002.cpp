@@ -985,6 +985,9 @@ static void update_hero_out()
 		hero_writeb(0x139b + i, hero.pa[i]);
 
 	hero_writeb(0x13b4, hero.group);
+
+	for (i = 0; i < 52; i++)
+		hero_writeb(0x1434 + i, hero.skills[i]);
 }
 
 
@@ -3507,9 +3510,9 @@ void calc_at_pa() {
 		hero.pa[i] = base;
 		hero.at[i] = base;
 
-		if ((signed char)ds_readb(0x1434 + i) < 0) {
+		if (hero.skills[i] < 0) {
 			/* calculate ATPA for negative weapon skill */
-			tmp = abs((signed char)ds_readb(0x1434 + i)) / 2;
+			tmp = abs(hero.skills[i]) / 2;
 
 			/* sub skill / 2 from AT */
 			hero.at[i] -= tmp;
@@ -3518,11 +3521,11 @@ void calc_at_pa() {
 			hero.pa[i] -= tmp;
 
 			/* if skill % 2, then decrement PA */
-			if (abs((signed char)ds_readb(0x1434 + i)) != tmp * 2)
+			if (abs(hero.skills[i]) != tmp * 2)
 				hero.pa[i]--;
 		} else {
 			/* calculate ATPA for positive weapon skill */
-			tmp = abs((signed char)ds_readb(0x1434 + i)) / 2;
+			tmp = abs(hero.skills[i]) / 2;
 
 			/* add skill / 2 to AT */
 			hero.at[i] += tmp;
@@ -3531,7 +3534,7 @@ void calc_at_pa() {
 			hero.pa[i] += tmp;
 
 			/* if skill % 2, then increment AT */
-			if (ds_readb(0x1434 + i) != tmp * 2)
+			if (hero.skills[i] != tmp * 2)
 				hero.at[i]++;
 		}
 
@@ -3551,7 +3554,7 @@ void fill_values()
 	/* fill skill values */
 	for (i = 0; i < 52; i++) {
 
-		ds_writeb(0x1434 + i, skills[hero.typus][i]);
+		hero.skills[i] = skills[hero.typus][i];
 
 		/* set skill_incs and skill_tries to zero */
 		skill_incs[i].incs = 0;
@@ -3689,33 +3692,33 @@ void fill_values()
 		}
 		case 2 : {
 			/* Rondra: skill swords + 1 */
-			ds_writeb(0x1434 + 3, ds_readb(0x1434 + 3) + 1);
+			hero.skills[3]++;
 			break;
 		}
 		case 3 : {
 			/* Efferd: skill swim + 1 */
-			ds_writeb(0x1434 + 14, ds_readb(0x1434 + 14) + 1);
+			hero.skills[14]++;
 			break;
 		}
 		case 4 : {
 			/* Travia: skill treat poison + 1 */
-			ds_writeb(0x1434 + 44, ds_readb(0x1434 + 44) + 1);
+			hero.skills[44]++;
 			break;
 		}
 		case 5 : {
 			/* Boron: skill human nature + 1 */
-			ds_writeb(0x1434 + 24, ds_readb(0x1434 + 24) + 1);
+			hero.skills[24]++;
 			break;
 		}
 		case 6 : {
 			/* Hesinde: skill alchemy + 1 */
-			ds_writeb(0x1434 + 32, ds_readb(0x1434 + 32) + 1);
+			hero.skills[32]++;
 			break;
 		}
 		case 7 : {
 			/* Firun: skills track and missle weapons + 1  */
-			ds_writeb(0x1434 + 26, ds_readb(0x1434 + 26) + 1);
-			ds_writeb(0x1434 + 7, ds_readb(0x1434 + 7) + 1);
+			hero.skills[26]++;
+			hero.skills[7]++;
 			break;
 		}
 		case 8 : {
@@ -3727,26 +3730,26 @@ void fill_values()
 		}
 		case 9 : {
 			/* Phex: skills hide and pickpocket + 1 */
-			ds_writeb(0x1434 + 49, ds_readb(0x1434 + 49) + 1);
-			ds_writeb(0x1434 + 13, ds_readb(0x1434 + 13) + 1);
+			hero.skills[49]++;
+			hero.skills[13]++;
 			break;
 		}
 		case 10 : {
 			/* Peraine: skills treat disease and wounds + 1 */
-			ds_writeb(0x1434 + 45, ds_readb(0x1434 + 45) + 1);
-			ds_writeb(0x1434 + 46, ds_readb(0x1434 + 46) + 1);
+			hero.skills[45]++;
+			hero.skills[46]++;
 			break;
 		}
 		case 11 : {
 			/* Ingerimm: skill tactics + 1*/
-			ds_writeb(0x1434 + 37, ds_readb(0x1434 + 37) + 1);
+			hero.skills[37]++;
 			break;
 		}
 		case 12 : {
 			/* Rhaja: skills dance, seduce and instrument + 1*/
-			ds_writeb(0x1434 + 20, ds_readb(0x1434 + 20) + 1);
-			ds_writeb(0x1434 + 16, ds_readb(0x1434 + 16) + 1);
-			ds_writeb(0x1434 + 47, ds_readb(0x1434 + 47) + 1);
+			hero.skills[20]++;
+			hero.skills[16]++;
+			hero.skills[47]++;
 			break;
 		}
 	}
@@ -4104,9 +4107,9 @@ void skill_inc_novice(Bit16u skill)
 		ds_writeb(0x1468, ds_readb(0x1468) - 1);
 
 		/* check if the test is passed */
-		if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1434 + skill)) {
+		if (random_interval_gen(2, 12) > hero.skills[skill]) {
 			/* increment skill */
-			ds_writeb(0x1434 + skill, ds_readb(0x1434 + skill) + 1);
+			hero.skills[skill]++;
 
 			/* set inc tries for this skill to zero */
 			skill_incs[skill].tries = 0;
@@ -4810,8 +4813,7 @@ void print_values()
 			/* print fight skills */
 			for (i = 0; i < 9; i++) {
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
+				sprintf(tmp, "%d", hero.skills[i]);
 				width = get_str_width(tmp);
 
 				if (i & 1)
@@ -4828,8 +4830,7 @@ void print_values()
 			for (i = 9; i < 19; i++) {
 				pos = i - 9;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
+				sprintf(tmp, "%d", hero.skills[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -4857,8 +4858,7 @@ void print_values()
 			for (i = 19; i < 26; i++) {
 				pos = i - 19;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
+				sprintf(tmp, "%d", hero.skills[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -4875,8 +4875,7 @@ void print_values()
 			for (i = 32; i < 41; i++) {
 				pos = i - 32;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
+				sprintf(tmp, "%d", hero.skills[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -4904,8 +4903,7 @@ void print_values()
 			for (i = 41; i < 50; i++) {
 				pos = i - 41;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
+				sprintf(tmp, "%d", hero.skills[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -4922,8 +4920,7 @@ void print_values()
 			for (i = 26; i < 32; i++) {
 				pos = i - 26;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
+				sprintf(tmp, "%d", hero.skills[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -4940,8 +4937,7 @@ void print_values()
 			for (i = 50; i < 52; i++) {
 				pos = i - 50;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
+				sprintf(tmp, "%d", hero.skills[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -4985,9 +4981,7 @@ void print_values()
 					i * 12 + 48);
 
 				/* print skill value */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1434 + i));
-
+				sprintf(tmp, "%d", hero.skills[i]);
 				print_str(tmp, 315 - get_str_width(tmp),
 					i * 12 + 48);
 			}
@@ -5363,11 +5357,11 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 
 	/* decrement total number of skill inc tries */
 	ds_writeb(0x1468, ds_readb(0x1468) - 1);
-	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1434 + skill)) {
+	if (random_interval_gen(2, 12) > hero.skills[skill]) {
 		/* print sucess message */
 		infobox((Bit8u*)texts[152], 0);
 		/* increment skill */
-		ds_writeb(0x1434 + skill, ds_readb(0x1434 + skill) + 1);
+		hero.skills[skill]++;
 		/* reset tries */
 		skill_incs[skill].tries = 0;
 		/* increment skill increments */
@@ -5960,13 +5954,13 @@ void choose_atpa()
 			texts[99], texts[100], texts[101]) - 1;
 
 		if (skill != 0xfffe) {
-			if ((signed char)ds_readb(0x1434 + skill) > 0) {
+			if (hero.skills[skill] > 0) {
 				increase = gui_radio((Bit8u*)texts[254], 2,
 					texts[75], texts[76]);
 				if (increase != 0xffff) {
 					if (increase == 1) {
 						/* increase attack */
-						if ((signed char)ds_readb(0x1434 > 0) ||
+						if (hero.skills[skill] >= 0 &&
 							hero.pa[skill] > hero.atpa) {
 							/* inc AT */
 							hero.at[skill]++;
@@ -5977,7 +5971,7 @@ void choose_atpa()
 							infobox((Bit8u*)texts[255], 0);
 						}
 					} else {
-						if ((signed char)ds_readb(0x1434 > 0) ||
+						if (hero.skills[skill] >= 0 &&
 							hero.at[skill] > hero.atpa) {
 							/* dec AT */
 							hero.at[skill]--;
