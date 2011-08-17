@@ -3586,8 +3586,7 @@ void fill_values()
 
 		if (di && level == 2 && gui_bool((Bit8u*)texts[269])) {
 			/* create string */
-			sprintf(gen_ptr2,
-				texts[270], di);
+			sprintf(gen_ptr2, texts[270], di);
 
 			i = infobox((Bit8u*)gen_ptr2, 1);
 
@@ -3603,8 +3602,7 @@ void fill_values()
 			} else {
 
 				/* create string */
-				sprintf(gen_ptr2,
-					texts[271], di);
+				sprintf(gen_ptr2, texts[271], di);
 
 				i = infobox((Bit8u*)gen_ptr2, 1);
 				if (i > 0) {
@@ -3993,8 +3991,7 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf(gen_ptr2,
-			texts[46], bv1);
+		sprintf(gen_ptr2, texts[46], bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
@@ -4033,8 +4030,7 @@ void new_values()
 			bv2++;
 		}
 
-		sprintf(gen_ptr2,
-			texts[46], bv1);
+		sprintf(gen_ptr2, texts[46], bv1);
 
 		do {
 			ds_writew(0x1327, 0xffb0);
@@ -4751,28 +4747,21 @@ void print_values()
 				break;
 
 			/* print height */
-			sprintf(gen_ptr2,
-				texts[0x118 / 4], ds_readb(0x134f));
+			sprintf(gen_ptr2, texts[0x118 / 4], ds_readb(0x134f));
 
-			print_str(gen_ptr2,
-				205, 25);
+			print_str(gen_ptr2, 205, 25);
 
 			/* print weight */
-			sprintf(gen_ptr2,
-				texts[0x11c / 4], ds_readw(0x1350));
+			sprintf(gen_ptr2, texts[0x11c / 4], ds_readw(0x1350));
 
-			print_str(gen_ptr2,
-				205, 37);
+			print_str(gen_ptr2, 205, 37);
 
 			/* print god name */
-			print_str(texts[0xe0 / 4 + ds_readb(0x1352)],
-				205, 49);
+			print_str(texts[0xe0 / 4 + ds_readb(0x1352)], 205, 49);
 
 			/* print money */
-			make_valuta_str(gen_ptr2,
-				ds_readd(0x1358));
-			print_str(gen_ptr2,
-				205, 61);
+			make_valuta_str(gen_ptr2, ds_readd(0x1358));
+			print_str(gen_ptr2, 205, 61);
 
 			/* print LE */
 			/* originally it was itoa() */
