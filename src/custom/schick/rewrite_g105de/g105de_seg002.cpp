@@ -3397,7 +3397,7 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) > 2 && ds_readw(0x459f) <= 6 &&
+		if (ds_readw(0x459f) >= 2 && ds_readw(0x459f) <= 6 &&
 			level == 2 && ds_readb(0x134d)) {
 			switch (ds_readw(0x459f)) {
 				case 2: {
