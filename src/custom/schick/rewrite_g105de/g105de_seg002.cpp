@@ -3310,7 +3310,6 @@ void do_gen()
 								break;
 							}
 						}
-					/* TODO: 0x3334 -> 0x33e0 */
 					}
 					break;
 				}
