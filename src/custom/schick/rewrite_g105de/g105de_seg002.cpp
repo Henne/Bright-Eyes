@@ -975,6 +975,7 @@ static void update_hero_out()
 	hero_writew(0x138e, hero.ae);
 	hero_writew(0x1390, hero.ae_max);
 	hero_writeb(0x1392, hero.mr);
+	hero_writeb(0x1393, hero.atpa);
 }
 
 
@@ -3490,7 +3491,7 @@ void calc_at_pa() {
 		base++;
 
 	/* save AT/PA base value */
-	ds_writeb(0x1393, base);
+	hero.atpa = base;
 
 	for (i = 0; i < 7; i++) {
 		/* set the weapon values to base */
@@ -4956,9 +4957,9 @@ void print_values()
 			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
 
 			/* Print base value  2x the same */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x1393));
+			sprintf(tmp, "%d", hero.atpa);
 			print_str(tmp, 231, 30);
-			sprintf(tmp, "%d", (signed char)ds_readb(0x1393));
+			sprintf(tmp, "%d", hero.atpa);
 			print_str(tmp, 268, 30);
 
 			for (i = 0; i < 7; i++) {
@@ -5959,7 +5960,7 @@ void choose_atpa()
 					if (increase == 1) {
 						/* increase attack */
 						if ((signed char)ds_readb(0x1434 > 0) ||
-							ds_readb(0x139b + skill) > ds_readb(0x1393)) {
+							ds_readb(0x139b + skill) > hero.atpa) {
 							/* inc AT */
 							ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) + 1);
 							/* dec PA */
@@ -5970,7 +5971,7 @@ void choose_atpa()
 						}
 					} else {
 						if ((signed char)ds_readb(0x1434 > 0) ||
-							ds_readb(0x1394 + skill) > ds_readb(0x1393)) {
+							ds_readb(0x1394 + skill) > hero.atpa) {
 							/* dec AT */
 							ds_writeb(0x1394 + skill, ds_readb(0x1394 + skill) - 1);
 							/* inc PA */
