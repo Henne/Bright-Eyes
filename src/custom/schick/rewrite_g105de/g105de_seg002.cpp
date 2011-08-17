@@ -972,6 +972,8 @@ static void update_hero_out()
 
 	hero_writew(0x138a, hero.le);
 	hero_writew(0x138c, hero.le_max);
+	hero_writew(0x138e, hero.ae);
+	hero_writew(0x1390, hero.ae_max);
 }
 
 
@@ -3631,15 +3633,14 @@ void fill_values()
 	hero.le = hero.le_max = init_le[hero.typus];
 
 	/* set AE */
-	ds_writew(0x1390, init_ae[hero.typus]);
-	ds_writew(0x138e, init_ae[hero.typus]);
+	hero.ae = hero.ae_max = init_ae[hero.typus];
 
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
 	if (hero.typus == 9 && level == 2 && gui_bool((Bit8u*)texts[268])) {
 		/* change spell_attempts */
 		ds_writeb(0x14bf, ds_readb(0x14bf) - 10);
-		ds_writew(0x1390, random_interval_gen(3, 8) + ds_readw(0x1390));
-		ds_writew(0x138e, ds_readw(0x1390));
+		hero.ae_max = random_interval_gen(3, 8) + hero.ae_max;
+		hero.ae = hero.ae_max;
 	}
 
 	/* roll out size */
@@ -4776,7 +4777,7 @@ void print_values()
 
 			/* print AE */
 			/* originally it was itoa() */
-			sprintf(tmp, "%d", ds_readw(0x1390));
+			sprintf(tmp, "%d", hero.ae_max);
 			print_str(tmp, 221, 164);
 
 			/* print Endurance */

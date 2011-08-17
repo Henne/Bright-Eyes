@@ -37,8 +37,8 @@ struct struct_hero {
 	signed short le;
 	/* Offset 0x60 */
 	signed short le_max;
-	signed short ae1;
-	signed short ae2;
+	signed short ae;
+	signed short ae_max;
 	signed char mr;
 
 	signed char atpa;
