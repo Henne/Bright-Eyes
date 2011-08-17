@@ -963,6 +963,7 @@ static inline void hero_writed(unsigned off, int v)
 static void update_hero_out()
 {
 	hero_writeb(0x134d, hero.typus);
+	hero_writeb(0x134e, hero.sex);
 }
 
 
@@ -3204,11 +3205,11 @@ void change_sex()
 	signed char tmp;
 
 	/* change sex of the hero */
-	ds_writeb(0x134e, ds_readb(0x134e) ^ 1);
+	hero.sex = hero.sex ^ 1;
 
 	/* hero has a typus */
 	if (hero.typus) {
-		if (ds_readb(0x134e) != 0) {
+		if (hero.sex != 0) {
 			/* To female */
 			head_current = head_first_female[head_typus];
 			head_first = head_first_female[head_typus];
@@ -3224,7 +3225,7 @@ void change_sex()
 		return;
 	} else {
 		dst = Real2Phys(ds_readd(0x47cb)) + 7 * 320 + 305;
-		src = Real2Phys(ds_readd(0x4769)) + ds_readb(0x134e) * 256;
+		src = Real2Phys(ds_readd(0x4769)) + hero.sex * 256;
 		draw_mouse_ptr_wrapper();
 		copy_to_screen(src, dst, 16, 16, 0);
 		call_mouse();
@@ -3804,10 +3805,10 @@ void refresh_screen()
 		save_picbuf();
 
 		/* page with base values and hero is not male */
-		if (gen_page == 0 && ds_readb(0x134e) != 0) {
+		if (gen_page == 0 && hero.sex != 0) {
 
 			dst = Real2Phys(ds_readd(0x47d3)) + 7 * 320 + 305;
-			src = Real2Phys(ds_readd(0x4769) + ds_readb(0x134e) * 256);
+			src = Real2Phys(ds_readd(0x4769) + hero.sex * 256);
 
 			copy_to_screen(src, dst, 16, 16, 0);
 		}
@@ -3828,7 +3829,7 @@ void refresh_screen()
 				copy_to_screen(Real2Phys(ds_readd(0x47b3)),
 					dst, 128, 184, 0);
 
-				if (ds_readb(0x134e) != 0) {
+				if (hero.sex != 0) {
 					char *p;
 					p = texts[0x43c / 4 + hero.typus];
 
@@ -3960,7 +3961,7 @@ void new_values()
 	strcpy(name_bak, (char*)MemBase + PhysMake(datseg, 0x132c));
 
 	/* save the sex of the hero */
-	bv3 = ds_readb(0x134e);
+	bv3 = hero.sex;
 
 	/* clear the hero */
 	memset(MemBase + PhysMake(datseg, 0x132c), 0 , 0x6da);
@@ -3968,7 +3969,7 @@ void new_values()
 	clear_hero();
 
 	/* restore the sex of the hero */
-	ds_writeb(0x134e, bv3);
+	hero.sex = bv3;
 
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
@@ -4214,7 +4215,7 @@ void select_typus()
 		if (impossible)
 			continue;
 
-		if (ds_readb(0x134e))
+		if (hero.sex)
 			type_names[possible_types] = texts[271 + i];
 		else
 			type_names[possible_types] = texts[17 + i];
@@ -4280,7 +4281,7 @@ void select_typus()
 	else
 		head_typus = hero.typus;
 
-	if (ds_readb(0x134e)) {
+	if (hero.sex) {
 		head_current = head_first_female[head_typus];
 		head_first = head_first_female[head_typus];
 		head_last = head_first_male[head_typus + 1] - 1;
@@ -6009,7 +6010,7 @@ void choose_typus()
 	if (!gui_bool((Bit8u*)texts[264]))
 		return;
 
-	if (ds_readb(0x134e))
+	if (hero.sex)
 		/* famale typus names */
 		typus_names = 271;
 	else
@@ -6028,11 +6029,11 @@ void choose_typus()
 
 	/* clear the hero area with saved name and sex */
 	strcpy(name_bak, (char*)MemBase + PhysMake(datseg, 0x132c));
-	sex_bak = ds_readb(0x134e);
+	sex_bak = hero.sex;
 	memset(MemBase + PhysMake(datseg, 0x132c), 0, 0x6da);
 	memset(&hero, 0, sizeof(hero));
 	clear_hero();
-	ds_writeb(0x134e, sex_bak);
+	hero.sex = sex_bak;
 	strcpy((char*)MemBase + PhysMake(datseg, 0x132c), name_bak);
 
 	/* set typus */
@@ -6105,7 +6106,7 @@ void choose_typus()
 	else
 		head_typus = hero.typus;
 
-	if (ds_readb(0x134e)) {
+	if (hero.sex) {
 		head_current = head_first_female[head_typus];
 		head_first = head_first_female[head_typus];
 		head_last = head_first_male[head_typus + 1] - 1;
