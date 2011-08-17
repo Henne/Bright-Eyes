@@ -966,6 +966,7 @@ static void update_hero_out()
 	hero_writeb(0x134e, hero.sex);
 	hero_writeb(0x134f, hero.height);
 	hero_writew(0x1350, hero.weight);
+	hero_writeb(0x1352, hero.god);
 }
 
 
@@ -3660,10 +3661,10 @@ void fill_values()
 	ds_writeb(0x1392, ds_readb(0x1392) + mr_mod[hero.typus]);
 
 	/* roll out god */
-	ds_writeb(0x1352, random_gen(12));
+	hero.god = random_gen(12);
 
 	/* add gods boni */
-	switch (ds_readb(0x1352)) {
+	switch (hero.god) {
 		case 1 : {
 			/* Praios: MU + 1 */
 			ds_writeb(0x1360, ds_readb(0x1360) + 1);
@@ -4758,7 +4759,7 @@ void print_values()
 			print_str(gen_ptr2, 205, 37);
 
 			/* print god name */
-			print_str(texts[0xe0 / 4 + ds_readb(0x1352)], 205, 49);
+			print_str(texts[0xe0 / 4 + hero.god], 205, 49);
 
 			/* print money */
 			make_valuta_str(gen_ptr2, ds_readd(0x1358));
