@@ -983,6 +983,8 @@ static void update_hero_out()
 		hero_writeb(0x1394 + i, hero.at[i]);
 	for (i = 0; i < 7; i++)
 		hero_writeb(0x139b + i, hero.pa[i]);
+
+	hero_writeb(0x13b4, hero.group);
 }
 
 
@@ -2005,8 +2007,8 @@ void save_chr()
 	/* copy picture to the character struct */
 	memcpy(MemBase + PhysMake(datseg, 0x1606),
 		Real2Host(ds_readd(0x47d3)), 1024);
-	/* set an unknown value in the character struct */
-	ds_writeb(0x13b4, 1);
+	/* put the hero in the first group */
+	hero.group = 1;
 
 	/* wanna save ? */
 	if (!gui_bool((Bit8u*)texts[3]))
