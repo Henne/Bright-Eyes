@@ -968,6 +968,7 @@ static void update_hero_out()
 	hero_writew(0x1350, hero.weight);
 	hero_writeb(0x1352, hero.god);
 	hero_writeb(0x1353, hero.level);
+	hero_writed(0x1358, hero.money);
 }
 
 
@@ -3651,8 +3652,8 @@ void fill_values()
 	ptr = Real2Host(ds_readd(0xa51 + hero.typus * 4));
 	for (si = 0; host_readw(ptr + si * 6) < i; si++);
 
-	ds_writed(0x1358, random_interval_gen(host_readw(ptr + si * 6 + 2),
-				host_readw(ptr + si * 6 + 4)) * 10);
+	hero.money = random_interval_gen(host_readw(ptr + si * 6 + 2),
+				host_readw(ptr + si * 6 + 4)) * 10;
 
 	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
 	ds_writeb(0x1392,
@@ -4763,7 +4764,7 @@ void print_values()
 			print_str(texts[0xe0 / 4 + hero.god], 205, 49);
 
 			/* print money */
-			make_valuta_str(gen_ptr2, ds_readd(0x1358));
+			make_valuta_str(gen_ptr2, hero.money);
 			print_str(gen_ptr2, 205, 61);
 
 			/* print LE */
