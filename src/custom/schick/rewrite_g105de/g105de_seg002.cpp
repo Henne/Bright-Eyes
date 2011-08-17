@@ -962,6 +962,7 @@ static inline void hero_writed(unsigned off, int v)
 
 static void update_hero_out()
 {
+	hero_writeb(0x134d, hero.typus);
 }
 
 
@@ -1957,7 +1958,7 @@ void save_chr()
 	Bit16u i;
 
 	/* check for typus */
-	if (ds_readb(0x134d) == 0) {
+	if (hero.typus == 0) {
 		infobox((Bit8u*)texts[0x120 / 4], 0);
 		return;
 	}
@@ -3206,7 +3207,7 @@ void change_sex()
 	ds_writeb(0x134e, ds_readb(0x134e) ^ 1);
 
 	/* hero has a typus */
-	if (ds_readb(0x134d)) {
+	if (hero.typus) {
 		if (ds_readb(0x134e) != 0) {
 			/* To female */
 			head_current = head_first_female[head_typus];
@@ -3372,7 +3373,7 @@ void do_gen()
 			enter_name();
 
 		if (ds_readw(0x459f) == 0x48 && gen_page == 0) {
-			if (ds_readb(0x134d) == 0) {
+			if (hero.typus == 0) {
 				infobox((Bit8u*)texts[0x44 / 4], 0);
 			} else {
 				if (head_current < head_last) {
@@ -3385,7 +3386,7 @@ void do_gen()
 		}
 
 		if (ds_readw(0x459f) == 0x50 && gen_page == 0) {
-			if (ds_readb(0x134d) == 0) {
+			if (hero.typus == 0) {
 				infobox((Bit8u*)texts[0x44 / 4], 0);
 			} else {
 				if (head_current > head_first) {
@@ -3398,12 +3399,12 @@ void do_gen()
 		}
 
 		if (ds_readw(0x459f) == 0x4d && level != 1) {
-			if (ds_readb(0x134d) == 0) {
+			if (hero.typus == 0) {
 				infobox((Bit8u*)texts[0x120 / 4], 0);
 			} else {
 				ds_writew(0x11fe, 1);
 
-				if (((ds_readw(0x134d) >= 7) ? 10 : 4) > gen_page)
+				if (((hero.typus >= 7) ? 10 : 4) > gen_page)
 					gen_page++;
 				else
 					gen_page = 0;
@@ -3416,18 +3417,18 @@ void do_gen()
 				gen_page--;
 			} else {
 				if (level != 1) {
-					if (ds_readb(0x134d) == 0) {
+					if (hero.typus == 0) {
 						infobox((Bit8u*)texts[0x120 / 4], 0);
 					} else {
 						ds_writew(0x11fe, 1);
-						gen_page = ds_readb(0x134d) < 7 ? 4 : 10;
+						gen_page = hero.typus < 7 ? 4 : 10;
 					}
 				}
 			}
 		}
 
 		if (ds_readw(0x459f) >= 2 && ds_readw(0x459f) <= 6 &&
-			level == 2 && ds_readb(0x134d)) {
+			level == 2 && hero.typus) {
 			switch (ds_readw(0x459f)) {
 				case 2: {
 					si = 0;
@@ -3449,13 +3450,11 @@ void do_gen()
 					si = 10;
 				}
 			}
-			if (si != gen_page && (si < 5 || ds_readb(0x134d) >= 7))
-			{
+			if (si != gen_page && (si < 5 || hero.typus >= 7)) {
 				gen_page = si;
 				ds_writew(0x11fe, 1);
 			}
 		}
-
 	}
 }
 
@@ -3527,13 +3526,10 @@ void fill_values()
 	Bit16u i;
 	Bit16u si, di;
 
-	/* helper vars */
-	Bit8u typus = ds_readb(0x134d);
-
 	/* fill skill values */
 	for (i = 0; i < 52; i++) {
 
-		ds_writeb(0x1434 + i, skills[typus][i]);
+		ds_writeb(0x1434 + i, skills[hero.typus][i]);
 
 		/* set skill_incs and skill_tries to zero */
 		skill_incs[i].incs = 0;
@@ -3541,20 +3537,20 @@ void fill_values()
 	}
 
 	/* set skill_attempts */
-	ds_writeb(0x1468, ds_readb(0xa85 + typus - 1));
+	ds_writeb(0x1468, ds_readb(0xa85 + hero.typus - 1));
 
 	/* do magic user init */
-	if (typus >= 7) {
+	if (hero.typus >= 7) {
 		/* fill initial spell values */
 		for (i = 0; i < 86; i++) {
-			ds_writeb(0x1469 + i, spells[typus - 7][i]);
+			ds_writeb(0x1469 + i, spells[hero.typus - 7][i]);
 
 			/* set spell_incs and spell_tries to zero */
 			spell_incs[i].incs = 0;
 			spell_incs[i].tries = 0;
 		}
 		/* special mage values */
-		if (typus == 9) {
+		if (hero.typus == 9) {
 			/* set staff spell to level 1 */
 			ds_writeb(0x14c1, 1);
 			/* select mage school */
@@ -3582,10 +3578,10 @@ void fill_values()
 		}
 
 		/* set spell attempts */
-		ds_writeb(0x14bf, ds_readb(0xa91 + typus - 7));
+		ds_writeb(0x14bf, ds_readb(0xa91 + hero.typus - 7));
 
 		/* get convertable increase attempts */
-		di = ds_readb(0xa97 + typus - 7);
+		di = ds_readb(0xa97 + hero.typus - 7);
 
 		if (di && level == 2 && gui_bool((Bit8u*)texts[269])) {
 			/* create string */
@@ -3625,15 +3621,15 @@ void fill_values()
 	}
 
 	/* set LE */
-	ds_writew(0x138c, init_le[typus]);
-	ds_writew(0x138a, init_le[typus]);
+	ds_writew(0x138c, init_le[hero.typus]);
+	ds_writew(0x138a, init_le[hero.typus]);
 
 	/* set AE */
-	ds_writew(0x1390, init_ae[typus]);
-	ds_writew(0x138e, init_ae[typus]);
+	ds_writew(0x1390, init_ae[hero.typus]);
+	ds_writew(0x138e, init_ae[hero.typus]);
 
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
-	if (typus == 9 && level == 2 && gui_bool((Bit8u*)texts[268])) {
+	if (hero.typus == 9 && level == 2 && gui_bool((Bit8u*)texts[268])) {
 		/* change spell_attempts */
 		ds_writeb(0x14bf, ds_readb(0x14bf) - 10);
 		ds_writew(0x1390, random_interval_gen(3, 8) + ds_readw(0x1390));
@@ -3641,15 +3637,15 @@ void fill_values()
 	}
 
 	/* roll out size */
-	ds_writeb(0x134f, random_interval_gen(height_range[typus].min,
-				height_range[typus].max));
+	ds_writeb(0x134f, random_interval_gen(height_range[hero.typus].min,
+				height_range[hero.typus].max));
 
 	/* calculate weight i = (height - weight_mod) * 40 */
-	ds_writew(0x1350, (ds_readb(0x134f) - weight_mod[typus]) * 40);
+	ds_writew(0x1350, (ds_readb(0x134f) - weight_mod[hero.typus]) * 40);
 
 	/* roll out the money */
 	i = random_gen(20);
-	ptr = Real2Host(ds_readd(0xa51 + typus * 4));
+	ptr = Real2Host(ds_readd(0xa51 + hero.typus * 4));
 	for (si = 0; host_readw(ptr + si * 6) < i; si++);
 
 	ds_writed(0x1358, random_interval_gen(host_readw(ptr + si * 6 + 2),
@@ -3660,7 +3656,7 @@ void fill_values()
 		(ds_readb(0x1363) + ds_readb(0x1360) + ds_readb(0x1353)) / 3 -
 		ds_readb(0x1375) * 2);
 	/* add typus MR Modificator */
-	ds_writeb(0x1392, ds_readb(0x1392) + mr_mod[typus]);
+	ds_writeb(0x1392, ds_readb(0x1392) + mr_mod[hero.typus]);
 
 	/* roll out god */
 	ds_writeb(0x1352, random_gen(12));
@@ -3745,54 +3741,54 @@ void fill_values()
 		/* automatic increase skills */
 		i = 0;
 		while ((signed char)ds_readb(0x1468) > 0) {
-			skill_inc_novice(autoskills[typus][i++]);
+			skill_inc_novice(autoskills[hero.typus][i++]);
 		}
 
 		si = 0;
 		/* prepare mage automatic spell list */
-		if (typus == 9) {
+		if (hero.typus == 9) {
 			Bit16u school = ds_readb(0x14c0);
 			/* 1. house spells */
 			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
-				autospells[typus - 7][si] =
+				autospells[hero.typus - 7][si] =
 					ds_readw(0xa9d + 1 + school * 29 + i * 2);
 			}
 			/* 2. all schools spells */
 			for (i = 0; school_tab[school].spells > i; si++, i++) {
-				autospells[typus - 7][si] =
+				autospells[hero.typus - 7][si] =
 					school_tab[school].first_spell + i;
 			}
 			/* 3. five domination spells */
 				/* Herr der Tiere */
-			autospells[typus - 7][si++] = 0x52;
+			autospells[hero.typus - 7][si++] = 0x52;
 				/* Horriphobus */
-			autospells[typus - 7][si++] = 0x31;
+			autospells[hero.typus - 7][si++] = 0x31;
 				/* Mag. Raub */
-			autospells[typus - 7][si++] = 0x35;
+			autospells[hero.typus - 7][si++] = 0x35;
 				/* Respondami */
-			autospells[typus - 7][si++] = 0x21;
+			autospells[hero.typus - 7][si++] = 0x21;
 				/* Sanftmut */
-			autospells[typus - 7][si++] = 0x4f;
+			autospells[hero.typus - 7][si++] = 0x4f;
 
 			/* 4. all house spells */
 			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
-				autospells[typus - 7][si] =
+				autospells[hero.typus - 7][si] =
 					ds_readw(0xa9d + 1 + school * 29 + i * 2);
 			}
 			/* 5. all house spells */
 			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
-				autospells[typus - 7][si] =
+				autospells[hero.typus - 7][si] =
 					ds_readw(0xa9d + 1 + school * 29 + i * 2);
 			}
 			/* 6. random spells */
 			while (si < 45) {
-				autospells[typus - 7][si++] = random_gen(85);
+				autospells[hero.typus - 7][si++] = random_gen(85);
 			}
 		}
 		/* automatic increase spells */
 		i = 0;
 		while ((signed char)ds_readb(0x14bf) > 0) {
-			spell_inc_novice(autospells[typus - 7][i++]);
+			spell_inc_novice(autospells[hero.typus - 7][i++]);
 		}
 	}
 }
@@ -3827,21 +3823,21 @@ void refresh_screen()
 		if (gen_page < 5) {
 			/* draw DMENGE.DAT or the typus name */
 			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
-			if (ds_readb(0x134d) != 0) {
+			if (hero.typus != 0) {
 				need_refresh = true;
 				copy_to_screen(Real2Phys(ds_readd(0x47b3)),
 					dst, 128, 184, 0);
 
 				if (ds_readb(0x134e) != 0) {
 					char *p;
-					p = texts[0x43c / 4 + ds_readb(0x134d)];
+					p = texts[0x43c / 4 + hero.typus];
 
 					print_str(p,
 						get_line_start_c(p, 16, 128),
 						184);
 				} else {
 					char *p;
-					p = texts[0x44 / 4 + ds_readb(0x134d)];
+					p = texts[0x44 / 4 + hero.typus];
 
 					print_str(p,
 						get_line_start_c(p, 16, 128),
@@ -3860,7 +3856,7 @@ void refresh_screen()
 			}
 		}
 		/* if hero has a typus */
-		if (ds_readb(0x134d) != 0) {
+		if (hero.typus != 0) {
 			/* draw the head */
 			char nvf[19];
 			Bit8u *n =  (Bit8u*)nvf;
@@ -3956,7 +3952,7 @@ void new_values()
 	Bit8s bv1, bv2, bv3;
 
 	/* set variable if hero has a typus */
-	if (ds_readb(0x134d))
+	if (hero.typus)
 		ds_writew(0x11fe, 1);
 
 	/* save the name of the hero */
@@ -4182,7 +4178,7 @@ void select_typus()
 		return;
 	}
 	/* save the old typus */
-	old_typus = ds_readb(0x134d);
+	old_typus = hero.typus;
 	/* disable MU bonus */
 	if (got_mu_bonus) {
 		ds_writeb(0x1360, ds_readb(0x1360) - 1);
@@ -4269,20 +4265,20 @@ void select_typus()
 	}
 
 	/* set new typus */
-	ds_writeb(0x134d, t.t[di - 1]);
+	hero.typus = t.t[di - 1];
 	ds_writew(0x11fe, 1);
 
-	load_typus(ds_readb(0x134d));
+	load_typus(hero.typus);
 	draw_mouse_ptr_wrapper();
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
 	call_mouse();
 
-	if (ds_readb(0x134d) == 10)
+	if (hero.typus > 10)
 		head_typus = 10;
 	else
-		head_typus = ds_readb(0x134d);
+		head_typus = hero.typus;
 
 	if (ds_readb(0x134e)) {
 		head_current = head_first_female[head_typus];
@@ -4377,11 +4373,11 @@ void change_attribs()
 		return;
 	}
 	/* if typus != 0 */
-	if (ds_readb(0x134d)) {
+	if (hero.typus) {
 		if (!gui_bool((Bit8u*)texts[73]))
 			return;
 		/* set typus to 0 */
-		ds_writeb(0x134d, 0);
+		hero.typus = 0;
 		/* remove MU boni */
 		if (got_mu_bonus) {
 			ds_writeb(0x1360, ds_readb(0x1360) - 1);
@@ -4750,7 +4746,7 @@ void print_values()
 			print_attribs();
 
 			/* break if no typus */
-			if (ds_readb(0x134d) == 0)
+			if (hero.typus == 0)
 				break;
 
 			/* print height */
@@ -5591,16 +5587,16 @@ void inc_spell(Bit16u spell)
 	Bit16u max_incs = 1;
 
 	/* if typus == warlock and the origin of the spell is warlock */
-	if (ds_readb(0x134d) == 7 && spelltab[spell].origin == 3)
+	if (hero.typus == 7 && spelltab[spell].origin == 3)
 		max_incs = 2;
 	/* if typus == elf and the origin of the spell is elven */
-	if (ds_readb(0x134d) >= 10 && spelltab[spell].origin == 2)
+	if (hero.typus >= 10 && spelltab[spell].origin == 2)
 		max_incs = 2;
 	/* if typus == druid and the origin of the spell is druid */
-	if (ds_readb(0x134d) == 8 && spelltab[spell].origin == 0)
+	if (hero.typus == 8 && spelltab[spell].origin == 0)
 		max_incs = 2;
 	/* if typus == mage */
-	if (ds_readb(0x134d) == 9) {
+	if (hero.typus == 9) {
 		/* and the origin of the spell is mage */
 		if (spelltab[spell].origin == 1)
 			max_incs = 2;
@@ -6040,7 +6036,7 @@ void choose_typus()
 	strcpy((char*)MemBase + PhysMake(datseg, 0x132c), name_bak);
 
 	/* set typus */
-	ds_writeb(0x134d, choosen_typus);
+	hero.typus = choosen_typus;
 
 	/* roll out good attribute values */
 	ptr = MemBase + PhysMake(datseg, 0x1360);
@@ -6097,17 +6093,17 @@ void choose_typus()
 		}
 	}
 
-	load_typus(ds_readb(0x134d));
+	load_typus(hero.typus);
 	draw_mouse_ptr_wrapper();
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 16, 8, 143, 191, 0);
 	wait_for_vsync();
 	set_palette(Real2Host(ds_readd(0x47b3)) + 0x5c02, 0, 32);
 	call_mouse();
 
-	if (ds_readb(0x134d) > 10)
+	if (hero.typus > 10)
 		head_typus = 10;
 	else
-		head_typus = ds_readb(0x134d);
+		head_typus = hero.typus;
 
 	if (ds_readb(0x134e)) {
 		head_current = head_first_female[head_typus];
