@@ -3420,11 +3420,13 @@ void do_gen()
 					si = 10;
 				}
 			}
+			if (si != gen_page && (si < 5 || ds_readb(0x134d) >= 7))
+			{
+				gen_page = si;
+				ds_writew(0x11fe, 1);
+			}
 		}
-		if (si != gen_page && si >= 5 && ds_readb(0x134d >= 7)) {
-			gen_page = si;
-			ds_writew(0x11fe, 1);
-		}
+
 	}
 }
 
