@@ -989,10 +989,12 @@ static void update_hero_out()
 	for (i = 0; i < 52; i++)
 		hero_writeb(0x1434 + i, hero.skills[i]);
 	hero_writeb(0x1468, hero.skill_incs);
-
+	for (i = 0; i < 86; i++)
+		hero_writeb(0x1469 + i, hero.spells[i]);
 	hero_writeb(0x14bf, hero.spell_incs);
 	hero_writeb(0x14c0, hero.school);
 	hero_writeb(0x14c1, hero.staff_level);
+
 	memcpy(MemBase + PhysMake(datseg, 0x1606), &hero.pic, 1024);
 }
 
@@ -3573,7 +3575,7 @@ void fill_values()
 	if (hero.typus >= 7) {
 		/* fill initial spell values */
 		for (i = 0; i < 86; i++) {
-			ds_writeb(0x1469 + i, spells[hero.typus - 7][i]);
+			hero.spells[i] = spells[hero.typus - 7][i];
 
 			/* set spell_incs and spell_tries to zero */
 			spell_incs[i].incs = 0;
@@ -3599,10 +3601,7 @@ void fill_values()
 
 				spell = ds_readw(0xa9d + 1 + hero.school * 29 + i * 2);
 				mod = ds_readb(0xa9d + 15 + hero.school * 29 + i * 2);
-				ds_writeb(0x1469 + spell,
-					ds_readb(0x1469 + spell) + mod);
-
-
+				hero.spells[spell] += mod;
 			}
 		}
 
@@ -4161,9 +4160,9 @@ void spell_inc_novice(Bit16u spell)
 		hero.spell_incs--;
 
 		/* check if the test is passed */
-		if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
+		if (random_interval_gen(2, 12) > hero.spells[spell]) {
 			/* increment spell */
-			ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
+			hero.spells[spell]++;
 
 			/* set inc tries for this spell to zero */
 			spell_incs[spell].tries = 0;
@@ -5016,8 +5015,7 @@ void print_values()
 			for (i = 1; i < 6; i++) {
 				pos = i - 1;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5032,8 +5030,7 @@ void print_values()
 			for (i = 33; i < 38; i++) {
 				pos = i - 33;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5048,8 +5045,7 @@ void print_values()
 			for (i = 6; i <= 11; i++) {
 				pos = i - 6;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5075,8 +5071,7 @@ void print_values()
 			for (i = 12; i <= 17; i++) {
 				pos = i - 12;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5091,8 +5086,7 @@ void print_values()
 			for (i = 18; i < 24; i++) {
 				pos = i - 18;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5107,8 +5101,7 @@ void print_values()
 			for (i = 24; i < 27; i++) {
 				pos = i - 24;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5134,8 +5127,7 @@ void print_values()
 			for (i = 27; i < 33; i++) {
 				pos = i - 27;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5151,8 +5143,7 @@ void print_values()
 			for (i = 38; i < 45; i++) {
 				pos = i - 38;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5168,8 +5159,7 @@ void print_values()
 			for (i = 45; i <= 46; i++) {
 				pos = i - 45;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5195,8 +5185,7 @@ void print_values()
 			for (i = 47; i <= 48; i++) {
 				pos = i - 47;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5212,8 +5201,7 @@ void print_values()
 			for (i = 49; i < 58; i++) {
 				pos = i - 49;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5229,8 +5217,7 @@ void print_values()
 			for (i = 58; i < 60; i++) {
 				pos = i - 58;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5256,8 +5243,7 @@ void print_values()
 			for (i = 60; i < 76; i++) {
 				pos = i - 60;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5283,8 +5269,7 @@ void print_values()
 			for (i = 76; i < 86; i++) {
 				pos = i - 76;
 				/* originally it was itoa() */
-				sprintf(tmp, "%d",
-					(signed char)ds_readb(0x1469 + i));
+				sprintf(tmp, "%d", hero.spells[i]);
 				width = get_str_width(tmp);
 
 				if (pos & 1)
@@ -5623,11 +5608,11 @@ void inc_spell(Bit16u spell)
 	/* decrement spell attempts */
 	hero.spell_incs--;
 
-	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
+	if (random_interval_gen(2, 12) > hero.spells[spell]) {
 		/* show success */
 		infobox((Bit8u*)texts[0x260 / 4], 0);
 		/* increment spell value */
-		ds_writeb(0x1469 + spell, ds_readb(0x1469 + spell) + 1);
+		hero.spells[spell]++;
 		/* reset tries */
 		spell_incs[spell].tries = 0;
 		/* increment incs */
