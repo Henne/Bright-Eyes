@@ -990,6 +990,7 @@ static void update_hero_out()
 		hero_writeb(0x1434 + i, hero.skills[i]);
 	hero_writeb(0x1468, hero.skill_incs);
 
+	ds_writeb(0x14c0, hero.school);
 	ds_writeb(0x14c1, hero.staff_level);
 	memcpy(MemBase + PhysMake(datseg, 0x1606), &hero.pic, 1024);
 }
@@ -3583,21 +3584,20 @@ void fill_values()
 			hero.staff_level = 1;
 			/* select mage school */
 			do {
-				ds_writeb(0x14c0, gui_radio((Bit8u*)texts[47], 9,
+				hero.school = gui_radio((Bit8u*)texts[47], 9,
 							texts[48], texts[49],
 							texts[50], texts[51],
 							texts[52], texts[53],
 							texts[54], texts[55],
-							texts[56]) - 1);
-			} while (ds_readb(0x14c0) == 0xfe);
+							texts[56]) - 1;
+			} while (hero.school == -2);
 
 			/* add magic school modifications */
-			for (i = 0; ds_readb(0xa9d + ds_readb(0x14c0) * 29) > i; i++) {
-				Bit8s school = ds_readb(0x14c0);
+			for (i = 0; ds_readb(0xa9d + hero.school * 29) > i; i++) {
 				Bit16s spell, mod;
 
-				spell = ds_readw(0xa9d + 1 + school * 29 + i * 2);
-				mod = ds_readb(0xa9d + 15 + school * 29 + i * 2);
+				spell = ds_readw(0xa9d + 1 + hero.school * 29 + i * 2);
+				mod = ds_readb(0xa9d + 15 + hero.school * 29 + i * 2);
 				ds_writeb(0x1469 + spell,
 					ds_readb(0x1469 + spell) + mod);
 
@@ -3770,16 +3770,15 @@ void fill_values()
 		si = 0;
 		/* prepare mage automatic spell list */
 		if (hero.typus == 9) {
-			Bit16u school = ds_readb(0x14c0);
 			/* 1. house spells */
-			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
+			for (i = 0; ds_readb(0xa9d + hero.school * 29) > i; si++, i++) {
 				autospells[hero.typus - 7][si] =
-					ds_readw(0xa9d + 1 + school * 29 + i * 2);
+					ds_readw(0xa9d + 1 + hero.school * 29 + i * 2);
 			}
 			/* 2. all schools spells */
-			for (i = 0; school_tab[school].spells > i; si++, i++) {
+			for (i = 0; school_tab[hero.school].spells > i; si++, i++) {
 				autospells[hero.typus - 7][si] =
-					school_tab[school].first_spell + i;
+					school_tab[hero.school].first_spell + i;
 			}
 			/* 3. five domination spells */
 				/* Herr der Tiere */
@@ -3794,14 +3793,14 @@ void fill_values()
 			autospells[hero.typus - 7][si++] = 0x4f;
 
 			/* 4. all house spells */
-			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
+			for (i = 0; ds_readb(0xa9d + hero.school * 29) > i; si++, i++) {
 				autospells[hero.typus - 7][si] =
-					ds_readw(0xa9d + 1 + school * 29 + i * 2);
+					ds_readw(0xa9d + 1 + hero.school * 29 + i * 2);
 			}
 			/* 5. all house spells */
-			for (i = 0; ds_readb(0xa9d + school * 29) > i; si++, i++) {
+			for (i = 0; ds_readb(0xa9d + hero.school * 29) > i; si++, i++) {
 				autospells[hero.typus - 7][si] =
-					ds_readw(0xa9d + 1 + school * 29 + i * 2);
+					ds_readw(0xa9d + 1 + hero.school * 29 + i * 2);
 			}
 			/* 6. random spells */
 			while (si < 45) {
@@ -5603,7 +5602,7 @@ void inc_spell(Bit16u spell)
 		if (spelltab[spell].origin == 1)
 			max_incs = 2;
 
-		Bit8u *array = (Bit8u*)house_spells[ds_readb(0x14c0)];
+		Bit8u *array = (Bit8u*)house_spells[hero.school];
 		/* and is a school spell */
 		if (is_in_word_array(spell, array))
 			max_incs = 3;
