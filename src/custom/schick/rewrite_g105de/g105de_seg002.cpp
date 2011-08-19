@@ -990,6 +990,7 @@ static void update_hero_out()
 		hero_writeb(0x1434 + i, hero.skills[i]);
 	hero_writeb(0x1468, hero.skill_incs);
 
+	ds_writeb(0x14c1, hero.staff_level);
 	memcpy(MemBase + PhysMake(datseg, 0x1606), &hero.pic, 1024);
 }
 
@@ -3579,7 +3580,7 @@ void fill_values()
 		/* special mage values */
 		if (hero.typus == 9) {
 			/* set staff spell to level 1 */
-			ds_writeb(0x14c1, 1);
+			hero.staff_level = 1;
 			/* select mage school */
 			do {
 				ds_writeb(0x14c0, gui_radio((Bit8u*)texts[47], 9,
