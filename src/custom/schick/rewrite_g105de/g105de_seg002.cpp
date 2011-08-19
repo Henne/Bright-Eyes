@@ -989,6 +989,8 @@ static void update_hero_out()
 	for (i = 0; i < 52; i++)
 		hero_writeb(0x1434 + i, hero.skills[i]);
 	hero_writeb(0x1468, hero.skill_incs);
+
+	memcpy(MemBase + PhysMake(datseg, 0x1606), &hero.pic, 1024);
 }
 
 
@@ -2009,8 +2011,7 @@ void save_chr()
 	process_nvf(n);
 
 	/* copy picture to the character struct */
-	memcpy(MemBase + PhysMake(datseg, 0x1606),
-		Real2Host(ds_readd(0x47d3)), 1024);
+	memcpy(&hero.pic, Real2Host(ds_readd(0x47d3)), 1024);
 	/* put the hero in the first group */
 	hero.group = 1;
 
