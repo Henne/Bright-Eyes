@@ -990,6 +990,7 @@ static void update_hero_out()
 		hero_writeb(0x1434 + i, hero.skills[i]);
 	hero_writeb(0x1468, hero.skill_incs);
 
+	ds_writeb(0x14bf, hero.spell_incs);
 	ds_writeb(0x14c0, hero.school);
 	ds_writeb(0x14c1, hero.staff_level);
 	memcpy(MemBase + PhysMake(datseg, 0x1606), &hero.pic, 1024);
@@ -3606,7 +3607,7 @@ void fill_values()
 		}
 
 		/* set spell attempts */
-		ds_writeb(0x14bf, ds_readb(0xa91 + hero.typus - 7));
+		hero.spell_incs = ds_readb(0xa91 + hero.typus - 7);
 
 		/* get convertable increase attempts */
 		di = ds_readb(0xa97 + hero.typus - 7);
@@ -3623,7 +3624,7 @@ void fill_values()
 					i = di;
 				di -= i;
 				/* change spell attempts */
-				ds_writeb(0x14bf, ds_readb(0x14bf) - i);
+				hero.spell_incs -= i;
 				/* change skill attempts */
 				hero.skill_incs += i;
 			} else {
@@ -3636,7 +3637,7 @@ void fill_values()
 					if (i > di)
 						i = di;
 					/* change spell attempts */
-					ds_writeb(0x14bf, ds_readb(0x14bf) + i);
+					hero.spell_incs += i;
 					/* change skill attempts */
 					hero.skill_incs -= i;
 				}
@@ -3655,7 +3656,7 @@ void fill_values()
 	/* wanna change 10 spell_attempts against 1W6+2 AE ? */
 	if (hero.typus == 9 && level == 2 && gui_bool((Bit8u*)texts[268])) {
 		/* change spell_attempts */
-		ds_writeb(0x14bf, ds_readb(0x14bf) - 10);
+		hero.spell_incs -= 10;
 		hero.ae_max = random_interval_gen(3, 8) + hero.ae_max;
 		hero.ae = hero.ae_max;
 	}
@@ -3809,7 +3810,7 @@ void fill_values()
 		}
 		/* automatic increase spells */
 		i = 0;
-		while ((signed char)ds_readb(0x14bf) > 0) {
+		while (hero.spell_incs > 0) {
 			spell_inc_novice(autospells[hero.typus - 7][i++]);
 		}
 	}
@@ -4152,12 +4153,12 @@ void spell_inc_novice(Bit16u spell)
 		}
 
 		/* Original-Bugfix: add check if skill_attempts are left */
-		if (ds_readb(0x14bf) == 0) {
+		if (hero.spell_incs == 0) {
 			done++;
 			continue;
 		}
 		/* decrement counter for spell increments */
-		ds_writeb(0x14bf, ds_readb(0x14bf) - 1);
+		hero.spell_incs--;
 
 		/* check if the test is passed */
 		if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
@@ -5062,7 +5063,7 @@ void print_values()
 			}
 
 			/* print spell attempts */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			sprintf(tmp, "%d", hero.spell_incs);
 			print_str(tmp, 217, 184);
 
 			break;
@@ -5121,7 +5122,7 @@ void print_values()
 			}
 
 			/* print spell attempts */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			sprintf(tmp, "%d", hero.spell_incs);
 			print_str(tmp, 217, 184);
 
 			break;
@@ -5182,7 +5183,7 @@ void print_values()
 			}
 
 			/* print spell attempts */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			sprintf(tmp, "%d", hero.spell_incs);
 			print_str(tmp, 217, 184);
 
 			break;
@@ -5243,7 +5244,7 @@ void print_values()
 			}
 
 			/* print spell attempts */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			sprintf(tmp, "%d", hero.spell_incs);
 			print_str(tmp, 217, 184);
 
 			break;
@@ -5270,7 +5271,7 @@ void print_values()
 			}
 
 			/* print spell attempts */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			sprintf(tmp, "%d", hero.spell_incs);
 			print_str(tmp, 217, 184);
 
 			break;
@@ -5297,7 +5298,7 @@ void print_values()
 			}
 
 			/* print spell attempts */
-			sprintf(tmp, "%d", (signed char)ds_readb(0x14bf));
+			sprintf(tmp, "%d", hero.spell_incs);
 			print_str(tmp, 217, 184);
 
 			break;
@@ -5620,7 +5621,7 @@ void inc_spell(Bit16u spell)
 	}
 
 	/* decrement spell attempts */
-	ds_writeb(0x14bf, ds_readb(0x14bf) - 1);
+	hero.spell_incs--;
 
 	if (random_interval_gen(2, 12) > (signed char)ds_readb(0x1469 + spell)) {
 		/* show success */
@@ -5648,7 +5649,7 @@ void select_spell()
 	do {
 
 		/* check if we have spell attempts */
-		if (ds_readb(0x14bf) == 0) {
+		if (hero.spell_incs == 0) {
 			infobox((Bit8u*)texts[94], 0);
 			ds_writew(0x1327, 0);
 			return;
