@@ -965,6 +965,7 @@ static void update_hero_out()
 	unsigned long i;
 
 	strncpy((char*)MemBase + PhysMake(datseg, 0x132c), hero.name, 16);
+	strncpy((char*)MemBase + PhysMake(datseg, 0x133c), hero.alias, 16);
 
 	hero_writeb(0x134d, hero.typus);
 	hero_writeb(0x134e, hero.sex);
@@ -2028,7 +2029,7 @@ void save_chr()
 
 	/* copy name to alias */
 	/* TODO: should use strncpy() here */
-	strcpy((char*)MemBase + PhysMake(datseg, 0x133c), hero.name);
+	strcpy(hero.alias, hero.name);
 	/* copy name to buffer */
 	/* TODO: should use strncpy() here */
 	strcpy(gen_ptr2, hero.name);
