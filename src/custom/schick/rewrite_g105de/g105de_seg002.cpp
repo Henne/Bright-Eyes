@@ -964,6 +964,8 @@ static void update_hero_out()
 {
 	unsigned long i;
 
+	strncpy((char*)MemBase + PhysMake(datseg, 0x132c), hero.name, 16);
+
 	hero_writeb(0x134d, hero.typus);
 	hero_writeb(0x134e, hero.sex);
 	hero_writeb(0x134f, hero.height);
@@ -1996,7 +1998,7 @@ void save_chr()
 		return;
 	}
 	/* check for name */
-	if (ds_readb(0x132c) == 0) {
+	if (hero.name[0] == 0) {
 		infobox((Bit8u*)texts[0x120 / 4], 0);
 		return;
 	}
@@ -2026,11 +2028,10 @@ void save_chr()
 
 	/* copy name to alias */
 	/* TODO: should use strncpy() here */
-	strcpy((char*)MemBase + PhysMake(datseg, 0x133c),
-		(char*)MemBase + PhysMake(datseg, 0x132c));
+	strcpy((char*)MemBase + PhysMake(datseg, 0x133c), hero.name);
 	/* copy name to buffer */
 	/* TODO: should use strncpy() here */
-	strcpy(gen_ptr2, (const char*)MemBase + PhysMake(datseg, 0x132c));
+	strcpy(gen_ptr2, hero.name);
 	/* prepare filename */
 	for (i = 0; i < 8; i++) {
 		char c = gen_ptr2[i];
@@ -3184,10 +3185,10 @@ void enter_name()
 
 	draw_mouse_ptr_wrapper();
 	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
-	enter_string((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12, 15, 1);
+	enter_string(hero.name, 180, 12, 15, 1);
 	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
 	call_mouse();
-	print_str((char*)MemBase + PhysMake(datseg, 0x132c), 180, 12);
+	print_str(hero.name, 180, 12);
 }
 
 void change_head()
@@ -3979,7 +3980,7 @@ void new_values()
 
 	/* save the name of the hero */
 	/* TODO strncpy() would be better here */
-	strcpy(name_bak, (char*)MemBase + PhysMake(datseg, 0x132c));
+	strcpy(name_bak, hero.name);
 
 	/* save the sex of the hero */
 	bv3 = hero.sex;
@@ -3994,7 +3995,7 @@ void new_values()
 
 	/* restore the name of the hero */
 	/* TODO strncpy() would be better here */
-	strcpy((char*)MemBase + PhysMake(datseg, 0x132c), name_bak);
+	strcpy(hero.name, name_bak);
 
 	refresh_screen();
 
@@ -4759,8 +4760,7 @@ void print_values()
 			restore_picbuf(Real2Phys(ds_readd(0x47c7)));
 
 			/* print name */
-			print_str((char*)MemBase + PhysMake(datseg, 0x132c),
-				180, 12);
+			print_str(hero.name, 180, 12);
 
 			/* print attributes */
 			print_attribs();
@@ -6014,13 +6014,13 @@ void choose_typus()
 		return;
 
 	/* clear the hero area with saved name and sex */
-	strcpy(name_bak, (char*)MemBase + PhysMake(datseg, 0x132c));
+	strcpy(name_bak, hero.name);
 	sex_bak = hero.sex;
 	memset(MemBase + PhysMake(datseg, 0x132c), 0, 0x6da);
 	memset(&hero, 0, sizeof(hero));
 	clear_hero();
 	hero.sex = sex_bak;
-	strcpy((char*)MemBase + PhysMake(datseg, 0x132c), name_bak);
+	strcpy(hero.name, name_bak);
 
 	/* set typus */
 	hero.typus = choosen_typus;

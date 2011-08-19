@@ -14,9 +14,9 @@ __attribute__ ((packed))
 
 struct struct_hero {
 	/* Offset 0x00 */
-	unsigned char name[16];
+	char name[16];
 	/* Offset 0x10 */
-	unsigned char alias[16];
+	char alias[16];
 	/* Offset 0x20 */
 	unsigned char items;
 	unsigned char typus;
