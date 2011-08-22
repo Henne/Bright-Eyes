@@ -172,6 +172,27 @@ static const struct struct_school_tab school_tab[] = {
 	{0x4c, 0x0a},
 };
 
+struct struct_reqs {
+	unsigned char attrib, requirement;
+};
+/* DS:0x03cf */
+static const struct_reqs reqs[13][4] = {
+	{ },
+	{ {0, 12}, {4, 12}, {3, 12}, {7, 7}, },
+	{ {5, 12}, {4, 12}, {9, 7}, {2, 1}, },
+	{ {0, 13}, {6, 12}, {13, 0x80 | 4}, {2, 1}, },
+	{ {0, 12}, {4, 13}, {3, 13}, {2, 1}, },
+	{ {0, 12}, {6, 13}, {7, 7}, {2, 1}, },
+	{ {6, 13}, {3, 12}, {10, 7}, {9, 0x80 | 4}, },
+
+	{ {5, 12}, {2, 13}, {8, 0x80 | 4}, {6, 1}, },
+	{ {0, 13}, {1, 12}, {11, 0x80 |4}, {2, 1}, },
+	{ {1, 13}, {2, 12}, {7, 0x80 | 4}, {6, 1}, },
+
+	{ {1, 13}, {4, 12}, {10, 0x80 | 4}, {2, 1}, },
+	{ {5, 12}, {4, 13}, {10, 0x80 | 4}, {2, 1}, },
+	{ {5, 13}, {4, 13}, {10, 0x80 | 4}, {2, 1}, },
+};
 /* DS:0x0437 */
 static const signed char skills[13][52] = {
 	/* DUMMY */
@@ -4218,10 +4239,11 @@ void select_typus()
 		for (si = 0; si < 4; si++) {
 			Bit8u req;
 			ptr = MemBase + PhysMake(datseg, 0x1360 +
-				ds_readb(0x3cf +  i * 8 + si * 2) * 3);
+				reqs[i][si].attrib * 3);
 
 			ltmp2 = host_readb(ptr);
-			req = ds_readb(0x3cf + 1 +  i * 8 + si * 2);
+			req = reqs[i][si].requirement;
+
 			if (req & 0x80) {
 				if (ltmp2 <= (req & 0x80))
 					continue;
@@ -6056,10 +6078,10 @@ void choose_typus()
 	for (i = 0; i < 4; i++) {
 		/* calc pointer to attribute */
 		ptr = MemBase + PhysMake(datseg, 0x1360 +
-			ds_readb(0x3cf + choosen_typus * 8 + i * 2) * 3);
+			reqs[choosen_typus][i].attrib * 3);
 
 		/* get the required value */
-		randval = ds_readb(0x3cf + 1 + choosen_typus * 8 + i * 2);
+		randval = reqs[choosen_typus][i].requirement;
 
 		if (randval == 1)
 			continue;
