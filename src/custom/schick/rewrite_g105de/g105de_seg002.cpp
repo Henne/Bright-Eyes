@@ -610,6 +610,11 @@ static const signed char mr_mod[13] = {
 	2, 2, 2, 3, 4, 3
 };
 
+/* DS:0x0a85 */
+static const unsigned char initial_skill_incs[12] = {
+	20, 20, 20, 20, 20, 20, 20, 20, 15, 20, 20, 20
+};
+
 /* DS:0x0ba2 */
 static const unsigned short autoskills[13][25] = {
 	{ },
@@ -3595,7 +3600,7 @@ void fill_values()
 	}
 
 	/* set skill_attempts */
-	hero.skill_incs = ds_readb(0xa85 + hero.typus - 1);
+	hero.skill_incs = initial_skill_incs[hero.typus - 1];
 
 	/* do magic user init */
 	if (hero.typus >= 7) {
