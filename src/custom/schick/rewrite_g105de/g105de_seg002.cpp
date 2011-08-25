@@ -5018,14 +5018,12 @@ void print_values()
 			pos /= 4;
 
 			/* print missle weapon value */
-			sprintf(tmp, "%d",
-				(signed char)ds_readb(0x143b) + pos);
+			sprintf(tmp, "%d", hero.skills[7] + pos);
 
 			print_str(tmp, 231, 144);
 
 			/* print thrown weapon value */
-			sprintf(tmp, "%d",
-				(signed char)ds_readb(0x143c) + pos);
+			sprintf(tmp, "%d", hero.skills[8] + pos);
 			print_str(tmp, 231, 156);
 
 			break;
