@@ -960,33 +960,34 @@ Bit8u *gen_ptr1_dis;
 
 /* New variables */
 
-/*	This is the pointer to the buffer,
-	where the hero is stored in little endian.
+/*	This is the buffer, where the hero is stored in little endian.
 	This is neccessary to support Big Endian machines.
 */
-static Bit8u *hero_out;
+static char hero_out[1754];
 
 static inline void hero_writeb(unsigned off, char v)
 {
-	host_writeb(hero_out + off - 0x132c, v);
+	host_writeb((Bit8u*)hero_out + off - 0x132c, v);
 }
 
 static inline void hero_writew(unsigned off, short v)
 {
-	host_writew(hero_out + off - 0x132c, v);
+	host_writew((Bit8u*)hero_out + off - 0x132c, v);
 }
 
 static inline void hero_writed(unsigned off, int v)
 {
-	host_writed(hero_out + off - 0x132c, v);
+	host_writed((Bit8u*)hero_out + off - 0x132c, v);
 }
 
 static void update_hero_out()
 {
 	unsigned long i;
 
-	strncpy((char*)MemBase + PhysMake(datseg, 0x132c), hero.name, 16);
-	strncpy((char*)MemBase + PhysMake(datseg, 0x133c), hero.alias, 16);
+	memset(hero_out, 0, 1754);
+
+	strncpy(hero_out, hero.name, 16);
+	strncpy(hero_out + 0x10, hero.alias, 16);
 
 	hero_writeb(0x134d, hero.typus);
 	hero_writeb(0x134e, hero.sex);
@@ -1025,7 +1026,7 @@ static void update_hero_out()
 	hero_writeb(0x14c0, hero.school);
 	hero_writeb(0x14c1, hero.staff_level);
 
-	memcpy(MemBase + PhysMake(datseg, 0x1606), &hero.pic, 1024);
+	memcpy(hero_out + 0x2da, &hero.pic, 1024);
 }
 
 
@@ -2098,7 +2099,6 @@ void save_chr()
 
 	if (fd) {
 		/* write the CHR file to the current directory */
-		hero_out = MemBase + PhysMake(datseg, 0x132c);
 		update_hero_out();
 		fwrite(hero_out, 1, 1754, fd);
 		fclose(fd);
@@ -3371,7 +3371,6 @@ void do_gen()
 								break;
 							}
 							case 4: {
-								memset(MemBase +PhysMake(datseg, 0x132c), 0, 1754);
 								memset(&hero, 0, sizeof(hero));
 								clear_hero();
 								ds_writew(0x4599,
@@ -4011,7 +4010,6 @@ void new_values()
 	bv3 = hero.sex;
 
 	/* clear the hero */
-	memset(MemBase + PhysMake(datseg, 0x132c), 0 , 0x6da);
 	memset(&hero, 0 , sizeof(hero));
 	clear_hero();
 
@@ -6023,7 +6021,6 @@ void choose_typus()
 	/* clear the hero area with saved name and sex */
 	strcpy(name_bak, hero.name);
 	sex_bak = hero.sex;
-	memset(MemBase + PhysMake(datseg, 0x132c), 0, 0x6da);
 	memset(&hero, 0, sizeof(hero));
 	clear_hero();
 	hero.sex = sex_bak;
