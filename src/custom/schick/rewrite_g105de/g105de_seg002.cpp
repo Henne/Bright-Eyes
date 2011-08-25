@@ -614,6 +614,10 @@ static const signed char mr_mod[13] = {
 static const unsigned char initial_skill_incs[12] = {
 	20, 20, 20, 20, 20, 20, 20, 20, 15, 20, 20, 20
 };
+/* DS:0x0a91 */
+static const signed char initial_spell_incs[6] = {
+        25, 25, 40, 20, 20, 20
+};
 
 /* DS:0x0ba2 */
 static const unsigned short autoskills[13][25] = {
@@ -3637,7 +3641,7 @@ void fill_values()
 		}
 
 		/* set spell attempts */
-		hero.spell_incs = ds_readb(0xa91 + hero.typus - 7);
+		hero.spell_incs = initial_spell_incs[hero.typus - 7];
 
 		/* get convertable increase attempts */
 		di = ds_readb(0xa97 + hero.typus - 7);
