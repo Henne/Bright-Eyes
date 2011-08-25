@@ -996,6 +996,12 @@ static void update_hero_out()
 	hero_writeb(0x1353, hero.level);
 	hero_writed(0x1358, hero.money);
 
+	for (i = 0; i < 14; i++) {
+		hero_writeb(0x1360 + i * 3 + 0, hero.attribs[0].normal);
+		hero_writeb(0x1360 + i * 3 + 1, hero.attribs[0].current);
+		hero_writeb(0x1360 + i * 3 + 2, hero.attribs[0].mod);
+	}
+
 	hero_writew(0x138a, hero.le);
 	hero_writew(0x138c, hero.le_max);
 	hero_writew(0x138e, hero.ae);
@@ -3346,7 +3352,7 @@ void do_gen()
 
 					if (si != -1) {
 						if (si >= 4 && si < 6 &&
-							ds_readb(0x1360) &&
+							hero.attribs[0].normal &&
 							!gui_bool((Bit8u*)texts[0x34 /4])) {
 							si = 0;
 						}
@@ -3522,10 +3528,8 @@ void calc_at_pa() {
 	Bit16s tmp, base;
 
 	/* base = (GE + IN + KK) / 5 */
-	tmp = (signed char)ds_readb(0x136f);
-	tmp += (signed char)ds_readb(0x1372);
-	tmp += (signed char)ds_readb(0x136c);
-
+	tmp = hero.attribs[5].normal + hero.attribs[6].normal +
+		hero.attribs[4].normal ;
 	base = tmp / 5;
 
 	/* round up if neccessary */
@@ -3699,8 +3703,8 @@ void fill_values()
 				host_readw(ptr + si * 6 + 4)) * 10;
 
 	/* calculate MR  = (KL + SI + Level) / 3 - 2 * AG */
-	hero.mr = (ds_readb(0x1363) + ds_readb(0x1360) + hero.level) / 3 -
-		ds_readb(0x1375) * 2;
+	hero.mr = (hero.attribs[1].normal + hero.attribs[0].normal + hero.level) / 3 -
+		hero.attribs[7].normal * 2;
 	/* add typus MR Modificator */
 	hero.mr += mr_mod[hero.typus];
 
@@ -3711,8 +3715,8 @@ void fill_values()
 	switch (hero.god) {
 		case 1 : {
 			/* Praios: MU + 1 */
-			ds_writeb(0x1360, ds_readb(0x1360) + 1);
-			ds_writeb(0x1361, ds_readb(0x1360) + 1);
+			hero.attribs[0].normal++;
+			hero.attribs[0].current++;
 			got_mu_bonus = true;
 			break;
 		}
@@ -3749,8 +3753,8 @@ void fill_values()
 		}
 		case 8 : {
 			/* Tsa: CH + 1 */
-			ds_writeb(0x1366, ds_readb(0x1366) + 1);
-			ds_writeb(0x1367, ds_readb(0x1367) + 1);
+			hero.attribs[2].normal++;
+			hero.attribs[2].current++;
 			got_ch_bonus = true;
 			break;
 		}
@@ -3990,7 +3994,6 @@ void new_values()
 	/* Original-Bugfix:	there once was a char[11],
 				which could not hold a char[16] */
 
-	Bit8u *ptr;
 	char name_bak[17];
 	signed char values[8];
 	Bit16u di, i, j;
@@ -4022,14 +4025,13 @@ void new_values()
 	refresh_screen();
 
 	ds_writew(0x11fe, 0);
-	ptr = MemBase + PhysMake(datseg, 0x1360);
 
 	for (j = 0; j < 7; j++) {
 		bv1 = random_interval_gen(8, 13);
 		bv2 = 0;
 
 		for (i = 0; i < 7; i++) {
-			if (host_readb(ptr + i * 3))
+			if (hero.attribs[i].normal)
 				continue;
 
 			values[bv2] = i;
@@ -4055,20 +4057,19 @@ void new_values()
 			ds_writew(0x1327, 0);
 		} while (di == 0xffff);
 		di = values[di - 1];
-		host_writeb(ptr + di * 3 + 1, bv1);
-		host_writeb(ptr + di * 3, bv1);
+		hero.attribs[i].current = bv1;
+		hero.attribs[i].normal = bv1;
 		draw_mouse_ptr_wrapper();
 		refresh_screen();
 		call_mouse();
 	}
 
-	ptr = MemBase + PhysMake(datseg, 0x1375);
 	for (j = 0; j < 7; j++) {
 		bv1 = random_interval_gen(2, 7);
 		bv2 = 0;
 
 		for (i = 0; i < 7; i++) {
-			if (host_readb(ptr + i * 3))
+			if (hero.attribs[i + 7].normal)
 				continue;
 
 			values[bv2] = i;
@@ -4094,8 +4095,8 @@ void new_values()
 			ds_writew(0x1327, 0);
 		} while (di == 0xffff);
 		di = values[di - 1];
-		host_writeb(ptr + di * 3 + 1, bv1);
-		host_writeb(ptr + di * 3, bv1);
+		hero.attribs[di + 7].current = bv1;
+		hero.attribs[di + 7].normal = bv1;
 		draw_mouse_ptr_wrapper();
 		refresh_screen();
 		call_mouse();
@@ -4216,7 +4217,7 @@ void select_typus()
 	t = empty_bitmap;
 
 	/* check if attribs have bee set */
-	if (ds_readb(0x1360) == 0) {
+	if (hero.attribs[0].normal == 0) {
 		infobox((Bit8u*)texts[265], 0);
 		return;
 	}
@@ -4224,13 +4225,13 @@ void select_typus()
 	old_typus = hero.typus;
 	/* disable MU bonus */
 	if (got_mu_bonus) {
-		ds_writeb(0x1360, ds_readb(0x1360) - 1);
-		ds_writeb(0x1361, ds_readb(0x1360));
+		hero.attribs[0].normal--;
+		hero.attribs[0].current--;
 	}
 	/* disable CH bonus */
 	if (got_ch_bonus) {
-		ds_writeb(0x1366, ds_readb(0x1366) - 1);
-		ds_writeb(0x1367, ds_readb(0x1366));
+		hero.attribs[2].normal--;
+		hero.attribs[2].current--;
 	}
 	possible_types = 0;
 
@@ -4238,10 +4239,9 @@ void select_typus()
 		impossible = false;
 		for (si = 0; si < 4; si++) {
 			Bit8u req;
-			ptr = MemBase + PhysMake(datseg, 0x1360 +
-				reqs[i][si].attrib * 3);
 
-			ltmp2 = host_readb(ptr);
+			ltmp2 = hero.attribs[reqs[i][si].attrib].normal;
+
 			req = reqs[i][si].requirement;
 
 			if (req & 0x80) {
@@ -4298,12 +4298,12 @@ void select_typus()
 	 */
 	if (di == -1 || t.t[di - 1] == old_typus) {
 		if (got_mu_bonus) {
-			ds_writeb(0x1360, ds_readb(0x1360) + 1);
-			ds_writeb(0x1361, ds_readb(0x1360));
+			hero.attribs[0].normal++;
+			hero.attribs[0].current++;
 		}
 		if (got_ch_bonus) {
-			ds_writeb(0x1366, ds_readb(0x1366) + 1);
-			ds_writeb(0x1367, ds_readb(0x1366));
+			hero.attribs[2].normal++;
+			hero.attribs[2].current++;
 		}
 		return;
 	}
@@ -4359,21 +4359,17 @@ Bit16u can_change_attribs()
 
 
 	for (i = 0; i < 7; i++) {
-		p = p_datseg + 0x1360 + i * 3;
-
-		if (attrib_changed[i] != INC && host_readb(p) > 8)
-			pa_dec += 8 - (signed char)host_readb(p);
-		if (attrib_changed[i] != DEC && host_readb(p) < 13)
-			pa_inc += 13 - (signed char)host_readb(p);
+		if (attrib_changed[i] != INC && hero.attribs[i].normal > 8)
+			pa_dec += 8 - hero.attribs[i].normal;
+		if (attrib_changed[i] != DEC && hero.attribs[i].normal < 13)
+			pa_inc += 13 - hero.attribs[i].normal;
 	}
 
 	for (i = 7; i < 14; i++) {
-		p = p_datseg + 0x1360 + i * 3;
-
-		if (attrib_changed[i] != INC && host_readb(p) > 2)
-			na_dec += 2 - (signed char)host_readb(p);
-		if (attrib_changed[i] != DEC && host_readb(p) < 8)
-			na_inc += 8 - (signed char)host_readb(p);
+		if (attrib_changed[i] != INC && hero.attribs[i].normal > 2)
+			na_dec += 2 - hero.attribs[i].normal;
+		if (attrib_changed[i] != DEC && hero.attribs[i].normal < 8)
+			na_inc += 8 - hero.attribs[i].normal;
 	}
 
 	D1_LOG("%d %d %d %d\n", pa_inc, pa_dec, na_inc, na_dec);
@@ -4402,12 +4398,11 @@ Bit16u can_change_attribs()
  */
 void change_attribs()
 {
-	Bit8u *ptr1, *ptr2;
 	Bit16s tmp1, tmp2, tmp3, si, di;
 	Bit8u c;
 
 	/* check if attributes have been set */
-	if (ds_readb(0x1360) == 0) {
+	if (hero.attribs[0].normal == 0) {
 		infobox((Bit8u*)texts[16], 0);
 		return;
 	}
@@ -4424,14 +4419,14 @@ void change_attribs()
 		hero.typus = 0;
 		/* remove MU boni */
 		if (got_mu_bonus) {
-			ds_writeb(0x1360, ds_readb(0x1360) - 1);
-			ds_writeb(0x1361, ds_readb(0x1360));
+			hero.attribs[0].normal--;
+			hero.attribs[0].current--;
 			got_mu_bonus = false;
 		}
 		/* remove CH boni */
 		if (got_ch_bonus) {
-			ds_writeb(0x1366, ds_readb(0x1366) - 1);
-			ds_writeb(0x1367, ds_readb(0x1366));
+			hero.attribs[2].normal--;
+			hero.attribs[2].current--;
 			got_ch_bonus = false;
 		}
 		ds_writew(0x11fe, 1);
@@ -4466,10 +4461,9 @@ void change_attribs()
 		tmp3 = attrib_changed[tmp2];
 	}
 
-	ptr1 = MemBase + PhysMake(datseg, 0x1360 + tmp2 * 3);
 	if (tmp3 == INC) {
 		/* increment */
-		if (host_readb(ptr1) == 13) {
+		if (hero.attribs[tmp2].normal == 13) {
 			infobox((Bit8u*)texts[77], 0);
 			return;
 		}
@@ -4477,18 +4471,17 @@ void change_attribs()
 		for (di = 7; di < 14; di++) {
 			if (attrib_changed[di] == DEC)
 				continue;
-			ptr2 = MemBase + PhysMake(datseg, 0x1360 + di * 3);
-			if (host_readb(ptr2) >= 8)
+			if (hero.attribs[di].normal >= 8)
 				continue;
-			c += 8 - host_readb(ptr2);
+			c += 8 - hero.attribs[di].normal;
 		}
 		if (c < 2) {
 			infobox((Bit8u*)texts[85], 0);
 			return;
 		}
 		/* increment positive attribute */
-		host_writeb(ptr1 + 1, host_readb(ptr1 + 1) + 1);
-		host_writeb(ptr1, host_readb(ptr1) + 1);
+		hero.attribs[tmp2].current++;
+		hero.attribs[tmp2].normal++;
 
 		attrib_changed[tmp2] = INC;
 
@@ -4514,22 +4507,22 @@ void change_attribs()
 				continue;
 			}
 			/* check if attribute can be incremented */
-			ptr1 = MemBase + PhysMake(datseg, 0x1375 + si * 3);
-			if (host_readb(ptr1) == 8) {
+			if (hero.attribs[si + 7].normal == 8) {
 				infobox((Bit8u*)texts[77], 0);
 				continue;
 			}
 			/* increment the negative attribute */
 			tmp1++;
 			attrib_changed[si + 7] = INC;
-			host_writeb(ptr1 + 1, host_readb(ptr1 + 1) + 1);
-			host_writeb(ptr1, host_readb(ptr1) + 1);
+			hero.attribs[si + 7].normal++;
+			hero.attribs[si + 7].current++;
+
 			refresh_screen();
 		}
 	} else {
 		/* decrement */
 		/* check if the positive attribute can be decremented */
-		if (host_readb(ptr1) == 8) {
+		if (hero.attribs[tmp2].normal == 8) {
 			infobox((Bit8u*)texts[81], 0);
 			return;
 		}
@@ -4537,18 +4530,17 @@ void change_attribs()
 		for (di = 7; di < 14; di++) {
 			if (attrib_changed[di] == INC)
 				continue;
-			ptr2 = MemBase + PhysMake(datseg, 0x1360 + di * 3);
-			if (host_readb(ptr2) <= 2)
+			if (hero.attribs[di].normal <= 2)
 				continue;
-			c += host_readb(ptr2) - 2;
+			c += hero.attribs[di].normal - 2;
 		}
 		if (c < 2) {
 			infobox((Bit8u*)texts[84], 0);
 			return;
 		}
 		/* decrement positive attribute */
-		host_writeb(ptr1 + 1, host_readb(ptr1 + 1) - 1);
-		host_writeb(ptr1, host_readb(ptr1) - 1);
+		hero.attribs[tmp2].normal--;
+		hero.attribs[tmp2].current--;
 		/* mark this attribute as decremented */
 		attrib_changed[tmp2] = DEC;
 
@@ -4574,16 +4566,16 @@ void change_attribs()
 				continue;
 			}
 			/* check if attribute can be decremented */
-			ptr1 = MemBase + PhysMake(datseg, 0x1375 + si * 3);
-			if (host_readb(ptr1) == 2) {
+			if (hero.attribs[si + 7].normal == 2) {
 				infobox((Bit8u*)texts[81], 0);
 				continue;
 			}
 			/* deccrement the negative attribute */
 			tmp1++;
-			host_writeb(ptr1 + 1, host_readb(ptr1 + 1) - 1);
-			host_writeb(ptr1, host_readb(ptr1) - 1);
+			hero.attribs[si + 7].normal--;
+			hero.attribs[si + 7].current--;
 			attrib_changed[si + 7] = DEC;
+
 			refresh_screen();
 		}
 	}
@@ -4744,19 +4736,16 @@ void restore_picbuf(PhysPt ptr)
  */
 void print_attribs()
 {
-	Bit8u *p;
 	char buf[10];
 	Bit16u i;
 
-	p = p_datseg + 0x1360;
-
-	for (i = 0; i < 14; p += 3, i++) {
+	for (i = 0; i < 14; i++) {
 		/* don't print 0s */
-		if (host_readb(p) == 0)
+		if (hero.attribs[i].normal == 0)
 			continue;
 
 		/* convert value to string with itoa() */
-		sprintf(buf, "%d", (signed char)host_readb(p));
+		sprintf(buf, "%d", hero.attribs[i].normal);
 
 		/* print it */
 		print_str(buf, ds_readw(i * 4 + 0x105f),
@@ -4821,7 +4810,7 @@ void print_values()
 			/* print Endurance */
 			/* originally it was itoa() */
 			sprintf(tmp, "%d",
-				hero.le_max + (signed char)ds_readb(0x1373));
+				hero.le_max + hero.attribs[6].current);
 			print_str(tmp, 296, 164);
 
 			/* print MR */
@@ -5012,10 +5001,8 @@ void print_values()
 			}
 
 			/* calc range base value (KL+GE+KK)/4 */
-			pos = (signed char)ds_readb(0x1363) +
-				(signed char)ds_readb(0x136c) +
-				(signed char)ds_readb(0x1372);
-			pos /= 4;
+			pos = (hero.attribs[1].normal + hero.attribs[4].normal +
+				hero.attribs[6].normal) / 4;
 
 			/* print missle weapon value */
 			sprintf(tmp, "%d", hero.skills[7] + pos);
@@ -6008,7 +5995,6 @@ void choose_atpa()
  */
 void choose_typus()
 {
-	Bit8u *ptr;
 	char name_bak[20];
 	Bit16u randval, i, typus_names;
 	Bit16s choosen_typus;
@@ -6047,7 +6033,6 @@ void choose_typus()
 	hero.typus = choosen_typus;
 
 	/* roll out good attribute values */
-	ptr = MemBase + PhysMake(datseg, 0x1360);
 	for (i = 0; i < 7; i ++) {
 
 		randval = random_interval_gen(8, 13);
@@ -6055,12 +6040,11 @@ void choose_typus()
 		if (randval > 8)
 			randval--;
 
-		host_writeb(ptr + i * 3 + 1, randval);
-		host_writeb(ptr + i * 3,  randval);
+		hero.attribs[i].normal = randval;
+		hero.attribs[i].current = randval;
 	}
 
 	/* roll out bad attribute values */
-	ptr = MemBase + PhysMake(datseg, 0x1375);
 	for (i = 0; i < 7; i ++) {
 
 		randval = random_interval_gen(2, 7);
@@ -6068,15 +6052,15 @@ void choose_typus()
 		if (randval < 7)
 			randval++;
 
-		host_writeb(ptr + i * 3 + 1, randval);
-		host_writeb(ptr + i * 3,  randval);
+		hero.attribs[i + 7].normal = randval;
+		hero.attribs[i + 7].current = randval;
 	}
 
 	/* adjust typus attribute requirements */
 	for (i = 0; i < 4; i++) {
+		Bit8u ta;
 		/* calc pointer to attribute */
-		ptr = MemBase + PhysMake(datseg, 0x1360 +
-			reqs[choosen_typus][i].attrib * 3);
+		ta = reqs[choosen_typus][i].attrib;
 
 		/* get the required value */
 		randval = reqs[choosen_typus][i].requirement;
@@ -6086,18 +6070,18 @@ void choose_typus()
 
 		if (randval & 0x80) {
 			/* attribute upper bound */
-			if ((signed short)host_readb(ptr) <= (randval & 0x7f))
+			if (hero.attribs[ta].normal <= (randval & 0x7f))
 				continue;
 
-			host_writeb(ptr + 1, randval & 0x7f);
-			host_writeb(ptr, randval & 0x7f);
+			hero.attribs[ta].current = randval & 0x7f;
+			hero.attribs[ta].normal = randval & 0x7f;
 		} else {
 			/* attribute lower bound */
-			if ((signed short)host_readb(ptr) >= randval)
+			if (hero.attribs[ta].normal >= randval)
 				continue;
 
-			host_writeb(ptr + 1, randval);
-			host_writeb(ptr, randval);
+			hero.attribs[ta].current = randval;
+			hero.attribs[ta].normal = randval;
 		}
 	}
 
