@@ -616,7 +616,11 @@ static const unsigned char initial_skill_incs[12] = {
 };
 /* DS:0x0a91 */
 static const signed char initial_spell_incs[6] = {
-        25, 25, 40, 20, 20, 20
+	25, 25, 40, 20, 20, 20
+};
+/* DS:0x0a97 */
+static const signed char initial_conv_incs[6] = {
+	5, 5, 5, 0, 0, 0
 };
 
 /* DS:0x0ba2 */
@@ -3644,7 +3648,7 @@ void fill_values()
 		hero.spell_incs = initial_spell_incs[hero.typus - 7];
 
 		/* get convertable increase attempts */
-		di = ds_readb(0xa97 + hero.typus - 7);
+		di = initial_conv_incs[hero.typus - 7];
 
 		if (di && level == 2 && gui_bool((Bit8u*)texts[269])) {
 			/* create string */
