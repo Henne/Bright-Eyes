@@ -2602,8 +2602,9 @@ void print_str(char *str, Bit16u x, Bit16u y)
 Bit16u str_splitter(char *s) {
 
 	char *tp;
-	Bit16u last_space, lines, c_width, l_width, l_width_max;
+	Bit16u last_space, lines, l_width, l_width_max;
 	Bit16s i;
+	unsigned char c_width;
 
 	if (s == NULL || s == (char*)MemBase)
 		return 0;
@@ -2622,7 +2623,7 @@ Bit16u str_splitter(char *s) {
 	l_width = i = last_space = 0;
 
 	while (tp[i]) {
-		get_chr_info(tp[i], (Bit8u*)&c_width);
+		get_chr_info(tp[i], &c_width);
 		l_width += c_width;
 
 		if (l_width >= l_width_max) {
@@ -2666,9 +2667,10 @@ Bit16u str_splitter(char *s) {
 
 Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
 
-	Bit16u width, idx;
+	Bit16u idx;
+	unsigned char width;
 
-	idx = get_chr_info(c, (Bit8u*)&width);
+	idx = get_chr_info(c, &width);
 
 	call_them_all(idx, width, x, y);
 
@@ -2682,7 +2684,7 @@ Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
  *
  * Returns the font index.
  */
-Bit8u get_chr_info(unsigned char c, Bit8u *ptr) {
+unsigned char get_chr_info(unsigned char c, unsigned char *width) {
 
 	unsigned long i;
 
@@ -2691,15 +2693,15 @@ Bit8u get_chr_info(unsigned char c, Bit8u *ptr) {
 		if (chr_lookup[i].chr != c)
 			continue;
 
-		host_writew(ptr, chr_lookup[i].width);
+		*width = chr_lookup[i].width;
 		return chr_lookup[i].idx;
 	}
 
 	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
-		host_writew(ptr, 0);
+		*width = 0;
 		return 0;
 	} else {
-		host_writew(ptr, 6);
+		*width = 6;
 		return 0;
 	}
 }
@@ -2793,10 +2795,11 @@ void get_vals(Bit8u *p1, Bit8u *p2) {
 
 Bit16u get_str_width(char *str) {
 
-	Bit16u width, sum = 0;
+	Bit16u sum = 0;
+	unsigned char width;
 
 	while (*str) {
-		get_chr_info(*str++, (Bit8u*)&width);
+		get_chr_info(*str++, &width);
 		sum += width;
 	}
 
@@ -2813,10 +2816,11 @@ Bit16u get_str_width(char *str) {
  */
 Bit16u get_line_start_c(char *str, Bit16u x, Bit16u x_max) {
 
-	Bit16u width, sum = 0;
+	Bit16u sum = 0;
+	unsigned char width;
 
 	while (*str && *str != 0x40 && *str != 0x0d) {
-		get_chr_info(*str++, (Bit8u*)&width);
+		get_chr_info(*str++, &width);
 		sum += width;
 	}
 	return (x_max - sum) / 2 + x ;
@@ -2824,8 +2828,9 @@ Bit16u get_line_start_c(char *str, Bit16u x, Bit16u x_max) {
 
 Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 {
-	Bit16u pos, l3, di, si;
+	Bit16u pos, di, si;
 	Bit16s c;
+	unsigned char width;
 
 	draw_mouse_ptr_wrapper();
 	di = x;
@@ -2881,12 +2886,12 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 				print_chr(0x20, di, y);
 			pos--;
 			dst--;
-			get_chr_info(*dst, (Bit8u*)&l3);
+			get_chr_info(*dst, &width);
 
 			if (zero == 0)
 				di -= 6;
 			else
-				di -= l3;
+				di -= width;
 		} else {
 			if (!(ds_readb(0x1ff9 + c) & 0x0e) &&
 				(c != 0x84 & 0xff) && (c != 0x94 & 0xff) &&
@@ -2912,10 +2917,10 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 			/* are we at the end of the input field */
 			if (pos == num) {
 				dst--;
-				get_chr_info(*dst, (Bit8u*)&l3);
+				get_chr_info(*dst, &width);
 
 				if (zero != 0)
-					di -= l3;
+					di -= width;
 				else
 					di -= 6;
 
@@ -2925,10 +2930,10 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 			*dst++ = c & 0xff;
 			print_chr(0x20, di, y);
 			print_chr(c & 0xff, di, y);
-			get_chr_info(c & 0xff, (Bit8u*)&l3);
+			get_chr_info(c & 0xff, &width);
 
 			if (zero != 0)
-				di += l3;
+				di += width;
 			else
 				di += 6;
 
