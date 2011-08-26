@@ -702,6 +702,9 @@ static const signed char head_first_female[11] = {	0, 3, 9, 15,
 							21, 27, 34, 37,
 							46, 51, 58 };
 
+/* DS:0x109a */
+static const unsigned char unused_ro1 = 0;
+
 /* DS:0x124a */
 static Bit16s mouse_var = -1;
 
@@ -2622,7 +2625,7 @@ void fill_smth() {
 	Bit8u *ptr;
 	Bit16u i, j;
 
-	if (ds_readb(0x109a))
+	if (unused_ro1)
 		ptr = MemBase + PhysMake(datseg, 0x45a1);
 	else
 		ptr = MemBase + PhysMake(datseg, 0x45e1);
@@ -2639,7 +2642,7 @@ void fill_smth2(Bit8u* ptr) {
 	Bit16u i, j;
 	Bit8u lv;
 
-	if (ds_readb(0x109a))
+	if (unused_ro1)
 		lp = MemBase + PhysMake(datseg, 0x45a1);
 	else
 		lp = MemBase + PhysMake(datseg, 0x45e1);
