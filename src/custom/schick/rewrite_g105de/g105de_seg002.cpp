@@ -822,6 +822,87 @@ static const char fnames_g105de[][13] = { "GEN1.NVF",
 					"SAMPLE.AD",
 					"MT32EMUL.XMI" };
 
+struct struct_chr_lookup {
+	unsigned char chr, idx, width;
+};
+/* DS:0x1b85 */
+static const struct struct_chr_lookup chr_lookup[74] = {
+	{0x20, 0, 6},
+	{0x41, 1, 6},
+	{0x42, 2, 6},
+	{0x43, 3, 6},
+	{0x44, 4, 6},
+	{0x45, 5, 6},
+	{0x46, 6, 6},
+	{0x47, 7, 6},
+	{0x48, 8, 6},
+	{0x49, 9, 4},
+	{0x4a, 10, 6},
+	{0x4b, 11, 6},
+	{0x4c, 12, 5},
+	{0x4d, 13, 6},
+	{0x4e, 14, 6},
+	{0x4f, 15, 6},
+	{0x50, 16, 6},
+	{0x51, 17, 6},
+	{0x52, 18, 6},
+	{0x53, 19, 6},
+	{0x54, 20, 6},
+	{0x55, 21, 6},
+	{0x56, 22, 6},
+	{0x57, 23, 6},
+	{0x58, 24, 6},
+	{0x59, 25, 6},
+	{0x5a, 26, 6},
+	{0x8e, 27, 6},
+	{0x99, 28, 6},
+	{0x9a, 29, 6},
+	{0x2c, 30, 3},
+	{0x2e, 31, 2},
+	{0x2d, 32, 6},
+	{0x28, 33, 4},
+	{0x29, 34, 4},
+	{0x21, 35, 3},
+	{0x3f, 36, 5},
+	{0x30, 37, 6},
+	{0x31, 38, 3},
+	{0x32, 39, 6},
+	{0x33, 40, 6},
+	{0x34, 41, 6},
+	{0x35, 42, 6},
+	{0x36, 43, 6},
+	{0x37, 44, 6},
+	{0x38, 45, 6},
+	{0x39, 46, 6},
+	{0x27, 47, 3},
+	{0x3a, 48, 3},
+	{0x23, 49, 6},
+	{0x26, 50, 5},
+	{0x25, 51, 5},
+	{0x3c, 53, 5},
+	{0x3e, 52, 5},
+	{0x2f, 54, 6},
+	{0x5f, 55, 6},
+	{0xc8, 56, 6},
+	{0xc9, 57, 6},
+	{0xca, 58, 6},
+	{0xcb, 59, 5},
+	{0xcc, 60, 5},
+	{0xcd, 61, 4},
+	{0xce, 62, 5},
+	{0xcf, 63, 5},
+	{0xd0, 64, 2},
+	{0xd1, 65, 6},
+	{0xd2, 66, 6},
+	{0xd3, 67, 5},
+	{0xd4, 68, 6},
+	{0xd5, 69, 5},
+	{0xd6, 70, 6},
+	{0xd7, 71, 5},
+	{0xd8, 72, 6},
+	{0xd9, 73, 5},
+};
+
 /* DS:0x1c63 */
 static const struct mouse_action action_input[2] = {
 			{ 0, 0, 319, 199, 0x1c},
@@ -2603,15 +2684,15 @@ Bit16u print_chr(unsigned char c, Bit16u x, Bit16u y) {
  */
 Bit8u get_chr_info(unsigned char c, Bit8u *ptr) {
 
-	Bit16u i;
+	unsigned long i;
 
-	for (i = 0; i != 222; i += 3) {
+	for (i = 0; i != 74; i++) {
 		/* search for the character */
-		if (ds_readb(0x1b85 + i) != c)
+		if (chr_lookup[i].chr != c)
 			continue;
 
-		host_writew(ptr, ds_readb(0x1b85 + 2 + i));
-		return ds_readb(0x1b85 + 1 + i);
+		host_writew(ptr, chr_lookup[i].width);
+		return chr_lookup[i].idx;
 	}
 
 	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
