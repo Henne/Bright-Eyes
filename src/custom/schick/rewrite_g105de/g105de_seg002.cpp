@@ -720,6 +720,8 @@ static const signed char head_first_male[12] = {	0, 0, 6, 12,
 static const signed char head_first_female[11] = {	0, 3, 9, 15,
 							21, 27, 34, 37,
 							46, 51, 58 };
+/* DS:0x113b */
+static struct struct_color pal_tmp[32];
 
 /* DS:0x109a */
 static const unsigned char unused_ro1 = 0;
@@ -6522,7 +6524,7 @@ void intro()
 	wait_for_vsync();
 
 
-	set_palette(MemBase + PhysMake(datseg, 0x113b), 0, 32);
+	set_palette((Bit8u*)pal_tmp, 0, 32);
 
 	/* draw DSALOGO.DAT */
 	ds_writew(0x40c5, 0);
