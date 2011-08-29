@@ -60,7 +60,7 @@ namespace G105de {
 	void draw_v_line(Bit16u, Bit16u, Bit16u, Bit16u);
 	void do_draw_pic(Bit16u);
 	void draw_popup_line(Bit16u, Bit16u);
-	Bit16u infobox(Bit8u*, Bit16u);
+	Bit16u infobox(char*, Bit16u);
 	void call_fill_rect_gen(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
 	void wait_for_vsync();
 	void blit_smth3(PhysPt, Bit16u, Bit16u);

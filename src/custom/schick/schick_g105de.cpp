@@ -1367,7 +1367,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 
 
-					reg_ax = G105de::infobox(MemBase + Real2Phys(ptr), c);
+					reg_ax = G105de::infobox((char*)MemBase + Real2Phys(ptr), c);
 					D1_LOG("infobox(%s,%x); = %d\n",
 						MemBase + Real2Phys(ptr), c , reg_ax);
 

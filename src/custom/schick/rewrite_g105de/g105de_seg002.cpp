@@ -1923,7 +1923,7 @@ void handle_input()
 				si = 0;
 				menu_tiles = 4;
 				ds_writew(0x4789, 1);
-				infobox((Bit8u*)texts[267], 0);
+				infobox(texts[267], 0);
 				ds_writew(0x4789, 0);
 				menu_tiles = 3;
 			}
@@ -2265,12 +2265,12 @@ void save_chr()
 
 	/* check for typus */
 	if (hero.typus == 0) {
-		infobox((Bit8u*)texts[0x120 / 4], 0);
+		infobox(texts[0x120 / 4], 0);
 		return;
 	}
 	/* check for name */
 	if (hero.name[0] == 0) {
-		infobox((Bit8u*)texts[0x120 / 4], 0);
+		infobox(texts[0x120 / 4], 0);
 		return;
 	}
 	/* Load picture from nvf */
@@ -3141,7 +3141,7 @@ void draw_popup_line(Bit16u line, Bit16u type)
  *
  *	if @digits is zero the function just delays.
  */
-Bit16u infobox(Bit8u *msg, Bit16u digits)
+Bit16u infobox(char *msg, Bit16u digits)
 {
 	PhysPt src, dst;
 	Bit16u bg, fg;
@@ -3158,7 +3158,7 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 	ds_writew(0x40bb, abs(320 - di) / 2 + ds_readw(0x1327));
 	text_x = abs(320 - di) / 2 + ds_readw(0x1327) + 5;
 	text_x_end = di - 10;
-	lines = str_splitter((char*)msg);
+	lines = str_splitter(msg);
 
 	if (digits != 0)
 		lines += 2;
@@ -3186,7 +3186,7 @@ Bit16u infobox(Bit8u *msg, Bit16u digits)
 	get_vals((Bit8u*)&fg, (Bit8u*)&bg);
 	set_vals(0xff, 0xdf);
 
-	print_line((char*)msg);
+	print_line(msg);
 
 	ds_writew(0x4599, 0);
 	call_mouse();
@@ -3681,7 +3681,7 @@ void do_gen()
 
 		if (ds_readw(0x459f) == 0x48 && gen_page == 0) {
 			if (hero.typus == 0) {
-				infobox((Bit8u*)texts[0x44 / 4], 0);
+				infobox(texts[0x44 / 4], 0);
 			} else {
 				if (head_current < head_last) {
 					head_current++;
@@ -3694,7 +3694,7 @@ void do_gen()
 
 		if (ds_readw(0x459f) == 0x50 && gen_page == 0) {
 			if (hero.typus == 0) {
-				infobox((Bit8u*)texts[0x44 / 4], 0);
+				infobox(texts[0x44 / 4], 0);
 			} else {
 				if (head_current > head_first) {
 					head_current--;
@@ -3707,7 +3707,7 @@ void do_gen()
 
 		if (ds_readw(0x459f) == 0x4d && level != 1) {
 			if (hero.typus == 0) {
-				infobox((Bit8u*)texts[0x120 / 4], 0);
+				infobox(texts[0x120 / 4], 0);
 			} else {
 				ds_writew(0x11fe, 1);
 
@@ -3725,7 +3725,7 @@ void do_gen()
 			} else {
 				if (level != 1) {
 					if (hero.typus == 0) {
-						infobox((Bit8u*)texts[0x120 / 4], 0);
+						infobox(texts[0x120 / 4], 0);
 					} else {
 						ds_writew(0x11fe, 1);
 						gen_page = hero.typus < 7 ? 4 : 10;
@@ -3888,7 +3888,7 @@ void fill_values()
 			/* create string */
 			sprintf(gen_ptr2, texts[270], di);
 
-			i = infobox((Bit8u*)gen_ptr2, 1);
+			i = infobox(gen_ptr2, 1);
 
 			if (i > 0) {
 				/* spell attempts to skill attempts */
@@ -3904,7 +3904,7 @@ void fill_values()
 				/* create string */
 				sprintf(gen_ptr2, texts[271], di);
 
-				i = infobox((Bit8u*)gen_ptr2, 1);
+				i = infobox(gen_ptr2, 1);
 				if (i > 0) {
 					if (i > di)
 						i = di;
@@ -4459,7 +4459,7 @@ void select_typus()
 
 	/* check if attribs have bee set */
 	if (hero.attribs[0].normal == 0) {
-		infobox((Bit8u*)texts[265], 0);
+		infobox(texts[265], 0);
 		return;
 	}
 	/* save the old typus */
@@ -4512,10 +4512,10 @@ void select_typus()
 	if (possible_types == 0) {
 		if (can_change_attribs() == 0) {
 			/* totally messed up values */
-			infobox((Bit8u*)texts[284], 0);
+			infobox(texts[284], 0);
 			return;
 		} else {
-			infobox((Bit8u*)texts[31], 0);
+			infobox(texts[31], 0);
 			return;
 		}
 	}
@@ -4643,12 +4643,12 @@ void change_attribs()
 
 	/* check if attributes have been set */
 	if (hero.attribs[0].normal == 0) {
-		infobox((Bit8u*)texts[16], 0);
+		infobox(texts[16], 0);
 		return;
 	}
 	/* check if changing is possible */
 	if (can_change_attribs() == 0) {
-		infobox((Bit8u*)texts[266], 0);
+		infobox(texts[266], 0);
 		return;
 	}
 	/* if typus != 0 */
@@ -4675,7 +4675,7 @@ void change_attribs()
 	}
 	/* check again if changing is possible */
 	if (can_change_attribs() == 0) {
-		infobox((Bit8u*)texts[266], 0);
+		infobox(texts[266], 0);
 		return;
 	}
 	/* select a positive attribute to change */
@@ -4704,7 +4704,7 @@ void change_attribs()
 	if (tmp3 == INC) {
 		/* increment */
 		if (hero.attribs[tmp2].normal == 13) {
-			infobox((Bit8u*)texts[77], 0);
+			infobox(texts[77], 0);
 			return;
 		}
 		c = 0;
@@ -4716,7 +4716,7 @@ void change_attribs()
 			c += 8 - hero.attribs[di].normal;
 		}
 		if (c < 2) {
-			infobox((Bit8u*)texts[85], 0);
+			infobox(texts[85], 0);
 			return;
 		}
 		/* increment positive attribute */
@@ -4743,12 +4743,12 @@ void change_attribs()
 			si--;
 			/* check if this attribute has been decremented */
 			if (attrib_changed[si + 7] == DEC) {
-				infobox((Bit8u*)texts[83], 0);
+				infobox(texts[83], 0);
 				continue;
 			}
 			/* check if attribute can be incremented */
 			if (hero.attribs[si + 7].normal == 8) {
-				infobox((Bit8u*)texts[77], 0);
+				infobox(texts[77], 0);
 				continue;
 			}
 			/* increment the negative attribute */
@@ -4763,7 +4763,7 @@ void change_attribs()
 		/* decrement */
 		/* check if the positive attribute can be decremented */
 		if (hero.attribs[tmp2].normal == 8) {
-			infobox((Bit8u*)texts[81], 0);
+			infobox(texts[81], 0);
 			return;
 		}
 		c = 0;
@@ -4775,7 +4775,7 @@ void change_attribs()
 			c += hero.attribs[di].normal - 2;
 		}
 		if (c < 2) {
-			infobox((Bit8u*)texts[84], 0);
+			infobox(texts[84], 0);
 			return;
 		}
 		/* decrement positive attribute */
@@ -4802,12 +4802,12 @@ void change_attribs()
 			si--;
 			/* check if this attribute has been incremented */
 			if (attrib_changed[si + 7] == INC) {
-				infobox((Bit8u*)texts[82], 0);
+				infobox(texts[82], 0);
 				continue;
 			}
 			/* check if attribute can be decremented */
 			if (hero.attribs[si + 7].normal == 2) {
-				infobox((Bit8u*)texts[81], 0);
+				infobox(texts[81], 0);
 				continue;
 			}
 			/* deccrement the negative attribute */
@@ -5582,12 +5582,12 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 {
 	/* no more increments than the maximum */
 	if (skill_incs[skill].incs >= max) {
-		infobox(msg, 0);
+		infobox((char*)msg, 0);
 		return;
 	}
 	/* we just have 3 tries to increment */
 	if (skill_incs[skill].tries == 3) {
-		infobox((Bit8u*)texts[151], 0);
+		infobox(texts[151], 0);
 		return;
 	}
 
@@ -5595,7 +5595,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 	hero.skill_incs--;
 	if (random_interval_gen(2, 12) > hero.skills[skill]) {
 		/* print sucess message */
-		infobox((Bit8u*)texts[152], 0);
+		infobox(texts[152], 0);
 		/* increment skill */
 		hero.skills[skill]++;
 		/* reset tries */
@@ -5616,7 +5616,7 @@ void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
 		}
 	} else {
 		/* print failure message */
-		infobox((Bit8u*)texts[153], 0);
+		infobox(texts[153], 0);
 		/* increment try */
 		skill_incs[skill].tries++;
 	}
@@ -5632,7 +5632,7 @@ void select_skill()
 
 		/* check skill attempts */
 		if (hero.skill_incs == 0) {
-			infobox((Bit8u*)texts[94], 0);
+			infobox(texts[94], 0);
 			return;
 		}
 
@@ -5844,12 +5844,12 @@ void inc_spell(Bit16u spell)
 
 	/* all spell increments used for that spell */
 	if (spell_incs[spell].incs >= max_incs) {
-		infobox((Bit8u*)texts[0x404 / 4], 0);
+		infobox(texts[0x404 / 4], 0);
 		return;
 	}
 	/* all tries used for that spell */
 	if (spell_incs[spell].tries == 3) {
-		infobox((Bit8u*)texts[0x25c / 4], 0);
+		infobox(texts[0x25c / 4], 0);
 		return;
 	}
 
@@ -5858,7 +5858,7 @@ void inc_spell(Bit16u spell)
 
 	if (random_interval_gen(2, 12) > hero.spells[spell]) {
 		/* show success */
-		infobox((Bit8u*)texts[0x260 / 4], 0);
+		infobox(texts[0x260 / 4], 0);
 		/* increment spell value */
 		hero.spells[spell]++;
 		/* reset tries */
@@ -5867,7 +5867,7 @@ void inc_spell(Bit16u spell)
 		spell_incs[spell].incs++;
 	} else {
 		/* show failure */
-		infobox((Bit8u*)texts[0x264 / 4], 0);
+		infobox(texts[0x264 / 4], 0);
 		/* increment tries */
 		spell_incs[spell].tries++;
 	}
@@ -5883,7 +5883,7 @@ void select_spell()
 
 		/* check if we have spell attempts */
 		if (hero.spell_incs == 0) {
-			infobox((Bit8u*)texts[94], 0);
+			infobox(texts[94], 0);
 			ds_writew(0x1327, 0);
 			return;
 		}
@@ -6204,7 +6204,7 @@ void choose_atpa()
 							hero.pa[skill]--;
 							refresh_screen();
 						} else {
-							infobox((Bit8u*)texts[255], 0);
+							infobox(texts[255], 0);
 						}
 					} else {
 						if (hero.skills[skill] >= 0 &&
@@ -6215,12 +6215,12 @@ void choose_atpa()
 							hero.pa[skill]++;
 							refresh_screen();
 						} else {
-							infobox((Bit8u*)texts[256], 0);
+							infobox(texts[256], 0);
 						}
 					}
 				}
 			} else {
-				infobox((Bit8u*)texts[260], 0);
+				infobox(texts[260], 0);
 			}
 		}
 
