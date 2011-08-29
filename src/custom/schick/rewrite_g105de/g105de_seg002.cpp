@@ -4377,7 +4377,6 @@ void spell_inc_novice(Bit16u spell)
 void select_typus()
 {
 	Bit8s old_typus, possible_types, ltmp2;
-	Bit8u *ptr;
 	bool impossible;
 	Bit16s i, si, di;
 	struct type_bitmap t;
@@ -4516,7 +4515,6 @@ void select_typus()
  */
 Bit16u can_change_attribs()
 {
-	Bit8u *p;
 	Bit16u i;
 	Bit16s pa_inc, pa_dec, na_inc, na_dec;
 
