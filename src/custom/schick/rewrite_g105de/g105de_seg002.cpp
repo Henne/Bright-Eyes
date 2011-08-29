@@ -26,7 +26,7 @@
 
 namespace G105de {
 
-struct color_struct {
+struct struct_color {
 	signed char r;
 	signed char g;
 	signed char b;
@@ -934,14 +934,8 @@ struct type_bitmap empty_bitmap;
 
 /* DS:0x1cb3 */
 static char version[] = "V1.05";
-
-struct struct_pal {
-        signed char r, g, b;
-};
-
-
 /* DS:0x1cb9 */
-static const struct struct_pal pal_attic[16] = {
+static const struct struct_color pal_attic[16] = {
 	{0x00, 0x00, 0x00},
 	{0x24, 0x24, 0x3c},
 	{0x1c, 0x1c, 0x38},
@@ -960,7 +954,7 @@ static const struct struct_pal pal_attic[16] = {
 	{0x20, 0x26, 0x3c},
 };
 /* DS:0x1ce9 */
-static const struct struct_pal pal_dsalogo[32] = {
+static const struct struct_color pal_dsalogo[32] = {
 	{0x00, 0x00, 0x00},
 	{0x38, 0x38, 0x38},
 	{0x34, 0x34, 0x34},
@@ -994,13 +988,12 @@ static const struct struct_pal pal_dsalogo[32] = {
 	{0x14, 0x00, 0x00},
 	{0x3c, 0x3c, 0x3c},
 };
-
 /* DS:0x1d49 */
-static const struct color_struct col_white = { 0x3f, 0x3f, 0x3f };
+static const struct struct_color col_white = { 0x3f, 0x3f, 0x3f };
 /* DS:0x1d4c */
-static const struct color_struct col_black = { 0x00, 0x00, 0x00 };
+static const struct struct_color col_black = { 0x00, 0x00, 0x00 };
 /* DS:0x1d4f */
-static const struct color_struct col_popup[8] = {
+static const struct struct_color col_popup[8] = {
 						{ 0x00, 0x00, 0x00 },
 						{ 0x38, 0x30, 0x28 },
 						{ 0x38, 0x30, 0x10 },
@@ -1011,7 +1004,7 @@ static const struct color_struct col_popup[8] = {
 						{ 0x0b, 0x19, 0x0c }
 };
 /* DS:0x1d67 */
-static const struct color_struct col_misc[3] = {
+static const struct struct_color col_misc[3] = {
 						{ 0x28, 0x00, 0x00 },
 						{ 0x28, 0x28, 0x00 },
 						{ 0x00, 0x00, 0x28 } };
