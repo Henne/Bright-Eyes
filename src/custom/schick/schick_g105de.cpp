@@ -1569,7 +1569,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("inc_skill(%d, %d, %p)\n",
 						skill, max, (char*)MemBase + Real2Phys(msg));
-					G105de::inc_skill(skill, max, MemBase + Real2Phys(msg));
+					G105de::inc_skill(skill, max, (char*)MemBase + Real2Phys(msg));
 					return 1;
 				}
 				case 0x5bdd: {

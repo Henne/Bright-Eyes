@@ -5578,7 +5578,7 @@ void make_valuta_str(char *dst, unsigned int money)
 	sprintf(dst, texts[0x114 / 4], d, s, money);
 }
 
-void inc_skill(Bit16u skill, Bit16u max, Bit8u *msg)
+void inc_skill(Bit16u skill, Bit16u max, char *msg)
 {
 	/* no more increments than the maximum */
 	if (skill_incs[skill].incs >= max) {
@@ -5664,8 +5664,7 @@ void select_skill()
 						if (skill == -2)
 							break;
 
-						inc_skill(skill, 1,
-							(Bit8u*)texts[148]);
+						inc_skill(skill, 1, texts[148]);
 
 						break;
 					}
@@ -5684,8 +5683,7 @@ void select_skill()
 							break;
 
 						skill += 9;
-						inc_skill(skill, 2,
-							(Bit8u*)texts[149]);
+						inc_skill(skill, 2, texts[149]);
 						break;
 					}
 				}
@@ -5713,8 +5711,7 @@ void select_skill()
 							break;
 
 						skill += 19;
-						inc_skill(skill, 2,
-							(Bit8u*)texts[149]);
+						inc_skill(skill, 2, texts[149]);
 						break;
 					}
 					case 2: {
@@ -5735,8 +5732,7 @@ void select_skill()
 							break;
 
 						skill += 32;
-						inc_skill(skill, 3,
-							(Bit8u*)texts[150]);
+						inc_skill(skill, 3, texts[150]);
 						break;
 					}
 				}
@@ -5768,8 +5764,7 @@ void select_skill()
 							break;
 
 						skill += 41;
-						inc_skill(skill, 2,
-							(Bit8u*)texts[149]);
+						inc_skill(skill, 2, texts[149]);
 						break;
 					}
 					case 2: {
@@ -5788,8 +5783,7 @@ void select_skill()
 							break;
 
 						skill += 26;
-						inc_skill(skill, 2,
-							(Bit8u*)texts[149]);
+						inc_skill(skill, 2, texts[149]);
 						break;
 					}
 					case 3: {
@@ -5804,8 +5798,7 @@ void select_skill()
 							break;
 
 						skill += 50;
-						inc_skill(skill, 1,
-							(Bit8u*)texts[148]);
+						inc_skill(skill, 1, texts[148]);
 						break;
 					}
 				}
