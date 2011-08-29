@@ -4245,9 +4245,6 @@ void new_values()
 		refresh_screen();
 		call_mouse();
 	}
-
-
-
 }
 
 /**
