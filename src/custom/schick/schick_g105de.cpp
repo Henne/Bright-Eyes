@@ -9,12 +9,12 @@
 #include "rewrite_g105de/g105de_seg001.h"
 #include "rewrite_g105de/g105de_seg002.h"
 #include "rewrite_g105de/g105de_seg003.h"
+#include "rewrite_g105de/g105de_seg004.h"
 #include "rewrite_g105de/g105de_seg005.h"
 #include "rewrite_g105de/g105de_seg006.h"
 
 #include "rewrite_m302de/seg002.h"
 #include "rewrite_m302de/seg008.h"
-#include "rewrite_m302de/seg009.h"
 
 static int seg000(Bitu offs) {
 	switch (offs) {
@@ -418,7 +418,7 @@ static int seg004(Bitu offs) {
 			RealSeg(dst), RealOff(dst),
 			RealSeg(src), RealOff(src), len);
 
-		decomp_pp20(MemBase + Real2Phys(src),
+		G105de::decomp_pp20(MemBase + Real2Phys(src),
 			MemBase + Real2Phys(dst),
 			MemBase + Real2Phys(src) + 8, len);
 

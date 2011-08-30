@@ -16,12 +16,12 @@
 #include "g105de_seg001.h"
 #include "g105de_seg002.h"
 #include "g105de_seg003.h"
+#include "g105de_seg004.h"
 #include "g105de_seg005.h"
 #include "g105de_seg006.h"
 
 #include "../rewrite_m302de/seg002.h"
 #include "../rewrite_m302de/seg008.h"
-#include "../rewrite_m302de/seg009.h"
 
 
 namespace G105de {

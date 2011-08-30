@@ -1055,6 +1055,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schick\rewrite_g105de\g105de_seg004.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_g105de\g105de_seg004.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schick\rewrite_g105de\g105de_seg005.h"
 						>
 					</File>
