@@ -14,7 +14,6 @@
 #include "rewrite_g105de/g105de_seg006.h"
 
 #include "rewrite_m302de/seg002.h"
-#include "rewrite_m302de/seg008.h"
 
 static int seg000(Bitu offs) {
 	switch (offs) {
@@ -454,7 +453,7 @@ static int seg005(Bitu offs) {
 		D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
 			RealSeg(ptr), RealOff(ptr), first_color, colors);
 
-		set_palette(MemBase + Real2Phys(ptr),
+		G105de::set_palette(MemBase + Real2Phys(ptr),
 			(unsigned char)first_color, colors);
 
 		return 1;
@@ -467,7 +466,7 @@ static int seg005(Bitu offs) {
 		CPU_Push16(cnt);
 		CPU_Push16(ptr);
 
-		draw_h_line(PhysMake(0xa000, ptr), cnt, (unsigned char)color);
+		G105de::draw_h_line(PhysMake(0xa000, ptr), cnt, (unsigned char)color);
 
 			D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
 				ptr % 320, ptr / 320, cnt, color);

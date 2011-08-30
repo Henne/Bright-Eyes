@@ -21,7 +21,6 @@
 #include "g105de_seg006.h"
 
 #include "../rewrite_m302de/seg002.h"
-#include "../rewrite_m302de/seg008.h"
 
 
 namespace G105de {

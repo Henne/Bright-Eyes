@@ -10,15 +10,52 @@
 #include "paging.h"
 #include "callback.h"
 
+#include "../../ints/int10.h"
+
 #include "schick.h"
 
 namespace G105de {
+
+void set_video_mode(unsigned char mode) {
+	INT10_SetVideoMode(mode);
+}
+
+void set_video_page(unsigned char mode) {
+	INT10_SetActivePage(mode);
+}
 
 void save_display_stat(RealPt p)
 {
 	CPU_Push32(p);
 	CALLBACK_RunRealFar(reloc_gen + 0xb6b, 0x34);
 	CPU_Pop32();
+}
+
+void set_color(Bit8u *ptr, unsigned char color){
+	INT10_SetSingleDacRegister(color, ptr[0], ptr[1], ptr[2]);
+}
+
+void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors){
+	unsigned short i;
+	for (i = 0; i < colors; i++)
+		INT10_SetSingleDacRegister(first_color + i,
+			ptr[i*3], ptr[i*3+1], ptr[i*3+2]);
+}
+
+void draw_h_line(PhysPt ptr, unsigned short count, unsigned char color) {
+	unsigned short i;
+
+	for (i = 0; i < count; i++)
+		mem_writeb_inline(ptr + i, color);
+}
+
+void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space) {
+	unsigned short i;
+
+	for (i = 0; i < count; i++) {
+		mem_writeb_inline(ptr, color);
+		ptr += space;
+	}
 }
 
 void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
@@ -94,6 +131,20 @@ void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
 			break;
 		}
 	}
+}
+
+void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height) {
+	unsigned short x;
+
+	for (; height; height--) {
+		for (x = 0; x < width; x++)
+			mem_writeb_inline(ptr++ , color);
+	ptr += 320 - width;
+	}
+}
+
+unsigned short swap_u16(unsigned short val) {
+	return (val << 8) | (val >> 8);
 }
 
 void copy_to_screen(PhysPt src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
