@@ -20,10 +20,26 @@
 #include "g105de_seg005.h"
 #include "g105de_seg006.h"
 
-#include "../rewrite_m302de/seg002.h"
-
-
 namespace G105de {
+
+
+/**
+	struct nvf_desc - nvf descriptor
+	@src:   pointer to a buffer containing the nvf file
+	@dst:   pointer where to extract the picture
+	@nr:    number of the picture to extract
+	@type:  kind of compression / direction (0 = PP20 / 2-5 RLE / copy)
+	@p_height:      pointer where the height of the picture must be stored
+	@p_width:       pointer where the width of the picture must be stored
+*/
+struct nvf_desc {
+	RealPt src;
+	RealPt dst;
+	short nr;
+	signed char type;
+	RealPt p_width;
+	RealPt p_height;
+};
 
 struct struct_color {
 	signed char r;
@@ -1784,6 +1800,18 @@ void mouse_do_disable()
 	eh_installed = false;
 }
 
+/**
+ * mouse_move_cursor -	move the mouse cursor to a position
+ * @x:	X - coordinate
+ * @y:	Y - coordinate
+ */
+void mouse_move_cursor(unsigned short x, unsigned short y) {
+	unsigned short v1 = 4;
+	unsigned short v2 = 0xdead;
+
+	mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&x, (Bit8u*)&y, (Bit8u*)&v2);
+}
+
 /* static */
 void draw_mouse_ptr_wrapper() {
 
@@ -2462,6 +2490,130 @@ void read_common_files()
 	decomp_pp20(Real2Host(ds_readd(0x47a7)) - 8,
 		Real2Host(ds_readd(0x47a7)), NULL, len);
 
+}
+
+static inline unsigned int swap_u32(unsigned int v) {
+	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
+		((v >> 8) & 0xff) << 16 | (v&0xff) << 24;
+
+};
+
+signed int process_nvf(Bit8u *nvf) {
+	signed char nvf_type;
+	Bit8u *src, *dst;
+	int p_size;
+	int offs;
+	signed int retval;
+	short va;
+	short height;
+	short pics;
+	short width;
+	short i;
+
+	struct nvf_desc d;
+
+	d.dst = host_readd(nvf);
+	d.src = host_readd(nvf+4);
+	d.nr = host_readw(nvf+8);
+	d.type = host_readb(nvf+10);
+	d.p_width = host_readd(nvf+11);
+	d.p_height = host_readd(nvf+15);
+
+	Bit8u *p = MemBase + Real2Phys(d.src);
+	dst = MemBase + Real2Phys(d.dst);
+
+	nvf_type = host_readb(p);
+	va = nvf_type & 0x80;
+	nvf_type &= 0x7f;
+
+	pics = host_readw(p + 1);
+
+	if (d.nr < 0)
+		d.nr = 0;
+
+	if (d.nr > pics - 1)
+		d.nr = pics - 1;
+
+	switch (nvf_type) {
+
+	case 0x00:
+		width = host_readw(p + 3);
+		height = host_readw(p + 5);
+		p_size = height * width;
+		src =  p + d.nr * p_size + 7;
+		break;
+
+	case 0x01:
+		offs = pics * 4 + 3;
+		for (i = 0; i < d.nr; i++)
+			offs += width * height;
+
+		width = host_readw(p + d.nr * 4 + 3);
+		height = host_readw(p + d.nr * 4 + 5);
+		p_size = width * height;
+		src = p + offs;
+		break;
+
+	case 0x02: case 0x04:
+		width = host_readw(p + 3);
+		height = host_readw(p + 5);
+		offs = pics * 4 + 7;
+		for (i = 0; i < d.nr; i++)
+			offs += host_readd(p  + (i * 4) + 7);
+
+		p_size = host_readd(p + d.nr * 4 + 7);
+		src = p + offs;
+		break;
+
+	case 0x03: case 0x05:
+		offs = pics * 8 + 3;
+		for (i = 0; i < d.nr; i++)
+			offs += host_readd(p  + (i * 8) + 7);
+
+		width = host_readw(p + d.nr * 8 + 3);
+		height = host_readw(p + d.nr * 8 + 5);
+		p_size = host_readd(p + i * 8 + 7);
+		src = p + offs;
+		break;
+	}
+
+	switch (d.type) {
+
+	case 0:
+		/* PP20 decompression */
+
+		if (va != 0) {
+			/* get size from unpacked picture */
+			retval = host_readd(src);
+			retval = host_readd(src + (retval - 4));
+			retval = swap_u32(retval) >> 8;
+
+		} else
+			retval = width * height;
+
+		decomp_pp20(src, dst, src + 4, p_size);
+		break;
+
+	case 2: case 3: case 4: case 5:
+		/* RLE decompression */
+		decomp_rle(dst, src, 0, 0, width, height, d.type);
+		/* retval was originally neither set nor used here.
+			VC++2008 complains about an uninitialized variable
+			on a Debug build, so we fix this for debuggings sake */
+		/* Orig-Fix */
+		retval = p_size;
+		break;
+
+	default:
+		/* No decompression, just copy */
+		memmove(MemBase + Real2Phys(d.dst), src, (short)p_size);
+		retval = p_size;
+	}
+
+	mem_writew(Real2Phys(d.p_width), width);
+	mem_writew(Real2Phys(d.p_height), height);
+
+	return retval;
 }
 
 /* static */

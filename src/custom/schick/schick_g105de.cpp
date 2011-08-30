@@ -13,8 +13,6 @@
 #include "rewrite_g105de/g105de_seg005.h"
 #include "rewrite_g105de/g105de_seg006.h"
 
-#include "rewrite_m302de/seg002.h"
-
 static int seg000(Bitu offs) {
 	switch (offs) {
 		case 0x3a4: {
@@ -1003,7 +1001,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 
 					D1_LOG("process_nvf(%x);\n", ptr);
-					process_nvf(MemBase + Real2Phys(ptr));
+					G105de::process_nvf(MemBase + Real2Phys(ptr));
 
 					return 1;
 				}
