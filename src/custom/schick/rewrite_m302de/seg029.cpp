@@ -2,6 +2,7 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg008.h"
@@ -106,6 +107,33 @@ void clear_hero_icon(unsigned short pos) {
 	/* fill bars area black */
 	do_fill_rect(ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
 		ds_readw(0x2d01 + pos * 2) + 39, 188, 0);
+}
+
+/**
+ * load_icon - loads an icon to the icoc_buffer
+ * @fileindex:	index of the icon file (ICONS or BICONS)
+ * @icon:	index if the icon in the file
+ * @pos:	position of the icon (0-8)
+ */
+//static
+void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
+{
+	Bit16u fd;
+
+	fd = load_archive_file(fileindex);
+
+	seg002_0c72(fd, icon * 576);
+
+	read_archive_file(fd, Real2Host(ds_readd(0xd2e7)) + pos * 576, 576);
+
+	bc_close(fd);
+
+	if (fileindex == 0x0f)
+		/* Real Icon */
+		ds_writeb(0x5ecc + pos, icon);
+	else
+		/* Blank Icon */
+		ds_writeb(0x5ecc + pos, 0xff);
 }
 
 void clear_loc_line() {

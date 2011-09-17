@@ -4334,6 +4334,22 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("clear_hero_icon(%d)\n", pos);
 			return 1;
 		}
+		case 0x492: {
+			CPU_Pop16();
+			Bit16u index = CPU_Pop16();
+			Bit16u icon = CPU_Pop16();
+			Bit16u pos = CPU_Pop16();
+
+			D1_LOG("load_icon(%x, %x, %x);\n",
+				index, icon, pos);
+			M302de::load_icon(index, icon, pos);
+
+			CPU_Push16(pos);
+			CPU_Push16(icon);
+			CPU_Push16(index);
+
+			return 1;
+		}
 		case 0x4fd: {
 			return 0;
 		}
@@ -4342,9 +4358,6 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("near clear_loc_line();\n");
 			M302de::clear_loc_line();
 			return 1;
-		}
-		case 0x492: {
-			return 0;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
