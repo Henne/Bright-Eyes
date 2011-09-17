@@ -67,7 +67,6 @@ void draw_playmask()
 
 }
 
-}
 /**
  * copy_forename - copys the forename from a name
  * @dst:	wheres the forename should be stored
@@ -194,4 +193,6 @@ void deselect_hero_icon(unsigned short pos) {
 
 	/* restore textcolors */
 	GUI_set_smth(fg, bg);
+}
+
 }

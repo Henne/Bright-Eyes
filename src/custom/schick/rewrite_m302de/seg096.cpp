@@ -312,7 +312,7 @@ void GUI_print_loc_line(Bit8u * str) {
 	ds_writew(0xd2d7, 143);
 	ds_writew(0xd2d5, 307);
 
-	clear_loc_line();
+	M302de::clear_loc_line();
 	GUI_print_header(str);
 
 	ds_writew(0xd2d9, l1);

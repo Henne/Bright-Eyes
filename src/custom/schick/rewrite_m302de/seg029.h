@@ -3,8 +3,6 @@ namespace M302de {
 //static
 void draw_playmask();
 
-}
-
 //0x34
 void clear_hero_icon(unsigned short);
 //0x39
@@ -15,3 +13,5 @@ void select_hero_icon(unsigned short);
 void deselect_hero_icon(unsigned short);
 //0x48
 void copy_forename(Bit8u *, Bit8u *);
+
+}

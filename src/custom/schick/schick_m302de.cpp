@@ -2409,14 +2409,14 @@ static int seg029(unsigned short offs) {
 	}
 	case 0x39: {
 		D1_LOG("clear_loc_line();\n");
-		clear_loc_line();
+		M302de::clear_loc_line();
 		return 1;
 	}
 	case 0x3e: {
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
 
-		select_hero_icon(pos);
+		M302de::select_hero_icon(pos);
 		D1_LOG("select_hero_icon(%d);\n", pos);
 		return 1;
 	}
@@ -2424,7 +2424,7 @@ static int seg029(unsigned short offs) {
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
 
-		deselect_hero_icon(pos);
+		M302de::deselect_hero_icon(pos);
 		D1_LOG("deselect_hero_icon(%d);\n", pos);
 		return 1;
 	}
@@ -2434,7 +2434,7 @@ static int seg029(unsigned short offs) {
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 
-		copy_forename(Real2Host(p1), Real2Host(p2));
+		M302de::copy_forename(Real2Host(p1), Real2Host(p2));
 		D1_LOG("copy_forename(%s, %s)\n",
 			(char*)Real2Host(p1),
 			(char*)Real2Host(p2));
@@ -4315,7 +4315,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p2);
 			CPU_Push32(p1);
 
-			copy_forename(Real2Host(p1),
+			M302de::copy_forename(Real2Host(p1),
 				Real2Host(p2));
 			D1_LOG("near copy_forename(%s, %s)\n",
 				(char*)Real2Host(p1),
@@ -4330,7 +4330,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			unsigned short pos = CPU_Pop16();
 			CPU_Push16(pos);
 
-			clear_hero_icon(pos);
+			M302de::clear_hero_icon(pos);
 			D1_LOG("clear_hero_icon(%d)\n", pos);
 			return 1;
 		}
@@ -4340,7 +4340,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		case 0x5ff: {
 			CPU_Pop16();
 			D1_LOG("near clear_loc_line();\n");
-			clear_loc_line();
+			M302de::clear_loc_line();
 			return 1;
 		}
 		case 0x492: {
