@@ -21,6 +21,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg010.h"
+#include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg032.h"
@@ -2347,8 +2348,11 @@ static int seg026(unsigned short offs) {
 			return 0;
 		}
 		if (offs == 0x0048) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
+			Bit16s head = CPU_Pop16();
+			D1_LOG("load_in_head(%d)\n", head);
+			M302de::load_in_head(head);
+			CPU_Push16(head);
+			return 1;
 		}
 		if (offs == 0x004d) {
 			D1_LOG("ip=0x%4X unknown()\n", offs);
