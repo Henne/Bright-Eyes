@@ -2402,7 +2402,9 @@ static int seg029(unsigned short offs) {
 		return 0;
 	}
 	case 0x2a: {
-		return 0;
+		D1_LOG("draw_icons();\n");
+		M302de::draw_icons();
+		return 1;
 	}
 	case 0x2f: {
 		return 0;
@@ -4351,7 +4353,10 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x4fd: {
-			return 0;
+			CPU_Pop16();
+			D1_LOG("draw_icons();\n");
+			M302de::draw_icons();
+			return 1;
 		}
 		case 0x5ff: {
 			CPU_Pop16();

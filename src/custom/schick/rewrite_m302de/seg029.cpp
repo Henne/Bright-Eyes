@@ -136,6 +136,40 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 		ds_writeb(0x5ecc + pos, 0xff);
 }
 
+/**
+ *	draw_icons() - draws all icons
+ */
+void draw_icons()
+{
+	Bit16u i;
+
+	if (ds_readb(0x2845) != 0)
+		return;
+
+	update_mouse_cursor();
+
+	for (i = 0; i < 9; i++) {
+
+		ds_writew(0xc011, ds_readw(0x2cdd + i * 4));
+		ds_writew(0xc013, ds_readw(0x2cdd + 2 + i * 4));
+		ds_writew(0xc015, ds_readw(0x2cdd + i * 4) + 23);
+		ds_writew(0xc017, ds_readw(0x2cdd + 2 + i * 4) + 23);
+		ds_writed(0xc019, ds_readd(0xd2e7) + i * 576);
+
+		if (ds_readb(0xbd38 + i) != 0xff) {
+			if (ds_readb(0x5ecc + i) != ds_readb(0xbd38 + i))
+				load_icon(0x0f, ds_readb(0xbd38 + i), i);
+		} else {
+			if (ds_readb(0x5ecc + i) != 0xff)
+				load_icon(0x06, i, i);
+		}
+
+		do_pic_copy(0);
+	}
+
+	refresh_screen_size();
+}
+
 void clear_loc_line() {
 	update_mouse_cursor();
 	do_fill_rect(ds_readd(0xd2ff), 3, 140, 316, 153, 0);
