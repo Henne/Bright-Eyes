@@ -4304,7 +4304,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		switch (offs) {
 		case 0x000: {
 			CPU_Pop16();
-			D1_INFO("draw_playmask();\n");
+			D1_LOG("draw_playmask();\n");
 			M302de::draw_playmask();
 			return 1;
 		}
