@@ -4,8 +4,70 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg008.h"
+#include "seg027.h"
 #include "seg096.h"
 
+namespace M302de {
+
+/**
+ *	draw_playmask() - loads and draws the playmask to the screen
+ */
+//static
+void draw_playmask()
+{
+	ds_writew(0xc3cb, 0);
+
+	/* load the desired playmask */
+	if (ds_readb(0xbc62) == 0)
+		load_pp20(0);
+	else
+		load_pp20(0xd6);
+
+	ds_writeb(0x2845, 0);
+
+	wait_for_vsync();
+
+	set_palette(MemBase + PhysMake(datseg, 0x26c3), 0xe0, 0x20);
+
+	update_mouse_cursor();
+
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 319);
+	ds_writew(0xc017, 199);
+	ds_writed(0xc019, ds_readd(0xd303));
+
+	do_pic_copy(0);
+
+	wait_for_vsync();
+
+	set_color(MemBase + PhysMake(datseg, 0xb22d), 0);
+
+	set_palette(MemBase + PhysMake(datseg, 0x27e3), 0xe0, 0x20);
+
+	ds_writew(0xce41, 16);
+	ds_writew(0xce3f, 2);
+
+	GUI_set_smth(0x1f, 0x1b);
+
+	ds_writew(0xd2d9, 196);
+	ds_writew(0xd2d7, 12);
+	ds_writew(0xd2d3, 103);
+	ds_writew(0xd2d5, 113);
+
+	ds_writew(0xd313, 205);
+
+	ds_writed(0x29e0, RealMake(datseg, 0x29e8));
+	ds_writed(0x29e4, 0);
+
+	ds_writeb(0xc3cb, 1);
+
+	refresh_screen_size();
+
+}
+
+}
 /**
  * copy_forename - copys the forename from a name
  * @dst:	wheres the forename should be stored

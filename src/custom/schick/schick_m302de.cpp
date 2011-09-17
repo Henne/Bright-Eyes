@@ -4303,7 +4303,10 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x12f9)) {
 		switch (offs) {
 		case 0x000: {
-			return 0;
+			CPU_Pop16();
+			D1_INFO("draw_playmask();\n");
+			M302de::draw_playmask();
+			return 1;
 		}
 		case 0x0e8: {
 			CPU_Pop16();

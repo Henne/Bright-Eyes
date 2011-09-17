@@ -1,3 +1,10 @@
+namespace M302de {
+//0x25
+//static
+void draw_playmask();
+
+}
+
 //0x34
 void clear_hero_icon(unsigned short);
 //0x39
