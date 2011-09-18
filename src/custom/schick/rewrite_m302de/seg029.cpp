@@ -92,6 +92,9 @@ void copy_forename(Bit8u *dst, Bit8u *name) {
 	host_writeb(dst + 7, 0);
 }
 
+/**
+ *	draw_status_line() - draws the status line (pictures and names)
+ */
 void draw_status_line()
 {
 	Bit8u *src, *dst;
@@ -192,8 +195,6 @@ void draw_status_line()
 				ds_writew(0x2c18 + i * 8 + j * 2, 0xffff);
 		}
 
-
-
 		refresh_screen_size();
 	}
 
@@ -280,6 +281,34 @@ void draw_icons()
 	}
 
 	refresh_screen_size();
+}
+
+/**
+ *	draw_main_screen() - draws the main screen
+ */
+void draw_main_screen()
+{
+	ds_writew(0xe111, 0xf1);
+	ds_writew(0xe10f, 0x1f);
+	ds_writew(0xe113, 0);
+
+	set_var_to_zero();
+
+	if (ds_readb(0x2845))
+		draw_playmask();
+
+	clear_loc_line();
+
+	draw_status_line();
+
+	draw_icons();
+
+	draw_compass();
+
+	ds_writew(0xe10d, 1);
+	ds_writew(0xe113, 1);
+
+	GUI_set_smth(0x1f, 0x1b);
 }
 
 void clear_loc_line() {

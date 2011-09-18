@@ -2413,7 +2413,9 @@ static int seg029(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f: {
-		return 0;
+		D1_LOG("draw_main_screen();\n");
+		M302de::draw_main_screen();
+		return 1;
 	}
 	case 0x39: {
 		D1_LOG("clear_loc_line();\n");

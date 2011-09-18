@@ -6,6 +6,8 @@ void draw_playmask();
 void draw_status_line();
 //0x2a
 void draw_icons();
+//0x2f
+void draw_main_screen();
 //0x34
 void clear_hero_icon(unsigned short);
 //0x39
