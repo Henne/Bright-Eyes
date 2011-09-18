@@ -1,3 +1,8 @@
+/*
+        Rewrite of DSA1 v3.02_de functions of seg029 (playmask)
+        Functions rewritten: 10/10
+*/
+
 #include "schick.h"
 
 #include "v302de.h"
