@@ -2403,7 +2403,9 @@ static int seg027(unsigned short offs) {
 static int seg029(unsigned short offs) {
 	switch (offs) {
 	case 0x25: {
-		return 0;
+		D1_LOG("draw_status_line();\n");
+		M302de::draw_status_line();
+		return 1;
 	}
 	case 0x2a: {
 		D1_LOG("draw_icons();\n");
@@ -4329,7 +4331,10 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x127: {
-			return 0;
+			CPU_Pop16();
+			D1_LOG("draw_status_line();\n");
+			M302de::draw_status_line();
+			return 1;
 		}
 		case 0x417: {
 			CPU_Pop16();

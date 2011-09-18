@@ -1,7 +1,9 @@
 namespace M302de {
-//0x25
+//0x20
 //static
 void draw_playmask();
+//0x25
+void draw_status_line();
 //0x2a
 void draw_icons();
 //0x34

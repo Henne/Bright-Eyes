@@ -6,7 +6,9 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg008.h"
+#include "seg026.h"
 #include "seg027.h"
+#include "seg029.h"
 #include "seg096.h"
 
 namespace M302de {
@@ -88,6 +90,116 @@ void copy_forename(Bit8u *dst, Bit8u *name) {
 	}
 
 	host_writeb(dst + 7, 0);
+}
+
+void draw_status_line()
+{
+	Bit8u *src, *dst;
+	unsigned short i, j;
+	Bit16s fg, bg;
+	Bit16s head_bak;
+
+	ds_writew(0xc3cb, 0);
+
+	GUI_get_smth(&fg, &bg);
+
+	for (i = 0; i < 7; i++) {
+		/* Clear name field */
+		do_fill_rect(Real2Phys(ds_readd(0xd2ff)),
+			ds_readw(0x2d01 + i * 2), 190,
+			ds_readw(0x2d01 + i * 2) + 41, 197, 0);
+
+		if (host_readb(get_hero(i) + 0x21) != 0) {
+
+			copy_forename(Real2Host(ds_readd(0xd2f3)),
+				get_hero(i) + 0x10);
+
+			GUI_set_smth(0xff, 0);
+
+			/* Gray the names of heros in another group */
+			if (host_readb(get_hero(i) + 0x87) != ds_readb(0x2d35))
+				GUI_set_smth(0x6f, 0);
+
+			/* print the name */
+			GUI_print_string(Real2Host(ds_readd(0xd2f3)),
+				GUI_get_first_pos_centered(Real2Host(ds_readd(0xd2f3)),	ds_readw(0x2d01 + i * 2), 43, 0), 190);
+		}
+
+		wait_for_vsync();
+		update_mouse_cursor();
+
+		if (host_readb(get_hero(i) + 0x21) == 0) {
+			clear_hero_icon(i);
+		} else {
+			if (host_readb(get_hero(i) + 0x87) == ds_readb(0x2d35)) {
+				ds_writew(0xc011, ds_readw(0x2d01 + 2 * i));
+				ds_writew(0xc013, 157);
+				ds_writew(0xc015, ds_readw(0x2d01 + 2 * i) + 31);
+				ds_writew(0xc017, 188);
+
+				head_bak = -1;
+
+				/* load skull if hero is dead */
+				if (host_readb(get_hero(i) + 0xaa) & 1) {
+					head_bak = ds_readw(0x515c);
+					load_in_head(0x29);
+				}
+
+				/* set the src pointer of the head */
+				if (host_readb(get_hero(i) + 0xaa) & 1)
+					ds_writed(0xc019, ds_readd(0xd2f3));
+				else
+					ds_writed(0xc019, ds_readd(0xbd34) + i * 0x6da + 0x2da);
+
+				do_pic_copy(0);
+
+				if (head_bak != -1)
+					load_in_head(head_bak);
+			} else {
+
+				dst = Real2Host(ds_readd(0xd303));
+				head_bak = -1;
+
+				/* load skull if hero is dead */
+				if (host_readb(get_hero(i) + 0xaa) & 1) {
+					head_bak = ds_readw(0x515c);
+					load_in_head(0x29);
+				}
+
+				/* set the src pointer of the head */
+				if (host_readb(get_hero(i) + 0xaa) & 1)
+					src = Real2Host(ds_readd(0xd2f3));
+				else
+					src = Real2Host(ds_readd(0xbd34)) + i * 0x6da + 0x2da;
+
+				/* Gray out picture */
+				for (j = 0; j < 1024; src++, dst++, j++)
+					*dst = *src + 0x40;
+
+				ds_writew(0xc011, ds_readw(0x2d01 + 2 * i));
+				ds_writew(0xc013, 157);
+				ds_writew(0xc015, ds_readw(0x2d01 + 2 * i) + 31);
+				ds_writew(0xc017, 188);
+				ds_writed(0xc019, ds_readd(0xd303));
+
+				do_pic_copy(0);
+
+				if (head_bak == -1)
+					load_in_head(head_bak);
+			}
+
+			for (j = 0; j < 6; j++)
+				ds_writew(0x2c18 + i * 8 + j * 2, 0xffff);
+		}
+
+
+
+		refresh_screen_size();
+	}
+
+	GUI_set_smth(fg, bg);
+
+	ds_writew(0xc3cb, 1);
 }
 
 /**
