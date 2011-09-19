@@ -21,6 +21,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg010.h"
+#include "seg024.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
@@ -2314,6 +2315,24 @@ static int seg012(unsigned short offs) {
 	}
 }
 
+static int seg024(unsigned short offs) {
+	switch (offs) {
+	case 0x20: {
+		D1_LOG("diary_show();\n");
+		return 0;
+	}
+	case 0x2a: {
+		D1_LOG("diary_new_entry();\n");
+		M302de::diary_new_entry();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg026(unsigned short offs) {
 		if (offs == 0x0020) {
 			D1_LOG("ip=0x%04X unknown()\n", offs);
@@ -3676,7 +3695,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1030:	return seg010(offs);
 		case 0x1042:	return 0;
 		case 0x1112:	return seg012(offs);
-		case 0x12db:	return 0;
+		case 0x12db:	return seg024(offs);
 		case 0x12de:	return 0;
 		case 0x12e5:	return seg026(offs);
 		case 0x12ec:	return seg027(offs);
