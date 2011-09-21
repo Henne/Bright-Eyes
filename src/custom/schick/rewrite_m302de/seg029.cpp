@@ -113,7 +113,7 @@ void draw_status_line()
 
 	for (i = 0; i < 7; i++) {
 		/* Clear name field */
-		do_fill_rect(Real2Phys(ds_readd(0xd2ff)),
+		do_fill_rect(ds_readd(0xd2ff),
 			ds_readw(0x2d01 + i * 2), 190,
 			ds_readw(0x2d01 + i * 2) + 41, 197, 0);
 
