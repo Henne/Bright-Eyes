@@ -44,6 +44,7 @@ void dec_splash();
 void draw_splash(unsigned short index, unsigned short type);
 void wait_for_keyboard2();
 void wait_for_keypress();
+void delay_or_keypress(Bit16u);
 unsigned int swap_u32(unsigned int v);
 unsigned short alloc_EMS(unsigned int bytes);
 void set_to_ff();

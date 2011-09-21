@@ -1158,6 +1158,14 @@ void wait_for_keypress() {
 	ds_writew(0xc3d5, 0);
 }
 
+void delay_or_keypress(Bit16u time)
+{
+	CPU_Push16(time);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x40d1);
+	CPU_Pop16();
+
+}
+
 unsigned int swap_u32(unsigned int v) {
 	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
 		((v >> 8) & 0xff) << 16 | (v&0xff) << 24;

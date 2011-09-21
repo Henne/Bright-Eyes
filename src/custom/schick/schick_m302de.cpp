@@ -997,8 +997,14 @@ static int seg002(unsigned short offs) {
 		wait_for_keypress();
 		return 1;
 	}
-	case 0x40d1:
-		return 0;
+	/* Callers: 25 */
+	case 0x40d1: {
+		Bit16u time = CPU_Pop16();
+		delay_or_keypress(time);
+		CPU_Push16(time);
+		D1_LOG("delay_or_keypress(%d);\n", time);
+		return 1;
+	}
 	case 0x41cd: {
 		unsigned int v = CPU_Pop32();
 		CPU_Push32(v);
