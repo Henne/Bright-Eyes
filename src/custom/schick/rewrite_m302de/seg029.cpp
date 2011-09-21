@@ -18,6 +18,13 @@
 
 namespace M302de {
 
+/* DS:0x5ecc - DS:0x5ed4 */
+static signed char icon_array[9] = {
+	0xfe, 0xfe, 0xfe,
+	0xfe, 0xfe, 0xfe,
+	0xfe, 0xfe, 0xfe
+};
+
 /**
  *	draw_playmask() - loads and draws the playmask to the screen
  */
@@ -248,10 +255,10 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 
 	if (fileindex == 0x0f)
 		/* Real Icon */
-		ds_writeb(0x5ecc + pos, icon);
+		icon_array[pos] =  icon;
 	else
 		/* Blank Icon */
-		ds_writeb(0x5ecc + pos, 0xff);
+		icon_array[pos] = 0xff;
 }
 
 /**
@@ -275,7 +282,7 @@ void draw_icons()
 		ds_writed(0xc019, ds_readd(0xd2e7) + i * 576);
 
 		if (ds_readb(0xbd38 + i) != 0xff) {
-			if (ds_readb(0x5ecc + i) != ds_readb(0xbd38 + i))
+			if (icon_array[i] != ds_readb(0xbd38 + i))
 				load_icon(0x0f, ds_readb(0xbd38 + i), i);
 		} else {
 			if (ds_readb(0x5ecc + i) != 0xff)
