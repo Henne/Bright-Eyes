@@ -1163,7 +1163,8 @@ static char cursor_bak[256];
 Bit8u *buffer_sex_dat;
 Bit8u *buffer_popup_nvf;
 Bit8u *buffer_popup_dis;
-Bit8u *buffer_heads_dat;
+/* DS:0x4771 */
+static Bit8u *buffer_heads_dat;
 Bit8u *buffer_text;
 Bit8u *buffer_font6;
 /* DS:0x477d */
@@ -2295,7 +2296,7 @@ void save_chr()
 	/* Load picture from nvf */
 	/* TODO: why not just copy? */
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
-	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.src = buffer_heads_dat;
 	nvf.nr = head_current;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -2456,7 +2457,7 @@ void read_common_files()
 
 	/* load HEADS.DAT */
 	fd = fd_open_datfile(11);
-	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 64000);
+	fd_read_datfile(fd, buffer_heads_dat, 64000);
 	fclose(fd);
 
 	/* load POPUP.NVF */
@@ -3599,7 +3600,7 @@ void change_head()
 	signed short tmp;
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
-	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.src = buffer_heads_dat;
 	nvf.nr = head_current;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -4280,7 +4281,7 @@ void refresh_screen()
 			signed short tmp;
 
 			nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
-			nvf.src = Real2Host(ds_readd(0x4771));
+			nvf.src = buffer_heads_dat;
 			nvf.nr = head_current;
 			nvf.type = 0;
 			nvf.width = &tmp;
@@ -6544,10 +6545,10 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
+	fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
-	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.src = buffer_heads_dat;
 	nvf.type = 0;
 	nvf.width = &tmp;
 	nvf.height = &tmp;
@@ -6640,11 +6641,11 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	flen = fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
+	flen = fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
-	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.src = buffer_heads_dat;
 	nvf.nr = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -6657,7 +6658,7 @@ void intro()
 	wait_for_vsync();
 
 	/* set palette of FANPRO.NVF */
-	set_palette(Real2Host(ds_readd(0x4771)) + flen - 32*3, 0, 32);
+	set_palette(buffer_heads_dat + flen - 32*3, 0, 32);
 
 	/* draw the picture */
 	ds_writew(0x40c5, 60);
@@ -6674,11 +6675,11 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
+	fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
-	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.src = buffer_heads_dat;
 	nvf.nr = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
@@ -6707,11 +6708,11 @@ void intro()
 		D1_ERR("Failed to open\n");
 		exit(0);
 	}
-	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
+	fd_read_datfile(fd, buffer_heads_dat, 20000);
 	fclose(fd);
 
 	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
-	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.src = buffer_heads_dat;
 	nvf.nr = 0;
 	nvf.type = 0;
 	nvf.width = &tmp;
