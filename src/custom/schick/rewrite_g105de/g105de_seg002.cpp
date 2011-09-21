@@ -3215,7 +3215,8 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 
 void draw_popup_line(Bit16u line, Bit16u type)
 {
-	PhysPt dst, src;
+	Bit8u *src;
+	PhysPt dst;
 	Bit16u i, popup_right, popup_left, popup_middle;
 
 	/* This is a bit bogus */
@@ -3251,15 +3252,15 @@ void draw_popup_line(Bit16u line, Bit16u type)
 		}
 	}
 
-	src = Real2Phys(ds_readd(0x476d)) + popup_left;
+	src = Real2Host(ds_readd(0x476d)) + popup_left;
 	copy_to_screen(src, dst, 16, 8, 0);
 
-	src = Real2Phys(ds_readd(0x476d)) + popup_middle;
+	src = Real2Host(ds_readd(0x476d)) + popup_middle;
 	dst += 16;
 	for (i = 0; i < menu_tiles; dst += 32, i++)
 		copy_to_screen(src, dst, 32, 8, 0);
 
-	src = Real2Phys(ds_readd(0x476d)) + popup_right;
+	src = Real2Host(ds_readd(0x476d)) + popup_right;
 	copy_to_screen(src, dst, 16, 8, 0);
 }
 
@@ -3272,7 +3273,8 @@ void draw_popup_line(Bit16u line, Bit16u type)
  */
 Bit16u infobox(char *msg, Bit16u digits)
 {
-	PhysPt src, dst;
+	Bit8u *src;
+	PhysPt dst;
 	Bit16u bg, fg;
 	Bit16u retval, v2, v3, v4, i, lines;
 	Bit16s di;
@@ -3298,7 +3300,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	draw_mouse_ptr_wrapper();
 
-	src = Real2Phys(ds_readd(0x47cb));
+	src = Real2Host(ds_readd(0x47cb));
 	src += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
 	dst = Real2Phys(ds_readd(0x47d3));
 
@@ -3337,7 +3339,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	dst = Real2Phys(ds_readd(0x47cb));
 	dst += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
-	src = Real2Phys(ds_readd(0x47d3));
+	src = Real2Host(ds_readd(0x47d3));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
 	call_mouse();
@@ -3416,7 +3418,8 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	va_list arguments;
 
 	char *str;
-	PhysPt src, dst;
+	Bit8u *src;
+	PhysPt dst;
 	Bit16u r3, r4, r5, r6, r7, r8, r9;
 	Bit16u my_bak, mx_bak;
 	Bit16u bak1, bak2, bak3;
@@ -3443,7 +3446,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	draw_mouse_ptr_wrapper();
 
 	/* save old background */
-	src = Real2Phys(ds_readd(0x47cb));
+	src = Real2Host(ds_readd(0x47cb));
 	src += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
 	dst = Real2Phys(ds_readd(0x47d3));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
@@ -3565,7 +3568,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	dst = Real2Phys(ds_readd(0x47cb));
 	dst += ds_readw(0x40bd) * 320 + ds_readw(0x40bb);
-	src = Real2Phys(ds_readd(0x47d3));
+	src = Real2Host(ds_readd(0x47d3));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
 	call_mouse();
 	set_vals(fg_bak, bg_bak);
@@ -3588,9 +3591,9 @@ void enter_name()
 	dst = Real2Phys(ds_readd(0x47cb) + 12 * 320 + 176);
 
 	draw_mouse_ptr_wrapper();
-	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	copy_to_screen(Real2Host(ds_readd(0x479f)), dst, 94, 8, 0);
 	enter_string(hero.name, 180, 12, 15, 1);
-	copy_to_screen(Real2Phys(ds_readd(0x479f)), dst, 94, 8, 0);
+	copy_to_screen(Real2Host(ds_readd(0x479f)), dst, 94, 8, 0);
 	call_mouse();
 	print_str(hero.name, 180, 12);
 }
@@ -3633,7 +3636,8 @@ void change_head()
  */
 void change_sex()
 {
-	PhysPt dst, src;
+	Bit8u *src;
+	PhysPt dst;
 	signed char tmp;
 
 	/* change sex of the hero */
@@ -3657,7 +3661,7 @@ void change_sex()
 		return;
 	} else {
 		dst = Real2Phys(ds_readd(0x47cb)) + 7 * 320 + 305;
-		src = Real2Phys(ds_readd(0x4769)) + hero.sex * 256;
+		src = Real2Host(ds_readd(0x4769)) + hero.sex * 256;
 		draw_mouse_ptr_wrapper();
 		copy_to_screen(src, dst, 16, 16, 0);
 		call_mouse();
@@ -4216,7 +4220,8 @@ void fill_values()
 
 void refresh_screen()
 {
-	PhysPt src, dst;
+	Bit8u *src;
+	PhysPt dst;
 
 	if (ds_readw(0x11fe)) {
 		ds_writed(0x47c7, ds_readd(0x47d3));
@@ -4227,7 +4232,7 @@ void refresh_screen()
 		if (gen_page == 0 && hero.sex != 0) {
 
 			dst = Real2Phys(ds_readd(0x47d3)) + 7 * 320 + 305;
-			src = Real2Phys(ds_readd(0x4769) + hero.sex * 256);
+			src = Real2Host(ds_readd(0x4769) + hero.sex * 256);
 
 			copy_to_screen(src, dst, 16, 16, 0);
 		}
@@ -4235,7 +4240,7 @@ void refresh_screen()
 		/* page with base values and level is advanced */
 		if (gen_page == 0 && level == 1) {
 			dst = Real2Phys(ds_readd(0x47d3)) + 178 * 320 + 284;
-			src = Real2Phys(ds_readd(0x4769) + 512);
+			src = Real2Host(ds_readd(0x4769) + 512);
 
 			copy_to_screen(src, dst, 20, 15, 0);
 		}
@@ -4245,7 +4250,7 @@ void refresh_screen()
 			dst = Real2Phys(ds_readd(0x47d3)) + 0xa10;
 			if (hero.typus != 0) {
 				need_refresh = true;
-				copy_to_screen(Real2Phys(ds_readd(0x47b3)),
+				copy_to_screen(Real2Host(ds_readd(0x47b3)),
 					dst, 128, 184, 0);
 
 				if (hero.sex != 0) {
@@ -4271,7 +4276,7 @@ void refresh_screen()
 				}
 				wait_for_vsync();
 				set_palette(Real2Host(ds_readd(0x47a7)) + 0x5c02, 0 , 32);
-				copy_to_screen(Real2Phys(ds_readd(0x47a7)),
+				copy_to_screen(Real2Host(ds_readd(0x47a7)),
 					dst, 128, 184, 0);
 			}
 		}
@@ -4314,7 +4319,7 @@ void refresh_screen()
 		print_values();
 		ds_writed(0x47c7, ds_readd(0x47cb));
 		dst = Real2Phys(ds_readd(0x47cb));
-		src = Real2Phys(ds_readd(0x47d3));
+		src = Real2Host(ds_readd(0x47d3));
 		draw_mouse_ptr_wrapper();
 		copy_to_screen(src, dst, 320, 200, 0);
 		call_mouse();
@@ -4946,7 +4951,7 @@ void change_attribs()
 
 void save_picbuf()
 {
-	PhysPt p;
+	Bit8u *p;
 	Bit16u x_1, x_2, x_3;
 	Bit16u y_1, y_2, y_3;
 	Bit16u w_1, w_2, w_3;
@@ -5005,15 +5010,15 @@ void save_picbuf()
 	}
 
 	if (x_1) {
-		p = Real2Phys(ds_readd(0x47d3)) + y_1 * 320 + x_1;
+		p = Real2Host(ds_readd(0x47d3)) + y_1 * 320 + x_1;
 		copy_to_screen(p, Real2Phys(ds_readd(0x479f)),
 			w_1, h_1, 2);
 	}
 
-	p = Real2Phys(ds_readd(0x47d3)) + y_2 * 320 + x_2;
+	p = Real2Host(ds_readd(0x47d3)) + y_2 * 320 + x_2;
 	copy_to_screen(p, Real2Phys(ds_readd(0x479b)), w_2, h_2, 2);
 
-	p = Real2Phys(ds_readd(0x47d3)) + y_3 * 320 + x_3;
+	p = Real2Host(ds_readd(0x47d3)) + y_3 * 320 + x_3;
 	copy_to_screen(p, Real2Phys(ds_readd(0x4797)), w_3, h_3, 2);
 }
 
@@ -5079,15 +5084,15 @@ void restore_picbuf(PhysPt ptr)
 
 	if (x_1) {
 		p = ptr + y_1 * 320 + x_1;
-		copy_to_screen(Real2Phys(ds_readd(0x479f)),
+		copy_to_screen(Real2Host(ds_readd(0x479f)),
 			p, w_1, h_1, 0);
 	}
 
 	p = ptr + y_2 * 320 + x_2;
-	copy_to_screen(Real2Phys(ds_readd(0x479b)), p, w_2, h_2, 0);
+	copy_to_screen(Real2Host(ds_readd(0x479b)), p, w_2, h_2, 0);
 
 	p = ptr + y_3 * 320 + x_3;
-	copy_to_screen(Real2Phys(ds_readd(0x4797)), p, w_3, h_3, 0);
+	copy_to_screen(Real2Host(ds_readd(0x4797)), p, w_3, h_3, 0);
 }
 
 /**

@@ -517,7 +517,7 @@ static int seg005(Bitu offs) {
 		CPU_Push32(dst);
 		CPU_Push32(src);
 
-		G105de::copy_to_screen(Real2Phys(src), Real2Phys(dst), width,
+		G105de::copy_to_screen(Real2Host(src), Real2Phys(dst), width,
 			height, mode);
 
 		D1_LOG("copy_to_screen(src=0x%x, dst=0x%x, w=%d, h=%d, m=%d);\n",
