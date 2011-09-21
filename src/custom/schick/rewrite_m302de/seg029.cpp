@@ -178,7 +178,7 @@ void draw_status_line()
 				if (host_readb(get_hero(i) + 0xaa) & 1)
 					src = Real2Host(ds_readd(0xd2f3));
 				else
-					src = Real2Host(ds_readd(0xbd34)) + i * 0x6da + 0x2da;
+					src = get_hero(i) + 0x2da;
 
 				/* Gray out picture */
 				for (j = 0; j < 1024; src++, dst++, j++)
