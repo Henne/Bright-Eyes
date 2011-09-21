@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg024 (diary)
-	Functions rewritten: 2/3
+	Functions rewritten: 3/3
 */
 
 #include "schick.h"
@@ -8,7 +8,11 @@
 
 #include "v302de.h"
 
+#include "seg002.h"
 #include "seg004.h"
+#include "seg008.h"
+#include "seg024.h"
+#include "seg027.h"
 #include "seg096.h"
 
 namespace M302de {
@@ -24,6 +28,74 @@ static const char diary_fmt[][30] = {
 	"~~ABENTEUER IN %s.",
 	"~~RUMH\x8eNGEN IN %s."
 };
+
+void diary_show()
+{
+	Bit16u bak1, bak2, bak3, bak4, bak5;
+	Bit16s fg_bak, bg_bak;
+	Bit16u i;
+
+	bak5 = ds_readw(0xbffd);
+	ds_writew(0xbffd, 3);
+
+	ds_writeb(0x45b8, 1);
+	ds_writew(0xe113, 0);
+	ds_writew(0x2ccb, 0xffff);
+	ds_writed(0xcecb, RealMake(datseg, 0x2848));
+
+	/* load BUCH.DAT */
+	load_pp20(0xb1);
+	ds_writeb(0x2845, 0xb1);
+
+	GUI_get_smth(&fg_bak, &bg_bak);
+
+	ds_writed(0xd2fb, ds_readd(0xc3db));
+	bak1 = ds_readw(0xd2d5);
+	bak2 = ds_readw(0xd2d9);
+	bak3 = ds_readw(0xd313);
+	bak4 = ds_readw(0xd315);
+	ds_writew(0xd2d5, 200);
+	ds_writew(0xd2d9, 65);
+	ds_writew(0xd313, 83);
+	ds_writew(0xd315, 130);
+
+	GUI_set_smth(4, 0);
+
+	/* print all diary entries */
+	i = 0;
+	do {
+		i = diary_print_entry(i);
+	} while (i < ds_readw(0x43ba));
+
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 319);
+	ds_writew(0xc017, 199);
+	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+
+	update_mouse_cursor();
+
+	set_palette(Real2Host(ds_readd(0xd303)) + 0xfa02, 0, 0x20);
+
+	do_pic_copy(0);
+
+	refresh_screen_size();
+
+	GUI_set_smth(fg_bak, bg_bak);
+
+	ds_writed(0xd2fb, ds_readd(0xd2ff));
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+
+	ds_writew(0xd2d9, bak2);
+	ds_writew(0xd2d5, bak1);
+	ds_writew(0xd313, bak3);
+	ds_writew(0xd315, bak4);
+	ds_writew(0xbffd, bak5);
+
+	delay_or_keypress(5000);
+
+}
 
 void diary_new_entry()
 {

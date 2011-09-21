@@ -2325,7 +2325,8 @@ static int seg024(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
 		D1_LOG("diary_show();\n");
-		return 0;
+		M302de::diary_show();
+		return 1;
 	}
 	case 0x2a: {
 		D1_LOG("diary_new_entry();\n");
