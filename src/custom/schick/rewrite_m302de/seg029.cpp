@@ -18,6 +18,18 @@
 
 namespace M302de {
 
+struct coord {
+	unsigned short x,y;
+};
+
+/* DS:0x2cdd - DS:0x2d01 */
+/* Positions of the icons */
+static const struct coord icon_pos[9] = {
+	{241, 57}, {268, 57}, {295, 57},
+	{241, 84}, {268, 84}, {295, 84},
+	{241, 111}, {268, 111}, {295, 111}
+};
+
 /* DS:0x5ecc - DS:0x5ed4 */
 static signed char icon_array[9] = {
 	0xfe, 0xfe, 0xfe,
@@ -275,10 +287,10 @@ void draw_icons()
 
 	for (i = 0; i < 9; i++) {
 
-		ds_writew(0xc011, ds_readw(0x2cdd + i * 4));
-		ds_writew(0xc013, ds_readw(0x2cdd + 2 + i * 4));
-		ds_writew(0xc015, ds_readw(0x2cdd + i * 4) + 23);
-		ds_writew(0xc017, ds_readw(0x2cdd + 2 + i * 4) + 23);
+		ds_writew(0xc011, icon_pos[i].x);
+		ds_writew(0xc013, icon_pos[i].y);
+		ds_writew(0xc015, icon_pos[i].x + 23);
+		ds_writew(0xc017, icon_pos[i].y + 23);
 		ds_writed(0xc019, ds_readd(0xd2e7) + i * 576);
 
 		if (ds_readb(0xbd38 + i) != 0xff) {
