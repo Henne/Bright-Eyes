@@ -1001,7 +1001,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 
 					D1_LOG("process_nvf(%x);\n", ptr);
-					G105de::process_nvf(MemBase + Real2Phys(ptr));
+					G105de::process_nvf((struct nvf_desc*)MemBase + Real2Phys(ptr));
 
 					return 1;
 				}

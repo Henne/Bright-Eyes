@@ -32,14 +32,6 @@ namespace G105de {
 	@p_height:      pointer where the height of the picture must be stored
 	@p_width:       pointer where the width of the picture must be stored
 */
-struct nvf_desc {
-	RealPt src;
-	RealPt dst;
-	short nr;
-	signed char type;
-	RealPt p_width;
-	RealPt p_height;
-};
 
 struct struct_color {
 	signed char r;
@@ -2281,12 +2273,12 @@ void load_typus(Bit16u typus)
  */
 void save_chr()
 {
+	struct nvf_desc nvf;
 	FILE *fd;
+	signed short tmp;
 	char *pwd;
 	char path[80];
 	char filename[20];
-	char nvf[19];
-	Bit8u *n =  (Bit8u*)nvf;
 
 	Bit16u i;
 
@@ -2302,18 +2294,14 @@ void save_chr()
 	}
 	/* Load picture from nvf */
 	/* TODO: why not just copy? */
-	host_writed(n + 0, ds_readd(0x47d3));
+	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.nr = head_current;
+	nvf.type = 0;
+	nvf.width = &tmp;
+	nvf.height = &tmp;
 
-	host_writed(n + 4, ds_readd(0x4771));
-
-	host_writew(n + 8, head_current);
-
-	host_writew(n + 10, 0);
-
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
-
-	process_nvf(n);
+	process_nvf(&nvf);
 
 	/* copy picture to the character struct */
 	memcpy(&hero.pic, Real2Host(ds_readd(0x47d3)), 1024);
@@ -2498,9 +2486,8 @@ static inline unsigned int swap_u32(unsigned int v) {
 
 };
 
-signed int process_nvf(Bit8u *nvf) {
-	signed char nvf_type;
-	Bit8u *src, *dst;
+signed int process_nvf(struct nvf_desc *nvf) {
+	Bit8u *src;
 	int p_size;
 	int offs;
 	signed int retval;
@@ -2509,75 +2496,64 @@ signed int process_nvf(Bit8u *nvf) {
 	short pics;
 	short width;
 	short i;
+	signed char nvf_type;
 
-	struct nvf_desc d;
-
-	d.dst = host_readd(nvf);
-	d.src = host_readd(nvf+4);
-	d.nr = host_readw(nvf+8);
-	d.type = host_readb(nvf+10);
-	d.p_width = host_readd(nvf+11);
-	d.p_height = host_readd(nvf+15);
-
-	Bit8u *p = MemBase + Real2Phys(d.src);
-	dst = MemBase + Real2Phys(d.dst);
-
-	nvf_type = host_readb(p);
+	nvf_type = host_readb(nvf->src);
 	va = nvf_type & 0x80;
 	nvf_type &= 0x7f;
 
-	pics = host_readw(p + 1);
+	pics = host_readw(nvf->src + 1);
 
-	if (d.nr < 0)
-		d.nr = 0;
+	if (nvf->nr < 0)
+		nvf->nr = 0;
 
-	if (d.nr > pics - 1)
-		d.nr = pics - 1;
+	if (nvf->nr > pics - 1)
+		nvf->nr = pics - 1;
 
 	switch (nvf_type) {
 
 	case 0x00:
-		width = host_readw(p + 3);
-		height = host_readw(p + 5);
+		width = host_readw(nvf->src + 3);
+		height = host_readw(nvf->src + 5);
 		p_size = height * width;
-		src =  p + d.nr * p_size + 7;
+		src =  nvf->src + nvf->nr * p_size + 7;
 		break;
 
 	case 0x01:
 		offs = pics * 4 + 3;
-		for (i = 0; i < d.nr; i++)
+		for (i = 0; i < nvf->nr; i++)
 			offs += width * height;
 
-		width = host_readw(p + d.nr * 4 + 3);
-		height = host_readw(p + d.nr * 4 + 5);
+		width = host_readw(nvf->src + nvf->nr * 4 + 3);
+		height = host_readw(nvf->src + nvf->nr * 4 + 5);
 		p_size = width * height;
-		src = p + offs;
+		src = nvf->src + offs;
 		break;
 
 	case 0x02: case 0x04:
-		width = host_readw(p + 3);
-		height = host_readw(p + 5);
+		width = host_readw(nvf->src + 3);
+		height = host_readw(nvf->src + 5);
 		offs = pics * 4 + 7;
-		for (i = 0; i < d.nr; i++)
-			offs += host_readd(p  + (i * 4) + 7);
+		for (i = 0; i < nvf->nr; i++)
+			offs += host_readd(nvf->src + (i * 4) + 7);
 
-		p_size = host_readd(p + d.nr * 4 + 7);
-		src = p + offs;
+		p_size = host_readd(nvf->src + nvf->nr * 4 + 7);
+		src = nvf->src + offs;
 		break;
 
 	case 0x03: case 0x05:
 		offs = pics * 8 + 3;
-		for (i = 0; i < d.nr; i++)
-			offs += host_readd(p  + (i * 8) + 7);
+		for (i = 0; i < nvf->nr; i++)
+			offs += host_readd(nvf->src  + (i * 8) + 7);
 
-		width = host_readw(p + d.nr * 8 + 3);
-		height = host_readw(p + d.nr * 8 + 5);
-		p_size = host_readd(p + i * 8 + 7);
-		src = p + offs;
+		width = host_readw(nvf->src + nvf->nr * 8 + 3);
+		height = host_readw(nvf->src + nvf->nr * 8 + 5);
+		p_size = host_readd(nvf->src + i * 8 + 7);
+		src = nvf->src + offs;
 		break;
 	}
 
-	switch (d.type) {
+	switch (nvf->type) {
 
 	case 0:
 		/* PP20 decompression */
@@ -2591,12 +2567,12 @@ signed int process_nvf(Bit8u *nvf) {
 		} else
 			retval = width * height;
 
-		decomp_pp20(src, dst, src + 4, p_size);
+		decomp_pp20(src, (unsigned char*)nvf->dst, src + 4, p_size);
 		break;
 
 	case 2: case 3: case 4: case 5:
 		/* RLE decompression */
-		decomp_rle(dst, src, 0, 0, width, height, d.type);
+		decomp_rle((unsigned char*)nvf->dst, (unsigned char*)src, 0, 0, width, height, nvf->type);
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
 			on a Debug build, so we fix this for debuggings sake */
@@ -2606,12 +2582,12 @@ signed int process_nvf(Bit8u *nvf) {
 
 	default:
 		/* No decompression, just copy */
-		memmove(MemBase + Real2Phys(d.dst), src, (short)p_size);
+		memmove(nvf->dst, src, (short)p_size);
 		retval = p_size;
 	}
 
-	mem_writew(Real2Phys(d.p_width), width);
-	mem_writew(Real2Phys(d.p_height), height);
+	*nvf->width = width;
+	*nvf->height = height;
 
 	return retval;
 }
@@ -3619,21 +3595,17 @@ void enter_name()
 
 void change_head()
 {
-	char nvf[19];
-	Bit8u *n = (Bit8u*)nvf;
+	struct nvf_desc nvf;
+	signed short tmp;
 
-	host_writed(n + 0, ds_readd(0x47a3));
+	nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
+	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.nr = head_current;
+	nvf.type = 0;
+	nvf.width = &tmp;
+	nvf.height = &tmp;
 
-	host_writed(n + 4, ds_readd(0x4771));
-
-	host_writew(n + 8, head_current);
-
-	host_writew(n + 10, 0);
-
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
-
-	process_nvf(n);
+	process_nvf(&nvf);
 
 	ds_writed(0x40cd, ds_readd(0x47a3));
 
@@ -4304,21 +4276,16 @@ void refresh_screen()
 		/* if hero has a typus */
 		if (hero.typus != 0) {
 			/* draw the head */
-			char nvf[19];
-			Bit8u *n =  (Bit8u*)nvf;
+			struct nvf_desc nvf;
+			signed short tmp;
 
-			/* set src */
-			host_writed(n + 0, ds_readd(0x47a3));
-			/* set dst */
-			host_writed(n + 4, ds_readd(0x4771));
-			/* set nr */
-			host_writew(n + 8, head_current);
-			/* set type */
-			host_writew(n + 10, 0);
-			/* place somewhere on unused DOS stack */
-			host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-			host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
-			process_nvf(n);
+			nvf.dst = (char*)Real2Host(ds_readd(0x47a3));
+			nvf.src = Real2Host(ds_readd(0x4771));
+			nvf.nr = head_current;
+			nvf.type = 0;
+			nvf.width = &tmp;
+			nvf.height = &tmp;
+			process_nvf(&nvf);
 
 			ds_writed(0x40cd, ds_readd(0x47a3));
 			ds_writew(0x40c5, 272);
@@ -6559,8 +6526,8 @@ void pal_fade_in(Bit8u *dst, Bit8u *src, Bit16u col, Bit16u n)
  */
 void intro()
 {
-	char nvf[19];
-	Bit8u *n =  (Bit8u*)nvf;
+	struct nvf_desc nvf;
+	signed short tmp;
 
 	FILE *fd;
 	Bit8u *pal_dst, *pal_src;
@@ -6580,27 +6547,22 @@ void intro()
 	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
-	/* set src */
-	host_writed(n + 4, ds_readd(0x4771));
-	/* set type */
-	host_writew(n + 10, 0);
-	/* place somewhere on unused DOS stack */
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.type = 0;
+	nvf.width = &tmp;
+	nvf.height = &tmp;
 
 	for (i = 7; i >= 0; i--) {
-		/* set dst */
-		host_writed(n + 0, ds_readd(0x47d3) + i * 960 + 9600);
-		/* set nr */
-		host_writew(n + 8, i + 1);
-		process_nvf(n);
+		nvf.dst = (char*)Real2Host(ds_readd(0x47d3)) + i * 960 + 9600;
+		nvf.nr = i + 1;
+		process_nvf(&nvf);
 
 	}
 	/* set dst */
-	host_writed(n + 0, ds_readd(0x47d3));
+	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
 	/* set nr */
-	host_writew(n + 8, 0);
-	process_nvf(n);
+	nvf.nr = 0;
+	process_nvf(&nvf);
 
 	wait_for_vsync();
 
@@ -6681,19 +6643,14 @@ void intro()
 	flen = fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
-	/* set dst */
-	host_writed(n + 0, ds_readd(0x47d3));
-	/* set src */
-	host_writed(n + 4, ds_readd(0x4771));
-	/* set nr */
-	host_writew(n + 8, 0);
-	/* set type */
-	host_writew(n + 10, 0);
-	/* place somewhere on unused DOS stack */
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.nr = 0;
+	nvf.type = 0;
+	nvf.width = &tmp;
+	nvf.height = &tmp;
 
-	process_nvf(n);
+	process_nvf(&nvf);
 
 	/* clear screen */
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
@@ -6720,19 +6677,14 @@ void intro()
 	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
-	/* set dst */
-	host_writed(n + 0, ds_readd(0x47d3));
-	/* set src */
-	host_writed(n + 4, ds_readd(0x4771));
-	/* set nr */
-	host_writew(n + 8, 0);
-	/* set type */
-	host_writew(n + 10, 0);
-	/* place somewhere on unused DOS stack */
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.nr = 0;
+	nvf.type = 0;
+	nvf.width = &tmp;
+	nvf.height = &tmp;
 
-	process_nvf(n);
+	process_nvf(&nvf);
 
 	/* clear screen */
 	call_fill_rect_gen(Real2Phys(ds_readd(0x47cb)), 0, 0, 319, 199, 0);
@@ -6758,19 +6710,14 @@ void intro()
 	fd_read_datfile(fd, Real2Host(ds_readd(0x4771)), 20000);
 	fclose(fd);
 
-	/* set dst */
-	host_writed(n + 0, ds_readd(0x47d3));
-	/* set src */
-	host_writed(n + 4, ds_readd(0x4771));
-	/* set nr */
-	host_writew(n + 8, 0);
-	/* set type */
-	host_writew(n + 10, 0);
-	/* place somewhere on unused DOS stack */
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+	nvf.dst = (char*)Real2Host(ds_readd(0x47d3));
+	nvf.src = Real2Host(ds_readd(0x4771));
+	nvf.nr = 0;
+	nvf.type = 0;
+	nvf.width = &tmp;
+	nvf.height = &tmp;
 
-	process_nvf(n);
+	process_nvf(&nvf);
 
 	/* draw DSALOGO.DAT */
 	ds_writew(0x40c5, 10);

@@ -6,6 +6,15 @@ struct mouse_action {
 	unsigned short action;
 };
 
+struct nvf_desc {
+	Bit8u *src;
+	char *dst;
+	signed short nr;
+	signed char type;
+	signed short *width;
+	signed short *height;
+};
+
 namespace G105de {
 
 	void start_music(Bit16u);
@@ -46,7 +55,7 @@ namespace G105de {
 	void load_typus(Bit16u);
 	void save_chr();
 	void read_common_files();
-	signed int process_nvf(Bit8u *p);
+	signed int process_nvf(struct nvf_desc*);
 	Bit32s get_archive_offset(const char*, Bit8u*);
 	Bit16u open_datfile(Bit16u);
 	Bit16u read_datfile(Bit16u, Bit8u*, Bit16u);
