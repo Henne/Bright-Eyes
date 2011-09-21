@@ -4328,6 +4328,24 @@ int schick_nearcall_v302de(unsigned offs) {
 		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
 		return 1;
 	}
+	/* seg024 */
+	if (is_ovrseg(0x12db)) {
+		switch (offs) {
+		case 0x1d3: {
+			Bit16u CS = CPU_Pop16();
+			Bit16u line = CPU_Pop16();
+			CPU_Push16(line);
+
+			reg_ax = M302de::diary_print_entry(line);
+			D1_LOG("diary_print_entry(%d); == %d\n", line, reg_ax);
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg024", offs);
+			exit(1);
+		}
+	}
 	/* seg029 */
 	if (is_ovrseg(0x12f9)) {
 		switch (offs) {
