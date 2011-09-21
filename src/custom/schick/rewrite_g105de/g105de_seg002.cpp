@@ -1152,7 +1152,7 @@ static unsigned short unkn3;
 /* DS:0x40d7 */
 static unsigned short unkn4;
 
-char *texts[300];
+static char *texts[300];
 
 /* DS:0x4595 */
 static unsigned short wo_var;
@@ -1160,13 +1160,13 @@ static unsigned short wo_var;
 /* DS:0x4669 */
 static char cursor_bak[256];
 /* DS:0x4769 */
-Bit8u *buffer_sex_dat;
-Bit8u *buffer_popup_nvf;
-Bit8u *buffer_popup_dis;
+static Bit8u *buffer_sex_dat;
+static Bit8u *buffer_popup_nvf;
+static Bit8u *buffer_popup_dis;
 /* DS:0x4771 */
 static Bit8u *buffer_heads_dat;
-Bit8u *buffer_text;
-Bit8u *buffer_font6;
+static Bit8u *buffer_text;
+static Bit8u *buffer_font6;
 /* DS:0x477d */
 static Bit16u col_index;
 /* DS:0x477f */
@@ -1181,17 +1181,18 @@ static Bit16u text_y;
 static Bit16u text_x;
 
 /* DS:0x4797 */
-Bit8u *picbuf3;
-Bit8u *picbuf2;
-Bit8u *picbuf1;
-Bit8u *gen_ptr6;
-Bit8u *gen_ptr6_dis;
-Bit8u *buffer_dmenge_dat;
+static Bit8u *picbuf3;
+static Bit8u *picbuf2;
+static Bit8u *picbuf1;
+static Bit8u *gen_ptr6;
+static Bit8u *gen_ptr6_dis;
+static Bit8u *buffer_dmenge_dat;
 /* DS:0x47b3 */
-Bit8u *gen_ptr5;
-Bit8u *gen_ptr4;
-char *gen_ptr3;
-char *gen_ptr2;
+static Bit8u *gen_ptr5;
+/* DS:0x47b7 */
+static Bit8u *gen_ptr4;
+static char *gen_ptr3;
+static char *gen_ptr2;
 
 /* DS:0x47cf */
 Bit8u *page_buffer;
