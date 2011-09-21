@@ -32,6 +32,7 @@
 #include "seg044.h"
 #include "seg046.h"
 #include "seg047.h"
+#include "seg063.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
@@ -2955,6 +2956,24 @@ static int seg053(unsigned short offs) {
 	}
 }
 
+static int seg063(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("do_harbour();\n");
+			return 0;
+		}
+		case 0x25: {
+			D1_LOG("passages_init();\n");
+			M302de::passages_init();
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg073(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -3741,7 +3760,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x137b:	return 0;
 		case 0x137e:	return 0;
 		case 0x1383:	return 0;
-		case 0x1386:	return 0;
+		case 0x1386:	return seg063(offs);
 		case 0x138a:	return 0;
 		case 0x138e:	return 0;
 		case 0x1392:	return 0;
