@@ -9,6 +9,7 @@
 
 #include "seg096.h"
 
+namespace M302de {
 /**
  *
  *	@p:	pointer to an object 35 byte
@@ -142,3 +143,4 @@ void set_delay_timer() {
 	ds_writew(0xe2d0, ds_readw(0x4b66));
 }
 
+}

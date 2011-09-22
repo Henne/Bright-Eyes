@@ -4266,7 +4266,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(x);
 			CPU_Push32(p);
 
-			reg_ax = FIG_obj_needs_refresh(Real2Host(p), x, y);
+			reg_ax = M302de::FIG_obj_needs_refresh(Real2Host(p), x, y);
 			D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
 				p, x, y, reg_ax);
 
@@ -4281,7 +4281,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(count);
 			CPU_Push32(p);
 
-			FIG_set_star_color(Real2Phys(p), count, val & 0xff);
+			M302de::FIG_set_star_color(Real2Phys(p), count, val & 0xff);
 			D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
 				p, count, val & 0xff);
 
@@ -4294,7 +4294,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(pos);
 			CPU_Push16(type);
 
-			RealPt retval = FIG_name_3rd_case(type, pos);
+			RealPt retval = M302de::FIG_name_3rd_case(type, pos);
 			D1_LOG("FIG_name_3rd_case(%d,%d) = %s\n",
 				type, pos, getString(retval));
 
@@ -4310,7 +4310,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(pos);
 			CPU_Push16(type);
 
-			RealPt retval = FIG_name_4th_case(type, pos);
+			RealPt retval = M302de::FIG_name_4th_case(type, pos);
 			D1_LOG("FIG_name_4th_case(%d,%d) = %s\n",
 				type, pos, getString(retval));
 
@@ -4326,7 +4326,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(pos);
 			CPU_Push16(type);
 
-			RealPt retval = FIG_name_1st_case(type, pos);
+			RealPt retval = M302de::FIG_name_1st_case(type, pos);
 			D1_LOG("FIG_name_1st_case(%d,%d) = %s\n",
 				type, pos, getString(retval));
 
@@ -4337,7 +4337,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		case 0x1ba7: {
 			CPU_Pop16();
-			set_delay_timer();
+			M302de::set_delay_timer();
 			D1_LOG("set_delay_timer()\n");
 			return 1;
 		}

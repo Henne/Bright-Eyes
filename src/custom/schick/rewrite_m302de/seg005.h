@@ -1,3 +1,5 @@
+namespace M302de {
+
 //static
 unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y);
 //static
@@ -10,3 +12,5 @@ RealPt FIG_name_4th_case(unsigned short type, unsigned short pos);
 RealPt FIG_name_1st_case(unsigned short type, unsigned short pos);
 //static
 void set_delay_timer();
+
+}
