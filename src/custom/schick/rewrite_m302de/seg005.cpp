@@ -2,6 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg005 (fight)
  *	Functions rewritten: 7/9
  */
+#include "callback.h"
 
 #include "schick.h"
 
@@ -137,6 +138,14 @@ RealPt FIG_name_1st_case(unsigned short type, unsigned short pos) {
 		return ds_readd(HEROS) + pos * 0x6da + 0x10;
 	else
 		return GUI_names_grammar(0, pos, 1);
+}
+
+/* TODO This callback does not work */
+void seg005_0598(Bit16u val)
+{
+	CPU_Push16(val);
+	CALLBACK_RunRealFar(reloc_game + 0xc85, 0x598);
+	CPU_Pop16();
 }
 
 //static

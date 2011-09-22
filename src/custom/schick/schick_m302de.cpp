@@ -1605,8 +1605,13 @@ static int seg004(unsigned short offs) {
 static int seg005(unsigned short offs) {
 	/* seg005 has only one func called by far */
 	switch (offs) {
-		case 0x598:
+		case 0x598: {
+			Bit16u val = CPU_Pop16();
+			D1_LOG("seg005_0598(%d);\n", val);
+			CPU_Push16(val);
+//			M302de::seg005_0598(val);
 			return 0;
+		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				__func__, offs);
