@@ -1,12 +1,14 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg005 (fight)
- *	Functions rewritten: 5/9
+ *	Functions rewritten: 7/9
  */
 
 #include "schick.h"
 
 #include "v302de.h"
 
+#include "seg001.h"
+#include "seg004.h"
 #include "seg096.h"
 
 namespace M302de {
@@ -141,6 +143,17 @@ RealPt FIG_name_1st_case(unsigned short type, unsigned short pos) {
 void set_delay_timer() {
 	/* set delay_timer to delay_factor */
 	ds_writew(0xe2d0, ds_readw(0x4b66));
+}
+//static
+void fight_delay()
+{
+	seg001_02c4();
+
+	while (ds_readw(0xe2d0) > 0) {
+		ds_writew(0xe2d0, ds_readw(0xe2d0) - 1);
+		wait_for_vsync();
+	}
+
 }
 
 }

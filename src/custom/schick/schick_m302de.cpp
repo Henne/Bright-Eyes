@@ -4341,6 +4341,12 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("set_delay_timer()\n");
 			return 1;
 		}
+		case 0x1bb2: {
+			CPU_Pop16();
+			M302de::fight_delay();
+			D1_LOG("fight_delay()\n");
+			return 1;
+		}
 		default:
 			return 0;
 		}
