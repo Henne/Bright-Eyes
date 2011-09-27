@@ -4576,7 +4576,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg041", offs);
+				"seg038", offs);
 			exit(1);
 		}
 	}
