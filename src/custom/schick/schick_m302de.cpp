@@ -3602,7 +3602,7 @@ static int seg105(unsigned short offs) {
 				schick_getCharname(hero),
 				schick_getItemname(item), item, val);
 
-			unequip(Real2Host(hero), item, val);
+			M302de::unequip(Real2Host(hero), item, val);
 
 			return 1;
 		}
@@ -3624,7 +3624,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = can_hero_use_item(Real2Host(hero), item);
+			reg_ax = M302de::can_hero_use_item(Real2Host(hero), item);
 			D1_LOG("can_hero_use_item(%s, %s); = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax);
@@ -3637,7 +3637,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(pos);
 			CPU_Push16(item);
 
-			reg_ax = can_item_at_pos(item, pos);
+			reg_ax = M302de::can_item_at_pos(item, pos);
 
 			D1_LOG("can_item_at_pos(%s=%d, %d); = %d\n",
 				schick_getItemname(item), item, pos, reg_ax);
@@ -3653,7 +3653,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = hero_count_item(Real2Host(hero), item);
+			reg_ax = M302de::hero_count_item(Real2Host(hero), item);
 			D1_INFO("far hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax);
@@ -3664,7 +3664,7 @@ static int seg105(unsigned short offs) {
 			unsigned short item = CPU_Pop16();
 			CPU_Push16(item);
 
-			reg_ax = group_count_item(item);
+			reg_ax = M302de::group_count_item(item);
 			D1_INFO("group_count_item(%s) = %d\n",
 				schick_getItemname(item), reg_ax);
 
@@ -4955,7 +4955,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("unequip(%s, %s, %d);\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), pos);
-			unequip(Real2Host(hero), item, pos);
+			M302de::unequip(Real2Host(hero), item, pos);
 
 			return 1;
 		}
@@ -4966,7 +4966,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = has_hero_stacked(Real2Host(hero), item);
+			reg_ax = M302de::has_hero_stacked(Real2Host(hero), item);
 			D1_LOG("has_hero_stacked(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), (signed short)reg_ax)
@@ -4981,7 +4981,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			unsigned short item = CPU_Pop16();
 			CPU_Push16(item);
 
-			reg_ax = item_pleasing_ingerimm(item);
+			reg_ax = M302de::item_pleasing_ingerimm(item);
 			D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
 				schick_getItemname(item), reg_ax);
 
@@ -4997,7 +4997,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = hero_count_item(Real2Host(hero), item);
+			reg_ax = M302de::hero_count_item(Real2Host(hero), item);
 			D1_INFO("hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax)

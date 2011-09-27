@@ -1,3 +1,5 @@
+namespace M302de {
+
 //20
 void unequip(Bit8u *hero, unsigned short item, unsigned short pos);
 //3e
@@ -13,3 +15,5 @@ unsigned short item_pleasing_ingerimm(unsigned short);
 unsigned short hero_count_item(Bit8u *, unsigned short);
 //5c
 unsigned short group_count_item(unsigned short);
+
+}

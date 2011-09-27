@@ -12,6 +12,8 @@
 
 #include "seg007.h"
 
+namespace M302de {
+
 /**
  *	@hero:	the hero
  *	@item:	the item which gets unequipped
@@ -254,4 +256,6 @@ unsigned short group_count_item(unsigned short item) {
 	}
 
 	return ret;
+}
+
 }
