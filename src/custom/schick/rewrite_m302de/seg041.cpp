@@ -8,19 +8,22 @@
 
 namespace M302de {
 
+/* DS:0x26ad */
+static unsigned short msg_counter;
+
 /**
  *	FIG_clear_msgs() - clears the fight messages buffer
 */
 void FIG_clear_msgs() {
 	memset(MemBase + PhysMake(datseg, 0xd333), 0 , 20);
-	ds_writew(0x26ad, 0);
+	msg_counter = 0;
 }
 
 void FIG_add_msg(unsigned short f_action, unsigned short damage) {
-	ds_writew(0xd333 + 4 * ds_readw(0x26ad), f_action);
-	ds_writew(0xd333 + 4 * ds_readw(0x26ad) + 2 , damage);
-	if (ds_readw(0x26ad) < 4)
-		ds_writew(0x26ad, ds_readw(0x26ad) + 1);
+	ds_writew(0xd333 + 4 * msg_counter, f_action);
+	ds_writew(0xd333 + 4 * msg_counter + 2 , damage);
+	if (msg_counter < 4)
+		msg_counter++;
 }
 
 void seg041_8c8() {
