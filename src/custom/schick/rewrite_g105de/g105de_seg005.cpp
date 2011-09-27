@@ -147,7 +147,7 @@ unsigned short swap_u16(unsigned short val) {
 	return (val << 8) | (val >> 8);
 }
 
-void copy_to_screen(Bit8u *src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
+void copy_to_screen(PhysPt src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
 {
 
 	Bit16u v1, v2;
@@ -169,7 +169,7 @@ void copy_to_screen(Bit8u *src, PhysPt dst, Bit16s w, Bit16s h, Bit16u mode)
 	} else {
 		for (; h; h--) {
 			for (i = 0; i < w; i++)
-				mem_writeb(dst++, *src++);
+				mem_writeb(dst++, mem_readb(src++));
 			dst += v1;
 			src += v2;
 		}

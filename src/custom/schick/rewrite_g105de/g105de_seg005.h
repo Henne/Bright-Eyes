@@ -9,5 +9,5 @@ void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, u
 void draw_pic(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, PhysPt, Bit16u);
 void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height);
 unsigned short swap_u16(unsigned short val);
-void copy_to_screen(Bit8u*, PhysPt, Bit16s, Bit16s, Bit16u);
+void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);
 }
