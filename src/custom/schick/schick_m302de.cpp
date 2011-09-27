@@ -2586,7 +2586,7 @@ static int seg039(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			reg_ax = seg039_0000(v1, v2, v3, v4);
+			reg_ax = M302de::seg039_0000(v1, v2, v3, v4);
 			D1_LOG("seg039(%d,%d,%d,%d); = %d\n",
 				v1, v2, v3, v4, reg_ax);
 
@@ -2596,7 +2596,7 @@ static int seg039(unsigned short offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = seg039_0023(Real2Host(hero));
+			reg_ax = M302de::seg039_0023(Real2Host(hero));
 			D1_LOG("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
 
 			return 1;
@@ -2615,7 +2615,7 @@ static int seg039(unsigned short offs) {
 			D1_LOG("fill_enemy_sheet(%d, %d, %d);\n",
 				sheet_nr, enemy, round);
 
-			fill_enemy_sheet(sheet_nr, enemy, round);
+			M302de::fill_enemy_sheet(sheet_nr, enemy, round);
 
 			return 1;
 		}
@@ -2634,7 +2634,7 @@ static int seg039(unsigned short offs) {
 			signed char v2 = (signed char)(v2_16 & 0xff);
 			signed char dir = (signed char)(dir_16 & 0xff);
 
-			reg_ax = place_obj_on_cb(x, y, object, v2, dir);
+			reg_ax = M302de::place_obj_on_cb(x, y, object, v2, dir);
 			D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
 				x, y, object, v2, dir, reg_ax);
 
@@ -4589,7 +4589,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = seg039_0023(Real2Host(hero));
+			reg_ax = M302de::seg039_0023(Real2Host(hero));
 			D1_LOG("seg039_0023(%s) = %d\n",
 				schick_getCharname(hero), (signed short)reg_ax);
 
@@ -4610,7 +4610,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
 				sheet_nr, enemy, round);
 
-			fill_enemy_sheet(sheet_nr, enemy, round);
+			M302de::fill_enemy_sheet(sheet_nr, enemy, round);
 
 			return 1;
 		}
@@ -4630,7 +4630,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			signed char v2 = (signed char)(v2_16 & 0xff);
 			signed char dir = (signed char)(dir_16 & 0xff);
 
-			reg_ax = place_obj_on_cb(x, y, object, v2, dir);
+			reg_ax = M302de::place_obj_on_cb(x, y, object, v2, dir);
 			D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
 				x, y, object, v2, dir, reg_ax);
 

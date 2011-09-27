@@ -13,6 +13,8 @@
 #include "seg007.h"
 #include "seg032.h"
 
+namespace M302de {
+
 /* is used at selecting a target */
 signed short seg039_0000(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4) {
 	return abs(v1 - v3) + abs(v2 - v4);
@@ -245,4 +247,6 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 	FIG_set_cb_field(y, x, object);
 
 	return 1;
+}
+
 }

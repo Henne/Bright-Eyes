@@ -1711,7 +1711,7 @@ void add_hero_le(Bit8u *hero, signed short le) {
 		/* maybe if we are in a fight */
 		if (ds_readw(0x2cd5)) {
 			ptr = FIG_get_ptr(host_readb(hero + 0x81));
-			ret = seg039_0023(hero);
+			ret = M302de::seg039_0023(hero);
 
 			if (ret != -1) {
 				tmp = (signed char)host_readb(hero + 0x9b) * 12;
