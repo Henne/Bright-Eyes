@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg039 (fight)
- *	Functions rewritten 4/7
+ *	Functions rewritten 5/7
 */
 
 #include <stdlib.h>
@@ -10,6 +10,7 @@
 
 #include "v302de.h"
 
+#include "seg006.h"
 #include "seg007.h"
 #include "seg032.h"
 
@@ -247,6 +248,128 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 	FIG_set_cb_field(y, x, object);
 
 	return 1;
+}
+
+void FIG_init_heroes()
+{
+	Bit8u *hero;
+	Bit16s cb_x, cb_y;
+	Bit16s l_si, l_di;
+
+	for (l_si = 0; l_si <= 6; l_si++) {
+
+		if (host_readb(get_hero(l_si) + 0x81) == 0xff)
+			continue;
+
+		FIG_remove_from_list(host_readb(get_hero(l_si) + 0x81), 0);
+		host_writeb(get_hero(l_si) + 0x81, 0xff);
+	}
+
+	for (l_si = 0; l_si <= 6; l_si++) {
+		hero = get_hero(l_si);
+
+		/* check typus */
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+		/* check group */
+		if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+			continue;
+
+		/* these two are unknown */
+		host_writeb(hero + 0x84, 10);
+		host_writeb(hero + 0x86, 0);
+
+		/* check special fight */
+		if (ds_readw(0xe316) == 0xc0) {
+			if (hero == Real2Host(ds_readd(0x3e20))) {
+				cb_x = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7a);
+				cb_y = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7b);
+				host_writeb(hero + 0x82,
+					host_readb(Real2Host(ds_readd(0xbd28)) + 0x7c));
+			} else {
+				do {
+					l_di = random_schick(6);
+
+					cb_x = host_readb(Real2Host(ds_readd(0xbd28)) + l_di * 4 + 0x7a);
+					cb_y = host_readb(Real2Host(ds_readd(0xbd28)) + l_di * 4 + 0x7b);
+					host_writeb(hero + 0x82,
+						host_readb(Real2Host(ds_readd(0xbd28)) + l_di * 4 + 0x7c));
+				} while (get_cb_val(cb_x, cb_y) != 0);
+			}
+		} else {
+			cb_x = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7a + 4 * l_si);
+			cb_y = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7b + 4 * l_si);
+			/* Direction */
+			host_writeb(hero + 0x82, host_readb(Real2Host(ds_readd(0xbd28)) + 0x7c + 4 * l_si));
+		}
+
+		/* heros sleep until they appear */
+		if (host_readb(Real2Host(ds_readd(0xbe28)) + l_si * 4) != 0) {
+			if ((host_readb(hero + 0xaa) & 1) == 0)
+				host_writeb(hero + 0xaa, host_readb(hero + 0xaa) | 2);
+		}
+
+		place_obj_on_cb(cb_x, cb_y, l_si + 1,
+			host_readb(hero + 0x21), host_readb(hero + 0x82));
+
+		l_di = seg039_0023(hero);
+
+		if (l_di != -1) {
+			ds_writeb(0xe068,
+				ds_readb(0x10d0 + host_readb(hero + 0x82) + host_readb(hero + 0x9b) * 12 + l_di * 4));
+		} else {
+			ds_writeb(0xe068, host_readb(hero + 0x82));
+		}
+
+		ds_writew(0xe066, ds_readb(0x12c0 + host_readb(hero + 0x9b) * 5));
+		ds_writeb(0xe069, cb_x);
+		ds_writeb(0xe06a, cb_y);
+		ds_writeb(0xe06b, 0);
+		ds_writeb(0xe06c, 0);
+
+		if (host_readb(hero + 0xaa) & 1) {
+			/* if hero is dead */
+			ds_writeb(0xe068,
+				ds_readb(0x1a13 + host_readb(hero + 0x9b) * 2));
+			ds_writeb(0xe06b,
+				ds_readb(0x1539 + host_readb(hero + 0x9b) * 10));
+			ds_writeb(0xe06c,
+				ds_readb(0x1539 + 1 + host_readb(hero + 0x9b) * 10));
+		} else if ((host_readb(hero + 0xaa) >> 1) || host_readb(hero + 0xaa) >> 6) {
+			/* sleeps or is unconscious */
+			ds_writeb(0xe068,
+				host_readb(hero + 0x82) + ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2));
+
+			ds_writew(0xe06b,
+				ds_readb(0x1210 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+			ds_writew(0xe06c,
+				ds_readb(0x1210 + 1 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+		}
+
+
+		ds_writeb(0xe06d, 40);
+		ds_writeb(0xe06e, 32);
+		ds_writeb(0xe06f, 0);
+		ds_writeb(0xe070, 0);
+		ds_writeb(0xe071, 31);
+		ds_writeb(0xe072, 39);
+		ds_writeb(0xe07b, 2);
+		ds_writeb(0xe07c, host_readb(hero + 0x9b));
+		ds_writeb(0xe073, 0xff);
+		ds_writeb(0xe075, 0xff);
+		ds_writeb(0xe074, 0xff);
+		ds_writed(0xe07d, ds_readd(0xd86e));
+		ds_writeb(0xe07a, 0);
+		ds_writew(0xd86e, ds_readw(0xd86e) + 0x508);
+		ds_writed(0xe370, ds_readd(0xe370) - 0x508);
+		ds_writeb(0xe077, 0x63);
+		ds_writeb(0xe078, 1);
+		ds_writeb(0xe079, 0xff);
+
+
+		host_writeb(get_hero(l_si) + 0x81, FIG_add_to_list(0xffff));
+	}
+
 }
 
 }

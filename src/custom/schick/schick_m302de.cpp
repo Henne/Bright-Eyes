@@ -2647,7 +2647,9 @@ static int seg039(unsigned short offs) {
 			return 0;
 		}
 		case 0x3e: {
-			return 0;
+			D1_LOG("FIG_init_heroes();\n");
+			M302de::FIG_init_heroes();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
