@@ -2670,12 +2670,13 @@ static int seg041(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f: {
-		unsigned short v1 = CPU_Pop16();
-		unsigned short v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-		D1_LOG("seg041_218(v1=0x%04x, v2=0x%04x);\n", v1, v2);
-		M302de::seg041_218(v1, v2);
+		unsigned short f_action = CPU_Pop16();
+		unsigned short damage = CPU_Pop16();
+		CPU_Push16(damage);
+		CPU_Push16(f_action);
+		D1_LOG("FIG_add_msg(f_action=0x%04x, damage=0x%04x);\n",
+			f_action, damage);
+		M302de::FIG_add_msg(f_action, damage);
 		return 1;
 	}
 	case 0x34: {

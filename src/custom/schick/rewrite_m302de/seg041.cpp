@@ -16,9 +16,9 @@ void FIG_clear_msgs() {
 	ds_writew(0x26ad, 0);
 }
 
-void seg041_218(unsigned short v1, unsigned short v2) {
-	ds_writew(0xd333 + 4 * ds_readw(0x26ad), v1);
-	ds_writew(0xd333 + 4 * ds_readw(0x26ad) + 2 , v2);
+void FIG_add_msg(unsigned short f_action, unsigned short damage) {
+	ds_writew(0xd333 + 4 * ds_readw(0x26ad), f_action);
+	ds_writew(0xd333 + 4 * ds_readw(0x26ad) + 2 , damage);
 	if (ds_readw(0x26ad) < 4)
 		ds_writew(0x26ad, ds_readw(0x26ad) + 1);
 }
