@@ -2666,7 +2666,7 @@ static int seg041(unsigned short offs) {
 	}
 	case 0x2a: {
 		D1_LOG("seg041_1fd();\n");
-		seg041_1fd();
+		M302de::seg041_1fd();
 		return 1;
 	}
 	case 0x2f: {
@@ -2675,7 +2675,7 @@ static int seg041(unsigned short offs) {
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 		D1_LOG("seg041_218(v1=0x%04x, v2=0x%04x);\n", v1, v2);
-		seg041_218(v1, v2);
+		M302de::seg041_218(v1, v2);
 		return 1;
 	}
 	case 0x34: {
@@ -2688,7 +2688,7 @@ static int seg041(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = weapon_check(Real2Host(hero));
+		reg_ax = M302de::weapon_check(Real2Host(hero));
 
 		D1_LOG("weapon_check(%s); = %d\n", schick_getCharname(hero),
 			(signed short)reg_ax);
@@ -2700,7 +2700,7 @@ static int seg041(unsigned short offs) {
 	}
 	case 0x48: {
 		D1_LOG("seg041_8c8();\n");
-		seg041_8c8();
+		M302de::seg041_8c8();
 		return 1;
 	}
 	default:
@@ -4647,7 +4647,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = weapon_check(Real2Host(hero));
+			reg_ax = M302de::weapon_check(Real2Host(hero));
 
 			D1_LOG("near weapon_check(%s); = %d\n",
 				schick_getCharname(hero), (signed short)reg_ax);

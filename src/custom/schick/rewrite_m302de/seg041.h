@@ -1,3 +1,5 @@
+namespace M302de {
+
 //0x2a
 void seg041_1fd();
 //0x2f
@@ -7,3 +9,4 @@ signed short weapon_check(Bit8u *);
 //0x48
 void seg041_8c8();
 
+}

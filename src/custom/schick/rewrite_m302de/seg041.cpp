@@ -6,6 +6,8 @@
 
 #include "seg007.h"
 
+namespace M302de {
+
 void seg041_1fd() {
 	memset(MemBase + PhysMake(datseg, 0xd333), 0 , 20);
 	ds_writew(0x26ad, 0);
@@ -64,4 +66,6 @@ signed short weapon_check(Bit8u *hero) {
 		return 0;
 
 	return 2;
+}
+
 }
