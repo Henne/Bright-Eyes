@@ -8,7 +8,10 @@
 
 namespace M302de {
 
-void seg041_1fd() {
+/**
+ *	FIG_clear_msgs() - clears the fight messages buffer
+*/
+void FIG_clear_msgs() {
 	memset(MemBase + PhysMake(datseg, 0xd333), 0 , 20);
 	ds_writew(0x26ad, 0);
 }

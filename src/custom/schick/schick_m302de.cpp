@@ -2665,8 +2665,8 @@ static int seg041(unsigned short offs) {
 		return 0;
 	}
 	case 0x2a: {
-		D1_LOG("seg041_1fd();\n");
-		M302de::seg041_1fd();
+		D1_LOG("FIG_clear_msgs();\n");
+		M302de::FIG_clear_msgs();
 		return 1;
 	}
 	case 0x2f: {
