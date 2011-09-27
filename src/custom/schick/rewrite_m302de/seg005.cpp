@@ -1,7 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg005 (fight)
- *	Functions rewritten: 7/9
+ *	Functions rewritten: 8/9
  */
+#include <stdlib.h>
+#include <string.h>
+
 #include "callback.h"
 
 #include "schick.h"
@@ -138,6 +141,158 @@ RealPt FIG_name_1st_case(unsigned short type, unsigned short pos) {
 		return ds_readd(HEROS) + pos * 0x6da + 0x10;
 	else
 		return GUI_names_grammar(0, pos, 1);
+}
+unsigned short fight_printer()
+{
+	char str[6];
+	RealPt gfx_pos_bak;
+	RealPt gfx_dst_bak;
+	Bit16s fg_bak, bg_bak;
+	Bit16s f_action;
+	Bit16u x;
+
+	if (ds_readw(0xd333) == 0)
+		ds_writew(0x26b1, 1);
+
+	if (ds_readw(0x4b79) == 0 && ds_readb(0x4b94) != 0) {
+		ds_writeb(0x4b78, ds_readb(0x4b78) + 1);
+		ds_writeb(0x4b94, 0);
+
+		if (ds_readw(0xe318))
+			ds_writew(0x4b79, 10);
+		else
+			ds_writew(0x4b79, ds_readw(0x4b66) * 6);
+
+		if (ds_readw(0xd333 + ds_readb(0x4b78) * 4) == 0)
+			ds_writew(0x26b1, 0);
+	}
+
+	if (ds_readw(0x26b1) != 0) {
+		if (ds_readb(0x4b78) == ds_readb(0x4b7b))
+			return 0;
+
+		ds_writeb(0x4b94, 1);
+
+		f_action = ds_readw(0xd333 + ds_readb(0x4b78) * 4);
+		if (f_action != 0) {
+
+			gfx_pos_bak = ds_readd(0xd2fb);
+
+			ds_writed(0xd2fb, ds_readd(0xd303));
+			GUI_get_smth(&fg_bak, &bg_bak);
+
+			FIG_set_star_color(Real2Phys(ds_readd(0xd29d)),
+				3724, ds_readb(0x4b6b + f_action));
+
+			ds_writew(0xc011, 0);
+			ds_writew(0xc013, 150);
+			ds_writew(0xc015, 75);
+			ds_writew(0xc017, 198);
+			ds_writed(0xc019, ds_readd(0xd29d));
+			ds_writed(0xc00d, ds_readd(0xd303));
+			gfx_dst_bak = ds_readd(0xc00d);
+			do_pic_copy(2);
+
+			ds_writed(0xc00d, gfx_dst_bak);
+
+			/* print number into the star */
+			if (ds_readw(0xd333 + 2 + ds_readb(0x4b78) * 4)) {
+				GUI_set_smth(0xff, ds_readb(0x4b6b + f_action) + 0x80);
+				sprintf(str, "%d", (signed short)
+					ds_readw(0xd333 + 2 + ds_readb(0x4b78) * 4));
+				x = GUI_get_first_pos_centered((Bit8u*)str, 30, 20, 0);
+				GUI_print_string((Bit8u*)str, x, 170);
+			}
+
+			/* Generate textmessage */
+			if (ds_readw(0x4b7a + f_action * 2) != 0) {
+				ds_writew(0xc01d, 0);
+				ds_writew(0xc011, 0);
+				ds_writew(0xc01f, 194);
+				ds_writew(0xc013, 194);
+				ds_writew(0xc015, 318);
+				ds_writew(0xc017, 199);
+				ds_writed(0xc019, ds_readd(0xc3a9));
+				do_pic_copy(3);
+
+				GUI_set_smth(0xff, 0);
+
+				switch (f_action) {
+				case 1:	/* heros attack fails */
+				case 3: /* enemy attack fails */
+				{
+					Bit16u idx;
+
+					idx = ds_readw(0x4b7a + ds_readw(0xd333 + ds_readb(0x4b78) * 4) * 2);
+
+					sprintf(getString(ds_readd(0xd2eb)),
+						(char*)get_dtp(idx * 4),
+					getString(FIG_name_3rd_case(ds_readw(0xe2b8), ds_readw(0xe2ba))));
+					break;
+				}
+				case 2: /* hero parade fails */
+				case 4: /* enemy parade fails */
+				case 7:	/* hero get unconscious */
+				{
+					Bit16u idx;
+
+					idx = ds_readw(0x4b7a + ds_readw(0xd333 + ds_readb(0x4b78) * 4) * 2);
+
+					sprintf(getString(ds_readd(0xd2eb)),
+						(char*)get_dtp(idx * 4),
+					getString(FIG_name_3rd_case(ds_readw(0xe2bc), ds_readw(0xe2be))));
+
+
+					break;
+				}
+				case 8:		/* enemy hits hero */
+				case 11:	/* hero hits enemy */
+				{
+					Bit16u idx;
+
+					idx = ds_readw(0x4b7a + ds_readw(0xd333 + ds_readb(0x4b78) * 4) * 2);
+
+					sprintf(getString(ds_readd(0xd2eb)),
+						(char*)get_dtp(idx * 4),
+					getString(FIG_name_1st_case(ds_readw(0xe2b8), ds_readw(0xe2ba))),
+					getString(FIG_name_4th_case(ds_readw(0xe2bc), ds_readw(0xe2be))));
+					break;
+				}
+				default: {
+					/* case 5: hero successful parade */
+					/* case 6: weapon broke */
+					Bit16u idx;
+
+					idx = ds_readw(0x4b7a + ds_readw(0xd333 + ds_readb(0x4b78) * 4) * 2);
+					strcpy(getString(ds_readd(0xd2eb)), (char*)get_dtp(idx * 4));
+
+					if (f_action != 5 && f_action != 6) {
+					D1_INFO("f_action = %d\n", f_action);
+					D1_INFO("%s\n", getString(ds_readd(0xd2eb)));
+					}
+				}
+				}
+				GUI_print_string(Real2Host(ds_readd(0xd2eb)),
+					1, 194);
+			}
+			ds_writed(0xd2fb, gfx_pos_bak);
+			GUI_set_smth(fg_bak, bg_bak);
+		}
+		ds_writeb(0x4b7b, ds_readb(0x4b78));
+		return 1;
+	} else {
+		ds_writeb(0x4b78, 0);
+
+		if (ds_readw(0xe318))
+			ds_writew(0x4b79, 10);
+		else
+			ds_writew(0x4b79, ds_readw(0x4b66) * 6);
+
+		ds_writeb(0x4b7b, 0xff);
+
+		return 0;
+	}
+
 }
 
 /* TODO This callback does not work */

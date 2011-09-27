@@ -4340,6 +4340,12 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			return 1;
 		}
+		case 0x220: {
+			CPU_Pop16();
+			reg_ax = M302de::fight_printer();
+			D1_LOG("fight_printer()\n");
+			return 1;
+		}
 		case 0x1ba7: {
 			CPU_Pop16();
 			M302de::set_delay_timer();

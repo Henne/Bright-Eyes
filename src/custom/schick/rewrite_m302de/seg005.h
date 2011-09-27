@@ -10,6 +10,8 @@ RealPt FIG_name_3rd_case(unsigned short type, unsigned short pos);
 RealPt FIG_name_4th_case(unsigned short type, unsigned short pos);
 //static
 RealPt FIG_name_1st_case(unsigned short type, unsigned short pos);
+//static
+unsigned short fight_printer();
 
 void seg005_0598(Bit16u);
 //static
