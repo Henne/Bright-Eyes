@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 20/26
+ *	Functions rewritten 21/26
  *
 */
 
@@ -91,6 +91,31 @@ void spell_inc_ch() {
 			(char*)get_dtp(101 * 4),
 			(char*)tp + 0x10,
 			(char*)get_ltx(414 * 4));
+	}
+}
+
+void spell_feuerbann()
+{
+	unsigned short slot, pos;
+
+	/* check if spell is already activated */
+	if (host_readb(get_spelluser() + 0x99) == 0) {
+
+		pos = get_hero_index(get_spelluser());
+
+		slot = get_free_mod_slot();
+
+		/* Duration = Level * 12 min */
+		set_mod_slot(slot, host_readb(get_spelluser() + 0x27) * 450,
+			get_spelluser() + 0x99, 1, pos);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x198),
+			(char*)get_spelluser() + 0x10);
+	} else {
+		/* set AP costs to 0 */
+		ds_writew(0xac0e, 0);
 	}
 }
 

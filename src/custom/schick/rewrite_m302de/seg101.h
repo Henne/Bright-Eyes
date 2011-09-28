@@ -6,6 +6,8 @@ void spell_adler();
 void spell_arcano();
 //0x2f
 void spell_inc_ch();
+//0x34
+void spell_feuerbann();
 //0x39
 void spell_inc_ff();
 //0x3e
