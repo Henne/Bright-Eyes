@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 6/16
+ *      Functions rewritten 7/16
  *
- *      Functions called rewritten 5/13
+ *      Functions called rewritten 6/13
  *      Functions uncalled rewritten 1/3
 */
 
@@ -17,6 +17,7 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg096.h"
+#include "seg097.h"
 
 //000
 //129
@@ -230,6 +231,11 @@ void GUI_copy_smth(unsigned short width, unsigned short height) {
 	ds_writew(0xc017, ds_readw(0xc001) + height - 1);
 	ds_writed(0xc019, ds_readd(0xbff9));
 	do_pic_copy(0);
+}
+
+void GUI_output(Bit8u *str)
+{
+	GUI_input(str, 0);
 }
 
 signed short GUI_input(Bit8u *str, unsigned short num)

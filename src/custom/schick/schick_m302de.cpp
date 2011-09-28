@@ -3272,12 +3272,12 @@ static int seg097(unsigned short offs) {
 		return 1;
 	}
 	case 0x39: {
-		RealPt ptr = CPU_Pop32();
-		CPU_Push32(ptr);
+		RealPt str = CPU_Pop32();
+		CPU_Push32(str);
 
-		strncpy(buffer, getString(ptr), 20);
-		D1_LOG("GUI_InfoBox(%s...)\n", buffer);
-		return 0;
+		D1_LOG("GUI_output()\n");
+		GUI_output(Real2Host(str));
+		return 1;
 	}
 	case 0x3e: {
 		RealPt ptr = CPU_Pop32();
@@ -4848,8 +4848,15 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		/* Callers: 1 */
-		case 0x59f:
-			return 0;
+		case 0x59f: {
+			CPU_Pop16();
+			RealPt str = CPU_Pop32();
+			CPU_Push32(str);
+
+			D1_INFO("GUI_output()\n");
+			GUI_output(Real2Host(str));
+			return 1;
+		}
 		/* Callers: 1 */
 		case 0x5b4: {
 			CPU_Pop16();

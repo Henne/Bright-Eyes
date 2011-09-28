@@ -6,6 +6,8 @@ void GUI_1c2(unsigned short v1, unsigned short v2, unsigned short v3, unsigned s
 signed short GUI_enter_text(Bit8u *, unsigned short, unsigned short, unsigned short, unsigned short);
 //0x34
 signed short GUI_input(Bit8u*, unsigned short);
+//0x39
+void GUI_output(Bit8u*);
 //4d
 void GUI_draw_radio_bg(Bit16u, Bit16u, Bit16u, Bit16u);
 // 52
