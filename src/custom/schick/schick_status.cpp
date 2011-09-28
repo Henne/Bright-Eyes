@@ -269,7 +269,7 @@ static void schick_cmp_heros()
 
 		/* check for invalid spell_attempts */
 		if ((signed char)host_readb(hero + 0x193) < 0) {
-			D1_ERR("Original-Bug: %s hat negative Talentsteigerungen\n", (char*)(hero + 0x10));
+			D1_ERR("Original-Bug: %s hat negative Zaubersteigerungen\n", (char*)(hero + 0x10));
 			host_writeb(hero + 0x193, 0);
 		}
 	}
