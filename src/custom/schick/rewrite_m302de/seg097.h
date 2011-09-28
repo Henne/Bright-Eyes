@@ -4,6 +4,8 @@ char GUI_lookup_char_height(char c, unsigned short *p);
 void GUI_1c2(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
 //2f
 signed short GUI_enter_text(Bit8u *, unsigned short, unsigned short, unsigned short, unsigned short);
+//0x34
+signed short GUI_input(Bit8u*, unsigned short);
 //4d
 void GUI_draw_radio_bg(Bit16u, Bit16u, Bit16u, Bit16u);
 // 52

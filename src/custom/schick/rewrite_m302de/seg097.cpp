@@ -1,12 +1,13 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 4/16
+ *      Functions rewritten 6/16
  *
- *      Functions called rewritten 4/13
+ *      Functions called rewritten 5/13
  *      Functions uncalled rewritten 1/3
 */
 
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 #include "schick.h"
@@ -229,4 +230,96 @@ void GUI_copy_smth(unsigned short width, unsigned short height) {
 	ds_writew(0xc017, ds_readw(0xc001) + height - 1);
 	ds_writed(0xc019, ds_readd(0xbff9));
 	do_pic_copy(0);
+}
+
+signed short GUI_input(Bit8u *str, unsigned short num)
+{
+	Bit16s fg_bak, bg_bak;
+	Bit16s retval, l2, l3, l4, l5, l6, l7;
+	Bit16s l_si, l_di;
+
+	retval = 0;
+
+	l7 = ds_readw(0xc3cb);
+	ds_writeb(0xc3cb, 0);
+
+	if (str == NULL || str == MemBase || *str == '\0' || ds_readw(0xe318) != 0)
+		return -1;
+
+	l6 = ds_readw(0xe113);
+	ds_writew(0xe113, 0);
+	ds_writeb(0x2c98, 1);
+	ds_writew(0xd2d1, 1);
+
+	l3 = ds_readw(0xd2d9);
+	l4 = ds_readw(0xd2d7);
+	l5 = ds_readw(0xd2d5);
+
+	l_di = (ds_readw(0xbffd) * 32) + 32;
+	ds_writew(0xbfff, (320 - l_di) / 2 + ds_readw(0x2ca2));
+
+	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
+	ds_writew(0xd2d5, l_di - 8);
+
+	l_si = GUI_count_lines(str);
+
+	if (num != 0)
+		l_si += 2;
+
+	l2 = (l_si + 2) * 8;
+
+	ds_writew(0xc001, (200 - l2) / 2 + ds_readw(0x2ca4));
+	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
+
+	GUI_get_smth(&fg_bak, &bg_bak);
+
+	update_mouse_cursor();
+
+	GUI_draw_radio_bg(l_si, 0, l_di, l2);
+
+	GUI_print_header(str);
+
+	ds_writew(0xc3d3, 0);
+
+	refresh_screen_size();
+
+	if (num != 0) {
+		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), (l_di - num * 6) / 2 + ds_readw(0xbfff), l_si * 8 + ds_readw(0xc001) - 2, num, 0) == -1)
+			return -1;
+
+		retval = atol((char*)Real2Host(ds_readd(0xd2ef)));
+	} else {
+		/* set action table */
+		ds_writed(0x29e4, RealMake(datseg, 0x29cc));
+
+		if (ds_readw(0xc3c5) != 0) {
+			wait_for_keypress();
+		} else {
+			delay_or_keypress(l_si * ds_readw(0xbffd) * 50);
+		}
+
+		/* delete action table */
+		ds_writed(0x29e4, 0);
+	}
+
+	GUI_set_smth(fg_bak, bg_bak);
+
+	update_mouse_cursor();
+
+	GUI_copy_smth(l_di, l2);
+
+	refresh_screen_size();
+
+	ds_writew(0xd2d9, l3);
+	ds_writew(0xd2d7, l4);
+	ds_writew(0xd2d5, l5);
+
+	ds_writew(0xc3d9, 0);
+	ds_writeb(0x2c98, 0);
+
+	ds_writew(0xe113, l6);
+	ds_writew(0xd2d1, 0);
+	ds_writew(0xc3cb, l7);
+
+	return retval;
 }
