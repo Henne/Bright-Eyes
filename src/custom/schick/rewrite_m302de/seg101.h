@@ -22,6 +22,8 @@ void spell_inc_kl();
 void spell_inc_mu();
 //0x57
 void spell_mutabili();
+//0x5c
+void spell_paral();
 //0x61
 void spell_salander();
 //0x66

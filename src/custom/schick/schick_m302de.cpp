@@ -3482,7 +3482,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x5c: {
-		return 0;
+		M302de::spell_paral();
+		return 1;
 	}
 	case 0x61: {
 		M302de::spell_salander();

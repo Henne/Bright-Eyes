@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 21/26
+ *	Functions rewritten 23/26
  *
 */
 
@@ -405,6 +405,52 @@ void spell_mutabili() {
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
 	D1_INFO("Zauberspruch \"Mutabili\" ist nicht implementiert\n");
+}
+
+void spell_paral()
+{
+
+	if (host_readb(get_spelluser() + 0x86) >= 10) {
+		/* cast an enemy */
+		ds_writed(0xe5b4, RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
+
+		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
+			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x04);
+
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x19c),
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+	} else {
+		/* cast a hero */
+		/* TODO: the first check can be removed, cause it would not give a message */
+		if (get_spelluser() != get_spelltarget()) {
+
+			/* set the target  */
+			ds_writed(SPELLTARGET, ds_readd(HEROS) + (host_readb(get_spelluser() + 0x86) - 1) * 0x6da);
+
+			/* check again */
+			if (get_spelluser() == get_spelltarget()) {
+
+				/* never cast yourself */
+				ds_writew(0xac0e, 0);
+
+				strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+					(char*)get_dtp(0x1c0));
+			} else {
+				/* set the hero to stoned */
+				host_writeb(get_spelltarget() + 0xaa, host_readb(get_spelltarget() + 0xaa) | 0x4);
+
+				/* prepare message */
+				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+					(char*)get_dtp(0x19c),
+					(char*)get_spelltarget() + 0x10);
+			}
+		} else {
+			/* set AE to 0 */
+			ds_writew(0xac0e, 0);
+		}
+	}
+
 }
 
 void spell_salander()
