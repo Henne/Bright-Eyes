@@ -14,6 +14,7 @@
 #define TEXT_LTX	(0xc3b5)
 #define CHESSBOARD	(0xd852)
 #define ITEMSDAT	(0xe22b)
+#define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 
 static inline Bit8u *get_hero(unsigned short index) {
@@ -22,6 +23,10 @@ static inline Bit8u *get_hero(unsigned short index) {
 
 static inline Bit8u *get_spelluser() {
 	return MemBase + Real2Phys(ds_readd(SPELLUSER));
+}
+
+static inline Bit8u *get_spelltarget() {
+	return MemBase + Real2Phys(ds_readd(SPELLTARGET));
 }
 
 static inline Bit8u *get_fname(unsigned short off) {
