@@ -304,7 +304,7 @@ void FIG_init_heroes()
 		}
 
 		/* heros sleep until they appear */
-		if (host_readb(Real2Host(ds_readd(0xbe28)) + l_si * 4) != 0) {
+		if (host_readb(Real2Host(ds_readd(0xbd28)) + l_si * 4 + 0x7d) != 0) {
 			if ((host_readb(hero + 0xaa) & 1) == 0)
 				host_writeb(hero + 0xaa, host_readb(hero + 0xaa) | 2);
 		}
