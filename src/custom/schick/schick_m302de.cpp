@@ -3435,49 +3435,49 @@ static int seg098(unsigned short offs) {
 static int seg101(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
-		spell_adler();
+		M302de::spell_adler();
 		return 1;
 	}
 	case 0x25: {
-		spell_arcano();
+		M302de::spell_arcano();
 		return 1;
 	}
 	case 0x2a: {
 		return 0;
 	}
 	case 0x2f: {
-		spell_inc_ch();
+		M302de::spell_inc_ch();
 		return 1;
 	}
 	case 0x34: {
 		return 0;
 	}
 	case 0x39: {
-		spell_inc_ff();
+		M302de::spell_inc_ff();
 		return 1;
 	}
 	case 0x3e: {
-		spell_inc_ge();
+		M302de::spell_inc_ge();
 		return 1;
 	}
 	case 0x43: {
-		spell_inc_in();
+		M302de::spell_inc_in();
 		return 1;
 	}
 	case 0x48: {
-		spell_inc_kk();
+		M302de::spell_inc_kk();
 		return 1;
 	}
 	case 0x4d: {
-		spell_inc_kl();
+		M302de::spell_inc_kl();
 		return 1;
 	}
 	case 0x52: {
-		spell_inc_mu();
+		M302de::spell_inc_mu();
 		return 1;
 	}
 	case 0x57: {
-		spell_mutabili();
+		M302de::spell_mutabili();
 		return 1;
 	}
 	case 0x5c: {
@@ -3487,49 +3487,49 @@ static int seg101(unsigned short offs) {
 		return 0;
 	}
 	case 0x66: {
-		spell_see();
+		M302de::spell_see();
 		return 1;
 	}
 	case 0x6b: {
 		return 0;
 	}
 	case 0x70: {
-		spell_abvenenum();
+		M302de::spell_abvenenum();
 		return 1;
 	}
 	case 0x75: {
-		spell_aeolitus();
+		M302de::spell_aeolitus();
 		return 1;
 	}
 	case 0x7a: {
 		return 0;
 	}
 	case 0x7f: {
-		spell_claudibus();
+		M302de::spell_claudibus();
 		return 1;
 	}
 	case 0x84: {
-		spell_dunkelheit();
+		M302de::spell_dunkelheit();
 		return 1;
 	}
 	case 0x89: {
-		spell_erstarre();
+		M302de::spell_erstarre();
 		return 1;
 	}
 	case 0x8e: {
-		spell_flimflam();
+		M302de::spell_flimflam();
 		return 1;
 	}
 	case 0x93: {
-		spell_schmelze();
+		M302de::spell_schmelze();
 		return 1;
 	}
 	case 0x98: {
-		spell_silentium();
+		M302de::spell_silentium();
 		return 1;
 	}
 	case 0x9d: {
-		spell_sturmgebr();
+		M302de::spell_sturmgebr();
 		return 1;
 	}
 	default:

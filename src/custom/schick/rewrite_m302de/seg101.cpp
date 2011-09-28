@@ -13,6 +13,8 @@
 
 #include "seg002.h"
 
+namespace M302de {
+
 /* Transformation / Verwandlung */
 void spell_adler() {
 	/* triggers the "spell failed" messages */
@@ -466,4 +468,6 @@ void spell_silentium() {
 
 void spell_sturmgebr() {
 	D1_INFO("Zauberspruch \"Sturmgebruell\" ist nicht implementiert\n");
+}
+
 }

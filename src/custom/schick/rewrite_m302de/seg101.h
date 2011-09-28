@@ -1,3 +1,5 @@
+namespace M302de {
+
 //0x20
 void spell_adler();
 //0x25
@@ -38,3 +40,5 @@ void spell_schmelze();
 void spell_silentium();
 //0x9d
 void spell_sturmgebr();
+
+}
