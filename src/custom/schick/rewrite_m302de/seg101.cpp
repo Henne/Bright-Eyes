@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 19/26
+ *	Functions rewritten 20/26
  *
 */
 
@@ -12,6 +12,7 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg096.h"
 
 namespace M302de {
 
@@ -379,6 +380,44 @@ void spell_mutabili() {
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
 	D1_INFO("Zauberspruch \"Mutabili\" ist nicht implementiert\n");
+}
+
+void spell_salander()
+{
+	Bit16s ae_cost;
+
+	/* set a pointer */
+	ds_writed(0xe5b4, RealMake(datseg, 0xd0df + (signed char)host_readb(get_spelluser() + 0x86) * 62));
+
+	/* read a value from that struct */
+	ae_cost = (signed char)host_readb(Real2Host(ds_readd(0xe5b4)) + 0x19) * 3;
+
+	/* set the minimal astral cost to 25 AE */
+	if (ae_cost < 25)
+		ae_cost = 25;
+
+	if (host_readw(get_spelluser() + 0x64) >= ae_cost) {
+
+		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
+			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x40);
+
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x1a0),
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+
+		/* set AE cost */
+		ds_writew(0xac0e, ae_cost);
+	} else {
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_ltx(0x97c),
+			(char*)Real2Host(ds_readd(0xe5bc) + 0x10));
+
+		/* no AE cost */
+		ds_writew(0xac0e, 0);
+	}
 }
 
 void spell_see() {

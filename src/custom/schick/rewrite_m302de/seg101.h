@@ -20,6 +20,8 @@ void spell_inc_kl();
 void spell_inc_mu();
 //0x57
 void spell_mutabili();
+//0x61
+void spell_salander();
 //0x66
 void spell_see();
 //0x70
