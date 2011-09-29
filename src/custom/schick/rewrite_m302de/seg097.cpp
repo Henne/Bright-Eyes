@@ -247,7 +247,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	retval = 0;
 
 	l7 = ds_readw(0xc3cb);
-	ds_writeb(0xc3cb, 0);
+	ds_writew(0xc3cb, 0);
 
 	if (str == NULL || str == MemBase || *str == '\0' || ds_readw(0xe318) != 0)
 		return -1;
@@ -290,10 +290,11 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	refresh_screen_size();
 
 	if (num != 0) {
-		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), (l_di - num * 6) / 2 + ds_readw(0xbfff), l_si * 8 + ds_readw(0xc001) - 2, num, 0) == -1)
-			return -1;
-
-		retval = atol((char*)Real2Host(ds_readd(0xd2ef)));
+		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), (l_di - num * 6) / 2 + ds_readw(0xbfff), l_si * 8 + ds_readw(0xc001) - 2, num, 0) == -1) {
+			retval = -1;
+		} else {
+			retval = atol((char*)Real2Host(ds_readd(0xd2ef)));
+		}
 	} else {
 		/* set action table */
 		ds_writed(0x29e4, RealMake(datseg, 0x29cc));
