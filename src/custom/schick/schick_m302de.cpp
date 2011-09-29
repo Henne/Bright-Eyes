@@ -3003,7 +3003,8 @@ static int seg068(unsigned short offs)
 		}
 		case 0x2a: {
 			D1_LOG("thorwal_botschaft();\n");
-			return 0;
+			M302de::thorwal_botschaft();
+			return 1;
 		}
 		case 0x2f: {
 			D1_LOG("thorwal_bank();\n");
