@@ -30,6 +30,10 @@ void spell_paral();
 void spell_salander();
 //0x66
 void spell_see();
+//0x6b
+void spell_visibili();
+
+/* Transmutation / Veraenderung */
 //0x70
 void spell_abvenenum();
 //0x75

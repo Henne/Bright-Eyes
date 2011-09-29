@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 24/26
+ *	Functions rewritten 25/26
  *
 */
 
@@ -540,6 +540,48 @@ void spell_salander()
 
 void spell_see() {
 	D1_INFO("Zauberspruch \"See und Fluss\" ist nicht implementiert\n");
+}
+
+void spell_visibili()
+{
+	unsigned short pos, slot;
+	signed short rounds;
+
+	/* ask the user how many rounds he wants to be invisible */
+	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		(char*)get_dtp(0x1a4), (char*)get_spelluser() + 0x10);
+	rounds = GUI_input(Real2Host(ds_readd(0xd2f3)), 2);
+
+	/* the spell has also no effect if it is already active */
+	if ((rounds <= 0) || (host_readb(get_spelluser() + 0x9a) != 0)) {
+
+		/* set AE to 0 */
+		ds_writew(0xac0e, 0);
+		/* clear output string */
+		host_writeb(Real2Host(ds_readd(0xd2f3)), 0);
+
+		return;
+	}
+
+	/* check if the hero has enough AE */
+	if (rounds * 5 <= host_readw(get_spelluser() + 0x64)) {
+
+		ds_writew(0xac0e, rounds * 5);
+		pos = get_hero_index(get_spelluser());
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, rounds * 450, get_spelluser() + 0x9a, 1, pos);
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x1a8),
+			(char*)get_spelluser() + 0x10,
+			(char*)Real2Host(GUI_get_ptr(host_readb(get_spelluser() + 0x22), 0)));
+	} else {
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_ltx(0x97c),
+			(char*)get_spelluser() + 0x10);
+
+		ds_writew(0xac0e, 0);
+	}
+
 }
 
 /* Transmutation / Veraenderung */
