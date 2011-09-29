@@ -3456,7 +3456,8 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		return 0;
+		M302de::spell_chamaelioni();
+		return 1;
 	}
 	case 0x3e: {
 		return 0;
