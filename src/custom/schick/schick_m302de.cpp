@@ -3469,7 +3469,8 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x48: {
-		return 0;
+		M302de::spell_blitz();
+		return 1;
 	}
 	case 0x4d: {
 		return 0;

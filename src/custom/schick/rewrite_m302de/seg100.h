@@ -11,6 +11,10 @@ void spell_duplicatus();
 //0x43
 void spell_harmlos();
 
+/* Combat / Kampf */
+//0x48
+void spell_blitz();
+
 /* Communication / Verstaendigung */
 //0x7a
 void spell_hexenblick();

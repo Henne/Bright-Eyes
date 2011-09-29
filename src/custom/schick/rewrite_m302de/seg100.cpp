@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 6/20
+ *	Functions rewritten 7/20
  *
 */
 
@@ -57,6 +57,51 @@ void spell_harmlos()
 {
         D1_INFO("Zauberspruch \"Harmlos\" ist nicht implementiert\n");
 }
+
+/* Combat / Kampf */
+void spell_blitz()
+{
+
+	if (host_readb(get_spelluser() + 0x86) < 10) {
+		/* cast a hero */
+
+		/* set the spell target */
+		ds_writed(0xe5b8,
+			ds_readd(0xbd34) + (host_readb(get_spelluser() + 0x86) - 1) * 0x6da);
+
+		/* do not cast yourself */
+		if (get_spelltarget() == get_spelluser()) {
+
+			ds_writeb(0xac0e, 0);
+
+			strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+				(char*)get_dtp(0x1c0));
+		} else {
+			/* set the rounds counter */
+			host_writeb(get_spelltarget() + 0x96, 3);
+
+			/* prepare the message */
+			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				(char*)get_dtp(0x158),
+				(char*)get_spelltarget() + 0x10);
+		}
+	} else {
+		/* cast an enemy */
+
+		/* set a pointer to the enemy */
+		ds_writed(0xe5b4,
+			RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
+
+		/* set the rounds counter */
+		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x2f, 3);
+
+		/* prepare the message */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x154),
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+	}
+}
+
 
 /* Communication / Verstaendigung */
 void spell_hexenblick()
