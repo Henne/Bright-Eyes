@@ -245,6 +245,8 @@ unsigned short GUI_count_lines(Bit8u *str) {
 
 		if (width_line >=  ds_readw(0xd2d5)) {
 			if ( di != v6) {
+				/* TODO: this caused a crash on
+					no_way() in the city */
 				str_loc[di] = 0x0d;
 				str_loc += di;
 			} else {
