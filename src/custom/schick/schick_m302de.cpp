@@ -3460,7 +3460,8 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x3e: {
-		return 0;
+		M302de::spell_duplicatus();
+		return 1;
 	}
 	case 0x43: {
 		M302de::spell_harmlos();

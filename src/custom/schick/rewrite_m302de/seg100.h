@@ -3,6 +3,8 @@ namespace M302de {
 /* Illusion */
 //0x39
 void spell_chamaelioni();
+//0x3e
+void spell_duplicatus();
 //0x43
 void spell_harmlos();
 
