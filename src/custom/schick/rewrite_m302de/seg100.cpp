@@ -17,4 +17,17 @@
 
 namespace M302de {
 
+/* Communication / Verstaendigung */
+void spell_hexenblick()
+{
+        D1_INFO("Zauberspruch \"Hexenblick\" ist nicht implementiert\n");
+
+}
+
+void spell_necropathia()
+{
+        D1_INFO("Zauberspruch \"Necropathia\" ist nicht implementiert\n");
+
+}
+
 }

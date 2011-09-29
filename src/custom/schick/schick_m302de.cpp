@@ -3495,10 +3495,12 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x7a: {
-		return 0;
+		M302de::spell_hexenblick();
+		return 1;
 	}
 	case 0x7f: {
-		return 0;
+		M302de::spell_necropathia();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
