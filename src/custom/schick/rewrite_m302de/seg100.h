@@ -1,4 +1,7 @@
 namespace M302de {
+/* Clairvoyance / Hellsicht */
+//0x34
+void spell_sensibar();
 
 /* Illusion */
 //0x39

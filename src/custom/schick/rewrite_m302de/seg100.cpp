@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 5/20
+ *	Functions rewritten 6/20
  *
 */
 
@@ -16,6 +16,13 @@
 #include "seg097.h"
 
 namespace M302de {
+
+/* Clairvoyance / Hellsicht */
+
+void spell_sensibar()
+{
+        D1_INFO("Zauberspruch \"Sensibar\" ist nicht implementiert\n");
+}
 
 /* Illusion */
 void spell_chamaelioni()

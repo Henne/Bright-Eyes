@@ -3453,7 +3453,8 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x34: {
-		return 0;
+		M302de::spell_sensibar();
+		return 1;
 	}
 	case 0x39: {
 		M302de::spell_chamaelioni();
