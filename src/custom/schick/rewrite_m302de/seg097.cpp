@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 7/16
+ *      Functions rewritten 8/16
  *
- *      Functions called rewritten 6/13
+ *      Functions called rewritten 7/13
  *      Functions uncalled rewritten 1/3
 */
 
@@ -328,4 +328,33 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	ds_writew(0xc3cb, l7);
 
 	return retval;
+}
+
+//0x7f4
+///static
+void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
+	unsigned short offset)
+{
+	unsigned short i, x, y;
+
+	update_mouse_cursor();
+
+	y = ds_readw(0xbfff) + 6;
+
+	if (old_pos != -1) {
+
+		x = (offset + old_pos) * 8 + ds_readw(0xc001) + 2;
+
+		/* clear the old button */
+		for (i = 0; i < 4; i++)
+			do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3, 0xd8);
+	}
+
+	x = (offset + new_pos) * 8 + ds_readw(0xc001) + 2;
+
+	/* fill the new button */
+	for (i = 0; i < 4; i++)
+		do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3, 0xd9);
+
+	refresh_screen_size();
 }

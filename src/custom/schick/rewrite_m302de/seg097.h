@@ -13,3 +13,5 @@ void GUI_draw_radio_bg(Bit16u, Bit16u, Bit16u, Bit16u);
 // 52
 //static
 void GUI_copy_smth(unsigned short width, unsigned short height);
+//0x57
+void GUI_fill_radio_button(signed short, unsigned short, unsigned short);

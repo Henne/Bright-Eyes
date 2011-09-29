@@ -4871,7 +4871,23 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		/* Callers: 1 */
-		case 0x7f4:
+		case 0x7f4: {
+			CPU_Pop16();
+			Bit16s v1 = CPU_Pop16();
+			Bit16u v2 = CPU_Pop16();
+			Bit16u v3 = CPU_Pop16();
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_LOG("GUI_fill_radio_button(%d, %d, %d);\n",
+				v1, v2, v3);
+
+			GUI_fill_radio_button(v1, v2, v3);
+
+			return 1;
+
+		}
 		/* Callers: 1 */
 		case 0x893:
 		/* Callers: 2 */
