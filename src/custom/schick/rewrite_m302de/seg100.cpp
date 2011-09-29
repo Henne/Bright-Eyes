@@ -17,17 +17,21 @@
 
 namespace M302de {
 
+/* Illusion */
+void spell_harmlos()
+{
+        D1_INFO("Zauberspruch \"Harmlos\" ist nicht implementiert\n");
+}
+
 /* Communication / Verstaendigung */
 void spell_hexenblick()
 {
         D1_INFO("Zauberspruch \"Hexenblick\" ist nicht implementiert\n");
-
 }
 
 void spell_necropathia()
 {
         D1_INFO("Zauberspruch \"Necropathia\" ist nicht implementiert\n");
-
 }
 
 }

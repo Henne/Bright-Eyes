@@ -3462,7 +3462,8 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x43: {
-		return 0;
+		M302de::spell_harmlos();
+		return 1;
 	}
 	case 0x48: {
 		return 0;
