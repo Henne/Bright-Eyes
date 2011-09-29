@@ -1396,6 +1396,11 @@ static int seg003(unsigned short offs) {
 			reg_ax = M302de::update_direction(mod);
 			return 1;
 		}
+		case  0x0424: {
+			D1_LOG("no_way()\n");
+			M302de::no_way();
+			return 1;
+		}
 	default:
 		return 0;
 	}
