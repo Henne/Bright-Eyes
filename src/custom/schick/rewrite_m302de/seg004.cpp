@@ -338,22 +338,22 @@ void do_h_line(PhysPt ptr, unsigned short x1, unsigned short x2, unsigned short 
 	draw_h_line(dst, count, color);
 }
 
-void do_v_line(PhysPt ptr, unsigned short x, unsigned short y1, unsigned short y2, char color) {
+void do_v_line(PhysPt ptr, unsigned short y, unsigned short x1, unsigned short x2, char color) {
 
 	unsigned short count, tmp;
 	PhysPt dst;
 
-	if (y1 == y2)
+	if (x1 == x2)
 		return;
 
-	if (y1 > y2) {
-		tmp = y2;
-		y2 = y1;
-		y1 = tmp;
+	if (x1 > x2) {
+		tmp = x2;
+		x2 = x1;
+		x1 = tmp;
 	}
 
-	count = y2 - y1 + 1;
-	dst = y1 * 320 + x + ptr;
+	count = x2 - x1 + 1;
+	dst = x1 * 320 + y + ptr;
 
 	draw_h_spaced_dots(dst, count, color, 320);
 }
