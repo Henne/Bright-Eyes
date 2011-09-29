@@ -1393,7 +1393,7 @@ static int seg003(unsigned short offs) {
 
 			D1_LOG("update_direction(%d)\n", mod);
 
-			reg_ax = update_direction(mod);
+			reg_ax = M302de::update_direction(mod);
 			return 1;
 		}
 	default:

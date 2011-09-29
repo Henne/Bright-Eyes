@@ -2,6 +2,8 @@
 
 #include "schick.h"
 
+namespace M302de {
+
 signed short update_direction(unsigned char mod) {
 	unsigned char dir = ds_readb(0x2d3d);
 
@@ -15,3 +17,4 @@ signed short update_direction(unsigned char mod) {
 	return -1;
 }
 
+}
