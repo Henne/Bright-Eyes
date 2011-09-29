@@ -11,6 +11,7 @@
 #define FNAMES		(0x4c8c)
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
+#define CITY_LTX	(0xc3ad)
 #define TEXT_LTX	(0xc3b5)
 #define CHESSBOARD	(0xd852)
 #define ITEMSDAT	(0xe22b)
@@ -31,6 +32,10 @@ static inline Bit8u *get_spelltarget() {
 
 static inline Bit8u *get_fname(unsigned short off) {
 	return MemBase + Real2Phys(ds_readd(FNAMES + off * 4));
+}
+
+static inline Bit8u *get_city(unsigned short off) {
+	return MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(CITY_LTX) + off)));
 }
 
 static inline Bit8u *get_ltx(unsigned short off) {
