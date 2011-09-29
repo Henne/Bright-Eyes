@@ -33,6 +33,7 @@
 #include "seg046.h"
 #include "seg047.h"
 #include "seg063.h"
+#include "seg068.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
@@ -2970,7 +2971,8 @@ static int seg053(unsigned short offs) {
 	}
 }
 
-static int seg063(unsigned short offs) {
+static int seg063(unsigned short offs)
+{
 	switch (offs) {
 		case 0x20: {
 			D1_LOG("do_harbour();\n");
@@ -2980,6 +2982,56 @@ static int seg063(unsigned short offs) {
 			D1_LOG("passages_init();\n");
 			M302de::passages_init();
 			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
+static int seg068(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("thorwal_eisenhof();\n");
+			return 0;
+		}
+		case 0x25: {
+			D1_LOG("thorwal_imman();\n");
+			return 0;
+		}
+		case 0x2a: {
+			D1_LOG("thorwal_botschaft();\n");
+			return 0;
+		}
+		case 0x2f: {
+			D1_LOG("thorwal_bank();\n");
+			return 0;
+		}
+		case 0x34: {
+			D1_LOG("thorwal_zeughaus();\n");
+			return 0;
+		}
+		case 0x39: {
+			D1_LOG("thorwal_wache1();\n");
+			return 0;
+		}
+		case 0x3e: {
+			D1_LOG("thorwal_mueller();\n");
+			return 0;
+		}
+		case 0x43: {
+			D1_LOG("thorwal_swafnir();\n");
+			return 0;
+		}
+		case 0x4d: {
+			D1_LOG("thorwal_zwingfeste();\n");
+			return 0;
+		}
+		case 0x57: {
+			D1_LOG("thorwal_akademie();\n");
+			return 0;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -3859,7 +3911,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x138e:	return 0;
 		case 0x1392:	return 0;
 		case 0x139a:	return 0;
-		case 0x13a1:	return 0;
+		case 0x13a1:	return seg068(offs);
 		case 0x13a8:	return 0;
 		case 0x13b4:	return 0;
 		case 0x13b9:	return seg073(offs);
