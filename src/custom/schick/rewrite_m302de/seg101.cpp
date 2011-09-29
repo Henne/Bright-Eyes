@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 23/26
+ *	Functions rewritten 24/26
  *
 */
 
@@ -13,6 +13,7 @@
 
 #include "seg002.h"
 #include "seg096.h"
+#include "seg097.h"
 
 namespace M302de {
 
@@ -45,6 +46,52 @@ void spell_arcano() {
 	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 		(char*)get_dtp(98 * 4),
 		(char*)tp + 0x10);
+}
+
+void spell_armatrutz()
+{
+	unsigned short max_boni, pos, slot;
+	signed short boni;
+
+	max_boni = 0;
+
+	/* calc the maximal RS boni */
+	/* Original-Bug: you can get one RS point more that you have AE for */
+	while (max_boni * max_boni < host_readw(get_spelluser() + 0x64)) {
+		max_boni++;
+	}
+
+	/* the maximum boni is 9 */
+	if (max_boni > 9)
+		max_boni = 9;
+
+	/* aks the user which boni he wants */
+	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		(char*)get_dtp(0x18c), max_boni);
+	boni = GUI_input(Real2Host(ds_readd(0xd2f3)), 1);
+
+	/* fix wrong input */
+	if (boni > max_boni)
+		boni = max_boni;
+
+	if (boni != -1) {
+
+		pos = get_hero_index(get_spelluser());
+		ds_writew(0xac0e, boni * boni);
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 450, get_spelluser() + 0x30, boni, pos);
+
+		/* prepare output message */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x190), (char*)get_spelluser() + 0x10, boni);
+
+	} else {
+		/* spell canceled */
+		/* set AE to 0 */
+		ds_writew(0xac0e, 0);
+		/* avoid the textbox output */
+		host_writeb(Real2Host(ds_readd(0xd2f3)), 0);
+	}
 }
 
 void spell_inc_ch() {

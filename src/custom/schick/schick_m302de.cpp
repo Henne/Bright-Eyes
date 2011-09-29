@@ -3443,7 +3443,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
-		return 0;
+		M302de::spell_armatrutz();
+		return 1;
 	}
 	case 0x2f: {
 		M302de::spell_inc_ch();

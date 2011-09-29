@@ -4,6 +4,8 @@ namespace M302de {
 void spell_adler();
 //0x25
 void spell_arcano();
+//*0x2a
+void spell_armatrutz();
 //0x2f
 void spell_inc_ch();
 //0x34
