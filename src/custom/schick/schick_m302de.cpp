@@ -873,8 +873,11 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x1d67:
-		return 0;
+	case 0x1d67: {
+		D1_LOG("handle_input();\n");
+		handle_input();
+		return 1;
+	}
 	case 0x1ecc: {
 		D1_LOG("wait_for_keyboard1()\n");
 		wait_for_keyboard1();
@@ -4164,6 +4167,12 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
 				x, y, p, reg_ax);
+			return 1;
+		}
+		case 0x1d67: {
+			CPU_Pop16();
+			D1_LOG("handle_input();\n");
+			handle_input();
 			return 1;
 		}
 		/* Callers: 1 */

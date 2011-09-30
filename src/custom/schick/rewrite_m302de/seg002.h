@@ -18,6 +18,7 @@ void refresh_screen_size1();
 //static
 void mouse_19dc();
 unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p);
+void handle_input();
 void wait_for_keyboard1();
 //static
 void timers_daily();

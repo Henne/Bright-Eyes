@@ -475,6 +475,12 @@ unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {
 	return 0;
 }
 
+void handle_input()
+{
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1d67);
+
+}
+
 void wait_for_keyboard1() {
 	while (CD_bioskey(1)) {
 		D1_LOG("loop in %s\n", __func__);
