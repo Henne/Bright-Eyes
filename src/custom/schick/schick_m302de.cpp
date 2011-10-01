@@ -5036,7 +5036,21 @@ int schick_nearcall_v302de(unsigned offs) {
 		/* Callers: 1 */
 		case 0x893:
 		/* Callers: 2 */
-		case 0xb43:
+		case 0xb43: {
+			CPU_Pop16();
+			Bit16u v1 = CPU_Pop16();
+			Bit16u v2 = CPU_Pop16();
+			Bit16u v3 = CPU_Pop16();
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_LOG("GUI_menu_input(%d, %d, %d);\n", v1, v2, v3);
+
+			reg_ax = GUI_menu_input(v1, v2, v3);
+
+			return 1;
+		}
 		/* Callers: 1 */
 		case 0xd45:
 			   return 0;

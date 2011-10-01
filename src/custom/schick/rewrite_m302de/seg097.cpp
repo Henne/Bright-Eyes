@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 8/16
+ *      Functions rewritten 9/16
  *
- *      Functions called rewritten 7/13
+ *      Functions called rewritten 8/13
  *      Functions uncalled rewritten 1/3
 */
 
@@ -358,4 +358,122 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 		do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3, 0xd9);
 
 	refresh_screen_size();
+}
+
+//0xb43
+//static
+signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
+			unsigned short width)
+{
+	Bit16s l1, l2, l3, l4, l5, l6;
+	Bit16s retval;
+	bool done;
+
+	l5 = -1;
+	done = false;
+
+	ds_writew(0xe5ae, 1);
+	ds_writew(0xe5b0, 1);
+	ds_writew(0xe5b0, ds_readw(0xe5b0) + ds_readw(0xe5ac));
+
+	if (positions != 0) {
+		l6 = h_lines * 8;
+		l3 = ds_readw(0x299c);
+		l4 = ds_readw(0x299e);
+		ds_writew(0x299c, ds_readw(0xbfff) + 90);
+		ds_writew(0x29a0, ds_readw(0xbfff) + 90);
+		l1 = ds_readw(0xc001) + l6;
+		l2 = ds_readw(0xe5ac) * 8 + l1;
+		ds_writew(0x299e, l2);
+		ds_writew(0x29a2, l2);
+
+		mouse_move_cursor(ds_readw(0x299c), ds_readw(0x299e));
+
+		ds_writew(0x298e, ds_readw(0xbfff) + width - 16);
+		ds_writew(0x298a, ds_readw(0xbfff));
+		ds_writew(0x2988, ds_readw(0xc001) + l6);
+		ds_writew(0x298c, positions * 8 + l6 + ds_readw(0xc001) - 1);
+		refresh_screen_size();
+
+		ds_writew(0xc3d3, 0);
+		ds_writew(0xc3d1, 0);
+		ds_writew(0xc3d5, 0);
+
+		while (!done) {
+			ds_writed(0x29e4, RealMake(datseg, 0x29cc));
+			handle_input();
+			ds_writed(0x29e4, 0);
+
+			if (l5 != ds_readw(0xe5b0)) {
+				GUI_fill_radio_button(l5, ds_readw(0xe5b0),
+					h_lines - 1);
+				l5 = ds_readw(0xe5b0);
+			}
+
+			if (ds_readw(0xc3d3) != 0 ||
+				ds_readw(0xc3d9) == 1 ||
+				ds_readw(0xc3d9) == 0x51) {
+
+				retval = -1;
+				done = true;
+				ds_writew(0xc3d3, 0);
+			}
+
+			if (ds_readw(0xc3d9) == 0x1c) {
+				retval = ds_readw(0xe5b0);
+				done = true;
+			}
+
+			/* Key UP */
+			if (ds_readw(0xc3d9) == 0x48) {
+				ds_writew(0xe5b0, ds_readw(0xe5b0) - 1);
+				if (ds_readw(0xe5b0) + 1 == 1)
+					ds_writew(0xe5b0, positions);
+			}
+			/* Key DOWN */
+			if (ds_readw(0xc3d9) == 0x50) {
+				ds_writew(0xe5b0, ds_readw(0xe5b0) + 1);
+				if (ds_readw(0xe5b0) - 1 == positions)
+					ds_writew(0xe5b0, 1);
+			}
+
+			if (ds_readw(0x299e) != l2) {
+				l2 = ds_readw(0x299e);
+				ds_writew(0xe5b0, (l2 - l1) / 8 + 1);
+			}
+
+			if (ds_readw(0xac0b) != 0) {
+				if (ds_readw(0xc3d9) == 0x2c) {
+					retval = 1;
+					done = true;
+				} else if (ds_readw(0xc3d9) == 0x31) {
+					retval = 2;
+					done = true;
+				}
+			}
+		}
+
+		update_mouse_cursor();
+
+		ds_writew(0x299c, l3);
+		ds_writew(0x29a0, l3);
+		ds_writew(0x299e, l4);
+		ds_writew(0x29a2, l4);
+		ds_writew(0x298e, 319);
+		ds_writew(0x298a, 0);
+		ds_writew(0x2988, 0);
+		ds_writew(0x298c, 199);
+
+		mouse_move_cursor(ds_readw(0x299c), ds_readw(0x299e));
+
+	} else {
+		delay_or_keypress(10000);
+		if (ds_readw(0xc3d9) != 0)
+			retval = -1;
+	}
+
+	ds_writew(0xe5ae, 0);
+	ds_writew(0xe5ac, 0);
+
+	return retval;
 }
