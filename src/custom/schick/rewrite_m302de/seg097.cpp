@@ -371,7 +371,8 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	va_list arguments;
 
 	char *lp;
-	Bit16s l1, l2, l3, l4, l5, l6;
+	unsigned short i;
+	Bit16s l2, l3, l4, l5, l6;
 	Bit16s fg_bak, bg_bak;
 	Bit16s l7, l8, l9, l10;
 	signed short retval;
@@ -460,7 +461,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		l3 = (l_si + 1) * 8 + ds_readw(0xc001);
 
 		va_start(arguments, options);
-		for (l1 = 0; l1 < options; l3 += 8, l1++) {
+		for (i = 0; i < options; l3 += 8, i++) {
 			lp = va_arg(arguments, char*);
 			GUI_print_string((Bit8u*)lp, l2, l3);
 		}
