@@ -3046,6 +3046,36 @@ static int seg068(unsigned short offs)
 	}
 }
 
+static int seg069(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("thorwal_hetmann();\n");
+			return 0;
+		}
+		case 0x25: {
+			D1_LOG("thorwal_windzwinger();\n");
+			return 0;
+		}
+		case 0x2a: {
+			D1_LOG("thorwal_combi_tav_inn();\n");
+			return 1;
+		}
+		case 0x2f: {
+			D1_LOG("thorwal_sturm();\n");
+			return 0;
+		}
+		case 0x34: {
+			D1_LOG("thorwal_garaldssons();\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg073(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -3926,7 +3956,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1392:	return 0;
 		case 0x139a:	return 0;
 		case 0x13a1:	return seg068(offs);
-		case 0x13a8:	return 0;
+		case 0x13a8:	return seg069(offs);
 		case 0x13b4:	return 0;
 		case 0x13b9:	return seg073(offs);
 		case 0x13bd:	return 0;
