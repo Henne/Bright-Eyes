@@ -11,6 +11,8 @@
 #include "seg002.h"
 #include "seg007.h"
 
+namespace M302de {
+
 /**
 	get_proper_hero - returns hero which seems best for a skill
 	@skill:		skill
@@ -176,4 +178,6 @@ signed short bargain(Bit8u *hero, unsigned short items, signed int price,
 	mod += percent / 5 + 1;
 
 	return test_skill(hero, 0x15, mod);
+}
+
 }

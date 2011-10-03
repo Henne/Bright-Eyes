@@ -9,6 +9,8 @@
 #include "seg002.h"
 #include "seg009.h"
 
+namespace M302de {
+
 void load_pp20(Bit16u index)
 {
 	RealPt buffer_ptr;
@@ -92,3 +94,4 @@ void load_pp20(Bit16u index)
 	}
 }
 
+}

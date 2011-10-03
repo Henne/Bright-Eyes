@@ -5,6 +5,8 @@
 
 #include "seg007.h"
 
+namespace M302de {
+
 /**
  * get_hero_CH_best - get the index of the hero with the best CH value
  *
@@ -309,4 +311,6 @@ void hero_get_sober(Bit8u *hero) {
 
 	if (ds_readb(0x2845) == 20)
 		ds_writew(0x2846, 1);
+}
+
 }

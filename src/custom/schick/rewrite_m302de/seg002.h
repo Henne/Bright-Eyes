@@ -1,3 +1,5 @@
+namespace M302de {
+
 void play_voc(Bit16u);
 //static
 Bit16u open_and_seek_dat(unsigned short);
@@ -85,3 +87,5 @@ RealPt get_second_hero_available_in_group();
 unsigned short count_heros_available();
 unsigned short count_heroes_available_in_group();
 RealPt schick_alloc_emu(Bit32u);
+
+}

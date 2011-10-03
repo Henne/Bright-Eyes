@@ -17,6 +17,8 @@
 #include "seg006.h"
 #include "seg096.h"
 
+namespace M302de {
+
 RealPt FIG_get_ptr(signed char v1) {
 	RealPt ptr = ds_readd(0xe108);
 
@@ -305,8 +307,8 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	hero = ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
 	ds_writed(0xc019, hero + 0x2da);
 
-	M302de::GUI_get_smth(&bak1, &bak2);
-	M302de::GUI_set_smth(0xff, 0);
+	GUI_get_smth(&bak1, &bak2);
+	GUI_set_smth(0xff, 0);
 
 	ds_writed(0xc00d, ds_readd(0xd303));
 	ds_writed(0xd2fb, ds_readd(0xd303));
@@ -318,7 +320,7 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 41);
-		M302de::GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 1);
+		GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 1);
 		draw_bar(0, 0, mem_readw(Real2Phys(hero+0x60)), mem_readw(Real2Phys(hero+0x5e)), 1);
 		draw_bar(1, 0, mem_readw(Real2Phys(hero+0x62)), mem_readw(Real2Phys(hero+0x64)), 1);
 	} else {
@@ -327,15 +329,16 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 		ds_writew(0xc013, 158);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 189);
-		M302de::GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 193);
+		GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 193);
 	}
 
 	do_pic_copy(0);
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
-	M302de::GUI_set_smth(bak1, bak2);
+	GUI_set_smth(bak1, bak2);
 }
 
 void FIG_draw_enemy_pic(unsigned short v1, unsigned short v2) {
 }
 
+}

@@ -9,6 +9,8 @@
 
 #include "schick.h"
 
+namespace M302de {
+
 static unsigned short EMS_installed() {
 
 	RealPt IRQ_67;
@@ -102,4 +104,6 @@ unsigned short EMS_init() {
 	}
 
 	return 0;
+}
+
 }

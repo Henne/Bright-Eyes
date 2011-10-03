@@ -1,3 +1,5 @@
+namespace M302de {
+
 RealPt FIG_get_ptr(signed char v1);
 signed char FIG_set_array();
 void FIG_set_gfx();
@@ -12,3 +14,5 @@ void FIG_remove_from_list(signed char id, signed char v2);
 signed char FIG_add_to_list(signed char);
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr);
 void FIG_draw_enemy_pic(unsigned short pos, unsigned short enemy_nr);
+
+}

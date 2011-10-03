@@ -9,6 +9,8 @@
 
 #include "schick.h"
 
+namespace M302de {
+
 unsigned short swap_u16(unsigned short val) {
 	return (val << 8) | (val >> 8);
 }
@@ -295,4 +297,6 @@ void decomp_rle(unsigned short width, unsigned short height, Bit8u *dst,
 		}
 
 	} while (--height);
+}
+
 }

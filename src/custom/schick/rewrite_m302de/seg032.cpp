@@ -10,6 +10,8 @@
 
 #include "seg007.h"
 
+namespace M302de {
+
 /**
  *	FIG_set_cb_field - sets an object to a chessboard position
  *	@y:		the Y-Coordinate on the chessboard
@@ -325,4 +327,6 @@ unsigned short FIG_fight_continues() {
 		return 0;
 
 	return 1;
+}
+
 }

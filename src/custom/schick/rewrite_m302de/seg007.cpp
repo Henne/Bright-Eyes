@@ -7,6 +7,8 @@
 #include "schick.h"
 #include "seg007.h"
 
+namespace M302de {
+
 static inline
 unsigned short my_rol16(unsigned short op, unsigned char count) {
 	return (op << count) | (op >> (16 - count));
@@ -172,4 +174,6 @@ void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max) {
 
 	host_writew(min, host_readw(min) + x);
 	host_writew(max, host_readw(max) + x);
+}
+
 }

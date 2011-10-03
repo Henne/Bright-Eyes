@@ -8,6 +8,8 @@
 #include "seg004.h"
 #include "seg008.h"
 
+namespace M302de {
+
 void init_ani(Bit16u v1)
 {
 
@@ -430,4 +432,6 @@ void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short
 void wait_for_vsync()
 {
 	CALLBACK_RunRealFar(reloc_game + 0xb2a, 0x150d);
+}
+
 }

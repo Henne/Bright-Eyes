@@ -43,6 +43,8 @@
 #include "seg103.h"
 #include "seg105.h"
 
+using namespace M302de;
+
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
 
@@ -1398,12 +1400,12 @@ static int seg003(unsigned short offs) {
 
 			D1_LOG("update_direction(%d)\n", mod);
 
-			reg_ax = M302de::update_direction(mod);
+			reg_ax = update_direction(mod);
 			return 1;
 		}
 		case  0x0424: {
 			D1_LOG("no_way()\n");
-			M302de::no_way();
+			no_way();
 			return 1;
 		}
 	default:
@@ -1619,7 +1621,7 @@ static int seg005(unsigned short offs) {
 			Bit16u val = CPU_Pop16();
 			D1_LOG("seg005_0598(%d);\n", val);
 			CPU_Push16(val);
-//			M302de::seg005_0598(val);
+//			seg005_0598(val);
 			return 0;
 		}
 		default:
@@ -2341,12 +2343,12 @@ static int seg024(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
 		D1_LOG("diary_show();\n");
-		M302de::diary_show();
+		diary_show();
 		return 1;
 	}
 	case 0x2a: {
 		D1_LOG("diary_new_entry();\n");
-		M302de::diary_new_entry();
+		diary_new_entry();
 		return 1;
 	}
 	default:
@@ -2392,7 +2394,7 @@ static int seg026(unsigned short offs) {
 		if (offs == 0x0048) {
 			Bit16s head = CPU_Pop16();
 			D1_LOG("load_in_head(%d)\n", head);
-			M302de::load_in_head(head);
+			load_in_head(head);
 			CPU_Push16(head);
 			return 1;
 		}
@@ -2446,29 +2448,29 @@ static int seg029(unsigned short offs) {
 	switch (offs) {
 	case 0x25: {
 		D1_LOG("draw_status_line();\n");
-		M302de::draw_status_line();
+		draw_status_line();
 		return 1;
 	}
 	case 0x2a: {
 		D1_LOG("draw_icons();\n");
-		M302de::draw_icons();
+		draw_icons();
 		return 1;
 	}
 	case 0x2f: {
 		D1_LOG("draw_main_screen();\n");
-		M302de::draw_main_screen();
+		draw_main_screen();
 		return 1;
 	}
 	case 0x39: {
 		D1_LOG("clear_loc_line();\n");
-		M302de::clear_loc_line();
+		clear_loc_line();
 		return 1;
 	}
 	case 0x3e: {
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
 
-		M302de::select_hero_icon(pos);
+		select_hero_icon(pos);
 		D1_LOG("select_hero_icon(%d);\n", pos);
 		return 1;
 	}
@@ -2476,7 +2478,7 @@ static int seg029(unsigned short offs) {
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
 
-		M302de::deselect_hero_icon(pos);
+		deselect_hero_icon(pos);
 		D1_LOG("deselect_hero_icon(%d);\n", pos);
 		return 1;
 	}
@@ -2486,7 +2488,7 @@ static int seg029(unsigned short offs) {
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 
-		M302de::copy_forename(Real2Host(p1), Real2Host(p2));
+		copy_forename(Real2Host(p1), Real2Host(p2));
 		D1_LOG("copy_forename(%s, %s)\n",
 			(char*)Real2Host(p1),
 			(char*)Real2Host(p2));
@@ -2596,7 +2598,7 @@ static int seg039(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			reg_ax = M302de::seg039_0000(v1, v2, v3, v4);
+			reg_ax = seg039_0000(v1, v2, v3, v4);
 			D1_LOG("seg039(%d,%d,%d,%d); = %d\n",
 				v1, v2, v3, v4, reg_ax);
 
@@ -2606,7 +2608,7 @@ static int seg039(unsigned short offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = M302de::seg039_0023(Real2Host(hero));
+			reg_ax = seg039_0023(Real2Host(hero));
 			D1_LOG("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
 
 			return 1;
@@ -2625,7 +2627,7 @@ static int seg039(unsigned short offs) {
 			D1_LOG("fill_enemy_sheet(%d, %d, %d);\n",
 				sheet_nr, enemy, round);
 
-			M302de::fill_enemy_sheet(sheet_nr, enemy, round);
+			fill_enemy_sheet(sheet_nr, enemy, round);
 
 			return 1;
 		}
@@ -2644,7 +2646,7 @@ static int seg039(unsigned short offs) {
 			signed char v2 = (signed char)(v2_16 & 0xff);
 			signed char dir = (signed char)(dir_16 & 0xff);
 
-			reg_ax = M302de::place_obj_on_cb(x, y, object, v2, dir);
+			reg_ax = place_obj_on_cb(x, y, object, v2, dir);
 			D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
 				x, y, object, v2, dir, reg_ax);
 
@@ -2658,7 +2660,7 @@ static int seg039(unsigned short offs) {
 		}
 		case 0x3e: {
 			D1_LOG("FIG_init_heroes();\n");
-			M302de::FIG_init_heroes();
+			FIG_init_heroes();
 			return 1;
 		}
 		default:
@@ -2678,7 +2680,7 @@ static int seg041(unsigned short offs) {
 	}
 	case 0x2a: {
 		D1_LOG("FIG_clear_msgs();\n");
-		M302de::FIG_clear_msgs();
+		FIG_clear_msgs();
 		return 1;
 	}
 	case 0x2f: {
@@ -2688,7 +2690,7 @@ static int seg041(unsigned short offs) {
 		CPU_Push16(f_action);
 		D1_LOG("FIG_add_msg(f_action=0x%04x, damage=0x%04x);\n",
 			f_action, damage);
-		M302de::FIG_add_msg(f_action, damage);
+		FIG_add_msg(f_action, damage);
 		return 1;
 	}
 	case 0x34: {
@@ -2701,7 +2703,7 @@ static int seg041(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = M302de::weapon_check(Real2Host(hero));
+		reg_ax = weapon_check(Real2Host(hero));
 
 		D1_LOG("weapon_check(%s); = %d\n", schick_getCharname(hero),
 			(signed short)reg_ax);
@@ -2713,7 +2715,7 @@ static int seg041(unsigned short offs) {
 	}
 	case 0x48: {
 		D1_LOG("seg041_8c8();\n");
-		M302de::seg041_8c8();
+		seg041_8c8();
 		return 1;
 	}
 	default:
@@ -2761,7 +2763,7 @@ static int seg044(unsigned short offs) {
 
 		D1_LOG("seg044_002a(%d, %s, %d, %d, %d, %d, %d)\n",
 			v1, schick_getCharname(p), v2, obj1, obj2, v5, v6);
-		M302de::seg044_002a(v1, Real2Host(p), v2, obj1, obj2, v5, v6);
+		seg044_002a(v1, Real2Host(p), v2, obj1, obj2, v5, v6);
 
 		CPU_Push16(v6);
 		CPU_Push16(v5);
@@ -2784,7 +2786,7 @@ static int seg044(unsigned short offs) {
 		D1_LOG("seg044_002f(%d, 0x%x, %d, %d, %d, %d)\n",
 			v1, p, v2, obj1, obj2, v5);
 
-		M302de::seg044_002f(v1, Real2Host(p), v2, obj1, obj2, v5);
+		seg044_002f(v1, Real2Host(p), v2, obj1, obj2, v5);
 
 		CPU_Push16(v5);
 		CPU_Push16(obj2);
@@ -2809,7 +2811,7 @@ static int seg046(unsigned short offs) {
 		Bit16u index = CPU_Pop16();
 
 		D1_LOG("status_show(%d)\n", index);
-		M302de::status_show(index);
+		status_show(index);
 
 		CPU_Push16(index);
 
@@ -2983,7 +2985,7 @@ static int seg063(unsigned short offs)
 		}
 		case 0x25: {
 			D1_LOG("passages_init();\n");
-			M302de::passages_init();
+			passages_init();
 			return 1;
 		}
 		default:
@@ -3006,7 +3008,7 @@ static int seg068(unsigned short offs)
 		}
 		case 0x2a: {
 			D1_LOG("thorwal_botschaft();\n");
-			M302de::thorwal_botschaft();
+			thorwal_botschaft();
 			return 1;
 		}
 		case 0x2f: {
@@ -3078,7 +3080,7 @@ static int seg096(unsigned short offs) {
 		RealPt retval;
 
 		D1_LOG("GUI_names_grammar(%x,%x,%x)\n", v1 ,v2,v3);
-		retval = M302de::GUI_names_grammar(v1, v2, v3);
+		retval = GUI_names_grammar(v1, v2, v3);
 		reg_ax = RealOff(retval);
 		reg_dx = RealSeg(retval);
 
@@ -3092,7 +3094,7 @@ static int seg096(unsigned short offs) {
 
 		RealPt retval;
 
-		retval = M302de::GUI_name_plural(v1, MemBase + Real2Phys(s));
+		retval = GUI_name_plural(v1, MemBase + Real2Phys(s));
 		D1_LOG("GUI_name_singular(%x, %s)\n",
 			v1, getString(s));
 
@@ -3106,7 +3108,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(s);
 		RealPt retval;
 
-		retval = M302de::GUI_name_singular(MemBase + Real2Phys(s));
+		retval = GUI_name_singular(MemBase + Real2Phys(s));
 		D1_LOG("GUI_name_singular(%x:%x)\n", RealSeg(s), RealOff(s));
 
 		reg_dx = RealSeg(retval);
@@ -3124,7 +3126,7 @@ static int seg096(unsigned short offs) {
 
 		RealPt retval;
 
-		retval = M302de::GUI_2f2(v1, v2, v3);
+		retval = GUI_2f2(v1, v2, v3);
 		D1_LOG("GUI_2f2(%d, %d, %d)\n", v1, v2, v3);
 		reg_ax = RealOff(retval);
 		reg_dx = RealSeg(retval);
@@ -3139,7 +3141,7 @@ static int seg096(unsigned short offs) {
 
 			RealPt retval;
 
-			retval = M302de::GUI_get_ptr(v1, v2);
+			retval = GUI_get_ptr(v1, v2);
 			D1_LOG("GUI_get_ptr(%d,%d) = %s\n",
 				v1, v2, getString(retval));
 
@@ -3155,7 +3157,7 @@ static int seg096(unsigned short offs) {
 
 			RealPt retval;
 
-			retval = M302de::GUI_get_ptr2(v1, v2);
+			retval = GUI_get_ptr2(v1, v2);
 			D1_LOG("GUI_get_ptr2(%d,%d) = %s", v1, v2,
 				v1, v2, getString(retval));
 
@@ -3172,7 +3174,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(s);
 
 		D1_LOG("GUI_print_string(%s, %d, %d);\n", getString(s), x, y);
-		M302de::GUI_print_string(MemBase + Real2Phys(s), x, y);
+		GUI_print_string(MemBase + Real2Phys(s), x, y);
 		return 1;
 	}
 	case 0x48: {
@@ -3184,7 +3186,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(c);
 
 		D1_LOG("GUI_print_char(%c, %d, %d);\n", c & 0xff, x, y);
-		reg_ax = M302de::GUI_print_char(c & 0xff, x, y);
+		reg_ax = GUI_print_char(c & 0xff, x, y);
 		return 1;
 	}
 	case 0x4d: {
@@ -3197,7 +3199,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 		CPU_Push32(p);
 
-		reg_ax = M302de::GUI_get_first_pos_centered(Real2Host(p), v1, v2, v3);
+		reg_ax = GUI_get_first_pos_centered(Real2Host(p), v1, v2, v3);
 		D1_LOG("GUI_get_first_pos_centered(%s,%d,%d,%d) = %d\n", getString(p),
 			v1, v2, v3, reg_ax);
 
@@ -3207,13 +3209,13 @@ static int seg096(unsigned short offs) {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		reg_ax = M302de::GUI_count_lines(MemBase + Real2Phys(ptr));
+		reg_ax = GUI_count_lines(MemBase + Real2Phys(ptr));
 		D1_LOG("GUI_count_lines(%s) = %d\n", getString(ptr),(unsigned short)reg_ax);
 
 		return 1;
 	}
 	case 0x66: {
-		M302de::GUI_blank_char();
+		GUI_blank_char();
 		return 1;
 	}
 	case 0x6b: {
@@ -3221,7 +3223,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p);
 
 		D1_LOG("GUI_font_to_buf(0x%x:0x%x)\n", RealSeg(p), RealOff(p));
-		M302de::GUI_font_to_buf(Real2Host(p));
+		GUI_font_to_buf(Real2Host(p));
 
 		return 1;
 	}
@@ -3237,7 +3239,7 @@ static int seg096(unsigned short offs) {
 
 		D1_LOG("GUI_write_char_to_screen_xy(%d, %d, %d, %d);\n",
 			x, y, char_height, char_width);
-		M302de::GUI_write_char_to_screen_xy(x, y, char_height, char_width);
+		GUI_write_char_to_screen_xy(x, y, char_height, char_width);
 
 		return 1;
 	}
@@ -3248,7 +3250,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 
 		D1_LOG("GUI_set_smth(%d, %d);\n", v1, v2);
-		M302de::GUI_set_smth(v1, v2);
+		GUI_set_smth(v1, v2);
 
 		return 1;
 	}
@@ -3259,7 +3261,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("GUI_get_smth();\n");
-		M302de::GUI_get_smth((short*)(Real2Host(p1)), (short*)(Real2Host(p2)));
+		GUI_get_smth((short*)(Real2Host(p1)), (short*)(Real2Host(p2)));
 
 		return 1;
 	}
@@ -3268,7 +3270,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		D1_LOG("GUI_print_loc_line(%s)\n", getString(ptr));
-		M302de::GUI_print_loc_line(MemBase + Real2Phys(ptr));
+		GUI_print_loc_line(MemBase + Real2Phys(ptr));
 		return 1;
 	}
 	case 0x84: {
@@ -3276,7 +3278,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(str);
 
 		D1_LOG("GUI_print_header(%s)\n", getString(str));
-		M302de::GUI_print_header(MemBase + Real2Phys(str));
+		GUI_print_header(MemBase + Real2Phys(str));
 		return 1;
 	}
 	case 0x89: {
@@ -3285,7 +3287,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 		CPU_Push32(p);
 
-		reg_ax = M302de::GUI_get_space_for_string(MemBase + Real2Phys(p), (char)v1);
+		reg_ax = GUI_get_space_for_string(MemBase + Real2Phys(p), (char)v1);
 		D1_LOG("GUI_get_space_for_string(%s, %d) = %d\n",
 			getString(p), v1, reg_ax);
 
@@ -3298,7 +3300,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(line);
 
 		D1_LOG("GUI_draw_popup_line(%d, %d)\n", line, type);
-		M302de::GUI_draw_popup_line(line, type);
+		GUI_draw_popup_line(line, type);
 		return 1;
 	}
 	default:
@@ -3319,7 +3321,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(p_height);
 		CPU_Push16(c);
 
-		reg_ax = M302de::GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
+		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
 		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 		return 1;
 	}
@@ -3330,7 +3332,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(str);
 
 		D1_LOG("GUI_input()\n");
-		reg_ax = M302de::GUI_input(Real2Host(str), num);
+		reg_ax = GUI_input(Real2Host(str), num);
 		return 1;
 	}
 	case 0x39: {
@@ -3338,7 +3340,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(str);
 
 		D1_LOG("GUI_output()\n");
-		M302de::GUI_output(Real2Host(str));
+		GUI_output(Real2Host(str));
 		return 1;
 	}
 	case 0x3e: {
@@ -3509,23 +3511,23 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x34: {
-		M302de::spell_sensibar();
+		spell_sensibar();
 		return 1;
 	}
 	case 0x39: {
-		M302de::spell_chamaelioni();
+		spell_chamaelioni();
 		return 1;
 	}
 	case 0x3e: {
-		M302de::spell_duplicatus();
+		spell_duplicatus();
 		return 1;
 	}
 	case 0x43: {
-		M302de::spell_harmlos();
+		spell_harmlos();
 		return 1;
 	}
 	case 0x48: {
-		M302de::spell_blitz();
+		spell_blitz();
 		return 1;
 	}
 	case 0x4d: {
@@ -3556,11 +3558,11 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x7a: {
-		M302de::spell_hexenblick();
+		spell_hexenblick();
 		return 1;
 	}
 	case 0x7f: {
-		M302de::spell_necropathia();
+		spell_necropathia();
 		return 1;
 	}
 	default:
@@ -3572,106 +3574,106 @@ static int seg100(unsigned short offs) {
 static int seg101(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
-		M302de::spell_adler();
+		spell_adler();
 		return 1;
 	}
 	case 0x25: {
-		M302de::spell_arcano();
+		spell_arcano();
 		return 1;
 	}
 	case 0x2a: {
-		M302de::spell_armatrutz();
+		spell_armatrutz();
 		return 1;
 	}
 	case 0x2f: {
-		M302de::spell_inc_ch();
+		spell_inc_ch();
 		return 1;
 	}
 	case 0x34: {
-		M302de::spell_feuerbann();
+		spell_feuerbann();
 		return 1;
 	}
 	case 0x39: {
-		M302de::spell_inc_ff();
+		spell_inc_ff();
 		return 1;
 	}
 	case 0x3e: {
-		M302de::spell_inc_ge();
+		spell_inc_ge();
 		return 1;
 	}
 	case 0x43: {
-		M302de::spell_inc_in();
+		spell_inc_in();
 		return 1;
 	}
 	case 0x48: {
-		M302de::spell_inc_kk();
+		spell_inc_kk();
 		return 1;
 	}
 	case 0x4d: {
-		M302de::spell_inc_kl();
+		spell_inc_kl();
 		return 1;
 	}
 	case 0x52: {
-		M302de::spell_inc_mu();
+		spell_inc_mu();
 		return 1;
 	}
 	case 0x57: {
-		M302de::spell_mutabili();
+		spell_mutabili();
 		return 1;
 	}
 	case 0x5c: {
-		M302de::spell_paral();
+		spell_paral();
 		return 1;
 	}
 	case 0x61: {
-		M302de::spell_salander();
+		spell_salander();
 		return 1;
 	}
 	case 0x66: {
-		M302de::spell_see();
+		spell_see();
 		return 1;
 	}
 	case 0x6b: {
-		M302de::spell_visibili();
+		spell_visibili();
 		return 1;
 	}
 	case 0x70: {
-		M302de::spell_abvenenum();
+		spell_abvenenum();
 		return 1;
 	}
 	case 0x75: {
-		M302de::spell_aeolitus();
+		spell_aeolitus();
 		return 1;
 	}
 	case 0x7a: {
 		return 0;
 	}
 	case 0x7f: {
-		M302de::spell_claudibus();
+		spell_claudibus();
 		return 1;
 	}
 	case 0x84: {
-		M302de::spell_dunkelheit();
+		spell_dunkelheit();
 		return 1;
 	}
 	case 0x89: {
-		M302de::spell_erstarre();
+		spell_erstarre();
 		return 1;
 	}
 	case 0x8e: {
-		M302de::spell_flimflam();
+		spell_flimflam();
 		return 1;
 	}
 	case 0x93: {
-		M302de::spell_schmelze();
+		spell_schmelze();
 		return 1;
 	}
 	case 0x98: {
-		M302de::spell_silentium();
+		spell_silentium();
 		return 1;
 	}
 	case 0x9d: {
-		M302de::spell_sturmgebr();
+		spell_sturmgebr();
 		return 1;
 	}
 	default:
@@ -3744,7 +3746,7 @@ static int seg105(unsigned short offs) {
 				schick_getCharname(hero),
 				schick_getItemname(item), item, val);
 
-			M302de::unequip(Real2Host(hero), item, val);
+			unequip(Real2Host(hero), item, val);
 
 			return 1;
 		}
@@ -3766,7 +3768,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = M302de::can_hero_use_item(Real2Host(hero), item);
+			reg_ax = can_hero_use_item(Real2Host(hero), item);
 			D1_LOG("can_hero_use_item(%s, %s); = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax);
@@ -3779,7 +3781,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(pos);
 			CPU_Push16(item);
 
-			reg_ax = M302de::can_item_at_pos(item, pos);
+			reg_ax = can_item_at_pos(item, pos);
 
 			D1_LOG("can_item_at_pos(%s=%d, %d); = %d\n",
 				schick_getItemname(item), item, pos, reg_ax);
@@ -3795,7 +3797,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = M302de::hero_count_item(Real2Host(hero), item);
+			reg_ax = hero_count_item(Real2Host(hero), item);
 			D1_INFO("far hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax);
@@ -3806,7 +3808,7 @@ static int seg105(unsigned short offs) {
 			unsigned short item = CPU_Pop16();
 			CPU_Push16(item);
 
-			reg_ax = M302de::group_count_item(item);
+			reg_ax = group_count_item(item);
 			D1_INFO("group_count_item(%s) = %d\n",
 				schick_getItemname(item), reg_ax);
 
@@ -4422,7 +4424,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(x);
 			CPU_Push32(p);
 
-			reg_ax = M302de::FIG_obj_needs_refresh(Real2Host(p), x, y);
+			reg_ax = FIG_obj_needs_refresh(Real2Host(p), x, y);
 			D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
 				p, x, y, reg_ax);
 
@@ -4437,7 +4439,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(count);
 			CPU_Push32(p);
 
-			M302de::FIG_set_star_color(Real2Phys(p), count, val & 0xff);
+			FIG_set_star_color(Real2Phys(p), count, val & 0xff);
 			D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
 				p, count, val & 0xff);
 
@@ -4450,7 +4452,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(pos);
 			CPU_Push16(type);
 
-			RealPt retval = M302de::FIG_name_3rd_case(type, pos);
+			RealPt retval = FIG_name_3rd_case(type, pos);
 			D1_LOG("FIG_name_3rd_case(%d,%d) = %s\n",
 				type, pos, getString(retval));
 
@@ -4466,7 +4468,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(pos);
 			CPU_Push16(type);
 
-			RealPt retval = M302de::FIG_name_4th_case(type, pos);
+			RealPt retval = FIG_name_4th_case(type, pos);
 			D1_LOG("FIG_name_4th_case(%d,%d) = %s\n",
 				type, pos, getString(retval));
 
@@ -4482,7 +4484,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(pos);
 			CPU_Push16(type);
 
-			RealPt retval = M302de::FIG_name_1st_case(type, pos);
+			RealPt retval = FIG_name_1st_case(type, pos);
 			D1_LOG("FIG_name_1st_case(%d,%d) = %s\n",
 				type, pos, getString(retval));
 
@@ -4493,19 +4495,19 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		case 0x220: {
 			CPU_Pop16();
-			reg_ax = M302de::fight_printer();
+			reg_ax = fight_printer();
 			D1_LOG("fight_printer()\n");
 			return 1;
 		}
 		case 0x1ba7: {
 			CPU_Pop16();
-			M302de::set_delay_timer();
+			set_delay_timer();
 			D1_LOG("set_delay_timer()\n");
 			return 1;
 		}
 		case 0x1bb2: {
 			CPU_Pop16();
-			M302de::fight_delay();
+			fight_delay();
 			D1_LOG("fight_delay()\n");
 			return 1;
 		}
@@ -4530,7 +4532,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			Bit16u line = CPU_Pop16();
 			CPU_Push16(line);
 
-			reg_ax = M302de::diary_print_entry(line);
+			reg_ax = diary_print_entry(line);
 			D1_LOG("diary_print_entry(%d); == %d\n", line, reg_ax);
 			return 1;
 		}
@@ -4546,7 +4548,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		case 0x000: {
 			CPU_Pop16();
 			D1_LOG("draw_playmask();\n");
-			M302de::draw_playmask();
+			draw_playmask();
 			return 1;
 		}
 		case 0x0e8: {
@@ -4556,7 +4558,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p2);
 			CPU_Push32(p1);
 
-			M302de::copy_forename(Real2Host(p1),
+			copy_forename(Real2Host(p1),
 				Real2Host(p2));
 			D1_LOG("near copy_forename(%s, %s)\n",
 				(char*)Real2Host(p1),
@@ -4566,7 +4568,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		case 0x127: {
 			CPU_Pop16();
 			D1_LOG("draw_status_line();\n");
-			M302de::draw_status_line();
+			draw_status_line();
 			return 1;
 		}
 		case 0x417: {
@@ -4574,7 +4576,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			unsigned short pos = CPU_Pop16();
 			CPU_Push16(pos);
 
-			M302de::clear_hero_icon(pos);
+			clear_hero_icon(pos);
 			D1_LOG("clear_hero_icon(%d)\n", pos);
 			return 1;
 		}
@@ -4586,7 +4588,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("load_icon(%x, %x, %x);\n",
 				index, icon, pos);
-			M302de::load_icon(index, icon, pos);
+			load_icon(index, icon, pos);
 
 			CPU_Push16(pos);
 			CPU_Push16(icon);
@@ -4597,13 +4599,13 @@ int schick_nearcall_v302de(unsigned offs) {
 		case 0x4fd: {
 			CPU_Pop16();
 			D1_LOG("draw_icons();\n");
-			M302de::draw_icons();
+			draw_icons();
 			return 1;
 		}
 		case 0x5ff: {
 			CPU_Pop16();
 			D1_LOG("near clear_loc_line();\n");
-			M302de::clear_loc_line();
+			clear_loc_line();
 			return 1;
 		}
 		default:
@@ -4739,7 +4741,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = M302de::seg039_0023(Real2Host(hero));
+			reg_ax = seg039_0023(Real2Host(hero));
 			D1_LOG("seg039_0023(%s) = %d\n",
 				schick_getCharname(hero), (signed short)reg_ax);
 
@@ -4760,7 +4762,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
 				sheet_nr, enemy, round);
 
-			M302de::fill_enemy_sheet(sheet_nr, enemy, round);
+			fill_enemy_sheet(sheet_nr, enemy, round);
 
 			return 1;
 		}
@@ -4780,7 +4782,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			signed char v2 = (signed char)(v2_16 & 0xff);
 			signed char dir = (signed char)(dir_16 & 0xff);
 
-			reg_ax = M302de::place_obj_on_cb(x, y, object, v2, dir);
+			reg_ax = place_obj_on_cb(x, y, object, v2, dir);
 			D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
 				x, y, object, v2, dir, reg_ax);
 
@@ -4798,7 +4800,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = M302de::weapon_check(Real2Host(hero));
+			reg_ax = weapon_check(Real2Host(hero));
 
 			D1_LOG("near weapon_check(%s); = %d\n",
 				schick_getCharname(hero), (signed short)reg_ax);
@@ -4820,7 +4822,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			Bit16s a2 = CPU_Pop16();
 			Bit16u a3 = CPU_Pop16();
 
-			reg_ax = M302de::copy_ani_seq(Real2Host(p), a2, a3);
+			reg_ax = copy_ani_seq(Real2Host(p), a2, a3);
 			D1_LOG("copy_ani_seq(%x, %d, %d) = 0x%x\n",
 				p, a2, a3, reg_ax);
 
@@ -4835,7 +4837,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			Bit16s ani = CPU_Pop16();
 
-			reg_ax = M302de::seg044_00ae(ani);
+			reg_ax = seg044_00ae(ani);
 			D1_LOG("seg44_00ae(%d) = %d\n", ani, reg_ax);
 
 			CPU_Push16(ani);
@@ -4868,7 +4870,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
 				schick_getCharname(hero), spell, fsig, x1, x2, yg);
-			M302de::status_show_spell(Real2Host(hero), spell,
+			status_show_spell(Real2Host(hero), spell,
 				fsig, x1, x2, yg);
 
 			return 1;
@@ -4890,7 +4892,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
 				schick_getCharname(hero), talent, ftig, x1, x2, yg);
-			M302de::status_show_talent(Real2Host(hero), talent,
+			status_show_talent(Real2Host(hero), talent,
 				ftig, x1, x2, yg);
 
 			return 1;
@@ -4903,7 +4905,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("status_show_talents(%s);\n",
 				schick_getCharname(hero));
 
-			M302de::status_show_talents(Real2Host(hero));
+			status_show_talents(Real2Host(hero));
 
 			return 1;
 		}
@@ -4930,7 +4932,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p_height);
 			CPU_Push16(c);
 
-			reg_ax = M302de::GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
+			reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
 			D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 			return 1;
 		}
@@ -4954,7 +4956,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("GUI_1f8(0x%x, %d, %d, %d, %d);",
 				dst, x, y, num, v4);
 
-			reg_ax = M302de::GUI_enter_text(Real2Host(dst),
+			reg_ax = GUI_enter_text(Real2Host(dst),
 					x, y, num, v4);
 			D1_LOG(" = 0x%x\n", reg_ax);
 
@@ -4970,7 +4972,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
 				v1, v2, v3, v4);
-			M302de::GUI_draw_radio_bg(v1, v2, v3, v4);
+			GUI_draw_radio_bg(v1, v2, v3, v4);
 
 			CPU_Push16(v4);
 			CPU_Push16(v3);
@@ -4988,7 +4990,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(width);
 
 			D1_LOG("GUI_copy_smth(%d, %d)\n", width, height);
-			M302de::GUI_copy_smth(width, height);
+			GUI_copy_smth(width, height);
 
 			return 1;
 		}
@@ -4999,7 +5001,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(str);
 
 			D1_INFO("GUI_output()\n");
-			M302de::GUI_output(Real2Host(str));
+			GUI_output(Real2Host(str));
 			return 1;
 		}
 		/* Callers: 1 */
@@ -5011,7 +5013,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(str);
 
 			D1_LOG("GUI_input()\n");
-			reg_ax = M302de::GUI_input(Real2Host(str), num);
+			reg_ax = GUI_input(Real2Host(str), num);
 
 			return 1;
 		}
@@ -5028,7 +5030,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("GUI_fill_radio_button(%d, %d, %d);\n",
 				v1, v2, v3);
 
-			M302de::GUI_fill_radio_button(v1, v2, v3);
+			GUI_fill_radio_button(v1, v2, v3);
 
 			return 1;
 
@@ -5047,7 +5049,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("GUI_menu_input(%d, %d, %d);\n", v1, v2, v3);
 
-			reg_ax = M302de::GUI_menu_input(v1, v2, v3);
+			reg_ax = GUI_menu_input(v1, v2, v3);
 
 			return 1;
 		}
@@ -5152,7 +5154,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("unequip(%s, %s, %d);\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), pos);
-			M302de::unequip(Real2Host(hero), item, pos);
+			unequip(Real2Host(hero), item, pos);
 
 			return 1;
 		}
@@ -5163,7 +5165,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = M302de::has_hero_stacked(Real2Host(hero), item);
+			reg_ax = has_hero_stacked(Real2Host(hero), item);
 			D1_LOG("has_hero_stacked(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), (signed short)reg_ax)
@@ -5178,7 +5180,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			unsigned short item = CPU_Pop16();
 			CPU_Push16(item);
 
-			reg_ax = M302de::item_pleasing_ingerimm(item);
+			reg_ax = item_pleasing_ingerimm(item);
 			D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
 				schick_getItemname(item), reg_ax);
 
@@ -5194,7 +5196,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(item);
 			CPU_Push32(hero);
 
-			reg_ax = M302de::hero_count_item(Real2Host(hero), item);
+			reg_ax = hero_count_item(Real2Host(hero), item);
 			D1_INFO("hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				schick_getItemname(item), reg_ax)

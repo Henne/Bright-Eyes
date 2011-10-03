@@ -1,3 +1,5 @@
+namespace M302de {
+
 //static
 unsigned short CD_set_drive_nr();
 //static
@@ -14,3 +16,5 @@ void seg001_0322();
 void seg001_034f();
 void CD_audio_pause();
 void CD_audio_play();
+
+}

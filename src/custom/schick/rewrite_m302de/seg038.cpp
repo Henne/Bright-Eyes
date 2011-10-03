@@ -12,6 +12,8 @@
 
 #include "seg006.h"
 
+namespace M302de {
+
 /**
  * FIG_search_obj_on_cb - searches an object on the chessboard
  * @obj:	number of the object
@@ -87,4 +89,6 @@ unsigned short FIG_count_smth(Bit8u *p) {
 	}
 
 	return count;
+}
+
 }

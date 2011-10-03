@@ -27,6 +27,8 @@
 #include "seg047.h"
 #include "seg096.h"
 
+namespace M302de {
+
 void play_voc(Bit16u index)
 {
 	CPU_Push16(index);
@@ -1454,7 +1456,7 @@ void seg002_47e2() {
 
 	do_save_rect();
 
-	M302de::GUI_print_char('P', 0, 0);
+	GUI_print_char('P', 0, 0);
 	/* restore gfx settings from stack */
 	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
 }
@@ -1717,7 +1719,7 @@ void add_hero_le(Bit8u *hero, signed short le) {
 		/* maybe if we are in a fight */
 		if (ds_readw(0x2cd5)) {
 			ptr = FIG_get_ptr(host_readb(hero + 0x81));
-			ret = M302de::seg039_0023(hero);
+			ret = seg039_0023(hero);
 
 			if (ret != -1) {
 				tmp = (signed char)host_readb(hero + 0x9b) * 12;
@@ -2253,4 +2255,6 @@ unsigned short count_heroes_available_in_group() {
 RealPt schick_alloc_emu(Bit32u size)
 {
 	return bc_farcalloc(size, 1);
+}
+
 }

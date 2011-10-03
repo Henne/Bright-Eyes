@@ -8,6 +8,8 @@
 #include "seg000.h"
 #include "seg001.h"
 
+namespace M302de {
+
 static unsigned short CD_has_drives() {
 
 	reg_ax = 0x1500;
@@ -192,4 +194,6 @@ void CD_audio_play() {
 
 	real_writew(relocation + 0x1238, 0xc7, 0);
 	CD_driver_request(RealMake(relocation + 0x1238, 0xc4));
+}
+
 }

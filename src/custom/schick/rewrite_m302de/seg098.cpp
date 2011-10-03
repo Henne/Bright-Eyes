@@ -12,6 +12,8 @@
 #include "seg002.h"
 #include "seg007.h"
 
+namespace M302de {
+
 short seg098_3e() {
 	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe5bc));
 	signed char tmp = host_readb(ptr + 0x86);
@@ -149,3 +151,4 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 	return 0;
 }
 
+}

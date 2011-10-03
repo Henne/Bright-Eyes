@@ -1,3 +1,5 @@
+namespace M302de {
+
 //0x25
 void FIG_set_cb_field(signed short, signed short, signed char);
 //0x2f
@@ -14,3 +16,5 @@ signed short FIG_get_first_active_hero();
 unsigned short seg032_02db();
 //0x4d
 unsigned short FIG_fight_continues();
+
+}

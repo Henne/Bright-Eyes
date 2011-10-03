@@ -7,6 +7,8 @@
 
 #include "seg000.h"
 
+namespace M302de {
+
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
 	ds_writew(0xb788 + handle * 2, ds_readw(0xb788 + handle * 2) & 0xfdff);
@@ -81,4 +83,6 @@ Bit16s bc__close(Bit16u handle) {
 	ds_writew(0xb788 + handle * 2, 0);
 
 	return 0;
+}
+
 }
