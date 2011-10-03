@@ -1454,7 +1454,7 @@ void seg002_47e2() {
 
 	do_save_rect();
 
-	GUI_print_char('P', 0, 0);
+	M302de::GUI_print_char('P', 0, 0);
 	/* restore gfx settings from stack */
 	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
 }

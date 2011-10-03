@@ -19,6 +19,8 @@
 #include "seg096.h"
 #include "seg097.h"
 
+namespace M302de {
+
 //000
 //129
 //15e
@@ -476,4 +478,6 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 	ds_writew(0xe5ac, 0);
 
 	return retval;
+}
+
 }

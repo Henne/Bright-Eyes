@@ -2809,7 +2809,7 @@ static int seg046(unsigned short offs) {
 		Bit16u index = CPU_Pop16();
 
 		D1_LOG("status_show(%d)\n", index);
-		status_show(index);
+		M302de::status_show(index);
 
 		CPU_Push16(index);
 
@@ -3078,7 +3078,7 @@ static int seg096(unsigned short offs) {
 		RealPt retval;
 
 		D1_LOG("GUI_names_grammar(%x,%x,%x)\n", v1 ,v2,v3);
-		retval = GUI_names_grammar(v1, v2, v3);
+		retval = M302de::GUI_names_grammar(v1, v2, v3);
 		reg_ax = RealOff(retval);
 		reg_dx = RealSeg(retval);
 
@@ -3092,7 +3092,7 @@ static int seg096(unsigned short offs) {
 
 		RealPt retval;
 
-		retval = GUI_name_plural(v1, MemBase + Real2Phys(s));
+		retval = M302de::GUI_name_plural(v1, MemBase + Real2Phys(s));
 		D1_LOG("GUI_name_singular(%x, %s)\n",
 			v1, getString(s));
 
@@ -3106,7 +3106,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(s);
 		RealPt retval;
 
-		retval = GUI_name_singular(MemBase + Real2Phys(s));
+		retval = M302de::GUI_name_singular(MemBase + Real2Phys(s));
 		D1_LOG("GUI_name_singular(%x:%x)\n", RealSeg(s), RealOff(s));
 
 		reg_dx = RealSeg(retval);
@@ -3124,7 +3124,7 @@ static int seg096(unsigned short offs) {
 
 		RealPt retval;
 
-		retval = GUI_2f2(v1, v2, v3);
+		retval = M302de::GUI_2f2(v1, v2, v3);
 		D1_LOG("GUI_2f2(%d, %d, %d)\n", v1, v2, v3);
 		reg_ax = RealOff(retval);
 		reg_dx = RealSeg(retval);
@@ -3139,7 +3139,7 @@ static int seg096(unsigned short offs) {
 
 			RealPt retval;
 
-			retval = GUI_get_ptr(v1, v2);
+			retval = M302de::GUI_get_ptr(v1, v2);
 			D1_LOG("GUI_get_ptr(%d,%d) = %s\n",
 				v1, v2, getString(retval));
 
@@ -3155,7 +3155,7 @@ static int seg096(unsigned short offs) {
 
 			RealPt retval;
 
-			retval = GUI_get_ptr2(v1, v2);
+			retval = M302de::GUI_get_ptr2(v1, v2);
 			D1_LOG("GUI_get_ptr2(%d,%d) = %s", v1, v2,
 				v1, v2, getString(retval));
 
@@ -3172,7 +3172,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(s);
 
 		D1_LOG("GUI_print_string(%s, %d, %d);\n", getString(s), x, y);
-		GUI_print_string(MemBase + Real2Phys(s), x, y);
+		M302de::GUI_print_string(MemBase + Real2Phys(s), x, y);
 		return 1;
 	}
 	case 0x48: {
@@ -3184,7 +3184,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(c);
 
 		D1_LOG("GUI_print_char(%c, %d, %d);\n", c & 0xff, x, y);
-		reg_ax = GUI_print_char(c & 0xff, x, y);
+		reg_ax = M302de::GUI_print_char(c & 0xff, x, y);
 		return 1;
 	}
 	case 0x4d: {
@@ -3197,7 +3197,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 		CPU_Push32(p);
 
-		reg_ax = GUI_get_first_pos_centered(Real2Host(p), v1, v2, v3);
+		reg_ax = M302de::GUI_get_first_pos_centered(Real2Host(p), v1, v2, v3);
 		D1_LOG("GUI_get_first_pos_centered(%s,%d,%d,%d) = %d\n", getString(p),
 			v1, v2, v3, reg_ax);
 
@@ -3207,13 +3207,13 @@ static int seg096(unsigned short offs) {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		reg_ax = GUI_count_lines(MemBase + Real2Phys(ptr));
+		reg_ax = M302de::GUI_count_lines(MemBase + Real2Phys(ptr));
 		D1_LOG("GUI_count_lines(%s) = %d\n", getString(ptr),(unsigned short)reg_ax);
 
 		return 1;
 	}
 	case 0x66: {
-		GUI_blank_char();
+		M302de::GUI_blank_char();
 		return 1;
 	}
 	case 0x6b: {
@@ -3221,7 +3221,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p);
 
 		D1_LOG("GUI_font_to_buf(0x%x:0x%x)\n", RealSeg(p), RealOff(p));
-		GUI_font_to_buf(Real2Host(p));
+		M302de::GUI_font_to_buf(Real2Host(p));
 
 		return 1;
 	}
@@ -3237,7 +3237,7 @@ static int seg096(unsigned short offs) {
 
 		D1_LOG("GUI_write_char_to_screen_xy(%d, %d, %d, %d);\n",
 			x, y, char_height, char_width);
-		GUI_write_char_to_screen_xy(x, y, char_height, char_width);
+		M302de::GUI_write_char_to_screen_xy(x, y, char_height, char_width);
 
 		return 1;
 	}
@@ -3248,7 +3248,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 
 		D1_LOG("GUI_set_smth(%d, %d);\n", v1, v2);
-		GUI_set_smth(v1, v2);
+		M302de::GUI_set_smth(v1, v2);
 
 		return 1;
 	}
@@ -3259,7 +3259,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("GUI_get_smth();\n");
-		GUI_get_smth((short*)(Real2Host(p1)), (short*)(Real2Host(p2)));
+		M302de::GUI_get_smth((short*)(Real2Host(p1)), (short*)(Real2Host(p2)));
 
 		return 1;
 	}
@@ -3268,7 +3268,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		D1_LOG("GUI_print_loc_line(%s)\n", getString(ptr));
-		GUI_print_loc_line(MemBase + Real2Phys(ptr));
+		M302de::GUI_print_loc_line(MemBase + Real2Phys(ptr));
 		return 1;
 	}
 	case 0x84: {
@@ -3276,7 +3276,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(str);
 
 		D1_LOG("GUI_print_header(%s)\n", getString(str));
-		GUI_print_header(MemBase + Real2Phys(str));
+		M302de::GUI_print_header(MemBase + Real2Phys(str));
 		return 1;
 	}
 	case 0x89: {
@@ -3285,7 +3285,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 		CPU_Push32(p);
 
-		reg_ax = GUI_get_space_for_string(MemBase + Real2Phys(p), (char)v1);
+		reg_ax = M302de::GUI_get_space_for_string(MemBase + Real2Phys(p), (char)v1);
 		D1_LOG("GUI_get_space_for_string(%s, %d) = %d\n",
 			getString(p), v1, reg_ax);
 
@@ -3298,7 +3298,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(line);
 
 		D1_LOG("GUI_draw_popup_line(%d, %d)\n", line, type);
-		GUI_draw_popup_line(line, type);
+		M302de::GUI_draw_popup_line(line, type);
 		return 1;
 	}
 	default:
@@ -3319,7 +3319,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(p_height);
 		CPU_Push16(c);
 
-		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
+		reg_ax = M302de::GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
 		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 		return 1;
 	}
@@ -3330,7 +3330,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(str);
 
 		D1_LOG("GUI_input()\n");
-		reg_ax = GUI_input(Real2Host(str), num);
+		reg_ax = M302de::GUI_input(Real2Host(str), num);
 		return 1;
 	}
 	case 0x39: {
@@ -3338,7 +3338,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(str);
 
 		D1_LOG("GUI_output()\n");
-		GUI_output(Real2Host(str));
+		M302de::GUI_output(Real2Host(str));
 		return 1;
 	}
 	case 0x3e: {
@@ -4868,7 +4868,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
 				schick_getCharname(hero), spell, fsig, x1, x2, yg);
-			status_show_spell(Real2Host(hero), spell,
+			M302de::status_show_spell(Real2Host(hero), spell,
 				fsig, x1, x2, yg);
 
 			return 1;
@@ -4890,7 +4890,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
 				schick_getCharname(hero), talent, ftig, x1, x2, yg);
-			status_show_talent(Real2Host(hero), talent,
+			M302de::status_show_talent(Real2Host(hero), talent,
 				ftig, x1, x2, yg);
 
 			return 1;
@@ -4903,7 +4903,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("status_show_talents(%s);\n",
 				schick_getCharname(hero));
 
-			status_show_talents(Real2Host(hero));
+			M302de::status_show_talents(Real2Host(hero));
 
 			return 1;
 		}
@@ -4930,7 +4930,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p_height);
 			CPU_Push16(c);
 
-			reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
+			reg_ax = M302de::GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
 			D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 			return 1;
 		}
@@ -4954,7 +4954,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("GUI_1f8(0x%x, %d, %d, %d, %d);",
 				dst, x, y, num, v4);
 
-			reg_ax = GUI_enter_text(Real2Host(dst),
+			reg_ax = M302de::GUI_enter_text(Real2Host(dst),
 					x, y, num, v4);
 			D1_LOG(" = 0x%x\n", reg_ax);
 
@@ -4970,7 +4970,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
 				v1, v2, v3, v4);
-			GUI_draw_radio_bg(v1, v2, v3, v4);
+			M302de::GUI_draw_radio_bg(v1, v2, v3, v4);
 
 			CPU_Push16(v4);
 			CPU_Push16(v3);
@@ -4988,7 +4988,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(width);
 
 			D1_LOG("GUI_copy_smth(%d, %d)\n", width, height);
-			GUI_copy_smth(width, height);
+			M302de::GUI_copy_smth(width, height);
 
 			return 1;
 		}
@@ -4999,7 +4999,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(str);
 
 			D1_INFO("GUI_output()\n");
-			GUI_output(Real2Host(str));
+			M302de::GUI_output(Real2Host(str));
 			return 1;
 		}
 		/* Callers: 1 */
@@ -5011,7 +5011,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(str);
 
 			D1_LOG("GUI_input()\n");
-			reg_ax = GUI_input(Real2Host(str), num);
+			reg_ax = M302de::GUI_input(Real2Host(str), num);
 
 			return 1;
 		}
@@ -5028,7 +5028,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			D1_LOG("GUI_fill_radio_button(%d, %d, %d);\n",
 				v1, v2, v3);
 
-			GUI_fill_radio_button(v1, v2, v3);
+			M302de::GUI_fill_radio_button(v1, v2, v3);
 
 			return 1;
 
@@ -5047,7 +5047,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("GUI_menu_input(%d, %d, %d);\n", v1, v2, v3);
 
-			reg_ax = GUI_menu_input(v1, v2, v3);
+			reg_ax = M302de::GUI_menu_input(v1, v2, v3);
 
 			return 1;
 		}

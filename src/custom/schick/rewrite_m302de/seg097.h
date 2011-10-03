@@ -1,3 +1,5 @@
+namespace M302de {
+
 //25
 char GUI_lookup_char_height(char c, unsigned short *p);
 //2a
@@ -17,3 +19,5 @@ void GUI_copy_smth(unsigned short width, unsigned short height);
 void GUI_fill_radio_button(signed short, unsigned short, unsigned short);
 //0x61
 signed short GUI_menu_input(unsigned short, unsigned short, unsigned short);
+
+}

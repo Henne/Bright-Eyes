@@ -1,3 +1,5 @@
+namespace M302de {
+
 //20
 void GUI_write_char_to_screen(PhysPt dst, unsigned short v1, unsigned short v2);
 //25
@@ -43,3 +45,5 @@ unsigned short GUI_print_header(Bit8u *str);
 unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir);
 //8e
 void GUI_draw_popup_line(unsigned short line, unsigned short type);
+
+}

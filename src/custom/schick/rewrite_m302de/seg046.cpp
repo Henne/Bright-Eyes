@@ -17,6 +17,8 @@
 #include "seg047.h"
 #include "seg096.h"
 
+namespace M302de {
+
 /**
  *	status_show_spell -	prints spellname and value
  *	@hero:	the hero the spell is from
@@ -720,4 +722,6 @@ void status_show(Bit16u index)
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
 
 	refresh_screen_size();
+}
+
 }

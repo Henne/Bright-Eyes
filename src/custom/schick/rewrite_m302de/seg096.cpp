@@ -7,6 +7,9 @@
 #include "seg029.h"
 #include "seg096.h"
 #include "seg097.h"
+
+namespace M302de {
+
 //000
 /**
 	GUI_names_grammar - makes a grammatical wordgroup
@@ -587,4 +590,6 @@ void GUI_draw_popup_line(unsigned short line, unsigned short type) {
 	ds_writew(0xc015, x + 15);
 
 	do_pic_copy(0);
-};
+}
+
+}
