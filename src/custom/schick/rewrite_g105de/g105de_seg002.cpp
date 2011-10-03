@@ -1393,7 +1393,7 @@ void start_music(Bit16u track)
 			return;
 		play_midi(track);
 	} else {
-		G105de::seg001_0465();
+		seg001_0465();
 	}
 }
 
@@ -1436,7 +1436,7 @@ void read_soundcfg()
 	ds_writew(0x1a07, 1);
 
 	/* play audio-cd */
-	G105de::seg001_0600();
+	seg001_0600();
 }
 
 void init_music(unsigned long size)
@@ -2644,8 +2644,8 @@ Bit16u ret_zero1() {
 
 void wait_for_keypress()
 {
-	while (G105de::CD_bioskey(1)) {
-		G105de::CD_bioskey(0);
+	while (CD_bioskey(1)) {
+		CD_bioskey(0);
 	}
 }
 
@@ -3108,7 +3108,7 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 	c = 0;
 	while (c != 0xd || pos == 0) {
 		do {
-			do {} while (G105de::CD_bioskey(1) == 0 &&
+			do {} while (CD_bioskey(1) == 0 &&
 				ds_readw(0x4597) == 0);
 
 			if (ds_readw(0x4597)) {
@@ -3116,7 +3116,7 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 				ds_writew(0x459b, 0);
 				ds_writew(0x4597, 0);
 			} else {
-				ds_writew(0x459d, G105de::CD_bioskey(0));
+				ds_writew(0x459d, CD_bioskey(0));
 				ds_writew(0x459f, ds_readw(0x459d) >> 8);
 				ds_writew(0x459d, ds_readw(0x459d) & 0xff);
 			}

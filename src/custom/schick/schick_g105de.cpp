@@ -22,14 +22,14 @@ static int seg000(Bitu offs) {
 			CPU_Push16(ev);
 
 			D1_INFO("Bye Bye! We're closing DOSBox\n");
-			G105de::bc_exit(ev);
+			bc_exit(ev);
 			return 1;
 		}
 		case 0x0438: {
 			Bit16u intnr = CPU_Pop16();
 			CPU_Push16(intnr);
 
-			RealPt addr  = G105de::bc__dos_getvect(intnr);
+			RealPt addr  = bc__dos_getvect(intnr);
 			D1_LOG("_dos_getvect(intnr=0x%x) = %x\n", intnr, addr);
 
 			reg_ax = RealOff(addr);
@@ -46,7 +46,7 @@ static int seg000(Bitu offs) {
 			D1_LOG("_dos_setvect(intnr=0x%x, *isr=0x%x:0x%x)\n",
 				intnr, RealSeg(addr), RealOff(addr));
 
-			G105de::bc__dos_setvect(intnr, addr);
+			bc__dos_setvect(intnr, addr);
 
 			return 1;
 		}
@@ -60,7 +60,7 @@ static int seg000(Bitu offs) {
 
 			Bit32s retval;
 
-			retval = G105de::bc_lseek(handle, off, kind);
+			retval = bc_lseek(handle, off, kind);
 			D1_LOG("lseek(Handle=0x%x, off=%d, kind=%d) = %d\n",
 				handle, off, kind, retval);
 
@@ -77,7 +77,7 @@ static int seg000(Bitu offs) {
 			CPU_Push32(buf);
 			CPU_Push16(handle);
 
-			reg_ax = G105de::bc__read(handle, MemBase + Real2Phys(buf), len);
+			reg_ax = bc__read(handle, MemBase + Real2Phys(buf), len);
 			D1_LOG(
 			"_read(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
 				handle, RealSeg(buf), RealOff(buf),
@@ -92,21 +92,21 @@ static int seg000(Bitu offs) {
 			Bit16u v = CPU_Pop16();
 			CPU_Push16(v);
 
-			reg_ax = G105de::bioskey(v);
+			reg_ax = bioskey(v);
 
 			D1_LOG("bioskey(%d); = %x\n", v, reg_ax);
 
 			return 1;
 		}
 		case 0xf68: {
-			G105de::bc_clrscr();
+			bc_clrscr();
 			D1_LOG("clrscr();\n");
 			return 1;
 		}
 		case 0x1295: {
 			RealPt p = CPU_Pop32();
 			D1_LOG("bc_free(%x);\n", p);
-			G105de::bc_free(p);
+			bc_free(p);
 			CPU_Push32(p);
 			return 1;
 		}
@@ -114,7 +114,7 @@ static int seg000(Bitu offs) {
 			Bit16u handle = CPU_Pop16();
 			CPU_Push16(handle);
 
-			reg_ax = G105de::bc_close(handle);
+			reg_ax = bc_close(handle);
 			D1_LOG("close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
 
 			return 1;
@@ -123,7 +123,7 @@ static int seg000(Bitu offs) {
 			Bit16u handle = CPU_Pop16();
 			CPU_Push16(handle);
 
-			reg_ax = G105de::bc__close(handle);
+			reg_ax = bc__close(handle);
 			D1_LOG("_close(Handle=0x%x) = 0x%x\n", handle, reg_ax);
 
 			return 1;
@@ -134,7 +134,7 @@ static int seg000(Bitu offs) {
 			CPU_Push16(attr);
 			CPU_Push32(pathP);
 
-			reg_ax = G105de::bc__create(MemBase + Real2Phys(pathP), attr);
+			reg_ax = bc__create(MemBase + Real2Phys(pathP), attr);
 			D1_LOG("bc__create(%s, %x) = %d\n",
 				(char*)MemBase + Real2Phys(pathP),
 				attr, reg_ax);
@@ -261,7 +261,7 @@ static int seg000(Bitu offs) {
 			CPU_Push32(buf);
 			CPU_Push16(handle);
 
-			reg_ax = G105de::bc_write(handle, MemBase + Real2Phys(buf), len);
+			reg_ax = bc_write(handle, MemBase + Real2Phys(buf), len);
 			D1_LOG(
 			"bc_write(Handle=0x%x, Buffer=0x%x:0x%x, Length=%d) = %d\n",
 				handle, RealSeg(buf), RealOff(buf),
@@ -282,21 +282,21 @@ static int seg001(Bitu offs) {
 		case 0x0300: {
 			Bit16u cmd = CPU_Pop16();
 			CPU_Push16(cmd);
-			reg_ax = G105de::CD_bioskey(cmd);
+			reg_ax = CD_bioskey(cmd);
 			return 1;
 		}
 		case 0x033b: {
-			G105de::seg001_033b();
+			seg001_033b();
 			return 1;
 		}
 		case 0x0465: {
 			D1_LOG("seg001_0465()\n");
-			G105de::seg001_0465();
+			seg001_0465();
 			return 1;
 		}
 		case 0x0600: {
 			D1_LOG("seg001_0600();\n");
-			reg_ax = G105de::seg001_0600();
+			reg_ax = seg001_0600();
 			return 1;
 		}
 	default:
@@ -308,7 +308,7 @@ static int seg002(Bitu offs)
 {
 	switch (offs) {
 		case 0x1dbe: {
-			G105de::exit_video();
+			exit_video();
 			return 1;
 		}
 		case 0x1fe0: {
@@ -325,7 +325,7 @@ static int seg002(Bitu offs)
 			CPU_Push16(x1);
 			CPU_Push32(ptr);
 
-			G105de::call_fill_rect_gen(Real2Phys(ptr),
+			call_fill_rect_gen(Real2Phys(ptr),
 				x1, y1, x2, y2, color);
 
 			D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
@@ -335,7 +335,7 @@ static int seg002(Bitu offs)
 		}
 		case 0x730b: {
 			D1_LOG("restore_mouse_isr();\n");
-			G105de::restore_mouse_isr();
+			restore_mouse_isr();
 
 			return 1;
 		}
@@ -350,7 +350,7 @@ static int seg002(Bitu offs)
 				argv[i] = getString(host_readd(b_argv + i * 4));
 
 			D1_LOG("main_gen(%d, %p);\n", argc, (void*)argv);
-			reg_ax = G105de::main_gen(argc, argv);
+			reg_ax = main_gen(argc, argv);
 
 			CPU_Push32(p);
 			CPU_Push16(argc);
@@ -417,7 +417,7 @@ static int seg004(Bitu offs) {
 			RealSeg(dst), RealOff(dst),
 			RealSeg(src), RealOff(src), len);
 
-		G105de::decomp_pp20(MemBase + Real2Phys(src),
+		decomp_pp20(MemBase + Real2Phys(src),
 			MemBase + Real2Phys(dst),
 			MemBase + Real2Phys(src) + 8, len);
 
@@ -438,7 +438,7 @@ static int seg005(Bitu offs) {
 		RealPt addr = CPU_Pop32();
 		D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
 			RealSeg(addr), RealOff(addr));
-		G105de::save_display_stat(addr);
+		save_display_stat(addr);
 		CPU_Push32(addr);
 		return 1;
         }
@@ -453,7 +453,7 @@ static int seg005(Bitu offs) {
 		D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
 			RealSeg(ptr), RealOff(ptr), first_color, colors);
 
-		G105de::set_palette(MemBase + Real2Phys(ptr),
+		set_palette(MemBase + Real2Phys(ptr),
 			(unsigned char)first_color, colors);
 
 		return 1;
@@ -466,7 +466,7 @@ static int seg005(Bitu offs) {
 		CPU_Push16(cnt);
 		CPU_Push16(ptr);
 
-		G105de::draw_h_line(PhysMake(0xa000, ptr), cnt, (unsigned char)color);
+		draw_h_line(PhysMake(0xa000, ptr), cnt, (unsigned char)color);
 
 			D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
 				ptr % 320, ptr / 320, cnt, color);
@@ -503,7 +503,7 @@ static int seg005(Bitu offs) {
 		D1_GFX("DrawPic(dst=0x%x, x=%d, y=%d, ..., v1=%d, v2=%d, w=%d, h=%d, src=0x%x, mode=%d);\n",
 			dst, x, y, width, height, v1, v2, src, mode);
 
-		G105de::draw_pic(Real2Phys(dst), x, y, d1, d2, width, height,
+		draw_pic(Real2Phys(dst), x, y, d1, d2, width, height,
 				d3, d4, v1, v2, Real2Phys(src), mode);
 		return 1;
 	}
@@ -519,7 +519,7 @@ static int seg005(Bitu offs) {
 		CPU_Push32(dst);
 		CPU_Push32(src);
 
-		G105de::copy_to_screen(Real2Phys(src), Real2Phys(dst), width,
+		copy_to_screen(Real2Phys(src), Real2Phys(dst), width,
 			height, mode);
 
 		D1_LOG("copy_to_screen(src=0x%x, dst=0x%x, w=%d, h=%d, m=%d);\n",
@@ -662,20 +662,20 @@ int schick_nearcall_gen105(unsigned offs) {
 			switch(offs) {
 				case 0x0038: {
 					CPU_Pop16();
-					reg_ax = G105de::CD_set_drive_nr();
+					reg_ax = CD_set_drive_nr();
 					return 1;
 				}
 				case 0x005d: {
 					CPU_Pop16();
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
-					G105de::CD_driver_request(ptr);
+					CD_driver_request(ptr);
 					return 1;
 				}
 				case 0x00ae: {
 					unsigned int retval;
 					CPU_Pop16();
-					retval = G105de::CD_get_tod();
+					retval = CD_get_tod();
 
 					reg_ax = retval & 0xffff;
 					reg_dx = (retval>>16) & 0xffff;
@@ -685,23 +685,23 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 					Bit16u track = CPU_Pop16();
 					CPU_Push16(track);
-					G105de::seg001_00bb(track);
+					seg001_00bb(track);
 					return 1;
 				}
 				case 0x0312b: {
 					CPU_Pop16();
-					G105de::seg001_0312();
+					seg001_0312();
 					return 1;
 				}
 				case 0x033b: {
 					CPU_Pop16();
-					G105de::seg001_033b();
+					seg001_033b();
 					return 1;
 				}
 				case 0x03a8: {
 					CPU_Pop16();
 					D1_LOG("0x3a8()\n");
-					G105de::seg001_03a8();
+					seg001_03a8();
 					return 1;
 				}
 				case 0x0487: {
@@ -723,14 +723,14 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(index);
 
 					D1_LOG("start_music(%d);\n", index);
-					G105de::start_music(index);
+					start_music(index);
 
 					return 1;
 				}
 				case 0x0034: {
 					CPU_Pop16();
 					D1_LOG("read_soundcfg();\n");
-					G105de::read_soundcfg();
+					read_soundcfg();
 					return 1;
 				}
 				case 0x0083: {
@@ -738,13 +738,13 @@ int schick_nearcall_gen105(unsigned offs) {
 					Bit32u size = CPU_Pop32();
 					CPU_Push32(size);
 					D1_LOG("init_music(%d);\n", size);
-					G105de::init_music(size);
+					init_music(size);
 					return 1;
 				}
 				case 0x00ac: {
 					CPU_Pop16();
 					D1_LOG("stop_music();\n");
-					G105de::stop_music();
+					stop_music();
 					return 1;
 				}
 				case 0x389: {
@@ -753,7 +753,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(index);
 
 					D1_LOG("call_load_file(%d);\n", index);
-					reg_ax = G105de::load_file(index);
+					reg_ax = load_file(index);
 
 					return 1;
 				}
@@ -763,14 +763,14 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(index);
 
 					D1_LOG("load_file(%d);\n", index);
-					reg_ax = G105de::load_file(index);
+					reg_ax = load_file(index);
 
 					return 1;
 				}
 				case 0x0565: {
 					CPU_Pop16();
 					D1_LOG("restart_midi();\n");
-					G105de::restart_midi();
+					restart_midi();
 					return 1;
 				}
 				case 0x05a1: {
@@ -798,14 +798,14 @@ int schick_nearcall_gen105(unsigned offs) {
 				}
 				case 0x078c: {
 					CPU_Pop16();
-					G105de::mouse_enable();
+					mouse_enable();
 					D1_LOG("mouse_enable();\n");
 					return 1;
 				}
 				case 0x0829: {
 					CPU_Pop16();
 
-					G105de::mouse_disable();
+					mouse_disable();
 					D1_LOG("mouse_disable();\n");
 
 					return 1;
@@ -817,7 +817,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 					CPU_Push16(val);
 
-					G105de::mouse_do_enable(val, ptr);
+					mouse_do_enable(val, ptr);
 					D1_LOG("mouse_do_enable();\n");
 
 					return 1;
@@ -825,7 +825,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x08d4: {
 					CPU_Pop16();
 
-					G105de::mouse_do_disable();
+					mouse_do_disable();
 					D1_LOG("mouse_do_disable();\n");
 
 					return 1;
@@ -833,7 +833,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x09d1: {
 					CPU_Pop16();
 
-					G105de::draw_mouse_ptr_wrapper();
+					draw_mouse_ptr_wrapper();
 					D1_LOG("draw_mouse_ptr_wrapper();\n");
 
 					return 1;
@@ -842,14 +842,14 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("call_mouse();\n");
-					G105de::call_mouse();
+					call_mouse();
 
 					return 1;
 				}
 				case 0x09e5: {
 					CPU_Pop16();
 
-					G105de::draw_mouse_ptr();
+					draw_mouse_ptr();
 					D1_LOG("draw_mouse_ptr();\n");
 
 					return 1;
@@ -858,7 +858,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("mouse();\n");
-					G105de::mouse();
+					mouse();
 
 					return 1;
 				}
@@ -866,7 +866,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("mouse_compare();\n");
-					G105de::mouse_compare();
+					mouse_compare();
 
 					return 1;
 				}
@@ -874,7 +874,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("handle_input();\n");
-					G105de::handle_input();
+					handle_input();
 
 					return 1;
 				}
@@ -898,7 +898,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("decomp_rle(%x, %x,...);\n",
 						dst, src);
 
-					G105de::decomp_rle(MemBase + Real2Phys(dst),
+					decomp_rle(MemBase + Real2Phys(dst),
 						MemBase + Real2Phys(src),
 						x, y, w, h, m);
 
@@ -910,7 +910,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("update_mouse_ptr();\n");
-					G105de::update_mouse_ptr();
+					update_mouse_ptr();
 
 					return 1;
 				}
@@ -918,7 +918,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("save_mouse_ptr();\n");
-					G105de::save_mouse_ptr();
+					save_mouse_ptr();
 
 					return 1;
 				}
@@ -931,7 +931,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(y);
 					CPU_Push16(x);
 
-					reg_ax = G105de::get_mouse_action(x, y,
+					reg_ax = get_mouse_action(x, y,
 						MemBase + Real2Phys(ptr));
 
 					D1_LOG("get_mouse_action(%d,%d,%x); = %d\n",
@@ -951,7 +951,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("split_textbuffer(0x%x,0x%x,%d);\n",
 						p1, p2, p3);
 
-					G105de::split_textbuffer(MemBase + Real2Phys(p1), p2, p3);
+					split_textbuffer(MemBase + Real2Phys(p1), p2, p3);
 
 					return 1;
 				}
@@ -959,7 +959,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("load_font_and_text();\n");
-					G105de::load_font_and_text();
+					load_font_and_text();
 
 					return 1;
 				}
@@ -969,7 +969,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(val);
 
 					D1_LOG("load_page(%d);\n", val);
-					G105de::load_page(val);
+					load_page(val);
 
 					return 1;
 				}
@@ -979,21 +979,21 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(val);
 
 					D1_LOG("load_typus(%d);\n", val);
-					G105de::load_typus(val);
+					load_typus(val);
 
 					return 1;
 				}
 				case 0x12fa: {
 					CPU_Pop16();
 					D1_LOG("save_chr();\n");
-					G105de::save_chr();
+					save_chr();
 					return 1;
 				}
 				case 0x14f6: {
 					CPU_Pop16();
 
 					D1_LOG("read_common_files();\n");
-					G105de::read_common_files();
+					read_common_files();
 
 					return 1;
 				}
@@ -1003,7 +1003,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 
 					D1_LOG("process_nvf(%x);\n", ptr);
-					G105de::process_nvf((struct nvf_desc*)MemBase + Real2Phys(ptr));
+					process_nvf((struct nvf_desc*)MemBase + Real2Phys(ptr));
 
 					return 1;
 				}
@@ -1016,7 +1016,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					Bit32s retval;
 
-					retval = G105de::get_archive_offset(getString(name), MemBase + Real2Phys(table));
+					retval = get_archive_offset(getString(name), MemBase + Real2Phys(table));
 
 					D1_LOG("get_archive_offset(%s, %s); = %d\n",
 						getString(name),
@@ -1037,7 +1037,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(handle);
 
 
-					reg_ax = G105de::read_datfile(handle,
+					reg_ax = read_datfile(handle,
 						MemBase + Real2Phys(buf), len);
 
 					D1_LOG("read_datfile(Handle=%x, off=%x, len=%d)\n",
@@ -1050,7 +1050,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					Bit32s retval;
-					retval = G105de::get_filelength();
+					retval = get_filelength();
 
 					reg_ax = retval & 0xffff;
 					reg_dx = (retval>>16) & 0xffff;
@@ -1062,14 +1062,14 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x1c7b: {
 					CPU_Pop16();
 
-					reg_ax = G105de::ret_zero1();
+					reg_ax = ret_zero1();
 					D1_LOG("ret_zero1();\n");
 
 					return 1;
 				}
 				case 0x1c82: {
 					CPU_Pop16();
-					G105de::wait_for_keypress();
+					wait_for_keypress();
 					D1_LOG("wait_for_keypress()\n");
 					return 1;
 				}
@@ -1079,7 +1079,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(msg);
 
 					D1_LOG("error_msg(%s);\n", MemBase + Real2Phys(msg));
-					G105de::error_msg(MemBase + Real2Phys(msg));
+					error_msg(MemBase + Real2Phys(msg));
 
 					return 1;
 				}
@@ -1089,7 +1089,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(val);
 
 					D1_LOG("vsync_or_key(%d);\n", val);
-					G105de::vsync_or_key(val);
+					vsync_or_key(val);
 
 					return 1;
 				}
@@ -1101,7 +1101,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v1);
 
 					Bit32u retval;
-					retval = G105de::swap32(v1, v2);
+					retval = swap32(v1, v2);
 
 					D1_INFO("swap32(%x, %x);\n", v1, v2);
 
@@ -1114,7 +1114,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("init_video();\n");
-					G105de::init_video();
+					init_video();
 
 					return 1;
 				}
@@ -1122,7 +1122,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("exit_video();\n");
-					G105de::exit_video();
+					exit_video();
 
 					return 1;
 				}
@@ -1137,7 +1137,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v2);
 					CPU_Push16(v1);
 
-					G105de::draw_v_line(v1, v2, v3, v4);
+					draw_v_line(v1, v2, v3, v4);
 
 					D1_LOG("draw_v_line(%d,%d,%d,%x);\n",
 						v1, v2, v3, v4);
@@ -1150,7 +1150,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(val);
 
 					D1_LOG("0x1ecc(%d);\n", val);
-					G105de::do_draw_pic(val);
+					do_draw_pic(val);
 
 					return 1;
 				}
@@ -1169,7 +1169,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x1);
 					CPU_Push32(ptr);
 
-					G105de::call_fill_rect_gen(Real2Phys(ptr),
+					call_fill_rect_gen(Real2Phys(ptr),
 						x1, y1, x2, y2, color);
 
 					D1_LOG("call_fill_rect_gen(%x,%d,%d,%d,%d,%x);\n",
@@ -1182,7 +1182,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
-					reg_ax = G105de::str_splitter((char*)MemBase + Real2Phys(ptr));
+					reg_ax = str_splitter((char*)MemBase + Real2Phys(ptr));
 					D1_LOG("str_splitter(%s); = %d\n",
 						getString(ptr), reg_ax);
 
@@ -1193,7 +1193,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
-					reg_ax = G105de::print_line((char*)MemBase + Real2Phys(ptr));
+					reg_ax = print_line((char*)MemBase + Real2Phys(ptr));
 					D1_LOG("print_line(%s); = %d\n",
 						getString(ptr), reg_ax);
 
@@ -1209,7 +1209,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 
 					D1_LOG("print_str(%s)\n", getString(ptr));
-					G105de::print_str((char*)MemBase + Real2Phys(ptr),
+					print_str((char*)MemBase + Real2Phys(ptr),
 						x, y);
 
 					return 1;
@@ -1223,7 +1223,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x);
 					CPU_Push16(c);
 
-					reg_ax = G105de::print_chr((char)c, x, y);
+					reg_ax = print_chr((char)c, x, y);
 
 					D1_LOG("print_chr(%c,%d,%d); = %d\n",
 						c, x, y, reg_ax);
@@ -1237,7 +1237,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 					CPU_Push16(c);
 
-					reg_ax = G105de::get_chr_info((char)c,
+					reg_ax = get_chr_info((char)c,
 						MemBase + Real2Phys(ptr));
 
 					D1_LOG("get_chr_info(%c,%x); = %d\n",
@@ -1258,7 +1258,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("call_them_all(%d,%d,%d,%d);\n",
 						v1, v2, v3, v4);
-					G105de::call_them_all(v1, v2, v3, v4);
+					call_them_all(v1, v2, v3, v4);
 
 					return 1;
 				}
@@ -1266,7 +1266,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("WAIT_FOR_VSYNC();\n");
-					G105de::wait_for_vsync();
+					wait_for_vsync();
 
 					return 1;
 				}
@@ -1277,7 +1277,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v2);
 					CPU_Push16(v1);
 
-					G105de::set_vals(v1, v2);
+					set_vals(v1, v2);
 					D1_LOG("set_vals(%d, %d);\n", v1, v2);
 
 					return 1;
@@ -1289,7 +1289,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(p2);
 					CPU_Push32(p1);
 
-					G105de::get_vals(MemBase + Real2Phys(p1),
+					get_vals(MemBase + Real2Phys(p1),
 						MemBase + Real2Phys(p2));
 					D1_LOG("get_vals(%x, %x);\n", p1, p2);
 
@@ -1300,7 +1300,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt ptr = CPU_Pop32();
 					CPU_Push32(ptr);
 
-					reg_ax = G105de::get_str_width(getString(ptr));
+					reg_ax = get_str_width(getString(ptr));
 
 					D1_LOG("get_str_width(%s); = %d\n",
 						getString(ptr), reg_ax);
@@ -1316,7 +1316,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(x);
 					CPU_Push32(str);
 
-					reg_ax = G105de::get_line_start_c(getString(str), x, y);
+					reg_ax = get_line_start_c(getString(str), x, y);
 
 					D1_LOG("get_line_start_c(%s,%d,%d); = %d\n",
 						getString(str), x, y, reg_ax);
@@ -1339,7 +1339,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("enter_string(%x,%d,%d,%d,%d);\n",
 						getString(str), x, y, len, zero);
 
-					reg_ax = G105de::enter_string(
+					reg_ax = enter_string(
 						(char*)MemBase + Real2Phys(str),
 						x, y, len, zero);
 
@@ -1354,7 +1354,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("draw_popup_line(%d, %d);\n",
 						line, type);
-					G105de::draw_popup_line(line, type);
+					draw_popup_line(line, type);
 
 					return 1;
 				}
@@ -1366,7 +1366,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(ptr);
 
 
-					reg_ax = G105de::infobox((char*)MemBase + Real2Phys(ptr), c);
+					reg_ax = infobox((char*)MemBase + Real2Phys(ptr), c);
 					D1_LOG("infobox(%s,%x); = %d\n",
 						MemBase + Real2Phys(ptr), c , reg_ax);
 
@@ -1377,7 +1377,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					RealPt msg = CPU_Pop32();
 					CPU_Push32(msg);
 
-					reg_ax = G105de::gui_bool(MemBase + Real2Phys(msg));
+					reg_ax = gui_bool(MemBase + Real2Phys(msg));
 					D1_LOG("gui_bool(%p) = %d\n",
 						MemBase + Real2Phys(msg),
 						reg_ax);
@@ -1396,7 +1396,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("fill_radio_button(%x,%x,%x);\n",
 						old_pos, new_pos, offset);
 
-					G105de::fill_radio_button(old_pos,
+					fill_radio_button(old_pos,
 						new_pos, offset);
 
 					return 1;
@@ -1406,13 +1406,13 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("enter_name();\n");
-					G105de::enter_name();
+					enter_name();
 
 					return 1;
 				}
 				case 0x30df: {
 					CPU_Pop16();
-					G105de::change_head();
+					change_head();
 					D1_LOG("change_head()\n");
 					return 1;
 				}
@@ -1420,21 +1420,21 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("change_sex();\n");
-					G105de::change_sex();
+					change_sex();
 
 					return 1;
 				}
 				case 0x3217: {
 					CPU_Pop16();
 					D1_LOG("do_gen();\n");
-					G105de::do_gen();
+					do_gen();
 					return 1;
 				}
 				case 0x35d0: {
 					CPU_Pop16();
 
 					D1_LOG("refresh_screen();\n");
-					G105de::refresh_screen();
+					refresh_screen();
 
 					return 1;
 				}
@@ -1442,14 +1442,14 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("new_values();\n");
-					G105de::new_values();
+					new_values();
 
 					return 1;
 				}
 				case 0x3bdd: {
 					CPU_Pop16();
 
-					G105de::calc_at_pa();
+					calc_at_pa();
 					D1_LOG("calc_at_pa();\n");
 
 					return 1;
@@ -1458,7 +1458,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("fill_values();\n");
-					G105de::fill_values();
+					fill_values();
 
 					return 1;
 				}
@@ -1466,7 +1466,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("clear_hero();\n");
-					G105de::clear_hero();
+					clear_hero();
 
 					return 1;
 				}
@@ -1477,7 +1477,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("skill_inc_novice(%d);\n",
 						skill);
-					G105de::skill_inc_novice(skill);
+					skill_inc_novice(skill);
 
 					return 1;
 				}
@@ -1488,19 +1488,19 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("spell_inc_novice(%d);\n",
 						spell);
-					G105de::spell_inc_novice(spell);
+					spell_inc_novice(spell);
 
 					return 1;
 				}
 				case 0x435b: {
 					CPU_Pop16();
 					D1_LOG("select_typus();\n");
-					G105de::select_typus();
+					select_typus();
 					return 1;
 				}
 				case 0x4632: {
 					CPU_Pop16();
-					reg_ax = G105de::can_change_attribs();
+					reg_ax = can_change_attribs();
 					D1_LOG("can_change_attribs() = %d;\n",
 						reg_ax);
 					return 1;
@@ -1508,7 +1508,7 @@ int schick_nearcall_gen105(unsigned offs) {
 				case 0x4718: {
 					CPU_Pop16();
 					D1_LOG("change_attribs();\n");
-					G105de::change_attribs();
+					change_attribs();
 					return 1;
 				}
 				case 0x4b1b: {
@@ -1516,7 +1516,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("save_picbuf();\n");
 
-					G105de::save_picbuf();
+					save_picbuf();
 
 					return 1;
 				}
@@ -1527,20 +1527,20 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("restore_picbuf(%x);\n", ptr);
 
-					G105de::restore_picbuf(Real2Phys(ptr));
+					restore_picbuf(Real2Phys(ptr));
 
 					return 1;
 				}
 				case 0x4e47: {
 					CPU_Pop16();
 					D1_LOG("print_attribs();\n");
-					G105de::print_attribs();
+					print_attribs();
 					return 1;
 				}
 				case 0x4ea0: {
 					CPU_Pop16();
 					D1_LOG("print_values();\n");
-					G105de::print_values();
+					print_values();
 					return 1;
 				}
 				case 0x5abd: {
@@ -1552,7 +1552,7 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("make_valuta_str(%d);\n", money);
 
-					G105de::make_valuta_str(
+					make_valuta_str(
 						(char*)MemBase + Real2Phys(dst),						money);
 
 					return 1;
@@ -1568,13 +1568,13 @@ int schick_nearcall_gen105(unsigned offs) {
 
 					D1_LOG("inc_skill(%d, %d, %p)\n",
 						skill, max, (char*)MemBase + Real2Phys(msg));
-					G105de::inc_skill(skill, max, (char*)MemBase + Real2Phys(msg));
+					inc_skill(skill, max, (char*)MemBase + Real2Phys(msg));
 					return 1;
 				}
 				case 0x5bdd: {
 					CPU_Pop16();
 					D1_LOG("select_skill();\n");
-					G105de::select_skill();
+					select_skill();
 					return 1;
 				}
 				case 0x5fb5: {
@@ -1583,26 +1583,26 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(spell);
 
 					D1_LOG("inc_spell(%d);\n", spell);
-					G105de::inc_spell(spell);
+					inc_spell(spell);
 
 					return 1;
 				}
 				case 0x60db: {
 					CPU_Pop16();
 					D1_LOG("select_spell();\n");
-					G105de::select_spell();
+					select_spell();
 					return 1;
 				}
 				case 0x6716: {
 					CPU_Pop16();
 					D1_LOG("choose_atpa();\n");
-					G105de::choose_atpa();
+					choose_atpa();
 					return 1;
 				}
 				case 0x6821: {
 					CPU_Pop16();
 					D1_LOG("choose_typus();\n");
-					G105de::choose_typus();
+					choose_typus();
 					return 1;
 				}
 				case 0x6b05: {
@@ -1618,7 +1618,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("pal_fade_out(%x, %x, %d);\n",
 						dst, src, n);
 
-					G105de::pal_fade_out(MemBase + Real2Phys(dst),
+					pal_fade_out(MemBase + Real2Phys(dst),
 						MemBase + Real2Phys(src), n);
 
 					return 1;
@@ -1638,7 +1638,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					D1_LOG("pal_fade_in(%x, %x, %d, %d);\n",
 						dst, src, col, n);
 
-					G105de::pal_fade_in(MemBase + Real2Phys(dst),
+					pal_fade_in(MemBase + Real2Phys(dst),
 						MemBase + Real2Phys(src),
 						col, n);
 
@@ -1648,7 +1648,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("intro();\n");
-					G105de::intro();
+					intro();
 
 					return 1;
 				}
@@ -1656,7 +1656,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("set_mouse_isr();\n");
-					G105de::set_mouse_isr();
+					set_mouse_isr();
 
 					return 1;
 				}
@@ -1664,7 +1664,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("restore_mouse_isr();\n");
-					G105de::restore_mouse_isr();
+					restore_mouse_isr();
 
 					return 1;
 				}
@@ -1675,8 +1675,8 @@ int schick_nearcall_gen105(unsigned offs) {
 					 */
 					CPU_Pop16();
 					D1_INFO("alloc_buffers();\n");
-					G105de::alloc_buffers();
-					G105de::alloc_buffers_emu();
+					alloc_buffers();
+					alloc_buffers_emu();
 
 					return 1;
 				}
@@ -1684,7 +1684,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("init_colors();\n");
-					G105de::init_colors();
+					init_colors();
 
 					return 1;
 				}
@@ -1692,7 +1692,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 
 					D1_LOG("init_stuff();\n");
-					G105de::init_stuff();
+					init_stuff();
 
 					return 1;
 				}
@@ -1701,7 +1701,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Pop16();
 					Bit32u  nelem = CPU_Pop32();
 
-					ret = G105de::emu_gen_alloc(nelem);
+					ret = emu_gen_alloc(nelem);
 					D1_LOG("emu_gen_alloc(%d) = %x\n",
 						nelem, ret);
 					reg_ax = RealOff(ret);
