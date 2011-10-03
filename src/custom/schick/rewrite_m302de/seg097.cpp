@@ -2,12 +2,13 @@
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
  *      Functions rewritten 9/16
  *
- *      Functions called rewritten 8/13
+ *      Functions called rewritten 10/13
  *      Functions uncalled rewritten 1/3
 */
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <ctype.h>
 
 #include "schick.h"
@@ -16,6 +17,7 @@
 #include "seg001.h"
 #include "seg002.h"
 #include "seg004.h"
+#include "seg026.h"
 #include "seg096.h"
 #include "seg097.h"
 
@@ -362,6 +364,137 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 	refresh_screen_size();
 }
 
+//0x893
+signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
+		signed char options, ...)
+{
+	va_list arguments;
+
+	char *lp;
+	Bit16s l1, l2, l3, l4, l5, l6;
+	Bit16s fg_bak, bg_bak;
+	Bit16s l7, l8, l9, l10;
+	signed short retval;
+	Bit16s l11, l12, l13;
+	Bit16s l_si, l_di;
+
+	l13 = ds_readw(0x29ae);
+	l12 = ds_readw(0xc3cb);
+	ds_writew(0xc3cb, 0);
+
+	set_var_to_zero();
+
+	l11 = ds_readw(0xe113);
+	ds_writew(0xe113, 0);
+	ds_writeb(0x2c98, 1);
+	l7 = ds_readw(0xd2d9);
+	l8 = ds_readw(0xd2d7);
+	l9 = ds_readw(0xd2d5);
+	l6 = ds_readw(0xbffd);
+	ds_writew(0xbffd, 9);
+
+	l_di = ds_readw(0xbffd) * 32 + 32;
+	ds_writew(0xbfff, (320 - l_di) / 2 + ds_readw(0x2ca2));
+	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
+	ds_writew(0xd2d5, l_di - 8);
+	l10 = ds_readw(0xd313);
+	ds_writew(0xd313, ds_readw(0xd2d9) + ds_readw(0xd2d5) - 24);
+	ds_writew(0xe4db, 40);
+	ds_writew(0xe4d9, 5);
+
+	l_si = GUI_count_lines(text) - 1;
+
+	if (name != NULL && name != MemBase)
+		l_si += 2;
+
+	if (l_si < ds_readw(0xe4d9))
+		l_si = ds_readw(0xe4d9) - 1;
+
+	l4 = options + l_si;
+	l5 = (l4 + 2) * 8;
+	ds_writew(0xc001, (200 - (l5 + 2)) / 2);
+	ds_writew(0xd2d7, ds_readw(0xc001) + 5);
+
+	update_mouse_cursor();
+	GUI_get_smth(&fg_bak, &bg_bak);
+
+	GUI_draw_radio_bg(l_si, options, l_di, l5);
+
+	if (picture != 0) {
+		/* draw a frame */
+		do_border(Real2Phys(ds_readd(0xd2ff)),
+			ds_readw(0xbfff) + 5, ds_readw(0xc001) + 6,
+			ds_readw(0xbfff) + 38, ds_readw(0xc001) + 39, 0xff);
+
+		/* set the coordinates */
+		ds_writew(0xc011, ds_readw(0xbfff) + 6);
+		ds_writew(0xc013, ds_readw(0xc001) + 7);
+		ds_writew(0xc015, ds_readw(0xbfff) + 37);
+		ds_writew(0xc017, ds_readw(0xc001) + 38);
+		ds_writed(0xc019, picture);
+
+		do_pic_copy(0);
+	}
+
+	if (name != NULL && name != MemBase) {
+		/* set text color */
+		ds_writew(0xd2c5, 1);
+
+		GUI_print_string(name, ds_readw(0xd2d9), ds_readw(0xd2d7));
+
+		/* set text color */
+		ds_writew(0xd2c5, 0);
+
+		ds_writew(0xd2d7, ds_readw(0xd2d7) + 14);
+		ds_writew(0xe4d9, ds_readw(0xe4d9) - 2);
+	}
+
+	if (l_si != 0)
+		GUI_print_header(text);
+
+	ds_writew(0xe4d9, 0);
+	ds_writew(0xe4db, 0);
+
+	if (options != 0) {
+		l2 = ds_readw(0xd2d9) + 8;
+		l3 = (l_si + 1) * 8 + ds_readw(0xc001);
+
+		va_start(arguments, options);
+		for (l1 = 0; l1 < options; l3 += 8, l1++) {
+			lp = va_arg(arguments, char*);
+			GUI_print_string((Bit8u*)lp, l2, l3);
+		}
+	}
+
+	retval = GUI_menu_input(options, l_si + 1, l_di);
+
+	GUI_copy_smth(l_di, l5);
+
+	refresh_screen_size();
+	GUI_set_smth(fg_bak, bg_bak);
+
+	ds_writew(0xd2d9, l7);
+	ds_writew(0xd2d7, l8);
+	ds_writew(0xd2d5, l9);
+
+	ds_writew(0xbffd, l6);
+
+	ds_writew(0xd313, l10);
+
+	ds_writew(0xe113, l11);
+
+	ds_writeb(0x2c98, 0);
+	/* reset action */
+	ds_writeb(0xc3d9, 0);
+
+	ds_writew(0xc3cb, l12);
+
+	if (l13 != 0)
+		init_ani(2);
+
+	return retval;
+}
+
 //0xb43
 //static
 signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
@@ -480,4 +613,18 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 	return retval;
 }
 
+/**
+ *	GUI_dialog_na() - print a Dialog windows without answers
+ *	@head_index:	the number of a head, if another should be loaded
+ *	@text:		the text
+ */
+void GUI_dialog_na(unsigned short head_index, Bit8u *text)
+{
+
+	if (head_index != 0)
+		load_in_head(head_index);
+
+	GUI_dialogbox(ds_readd(0xd2f3), NULL, text, 0);
+
+}
 }

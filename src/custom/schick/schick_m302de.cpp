@@ -3387,7 +3387,7 @@ static int seg097(unsigned short offs) {
 		else
 			strncpy(buffer, "(NULL)", 20);
 
-		D1_LOG("GUI_DialogBox(pic=0x%x, %s,", pic, buffer);
+		D1_LOG("GUI_dialogbox(pic=0x%x, %s,", pic, buffer);
 		strncpy(buffer, getString(text), 20);
 		D1_LOG("%s..., %d, %d)\n", buffer, (char)options, v2);
 		return 0;
@@ -3400,7 +3400,15 @@ static int seg097(unsigned short offs) {
 		return 0;
 	}
 	case 0x6b: {
-		return 0;
+		Bit16u head = CPU_Pop16();
+		RealPt text = CPU_Pop32();
+		CPU_Push32(text);
+		CPU_Push16(head);
+
+		D1_INFO("GUI_dialog_na(%d);\n", head);
+		GUI_dialog_na(head + 1, Real2Host(text));
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
