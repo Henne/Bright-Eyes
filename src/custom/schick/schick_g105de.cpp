@@ -786,7 +786,7 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(p2);
 					CPU_Push32(p1);
 
-					G105de::mouse_action(MemBase + Real2Phys(p1),
+					do_mouse_action(MemBase + Real2Phys(p1),
 						MemBase + Real2Phys(p2),
 						MemBase + Real2Phys(p3),
 						MemBase + Real2Phys(p4),

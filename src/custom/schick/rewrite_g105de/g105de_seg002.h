@@ -31,7 +31,7 @@ namespace G105de {
 	bool load_driver(RealPt, Bit16u, Bit16u);
 	void play_midi(Bit16u);
 	void stop_sequence();
-	void mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
+	void do_mouse_action(Bit8u*, Bit8u*, Bit8u*, Bit8u*, Bit8u*);
 	void mouse_enable();
 	void mouse_disable();
 	void mouse_do_enable(Bit16u, RealPt);

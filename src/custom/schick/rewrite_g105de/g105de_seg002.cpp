@@ -1640,7 +1640,7 @@ void restart_midi()
  * to call interrupts. We use the one of DOSBox, which means, that we
  * put the values in the emulated registers, instead in a structure.
  */
-void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
+void do_mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 
 	if ((signed short)host_readw(p1) < 0)
 		return;
@@ -1721,7 +1721,7 @@ void mouse_enable()
 	/* initialize mouse */
 	p1 = 0;
 
-	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
+	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
 	if (p1 == 0)
@@ -1738,7 +1738,7 @@ void mouse_enable()
 	p3 = ds_readw(0x124c);
 	p4 = ds_readw(0x124e);
 
-	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
+	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
 	mouse_do_enable(0x1f, RealMake(reloc_gen + 0x3c6, 0x68c));
@@ -1769,7 +1769,7 @@ void mouse_do_enable(Bit16u val, RealPt ptr)
 	RealSetVec(0x78, ptr);
 
 	/* set the new mouse event handler */
-	mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
+	do_mouse_action((Bit8u*)&p1, (Bit8u*)&p2, (Bit8u*)&p3,
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
 	eh_installed = true;
@@ -1788,7 +1788,7 @@ void mouse_do_disable()
 	v4 = 0;
 	v5 = 0;
 
-	mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3,
+	do_mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&v3,
 		(Bit8u*)&v4, (Bit8u*)&v5);
 
 	eh_installed = false;
@@ -1803,7 +1803,7 @@ void mouse_move_cursor(unsigned short x, unsigned short y) {
 	unsigned short v1 = 4;
 	unsigned short v2 = 0xdead;
 
-	mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&x, (Bit8u*)&y, (Bit8u*)&v2);
+	do_mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&x, (Bit8u*)&y, (Bit8u*)&v2);
 }
 
 /* static */
