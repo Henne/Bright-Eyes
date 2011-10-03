@@ -9,6 +9,8 @@
 
 #include "g105de_seg003.h"
 
+namespace G105de {
+
 static Bit16u rand_seed = 0x327b;
 
 static inline
@@ -43,4 +45,19 @@ unsigned short random_gen(short val) {
 	si = abs(si) % val;
 
 	return si + 1;
-};
+}
+
+unsigned short is_in_word_array(unsigned short val, Bit8u *p)
+{
+
+	while (host_readw(p) != 0) {
+		p += 2;
+
+		if (host_readw(p) == val)
+			return 1;
+	}
+
+	return 0;
+}
+
+}

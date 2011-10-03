@@ -5,11 +5,12 @@
 
 #include "schick.h"
 
+#include "g105de_seg000.h"
 #include "g105de_seg001.h"
 
-#include "../rewrite_m302de/seg000.h"
-
 #define CDSEG (0xc83)
+
+namespace G105de {
 
 static unsigned short CD_has_drives() {
 
@@ -41,7 +42,7 @@ static unsigned short CD_get_first_drive() {
 	return reg_cx;
 }
 
-unsigned short G105de::CD_set_drive_nr() {
+unsigned short CD_set_drive_nr() {
 
 	if(CD_has_drives() == 0)
 		return 0;
@@ -53,7 +54,7 @@ unsigned short G105de::CD_set_drive_nr() {
 	return 1;
 }
 
-void G105de::CD_driver_request(RealPt req) {
+void CD_driver_request(RealPt req) {
 	reg_ax = 0x1510;
 	reg_cx = ds_readw(0x246c);
 	CPU_SetSegGeneral(es, RealSeg(req));
@@ -61,7 +62,7 @@ void G105de::CD_driver_request(RealPt req) {
 	CALLBACK_RunRealInt(0x2f);
 }
 
-unsigned int G105de::CD_get_tod() {
+unsigned int CD_get_tod() {
 	reg_ah = 0;
 	CALLBACK_RunRealInt(0x1a);
 	reg_ax = reg_dx;
@@ -70,7 +71,7 @@ unsigned int G105de::CD_get_tod() {
 	return (reg_dx << 16) | reg_ax;
 }
 
-void G105de::seg001_00bb(unsigned short track_nr)
+void seg001_00bb(unsigned short track_nr)
 {
 	unsigned int track_start, track_end;
 	unsigned int track_len, tmp;
@@ -107,9 +108,9 @@ void G105de::seg001_00bb(unsigned short track_nr)
 	track_len = track_end - track_start;
 	real_writed(relocation + CDSEG, 0x9e, track_len - 150);
 
-	G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x8c));
+	CD_driver_request(RealMake(relocation + CDSEG, 0x8c));
 	ds_writed(0x2468, ((track_len - 150) * 0x1234e) / 0x4b000);
-	ds_writed(0x2464, G105de::CD_get_tod());
+	ds_writed(0x2464, CD_get_tod());
 }
 
 static void seg001_02ba()
@@ -119,7 +120,7 @@ static void seg001_02ba()
 	if (ds_readw(0x95) == 0)
 		return;
 
-	val = G105de::CD_get_tod();
+	val = CD_get_tod();
 	val -= ds_readd(0x2464);
 
 	if (val < ds_readd(0x2468))
@@ -128,38 +129,38 @@ static void seg001_02ba()
 	if (ds_readw(0x9b) != 1)
 		return;
 
-	G105de::seg001_0312();
-	G105de::seg001_0312();
-	G105de::seg001_00bb(ds_readw(0x245a));
+	seg001_0312();
+	seg001_0312();
+	seg001_00bb(ds_readw(0x245a));
 	ds_writew(0x9b, 1);
 }
 
-signed short G105de::CD_bioskey(signed short cmd)
+signed short CD_bioskey(signed short cmd)
 {
 	seg001_02ba();
 	return bioskey(cmd);
 }
 
-void G105de::seg001_0312()
+void seg001_0312()
 {
 	if (ds_readw(0x95) == 0)
 		return;
 
 	real_writew(relocation + CDSEG, 3, 0);
-	G105de::CD_driver_request(RealMake(relocation + CDSEG, 0));
+	CD_driver_request(RealMake(relocation + CDSEG, 0));
 	ds_writew(0x9b, 0);
 }
 
-void G105de::seg001_033b()
+void seg001_033b()
 {
 	if (ds_readw(0x95) == 0)
 		return;
 
-	G105de::seg001_0312();
+	seg001_0312();
 	real_writew(relocation + CDSEG, 0x1f, 0);
-	G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x1c));
+	CD_driver_request(RealMake(relocation + CDSEG, 0x1c));
 }
-void G105de::seg001_03a8()
+void seg001_03a8()
 {
 	Bit16u v;
 
@@ -170,7 +171,7 @@ void G105de::seg001_03a8()
 	real_writew(relocation + CDSEG, 0x48, relocation + CDSEG);
 	real_writew(relocation + CDSEG, 0x46, 0x420);
 	real_writeb(relocation + CDSEG, 0x420, 10);
-	G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x38));
+	CD_driver_request(RealMake(relocation + CDSEG, 0x38));
 
 	v = real_readb(relocation + CDSEG, 0x421);
 	for (; real_readb(relocation + CDSEG, 0x422) >= v; v++) {
@@ -180,29 +181,31 @@ void G105de::seg001_03a8()
 		real_writeb(relocation + CDSEG, v * 8 + 0x108, 11);
 		real_writeb(relocation + CDSEG, v * 8 + 0x109, (unsigned char)v);
 
-		G105de::CD_driver_request(RealMake(relocation + CDSEG, 0x38));
+		CD_driver_request(RealMake(relocation + CDSEG, 0x38));
 	}
 
 }
 
-void G105de::seg001_0465()
+void seg001_0465()
 {
-	G105de::seg001_0312();
-	G105de::seg001_0312();
+	seg001_0312();
+	seg001_0312();
 	ds_writew(0x245a, 4);
-	G105de::seg001_00bb(ds_readw(0x245a));
+	seg001_00bb(ds_readw(0x245a));
 	ds_writew(0x9b, 1);
 }
 
-bool G105de::seg001_0600()
+bool seg001_0600()
 {
-	if (G105de::CD_set_drive_nr() == 0)
+	if (CD_set_drive_nr() == 0)
 		return false;
 
 	ds_writew(0x95, 1);
 	/* CHECK_CD() would have been called here */
-	G105de::seg001_033b();
-	G105de::seg001_03a8();
+	seg001_033b();
+	seg001_03a8();
 
 	return true;
+}
+
 }

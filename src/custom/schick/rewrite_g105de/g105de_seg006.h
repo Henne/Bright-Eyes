@@ -1,3 +1,5 @@
+namespace G105de {
+
 void AIL_startup();
 
 void AIL_shutdown(RealPt signoff_msg);
@@ -15,3 +17,5 @@ void AIL_stop_sequence(Bit16u driver, Bit16u sequence);
 Bit16u AIL_sequence_status(Bit16u driver, Bit16u sequence);
 
 void AIL_release_sequence_handle(Bit16u driver, Bit16u sequence);
+
+}

@@ -4,6 +4,8 @@
 
 #include "../schick.h"
 
+namespace G105de {
+
 void AIL_startup()
 {
 	CALLBACK_RunRealFar(reloc_gen + 0xbb2, 0x6d7);
@@ -93,4 +95,6 @@ Bit16u AIL_sequence_status(Bit16u driver, Bit16u sequence)
 	CPU_Pop16();
 
 	return reg_ax;
+}
+
 }

@@ -13,6 +13,8 @@
 #include "rewrite_g105de/g105de_seg005.h"
 #include "rewrite_g105de/g105de_seg006.h"
 
+using namespace G105de;
+
 static int seg000(Bitu offs) {
 	switch (offs) {
 		case 0x3a4: {
