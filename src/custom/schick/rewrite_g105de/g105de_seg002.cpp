@@ -791,6 +791,19 @@ static const struct struct_color pal_genbg[32] = {
 /* DS:0x109a */
 static const unsigned char unused_ro1 = 0;
 
+/* DS:0x1200 */
+static unsigned short mouse_mask[32] = {
+        0x7fff, 0x9fff, 0x87ff, 0xc1ff,
+        0xc07f, 0xe01f, 0xe007, 0xf00f,
+        0xf01f, 0xf80f, 0xf887, 0xfdc3,
+        0xffe3, 0xfff7, 0xffff, 0xffff,
+        0x8000, 0x6000, 0x7800, 0x3e00,
+        0x3f80, 0x1fe0, 0x1ff8, 0x0ff0,
+        0x0fe0, 0x07f0, 0x0778, 0x023c,
+        0x001c, 0x0008, 0x0000, 0x0000,
+};
+
+
 /* DS:0x124a */
 static Bit16s mouse_var = -1;
 
@@ -1204,9 +1217,9 @@ static unsigned short in_key_ascii;
 static unsigned short in_key_ext;
 
 /* DS:0x4621 */
-static PhysPt mouse_p1;
+static unsigned short *mouse_p1;
 /* DS:0x4625 */
-static PhysPt mouse_p2;
+static unsigned short *mouse_p2;
 
 /* DS:0x4669 */
 static char cursor_bak[256];
@@ -1778,8 +1791,8 @@ void mouse_enable()
 	if (p1 == 0)
 		mouse_flag = 0;
 
-	mouse_p2 = PhysMake(datseg, 0x1200);
-	mouse_p1 = PhysMake(datseg, 0x1200);
+	mouse_p2 = mouse_mask;
+	mouse_p1 = mouse_mask;
 
 	if (mouse_flag != 2)
 		return;
@@ -1929,7 +1942,7 @@ void mouse_compare()
 		/* copy a pointer */
 		mouse_p1 = mouse_p2;
 
-		if (PhysMake(datseg, 0x1200) == mouse_p2) {
+		if (mouse_mask == mouse_p2) {
 			ds_writew(0x1258, 0);
 			ds_writew(0x1256, 0);
 		} else {
@@ -2101,13 +2114,14 @@ void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 /* static */
 void update_mouse_ptr()
 {
-	PhysPt p1, p2;
+	unsigned short *src;
+	PhysPt p1;
 	Bit16u v1, v2, v3, si, di;
 	Bit8s i, j;
 
 	p1 = Real2Phys(ds_readd(0x47cb));
 
-	p2 = mouse_p2 + 32;
+	src = &mouse_p2[16];
 
 	di = ds_readw(0x124c) - ds_readw(0x1256);
 
@@ -2125,8 +2139,7 @@ void update_mouse_ptr()
 
 	for (i = 0; i < v3; p1 += 320, i++) {
 
-		si = mem_readw_inline(p2);
-		p2 += 2;
+		si = *src++;
 
 		for (j = 0; j < v2; j++)
 			if ((0x8000 >> j) & si)
