@@ -1170,6 +1170,8 @@ static unsigned short upper_border;
 /* DS:0x40bf */
 static signed short level;
 
+/* DS:0x40c9 */
+static unsigned short dst_x2;
 /* DS:0x40cb */
 static unsigned short dst_y2;
 
@@ -2750,7 +2752,7 @@ void do_draw_pic(Bit16u mode)
 
 	x = ds_readw(0x40c5);
 	y = ds_readw(0x40c7);
-	d1 = ds_readw(0x40c9);
+	d1 = dst_x2;
 	d2 = dst_y2;
 	v1 = unkn1;
 	v2 = unkn2;
@@ -3650,7 +3652,7 @@ void change_head()
 	ds_writed(0x40cd, ds_readd(0x47a3));
 
 	ds_writew(0x40c5, 272);
-	ds_writew(0x40c9, 303);
+	dst_x2 = 303;
 
 	if (gen_page == 0) {
 		ds_writew(0x40c7, 8);
@@ -4327,7 +4329,7 @@ void refresh_screen()
 
 			ds_writed(0x40cd, ds_readd(0x47a3));
 			ds_writew(0x40c5, 272);
-			ds_writew(0x40c9, 303);
+			dst_x2 = 303;
 			ds_writed(0x40c1, ds_readd(0x47d3));
 
 			/* draw the head */
@@ -6613,7 +6615,7 @@ void intro()
 	for (i = 0; i < 4; i++) {
 		ds_writew(0x40c5, 112);
 		ds_writew(0x40c7, 140);
-		ds_writew(0x40c9, 207);
+		dst_x2 = 207;
 		dst_y2 = 149;
 		ds_writed(0x40cd, ds_readd(0x47d3) + i * 960 + 9600);
 		do_draw_pic(0);
@@ -6626,7 +6628,7 @@ void intro()
 	while (cnt1 <= 100 && in_key_ext == 0) {
 		ds_writew(0x40c5, 0);
 		ds_writew(0x40c7, cnt2 + 60);
-		ds_writew(0x40c9, 95);
+		dst_x2 = 95;
 		dst_y2 = cnt1 + cnt2 + 59;
 		ds_writed(0x40c1, ds_readd(0x47d3));
 		ds_writed(0x40cd, ds_readd(0x47d3));
@@ -6643,7 +6645,7 @@ void intro()
 
 			ds_writew(0x40c5, 0);
 			ds_writew(0x40c7, 150);
-			ds_writew(0x40c9, 95);
+			dst_x2 = 95;
 			dst_y2 = 159;
 			ds_writed(0x40c1, ds_readd(0x47d3));
 			do_draw_pic(2);
@@ -6651,7 +6653,7 @@ void intro()
 
 		ds_writew(0x40c5, 112);
 		ds_writew(0x40c7, 50);
-		ds_writew(0x40c9, 207);
+		dst_x2 = 207;
 		dst_y2 = 149;
 		ds_writed(0x40cd, ds_readd(0x47d3));
 
@@ -6700,7 +6702,7 @@ void intro()
 	/* draw the picture */
 	ds_writew(0x40c5, 60);
 	ds_writew(0x40c7, 50);
-	ds_writew(0x40c9, 259);
+	dst_x2 = 259;
 	dst_y2 = 149;
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
@@ -6734,7 +6736,7 @@ void intro()
 	/* draw DSALOGO.DAT */
 	ds_writew(0x40c5, 0);
 	ds_writew(0x40c7, 0);
-	ds_writew(0x40c9, 319);
+	dst_x2 = 319;
 	dst_y2 = 99;
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
@@ -6760,7 +6762,7 @@ void intro()
 	/* draw DSALOGO.DAT */
 	ds_writew(0x40c5, 10);
 	ds_writew(0x40c7, 110);
-	ds_writew(0x40c9, 329);
+	dst_x2 = 329;
 	dst_y2 = 159;
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
