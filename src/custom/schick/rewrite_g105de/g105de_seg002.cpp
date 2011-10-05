@@ -1156,6 +1156,8 @@ static char *texts[300];
 
 /* DS:0x4595 */
 static unsigned short wo_var;
+/* DS:0x459d */
+static unsigned short in_key_ascii;
 
 /* DS:0x4669 */
 static char cursor_bak[256];
@@ -1897,16 +1899,16 @@ void handle_input()
 
 	si = 0;
 	ds_writew(0x459f, 0);
-	ds_writew(0x459d, 0);
+	in_key_ascii = 0;
 
 	if (CD_bioskey(1)) {
 		si = CD_bioskey(0);
-		ds_writew(0x459d, si & 0xff);
+		in_key_ascii = si & 0xff;
 		si = si >> 8;
 		if (si == 0x24)
 			si = 0x2c;
 
-		if (ds_readw(0x459d) == 0x11 && !ds_readb(0x40b8)) {
+		if ((in_key_ascii == 0x11) && !ds_readb(0x40b8)) {
 
 			draw_mouse_ptr_wrapper();
 			mouse_disable();
@@ -3112,17 +3114,17 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 				ds_readw(0x4597) == 0);
 
 			if (ds_readw(0x4597)) {
-				ds_writew(0x459d, 0xd);
+				in_key_ascii = 0xd;
 				ds_writew(0x459b, 0);
 				ds_writew(0x4597, 0);
 			} else {
-				ds_writew(0x459d, CD_bioskey(0));
-				ds_writew(0x459f, ds_readw(0x459d) >> 8);
-				ds_writew(0x459d, ds_readw(0x459d) & 0xff);
+				in_key_ascii = CD_bioskey(0);
+				ds_writew(0x459f, in_key_ascii >> 8);
+				in_key_ascii = in_key_ascii & 0xff;
 			}
-		} while (ds_readw(0x459f) == 0 && ds_readw(0x459d) == 0);
+		} while (ds_readw(0x459f) == 0 && in_key_ascii == 0);
 
-		c = ds_readw(0x459d);
+		c = in_key_ascii;
 
 		if (c == 0xd)
 			continue;
