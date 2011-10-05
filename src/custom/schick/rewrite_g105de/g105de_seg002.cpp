@@ -1164,6 +1164,8 @@ static signed char head_typus;
 static unsigned short menu_tiles;
 /* DS:0x40bb */
 static unsigned short left_border;
+/* DS:0x40bd */
+static unsigned short upper_border;
 
 /* DS:0x40bf */
 static signed short level;
@@ -3255,7 +3257,7 @@ void draw_popup_line(Bit16u line, Bit16u type)
 	dst = Real2Phys(ds_readd(0x47cb));
 
 	/* (line * 8 + y) * 320  + x */
-	dst = ((line * 8) + ds_readw(0x40bd)) * 320 + Real2Phys(ds_readd(0x47cb)) + left_border;
+	dst = ((line * 8) + upper_border) * 320 + Real2Phys(ds_readd(0x47cb)) + left_border;
 
 	switch (type) {
 		case 0: {
@@ -3325,14 +3327,14 @@ Bit16u infobox(char *msg, Bit16u digits)
 	if (digits != 0)
 		lines += 2;
 
-	ds_writew(0x40bd, abs(200 - (lines + 2) * 8) / 2);
-	ds_writew(0x40bd, ds_readw(0x40bd) + ro_zero);
-	text_y = ds_readw(0x40bd) + 7;
+	upper_border = abs(200 - (lines + 2) * 8) / 2;
+	upper_border += ro_zero;
+	text_y = upper_border + 7;
 
 	draw_mouse_ptr_wrapper();
 
 	src = Real2Phys(ds_readd(0x47cb));
-	src += ds_readw(0x40bd) * 320 + left_border;
+	src += upper_border * 320 + left_border;
 	dst = Real2Phys(ds_readd(0x47d3));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 2);
@@ -3356,7 +3358,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	if (digits) {
 		enter_string(gen_ptr3,
 			abs(di - digits * 6) / 2 + left_border,
-			lines * 8 + ds_readw(0x40bd) - 2, digits, 0);
+			lines * 8 + upper_border - 2, digits, 0);
 
 		retval = (Bit16u)atol(gen_ptr3);
 	} else {
@@ -3369,7 +3371,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	draw_mouse_ptr_wrapper();
 
 	dst = Real2Phys(ds_readd(0x47cb));
-	dst += ds_readw(0x40bd) * 320 + left_border;
+	dst += upper_border * 320 + left_border;
 	src = Real2Phys(ds_readd(0x47d3));
 
 	copy_to_screen(src, dst, di, (lines + 2) * 8, 0);
@@ -3421,7 +3423,7 @@ void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 	if (old_pos != -1) {
 		y = left_border + 6;
 
-		x = (offset + old_pos) * 8 + ds_readw(0x40bd) + 2;
+		x = (offset + old_pos) * 8 + upper_border + 2;
 
 		for (i = 0; i < 4; i++)
 			draw_v_line(y + i, x, x + 3, 0xd8);
@@ -3430,7 +3432,7 @@ void fill_radio_button(Bit16s old_pos, Bit16u new_pos, Bit16u offset)
 	/* mark the new radio button */
 	y = left_border + 6;
 
-	x = (offset + new_pos) * 8 + ds_readw(0x40bd) + 2;
+	x = (offset + new_pos) * 8 + upper_border + 2;
 
 	for (i = 0; i < 4; i++)
 		draw_v_line(y + i, x, x + 3, 0xd9);
@@ -3471,13 +3473,13 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	text_x_end = (menu_tiles + 1) * 32 - 10;
 	lines_header = str_splitter((char*)header);
 	lines_sum = lines_header + options;
-	ds_writew(0x40bd, abs(200 - (lines_sum + 2) * 8) / 2);
-	text_y = ds_readw(0x40bd) + 7;
+	upper_border = abs(200 - (lines_sum + 2) * 8) / 2;
+	text_y = upper_border + 7;
 	draw_mouse_ptr_wrapper();
 
 	/* save old background */
 	src = Real2Phys(ds_readd(0x47cb));
-	src += ds_readw(0x40bd) * 320 + left_border;
+	src += upper_border * 320 + left_border;
 	dst = Real2Phys(ds_readd(0x47d3));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 2);
 
@@ -3498,7 +3500,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		print_line((char*)header);
 
 	r3 = text_x + 8;
-	r4 = (lines_header + 1) * 8 + ds_readw(0x40bd);
+	r4 = (lines_header + 1) * 8 + upper_border;
 
 	/* print radio options */
 	va_start(arguments, options);
@@ -3513,7 +3515,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	my_bak = ds_readw(0x124e);
 	ds_writew(0x124c, left_border + 90);
 	ds_writew(0x1250, left_border + 90);
-	r7 = (lines_header + 1) * 8 + ds_readw(0x40bd);
+	r7 = (lines_header + 1) * 8 + upper_border;
 	r8 = r7;
 	ds_writew(0x124e, r8);
 	ds_writew(0x1252, r8);
@@ -3521,9 +3523,9 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 
 	ds_writew(0x1246, left_border + r9 - 16);
 	ds_writew(0x1242, left_border);
-	ds_writew(0x1240, (lines_header + 1) * 8 + ds_readw(0x40bd));
+	ds_writew(0x1240, (lines_header + 1) * 8 + upper_border);
 	ds_writew(0x1244,
-		ds_readw(0x40bd) + options * 8 + (lines_header + 1) * 8 - 1);
+		upper_border + options * 8 + (lines_header + 1) * 8 - 1);
 	call_mouse();
 	ds_writew(0x4599, 0);
 
@@ -3597,7 +3599,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	mouse_move_cursor(mx_bak, my_bak);
 
 	dst = Real2Phys(ds_readd(0x47cb));
-	dst += ds_readw(0x40bd) * 320 + left_border;
+	dst += upper_border * 320 + left_border;
 	src = Real2Phys(ds_readd(0x47d3));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
 	call_mouse();
