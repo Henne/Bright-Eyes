@@ -22,6 +22,12 @@
 
 namespace G105de {
 
+/** Keyboard Constants */
+static const unsigned short KEY_UP = 0x48;
+static const unsigned short KEY_LEFT = 0x4b;
+static const unsigned short KEY_RIGHT = 0x4d;
+static const unsigned short KEY_DOWN = 0x50;
+
 
 /**
 	struct nvf_desc - nvf descriptor
@@ -787,22 +793,22 @@ static const struct mouse_action action_base[9] = {
 			{ 272, 8, 304, 41, 0xfd},	/* credits */
 			{ 305, 7, 319, 21, 0x60},	/* change sex */
 			{ 145, 13, 175, 21, 0x61},	/* enter name */
-			{ 271, 42, 286, 56, 0x48},	/* previous head */
-			{ 288, 42, 303, 56, 0x50},	/* next head */
-			{ 145, 178, 164, 192, 0x4b},	/* previous page */
-			{ 284, 178, 303, 192, 0x4d},	/* next page */
+			{ 271, 42, 286, 56, KEY_UP},	/* previous head */
+			{ 288, 42, 303, 56, KEY_DOWN},	/* next head */
+			{ 145, 178, 164, 192, KEY_LEFT},	/* previous page */
+			{ 284, 178, 303, 192, KEY_RIGHT},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 /* DS:0x12d4 */
 static const struct mouse_action action_skills[4] = {
-			{ 145, 178, 164, 192, 0x4b},	/* previous page */
-			{ 284, 178, 303, 192, 0x4d},	/* next page */
+			{ 145, 178, 164, 192, KEY_LEFT},	/* previous page */
+			{ 284, 178, 303, 192, KEY_RIGHT},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 /* DS:0x12fc */
 static const struct mouse_action action_spells[4] = {
-			{ 16, 178, 35, 192, 0x4b},	/* previous page */
-			{ 284, 178, 303, 192, 0x4d},	/* next page */
+			{ 16, 178, 35, 192, KEY_LEFT},	/* previous page */
+			{ 284, 178, 303, 192, KEY_RIGHT},	/* next page */
 			{ 0, 0, 319, 199, 0xfe},
 			{ 0xffff, 0xffff, 0xffff, 0xffff, 0xffff} };
 
@@ -3520,14 +3526,14 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			retval = di;
 			r5 = 1;
 		}
-		if (in_key_ext == 0x48) {
+		if (in_key_ext == KEY_UP) {
 			/* has the up key been pressed */
 			if (di == 1)
 				di = options;
 			else
 				di--;
 		}
-		if (in_key_ext == 0x50) {
+		if (in_key_ext == KEY_DOWN) {
 			/* has the down key been pressed */
 			if (di == options)
 				di = 1;
@@ -3808,7 +3814,7 @@ void do_gen()
 		if (in_key_ext == 0x61)
 			enter_name();
 
-		if (in_key_ext == 0x48 && gen_page == 0) {
+		if (in_key_ext == KEY_UP && gen_page == 0) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -3821,7 +3827,7 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == 0x50 && gen_page == 0) {
+		if (in_key_ext == KEY_DOWN && gen_page == 0) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -3834,7 +3840,7 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == 0x4d && level != 1) {
+		if (in_key_ext == KEY_RIGHT && level != 1) {
 			if (hero.typus == 0) {
 				infobox(texts[0x120 / 4], 0);
 			} else {
@@ -3847,7 +3853,7 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == 0x4b) {
+		if (in_key_ext == KEY_LEFT) {
 			if ((Bit16s)gen_page > 0) {
 				ds_writew(0x11fe, 1);
 				gen_page--;
