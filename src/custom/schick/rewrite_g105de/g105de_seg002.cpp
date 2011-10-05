@@ -1204,9 +1204,9 @@ static unsigned short in_key_ascii;
 static unsigned short in_key_ext;
 
 /* DS:0x4621 */
-static RealPt mouse_p1;
+static PhysPt mouse_p1;
 /* DS:0x4625 */
-static RealPt mouse_p2;
+static PhysPt mouse_p2;
 
 /* DS:0x4669 */
 static char cursor_bak[256];
@@ -1778,8 +1778,8 @@ void mouse_enable()
 	if (p1 == 0)
 		mouse_flag = 0;
 
-	mouse_p2 = RealMake(datseg, 0x1200);
-	mouse_p1 = RealMake(datseg, 0x1200);
+	mouse_p2 = PhysMake(datseg, 0x1200);
+	mouse_p1 = PhysMake(datseg, 0x1200);
 
 	if (mouse_flag != 2)
 		return;
@@ -1929,7 +1929,7 @@ void mouse_compare()
 		/* copy a pointer */
 		mouse_p1 = mouse_p2;
 
-		if (PhysMake(datseg, 0x1200) == Real2Phys(mouse_p2)) {
+		if (PhysMake(datseg, 0x1200) == mouse_p2) {
 			ds_writew(0x1258, 0);
 			ds_writew(0x1256, 0);
 		} else {
@@ -2107,7 +2107,7 @@ void update_mouse_ptr()
 
 	p1 = Real2Phys(ds_readd(0x47cb));
 
-	p2 = Real2Phys(mouse_p2) + 32;
+	p2 = mouse_p2 + 32;
 
 	di = ds_readw(0x124c) - ds_readw(0x1256);
 
