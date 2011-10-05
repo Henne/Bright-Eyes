@@ -1180,7 +1180,8 @@ static unsigned short dst_y1;
 static unsigned short dst_x2;
 /* DS:0x40cb */
 static unsigned short dst_y2;
-
+/* DS:0x40cd */
+static RealPt dst_src;
 /* DS:0x40d1 */
 static unsigned short unkn1;
 /* DS:0x40d3 */
@@ -2768,7 +2769,7 @@ void do_draw_pic(Bit16u mode)
 	w = d1 - x + 1;
 	h = d2 - y + 1;
 
-	src = Real2Phys(ds_readd(0x40cd));
+	src = Real2Phys(dst_src);
 	dst = Real2Phys(dst_dst);
 
 	draw_mouse_ptr_wrapper();
@@ -3655,7 +3656,7 @@ void change_head()
 
 	process_nvf(&nvf);
 
-	ds_writed(0x40cd, ds_readd(0x47a3));
+	dst_src = ds_readd(0x47a3);
 
 	dst_x1 = 272;
 	dst_x2 = 303;
@@ -4333,7 +4334,7 @@ void refresh_screen()
 			nvf.height = &tmp;
 			process_nvf(&nvf);
 
-			ds_writed(0x40cd, ds_readd(0x47a3));
+			dst_src = ds_readd(0x47a3);
 			dst_x1 = 272;
 			dst_x2 = 303;
 			dst_dst = ds_readd(0x47d3);
@@ -6623,7 +6624,7 @@ void intro()
 		dst_y1 = 140;
 		dst_x2 = 207;
 		dst_y2 = 149;
-		ds_writed(0x40cd, ds_readd(0x47d3) + i * 960 + 9600);
+		dst_src = ds_readd(0x47d3) + i * 960 + 9600;
 		do_draw_pic(0);
 		vsync_or_key(20);
 	}
@@ -6637,12 +6638,12 @@ void intro()
 		dst_x2 = 95;
 		dst_y2 = cnt1 + cnt2 + 59;
 		dst_dst = ds_readd(0x47d3);
-		ds_writed(0x40cd, ds_readd(0x47d3));
+		dst_src = ds_readd(0x47d3);
 		do_draw_pic(0);
 
 		if (cnt1 != 100) {
 
-			ds_writed(0x40cd, ds_readd(0x47d3) + i * 960 + 9600);
+			dst_src = ds_readd(0x47d3) + i * 960 + 9600;
 			if (cnt1 % 4 == 1)
 				i++;
 
@@ -6661,7 +6662,7 @@ void intro()
 		dst_y1 = 50;
 		dst_x2 = 207;
 		dst_y2 = 149;
-		ds_writed(0x40cd, ds_readd(0x47d3));
+		dst_src = ds_readd(0x47d3);
 
 		unkn1 = 0;
 		unkn2 = 60;
@@ -6710,7 +6711,7 @@ void intro()
 	dst_y1 = 50;
 	dst_x2 = 259;
 	dst_y2 = 149;
-	ds_writed(0x40cd, ds_readd(0x47d3));
+	dst_src = ds_readd(0x47d3);
 	do_draw_pic(0);
 	vsync_or_key(200);
 
@@ -6744,7 +6745,7 @@ void intro()
 	dst_y1 = 0;
 	dst_x2 = 319;
 	dst_y2 = 99;
-	ds_writed(0x40cd, ds_readd(0x47d3));
+	dst_src = ds_readd(0x47d3);
 	do_draw_pic(0);
 
 	/* load GENTIT.DAT */
@@ -6770,7 +6771,7 @@ void intro()
 	dst_y1 = 110;
 	dst_x2 = 329;
 	dst_y2 = 159;
-	ds_writed(0x40cd, ds_readd(0x47d3));
+	dst_src = ds_readd(0x47d3);
 	do_draw_pic(0);
 
 	memcpy(Real2Host(ds_readd(0x47d3)) + 500, &pal_dsalogo, 96);
