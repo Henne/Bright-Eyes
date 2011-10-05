@@ -6855,7 +6855,7 @@ int main_gen(int argc, char **argv)
 	mouse_enable();
 
 	if (mouse_flag == 0)
-		ds_writew(0x124a, 0xfffe);
+		mouse_var = -2;
 
 	init_stuff();
 
