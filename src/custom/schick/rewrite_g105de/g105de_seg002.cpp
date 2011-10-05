@@ -1177,6 +1177,9 @@ static unsigned short unkn4;
 
 static char *texts[300];
 
+/* DS:0x4591 */
+static unsigned short mouse_flag;
+
 /* DS:0x4595 */
 static unsigned short wo_var;
 /* DS:0x459d */
@@ -1742,7 +1745,7 @@ void mouse_enable()
 {
 	Bit16u p1, p2, p3, p4, p5;
 
-	if (ds_readw(0x4591) != 2)
+	if (mouse_flag != 2)
 		return;
 
 	/* initialize mouse */
@@ -1752,12 +1755,12 @@ void mouse_enable()
 				(Bit8u*)&p4, (Bit8u*)&p5);
 
 	if (p1 == 0)
-		ds_writew(0x4591, 0);
+		mouse_flag = 0;
 
 	ds_writed(0x4625, RealMake(datseg, 0x1200));
 	ds_writed(0x4621, RealMake(datseg, 0x1200));
 
-	if (ds_readw(0x4591) != 2)
+	if (mouse_flag != 2)
 		return;
 
 	/* move cursor  to initial position */
@@ -1774,7 +1777,7 @@ void mouse_enable()
 
 void mouse_disable()
 {
-	if (ds_readw(0x4591) == 2)
+	if (mouse_flag == 2)
 		mouse_do_disable();
 
 }
@@ -1959,7 +1962,7 @@ void handle_input()
 				ds_readw(0x124e),
 				ptr_def_action);
 
-		if (ds_readw(0x4591) == 2) {
+		if (mouse_flag == 2) {
 			for (i = 0; i < 15; i++)
 				wait_for_vsync();
 
@@ -6847,11 +6850,11 @@ int main_gen(int argc, char **argv)
 
 	init_video();
 
-	ds_writew(0x4591, 2);
+	mouse_flag = 2;
 
 	mouse_enable();
 
-	if (ds_readw(0x4591) == 0)
+	if (mouse_flag == 0)
 		ds_writew(0x124a, 0xfffe);
 
 	init_stuff();
