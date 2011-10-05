@@ -1170,6 +1170,8 @@ static unsigned short upper_border;
 /* DS:0x40bf */
 static signed short level;
 
+/* DS:0x40c1 */
+static RealPt dst_dst;
 /* DS:0x40c5 */
 static unsigned short dst_x1;
 /* DS:0x40c7 */
@@ -2767,7 +2769,7 @@ void do_draw_pic(Bit16u mode)
 	h = d2 - y + 1;
 
 	src = Real2Phys(ds_readd(0x40cd));
-	dst = Real2Phys(ds_readd(0x40c1));
+	dst = Real2Phys(dst_dst);
 
 	draw_mouse_ptr_wrapper();
 
@@ -4334,7 +4336,7 @@ void refresh_screen()
 			ds_writed(0x40cd, ds_readd(0x47a3));
 			dst_x1 = 272;
 			dst_x2 = 303;
-			ds_writed(0x40c1, ds_readd(0x47d3));
+			dst_dst = ds_readd(0x47d3);
 
 			/* draw the head */
 			if (gen_page == 0) {
@@ -4349,7 +4351,7 @@ void refresh_screen()
 				do_draw_pic(0);
 			}
 
-			ds_writed(0x40c1, ds_readd(0x47cb));
+			dst_dst = ds_readd(0x47cb);
 
 		}
 
@@ -6634,7 +6636,7 @@ void intro()
 		dst_y1 = cnt2 + 60;
 		dst_x2 = 95;
 		dst_y2 = cnt1 + cnt2 + 59;
-		ds_writed(0x40c1, ds_readd(0x47d3));
+		dst_dst = ds_readd(0x47d3);
 		ds_writed(0x40cd, ds_readd(0x47d3));
 		do_draw_pic(0);
 
@@ -6651,7 +6653,7 @@ void intro()
 			dst_y1 = 150;
 			dst_x2 = 95;
 			dst_y2 = 159;
-			ds_writed(0x40c1, ds_readd(0x47d3));
+			dst_dst = ds_readd(0x47d3);
 			do_draw_pic(2);
 		}
 
@@ -6665,7 +6667,7 @@ void intro()
 		unkn2 = 60;
 		unkn3 = 95;
 		unkn4 = 159;
-		ds_writed(0x40c1, ds_readd(0x47cb));
+		dst_dst = ds_readd(0x47cb);
 		do_draw_pic(3);
 		cnt1++;
 		cnt2--;
@@ -6977,7 +6979,7 @@ void init_stuff()
 	/* number of menu tiles width */
 	menu_tiles = 3;
 
-	ds_writed(0x40c1, ds_readd(0x47cb));
+	dst_dst = ds_readd(0x47cb);
 }
 
 void *gen_alloc(unsigned long size)
