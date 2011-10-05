@@ -6526,33 +6526,30 @@ void choose_typus()
 
 void pal_fade_out(Bit8u *dst, Bit8u *src, Bit16u n)
 {
+	struct struct_color *d = (struct struct_color*)dst;
+	struct struct_color *s = (struct struct_color*)src;
 	Bit16u i;
 
 	for (i = 0; i < n; i++) {
-		if (host_readb(src + 3 * i) < host_readb(dst + 3 * i)) {
-			host_writeb(dst + 3 * i, host_readb(dst + 3 * i) - 1);
+		if (s[i].r < d[i].r) {
+			d[i].r--;
 		} else {
-			if (host_readb(src + i * 3) > host_readb(dst + i * 3))
-				host_writeb(dst + 3 * i,
-					host_readb(dst + 3 * i) + 1);
+			if (s[i].r > d[i].r)
+				d[i].r++;
 		}
 
-		if (host_readb(src + 3 * i + 1) < host_readb(dst + 3 * i + 1)) {
-			host_writeb(dst + 3 * i + 1,
-				host_readb(dst + 3 * i + 1) - 1);
+		if (s[i].g < d[i].g) {
+			d[i].g--;
 		} else {
-			if (host_readb(src + i * 3 + 1) > host_readb(dst + i * 3 + 1))
-				host_writeb(dst + 3 * i + 1,
-					host_readb(dst + 3 * i + 1) + 1);
+			if (s[i].g > d[i].g)
+				d[i].g++;
 		}
 
-		if (host_readb(src + 3 * i + 2) < host_readb(dst + 3 * i + 2)) {
-			host_writeb(dst + 3 * i + 2,
-				host_readb(dst + 3 * i + 2) - 1);
+		if (s[i].b < d[i].b) {
+			d[i].b--;
 		} else {
-			if (host_readb(src + i * 3 + 2) > host_readb(dst + i * 3 + 2))
-				host_writeb(dst + 3 * i + 2,
-					host_readb(dst + 3 * i + 2) + 1);
+			if (s[i].b > d[i].b)
+				d[i].b++;
 		}
 	}
 }
