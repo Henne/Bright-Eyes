@@ -2090,19 +2090,19 @@ void decomp_rle(Bit8u *dst, Bit8u *src, Bit16u y, Bit16u x,
 
 		while (j < width) {
 
-			val = host_readb(src++);
+			val = *src++;
 
 			if (val == 0x7f) {
-				n = host_readb(src++);
-				pix = host_readb(src++);
+				n = *src++;
+				pix = *src++;
 
 				if (pix != 0 || mode != 2)
 					for (k = 0; k <= n; k++)
-						host_writeb(dst_loc + j + k, pix);
+						dst_loc[j + k] = pix;
 				j += n;
 			} else {
 				if (val != 0 || mode != 2)
-					host_writeb(dst_loc + j, val);
+					dst_loc[j] = val;
 				j++;
 			}
 		}
@@ -2565,7 +2565,7 @@ signed int process_nvf(struct nvf_desc *nvf) {
 	short i;
 	signed char nvf_type;
 
-	nvf_type = host_readb(nvf->src);
+	nvf_type = *nvf->src;
 	va = nvf_type & 0x80;
 	nvf_type &= 0x7f;
 
@@ -2819,7 +2819,7 @@ void blit_smth3(PhysPt ptr, Bit16u v1, Bit16u v2) {
 
 	for (i = 0; i < v1; src += 8 - v2, ptr += 320, i++)
 		for (j = 0; j < v2; src++, j++)
-			mem_writeb_inline(ptr + j, host_readb(src));
+			mem_writeb_inline(ptr + j, *src);
 }
 
 /* static */
@@ -3070,8 +3070,7 @@ void fill_smth2(Bit8u* ptr) {
 		lp = MemBase + PhysMake(datseg, 0x45e1);
 
 	for (i = 0; i < 8; i++, lp += 8) {
-		lv = host_readb(ptr);
-		ptr++;
+		lv = *ptr++;
 		for (j = 0; j < 8; j++) {
 			if (!((0x80 >> j) & lv))
 				continue;
