@@ -1170,6 +1170,8 @@ static unsigned short upper_border;
 /* DS:0x40bf */
 static signed short level;
 
+/* DS:0x40c5 */
+static unsigned short dst_x1;
 /* DS:0x40c7 */
 static unsigned short dst_y1;
 /* DS:0x40c9 */
@@ -2752,7 +2754,7 @@ void do_draw_pic(Bit16u mode)
 	Bit16u d3, d4, w, h;
 	PhysPt dst, src;
 
-	x = ds_readw(0x40c5);
+	x = dst_x1;
 	y = dst_y1;
 	d1 = dst_x2;
 	d2 = dst_y2;
@@ -3653,7 +3655,7 @@ void change_head()
 
 	ds_writed(0x40cd, ds_readd(0x47a3));
 
-	ds_writew(0x40c5, 272);
+	dst_x1 = 272;
 	dst_x2 = 303;
 
 	if (gen_page == 0) {
@@ -4330,7 +4332,7 @@ void refresh_screen()
 			process_nvf(&nvf);
 
 			ds_writed(0x40cd, ds_readd(0x47a3));
-			ds_writew(0x40c5, 272);
+			dst_x1 = 272;
 			dst_x2 = 303;
 			ds_writed(0x40c1, ds_readd(0x47d3));
 
@@ -6615,7 +6617,7 @@ void intro()
 
 	/* glowing at the bottom */
 	for (i = 0; i < 4; i++) {
-		ds_writew(0x40c5, 112);
+		dst_x1 = 112;
 		dst_y1 = 140;
 		dst_x2 = 207;
 		dst_y2 = 149;
@@ -6628,7 +6630,7 @@ void intro()
 	i = 4;
 	in_key_ext = 0;
 	while (cnt1 <= 100 && in_key_ext == 0) {
-		ds_writew(0x40c5, 0);
+		dst_x1 = 0;
 		dst_y1 = cnt2 + 60;
 		dst_x2 = 95;
 		dst_y2 = cnt1 + cnt2 + 59;
@@ -6645,7 +6647,7 @@ void intro()
 			if (i == 8)
 				i = 4;
 
-			ds_writew(0x40c5, 0);
+			dst_x1 = 0;
 			dst_y1 = 150;
 			dst_x2 = 95;
 			dst_y2 = 159;
@@ -6653,7 +6655,7 @@ void intro()
 			do_draw_pic(2);
 		}
 
-		ds_writew(0x40c5, 112);
+		dst_x1 = 112;
 		dst_y1 = 50;
 		dst_x2 = 207;
 		dst_y2 = 149;
@@ -6702,7 +6704,7 @@ void intro()
 	set_palette(buffer_heads_dat + flen - 32*3, 0, 32);
 
 	/* draw the picture */
-	ds_writew(0x40c5, 60);
+	dst_x1 = 60;
 	dst_y1 = 50;
 	dst_x2 = 259;
 	dst_y2 = 149;
@@ -6736,7 +6738,7 @@ void intro()
 	set_palette((Bit8u*)pal_tmp, 0, 32);
 
 	/* draw DSALOGO.DAT */
-	ds_writew(0x40c5, 0);
+	dst_x1 = 0;
 	dst_y1 = 0;
 	dst_x2 = 319;
 	dst_y2 = 99;
@@ -6762,7 +6764,7 @@ void intro()
 	process_nvf(&nvf);
 
 	/* draw DSALOGO.DAT */
-	ds_writew(0x40c5, 10);
+	dst_x1 = 10;
 	dst_y1 = 110;
 	dst_x2 = 329;
 	dst_y2 = 159;
