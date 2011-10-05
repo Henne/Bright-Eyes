@@ -1158,6 +1158,8 @@ static char *texts[300];
 static unsigned short wo_var;
 /* DS:0x459d */
 static unsigned short in_key_ascii;
+/* DS:0x459f */
+static unsigned short in_key_ext;
 
 /* DS:0x4669 */
 static char cursor_bak[256];
@@ -1898,7 +1900,7 @@ void handle_input()
 	Bit16u si, i;
 
 	si = 0;
-	ds_writew(0x459f, 0);
+	in_key_ext = 0;
 	in_key_ascii = 0;
 
 	if (CD_bioskey(1)) {
@@ -1953,7 +1955,7 @@ void handle_input()
 		}
 	}
 	mouse_compare();
-	ds_writew(0x459f, si);
+	in_key_ext = si;
 }
 
 /* static */
@@ -2662,9 +2664,9 @@ void vsync_or_key(Bit16u val)
 
 	for (i = 0; i < val; i++) {
 		handle_input();
-		if (ds_readw(0x459f) || ds_readw(0x4599)) {
+		if (in_key_ext || ds_readw(0x4599)) {
 			ds_writew(0x4599, 0);
-			ds_writew(0x459f, 0x1c);
+			in_key_ext = 0x1c;
 			return;
 		}
 		wait_for_vsync();
@@ -3119,20 +3121,20 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 				ds_writew(0x4597, 0);
 			} else {
 				in_key_ascii = CD_bioskey(0);
-				ds_writew(0x459f, in_key_ascii >> 8);
+				in_key_ext = in_key_ascii >> 8;
 				in_key_ascii = in_key_ascii & 0xff;
 			}
-		} while (ds_readw(0x459f) == 0 && in_key_ascii == 0);
+		} while (in_key_ext == 0 && in_key_ascii == 0);
 
 		c = in_key_ascii;
 
 		if (c == 0xd)
 			continue;
 
-		if (ds_readw(0x459f) == 1) {
+		if (in_key_ext == 1) {
 			*dst = 0;
 			call_mouse();
-			ds_writew(0x459f, 0);
+			in_key_ext = 0;
 			return 1;
 		}
 		if (c == 8) {
@@ -3349,7 +3351,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 	text_x_end = v4;
 
 	ds_writew(0x4789, 0);
-	ds_writew(0x459f, 0);
+	in_key_ext = 0;
 
 	return retval;
 }
@@ -3506,26 +3508,26 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			r6 = di;
 		}
 		if (ds_readw(0x4599) != 0 ||
-			ds_readw(0x459f) == 1 ||
-			ds_readw(0x459f) == 0x51) {
+			in_key_ext == 1 ||
+			in_key_ext == 0x51) {
 			/* has the selection been canceled */
 			retval = -1;
 			r5 = 1;
 			ds_writew(0x4599, 0);
 		}
-		if (ds_readw(0x459f) == 0x1c) {
+		if (in_key_ext == 0x1c) {
 			/* has the return key been pressed */
 			retval = di;
 			r5 = 1;
 		}
-		if (ds_readw(0x459f) == 0x48) {
+		if (in_key_ext == 0x48) {
 			/* has the up key been pressed */
 			if (di == 1)
 				di = options;
 			else
 				di--;
 		}
-		if (ds_readw(0x459f) == 0x50) {
+		if (in_key_ext == 0x50) {
 			/* has the down key been pressed */
 			if (di == options)
 				di = 1;
@@ -3539,11 +3541,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		}
 		/* is this a bool radiobox ? */
 		if (bool_mode) {
-			if (ds_readw(0x459f) == 0x2c) {
+			if (in_key_ext == 0x2c) {
 				/* has the 'j' key been pressed */
 				retval = 1;
 				r5 = 1;
-			} else if (ds_readw(0x459f) == 0x31) {
+			} else if (in_key_ext == 0x31) {
 				/* has the 'n' key been pressed */
 				retval = 2;
 				r5 = 1;
@@ -3575,7 +3577,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	text_x = bak1;
 	text_y = bak2;
 	text_x_end = bak3;
-	ds_writew(0x459f, 0);
+	in_key_ext = 0;
 
 	return retval;
 }
@@ -3709,7 +3711,7 @@ void do_gen()
 		handle_input();
 		action_table = NULL;
 
-		if (ds_readw(0x4599) || ds_readw(0x459f) == 0x49) {
+		if (ds_readw(0x4599) || in_key_ext == 0x49) {
 			/* print the menu for each page */
 			switch(gen_page) {
 				case 0: {
@@ -3730,7 +3732,7 @@ void do_gen()
 							!gui_bool((Bit8u*)texts[0x34 /4])) {
 							si = 0;
 						}
-						ds_writew(0x459f, 0);
+						in_key_ext = 0;
 						switch (si) {
 							case 1: {
 								enter_name();
@@ -3800,13 +3802,13 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) == 0x60)
+		if (in_key_ext == 0x60)
 			change_sex();
 
-		if (ds_readw(0x459f) == 0x61)
+		if (in_key_ext == 0x61)
 			enter_name();
 
-		if (ds_readw(0x459f) == 0x48 && gen_page == 0) {
+		if (in_key_ext == 0x48 && gen_page == 0) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -3819,7 +3821,7 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) == 0x50 && gen_page == 0) {
+		if (in_key_ext == 0x50 && gen_page == 0) {
 			if (hero.typus == 0) {
 				infobox(texts[0x44 / 4], 0);
 			} else {
@@ -3832,7 +3834,7 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) == 0x4d && level != 1) {
+		if (in_key_ext == 0x4d && level != 1) {
 			if (hero.typus == 0) {
 				infobox(texts[0x120 / 4], 0);
 			} else {
@@ -3845,7 +3847,7 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) == 0x4b) {
+		if (in_key_ext == 0x4b) {
 			if ((Bit16s)gen_page > 0) {
 				ds_writew(0x11fe, 1);
 				gen_page--;
@@ -3861,9 +3863,9 @@ void do_gen()
 			}
 		}
 
-		if (ds_readw(0x459f) >= 2 && ds_readw(0x459f) <= 6 &&
+		if (in_key_ext >= 2 && in_key_ext <= 6 &&
 			level == 2 && hero.typus) {
-			switch (ds_readw(0x459f)) {
+			switch (in_key_ext) {
 				case 2: {
 					si = 0;
 					break;
@@ -6588,8 +6590,8 @@ void intro()
 
 	/* elevate the attic logo */
 	i = 4;
-	ds_writew(0x459f, 0);
-	while (cnt1 <= 100 && ds_readw(0x459f) == 0) {
+	in_key_ext = 0;
+	while (cnt1 <= 100 && in_key_ext == 0) {
 		ds_writew(0x40c5, 0);
 		ds_writew(0x40c7, cnt2 + 60);
 		ds_writew(0x40c9, 95);
@@ -6635,7 +6637,7 @@ void intro()
 			vsync_or_key(1);
 	}
 
-	if (ds_readw(0x459f) == 0)
+	if (in_key_ext == 0)
 		vsync_or_key(200);
 
 	/* load FANPRO.NVF */
