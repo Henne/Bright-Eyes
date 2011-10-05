@@ -1170,6 +1170,9 @@ static unsigned short upper_border;
 /* DS:0x40bf */
 static signed short level;
 
+/* DS:0x40cb */
+static unsigned short dst_y2;
+
 /* DS:0x40d1 */
 static unsigned short unkn1;
 /* DS:0x40d3 */
@@ -2748,7 +2751,7 @@ void do_draw_pic(Bit16u mode)
 	x = ds_readw(0x40c5);
 	y = ds_readw(0x40c7);
 	d1 = ds_readw(0x40c9);
-	d2 = ds_readw(0x40cb);
+	d2 = dst_y2;
 	v1 = unkn1;
 	v2 = unkn2;
 	d3 = unkn3;
@@ -3651,13 +3654,11 @@ void change_head()
 
 	if (gen_page == 0) {
 		ds_writew(0x40c7, 8);
-		ds_writew(0x40cb, 39);
+		dst_y2 = 39;
 		do_draw_pic(0);
 	} else if (gen_page > 4) {
 		ds_writew(0x40c7, 4);
-		ds_writew(0x40cb, 35);
-		ds_writew(0x40c7, 8);
-		ds_writew(0x40cb, 39);
+		dst_y2 = 35;
 		do_draw_pic(0);
 	}
 }
@@ -4333,12 +4334,12 @@ void refresh_screen()
 			if (gen_page == 0) {
 				/* on the base page */
 				ds_writew(0x40c7, 8);
-				ds_writew(0x40cb, 39);
+				dst_y2 =  39;
 				do_draw_pic(0);
 			} else if (gen_page > 4) {
 				/* on the spell pages */
 				ds_writew(0x40c7, 4);
-				ds_writew(0x40cb, 35);
+				dst_y2 = 35;
 				do_draw_pic(0);
 			}
 
@@ -6613,7 +6614,7 @@ void intro()
 		ds_writew(0x40c5, 112);
 		ds_writew(0x40c7, 140);
 		ds_writew(0x40c9, 207);
-		ds_writew(0x40cb, 149);
+		dst_y2 = 149;
 		ds_writed(0x40cd, ds_readd(0x47d3) + i * 960 + 9600);
 		do_draw_pic(0);
 		vsync_or_key(20);
@@ -6626,7 +6627,7 @@ void intro()
 		ds_writew(0x40c5, 0);
 		ds_writew(0x40c7, cnt2 + 60);
 		ds_writew(0x40c9, 95);
-		ds_writew(0x40cb, cnt1 + cnt2 + 59);
+		dst_y2 = cnt1 + cnt2 + 59;
 		ds_writed(0x40c1, ds_readd(0x47d3));
 		ds_writed(0x40cd, ds_readd(0x47d3));
 		do_draw_pic(0);
@@ -6643,7 +6644,7 @@ void intro()
 			ds_writew(0x40c5, 0);
 			ds_writew(0x40c7, 150);
 			ds_writew(0x40c9, 95);
-			ds_writew(0x40cb, 159);
+			dst_y2 = 159;
 			ds_writed(0x40c1, ds_readd(0x47d3));
 			do_draw_pic(2);
 		}
@@ -6651,7 +6652,7 @@ void intro()
 		ds_writew(0x40c5, 112);
 		ds_writew(0x40c7, 50);
 		ds_writew(0x40c9, 207);
-		ds_writew(0x40cb, 149);
+		dst_y2 = 149;
 		ds_writed(0x40cd, ds_readd(0x47d3));
 
 		unkn1 = 0;
@@ -6700,7 +6701,7 @@ void intro()
 	ds_writew(0x40c5, 60);
 	ds_writew(0x40c7, 50);
 	ds_writew(0x40c9, 259);
-	ds_writew(0x40cb, 149);
+	dst_y2 = 149;
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
 	vsync_or_key(200);
@@ -6734,7 +6735,7 @@ void intro()
 	ds_writew(0x40c5, 0);
 	ds_writew(0x40c7, 0);
 	ds_writew(0x40c9, 319);
-	ds_writew(0x40cb, 99);
+	dst_y2 = 99;
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
 
@@ -6760,7 +6761,7 @@ void intro()
 	ds_writew(0x40c5, 10);
 	ds_writew(0x40c7, 110);
 	ds_writew(0x40c9, 329);
-	ds_writew(0x40cb, 159);
+	dst_y2 = 159;
 	ds_writed(0x40cd, ds_readd(0x47d3));
 	do_draw_pic(0);
 
