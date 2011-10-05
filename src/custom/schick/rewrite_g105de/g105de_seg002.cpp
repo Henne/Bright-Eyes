@@ -23,10 +23,27 @@
 namespace G105de {
 
 /** Keyboard Constants */
+static const unsigned short KEY_ESC = 0x01;
+static const unsigned short KEY_1 = 0x02;
+static const unsigned short KEY_2 = 0x03;
+static const unsigned short KEY_3 = 0x04;
+static const unsigned short KEY_4 = 0x05;
+static const unsigned short KEY_5 = 0x06;
+
+static const unsigned short KEY_RET = 0x1c;
+
+static const unsigned short KEY_J = 0x24;
+static const unsigned short KEY_Y = 0x2c;
+static const unsigned short KEY_N = 0x31;
+
 static const unsigned short KEY_UP = 0x48;
 static const unsigned short KEY_LEFT = 0x4b;
 static const unsigned short KEY_RIGHT = 0x4d;
 static const unsigned short KEY_DOWN = 0x50;
+
+static const unsigned short KEY_PGUP = 0x49;
+static const unsigned short KEY_PGDOWN = 0x51;
+
 
 
 /**
@@ -1913,8 +1930,9 @@ void handle_input()
 		si = CD_bioskey(0);
 		in_key_ascii = si & 0xff;
 		si = si >> 8;
-		if (si == 0x24)
-			si = 0x2c;
+
+		if (si == KEY_J)
+			si = KEY_Y;
 
 		if ((in_key_ascii == 0x11) && !ds_readb(0x40b8)) {
 
@@ -2672,7 +2690,7 @@ void vsync_or_key(Bit16u val)
 		handle_input();
 		if (in_key_ext || ds_readw(0x4599)) {
 			ds_writew(0x4599, 0);
-			in_key_ext = 0x1c;
+			in_key_ext = KEY_RET;
 			return;
 		}
 		wait_for_vsync();
@@ -3137,7 +3155,7 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 		if (c == 0xd)
 			continue;
 
-		if (in_key_ext == 1) {
+		if (in_key_ext == KEY_ESC) {
 			*dst = 0;
 			call_mouse();
 			in_key_ext = 0;
@@ -3514,14 +3532,14 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 			r6 = di;
 		}
 		if (ds_readw(0x4599) != 0 ||
-			in_key_ext == 1 ||
-			in_key_ext == 0x51) {
+			in_key_ext == KEY_ESC ||
+			in_key_ext == KEY_PGDOWN) {
 			/* has the selection been canceled */
 			retval = -1;
 			r5 = 1;
 			ds_writew(0x4599, 0);
 		}
-		if (in_key_ext == 0x1c) {
+		if (in_key_ext == KEY_RET) {
 			/* has the return key been pressed */
 			retval = di;
 			r5 = 1;
@@ -3547,11 +3565,11 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 		}
 		/* is this a bool radiobox ? */
 		if (bool_mode) {
-			if (in_key_ext == 0x2c) {
+			if (in_key_ext == KEY_Y) {
 				/* has the 'j' key been pressed */
 				retval = 1;
 				r5 = 1;
-			} else if (in_key_ext == 0x31) {
+			} else if (in_key_ext == KEY_N) {
 				/* has the 'n' key been pressed */
 				retval = 2;
 				r5 = 1;
@@ -3717,7 +3735,7 @@ void do_gen()
 		handle_input();
 		action_table = NULL;
 
-		if (ds_readw(0x4599) || in_key_ext == 0x49) {
+		if (ds_readw(0x4599) || in_key_ext == KEY_PGUP) {
 			/* print the menu for each page */
 			switch(gen_page) {
 				case 0: {
@@ -3869,22 +3887,22 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext >= 2 && in_key_ext <= 6 &&
+		if (in_key_ext >= KEY_1 && in_key_ext <= KEY_5 &&
 			level == 2 && hero.typus) {
 			switch (in_key_ext) {
-				case 2: {
+				case KEY_1: {
 					si = 0;
 					break;
 				}
-				case 3: {
+				case KEY_2: {
 					si = 1;
 					break;
 				}
-				case 4: {
+				case KEY_3: {
 					si = 4;
 					break;
 				}
-				case 5: {
+				case KEY_4: {
 					si = 5;
 					break;
 				}
