@@ -15,6 +15,7 @@
 #define TEXT_LTX	(0xc3b5)
 #define CHESSBOARD	(0xd852)
 #define ITEMSDAT	(0xe22b)
+#define ITEMSNAME	(0xe22f)
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 
@@ -56,4 +57,10 @@ static inline void set_cb_val(unsigned short x, unsigned short y, signed char va
 
 static inline Bit8u *get_itemsdat(unsigned short item) {
 	return MemBase + Real2Phys(ds_readd(ITEMSDAT)) + item * 12;
+}
+
+static inline char* get_itemname(unsigned short item) {
+	PhysPt iptr = Real2Phys(ds_readd(ITEMSNAME));
+
+	return (char*)MemBase + Real2Phys(mem_readd(iptr + item * 4));
 }

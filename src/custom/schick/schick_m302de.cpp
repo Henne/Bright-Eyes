@@ -48,12 +48,6 @@ using namespace M302de;
 /* dice table */
 static char dice_tab[4] = {6, 20, 3, 4};
 
-static char* schick_getItemname(unsigned short item) {
-	PhysPt iptr = Real2Phys(ds_readd(0xe22f));
-
-	return (char*)MemBase + Real2Phys(mem_readd(iptr + item * 4));
-}
-
 static SDL_TimerID irq_timer;
 /* buffer for seed2 code */
 static char irq_bak[17];
@@ -1319,7 +1313,7 @@ static int seg002(unsigned short offs) {
 
 		D1_LOG("get_item_pos(%s, %s = (0x%d)) = %d\n",
 					schick_getCharname(hero),
-					schick_getItemname(item),
+					get_itemname(item),
 					item, (short)reg_ax);
 		return 1;
 	}
@@ -1329,7 +1323,7 @@ static int seg002(unsigned short offs) {
 
 		reg_ax = get_first_hero_with_item(item);
 		D1_LOG("get_first_hero_with_item(%s = (%d)) = %d\n",
-			schick_getItemname(item), item, (signed short)reg_ax);
+			get_itemname(item), item, (signed short)reg_ax);
 
 		return 1;
 	}
@@ -3786,7 +3780,7 @@ static int seg105(unsigned short offs) {
 
 			D1_LOG("unequip(%s, %s=%d, %d);\n",
 				schick_getCharname(hero),
-				schick_getItemname(item), item, val);
+				get_itemname(item), item, val);
 
 			unequip(Real2Host(hero), item, val);
 
@@ -3813,7 +3807,7 @@ static int seg105(unsigned short offs) {
 			reg_ax = can_hero_use_item(Real2Host(hero), item);
 			D1_LOG("can_hero_use_item(%s, %s); = %d\n",
 				schick_getCharname(hero),
-				schick_getItemname(item), reg_ax);
+				get_itemname(item), reg_ax);
 
 			return 1;
 		}
@@ -3826,7 +3820,7 @@ static int seg105(unsigned short offs) {
 			reg_ax = can_item_at_pos(item, pos);
 
 			D1_LOG("can_item_at_pos(%s=%d, %d); = %d\n",
-				schick_getItemname(item), item, pos, reg_ax);
+				get_itemname(item), item, pos, reg_ax);
 
 			return 1;
 		}
@@ -3842,7 +3836,7 @@ static int seg105(unsigned short offs) {
 			reg_ax = hero_count_item(Real2Host(hero), item);
 			D1_INFO("far hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
-				schick_getItemname(item), reg_ax);
+				get_itemname(item), reg_ax);
 
 			return 1;
 		}
@@ -3852,7 +3846,7 @@ static int seg105(unsigned short offs) {
 
 			reg_ax = group_count_item(item);
 			D1_INFO("group_count_item(%s) = %d\n",
-				schick_getItemname(item), reg_ax);
+				get_itemname(item), reg_ax);
 
 			return 1;
 		}
@@ -4386,7 +4380,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			reg_ax = get_first_hero_with_item_in_group(item, group);
 			D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
-				schick_getItemname(item), item, group,
+				get_itemname(item), item, group,
 				(short)reg_ax);
 
 			return 1;
@@ -5195,7 +5189,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			D1_LOG("unequip(%s, %s, %d);\n",
 				schick_getCharname(hero),
-				schick_getItemname(item), pos);
+				get_itemname(item), pos);
 			unequip(Real2Host(hero), item, pos);
 
 			return 1;
@@ -5210,7 +5204,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			reg_ax = has_hero_stacked(Real2Host(hero), item);
 			D1_LOG("has_hero_stacked(%s, %s) = %d\n",
 				schick_getCharname(hero),
-				schick_getItemname(item), (signed short)reg_ax)
+				get_itemname(item), (signed short)reg_ax)
 ;
 			return 1;
 		}
@@ -5224,7 +5218,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			reg_ax = item_pleasing_ingerimm(item);
 			D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
-				schick_getItemname(item), reg_ax);
+				get_itemname(item), reg_ax);
 
 			return 1;
 		}
@@ -5241,7 +5235,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			reg_ax = hero_count_item(Real2Host(hero), item);
 			D1_INFO("hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
-				schick_getItemname(item), reg_ax)
+				get_itemname(item), reg_ax)
 ;
 			return 1;
 		}
