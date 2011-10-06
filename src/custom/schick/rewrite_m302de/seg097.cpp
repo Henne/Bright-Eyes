@@ -52,7 +52,7 @@ char GUI_lookup_char_height(char c, unsigned short *p) {
 void GUI_1c2(unsigned short v1, unsigned short v2, RealPt v3) {
 
 	GUI_blank_char();
-	GUI_font_to_buf(MemBase + Real2Phys(ds_readd(0xd2bd + v1 * 8)));
+	GUI_font_to_buf(Real2Host(ds_readd(0xd2bd + v1 * 8)));
 	GUI_write_char_to_screen(v3, 8, v2);
 }
 

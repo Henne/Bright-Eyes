@@ -15,7 +15,7 @@
 namespace M302de {
 
 short seg098_3e() {
-	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe5bc));
+	Bit8u *ptr = Real2Host(ds_readd(0xe5bc));
 	signed char tmp = host_readb(ptr + 0x86);
 
 	if (tmp < 10) {
