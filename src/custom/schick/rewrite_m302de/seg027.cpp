@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 1/8
+	Functions rewritten: 2/8
 */
 
 #include "schick.h"
@@ -92,6 +92,34 @@ void load_pp20(Bit16u index)
 
 		bc_close(fd);
 	}
+}
+
+void load_scenario(signed short nr)
+{
+	unsigned short fd;
+	signed short n;
+	char buf[2];
+
+	n = nr;
+
+	/* load SCENARIO.LST */
+	fd = load_archive_file(0xc8);
+
+	/* read the first two bytes == nr of scenarios */
+	read_archive_file(fd, (Bit8u*)buf, 2);
+
+	/* check if scenario nr is valid */
+	if ((host_readw((Bit8u*)buf) < n) || (n < 1))
+		nr = 1;
+
+	/* seek to the scenario */
+	seg002_0c72(fd, (n - 1) * 621 + 2);
+
+	/* read scenario */
+	read_archive_file(fd, Real2Host(ds_readd(0xbd2c)), 621);
+
+	/* close archive */
+	bc_close(fd);
 }
 
 }

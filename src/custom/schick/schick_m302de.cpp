@@ -2433,6 +2433,15 @@ static int seg027(unsigned short offs) {
 			D1_LOG("ANI %02d angefordert\n", ani);
 			return 0;
 		}
+		case 0x34: {
+			Bit16s nr = CPU_Pop16();
+
+			D1_LOG("load_scenario(0x%02x);\n", nr);
+			load_scenario(nr);
+
+			CPU_Push16(nr);
+			return 1;
+		}
 	default:
 		return 0;
 	}
