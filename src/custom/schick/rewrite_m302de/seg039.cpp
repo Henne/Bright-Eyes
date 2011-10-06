@@ -63,7 +63,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	unsigned short i;
 
 	/* calculate the pointers */
-	temp = MemBase + Real2Phys(ds_readd(0xe125)) + enemy_id * 44;
+	temp = Real2Host(ds_readd(0xe125)) + enemy_id * 44;
 	sheet = MemBase + PhysMake(datseg, 0xd34b) + sheet_nr * 62;
 
 	/* erease the sheet */
@@ -150,7 +150,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 
 	/* set to ? */
 	host_writeb(sheet + 0x27,
-		host_readb(MemBase + Real2Phys(ds_readd(0xbd28)) + sheet_nr * 5 + 0x19));
+		host_readb(Real2Host(ds_readd(0xbd28)) + sheet_nr * 5 + 0x19));
 
 	/* copy number of ammo */
 	host_writeb(sheet + 0x37, host_readb(temp + 0x25));

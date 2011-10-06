@@ -73,7 +73,7 @@ RealPt FIG_get_hero_ptr(unsigned short v1) {
 	unsigned short i;
 
 	for (i = 0; i <= 6; i++)
-		if (mem_readb(Real2Phys(heros) + i * 0x6da + 0x81) == v1)
+		if (host_readb(Real2Host(heros) + i * 0x6da + 0x81) == v1)
 			return heros + i * 0x6da;
 	return heros;
 }
@@ -90,12 +90,12 @@ RealPt seg006_033c(short v) {
 }
 
 void FIG_set_0e(signed char id, signed char val) {
-	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
+	Bit8u *ptr = Real2Host(ds_readd(0xe108));
 
 	while (host_readb(ptr + 0x10) != id) {
 		if (host_readd(ptr + 0x1b) == 0)
 			return;
-		ptr = MemBase + Real2Phys(host_readd(ptr + 0x1b));
+		ptr = Real2Host(host_readd(ptr + 0x1b));
 	}
 	host_writeb(ptr + 0x0e, val);
 	host_writeb(ptr + 0x12, 1);
@@ -105,22 +105,22 @@ void FIG_set_0e(signed char id, signed char val) {
 void FIG_reset_12_13(signed char id) {
 	Bit8u *ptr1, *ptr2;
 
-	ptr1 = MemBase + Real2Phys(ds_readd(0xe108));
+	ptr1 = Real2Host(ds_readd(0xe108));
 
 	while (host_readb(ptr1 + 0x10) != id) {
 		if (host_readd(ptr1 + 0x1b) == 0)
 			return;
-		ptr1 = MemBase + Real2Phys(host_readd(ptr1 + 0x1b));
+		ptr1 = Real2Host(host_readd(ptr1 + 0x1b));
 	}
 	host_writeb(ptr1 + 0x12, 0);
 
 	if (host_readb(ptr1 + 0x13) == 0xff)
 		return;
 
-	ptr2 = MemBase + Real2Phys(ds_readd(0xe108));
+	ptr2 = Real2Host(ds_readd(0xe108));
 
 	while (ds_readb(0xe35a + host_readb(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
-		ptr2 = MemBase + Real2Phys(host_readd(ptr2 + 0x1b));
+		ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
 	}
 	host_writeb(ptr2 + 0x12, 0);
 }
@@ -128,33 +128,33 @@ void FIG_reset_12_13(signed char id) {
 void FIG_set_12_13(signed char id) {
 	Bit8u *ptr1, *ptr2;
 
-	ptr1 = MemBase + Real2Phys(ds_readd(0xe108));
+	ptr1 = Real2Host(ds_readd(0xe108));
 
 	while (host_readb(ptr1 + 0x10) != id) {
 		if (host_readd(ptr1 + 0x1b) == 0)
 			return;
-		ptr1 = MemBase + Real2Phys(host_readd(ptr1 + 0x1b));
+		ptr1 = Real2Host(host_readd(ptr1 + 0x1b));
 	}
 	host_writeb(ptr1 + 0x12, 1);
 
 	if (host_readb(ptr1 + 0x13) == 0xff)
 		return;
 
-	ptr2 = MemBase + Real2Phys(ds_readd(0xe108));
+	ptr2 = Real2Host(ds_readd(0xe108));
 
 	while (ds_readb(0xe35a + host_readb(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
-		ptr2 = MemBase + Real2Phys(host_readd(ptr2 + 0x1b));
+		ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
 	}
 	host_writeb(ptr2 + 0x12, 1);
 }
 
 void FIG_set_0f(signed char id, signed char val) {
-	Bit8u *ptr = MemBase + Real2Phys(ds_readd(0xe108));
+	Bit8u *ptr = Real2Host(ds_readd(0xe108));
 
 	while (host_readb(ptr + 0x10) != id) {
 		if (host_readd(ptr + 0x1b) == 0)
 			return;
-		ptr = MemBase + Real2Phys(host_readd(ptr + 0x1b));
+		ptr = Real2Host(host_readd(ptr + 0x1b));
 	}
 	host_writeb(ptr + 0x0f, val);
 }
@@ -218,7 +218,7 @@ signed char FIG_add_to_list(signed char v) {
 
 		ds_writed(0xe108, ds_readd(0xe37c));
 
-		fls = MemBase + Real2Phys(ds_readd(0xe108));
+		fls = Real2Host(ds_readd(0xe108));
 
 		memcpy(fls, MemBase + PhysMake(datseg, 0xe066), 35);
 
@@ -237,12 +237,12 @@ signed char FIG_add_to_list(signed char v) {
 		p1 += 35;
 	}
 
-	memcpy(MemBase + Real2Phys(p1), MemBase + PhysMake(datseg, 0xe066), 35);
+	memcpy(Real2Host(p1), MemBase + PhysMake(datseg, 0xe066), 35);
 
 	if (v == -1)
-		host_writeb(MemBase + Real2Phys(p1) + 0x10, FIG_set_array());
+		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
 	else
-		host_writeb(MemBase + Real2Phys(p1) + 0x10, v);
+		host_writeb(Real2Host(p1) + 0x10, v);
 
 	p2 = ds_readd(0xe108);
 
