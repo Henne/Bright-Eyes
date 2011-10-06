@@ -3563,11 +3563,11 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x48: {
-		spell_blitz();
-		return 1;
+		return 0;
 	}
 	case 0x4d: {
-		return 0;
+		spell_blitz();
+		return 1;
 	}
 	case 0x52: {
 		return 0;
