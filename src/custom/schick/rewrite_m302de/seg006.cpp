@@ -233,7 +233,7 @@ signed char FIG_add_to_list(signed char v) {
 		return host_readb(fls + 0x10);
 	}
 
-	while ((signed char)mem_readb(Real2Phys(p1) + 0x10) != -1) {
+	while ((signed char)host_readb(Real2Host(p1) + 0x10) != -1) {
 		p1 += 35;
 	}
 
@@ -254,45 +254,45 @@ signed char FIG_add_to_list(signed char v) {
 		(signed char)mem_readb(Real2Phys(p2) + 4) != y ||
 		(signed char)mem_readb(Real2Phys(p2) + 0x11) <= (signed char)ds_readb(0xe077))
 				/* p2 = p2->next */
-			 ; p2 = mem_readd(Real2Phys(p2) + 0x1b)) {
+			 ; p2 = host_readd(Real2Host(p2) + 0x1b)) {
 
 			/* p2->next != NULL */
-			if (mem_readd(Real2Phys(p2) + 0x1b) != 0)
+			if (host_readd(Real2Host(p2) + 0x1b) != 0)
 				continue;
 
 			/* append to end of the list */
 
 			/* p2->next = p1 */
-			mem_writed(Real2Phys(p2) + 0x1b, p1);
+			host_writed(Real2Host(p2) + 0x1b, p1);
 			/* p1->prev = p2 */
-			mem_writed(Real2Phys(p1) + 0x1f, p2);
+			host_writed(Real2Host(p1) + 0x1f, p2);
 			/* p1->next = NULL */
-			mem_writed(Real2Phys(p1) + 0x1b, 0);
+			host_writed(Real2Host(p1) + 0x1b, 0);
 
 			D1_LOG("\tlist appended x = %d, y = %d\n", x, y);
 
-			return mem_readb(Real2Phys(p1) + 0x10);
+			return host_readb(Real2Host(p1) + 0x10);
 		}
 
 	/* p1->prev = p2->prev; */
-	mem_writed(Real2Phys(p1) + 0x1f, mem_readd(Real2Phys(p2) + 0x1f));
+	host_writed(Real2Host(p1) + 0x1f, host_readd(Real2Host(p2) + 0x1f));
 
 	/* if (p2->prev) */
-	if (mem_readd(Real2Phys(p2) + 0x1f) != 0)
+	if (host_readd(Real2Host(p2) + 0x1f) != 0)
 		/* p2->prev->next = p1 */
-		mem_writed(Real2Phys(mem_readd(Real2Phys(p2) + 0x1f)) + 0x1b, p1);
+		host_writed(Real2Host(host_readd(Real2Host(p2) + 0x1f)) + 0x1b, p1);
 	else
 		/* FIG_list_start = p1 */
 		ds_writed(0xe108, p1);
 
 	/* p2->prev = p1 */
-	mem_writed(Real2Phys(p2) + 0x1f, p1);
+	host_writed(Real2Host(p2) + 0x1f, p1);
 	/* p1->next = p2 */
-	mem_writed(Real2Phys(p1) + 0x1b, p2);
+	host_writed(Real2Host(p1) + 0x1b, p2);
 
 	D1_LOG("\tlist insert x = %d, y = %d\n", x, y);
 
-	return mem_readb(Real2Phys(p1) + 0x10);
+	return host_readb(Real2Host(p1) + 0x10);
 }
 
 /**
