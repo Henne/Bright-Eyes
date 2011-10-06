@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten 1/13
+ *	Functions rewritten 2/13
  *
 */
 
@@ -30,6 +30,23 @@ void thorwal_botschaft()
 		GUI_input(get_city(0x110), 0);
 	else
 		GUI_input(get_city(0x114), 0);
+}
+
+void thorwal_mueller()
+{
+	if (GUI_bool(get_city(0x40)) == 1) {
+
+		if(ds_readw(0x3354) == 0) {
+			/* first_visit */
+			GUI_output(get_city(0x44));
+		} else {
+			/* after the first_visit */
+			GUI_output(get_city(0x48));
+		}
+
+		/* mark the miller as visited */
+		ds_writew(0x3354, 1);
+	}
 }
 
 }

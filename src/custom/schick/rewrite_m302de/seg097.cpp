@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 12/16
+ *      Functions rewritten 13/16
  *
- *      Functions called rewritten 11/13
+ *      Functions called rewritten 12/13
  *      Functions uncalled rewritten 1/3
 */
 
@@ -12,6 +12,7 @@
 #include <ctype.h>
 
 #include "schick.h"
+#include "v302de.h"
 
 #include "seg000.h"
 #include "seg001.h"
@@ -334,6 +335,22 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 
 	return retval;
 }
+
+signed short GUI_bool(Bit8u *text)
+{
+	signed short ret_radio;
+
+	ds_writew(0xac0b, 1);
+
+	ret_radio = GUI_radio(text, 2, get_ltx(0x08), get_ltx(0x0c));
+	ds_writew(0xac0b, 0);
+
+	if (ret_radio == 1)
+		return 1;
+	else
+		return 0;
+}
+
 
 //0x7f4
 ///static

@@ -3025,7 +3025,8 @@ static int seg068(unsigned short offs)
 		}
 		case 0x3e: {
 			D1_LOG("thorwal_mueller();\n");
-			return 0;
+			thorwal_mueller();
+			return 1;
 		}
 		case 0x43: {
 			D1_LOG("thorwal_swafnir();\n");
@@ -3378,8 +3379,10 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		strncpy(buffer, getString(ptr), 20);
-		D1_LOG("GUI_AskBool(%s...)\n", buffer);
-		return 0;
+		reg_ax = GUI_bool(Real2Host(ptr));
+		D1_LOG("GUI_bool(%s...) = %d\n", buffer, reg_ax);
+
+		return 1;
 	}
 	case 0x43: {
 		RealPt text = CPU_Pop32();
