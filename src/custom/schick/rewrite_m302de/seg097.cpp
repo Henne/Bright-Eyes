@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 9/16
+ *      Functions rewritten 12/16
  *
- *      Functions called rewritten 10/13
+ *      Functions called rewritten 11/13
  *      Functions uncalled rewritten 1/3
 */
 
@@ -612,6 +612,90 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 	ds_writew(0xe5ac, 0);
 
 	return retval;
+}
+
+signed short GUI_radio(Bit8u *text, signed char options, ...)
+{
+	va_list arguments;
+	char *str;
+	Bit16s l3, l4, l5, l6;
+	signed short fg_bak, bg_bak;
+	Bit16s l7, l8, l9, l10, l11;
+	signed short retval;
+	Bit16s l12;
+	Bit16s i, l_di;
+
+	l12 = ds_readw(0xc3cb);
+	ds_writew(0xc3cb, 0);
+
+	if (options == 0) {
+		GUI_output(text);
+		return 0;
+	}
+
+
+	ds_writeb(0x2c98, 1);
+	l7 = ds_readw(0xd2d9);
+	l8 = ds_readw(0xd2d7);
+	l9 = ds_readw(0xd2d5);
+
+	l11 = ds_readw(0xbffd) * 32 + 32;
+	ds_writew(0xbfff, (320 - l11) / 2 + ds_readw(0x2ca2));
+	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
+	ds_writew(0xd2d5, l11 - 8);
+
+	l10 = ds_readw(0xd313);
+	ds_writew(0xd313, ds_readw(0xd2d9) + ds_readw(0xd2d5) - 24);
+
+	l_di = GUI_count_lines(text);
+	l5 = options + l_di;
+	l6 = (l5 + 2) * 8;
+	ds_writew(0xc001, (200 - l6 + 2) / 2 + ds_readw(0x2ca4));
+	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
+
+	update_mouse_cursor();
+	GUI_get_smth(&fg_bak, &bg_bak);
+
+	GUI_draw_radio_bg(l_di, options, l11, l6);
+
+	if (l_di != 0)
+		GUI_print_header(text);
+
+	l3 = ds_readw(0xd2d9) + 8;
+	l4 = (l_di + 1) * 8 + ds_readw(0xc001);
+
+	va_start(arguments, options);
+	for (i = 0; i < options; l4 += 8, i++) {
+
+		/* highlight special option */
+		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
+			GUI_set_smth(0xc9, 0xdf);
+
+		str = va_arg(arguments, char*);
+		GUI_print_string((Bit8u*)str, l3, l4);
+
+		/* reset highlight special option */
+		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
+			GUI_set_smth(0xdf, 0xff);
+	}
+
+	retval = GUI_menu_input(options, l_di + 1, l11);
+
+	GUI_copy_smth(l11, l6);
+	refresh_screen_size();
+	GUI_set_smth(fg_bak, bg_bak);
+
+	ds_writew(0xd2d9, l7);
+	ds_writew(0xd2d7, l8);
+	ds_writew(0xd2d5, l9);
+	ds_writew(0xd313, l10);
+	ds_writeb(0x2c98, 0);
+
+	ds_writew(0xc3d9, 0);
+	ds_writew(0xc3cb, l12);
+
+	return retval;
+	/* TODO: 0xe48 - 0xf36 */
 }
 
 /**
