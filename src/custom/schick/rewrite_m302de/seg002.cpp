@@ -1988,7 +1988,7 @@ void add_hero_ap(Bit8u *hero, int ap) {
  */
 void add_group_ap(signed int ap) {
 
-	PhysPt hero_i;
+	Bit8u *hero_i;
 	unsigned short i;
 
 	if (ap < 0)
@@ -1996,20 +1996,20 @@ void add_group_ap(signed int ap) {
 
 	ap = ap / count_heroes_in_group();
 
-	hero_i = Real2Phys(ds_readd(HEROS));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
-		if (mem_readb(hero_i + 0x21) == 0)
+		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (mem_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check if hero is dead */
-		if (mem_readb(hero_i + 0xaa) & 1)
+		if (host_readb(hero_i + 0xaa) & 1)
 			continue;
 
-		add_hero_ap(MemBase + hero_i, ap);
+		add_hero_ap(hero_i, ap);
 	}
 }
 
