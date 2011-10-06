@@ -44,6 +44,8 @@ static const unsigned short KEY_DOWN = 0x50;
 static const unsigned short KEY_PGUP = 0x49;
 static const unsigned short KEY_PGDOWN = 0x51;
 
+static const unsigned short KEY_CTRL_F3 = 0x60;
+static const unsigned short KEY_CTRL_F4 = 0x61;
 
 
 /**
@@ -821,8 +823,8 @@ static Bit8u *action_table;
 /* DS:0x127a */
 static const struct mouse_action action_base[9] = {
 			{ 272, 8, 304, 41, 0xfd},	/* credits */
-			{ 305, 7, 319, 21, 0x60},	/* change sex */
-			{ 145, 13, 175, 21, 0x61},	/* enter name */
+			{ 305, 7, 319, 21, KEY_CTRL_F3},	/* change sex */
+			{ 145, 13, 175, 21, KEY_CTRL_F4},	/* enter name */
 			{ 271, 42, 286, 56, KEY_UP},	/* previous head */
 			{ 288, 42, 303, 56, KEY_DOWN},	/* next head */
 			{ 145, 178, 164, 192, KEY_LEFT},	/* previous page */
@@ -3860,10 +3862,10 @@ void do_gen()
 			}
 		}
 
-		if (in_key_ext == 0x60)
+		if (in_key_ext == KEY_CTRL_F3)
 			change_sex();
 
-		if (in_key_ext == 0x61)
+		if (in_key_ext == KEY_CTRL_F4)
 			enter_name();
 
 		if (in_key_ext == KEY_UP && gen_page == 0) {
