@@ -1,4 +1,6 @@
 namespace M302de {
+//0x25
+void thorwal_imman();
 //0x2a
 void thorwal_botschaft();
 
