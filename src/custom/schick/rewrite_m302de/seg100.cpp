@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 7/20
+ *	Functions rewritten 8/20
  *
 */
 
@@ -100,6 +100,44 @@ void spell_blitz()
 			(char*)get_dtp(0x154),
 			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
 	}
+}
+
+void spell_ecliptifactus()
+{
+	signed short rounds;
+	unsigned short ae;
+
+	/* ask how many rounds */
+	rounds = GUI_input(get_dtp(0x15c), 1);
+
+	if (rounds != -1) {
+
+		/* calculate the AE costs */
+		ae = rounds * 2 + 5;
+
+		if (host_readw(get_spelluser() + 0x64) >= ae) {
+			/* set AP costs */
+			ds_writew(0xac0e, ae);
+			/* enable the spell */
+			host_writeb(get_spelluser() + 0x97, rounds + 1);
+			/* prepare the message */
+			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				(char*)get_dtp(0x160),
+				(char*)(get_spelluser() + 0x10),
+				(char*)Real2Host(GUI_get_ptr(host_readb(get_spelluser() + 0x22), 3)),
+				rounds);
+		} else {
+			/* prepare the message */
+			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				(char*)get_ltx(0x97e),
+				(char*)get_spelluser() + 0x10);
+			/* set costs to 0 */
+			ds_writew(0xac0e, 0);
+		}
+	} else {
+		ds_writew(0xac0e, -2);
+	}
+
 }
 
 

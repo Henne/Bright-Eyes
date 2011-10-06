@@ -12,8 +12,10 @@ void spell_duplicatus();
 void spell_harmlos();
 
 /* Combat / Kampf */
-//0x48
+//0x4d
 void spell_blitz();
+//0x52
+void spell_ecliptifactus();
 
 /* Communication / Verstaendigung */
 //0x7a

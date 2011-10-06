@@ -3570,7 +3570,8 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x52: {
-		return 0;
+		spell_ecliptifactus();
+		return 1;
 	}
 	case 0x57: {
 		return 0;
