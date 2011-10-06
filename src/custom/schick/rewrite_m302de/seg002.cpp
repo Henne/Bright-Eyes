@@ -133,8 +133,8 @@ signed int process_nvf(Bit8u *nvf) {
 	d.p_width = host_readd(nvf+11);
 	d.p_height = host_readd(nvf+15);
 
-	Bit8u *p = MemBase + Real2Phys(d.src);
-	dst = MemBase + Real2Phys(d.dst);
+	Bit8u *p = Real2Host(d.src);
+	dst = Real2Host(d.dst);
 
 	nvf_type = host_readb(p);
 	va = nvf_type & 0x80;
@@ -211,7 +211,7 @@ signed int process_nvf(Bit8u *nvf) {
 	case 2: case 3: case 4: case 5:
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
-			MemBase + Real2Phys(ds_readd(0xd2eb)), d.type);
+			Real2Host(ds_readd(0xd2eb)), d.type);
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
 			on a Debug build, so we fix this for debuggings sake */
@@ -221,7 +221,7 @@ signed int process_nvf(Bit8u *nvf) {
 
 	default:
 		/* No decompression, just copy */
-		memmove(MemBase + Real2Phys(d.dst), src, (short)p_size);
+		memmove(Real2Host(d.dst), src, (short)p_size);
 		retval = p_size;
 	}
 
@@ -2160,16 +2160,16 @@ RealPt get_first_hero_available_in_group() {
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
-		if (mem_readb(Real2Phys(hero_i) + 0x21) == 0)
+		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
 			continue;
 		/* Check group */
-		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(0x2d35))
+		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check dead BOGUS */
-		if (mem_readb(Real2Phys(hero_i) + 0xaa) & 1)
+		if (host_readb(Real2Host(hero_i) + 0xaa) & 1)
 			continue;
 		/* Check if hero is available */
-		if (check_hero(MemBase + Real2Phys(hero_i)) == 0)
+		if (check_hero(Real2Host(hero_i)) == 0)
 			continue;
 
 		return hero_i;
@@ -2187,13 +2187,13 @@ RealPt get_second_hero_available_in_group() {
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
-		if (mem_readb(Real2Phys(hero_i) + 0x21) == 0)
+		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
 			continue;
 		/* Check group */
-		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(0x2d35))
+		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check if hero is available */
-		if (check_hero(MemBase + Real2Phys(hero_i)) == 0)
+		if (check_hero(Real2Host(hero_i)) == 0)
 			continue;
 
 		if (tmp)
