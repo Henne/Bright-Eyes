@@ -1,16 +1,19 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 8/14
+ *      Functions rewritten 9/14
  *
- *      Functions called rewritten 7/13
+ *      Functions called rewritten 8/13
  *      Functions uncalled rewritten 1/1
 */
 
+#include <string.h>
 #include "schick.h"
 
 #include "v302de.h"
 
 #include "seg007.h"
+#include "seg096.h"
+#include "seg097.h"
 
 namespace M302de {
 
@@ -216,6 +219,128 @@ unsigned short item_pleasing_ingerimm(unsigned short item) {
 		return 0;
 
 	return 1;
+}
+
+/**
+ *	drop_item()	-	tries to drop an item
+ *	@hero:		pointer to the hero
+ *	@pos:		position of the item to be dropped
+ *	@nr:		number of stacked items to be dropped / -1 to ask
+ *
+ *	returns true if the item has been dropped or false if not
+ *
+ *	TODO: This function can be tuned a bit
+ */
+unsigned short drop_item(Bit8u *hero, unsigned short pos, signed short nr)
+{
+
+	Bit8u *p_item;
+	signed short answer;
+	unsigned short retval;
+	unsigned short item;
+
+	retval = 0;
+
+	item = host_readw(hero + 0x196 + pos * 14);
+
+	/* check if that item is valid */
+	if (item == 0)
+		return retval;
+
+	p_item = get_itemsdat(item);
+
+	if ((host_readb(p_item + 2) >> 6) & 1) {
+		/* this item is not droppable */
+
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_ltx(0x718),
+			(char*)Real2Host(GUI_names_grammar(0x8002, item, 0)));
+
+		GUI_output(Real2Host(ds_readd(0xd2f3)));
+	} else {
+		/* this item is droppable */
+
+		if ((host_readb(p_item + 2) >> 4) & 1) {
+			if (nr == -1) {
+				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+					(char*)get_ltx(0x36c),
+					(char*)Real2Host(GUI_names_grammar(6, item, 0)));
+
+				do {
+					answer = GUI_input(Real2Host(ds_readd(0xd2f3)), 2);
+				} while (answer < 0);
+
+				nr = answer;
+			}
+
+			if (host_readw(hero + 0x196 + 2 + pos * 14) > nr) {
+				/* remove some stacked items */
+
+				/* adjust stack counter */
+				host_writew(hero + 0x196 + 2 + pos * 14,
+					host_readw(hero + 0x196 + 2 + pos * 14) - nr);
+				/* adjust weight */
+				host_writew(hero + 0x2d8,
+					host_readw(hero + 0x2d8) - host_readw(p_item + 5) * nr);
+			} else {
+				/* remove all stacked items */
+
+				/* adjust weight */
+				host_writew(hero + 0x2d8,
+					host_readw(hero + 0x2d8) -
+					host_readw(p_item + 5) * host_readw(hero + 0x196 + 2 + pos * 14));
+
+				/* decrement item counter */
+				host_writeb(hero + 0x20,
+					host_readw(hero + 0x20) - 1);
+
+				/* clear the inventory pos */
+				memset(hero + 0x196 + pos * 14, 0, 14);
+			}
+
+			retval = 1;
+		} else {
+			if (nr != -1 || GUI_bool(get_ltx(0x370)) == 1) {
+
+				/* check if item is equipped */
+				if (pos < 7)
+					unequip(hero, item, pos);
+
+				/* decrement item counter */
+				host_writeb(hero + 0x20,
+					host_readb(hero + 0x20) - 1);
+				/* subtract item weight */
+				host_writew(hero + 0x2d8,
+					host_readw(hero + 0x2d8) - host_readw(p_item + 5));
+				/* check special items */
+				/* item: SICHEL Pflanzenkunde -3 */
+				if (item == 0xa1)
+					host_writeb(hero + 0x125,
+						host_readb(hero + 0x125) - 3);
+				/* item:  AMULETT MR -5 */
+				if (item == 0xa3)
+					host_writeb(hero + 0x66,
+						host_readb(hero + 0x66) - 5);
+
+				/* clear the inventory pos */
+				memset(hero + 0x196 + pos * 14, 0, 14);
+				retval = 1;
+			}
+		}
+	}
+
+	/* check for the piratecave to bring efferd a gift */
+	if ((item == 0x66 || item == 0x61) && ds_readb(0x2d6e) == 0x0b &&
+		ds_readw(0x2d44) == 9 && ds_readw(0x2d46) == 9)
+		ds_writeb(0x415f, 1);
+
+	/* check for the mine in oberorken to bring ingerimm a gift */
+	if (item_pleasing_ingerimm(item) && ds_readb(0x2d6e) == 0x0c &&
+		ds_readw(0x2d44) == 2 && ds_readw(0x2d46) == 14 &&
+		ds_readb(0x2d75) == 1)
+		ds_writeb(0x3f9f, 1);
+
+	return retval;
 }
 
 /**

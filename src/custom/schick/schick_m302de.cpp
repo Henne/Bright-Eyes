@@ -3793,7 +3793,18 @@ static int seg105(unsigned short offs) {
 			return 0;
 		}
 		case 0x34: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			unsigned short pos = CPU_Pop16();
+			signed short nr = CPU_Pop16();
+			CPU_Push16(nr);
+			CPU_Push16(pos);
+			CPU_Push32(hero);
+
+			reg_ax = drop_item(Real2Host(hero), pos, nr);
+			D1_LOG("drop_item(%s, %d, %d); = %d\n",
+				schick_getCharname(hero), pos, nr, reg_ax);
+
+			return 1;
 		}
 		case 0x39: {
 			return 0;
@@ -5223,7 +5234,19 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x6d9: {
-			return 0;
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			unsigned short pos = CPU_Pop16();
+			signed short nr = CPU_Pop16();
+			CPU_Push16(nr);
+			CPU_Push16(pos);
+			CPU_Push32(hero);
+
+			reg_ax = drop_item(Real2Host(hero), pos, nr);
+			D1_LOG("drop_item(%s, %d, %d); = %d\n",
+				schick_getCharname(hero), pos, nr, reg_ax);
+
+			return 1;
 		}
 		case 0xada: {
 			CPU_Pop16();
