@@ -63,9 +63,9 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 
 
 	sprintf((char*)MemBase + PhysMake(datseg, 0xe50b + ds_readw(0xa9eb) *40),
-		(l2 == 0) ? (char*)MemBase + Real2Phys(ds_readd(0xa9e3)) : (char*)MemBase + Real2Phys(0xa9e7),
-		(char*)MemBase + Real2Phys(ds_readd(0xa917 + (host_readw(lp1 + ((((flag & 0x3000) - 1) >> 12) << 1)) << 2))),
-		(char*)MemBase + Real2Phys(GUI_name_plural(flag, MemBase + Real2Phys(p_name))));
+		(l2 == 0) ? (char*)Real2Host(ds_readd(0xa9e3)) : (char*)Real2Host(ds_readd(0xa9e7)),
+		(char*)Real2Host(ds_readd(0xa917 + (host_readw(lp1 + ((((flag & 0x3000) - 1) >> 12) << 1)) << 2))),
+		(char*)Real2Host(GUI_name_plural(flag, Real2Host(p_name))));
 
 	p_name = RealMake(datseg, ds_readw(0xa9eb) * 40 + 0xe50b);
 
