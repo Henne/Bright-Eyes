@@ -3591,7 +3591,9 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x4d: {
-		return 0;
+		D1_LOG("spell_grosse_ver();\n");
+		spell_grosse_ver();
+		return 1;
 	}
 	case 0x52: {
 		return 0;
