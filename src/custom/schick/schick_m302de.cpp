@@ -774,8 +774,18 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x0cb6:
-			return 0;
+	case 0x0cb6: {
+		Bit16u index = CPU_Pop16();
+
+		reg_ax = load_regular_file(index);
+
+		D1_LOG("load_regular_file(0x%x / %s) = %x\n",
+			index, get_fname(index), reg_ax);
+
+		CPU_Push16(index);
+
+		return 1;
+	}
 	case 0x0d27: {
 		Bit16u index = CPU_Pop16();
 

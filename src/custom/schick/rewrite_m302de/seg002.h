@@ -6,6 +6,7 @@ Bit16u open_and_seek_dat(unsigned short);
 unsigned int get_readlength2(signed short index);
 unsigned short read_archive_file(Bit16u, Bit8u *, Bit16u);
 void seg002_0c72(Bit16u, Bit32u);
+Bit16u load_regular_file(Bit16u);
 Bit16u load_archive_file(Bit16u);
 signed int process_nvf(Bit8u *p);
 //static

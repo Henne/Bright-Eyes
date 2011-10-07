@@ -103,6 +103,14 @@ void seg002_0c72(Bit16u handle, Bit32u off) {
 	bc_lseek(handle, ds_readd(0xbcdf) + off, DOS_SEEK_SET);
 }
 
+Bit16u load_regular_file(Bit16u index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0xcb6);
+	CPU_Pop16();
+
+	return reg_ax;
+}
 Bit16u load_archive_file(Bit16u index)
 {
 	CPU_Push16(index);
