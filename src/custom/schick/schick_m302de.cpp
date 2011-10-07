@@ -3563,7 +3563,9 @@ static int seg099(unsigned short offs) {
 		return 0;
 	}
 	case 0x25: {
-		return 0;
+		D1_LOG("spell_destructibo();\n");
+		spell_destructibo();
+		return 1;
 	}
 	case 0x2a: {
 		return 0;
