@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 2/8
+	Functions rewritten: 3/8
 */
 
 #include "schick.h"
@@ -120,6 +120,65 @@ void load_scenario(signed short nr)
 
 	/* close archive */
 	bc_close(fd);
+}
+
+void init_common_buffers()
+{
+
+	unsigned short fd;
+	unsigned short bytes;
+
+	/* load POPUP.DAT */
+	fd = load_archive_file(0x99);
+	bytes = read_archive_file(fd, Real2Host(ds_readd(0xd2ad) - 8), 500);
+	bc_close(fd);
+
+	/* decompress POPUP.DAT */
+	decomp_pp20(Real2Host(ds_readd(0xd2ad) - 8),
+		Real2Host(ds_readd(0xd2ad)),
+		Real2Host(ds_readd(0xd2ad) - 8 + 4),
+		bytes);
+
+	/* load COMPASS */
+	fd = load_archive_file(0x12);
+	bytes = read_archive_file(fd, Real2Host(ds_readd(0xd2b1)), 5000);
+	bc_close(fd);
+
+	/* load ITEMS.DAT */
+	fd = load_archive_file(0xdc);
+	bytes = read_archive_file(fd, Real2Host(ds_readd(0xe22b)), 3060);
+	bc_close(fd);
+
+	/* load ANIS.TAB */
+	fd = load_archive_file(0x17);
+	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd205)), 148);
+	bc_close(fd);
+
+	/* load MFIGS.TAB */
+	fd = load_archive_file(0x19);
+	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd159)), 172);
+	bc_close(fd);
+
+	/* load WFIGS.TAB */
+	fd = load_archive_file(0xeb);
+	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd0ad)), 172);
+	bc_close(fd);
+
+	/* load MONSTER.TAB */
+	fd = load_archive_file(0x11);
+	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd01d)), 144);
+	bc_close(fd);
+
+	/* load GAMES.NAM */
+	fd = load_regular_file(0xcf);
+	bc__read(fd, Real2Host(RealMake(datseg, 0xe2da)), 45);
+	bc_close(fd);
+
+	/* load TOWNPAL.DAT */
+	fd = load_archive_file(0x8d);
+	read_archive_file(fd, Real2Host(ds_readd(0xd321)), 288);
+	bc_close(fd);
+
 }
 
 }

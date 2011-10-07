@@ -2443,6 +2443,11 @@ static int seg027(unsigned short offs) {
 			D1_LOG("ANI %02d angefordert\n", ani);
 			return 0;
 		}
+		case 0x2f: {
+			D1_LOG("init_common_buffers();\n");
+			init_common_buffers();
+			return 1;
+		}
 		case 0x34: {
 			Bit16s nr = CPU_Pop16();
 
