@@ -24,4 +24,10 @@ void spell_destructibo()
 	ds_writew(0xac02, -2);
 }
 
+void spell_grosse_gier()
+{
+	D1_INFO("Zauberspruch \"Grosse Gier\" ist nicht implementiert\n");
+	ds_writew(0xac02, -2);
+}
+
 }

@@ -3586,7 +3586,9 @@ static int seg099(unsigned short offs) {
 		return 0;
 	}
 	case 0x48: {
-		return 0;
+		D1_LOG("spell_grosse_gier();\n");
+		spell_grosse_gier();
+		return 1;
 	}
 	case 0x4d: {
 		return 0;
