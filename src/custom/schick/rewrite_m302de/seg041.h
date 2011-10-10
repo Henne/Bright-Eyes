@@ -1,5 +1,7 @@
 namespace M302de {
 
+//0x25
+void FIG_output(Bit8u*);
 //0x2a
 void FIG_clear_msgs();
 //0x2f

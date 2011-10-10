@@ -2695,7 +2695,11 @@ static int seg041(unsigned short offs) {
 		return 0;
 	}
 	case 0x25: {
-		return 0;
+		RealPt str = CPU_Pop32();
+		D1_LOG("FIG_output(%05s);\n", getString(str));
+		FIG_output(Real2Host(str));
+		CPU_Push32(str);
+		return 1;
 	}
 	case 0x2a: {
 		D1_LOG("FIG_clear_msgs();\n");

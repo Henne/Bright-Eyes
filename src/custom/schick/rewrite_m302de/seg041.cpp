@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg041 (fight)
-        Functions rewritten: 4/9
+        Functions rewritten: 5/9
 */
 #include <string.h>
 
@@ -9,11 +9,22 @@
 #include "v302de.h"
 
 #include "seg007.h"
+#include "seg097.h"
 
 namespace M302de {
 
 /* DS:0x26ad */
 static unsigned short msg_counter;
+
+void FIG_output(Bit8u *str)
+{
+
+	if (*str == 0)
+		return;
+
+	GUI_output(str);
+
+}
 
 /**
  *	FIG_clear_msgs() - clears the fight messages buffer
