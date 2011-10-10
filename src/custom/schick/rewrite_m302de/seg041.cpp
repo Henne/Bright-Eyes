@@ -1,3 +1,7 @@
+/*
+        Rewrite of DSA1 v3.02_de functions of seg041 (fight)
+        Functions rewritten: 4/9
+*/
 #include <string.h>
 
 #include "schick.h"
