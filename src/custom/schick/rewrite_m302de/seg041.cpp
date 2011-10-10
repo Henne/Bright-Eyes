@@ -1,15 +1,18 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg041 (fight)
-        Functions rewritten: 6/9
+        Functions rewritten: 7/9
 */
+#include <stdlib.h>
 #include <string.h>
 
 #include "schick.h"
 
 #include "v302de.h"
 
+#include "seg002.h"
 #include "seg007.h"
 #include "seg097.h"
+#include "seg105.h"
 
 namespace M302de {
 
@@ -82,6 +85,82 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
 
 	if (flag)
 		host_writeb(enemy + 0x32, host_readb(enemy + 0x32) & 0xfd);
+}
+
+/**
+ *	FIG_get_enemy_attack_damage() - calculates attack damage from an enemy
+ *	@attacker:	the enemy which attacks
+ *	@attacked:	the enemy/hero which gets attacked
+ *	@is_enemy:	1 = if attacked is an enemy / 0 = attacked is a hero
+ *
+ */
+
+signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool is_enemy)
+{
+	Bit8u *hero;
+	signed short pos, damage;
+	unsigned short dice;
+
+	dice = host_readw(attacker + 0x1e);
+
+	if (host_readw(attacker + 0x20) != 0 && random_schick(100) < 50)
+		dice = host_readw(attacker + 0x20);
+
+	damage = dice_template(dice);
+
+	if (is_enemy == 0) {
+		/* the attacked is a hero */
+		hero = attacked;
+
+		/* subtract RS */
+		damage -= host_readb(hero + 0x30);
+
+		/* armour bonus against skelettons an zombies */
+		if (host_readb(hero + 0x1b2) == 0xc5 &&
+			host_readb(attacker + 1) == 0x22 ||
+			host_readb(attacker + 1) == 0x1c)
+				damage -= 3;
+
+		/* Totenkopfguertel makes damage 0, but can be lost */
+		pos = get_item_pos(hero, 0xb6);
+
+		if (pos != -1 && (host_readb(attacker + 1) == 0x22 ||
+			host_readb(attacker + 1) == 0x1c)) {
+
+			damage = 0;
+			if (random_schick(100) < 5) {
+				drop_item(hero, pos, 1);
+				GUI_output(get_dtp(0x2c));
+			}
+		}
+
+		/* no damage if the hero is stoned */
+		if ((host_readb(hero + 0xaa) >> 2) & 1 != 0)
+			damage = 0;
+	} else {
+		/* the attacked is an enemy */
+
+		/* subtract RS */
+		damage -= host_readb(attacked + 0x2);
+
+		/* check unknown flag, maybe stoned */
+		if ((host_readb(attacked + 0x31) >> 2) & 1 != 0)
+			damage = 0;
+
+		/* check if the attacked is immune
+		 * against non-magicial weapons */
+		if (host_readb(attacked + 0x24) != 0)
+			damage = 0;
+	}
+
+	/* damage bonus */
+	damage += (signed char)host_readb(attacker + 0x2e);
+
+	/* half damage */
+	if (host_readb(attacker + 0x30) != 0)
+		damage = abs(damage) / 2;
+
+	return damage;
 }
 
 void seg041_8c8() {

@@ -10,6 +10,8 @@ void FIG_add_msg(unsigned short, unsigned short);
 void FIG_damage_enemy(Bit8u*, Bit16s, bool);
 //0x3e
 signed short weapon_check(Bit8u *);
+//0x43
+signed short FIG_get_enemy_attack_damage(Bit8u*, Bit8u*, bool);
 //0x48
 void seg041_8c8();
 

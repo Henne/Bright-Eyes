@@ -2743,7 +2743,18 @@ static int seg041(unsigned short offs) {
 		return 1;
 	}
 	case 0x43: {
-		return 0;
+		RealPt enemy = CPU_Pop32();
+		RealPt hero = CPU_Pop32();
+		Bit16u flag = CPU_Pop16();
+
+		reg_ax = FIG_get_enemy_attack_damage(Real2Host(enemy), Real2Host(hero), flag);
+		D1_LOG("FIG_get_enemy_attack_damage(%x, %x, %d); = %d\n",
+				enemy, hero, flag, reg_ax);
+		CPU_Push16(flag);
+		CPU_Push32(hero);
+		CPU_Push32(enemy);
+
+		return 1;
 	}
 	case 0x48: {
 		D1_LOG("seg041_8c8();\n");
