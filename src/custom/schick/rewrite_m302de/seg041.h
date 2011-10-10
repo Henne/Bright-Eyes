@@ -6,6 +6,8 @@ void FIG_output(Bit8u*);
 void FIG_clear_msgs();
 //0x2f
 void FIG_add_msg(unsigned short, unsigned short);
+//0x34
+void FIG_damage_enemy(Bit8u*, Bit16s, bool);
 //0x3e
 signed short weapon_check(Bit8u *);
 //0x48

@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg041 (fight)
-        Functions rewritten: 5/9
+        Functions rewritten: 6/9
 */
 #include <string.h>
 
@@ -39,6 +39,49 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage) {
 	ds_writew(0xd333 + 4 * msg_counter + 2 , damage);
 	if (msg_counter < 4)
 		msg_counter++;
+}
+
+/**
+ * FIG_damage_enemy() -	damages an enemy
+ * @enemy:	pointer to the enemy
+ * @damage:	the damage
+ * @flag:	unknown
+ *
+ * This function has some tweaks, dependent on the fight number.
+ */
+void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
+{
+	unsigned short i;
+
+	/* subtract the damage from the enemies LE */
+	host_writew(enemy + 0x13, host_readw(enemy + 0x13) - damage);
+
+	/* are the enemies LE lower than 0 */
+	if ((signed short)host_readw(enemy + 0x13) <= 0) {
+		/* set a flag, maybe dead */
+		host_writeb(enemy + 0x31, host_readb(enemy + 0x31) | 1);
+		/* set LE to 0 */
+		host_writew(enemy + 0x13, 0);
+
+		if (ds_readw(0xe316) == 0x5e && host_readb(enemy) == 0x38) {
+			/* slaying a special cultist */
+			/* set a flag in the status area */
+			ds_writeb(0x40f9, 0);
+		} else if (ds_readw(0xe316) == 0xc0 && host_readb(enemy) == 0x48) {
+			/* slaying the orc champion */
+			if (ds_readb(0x5f30) == 0)
+				ds_writew(0x2cd5, 0);
+		} else if (ds_readw(0xe316) == 0xb4 && host_readb(enemy) == 0x46) {
+			/* slaying Gorah make everything flee than Heshtot*/
+			for (i = 0; i < 20; i++)
+				if (ds_readb(0xd34b + 1 + i * 62) != 0x1a)
+					ds_writeb(0xd34b + 0x32 + i * 62,
+						ds_readb(0xd34b + 0x32 + i * 62) | 4);
+		}
+	}
+
+	if (flag)
+		host_writeb(enemy + 0x32, host_readb(enemy + 0x32) & 0xfd);
 }
 
 void seg041_8c8() {

@@ -2717,7 +2717,16 @@ static int seg041(unsigned short offs) {
 		return 1;
 	}
 	case 0x34: {
-		return 0;
+		RealPt ptr = CPU_Pop32();
+		Bit16u damage = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(damage);
+		CPU_Push32(ptr);
+
+		D1_LOG("FIG_damage_enemy(%x, %x, %x);\n", ptr, damage, v2);
+		FIG_damage_enemy(Real2Host(ptr), damage, v2);
+		return 1;
 	}
 	case 0x39: {
 		return 0;
