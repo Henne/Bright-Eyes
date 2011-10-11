@@ -2522,7 +2522,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x61: {
-		return 0;
+		Bit16s index = CPU_Pop16();
+		D1_LOG("load_npc(%s);\n", get_fname(index));
+		load_npc(index);
+		CPU_Push16(index);
+		return 1;
 	}
 	case 0x66: {
 		return 0;
