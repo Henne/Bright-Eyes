@@ -2537,7 +2537,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x7a: {
-		return 0;
+		Bit16s index = CPU_Pop16();
+		D1_LOG("load_fightbg(%s);\n", get_fname(index));
+		load_fightbg(index);
+		CPU_Push16(index);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
