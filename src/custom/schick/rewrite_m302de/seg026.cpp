@@ -8,6 +8,22 @@
 
 namespace M302de {
 
+void load_city_ltx(signed short index)
+{
+	unsigned int len;
+	unsigned short fd;
+
+	if (index == -1)
+		return;
+
+	ds_writew(0x26bd, index);
+	fd = load_archive_file(index);
+	len = read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 12000);
+	bc_close(fd);
+
+	split_textbuffer(Real2Host(ds_readd(0xc3ad)), ds_readd(0xc3a9), len);
+}
+
 void load_ltx(unsigned short index)
 {
 	unsigned int len;
