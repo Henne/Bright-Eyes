@@ -2369,8 +2369,17 @@ static int seg026(unsigned short offs) {
 			return 0;
 		}
 		if (offs == 0x0025) {
-			D1_LOG("ip=0x%04X unknown()\n", offs);
-			return 0;
+			RealPt src = CPU_Pop32();
+			RealPt dst = CPU_Pop32();
+			Bit32u len = CPU_Pop32();
+
+			D1_LOG("split_textbuffer(%x, %x, %d)\n",
+				src, dst, len);
+			split_textbuffer(Real2Host(src), dst, len);
+			CPU_Push32(len);
+			CPU_Push32(dst);
+			CPU_Push32(src);
+			return 1;
 		}
 		if (offs == 0x002a) {
 			D1_LOG("ip=0x%04X unknown()\n", offs);
@@ -4774,7 +4783,18 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x12e5)) {
 		switch (offs) {
 		case 0x23e: {
-			return 0;
+			CPU_Pop16();
+			RealPt src = CPU_Pop32();
+			RealPt dst = CPU_Pop32();
+			Bit32u len = CPU_Pop32();
+
+			D1_LOG("split_textbuffer(%x, %x, %d)\n",
+				src, dst, len);
+			split_textbuffer(Real2Host(src), dst, len);
+			CPU_Push32(len);
+			CPU_Push32(dst);
+			CPU_Push32(src);
+			return 1;
 		}
 		case 0x2d3: {
 			return 0;

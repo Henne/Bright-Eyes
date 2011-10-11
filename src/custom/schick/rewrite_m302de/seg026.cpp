@@ -7,6 +7,23 @@
 
 namespace M302de {
 
+void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
+{
+	Bit32u i = 0;
+
+	host_writed(dst, src);
+	dst += 4;
+
+	for (; i != len; src++, i++) {
+		/* continue if not the end of the string */
+		if (host_readb(Real2Host(src)) != 0)
+			continue;
+		/* write the adress of the next string */
+		host_writed(dst, src + 1);
+		dst += 4;
+	}
+}
+
 /**
  *	load_in_head() - loads a head icon from IN_HEADS.NVF
  *	@head:	index of the desired head
