@@ -4770,6 +4770,31 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
+	/* seg026 */
+	if (is_ovrseg(0x12e5)) {
+		switch (offs) {
+		case 0x23e: {
+			return 0;
+		}
+		case 0x2d3: {
+			return 0;
+		}
+		case 0x347: {
+			return 0;
+		}
+		case 0x1021: {
+			return 0;
+		}
+		case 0x117f: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg024", offs);
+			exit(1);
+		}
+	}
+
 	/* seg029 */
 	if (is_ovrseg(0x12f9)) {
 		switch (offs) {
