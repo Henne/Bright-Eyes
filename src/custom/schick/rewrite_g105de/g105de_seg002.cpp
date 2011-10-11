@@ -2213,10 +2213,10 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 
 	for (; i != len; src++, i++) {
 		/* continue if not the ned of the string */
-		if (mem_readb(Real2Phys(src)) != 0)
+		if (host_readb(Real2Host(src)) != 0)
 			continue;
 		/* return if "\0\0" (never happens) */
-		if (mem_readb(Real2Phys(src) + 1) == 0)
+		if (host_readb(Real2Host(src) + 1) == 0)
 			return;
 		/* write the adress of the next string */
 		host_writed(dst, src + 1);
