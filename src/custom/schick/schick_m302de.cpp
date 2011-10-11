@@ -2382,8 +2382,9 @@ static int seg026(unsigned short offs) {
 			return 1;
 		}
 		if (offs == 0x002a) {
-			D1_LOG("ip=0x%04X unknown()\n", offs);
-			return 0;
+			D1_LOG("load_ggsts_nvf()\n");
+			load_ggsts_nvf();
+			return 1;
 		}
 		if (offs == 0x002f) {
 			D1_LOG("short ChooseLoadSavegame(void)\n");

@@ -24,6 +24,20 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 	}
 }
 
+void load_ggsts_nvf()
+{
+	Bit16u fd;
+
+	/* seek to GGSTS.NVF */
+	fd = load_archive_file(0x0d);
+	/* read it */
+	read_archive_file(fd, Real2Host(ds_readd(0xd2a9)), 16771);
+	/* close it */
+	bc_close(fd);
+
+	ds_writew(0x2ccb, 0xffff);
+}
+
 /**
  *	load_in_head() - loads a head icon from IN_HEADS.NVF
  *	@head:	index of the desired head
