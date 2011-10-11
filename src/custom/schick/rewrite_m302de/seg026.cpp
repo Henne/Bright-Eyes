@@ -4,8 +4,23 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg026.h"
 
 namespace M302de {
+
+void load_ltx(unsigned short index)
+{
+	unsigned int len;
+	unsigned short fd;
+
+	fd = load_archive_file(index);
+	ds_writew(0x2ccb, 0xffff);
+	len = read_archive_file(fd, Real2Host(ds_readd(0xd019)) + 1000, 64000);
+	bc_close(fd);
+
+	split_textbuffer(Real2Host(ds_readd(0xd019)),
+		ds_readd(0xd019) + 1000, len);
+}
 
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
