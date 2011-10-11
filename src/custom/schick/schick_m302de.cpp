@@ -24,6 +24,7 @@
 #include "seg024.h"
 #include "seg026.h"
 #include "seg027.h"
+#include "seg028.h"
 #include "seg029.h"
 #include "seg032.h"
 #include "seg038.h"
@@ -2479,6 +2480,71 @@ static int seg027(unsigned short offs) {
 	}
 }
 
+static int seg028(unsigned short offs) {
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	case 0x66: {
+		return 0;
+	}
+	case 0x6b: {
+		return 0;
+	}
+	case 0x70: {
+		return 0;
+	}
+	case 0x75: {
+		return 0;
+	}
+	case 0x7a: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int seg029(unsigned short offs) {
 	switch (offs) {
 	case 0x25: {
@@ -4121,7 +4187,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x12de:	return 0;
 		case 0x12e5:	return seg026(offs);
 		case 0x12ec:	return seg027(offs);
-		case 0x12f1:	return 0;
+		case 0x12f1:	return seg028(offs);
 		case 0x12f9:	return seg029(offs);
 		case 0x12ff:	return 0;
 		case 0x1303:	return 0;
