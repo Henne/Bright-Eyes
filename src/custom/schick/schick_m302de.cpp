@@ -35,6 +35,7 @@
 #include "seg047.h"
 #include "seg063.h"
 #include "seg068.h"
+#include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
@@ -3229,6 +3230,27 @@ static int seg073(unsigned short offs) {
 	}
 }
 
+static int seg095(unsigned short offs) {
+	switch (offs) {
+		case 0x3e: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
+		case 0x48: {
+			return 0;
+		}
+		case 0x4d: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg096(unsigned short offs) {
 	/*
 		Handles Strings and Fonts
@@ -4253,7 +4275,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1420:	return 0;
 		case 0x1429:	return 0;
 		case 0x142c:	return 0;
-		case 0x1432:	return 0;
+		case 0x1432:	return seg095(offs);
 		case 0x1438:	return seg096(offs);
 		case 0x1442:	return seg097(offs);
 		case 0x1449:	return seg098(offs);
@@ -5263,6 +5285,39 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			return 1;
 		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg046", offs);
+			exit(1);
+		}
+	}
+	/* seg096 */
+	if (is_ovrseg(0x1432)) {
+		switch (offs) {
+			case 0x335: {
+				return 0;
+			}
+			case 0x44d: {
+				return 0;
+			}
+			case 0x62d: {
+				return 0;
+			}
+			case 0x746: {
+				return 0;
+			}
+			case 0x9a5: {
+				return 0;
+			}
+			case 0xad0: {
+				return 0;
+			}
+			case 0xbfb: {
+				return 0;
+			}
+			case 0xcb8: {
+				return 0;
+			}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				"seg046", offs);
