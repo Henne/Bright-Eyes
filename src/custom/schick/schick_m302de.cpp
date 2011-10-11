@@ -3236,7 +3236,11 @@ static int seg095(unsigned short offs) {
 			return 0;
 		}
 		case 0x43: {
-			return 0;
+			Bit16s index = CPU_Pop16();
+			D1_LOG("add_npc(%s);\n", get_fname(index));
+			add_npc(index);
+			CPU_Push16(index);
+			return 1;
 		}
 		case 0x48: {
 			return 0;
@@ -5316,7 +5320,12 @@ int schick_nearcall_v302de(unsigned offs) {
 				return 0;
 			}
 			case 0xcb8: {
-				return 0;
+				CPU_Pop16();
+				Bit16s index = CPU_Pop16();
+				D1_LOG("add_npc(%s);\n", get_fname(index));
+				add_npc(index);
+				CPU_Push16(index);
+				return 1;
 			}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
