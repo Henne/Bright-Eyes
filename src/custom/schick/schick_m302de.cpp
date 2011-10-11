@@ -5277,7 +5277,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt str = CPU_Pop32();
 			CPU_Push32(str);
 
-			D1_INFO("GUI_output()\n");
+			D1_LOG("GUI_output()\n");
 			GUI_output(Real2Host(str));
 			return 1;
 		}
