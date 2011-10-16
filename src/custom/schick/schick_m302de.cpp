@@ -3137,7 +3137,7 @@ static int seg068(unsigned short offs)
 			return 0;
 		}
 		case 0x25: {
-			D1_INFO("thorwal_imman();\n");
+			D1_LOG("thorwal_imman();\n");
 			thorwal_imman();
 			return 1;
 		}
@@ -3598,7 +3598,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(text);
 		CPU_Push16(head);
 
-		D1_INFO("GUI_dialog_na(%d);\n", head);
+		D1_LOG("GUI_dialog_na(%d);\n", head);
 		GUI_dialog_na(head + 1, Real2Host(text));
 
 		return 1;
@@ -4142,7 +4142,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push32(hero);
 
 			reg_ax = hero_count_item(Real2Host(hero), item);
-			D1_INFO("far hero_count_item(%s, %s) = %d\n",
+			D1_LOG("far hero_count_item(%s, %s) = %d\n",
 				schick_getCharname(hero),
 				get_itemname(item), reg_ax);
 
@@ -4153,7 +4153,7 @@ static int seg105(unsigned short offs) {
 			CPU_Push16(item);
 
 			reg_ax = group_count_item(item);
-			D1_INFO("group_count_item(%s) = %d\n",
+			D1_LOG("group_count_item(%s) = %d\n",
 				get_itemname(item), reg_ax);
 
 			return 1;
@@ -4330,7 +4330,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			Bit32s retval = bc_lseek(handle, pos, whence);
 
-			D1_INFO("C-Lib near lseek(Handle=0x%x, pos=%u, whence=%d)\n",
+			D1_LOG("C-Lib near lseek(Handle=0x%x, pos=%u, whence=%d)\n",
 				handle, pos, whence);
 
 			reg_ax = retval & 0xffff;
