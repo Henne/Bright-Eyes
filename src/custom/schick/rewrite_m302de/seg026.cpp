@@ -8,6 +8,26 @@
 
 namespace M302de {
 
+void load_buffer_1(signed short index)
+{
+	signed int len;
+	unsigned short fd;
+
+	if (index == -1)
+		return;
+
+	fd = load_archive_file(index);
+
+	len = read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
+
+	bc_close(fd);
+
+	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)), ds_readd(0xd2b5), len);
+
+	ds_writew(0x26bf, index);
+
+}
+
 void load_city_ltx(signed short index)
 {
 	unsigned int len;

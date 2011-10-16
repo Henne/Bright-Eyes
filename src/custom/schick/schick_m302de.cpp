@@ -2423,8 +2423,11 @@ static int seg026(unsigned short offs) {
 			return 1;
 		}
 		if (offs == 0x0052) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
+			Bit16s index = CPU_Pop16();
+			D1_LOG("load_buffer_1(%s)\n", get_fname(index));
+			load_buffer_1(index);
+			CPU_Push16(index);
+			return 1;
 		}
 		if (offs == 0x0057) {
 			Bit16u index = CPU_Pop16();
