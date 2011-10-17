@@ -2542,7 +2542,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x75: {
-		return 0;
+		Bit16s index = CPU_Pop16();
+		D1_LOG("load_tlk(%s);\n", get_fname(index));
+		load_tlk(index);
+		CPU_Push16(index);
+		return 1;
 	}
 	case 0x7a: {
 		Bit16s index = CPU_Pop16();

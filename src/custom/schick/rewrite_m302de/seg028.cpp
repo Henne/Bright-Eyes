@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 2/19
+	Functions rewritten: 3/19
 */
 
 #include "schick.h"
@@ -10,6 +10,7 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg009.h"
+#include "seg026.h"
 
 namespace M302de {
 
@@ -38,6 +39,44 @@ void load_npc(signed short index)
 	}
 
 
+}
+
+void load_tlk(signed short index)
+{
+	Bit8u *ptr;
+	unsigned int off, text_len;
+	unsigned short partners;
+	unsigned short fd;
+	unsigned short i;
+
+	ds_writew(0x26bd, index);
+
+	fd = load_archive_file(index);
+
+	/* read the header */
+	read_archive_file(fd, (Bit8u*)&off, 4);
+	read_archive_file(fd, (Bit8u*)&partners, 2);
+
+	/* read the partner structures */
+	read_archive_file(fd,
+		ptr = Real2Host(RealMake(datseg, 0x3618)), partners * 0x26);
+
+	/* read the dialog layouts */
+	read_archive_file(fd,
+		Real2Host(RealMake(datseg, 0x3794)), off - partners * 0x26);
+
+	/* read the text */
+	text_len = read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
+
+	bc_close(fd);
+
+	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)),
+		ds_readd(0xd2b5), text_len);
+
+	/* adjust the pointers to the layouts */
+	for (i = 0; i < partners; i++, ptr += 0x26) {
+		host_writed(ptr, RealMake(datseg, host_readw(ptr) + 0x3794));
+	}
 }
 
 void load_fightbg(signed short index)
