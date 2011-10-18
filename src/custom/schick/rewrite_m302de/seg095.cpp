@@ -17,10 +17,7 @@ void add_npc(signed short index)
 {
 	load_npc(index);
 
-	/* we could copy is from the hero array, too */
-#if 0
 	memcpy(get_hero(0) + 0x2bf6, Real2Host(ds_readd(0xd2f3)), 0x400);
-#endif
 
 	/* increment heros in that group */
 	ds_writeb(0x2d36 + ds_readb(0x2d35),
