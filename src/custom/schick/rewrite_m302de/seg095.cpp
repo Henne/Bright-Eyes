@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 1/10
+	Functions rewritten: 2/10
 */
 
 #include <string.h>
@@ -8,10 +8,61 @@
 #include "schick.h"
 #include "v302de.h"
 
+#include "seg026.h"
 #include "seg028.h"
 #include "seg029.h"
+#include "seg095.h"
+#include "seg097.h"
 
 namespace M302de {
+
+//static
+void npc_nariell()
+{
+	signed short answer;
+
+	/* load NSC.LTX */
+	load_buffer_1(0xe1);
+
+	/* load head */
+	load_in_head(0x14);
+
+	/* show dialog window */
+	do {
+		answer = GUI_dialogbox(ds_readd(0xd2f3),
+				get_ltx(0xbc4), get_dtp(0x00),
+				3,
+				get_dtp(0x04), get_dtp(0x08),
+				get_dtp(0x0c));
+	} while (answer == -1);
+
+	/* process the answer */
+	if (answer == 1) {
+		GUI_dialogbox(ds_readd(0xd2f3),
+			get_ltx(0xbc4), get_dtp(0x10), 0);
+	} else {
+		do {
+			if (answer == 2)
+				answer = GUI_dialogbox(ds_readd(0xd2f3),
+						get_ltx(0xbc4), get_dtp(0x14),
+						2, get_dtp(0x1c),
+						get_dtp(0x20));
+			else
+				answer = GUI_dialogbox(ds_readd(0xd2f3),
+						get_ltx(0xbc4), get_dtp(0x18),
+						2, get_dtp(0x1c),
+						get_dtp(0x20));
+		} while (answer == -1);
+
+		/* add nariell */
+		if (answer == 2)
+			add_npc(0xe2);
+	}
+
+	/* load TAVERN.TLK */
+	load_tlk(0x82);
+
+}
 
 void add_npc(signed short index)
 {

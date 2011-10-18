@@ -5302,11 +5302,13 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	/* seg096 */
+	/* seg095 */
 	if (is_ovrseg(0x1432)) {
 		switch (offs) {
 			case 0x335: {
-				return 0;
+				CPU_Pop16();
+				npc_nariell();
+				return 1;
 			}
 			case 0x44d: {
 				return 0;
