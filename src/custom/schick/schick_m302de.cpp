@@ -5311,7 +5311,9 @@ int schick_nearcall_v302de(unsigned offs) {
 				return 1;
 			}
 			case 0x44d: {
-				return 0;
+				CPU_Pop16();
+				npc_harika();
+				return 1;
 			}
 			case 0x62d: {
 				return 0;

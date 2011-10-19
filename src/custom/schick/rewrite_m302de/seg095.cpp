@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 2/10
+	Functions rewritten: 3/10
 */
 
 #include <string.h>
@@ -8,6 +8,7 @@
 #include "schick.h"
 #include "v302de.h"
 
+#include "seg002.h"
 #include "seg026.h"
 #include "seg028.h"
 #include "seg029.h"
@@ -63,6 +64,86 @@ void npc_nariell()
 	load_tlk(0x82);
 
 }
+
+//static
+void npc_harika()
+{
+	unsigned int money;
+	signed short answer;
+
+	/* load NSC.LTX */
+	load_buffer_1(0xe1);
+
+	/* load head */
+	load_in_head(0x16);
+
+	/* show dialog window */
+	do {
+		answer = GUI_dialogbox(ds_readd(0xd2f3),
+				get_ltx(0xbc8), get_dtp(0x28),
+				3,
+				get_dtp(0x2c), get_dtp(0x30),
+				get_dtp(0x34));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbc8),
+			get_dtp(0x38), 0);
+	} else if (answer == 2) {
+		money = get_party_money();
+
+		if (money >= 2000)
+			answer = 2;
+		else
+			answer = 1;
+
+		do {
+			answer = GUI_dialogbox(ds_readd(0xd2f3),
+					get_ltx(0xbc8), get_dtp(0x3c),
+					answer,
+					get_dtp(0x44), get_dtp(0x48));
+		} while (answer == -1);
+
+		/* hier her for 20D */
+		if (answer == 2) {
+			/* subtract 20D */
+			money -= 2000;
+			set_party_money(money);
+
+			/* add her to the party */
+			add_npc(0xe3);
+		}
+	} else {
+		money = get_party_money();
+
+		if (money >= 1500)
+			answer = 2;
+		else
+			answer = 1;
+
+		do {
+			answer = GUI_dialogbox(ds_readd(0xd2f3),
+					get_ltx(0xbc8), get_dtp(0x40),
+					answer,
+					get_dtp(0x44), get_dtp(0x48));
+		} while (answer == -1);
+
+		/* hier her for 15D */
+		if (answer == 2) {
+			/* subtract 15D */
+			money -= 1500;
+			set_party_money(money);
+
+			/* add her to the party */
+			add_npc(0xe3);
+		}
+	}
+
+
+	/* load TAVERN.TLK */
+	load_tlk(0x82);
+}
+
 
 void add_npc(signed short index)
 {
