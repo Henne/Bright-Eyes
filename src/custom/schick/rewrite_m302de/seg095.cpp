@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 3/10
+	Functions rewritten: 4/10
 */
 
 #include <string.h>
@@ -139,6 +139,53 @@ void npc_harika()
 		}
 	}
 
+
+	/* load TAVERN.TLK */
+	load_tlk(0x82);
+}
+
+//static
+void npc_curian()
+{
+	signed short answer;
+
+	/* load NSC.LTX */
+	load_buffer_1(0xe1);
+
+	/* load head */
+	load_in_head(0x19);
+
+	/* show dialog window */
+	do {
+		answer = GUI_dialogbox(ds_readd(0xd2f3),
+				get_ltx(0xbcc), get_dtp(0x50),
+				3,
+				get_dtp(0x54), get_dtp(0x58),
+				get_dtp(0x5c));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbcc),
+			get_dtp(0x60), 0);
+	} else {
+		do {
+			if (answer == 2)
+				answer = GUI_dialogbox(ds_readd(0xd2f3),
+						get_ltx(0xbcc), get_dtp(0x64),
+						2,
+						get_dtp(0x6c), get_dtp(0x70));
+			else
+				answer = GUI_dialogbox(ds_readd(0xd2f3),
+						get_ltx(0xbcc), get_dtp(0x68),
+						2,
+						get_dtp(0x6c), get_dtp(0x70));
+		} while (answer == -1);
+
+	/* add NPC */
+	if (answer == 2)
+		add_npc(0xe4);
+
+	}
 
 	/* load TAVERN.TLK */
 	load_tlk(0x82);

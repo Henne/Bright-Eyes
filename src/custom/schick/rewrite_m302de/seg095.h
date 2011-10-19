@@ -3,6 +3,8 @@ namespace M302de {
 void npc_nariell();
 //0x25
 void npc_harika();
+//0x2a
+void npc_curian();
 //0x43
 void add_npc(signed short);
 
