@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 6/10
+	Functions rewritten: 7/10
 */
 
 #include <string.h>
@@ -145,6 +145,75 @@ void npc_harika()
 }
 
 //static
+void npc_ardora()
+{
+	signed short answer;
+
+	/* load NSC.LTX */
+	load_buffer_1(0xe1);
+
+	/* load head */
+	load_in_head(0x15);
+
+	/* show dialog window */
+	do {
+		answer = GUI_dialogbox(ds_readd(0xd2f3),
+				get_ltx(0xbd0), get_dtp(0x78),
+				3,
+				get_dtp(0x7c), get_dtp(0x80),
+				get_dtp(0x84));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		do {
+			answer = GUI_dialogbox(ds_readd(0xd2f3),
+					get_ltx(0xbd0), get_dtp(0x88),
+					2,
+					get_dtp(0x8c), get_dtp(0x90));
+		} while (answer == -1);
+
+		if (answer == 2) {
+			GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+				get_dtp(0x94), 0);
+		} else {
+			do {
+				answer = GUI_dialogbox(ds_readd(0xd2f3),
+						get_ltx(0xbd0), get_dtp(0x9c),
+						2,
+						get_dtp(0xa0), get_dtp(0xa4));
+			} while (answer == -1);
+
+			if (answer == 1) {
+				add_npc(0xe5);
+			} else {
+				GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+					get_dtp(0xa8), 0);
+			}
+		}
+	} else {
+		if (answer == 2) {
+			GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+				get_dtp(0x98), 0);
+		}
+
+		do {
+			answer = GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+					get_dtp(0x9c), 2,
+					get_dtp(0xa0), get_dtp(0xa4));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			add_npc(0xe5);
+		} else {
+			GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+				get_dtp(0xa8), 0);
+		}
+	}
+
+	/* load TAVERN.TLK */
+	load_tlk(0x82);
+}
+
 void npc_curian()
 {
 	signed short answer;
