@@ -7,6 +7,8 @@ void npc_harika();
 void npc_curian();
 //0x34
 void npc_garsvik();
+//0x39
+void npc_erwo();
 //0x43
 void add_npc(signed short);
 
