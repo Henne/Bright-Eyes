@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 7/10
+	Functions rewritten: 8/10
 */
 
 #include <string.h>
@@ -16,6 +16,70 @@
 #include "seg097.h"
 
 namespace M302de {
+
+unsigned short npc_meetings(unsigned short type_index)
+{
+
+	/* check if an NPC is in the party */
+	if (host_readb(get_hero(7) + 0x21) != 0)
+		return 0;
+
+	/* check if we had an NPC conversation here */
+	if (ds_readw(0x346e) == type_index)
+		return 0;
+
+	ds_writew(0x346e, type_index);
+
+	/* Nariell */
+	if (ds_readw(0x2d67) == 0x17 &&	ds_readw(0x4224) == 0x30 &&
+		ds_readb(0x3601 + 1) == 0) {
+
+		npc_nariell();
+		return 1;
+	}
+
+	/* Harika */
+	if (ds_readw(0x2d67) == 0x12 &&	ds_readw(0x4224) == 0x28 &&
+		ds_readb(0x3601 + 2) == 0) {
+
+		npc_harika();
+		return 1;
+	}
+
+	/* Curian */
+	if (ds_readw(0x2d67) == 0x1d &&	ds_readw(0x4224) == 0x3c &&
+		ds_readb(0x3601 + 3) == 0) {
+
+		npc_curian();
+		return 1;
+	}
+
+	/* Ardora */
+	if (ds_readw(0x2d67) == 0x1 && ds_readw(0x4224) == 0x6 &&
+		ds_readb(0x3601 + 4) == 0 && ds_readb(0x3317) != 0) {
+
+		npc_ardora();
+		return 1;
+	}
+
+	/* Garsvik */
+	if (ds_readw(0x2d67) == 0x27 &&	ds_readw(0x4224) == 0x4a &&
+		ds_readb(0x3601 + 5) == 0) {
+
+		npc_garsvik();
+		return 1;
+	}
+
+	/* Erwo */
+	if (ds_readw(0x2d67) == 0x30 &&	ds_readw(0x4224) == 0x57 &&
+		ds_readb(0x3601 + 6) == 0) {
+
+		npc_ardora();
+		return 1;
+	}
+
+	return 0;
+}
 
 //static
 void npc_nariell()

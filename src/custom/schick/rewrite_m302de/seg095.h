@@ -13,5 +13,7 @@ void npc_garsvik();
 void npc_erwo();
 //0x43
 void add_npc(signed short);
+//0x48
+unsigned short npc_meetings(unsigned short);
 
 }

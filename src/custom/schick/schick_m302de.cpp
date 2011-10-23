@@ -3250,7 +3250,11 @@ static int seg095(unsigned short offs) {
 			return 1;
 		}
 		case 0x48: {
-			return 0;
+			Bit16u type = CPU_Pop16();
+			D1_INFO("npcmeetings(%x);\n", type);
+			reg_ax = npc_meetings(type);
+			CPU_Push16(type);
+			return 1;
 		}
 		case 0x4d: {
 			return 0;
