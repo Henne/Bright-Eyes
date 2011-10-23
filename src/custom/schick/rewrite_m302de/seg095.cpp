@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 4/10
+	Functions rewritten: 5/10
 */
 
 #include <string.h>
@@ -184,6 +184,53 @@ void npc_curian()
 	/* add NPC */
 	if (answer == 2)
 		add_npc(0xe4);
+
+	}
+
+	/* load TAVERN.TLK */
+	load_tlk(0x82);
+}
+
+//static
+void npc_garsvik()
+{
+	signed short answer;
+
+	/* load NSC.LTX */
+	load_buffer_1(0xe1);
+
+	/* load head */
+	load_in_head(0x17);
+
+	/* show dialog window */
+	do {
+		answer = GUI_dialogbox(ds_readd(0xd2f3),
+				get_ltx(0xbd4), get_dtp(0xb0),
+				3,
+				get_dtp(0xb4), get_dtp(0xb8),
+				get_dtp(0xbc));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd4),
+			get_dtp(0xc0), 0);
+	} else {
+		do {
+			if (answer == 2)
+				answer = GUI_dialogbox(ds_readd(0xd2f3),
+						get_ltx(0xbd4), get_dtp(0xc4),
+						2,
+						get_dtp(0xcc), get_dtp(0xd0));
+			else
+				answer = GUI_dialogbox(ds_readd(0xd2f3),
+						get_ltx(0xbd4), get_dtp(0xc8),
+						2,
+						get_dtp(0xcc), get_dtp(0xd0));
+		} while (answer == -1);
+
+	/* add NPC */
+	if (answer == 2)
+		add_npc(0xe6);
 
 	}
 
