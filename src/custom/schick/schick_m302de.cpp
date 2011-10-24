@@ -45,6 +45,7 @@
 #include "seg102.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg120.h"
 
 using namespace M302de;
 
@@ -4202,6 +4203,44 @@ static int seg109(unsigned short offs) {
 	}
 }
 
+static int seg120(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x25: {
+			return 0;
+		}
+		case 0x2a: {
+			 return 0;
+		}
+		case 0x2f: {
+			 return 0;
+		}
+		case 0x34: {
+			 return 0;
+		}
+		case 0x3e: {
+			 return 0;
+		}
+		case 0x43: {
+			 return 0;
+		}
+		case 0x48: {
+			 return 0;
+		}
+		case 0x4d: {
+			 return 0;
+		}
+		case 0x52: {
+			 return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
 
 /*
 	In seg122 is only an empty function.
@@ -4313,7 +4352,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x14e0:	return 0;
 		case 0x14e7:	return 0;
 		case 0x14ed:	return 0;
-		case 0x14f0:	return 0;
+		case 0x14f0:	return seg120(offs);
 		case 0x14f6:	return 0;
 		case 0x14f9:	return seg122(offs);
 		default:
@@ -5662,6 +5701,24 @@ int schick_nearcall_v302de(unsigned offs) {
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				"seg105", offs);
+			exit(1);
+		}
+	}
+	/* seg120 */
+	if (is_ovrseg(0x14f0)) {
+		switch (offs) {
+		case 0x578: {
+			return 0;
+		}
+		case 0x99f: {
+			return 0;
+		}
+		case 0xd85: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				"seg120", offs);
 			exit(1);
 		}
 	}
