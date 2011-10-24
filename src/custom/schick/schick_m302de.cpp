@@ -4212,13 +4212,13 @@ static int seg120(unsigned short offs) {
 			return 0;
 		}
 		case 0x2a: {
-			 return 0;
+			return 0;
 		}
 		case 0x2f: {
-			 return 0;
+			return 0;
 		}
 		case 0x34: {
-			 return 0;
+			return 0;
 		}
 		case 0x3e: {
 			D1_LOG("refresh_colors();\n");
@@ -4226,16 +4226,16 @@ static int seg120(unsigned short offs) {
 			return 1;
 		}
 		case 0x43: {
-			 return 0;
+			return 0;
 		}
 		case 0x48: {
-			 return 0;
+			return 0;
 		}
 		case 0x4d: {
-			 return 0;
+			return 0;
 		}
 		case 0x52: {
-			 return 0;
+			return 0;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
