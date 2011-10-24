@@ -4221,7 +4221,9 @@ static int seg120(unsigned short offs) {
 			 return 0;
 		}
 		case 0x3e: {
-			 return 0;
+			D1_LOG("refresh_colors();\n");
+			refresh_colors();
+			return 1;
 		}
 		case 0x43: {
 			 return 0;
@@ -5711,7 +5713,10 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x99f: {
-			return 0;
+			CPU_Pop16();
+			D1_LOG("refresh_colors();\n");
+			refresh_colors();
+			return 1;
 		}
 		case 0xd85: {
 			return 0;
