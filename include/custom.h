@@ -3,23 +3,6 @@
 
 #include "dosbox.h"
 
-class custom_prog {
-	public:
-		custom_prog() { }
-		~custom_prog() { }
-		virtual int probe(char *name, Bit16u relocate,	Bit16u init_cs,
-						 Bit16u init_ip);
-		virtual void remove(Bit8u exitcode);
-		virtual void suspend();
-		virtual void resume();
-
-		virtual int fcall_handler(Bit16u seg, Bit16u off);
-		virtual int ncall_handler(Bit16u off);
-
-		void *data;
-	private:
-};
-
 #if DOSBOX_CUSTOM
 
 void custom_init(Section *sec);

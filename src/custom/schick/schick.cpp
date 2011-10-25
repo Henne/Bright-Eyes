@@ -131,7 +131,7 @@ void schick_get_fname(char *dst, char *src) {
 
 //Initializer - is startet if executed file is SCHICKM.EXE/BLADEM.EXE or GEN.EXE
 //Returns true if the desired programm is started
-bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
+bool schick_init(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
 {
 
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
@@ -234,7 +234,7 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 }
 
 
-void exit_schick(unsigned char exit)
+void schick_exit(unsigned char exit)
 {
 	if (fromgame)
 	{
