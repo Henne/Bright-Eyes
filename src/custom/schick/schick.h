@@ -105,8 +105,6 @@ inline int is_ovrseg(unsigned short stub_seg) {
 
 int schick_get_version(char *);
 int schick_is_en();
-int schick_gen_get_version(char *);
-int schick_gen_is_en();
 
 void schick_status_init();
 void schick_status_exit();

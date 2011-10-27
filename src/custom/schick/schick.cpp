@@ -38,7 +38,7 @@ int schick_is_en() {
 /**
 	schick_gen_is_en - returns 1 if the language of the character generator is english
 */
-int schick_gen_is_en() {
+static int schick_gen_is_en() {
 	return gen_en;
 }
 
@@ -83,7 +83,7 @@ int schick_get_version(char *p) {
 	schick_gen_get_version - returns the version number of the character generator
 	@p:	pointer to the start of the datasegment
 */
-int schick_gen_get_version(char *p) {
+static int schick_gen_get_version(char *p) {
 
 	/* V1.05_de, the common CD-version */
 	if (!strncmp(p + 0x1cb3, "V1.05", 6))
