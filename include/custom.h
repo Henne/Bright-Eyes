@@ -5,18 +5,14 @@
 
 class custom_prog {
 	public:
-		custom_prog() { }
-		~custom_prog() { }
-		virtual int probe(char *name, Bit16u relocate,	Bit16u init_cs,
-						 Bit16u init_ip);
-		virtual void remove(Bit8u exitcode);
-		virtual void suspend();
-		virtual void resume();
+		virtual bool probe(char *name, Bit16u relocate,
+				Bit16u init_cs, Bit16u init_ip) = 0;
+		virtual void remove(Bit8u exitcode) = 0;
+		virtual void suspend() = 0;
+		virtual void resume() = 0;
 
-		virtual int fcall_handler(Bit16u seg, Bit16u off);
-		virtual int ncall_handler(Bit16u off);
-
-		void *data;
+		virtual int fcall_handler(Bitu seg, Bitu off) = 0;
+		virtual int ncall_handler(Bit16u off) = 0;
 	private:
 };
 
