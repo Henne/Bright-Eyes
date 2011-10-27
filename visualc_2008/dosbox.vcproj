@@ -1000,6 +1000,10 @@
 					RelativePath="..\src\custom\custom.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\src\custom\custom_hooks.h"
+					>
+				</File>
 				<Filter
 					Name="schick"
 					>
@@ -1404,10 +1408,6 @@
 			</File>
 			<File
 				RelativePath="..\include\cross.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\custom_hooks.h"
 				>
 			</File>
 			<File

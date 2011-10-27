@@ -36,5 +36,5 @@ support.h \
 timer.h \
 vga.h \
 video.h\
-custom_hooks.h
+custom.h
 
