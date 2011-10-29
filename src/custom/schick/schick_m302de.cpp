@@ -3611,7 +3611,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push16(head);
 
 		D1_LOG("GUI_dialog_na(%d);\n", head);
-		GUI_dialog_na(head + 1, Real2Host(text));
+		GUI_dialog_na(head, Real2Host(text));
 
 		return 1;
 	}
@@ -5519,6 +5519,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x893:
+			return 0;
 		/* Callers: 2 */
 		case 0xb43: {
 			CPU_Pop16();
