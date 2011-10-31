@@ -97,11 +97,6 @@ namespace G105de {
 void BE_cleanup();
 }
 
-int get_ovrseg(unsigned short);
-inline int is_ovrseg(unsigned short stub_seg) {
-	return SegValue(cs) == get_ovrseg(stub_seg);
-}
-
 int schick_get_version(char *);
 int schick_is_en();
 
