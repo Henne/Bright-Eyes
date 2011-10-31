@@ -6830,7 +6830,7 @@ void set_mouse_isr()
 	/* save adress of the old ISR */
 	ds_writed(0x247c, RealGetVec(0x1c));
 	/* set a the new one */
-	RealSetVec(0x1c, RealMake(relocation + 0x3c6, 0x72b3));
+	RealSetVec(0x1c, RealMake(reloc_gen + 0x3c6, 0x72b3));
 }
 
 void restore_mouse_isr()

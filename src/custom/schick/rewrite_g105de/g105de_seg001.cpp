@@ -79,36 +79,36 @@ void seg001_00bb(unsigned short track_nr)
 	if (ds_readw(0x95) == 0)
 		return;
 
-	real_writew(relocation + CDSEG, 0x8f, 0);
+	real_writew(reloc_gen + CDSEG, 0x8f, 0);
 
-	tmp = real_readd(relocation + CDSEG, 0x10a + track_nr * 8) & 0x00ffffff;
-	real_writed(relocation + CDSEG, 0x9a, tmp);
+	tmp = real_readd(reloc_gen + CDSEG, 0x10a + track_nr * 8) & 0x00ffffff;
+	real_writed(reloc_gen + CDSEG, 0x9a, tmp);
 
 	/* calculate track_start */
-	tmp = real_readb(relocation + CDSEG, 0x10c + track_nr * 8) * 60;
-	tmp += real_readb(relocation + CDSEG, 0x10b + track_nr * 8);
+	tmp = real_readb(reloc_gen + CDSEG, 0x10c + track_nr * 8) * 60;
+	tmp += real_readb(reloc_gen + CDSEG, 0x10b + track_nr * 8);
 	tmp *= 75;
-	tmp += real_readb(relocation + CDSEG, 0x10a + track_nr * 8);
+	tmp += real_readb(reloc_gen + CDSEG, 0x10a + track_nr * 8);
 	track_start = tmp;
 
 	/* calculate track_end */
-	if (real_readb(relocation + CDSEG, 0x422) == track_nr) {
-		tmp = real_readb(relocation + CDSEG, 0x425) * 60;
-		tmp += real_readb(relocation + CDSEG, 0x424);
+	if (real_readb(reloc_gen + CDSEG, 0x422) == track_nr) {
+		tmp = real_readb(reloc_gen + CDSEG, 0x425) * 60;
+		tmp += real_readb(reloc_gen + CDSEG, 0x424);
 		tmp *= 75;
-		tmp += real_readb(relocation + CDSEG, 0x423);
+		tmp += real_readb(reloc_gen + CDSEG, 0x423);
 	} else {
-		tmp = real_readb(relocation + CDSEG, 0x114 + track_nr * 8) * 60;
-		tmp += real_readb(relocation + CDSEG, 0x113 + track_nr * 8);
+		tmp = real_readb(reloc_gen + CDSEG, 0x114 + track_nr * 8) * 60;
+		tmp += real_readb(reloc_gen + CDSEG, 0x113 + track_nr * 8);
 		tmp *= 75;
-		tmp += real_readb(relocation + CDSEG, 0x112 + track_nr * 8);
+		tmp += real_readb(reloc_gen + CDSEG, 0x112 + track_nr * 8);
 	}
 	track_end = tmp;
 
 	track_len = track_end - track_start;
-	real_writed(relocation + CDSEG, 0x9e, track_len - 150);
+	real_writed(reloc_gen + CDSEG, 0x9e, track_len - 150);
 
-	CD_driver_request(RealMake(relocation + CDSEG, 0x8c));
+	CD_driver_request(RealMake(reloc_gen + CDSEG, 0x8c));
 	ds_writed(0x2468, ((track_len - 150) * 0x1234e) / 0x4b000);
 	ds_writed(0x2464, CD_get_tod());
 }
@@ -146,8 +146,8 @@ void seg001_0312()
 	if (ds_readw(0x95) == 0)
 		return;
 
-	real_writew(relocation + CDSEG, 3, 0);
-	CD_driver_request(RealMake(relocation + CDSEG, 0));
+	real_writew(reloc_gen + CDSEG, 3, 0);
+	CD_driver_request(RealMake(reloc_gen + CDSEG, 0));
 	ds_writew(0x9b, 0);
 }
 
@@ -157,8 +157,8 @@ void seg001_033b()
 		return;
 
 	seg001_0312();
-	real_writew(relocation + CDSEG, 0x1f, 0);
-	CD_driver_request(RealMake(relocation + CDSEG, 0x1c));
+	real_writew(reloc_gen + CDSEG, 0x1f, 0);
+	CD_driver_request(RealMake(reloc_gen + CDSEG, 0x1c));
 }
 void seg001_03a8()
 {
@@ -167,21 +167,21 @@ void seg001_03a8()
 	if (ds_readw(0x95) == 0)
 		return;
 
-	real_writew(relocation + CDSEG, 0x3b, 0);
-	real_writew(relocation + CDSEG, 0x48, relocation + CDSEG);
-	real_writew(relocation + CDSEG, 0x46, 0x420);
-	real_writeb(relocation + CDSEG, 0x420, 10);
-	CD_driver_request(RealMake(relocation + CDSEG, 0x38));
+	real_writew(reloc_gen + CDSEG, 0x3b, 0);
+	real_writew(reloc_gen + CDSEG, 0x48, reloc_gen + CDSEG);
+	real_writew(reloc_gen + CDSEG, 0x46, 0x420);
+	real_writeb(reloc_gen + CDSEG, 0x420, 10);
+	CD_driver_request(RealMake(reloc_gen + CDSEG, 0x38));
 
-	v = real_readb(relocation + CDSEG, 0x421);
-	for (; real_readb(relocation + CDSEG, 0x422) >= v; v++) {
-		real_writew(relocation + CDSEG, 0x3b, 0);
-		real_writew(relocation + CDSEG, 0x48, relocation + CDSEG);
-		real_writew(relocation + CDSEG, 0x46, 0x108 + v * 8);
-		real_writeb(relocation + CDSEG, v * 8 + 0x108, 11);
-		real_writeb(relocation + CDSEG, v * 8 + 0x109, (unsigned char)v);
+	v = real_readb(reloc_gen + CDSEG, 0x421);
+	for (; real_readb(reloc_gen + CDSEG, 0x422) >= v; v++) {
+		real_writew(reloc_gen + CDSEG, 0x3b, 0);
+		real_writew(reloc_gen + CDSEG, 0x48, reloc_gen + CDSEG);
+		real_writew(reloc_gen + CDSEG, 0x46, 0x108 + v * 8);
+		real_writeb(reloc_gen + CDSEG, v * 8 + 0x108, 11);
+		real_writeb(reloc_gen + CDSEG, v * 8 + 0x109, (unsigned char)v);
 
-		CD_driver_request(RealMake(relocation + CDSEG, 0x38));
+		CD_driver_request(RealMake(reloc_gen + CDSEG, 0x38));
 	}
 
 }
