@@ -66,7 +66,6 @@ extern const char* names_spell[];
 
 extern unsigned short datseg;
 extern Bit8u *p_datseg;
-extern unsigned short relocation;
 extern Bitu reloc_game;
 extern Bitu reloc_gen;
 

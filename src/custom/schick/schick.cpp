@@ -12,7 +12,7 @@ static int gen=0;
 //Has the game called gen?
 static int fromgame = 0;
 // Segment relocation
-unsigned short relocation;
+static Bitu relocation;
 
 //Segment relocation of the game
 Bitu reloc_game;
