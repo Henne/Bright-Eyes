@@ -367,9 +367,8 @@ void FIG_init_heroes()
 		ds_writeb(0xe079, 0xff);
 
 
-		host_writeb(get_hero(l_si) + 0x81, (signed char)FIG_add_to_list(0xffff));
+		host_writeb(get_hero(l_si) + 0x81, FIG_add_to_list(-11));
 	}
-
 }
 
 }
