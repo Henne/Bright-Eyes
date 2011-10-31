@@ -4410,14 +4410,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 	}
 }
 
-
-int schick_nearcall_v302de(unsigned offs) {
-
-	unsigned short segm = SegValue(cs)-reloc_game;
-
-	/* Borland C-Lib */
-	if (segm == 0) {
-		switch (offs) {
+static int n_seg000(unsigned offs) {
+	switch (offs) {
 		case 0xb33: {
 			CPU_Pop16();
 			Bit16u handle = CPU_Pop16();
@@ -4439,8 +4433,16 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		default:
 			return 0;
-		}
 	}
+}
+
+int schick_nearcall_v302de(unsigned offs) {
+
+	unsigned short segm = SegValue(cs)-reloc_game;
+
+	/* Borland C-Lib */
+	if (segm == 0) return n_seg000(offs);
+	else 
 	/* seg001 - CD_library */
 	if (segm == 0x4ac) {
 		/* Callers: 1 */
