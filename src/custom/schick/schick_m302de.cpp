@@ -638,17 +638,26 @@ static int seg000(unsigned short offs) {
 		}
 		case 0x4a85: {
 			/*write()*/
-			unsigned short handle = CPU_Pop16();
+			Bit16u handle = CPU_Pop16();
 			RealPt buf = CPU_Pop32();
-			unsigned short val = CPU_Pop16();
+			Bit16u val = CPU_Pop16();
+
+			Bit32s retval;
+
+			retval = bc__write(handle, buf, val);
+
 			CPU_Push16(val);
 			CPU_Push32(buf);
 			CPU_Push16(handle);
 
-			D1_LOG("C-Lib __write(handle=0x%x, buffer=0x%x:0x%x, len=%d)\n",
-				handle, RealSeg(buf), RealOff(buf), val);
+			D1_LOG("C-Lib __write(handle=0x%x, buffer=0x%x:0x%x, len=%d) = %d\n",
+				handle, RealSeg(buf), RealOff(buf),
+				val, retval);
 
-			return 0;
+			reg_dx = 0;
+			reg_ax = retval & 0xffff;
+
+			return 1;
 		}
 		case 0x4a88: {
 			return 0;
