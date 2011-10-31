@@ -11,8 +11,6 @@ static int schick = 0;
 static int gen=0;
 //Has the game called gen?
 static int fromgame = 0;
-// Segment relocation
-static Bitu relocation;
 
 //Segment relocation of the game
 Bitu reloc_game;
@@ -157,7 +155,6 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 	datseg = real_readw(reloc, ip+1);
 	p_datseg_bak = p_datseg;
 	p_datseg = MemBase + PhysMake(datseg, 0);
-	relocation = reloc;
 	D1_TRAC("Dseg: 0x%X\n", datseg);
 
 	/* Check if the start of the Datasegment is Borland C++ */
@@ -220,7 +217,7 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 			schick--;
 			fromgame++;
 
-			D1_INFO("Gen gestartet\nreloc (0x%x)\n", relocation);
+			D1_INFO("Gen gestartet\nreloc (0x%x)\n", reloc_gen);
 		}
 
 		/* enable profiler only on this version */
@@ -241,7 +238,6 @@ void exit_schick(unsigned char exit)
 		gen--;
 		fromgame--;
 		schick++;
-		relocation = reloc_game;
 		datseg = datseg_bak;
 		datseg_bak = 0;
 		p_datseg = p_datseg_bak;
@@ -313,7 +309,7 @@ const char* names_spell[] = {
  * and the stub is ajusted with far jumps to the corrosponding funcs.
  */
 int get_ovrseg(unsigned short stub_seg) {
-	Bit8u *p = MemBase + (relocation<<4) + (stub_seg<<4);
+	Bit8u *p = MemBase + (reloc_game<<4) + (stub_seg<<4);
 
 	if (host_readw(p) != 0x3fcd) {
 		D1_ERR("Error: %x is not an overlay segment\n", stub_seg);
@@ -337,20 +333,15 @@ int schick_callf(unsigned selector, unsigned offs)
 	if (selector >= 0xa000)
 		return 0;
 
-	unsigned short segm = selector - relocation;
-	int ret = 0;
-
 	if (schick && !fromgame) {
-		ret = schick_farcall_v302de(segm, offs);
-		return ret;
+		return schick_farcall_v302de(selector - reloc_game, offs);
 	}
 
 	if (gen) {
-		ret = schick_farcall_gen105(segm, offs);
-		return ret;
+		return schick_farcall_gen105(selector - reloc_gen, offs);
 	}
 
-	return ret;
+	return 0;
 }
 
 // Intercept near CALLs, 16-Bit
@@ -364,13 +355,11 @@ int schick_calln16(unsigned offs) {
 	int ret = 0;
 
 	if (schick && !fromgame) {
-		ret = schick_nearcall_v302de(offs);
-		return ret;
+		return schick_nearcall_v302de(offs);
 	}
 
 	if (gen) {
-		ret = schick_nearcall_gen105(offs);
-		return ret;
+		return schick_nearcall_gen105(offs);
 	}
 
 	return ret;
