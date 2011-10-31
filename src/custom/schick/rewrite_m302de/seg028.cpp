@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 3/19
+	Functions rewritten: 4/19
 */
 
 #include "schick.h"
@@ -38,6 +38,18 @@ void load_npc(signed short index)
 			host_writeb(npc_dst + 0x9b, 10);
 	}
 
+
+}
+
+void save_npc(signed short index)
+{
+	Bit16u fd;
+
+	fd = load_archive_file(index | 0x8000);
+
+	bc__write(fd, ds_readd(HEROS) + 0x291c, 0x6da);
+
+	bc_close(fd);
 
 }
 

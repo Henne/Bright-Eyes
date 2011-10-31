@@ -2543,7 +2543,11 @@ static int seg028(unsigned short offs) {
 		return 1;
 	}
 	case 0x66: {
-		return 0;
+		Bit16s index = CPU_Pop16();
+		D1_LOG("save_npc(%s);\n", get_fname(index));
+		save_npc(index);
+		CPU_Push16(index);
+		return 1;
 	}
 	case 0x6b: {
 		return 0;
