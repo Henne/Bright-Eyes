@@ -76,36 +76,36 @@ void seg001_00c1(unsigned short track_nr) {
 	if (ds_readw(0x95) == 0)
 		return;
 
-	real_writew(relocation + 0x1238, 0x8f, 0);
+	real_writew(reloc_game + 0x1238, 0x8f, 0);
 
-	tmp = real_readd(relocation + 0x1238, 0x10a + track_nr * 8) & 0x00ffffff;
-	real_writed(relocation + 0x1238, 0x9a, tmp);
+	tmp = real_readd(reloc_game + 0x1238, 0x10a + track_nr * 8) & 0x00ffffff;
+	real_writed(reloc_game + 0x1238, 0x9a, tmp);
 
 	/* calculate track_start */
-	tmp = real_readb(relocation + 0x1238, 0x10c + track_nr * 8) * 60;
-	tmp += real_readb(relocation + 0x1238, 0x10b + track_nr * 8);
+	tmp = real_readb(reloc_game + 0x1238, 0x10c + track_nr * 8) * 60;
+	tmp += real_readb(reloc_game + 0x1238, 0x10b + track_nr * 8);
 	tmp *= 75;
-	tmp += real_readb(relocation + 0x1238, 0x10a + track_nr * 8);
+	tmp += real_readb(reloc_game + 0x1238, 0x10a + track_nr * 8);
 	track_start = tmp;
 
 	/* calculate track_end */
-	if (real_readb(relocation + 0x1238, 0x422) == track_nr) {
-		tmp = real_readb(relocation + 0x1238, 0x425) * 60;
-		tmp += real_readb(relocation + 0x1238, 0x424);
+	if (real_readb(reloc_game + 0x1238, 0x422) == track_nr) {
+		tmp = real_readb(reloc_game + 0x1238, 0x425) * 60;
+		tmp += real_readb(reloc_game + 0x1238, 0x424);
 		tmp *= 75;
-		tmp += real_readb(relocation + 0x1238, 0x423);
+		tmp += real_readb(reloc_game + 0x1238, 0x423);
 	} else {
-		tmp = real_readb(relocation + 0x1238, 0x114 + track_nr * 8) * 60;
-		tmp += real_readb(relocation + 0x1238, 0x113 + track_nr * 8);
+		tmp = real_readb(reloc_game + 0x1238, 0x114 + track_nr * 8) * 60;
+		tmp += real_readb(reloc_game + 0x1238, 0x113 + track_nr * 8);
 		tmp *= 75;
-		tmp += real_readb(relocation + 0x1238, 0x112 + track_nr * 8);
+		tmp += real_readb(reloc_game + 0x1238, 0x112 + track_nr * 8);
 	}
 	track_end = tmp;
 
 	track_len = track_end - track_start;
-	real_writed(relocation + 0x1238, 0x9e, track_len - 150);
+	real_writed(reloc_game + 0x1238, 0x9e, track_len - 150);
 
-	CD_driver_request(RealMake(relocation + 0x1238, 0x8c));
+	CD_driver_request(RealMake(reloc_game + 0x1238, 0x8c));
 	ds_writed(0xbc4e, ((track_len - 150) * 0x1234e) / 0x4b000);
 	ds_writed(0xbc4a, CD_get_tod());
 }
@@ -141,8 +141,8 @@ void seg001_0322() {
 	if (ds_readw(0x95) == 0)
 		return;
 
-	real_writew(relocation + 0x1238, 3, 0);
-	CD_driver_request(RealMake(relocation + 0x1238, 0));
+	real_writew(reloc_game + 0x1238, 3, 0);
+	CD_driver_request(RealMake(reloc_game + 0x1238, 0));
 	ds_writew(0x9b, 0);
 }
 
@@ -151,8 +151,8 @@ void seg001_034f() {
 		return;
 
 	seg001_0322();
-	real_writew(relocation + 0x1238, 0x1f, 0);
-	CD_driver_request(RealMake(relocation + 0x1238, 0x1c));
+	real_writew(reloc_game + 0x1238, 0x1f, 0);
+	CD_driver_request(RealMake(reloc_game + 0x1238, 0x1c));
 }
 
 void CD_audio_pause() {
@@ -172,8 +172,8 @@ void CD_audio_pause() {
 	/* set current position to maximum singned int */
 	ds_writed(0xbc4e, 0x7fffffff);
 
-	real_writew(relocation + 0x1238, 0xab, 0);
-	CD_driver_request(RealMake(relocation + 0x1238, 0xa8));
+	real_writew(reloc_game + 0x1238, 0xab, 0);
+	CD_driver_request(RealMake(reloc_game + 0x1238, 0xa8));
 }
 
 void CD_audio_play() {
@@ -192,8 +192,8 @@ void CD_audio_play() {
 	ds_writed(0xbc4e, ds_readd(0xbc38));
 	ds_writed(0xbc4a, CD_get_tod() - ds_readd(0xbc3c) + ds_readd(0xbc4a));
 
-	real_writew(relocation + 0x1238, 0xc7, 0);
-	CD_driver_request(RealMake(relocation + 0x1238, 0xc4));
+	real_writew(reloc_game + 0x1238, 0xc7, 0);
+	CD_driver_request(RealMake(reloc_game + 0x1238, 0xc4));
 }
 
 }
