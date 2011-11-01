@@ -11,6 +11,8 @@ void npc_ardora();
 void npc_garsvik();
 //0x39
 void npc_erwo();
+//0x3e
+void remove_npc(signed short, signed char, signed short, Bit8u*, Bit8u*);
 //0x43
 void add_npc(signed short);
 //0x48

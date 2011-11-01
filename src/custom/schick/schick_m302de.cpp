@@ -3288,7 +3288,25 @@ static int seg073(unsigned short offs) {
 static int seg095(unsigned short offs) {
 	switch (offs) {
 		case 0x3e: {
-			return 0;
+			Bit16s head_index = CPU_Pop16();
+			Bit16s days = CPU_Pop16();
+			Bit16s index = CPU_Pop16();
+			RealPt name = CPU_Pop32();
+			RealPt text = CPU_Pop32();
+
+			remove_npc(head_index, (signed char)days, index,
+				Real2Host(name), Real2Host(text));
+
+			D1_INFO("remove_npc(%x, %d, %x, %x, %x);\n",
+				head_index, (signed char)days, index,
+				name, text);
+
+			CPU_Push32(text);
+			CPU_Push32(name);
+			CPU_Push16(index);
+			CPU_Push16(days);
+			CPU_Push16(head_index);
+			return 1;
 		}
 		case 0x43: {
 			Bit16s index = CPU_Pop16();
@@ -5430,7 +5448,26 @@ int schick_nearcall_v302de(unsigned offs) {
 				return 1;
 			}
 			case 0xbfb: {
-				return 0;
+				CPU_Pop16();
+				Bit16s head_index = CPU_Pop16();
+				Bit16s days = CPU_Pop16();
+				Bit16s index = CPU_Pop16();
+				RealPt name = CPU_Pop32();
+				RealPt text = CPU_Pop32();
+
+				remove_npc(head_index, (signed char)days, index,
+					Real2Host(name), Real2Host(text));
+
+				D1_INFO("remove_npc(%x, %d, %x, %x, %x);\n",
+					head_index, (signed char)days, index,
+					name, text);
+
+				CPU_Push32(text);
+				CPU_Push32(name);
+				CPU_Push16(index);
+				CPU_Push16(days);
+				CPU_Push16(head_index);
+				return 1;
 			}
 			case 0xcb8: {
 				CPU_Pop16();

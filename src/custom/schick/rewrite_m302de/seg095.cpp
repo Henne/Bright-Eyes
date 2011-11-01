@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 8/10
+	Functions rewritten: 9/10
 */
 
 #include <string.h>
@@ -14,6 +14,7 @@
 #include "seg029.h"
 #include "seg095.h"
 #include "seg097.h"
+#include "seg120.h"
 
 namespace M302de {
 
@@ -416,6 +417,50 @@ void npc_erwo()
 
 	/* load TAVERN.TLK */
 	load_tlk(0x82);
+}
+
+void remove_npc(signed short head_index, signed char days,
+		signed short index, Bit8u* name, Bit8u *text)
+{
+
+	if (ds_readb(0x4475) != 0)
+		refresh_colors();
+
+	/* reset NPCs groups position */
+	/* TODO: this is bogus, since memset() will come */
+	host_writeb(get_hero(7) + 0x8a, 0);
+
+	/* save the NPC */
+	save_npc(index);
+
+
+	/* print farewell message if the NPC has and can */
+	if (text != NULL && text != MemBase) {
+		if (check_hero(get_hero(7)) != 0) {
+			load_in_head(head_index);
+			GUI_dialogbox(ds_readd(0xd2f3), name, text, 0);
+		}
+	}
+
+	/* clear the NPC from memory */
+	memset(get_hero(7), 0, 0x6da);
+
+	/* dec group counter */
+	ds_writeb(0x2d36 + ds_readb(0x2d35),
+		ds_readb(0x2d36 + ds_readb(0x2d35) - 1));
+
+	/* dec global hero counter */
+	ds_writeb(0x2d3c, ds_readb(0x2d3c) - 1);
+
+	ds_writeb(0x46df, 1);
+
+	/* TODO:	check_hero() will now, after memset() return 0,
+			so the parameter days is useless */
+	if (check_hero(get_hero(7)) != 0)
+		ds_writeb(0x3520 + index, days);
+	else
+		ds_writeb(0x3520 + index, -1);
+
 }
 
 
