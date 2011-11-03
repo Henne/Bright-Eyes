@@ -22,7 +22,7 @@ unsigned short npc_meetings(unsigned short type_index)
 {
 
 	/* check if an NPC is in the party */
-	if (host_readb(get_hero(7) + 0x21) != 0)
+	if (host_readb(get_hero(6) + 0x21) != 0)
 		return 0;
 
 	/* check if we had an NPC conversation here */
@@ -428,7 +428,7 @@ void remove_npc(signed short head_index, signed char days,
 
 	/* reset NPCs groups position */
 	/* TODO: this is bogus, since memset() will come */
-	host_writeb(get_hero(7) + 0x8a, 0);
+	host_writeb(get_hero(6) + 0x8a, 0);
 
 	/* save the NPC */
 	save_npc(index);
@@ -436,14 +436,14 @@ void remove_npc(signed short head_index, signed char days,
 
 	/* print farewell message if the NPC has and can */
 	if (text != NULL && text != MemBase) {
-		if (check_hero(get_hero(7)) != 0) {
+		if (check_hero(get_hero(6)) != 0) {
 			load_in_head(head_index);
 			GUI_dialogbox(ds_readd(0xd2f3), name, text, 0);
 		}
 	}
 
 	/* clear the NPC from memory */
-	memset(get_hero(7), 0, 0x6da);
+	memset(get_hero(6), 0, 0x6da);
 
 	/* dec group counter */
 	ds_writeb(0x2d36 + ds_readb(0x2d35),
@@ -456,7 +456,7 @@ void remove_npc(signed short head_index, signed char days,
 
 	/* TODO:	check_hero() will now, after memset() return 0,
 			so the parameter days is useless */
-	if (check_hero(get_hero(7)) != 0)
+	if (check_hero(get_hero(6)) != 0)
 		ds_writeb(0x3520 + index, days);
 	else
 		ds_writeb(0x3520 + index, -1);
