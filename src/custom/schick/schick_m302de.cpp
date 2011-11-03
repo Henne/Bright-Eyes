@@ -33,6 +33,7 @@
 #include "seg044.h"
 #include "seg046.h"
 #include "seg047.h"
+#include "seg050.h"
 #include "seg063.h"
 #include "seg068.h"
 #include "seg095.h"
@@ -3150,6 +3151,34 @@ static int seg047(unsigned short offs) {
 	}
 }
 
+static int seg050(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			Bit16u hero_nr = CPU_Pop16();
+
+			D1_LOG("level_up(%s);\n", get_hero(hero_nr) + 0x10);
+
+			CPU_Push16(hero_nr);
+			return 0;
+		}
+		case 0x2f: {
+			RealPt hero = CPU_Pop32();
+			Bit16u skill = CPU_Pop16();
+
+			D1_LOG("inc_skill_novice(%s, %s);\n",
+				schick_getCharname(hero), names_skill[skill]);
+
+			CPU_Push16(skill);
+			CPU_Push32(hero);
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg053(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -4360,7 +4389,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1348:	return seg047(offs);
 		case 0x1350:	return 0;
 		case 0x1353:	return 0;
-		case 0x1358:	return 0;
+		case 0x1358:	return seg050(offs);
 		case 0x135c:	return 0;
 		case 0x135f:	return 0;
 		case 0x1362:	return seg053(offs);
@@ -4451,6 +4480,67 @@ static int n_seg000(unsigned offs) {
 		}
 		default:
 			return 0;
+	}
+}
+
+static int n_seg050(unsigned short offs) {
+	switch (offs) {
+		case 0x0000: {
+			Bit16u cs = CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16u spell = CPU_Pop16();
+
+			D1_LOG("inc_spell_advanced(%s, %s);\n",
+				schick_getCharname(hero), names_spell[spell]);
+
+			CPU_Push16(spell);
+			CPU_Push32(hero);
+			CPU_Push16(cs);
+			return 0;
+		}
+		case 0x01ec: {
+			Bit16u cs = CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16u skill = CPU_Pop16();
+
+			D1_LOG("inc_skill_advanced(%s, %s);\n",
+				schick_getCharname(hero), names_skill[skill]);
+
+			CPU_Push16(skill);
+			CPU_Push32(hero);
+			CPU_Push16(cs);
+			return 0;
+		}
+		case 0x03d2: {
+			Bit16u cs = CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16u skill = CPU_Pop16();
+
+			D1_LOG("inc_skill_novice(%s, %s);\n",
+				schick_getCharname(hero), names_skill[skill]);
+
+			CPU_Push16(skill);
+			CPU_Push32(hero);
+			CPU_Push16(cs);
+			return 0;
+		}
+		case 0x04b1: {
+			Bit16u cs = CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16u spell = CPU_Pop16();
+
+			D1_LOG("inc_spell_novice(%s, %s);\n",
+				schick_getCharname(hero), names_spell[spell]);
+
+			CPU_Push16(spell);
+			CPU_Push32(hero);
+			CPU_Push16(cs);
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
 	}
 }
 
@@ -5414,6 +5504,9 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
+
+	if (is_ovrseg(0x1358))
+		return n_seg050(offs);
 	/* seg095 */
 	if (is_ovrseg(0x1432)) {
 		switch (offs) {
