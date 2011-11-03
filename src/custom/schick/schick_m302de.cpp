@@ -3167,10 +3167,11 @@ static int seg050(unsigned short offs) {
 
 			D1_LOG("inc_skill_novice(%s, %s);\n",
 				schick_getCharname(hero), names_skill[skill]);
+			inc_skill_novice(Real2Host(hero), skill);
 
 			CPU_Push16(skill);
 			CPU_Push32(hero);
-			return 0;
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -4512,17 +4513,17 @@ static int n_seg050(unsigned short offs) {
 			return 0;
 		}
 		case 0x03d2: {
-			Bit16u cs = CPU_Pop16();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16u skill = CPU_Pop16();
 
 			D1_LOG("inc_skill_novice(%s, %s);\n",
 				schick_getCharname(hero), names_skill[skill]);
+			inc_skill_novice(Real2Host(hero), skill);
 
 			CPU_Push16(skill);
 			CPU_Push32(hero);
-			CPU_Push16(cs);
-			return 0;
+			return 1;
 		}
 		case 0x04b1: {
 			Bit16u cs = CPU_Pop16();
