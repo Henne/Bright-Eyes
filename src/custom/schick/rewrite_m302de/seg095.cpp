@@ -468,7 +468,8 @@ void add_npc(signed short index)
 {
 	load_npc(index);
 
-	memcpy(get_hero(0) + 0x2bf6, Real2Host(ds_readd(0xd2f3)), 0x400);
+	/* overwrite the picture of the NPC with one from IN_HEAD.NVF */
+	memcpy(get_hero(6) + 0x2da, Real2Host(ds_readd(0xd2f3)), 0x400);
 
 	/* increment heros in that group */
 	ds_writeb(0x2d36 + ds_readb(0x2d35),
@@ -477,10 +478,14 @@ void add_npc(signed short index)
 	/* increment heros */
 	ds_writew(0x2d3c, ds_readw(0x2d3c) + 1);
 
+	/* reset the months the NPC is in the group */
 	ds_writew(0x3470, 0);
 
-	host_writeb(get_hero(0) + 0x29a5, index + 31);
-	host_writeb(get_hero(0) + 0x29a3, ds_readb(0x2d35));
+	/* set a number to deciede between the NPCs (1-6) */
+	host_writeb(get_hero(6) + 0x89, index - 0xe1);
+
+	/* set the group the NPC contains in */
+	host_writeb(get_hero(6) + 0x87, ds_readb(0x2d35));
 
 	draw_status_line();
 }
