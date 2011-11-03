@@ -3353,7 +3353,9 @@ static int seg095(unsigned short offs) {
 			return 1;
 		}
 		case 0x4d: {
-			return 0;
+			D1_INFO("npc_farewell();\n");
+			npc_farewell();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

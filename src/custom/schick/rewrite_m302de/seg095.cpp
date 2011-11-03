@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 9/10
+	Functions rewritten: 10/10 (complete)
 */
 
 #include <string.h>
@@ -12,6 +12,7 @@
 #include "seg026.h"
 #include "seg028.h"
 #include "seg029.h"
+#include "seg050.h"
 #include "seg095.h"
 #include "seg097.h"
 #include "seg120.h"
@@ -80,6 +81,97 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	return 0;
+}
+
+void npc_farewell()
+{
+	Bit8u *hero_i;
+	Bit16s tmp;
+	Bit16u i;
+
+	/* no NPC there */
+	if (host_readb(get_hero(6) + 0x21) == 0)
+		return;
+
+	/* no NPC in that group */
+	if (host_readb(get_hero(6) + 0x87) != ds_readb(0x2d35))
+		return;
+
+	/* The NPC will be removed after 99 Months ingame time. Weird! */
+	if (check_hero(get_hero(6)) == 0 && ds_readw(0x3470) < 99)
+		return;
+
+	tmp = ds_readw(0x26bf);
+	load_buffer_1(0xe1);
+
+	switch (host_readb(get_hero(6) + 0x89)) {
+		/* Nariell */
+		case 1: {
+			if (ds_readw(0x3470) >= 2)
+				remove_npc(0x14, 0x1f, 0xe2,
+					get_ltx(0xbc4), get_dtp(0x24));
+			break;
+		}
+		/* Harika */
+		case 2: {
+			if (ds_readw(0x3470) >= 2) {
+				if (ds_readw(0x3470) >= 99 ||
+					ds_readw(0x2d67) == 1 ||
+					ds_readw(0x2d67) == 0x12 ||
+					ds_readw(0x2d67) == 0x27 ||
+					ds_readw(0x2d67) == 0x11) {
+
+					remove_npc(0x16, 0x1f, 0xe3,
+						get_ltx(0xbc8), get_dtp(0x4c));
+
+					hero_i = get_hero(0);
+					for (i = 0; i < 6; i++, hero_i += 0x6da) {
+						if (host_readb(hero_i + 0x21) == 0)
+							continue;
+						if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+							continue;
+						if ((host_readb(hero_i + 0xaa) & 1) != 0)
+							continue;
+
+						/* try to increase sneaking */
+						inc_skill_novice(hero_i, 0xd);
+					}
+				}
+			}
+			break;
+		}
+		/* Curian */
+		case 3: {
+			if (ds_readw(0x3470) >= 6)
+				remove_npc(0x19, 0x40, 0xe4,
+					get_ltx(0xbcc), get_dtp(0x74));
+			break;
+		}
+		/* Ardora */
+		case 4: {
+			if (ds_readw(0x3470) >= 1)
+				remove_npc(0x15, 0x1f, 0xe5,
+					get_ltx(0xbd0), get_dtp(0xac));
+			break;
+		}
+		/* Garsvik */
+		case 5: {
+			if (ds_readw(0x3470) >= 2)
+				remove_npc(0x17, 0x1f, 0xe6,
+					get_ltx(0xbd4), get_dtp(0xd4));
+			break;
+		}
+		/* Erwo */
+		case 6: {
+			if (ds_readw(0x3470) >= 2)
+				remove_npc(0x18, 0x1f, 0xe7,
+					get_ltx(0xbd8), get_dtp(0xfc));
+			break;
+		}
+	}
+
+	if (tmp != -1 && tmp != 0xe1)
+		load_buffer_1(tmp);
 }
 
 //static

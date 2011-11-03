@@ -17,5 +17,7 @@ void remove_npc(signed short, signed char, signed short, Bit8u*, Bit8u*);
 void add_npc(signed short);
 //0x48
 unsigned short npc_meetings(unsigned short);
+//0x4d
+void npc_farewell();
 
 }
