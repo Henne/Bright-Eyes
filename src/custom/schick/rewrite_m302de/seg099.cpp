@@ -27,7 +27,7 @@ void spell_destructibo()
 void spell_grosse_gier()
 {
 	D1_INFO("Zauberspruch \"Grosse Gier\" ist nicht implementiert\n");
-	ds_writew(0xac02, -2);
+	ds_writew(0xac0e, -2);
 }
 
 void spell_grosse_ver()
@@ -37,12 +37,12 @@ void spell_grosse_ver()
 
 	/* this spell does not work on all kind of sleletons */
 	if (host_readb(Real2Host(ds_readd(0xe5b4)) + 1) == 0x1c) {
-		ds_writew(0xac02, -2);
+		ds_writew(0xac0e, -2);
 		return;
 	}
 
 	/* cost is 8 AP */
-	ds_writew(0xac02, 8);
+	ds_writew(0xac0e, 8);
 
 	/* Sub -2 from AT */
 	host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x1c,
