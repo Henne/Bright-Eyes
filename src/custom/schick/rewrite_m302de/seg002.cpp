@@ -500,8 +500,8 @@ void wait_for_keyboard1() {
 
 //static
 void timers_daily() {
+	Bit8u *hero_i;
 	unsigned short i = 0;
-	PhysPt hero_i;
 
 	/* Smith / items to repair */
 	for (i = 0; i < 50; i++) {
@@ -517,14 +517,14 @@ void timers_daily() {
 	for (i = 0; i < 94; i++)
 		ds_writeb(0x3592 + i, 0);
 
-	hero_i = Real2Phys(ds_readd(HEROS));
+	hero_i = get_hero(0);
 	for (i = 0; i <=6; i++, hero_i += 0x6da) {
-		if (mem_readb(hero_i + 0x21) == 0)
+		if (host_readb(hero_i + 0x21) == 0)
 			continue;
-		if ((signed char)mem_readb(hero_i + 0x94) <= 0)
+		if ((signed char)host_readb(hero_i + 0x94) <= 0)
 			continue;
 
-		mem_writeb(hero_i + 0x94, mem_readb(hero_i + 0x94) - 1);
+		host_writeb(hero_i + 0x94, host_readb(hero_i + 0x94) - 1);
 	}
 
 	ds_writew(0x26b9, 1);
@@ -1059,18 +1059,18 @@ void seg002_3b63() {
 }
 
 void seg002_3c63() {
-	PhysPt p;
+	Bit8u *p;
 	unsigned short i;
 
-	p = PhysMake(datseg, 0x6f00);
+	p = MemBase + PhysMake(datseg, 0x6f00);
 
 	/* Orig-BUG: the loop operates only on the first element
 		sizeof(element) == 8 */
 	/* for (i = 0; i < 45; i++) */
 
 	for (i = 0; i < 45; p += 8, i++)
-		if (mem_readb(p + 4) == 0)
-			mem_writeb(p + 4, -1);
+		if (host_readb(p + 4) == 0)
+			host_writeb(p + 4, -1);
 
 	/* If a passage is hired and the timer is zero, reset the passage */
 	if ((ds_readb(0x42ae) == 170) && (ds_readb(0x42af) == 0))
