@@ -4,6 +4,8 @@ namespace M302de {
 
 //0x25
 void spell_destructibo();
+//0x2a
+void spell_gardanium();
 
 /* Domination / Beherrschung */
 

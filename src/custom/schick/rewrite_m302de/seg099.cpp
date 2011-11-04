@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 3/39
+ *	Functions rewritten 4/39
  *
 */
 
@@ -21,7 +21,45 @@ namespace M302de {
 void spell_destructibo()
 {
         D1_INFO("Zauberspruch \"Destructibo\" ist nicht implementiert\n");
-	ds_writew(0xac02, -2);
+	ds_writew(0xac0e, -2);
+}
+
+void spell_gardanium()
+{
+	signed short answer;
+
+	/* prepare a question */
+	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		(char*)get_dtp(0x8), (char*)(get_spelluser() + 0x10));
+
+	/* ask and get the answer */
+	answer = GUI_input(Real2Host(ds_readd(0xd2f3)), 2);
+
+	/* clear the textbuffer */
+	host_writeb(Real2Host(ds_readd(0xd2f3)), 0);
+
+	if (answer <= 0) {
+		ds_writew(0xac0e, 0);
+		return;
+	}
+
+	if (host_readw(get_spelluser() + 0x64) >= answer) {
+		/* enough AE */
+
+		/* TODO: this adds the AE to a variable no one reads */
+		ds_writew(0x333e, ds_readw(0x333e) + answer);
+		/* set AE costs */
+		ds_writew(0xac0e, answer);
+		/* prepare the message */
+		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x1c));
+	} else {
+		/* not enough AE */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_ltx(0x97c), (char*)get_spelluser() + 0x10);
+		/* set AE costs */
+		ds_writew(0xac0e, 0);
+	}
 }
 
 void spell_grosse_gier()
