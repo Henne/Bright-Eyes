@@ -860,7 +860,7 @@ static bool eh_installed;
 /* DS:0x1a11 */
 static Bit8u *bg_buffer[MAX_PAGES];
 /* DS:0x1a3d */
-static long bg_len[MAX_PAGES];
+static unsigned short bg_len[MAX_PAGES];
 /* DS:0x1a69 */
 static Bit8u *typus_buffer[MAX_TYPES];
 /* DS:0x1a9d */
@@ -2275,7 +2275,7 @@ void load_page(Bit16u page)
 
 		if (ptr) {
 			bg_buffer[page] = ptr;
-			bg_len[page] = get_filelength();
+			bg_len[page] = (unsigned short)get_filelength();
 			fd_read_datfile(fd, bg_buffer[page], bg_len[page]);
 			decomp_rle(Real2Host(ds_readd(0x47d3)),
 				bg_buffer[page], 0, 0, 320, 200, 0);
@@ -2321,7 +2321,8 @@ void load_typus(Bit16u typus)
 		/* load the file into the typus buffer */
 		typus_buffer[typus] = ptr;
 		typus_len[typus] = get_filelength();
-		fd_read_datfile(fd, typus_buffer[typus], typus_len[typus]);
+		fd_read_datfile(fd, typus_buffer[typus],
+			(unsigned short)typus_len[typus]);
 		decomp_pp20(typus_buffer[typus],
 			Real2Host(ds_readd(0x47b3)),
 			NULL, typus_len[typus]);
@@ -2464,7 +2465,7 @@ static FILE * fd_open_datfile(Bit16u index)
 {
 	FILE *fd;
 	char *fname;
-	signed long offset;
+	signed int offset;
 	Bit8u buf[800];
 
 
@@ -2490,7 +2491,7 @@ static FILE * fd_open_datfile(Bit16u index)
 
 
 	offset = get_archive_offset(fnames_g105de[index], buf);
-	ds_writew(0x3f36, offset);
+	ds_writew(0x3f36, (unsigned short)offset);
 
 
 	if (offset == -1) {
@@ -2509,7 +2510,7 @@ static Bit16u fd_read_datfile(FILE * fd, Bit8u *buf, Bit16u len)
 {
 
 	if (len > flen_left)
-		len = flen_left;
+		len = (unsigned short)flen_left;
 
 	len = fread(buf, 1, len, fd);
 
@@ -2590,8 +2591,11 @@ signed int process_nvf(struct nvf_desc *nvf) {
 
 	case 0x01:
 		offs = pics * 4 + 3;
-		for (i = 0; i < nvf->nr; i++)
+		for (i = 0; i < nvf->nr; i++) {
+			width = host_readw(nvf->src + i * 4 + 3);
+			height = host_readw(nvf->src + i * 4 + 5);
 			offs += width * height;
+		}
 
 		width = host_readw(nvf->src + nvf->nr * 4 + 3);
 		height = host_readw(nvf->src + nvf->nr * 4 + 5);
@@ -2599,7 +2603,7 @@ signed int process_nvf(struct nvf_desc *nvf) {
 		src = nvf->src + offs;
 		break;
 
-	case 0x02: case 0x04:
+	case 0x02:
 		width = host_readw(nvf->src + 3);
 		height = host_readw(nvf->src + 5);
 		offs = pics * 4 + 7;
@@ -2610,7 +2614,7 @@ signed int process_nvf(struct nvf_desc *nvf) {
 		src = nvf->src + offs;
 		break;
 
-	case 0x03: case 0x05:
+	case 0x03:
 		offs = pics * 8 + 3;
 		for (i = 0; i < nvf->nr; i++)
 			offs += host_readd(nvf->src  + (i * 8) + 7);
@@ -2691,7 +2695,7 @@ Bit16u read_datfile(Bit16u handle, Bit8u *buf, Bit16u len)
 {
 
 	if (len > flen_left)
-		len = flen_left;
+		len = (unsigned short)flen_left;
 
 	len = bc__read(handle, buf, len);
 
@@ -2750,9 +2754,9 @@ void init_video()
 void exit_video()
 {
 	/* restore old mode */
-	set_video_mode(ds_readw(0x47dd));
+	set_video_mode((unsigned char)ds_readw(0x47dd));
 	/* restore old page */
-	set_video_page(ds_readw(0x47db));
+	set_video_page((unsigned char)ds_readw(0x47db));
 }
 
 void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
@@ -2768,7 +2772,8 @@ void draw_v_line(Bit16u x, Bit16u y1, Bit16u y2, Bit16u color)
 	len = y2 - y1 + 1;
 	off = y1 * 320 + x;
 
-	draw_h_spaced_dots(PhysMake(0xa000, off), len, color, 320);
+	draw_h_spaced_dots(PhysMake(0xa000, off), len,
+		(unsigned char)color, 320);
 }
 
 void do_draw_pic(Bit16u mode)
@@ -2803,7 +2808,7 @@ void do_draw_pic(Bit16u mode)
 
 void call_fill_rect_gen(PhysPt ptr, Bit16u x1, Bit16u y1, Bit16u x2, Bit16u y2, Bit16u color)
 {
-	fill_rect(ptr + y1 * 320 + x1, color, x2 - x1 + 1, y2 - y1 + 1);
+	fill_rect(ptr + y1 * 320 + x1, (unsigned char)color, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 void wait_for_vsync()
@@ -3056,7 +3061,7 @@ void fill_smth() {
 
 	for (i = 0; i < 8; i++, ptr += 8)
 		for (j = 0; j < 8; j++)
-			host_writeb(ptr + j, bg_color);
+			host_writeb(ptr + j, (unsigned char)bg_color);
 }
 
 /* static */
@@ -3077,7 +3082,7 @@ void fill_smth2(Bit8u* ptr) {
 			if (!((0x80 >> j) & lv))
 				continue;
 
-			host_writeb(lp + j, fg_color[col_index]);
+			host_writeb(lp + j, (unsigned char)fg_color[col_index]);
 		}
 	}
 }
@@ -3215,9 +3220,9 @@ Bit16u enter_string(char *dst, Bit16u x, Bit16u y, Bit16u num, Bit16u zero)
 				di -= width;
 		} else {
 			if (!(ds_readb(0x1ff9 + c) & 0x0e) &&
-				(c != 0x84 & 0xff) && (c != 0x94 & 0xff) &&
-				(c != 0x81 & 0xff) && (c != 0x8e & 0xff) &&
-				(c != 0x99 & 0xff) && (c != 0x9a & 0xff) &&
+				((c & 0xff) != 0x84) && ((c & 0xff) != 0x94) &&
+				((c & 0xff) != 0x81) && ((c & 0xff) != 0x8e) &&
+				((c & 0xff) != 0x99) && ((c & 0xff) != 0x9a) &&
 				(c != 0x20) && (c != 0x2e))
 					continue;
 
@@ -3972,12 +3977,12 @@ void calc_at_pa() {
 		base++;
 
 	/* save AT/PA base value */
-	hero.atpa = base;
+	hero.atpa = (signed char)base;
 
 	for (i = 0; i < 7; i++) {
 		/* set the weapon values to base */
-		hero.pa[i] = base;
-		hero.at[i] = base;
+		hero.pa[i] = (signed char)base;
+		hero.at[i] = (signed char)base;
 
 		if (hero.skills[i] < 0) {
 			/* calculate ATPA for negative weapon skill */
@@ -4123,7 +4128,7 @@ void fill_values()
 	}
 
 	/* roll out size */
-	hero.height = random_interval_gen(height_range[hero.typus].min,
+	hero.height = (unsigned char)random_interval_gen(height_range[hero.typus].min,
 				height_range[hero.typus].max);
 
 	/* calculate weight i = (height - weight_mod) * 40 */
@@ -4144,7 +4149,7 @@ void fill_values()
 	hero.mr += mr_mod[hero.typus];
 
 	/* roll out god */
-	hero.god = random_gen(12);
+	hero.god = (unsigned char)random_gen(12);
 
 	/* add gods boni */
 	switch (hero.god) {
@@ -4456,14 +4461,14 @@ void new_values()
 	ds_writew(0x11fe, 0);
 
 	for (j = 0; j < 7; j++) {
-		bv1 = random_interval_gen(8, 13);
+		bv1 = (unsigned char)random_interval_gen(8, 13);
 		bv2 = 0;
 
 		for (i = 0; i < 7; i++) {
 			if (hero.attribs[i].normal)
 				continue;
 
-			values[bv2] = i;
+			values[bv2] = (signed char)i;
 			type_names[bv2] = texts[0x80 / 4 + i];
 			bv2++;
 		}
@@ -4494,14 +4499,14 @@ void new_values()
 	}
 
 	for (j = 0; j < 7; j++) {
-		bv1 = random_interval_gen(2, 7);
+		bv1 = (signed char)random_interval_gen(2, 7);
 		bv2 = 0;
 
 		for (i = 0; i < 7; i++) {
 			if (hero.attribs[i + 7].normal)
 				continue;
 
-			values[bv2] = i;
+			values[bv2] = (signed char)i;
 			type_names[bv2] = texts[0x9c / 4 + i];
 			bv2++;
 		}
@@ -4688,7 +4693,7 @@ void select_typus()
 		else
 			type_names[possible_types] = texts[17 + i];
 
-		t.t[possible_types] = i;
+		t.t[possible_types] = (char)i;
 		possible_types++;
 
 	}
@@ -6413,8 +6418,9 @@ void choose_atpa()
 void choose_typus()
 {
 	char name_bak[20];
-	Bit16u randval, i, typus_names;
-	Bit16s choosen_typus;
+	unsigned short i, typus_names;
+	signed short choosen_typus;
+	unsigned char randval;
 	char sex_bak;
 
 	if (!gui_bool((Bit8u*)texts[264]))
@@ -6446,12 +6452,12 @@ void choose_typus()
 	strcpy(hero.name, name_bak);
 
 	/* set typus */
-	hero.typus = choosen_typus;
+	hero.typus = (unsigned char)choosen_typus;
 
 	/* roll out good attribute values */
 	for (i = 0; i < 7; i ++) {
 
-		randval = random_interval_gen(8, 13);
+		randval = (unsigned char)random_interval_gen(8, 13);
 
 		if (randval > 8)
 			randval--;
@@ -6463,7 +6469,7 @@ void choose_typus()
 	/* roll out bad attribute values */
 	for (i = 0; i < 7; i ++) {
 
-		randval = random_interval_gen(2, 7);
+		randval = (unsigned char)random_interval_gen(2, 7);
 
 		if (randval < 7)
 			randval++;
