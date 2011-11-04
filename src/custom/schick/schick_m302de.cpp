@@ -3084,7 +3084,11 @@ static int seg047(unsigned short offs) {
 		return 0;
 	}
 	case 0x48: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		D1_INFO("update_atpa(%s);\n", schick_getCharname(hero));
+		update_atpa(Real2Host(hero));
+		CPU_Push32(hero);
+		return 1;
 	}
 	case 0x4d: {
 		return 0;

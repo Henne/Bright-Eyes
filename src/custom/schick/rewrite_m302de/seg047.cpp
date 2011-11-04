@@ -1,9 +1,10 @@
-#include "mem.h"
+#include <stdio.h>
 
 #include "schick.h"
 #include "v302de.h"
 
 #include "seg007.h"
+#include "seg097.h"
 
 namespace M302de {
 
@@ -247,6 +248,50 @@ void make_valuta_str(char *dst, unsigned int money) {
 	}
 
 	sprintf(dst, (char*)get_ltx(0xbb0), d, s, money);
+}
+
+/**
+ *	update_atpa() -	recalculates the AT PA values
+ *
+ */
+void update_atpa(Bit8u *hero)
+{
+	unsigned short modulo, atpa;
+	signed short diff;
+	unsigned short i;
+
+	/* ATPA base = (IN + KK + GE) / 5 rounded */
+	modulo = (hero[0x43] + hero[0x46] + hero[0x40]) % 5;
+	atpa = (hero[0x43] + hero[0x46] + hero[0x40]) / 5;
+
+	/* round up */
+	if (modulo >= 3)
+		atpa++;
+
+	/* calculate difference */
+	diff = atpa - host_readb(hero + 0x67);
+
+	if (diff == 0)
+		return;
+
+	/* update atpa base value */
+	host_writeb(hero + 0x67, atpa);
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		(char*)get_ltx(0x20), host_readb(hero + 0x67));
+
+	/* print message */
+	GUI_output(Real2Host(ds_readd(0xd2f3)));
+
+	for (i = 0; i < 7; i++) {
+		/* add diff to AT value */
+		host_writeb(hero + 0x68 + i,
+			host_readb(hero + 0x68 + i) + diff);
+		/* add diff to PA value */
+		host_writeb(hero + 0x6f + i,
+			host_readb(hero + 0x6f + i) + diff);
+	}
 }
 
 /**
