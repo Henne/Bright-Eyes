@@ -121,7 +121,7 @@ static unsigned short status_offset = 0;
 static char slots[12] = { 0,0,0,0,0,0,0,0,0,0,0,0};
 
 static void schick_log_timer32(const char *text, char *flag,
-						const unsigned short offset) {
+						unsigned long offset) {
 	if (!text) {
 		D1_ERR("%s argument text is null\n", __func__);
 		return;
@@ -234,7 +234,8 @@ static void schick_cmp_heros()
 {
 
 	Bit8u *hero = Real2Host(ds_readd(0xbd34));
-	unsigned short i, j, items;
+	unsigned long i, j;
+	unsigned char items;
 
 	for (i = 0; i < 7; i++, hero += 0x6da) {
 
@@ -346,17 +347,17 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 		/* Timers */
 		if (i >= 0x90 && i < 0xf8) {
-			unsigned long idx=(i-0x90)/4;
+			unsigned long idx = (i - 0x90) / 4;
 			schick_log_timer32(timer_desc[idx], &timer_flags[idx],
-					0x90+idx*4);
-			i = 0x90 + idx*4;
+					idx * 4 + 0x90);
+			i = 0x90 + idx * 4;
 			continue;
 		}
 
 		if (i >= 0xf8 && i < 0x418) {
 			//modification slots 100x8 byte
-			unsigned long s_nr=(i-0xf8)/8;
-			unsigned long s_of=status_offset+s_nr*8+0xf8;
+			unsigned short s_nr=((unsigned short)i-0xf8)/8;
+			unsigned short s_of=status_offset+s_nr*8+0xf8;
 
 			unsigned int cnt = ds_readd(s_of);
 			unsigned short off = ds_readw(s_of + 4);
