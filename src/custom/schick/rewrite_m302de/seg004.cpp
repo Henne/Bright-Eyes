@@ -303,8 +303,8 @@ void schick_set_video() {
 }
 
 void schick_reset_video() {
-	set_video_mode(ds_readw(0xd30d));
-	set_video_page(ds_readw(0xd30b));
+	set_video_mode((signed char)ds_readw(0xd30d));
+	set_video_page((signed char)ds_readw(0xd30b));
 }
 
 void clear_ani_pal()
@@ -425,7 +425,7 @@ void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short
 	dst += y * 320 + x;
 
 	update_mouse_cursor();
-	fill_rect(Real2Phys(dst), color, width, height);
+	fill_rect(Real2Phys(dst), (unsigned char)color, width, height);
 	refresh_screen_size();
 }
 

@@ -1117,12 +1117,12 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x45db: {
-		short val = CPU_Pop16();
+		Bit16u val = CPU_Pop16();
 		CPU_Push16(val);
 
 		D1_LOG("div16(%d)\n", val);
 
-		reg_ax = div16(val);
+		reg_ax = div16((unsigned char)val);
 
 		return 1;
 	}
@@ -1268,7 +1268,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(hero);
 
 		reg_ax = test_attrib3(Real2Host(hero),
-				attrib1, attrib2, attrib3, bonus);
+				attrib1, attrib2, attrib3, (signed char)bonus);
 
 		return 1;
 	}
@@ -1452,7 +1452,7 @@ static int seg003(unsigned short offs) {
 
 			D1_LOG("update_direction(%d)\n", mod);
 
-			reg_ax = update_direction(mod);
+			reg_ax = update_direction((unsigned char)mod);
 			return 1;
 		}
 		case  0x0424: {
@@ -1959,20 +1959,20 @@ static int seg008(unsigned short offs) {
 		return 1;
 	}
 	case 0x14: {
-		unsigned short mode = CPU_Pop16();
+		Bitu mode = CPU_Pop16();
 		CPU_Push16(mode);
 
 		D1_GFX("set_video_mode(mode=0x%x);\n", mode);
-		set_video_mode(mode);
+		set_video_mode((unsigned char)mode);
 
 		return 1;
 	}
 	case 0x2a: {
-		unsigned short page = CPU_Pop16();
+		Bitu page = CPU_Pop16();
 		CPU_Push16(page);
 
 		D1_GFX("set_video_page(page=0x%x);\n", page);
-		set_video_page(page);
+		set_video_page((unsigned char)page);
 
 		return 1;
 	}
@@ -1987,12 +1987,12 @@ static int seg008(unsigned short offs) {
 	}
 	case 0xea: {
 		RealPt ptr = CPU_Pop32();
-		unsigned short color = CPU_Pop16();
+		Bitu color = CPU_Pop16();
 		CPU_Push16(color);
 		CPU_Push32(ptr);
 
 		D1_GFX("set_color(rgb=0x%x:0x%x, color=0x%x);\n",
-			RealSeg(ptr), RealOff(ptr), color);
+			RealSeg(ptr), RealOff(ptr), (unsigned char)color);
 
 		set_color(Real2Host(ptr), color);
 
@@ -2006,7 +2006,7 @@ static int seg008(unsigned short offs) {
 	case 0x119: {
 		RealPt ptr = CPU_Pop32();
 		unsigned short first_color = CPU_Pop16();
-		unsigned short colors = CPU_Pop16();
+		Bitu colors = CPU_Pop16();
 		CPU_Push16(colors);
 		CPU_Push16(first_color);
 		CPU_Push32(ptr);
@@ -2016,7 +2016,7 @@ static int seg008(unsigned short offs) {
 		D1_GFX("set_palette(rgb=0x%x:0x%x, first_color=0x%x, colors=0x%x);\n",
 			RealSeg(ptr), RealOff(ptr), first_color, colors);
 
-		set_palette(Real2Host(ptr), first_color, colors);
+		set_palette(Real2Host(ptr), (unsigned char)first_color, (unsigned char)colors);
 
 		if (RealSeg(ptr) == datseg)
 			D1_LOG("Palette at DS:0x%x\n", RealSeg(ptr));
@@ -2029,13 +2029,13 @@ static int seg008(unsigned short offs) {
 	}
 	case 0x14d: {
 		RealPt rptr = CPU_Pop32();
-		unsigned short cnt = CPU_Pop16();
-		unsigned short color = CPU_Pop16();
+		Bitu cnt = CPU_Pop16();
+		Bitu color = CPU_Pop16();
 		CPU_Push16(color);
 		CPU_Push16(cnt);
 		CPU_Push32(rptr);
 
-		draw_h_line(Real2Phys(rptr), cnt, color);
+		draw_h_line(Real2Phys(rptr), cnt, (unsigned char)color);
 
 		if (RealSeg(rptr) == 0xa000)
 			D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",
@@ -2056,7 +2056,8 @@ static int seg008(unsigned short offs) {
 		CPU_Push16(cnt);
 		CPU_Push32(rptr);
 
-		draw_h_spaced_dots(Real2Phys(rptr), cnt, color, space);
+		draw_h_spaced_dots(Real2Phys(rptr), cnt,
+			(unsigned char)color, space);
 		if (RealSeg(rptr) == 0xa000)
 			D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
 				RealOff(rptr) % 320,
@@ -2154,7 +2155,7 @@ static int seg008(unsigned short offs) {
 		/* Seg and Off are swapped */
 		rptr = (rptr >> 16) | (rptr << 16);
 
-		fill_rect(Real2Phys(rptr), color, width, height);
+		fill_rect(Real2Phys(rptr), (unsigned char)color, width, height);
 
 		if (RealSeg(rptr) == 0xa000)
 
@@ -2872,7 +2873,7 @@ static int seg041(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		D1_LOG("FIG_damage_enemy(%x, %x, %x);\n", ptr, damage, v2);
-		FIG_damage_enemy(Real2Host(ptr), damage, v2);
+		FIG_damage_enemy(Real2Host(ptr), damage, v2 ? true : false);
 		return 1;
 	}
 	case 0x39: {
@@ -2894,7 +2895,7 @@ static int seg041(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		Bit16u flag = CPU_Pop16();
 
-		reg_ax = FIG_get_enemy_attack_damage(Real2Host(enemy), Real2Host(hero), flag);
+		reg_ax = FIG_get_enemy_attack_damage(Real2Host(enemy), Real2Host(hero), flag ? true : false);
 		D1_LOG("FIG_get_enemy_attack_damage(%x, %x, %d); = %d\n",
 				enemy, hero, flag, reg_ax);
 		CPU_Push16(flag);
@@ -3795,7 +3796,7 @@ static int seg098(unsigned short offs) {
 		CPU_Push16(spell);
 
 		D1_LOG("Zauberprobe fuer alle\n");
-		reg_ax = test_spell_group(spell, bonus);
+		reg_ax = test_spell_group(spell, (signed char)bonus);
 
 		return 1;
 	}
@@ -4143,7 +4144,8 @@ static int seg103(unsigned short offs) {
 			D1_LOG("Talentprobe : %s %+d ",
 				names_skill[skill], (signed char)bonus);
 
-			reg_ax = test_skill(Real2Host(hero), skill, bonus);
+			reg_ax = test_skill(Real2Host(hero), skill,
+				(signed char)bonus);
 			return 1;
 		}
 		case 0x25: {
@@ -4900,11 +4902,11 @@ int schick_nearcall_v302de(unsigned offs) {
 		case 0x55b1: {
 			CPU_Pop16();
 			unsigned short item = CPU_Pop16();
-			unsigned short group = CPU_Pop16() & 0xff;
+			Bitu group = CPU_Pop16() & 0xff;
 			CPU_Push16(group);
 			CPU_Push16(item);
 
-			reg_ax = get_first_hero_with_item_in_group(item, group);
+			reg_ax = get_first_hero_with_item_in_group(item, (signed char)group);
 			D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
 				get_itemname(item), item, group,
 				(short)reg_ax);
