@@ -133,7 +133,7 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 {
 
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
-	char fname[13];
+	char fname[81];
 	int ver;
 
 	schick_get_fname(fname, name);
