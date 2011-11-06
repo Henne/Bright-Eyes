@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I../ -I.
+AM_CPPFLAGS = -I$(top_srcdir)/include -I../ -Wall -pedantic
 
 noinst_LIBRARIES = libschick_rewrite_g105de.a
 

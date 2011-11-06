@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I./rewrite_m302de
+AM_CPPFLAGS = -I$(top_srcdir)/include -I./rewrite_m302de -Wall -pedantic
 
 SUBDIRS = rewrite_m302de rewrite_g105de
 
