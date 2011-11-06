@@ -49,7 +49,7 @@ unsigned short random_schick(short val) {
 	ax = ((dx << 16) | ax) % val;	/* emulate a dx_ax register */
 
 	return ax + 1;
-};
+}
 
 /**
 	dice_roll - rolls a dice: n*Wm+x

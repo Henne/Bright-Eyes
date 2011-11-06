@@ -1190,7 +1190,7 @@ unsigned int swap_u32(unsigned int v) {
 	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
 		((v >> 8) & 0xff) << 16 | (v&0xff) << 24;
 
-};
+}
 
 /**
  *	alloc_EMS -	allocates EMS memory
