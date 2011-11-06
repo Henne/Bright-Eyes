@@ -59,7 +59,7 @@ unsigned short FIG_choose_next_hero() {
 			 * print random statistic
 			 */
 			for (i = 0; i < 7; i++)
-				D1_ERR("tries[%d] = %d\n", i, tries[i]);
+				D1_ERR("tries[%d] = %ld\n", i, tries[i]);
 
 			/*
 			 * search by hand for a hero and dumpi the
@@ -129,7 +129,7 @@ unsigned short FIG_choose_next_enemy() {
 			 * print random statistic
 			 */
 			for (i = 0; i < 20; i++)
-				D1_ERR("tries[%d] = %d\n", i, tries[i]);
+				D1_ERR("tries[%d] = %ld\n", i, tries[i]);
 
 			/*
 			 * search by hand for an enemy and dump	the
