@@ -2,6 +2,7 @@
         Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
         Functions rewritten: 4/11
 */
+#include <stdlib.h>
 
 #include "mem.h"
 
@@ -45,19 +46,22 @@ short seg098_3e() {
 }
 
 /**
-	get_spell_cost - get the amount of AE-Points needed for a spell
+ *	get_spell_cost() - get the amount of AE-Points needed for a spell
+ *	@spell:		numberof the spell
+ *	@half cost:	the caster needs only half AE
 */
-short get_spell_cost(unsigned short spell, unsigned short half_cost) {
+short get_spell_cost(unsigned short spell, unsigned short half_cost)
+{
 
 	signed char ret;
 
-	ret = ds_readb(spell * 10 + 0x9a1);
+	ret = ds_readb(0x99d + 4 + spell * 10);
 
-	if (half_cost) {
+	if (half_cost != 0) {
 		if (ret == -1)
-			ret = random_interval(5, 10);
+			ret = (signed char)random_interval(5, 10);
 		else
-			ret = ret >= 0 ? ret / 2 : (ret + 1) / 2;
+			ret = abs(ret) / 2;
 
 		if (ret == 0)
 			ret = 1;
