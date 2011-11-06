@@ -6855,7 +6855,7 @@ int main_gen(int argc, char **argv)
 
 
 	if (sizeof(struct struct_hero) != 0x6da) {
-		D1_ERR("Error: sizeof(struct_hero) == 0x%x != 0x6da\n",
+		D1_ERR("Error: sizeof(struct_hero) == 0x%lx != 0x6da\n",
 			sizeof(struct struct_hero));
 		exit(1);
 	}
