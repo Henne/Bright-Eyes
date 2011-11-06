@@ -116,9 +116,9 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 		damage -= host_readb(hero + 0x30);
 
 		/* armour bonus against skelettons an zombies */
-		if (host_readb(hero + 0x1b2) == 0xc5 &&
+		if (host_readb(hero + 0x1b2) == 0xc5 && (
 			host_readb(attacker + 1) == 0x22 ||
-			host_readb(attacker + 1) == 0x1c)
+			host_readb(attacker + 1) == 0x1c))
 				damage -= 3;
 
 		/* Totenkopfguertel makes damage 0, but can be lost */
