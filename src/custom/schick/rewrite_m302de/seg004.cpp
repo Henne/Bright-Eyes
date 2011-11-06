@@ -167,9 +167,11 @@ void restore_rect(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, ch
 	dst += y * 320 + x;
 
 	for (i = 0; i < m; dst += 320, i++)
-		for (j = 0; j < n; j++)
-			if (c = *src++)
+		for (j = 0; j < n; j++) {
+			c = *src++;
+			if (c)
 				mem_writeb_inline(dst + j, c);
+		}
 }
 
 void restore_rect_rle(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, char width, char height, unsigned short v1) {
