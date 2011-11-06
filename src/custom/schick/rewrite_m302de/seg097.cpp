@@ -113,7 +113,7 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 		if (ds_readw(0xc3d9) == 0 && ds_readw(0xc3d7) == 0)
 			continue;
 
-		c = ds_readw(0xc3d7);
+		c = (signed short)ds_readw(0xc3d7);
 
 		if (c == 0x0d)
 			continue;
@@ -150,13 +150,13 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 
 		/* ae */
 		if (c == 0x84)
-			c = 0xff8e;
+			c = (signed char)0x8e;
 		/* oe */
 		if (c == 0x94)
-			c = 0xff99;
+			c = (signed char)0x99;
 		/* ue */
 		if (c == 0x81)
-			c = 0xff9a;
+			c = (signed char)0x9a;
 
 		/* are we at the end of the input field ? */
 		if (pos == num) {
@@ -165,9 +165,9 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 			pos--;
 		}
 
-		host_writeb(dst++, c);
+		host_writeb(dst++, (signed char)c);
 		GUI_print_char(0x20, di, y);
-		GUI_print_char(c, di, y);
+		GUI_print_char((unsigned char)c, di, y);
 		di += 6;
 		pos++;
 
@@ -298,7 +298,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), (l_di - num * 6) / 2 + ds_readw(0xbfff), l_si * 8 + ds_readw(0xc001) - 2, num, 0) == -1) {
 			retval = -1;
 		} else {
-			retval = atol((char*)Real2Host(ds_readd(0xd2ef)));
+			retval = (unsigned short)atol((char*)Real2Host(ds_readd(0xd2ef)));
 		}
 	} else {
 		/* set action table */
@@ -369,14 +369,16 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 
 		/* clear the old button */
 		for (i = 0; i < 4; i++)
-			do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3, 0xd8);
+			do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3,
+				(signed char)0xd8);
 	}
 
 	x = (offset + new_pos) * 8 + ds_readw(0xc001) + 2;
 
 	/* fill the new button */
 	for (i = 0; i < 4; i++)
-		do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3, 0xd9);
+		do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3,
+			(signed char)0xd9);
 
 	refresh_screen_size();
 }
@@ -442,7 +444,8 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		/* draw a frame */
 		do_border(Real2Phys(ds_readd(0xd2ff)),
 			ds_readw(0xbfff) + 5, ds_readw(0xc001) + 6,
-			ds_readw(0xbfff) + 38, ds_readw(0xc001) + 39, 0xff);
+			ds_readw(0xbfff) + 38, ds_readw(0xc001) + 39,
+				(signed char)0xff);
 
 		/* set the coordinates */
 		ds_writew(0xc011, ds_readw(0xbfff) + 6);

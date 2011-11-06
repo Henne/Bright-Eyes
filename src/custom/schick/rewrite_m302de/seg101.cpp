@@ -28,10 +28,10 @@ void spell_arcano() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readb(get_spelluser() + 0x86) - 1;
 
 	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
 	tp = Real2Host(ds_readd(0xe5b8));
@@ -50,8 +50,9 @@ void spell_arcano() {
 
 void spell_armatrutz()
 {
-	unsigned short max_boni, pos, slot;
+	unsigned short max_boni, slot;
 	signed short boni;
+	signed char pos;
 
 	max_boni = 0;
 
@@ -76,10 +77,11 @@ void spell_armatrutz()
 
 	if (boni != -1) {
 
-		pos = get_hero_index(get_spelluser());
+		pos = (signed char)get_hero_index(get_spelluser());
 		ds_writew(0xac0e, boni * boni);
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 450, get_spelluser() + 0x30, boni, pos);
+		set_mod_slot(slot, 450, get_spelluser() + 0x30,
+			(signed char)boni, pos);
 
 		/* prepare output message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
@@ -98,10 +100,10 @@ void spell_inc_ch() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readb(get_spelluser() + 0x86) - 1;
 
 	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
 	tp = Real2Host(ds_readd(0xe5b8));
@@ -143,18 +145,19 @@ void spell_inc_ch() {
 
 void spell_feuerbann()
 {
-	unsigned short slot, pos;
+	unsigned short slot;
+	signed char target;
 
 	/* check if spell is already activated */
 	if (host_readb(get_spelluser() + 0x99) == 0) {
 
-		pos = get_hero_index(get_spelluser());
+		target = (signed char)get_hero_index(get_spelluser());
 
 		slot = get_free_mod_slot();
 
 		/* Duration = Level * 12 min */
 		set_mod_slot(slot, host_readb(get_spelluser() + 0x27) * 450,
-			get_spelluser() + 0x99, 1, pos);
+			get_spelluser() + 0x99, 1, target);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
@@ -170,7 +173,7 @@ void spell_inc_ff() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
 	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
@@ -217,7 +220,7 @@ void spell_inc_ge() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
 	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
@@ -264,7 +267,7 @@ void spell_inc_in() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
 	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
@@ -311,7 +314,7 @@ void spell_inc_kk() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
 	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
@@ -358,7 +361,7 @@ void spell_inc_kl() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
 	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
@@ -405,7 +408,7 @@ void spell_inc_mu() {
 
 	Bit8u *tp;
 	unsigned short slot;
-	signed short target;
+	signed char target;
 
 	/* get the spell target */
 	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
@@ -544,7 +547,8 @@ void spell_see() {
 
 void spell_visibili()
 {
-	unsigned short pos, slot;
+	unsigned short slot;
+	signed char pos;
 	signed short rounds;
 
 	/* ask the user how many rounds he wants to be invisible */
@@ -567,7 +571,7 @@ void spell_visibili()
 	if (rounds * 5 <= host_readw(get_spelluser() + 0x64)) {
 
 		ds_writew(0xac0e, rounds * 5);
-		pos = get_hero_index(get_spelluser());
+		pos = (signed char)get_hero_index(get_spelluser());
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, rounds * 450, get_spelluser() + 0x9a, 1, pos);
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
@@ -635,8 +639,8 @@ void spell_schmelze() {
 void spell_silentium() {
 
 	Bit8u *hero;
-	unsigned short i;
 	unsigned short slot;
+	signed char i;
 
 	hero = get_hero(0);
 

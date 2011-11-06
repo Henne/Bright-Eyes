@@ -167,8 +167,11 @@ signed int process_nvf(Bit8u *nvf) {
 
 	case 0x01:
 		offs = pics * 4 + 3;
-		for (i = 0; i < d.nr; i++)
+		for (i = 0; i < d.nr; i++) {
+			width = host_readw(p + i * 4 + 3);
+			height = host_readw(p + i * 4 + 5);
 			offs += width * height;
+		}
 
 		width = host_readw(p + d.nr * 4 + 3);
 		height = host_readw(p + d.nr * 4 + 5);
@@ -841,8 +844,9 @@ void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
 	signed char mod, signed char who) {
 
 	Bit8u *mod_ptr;
-	unsigned short i, j;
+	unsigned short j;
 	unsigned short new_target;
+	signed char i;
 	signed char target;
 
 	if (who == -1)
@@ -1025,7 +1029,7 @@ void seg002_3b63() {
 		if (tmp != -1)
 			continue;
 
-		host_writeb(p + 7, random_interval(70, 130));
+		host_writeb(p + 7, (unsigned char)random_interval(70, 130));
 		host_writeb(p + 4, random_interval(0, (char)host_readb(p + 3) * 10 + (char)host_readb(p + 3) * locvar) / 10);
 
 		di = random_schick(100);
@@ -2056,7 +2060,7 @@ void add_hero_ap_all(short ap) {
 
 	sub AP from every hero
 */
-void sub_hero_ap_all(short ap) {
+void sub_hero_ap_all(signed short ap) {
 	Bit8u *hero_i;
 	int i;
 
@@ -2075,7 +2079,7 @@ void sub_hero_ap_all(short ap) {
 		if (host_readb(hero_i + 0xaa) & 1)
 			continue;
 
-		if (ap <= host_readd(hero_i+0x28)) {
+		if (ap <= (signed int)host_readd(hero_i+0x28)) {
 			ap = -ap;
 			D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i+0x10), ap);
 			add_hero_ap(hero_i, ap);
