@@ -123,7 +123,7 @@ static void seg001_02ba()
 	val = CD_get_tod();
 	val -= ds_readd(0x2464);
 
-	if (val < ds_readd(0x2468))
+	if (val < (signed int)ds_readd(0x2468))
 		return;
 
 	if (ds_readw(0x9b) != 1)

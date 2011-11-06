@@ -179,7 +179,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 			}
 		}
 
-		host_writeb(hero + 0x82, dir);
+		host_writeb(hero + 0x82, (signed char)dir);
 		lp1 += copy_ani_seq(lp1, host_readw(lp2 + l3 * 2), 2);
 
 		if (l2 != -1)
@@ -310,7 +310,7 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 			}
 		}
 
-		host_writeb(p + 0x27, dir);
+		host_writeb(p + 0x27, (signed char)dir);
 
 		lp1 += copy_ani_seq(lp1, host_readw(lp2 + l3 * 2), 1);
 

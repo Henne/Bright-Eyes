@@ -135,7 +135,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 		}
 
 		/* no damage if the hero is stoned */
-		if ((host_readb(hero + 0xaa) >> 2) & 1 != 0)
+		if (((host_readb(hero + 0xaa) >> 2) & 1) != 0)
 			damage = 0;
 	} else {
 		/* the attacked is an enemy */
@@ -144,7 +144,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 		damage -= host_readb(attacked + 0x2);
 
 		/* check unknown flag, maybe stoned */
-		if ((host_readb(attacked + 0x31) >> 2) & 1 != 0)
+		if (((host_readb(attacked + 0x31) >> 2) & 1) != 0)
 			damage = 0;
 
 		/* check if the attacked is immune
@@ -184,7 +184,7 @@ signed short weapon_check(Bit8u *hero) {
 	item_p = get_itemsdat(item);
 
 	/* check if its a weapon */
-	if ((host_readw(item_p + 2) >> 1) & 1 == 0)
+	if (((host_readw(item_p + 2) >> 1) & 1) == 0)
 		return -1;
 
 	if (host_readb(hero + 0x1c4) & 1)

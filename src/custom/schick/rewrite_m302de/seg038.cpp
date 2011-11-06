@@ -49,8 +49,8 @@ void FIG_init_list_elem(signed short obj) {
 	/* This initializes a 35 byte structure at DS:0x3066 */
 	ds_writew(0xe066, 0);
 	ds_writeb(0xe068, 0);
-	ds_writeb(0xe069, x);
-	ds_writeb(0xe06a, y);
+	ds_writeb(0xe069, (signed char)x);
+	ds_writeb(0xe06a, (signed char)y);
 	ds_writeb(0xe06b, 0);
 	ds_writeb(0xe06c, 4);
 	ds_writeb(0xe06d, 11);

@@ -78,7 +78,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	for (i = 0; i < 7; i++) {
 		signed char tmp;
 
-		tmp = dice_template(host_readw(temp + i * 2 + 3));
+		tmp = (signed char)dice_template(host_readw(temp + i * 2 + 3));
 		host_writeb(sheet + i * 2 + 4, tmp);
 		host_writeb(sheet + i * 2 + 3, tmp);
 	}
@@ -95,7 +95,8 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writew(sheet + 0x15, host_readw(sheet + 0x17));
 
 	/* roll out MR  and save it */
-	host_writeb(sheet + 0x19, dice_template(host_readw(temp + 0x15)));
+	host_writeb(sheet + 0x19,
+		(signed char)dice_template(host_readw(temp + 0x15)));
 
 	/* Terrible hack:
 		if the current fight is 0xbc, set MR to 5 (Travel-Event 84),
@@ -197,24 +198,24 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 	/* check if the object is decoration */
 	if (object >= 50) {
 		if (type == 57 || type == 56 || type == 62) {
-			FIG_set_cb_field(y + 1, x, object);
-			FIG_set_cb_field(y + 1, x - 1, object);
-			FIG_set_cb_field(y, x - 1, object);
+			FIG_set_cb_field(y + 1, x, (signed char)object);
+			FIG_set_cb_field(y + 1, x - 1, (signed char)object);
+			FIG_set_cb_field(y, x - 1, (signed char)object);
 		} else if (type == 9) {
-				FIG_set_cb_field(y, x + 1, object);
-				FIG_set_cb_field(y - 1, x, object);
+				FIG_set_cb_field(y, x + 1, (signed char)object);
+				FIG_set_cb_field(y - 1, x, (signed char)object);
 		} else if (type == 43 || type == 44 || type == 48 ||
 				type == 49 || type == 50 || type == 51 ||
 				type == 52 || type == 53 || type == 54 ||
 				type == 55) {
 
-				FIG_set_cb_field(y + 1, x, object);
+				FIG_set_cb_field(y + 1, x, (signed char)object);
 		} else if (type == 60) {
 			for (i = 0; i < 7; i++)
-				FIG_set_cb_field(y + i, x, object);
+				FIG_set_cb_field(y + i, x, (signed char)object);
 		} else if (type == 61) {
 			for (i = 0; i < 7; i++)
-				FIG_set_cb_field(y, x + i, object);
+				FIG_set_cb_field(y, x + i, (signed char)object);
 		}
 	} else {
 		/* if object is an enemy an needs 2 fields */
@@ -245,7 +246,7 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 	}
 
 	/* set the object to the chessboard */
-	FIG_set_cb_field(y, x, object);
+	FIG_set_cb_field(y, x, (signed char)object);
 
 	return 1;
 }
@@ -322,8 +323,8 @@ void FIG_init_heroes()
 		}
 
 		ds_writew(0xe066, ds_readb(0x12c0 + host_readb(hero + 0x9b) * 5));
-		ds_writeb(0xe069, cb_x);
-		ds_writeb(0xe06a, cb_y);
+		ds_writeb(0xe069, (signed char)cb_x);
+		ds_writeb(0xe06a, (signed char)cb_y);
 		ds_writeb(0xe06b, 0);
 		ds_writeb(0xe06c, 0);
 

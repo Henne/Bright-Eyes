@@ -32,9 +32,9 @@ static const struct coord icon_pos[9] = {
 
 /* DS:0x5ecc - DS:0x5ed4 */
 static signed char icon_array[9] = {
-	0xfe, 0xfe, 0xfe,
-	0xfe, 0xfe, 0xfe,
-	0xfe, 0xfe, 0xfe
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2
 };
 
 /**
@@ -267,10 +267,10 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 
 	if (fileindex == 0x0f)
 		/* Real Icon */
-		icon_array[pos] =  icon;
+		icon_array[pos] =  (signed char)icon;
 	else
 		/* Blank Icon */
-		icon_array[pos] = 0xff;
+		icon_array[pos] = -1;
 }
 
 /**
@@ -354,12 +354,12 @@ void select_hero_icon(unsigned short pos) {
 	/* paint a blue border for the pic and bars */
 	do_border(Real2Phys(ds_readd(0xd2ff)),
 		ds_readw(0x2d01 + pos * 2) - 1, 156,
-		ds_readw(0x2d01 + pos * 2) + 42, 189, 0xfc);
+		ds_readw(0x2d01 + pos * 2) + 42, 189, (signed char)0xfc);
 
 	/* paint a blue border for the name */
 	do_border(Real2Phys(ds_readd(0xd2ff)),
 		ds_readw(0x2d01 + pos * 2) - 1, 189,
-		ds_readw(0x2d01 + pos * 2) + 42, 198, 0xfc);
+		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xfc);
 
 	/* save the textcolors */
 	GUI_get_smth(&fg, &bg);
@@ -395,12 +395,12 @@ void deselect_hero_icon(unsigned short pos) {
 	/* paint a gray border for the pic and bars */
 	do_border(Real2Phys(ds_readd(0xd2ff)),
 		ds_readw(0x2d01 + pos * 2) - 1, 156,
-		ds_readw(0x2d01 + pos * 2) + 42, 189, 0xe6);
+		ds_readw(0x2d01 + pos * 2) + 42, 189, (signed char)0xe6);
 
 	/* paint a gray border for the name */
 	do_border(Real2Phys(ds_readd(0xd2ff)),
 		ds_readw(0x2d01 + pos * 2) - 1, 189,
-		ds_readw(0x2d01 + pos * 2) + 42, 198, 0xe6);
+		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xe6);
 
 	/* save the textcolors */
 	GUI_get_smth(&fg, &bg);

@@ -18,8 +18,9 @@ void passages_init()
 
 	p = MemBase + PhysMake(datseg, 0x6f00);
 	for (i = 0; i < 45; p += 8, i++) {
-		host_writeb(p + 4, random_interval(0, host_readb(p + 3)));
-		host_writeb(p + 7, random_interval(70, 130));
+		host_writeb(p + 4,
+			(unsigned char)random_interval(0, host_readb(p + 3)));
+		host_writeb(p + 7, (unsigned char)random_interval(70, 130));
 
 		si = random_schick(100);
 		if (host_readb(p + 5) == 0) {

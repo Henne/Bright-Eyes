@@ -275,7 +275,7 @@ void update_atpa(Bit8u *hero)
 		return;
 
 	/* update atpa base value */
-	host_writeb(hero + 0x67, atpa);
+	host_writeb(hero + 0x67, (signed char)atpa);
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(0xd2f3)),

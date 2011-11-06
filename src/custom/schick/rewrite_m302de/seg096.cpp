@@ -73,7 +73,7 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 		do {
 			p_name++;
 			l4 = mem_readb(Real2Phys(p_name));
-			mem_writeb(Real2Phys(p_name) - 1, l4);
+			mem_writeb(Real2Phys(p_name) - 1, (signed char)l4);
 		} while (l4 != 0);
 	};
 

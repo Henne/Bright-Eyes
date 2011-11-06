@@ -257,7 +257,7 @@ void npc_harika()
 		do {
 			answer = GUI_dialogbox(ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x3c),
-					answer,
+					(signed char)answer,
 					get_dtp(0x44), get_dtp(0x48));
 		} while (answer == -1);
 
@@ -281,7 +281,7 @@ void npc_harika()
 		do {
 			answer = GUI_dialogbox(ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x40),
-					answer,
+					(signed char)answer,
 					get_dtp(0x44), get_dtp(0x48));
 		} while (answer == -1);
 
