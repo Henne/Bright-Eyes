@@ -2568,6 +2568,11 @@ signed int process_nvf(struct nvf_desc *nvf) {
 	short i;
 	signed char nvf_type;
 
+	/* Fix: GCC warns about uninitialized values */
+	width = height = 0;
+	p_size = 0;
+	src = NULL;
+
 	nvf_type = *nvf->src;
 	va = nvf_type & 0x80;
 	nvf_type &= 0x7f;
