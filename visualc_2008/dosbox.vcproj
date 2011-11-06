@@ -76,6 +76,7 @@
 				OutputFile=".\Debug/dosbox.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="msvcrt"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/dosbox.pdb"
 				SubSystem="1"
