@@ -4496,8 +4496,8 @@ void new_values()
 			ds_writew(0x1327, 0);
 		} while (di == 0xffff);
 		di = values[di - 1];
-		hero.attribs[i].current = bv1;
-		hero.attribs[i].normal = bv1;
+		hero.attribs[di].current = bv1;
+		hero.attribs[di].normal = bv1;
 		draw_mouse_ptr_wrapper();
 		refresh_screen();
 		call_mouse();
