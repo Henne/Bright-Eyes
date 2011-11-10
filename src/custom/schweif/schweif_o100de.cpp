@@ -43,6 +43,7 @@ static int segUnk(unsigned segm, unsigned short offs) {
 	D2_LOG("img@%04x\n", segm);
 	return 0;
     }
+	return 0;
 }
 
 
@@ -65,6 +66,7 @@ static int seg037(unsigned short offs) {
 	return 1;
     }
     }
+    return 0;
 }
 
 static int seg20C8(unsigned short offs) {
