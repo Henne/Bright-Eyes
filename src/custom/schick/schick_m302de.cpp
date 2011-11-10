@@ -5105,7 +5105,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x12db)) {
 		switch (offs) {
 		case 0x1d3: {
-			Bit16u CS = CPU_Pop16();
+			CPU_Pop16();
 			Bit16u line = CPU_Pop16();
 			CPU_Push16(line);
 
