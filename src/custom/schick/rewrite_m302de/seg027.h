@@ -8,4 +8,6 @@ void init_common_buffers();
 //0x34
 void load_scenario(signed short);
 
+//0x43
+void write_fight_lst(void);
 }

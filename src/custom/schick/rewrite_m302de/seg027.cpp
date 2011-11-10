@@ -1,7 +1,9 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 3/8
+	Functions rewritten: 4/8
 */
+
+#include "dos_inc.h"
 
 #include "schick.h"
 
@@ -119,6 +121,26 @@ void load_scenario(signed short nr)
 	read_archive_file(fd, Real2Host(ds_readd(0xbd2c)), 621);
 
 	/* close archive */
+	bc_close(fd);
+}
+
+void write_fight_lst(void)
+{
+	signed short nr;
+	unsigned short fd;
+
+	nr = ds_readw(0x5eb2);
+
+	/* load FIGHT.LSR from TEMP dir */
+	fd = load_archive_file(0x8000 | 0xcd);
+
+	/* seek to the entry */
+	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
+
+	/* write it */
+	bc__write(fd, ds_readd(0xbd28), 216);
+
+	/* close the file */
 	bc_close(fd);
 }
 

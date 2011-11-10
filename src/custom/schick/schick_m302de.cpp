@@ -2535,7 +2535,9 @@ static int seg027(unsigned short offs) {
 			return 0;
 		}
 		case 0x43: {
-			return 0;
+			D1_LOG("write_fight_lst();\n");
+			write_fight_lst();
+			return 1;
 		}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
