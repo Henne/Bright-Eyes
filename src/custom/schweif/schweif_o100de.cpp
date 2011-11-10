@@ -4,16 +4,6 @@
 
 #include "SDL.h"
 
-#include "regs.h"
-
-#include "schweif.h"
-
-static SDL_TimerID irq_timer;
-/* buffer for seed2 code */
-static char irq_bak[17];
-
-
-
 #include "dosbox.h"
 #include "regs.h"
 #include "callback.h"
@@ -23,7 +13,6 @@ static char irq_bak[17];
 
 #include "o100de_seg000.h"
 #include "o100de_seg037.h"
-//#include "seg000.h"
 
 using namespace schweif_o100de;
 
@@ -131,7 +120,6 @@ int schweif_farcall_v100de(unsigned segm, unsigned offs) {
     default: return segUnk(segm, offs);
     }
     return 0;
-    
 }
 
 int schweif_nearcall_v100de(unsigned offs) {
