@@ -52,8 +52,8 @@ static int seg037(unsigned short offs) {
     case 0x21:{
 	unsigned short range = CPU_Pop16();
 	CPU_Push16(range);
-	D2_LOG("random(%d)\n", range & 0xFF);
-	random_schweif(range);
+	reg_ax = random_schweif(range);
+	D2_LOG("random(%d) = %d\n", range & 0xFF, reg_ax);
 	return 1;
     }
     case 0x01:{
@@ -61,8 +61,8 @@ static int seg037(unsigned short offs) {
 	unsigned short upperBound = CPU_Pop16();
 	CPU_Push16(upperBound);
 	CPU_Push16(lowerBound);
-	D2_LOG("randomInterval(%d, %d)\n", lowerBound, upperBound);
-	random_interval(lowerBound, upperBound);
+	reg_ax = random_interval(lowerBound, upperBound);
+	D2_LOG("randomInterval(%d, %d) = %d\n", lowerBound, upperBound, reg_ax);
 	return 1;
     }
     }
