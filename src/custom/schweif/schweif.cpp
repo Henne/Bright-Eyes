@@ -71,7 +71,7 @@ static void schweif_get_fname(char *dst, char *src) {
 bool schweif_init(char *name, unsigned short reloc, unsigned short _cs, unsigned short ip)
 {
 	char borsig[] = "Borland C++ - Copyright 1991 Borland Intl.";
-	char fname[13];
+	char fname[80];
 
 	schweif_get_fname(fname, name);
 	if (strcmp(fname, "schweif.exe")
@@ -81,7 +81,7 @@ bool schweif_init(char *name, unsigned short reloc, unsigned short _cs, unsigned
 	 * and the first executed instruction is mov dx,i16 */
 	if (_cs != 0 || ip != 0 || real_readb(reloc+_cs, ip) != 0xba)
 		return false;
-	
+
 	/* Show CS:IP on the virtual machine and the pointer to 0:0 */
 	D2_TRAC("\n\nCS:IP 0x%x:0x%x\tMemBase: %p\n", reloc, ip, MemBase);
 
