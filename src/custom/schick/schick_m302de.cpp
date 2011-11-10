@@ -2511,6 +2511,9 @@ static int seg027(unsigned short offs) {
 			D1_LOG("ANI %02d angefordert\n", ani);
 			return 0;
 		}
+		case 0x2a: {
+			return 0;
+		}
 		case 0x2f: {
 			D1_LOG("init_common_buffers();\n");
 			init_common_buffers();
@@ -2525,8 +2528,18 @@ static int seg027(unsigned short offs) {
 			CPU_Push16(nr);
 			return 1;
 		}
+		case 0x39: {
+			return 0;
+		}
+		case 0x3e: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
 	default:
-		return 0;
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
 	}
 }
 
