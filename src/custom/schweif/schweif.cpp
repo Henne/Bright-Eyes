@@ -34,6 +34,8 @@ const char* schweif_get_version(char *p) {
 	/* German 1CD-Version 01.00. Yes, that's an upcase 'o' in front. */
 	if (!strncmp(p + 0x2219, "O1.00", 4))
 		return (char*)"O100de";
+	if (!strncmp(p + 0x3abd, "C1.02", 5))
+		return (char*)"C1.02de";
 	/* C2.00 english floppy version */
 	if (!strncmp(p + 0x2195, "C2.00", 4)) {
 		schweif_en = 1;
@@ -113,6 +115,11 @@ bool schweif_init(char *name, unsigned short reloc, unsigned short _cs, unsigned
 		if (ver == "O100de") {
 			D2_INFO("Starte Profiler\n");
 			schweif++;
+		}
+		/* enable profiler only on this version */
+		if (ver == "C1.02de") {
+			D2_INFO("Starte Profiler NOCH NICHT :D\n");
+			//schweif++;
 		}
 	}
 
