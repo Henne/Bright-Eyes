@@ -6,12 +6,13 @@
 #include "schweif.h"
 
 // Is the game running?
-static int schweif = 0;
+static int schweif_o100de;
+static int schweif_c102de;
 
 // Segment relocation
 unsigned short relocation;
 
-namespace schweif_o100de {
+namespace schweif_common {
 //Datasegment
 unsigned short datseg = 0;
 Bit8u *p_datseg = NULL;
@@ -114,12 +115,12 @@ bool schweif_init(char *name, unsigned short reloc, unsigned short _cs, unsigned
 		/* enable profiler only on this version */
 		if (ver == "O100de") {
 			D2_INFO("Starte Profiler\n");
-			schweif++;
+			schweif_o100de++;
 		}
 		/* enable profiler only on this version */
 		if (ver == "C1.02de") {
-			D2_INFO("Starte Profiler NOCH NICHT :D\n");
-			//schweif++;
+			D2_INFO("Starte Profiler\n");
+			schweif_c102de++;
 		}
 	}
 
@@ -129,13 +130,14 @@ bool schweif_init(char *name, unsigned short reloc, unsigned short _cs, unsigned
 
 void schweif_exit(unsigned char exit)
 {
-	if (schweif) {
-		schweif--;
-	}
+	if (schweif_o100de)
+		schweif_o100de--;
+	if (schweif_c102de)
+		schweif_c102de--;
 	D2_INFO("DSA2 Fehlercode %d\nProfiler beendet\n", exit);
 }
 
-namespace schweif_o100 {
+namespace schweif_common {
 const char* names_attrib[] = {	"MU", "KL", "CH", "FF", "GE", "IN", "KK",
 				"AG", "HA", "RA", "GG", "TA", "NG", "JZ"};
 
@@ -201,12 +203,16 @@ int schweif_callf(unsigned selector, unsigned offs)
 	if (selector >= 0xa000)
 		return 0;
 
+
 	unsigned short segm = selector - relocation;
 	int ret = 0;
 
-	if (schweif) {
+	if (schweif_o100de) {
 		ret = schweif_farcall_v100de(segm, offs);
 		return ret;
+	}
+	if (schweif_c102de) {
+		return schweif_farcall_c102de(segm, offs);
 	}
 	return ret;
 }
@@ -221,9 +227,12 @@ int schweif_calln(unsigned offs) {
 
 	int ret = 0;
 
-	if (schweif) {
+	if (schweif_o100de) {
 		ret = schweif_nearcall_v100de(offs);
 		return ret;
+	}
+	if (schweif_c102de) {
+		return schweif_nearcall_c102de(offs);
 	}
 
 	return ret;

@@ -56,9 +56,11 @@ static inline Bit8u* getString(unsigned p) {
         return MemBase+Real2Phys(p);
 }
 
+namespace schweif_common {
 extern const char* names_attrib[];
 extern const char* names_skill[];
 extern const char* names_spell[];
+}
 
 extern unsigned short datseg;
 extern Bit8u* p_datseg;
@@ -85,6 +87,9 @@ static inline void ds_writed(unsigned short offs, Bit32u val) {
 
 int schweif_farcall_v100de(unsigned, unsigned);
 int schweif_nearcall_v100de(unsigned);
+
+int schweif_farcall_c102de(unsigned, unsigned);
+int schweif_nearcall_c102de(unsigned);
 
 int schweif_get_ovrseg(unsigned short);
 inline int schweif_is_ovrseg(unsigned short stub_seg) {

@@ -11,12 +11,12 @@
 
 #include "schweif.h"
 
-#include "o100de_seg000.h"
-#include "o100de_seg037.h"
+#include "c102de_seg000.h"
+#include "c102de_seg037.h"
 
-using namespace schweif_o100de;
-using namespace schweif_common;
+namespace C102de {
 
+#if 0
 static int seg016(unsigned short offs) {
     switch(offs) {
     case 0x000B:{ // decode_image(...)
@@ -109,21 +109,25 @@ static int seg2123(unsigned short offs) {
     }
     return 0;
 }
-
+#endif
+}
 
 // Intercept far CALLs (both 32 and 16 bit)
-int schweif_farcall_v100de(unsigned segm, unsigned offs) {
+int schweif_farcall_c102de(unsigned segm, unsigned offs) {
+#if 0
     switch (segm) {
     case 0x0000: return seg000(offs);
-    case 0x1B26: return seg037(offs);
+    case 0x1B27: return seg037(offs);
     case 0x20C8: return seg20C8(offs);
     case 0x2123: return seg2123(offs);
     default: return segUnk(segm, offs);
     }
+#endif
     return 0;
 }
 
-int schweif_nearcall_v100de(unsigned offs) {
+int schweif_nearcall_c102de(unsigned offs) {
+#if 0
     unsigned short segm = SegValue(cs)-relocation;
 
     /* Borland C-Lib */
@@ -132,7 +136,7 @@ int schweif_nearcall_v100de(unsigned offs) {
 	default: return 0;
 	}
     }
-    if (segm == 0x1B26) {
+    if (segm == 0x1B27) {
 	switch(offs) {
 	case 0x21:{
 	    unsigned short range = CPU_Pop16();
@@ -151,5 +155,6 @@ int schweif_nearcall_v100de(unsigned offs) {
 	default: return 0;
 	}
     }
+#endif
     return 0;
 }
