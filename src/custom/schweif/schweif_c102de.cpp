@@ -13,6 +13,7 @@
 
 #include "c102de_seg000.h"
 #include "c102de_seg037.h"
+#include "c102de_seg136.h"
 
 using namespace C102de;
 
@@ -87,38 +88,45 @@ static int seg037(unsigned short offs)
 	}
 	return 0;
 }
+
+static int seg136(unsigned short offs)
+{
+	switch(offs) {
 #if 0
-static int seg20C8(unsigned short offs) {
-    // Stub 0138
-    switch(offs) {
     case 0x4D:{
 	D2_LOG("Probe-Basis\n");
 	return 0;
     }
-    case 0x48:{
-	RealPt hero = CPU_Pop32();
-	unsigned short attrib = CPU_Pop16();
-	signed short bonus = CPU_Pop16();
-	CPU_Push16(bonus);
-	CPU_Push16(attrib);
-	CPU_Push32(hero);
-	D2_LOG("Eigenschafts-Probe: %s + %d\n", names_attrib[attrib], bonus & 0xFF);
-	return 0;
-    }
-    case 0x61:{
-	RealPt hero = CPU_Pop32();
-	unsigned short skill = CPU_Pop16();
-	signed short bonus = CPU_Pop16();
-	CPU_Push16(bonus);
-	CPU_Push16(skill);
-	CPU_Push32(hero);
-	D2_LOG("Talentprobe: %s + %d\n", names_skill[skill], bonus & 0xFF);
-	return 0;
-    }
-    default: return 0;
-    }
-    return 0;
+#endif
+		case 0x48: {
+			RealPt hero = CPU_Pop32();
+			Bit16u attrib = CPU_Pop16();
+			Bit16s bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(attrib);
+			CPU_Push32(hero);
+			test_attrib(Real2Host(hero), attrib, bonus);
+			return 1;
+		}
+		case 0x61:{
+			RealPt hero = CPU_Pop32();
+			Bit16u skill = CPU_Pop16();
+			Bit16s bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(skill);
+			CPU_Push32(hero);
+			D2_LOG("Talentprobe %s auf %s %+d\n",
+				(char*)Real2Host(hero + 0x22),
+				schweif_common::names_skill[skill],
+				(signed char)bonus);
+		return 0;
+	    }
+	    default:
+		return 0;
+	}
 }
+
+#if 0
 
 //Feilschen: stub:0136=seg:20B7
 
@@ -148,12 +156,12 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
     case 0x0000: return seg000(offs);
 #endif
 	case 0x1b27: return seg037(offs);
+	case 0x20be: return seg136(offs);
 #if 0
-    case 0x20C8: return seg20C8(offs);
     case 0x2123: return seg2123(offs);
     default: return segUnk(segm, offs);
 #endif
-    }
+	}
 	return 0;
 }
 
