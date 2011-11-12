@@ -54,6 +54,23 @@ unsigned short random_interval(unsigned short lo, unsigned short hi) {
 	return lo + random_schweif(hi - lo + 1) - 1;
 }
 
+signed short dice_roll(unsigned short n, unsigned short m, signed short x)
+{
+	signed short i;
+	signed short sum = 0;
+
+	for (i = 0; i < n; i++) {
+		sum += random_schweif(m);
+	}
+
+	sum += x;
+
+	if (sum < 0)
+		sum = 0;
+
+	return sum;
+}
+
 #if 0
 /**
 	calc_damage_range - calculate min/max damage of a weapon
