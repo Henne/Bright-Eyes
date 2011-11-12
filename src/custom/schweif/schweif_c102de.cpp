@@ -69,6 +69,21 @@ static int seg037(unsigned short offs)
 			D2_LOG("wuerfel %dW%d%+d = %d\n", n, m, x, reg_ax);
 			return 1;
 		}
+		case 0xa2: {
+			Bit16u n = CPU_Pop16();
+			Bit16u m = CPU_Pop16();
+			Bit16s x = CPU_Pop16();
+			RealPt min = CPU_Pop32();
+			RealPt max = CPU_Pop32();
+			CPU_Push32(max);
+			CPU_Push32(min);
+			CPU_Push16(x);
+			CPU_Push16(m);
+			CPU_Push16(n);
+			calc_damage_range(n, m, x, Real2Host(min),
+				Real2Host(max));
+			return 1;
+		}
 	}
 	return 0;
 }

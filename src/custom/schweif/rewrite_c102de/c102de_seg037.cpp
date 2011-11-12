@@ -1,10 +1,10 @@
-#include "dosbox.h"
-#include "regs.h"
-#include "callback.h"
-#include "dos_inc.h"
+/*
+	Rewrite of DSA2 c1.02_de functions of seg037 (random, dice, min/max)
+	Functions rewritten: 4/4 (complete)
+*/
 
-#include "mem.h"
 #include "schweif.h"
+
 #include "c102de_seg037.h"
 
 namespace C102de {
@@ -71,14 +71,14 @@ signed short dice_roll(unsigned short n, unsigned short m, signed short x)
 	return sum;
 }
 
-#if 0
 /**
-	calc_damage_range - calculate min/max damage of a weapon
-*/
-void calc_damage_range(unsigned short n, unsigned short m, short x, Bit8u *min, Bit8u *max) {
-	host_writew(min, n+x);
-	host_writew(max, n*m+x);
+ *	calc_damage_range() - calculate min/max damage of a weapon
+ */
+void calc_damage_range(unsigned short n, unsigned short m, short x,
+				Bit8u *min, Bit8u *max)
+{
+	host_writew(min, n + x);
+	host_writew(max, n * m + x);
 }
-#endif
 
 }
