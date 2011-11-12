@@ -14,7 +14,7 @@
 #include "c102de_seg000.h"
 #include "c102de_seg037.h"
 
-namespace C102de {
+using namespace C102de;
 
 #if 0
 static int seg016(unsigned short offs) {
@@ -37,28 +37,32 @@ static int segUnk(unsigned segm, unsigned short offs) {
 }
 
 
-static int seg037(unsigned short offs) {
-    switch(offs) {
-    case 0x21:{
-	unsigned short range = CPU_Pop16();
-	CPU_Push16(range);
-	reg_ax = random_schweif(range);
-	D2_LOG("random(%d) = %d\n", range & 0xFF, reg_ax);
-	return 1;
-    }
-    case 0x01:{
-	unsigned short lowerBound = CPU_Pop16();
-	unsigned short upperBound = CPU_Pop16();
+#endif
+static int seg037(unsigned short offs)
+{
+	switch(offs) {
+#if 0
+    case 0x05:{
+	Bit16u lowerBound = CPU_Pop16();
+	Bit16u upperBound = CPU_Pop16();
 	CPU_Push16(upperBound);
 	CPU_Push16(lowerBound);
 	reg_ax = random_interval(lowerBound, upperBound);
 	D2_LOG("randomInterval(%d, %d) = %d\n", lowerBound, upperBound, reg_ax);
 	return 1;
     }
-    }
-    return 0;
+#endif
+	    case 0x25: {
+			Bit16u range = CPU_Pop16();
+			CPU_Push16(range);
+			reg_ax = random_schweif(range);
+			D2_LOG("random(%d) = %d\n", range & 0xFF, reg_ax);
+			return 1;
+		}
+	}
+	return 0;
 }
-
+#if 0
 static int seg20C8(unsigned short offs) {
     // Stub 0138
     switch(offs) {
@@ -110,20 +114,22 @@ static int seg2123(unsigned short offs) {
     return 0;
 }
 #endif
-}
 
 // Intercept far CALLs (both 32 and 16 bit)
-int schweif_farcall_c102de(unsigned segm, unsigned offs) {
+int schweif_farcall_c102de(unsigned segm, unsigned offs)
+{
+	switch (segm) {
 #if 0
-    switch (segm) {
     case 0x0000: return seg000(offs);
-    case 0x1B27: return seg037(offs);
+#endif
+	case 0x1b27: return seg037(offs);
+#if 0
     case 0x20C8: return seg20C8(offs);
     case 0x2123: return seg2123(offs);
     default: return segUnk(segm, offs);
-    }
 #endif
-    return 0;
+    }
+	return 0;
 }
 
 int schweif_nearcall_c102de(unsigned offs) {
