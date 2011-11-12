@@ -1,13 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-
-#include "SDL.h"
 
 #include "dosbox.h"
-#include "regs.h"
-#include "callback.h"
-#include "dos_inc.h"
 
 #include "schweif.h"
 
