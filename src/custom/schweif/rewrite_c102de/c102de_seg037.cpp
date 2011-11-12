@@ -45,16 +45,16 @@ unsigned short random_schweif(signed short val)
 	return ax + 1;
 }
 
-#if 0
 
 /**
-	random_interval - generates a u16 random number between lo and hi
-*/
+ *	random_interval() - generates a u16 random number between lo and hi
+ */
 unsigned short random_interval(unsigned short lo, unsigned short hi) {
 
 	return lo + random_schweif(hi - lo + 1) - 1;
 }
 
+#if 0
 /**
 	calc_damage_range - calculate min/max damage of a weapon
 */

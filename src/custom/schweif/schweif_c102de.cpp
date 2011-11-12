@@ -41,18 +41,17 @@ static int segUnk(unsigned segm, unsigned short offs) {
 static int seg037(unsigned short offs)
 {
 	switch(offs) {
-#if 0
-    case 0x05:{
-	Bit16u lowerBound = CPU_Pop16();
-	Bit16u upperBound = CPU_Pop16();
-	CPU_Push16(upperBound);
-	CPU_Push16(lowerBound);
-	reg_ax = random_interval(lowerBound, upperBound);
-	D2_LOG("randomInterval(%d, %d) = %d\n", lowerBound, upperBound, reg_ax);
-	return 1;
-    }
-#endif
-	    case 0x25: {
+		case 0x05: {
+			Bit16u lowerBound = CPU_Pop16();
+			Bit16u upperBound = CPU_Pop16();
+			CPU_Push16(upperBound);
+			CPU_Push16(lowerBound);
+			reg_ax = random_interval(lowerBound, upperBound);
+			D2_LOG("randomInterval(%d, %d) = %d\n",
+				lowerBound, upperBound, reg_ax);
+			return 1;
+		}
+		case 0x25: {
 			Bit16u range = CPU_Pop16();
 			CPU_Push16(range);
 			reg_ax = random_schweif(range);
