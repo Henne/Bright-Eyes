@@ -4,6 +4,7 @@ noinst_LIBRARIES = libschweif_rewrite_c102de.a
 
 libschweif_rewrite_c102de_a_SOURCES = \
 		c102de_seg000.cpp c102de_seg000.h\
+		c102de_seg013.cpp c102de_seg013.h\
 		c102de_seg029.cpp c102de_seg029.h\
 		c102de_seg033.cpp c102de_seg033.h\
 		c102de_seg034.cpp c102de_seg034.h\

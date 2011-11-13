@@ -1,0 +1,2 @@
+namespace C102de {
+}

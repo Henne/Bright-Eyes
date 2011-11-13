@@ -61,8 +61,10 @@ static int seg013(unsigned short offs)
 		case 0xf8e: {
 			return 0;
 		}
-		default:
-		D2_LOG("call to %s:0x%04x\n", __func__, offs);
+		default: {
+			D2_ERR("Uncatched call to %s:0x%04x\n", __func__, offs);
+			exit(1);
+		}
 	}
 	return 0;
 }
