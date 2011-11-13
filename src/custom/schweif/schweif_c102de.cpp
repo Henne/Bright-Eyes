@@ -6,6 +6,8 @@
 #include "schweif.h"
 
 #include "c102de_seg000.h"
+#include "c102de_seg029.h"
+#include "c102de_seg033.h"
 #include "c102de_seg037.h"
 #include "c102de_seg136.h"
 
@@ -33,6 +35,45 @@ static int segUnk(unsigned segm, unsigned short offs) {
 
 
 #endif
+
+static int seg029(unsigned short offs)
+{
+	switch (offs) {
+		case 0x0e: {
+			RealPt dst = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			RealPt length = CPU_Pop32();
+			CPU_Push32(length);
+			CPU_Push32(src);
+			CPU_Push32(dst);
+			//D2_LOG("decomp(%x, %x, %x)\n", dst, src, length);
+			decomp_pp20(dst, Real2Host(src), length);
+			return 1;
+		}
+		default: return 0;
+	}
+}
+
+static int seg033(unsigned short offs)
+{
+	switch (offs) {
+		case 0x0e: {
+			RealPt src = CPU_Pop32();
+			RealPt dst = CPU_Pop32();
+			RealPt src_data = CPU_Pop32();
+			Bit32u length = CPU_Pop32();
+			CPU_Push32(length);
+			CPU_Push32(src_data);
+			CPU_Push32(dst);
+			CPU_Push32(src);
+			//D2_LOG("ppDecrunch(%x, %x, %x, %x)\n",
+			//	src, dst, src_data, length);
+			return 0;
+		}
+		default: return 0;
+	}
+}
+
 static int seg037(unsigned short offs)
 {
 	switch(offs) {
@@ -147,6 +188,8 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 #if 0
     case 0x0000: return seg000(offs);
 #endif
+	case 0x1a8a: return seg029(offs);
+	case 0x1aa4: return seg033(offs);
 	case 0x1b27: return seg037(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);

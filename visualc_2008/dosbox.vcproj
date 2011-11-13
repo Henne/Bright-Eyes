@@ -1441,6 +1441,26 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg029.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg029.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg033.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg033.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg037.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg037.cpp"
 						>
 					</File>
@@ -1450,10 +1470,6 @@
 					</File>
 					<File
 						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg136.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg037.h"
 						>
 					</File>
 				</Filter>
