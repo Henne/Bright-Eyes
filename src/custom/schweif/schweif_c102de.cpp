@@ -8,6 +8,7 @@
 #include "c102de_seg000.h"
 #include "c102de_seg029.h"
 #include "c102de_seg033.h"
+#include "c102de_seg034.h"
 #include "c102de_seg037.h"
 #include "c102de_seg136.h"
 
@@ -71,6 +72,46 @@ static int seg033(unsigned short offs)
 			return 0;
 		}
 		default: return 0;
+	}
+}
+
+static int seg034(unsigned short offs)
+{
+	switch (offs) {
+		case 0x08: {
+			return 0;
+		}
+		case 0x22: {
+			Bit16u length = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			CPU_Push32(src);
+			CPU_Push16(length);
+			D2_LOG("seg034_22(%x, %x)\n",
+				length, src);
+			return 0;
+		}
+		case 0x41: {
+			return 0;
+		}
+		case 0x60: {
+			return 0;
+		}
+		case 0x7f: {
+			return 0;
+		}
+		case 0x9f: {
+			return 0;
+		}
+		case 0xc4: {
+			return 0;
+		}
+		case 0xe9: {
+			return 0;
+		}
+		default: {
+			D2_ERR("Uncatched call to %s:0x%04x\n", __func__, offs);
+			exit(1);
+		}
 	}
 }
 
@@ -190,6 +231,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 #endif
 	case 0x1a8a: return seg029(offs);
 	case 0x1aa4: return seg033(offs);
+	case 0x1ae4: return seg034(offs);
 	case 0x1b27: return seg037(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);
