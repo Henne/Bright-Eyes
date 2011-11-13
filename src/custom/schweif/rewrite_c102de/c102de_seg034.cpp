@@ -9,4 +9,12 @@
 
 namespace C102de {
 
+void fill_line(PhysPt dst, unsigned short count, signed char color)
+{
+	while (count--) {
+		mem_writeb_inline(dst++, color);
+	}
+
+}
+
 }

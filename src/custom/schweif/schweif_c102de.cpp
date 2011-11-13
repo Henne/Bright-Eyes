@@ -79,7 +79,16 @@ static int seg034(unsigned short offs)
 {
 	switch (offs) {
 		case 0x08: {
-			return 0;
+			RealPt dst = CPU_Pop32();
+			Bit16u count = CPU_Pop16();
+			Bit16s color = CPU_Pop16();
+			CPU_Push16(color);
+			CPU_Push16(count);
+			CPU_Push32(dst);
+			D2_GFX("fill_line(0x%x, %d, 0x%x);\n",
+				dst, count, (signed char)color);
+			fill_line(Real2Phys(dst), count, (signed char)color);
+			return 1;
 		}
 		case 0x22: {
 			Bit16u length = CPU_Pop32();
