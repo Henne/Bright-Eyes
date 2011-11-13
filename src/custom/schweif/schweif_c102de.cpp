@@ -106,7 +106,19 @@ static int seg034(unsigned short offs)
 			return 0;
 		}
 		case 0x7f: {
-			return 0;
+			RealPt dst = CPU_Pop32();
+			Bit16u height = CPU_Pop16();
+			Bit16s color = CPU_Pop16();
+			Bit16u disp = CPU_Pop16();
+			CPU_Push16(disp);
+			CPU_Push16(color);
+			CPU_Push16(height);
+			CPU_Push32(dst);
+			D2_GFX("fill_v_line(%x, %d, %x, %d);\n",
+				dst, height, color, disp);
+			fill_v_line(Real2Phys(dst), height, (signed char)color,
+					disp);
+			return 1;
 		}
 		case 0x9f: {
 			return 0;
