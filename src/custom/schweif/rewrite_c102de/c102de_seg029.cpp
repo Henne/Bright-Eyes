@@ -2,6 +2,9 @@
  *	Rewritr of DSA2 c1.02_de functions seg029 (decomp_pp20)
  *	Functions rewritten 1/1 (complete)
  */
+
+#include "paging.h"
+
 #include "schweif.h"
 
 #include "c102de_seg033.h"
