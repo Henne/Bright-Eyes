@@ -146,7 +146,7 @@ static int seg034(unsigned short offs)
 			return 1;
 		}
 		case 0x22: {
-			Bit16u length = CPU_Pop32();
+			Bit16u length = CPU_Pop16();
 			RealPt src = CPU_Pop32();
 			CPU_Push32(src);
 			CPU_Push16(length);
