@@ -120,27 +120,25 @@ static int seg136(unsigned short offs)
 	}
 }
 
-#if 0
-
-//Feilschen: stub:0136=seg:20B7
-
-static int seg2123(unsigned short offs) {
-    switch(offs) {
-    case 0x2A:{
-	RealPt hero = CPU_Pop32();
-	unsigned short spell = CPU_Pop16();
-	signed short bonus = CPU_Pop16();
-	CPU_Push16(bonus);
-	CPU_Push16(spell);
-	CPU_Push32(hero);
-	D2_LOG("Zauberprobe: %s + %d\n", names_spell[spell], bonus & 0xFF);
-	return 0;
-    }
-    default: return 0;
-    }
-    return 0;
+static int seg151(unsigned short offs)
+{
+	switch (offs) {
+		case 0x2a: {
+			RealPt hero = CPU_Pop32();
+			Bit16u spell = CPU_Pop16();
+			Bit16s bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(spell);
+			CPU_Push32(hero);
+			D2_LOG("Zauberprobe %s auf %s %+d\n",
+					(char*)(Real2Host(hero) + 0x22),
+					schweif_common::names_spell[spell],
+					(signed char)bonus);
+			return 0;
+		}
+		default: return 0;
+	}
 }
-#endif
 
 // Intercept far CALLs (both 32 and 16 bit)
 int schweif_farcall_c102de(unsigned segm, unsigned offs)
@@ -151,8 +149,8 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 #endif
 	case 0x1b27: return seg037(offs);
 	case 0x20be: return seg136(offs);
+	case 0x2119: return seg151(offs);
 #if 0
-    case 0x2123: return seg2123(offs);
     default: return segUnk(segm, offs);
 #endif
 	}
