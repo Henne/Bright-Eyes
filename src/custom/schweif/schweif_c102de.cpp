@@ -6,6 +6,7 @@
 #include "schweif.h"
 
 #include "c102de_seg000.h"
+#include "c102de_seg013.h"
 #include "c102de_seg029.h"
 #include "c102de_seg033.h"
 #include "c102de_seg034.h"
@@ -47,7 +48,13 @@ static int seg013(unsigned short offs)
 			return 0;
 		}
 		case 0x91d: {
-			return 0;
+			Bit16s a = CPU_Pop16();
+			Bit16s b = CPU_Pop16();
+			CPU_Push16(b);
+			CPU_Push16(a);
+			D2_GFX("seg013_91d(%d, %d);\n", a, b);
+			seg013_91d(a, b);
+			return 1;
 		}
 		case 0x95f: {
 			return 0;
