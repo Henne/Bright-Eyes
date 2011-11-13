@@ -14,6 +14,59 @@
 
 using namespace C102de;
 
+static int seg004(unsigned short offs)
+{
+	switch(offs) {
+		case 0x012d: {
+			return 0;
+		}
+		case 0x06da: {
+			return 0;
+		}
+		case 0x0760: {
+			return 0;
+		}
+		case 0x0b70: {
+			return 0;
+		}
+		default:
+//			D2_LOG("%s:0x%04x();\n", __func__, offs);
+			return 0;
+	}
+}
+
+static int seg007(unsigned short offs)
+{
+	return 0;
+}
+
+static int seg013(unsigned short offs)
+{
+	switch (offs) {
+		case 0x7af: {
+			return 0;
+		}
+		case 0x91d: {
+			return 0;
+		}
+		case 0x95f: {
+			return 0;
+		}
+		case 0xb10: {
+			return 0;
+		}
+		case 0xc7d: {
+			return 0;
+		}
+		case 0xf8e: {
+			return 0;
+		}
+		default:
+		D2_LOG("call to %s:0x%04x\n", __func__, offs);
+	}
+	return 0;
+}
+
 #if 0
 static int seg016(unsigned short offs) {
     switch(offs) {
@@ -43,7 +96,7 @@ static int seg029(unsigned short offs)
 		case 0x0e: {
 			RealPt dst = CPU_Pop32();
 			RealPt src = CPU_Pop32();
-			RealPt length = CPU_Pop32();
+			Bit32u length = CPU_Pop32();
 			CPU_Push32(length);
 			CPU_Push32(src);
 			CPU_Push32(dst);
@@ -186,6 +239,12 @@ static int seg037(unsigned short offs)
 	return 0;
 }
 
+/* XMS stuff */
+static int seg039(unsigned short offs)
+{
+	return 0;
+}
+
 static int seg136(unsigned short offs)
 {
 	switch(offs) {
@@ -247,20 +306,22 @@ static int seg151(unsigned short offs)
 int schweif_farcall_c102de(unsigned segm, unsigned offs)
 {
 	switch (segm) {
-#if 0
-    case 0x0000: return seg000(offs);
-#endif
+	case 0x0000: return 0;
+	case 0x06bd: return seg004(offs);
+	case 0x0a32: return seg007(offs);
+	case 0x0ce1: return seg013(offs);
 	case 0x1a8a: return seg029(offs);
 	case 0x1aa4: return seg033(offs);
 	case 0x1ae4: return seg034(offs);
 	case 0x1b27: return seg037(offs);
+	case 0x1b42: return seg039(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);
-#if 0
-    default: return segUnk(segm, offs);
-#endif
+	default:
+		//if (segm <= 0x1e26)
+		//	D2_LOG("call to 0x%04x:0x%04x\n", segm, offs);
+		return 0;
 	}
-	return 0;
 }
 
 int schweif_nearcall_c102de(unsigned offs) {
