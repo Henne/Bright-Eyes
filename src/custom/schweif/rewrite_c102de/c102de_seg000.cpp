@@ -263,19 +263,48 @@ int seg000(unsigned short offs) {
     case 0x3F5A: { // sub_13F5A
 	return 0;
     }
-    case 0x40B7: { // sub_140B7
+    case 0x40B7: { // sub_140B7: sprintf
+	RealPt dst_p = CPU_Pop32();
+	Bit16u format_ofs = CPU_Pop16();
+	Bit16u format_seg = CPU_Pop16();
+	Bit16u args_ofs   = CPU_Pop16();
+	Bit16u args_seg   = CPU_Pop16();
+	CPU_Push16(args_seg);
+	CPU_Push16(args_ofs);
+	CPU_Push16(format_seg);
+	CPU_Push16(format_ofs);
+	CPU_Push32(dst_p);
+	char* dest   = (char*)(MemBase + Real2Phys(dst_p));
+	char* format = (char*)(MemBase + PhysMake(format_seg, format_ofs));
+	char* args_p = (char*)(MemBase + PhysMake(  args_seg,   args_ofs));
+	
+	// TODO: Find out how Borland-sprintf saves the variadric argument list.
+	//       Transform this so the host version of sprintf can be used.
+	//D2_LOG("sprintf: %s with '%s'\n", format, args_p);
 	return 0;
     }
-    case 0x40FA: { // sub_140FA
-	return 0;
+    case 0x40FA: { // sub_140FA: strcat
+	RealPt dest   = CPU_Pop32();
+	RealPt source = CPU_Pop32();
+	CPU_Push32(source);
+	CPU_Push32(dest);
+	//D2_LOG("strcat(%08x, %s)\n", dest, MemBase+Real2Phys(source));
+	strcat((char*)(MemBase + Real2Phys(dest)),  (char*)(MemBase + Real2Phys(source)));
+	return 1;
     }
     case 0x4139: { // sub_14139
 	return 0;
     }
-    case 0x4176: { // sub_14176
-	return 0;
+    case 0x4176: { // sub_14176: strcmp
+	// Untested
+	RealPt str1 = CPU_Pop32();
+	RealPt str2 = CPU_Pop32();
+	CPU_Push32(str2);
+	CPU_Push32(str1);
+	reg_ax = strcmp(MemBase + Real2Phys(str1), MemBase + Real2Phys(str2));
+	return 1;
     }
-    case 0x41A6: { // sub_141A6
+    case 0x41A6: { // sub_141A6: strcpy
 	return 0;
     }
     case 0x41CF: { // sub_141CF
