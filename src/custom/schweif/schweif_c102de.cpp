@@ -99,6 +99,46 @@ static int segUnk(unsigned segm, unsigned short offs) {
 
 #endif
 
+static int seg024(unsigned short offs)
+{
+	switch (offs) {
+		case 0x4f3: {
+			return 0;
+		}
+		case 0x560: {
+			return 0;
+		}
+		case 0x5cd: {
+			return 0;
+		}
+		case 0x5f6: {
+			return 0;
+		}
+		case 0x627: {
+			return 0;
+		}
+		case 0x668: {
+			return 0;
+		}
+		case 0x198a: {
+			return 0;
+		}
+		case 0x2fce: {
+			return 0;
+		}
+		case 0x4b29: {
+			return 0;
+		}
+		case 0x6c35: {
+			return 0;
+		}
+		default: {
+			D2_ERR("uncatched call to %s:0x%04x\n", __func__, offs);
+			return 0;
+		}
+	}
+}
+
 static int seg029(unsigned short offs)
 {
 	switch (offs) {
@@ -319,6 +359,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x06bd: return seg004(offs);
 	case 0x0a32: return seg007(offs);
 	case 0x0ce1: return seg013(offs);
+	case 0x1288: return seg024(offs);
 	case 0x1a8a: return seg029(offs);
 	case 0x1aa4: return seg033(offs);
 	case 0x1ae4: return seg034(offs);
@@ -333,16 +374,37 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	}
 }
 
-int schweif_nearcall_c102de(unsigned offs) {
-#if 0
-    unsigned short segm = SegValue(cs)-relocation;
-
-    /* Borland C-Lib */
-    if (segm == 0x0000) {
-	switch(offs) {
-	default: return 0;
+int n_seg024(unsigned offs)
+{
+	switch (offs) {
+		case 0x10: {
+			return 0;
+		}
+		case 0x25a: {
+			return 0;
+		}
+		default: {
+			return 0;
+		}
 	}
-    }
+}
+
+int schweif_nearcall_c102de(unsigned offs) {
+
+	unsigned short segm = SegValue(cs)-relocation;
+
+	switch (segm) {
+		/* seg000 Borland C-Lib */
+		case 0x0000: {
+			return 0;
+		}
+		/* seg024 */
+		case 0x1288: {
+			return n_seg024(offs);
+		}
+	}
+#if 0
+
     if (segm == 0x1B27) {
 	switch(offs) {
 	case 0x21:{
