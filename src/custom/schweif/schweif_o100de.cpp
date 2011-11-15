@@ -27,13 +27,14 @@ static int seg016(unsigned short offs) {
     }
 }
 
+// "Unbekanntes Segment" zu Forschungszwecken
 static int segUnk(unsigned segm, unsigned short offs) {
     switch(offs) {
-    case 0x9C9:
-	D2_LOG("img@%04x\n", segm);
+    case 0x00E8:
+	//D2_LOG("img@%04x\n", segm);
 	return 0;
     }
-	return 0;
+    return 0;
 }
 
 
