@@ -1,5 +1,4 @@
 #include "dosbox.h"
-#include "regs.h"
 #include "callback.h"
 #include "dos_inc.h"
 

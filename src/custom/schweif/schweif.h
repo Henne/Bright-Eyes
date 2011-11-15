@@ -56,6 +56,11 @@ static inline Bit8u* getString(unsigned p) {
         return MemBase+Real2Phys(p);
 }
 
+static inline Bit8u* Real2Host(RealPt p)
+{
+	return MemBase + Real2Phys(p);
+}
+
 namespace schweif_common {
 extern const char* names_attrib[];
 extern const char* names_skill[];
