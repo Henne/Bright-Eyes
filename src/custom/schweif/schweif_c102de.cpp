@@ -7,6 +7,7 @@
 
 #include "c102de_seg000.h"
 #include "c102de_seg013.h"
+#include "c102de_seg024.h"
 #include "c102de_seg029.h"
 #include "c102de_seg033.h"
 #include "c102de_seg034.h"
@@ -115,7 +116,9 @@ static int seg024(unsigned short offs)
 			return 0;
 		}
 		case 0x627: {
-			return 0;
+			D2_GFX("copy_3d_to_screen()\n");
+			copy_3d_to_screen();
+			return 1;
 		}
 		case 0x668: {
 			return 0;
