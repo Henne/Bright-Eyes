@@ -1449,6 +1449,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg024.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg024.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schweif\rewrite_c102de\c102de_seg029.h"
 						>
 					</File>
