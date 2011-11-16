@@ -288,7 +288,7 @@ int seg000(unsigned short offs) {
 	RealPt source = CPU_Pop32();
 	CPU_Push32(source);
 	CPU_Push32(dest);
-	//D2_LOG("strcat(%08x, %s)\n", dest, MemBase+Real2Phys(source));
+	//D2_LOG("strcat(%04x, %s)\n", dest, MemBase+Real2Phys(source));
 	strcat((char*)(MemBase + Real2Phys(dest)),  (char*)(MemBase + Real2Phys(source)));
 	return 1;
     }
@@ -305,7 +305,14 @@ int seg000(unsigned short offs) {
 	return 1;
     }
     case 0x41A6: { // sub_141A6: strcpy
-	return 0;
+	// Untested
+	RealPt dest   = CPU_Pop32();
+	RealPt source = CPU_Pop32();
+	CPU_Push32(source);
+	CPU_Push32(dest);
+	D2_LOG("strcpy(%04x, %s)\n", dest, MemBase+Real2Phys(source));
+	strcpy((char*)(MemBase + Real2Phys(dest)),  (char*)(MemBase + Real2Phys(source)));
+	return 1;
     }
     case 0x41CF: { // sub_141CF
 	return 0;
