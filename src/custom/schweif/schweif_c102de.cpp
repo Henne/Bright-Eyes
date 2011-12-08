@@ -113,7 +113,11 @@ static int seg024(unsigned short offs)
 			return 0;
 		}
 		case 0x5f6: {
-			return 0;
+			Bit16u val = CPU_Pop16();
+			CPU_Push16(val);
+			D2_GFX("fill_scene(%x);\n", (unsigned char)val);
+			fill_scene((unsigned char)val);
+			return 1;
 		}
 		case 0x627: {
 			D2_GFX("copy_3d_to_screen()\n");
