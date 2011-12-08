@@ -110,7 +110,9 @@ static int seg024(unsigned short offs)
 			return 0;
 		}
 		case 0x5cd: {
-			return 0;
+			D2_GFX("fill_smth();\n");
+			fill_smth();
+			return 1;
 		}
 		case 0x5f6: {
 			Bit16u val = CPU_Pop16();

@@ -1,6 +1,6 @@
 /*
  *	Rewritr of DSA2 c1.02_de functions seg024 (???)
- *	Functions rewritten 2/12
+ *	Functions rewritten 3/12
  */
 
 #include "paging.h"
@@ -8,6 +8,20 @@
 #include "schweif.h"
 
 namespace C102de {
+
+void fill_smth(void)
+{
+	Bit8u *dst;
+	Bit32u i;
+
+	dst = MemBase + PhysMake(datseg, 0x78da);
+	for (i = 104; i > 0; i--, dst += 4)
+		host_writed(dst, 0x7fff7fff);
+	dst = MemBase + PhysMake(datseg, 0x7a7a);
+	for (i = 104; i > 0; i--, dst += 4)
+		host_writed(dst, 0x80018001);
+
+}
 
 void fill_scene(unsigned char col)
 {
