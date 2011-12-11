@@ -2532,7 +2532,11 @@ static int seg027(unsigned short offs) {
 			return 0;
 		}
 		case 0x3e: {
-			return 0;
+			Bit16s nr = CPU_Pop16();
+			D1_LOG("read_fight_lst(0x%x)\n", nr);
+			CPU_Push16(nr);
+			read_fight_lst(nr);
+			return 1;
 		}
 		case 0x43: {
 			D1_LOG("write_fight_lst();\n");

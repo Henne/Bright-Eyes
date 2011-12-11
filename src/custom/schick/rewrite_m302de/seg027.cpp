@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 4/8
+	Functions rewritten: 5/8
 */
 
 #include "dos_inc.h"
@@ -124,6 +124,34 @@ void load_scenario(signed short nr)
 	bc_close(fd);
 }
 
+void read_fight_lst(signed short nr)
+{
+	unsigned short fd;
+	unsigned short max;
+
+	/* load FIGHT.LST from TEMP dir */
+	fd = load_archive_file(0x8000 | 0xcd);
+
+	/* read the first 2 bytes (max number of fights) */
+	bc__read(fd, (Bit8u*)&max, 2);
+
+	/* sanity check for parameter nr */
+	if ((max - 1) < nr || nr <= 0)
+		nr = 0;
+
+	/* write the fight number to a global var */
+	ds_writew(0x5eb2, nr);
+
+	/* seek to file position */
+	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
+
+	/* read the fight entry */
+	bc__read(fd, Real2Host(ds_readd(0xbd28)), 216);
+
+	/* close FIGHT.LST */
+	bc_close(fd);
+}
+
 void write_fight_lst(void)
 {
 	signed short nr;
@@ -131,7 +159,7 @@ void write_fight_lst(void)
 
 	nr = ds_readw(0x5eb2);
 
-	/* load FIGHT.LSR from TEMP dir */
+	/* load FIGHT.LST from TEMP dir */
 	fd = load_archive_file(0x8000 | 0xcd);
 
 	/* seek to the entry */
