@@ -2529,7 +2529,11 @@ static int seg027(unsigned short offs) {
 			return 1;
 		}
 		case 0x39: {
-			return 0;
+			Bit16s nr = CPU_Pop16();
+			CPU_Push16(nr);
+			reg_ax = count_fight_enemies(nr);
+			D1_LOG("count_fight_enemies(0x%x) = %d\n", nr, reg_ax);
+			return 1;
 		}
 		case 0x3e: {
 			Bit16s nr = CPU_Pop16();
