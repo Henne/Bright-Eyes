@@ -126,6 +126,7 @@ void load_scenario(signed short nr)
 
 void read_fight_lst(signed short nr)
 {
+	char fight_name[21];
 	unsigned short fd;
 	unsigned short max;
 
@@ -147,6 +148,12 @@ void read_fight_lst(signed short nr)
 
 	/* read the fight entry */
 	bc__read(fd, Real2Host(ds_readd(0xbd28)), 216);
+
+	/* Improvement */
+	strncpy(fight_name, (char*)Real2Host(ds_readd(0xbd28)), 20);
+	fight_name[20] = '\0';
+	D1_INFO("Lade Kampf Nr %3d\t Name \"%s\"\n", nr, fight_name);
+	/* Improvement end */
 
 	/* close FIGHT.LST */
 	bc_close(fd);
