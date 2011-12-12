@@ -2422,85 +2422,95 @@ static int seg024(unsigned short offs) {
 }
 
 static int seg026(unsigned short offs) {
-		if (offs == 0x0020) {
-			D1_LOG("ip=0x%04X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0025) {
-			RealPt src = CPU_Pop32();
-			RealPt dst = CPU_Pop32();
-			Bit32u len = CPU_Pop32();
+	switch (offs) {
 
-			D1_LOG("split_textbuffer(%x, %x, %d)\n",
-				src, dst, len);
-			split_textbuffer(Real2Host(src), dst, len);
-			CPU_Push32(len);
-			CPU_Push32(dst);
-			CPU_Push32(src);
-			return 1;
-		}
-		if (offs == 0x002a) {
-			D1_LOG("load_ggsts_nvf()\n");
-			load_ggsts_nvf();
-			return 1;
-		}
-		if (offs == 0x002f) {
-			D1_LOG("short ChooseLoadSavegame(void)\n");
-			return 0;
-		}
-		if (offs == 0x0034) {
-			D1_LOG("ip=0x%04X ChooseSaveSavegame()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0039) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x003e) {
-			D1_LOG("ip=0x%4X ReleaseHero()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0043) {
-			D1_LOG("ip=0x%4X ChooseFreeHero()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0048) {
-			Bit16s head = CPU_Pop16();
-			D1_LOG("load_in_head(%d)\n", head);
-			load_in_head(head);
-			CPU_Push16(head);
-			return 1;
-		}
-		if (offs == 0x004d) {
-			Bit16s index = CPU_Pop16();
-			D1_LOG("load_city_ltx(%s)\n", get_fname(index));
-			load_city_ltx(index);
-			CPU_Push16(index);
-			return 1;
-		}
-		if (offs == 0x0052) {
-			Bit16s index = CPU_Pop16();
-			D1_LOG("load_buffer_1(%s)\n", get_fname(index));
-			load_buffer_1(index);
-			CPU_Push16(index);
-			return 1;
-		}
-		if (offs == 0x0057) {
-			Bit16u index = CPU_Pop16();
-			CPU_Push16(index);
-			D1_LOG("load_ltx(%s)\n", get_fname(index));
-			load_ltx(index);
-			return 1;
-		}
-		if (offs == 0x005c) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
-		if (offs == 0x0066) {
-			D1_LOG("ip=0x%4X unknown()\n", offs);
-			return 0;
-		}
+	case 0x20: {
+		D1_LOG("ip=0x%04X unknown()\n", offs);
 		return 0;
+	}
+	case 0x25: {
+		RealPt src = CPU_Pop32();
+		RealPt dst = CPU_Pop32();
+		Bit32u len = CPU_Pop32();
+
+		D1_LOG("split_textbuffer(%x, %x, %d)\n", src, dst, len);
+		split_textbuffer(Real2Host(src), dst, len);
+		CPU_Push32(len);
+		CPU_Push32(dst);
+		CPU_Push32(src);
+		return 1;
+	}
+	case 0x2a: {
+		D1_LOG("load_ggsts_nvf()\n");
+		load_ggsts_nvf();
+		return 1;
+	}
+	case 0x2f: {
+		D1_LOG("short ChooseLoadSavegame(void)\n");
+		return 0;
+	}
+	case 0x34: {
+		D1_LOG("ip=0x%04X ChooseSaveSavegame()\n", offs);
+		return 0;
+	}
+	case 0x39: {
+		D1_LOG("ip=0x%4X unknown()\n", offs);
+		return 0;
+	}
+	case 0x3e: {
+		D1_LOG("ip=0x%4X ReleaseHero()\n", offs);
+		return 0;
+	}
+	case 0x43: {
+		D1_LOG("ip=0x%4X ChooseFreeHero()\n", offs);
+		return 0;
+	}
+	case 0x48: {
+		Bit16s head = CPU_Pop16();
+		D1_LOG("load_in_head(%d)\n", head);
+		load_in_head(head);
+		CPU_Push16(head);
+		return 1;
+	}
+	case 0x4d: {
+		Bit16s index = CPU_Pop16();
+		D1_LOG("load_city_ltx(%s)\n", get_fname(index));
+		load_city_ltx(index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x52: {
+		Bit16s index = CPU_Pop16();
+		D1_LOG("load_buffer_1(%s)\n", get_fname(index));
+		load_buffer_1(index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x57: {
+		Bit16u index = CPU_Pop16();
+		CPU_Push16(index);
+		D1_LOG("load_ltx(%s)\n", get_fname(index));
+		load_ltx(index);
+		return 1;
+	}
+	case 0x5c: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		D1_LOG("prepare_chr_name(%x, %s);\n", p1, (char*)Real2Host(p2));
+		prepare_chr_name((char*)Real2Host(p1), (char*)Real2Host(p2));
+		return 1;
+	}
+	case 0x66: {
+		D1_LOG("ip=0x%4X unknown()\n", offs);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
 }
 
 static int seg027(unsigned short offs) {
@@ -5157,7 +5167,16 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		case 0x2d3: {
-			return 0;
+			CPU_Pop16();
+			RealPt p1 = CPU_Pop32();
+			RealPt p2 = CPU_Pop32();
+			CPU_Push32(p2);
+			CPU_Push32(p1);
+			D1_LOG("prepare_chr_name(%x, %s);\n", p1,
+				(char*)Real2Host(p2));
+			prepare_chr_name((char*)Real2Host(p1),
+				(char*)Real2Host(p2));
+			return 1;
 		}
 		case 0x347: {
 			CPU_Pop16();
@@ -5165,7 +5184,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			RealPt p2 = CPU_Pop32();
 			CPU_Push32(p2);
 			CPU_Push32(p1);
-			D1_LOG("func(%x, %s);\n", p1, (char*)Real2Host(p2));
+			D1_LOG("prepare_sg_name(%x, %s);\n", p1, (char*)Real2Host(p2));
 			prepare_sg_name((char*)Real2Host(p1),
 				(char*)Real2Host(p2));
 			return 1;
