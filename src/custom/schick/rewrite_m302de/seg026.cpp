@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "schick.h"
 #include "schick_common.h"
 #include "v302de.h"
@@ -87,6 +89,34 @@ void load_ggsts_nvf()
 	bc_close(fd);
 
 	ds_writew(0x2ccb, 0xffff);
+}
+
+void prepare_sg_name(char *dst, char *src)
+{
+	char tmp_str[40];
+	Bit16u i;
+
+	strcpy(tmp_str, src);
+
+	i = 0;
+	while (i < 8) {
+		if (tmp_str[i] == '\0') {
+			while (i < 8) {
+				/* fill up with underscores */
+				tmp_str[i] = 0x5f;
+				i++;
+			}
+			break;
+		} else {
+			if ((ds_readb(0xb4e9 + tmp_str[i]) & 0x0e) == 0)
+				tmp_str[i] = 0x5f;
+		}
+
+		i++;
+	}
+
+	strncpy(dst, tmp_str, 8);
+	dst[8] = '\0';
 }
 
 /**

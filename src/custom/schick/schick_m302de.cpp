@@ -5160,7 +5160,15 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x347: {
-			return 0;
+			CPU_Pop16();
+			RealPt p1 = CPU_Pop32();
+			RealPt p2 = CPU_Pop32();
+			CPU_Push32(p2);
+			CPU_Push32(p1);
+			D1_LOG("func(%x, %s);\n", p1, (char*)Real2Host(p2));
+			prepare_sg_name((char*)Real2Host(p1),
+				(char*)Real2Host(p2));
+			return 1;
 		}
 		case 0x1021: {
 			return 0;
