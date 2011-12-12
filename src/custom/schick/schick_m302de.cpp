@@ -1455,13 +1455,23 @@ static int seg003(unsigned short offs) {
 			reg_ax = update_direction((unsigned char)mod);
 			return 1;
 		}
+		case  0x002c: {
+			return 0;
+		}
+		case  0x01e1: {
+			return 0;
+		}
+		case  0x031e: {
+			return 0;
+		}
 		case  0x0424: {
 			D1_LOG("no_way()\n");
 			no_way();
 			return 1;
 		}
 	default:
-		return 0;
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
 	}
 }
 
