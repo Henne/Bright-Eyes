@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 4/19
+	Functions rewritten: 5/19
 */
 
 #include "schick.h"
@@ -13,6 +13,17 @@
 #include "seg026.h"
 
 namespace M302de {
+
+void load_special_textures(signed short arg)
+{
+	Bit16u fd;
+
+	/* load 0xe8 LTURM.NVF else FINGER.NVF */
+	fd = load_archive_file(arg == 9 ? 0xe8 : 0xe9);
+	read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
+	bc_close(fd);
+
+}
 
 void load_npc(signed short index)
 {

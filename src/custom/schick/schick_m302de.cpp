@@ -2610,7 +2610,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x4d: {
-		return 0;
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("load_special_textures(%x);\n", arg);
+		load_special_textures(arg);
+		return 1;
 	}
 	case 0x52: {
 		return 0;
