@@ -6,6 +6,7 @@ signed short bioskey(signed short);
 RealPt bc_farcalloc(Bit32u, Bit32u);
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
+Bit16s bc__creat(RealPt, Bit16u);
 
 Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
