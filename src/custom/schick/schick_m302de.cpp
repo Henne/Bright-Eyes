@@ -459,7 +459,7 @@ static int seg000(unsigned short offs) {
 		case 0x2f25: {
 			RealPt name = CPU_Pop32();
 			Bit16u attrib = CPU_Pop16();
-			D1_INFO("C-Lib bc__creat(%s, %x);\n",
+			D1_LOG("C-Lib bc__creat(%s, %x);\n",
 				(char*)Real2Host(name), attrib);
 			reg_ax = bc__creat(name, attrib);
 			CPU_Push16(attrib);
