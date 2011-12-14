@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 5/19
+	Functions rewritten: 6/19
 */
 
 #include "schick.h"
@@ -23,6 +23,11 @@ void load_special_textures(signed short arg)
 	read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
 	bc_close(fd);
 
+}
+
+void call_load_buffer(void)
+{
+	load_buffer_1((signed short)ds_readw(0x26bf));
 }
 
 void load_npc(signed short index)

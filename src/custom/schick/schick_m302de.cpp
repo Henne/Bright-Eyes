@@ -2617,7 +2617,9 @@ static int seg028(unsigned short offs) {
 		return 1;
 	}
 	case 0x52: {
-		return 0;
+		D1_LOG("call_load_buffer();\n");
+		call_load_buffer();
+		return 1;
 	}
 	case 0x57: {
 		return 0;
