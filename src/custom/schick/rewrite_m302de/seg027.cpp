@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 4/8
+	Functions rewritten: 6/8
 */
 
 #include "dos_inc.h"
@@ -124,6 +124,87 @@ void load_scenario(signed short nr)
 	bc_close(fd);
 }
 
+unsigned short count_fight_enemies(signed short nr)
+{
+	Bit8u *buf;
+	unsigned short fd;
+	unsigned short max;
+	unsigned short retval;
+	unsigned short i;
+
+	retval = 0;
+
+	buf = Real2Host(ds_readd(0xd2f3));
+
+	/* load FIGHT.LST from TEMP dir */
+	fd = load_archive_file(0x8000 | 0xcd);
+
+	/* read the first 2 bytes (max number of fights) */
+	bc__read(fd, (Bit8u*)&max, 2);
+
+	/* sanity check for parameter nr */
+	if ((max - 1) < nr || nr <= 0)
+		nr = 0;
+
+	/* seek to file position */
+	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
+
+	/* read the fight entry */
+	bc__read(fd, buf, 216);
+
+	/* close FIGHT.LST */
+	bc_close(fd);
+
+	/* check all enemies */
+	for (i = 0; i < 20; i++) {
+		/* no enemy */
+		if (host_readb(buf + 0x16 + i * 5) == 0)
+			continue;
+		/* enemy does not appear in the first round */
+		if (host_readb(buf + 0x1a + i * 5) != 0)
+			continue;
+		/* increment counter */
+		retval++;
+	}
+
+	return retval;
+}
+
+void read_fight_lst(signed short nr)
+{
+	char fight_name[21];
+	unsigned short fd;
+	unsigned short max;
+
+	/* load FIGHT.LST from TEMP dir */
+	fd = load_archive_file(0x8000 | 0xcd);
+
+	/* read the first 2 bytes (max number of fights) */
+	bc__read(fd, (Bit8u*)&max, 2);
+
+	/* sanity check for parameter nr */
+	if ((max - 1) < nr || nr <= 0)
+		nr = 0;
+
+	/* write the fight number to a global var */
+	ds_writew(0x5eb2, nr);
+
+	/* seek to file position */
+	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
+
+	/* read the fight entry */
+	bc__read(fd, Real2Host(ds_readd(0xbd28)), 216);
+
+	/* Improvement */
+	strncpy(fight_name, (char*)Real2Host(ds_readd(0xbd28)), 20);
+	fight_name[20] = '\0';
+	D1_INFO("Lade Kampf Nr %3d\t Name \"%s\"\n", nr, fight_name);
+	/* Improvement end */
+
+	/* close FIGHT.LST */
+	bc_close(fd);
+}
+
 void write_fight_lst(void)
 {
 	signed short nr;
@@ -131,7 +212,7 @@ void write_fight_lst(void)
 
 	nr = ds_readw(0x5eb2);
 
-	/* load FIGHT.LSR from TEMP dir */
+	/* load FIGHT.LST from TEMP dir */
 	fd = load_archive_file(0x8000 | 0xcd);
 
 	/* seek to the entry */

@@ -11,5 +11,9 @@ void load_city_ltx(signed short);
 void load_buffer_1(signed short);
 //0x57
 void load_ltx(unsigned short);
+//0x61
+void prepare_chr_name(char*, char*);
+//0x61
+void prepare_sg_name(char*, char*);
 
 }

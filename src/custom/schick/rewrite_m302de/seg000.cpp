@@ -85,6 +85,18 @@ Bit16s bc__close(Bit16u handle) {
 	return 0;
 }
 
+Bit16s bc__creat(RealPt name, Bit16u attrib)
+{
+	CPU_Push16(attrib);
+	CPU_Push32(name);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x2f25);
+	CPU_Pop32();
+	CPU_Pop16();
+
+	return reg_ax;
+
+}
+
 Bit32s bc__write(Bit16u fd, RealPt buf, Bit16u len)
 {
 	CPU_Push16(len);
