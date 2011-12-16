@@ -76,7 +76,7 @@ static int seg013(unsigned short offs)
 	return 0;
 }
 
-#if 0
+#if 1
 static int seg016(unsigned short offs) {
     switch(offs) {
     case 0x000B:{ // decode_image(...)
@@ -89,7 +89,7 @@ static int seg016(unsigned short offs) {
 
 static int segUnk(unsigned segm, unsigned short offs) {
     switch(offs) {
-    case 0x9C9:
+    case 0x000C:
 	D2_LOG("img@%04x\n", segm);
 	return 0;
     }
@@ -294,6 +294,16 @@ static int seg039(unsigned short offs)
 	return 0;
 }
 
+/* Graphics drawing stuff */
+static int seg046(unsigned short offs)
+{
+	switch(offs) {
+	case 0x000C: return 0;
+	case 0x01BD: return 0;//redraw stuff under cursor
+	case 0x023E: return 0;//subfunction of 000c
+	}
+}
+
 static int seg136(unsigned short offs)
 {
 	switch(offs) {
@@ -365,9 +375,11 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x1ae4: return seg034(offs);
 	case 0x1b27: return seg037(offs);
 	case 0x1b42: return seg039(offs);
+	case 0x1cce: return seg046(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);
 	default:
+		return segUnk(segm, offs);
 		//if (segm <= 0x1e26)
 		//	D2_LOG("call to 0x%04x:0x%04x\n", segm, offs);
 		return 0;
@@ -407,7 +419,7 @@ int schweif_nearcall_c102de(unsigned offs) {
 
     if (segm == 0x1B27) {
 	switch(offs) {
-	case 0x21:{
+	case 0x25:{
 	    unsigned short range = CPU_Pop16();
 	    CPU_Push16(range);
 	    D2_LOG("random(%d)\n", range & 0xFF);
