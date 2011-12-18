@@ -1,7 +1,9 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 6/19
+	Functions rewritten: 7/19
 */
+
+#include <string.h>
 
 #include "schick.h"
 
@@ -28,6 +30,102 @@ void load_special_textures(signed short arg)
 void call_load_buffer(void)
 {
 	load_buffer_1((signed short)ds_readw(0x26bf));
+}
+
+/**
+ *	load_area_description() - writes the old area and reads a new one
+ *	@type:		either 0,1,2
+ *
+ *	0 = only write old area
+ *	1 = do both
+ *	2 = only read new area (loading a savegame)
+*/
+void load_area_description(unsigned short type)
+{
+	unsigned short f_index;
+	unsigned short fd;
+
+	if (ds_readw(0x5ebc) != 0) {
+		if (type != 2) {
+			fd = load_archive_file(ds_readw(0x5ebc) + 0x8000);
+
+			if (ds_readw(0x5ebe) == 0 && ds_readb(0xbd94) == 0x20) {
+				bc__write(fd, RealMake(datseg, 0xbd95), 0x200);
+			} else {
+				bc_lseek(fd, ds_readw(0x5eba) * 0x140, 0);
+				bc__write(fd, RealMake(datseg, 0xbd95), 0x100);
+			}
+			/* write automap tiles */
+			bc__write(fd, RealMake(datseg, 0xe442), 64);
+			/* write something unknown */
+			bc__write(fd, RealMake(datseg, 0xc025),
+				ds_readw(0x5eb8));
+
+			bc_close(fd);
+
+			ds_writew(0x5ebe, 0);
+			ds_writew(0x5eb8, 0);
+			ds_writew(0x5eba, 0);
+			ds_writew(0x5ebc, 0);
+		}
+	}
+
+	if (type != 0) {
+
+		/* calc archive file index */
+		if (ds_readb(0x2d6e) != 0)
+			/* dungeon */
+			f_index = ds_readb(0x2d6e) + 0xf1;
+		else
+			/* city */
+			f_index = ds_readb(0x2d67) + 0x19;
+
+		/* save archive index */
+		ds_writew(0x5ebc, f_index);
+		/* save dungeon level */
+		ds_writew(0x5eba, ds_readb(0x2d75));
+
+		if (ds_readb(0x2d6e) != 0)
+			ds_writew(0x5ebe, 1);
+		else
+			ds_writew(0x5ebe, 0);
+
+		/* load DAT or DNG file */
+		fd = load_archive_file(f_index + 0x8000);
+
+		if (ds_readb(0x2d6e) == 0 &&
+			(ds_readb(0x2d67) == 1 || ds_readb(0x2d67) == 0x27 ||
+				ds_readb(0x2d67) == 0x11)) {
+			/* path taken in THORWAL PREM and PHEXCAER */
+			bc__read(fd, p_datseg + 0xbd95, 0x200);
+			/* read automap tiles */
+			bc__read(fd, p_datseg + 0xe442, 0x40);
+
+			/* TODO: is that neccessary ? */
+			memset(p_datseg + 0xc025, -1, 900);
+			ds_writew(0x5eb8,
+				bc__read(fd, p_datseg + 0xc025, 1000));
+
+			ds_writeb(0xbd94, 0x20);
+		} else {
+			/* Seek to Dungeon Level * 320 */
+			bc_lseek(fd, ds_readb(0x2d75) * 320, 0);
+			bc__read(fd, p_datseg + 0xbd95, 0x100);
+			/* read automap tiles */
+			bc__read(fd, p_datseg + 0xe442, 0x40);
+			ds_writew(0x5eb8, 0);
+
+			if (ds_readb(0x2d6e) == 0) {
+				/* TODO: is that neccessary ? */
+				memset((void*)p_datseg + 0xc025, -1, 900);
+				ds_writew(0x5eb8,
+					bc__read(fd, p_datseg + 0xc025, 1000));
+			}
+
+			ds_writeb(0xbd94, 0x10);
+		}
+		bc_close(fd);
+	}
 }
 
 void load_npc(signed short index)

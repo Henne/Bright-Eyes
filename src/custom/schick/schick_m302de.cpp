@@ -2595,7 +2595,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x2a: {
-		return 0;
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("load_area_description(%d);\n", arg);
+		load_area_description(arg);
+		return 1;
 	}
 	case 0x2f: {
 		return 0;
@@ -4571,7 +4575,12 @@ static int n_seg028(unsigned offs) {
 		return 0;
 	}
 	case 0x56a: {
-		return 0;
+		CPU_Pop16();
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("load_area_description(%d);\n", arg);
+		load_area_description(arg);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
