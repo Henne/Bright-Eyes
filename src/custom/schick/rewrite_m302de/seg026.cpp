@@ -148,6 +148,22 @@ void prepare_sg_name(char *dst, char *src)
 	dst[8] = '\0';
 }
 
+void write_chr_temp(unsigned short hero)
+{
+	char fname[20];
+	unsigned short fd;
+
+	prepare_chr_name(fname, (char*)get_hero(hero));
+
+	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		(char*)p_datseg + 0x4c88,		/* "TEMP\\%s" */
+		fname);
+
+	fd = bc__creat(ds_readd(0xd2eb), 0);
+	bc__write(fd, ds_readd(0xd2eb), 0x6da);
+	bc_close(fd);
+}
+
 /**
  *	load_in_head() - loads a head icon from IN_HEADS.NVF
  *	@head:	index of the desired head

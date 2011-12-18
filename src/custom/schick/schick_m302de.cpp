@@ -2465,8 +2465,11 @@ static int seg026(unsigned short offs) {
 		return 0;
 	}
 	case 0x3e: {
-		D1_LOG("ip=0x%4X ReleaseHero()\n", offs);
-		return 0;
+		Bit16u hero = CPU_Pop16();
+		CPU_Push16(hero);
+		D1_LOG("write_chr_temp(%d)\n", hero);
+		write_chr_temp(hero);
+		return 1;
 	}
 	case 0x43: {
 		D1_LOG("ip=0x%4X ChooseFreeHero()\n", offs);
@@ -5209,7 +5212,12 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 		case 0x117f: {
-			return 0;
+			CPU_Pop16();
+			Bit16u hero = CPU_Pop16();
+			CPU_Push16(hero);
+			D1_LOG("write_chr_temp(%d)\n", hero);
+			write_chr_temp(hero);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
