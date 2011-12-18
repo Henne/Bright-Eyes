@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 7/19
+	Functions rewritten: 8/19
 */
 
 #include <string.h>
@@ -126,6 +126,11 @@ void load_area_description(unsigned short type)
 		}
 		bc_close(fd);
 	}
+}
+
+void call_load_area(unsigned short type)
+{
+	load_area_description(type);
 }
 
 void load_npc(signed short index)

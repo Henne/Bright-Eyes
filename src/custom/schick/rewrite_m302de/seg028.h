@@ -5,6 +5,8 @@ void load_area_description(unsigned short);
 void load_special_textures(signed short);
 //0x52
 void call_load_buffer(void);
+//0x5c
+void call_load_area(unsigned short);
 //0x61
 void load_npc(signed short);
 //0x66

@@ -2635,7 +2635,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x5c: {
-		return 0;
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("call_load_area(%d);\n", arg);
+		call_load_area(arg);
+		return 1;
 	}
 	case 0x61: {
 		Bit16s index = CPU_Pop16();
