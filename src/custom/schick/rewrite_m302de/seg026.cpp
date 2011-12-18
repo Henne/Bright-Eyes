@@ -171,4 +171,34 @@ void load_in_head(Bit16s head)
 
 }
 
+void load_tempicon(unsigned short nr)
+{
+	char nvf[19];
+	Bit8u *n = (Bit8u*)nvf;
+	unsigned short fd;
+
+	if (nr == 14)
+		nr = 7;
+
+	/* load TEMPICON */
+	fd = load_archive_file(0xb4);
+	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 7000);
+	bc_close(fd);
+
+	/* set dst */
+	host_writed(n + 0, ds_readd(0xc3a9) + 7000);
+	/* set src */
+	host_writed(n + 4, ds_readd(0xc3a9));
+	/* set nr */
+	host_writew(n + 8, nr);
+	/* set type */
+	host_writew(n + 10, 0);
+
+	/* place somewhere on unused stack */
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	process_nvf(n);
+}
+
 }

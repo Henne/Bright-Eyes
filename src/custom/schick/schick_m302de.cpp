@@ -2510,8 +2510,11 @@ static int seg026(unsigned short offs) {
 		return 1;
 	}
 	case 0x66: {
-		D1_LOG("ip=0x%4X unknown()\n", offs);
-		return 0;
+		Bit16u nr = CPU_Pop16();
+		CPU_Push16(nr);
+		D1_LOG("load_tempicon(%d);\n", nr);
+		load_tempicon(nr);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

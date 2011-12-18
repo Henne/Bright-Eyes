@@ -15,5 +15,6 @@ void load_ltx(unsigned short);
 void prepare_chr_name(char*, char*);
 //0x61
 void prepare_sg_name(char*, char*);
-
+//0x66
+void load_tempicon(unsigned short);
 }
