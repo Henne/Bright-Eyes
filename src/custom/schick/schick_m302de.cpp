@@ -4688,8 +4688,19 @@ static int n_seg050(unsigned short offs) {
 static int n_seg064(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		D1_INFO("Harbour Helper near\n");
-		return 0;
+		RealPt tmp;
+		CPU_Pop16();
+		Bit16s arg1 = CPU_Pop16();
+		Bit16s arg2 = CPU_Pop16();
+		CPU_Push16(arg2);
+		CPU_Push16(arg1);
+		tmp = get_ship_name((signed char)arg1, arg2 + 2);
+		D1_LOG("get_ship_name(%d, %d); = 0x%x\n",
+			(signed char)arg1, arg2, tmp);
+
+		reg_ax = RealOff(tmp);
+		reg_dx = RealSeg(tmp);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
