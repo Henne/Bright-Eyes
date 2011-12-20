@@ -35,6 +35,7 @@
 #include "seg047.h"
 #include "seg050.h"
 #include "seg063.h"
+#include "seg064.h"
 #include "seg068.h"
 #include "seg095.h"
 #include "seg096.h"
@@ -3289,6 +3290,36 @@ static int seg063(unsigned short offs)
 	}
 }
 
+static int seg064(unsigned short offs)
+{
+	switch (offs) {
+	case 0x20: {
+		D1_INFO("Harbour Helper 0x20\n");
+		return 0;
+	}
+	case 0x2a: {
+		D1_INFO("book_passage()\n");
+		return 0;
+	}
+	case 0x2f: {
+		D1_INFO("Harbour Helper 0x2f\n");
+		return 0;
+	}
+	case 0x34: {
+		D1_INFO("get_next_passages()\n");
+		return 0;
+	}
+	case 0x39: {
+		D1_INFO("Harbour Helper 0x39\n");
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+
 static int seg068(unsigned short offs)
 {
 	switch (offs) {
@@ -4484,7 +4515,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x137e:	return 0;
 		case 0x1383:	return 0;
 		case 0x1386:	return seg063(offs);
-		case 0x138a:	return 0;
+		case 0x138a:	return seg064(offs);
 		case 0x138e:	return 0;
 		case 0x1392:	return 0;
 		case 0x139a:	return 0;
@@ -4654,6 +4685,18 @@ static int n_seg050(unsigned short offs) {
 	}
 }
 
+static int n_seg064(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		D1_INFO("Harbour Helper near\n");
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
 int schick_nearcall_v302de(unsigned offs) {
 
 	unsigned short segm = SegValue(cs)-reloc_game;
@@ -5641,6 +5684,8 @@ int schick_nearcall_v302de(unsigned offs) {
 
 	if (is_ovrseg(0x1358))
 		return n_seg050(offs);
+	if (is_ovrseg(0x138a))
+		return n_seg064(offs);
 	/* seg095 */
 	if (is_ovrseg(0x1432)) {
 		switch (offs) {
