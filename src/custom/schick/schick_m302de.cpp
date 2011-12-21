@@ -3310,8 +3310,14 @@ static int seg064(unsigned short offs)
 		return 0;
 	}
 	case 0x2f: {
-		D1_INFO("Harbour Helper 0x2f\n");
-		return 0;
+		Bit16s arg1 = CPU_Pop16();
+		Bit16s arg2 = CPU_Pop16();
+		CPU_Push16(arg2);
+		CPU_Push16(arg1);
+		reg_ax = get_passage_travel_hours(arg1, arg2);
+		D1_LOG("get_passage_travel_hours(%d, %d) = %d\n",
+			arg1, arg2, reg_ax);
+		return 1;
 	}
 	case 0x34: {
 		D1_INFO("get_next_passages()\n");

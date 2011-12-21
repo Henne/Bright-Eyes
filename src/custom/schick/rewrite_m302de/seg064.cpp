@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
-	Functions rewritten: 2/6
+	Functions rewritten: 3/6
 */
 #include <string.h>
 
@@ -73,6 +73,27 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 	ds_writew(0x432a, price);
 	return ds_readd(0xd2eb);
 
+}
+
+unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
+{
+	int hours;
+
+	arg2 = (arg2 * 10 + 11) / 24;
+
+	/*	ds:0x331b = random(6)
+	 *	ds:0x331d = random(7) */
+	ds_writew(0x432c, (unsigned short)
+		((ds_readw(0x331d) + 6) * arg2 * (ds_readw(0x331b) * 15 + 100) + 499)/ 1000);
+
+	hours = (ds_readw(0x432c) + 4) / 10;
+
+	if (hours == 0)
+		hours = 1;
+
+	hours = arg1 / hours;
+
+	return (unsigned short)hours;
 }
 
 }
