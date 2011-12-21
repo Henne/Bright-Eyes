@@ -3294,8 +3294,16 @@ static int seg064(unsigned short offs)
 {
 	switch (offs) {
 	case 0x20: {
-		D1_INFO("Harbour Helper 0x20\n");
-		return 0;
+		RealPt tmp;
+		Bit16s price = CPU_Pop16();
+		RealPt entry = CPU_Pop32();
+		CPU_Push32(entry);
+		CPU_Push16(price);
+		tmp = print_passage_price(price, Real2Host(entry));
+		D1_LOG("print_passage_price(%d, %x)\n", price, entry);
+		reg_ax = RealOff(tmp);
+		reg_dx = RealSeg(tmp);
+		return 1;
 	}
 	case 0x2a: {
 		D1_INFO("book_passage()\n");

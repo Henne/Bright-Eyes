@@ -1,7 +1,9 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
-	Functions rewritten: 1/6
+	Functions rewritten: 2/6
 */
+#include <string.h>
+
 #include "schick.h"
 
 #include "schick_common.h"
@@ -39,6 +41,38 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 	} while (done == 0);
 
 	return host_readd(Real2Host(ds_readd(0xc3b1)) + name * 4);
+}
+
+/**
+ *	print_passage_price()	- calculates the price and prints to buffer
+ *	@price:	a price factor
+ *	@entry:	pointer to the schedule
+ *
+ *	Returns a pointer to the buffer.
+ */
+RealPt print_passage_price(signed short price, Bit8u *entry)
+{
+	signed short di;
+
+	if (price != 0) {
+		/* calc price per distance */
+		di = ((unsigned char)host_readb(entry + 7) * price + 4) / 10;
+		/* multiply with distance */
+		di = di * (unsigned char)host_readb(entry + 2);
+		/* round up and divide by 100 */
+		price = (di + 49) / 100;
+
+		/* generate a price string "%d^HELLER" */
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)p_datseg + 0x7096, price);
+	} else {
+		/* "NICHTS" */
+		strcpy((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)p_datseg + 0x70a0);
+	}
+	ds_writew(0x432a, price);
+	return ds_readd(0xd2eb);
+
 }
 
 }
