@@ -3320,8 +3320,11 @@ static int seg064(unsigned short offs)
 		return 1;
 	}
 	case 0x34: {
-		D1_INFO("get_next_passages()\n");
-		return 0;
+		Bit16u type = CPU_Pop16();
+		CPU_Push16(type);
+		reg_ax = get_next_passages(type);
+		D1_LOG("get_next_passages(%d) = %d\n", type, reg_ax);
+		return 1;
 	}
 	case 0x39: {
 		D1_INFO("Harbour Helper 0x39\n");

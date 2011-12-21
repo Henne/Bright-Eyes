@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
-	Functions rewritten: 3/6
+	Functions rewritten: 4/6
 */
 #include <string.h>
 
@@ -94,6 +94,52 @@ unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 	hours = arg1 / hours;
 
 	return (unsigned short)hours;
+}
+
+/**
+ *	get_next_passages() -	get destination harbours
+ *	@type:	1 = passages next days / 2 = all passages
+ */
+unsigned short get_next_passages(unsigned short type)
+{
+	Bit8u *entry;
+	unsigned short i, destinations;
+
+	entry = p_datseg + 0x6f00;
+	destinations = 0;
+	i = 0;
+
+	for (i = 0; i < 45; entry += 8, i++) {
+
+		if (type == 1) {
+			/* check passages in the next two days */
+			if (host_readb(entry + 4) == 1 || host_readb(entry + 4) == 2) {
+				/* compare town */
+				if (host_readb(entry) == ds_readb(0x2d67) ||
+					host_readb(entry + 1) == ds_readb(0x2d67))
+				{
+					ds_writeb(0x42bc + destinations * 12,
+						host_readb(entry) == ds_readb(0x2d67) ?
+							host_readb(entry + 1):
+							host_readb(entry));
+					destinations++;
+				}
+			}
+		} else {
+			/* compare town */
+			if (host_readb(entry) == ds_readb(0x2d67) ||
+				host_readb(entry + 1) == ds_readb(0x2d67))
+			{
+				ds_writeb(0x42bc + destinations * 12,
+					host_readb(entry) == ds_readb(0x2d67) ?
+						host_readb(entry + 1):
+						host_readb(entry));
+				destinations++;
+			}
+		}
+	}
+	return destinations;
+
 }
 
 }
