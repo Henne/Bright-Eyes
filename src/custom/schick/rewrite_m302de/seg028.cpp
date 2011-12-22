@@ -117,7 +117,7 @@ void load_area_description(unsigned short type)
 
 			if (ds_readb(0x2d6e) == 0) {
 				/* TODO: is that neccessary ? */
-				memset((void*)p_datseg + 0xc025, -1, 900);
+				memset(p_datseg + 0xc025, -1, 900);
 				ds_writew(0x5eb8,
 					bc__read(fd, p_datseg + 0xc025, 1000));
 			}
