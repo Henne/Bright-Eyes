@@ -3306,8 +3306,9 @@ static int seg064(unsigned short offs)
 		return 1;
 	}
 	case 0x2a: {
-		D1_INFO("book_passage()\n");
-		return 0;
+		reg_ax = prepare_passages();
+		D1_LOG("prepare_passages(); = %d\n", reg_ax);
+		return 1;
 	}
 	case 0x2f: {
 		Bit16s arg1 = CPU_Pop16();

@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
-	Functions rewritten: 4/6
+	Functions rewritten: 5/6
 */
 #include <string.h>
 
@@ -41,6 +41,65 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 	} while (done == 0);
 
 	return host_readd(Real2Host(ds_readd(0xc3b1)) + name * 4);
+}
+
+/**
+ *	prepare_passages()	-
+ */
+unsigned short prepare_passages(void)
+{
+	Bit8u *entry;
+	RealPt ent;
+	unsigned short prepared, i;
+
+	entry = p_datseg + 0x6f00;
+	ent = RealMake(datseg, 0x6f00);
+	prepared = 0;
+
+	for (i = 0; i < 45; entry += 8, ent += 8, i++) {
+		if (host_readb(entry + 4) == 0 &&
+			(host_readb(entry) == ds_readb(0x2d67) ||
+			(host_readb(entry + 1) == ds_readb(0x2d67)))) {
+
+			/* prepare an entry of 12 byte for a passage today */
+			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
+			ds_writed(0x42b6 + prepared * 12, ent);
+			ds_writeb(0x42ba + prepared * 12, 0);
+			ds_writeb(0x42bb + prepared * 12, host_readb(entry + 6));
+			ds_writed(0x42b2 + prepared * 12,
+				get_ship_name(host_readb(entry + 6), prepared));
+			ds_writeb(0x42bc + prepared * 12,
+				host_readb(entry) == ds_readb(0x2d67) ?
+					host_readb(entry + 1) :
+					host_readb(entry));
+			prepared++;
+		} else {
+			/* not before 14.00 o'clock */
+			if (ds_readd(0x2dbb) < 0x1518 * 14)
+				continue;
+			/* only for ships tomorrow */
+			if (host_readb(entry + 4) != 1)
+				continue;
+			/* only in this city */
+			if (host_readb(entry) != ds_readb(0x2d67) &&
+				host_readb(entry + 1) != ds_readb(0x2d67))
+				continue;
+
+			/* prepare an entry of 12 byte for a passage tomorrow */
+			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
+			ds_writed(0x42b6 + prepared * 12, ent);
+			ds_writeb(0x42ba + prepared * 12, 1);
+			ds_writeb(0x42bb + prepared * 12, host_readb(entry + 6));
+			ds_writed(0x42b2 + prepared * 12,
+				get_ship_name(host_readb(entry + 6), prepared));
+			ds_writeb(0x42bc + prepared * 12,
+				host_readb(entry) == ds_readb(0x2d67) ?
+					host_readb(entry + 1) :
+					host_readb(entry));
+			prepared++;
+		}
+	}
+	return prepared;
 }
 
 /**
