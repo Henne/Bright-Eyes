@@ -4711,7 +4711,7 @@ static int n_seg064(unsigned offs) {
 		Bit16s arg2 = CPU_Pop16();
 		CPU_Push16(arg2);
 		CPU_Push16(arg1);
-		tmp = get_ship_name((signed char)arg1, arg2 + 2);
+		tmp = get_ship_name((signed char)arg1, arg2);
 		D1_LOG("get_ship_name(%d, %d); = 0x%x\n",
 			(signed char)arg1, arg2, tmp);
 
