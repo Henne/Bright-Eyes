@@ -546,7 +546,7 @@ static int seg000(unsigned short offs) {
 			CPU_Push32(src);
 			CPU_Push32(dst);
 
-			D1_INFO("bc_memmove(0x%x, 0x%x, %d)\n", dst, src, len);
+			D1_LOG("bc_memmove(0x%x, 0x%x, %d)\n", dst, src, len);
 			bc_memmove(dst, src, len);
 			reg_ax = RealOff(dst);
 			reg_dx = RealSeg(dst);
