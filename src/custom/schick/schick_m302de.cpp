@@ -538,12 +538,19 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		case 0x3479: {
-			/* write(handle) */
-			unsigned short handle = CPU_Pop16();
-			CPU_Push16(handle);
+			/*  memmove() */
+			RealPt dst = CPU_Pop32();
+			RealPt src = CPU_Pop32();
+			Bit16u len = CPU_Pop16();
+			CPU_Push16(len);
+			CPU_Push32(src);
+			CPU_Push32(dst);
 
-			D1_LOG("write_0(%d)\n", handle);
-			return 0;
+			D1_INFO("bc_memmove(0x%x, 0x%x, %d)\n", dst, src, len);
+			bc_memmove(dst, src, len);
+			reg_ax = RealOff(dst);
+			reg_dx = RealSeg(dst);
+			return 1;
 		}
 		case 0x34c7: {
 			/*open()*/

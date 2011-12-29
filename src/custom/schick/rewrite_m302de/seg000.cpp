@@ -2,6 +2,7 @@
 #include "regs.h"
 #include "callback.h"
 #include "dos_inc.h"
+#include "paging.h"
 
 #include "schick.h"
 
@@ -83,6 +84,20 @@ Bit16s bc__close(Bit16u handle) {
 	ds_writew(0xb788 + handle * 2, 0);
 
 	return 0;
+}
+
+RealPt bc_memmove(RealPt dst, RealPt src, Bit16u len)
+{
+	PhysPt s, d;
+
+	s = Real2Phys(src);
+	d = Real2Phys(dst);
+
+	while (len--) {
+		mem_writeb_inline(d++, mem_readb_inline(s++));
+	}
+
+	return dst;
 }
 
 Bit16s bc__creat(RealPt name, Bit16u attrib)
