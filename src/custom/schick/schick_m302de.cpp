@@ -2637,7 +2637,9 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		return 0;
+		D1_INFO("load_map();\n");
+		load_map();
+		return 1;
 	}
 	case 0x3e: {
 		return 0;
