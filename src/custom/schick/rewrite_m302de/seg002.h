@@ -51,6 +51,7 @@ void wait_for_keypress();
 void delay_or_keypress(Bit16u);
 unsigned int swap_u32(unsigned int v);
 unsigned short alloc_EMS(unsigned int bytes);
+void to_EMS(unsigned short, RealPt, unsigned int bytes);
 void set_to_ff();
 unsigned short mod_timer(short val);
 void draw_compass();

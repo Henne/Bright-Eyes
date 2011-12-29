@@ -1102,9 +1102,22 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x428b:
-	case 0x4339:
+	case 0x428b: {
+		D1_INFO("EMS1();\n");
 		return 0;
+	}
+	case 0x4339: {
+		Bit16u handle = CPU_Pop16();
+		RealPt src = CPU_Pop32();
+		Bit32u bytes = CPU_Pop32();
+		CPU_Push32(bytes);
+		CPU_Push32(src);
+		CPU_Push16(handle);
+
+		D1_LOG("to_EMS(0x%x, 0x%x, 0x%x);\n", handle, src, bytes);
+		to_EMS(handle, src, bytes);
+		return 1;
+	}
 	case 0x43e7: {
 		D1_LOG("set_to_ff()\n");
 		set_to_ff();

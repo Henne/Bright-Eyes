@@ -1221,6 +1221,34 @@ unsigned short alloc_EMS(unsigned int bytes) {
 	return handle;
 }
 
+void to_EMS(unsigned short handle, RealPt src, unsigned int bytes)
+{
+	RealPt ptr;
+	unsigned short v1, v2, di;
+	signed short si;
+
+	di = bytes / 0x4000 + 1;
+	si = 0;
+	v1 = 0;
+
+	do {
+		EMS_map_memory(handle, v1++, 0);
+		ptr = (si << 0x0e) + src;
+		si++;
+
+		if (bytes - 0x4000 < 0)
+			v2 = bytes;
+		else
+			v2 = 0x4000;
+
+		bytes -= 0x4000;
+
+		bc_memmove(ds_readd(0x4baa), EMS_norm_ptr(ptr), v2);
+		di--;
+	} while (di != 0);
+
+}
+
 void set_to_ff() {
 	unsigned i;
 
