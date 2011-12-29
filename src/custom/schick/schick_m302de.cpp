@@ -3328,8 +3328,9 @@ static int seg064(unsigned short offs)
 		return 1;
 	}
 	case 0x39: {
-		D1_INFO("Harbour Helper 0x39\n");
-		return 0;
+		D1_LOG("passage_arrival()\n");
+		reg_ax = passage_arrival();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

@@ -9,6 +9,6 @@ unsigned short prepare_passages(void);
 unsigned short get_passage_travel_hours(signed short, signed short);
 /*0x34*/
 unsigned short get_next_passages(unsigned short);
-
-
+/*0x39*/
+unsigned short passage_arrival(void);
 }

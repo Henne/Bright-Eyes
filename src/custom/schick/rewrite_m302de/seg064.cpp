@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
-	Functions rewritten: 5/6
+	Functions rewritten: 6/6 (complete)
 */
 #include <string.h>
 
@@ -199,6 +199,73 @@ unsigned short get_next_passages(unsigned short type)
 		}
 	}
 	return destinations;
+
+}
+
+unsigned short passage_arrival(void)
+{
+	Bit8u *p1, *buildings, *p_sched;
+	signed short tmp, si, di;
+
+	di = 0;
+	p1 = p_datseg + 0xa3a3;
+
+	p_sched = p_datseg + 0x6f00 + ds_readb(0x42b1) * 8;
+
+	/* write the destination to a global variable */
+	ds_writew(0x4338, host_readb(p_sched));
+	if (ds_readw(0x4338) == (signed char)ds_readb(0x2d67))
+		ds_writew(0x4338, host_readb(p_sched + 1));
+
+	do {
+		if (host_readb(p1) == ds_readw(0x4338)) {
+			si = 0;
+			do {
+				tmp = host_readb(Real2Host(host_readd(p1 + 2)) + si) - 1;
+				if (host_readb(p_datseg + 0x6f00 + tmp * 8) == ds_readb(0x2d67) ||
+					host_readb(p_datseg + 0x6f00 + tmp * 8 + 1) == ds_readb(0x2d67)) {
+					di = (unsigned char)host_readb(p1 + 1);
+					break;
+				}
+
+				si++;
+			} while (host_readb(Real2Host(host_readd(p1 + 2)) + si) != 0xff);
+		}
+		/* set pointer to the next structure */
+		p1 += 6;
+	} while (di == 0 && host_readb(p1) != 0xff);
+
+	/* TODO: check until here */
+	if (di == 0)
+		return 0;
+
+	/* save the old town in tmp */
+	tmp = (signed char)ds_readb(0x2d67);
+	/* set the new current_town */
+	ds_writeb(0x2d67, ds_readb(0x4338));
+
+	/* load the area  of the new town */
+	call_load_area(1);
+
+
+	/* search for the harbour in the map */
+	buildings = p_datseg + 0xc025;
+	while ((host_readb(buildings + 2) != 0x0b) ||
+			(host_readb(buildings + 3) != di)) {
+		buildings += 6;
+	}
+
+	/* set the position of the party */
+	si = host_readw(buildings + 4);
+	ds_writew(0x433a, (si >> 8) & 0xff);
+	ds_writew(0x433c, si & 0x0f);
+	ds_writew(0x433e, (si >> 4) & 0x0f);
+
+	/* restore the old town area / TODO: a bit bogus */
+	ds_writeb(0x2d67, tmp);
+	call_load_area(1);
+
+	return 0;
 
 }
 
