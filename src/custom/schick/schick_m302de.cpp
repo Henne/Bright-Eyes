@@ -1110,7 +1110,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(handle);
 		CPU_Push32(dst);
 
-		D1_INFO("from_EMS(0x%x, 0x%x, 0x%x);\n", dst, handle, bytes);
+		D1_LOG("from_EMS(0x%x, 0x%x, 0x%x);\n", dst, handle, bytes);
 		from_EMS(dst, handle, bytes);
 		return 1;
 	}
@@ -2637,7 +2637,7 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		D1_INFO("load_map();\n");
+		D1_LOG("load_map();\n");
 		load_map();
 		return 1;
 	}
