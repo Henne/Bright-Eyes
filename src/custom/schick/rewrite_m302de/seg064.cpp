@@ -111,7 +111,7 @@ unsigned short prepare_passages(void)
  */
 RealPt print_passage_price(signed short price, Bit8u *entry)
 {
-	signed short di;
+	unsigned short di;
 
 	if (price != 0) {
 		/* calc price per distance */
@@ -124,19 +124,12 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 		/* generate a price string "%d^HELLER" */
 		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 			(char*)p_datseg + 0x7096, price);
-		D1_INFO("errechnet %d HELLER\n", price);
 	} else {
 		/* "NICHTS" */
 		strcpy((char*)Real2Host(ds_readd(0xd2eb)),
 			(char*)p_datseg + 0x70a0);
 	}
 	ds_writew(0x432a, price);
-
-	if (price < 0)
-		D1_ERR("Error: price < 0 %d %d %d\n",
-			(unsigned char)host_readb(entry + 2),
-			(unsigned char)host_readb(entry + 7),
-			price);
 
 	return ds_readd(0xd2eb);
 
