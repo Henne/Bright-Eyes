@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 76/136
+	Functions rewritten: 78/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1219,6 +1219,34 @@ unsigned short alloc_EMS(unsigned int bytes) {
 	}
 
 	return handle;
+}
+
+void from_EMS(RealPt dst, unsigned short handle, unsigned int bytes)
+{
+	RealPt ptr;
+	unsigned short v1, v2, di;
+	signed short si;
+
+	di = bytes / 0x4000 + 1;
+	si = 0;
+	v1 = 0;
+
+	do {
+		EMS_map_memory(handle, v1++, 0);
+		ptr = (si << 0x0e) + dst;
+		si++;
+
+		if (bytes - 0x4000 < 0)
+			v2 = bytes;
+		else
+			v2 = 0x4000;
+
+		bytes -= 0x4000;
+
+		bc_memmove(EMS_norm_ptr(ptr), ds_readd(0x4baa), v2);
+		di--;
+	} while (di != 0);
+
 }
 
 void to_EMS(unsigned short handle, RealPt src, unsigned int bytes)
