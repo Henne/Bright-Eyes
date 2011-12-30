@@ -4733,6 +4733,23 @@ static int n_seg050(unsigned short offs) {
 			exit(1);
 	}
 }
+static int n_seg063(unsigned offs) {
+	switch (offs) {
+	case 0x999: {
+		return 0;
+	}
+	case 0xa0e: {
+		return 0;
+	}
+	case 0xf6f: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
 
 static int n_seg064(unsigned offs) {
 	switch (offs) {
@@ -4757,6 +4774,7 @@ static int n_seg064(unsigned offs) {
 		exit(1);
 	}
 }
+
 int schick_nearcall_v302de(unsigned offs) {
 
 	unsigned short segm = SegValue(cs)-reloc_game;
@@ -5744,6 +5762,8 @@ int schick_nearcall_v302de(unsigned offs) {
 
 	if (is_ovrseg(0x1358))
 		return n_seg050(offs);
+	if (is_ovrseg(0x1386))
+		return n_seg063(offs);
 	if (is_ovrseg(0x138a))
 		return n_seg064(offs);
 	/* seg095 */
