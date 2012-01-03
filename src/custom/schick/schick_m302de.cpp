@@ -4742,7 +4742,12 @@ static int n_seg063(unsigned offs) {
 		return 0;
 	}
 	case 0xf6f: {
-		return 0;
+		CPU_Pop16();
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+		reg_ax = get_srout_len(Real2Host(ptr));
+		D1_LOG("get_srout_len(0x%x) = %d;\n", ptr, reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
