@@ -147,7 +147,7 @@ void load_map(void)
 
 	ds_writew(0x2ccb, 0xffff);
 	/* set current_ani to -1 */
-	ds_writew(0x2ccf, 0xffff);
+	ds_writew(CURRENT_ANI, 0xffff);
 
 	/* open OBJECTS.NVF */
 	fd = load_archive_file(7);

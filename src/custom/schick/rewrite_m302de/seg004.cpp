@@ -3,6 +3,7 @@
 #include "callback.h"
 
 #include "schick.h"
+#include "v302de.h"
 
 #include "seg002.h"
 #include "seg004.h"
@@ -16,7 +17,7 @@ void init_ani(Bit16u v1)
 	Bit16u i;
 
 	/* return if current ani == -1 */
-	if (ds_readw(0x2ccf) == 0xffff)
+	if (ds_readw(CURRENT_ANI) == 0xffff)
 		return;
 
 	if ((v1 & 0x7f) != 2) {

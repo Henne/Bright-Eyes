@@ -8,6 +8,7 @@
 
 #include "schick.h"
 
+#define CURRENT_ANI	(0x2ccf)
 #define FNAMES		(0x4c8c)
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
