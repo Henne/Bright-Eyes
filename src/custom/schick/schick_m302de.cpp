@@ -3462,12 +3462,19 @@ static int seg073(unsigned short offs) {
 			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
 			return 0;
 		}
-		case 0x25:
-		case 0x2a:
-		case 0x2f:
+		case 0x25: {
 			return 0;
+		}
+		case 0x2a: {
+			return 0;
+		}
+		case 0x2f: {
+			return 0;
+		}
 		default:
-			return 0;
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
 	}
 }
 
