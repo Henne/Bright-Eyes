@@ -14,6 +14,7 @@
 #define DIALOG_TEXT	(0xc3b1)
 #define CITY_LTX	(0xc3ad)
 #define TEXT_LTX	(0xc3b5)
+#define ANI_MAIN_PTR	(0xce35)
 #define CHESSBOARD	(0xd852)
 #define ITEMSDAT	(0xe22b)
 #define ITEMSNAME	(0xe22f)
