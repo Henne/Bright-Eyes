@@ -2570,8 +2570,9 @@ static int seg027(unsigned short offs) {
 			short ani = CPU_Pop16();
 			CPU_Push16(ani);
 
-			D1_LOG("ANI %02d angefordert\n", ani);
-			return 0;
+			D1_LOG("load_ani(0x%02x);\n", ani);
+			load_ani(ani);
+			return 1;
 		}
 		case 0x2a: {
 			return 0;

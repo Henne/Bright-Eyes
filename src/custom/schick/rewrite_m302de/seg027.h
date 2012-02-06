@@ -2,7 +2,8 @@ namespace M302de {
 
 //0x20
 void load_pp20(Bit16u);
-
+/*0x25*/
+void load_ani(signed short);
 //0x2f
 void init_common_buffers();
 //0x34
