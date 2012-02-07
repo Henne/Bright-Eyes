@@ -3457,15 +3457,13 @@ static int seg069(unsigned short offs)
 static int seg073(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			unsigned char city = ds_readb(0x2d67);
-			unsigned char ww = ds_readb(0x7c9d + city);
-			D1_LOG("Merkwuerdige Funktion\n");
-			D1_LOG("Stadt: 0x%02x\t WW: 0x%02x\n", city, ww);
-			return 0;
+			reg_ax = get_tavern_gossip();
+			D1_LOG("tavern_gossip() = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x25: {
 			RealPt ret;
-			D1_LOG("get_drinkmake();\n");
+			D1_LOG("get_drinkmate();\n");
 			ret = get_drinkmate();
 
 			reg_ax = RealOff(ret);
