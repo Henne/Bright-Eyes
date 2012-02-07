@@ -37,6 +37,7 @@
 #include "seg063.h"
 #include "seg064.h"
 #include "seg068.h"
+#include "seg073.h"
 #include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -3463,7 +3464,13 @@ static int seg073(unsigned short offs) {
 			return 0;
 		}
 		case 0x25: {
-			return 0;
+			RealPt ret;
+			D1_LOG("get_drinkmake();\n");
+			ret = get_drinkmate();
+
+			reg_ax = RealOff(ret);
+			reg_dx = RealSeg(ret);
+			return 1;
 		}
 		case 0x2a: {
 			return 0;
