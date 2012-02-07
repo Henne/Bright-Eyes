@@ -36,47 +36,46 @@ static inline void ds_writeb_z(Bitu add, char val) {
 }
 
 static inline Bit8u *get_hero(unsigned short index) {
-	return MemBase + Real2Phys(ds_readd(HEROS)) + index * 0x6da;
+	return Real2Host(ds_readd(HEROS)) + index * 0x6da;
 }
 
 static inline Bit8u *get_spelluser() {
-	return MemBase + Real2Phys(ds_readd(SPELLUSER));
+	return Real2Host(ds_readd(SPELLUSER));
 }
 
 static inline Bit8u *get_spelltarget() {
-	return MemBase + Real2Phys(ds_readd(SPELLTARGET));
+	return Real2Host(ds_readd(SPELLTARGET));
 }
 
 static inline Bit8u *get_fname(unsigned short off) {
-	return MemBase + Real2Phys(ds_readd(FNAMES + off * 4));
+	return Real2Host(ds_readd(FNAMES + off * 4));
 }
 
 static inline Bit8u *get_city(unsigned short off) {
-	return MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(CITY_LTX) + off)));
+	return Real2Host(host_readd(Real2Host(ds_readd(CITY_LTX) + off)));
 }
 
 static inline Bit8u *get_ltx(unsigned short off) {
-	return MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(TEXT_LTX) + off)));
+	return Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX) + off)));
 }
 
 static inline Bit8u *get_dtp(unsigned short off) {
-	return MemBase + Real2Phys(mem_readd(Real2Phys(ds_readd(DIALOG_TEXT) + off)));
+	return Real2Host(host_readd(Real2Host(ds_readd(DIALOG_TEXT) + off)));
 }
 
 static inline signed char get_cb_val(unsigned short x, unsigned short y) {
-	return host_readb(MemBase + Real2Phys(ds_readd(CHESSBOARD)) + y * 25 + x);
+	return host_readb(Real2Host(ds_readd(CHESSBOARD)) + y * 25 + x);
 }
 
 static inline void set_cb_val(unsigned short x, unsigned short y, signed char val) {
-	host_writeb(MemBase + Real2Phys(ds_readd(CHESSBOARD)) + y * 25 + x, val);
+	host_writeb(Real2Host(ds_readd(CHESSBOARD)) + y * 25 + x, val);
 }
 
 static inline Bit8u *get_itemsdat(unsigned short item) {
-	return MemBase + Real2Phys(ds_readd(ITEMSDAT)) + item * 12;
+	return Real2Host(ds_readd(ITEMSDAT)) + item * 12;
 }
 
-static inline char* get_itemname(unsigned short item) {
-	PhysPt iptr = Real2Phys(ds_readd(ITEMSNAME));
-
-	return (char*)MemBase + Real2Phys(mem_readd(iptr + item * 4));
+static inline char* get_itemname(unsigned short item)
+{
+	return (char*)Real2Host(host_readd(Real2Host(ds_readd(ITEMSNAME)) + item * 4));
 }
