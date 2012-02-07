@@ -4439,7 +4439,15 @@ static int seg105(unsigned short offs) {
 			return 1;
 		}
 		case 0x61: {
-			 return 0;
+			RealPt hero = CPU_Pop32();
+			Bit16u per = CPU_Pop16();
+			RealPt text = CPU_Pop32();
+			CPU_Push32(text);
+			CPU_Push16(per);
+			CPU_Push32(hero);
+			D1_LOG("loose_random_item()\n");
+			loose_random_item(Real2Host(hero), per, Real2Host(text));
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 9/14
+ *      Functions rewritten 10/14
  *
- *      Functions called rewritten 8/13
+ *      Functions called rewritten 9/13
  *      Functions uncalled rewritten 1/1
 */
 
@@ -381,6 +381,49 @@ unsigned short group_count_item(unsigned short item) {
 	}
 
 	return ret;
+}
+
+/**
+ *	loose_random_item() - a hero will loose an item
+ *	@hero:		the hero
+ *	@percent:	probability to loose
+ *	@text:		the displayed text
+ *
+ */
+void loose_random_item(Bit8u *hero, unsigned short percent, Bit8u *text)
+{
+	Bit8u *p_item;
+	unsigned short item, pos;
+
+	if (random_schick(100) > percent)
+		return;
+
+	/* Original-Bug: infinite loop if the hero has no item */
+	do {
+		pos = random_schick(23) - 1;
+
+		item = host_readw(hero + 0x196 + pos * 14);
+
+		p_item = get_itemsdat(item);
+
+		/* No item to drop */
+		if (item == 0)
+			continue;
+
+		if ((host_readb(p_item + 2) >> 6) & 1 == 1)
+			continue;
+
+		/* drop 1 item */
+		drop_item(hero, pos, 1);
+
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)text, hero + 0x10,
+			Real2Host(GUI_names_grammar(0, item, 0)));
+
+		GUI_output(Real2Host(ds_readd(0xd2eb)));
+
+		return;
+	} while (1);
 }
 
 }
