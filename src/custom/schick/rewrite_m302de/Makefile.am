@@ -20,6 +20,7 @@ libschick_rewrite_m302de_a_SOURCES = schick_common.h v302de.h\
 		seg028.cpp seg028.h\
 		seg029.cpp seg029.h\
 		seg032.cpp seg032.h\
+		seg037.cpp seg037.h\
 		seg038.cpp seg038.h\
 		seg039.cpp seg039.h\
 		seg041.cpp seg041.h\

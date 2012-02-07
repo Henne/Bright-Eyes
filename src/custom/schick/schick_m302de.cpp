@@ -27,6 +27,7 @@
 #include "seg028.h"
 #include "seg029.h"
 #include "seg032.h"
+#include "seg037.h"
 #include "seg038.h"
 #include "seg039.h"
 #include "seg041.h"
@@ -4694,6 +4695,37 @@ static int n_seg028(unsigned offs) {
 	}
 }
 
+static int n_seg037(unsigned offs) {
+	D1_INFO("%s:%x\n", __func__, offs);
+	switch (offs) {
+	case 0x000: {
+		return 0;
+	}
+	case 0x00ae: {
+		return 0;
+	}
+	case 0x2e3: {
+		return 0;
+	}
+	case 0x417: {
+		return 0;
+	}
+	case 0x725: {
+		return 0;
+	}
+	case 0x791: {
+		return 0;
+	}
+	case 0xb3e: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg050(unsigned short offs) {
 	switch (offs) {
 		case 0x0000: {
@@ -4754,6 +4786,7 @@ static int n_seg050(unsigned short offs) {
 			exit(1);
 	}
 }
+
 static int n_seg063(unsigned offs) {
 	switch (offs) {
 	case 0x999: {
@@ -5562,6 +5595,10 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 	}
+
+	if (is_ovrseg(0x131f))
+		return n_seg037(offs);
+
 	/* seg038 */
 	if (is_ovrseg(0x1324)) {
 		switch (offs) {
