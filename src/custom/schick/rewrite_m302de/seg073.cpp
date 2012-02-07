@@ -29,9 +29,9 @@ unsigned short get_tavern_gossip(void)
 	/* Thorwal */
 	case 0x00: {
 		if (r_si == 6)
-			ds_writeb(0x336c, 1);	/* Eliane Windenbeck */
+			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck */
 		else if (r_si == 7)
-			ds_writeb(0x336b, 1);	/* Asgrimm Thurboldsson */
+			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson */
 
 		break;
 	}
@@ -42,9 +42,9 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 2)
 			ds_writeb(0x3da2, 1);
 		else if (r_si == 9)
-			ds_writeb(0x336c, 1);	/* Eliane Windenbeck */
+			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck */
 		else if (r_si == 10)
-			ds_writeb(0x336b, 1);	/* Asgrimm Thurboldsson */
+			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson */
 
 		break;
 	}
@@ -127,9 +127,9 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 3)
 			ds_writeb(0x3dff, 1);
 		else if (r_si == 11)
-			ds_writeb(0x336c, 1);	/* Eliane Windenbeck ? */
+			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck ? */
 		else if (r_si == 12)
-			ds_writeb(0x336b, 1);	/* Asgrimm Thurboldsson ? */
+			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson ? */
 
 		break;
 	}
@@ -138,9 +138,9 @@ unsigned short get_tavern_gossip(void)
 		if (r_si == 2)
 			ds_writeb(0x3da4, 1);	/* Restplaces */
 		else if (r_si == 7)
-			ds_writeb(0x336c, 1);	/* Eliane Windenbeck ? */
+			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck ? */
 		else if (r_si == 8)
-			ds_writeb(0x336b, 1);	/* Asgrimm Thurboldsson ? */
+			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson ? */
 
 		break;
 	}
@@ -394,18 +394,18 @@ unsigned short get_tavern_gossip(void)
 			ds_writeb(0x3dd5, 1);	/* Huntplace */
 		}
 		else if (r_si == 9)
-			ds_writeb(0x336c, 1);	/* Eliane Windenbeck wt */
+			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck wt */
 		else if (r_si == 10)
-			ds_writeb(0x336b, 1);	/* Asgrimm Thurboldsson wt */
+			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson wt */
 
 		break;
 	}
 	/* Vaermhag */
 	case 0x2b: {
 		if (r_si == 7)
-			ds_writeb(0x336c, 1);	/* Eliane Windenbeck wt */
+			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck wt */
 		else if (r_si == 8)
-			ds_writeb(0x336b, 1);	/* Asgrimm Thurboldsson wt */
+			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson wt */
 
 		break;
 	}

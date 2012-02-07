@@ -21,6 +21,20 @@
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 
+/**
+ *	ds_writeb_z() -	write only if target is 0
+ *	@addr:	address in datasegment
+ *	@val:	value which should be written
+ *
+ *	A often occuring Original-Bug resets some informants
+ *	to older states. This helper writes only that value
+ *	if the informer is unknown (0).
+ */
+static inline void ds_writeb_z(Bitu add, char val) {
+	if (ds_readb(add) == 0)
+		ds_writeb(add, val);
+}
+
 static inline Bit8u *get_hero(unsigned short index) {
 	return MemBase + Real2Phys(ds_readd(HEROS)) + index * 0x6da;
 }

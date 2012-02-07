@@ -46,6 +46,8 @@ M302de (Main V3.02 german CD - Version):
 	Story fixes:
 		* It's not possible to visit Umbrik after finish him
 		* You can identify an item more than once in the academy
+		* The informers Eliane and Asgrimm will not be reset
+			by tavern gossip
 	Usability:
 		* If a character has permanent damage LE max is red
 	Grammar:
