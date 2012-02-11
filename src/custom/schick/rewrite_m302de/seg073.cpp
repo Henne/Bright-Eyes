@@ -118,7 +118,7 @@ unsigned short get_tavern_gossip(void)
 
 		break;
 	}
-	/* Merske */
+	/* Merske (has no tavern) */
 	case 0x08: {
 		if (r_si == 1)
 			ds_writeb(0x3dfd, 1);	/* Restplaces */
