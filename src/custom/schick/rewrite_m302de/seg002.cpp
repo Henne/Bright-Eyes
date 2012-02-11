@@ -1104,7 +1104,7 @@ void dec_splash() {
 		if (ds_readb(0x2845))
 			continue;
 		/* check if hero is dead */
-		if (host_readb(get_hero(i) + 0xaa) & 1)
+		if (hero_dead(get_hero(i)))
 			continue;
 
 		restore_rect(Real2Phys(ds_readd(0xd2ff)), get_hero(i) + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
@@ -1567,13 +1567,13 @@ unsigned short check_hero(Bit8u *hero) {
 	if ((host_readb(hero+0xaa) >> 1) & 1)
 		return 0;
 	/* Check if dead */
-	if (host_readb(hero+0xaa) & 1 )
+	if (hero_dead(hero))
 		return 0;
 	/* Check if stoned */
 	if ((host_readb(hero+0xaa) >> 2) & 1)
 		return 0;
 	/* Check if unconscious */
-	if ((host_readb(hero+0xaa) >> 6) & 1)
+	if (hero_unc(hero))
 		return 0;
 	/* Check if ??? */
 	if ((host_readb(hero+0xaa) >> 5) & 1)
@@ -1595,13 +1595,13 @@ unsigned short check_hero_no2(Bit8u *hero) {
 	if (host_readb(hero+0x21) == 0)
 		return 0;
 	/* Check if dead */
-	if (host_readb(hero+0xaa) & 1 )
+	if (hero_dead(hero))
 		return 0;
 	/* Check if stoned */
 	if ((host_readb(hero+0xaa) >> 2) & 1)
 		return 0;
 	/* Check if unconscious */
-	if ((host_readb(hero+0xaa) >> 6) & 1)
+	if (hero_unc(hero))
 		return 0;
 	/* Check if ??? */
 	if ((host_readb(hero+0xaa) >> 5) & 1)
@@ -1620,13 +1620,13 @@ unsigned short check_hero_no3(Bit8u *hero) {
 	if (host_readb(hero+0x21) == 0)
 		return 0;
 	/* Check if dead */
-	if (host_readb(hero+0xaa) & 1 )
+	if (hero_dead(hero))
 		return 0;
 	/* Check if stoned */
 	if ((host_readb(hero+0xaa) >> 2) & 1)
 		return 0;
 	/* Check if unconscious */
-	if ((host_readb(hero+0xaa) >> 6) & 1)
+	if (hero_unc(hero))
 		return 0;
 
 	return 1;
@@ -1652,7 +1652,7 @@ void sub_ae_splash(Bit8u *hero, signed short ae) {
 
 	unsigned short tmp;
 
-	if (host_readb(hero + 0xaa) & 1 || ae <= 0)
+	if (hero_dead(hero) || ae <= 0)
 		return;
 
 	tmp = ds_readw(0xc3cb);
@@ -1684,7 +1684,7 @@ void add_hero_ae(Bit8u* hero, short ae) {
 	short tmp;
 
 	/* dont add AE if hero is dead or ae = 0 */
-	if ( (*(hero+0xaa) & 1) || ae == 0)
+	if (hero_dead(hero) || ae == 0)
 		return;
 
 	tmp = ds_readw(0xc3cb);
@@ -1714,7 +1714,7 @@ void add_hero_le(Bit8u *hero, signed short le) {
 	unsigned short val_bak, tmp, ret;
 
 	/* dead heroes never get LE */
-	if (host_readb(hero + 0xaa) & 1)
+	if (hero_dead(hero))
 		return;
 	/* this function is only for adding */
 	if (le <= 0)
@@ -1731,8 +1731,7 @@ void add_hero_le(Bit8u *hero, signed short le) {
 		host_writew(hero + 0x60, host_readw(hero + 0x5e));
 
 	/* if current LE is >= 5 and the hero is unconscissous */
-	if (host_readw(hero + 0x60) >= 5 &&
-			(host_readb(hero + 0xaa) >> 6) & 1) {
+	if (host_readw(hero + 0x60) >= 5 && hero_unc(hero)) {
 
 		/* awake */
 		host_writeb(hero + 0xaa, host_readb(hero + 0xaa) & 0xbf);
@@ -1795,7 +1794,7 @@ void do_starve_damage(Bit8u *hero, Bit16u index, Bit16u type)
 	Bit16u bak;
 
 	/* check if the hero is dead */
-	if (host_readb(hero + 0xaa) & 1)
+	if (hero_dead(hero))
 		return;
 
 	/* save this value locally */
@@ -1952,7 +1951,7 @@ unsigned short get_random_hero() {
 		if (host_readb(hero+0x87) != cur_group)
 			continue;
 		/* Check if dead */
-		if (host_readb(hero+0xaa) & 1 )
+		if (hero_dead(hero))
 			continue;
 
 		return pos;
@@ -2005,7 +2004,7 @@ void set_party_money(signed int money) {
 	/* if we have an NPC in current group and alive */
 	if (host_readb(hero + 0x21) &&
 		host_readb(hero + 0x87) == ds_readb(0x2d35) &&
-		(host_readb(hero + 0xaa) & 1) == 0) {
+		hero_dead(hero) == 0) {
 
 		/* If only the NPC is in that group give him all the money */
 		if (heroes <= 1) {
@@ -2026,7 +2025,7 @@ void set_party_money(signed int money) {
 
 		if (host_readb(hero + 0x21) &&
 			host_readb(hero + 0x87) == ds_readb(0x2d35) &&
-			(host_readb(hero + 0xaa) & 1) == 0) {
+			hero_dead(hero) == 0) {
 			/* account the money to hero */
 			host_writed(hero + 0x2c, hero_money);
 		} else
@@ -2074,7 +2073,7 @@ void add_group_ap(signed int ap) {
 		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check if hero is dead */
-		if (host_readb(hero_i + 0xaa) & 1)
+		if (hero_dead(hero_i))
 			continue;
 
 		add_hero_ap(hero_i, ap);
@@ -2102,7 +2101,7 @@ void add_hero_ap_all(short ap) {
 		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check if dead */
-		if (host_readb(hero_i + 0xaa) & 1)
+		if (hero_dead(hero_i))
 			continue;
 
 		D1_INFO("%s erhaelt %d AP\n",(char*)(hero_i+0x10), ap);
@@ -2132,7 +2131,7 @@ void sub_hero_ap_all(signed short ap) {
 		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check if dead */
-		if (host_readb(hero_i + 0xaa) & 1)
+		if (hero_dead(hero_i))
 			continue;
 
 		if (ap <= (signed int)host_readd(hero_i+0x28)) {
@@ -2234,7 +2233,7 @@ RealPt get_first_hero_available_in_group() {
 		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* Check dead BOGUS */
-		if (host_readb(Real2Host(hero_i) + 0xaa) & 1)
+		if (hero_dead(Real2Host(hero_i)))
 			continue;
 		/* Check if hero is available */
 		if (check_hero(Real2Host(hero_i)) == 0)

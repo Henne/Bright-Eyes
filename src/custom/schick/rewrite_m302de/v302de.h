@@ -39,6 +39,32 @@ static inline Bit8u *get_hero(unsigned short index) {
 	return Real2Host(ds_readd(HEROS)) + index * 0x6da;
 }
 
+/**
+ * hero_dead() -	check if hero is dead
+ * @hero:	ptr to hero
+ *
+ * 0 = alive / 1 = dead
+ */
+static inline unsigned short hero_dead(Bit8u *hero) {
+	if ((host_readb(hero + 0xaa) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * hero_unc() -	check if hero is unconscious
+ * @hero:	ptr to hero
+ *
+ * 0 = awake / 1 = unconscious
+ */
+static inline unsigned short hero_unc(Bit8u *hero) {
+	if (((host_readb(hero + 0xaa) >> 6) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 static inline Bit8u *get_spelluser() {
 	return Real2Host(ds_readd(SPELLUSER));
 }
