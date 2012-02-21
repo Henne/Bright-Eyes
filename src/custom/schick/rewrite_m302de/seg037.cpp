@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
-        Functions rewritten: 2/8
+        Functions rewritten: 3/8
 */
 
 #include "schick.h"
@@ -67,12 +67,75 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	return retval;
 }
 
+
+/**
+ * test_foe_melee_attack() - checks if range attack is possible
+ * @x:		x - coordinate of attacker
+ * @y:		y - coordinate of attacker
+ * @dx:		delta to x (looking direction)
+ * @dy:		delta to y (looking direction)
+ * @mode:	0 = common, 1 = attack enemies only, 2 = attack heroes only
+ *
+ * The return value is 0 if theres nothing to attack else 1
+ */
+unsigned short test_foe_melee_attack(signed short x, signed short y,
+		signed short dx, signed short dy, signed short mode)
+{
+	signed char cb_val;
+
+	cb_val = get_cb_val(x + dx, y + dy);
+
+	if (mode == 0) {
+
+		/* is a hero */
+		if ((cb_val > 0) && (cb_val < 10))
+			/* hero is not dead */
+			if (!hero_dead(get_hero(cb_val - 1)))
+				/* hero is not unconscious */
+				if (!hero_unc(get_hero(cb_val - 1)))
+					return 1;
+
+		/* is an enemy */
+		if ((cb_val >= 10) && (cb_val < 30))
+			/* enemy is alive */
+			if ((ds_readb(0xd0df + cb_val * 62 + 0x31) & 1) == 0)
+				/* is under "Boeser Blick"-Spell */
+				if (((ds_readb(0xd0df + cb_val * 62 + 0x32) >> 1) & 1) == 1)
+					return 1;
+
+		return 0;
+
+	} else if (mode == 1) {
+
+		/* is an enemy */
+		if ((cb_val >= 10) && (cb_val < 30))
+			/* enemy is alive */
+			if ((ds_readb(0xd0df + cb_val * 62 + 0x31) & 1) == 0)
+					return 1;
+
+		return 0;
+
+	} else if (mode == 2) {
+
+		/* is a hero */
+		if ((cb_val > 0) && (cb_val < 10))
+			/* hero is not dead */
+			if (!hero_dead(get_hero(cb_val - 1)))
+				/* hero is not unconscious */
+				if (!hero_unc(get_hero(cb_val - 1)))
+					return 1;
+	}
+
+
+	return 0;
+}
+
 /**
  * test_foe_range_attack() - checks if range attack is possible
  * @x:	x - coordinate of attacker
  * @y:	y - coordinate of attacker
  * @dir:	looking direction
- * @mode:	0 = common, 1 = attack enemies, 2 = ?
+ * @mode:	0 = common, 1 = attack enemies only, 2 = attack heroes only
  *
  * The return value is 0 if theres nothing to attack in taht direction
  * or the ID of the attackee.

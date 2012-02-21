@@ -4715,7 +4715,22 @@ static int n_seg037(unsigned offs) {
 		return 0;
 	}
 	case 0x2e3: {
-		return 0;
+		CPU_Pop16();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		Bit16s v5 = CPU_Pop16();
+		CPU_Push16(v5);
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax = test_foe_melee_attack(v1, v2, v3, v4, v5);
+		D1_LOG("test_foe_melee_attack(%d, %d, %d, %d, %d); = %x\n",
+				v1, v2, v3, v4, v5, reg_ax);
+		return 1;
 	}
 	case 0x417: {
 		CPU_Pop16();
