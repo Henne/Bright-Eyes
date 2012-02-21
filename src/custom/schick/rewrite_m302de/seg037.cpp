@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
-        Functions rewritten: 1/8
+        Functions rewritten: 2/8
 */
 
 #include "schick.h"
@@ -9,6 +9,63 @@
 #include "seg007.h"
 
 namespace M302de {
+
+/**
+ * copy_ani_stuff() - copies something from ANI.DAT
+ * @dst:	destination
+ * @nr:		which record to copy
+ * @mode:	3 for WEAPANI.DAT, anything else is ANI.DAT
+ *
+ * Returns the number of copied bytes.
+ */
+
+signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
+{
+	Bit8u *buffer, *src;
+	signed short retval;
+	signed short max_nr;
+	signed short i;
+
+	/* ANI.DAT */
+	buffer = Real2Host(ds_readd(0xe378));
+
+	/* WEAPANI.DAT */
+	if (mode == 3)
+		buffer = Real2Host(ds_readd(0xe374));
+
+	max_nr = host_readw(buffer);
+
+	/* Sanity check of nr */
+	if (nr < 0 || nr > max_nr)
+		return 0;
+
+	/* set src to the requested data entry */
+	src = buffer;
+	src += max_nr + 2;
+
+	retval = host_readb(buffer + 2);
+
+	for (i = 1; i <= nr; i++) {
+		src += retval;
+		retval = host_readb(buffer + i + 2);
+	}
+
+	src++;
+
+	retval = retval - 2;
+
+	/* copy some bytes from ANI.DAT */
+
+	for (i = 0; retval > i; i++) {
+		host_writeb(dst, host_readb(src));
+		src++;
+		dst++;
+	}
+
+	/* return the number of copied bytes */
+
+	return retval;
+}
 
 /**
  * test_foe_range_attack() - checks if range attack is possible

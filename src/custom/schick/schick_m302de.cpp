@@ -4698,8 +4698,17 @@ static int n_seg028(unsigned offs) {
 static int n_seg037(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		D1_INFO("%s:%x\n", __func__, offs);
-		return 0;
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16u v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v2);
+		CPU_Push32(p);
+
+		reg_ax = copy_ani_stuff(Real2Host(p), v1, v2);
+		D1_LOG("copy_ani_stuff(%x, %d, %d); = %x\n", p, v1, v2, reg_ax);
+		return 1;
 	}
 	case 0x00ae: {
 		D1_INFO("%s:%x\n", __func__, offs);
