@@ -4696,27 +4696,42 @@ static int n_seg028(unsigned offs) {
 }
 
 static int n_seg037(unsigned offs) {
-	D1_INFO("%s:%x\n", __func__, offs);
 	switch (offs) {
 	case 0x000: {
+		D1_INFO("%s:%x\n", __func__, offs);
 		return 0;
 	}
 	case 0x00ae: {
+		D1_INFO("%s:%x\n", __func__, offs);
 		return 0;
 	}
 	case 0x2e3: {
 		return 0;
 	}
 	case 0x417: {
-		return 0;
+		CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(dir);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		reg_ax = test_foe_range_attack(x, y, dir, v4);
+		D1_INFO("test_foe_range_attack(%d, %d, %d, %d); = %d attacker = %d\n",
+			x, y, dir, v4, reg_ax, get_cb_val(x, y));
+		return 1;
 	}
 	case 0x725: {
 		return 0;
 	}
 	case 0x791: {
+		D1_INFO("%s:%x\n", __func__, offs);
 		return 0;
 	}
 	case 0xb3e: {
+		D1_INFO("%s:%x\n", __func__, offs);
 		return 0;
 	}
 	default:
