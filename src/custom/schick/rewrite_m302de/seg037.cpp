@@ -69,10 +69,10 @@ signed short test_foe_range_attack(signed short x, signed short y, signed short 
 				done = 1;
 
 				if (cb_val < 10)
-					D1_INFO("Attack hero %s\n",
+					D1_LOG("Attack hero %s\n",
 						(char*)get_hero(cb_val - 1) + 0x10);
 				else
-					D1_INFO("Attack foe\n");
+					D1_LOG("Attack foe\n");
 
 				continue;
 			}
@@ -86,7 +86,7 @@ signed short test_foe_range_attack(signed short x, signed short y, signed short 
 				(ds_readb(0xd0df + 0x3e * cb_val + 0x31)&1) != 0) {
 					if (cb_val >= 0x32 &&
 						!is_in_word_array(cb_val + 0xffce, p_datseg + 0x5f46)) {
-						D1_INFO("Reached a %d\n", cb_val);
+						D1_LOG("Reached a %d\n", cb_val);
 						done = 1;
 					}
 				}
