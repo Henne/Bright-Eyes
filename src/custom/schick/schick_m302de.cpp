@@ -3455,6 +3455,26 @@ static int seg069(unsigned short offs)
 	}
 }
 
+static int seg071(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x25: {
+			return 0;
+		}
+		case 0x2a: {
+			D1_INFO("dialog_alrik_derondan();\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
+
 static int seg073(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -4594,6 +4614,8 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x139a:	return 0;
 		case 0x13a1:	return seg068(offs);
 		case 0x13a8:	return seg069(offs);
+		case 0x13ac:	return 0;
+		case 0x13b1:	return seg071(offs);
 		case 0x13b4:	return 0;
 		case 0x13b9:	return seg073(offs);
 		case 0x13bd:	return 0;
