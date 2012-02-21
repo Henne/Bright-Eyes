@@ -4003,7 +4003,9 @@ static int seg099(unsigned short offs) {
 		return 0;
 	}
 	case 0x43: {
-		return 0;
+		D1_LOG("spell_boeser_blick();\n");
+		spell_boeser_blick();
+		return 1;
 	}
 	case 0x48: {
 		D1_LOG("spell_grosse_gier();\n");
