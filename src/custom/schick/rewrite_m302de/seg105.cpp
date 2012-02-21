@@ -410,7 +410,7 @@ void loose_random_item(Bit8u *hero, unsigned short percent, Bit8u *text)
 		if (item == 0)
 			continue;
 
-		if ((host_readb(p_item + 2) >> 6) & 1 == 1)
+		if (((host_readb(p_item + 2) >> 6) & 1) == 1)
 			continue;
 
 		/* drop 1 item */

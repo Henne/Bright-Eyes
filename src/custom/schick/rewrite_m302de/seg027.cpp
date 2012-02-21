@@ -259,7 +259,7 @@ void load_ani(const signed short nr)
 		host_writeb(p5 + 0x0b, host_readb(p_area + 0x0a));
 
 		area_pics = (signed char)host_readb(p_area + 0x0b);
-		host_writeb(p5 + 0x0c, area_pics);
+		host_writeb(p5 + 0x0c, (unsigned char)area_pics);
 		if (ds_readb(0xce39) != 0) {
 
 			p4 = host_readd(p_area + 0xc);
@@ -320,7 +320,7 @@ void load_ani(const signed short nr)
 
 	ani_len = p6 - Real2Host(ds_readd(0xc3db));
 	/* this is always true */
-	if (ani_len > ds_readd(0xce43)) {
+	if (ani_len > (signed int)ds_readd(0xce43)) {
 		ds_writew(0x2ccb, 0xffff);
 	}
 }

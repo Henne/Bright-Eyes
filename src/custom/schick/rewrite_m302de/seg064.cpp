@@ -262,7 +262,7 @@ unsigned short passage_arrival(void)
 	ds_writew(0x433e, (si >> 4) & 0x0f);
 
 	/* restore the old town area / TODO: a bit bogus */
-	ds_writeb(0x2d67, tmp);
+	ds_writeb(0x2d67, (unsigned char)tmp);
 	call_load_area(1);
 
 	return 0;
