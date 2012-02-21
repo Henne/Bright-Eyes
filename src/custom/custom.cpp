@@ -9,7 +9,7 @@
 static Bit8u custom_runs;
 
 static Bit8u schick_runs;
-static Bit8u schweif_o100de_runs;
+static Bit8u schweif_runs;
 
 //static class custom_prog running_progs[2];
 
@@ -31,7 +31,7 @@ void custom_init_prog(char *name, Bit16u relocate, Bit16u init_cs, Bit16u init_i
 	}
 	if (schweif_init(name, relocate, init_cs, init_ip)) {
 		custom_runs++;
-		schweif_o100de_runs++;
+		schweif_runs++;
 	}
 }
 
@@ -45,9 +45,9 @@ void custom_exit_prog(Bit8u exitcode)
 		exit_schick(exitcode);
 		schick_runs--;
 	}
-	if (schweif_o100de_runs) {
+	if (schweif_runs) {
 		schweif_exit(exitcode);
-		schweif_o100de_runs--;
+		schweif_runs--;
 	}
 }
 
@@ -59,7 +59,7 @@ int custom_calln(Bit16u ip)
 	if (schick_runs)
 		return schick_calln16(ip);
 
-	if (schweif_o100de_runs)
+	if (schweif_runs)
 		return schweif_calln(ip);
 
 	return 0;
@@ -72,7 +72,7 @@ int custom_callf(Bitu cs, Bitu ip)
 
 	if (schick_runs)
 		return schick_callf(cs, ip);
-	if (schweif_o100de_runs)
+	if (schweif_runs)
 		return schweif_callf(cs, ip);
 
 	return 0;

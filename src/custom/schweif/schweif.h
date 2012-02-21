@@ -90,9 +90,6 @@ static inline void ds_writed(unsigned short offs, Bit32u val) {
 	host_writed(p_datseg + offs, val);
 }
 
-int schweif_farcall_v100de(unsigned, unsigned);
-int schweif_nearcall_v100de(unsigned);
-
 int schweif_farcall_c102de(unsigned, unsigned);
 int schweif_nearcall_c102de(unsigned);
 
