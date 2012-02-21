@@ -97,6 +97,30 @@ static inline void set_cb_val(unsigned short x, unsigned short y, signed char va
 	host_writeb(Real2Host(ds_readd(CHESSBOARD)) + y * 25 + x, val);
 }
 
+static inline void dump_cb(void)
+{
+	FILE *fd;
+	int y, x;
+	signed char val;
+
+	fd = fopen("cb_dump.txt", "w");
+
+	if (fd == NULL)
+		return;
+	fprintf(fd, "\n");
+	for (y = 24; y >= 0; y--) {
+		for (x = 0; x < 25; x++) {
+			val = get_cb_val(x, y);
+			if (val != 0)
+				fprintf(fd, "%3d ", val);
+			else
+				fprintf(fd, "    ");
+		}
+		fprintf(fd, "\n");
+	}
+	fclose(fd);
+}
+
 static inline Bit8u *get_itemsdat(unsigned short item) {
 	return Real2Host(ds_readd(ITEMSDAT)) + item * 12;
 }
