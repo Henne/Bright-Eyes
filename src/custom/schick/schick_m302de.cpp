@@ -73,15 +73,28 @@ static Uint32 schick_irq_timer(Uint32 interval, void *param)
 	return interval;
 }
 
+
+void schick_timer_disable()
+{
+	SDL_RemoveTimer(irq_timer);
+	irq_timer = NULL;
+
+	/* restore rand 2 code */
+	memcpy(MemBase + PhysMake(reloc_game + 0xb2a, 0x261),
+		irq_bak, 17 * sizeof(char));
+	memset(irq_bak, 0, 17 * sizeof(char));
+	D1_INFO("IRQ timer deaktiviert\n");
+}
+
 void schick_timer_enable()
 {
 	/* get the adress of the seed2 code */
 	Bit8u *loc = MemBase + PhysMake(reloc_game + 0xb2a, 0x261);
 
 	/* copy seed2 code part */
-	memcpy(irq_bak, loc, 17);
+	memcpy(irq_bak, loc, 17 * sizeof(char));
 	/*replace it with NOPs */
-	memset(loc, 0x90, sizeof(char));
+	memset(loc, 0x90, 17 * sizeof(char));
 
 	irq_timer = SDL_AddTimer(56, schick_irq_timer, NULL);
 
@@ -90,21 +103,11 @@ void schick_timer_enable()
 		D1_ERR("Konnte den IRQ Timer nicht initialisieren\n");
 
 		/* restore rand 2 code */
-		memcpy(loc, irq_bak, 17);
+		memcpy(loc, irq_bak, 17 * sizeof(char));
+		return;
 	}
 
 	D1_INFO("IRQ timer aktiviert\n");
-}
-
-void schick_timer_disable()
-{
-	SDL_RemoveTimer(irq_timer);
-	irq_timer = NULL;
-
-	/* restore rand 2 code */
-	memcpy(MemBase + PhysMake(reloc_game + 0xb2a, 0x261), irq_bak, 17);
-	memset(irq_bak, 0, 17);
-	D1_INFO("IRQ timer deaktiviert\n");
 }
 
 /**
