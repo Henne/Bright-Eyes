@@ -32,6 +32,7 @@
 #include "seg039.h"
 #include "seg041.h"
 #include "seg044.h"
+#include "seg045.h"
 #include "seg046.h"
 #include "seg047.h"
 #include "seg050.h"
@@ -3102,22 +3103,27 @@ static int seg044(unsigned short offs) {
 }
 
 static int seg045(unsigned short offs) {
-	D1_INFO("%s:%x();\n", __func__, offs);
 	switch (offs) {
 
 	case 0x25: {
-		return 0;
+		D1_LOG("FIG_remove_smth();\n");
+		FIG_remove_smth();
+		return 1;
 	}
 	case 0x2f: {
+		D1_LOG("%s:%x();\n", __func__, offs);
 		return 0;
 	}
 	case 0x39: {
+		D1_LOG("%s:%x();\n", __func__, offs);
 		return 0;
 	}
 	case 0x3e: {
+		D1_LOG("%s:%x();\n", __func__, offs);
 		return 0;
 	}
 	case 0x43: {
+		D1_LOG("%s:%x();\n", __func__, offs);
 		return 0;
 	}
 	default:
