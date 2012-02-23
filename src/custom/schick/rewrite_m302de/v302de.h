@@ -8,6 +8,7 @@
 
 #include "schick.h"
 
+#define EMS_ENABLED	(0x26ab)
 #define CURRENT_ANI	(0x2ccf)
 #define FNAMES		(0x4c8c)
 #define HEROS		(0xbd34)

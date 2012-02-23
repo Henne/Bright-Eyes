@@ -165,7 +165,7 @@ void load_ani(const signed short nr)
 			(unsigned short)ani_len);
 
 		/* if EMS is enabled buffer it */
-		if (ds_readb(0x26ab) != 0) {
+		if (ds_readb(EMS_ENABLED) != 0) {
 			ems_handle = alloc_EMS(ani_len);
 
 			/* find an empty EMS slot */

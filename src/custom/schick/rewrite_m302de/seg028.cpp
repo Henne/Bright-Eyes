@@ -188,7 +188,7 @@ void load_map(void)
 		read_archive_file(fd, Real2Host(ds_readd(0x432e)), 64098);
 		bc_close(fd);
 
-		if (ds_readb(0x26ab) != 0) {
+		if (ds_readb(EMS_ENABLED) != 0) {
 			ds_writew(0xbd90, alloc_EMS(64100));
 
 			if (ds_readw(0xbd90) != 0) {
