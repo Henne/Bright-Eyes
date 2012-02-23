@@ -273,7 +273,7 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 	else
 		l1 = 16;
 
-	lp1 = MemBase + PhysMake(datseg, 0xd8cf + v1 * 0xf3);
+	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
 	lp1_bak = lp1;
 
 	/* this is true if a monster attacks a hero */
@@ -347,12 +347,18 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 	host_writeb(lp1, 0xff);
 
 	/* check if the moster sprite ID needs two fields */
-	if (is_in_byte_array(host_readb(p + 1),
-		MemBase + PhysMake(datseg, 0x25f9))) {
-			memcpy(MemBase + PhysMake(datseg, 0xdab4 + v1 * 0xf3),
-				MemBase + PhysMake(datseg, 0xd8ce + v1 * 0xf3),
+	if (is_in_byte_array(host_readb(p + 1),	p_datseg + 0x25f9)) {
+			memcpy(p_datseg + 0xdab4 + v1 * 0xf3,
+				p_datseg + 0xd8ce + v1 * 0xf3,
 				0xf3);
 	}
+
+#if 0
+	while (lp1_bak < lp1) {
+		D1_INFO("%x ", *lp1_bak++);
+	}
+	D1_INFO("\n");
+#endif
 }
 
 }
