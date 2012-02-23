@@ -1712,6 +1712,13 @@ static int seg004(unsigned short offs) {
 		wait_for_vsync();
 		return 1;
 	}
+	case 0x1557: {
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		D1_LOG("map_effect(%x)\n", p);
+		map_effect(Real2Host(p));
+		return 1;
+	}
 
 	default:
 		return 0;

@@ -437,4 +437,45 @@ void wait_for_vsync()
 	CALLBACK_RunRealFar(reloc_game + 0xb2a, 0x150d);
 }
 
+/**
+ * map_effect() - the snow effect for the map screen
+ * @src:	pointer to a picture
+ *
+ */
+void map_effect(Bit8u *src)
+{
+	signed short bak;
+	unsigned short seed;
+	unsigned short si, i;
+
+	seed = 0;
+
+	bak = ds_readw(0xe113);
+	ds_writew(0xe113, 0);
+
+	wait_for_vsync();
+	update_mouse_cursor();
+
+	i = 0;
+	while (i < 64000) {
+		si = (seed * 17 + 87) & 0xffff;
+		seed = si;
+
+		if (si >= 64000)
+			continue;
+
+		mem_writeb(Real2Phys(ds_readd(0xd2ff)) + si, host_readb(src + si));
+		i++;
+
+/* this too fast now, we slow it down a bit */
+#if 1
+		if ((i & 0x3ff) == 0x3ff)
+			wait_for_vsync();
+#endif
+	}
+
+	refresh_screen_size();
+	ds_writew(0xe113, bak);
+}
+
 }
