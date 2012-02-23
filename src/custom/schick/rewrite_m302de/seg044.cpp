@@ -320,7 +320,7 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writew(lp1, seg044_00ae(host_readw(lp2 + l1 * 2)));
+		host_writeb(lp1, seg044_00ae(host_readw(lp2 + l1 * 2)));
 		lp1++;
 
 		host_writeb(lp1, 0);
@@ -330,7 +330,7 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 	lp1 += copy_ani_seq(lp1, host_readw(lp2 + l1 * 2), 1);
 
 	if (((ds_readw(0xe3a8) != 0) && (v5 == 0)) ||
-		((ds_readw(0xe3a6 != 0) && (v5 == 1)))) {
+		((ds_readw(0xe3a6) != 0) && (v5 == 1))) {
 
 		host_writeb(lp1, 0xfc);
 		lp1++;
@@ -341,7 +341,7 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 		host_writeb(lp1, 0);
 		lp1++;
 
-		host_writew(lp1, copy_ani_seq(lp1, host_readw(lp2 + 0x28), 1));
+		lp1 += copy_ani_seq(lp1, host_readw(lp2 + 0x28), 1);
 	}
 
 	host_writeb(lp1, 0xff);
