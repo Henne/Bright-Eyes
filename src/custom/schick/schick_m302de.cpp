@@ -1519,6 +1519,15 @@ static int seg003(unsigned short offs) {
 
 static int seg004(unsigned short offs) {
 	switch (offs) {
+	case 0x05: {
+		return 0;
+	}
+	case 0x29: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
 	case 0x55: {
 		Bit16u v1 = CPU_Pop16();
 
@@ -1528,14 +1537,25 @@ static int seg004(unsigned short offs) {
 		CPU_Push16(v1);
 		return 1;
 	}
-	case 0x134:
+	case 0x134: {
 		D1_LOG("set_var_to_zero()\n");
 		set_var_to_zero();
 		return 1;
-	case 0x15b:
+	}
+	case 0x13f: {
+		return 0;
+	}
+	case 0x15b: {
 		D1_LOG("clear_ani()\n");
 		clear_ani();
 		return 1;
+	}
+	case 0x244: {
+		return 0;
+	}
+	case 0x54b: {
+		return 0;
+	}
 	case 0x8e9: {
 		unsigned short v1 = CPU_Pop16();
 		unsigned short v2 = CPU_Pop16();
@@ -1593,18 +1613,30 @@ static int seg004(unsigned short offs) {
 			x, y, (char)w, (char)h, v1);
 		return 1;
 	}
-	case 0xb6b:
+	case 0xb6b: {
 		D1_LOG("draw_mouse_cursor()\n");
 		draw_mouse_cursor();
 		return 1;
-	case 0xc26:
+	}
+	case 0xc26: {
 		D1_LOG("save_mouse_bg()\n");
 		save_mouse_bg();
 		return 1;
-	case 0xcb1:
+	}
+	case 0xcb1: {
 		D1_LOG("restore_mouse_bg()\n");
 		restore_mouse_bg();
 		return 1;
+	}
+	case 0xd3c: {
+		return 0;
+	}
+	case 0xe31: {
+		return 0;
+	}
+	case 0xf54: {
+		return 0;
+	}
 	case 0x1147: {
 		RealPt dst = CPU_Pop32();
 		unsigned short v1 = CPU_Pop16();
@@ -1620,14 +1652,16 @@ static int seg004(unsigned short offs) {
 		array_add(Real2Phys(dst), v1, (char)v2, v3);
 		return 1;
 	}
-	case 0x1190:
+	case 0x1190: {
 		D1_LOG("schick_set_video()\n");
 		schick_set_video();
 		return 1;
-	case 0x11c1:
+	}
+	case 0x11c1: {
 		D1_LOG("schick_reset_video()\n");
 		schick_reset_video();
 		return 1;
+	}
 	case 0x11da: {
 		D1_LOG("clear_ani_pal()\n");
 		clear_ani_pal();
@@ -1639,6 +1673,9 @@ static int seg004(unsigned short offs) {
 		set_ani_pal(Real2Host(pal));
 		CPU_Push32(pal);
 		return 1;
+	}
+	case 0x1291: {
+		return 0;
 	}
 	case 0x12e8: {
 		RealPt dst = CPU_Pop32();
@@ -1685,10 +1722,11 @@ static int seg004(unsigned short offs) {
 		do_pic_copy(mode);
 		return 1;
 	}
-	case 0x144c:
+	case 0x144c: {
 		D1_LOG("do_save_rect()\n");
 		do_save_rect();
 		return 1;
+	}
 	case 0x14bd: {
 		RealPt dst = CPU_Pop32();
 		unsigned short x = CPU_Pop16();
@@ -1721,7 +1759,8 @@ static int seg004(unsigned short offs) {
 	}
 
 	default:
-		return 0;
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
 	}
 }
 
