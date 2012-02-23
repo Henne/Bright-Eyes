@@ -1360,16 +1360,16 @@ short can_merge_group() {
 		if (ds_readw(i * 2 + 0x2d54) != ds_readw(0x2d46))
 			continue;
 		/* check Location */
-		if (ds_readb(0x2d61) != ds_readb(0x2d60))
+		if (ds_readb(0x2d61 + i) != ds_readb(0x2d60))
 			continue;
 		/* check currentTown */
-		if (ds_readb(0x2d68) != ds_readb(0x2d67))
+		if (ds_readb(0x2d68 + i) != ds_readb(0x2d67))
 			continue;
 		/* check DungeonIndex */
-		if (ds_readb(0x2d6f) != ds_readb(0x2d6e))
+		if (ds_readb(0x2d6f + i) != ds_readb(0x2d6e))
 			continue;
 		/* check DungeonLevel */
-		if (ds_readb(0x2d76) != ds_readb(0x2d75))
+		if (ds_readb(0x2d76 + i) != ds_readb(0x2d75))
 			continue;
 
 		retval = i;
