@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 7/8
+	Functions rewritten: 8/8 (complete)
 */
 
 #include "dos_inc.h"
@@ -97,6 +97,158 @@ void load_pp20(Bit16u index)
 
 		bc_close(fd);
 	}
+}
+
+/**
+ * load_fight_figs() - load fight sprites of actors
+ * @fig_old:	the fig number
+ *
+ * Returns a pointer to the location where the data is.
+ *
+ */
+/* Original-Bug: when using EMS for caching something starge happens. */
+RealPt load_fight_figs(signed short fig_old)
+{
+	RealPt src;
+	signed short index;
+	Bit8u *p_tab;
+	Bit8u *mem_slots;
+	signed short max_entries;
+	unsigned short fd;
+	unsigned int len;
+	unsigned int offset;
+	unsigned short ems_handle;
+	RealPt dst;
+	signed short i;
+	signed short fig = fig_old;
+
+	/* check if fig is at a known place */
+	if (fig == (signed short)ds_readw(0x2cd1))
+		return ds_readd(0xd2df);
+	if (fig == (signed short)ds_readw(0x2cd3))
+		return ds_readd(0xd2db);
+
+	if ((signed short)ds_readw(0x2cd3) != -1) {
+		ds_writew(0x2cd1, ds_readw(0x2cd3));
+		memcpy(Real2Host(ds_readd(0xd2df)),
+			Real2Host(ds_readd(0xd2db)), 20000);
+		src = ds_readd(0xd2db);
+		ds_writew(0x2cd3, fig);
+	} else if ((signed short)ds_readw(0x2cd1) != -1) {
+		src = ds_readd(0xd2db);
+		ds_writew(0x2cd3, fig);
+	} else {
+		src = ds_readd(0xd2df);
+		ds_writew(0x2cd1, fig);
+	}
+
+	/* prepare archive access... */
+
+	if (fig >= 88) {
+		/* ...for foes */
+		max_entries = 36;
+		mem_slots = Real2Host(ds_readd(MEM_SLOTS_MON));
+		p_tab = p_datseg + 0xd01d;
+		index = 16;
+		fig -= 88;
+	} else {
+		/* ...for heroes */
+		max_entries = 43;
+
+		if (fig >= 44) {
+			/* female */
+			p_tab = p_datseg + 0xd0ad;
+			index = 234;
+			mem_slots = Real2Host(ds_readd(MEM_SLOTS_WFIG));
+			fig -= 44;
+		} else {
+			/* male */
+			p_tab = p_datseg + 0xd159;
+			index = 24;
+			mem_slots = Real2Host(ds_readd(MEM_SLOTS_MFIG));
+		}
+	}
+
+	/* check if fig is already in memory */
+	for (i = 0; i < max_entries; i++) {
+		if (host_readw(mem_slots + i * 12) == fig)
+			break;
+	}
+
+	if (i != max_entries) {
+		/* Yes, it is */
+
+		if (host_readw(mem_slots + i * 12 + 6) != 0) {
+			/* is in EMS */
+			ems_handle = host_readw(mem_slots + i * 12 + 6);
+			from_EMS(src, ems_handle, host_readd(mem_slots + i * 12 + 8));
+		} else {
+			/* is in HEAP */
+			D1_LOG("cached from HEAP %d\n", fig);
+			memcpy(Real2Host(src),
+				Real2Host(host_readd(mem_slots + i * 12 + 2)),
+				host_readw(mem_slots + i * 12 + 8));
+		}
+	} else {
+		D1_LOG("not cached\n");
+
+		/* read fig from file */
+		offset = host_readd(p_tab + (fig - 1) * 4);
+		len = host_readd(p_tab + fig * 4) - offset;
+
+		fd = load_archive_file(index);
+
+		seg002_0c72(fd, offset);
+
+		read_archive_file(fd, Real2Host(src), (unsigned short)len);
+
+		bc_close(fd);
+
+		dst = schick_alloc_emu(len);
+
+		if (dst != 0) {
+			D1_LOG("use HEAP for fig %d\n", fig_old);
+			/* use heap */
+
+			for (i = 0; i < max_entries - 1; i++) {
+				if (host_readw(mem_slots + i * 12) == 0)
+					break;
+			}
+
+			host_writew(mem_slots + i * 12, fig);
+			host_writed(mem_slots + i * 12 + 2, dst);
+			host_writew(mem_slots + i * 12 + 6, 0);
+			host_writed(mem_slots + i * 12 + 8, len);
+
+			memcpy(Real2Host(dst), Real2Host(src),
+				(unsigned short)len);
+
+		} else if (ds_readb(EMS_ENABLED) != 0) {
+			D1_LOG("use EMS for fig %d\n", fig_old);
+
+			ems_handle = alloc_EMS(len);
+
+			if (ems_handle != 0) {
+
+				/* find a free slot */
+				for (i = 0; i < max_entries - 1; i++) {
+					if (host_readw(mem_slots + i * 12) == 0)
+						break;
+				}
+
+				/* write slot */
+				host_writew(mem_slots + i * 12, fig);
+				host_writew(mem_slots + i * 12 + 6, ems_handle);
+				host_writed(mem_slots + i * 12 + 2, 0);
+				host_writed(mem_slots + i * 12 + 8, len);
+
+				/* copy to EMS */
+				to_EMS(ems_handle, src, len);
+			}
+		}
+	}
+
+	return src;
 }
 
 /**

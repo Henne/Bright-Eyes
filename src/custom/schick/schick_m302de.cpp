@@ -2581,7 +2581,15 @@ static int seg027(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			RealPt ret;
+			short fig = CPU_Pop16();
+			CPU_Push16(fig);
+
+			ret = load_fight_figs(fig);
+			D1_LOG("load_fight_figs(%d) = 0x%x\n", fig, ret);
+			reg_ax = RealOff(ret);
+			reg_dx = RealSeg(ret);
+			return 1;
 		}
 		case 0x2f: {
 			D1_LOG("init_common_buffers();\n");

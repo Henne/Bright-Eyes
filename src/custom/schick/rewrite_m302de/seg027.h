@@ -4,6 +4,8 @@ namespace M302de {
 void load_pp20(Bit16u);
 /*0x25*/
 void load_ani(signed short);
+/* 0x2a */
+RealPt load_fight_figs(signed short);
 //0x2f
 void init_common_buffers();
 //0x34
