@@ -908,16 +908,22 @@ void seg002_2f7a(unsigned int fmin) {
 			continue;
 
 		/* I have no clue what is at offset 0x8b */
-		if ((int)host_readd(hero_i + 0x8b) > 0) {
-			D1_INFO("%s 8b = %d\n", (char*)hero_i + 0x10,
-				host_readd(hero_i + 0x8b));
-			host_writed(hero_i + 0x8b, host_readd(hero_i + 0x8b) - fmin * 450);
+		if ((signed int)host_readd(hero_i + 0x8b) > 0) {
+			D1_INFO("Unknown Timer %s at 0x8b = %d\n",
+				(char*)hero_i + 0x10,
+				(signed int)host_readd(hero_i + 0x8b));
+
+			host_writed(hero_i + 0x8b,
+				host_readd(hero_i + 0x8b) - fmin * 450);
+
 			if ((int)host_readd(hero_i + 0x8b) < 0)
 				host_writed(hero_i + 0x8b, 0);
 		}
+
 		/* Timer set after Staffspell */
 		if ((int)host_readd(hero_i + 0x8f) > 0) {
-			D1_INFO("%s 8f = %d\n", (char*)(hero_i + 0x10),
+			D1_INFO("Unknown Timer %s at 0x8f = %d\n",
+				(char*)(hero_i + 0x10),
 				host_readd(hero_i + 0x8f));
 			host_writed(hero_i + 0x8f, host_readd(hero_i + 0x8f) - fmin * 450);
 			if ((int)host_readd(hero_i + 0x8f) < 0)
