@@ -10,6 +10,7 @@
 
 #define EMS_ENABLED	(0x26ab)
 #define CURRENT_ANI	(0x2ccf)
+#define DELAY_FACTOR	(0x4b66)
 #define FNAMES		(0x4c8c)
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
@@ -22,6 +23,7 @@
 #define MEM_SLOTS_MFIG	(0xe11d)
 #define ITEMSDAT	(0xe22b)
 #define ITEMSNAME	(0xe22f)
+#define DELAY_TIMER	(0xe2d0)
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 
