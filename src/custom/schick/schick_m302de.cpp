@@ -1911,8 +1911,8 @@ static int seg006(unsigned short offs) {
 			CPU_Push16(v1);
 
 			D1_LOG("FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
-			//FIG_draw_enemy_pic(v1, v2);
-			return 0;
+			FIG_draw_enemy_pic(v1, v2);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

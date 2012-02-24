@@ -21,6 +21,7 @@
 #define MEM_SLOTS_MON	(0xe115)
 #define MEM_SLOTS_WFIG	(0xe119)
 #define MEM_SLOTS_MFIG	(0xe11d)
+#define MONNAMES	(0xe129)
 #define ITEMSDAT	(0xe22b)
 #define ITEMSNAME	(0xe22f)
 #define DELAY_TIMER	(0xe2d0)
@@ -81,6 +82,11 @@ static inline Bit8u *get_spelltarget() {
 
 static inline Bit8u *get_fname(unsigned short off) {
 	return Real2Host(ds_readd(FNAMES + off * 4));
+}
+
+static inline Bit8u *get_monname(unsigned short off)
+{
+	return Real2Host(host_readd(Real2Host(ds_readd(MONNAMES) + off * 4)));
 }
 
 static inline Bit8u *get_city(unsigned short off) {
