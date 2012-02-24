@@ -777,9 +777,11 @@ void schick_status_init()
 	/* Disable delay and set status manually (german CD-version) */
 	if (ver == 302 && !schick_is_en())
 	{
+#if 0
 		/*disable delay */
 		ds_writew(0x4b66, 0x0000);
 		D1_INFO("Verzoegerungsfaktor ausgeschalten\n");
+#endif
 
 		/*set status manually */
 		status_len = 0x1740;
@@ -812,9 +814,11 @@ void schick_status_init()
 
 	/* Disable delay and set status manually (english version) */
 	if (schick_is_en()) {
+#if 0
 		/*disable delay */
 		ds_writew(0x4c5a, 0x0000);
 		D1_INFO("Verzoegerungsfaktor ausgeschalten\n");
+#endif
 
 		/*set status manually */
 		status_len = 0x1740;
