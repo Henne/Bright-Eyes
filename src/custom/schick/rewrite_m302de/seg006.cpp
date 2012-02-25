@@ -60,7 +60,7 @@ void FIG_set_gfx() {
 
 void FIG_draw_pic() {
 	mem_memcpy(Real2Phys(ds_readd(0xd303)), Real2Phys(ds_readd(0xc3a9)), 64000);
-	ds_writeb(0x26af, 1);
+	ds_writew(0x26af, 1);
 
 	if (ds_readw(0x26b3))
 		FIG_draw_char_pic(0, ds_readw(0x26b3));

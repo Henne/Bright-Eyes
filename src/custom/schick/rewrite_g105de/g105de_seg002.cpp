@@ -2475,13 +2475,14 @@ static FILE * fd_open_datfile(Bit16u index)
 	prepare_path(fname);
 
 	fd = fopen(fname, "rb");
-	free(fname);
 
 	if (fd == NULL) {
 		D1_ERR("%s(): failed to open datafile at %s\n",
 			__func__, fname);
+		free(fname);
 		return NULL;
 	}
+	free(fname);
 
 	if (fread(buf, 1, 800, fd) != 800) {
 		D1_ERR("%s(): failed to read datafile\n", __func__);

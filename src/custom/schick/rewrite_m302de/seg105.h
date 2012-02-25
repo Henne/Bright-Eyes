@@ -17,5 +17,7 @@ unsigned short item_pleasing_ingerimm(unsigned short);
 unsigned short hero_count_item(Bit8u *, unsigned short);
 //5c
 unsigned short group_count_item(unsigned short);
+/* 0x61 */
+void loose_random_item(Bit8u *, unsigned short, Bit8u*);
 
 }

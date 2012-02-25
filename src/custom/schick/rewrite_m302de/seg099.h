@@ -9,6 +9,8 @@ void spell_gardanium();
 
 /* Domination / Beherrschung */
 
+/* 0x43 */
+void spell_boeser_blick();
 //0x48
 void spell_grosse_gier();
 //0x4d

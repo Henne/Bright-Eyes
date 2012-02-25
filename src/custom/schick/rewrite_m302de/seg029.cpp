@@ -167,13 +167,13 @@ void draw_status_line()
 				head_bak = -1;
 
 				/* load skull if hero is dead */
-				if (host_readb(get_hero(i) + 0xaa) & 1) {
+				if (hero_dead(get_hero(i))) {
 					head_bak = ds_readw(0x515c);
 					load_in_head(0x29);
 				}
 
 				/* set the src pointer of the head */
-				if (host_readb(get_hero(i) + 0xaa) & 1)
+				if (hero_dead(get_hero(i)))
 					ds_writed(0xc019, ds_readd(0xd2f3));
 				else
 					ds_writed(0xc019, ds_readd(0xbd34) + i * 0x6da + 0x2da);
@@ -188,13 +188,13 @@ void draw_status_line()
 				head_bak = -1;
 
 				/* load skull if hero is dead */
-				if (host_readb(get_hero(i) + 0xaa) & 1) {
+				if (hero_dead(get_hero(i))) {
 					head_bak = ds_readw(0x515c);
 					load_in_head(0x29);
 				}
 
 				/* set the src pointer of the head */
-				if (host_readb(get_hero(i) + 0xaa) & 1)
+				if (hero_dead(get_hero(i)))
 					src = Real2Host(ds_readd(0xd2f3));
 				else
 					src = get_hero(i) + 0x2da;

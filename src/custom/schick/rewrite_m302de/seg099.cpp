@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 4/39
+ *	Functions rewritten 5/39
  *
 */
 
@@ -59,6 +59,31 @@ void spell_gardanium()
 			(char*)get_ltx(0x97c), (char*)get_spelluser() + 0x10);
 		/* set AE costs */
 		ds_writew(0xac0e, 0);
+	}
+}
+
+void spell_boeser_blick()
+{
+	/* set attacked foe */
+	ds_writed(0xe5b4,
+		RealMake(datseg, host_readb(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+
+	/* this spell does not work on all kind of sleletons */
+	if (host_readb(Real2Host(ds_readd(0xe5b4)) + 1) == 0x1c) {
+		ds_writew(0xac0e, -2);
+	} else {
+		/* set "Boeser Blick" Flag */
+		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x32,
+			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x32) | 2);
+
+		/* set number of attacks to 2 */
+		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x1b, 2);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_dtp(0x28),
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+
 	}
 }
 

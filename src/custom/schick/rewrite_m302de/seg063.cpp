@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg063 (harbour)
-        Functions rewritten: 0/5
+        Functions rewritten: 2/5
 */
 
 #include "schick.h"
@@ -56,6 +56,17 @@ void passages_init()
 		host_readb(p + 6),
 		host_readb(p + 7));
 	}
+}
+
+unsigned short get_srout_len(Bit8u *ptr)
+{
+	unsigned short i = 0;
+
+	while (host_readw(ptr) != 0xffff) {
+		ptr += 4;
+		i++;
+	}
+	return i;
 }
 
 }

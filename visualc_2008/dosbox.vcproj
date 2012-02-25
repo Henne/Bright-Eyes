@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de;../src/custom/schweif;../src/custom/schweif/rewrite_o100de/;../src/custom/schweif/rewrite_c102de"
+				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de;../src/custom/schweif;../src/custom/schweif/rewrite_c102de"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -140,7 +140,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de;../src/custom/schweif;../src/custom/schweif/rewrite_o100de/;../src/custom/schweif/rewrite_c102de"
+				AdditionalIncludeDirectories="../include;../src/platform/visualc;../src/custom/schick;../src/custom/schick/rewrite_m302de;../src/custom/schweif;../src/custom/schweif/rewrite_c102de"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -1229,6 +1229,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg037.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg037.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg038.cpp"
 						>
 					</File>
@@ -1258,6 +1266,14 @@
 					</File>
 					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg044.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg045.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg045.h"
 						>
 					</File>
 					<File
@@ -1293,11 +1309,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg064.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg064.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg068.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg068.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg073.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg073.h"
 						>
 					</File>
 					<File
@@ -1402,33 +1434,9 @@
 						>
 					</File>
 					<File
-						RelativePath="..\src\custom\schweif\schweif_o100de.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\src\custom\schweif\schweif_c102de.cpp"
 						>
 					</File>
-				<Filter
-					Name="schweif_rewrite_o100de"
-					>
-					<File
-						RelativePath="..\src\custom\schweif\rewrite_o100de\o100de_seg000.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\src\custom\schweif\rewrite_o100de\o100de_seg000.h"
-						>
-					</File>
-					<File
-						RelativePath="..\src\custom\schweif\rewrite_o100de\o100de_seg037.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\src\custom\schweif\rewrite_o100de\o100de_seg037.h"
-						>
-					</File>
-				</Filter>
 				<Filter
 					Name="schweif_rewrite_c102de"
 					>

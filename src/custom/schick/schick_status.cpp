@@ -118,8 +118,6 @@ static unsigned char *status_copy = NULL;
 static unsigned int status_len = 0;
 static unsigned short status_offset = 0;
 
-static char slots[12] = { 0,0,0,0,0,0,0,0,0,0,0,0};
-
 static void schick_log_timer32(const char *text, char *flag,
 						unsigned long offset) {
 	if (!text) {
@@ -370,7 +368,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			/* deactivate mod slot */
 			if (cnt == 0 && host_readd(status_copy+s_nr*8+0xf8))
 			{
-				D1_INFO("Mod Timer %ld beendet\n", s_nr);
+				D1_INFO("Mod Timer %d beendet\n", s_nr);
 				memcpy(status_copy+s_nr*8+0xf8,
 					status_ingame+s_nr*8+0xf8, 8);
 				i += 8;
@@ -389,7 +387,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 
 			/* activate a new slot */
 			if (off != 0 && !host_readw(status_copy+s_nr*8+0xf8+4)) {
-				D1_INFO("Mod Timer in Slot %ld aktiviert\n",
+				D1_INFO("Mod Timer in Slot %d aktiviert\n",
 						s_nr);
 				D1_INFO("Offset: 0x%x\tBonus %d auf %d\n",
 						off, mod, tar);

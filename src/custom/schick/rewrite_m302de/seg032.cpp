@@ -251,7 +251,7 @@ signed short FIG_get_first_active_hero() {
 		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* hero is dead */
-		if (host_readb(hero_i + 0xaa) & 1)
+		if (hero_dead(hero_i))
 			continue;
 		/* hero is stoned */
 		if ((host_readb(hero_i + 0xaa) >> 2) & 1)
@@ -263,7 +263,7 @@ signed short FIG_get_first_active_hero() {
 		if (host_readb(hero_i + 0xab) & 1)
 			continue;
 		/* hero is unconscious */
-		if ((host_readb(hero_i + 0xaa) >> 6) & 1)
+		if (hero_unc(hero_i))
 			continue;
 
 		return i;
@@ -298,7 +298,7 @@ unsigned short seg032_02db() {
 		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
 		/* hero is dead */
-		if (host_readb(hero_i + 0xaa) & 1)
+		if (hero_dead(hero_i))
 			continue;
 		/* unknown */
 		if (host_readb(hero_i + 0x84) != 0x10)

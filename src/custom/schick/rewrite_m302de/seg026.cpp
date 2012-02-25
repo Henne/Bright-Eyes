@@ -148,6 +148,22 @@ void prepare_sg_name(char *dst, char *src)
 	dst[8] = '\0';
 }
 
+void write_chr_temp(unsigned short hero)
+{
+	char fname[20];
+	unsigned short fd;
+
+	prepare_chr_name(fname, (char*)get_hero(hero));
+
+	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		(char*)p_datseg + 0x4c88,		/* "TEMP\\%s" */
+		fname);
+
+	fd = bc__creat(ds_readd(0xd2eb), 0);
+	bc__write(fd, ds_readd(0xd2eb), 0x6da);
+	bc_close(fd);
+}
+
 /**
  *	load_in_head() - loads a head icon from IN_HEADS.NVF
  *	@head:	index of the desired head
@@ -169,6 +185,36 @@ void load_in_head(Bit16s head)
 
 	ds_writew(0x515c, head);
 
+}
+
+void load_tempicon(unsigned short nr)
+{
+	char nvf[19];
+	Bit8u *n = (Bit8u*)nvf;
+	unsigned short fd;
+
+	if (nr == 14)
+		nr = 7;
+
+	/* load TEMPICON */
+	fd = load_archive_file(0xb4);
+	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 7000);
+	bc_close(fd);
+
+	/* set dst */
+	host_writed(n + 0, ds_readd(0xc3a9) + 7000);
+	/* set src */
+	host_writed(n + 4, ds_readd(0xc3a9));
+	/* set nr */
+	host_writew(n + 8, nr);
+	/* set type */
+	host_writew(n + 10, 0);
+
+	/* place somewhere on unused stack */
+	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
+	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+	process_nvf(n);
 }
 
 }

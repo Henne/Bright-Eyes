@@ -1,14 +1,17 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 6/8
+	Functions rewritten: 8/8 (complete)
 */
 
 #include "dos_inc.h"
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg000.h"
 #include "seg002.h"
+#include "seg004.h"
 #include "seg009.h"
 
 namespace M302de {
@@ -93,6 +96,384 @@ void load_pp20(Bit16u index)
 			get_readlength2(fd));
 
 		bc_close(fd);
+	}
+}
+
+/**
+ * load_fight_figs() - load fight sprites of actors
+ * @fig_old:	the fig number
+ *
+ * Returns a pointer to the location where the data is.
+ *
+ */
+/* Original-Bug: when using EMS for caching something starge happens. */
+RealPt load_fight_figs(signed short fig_old)
+{
+	RealPt src;
+	signed short index;
+	Bit8u *p_tab;
+	Bit8u *mem_slots;
+	signed short max_entries;
+	unsigned short fd;
+	unsigned int len;
+	unsigned int offset;
+	unsigned short ems_handle;
+	RealPt dst;
+	signed short i;
+	signed short fig = fig_old;
+
+	/* check if fig is at a known place */
+	if (fig == (signed short)ds_readw(0x2cd1))
+		return ds_readd(0xd2df);
+	if (fig == (signed short)ds_readw(0x2cd3))
+		return ds_readd(0xd2db);
+
+	if ((signed short)ds_readw(0x2cd3) != -1) {
+		ds_writew(0x2cd1, ds_readw(0x2cd3));
+		memcpy(Real2Host(ds_readd(0xd2df)),
+			Real2Host(ds_readd(0xd2db)), 20000);
+		src = ds_readd(0xd2db);
+		ds_writew(0x2cd3, fig);
+	} else if ((signed short)ds_readw(0x2cd1) != -1) {
+		src = ds_readd(0xd2db);
+		ds_writew(0x2cd3, fig);
+	} else {
+		src = ds_readd(0xd2df);
+		ds_writew(0x2cd1, fig);
+	}
+
+	/* prepare archive access... */
+
+	if (fig >= 88) {
+		/* ...for foes */
+		max_entries = 36;
+		mem_slots = Real2Host(ds_readd(MEM_SLOTS_MON));
+		p_tab = p_datseg + 0xd01d;
+		index = 16;
+		fig -= 88;
+	} else {
+		/* ...for heroes */
+		max_entries = 43;
+
+		if (fig >= 44) {
+			/* female */
+			p_tab = p_datseg + 0xd0ad;
+			index = 234;
+			mem_slots = Real2Host(ds_readd(MEM_SLOTS_WFIG));
+			fig -= 44;
+		} else {
+			/* male */
+			p_tab = p_datseg + 0xd159;
+			index = 24;
+			mem_slots = Real2Host(ds_readd(MEM_SLOTS_MFIG));
+		}
+	}
+
+	/* check if fig is already in memory */
+	for (i = 0; i < max_entries; i++) {
+		if (host_readw(mem_slots + i * 12) == fig)
+			break;
+	}
+
+	if (i != max_entries) {
+		/* Yes, it is */
+
+		if (host_readw(mem_slots + i * 12 + 6) != 0) {
+			/* is in EMS */
+			ems_handle = host_readw(mem_slots + i * 12 + 6);
+			from_EMS(src, ems_handle, host_readd(mem_slots + i * 12 + 8));
+		} else {
+			/* is in HEAP */
+			D1_LOG("cached from HEAP %d\n", fig);
+			memcpy(Real2Host(src),
+				Real2Host(host_readd(mem_slots + i * 12 + 2)),
+				host_readw(mem_slots + i * 12 + 8));
+		}
+	} else {
+		D1_LOG("not cached\n");
+
+		/* read fig from file */
+		offset = host_readd(p_tab + (fig - 1) * 4);
+		len = host_readd(p_tab + fig * 4) - offset;
+
+		fd = load_archive_file(index);
+
+		seg002_0c72(fd, offset);
+
+		read_archive_file(fd, Real2Host(src), (unsigned short)len);
+
+		bc_close(fd);
+
+		dst = schick_alloc_emu(len);
+
+		if (dst != 0) {
+			D1_LOG("use HEAP for fig %d\n", fig_old);
+			/* use heap */
+
+			for (i = 0; i < max_entries - 1; i++) {
+				if (host_readw(mem_slots + i * 12) == 0)
+					break;
+			}
+
+			host_writew(mem_slots + i * 12, fig);
+			host_writed(mem_slots + i * 12 + 2, dst);
+			host_writew(mem_slots + i * 12 + 6, 0);
+			host_writed(mem_slots + i * 12 + 8, len);
+
+			memcpy(Real2Host(dst), Real2Host(src),
+				(unsigned short)len);
+
+		} else if (ds_readb(EMS_ENABLED) != 0) {
+			D1_LOG("use EMS for fig %d\n", fig_old);
+
+			ems_handle = alloc_EMS(len);
+
+			if (ems_handle != 0) {
+
+				/* find a free slot */
+				for (i = 0; i < max_entries - 1; i++) {
+					if (host_readw(mem_slots + i * 12) == 0)
+						break;
+				}
+
+				/* write slot */
+				host_writew(mem_slots + i * 12, fig);
+				host_writew(mem_slots + i * 12 + 6, ems_handle);
+				host_writed(mem_slots + i * 12 + 2, 0);
+				host_writed(mem_slots + i * 12 + 8, len);
+
+				/* copy to EMS */
+				to_EMS(ems_handle, src, len);
+			}
+		}
+	}
+
+	return src;
+}
+
+/**
+ *	load_ani() -	loads an animation
+ *	@nr:	number of the animation
+ */
+void load_ani(const signed short nr)
+{
+	signed int area_size;
+	int len;
+	signed int len_3, len_4;
+	unsigned int offset, offset_2;
+	Bit8u *dst, *p6;
+	int ani_off, ani_len;
+	Bit8u *p5;
+	signed int p4;
+	signed int p3;
+	Bit8u *p2;
+	Bit8u *p1;
+	RealPt ani_buffer;
+	unsigned short ems_handle;
+	Bit8u *p_area;
+	unsigned short i;
+	unsigned short fd;
+	signed short area_changes;
+	signed short area_pics;
+	unsigned short i_area;
+	signed short di;
+
+
+	/* sanity check */
+	if (nr == -1)
+		return;
+
+	/* no need to reload  the same ani*/
+	if (nr == (signed short)ds_readw(CURRENT_ANI))
+		return;
+
+	ds_writew(0x29ae, 0);
+	/* set the new ani nr*/
+	ds_writew(CURRENT_ANI, nr);
+	/* clear the old ani */
+	clear_ani();
+
+	/* count to the ordered ani in an array*/
+	for (i = 0; i < 37; i++) {
+		if (nr == host_readw(Real2Host(ds_readd(0xe121)) + i * 8))
+			break;
+	}
+
+	if (i != 37) {
+		/* already buffered in EMS, get from there */
+		ems_handle = host_readw(Real2Host(ds_readd(0xe121)) + i * 8 + 2);
+		from_EMS(ds_readd(0xc3db), ems_handle,
+			host_readd(Real2Host(ds_readd(0xe121)) + i * 8 + 4));
+	} else {
+		/* load it from file */
+		ani_off = ds_readd(0xd205 - 4 + nr * 4);
+		ani_len = ds_readd(0xd205 + nr * 4) - ani_off;
+
+		/* load ANIS */
+		fd = load_archive_file(0x16);
+		/* seek to ordered ani */
+		seg002_0c72(fd, ani_off);
+		read_archive_file(fd, Real2Host(ds_readd(0xc3db)),
+			(unsigned short)ani_len);
+
+		/* if EMS is enabled buffer it */
+		if (ds_readb(EMS_ENABLED) != 0) {
+			ems_handle = alloc_EMS(ani_len);
+
+			/* find an empty EMS slot */
+			if (ems_handle != 0) {
+				for (i = 0; i < 36; i++)
+					if (host_readw(Real2Host(ds_readd(0xe121)) + i * 8) == 0)
+						break;
+			}
+
+			/* fill the entry */
+			host_writew(Real2Host(ds_readd(0xe121)) + i * 8, nr);
+			host_writew(Real2Host(ds_readd(0xe121)) + i * 8 + 2,
+				ems_handle);
+			host_writed(Real2Host(ds_readd(0xe121)) + i * 8 + 4,
+				ani_len);
+
+			/* copy data to EMS */
+			to_EMS(ems_handle, ds_readd(0xc3db), ani_len);
+		}
+
+		bc_close(fd);
+	}
+
+	ani_buffer = ds_readd(0xc3db);
+
+	/* set start of picture data */
+	ds_writed(ANI_MAIN_PTR,
+		host_readd(Real2Host(ds_readd(0xc3db))) + ani_buffer);
+	/* set start of palette */
+	ds_writed(0xce3b,
+		host_readd(Real2Host(ds_readd(0xc3db)) + 4) + ani_buffer + 6);
+
+	/* read some bytes between data and palette */
+	ds_writew(0xc3e9,
+		host_readw(Real2Host(ds_readd(0xce3b)) - 6));
+	ds_writew(0xc3eb,
+		host_readw(Real2Host(ds_readd(0xce3b)) - 4));
+	/* compression type */
+	ds_writeb(0xce39,
+		host_readb(Real2Host(ds_readd(0xce3b)) - 1));
+	ds_writeb(0xce3a,
+		host_readb(Real2Host(ds_readd(0xce3b)) - 2));
+
+	p6 = Real2Host(ds_readd(0xce3b) + ds_readb(0xce3a) * 3);
+	/* set picture size */
+	ds_writew(0xc3e7, host_readw(Real2Host(ds_readd(0xc3db) + 8)));
+	ds_writeb(0xc3ed, host_readb(Real2Host(ds_readd(0xc3db) + 10)));
+	/* set number of areas */
+	ds_writeb(0xc3ee, host_readb(Real2Host(ds_readd(0xc3db) + 11)));
+
+	/* Process Main Picture */
+	if (ds_readb(0xce39) != 0) {
+		len_4 = host_readd(Real2Host(ds_readd(ANI_MAIN_PTR)));
+		p1 = Real2Host(ds_readd(ANI_MAIN_PTR));
+
+		p1 += (len_4 - 4);
+
+		len_3 = host_readd(p1);
+		len_3 = swap_u32(len_3) >> 8;
+
+		decomp_pp20(Real2Host(ds_readd(ANI_MAIN_PTR)),
+			Real2Host(ds_readd(0xd303)),
+			Real2Host(ds_readd(ANI_MAIN_PTR)) + 4,
+			len_4);
+
+		offset = len_3 - len_4;
+		dst = Real2Host(ds_readd(ANI_MAIN_PTR));
+		dst += len_4;
+		len = p6 - dst;
+		memcpy(p6 + offset, dst, len);
+
+		memcpy(Real2Host(ds_readd(ANI_MAIN_PTR)),
+			Real2Host(ds_readd(0xd303)), len_3);
+		dst += offset;
+		memcpy(dst, p6 + offset, len);
+		ds_writed(0xce3b, ds_readd(0xce3b) + offset);
+		p6 += offset;
+	}
+
+	/* Process the Areas */
+	for (i_area = 0; (signed char)ds_readb(0xc3ee) > i_area; i_area++) {
+		p5 = Real2Host(RealMake(datseg, 0xc3ef + i_area * 0x107));
+		p3 = host_readd(Real2Host(ds_readd(0xc3db) + i_area * 4 + 0xc));
+		p_area = Real2Host(ds_readd(0xc3db) + p3);
+		strncpy((char*)p5, (char*)p_area, 4);
+
+		host_writew(p5 + 5, host_readw(p_area + 4));
+		host_writeb(p5 + 7, host_readb(p_area + 6));
+		host_writeb(p5 + 8, host_readb(p_area + 7));
+		host_writew(p5 + 9, host_readw(p_area + 8));
+		host_writeb(p5 + 0x0b, host_readb(p_area + 0x0a));
+
+		area_pics = (signed char)host_readb(p_area + 0x0b);
+		host_writeb(p5 + 0x0c, (unsigned char)area_pics);
+		if (ds_readb(0xce39) != 0) {
+
+			p4 = host_readd(p_area + 0xc);
+			p4 += offset;
+			p1 = Real2Host(ds_readd(0xc3db) + p4);
+
+			len_4 = host_readd(p1);
+			p1 += (len_4 - 4);
+			area_size = host_readd(p1);
+			area_size = swap_u32(area_size) >> 8;
+
+			decomp_pp20(Real2Host(ds_readd(0xc3db)) + p4,
+				Real2Host(ds_readd(0xd303)),
+				Real2Host(ds_readd(0xc3db)) + p4 + 4,
+				len_4);
+
+			offset_2 = area_size - len_4;
+			offset += offset_2;
+
+			dst = Real2Host(ds_readd(0xc3db));
+			dst += p4;
+			dst += len_4;
+			len = p6 - dst;
+			memcpy(p6 + offset_2, dst, (unsigned short)len);
+
+			memcpy(Real2Host(ds_readd(0xc3db)) + p4,
+				Real2Host(ds_readd(0xd303)), (unsigned short)area_size);
+			dst += offset_2;
+			memcpy(dst, p6 + offset_2, (unsigned short)len);
+			ds_writed(0xce3b, ds_readd(0xce3b) + offset_2);
+			p6 += offset_2;
+			area_size = (unsigned char)host_readb(p5 + 8)
+				* (signed short)host_readw(p5 + 9);
+
+			for (di = 0; di < area_pics; di++) {
+				host_writed(p5 + di * 4 + 0xd,
+					ds_readd(0xc3db) + p4 + di * area_size);
+			}
+		} else {
+			for (di = 0; di < area_pics; di++) {
+				p4 = host_readd(p_area + di * 4 + 0xc);
+				host_writed(p5 + di * 4 + 0x0d,
+					ds_readd(0xc3db) + p4);
+			}
+		}
+
+		area_changes = host_readw(p_area + area_pics * 4 + 0x0c);
+		host_writew(p5 + 0x5d, area_changes);
+
+		p2 = p_area + area_pics * 4 + 0x0e;
+		for (di = 0; di < area_changes; di++) {
+			host_writew(p5 + 0x5f + di * 4,
+				host_readw(p2 + di * 4));
+			host_writew(p5 + 0x61 + di * 4,
+				host_readw(p2 + di * 4 + 2));
+		}
+	}
+
+	ani_len = p6 - Real2Host(ds_readd(0xc3db));
+	/* this is always true */
+	if (ani_len > (signed int)ds_readd(0xce43)) {
+		ds_writew(0x2ccb, 0xffff);
 	}
 }
 

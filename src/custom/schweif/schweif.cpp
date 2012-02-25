@@ -6,7 +6,6 @@
 #include "schweif.h"
 
 // Is the game running?
-static int schweif_o100de;
 static int schweif_c102de;
 
 // Segment relocation
@@ -113,11 +112,6 @@ bool schweif_init(char *name, unsigned short reloc, unsigned short _cs, unsigned
 		D2_INFO("\nDSA2 Sternenschweif gefunden Version %s\n", ver);
 
 		/* enable profiler only on this version */
-		if (ver == "O100de") {
-			D2_INFO("Starte Profiler\n");
-			schweif_o100de++;
-		}
-		/* enable profiler only on this version */
 		if (ver == "C1.02de") {
 			D2_INFO("Starte Profiler\n");
 			schweif_c102de++;
@@ -130,8 +124,6 @@ bool schweif_init(char *name, unsigned short reloc, unsigned short _cs, unsigned
 
 void schweif_exit(unsigned char exit)
 {
-	if (schweif_o100de)
-		schweif_o100de--;
 	if (schweif_c102de)
 		schweif_c102de--;
 	D2_INFO("DSA2 Fehlercode %d\nProfiler beendet\n", exit);
@@ -205,16 +197,11 @@ int schweif_callf(unsigned selector, unsigned offs)
 
 
 	unsigned short segm = selector - relocation;
-	int ret = 0;
 
-	if (schweif_o100de) {
-		ret = schweif_farcall_v100de(segm, offs);
-		return ret;
-	}
-	if (schweif_c102de) {
+	if (schweif_c102de)
 		return schweif_farcall_c102de(segm, offs);
-	}
-	return ret;
+
+	return 0;
 }
 
 // Intercept near CALLs, 16-Bit
@@ -225,16 +212,8 @@ int schweif_calln(unsigned offs) {
 	if (SegValue(cs) >= 0xa000)
 		return 0;
 
-	int ret = 0;
-
-	if (schweif_o100de) {
-		ret = schweif_nearcall_v100de(offs);
-		return ret;
-	}
-	if (schweif_c102de) {
+	if (schweif_c102de)
 		return schweif_nearcall_c102de(offs);
-	}
 
-	return ret;
+	return 0;
 }
-
