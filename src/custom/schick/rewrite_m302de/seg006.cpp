@@ -303,12 +303,12 @@ signed char FIG_add_to_list(signed char v) {
 */
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	RealPt hero;
-	signed short bak1, bak2;
+	signed short fg_bak, bg_bak;
 
 	hero = ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
 	ds_writed(0xc019, hero + 0x2da);
 
-	GUI_get_smth(&bak1, &bak2);
+	GUI_get_smth(&fg_bak, &bg_bak);
 	GUI_set_smth(0xff, 0);
 
 	ds_writed(0xc00d, ds_readd(0xd303));
@@ -340,7 +340,7 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	do_pic_copy(0);
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
-	GUI_set_smth(bak1, bak2);
+	GUI_set_smth(fg_bak, bg_bak);
 }
 
 /**
