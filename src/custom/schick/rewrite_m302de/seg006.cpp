@@ -4,7 +4,8 @@
  *
 */
 
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
 
 #include "mem.h"
 
@@ -29,6 +30,80 @@ RealPt FIG_get_ptr(signed char v1) {
 		ptr = mem_readd(Real2Phys(ptr + 0x1b));
 	}
 	return ptr;
+}
+
+void FIG_draw_figures(void)
+{
+	RealPt gfx_dst_bak;
+	unsigned char screen_mode[8];
+	Bit8u *list_i;
+	signed short l1, l2;
+	signed short l_si, l_di;
+
+	l1 = 10;
+	l2 = 118;
+
+	gfx_dst_bak = ds_readd(0xc00d);
+	ds_writed(0xc00d, ds_readd(0xd303));
+
+	/* backup a structure */
+	memcpy(screen_mode, p_datseg + 0x2990, 8);
+
+	list_i = Real2Host(ds_readd(0xe108));
+
+	do {
+
+		if (host_readb(list_i + 0x12) == 1) {
+			l_si = ((signed char)host_readb(list_i + 3)
+				+ (signed char)host_readb(list_i + 4)) * 10
+				+ l1
+				- abs((signed char)host_readb(list_i + 8)) / 2;
+
+			l_di = ((signed char)host_readb(list_i + 3)
+				- (signed char)host_readb(list_i + 4)) * 5
+				+ l2
+				- (signed char)host_readb(list_i + 7);
+
+			l_si += (signed char)host_readb(list_i + 5);
+			l_di += (signed char)host_readb(list_i + 6);
+
+			ds_writew(0xc011, l_si);
+			ds_writew(0xc013, l_di);
+			ds_writew(0xc015, l_si + (signed char)host_readb(list_i + 8) - 1);
+			ds_writew(0xc017, l_di + (signed char)host_readb(list_i + 7) - 1);
+			/* set gfx_src */
+			ds_writed(0xc019, host_readd(list_i + 0x17));
+
+			ds_writew(0x2990,
+				l_di + (signed char)host_readb(list_i + 0xa));
+			if ((signed short)ds_readw(0x2990) < 0)
+				ds_writew(0x2990, 0);
+
+			ds_writew(0x2992,
+				l_si + (signed char)host_readb(list_i + 9));
+			if ((signed short)ds_readw(0x2992) < 0)
+				ds_writew(0x2992, 0);
+
+			ds_writew(0x2994,
+				l_di + (signed char)host_readb(list_i + 0xc));
+			if ((signed short)ds_readw(0x2994) > 199)
+				ds_writew(0x2994, 199);
+
+			ds_writew(0x2996,
+				l_si + (signed char)host_readb(list_i + 0xb));
+			if ((signed short)ds_readw(0x2996) > 319)
+				ds_writew(0x2996, 319);
+
+			do_pic_copy(2);
+		}
+
+		list_i = Real2Host(host_readd(list_i + 0x1b));
+
+	} while (list_i != NULL && list_i != MemBase);
+
+	/* restore a structure */
+	memcpy(p_datseg + 0x2990, screen_mode, 8);
+	ds_writed(0xc00d, gfx_dst_bak);
 }
 
 //static

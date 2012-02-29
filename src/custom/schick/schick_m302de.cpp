@@ -1795,9 +1795,11 @@ static int seg006(unsigned short offs) {
 			reg_dx = RealSeg(retval);
 			return 1;
 		}
-		case 0x07f:
-			D1_LOG("seg006_07f()\n");
-			return 0;
+		case 0x07f: {
+			D1_LOG("FIG_draw_figures()\n");
+			FIG_draw_figures();
+			return 1;
+		}
 		case 0x236:
 			D1_LOG("FIG_set_gfx()\n");
 			FIG_set_gfx();

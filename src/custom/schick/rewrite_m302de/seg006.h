@@ -1,6 +1,7 @@
 namespace M302de {
 
 RealPt FIG_get_ptr(signed char v1);
+void FIG_draw_figures(void);
 signed char FIG_set_array();
 void FIG_set_gfx();
 void FIG_call_draw_pic();
