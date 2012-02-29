@@ -303,7 +303,7 @@ signed char FIG_add_to_list(signed char v) {
 */
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	RealPt hero;
-	short bak1, bak2;
+	signed short bak1, bak2;
 
 	hero = ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
 	ds_writed(0xc019, hero + 0x2da);
@@ -321,16 +321,20 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 41);
-		GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 1);
-		draw_bar(0, 0, mem_readw(Real2Phys(hero+0x60)), mem_readw(Real2Phys(hero+0x5e)), 1);
-		draw_bar(1, 0, mem_readw(Real2Phys(hero+0x62)), mem_readw(Real2Phys(hero+0x64)), 1);
+		GUI_print_string(MemBase + Real2Phys(hero) + 0x10, 1, 1);
+
+		draw_bar(0, 0, mem_readw(Real2Phys(hero) + 0x60),
+			mem_readw(Real2Phys(hero) + 0x5e), 1);
+
+		draw_bar(1, 0, mem_readw(Real2Phys(hero) + 0x62),
+			mem_readw(Real2Phys(hero) + 0x64), 1);
 	} else {
 		do_border(Real2Phys(ds_readd(0xd303)), 1, 157, 34, 190, 29);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 158);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 189);
-		GUI_print_string(MemBase + Real2Phys(hero + 0x10), 1, 193);
+		GUI_print_string(MemBase + Real2Phys(hero) + 0x10, 1, 193);
 	}
 
 	do_pic_copy(0);
