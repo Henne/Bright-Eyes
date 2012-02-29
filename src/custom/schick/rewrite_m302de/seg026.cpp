@@ -156,11 +156,11 @@ void write_chr_temp(unsigned short hero)
 	prepare_chr_name(fname, (char*)get_hero(hero));
 
 	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
-		(char*)p_datseg + 0x4c88,		/* "TEMP\\%s" */
+		(char*)Real2Host(ds_readd(0x4c88)),		/* "TEMP\\%s" */
 		fname);
 
 	fd = bc__creat(ds_readd(0xd2eb), 0);
-	bc__write(fd, ds_readd(0xd2eb), 0x6da);
+	bc__write(fd, ds_readd(HEROS) + hero * 0x6da, 0x6da);
 	bc_close(fd);
 }
 
