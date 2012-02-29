@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg006 (Fight)
- *      Functions rewritten 14/16
+ *      Functions rewritten 16/16 (complete)
  *
 */
 
@@ -59,8 +59,15 @@ void FIG_set_gfx() {
 	ds_writed(0xc00d, ptr_bak);
 }
 
-void FIG_draw_pic() {
-	mem_memcpy(Real2Phys(ds_readd(0xd303)), Real2Phys(ds_readd(0xc3a9)), 64000);
+void FIG_call_draw_pic(void)
+{
+	FIG_draw_pic();
+}
+
+void FIG_draw_pic(void)
+{
+	mem_memcpy(Real2Phys(ds_readd(0xd303)),
+		Real2Phys(ds_readd(0xc3a9)), 64000);
 	ds_writew(0x26af, 1);
 
 	if (ds_readw(0x26b3))

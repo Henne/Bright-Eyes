@@ -3,6 +3,7 @@ namespace M302de {
 RealPt FIG_get_ptr(signed char v1);
 signed char FIG_set_array();
 void FIG_set_gfx();
+void FIG_call_draw_pic();
 void FIG_draw_pic();
 RealPt FIG_get_hero_ptr(unsigned short v1);
 RealPt seg006_033c(short v);

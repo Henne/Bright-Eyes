@@ -1802,13 +1802,16 @@ static int seg006(unsigned short offs) {
 			D1_LOG("FIG_set_gfx()\n");
 			FIG_set_gfx();
 			return 1;
-		case 0x29e:
-			D1_LOG("FIG_do_draw_pic()\n");
-			return 0;
-		case 0x2a8:
+		case 0x29e: {
+			D1_LOG("FIG_call_draw_pic()\n");
+			FIG_call_draw_pic();
+			return 1;
+		}
+		case 0x2a8: {
 			D1_LOG("FIG_draw_pic();\n");
-//			FIG_draw_pic();
-			return 0;
+			FIG_draw_pic();
+			return 1;
+		}
 		case 0x2fa: {
 			unsigned short v1 = CPU_Pop16();
 			CPU_Push16(v1);
