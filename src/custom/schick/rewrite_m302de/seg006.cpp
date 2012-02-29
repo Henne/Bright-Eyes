@@ -321,20 +321,20 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 41);
-		GUI_print_string(MemBase + Real2Phys(hero) + 0x10, 1, 1);
+		GUI_print_string(Real2Host(hero) + 0x10, 1, 1);
 
-		draw_bar(0, 0, mem_readw(Real2Phys(hero) + 0x60),
-			mem_readw(Real2Phys(hero) + 0x5e), 1);
+		draw_bar(0, 0, host_readw(Real2Host(hero) + 0x60),
+			host_readw(Real2Host(hero) + 0x5e), 1);
 
-		draw_bar(1, 0, mem_readw(Real2Phys(hero) + 0x64),
-			mem_readw(Real2Phys(hero) + 0x62), 1);
+		draw_bar(1, 0, host_readw(Real2Host(hero) + 0x64),
+			host_readw(Real2Host(hero) + 0x62), 1);
 	} else {
 		do_border(Real2Phys(ds_readd(0xd303)), 1, 157, 34, 190, 29);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 158);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 189);
-		GUI_print_string(MemBase + Real2Phys(hero) + 0x10, 1, 193);
+		GUI_print_string(Real2Host(hero) + 0x10, 1, 193);
 	}
 
 	do_pic_copy(0);
