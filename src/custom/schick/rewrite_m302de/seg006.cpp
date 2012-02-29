@@ -326,8 +326,8 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 		draw_bar(0, 0, mem_readw(Real2Phys(hero) + 0x60),
 			mem_readw(Real2Phys(hero) + 0x5e), 1);
 
-		draw_bar(1, 0, mem_readw(Real2Phys(hero) + 0x62),
-			mem_readw(Real2Phys(hero) + 0x64), 1);
+		draw_bar(1, 0, mem_readw(Real2Phys(hero) + 0x64),
+			mem_readw(Real2Phys(hero) + 0x62), 1);
 	} else {
 		do_border(Real2Phys(ds_readd(0xd303)), 1, 157, 34, 190, 29);
 		ds_writew(0xc011, 2);
