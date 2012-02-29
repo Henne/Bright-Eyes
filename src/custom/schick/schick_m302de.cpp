@@ -4777,6 +4777,45 @@ static int n_seg000(unsigned offs) {
 			return 0;
 	}
 }
+static int n_seg006(unsigned offs)
+{
+	switch (offs) {
+	/* Callers: 1 */
+	case 0x5a: {
+		CPU_Pop16();
+
+		reg_ax = FIG_set_array();
+
+		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
+		return 1;
+	}
+	case 0x82b: {
+		CPU_Pop16();
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("FIG_draw_char_pic(%d, %d)\n", v1, v2);
+		FIG_draw_char_pic(v1, v2);
+		return 1;
+	}
+	case 0x99f: {
+		CPU_Pop16();
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_INFO("n FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
+		FIG_draw_enemy_pic(v1, v2);
+		return 1;
+	}
+	default:
+		D1_LOG("%s:0x%x missing\n", __func__, offs);
+		return 0;
+	}
+}
 
 static int n_seg028(unsigned offs) {
 	switch (offs) {
@@ -5528,15 +5567,8 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 	}
-	/* Callers: 1 */
-	if ((segm == 0xe41) && (offs == 0x5a)) {
-		CPU_Pop16();
-
-		reg_ax = FIG_set_array();
-
-		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
-		return 1;
-	}
+	if (segm == 0xe41)
+		return n_seg006(offs);
 	/* seg024 */
 	if (is_ovrseg(0x12db)) {
 		switch (offs) {
