@@ -22,21 +22,20 @@ namespace M302de {
 RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned short type) {
 	Bit8u *lp1;
 	unsigned short l2;
-	RealPt p_name;
+	Bit8u *p_name;
 	short l4;
 	short *lp5;
 
 	l2 = 0;
-	lp5 = (short*)(MemBase + PhysMake(datseg, 0xa9ed));
+	lp5 = (short*)(p_datseg + 0xa9ed);
 
 	if (type == 0) {
 		/* string_array_itemnames */
-		p_name = ds_readd(0xe22f) + index * 4;
-		p_name = mem_readd(Real2Phys(p_name));
+		p_name = (Bit8u*)get_itemname(index);
 
 		flag += lp5[ds_readb(0x02ac + index)];
 
-		lp1 = MemBase + PhysMake(datseg, 0x270);
+		lp1 = p_datseg + 0x270;
 		do {
 			l4 = host_readw(lp1);
 			lp1 += 2;
@@ -50,34 +49,33 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 				l2 = 1;
 		}
 	} else {
-		p_name = ds_readd(0xe129) + index * 4;
-		p_name = mem_readd(Real2Phys(p_name));
+		p_name = get_monname(index);
 		flag += lp5[ds_readb(0x0925 + index)];
 	}
 
 	if (flag & 0x8000)
-		lp1 = MemBase + PhysMake(datseg, 0xa953 + (flag & 0xf) * 6);
+		lp1 = p_datseg + 0xa953 + (flag & 0xf) * 6;
 	else if (flag & 0x4000)
-			lp1 = MemBase + PhysMake(datseg, 0xa9b3);
+			lp1 = p_datseg + 0xa9b3;
 		else
-			lp1 = MemBase + PhysMake(datseg, 0xa983 + (flag & 0xf) * 6);
+			lp1 = p_datseg + 0xa983 + (flag & 0xf) * 6;
 
 
 
-	sprintf((char*)MemBase + PhysMake(datseg, 0xe50b + ds_readw(0xa9eb) *40),
+	sprintf((char*)p_datseg + 0xe50b + ds_readw(0xa9eb) * 40,
 		(l2 == 0) ? (char*)Real2Host(ds_readd(0xa9e3)) : (char*)Real2Host(ds_readd(0xa9e7)),
 		(char*)Real2Host(ds_readd(0xa917 + (host_readw(lp1 + ((((flag & 0x3000) - 1) >> 12) << 1)) << 2))),
-		(char*)Real2Host(GUI_name_plural(flag, Real2Host(p_name))));
+		(char*)Real2Host(GUI_name_plural(flag, p_name)));
 
-	p_name = RealMake(datseg, ds_readw(0xa9eb) * 40 + 0xe50b);
+	p_name = p_datseg + ds_readw(0xa9eb) * 40 + 0xe50b;
 
-	if (mem_readb(Real2Phys(p_name)) == 0x20){
+	if (host_readb(p_name) == 0x20) {
 		do {
 			p_name++;
-			l4 = mem_readb(Real2Phys(p_name));
-			mem_writeb(Real2Phys(p_name) - 1, (signed char)l4);
+			l4 = host_readb(p_name);
+			host_writeb(p_name - 1, (signed char)l4);
 		} while (l4 != 0);
-	};
+	}
 
 	l4 = ds_readw(0xa9eb);
 	ds_writew(0xa9eb, ds_readw(0xa9eb) + 1);
