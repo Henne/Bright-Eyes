@@ -43,7 +43,7 @@ void load_city_ltx(signed short index)
 	len = read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 12000);
 	bc_close(fd);
 
-	split_textbuffer(Real2Host(ds_readd(0xc3ad)), ds_readd(0xc3a9), len);
+	split_textbuffer(Real2Host(ds_readd(CITY_LTX)), ds_readd(0xc3a9), len);
 }
 
 void load_ltx(unsigned short index)
