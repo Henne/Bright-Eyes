@@ -1,5 +1,7 @@
 #include "paging.h"
 
+#include "v302de.h"
+
 #include "schick.h"
 
 #include "seg002.h"
@@ -306,8 +308,8 @@ void GUI_print_loc_line(Bit8u * str) {
 	unsigned short tmp1, tmp2;
 	unsigned short l1, l2, l3;
 
-	GUI_get_smth(&tmp1, &tmp2);
-	GUI_set_smth(0xff, 0);
+	get_textcolor(&tmp1, &tmp2);
+	set_textcolor(0xff, 0);
 
 	l1 = ds_readw(0xd2d9);
 	l2 = ds_readw(0xd2d7);
@@ -324,7 +326,7 @@ void GUI_print_loc_line(Bit8u * str) {
 	ds_writew(0xd2d7, l2);
 	ds_writew(0xd2d5, l3);
 
-	GUI_set_smth(tmp1, tmp2);
+	set_textcolor(tmp1, tmp2);
 }
 
 //691
@@ -481,15 +483,26 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }
 
-void GUI_set_smth(unsigned short col_text, unsigned short col_bg) {
-	ds_writew(0xd2c9, col_text);
-	ds_writew(0xd2c7, col_bg);
+/**
+ * set_textcolor() - sets the textcolor
+ * @fg:	foreground color index
+ * @bg: background color index
+ */
+void set_textcolor(unsigned short fg, unsigned short bg) {
+	ds_writew(TEXTCOLOR_FG, fg);
+	ds_writew(TEXTCOLOR_BG, bg);
 
 }
 
-void GUI_get_smth(unsigned short *p1, unsigned short *p2) {
-	host_writew((Bit8u*)p1, ds_readw(0xd2c9));
-	host_writew((Bit8u*)p2, ds_readw(0xd2c7));
+/**
+ * get_textcolor() - gets the textcolor
+ * @fg:	foreground color index
+ * @bg: background color index
+ *
+ */
+void get_textcolor(unsigned short *fg, unsigned short *bg) {
+	host_writew((Bit8u*)fg, ds_readw(TEXTCOLOR_FG));
+	host_writew((Bit8u*)bg, ds_readw(TEXTCOLOR_BG));
 }
 
 unsigned short GUI_unused(Bit8u *str) {

@@ -224,7 +224,7 @@ void GUI_draw_radio_bg(Bit16u header, Bit16u options, Bit16u width,
 
 	GUI_draw_popup_line(header + options + 1, 3);
 
-	GUI_set_smth(0xff, 0xdf);
+	set_textcolor(0xff, 0xdf);
 	wait_for_keyboard1();
 }
 
@@ -282,7 +282,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	ds_writew(0xc001, (200 - l2) / 2 + ds_readw(0x2ca4));
 	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
 
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	update_mouse_cursor();
 
@@ -314,7 +314,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 		ds_writed(0x29e4, 0);
 	}
 
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	update_mouse_cursor();
 
@@ -436,7 +436,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	ds_writew(0xd2d7, ds_readw(0xc001) + 5);
 
 	update_mouse_cursor();
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	GUI_draw_radio_bg(l_si, options, l_di, l5);
 
@@ -492,7 +492,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	GUI_copy_smth(l_di, l5);
 
 	refresh_screen_size();
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	ds_writew(0xd2d9, l7);
 	ds_writew(0xd2d7, l8);
@@ -674,7 +674,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
 
 	update_mouse_cursor();
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	GUI_draw_radio_bg(l_di, options, l11, l6);
 
@@ -689,21 +689,21 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 
 		/* highlight special option */
 		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
-			GUI_set_smth(0xc9, 0xdf);
+			set_textcolor(0xc9, 0xdf);
 
 		str = va_arg(arguments, char*);
 		GUI_print_string((Bit8u*)str, l3, l4);
 
 		/* reset highlight special option */
 		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
-			GUI_set_smth(0xdf, 0xff);
+			set_textcolor(0xdf, 0xff);
 	}
 
 	retval = GUI_menu_input(options, l_di + 1, l11);
 
 	GUI_copy_smth(l11, l6);
 	refresh_screen_size();
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	ds_writew(0xd2d9, l7);
 	ds_writew(0xd2d7, l8);

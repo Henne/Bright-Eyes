@@ -83,7 +83,7 @@ void status_show_talents(Bit8u *hero) {
 
 	unsigned short i, j;
 
-	GUI_set_smth(0xff, 2);
+	set_textcolor(0xff, 2);
 
 	/* print talent category names */
 	GUI_print_string(get_ltx(0x190),
@@ -107,7 +107,7 @@ void status_show_talents(Bit8u *hero) {
 	GUI_print_string(get_ltx(0x1a8),
 		GUI_get_first_pos_centered(get_ltx(0x1a8), 5, 100, 0), 174);
 
-	GUI_set_smth(0, 2);
+	set_textcolor(0, 2);
 
 	for (i = 0; i < 7; i++) {
 		j = ds_readb(0x10ce + i * 2);
@@ -189,7 +189,7 @@ void status_show(Bit16u index)
 	ds_writed(0x29e0, RealMake(datseg, 0x2ad8));
 	ds_writed(0x29e4, 0);
 	ds_writed(0xd2fb, ds_readd(0xd303));
-	GUI_set_smth(0, 2);
+	set_textcolor(0, 2);
 
 	/* load and draw the background */
 	load_pp20(20);
@@ -244,7 +244,7 @@ void status_show(Bit16u index)
 			if (((host_readb(get_itemsdat(host_readw(hero + i * 14 + 0x196)) + 2) >> 4) & 1) == 0)
 				continue;
 
-			GUI_set_smth(0xff, 0);
+			set_textcolor(0xff, 0);
 			/* originally itoa() */
 			sprintf((char*)Real2Host(ds_readd(0xd2f3)), "%d",
 				host_readw(hero + i * 14 + 0x196 + 2));
@@ -253,7 +253,7 @@ void status_show(Bit16u index)
 				ds_readw(0x63d2 + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(0xd2f3)), 0),
 				ds_readw(0x63d2 + i * 4 + 2) + 9);
 
-			GUI_set_smth(0, 2);
+			set_textcolor(0, 2);
 		}
 
 		/* print height */
@@ -274,11 +274,11 @@ void status_show(Bit16u index)
 	ds_writew(0xd313, 0x5f);
 
 	/* print name */
-	GUI_set_smth(0xff, 2);
+	set_textcolor(0xff, 2);
 	GUI_print_string(hero + 0x10, 59, 9);
 
 	/* print typus */
-	GUI_set_smth(0, 2);
+	set_textcolor(0, 2);
 
 	if (host_readb(hero + 0x22))
 		GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (0x251 + host_readb(hero + 0x21)) * 4)), 59, 16);
@@ -590,7 +590,7 @@ void status_show(Bit16u index)
 		/* spells */
 		case 4: {
 			/* print headers */
-			GUI_set_smth(0xff, 2);
+			set_textcolor(0xff, 2);
 
 			GUI_print_string(
 				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x300)),
@@ -633,7 +633,7 @@ void status_show(Bit16u index)
 				153);
 
 			/* print values */
-			GUI_set_smth(0, 2);
+			set_textcolor(0, 2);
 
 			for (i = 0; i < 8; i++) {
 
@@ -655,7 +655,7 @@ void status_show(Bit16u index)
 		/* more spells */
 		case 5: {
 			/* print headers */
-			GUI_set_smth(0xff, 2);
+			set_textcolor(0xff, 2);
 
 			GUI_print_string(
 				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x190)),
@@ -679,7 +679,7 @@ void status_show(Bit16u index)
 
 
 			/* show values */
-			GUI_set_smth(0, 2);
+			set_textcolor(0, 2);
 
 			for (i = 0; i < 4; i++) {
 

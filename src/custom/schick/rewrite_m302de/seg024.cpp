@@ -47,7 +47,7 @@ void diary_show()
 	load_pp20(0xb1);
 	ds_writeb(0x2845, 0xb1);
 
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	ds_writed(0xd2fb, ds_readd(0xc3db));
 	bak1 = ds_readw(0xd2d5);
@@ -59,7 +59,7 @@ void diary_show()
 	ds_writew(0xd313, 83);
 	ds_writew(0xd315, 130);
 
-	GUI_set_smth(4, 0);
+	set_textcolor(4, 0);
 
 	/* print all diary entries */
 	i = 0;
@@ -82,7 +82,7 @@ void diary_show()
 
 	refresh_screen_size();
 
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
 	ds_writed(0xc00d, ds_readd(0xd2ff));

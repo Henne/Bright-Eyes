@@ -17,6 +17,8 @@
 #define CITY_LTX	(0xc3ad)
 #define TEXT_LTX	(0xc3b5)
 #define ANI_MAIN_PTR	(0xce35)
+#define TEXTCOLOR_BG	(0xd2c7)
+#define TEXTCOLOR_FG	(0xd2c9)
 #define CHESSBOARD	(0xd852)
 #define MEM_SLOTS_MON	(0xe115)
 #define MEM_SLOTS_WFIG	(0xe119)

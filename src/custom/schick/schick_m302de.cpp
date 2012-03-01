@@ -3831,8 +3831,8 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 
-		D1_LOG("GUI_set_smth(%d, %d);\n", v1, v2);
-		GUI_set_smth(v1, v2);
+		D1_LOG("set_textcolor(%d, %d);\n", v1, v2);
+		set_textcolor(v1, v2);
 
 		return 1;
 	}
@@ -3842,8 +3842,8 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p2);
 		CPU_Push32(p1);
 
-		D1_LOG("GUI_get_smth();\n");
-		GUI_get_smth((unsigned short*)Real2Host(p1),
+		D1_LOG("get_textcolor();\n");
+		get_textcolor((unsigned short*)Real2Host(p1),
 			(unsigned short*)Real2Host(p2));
 
 		return 1;

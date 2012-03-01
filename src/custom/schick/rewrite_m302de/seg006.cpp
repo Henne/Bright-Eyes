@@ -390,8 +390,8 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	hero = ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
 	ds_writed(0xc019, hero + 0x2da);
 
-	GUI_get_smth(&fg_bak, &bg_bak);
-	GUI_set_smth(0xff, 0);
+	get_textcolor(&fg_bak, &bg_bak);
+	set_textcolor(0xff, 0);
 
 	ds_writed(0xc00d, ds_readd(0xd303));
 	ds_writed(0xd2fb, ds_readd(0xd303));
@@ -422,7 +422,7 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	do_pic_copy(0);
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 }
 
 /**
@@ -464,8 +464,8 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	}
 
 	/* save and set text colors */
-	GUI_get_smth(&fg_bak, &bg_bak);
-	GUI_set_smth(0xff, 0);
+	get_textcolor(&fg_bak, &bg_bak);
+	set_textcolor(0xff, 0);
 
 	/* set gfx address */
 	ds_writed(0xc00d, ds_readd(0xd303));
@@ -494,7 +494,7 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
 
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 }
 
 }
