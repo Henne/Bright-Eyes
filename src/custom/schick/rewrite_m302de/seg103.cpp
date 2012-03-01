@@ -148,7 +148,7 @@ signed short bargain(Bit8u *hero, unsigned short items, signed int price,
 	mod = mod_init;
 
 	/* maybe a special NPC ? */
-	if (host_readb(MemBase + Real2Phys(ds_readd(0xbd34)) + 0x29a5) == 2)
+	if (host_readb(get_hero(7) + 0x89) == 2)
 		mod -= 2;
 
 	/* the more different items you buy, the easier the bargain */

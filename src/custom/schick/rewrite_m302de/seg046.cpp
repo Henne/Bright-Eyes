@@ -201,7 +201,7 @@ void status_show(Bit16u index)
 	ds_writew(0xc017, 40);
 	ds_writed(0xc00d, ds_readd(0xd303));
 	/* the source must be passed here as RealPt */
-	ds_writed(0xc019, ds_readd(0xbd34) + 0x6da * index + 0x2da);
+	ds_writed(0xc019, ds_readd(HEROS) + 0x6da * index + 0x2da);
 	do_pic_copy(0);
 
 	ds_writed(0xc00d, ds_readd(0xd2ff));

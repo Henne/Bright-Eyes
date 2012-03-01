@@ -176,7 +176,7 @@ void draw_status_line()
 				if (hero_dead(get_hero(i)))
 					ds_writed(0xc019, ds_readd(0xd2f3));
 				else
-					ds_writed(0xc019, ds_readd(0xbd34) + i * 0x6da + 0x2da);
+					ds_writed(0xc019, ds_readd(HEROS) + i * 0x6da + 0x2da);
 
 				do_pic_copy(0);
 
