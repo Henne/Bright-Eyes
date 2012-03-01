@@ -1277,8 +1277,8 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push16(v2);
 					CPU_Push16(v1);
 
-					set_vals(v1, v2);
-					D1_LOG("set_vals(%d, %d);\n", v1, v2);
+					set_textcolor(v1, v2);
+					D1_LOG("set_textcolor(%d, %d);\n", v1, v2);
 
 					return 1;
 				}
@@ -1289,9 +1289,9 @@ int schick_nearcall_gen105(unsigned offs) {
 					CPU_Push32(p2);
 					CPU_Push32(p1);
 
-					get_vals(MemBase + Real2Phys(p1),
-						MemBase + Real2Phys(p2));
-					D1_LOG("get_vals(%x, %x);\n", p1, p2);
+					get_textcolor(Real2Host(p1),
+						Real2Host(p2));
+					D1_LOG("get_textcolor(%x, %x);\n", p1, p2);
 
 					return 1;
 				}

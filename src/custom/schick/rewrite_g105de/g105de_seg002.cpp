@@ -3114,13 +3114,13 @@ void call_blit_smth3(PhysPt dst, Bit16u v1, Bit16u v2, Bit16u v3, Bit16u v4) {
 }
 
 /* static */
-void set_vals(Bit16u v1, Bit16u v2) {
-	fg_color[0] = v1;
-	bg_color = v2;
+void set_textcolor(unsigned short fg, unsigned short bg) {
+	fg_color[0] = fg;
+	bg_color = bg;
 }
 
 /* static */
-void get_vals(Bit8u *p1, Bit8u *p2) {
+void get_textcolor(Bit8u *p1, Bit8u *p2) {
 	host_writew(p1, fg_color[0]);
 	host_writew(p2, bg_color);
 }
@@ -3389,8 +3389,8 @@ Bit16u infobox(char *msg, Bit16u digits)
 
 	draw_popup_line(lines + 1, 3);
 
-	get_vals((Bit8u*)&fg, (Bit8u*)&bg);
-	set_vals(0xff, 0xdf);
+	get_textcolor((Bit8u*)&fg, (Bit8u*)&bg);
+	set_textcolor(0xff, 0xdf);
 
 	print_line(msg);
 
@@ -3409,7 +3409,7 @@ Bit16u infobox(char *msg, Bit16u digits)
 		action_table = NULL;
 	}
 
-	set_vals(fg, bg);
+	set_textcolor(fg, bg);
 	draw_mouse_ptr_wrapper();
 
 	dst = Real2Phys(ds_readd(0x47cb));
@@ -3534,8 +3534,8 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	draw_popup_line(lines_sum + 1, 3);
 
 	/* save and set text colors */
-	get_vals((Bit8u*)&fg_bak, (Bit8u*)&bg_bak);
-	set_vals(0xff, 0xdf);
+	get_textcolor((Bit8u*)&fg_bak, (Bit8u*)&bg_bak);
+	set_textcolor(0xff, 0xdf);
 
 	/* print header */
 	if (lines_header)
@@ -3645,7 +3645,7 @@ Bit16s gui_radio(Bit8u *header, Bit8s options, ...)
 	src = Real2Phys(ds_readd(0x47d3));
 	copy_to_screen(src, dst, r9, (lines_sum + 2) * 8, 0);
 	call_mouse();
-	set_vals(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	text_x = bak1;
 	text_y = bak2;
@@ -6814,7 +6814,7 @@ void intro()
 		set_palette(pal_dst, 0, 32);
 	}
 
-	set_vals(0xff, 0);
+	set_textcolor(0xff, 0);
 	print_str(version, 290, 190);
 	vsync_or_key(400);
 
@@ -6993,7 +6993,7 @@ void init_colors()
 	set_palette((Bit8u*)col_misc, 0xc8, 3);
 	set_palette((Bit8u*)pal_genbg, 0x40, 0x20);
 	set_palette((Bit8u*)pal_heads, 0x20, 0x20);
-	set_vals(0xff, 0x0);
+	set_textcolor(0xff, 0x0);
 }
 
 void init_stuff()
