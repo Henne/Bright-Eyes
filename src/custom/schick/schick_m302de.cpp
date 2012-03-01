@@ -3843,7 +3843,8 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("GUI_get_smth();\n");
-		GUI_get_smth((short*)(Real2Host(p1)), (short*)(Real2Host(p2)));
+		GUI_get_smth((unsigned short*)Real2Host(p1),
+			(unsigned short*)Real2Host(p2));
 
 		return 1;
 	}

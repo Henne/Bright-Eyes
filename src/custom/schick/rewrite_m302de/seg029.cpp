@@ -123,12 +123,12 @@ void draw_status_line()
 {
 	Bit8u *src, *dst;
 	unsigned short i, j;
-	Bit16s fg, bg;
+	unsigned short fg_bak, bg_bak;
 	Bit16s head_bak;
 
 	ds_writew(0xc3cb, 0);
 
-	GUI_get_smth(&fg, &bg);
+	GUI_get_smth(&fg_bak, &bg_bak);
 
 	for (i = 0; i < 7; i++) {
 		/* Clear name field */
@@ -222,7 +222,7 @@ void draw_status_line()
 		refresh_screen_size();
 	}
 
-	GUI_set_smth(fg, bg);
+	GUI_set_smth(fg_bak, bg_bak);
 
 	ds_writew(0xc3cb, 1);
 }
@@ -349,7 +349,7 @@ void clear_loc_line() {
  */
 void select_hero_icon(unsigned short pos) {
 
-	short fg, bg;
+	unsigned short fg_bak, bg_bak;
 
 	/* paint a blue border for the pic and bars */
 	do_border(Real2Phys(ds_readd(0xd2ff)),
@@ -362,7 +362,7 @@ void select_hero_icon(unsigned short pos) {
 		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xfc);
 
 	/* save the textcolors */
-	GUI_get_smth(&fg, &bg);
+	GUI_get_smth(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
 	copy_forename(MemBase + Real2Phys(ds_readd(0xd2f3)),
@@ -378,7 +378,7 @@ void select_hero_icon(unsigned short pos) {
 
 
 	/* restore textcolors */
-	GUI_set_smth(fg, bg);
+	GUI_set_smth(fg_bak, bg_bak);
 }
 
 /**
@@ -390,7 +390,7 @@ void select_hero_icon(unsigned short pos) {
 /* TODO: this function an select_hero_icon() can be merged into one. */
 void deselect_hero_icon(unsigned short pos) {
 
-	short fg, bg;
+	unsigned short fg_bak, bg_bak;
 
 	/* paint a gray border for the pic and bars */
 	do_border(Real2Phys(ds_readd(0xd2ff)),
@@ -403,7 +403,7 @@ void deselect_hero_icon(unsigned short pos) {
 		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xe6);
 
 	/* save the textcolors */
-	GUI_get_smth(&fg, &bg);
+	GUI_get_smth(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
 	copy_forename(MemBase + Real2Phys(ds_readd(0xd2f3)),
@@ -419,7 +419,7 @@ void deselect_hero_icon(unsigned short pos) {
 
 
 	/* restore textcolors */
-	GUI_set_smth(fg, bg);
+	GUI_set_smth(fg_bak, bg_bak);
 }
 
 }

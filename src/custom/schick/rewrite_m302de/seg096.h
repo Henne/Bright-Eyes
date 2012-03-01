@@ -36,7 +36,7 @@ void GUI_font_to_buf(Bit8u *p);
 void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width);
 //75
 void GUI_set_smth(unsigned short v1, unsigned short v2);
-void GUI_get_smth(short *p1, short *p2);
+void GUI_get_smth(unsigned short *p1, unsigned short *p2);
 //7f
 void GUI_print_loc_line(Bit8u *str);
 //84

@@ -385,7 +385,7 @@ signed char FIG_add_to_list(signed char v) {
 */
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	RealPt hero;
-	signed short fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 
 	hero = ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
 	ds_writed(0xc019, hero + 0x2da);
@@ -435,7 +435,7 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	char nvf[19];
 	Bit8u *n = (Bit8u*)nvf;
 	RealPt p1;
-	signed short fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit8u *p_enemy;
 
 	p1 = ds_readd(0xc3a9) - 1288;

@@ -147,7 +147,7 @@ unsigned short fight_printer()
 	char str[6];
 	RealPt gfx_pos_bak;
 	RealPt gfx_dst_bak;
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s f_action;
 	Bit16u x;
 

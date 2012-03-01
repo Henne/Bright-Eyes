@@ -32,7 +32,7 @@ static const char diary_fmt[][30] = {
 void diary_show()
 {
 	Bit16u bak1, bak2, bak3, bak4, bak5;
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16u i;
 
 	bak5 = ds_readw(0xbffd);

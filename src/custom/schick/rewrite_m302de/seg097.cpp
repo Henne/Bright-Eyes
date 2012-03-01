@@ -245,7 +245,7 @@ void GUI_output(Bit8u *str)
 
 signed short GUI_input(Bit8u *str, unsigned short num)
 {
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s retval, l2, l3, l4, l5, l6, l7;
 	Bit16s l_si, l_di;
 
@@ -392,7 +392,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	char *lp;
 	unsigned short i;
 	Bit16s l2, l3, l4, l5, l6;
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s l7, l8, l9, l10;
 	signed short retval;
 	Bit16s l11, l12, l13;
@@ -639,7 +639,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	va_list arguments;
 	char *str;
 	Bit16s l3, l4, l5, l6;
-	signed short fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s l7, l8, l9, l10, l11;
 	signed short retval;
 	Bit16s l12;

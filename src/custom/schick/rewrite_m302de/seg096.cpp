@@ -303,7 +303,7 @@ unsigned short GUI_print_header(Bit8u *str) {
 
 //614
 void GUI_print_loc_line(Bit8u * str) {
-	short tmp1, tmp2;
+	unsigned short tmp1, tmp2;
 	unsigned short l1, l2, l3;
 
 	GUI_get_smth(&tmp1, &tmp2);
@@ -487,7 +487,7 @@ void GUI_set_smth(unsigned short col_text, unsigned short col_bg) {
 
 }
 
-void GUI_get_smth(short *p1, short *p2) {
+void GUI_get_smth(unsigned short *p1, unsigned short *p2) {
 	host_writew((Bit8u*)p1, ds_readw(0xd2c9));
 	host_writew((Bit8u*)p2, ds_readw(0xd2c7));
 }
