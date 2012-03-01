@@ -3676,8 +3676,8 @@ static int seg096(unsigned short offs) {
 
 		RealPt retval;
 
-		retval = GUI_name_plural(v1, MemBase + Real2Phys(s));
-		D1_LOG("GUI_name_singular(%x, %s)\n",
+		retval = GUI_name_plural(v1, Real2Host(s));
+		D1_LOG("GUI_name_plural(%x, %s)\n",
 			v1, getString(s));
 
 		reg_dx = RealSeg(retval);
@@ -3690,7 +3690,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(s);
 		RealPt retval;
 
-		retval = GUI_name_singular(MemBase + Real2Phys(s));
+		retval = GUI_name_singular(Real2Host(s));
 		D1_LOG("GUI_name_singular(%x:%x)\n", RealSeg(s), RealOff(s));
 
 		reg_dx = RealSeg(retval);

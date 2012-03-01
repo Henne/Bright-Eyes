@@ -91,45 +91,45 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 
 //1a7
 RealPt GUI_name_plural(unsigned short v1, Bit8u *s) {
-	PhysPt p = PhysMake(datseg, 0xe4e3);
+	Bit8u *p = p_datseg + GRAMMAR_STRING;
 	char tmp;
 
 	while ((tmp = *s++) && (tmp != 0x2e))
-		mem_writeb_inline(p++, tmp);
+		host_writeb(p++, tmp);
 
 	if (v1 & 4)
 		while ((tmp = *s++) && (tmp != 0x2e));
 
 	while ((tmp = *s++) && (tmp != 0x2e))
-		mem_writeb_inline(p++, tmp);
+		host_writeb(p++, tmp);
 
 	if ((v1 & 0x0f) == 1 && (v1 & 0x3000) != 0x2000) {
-		if (mem_readb(p-1) == 'B' || mem_readb(p-1) == 'D')
-			mem_writeb_inline(p++, 'E');
-		mem_writeb_inline(p++, 'S');
+		if (host_readb(p-1) == 'B' || host_readb(p-1) == 'D')
+			host_writeb(p++, 'E');
+		host_writeb(p++, 'S');
 	} else {
-		if (((v1 & 0x0f) == 7) && (mem_readb(p-1) != 'N' || mem_readb(p-1) != 'S'))
-				mem_writeb_inline(p++, 'N');
+		if (((v1 & 0x0f) == 7) && (host_readb(p-1) != 'N' || host_readb(p-1) != 'S'))
+				host_writeb(p++, 'N');
 	}
 
-	mem_writeb_inline(p, 0);
-	return RealMake(datseg, 0xe4e3);
+	host_writeb(p, 0);
+	return RealMake(datseg, GRAMMAR_STRING);
 }
 
 
 //290
 RealPt GUI_name_singular(Bit8u *s) {
-	PhysPt p = PhysMake(datseg, 0xe4e3);
+	Bit8u *p = p_datseg + GRAMMAR_STRING;
 	char tmp;
 
 	while ((tmp = *s++) && (tmp != 0x2e))
-		mem_writeb_inline(p++, tmp);
+		host_writeb(p++, tmp);
 
 	while ((*s) && (*s != 0x2e))
-		mem_writeb_inline(p++, *s++);
+		host_writeb(p++, *s++);
 
-	mem_writeb_inline(p, 0);
-	return RealMake(datseg, 0xe4e3);
+	host_writeb(p, 0);
+	return RealMake(datseg, GRAMMAR_STRING);
 }
 //2f2
 RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3) {

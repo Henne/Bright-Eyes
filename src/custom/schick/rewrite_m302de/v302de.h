@@ -27,6 +27,7 @@
 #define ITEMSDAT	(0xe22b)
 #define ITEMSNAME	(0xe22f)
 #define DELAY_TIMER	(0xe2d0)
+#define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 
