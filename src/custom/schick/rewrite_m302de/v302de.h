@@ -39,9 +39,9 @@
  *	to older states. This helper writes only that value
  *	if the informer is unknown (0).
  */
-static inline void ds_writeb_z(Bitu add, char val) {
-	if (ds_readb(add) == 0)
-		ds_writeb(add, val);
+static inline void ds_writeb_z(Bitu addr, char val) {
+	if (ds_readb(addr) == 0)
+		ds_writeb(addr, val);
 }
 
 static inline Bit8u *get_hero(unsigned short index) {
