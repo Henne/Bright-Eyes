@@ -100,15 +100,15 @@ RealPt GUI_name_plural(unsigned short v1, Bit8u *s) {
 	if (v1 & 4)
 		while ((tmp = *s++) && (tmp != 0x2e));
 
-	while ((tmp = *s++) && (tmp != 0x2e))
-		host_writeb(p++, tmp);
+	while ((tmp = *s) && (tmp != 0x2e))
+		host_writeb(p++, *s++);
 
 	if ((v1 & 0x0f) == 1 && (v1 & 0x3000) != 0x2000) {
 		if (host_readb(p-1) == 'B' || host_readb(p-1) == 'D')
 			host_writeb(p++, 'E');
 		host_writeb(p++, 'S');
 	} else {
-		if (((v1 & 0x0f) == 7) && (host_readb(p-1) != 'N' || host_readb(p-1) != 'S'))
+		if (((v1 & 0x0f) == 7) && (host_readb(p-1) != 'N') && (host_readb(p-1) != 'S'))
 				host_writeb(p++, 'N');
 	}
 
