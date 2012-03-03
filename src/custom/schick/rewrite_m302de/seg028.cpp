@@ -97,7 +97,7 @@ void load_area_description(unsigned short type)
 
 		if (ds_readb(0x2d6e) == 0 &&
 			(ds_readb(0x2d67) == 1 || ds_readb(0x2d67) == 0x27 ||
-				ds_readb(0x2d67) == 0x11)) {
+				ds_readb(0x2d67) == 0x12)) {
 			/* path taken in THORWAL PREM and PHEXCAER */
 			bc__read(fd, p_datseg + 0xbd95, 0x200);
 			/* read automap tiles */
