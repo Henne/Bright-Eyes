@@ -3392,8 +3392,17 @@ static int seg053(unsigned short offs) {
 				typi, 100 + price, qual);
 			return 0;
 		}
-		default:
+		case 0x25: {
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			D1_LOG("is_healable(%s)\n", Real2Host(hero) + 0x10);
 			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
 	}
 }
 
@@ -5002,6 +5011,25 @@ static int n_seg050(unsigned short offs) {
 	}
 }
 
+static int n_seg053(unsigned short offs) {
+	switch (offs) {
+		case 0x0000: {
+			Bitu CS = CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+			CPU_Push16(CS);
+
+			D1_LOG("near is_healable(%s)\n", Real2Host(hero) + 0x10);
+
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int n_seg063(unsigned offs) {
 	switch (offs) {
 	case 0x999: {
@@ -6037,6 +6065,8 @@ int schick_nearcall_v302de(unsigned offs) {
 
 	if (is_ovrseg(0x1358))
 		return n_seg050(offs);
+	if (is_ovrseg(0x1362))
+		return n_seg053(offs);
 	if (is_ovrseg(0x1386))
 		return n_seg063(offs);
 	if (is_ovrseg(0x138a))
