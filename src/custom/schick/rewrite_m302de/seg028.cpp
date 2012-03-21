@@ -220,7 +220,7 @@ void load_map(void)
 
 	load_buffer_1(0x13);
 
-	ds_writed(0xe113, bak);
+	ds_writew(0xe113, bak);
 }
 
 void load_npc(signed short index)
