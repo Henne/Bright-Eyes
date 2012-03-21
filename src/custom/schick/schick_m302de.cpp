@@ -36,6 +36,7 @@
 #include "seg046.h"
 #include "seg047.h"
 #include "seg050.h"
+#include "seg053.h"
 #include "seg063.h"
 #include "seg064.h"
 #include "seg068.h"
@@ -3396,8 +3397,11 @@ static int seg053(unsigned short offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			D1_LOG("is_healable(%s)\n", Real2Host(hero) + 0x10);
-			return 0;
+			reg_ax = is_hero_healable(Real2Host(hero));
+
+			D1_LOG("is_hero_healable(%s) = %d\n",
+				Real2Host(hero) + 0x10, reg_ax);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -5014,14 +5018,16 @@ static int n_seg050(unsigned short offs) {
 static int n_seg053(unsigned short offs) {
 	switch (offs) {
 		case 0x0000: {
-			Bitu CS = CPU_Pop16();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
-			CPU_Push16(CS);
 
-			D1_LOG("near is_healable(%s)\n", Real2Host(hero) + 0x10);
+			reg_ax = is_hero_healable(Real2Host(hero));
 
-			return 0;
+			D1_LOG("near is_hero_healable(%s); = %d\n",
+				Real2Host(hero) + 0x10, reg_ax);
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
