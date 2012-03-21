@@ -63,6 +63,19 @@ static inline unsigned short hero_dead(Bit8u *hero) {
 }
 
 /**
+ * hero_stoned() -	check if hero is stoned
+ * @hero:	ptr to hero
+ *
+ * 0 = non-stoned / 1 = stoned
+ */
+static inline unsigned short hero_stoned(Bit8u *hero) {
+	if (((host_readb(hero + 0xaa) >> 2) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * hero_unc() -	check if hero is unconscious
  * @hero:	ptr to hero
  *
