@@ -3285,7 +3285,7 @@ static int seg047(unsigned short offs) {
 	}
 	case 0x48: {
 		RealPt hero = CPU_Pop32();
-		D1_INFO("update_atpa(%s);\n", schick_getCharname(hero));
+		D1_LOG("update_atpa(%s);\n", schick_getCharname(hero));
 		update_atpa(Real2Host(hero));
 		CPU_Push32(hero);
 		return 1;
@@ -5188,7 +5188,7 @@ static int n_seg113(unsigned offs) {
 		CPU_Push16(arg2);
 		CPU_Push16(idx);
 		CPU_Push32(hero);
-		D1_INFO("hero_disappear(%s, %d, %d);\n",
+		D1_LOG("hero_disappear(%s, %d, %d);\n",
 			Real2Host(hero) + 0x10, idx, (signed char)arg2);
 
 		hero_disappear(Real2Host(hero), idx, (signed char)arg2);
@@ -6239,7 +6239,7 @@ int schick_nearcall_v302de(unsigned offs) {
 				remove_npc(head_index, (signed char)days, index,
 					Real2Host(name), Real2Host(text));
 
-				D1_INFO("remove_npc(%x, %d, %x, %x, %x);\n",
+				D1_LOG("remove_npc(%x, %d, %x, %x, %x);\n",
 					head_index, (signed char)days, index,
 					name, text);
 
