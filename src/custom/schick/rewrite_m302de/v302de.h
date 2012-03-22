@@ -10,6 +10,7 @@
 
 #define EMS_ENABLED	(0x26ab)
 #define CURRENT_ANI	(0x2ccf)
+#define CHECK_PARTY	(0x4495)
 #define DELAY_FACTOR	(0x4b66)
 #define FNAMES		(0x4c8c)
 #define HEROS		(0xbd34)

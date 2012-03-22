@@ -4619,8 +4619,11 @@ static int seg113(unsigned short offs) {
 		CPU_Push16(arg2);
 		CPU_Push16(idx);
 		CPU_Push32(hero);
-		D1_LOG("hero_disappear()\n");
-		return 0;
+		D1_LOG("hero_disappear(%s, %d, %d);\n",
+			Real2Host(hero) + 0x10, idx, (signed char)arg2);
+
+		hero_disappear(Real2Host(hero), idx, (signed char)arg2);
+		return 1;
 	}
 	case 0x25: {
 		return 0;
@@ -5178,16 +5181,18 @@ static int n_seg064(unsigned offs) {
 static int n_seg113(unsigned offs) {
 	switch (offs) {
 	case 0x900: {
-		Bitu CS = CPU_Pop16();
+		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s idx = CPU_Pop16();
 		Bit16s arg2 = CPU_Pop16();
 		CPU_Push16(arg2);
 		CPU_Push16(idx);
 		CPU_Push32(hero);
-		CPU_Push16(CS);
-		D1_LOG("hero_disappear()\n");
-		return 0;
+		D1_INFO("hero_disappear(%s, %d, %d);\n",
+			Real2Host(hero) + 0x10, idx, (signed char)arg2);
+
+		hero_disappear(Real2Host(hero), idx, (signed char)arg2);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
