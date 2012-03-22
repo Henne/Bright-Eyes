@@ -2844,8 +2844,9 @@ static int seg030(unsigned short offs) {
 			return 0;
 		}
 		case 0x2a: {
-			D1_LOG("prepare_date_str();\n");
-			return 0;
+			D1_INFO("prepare_date_str();\n");
+			prepare_date_str();
+			return 1;
 		}
 		case 0x2f: {
 			return 0;
