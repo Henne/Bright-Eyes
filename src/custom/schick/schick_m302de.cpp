@@ -26,6 +26,7 @@
 #include "seg027.h"
 #include "seg028.h"
 #include "seg029.h"
+#include "seg030.h"
 #include "seg032.h"
 #include "seg037.h"
 #include "seg038.h"
@@ -2837,6 +2838,25 @@ static int seg029(unsigned short offs) {
 	}
 }
 
+static int seg030(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x2a: {
+			D1_LOG("prepare_date_str();\n");
+			return 0;
+		}
+		case 0x2f: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg032(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -4767,7 +4787,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x12ec:	return seg027(offs);
 		case 0x12f1:	return seg028(offs);
 		case 0x12f9:	return seg029(offs);
-		case 0x12ff:	return 0;
+		case 0x12ff:	return seg030(offs);
 		case 0x1303:	return 0;
 		case 0x1309:	return seg032(offs);
 		case 0x130f:	return 0;
