@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg030 (???)
-	Functions rewritten: 1/6
+	Functions rewritten: 2/6
 */
 
 #include <string.h>
@@ -10,8 +10,24 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg030.h"
+#include "seg097.h"
 
 namespace M302de {
+
+/* 0x11e */
+/* unused in the game */
+void print_date(void)
+{
+	unsigned short bak;
+
+	prepare_date_str();
+	bak = ds_readw(0xbffd);
+	ds_writew(0xbffd, 3);
+
+	GUI_input(Real2Host(ds_readd(DTP2)), 0);
+	ds_writew(0xbffd, bak);
+}
 
 /* 0x14f */
 void prepare_date_str(void)
