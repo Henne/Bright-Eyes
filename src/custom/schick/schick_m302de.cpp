@@ -2904,6 +2904,30 @@ static int seg032(unsigned short offs) {
 	}
 }
 
+static int seg037(unsigned short offs) {
+	switch (offs) {
+		case 0x3e: {
+			RealPt p = CPU_Pop32();
+			Bit16s active = CPU_Pop16();
+			Bit16s x = CPU_Pop16();
+			Bit16s y = CPU_Pop16();
+			CPU_Push16(y);
+			CPU_Push16(x);
+			CPU_Push16(active);
+			CPU_Push32(p);
+
+			D1_LOG("enemy_turn(%x, %x, %d, %d);\n",
+				p, active, x, y);
+
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg038(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -4795,7 +4819,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1312:	return 0;
 		case 0x1316:	return 0;
 		case 0x131a:	return 0;
-		case 0x131f:	return 0;
+		case 0x131f:	return seg037(offs);
 		case 0x1324:	return seg038(offs);
 		case 0x1328:	return seg039(offs);
 		case 0x132d:	return 0;
