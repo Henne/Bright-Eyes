@@ -51,6 +51,7 @@
 #include "seg102.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg113.h"
 #include "seg120.h"
 
 using namespace M302de;
@@ -4609,6 +4610,88 @@ static int seg109(unsigned short offs) {
 	}
 }
 
+static int seg113(unsigned short offs) {
+	switch (offs) {
+	case 0x20: {
+		RealPt hero = CPU_Pop32();
+		Bit16s idx = CPU_Pop16();
+		Bit16s arg2 = CPU_Pop16();
+		CPU_Push16(arg2);
+		CPU_Push16(idx);
+		CPU_Push32(hero);
+		D1_LOG("hero_disappear()\n");
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	case 0x66: {
+		return 0;
+	}
+	case 0x6b: {
+		return 0;
+	}
+	case 0x70: {
+		return 0;
+	}
+	case 0x75: {
+		return 0;
+	}
+	case 0x7a: {
+		return 0;
+	}
+	case 0x7f: {
+		return 0;
+	}
+	case 0x84: {
+		return 0;
+	}
+	case 0x89: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+
 static int seg120(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -4764,7 +4847,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x14a7:	return 0;
 		case 0x14b4:	return 0;
 		case 0x14bb:	return 0;
-		case 0x14c2:	return 0;
+		case 0x14c2:	return seg113(offs);
 		case 0x14cb:	return 0;
 		case 0x14d1:	return 0;
 		case 0x14d8:	return 0;
@@ -5084,6 +5167,27 @@ static int n_seg064(unsigned offs) {
 		reg_ax = RealOff(tmp);
 		reg_dx = RealSeg(tmp);
 		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg113(unsigned offs) {
+	switch (offs) {
+	case 0x900: {
+		Bitu CS = CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s idx = CPU_Pop16();
+		Bit16s arg2 = CPU_Pop16();
+		CPU_Push16(arg2);
+		CPU_Push16(idx);
+		CPU_Push32(hero);
+		CPU_Push16(CS);
+		D1_LOG("hero_disappear()\n");
+		return 0;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -6465,6 +6569,8 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
+	if (is_ovrseg(0x14c2))
+		return n_seg113(offs);
 	/* seg120 */
 	if (is_ovrseg(0x14f0)) {
 		switch (offs) {
