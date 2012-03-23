@@ -1263,8 +1263,19 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x4adc:
-		return 0;
+	case 0x4adc: {
+		RealPt hero = CPU_Pop32();
+		Bit16s le = CPU_Pop16();
+		CPU_Push16(le);
+		CPU_Push32(hero);
+
+		D1_LOG("far sub_hero_le(%s, %d);\n",
+			(char*)Real2Host(hero) + 0x10, le);
+
+		sub_hero_le(Real2Host(hero), le);
+
+		return 1;
+	}
 	case 0x4df3: {
 		RealPt hero = CPU_Pop32();
 		signed short le = CPU_Pop16();
@@ -5572,6 +5583,20 @@ int schick_nearcall_v302de(unsigned offs) {
 			reg_ax = is_hero_available_in_group(Real2Host(hero));
 			D1_LOG("is_hero_available_in_group(%s) = %d\n",
 			schick_getCharname(hero), reg_ax);
+
+			return 1;
+		}
+		case 0x4adc: {
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16s le = CPU_Pop16();
+			CPU_Push16(le);
+			CPU_Push32(hero);
+
+			D1_LOG("near sub_hero_le(%s, %d);\n",
+				(char*)Real2Host(hero) + 0x10, le);
+
+			sub_hero_le(Real2Host(hero), le);
 
 			return 1;
 		}

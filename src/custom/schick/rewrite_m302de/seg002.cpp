@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 78/136
+	Functions rewritten: 79/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -24,8 +24,10 @@
 #include "seg009.h"
 #include "seg010.h"
 #include "seg039.h"
+#include "seg041.h"
 #include "seg047.h"
 #include "seg096.h"
+#include "seg113.h"
 
 namespace M302de {
 
@@ -1705,6 +1707,141 @@ void add_hero_ae(Bit8u* hero, short ae) {
 		host_writew(hero+0x64, host_readw(hero+0x62));
 
 	ds_writew(0xc3cb, tmp);
+}
+
+/**
+ * sub_hero_le() - subtracts LE from a hero
+ * @hero:	pointer to the hero
+ * @le:		LE to loose
+ *
+ */
+void sub_hero_le(Bit8u *hero, signed short le)
+{
+	Bit8u *hero_i, *ptr;
+	signed short bak, old_le, i;
+
+	if (!hero_dead(hero) && le > 0) {
+
+		bak = ds_readw(0xc3cb);
+		ds_writew(0xc3cb, 0);
+
+		/* do the damage */
+		old_le = host_readw(hero + 0x60);
+		host_writew(hero + 0x60, old_le - le);
+
+		if (hero_sleeps(hero)) {
+			/* awake him/her */
+			host_writeb(hero + 0xaa,
+				host_readb(hero + 0xaa) & 0xfd);
+
+			/* in fight mode */
+			if (ds_readw(0x2dc5) != 0) {
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+
+				/* update looking dir and other  */
+				host_writeb(ptr + 2, host_readb(hero + 0x82));
+				host_writeb(ptr + 0xd, 0xff);
+				host_writeb(ptr + 5, 0);
+				host_writeb(ptr + 6, 0);
+			}
+		}
+
+		draw_splash(get_hero_index(hero), 0);
+
+		if ((signed short)host_readw(hero + 0x60) < 0) {
+			/* set LE to 0 */
+			host_writew(hero + 0x60, 0);
+
+			/* mark hero as dead */
+			host_writew(hero + 0xaa, host_readw(hero + 0xaa) | 1);
+
+			/* unknown */
+			ds_writeb(0x4212 + get_hero_index(hero), 0);
+
+			/* unknown */
+			host_writeb(hero + 0x84, 100);
+
+			if (ds_readb(0x2845) == 0)
+				ds_writeb(0x46df, 1);
+
+			/* reset sickness */
+			for (i = 1; i <= 7; i++) {
+				host_writeb(hero + 0xae + i * 5, 0);
+				host_writeb(hero + 0xaf + i * 5, 0);
+			}
+
+			/* reset poison */
+			for (i = 1; i <= 9; i++) {
+				host_writeb(hero + 0xd6 + i * 5, 0);
+				host_writeb(hero + 0xd7 + i * 5, 0);
+			}
+
+			if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
+				if (hero == Real2Host(ds_readd(0x3e20))) {
+					ds_writew(0xc3c1, 1);
+					ds_writew(0x3cd5, 0);
+				}
+			}
+
+			if (ds_readb(0xa842) != 0 && ds_readw(0x2cd5) == 0 &&
+				(count_heroes_available_in_group() == 0 ||
+				count_heroes_available_in_group() == 1 && is_hero_available_in_group(get_hero(6)))) {
+
+				ds_writeb(0x4333, 99);
+
+				for (hero_i = get_hero(0), i = 0; i <=6; i++, hero_i = get_hero(i)) {
+					/* no typus */
+					if (host_readb(hero_i + 0x21) == 0)
+						continue;
+
+					/* not in current group */
+					if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+						continue;
+
+					hero_disappear(hero_i, i, -1);
+				}
+			}
+
+		} else {
+			if (old_le >= 5 && (signed short)host_readw(hero + 0x60) < 5) {
+				/* make hero unsonscious */
+				host_writeb(hero + 0xaa,
+					host_readb(hero + 0xaa) | 0x40);
+
+				/* unknown yet */
+				host_writeb(hero + 0x84, 10);
+
+				/* unknown yet */
+				ds_writeb(0x4212 + get_hero_index(hero), 1);
+
+				/* in fight mode */
+				if (ds_readw(0x2cd5) != 0) {
+					ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+					host_writeb(ptr + 2,
+						ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2) + host_readb(hero + 0x82));
+					host_writeb(ptr + 0x0d, 0xff);
+					host_writeb(ptr + 5,
+						ds_readb(0x1210 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+					host_writeb(ptr + 6,
+						ds_readb(0x1211 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+
+
+					FIG_add_msg(7, 0);
+
+					if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
+						if (hero == Real2Host(ds_readd(0x3e20))) {
+							ds_writew(0xc3c1, 1);
+							ds_writew(0x3cd5, 0);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (ds_readw(0x2cd5) == 0) {
+		ds_writeb(CHECK_PARTY, 0);
+	}
 }
 
 /**
