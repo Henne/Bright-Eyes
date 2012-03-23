@@ -4936,6 +4936,66 @@ static int n_seg000(unsigned offs) {
 			return 0;
 	}
 }
+static int n_seg001(unsigned offs)
+{
+	switch (offs) {
+	/* Callers: 1 */
+	case 0x35: {
+		CPU_Pop16();
+		reg_ax = CD_set_drive_nr();
+		D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 6 */
+	case 0x5c: {
+		CPU_Pop16();
+		RealPt req = CPU_Pop32();
+		CPU_Push32(req);
+
+		CD_driver_request(req);
+		D1_LOG("CD_driver_request();\n");
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0xb2: {
+		CPU_Pop16();
+		unsigned int retval;
+
+		retval = CD_get_tod();
+
+		D1_LOG("CD_get_tod(); = %d\n", retval);
+		reg_ax = retval & 0xffff;
+		reg_dx = (retval >> 16) & 0xffff;
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0xc1: {
+		CPU_Pop16();
+		unsigned short track_nr = CPU_Pop16();
+		CPU_Push16(track_nr);
+		D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
+		seg001_00c1(track_nr);
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x322: {
+		CPU_Pop16();
+		D1_LOG("seg001_0322()\n");
+		seg001_0322();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x34f: {
+		CPU_Pop16();
+		D1_LOG("seg001_034f()\n");
+		seg001_034f();
+		return 1;
+	}
+	default:
+		return 0;
+	}
+}
+
 static int n_seg006(unsigned offs)
 {
 	switch (offs) {
@@ -5252,64 +5312,8 @@ int schick_nearcall_v302de(unsigned offs) {
 
 	/* Borland C-Lib */
 	if (segm == 0) return n_seg000(offs);
-	else 
-	/* seg001 - CD_library */
-	if (segm == 0x4ac) {
-		/* Callers: 1 */
-		if (offs == 0x35) {
-			CPU_Pop16();
-			reg_ax = CD_set_drive_nr();
-			D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
-			return 1;
-		}
-		/* Callers: 6 */
-		if (offs == 0x5c) {
-			CPU_Pop16();
-			RealPt req = CPU_Pop32();
-			CPU_Push32(req);
-
-			CD_driver_request(req);
-			D1_LOG("CD_driver_request();\n");
-			return 1;
-		}
-		/* Callers: 4 */
-		if (offs == 0xb2) {
-			CPU_Pop16();
-			unsigned int retval;
-
-			retval = CD_get_tod();
-
-			D1_LOG("CD_get_tod(); = %d\n", retval);
-			reg_ax = retval & 0xffff;
-			reg_dx = (retval >> 16) & 0xffff;
-			return 1;
-		}
-		/* Callers: 2 */
-		if (offs == 0xc1) {
-			CPU_Pop16();
-			unsigned short track_nr = CPU_Pop16();
-			CPU_Push16(track_nr);
-			D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
-			seg001_00c1(track_nr);
-			return 1;
-		}
-		/* Callers: 3 */
-		if (offs == 0x322) {
-			CPU_Pop16();
-			D1_LOG("seg001_0322()\n");
-			seg001_0322();
-			return 1;
-		}
-		/* Callers: 1 */
-		if (offs == 0x34f) {
-			CPU_Pop16();
-			D1_LOG("seg001_034f()\n");
-			seg001_034f();
-			return 1;
-		}
-		return 0;
-	}
-
+	else if (segm == 0x4ac) return n_seg001(offs);
+	else
 	/* seg002 - often used */
 	if (segm == 0x51e) {
 
