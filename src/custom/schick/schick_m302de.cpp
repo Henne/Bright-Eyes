@@ -968,7 +968,7 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("pal_fade(%x,%x);\n", p1, p2);
-		pal_fade(Real2Phys(p1), Real2Phys(p2));
+		pal_fade(Real2Host(p1), Real2Host(p2));
 		return 1;
 	}
 	case 0x232a: {
@@ -983,7 +983,7 @@ static int seg002(unsigned short offs) {
 
 		D1_LOG("pal_fade_in(%x,%x,%x,%x);\n", dst, p2, v3, colors);
 
-		pal_fade_in(Real2Phys(dst), Real2Phys(p2), v3, colors);
+		pal_fade_in(Real2Host(dst), Real2Host(p2), v3, colors);
 
 		return 1;
 	}
@@ -5469,7 +5469,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push32(p2);
 			CPU_Push32(p1);
 			D1_LOG("pal_fade(%x,%x);\n", p1, p2);
-			pal_fade(Real2Phys(p1), Real2Phys(p2));
+			pal_fade(Real2Host(p1), Real2Host(p2));
 			return 1;
 		}
 		/* Callers: 1 */

@@ -562,46 +562,46 @@ void seg002_2177() {
 		ds_writew(0x70ae + i * 8, random_interval(ds_readw(0x70a8 + i * 8), 20));
 }
 
-void pal_fade(PhysPt dst, PhysPt p2) {
+void pal_fade(Bit8u *dst, Bit8u *p2) {
 	unsigned short i;
 
 	for (i = 0; i < 32; i++) {
 		signed char v1;
 		signed char v2;
 
-		v1 = mem_readb(dst + i * 3);
-		v2 = mem_readb(p2 + i * 3);
+		v1 = host_readb(dst + i * 3);
+		v2 = host_readb(p2 + i * 3);
 
 		if (v2 < v1 && v1 > 0)
-			mem_writeb(dst + i * 3, v1 - 1);
+			host_writeb(dst + i * 3, v1 - 1);
 		else {
 			if (v2 > v1 && v1 < 0x3f)
-				mem_writeb(dst + i * 3, v1 + 1);
+				host_writeb(dst + i * 3, v1 + 1);
 		};
 
-		v1 = mem_readb(dst + i * 3 + 1);
-		v2 = mem_readb(p2 + i * 3 + 1);
+		v1 = host_readb(dst + i * 3 + 1);
+		v2 = host_readb(p2 + i * 3 + 1);
 
 		if (v2 < v1 && v1 > 0)
-			mem_writeb(dst + i * 3 + 1, v1 - 1);
+			host_writeb(dst + i * 3 + 1, v1 - 1);
 		else {
 			if (v2 > v1 && v1 < 0x3f)
-				mem_writeb(dst + i * 3 + 1, v1 + 1);
+				host_writeb(dst + i * 3 + 1, v1 + 1);
 		};
 
-		v1 = mem_readb(dst + i * 3 + 2);
-		v2 = mem_readb(p2 + i * 3 + 2);
+		v1 = host_readb(dst + i * 3 + 2);
+		v2 = host_readb(p2 + i * 3 + 2);
 
 		if (v2 < v1 && v1 > 0)
-			mem_writeb(dst + i * 3 + 2, v1 - 1);
+			host_writeb(dst + i * 3 + 2, v1 - 1);
 		else {
 			if (v2 > v1 && v1 < 0x3f)
-				mem_writeb(dst + i * 3 + 2, v1 + 1);
-		};
+				host_writeb(dst + i * 3 + 2, v1 + 1);
+		}
 	}
 }
 
-void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors) {
+void pal_fade_in(Bit8u *dst, Bit8u *p2, unsigned short v3, unsigned short colors) {
 	unsigned short i, si;
 
 	signed char c1, c2;
@@ -610,23 +610,23 @@ void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors
 
 	for (i = 0; i < colors; i++) {
 
-		c1 = mem_readb(dst + i * 3);
-		c2 = mem_readb(p2 + i * 3);
+		c1 = host_readb(dst + i * 3);
+		c2 = host_readb(p2 + i * 3);
 
 		if ((c2 >= si) && (c2 > c1))
-			mem_writeb(dst + i * 3, c1 + 1);
+			host_writeb(dst + i * 3, c1 + 1);
 
-		c1 = mem_readb(dst + i * 3 + 1);
-		c2 = mem_readb(p2 + i * 3 + 1);
-
-		if ((c2 >= si) && (c2 > c1))
-			mem_writeb(dst + i * 3 + 1, c1 + 1);
-
-		c1 = mem_readb(dst + i * 3 + 2);
-		c2 = mem_readb(p2 + i * 3 + 2);
+		c1 = host_readb(dst + i * 3 + 1);
+		c2 = host_readb(p2 + i * 3 + 1);
 
 		if ((c2 >= si) && (c2 > c1))
-			mem_writeb(dst + i * 3 + 2, c1 + 1);
+			host_writeb(dst + i * 3 + 1, c1 + 1);
+
+		c1 = host_readb(dst + i * 3 + 2);
+		c2 = host_readb(p2 + i * 3 + 2);
+
+		if ((c2 >= si) && (c2 > c1))
+			host_writeb(dst + i * 3 + 2, c1 + 1);
 	}
 }
 
@@ -645,11 +645,11 @@ void dawning(void)
 		return;
 
 	/* floor */
-	pal_fade(PhysMake(datseg, 0x3e53), Real2Phys(ds_readd(0xd321)));
+	pal_fade(p_datseg + 0x3e53, Real2Host(ds_readd(0xd321)));
 	/* buildings */
-	pal_fade(PhysMake(datseg, 0x3eb3), Real2Phys(ds_readd(0xd321)) + 0x60);
+	pal_fade(p_datseg + 0x3eb3, Real2Host(ds_readd(0xd321)) + 0x60);
 	/* sky */
-	pal_fade(PhysMake(datseg, 0x3f13), Real2Phys(ds_readd(0xd321)) + 0xc0);
+	pal_fade(p_datseg + 0x3f13, Real2Host(ds_readd(0xd321)) + 0xc0);
 
 	/* not in a town */
 	if (ds_readb(0x2d67) == 0)
@@ -694,11 +694,11 @@ void nightfall(void)
 		return;
 
 	/* floor */
-	pal_fade(PhysMake(datseg, 0x3e53), PhysMake(datseg, 0x4498));
+	pal_fade(p_datseg + 0x3e53, p_datseg + 0x4498);
 	/* buildings */
-	pal_fade(PhysMake(datseg, 0x3eb3), PhysMake(datseg, 0x44f8));
+	pal_fade(p_datseg + 0x3eb3, p_datseg + 0x44f8);
 	/* sky */
-	pal_fade(PhysMake(datseg, 0x3f13), PhysMake(datseg, 0x4558));
+	pal_fade(p_datseg + 0x3f13, p_datseg + 0x4558);
 
 	/* not in a town */
 	if (ds_readb(0x2d67) == 0)

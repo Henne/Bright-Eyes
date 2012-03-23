@@ -27,8 +27,8 @@ void wait_for_keyboard1();
 void timers_daily();
 //static
 void seg002_2177();
-void pal_fade(PhysPt dst, PhysPt p2);
-void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors);
+void pal_fade(Bit8u*, Bit8u*);
+void pal_fade_in(Bit8u*, Bit8u*, unsigned short, unsigned short);
 void dawning(void);
 void nightfall(void);
 unsigned short get_current_season();
