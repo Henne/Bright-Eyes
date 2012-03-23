@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#include "setup.h"
 #include "custom.h"
 #include "custom_hooks.h"
 static Bit8u custom_runs;
@@ -78,9 +79,15 @@ int custom_callf(Bitu cs, Bitu ip)
 	return 0;
 }
 
+static void custom_exit(Section *sec)
+{
+	custom_exit_prog(0);
+}
+
 void custom_init(Section *sec)
 {
 //	custom_prog *p_current = new custom_prog;
+	sec->AddDestroyFunction(&custom_exit);
 }
 
 #endif /* DOSBOX_CUSTOM */
