@@ -38,6 +38,8 @@ unsigned short get_free_mod_slot();
 void set_mod_slot(unsigned short, unsigned int, Bit8u *, signed char, signed char);
 void seg002_2f7a(unsigned int fmin);
 void sub_light_timers(unsigned short quarter, signed short v2);
+//static
+void magical_chainmail_damage(void);
 void set_and_spin_lock();
 //static
 void seg002_3b63();

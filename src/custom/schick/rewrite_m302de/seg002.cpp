@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 79/136
+	Functions rewritten: 80/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1000,6 +1000,50 @@ void sub_light_timers(unsigned short quarter, signed short v2) {
 
 		}
 
+	}
+}
+
+/**
+ * magical_chainmail_damage() - damage if a cursed chainmail is worn
+ *
+ */
+void magical_chainmail_damage(void)
+{
+	Bit8u *hero_i;
+	signed short i;
+
+	if (ds_readw(0x2c99) != 0) {
+		D1_INFO("return\n");
+		return;
+	}
+
+	if (ds_readw(0x3614) != 0)
+		ds_writeb(0x4649, 1);
+	else
+		ds_writeb(0x4649, 2);
+
+	for (i = 0; i <= 6; i++) {
+		/* check typus */
+		if (host_readb(get_hero(i) + 0x21) == 0)
+			continue;
+
+		hero_i = get_hero(i);
+
+		if (hero_dead(hero_i))
+			continue;
+
+		/* unknown */
+		if (host_readb(hero_i + 0x9f) != 0) {
+			D1_INFO("Bit is set \n");
+			continue;
+		}
+
+		/* check magical chainmail */
+		if (host_readw(hero_i + 0x1b2) != 0xc5) {
+			continue;
+		}
+
+		sub_hero_le(hero_i, 1);
 	}
 }
 

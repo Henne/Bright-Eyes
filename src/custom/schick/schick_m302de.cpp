@@ -5527,6 +5527,12 @@ int schick_nearcall_v302de(unsigned offs) {
 
 			return 1;
 		}
+		case 0x31a2: {
+			CPU_Pop16();
+			D1_LOG("magical_chainmail_damage()\n");
+			magical_chainmail_damage();
+			return 1;
+		}
 		/* Callers: 1 */
 		case 0x3b63: {
 			CPU_Pop16();
