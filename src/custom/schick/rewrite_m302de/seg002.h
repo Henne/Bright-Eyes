@@ -30,6 +30,7 @@ void seg002_2177();
 void pal_fade(PhysPt dst, PhysPt p2);
 void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors);
 void dawning(void);
+void nightfall(void);
 unsigned short get_current_season();
 //static
 void do_census();

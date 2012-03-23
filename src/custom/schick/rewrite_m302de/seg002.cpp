@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 81/136
+	Functions rewritten: 82/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -650,6 +650,55 @@ void dawning(void)
 	pal_fade(PhysMake(datseg, 0x3eb3), Real2Phys(ds_readd(0xd321)) + 0x60);
 	/* sky */
 	pal_fade(PhysMake(datseg, 0x3f13), Real2Phys(ds_readd(0xd321)) + 0xc0);
+
+	/* not in a town */
+	if (ds_readb(0x2d67) == 0)
+		return;
+	/* in a dungeon */
+	if (ds_readb(0x2d6e) != 0)
+		return;
+	/* in a location */
+	if (ds_readb(0x2d60) != 0)
+		return;
+	/* in a travel mode */
+	if (ds_readb(0x3614) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0xe5d2) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0x45b8) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0x2845) != 0)
+		return;
+
+	wait_for_vsync();
+
+	set_palette(p_datseg + 0x3e53, 0, 0x20);
+	set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+}
+
+/**
+ * nightfall() - adjusts palettes in the evening
+ *
+ */
+void nightfall(void)
+{
+	/* Between 6 and 7 */
+	if ((ds_readd(0x2dbb) < 0x1a5e0) || (ds_readd(0x2dbb) >= 0x1baf8))
+		return;
+
+	/* in 64 steps */
+	if (((ds_readd(0x2dbb) - 0x1a5e0) % 0x54) != 0)
+		return;
+
+	/* floor */
+	pal_fade(PhysMake(datseg, 0x3e53), PhysMake(datseg, 0x4498));
+	/* buildings */
+	pal_fade(PhysMake(datseg, 0x3eb3), PhysMake(datseg, 0x44f8));
+	/* sky */
+	pal_fade(PhysMake(datseg, 0x3f13), PhysMake(datseg, 0x4558));
 
 	/* not in a town */
 	if (ds_readb(0x2d67) == 0)

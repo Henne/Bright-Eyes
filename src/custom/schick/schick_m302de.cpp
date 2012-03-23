@@ -5480,7 +5480,9 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 		/* Callers: 1 */
 		case 0x24f0: {
-			return 0;
+			D1_LOG("nightfall()\n");
+			nightfall();
+			return 1;
 		}
 		/* Callers: 1 */
 		case 0x25ce: {
