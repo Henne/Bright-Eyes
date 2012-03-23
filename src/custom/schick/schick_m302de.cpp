@@ -5473,6 +5473,16 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 1;
 		}
 		/* Callers: 1 */
+		case 0x2400: {
+			dawning();
+			D1_LOG("dawning()\n");
+			return 1;
+		}
+		/* Callers: 1 */
+		case 0x24f0: {
+			return 0;
+		}
+		/* Callers: 1 */
 		case 0x25ce: {
 			CPU_Pop16();
 			reg_ax = get_current_season();
