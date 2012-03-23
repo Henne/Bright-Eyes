@@ -66,15 +66,15 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
 		/* set LE to 0 */
 		host_writew(enemy + 0x13, 0);
 
-		if (ds_readw(0xe316) == 0x5e && host_readb(enemy) == 0x38) {
+		if (ds_readw(CURRENT_FIG_NR) == 0x5e && host_readb(enemy) == 0x38) {
 			/* slaying a special cultist */
 			/* set a flag in the status area */
 			ds_writeb(0x40f9, 0);
-		} else if (ds_readw(0xe316) == 0xc0 && host_readb(enemy) == 0x48) {
+		} else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(enemy) == 0x48) {
 			/* slaying the orc champion */
 			if (ds_readb(0x5f30) == 0)
 				ds_writew(0x2cd5, 0);
-		} else if (ds_readw(0xe316) == 0xb4 && host_readb(enemy) == 0x46) {
+		} else if (ds_readw(CURRENT_FIG_NR) == 0xb4 && host_readb(enemy) == 0x46) {
 			/* slaying Gorah make everything flee than Heshtot*/
 			for (i = 0; i < 20; i++)
 				if (ds_readb(0xd34b + 1 + i * 62) != 0x1a)
