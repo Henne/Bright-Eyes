@@ -1045,13 +1045,11 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x3071: {
-		unsigned short quarter = CPU_Pop16();
-		signed short v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(quarter);
+		signed int quarter = CPU_Pop32();
+		CPU_Push32(quarter);
 
-		D1_LOG("sub_light_timers(quarter=%d, v2=%d);\n", quarter, v2);
-		sub_light_timers(quarter, v2);
+		D1_LOG("sub_light_timers(quarter=%d);\n", quarter);
+		sub_light_timers(quarter);
 
 		return 1;
 	}
@@ -5528,14 +5526,11 @@ int schick_nearcall_v302de(unsigned offs) {
 		/* Callers: 4 */
 		case 0x3071: {
 			CPU_Pop16();
-			unsigned short quarter = CPU_Pop16();
-			signed short v2 = CPU_Pop16();
-			CPU_Push16(v2);
-			CPU_Push16(quarter);
+			signed int quarter = CPU_Pop32();
+			CPU_Push32(quarter);
 
-			D1_LOG("near sub_light_timers(quarter=%d, v2=%d);\n",
-				quarter, v2);
-			sub_light_timers(quarter, v2);
+			D1_LOG("near sub_light_timers(quarter=%d);\n", quarter);
+			sub_light_timers(quarter);
 
 			return 1;
 		}

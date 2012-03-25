@@ -1037,13 +1037,12 @@ void seg002_2f7a(unsigned int fmin) {
 /**
  *	sub_light_timers - decrements the light timers
  *	@quarter:	the time in quarters of an hour
- *	@v2:		atm unknown
  *
  *	This function decrements the timers of burning torches and lanterns.
  *	If the time of the lightsource is up the toch is removed from the
  *	inventory and the lantern is turned off.
 */
-void sub_light_timers(unsigned short quarter, signed short v2) {
+void sub_light_timers(signed int quarter) {
 	PhysPt hero_i;
 	unsigned short i,j;
 	unsigned char tmp;
@@ -1058,7 +1057,7 @@ void sub_light_timers(unsigned short quarter, signed short v2) {
 		if (mem_readb(hero_i + 0x21) == 0)
 			continue;
 
-		if (v2 > 0 || (!v2 && quarter > 120))
+		if (quarter > 120)
 			tmp = 120;
 		else
 			tmp = quarter & 0xff;
