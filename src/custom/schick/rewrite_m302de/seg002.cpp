@@ -1043,18 +1043,18 @@ void seg002_2f7a(unsigned int fmin) {
  *	inventory and the lantern is turned off.
 */
 void sub_light_timers(signed int quarter) {
-	PhysPt hero_i;
+	Bit8u *hero_i;
 	unsigned short i,j;
 	unsigned char tmp;
 
 	if (ds_readw(0x2c99))
 		return;
 
-	hero_i = Real2Phys(ds_readd(HEROS));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
-		if (mem_readb(hero_i + 0x21) == 0)
+		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 
 		if (quarter > 120)
@@ -1064,39 +1064,39 @@ void sub_light_timers(signed int quarter) {
 
 		for (j = 0; j < 23; j++) {
 			signed char cur;
-			if (mem_readw(hero_i + 0x196 + 14 * j) == 0x16) {
+			if (host_readw(hero_i + 0x196 + 14 * j) == 0x16) {
 				/* Torch, burning */
 
-				cur = mem_readb(hero_i + 0x19e + 14 * j);
+				cur = host_readb(hero_i + 0x19e + 14 * j);
 				cur -= tmp;
-				mem_writeb(hero_i + 0x19e + 14 * j, cur);
+				host_writeb(hero_i + 0x19e + 14 * j, cur);
 
 				if (cur <= 0) {
 					signed short tmp_1;
-					mem_writeb(hero_i + 0x20, mem_readb(hero_i + 0x20) - 1);
+					host_writeb(hero_i + 0x20, host_readb(hero_i + 0x20) - 1);
 
 					tmp_1 = mem_readw(Real2Phys(ds_readd(ITEMSDAT)) + 0x10d);
-					mem_writew(hero_i + 0x2d8, mem_readb(hero_i + 0x2d8) - tmp_1);
+					host_writew(hero_i + 0x2d8,
+						host_readb(hero_i + 0x2d8) - tmp_1);
 
 					/* Remove Torch from inventory */
-					memset(MemBase + hero_i + 0x196 + 14 * j, 0, 14);
+					memset(hero_i + 0x196 + 14 * j, 0, 14);
 				}
-			} else if (mem_readw(hero_i + 0x196 + j * 14) == 0xf9) {
+			} else if (host_readw(hero_i + 0x196 + j * 14) == 0xf9) {
 				/* Lantern, burning */
-				cur = mem_readb(hero_i + 0x19e + 14 * j);
+				cur = host_readb(hero_i + 0x19e + 14 * j);
 				cur -= tmp;
-				mem_writeb(hero_i + 0x19e + 14 * j, cur);
+				host_writeb(hero_i + 0x19e + 14 * j, cur);
 
 				if (cur <= 0) {
 					/* Set timer to 0 */
-					mem_writeb(hero_i + 0x19e + j * 14, 0);
+					host_writeb(hero_i + 0x19e + j * 14, 0);
 					/* Set burning lantern to a not burning lantern */
-					mem_writew(hero_i + 0x196 + j * 14, 0x19);
+					host_writew(hero_i + 0x196 + j * 14, 0x19);
 				}
 			}
 
 		}
-
 	}
 }
 
