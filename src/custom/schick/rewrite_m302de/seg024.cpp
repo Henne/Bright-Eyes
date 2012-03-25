@@ -108,24 +108,24 @@ void diary_new_entry()
 	}
 
 	/* make a pointer to the last entry */
-	ptr = MemBase + PhysMake(datseg, 0x43b4 + ds_readw(0x43ba) * 8);
+	ptr = p_datseg + 0x43b4 + ds_readw(0x43ba) * 8;
 
 	/* avoid double entries for the same town */
 	if (ds_readb(0x2d67) == host_readw(ptr + 6))
 		return;
 
 	/* make a pointer to the current entry */
-	ptr = MemBase + PhysMake(datseg, 0x43bc + ds_readw(0x43ba) * 8);
+	ptr = p_datseg + 0x43bc + ds_readw(0x43ba) * 8;
 
 	/* increment entry counter */
 	ds_writew(0x43ba, ds_readw(0x43ba) + 1);
 
 	/* Write day of month */
-	host_writew(ptr, ds_readb(0x2dc0));
+	host_writew(ptr, ds_readb(DAY_OF_MONTH));
 	/* Write month */
-	host_writew(ptr + 2, ds_readb(0x2dc1));
+	host_writew(ptr + 2, ds_readb(MONTH));
 	/* Write year */
-	host_writew(ptr + 4, ds_readb(0x2dc2));
+	host_writew(ptr + 4, ds_readb(YEAR));
 	/* Write city */
 	host_writew(ptr + 6, ds_readb(0x2d67));
 }
