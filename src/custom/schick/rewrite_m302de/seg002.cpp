@@ -637,11 +637,11 @@ void pal_fade_in(Bit8u *dst, Bit8u *p2, unsigned short v3, unsigned short colors
 void dawning(void)
 {
 	/* Between 6 and 7 */
-	if ((ds_readd(0x2dbb) < 0x7e90) || (ds_readd(0x2dbb) >= 0x93a8))
+	if ((ds_readd(DAY_TIMER) < 0x7e90) || (ds_readd(DAY_TIMER) >= 0x93a8))
 		return;
 
 	/* in 64 steps */
-	if (((ds_readd(0x2dbb) - 0x7e90) % 0x54) != 0)
+	if (((ds_readd(DAY_TIMER) - 0x7e90) % 0x54) != 0)
 		return;
 
 	/* floor */
@@ -686,11 +686,11 @@ void dawning(void)
 void nightfall(void)
 {
 	/* Between 6 and 7 */
-	if ((ds_readd(0x2dbb) < 0x1a5e0) || (ds_readd(0x2dbb) >= 0x1baf8))
+	if ((ds_readd(DAY_TIMER) < 0x1a5e0) || (ds_readd(DAY_TIMER) >= 0x1baf8))
 		return;
 
 	/* in 64 steps */
-	if (((ds_readd(0x2dbb) - 0x1a5e0) % 0x54) != 0)
+	if (((ds_readd(DAY_TIMER) - 0x1a5e0) % 0x54) != 0)
 		return;
 
 	/* floor */
@@ -1435,7 +1435,7 @@ void set_to_ff() {
 }
 
 unsigned short mod_timer(short val) {
-	if (ds_readd(0x2dbb) % val == 0)
+	if (ds_readd(DAY_TIMER) % val == 0)
 		return 1;
 
 	return 0;

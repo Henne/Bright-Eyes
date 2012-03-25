@@ -10,6 +10,7 @@
 
 #define EMS_ENABLED	(0x26ab)
 #define CURRENT_ANI	(0x2ccf)
+#define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)
 #define DAY_OF_MONTH	(0x2dc0)
 #define MONTH		(0x2dc1)

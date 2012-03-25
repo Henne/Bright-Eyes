@@ -75,7 +75,7 @@ unsigned short prepare_passages(void)
 			prepared++;
 		} else {
 			/* not before 14.00 o'clock */
-			if (ds_readd(0x2dbb) < 0x1518 * 14)
+			if (ds_readd(DAY_TIMER) < 0x1518 * 14)
 				continue;
 			/* only for ships tomorrow */
 			if (host_readb(entry + 4) != 1)
