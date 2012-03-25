@@ -19,6 +19,8 @@
 #define UNICORN_MET	(0x2464)
 #define UNICORN_GET_MAP	(0x2465)
 #define UNICORN_TIMER	(0x2466)
+#define SPHERE_TIMER	(0x3c97)
+#define SPHERE_ACTIVE	(0x3c98)
 #define CHECK_PARTY	(0x4495)
 #define DELAY_FACTOR	(0x4b66)
 #define FNAMES		(0x4c8c)
