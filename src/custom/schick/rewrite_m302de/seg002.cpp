@@ -655,7 +655,7 @@ void dawning(void)
 	if (ds_readb(0x2d67) == 0)
 		return;
 	/* in a dungeon */
-	if (ds_readb(0x2d6e) != 0)
+	if (ds_readb(DUNGEON_INDEX) != 0)
 		return;
 	/* in a location */
 	if (ds_readb(0x2d60) != 0)
@@ -704,7 +704,7 @@ void nightfall(void)
 	if (ds_readb(0x2d67) == 0)
 		return;
 	/* in a dungeon */
-	if (ds_readb(0x2d6e) != 0)
+	if (ds_readb(DUNGEON_INDEX) != 0)
 		return;
 	/* in a location */
 	if (ds_readb(0x2d60) != 0)
@@ -1452,7 +1452,7 @@ void draw_compass() {
 	if (ds_readb(0xb132))
 		return;
 	/* Not in town or dungeon */
-	if (!ds_readb(0x2d6e) && !ds_readb(0x2d67))
+	if (!ds_readb(DUNGEON_INDEX) && !ds_readb(0x2d67))
 		return;
 	/* I have no clue */
 	if (ds_readb(0x4475) == 2)
@@ -1514,10 +1514,10 @@ short can_merge_group() {
 		if (ds_readb(0x2d68 + i) != ds_readb(0x2d67))
 			continue;
 		/* check DungeonIndex */
-		if (ds_readb(0x2d6f + i) != ds_readb(0x2d6e))
+		if (ds_readb(0x2d6f + i) != ds_readb(DUNGEON_INDEX))
 			continue;
 		/* check DungeonLevel */
-		if (ds_readb(0x2d76 + i) != ds_readb(0x2d75))
+		if (ds_readb(0x2d76 + i) != ds_readb(DUNGEON_LEVEL))
 			continue;
 
 		retval = i;
