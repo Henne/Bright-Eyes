@@ -803,7 +803,7 @@ void sub_ingame_timers(unsigned int val) {
 
 	short i = 0;
 
-	if (ds_readw(0x2c99))
+	if (ds_readw(TIMERS_DISABLED))
 		return;
 
 	for (i = 0; i < 26; i++) {
@@ -833,7 +833,7 @@ void sub_mod_timers(unsigned int val) {
 
 	h_index = -1;
 
-	if (ds_readw(0x2c99))
+	if (ds_readw(TIMERS_DISABLED))
 		return;
 
 	for (i = 0; i < 100; i++) {
@@ -997,7 +997,7 @@ void seg002_2f7a(unsigned int fmin) {
 	Bit8u *hero_i;
 	unsigned short i;
 
-	if (ds_readw(0x2c99) != 0)
+	if (ds_readw(TIMERS_DISABLED) != 0)
 		return;
 
 	hero_i = get_hero(0);
@@ -1047,7 +1047,7 @@ void sub_light_timers(signed int quarter) {
 	unsigned short i,j;
 	unsigned char tmp;
 
-	if (ds_readw(0x2c99))
+	if (ds_readw(TIMERS_DISABLED))
 		return;
 
 	hero_i = get_hero(0);
@@ -1109,8 +1109,7 @@ void magical_chainmail_damage(void)
 	Bit8u *hero_i;
 	signed short i;
 
-	if (ds_readw(0x2c99) != 0) {
-		D1_INFO("return\n");
+	if (ds_readw(TIMERS_DISABLED) != 0) {
 		return;
 	}
 

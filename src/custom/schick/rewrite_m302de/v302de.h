@@ -9,6 +9,7 @@
 #include "schick.h"
 
 #define EMS_ENABLED	(0x26ab)
+#define TIMERS_DISABLED	(0x2c99)
 #define CURRENT_ANI	(0x2ccf)
 #define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)
