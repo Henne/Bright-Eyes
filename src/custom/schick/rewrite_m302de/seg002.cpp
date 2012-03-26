@@ -730,13 +730,13 @@ void nightfall(void)
 
 unsigned short get_current_season() {
 	/* Check Winter */
-	if (is_in_byte_array(ds_readb(0x2dc1), MemBase + PhysMake(datseg, 0x463e)))
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463e))
 		return 0;
 	/* Check Summer */
-	if (is_in_byte_array(ds_readb(0x2dc1), MemBase + PhysMake(datseg, 0x4642)))
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x4642))
 		return 2;
 	/* Check Spring */
-	if (is_in_byte_array(ds_readb(0x2dc1), MemBase + PhysMake(datseg, 0x463a)))
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463a))
 		return 1;
 
 	return 3;
