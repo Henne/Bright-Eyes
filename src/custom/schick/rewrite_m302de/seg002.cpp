@@ -2166,7 +2166,7 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 		if (tmp == 20) {
 			zw++;
 			if (zw == 2) {
-				D1_INFO(" -> UNGLÜCKLICH! nicht bestanden\n");
+				D1_INFO(" -> UNGLUECKLICH! nicht bestanden\n");
 				return -99;
 			}
 		}
