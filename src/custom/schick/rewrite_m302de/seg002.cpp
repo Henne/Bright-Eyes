@@ -838,7 +838,7 @@ void sub_mod_timers(unsigned int val) {
 
 	for (i = 0; i < 100; i++) {
 		/* make a pointer to the slot */
-		sp = MemBase + PhysMake(datseg, 0x2e2c + i * 8);
+		sp = p_datseg + 0x2e2c + i * 8;
 
 		/* if timer is 0 continue */
 		if (host_readd(sp) == 0)
@@ -909,7 +909,7 @@ void sub_mod_timers(unsigned int val) {
 
 		} else {
 			/* target affects the savegame */
-			mp = MemBase + PhysMake(datseg, 0x2d34);
+			mp = p_datseg + 0x2d34;
 			mp += host_readw(sp + 4);
 			host_writeb(mp, host_readb(mp) - host_readb(sp + 7));
 		}
@@ -951,7 +951,7 @@ void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
 
 	if (who == -1)
 		/* mod slot is on savegame */
-		mod_ptr = MemBase + PhysMake(datseg, 0x2d34);
+		mod_ptr = p_datseg + 0x2d34;
 	else {
 		/* mod slot is on a hero/npc */
 		mod_ptr = get_hero(who);
@@ -1155,7 +1155,7 @@ void passages_recalc() {
 
 	signed char tmp;
 
-	p = MemBase + PhysMake(datseg, 0x6f00);
+	p = p_datseg + 0x6f00;
 
 	switch (get_current_season()) {
 		case 2:
@@ -1214,7 +1214,7 @@ void passages_reset() {
 	Bit8u *p;
 	unsigned short i;
 
-	p = MemBase + PhysMake(datseg, 0x6f00);
+	p = p_datseg + 0x6f00;
 
 	/* Orig-BUG: the loop operates only on the first element
 		sizeof(element) == 8 */
@@ -1275,10 +1275,10 @@ void draw_splash(unsigned short index, unsigned short type) {
 
 	if (type == 0)
 		/* splash 1 / red / LE */
-		splash = MemBase + Real2Phys(ds_readd(0xbccb));
+		splash = Real2Host(ds_readd(0xbccb));
 	else
 		/* splash 2 / yellow / AE */
-		splash = MemBase + Real2Phys(ds_readd(0xbcc7));
+		splash = Real2Host(ds_readd(0xbcc7));
 
 	restore_rect_rle(Real2Phys(ds_readd(0xd2ff)), splash, ds_readw(0x2d01 + index*2), 157, 32, 32, 2);
 
@@ -1657,7 +1657,7 @@ void seg002_47e2() {
 	char bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, MemBase + PhysMake(datseg, 0xc00d), 24);
+	memcpy(&bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1674,7 +1674,7 @@ void seg002_47e2() {
 
 	GUI_print_char('P', 0, 0);
 	/* restore gfx settings from stack */
-	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
+	memcpy(p_datseg + 0xc00d, &bak, 24);
 }
 
 /**
@@ -1683,7 +1683,7 @@ void seg002_484f() {
 	char bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, MemBase + PhysMake(datseg, 0xc00d), 24);
+	memcpy(&bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1699,7 +1699,7 @@ void seg002_484f() {
 	do_pic_copy(0);
 
 	/* restore gfx settings from stack */
-	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
+	memcpy(p_datseg + 0xc00d, &bak, 24);
 }
 
 /**
