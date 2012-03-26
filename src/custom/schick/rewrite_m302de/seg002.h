@@ -32,6 +32,7 @@ void pal_fade_in(Bit8u*, Bit8u*, unsigned short, unsigned short);
 void dawning(void);
 void nightfall(void);
 unsigned short get_current_season();
+void do_timers(void);
 //static
 void do_census();
 void sub_ingame_timers(unsigned int);

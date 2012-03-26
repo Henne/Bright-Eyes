@@ -991,8 +991,11 @@ static int seg002(unsigned short offs) {
 		reg_ax = get_current_season();
 		return 1;
 		}
-	case 0x274e:
-		return 0;
+	case 0x274e: {
+		D1_LOG("far do_timers();\n");
+		do_timers();
+		return 1;
+	}
 	case 0x2bf6: {
 		unsigned int val = CPU_Pop32();
 		CPU_Push32(val);
@@ -5493,6 +5496,12 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Pop16();
 			D1_LOG("do_census();\n");
 			do_census();
+			return 1;
+		}
+		case 0x274e: {
+			CPU_Pop16();
+			D1_LOG("near do_timers();\n");
+			do_timers();
 			return 1;
 		}
 		/* Callers: 4 */

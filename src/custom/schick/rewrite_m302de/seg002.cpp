@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 82/136
+	Functions rewritten: 83/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -740,6 +740,289 @@ unsigned short get_current_season() {
 		return 1;
 
 	return 3;
+}
+
+void do_timers(void)
+{
+	Bit8u *ptr;
+	unsigned char afternoon;
+	Bit8u *hero_i;
+	signed short i, di;
+
+	afternoon = 0;
+
+	if (ds_readw(TIMERS_DISABLED) != 0)
+		return;
+
+	dawning();
+
+	nightfall();
+
+	/* inc day timer */
+	ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) + 1);
+
+	if (ds_readb(0xbcda) == 0) {
+		sub_ingame_timers(1);
+		sub_mod_timers(1);
+	}
+
+	if (ds_readb(0xbcda) == 0) {
+
+		/* set day timer to pm */
+		/* TODO: afternoon is useless */
+		if (ds_readd(DAY_TIMER) > 0xfd20) {
+			ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) - 0xfd20);
+			afternoon = 1;
+		}
+
+		/* every 5 minutes ingame */
+		if (ds_readd(DAY_TIMER) % 0x1c2 == 0) {
+			seg002_2f7a(1);
+		}
+
+		/* every 15 minutes ingame */
+		if (ds_readd(DAY_TIMER) % 0x546 == 0) {
+			sub_light_timers(1);
+		}
+		/* every hour ingame */
+		if (ds_readd(DAY_TIMER) % 0x1518 == 0) {
+			magical_chainmail_damage();
+
+			/* decrement unicorn timer */
+			if (ds_readb(UNICORN_GET_MAP) != 0 &&
+				ds_readb(UNICORN_TIMER) != 0) {
+					ds_writeb(UNICORN_TIMER,
+						ds_readb(UNICORN_TIMER) - 1);
+			}
+
+			/* handle sphere timer */
+			if (ds_readb(SPHERE_TIMER) != 0) {
+				ds_writeb(SPHERE_TIMER,
+					ds_readb(SPHERE_TIMER) - 1);
+
+				if (ds_readb(SPHERE_TIMER) == 0) {
+					ds_writeb(SPHERE_ACTIVE, 1);
+				}
+			}
+
+			/* two timers of a dungeon */
+			if (ds_readb(0x3cc6) != 0) {
+				ds_writeb(0x3cc6, ds_readb(0x3cc6) - 1);
+			}
+			if (ds_readb(0x3cc7) != 0) {
+				ds_writeb(0x3cc7, ds_readb(0x3cc7) - 1);
+			}
+		}
+
+		/* reset the day timer to 24h time */
+		if (afternoon)
+			ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) + 0xfd20);
+	}
+
+	/* at 6 o'clock in the morninig */
+	if (ds_readd(DAY_TIMER) == 0x7e90) {
+
+		hero_i = get_hero(0);
+
+		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+			/* check typus */
+			if (host_readb(hero_i + 0x21) == 0)
+				continue;
+
+			/* unknown flag */
+			if (host_readb(hero_i + 0x9f) == 0)
+				continue;
+
+			/* reset flag */
+			host_writeb(hero_i + 0x9f, 0);
+
+			ds_writeb(0x2d61 + host_readb(hero_i + 0x87),
+				ds_readb(0x2da0 + host_readb(hero_i + 0x87)));
+
+			ds_writew(0x2d48 + host_readb(hero_i + 0x87) * 2,
+				ds_readw(0x2d87 + host_readb(hero_i + 0x87) * 2));
+			ds_writew(0x2d54 + host_readb(hero_i + 0x87) * 2,
+				ds_readw(0x2d93 + host_readb(hero_i + 0x87) * 2));
+		}
+	}
+
+	/* at 10 o'clock */
+	if (ds_readd(DAY_TIMER) == 0xd2f0) {
+		hero_i = get_hero(0);
+
+		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+			/* check typus */
+			if (host_readb(hero_i + 0x21) == 0)
+				continue;
+			/* check drunken */
+			if (host_readb(hero_i + 0xa1) == 0)
+				continue;
+
+			hero_get_sober(hero_i);
+		}
+	}
+
+	/* poison timer in the mage dungeon */
+	if (ds_readd(MAGE_POISON) != 0) {
+
+		/* decrement the timer */
+		ds_writed(MAGE_POISON, ds_readd(MAGE_POISON) - 1);
+
+		/* every 15 minutes  do damage */
+		if (ds_readd(MAGE_POISON) % 0x546 == 0) {
+
+			ptr = get_hero(0);
+			for (i = 0; i <= 6; i++, ptr = get_hero(i)) {
+
+				/* check typus */
+				if (host_readb(ptr + 0x21) == 0)
+					continue;
+
+				/* get group nr */
+				di = host_readb(ptr + 0x87);
+
+				/* hero is in group and in mage dungeon */
+				if (ds_readb(0x2d35) == di &&
+					ds_readb(DUNGEON_INDEX) == 7) {
+
+					switch (ds_readb(DUNGEON_LEVEL)) {
+					case 1: {
+						/* 1W6-1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6,	-1));
+						break;
+					}
+					case 2: {
+						/* 1W6+1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6, 1));
+						break;
+					}
+					}
+				} else {
+					if (ds_readb(0x2d6f + di) != 7)
+						continue;
+
+					switch (ds_readb(0x2d76 + di)) {
+					case 1: {
+						/* 1W6-1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6, -1));
+						break;
+					}
+					case 2: {
+						/* 1W6+1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6, 1));
+						break;
+					}
+					}
+				}
+			}
+		}
+	}
+
+	/* unknown timer */
+	if (ds_readd(0x3fa2) != 0) {
+		D1_LOG("Unknown Dungeon Timer\n");
+		ds_writed(0x3fa2, ds_readd(0x3fa2) - 1);
+	}
+
+	/* at 24 o'clock, daily stuff */
+	if (ds_readd(DAY_TIMER) > 0x1fa40) {
+
+		timers_daily();
+
+		seg002_2177();
+
+		/* reset day timer */
+		ds_writed(DAY_TIMER, 0);
+
+		/* inc DAY date */
+		ds_writeb(DAY_OF_WEEK, ds_readb(DAY_OF_WEEK) + 1);
+		ds_writeb(DAY_OF_MONTH, ds_readb(DAY_OF_MONTH) + 1);
+		if (ds_readb(DAY_OF_WEEK) == 7)
+			ds_writeb(DAY_OF_WEEK, 0);
+
+		/* decrement NPC timers */
+		for (i = 1; i < 7; i++) {
+			if (ds_readb(0x3601 + i) == 0)
+				continue;
+			if ((signed char)ds_readb(0x3601 + i) == -1)
+				continue;
+
+			ds_writeb(0x3601 + i, ds_readb(0x3601 + i) - 1);
+		}
+
+		/* drug timer (phexcaer) */
+		if (ds_readb(0x3f76) != 0)
+			ds_writeb(0x3f76, ds_readb(0x3f76) - 1);
+
+		/* unknown timer */
+		if (ds_readb(0x4332) != 0)
+			ds_writeb(0x4332, ds_readb(0x4332) - 1);
+
+		/* calendar */
+		if (ds_readb(DAY_OF_MONTH) == 31) {
+			/* new month */
+			ds_writeb(DAY_OF_MONTH, 1);
+			ds_writeb(MONTH, ds_readb(MONTH) + 1);
+
+			/* increment quested months counter */
+			if (ds_readw(GOT_MAIN_QUEST) != 0)
+				ds_writew(QUESTED_MONTHS,
+					ds_readw(QUESTED_MONTHS) + 1);
+
+			/* increment the months the NPC is in the group */
+			if (host_readb(get_hero(6) + 0x21) != 0)
+				ds_writew(NPC_MONTHS,
+					ds_readw(NPC_MONTHS) + 1);
+
+			do_census();
+
+			/* set days of the nameless (negative) */
+			if (ds_readb(MONTH) == 13) {
+				ds_writeb(DAY_OF_MONTH, -5);
+			}
+		} else {
+			/* new year */
+			if (ds_readb(DAY_OF_MONTH) == 0) {
+				ds_writeb(MONTH, 1);
+				ds_writeb(YEAR, ds_readb(YEAR) + 1);
+				ds_writeb(DAY_OF_MONTH, 1);
+			}
+		}
+
+		/* check if we have a special day */
+		ds_writeb(SPECIAL_DAY, 0);
+
+		for (i = 0; ds_readb(0x45b9 + i * 3) != 0xff; i++) {
+
+			if (ds_readb(0x45b9 + i * 3) != ds_readb(MONTH))
+				continue;
+			if (ds_readb(0x45b9 + 1 + i * 3) != ds_readb(DAY_OF_MONTH))
+				continue;
+
+			ds_writeb(SPECIAL_DAY, ds_readb(0x45b9 + 2 + i * 3));
+			break;
+		}
+
+		passages_recalc();
+
+		/* roll out the weather, used for passages */
+		ds_writew(0x331b, random_schick(6));
+		ds_writew(0x331d, random_schick(7));
+
+		/* check if times up */
+		if (ds_readb(YEAR) == 17 && ds_readb(MONTH) >= 10 &&
+			ds_readb(DAY_OF_MONTH) >= 17) {
+			ds_writeb(0xc3c1, 4);
+		}
+	}
+
+	/* at 9 o'clock */
+	if (ds_readd(DAY_TIMER) == 0xbdd8)
+		passages_reset();
 }
 
 /**
