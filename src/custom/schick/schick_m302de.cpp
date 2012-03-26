@@ -52,6 +52,8 @@
 #include "seg102.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg106.h"
+#include "seg108.h"
 #include "seg113.h"
 #include "seg120.h"
 
@@ -4644,6 +4646,63 @@ static int seg105(unsigned short offs) {
 	}
 }
 
+static int seg106(unsigned short offs)
+{
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		D1_LOG("equip_belt();\n");
+		return 0;
+	}
+	case 0x43: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+		D1_LOG("get_full_waterskin_pos(%s);\n",
+			(char*)Real2Host(hero) + 0x10);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int seg108(unsigned short offs)
+{
+	switch (offs) {
+	case 0x20: {
+		RealPt owner = CPU_Pop32();
+		RealPt consumer = CPU_Pop32();
+		Bit16u pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push32(consumer);
+		CPU_Push32(owner);
+		D1_LOG("consume(%s, %s, %x);\n",
+			(char*)Real2Host(owner) + 0x10,
+			(char*)Real2Host(consumer) + 0x10,
+			pos);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg109(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -4900,9 +4959,9 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x147b:	return seg103(offs);
 		case 0x1480:	return 0;
 		case 0x1485:	return seg105(offs);
-		case 0x148c:	return 0;
+		case 0x148c:	return seg106(offs);
 		case 0x1491:	return 0;
-		case 0x1498:	return 0;
+		case 0x1498:	return seg108(offs);
 		case 0x149b:	return seg109(offs);
 		case 0x14a7:	return 0;
 		case 0x14b4:	return 0;
@@ -5287,6 +5346,21 @@ static int n_seg064(unsigned offs) {
 		reg_ax = RealOff(tmp);
 		reg_dx = RealSeg(tmp);
 		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg106(unsigned offs) {
+	switch (offs) {
+	case 0x00: {
+		return 0;
+	}
+	case 0x9c: {
+		return 0;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -6670,8 +6744,8 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	if (is_ovrseg(0x14c2))
-		return n_seg113(offs);
+	else if (is_ovrseg(0x148c)) return n_seg106(offs);
+	else if (is_ovrseg(0x14c2)) return n_seg113(offs);
 	/* seg120 */
 	if (is_ovrseg(0x14f0)) {
 		switch (offs) {
