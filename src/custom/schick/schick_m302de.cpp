@@ -4671,9 +4671,10 @@ static int seg106(unsigned short offs)
 	case 0x43: {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
-		D1_LOG("get_full_waterskin_pos(%s);\n",
-			(char*)Real2Host(hero) + 0x10);
-		return 0;
+		reg_ax = get_full_waterskin_pos(Real2Host(hero));
+		D1_LOG("get_full_waterskin_pos(%s); = %d\n",
+			(char*)Real2Host(hero) + 0x10, (signed short)reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
