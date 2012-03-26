@@ -5550,8 +5550,8 @@ int schick_nearcall_v302de(unsigned offs) {
 		/* Callers: 1 */
 		case 0x3c63: {
 			CPU_Pop16();
-			seg002_3c63();
-			D1_LOG("seg002_3c63();\n");
+			passages_reset();
+			D1_LOG("passages_reset();\n");
 			return 1;
 		}
 		/* Callers: 2 */

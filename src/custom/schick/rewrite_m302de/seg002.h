@@ -46,7 +46,7 @@ void set_and_spin_lock();
 //static
 void passages_recalc();
 //static
-void seg002_3c63();
+void passages_reset();
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);

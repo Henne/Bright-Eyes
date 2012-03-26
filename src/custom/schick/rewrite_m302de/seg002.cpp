@@ -1210,7 +1210,7 @@ void passages_recalc() {
 		ds_writeb(0x42af, ds_readb(0x42af) - 1);
 }
 
-void seg002_3c63() {
+void passages_reset() {
 	Bit8u *p;
 	unsigned short i;
 
