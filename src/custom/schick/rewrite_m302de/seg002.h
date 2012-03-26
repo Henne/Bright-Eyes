@@ -44,7 +44,7 @@ void sub_light_timers(signed int);
 void magical_chainmail_damage(void);
 void set_and_spin_lock();
 //static
-void seg002_3b63();
+void passages_recalc();
 //static
 void seg002_3c63();
 void dec_splash();

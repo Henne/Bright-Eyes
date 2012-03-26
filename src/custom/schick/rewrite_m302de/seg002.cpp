@@ -1148,7 +1148,7 @@ void set_and_spin_lock() {
 	while (ds_readw(0xbcd6)) {};
 }
 
-void seg002_3b63() {
+void passages_recalc() {
 	Bit8u *p;
 	unsigned short locvar;
 	unsigned short di,i;
