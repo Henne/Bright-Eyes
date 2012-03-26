@@ -37,7 +37,7 @@ void prepare_date_str(void)
 
 	unused = 0;
 
-	hour = ds_readd(DAY_TIMER) / 0x1518;
+	hour = (signed short)(ds_readd(DAY_TIMER) / 0x1518);
 
 	if ((signed char)ds_readb(DAY_OF_MONTH) < 0) {
 		/* Days of the nameless */
