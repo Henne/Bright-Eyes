@@ -5355,6 +5355,91 @@ static int n_seg064(unsigned offs) {
 	}
 }
 
+static int n_seg105(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned short item = CPU_Pop16();
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		D1_LOG("unequip(%s, %s, %d);\n",
+			schick_getCharname(hero),
+			get_itemname(item), pos);
+		unequip(Real2Host(hero), item, pos);
+
+		return 1;
+	}
+	case 0x3aa: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		reg_ax = has_hero_stacked(Real2Host(hero), item);
+		D1_LOG("has_hero_stacked(%s, %s) = %d\n",
+			schick_getCharname(hero),
+			get_itemname(item), (signed short)reg_ax);
+
+		return 1;
+	}
+	case 0x3e8: {
+		return 0;
+	}
+	case 0x675: {
+		CPU_Pop16();
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+
+		reg_ax = item_pleasing_ingerimm(item);
+		D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
+			get_itemname(item), reg_ax);
+
+		return 1;
+	}
+	case 0x6d9: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned short pos = CPU_Pop16();
+		signed short nr = CPU_Pop16();
+		CPU_Push16(nr);
+		CPU_Push16(pos);
+		CPU_Push32(hero);
+
+		reg_ax = drop_item(Real2Host(hero), pos, nr);
+		D1_LOG("drop_item(%s, %d, %d); = %d\n",
+			schick_getCharname(hero), pos, nr, reg_ax);
+
+		return 1;
+	}
+	case 0xada: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		reg_ax = hero_count_item(Real2Host(hero), item);
+		D1_INFO("hero_count_item(%s, %s) = %d\n",
+			schick_getCharname(hero),
+			get_itemname(item), reg_ax);
+
+		return 1;
+	}
+	case 0xc10: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			"seg105", offs);
+		exit(1);
+	}
+}
+
 static int n_seg106(unsigned offs) {
 	switch (offs) {
 	case 0x00: {
@@ -6661,90 +6746,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 	}
 	/* seg105 */
-	if (is_ovrseg(0x1485)) {
-		switch (offs) {
-		case 0x000: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			unsigned short item = CPU_Pop16();
-			unsigned short pos = CPU_Pop16();
-			CPU_Push16(pos);
-			CPU_Push16(item);
-			CPU_Push32(hero);
-
-			D1_LOG("unequip(%s, %s, %d);\n",
-				schick_getCharname(hero),
-				get_itemname(item), pos);
-			unequip(Real2Host(hero), item, pos);
-
-			return 1;
-		}
-		case 0x3aa: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			unsigned short item = CPU_Pop16();
-			CPU_Push16(item);
-			CPU_Push32(hero);
-
-			reg_ax = has_hero_stacked(Real2Host(hero), item);
-			D1_LOG("has_hero_stacked(%s, %s) = %d\n",
-				schick_getCharname(hero),
-				get_itemname(item), (signed short)reg_ax)
-;
-			return 1;
-		}
-		case 0x3e8: {
-			return 0;
-		}
-		case 0x675: {
-			CPU_Pop16();
-			unsigned short item = CPU_Pop16();
-			CPU_Push16(item);
-
-			reg_ax = item_pleasing_ingerimm(item);
-			D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
-				get_itemname(item), reg_ax);
-
-			return 1;
-		}
-		case 0x6d9: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			unsigned short pos = CPU_Pop16();
-			signed short nr = CPU_Pop16();
-			CPU_Push16(nr);
-			CPU_Push16(pos);
-			CPU_Push32(hero);
-
-			reg_ax = drop_item(Real2Host(hero), pos, nr);
-			D1_LOG("drop_item(%s, %d, %d); = %d\n",
-				schick_getCharname(hero), pos, nr, reg_ax);
-
-			return 1;
-		}
-		case 0xada: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			unsigned short item = CPU_Pop16();
-			CPU_Push16(item);
-			CPU_Push32(hero);
-
-			reg_ax = hero_count_item(Real2Host(hero), item);
-			D1_INFO("hero_count_item(%s, %s) = %d\n",
-				schick_getCharname(hero),
-				get_itemname(item), reg_ax)
-;
-			return 1;
-		}
-		case 0xc10: {
-			return 0;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg105", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x1485)) return n_seg105(offs);
 	else if (is_ovrseg(0x148c)) return n_seg106(offs);
 	else if (is_ovrseg(0x14c2)) return n_seg113(offs);
 	/* seg120 */
