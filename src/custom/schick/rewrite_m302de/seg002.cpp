@@ -62,6 +62,10 @@ Bit16u open_and_seek_dat(unsigned short fileindex) {
 	/* read the start offset of the next file */
 	bc__read(fd, (Bit8u*)&end, 4);
 
+	/* BE-Fix */
+	start = host_readd((Bit8u*)&start);
+	end = host_readd((Bit8u*)&end);
+
 	/* seek to the desired file */
 	bc_lseek(fd, start, DOS_SEEK_SET);
 
