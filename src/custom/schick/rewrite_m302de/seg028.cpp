@@ -278,6 +278,10 @@ void load_tlk(signed short index)
 	read_archive_file(fd, (Bit8u*)&off, 4);
 	read_archive_file(fd, (Bit8u*)&partners, 2);
 
+	/* BE-Fix */
+	off = host_readd((Bit8u*)&off);
+	partners = host_readw((Bit8u*)&partners);
+
 	/* read the partner structures */
 	read_archive_file(fd,
 		ptr = Real2Host(RealMake(datseg, 0x3618)), partners * 0x26);
