@@ -50,7 +50,7 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 		}
 	} else {
 		p_name = get_monname(index);
-		flag += host_readw(lp5 + 2 * ds_readb(0x0925 + index));
+		flag += host_readw((Bit8u*)lp5 + 2 * ds_readb(0x0925 + index));
 	}
 
 	if (flag & 0x8000)
