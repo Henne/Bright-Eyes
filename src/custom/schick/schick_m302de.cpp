@@ -2953,12 +2953,17 @@ static int seg038(unsigned short offs) {
 			CPU_Push16(obj);
 
 			reg_ax = FIG_search_obj_on_cb(obj,
-					Real2Host(px),
-					Real2Host(py));
+					(signed short*)Real2Host(px),
+					(signed short*)Real2Host(py));
 
 			D1_LOG("far FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
 				obj, mem_readw(Real2Phys(px)),
 				mem_readw(Real2Phys(py)), reg_ax);
+
+			host_writew(Real2Host(px),
+				*((signed short*)Real2Host(px)));
+			host_writew(Real2Host(py),
+				*((signed short*)Real2Host(py)));
 
 			return 1;
 		}
@@ -6228,12 +6233,17 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(obj);
 
 			reg_ax = FIG_search_obj_on_cb(obj,
-					Real2Host(px),
-					Real2Host(py));
+					(signed short*)Real2Host(px),
+					(signed short*)Real2Host(py));
 
 			D1_LOG("near FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
 				obj, mem_readw(Real2Phys(px)),
 				mem_readw(Real2Phys(py)), reg_ax);
+
+			host_writew(Real2Host(px),
+				*((signed short*)Real2Host(px)));
+			host_writew(Real2Host(py),
+				*((signed short*)Real2Host(py)));
 
 			return 1;
 		}
