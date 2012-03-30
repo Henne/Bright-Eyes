@@ -7,6 +7,7 @@
 #include <SDL.h>
 
 #include "schick.h"
+#include "v302de.h"
 
 static const char god[][9] = {"Neu-Gott", "Praios", "Rondra", "Efferd",
 				"Travia", "Boron", "Hesinde", "Firun", "Tsa",
@@ -231,9 +232,17 @@ static void schick_status_dng_thorwal(unsigned long i) {
 static void schick_cmp_heros()
 {
 
-	Bit8u *hero = Real2Host(ds_readd(0xbd34));
+	Bit8u *hero;
 	unsigned long i, j;
 	unsigned char items;
+
+	/* check for non NULL */
+	if (ds_readd(HEROS) == 0) {
+		D1_ERR("Null ptr\n");
+		return;
+	}
+
+	hero = get_hero(0);
 
 	for (i = 0; i < 7; i++, hero += 0x6da) {
 
