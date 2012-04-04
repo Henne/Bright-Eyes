@@ -5371,20 +5371,20 @@ static int n_seg064(unsigned offs) {
 static int n_seg105(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
-		RealPt hero = CPU_Pop32();
-		unsigned short item = CPU_Pop16();
-		unsigned short pos = CPU_Pop16();
-		CPU_Push16(pos);
-		CPU_Push16(item);
-		CPU_Push32(hero);
+	    CPU_Pop16();
+	    RealPt hero = CPU_Pop32();
+	    unsigned short item = CPU_Pop16();
+	    unsigned short pos = CPU_Pop16();
+	    CPU_Push16(pos);
+	    CPU_Push16(item);
+	    CPU_Push32(hero);
 
-		D1_LOG("unequip(%s, %s, %d);\n",
-			schick_getCharname(hero),
-			get_itemname(item), pos);
-		unequip(Real2Host(hero), item, pos);
+	    D1_LOG("unequip(%s, %s, %d);\n",
+		    schick_getCharname(hero),
+		    get_itemname(item), pos);
+		    unequip(Real2Host(hero), item, pos);
 
-		return 1;
+	    return 1;
 	}
 	case 0x3aa: {
 		CPU_Pop16();
