@@ -115,7 +115,6 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos) {
 	/* if item is an armor ? */
 	if (host_readb(item_p + 2) & 1)	{
 		unsigned char v = host_readb(item_p + 3);
-		D1_INFO("Ruestung %d\n", v);
 
 		/* can be weared on the head */
 		if (pos == 0 && v == 0)
