@@ -138,7 +138,7 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos) {
 		return 0;
 	}
 
-	/* Strinreif (3 types) can be weared at the head */
+	/* Stirnreif (3 types) can be weared at the head */
 	if (item == 217 || item == 171 || item == 245)
 		if (pos == 0)
 			return 1;
