@@ -4562,7 +4562,21 @@ static int seg105(unsigned short offs) {
 			return 0;
 		}
 		case 0x2f: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			Bit16s item = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			Bit16s nr = CPU_Pop16();
+			CPU_Push16(nr);
+			CPU_Push16(v2);
+			CPU_Push16(item);
+			CPU_Push32(hero);
+
+			reg_ax = give_hero_new_item(Real2Host(hero), item, v2, nr);
+			D1_LOG("far new(%s, %s, %d, %d); = %d \n",
+				(char*)Real2Host(hero) + 0x10,
+				get_itemname(item),
+				v2, nr, (signed short)reg_ax);
+			return 1;
 		}
 		case 0x34: {
 			RealPt hero = CPU_Pop32();
@@ -5401,7 +5415,21 @@ static int n_seg105(unsigned offs) {
 		return 1;
 	}
 	case 0x3e8: {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s item = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s nr = CPU_Pop16();
+		CPU_Push16(nr);
+		CPU_Push16(v2);
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		reg_ax = give_hero_new_item(Real2Host(hero), item, v2, nr);
+		D1_LOG("near give_hero_new_item(%s, %s, %d, %d); = %d\n",
+			(char*)Real2Host(hero) + 0x10,
+			get_itemname(item), v2, nr, (signed short)reg_ax);
+		return 1;
 	}
 	case 0x675: {
 		CPU_Pop16();

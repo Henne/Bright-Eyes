@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 10/14
+ *      Functions rewritten 11/14
  *
- *      Functions called rewritten 9/13
+ *      Functions called rewritten 10/13
  *      Functions uncalled rewritten 1/1
 */
 
@@ -194,6 +194,156 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item) {
 	}
 
 	return -1;
+}
+
+/**
+ * give_hero_new_item() - generates an item and gives it to hero
+ * @hero:	the hero who should get the item
+ * @item:	id of the item
+ * @mode:	0 = quiet / 1 = warn / 2 = ignore
+ * @nr:		number of item the hero should get
+ *
+ * The mode parameter works that way: If the weight the hero carries
+ * is greater than KK*10 mode 0 and 1 will not give the hero that item.
+ * The difference is, that mode = 1 prints a warning, mode = 0 is quiet.
+ * mode = 2 ignores the carry weight completely.
+*/
+signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short nr)
+{
+	Bit8u *item_p;
+	signed short done;
+	signed short retval;
+	signed short l1;
+	signed short si, di;
+
+	si = nr;
+
+	retval = 0;
+
+	/* check if hero can carry that item */
+	if ((mode != 2) &&
+		(host_readb(hero + 0x47) * 100 <= host_readw(hero + 0x2d8))) {
+
+		if (mode != 0) {
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xc2c),
+				(char*)(hero + 0x10));
+			GUI_output(Real2Host(ds_readd(DTP2)));
+		}
+	} else {
+		item_p = get_itemsdat(item);
+
+		/* hero has a non-full stack of this item */
+		if (((host_readb(item_p + 2) >> 4) & 1) &&
+			((l1 = has_hero_stacked(hero, item)) != -1)) {
+
+
+			/* check for space on existing stack */
+			if (host_readw(hero + 0x196 + 2 + l1 * 14) + si > 99) {
+				si = 99 - host_readw(hero + 0x196 + 2 + l1 * 14);
+			}
+
+			/* add items to stack */
+			host_writew(hero + 0x196 + 2 + l1 * 14,
+				host_readw(hero + 0x196 + 2 + l1 * 14) + si);
+
+			/* add weight */
+			host_writew(hero + 0x2d8,
+				host_readw(hero + 0x2d8) + host_readw(item_p + 5) * si);
+
+			retval = si;
+		} else {
+
+			/* Original-Bug: may lead to problems when the
+				item counter is broken */
+			if (host_readb(hero + 0x20) < 23) {
+
+				done = 0;
+
+				do {
+				/* Original-Bug: may lead to problems when the
+					item counter is broken */
+					if (host_readb(hero + 0x20) < 23) {
+						/* look for a free place */
+						di = 6;
+						do {
+							di++;
+							if (host_readw(hero + 0x196 + di * 14) == 0)
+								break;
+						} while (di < 23);
+
+						if (di < 23) {
+							if (si > 99)
+								si = 99;
+							/* increment item counter */
+							host_writeb(hero + 0x20, host_readb(hero + 0x20) + 1);
+
+							/* write item id */
+							host_writew(hero + 0x196 + di * 14, item);
+
+							/* write item counter */
+							if ((host_readb(item_p + 2) >> 4) & 1) {
+								/* write stackable items */
+								host_writew(hero + 0x196 + 2 + di * 14, si);
+							} else if ((host_readb(item_p + 2) >> 2) & 1) {
+								/* unknown */
+								host_writew(hero + 0x196 + 2 + di * 14,
+									ds_readb(0x8aa + host_readb(item_p + 4) * 3));
+							} else {
+								host_writew(hero + 0x196 + 2 + di * 14, 0);
+							}
+
+							/* unknown */
+							if (host_readb(item_p + 0xb) != 0) {
+								host_writeb(hero + 0x196 + 2 + di * 14,
+									host_readb(hero + 0x196 + 2 + di * 14) | 8);
+							}
+
+							/* set breakfactor */
+							if ((host_readb(item_p + 2) >> 1) & 1) {
+								host_writeb(hero + 0x196 + 6 + di * 14,
+									ds_readb(0x6b0 + 3 + host_readb(item_p + 4) * 7));
+							}
+
+							/* adjust weight */
+							if ((host_readb(item_p + 2) >> 4) & 1) {
+								/* add stackable items weight*/
+								host_writew(hero + 0x2d8,
+									host_readw(hero + 0x2d8) + host_readw(item_p + 5) * si);
+								retval = si;
+								si = 0;
+							} else {
+								/* add single item weight */
+								host_writew(hero + 0x2d8,
+									host_readw(hero + 0x2d8) + host_readw(item_p + 5));
+								si--;
+								retval++;
+							}
+
+							/* all items are distributed */
+							if (si == 0)
+								done = 1;
+
+							/* special items */
+							if (item == 0xa1) {
+								host_writeb(hero + 0x125, host_readb(hero + 0x125) + 3);
+							}
+							if (item == 0xa3) {
+								host_writeb(hero + 0x66, host_readb(hero + 0x66) + 5);
+							}
+
+						} else {
+							done = 1;
+						}
+					} else {
+						done = 1;
+					}
+				} while (done == 0);
+			}
+		}
+	}
+
+	return retval;
 }
 
 /**

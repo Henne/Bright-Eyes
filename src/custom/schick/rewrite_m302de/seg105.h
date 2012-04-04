@@ -2,6 +2,8 @@ namespace M302de {
 
 //20
 void unequip(Bit8u *hero, unsigned short item, unsigned short pos);
+//2f
+signed short give_hero_new_item(Bit8u *hero, signed short, signed short, signed short);
 //34
 unsigned short drop_item(Bit8u *, unsigned short, signed short);
 //3e
