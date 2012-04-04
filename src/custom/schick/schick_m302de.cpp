@@ -4658,7 +4658,15 @@ static int seg106(unsigned short offs)
 		return 0;
 	}
 	case 0x25: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		Bit16s pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push32(hero);
+		D1_LOG("print_item_description(%s, %d);\n",
+				(char*)Real2Host(hero) + 0x10,
+				pos);
+		print_item_description(Real2Host(hero), pos);
+		return 1;
 	}
 	case 0x2a: {
 		return 0;
