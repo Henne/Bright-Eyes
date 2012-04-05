@@ -5497,6 +5497,110 @@ static int n_seg004(unsigned short offs)
 	}
 }
 
+static int n_seg005(unsigned short offs)
+{
+	switch (offs) {
+	case 0xb: {
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		signed short x = CPU_Pop16();
+		signed short y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(p);
+
+		reg_ax = FIG_obj_needs_refresh(Real2Host(p), x, y);
+		D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
+			p, x, y, reg_ax);
+
+		return 1;
+	}
+	case 0x144: {
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		unsigned short count = CPU_Pop16();
+		unsigned short val = CPU_Pop16();
+		CPU_Push16(val);
+		CPU_Push16(count);
+		CPU_Push32(p);
+
+		FIG_set_star_color(Real2Phys(p), count, val & 0xff);
+		D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
+			p, count, val & 0xff);
+
+		return 1;
+	}
+	case 0x181: {
+		CPU_Pop16();
+		unsigned short type = CPU_Pop16();
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(type);
+
+		RealPt retval = FIG_name_3rd_case(type, pos);
+		D1_LOG("FIG_name_3rd_case(%d,%d) = %s\n",
+			type, pos, getString(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x1b6: {
+		CPU_Pop16();
+		unsigned short type = CPU_Pop16();
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(type);
+
+		RealPt retval = FIG_name_4th_case(type, pos);
+		D1_LOG("FIG_name_4th_case(%d,%d) = %s\n",
+			type, pos, getString(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x1eb: {
+		CPU_Pop16();
+		unsigned short type = CPU_Pop16();
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(type);
+
+		RealPt retval = FIG_name_1st_case(type, pos);
+		D1_LOG("FIG_name_1st_case(%d,%d) = %s\n",
+			type, pos, getString(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x220: {
+		CPU_Pop16();
+		reg_ax = fight_printer();
+		D1_LOG("fight_printer()\n");
+		return 1;
+	}
+	case 0x1ba7: {
+		CPU_Pop16();
+		set_delay_timer();
+		D1_LOG("set_delay_timer()\n");
+		return 1;
+	}
+	case 0x1bb2: {
+		CPU_Pop16();
+		fight_delay();
+		D1_LOG("fight_delay()\n");
+		return 1;
+	}
+	default:
+		return 0;
+	}
+}
+
 static int n_seg006(unsigned offs)
 {
 	switch (offs) {
@@ -6034,109 +6138,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (segm == 0x4ac) return n_seg001(offs);
 	else if (segm == 0x51e) return n_seg002(offs);
 	else if (segm == 0xb2a) return n_seg004(offs);
-	/* seg005 */
-	if (segm == 0xc85) {
-		switch (offs) {
-		case 0xb: {
-			CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			signed short x = CPU_Pop16();
-			signed short y = CPU_Pop16();
-			CPU_Push16(y);
-			CPU_Push16(x);
-			CPU_Push32(p);
-
-			reg_ax = FIG_obj_needs_refresh(Real2Host(p), x, y);
-			D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
-				p, x, y, reg_ax);
-
-			return 1;
-		}
-		case 0x144: {
-			CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			unsigned short count = CPU_Pop16();
-			unsigned short val = CPU_Pop16();
-			CPU_Push16(val);
-			CPU_Push16(count);
-			CPU_Push32(p);
-
-			FIG_set_star_color(Real2Phys(p), count, val & 0xff);
-			D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
-				p, count, val & 0xff);
-
-			return 1;
-		}
-		case 0x181: {
-			CPU_Pop16();
-			unsigned short type = CPU_Pop16();
-			unsigned short pos = CPU_Pop16();
-			CPU_Push16(pos);
-			CPU_Push16(type);
-
-			RealPt retval = FIG_name_3rd_case(type, pos);
-			D1_LOG("FIG_name_3rd_case(%d,%d) = %s\n",
-				type, pos, getString(retval));
-
-			reg_ax = RealOff(retval);
-			reg_dx = RealSeg(retval);
-
-			return 1;
-		}
-		case 0x1b6: {
-			CPU_Pop16();
-			unsigned short type = CPU_Pop16();
-			unsigned short pos = CPU_Pop16();
-			CPU_Push16(pos);
-			CPU_Push16(type);
-
-			RealPt retval = FIG_name_4th_case(type, pos);
-			D1_LOG("FIG_name_4th_case(%d,%d) = %s\n",
-				type, pos, getString(retval));
-
-			reg_ax = RealOff(retval);
-			reg_dx = RealSeg(retval);
-
-			return 1;
-		}
-		case 0x1eb: {
-			CPU_Pop16();
-			unsigned short type = CPU_Pop16();
-			unsigned short pos = CPU_Pop16();
-			CPU_Push16(pos);
-			CPU_Push16(type);
-
-			RealPt retval = FIG_name_1st_case(type, pos);
-			D1_LOG("FIG_name_1st_case(%d,%d) = %s\n",
-				type, pos, getString(retval));
-
-			reg_ax = RealOff(retval);
-			reg_dx = RealSeg(retval);
-
-			return 1;
-		}
-		case 0x220: {
-			CPU_Pop16();
-			reg_ax = fight_printer();
-			D1_LOG("fight_printer()\n");
-			return 1;
-		}
-		case 0x1ba7: {
-			CPU_Pop16();
-			set_delay_timer();
-			D1_LOG("set_delay_timer()\n");
-			return 1;
-		}
-		case 0x1bb2: {
-			CPU_Pop16();
-			fight_delay();
-			D1_LOG("fight_delay()\n");
-			return 1;
-		}
-		default:
-			return 0;
-		}
-	}
+	else if (segm == 0xc85) return n_seg005(offs);
 	else if (segm == 0xe41) return n_seg006(offs);
 	/* seg024 */
 	if (is_ovrseg(0x12db)) {
