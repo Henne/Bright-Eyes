@@ -5659,6 +5659,22 @@ static int n_seg006(unsigned offs)
 		return 0;
 	}
 }
+static int n_seg024(unsigned short offs)
+{
+	switch (offs) {
+	case 0x1d3: {
+		CPU_Pop16();
+		Bit16u line = CPU_Pop16();
+		CPU_Push16(line);
+		reg_ax = diary_print_entry(line);
+		D1_LOG("diary_print_entry(%d); == %d\n", line, reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
 
 static int n_seg028(unsigned offs) {
 	switch (offs) {
@@ -6159,24 +6175,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (segm == 0xb2a) return n_seg004(offs);
 	else if (segm == 0xc85) return n_seg005(offs);
 	else if (segm == 0xe41) return n_seg006(offs);
-	/* seg024 */
-	if (is_ovrseg(0x12db)) {
-		switch (offs) {
-		case 0x1d3: {
-			CPU_Pop16();
-			Bit16u line = CPU_Pop16();
-			CPU_Push16(line);
-
-			reg_ax = diary_print_entry(line);
-			D1_LOG("diary_print_entry(%d); == %d\n", line, reg_ax);
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg024", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x12db)) return n_seg024(offs);
 	/* seg026 */
 	if (is_ovrseg(0x12e5)) {
 		switch (offs) {
