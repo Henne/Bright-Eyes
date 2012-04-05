@@ -3301,6 +3301,7 @@ static int seg047(unsigned short offs) {
 		CPU_Push32(hero);
 
 		hero_get_sober(Real2Host(hero));
+		D1_LOG("%s ist wieder nuechtern\n", schick_getCharname(hero));
 
 		return 1;
 	}
@@ -3308,9 +3309,10 @@ static int seg047(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
+		hero_get_drunken(Real2Host(hero));
 		D1_LOG("%s ist betrunken\n", schick_getCharname(hero));
 
-		return 0;
+		return 1;
 	}
 /*	not called
 	case 0x2f: {

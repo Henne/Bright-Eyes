@@ -3,6 +3,7 @@
 #include "schick.h"
 #include "v302de.h"
 
+#include "seg002.h"
 #include "seg007.h"
 #include "seg097.h"
 
@@ -321,6 +322,39 @@ unsigned short count_heroes_in_group(void)
 	}
 
 	return retval;
+}
+
+void hero_get_drunken(Bit8u *hero)
+{
+
+	if (host_readb(hero + 0xa1) == 0) {
+
+		/* set the hero drunken */
+		host_writeb(hero + 0xa1, 1);
+
+		/* change good attributes */
+		host_writeb(hero + 0x35, host_readb(hero + 0x35) + 1);
+		host_writeb(hero + 0x38, host_readb(hero + 0x38) - 1);
+		host_writeb(hero + 0x3b, host_readb(hero + 0x3b) - 1);
+		host_writeb(hero + 0x3e, host_readb(hero + 0x3e) - 1);
+		host_writeb(hero + 0x41, host_readb(hero + 0x41) - 1);
+		host_writeb(hero + 0x44, host_readb(hero + 0x44) + 1);
+		host_writeb(hero + 0x47, host_readb(hero + 0x47) + 1);
+
+		/* Reset bad attributes */
+		host_writeb(hero + 0x4a, host_readb(hero + 0x4a) + 1);
+		host_writeb(hero + 0x4d, host_readb(hero + 0x4d) - 1);
+		host_writeb(hero + 0x50, host_readb(hero + 0x50) - 1);
+		host_writeb(hero + 0x53, host_readb(hero + 0x53) + 1);
+		host_writeb(hero + 0x56, host_readb(hero + 0x56) - 1);
+		host_writeb(hero + 0x59, host_readb(hero + 0x59) + 1);
+		host_writeb(hero + 0x5c, host_readb(hero + 0x5c) + 1);
+
+		/* do a burp FX2.VOC */
+		if (ds_readb(0x2845) == 20) {
+			play_voc_delay(0x122);
+		}
+	}
 }
 
 /**
