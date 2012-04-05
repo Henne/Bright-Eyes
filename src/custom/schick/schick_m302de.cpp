@@ -5980,6 +5980,75 @@ static int n_seg064(unsigned offs) {
 	}
 }
 
+static int n_seg095(unsigned short offs)
+{
+	switch (offs) {
+	case 0x335: {
+		CPU_Pop16();
+		npc_nariell();
+		return 1;
+	}
+	case 0x44d: {
+		CPU_Pop16();
+		npc_harika();
+		return 1;
+	}
+	case 0x62d: {
+		CPU_Pop16();
+		npc_curian();
+		return 1;
+	}
+	case 0x746: {
+		CPU_Pop16();
+		npc_ardora();
+		return 1;
+	}
+	case 0x9a5: {
+		CPU_Pop16();
+		npc_garsvik();
+		return 1;
+	}
+	case 0xad0: {
+		CPU_Pop16();
+		npc_erwo();
+		return 1;
+	}
+	case 0xbfb: {
+		CPU_Pop16();
+		Bit16s head_index = CPU_Pop16();
+		Bit16s days = CPU_Pop16();
+		Bit16s index = CPU_Pop16();
+		RealPt name = CPU_Pop32();
+		RealPt text = CPU_Pop32();
+
+		remove_npc(head_index, (signed char)days, index,
+			Real2Host(name), Real2Host(text));
+
+		D1_LOG("remove_npc(%x, %d, %x, %x, %x);\n",
+			head_index, (signed char)days, index,
+			name, text);
+
+		CPU_Push32(text);
+		CPU_Push32(name);
+		CPU_Push16(index);
+		CPU_Push16(days);
+		CPU_Push16(head_index);
+		return 1;
+	}
+	case 0xcb8: {
+		CPU_Pop16();
+		Bit16s index = CPU_Pop16();
+		D1_LOG("add_npc(%s);\n", get_fname(index));
+		add_npc(index);
+		CPU_Push16(index);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg098(unsigned short offs)
 {
 	switch (offs) {
@@ -6625,75 +6694,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1362)) return n_seg053(offs);
 	else if (is_ovrseg(0x1386)) return n_seg063(offs);
 	else if (is_ovrseg(0x138a)) return n_seg064(offs);
-	/* seg095 */
-	if (is_ovrseg(0x1432)) {
-		switch (offs) {
-			case 0x335: {
-				CPU_Pop16();
-				npc_nariell();
-				return 1;
-			}
-			case 0x44d: {
-				CPU_Pop16();
-				npc_harika();
-				return 1;
-			}
-			case 0x62d: {
-				CPU_Pop16();
-				npc_curian();
-				return 1;
-			}
-			case 0x746: {
-				CPU_Pop16();
-				npc_ardora();
-				return 1;
-			}
-			case 0x9a5: {
-				CPU_Pop16();
-				npc_garsvik();
-				return 1;
-			}
-			case 0xad0: {
-				CPU_Pop16();
-				npc_erwo();
-				return 1;
-			}
-			case 0xbfb: {
-				CPU_Pop16();
-				Bit16s head_index = CPU_Pop16();
-				Bit16s days = CPU_Pop16();
-				Bit16s index = CPU_Pop16();
-				RealPt name = CPU_Pop32();
-				RealPt text = CPU_Pop32();
-
-				remove_npc(head_index, (signed char)days, index,
-					Real2Host(name), Real2Host(text));
-
-				D1_LOG("remove_npc(%x, %d, %x, %x, %x);\n",
-					head_index, (signed char)days, index,
-					name, text);
-
-				CPU_Push32(text);
-				CPU_Push32(name);
-				CPU_Push16(index);
-				CPU_Push16(days);
-				CPU_Push16(head_index);
-				return 1;
-			}
-			case 0xcb8: {
-				CPU_Pop16();
-				Bit16s index = CPU_Pop16();
-				D1_LOG("add_npc(%s);\n", get_fname(index));
-				add_npc(index);
-				CPU_Push16(index);
-				return 1;
-			}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg046", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	/* seg097 */
 	if (is_ovrseg(0x1442)) {
 		switch (offs) {
