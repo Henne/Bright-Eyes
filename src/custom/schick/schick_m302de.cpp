@@ -5390,6 +5390,65 @@ static int n_seg064(unsigned offs) {
 	}
 }
 
+static int n_seg098(unsigned short offs)
+{
+	switch (offs) {
+
+	/* Callers: 1 */
+	case 0x0000 : {
+		return 0;
+	}
+	/* Callers: 4 */
+	case 0x0339 : {
+		CPU_Pop16();
+		unsigned short spell = CPU_Pop16();
+		unsigned short half_cost = CPU_Pop16();
+		CPU_Push16(half_cost);
+		CPU_Push16(spell);
+
+		reg_ax = get_spell_cost(spell, half_cost);
+
+		D1_LOG("get_spell_cost(%s, %d) = %d\n",
+			names_spell[spell], half_cost, (short)reg_ax);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x071d : {
+		return 0;
+	}
+	/* Callers: 1 */
+	case 0x0786 : {
+		return 0;
+	}
+	/* Callers: 1 */
+	case 0x0e1f : {
+		// Zauberprobe
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned spell = CPU_Pop16();
+		signed bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(spell);
+		CPU_Push32(hero);
+
+		D1_LOG("Zauberprobe: %s %+d ",
+			names_spell[spell], (signed char)bonus);
+
+		reg_ax = test_spell(Real2Host(hero),
+			spell, (signed char)bonus);
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x1000 : {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg105(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
@@ -6761,65 +6820,7 @@ int schick_nearcall_v302de(unsigned offs) {
 
 		return 1;
 	}
-	/* seg098 */
-	if (is_ovrseg(0x1449)) {
-		switch (offs) {
-
-		/* Callers: 1 */
-		case 0x0000 : {
-			return 0;
-		}
-		/* Callers: 4 */
-		case 0x0339 : {
-			CPU_Pop16();
-			unsigned short spell = CPU_Pop16();
-			unsigned short half_cost = CPU_Pop16();
-			CPU_Push16(half_cost);
-			CPU_Push16(spell);
-
-			reg_ax = get_spell_cost(spell, half_cost);
-
-			D1_LOG("get_spell_cost(%s, %d) = %d\n",
-				names_spell[spell], half_cost, (short)reg_ax);
-
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x071d : {
-			return 0;
-		}
-		/* Callers: 1 */
-		case 0x0786 : {
-			return 0;
-		}
-		/* Callers: 1 */
-		case 0x0e1f : {
-			// Zauberprobe
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			unsigned spell = CPU_Pop16();
-			signed bonus = CPU_Pop16();
-			CPU_Push16(bonus);
-			CPU_Push16(spell);
-			CPU_Push32(hero);
-
-			D1_LOG("Zauberprobe: %s %+d ",
-				names_spell[spell], (signed char)bonus);
-
-			reg_ax = test_spell(Real2Host(hero),
-				spell, (signed char)bonus);
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x1000 : {
-			return 0;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg098", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x1449)) return n_seg098(offs);
 	else if (is_ovrseg(0x1485)) return n_seg105(offs);
 	else if (is_ovrseg(0x148c)) return n_seg106(offs);
 	else if (is_ovrseg(0x14c2)) return n_seg113(offs);
