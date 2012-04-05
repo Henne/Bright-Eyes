@@ -6137,8 +6137,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			return 0;
 		}
 	}
-	if (segm == 0xe41)
-		return n_seg006(offs);
+	else if (segm == 0xe41) return n_seg006(offs);
 	/* seg024 */
 	if (is_ovrseg(0x12db)) {
 		switch (offs) {
@@ -6214,8 +6213,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	if (is_ovrseg(0x12f1))
-		return n_seg028(offs);
+	else if (is_ovrseg(0x12f1)) return n_seg028(offs);
 
 	/* seg029 */
 	if (is_ovrseg(0x12f9)) {
@@ -6368,8 +6366,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 	}
 
-	if (is_ovrseg(0x131f))
-		return n_seg037(offs);
+	else if (is_ovrseg(0x131f)) return n_seg037(offs);
 
 	/* seg038 */
 	if (is_ovrseg(0x1324)) {
@@ -6535,8 +6532,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 	}
 
-	if (is_ovrseg(0x133f))
-		return n_seg045(offs);
+	else if (is_ovrseg(0x133f)) return n_seg045(offs);
 
 	/* seg046 */
 	if (is_ovrseg(0x1344)) {
@@ -6604,14 +6600,10 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 	}
 
-	if (is_ovrseg(0x1358))
-		return n_seg050(offs);
-	if (is_ovrseg(0x1362))
-		return n_seg053(offs);
-	if (is_ovrseg(0x1386))
-		return n_seg063(offs);
-	if (is_ovrseg(0x138a))
-		return n_seg064(offs);
+	else if (is_ovrseg(0x1358)) return n_seg050(offs);
+	else if (is_ovrseg(0x1362)) return n_seg053(offs);
+	else if (is_ovrseg(0x1386)) return n_seg063(offs);
+	else if (is_ovrseg(0x138a)) return n_seg064(offs);
 	/* seg095 */
 	if (is_ovrseg(0x1432)) {
 		switch (offs) {
