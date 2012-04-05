@@ -5527,6 +5527,27 @@ static int n_seg113(unsigned offs) {
 	}
 }
 
+static int n_seg120(unsigned short offs)
+{
+	switch (offs) {
+	case 0x578: {
+		return 0;
+	}
+	case 0x99f: {
+		CPU_Pop16();
+		D1_LOG("refresh_colors();\n");
+		refresh_colors();
+		return 1;
+	}
+	case 0xd85: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 int schick_nearcall_v302de(unsigned offs) {
 
 	unsigned short segm = SegValue(cs)-reloc_game;
@@ -6799,31 +6820,10 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	/* seg105 */
 	else if (is_ovrseg(0x1485)) return n_seg105(offs);
 	else if (is_ovrseg(0x148c)) return n_seg106(offs);
 	else if (is_ovrseg(0x14c2)) return n_seg113(offs);
-	/* seg120 */
-	if (is_ovrseg(0x14f0)) {
-		switch (offs) {
-		case 0x578: {
-			return 0;
-		}
-		case 0x99f: {
-			CPU_Pop16();
-			D1_LOG("refresh_colors();\n");
-			refresh_colors();
-			return 1;
-		}
-		case 0xd85: {
-			return 0;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg120", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x14f0)) return n_seg120(offs);
 
 	return 0;
 }
