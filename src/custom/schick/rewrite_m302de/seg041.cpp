@@ -121,13 +121,16 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 			host_readb(attacker + 1) == 0x1c))
 				damage -= 3;
 
-		/* Totenkopfguertel makes damage 0, but can be lost */
+		/* get position of Totenkopfguertel/Skullbelt */
 		pos = get_item_pos(hero, 0xb6);
 
 		if (pos != -1 && (host_readb(attacker + 1) == 0x22 ||
 			host_readb(attacker + 1) == 0x1c)) {
 
+			/* no damage for the hero who wears it */
 			damage = 0;
+
+			/* 55 chance to loose this item on use */
 			if (random_schick(100) < 5) {
 				drop_item(hero, pos, 1);
 				GUI_output(get_dtp(0x2c));
