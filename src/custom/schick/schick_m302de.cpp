@@ -1064,17 +1064,29 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x3230:
-	case 0x37c4:
+	case 0x3230: {
+		D1_LOG("Interesting();\n");
+		return 0;
+	}
+	case 0x37c4: {
 			return 0;
-
+	}
 	case 0x3b4f:  {
 		D1_LOG("set_and_spin_lock()\n");
 		return 1;
 	}
-	case 0x3ca6:
-	case 0x3dbb:	/* Schiffsfahrt */
+	case 0x3ca6: {
+		Bit32u time = CPU_Pop32();
+		CPU_Push32(time);
+		D1_LOG("timewarp(0x%x);\n", time);
 		return 0;
+	}
+	case 0x3dbb: {
+		Bit32u time = CPU_Pop32();
+		CPU_Push32(time);
+		D1_LOG("timewarp_visible(%d);\n", time);
+		return 0;
+	}
 	case 0x3ebb: {
 		D1_LOG("dec_splash();\n");
 		dec_splash();
