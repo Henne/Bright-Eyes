@@ -5676,6 +5676,63 @@ static int n_seg024(unsigned short offs)
 	}
 }
 
+static int n_seg026(unsigned short offs)
+{
+	switch (offs) {
+	case 0x23e: {
+		CPU_Pop16();
+		RealPt src = CPU_Pop32();
+		RealPt dst = CPU_Pop32();
+		Bit32u len = CPU_Pop32();
+
+		D1_LOG("split_textbuffer(%x, %x, %d)\n",
+			src, dst, len);
+		split_textbuffer(Real2Host(src), dst, len);
+		CPU_Push32(len);
+		CPU_Push32(dst);
+		CPU_Push32(src);
+		return 1;
+	}
+	case 0x2d3: {
+		CPU_Pop16();
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		D1_LOG("prepare_chr_name(%x, %s);\n", p1,
+			(char*)Real2Host(p2));
+		prepare_chr_name((char*)Real2Host(p1),
+			(char*)Real2Host(p2));
+		return 1;
+	}
+	case 0x347: {
+		CPU_Pop16();
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		D1_LOG("prepare_sg_name(%x, %s);\n", p1, (char*)Real2Host(p2));
+		prepare_sg_name((char*)Real2Host(p1),
+			(char*)Real2Host(p2));
+		return 1;
+	}
+	case 0x1021: {
+		return 0;
+	}
+	case 0x117f: {
+		CPU_Pop16();
+		Bit16u hero = CPU_Pop16();
+		CPU_Push16(hero);
+		D1_LOG("write_chr_temp(%d)\n", hero);
+		write_chr_temp(hero);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg028(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
@@ -6176,63 +6233,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (segm == 0xc85) return n_seg005(offs);
 	else if (segm == 0xe41) return n_seg006(offs);
 	else if (is_ovrseg(0x12db)) return n_seg024(offs);
-	/* seg026 */
-	if (is_ovrseg(0x12e5)) {
-		switch (offs) {
-		case 0x23e: {
-			CPU_Pop16();
-			RealPt src = CPU_Pop32();
-			RealPt dst = CPU_Pop32();
-			Bit32u len = CPU_Pop32();
-
-			D1_LOG("split_textbuffer(%x, %x, %d)\n",
-				src, dst, len);
-			split_textbuffer(Real2Host(src), dst, len);
-			CPU_Push32(len);
-			CPU_Push32(dst);
-			CPU_Push32(src);
-			return 1;
-		}
-		case 0x2d3: {
-			CPU_Pop16();
-			RealPt p1 = CPU_Pop32();
-			RealPt p2 = CPU_Pop32();
-			CPU_Push32(p2);
-			CPU_Push32(p1);
-			D1_LOG("prepare_chr_name(%x, %s);\n", p1,
-				(char*)Real2Host(p2));
-			prepare_chr_name((char*)Real2Host(p1),
-				(char*)Real2Host(p2));
-			return 1;
-		}
-		case 0x347: {
-			CPU_Pop16();
-			RealPt p1 = CPU_Pop32();
-			RealPt p2 = CPU_Pop32();
-			CPU_Push32(p2);
-			CPU_Push32(p1);
-			D1_LOG("prepare_sg_name(%x, %s);\n", p1, (char*)Real2Host(p2));
-			prepare_sg_name((char*)Real2Host(p1),
-				(char*)Real2Host(p2));
-			return 1;
-		}
-		case 0x1021: {
-			return 0;
-		}
-		case 0x117f: {
-			CPU_Pop16();
-			Bit16u hero = CPU_Pop16();
-			CPU_Push16(hero);
-			D1_LOG("write_chr_temp(%d)\n", hero);
-			write_chr_temp(hero);
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg024", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x12e5)) return n_seg026(offs);
 	else if (is_ovrseg(0x12f1)) return n_seg028(offs);
 
 	/* seg029 */
