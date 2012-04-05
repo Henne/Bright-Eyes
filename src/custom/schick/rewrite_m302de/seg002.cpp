@@ -38,6 +38,13 @@ void play_voc(Bit16u index)
 	CPU_Pop16();
 }
 
+void play_voc_delay(Bit16u index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x856);
+	CPU_Pop16();
+}
+
 /**
  * open_and_seek_dat - opens SCHICK.DAT and seeks to desired position
  * @fileindex: the index of the file in SCHICK.DAT

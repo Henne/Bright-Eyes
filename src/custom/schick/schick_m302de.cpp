@@ -807,7 +807,13 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(index);
 		return 1;
 	}
-	case 0x0856:	/* Betrunken */
+	case 0x0856: {
+		Bit16u index = CPU_Pop16();
+		D1_LOG("play_voc_delay(FX%d.VOC)\n", index - 288);
+		play_voc_delay(index);
+		CPU_Push16(index);
+		return 1;
+	}
 	case 0x0890:
 		return 0;
 	case 0x0c0e: {
