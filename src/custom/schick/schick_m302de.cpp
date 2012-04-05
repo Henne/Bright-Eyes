@@ -5449,6 +5449,30 @@ static int n_seg098(unsigned short offs)
 	}
 }
 
+static int n_seg103(unsigned short offs)
+{
+	switch (offs) {
+	case 0x040f: {
+		// Talentprobe
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned skill = CPU_Pop16();
+		signed bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(skill);
+		CPU_Push32(hero);
+
+		D1_LOG("Talentprobe: %s %+d\n ",
+			names_skill[skill], (char)bonus);
+
+		reg_ax = test_skill(Real2Host(hero), skill, bonus);
+
+		return 1;
+	}
+	default:
+		return 0;
+	}
+}
 static int n_seg105(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
@@ -6802,25 +6826,8 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	/* Callers: 2 */
-	if (is_ovrseg(0x147b) && (offs == 0x040F)) {
-		// Talentprobe
-		CPU_Pop16();
-		RealPt hero = CPU_Pop32();
-		unsigned skill = CPU_Pop16();
-		signed bonus = CPU_Pop16();
-		CPU_Push16(bonus);
-		CPU_Push16(skill);
-		CPU_Push32(hero);
-
-		D1_LOG("Talentprobe: %s %+d\n ",
-			names_skill[skill], (char)bonus);
-
-		reg_ax = test_skill(Real2Host(hero), skill, bonus);
-
-		return 1;
-	}
 	else if (is_ovrseg(0x1449)) return n_seg098(offs);
+	else if (is_ovrseg(0x147b)) return n_seg103(offs);
 	else if (is_ovrseg(0x1485)) return n_seg105(offs);
 	else if (is_ovrseg(0x148c)) return n_seg106(offs);
 	else if (is_ovrseg(0x14c2)) return n_seg113(offs);
