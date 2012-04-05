@@ -1161,8 +1161,14 @@ static int seg002(unsigned short offs) {
 		set_to_ff();
 		return 1;
 	}
-	case 0x43fd:
+	case 0x43fd: {
+		Bit16u nr = CPU_Pop16();
+		Bit16u first = CPU_Pop16();
+		CPU_Push16(first);
+		CPU_Push16(nr);
+		D1_LOG("draw_loc_icons(%d, %d);\n", nr, first);
 		return 0;
+	}
 	case 0x4485: {
 		short val = CPU_Pop16();
 		CPU_Push16(val);
