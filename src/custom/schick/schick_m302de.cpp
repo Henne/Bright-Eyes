@@ -5103,6 +5103,364 @@ static int n_seg001(unsigned offs)
 	}
 }
 
+static int n_seg002(unsigned short offs)
+{
+
+	switch (offs) {
+	case 0x0832: {
+		CPU_Pop16();
+		Bit16u index = CPU_Pop16();
+		D1_LOG("near play_voc(FX%d)\n", index - 288);
+		play_voc(index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x0b7e: {
+		CPU_Pop16();
+		unsigned short fileindex = CPU_Pop16();
+		CPU_Push16(fileindex);
+
+		reg_ax = open_and_seek_dat(fileindex);
+
+		D1_LOG("open_and_seek_dat(%s);\n", get_fname(fileindex));
+
+		return 1;
+	}
+	case 0x0c28: {
+		CPU_Pop16();
+		Bit16u handle = CPU_Pop16();
+		RealPt buf = CPU_Pop32();
+		Bit16u len = CPU_Pop16();
+		CPU_Push16(len);
+		CPU_Push32(buf);
+		CPU_Push16(handle);
+
+		D1_LOG("near read_archive_file(%d, %x, %d);\n",
+			handle, buf, len);
+		reg_ax = read_archive_file(handle, Real2Host(buf), len);
+
+		return 1;
+	}
+	case 0x0c72: {
+		CPU_Pop16();
+		Bit16u handle = CPU_Pop16();
+		Bit32u off = CPU_Pop32();
+		CPU_Push32(off);
+		CPU_Push16(handle);
+
+		D1_LOG("near seg002_0c72(%d, %d)\n", handle, off);
+		seg002_0c72(handle, off);
+
+		return 1;
+	}
+	case 0x1361: {
+		CPU_Pop16();
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		RealPt p3 = CPU_Pop32();
+		RealPt p4 = CPU_Pop32();
+		RealPt p5 = CPU_Pop32();
+		CPU_Push32(p5);
+		CPU_Push32(p4);
+		CPU_Push32(p3);
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		D1_LOG("mouse_action()\n");
+
+		mouse_action(Real2Host(p1),
+			Real2Host(p2),
+			Real2Host(p3),
+			Real2Host(p4),
+			Real2Host(p5));
+
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x1634: {
+		CPU_Pop16();
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		unsigned short v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax  = is_mouse_in_rect(v1, v2, v3, v4);
+		D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
+			v1, v2, v3, v4, reg_ax);
+
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x19dc: {
+		CPU_Pop16();
+		D1_LOG("mouse_19dc()\n");
+		mouse_19dc();
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x1cf2: {
+		CPU_Pop16();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = get_mouse_action(x, y, Real2Host(p));
+
+		D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
+			x, y, p, reg_ax);
+		return 1;
+	}
+	case 0x1d67: {
+		CPU_Pop16();
+		D1_LOG("handle_input();\n");
+		handle_input();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x20bd: {
+		CPU_Pop16();
+		timers_daily();
+		D1_LOG("timers_daily();\n");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2177: {
+		CPU_Pop16();
+		seg002_2177();
+		D1_LOG("seg002_2177();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x21ab: {
+		CPU_Pop16();
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		D1_LOG("pal_fade(%x,%x);\n", p1, p2);
+		pal_fade(Real2Host(p1), Real2Host(p2));
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2400: {
+		dawning();
+		D1_LOG("dawning()\n");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x24f0: {
+		D1_LOG("nightfall()\n");
+		nightfall();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x25ce: {
+		CPU_Pop16();
+		reg_ax = get_current_season();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2628: {
+		CPU_Pop16();
+		D1_LOG("do_census();\n");
+		do_census();
+		return 1;
+	}
+	case 0x274e: {
+		CPU_Pop16();
+		D1_LOG("near do_timers();\n");
+		do_timers();
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x2bf6: {
+		CPU_Pop16();
+		unsigned int val = CPU_Pop32();
+		CPU_Push32(val);
+		D1_LOG("near sub_ingame_timers(val = %u);\n", val);
+		sub_ingame_timers(val);
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x2c5e: {
+		CPU_Pop16();
+		unsigned int val = CPU_Pop32();
+		CPU_Push32(val);
+
+		D1_LOG("sub_mod_timers(%d);\n", val);
+		sub_mod_timers(val);
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x2f7a: {
+		CPU_Pop16();
+		unsigned int val = CPU_Pop32();
+		CPU_Push32(val);
+		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
+		seg002_2f7a(val);
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x3071: {
+		CPU_Pop16();
+		signed int quarter = CPU_Pop32();
+		CPU_Push32(quarter);
+
+		D1_LOG("near sub_light_timers(quarter=%d);\n", quarter);
+		sub_light_timers(quarter);
+
+		return 1;
+	}
+	case 0x31a2: {
+		CPU_Pop16();
+		D1_LOG("magical_chainmail_damage()\n");
+		magical_chainmail_damage();
+		return 1;
+	}
+	case 0x3230: {
+		D1_LOG("near Interesting();\n");
+		return 0;
+	}
+	/* Callers: 1 */
+	case 0x3b63: {
+		CPU_Pop16();
+		passages_recalc();
+		D1_LOG("passages_recalc();\n");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x3c63: {
+		CPU_Pop16();
+		passages_reset();
+		D1_LOG("passages_reset();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x3f3e: {
+		CPU_Pop16();
+		unsigned short index = CPU_Pop16();
+		unsigned short type = CPU_Pop16();
+		CPU_Push16(type);
+		CPU_Push16(index);
+
+		D1_LOG("draw_splash(%d, %d);\n", index, type);
+		draw_splash(index, type);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x4016: {
+		CPU_Pop16();
+		D1_LOG("near wait_for_keyboard2()\n");
+		wait_for_keyboard2();
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x47e2: {
+		CPU_Pop16();
+		seg002_47e2();
+		D1_INFO("seg002_47e2();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x484f: {
+		CPU_Pop16();
+		seg002_484f();
+		D1_INFO("seg002_484f();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x49d8: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = is_hero_available_in_group(Real2Host(hero));
+		D1_LOG("is_hero_available_in_group(%s) = %d\n",
+		schick_getCharname(hero), reg_ax);
+
+		return 1;
+	}
+	case 0x4adc: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s le = CPU_Pop16();
+		CPU_Push16(le);
+		CPU_Push32(hero);
+
+		D1_LOG("near sub_hero_le(%s, %d);\n",
+			(char*)Real2Host(hero) + 0x10, le);
+
+		sub_hero_le(Real2Host(hero), le);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x4f49: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16u index = CPU_Pop16();
+		Bit16u type = CPU_Pop16();
+
+		D1_LOG("do_starve_damage(%s, %d, %d);\n",
+			schick_getCharname(hero), index, type);
+
+		do_starve_damage(Real2Host(hero), index, type);
+
+		CPU_Push16(type);
+		CPU_Push16(index);
+		CPU_Push32(hero);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x55b1: {
+		CPU_Pop16();
+		unsigned short item = CPU_Pop16();
+		Bitu group = CPU_Pop16() & 0xff;
+		CPU_Push16(group);
+		CPU_Push16(item);
+
+		reg_ax = get_first_hero_with_item_in_group(item, (signed char)group);
+		D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
+			get_itemname(item), item, group,
+			(short)reg_ax);
+
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x573e: {
+		CPU_Pop16();
+		reg_ax = count_heros_available();
+		D1_LOG("count_heros_available() = %d;\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x5799: {
+		CPU_Pop16();
+		reg_ax = count_heroes_available_in_group();
+		D1_LOG("count_heroes_available_in_group() = %d;\n",
+			reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x5a81: {
+		CPU_Pop16();
+		reg_ax = 1;
+		D1_LOG("Kopierschutzabfrage umgangen\n");
+		return 1;
+	}
+	default:
+		return 0;
+	}
+}
+
 static int n_seg006(unsigned offs)
 {
 	switch (offs) {
@@ -5638,362 +5996,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	/* Borland C-Lib */
 	if (segm == 0) return n_seg000(offs);
 	else if (segm == 0x4ac) return n_seg001(offs);
-	else
-	/* seg002 - often used */
-	if (segm == 0x51e) {
-
-		switch (offs) {
-		case 0x0832: {
-			CPU_Pop16();
-			Bit16u index = CPU_Pop16();
-			D1_LOG("near play_voc(FX%d)\n", index - 288);
-			play_voc(index);
-			CPU_Push16(index);
-			return 1;
-		}
-		case 0x0b7e: {
-			CPU_Pop16();
-			unsigned short fileindex = CPU_Pop16();
-			CPU_Push16(fileindex);
-
-			reg_ax = open_and_seek_dat(fileindex);
-
-			D1_LOG("open_and_seek_dat(%s);\n",
-				get_fname(fileindex));
-
-			return 1;
-		}
-		case 0x0c28: {
-			CPU_Pop16();
-			Bit16u handle = CPU_Pop16();
-			RealPt buf = CPU_Pop32();
-			Bit16u len = CPU_Pop16();
-			CPU_Push16(len);
-			CPU_Push32(buf);
-			CPU_Push16(handle);
-
-			D1_LOG("near read_archive_file(%d, %x, %d);\n",
-				handle, buf, len);
-			reg_ax = read_archive_file(handle,
-					Real2Host(buf), len);
-
-			return 1;
-		}
-		case 0x0c72: {
-			CPU_Pop16();
-			Bit16u handle = CPU_Pop16();
-			Bit32u off = CPU_Pop32();
-			CPU_Push32(off);
-			CPU_Push16(handle);
-
-			D1_LOG("near seg002_0c72(%d, %d)\n", handle, off);
-			seg002_0c72(handle, off);
-
-			return 1;
-		}
-		case 0x1361: {
-			CPU_Pop16();
-			RealPt p1 = CPU_Pop32();
-			RealPt p2 = CPU_Pop32();
-			RealPt p3 = CPU_Pop32();
-			RealPt p4 = CPU_Pop32();
-			RealPt p5 = CPU_Pop32();
-			CPU_Push32(p5);
-			CPU_Push32(p4);
-			CPU_Push32(p3);
-			CPU_Push32(p2);
-			CPU_Push32(p1);
-
-			D1_LOG("mouse_action()\n");
-
-			mouse_action(Real2Host(p1),
-				Real2Host(p2),
-				Real2Host(p3),
-				Real2Host(p4),
-				Real2Host(p5));
-
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x1634: {
-			CPU_Pop16();
-			unsigned short v1 = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			unsigned short v3 = CPU_Pop16();
-			unsigned short v4 = CPU_Pop16();
-			CPU_Push16(v4);
-			CPU_Push16(v3);
-			CPU_Push16(v2);
-			CPU_Push16(v1);
-
-			reg_ax  = is_mouse_in_rect(v1, v2, v3, v4);
-			D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
-				v1, v2, v3, v4, reg_ax);
-
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x19dc: {
-			CPU_Pop16();
-			D1_LOG("mouse_19dc()\n");
-			mouse_19dc();
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x1cf2: {
-			CPU_Pop16();
-			unsigned short x = CPU_Pop16();
-			unsigned short y = CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			CPU_Push32(p);
-			CPU_Push16(y);
-			CPU_Push16(x);
-
-			reg_ax = get_mouse_action(x, y, Real2Host(p));
-
-			D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
-				x, y, p, reg_ax);
-			return 1;
-		}
-		case 0x1d67: {
-			CPU_Pop16();
-			D1_LOG("handle_input();\n");
-			handle_input();
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x20bd: {
-			CPU_Pop16();
-			timers_daily();
-			D1_LOG("timers_daily();\n");
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x2177: {
-			CPU_Pop16();
-			seg002_2177();
-			D1_LOG("seg002_2177();\n");
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x21ab: {
-			CPU_Pop16();
-			RealPt p1 = CPU_Pop32();
-			RealPt p2 = CPU_Pop32();
-			CPU_Push32(p2);
-			CPU_Push32(p1);
-			D1_LOG("pal_fade(%x,%x);\n", p1, p2);
-			pal_fade(Real2Host(p1), Real2Host(p2));
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x2400: {
-			dawning();
-			D1_LOG("dawning()\n");
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x24f0: {
-			D1_LOG("nightfall()\n");
-			nightfall();
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x25ce: {
-			CPU_Pop16();
-			reg_ax = get_current_season();
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x2628: {
-			CPU_Pop16();
-			D1_LOG("do_census();\n");
-			do_census();
-			return 1;
-		}
-		case 0x274e: {
-			CPU_Pop16();
-			D1_LOG("near do_timers();\n");
-			do_timers();
-			return 1;
-		}
-		/* Callers: 4 */
-		case 0x2bf6: {
-			CPU_Pop16();
-			unsigned int val = CPU_Pop32();
-			CPU_Push32(val);
-			D1_LOG("near sub_ingame_timers(val = %u);\n", val);
-			sub_ingame_timers(val);
-			return 1;
-		}
-		/* Callers: 4 */
-		case 0x2c5e: {
-			CPU_Pop16();
-			unsigned int val = CPU_Pop32();
-			CPU_Push32(val);
-
-			D1_LOG("sub_mod_timers(%d);\n", val);
-			sub_mod_timers(val);
-			return 1;
-		}
-		/* Callers: 4 */
-		case 0x2f7a: {
-			CPU_Pop16();
-			unsigned int val = CPU_Pop32();
-			CPU_Push32(val);
-			D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
-			seg002_2f7a(val);
-			return 1;
-		}
-		/* Callers: 4 */
-		case 0x3071: {
-			CPU_Pop16();
-			signed int quarter = CPU_Pop32();
-			CPU_Push32(quarter);
-
-			D1_LOG("near sub_light_timers(quarter=%d);\n", quarter);
-			sub_light_timers(quarter);
-
-			return 1;
-		}
-		case 0x31a2: {
-			CPU_Pop16();
-			D1_LOG("magical_chainmail_damage()\n");
-			magical_chainmail_damage();
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x3b63: {
-			CPU_Pop16();
-			passages_recalc();
-			D1_LOG("passages_recalc();\n");
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x3c63: {
-			CPU_Pop16();
-			passages_reset();
-			D1_LOG("passages_reset();\n");
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x3f3e: {
-			CPU_Pop16();
-			unsigned short index = CPU_Pop16();
-			unsigned short type = CPU_Pop16();
-			CPU_Push16(type);
-			CPU_Push16(index);
-
-			D1_LOG("draw_splash(%d, %d);\n", index, type);
-			draw_splash(index, type);
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x4016: {
-			CPU_Pop16();
-			D1_LOG("near wait_for_keyboard2()\n");
-			wait_for_keyboard2();
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x47e2: {
-			CPU_Pop16();
-			seg002_47e2();
-			D1_INFO("seg002_47e2();\n");
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x484f: {
-			CPU_Pop16();
-			seg002_484f();
-			D1_INFO("seg002_484f();\n");
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x49d8: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			CPU_Push32(hero);
-
-			reg_ax = is_hero_available_in_group(Real2Host(hero));
-			D1_LOG("is_hero_available_in_group(%s) = %d\n",
-			schick_getCharname(hero), reg_ax);
-
-			return 1;
-		}
-		case 0x4adc: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			Bit16s le = CPU_Pop16();
-			CPU_Push16(le);
-			CPU_Push32(hero);
-
-			D1_LOG("near sub_hero_le(%s, %d);\n",
-				(char*)Real2Host(hero) + 0x10, le);
-
-			sub_hero_le(Real2Host(hero), le);
-
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x4f49: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			Bit16u index = CPU_Pop16();
-			Bit16u type = CPU_Pop16();
-
-			D1_LOG("do_starve_damage(%s, %d, %d);\n",
-				schick_getCharname(hero), index, type);
-
-			do_starve_damage(Real2Host(hero), index, type);
-
-			CPU_Push16(type);
-			CPU_Push16(index);
-			CPU_Push32(hero);
-
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x55b1: {
-			CPU_Pop16();
-			unsigned short item = CPU_Pop16();
-			Bitu group = CPU_Pop16() & 0xff;
-			CPU_Push16(group);
-			CPU_Push16(item);
-
-			reg_ax = get_first_hero_with_item_in_group(item, (signed char)group);
-			D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
-				get_itemname(item), item, group,
-				(short)reg_ax);
-
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x573e: {
-			CPU_Pop16();
-			reg_ax = count_heros_available();
-			D1_LOG("count_heros_available() = %d;\n", reg_ax);
-			return 1;
-		}
-		/* Callers: 3 */
-		case 0x5799: {
-			CPU_Pop16();
-			reg_ax = count_heroes_available_in_group();
-			D1_LOG("count_heroes_available_in_group() = %d;\n",
-				reg_ax);
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x5a81: {
-			CPU_Pop16();
-			reg_ax = 1;
-			D1_LOG("Kopierschutzabfrage umgangen\n");
-			return 1;
-		}
-		default:
-			return 0;
-		}
-	}
+	else if (segm == 0x51e) return n_seg002(offs);
 	/* seg004 */
 	if (segm == 0xb2a) {
 		switch (offs) {
