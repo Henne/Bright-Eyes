@@ -5461,6 +5461,42 @@ static int n_seg002(unsigned short offs)
 	}
 }
 
+static int n_seg004(unsigned short offs)
+{
+	switch (offs) {
+		case 0x55: {
+			CPU_Pop16();
+			Bit16u v1 = CPU_Pop16();
+			D1_LOG("near init_ani(%d)\n", v1);
+			init_ani(v1);
+			CPU_Push16(v1);
+			return 1;
+		}
+		case 0x11da: {
+			CPU_Pop16();
+			D1_LOG("clear_ani_pal()\n");
+			clear_ani_pal();
+			return 1;
+		}
+		case 0x1209: {
+			CPU_Pop16();
+			RealPt pal = CPU_Pop32();
+			D1_LOG("set_ani_pal()\n");
+			set_ani_pal(Real2Host(pal));
+			CPU_Push32(pal);
+			return 1;
+		}
+		case 0x150d: {
+			CPU_Pop16();
+			D1_LOG("wait_for_vsync()\n");
+			wait_for_vsync();
+			return 1;
+		}
+		default:
+			return 0;
+	}
+}
+
 static int n_seg006(unsigned offs)
 {
 	switch (offs) {
@@ -5997,43 +6033,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (segm == 0) return n_seg000(offs);
 	else if (segm == 0x4ac) return n_seg001(offs);
 	else if (segm == 0x51e) return n_seg002(offs);
-	/* seg004 */
-	if (segm == 0xb2a) {
-		switch (offs) {
-			case 0x55: {
-				CPU_Pop16();
-				Bit16u v1 = CPU_Pop16();
-
-				D1_LOG("near init_ani(%d)\n", v1);
-				init_ani(v1);
-
-				CPU_Push16(v1);
-				return 1;
-			}
-			case 0x11da: {
-				CPU_Pop16();
-				D1_LOG("clear_ani_pal()\n");
-				clear_ani_pal();
-				return 1;
-			}
-			case 0x1209: {
-				CPU_Pop16();
-				RealPt pal = CPU_Pop32();
-				D1_LOG("set_ani_pal()\n");
-				set_ani_pal(Real2Host(pal));
-				CPU_Push32(pal);
-				return 1;
-			}
-			case 0x150d: {
-				CPU_Pop16();
-				D1_LOG("wait_for_vsync()\n");
-				wait_for_vsync();
-				return 1;
-			}
-			default:
-				return 0;
-		}
-	}
+	else if (segm == 0xb2a) return n_seg004(offs);
 	/* seg005 */
 	if (segm == 0xc85) {
 		switch (offs) {
