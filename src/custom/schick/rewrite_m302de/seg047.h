@@ -15,7 +15,7 @@ unsigned short hero_is_poisoned(Bit8u *hero);
 /* 48 */
 void update_atpa(Bit8u*);
 /* 57 */
-unsigned short count_heroes_in_group();
+unsigned short count_heroes_in_group(void);
 /* 5c */
 unsigned short get_hero_CH_best();
 /* 61 */

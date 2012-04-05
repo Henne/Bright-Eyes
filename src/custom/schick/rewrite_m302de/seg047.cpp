@@ -295,23 +295,26 @@ void update_atpa(Bit8u *hero)
 }
 
 /**
- * count_heroes_in_group - counts the heroes in the current group
+ * count_heroes_in_group() - counts the heroes in the current group
+ *
+ * Returns how many alive heros are in the group.
  */
-unsigned short count_heroes_in_group() {
-	PhysPt hero_i;
+unsigned short count_heroes_in_group(void)
+{
+	Bit8u *hero_i;
 	unsigned short i, retval = 0;
 
-	hero_i = Real2Phys(ds_readd(HEROS));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
-		if (mem_readb(hero_i + 0x21) == 0)
+		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (mem_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
 			continue;
                 /* Check if hero is dead */
-		if (mem_readb(hero_i + 0xaa) & 1)
+		if (host_readb(hero_i + 0xaa) & 1)
 			continue;
 
 		retval++;
