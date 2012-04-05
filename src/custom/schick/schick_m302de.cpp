@@ -3689,6 +3689,7 @@ static int seg073(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a: {
+			D1_LOG("tavern_special()\n");
 			return 0;
 		}
 		case 0x2f: {
