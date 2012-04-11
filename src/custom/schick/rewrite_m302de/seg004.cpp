@@ -1,3 +1,8 @@
+/*
+	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
+	Functions rewritten: 22/31
+*/
+
 #include "mem.h"
 #include "paging.h"
 #include "callback.h"
