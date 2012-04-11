@@ -281,6 +281,115 @@ void restore_mouse_bg() {
 			mem_writeb_inline(dst + j, ds_readb(0xcf0f + si*16 + j));
 
 }
+
+
+/**
+ * draw_wallclock() - draws day-  and nighttime
+ * @pos:	position
+ * @night:	0 = day / 1 = night
+ *
+ */
+void draw_wallclock(signed short pos, signed short night)
+{
+	Bit8u gfx_bak[24];
+	Bit8u fullscreen_bak[8];
+	signed short mouse_updated;
+	signed short y;
+
+	mouse_updated = 0;
+
+	/* make backups */
+	struct_copy(gfx_bak, p_datseg + 0xc00d, 0x18);
+
+	struct_copy(fullscreen_bak, p_datseg + 0x2990, 8);
+
+	/* set pointer */
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+
+
+	/* calculate y value */
+	/* Original-Bug: off-by-one with pos > 80 */
+	y = ds_readw(WALLCLOCK_Y) + (signed char)ds_readb(0x4aa0 + pos);
+
+	/* calculate x value */
+	pos = pos + ds_readw(WALLCLOCK_X) - 2;
+
+	/* set window */
+	ds_writew(0x2990, ds_readw(WALLCLOCK_Y));
+	ds_writew(0x2992, ds_readw(WALLCLOCK_X));
+	ds_writew(0x2994, ds_readw(WALLCLOCK_Y) + 22);
+	ds_writew(0x2996, ds_readw(WALLCLOCK_X) + 78);
+
+	/* set palette (night/day) */
+	set_palette(p_datseg + (!night ? 0x4af1 : 0x4afa), 0xfa, 3);
+
+	/* check if mouse is in that window */
+	if (is_mouse_in_rect(ds_readw(WALLCLOCK_X) - 6,
+				ds_readw(WALLCLOCK_Y) - 6,
+				ds_readw(WALLCLOCK_X) + 85,
+				ds_readw(WALLCLOCK_Y) + 28)) {
+
+			update_mouse_cursor();
+			mouse_updated = 1;
+	}
+
+	/* set coordinates */
+	ds_writew(0xc011, ds_readw(WALLCLOCK_X));
+	ds_writew(0xc013, ds_readw(WALLCLOCK_Y));
+	ds_writew(0xc015, ds_readw(WALLCLOCK_X) + 78);
+	ds_writew(0xc017, ds_readw(WALLCLOCK_Y) + 20);
+	ds_writed(0xc019, ds_readd(0xd2e3));
+
+	/* draw backgroud */
+	do_pic_copy(2);
+
+
+	/* set coordinates */
+	ds_writew(0xc011, pos);
+	ds_writew(0xc013, y);
+	ds_writew(0xc015, pos + 7);
+	ds_writew(0xc017, y + 6);
+	ds_writed(0xc019, ds_readd(0xd2e3) + (!night ? 0xcaf: 0xcef));
+
+	/* draw sun/moon */
+	do_pic_copy(2);
+
+
+	/* set coordinates */
+	ds_writew(0xc011, ds_readw(WALLCLOCK_X));
+	ds_writew(0xc013, ds_readw(WALLCLOCK_Y) + 3);
+	ds_writew(0xc015, ds_readw(WALLCLOCK_X) + 78);
+	ds_writew(0xc017, ds_readw(WALLCLOCK_Y) + 22);
+	ds_writed(0xc019, ds_readd(0xd2e3) + 0x683);
+
+	/* draw backgroud */
+	do_pic_copy(2);
+
+	/* restore fullscreen */
+	struct_copy(p_datseg + 0x2990, fullscreen_bak, 8);
+
+	/* happens in travel mode */
+	if (ds_readb(0x2845) == 5) {
+
+		/* set coordinates */
+		ds_writew(0xc011, ds_readw(WALLCLOCK_X) - 5);
+		ds_writew(0xc013, ds_readw(WALLCLOCK_Y) - 4);
+		ds_writew(0xc015, ds_readw(WALLCLOCK_X) + 85);
+		ds_writew(0xc017, ds_readw(WALLCLOCK_Y) + 28);
+		ds_writed(0xc019, ds_readd(0xc3db) + 0x4650);
+
+		/* draw backgroud */
+		do_pic_copy(2);
+	}
+
+	if (mouse_updated != 0) {
+		refresh_screen_size();
+	}
+
+	/* restore gfx */
+	struct_copy(p_datseg + 0xc00d, gfx_bak, 0x18);
+}
+
 /**
 	array_add - adds op to each element of an array
 	@dst:	pointer to array

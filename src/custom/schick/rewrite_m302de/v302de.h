@@ -40,6 +40,8 @@
 #define TEXTCOLOR_FG	(0xd2c9)
 #define DTP2		(0xd2f3)
 #define CHESSBOARD	(0xd852)
+#define WALLCLOCK_Y	(0xe10f)
+#define WALLCLOCK_X	(0xe111)
 #define MEM_SLOTS_MON	(0xe115)
 #define MEM_SLOTS_WFIG	(0xe119)
 #define MEM_SLOTS_MFIG	(0xe11d)

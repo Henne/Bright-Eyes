@@ -5491,6 +5491,16 @@ static int n_seg004(unsigned short offs)
 			CPU_Push16(v1);
 			return 1;
 		}
+		case 0xf54: {
+			CPU_Pop16();
+			Bit16s pos = CPU_Pop16();
+			Bit16s night = CPU_Pop16();
+			D1_LOG("near wallclock(%d, %d)\n", pos, night);
+			draw_wallclock(pos, night);
+			CPU_Push16(night);
+			CPU_Push16(pos);
+			return 1;
+		}
 		case 0x11da: {
 			CPU_Pop16();
 			D1_LOG("clear_ani_pal()\n");
