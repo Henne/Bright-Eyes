@@ -1967,126 +1967,125 @@ static int seg006(unsigned short offs) {
 	}
 }
 
-static int seg007(unsigned short offs) {
+static int seg007(unsigned short offs)
+{
+	switch (offs) {
 
-		if (offs == 0x000b) {
-			unsigned lo = CPU_Pop16();
-			unsigned hi = CPU_Pop16();
-			CPU_Push16(hi);
-			CPU_Push16(lo);
+	case 0x000b: {
+		unsigned lo = CPU_Pop16();
+		unsigned hi = CPU_Pop16();
+		CPU_Push16(hi);
+		CPU_Push16(lo);
 
-			reg_ax = random_interval(lo, hi);
+		reg_ax = random_interval(lo, hi);
 
-			D1_INFO("randomInterval %d - %d : %d\n",
-				lo, hi, reg_ax);
+		D1_INFO("randomInterval %d - %d : %d\n", lo, hi, reg_ax);
 
-			return 1;
-		}
-		if (offs == 0x002b) {
-			signed short p1 = CPU_Pop16();
-			CPU_Push16(p1);
+		return 1;
+	}
+	case 0x002b: {
+		signed short p1 = CPU_Pop16();
+		CPU_Push16(p1);
 
-			reg_ax = random_schick(p1);
+		reg_ax = random_schick(p1);
 
-			D1_INFO("random(%d) = %d\n", p1, reg_ax);
+		D1_INFO("random(%d) = %d\n", p1, reg_ax);
 
-			return 1;
-		}
-		if (offs == 0x007a) {
-			unsigned n = CPU_Pop16();
-			unsigned m = CPU_Pop16();
-			signed short x = CPU_Pop16();
-			CPU_Push16(x);
-			CPU_Push16(m);
-			CPU_Push16(n);
+		return 1;
+	}
+	case 0x007a: {
+		unsigned n = CPU_Pop16();
+		unsigned m = CPU_Pop16();
+		signed short x = CPU_Pop16();
+		CPU_Push16(x);
+		CPU_Push16(m);
+		CPU_Push16(n);
 
-			reg_ax = dice_roll(n, m, x);
+		reg_ax = dice_roll(n, m, x);
 
-			D1_INFO("wuerfel %dW%d%+d = %d\n",
-				n, m, x, reg_ax);
+		D1_INFO("wuerfel %dW%d%+d = %d\n", n, m, x, reg_ax);
 
-			return 1;
-		}
-		if (offs == 0x00c4) {
-			unsigned short val = CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			CPU_Push32(p);
-			CPU_Push16(val);
+		return 1;
+	}
+	case 0x00c4: {
+		unsigned short val = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		CPU_Push16(val);
 
-			reg_ax = is_in_word_array(val, Real2Host(p));
+		reg_ax = is_in_word_array(val, Real2Host(p));
 
-			D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
-				val, RealSeg(p), RealOff(p), reg_ax);
+		D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
+			val, RealSeg(p), RealOff(p), reg_ax);
 
-			return 1;
-		}
-		if (offs == 0x00ef) {
-			unsigned val = CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			CPU_Push32(p);
-			CPU_Push16(val);
+		return 1;
+	}
+	case 0x00ef: {
+		unsigned val = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		CPU_Push16(val);
 
-			reg_ax = is_in_byte_array((char)val, MemBase+Real2Phys(p));
-			D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
-				(char)val, RealSeg(p), RealOff(p), reg_ax);
+		reg_ax = is_in_byte_array((char)val, Real2Host(p));
+		D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
+			(char)val, RealSeg(p), RealOff(p), reg_ax);
 
-			return 1;
-		}
-		if (offs == 0x00a0) {
-			signed n = CPU_Pop16();
-			unsigned m = CPU_Pop16();
-			signed x = CPU_Pop16();
-			RealPt pmin = CPU_Pop32();
-			RealPt pmax = CPU_Pop32();
-			CPU_Push32(pmax);
-			CPU_Push32(pmin);
-			CPU_Push16(x);
-			CPU_Push16(m);
-			CPU_Push16(n);
+		return 1;
+	}
+	case 0x00a0: {
+		signed n = CPU_Pop16();
+		unsigned m = CPU_Pop16();
+		signed x = CPU_Pop16();
+		RealPt pmin = CPU_Pop32();
+		RealPt pmax = CPU_Pop32();
+		CPU_Push32(pmax);
+		CPU_Push32(pmin);
+		CPU_Push16(x);
+		CPU_Push16(m);
+		CPU_Push16(n);
 
-			calc_damage_range(n, m, x, MemBase+Real2Phys(pmin),
-				MemBase+Real2Phys(pmax));
+		calc_damage_range(n, m, x, Real2Host(pmin), Real2Host(pmax));
 
-			D1_LOG("calc_damage_range(%d, %d, %d)\n", n, m, x);
+		D1_LOG("calc_damage_range(%d, %d, %d)\n", n, m, x);
 
-			return 1;
-		}
-		if (offs == 0x0119) {
-		        unsigned val = CPU_Pop16();
-		        CPU_Push16(val);
+		return 1;
+	}
+	case 0x0119: {
+		unsigned val = CPU_Pop16();
+		CPU_Push16(val);
 
-			unsigned short m = ((val & 0x0f00) >> 8) - 1;
-			if (m > 3)
-				m = 3;
+		unsigned short m = ((val & 0x0f00) >> 8) - 1;
+		if (m > 3)
+			m = 3;
 
-			m = dice_tab[m];
+		m = dice_tab[m];
 
-			reg_ax = dice_template(val);
+		reg_ax = dice_template(val);
 
-		        D1_INFO("Wuerfel %dW%d%+d = %d\n",
-				(val & 0xf000) >> 12, m,
-				(signed char)(val & 0xff), (short)reg_ax);
+	        D1_INFO("Wuerfel %dW%d%+d = %d\n",
+			(val & 0xf000) >> 12, m,
+			(signed char)(val & 0xff), (short)reg_ax);
 
-			return 1;
-		}
-		if (offs == 0x0186) {
-			unsigned short val = CPU_Pop16();
-			RealPt min = CPU_Pop32();
-			RealPt max = CPU_Pop32();
-			CPU_Push32(max);
-			CPU_Push32(min);
-			CPU_Push16(val);
+		return 1;
+	}
+	case 0x0186: {
+		unsigned short val = CPU_Pop16();
+		RealPt min = CPU_Pop32();
+		RealPt max = CPU_Pop32();
+		CPU_Push32(max);
+		CPU_Push32(min);
+		CPU_Push16(val);
 
-			damage_range_template(val, Real2Host(min),
-				Real2Host(max));
+		damage_range_template(val, Real2Host(min), Real2Host(max));
 
-			D1_LOG("damage_range_template() Untested\n");
+		D1_LOG("damage_range_template() Untested\n");
 
-			return 1;
-		}
-	D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-	exit(1);
-	return 0;
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
 }
 
 static int seg008(unsigned short offs) {
