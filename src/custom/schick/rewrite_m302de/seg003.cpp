@@ -1,4 +1,4 @@
-#include "mem.h"
+#include "v302de.h"
 
 #include "schick.h"
 
@@ -12,7 +12,8 @@ static const char no_way_msg[][41] = {
 	"YOU CAN GO NO FURTHER IN THIS DIRECTION."
 };
 
-signed short update_direction(unsigned char mod) {
+signed short update_direction(unsigned char mod)
+{
 	unsigned char dir = ds_readb(0x2d3d);
 
 	/* save old direction */
@@ -27,7 +28,7 @@ signed short update_direction(unsigned char mod) {
 
 void no_way()
 {
-	GUI_output(Real2Host(RealMake(datseg, 0x4a68)));
+	GUI_output(p_datseg + 0x4a68);
 }
 
 }
