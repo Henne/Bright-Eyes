@@ -2882,7 +2882,7 @@ static int seg030(unsigned short offs) {
 			return 0;
 		}
 		case 0x2a: {
-			D1_INFO("prepare_date_str();\n");
+			D1_LOG("prepare_date_str();\n");
 			prepare_date_str();
 			return 1;
 		}
