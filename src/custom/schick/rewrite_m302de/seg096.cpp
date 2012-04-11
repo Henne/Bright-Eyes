@@ -24,16 +24,16 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 	unsigned short l2;
 	Bit8u *p_name;
 	short l4;
-	short *lp5;
+	Bit8u lp5[6];
 
 	l2 = 0;
-	lp5 = (short*)(p_datseg + 0xa9ed);
+	struct_copy(lp5, p_datseg + 0xa9ed, 6);
 
 	if (type == 0) {
 		/* string_array_itemnames */
 		p_name = (Bit8u*)get_itemname(index);
 
-		flag += host_readw((Bit8u*)lp5 + 2 * ds_readb(0x02ac + index));
+		flag += host_readw(lp5 + 2 * ds_readb(0x02ac + index));
 
 		lp1 = p_datseg + 0x270;
 		do {
@@ -50,7 +50,7 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 		}
 	} else {
 		p_name = get_monname(index);
-		flag += host_readw((Bit8u*)lp5 + 2 * ds_readb(0x0925 + index));
+		flag += host_readw(lp5 + 2 * ds_readb(0x0925 + index));
 	}
 
 	if (flag & 0x8000)
