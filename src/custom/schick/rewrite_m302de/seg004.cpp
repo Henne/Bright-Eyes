@@ -302,9 +302,13 @@ void array_add(PhysPt dst, unsigned short len, unsigned char op, unsigned short 
 	}
 }
 
-void schick_set_video() {
+void schick_set_video()
+{
+	Bit8u pal_black[3];
+
+	struct_copy(pal_black, p_datseg + 0x4b03, 3);
 	set_video_mode(0x13);
-	set_color(MemBase + PhysMake(datseg, 0x4b03), 0xff);
+	set_color(pal_black, 0xff);
 }
 
 void schick_reset_video() {
@@ -314,7 +318,9 @@ void schick_reset_video() {
 
 void clear_ani_pal()
 {
-	Bit8u * pal = MemBase + PhysMake(datseg, 0x4b06);
+	Bit8u pal[0x60];
+
+	struct_copy(pal, p_datseg + 0x4b06, 0x60);
 
 	wait_for_vsync();
 	set_palette(pal, 0, 0x20);

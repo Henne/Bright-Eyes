@@ -1948,10 +1948,10 @@ void set_automap_tiles(unsigned short x, unsigned short y) {
 /**
 */
 void seg002_47e2() {
-	char bak[24];
+	Bit8u bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, p_datseg + 0xc00d, 24);
+	struct_copy(bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1967,17 +1967,19 @@ void seg002_47e2() {
 	do_save_rect();
 
 	GUI_print_char('P', 0, 0);
+
 	/* restore gfx settings from stack */
-	memcpy(p_datseg + 0xc00d, &bak, 24);
+	struct_copy(p_datseg + 0xc00d, bak, 24);
 }
 
 /**
 */
 void seg002_484f() {
-	char bak[24];
+
+	Bit8u bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, p_datseg + 0xc00d, 24);
+	struct_copy(bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1993,7 +1995,7 @@ void seg002_484f() {
 	do_pic_copy(0);
 
 	/* restore gfx settings from stack */
-	memcpy(p_datseg + 0xc00d, &bak, 24);
+	struct_copy(p_datseg + 0xc00d, bak, 24);
 }
 
 /**

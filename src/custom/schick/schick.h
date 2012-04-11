@@ -2,6 +2,7 @@
 #define SCHICK_H
 
 #include <stdio.h>
+#include <string.h>
 
 
 #include "cpu.h"
@@ -58,6 +59,26 @@ static inline char* getString(RealPt p) {
 
 static inline Bit8u* Real2Host(RealPt p) {
         return MemBase + Real2Phys(p);
+}
+
+
+/**
+ * struct_copy() - wrapper for struct assignments
+ * @dst:	destination
+ * @src:	source
+ * @len:	length
+ *
+ * This is only a marker for copying structs.
+ */
+static inline void struct_copy(Bit8u *dst, Bit8u *src, int len)
+{
+
+	if (len < 0) {
+		D1_ERR("ERROR: %s copy negative amount of bytes\n", __func__);
+		return;
+	}
+
+	memcpy(dst, src, len);
 }
 
 extern const char* names_attrib[];
