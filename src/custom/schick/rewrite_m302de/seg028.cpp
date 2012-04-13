@@ -97,7 +97,7 @@ void load_area_description(unsigned short type)
 
 		if (ds_readb(0x2d6e) == 0 &&
 			(ds_readb(0x2d67) == 1 || ds_readb(0x2d67) == 0x27 ||
-				ds_readb(0x2d67) == 0x11)) {
+				ds_readb(0x2d67) == 0x12)) {
 			/* path taken in THORWAL PREM and PHEXCAER */
 			bc__read(fd, p_datseg + 0xbd95, 0x200);
 			/* read automap tiles */
@@ -220,7 +220,7 @@ void load_map(void)
 
 	load_buffer_1(0x13);
 
-	ds_writed(0xe113, bak);
+	ds_writew(0xe113, bak);
 }
 
 void load_npc(signed short index)
@@ -277,6 +277,10 @@ void load_tlk(signed short index)
 	/* read the header */
 	read_archive_file(fd, (Bit8u*)&off, 4);
 	read_archive_file(fd, (Bit8u*)&partners, 2);
+
+	/* BE-Fix */
+	off = host_readd((Bit8u*)&off);
+	partners = host_readw((Bit8u*)&partners);
 
 	/* read the partner structures */
 	read_archive_file(fd,

@@ -1,5 +1,7 @@
 #include "paging.h"
 
+#include "v302de.h"
+
 #include "schick.h"
 
 #include "seg002.h"
@@ -20,21 +22,20 @@ namespace M302de {
 RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned short type) {
 	Bit8u *lp1;
 	unsigned short l2;
-	RealPt p_name;
+	Bit8u *p_name;
 	short l4;
 	short *lp5;
 
 	l2 = 0;
-	lp5 = (short*)(MemBase + PhysMake(datseg, 0xa9ed));
+	lp5 = (short*)(p_datseg + 0xa9ed);
 
 	if (type == 0) {
 		/* string_array_itemnames */
-		p_name = ds_readd(0xe22f) + index * 4;
-		p_name = mem_readd(Real2Phys(p_name));
+		p_name = (Bit8u*)get_itemname(index);
 
-		flag += lp5[ds_readb(0x02ac + index)];
+		flag += host_readw((Bit8u*)lp5 + 2 * ds_readb(0x02ac + index));
 
-		lp1 = MemBase + PhysMake(datseg, 0x270);
+		lp1 = p_datseg + 0x270;
 		do {
 			l4 = host_readw(lp1);
 			lp1 += 2;
@@ -48,34 +49,33 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 				l2 = 1;
 		}
 	} else {
-		p_name = ds_readd(0xe129) + index * 4;
-		p_name = mem_readd(Real2Phys(p_name));
-		flag += lp5[ds_readb(0x0925 + index)];
+		p_name = get_monname(index);
+		flag += host_readw((Bit8u*)lp5 + 2 * ds_readb(0x0925 + index));
 	}
 
 	if (flag & 0x8000)
-		lp1 = MemBase + PhysMake(datseg, 0xa953 + (flag & 0xf) * 6);
+		lp1 = p_datseg + 0xa953 + (flag & 0xf) * 6;
 	else if (flag & 0x4000)
-			lp1 = MemBase + PhysMake(datseg, 0xa9b3);
+			lp1 = p_datseg + 0xa9b3;
 		else
-			lp1 = MemBase + PhysMake(datseg, 0xa983 + (flag & 0xf) * 6);
+			lp1 = p_datseg + 0xa983 + (flag & 0xf) * 6;
 
 
 
-	sprintf((char*)MemBase + PhysMake(datseg, 0xe50b + ds_readw(0xa9eb) *40),
+	sprintf((char*)p_datseg + 0xe50b + ds_readw(0xa9eb) * 40,
 		(l2 == 0) ? (char*)Real2Host(ds_readd(0xa9e3)) : (char*)Real2Host(ds_readd(0xa9e7)),
 		(char*)Real2Host(ds_readd(0xa917 + (host_readw(lp1 + ((((flag & 0x3000) - 1) >> 12) << 1)) << 2))),
-		(char*)Real2Host(GUI_name_plural(flag, Real2Host(p_name))));
+		(char*)Real2Host(GUI_name_plural(flag, p_name)));
 
-	p_name = RealMake(datseg, ds_readw(0xa9eb) * 40 + 0xe50b);
+	p_name = p_datseg + ds_readw(0xa9eb) * 40 + 0xe50b;
 
-	if (mem_readb(Real2Phys(p_name)) == 0x20){
+	if (host_readb(p_name) == 0x20) {
 		do {
 			p_name++;
-			l4 = mem_readb(Real2Phys(p_name));
-			mem_writeb(Real2Phys(p_name) - 1, (signed char)l4);
+			l4 = host_readb(p_name);
+			host_writeb(p_name - 1, (signed char)l4);
 		} while (l4 != 0);
-	};
+	}
 
 	l4 = ds_readw(0xa9eb);
 	ds_writew(0xa9eb, ds_readw(0xa9eb) + 1);
@@ -89,45 +89,45 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 
 //1a7
 RealPt GUI_name_plural(unsigned short v1, Bit8u *s) {
-	PhysPt p = PhysMake(datseg, 0xe4e3);
+	Bit8u *p = p_datseg + GRAMMAR_STRING;
 	char tmp;
 
 	while ((tmp = *s++) && (tmp != 0x2e))
-		mem_writeb_inline(p++, tmp);
+		host_writeb(p++, tmp);
 
 	if (v1 & 4)
 		while ((tmp = *s++) && (tmp != 0x2e));
 
-	while ((tmp = *s++) && (tmp != 0x2e))
-		mem_writeb_inline(p++, tmp);
+	while ((tmp = *s) && (tmp != 0x2e))
+		host_writeb(p++, *s++);
 
 	if ((v1 & 0x0f) == 1 && (v1 & 0x3000) != 0x2000) {
-		if (mem_readb(p-1) == 'B' || mem_readb(p-1) == 'D')
-			mem_writeb_inline(p++, 'E');
-		mem_writeb_inline(p++, 'S');
+		if (host_readb(p-1) == 'B' || host_readb(p-1) == 'D')
+			host_writeb(p++, 'E');
+		host_writeb(p++, 'S');
 	} else {
-		if (((v1 & 0x0f) == 7) && (mem_readb(p-1) != 'N' || mem_readb(p-1) != 'S'))
-				mem_writeb_inline(p++, 'N');
+		if (((v1 & 0x0f) == 7) && (host_readb(p-1) != 'N') && (host_readb(p-1) != 'S'))
+				host_writeb(p++, 'N');
 	}
 
-	mem_writeb_inline(p, 0);
-	return RealMake(datseg, 0xe4e3);
+	host_writeb(p, 0);
+	return RealMake(datseg, GRAMMAR_STRING);
 }
 
 
 //290
 RealPt GUI_name_singular(Bit8u *s) {
-	PhysPt p = PhysMake(datseg, 0xe4e3);
+	Bit8u *p = p_datseg + GRAMMAR_STRING;
 	char tmp;
 
 	while ((tmp = *s++) && (tmp != 0x2e))
-		mem_writeb_inline(p++, tmp);
+		host_writeb(p++, tmp);
 
 	while ((*s) && (*s != 0x2e))
-		mem_writeb_inline(p++, *s++);
+		host_writeb(p++, *s++);
 
-	mem_writeb_inline(p, 0);
-	return RealMake(datseg, 0xe4e3);
+	host_writeb(p, 0);
+	return RealMake(datseg, GRAMMAR_STRING);
 }
 //2f2
 RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3) {
@@ -303,11 +303,11 @@ unsigned short GUI_print_header(Bit8u *str) {
 
 //614
 void GUI_print_loc_line(Bit8u * str) {
-	short tmp1, tmp2;
+	unsigned short tmp1, tmp2;
 	unsigned short l1, l2, l3;
 
-	GUI_get_smth(&tmp1, &tmp2);
-	GUI_set_smth(0xff, 0);
+	get_textcolor(&tmp1, &tmp2);
+	set_textcolor(0xff, 0);
 
 	l1 = ds_readw(0xd2d9);
 	l2 = ds_readw(0xd2d7);
@@ -324,7 +324,7 @@ void GUI_print_loc_line(Bit8u * str) {
 	ds_writew(0xd2d7, l2);
 	ds_writew(0xd2d5, l3);
 
-	GUI_set_smth(tmp1, tmp2);
+	set_textcolor(tmp1, tmp2);
 }
 
 //691
@@ -407,22 +407,23 @@ unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short 
 	return char_width;
 }
 //82b
-unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p){
+unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p)
+{
 	unsigned short i;
 
-	for (i = 0; i != 75*3; i += 3) {
+	for (i = 0; i != 75 * 3; i += 3) {
 		if (c != ds_readb(0xaa51 + i))
 			continue;
 
-		host_writew((Bit8u*)p, ds_readb(0xaa51 + i + 2) & 0xff);
+		*p = ds_readb(0xaa51 + i + 2) & 0xff;
 		return ds_readb(0xaa51 + i + 1) & 0xff;
 	}
 
 	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
-		host_writew((Bit8u*)p, 0);
+		*p = 0;
 		return 0;
 	} else {
-		host_writew((Bit8u*)p, 5);
+		*p = 5;
 		return 0;
 	}
 }
@@ -481,15 +482,26 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }
 
-void GUI_set_smth(unsigned short col_text, unsigned short col_bg) {
-	ds_writew(0xd2c9, col_text);
-	ds_writew(0xd2c7, col_bg);
+/**
+ * set_textcolor() - sets the textcolor
+ * @fg:	foreground color index
+ * @bg: background color index
+ */
+void set_textcolor(unsigned short fg, unsigned short bg) {
+	ds_writew(TEXTCOLOR_FG, fg);
+	ds_writew(TEXTCOLOR_BG, bg);
 
 }
 
-void GUI_get_smth(short *p1, short *p2) {
-	host_writew((Bit8u*)p1, ds_readw(0xd2c9));
-	host_writew((Bit8u*)p2, ds_readw(0xd2c7));
+/**
+ * get_textcolor() - gets the textcolor
+ * @fg:	foreground color index
+ * @bg: background color index
+ *
+ */
+void get_textcolor(unsigned short *fg, unsigned short *bg) {
+	host_writew((Bit8u*)fg, ds_readw(TEXTCOLOR_FG));
+	host_writew((Bit8u*)bg, ds_readw(TEXTCOLOR_BG));
 }
 
 unsigned short GUI_unused(Bit8u *str) {

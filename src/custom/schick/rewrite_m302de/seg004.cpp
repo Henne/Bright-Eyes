@@ -209,7 +209,7 @@ void draw_mouse_cursor() {
 	char i,j;
 
 	dst = Real2Phys(ds_readd(0xd2ff));
-	mouse_cursor = (short*)(MemBase + Real2Phys(ds_readd(0xcecb)) + 32);
+	mouse_cursor = (short*)(Real2Host(ds_readd(0xcecb)) + 32);
 
 	x = ds_readw(0x299c) - ds_readw(0x29a6);
 	y = ds_readw(0x299e) - ds_readw(0x29a8);
@@ -224,10 +224,12 @@ void draw_mouse_cursor() {
 
 	dst += y * 320 + x;
 
-	for (i = 0; i < height; dst += 320, i++)
-		for (mask = *mouse_cursor++, j = 0; j < width; j++)
+	for (i = 0; i < height; dst += 320, i++) {
+		mask = host_readw((Bit8u*)mouse_cursor++);
+		for (j = 0; j < width; j++)
 			if ((0x8000 >> j) & mask)
 				mem_writeb_inline(dst + j, 0xff);
+	}
 }
 
 void save_mouse_bg() {

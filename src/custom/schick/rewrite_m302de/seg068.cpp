@@ -56,8 +56,8 @@ void thorwal_botschaft()
 	bool closed = false;
 
 	/* At the 6th month in year 17 Hal another message is shown */
-	if (ds_readw(0x2dc2) > 17 ||
-		(ds_readw(0x2dc2) == 17 && ds_readw(0x2dc1) > 5)) {
+	if (ds_readb(YEAR) > 17 ||
+		(ds_readb(YEAR) == 17 && ds_readb(MONTH) > 5)) {
 
 		closed = true;
 	}

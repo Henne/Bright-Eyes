@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 78/136
+	Functions rewritten: 83/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -24,8 +24,10 @@
 #include "seg009.h"
 #include "seg010.h"
 #include "seg039.h"
+#include "seg041.h"
 #include "seg047.h"
 #include "seg096.h"
+#include "seg113.h"
 
 namespace M302de {
 
@@ -59,6 +61,10 @@ Bit16u open_and_seek_dat(unsigned short fileindex) {
 
 	/* read the start offset of the next file */
 	bc__read(fd, (Bit8u*)&end, 4);
+
+	/* BE-Fix */
+	start = host_readd((Bit8u*)&start);
+	end = host_readd((Bit8u*)&end);
 
 	/* seek to the desired file */
 	bc_lseek(fd, start, DOS_SEEK_SET);
@@ -560,46 +566,46 @@ void seg002_2177() {
 		ds_writew(0x70ae + i * 8, random_interval(ds_readw(0x70a8 + i * 8), 20));
 }
 
-void pal_fade(PhysPt dst, PhysPt p2) {
+void pal_fade(Bit8u *dst, Bit8u *p2) {
 	unsigned short i;
 
 	for (i = 0; i < 32; i++) {
 		signed char v1;
 		signed char v2;
 
-		v1 = mem_readb(dst + i * 3);
-		v2 = mem_readb(p2 + i * 3);
+		v1 = host_readb(dst + i * 3);
+		v2 = host_readb(p2 + i * 3);
 
 		if (v2 < v1 && v1 > 0)
-			mem_writeb(dst + i * 3, v1 - 1);
+			host_writeb(dst + i * 3, v1 - 1);
 		else {
 			if (v2 > v1 && v1 < 0x3f)
-				mem_writeb(dst + i * 3, v1 + 1);
+				host_writeb(dst + i * 3, v1 + 1);
 		};
 
-		v1 = mem_readb(dst + i * 3 + 1);
-		v2 = mem_readb(p2 + i * 3 + 1);
+		v1 = host_readb(dst + i * 3 + 1);
+		v2 = host_readb(p2 + i * 3 + 1);
 
 		if (v2 < v1 && v1 > 0)
-			mem_writeb(dst + i * 3 + 1, v1 - 1);
+			host_writeb(dst + i * 3 + 1, v1 - 1);
 		else {
 			if (v2 > v1 && v1 < 0x3f)
-				mem_writeb(dst + i * 3 + 1, v1 + 1);
+				host_writeb(dst + i * 3 + 1, v1 + 1);
 		};
 
-		v1 = mem_readb(dst + i * 3 + 2);
-		v2 = mem_readb(p2 + i * 3 + 2);
+		v1 = host_readb(dst + i * 3 + 2);
+		v2 = host_readb(p2 + i * 3 + 2);
 
 		if (v2 < v1 && v1 > 0)
-			mem_writeb(dst + i * 3 + 2, v1 - 1);
+			host_writeb(dst + i * 3 + 2, v1 - 1);
 		else {
 			if (v2 > v1 && v1 < 0x3f)
-				mem_writeb(dst + i * 3 + 2, v1 + 1);
-		};
+				host_writeb(dst + i * 3 + 2, v1 + 1);
+		}
 	}
 }
 
-void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors) {
+void pal_fade_in(Bit8u *dst, Bit8u *p2, unsigned short v3, unsigned short colors) {
 	unsigned short i, si;
 
 	signed char c1, c2;
@@ -608,38 +614,419 @@ void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors
 
 	for (i = 0; i < colors; i++) {
 
-		c1 = mem_readb(dst + i * 3);
-		c2 = mem_readb(p2 + i * 3);
+		c1 = host_readb(dst + i * 3);
+		c2 = host_readb(p2 + i * 3);
 
 		if ((c2 >= si) && (c2 > c1))
-			mem_writeb(dst + i * 3, c1 + 1);
+			host_writeb(dst + i * 3, c1 + 1);
 
-		c1 = mem_readb(dst + i * 3 + 1);
-		c2 = mem_readb(p2 + i * 3 + 1);
-
-		if ((c2 >= si) && (c2 > c1))
-			mem_writeb(dst + i * 3 + 1, c1 + 1);
-
-		c1 = mem_readb(dst + i * 3 + 2);
-		c2 = mem_readb(p2 + i * 3 + 2);
+		c1 = host_readb(dst + i * 3 + 1);
+		c2 = host_readb(p2 + i * 3 + 1);
 
 		if ((c2 >= si) && (c2 > c1))
-			mem_writeb(dst + i * 3 + 2, c1 + 1);
+			host_writeb(dst + i * 3 + 1, c1 + 1);
+
+		c1 = host_readb(dst + i * 3 + 2);
+		c2 = host_readb(p2 + i * 3 + 2);
+
+		if ((c2 >= si) && (c2 > c1))
+			host_writeb(dst + i * 3 + 2, c1 + 1);
 	}
+}
+
+/**
+ * dawning() - adjusts palettes in the morning
+ *
+ */
+void dawning(void)
+{
+	/* Between 6 and 7 */
+	if ((ds_readd(DAY_TIMER) < 0x7e90) || (ds_readd(DAY_TIMER) >= 0x93a8))
+		return;
+
+	/* in 64 steps */
+	if (((ds_readd(DAY_TIMER) - 0x7e90) % 0x54) != 0)
+		return;
+
+	/* floor */
+	pal_fade(p_datseg + 0x3e53, Real2Host(ds_readd(0xd321)));
+	/* buildings */
+	pal_fade(p_datseg + 0x3eb3, Real2Host(ds_readd(0xd321)) + 0x60);
+	/* sky */
+	pal_fade(p_datseg + 0x3f13, Real2Host(ds_readd(0xd321)) + 0xc0);
+
+	/* not in a town */
+	if (ds_readb(0x2d67) == 0)
+		return;
+	/* in a dungeon */
+	if (ds_readb(DUNGEON_INDEX) != 0)
+		return;
+	/* in a location */
+	if (ds_readb(0x2d60) != 0)
+		return;
+	/* in a travel mode */
+	if (ds_readb(0x3614) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0xe5d2) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0x45b8) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0x2845) != 0)
+		return;
+
+	wait_for_vsync();
+
+	set_palette(p_datseg + 0x3e53, 0, 0x20);
+	set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+}
+
+/**
+ * nightfall() - adjusts palettes in the evening
+ *
+ */
+void nightfall(void)
+{
+	/* Between 6 and 7 */
+	if ((ds_readd(DAY_TIMER) < 0x1a5e0) || (ds_readd(DAY_TIMER) >= 0x1baf8))
+		return;
+
+	/* in 64 steps */
+	if (((ds_readd(DAY_TIMER) - 0x1a5e0) % 0x54) != 0)
+		return;
+
+	/* floor */
+	pal_fade(p_datseg + 0x3e53, p_datseg + 0x4498);
+	/* buildings */
+	pal_fade(p_datseg + 0x3eb3, p_datseg + 0x44f8);
+	/* sky */
+	pal_fade(p_datseg + 0x3f13, p_datseg + 0x4558);
+
+	/* not in a town */
+	if (ds_readb(0x2d67) == 0)
+		return;
+	/* in a dungeon */
+	if (ds_readb(DUNGEON_INDEX) != 0)
+		return;
+	/* in a location */
+	if (ds_readb(0x2d60) != 0)
+		return;
+	/* in a travel mode */
+	if (ds_readb(0x3614) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0xe5d2) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0x45b8) != 0)
+		return;
+	/* unknown */
+	if (ds_readb(0x2845) != 0)
+		return;
+
+	wait_for_vsync();
+
+	set_palette(p_datseg + 0x3e53, 0, 0x20);
+	set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
 }
 
 unsigned short get_current_season() {
 	/* Check Winter */
-	if (is_in_byte_array(ds_readb(0x2dc1), MemBase + PhysMake(datseg, 0x463e)))
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463e))
 		return 0;
 	/* Check Summer */
-	if (is_in_byte_array(ds_readb(0x2dc1), MemBase + PhysMake(datseg, 0x4642)))
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x4642))
 		return 2;
 	/* Check Spring */
-	if (is_in_byte_array(ds_readb(0x2dc1), MemBase + PhysMake(datseg, 0x463a)))
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463a))
 		return 1;
 
 	return 3;
+}
+
+void do_timers(void)
+{
+	Bit8u *ptr;
+	unsigned char afternoon;
+	Bit8u *hero_i;
+	signed short i, di;
+
+	afternoon = 0;
+
+	if (ds_readw(TIMERS_DISABLED) != 0)
+		return;
+
+	dawning();
+
+	nightfall();
+
+	/* inc day timer */
+	ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) + 1);
+
+	if (ds_readb(0xbcda) == 0) {
+		sub_ingame_timers(1);
+		sub_mod_timers(1);
+	}
+
+	if (ds_readb(0xbcda) == 0) {
+
+		/* set day timer to pm */
+		/* TODO: afternoon is useless */
+		if (ds_readd(DAY_TIMER) > 0xfd20) {
+			ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) - 0xfd20);
+			afternoon = 1;
+		}
+
+		/* every 5 minutes ingame */
+		if (ds_readd(DAY_TIMER) % 0x1c2 == 0) {
+			seg002_2f7a(1);
+		}
+
+		/* every 15 minutes ingame */
+		if (ds_readd(DAY_TIMER) % 0x546 == 0) {
+			sub_light_timers(1);
+		}
+		/* every hour ingame */
+		if (ds_readd(DAY_TIMER) % 0x1518 == 0) {
+			magical_chainmail_damage();
+
+			/* decrement unicorn timer */
+			if (ds_readb(UNICORN_GET_MAP) != 0 &&
+				ds_readb(UNICORN_TIMER) != 0) {
+					ds_writeb(UNICORN_TIMER,
+						ds_readb(UNICORN_TIMER) - 1);
+			}
+
+			/* handle sphere timer */
+			if (ds_readb(SPHERE_TIMER) != 0) {
+				ds_writeb(SPHERE_TIMER,
+					ds_readb(SPHERE_TIMER) - 1);
+
+				if (ds_readb(SPHERE_TIMER) == 0) {
+					ds_writeb(SPHERE_ACTIVE, 1);
+				}
+			}
+
+			/* two timers of a dungeon */
+			if (ds_readb(0x3cc6) != 0) {
+				ds_writeb(0x3cc6, ds_readb(0x3cc6) - 1);
+			}
+			if (ds_readb(0x3cc7) != 0) {
+				ds_writeb(0x3cc7, ds_readb(0x3cc7) - 1);
+			}
+		}
+
+		/* reset the day timer to 24h time */
+		if (afternoon)
+			ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) + 0xfd20);
+	}
+
+	/* at 6 o'clock in the morninig */
+	if (ds_readd(DAY_TIMER) == 0x7e90) {
+
+		hero_i = get_hero(0);
+
+		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+			/* check typus */
+			if (host_readb(hero_i + 0x21) == 0)
+				continue;
+
+			/* unknown flag */
+			if (host_readb(hero_i + 0x9f) == 0)
+				continue;
+
+			/* reset flag */
+			host_writeb(hero_i + 0x9f, 0);
+
+			ds_writeb(0x2d61 + host_readb(hero_i + 0x87),
+				ds_readb(0x2da0 + host_readb(hero_i + 0x87)));
+
+			ds_writew(0x2d48 + host_readb(hero_i + 0x87) * 2,
+				ds_readw(0x2d87 + host_readb(hero_i + 0x87) * 2));
+			ds_writew(0x2d54 + host_readb(hero_i + 0x87) * 2,
+				ds_readw(0x2d93 + host_readb(hero_i + 0x87) * 2));
+		}
+	}
+
+	/* at 10 o'clock */
+	if (ds_readd(DAY_TIMER) == 0xd2f0) {
+		hero_i = get_hero(0);
+
+		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+			/* check typus */
+			if (host_readb(hero_i + 0x21) == 0)
+				continue;
+			/* check drunken */
+			if (host_readb(hero_i + 0xa1) == 0)
+				continue;
+
+			hero_get_sober(hero_i);
+		}
+	}
+
+	/* poison timer in the mage dungeon */
+	if (ds_readd(MAGE_POISON) != 0) {
+
+		/* decrement the timer */
+		ds_writed(MAGE_POISON, ds_readd(MAGE_POISON) - 1);
+
+		/* every 15 minutes  do damage */
+		if (ds_readd(MAGE_POISON) % 0x546 == 0) {
+
+			ptr = get_hero(0);
+			for (i = 0; i <= 6; i++, ptr = get_hero(i)) {
+
+				/* check typus */
+				if (host_readb(ptr + 0x21) == 0)
+					continue;
+
+				/* get group nr */
+				di = host_readb(ptr + 0x87);
+
+				/* hero is in group and in mage dungeon */
+				if (ds_readb(0x2d35) == di &&
+					ds_readb(DUNGEON_INDEX) == 7) {
+
+					switch (ds_readb(DUNGEON_LEVEL)) {
+					case 1: {
+						/* 1W6-1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6,	-1));
+						break;
+					}
+					case 2: {
+						/* 1W6+1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6, 1));
+						break;
+					}
+					}
+				} else {
+					if (ds_readb(0x2d6f + di) != 7)
+						continue;
+
+					switch (ds_readb(0x2d76 + di)) {
+					case 1: {
+						/* 1W6-1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6, -1));
+						break;
+					}
+					case 2: {
+						/* 1W6+1 */
+						sub_hero_le(ptr,
+							dice_roll(1, 6, 1));
+						break;
+					}
+					}
+				}
+			}
+		}
+	}
+
+	/* unknown timer */
+	if (ds_readd(0x3fa2) != 0) {
+		D1_LOG("Unknown Dungeon Timer\n");
+		ds_writed(0x3fa2, ds_readd(0x3fa2) - 1);
+	}
+
+	/* at 24 o'clock, daily stuff */
+	if (ds_readd(DAY_TIMER) > 0x1fa40) {
+
+		timers_daily();
+
+		seg002_2177();
+
+		/* reset day timer */
+		ds_writed(DAY_TIMER, 0);
+
+		/* inc DAY date */
+		ds_writeb(DAY_OF_WEEK, ds_readb(DAY_OF_WEEK) + 1);
+		ds_writeb(DAY_OF_MONTH, ds_readb(DAY_OF_MONTH) + 1);
+		if (ds_readb(DAY_OF_WEEK) == 7)
+			ds_writeb(DAY_OF_WEEK, 0);
+
+		/* decrement NPC timers */
+		for (i = 1; i < 7; i++) {
+			if (ds_readb(0x3601 + i) == 0)
+				continue;
+			if ((signed char)ds_readb(0x3601 + i) == -1)
+				continue;
+
+			ds_writeb(0x3601 + i, ds_readb(0x3601 + i) - 1);
+		}
+
+		/* drug timer (phexcaer) */
+		if (ds_readb(0x3f76) != 0)
+			ds_writeb(0x3f76, ds_readb(0x3f76) - 1);
+
+		/* unknown timer */
+		if (ds_readb(0x4332) != 0)
+			ds_writeb(0x4332, ds_readb(0x4332) - 1);
+
+		/* calendar */
+		if (ds_readb(DAY_OF_MONTH) == 31) {
+			/* new month */
+			ds_writeb(DAY_OF_MONTH, 1);
+			ds_writeb(MONTH, ds_readb(MONTH) + 1);
+
+			/* increment quested months counter */
+			if (ds_readw(GOT_MAIN_QUEST) != 0)
+				ds_writew(QUESTED_MONTHS,
+					ds_readw(QUESTED_MONTHS) + 1);
+
+			/* increment the months the NPC is in the group */
+			if (host_readb(get_hero(6) + 0x21) != 0)
+				ds_writew(NPC_MONTHS,
+					ds_readw(NPC_MONTHS) + 1);
+
+			do_census();
+
+			/* set days of the nameless (negative) */
+			if (ds_readb(MONTH) == 13) {
+				ds_writeb(DAY_OF_MONTH, -5);
+			}
+		} else {
+			/* new year */
+			if (ds_readb(DAY_OF_MONTH) == 0) {
+				ds_writeb(MONTH, 1);
+				ds_writeb(YEAR, ds_readb(YEAR) + 1);
+				ds_writeb(DAY_OF_MONTH, 1);
+			}
+		}
+
+		/* check if we have a special day */
+		ds_writeb(SPECIAL_DAY, 0);
+
+		for (i = 0; ds_readb(0x45b9 + i * 3) != 0xff; i++) {
+
+			if (ds_readb(0x45b9 + i * 3) != ds_readb(MONTH))
+				continue;
+			if (ds_readb(0x45b9 + 1 + i * 3) != ds_readb(DAY_OF_MONTH))
+				continue;
+
+			ds_writeb(SPECIAL_DAY, ds_readb(0x45b9 + 2 + i * 3));
+			break;
+		}
+
+		passages_recalc();
+
+		/* roll out the weather, used for passages */
+		ds_writew(0x331b, random_schick(6));
+		ds_writew(0x331d, random_schick(7));
+
+		/* check if times up */
+		if (ds_readb(YEAR) == 17 && ds_readb(MONTH) >= 10 &&
+			ds_readb(DAY_OF_MONTH) >= 17) {
+			ds_writeb(0xc3c1, 4);
+		}
+	}
+
+	/* at 9 o'clock */
+	if (ds_readd(DAY_TIMER) == 0xbdd8)
+		passages_reset();
 }
 
 /**
@@ -703,7 +1090,7 @@ void sub_ingame_timers(unsigned int val) {
 
 	short i = 0;
 
-	if (ds_readw(0x2c99))
+	if (ds_readw(TIMERS_DISABLED))
 		return;
 
 	for (i = 0; i < 26; i++) {
@@ -733,12 +1120,12 @@ void sub_mod_timers(unsigned int val) {
 
 	h_index = -1;
 
-	if (ds_readw(0x2c99))
+	if (ds_readw(TIMERS_DISABLED))
 		return;
 
 	for (i = 0; i < 100; i++) {
 		/* make a pointer to the slot */
-		sp = MemBase + PhysMake(datseg, 0x2e2c + i * 8);
+		sp = p_datseg + 0x2e2c + i * 8;
 
 		/* if timer is 0 continue */
 		if (host_readd(sp) == 0)
@@ -809,7 +1196,7 @@ void sub_mod_timers(unsigned int val) {
 
 		} else {
 			/* target affects the savegame */
-			mp = MemBase + PhysMake(datseg, 0x2d34);
+			mp = p_datseg + 0x2d34;
 			mp += host_readw(sp + 4);
 			host_writeb(mp, host_readb(mp) - host_readb(sp + 7));
 		}
@@ -851,7 +1238,7 @@ void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
 
 	if (who == -1)
 		/* mod slot is on savegame */
-		mod_ptr = MemBase + PhysMake(datseg, 0x2d34);
+		mod_ptr = p_datseg + 0x2d34;
 	else {
 		/* mod slot is on a hero/npc */
 		mod_ptr = get_hero(who);
@@ -897,7 +1284,7 @@ void seg002_2f7a(unsigned int fmin) {
 	Bit8u *hero_i;
 	unsigned short i;
 
-	if (ds_readw(0x2c99) != 0)
+	if (ds_readw(TIMERS_DISABLED) != 0)
 		return;
 
 	hero_i = get_hero(0);
@@ -908,16 +1295,22 @@ void seg002_2f7a(unsigned int fmin) {
 			continue;
 
 		/* I have no clue what is at offset 0x8b */
-		if ((int)host_readd(hero_i + 0x8b) > 0) {
-			D1_INFO("%s 8b = %d\n", (char*)hero_i + 0x10,
-				host_readd(hero_i + 0x8b));
-			host_writed(hero_i + 0x8b, host_readd(hero_i + 0x8b) - fmin * 450);
+		if ((signed int)host_readd(hero_i + 0x8b) > 0) {
+			D1_INFO("Unknown Timer %s at 0x8b = %d\n",
+				(char*)hero_i + 0x10,
+				(signed int)host_readd(hero_i + 0x8b));
+
+			host_writed(hero_i + 0x8b,
+				host_readd(hero_i + 0x8b) - fmin * 450);
+
 			if ((int)host_readd(hero_i + 0x8b) < 0)
 				host_writed(hero_i + 0x8b, 0);
 		}
+
 		/* Timer set after Staffspell */
 		if ((int)host_readd(hero_i + 0x8f) > 0) {
-			D1_INFO("%s 8f = %d\n", (char*)(hero_i + 0x10),
+			D1_INFO("Unknown Timer %s at 0x8f = %d\n",
+				(char*)(hero_i + 0x10),
 				host_readd(hero_i + 0x8f));
 			host_writed(hero_i + 0x8f, host_readd(hero_i + 0x8f) - fmin * 450);
 			if ((int)host_readd(hero_i + 0x8f) < 0)
@@ -931,67 +1324,109 @@ void seg002_2f7a(unsigned int fmin) {
 /**
  *	sub_light_timers - decrements the light timers
  *	@quarter:	the time in quarters of an hour
- *	@v2:		atm unknown
  *
  *	This function decrements the timers of burning torches and lanterns.
  *	If the time of the lightsource is up the toch is removed from the
  *	inventory and the lantern is turned off.
 */
-void sub_light_timers(unsigned short quarter, signed short v2) {
-	PhysPt hero_i;
+void sub_light_timers(signed int quarter) {
+	Bit8u *hero_i;
 	unsigned short i,j;
 	unsigned char tmp;
 
-	if (ds_readw(0x2c99))
+	if (ds_readw(TIMERS_DISABLED))
 		return;
 
-	hero_i = Real2Phys(ds_readd(HEROS));
+	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
-		if (mem_readb(hero_i + 0x21) == 0)
+		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 
-		if (v2 > 0 || (!v2 && quarter > 120))
+		if (quarter > 120)
 			tmp = 120;
 		else
 			tmp = quarter & 0xff;
 
 		for (j = 0; j < 23; j++) {
 			signed char cur;
-			if (mem_readw(hero_i + 0x196 + 14 * j) == 0x16) {
+			if (host_readw(hero_i + 0x196 + 14 * j) == 0x16) {
 				/* Torch, burning */
 
-				cur = mem_readb(hero_i + 0x19e + 14 * j);
+				cur = host_readb(hero_i + 0x19e + 14 * j);
 				cur -= tmp;
-				mem_writeb(hero_i + 0x19e + 14 * j, cur);
+				host_writeb(hero_i + 0x19e + 14 * j, cur);
 
 				if (cur <= 0) {
 					signed short tmp_1;
-					mem_writeb(hero_i + 0x20, mem_readb(hero_i + 0x20) - 1);
+					host_writeb(hero_i + 0x20, host_readb(hero_i + 0x20) - 1);
 
 					tmp_1 = mem_readw(Real2Phys(ds_readd(ITEMSDAT)) + 0x10d);
-					mem_writew(hero_i + 0x2d8, mem_readb(hero_i + 0x2d8) - tmp_1);
+					host_writew(hero_i + 0x2d8,
+						host_readb(hero_i + 0x2d8) - tmp_1);
 
 					/* Remove Torch from inventory */
-					memset(MemBase + hero_i + 0x196 + 14 * j, 0, 14);
+					memset(hero_i + 0x196 + 14 * j, 0, 14);
 				}
-			} else if (mem_readw(hero_i + 0x196 + j * 14) == 0xf9) {
+			} else if (host_readw(hero_i + 0x196 + j * 14) == 0xf9) {
 				/* Lantern, burning */
-				cur = mem_readb(hero_i + 0x19e + 14 * j);
+				cur = host_readb(hero_i + 0x19e + 14 * j);
 				cur -= tmp;
-				mem_writeb(hero_i + 0x19e + 14 * j, cur);
+				host_writeb(hero_i + 0x19e + 14 * j, cur);
 
 				if (cur <= 0) {
 					/* Set timer to 0 */
-					mem_writeb(hero_i + 0x19e + j * 14, 0);
+					host_writeb(hero_i + 0x19e + j * 14, 0);
 					/* Set burning lantern to a not burning lantern */
-					mem_writew(hero_i + 0x196 + j * 14, 0x19);
+					host_writew(hero_i + 0x196 + j * 14, 0x19);
 				}
 			}
 
 		}
+	}
+}
 
+/**
+ * magical_chainmail_damage() - damage if a cursed chainmail is worn
+ *
+ */
+void magical_chainmail_damage(void)
+{
+	Bit8u *hero_i;
+	signed short i;
+
+	if (ds_readw(TIMERS_DISABLED) != 0) {
+		return;
+	}
+
+	if (ds_readw(0x3614) != 0)
+		ds_writeb(0x4649, 1);
+	else
+		ds_writeb(0x4649, 2);
+
+	for (i = 0; i <= 6; i++) {
+		/* check typus */
+		if (host_readb(get_hero(i) + 0x21) == 0)
+			continue;
+
+		hero_i = get_hero(i);
+
+		if (hero_dead(hero_i))
+			continue;
+
+		/* unknown */
+		if (host_readb(hero_i + 0x9f) != 0) {
+			D1_INFO("Bit is set \n");
+			continue;
+		}
+
+		/* check magical chainmail */
+		if (host_readw(hero_i + 0x1b2) != 0xc5) {
+			continue;
+		}
+
+		sub_hero_le(hero_i, 1);
 	}
 }
 
@@ -1000,14 +1435,14 @@ void set_and_spin_lock() {
 	while (ds_readw(0xbcd6)) {};
 }
 
-void seg002_3b63() {
+void passages_recalc() {
 	Bit8u *p;
 	unsigned short locvar;
 	unsigned short di,i;
 
 	signed char tmp;
 
-	p = MemBase + PhysMake(datseg, 0x6f00);
+	p = p_datseg + 0x6f00;
 
 	switch (get_current_season()) {
 		case 2:
@@ -1062,11 +1497,11 @@ void seg002_3b63() {
 		ds_writeb(0x42af, ds_readb(0x42af) - 1);
 }
 
-void seg002_3c63() {
+void passages_reset() {
 	Bit8u *p;
 	unsigned short i;
 
-	p = MemBase + PhysMake(datseg, 0x6f00);
+	p = p_datseg + 0x6f00;
 
 	/* Orig-BUG: the loop operates only on the first element
 		sizeof(element) == 8 */
@@ -1127,10 +1562,10 @@ void draw_splash(unsigned short index, unsigned short type) {
 
 	if (type == 0)
 		/* splash 1 / red / LE */
-		splash = MemBase + Real2Phys(ds_readd(0xbccb));
+		splash = Real2Host(ds_readd(0xbccb));
 	else
 		/* splash 2 / yellow / AE */
-		splash = MemBase + Real2Phys(ds_readd(0xbcc7));
+		splash = Real2Host(ds_readd(0xbcc7));
 
 	restore_rect_rle(Real2Phys(ds_readd(0xd2ff)), splash, ds_readw(0x2d01 + index*2), 157, 32, 32, 2);
 
@@ -1285,7 +1720,7 @@ void set_to_ff() {
 }
 
 unsigned short mod_timer(short val) {
-	if (ds_readd(0x2dbb) % val == 0)
+	if (ds_readd(DAY_TIMER) % val == 0)
 		return 1;
 
 	return 0;
@@ -1304,7 +1739,7 @@ void draw_compass() {
 	if (ds_readb(0xb132))
 		return;
 	/* Not in town or dungeon */
-	if (!ds_readb(0x2d6e) && !ds_readb(0x2d67))
+	if (!ds_readb(DUNGEON_INDEX) && !ds_readb(0x2d67))
 		return;
 	/* I have no clue */
 	if (ds_readb(0x4475) == 2)
@@ -1366,10 +1801,10 @@ short can_merge_group() {
 		if (ds_readb(0x2d68 + i) != ds_readb(0x2d67))
 			continue;
 		/* check DungeonIndex */
-		if (ds_readb(0x2d6f + i) != ds_readb(0x2d6e))
+		if (ds_readb(0x2d6f + i) != ds_readb(DUNGEON_INDEX))
 			continue;
 		/* check DungeonLevel */
-		if (ds_readb(0x2d76 + i) != ds_readb(0x2d75))
+		if (ds_readb(0x2d76 + i) != ds_readb(DUNGEON_LEVEL))
 			continue;
 
 		retval = i;
@@ -1509,7 +1944,7 @@ void seg002_47e2() {
 	char bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, MemBase + PhysMake(datseg, 0xc00d), 24);
+	memcpy(&bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1526,7 +1961,7 @@ void seg002_47e2() {
 
 	GUI_print_char('P', 0, 0);
 	/* restore gfx settings from stack */
-	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
+	memcpy(p_datseg + 0xc00d, &bak, 24);
 }
 
 /**
@@ -1535,7 +1970,7 @@ void seg002_484f() {
 	char bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, MemBase + PhysMake(datseg, 0xc00d), 24);
+	memcpy(&bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1551,7 +1986,7 @@ void seg002_484f() {
 	do_pic_copy(0);
 
 	/* restore gfx settings from stack */
-	memcpy(MemBase + PhysMake(datseg, 0xc00d), &bak, 24);
+	memcpy(p_datseg + 0xc00d, &bak, 24);
 }
 
 /**
@@ -1699,6 +2134,141 @@ void add_hero_ae(Bit8u* hero, short ae) {
 		host_writew(hero+0x64, host_readw(hero+0x62));
 
 	ds_writew(0xc3cb, tmp);
+}
+
+/**
+ * sub_hero_le() - subtracts LE from a hero
+ * @hero:	pointer to the hero
+ * @le:		LE to loose
+ *
+ */
+void sub_hero_le(Bit8u *hero, signed short le)
+{
+	Bit8u *hero_i, *ptr;
+	signed short bak, old_le, i;
+
+	if (!hero_dead(hero) && le > 0) {
+
+		bak = ds_readw(0xc3cb);
+		ds_writew(0xc3cb, 0);
+
+		/* do the damage */
+		old_le = host_readw(hero + 0x60);
+		host_writew(hero + 0x60, old_le - le);
+
+		if (hero_sleeps(hero)) {
+			/* awake him/her */
+			host_writeb(hero + 0xaa,
+				host_readb(hero + 0xaa) & 0xfd);
+
+			/* in fight mode */
+			if (ds_readw(0x2dc5) != 0) {
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+
+				/* update looking dir and other  */
+				host_writeb(ptr + 2, host_readb(hero + 0x82));
+				host_writeb(ptr + 0xd, 0xff);
+				host_writeb(ptr + 5, 0);
+				host_writeb(ptr + 6, 0);
+			}
+		}
+
+		draw_splash(get_hero_index(hero), 0);
+
+		if ((signed short)host_readw(hero + 0x60) < 0) {
+			/* set LE to 0 */
+			host_writew(hero + 0x60, 0);
+
+			/* mark hero as dead */
+			host_writew(hero + 0xaa, host_readw(hero + 0xaa) | 1);
+
+			/* unknown */
+			ds_writeb(0x4212 + get_hero_index(hero), 0);
+
+			/* unknown */
+			host_writeb(hero + 0x84, 100);
+
+			if (ds_readb(0x2845) == 0)
+				ds_writeb(0x46df, 1);
+
+			/* reset sickness */
+			for (i = 1; i <= 7; i++) {
+				host_writeb(hero + 0xae + i * 5, 0);
+				host_writeb(hero + 0xaf + i * 5, 0);
+			}
+
+			/* reset poison */
+			for (i = 1; i <= 9; i++) {
+				host_writeb(hero + 0xd6 + i * 5, 0);
+				host_writeb(hero + 0xd7 + i * 5, 0);
+			}
+
+			if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
+				if (hero == Real2Host(ds_readd(0x3e20))) {
+					ds_writew(0xc3c1, 1);
+					ds_writew(0x3cd5, 0);
+				}
+			}
+
+			if (ds_readb(0xa842) != 0 && ds_readw(0x2cd5) == 0 &&
+				(count_heroes_available_in_group() == 0 ||
+				count_heroes_available_in_group() == 1 && is_hero_available_in_group(get_hero(6)))) {
+
+				ds_writeb(0x4333, 99);
+
+				for (hero_i = get_hero(0), i = 0; i <=6; i++, hero_i = get_hero(i)) {
+					/* no typus */
+					if (host_readb(hero_i + 0x21) == 0)
+						continue;
+
+					/* not in current group */
+					if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+						continue;
+
+					hero_disappear(hero_i, i, -1);
+				}
+			}
+
+		} else {
+			if (old_le >= 5 && (signed short)host_readw(hero + 0x60) < 5) {
+				/* make hero unsonscious */
+				host_writeb(hero + 0xaa,
+					host_readb(hero + 0xaa) | 0x40);
+
+				/* unknown yet */
+				host_writeb(hero + 0x84, 10);
+
+				/* unknown yet */
+				ds_writeb(0x4212 + get_hero_index(hero), 1);
+
+				/* in fight mode */
+				if (ds_readw(0x2cd5) != 0) {
+					ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+					host_writeb(ptr + 2,
+						ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2) + host_readb(hero + 0x82));
+					host_writeb(ptr + 0x0d, 0xff);
+					host_writeb(ptr + 5,
+						ds_readb(0x1210 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+					host_writeb(ptr + 6,
+						ds_readb(0x1211 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+
+
+					FIG_add_msg(7, 0);
+
+					if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
+						if (hero == Real2Host(ds_readd(0x3e20))) {
+							ds_writew(0xc3c1, 1);
+							ds_writew(0x3cd5, 0);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (ds_readw(0x2cd5) == 0) {
+		ds_writeb(CHECK_PARTY, 0);
+	}
 }
 
 /**
@@ -1883,7 +2453,7 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 		if (tmp == 20) {
 			zw++;
 			if (zw == 2) {
-				D1_INFO(" -> UNGLÜCKLICH! nicht bestanden\n");
+				D1_INFO(" -> UNGLUECKLICH! nicht bestanden\n");
 				return -99;
 			}
 		}

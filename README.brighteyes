@@ -32,6 +32,14 @@ Prequisites:
 	since atm no precompiled binaries are available.
 
 
+Configuration Hints for dosbox.conf :
+
+* The CPU emulation must be set to core=auto or core=normal, to bypass all
+  rewritten functions.
+
+* DSA1/RAK1 has no working EMS support, so memsize=1 is fine.
+
+
 Improvements and changes to the Original:
 
 I could not resist to fix some Bugs in this early state.
@@ -41,6 +49,7 @@ M302de (Main V3.02 german CD - Version):
 	Game logic:
 		* broken item counters will be corrected
 		* the schedule for ships was broken
+		* reactivation of informants in taverns
 	Crashes:
 		* infinite loop in get_random_hero()
 	Story fixes:
@@ -55,7 +64,6 @@ M302de (Main V3.02 german CD - Version):
 
 G105de (Generation V1.05 german CD - Version):
 		* avoid negative skill-/spell_attempts in novice mode
-
 
 
 Links:

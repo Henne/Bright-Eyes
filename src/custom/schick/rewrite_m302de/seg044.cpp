@@ -111,16 +111,16 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 			Bit16u v5, Bit16u v6)
 {
 	Bit8u *lp1, *lp2;
-	Bit16u x_obj1, y_obj1;
-	Bit16u x_obj2, y_obj2;
+	signed short x_obj1, y_obj1;
+	signed short x_obj2, y_obj2;
 	Bit16s dir, l2, l3;
 	Bit16u si, di;
 
 	/* get a pointer from an array where the Monster-ID serves as index */
 	lp2 = Real2Host(ds_readd(0x2555 + host_readb(hero + 0x9b) * 4));
 
-	FIG_search_obj_on_cb(obj2, (Bit8u*)&x_obj2, (Bit8u*)&y_obj2);
-	FIG_search_obj_on_cb(obj1, (Bit8u*)&x_obj1, (Bit8u*)&y_obj1);
+	FIG_search_obj_on_cb(obj2, &x_obj2, &y_obj2);
+	FIG_search_obj_on_cb(obj1, &x_obj1, &y_obj1);
 
 	if (x_obj1 == x_obj2) {
 		if (y_obj2 < y_obj1)
@@ -240,8 +240,8 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 	Bit8u *lp1;		/* mostly written */
 	Bit8u *lp2;		/* read only */
 	Bit16s l1, l2, l3;	/* indicees to lp2 */
-	Bit16u x_target, y_target;
-	Bit16u x_caster, y_caster;
+	signed short x_target, y_target;
+	signed short x_caster, y_caster;
 	Bit16s dir, dir2;
 
 	Bit8u *lp1_bak;
@@ -249,8 +249,8 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 	/* get a pointer from an array where the Monster-ID serves as index */
 	lp2 = Real2Host(ds_readd(0x2555 + host_readb(p + 1) * 4));
 
-	FIG_search_obj_on_cb(caster, (Bit8u*)&x_caster, (Bit8u*)&y_caster);
-	FIG_search_obj_on_cb(target, (Bit8u*)&x_target, (Bit8u*)&y_target);
+	FIG_search_obj_on_cb(caster, &x_caster, &y_caster);
+	FIG_search_obj_on_cb(target, &x_target, &y_target);
 
 	if (x_target == x_caster) {
 		if (y_caster < y_target)

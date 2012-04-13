@@ -23,20 +23,21 @@ namespace M302de {
  * Returns 0 if the object was not found. If the object was
  * found it returns 1 and stores the coordinates at the pointers.
  */
-unsigned short FIG_search_obj_on_cb(signed short obj, Bit8u *px, Bit8u* py) {
+unsigned short FIG_search_obj_on_cb(signed short obj, signed short *px, signed short *py)
+{
 
-	unsigned short x, y;
+	signed short x, y;
 
 	for (x = 0; x < 25; x++)
 		for (y = 0; y < 24; y++)
 			if (get_cb_val(x, y) == obj) {
-				host_writew(px, x);
-				host_writew(py, y);
+				*px = x;
+				*py = y;
 				return 1;
 			}
 
-	host_writew(px, x);
-	host_writew(py, y);
+	*px = x;
+	*py = y;
 	return 0;
 }
 
@@ -44,7 +45,7 @@ void FIG_init_list_elem(signed short obj) {
 
 	signed short x, y;
 
-	FIG_search_obj_on_cb(obj, (Bit8u*)&x, (Bit8u*)&y);
+	FIG_search_obj_on_cb(obj, &x, &y);
 
 	/* This initializes a 35 byte structure at DS:0x3066 */
 	ds_writew(0xe066, 0);

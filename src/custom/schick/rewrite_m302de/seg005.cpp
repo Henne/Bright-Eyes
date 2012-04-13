@@ -147,7 +147,7 @@ unsigned short fight_printer()
 	char str[6];
 	RealPt gfx_pos_bak;
 	RealPt gfx_dst_bak;
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s f_action;
 	Bit16u x;
 
@@ -161,7 +161,7 @@ unsigned short fight_printer()
 		if (ds_readw(0xe318))
 			ds_writew(0x4b79, 10);
 		else
-			ds_writew(0x4b79, ds_readw(0x4b66) * 6);
+			ds_writew(0x4b79, ds_readw(DELAY_FACTOR) * 6);
 
 		if (ds_readw(0xd333 + ds_readb(0x4b78) * 4) == 0)
 			ds_writew(0x26b1, 0);
@@ -179,7 +179,7 @@ unsigned short fight_printer()
 			gfx_pos_bak = ds_readd(0xd2fb);
 
 			ds_writed(0xd2fb, ds_readd(0xd303));
-			GUI_get_smth(&fg_bak, &bg_bak);
+			get_textcolor(&fg_bak, &bg_bak);
 
 			FIG_set_star_color(Real2Phys(ds_readd(0xd29d)),
 				3724, ds_readb(0x4b6b + f_action));
@@ -197,7 +197,7 @@ unsigned short fight_printer()
 
 			/* print number into the star */
 			if (ds_readw(0xd333 + 2 + ds_readb(0x4b78) * 4)) {
-				GUI_set_smth(0xff, ds_readb(0x4b6b + f_action) + 0x80);
+				set_textcolor(0xff, ds_readb(0x4b6b + f_action) + 0x80);
 				sprintf(str, "%d", (signed short)
 					ds_readw(0xd333 + 2 + ds_readb(0x4b78) * 4));
 				x = GUI_get_first_pos_centered((Bit8u*)str, 30, 20, 0);
@@ -215,7 +215,7 @@ unsigned short fight_printer()
 				ds_writed(0xc019, ds_readd(0xc3a9));
 				do_pic_copy(3);
 
-				GUI_set_smth(0xff, 0);
+				set_textcolor(0xff, 0);
 
 				switch (f_action) {
 				case 1:	/* heros attack fails */
@@ -276,7 +276,7 @@ unsigned short fight_printer()
 					1, 194);
 			}
 			ds_writed(0xd2fb, gfx_pos_bak);
-			GUI_set_smth(fg_bak, bg_bak);
+			set_textcolor(fg_bak, bg_bak);
 		}
 		ds_writeb(0x4b7b, ds_readb(0x4b78));
 		return 1;
@@ -286,7 +286,7 @@ unsigned short fight_printer()
 		if (ds_readw(0xe318))
 			ds_writew(0x4b79, 10);
 		else
-			ds_writew(0x4b79, ds_readw(0x4b66) * 6);
+			ds_writew(0x4b79, ds_readw(DELAY_FACTOR) * 6);
 
 		ds_writeb(0x4b7b, 0xff);
 
@@ -306,15 +306,15 @@ void seg005_0598(Bit16u val)
 //static
 void set_delay_timer() {
 	/* set delay_timer to delay_factor */
-	ds_writew(0xe2d0, ds_readw(0x4b66));
+	ds_writew(DELAY_TIMER, ds_readw(DELAY_FACTOR));
 }
 //static
 void fight_delay()
 {
 	seg001_02c4();
 
-	while (ds_readw(0xe2d0) > 0) {
-		ds_writew(0xe2d0, ds_readw(0xe2d0) - 1);
+	while (ds_readw(DELAY_TIMER) > 0) {
+		ds_writew(DELAY_TIMER, ds_readw(DELAY_TIMER) - 1);
 		wait_for_vsync();
 	}
 

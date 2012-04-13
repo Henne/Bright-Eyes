@@ -32,7 +32,7 @@ static const char diary_fmt[][30] = {
 void diary_show()
 {
 	Bit16u bak1, bak2, bak3, bak4, bak5;
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16u i;
 
 	bak5 = ds_readw(0xbffd);
@@ -47,7 +47,7 @@ void diary_show()
 	load_pp20(0xb1);
 	ds_writeb(0x2845, 0xb1);
 
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	ds_writed(0xd2fb, ds_readd(0xc3db));
 	bak1 = ds_readw(0xd2d5);
@@ -59,7 +59,7 @@ void diary_show()
 	ds_writew(0xd313, 83);
 	ds_writew(0xd315, 130);
 
-	GUI_set_smth(4, 0);
+	set_textcolor(4, 0);
 
 	/* print all diary entries */
 	i = 0;
@@ -82,7 +82,7 @@ void diary_show()
 
 	refresh_screen_size();
 
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
 	ds_writed(0xc00d, ds_readd(0xd2ff));
@@ -108,24 +108,24 @@ void diary_new_entry()
 	}
 
 	/* make a pointer to the last entry */
-	ptr = MemBase + PhysMake(datseg, 0x43b4 + ds_readw(0x43ba) * 8);
+	ptr = p_datseg + 0x43b4 + ds_readw(0x43ba) * 8;
 
 	/* avoid double entries for the same town */
 	if (ds_readb(0x2d67) == host_readw(ptr + 6))
 		return;
 
 	/* make a pointer to the current entry */
-	ptr = MemBase + PhysMake(datseg, 0x43bc + ds_readw(0x43ba) * 8);
+	ptr = p_datseg + 0x43bc + ds_readw(0x43ba) * 8;
 
 	/* increment entry counter */
 	ds_writew(0x43ba, ds_readw(0x43ba) + 1);
 
 	/* Write day of month */
-	host_writew(ptr, ds_readb(0x2dc0));
+	host_writew(ptr, ds_readb(DAY_OF_MONTH));
 	/* Write month */
-	host_writew(ptr + 2, ds_readb(0x2dc1));
+	host_writew(ptr + 2, ds_readb(MONTH));
 	/* Write year */
-	host_writew(ptr + 4, ds_readb(0x2dc2));
+	host_writew(ptr + 4, ds_readb(YEAR));
 	/* Write city */
 	host_writew(ptr + 6, ds_readb(0x2d67));
 }

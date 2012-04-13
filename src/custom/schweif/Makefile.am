@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I./rewrite_o100de -I./rewrite_c102de
+AM_CPPFLAGS = -I$(top_srcdir)/include -I./rewrite_c102de
 
 SUBDIRS = rewrite_c102de
 

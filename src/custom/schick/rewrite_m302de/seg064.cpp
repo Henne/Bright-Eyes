@@ -32,7 +32,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 		done = 1;
 		for (i = 0; i < arg2; i++) {
 			if (host_readd((Real2Host(ds_readd(0x42b2)) + i * 12))
-				!= host_readd(Real2Host(ds_readd(0xc3b1)) + name * 4))
+				!= host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4))
 				continue;
 			done = 0;
 			break;
@@ -40,7 +40,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 
 	} while (done == 0);
 
-	return host_readd(Real2Host(ds_readd(0xc3b1)) + name * 4);
+	return host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4);
 }
 
 /**
@@ -75,7 +75,7 @@ unsigned short prepare_passages(void)
 			prepared++;
 		} else {
 			/* not before 14.00 o'clock */
-			if (ds_readd(0x2dbb) < 0x1518 * 14)
+			if (ds_readd(DAY_TIMER) < 0x1518 * 14)
 				continue;
 			/* only for ships tomorrow */
 			if (host_readb(entry + 4) != 1)

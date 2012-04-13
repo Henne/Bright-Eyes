@@ -67,7 +67,7 @@ void spell_blitz()
 
 		/* set the spell target */
 		ds_writed(0xe5b8,
-			ds_readd(0xbd34) + (host_readb(get_spelluser() + 0x86) - 1) * 0x6da);
+			ds_readd((HEROS) + (host_readb(get_spelluser() + 0x86) - 1) * 0x6da));
 
 		/* do not cast yourself */
 		if (get_spelltarget() == get_spelluser()) {

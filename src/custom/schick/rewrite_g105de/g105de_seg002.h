@@ -85,8 +85,8 @@ namespace G105de {
 	RealPt get_gfx_ptr(Bit16u, Bit16u);
 	Bit16u ret_zero();
 	void call_blit_smth3(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u);
-	void set_vals(Bit16u, Bit16u);
-	void get_vals(Bit8u*, Bit8u*);
+	void set_textcolor(unsigned short, unsigned short);
+	void get_textcolor(Bit8u*, Bit8u*);
 	Bit16u get_str_width(char*);
 	Bit16u get_line_start_c(char*, Bit16u, Bit16u);
 	Bit16u enter_string(char*, Bit16u, Bit16u, Bit16u, Bit16u);

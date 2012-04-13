@@ -27,9 +27,12 @@ void wait_for_keyboard1();
 void timers_daily();
 //static
 void seg002_2177();
-void pal_fade(PhysPt dst, PhysPt p2);
-void pal_fade_in(PhysPt dst, PhysPt p2, unsigned short v3, unsigned short colors);
+void pal_fade(Bit8u*, Bit8u*);
+void pal_fade_in(Bit8u*, Bit8u*, unsigned short, unsigned short);
+void dawning(void);
+void nightfall(void);
 unsigned short get_current_season();
+void do_timers(void);
 //static
 void do_census();
 void sub_ingame_timers(unsigned int);
@@ -37,12 +40,14 @@ void sub_mod_timers(unsigned int);
 unsigned short get_free_mod_slot();
 void set_mod_slot(unsigned short, unsigned int, Bit8u *, signed char, signed char);
 void seg002_2f7a(unsigned int fmin);
-void sub_light_timers(unsigned short quarter, signed short v2);
+void sub_light_timers(signed int);
+//static
+void magical_chainmail_damage(void);
 void set_and_spin_lock();
 //static
-void seg002_3b63();
+void passages_recalc();
 //static
-void seg002_3c63();
+void passages_reset();
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);
@@ -69,6 +74,7 @@ unsigned short is_hero_available_in_group(Bit8u* hero);
 void do_starve_damage(Bit8u*, Bit16u, Bit16u);
 void sub_ae_splash(Bit8u *hero, signed short type);
 void add_hero_ae(Bit8u* hero, short ae);
+void sub_hero_le(Bit8u*, short);
 void add_hero_le(Bit8u *hero, signed short le);
 void add_group_le(signed short le);
 short test_attrib(Bit8u* hero, unsigned short attrib, short bonus);

@@ -27,23 +27,24 @@ namespace M302de {
 //000
 //129
 //15e
-char GUI_lookup_char_height(char c, unsigned short *p) {
+char GUI_lookup_char_height(char c, unsigned short *p)
+{
 	short i;
-	Bit8u *tab = MemBase + PhysMake(datseg, 0xab42);
+	Bit8u *tab = p_datseg + 0xab42;
 
 	for (i = 0; i != 210; i+=3) {
 		if (c != ds_readb(0xab42 + i))
 			continue;
 
-		host_writew((Bit8u*)p, ds_readb(0xab42 + i + 2) & 0xff);
+		*p = ds_readb(0xab42 + i + 2) & 0xff;
 		return ds_readb(0xab42 + i + 1) & 0xff;
 	}
 
 	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
-		host_writew((Bit8u*)p, 0);
+		*p = 0;
 		return 0;
 	} else {
-		host_writew((Bit8u*)p, 8);
+		*p = 8;
 		return 0;
 	}
 }
@@ -224,7 +225,7 @@ void GUI_draw_radio_bg(Bit16u header, Bit16u options, Bit16u width,
 
 	GUI_draw_popup_line(header + options + 1, 3);
 
-	GUI_set_smth(0xff, 0xdf);
+	set_textcolor(0xff, 0xdf);
 	wait_for_keyboard1();
 }
 
@@ -245,7 +246,7 @@ void GUI_output(Bit8u *str)
 
 signed short GUI_input(Bit8u *str, unsigned short num)
 {
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s retval, l2, l3, l4, l5, l6, l7;
 	Bit16s l_si, l_di;
 
@@ -282,7 +283,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	ds_writew(0xc001, (200 - l2) / 2 + ds_readw(0x2ca4));
 	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
 
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	update_mouse_cursor();
 
@@ -314,7 +315,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 		ds_writed(0x29e4, 0);
 	}
 
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	update_mouse_cursor();
 
@@ -392,7 +393,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	char *lp;
 	unsigned short i;
 	Bit16s l2, l3, l4, l5, l6;
-	Bit16s fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s l7, l8, l9, l10;
 	signed short retval;
 	Bit16s l11, l12, l13;
@@ -436,7 +437,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	ds_writew(0xd2d7, ds_readw(0xc001) + 5);
 
 	update_mouse_cursor();
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	GUI_draw_radio_bg(l_si, options, l_di, l5);
 
@@ -492,7 +493,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	GUI_copy_smth(l_di, l5);
 
 	refresh_screen_size();
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	ds_writew(0xd2d9, l7);
 	ds_writew(0xd2d7, l8);
@@ -639,7 +640,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	va_list arguments;
 	char *str;
 	Bit16s l3, l4, l5, l6;
-	signed short fg_bak, bg_bak;
+	unsigned short fg_bak, bg_bak;
 	Bit16s l7, l8, l9, l10, l11;
 	signed short retval;
 	Bit16s l12;
@@ -674,7 +675,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
 
 	update_mouse_cursor();
-	GUI_get_smth(&fg_bak, &bg_bak);
+	get_textcolor(&fg_bak, &bg_bak);
 
 	GUI_draw_radio_bg(l_di, options, l11, l6);
 
@@ -689,21 +690,21 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 
 		/* highlight special option */
 		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
-			GUI_set_smth(0xc9, 0xdf);
+			set_textcolor(0xc9, 0xdf);
 
 		str = va_arg(arguments, char*);
 		GUI_print_string((Bit8u*)str, l3, l4);
 
 		/* reset highlight special option */
 		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
-			GUI_set_smth(0xdf, 0xff);
+			set_textcolor(0xdf, 0xff);
 	}
 
 	retval = GUI_menu_input(options, l_di + 1, l11);
 
 	GUI_copy_smth(l11, l6);
 	refresh_screen_size();
-	GUI_set_smth(fg_bak, bg_bak);
+	set_textcolor(fg_bak, bg_bak);
 
 	ds_writew(0xd2d9, l7);
 	ds_writew(0xd2d7, l8);

@@ -102,9 +102,9 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		if the current fight is 0xbc, set MR to 5 (Travel-Event 84),
 		if the current fight is 0xc0, and the enemy
 		is no "Orkcachampion" then set a flag */
-	if (ds_readw(0xe316) == 0xbc)
+	if (ds_readw(CURRENT_FIG_NR) == 0xbc)
 		host_writeb(sheet + 0x19, 5);
-	else if (ds_readw(0xe316) == 0xc0 && host_readb(sheet) == 0x48)
+	else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(sheet) == 0x48)
 			host_writeb(sheet + 0x31,
 				host_readb(sheet + 0x31) | 0x20);
 
@@ -169,7 +169,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	/* Another hack:
 		If the current fight == 0x5e and the enemy is "Kultist",
 		set a flag */
-	if (ds_readw(0xe316) == 0x5e && host_readb(sheet) == 0x38)
+	if (ds_readw(CURRENT_FIG_NR) == 0x5e && host_readb(sheet) == 0x38)
 		host_writeb(sheet + 0x32, host_readb(sheet + 0x32) | 4);
 }
 
@@ -281,7 +281,7 @@ void FIG_init_heroes()
 		host_writeb(hero + 0x86, 0);
 
 		/* check special fight */
-		if (ds_readw(0xe316) == 0xc0) {
+		if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
 			if (hero == Real2Host(ds_readd(0x3e20))) {
 				cb_x = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7a);
 				cb_y = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7b);
