@@ -2215,7 +2215,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
 				if (hero == Real2Host(ds_readd(0x3e20))) {
 					ds_writew(0xc3c1, 1);
-					ds_writew(0x3cd5, 0);
+					ds_writew(IN_FIGHT, 0);
 				}
 			}
 
@@ -2267,7 +2267,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 					if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
 						if (hero == Real2Host(ds_readd(0x3e20))) {
 							ds_writew(0xc3c1, 1);
-							ds_writew(0x3cd5, 0);
+							ds_writew(IN_FIGHT, 0);
 						}
 					}
 				}
