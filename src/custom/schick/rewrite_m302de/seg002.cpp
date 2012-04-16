@@ -2171,7 +2171,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				host_readb(hero + 0xaa) & 0xfd);
 
 			/* in fight mode */
-			if (ds_readw(0x2cd5) != 0) {
+			if (ds_readw(IN_FIGHT) != 0) {
 				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
 
 				/* update looking dir and other  */
@@ -2219,7 +2219,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				}
 			}
 
-			if (ds_readb(0xa842) != 0 && ds_readw(0x2cd5) == 0 &&
+			if (ds_readb(0xa842) != 0 && ds_readw(IN_FIGHT) == 0 &&
 				(count_heroes_available_in_group() == 0 ||
 				count_heroes_available_in_group() == 1 && is_hero_available_in_group(get_hero(6)))) {
 
@@ -2251,7 +2251,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				ds_writeb(0x4212 + get_hero_index(hero), 1);
 
 				/* in fight mode */
-				if (ds_readw(0x2cd5) != 0) {
+				if (ds_readw(IN_FIGHT) != 0) {
 					ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
 					host_writeb(ptr + 2,
 						ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2) + host_readb(hero + 0x82));
@@ -2275,7 +2275,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 		}
 	}
 
-	if (ds_readw(0x2cd5) == 0) {
+	if (ds_readw(IN_FIGHT) == 0) {
 		ds_writeb(CHECK_PARTY, 0);
 	}
 }
@@ -2316,7 +2316,7 @@ void add_hero_le(Bit8u *hero, signed short le) {
 		host_writeb(hero + 0xaa, host_readb(hero + 0xaa) & 0xbf);
 
 		/* maybe if we are in a fight */
-		if (ds_readw(0x2cd5)) {
+		if (ds_readw(IN_FIGHT)) {
 			ptr = FIG_get_ptr(host_readb(hero + 0x81));
 			ret = seg039_0023(hero);
 
