@@ -2171,7 +2171,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				host_readb(hero + 0xaa) & 0xfd);
 
 			/* in fight mode */
-			if (ds_readw(0x2dc5) != 0) {
+			if (ds_readw(0x2cd5) != 0) {
 				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
 
 				/* update looking dir and other  */
