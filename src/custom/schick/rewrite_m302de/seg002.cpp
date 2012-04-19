@@ -2118,6 +2118,16 @@ void sub_ae_splash(Bit8u *hero, signed short ae) {
 		host_writew(hero + 0x64, 0);
 
 	ds_writew(0xc3cb, tmp);
+
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* AE Bar was not updated in Pseudo 3D mode */
+	if (ds_readw(IN_FIGHT) == 0) {
+		/* redraw AE Bar */
+		draw_bar(1, get_hero_index(hero), host_readw(hero + 0x64),
+			host_readw(hero + 0x62), 0);
+	}
+#endif
+
 }
 
 /**
