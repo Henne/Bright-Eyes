@@ -8,6 +8,10 @@
 #include "cpu.h"
 #include "mem.h"
 
+/* comment this out to have the original, but buggy behaviour */
+#define M302de_ORIGINAL_BUGFIX
+
+
 #define SCHICK_INFO
 //#define SCHICK_LOG
 //#define SCHICK_TRAC
