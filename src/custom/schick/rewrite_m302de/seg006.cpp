@@ -35,7 +35,7 @@ RealPt FIG_get_ptr(signed char v1) {
 void FIG_draw_figures(void)
 {
 	RealPt gfx_dst_bak;
-	unsigned char screen_mode[8];
+	Bit8u screen_mode[8];
 	Bit8u *list_i;
 	signed short l1, l2;
 	signed short l_si, l_di;
@@ -47,7 +47,7 @@ void FIG_draw_figures(void)
 	ds_writed(0xc00d, ds_readd(0xd303));
 
 	/* backup a structure */
-	memcpy(screen_mode, p_datseg + 0x2990, 8);
+	struct_copy(screen_mode, p_datseg + 0x2990, 8);
 
 	list_i = Real2Host(ds_readd(0xe108));
 
@@ -102,7 +102,7 @@ void FIG_draw_figures(void)
 	} while (list_i != NULL && list_i != MemBase);
 
 	/* restore a structure */
-	memcpy(p_datseg + 0x2990, screen_mode, 8);
+	struct_copy(p_datseg + 0x2990, screen_mode, 8);
 	ds_writed(0xc00d, gfx_dst_bak);
 }
 
@@ -260,7 +260,7 @@ void FIG_remove_from_list(signed char id, signed char v2) {
 	if (v2 == 0)
 		ds_writeb(0xe089 + id, 0);
 	else
-		mem_memcpy(PhysMake(datseg, 0xe066), p, 35);
+		struct_copy(p_datseg + 0xe066, MemBase + p, 35);
 
 	/* check if p == HEAD */
 	if (p == Real2Phys(ds_readd(0xe108))) {
@@ -303,7 +303,7 @@ signed char FIG_add_to_list(signed char v) {
 
 		fls = Real2Host(ds_readd(0xe108));
 
-		memcpy(fls, MemBase + PhysMake(datseg, 0xe066), 35);
+		struct_copy(fls, p_datseg + 0xe066, 35);
 
 		if (v == -1)
 			host_writeb(fls + 0x10,	FIG_set_array());
@@ -320,7 +320,7 @@ signed char FIG_add_to_list(signed char v) {
 		p1 += 35;
 	}
 
-	memcpy(Real2Host(p1), MemBase + PhysMake(datseg, 0xe066), 35);
+	struct_copy(Real2Host(p1), p_datseg + 0xe066, 35);
 
 	if (v == -1)
 		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());

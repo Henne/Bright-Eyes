@@ -225,10 +225,12 @@ signed short test_foe_range_attack(signed short x, signed short y, signed short 
 
 			/* Original-Bugfix: the next if assumes
 					that a negative cb_val is a hero -> SEGFAULT*/
+#ifdef M302de_ORIGINAL_BUGFIX
 			if (cb_val < 0) {
 				done = 1;
 				continue;
 			}
+#endif
 
 			/* handle heroes or walls */
 			if (cb_val >= 10 ||

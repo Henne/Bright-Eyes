@@ -71,9 +71,9 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
 			/* set a flag in the status area */
 			ds_writeb(0x40f9, 0);
 		} else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(enemy) == 0x48) {
-			/* slaying the orc champion */
+			/* slaying the orc champion, ends the fight */
 			if (ds_readb(0x5f30) == 0)
-				ds_writew(0x2cd5, 0);
+				ds_writew(IN_FIGHT, 0);
 		} else if (ds_readw(CURRENT_FIG_NR) == 0xb4 && host_readb(enemy) == 0x46) {
 			/* slaying Gorah make everything flee than Heshtot*/
 			for (i = 0; i < 20; i++)
@@ -121,13 +121,16 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 			host_readb(attacker + 1) == 0x1c))
 				damage -= 3;
 
-		/* Totenkopfguertel makes damage 0, but can be lost */
+		/* get position of Totenkopfguertel/Skullbelt */
 		pos = get_item_pos(hero, 0xb6);
 
 		if (pos != -1 && (host_readb(attacker + 1) == 0x22 ||
 			host_readb(attacker + 1) == 0x1c)) {
 
+			/* no damage for the hero who wears it */
 			damage = 0;
+
+			/* 55 chance to loose this item on use */
 			if (random_schick(100) < 5) {
 				drop_item(hero, pos, 1);
 				GUI_output(get_dtp(0x2c));

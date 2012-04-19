@@ -9,6 +9,7 @@ void restore_rect_rle(PhysPt ptr1, Bit8u *ptr2, unsigned short x, unsigned short
 void draw_mouse_cursor();
 void save_mouse_bg();
 void restore_mouse_bg();
+void draw_wallclock(signed short, signed short);
 void array_add(PhysPt dst, unsigned short len, unsigned char op, unsigned short flag);
 void schick_set_video();
 void schick_reset_video();

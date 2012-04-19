@@ -4,6 +4,8 @@ namespace M302de {
 void make_valuta_str(char* dst, unsigned int money);
 /* 25 */
 void hero_get_sober(Bit8u *hero);
+/* 2a */
+void hero_get_drunken(Bit8u *hero);
 /* 2f */
 signed short check_hero_KK_unused(signed short val);
 /* 34 */
@@ -15,7 +17,7 @@ unsigned short hero_is_poisoned(Bit8u *hero);
 /* 48 */
 void update_atpa(Bit8u*);
 /* 57 */
-unsigned short count_heroes_in_group();
+unsigned short count_heroes_in_group(void);
 /* 5c */
 unsigned short get_hero_CH_best();
 /* 61 */

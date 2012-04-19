@@ -38,6 +38,13 @@ void play_voc(Bit16u index)
 	CPU_Pop16();
 }
 
+void play_voc_delay(Bit16u index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x856);
+	CPU_Pop16();
+}
+
 /**
  * open_and_seek_dat - opens SCHICK.DAT and seeks to desired position
  * @fileindex: the index of the file in SCHICK.DAT
@@ -1941,10 +1948,10 @@ void set_automap_tiles(unsigned short x, unsigned short y) {
 /**
 */
 void seg002_47e2() {
-	char bak[24];
+	Bit8u bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, p_datseg + 0xc00d, 24);
+	struct_copy(bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1960,17 +1967,19 @@ void seg002_47e2() {
 	do_save_rect();
 
 	GUI_print_char('P', 0, 0);
+
 	/* restore gfx settings from stack */
-	memcpy(p_datseg + 0xc00d, &bak, 24);
+	struct_copy(p_datseg + 0xc00d, bak, 24);
 }
 
 /**
 */
 void seg002_484f() {
-	char bak[24];
+
+	Bit8u bak[24];
 
 	/* save gfx settings to stack */
-	memcpy(&bak, p_datseg + 0xc00d, 24);
+	struct_copy(bak, p_datseg + 0xc00d, 24);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -1986,7 +1995,7 @@ void seg002_484f() {
 	do_pic_copy(0);
 
 	/* restore gfx settings from stack */
-	memcpy(p_datseg + 0xc00d, &bak, 24);
+	struct_copy(p_datseg + 0xc00d, bak, 24);
 }
 
 /**
@@ -2109,6 +2118,16 @@ void sub_ae_splash(Bit8u *hero, signed short ae) {
 		host_writew(hero + 0x64, 0);
 
 	ds_writew(0xc3cb, tmp);
+
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* AE Bar was not updated in Pseudo 3D mode */
+	if (ds_readw(IN_FIGHT) == 0) {
+		/* redraw AE Bar */
+		draw_bar(1, get_hero_index(hero), host_readw(hero + 0x64),
+			host_readw(hero + 0x62), 0);
+	}
+#endif
+
 }
 
 /**
@@ -2162,7 +2181,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				host_readb(hero + 0xaa) & 0xfd);
 
 			/* in fight mode */
-			if (ds_readw(0x2dc5) != 0) {
+			if (ds_readw(IN_FIGHT) != 0) {
 				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
 
 				/* update looking dir and other  */
@@ -2206,11 +2225,11 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
 				if (hero == Real2Host(ds_readd(0x3e20))) {
 					ds_writew(0xc3c1, 1);
-					ds_writew(0x3cd5, 0);
+					ds_writew(IN_FIGHT, 0);
 				}
 			}
 
-			if (ds_readb(0xa842) != 0 && ds_readw(0x2cd5) == 0 &&
+			if (ds_readb(0xa842) != 0 && ds_readw(IN_FIGHT) == 0 &&
 				(count_heroes_available_in_group() == 0 ||
 				count_heroes_available_in_group() == 1 && is_hero_available_in_group(get_hero(6)))) {
 
@@ -2242,7 +2261,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				ds_writeb(0x4212 + get_hero_index(hero), 1);
 
 				/* in fight mode */
-				if (ds_readw(0x2cd5) != 0) {
+				if (ds_readw(IN_FIGHT) != 0) {
 					ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
 					host_writeb(ptr + 2,
 						ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2) + host_readb(hero + 0x82));
@@ -2258,7 +2277,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 					if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
 						if (hero == Real2Host(ds_readd(0x3e20))) {
 							ds_writew(0xc3c1, 1);
-							ds_writew(0x3cd5, 0);
+							ds_writew(IN_FIGHT, 0);
 						}
 					}
 				}
@@ -2266,8 +2285,10 @@ void sub_hero_le(Bit8u *hero, signed short le)
 		}
 	}
 
-	if (ds_readw(0x2cd5) == 0) {
-		ds_writeb(CHECK_PARTY, 0);
+	ds_writew(0xc3cb, bak);
+
+	if (ds_readw(IN_FIGHT) == 0) {
+		ds_writeb(CHECK_PARTY, 1);
 	}
 }
 
@@ -2307,7 +2328,7 @@ void add_hero_le(Bit8u *hero, signed short le) {
 		host_writeb(hero + 0xaa, host_readb(hero + 0xaa) & 0xbf);
 
 		/* maybe if we are in a fight */
-		if (ds_readw(0x2cd5)) {
+		if (ds_readw(IN_FIGHT)) {
 			ptr = FIG_get_ptr(host_readb(hero + 0x81));
 			ret = seg039_0023(hero);
 
