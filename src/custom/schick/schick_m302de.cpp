@@ -2511,9 +2511,10 @@ static int seg012(unsigned short offs) {
 		be done by a jump to a pointer value.
 	 */
 	switch (offs) {
-		case 0x195:
+		case 0x195: {
 			D1_LOG("seg12_195();\n");
 			return 0;
+		}
 		case 0x8ed: {
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
@@ -2525,9 +2526,10 @@ static int seg012(unsigned short offs) {
 			D1_LOG("seg12_8ed(%u, %u, %u);\n", v1, v2, v3);
 			return 0;
 		}
-		case 0xd29:
+		case 0xd29: {
 			D1_LOG("seg12_d29();\n");
 			return 0;
+		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				__func__, offs);
