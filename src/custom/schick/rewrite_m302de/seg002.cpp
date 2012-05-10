@@ -221,6 +221,8 @@ signed int process_nvf(Bit8u *nvf) {
 		/* PP20 decompression */
 
 		if (va != 0) {
+			D1_INFO("SUSPECT: nvf_type %d pic 0x%x/0x%x\n",
+				nvf_type, pics, d.pic);
 			/* get size from unpacked picture */
 			retval = host_readd(src);
 			retval = host_readd(src + (retval - 4));
