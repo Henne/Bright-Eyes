@@ -3420,8 +3420,9 @@ static int seg047(unsigned short offs) {
 		CPU_Push32(hero);
 
 		hero_gets_diseased(Real2Host(hero), disease);
-		D1_INFO("%s ist erkrankt %d\n",
-			schick_getCharname(hero), disease);
+		if (host_readb(Real2Host(hero) + 0x21) != 0)
+			D1_INFO("%s ist erkrankt %d\n",
+				schick_getCharname(hero), disease);
 		return 1;
 	}
 	case 0x70: {
@@ -3433,8 +3434,10 @@ static int seg047(unsigned short offs) {
 		CPU_Push32(hero);
 
 		hero_disease_test(Real2Host(hero), disease, probability);
-		D1_INFO("%s koennte zu %d%% an %d erkranken\n",
-			schick_getCharname(hero), probability, disease);
+
+		if (host_readb(Real2Host(hero) + 0x21) != 0)
+			D1_INFO("%s koennte zu %d%% an %d erkranken\n",
+				schick_getCharname(hero), probability, disease);
 		return 1;
 	}
 	case 0x75: {
