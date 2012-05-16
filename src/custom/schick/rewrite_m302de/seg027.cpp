@@ -128,6 +128,11 @@ RealPt load_fight_figs(signed short fig_old)
 	if (fig == (signed short)ds_readw(0x2cd3))
 		return ds_readd(0xd2db);
 
+#ifdef M302de_ORIGINAL_BUGFIX
+	if (fig == -1)
+		return ds_readd(0xd2df);
+#endif
+
 	if ((signed short)ds_readw(0x2cd3) != -1) {
 		ds_writew(0x2cd1, ds_readw(0x2cd3));
 		memcpy(Real2Host(ds_readd(0xd2df)),

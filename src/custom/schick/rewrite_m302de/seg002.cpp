@@ -221,11 +221,7 @@ signed int process_nvf(Bit8u *nvf) {
 		/* PP20 decompression */
 
 		if (va != 0) {
-			D1_INFO("SUSPECT: nvf_type %d pic 0x%x/0x%x\n",
-				nvf_type, d.nr, pics);
-			D1_INFO("Seg: 0x%04x:0x%04x\n",
-				SegValue(cs) - reloc_game,
-				reg_ip);
+
 			/* get size from unpacked picture */
 			retval = host_readd(src);
 			retval = host_readd(src + (retval - 4));
