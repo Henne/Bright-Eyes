@@ -4746,15 +4746,16 @@ static int seg108(unsigned short offs)
 	case 0x20: {
 		RealPt owner = CPU_Pop32();
 		RealPt consumer = CPU_Pop32();
-		Bit16u pos = CPU_Pop16();
+		Bit16s pos = CPU_Pop16();
 		CPU_Push16(pos);
 		CPU_Push32(consumer);
 		CPU_Push32(owner);
-		D1_LOG("consume(%s, %s, %x);\n",
+		D1_LOG("consume(%s, %s, %d);\n",
 			(char*)Real2Host(owner) + 0x10,
 			(char*)Real2Host(consumer) + 0x10,
 			pos);
-		return 0;
+		consume(Real2Host(owner), Real2Host(consumer), pos);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
