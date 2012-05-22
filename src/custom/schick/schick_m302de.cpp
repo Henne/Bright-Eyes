@@ -2511,9 +2511,10 @@ static int seg012(unsigned short offs) {
 		be done by a jump to a pointer value.
 	 */
 	switch (offs) {
-		case 0x195:
+		case 0x195: {
 			D1_LOG("seg12_195();\n");
 			return 0;
+		}
 		case 0x8ed: {
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
@@ -2525,9 +2526,10 @@ static int seg012(unsigned short offs) {
 			D1_LOG("seg12_8ed(%u, %u, %u);\n", v1, v2, v3);
 			return 0;
 		}
-		case 0xd29:
+		case 0xd29: {
 			D1_LOG("seg12_d29();\n");
 			return 0;
+		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				__func__, offs);
@@ -3418,8 +3420,9 @@ static int seg047(unsigned short offs) {
 		CPU_Push32(hero);
 
 		hero_gets_diseased(Real2Host(hero), disease);
-		D1_INFO("%s ist erkrankt %d\n",
-			schick_getCharname(hero), disease);
+		if (host_readb(Real2Host(hero) + 0x21) != 0)
+			D1_INFO("%s ist erkrankt %d\n",
+				schick_getCharname(hero), disease);
 		return 1;
 	}
 	case 0x70: {
@@ -3431,8 +3434,10 @@ static int seg047(unsigned short offs) {
 		CPU_Push32(hero);
 
 		hero_disease_test(Real2Host(hero), disease, probability);
-		D1_INFO("%s koennte zu %d%% an %d erkranken\n",
-			schick_getCharname(hero), probability, disease);
+
+		if (host_readb(Real2Host(hero) + 0x21) != 0)
+			D1_INFO("%s koennte zu %d%% an %d erkranken\n",
+				schick_getCharname(hero), probability, disease);
 		return 1;
 	}
 	case 0x75: {
@@ -4741,15 +4746,16 @@ static int seg108(unsigned short offs)
 	case 0x20: {
 		RealPt owner = CPU_Pop32();
 		RealPt consumer = CPU_Pop32();
-		Bit16u pos = CPU_Pop16();
+		Bit16s pos = CPU_Pop16();
 		CPU_Push16(pos);
 		CPU_Push32(consumer);
 		CPU_Push32(owner);
-		D1_LOG("consume(%s, %s, %x);\n",
+		D1_LOG("consume(%s, %s, %d);\n",
 			(char*)Real2Host(owner) + 0x10,
 			(char*)Real2Host(consumer) + 0x10,
 			pos);
-		return 0;
+		consume(Real2Host(owner), Real2Host(consumer), pos);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

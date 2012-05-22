@@ -131,7 +131,13 @@ void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
  * @hero:	the hero which gets diseased
  * @disease:	the kind of disease
  */
-void hero_gets_diseased(Bit8u *hero, unsigned short disease) {
+void hero_gets_diseased(Bit8u *hero, unsigned short disease)
+{
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* not a real BUG, but very useless */
+	if (host_readb(hero + 0x21) == 0)
+		return;
+#endif
 
 	if (*(hero + 0xaa) & 1)
 		return;
@@ -150,6 +156,12 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease) {
  * @probability: the probability to get diseased in percent
  */
 void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short probability) {
+
+#ifdef M302de_ORIGINAL_BUGFIX
+	/* not a real BUG, but very useless */
+	if (host_readb(hero + 0x21) == 0)
+		return;
+#endif
 
 	/* check the probability */
 	if (random_schick(100) > probability)

@@ -221,6 +221,7 @@ signed int process_nvf(Bit8u *nvf) {
 		/* PP20 decompression */
 
 		if (va != 0) {
+
 			/* get size from unpacked picture */
 			retval = host_readd(src);
 			retval = host_readd(src + (retval - 4));
