@@ -2398,13 +2398,13 @@ void do_starve_damage(Bit8u *hero, Bit16u index, Bit16u type)
 	/* decrement the heros LE */
 	host_writew(hero + 0x60, host_readw(hero + 0x60) - 1);
 
-	/* set the message type for the hero */
+	/* set the critical message type for the hero */
 	if (type != 0)
 		/* thirst */
-		ds_writeb(0x4219 + index, 1);
+		ds_writeb(FOOD_MESSAGE + index, 1);
 	else
 		/* hunger */
-		ds_writeb(0x4219 + index, 2);
+		ds_writeb(FOOD_MESSAGE + index, 2);
 
 	if (host_readw(hero + 0x60) <= 0) {
 
