@@ -30,6 +30,7 @@
 #define SPHERE_ACTIVE	(0x3c98)
 #define MAGE_POISON	(0x3cb6)
 #define CHECK_PARTY	(0x4495)
+#define CONSUME_QUIET	(0x4648)
 #define DELAY_FACTOR	(0x4b66)
 #define FNAMES		(0x4c8c)
 #define HEROS		(0xbd34)

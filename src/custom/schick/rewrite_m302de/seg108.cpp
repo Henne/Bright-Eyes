@@ -67,7 +67,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			}
 
 			/* consume quietly */
-			if ((signed short)ds_readb(0x4648) == 0) {
+			if (ds_readb(CONSUME_QUIET) == 0) {
 				GUI_output(get_ltx(0x33c));
 			}
 
@@ -89,7 +89,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				}
 
 				/* consume quietly */
-				if ((signed short)ds_readb(0x4648) == 0) {
+				if (ds_readb(CONSUME_QUIET) == 0) {
 					GUI_output(get_ltx(0x340));
 				}
 
