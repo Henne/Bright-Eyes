@@ -144,7 +144,7 @@ void draw_status_line()
 			set_textcolor(0xff, 0);
 
 			/* Gray the names of heros in another group */
-			if (host_readb(get_hero(i) + 0x87) != ds_readb(0x2d35))
+			if (host_readb(get_hero(i) + 0x87) != ds_readb(CURRENT_GROUP))
 				set_textcolor(0x6f, 0);
 
 			/* print the name */
@@ -158,7 +158,7 @@ void draw_status_line()
 		if (host_readb(get_hero(i) + 0x21) == 0) {
 			clear_hero_icon(i);
 		} else {
-			if (host_readb(get_hero(i) + 0x87) == ds_readb(0x2d35)) {
+			if (host_readb(get_hero(i) + 0x87) == ds_readb(CURRENT_GROUP)) {
 				ds_writew(0xc011, ds_readw(0x2d01 + 2 * i));
 				ds_writew(0xc013, 157);
 				ds_writew(0xc015, ds_readw(0x2d01 + 2 * i) + 31);

@@ -29,8 +29,8 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed char type)
 		ds_writew(0xc3c1, 1);
 
 	/* decrement group counter */
-	ds_writeb(0x2d36 + ds_readb(0x2d35),
-		ds_readb(0x2d36 + ds_readb(0x2d35)) - 1);
+	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
+		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) - 1);
 
 	/* write type to character sheet */
 	host_writeb(hero + 0x88, type);

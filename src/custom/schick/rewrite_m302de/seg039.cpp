@@ -273,7 +273,7 @@ void FIG_init_heroes()
 		if (host_readb(hero + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 
 		/* these two are unknown */

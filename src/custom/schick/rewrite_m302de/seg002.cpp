@@ -896,7 +896,7 @@ void do_timers(void)
 				di = host_readb(ptr + 0x87);
 
 				/* hero is in group and in mage dungeon */
-				if (ds_readb(0x2d35) == di &&
+				if (ds_readb(CURRENT_GROUP) == di &&
 					ds_readb(DUNGEON_INDEX) == 7) {
 
 					switch (ds_readb(DUNGEON_LEVEL)) {
@@ -1789,12 +1789,12 @@ short can_merge_group() {
 	char cur_heroes;
 	short i;
 
-	cur_heroes = ds_readb((short)ds_readb(0x2d35) + 0x2d36);
+	cur_heroes = ds_readb((short)ds_readb(CURRENT_GROUP) + 0x2d36);
 	if (cur_heroes == ds_readb(0x2d3c))
 		return retval;
 
 	for (i = 0; i < 6; i++) {
-		if (i == (char)ds_readb(0x2d35))
+		if (i == (char)ds_readb(CURRENT_GROUP))
 			continue;
 		if (0 == ds_readb(i + 0x2d36))
 			continue;
@@ -2084,7 +2084,7 @@ unsigned short is_hero_available_in_group(Bit8u *hero) {
 	if (check_hero(hero) == 0)
 		return 0;
 	/* Check if in group */
-	if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+	if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
 		return 0;
 
 	return 1;
@@ -2244,7 +2244,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 						continue;
 
 					/* not in current group */
-					if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+					if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
 						continue;
 
 					hero_disappear(hero_i, i, -1);
@@ -2369,7 +2369,7 @@ void add_group_le(signed short le) {
 		if (host_readb(hero + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 
 		add_hero_le(hero, le);
@@ -2514,7 +2514,7 @@ unsigned short get_random_hero() {
 
 	do {
 		/* get number of current group */
-		cur_group = ds_readb(0x2d35);
+		cur_group = ds_readb(CURRENT_GROUP);
 		cur_hero = random_schick(ds_readb(0x2d36 + cur_group));
 		cur_hero--;
 
@@ -2568,7 +2568,7 @@ unsigned int get_party_money() {
 		if (host_readb(hero+0x21) == 0)
 			continue;
 		/* Check if hero is in current party */
-		if (host_readb(hero+0x87) != ds_readb(0x2d35))
+		if (host_readb(hero+0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		sum += host_readd(hero+0x2c);
 	}
@@ -2597,7 +2597,7 @@ void set_party_money(signed int money) {
 	hero = get_hero(6);
 	/* if we have an NPC in current group and alive */
 	if (host_readb(hero + 0x21) &&
-		host_readb(hero + 0x87) == ds_readb(0x2d35) &&
+		host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
 		hero_dead(hero) == 0) {
 
 		/* If only the NPC is in that group give him all the money */
@@ -2618,12 +2618,12 @@ void set_party_money(signed int money) {
 	for (i = 0; i < 6; i++, hero += 0x6da) {
 
 		if (host_readb(hero + 0x21) &&
-			host_readb(hero + 0x87) == ds_readb(0x2d35) &&
+			host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
 			hero_dead(hero) == 0) {
 			/* account the money to hero */
 			host_writed(hero + 0x2c, hero_money);
 		} else
-			if (host_readb(hero + 0x87) == ds_readb(0x2d35))
+			if (host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP))
 				host_writed(hero + 0x2c, 0);
 	}
 }
@@ -2664,7 +2664,7 @@ void add_group_ap(signed int ap) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if hero is dead */
 		if (hero_dead(hero_i))
@@ -2692,7 +2692,7 @@ void add_hero_ap_all(short ap) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if dead */
 		if (hero_dead(hero_i))
@@ -2722,7 +2722,7 @@ void sub_hero_ap_all(signed short ap) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if dead */
 		if (hero_dead(hero_i))
@@ -2776,7 +2776,7 @@ short get_first_hero_with_item(unsigned short item) {
 		if (host_readb(hero_i+0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (host_readb(hero_i+0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i+0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Search inventar */
 		for (j = 0; j < 23; j++)
@@ -2824,7 +2824,7 @@ RealPt get_first_hero_available_in_group() {
 		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
 			continue;
 		/* Check group */
-		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(0x2d35))
+		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check dead BOGUS */
 		if (hero_dead(Real2Host(hero_i)))
@@ -2851,7 +2851,7 @@ RealPt get_second_hero_available_in_group() {
 		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
 			continue;
 		/* Check group */
-		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(0x2d35))
+		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if hero is available */
 		if (check_hero(Real2Host(hero_i)) == 0)
@@ -2901,7 +2901,7 @@ unsigned short count_heroes_available_in_group() {
 		if (host_readb(hero_i+0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (host_readb(hero_i+0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i+0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if hero is available */
 		if (check_hero_no2(hero_i) == 0)

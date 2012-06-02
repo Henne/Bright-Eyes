@@ -27,7 +27,7 @@ unsigned short get_hero_CH_best() {
 		if (*(hero_i + 0x21) == 0)
 			continue;
 		/* check if in group */
-		if (*(hero_i + 0x87) != ds_readb(0x2d35))
+		if (*(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* check if dead */
 		if (*(hero_i + 0xaa) & 1)
@@ -61,7 +61,7 @@ unsigned short get_hero_KK_best() {
 		if (*(hero_i + 0x21) == 0)
 			continue;
 		/* check if in group */
-		if (*(hero_i + 0x87) != ds_readb(0x2d35))
+		if (*(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* check if dead */
 		if (*(hero_i + 0xaa) & 1)
@@ -211,7 +211,7 @@ short check_heros_KK(short val) {
 	hero += 0x6da;
 
 	/* check class, group and dead status of hero in slot 2*/
-	if (mem_readb(hero + 0x21) && mem_readb(hero + 0x87) == ds_readb(0x2d35) && !(mem_readb(hero + 0xaa) & 1)) {
+	if (mem_readb(hero + 0x21) && mem_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) && !(mem_readb(hero + 0xaa) & 1)) {
 		sum += (short)mem_readb(hero + 0x47);
 		sum += (short)mem_readb(hero + 0x48);
 	}
@@ -324,7 +324,7 @@ unsigned short count_heroes_in_group(void)
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
                 /* Check if hero is dead */
 		if (host_readb(hero_i + 0xaa) & 1)

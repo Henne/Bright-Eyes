@@ -70,11 +70,11 @@ unsigned short FIG_choose_next_hero() {
 				D1_ERR("Hero %d typus = %x group=%x current_group=%x actions=%x\n",
 					i, host_readb(hero + 0x21),
 					host_readb(hero + 0x87),
-					ds_readb(0x2d35),
+					ds_readb(CURRENT_GROUP),
 					host_readb(hero + 0x83));
 
 				if (host_readb(hero + 0x21) &&
-					host_readb(hero + 0x87) == ds_readb(0x2d35) &&
+					host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
 					host_readb(hero + 0x83))
 						retval = i;
 			}
@@ -94,7 +94,7 @@ unsigned short FIG_choose_next_hero() {
 	/* search for a hero who has a class, is in the current group and
 		something still unknown */
 	} while (host_readb(hero + 0x21) == 0 ||
-			host_readb(hero + 0x87) != ds_readb(0x2d35) ||
+			host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP) ||
 			host_readb(hero + 0x83) == 0);
 
 	return retval;
@@ -248,7 +248,7 @@ signed short FIG_get_first_active_hero() {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* hero is dead */
 		if (hero_dead(hero_i))
@@ -295,7 +295,7 @@ unsigned short seg032_02db() {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* hero is dead */
 		if (hero_dead(hero_i))

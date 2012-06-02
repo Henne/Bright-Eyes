@@ -94,7 +94,7 @@ void npc_farewell()
 		return;
 
 	/* no NPC in that group */
-	if (host_readb(get_hero(6) + 0x87) != ds_readb(0x2d35))
+	if (host_readb(get_hero(6) + 0x87) != ds_readb(CURRENT_GROUP))
 		return;
 
 	/* The NPC will be removed after 99 Months ingame time. Weird! */
@@ -128,7 +128,7 @@ void npc_farewell()
 					for (i = 0; i < 6; i++, hero_i += 0x6da) {
 						if (host_readb(hero_i + 0x21) == 0)
 							continue;
-						if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+						if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 							continue;
 						if ((host_readb(hero_i + 0xaa) & 1) != 0)
 							continue;
@@ -538,8 +538,8 @@ void remove_npc(signed short head_index, signed char days,
 	memset(get_hero(6), 0, 0x6da);
 
 	/* dec group counter */
-	ds_writeb(0x2d36 + ds_readb(0x2d35),
-		ds_readb(0x2d36 + ds_readb(0x2d35) - 1));
+	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
+		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP) - 1));
 
 	/* dec global hero counter */
 	ds_writeb(0x2d3c, ds_readb(0x2d3c) - 1);
@@ -564,8 +564,8 @@ void add_npc(signed short index)
 	memcpy(get_hero(6) + 0x2da, Real2Host(ds_readd(0xd2f3)), 0x400);
 
 	/* increment heros in that group */
-	ds_writeb(0x2d36 + ds_readb(0x2d35),
-		ds_readb(0x2d36 + ds_readb(0x2d35)) + 1);
+	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
+		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) + 1);
 
 	/* increment heros */
 	ds_writew(0x2d3c, ds_readw(0x2d3c) + 1);
@@ -577,7 +577,7 @@ void add_npc(signed short index)
 	host_writeb(get_hero(6) + 0x89, index - 0xe1);
 
 	/* set the group the NPC contains in */
-	host_writeb(get_hero(6) + 0x87, ds_readb(0x2d35));
+	host_writeb(get_hero(6) + 0x87, ds_readb(CURRENT_GROUP));
 
 	draw_status_line();
 }

@@ -524,7 +524,7 @@ unsigned short group_count_item(unsigned short item) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		ret += hero_count_item(hero_i, item);
 	}

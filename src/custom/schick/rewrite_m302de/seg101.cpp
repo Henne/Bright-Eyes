@@ -649,7 +649,7 @@ void spell_silentium() {
 		if (host_readb(hero + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* check dead */
 		if (host_readb(hero + 0xaa) & 1)

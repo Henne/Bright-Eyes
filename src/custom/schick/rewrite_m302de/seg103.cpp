@@ -31,7 +31,7 @@ RealPt get_proper_hero(unsigned short skill) {
 		if (mem_readb(Real2Phys(hero_i) + 0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(0x2d35))
+		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check hero is dead */
 		if (mem_readb(Real2Phys(hero_i) + 0xaa) & 1)

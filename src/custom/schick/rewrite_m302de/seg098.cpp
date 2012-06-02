@@ -143,7 +143,7 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if dead */
 		if (host_readb(hero_i + 0xaa) & 1)
