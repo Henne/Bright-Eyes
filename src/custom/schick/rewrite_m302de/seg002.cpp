@@ -675,7 +675,7 @@ void dawning(void)
 	if (ds_readb(0x2d60) != 0)
 		return;
 	/* in a travel mode */
-	if (ds_readb(0x3614) != 0)
+	if (ds_readb(TRAVELING) != 0)
 		return;
 	/* unknown */
 	if (ds_readb(0xe5d2) != 0)
@@ -724,7 +724,7 @@ void nightfall(void)
 	if (ds_readb(0x2d60) != 0)
 		return;
 	/* in a travel mode */
-	if (ds_readb(0x3614) != 0)
+	if (ds_readb(TRAVELING) != 0)
 		return;
 	/* unknown */
 	if (ds_readb(0xe5d2) != 0)
@@ -1410,7 +1410,7 @@ void magical_chainmail_damage(void)
 		return;
 	}
 
-	if (ds_readw(0x3614) != 0)
+	if (ds_readw(TRAVELING) != 0)
 		ds_writeb(0x4649, 1);
 	else
 		ds_writeb(0x4649, 2);

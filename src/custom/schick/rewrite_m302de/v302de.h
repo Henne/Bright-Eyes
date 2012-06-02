@@ -27,6 +27,7 @@
 #define GOT_MAIN_QUEST	(0x334c)
 #define QUESTED_MONTHS	(0x334e)
 #define NPC_MONTHS	(0x3470)
+#define TRAVELING	(0x3614)
 #define SPHERE_TIMER	(0x3c97)
 #define SPHERE_ACTIVE	(0x3c98)
 #define MAGE_POISON	(0x3cb6)
