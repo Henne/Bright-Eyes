@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 85/136
+	Functions rewritten: 86/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1820,6 +1820,61 @@ void timewarp(unsigned int time)
 		}
 
 		for (i = 0; hour_diff > i; i++) {
+			magical_chainmail_damage();
+			herokeeping();
+		}
+	}
+
+	/* restore variables */
+	ds_writeb(0xbcda, 0);
+	ds_writew(TIMERS_DISABLED, td_bak);
+}
+
+/**
+ * timewarp_until() -	forwards the ingame time
+ * @time:	ticks to forward to e.g 6 AM
+ */
+void timewarp_until(unsigned int time)
+{
+	unsigned int i;
+	signed short td_bak;
+	signed short j;
+	signed short hour_diff;
+	unsigned int timer_bak;
+	register signed short hour_old, hour_new;
+
+	i = 0;
+	timer_bak = ds_readd(DAY_TIMER);
+	td_bak = ds_readw(TIMERS_DISABLED);
+	ds_writew(TIMERS_DISABLED, 0);
+
+	ds_writeb(0xbcda, 1);
+
+	while (time != ds_readd(DAY_TIMER)) {
+		do_timers();
+		i++;
+	}
+
+	sub_ingame_timers(i);
+
+	sub_mod_timers(i);
+
+	seg002_2f7a(i / 0x1c2);
+
+	sub_light_timers(i / 0x546);
+
+	/* calculate hours */
+	hour_old = timer_bak / 0x1518;
+	hour_new = ds_readd(DAY_TIMER) / 0x1518;
+
+	if (hour_old != hour_new) {
+		if (hour_new > hour_old) {
+			hour_diff = hour_new - hour_old;
+		} else {
+			hour_diff = 23 - hour_old + hour_new;
+		}
+
+		for (j = 0; j < hour_diff; j++) {
 			magical_chainmail_damage();
 			herokeeping();
 		}
