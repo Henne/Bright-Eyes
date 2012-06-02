@@ -80,7 +80,7 @@ void load_area_description(unsigned short type)
 			f_index = ds_readb(0x2d6e) + 0xf1;
 		else
 			/* city */
-			f_index = ds_readb(0x2d67) + 0x19;
+			f_index = ds_readb(CURRENT_TOWN) + 0x19;
 
 		/* save archive index */
 		ds_writew(0x5ebc, f_index);
@@ -96,8 +96,8 @@ void load_area_description(unsigned short type)
 		fd = load_archive_file(f_index + 0x8000);
 
 		if (ds_readb(0x2d6e) == 0 &&
-			(ds_readb(0x2d67) == 1 || ds_readb(0x2d67) == 0x27 ||
-				ds_readb(0x2d67) == 0x12)) {
+			(ds_readb(CURRENT_TOWN) == 1 || ds_readb(CURRENT_TOWN) == 0x27 ||
+				ds_readb(CURRENT_TOWN) == 0x12)) {
 			/* path taken in THORWAL PREM and PHEXCAER */
 			bc__read(fd, p_datseg + 0xbd95, 0x200);
 			/* read automap tiles */

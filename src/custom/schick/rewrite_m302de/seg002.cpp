@@ -666,7 +666,7 @@ void dawning(void)
 	pal_fade(p_datseg + 0x3f13, Real2Host(ds_readd(0xd321)) + 0xc0);
 
 	/* not in a town */
-	if (ds_readb(0x2d67) == 0)
+	if (ds_readb(CURRENT_TOWN) == 0)
 		return;
 	/* in a dungeon */
 	if (ds_readb(DUNGEON_INDEX) != 0)
@@ -715,7 +715,7 @@ void nightfall(void)
 	pal_fade(p_datseg + 0x3f13, p_datseg + 0x4558);
 
 	/* not in a town */
-	if (ds_readb(0x2d67) == 0)
+	if (ds_readb(CURRENT_TOWN) == 0)
 		return;
 	/* in a dungeon */
 	if (ds_readb(DUNGEON_INDEX) != 0)
@@ -1749,7 +1749,7 @@ void draw_compass() {
 	if (ds_readb(0xb132))
 		return;
 	/* Not in town or dungeon */
-	if (!ds_readb(DUNGEON_INDEX) && !ds_readb(0x2d67))
+	if (!ds_readb(DUNGEON_INDEX) && !ds_readb(CURRENT_TOWN))
 		return;
 	/* I have no clue */
 	if (ds_readb(0x4475) == 2)
@@ -1808,7 +1808,7 @@ short can_merge_group() {
 		if (ds_readb(0x2d61 + i) != ds_readb(0x2d60))
 			continue;
 		/* check currentTown */
-		if (ds_readb(0x2d68 + i) != ds_readb(0x2d67))
+		if (ds_readb(0x2d68 + i) != ds_readb(CURRENT_TOWN))
 			continue;
 		/* check DungeonIndex */
 		if (ds_readb(0x2d6f + i) != ds_readb(DUNGEON_INDEX))

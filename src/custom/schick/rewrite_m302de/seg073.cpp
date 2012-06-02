@@ -21,11 +21,11 @@ unsigned short get_tavern_gossip(void)
 	/* Orig-Bug: Informants can be reenabled if they had been set to 2 */
 	unsigned short r_si, r_di;
 
-	r_di = ds_readb(0x7c9d + ds_readb(0x2d67));
+	r_di = ds_readb(0x7c9d + ds_readb(CURRENT_TOWN));
 
 	r_si = r_di = random_schick(r_di) - 1;
 
-	switch (ds_readb(0x2d67) - 1) {
+	switch (ds_readb(CURRENT_TOWN) - 1) {
 	/* Thorwal */
 	case 0x00: {
 		if (r_si == 6)
@@ -434,7 +434,7 @@ unsigned short get_tavern_gossip(void)
 	}
 	}
 
-	return r_di + ds_readb(0x7cd1 + ds_readb(0x2d67));
+	return r_di + ds_readb(0x7cd1 + ds_readb(CURRENT_TOWN));
 
 }
 

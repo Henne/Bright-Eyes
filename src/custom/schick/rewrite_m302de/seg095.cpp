@@ -33,7 +33,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	ds_writew(0x346e, type_index);
 
 	/* Nariell */
-	if (ds_readw(0x2d67) == 0x17 &&	ds_readw(0x4224) == 0x30 &&
+	if (ds_readw(CURRENT_TOWN) == 0x17 &&	ds_readw(0x4224) == 0x30 &&
 		ds_readb(0x3601 + 1) == 0) {
 
 		npc_nariell();
@@ -41,7 +41,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Harika */
-	if (ds_readw(0x2d67) == 0x12 &&	ds_readw(0x4224) == 0x28 &&
+	if (ds_readw(CURRENT_TOWN) == 0x12 &&	ds_readw(0x4224) == 0x28 &&
 		ds_readb(0x3601 + 2) == 0) {
 
 		npc_harika();
@@ -49,7 +49,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Curian */
-	if (ds_readw(0x2d67) == 0x1d &&	ds_readw(0x4224) == 0x3c &&
+	if (ds_readw(CURRENT_TOWN) == 0x1d &&	ds_readw(0x4224) == 0x3c &&
 		ds_readb(0x3601 + 3) == 0) {
 
 		npc_curian();
@@ -57,7 +57,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Ardora */
-	if (ds_readw(0x2d67) == 0x1 && ds_readw(0x4224) == 0x6 &&
+	if (ds_readw(CURRENT_TOWN) == 0x1 && ds_readw(0x4224) == 0x6 &&
 		ds_readb(0x3601 + 4) == 0 && ds_readb(0x3317) != 0) {
 
 		npc_ardora();
@@ -65,7 +65,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Garsvik */
-	if (ds_readw(0x2d67) == 0x27 &&	ds_readw(0x4224) == 0x4a &&
+	if (ds_readw(CURRENT_TOWN) == 0x27 &&	ds_readw(0x4224) == 0x4a &&
 		ds_readb(0x3601 + 5) == 0) {
 
 		npc_garsvik();
@@ -73,7 +73,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Erwo */
-	if (ds_readw(0x2d67) == 0x30 &&	ds_readw(0x4224) == 0x57 &&
+	if (ds_readw(CURRENT_TOWN) == 0x30 &&	ds_readw(0x4224) == 0x57 &&
 		ds_readb(0x3601 + 6) == 0) {
 
 		npc_ardora();
@@ -116,10 +116,10 @@ void npc_farewell()
 		case 2: {
 			if (ds_readw(0x3470) >= 2) {
 				if (ds_readw(0x3470) >= 99 ||
-					ds_readw(0x2d67) == 1 ||
-					ds_readw(0x2d67) == 0x12 ||
-					ds_readw(0x2d67) == 0x27 ||
-					ds_readw(0x2d67) == 0x11) {
+					ds_readw(CURRENT_TOWN) == 1 ||
+					ds_readw(CURRENT_TOWN) == 0x12 ||
+					ds_readw(CURRENT_TOWN) == 0x27 ||
+					ds_readw(CURRENT_TOWN) == 0x11) {
 
 					remove_npc(0x16, 0x1f, 0xe3,
 						get_ltx(0xbc8), get_dtp(0x4c));

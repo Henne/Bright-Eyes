@@ -12,6 +12,7 @@
 #define TIMERS_DISABLED	(0x2c99)
 #define CURRENT_ANI	(0x2ccf)
 #define IN_FIGHT	(0x2cd5)
+#define CURRENT_TOWN	(0x2d67)
 #define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)
 #define DAY_OF_MONTH	(0x2dc0)
