@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 84/136
+	Functions rewritten: 85/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1777,6 +1777,57 @@ void passages_reset() {
 	/* If a passage is hired and the timer is zero, reset the passage */
 	if ((ds_readb(0x42ae) == 170) && (ds_readb(0x42af) == 0))
 		ds_writeb(0x42ae, 0);
+}
+
+/**
+ * timewarp() -	forwards the ingame time
+ * @time:	ticks to forward
+ */
+void timewarp(unsigned int time)
+{
+	unsigned int i;
+	signed short td_bak;
+	signed short hour_diff;
+	unsigned int timer_bak;
+	register signed short hour_old, hour_new;
+
+	timer_bak = ds_readd(DAY_TIMER);
+	td_bak = ds_readw(TIMERS_DISABLED);
+	ds_writew(TIMERS_DISABLED, 0);
+
+	ds_writeb(0xbcda, 1);
+
+	for (i = 0; i < time; i++)
+		do_timers();
+
+	sub_ingame_timers(time);
+
+	sub_mod_timers(time);
+
+	seg002_2f7a(time / 0x1c2);
+
+	sub_light_timers(time / 0x546);
+
+	/* calculate hours */
+	hour_old = timer_bak / 0x1518;
+	hour_new = ds_readd(DAY_TIMER) / 0x1518;
+
+	if (hour_old != hour_new) {
+		if (hour_new > hour_old) {
+			hour_diff = hour_new - hour_old;
+		} else {
+			hour_diff = 23 - hour_old + hour_new;
+		}
+
+		for (i = 0; hour_diff > i; i++) {
+			magical_chainmail_damage();
+			herokeeping();
+		}
+	}
+
+	/* restore variables */
+	ds_writeb(0xbcda, 0);
+	ds_writew(TIMERS_DISABLED, td_bak);
 }
 
 /**

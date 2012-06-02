@@ -50,6 +50,7 @@ void set_and_spin_lock();
 void passages_recalc();
 //static
 void passages_reset();
+void timewarp(unsigned int);
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);

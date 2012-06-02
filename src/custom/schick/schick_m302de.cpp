@@ -1080,7 +1080,8 @@ static int seg002(unsigned short offs) {
 		Bit32u time = CPU_Pop32();
 		CPU_Push32(time);
 		D1_LOG("timewarp(0x%x);\n", time);
-		return 0;
+		timewarp(time);
+		return 1;
 	}
 	case 0x3dbb: {
 		Bit32u time = CPU_Pop32();
