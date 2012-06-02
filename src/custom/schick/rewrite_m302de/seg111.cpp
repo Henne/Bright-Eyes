@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
-	Functions rewritten: 1/15
+	Functions rewritten: 2/15
 */
 
 #include "schick.h"
@@ -12,6 +12,12 @@
 #include "seg097.h"
 
 namespace M302de {
+
+/* dummy Orvil<->Skjal */
+void tevent_062(void)
+{
+
+}
 
 /* The rider Orvil <-> Ala */
 void tevent_065(void)
