@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 83/136
+	Functions rewritten: 84/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -27,6 +27,9 @@
 #include "seg041.h"
 #include "seg047.h"
 #include "seg096.h"
+#include "seg097.h"
+#include "seg106.h"
+#include "seg108.h"
 #include "seg113.h"
 
 namespace M302de {
@@ -1438,6 +1441,256 @@ void magical_chainmail_damage(void)
 
 		sub_hero_le(hero_i, 1);
 	}
+}
+
+/**
+ * herokeeping() - consume food if needed and print warnings to the user
+ *
+ */
+void herokeeping(void)
+{
+	char buffer[100];
+	Bit8u *hero;
+	register signed short i, pos;
+
+	if (ds_readw(0xc3c1) != 0)
+		return;
+
+	/* for each hero ..*/
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		/* consume food and set messages */
+		if (host_readb(hero + 0x21) != 0 &&		/* valid hero */
+			ds_readb(0x4649) != 0 &&
+			check_hero_no3(hero) &&			/* must be vital */
+			!host_readb(hero + 0x9f) &&
+			!ds_readb(0x4497)) {
+
+
+			/* Do the eating */
+
+			/* check for magic bread bag */
+			if (get_first_hero_with_item_in_group(0xb8, host_readb(hero + 0x87)) == -1) {
+				/* check if the hero has the food amulet */
+				if (get_item_pos(hero, 0xaf) == -1) {
+
+					/* eat if hunger > 90 % */
+					if (host_readb(hero + 0x7f) > 90) {
+
+						/* search for Lunchpack */
+						pos = get_item_pos(hero, 0x2d);
+
+						if (pos != -1) {
+							/* Lunchpack found, consume quiet */
+							ds_writeb(CONSUME_QUIET, 1);
+							consume(hero, hero, pos);
+							D1_INFO("%s isst etwas\n", (char*)hero + 0x10);
+							ds_writeb(CONSUME_QUIET, 0);
+
+							/* search for another Lunchpack */
+							pos = get_item_pos(hero, 0x2d);
+
+							/* print last ration message */
+							if (pos == -1) {
+								ds_writeb(FOOD_MESSAGE + i, 6);
+							}
+						} else {
+							/* print ration warning */
+							if (host_readb(hero + 0x7f) < 100) {
+								ds_writeb(FOOD_MESSAGE + i, 4);
+							}
+						}
+
+					}
+
+					if (host_readb(hero + 0x7f) < 100) {
+						/* increase food counter food_mod is always 0 or 1 */
+						if ((signed char)host_readb(hero + 0x7e) <= 0) {
+							/* increase more (2 or 1) */
+							host_writeb(hero + 0x7f,
+								host_readb(hero + 0x7f) + 2 / (ds_readb(FOOD_MOD) * 2 + 1));
+						} else {
+							/* increase less (1 or 0) */
+							host_writeb(hero + 0x7f,
+								host_readb(hero + 0x7f) + 1 / (ds_readb(FOOD_MOD) * 2 + 1));
+						}
+
+						/* adjust hunger */
+						if (host_readb(hero + 0x7f) > 100) {
+							host_writeb(hero + 0x7f, 100);
+						}
+					} else {
+
+						/* */
+						if ((signed char)host_readb(hero + 0x7e) <= 0) {
+							do_starve_damage(hero, i, 0);
+						}
+					}
+				}
+			} else {
+
+				/* set hunger to 20 % */
+				if (host_readb(hero + 0x7f) > 20) {
+					host_writeb(hero + 0x7f, 20);
+				}
+			}
+
+			/* Do the drinking */
+
+			/* check for magic waterskin in group */
+			if ((get_first_hero_with_item_in_group(0xb9, host_readb(hero + 0x87)) == -1) &&
+
+				/* checked with Borland C for correctness */
+				(host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
+				(!ds_readb(CURRENT_TOWN) || (ds_readb(CURRENT_TOWN) != 0 && ds_readb(TRAVELING) != 0))) ||
+				((host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP) &&
+				!ds_readb(0x2d68 + host_readb(hero + 0x87))))) {
+
+					/* check for food amulett */
+					if (get_item_pos(hero, 0xaf) == -1) {
+
+						/* hero should drink something */
+						if (host_readb(hero + 0x80) > 90) {
+
+							ds_writeb(CONSUME_QUIET, 1);
+
+							/* first check for beer :) */
+							pos = get_item_pos(hero, 0x17);
+
+							/* and then for water */
+							if (pos == -1) {
+								pos = get_full_waterskin_pos(hero);
+							}
+
+							if (pos != -1) {
+								/* drink it */
+								consume(hero, hero, pos);
+								D1_INFO("%s trinkt etwas\n", (char*)hero + 0x10);
+
+								/* nothing to drink message */
+								if ((get_item_pos(hero, 0x17) == -1)
+									&& (get_full_waterskin_pos(hero) == -1)) {
+									ds_writeb(FOOD_MESSAGE + i, 5);
+								}
+
+							} else {
+								/* hero has nothing to drink */
+								if (host_readb(hero + 0x80) < 100) {
+									ds_writeb(FOOD_MESSAGE + i, 3);
+								}
+							}
+
+							ds_writeb(CONSUME_QUIET, 0);
+						}
+
+						if (host_readb(hero + 0x80) < 100) {
+							/* increase thirst counter food_mod is always 0 or 1 */
+							if ((signed char)host_readb(hero + 0x7e) <= 0) {
+
+								host_writeb(hero + 0x80,
+									host_readb(hero + 0x80) + 4 / (ds_readb(FOOD_MOD) * 2 + 1));
+							} else {
+
+								host_writeb(hero + 0x80,
+									host_readb(hero + 0x80) + 2 / (ds_readb(FOOD_MOD) * 2 + 1));
+							}
+
+							/* adjust thirst */
+							if (host_readb(hero + 0x80) > 100) {
+								host_writeb(hero + 0x80, 100);
+							}
+
+						} else {
+							if ((signed char)host_readb(hero + 0x7e) <= 0) {
+								do_starve_damage(hero, i, 1);
+							}
+						}
+
+					}
+			} else {
+
+				/* set thirst to 20 % */
+				if (host_readb(hero + 0x80) > 20) {
+					host_writeb(hero + 0x80, 20);
+				}
+			}
+		}
+
+		/* print hero message */
+		if (ds_readb(FOOD_MESSAGE + i) != 0 && !ds_readb(0x2c98) &&
+			ds_readw(IN_FIGHT) == 0 && !ds_readb(0xbcda)) {
+
+			if (host_readb(hero + 0x21) != 0 &&
+				host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
+				!hero_dead(hero) &&
+				(!ds_readb(TRAVELING) || ds_readb(0x26a4 + i) != ds_readb(FOOD_MESSAGE + i))) {
+
+					/* switch message types */
+					if (ds_readb(FOOD_MESSAGE + i) == 1) {
+						/* thirst critical */
+						sprintf(buffer, (char*)get_ltx(0x380),
+						(char*)hero + 0x10, (char*)Real2Host(GUI_get_ptr(host_readb(hero + 0x22), 1)));
+					} else if (ds_readb(FOOD_MESSAGE + i) == 2) {
+						/* hunger critical */
+						sprintf(buffer, (char*)get_ltx(0x37c),
+						(char*)hero + 0x10, (char*)Real2Host(GUI_get_ptr(host_readb(hero + 0x22), 1)));
+					} else if (ds_readb(FOOD_MESSAGE + i) == 3) {
+						/* thirst warning */
+						sprintf(buffer, (char*)get_ltx(0xc74),
+						(char*)hero + 0x10, (char*)Real2Host(GUI_get_ptr(host_readb(hero + 0x22), 1)));
+					} else if (ds_readb(FOOD_MESSAGE + i) == 4) {
+						/* hunger critical */
+						sprintf(buffer, (char*)get_ltx(0xc78),
+						(char*)hero + 0x10, (char*)Real2Host(GUI_get_ptr(host_readb(hero + 0x22), 1)));
+					} else if (ds_readb(FOOD_MESSAGE + i) == 5) {
+						/* thirst last ration */
+						sprintf(buffer, (char*)get_ltx(0xc7c),
+						(char*)hero + 0x10, (char*)Real2Host(GUI_get_ptr(host_readb(hero + 0x22), 1)));
+					} else {
+						/* hunger last ration */
+						sprintf(buffer, (char*)get_ltx(0xc80),
+						(char*)hero + 0x10, (char*)Real2Host(GUI_get_ptr(host_readb(hero + 0x22), 1)));
+					}
+
+					ds_writeb(0x26a4 + i, ds_readb(FOOD_MESSAGE + i));
+
+					GUI_output((Bit8u*)buffer);
+
+					if (ds_readb(0x2845) == 20) {
+						ds_writew(0x2846, 1);
+					}
+			}
+
+			ds_writeb(FOOD_MESSAGE + i, 0);
+		}
+
+
+		/* print unconscious message */
+		if ((ds_readb(0x4212 + i) != 0) && !ds_readb(0x2c98)) {
+
+			if (host_readb(hero + 0x21) != 0 &&
+				host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
+				!hero_dead(hero)) {
+
+					/* prepare output */
+					sprintf(buffer, (char*)get_ltx(0xc54),
+						(char*)hero + 0x10);
+
+					/* print output */
+					GUI_output((Bit8u*)buffer);
+
+					if (ds_readb(0x2845) == 20) {
+						ds_writew(0x2846, 1);
+					}
+			}
+
+			/* reset condition */
+			ds_writeb(0x4212 + i, 0);
+		}
+	}
+
+	ds_writeb(0x4649, 0);
 }
 
 void set_and_spin_lock() {

@@ -1065,8 +1065,9 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x3230: {
-		D1_LOG("Interesting();\n");
-		return 0;
+		D1_LOG("herokeeping();\n");
+		herokeeping();
+		return 1;
 	}
 	case 0x37c4: {
 			return 0;
@@ -5349,8 +5350,16 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x3230: {
-		D1_LOG("near Interesting();\n");
-		return 0;
+		/* input routines are called faster now,
+		   so heros would starve earlier if the cycles are to high */
+		if (reg_eip == 0x1d7b || reg_eip == 0x1a4b)
+			return 0;
+
+		D1_LOG("near herokeeping();\n");
+		CPU_Pop16();
+		herokeeping();
+
+		return 1;
 	}
 	/* Callers: 1 */
 	case 0x3b63: {

@@ -44,6 +44,7 @@ void seg002_2f7a(unsigned int fmin);
 void sub_light_timers(signed int);
 //static
 void magical_chainmail_damage(void);
+void herokeeping(void);
 void set_and_spin_lock();
 //static
 void passages_recalc();
@@ -74,6 +75,7 @@ unsigned short check_hero(Bit8u* hero);
 unsigned short check_hero_no2(Bit8u* hero);
 unsigned short check_hero_no3(Bit8u* hero);
 unsigned short is_hero_available_in_group(Bit8u* hero);
+/* static */
 void do_starve_damage(Bit8u*, Bit16u, Bit16u);
 void sub_ae_splash(Bit8u *hero, signed short type);
 void add_hero_ae(Bit8u* hero, short ae);
