@@ -13,6 +13,8 @@ void call_load_area(unsigned short);
 void load_npc(signed short);
 //0x66
 void save_npc(signed short);
+/* 0x70 */
+void load_informer_tlk(signed short);
 //0x75
 void load_tlk(signed short);
 //0x7a

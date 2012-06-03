@@ -2810,7 +2810,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x70: {
-		return 0;
+		Bit16s index = CPU_Pop16();
+		CPU_Push16(index);
+		D1_LOG("load_informer_tlk(%0x);\n", index);
+		load_informer_tlk(index);
+		return 1;
 	}
 	case 0x75: {
 		Bit16s index = CPU_Pop16();

@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 9/19
+	Functions rewritten: 10/19
 */
 
 #include <string.h>
@@ -260,6 +260,50 @@ void save_npc(signed short index)
 
 	bc_close(fd);
 
+}
+
+void load_informer_tlk(signed short index)
+{
+	Bit8u *ptr;
+	unsigned int text_len;
+	unsigned short partners;
+	unsigned short off;
+
+	register unsigned short fd;
+	register unsigned short i;
+
+	ds_writew(0x26bd, index);
+
+	fd = load_archive_file(index);
+
+	/* read the header */
+	read_archive_file(fd, (Bit8u*)&off, 4);
+	read_archive_file(fd, (Bit8u*)&partners, 2);
+
+	/* BE-Fix */
+	off = host_readd((Bit8u*)&off);
+	partners = host_readw((Bit8u*)&partners);
+
+	ptr = p_datseg + 0x3618;
+
+	/* read the partner structures */
+	read_archive_file(fd, ptr, partners * 0x26);
+
+	/* read the dialog layouts */
+	read_archive_file(fd, p_datseg + 0x3794, off - partners * 0x26);
+
+	/* read the text */
+	text_len = read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 10000);
+
+	bc_close(fd);
+
+	split_textbuffer(Real2Host(ds_readd(CITY_LTX)),
+		ds_readd(0xc3a9), text_len);
+
+	/* adjust the pointers to the layouts */
+	for (i = 0; i < partners; i++, ptr += 0x26) {
+		host_writed(ptr, RealMake(datseg, host_readw(ptr) + 0x3794));
+	}
 }
 
 void load_tlk(signed short index)
