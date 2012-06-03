@@ -1850,10 +1850,10 @@ void timewarp_until(unsigned int time)
 
 	ds_writeb(0xbcda, 1);
 
-	while (time != ds_readd(DAY_TIMER)) {
+	do {
 		do_timers();
 		i++;
-	}
+	} while (time != ds_readd(DAY_TIMER));
 
 	sub_ingame_timers(i);
 
