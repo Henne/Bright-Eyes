@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
-	Functions rewritten: 2/15
+	Functions rewritten: 3/15
 */
 
 #include "schick.h"
@@ -12,6 +12,25 @@
 #include "seg097.h"
 
 namespace M302de {
+
+/* Path ??? */
+void tevent_055(void)
+{
+	register signed short season;
+
+	season = get_current_season();
+
+	/* only in autumn or spring */
+	if (season == 1 || season == 3) {
+
+		load_in_head(0x34);
+
+		GUI_dialogbox(ds_readd(DTP2), NULL, get_city(0), 0);
+
+		/* you got hold for 3 hours */
+		timewarp(0x3f48);
+	}
+}
 
 /* dummy Orvil<->Skjal */
 void tevent_062(void)
