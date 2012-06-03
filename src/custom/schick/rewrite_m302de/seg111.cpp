@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
-	Functions rewritten: 3/15
+	Functions rewritten: 4/15
 */
 
 #include "schick.h"
@@ -36,6 +36,63 @@ void tevent_055(void)
 void tevent_062(void)
 {
 
+}
+
+/* dead animal Orvil<->Skjal */
+void tevent_063(void)
+{
+	Bit8u *hero;
+	signed short vomiter;
+	signed short proof;
+	register signed short i;
+	register signed short max;
+
+	max = 9999;
+
+	/* intro message */
+	GUI_output(get_city(0xb8));
+
+	hero = get_hero(0);
+
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
+			continue;
+
+		if (hero_dead(hero))
+			continue;
+
+		/* MU+0 */
+		proof = test_attrib(hero, 0, 0);
+
+		if (proof < max) {
+			max = proof;
+			vomiter = i;
+		}
+	}
+
+	hero = get_hero(vomiter);
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_city(0xbc),
+		(char*)hero + 0x10);
+
+	/* print who vomits */
+	GUI_output(Real2Host(ds_readd(DTP2)));
+
+	/* LE - 2 */
+	sub_hero_le(hero, 2);
+
+	i = get_free_mod_slot();
+
+	/* MU -2 for 24 hours */
+	set_mod_slot(i, 0x1fa40, hero + 0x35, -2, vomiter);
+
+	/* outro message */
+	GUI_output(get_city(0xc0));
 }
 
 /* The rider Orvil <-> Ala */
