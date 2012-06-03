@@ -1797,8 +1797,13 @@ void timewarp(unsigned int time)
 
 	ds_writeb(0xbcda, 1);
 
-	for (i = 0; i < time; i++)
+	for (i = 0; i < time; i++) {
 		do_timers();
+#ifdef M302de_ORIGINAL_BUGFIX
+		if (i % 768 == 0)
+			wait_for_vsync();
+#endif
+	}
 
 	sub_ingame_timers(time);
 
@@ -1853,6 +1858,10 @@ void timewarp_until(unsigned int time)
 	do {
 		do_timers();
 		i++;
+#ifdef M302de_ORIGINAL_BUGFIX
+		if (i % 768 == 0)
+			wait_for_vsync();
+#endif
 	} while (time != ds_readd(DAY_TIMER));
 
 	sub_ingame_timers(i);
