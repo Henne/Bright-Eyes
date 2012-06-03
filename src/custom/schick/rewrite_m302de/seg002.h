@@ -98,6 +98,7 @@ unsigned short get_hero_index(Bit8u* hero);
 int get_item_pos(Bit8u* hero, unsigned short item);
 short get_first_hero_with_item(unsigned short item);
 signed short get_first_hero_with_item_in_group(unsigned short item, signed char group);
+void sub_group_le(signed short);
 RealPt get_first_hero_available_in_group();
 RealPt get_second_hero_available_in_group();
 unsigned short count_heros_available();

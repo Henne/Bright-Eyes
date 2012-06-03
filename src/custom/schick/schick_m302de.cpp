@@ -1473,8 +1473,15 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x5615:	/* Krakenangriff */
-			return 0;
+	case 0x5615: {
+		Bit16s le = CPU_Pop16();
+		CPU_Push16(le);
+
+		D1_LOG("sub_group_le(%d);\n", le);
+		sub_group_le(le);
+
+		return 1;
+	}
 	case 0x5667: {
 		RealPt retval = get_first_hero_available_in_group();
 

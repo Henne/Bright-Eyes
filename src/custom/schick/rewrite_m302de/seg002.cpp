@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 86/136
+	Functions rewritten: 87/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3164,6 +3164,30 @@ signed short get_first_hero_with_item_in_group(unsigned short item, signed char 
 	}
 
 	return -1;
+}
+
+
+/**
+ * sub_group_le() - subtracts LE from every group member
+ * @le:		LE to remove
+ */
+void sub_group_le(signed short le)
+{
+	Bit8u * hero;
+	register signed short i;
+
+	for (i = 0; i <= 6; i++) {
+
+		hero = get_hero(i);
+
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
+			continue;
+
+		sub_hero_le(hero, le);
+	}
 }
 
 /**
