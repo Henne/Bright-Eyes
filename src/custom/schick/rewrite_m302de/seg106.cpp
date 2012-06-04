@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
-	Functions rewritten: 3/8
+	Functions rewritten: 4/8
 */
 #include <stdlib.h>
 #include <string.h>
@@ -126,6 +126,43 @@ void print_item_description(Bit8u *hero, signed short pos)
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
+}
+
+/**
+ * get_max_light_time() - get the maximum time of a burning lightsource
+ *
+ */
+signed short get_max_light_time(void)
+{
+	Bit8u *hero;
+	register signed short i;	/* di */
+	register signed short j;	/* cx */
+	register signed short retval;	/* si */
+
+	retval = -1;
+
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		for (j = 0; j < 23; j++) {
+
+			/* search for a burning torch */
+			if (host_readw(hero + 0x196 + j * 14) == 0x16) {
+
+				if (host_readb(hero + j * 14 + 0x196 + 8) > retval) {
+					retval = host_readb(hero + j * 14 + 0x196 + 8);
+				}
+			} else if (host_readw(hero + 0x196 + j * 14) == 0xf9) {
+				/* search for a burning lantern */
+
+				if (host_readb(hero + j * 14 + 0x196 + 8) / 10 > retval) {
+					retval = host_readb(hero + j * 14 + 0x196 + 8) / 10;
+				}
+			}
+		}
+	}
+
+	return retval;
 }
 
 /**

@@ -4736,7 +4736,9 @@ static int seg106(unsigned short offs)
 		return 0;
 	}
 	case 0x39: {
-		return 0;
+		reg_ax = get_max_light_time();
+		D1_LOG("get_max_light_time(); == %d\n", (signed short)reg_ax);
+		return 1;
 	}
 	case 0x3e: {
 		D1_LOG("equip_belt();\n");
