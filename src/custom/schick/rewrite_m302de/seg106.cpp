@@ -144,6 +144,11 @@ signed short get_max_light_time(void)
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
 
+#ifdef M302de_ORIGINAL_BUGFIX
+		if (!host_readb(hero + 0x21))
+			continue;
+#endif
+
 		for (j = 0; j < 23; j++) {
 
 			/* search for a burning torch */
