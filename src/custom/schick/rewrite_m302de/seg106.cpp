@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
-	Functions rewritten: 2/8
+	Functions rewritten: 3/8
 */
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +16,50 @@
 
 namespace M302de {
 
+/**
+ * two_hand_collision() - check for a two hand collision
+ * @hero:	the hero
+ * @item:	the item which should be equipped
+ * @pos:	the position the item should be placed
+ *
+ * A hero can not equip a two-handed weapon if one hand is in use,
+ * nor can he equip something in his free hand if he has a two-handed weapon
+ * in the other.
+ * If such a collision is detected this function returns 1 else 0.
+ */
+signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos)
+{
+	signed short other_pos;
+	register signed short retval;	/* di */
+	register signed short in_hand;	/* cx */
+
+	retval = 0;
+
+	if (pos == 3 || pos == 4) {
+
+		other_pos = 3;
+
+
+		if (pos == 3) {
+			other_pos = 4;
+		}
+
+		/* get the item in the other hand */
+		in_hand = host_readw(hero + other_pos * 0x0e + 0x196);
+		if (in_hand) {
+
+			/* check if one hand has a two-handed weapon */
+			if ( ((host_readb(get_itemsdat(item) + 2) >> 1) & 1) &&
+				(host_readb(get_itemsdat(item) + 3) == 6) ||
+				(((host_readb(get_itemsdat(in_hand) + 2) >> 1) & 1) &&
+				(host_readb(get_itemsdat(in_hand) + 3) == 6))) {
+					retval = 1;
+			}
+		}
+	}
+
+	return retval;
+}
 
 void print_item_description(Bit8u *hero, signed short pos)
 {

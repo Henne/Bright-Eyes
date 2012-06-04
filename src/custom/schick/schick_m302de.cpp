@@ -6336,7 +6336,19 @@ static int n_seg105(unsigned offs) {
 static int n_seg106(unsigned offs) {
 	switch (offs) {
 	case 0x00: {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s item = CPU_Pop16();
+		Bit16s pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(item);
+		CPU_Push32(hero);
+		reg_ax = two_hand_collision(Real2Host(hero), item, pos);
+
+		D1_LOG("two_hand_collision(%s, 0x%x, %d); == %d\n",
+			(char*)Real2Host(hero) + 0x10, item, pos, reg_ax);
+
+		return 1;
 	}
 	case 0x9c: {
 		return 0;
