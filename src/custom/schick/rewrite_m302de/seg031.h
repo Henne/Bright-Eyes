@@ -3,4 +3,6 @@ namespace M302de {
 RealPt load_current_town_gossip(void);
 /* 0x2f */
 signed short get_town_lookup_entry(void);
+/* 0x34 */
+RealPt get_informer_hint(void);
 }

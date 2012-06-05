@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 2/10
+	Functions rewritten: 3/10
 */
 
 #include "schick.h"
@@ -31,6 +31,33 @@ signed short get_town_lookup_entry(void)
 
 	return 15;
 }
+
+/* 0x5a0 */
+
+/**
+ * get_informer_hint() - gives a hint where a informer lives
+ *
+ * Returns a pointer to the string.
+ *
+ * Game Info: You can ask in some towns where informers live.
+ * This function returns a pointer to the answer or to an empty string.
+ */
+RealPt get_informer_hint(void)
+{
+	Bit8u *ptr;
+	register signed short i;	/* cx */
+
+	ptr = p_datseg + 0x5ed6;
+	for (i = 0; i < 15; i++, ptr += 4) {
+		if (host_readb(ptr + 2) == ds_readb(CURRENT_TOWN)) {
+			return host_readd(Real2Host(ds_readd(TEXT_LTX) + (i + 0x2cb) * 4));
+		}
+	}
+
+	return host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xb54);
+}
+
+
 /* 0x63b */
 /**
  * load_current_town_gossip() - loads a gossip message from the current town

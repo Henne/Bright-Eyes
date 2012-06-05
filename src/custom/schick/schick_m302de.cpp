@@ -2936,9 +2936,18 @@ static int seg031(unsigned short offs) {
 		D1_LOG("far get_town_lookup_entry(); = %d\n", reg_ax);
 		return 1;
 	}
-		case 0x34: {
-			return 0;
-		}
+	case 0x34: {
+
+		RealPt retval;
+
+		retval = get_informer_hint();
+		D1_LOG("get_informer_hint() = 0x%x\n", retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
 		case 0x39: {
 			return 0;
 		}
