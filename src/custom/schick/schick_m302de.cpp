@@ -2916,9 +2916,18 @@ static int seg030(unsigned short offs) {
 
 static int seg031(unsigned short offs) {
 	switch (offs) {
-		case 0x20: {
-			return 0;
-		}
+	case 0x20: {
+
+		RealPt retval;
+
+		retval = load_current_town_gossip();
+		D1_LOG("far load_current_town_gossip() = 0x%x\n", retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
 		case 0x25: {
 			return 0;
 		}
@@ -5909,7 +5918,17 @@ static int n_seg031(unsigned offs) {
 		return 0;
 	}
 	case 0x63b: {
-		return 0;
+		CPU_Pop16();
+
+		RealPt retval;
+
+		retval = load_current_town_gossip();
+		D1_LOG("near load_current_town_gossip() = 0x%x\n", retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
