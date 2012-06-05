@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 3/10
+	Functions rewritten: 4/10
 */
 
 #include "schick.h"
@@ -57,6 +57,15 @@ RealPt get_informer_hint(void)
 	return host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xb54);
 }
 
+/* 0x5f2 */
+/**
+ * get_informer_name() - get the name on the current informer
+ *
+ */
+RealPt get_informer_name(void)
+{
+	return host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(0x5ed6 - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
+}
 
 /* 0x63b */
 /**
