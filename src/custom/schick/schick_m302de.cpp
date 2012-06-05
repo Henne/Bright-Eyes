@@ -2931,9 +2931,11 @@ static int seg031(unsigned short offs) {
 		case 0x25: {
 			return 0;
 		}
-		case 0x2f: {
-			return 0;
-		}
+	case 0x2f: {
+		reg_ax = get_town_lookup_entry();
+		D1_LOG("far get_town_lookup_entry(); = %d\n", reg_ax);
+		return 1;
+	}
 		case 0x34: {
 			return 0;
 		}
@@ -5914,8 +5916,12 @@ static int n_seg028(unsigned offs) {
 
 static int n_seg031(unsigned offs) {
 	switch (offs) {
-	case 0x4de: {
-		return 0;
+	case 0x56c: {
+		CPU_Pop16();
+
+		reg_ax = get_town_lookup_entry();
+		D1_LOG("get_town_lookup_entry(); = %d\n", reg_ax);
+		return 1;
 	}
 	case 0x63b: {
 		CPU_Pop16();

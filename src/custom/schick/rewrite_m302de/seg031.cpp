@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 1/10
+	Functions rewritten: 2/10
 */
 
 #include "schick.h"
@@ -12,6 +12,25 @@
 
 namespace M302de {
 
+/**
+ * get_town_lookup_entry() - ?
+ *
+ * return a value between 0 and 15
+ */
+signed short get_town_lookup_entry(void)
+{
+	Bit8u *ptr;
+	register signed short i;
+
+	ptr = p_datseg + 0x5ed6;
+	for (i = 0; i < 15; i++, ptr += 4) {
+		if (host_readb(ptr + 2) == ds_readb(CURRENT_TOWN)) {
+			return i;
+		}
+	}
+
+	return 15;
+}
 /* 0x63b */
 /**
  * load_current_town_gossip() - loads a gossip message from the current town
