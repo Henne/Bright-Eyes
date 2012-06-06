@@ -2960,9 +2960,17 @@ static int seg031(unsigned short offs) {
 
 		return 1;
 	}
-		case 0x3e: {
-			return 0;
-		}
+	case 0x3e: {
+		RealPt retval;
+
+		retval = get_informer_name2();
+		D1_LOG("get_informer_name2() = %s\n", Real2Host(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
 		case 0x43: {
 			return 0;
 		}

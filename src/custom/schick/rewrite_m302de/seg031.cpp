@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 6/10
+	Functions rewritten: 7/10
 */
 
 #include "schick.h"
@@ -65,6 +65,17 @@ RealPt get_informer_hint(void)
 RealPt get_informer_name(void)
 {
 	return host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(0x5ed6 - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
+}
+
+/* 0x617 */
+/**
+ * get_informer_name2() - get the name of the informer in this town
+ *
+ */
+RealPt get_informer_name2(void)
+{
+	return host_readd(Real2Host(ds_readd(TEXT_LTX)) +
+			ds_readw(0x5ed6 + get_town_lookup_entry() * 4) * 4);
 }
 
 /* 0x63b */
