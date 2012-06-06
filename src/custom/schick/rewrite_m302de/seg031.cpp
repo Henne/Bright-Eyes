@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 5/10
+	Functions rewritten: 6/10
 */
 
 #include "schick.h"
@@ -96,6 +96,46 @@ RealPt load_current_town_gossip(void)
 
 }
 
+/* 0x70b */
+/**
+ * drink_while_drinking() - drink while sitting in a tavern
+ * @amount:	how much amount fluid you get
+ *
+ * TODO:
+ * This function is only called while sitting in a tavern.
+ * When you enter a tavern and order food another function is called.
+ * Also this function is called in taverns with amount = 10,
+ * and in the thorwalian dungeon with 100.
+ */
+void drink_while_drinking(unsigned short amount)
+{
+	Bit8u *hero;
+	register unsigned short i;
+
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		/* is hero valid */
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+
+		/* is hero in group */
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
+			continue;
+
+		/* hero is dead */
+		if (hero_dead(hero))
+			continue;
+
+		/* sub fluid amount */
+		host_writeb(hero + 0x80, host_readb(hero + 0x80) - amount);
+
+		/* adjust food counter */
+		if ((signed char)host_readb(hero + 0x80) < 0) {
+			host_writeb(hero + 0x80, 0);
+		}
+	}
+}
 /* 0x77d */
 /**
  * eat_while_drinking() - eat food while sitting in a tavern
@@ -135,7 +175,6 @@ void eat_while_drinking(unsigned short amount)
 			host_writeb(hero + 0x7f, 0);
 		}
 	}
-
 }
 
 }

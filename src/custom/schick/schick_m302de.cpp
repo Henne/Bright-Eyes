@@ -2966,9 +2966,14 @@ static int seg031(unsigned short offs) {
 		case 0x43: {
 			return 0;
 		}
-		case 0x48: {
-			return 0;
-		}
+	case 0x48: {
+		Bit16s amount = CPU_Pop16();
+		CPU_Push16(amount);
+
+		D1_LOG("drink_while_drinking(%d);\n", amount);
+		drink_while_drinking(amount);
+		return 1;
+	}
 	case 0x4d: {
 		Bit16s amount = CPU_Pop16();
 		CPU_Push16(amount);
