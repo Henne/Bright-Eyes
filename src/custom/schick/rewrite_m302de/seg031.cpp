@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 4/10
+	Functions rewritten: 5/10
 */
 
 #include "schick.h"
@@ -93,6 +93,48 @@ RealPt load_current_town_gossip(void)
 
 	/* return the pointer to the gossip (pointers are stored in the first 1000 bytes) */
 	return host_readd(Real2Host(ptr) + gossip_id * 4);
+
+}
+
+/* 0x77d */
+/**
+ * eat_while_drinking() - eat food while sitting in a tavern
+ * @amount:	how much food you get
+ *
+ * TODO:
+ * This function is only called while sitting in a tavern.
+ * When you enter a tavern and order food another function is called.
+ * Also this function is called only at one play with amount = 100,
+ * so there is space for tuning.
+ */
+void eat_while_drinking(unsigned short amount)
+{
+	Bit8u *hero;
+	register unsigned short i;
+
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		/* is hero valid */
+		if (host_readb(hero + 0x21) == 0)
+			continue;
+
+		/* is hero in group */
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
+			continue;
+
+		/* hero is dead */
+		if (hero_dead(hero))
+			continue;
+
+		/* sub food amount */
+		host_writeb(hero + 0x7f, host_readb(hero + 0x7f) - amount);
+
+		/* adjust food counter */
+		if ((signed char)host_readb(hero + 0x7f) < 0) {
+			host_writeb(hero + 0x7f, 0);
+		}
+	}
 
 }
 

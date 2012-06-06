@@ -7,4 +7,6 @@ signed short get_town_lookup_entry(void);
 RealPt get_informer_hint(void);
 /* 0x39 */
 RealPt get_informer_name(void);
+/* 0x4d */
+void eat_while_drinking(unsigned short);
 }

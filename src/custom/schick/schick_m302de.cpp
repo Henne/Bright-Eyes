@@ -2969,13 +2969,17 @@ static int seg031(unsigned short offs) {
 		case 0x48: {
 			return 0;
 		}
-		case 0x4d: {
-			return 0;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				__func__, offs);
-			exit(1);
+	case 0x4d: {
+		Bit16s amount = CPU_Pop16();
+		CPU_Push16(amount);
+
+		D1_LOG("eat_while_drinking(%d);\n", amount);
+		eat_while_drinking(amount);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
 	}
 }
 
