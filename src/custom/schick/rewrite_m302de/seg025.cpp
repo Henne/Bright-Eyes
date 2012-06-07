@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 2/15
+ *	Functions rewritten: 3/15
  */
 
 #include <string.h>
@@ -10,10 +10,36 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg004.h"
 #include "seg007.h"
 #include "seg097.h"
 
 namespace M302de {
+
+/* 0xea9 */
+/**
+ * turnaround() - turn around in a pseudo 3d-view
+ */
+void turnaround(void)
+{
+	set_var_to_zero();
+
+	/* reset location */
+	ds_writeb(0x2d60, ds_readb(0x2d9f));
+
+	/* set target  coordinates*/
+	ds_writew(0x2d44, ds_readw(0x2d83));
+	ds_writew(0x2d46, ds_readw(0x2d85));
+
+	/* recalc direction */
+	ds_writeb(0x2d3d, (ds_readb(0x2d3d) + 2) % 4);
+
+	set_to_ff();
+
+	ds_writeb(0x45b8, 1);
+	ds_writew(0x2846, 1);
+
+}
 
 /* 0x100a */
 /**

@@ -2576,7 +2576,9 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x25: {
-		return 0;
+		D1_LOG("turnaround();\n");
+		turnaround();
+		return 1;
 	}
 	case 0x2a: {
 		return 0;
@@ -5929,7 +5931,10 @@ static int n_seg025(unsigned short offs)
 		return 0;
 	}
 	case 0xea9: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("near turnaround();\n");
+		turnaround();
+		return 1;
 	}
 	case 0x114a: {
 		CPU_Pop16();
