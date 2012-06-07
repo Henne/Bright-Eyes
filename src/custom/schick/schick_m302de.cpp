@@ -22,6 +22,7 @@
 #include "seg009.h"
 #include "seg010.h"
 #include "seg024.h"
+#include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg028.h"
@@ -2569,6 +2570,54 @@ static int seg024(unsigned short offs) {
 	}
 }
 
+static int seg025(unsigned short offs) {
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	case 0x66: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg026(unsigned short offs) {
 	switch (offs) {
 
@@ -5102,7 +5151,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1042:	return 0;
 		case 0x1112:	return seg012(offs);
 		case 0x12db:	return seg024(offs);
-		case 0x12de:	return 0;
+		case 0x12de:	return seg025(offs);
 		case 0x12e5:	return seg026(offs);
 		case 0x12ec:	return seg027(offs);
 		case 0x12f1:	return seg028(offs);
@@ -5863,6 +5912,30 @@ static int n_seg024(unsigned short offs)
 	}
 }
 
+static int n_seg025(unsigned short offs)
+{
+	switch (offs) {
+	case 0x4a2: {
+		return 0;
+	}
+	case 0xca8: {
+		return 0;
+	}
+	case 0xd54: {
+		return 0;
+	}
+	case 0xea9: {
+		return 0;
+	}
+	case 0x114a: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg026(unsigned short offs)
 {
 	switch (offs) {
@@ -6530,6 +6603,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (segm == 0xc85) return n_seg005(offs);
 	else if (segm == 0xe41) return n_seg006(offs);
 	else if (is_ovrseg(0x12db)) return n_seg024(offs);
+	else if (is_ovrseg(0x12de)) return n_seg025(offs);
 	else if (is_ovrseg(0x12e5)) return n_seg026(offs);
 	else if (is_ovrseg(0x12f1)) return n_seg028(offs);
 
