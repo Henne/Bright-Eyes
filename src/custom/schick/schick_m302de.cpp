@@ -2582,7 +2582,9 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x2f: {
-		return 0;
+		D1_LOG("far copy_palette();\n");
+		copy_palette();
+		return 1;
 	}
 	case 0x39: {
 		return 0;
@@ -5928,7 +5930,10 @@ static int n_seg025(unsigned short offs)
 		return 0;
 	}
 	case 0x114a: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("copy_palette();\n");
+		copy_palette();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
