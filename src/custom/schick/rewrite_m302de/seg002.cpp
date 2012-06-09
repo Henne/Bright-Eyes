@@ -1486,6 +1486,7 @@ void herokeeping(void)
 							/* Lunchpack found, consume quiet */
 							ds_writeb(CONSUME_QUIET, 1);
 							consume(hero, hero, pos);
+							D1_INFO("%s isst etwas\n", (char*)hero + 0x10);
 							ds_writeb(CONSUME_QUIET, 0);
 
 							/* search for another Lunchpack */
