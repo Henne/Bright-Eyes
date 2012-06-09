@@ -1539,10 +1539,10 @@ void herokeeping(void)
 			if ((get_first_hero_with_item_in_group(0xb9, host_readb(hero + 0x87)) == -1) &&
 
 				/* checked with Borland C for correctness */
-				(host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
+				((host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
 				(!ds_readb(CURRENT_TOWN) || (ds_readb(CURRENT_TOWN) != 0 && ds_readb(TRAVELING) != 0))) ||
 				((host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP) &&
-				!ds_readb(0x2d68 + host_readb(hero + 0x87))))) {
+				!ds_readb(0x2d68 + host_readb(hero + 0x87)))))) {
 
 					/* check for food amulett */
 					if (get_item_pos(hero, 0xaf) == -1) {
