@@ -3123,15 +3123,23 @@ unsigned short get_hero_index(Bit8u *hero) {
 }
 
 /**
-	get_item_pos - gets item position
+ *	get_item_pos() - gets item position
+ *	@hero:	pointer to the hero
+ *	@item:	item ID to look for
+ *
+ *	Returns the position of the item or -1 if the item is not in the
+ *	indventory .
 */
-int get_item_pos(Bit8u *hero, unsigned short item) {
-	int i;
+int get_item_pos(Bit8u *hero, unsigned short item)
+{
 
-	for (i = 0; i < 0x17; i++) {
-		if (item == host_readw(hero + i*14 + 0x196))
+	register int i;	/* dx */
+
+	for (i = 0; i < 23; i++) {
+		if (item == host_readw(hero + i * 14 + 0x196))
 			return i;
 	}
+
 	return -1;
 }
 
