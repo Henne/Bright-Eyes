@@ -4941,6 +4941,12 @@ static int seg109(unsigned short offs) {
 			D1_INFO("Reisebegegnung %d\n", tevent);
 			return 0;
 		}
+		case 0xb1: {
+			reg_ax = enter_hut_question();
+			D1_LOG("enter_hut_question(); = %d\n",
+				(signed short)reg_ax);
+			return 1;
+		}
 		default:
 			return 0;
 	}
