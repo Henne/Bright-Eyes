@@ -1476,7 +1476,7 @@ void herokeeping(void)
 				if (get_item_pos(hero, 0xaf) == -1) {
 
 					/* eat if hunger > 90 % */
-					if (host_readb(hero + 0x7f) > 90) {
+					if ((signed char)host_readb(hero + 0x7f) > 90) {
 
 						/* search for Lunchpack */
 						pos = get_item_pos(hero, 0x2d);
@@ -1485,26 +1485,23 @@ void herokeeping(void)
 							/* Lunchpack found, consume quiet */
 							ds_writeb(CONSUME_QUIET, 1);
 							consume(hero, hero, pos);
-							D1_INFO("%s isst etwas\n", (char*)hero + 0x10);
 							ds_writeb(CONSUME_QUIET, 0);
 
 							/* search for another Lunchpack */
-							pos = get_item_pos(hero, 0x2d);
-
 							/* print last ration message */
-							if (pos == -1) {
+							if (get_item_pos(hero, 0x2d) == -1) {
 								ds_writeb(FOOD_MESSAGE + i, 6);
 							}
 						} else {
 							/* print ration warning */
-							if (host_readb(hero + 0x7f) < 100) {
+							if ((signed char)host_readb(hero + 0x7f) < 100) {
 								ds_writeb(FOOD_MESSAGE + i, 4);
 							}
 						}
 
 					}
 
-					if (host_readb(hero + 0x7f) < 100) {
+					if ((signed char)host_readb(hero + 0x7f) < 100) {
 						/* increase food counter food_mod is always 0 or 1 */
 						if ((signed char)host_readb(hero + 0x7e) <= 0) {
 							/* increase more (2 or 1) */
@@ -1517,7 +1514,7 @@ void herokeeping(void)
 						}
 
 						/* adjust hunger */
-						if (host_readb(hero + 0x7f) > 100) {
+						if ((signed char)host_readb(hero + 0x7f) > 100) {
 							host_writeb(hero + 0x7f, 100);
 						}
 					} else {
@@ -1531,7 +1528,7 @@ void herokeeping(void)
 			} else {
 
 				/* set hunger to 20 % */
-				if (host_readb(hero + 0x7f) > 20) {
+				if ((signed char)host_readb(hero + 0x7f) > 20) {
 					host_writeb(hero + 0x7f, 20);
 				}
 			}
@@ -1551,7 +1548,7 @@ void herokeeping(void)
 					if (get_item_pos(hero, 0xaf) == -1) {
 
 						/* hero should drink something */
-						if (host_readb(hero + 0x80) > 90) {
+						if ((signed char)host_readb(hero + 0x80) > 90) {
 
 							ds_writeb(CONSUME_QUIET, 1);
 
@@ -1576,7 +1573,7 @@ void herokeeping(void)
 
 							} else {
 								/* hero has nothing to drink */
-								if (host_readb(hero + 0x80) < 100) {
+								if ((signed char)host_readb(hero + 0x80) < 100) {
 									ds_writeb(FOOD_MESSAGE + i, 3);
 								}
 							}
@@ -1584,7 +1581,7 @@ void herokeeping(void)
 							ds_writeb(CONSUME_QUIET, 0);
 						}
 
-						if (host_readb(hero + 0x80) < 100) {
+						if ((signed char)host_readb(hero + 0x80) < 100) {
 							/* increase thirst counter food_mod is always 0 or 1 */
 							if ((signed char)host_readb(hero + 0x7e) <= 0) {
 
@@ -1597,7 +1594,7 @@ void herokeeping(void)
 							}
 
 							/* adjust thirst */
-							if (host_readb(hero + 0x80) > 100) {
+							if ((signed char)host_readb(hero + 0x80) > 100) {
 								host_writeb(hero + 0x80, 100);
 							}
 
@@ -1611,7 +1608,7 @@ void herokeeping(void)
 			} else {
 
 				/* set thirst to 20 % */
-				if (host_readb(hero + 0x80) > 20) {
+				if ((signed char)host_readb(hero + 0x80) > 20) {
 					host_writeb(hero + 0x80, 20);
 				}
 			}
@@ -1624,7 +1621,7 @@ void herokeeping(void)
 			if (host_readb(hero + 0x21) != 0 &&
 				host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				(!ds_readb(TRAVELING) || ds_readb(0x26a4 + i) != ds_readb(FOOD_MESSAGE + i))) {
+				(!(unsigned char)ds_readb(TRAVELING) || ds_readb(0x26a4 + i) != ds_readb(FOOD_MESSAGE + i))) {
 
 					/* switch message types */
 					if (ds_readb(FOOD_MESSAGE + i) == 1) {
