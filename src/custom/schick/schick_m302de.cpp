@@ -2601,6 +2601,8 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x52: {
+		D1_LOG("enter_map();\n");
+//		enter_map();
 		return 0;
 	}
 	case 0x57: {

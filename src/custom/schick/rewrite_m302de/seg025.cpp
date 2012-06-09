@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 3/15
+ *	Functions rewritten: 4/15
  */
 
 #include <string.h>
@@ -15,6 +15,21 @@
 #include "seg097.h"
 
 namespace M302de {
+
+/* 0x483 */
+/**
+ * enter_map() -
+ */
+void enter_map(void)
+{
+	ds_writew(0x4334, ds_readw(0x4224));
+
+	ds_writew(0x4224, (signed char)ds_readb(CURRENT_TOWN));
+
+	ds_writeb(CURRENT_TOWN, 0);
+	ds_writeb(0x2d60, 0);
+	ds_writeb(TRAVELING, 1);
+}
 
 /* 0xea9 */
 /**
