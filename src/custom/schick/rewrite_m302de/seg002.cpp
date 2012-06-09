@@ -4,6 +4,7 @@
 */
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "callback.h"
 #include "regs.h"
