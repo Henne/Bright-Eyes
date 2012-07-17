@@ -3101,6 +3101,20 @@ static int seg032(unsigned short offs) {
 	}
 }
 
+static int seg033(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("HERO_TURN()\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
+
 static int seg037(unsigned short offs) {
 	switch (offs) {
 		case 0x3e: {
@@ -5176,7 +5190,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x12ff:	return seg030(offs);
 		case 0x1303:	return seg031(offs);
 		case 0x1309:	return seg032(offs);
-		case 0x130f:	return 0;
+		case 0x130f:	return seg033(offs);
 		case 0x1312:	return 0;
 		case 0x1316:	return 0;
 		case 0x131a:	return 0;
