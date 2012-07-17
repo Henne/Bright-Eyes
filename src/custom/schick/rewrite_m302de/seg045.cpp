@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg045 (fight helper)
-	Functions rewritten: 2/8
+	Functions rewritten: 3/8
 */
 
 #include "schick.h"
@@ -44,6 +44,13 @@ signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 	}
 
 	return i;
+}
+
+/* 0x37c */
+void FIG_remove_smth2(void)
+{
+	FIG_remove_from_list(ds_readb(0xe38c), 0);
+	ds_writeb(0xe38c, 0xff);
 }
 
 }

@@ -3423,8 +3423,9 @@ static int seg045(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		D1_LOG("%s:%x();\n", __func__, offs);
-		return 0;
+		D1_LOG("FIG_remove_smth2();\n");
+		FIG_remove_smth2();
+		return 1;
 	}
 	case 0x3e: {
 		D1_LOG("%s:%x();\n", __func__, offs);
