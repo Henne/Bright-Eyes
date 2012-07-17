@@ -6133,7 +6133,13 @@ static int n_seg036(unsigned offs)
 		return 0;
 	}
 	case 0xc39: {
-		return 0;
+		CPU_Pop16();
+		Bit16u v = CPU_Pop16();
+		CPU_Push16(v);
+
+		reg_ax = KI_count_heros(v);
+		D1_LOG("KI_count_heros(%d); = %d\n", v, reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
