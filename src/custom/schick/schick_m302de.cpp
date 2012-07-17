@@ -30,6 +30,7 @@
 #include "seg030.h"
 #include "seg031.h"
 #include "seg032.h"
+#include "seg036.h"
 #include "seg037.h"
 #include "seg038.h"
 #include "seg039.h"
@@ -2573,6 +2574,7 @@ static int seg024(unsigned short offs) {
 static int seg025(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
+	D1_ERR("call to Segment %s:0x%04x\n",	__func__, offs);
 		return 0;
 	}
 	case 0x25: {
@@ -3105,6 +3107,22 @@ static int seg033(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
 			D1_LOG("HERO_TURN()\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
+static int seg036(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x48: {
+			D1_LOG("hero_ki()\n");
 			return 0;
 		}
 		default:
@@ -5193,7 +5211,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x130f:	return seg033(offs);
 		case 0x1312:	return 0;
 		case 0x1316:	return 0;
-		case 0x131a:	return 0;
+		case 0x131a:	return seg036(offs);
 		case 0x131f:	return seg037(offs);
 		case 0x1324:	return seg038(offs);
 		case 0x1328:	return seg039(offs);
@@ -6087,6 +6105,42 @@ static int n_seg031(unsigned offs) {
 		exit(1);
 	}
 }
+static int n_seg036(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		return 0;
+	}
+	case 0x0ae: {
+		return 0;
+	}
+	case 0x27f: {
+		return 0;
+	}
+	case 0x39b: {
+		return 0;
+	}
+	case 0x4cf: {
+		return 0;
+	}
+	case 0x6f7: {
+		return 0;
+	}
+	case 0x863: {
+		return 0;
+	}
+	case 0x8cf: {
+		return 0;
+	}
+	case 0xc39: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
 
 static int n_seg037(unsigned offs) {
 	switch (offs) {
@@ -6807,6 +6861,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 	}
 
+	else if (is_ovrseg(0x131a)) return n_seg036(offs);
 	else if (is_ovrseg(0x131f)) return n_seg037(offs);
 
 	/* seg038 */
