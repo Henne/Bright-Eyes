@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 4/15
+ *	Functions rewritten: 5/15
  */
 
 #include <string.h>
@@ -12,6 +12,7 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
+#include "seg008.h"
 #include "seg097.h"
 
 namespace M302de {
@@ -91,6 +92,38 @@ void tumult(void)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
 	ds_writew(0xbffd, bak);
+}
+
+/* 0x10b3 */
+
+/**
+ * fade_into() - fade when leaving a location
+ */
+void fade_into(void)
+{
+	Bit8u *ptr;
+	signed short i;
+
+	ptr = Real2Host(ds_readd(0xd303)) + 0xfa00;
+
+	memset(Real2Host(ds_readd(0xd303)), 0, 0xc0);
+
+	wait_for_vsync();
+
+	set_palette(Real2Host(ds_readd(0xd303)), 0x80, 0x40);
+
+	for (i = 0; i < 0x20; i++) {
+
+		pal_fade(ptr, Real2Host(ds_readd(0xd303)));
+
+		pal_fade(ptr, Real2Host(ds_readd(0xd303)));
+
+		wait_for_vsync();
+
+		set_palette(ptr, 0, 0x20);
+	}
+
+
 }
 
 /* 0x114a */

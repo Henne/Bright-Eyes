@@ -2617,7 +2617,9 @@ static int seg025(unsigned short offs) {
 		return 1;
 	}
 	case 0x66: {
-		return 0;
+		D1_LOG("fade_into();\n");
+		fade_into();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

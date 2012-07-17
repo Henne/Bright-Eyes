@@ -7,4 +7,6 @@ void copy_palette(void);
 void enter_map(void);
 /* 0x61 */
 void tumult(void);
+/* 0x66 */
+void fade_into(void);
 }
