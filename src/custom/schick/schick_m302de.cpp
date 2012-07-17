@@ -6150,7 +6150,18 @@ static int n_seg045(unsigned short offs)
 		return 0;
 	}
 	case 0x014f: {
-		return 0;
+		CPU_Pop16();
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		Bit16s v = CPU_Pop16();
+
+		CPU_Push16(v);
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		reg_ax = FIG_copy_it(Real2Host(p1), Real2Host(p2), (signed char)v);
+		D1_LOG("FIG_copy_it(%x, %x, %x) = %d\n",
+			p1, p2, (signed char)v, reg_ax);
+		return 1;
 	}
 	case 0x0273: {
 		return 0;
