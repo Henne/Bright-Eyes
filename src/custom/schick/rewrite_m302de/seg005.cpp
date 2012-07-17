@@ -158,7 +158,7 @@ unsigned short fight_printer()
 		ds_writeb(0x4b78, ds_readb(0x4b78) + 1);
 		ds_writeb(0x4b94, 0);
 
-		if (ds_readw(0xe318))
+		if (ds_readw(AUTOFIGHT))
 			ds_writew(0x4b79, 10);
 		else
 			ds_writew(0x4b79, ds_readw(DELAY_FACTOR) * 6);
@@ -283,7 +283,7 @@ unsigned short fight_printer()
 	} else {
 		ds_writeb(0x4b78, 0);
 
-		if (ds_readw(0xe318))
+		if (ds_readw(AUTOFIGHT))
 			ds_writew(0x4b79, 10);
 		else
 			ds_writew(0x4b79, ds_readw(DELAY_FACTOR) * 6);

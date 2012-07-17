@@ -39,6 +39,7 @@
 #define CONSUME_QUIET	(0x4648)
 #define DELAY_FACTOR	(0x4b66)
 #define FNAMES		(0x4c8c)
+#define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
 #define CITY_LTX	(0xc3ad)
@@ -58,6 +59,7 @@
 #define ITEMSNAME	(0xe22f)
 #define DELAY_TIMER	(0xe2d0)
 #define CURRENT_FIG_NR	(0xe316)
+#define AUTOFIGHT	(0xe318)	/* ?16 */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)

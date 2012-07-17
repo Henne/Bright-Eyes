@@ -255,7 +255,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	l7 = ds_readw(0xc3cb);
 	ds_writew(0xc3cb, 0);
 
-	if (str == NULL || str == MemBase || *str == '\0' || ds_readw(0xe318) != 0)
+	if (str == NULL || str == MemBase || *str == '\0' || ds_readw(AUTOFIGHT) != 0)
 		return -1;
 
 	l6 = ds_readw(0xe113);
