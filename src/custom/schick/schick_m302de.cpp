@@ -6127,7 +6127,15 @@ static int n_seg036(unsigned offs)
 		return 0;
 	}
 	case 0x863: {
-		return 0;
+		CPU_Pop16();
+		Bit16s spell = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(spell);
+		reg_ax = KI_get_spell(spell, v2);
+		D1_LOG("KI_get_spell(%s, %d); = %d\n",
+			names_spell[spell], v2, (signed short)reg_ax);
+		return 1;
 	}
 	case 0x8cf: {
 		return 0;

@@ -11,6 +11,38 @@
 
 namespace M302de {
 
+/* 0x863 */
+
+/**
+ * KI_get_spell() - ???
+ * @spell:	spell index
+ * @mode:	mode 0/1
+ */
+signed short KI_get_spell(signed short spell, signed short mode)
+{
+	Bit8u * p;
+	signed short retval = -1;
+
+	/* make a pointer to the spell description */
+	p = p_datseg + spell * 10 + 0x99d;
+
+	if (mode == 0) {
+		if (host_readb(p + 7) == 2)
+			retval = 1;
+		else if (host_readb(p + 7) == 1 || host_readb(p + 7) == 3)
+			retval = 0;
+		else
+			retval = 2;
+	} else {
+		if (host_readb(p + 7) == 3)
+			retval = 1;
+		else if (host_readb(p + 7) == 0)
+			retval = 2;
+	}
+
+	return retval;
+}
+
 /* 0xc39 */
 
 /**
