@@ -4231,6 +4231,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		strncpy(buffer, getString(ptr), 20);
+		buffer[19] = '\0';
 		reg_ax = GUI_bool(Real2Host(ptr));
 		D1_LOG("GUI_bool(%s...) = %d\n", buffer, reg_ax);
 
@@ -4243,6 +4244,7 @@ static int seg097(unsigned short offs) {
 		unsigned short i;
 
 		strncpy(buffer, getString(text), 20);
+		buffer[19] = '\0';
 		D1_LOG("GUI_RadioBox(%s..., %d", buffer, (char)options);
 
 		for (i = 0; i < (char)options; i++) {
