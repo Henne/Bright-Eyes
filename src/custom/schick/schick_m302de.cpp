@@ -6120,7 +6120,23 @@ static int n_seg036(unsigned offs)
 		return 0;
 	}
 	case 0x39b: {
-		return 0;
+		Bit16s CS = CPU_Pop16();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		Bit16s v5 = CPU_Pop16();
+		CPU_Push16(v5);
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax = KI_can_attack_neighbour(v1, v2, v3, v4, v5);
+
+		D1_LOG("KI_can_attack_neighbour(%d,%d,%d,%d,%d); = %d\n",
+			v1, v2, v3, v4, v5, reg_ax);
+		return 1;
 	}
 	case 0x4cf: {
 		return 0;
