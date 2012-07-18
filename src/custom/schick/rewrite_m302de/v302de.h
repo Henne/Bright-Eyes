@@ -40,6 +40,7 @@
 #define DELAY_FACTOR	(0x4b66)
 #define FNAMES		(0x4c8c)
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
+#define AF_SPELL_LIST	(0x5fac)	/* char[11] */
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
 #define CITY_LTX	(0xc3ad)
