@@ -91,7 +91,7 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 		D1_ERR("Warning: %s() typus == 0\n", __func__);
 
 	/* calculate the address of the class forbidden items array */
-	array = MemBase + Real2Phys(ds_readd(0x634 + typus * 4));
+	array = Real2Host(ds_readd(0x634 + typus * 4));
 
 	if (!is_in_word_array(item, array))
 		return 1;

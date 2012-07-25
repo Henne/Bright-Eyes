@@ -135,7 +135,7 @@ unsigned short FIG_choose_next_enemy() {
 			 * search by hand for an enemy and dump	the
 			 * interesting bits
 			 */
-			enemy = MemBase + PhysMake(datseg, 0xd34b);
+			enemy = p_datseg + 0xd34b;
 			for (i = 0; i < ds_readw(0xd872); i++, enemy += 62) {
 				D1_ERR("Enemy %02d %x %x\n",
 					i, host_readb(enemy),
@@ -155,7 +155,7 @@ unsigned short FIG_choose_next_enemy() {
 
 			return retval;
 		}
-		enemy = MemBase + PhysMake(datseg, 0xd34b) + retval * 62;
+		enemy = p_datseg + 0xd34b + retval * 62;
 
 	} while (host_readb(enemy) == 0 || host_readb(enemy + 0x28) == 0);
 
@@ -172,7 +172,7 @@ unsigned short FIG_count_active_enemies() {
 	unsigned short i, retval = 0;
 
 	for (i = 0; i < 20; i++) {
-		enemy = MemBase + PhysMake(datseg, 0xd34b) + i * 62;
+		enemy = p_datseg + 0xd34b + i * 62;
 
 		/* if enemy has no monster class */
 		if (host_readb(enemy) == 0)

@@ -152,7 +152,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 	else
 		di += host_readb(hero + 0x82);
 
-	lp1 = MemBase + PhysMake(datseg, 0xd8cf + v1 * 0xf3);
+	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
 
 	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readw(lp2 + di * 2)));
 

@@ -183,7 +183,7 @@ void status_show(Bit16u index)
 		ds_writeb(0x2845, 20);
 		do_fill_rect(ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 		wait_for_vsync();
-		set_palette(MemBase + PhysMake(datseg, 0x6372), 0, 0x20);
+		set_palette(p_datseg + 0x6372, 0, 0x20);
 	}
 
 	ds_writed(0x29e0, RealMake(datseg, 0x2ad8));

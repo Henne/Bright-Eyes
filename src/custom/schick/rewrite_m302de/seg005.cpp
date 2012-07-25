@@ -38,10 +38,10 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y) {
 		return 1;
 	}
 
-	i = MemBase + Real2Phys(ds_readd(0xe108));
+	i = Real2Host(ds_readd(0xe108));
 
 	/* i = i->next; */
-	for (; i != p; i = MemBase + Real2Phys(host_readd(i + 0x1b))) {
+	for (; i != p; i = Real2Host(host_readd(i + 0x1b))) {
 
 		if (host_readb(i + 0x12) < 2)
 			continue;

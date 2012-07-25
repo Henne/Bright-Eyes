@@ -122,7 +122,7 @@ signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
 
 	/* automatically get hero with best senses in beginner mode */
 	if (skill == 51 && ds_readb(0xc003) == 1)
-		hero = MemBase + Real2Phys(get_proper_hero(51));
+		hero = Real2Host(get_proper_hero(51));
 
 	/* do the test */
 	return test_attrib3(hero, ds_readb(0xffe + skill * 4), ds_readb(0xfff + skill * 4), ds_readb(0x1000 + skill * 4), bonus - host_readb(hero + 0x108 + skill));

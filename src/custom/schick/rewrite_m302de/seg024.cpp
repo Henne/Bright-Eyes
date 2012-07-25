@@ -144,7 +144,7 @@ Bit16u diary_print_entry(Bit16u line)
 
 	memset(Real2Host(ds_readd(0xc3db)), 0, 64000);
 
-	ptr = MemBase + PhysMake(datseg, 0x43bc) + line * 8;
+	ptr = p_datseg + 0x43bc + line * 8;
 
 	startline = line;
 
