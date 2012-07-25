@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 /* 0x25 */
 void turnaround(void);
 /* 0x2f */
@@ -9,4 +11,6 @@ void enter_map(void);
 void tumult(void);
 /* 0x66 */
 void fade_into(void);
+#if !defined(__BORLANDC__)
 }
+#endif

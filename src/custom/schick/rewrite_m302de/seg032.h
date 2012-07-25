@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //0x25
 void FIG_set_cb_field(signed short, signed short, signed char);
@@ -17,4 +19,6 @@ unsigned short seg032_02db();
 //0x4d
 unsigned short FIG_fight_continues();
 
+#if !defined(__BORLANDC__)
 }
+#endif
