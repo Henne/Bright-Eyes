@@ -186,7 +186,7 @@ signed short KI_count_heros(signed short index)
 	/* for each hero in this group */
 	for (i = 0; ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) > i; i++) {
 
-		if (index == i)
+		if (i == index)
 			continue;
 
 		if (!check_hero(get_hero(i)))
