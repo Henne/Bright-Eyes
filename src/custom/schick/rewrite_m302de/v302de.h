@@ -6,7 +6,9 @@
  *	These functions will only work with the version mentioned above.
  */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #define EMS_ENABLED	(0x26ab)
 #define TIMERS_DISABLED	(0x2c99)
@@ -67,6 +69,7 @@
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 
+#if !defined(__BORLANDC__)
 /**
  *	ds_writeb_z() -	write only if target is 0
  *	@addr:	address in datasegment
@@ -206,3 +209,69 @@ static inline char* get_itemname(unsigned short item)
 {
 	return (char*)Real2Host(host_readd(Real2Host(ds_readd(ITEMSNAME)) + item * 4));
 }
+#else
+
+#undef D1_INFO
+#undef D1_LOG
+#undef D1_ERR
+#undef M302de_ORIGINAL_BUGFIX
+
+typedef unsigned char Bit8u;
+typedef signed char Bit8s;
+typedef unsigned short Bit16u;
+typedef signed short Bit16s;
+typedef unsigned long Bit32u;
+typedef signed long Bit32s;
+
+typedef Bit8u* RealPt;
+typedef Bit8u* PhysPt;
+
+/* poring functions for Borland C++ */
+struct hero_struct {
+	char name[16];
+	char alias[16];
+	char dummy;
+	char typus;
+};
+
+extern char ds[0xffff];
+#define p_datseg (&ds[0x0000])
+
+#define ds_readb(p) *(signed char*)(ds + p)
+#define ds_readw(p) *(signed short*)(ds + p)
+#define ds_readd(p) *(signed long*)(ds + p)
+
+#define ds_writeb(p, d) *(unsigned char*)(ds + p) = d
+#define ds_writew(p, d) *(unsigned short*)(ds + p) = d
+#define ds_writed(p, d) *(unsigned long*)(ds + p) = d
+
+#define get_hero(nr) (Bit8u*)ds_readd(HEROS)
+
+
+extern Bit8u* text_ltx[];
+
+#define Real2Host(p) (Bit8u*)(p)
+
+#define host_readb(p) *(Bit8u*)(p)
+#define host_readw(p) *(Bit8u*)(p)
+#define host_readd(p) *(Bit8u*)(p)
+
+#define host_writeb(p, d)	(*(p) = d)
+#define host_writew(p, d)	(*(p) = d)
+#define host_writed(p, d)	(*(p) = d)
+
+#define hero_dead(hero)  (!((host_readb(hero + 0xaa) & 1) == 0))
+#define hero_unc(hero)  (!(((host_readb(hero + 0xaa) >> 6) & 1) == 0))
+
+#define get_ltx(nr) (Bit8u*)(&text_ltx[nr])
+
+#if 0
+#define get_ltx(nr) (Bit8u*)(Real2Host(NULL + (0x4 * nr)))
+#endif
+#define get_itemsdat(nr) (Bit8u*)(&text_ltx)
+
+#define BORLAND_FAR __far
+
+#define get_cb_val(x, y) (host_readb((ds_readd(CHESSBOARD)) + y * 25 + x))
+
+#endif

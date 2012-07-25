@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void play_voc(Bit16u);
 void play_voc_delay(Bit16u);
@@ -105,4 +107,6 @@ unsigned short count_heros_available();
 unsigned short count_heroes_available_in_group();
 RealPt schick_alloc_emu(Bit32u);
 
+#if !defined(__BORLANDC__)
 }
+#endif

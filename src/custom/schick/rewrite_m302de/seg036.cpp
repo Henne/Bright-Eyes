@@ -3,13 +3,17 @@
  *	Functions rewritten: 4/10
  */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
 #include "seg002.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 0x000 */
 /* static */
@@ -190,4 +194,6 @@ signed short KI_count_heros(signed short index)
 	return cnt;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
