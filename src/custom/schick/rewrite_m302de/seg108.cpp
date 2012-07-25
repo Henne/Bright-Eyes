@@ -3,11 +3,15 @@
 	Functions rewritten: 1/1
 */
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "schick_common.h"
+
 #include "v302de.h"
 
 #include "seg002.h"
@@ -17,7 +21,9 @@
 #include "seg097.h"
 #include "seg105.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * consume() - owner gives consumer an item from his inventory
@@ -592,4 +598,6 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
