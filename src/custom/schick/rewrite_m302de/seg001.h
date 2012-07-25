@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //static
 unsigned short CD_set_drive_nr();
@@ -17,4 +19,6 @@ void seg001_034f();
 void CD_audio_pause();
 void CD_audio_play();
 
+#if !defined(__BORLANDC__)
 }
+#endif

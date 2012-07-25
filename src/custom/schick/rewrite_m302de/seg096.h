@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //20
 void GUI_write_char_to_screen(PhysPt dst, unsigned short v1, unsigned short v2);
@@ -46,4 +48,6 @@ unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir);
 //8e
 void GUI_draw_popup_line(unsigned short line, unsigned short type);
 
+#if !defined(__BORLANDC__)
 }
+#endif
