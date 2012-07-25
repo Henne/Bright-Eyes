@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg036 (Fight Hero KI)
- *	Functions rewritten: 3/10
+ *	Functions rewritten: 4/10
  */
 
 #include "schick.h"
@@ -10,6 +10,67 @@
 #include "seg002.h"
 
 namespace M302de {
+
+/* 0x000 */
+/* static */
+
+/**
+ * KI_copy_ani_sequence() - copies an ani sequence
+ * @dst:	destination pointer for data
+ * @ani_nr:
+ * @mode:	DAT-File to use 3 = WEAPANI.DAT, else ANI.DAT
+ *
+ * Returns the length of the sequence in bytes.
+ */
+signed char KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short mode)
+{
+	Bit8u *p_datbuffer;
+	Bit8u *p_datitem;
+	signed char len;
+
+	register signed short ani_max_nr;
+	register signed short i;
+
+
+	/* set the right buffer */
+	p_datbuffer = Real2Host(ds_readd(BUFFER_ANIDAT));
+
+	/* This function is never calld with mode == 3 */
+	if (mode == 3)
+		p_datbuffer = Real2Host(ds_readd(BUFFER_WEAPANIDAT));
+
+	/* read how many ani sequences are in the file */
+	ani_max_nr = host_readw(p_datbuffer);
+
+	/* check if the desired ani_nr is in the range */
+	if (ani_nr < 0 || ani_nr > ani_max_nr)
+		return 0;
+
+	/* set p_datitem to the first (0) ani sequence */
+	p_datitem = p_datbuffer;
+	p_datitem = p_datitem + ani_max_nr + 2;
+	/* set len to the lenght first (0) ani sequence */
+	len = host_readb(p_datbuffer + 2);
+
+	/* forward to the desired ani sequence */
+	for (i = 1; i <= ani_nr; i++) {
+		p_datitem = p_datitem + len;
+		len = host_readb(p_datbuffer + i + 2);
+	}
+
+	p_datitem++;
+
+	len = len - 2;
+
+	/* copy the ani sequenecs to dst */
+	for (i = 0; len > i; i++) {
+		host_writeb(dst, host_readb(p_datitem));
+		p_datitem++;
+		dst++;
+	}
+
+	return len;
+}
 
 /* 0x39b */
 

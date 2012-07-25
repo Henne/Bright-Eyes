@@ -6111,7 +6111,19 @@ static int n_seg036(unsigned offs)
 {
 	switch (offs) {
 	case 0x000: {
-		return 0;
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = KI_copy_ani_sequence(Real2Host(p), v1, v2);
+		D1_LOG("KI_copy_ani_sequence(%x, %d, %d); = %d\n",
+			p, v1, v2, (signed char)reg_ax);
+
+		return 1;
 	}
 	case 0x0ae: {
 		return 0;
