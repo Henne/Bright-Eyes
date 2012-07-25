@@ -1235,7 +1235,7 @@ unsigned short get_free_mod_slot() {
 		return i;
 
 	/* set timer of slot 0 to 1 */
-	mem_writed(PhysMake(datseg, 0x2e2c), 1);
+	host_writed(p_datseg + 0x2e2c, 1);
 	/* subtract one */
 	sub_mod_timers(1);
 	return 0;
