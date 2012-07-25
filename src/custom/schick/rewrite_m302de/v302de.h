@@ -70,6 +70,12 @@
 #define SPELLUSER	(0xe5bc)
 
 #if !defined(__BORLANDC__)
+
+static inline int NOT_NULL(Bit8u* p)
+{
+	return (p != NULL && p != MemBase);
+}
+
 /**
  *	ds_writeb_z() -	write only if target is 0
  *	@addr:	address in datasegment
@@ -225,6 +231,8 @@ typedef signed long Bit32s;
 
 typedef Bit8u* RealPt;
 typedef Bit8u* PhysPt;
+
+#define NOT_NULL(p) (p != NULL)
 
 /* poring functions for Borland C++ */
 struct hero_struct {

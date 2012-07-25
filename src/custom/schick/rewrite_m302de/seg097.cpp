@@ -255,7 +255,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	l7 = ds_readw(0xc3cb);
 	ds_writew(0xc3cb, 0);
 
-	if (str == NULL || str == MemBase || *str == '\0' || ds_readw(AUTOFIGHT) != 0)
+	if (!NOT_NULL(str) || *str == '\0' || ds_readw(AUTOFIGHT) != 0)
 		return -1;
 
 	l6 = ds_readw(0xe113);
@@ -425,7 +425,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 
 	l_si = GUI_count_lines(text) - 1;
 
-	if (name != NULL && name != MemBase)
+	if (NOT_NULL(name))
 		l_si += 2;
 
 	if (l_si < ds_readw(0xe4d9))
@@ -458,7 +458,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		do_pic_copy(0);
 	}
 
-	if (name != NULL && name != MemBase) {
+	if (NOT_NULL(name)) {
 		/* set text color */
 		ds_writew(0xd2c5, 1);
 

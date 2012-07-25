@@ -527,7 +527,7 @@ void remove_npc(signed short head_index, signed char days,
 
 
 	/* print farewell message if the NPC has and can */
-	if (text != NULL && text != MemBase) {
+	if (NOT_NULL(text)) {
 		if (check_hero(get_hero(6)) != 0) {
 			load_in_head(head_index);
 			GUI_dialogbox(ds_readd(0xd2f3), name, text, 0);

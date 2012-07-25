@@ -99,7 +99,7 @@ void FIG_draw_figures(void)
 
 		list_i = Real2Host(host_readd(list_i + 0x1b));
 
-	} while (list_i != NULL && list_i != MemBase);
+	} while (NOT_NULL(list_i));
 
 	/* restore a structure */
 	struct_copy(p_datseg + 0x2990, screen_mode, 8);
