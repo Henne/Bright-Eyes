@@ -167,16 +167,13 @@ unsigned short fight_printer()
 	Bit16u x;
 
 	if (ds_readw(0xd333) == 0)
-		ds_writew(0x26b1, 1);
+		ds_writew(0x26b1, 0);
 
 	if (ds_readw(0x4b79) == 0 && ds_readb(0x4b94) != 0) {
 		ds_writeb(0x4b78, ds_readb(0x4b78) + 1);
 		ds_writeb(0x4b94, 0);
 
-		if (ds_readw(AUTOFIGHT))
-			ds_writew(0x4b79, 10);
-		else
-			ds_writew(0x4b79, ds_readw(DELAY_FACTOR) * 6);
+		ds_writew(0x4b79, ds_readw(AUTOFIGHT) ? 10: (signed short)ds_readw(DELAY_FACTOR) * 6);
 
 		if (ds_readw(0xd333 + ds_readb(0x4b78) * 4) == 0)
 			ds_writew(0x26b1, 0);
