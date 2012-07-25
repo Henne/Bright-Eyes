@@ -1,16 +1,22 @@
 #include "v302de.h"
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
+#if 0
 /* DS:0x4a68 - DS:0x4a7f */
 static const char no_way_msg[][41] = {
 	"IN DIESE RICHTUNG GEHT ES NICHT WEITER.",
 	"YOU CAN GO NO FURTHER IN THIS DIRECTION."
 };
+#endif
 
 signed short update_direction(unsigned char mod)
 {
@@ -31,4 +37,6 @@ void no_way()
 	GUI_output(p_datseg + 0x4a68);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
