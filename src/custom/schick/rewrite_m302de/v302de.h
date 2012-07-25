@@ -253,12 +253,12 @@ extern Bit8u* text_ltx[];
 #define Real2Host(p) (Bit8u*)(p)
 
 #define host_readb(p) *(Bit8u*)(p)
-#define host_readw(p) *(Bit8u*)(p)
-#define host_readd(p) *(Bit8u*)(p)
+#define host_readw(p) *(Bit16u*)(p)
+#define host_readd(p) *(Bit32u*)(p)
 
-#define host_writeb(p, d)	(*(p) = d)
-#define host_writew(p, d)	(*(p) = d)
-#define host_writed(p, d)	(*(p) = d)
+#define host_writeb(p, d)	(*(Bit8u*)(p) = d)
+#define host_writew(p, d)	(*(Bit16u*) = d)
+#define host_writed(p, d)	(*(Bit32u*)(p) = d)
 
 #define hero_dead(hero)  (!((host_readb(hero + 0xaa) & 1) == 0))
 #define hero_unc(hero)  (!(((host_readb(hero + 0xaa) >> 6) & 1) == 0))
