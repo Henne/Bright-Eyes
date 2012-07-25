@@ -2,12 +2,15 @@
  *	Rewrite of DSA1 v3.02_de functions of seg005 (fight)
  *	Functions rewritten: 8/9
  */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "callback.h"
 
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -15,7 +18,10 @@
 #include "seg004.h"
 #include "seg096.h"
 
+
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 /**
  *
  *	@p:	pointer to an object 35 byte
@@ -27,58 +33,63 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y) {
 
 	Bit8u *i;
 
-	if (host_readb(p + 0x12) == 0)
-		return 0;
+	if (host_readb(p + 0x12) != 0) {
 
-	if (host_readb(p + 0xe) != 0xff || host_readb(p + 0x12) == 3) {
+		if (host_readb(p + 0xe) != 0xff || host_readb(p + 0x12) == 3) {
 
-		if (host_readb(p + 0x12) == 1)
-			host_writeb(p + 0x12, 2);
+			if (host_readb(p + 0x12) == 1)
+				host_writeb(p + 0x12, 2);
 
-		return 1;
-	}
+			return 1;
+		}
 
-	i = Real2Host(ds_readd(0xe108));
+		i = Real2Host(ds_readd(0xe108));
 
-	/* i = i->next; */
-	for (; i != p; i = Real2Host(host_readd(i + 0x1b))) {
+		/* i = i->next; */
+		for (; i != p; i = Real2Host(host_readd(i + 0x1b))) {
 
-		if (host_readb(i + 0x12) < 2)
-			continue;
+			if (host_readb(i + 0x12) < 2)
+				continue;
 
-		signed short i3, i4, i5, i6, i7, i8;
-		signed short osx, osy;
+			signed short i3, i4, i5, i6, i7, i8;
+			signed short osx, osy;
 
-		i3 = (signed char)host_readb(i + 3);
-		i4 = (signed char)host_readb(i + 4);
-		i5 = (signed char)host_readb(i + 5);
-		i6 = (signed char)host_readb(i + 6);
-		i7 = (signed char)host_readb(i + 7);
-		i8 = (signed char)host_readb(i + 8);
+			i3 = (signed char)host_readb(i + 3);
+			i4 = (signed char)host_readb(i + 4);
+			i5 = (signed char)host_readb(i + 5);
+			i6 = (signed char)host_readb(i + 6);
+			i7 = (signed char)host_readb(i + 7);
+			i8 = (signed char)host_readb(i + 8);
 
-		osx = 10 - i8 / 2 + (i3 + i4) * 10 + i5;
-		osy = 118 - i7 + (i3 - i4) * 5 + i6;
+			osx = 10 - i8 / 2 + (i3 + i4) * 10 + i5;
+			osy = 118 - i7 + (i3 - i4) * 5 + i6;
 
+#if !defined(__BORLANDC__)
 		D1_LOG("3=%d 4=%d 5=%d 6=%d 7=%d 8=%d osx=%d osy=%d\n",
 			i3, i4, i5, i6, i7, i8, osx, osy);
+#endif
 
-		if (x + i8 < osx || x - i8 > osx)
-			continue;
+			if (x + i8 < osx || x - i8 > osx)
+				continue;
 
-		if (y + i7 < osy || y - i7 > osy)
-			continue;
+			if (y + i7 < osy || y - i7 > osy)
+				continue;
 
-		if (host_readb(p + 0x12) == 1)
-			host_writeb(p + 0x12, 2);
+			if (host_readb(p + 0x12) == 1)
+				host_writeb(p + 0x12, 2);
 
-		return 1;
+			return 1;
 	}
 
-	return 0;
+		return 0;
+
+	} else
+		return 0;
 }
 
+/* Borlandified and identical */
 /**
- *	FIG_set_star_color - set the color of the star in fights
+ *	FIG_set_star_color() - set the color of the star in fights
  *	@ptr:	pointer to the star template
  *	@count: number of bytes the star has
  *	@color: 1=red/2=green/3=blue/4=yellow/11=darkbrown/12=lightbrown/13=pink
@@ -86,12 +97,15 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y) {
  *	Sets the color of the star which shows fight activities,
  *	like damage, in fights.
  */
-void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color) {
+void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color)
+{
+	PhysPt p;
 
 	color += 0x80;
-	for (; --count; ptr++) {
-		if (mem_readb(ptr))
-			mem_writeb(ptr, color);
+
+	for (p = ptr; --count; p++) {
+		if (mem_readb(p))
+			mem_writeb(p, color);
 	}
 }
 
@@ -106,7 +120,7 @@ void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color) {
 RealPt FIG_name_3rd_case(unsigned short type, unsigned short pos) {
 
 	if (type == 2)
-		return ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
 	else
 		return GUI_names_grammar(3, pos, 1);
 }
@@ -122,7 +136,7 @@ RealPt FIG_name_3rd_case(unsigned short type, unsigned short pos) {
 RealPt FIG_name_4th_case(unsigned short type, unsigned short pos) {
 
 	if (type == 2)
-		return ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
 	else
 		return GUI_names_grammar(2, pos, 1);
 }
@@ -138,10 +152,11 @@ RealPt FIG_name_4th_case(unsigned short type, unsigned short pos) {
 RealPt FIG_name_1st_case(unsigned short type, unsigned short pos) {
 
 	if (type == 2)
-		return ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
 	else
 		return GUI_names_grammar(0, pos, 1);
 }
+
 unsigned short fight_printer()
 {
 	char str[6];
@@ -176,7 +191,7 @@ unsigned short fight_printer()
 		f_action = ds_readw(0xd333 + ds_readb(0x4b78) * 4);
 		if (f_action != 0) {
 
-			gfx_pos_bak = ds_readd(0xd2fb);
+			gfx_pos_bak = (RealPt)ds_readd(0xd2fb);
 
 			ds_writed(0xd2fb, ds_readd(0xd303));
 			get_textcolor(&fg_bak, &bg_bak);
@@ -190,10 +205,10 @@ unsigned short fight_printer()
 			ds_writew(0xc017, 198);
 			ds_writed(0xc019, ds_readd(0xd29d));
 			ds_writed(0xc00d, ds_readd(0xd303));
-			gfx_dst_bak = ds_readd(0xc00d);
+			gfx_dst_bak = (RealPt)ds_readd(0xc00d);
 			do_pic_copy(2);
 
-			ds_writed(0xc00d, gfx_dst_bak);
+			ds_writed(0xc00d, (Bit32u)gfx_dst_bak);
 
 			/* print number into the star */
 			if (ds_readw(0xd333 + 2 + ds_readb(0x4b78) * 4)) {
@@ -265,17 +280,19 @@ unsigned short fight_printer()
 
 					idx = ds_readw(0x4b7a + ds_readw(0xd333 + ds_readb(0x4b78) * 4) * 2);
 					strcpy(getString(ds_readd(0xd2eb)), (char*)get_dtp(idx * 4));
+#if !defined(__BORLANDC__)
 
 					if (f_action != 5 && f_action != 6) {
 					D1_INFO("f_action = %d\n", f_action);
 					D1_INFO("%s\n", getString(ds_readd(0xd2eb)));
 					}
+#endif
 				}
 				}
 				GUI_print_string(Real2Host(ds_readd(0xd2eb)),
 					1, 194);
 			}
-			ds_writed(0xd2fb, gfx_pos_bak);
+			ds_writed(0xd2fb, (Bit32u)gfx_pos_bak);
 			set_textcolor(fg_bak, bg_bak);
 		}
 		ds_writeb(0x4b7b, ds_readb(0x4b78));
@@ -295,6 +312,7 @@ unsigned short fight_printer()
 
 }
 
+#if !defined(__BORLANDC__)
 /* TODO This callback does not work */
 void seg005_0598(Bit16u val)
 {
@@ -302,6 +320,7 @@ void seg005_0598(Bit16u val)
 	CALLBACK_RunRealFar(reloc_game + 0xc85, 0x598);
 	CPU_Pop16();
 }
+#endif
 
 //static
 void set_delay_timer() {
@@ -320,4 +339,6 @@ void fight_delay()
 
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
