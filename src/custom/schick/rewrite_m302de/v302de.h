@@ -217,9 +217,6 @@ static inline char* get_itemname(unsigned short item)
 }
 #else
 
-void D1_INFO(const char *, ...);
-#undef D1_LOG
-#undef D1_ERR
 #undef M302de_ORIGINAL_BUGFIX
 
 typedef unsigned char Bit8u;
@@ -253,12 +250,23 @@ extern char ds[0xffff];
 #define ds_writew(p, d) *(unsigned short*)(ds + p) = d
 #define ds_writed(p, d) *(unsigned long*)(ds + p) = d
 
+#define mem_readb(p) *(signed char*)(p)
+#define mem_readw(p) *(signed short*)(p)
+#define mem_readd(p) *(signed long*)(p)
+
+#define mem_writeb(p, d) *(unsigned char*)(p) = d
+#define mem_writew(p, d) *(unsigned short*)(p) = d
+#define mem_writed(p, d) *(unsigned long*)(p) = d
+
 #define get_hero(nr) (Bit8u*)ds_readd(HEROS) + 0x6da * nr
 
 
 extern Bit8u* text_ltx[];
+extern Bit8u* dialog_text[];
 
+#define Real2Phys(p) (Bit8u*)(p)
 #define Real2Host(p) (Bit8u*)(p)
+#define getString(p) (char*)(p)
 
 #define host_readb(p) *(Bit8u*)(p)
 #define host_readw(p) *(Bit16u*)(p)
@@ -272,6 +280,7 @@ extern Bit8u* text_ltx[];
 #define hero_unc(hero)  (!(((host_readb(hero + 0xaa) >> 6) & 1) == 0))
 
 #define get_ltx(nr) (Bit8u*)(&text_ltx[nr])
+#define get_dtp(nr) (Bit8u*)(&dialog_text[nr])
 
 #if 0
 #define get_ltx(nr) (Bit8u*)(Real2Host(NULL + (0x4 * nr)))
