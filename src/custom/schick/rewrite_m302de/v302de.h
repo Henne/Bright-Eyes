@@ -245,7 +245,7 @@ extern char ds[0xffff];
 #define ds_writew(p, d) *(unsigned short*)(ds + p) = d
 #define ds_writed(p, d) *(unsigned long*)(ds + p) = d
 
-#define get_hero(nr) (Bit8u*)ds_readd(HEROS)
+#define get_hero(nr) (Bit8u*)ds_readd(HEROS) + 0x6da * nr
 
 
 extern Bit8u* text_ltx[];

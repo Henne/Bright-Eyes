@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 unsigned short random_interval(unsigned short lo, unsigned short hi);
 unsigned short random_schick(short val);
@@ -10,4 +12,6 @@ unsigned short is_in_byte_array(char val, Bit8u *p);
 short dice_template(unsigned short val);
 void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max);
 
+#if !defined(__BORLANDC__)
 }
+#endif

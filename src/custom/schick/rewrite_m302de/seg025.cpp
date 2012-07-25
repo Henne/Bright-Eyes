@@ -4,8 +4,11 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -15,7 +18,9 @@
 #include "seg008.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 0x483 */
 /**
@@ -133,4 +138,6 @@ void copy_palette(void)
 	ds_writeb(0x4475, 2);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
