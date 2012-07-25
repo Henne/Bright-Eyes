@@ -17,6 +17,7 @@ namespace M302de {
 
 /* 0x000 */
 /* static */
+/* Borlandified  and identical */
 
 /**
  * KI_copy_ani_sequence() - copies an ani sequence
@@ -26,14 +27,14 @@ namespace M302de {
  *
  * Returns the length of the sequence in bytes.
  */
-signed char KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short mode)
+signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short mode)
 {
 	Bit8u *p_datbuffer;
 	Bit8u *p_datitem;
 	signed char len;
 
-	register signed short ani_max_nr;
-	register signed short i;
+	signed short i;
+	signed short ani_max_nr;
 
 
 	/* set the right buffer */
@@ -47,18 +48,21 @@ signed char KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short m
 	ani_max_nr = host_readw(p_datbuffer);
 
 	/* check if the desired ani_nr is in the range */
-	if (ani_nr < 0 || ani_nr > ani_max_nr)
+	if (ani_nr < 0)
+		return 0;
+
+	if (ani_nr > ani_max_nr)
 		return 0;
 
 	/* set p_datitem to the first (0) ani sequence */
 	p_datitem = p_datbuffer;
-	p_datitem = p_datitem + ani_max_nr + 2;
+	p_datitem += ani_max_nr + 2;
 	/* set len to the lenght first (0) ani sequence */
 	len = host_readb(p_datbuffer + 2);
 
 	/* forward to the desired ani sequence */
 	for (i = 1; i <= ani_nr; i++) {
-		p_datitem = p_datitem + len;
+		p_datitem += len;
 		len = host_readb(p_datbuffer + i + 2);
 	}
 
