@@ -27,11 +27,11 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	signed short i;
 
 	/* ANI.DAT */
-	buffer = Real2Host(ds_readd(0xe378));
+	buffer = Real2Host(ds_readd(BUFFER_ANIDAT));
 
 	/* WEAPANI.DAT */
 	if (mode == 3)
-		buffer = Real2Host(ds_readd(0xe374));
+		buffer = Real2Host(ds_readd(BUFFER_WEAPANIDAT));
 
 	max_nr = host_readw(buffer);
 

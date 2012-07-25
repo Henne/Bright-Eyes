@@ -7,6 +7,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg002.h"
 #include "seg007.h"
 #include "seg038.h"
@@ -29,11 +31,11 @@ Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 	Bit8s length;
 
 	/* get pointer from ANI.DAT */
-	p_start = Real2Host(ds_readd(0xe378));
+	p_start = Real2Host(ds_readd(BUFFER_ANIDAT));
 
 	/* check if we must use WEAPANI.DAT */
 	if (type == 3)
-		p_start = Real2Host(ds_readd(0xe374));
+		p_start = Real2Host(ds_readd(BUFFER_WEAPANIDAT));
 
 	/* get number of animation sequences */
 	nr_anis = host_readw(p_start);
@@ -78,7 +80,7 @@ Bit8s seg044_00ae(Bit16s ani)
 	Bit16u i;
 
 	/* get pointer from ANI.DAT */
-	p_start = Real2Host(ds_readd(0xe378));
+	p_start = Real2Host(ds_readd(BUFFER_ANIDAT));
 
 	/* get number of ani seqences in ANI.DAT */
 	nr_anis = host_readw(p_start);

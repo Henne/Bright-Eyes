@@ -61,6 +61,8 @@
 #define DELAY_TIMER	(0xe2d0)
 #define CURRENT_FIG_NR	(0xe316)
 #define AUTOFIGHT	(0xe318)	/* ?16 */
+#define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
+#define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
