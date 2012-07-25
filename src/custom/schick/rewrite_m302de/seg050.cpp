@@ -3,14 +3,17 @@
 	Functions rewritten: 1/5
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
-#include "schick_common.h"
 #include "v302de.h"
 
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * inc_skill_novice() - tries to increace a skill in novice mode
@@ -23,17 +26,19 @@ namespace M302de {
  */
 void inc_skill_novice(Bit8u *hero, unsigned short skill)
 {
+	unsigned short done;
 	unsigned short randval;
-	bool done;
 
-	done = false;
+	done = 0;
 
-	while (done == false) {
+	while (!done) {
 		/* leave the loop if 3 incs failes or the skill value is 18 */
-		if (host_readb(Real2Host(ds_readd(0xe3b6) + skill * 2)) == 3 ||
+		if (host_readb(Real2Host(ds_readd(0xe3b6)) + skill * 2) == 3 ||
 			host_readb(hero + 0x108 + skill) == 18) {
-			done = true;
+			done = 1;
+#if !defined(__BORLANDC__)
 			D1_INFO("%s hatt alle Versuche aufgebraucht\n", hero + 0x10);
+#endif
 			continue;
 		}
 
@@ -41,8 +46,8 @@ void inc_skill_novice(Bit8u *hero, unsigned short skill)
 		host_writeb(hero + 0x13c, host_readb(hero + 0x13c) - 1);
 
 		/* check if available skill incs are 0 */
-		if (host_readb(hero + 0x13c) == 0)
-			done = true;
+		if (!(signed char)host_readb(hero + 0x13c))
+			done = 1;
 
 		/* on a  skill value < 11 use 2W6 else 3W6 */
 		if ((signed char)host_readb(hero + 0x108 + skill) >= 11)
@@ -59,7 +64,7 @@ void inc_skill_novice(Bit8u *hero, unsigned short skill)
 			/* reset failed counter */
 			host_writeb(Real2Host(ds_readd(0xe3b6) + skill * 2), 0);
 
-			done = true;
+			done = 1;
 
 			/* adjust AT PA values */
 			if (skill <= 6) {
@@ -74,10 +79,12 @@ void inc_skill_novice(Bit8u *hero, unsigned short skill)
 
 		} else {
 			/* inc failed oounter */
-			host_writeb(Real2Host(ds_readd(0xe3b6) + skill * 2),
-				host_readb(Real2Host(ds_readd(0xe3b6) + skill * 2) + 1));
+			host_writeb(Real2Host(ds_readd(0xe3b6)) + skill * 2,
+				host_readb(Real2Host(ds_readd(0xe3b6)) + skill * 2) + 1);
 		}
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

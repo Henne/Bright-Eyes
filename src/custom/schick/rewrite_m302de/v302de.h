@@ -217,7 +217,7 @@ static inline char* get_itemname(unsigned short item)
 }
 #else
 
-#undef D1_INFO
+void D1_INFO(const char *, ...);
 #undef D1_LOG
 #undef D1_ERR
 #undef M302de_ORIGINAL_BUGFIX
