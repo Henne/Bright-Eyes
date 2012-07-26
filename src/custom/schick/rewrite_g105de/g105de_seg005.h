@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace G105de {
+#endif
 void set_video_mode(unsigned char mode);
 void set_video_page(unsigned char mode);
 void save_display_stat(RealPt);
@@ -10,4 +12,6 @@ void draw_pic(PhysPt, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bit16u, Bi
 void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height);
 unsigned short swap_u16(unsigned short val);
 void copy_to_screen(PhysPt, PhysPt, Bit16s, Bit16s, Bit16u);
+#if !defined(__BORLANDC__)
 }
+#endif

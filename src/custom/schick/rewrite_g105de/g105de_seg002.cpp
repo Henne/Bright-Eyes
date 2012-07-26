@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -5,6 +6,7 @@
 
 #include "hero.h"
 
+#if !defined(__BORLANDC__)
 #include "regs.h"
 #include "paging.h"
 #include "callback.h"
@@ -21,6 +23,16 @@
 #include "g105de_seg006.h"
 
 namespace G105de {
+#else
+
+#include "port.h"
+
+#include "seg001.h"
+#include "seg002.h"
+#include "seg003.h"
+#include "seg004.h"
+#include "seg005.h"
+#endif
 
 /** Keyboard Constants */
 static const unsigned short KEY_ESC = 0x01;
@@ -1275,6 +1287,7 @@ static const Bit16u ro_var[7] = {0, 0, 0, 0, 0, 0, 0};
 Bit8u *gen_ptr1;
 Bit8u *gen_ptr1_dis;
 
+#if !defined(__BORLANDC__)
 /* New variables */
 
 /*	This is the buffer, where the hero is stored in little endian.
@@ -1450,6 +1463,9 @@ void BE_cleanup()
 	}
 	D1_INFO("Cleanup %ld bytes freed\n", sum);
 }
+#else
+
+#endif
 
 void start_music(Bit16u track)
 {
@@ -1482,14 +1498,18 @@ void read_soundcfg()
 	free(fname);
 
 	if (fd == NULL) {
+#if !defined(__BORLANDC__)
 		D1_ERR("Failed to open %s\n", fname);
+#endif
 		return;
 	}
 
 	fread(&port, 2, sizeof(char), fd);
 	fclose(fd);
 
+#if !defined(__BORLANDC__)
 	D1_INFO("MIDI port 0x%x\n", host_readw((Bit8u*)&port));
+#endif
 	if (port && load_driver(RealMake(datseg, 0x1dda), 3, host_readw((Bit8u*)&port))) {
 		/* disable audio-cd */
 		use_cda = false;
@@ -1550,6 +1570,7 @@ void stop_music()
 	seg001_033b();
 }
 
+#if !defined(__BORLANDC__)
 bool emu_load_seq(Bit16u sequence_num)
 {
 	CPU_Push16(sequence_num);
@@ -1557,8 +1578,8 @@ bool emu_load_seq(Bit16u sequence_num)
 	CPU_Pop16();
 	return reg_ax ? true : false;
 }
+#else
 
-#if 0
 bool load_seq(Bit16u sequence_num)
 {
 	Bit8u *ptr;
@@ -2449,7 +2470,7 @@ void save_chr()
 		}
 	} else {
 		/* should be replaced with infobox() */
-		error_msg(MemBase + PhysMake(datseg, 0x1e09));
+		error_msg(p_datseg + 0x1e09);
 	}
 }
 
@@ -7017,6 +7038,7 @@ void *gen_alloc(unsigned long size)
 	return calloc(size, sizeof(char));
 }
 
+#if !defined(__BORLANDC__)
 RealPt emu_gen_alloc(Bit32u nelem)
 {
 	/* prepare stack */
@@ -7033,5 +7055,8 @@ RealPt emu_gen_alloc(Bit32u nelem)
 	/* return the pointer */
 	return RealMake(reg_dx, reg_ax);
 }
+#endif
 
+#if !defined(__BORLANDC__)
 }
+#endif

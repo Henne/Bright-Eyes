@@ -15,7 +15,9 @@ struct nvf_desc {
 	signed short *height;
 };
 
+#if !defined(__BORLANDC__)
 namespace G105de {
+#endif
 
 	void start_music(Bit16u);
 	void read_soundcfg();
@@ -130,4 +132,6 @@ namespace G105de {
 	void init_stuff();
 	void *gen_alloc(unsigned long);
 	RealPt emu_gen_alloc(Bit32u);
+#if !defined(__BORLANDC__)
 }
+#endif
