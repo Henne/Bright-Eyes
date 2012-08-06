@@ -358,7 +358,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* 1W20+10 */
 					l_si = dice_roll(1, 20, 10);
-					if (host_readw(consumer + 0x5e) - host_readw(consumer + 0x60) < l_si);
+					if (host_readw(consumer + 0x5e) - host_readw(consumer + 0x60) < l_si)
 						l_si = host_readw(consumer + 0x5e) - host_readw(consumer + 0x60);
 
 					/* add LE */
