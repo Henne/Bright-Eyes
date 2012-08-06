@@ -71,6 +71,21 @@
 
 #if !defined(__BORLANDC__)
 
+static inline Bit8s host_readbs(Bit8u* p)
+{
+	return (Bit8s)host_readb(p);
+}
+
+static inline Bit16s host_readws(Bit8u* p)
+{
+	return (Bit16s)host_readw(p);
+}
+
+static inline Bit32s host_readds(Bit8u* p)
+{
+	return (Bit32s)host_readd(p);
+}
+
 static inline int NOT_NULL(Bit8u* p)
 {
 	return (p != NULL && p != MemBase);
@@ -242,21 +257,29 @@ struct hero_struct {
 extern char ds[0xffff];
 #define p_datseg (&ds[0x0000])
 
-#define ds_readb(p) *(signed char*)(ds + p)
-#define ds_readw(p) *(signed short*)(ds + p)
-#define ds_readd(p) *(signed long*)(ds + p)
+#define ds_readb(p) *(Bit8u*)(ds + p)
+#define ds_readw(p) *(Bit16u*)(ds + p)
+#define ds_readd(p) *(Bit32u*)(ds + p)
 
-#define ds_writeb(p, d) *(unsigned char*)(ds + p) = d
-#define ds_writew(p, d) *(unsigned short*)(ds + p) = d
-#define ds_writed(p, d) *(unsigned long*)(ds + p) = d
+#define ds_readbs(p) *(Bit8s*)(ds + p)
+#define ds_readws(p) *(Bit16s*)(ds + p)
+#define ds_readds(p) *(Bit32s*)(ds + p)
 
-#define mem_readb(p) *(signed char*)(p)
-#define mem_readw(p) *(signed short*)(p)
-#define mem_readd(p) *(signed long*)(p)
+#define ds_writeb(p, d) *(Bit8u*)(ds + p) = d
+#define ds_writew(p, d) *(Bit16u*)(ds + p) = d
+#define ds_writed(p, d) *(Bit32u*)(ds + p) = d
 
-#define mem_writeb(p, d) *(unsigned char*)(p) = d
-#define mem_writew(p, d) *(unsigned short*)(p) = d
-#define mem_writed(p, d) *(unsigned long*)(p) = d
+#define mem_readb(p) *(Bit8u*)(p)
+#define mem_readw(p) *(Bit16u*)(p)
+#define mem_readd(p) *(Bit32u*)(p)
+
+#define mem_readbs(p) *(Bit8s*)(p)
+#define mem_readws(p) *(Bit16s*)(p)
+#define mem_readds(p) *(Bit32s*)(p)
+
+#define mem_writeb(p, d) *(Bit8u*)(p) = d
+#define mem_writew(p, d) *(Bit16u*)(p) = d
+#define mem_writed(p, d) *(Bit32u*)(p) = d
 
 #define get_hero(nr) (Bit8u*)ds_readd(HEROS) + 0x6da * nr
 

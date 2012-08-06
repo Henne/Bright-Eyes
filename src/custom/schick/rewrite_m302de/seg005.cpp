@@ -54,12 +54,12 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y) {
 			signed short i3, i4, i5, i6, i7, i8;
 			signed short osx, osy;
 
-			i3 = (signed char)host_readb(i + 3);
-			i4 = (signed char)host_readb(i + 4);
-			i5 = (signed char)host_readb(i + 5);
-			i6 = (signed char)host_readb(i + 6);
-			i7 = (signed char)host_readb(i + 7);
-			i8 = (signed char)host_readb(i + 8);
+			i3 = host_readbs(i + 3);
+			i4 = host_readbs(i + 4);
+			i5 = host_readbs(i + 5);
+			i6 = host_readbs(i + 6);
+			i7 = host_readbs(i + 7);
+			i8 = host_readbs(i + 8);
 
 			osx = 10 - i8 / 2 + (i3 + i4) * 10 + i5;
 			osy = 118 - i7 + (i3 - i4) * 5 + i6;
