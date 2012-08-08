@@ -2574,7 +2574,6 @@ static int seg024(unsigned short offs) {
 static int seg025(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
-	D1_ERR("call to Segment %s:0x%04x\n",	__func__, offs);
 		return 0;
 	}
 	case 0x25: {
