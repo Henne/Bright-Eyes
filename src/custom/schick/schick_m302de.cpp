@@ -3288,7 +3288,9 @@ static int seg039(unsigned short offs) {
 static int seg040(unsigned short offs) {
 	switch(offs) {
 	case 0x20: {
-		return 0;
+		D1_LOG("FIG_chessboard_init()\n");
+		FIG_chessboard_init();
+		return 1;
 	}
 	case 0x25: {
 		return 0;
