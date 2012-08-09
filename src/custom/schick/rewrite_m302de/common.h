@@ -8,10 +8,10 @@
 	@p_width:	pointer where the width of the picture must be stored
 */
 struct nvf_desc {
-	RealPt src;
-	RealPt dst;
+	Bit8u *dst;
+	Bit8u *src;
 	short nr;
 	signed char type;
-	RealPt p_width;
-	RealPt p_height;
+	Bit8u *width;
+	Bit8u *height;
 };

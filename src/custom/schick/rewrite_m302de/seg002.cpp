@@ -137,7 +137,8 @@ Bit16u load_archive_file(Bit16u index)
 	return reg_ax;
 }
 
-signed int process_nvf(Bit8u *nvf) {
+signed int process_nvf(struct nvf_desc *nvf) {
+
 	signed char nvf_type;
 	Bit8u *src, *dst;
 	int p_size;
@@ -149,17 +150,8 @@ signed int process_nvf(Bit8u *nvf) {
 	short width;
 	short i;
 
-	struct nvf_desc d;
-
-	d.dst = host_readd(nvf);
-	d.src = host_readd(nvf+4);
-	d.nr = host_readw(nvf+8);
-	d.type = host_readb(nvf+10);
-	d.p_width = host_readd(nvf+11);
-	d.p_height = host_readd(nvf+15);
-
-	Bit8u *p = Real2Host(d.src);
-	dst = Real2Host(d.dst);
+	Bit8u *p = nvf->src;
+	dst = nvf->dst;
 
 	nvf_type = host_readb(p);
 	va = nvf_type & 0x80;
@@ -167,11 +159,11 @@ signed int process_nvf(Bit8u *nvf) {
 
 	pics = host_readw(p + 1);
 
-	if (d.nr < 0)
-		d.nr = 0;
+	if (nvf->nr < 0)
+		nvf->nr = 0;
 
-	if (d.nr > pics - 1)
-		d.nr = pics - 1;
+	if (nvf->nr > pics - 1)
+		nvf->nr = pics - 1;
 
 	switch (nvf_type) {
 
@@ -179,19 +171,19 @@ signed int process_nvf(Bit8u *nvf) {
 		width = host_readw(p + 3);
 		height = host_readw(p + 5);
 		p_size = height * width;
-		src =  p + d.nr * p_size + 7;
+		src =  p + nvf->nr * p_size + 7;
 		break;
 
 	case 0x01:
 		offs = pics * 4 + 3;
-		for (i = 0; i < d.nr; i++) {
+		for (i = 0; i < nvf->nr; i++) {
 			width = host_readw(p + i * 4 + 3);
 			height = host_readw(p + i * 4 + 5);
 			offs += width * height;
 		}
 
-		width = host_readw(p + d.nr * 4 + 3);
-		height = host_readw(p + d.nr * 4 + 5);
+		width = host_readw(p + nvf->nr * 4 + 3);
+		height = host_readw(p + nvf->nr * 4 + 5);
 		p_size = width * height;
 		src = p + offs;
 		break;
@@ -200,26 +192,26 @@ signed int process_nvf(Bit8u *nvf) {
 		width = host_readw(p + 3);
 		height = host_readw(p + 5);
 		offs = pics * 4 + 7;
-		for (i = 0; i < d.nr; i++)
+		for (i = 0; i < nvf->nr; i++)
 			offs += host_readd(p  + (i * 4) + 7);
 
-		p_size = host_readd(p + d.nr * 4 + 7);
+		p_size = host_readd(p + nvf->nr * 4 + 7);
 		src = p + offs;
 		break;
 
 	case 0x03: case 0x05:
 		offs = pics * 8 + 3;
-		for (i = 0; i < d.nr; i++)
+		for (i = 0; i < nvf->nr; i++)
 			offs += host_readd(p  + (i * 8) + 7);
 
-		width = host_readw(p + d.nr * 8 + 3);
-		height = host_readw(p + d.nr * 8 + 5);
+		width = host_readw(p + nvf->nr * 8 + 3);
+		height = host_readw(p + nvf->nr * 8 + 5);
 		p_size = host_readd(p + i * 8 + 7);
 		src = p + offs;
 		break;
 	}
 
-	switch (d.type) {
+	switch (nvf->type) {
 
 	case 0:
 		/* PP20 decompression */
@@ -240,7 +232,7 @@ signed int process_nvf(Bit8u *nvf) {
 	case 2: case 3: case 4: case 5:
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
-			Real2Host(ds_readd(0xd2eb)), d.type);
+			Real2Host(ds_readd(0xd2eb)), nvf->type);
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
 			on a Debug build, so we fix this for debuggings sake */
@@ -250,12 +242,12 @@ signed int process_nvf(Bit8u *nvf) {
 
 	default:
 		/* No decompression, just copy */
-		memmove(Real2Host(d.dst), src, (short)p_size);
+		memmove(nvf->dst, src, (short)p_size);
 		retval = p_size;
 	}
 
-	mem_writew(Real2Phys(d.p_width), width);
-	mem_writew(Real2Phys(d.p_height), height);
+	host_writew(nvf->width, width);
+	host_writew(nvf->height, height);
 
 	return retval;
 }
@@ -2104,10 +2096,10 @@ unsigned short mod_timer(short val) {
 }
 
 void draw_compass() {
-//	struct nvf_desc n;
-	/* ugly hack to provide the layout of struct nvf_desc */
-	char nvf[19];
-	Bit8u *n = (Bit8u*)nvf;
+
+	struct nvf_desc n;
+	signed short height;
+	signed short width;
 
 	/* No compass in a location */
 	if (ds_readb(0x2d60))
@@ -2121,20 +2113,21 @@ void draw_compass() {
 	/* I have no clue */
 	if (ds_readb(0x4475) == 2)
 		return;
+
 	/* set src */
-	host_writed(n + 0, ds_readd(0xd2f7));
+	n.dst = Real2Host(ds_readd(0xd2f7));
 	/* set dst */
-	host_writed(n + 4, ds_readd(0xd2b1));
+	n.src = Real2Host(ds_readd(0xd2b1));
 	/* set nr */
-	host_writew(n + 8, ds_readb(0x2d3d));
+	n.nr = ds_readbs(0x2d3d);
 	/* set type*/
-	host_writew(n + 10, 0);
-	/* place somwhere on unused DOS stack */
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+	n.type = 0;
+
+	n.height = (Bit8u*)&height;
+	n.width = (Bit8u*)&width;
 
 	/* process the nvf */
-	process_nvf(n);
+	process_nvf(&n);
 
 	/* set x and y values */
 	ds_writew(0xc011, 94);

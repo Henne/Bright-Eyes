@@ -9,6 +9,8 @@
 #include "schick.h"
 #include "v302de.h"
 
+#include "common.h"
+
 #include "seg002.h"
 #include "seg004.h"
 #include "seg008.h"
@@ -160,12 +162,14 @@ void status_show(Bit16u index)
 {
 	char le_fix[10];
 	Bit8u *hero;
-	char nvf[19];
-	Bit8u *n = (Bit8u*)nvf;
+	struct nvf_desc nvf;
 	Bit16u bak1, bak2, bak3, bak4;
 	Bit16u i, j;
 	Bit16u bp;
-	Bit16s l1, at, pa, fb;
+	Bit16s l1, at, pa;
+	signed short height;
+	signed short width;
+	Bit16s fb;
 	Bit8s val;
 
 	bak1 = ds_readw(0xd313);
@@ -208,26 +212,23 @@ void status_show(Bit16u index)
 
 	/* print invetory and silouette values */
 	if (ds_readw(0x2c9b) < 3) {
-		/* set dst */
-		host_writed(n + 4, ds_readd(0xd2a9));
-		/* set type */
-		host_writew(n + 10, 0);
-		/* place somewhere on unused stack */
-		host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-		host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
+
+		nvf.src = Real2Host(ds_readd(0xd2a9));
+		nvf.type = 0;
+
+		nvf.width = (Bit8u*)&width;
+		nvf.height = (Bit8u*)&height;
 
 		for (i = 0; i < 23; i++) {
 
 			if (host_readw(hero + i * 14 + 0x196) == 0)
 				continue;
 
-			/* set src */
-			host_writed(n + 0, ds_readd(0xd2f7));
+			nvf.dst = Real2Host(ds_readd(0xd2f7));
 			/* set nr */
-			host_writew(n + 8,
-				host_readw(get_itemsdat(host_readw(hero + i * 14 + 0x196))));
+			nvf.nr = host_readw(get_itemsdat(host_readw(hero + i * 14 + 0x196)));
 
-			process_nvf(n);
+			process_nvf(&nvf);
 
 			/* draw the item icon */
 			ds_writew(0xc011, ds_readw(0x63d2 + i * 4));

@@ -8,6 +8,7 @@
 #include "schick.h"
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg000.h"
 #include "seg002.h"
@@ -137,8 +138,7 @@ void call_load_area(unsigned short type)
 
 void load_map(void)
 {
-	char nvf[19];
-	Bit8u *n = (Bit8u*)nvf;
+	struct nvf_desc nvf;
 	unsigned short bak;
 	unsigned short fd;
 
@@ -154,19 +154,14 @@ void load_map(void)
 	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 2000);
 	bc_close(fd);
 
-	/* set src */
-	host_writed(n + 4, ds_readd(0xd303));
-	/* set type */
-	host_writew(n + 10, 0);
-	/* place somewhere on unused stack */
-	host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-	host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
-	/* set dst */
-	host_writed(n + 0, ds_readd(0xc3db) + 18000);
-	/* set nr */
-	host_writew(n + 8, 16);
+	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&fd;
+	nvf.height = (Bit8u*)&fd;
+	nvf.dst = Real2Host(ds_readd(0xc3db)) + 18000;
+	nvf.nr = 16;
 
-	process_nvf(n);
+	process_nvf(&nvf);
 
 	array_add(Real2Phys(ds_readd(0xc3db)) + 18000, 3003, 0xe0, 2);
 

@@ -8,6 +8,7 @@
 
 #include "schick.h"
 
+#include "common.h"
 #include "v302de.h"
 
 #include "seg000.h"
@@ -885,15 +886,26 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x0ed2: {
-			RealPt nvf = CPU_Pop32();
-			CPU_Push32(nvf);
+			RealPt nvf_rp = CPU_Pop32();
+			CPU_Push32(nvf_rp);
 
 			signed int retval;
 
-			D1_LOG("process_nvf(0x%04x:0x%04x);\n",
-				RealSeg(nvf), RealOff(nvf));
+			Bit8u *nvf_p = Real2Host(nvf_rp);
 
-			retval = process_nvf(Real2Host(nvf));
+			struct nvf_desc nvf;
+
+			nvf.dst = Real2Host(host_readd(nvf_p + 0));
+			nvf.src = Real2Host(host_readd(nvf_p + 4));
+			nvf.nr = host_readw(nvf_p + 8);
+			nvf.type = host_readb(nvf_p + 10);
+			nvf.width = Real2Host(host_readd(nvf_p + 11));
+			nvf.height = Real2Host(host_readd(nvf_p + 15));
+
+			D1_LOG("process_nvf(0x%04x:0x%04x);\n",
+				RealSeg(nvf_rp), RealOff(nvf_rp));
+
+			retval = process_nvf(&nvf);
 
 			reg_ax = retval & 0xffff;
 			reg_dx = (retval >> 16) & 0xffff;

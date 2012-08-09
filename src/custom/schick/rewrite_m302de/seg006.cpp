@@ -12,6 +12,7 @@
 #include "schick.h"
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg002.h"
 #include "seg004.h"
@@ -433,11 +434,12 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
  */
 void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 {
-	char nvf[19];
-	Bit8u *n = (Bit8u*)nvf;
+	struct nvf_desc nvf;
 	RealPt p1;
-	unsigned short fg_bak, bg_bak;
+	unsigned short fg_bak;
+	unsigned short bg_bak;
 	Bit8u *p_enemy;
+	signed short height_width;
 
 	p1 = ds_readd(0xc3a9) - 1288;
 
@@ -445,20 +447,14 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 
 	if ((signed char)ds_readb(0x12c0 + host_readb(p_enemy + 1) * 5) != (signed short)ds_readw(0x4b9e)) {
 
-		/* set src */
-		host_writed(n + 4,
-			load_fight_figs(ds_readb(0x12c0 + host_readb(p_enemy + 1) * 5)));
-		/* set dst */
-		host_writed(n + 0, p1);
-		/* set nr */
-		host_writew(n + 8, 1);
-		/* set type */
-		host_writeb(n + 10, 0);
+		nvf.src = Real2Host(load_fight_figs(ds_readb(0x12c0 + host_readb(p_enemy + 1) * 5)));
+		nvf.dst = Real2Host(p1);
+		nvf.nr = 1;
+		nvf.type = 0;
+		nvf.width = (Bit8u*)&height_width;
+		nvf.height = (Bit8u*)&height_width;
 
-		host_writed(n + 11, RealMake(SegValue(ss), reg_sp - 8));
-		host_writed(n + 15, RealMake(SegValue(ss), reg_sp - 10));
-
-		process_nvf(n);
+		process_nvf(&nvf);
 
 		ds_writew(0x4b9e,
 			ds_readb(0x12c0 + host_readb(p_enemy + 1) * 5));

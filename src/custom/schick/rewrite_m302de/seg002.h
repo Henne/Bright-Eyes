@@ -11,7 +11,7 @@ unsigned short read_archive_file(Bit16u, Bit8u *, Bit16u);
 void seg002_0c72(Bit16u, Bit32u);
 Bit16u load_regular_file(Bit16u);
 Bit16u load_archive_file(Bit16u);
-signed int process_nvf(Bit8u *p);
+signed int process_nvf(struct nvf_desc *);
 //static
 void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
 short is_mouse_in_rect(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);

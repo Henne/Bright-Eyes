@@ -231,6 +231,7 @@ static inline char* get_itemname(unsigned short item)
 {
 	return (char*)Real2Host(host_readd(Real2Host(ds_readd(ITEMSNAME)) + item * 4));
 }
+
 #else
 
 #undef M302de_ORIGINAL_BUGFIX
