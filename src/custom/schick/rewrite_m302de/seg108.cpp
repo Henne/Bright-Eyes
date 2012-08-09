@@ -10,7 +10,7 @@
 #include "schick.h"
 #endif
 
-#include "schick_common.h"
+#include "common.h"
 
 #include "v302de.h"
 

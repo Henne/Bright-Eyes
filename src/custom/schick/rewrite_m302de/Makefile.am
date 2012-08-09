@@ -2,7 +2,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I../ -Wall -pedantic
 
 noinst_LIBRARIES = libschick_rewrite_m302de.a
 
-libschick_rewrite_m302de_a_SOURCES = schick_common.h v302de.h\
+libschick_rewrite_m302de_a_SOURCES = common.h v302de.h\
 		seg000.cpp seg000.h\
 		seg001.cpp seg001.h\
 		seg002.cpp seg002.h\

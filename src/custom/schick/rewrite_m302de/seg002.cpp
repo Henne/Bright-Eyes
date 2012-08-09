@@ -12,7 +12,7 @@
 
 #include "schick.h"
 
-#include "schick_common.h"
+#include "common.h"
 #include "v302de.h"
 
 #include "seg000.h"
