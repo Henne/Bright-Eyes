@@ -3308,7 +3308,9 @@ static int seg040(unsigned short offs) {
 		return 0;
 	}
 	case 0x2a: {
-		return 0;
+		D1_INFO("FIG_draw_scenario()\n");
+		FIG_draw_scenario();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
