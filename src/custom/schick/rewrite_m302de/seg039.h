@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //0x20
 signed short seg039_0000(unsigned short, unsigned short, unsigned short, unsigned short);
@@ -11,5 +13,6 @@ unsigned short place_obj_on_cb(unsigned short, unsigned short, signed short, sig
 
 //0x3e
 void FIG_init_heroes();
-
+#if !defined(__BORLANDC__)
 }
+#endif

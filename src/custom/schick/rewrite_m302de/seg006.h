@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 RealPt FIG_get_ptr(signed char v1);
 void FIG_draw_figures(void);
@@ -17,4 +19,6 @@ signed char FIG_add_to_list(signed char);
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr);
 void FIG_draw_enemy_pic(unsigned short pos, unsigned short enemy_nr);
 
+#if !defined(__BORLANDC__)
 }
+#endif
