@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 10/19
+	Functions rewritten: 11/19
 */
 
 #include <string.h>
@@ -255,6 +255,39 @@ void save_npc(signed short index)
 
 	bc_close(fd);
 
+}
+
+void load_splashes(void)
+{
+	struct nvf_desc nvf;
+	signed short height;
+	signed short width;
+	unsigned short fd;
+
+	/* read SPLASHES.DAT */
+	fd = load_archive_file(0xec);
+	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 3000);
+	bc_close(fd);
+
+	/* nvf.dst = splash_le = ds_readd() */
+	ds_writed(SPLASH_LE, ds_readd(0xd2bd));
+	nvf.dst = Real2Host(ds_readd(0xd2bd));
+	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.nr = 0;
+	nvf.type = 1;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	fd = process_nvf(&nvf);
+
+	/* nvf.dst = splash_ae = ds_readd() */
+	ds_writed(SPLASH_AE, ds_readd(0xd2bd) + fd);
+	nvf.dst = Real2Host(ds_readd(0xd2bd)) + fd;
+	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.nr = 1;
+	nvf.type = 1;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	fd = process_nvf(&nvf);
 }
 
 void load_informer_tlk(signed short index)

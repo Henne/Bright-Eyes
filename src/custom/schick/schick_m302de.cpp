@@ -2883,7 +2883,9 @@ static int seg028(unsigned short offs) {
 		return 1;
 	}
 	case 0x6b: {
-		return 0;
+		D1_LOG("load_splashes();\n");
+		load_splashes();
+		return 1;
 	}
 	case 0x70: {
 		Bit16s index = CPU_Pop16();
