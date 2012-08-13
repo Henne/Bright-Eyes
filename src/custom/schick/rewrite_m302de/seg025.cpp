@@ -33,7 +33,7 @@ void enter_map(void)
 	ds_writew(0x4224, (signed char)ds_readb(CURRENT_TOWN));
 
 	ds_writeb(CURRENT_TOWN, 0);
-	ds_writeb(0x2d60, 0);
+	ds_writeb(LOCATION, 0);
 	ds_writeb(TRAVELING, 1);
 }
 
@@ -46,7 +46,7 @@ void turnaround(void)
 	set_var_to_zero();
 
 	/* reset location */
-	ds_writeb(0x2d60, ds_readb(0x2d9f));
+	ds_writeb(LOCATION, ds_readb(0x2d9f));
 
 	/* set target  coordinates*/
 	ds_writew(0x2d44, ds_readw(0x2d83));

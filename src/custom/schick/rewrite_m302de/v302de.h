@@ -15,6 +15,7 @@
 #define CURRENT_ANI	(0x2ccf)
 #define IN_FIGHT	(0x2cd5)
 #define CURRENT_GROUP	(0x2d35)
+#define LOCATION	(0x2d60)
 #define CURRENT_TOWN	(0x2d67)
 #define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)

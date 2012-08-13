@@ -668,7 +668,7 @@ void dawning(void)
 	if (ds_readb(DUNGEON_INDEX) != 0)
 		return;
 	/* in a location */
-	if (ds_readb(0x2d60) != 0)
+	if (ds_readb(LOCATION) != 0)
 		return;
 	/* in a travel mode */
 	if (ds_readb(TRAVELING) != 0)
@@ -717,7 +717,7 @@ void nightfall(void)
 	if (ds_readb(DUNGEON_INDEX) != 0)
 		return;
 	/* in a location */
-	if (ds_readb(0x2d60) != 0)
+	if (ds_readb(LOCATION) != 0)
 		return;
 	/* in a travel mode */
 	if (ds_readb(TRAVELING) != 0)
@@ -2102,7 +2102,7 @@ void draw_compass() {
 	signed short width;
 
 	/* No compass in a location */
-	if (ds_readb(0x2d60))
+	if (ds_readb(LOCATION))
 		return;
 	/* Has something to do with traveling */
 	if (ds_readb(0xb132))
@@ -2165,7 +2165,7 @@ short can_merge_group() {
 		if (ds_readw(i * 2 + 0x2d54) != ds_readw(0x2d46))
 			continue;
 		/* check Location */
-		if (ds_readb(0x2d61 + i) != ds_readb(0x2d60))
+		if (ds_readb(0x2d61 + i) != ds_readb(LOCATION))
 			continue;
 		/* check currentTown */
 		if (ds_readb(0x2d68 + i) != ds_readb(CURRENT_TOWN))
