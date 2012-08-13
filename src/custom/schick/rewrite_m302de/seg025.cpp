@@ -49,11 +49,11 @@ void turnaround(void)
 	ds_writeb(LOCATION, ds_readb(0x2d9f));
 
 	/* set target  coordinates*/
-	ds_writew(0x2d44, ds_readw(0x2d83));
-	ds_writew(0x2d46, ds_readw(0x2d85));
+	ds_writew(X_TARGET, ds_readw(0x2d83));
+	ds_writew(Y_TARGET, ds_readw(0x2d85));
 
 	/* recalc direction */
-	ds_writeb(0x2d3d, (ds_readb(0x2d3d) + 2) % 4);
+	ds_writeb(DIRECTION, (ds_readb(DIRECTION) + 2) % 4);
 
 	set_to_ff();
 

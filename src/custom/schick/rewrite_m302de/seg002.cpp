@@ -2119,7 +2119,7 @@ void draw_compass() {
 	/* set dst */
 	n.src = Real2Host(ds_readd(0xd2b1));
 	/* set nr */
-	n.nr = ds_readbs(0x2d3d);
+	n.nr = ds_readbs(DIRECTION);
 	/* set type*/
 	n.type = 0;
 
@@ -2159,10 +2159,10 @@ short can_merge_group() {
 		if (0 == ds_readb(i + 0x2d36))
 			continue;
 		/* check XTarget */
-		if (ds_readw(i * 2 + 0x2d48) != ds_readw(0x2d44))
+		if (ds_readw(i * 2 + 0x2d48) != ds_readw(X_TARGET))
 			continue;
 		/* check YTarget */
-		if (ds_readw(i * 2 + 0x2d54) != ds_readw(0x2d46))
+		if (ds_readw(i * 2 + 0x2d54) != ds_readw(Y_TARGET))
 			continue;
 		/* check Location */
 		if (ds_readb(0x2d61 + i) != ds_readb(LOCATION))

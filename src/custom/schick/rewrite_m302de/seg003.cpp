@@ -20,12 +20,12 @@ static const char no_way_msg[][41] = {
 
 signed short update_direction(unsigned char mod)
 {
-	unsigned char dir = ds_readb(0x2d3d);
+	unsigned char dir = ds_readb(DIRECTION);
 
 	/* save old direction */
 	ds_writeb(0x2d7c, dir);
 	/* set new direction */
-	ds_writeb(0x2d3d, (dir+mod) & 0x3);
+	ds_writeb(DIRECTION, (dir+mod) & 0x3);
 	/* set bogus variable to 1 */
 	ds_writeb(0xbd4f, 0x1);
 
