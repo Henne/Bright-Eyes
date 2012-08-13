@@ -5178,7 +5178,9 @@ static int seg120(unsigned short offs) {
 			return 0;
 		}
 		case 0x25: {
-			return 0;
+			D1_LOG("init_game_state()\n");
+			init_game_state();
+			return 1;
 		}
 		case 0x2a: {
 			return 0;
