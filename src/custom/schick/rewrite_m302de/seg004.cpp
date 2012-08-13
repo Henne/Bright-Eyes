@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 22/31
+	Functions rewritten: 23/31
 */
 
 #include "mem.h"
@@ -10,6 +10,9 @@
 #include "schick.h"
 #include "v302de.h"
 
+#include "common.h"
+
+#include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg008.h"
@@ -284,6 +287,39 @@ void restore_mouse_bg() {
 	for (si = 0; si < v4; dst += 320, si++)
 		for (j = 0; j < v3; j++)
 			mem_writeb_inline(dst + j, ds_readb(0xcf0f + si*16 + j));
+
+}
+
+void load_objects_nvf(void)
+{
+	struct nvf_desc nvf;
+	unsigned short fd;
+
+	fd = load_archive_file(0x07);
+	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 2000);
+	bc_close(fd);
+
+	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&fd;
+	nvf.height = (Bit8u*)&fd;
+	nvf.dst = Real2Host(ds_readd(0xd2e3));
+	nvf.nr = 12;
+	process_nvf(&nvf);
+
+	nvf.dst = Real2Host(ds_readd(0xd2e3)) + 0x683;
+	nvf.nr = 13;
+	process_nvf(&nvf);
+
+	nvf.dst = Real2Host(ds_readd(0xd2e3)) + 0xcaf;
+	nvf.nr = 14;
+	process_nvf(&nvf);
+
+	nvf.dst = Real2Host(ds_readd(0xd2e3)) + 0xcef;
+	nvf.nr = 15;
+	process_nvf(&nvf);
+
+	array_add(Real2Phys(ds_readd(0xd2e3)), 0xd3f, 0xe0, 2);
 
 }
 

@@ -1698,7 +1698,9 @@ static int seg004(unsigned short offs) {
 		return 1;
 	}
 	case 0xd3c: {
-		return 0;
+		D1_LOG("load_objects_nvf()\n");
+		load_objects_nvf();
+		return 1;
 	}
 	case 0xe31: {
 		return 0;
