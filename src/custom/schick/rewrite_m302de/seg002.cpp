@@ -1931,10 +1931,10 @@ void draw_splash(unsigned short index, unsigned short type) {
 
 	if (type == 0)
 		/* splash 1 / red / LE */
-		splash = Real2Host(ds_readd(0xbccb));
+		splash = Real2Host(ds_readd(SPLASH_LE));
 	else
 		/* splash 2 / yellow / AE */
-		splash = Real2Host(ds_readd(0xbcc7));
+		splash = Real2Host(ds_readd(SPLASH_AE));
 
 	restore_rect_rle(Real2Phys(ds_readd(0xd2ff)), splash, ds_readw(0x2d01 + index*2), 157, 32, 32, 2);
 

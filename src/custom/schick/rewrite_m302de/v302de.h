@@ -43,6 +43,8 @@
 #define FNAMES		(0x4c8c)
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
+#define SPLASH_AE	(0xbcc7)
+#define SPLASH_LE	(0xbccb)
 #define SCENARIO_BUF	(0xbd2c)
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
