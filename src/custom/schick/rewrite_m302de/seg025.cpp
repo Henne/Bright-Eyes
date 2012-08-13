@@ -28,9 +28,9 @@ namespace M302de {
  */
 void enter_map(void)
 {
-	ds_writew(0x4334, ds_readw(0x4224));
+	ds_writew(0x4334, ds_readw(TYPEINDEX));
 
-	ds_writew(0x4224, (signed char)ds_readb(CURRENT_TOWN));
+	ds_writew(TYPEINDEX, (signed char)ds_readb(CURRENT_TOWN));
 
 	ds_writeb(CURRENT_TOWN, 0);
 	ds_writeb(LOCATION, 0);
