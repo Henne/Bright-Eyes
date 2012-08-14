@@ -45,6 +45,7 @@
 #include "seg053.h"
 #include "seg063.h"
 #include "seg064.h"
+#include "seg066.h"
 #include "seg068.h"
 #include "seg073.h"
 #include "seg095.h"
@@ -3800,6 +3801,34 @@ static int seg064(unsigned short offs)
 	}
 }
 
+static int seg066(unsigned short offs)
+{
+	switch (offs) {
+	case 0x2a: {
+		D1_LOG("%s:0x%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x2f: {
+		D1_LOG("%s:0x%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x34: {
+		D1_LOG("%s:0x%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x39: {
+		D1_LOG("%s:0x%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x61: {
+		D1_LOG("%s:0x%x()\n", __func__, offs);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
 
 static int seg068(unsigned short offs)
 {
@@ -5282,7 +5311,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1386:	return seg063(offs);
 		case 0x138a:	return seg064(offs);
 		case 0x138e:	return 0;
-		case 0x1392:	return 0;
+		case 0x1392:	return seg066(offs);
 		case 0x139a:	return 0;
 		case 0x13a1:	return seg068(offs);
 		case 0x13a8:	return seg069(offs);
@@ -6454,6 +6483,75 @@ static int n_seg064(unsigned offs) {
 	}
 }
 
+static int n_seg066(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		return 0;
+	}
+	case 0x0dd: {
+		return 0;
+	}
+	case 0x5fc: {
+		return 0;
+	}
+	case 0x692: {
+		return 0;
+	}
+	case 0x6c1: {
+		return 0;
+	}
+	case 0xb73: {
+		Bitu CS = CPU_Pop16();
+		Bit16s v1 = CPU_Pop16();
+		CPU_Push16(v1);
+		CPU_Push16(CS);
+		D1_INFO("Interesting\n");
+		return 0;
+	}
+	case 0xbad: {
+		return 0;
+	}
+	case 0xc50: {
+		return 0;
+	}
+	case 0xd1d: {
+		return 0;
+	}
+	case 0xf62: {
+		Bitu CS = CPU_Pop16();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push16(CS);
+		D1_INFO("load_city_texture(%d, %d, %x, %d)\n",
+			v1, v2, v3, v4);
+		return 0;
+	}
+	case 0x10c8: {
+		return 0;
+	}
+	case 0x10e9: {
+		return 0;
+	}
+	case 0x14dd: {
+		return 0;
+	}
+	case 0x159b: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg095(unsigned short offs)
 {
 	switch (offs) {
@@ -7183,6 +7281,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1362)) return n_seg053(offs);
 	else if (is_ovrseg(0x1386)) return n_seg063(offs);
 	else if (is_ovrseg(0x138a)) return n_seg064(offs);
+	else if (is_ovrseg(0x1392)) return n_seg066(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	/* seg097 */
 	if (is_ovrseg(0x1442)) {
