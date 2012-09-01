@@ -99,7 +99,7 @@ void FIG_draw_figures(void)
 
 		list_i = Real2Host(host_readd(list_i + 0x1b));
 
-	} while (list_i != NULL && list_i != MemBase);
+	} while (NOT_NULL(list_i));
 
 	/* restore a structure */
 	struct_copy(p_datseg + 0x2990, screen_mode, 8);
@@ -242,48 +242,49 @@ void FIG_set_0f(signed char id, signed char val) {
 	host_writeb(ptr + 0x0f, val);
 }
 
-void FIG_remove_from_list(signed char id, signed char v2) {
-	PhysPt p = Real2Phys(ds_readd(0xe108));
+void FIG_remove_from_list(signed char id, signed char v2)
+{
+	Bit8u* p = Real2Host(ds_readd(0xe108));
 
 	/* NULL check */
-	if (p == 0)
+	if (!NOT_NULL(p))
 		return;
 
-	while (mem_readb(p + 0x10) != id) {
+	while (host_readb(p + 0x10) != id) {
 		/* if (ptr->next == NULL); */
-		if (mem_readd(p + 0x1b) == 0)
+		if (host_readd(p + 0x1b) == 0)
 			return;
 		/* ptr = ptr->next; */
-		p = Real2Phys(mem_readd(p + 0x1b));
+		p = Real2Host(host_readd(p + 0x1b));
 	}
 
 	if (v2 == 0)
 		ds_writeb(0xe089 + id, 0);
 	else
-		struct_copy(p_datseg + 0xe066, MemBase + p, 35);
+		struct_copy(p_datseg + 0xe066, p, 35);
 
 	/* check if p == HEAD */
-	if (p == Real2Phys(ds_readd(0xe108))) {
+	if (p == Real2Host(ds_readd(0xe108))) {
 		/* Set HEAD: head = p->next;*/
-		ds_writed(0xe108, mem_readd(p + 0x1b));
+		ds_writed(0xe108, host_readd(p + 0x1b));
 		if (ds_readd(0xe108) != 0)
 			/* head->prev = NULL */
-			mem_writed(Real2Phys(ds_readd(0xe108)) + 0x1f, 0);
+			host_writed(Real2Host(ds_readd(0xe108)) + 0x1f, 0);
 	} else {
 		/* check if p == tail */
-		if (mem_readd(p + 0x1b) == 0) {
+		if (host_readd(p + 0x1b) == 0) {
 			/* p->prev->next == NULL */
-			mem_writed(Real2Phys(mem_readd(p + 0x1f)) + 0x1b , 0);
+			host_writed(Real2Host(host_readd(p + 0x1f)) + 0x1b , 0);
 		} else {
 			/* remove ptr from list
 			p->prev->next = p->next;
 			p->next->prev = p->prev; */
-			mem_writed(Real2Phys(mem_readd(p + 0x1f)) + 0x1b, mem_readd(p + 0x1b));
-			mem_writed(Real2Phys(mem_readd(p + 0x1b)) + 0x1f, mem_readd(p + 0x1f));
+			host_writed(Real2Host(host_readd(p + 0x1f)) + 0x1b, host_readd(p + 0x1b));
+			host_writed(Real2Host(host_readd(p + 0x1b)) + 0x1f, host_readd(p + 0x1f));
 		}
 	}
-	memset(MemBase + p, 0, 35);
-	mem_writeb(p + 0x10, 0xff);
+	memset(p, 0, 35);
+	host_writeb(p + 0x10, 0xff);
 }
 
 signed char FIG_add_to_list(signed char v) {

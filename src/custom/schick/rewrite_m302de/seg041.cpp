@@ -33,7 +33,7 @@ void FIG_output(Bit8u *str)
  *	FIG_clear_msgs() - clears the fight messages buffer
 */
 void FIG_clear_msgs() {
-	memset(MemBase + PhysMake(datseg, 0xd333), 0 , 20);
+	memset(p_datseg + 0xd333, 0 , 20);
 	msg_counter = 0;
 }
 
@@ -170,10 +170,10 @@ void seg041_8c8() {
 	unsigned short i;
 
 	for (i = 0; i < 8; i++)
-		memset(MemBase + PhysMake(datseg, 0xd8ce) + i * 0xf3, 0xffff, 0xf3);
+		memset(p_datseg + 0xd8ce + i * 0xf3, 0xffff, 0xf3);
 
 //		That would be better
-//		memset(MemBase + PhysMake(datseg, 0xd8ce), 0xffff, 0xf3 * 8);
+//		memset(p_datseg + 0xd8ce, 0xffff, 0xf3 * 8);
 }
 
 signed short weapon_check(Bit8u *hero) {
@@ -205,10 +205,10 @@ signed short weapon_check(Bit8u *hero) {
 			return -1;
 	}
 
-	if (is_in_word_array(item, MemBase + PhysMake(datseg, 0x615c)))
+	if (is_in_word_array(item, p_datseg +  0x615c))
 		return 1;
 
-	if (is_in_word_array(item, MemBase + PhysMake(datseg, 0x616e)))
+	if (is_in_word_array(item, p_datseg + 0x616e))
 		return 0;
 
 	return 2;

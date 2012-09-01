@@ -504,7 +504,7 @@ void load_scenario(signed short nr)
 	seg002_0c72(fd, (n - 1) * 621 + 2);
 
 	/* read scenario */
-	read_archive_file(fd, Real2Host(ds_readd(0xbd2c)), 621);
+	read_archive_file(fd, Real2Host(ds_readd(SCENARIO_BUF)), 621);
 
 	/* close archive */
 	bc_close(fd);

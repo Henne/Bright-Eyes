@@ -22,15 +22,19 @@
 #include "seg009.h"
 #include "seg010.h"
 #include "seg024.h"
+#include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg028.h"
 #include "seg029.h"
 #include "seg030.h"
+#include "seg031.h"
 #include "seg032.h"
+#include "seg036.h"
 #include "seg037.h"
 #include "seg038.h"
 #include "seg039.h"
+#include "seg040.h"
 #include "seg041.h"
 #include "seg044.h"
 #include "seg045.h"
@@ -54,6 +58,8 @@
 #include "seg105.h"
 #include "seg106.h"
 #include "seg108.h"
+#include "seg109.h"
+#include "seg111.h"
 #include "seg113.h"
 #include "seg120.h"
 
@@ -1065,8 +1071,9 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x3230: {
-		D1_LOG("Interesting();\n");
-		return 0;
+		D1_LOG("herokeeping();\n");
+		herokeeping();
+		return 1;
 	}
 	case 0x37c4: {
 			return 0;
@@ -1079,13 +1086,15 @@ static int seg002(unsigned short offs) {
 		Bit32u time = CPU_Pop32();
 		CPU_Push32(time);
 		D1_LOG("timewarp(0x%x);\n", time);
-		return 0;
+		timewarp(time);
+		return 1;
 	}
 	case 0x3dbb: {
 		Bit32u time = CPU_Pop32();
 		CPU_Push32(time);
-		D1_LOG("timewarp_visible(%d);\n", time);
-		return 0;
+		D1_LOG("timewarp_until(0x%x);\n", time);
+		timewarp_until(time);
+		return 1;
 	}
 	case 0x3ebb: {
 		D1_LOG("dec_splash();\n");
@@ -1468,8 +1477,15 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x5615:	/* Krakenangriff */
-			return 0;
+	case 0x5615: {
+		Bit16s le = CPU_Pop16();
+		CPU_Push16(le);
+
+		D1_LOG("sub_group_le(%d);\n", le);
+		sub_group_le(le);
+
+		return 1;
+	}
 	case 0x5667: {
 		RealPt retval = get_first_hero_available_in_group();
 
@@ -2556,6 +2572,64 @@ static int seg024(unsigned short offs) {
 	}
 }
 
+static int seg025(unsigned short offs) {
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		D1_LOG("turnaround();\n");
+		turnaround();
+		return 1;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		D1_LOG("far copy_palette();\n");
+		copy_palette();
+		return 1;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		D1_LOG("enter_map();\n");
+//		enter_map();
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		D1_LOG("tumult();\n");
+		tumult();
+		return 1;
+	}
+	case 0x66: {
+		D1_LOG("fade_into();\n");
+		fade_into();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg026(unsigned short offs) {
 	switch (offs) {
 
@@ -2798,7 +2872,11 @@ static int seg028(unsigned short offs) {
 		return 0;
 	}
 	case 0x70: {
-		return 0;
+		Bit16s index = CPU_Pop16();
+		CPU_Push16(index);
+		D1_LOG("load_informer_tlk(%0x);\n", index);
+		load_informer_tlk(index);
+		return 1;
 	}
 	case 0x75: {
 		Bit16s index = CPU_Pop16();
@@ -2897,6 +2975,88 @@ static int seg030(unsigned short offs) {
 	}
 }
 
+static int seg031(unsigned short offs) {
+	switch (offs) {
+	case 0x20: {
+
+		RealPt retval;
+
+		retval = load_current_town_gossip();
+		D1_LOG("far load_current_town_gossip() = 0x%x\n", retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+		case 0x25: {
+			return 0;
+		}
+	case 0x2f: {
+		reg_ax = get_town_lookup_entry();
+		D1_LOG("far get_town_lookup_entry(); = %d\n", reg_ax);
+		return 1;
+	}
+	case 0x34: {
+
+		RealPt retval;
+
+		retval = get_informer_hint();
+		D1_LOG("get_informer_hint() = 0x%x\n", retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x39: {
+
+		RealPt retval;
+
+		retval = get_informer_name();
+		D1_LOG("get_informer_name() = %s\n", Real2Host(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x3e: {
+		RealPt retval;
+
+		retval = get_informer_name2();
+		D1_LOG("get_informer_name2() = %s\n", Real2Host(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+		case 0x43: {
+			return 0;
+		}
+	case 0x48: {
+		Bit16s amount = CPU_Pop16();
+		CPU_Push16(amount);
+
+		D1_LOG("drink_while_drinking(%d);\n", amount);
+		drink_while_drinking(amount);
+		return 1;
+	}
+	case 0x4d: {
+		Bit16s amount = CPU_Pop16();
+		CPU_Push16(amount);
+
+		D1_LOG("eat_while_drinking(%d);\n", amount);
+		eat_while_drinking(amount);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int seg032(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -2942,6 +3102,36 @@ static int seg032(unsigned short offs) {
 			exit(1);
 	}
 }
+
+static int seg033(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("HERO_TURN()\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
+static int seg036(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x48: {
+			D1_LOG("hero_ki()\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 
 static int seg037(unsigned short offs) {
 	switch (offs) {
@@ -3092,6 +3282,25 @@ static int seg039(unsigned short offs) {
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				__func__, offs);
 			exit(1);
+	}
+}
+
+static int seg040(unsigned short offs) {
+	switch(offs) {
+	case 0x20: {
+		D1_LOG("FIG_chessboard_init()\n");
+		FIG_chessboard_init();
+		return 1;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
 	}
 }
 
@@ -3265,8 +3474,9 @@ static int seg045(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		D1_LOG("%s:%x();\n", __func__, offs);
-		return 0;
+		D1_LOG("FIG_remove_smth2();\n");
+		FIG_remove_smth2();
+		return 1;
 	}
 	case 0x3e: {
 		D1_LOG("%s:%x();\n", __func__, offs);
@@ -4040,6 +4250,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		strncpy(buffer, getString(ptr), 20);
+		buffer[19] = '\0';
 		reg_ax = GUI_bool(Real2Host(ptr));
 		D1_LOG("GUI_bool(%s...) = %d\n", buffer, reg_ax);
 
@@ -4052,6 +4263,7 @@ static int seg097(unsigned short offs) {
 		unsigned short i;
 
 		strncpy(buffer, getString(text), 20);
+		buffer[19] = '\0';
 		D1_LOG("GUI_RadioBox(%s..., %d", buffer, (char)options);
 
 		for (i = 0; i < (char)options; i++) {
@@ -4720,7 +4932,9 @@ static int seg106(unsigned short offs)
 		return 0;
 	}
 	case 0x39: {
-		return 0;
+		reg_ax = get_max_light_time();
+		D1_LOG("get_max_light_time(); == %d\n", (signed short)reg_ax);
+		return 1;
 	}
 	case 0x3e: {
 		D1_LOG("equip_belt();\n");
@@ -4774,6 +4988,10 @@ static int seg109(unsigned short offs) {
 			D1_LOG("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
 			return 0;
 		}
+		case 0x57: {
+			tevent_002();
+			return 1;
+		}
 		case 0xa2: {
 			unsigned short tevent = CPU_Pop16();
 			CPU_Push16(tevent);
@@ -4781,8 +4999,73 @@ static int seg109(unsigned short offs) {
 			D1_INFO("Reisebegegnung %d\n", tevent);
 			return 0;
 		}
+		case 0xb1: {
+			reg_ax = enter_hut_question();
+			D1_LOG("enter_hut_question(); = %d\n",
+				(signed short)reg_ax);
+			return 1;
+		}
 		default:
 			return 0;
+	}
+}
+
+static int seg111(unsigned short offs)
+{
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		tevent_062();
+		return 1;
+	}
+	case 0x34: {
+		tevent_063();
+		return 1;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		tevent_065();
+		return 1;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		tevent_055();
+		return 1;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	case 0x66: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+		return 0;
 	}
 }
 
@@ -4938,22 +5221,22 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1042:	return 0;
 		case 0x1112:	return seg012(offs);
 		case 0x12db:	return seg024(offs);
-		case 0x12de:	return 0;
+		case 0x12de:	return seg025(offs);
 		case 0x12e5:	return seg026(offs);
 		case 0x12ec:	return seg027(offs);
 		case 0x12f1:	return seg028(offs);
 		case 0x12f9:	return seg029(offs);
 		case 0x12ff:	return seg030(offs);
-		case 0x1303:	return 0;
+		case 0x1303:	return seg031(offs);
 		case 0x1309:	return seg032(offs);
-		case 0x130f:	return 0;
+		case 0x130f:	return seg033(offs);
 		case 0x1312:	return 0;
 		case 0x1316:	return 0;
-		case 0x131a:	return 0;
+		case 0x131a:	return seg036(offs);
 		case 0x131f:	return seg037(offs);
 		case 0x1324:	return seg038(offs);
 		case 0x1328:	return seg039(offs);
-		case 0x132d:	return 0;
+		case 0x132d:	return seg040(offs);
 		case 0x1330:	return seg041(offs);
 		case 0x1335:	return 0;
 		case 0x1338:	return seg043(offs);
@@ -5024,7 +5307,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1498:	return seg108(offs);
 		case 0x149b:	return seg109(offs);
 		case 0x14a7:	return 0;
-		case 0x14b4:	return 0;
+		case 0x14b4:	return seg111(offs);
 		case 0x14bb:	return 0;
 		case 0x14c2:	return seg113(offs);
 		case 0x14cb:	return 0;
@@ -5349,8 +5632,16 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x3230: {
-		D1_LOG("near Interesting();\n");
-		return 0;
+		/* input routines are called faster now,
+		   so heros would starve earlier if the cycles are to high */
+		if (reg_eip == 0x1d7b || reg_eip == 0x1a4b)
+			return 0;
+
+		D1_LOG("near herokeeping();\n");
+		CPU_Pop16();
+		herokeeping();
+
+		return 1;
 	}
 	/* Callers: 1 */
 	case 0x3b63: {
@@ -5691,6 +5982,36 @@ static int n_seg024(unsigned short offs)
 	}
 }
 
+static int n_seg025(unsigned short offs)
+{
+	switch (offs) {
+	case 0x4a2: {
+		return 0;
+	}
+	case 0xca8: {
+		return 0;
+	}
+	case 0xd54: {
+		return 0;
+	}
+	case 0xea9: {
+		CPU_Pop16();
+		D1_LOG("near turnaround();\n");
+		turnaround();
+		return 1;
+	}
+	case 0x114a: {
+		CPU_Pop16();
+		D1_LOG("copy_palette();\n");
+		copy_palette();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg026(unsigned short offs)
 {
 	switch (offs) {
@@ -5777,6 +6098,113 @@ static int n_seg028(unsigned offs) {
 	}
 }
 
+static int n_seg031(unsigned offs) {
+	switch (offs) {
+	case 0x56c: {
+		CPU_Pop16();
+
+		reg_ax = get_town_lookup_entry();
+		D1_LOG("get_town_lookup_entry(); = %d\n", reg_ax);
+		return 1;
+	}
+	case 0x63b: {
+		CPU_Pop16();
+
+		RealPt retval;
+
+		retval = load_current_town_gossip();
+		D1_LOG("near load_current_town_gossip() = 0x%x\n", retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+static int n_seg036(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = KI_copy_ani_sequence(Real2Host(p), v1, v2);
+		D1_LOG("KI_copy_ani_sequence(%x, %d, %d); = %d\n",
+			p, v1, v2, (signed char)reg_ax);
+
+		return 1;
+	}
+	case 0x0ae: {
+		return 0;
+	}
+	case 0x27f: {
+		return 0;
+	}
+	case 0x39b: {
+		Bit16s CS = CPU_Pop16();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		Bit16s v5 = CPU_Pop16();
+		CPU_Push16(v5);
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax = KI_can_attack_neighbour(v1, v2, v3, v4, v5);
+
+		D1_LOG("KI_can_attack_neighbour(%d,%d,%d,%d,%d); = %d\n",
+			v1, v2, v3, v4, v5, reg_ax);
+		return 1;
+	}
+	case 0x4cf: {
+		return 0;
+	}
+	case 0x6f7: {
+		return 0;
+	}
+	case 0x863: {
+		CPU_Pop16();
+		Bit16s spell = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(spell);
+		reg_ax = KI_get_spell(spell, v2);
+		D1_LOG("KI_get_spell(%s, %d); = %d\n",
+			names_spell[spell], v2, (signed short)reg_ax);
+		return 1;
+	}
+	case 0x8cf: {
+		return 0;
+	}
+	case 0xc39: {
+		CPU_Pop16();
+		Bit16u v = CPU_Pop16();
+		CPU_Push16(v);
+
+		reg_ax = KI_count_heros(v);
+		D1_LOG("KI_count_heros(%d); = %d\n", v, reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg037(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
@@ -5854,7 +6282,18 @@ static int n_seg045(unsigned short offs)
 		return 0;
 	}
 	case 0x014f: {
-		return 0;
+		CPU_Pop16();
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		Bit16s v = CPU_Pop16();
+
+		CPU_Push16(v);
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		reg_ax = FIG_copy_it(Real2Host(p1), Real2Host(p2), (signed char)v);
+		D1_LOG("FIG_copy_it(%x, %x, %x) = %d\n",
+			p1, p2, (signed char)v, reg_ax);
+		return 1;
 	}
 	case 0x0273: {
 		return 0;
@@ -6249,7 +6688,19 @@ static int n_seg105(unsigned offs) {
 static int n_seg106(unsigned offs) {
 	switch (offs) {
 	case 0x00: {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s item = CPU_Pop16();
+		Bit16s pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(item);
+		CPU_Push32(hero);
+		reg_ax = two_hand_collision(Real2Host(hero), item, pos);
+
+		D1_LOG("two_hand_collision(%s, 0x%x, %d); == %d\n",
+			(char*)Real2Host(hero) + 0x10, item, pos, reg_ax);
+
+		return 1;
 	}
 	case 0x9c: {
 		return 0;
@@ -6317,6 +6768,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (segm == 0xc85) return n_seg005(offs);
 	else if (segm == 0xe41) return n_seg006(offs);
 	else if (is_ovrseg(0x12db)) return n_seg024(offs);
+	else if (is_ovrseg(0x12de)) return n_seg025(offs);
 	else if (is_ovrseg(0x12e5)) return n_seg026(offs);
 	else if (is_ovrseg(0x12f1)) return n_seg028(offs);
 
@@ -6392,6 +6844,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
+	else if (is_ovrseg(0x1303)) return n_seg031(offs);
 	/* seg032 */
 	if (is_ovrseg(0x1309)) {
 		switch (offs) {
@@ -6471,6 +6924,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 	}
 
+	else if (is_ovrseg(0x131a)) return n_seg036(offs);
 	else if (is_ovrseg(0x131f)) return n_seg037(offs);
 
 	/* seg038 */

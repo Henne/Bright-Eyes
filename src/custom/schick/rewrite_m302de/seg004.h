@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void init_ani(Bit16u);
 void set_var_to_zero();
@@ -24,4 +26,6 @@ void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short
 void wait_for_vsync();
 void map_effect(Bit8u*);
 
+#if !defined(__BORLANDC__)
 }
+#endif

@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace G105de {
+#endif
 
 	//static
 	unsigned short CD_set_drive_nr();
@@ -21,4 +23,6 @@ namespace G105de {
 	void seg001_0465();
 
 	bool seg001_0600();
+#if !defined(__BORLANDC__)
 }
+#endif

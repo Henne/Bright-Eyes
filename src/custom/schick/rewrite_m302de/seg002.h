@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void play_voc(Bit16u);
 void play_voc_delay(Bit16u);
@@ -44,11 +46,14 @@ void seg002_2f7a(unsigned int fmin);
 void sub_light_timers(signed int);
 //static
 void magical_chainmail_damage(void);
+void herokeeping(void);
 void set_and_spin_lock();
 //static
 void passages_recalc();
 //static
 void passages_reset();
+void timewarp(unsigned int);
+void timewarp_until(unsigned int);
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);
@@ -71,7 +76,10 @@ void set_automap_tiles(unsigned short x, unsigned short y);
 void seg002_47e2();
 void seg002_484f();
 unsigned short check_hero(Bit8u* hero);
+unsigned short check_hero_no2(Bit8u* hero);
+unsigned short check_hero_no3(Bit8u* hero);
 unsigned short is_hero_available_in_group(Bit8u* hero);
+/* static */
 void do_starve_damage(Bit8u*, Bit16u, Bit16u);
 void sub_ae_splash(Bit8u *hero, signed short type);
 void add_hero_ae(Bit8u* hero, short ae);
@@ -92,10 +100,13 @@ unsigned short get_hero_index(Bit8u* hero);
 int get_item_pos(Bit8u* hero, unsigned short item);
 short get_first_hero_with_item(unsigned short item);
 signed short get_first_hero_with_item_in_group(unsigned short item, signed char group);
+void sub_group_le(signed short);
 RealPt get_first_hero_available_in_group();
 RealPt get_second_hero_available_in_group();
 unsigned short count_heros_available();
 unsigned short count_heroes_available_in_group();
 RealPt schick_alloc_emu(Bit32u);
 
+#if !defined(__BORLANDC__)
 }
+#endif

@@ -64,7 +64,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 
 	/* calculate the pointers */
 	temp = Real2Host(ds_readd(0xe125)) + enemy_id * 44;
-	sheet = MemBase + PhysMake(datseg, 0xd34b) + sheet_nr * 62;
+	sheet = p_datseg + 0xd34b + sheet_nr * 62;
 
 	/* erease the sheet */
 	memset(sheet, 0, 62);
@@ -220,7 +220,7 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 	} else {
 		/* if object is an enemy an needs 2 fields */
 		if (object >= 10 &&
-			is_in_byte_array(type, MemBase + PhysMake(datseg, 0x25f9)))
+			is_in_byte_array(type, p_datseg + 0x25f9))
 		{
 			signed short x_diff, y_diff;
 
@@ -273,7 +273,7 @@ void FIG_init_heroes()
 		if (host_readb(hero + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 
 		/* these two are unknown */

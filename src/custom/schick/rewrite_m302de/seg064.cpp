@@ -58,8 +58,8 @@ unsigned short prepare_passages(void)
 
 	for (i = 0; i < 45; entry += 8, ent += 8, i++) {
 		if (host_readb(entry + 4) == 0 &&
-			(host_readb(entry) == ds_readb(0x2d67) ||
-			(host_readb(entry + 1) == ds_readb(0x2d67)))) {
+			(host_readb(entry) == ds_readb(CURRENT_TOWN) ||
+			(host_readb(entry + 1) == ds_readb(CURRENT_TOWN)))) {
 
 			/* prepare an entry of 12 byte for a passage today */
 			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
@@ -69,7 +69,7 @@ unsigned short prepare_passages(void)
 			ds_writed(0x42b2 + prepared * 12,
 				get_ship_name(host_readb(entry + 6), prepared));
 			ds_writeb(0x42bc + prepared * 12,
-				host_readb(entry) == ds_readb(0x2d67) ?
+				host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 					host_readb(entry + 1) :
 					host_readb(entry));
 			prepared++;
@@ -81,8 +81,8 @@ unsigned short prepare_passages(void)
 			if (host_readb(entry + 4) != 1)
 				continue;
 			/* only in this city */
-			if (host_readb(entry) != ds_readb(0x2d67) &&
-				host_readb(entry + 1) != ds_readb(0x2d67))
+			if (host_readb(entry) != ds_readb(CURRENT_TOWN) &&
+				host_readb(entry + 1) != ds_readb(CURRENT_TOWN))
 				continue;
 
 			/* prepare an entry of 12 byte for a passage tomorrow */
@@ -93,7 +93,7 @@ unsigned short prepare_passages(void)
 			ds_writed(0x42b2 + prepared * 12,
 				get_ship_name(host_readb(entry + 6), prepared));
 			ds_writeb(0x42bc + prepared * 12,
-				host_readb(entry) == ds_readb(0x2d67) ?
+				host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 					host_readb(entry + 1) :
 					host_readb(entry));
 			prepared++;
@@ -175,11 +175,11 @@ unsigned short get_next_passages(unsigned short type)
 			/* check passages in the next two days */
 			if (host_readb(entry + 4) == 1 || host_readb(entry + 4) == 2) {
 				/* compare town */
-				if (host_readb(entry) == ds_readb(0x2d67) ||
-					host_readb(entry + 1) == ds_readb(0x2d67))
+				if (host_readb(entry) == ds_readb(CURRENT_TOWN) ||
+					host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 				{
 					ds_writeb(0x42bc + destinations * 12,
-						host_readb(entry) == ds_readb(0x2d67) ?
+						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 							host_readb(entry + 1):
 							host_readb(entry));
 					destinations++;
@@ -187,11 +187,11 @@ unsigned short get_next_passages(unsigned short type)
 			}
 		} else {
 			/* compare town */
-			if (host_readb(entry) == ds_readb(0x2d67) ||
-				host_readb(entry + 1) == ds_readb(0x2d67))
+			if (host_readb(entry) == ds_readb(CURRENT_TOWN) ||
+				host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 			{
 				ds_writeb(0x42bc + destinations * 12,
-					host_readb(entry) == ds_readb(0x2d67) ?
+					host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 						host_readb(entry + 1):
 						host_readb(entry));
 				destinations++;
@@ -214,7 +214,7 @@ unsigned short passage_arrival(void)
 
 	/* write the destination to a global variable */
 	ds_writew(0x4338, host_readb(p_sched));
-	if (ds_readw(0x4338) == (signed char)ds_readb(0x2d67))
+	if (ds_readw(0x4338) == (signed char)ds_readb(CURRENT_TOWN))
 		ds_writew(0x4338, host_readb(p_sched + 1));
 
 	do {
@@ -222,8 +222,8 @@ unsigned short passage_arrival(void)
 			si = 0;
 			do {
 				tmp = host_readb(Real2Host(host_readd(p1 + 2)) + si) - 1;
-				if (host_readb(p_datseg + 0x6f00 + tmp * 8) == ds_readb(0x2d67) ||
-					host_readb(p_datseg + 0x6f00 + tmp * 8 + 1) == ds_readb(0x2d67)) {
+				if (host_readb(p_datseg + 0x6f00 + tmp * 8) == ds_readb(CURRENT_TOWN) ||
+					host_readb(p_datseg + 0x6f00 + tmp * 8 + 1) == ds_readb(CURRENT_TOWN)) {
 					di = (unsigned char)host_readb(p1 + 1);
 					break;
 				}
@@ -240,9 +240,9 @@ unsigned short passage_arrival(void)
 		return 0;
 
 	/* save the old town in tmp */
-	tmp = (signed char)ds_readb(0x2d67);
+	tmp = (signed char)ds_readb(CURRENT_TOWN);
 	/* set the new current_town */
-	ds_writeb(0x2d67, ds_readb(0x4338));
+	ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
 
 	/* load the area  of the new town */
 	call_load_area(1);
@@ -262,7 +262,7 @@ unsigned short passage_arrival(void)
 	ds_writew(0x433e, (si >> 4) & 0x0f);
 
 	/* restore the old town area / TODO: a bit bogus */
-	ds_writeb(0x2d67, (unsigned char)tmp);
+	ds_writeb(CURRENT_TOWN, (unsigned char)tmp);
 	call_load_area(1);
 
 	return 0;

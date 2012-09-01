@@ -83,7 +83,7 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 	if (ds_readw(0xa9eb) == 4)
 		ds_writew(0xa9eb, 0);
 
-	D1_LOG("%s\n", (char*)MemBase + PhysMake(datseg, 0xe50b + l4 * 40));
+	D1_LOG("%s\n", (char*)p_datseg + 0xe50b + l4 * 40);
 	return RealMake(datseg, 0xe50b + l4 * 40);
 }
 
@@ -206,7 +206,7 @@ void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned sh
 	Bit8u *ptr;
 	unsigned short y,x;
 
-	ptr = MemBase + PhysMake(datseg, 0xce87);
+	ptr = p_datseg + 0xce87;
 
 	for (y = 0; y < char_width; ptr += 8 - char_height, dst += 320, y++) {
 		for (x = 0; x < char_height; x++)
@@ -225,7 +225,7 @@ unsigned short GUI_count_lines(Bit8u *str) {
 
 	lines = 0;
 
-	if (str == NULL || str == MemBase)
+	if (!NOT_NULL(str))
 		return 0;
 
 	/* replace all CR and CL with Whitespaces */
@@ -433,7 +433,7 @@ void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_wi
 
 	D1_LOG("GUI_write_fonti_to_screen(fi=%d, cw=%d,x=%d, y=%d)\n", font_index, char_width, x, y);
 	GUI_blank_char();
-	GUI_font_to_buf(MemBase + Real2Phys(p_font6) + font_index * 8);
+	GUI_font_to_buf(Real2Host(p_font6) + font_index * 8);
 	GUI_write_char_to_screen_xy(x, y, 7, char_width);
 }
 //8c5
@@ -460,7 +460,7 @@ void GUI_font_to_buf(Bit8u *fc) {
 	short i, j;
 
 	/* current text position */
-	p = MemBase + PhysMake(datseg, 0xce87);
+	p = p_datseg + 0xce87;
 
 	if (ds_readb(0xe4d8) == 0x3a)
 		fc++;

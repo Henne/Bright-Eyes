@@ -5,18 +5,29 @@
 
 #include <stdlib.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
 
 #include "g105de_seg003.h"
+#else
+#include "port.h"
+#include "seg003.h"
+#endif
 
+#if !defined(__BORLANDC__)
 namespace G105de {
+#endif
 
 static Bit16u rand_seed = 0x327b;
 
+#if !defined(__BORLANDC__)
 static inline
 unsigned short my_rol16(unsigned short op, unsigned char count) {
 	return (op << count) | (op >> (16 - count));
 }
+#else
+#define my_rol16(op, count) _rotl(op, count)
+#endif
 
 /**
 	random_interval_gen - generates a u16 random number between lo and hi
@@ -60,4 +71,6 @@ unsigned short is_in_word_array(unsigned short val, Bit8u *p)
 	return 0;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

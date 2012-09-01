@@ -1033,6 +1033,10 @@
 					Name="schick_rewrite_g105de"
 					>
 					<File
+						RelativePath="..\src\custom\schick\rewrite_g105de\port.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schick\rewrite_g105de\g105de_seg000.cpp"
 						>
 					</File>
@@ -1189,6 +1193,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg025.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg025.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg026.cpp"
 						>
 					</File>
@@ -1229,11 +1241,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg031.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg031.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg032.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg032.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg036.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg036.h"
 						>
 					</File>
 					<File
@@ -1258,6 +1286,14 @@
 					</File>
 					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg039.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg040.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg040.h"
 						>
 					</File>
 					<File
@@ -1442,6 +1478,22 @@
 					</File>
 					<File
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg108.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg109.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg109.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg111.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg111.h"
 						>
 					</File>
 					<File

@@ -3,11 +3,15 @@
 	Functions rewritten: 1/1
 */
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "schick_common.h"
+
 #include "v302de.h"
 
 #include "seg002.h"
@@ -17,7 +21,9 @@
 #include "seg097.h"
 #include "seg105.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * consume() - owner gives consumer an item from his inventory
@@ -67,7 +73,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			}
 
 			/* consume quietly */
-			if ((signed short)ds_readb(0x4648) == 0) {
+			if (ds_readb(CONSUME_QUIET) == 0) {
 				GUI_output(get_ltx(0x33c));
 			}
 
@@ -89,7 +95,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				}
 
 				/* consume quietly */
-				if ((signed short)ds_readb(0x4648) == 0) {
+				if (ds_readb(CONSUME_QUIET) == 0) {
 					GUI_output(get_ltx(0x340));
 				}
 
@@ -352,7 +358,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* 1W20+10 */
 					l_si = dice_roll(1, 20, 10);
-					if (host_readw(consumer + 0x5e) - host_readw(consumer + 0x60) < l_si);
+					if (host_readw(consumer + 0x5e) - host_readw(consumer + 0x60) < l_si)
 						l_si = host_readw(consumer + 0x5e) - host_readw(consumer + 0x60);
 
 					/* add LE */
@@ -592,4 +598,6 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

@@ -16,7 +16,7 @@ void passages_init()
 	Bit8u *p;
 	Bit16u si, i;
 
-	p = MemBase + PhysMake(datseg, 0x6f00);
+	p = p_datseg + 0x6f00;
 	for (i = 0; i < 45; p += 8, i++) {
 		host_writeb(p + 4,
 			(unsigned char)random_interval(0, host_readb(p + 3)));

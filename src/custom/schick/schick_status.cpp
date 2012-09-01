@@ -610,11 +610,6 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			D1_INFO("Informant %s ist %s\n",
 					informer[i-0x630],
 					status_ingame[i]==2? "abgeschlossen":"jetzt bekannt");
-			/* Original Bugfix : Set Umbrik to know if he is done */
-			if (i == 0x633 && status_ingame[i] == 1 && status_copy[i] == 2) {
-				status_ingame[i] = 2;
-				D1_INFO("Original-Bug (fixed): Umbrik Siebenstein\n");
-}
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;

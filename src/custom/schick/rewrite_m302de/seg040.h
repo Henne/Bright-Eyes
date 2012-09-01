@@ -2,9 +2,8 @@
 namespace M302de {
 #endif
 
-signed short update_direction(unsigned char mod);
-
-void no_way();
+/* 0x20 */
+void FIG_chessboard_init(void);
 
 #if !defined(__BORLANDC__)
 }

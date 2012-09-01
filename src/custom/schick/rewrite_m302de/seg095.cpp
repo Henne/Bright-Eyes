@@ -33,7 +33,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	ds_writew(0x346e, type_index);
 
 	/* Nariell */
-	if (ds_readw(0x2d67) == 0x17 &&	ds_readw(0x4224) == 0x30 &&
+	if (ds_readw(CURRENT_TOWN) == 0x17 &&	ds_readw(0x4224) == 0x30 &&
 		ds_readb(0x3601 + 1) == 0) {
 
 		npc_nariell();
@@ -41,7 +41,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Harika */
-	if (ds_readw(0x2d67) == 0x12 &&	ds_readw(0x4224) == 0x28 &&
+	if (ds_readw(CURRENT_TOWN) == 0x12 &&	ds_readw(0x4224) == 0x28 &&
 		ds_readb(0x3601 + 2) == 0) {
 
 		npc_harika();
@@ -49,7 +49,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Curian */
-	if (ds_readw(0x2d67) == 0x1d &&	ds_readw(0x4224) == 0x3c &&
+	if (ds_readw(CURRENT_TOWN) == 0x1d &&	ds_readw(0x4224) == 0x3c &&
 		ds_readb(0x3601 + 3) == 0) {
 
 		npc_curian();
@@ -57,7 +57,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Ardora */
-	if (ds_readw(0x2d67) == 0x1 && ds_readw(0x4224) == 0x6 &&
+	if (ds_readw(CURRENT_TOWN) == 0x1 && ds_readw(0x4224) == 0x6 &&
 		ds_readb(0x3601 + 4) == 0 && ds_readb(0x3317) != 0) {
 
 		npc_ardora();
@@ -65,7 +65,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Garsvik */
-	if (ds_readw(0x2d67) == 0x27 &&	ds_readw(0x4224) == 0x4a &&
+	if (ds_readw(CURRENT_TOWN) == 0x27 &&	ds_readw(0x4224) == 0x4a &&
 		ds_readb(0x3601 + 5) == 0) {
 
 		npc_garsvik();
@@ -73,7 +73,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 
 	/* Erwo */
-	if (ds_readw(0x2d67) == 0x30 &&	ds_readw(0x4224) == 0x57 &&
+	if (ds_readw(CURRENT_TOWN) == 0x30 &&	ds_readw(0x4224) == 0x57 &&
 		ds_readb(0x3601 + 6) == 0) {
 
 		npc_ardora();
@@ -94,7 +94,7 @@ void npc_farewell()
 		return;
 
 	/* no NPC in that group */
-	if (host_readb(get_hero(6) + 0x87) != ds_readb(0x2d35))
+	if (host_readb(get_hero(6) + 0x87) != ds_readb(CURRENT_GROUP))
 		return;
 
 	/* The NPC will be removed after 99 Months ingame time. Weird! */
@@ -116,10 +116,10 @@ void npc_farewell()
 		case 2: {
 			if (ds_readw(0x3470) >= 2) {
 				if (ds_readw(0x3470) >= 99 ||
-					ds_readw(0x2d67) == 1 ||
-					ds_readw(0x2d67) == 0x12 ||
-					ds_readw(0x2d67) == 0x27 ||
-					ds_readw(0x2d67) == 0x11) {
+					ds_readw(CURRENT_TOWN) == 1 ||
+					ds_readw(CURRENT_TOWN) == 0x12 ||
+					ds_readw(CURRENT_TOWN) == 0x27 ||
+					ds_readw(CURRENT_TOWN) == 0x11) {
 
 					remove_npc(0x16, 0x1f, 0xe3,
 						get_ltx(0xbc8), get_dtp(0x4c));
@@ -128,7 +128,7 @@ void npc_farewell()
 					for (i = 0; i < 6; i++, hero_i += 0x6da) {
 						if (host_readb(hero_i + 0x21) == 0)
 							continue;
-						if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+						if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 							continue;
 						if ((host_readb(hero_i + 0xaa) & 1) != 0)
 							continue;
@@ -527,7 +527,7 @@ void remove_npc(signed short head_index, signed char days,
 
 
 	/* print farewell message if the NPC has and can */
-	if (text != NULL && text != MemBase) {
+	if (NOT_NULL(text)) {
 		if (check_hero(get_hero(6)) != 0) {
 			load_in_head(head_index);
 			GUI_dialogbox(ds_readd(0xd2f3), name, text, 0);
@@ -538,8 +538,8 @@ void remove_npc(signed short head_index, signed char days,
 	memset(get_hero(6), 0, 0x6da);
 
 	/* dec group counter */
-	ds_writeb(0x2d36 + ds_readb(0x2d35),
-		ds_readb(0x2d36 + ds_readb(0x2d35) - 1));
+	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
+		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP) - 1));
 
 	/* dec global hero counter */
 	ds_writeb(0x2d3c, ds_readb(0x2d3c) - 1);
@@ -564,8 +564,8 @@ void add_npc(signed short index)
 	memcpy(get_hero(6) + 0x2da, Real2Host(ds_readd(0xd2f3)), 0x400);
 
 	/* increment heros in that group */
-	ds_writeb(0x2d36 + ds_readb(0x2d35),
-		ds_readb(0x2d36 + ds_readb(0x2d35)) + 1);
+	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
+		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) + 1);
 
 	/* increment heros */
 	ds_writew(0x2d3c, ds_readw(0x2d3c) + 1);
@@ -577,7 +577,7 @@ void add_npc(signed short index)
 	host_writeb(get_hero(6) + 0x89, index - 0xe1);
 
 	/* set the group the NPC contains in */
-	host_writeb(get_hero(6) + 0x87, ds_readb(0x2d35));
+	host_writeb(get_hero(6) + 0x87, ds_readb(CURRENT_GROUP));
 
 	draw_status_line();
 }

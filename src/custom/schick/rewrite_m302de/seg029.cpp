@@ -55,7 +55,7 @@ void draw_playmask()
 
 	wait_for_vsync();
 
-	set_palette(MemBase + PhysMake(datseg, 0x26c3), 0xe0, 0x20);
+	set_palette(p_datseg + 0x26c3, 0xe0, 0x20);
 
 	update_mouse_cursor();
 
@@ -69,9 +69,9 @@ void draw_playmask()
 
 	wait_for_vsync();
 
-	set_color(MemBase + PhysMake(datseg, 0xb22d), 0);
+	set_color(p_datseg + 0xb22d, 0);
 
-	set_palette(MemBase + PhysMake(datseg, 0x27e3), 0xe0, 0x20);
+	set_palette(p_datseg + 0x27e3, 0xe0, 0x20);
 
 	ds_writew(0xce41, 16);
 	ds_writew(0xce3f, 2);
@@ -144,7 +144,7 @@ void draw_status_line()
 			set_textcolor(0xff, 0);
 
 			/* Gray the names of heros in another group */
-			if (host_readb(get_hero(i) + 0x87) != ds_readb(0x2d35))
+			if (host_readb(get_hero(i) + 0x87) != ds_readb(CURRENT_GROUP))
 				set_textcolor(0x6f, 0);
 
 			/* print the name */
@@ -158,7 +158,7 @@ void draw_status_line()
 		if (host_readb(get_hero(i) + 0x21) == 0) {
 			clear_hero_icon(i);
 		} else {
-			if (host_readb(get_hero(i) + 0x87) == ds_readb(0x2d35)) {
+			if (host_readb(get_hero(i) + 0x87) == ds_readb(CURRENT_GROUP)) {
 				ds_writew(0xc011, ds_readw(0x2d01 + 2 * i));
 				ds_writew(0xc013, 157);
 				ds_writew(0xc015, ds_readw(0x2d01 + 2 * i) + 31);
@@ -365,15 +365,14 @@ void select_hero_icon(unsigned short pos) {
 	get_textcolor(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
-	copy_forename(MemBase + Real2Phys(ds_readd(0xd2f3)),
-		get_hero(pos) + 0x10);
+	copy_forename(Real2Host(ds_readd(0xd2f3)), get_hero(pos) + 0x10);
 
 	/* set the textcolors */
 	set_textcolor(0xfc, 0);
 
 	/* print forename */
-	GUI_print_string(MemBase + Real2Phys(ds_readd(0xd2f3)),
-		GUI_get_first_pos_centered(MemBase + Real2Phys(ds_readd(0xd2f3)),
+	GUI_print_string(Real2Host(ds_readd(0xd2f3)),
+		GUI_get_first_pos_centered(Real2Host(ds_readd(0xd2f3)),
 			ds_readw(0x2d01 + pos * 2), 43, 0), 190);
 
 
@@ -406,15 +405,14 @@ void deselect_hero_icon(unsigned short pos) {
 	get_textcolor(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
-	copy_forename(MemBase + Real2Phys(ds_readd(0xd2f3)),
-		get_hero(pos) + 0x10);
+	copy_forename(Real2Host(ds_readd(0xd2f3)), get_hero(pos) + 0x10);
 
 	/* set the textcolors */
 	set_textcolor(0xff, 0);
 
 	/* print forename */
-	GUI_print_string(MemBase + Real2Phys(ds_readd(0xd2f3)),
-		GUI_get_first_pos_centered(MemBase + Real2Phys(ds_readd(0xd2f3)),
+	GUI_print_string(Real2Host(ds_readd(0xd2f3)),
+		GUI_get_first_pos_centered(Real2Host(ds_readd(0xd2f3)),
 			ds_readw(0x2d01 + pos * 2), 43, 0), 190);
 
 

@@ -27,7 +27,7 @@ short seg098_3e() {
 		ds_writew(0xe5b4+2, RealSeg(hero));
 		ds_writew(0xe5b4, RealOff(hero) + (tmp - 1) * 0x6da);
 		hero = ds_readd(0xe5b4);
-		hptr = MemBase + Real2Phys(hero);
+		hptr = Real2Host(hero);
 
 		/* PA Wert ausrechnen */
 		ax = (char)host_readb(hptr + (char)host_readb(hptr + 0x78) + 0x6f);
@@ -90,7 +90,7 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 	if (get_spell_cost(spell, 0) > host_readw(hero+0x64))
 		return -99;
 
-	spell_desc = MemBase + PhysMake(datseg, spell * 10 + 0x99d);
+	spell_desc = p_datseg + spell * 10 + 0x99d;
 
 	if (host_readb(spell_desc+0x9) != 0) {
 
@@ -106,7 +106,7 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 				return 0;
 		} else {
 			addr = ((char)host_readb(hero+0x86) - 1) * 0x6da;
-			bonus += host_readb(MemBase + PhysMake(datseg, HEROS) + addr + 0x66);
+			bonus += host_readb(p_datseg + HEROS + addr + 0x66);
 
 		}
 	}
@@ -143,7 +143,7 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* Check in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if dead */
 		if (host_readb(hero_i + 0xaa) & 1)

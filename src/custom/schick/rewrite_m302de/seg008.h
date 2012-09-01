@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 unsigned short swap_u16(unsigned short val);
 void set_video_mode(unsigned char mode);
@@ -25,4 +27,6 @@ void copy_solid(Bit8u *dst, Bit8u *src, unsigned short width_to_copy,
 void decomp_rle(unsigned short width, unsigned short height,
 	Bit8u *dst, Bit8u *src, Bit8u *tmp_buffer, unsigned short mode);
 
+#if !defined(__BORLANDC__)
 }
+#endif

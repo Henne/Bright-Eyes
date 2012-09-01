@@ -91,7 +91,7 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 		D1_ERR("Warning: %s() typus == 0\n", __func__);
 
 	/* calculate the address of the class forbidden items array */
-	array = MemBase + Real2Phys(ds_readd(0x634 + typus * 4));
+	array = Real2Host(ds_readd(0x634 + typus * 4));
 
 	if (!is_in_word_array(item, array))
 		return 1;
@@ -524,7 +524,7 @@ unsigned short group_count_item(unsigned short item) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero_i + 0x87) != ds_readb(0x2d35))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		ret += hero_count_item(hero_i, item);
 	}

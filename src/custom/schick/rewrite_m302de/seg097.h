@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //25
 char GUI_lookup_char_height(char c, unsigned short *p);
@@ -28,4 +30,6 @@ signed short GUI_menu_input(unsigned short, unsigned short, unsigned short);
 //0x6b
 void GUI_dialog_na(unsigned short, Bit8u*);
 
+#if !defined(__BORLANDC__)
 }
+#endif

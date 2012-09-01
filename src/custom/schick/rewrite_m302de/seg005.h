@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //static
 unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y);
@@ -18,4 +20,6 @@ void seg005_0598(Bit16u);
 void set_delay_timer();
 //static
 void fight_delay();
+#if !defined(__BORLANDC__)
 }
+#endif

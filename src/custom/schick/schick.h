@@ -103,6 +103,17 @@ static inline Bit16u ds_readw(unsigned short offs) {
 static inline Bit32u ds_readd(unsigned short offs) {
 	return host_readd(p_datseg + offs);
 }
+
+static inline Bit8s ds_readbs(unsigned short offs) {
+	return (Bit8s)host_readb(p_datseg + offs);
+}
+static inline Bit16s ds_readws(unsigned short offs) {
+	return (Bit16s)host_readw(p_datseg + offs);
+}
+static inline Bit32s ds_readds(unsigned short offs) {
+	return (Bit32s)host_readd(p_datseg + offs);
+}
+
 static inline void ds_writeb(unsigned short offs, Bit8u val) {
 	host_writeb(p_datseg + offs, val);
 }
