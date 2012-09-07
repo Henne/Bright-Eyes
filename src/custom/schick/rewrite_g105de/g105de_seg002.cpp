@@ -4702,7 +4702,7 @@ void select_typus()
 			req = reqs[i][si].requirement;
 
 			if (req & 0x80) {
-				if (ltmp2 <= (req & 0x80))
+				if (ltmp2 <= (req & 0x7f))
 					continue;
 				impossible = true;
 			} else {
