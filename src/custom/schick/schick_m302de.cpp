@@ -6529,7 +6529,7 @@ static int n_seg066(unsigned offs)
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 		CPU_Push16(CS);
-		D1_INFO("load_city_texture(%d, %d, %x, %d)\n",
+		D1_LOG("load_city_texture(%d, %d, %x, %d)\n",
 			v1, v2, v3, v4);
 		return 0;
 	}
