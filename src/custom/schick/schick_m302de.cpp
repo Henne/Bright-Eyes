@@ -886,6 +886,9 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
+	case 0x0e57: {
+		return 0;
+	}
 	case 0x0ed2: {
 			RealPt nvf_rp = CPU_Pop32();
 			CPU_Push32(nvf_rp);
