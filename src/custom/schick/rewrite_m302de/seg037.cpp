@@ -3,12 +3,17 @@
         Functions rewritten: 3/8
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
 
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * copy_ani_stuff() - copies something from ANI.DAT
@@ -145,24 +150,30 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
  * Original-Bug: range attack of foes is possible with direct contacti
 */
 
-signed short test_foe_range_attack(signed short x, signed short y, signed short dir, signed short mode)
+signed short test_foe_range_attack(signed short x, signed short y, const signed short dir, signed short mode)
 {
 	signed char cb_val;
-	signed short dy = 0, di = 0;	/* run variables in dir */
+	signed short dy;	/* run variables in dir */
+	signed short di;	/* run variables in dir */
 	signed short can_attack;
 	signed short done;
 
 	done = 0;
+	di = 0;
+	dy = 0;
 	can_attack = 0;
 
-	while (done == 0) {
+	while (!done) {
 
 		/* go one field further */
-		switch (dir) {
-		case 0:	di++; break;	/* RIGHT-BOTTOM */
-		case 1: dy--; break;	/* LEFT-BOTTOM */
-		case 2: di--; break;	/* LEFT-UP */
-		default: dy++;		/* RIGHT-UP */
+		if (dir == 0) {		/* RIGHT-BOTTOM */
+			di++;
+		} else if (dir == 1) {	/* LEFT-BOTTOM */
+			dy--;
+		} else if (dir == 2) {	/* LEFT-UP */
+			di--;
+		} else {		/* RIGHT-UP */
+			dy++;
 		}
 
 		/* out of chessboard */
@@ -181,18 +192,20 @@ signed short test_foe_range_attack(signed short x, signed short y, signed short 
 				!hero_unc(get_hero(cb_val - 1))) ||
 
 				(cb_val >= 10 && cb_val < 30 &&
-				(ds_readb(0xd0df + 0x3e * cb_val + 0x31)&1)== 0 &&
-				((ds_readb(0xd0df + 0x3e * cb_val + 0x32) >> 1)&1)))
+				!(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1) &&
+				((ds_readb(0xd0df + 0x3e * cb_val + 0x32) >> 1) & 1)))
 
 			{
 				can_attack = 1;
 				done = 1;
 
+#if !defined(__BORLANDC__)
 				if (cb_val < 10)
 					D1_LOG("Attack hero %s\n",
 						(char*)get_hero(cb_val - 1) + 0x10);
 				else
 					D1_LOG("Attack foe\n");
+#endif
 
 				continue;
 			}
@@ -280,10 +293,12 @@ signed short test_foe_range_attack(signed short x, signed short y, signed short 
 		}
 	}
 
-	if (can_attack != 0)
-		return cb_val;
-	else
+	if (can_attack == 0)
 		return 0;
+	else
+		return cb_val;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
