@@ -197,19 +197,21 @@ signed short test_foe_range_attack(signed short x, signed short y, signed short 
 				continue;
 			}
 
-			/* empty field */
-			if (cb_val == 0)
-				continue;
+			/* if field is not empty */
+			if (cb_val != 0) {
 
-			/* not an enemy */
-			if (cb_val < 10 || cb_val >= 30 ||
-				(ds_readb(0xd0df + 0x3e * cb_val + 0x31)&1) != 0) {
-					if (cb_val >= 0x32 &&
-						!is_in_word_array(cb_val + 0xffce, p_datseg + 0x5f46)) {
+				/* an enemy or another object */
+				if ((cb_val >= 10 && cb_val < 30 &&
+					!(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1))
+
+					|| (cb_val >= 0x32 && !is_in_word_array(cb_val + 0xffce, p_datseg + 0x5f46))) {
+#if !defined(__BORLANDC__)
 						D1_LOG("Reached a %d\n", cb_val);
+#endif
 						done = 1;
-					}
 				}
+			}
+
 		} else if (mode == 1) {
 			/* attack foe first */
 			if (cb_val >= 10 && cb_val < 30 &&
