@@ -266,9 +266,9 @@ struct hero_struct {
 extern char ds[0xffff];
 #define p_datseg (&ds[0x0000])
 
-#define ds_readb(p) *(Bit8u*)(ds + p)
-#define ds_readw(p) *(Bit16u*)(ds + p)
-#define ds_readd(p) *(Bit32u*)(ds + p)
+#define ds_readb(p) (*(Bit8u*)(ds + p))
+#define ds_readw(p) (*(Bit16u*)(ds + p))
+#define ds_readd(p) (*(Bit32u*)(ds + p))
 
 #define ds_readbs(p) *(Bit8s*)(ds + p)
 #define ds_readws(p) *(Bit16s*)(ds + p)
@@ -290,7 +290,7 @@ extern char ds[0xffff];
 #define mem_writew(p, d) *(Bit16u*)(p) = d
 #define mem_writed(p, d) *(Bit32u*)(p) = d
 
-#define get_hero(nr) (Bit8u*)ds_readd(HEROS) + 0x6da * nr
+#define get_hero(nr) ((Bit8u*)ds_readd(HEROS) + 0x6da * (nr))
 
 
 extern Bit8u* text_ltx[];
@@ -308,8 +308,8 @@ extern Bit8u* dialog_text[];
 #define host_writew(p, d)	(*(Bit16u*) = d)
 #define host_writed(p, d)	(*(Bit32u*)(p) = d)
 
-#define hero_dead(hero)  (!((host_readb(hero + 0xaa) & 1) == 0))
-#define hero_unc(hero)  (!(((host_readb(hero + 0xaa) >> 6) & 1) == 0))
+#define hero_dead(hero)  (((host_readb(hero + 0xaa)) & 1))
+#define hero_unc(hero)  (((host_readb(hero + 0xaa)) >> 6) & 1)
 
 #define get_ltx(nr) (Bit8u*)(&text_ltx[nr])
 #define get_dtp(nr) (Bit8u*)(&dialog_text[nr])
