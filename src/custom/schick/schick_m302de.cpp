@@ -4987,8 +4987,9 @@ static int seg106(unsigned short offs)
 		return 1;
 	}
 	case 0x3e: {
-		D1_LOG("equip_belt();\n");
-		return 0;
+		D1_LOG("equip_belt_ani();\n");
+		equip_belt_ani();
+		return 1;
 	}
 	case 0x43: {
 		RealPt hero = CPU_Pop32();
