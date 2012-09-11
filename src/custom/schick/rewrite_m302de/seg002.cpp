@@ -1360,9 +1360,9 @@ void sub_light_timers(signed int quarter) {
 			if (host_readw(hero_i + 0x196 + 14 * j) == 0x16) {
 				/* Torch, burning */
 
-				cur = host_readb(hero_i + 0x19e + 14 * j);
+				cur = host_readb(hero_i + 0x196 + 8 + 14 * j);
 				cur -= tmp;
-				host_writeb(hero_i + 0x19e + 14 * j, cur);
+				host_writeb(hero_i + 0x196 + 8 + 14 * j, cur);
 
 				if (cur <= 0) {
 					signed short tmp_1;
@@ -1377,13 +1377,13 @@ void sub_light_timers(signed int quarter) {
 				}
 			} else if (host_readw(hero_i + 0x196 + j * 14) == 0xf9) {
 				/* Lantern, burning */
-				cur = host_readb(hero_i + 0x19e + 14 * j);
+				cur = host_readb(hero_i + 0x196 + 8 + 14 * j);
 				cur -= tmp;
-				host_writeb(hero_i + 0x19e + 14 * j, cur);
+				host_writeb(hero_i + 0x196 + 8 + 14 * j, cur);
 
 				if (cur <= 0) {
 					/* Set timer to 0 */
-					host_writeb(hero_i + 0x19e + j * 14, 0);
+					host_writeb(hero_i + 0x196 + 8 + j * 14, 0);
 					/* Set burning lantern to a not burning lantern */
 					host_writew(hero_i + 0x196 + j * 14, 0x19);
 				}
