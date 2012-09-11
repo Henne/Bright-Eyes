@@ -60,8 +60,8 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 		if (in_hand) {
 
 			/* check if one hand has a two-handed weapon */
-			if ( ((host_readb(get_itemsdat(item) + 2) >> 1) & 1) &&
-				(host_readb(get_itemsdat(item) + 3) == 6) ||
+			if ( (((host_readb(get_itemsdat(item) + 2) >> 1) & 1) &&
+				(host_readb(get_itemsdat(item) + 3) == 6)) ||
 				(((host_readb(get_itemsdat(in_hand) + 2) >> 1) & 1) &&
 				(host_readb(get_itemsdat(in_hand) + 3) == 6))) {
 					retval = 1;
