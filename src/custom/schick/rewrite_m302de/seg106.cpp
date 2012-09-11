@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "common.h"
 #include "v302de.h"
@@ -14,7 +16,9 @@
 #include "seg096.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * two_hand_collision() - check for a two hand collision
@@ -198,4 +202,6 @@ signed short get_full_waterskin_pos(Bit8u *hero)
 	return pos;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
