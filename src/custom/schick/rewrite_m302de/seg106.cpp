@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
-	Functions rewritten: 4/8
+	Functions rewritten: 5/8
 */
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +12,14 @@
 #include "common.h"
 #include "v302de.h"
 
+#if !defined(__BORLANDC__)
+#include "seg000.h"
+#endif
+
+#include "seg002.h"
+#include "seg004.h"
 #include "seg007.h"
+#include "seg008.h"
 #include "seg096.h"
 #include "seg097.h"
 
@@ -172,6 +179,109 @@ signed short get_max_light_time(void)
 	}
 
 	return retval;
+}
+
+/**
+ * equip_belt_ani() - shows an animation of a man equipping a belt
+ *
+ * This is only executed when equipping a skullbelt.
+ */
+void equip_belt_ani(void)
+{
+	struct nvf_desc nvf;
+	Bit8u *p_pal;
+	unsigned int nvf_length;
+	signed short height;
+	signed short width;
+
+	signed short i;
+	signed short handle;
+
+	/* open GUERTEL.NVF */
+	handle = load_archive_file(0x84);
+
+	/* read NVF part 1 */
+	nvf_length = read_archive_file(handle,
+			Real2Host(ds_readd(0xc3db)), 64000);
+	/* read NVF part 2 */
+	nvf_length += read_archive_file(handle,
+			Real2Host(ds_readd(0xc3db)) + 64000, 64000);
+
+	bc_close(handle);
+
+	/* calculate palette pointer */
+	p_pal = Real2Host(ds_readd(0xc3db)) + nvf_length - 0x60;
+
+	set_palette(p_pal, 0x80, 0x20);
+
+	do_border(Real2Phys(ds_readd(0xd2ff)), 209, 79, 215, 89, 9);
+
+	do_fill_rect(ds_readd(0xd2ff), 209, 79, 215, 89, 0);
+
+	wait_for_vsync();
+	wait_for_vsync();
+	wait_for_vsync();
+
+	do_fill_rect(ds_readd(0xd2ff), 189, 69, 235, 99, 0);
+
+	do_border(Real2Phys(ds_readd(0xd2ff)), 189, 69, 235, 99, 9);
+
+	wait_for_vsync();
+	wait_for_vsync();
+	wait_for_vsync();
+
+	do_fill_rect(ds_readd(0xd2ff), 169, 59, 255, 109, 0);
+
+	do_border(Real2Phys(ds_readd(0xd2ff)), 169, 59, 255, 109, 9);
+
+	wait_for_vsync();
+	wait_for_vsync();
+	wait_for_vsync();
+
+	do_fill_rect(ds_readd(0xd2ff), 164, 54, 260, 114, 0);
+
+	do_border(Real2Phys(ds_readd(0xd2ff)), 164, 54, 260, 114, 9);
+
+	wait_for_vsync();
+	wait_for_vsync();
+	wait_for_vsync();
+
+	do_fill_rect(ds_readd(0xd2ff), 159, 49, 263, 117, 0);
+
+	do_border(Real2Phys(ds_readd(0xd2ff)), 159, 49, 263, 117, 9);
+
+	for (i = 0; i < 12; i++) {
+
+		nvf.dst = Real2Host(ds_readd(0xd303));
+		nvf.src = Real2Host(ds_readd(0xc3db));
+		nvf.nr = i;
+		nvf.type = 3;
+		nvf.width = (Bit8u*)&width;
+		nvf.height = (Bit8u*)&height;
+
+		process_nvf(&nvf);
+
+		ds_writew(0xc011, 160);
+		ds_writew(0xc013, 50);
+		ds_writew(0xc015, width + 159);
+		ds_writew(0xc017, height + 49);
+		ds_writed(0xc019, ds_readd(0xd303));
+
+		wait_for_vsync();
+		wait_for_vsync();
+		wait_for_vsync();
+		update_mouse_cursor();
+		wait_for_vsync();
+
+		do_pic_copy(0);
+
+		refresh_screen_size();
+	}
+
+	/* a = b = c = -1 */
+	ds_writeb(0x2ca7, -1);
+	ds_writeb(0x2ca6, -1);
+	ds_writew(0x2ccf, -1);
 }
 
 /**
