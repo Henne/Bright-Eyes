@@ -39,7 +39,7 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos) {
 		rs_mod = ds_readb(host_readb(item_p + 4) * 2 + 0x877);
 		host_writeb(hero + 0x30, host_readb(hero + 0x30) - rs_mod);
 
-		rs_mod = host_readb(hero + 0x19d + pos * 14);
+		rs_mod = host_readb(hero + 0x196 + 7 + pos * 14);
 		host_writeb(hero + 0x30, host_readb(hero + 0x30) + rs_mod);
 
 		rs_mod = ds_readb(host_readb(item_p + 4) * 2 + 0x878);
@@ -187,7 +187,7 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item) {
 		if (host_readw(hero + 0x196 + i * 14) != item)
 			continue;
 		/* is the number of items < 99 */
-		if (host_readw(hero + 0x198 + i * 14) >= 99)
+		if (host_readw(hero + 0x196 + 2 + i * 14) >= 99)
 			continue;
 
 		return i;
