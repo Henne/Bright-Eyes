@@ -5,7 +5,9 @@
  *
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "string.h"
 
@@ -15,7 +17,9 @@
 #include "seg096.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* Transformation / Verwandlung */
 void spell_adler() {
@@ -673,4 +677,6 @@ void spell_sturmgebr() {
 	D1_INFO("Zauberspruch \"Sturmgebruell\" ist nicht implementiert\n");
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
