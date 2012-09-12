@@ -4,6 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void unequip(Bit8u *hero, unsigned short item, unsigned short pos);
+/* 0x25 */
+void add_equip_boni(Bit8u*, Bit8u*, signed short, signed short, signed short);
 /* 0x2f */
 signed short give_hero_new_item(Bit8u *hero, signed short, signed short, signed short);
 /* 0x34 */
