@@ -7,7 +7,9 @@
 */
 
 #include <string.h>
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -15,7 +17,9 @@
 #include "seg096.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  *	@hero:	the hero
@@ -575,4 +579,6 @@ void loose_random_item(Bit8u *hero, unsigned short percent, Bit8u *text)
 	} while (1);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
