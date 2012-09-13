@@ -4607,7 +4607,8 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x2f: {
-		return 0;
+		spell_penetrizzel();
+		return 1;
 	}
 	case 0x34: {
 		spell_sensibar();
