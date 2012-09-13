@@ -40,6 +40,8 @@ void spell_visibili();
 void spell_abvenenum();
 /* 0x75 */
 void spell_aeolitus();
+/* 0x7a */
+void spell_brenne();
 /* 0x7f */
 void spell_claudibus();
 /* 0x84 */
