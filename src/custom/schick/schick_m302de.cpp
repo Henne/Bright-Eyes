@@ -4746,7 +4746,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x7a: {
-		return 0;
+		spell_brenne();
+		return 1;
 	}
 	case 0x7f: {
 		spell_claudibus();
