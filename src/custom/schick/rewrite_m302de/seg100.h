@@ -1,5 +1,7 @@
 namespace M302de {
 /* Clairvoyance / Hellsicht */
+/* 0x2f */
+void spell_penetrizzel(void);
 //0x34
 void spell_sensibar();
 
