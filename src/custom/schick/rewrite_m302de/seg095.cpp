@@ -539,7 +539,7 @@ void remove_npc(signed short head_index, signed char days,
 
 	/* dec group counter */
 	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
-		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP) - 1));
+		(ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) - 1));
 
 	/* dec global hero counter */
 	ds_writeb(0x2d3c, ds_readb(0x2d3c) - 1);
