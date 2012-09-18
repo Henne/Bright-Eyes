@@ -27,7 +27,7 @@ static const char dungeon[][25] = {	"",
 				"Eine Hoehle",
 				"Eine Piratenhoehle",
 				"Ein Dungeon",
-				"Eine verlassene Miene",
+				"Eine verlassene Mine",
 				"Die alte Zwingfeste",
 				"Eine Burgruine" };
 
