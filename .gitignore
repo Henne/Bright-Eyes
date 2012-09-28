@@ -1,6 +1,7 @@
 *~
 .*
 *.o
+*.OBJ
 *.a
 Makefile
 Makefile.in
