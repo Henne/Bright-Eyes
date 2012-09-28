@@ -399,10 +399,15 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 								host_writew(hero + 0x196 + 2 + di * 14, 0);
 							}
 
-							/* unknown */
+							/* set magical flag */
 							if (host_readb(item_p + 0xb) != 0) {
-								host_writeb(hero + 0x196 + 2 + di * 14,
-									host_readb(hero + 0x196 + 2 + di * 14) | 8);
+								host_writeb(hero + 0x196 + 4 + di * 14,
+									host_readb(hero + 0x196 + 4 + di * 14) | 8);
+
+#if !defined(__BORLANDC__)
+								D1_INFO("%s hat soeben einen magischen Gegenstand erhalten: %s\n",
+									(char*)hero + 0x10, get_itemname(item));
+#endif
 							}
 
 							/* set breakfactor */
