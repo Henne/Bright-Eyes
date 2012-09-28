@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 8/20
+ *	Functions rewritten 9/20
  *
 */
 
@@ -18,6 +18,22 @@
 namespace M302de {
 
 /* Clairvoyance / Hellsicht */
+
+void spell_penetrizzel(void)
+{
+	signed short y;
+	signed short x;
+
+	for (y = -2;  y <= 2; y++) {
+		for (x = -2;  x <= 2; x++) {
+			if ((ds_readw(Y_TARGET) + y >= 0) && (ds_readw(X_TARGET) + x >= 0)) {
+				if ((ds_readb(0xbd94) - 1 >= ds_readw(X_TARGET) + x) && (ds_readw(Y_TARGET) + y <= 15)) {
+					set_automap_tile(ds_readw(X_TARGET) + x, ds_readw(Y_TARGET) + y);
+				}
+			}
+		}
+	}
+}
 
 void spell_sensibar()
 {

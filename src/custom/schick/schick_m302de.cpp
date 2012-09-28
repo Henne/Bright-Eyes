@@ -4607,7 +4607,8 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x2f: {
-		return 0;
+		spell_penetrizzel();
+		return 1;
 	}
 	case 0x34: {
 		spell_sensibar();
@@ -4746,7 +4747,8 @@ static int seg101(unsigned short offs) {
 		return 1;
 	}
 	case 0x7a: {
-		return 0;
+		spell_brenne();
+		return 1;
 	}
 	case 0x7f: {
 		spell_claudibus();
@@ -4852,7 +4854,27 @@ static int seg105(unsigned short offs) {
 			return 1;
 		}
 		case 0x25: {
-			return 0;
+
+			RealPt owner = CPU_Pop32();
+			RealPt equipper = CPU_Pop32();
+			Bit16u item = CPU_Pop16();
+			Bit16s pos_i = CPU_Pop16();
+			Bit16s pos_b = CPU_Pop16();
+			CPU_Push16(pos_b);
+			CPU_Push16(pos_i);
+			CPU_Push16(item);
+			CPU_Push32(equipper);
+			CPU_Push32(owner);
+
+			D1_LOG("add_equip_boni(%s, %s, %x, %x, %x)\n",
+				schick_getCharname(owner),
+				schick_getCharname(equipper),
+				item, pos_i, pos_b);
+
+			add_equip_boni(Real2Host(owner), Real2Host(equipper),
+				item, pos_i, pos_b);
+
+			return 1;
 		}
 		case 0x2f: {
 			RealPt hero = CPU_Pop32();
@@ -4987,8 +5009,9 @@ static int seg106(unsigned short offs)
 		return 1;
 	}
 	case 0x3e: {
-		D1_LOG("equip_belt();\n");
-		return 0;
+		D1_LOG("equip_belt_ani();\n");
+		equip_belt_ani();
+		return 1;
 	}
 	case 0x43: {
 		RealPt hero = CPU_Pop32();

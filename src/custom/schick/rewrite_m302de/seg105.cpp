@@ -1,21 +1,26 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 11/14
+ *      Functions rewritten 12/14
  *
- *      Functions called rewritten 10/13
+ *      Functions called rewritten 11/13
  *      Functions uncalled rewritten 1/1
 */
 
 #include <string.h>
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
 #include "seg007.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg106.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  *	@hero:	the hero
@@ -39,7 +44,7 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos) {
 		rs_mod = ds_readb(host_readb(item_p + 4) * 2 + 0x877);
 		host_writeb(hero + 0x30, host_readb(hero + 0x30) - rs_mod);
 
-		rs_mod = host_readb(hero + 0x19d + pos * 14);
+		rs_mod = host_readb(hero + 0x196 + 7 + pos * 14);
 		host_writeb(hero + 0x30, host_readb(hero + 0x30) + rs_mod);
 
 		rs_mod = ds_readb(host_readb(item_p + 4) * 2 + 0x878);
@@ -69,6 +74,107 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos) {
 	/* unequip Kristallkugel Gefahrensinn - 2 */
 	if (item == 70)
 		host_writeb(hero + 0x13a, host_readb(hero + 0x13a) - 2);
+}
+
+
+/**
+ * add_equip_boni() - account boni of special items when equipped
+ * @owner:	the owner of the item
+ * @equipper:	the one who equips the item
+ * @item:	the item ID
+ * @pos_i:	the position in the inventory of the owner
+ * @pos_b:	the position in the inventory of the equipper
+ *
+ */
+void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed short pos_i, signed short pos_b)
+{
+	Bit8u *item_p;
+
+	if (item) {
+		/* calculate pointer to item description */
+		item_p = Real2Host(ds_readd(ITEMSDAT)) + item * 12;
+
+		/* armor and shield */
+		if (host_readb(item_p + 2) & 1) {
+
+			/* add RS boni */
+			host_writeb(equipper + 0x30,
+				host_readb(equipper + 0x30) + ds_readb(0x877 + host_readb(item_p + 4) * 2));
+
+			/* subtract used item value */
+			host_writeb(equipper + 0x30,
+				host_readb(equipper + 0x30) - host_readb(owner + 0x196 + 7 + pos_i * 14));
+
+			/* add RS-BE */
+			host_writeb(equipper + 0x32,
+				host_readb(equipper + 0x32) + ds_readb(0x877  + 1 + host_readb(item_p + 4) * 2));
+
+		}
+
+		/* weapon right hand */
+		if (((host_readb(item_p + 2) >> 1) & 1) && (pos_b == 3)) {
+
+			/* set weapon type */
+			host_writeb(equipper + 0x78, host_readb(item_p + 3));
+
+			/* set AT */
+			host_writeb(equipper + 0x76,
+				ds_readb(0x6b0 + 5 + host_readbs(item_p + 4) * 7));
+
+			/* set PA */
+			host_writeb(equipper + 0x77,
+				ds_readb(0x6b0 + 6 + host_readbs(item_p + 4) * 7));
+
+		}
+
+		/* Girdle of might / Kraftguertel */
+		if (item == 0xb7) {
+			/* KK + 5 */
+			host_writeb(equipper + 0x47,
+				host_readb(equipper + 0x47) + 5);
+		}
+
+		/* Helmet / Helm */
+		if (item == 0xc4) {
+			/* dec CH */
+			host_writeb(equipper + 0x3b,
+				host_readb(equipper + 0x3b) - 1);
+		}
+
+		/* Silver Jewelry / Silberschmuckstueck (magisch) */
+		if (item == 0xd7) {
+			/* TA - 2 */
+			host_writeb(equipper + 0x56,
+				host_readb(equipper + 0x56) - 2);
+		}
+
+		/* Coronet or Ring / Stirnreif oder Ring */
+		if (item == 0xd9 || item == 0xa5) {
+			/* MR + 2 */
+			host_writeb(equipper + 0x66,
+				host_readb(equipper + 0x66) + 2);
+		}
+
+		/* Death-Head belt / Totenkopfguertel */
+		if (item == 0xb6) {
+
+			/* TA - 5 */
+			host_writeb(equipper + 0x56,
+				host_readb(equipper + 0x56) - 5);
+
+			if (ds_readb(0x2845) == 20) {
+				equip_belt_ani();
+			}
+		}
+
+		/* Crystal ball / Kristalkugel */
+		if (item == 0x46) {
+
+			/* Sinnesschaerfe + 2 */
+			host_writeb(equipper + 0x13a,
+				host_readb(equipper + 0x13a) + 2);
+		}
+	}
 }
 
 /**
@@ -187,7 +293,7 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item) {
 		if (host_readw(hero + 0x196 + i * 14) != item)
 			continue;
 		/* is the number of items < 99 */
-		if (host_readw(hero + 0x198 + i * 14) >= 99)
+		if (host_readw(hero + 0x196 + 2 + i * 14) >= 99)
 			continue;
 
 		return i;
@@ -293,10 +399,15 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 								host_writew(hero + 0x196 + 2 + di * 14, 0);
 							}
 
-							/* unknown */
+							/* set magical flag */
 							if (host_readb(item_p + 0xb) != 0) {
-								host_writeb(hero + 0x196 + 2 + di * 14,
-									host_readb(hero + 0x196 + 2 + di * 14) | 8);
+								host_writeb(hero + 0x196 + 4 + di * 14,
+									host_readb(hero + 0x196 + 4 + di * 14) | 8);
+
+#if !defined(__BORLANDC__)
+								D1_INFO("%s hat soeben einen magischen Gegenstand erhalten: %s\n",
+									(char*)hero + 0x10, get_itemname(item));
+#endif
 							}
 
 							/* set breakfactor */
@@ -575,4 +686,6 @@ void loose_random_item(Bit8u *hero, unsigned short percent, Bit8u *text)
 	} while (1);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

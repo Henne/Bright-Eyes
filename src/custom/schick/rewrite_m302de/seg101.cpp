@@ -1,21 +1,27 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 25/26
+ *	Functions rewritten 26/26 (complete)
  *
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "string.h"
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg105.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* Transformation / Verwandlung */
 void spell_adler() {
@@ -598,6 +604,111 @@ void spell_aeolitus() {
 	D1_INFO("Zauberspruch \"Aeolitus\" ist nicht implementiert\n");
 }
 
+void spell_brenne(void)
+{
+	signed short answer;
+	signed short oil_pos;
+
+	signed short torch_pos;
+	signed short lantern_pos;
+
+	torch_pos = -1;
+	lantern_pos = -1;
+
+	ds_writew(0xac0e, 0);
+
+	if (ds_readw(LIGHT_TYPE) == 1) {
+		torch_pos = get_item_pos(get_spelluser(), 0x41);
+	} else {
+		if (ds_readw(LIGHT_TYPE) != 2) {
+			torch_pos = get_item_pos(get_spelluser(), 0x41);
+		}
+
+		lantern_pos = get_item_pos(get_spelluser(), 0x19);
+	}
+
+	if (torch_pos != -1) {
+		if (lantern_pos != -1) {
+			/* lantern and torch are available, must decide */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(107 * 4),
+				(char*)get_spelluser() + 0x10);
+
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)),
+					2,
+					(char*)Real2Host(GUI_names_grammar(0x4000, 0x41, 0)),
+					(char*)Real2Host(GUI_names_grammar(0x4000, 0x19, 0)));
+
+			if (answer == -1) {
+				/* abort */
+				torch_pos = lantern_pos = -1;
+			} else if (answer == 1) {
+				lantern_pos = -1;
+			} else {
+				torch_pos = -1;
+			}
+		}
+	}
+
+	if (torch_pos != -1) {
+
+		/* change torch to burning torch */
+		host_writew(get_spelluser() + 0x196 + torch_pos * 14, 0x16);
+
+		/* set counter to 10 */
+		host_writeb(get_spelluser() + 0x196  + 8 + torch_pos * 14, 10);
+
+		/* set AP cost */
+		ds_writew(0xac0e, random_schick(20));
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(108 * 4),
+			get_spelluser() + 0x10);
+
+	} else if (lantern_pos != -1) {
+
+		/* get position of oil */
+		oil_pos = get_item_pos(get_spelluser(), 0x29);
+
+		if (oil_pos != -1) {
+
+			/* change torch to burning lantern */
+			host_writew(get_spelluser() + 0x196 + lantern_pos * 14, 0xf9);
+
+			/* set counter to 100 */
+			host_writeb(get_spelluser() + 0x196  + 8 + lantern_pos * 14, 100);
+
+			/* drop one oil flask */
+			drop_item(get_spelluser(), oil_pos, 1);
+
+			/* give bronze flask */
+			give_hero_new_item(get_spelluser(), 0x2a, 0, 1);
+
+			/* set AP cost */
+			ds_writew(0xac0e, random_schick(20));
+
+			/* prepare message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(119 * 4),
+				get_spelluser() + 0x10);
+		} else {
+			/* prepare message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(120 * 4),
+				get_spelluser() + 0x10);
+		}
+	} else {
+		/* neither torch nor lantern */
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(121 * 4),
+			get_spelluser() + 0x10);
+	}
+}
+
 void spell_claudibus() {
 	D1_INFO("Zauberspruch \"Claudibus\" ist nicht implementiert\n");
 }
@@ -673,4 +784,6 @@ void spell_sturmgebr() {
 	D1_INFO("Zauberspruch \"Sturmgebruell\" ist nicht implementiert\n");
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
