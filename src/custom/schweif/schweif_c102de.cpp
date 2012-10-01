@@ -12,6 +12,7 @@
 #include "c102de_seg033.h"
 #include "c102de_seg034.h"
 #include "c102de_seg037.h"
+#include "c102de_seg043.h"
 #include "c102de_seg136.h"
 
 using namespace C102de;
@@ -303,6 +304,36 @@ static int seg039(unsigned short offs)
 	return 0;
 }
 
+static int seg043(unsigned short offs)
+{
+	switch (offs) {
+	case 0x0c: {
+		return 0;
+	}
+	case 0x3c: {
+		return 0;
+	}
+	case 0x72: {
+		return 0;
+	}
+	case 0xf2: {
+		return 0;
+	}
+	case 0x111: {
+		return 0;
+	}
+	case 0x130: {
+		return 0;
+	}
+	default:
+		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
+		exit(1);
+	}
+
+	return 0;
+
+}
+
 /* Graphics drawing stuff */
 static int seg046(unsigned short offs)
 {
@@ -384,6 +415,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x1ae4: return seg034(offs);
 	case 0x1b27: return seg037(offs);
 	case 0x1b42: return seg039(offs);
+	case 0x1c8a: return seg043(offs);
 	case 0x1cce: return seg046(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);
@@ -410,6 +442,24 @@ int n_seg024(unsigned offs)
 	}
 }
 
+static int n_seg043(unsigned short offs)
+{
+	switch (offs) {
+	case 0x0c: {
+		return 0;
+	}
+	case 0x24: {
+		return 0;
+	}
+	default:
+		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
+		exit(1);
+	}
+
+	return 0;
+
+}
+
 int schweif_nearcall_c102de(unsigned offs) {
 
 	unsigned short segm = SegValue(cs)-relocation;
@@ -423,6 +473,7 @@ int schweif_nearcall_c102de(unsigned offs) {
 		case 0x1288: {
 			return n_seg024(offs);
 		}
+		case 0x1c8a: return n_seg043(offs);
 	}
 #if 0
 
