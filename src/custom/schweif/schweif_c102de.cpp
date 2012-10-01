@@ -308,7 +308,11 @@ static int seg043(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0c: {
-		return 0;
+		Bit16u mode = CPU_Pop16();
+		CPU_Push16(mode);
+		D2_LOG("set_video_mode(0x%x);\n", mode);
+		set_video_mode((unsigned char)mode);
+		return 1;
 	}
 	case 0x3c: {
 		return 0;
@@ -446,7 +450,12 @@ static int n_seg043(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0c: {
-		return 0;
+		CPU_Pop16();
+		Bit16u mode = CPU_Pop16();
+		CPU_Push16(mode);
+		D2_LOG("set_video_mode(0x%x);\n", mode);
+		set_video_mode((unsigned char)mode);
+		return 1;
 	}
 	case 0x24: {
 		return 0;
