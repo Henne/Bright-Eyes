@@ -17,6 +17,33 @@
 
 using namespace C102de;
 
+static int seg002(unsigned short offs)
+{
+	switch (offs) {
+	case 0xf9: {
+		RealPt pal = CPU_Pop32();
+		Bit16s first_col = CPU_Pop16();
+		Bit16s colors = CPU_Pop16();
+		CPU_Push16(colors);
+		CPU_Push16(first_col);
+		CPU_Push32(pal);
+		D2_TRAC("set_palette(%x, %x, %x)\n", pal, first_col, colors);
+		return 0;
+	}
+	case 0x18f: {
+		RealPt pal = CPU_Pop32();
+		Bit16s first_col = CPU_Pop16();
+		CPU_Push16(first_col);
+		CPU_Push32(pal);
+		D2_TRAC("set_color(%x, %x)\n", pal, first_col);
+		return 0;
+	}
+	default:
+		return 0;
+	}
+	return 0;
+}
+
 static int seg004(unsigned short offs)
 {
 	switch(offs) {
@@ -410,6 +437,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 {
 	switch (segm) {
 	case 0x0000: return 0;
+	case 0x053a: return seg002(offs);
 	case 0x06bd: return seg004(offs);
 	case 0x0a32: return seg007(offs);
 	case 0x0ce1: return seg013(offs);
