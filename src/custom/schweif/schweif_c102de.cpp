@@ -458,7 +458,12 @@ static int n_seg043(unsigned short offs)
 		return 1;
 	}
 	case 0x24: {
-		return 0;
+		CPU_Pop16();
+		Bit16u page = CPU_Pop16();
+		CPU_Push16(page);
+		D2_LOG("set_display_page(0x%x);\n", page);
+		set_display_page((unsigned char)page);
+		return 1;
 	}
 	default:
 		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
