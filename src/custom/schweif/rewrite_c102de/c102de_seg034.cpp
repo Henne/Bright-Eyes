@@ -1,5 +1,5 @@
 /*
- *	Rewritr of DSA2 c1.02_de functions seg034 (gfx_copy)
+ *	Rewrite of DSA2 c1.02_de functions seg034 (gfx_copy)
  *	Functions rewritten 2/8
  */
 
