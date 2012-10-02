@@ -4524,16 +4524,20 @@ static int seg099(unsigned short offs) {
 		return 0;
 	}
 	case 0x75: {
-		return 0;
+		spell_furor_blut();
+		return 1;
 	}
 	case 0x7a: {
-		return 0;
+		spell_geister_bannen();
+		return 1;
 	}
 	case 0x7f: {
-		return 0;
+		spell_geister_rufen();
+		return 1;
 	}
 	case 0x84: {
-		return 0;
+		spell_heptagon();
+		return 1;
 	}
 	case 0x89: {
 		return 0;

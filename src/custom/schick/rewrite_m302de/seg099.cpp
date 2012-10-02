@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 5/39
+ *	Functions rewritten 9/39
  *
 */
 
@@ -115,6 +115,31 @@ void spell_grosse_ver()
 	host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x1d,
 		host_readb(Real2Host(ds_readd(0xe5b4)) + 0x1d) - 2);
 
+}
+
+/* Demonologie / Demonology */
+
+void spell_furor_blut(void)
+{
+        D1_INFO("Zauberspruch \"Furor Blut\" ist nicht implementiert\n");
+	ds_writew(0xac0e, -2);
+}
+
+void spell_geister_bannen(void)
+{
+        D1_INFO("Zauberspruch \"Geister bannen\" ist nicht implementiert\n");
+}
+
+void spell_geister_rufen(void)
+{
+        D1_INFO("Zauberspruch \"Geister rufen\" ist nicht implementiert\n");
+	ds_writew(0xac0e, -2);
+}
+
+void spell_heptagon(void)
+{
+        D1_INFO("Zauberspruch \"Heptagon\" ist nicht implementiert\n");
+	ds_writew(0xac0e, -2);
 }
 
 }
