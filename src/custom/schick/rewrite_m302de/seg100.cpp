@@ -1,17 +1,19 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 9/20
+ *	Functions rewritten 11/20
  *
 */
 
 #include "schick.h"
 
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg096.h"
 #include "seg097.h"
 
@@ -153,6 +155,77 @@ void spell_ecliptifactus()
 	} else {
 		ds_writew(0xac0e, -2);
 	}
+
+}
+
+void spell_saft_kraft(void)
+{
+	signed short target;
+	signed short slot;
+	signed short rounds;
+
+	rounds = random_schick(20);
+
+	/* get the index of the hero on whom the spell is cast */
+	target = host_readbs(get_spelluser() + 0x86) - 1;
+
+	/* set a pointer to the target */
+	ds_writed(SPELLTARGET, ds_readd(HEROS) + 0x6da * target);
+
+
+	/* +5 on AT of the current weapon */
+	slot = get_free_mod_slot();
+
+	set_mod_slot(slot, abs(rounds) * 9,
+		Real2Host(ds_readd(SPELLTARGET)) + 0x68 + host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x78),
+		5, (signed char)target);
+
+	/* -5 on PA of the current weapon */
+	slot = get_free_mod_slot();
+
+	set_mod_slot(slot, abs(rounds) * 9,
+		Real2Host(ds_readd(SPELLTARGET)) + 0x6f + host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x78),
+		-5, (signed char)target);
+
+	/* TODO: this position is unknown */
+	slot = get_free_mod_slot();
+
+	set_mod_slot(slot, abs(rounds) * 9, Real2Host(ds_readd(SPELLTARGET)) + 0x98, 5, (signed char)target);
+
+	/* set ae costs */
+	ds_writew(0xac0e, rounds);
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(96 * 4),
+		(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
+
+}
+
+void spell_scharfes_auge(void)
+{
+	signed short target;
+	signed short slot;
+
+	/* get the index of the hero on whom the spell is cast */
+	target = host_readbs(get_spelluser() + 0x86) - 1;
+
+	/* set a pointer to the target */
+	ds_writed(SPELLTARGET, ds_readd(HEROS) + 0x6da * target);
+
+	/* all range talents are boosted + 3 */
+
+	slot = get_free_mod_slot();
+
+	set_mod_slot(slot, 27, Real2Host(ds_readd(SPELLTARGET)) + 0x110, 3, (signed char)target);
+
+	slot = get_free_mod_slot();
+
+	set_mod_slot(slot, 27, Real2Host(ds_readd(SPELLTARGET)) + 0x10f, 3, (signed char)target);
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(97 * 4),
+		(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
 
 }
 

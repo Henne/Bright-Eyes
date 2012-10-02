@@ -4653,10 +4653,12 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x70: {
-		return 0;
+		spell_saft_kraft();
+		return 1;
 	}
 	case 0x75: {
-		return 0;
+		spell_scharfes_auge();
+		return 1;
 	}
 	case 0x7a: {
 		spell_hexenblick();
