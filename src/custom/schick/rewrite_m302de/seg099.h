@@ -16,4 +16,15 @@ void spell_grosse_gier();
 //0x4d
 void spell_grosse_ver();
 
+/* Demonologie / Demonology */
+
+/* 0x75 */
+void spell_furor_blut(void);
+/* 0x7a */
+void spell_geister_bannen(void);
+/* 0x7f */
+void spell_geister_rufen(void);
+/* 0x84 */
+void spell_heptagon(void);
+
 }
