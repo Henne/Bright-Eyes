@@ -27,4 +27,13 @@ void spell_geister_rufen(void);
 /* 0x84 */
 void spell_heptagon(void);
 
+/* Elemente / Elements */
+
+/* 0x93 */
+void spell_elementare(void);
+/* 0x98 */
+void spell_nihilatio(void);
+/* 0x9d */
+void spell_solidirid(void);
+
 }

@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 9/39
+ *	Functions rewritten 12/39
  *
 */
 
@@ -140,6 +140,22 @@ void spell_heptagon(void)
 {
         D1_INFO("Zauberspruch \"Heptagon\" ist nicht implementiert\n");
 	ds_writew(0xac0e, -2);
+}
+
+void spell_elementare(void)
+{
+        D1_INFO("Zauberspruch \"Elementare\" ist nicht implementiert\n");
+	ds_writew(0xac0e, -2);
+}
+
+void spell_nihilatio(void)
+{
+        D1_INFO("Zauberspruch \"Nihilatio\" ist nicht implementiert\n");
+}
+
+void spell_solidirid(void)
+{
+        D1_INFO("Zauberspruch \"Solidirid\" ist nicht implementiert\n");
 }
 
 }
