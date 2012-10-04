@@ -4546,13 +4546,16 @@ static int seg099(unsigned short offs) {
 		return 0;
 	}
 	case 0x93: {
-		return 0;
+		spell_elementare();
+		return 1;
 	}
 	case 0x98: {
-		return 0;
+		spell_nihilatio();
+		return 1;
 	}
 	case 0x9d: {
-		return 0;
+		spell_solidirid();
+		return 1;
 	}
 	case 0xa2: {
 		return 0;
