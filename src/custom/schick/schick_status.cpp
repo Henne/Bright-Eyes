@@ -249,15 +249,18 @@ static void fix_broken_magical_items(void)
 			continue;
 
 		/* check all items */
-		for (i = 0; i < 23; i++) {
+		for (pos = 0; pos < 23; pos++) {
 
-			inv_p = hero + 0x196 + i * 14;
+			inv_p = hero + 0x196 + pos * 14;
 
 			item_p = get_itemsdat(host_readw(inv_p));
 
-			/* Item is not stackable, but has stackcounter */
+			/* Item is not stackable, but has stackcounter.. */
 			if ((((host_readb(item_p + 2) >> 4) & 1) == 0) &&
-				(host_readw(inv_p + 2) != 0)) {
+				(host_readw(inv_p + 2) != 0) &&
+				/* .. and should be magical, but is not set in inventory */
+				(host_readb(item_p + 0x0b) != 0) &&
+				((host_readb(inv_p + 4) & 0x80) == 0)) {
 
 				/* set magical flag */
 				host_writeb(inv_p + 4,
@@ -266,12 +269,12 @@ static void fix_broken_magical_items(void)
 				/* reset stack counter */
 				host_writew(inv_p + 2, 0);
 
-				D1_INFO("Bugfix: magischer Gegenstand repariert\n");
+				D1_INFO("Bugfix: magischer Gegenstand von %s repariert\n",
+					(char*)hero + 0x10);
 
 			}
 		}
 	}
-
 }
 
 static void schick_cmp_heros()
