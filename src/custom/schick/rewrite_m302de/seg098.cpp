@@ -4,8 +4,6 @@
 */
 #include <stdlib.h>
 
-#include "mem.h"
-
 #include "schick.h"
 
 #include "v302de.h"
