@@ -4416,8 +4416,12 @@ static int seg098(unsigned short offs) {
 		return 0;
 	}
 	case 0x39: {
-		D1_TRAC("Seg098:0x%04x()\n", offs);
-		return 0;
+		Bit16s le = CPU_Pop16();
+		CPU_Push16(le);
+
+		D1_LOG("FIG_do_spell_damage(%d)\n", le);
+		FIG_do_spell_damage(le);
+		return 1;
 	}
 	case 0x3e: {
 		D1_LOG("get_attackee_parade();\n");

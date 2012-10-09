@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
-        Functions rewritten: 4/11
+        Functions rewritten: 5/11
 */
 #include <stdlib.h>
 
@@ -10,8 +10,62 @@
 
 #include "seg002.h"
 #include "seg007.h"
+#include "seg041.h"
 
 namespace M302de {
+
+/**
+ * FIG_do_spell_damage() - account physical spell damage in fight
+ * @le:	LE someone looses
+*/
+void FIG_do_spell_damage(signed short le)
+{
+
+	if (le <= 0)
+		return;
+
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
+		/* attack hero */
+
+		/* set pointer */
+		ds_writed(SPELLTARGET,
+			ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da);
+
+
+		/* ensure the spelluser does not attack himself */
+		if (Real2Host(ds_readd(SPELLTARGET)) != get_spelluser()) {
+
+			/* do the damage */
+			sub_hero_le(Real2Host(ds_readd(SPELLTARGET)), le);
+
+			/* add a message (ired star with le) */
+			FIG_add_msg(0x08, le);
+
+			/* set a variable if the hoer died */
+			if (hero_dead(Real2Host(ds_readd(SPELLTARGET)))) {
+				ds_writew(0xe3a6, 1);
+			}
+		}
+
+	} else {
+		/* attack enemy */
+
+		/* set a pointer to the enemy */
+		ds_writed(0xe5b4,
+			RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+		/* do the damage */
+		FIG_damage_enemy(Real2Host(ds_readd(0xe5b4)), le, 0);
+		/* add a message (green star with le) */
+		FIG_add_msg(0x0b, le);
+
+		/* set a variable if the enemy died */
+		if (host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) & 1) {
+			ds_writew(0xe3a6, 1);
+		}
+	}
+
+}
 
 /**
  * get_attackee_parade()  - calculates the PA value of one who is attacked
