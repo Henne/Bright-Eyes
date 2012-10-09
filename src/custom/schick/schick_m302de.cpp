@@ -4420,10 +4420,9 @@ static int seg098(unsigned short offs) {
 		return 0;
 	}
 	case 0x3e: {
-		/* Untested */
-		D1_TRAC("seg098_3e()\n");
-		/*reg_ax = seg098_3e(); */
-		return 0;
+		D1_LOG("get_attackee_parade();\n");
+		reg_ax = get_attackee_parade();
+		return 1;
 	}
 	case 0x48: {
 		unsigned short spell = CPU_Pop16();

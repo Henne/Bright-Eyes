@@ -15,33 +15,56 @@
 
 namespace M302de {
 
-short seg098_3e() {
-	Bit8u *ptr = Real2Host(ds_readd(0xe5bc));
-	signed char tmp = host_readb(ptr + 0x86);
+/**
+ * get_attackee_parade()  - calculates the PA value of one who is attacked
+ *
+ * This function is only used by the spell Kraehenruf.
+*/
+signed short get_attackee_parade(void)
+{
 
-	if (tmp < 10) {
-		RealPt hero = ds_readd(HEROS);
+	/* check if enemy or hero is attacked */
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
+
+		/* attacked a hero */
+
+		/* TODO: these vars are only for better
+			readability.
+		*/
 		Bit8u *hptr;
 		short ax, dx;
 
-		ds_writew(0xe5b4+2, RealSeg(hero));
-		ds_writew(0xe5b4, RealOff(hero) + (tmp - 1) * 0x6da);
-		hero = ds_readd(0xe5b4);
-		hptr = Real2Host(hero);
 
-		/* PA Wert ausrechnen */
-		ax = (char)host_readb(hptr + (char)host_readb(hptr + 0x78) + 0x6f);
-		dx = (char)host_readb(hptr + 0x79);
+		ds_writed(SPELLTARGET,
+			ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da);
+
+		hptr = Real2Host(ds_readd(SPELLTARGET));
+
+		/* calculate PA  */
+
+		/* PA = PA-Current-Weapon - AT-Modificator - 1/2 * RS-BE */
+
+		ax = host_readbs(hptr + host_readbs(hptr + 0x78) + 0x6f);
+		dx = host_readbs(hptr + 0x79);
 		ax -= dx;
+
 		/* Rüstungsschutz Behinderung */
-		dx = (char)host_readb(hptr + 0x32);
+		dx = host_readbs(hptr + 0x32);
 		dx = dx >= 0 ? dx / 2 : (dx + 1) / 2;
+
 		ax -= dx;
+
 		return ax;
 	} else {
+
+		/* attacked an enemy */
+
+		/* set a global pointer to the target */
 		ds_writew(0xe5b4+2, datseg);
-		ds_writew(0xe5b4, tmp * 62 + 0xd0df);
-		return (char)host_readb(ptr + 0x1d);
+		ds_writew(0xe5b4,
+			host_readbs(get_spelluser() + 0x86) * 62 + 0xd0df);
+
+		return host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1d);
 	}
 }
 
