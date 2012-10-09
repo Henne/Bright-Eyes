@@ -125,10 +125,10 @@ static inline Bit8u *get_hero(unsigned short index) {
  * 0 = alive / 1 = dead
  */
 static inline unsigned short hero_dead(Bit8u *hero) {
-	if ((host_readb(hero + 0xaa) & 1) == 0)
-		return 0;
-	else
+	if ((host_readb(hero + 0xaa) & 1))
 		return 1;
+	else
+		return 0;
 }
 
 /**
