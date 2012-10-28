@@ -10,7 +10,7 @@
 #define SCHWEIF_INFO
 #define SCHWEIF_LOG
 //#define SCHWEIF_TRAC
-//#define SCHWEIF_GFX
+#define SCHWEIF_GFX
 
 #define D2_ERR(...) fprintf(stderr, __VA_ARGS__)
 
@@ -70,6 +70,10 @@ extern const char* names_spell[];
 extern unsigned short datseg;
 extern Bit8u* p_datseg;
 extern unsigned short relocation;
+
+#define deref8(arg) *((unsigned char*)Real2Host(arg))
+#define deref16(arg) *((unsigned short*)Real2Host(arg))
+#define deref32(arg) *((unsigned int*)Real2Host(arg))
 
 static inline Bit8u ds_readb(unsigned short offs) {
 	return host_readb(p_datseg + offs);

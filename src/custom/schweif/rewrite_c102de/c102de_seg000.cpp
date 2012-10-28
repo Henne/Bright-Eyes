@@ -7,8 +7,6 @@
 #include "c102de_seg000.h"
 
 namespace C102de {
-#if 0
-
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
 	ds_writew(0x895C + handle * 2, ds_readw(0x895C + handle * 2) & 0xfdff);
@@ -51,23 +49,16 @@ signed short bioskey(signed short cmd) {
 }
 
 Bit16s bc_close(Bit16u handle) {
-
-	if (handle >= ds_readw(0xb786))
+	if (handle >= ds_readw(0x895C))
 		return -1;
-
-	ds_writew(0xb788 + handle * 2, 0);
-
 	return bc__close(handle);
 
 }
 
 Bit16s bc__close(Bit16u handle) {
-
 	if (!DOS_CloseFile(handle))
 		return -1;
-
-	ds_writew(0xb788 + handle * 2, 0);
-
+	ds_writew(0x895C + handle * 2, 0);
 	return 0;
 }
 
@@ -274,53 +265,91 @@ int seg000(unsigned short offs) {
 	CPU_Push16(format_seg);
 	CPU_Push16(format_ofs);
 	CPU_Push32(dst_p);
-	char* dest   = (char*)(MemBase + Real2Phys(dst_p));
+	char* dest   = (char*)(Real2Host(dst_p));
 	char* format = (char*)(MemBase + PhysMake(format_seg, format_ofs));
 	char* args_p = (char*)(MemBase + PhysMake(  args_seg,   args_ofs));
 	
-	// TODO: Find out how Borland-sprintf saves the variadric argument list.
-	//       Transform this so the host version of sprintf can be used.
+	// TODO: make it work with more than one argument in args_p!!!
 	//D2_LOG("sprintf: %s with '%s'\n", format, args_p);
+	//sprintf(dest, format, args_p);
+	//reg_ax = RealOff(dst_p);
+	//reg_dx = RealSeg(dst_p);
 	return 0;
     }
     case 0x40FA: { // sub_140FA: strcat
-	RealPt dest   = CPU_Pop32();
-	RealPt source = CPU_Pop32();
-	CPU_Push32(source);
-	CPU_Push32(dest);
-	//D2_LOG("strcat(%04x, %s)\n", dest, MemBase+Real2Phys(source));
-	strcat((char*)(MemBase + Real2Phys(dest)),  (char*)(MemBase + Real2Phys(source)));
-	return 1;
+	    RealPt dest   = CPU_Pop32();
+	    RealPt source = CPU_Pop32();
+	    CPU_Push32(source);
+	    CPU_Push32(dest);
+	    //D2_LOG("strcat(0x%08x, %s)\n", dest, (char*)getString(source));
+	    strcat((char*)Real2Host(dest),  (char*)Real2Host(source));
+	    reg_ax = RealOff(dest);
+	    reg_dx = RealSeg(dest);
+	    return 1;
     }
-    case 0x4139: { // sub_14139
+    case 0x4139: { // sub_14139: strchr
+	// Untested
+	RealPt haystack = CPU_Pop32();
+	char   needle_  = CPU_Pop16();
+	CPU_Push16(needle_);
+	CPU_Push32(haystack);
+	char needle = (needle_ >> 8) & 0xFF;
+	//reg_ax = strchr((char*)getString(haystack), needle);
+	D2_LOG("strchr(%04x, %c)\n", haystack, needle);
 	return 0;
     }
     case 0x4176: { // sub_14176: strcmp
-	// Untested
-	RealPt str1 = CPU_Pop32();
-	RealPt str2 = CPU_Pop32();
-	CPU_Push32(str2);
-	CPU_Push32(str1);
-	reg_ax = strcmp(MemBase + Real2Phys(str1), MemBase + Real2Phys(str2));
-	return 1;
+	    RealPt str1 = CPU_Pop32();
+	    RealPt str2 = CPU_Pop32();
+	    CPU_Push32(str2);
+	    CPU_Push32(str1);
+	    reg_ax = strcmp((char*)getString(str1), (char*)getString(str2));
+	    //D2_LOG("strcmp(%s, %s) = %d\n", (char*)(Real2Host(str1)), (char*)(Real2Host(str2)), reg_ax);
+	    return 1;
     }
     case 0x41A6: { // sub_141A6: strcpy
-	// Untested
-	RealPt dest   = CPU_Pop32();
-	RealPt source = CPU_Pop32();
-	CPU_Push32(source);
+	    RealPt dest   = CPU_Pop32();
+	    RealPt source = CPU_Pop32();
+	    CPU_Push32(source);
+	    CPU_Push32(dest);
+	    //D2_LOG("strcpy(0x%08x, %s)\n", Real2Host(dest), getString(source));
+	    strcpy((char*)getString(dest),  (char*)getString(source));
+	    reg_ax = RealOff(dest);
+	    reg_dx = RealSeg(dest);
+	    return 1;
+    }
+    case 0x41CF: { // sub_141CF: strlen
+	    RealPt str = CPU_Pop32();
+	    CPU_Push32(str);
+	    //D2_LOG("strlen(\"%s\")\n", (char*)getString(str));
+	    reg_ax = strlen((char*)getString(str));
+	    return 1;
+    }
+    case 0x41EE: { // sub_141EE: strncmp
+	RealPt str1 = CPU_Pop32();
+	RealPt str2 = CPU_Pop32();
+	unsigned short n = CPU_Pop16();
+	CPU_Push16(n);
+	CPU_Push32(str2);
+	CPU_Push32(str1);
+	//reg_ax = strncmp(Real2Host(str1), Real2Host(str2), n);
+	D2_LOG("strncmp(%s, %s, %d) = %d\n", (char*)(Real2Host(str1)),
+	       (char*)(Real2Host(str2)), n, reg_ax);
+	return 0;
+    }
+    case 0x4226: { // sub_14226: strncpy
+	RealPt dest = CPU_Pop32();
+	RealPt src = CPU_Pop32();
+	unsigned short n = CPU_Pop16();
+	CPU_Push16(n);
+	CPU_Push32(src);
 	CPU_Push32(dest);
-	D2_LOG("strcpy(%04x, %s)\n", dest, MemBase+Real2Phys(source));
-	strcpy((char*)(MemBase + Real2Phys(dest)),  (char*)(MemBase + Real2Phys(source)));
-	return 1;
-    }
-    case 0x41CF: { // sub_141CF
-	return 0;
-    }
-    case 0x41EE: { // sub_141EE
-	return 0;
-    }
-    case 0x4226: { // sub_14226
+	D2_LOG("strncpy(0x%04x:0x%04x, 0x%04x:0x%04x, %u)\n",
+	       RealSeg(dest), RealOff(dest), RealSeg(src), RealSeg(src), n);
+	
+	//strncpy((char*)Real2Host(dest), (char*)Real2Host(src), n);
+	//reg_ax = RealOff(dest);
+	//reg_dx = RealSeg(dest);
 	return 0;
     }
     case 0x4257: { // sub_14257
@@ -492,7 +521,10 @@ int seg000(unsigned short offs) {
 	return 0;
     }
     case 0x2F0F: { // DOS_CloseFile
-	return 0;
+	    Bit16u handle = CPU_Pop16();
+	    CPU_Push16(handle);
+	    reg_ax = bc_close(handle);
+	    return 1;
     }
     case 0x02F7: { // DOS_Chdir
 	return 0;
@@ -510,38 +542,36 @@ int seg000(unsigned short offs) {
 	return 0;
     }
     case 0x0920: { // DOS_ReadFile
-	Bit16u handle = CPU_Pop16();
-	RealPt buf = CPU_Pop32();
-	Bit16u count = CPU_Pop16();
-	CPU_Push16(count);
-	CPU_Push32(buf);
-	CPU_Push16(handle);
-	
-/*	D2_LOG("C-Lib _read(handle=%d, buffer=0x%x, len=%d)\n",
-	       handle, buf, count);
-*/
-	reg_ax = bc__read(handle, MemBase + Real2Phys(buf), count);
-	
-	return 1;
+	    Bit16u handle = CPU_Pop16();
+	    RealPt buf = CPU_Pop32();
+	    Bit16u count = CPU_Pop16();
+	    CPU_Push16(count);
+	    CPU_Push32(buf);
+	    CPU_Push16(handle);
+	    
+	    /*D2_LOG("C-Lib _read(handle=%d, buffer=0x%x, len=%d)\n",
+	      handle, buf, count);*/
+	    
+	    reg_ax = bc__read(handle, Real2Host(buf), count);
+	    
+	    return 1;
     }
     case 0x0870: { // DOS_Seek
-	Bit16u handle = CPU_Pop16();
-	Bit32u pos = CPU_Pop32();
-	Bit16u whence = CPU_Pop16();
-	CPU_Push16(whence);
-	CPU_Push32(pos);
-	CPU_Push16(handle);
+	    Bit16u handle = CPU_Pop16();
+	    Bit32u pos = CPU_Pop32();
+	    Bit16u whence = CPU_Pop16();
+	    CPU_Push16(whence);
+	    CPU_Push32(pos);
+	    CPU_Push16(handle);
+	    
+	    Bit32s retval = bc_lseek(handle, pos, whence);
+	    /*D2_LOG("C-Lib lseek(Handle=0x%x, pos=%u, whence=%d, apos=%x)\n",
+	      handle, pos, whence, ((handle*2)-0x76A4)&0xFDFF);*/
 	
-	Bit32s retval = bc_lseek(handle, pos, whence);
-
-/*	D2_LOG("C-Lib lseek(Handle=0x%x, pos=%u, whence=%d, apos=%x)\n",
-	       handle, pos, whence, ((handle*2)-0x76A4)&0xFDFF);
-*/	
-	reg_ax = retval & 0xffff;
-	reg_dx = (retval >> 16) & 0xffff;
-	
-	return 1;
-	return 0;
+	    reg_ax = retval & 0xffff;
+	    reg_dx = (retval >> 16) & 0xffff;
+	    
+	    return 1;
     }
     case 0x0CB8: { // DOS_SeekEOF
 	return 0;
@@ -696,6 +726,4 @@ int seg000(unsigned short offs) {
     default: return 0;
     }
 }
-#endif
-
 }

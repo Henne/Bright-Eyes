@@ -17,11 +17,11 @@ void fill_line(PhysPt dst, unsigned short count, signed char color)
 }
 
 void fill_v_line(PhysPt dst, unsigned short count, signed char color,
-			unsigned short disp)
+			unsigned short screenwidth)
 {
 	while (count--) {
 		mem_writeb_inline(dst, color);
-		dst += disp;
+		dst += screenwidth;
 	}
 }
 

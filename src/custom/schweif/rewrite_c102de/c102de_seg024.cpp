@@ -20,7 +20,6 @@ void fill_smth(void)
 	dst = MemBase + PhysMake(datseg, 0x7a7a);
 	for (i = 104; i > 0; i--, dst += 4)
 		host_writed(dst, 0x80018001);
-
 }
 
 void fill_scene(unsigned char col)
