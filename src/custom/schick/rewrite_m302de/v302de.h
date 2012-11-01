@@ -305,6 +305,10 @@ extern Bit8u* dialog_text[];
 #define host_readw(p) *(Bit16u*)(p)
 #define host_readd(p) *(Bit32u*)(p)
 
+#define host_readbs(p) *(Bit8s*)(p)
+#define host_readws(p) *(Bit16s*)(p)
+#define host_readds(p) *(Bit32s*)(p)
+
 #define host_writeb(p, d)	(*(Bit8u*)(p) = d)
 #define host_writew(p, d)	(*(Bit16u*) = d)
 #define host_writed(p, d)	(*(Bit32u*)(p) = d)
