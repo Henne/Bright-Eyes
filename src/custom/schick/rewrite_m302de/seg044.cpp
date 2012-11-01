@@ -5,7 +5,9 @@
 
 #include "string.h"
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -13,7 +15,9 @@
 #include "seg007.h"
 #include "seg038.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * copy_ani_seq() - copies an animation sequence
@@ -246,7 +250,6 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 	signed short x_caster, y_caster;
 	Bit16s dir, dir2;
 
-	Bit8u *lp1_bak;
 
 	/* get a pointer from an array where the Monster-ID serves as index */
 	lp2 = Real2Host(ds_readd(0x2555 + host_readb(p + 1) * 4));
@@ -276,7 +279,6 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 		l1 = 16;
 
 	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
-	lp1_bak = lp1;
 
 	/* this is true if a monster attacks a hero */
 	if (v2 == 4)
@@ -355,12 +357,8 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 				0xf3);
 	}
 
-#if 0
-	while (lp1_bak < lp1) {
-		D1_INFO("%x ", *lp1_bak++);
-	}
-	D1_INFO("\n");
-#endif
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

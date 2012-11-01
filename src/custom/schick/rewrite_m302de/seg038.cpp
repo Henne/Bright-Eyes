@@ -6,13 +6,17 @@
  *      Functions uncalled rewritten 0/1
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
 #include "seg006.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * FIG_search_obj_on_cb - searches an object on the chessboard
@@ -92,4 +96,6 @@ unsigned short FIG_count_smth(Bit8u *p) {
 	return count;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
