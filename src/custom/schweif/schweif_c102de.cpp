@@ -647,34 +647,6 @@ static int n_seg043(unsigned short offs)
 
 }
 
-static int n_seg043(unsigned short offs)
-{
-	switch (offs) {
-	case 0x0c: {
-		CPU_Pop16();
-		Bit16u mode = CPU_Pop16();
-		CPU_Push16(mode);
-		D2_LOG("set_video_mode(0x%x);\n", mode);
-		set_video_mode((unsigned char)mode);
-		return 1;
-	}
-	case 0x24: {
-		CPU_Pop16();
-		Bit16u page = CPU_Pop16();
-		CPU_Push16(page);
-		D2_LOG("set_display_page(0x%x);\n", page);
-		set_display_page((unsigned char)page);
-		return 1;
-	}
-	default:
-		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
-		exit(1);
-	}
-
-	return 0;
-
-}
-
 int schweif_nearcall_c102de(unsigned offs) {
 	unsigned short segm = SegValue(cs)-relocation;
 	int ret = 0;
