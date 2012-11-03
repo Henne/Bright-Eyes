@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 12/39
+ *	Functions rewritten 13/39
  *
 */
 
@@ -13,8 +13,10 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg098.h"
 
 namespace M302de {
 
@@ -140,6 +142,33 @@ void spell_heptagon(void)
 {
         D1_INFO("Zauberspruch \"Heptagon\" ist nicht implementiert\n");
 	ds_writew(0xac0e, -2);
+}
+
+void spell_kraehenruf(void)
+{
+	signed short pa_value;
+	signed short caster_level;
+	signed short i, damage;
+
+
+	caster_level = host_readbs(get_spelluser() + 0x27) + 2;
+
+	pa_value = get_attackee_parade();
+
+	damage = 0;
+
+	for (i = 0; i < caster_level; i++) {
+
+		/* only 40 % chance of success */
+		if (random_schick(20) > 8)
+			continue;
+
+		if (random_schick(20) > pa_value) {
+			damage++;
+		}
+	}
+
+	FIG_do_spell_damage(damage);
 }
 
 void spell_elementare(void)

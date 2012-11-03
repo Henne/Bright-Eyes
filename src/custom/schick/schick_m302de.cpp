@@ -4546,7 +4546,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x89: {
-		return 0;
+		spell_kraehenruf();
+		return 1;
 	}
 	case 0x8e: {
 		return 0;

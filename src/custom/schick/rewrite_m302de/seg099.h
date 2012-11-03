@@ -26,6 +26,8 @@ void spell_geister_bannen(void);
 void spell_geister_rufen(void);
 /* 0x84 */
 void spell_heptagon(void);
+/* 0x89 */
+void spell_kraehenruf(void);
 
 /* Elemente / Elements */
 
