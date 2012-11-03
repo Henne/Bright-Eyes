@@ -3442,8 +3442,11 @@ static int seg044(unsigned short offs) {
 		Bit16u v6 = CPU_Pop16();
 
 		D1_LOG("seg044_002a(%d, %s, %d, %d, %d, %d, %d)\n",
-			v1, schick_getCharname(p), v2, obj1, obj2, v5, v6);
-		seg044_002a(v1, Real2Host(p), v2, obj1, obj2, v5, v6);
+			v1, schick_getCharname(p), v2,
+			(Bit8s)obj1, (Bit8s)obj2, v5, v6);
+
+		seg044_002a(v1, Real2Host(p), v2,
+			(Bit8s)obj1, (Bit8s)obj2, v5, v6);
 
 		CPU_Push16(v6);
 		CPU_Push16(v5);
