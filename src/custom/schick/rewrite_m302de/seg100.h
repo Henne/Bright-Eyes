@@ -19,6 +19,9 @@ void spell_blitz();
 //0x52
 void spell_ecliptifactus();
 
+/* 0x6b */
+void spell_radau();
+
 /* 0x70 */
 void spell_saft_kraft(void);
 /* 0x75 */

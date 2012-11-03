@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 11/20
+ *	Functions rewritten 12/20
  *
 */
 
@@ -16,6 +16,7 @@
 #include "seg007.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg099.h"
 
 namespace M302de {
 
@@ -156,6 +157,11 @@ void spell_ecliptifactus()
 		ds_writew(0xac0e, -2);
 	}
 
+}
+
+void spell_radau(void)
+{
+	spell_kraehenruf();
 }
 
 void spell_saft_kraft(void)

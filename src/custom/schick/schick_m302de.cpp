@@ -4664,7 +4664,8 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x6b: {
-		return 0;
+		spell_radau();
+		return 1;
 	}
 	case 0x70: {
 		spell_saft_kraft();
