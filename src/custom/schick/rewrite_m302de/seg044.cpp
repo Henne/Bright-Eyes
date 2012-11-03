@@ -220,7 +220,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 		host_writeb(lp1, 0x00);
 		lp1++;
 
-		lp1 += copy_ani_seq(lp1, host_readw(hero + 0x28), 2);
+		lp1 += copy_ani_seq(lp1, host_readw(lp2 + 0x28), 2);
 	}
 
 	host_writeb(lp1, 0xff);
