@@ -5,8 +5,11 @@
  *
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -18,7 +21,9 @@
 #include "seg097.h"
 #include "seg099.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* Clairvoyance / Hellsicht */
 
@@ -40,7 +45,9 @@ void spell_penetrizzel(void)
 
 void spell_sensibar()
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Sensibar\" ist nicht implementiert\n");
+#endif
 }
 
 /* Illusion */
@@ -74,7 +81,9 @@ void spell_duplicatus()
 
 void spell_harmlos()
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Harmlos\" ist nicht implementiert\n");
+#endif
 }
 
 /* Combat / Kampf */
@@ -239,12 +248,18 @@ void spell_scharfes_auge(void)
 /* Communication / Verstaendigung */
 void spell_hexenblick()
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Hexenblick\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_necropathia()
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Necropathia\" ist nicht implementiert\n");
+#endif
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

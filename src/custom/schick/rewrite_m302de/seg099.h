@@ -1,20 +1,24 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* Dispel / Antimagie */
 
-//0x25
+/* 0x25 */
 void spell_destructibo();
-//0x2a
+/* 0x2a */
 void spell_gardanium();
+
 
 /* Domination / Beherrschung */
 
 /* 0x43 */
 void spell_boeser_blick();
-//0x48
+/* 0x48 */
 void spell_grosse_gier();
-//0x4d
+/* 0x4d */
 void spell_grosse_ver();
+
 
 /* Demonologie / Demonology */
 
@@ -29,6 +33,7 @@ void spell_heptagon(void);
 /* 0x89 */
 void spell_kraehenruf(void);
 
+
 /* Elemente / Elements */
 
 /* 0x93 */
@@ -38,4 +43,6 @@ void spell_nihilatio(void);
 /* 0x9d */
 void spell_solidirid(void);
 
+#if !defined(__BORLANDC__)
 }
+#endif
