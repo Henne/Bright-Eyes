@@ -27,6 +27,7 @@ namespace M302de {
 
 /* Clairvoyance / Hellsicht */
 
+/* Borlandified and identical */
 void spell_penetrizzel(void)
 {
 	signed short y;
@@ -34,9 +35,9 @@ void spell_penetrizzel(void)
 
 	for (y = -2;  y <= 2; y++) {
 		for (x = -2;  x <= 2; x++) {
-			if ((ds_readw(Y_TARGET) + y >= 0) && (ds_readw(X_TARGET) + x >= 0)) {
-				if ((ds_readb(0xbd94) - 1 >= ds_readw(X_TARGET) + x) && (ds_readw(Y_TARGET) + y <= 15)) {
-					set_automap_tile(ds_readw(X_TARGET) + x, ds_readw(Y_TARGET) + y);
+			if ((ds_readws(Y_TARGET) + y >= 0) && (ds_readws(X_TARGET) + x >= 0)) {
+				if ((ds_readb(0xbd94) - 1 >= ds_readws(X_TARGET) + x) && (ds_readws(Y_TARGET) + y <= 15)) {
+					set_automap_tile(ds_readws(X_TARGET) + x, ds_readws(Y_TARGET) + y);
 				}
 			}
 		}
