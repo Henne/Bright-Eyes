@@ -242,6 +242,8 @@ static inline char* get_itemname(unsigned short item)
 
 #else
 
+#include <DOS.H>
+
 #undef M302de_ORIGINAL_BUGFIX
 
 typedef unsigned char Bit8u;
@@ -266,6 +268,7 @@ struct hero_struct {
 
 extern char ds[0xffff];
 #define p_datseg (&ds[0x0000])
+#define datseg (FP_SEG(&ds[0x0000]))
 
 #define ds_readb(p) (*(Bit8u*)(ds + p))
 #define ds_readw(p) (*(Bit16u*)(ds + p))
@@ -297,6 +300,8 @@ extern char ds[0xffff];
 extern Bit8u* text_ltx[];
 extern Bit8u* dialog_text[];
 
+#define RealMake(s, o) ((s << 16) | o)
+
 #define Real2Phys(p) (Bit8u*)(p)
 #define Real2Host(p) (Bit8u*)(p)
 #define getString(p) (char*)(p)
@@ -315,6 +320,9 @@ extern Bit8u* dialog_text[];
 
 #define hero_dead(hero)  (((host_readb(hero + 0xaa)) & 1))
 #define hero_unc(hero)  (((host_readb(hero + 0xaa)) >> 6) & 1)
+
+#define get_spelluser() ds_readd(SPELLUSER)
+#define get_spelltarget() ds_readd(SPELLTARGET)
 
 #define get_ltx(nr) (Bit8u*)(&text_ltx[nr])
 #define get_dtp(nr) (Bit8u*)(&dialog_text[nr])
