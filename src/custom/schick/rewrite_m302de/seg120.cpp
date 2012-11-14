@@ -1,9 +1,11 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 1/11
+ *	Functions rewritten: 2/11
  */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -13,9 +15,12 @@
 #include "seg028.h"
 #include "seg063.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
-void refresh_colors()
+/* Borlandified and identical */
+void refresh_colors(void)
 {
 	set_color(p_datseg + 0xb22d, 0);
 	set_color(p_datseg + 0xb22a, 0xff);
@@ -83,4 +88,6 @@ void init_game_state(void)
 	load_splashes();
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

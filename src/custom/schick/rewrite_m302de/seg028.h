@@ -1,4 +1,7 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
 //0x2a
 void load_area_description(unsigned short);
 //0x39
@@ -21,4 +24,7 @@ void load_informer_tlk(signed short);
 void load_tlk(signed short);
 //0x7a
 void load_fightbg(signed short index);
+
+#if !defined(__BORLANDC__)
 }
+#endif
