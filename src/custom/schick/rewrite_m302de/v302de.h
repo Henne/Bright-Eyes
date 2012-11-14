@@ -6,6 +6,9 @@
  *	These functions will only work with the version mentioned above.
  */
 
+#if !defined V302DE_H
+#define V302DE_H
+
 #if !defined(__BORLANDC__)
 #include "schick.h"
 #endif
@@ -315,7 +318,7 @@ extern Bit8u* dialog_text[];
 #define host_readds(p) *(Bit32s*)(p)
 
 #define host_writeb(p, d)	(*(Bit8u*)(p) = d)
-#define host_writew(p, d)	(*(Bit16u*) = d)
+#define host_writew(p, d)	(*(Bit16u*)(p) = d)
 #define host_writed(p, d)	(*(Bit32u*)(p) = d)
 
 #define hero_dead(hero)  (((host_readb(hero + 0xaa)) & 1))
@@ -336,4 +339,5 @@ extern Bit8u* dialog_text[];
 
 #define get_cb_val(x, y) (host_readb((ds_readd(CHESSBOARD)) + y * 25 + x))
 
+#endif
 #endif

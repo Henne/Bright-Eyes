@@ -1,3 +1,4 @@
+#include "v302de.h"
 /**
 	struct nvf_desc - nvf descriptor
 	@src:	pointer to a buffer containing the nvf file
