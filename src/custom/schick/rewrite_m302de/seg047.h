@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 20 */
 void make_valuta_str(char* dst, unsigned int money);
@@ -29,4 +31,6 @@ void hero_gets_diseased(Bit8u *hero, unsigned short diseased);
 /* 70 */
 void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short probability);
 
+#if !defined(__BORLANDC__)
 }
+#endif
