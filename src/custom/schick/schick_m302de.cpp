@@ -6955,7 +6955,7 @@ static int n_seg117(unsigned short offs)
 	}
 	case 0x006a: {
 		CPU_Pop16();
-		D1_INFO("resume_traveling();\n");
+		D1_LOG("resume_traveling();\n");
 		resume_traveling();
 		return 1;
 	}
