@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //0x20
 void load_pp20(Bit16u);
@@ -16,4 +18,7 @@ unsigned short count_fight_enemies(signed short);
 void read_fight_lst(signed short);
 //0x43
 void write_fight_lst(void);
+
+#if !defined(__BORLANDC__)
 }
+#endif

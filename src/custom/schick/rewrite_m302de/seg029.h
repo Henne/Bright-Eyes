@@ -1,4 +1,7 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
 //0x20
 //static
 void draw_playmask();
@@ -22,4 +25,6 @@ void copy_forename(Bit8u *, Bit8u *);
 //static
 void load_icon(Bit16u, Bit16s, Bit16s);
 
+#if !defined(__BORLANDC__)
 }
+#endif
