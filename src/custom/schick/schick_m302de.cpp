@@ -5251,9 +5251,11 @@ static int seg117(unsigned short offs)
 //	printf("%s:0x%x()\n", __func__, offs);
 	switch (offs) {
 	case 0x34: {
+		D1_INFO("do_octopus_attack();\n");
 		return 0;
 	}
 	case 0x43: {
+		D1_INFO("do_pirate_attack();\n");
 		return 0;
 	}
 	case 0x48: {
@@ -6951,21 +6953,27 @@ static int n_seg117(unsigned short offs)
 		return 0;
 	}
 	case 0x00a0: {
+		D1_INFO("do_stag_hunt();\n");
 		return 0;
 	}
 	case 0x02a3: {
+		D1_INFO("do_boar_hunt();\n");
 		return 0;
 	}
 	case 0x047f: {
+		D1_INFO("do_bear_hunt();\n");
 		return 0;
 	}
 	case 0x060c: {
+		D1_INFO("do_snake_attack();\n");
 		return 0;
 	}
 	case 0x0981: {
+		D1_INFO("do_bison_hunt();\n");
 		return 0;
 	}
 	case 0x0a8c: {
+		D1_INFO("do_rhino_attack();\n");
 		return 0;
 	}
 	default:
