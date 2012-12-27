@@ -6938,7 +6938,14 @@ static int n_seg117(unsigned short offs)
 //	printf("%s:0x%x()\n", __func__, offs);
 	switch (offs) {
 	case 0x0000: {
-		return 0;
+		CPU_Pop16();
+		Bit16s ani_nr = CPU_Pop16();
+		CPU_Push16(ani_nr);
+
+		D1_LOG("pause_traveling(%d);\n", ani_nr);
+		pause_traveling(ani_nr);
+
+		return 1;
 	}
 	case 0x006a: {
 		return 0;
