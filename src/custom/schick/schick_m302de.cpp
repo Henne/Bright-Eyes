@@ -63,6 +63,7 @@
 #include "seg109.h"
 #include "seg111.h"
 #include "seg113.h"
+#include "seg117.h"
 #include "seg120.h"
 
 using namespace M302de;
@@ -5245,6 +5246,41 @@ static int seg113(unsigned short offs) {
 }
 
 
+static int seg117(unsigned short offs)
+{
+//	printf("%s:0x%x()\n", __func__, offs);
+	switch (offs) {
+	case 0x34: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+
 static int seg120(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -5406,7 +5442,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x14cb:	return 0;
 		case 0x14d1:	return 0;
 		case 0x14d8:	return 0;
-		case 0x14e0:	return 0;
+		case 0x14e0:	return seg117(offs);
 		case 0x14e7:	return 0;
 		case 0x14ed:	return 0;
 		case 0x14f0:	return seg120(offs);
@@ -6897,6 +6933,40 @@ static int n_seg113(unsigned offs) {
 	}
 }
 
+static int n_seg117(unsigned short offs)
+{
+//	printf("%s:0x%x()\n", __func__, offs);
+	switch (offs) {
+	case 0x0000: {
+		return 0;
+	}
+	case 0x006a: {
+		return 0;
+	}
+	case 0x00a0: {
+		return 0;
+	}
+	case 0x02a3: {
+		return 0;
+	}
+	case 0x047f: {
+		return 0;
+	}
+	case 0x060c: {
+		return 0;
+	}
+	case 0x0981: {
+		return 0;
+	}
+	case 0x0a8c: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg120(unsigned short offs)
 {
 	switch (offs) {
@@ -7480,6 +7550,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1485)) return n_seg105(offs);
 	else if (is_ovrseg(0x148c)) return n_seg106(offs);
 	else if (is_ovrseg(0x14c2)) return n_seg113(offs);
+	else if (is_ovrseg(0x14e0)) return n_seg117(offs);
 	else if (is_ovrseg(0x14f0)) return n_seg120(offs);
 
 	return 0;
