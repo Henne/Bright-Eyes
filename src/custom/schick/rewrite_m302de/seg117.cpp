@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (2xTravelevent, hunt and helpers)
- *	Functions rewritten: 1/16
+ *	Functions rewritten: 2/16
  */
 
 #if !defined(__BORLANDC__)
@@ -46,6 +46,25 @@ void pause_traveling(signed short ani_nr)
 
 	ds_writew(0x2ca4, ani_nr == 21 ? 60: 70);
 	ds_writew(0xbffd, 9);
+
+}
+
+/* static */
+void resume_traveling(void)
+{
+	ds_writew(0x2ca2, ds_readw(0xe5d9));
+	ds_writew(0x2ca4, ds_readw(0xe5d7));
+	ds_writew(0xbffd, ds_readw(0xe5d5));
+	ds_writew(0xe113, ds_readw(0xe5d3));
+
+	set_var_to_zero();
+
+	/* b = a = 1 */
+	ds_writeb(TRAVELING, 1);
+	ds_writew(0x2846, 1);
+
+	ds_writeb(0xe5d2, 0);
+	ds_writeb(0xb132, 0);
 
 }
 
