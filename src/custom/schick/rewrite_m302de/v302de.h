@@ -302,6 +302,7 @@ extern char ds[0xffff];
 
 extern Bit8u* text_ltx[];
 extern Bit8u* dialog_text[];
+extern Bit8u* city_ltx[];
 
 #define RealMake(s, o) ((s << 16) | o)
 
@@ -329,10 +330,8 @@ extern Bit8u* dialog_text[];
 
 #define get_ltx(nr) (Bit8u*)(&text_ltx[nr])
 #define get_dtp(nr) (Bit8u*)(&dialog_text[nr])
+#define get_city(nr) (Bit8u*)(&city_ltx[nr])
 
-#if 0
-#define get_ltx(nr) (Bit8u*)(Real2Host(NULL + (0x4 * nr)))
-#endif
 #define get_itemsdat(nr) (Bit8u*)(&text_ltx)
 
 #define BORLAND_FAR __far

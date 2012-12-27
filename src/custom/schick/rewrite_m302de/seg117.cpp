@@ -7,6 +7,8 @@
 #include "schick.h"
 #endif
 
+#include <stdio.h>
+
 #include "v302de.h"
 
 #include "seg002.h"
