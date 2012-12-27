@@ -4655,7 +4655,8 @@ static int seg100(unsigned short offs) {
 		return 0;
 	}
 	case 0x5c: {
-		return 0;
+		spell_fulminictus();
+		return 1;
 	}
 	case 0x61: {
 		return 0;

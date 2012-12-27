@@ -27,6 +27,9 @@ void spell_blitz();
 /* 0x52 */
 void spell_ecliptifactus();
 
+/* 0x5c */
+void spell_fulminictus();
+
 /* 0x6b */
 void spell_radau();
 

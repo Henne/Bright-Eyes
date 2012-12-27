@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 12/20
+ *	Functions rewritten 13/20
  *
 */
 
@@ -19,6 +19,7 @@
 #include "seg007.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg098.h"
 #include "seg099.h"
 
 #if !defined(__BORLANDC__)
@@ -165,6 +166,43 @@ void spell_ecliptifactus()
 		}
 	} else {
 		ds_writew(0xac0e, -2);
+	}
+
+}
+
+void spell_fulminictus(void)
+{
+	signed short damage;
+
+	if ((host_readb(get_spelluser() + 0x86) < 10) &&
+		get_hero(host_readb(get_spelluser() + 0x86) - 1) == get_spelluser()) {
+
+		/* do not attack yourself */
+
+		/* set costs to 0 */
+		ds_writew(0xac0e, 0);
+
+		/* prepare message */
+		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x1c0));
+	} else {
+		/* roll 3W6+0 damage */
+		damage = dice_roll(3, 6, 0);
+
+		/* add level to damage */
+		damage += host_readbs(get_spelluser() + 0x27);
+
+		/* reduce damage if the spellcaster has not enough AE */
+		if (host_readws(get_spelluser() + 0x64) < damage) {
+
+			damage = host_readws(get_spelluser() + 0x64);
+		}
+
+		/* do the damage */
+		FIG_do_spell_damage(damage);
+
+		/* set costs to damage AE */
+		ds_writew(0xac0e, damage);
+
 	}
 
 }
