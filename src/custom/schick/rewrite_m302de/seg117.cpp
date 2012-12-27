@@ -76,10 +76,10 @@ void resume_traveling(void)
 /* should be static */
 void do_snake_attack(void)
 {
-	Bit8u *hero_i;
 	signed short choosen_hero;
-	signed short i;
+	Bit8u *hero_i;
 	signed short l_di;
+	signed short i;
 
 	/* load snake picture */
 	pause_traveling(30);
@@ -88,7 +88,7 @@ void do_snake_attack(void)
 
 	hero_i = get_hero(0);
 
-	for (l_di = i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = l_di = 0; i <= 6; i++, hero_i += 0x6da) {
 
 		/* hero is invalid */
 		if (host_readb(hero_i + 0x21) == 0)
