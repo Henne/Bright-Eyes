@@ -5248,7 +5248,6 @@ static int seg113(unsigned short offs) {
 
 static int seg117(unsigned short offs)
 {
-//	printf("%s:0x%x()\n", __func__, offs);
 	switch (offs) {
 	case 0x34: {
 		D1_INFO("do_octopus_attack();\n");
@@ -5259,21 +5258,27 @@ static int seg117(unsigned short offs)
 		return 0;
 	}
 	case 0x48: {
+		D1_INFO("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x4d: {
+		D1_INFO("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x52: {
+		D1_INFO("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x57: {
+		D1_INFO("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x5c: {
+		D1_INFO("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x61: {
+		D1_INFO("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	default:
@@ -6937,7 +6942,6 @@ static int n_seg113(unsigned offs) {
 
 static int n_seg117(unsigned short offs)
 {
-//	printf("%s:0x%x()\n", __func__, offs);
 	switch (offs) {
 	case 0x0000: {
 		CPU_Pop16();
