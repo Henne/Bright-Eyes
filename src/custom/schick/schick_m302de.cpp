@@ -6470,9 +6470,12 @@ static int n_seg039(unsigned offs)
 
 		return 1;
 	}
+	case 0x546: {
+		return 0;
+	}
 	default:
 		D1_ERR("Uncatched func at %s:0x%x\n", __func__, offs);
-		return 0;
+		exit(1);
 	}
 }
 
