@@ -6289,7 +6289,7 @@ static int n_seg036(unsigned offs)
 		return 0;
 	}
 	case 0x39b: {
-		Bit16s CS = CPU_Pop16();
+		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
 		Bit16s v3 = CPU_Pop16();
