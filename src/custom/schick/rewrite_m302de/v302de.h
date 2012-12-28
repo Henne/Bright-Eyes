@@ -16,6 +16,7 @@
 #define UNICORN_MET	(0x2464)
 #define UNICORN_GET_MAP	(0x2465)
 #define UNICORN_TIMER	(0x2466)
+#define TWO_FIELDED_SPRITE_ID (0x25f9)	/* char[5] array */
 #define EMS_ENABLED	(0x26ab)
 #define TIMERS_DISABLED	(0x2c99)
 #define CURRENT_ANI	(0x2ccf)

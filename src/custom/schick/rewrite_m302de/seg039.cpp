@@ -220,7 +220,7 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 	} else {
 		/* if object is an enemy an needs 2 fields */
 		if (object >= 10 &&
-			is_in_byte_array(type, p_datseg + 0x25f9))
+			is_in_byte_array(type, p_datseg + TWO_FIELDED_SPRITE_ID))
 		{
 			signed short x_diff, y_diff;
 

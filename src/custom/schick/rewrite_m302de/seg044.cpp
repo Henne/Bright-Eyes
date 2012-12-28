@@ -369,7 +369,8 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 	host_writeb(lp1, 0xff);
 
 	/* check if the moster sprite ID needs two fields */
-	if (is_in_byte_array(host_readb(p + 1),	p_datseg + 0x25f9)) {
+	if (is_in_byte_array(host_readb(p + 1),
+		p_datseg + TWO_FIELDED_SPRITE_ID)) {
 			memcpy(p_datseg + 0xdab4 + v1 * 0xf3,
 				p_datseg + 0xd8ce + v1 * 0xf3,
 				0xf3);
