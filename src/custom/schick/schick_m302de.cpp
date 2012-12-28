@@ -5260,7 +5260,7 @@ static int seg117(unsigned short offs)
 		return 0;
 	}
 	case 0x48: {
-		D1_INFO("%s:0x%x()\n", __func__, offs);
+		D1_INFO("wilderness_events();\n");
 		return 0;
 	}
 	case 0x4d: {
