@@ -112,7 +112,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	/* Terrible hack:
 		if the current fight is 0xbc, set MR to 5 (Travel-Event 84),
 		if the current fight is 0xc0, and the enemy
-		is no "Orkcachampion" then set a flag */
+		is no "Orkchampion" then set a flag */
 	if (ds_readw(CURRENT_FIG_NR) == 0xbc)
 		host_writeb(sheet + 0x19, 5);
 	else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(sheet) == 0x48)
@@ -306,7 +306,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
 	ds_writed(0xe07d, ds_readd(0xd86e));
 	ds_writeb(0xe07a, 0);
 
-	/* add and sub in place */
+	/* TODO: add and sub in place */
 	ds_writew(0xd86e, ds_readw(0xd86e) + 0x508);
 	ds_writed(0xe370, ds_readd(0xe370) - 0x508);
 	ds_writeb(0xe077, 0x63);
