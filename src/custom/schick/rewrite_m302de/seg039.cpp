@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -14,7 +16,9 @@
 #include "seg007.h"
 #include "seg032.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* is used at selecting a target */
 signed short seg039_0000(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4) {
@@ -30,8 +34,11 @@ signed short seg039_0023(Bit8u *hero) {
 	/* make a pointer to the entry of ITEMS.DAT */
 	ptr = get_itemsdat(weapon);
 
+
+#if !defined(__BORLANDC__)
 	D1_LOG("weapon 0x%x +2 0x%x +3 0x%x\n", weapon,
 		host_readb(ptr + 2), host_readb(ptr + 3));
+#endif
 
 	/* not a weapon */
 	if (((host_readb(ptr + 2) >> 1) & 1) == 0)
@@ -372,4 +379,6 @@ void FIG_init_heroes()
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
