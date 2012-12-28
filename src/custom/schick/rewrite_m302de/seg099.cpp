@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 13/39
+ *	Functions rewritten 14/39
  *
 */
 
@@ -185,6 +185,12 @@ void spell_nihilatio(void)
 void spell_solidirid(void)
 {
         D1_INFO("Zauberspruch \"Solidirid\" ist nicht implementiert\n");
+}
+
+void spell_motoricus(void)
+{
+        D1_INFO("Zauberspruch \"Motoricus\" ist nicht implementiert\n");
+	ds_writew(0xac0e, -2);
 }
 
 }

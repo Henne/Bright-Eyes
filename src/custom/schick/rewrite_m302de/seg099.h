@@ -43,6 +43,12 @@ void spell_nihilatio(void);
 /* 0x9d */
 void spell_solidirid(void);
 
+
+/* Bewegung / Movement */
+
+/* 0xac */
+void spell_motoricus(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif
