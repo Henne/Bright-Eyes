@@ -11,6 +11,9 @@ void fill_enemy_sheet(unsigned short, signed char, unsigned char);
 //0x2f
 unsigned short place_obj_on_cb(unsigned short, unsigned short, signed short, signed char, signed char);
 
+/* 0x34 */
+void FIG_load_enemy_sprites(Bit8u *, signed char, signed char);
+
 //0x3e
 void FIG_init_heroes();
 #if !defined(__BORLANDC__)

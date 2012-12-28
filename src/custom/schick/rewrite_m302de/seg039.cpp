@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg039 (fight)
- *	Functions rewritten 5/7
+ *	Functions rewritten 6/7
 */
 
 #include <stdlib.h>
@@ -12,8 +12,12 @@
 
 #include "v302de.h"
 
+#include "common.h"
+
+#include "seg002.h"
 #include "seg006.h"
 #include "seg007.h"
+#include "seg027.h"
 #include "seg032.h"
 
 #if !defined(__BORLANDC__)
@@ -256,6 +260,89 @@ unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short 
 	FIG_set_cb_field(y, x, (signed char)object);
 
 	return 1;
+}
+
+void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
+{
+	struct nvf_desc nvf;
+	signed short l1;
+
+	ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(ptr + 1) * 5));
+	ds_writeb(0xe068, host_readbs(ptr + 0x27));
+	ds_writeb(0xe069, v1);
+	ds_writeb(0xe06a, v2);
+
+	ds_writeb(0xe06b,
+		ds_readb(0x1531 + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
+
+	ds_writeb(0xe06c,
+		ds_readb(0x1532 + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
+
+	if (is_in_byte_array(host_readbs(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+		/* sprite uses two fields */
+
+		ds_writeb(0xe06f, ds_readbs(0x6030 + host_readbs(ptr + 0x27)));
+		ds_writeb(0xe071, ds_readbs(0x6034 + host_readbs(ptr + 0x27)));
+
+		/* TODO: b = a = ++a; */
+		ds_writeb(0xe36f, ds_readb(0xe36f) + 1);
+		ds_writeb(0xe079, ds_readb(0xe36f));
+	} else {
+		/* sprite uses one field */
+		ds_writeb(0xe06f, 0);
+		ds_writeb(0xe071, 0x1f);
+		ds_writeb(0xe079, 0xff);
+	}
+
+	ds_writeb(0xe070, 0);
+	ds_writeb(0xe072, 0x27);
+	ds_writeb(0xe06d, 0x28);
+	ds_writeb(0xe06e, 0x20);
+	ds_writeb(0xe07b, 1);
+	ds_writeb(0xe07c, host_readbs(ptr + 1));
+	ds_writeb(0xe073, -1);
+	ds_writeb(0xe075, -1);
+	ds_writeb(0xe074, -1);
+	ds_writed(0xe07d, ds_readd(0xd86e));
+	ds_writeb(0xe07a, 0);
+
+	/* add and sub in place */
+	ds_writew(0xd86e, ds_readw(0xd86e) + 0x508);
+	ds_writed(0xe370, ds_readd(0xe370) - 0x508);
+	ds_writeb(0xe077, 0x63);
+
+	ds_writeb(0xe078, host_readb(ptr + 0x35) == 0 ? 1 : 0);
+
+	if (is_in_byte_array(host_readb(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+
+		nvf.src = Real2Host(load_fight_figs(ds_readw(0xe066)));
+		nvf.dst = Real2Host(ds_readd(0xe07d));
+		nvf.nr = ds_readbs(0xe068);
+		nvf.type = 0;
+		nvf.width = (Bit8u*)&l1;
+		nvf.height = (Bit8u*)&l1;
+		process_nvf(&nvf);
+		ds_writeb(0xe073, 0);
+	}
+
+	host_writeb(ptr + 0x26, FIG_add_to_list(-1));
+
+	if (is_in_byte_array(host_readb(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+
+		ds_writeb(0xe069, v1 + ds_readbs(0x6018 + host_readbs(ptr + 0x27) * 4));
+		ds_writeb(0xe06a, v2 + ds_readbs(0x601a + host_readbs(ptr + 0x27) * 4));
+
+		ds_writeb(0xe06b, ds_readb(0xe06b)  + ds_readb(0x6028 + host_readbs(ptr + 0x27)));
+		ds_writeb(0xe06c, ds_readb(0xe06c)  + ds_readb(0x602c + host_readbs(ptr + 0x27)));
+		ds_writeb(0xe06f, ds_readb(0x6038 + host_readbs(ptr + 0x27)));
+		ds_writeb(0xe071, ds_readb(0x603c + host_readbs(ptr + 0x27)));
+		ds_writeb(0xe070, 0);
+		ds_writeb(0xe072, 0x27);
+		ds_writeb(0xe07b, 1);
+		ds_writeb(0xe077, 10);
+		ds_writeb(0xe079, ds_readb(0xe36f) + 20);
+		ds_writeb(0xe35a + ds_readbs(0xe36f), FIG_add_to_list(-1));
+	}
 }
 
 void FIG_init_heroes()

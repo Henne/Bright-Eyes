@@ -3289,7 +3289,18 @@ static int seg039(unsigned short offs) {
 			return 1;
 		}
 		case 0x34: {
-			return 0;
+			RealPt p = CPU_Pop32();
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			CPU_Push32(p);
+
+			D1_LOG("FIG_load_enemy_sprites(%x, %d, %d);\n", p, v1, v2);
+			FIG_load_enemy_sprites(Real2Host(p),
+				(signed char)v1, (signed char)v2);
+
+			return 1;
 		}
 		case 0x39: {
 			return 0;
@@ -6471,7 +6482,19 @@ static int n_seg039(unsigned offs)
 		return 1;
 	}
 	case 0x546: {
-		return 0;
+		Bit16u CS = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		D1_LOG("FIG_load_enemy_sprites(%x, %d, %d);\n", p, v1, v2);
+		FIG_load_enemy_sprites(Real2Host(p),
+			(signed char)v1, (signed char)v2);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched func at %s:0x%x\n", __func__, offs);
