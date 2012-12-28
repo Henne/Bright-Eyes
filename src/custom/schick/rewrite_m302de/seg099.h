@@ -48,6 +48,8 @@ void spell_solidirid(void);
 
 /* 0xac */
 void spell_motoricus(void);
+/* 0xb1 */
+void spell_spurlos(void);
 
 #if !defined(__BORLANDC__)
 }

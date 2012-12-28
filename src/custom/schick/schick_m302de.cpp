@@ -4576,7 +4576,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xb1: {
-		return 0;
+		spell_spurlos();
+		return 1;
 	}
 	case 0xb6: {
 		return 0;
