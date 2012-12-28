@@ -6413,6 +6413,69 @@ static int n_seg037(unsigned offs) {
 	}
 }
 
+static int n_seg039(unsigned offs)
+{
+
+	switch(offs) {
+
+	case 0x23: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = seg039_0023(Real2Host(hero));
+		D1_LOG("seg039_0023(%s) = %d\n",
+			schick_getCharname(hero), (signed short)reg_ax);
+
+		return 1;
+	}
+	case 0x97: {
+		CPU_Pop16();
+		unsigned short sheet_nr = CPU_Pop16();
+		unsigned short enemy_id_16 = CPU_Pop16();
+		unsigned short round_16 = CPU_Pop16();
+		CPU_Push16(round_16);
+		CPU_Push16(enemy_id_16);
+		CPU_Push16(sheet_nr);
+
+		signed char enemy = (signed char)(enemy_id_16 & 0xff);
+		signed char round = (signed char)(round_16 & 0xff);
+
+		D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
+			sheet_nr, enemy, round);
+
+		fill_enemy_sheet(sheet_nr, enemy, round);
+
+		return 1;
+	}
+	case 0x317: {
+		CPU_Pop16();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		signed short object = CPU_Pop16();
+		unsigned short v2_16 = CPU_Pop16();
+		unsigned short dir_16 = CPU_Pop16();
+		CPU_Push16(dir_16);
+		CPU_Push16(v2_16);
+		CPU_Push16(object);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		signed char v2 = (signed char)(v2_16 & 0xff);
+		signed char dir = (signed char)(dir_16 & 0xff);
+
+		reg_ax = place_obj_on_cb(x, y, object, v2, dir);
+		D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
+				x, y, object, v2, dir, reg_ax);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched func at %s:0x%x\n", __func__, offs);
+		return 0;
+	}
+}
+
 static int n_seg045(unsigned short offs)
 {
 	switch (offs) {
@@ -7231,65 +7294,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	/* seg039 */
-	if (is_ovrseg(0x1328)) {
-		switch(offs) {
-		case 0x23: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			CPU_Push32(hero);
-
-			reg_ax = seg039_0023(Real2Host(hero));
-			D1_LOG("seg039_0023(%s) = %d\n",
-				schick_getCharname(hero), (signed short)reg_ax);
-
-			return 1;
-		}
-		case 0x97: {
-			CPU_Pop16();
-			unsigned short sheet_nr = CPU_Pop16();
-			unsigned short enemy_id_16 = CPU_Pop16();
-			unsigned short round_16 = CPU_Pop16();
-			CPU_Push16(round_16);
-			CPU_Push16(enemy_id_16);
-			CPU_Push16(sheet_nr);
-
-			signed char enemy = (signed char)(enemy_id_16 & 0xff);
-			signed char round = (signed char)(round_16 & 0xff);
-
-			D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
-				sheet_nr, enemy, round);
-
-			fill_enemy_sheet(sheet_nr, enemy, round);
-
-			return 1;
-		}
-		case 0x317: {
-			CPU_Pop16();
-			unsigned short x = CPU_Pop16();
-			unsigned short y = CPU_Pop16();
-			signed short object = CPU_Pop16();
-			unsigned short v2_16 = CPU_Pop16();
-			unsigned short dir_16 = CPU_Pop16();
-			CPU_Push16(dir_16);
-			CPU_Push16(v2_16);
-			CPU_Push16(object);
-			CPU_Push16(y);
-			CPU_Push16(x);
-
-			signed char v2 = (signed char)(v2_16 & 0xff);
-			signed char dir = (signed char)(dir_16 & 0xff);
-
-			reg_ax = place_obj_on_cb(x, y, object, v2, dir);
-			D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
-				x, y, object, v2, dir, reg_ax);
-
-			return 1;
-		}
-		default:
-			return 0;
-		}
-	}
+	else if (is_ovrseg(0x1328)) return n_seg039(offs);
 	/* seg041 */
 	if (is_ovrseg(0x1330)) {
 		switch (offs) {
