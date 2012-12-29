@@ -77,9 +77,9 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
 		} else if (ds_readw(CURRENT_FIG_NR) == 0xb4 && host_readb(enemy) == 0x46) {
 			/* slaying Gorah make everything flee than Heshtot*/
 			for (i = 0; i < 20; i++)
-				if (ds_readb(0xd34b + 1 + i * 62) != 0x1a)
-					ds_writeb(0xd34b + 0x32 + i * 62,
-						ds_readb(0xd34b + 0x32 + i * 62) | 4);
+				if (ds_readb(ENEMY_SHEETS + 1 + i * 62) != 0x1a)
+					ds_writeb(ENEMY_SHEETS + 0x32 + i * 62,
+						ds_readb(ENEMY_SHEETS + 0x32 + i * 62) | 4);
 		}
 	}
 

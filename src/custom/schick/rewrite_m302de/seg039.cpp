@@ -75,7 +75,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 
 	/* calculate the pointers */
 	temp = Real2Host(ds_readd(0xe125)) + enemy_id * 44;
-	sheet = p_datseg + 0xd34b + sheet_nr * 62;
+	sheet = p_datseg + ENEMY_SHEETS + sheet_nr * 62;
 
 	/* erease the sheet */
 	memset(sheet, 0, 62);

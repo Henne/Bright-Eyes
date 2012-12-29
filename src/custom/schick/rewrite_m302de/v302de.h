@@ -65,6 +65,7 @@
 #define TEXTCOLOR_BG	(0xd2c7)
 #define TEXTCOLOR_FG	(0xd2c9)
 #define DTP2		(0xd2f3)
+#define ENEMY_SHEETS	(0xd34b)	/* struct enemy[20] */
 #define CHESSBOARD	(0xd852)
 #define NR_OF_ENEMIES	(0xd872)	/* ? short */
 #define WALLCLOCK_Y	(0xe10f)

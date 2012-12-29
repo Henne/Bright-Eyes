@@ -167,7 +167,7 @@ RealPt seg006_033c(short v) {
 
 	for (i = 0; i < 20; i++) {
 		if (v == (signed char)ds_readb(0xd371 + i * 62))
-			return RealMake(datseg, 0xd34b + i * 62);
+			return RealMake(datseg, ENEMY_SHEETS + i * 62);
 	}
 
 	return 0;
