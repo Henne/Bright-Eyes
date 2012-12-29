@@ -56,6 +56,7 @@
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
 #define SCENARIO_BUF	(0xbd2c)
+#define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
 #define HEROS		(0xbd34)
 #define DIALOG_TEXT	(0xc3b1)
 #define CITY_LTX	(0xc3ad)

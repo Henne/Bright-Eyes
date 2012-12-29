@@ -162,7 +162,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 
 	/* set to ? */
 	host_writeb(sheet + 0x27,
-		host_readb(Real2Host(ds_readd(0xbd28)) + sheet_nr * 5 + 0x19));
+		host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + sheet_nr * 5 + 0x19));
 
 	/* copy number of ammo */
 	host_writeb(sheet + 0x37, host_readb(temp + 0x25));
@@ -377,29 +377,29 @@ void FIG_init_heroes()
 		/* check special fight */
 		if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
 			if (hero == Real2Host(ds_readd(0x3e20))) {
-				cb_x = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7a);
-				cb_y = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7b);
+				cb_x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a);
+				cb_y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b);
 				host_writeb(hero + 0x82,
-					host_readb(Real2Host(ds_readd(0xbd28)) + 0x7c));
+					host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7c));
 			} else {
 				do {
 					l_di = random_schick(6);
 
-					cb_x = host_readb(Real2Host(ds_readd(0xbd28)) + l_di * 4 + 0x7a);
-					cb_y = host_readb(Real2Host(ds_readd(0xbd28)) + l_di * 4 + 0x7b);
+					cb_x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7a);
+					cb_y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7b);
 					host_writeb(hero + 0x82,
-						host_readb(Real2Host(ds_readd(0xbd28)) + l_di * 4 + 0x7c));
+						host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7c));
 				} while (get_cb_val(cb_x, cb_y) != 0);
 			}
 		} else {
-			cb_x = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7a + 4 * l_si);
-			cb_y = host_readb(Real2Host(ds_readd(0xbd28)) + 0x7b + 4 * l_si);
+			cb_x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a + 4 * l_si);
+			cb_y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b + 4 * l_si);
 			/* Direction */
-			host_writeb(hero + 0x82, host_readb(Real2Host(ds_readd(0xbd28)) + 0x7c + 4 * l_si));
+			host_writeb(hero + 0x82, host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7c + 4 * l_si));
 		}
 
 		/* heros sleep until they appear */
-		if (host_readb(Real2Host(ds_readd(0xbd28)) + l_si * 4 + 0x7d) != 0) {
+		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_si * 4 + 0x7d) != 0) {
 			if ((host_readb(hero + 0xaa) & 1) == 0)
 				host_writeb(hero + 0xaa, host_readb(hero + 0xaa) | 2);
 		}
