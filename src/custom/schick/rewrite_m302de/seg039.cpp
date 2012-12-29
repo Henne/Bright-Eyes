@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg039 (fight)
- *	Functions rewritten 6/7
+ *	Functions rewritten 7/7 (complete)
 */
 
 #include <stdlib.h>
@@ -342,6 +342,59 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
 		ds_writeb(0xe077, 10);
 		ds_writeb(0xe079, ds_readb(0xe36f) + 20);
 		ds_writeb(0xe35a + ds_readbs(0xe36f), FIG_add_to_list(-1));
+	}
+}
+
+void FIG_init_enemies(void)
+{
+	signed short i;
+	signed short x, y;
+
+	/* Cleanup the old enemy tables */
+	for (i = 0; i < 20; i++) {
+
+		if (ds_readbs(ENEMY_SHEETS + 38 + i * 62) != -1) {
+
+			FIG_remove_from_list(ds_readbs(ENEMY_SHEETS + 38 + i * 62), 0);
+
+			ds_writeb(ENEMY_SHEETS + 38 + i * 62, -1);
+		}
+	}
+
+	ds_writew(NR_OF_ENEMIES, 0);
+
+
+	/* Fill the tables with new values */
+	for (i = 0; i < 20; i++) {
+
+		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x16) != 0) {
+
+			fill_enemy_sheet(i,
+				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x16),
+				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x1a));
+
+			/* TODO: inc a */
+			ds_writew(NR_OF_ENEMIES, ds_readw(NR_OF_ENEMIES) + 1);
+		}
+	}
+
+	/* place the enemies on the chessboard */
+	for (i = 0; i < ds_readw(NR_OF_ENEMIES); i++) {
+
+		x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x17);
+		y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x18);
+
+
+		/* place only the enemies from round 0 */
+		if (!host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x1a)) {
+
+			place_obj_on_cb(x, y, i + 10,
+				ds_readb(ENEMY_SHEETS + 1 + i * 62),
+				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x19));
+		}
+
+		/* load the sprites */
+		FIG_load_enemy_sprites(p_datseg + ENEMY_SHEETS + i * 62, x, y);
 	}
 }
 

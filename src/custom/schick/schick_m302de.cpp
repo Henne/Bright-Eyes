@@ -3303,7 +3303,9 @@ static int seg039(unsigned short offs) {
 			return 1;
 		}
 		case 0x39: {
-			return 0;
+			D1_LOG("FIG_init_enemies();\n");
+			FIG_init_enemies();
+			return 1;
 		}
 		case 0x3e: {
 			D1_LOG("FIG_init_heroes();\n");
