@@ -116,7 +116,7 @@ unsigned short FIG_choose_next_enemy() {
 				0, 0, 0, 0, 0};
 	do {
 
-		retval = random_schick(ds_readw(0xd872)) - 1;
+		retval = random_schick(ds_readw(NR_OF_ENEMIES)) - 1;
 		tries[retval]++;
 
 		if (++loop_cnt > 200) {
@@ -136,7 +136,7 @@ unsigned short FIG_choose_next_enemy() {
 			 * interesting bits
 			 */
 			enemy = p_datseg + 0xd34b;
-			for (i = 0; i < ds_readw(0xd872); i++, enemy += 62) {
+			for (i = 0; i < ds_readw(NR_OF_ENEMIES); i++, enemy += 62) {
 				D1_ERR("Enemy %02d %x %x\n",
 					i, host_readb(enemy),
 					host_readb(enemy + 0x28));
