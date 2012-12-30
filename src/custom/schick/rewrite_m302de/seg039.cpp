@@ -25,13 +25,15 @@ namespace M302de {
 #endif
 
 /* is used at selecting a target */
-signed short seg039_0000(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4) {
+signed short seg039_0000(signed short v1, signed short v2, signed short v3, signed short v4)
+{
 	return abs(v1 - v3) + abs(v2 - v4);
 }
 
 signed short seg039_0023(Bit8u *hero) {
 	Bit8u *ptr;
-	unsigned short weapon;
+	register signed short weapon;
+	register signed short retval = -1;
 
 	/* get equipped weapon of the hero */
 	weapon = host_readw(hero + 0x1c0);
@@ -39,26 +41,21 @@ signed short seg039_0023(Bit8u *hero) {
 	ptr = get_itemsdat(weapon);
 
 
-#if !defined(__BORLANDC__)
-	D1_LOG("weapon 0x%x +2 0x%x +3 0x%x\n", weapon,
-		host_readb(ptr + 2), host_readb(ptr + 3));
-#endif
-
 	/* not a weapon */
-	if (((host_readb(ptr + 2) >> 1) & 1) == 0)
-		return -1;
+	if (((host_readb(ptr + 2) >> 1) & 1)) {
 
-	/* weapons are not MagicStaffs or Fightstaffs */
-	if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45)
-		return 5;
+		/* weapons are not MagicStaffs or Fightstaffs */
+		if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45)
+			retval =  5;
 
-	if (host_readb(ptr + 3) == 7)
-		return 3;
+		else if (host_readb(ptr + 3) == 7)
+			retval = 3;
 
-	if (host_readb(ptr + 3) == 8)
-		return 4;
+		else if (host_readb(ptr + 3) == 8)
+			retval = 4;
+	}
 
-	return -1;
+	return retval;
 }
 
 /**
@@ -69,9 +66,9 @@ signed short seg039_0023(Bit8u *hero) {
  */
 void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round) {
 
-	Bit8u *sheet;
 	Bit8u *temp;
-	unsigned short i;
+	Bit8u *sheet;
+	signed short i;
 
 	/* calculate the pointers */
 	temp = Real2Host(ds_readd(0xe125)) + enemy_id * 44;
@@ -87,6 +84,8 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 
 	/* roll attributes  and save them to the sheet */
 	for (i = 0; i < 7; i++) {
+
+		/* TODO: a = b = dice_template() */
 		signed char tmp;
 
 		tmp = (signed char)dice_template(host_readw(temp + i * 2 + 3));
@@ -97,11 +96,12 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	/* roll out LE and save it to the sheet */
 	host_writew(sheet + 0x11, dice_template(host_readw(temp + 0x11)));
 	/* recalculate LE = LE / 6 * 5; */
-	host_writew(sheet + 0x11, host_readw(sheet + 0x11) / 6 * 5);
+	host_writew(sheet + 0x11, host_readws(sheet + 0x11) / 6 * 5);
 	/* copy LE*/
 	host_writew(sheet + 0x13, host_readw(sheet + 0x11));
 
 	/* roll out AE and save it to the sheet */
+	/* TODO: a = b = dice_template() */
 	host_writew(sheet + 0x17, dice_template(host_readw(temp + 0x13)));
 	host_writew(sheet + 0x15, host_readw(sheet + 0x17));
 
@@ -137,7 +137,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writeb(sheet + 0x22, host_readb(temp + 0x1f));
 
 	/* set BP to 10 if greater */
-	if (host_readb(sheet + 0x22) > 10)
+	if (host_readbs(sheet + 0x22) > 10)
 		host_writeb(sheet + 0x22, 10);
 
 	/* copy imunnity against non-magicial weapons ? */
@@ -196,7 +196,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
  */
 unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short object, signed char type, signed char dir) {
 
-	unsigned short i;
+	signed short i;
 
 	/* check if an object is already on that field */
 	if (get_cb_val(x, y) > 0)
@@ -347,8 +347,9 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
 
 void FIG_init_enemies(void)
 {
-	signed short i;
-	signed short x, y;
+	register signed short i;
+	register signed short x;
+	signed short y;
 
 	/* Cleanup the old enemy tables */
 	for (i = 0; i < 20; i++) {
