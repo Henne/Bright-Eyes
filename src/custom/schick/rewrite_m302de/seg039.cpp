@@ -115,7 +115,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		is no "Orkchampion" then set a flag */
 	if (ds_readw(CURRENT_FIG_NR) == 0xbc)
 		host_writeb(sheet + 0x19, 5);
-	else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(sheet) == 0x48)
+	else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(sheet) != 0x48)
 			host_writeb(sheet + 0x31,
 				host_readb(sheet + 0x31) | 0x20);
 
