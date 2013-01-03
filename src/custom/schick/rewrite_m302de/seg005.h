@@ -15,7 +15,7 @@ RealPt FIG_name_1st_case(unsigned short, volatile unsigned short);
 //static
 unsigned short fight_printer();
 
-void seg005_0598(Bit16u);
+void draw_fight_screen(Bit16u);
 //static
 void set_delay_timer();
 //static

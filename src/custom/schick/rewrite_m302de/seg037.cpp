@@ -78,6 +78,7 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	return retval;
 }
 
+#if defined(__BORLANDC__)
 /* DONOTBYPASS */
 /* Borlandified and identical */
 void seg037_00ae(Bit8u *enemy, signed short a2)
@@ -179,6 +180,7 @@ void seg037_00ae(Bit8u *enemy, signed short a2)
 
 	FIG_init_list_elem(a2 + 10);
 }
+#endif
 
 
 /**
