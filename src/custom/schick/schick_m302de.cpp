@@ -6394,7 +6394,7 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x417: {
-		CPU_Pop16();
+		Bit16u CS = CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		Bit16s dir = CPU_Pop16();
@@ -6406,7 +6406,8 @@ static int n_seg037(unsigned offs) {
 		reg_ax = test_foe_range_attack(x, y, dir, v4);
 		D1_LOG("test_foe_range_attack(%d, %d, %d, %d); = %d attacker = %d\n",
 			x, y, dir, v4, reg_ax, get_cb_val(x, y));
-		return 1;
+		CPU_Push16(CS);
+		return 0;
 	}
 	case 0x725: {
 		return 0;
