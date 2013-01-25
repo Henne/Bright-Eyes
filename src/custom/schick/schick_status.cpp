@@ -229,54 +229,6 @@ static void schick_status_dng_thorwal(unsigned long i) {
 	status_copy[i]=status_ingame[i];
 }
 
-/* In commit c927abe7213183d6117743ec01589aa31f16b9f1 a Bug was
- * fixed, which does not set magical item as magical when you get them.
- * This will fix them.
-*/
-static void fix_broken_magical_items(void)
-{
-	Bit8u *item_p;
-	Bit8u *inv_p;
-	Bit8u *hero;
-	int pos, i;
-
-	for (i = 0; i < 7; i++) {
-
-		hero = get_hero(i);
-
-		/* not a valid hero */
-		if (host_readb(hero + 0x21) == 0)
-			continue;
-
-		/* check all items */
-		for (pos = 0; pos < 23; pos++) {
-
-			inv_p = hero + 0x196 + pos * 14;
-
-			item_p = get_itemsdat(host_readw(inv_p));
-
-			/* Item is not stackable, but has stackcounter.. */
-			if ((((host_readb(item_p + 2) >> 4) & 1) == 0) &&
-				(host_readw(inv_p + 2) != 0) &&
-				/* .. and should be magical, but is not set in inventory */
-				(host_readb(item_p + 0x0b) != 0) &&
-				((host_readb(inv_p + 4) & 0x80) == 0)) {
-
-				/* set magical flag */
-				host_writeb(inv_p + 4,
-					host_readb(inv_p + 4) | 0x08);
-
-				/* reset stack counter */
-				host_writew(inv_p + 2, 0);
-
-				D1_INFO("Bugfix: magischer Gegenstand von %s repariert\n",
-					(char*)hero + 0x10);
-
-			}
-		}
-	}
-}
-
 static void schick_cmp_heros()
 {
 
@@ -291,8 +243,6 @@ static void schick_cmp_heros()
 	}
 
 	hero = get_hero(0);
-
-	fix_broken_magical_items();
 
 	for (i = 0; i < 7; i++, hero += 0x6da) {
 
