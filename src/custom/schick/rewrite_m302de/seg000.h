@@ -1,3 +1,4 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
 
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
@@ -12,3 +13,12 @@ Bit16s bc__creat(RealPt, Bit16u);
 Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 }
+#else
+#include <IO.H>
+#define bc_lseek lseek
+#define bc__read read
+#define bc__write write
+#define bc_close close
+
+#define DOS_SEEK_SET SEEK_SET
+#endif
