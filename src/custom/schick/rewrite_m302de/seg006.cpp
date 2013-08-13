@@ -76,44 +76,44 @@ void FIG_draw_figures(void)
 	do {
 
 		if (host_readb(list_i + 0x12) == 1) {
-			l_si = ((signed char)host_readb(list_i + 3)
-				+ (signed char)host_readb(list_i + 4)) * 10
+			l_si = (host_readbs(list_i + 3)
+				+ host_readbs(list_i + 4)) * 10
 				+ l1
-				- abs((signed char)host_readb(list_i + 8)) / 2;
+				- abs(host_readbs(list_i + 8)) / 2;
 
-			l_di = ((signed char)host_readb(list_i + 3)
-				- (signed char)host_readb(list_i + 4)) * 5
+			l_di = (host_readbs(list_i + 3)
+				- host_readbs(list_i + 4)) * 5
 				+ l2
-				- (signed char)host_readb(list_i + 7);
+				- host_readbs(list_i + 7);
 
-			l_si += (signed char)host_readb(list_i + 5);
-			l_di += (signed char)host_readb(list_i + 6);
+			l_si += host_readbs(list_i + 5);
+			l_di += host_readbs(list_i + 6);
 
 			ds_writew(0xc011, l_si);
 			ds_writew(0xc013, l_di);
-			ds_writew(0xc015, l_si + (signed char)host_readb(list_i + 8) - 1);
-			ds_writew(0xc017, l_di + (signed char)host_readb(list_i + 7) - 1);
+			ds_writew(0xc015, l_si + host_readbs(list_i + 8) - 1);
+			ds_writew(0xc017, l_di + host_readbs(list_i + 7) - 1);
 			/* set gfx_src */
 			ds_writed(0xc019, host_readd(list_i + 0x17));
 
 			ds_writew(0x2990,
-				l_di + (signed char)host_readb(list_i + 0xa));
-			if ((signed short)ds_readw(0x2990) < 0)
+				l_di + host_readbs(list_i + 0xa));
+			if (ds_readws(0x2990) < 0)
 				ds_writew(0x2990, 0);
 
 			ds_writew(0x2992,
-				l_si + (signed char)host_readb(list_i + 9));
-			if ((signed short)ds_readw(0x2992) < 0)
+				l_si + host_readbs(list_i + 9));
+			if (ds_readws(0x2992) < 0)
 				ds_writew(0x2992, 0);
 
 			ds_writew(0x2994,
-				l_di + (signed char)host_readb(list_i + 0xc));
-			if ((signed short)ds_readw(0x2994) > 199)
+				l_di + host_readbs(list_i + 0xc));
+			if (ds_readws(0x2994) > 199)
 				ds_writew(0x2994, 199);
 
 			ds_writew(0x2996,
-				l_si + (signed char)host_readb(list_i + 0xb));
-			if ((signed short)ds_readw(0x2996) > 319)
+				l_si + host_readbs(list_i + 0xb));
+			if (ds_readws(0x2996) > 319)
 				ds_writew(0x2996, 319);
 
 			do_pic_copy(2);
