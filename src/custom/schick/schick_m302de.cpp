@@ -47,6 +47,7 @@
 #include "seg064.h"
 #include "seg066.h"
 #include "seg068.h"
+#include "seg072.h"
 #include "seg073.h"
 #include "seg095.h"
 #include "seg096.h"
@@ -3953,6 +3954,38 @@ static int seg071(unsigned short offs) {
 }
 
 
+static int seg072(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x2f: {
+			/* Informer */
+			return 0;
+		}
+		case 0x34: {
+			return 0;
+		}
+		case 0x39: {
+			return 0;
+		}
+		case 0x3e: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
+		case 0x48: {
+			/* Informer: Swafnild */
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg073(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -5419,7 +5452,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x13a8:	return seg069(offs);
 		case 0x13ac:	return 0;
 		case 0x13b1:	return seg071(offs);
-		case 0x13b4:	return 0;
+		case 0x13b4:	return seg072(offs);
 		case 0x13b9:	return seg073(offs);
 		case 0x13bd:	return 0;
 		case 0x13c3:	return 0;
@@ -6733,6 +6766,23 @@ static int n_seg066(unsigned offs)
 	}
 }
 
+static int n_seg072(unsigned short offs)
+{
+	switch (offs) {
+	case 0x146a: {
+		D1_LOG("count_map_parts()\n");
+		return 0;
+	}
+	case 0x148b: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+
 static int n_seg095(unsigned short offs)
 {
 	switch (offs) {
@@ -7456,6 +7506,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1386)) return n_seg063(offs);
 	else if (is_ovrseg(0x138a)) return n_seg064(offs);
 	else if (is_ovrseg(0x1392)) return n_seg066(offs);
+	else if (is_ovrseg(0x13b4)) return n_seg072(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	/* seg097 */
 	if (is_ovrseg(0x1442)) {
