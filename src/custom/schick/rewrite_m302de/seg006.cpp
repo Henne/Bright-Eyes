@@ -41,7 +41,8 @@ RealPt FIG_get_ptr(signed char v1) {
 void FIG_draw_figures(void)
 {
 	RealPt gfx_dst_bak;
-	Bit8u screen_mode[8];
+	//Bit8u screen_mode[8];
+	struct screen_rect screen_mode;
 	Bit8u *list_i;
 	signed short l1, l2;
 	signed short l_si, l_di;
@@ -53,7 +54,8 @@ void FIG_draw_figures(void)
 	ds_writed(0xc00d, ds_readd(0xd303));
 
 	/* backup a structure */
-	struct_copy(screen_mode, p_datseg + 0x2990, 8);
+	//struct_copy(screen_mode, p_datseg + 0x2990, 8);
+	screen_mode = *((struct screen_rect*)(p_datseg + 0x2990));
 
 	list_i = Real2Host(ds_readd(0xe108));
 
@@ -108,8 +110,9 @@ void FIG_draw_figures(void)
 	} while (NOT_NULL(list_i));
 
 	/* restore a structure */
-	struct_copy(p_datseg + 0x2990, screen_mode, 8);
-	ds_writed(0xc00d, gfx_dst_bak);
+	//struct_copy(p_datseg + 0x2990, screen_mode, 8);
+	*((struct screen_rect*)(p_datseg + 0x2990)) = screen_mode;
+	ds_writed(0xc00d, (Bit32u)gfx_dst_bak);
 }
 
 //static

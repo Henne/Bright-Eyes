@@ -16,3 +16,14 @@ struct nvf_desc {
 	Bit8u *width;
 	Bit8u *height;
 };
+
+/**
+ *	struct screen_rect - coordinates for a rectangle on the screen
+ *	@y1:	upper Y-Coordinate
+ *	@x1:	upper X-Coordinate
+ *	@y2:	lower Y-Coordinate
+ *	@x2:	lower X-Coordinate
+ */
+struct screen_rect {
+	short y1, x1, y2, x2;
+};
