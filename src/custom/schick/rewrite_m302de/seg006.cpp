@@ -140,7 +140,7 @@ void FIG_set_gfx() {
 	update_mouse_cursor();
 	do_pic_copy(0);
 	refresh_screen_size();
-	ds_writed(0xc00d, ptr_bak);
+	ds_writed(0xc00d, (Bit32u)ptr_bak);
 }
 
 void FIG_call_draw_pic(void)
@@ -161,8 +161,11 @@ void FIG_draw_pic(void)
 }
 
 RealPt FIG_get_hero_ptr(unsigned short v1) {
-	RealPt heros = ds_readd(HEROS);
+
+	RealPt heros;
 	unsigned short i;
+
+	heros = (RealPt)ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++)
 		if (host_readb(Real2Host(heros) + i * 0x6da + 0x81) == v1)
@@ -302,7 +305,7 @@ signed char FIG_add_to_list(signed char v) {
 	RealPt p2;
 	signed short x, y;
 
-	p1 = ds_readd(0xe37c);
+	p1 = (RealPt)ds_readd(0xe37c);
 	x = (signed char)ds_readb(0xe069);
 	y = (signed char)ds_readb(0xe06a);
 
@@ -321,7 +324,9 @@ signed char FIG_add_to_list(signed char v) {
 		host_writed(fls + 0x1f, 0);
 		host_writed(fls + 0x1b, 0);
 
-		D1_LOG("\tlist created x = %d, y = %d\n", x, y);
+#if !defined(__BORLANDC__)
+		D1_INFO("\tlist created x = %d, y = %d\n", x, y);
+#endif
 
 		return host_readb(fls + 0x10);
 	}
@@ -337,7 +342,7 @@ signed char FIG_add_to_list(signed char v) {
 	else
 		host_writeb(Real2Host(p1) + 0x10, v);
 
-	p2 = ds_readd(0xe108);
+	p2 = (RealPt)ds_readd(0xe108);
 
 	if ((signed char)ds_readb(0xe077) != -1)
 		for (; (signed char)mem_readb(Real2Phys(p2) + 3) <= x &&
@@ -346,8 +351,8 @@ signed char FIG_add_to_list(signed char v) {
 		((signed char)mem_readb(Real2Phys(p2) + 3) != x ||
 		(signed char)mem_readb(Real2Phys(p2) + 4) != y ||
 		(signed char)mem_readb(Real2Phys(p2) + 0x11) <= (signed char)ds_readb(0xe077))
-				/* p2 = p2->next */
-			 ; p2 = host_readd(Real2Host(p2) + 0x1b)) {
+			/* p2 = p2->next */
+			 ; p2 = (RealPt)host_readd(Real2Host(p2) + 0x1b)) {
 
 			/* p2->next != NULL */
 			if (host_readd(Real2Host(p2) + 0x1b) != 0)
@@ -356,14 +361,14 @@ signed char FIG_add_to_list(signed char v) {
 			/* append to end of the list */
 
 			/* p2->next = p1 */
-			host_writed(Real2Host(p2) + 0x1b, p1);
+			host_writed(Real2Host(p2) + 0x1b, (Bit32u)p1);
 			/* p1->prev = p2 */
-			host_writed(Real2Host(p1) + 0x1f, p2);
+			host_writed(Real2Host(p1) + 0x1f, (Bit32u)p2);
 			/* p1->next = NULL */
 			host_writed(Real2Host(p1) + 0x1b, 0);
-
+#if !defined(__BORLANDC__)
 			D1_LOG("\tlist appended x = %d, y = %d\n", x, y);
-
+#endif
 			return host_readb(Real2Host(p1) + 0x10);
 		}
 
@@ -373,18 +378,18 @@ signed char FIG_add_to_list(signed char v) {
 	/* if (p2->prev) */
 	if (host_readd(Real2Host(p2) + 0x1f) != 0)
 		/* p2->prev->next = p1 */
-		host_writed(Real2Host(host_readd(Real2Host(p2) + 0x1f)) + 0x1b, p1);
+		host_writed(Real2Host(host_readd(Real2Host(p2) + 0x1f)) + 0x1b, (Bit32u)p1);
 	else
 		/* FIG_list_start = p1 */
-		ds_writed(0xe108, p1);
+		ds_writed(0xe108, (Bit32u)p1);
 
 	/* p2->prev = p1 */
-	host_writed(Real2Host(p2) + 0x1f, p1);
+	host_writed(Real2Host(p2) + 0x1f, (Bit32u)p1);
 	/* p1->next = p2 */
-	host_writed(Real2Host(p1) + 0x1b, p2);
-
+	host_writed(Real2Host(p1) + 0x1b, (Bit32u)p2);
+#if !defined(__BORLANDC__)
 	D1_LOG("\tlist insert x = %d, y = %d\n", x, y);
-
+#endif
 	return host_readb(Real2Host(p1) + 0x10);
 }
 
@@ -397,8 +402,8 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
 	RealPt hero;
 	unsigned short fg_bak, bg_bak;
 
-	hero = ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
-	ds_writed(0xc019, hero + 0x2da);
+	hero = (RealPt)ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
+	ds_writed(0xc019, (Bit32u)(hero + 0x2da));
 
 	get_textcolor(&fg_bak, &bg_bak);
 	set_textcolor(0xff, 0);
@@ -449,7 +454,7 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	Bit8u *p_enemy;
 	signed short height_width;
 
-	p1 = ds_readd(0xc3a9) - 1288;
+	p1 = (RealPt)(ds_readd(0xc3a9) - 1288);
 
 	p_enemy = p_datseg + 0xd0df + id * 62;
 
@@ -482,7 +487,7 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 49);
-		ds_writed(0xc019, p1);
+		ds_writed(0xc019, (Bit32u)p1);
 		do_pic_copy(0);
 		GUI_print_string(Real2Host(GUI_name_singular(get_monname(host_readb(p_enemy)))), 1, 1);
 	} else {
@@ -491,7 +496,7 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 		ds_writew(0xc013, 150);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 189);
-		ds_writed(0xc019, p1);
+		ds_writed(0xc019, (Bit32u)p1);
 		do_pic_copy(0);
 		GUI_print_string(Real2Host(GUI_name_singular(get_monname(host_readb(p_enemy)))), 1, 193);
 	}

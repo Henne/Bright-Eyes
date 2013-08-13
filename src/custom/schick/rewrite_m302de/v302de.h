@@ -308,7 +308,7 @@ extern Bit8u* text_ltx[];
 extern Bit8u* dialog_text[];
 extern Bit8u* city_ltx[];
 
-#define RealMake(s, o) ((s << 16) | o)
+#define RealMake(s, o) (RealPt)((s << 16) | o)
 
 #define Real2Phys(p) (Bit8u*)(p)
 #define Real2Host(p) (Bit8u*)(p)
@@ -326,6 +326,8 @@ extern Bit8u* city_ltx[];
 #define host_writew(p, d)	(*(Bit16u*)(p) = d)
 #define host_writed(p, d)	(*(Bit32u*)(p) = d)
 
+#define mem_memcpy memcpy
+
 #define hero_dead(hero)  (((host_readb(hero + 0xaa)) & 1))
 #define hero_unc(hero)  (((host_readb(hero + 0xaa)) >> 6) & 1)
 
@@ -336,7 +338,13 @@ extern Bit8u* city_ltx[];
 #define get_dtp(nr) (Bit8u*)(&dialog_text[nr])
 #define get_city(nr) (Bit8u*)(&city_ltx[nr])
 
+/* Unfunctional, but compiles */
 #define get_itemsdat(nr) (Bit8u*)(&text_ltx)
+
+#define get_monname(off) (RealPt)host_readd(Real2Host(ds_readd(MONNAMES) + off * 4))
+
+#define struct_copy memcpy
+
 
 #define BORLAND_FAR __far
 
