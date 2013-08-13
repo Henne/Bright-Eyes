@@ -9,7 +9,9 @@
 
 #include "mem.h"
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 #include "common.h"
@@ -20,15 +22,18 @@
 #include "seg027.h"
 #include "seg096.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 RealPt FIG_get_ptr(signed char v1) {
-	RealPt ptr = ds_readd(0xe108);
+	RealPt ptr;
+	ptr = (RealPt)ds_readd(0xe108);
 
 	while (mem_readb(Real2Phys(ptr + 0x10)) != v1) {
 		if (mem_readd(Real2Phys(ptr + 0x1b)) == 0)
-			return ds_readd(0xe108);
-		ptr = mem_readd(Real2Phys(ptr + 0x1b));
+			return (RealPt)ds_readd(0xe108);
+		ptr = (RealPt)mem_readd(Real2Phys(ptr + 0x1b));
 	}
 	return ptr;
 }
@@ -44,7 +49,7 @@ void FIG_draw_figures(void)
 	l1 = 10;
 	l2 = 118;
 
-	gfx_dst_bak = ds_readd(0xc00d);
+	gfx_dst_bak = (RealPt)ds_readd(0xc00d);
 	ds_writed(0xc00d, ds_readd(0xd303));
 
 	/* backup a structure */
@@ -122,7 +127,7 @@ signed char FIG_set_array() {
 void FIG_set_gfx() {
 	RealPt ptr_bak;
 
-	ptr_bak = ds_readd(0xc00d);
+	ptr_bak = (RealPt)ds_readd(0xc00d);
 	ds_writew(0xc011, 0);
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
@@ -494,4 +499,6 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	set_textcolor(fg_bak, bg_bak);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
