@@ -54,12 +54,12 @@ signed char FIG_set_array() {
 
 void FIG_draw_figures(void)
 {
-	RealPt gfx_dst_bak;
-	//Bit8u screen_mode[8];
-	struct screen_rect screen_mode;
-	Bit8u *list_i;
 	signed short l1, l2;
+	//Bit8u screen_mode[8];
+	Bit8u *list_i;
+	struct screen_rect screen_mode;
 	signed short l_si, l_di;
+	RealPt gfx_dst_bak;
 
 	l1 = 10;
 	l2 = 118;
