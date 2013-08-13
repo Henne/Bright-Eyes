@@ -6770,8 +6770,10 @@ static int n_seg072(unsigned short offs)
 {
 	switch (offs) {
 	case 0x146a: {
+		CPU_Pop16();
 		D1_LOG("count_map_parts()\n");
-		return 0;
+		reg_ax = count_map_parts();
+		return 1;
 	}
 	case 0x148b: {
 		return 0;
