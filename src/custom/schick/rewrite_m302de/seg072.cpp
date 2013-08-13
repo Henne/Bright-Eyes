@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg072 (informers)
- *	Functions rewritten: 1/9
+ *	Functions rewritten: 2/9
  */
 
 #if !defined(__BORLANDC__)
@@ -8,6 +8,8 @@
 #endif
 
 #include "v302de.h"
+
+#include "seg002.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -28,6 +30,20 @@ short count_map_parts(void)
 	}
 
 	return parts;
+}
+
+/**
+ * has_intro_letter - check if a hero in the group has the introduction letter
+ *
+ */
+short has_intro_letter(void)
+{
+	/* check for the introduction letter / Empfehlungsschreiben */
+	if (get_first_hero_with_item(0xeb) != -1) {
+		return 1;
+	}
+
+	return 0;
 }
 
 #if !defined(__BORLANDC__)

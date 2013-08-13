@@ -6776,7 +6776,10 @@ static int n_seg072(unsigned short offs)
 		return 1;
 	}
 	case 0x148b: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("has_intro_letter()\n");
+		reg_ax = has_intro_letter();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
