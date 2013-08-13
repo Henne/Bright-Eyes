@@ -26,6 +26,7 @@
 namespace M302de {
 #endif
 
+/* Borlandified and identical */
 RealPt FIG_get_ptr(signed char v1) {
 	RealPt ptr;
 	ptr = (RealPt)ds_readd(0xe108);
@@ -36,6 +37,19 @@ RealPt FIG_get_ptr(signed char v1) {
 		ptr = (RealPt)mem_readd(Real2Phys(ptr + 0x1b));
 	}
 	return ptr;
+}
+
+/* Borlandified and identical */
+//static
+signed char FIG_set_array() {
+	char i;
+
+	/* find first element that is zero */
+	for (i = 0; ds_readb(0xe089 + i) != 0; i++);
+	/* make it 1 */
+	ds_writeb(0xe089 + i, 1);
+	/* return the number of the index */
+	return i;
 }
 
 void FIG_draw_figures(void)
@@ -113,18 +127,6 @@ void FIG_draw_figures(void)
 	//struct_copy(p_datseg + 0x2990, screen_mode, 8);
 	*((struct screen_rect*)(p_datseg + 0x2990)) = screen_mode;
 	ds_writed(0xc00d, (Bit32u)gfx_dst_bak);
-}
-
-//static
-signed char FIG_set_array() {
-	char i;
-
-	/* find first element that is zero */
-	for (i = 0; ds_readb(0xe089 + i) != 0; i++);
-	/* make it 1 */
-	ds_writeb(0xe089 + i, 1);
-	/* return the number of the index */
-	return i;
 }
 
 void FIG_set_gfx() {
