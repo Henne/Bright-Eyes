@@ -164,15 +164,12 @@ void FIG_draw_pic(void)
 
 RealPt FIG_get_hero_ptr(unsigned short v1) {
 
-	RealPt heros;
-	unsigned short i;
-
-	heros = (RealPt)ds_readd(HEROS);
+	signed short i;
 
 	for (i = 0; i <= 6; i++)
-		if (host_readb(Real2Host(heros) + i * 0x6da + 0x81) == v1)
-			return heros + i * 0x6da;
-	return heros;
+		if (host_readbs(Real2Host((RealPt)ds_readd(HEROS)) + i * 0x6da + 0x81) == v1)
+			return (RealPt)ds_readd(HEROS) + i * 0x6da;
+	return (RealPt)ds_readd(HEROS);
 }
 
 RealPt seg006_033c(short v) {
