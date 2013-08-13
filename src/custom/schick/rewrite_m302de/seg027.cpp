@@ -3,9 +3,13 @@
 	Functions rewritten: 8/8 (complete)
 */
 
+#if !defined(__BORLANDC__)
 #include "dos_inc.h"
 
 #include "schick.h"
+#endif
+
+#include <string.h>
 
 #include "v302de.h"
 
@@ -14,7 +18,9 @@
 #include "seg004.h"
 #include "seg009.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void load_pp20(Bit16u index)
 {
@@ -51,7 +57,7 @@ void load_pp20(Bit16u index)
 				/* successful allocation */
 
 				/* save pointer */
-				ds_writed(0x5e6a + bi * 4, buffer_ptr);
+				ds_writed(0x5e6a + bi * 4, (Bit32u)buffer_ptr);
 				/* save length */
 				ds_writed(0x5e8e + bi * 4, get_readlength2(fd));
 
@@ -123,27 +129,30 @@ RealPt load_fight_figs(signed short fig_old)
 	signed short fig = fig_old;
 
 	/* check if fig is at a known place */
-	if (fig == (signed short)ds_readw(0x2cd1))
-		return ds_readd(0xd2df);
-	if (fig == (signed short)ds_readw(0x2cd3))
-		return ds_readd(0xd2db);
+	if (fig == ds_readws(0x2cd1))
+		return (RealPt)ds_readd(0xd2df);
+	if (fig == ds_readws(0x2cd3))
+		return (RealPt)ds_readd(0xd2db);
 
 #ifdef M302de_ORIGINAL_BUGFIX
-	if (fig == -1)
+	if (fig == -1) {
+		D1_INFO("Original-Bugfix: %s(fig_old = %s)\n",
+			__func__, fig_old);
 		return ds_readd(0xd2df);
+	}
 #endif
 
-	if ((signed short)ds_readw(0x2cd3) != -1) {
+	if (ds_readws(0x2cd3) != -1) {
 		ds_writew(0x2cd1, ds_readw(0x2cd3));
 		memcpy(Real2Host(ds_readd(0xd2df)),
 			Real2Host(ds_readd(0xd2db)), 20000);
-		src = ds_readd(0xd2db);
+		src = (RealPt)ds_readd(0xd2db);
 		ds_writew(0x2cd3, fig);
 	} else if ((signed short)ds_readw(0x2cd1) != -1) {
-		src = ds_readd(0xd2db);
+		src = (RealPt)ds_readd(0xd2db);
 		ds_writew(0x2cd3, fig);
 	} else {
-		src = ds_readd(0xd2df);
+		src = (RealPt)ds_readd(0xd2df);
 		ds_writew(0x2cd1, fig);
 	}
 
@@ -189,13 +198,17 @@ RealPt load_fight_figs(signed short fig_old)
 			from_EMS(src, ems_handle, host_readd(mem_slots + i * 12 + 8));
 		} else {
 			/* is in HEAP */
+#if !defined(__BORLANDC__)
 			D1_LOG("cached from HEAP %d\n", fig);
+#endif
 			memcpy(Real2Host(src),
 				Real2Host(host_readd(mem_slots + i * 12 + 2)),
 				host_readw(mem_slots + i * 12 + 8));
 		}
 	} else {
+#if !defined(__BORLANDC__)
 		D1_LOG("not cached\n");
+#endif
 
 		/* read fig from file */
 		offset = host_readd(p_tab + (fig - 1) * 4);
@@ -212,7 +225,9 @@ RealPt load_fight_figs(signed short fig_old)
 		dst = schick_alloc_emu(len);
 
 		if (dst != 0) {
+#if !defined(__BORLANDC__)
 			D1_LOG("use HEAP for fig %d\n", fig_old);
+#endif
 			/* use heap */
 
 			for (i = 0; i < max_entries - 1; i++) {
@@ -221,7 +236,7 @@ RealPt load_fight_figs(signed short fig_old)
 			}
 
 			host_writew(mem_slots + i * 12, fig);
-			host_writed(mem_slots + i * 12 + 2, dst);
+			host_writed(mem_slots + i * 12 + 2, (Bit32u)dst);
 			host_writew(mem_slots + i * 12 + 6, 0);
 			host_writed(mem_slots + i * 12 + 8, len);
 
@@ -229,7 +244,9 @@ RealPt load_fight_figs(signed short fig_old)
 				(unsigned short)len);
 
 		} else if (ds_readb(EMS_ENABLED) != 0) {
+#if !defined(__BORLANDC__)
 			D1_LOG("use EMS for fig %d\n", fig_old);
+#endif
 
 			ems_handle = alloc_EMS(len);
 
@@ -307,7 +324,7 @@ void load_ani(const signed short nr)
 	if (i != 37) {
 		/* already buffered in EMS, get from there */
 		ems_handle = host_readw(Real2Host(ds_readd(0xe121)) + i * 8 + 2);
-		from_EMS(ds_readd(0xc3db), ems_handle,
+		from_EMS((RealPt)ds_readd(0xc3db), ems_handle,
 			host_readd(Real2Host(ds_readd(0xe121)) + i * 8 + 4));
 	} else {
 		/* load it from file */
@@ -340,20 +357,20 @@ void load_ani(const signed short nr)
 				ani_len);
 
 			/* copy data to EMS */
-			to_EMS(ems_handle, ds_readd(0xc3db), ani_len);
+			to_EMS(ems_handle, (RealPt)ds_readd(0xc3db), ani_len);
 		}
 
 		bc_close(fd);
 	}
 
-	ani_buffer = ds_readd(0xc3db);
+	ani_buffer = (RealPt)ds_readd(0xc3db);
 
 	/* set start of picture data */
 	ds_writed(ANI_MAIN_PTR,
-		host_readd(Real2Host(ds_readd(0xc3db))) + ani_buffer);
+		(Bit32u)(host_readd(Real2Host(ds_readd(0xc3db))) + ani_buffer));
 	/* set start of palette */
 	ds_writed(0xce3b,
-		host_readd(Real2Host(ds_readd(0xc3db)) + 4) + ani_buffer + 6);
+		(Bit32u)(host_readd(Real2Host(ds_readd(0xc3db)) + 4) + ani_buffer + 6));
 
 	/* read some bytes between data and palette */
 	ds_writew(0xc3e9,
@@ -581,11 +598,13 @@ void read_fight_lst(signed short nr)
 	/* read the fight entry */
 	bc__read(fd, Real2Host(ds_readd(PTR_FIGHT_LST)), 216);
 
+#if !defined(__BORLANDC__)
 	/* Improvement */
 	strncpy(fight_name, (char*)Real2Host(ds_readd(PTR_FIGHT_LST)), 20);
 	fight_name[20] = '\0';
 	D1_INFO("Lade Kampf Nr %3d\t Name \"%s\"\n", nr, fight_name);
 	/* Improvement end */
+#endif
 
 	/* close FIGHT.LST */
 	bc_close(fd);
@@ -605,7 +624,7 @@ void write_fight_lst(void)
 	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
 
 	/* write it */
-	bc__write(fd, ds_readd(PTR_FIGHT_LST), 216);
+	bc__write(fd, (RealPt)ds_readd(PTR_FIGHT_LST), 216);
 
 	/* close the file */
 	bc_close(fd);
@@ -670,4 +689,6 @@ void init_common_buffers()
 
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
