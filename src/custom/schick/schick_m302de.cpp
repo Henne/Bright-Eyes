@@ -1189,11 +1189,9 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x43fd: {
-		Bit16u nr = CPU_Pop16();
-		Bit16u first = CPU_Pop16();
-		CPU_Push16(first);
-		CPU_Push16(nr);
-		D1_LOG("draw_loc_icons(%d, %d);\n", nr, first);
+		// va_arg function are not bypassed this way
+		D1_LOG("draw_loc_icons(...);\n");
+		//draw_loc_icons(9, 10, 11, 21, 31, 41, 51, 61, 71, 81);
 		return 0;
 	}
 	case 0x4485: {

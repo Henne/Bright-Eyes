@@ -1,10 +1,11 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 87/136
+	Functions rewritten: 88/136
 */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "callback.h"
 #include "regs.h"
@@ -24,6 +25,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg010.h"
+#include "seg029.h"
 #include "seg039.h"
 #include "seg041.h"
 #include "seg047.h"
@@ -2086,6 +2088,44 @@ void set_to_ff() {
 
 	for (i = 0; i < 9; i++)
 		ds_writeb(0xbd38 + i, 0xff);
+}
+
+/* 0x43fd */
+/**
+ * draw_loc_icons - draws the icons of locations
+ * @icons:	number of icons
+ * @... :	icon ids
+ */
+void draw_loc_icons(signed short icons, ...)
+{
+	signed short icons_bak[9];
+	va_list arguments;
+	signed short i, changed;
+
+	changed = 0;
+
+	/* save icon ids in local variable */
+	for (i = 0; i < 9; i++) {
+		icons_bak[i] = ds_readbs(0xbd38 + i);
+		ds_writeb(0xbd38 + i, -1);
+	}
+
+	va_start(arguments, icons);
+
+	for (i = 0; i < icons; i++) {
+		ds_writeb(0xbd38 + i, va_arg(arguments, int));
+
+		if (ds_readbs(0xbd38 + i) != icons_bak[i]) {
+			changed = 1;
+		}
+	}
+
+	if (icons_bak[i] != -1)
+		changed = 1;
+
+	if (changed && ds_readb(0x2845) == 0) {
+		draw_icons();
+	}
 }
 
 unsigned short mod_timer(short val) {

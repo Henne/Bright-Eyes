@@ -65,6 +65,7 @@ unsigned short alloc_EMS(unsigned int bytes);
 void from_EMS(RealPt, unsigned short, unsigned int);
 void to_EMS(unsigned short, RealPt, unsigned int bytes);
 void set_to_ff();
+void draw_loc_icons(signed short, ...);
 unsigned short mod_timer(short val);
 void draw_compass();
 short can_merge_group();
