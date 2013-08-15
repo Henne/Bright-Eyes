@@ -1619,7 +1619,11 @@ static int seg004(unsigned short offs) {
 		return 1;
 	}
 	case 0x13f: {
-		return 0;
+		Bit16u v1 = CPU_Pop16();
+		CPU_Push16(v1);
+		D1_LOG("init_ani_busy_loop(%d)\n", v1);
+		init_ani_busy_loop(v1);
+		return 1;
 	}
 	case 0x15b: {
 		D1_LOG("clear_ani()\n");

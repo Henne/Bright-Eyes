@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 23/31
+	Functions rewritten: 24/31
 */
 
 #include "mem.h"
@@ -72,13 +72,29 @@ void init_ani(Bit16u v1)
 	if ((v1 & 0x7f) != 1) {
 		wait_for_vsync();
 		ds_writew(0x29ae, 1);
-	} else {
-		wait_for_vsync();
 	}
+
+	wait_for_vsync();
 }
 
 void set_var_to_zero() {
 	ds_writew(0x29ae, 0);
+}
+
+void init_ani_busy_loop(unsigned short v1)
+{
+	/* set lock */
+	ds_writew(0x4a90, 1);
+
+	init_ani(v1);
+
+	do {
+#ifdef M302de_SPEEDFIX
+		/*	enter emulation mode frequently,
+			that the timer can reset this variable */
+		wait_for_vsync();
+#endif
+	 } while (ds_readw(0x4a90) != 0);
 }
 
 void clear_ani() {
