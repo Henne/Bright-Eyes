@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 5/15
+ *	Functions rewritten: 6/15
  */
 
 #include <string.h>
@@ -16,6 +16,7 @@
 #include "seg004.h"
 #include "seg007.h"
 #include "seg008.h"
+#include "seg026.h"
 #include "seg097.h"
 
 #if !defined(__BORLANDC__)
@@ -35,6 +36,57 @@ void enter_map(void)
 	ds_writeb(CURRENT_TOWN, 0);
 	ds_writeb(LOCATION, 0);
 	ds_writeb(TRAVELING, 1);
+}
+
+
+/* 0xd54 */
+/**
+ * show_storytext() - show storytexts
+ *
+ * Returns: 1 if dialog was shown / 0 if had already been shown
+ * These were introduced in V3.00 (de and en) to find better into the story.
+ */
+/* static */
+signed short show_storytext(void)
+{
+	Bit8u *ptr;
+	signed short person, icon;
+
+	load_buffer_1(0x120);
+
+	person = random_schick(17) - 1;
+
+	ptr = get_dtp(person * 4);
+
+	switch (person) {
+
+		case 0:	icon = 0x3f; break;
+		case 1: icon = 0x44; break;
+		case 2: icon = 0x44; break;
+		case 3: icon = 0x45; break;
+		case 4: icon = 0x43; break;
+		case 5: icon = 0x46; break;
+		case 6: icon = 0x41; break;
+		case 7: icon = 0x42; break;
+		case 8: icon = 0x40; break;
+		case 9: icon = 0x46; break;
+		case 10: icon = 0x40; break;
+		case 11: icon = 0x45; break;
+		case 12: icon = 0x43; break;
+		case 13: icon = 0x40; break;
+		case 14: icon = 0x43; break;
+		case 15: icon = 0x41; break;
+		case 16: icon = 0x44; break;
+		default: break;
+	}
+
+	if (!ds_readbs(0x43a6 + person)) {
+		GUI_dialog_na(icon, ptr);
+		ds_writeb(0x43a6 + person, 1);
+		return 1;
+	}
+
+	return 0;
 }
 
 /* 0xea9 */

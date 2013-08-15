@@ -6174,7 +6174,10 @@ static int n_seg025(unsigned short offs)
 		return 0;
 	}
 	case 0xd54: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("show_storytext();\n");
+		reg_ax = show_storytext();
+		return 1;
 	}
 	case 0xea9: {
 		CPU_Pop16();
