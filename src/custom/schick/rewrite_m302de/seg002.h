@@ -19,6 +19,7 @@ void mouse_move_cursor(unsigned short x, unsigned short y);
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor();
 void refresh_screen_size();
+void handle_gui_input(void);
 void update_mouse_cursor1();
 void refresh_screen_size1();
 //static

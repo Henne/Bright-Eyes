@@ -405,6 +405,11 @@ void refresh_screen_size() {
 	refresh_screen_size1();
 }
 
+void handle_gui_input(void)
+{
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1a34);
+}
+
 void update_mouse_cursor1() {
 	if (ds_readw(0x2998) == 0) {
 		if  (ds_readw(0x299a) == 0) {

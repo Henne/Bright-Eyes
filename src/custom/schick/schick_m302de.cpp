@@ -966,8 +966,11 @@ static int seg002(unsigned short offs) {
 		D1_LOG("refresh_screen_size();\n");
 		refresh_screen_size();
 		return 1;
-	case 0x1a34:
-		return 0;
+	case 0x1a34: {
+		D1_LOG("handle_gui_input();\n");
+		handle_gui_input();
+		return 1;
+	}
 	case 0x1cf2: {
 		unsigned short x = CPU_Pop16();
 		unsigned short y = CPU_Pop16();
