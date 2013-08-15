@@ -45,6 +45,7 @@
 #define SPHERE_ACTIVE	(0x3c98)
 #define MAGE_POISON	(0x3cb6)
 #define FOOD_MESSAGE	(0x4219)
+#define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
@@ -62,6 +63,7 @@
 #define DIALOG_TEXT	(0xc3b1)
 #define CITY_LTX	(0xc3ad)
 #define TEXT_LTX	(0xc3b5)
+#define ACTION		(0xc3d9)	/* ? short */
 #define ANI_MAIN_PTR	(0xce35)
 #define TEXTCOLOR_BG	(0xd2c7)
 #define TEXTCOLOR_FG	(0xd2c9)
