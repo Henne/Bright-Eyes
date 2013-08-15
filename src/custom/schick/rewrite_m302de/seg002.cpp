@@ -37,6 +37,13 @@
 
 namespace M302de {
 
+void set_audio_track(Bit16u index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x17);
+	CPU_Pop16();
+}
+
 void play_voc(Bit16u index)
 {
 	CPU_Push16(index);

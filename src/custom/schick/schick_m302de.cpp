@@ -796,11 +796,12 @@ static int seg002(unsigned short offs) {
 	switch (offs) {
 
 	case 0x0017: {
-		unsigned short track = CPU_Pop16();
-		CPU_Push16(track);
+		unsigned short index = CPU_Pop16();
+		CPU_Push16(index);
 
-		D1_LOG("set_cda_track(%d);\n", track);
-		return 0;
+		D1_LOG("set_audio_track(%d);\n", index);
+		set_audio_track(index);
+		return 1;
 	}
 	case 0x0045:	/* wird bei Musikmenu aufgerufen */
 	case 0x00e6:
