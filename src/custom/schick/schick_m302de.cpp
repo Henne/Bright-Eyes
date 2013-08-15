@@ -2615,7 +2615,9 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x3e: {
-		return 0;
+		D1_LOG("show_citizen();\n");
+		show_citizen();
+		return 1;
 	}
 	case 0x48: {
 		return 0;

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 6/15
+ *	Functions rewritten: 7/15
  */
 
 #include <string.h>
@@ -16,12 +16,62 @@
 #include "seg004.h"
 #include "seg007.h"
 #include "seg008.h"
+#include "seg025.h"
 #include "seg026.h"
+#include "seg027.h"
+#include "seg029.h"
+#include "seg096.h"
 #include "seg097.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+
+/* 0x52 */
+/**
+ * show_citizen() - the screen when entering a house in the city
+ */
+void show_citizen(void)
+{
+
+	ds_writew(0x2846, 1);
+
+	do {
+		handle_gui_input();
+		if (ds_readw(0x2846) != 0) {
+
+			draw_main_screen();
+			set_var_to_zero();
+			load_ani(20);
+			ds_writew(0x2846, 0);
+			init_ani(0);
+
+			strcpy((char*)Real2Host((RealPt)ds_readd(0xd2eb)),
+				(char*)get_dtp(ds_readw(CITYINDEX) * 4));
+
+			if (ds_readbs(YEAR) == 15 && ds_readbs(MONTH) == 1 && random_schick(100) <= 20) {
+
+				if (!show_storytext()) {
+					GUI_print_loc_line(Real2Host((RealPt)ds_readd(0xd2eb)));
+				} else {
+					ds_writew(ACTION, 1);
+				}
+			} else {
+				GUI_print_loc_line(Real2Host((RealPt)ds_readd(0xd2eb)));
+#ifdef M302de_SPEEDFIX
+				delay_or_keypress(200);
+#endif
+			}
+		}
+
+	} while (ds_readw(ACTION) != 0 && ds_readw(0xc3d5) != 0);
+
+	ds_writew(0xc3d5, 0);
+	set_var_to_zero();
+	copy_palette();
+	turnaround();
+}
 
 /* 0x483 */
 /**
