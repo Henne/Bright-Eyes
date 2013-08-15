@@ -11,6 +11,9 @@
 /* comment this out to have the original, but buggy behaviour */
 #define M302de_ORIGINAL_BUGFIX
 
+/* slow down when too fast */
+#define M302de_SPEEDFIX
+
 
 #define SCHICK_INFO
 //#define SCHICK_LOG
