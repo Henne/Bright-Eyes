@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 /* 0x20 */
-void make_valuta_str(char* dst, unsigned int money);
+void make_valuta_str(char* dst, Bit32s money);
 /* 0x25 */
 void hero_get_sober(Bit8u *hero);
 /* 0x2a */

@@ -249,7 +249,7 @@ short check_heros_KK(short val) {
  *
  *	This funcion is buggy.
  */
-void make_valuta_str(char *dst, unsigned int money) {
+void make_valuta_str(char *dst, Bit32s money) {
 	/* Orig-BUG: d can overflow  on D > 65536*/
 	unsigned short d = 0;
 	unsigned short s = 0;
@@ -276,7 +276,7 @@ void make_valuta_str(char *dst, unsigned int money) {
 		money -= 10;
 	}
 
-	sprintf(dst, (char*)get_ltx(0xbb0), d, s, money);
+	sprintf(dst, (char*)get_ltx(0xbb0), d, s, (short)money);
 }
 
 /**
