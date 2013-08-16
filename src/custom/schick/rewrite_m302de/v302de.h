@@ -337,9 +337,9 @@ extern Bit8u* city_ltx[];
 #define get_spelluser() ds_readd(SPELLUSER)
 #define get_spelltarget() ds_readd(SPELLTARGET)
 
-#define get_ltx(nr) (Bit8u*)(&text_ltx[nr])
-#define get_dtp(nr) (Bit8u*)(&dialog_text[nr])
-#define get_city(nr) (Bit8u*)(&city_ltx[nr])
+#define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
+#define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
+#define get_city(nr) (char*)(host_readd((RealPt)ds_readd(CITY_TEXT) + nr))
 
 /* Unfunctional, but compiles */
 #define get_itemsdat(nr) (Bit8u*)(&text_ltx)
