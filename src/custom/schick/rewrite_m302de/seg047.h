@@ -20,6 +20,8 @@ unsigned short hero_is_poisoned(Bit8u *hero);
 signed short menu_enter_delete(RealPt, signed short, signed short);
 /* 0x48 */
 void update_atpa(Bit8u*);
+/* 0x4d */
+signed short select_hero_from_group(Bit8u *);
 /* 0x57 */
 unsigned short count_heroes_in_group(void);
 /* 0x5c */
