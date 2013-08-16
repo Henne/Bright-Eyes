@@ -3591,17 +3591,6 @@ static int seg047(unsigned short offs) {
 
 		return 1;
 	}
-/*	not called
-	case 0x2f: {
-		signed short val = CPU_Pop16();
-		CPU_Push16(val);
-
-		reg_ax = check_heros_KK(val);
-		D1_LOG("check_heros_KK(%d); = %d\n", val, reg_ax);
-
-		return 1;
-	}
-*/
 	case 0x34: {
 		signed short val = CPU_Pop16();
 		CPU_Push16(val);
