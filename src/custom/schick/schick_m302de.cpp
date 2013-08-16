@@ -3619,7 +3619,17 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x43: {
-		return 0;
+		RealPt ptr = CPU_Pop32();
+		Bit16s entries = CPU_Pop16();
+		Bit16s mode = CPU_Pop16();
+		CPU_Push16(mode);
+		CPU_Push16(entries);
+		CPU_Push32(ptr);
+
+		reg_ax = menu_enter_delete(ptr, entries, mode);
+		D1_LOG("Called menu_enter_delete(%x, %d, %d) = %d\n",
+			ptr, entries, mode, reg_ax);
+		return 1;
 	}
 	case 0x48: {
 		RealPt hero = CPU_Pop32();

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg047 (heros, group)
- *	Functions rewritten: 14/18
+ *	Functions rewritten: 15/18
  */
 
 #include <stdio.h>
@@ -321,6 +321,76 @@ void update_atpa(Bit8u *hero)
 				host_readbs(hero + 0x6f + i) + diff);
 		}
 	}
+}
+
+/**
+ * menu_enter_delete() - selects a hero to enter / get deleted
+ * @ptr:	pointer
+ * @entries:	how many heros
+ * @mode:	1 = enter / -1 = delete
+ *
+ * Returns: the number of the selected hero.
+ * Used only in temples.
+ */
+/* Borlandified and identical */
+signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mode)
+{
+	signed short i;
+	signed short answer;
+	signed short a;
+	signed short l_di;
+
+	answer = 0;
+	l_di = 0;
+
+	while (answer != -1) {
+
+		a = (l_di + 10 < entries) ? 10 : entries - l_di;
+
+		/* fill a pointer array with the pointer to the names */
+		for (i = 0; i < a; i++) {
+			ds_writed(0xbf95 + 4 * i,
+				(Bit32u)((i + l_di) * 32 + ptr + 0x10));
+		}
+
+		i = a;
+		if (entries > 10) {
+			ds_writed(0xbf95 + 4 * i,
+				host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX) + 0x48c)));
+			i++;
+		}
+
+		answer = GUI_radio( (mode == -1) ? get_ltx(0x8dc) : get_ltx(0x490),
+				i,
+				Real2Host(ds_readd(0xbf95)),
+				Real2Host(ds_readd(0xbf99)),
+				Real2Host(ds_readd(0xbf9d)),
+				Real2Host(ds_readd(0xbfa1)),
+				Real2Host(ds_readd(0xbfa5)),
+				Real2Host(ds_readd(0xbfa9)),
+				Real2Host(ds_readd(0xbfad)),
+				Real2Host(ds_readd(0xbfb1)),
+				Real2Host(ds_readd(0xbfb5)),
+				Real2Host(ds_readd(0xbfb9)),
+				Real2Host(ds_readd(0xbfbd)),
+				Real2Host(ds_readd(0xbfc1)));
+
+		if ((entries > 10) && (answer == i)) {
+			l_di += 10;
+
+			if (l_di > entries) {
+				l_di = 0;
+			}
+
+		} else {
+
+			if (answer != -1) {
+				return l_di + answer - 1;
+			}
+		}
+	}
+
+	return -1;
 }
 
 /**
