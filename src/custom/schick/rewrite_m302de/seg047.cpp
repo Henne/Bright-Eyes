@@ -130,14 +130,14 @@ unsigned short hero_is_poisoned(Bit8u *hero)
  */
 void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 
-	if (host_readb(hero + 0xaa) & 1)
-		return;
+	if ((host_readb(hero + 0xaa) & 1) == 0) {
 
-	host_writeb(hero + poison * 5 + 0xd6, 0xff);
-	host_writeb(hero + poison * 5 + 0xd7, 0x00);
-	host_writeb(hero + poison * 5 + 0xd8, 0x00);
-	host_writeb(hero + poison * 5 + 0xd9, 0x00);
-	host_writeb(hero + poison * 5 + 0xda, 0x00);
+		host_writeb(hero + poison * 5 + 0xd6, 0xff);
+		host_writeb(hero + poison * 5 + 0xd7, 0x00);
+		host_writeb(hero + poison * 5 + 0xd8, 0x00);
+		host_writeb(hero + poison * 5 + 0xd9, 0x00);
+		host_writeb(hero + poison * 5 + 0xda, 0x00);
+	}
 }
 
 /**
@@ -153,14 +153,14 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 		return;
 #endif
 
-	if (*(hero + 0xaa) & 1)
-		return;
+	if ((host_readb(hero + 0xaa) & 1) == 0) {
 
-	host_writeb(hero + disease * 5 + 0xae, 0xff);
-	host_writeb(hero + disease * 5 + 0xaf, 0x00);
-	host_writeb(hero + disease * 5 + 0xb0, 0x00);
-	host_writeb(hero + disease * 5 + 0xb1, 0x00);
-	host_writeb(hero + disease * 5 + 0xb2, 0x00);
+		host_writeb(hero + disease * 5 + 0xae, 0xff);
+		host_writeb(hero + disease * 5 + 0xaf, 0x00);
+		host_writeb(hero + disease * 5 + 0xb0, 0x00);
+		host_writeb(hero + disease * 5 + 0xb1, 0x00);
+		host_writeb(hero + disease * 5 + 0xb2, 0x00);
+	}
 }
 
 /**
