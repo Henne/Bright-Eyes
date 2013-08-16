@@ -3564,7 +3564,7 @@ static int seg047(unsigned short offs) {
 	switch(offs) {
 	case 0x20: {
 		RealPt s_ptr = CPU_Pop32();
-		unsigned int money = CPU_Pop32();
+		Bit32s money = CPU_Pop32();
 		CPU_Push32(money);
 		CPU_Push32(s_ptr);
 
@@ -3675,7 +3675,7 @@ static int seg047(unsigned short offs) {
 	case 0x70: {
 		RealPt hero = CPU_Pop32();
 		unsigned short disease = CPU_Pop16();
-		unsigned short probability = CPU_Pop16();
+		signed short probability = CPU_Pop16();
 		CPU_Push16(probability);
 		CPU_Push16(disease);
 		CPU_Push32(hero);
