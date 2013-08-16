@@ -211,20 +211,19 @@ short check_hero_KK_unused(short val)
  */
 short check_heros_KK(short val) {
 
-	PhysPt hero;
+	Bit8u *hero;
 	signed short sum;
 
-	hero = Real2Phys(ds_readd(HEROS));
+	hero = get_hero(0);
 
 	/* Orig-BUG: not checked if hero is valid */
-	sum = (short)mem_readb(hero + 0x47) + (short)mem_readb(hero + 0x48);
+	sum = host_readbs(hero + 0x47) + host_readbs(hero + 0x48);
 
-	hero += 0x6da;
+	hero = get_hero(1);
 
 	/* check class, group and dead status of hero in slot 2*/
-	if (mem_readb(hero + 0x21) && mem_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) && !(mem_readb(hero + 0xaa) & 1)) {
-		sum += (short)mem_readb(hero + 0x47);
-		sum += (short)mem_readb(hero + 0x48);
+	if (host_readb(hero + 0x21) && host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) && !(host_readb(hero + 0xaa) & 1)) {
+		sum += host_readbs(hero + 0x47) + host_readbs(hero + 0x48);
 	}
 
 #if !defined(__BORLANDC__)
