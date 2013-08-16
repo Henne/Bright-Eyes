@@ -4,6 +4,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #if !defined(__BORLANDC__)
 #include "schick.h"
@@ -285,41 +286,40 @@ void make_valuta_str(char *dst, Bit32s money) {
  */
 void update_atpa(Bit8u *hero)
 {
-	unsigned short modulo, atpa;
+	div_t erg;
 	signed short diff;
-	unsigned short i;
+	signed short i;
 
 	/* ATPA base = (IN + KK + GE) / 5 rounded */
-	modulo = (hero[0x43] + hero[0x46] + hero[0x40]) % 5;
-	atpa = (hero[0x43] + hero[0x46] + hero[0x40]) / 5;
+	erg = div(host_readbs(hero + 0x43) + host_readbs(hero + 0x46) + host_readbs(hero + 0x40), 5);
 
 	/* round up */
-	if (modulo >= 3)
-		atpa++;
+	if (erg.rem >= 3)
+		erg.quot++;
 
 	/* calculate difference */
-	diff = atpa - host_readb(hero + 0x67);
+	diff = erg.quot - host_readbs(hero + 0x67);
 
-	if (diff == 0)
-		return;
+	if (diff != 0) {
 
-	/* update atpa base value */
-	host_writeb(hero + 0x67, (signed char)atpa);
+		/* update atpa base value */
+		host_writeb(hero + 0x67, erg.quot);
 
-	/* prepare message */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
-		(char*)get_ltx(0x20), host_readb(hero + 0x67));
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			(char*)get_ltx(0x20), host_readbs(hero + 0x67));
 
-	/* print message */
-	GUI_output(Real2Host(ds_readd(0xd2f3)));
+		/* print message */
+		GUI_output(Real2Host(ds_readd(0xd2f3)));
 
-	for (i = 0; i < 7; i++) {
-		/* add diff to AT value */
-		host_writeb(hero + 0x68 + i,
-			host_readb(hero + 0x68 + i) + diff);
-		/* add diff to PA value */
-		host_writeb(hero + 0x6f + i,
-			host_readb(hero + 0x6f + i) + diff);
+		for (i = 0; i < 7; i++) {
+			/* add diff to AT value */
+			host_writeb(hero + 0x68 + i,
+				host_readbs(hero + 0x68 + i) + diff);
+			/* add diff to PA value */
+			host_writeb(hero + 0x6f + i,
+				host_readbs(hero + 0x6f + i) + diff);
+		}
 	}
 }
 
