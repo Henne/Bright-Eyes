@@ -191,16 +191,14 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
  *
  *	This function is not used in the game!
  */
-short check_hero_KK_unused(short val) {
+short check_hero_KK_unused(short val)
+{
 
-	PhysPt hero;
-
-	hero = Real2Phys(ds_readd(HEROS));
-
-	if ((short)mem_readb(hero + 0x47) + (short)mem_readb(hero + 0x48) < val)
-		return 0;
-	else
+	if (host_readbs(get_hero(0) + 0x47) + host_readbs(get_hero(0) + 0x48) >= val) {
 		return 1;
+	}
+
+	return 0;
 
 }
 
