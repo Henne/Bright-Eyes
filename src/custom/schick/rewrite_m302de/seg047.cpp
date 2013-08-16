@@ -95,7 +95,7 @@ unsigned short get_hero_KK_best() {
 unsigned short hero_is_diseased(Bit8u *hero) {
 	unsigned short i;
 
-	for (i = 0; i <= 7; i++)
+	for (i = 1; i <= 7; i++)
 		if (host_readbs(hero + 0xae + i * 5) == -1)
 			return i;
 
@@ -111,7 +111,7 @@ unsigned short hero_is_diseased(Bit8u *hero) {
 unsigned short hero_is_poisoned(Bit8u *hero) {
 	unsigned short i;
 
-	for (i = 0; i <= 9; i++)
+	for (i = 1; i <= 9; i++)
 		if (host_readbs(hero + 0xd6 + i * 5) == -1)
 			return i;
 
