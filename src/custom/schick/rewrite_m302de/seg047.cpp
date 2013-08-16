@@ -169,7 +169,8 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
  * @disease:	the kind of disease
  * @probability: the probability to get diseased in percent
  */
-void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short probability) {
+/* Borlandified and identical */
+void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probability) {
 
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* not a real BUG, but very useless */
@@ -177,14 +178,12 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, unsigned short proba
 		return;
 #endif
 
-	/* check the probability */
-	if (random_schick(100) > probability)
-		return;
-	/* check if the hero already has the disease */
-	if (host_readb(hero + disease * 5 + 0xae) == 0xff)
-		return;
+	/* check the probability and if hero is diseased*/
+	if (random_schick(100) <= probability &&
+		host_readb(hero + disease * 5 + 0xae) != 0xff) {
 
-	hero_gets_diseased(hero, disease);
+		hero_gets_diseased(hero, disease);
+	}
 }
 
 /**
