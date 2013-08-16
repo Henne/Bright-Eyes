@@ -92,8 +92,10 @@ unsigned short get_hero_KK_best() {
  *
  * Only the first disease is returned here.
  */
-unsigned short hero_is_diseased(Bit8u *hero) {
-	unsigned short i;
+/* Borlandified and identical */
+unsigned short hero_is_diseased(Bit8u *hero)
+{
+	signed short i;
 
 	for (i = 1; i <= 7; i++)
 		if (host_readbs(hero + 0xae + i * 5) == -1)
@@ -108,8 +110,11 @@ unsigned short hero_is_diseased(Bit8u *hero) {
  *
  * Only the first poison is returned here.
  */
-unsigned short hero_is_poisoned(Bit8u *hero) {
-	unsigned short i;
+/* Borlandified and identical */
+unsigned short hero_is_poisoned(Bit8u *hero)
+{
+
+	signed short i;
 
 	for (i = 1; i <= 9; i++)
 		if (host_readbs(hero + 0xd6 + i * 5) == -1)
