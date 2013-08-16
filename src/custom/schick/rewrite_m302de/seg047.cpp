@@ -25,29 +25,30 @@ namespace M302de {
  * Returns the index of the hero with the highest unmodified CH value.
  * The hero must be alive and in the current group.
  */
-unsigned short get_hero_CH_best() {
+unsigned short get_hero_CH_best()
+{
+
+	unsigned short retval;
 	Bit8u *hero_i;
-	unsigned short i, retval;
+	signed short i;
 	signed short ch_val = -1;
 
 	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* check if in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* check if dead */
-		if (host_readb(hero_i + 0xaa) & 1)
-			continue;
-		/* check if CH is the highest */
-		if (host_readbs(hero_i + 0x3b) <= ch_val)
-			continue;
 
-		ch_val = host_readbs(hero_i + 0x3b);
-		retval = i;
+		if ((host_readb(hero_i + 0x21) != 0) &&
+				/* check class */
+			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+				/* check if in group */
+			(host_readb(hero_i + 0xaa) & 1) == 0 &&
+				/* check if dead */
+			(host_readbs(hero_i + 0x3b) > ch_val)) {
+				/* check if CH is the highest */
+
+				ch_val = host_readbs(hero_i + 0x3b);
+				retval = i;
+		}
 	}
 
 	return retval;
@@ -60,28 +61,26 @@ unsigned short get_hero_CH_best() {
  * The hero must be alive and in the current group.
  */
 unsigned short get_hero_KK_best() {
+	signed short retval;
 	Bit8u *hero_i;
-	unsigned short i, retval;
+	signed short i;
 	signed short kk_val = -1;
 
 	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* check if in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* check if dead */
-		if (host_readb(hero_i + 0xaa) & 1)
-			continue;
-		/* check if CH is the highest */
-		if (host_readbs(hero_i + 0x47) <= kk_val)
-			continue;
+		if ((host_readb(hero_i + 0x21) != 0) &&
+				/* check class */
+			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+				/* check if in group */
+			(host_readb(hero_i + 0xaa) & 1) == 0 &&
+				/* check if dead */
+			(host_readbs(hero_i + 0x47) > kk_val)) {
+				/* check if KK is the highest */
 
-		kk_val = host_readbs(hero_i + 0x47);
-		retval = i;
+				kk_val = host_readbs(hero_i + 0x47);
+				retval = i;
+			}
 	}
 
 	return retval;
