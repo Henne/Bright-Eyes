@@ -25,7 +25,8 @@ unsigned short random_interval(unsigned short lo, unsigned short hi) {
 /**
 	random_schick - generates a u16 random number
 */
-unsigned short random_schick(short val) {
+signed short random_schick(short val)
+{
 	short ax, bx, dx;
 
 	if (val == 0)
