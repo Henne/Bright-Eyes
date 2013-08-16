@@ -1,13 +1,23 @@
+/**
+ *	Rewrite of DSA1 v3.02_de functions of seg047 (heros, group)
+ *	Functions rewritten: 14/18
+ */
+
 #include <stdio.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
 
 #include "seg002.h"
 #include "seg007.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * get_hero_CH_best - get the index of the hero with the best CH value
@@ -24,19 +34,19 @@ unsigned short get_hero_CH_best() {
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
-		if (*(hero_i + 0x21) == 0)
+		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* check if in group */
-		if (*(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* check if dead */
-		if (*(hero_i + 0xaa) & 1)
+		if (host_readb(hero_i + 0xaa) & 1)
 			continue;
 		/* check if CH is the highest */
-		if (*(signed char*)(hero_i + 0x3b) <= ch_val)
+		if (host_readbs(hero_i + 0x3b) <= ch_val)
 			continue;
 
-		ch_val = *(signed char*)(hero_i + 0x3b);
+		ch_val = host_readbs(hero_i + 0x3b);
 		retval = i;
 	}
 
@@ -58,19 +68,19 @@ unsigned short get_hero_KK_best() {
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
-		if (*(hero_i + 0x21) == 0)
+		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 		/* check if in group */
-		if (*(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
+		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* check if dead */
-		if (*(hero_i + 0xaa) & 1)
+		if (host_readb(hero_i + 0xaa) & 1)
 			continue;
 		/* check if CH is the highest */
-		if (*(signed char*)(hero_i + 0x47) <= kk_val)
+		if (host_readbs(hero_i + 0x47) <= kk_val)
 			continue;
 
-		kk_val = *(signed char*)(hero_i + 0x47);
+		kk_val = host_readbs(hero_i + 0x47);
 		retval = i;
 	}
 
@@ -87,7 +97,7 @@ unsigned short hero_is_diseased(Bit8u *hero) {
 	unsigned short i;
 
 	for (i = 0; i <= 7; i++)
-		if (*(hero + 0xae + i * 5) == 0xff)
+		if (host_readbs(hero + 0xae + i * 5) == -1)
 			return i;
 
 	return 0;
@@ -103,7 +113,7 @@ unsigned short hero_is_poisoned(Bit8u *hero) {
 	unsigned short i;
 
 	for (i = 0; i <= 9; i++)
-		if (*(hero + 0xd6 + i * 5) == 0xff)
+		if (host_readbs(hero + 0xd6 + i * 5) == -1)
 			return i;
 
 	return 0;
@@ -116,7 +126,7 @@ unsigned short hero_is_poisoned(Bit8u *hero) {
  */
 void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 
-	if (*(hero + 0xaa) & 1)
+	if (host_readb(hero + 0xaa) & 1)
 		return;
 
 	host_writeb(hero + poison * 5 + 0xd6, 0xff);
@@ -216,14 +226,20 @@ short check_heros_KK(short val) {
 		sum += (short)mem_readb(hero + 0x48);
 	}
 
+#if !defined(__BORLANDC__)
 	D1_INFO("Pruefe KK der ersten beiden Helden (%d) >= %d: ", sum, val);
+#endif
 
 	if (sum >= val) {
+#if !defined(__BORLANDC__)
 		D1_INFO("gelungen\n");
+#endif
 		return 1;
 	}
 
+#if !defined(__BORLANDC__)
 	D1_INFO("mislungen\n");
+#endif
 	return 0;
 }
 /**
@@ -380,7 +396,9 @@ void hero_get_sober(Bit8u *hero) {
 	if (host_readb(hero + 0xa1) == 0)
 		return;
 
+#if !defined(__BORLANDC__)
 	D1_INFO("%s ist wieder nuechtern\n", (char*)hero + 0x10);
+#endif
 
 	/* set hero sober */
 	host_writeb(hero + 0xa1, 0);
@@ -407,4 +425,6 @@ void hero_get_sober(Bit8u *hero) {
 		ds_writew(0x2846, 1);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
