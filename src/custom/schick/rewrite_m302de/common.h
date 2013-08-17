@@ -1,4 +1,7 @@
 #include "v302de.h"
+
+#if !defined(COMMON_H)
+#define COMMON_H
 /**
 	struct nvf_desc - nvf descriptor
 	@src:	pointer to a buffer containing the nvf file
@@ -57,3 +60,5 @@ struct hero_status {
 	unsigned short dup	:1;
 	unsigned short dummy	:6;
 };
+
+#endif
