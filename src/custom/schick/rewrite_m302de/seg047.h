@@ -36,6 +36,8 @@ void hero_gets_poisoned(Bit8u *hero, unsigned short poison);
 void hero_gets_diseased(Bit8u *hero, unsigned short diseased);
 /* 0x70 */
 void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probability);
+/* 0x75 */
+signed short select_hero_ok_forced(Bit8u *);
 
 #if !defined(__BORLANDC__)
 }

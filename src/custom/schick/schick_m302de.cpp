@@ -3710,7 +3710,12 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x75: {
-		return 0;
+		RealPt title = CPU_Pop32();
+		CPU_Push32(title);
+		reg_ax = select_hero_ok_forced(Real2Host(title));
+		D1_LOG("select_hero_ok_forced(%s) = %d;\n",
+				Real2Host(title), (signed short)reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
