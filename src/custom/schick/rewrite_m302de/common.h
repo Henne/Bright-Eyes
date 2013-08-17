@@ -27,3 +27,33 @@ struct nvf_desc {
 struct screen_rect {
 	short y1, x1, y2, x2;
 };
+
+/**
+ *	struct hero_status - status of the hero
+ *	@dead:		1 = dead		/ 0 = not dead
+ *	@sleeps:	1 = sleeps		/ 0 = awake
+ *	@stoned:	1 = stoned		/ 0 = not stoned
+ *	@unkn1:		yet unknown, maybe unused
+ *	@cham:		1 = Chamaelioni active	/ 0 = not active
+ *	@cursed:	1 = cursed		/ 0 = not cursed
+ *	@uncon:		1 = unconscious		/ 0 = conscious
+ *	@unkn2:		yet unknown, maybe unused
+ *	@unkn3:		yet unknown, but used
+ *	@dup:		1 = Duplicatus active	/ not active
+ *	@dummy:		yet unknown, maybe unused
+ */
+struct hero_status {
+	/* hero + 0xaa */
+	unsigned short dead	:1;
+	unsigned short sleeps	:1;
+	unsigned short stoned	:1;
+	unsigned short unkn1	:1;
+	unsigned short cham	:1;
+	unsigned short cursed	:1;
+	unsigned short uncon	:1;
+	unsigned short unkn2	:1;
+	/* hero + 0xab */
+	unsigned short unkn3	:1;
+	unsigned short dup	:1;
+	unsigned short dummy	:6;
+};

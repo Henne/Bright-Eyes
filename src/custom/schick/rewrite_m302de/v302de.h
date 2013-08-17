@@ -168,6 +168,19 @@ static inline unsigned short hero_stoned(Bit8u *hero) {
 }
 
 /**
+ * hero_cursed() -	check if hero is cursed
+ * @hero:	ptr to hero
+ *
+ * 0 = not cursed / 1 = cursed
+ */
+static inline unsigned short hero_cursed(Bit8u *hero) {
+	if (((host_readb(hero + 0xaa) >> 5) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * hero_unc() -	check if hero is unconscious
  * @hero:	ptr to hero
  *
@@ -331,8 +344,13 @@ extern Bit8u* city_ltx[];
 
 #define mem_memcpy memcpy
 
-#define hero_dead(hero)  (((host_readb(hero + 0xaa)) & 1))
-#define hero_unc(hero)  (((host_readb(hero + 0xaa)) >> 6) & 1)
+#define hero_dead(hero)  ((*(struct hero_status*)(hero + 0xaa)).dead)
+#define hero_sleeps(hero)  ((*(struct hero_status*)(hero + 0xaa)).sleeps)
+#define hero_stoned(hero)  ((*(struct hero_status*)(hero + 0xaa)).stoned)
+#define hero_cham(hero)  ((*(struct hero_status*)(hero + 0xaa)).cham)
+#define hero_cursed(hero)  ((*(struct hero_status*)(hero + 0xaa)).cursed)
+#define hero_unc(hero)  ((*(struct hero_status*)(hero + 0xaa)).uncon)
+#define hero_dup(hero)  ((*(struct hero_status*)(hero + 0xaa)).dup)
 
 #define get_spelluser() ds_readd(SPELLUSER)
 #define get_spelltarget() ds_readd(SPELLTARGET)
