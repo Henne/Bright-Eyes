@@ -11,6 +11,7 @@
 #endif
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg002.h"
 #include "seg007.h"
@@ -26,6 +27,7 @@ namespace M302de {
  * Returns the index of the hero with the highest unmodified CH value.
  * The hero must be alive and in the current group.
  */
+/* Borlandified and identical */
 unsigned short get_hero_CH_best()
 {
 
@@ -61,6 +63,7 @@ unsigned short get_hero_CH_best()
  * Returns the index of the hero with the highest unmodified KK value.
  * The hero must be alive and in the current group.
  */
+/* Borlandified and identical */
 unsigned short get_hero_KK_best() {
 	signed short retval;
 	Bit8u *hero_i;
@@ -129,6 +132,7 @@ unsigned short hero_is_poisoned(Bit8u *hero)
  * @hero:	the hero which gets poisoned
  * @poison:	the kind of poison
  */
+/* Borlandified and identical */
 void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 
 	if (!hero_dead(hero)) {
@@ -146,6 +150,7 @@ void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
  * @hero:	the hero which gets diseased
  * @disease:	the kind of disease
  */
+/* Borlandified and identical */
 void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 {
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -192,15 +197,11 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
  *
  *	This function is not used in the game!
  */
+/* Borlandified and identical */
 short check_hero_KK_unused(short val)
 {
 
-	if (host_readbs(get_hero(0) + 0x47) + host_readbs(get_hero(0) + 0x48) >= val) {
-		return 1;
-	}
-
-	return 0;
-
+	return (host_readbs(get_hero(0) + 0x47) + host_readbs(get_hero(0) + 0x48) >= val) ? 1 : 0;
 }
 
 /**
@@ -210,6 +211,7 @@ short check_hero_KK_unused(short val)
  *	This function, like hero_check_KK_unused, is buggy!
  *	It does not check if the first slot is a valid hero.
  */
+/* Borlandified and identical */
 short check_heros_KK(short val) {
 
 	Bit8u *hero;
@@ -229,20 +231,12 @@ short check_heros_KK(short val) {
 
 #if !defined(__BORLANDC__)
 	D1_INFO("Pruefe KK der ersten beiden Helden (%d) >= %d: ", sum, val);
+	D1_INFO("%s\n", sum >= val ? "gelungen" : "mislungen");
 #endif
 
-	if (sum >= val) {
-#if !defined(__BORLANDC__)
-		D1_INFO("gelungen\n");
-#endif
-		return 1;
-	}
-
-#if !defined(__BORLANDC__)
-	D1_INFO("mislungen\n");
-#endif
-	return 0;
+	return (sum >= val) ? 1 : 0;
 }
+
 /**
  *	make_valuta_str	-	makes a valuta string
  *	@dst:	the destination
@@ -250,6 +244,7 @@ short check_heros_KK(short val) {
  *
  *	This funcion is buggy.
  */
+/* Borlandified and identical */
 void make_valuta_str(char *dst, Bit32s money) {
 	/* Orig-BUG: d can overflow  on D > 65536*/
 	unsigned short d = 0;
@@ -284,6 +279,7 @@ void make_valuta_str(char *dst, Bit32s money) {
  *	update_atpa() -	recalculates the AT PA values
  *
  */
+/* Borlandified and identical */
 void update_atpa(Bit8u *hero)
 {
 	div_t erg;
@@ -393,7 +389,6 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 	return -1;
 }
 
-
 /**
  * select_hero_from_group() - menu for selecting a hero
  * @title:	titlestring for the menu
@@ -401,6 +396,7 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
  * Returns: index of the hero or -1 (ESC).
  * Remark: The available heros must be in the group only.
  */
+/* Borlandified and identical */
 signed short select_hero_from_group(Bit8u *title)
 {
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -437,7 +433,8 @@ signed short select_hero_from_group(Bit8u *title)
 	if (cnt != 0) {
 		bak_2 = ds_readw(0x2ca2);
 		bak_3 = ds_readw(0x2ca4);
-		/* val1 = val2 = 0; */
+
+		/* BC-TODO: val1 = val2 = 0; */
 		ds_writew(0x2ca4, 0);
 		ds_writew(0x2ca2, 0);
 
@@ -454,16 +451,16 @@ signed short select_hero_from_group(Bit8u *title)
 		ds_writew(0x2ca4, bak_3);
 		ds_writew(0xbffd, bak_1);
 
-		if (answer != -2) {
+		if (answer != -2)
 			return dst[answer];
-		} else
+		else
 			return -1;
-	} else {
-		ds_writew(0xbffd, bak_1);
 	}
 
+	ds_writew(0xbffd, bak_1);
 	return -1;
 }
+
 
 /**
  * count_heroes_in_group() - counts the heroes in the current group
