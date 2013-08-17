@@ -130,20 +130,11 @@ RealPt load_fight_figs(signed short fig_old)
 	RealPt src;
 
 	/* check if fig is at a known place */
-	if (fig == ds_readws(0x2cd1))
+	if (fig == ds_readws(0x2cd1)) {
 		return (RealPt)ds_readd(0xd2df);
-	if (fig == ds_readws(0x2cd3))
-		return (RealPt)ds_readd(0xd2db);
-
-#ifdef M302de_ORIGINAL_BUGFIX
-	if (fig == -1) {
-		D1_INFO("Original-Bugfix: %s(fig_old = %s)\n",
-			__func__, fig_old);
-		return ds_readd(0xd2df);
-	}
-#endif
-
-	if (ds_readws(0x2cd3) != -1) {
+	} else if (fig == ds_readws(0x2cd3)) {
+			return (RealPt)ds_readd(0xd2db);
+	} else if (ds_readws(0x2cd3) != -1) {
 		ds_writew(0x2cd1, ds_readw(0x2cd3));
 		memcpy(Real2Host(ds_readd(0xd2df)),
 			Real2Host(ds_readd(0xd2db)), 20000);
