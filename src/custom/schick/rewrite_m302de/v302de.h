@@ -358,11 +358,10 @@ extern Bit8u* city_ltx[];
 #define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
 #define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
 #define get_city(nr) (char*)(host_readd((RealPt)ds_readd(CITY_TEXT) + nr))
+#define get_monname(nr) (char*)(host_readd((RealPt)ds_readd(MONNAMES) + nr * 4))
 
 /* Unfunctional, but compiles */
 #define get_itemsdat(nr) (Bit8u*)(&text_ltx)
-
-#define get_monname(off) (RealPt)host_readd(Real2Host(ds_readd(MONNAMES) + off * 4))
 
 #define struct_copy memcpy
 
