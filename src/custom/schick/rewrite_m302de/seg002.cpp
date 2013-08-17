@@ -122,7 +122,7 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len) {
 	return bc__read(handle, buffer, readsize);
 }
 
-void seg002_0c72(Bit16u handle, Bit32u off) {
+void seg002_0c72(Bit16u handle, Bit32u off, Bit16u dummy) {
 
 	ds_writed(0xbce3, ds_readd(0xbce7) - off);
 
@@ -2016,7 +2016,7 @@ unsigned int swap_u32(unsigned int v) {
  *
  *	Returns an EMS handle, to access the memory.
  */
-unsigned short alloc_EMS(unsigned int bytes) {
+unsigned short alloc_EMS(Bit32u bytes) {
 
 	unsigned short pages;
 	unsigned short handle;
@@ -2039,7 +2039,7 @@ unsigned short alloc_EMS(unsigned int bytes) {
 	return handle;
 }
 
-void from_EMS(RealPt dst, unsigned short handle, unsigned int bytes)
+void from_EMS(RealPt dst, unsigned short handle, Bit32u bytes)
 {
 	RealPt ptr;
 	unsigned short v1, v2, di;
@@ -2067,7 +2067,7 @@ void from_EMS(RealPt dst, unsigned short handle, unsigned int bytes)
 
 }
 
-void to_EMS(unsigned short handle, RealPt src, unsigned int bytes)
+void to_EMS(unsigned short handle, RealPt src, Bit32u bytes)
 {
 	RealPt ptr;
 	unsigned short v1, v2, di;

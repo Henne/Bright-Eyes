@@ -857,11 +857,13 @@ static int seg002(unsigned short offs) {
 	case 0x0c72: {
 		Bit16u handle = CPU_Pop16();
 		Bit32u off = CPU_Pop32();
+		Bit16u dummy = CPU_Pop16();
+		CPU_Push16(dummy);
 		CPU_Push32(off);
 		CPU_Push16(handle);
 
-		D1_LOG("seg002_0c72(%d, %d)\n", handle, off);
-		seg002_0c72(handle, off);
+		D1_LOG("seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
+		seg002_0c72(handle, off, dummy);
 
 		return 1;
 	}
@@ -1156,7 +1158,7 @@ static int seg002(unsigned short offs) {
 	}
 	/* 3 EMS functions (all disabled in v3.02_de) */
 	case 0x4253: {
-		unsigned int bytes = CPU_Pop32();
+		Bit32u bytes = CPU_Pop32();
 		CPU_Push32(bytes);
 
 		reg_ax = alloc_EMS(bytes);
@@ -5660,11 +5662,13 @@ static int n_seg002(unsigned short offs)
 		CPU_Pop16();
 		Bit16u handle = CPU_Pop16();
 		Bit32u off = CPU_Pop32();
+		Bit16u dummy = CPU_Pop16();
+		CPU_Push16(dummy);
 		CPU_Push32(off);
 		CPU_Push16(handle);
 
-		D1_LOG("near seg002_0c72(%d, %d)\n", handle, off);
-		seg002_0c72(handle, off);
+		D1_LOG("near seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
+		seg002_0c72(handle, off, dummy);
 
 		return 1;
 	}

@@ -170,7 +170,7 @@ void load_in_head(Bit16s head)
 
 	fd = load_archive_file(0xb3);
 
-	seg002_0c72(fd, head * 1024);
+	seg002_0c72(fd, head * 1024, 0);
 
 	read_archive_file(fd, Real2Host(ds_readd(0xd2f3)), 1024);
 
