@@ -33,6 +33,7 @@ void refresh_colors(void)
 
 }
 
+/* Borlandified and nearly identical, see BC-TODO */
 void init_game_state(void)
 {
 	signed short i;
@@ -52,7 +53,7 @@ void init_game_state(void)
 	ds_writeb(0x2d9f, 0);
 	/* Travia Temple in Thorwal */
 	ds_writeb(LOCATION, 2);
-	ds_writeb(TYPEINDEX, 1);
+	ds_writew(TYPEINDEX, 1);
 	ds_writew(0x2d83, 9);
 	ds_writew(0x2d85, 9);
 	ds_writew(X_TARGET, 9);
@@ -61,16 +62,18 @@ void init_game_state(void)
 	ds_writeb(DIRECTION, 0);
 	ds_writeb(DUNGEON_INDEX, 0);
 
-	/* var = current_town = 1; */
+	/* BC-TODO: var = current_town = 1; */
 	ds_writeb(CURRENT_TOWN, 1);
 	ds_writeb(0x2da6, 1);
 
 	ds_writew(0xbffd, 3);
 
 	/* timer */
-	ds_writed(DAY_TIMER, 24 * 0x1518 - 1);
+	/* ds_writed(DAY_TIMER, 24 * 0x1518 - 1);*/
+	ds_writed(DAY_TIMER, 0x1fa3f);
 	timewarp_until(1);
-	ds_writed(DAY_TIMER,  8 * 0x1518);
+	/* ds_writed(DAY_TIMER,  8 * 0x1518); */
+	ds_writed(DAY_TIMER,  0xa8c0);
 	ds_writeb(DAY_OF_WEEK, 4);
 	ds_writeb(DAY_OF_MONTH, 17);
 	ds_writeb(MONTH, 1);
