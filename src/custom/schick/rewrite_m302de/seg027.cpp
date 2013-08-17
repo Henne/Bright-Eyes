@@ -112,11 +112,11 @@ void load_pp20(Bit16u index)
  * Returns a pointer to the location where the data is.
  *
  */
-/* Original-Bug: when using EMS for caching something starge happens. */
-RealPt load_fight_figs(signed short fig_old)
+/* Original-Bug: when using EMS for caching something strage happens. */
+/* Borlandified and identical */
+RealPt load_fight_figs(signed short fig)
 {
 	signed short i;
-	signed short fig = fig_old;
 
 	RealPt dst;
 	unsigned short ems_handle;
@@ -214,11 +214,9 @@ RealPt load_fight_figs(signed short fig_old)
 
 		bc_close(fd);
 
-		dst = schick_alloc_emu(len);
-
-		if (dst != 0) {
+		if (dst = schick_alloc_emu(len)) {
 #if !defined(__BORLANDC__)
-			D1_LOG("use HEAP for fig %d\n", fig_old);
+			D1_LOG("use HEAP for fig %d\n", fig);
 #endif
 			/* use heap */
 
@@ -237,12 +235,10 @@ RealPt load_fight_figs(signed short fig_old)
 
 		} else if (ds_readb(EMS_ENABLED) != 0) {
 #if !defined(__BORLANDC__)
-			D1_LOG("use EMS for fig %d\n", fig_old);
+			D1_LOG("use EMS for fig %d\n", fig);
 #endif
 
-			ems_handle = alloc_EMS(len);
-
-			if (ems_handle != 0) {
+			if (ems_handle = alloc_EMS(len)) {
 
 				/* find a free slot */
 				for (i = 0; i < max_entries - 1; i++) {
