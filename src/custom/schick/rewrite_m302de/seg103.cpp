@@ -34,7 +34,7 @@ RealPt get_proper_hero(unsigned short skill) {
 		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check hero is dead */
-		if (mem_readb(Real2Phys(hero_i) + 0xaa) & 1)
+		if (hero_dead(Real2Host(hero_i)))
 			continue;
 		/* add current and maximum attibute values */
 		tmp = ds_readb(0xffe + skill * 4) * 3;

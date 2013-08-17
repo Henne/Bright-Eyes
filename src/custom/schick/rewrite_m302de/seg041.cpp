@@ -138,7 +138,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 		}
 
 		/* no damage if the hero is stoned */
-		if (((host_readb(hero + 0xaa) >> 2) & 1) != 0)
+		if (hero_stoned(hero))
 			damage = 0;
 	} else {
 		/* the attacked is an enemy */

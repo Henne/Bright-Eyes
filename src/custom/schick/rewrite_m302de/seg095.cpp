@@ -130,7 +130,7 @@ void npc_farewell()
 							continue;
 						if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 							continue;
-						if ((host_readb(hero_i + 0xaa) & 1) != 0)
+						if (!hero_dead(hero_i))
 							continue;
 
 						/* try to increase sneaking */

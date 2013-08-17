@@ -254,12 +254,12 @@ signed short FIG_get_first_active_hero() {
 		if (hero_dead(hero_i))
 			continue;
 		/* hero is stoned */
-		if ((host_readb(hero_i + 0xaa) >> 2) & 1)
+		if (hero_stoned(hero_i))
 			continue;
-		/* unknown */
-		if ((host_readb(hero_i + 0xaa) >> 5) & 1)
+		/* hero is cursed */
+		if (hero_cursed(hero_i))
 			continue;
-		/* unknown */
+		/* yet unknown */
 		if (host_readb(hero_i + 0xab) & 1)
 			continue;
 		/* hero is unconscious */

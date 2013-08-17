@@ -454,7 +454,7 @@ void FIG_init_heroes()
 
 		/* heros sleep until they appear */
 		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_si * 4 + 0x7d) != 0) {
-			if ((host_readb(hero + 0xaa) & 1) == 0)
+			if (!hero_dead(hero))
 				host_writeb(hero + 0xaa, host_readb(hero + 0xaa) | 2);
 		}
 
@@ -476,7 +476,7 @@ void FIG_init_heroes()
 		ds_writeb(0xe06b, 0);
 		ds_writeb(0xe06c, 0);
 
-		if (host_readb(hero + 0xaa) & 1) {
+		if (hero_dead(hero)) {
 			/* if hero is dead */
 			ds_writeb(0xe068,
 				ds_readb(0x1a13 + host_readb(hero + 0x9b) * 2));
@@ -484,7 +484,7 @@ void FIG_init_heroes()
 				ds_readb(0x1539 + host_readb(hero + 0x9b) * 10));
 			ds_writeb(0xe06c,
 				ds_readb(0x1539 + 1 + host_readb(hero + 0x9b) * 10));
-		} else if ((host_readb(hero + 0xaa) >> 1) || host_readb(hero + 0xaa) >> 6) {
+		} else if (hero_sleeps(hero) || hero_unc(hero)) {
 			/* sleeps or is unconscious */
 			ds_writeb(0xe068,
 				host_readb(hero + 0x82) + ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2));

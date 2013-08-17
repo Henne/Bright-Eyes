@@ -42,7 +42,7 @@ unsigned short get_hero_CH_best()
 				/* check class */
 			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
-			(host_readb(hero_i + 0xaa) & 1) == 0 &&
+			(!hero_dead(hero_i)) &&
 				/* check if dead */
 			(host_readbs(hero_i + 0x3b) > ch_val)) {
 				/* check if CH is the highest */
@@ -74,7 +74,7 @@ unsigned short get_hero_KK_best() {
 				/* check class */
 			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
-			(host_readb(hero_i + 0xaa) & 1) == 0 &&
+			(!hero_dead(hero_i)) &&
 				/* check if dead */
 			(host_readbs(hero_i + 0x47) > kk_val)) {
 				/* check if KK is the highest */
@@ -131,7 +131,7 @@ unsigned short hero_is_poisoned(Bit8u *hero)
  */
 void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 
-	if ((host_readb(hero + 0xaa) & 1) == 0) {
+	if (!hero_dead(hero)) {
 
 		host_writeb(hero + poison * 5 + 0xd6, 0xff);
 		host_writeb(hero + poison * 5 + 0xd7, 0x00);
@@ -154,7 +154,7 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 		return;
 #endif
 
-	if ((host_readb(hero + 0xaa) & 1) == 0) {
+	if (!hero_dead(hero)) {
 
 		host_writeb(hero + disease * 5 + 0xae, 0xff);
 		host_writeb(hero + disease * 5 + 0xaf, 0x00);
@@ -223,7 +223,7 @@ short check_heros_KK(short val) {
 	hero = get_hero(1);
 
 	/* check class, group and dead status of hero in slot 2*/
-	if (host_readb(hero + 0x21) && host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) && !(host_readb(hero + 0xaa) & 1)) {
+	if (host_readb(hero + 0x21) && host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) && (!hero_dead(hero))) {
 		sum += host_readbs(hero + 0x47) + host_readbs(hero + 0x48);
 	}
 
@@ -485,7 +485,7 @@ unsigned short count_heroes_in_group(void)
 		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
                 /* Check if hero is dead */
-		if (host_readb(hero_i + 0xaa) & 1)
+		if (hero_dead(hero_i))
 			continue;
 
 		retval++;

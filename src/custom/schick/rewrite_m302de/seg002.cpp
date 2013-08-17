@@ -2423,19 +2423,19 @@ unsigned short check_hero(Bit8u *hero) {
 	if (host_readb(hero+0x21) == 0)
 		return 0;
 	/* Check if sleeping */
-	if ((host_readb(hero+0xaa) >> 1) & 1)
+	if (hero_sleeps(hero))
 		return 0;
 	/* Check if dead */
 	if (hero_dead(hero))
 		return 0;
 	/* Check if stoned */
-	if ((host_readb(hero+0xaa) >> 2) & 1)
+	if (hero_stoned(hero))
 		return 0;
 	/* Check if unconscious */
 	if (hero_unc(hero))
 		return 0;
-	/* Check if ??? */
-	if ((host_readb(hero+0xaa) >> 5) & 1)
+	/* Check if cursed */
+	if (hero_cursed(hero))
 		return 0;
 	/* Check if ??? */
 	if (host_readb(hero+0x84) == 0x10)
@@ -2457,13 +2457,13 @@ unsigned short check_hero_no2(Bit8u *hero) {
 	if (hero_dead(hero))
 		return 0;
 	/* Check if stoned */
-	if ((host_readb(hero+0xaa) >> 2) & 1)
+	if (hero_stoned(hero))
 		return 0;
 	/* Check if unconscious */
 	if (hero_unc(hero))
 		return 0;
-	/* Check if ??? */
-	if ((host_readb(hero+0xaa) >> 5) & 1)
+	/* Check if cursed */
+	if (hero_cursed(hero))
 		return 0;
 
 	return 1;
@@ -2482,7 +2482,7 @@ unsigned short check_hero_no3(Bit8u *hero) {
 	if (hero_dead(hero))
 		return 0;
 	/* Check if stoned */
-	if ((host_readb(hero+0xaa) >> 2) & 1)
+	if (hero_stoned(hero))
 		return 0;
 	/* Check if unconscious */
 	if (hero_unc(hero))

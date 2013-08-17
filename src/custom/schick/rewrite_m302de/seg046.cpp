@@ -308,10 +308,10 @@ void status_show(Bit16u index)
 	GUI_print_string(Real2Host(ds_readd(0xd2f3)), 59, 43);
 
 	/* dead, unconscious or drunk */
-	if ((host_readb(hero + 0xaa) & 1))
+	if (hero_dead(hero))
 		/* print if dead */
 		GUI_print_string(get_city(0x00), 155, 9);
-	else if (((host_readb(hero + 0xaa) >> 6) & 1))
+	else if (hero_unc(hero))
 		/* print if uncounscious */
 		GUI_print_string(get_city(0x18), 155, 9);
 	else if (host_readb(hero + 0xa1))
@@ -319,11 +319,11 @@ void status_show(Bit16u index)
 		GUI_print_string(get_city(0xd8), 155, 9);
 
 	/* print sleeps */
-	if (((host_readb(hero + 0xaa) >> 1) & 1))
+	if (hero_sleeps(hero))
 		GUI_print_string(get_city(0x04), 155, 16);
 
 	/* print stoned */
-	if (((host_readb(hero + 0xaa) >> 2) & 1))
+	if (hero_stoned(hero))
 		GUI_print_string(get_city(0x08), 155, 23);
 
 	/* print diseased */

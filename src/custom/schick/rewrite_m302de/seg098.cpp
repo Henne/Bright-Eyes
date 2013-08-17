@@ -221,7 +221,7 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check if dead */
-		if (host_readb(hero_i + 0xaa) & 1)
+		if (hero_dead(hero_i))
 			continue;
 
 		if (test_spell(hero_i, spell, bonus) > 0)
