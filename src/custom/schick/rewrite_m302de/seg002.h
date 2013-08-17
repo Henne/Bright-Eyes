@@ -54,8 +54,8 @@ void set_and_spin_lock();
 void passages_recalc();
 //static
 void passages_reset();
-void timewarp(unsigned int);
-void timewarp_until(unsigned int);
+void timewarp(Bit32u);
+void timewarp_until(Bit32u);
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);

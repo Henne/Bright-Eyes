@@ -1788,7 +1788,7 @@ void passages_reset() {
  * timewarp() -	forwards the ingame time
  * @time:	ticks to forward
  */
-void timewarp(unsigned int time)
+void timewarp(Bit32u time)
 {
 	unsigned int i;
 	signed short td_bak;
@@ -1844,7 +1844,7 @@ void timewarp(unsigned int time)
  * timewarp_until() -	forwards the ingame time
  * @time:	ticks to forward to e.g 6 AM
  */
-void timewarp_until(unsigned int time)
+void timewarp_until(Bit32u time)
 {
 	unsigned int i;
 	signed short td_bak;
