@@ -682,6 +682,7 @@ void hero_get_drunken(Bit8u *hero)
  *	@hero:	pointer to the hero
  *
  */
+/* BC-TODO: nearly the same, but the decs are calculated another way. */
 void hero_get_sober(Bit8u *hero) {
 	/* This is checked twice */
 	/* Is hero drunken ? */
