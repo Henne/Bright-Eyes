@@ -636,10 +636,16 @@ unsigned short count_heroes_in_group(void)
 	return retval;
 }
 
+/**
+ * hero_get_drunken() - let the hero feel the result of too much alcohol
+ * @hero:	the hero
+ */
+/* BC-TODO: nearly the same, but the decs are calculated another way. */
+
 void hero_get_drunken(Bit8u *hero)
 {
 
-	if (host_readb(hero + 0xa1) == 0) {
+	if (!host_readbs(hero + 0xa1)) {
 
 		/* set the hero drunken */
 		host_writeb(hero + 0xa1, 1);
