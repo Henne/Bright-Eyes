@@ -22,6 +22,8 @@ signed short menu_enter_delete(RealPt, signed short, signed short);
 void update_atpa(Bit8u*);
 /* 0x4d */
 signed short select_hero_from_group(Bit8u *);
+/* 0x52 */
+signed short select_hero_ok(Bit8u *);
 /* 0x57 */
 unsigned short count_heroes_in_group(void);
 /* 0x5c */

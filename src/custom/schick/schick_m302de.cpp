@@ -3649,7 +3649,12 @@ static int seg047(unsigned short offs) {
 		return 1;
 	}
 	case 0x52: {
-		return 0;
+		RealPt title = CPU_Pop32();
+		CPU_Push32(title);
+		reg_ax = select_hero_ok(Real2Host(title));
+		D1_LOG("select_hero_ok(%s) = %d;\n",
+				Real2Host(title), (signed short)reg_ax);
+		return 1;
 	}
 	case 0x57: {
 		reg_ax = count_heroes_in_group();

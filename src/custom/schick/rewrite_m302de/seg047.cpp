@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg047 (heros, group)
- *	Functions rewritten: 16/18
+ *	Functions rewritten: 17/18
  */
 
 #include <stdio.h>
@@ -461,6 +461,78 @@ signed short select_hero_from_group(Bit8u *title)
 	return -1;
 }
 
+/**
+ * select_hero_ok() - menu for selecting a hero
+ * @title:	titlestring for the menu
+ *
+ * Returns: index of the hero or -1 (ESC).
+ * Remark: The available heros must be in the group and pass check_hero().
+ */
+/* Borlandified and identical */
+signed short select_hero_ok(Bit8u *title)
+{
+	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
+	signed short cnt;
+	signed short bak_1;
+	signed short bak_2;
+	signed short bak_3;
+	RealPt hero;
+	register signed short i;
+	register signed short answer;
+
+	bak_1 = ds_readw(0xbffd);
+	ds_writew(0xbffd, 3);
+	cnt = 0;
+
+	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += 0x6da) {
+
+		if (host_readb(Real2Host(hero) + 0x21) != 0 &&
+			host_readb(Real2Host(hero) + 0x87) == ds_readb(CURRENT_GROUP) &&
+			check_hero(Real2Host(hero)) &&
+				/* TODO: find out what that means */
+				ds_readbs(0x64a2) != i) {
+
+			/* save pointer to the name of the hero */
+			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + 0x10));
+			dst[cnt] = i;
+			cnt++;
+		}
+	}
+
+	ds_writeb(0x64a2, -1);
+
+	if (cnt != 0) {
+		bak_2 = ds_readw(0x2ca2);
+		bak_3 = ds_readw(0x2ca4);
+
+		/* BC-TODO: val1 = val2 = 0; */
+		ds_writew(0x2ca4, 0);
+		ds_writew(0x2ca2, 0);
+
+		answer = GUI_radio(title, cnt,
+				Real2Host(ds_readd(0xbf95)),
+				Real2Host(ds_readd(0xbf99)),
+				Real2Host(ds_readd(0xbf9d)),
+				Real2Host(ds_readd(0xbfa1)),
+				Real2Host(ds_readd(0xbfa5)),
+				Real2Host(ds_readd(0xbfa9)),
+				Real2Host(ds_readd(0xbfad))) - 1;
+
+		ds_writew(0x2ca2, bak_2);
+		ds_writew(0x2ca4, bak_3);
+		ds_writew(0xbffd, bak_1);
+		ds_writew(0x2cdb, -1);
+
+		if (answer != -2)
+			return dst[answer];
+		else
+			return -1;
+	}
+
+	ds_writew(0xbffd, bak_1);
+	ds_writew(0x2cdb, -1);
+	return -1;
+}
 
 /**
  * count_heroes_in_group() - counts the heroes in the current group
