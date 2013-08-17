@@ -614,25 +614,23 @@ signed short select_hero_ok_forced(Bit8u *title)
  *
  * Returns how many alive heros are in the group.
  */
+/* Borlandified and identical */
 unsigned short count_heroes_in_group(void)
 {
 	Bit8u *hero_i;
-	unsigned short i, retval = 0;
+	signed short i;
+	unsigned short retval;
 
-	hero_i = get_hero(0);
+	retval = 0;
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* Check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* Check if in current group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-                /* Check if hero is dead */
-		if (hero_dead(hero_i))
-			continue;
+	for (hero_i = get_hero(0), i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class, group and dead */
+		if ((host_readb(hero_i + 0x21) != 0) &&
+			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			(!hero_dead(hero_i))) {
 
-		retval++;
+			retval++;
+		}
 	}
 
 	return retval;
