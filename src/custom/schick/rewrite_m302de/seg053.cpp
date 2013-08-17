@@ -3,14 +3,18 @@
 	Functions rewritten: 1/2
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "common.h"
 #include "v302de.h"
 
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * is_hero_healable() - check if hero can healed by a healer
@@ -18,6 +22,7 @@ namespace M302de {
  *
  * Returns 1 if hero can be healed, else 0.
  */
+/* Borlandified and identical */
 unsigned short is_hero_healable(Bit8u *hero)
 {
 
@@ -31,4 +36,6 @@ unsigned short is_hero_healable(Bit8u *hero)
 
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
