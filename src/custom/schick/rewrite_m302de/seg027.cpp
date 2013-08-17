@@ -115,18 +115,19 @@ void load_pp20(Bit16u index)
 /* Original-Bug: when using EMS for caching something starge happens. */
 RealPt load_fight_figs(signed short fig_old)
 {
-	RealPt src;
-	signed short index;
-	Bit8u *p_tab;
-	Bit8u *mem_slots;
-	signed short max_entries;
-	unsigned short fd;
-	unsigned int len;
-	unsigned int offset;
-	unsigned short ems_handle;
-	RealPt dst;
 	signed short i;
 	signed short fig = fig_old;
+
+	RealPt dst;
+	unsigned short ems_handle;
+	Bit32u offset;
+	Bit32u len;
+	unsigned short fd;
+	signed short max_entries;
+	Bit8u *mem_slots;
+	Bit8u *p_tab;
+	signed short index;
+	RealPt src;
 
 	/* check if fig is at a known place */
 	if (fig == ds_readws(0x2cd1))
