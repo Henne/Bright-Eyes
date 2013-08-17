@@ -3635,9 +3635,9 @@ static int seg047(unsigned short offs) {
 	}
 	case 0x48: {
 		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
 		D1_LOG("update_atpa(%s);\n", schick_getCharname(hero));
 		update_atpa(Real2Host(hero));
-		CPU_Push32(hero);
 		return 1;
 	}
 	case 0x4d: {
