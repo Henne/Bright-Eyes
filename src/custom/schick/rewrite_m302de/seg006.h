@@ -7,7 +7,7 @@ void FIG_draw_figures(void);
 signed char FIG_set_array();
 void FIG_set_gfx();
 void FIG_call_draw_pic();
-void FIG_draw_pic();
+void FIG_draw_pic(void);
 RealPt FIG_get_hero_ptr(unsigned short v1);
 RealPt seg006_033c(short v);
 void FIG_set_0e(signed char id, signed char val);
