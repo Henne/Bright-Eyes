@@ -664,8 +664,10 @@ void hero_get_drunken(Bit8u *hero)
 
 		/* do a burp FX2.VOC */
 		if (ds_readb(0x2845) == 20) {
-			play_voc_delay(0x122);
+			ds_writew(0x2846, 1);
 		}
+
+		play_voc_delay(0x122);
 	}
 }
 
