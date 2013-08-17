@@ -968,6 +968,7 @@ static int seg002(unsigned short offs) {
 		refresh_screen_size();
 		return 1;
 	case 0x1a34: {
+		return 0;
 		D1_LOG("handle_gui_input();\n");
 		handle_gui_input();
 		return 1;
@@ -2620,6 +2621,7 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x3e: {
+		return 0;
 		D1_LOG("show_citizen();\n");
 		show_citizen();
 		return 1;
