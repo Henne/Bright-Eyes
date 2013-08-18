@@ -338,7 +338,7 @@ signed char FIG_add_to_list(signed char v) {
 		host_writed(Real2Host(ds_readd(0xe108)) + 0x1b, 0);
 
 #if !defined(__BORLANDC__)
-		D1_INFO("\tlist created x = %d, y = %d\n", x, y);
+		D1_LOG("\tlist created x = %d, y = %d\n", x, y);
 #endif
 
 		return host_readb(Real2Host(ds_readd(0xe108)) + 0x10);
