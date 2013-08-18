@@ -2431,7 +2431,6 @@ void save_chr()
 
 	/* try to open the filename */
 	fd = fopen(pwd, "rb");
-	free(pwd);
 
 	/* if the file exists ask if should overwrite */
 	if (fd) {
@@ -2443,7 +2442,9 @@ void save_chr()
 	}
 
 	/* here originally creat() was used */
-	fd = fopen(filename, "w+");
+	fd = fopen(pwd, "wb");
+	free(pwd);
+	pwd = NULL;
 
 	if (fd) {
 		/* write the CHR file to the current directory */
@@ -2460,8 +2461,9 @@ void save_chr()
 			strncat(pwd, path, 80);
 			prepare_path(pwd);
 
-			fd = fopen(pwd, "w+");
+			fd = fopen(pwd, "wb");
 			free(pwd);
+			pwd = NULL;
 
 			if (fd) {
 				fwrite(hero_out, 1, 1754, fd);
