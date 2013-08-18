@@ -3763,7 +3763,9 @@ static int seg053(unsigned short offs) {
 			unsigned char qual = ds_readb(typi * 2 + 0x66ea + 1);
 			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualitaet: %d\n",
 				typi, 100 + price, qual);
-			return 0;
+
+			do_healer();
+			return 1;
 		}
 		case 0x25: {
 			RealPt hero = CPU_Pop32();
