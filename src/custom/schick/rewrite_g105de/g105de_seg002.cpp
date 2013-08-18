@@ -1328,9 +1328,9 @@ static void update_hero_out()
 	hero_writed(0x1358, hero.money);
 
 	for (i = 0; i < 14; i++) {
-		hero_writeb(0x1360 + i * 3 + 0, hero.attribs[0].normal);
-		hero_writeb(0x1360 + i * 3 + 1, hero.attribs[0].current);
-		hero_writeb(0x1360 + i * 3 + 2, hero.attribs[0].mod);
+		hero_writeb(0x1360 + i * 3 + 0, hero.attribs[i].normal);
+		hero_writeb(0x1360 + i * 3 + 1, hero.attribs[i].current);
+		hero_writeb(0x1360 + i * 3 + 2, hero.attribs[i].mod);
 	}
 
 	hero_writew(0x138a, hero.le);
