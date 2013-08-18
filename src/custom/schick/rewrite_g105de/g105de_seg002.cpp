@@ -1363,7 +1363,7 @@ static void update_hero_out()
 static void prepare_path(char *p)
 {
 	while (*p) {
-#ifdef __WIN32__
+#if defined (WIN32)
 		if (*p == '/')
 			*p = '\\';
 #else
