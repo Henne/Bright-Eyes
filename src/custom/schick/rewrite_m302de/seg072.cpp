@@ -23,8 +23,7 @@ short count_map_parts(void)
 	int i;
 	int parts;
 
-	parts = 0;
-	for (i = 0; i < 9; i++) {
+	for (i = parts = 0; i < 9; i++) {
 		if (ds_readb(TREASURE_MAPS + i) != 0)
 			parts++;
 	}
@@ -39,11 +38,7 @@ short count_map_parts(void)
 short has_intro_letter(void)
 {
 	/* check for the introduction letter / Empfehlungsschreiben */
-	if (get_first_hero_with_item(0xeb) != -1) {
-		return 1;
-	}
-
-	return 0;
+	return (get_first_hero_with_item(0xeb) != -1) ? 1 : 0;
 }
 
 #if !defined(__BORLANDC__)
