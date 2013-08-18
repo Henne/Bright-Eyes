@@ -6192,7 +6192,7 @@ static int n_seg006(unsigned offs)
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 
-		D1_LOG("FIG_draw_char_pic(%d, %d)\n", v1, v2);
+		D1_LOG("n FIG_draw_char_pic(%d, %d)\n", v1, v2);
 		FIG_draw_char_pic(v1, v2);
 		return 1;
 	}
@@ -6203,7 +6203,7 @@ static int n_seg006(unsigned offs)
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 
-		D1_INFO("n FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
+		D1_LOG("n FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
 		FIG_draw_enemy_pic(v1, v2);
 		return 1;
 	}
