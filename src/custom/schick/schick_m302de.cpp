@@ -3983,26 +3983,61 @@ static int seg071(unsigned short offs) {
 static int seg072(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x2f: {
-			/* Informer */
+			/* Informer: Isleif (2, {0,2,0xf, 0x10, 0x18, 0x19}) */
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x34: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x39: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x3e: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x43: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x48: {
 			/* Informer: Swafnild */
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		default:
