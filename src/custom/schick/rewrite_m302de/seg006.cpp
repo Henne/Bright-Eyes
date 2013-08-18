@@ -471,7 +471,7 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	struct nvf_desc nvf;
 
 	/* BC-TODO */
-	p1 = (RealPt)(ds_readd(0xc3a9)) - 1288;
+	p1 = F_PADD((RealPt)(ds_readd(0xc3a9)), -1288);
 
 	p_enemy = p_datseg + 0xd0df + id * 62;
 
