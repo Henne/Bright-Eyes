@@ -1,6 +1,7 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 
+RealPt F_PADD(RealPt, Bit32s);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
 signed short bioskey(signed short);
@@ -15,6 +16,8 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 }
 #else
 #include <IO.H>
+
+#define F_PADD(p, o) ((RealPt far)(p) + o)
 #define bc_lseek lseek
 #define bc__read read
 #define bc__write write

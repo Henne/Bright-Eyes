@@ -10,6 +10,17 @@
 
 namespace M302de {
 
+RealPt F_PADD(RealPt p, Bit32s off)
+{
+	reg_dx = RealSeg(p);
+	reg_ax = RealOff(p);
+	reg_cx = off >> 16;
+	reg_bx = off & 0xffff;
+	CALLBACK_RunRealFar(reloc_game, 0x9b0);
+	return RealMake(reg_dx, reg_ax);
+}
+
+
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
 	ds_writew(0xb788 + handle * 2, ds_readw(0xb788 + handle * 2) & 0xfdff);
