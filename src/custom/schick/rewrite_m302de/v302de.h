@@ -105,6 +105,24 @@ static inline Bit32s host_readds(Bit8u* p)
 	return (Bit32s)host_readd(p);
 }
 
+static inline Bit8s host_writebs(Bit8u* p, Bit8s val)
+{
+	host_writeb(p, val);
+	return val;
+}
+
+static inline Bit16s host_writews(Bit8u* p, Bit16s val)
+{
+	host_writew(p, val);
+	return val;
+}
+
+static inline Bit32s host_writeds(Bit8u* p, Bit32s val)
+{
+	host_writed(p, val);
+	return val;
+}
+
 static inline int NOT_NULL(Bit8u* p)
 {
 	return (p != NULL && p != MemBase);
@@ -126,6 +144,16 @@ static inline void ds_writeb_z(Bitu addr, char val) {
 
 static inline Bit8u *get_hero(unsigned short index) {
 	return Real2Host(ds_readd(HEROS)) + index * 0x6da;
+}
+
+static inline void inc_ptr_bs(Bit8u *p)
+{
+	host_writebs(p, host_readbs(p) + 1);
+}
+
+static inline void dec_ptr_bs(Bit8u *p)
+{
+	host_writebs(p, host_readbs(p) - 1);
 }
 
 /**
@@ -304,6 +332,10 @@ extern char ds[0xffff];
 #define ds_writeb(p, d) *(Bit8u*)(ds + p) = d
 #define ds_writew(p, d) *(Bit16u*)(ds + p) = d
 #define ds_writed(p, d) *(Bit32u*)(ds + p) = d
+
+#define inc_ptr_bs(p)  ++*(Bit8s*)(p)
+
+#define dec_ptr_bs(p) --*(Bit8s*)(p)
 
 #define mem_readb(p) *(Bit8u*)(p)
 #define mem_readw(p) *(Bit16u*)(p)
