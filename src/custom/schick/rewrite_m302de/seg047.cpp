@@ -573,10 +573,10 @@ signed short select_hero_ok_forced(Bit8u *title)
 	ds_writeb(0x64a2, -1);
 
 	if (cnt != 0) {
-		bak_2 = ds_readw(0x2ca2);
-		bak_3 = ds_readw(0x2ca4);
-
 		do {
+			bak_2 = ds_readw(0x2ca2);
+			bak_3 = ds_readw(0x2ca4);
+
 			ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
 			answer = GUI_radio(title, cnt,
