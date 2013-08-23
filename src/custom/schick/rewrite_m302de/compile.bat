@@ -16,5 +16,6 @@
 @REM
 @REM
 @REM --here start the good ones --
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG047.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG120.CPP
+@REM -- here start the complete
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG047.CPP

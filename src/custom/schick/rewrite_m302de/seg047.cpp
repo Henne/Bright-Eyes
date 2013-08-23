@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg047 (heros, group)
- *	Functions rewritten: 18/18
+ *	Functions rewritten: 18/18 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y SEG047.CPP
  */
 
 #include <stdio.h>
@@ -27,7 +31,6 @@ namespace M302de {
  * Returns the index of the hero with the highest unmodified CH value.
  * The hero must be alive and in the current group.
  */
-/* Borlandified and identical */
 unsigned short get_hero_CH_best()
 {
 
@@ -63,7 +66,6 @@ unsigned short get_hero_CH_best()
  * Returns the index of the hero with the highest unmodified KK value.
  * The hero must be alive and in the current group.
  */
-/* Borlandified and identical */
 unsigned short get_hero_KK_best() {
 	signed short retval;
 	Bit8u *hero_i;
@@ -96,7 +98,6 @@ unsigned short get_hero_KK_best() {
  *
  * Only the first disease is returned here.
  */
-/* Borlandified and identical */
 unsigned short hero_is_diseased(Bit8u *hero)
 {
 	signed short i;
@@ -114,7 +115,6 @@ unsigned short hero_is_diseased(Bit8u *hero)
  *
  * Only the first poison is returned here.
  */
-/* Borlandified and identical */
 unsigned short hero_is_poisoned(Bit8u *hero)
 {
 
@@ -132,7 +132,6 @@ unsigned short hero_is_poisoned(Bit8u *hero)
  * @hero:	the hero which gets poisoned
  * @poison:	the kind of poison
  */
-/* Borlandified and identical */
 void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 
 	if (!hero_dead(hero)) {
@@ -150,7 +149,6 @@ void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
  * @hero:	the hero which gets diseased
  * @disease:	the kind of disease
  */
-/* Borlandified and identical */
 void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 {
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -175,7 +173,6 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
  * @disease:	the kind of disease
  * @probability: the probability to get diseased in percent
  */
-/* Borlandified and identical */
 void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probability) {
 
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -197,7 +194,6 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
  *
  *	This function is not used in the game!
  */
-/* Borlandified and identical */
 short check_hero_KK_unused(short val)
 {
 
@@ -211,7 +207,6 @@ short check_hero_KK_unused(short val)
  *	This function, like hero_check_KK_unused, is buggy!
  *	It does not check if the first slot is a valid hero.
  */
-/* Borlandified and identical */
 short check_heros_KK(short val) {
 
 	Bit8u *hero;
@@ -244,7 +239,6 @@ short check_heros_KK(short val) {
  *
  *	This funcion is buggy.
  */
-/* Borlandified and identical */
 void make_valuta_str(char *dst, Bit32s money) {
 	/* Orig-BUG: d can overflow  on D > 65536*/
 	unsigned short d = 0;
@@ -279,7 +273,6 @@ void make_valuta_str(char *dst, Bit32s money) {
  *	update_atpa() -	recalculates the AT PA values
  *
  */
-/* Borlandified and identical */
 void update_atpa(Bit8u *hero)
 {
 	div_t erg;
@@ -328,7 +321,6 @@ void update_atpa(Bit8u *hero)
  * Returns: the number of the selected hero.
  * Used only in temples.
  */
-/* Borlandified and identical */
 signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mode)
 {
 	signed short i;
@@ -396,7 +388,6 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
  * Returns: index of the hero or -1 (ESC).
  * Remark: The available heros must be in the group only.
  */
-/* Borlandified and identical */
 signed short select_hero_from_group(Bit8u *title)
 {
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -467,7 +458,6 @@ signed short select_hero_from_group(Bit8u *title)
  * Returns: index of the hero or -1 (ESC).
  * Remark: The available heros must be in the group and pass check_hero().
  */
-/* Borlandified and identical */
 signed short select_hero_ok(Bit8u *title)
 {
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -539,7 +529,6 @@ signed short select_hero_ok(Bit8u *title)
  * Remark: The available heros must be in the group, pass check_hero() and
  *		you are forced to select a hero.
  */
-/* Borlandified and identical */
 signed short select_hero_ok_forced(Bit8u *title)
 {
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -609,7 +598,6 @@ signed short select_hero_ok_forced(Bit8u *title)
  *
  * Returns how many alive heros are in the group.
  */
-/* Borlandified and identical */
 unsigned short count_heroes_in_group(void)
 {
 	Bit8u *hero_i;
@@ -635,8 +623,6 @@ unsigned short count_heroes_in_group(void)
  * hero_get_drunken() - let the hero feel the result of too much alcohol
  * @hero:	the hero
  */
-/* Borlandified and identical */
-
 void hero_get_drunken(Bit8u *hero)
 {
 
@@ -677,7 +663,6 @@ void hero_get_drunken(Bit8u *hero)
  *	@hero:	pointer to the hero
  *
  */
-/* Borlandified and identical */
 void hero_get_sober(Bit8u *hero) {
 	/* This is checked twice */
 	/* Is hero drunken ? */
