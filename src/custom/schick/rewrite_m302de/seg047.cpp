@@ -635,7 +635,7 @@ unsigned short count_heroes_in_group(void)
  * hero_get_drunken() - let the hero feel the result of too much alcohol
  * @hero:	the hero
  */
-/* BC-TODO: nearly the same, but the decs are calculated another way. */
+/* Borlandified and identical */
 
 void hero_get_drunken(Bit8u *hero)
 {
@@ -646,22 +646,22 @@ void hero_get_drunken(Bit8u *hero)
 		host_writeb(hero + 0xa1, 1);
 
 		/* change good attributes */
-		host_writeb(hero + 0x35, host_readb(hero + 0x35) + 1);
-		host_writeb(hero + 0x38, host_readb(hero + 0x38) - 1);
-		host_writeb(hero + 0x3b, host_readb(hero + 0x3b) - 1);
-		host_writeb(hero + 0x3e, host_readb(hero + 0x3e) - 1);
-		host_writeb(hero + 0x41, host_readb(hero + 0x41) - 1);
-		host_writeb(hero + 0x44, host_readb(hero + 0x44) + 1);
-		host_writeb(hero + 0x47, host_readb(hero + 0x47) + 1);
+		inc_ptr_bs(hero + 0x35);
+		dec_ptr_bs(hero + 0x38);
+		dec_ptr_bs(hero + 0x3b);
+		dec_ptr_bs(hero + 0x3e);
+		dec_ptr_bs(hero + 0x41);
+		inc_ptr_bs(hero + 0x44);
+		inc_ptr_bs(hero + 0x47);
 
 		/* Reset bad attributes */
-		host_writeb(hero + 0x4a, host_readb(hero + 0x4a) + 1);
-		host_writeb(hero + 0x4d, host_readb(hero + 0x4d) - 1);
-		host_writeb(hero + 0x50, host_readb(hero + 0x50) - 1);
-		host_writeb(hero + 0x53, host_readb(hero + 0x53) + 1);
-		host_writeb(hero + 0x56, host_readb(hero + 0x56) - 1);
-		host_writeb(hero + 0x59, host_readb(hero + 0x59) + 1);
-		host_writeb(hero + 0x5c, host_readb(hero + 0x5c) + 1);
+		inc_ptr_bs(hero + 0x4a);
+		dec_ptr_bs(hero + 0x4d);
+		dec_ptr_bs(hero + 0x50);
+		inc_ptr_bs(hero + 0x53);
+		dec_ptr_bs(hero + 0x56);
+		inc_ptr_bs(hero + 0x59);
+		inc_ptr_bs(hero + 0x5c);
 
 		/* do a burp FX2.VOC */
 		if (ds_readb(0x2845) == 20) {
@@ -677,7 +677,7 @@ void hero_get_drunken(Bit8u *hero)
  *	@hero:	pointer to the hero
  *
  */
-/* BC-TODO: nearly the same, but the decs are calculated another way. */
+/* Borlandified and identical */
 void hero_get_sober(Bit8u *hero) {
 	/* This is checked twice */
 	/* Is hero drunken ? */
@@ -692,22 +692,22 @@ void hero_get_sober(Bit8u *hero) {
 	host_writeb(hero + 0xa1, 0);
 
 	/* Reset good attributes */
-	host_writeb(hero + 0x35, host_readb(hero + 0x35) - 1);
-	host_writeb(hero + 0x38, host_readb(hero + 0x38) + 1);
-	host_writeb(hero + 0x3b, host_readb(hero + 0x3b) + 1);
-	host_writeb(hero + 0x3e, host_readb(hero + 0x3e) + 1);
-	host_writeb(hero + 0x41, host_readb(hero + 0x41) + 1);
-	host_writeb(hero + 0x44, host_readb(hero + 0x44) - 1);
-	host_writeb(hero + 0x47, host_readb(hero + 0x47) - 1);
+	dec_ptr_bs(hero + 0x35);
+	inc_ptr_bs(hero + 0x38);
+	inc_ptr_bs(hero + 0x3b);
+	inc_ptr_bs(hero + 0x3e);
+	inc_ptr_bs(hero + 0x41);
+	dec_ptr_bs(hero + 0x44);
+	dec_ptr_bs(hero + 0x47);
 
 	/* Reset bad attributes */
-	host_writeb(hero + 0x4a, host_readb(hero + 0x4a) - 1);
-	host_writeb(hero + 0x4d, host_readb(hero + 0x4d) + 1);
-	host_writeb(hero + 0x50, host_readb(hero + 0x50) + 1);
-	host_writeb(hero + 0x53, host_readb(hero + 0x53) - 1);
-	host_writeb(hero + 0x56, host_readb(hero + 0x56) + 1);
-	host_writeb(hero + 0x59, host_readb(hero + 0x59) - 1);
-	host_writeb(hero + 0x5c, host_readb(hero + 0x5c) - 1);
+	dec_ptr_bs(hero + 0x4a);
+	inc_ptr_bs(hero + 0x4d);
+	inc_ptr_bs(hero + 0x50);
+	dec_ptr_bs(hero + 0x53);
+	inc_ptr_bs(hero + 0x56);
+	dec_ptr_bs(hero + 0x59);
+	dec_ptr_bs(hero + 0x5c);
 
 	if (ds_readb(0x2845) == 20)
 		ds_writew(0x2846, 1);
