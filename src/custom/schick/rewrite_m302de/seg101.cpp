@@ -9,6 +9,8 @@
 #include "schick.h"
 #endif
 
+#include <stdio.h>
+
 #include "string.h"
 
 #include "v302de.h"
@@ -27,7 +29,9 @@ namespace M302de {
 void spell_adler() {
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Adler, Wolf und Hammerhai\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_arcano() {
@@ -460,7 +464,9 @@ void spell_inc_mu() {
 void spell_mutabili() {
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Mutabili\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_paral()
@@ -468,7 +474,7 @@ void spell_paral()
 
 	if (host_readb(get_spelluser() + 0x86) >= 10) {
 		/* cast an enemy */
-		ds_writed(0xe5b4, RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
+		ds_writed(0xe5b4, (Bit32u)RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
 
 		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
 			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x04);
@@ -514,7 +520,7 @@ void spell_salander()
 	Bit16s ae_cost;
 
 	/* set a pointer */
-	ds_writed(0xe5b4, RealMake(datseg, 0xd0df + (signed char)host_readb(get_spelluser() + 0x86) * 62));
+	ds_writed(0xe5b4, (Bit32u)RealMake(datseg, 0xd0df + (signed char)host_readb(get_spelluser() + 0x86) * 62));
 
 	/* read a value from that struct */
 	ae_cost = (signed char)host_readb(Real2Host(ds_readd(0xe5b4)) + 0x19) * 3;
@@ -548,7 +554,9 @@ void spell_salander()
 }
 
 void spell_see() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"See und Fluss\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_visibili()
@@ -597,11 +605,15 @@ void spell_visibili()
 /* Transmutation / Veraenderung */
 
 void spell_abvenenum() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Abvenenum\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_aeolitus() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Aeolitus\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_brenne(void)
@@ -710,7 +722,9 @@ void spell_brenne(void)
 }
 
 void spell_claudibus() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Claudibus\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_dunkelheit() {
@@ -727,7 +741,9 @@ void spell_dunkelheit() {
 }
 
 void spell_erstarre() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Erstarre\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_flimflam() {
@@ -744,7 +760,9 @@ void spell_flimflam() {
 }
 
 void spell_schmelze() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Schmelze\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_silentium() {
@@ -781,7 +799,9 @@ void spell_silentium() {
 }
 
 void spell_sturmgebr() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Sturmgebruell\" ist nicht implementiert\n");
+#endif
 }
 
 #if !defined(__BORLANDC__)
