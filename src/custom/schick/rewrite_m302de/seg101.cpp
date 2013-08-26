@@ -153,18 +153,18 @@ void spell_inc_ch() {
 
 void spell_feuerbann()
 {
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* check if spell is already activated */
-	if (host_readb(get_spelluser() + 0x99) == 0) {
+	if (!host_readbs(get_spelluser() + 0x99)) {
 
-		target = (signed char)get_hero_index(get_spelluser());
+		target = get_hero_index(get_spelluser());
 
 		slot = get_free_mod_slot();
 
 		/* Duration = Level * 12 min */
-		set_mod_slot(slot, host_readb(get_spelluser() + 0x27) * 450,
+		set_mod_slot(slot, host_readbs(get_spelluser() + 0x27) * 450L,
 			get_spelluser() + 0x99, 1, target);
 
 		/* prepare message */
