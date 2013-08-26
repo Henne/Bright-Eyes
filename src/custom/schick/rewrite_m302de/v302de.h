@@ -384,8 +384,8 @@ extern Bit8u* city_ltx[];
 #define hero_unc(hero)  ((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_dup(hero)  ((*(struct hero_status*)(hero + 0xaa)).dup)
 
-#define get_spelluser() ds_readd(SPELLUSER)
-#define get_spelltarget() ds_readd(SPELLTARGET)
+#define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
+#define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
 
 #define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
 #define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
