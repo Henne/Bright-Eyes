@@ -13,6 +13,7 @@
 
 #include "string.h"
 
+#include "common.h"
 #include "v302de.h"
 
 #include "seg002.h"
@@ -458,26 +459,31 @@ void spell_mutabili() {
 void spell_paral()
 {
 
-	if (host_readb(get_spelluser() + 0x86) >= 10) {
+	if (host_readbs(get_spelluser() + 0x86) >= 10) {
 		/* cast an enemy */
-		ds_writed(0xe5b4, (Bit32u)RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
 
+		/* BC-TODO: calculation of ptr could be better */
+		ds_writed(0xe5b4,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+		/* BC-TODO: add pointer or instruction */
 		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
 			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x04);
 
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x19c),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(0xe5b4))), 1)));
 	} else {
 		/* cast a hero */
 		/* TODO: the first check can be removed, cause it would not give a message */
 		if (get_spelluser() != get_spelltarget()) {
 
 			/* set the target  */
-			ds_writed(SPELLTARGET, ds_readd(HEROS) + (host_readb(get_spelluser() + 0x86) - 1) * 0x6da);
+			ds_writed(SPELLTARGET,
+				(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
 
 			/* check again */
-			if (get_spelluser() == get_spelltarget()) {
+			if (get_spelltarget() == get_spelluser()) {
 
 				/* never cast yourself */
 				ds_writew(0xac0e, 0);
@@ -486,6 +492,7 @@ void spell_paral()
 					(char*)get_dtp(0x1c0));
 			} else {
 				/* set the hero to stoned */
+				/* BC-TODO: add pointer or instruction */
 				host_writeb(get_spelltarget() + 0xaa, host_readb(get_spelltarget() + 0xaa) | 0x4);
 
 				/* prepare message */
@@ -503,20 +510,22 @@ void spell_paral()
 
 void spell_salander()
 {
-	Bit16s ae_cost;
+	signed short ae_cost;
 
+	/* BC-TODO: calculation of ptr could be better */
 	/* set a pointer */
-	ds_writed(0xe5b4, (Bit32u)RealMake(datseg, 0xd0df + (signed char)host_readb(get_spelluser() + 0x86) * 62));
+	ds_writed(0xe5b4, (Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 	/* read a value from that struct */
-	ae_cost = (signed char)host_readb(Real2Host(ds_readd(0xe5b4)) + 0x19) * 3;
+	ae_cost = host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x19) * 3;
 
 	/* set the minimal astral cost to 25 AE */
 	if (ae_cost < 25)
 		ae_cost = 25;
 
-	if (host_readw(get_spelluser() + 0x64) >= ae_cost) {
+	if (host_readws(get_spelluser() + 0x64) >= ae_cost) {
 
+		/* BC-TODO: add pointer or instruction */
 		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
 			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x40);
 
@@ -524,7 +533,7 @@ void spell_salander()
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x1a0),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(0xe5b4))), 1)));
 
 		/* set AE cost */
 		ds_writew(0xac0e, ae_cost);
@@ -532,7 +541,7 @@ void spell_salander()
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_ltx(0x97c),
-			(char*)Real2Host(ds_readd(0xe5bc) + 0x10));
+			(char*)Real2Host(ds_readd(0xe5bc)) + 0x10);
 
 		/* no AE cost */
 		ds_writew(0xac0e, 0);
@@ -547,8 +556,8 @@ void spell_see() {
 
 void spell_visibili()
 {
-	unsigned short slot;
-	signed char pos;
+	signed short slot;
+	signed short pos;
 	signed short rounds;
 
 	/* ask the user how many rounds he wants to be invisible */
@@ -568,16 +577,16 @@ void spell_visibili()
 	}
 
 	/* check if the hero has enough AE */
-	if (rounds * 5 <= host_readw(get_spelluser() + 0x64)) {
+	if (rounds * 5 <= host_readws(get_spelluser() + 0x64)) {
 
 		ds_writew(0xac0e, rounds * 5);
 		pos = (signed char)get_hero_index(get_spelluser());
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, rounds * 450, get_spelluser() + 0x9a, 1, pos);
+		set_mod_slot(slot, (Bit32s)rounds * 450L, get_spelluser() + 0x9a, 1, pos);
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x1a8),
 			(char*)get_spelluser() + 0x10,
-			(char*)Real2Host(GUI_get_ptr(host_readb(get_spelluser() + 0x22), 0)));
+			(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_ltx(0x97c),
@@ -604,8 +613,8 @@ void spell_aeolitus() {
 
 void spell_brenne(void)
 {
-	signed short answer;
 	signed short oil_pos;
+	signed short answer;
 
 	signed short torch_pos;
 	signed short lantern_pos;
@@ -618,7 +627,8 @@ void spell_brenne(void)
 	if (ds_readw(LIGHT_TYPE) == 1) {
 		torch_pos = get_item_pos(get_spelluser(), 0x41);
 	} else {
-		if (ds_readw(LIGHT_TYPE) != 2) {
+		if (ds_readw(LIGHT_TYPE) == 2) {
+		} else {
 			torch_pos = get_item_pos(get_spelluser(), 0x41);
 		}
 
@@ -715,10 +725,10 @@ void spell_claudibus() {
 
 void spell_dunkelheit() {
 
-	signed char level = host_readb(get_spelluser() + 0x27);
 
 	/* set dunkelheit duration (level + 3) hours */
-	ds_writed(0x2dc4 + 0x24, (level + 3) * 0x1518);
+	ds_writed(0x2dc4 + 0x24,
+		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */
 	strcpy((char*)Real2Host(ds_readd(0xd2f3)),
@@ -734,10 +744,10 @@ void spell_erstarre() {
 
 void spell_flimflam() {
 
-	signed char level = host_readb(get_spelluser() + 0x27);
 
 	/* set flim flam duration (level + 3) hours */
-	ds_writed(0x2dc4 + 0x20, (level + 3) * 0x1518);
+	ds_writed(0x2dc4 + 0x20,
+		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */
 	strcpy((char*)Real2Host(ds_readd(0xd2f3)),
@@ -753,27 +763,25 @@ void spell_schmelze() {
 
 void spell_silentium() {
 
+	signed short i;
+	signed short slot;
 	Bit8u *hero;
-	unsigned short slot;
-	signed char i;
 
 	hero = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
 		/* check class */
-		if (host_readb(hero + 0x21) == 0)
-			continue;
-		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* check dead */
-		if (host_readb(hero + 0xaa) & 1)
-			continue;
+		if ((host_readb(hero + 0x21) != 0) &&
+			/* check group */
+			(host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			/* check dead */
+			!(hero_dead(hero))) {
 
-		/* get a free mod_slot */
-		slot = get_free_mod_slot();
-		/* skill stealth + 10 for 12 minutes */
-		set_mod_slot(slot, 0x1c2, hero + 0x115, 10, i);
+			/* get a free mod_slot */
+			slot = get_free_mod_slot();
+			/* skill stealth + 10 for 12 minutes */
+			set_mod_slot(slot, 0x1c2, hero + 0x115, 10, i);
+		}
 	}
 
 	/* set AP cost */
