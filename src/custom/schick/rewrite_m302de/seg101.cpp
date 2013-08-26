@@ -34,41 +34,41 @@ void spell_adler() {
 #endif
 }
 
-void spell_arcano() {
-
-	Bit8u *tp;
+void spell_arcano()
+{
+	signed short target;
 	unsigned short slot;
-	signed char target;
 
 	/* get the spell target */
-	target = host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+
 
 	/* get a free mod_slot */
 	slot = get_free_mod_slot();
 
 	/* MR + 2 for 1 h */
-	set_mod_slot(slot, 0x1518, tp + 0x66, 2, target);
+	set_mod_slot(slot, 0x1518, Real2Host(ds_readd(0xe5b8)) + 0x66, 2, target);
 
 	/* "Die Magieresistenz von %s steigt um 2 Punkte." */
 	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 		(char*)get_dtp(98 * 4),
-		(char*)tp + 0x10);
+		(char*)Real2Host((RealPt)ds_readd(0xe5b8) + 0x10));
 }
 
 void spell_armatrutz()
 {
-	unsigned short max_boni, slot;
+	signed short max_boni;
+	signed short pos;
 	signed short boni;
-	signed char pos;
+	signed short slot;
 
 	max_boni = 0;
 
 	/* calc the maximal RS boni */
 	/* Original-Bug: you can get one RS point more that you have AE for */
-	while (max_boni * max_boni < host_readw(get_spelluser() + 0x64)) {
+	while (max_boni * max_boni < host_readws(get_spelluser() + 0x64)) {
 		max_boni++;
 	}
 
@@ -87,7 +87,7 @@ void spell_armatrutz()
 
 	if (boni != -1) {
 
-		pos = (signed char)get_hero_index(get_spelluser());
+		pos = get_hero_index(get_spelluser());
 		ds_writew(0xac0e, boni * boni);
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, 450, get_spelluser() + 0x30,
