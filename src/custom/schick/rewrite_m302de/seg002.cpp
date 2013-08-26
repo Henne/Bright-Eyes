@@ -1247,7 +1247,7 @@ unsigned short get_free_mod_slot() {
 	return 0;
 }
 
-void set_mod_slot(unsigned short slot_nr, unsigned int timer_value, Bit8u *ptr,
+void set_mod_slot(unsigned short slot_nr, Bit32u timer_value, Bit8u *ptr,
 	signed char mod, signed char who) {
 
 	Bit8u *mod_ptr;

@@ -43,7 +43,7 @@ void do_census();
 void sub_ingame_timers(unsigned int);
 void sub_mod_timers(unsigned int);
 unsigned short get_free_mod_slot();
-void set_mod_slot(unsigned short, unsigned int, Bit8u *, signed char, signed char);
+void set_mod_slot(unsigned short, Bit32u, Bit8u *, signed char, signed char);
 void seg002_2f7a(unsigned int fmin);
 void sub_light_timers(signed int);
 //static
