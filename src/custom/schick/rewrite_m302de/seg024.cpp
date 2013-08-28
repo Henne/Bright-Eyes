@@ -3,8 +3,12 @@
 	Functions rewritten: 3/3
 */
 
+#if !defined (__BORLANDC__)
 #include "schick.h"
-#include "string.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -15,7 +19,9 @@
 #include "seg027.h"
 #include "seg096.h"
 
+#if !defined (__BORLANDC__)
 namespace M302de {
+#endif
 
 /* DS:0x4900 - DS:0x496f */
 static const char diary_fmt[][30] = {
@@ -41,7 +47,7 @@ void diary_show()
 	ds_writeb(0x45b8, 1);
 	ds_writew(0xe113, 0);
 	ds_writew(0x2ccb, 0xffff);
-	ds_writed(0xcecb, RealMake(datseg, 0x2848));
+	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
 
 	/* load BUCH.DAT */
 	load_pp20(0xb1);
@@ -205,4 +211,6 @@ Bit16u diary_print_entry(Bit16u line)
 
 }
 
+#if !defined (__BORLANDC__)
 }
+#endif
