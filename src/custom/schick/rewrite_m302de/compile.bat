@@ -12,6 +12,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG036.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG037.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG044.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG095.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG100.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG101.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG108.CPP

@@ -1,4 +1,7 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
 //0x20
 void npc_nariell();
 //0x25
@@ -20,4 +23,6 @@ unsigned short npc_meetings(unsigned short);
 //0x4d
 void npc_farewell();
 
+#if !defined(__BORLANDC__)
 }
+#endif
