@@ -196,7 +196,7 @@ void npc_nariell()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbc4), get_dtp(0x00),
 				3,
 				get_dtp(0x04), get_dtp(0x08),
@@ -205,20 +205,15 @@ void npc_nariell()
 
 	/* process the answer */
 	if (answer == 1) {
-		GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 			get_ltx(0xbc4), get_dtp(0x10), 0);
 	} else {
 		do {
-			if (answer == 2)
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
-						get_ltx(0xbc4), get_dtp(0x14),
-						2, get_dtp(0x1c),
-						get_dtp(0x20));
-			else
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
-						get_ltx(0xbc4), get_dtp(0x18),
-						2, get_dtp(0x1c),
-						get_dtp(0x20));
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
+					get_ltx(0xbc4),
+					(answer == 2) ? get_dtp(0x14): get_dtp(0x18),
+					2, get_dtp(0x1c),
+					get_dtp(0x20));
 		} while (answer == -1);
 
 		/* add nariell */
@@ -245,7 +240,7 @@ void npc_harika()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbc8), get_dtp(0x28),
 				3,
 				get_dtp(0x2c), get_dtp(0x30),
@@ -253,7 +248,7 @@ void npc_harika()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbc8),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbc8),
 			get_dtp(0x38), 0);
 	} else if (answer == 2) {
 		money = get_party_money();
@@ -264,7 +259,7 @@ void npc_harika()
 			answer = 1;
 
 		do {
-			answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x3c),
 					(signed char)answer,
 					get_dtp(0x44), get_dtp(0x48));
@@ -288,7 +283,7 @@ void npc_harika()
 			answer = 1;
 
 		do {
-			answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x40),
 					(signed char)answer,
 					get_dtp(0x44), get_dtp(0x48));
@@ -323,7 +318,7 @@ void npc_ardora()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbd0), get_dtp(0x78),
 				3,
 				get_dtp(0x7c), get_dtp(0x80),
@@ -332,18 +327,18 @@ void npc_ardora()
 
 	if (answer == 1) {
 		do {
-			answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbd0), get_dtp(0x88),
 					2,
 					get_dtp(0x8c), get_dtp(0x90));
 		} while (answer == -1);
 
 		if (answer == 2) {
-			GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbd0),
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 				get_dtp(0x94), 0);
 		} else {
 			do {
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd0), get_dtp(0x9c),
 						2,
 						get_dtp(0xa0), get_dtp(0xa4));
@@ -352,18 +347,18 @@ void npc_ardora()
 			if (answer == 1) {
 				add_npc(0xe5);
 			} else {
-				GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbd0),
+				GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 					get_dtp(0xa8), 0);
 			}
 		}
 	} else {
 		if (answer == 2) {
-			GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbd0),
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 				get_dtp(0x98), 0);
 		}
 
 		do {
-			answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbd0),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 					get_dtp(0x9c), 2,
 					get_dtp(0xa0), get_dtp(0xa4));
 		} while (answer == -1);
@@ -371,7 +366,7 @@ void npc_ardora()
 		if (answer == 1) {
 			add_npc(0xe5);
 		} else {
-			GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbd0),
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 				get_dtp(0xa8), 0);
 		}
 	}
@@ -392,7 +387,7 @@ void npc_curian()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbcc), get_dtp(0x50),
 				3,
 				get_dtp(0x54), get_dtp(0x58),
@@ -400,17 +395,17 @@ void npc_curian()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbcc),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbcc),
 			get_dtp(0x60), 0);
 	} else {
 		do {
 			if (answer == 2)
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbcc), get_dtp(0x64),
 						2,
 						get_dtp(0x6c), get_dtp(0x70));
 			else
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbcc), get_dtp(0x68),
 						2,
 						get_dtp(0x6c), get_dtp(0x70));
@@ -439,7 +434,7 @@ void npc_garsvik()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbd4), get_dtp(0xb0),
 				3,
 				get_dtp(0xb4), get_dtp(0xb8),
@@ -447,17 +442,17 @@ void npc_garsvik()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbd4),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd4),
 			get_dtp(0xc0), 0);
 	} else {
 		do {
 			if (answer == 2)
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd4), get_dtp(0xc4),
 						2,
 						get_dtp(0xcc), get_dtp(0xd0));
 			else
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd4), get_dtp(0xc8),
 						2,
 						get_dtp(0xcc), get_dtp(0xd0));
@@ -486,7 +481,7 @@ void npc_erwo()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbd8), get_dtp(0xd8),
 				3,
 				get_dtp(0xdc), get_dtp(0xe0),
@@ -494,17 +489,17 @@ void npc_erwo()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), get_ltx(0xbd8),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd8),
 			get_dtp(0xe8), 0);
 	} else {
 		do {
 			if (answer == 2)
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd8), get_dtp(0xec),
 						2,
 						get_dtp(0xf4), get_dtp(0xf8));
 			else
-				answer = GUI_dialogbox((Bit8u*)ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd8), get_dtp(0xf0),
 						2,
 						get_dtp(0xf4), get_dtp(0xf8));
@@ -539,7 +534,7 @@ void remove_npc(signed short head_index, signed char days,
 	if (NOT_NULL(text)) {
 		if (check_hero(get_hero(6)) != 0) {
 			load_in_head(head_index);
-			GUI_dialogbox((Bit8u*)ds_readd(0xd2f3), name, text, 0);
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), name, text, 0);
 		}
 	}
 
