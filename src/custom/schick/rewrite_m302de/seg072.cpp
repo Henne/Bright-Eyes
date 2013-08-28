@@ -18,6 +18,7 @@ namespace M302de {
 /**
  * count_map_parts - counts the parts of the treasure map
  */
+/* Borlandified and identical */
 short count_map_parts(void)
 {
 	int i;
@@ -35,6 +36,7 @@ short count_map_parts(void)
  * has_intro_letter - check if a hero in the group has the introduction letter
  *
  */
+/* Borlandified and identical */
 short has_intro_letter(void)
 {
 	/* check for the introduction letter / Empfehlungsschreiben */

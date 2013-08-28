@@ -54,6 +54,7 @@ signed char FIG_set_array() {
 	return i;
 }
 
+/* BC-TODO: calculations are done in another way */
 void FIG_draw_figures(void)
 {
 	signed short l1, l2;
