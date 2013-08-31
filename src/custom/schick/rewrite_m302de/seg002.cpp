@@ -2968,9 +2968,10 @@ unsigned short get_random_hero() {
 /**
 	get_party_money - summs up the money of the current party
 */
-unsigned int get_party_money() {
+Bit32s get_party_money() {
 	Bit8u* hero;
-	unsigned int sum, i;
+	Bit32s sum;
+	short i;
 
 	sum = 0;
 	hero = get_hero(0);
@@ -2993,11 +2994,11 @@ unsigned int get_party_money() {
  *	@money:		the money to share
  *
  *	If only a NPC is in that party, he gets all the money.
- *	If a hero is dead an in the current party, his money is set to 0.
+ *	If a hero is dead and in the current party, his money is set to 0.
 */
-void set_party_money(signed int money) {
+void set_party_money(Bit32s money) {
 	Bit8u *hero;
-	signed int hero_money;
+	Bit32s hero_money;
 	unsigned short i, heroes = 0;
 
 	if (money < 0)
@@ -3044,7 +3045,7 @@ void set_party_money(signed int money) {
  *	add_party_money	-	adds money to the current group
  *	@money:		money to add
 */
-void add_party_money(signed int money) {
+void add_party_money(Bit32s money) {
 	set_party_money(get_party_money() + money);
 }
 

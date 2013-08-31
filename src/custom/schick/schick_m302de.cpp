@@ -1395,7 +1395,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x51c2: {
-		unsigned int money;
+		Bit32s money;
 
 		money = get_party_money();
 		D1_INFO("Aktuelles Gruppenvermoegen = %dD %dS %dH\n",
@@ -1407,7 +1407,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x5221: {
-		unsigned int money = CPU_Pop32();
+		Bit32s money = CPU_Pop32();
 		CPU_Push32(money);
 
 		D1_INFO("Setze Gruppenvermoegen = %dD %dS %dH\n",
@@ -1417,7 +1417,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x5331: {
-		unsigned int money = CPU_Pop32();
+		Bit32s money = CPU_Pop32();
 		CPU_Push32(money);
 
 		D1_INFO("Aendere Gruppenvermoegen = %dD %dS %dH\n",

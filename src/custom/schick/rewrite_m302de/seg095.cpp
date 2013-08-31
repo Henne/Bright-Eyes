@@ -223,13 +223,12 @@ void npc_nariell()
 
 	/* load TAVERN.TLK */
 	load_tlk(0x82);
-
 }
 
 //static
 void npc_harika()
 {
-	unsigned int money;
+	Bit32s money;
 	signed short answer;
 
 	/* load NSC.LTX */
