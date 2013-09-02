@@ -2066,7 +2066,7 @@ static int seg007(unsigned short offs)
 		return 1;
 	}
 	case 0x00ef: {
-		signed val = CPU_Pop16();
+		Bit32s val = CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 		CPU_Push16(val);

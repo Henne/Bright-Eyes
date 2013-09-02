@@ -2,6 +2,8 @@
 	Rewrite of DSA1 v3.02_de functions of seg007 (random, dice, min/max)
 	Functions rewritten: complete
 */
+#include <stdlib.h>
+
 #include "mem.h"
 
 #if !defined(__BORLANDC__)
@@ -16,10 +18,12 @@
 namespace M302de {
 #endif
 
+#if !defined(__BORLANDC__)
 static inline
-unsigned short my_rol16(unsigned short op, unsigned char count) {
+unsigned short _rotl(unsigned short op, unsigned char count) {
 	return (op << count) | (op >> (16 - count));
 }
+#endif
 
 /**
 	random_interval - generates a random number between lo and hi
@@ -43,10 +47,10 @@ int random_schick(const int val)
 
 	ax = ds_readw(0x4ba0);		/* get rand_seed */
 	ax = ax ^ ds_readw(0xc3bf);	/* XOR with rand_seed2 */
-	ax = my_rol16(ax, 2);		/* ROL ax */
+	ax = _rotl(ax, 2);		/* ROL ax */
 	ax = ax + ds_readw(0xc3bf);	/* ADD rand_seed2 */
 	ax = ax ^ ds_readw(0x4ba0);	/* XOR with rand_seed */
-	ax = my_rol16(ax, 3);
+	ax = _rotl(ax, 3);
 	bx = ax;
 	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
 	ax = (ax ^ dx) - dx + 1 ;
@@ -125,32 +129,30 @@ int is_in_byte_array(const signed char val, Bit8u *p)
 /**
 	dice_template - rolls a dice from enemy templates
 */
-short dice_template(unsigned short val) {
-	unsigned short n, m;
-	char x;
-	unsigned short i, sum = 0;
+/* Borlandified and identical */
+int dice_template(const unsigned short val)
+{
+	signed short n;
+	signed short m;
+	signed char x;
+	signed short i, sum = 0;
 
 	/* get dice formula n*Wm+x */
-	n = (val & 0xf000) >> 12;
+	n = _rotl(val & 0xf000, 4);
 
-	switch ((val & 0x0f00) >> 8) {
-		case 1:	m = 6;
-			break;
-		case 2: m = 20;
-			break;
-		case 3: m = 3;
-			break;
-		default:
-			m = 4;
-	}
+	i =_rotl(val & 0x0f00, 8);
 
-	x = (val & 0xff);
+	m = (i == 1) ? 6 : ((i == 2) ? 20 : ((i == 3) ? 3 : 4));
+
+	x = (signed char)val;
 
 	/* roll the dices */
 	for (i = 0; i < n; i++)
 		sum += random_schick(m);
 
-	return sum + x;
+	sum += x;
+
+	return sum;
 }
 
 /**
