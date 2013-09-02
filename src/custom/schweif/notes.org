@@ -1,0 +1,16 @@
+* Bugs [25%]
+** DONE Proben misslingen/gelingen immer
+** TODO Probe in Zwergenbinge misslingt immer
+Silencer[PN]: Die Problemstelle war ja der Abgrund in der Zwergenbinge, den man in Bright Eyes nicht überqueren konnte, weil die Probe immer misslang, obwohl im Logger als bestanden angezeigt.
+** TODO Grafikfehler im Sumpf
+Silencer[PN]: Im Sumpf gibt es noch einen generellen Grafikfehler, da hat man dann einen gestreiften Himmel, da ist auch die Sache mit dieser Endlosschleife das erste Mal passiert. Im Sumpf Karte an [[http://nlt-hilfe.crystals-dsa-foren.de/page.php?126][Pos 19]] kann ich mich dunkel an ein Ereignis erinnern, dass ich aber bisher nicht wieder auslösen konnte, der Logger zeigt auch nichts an und es ist nach wie vor völlig unklar, was der Auslöser sein könnte.
+** TODO Clipping kaputt
+Silencer: Was mir jetzt erst aufgefallen ist (womöglich war das vorher noch nicht der Fall), dass die nicht begehbaren Felder/Grenzen mit Bright Eyes nicht mehr richtig zu funktionieren scheinen. Man kann also zum Beispiel Häuser durchschreiten und befindet sich dann plötzlich in Dachhöhe des nächsten Hauses oder Wände in einem Dungeon.
+* Features [0%]
+** TODO Geprüfte Attribute bei Proben anzeigen
+Silencer[PN]: Ich fände es generell ganz gut, wenn wie in der Schicksalsklinge wieder die geprüften Attribute mit angezeigt werden, so kann man es zwar erahnen (3 x W20 Proben), aber mit Attributen ist es doch irgendwie schöner.
+* Zusammenhänge erkennen [0%]
+** TODO KK-Proben während der Übernachtung auf Reisen
+Silencer[PN]: Während der Übernachtung auf Reisen werden mitunter KK Proben -8 angezeigt. Ich habe soweit vermutet, dass dies eher im Winter & Frühjahr wahrscheinlich um die Auswirkung von kälteren Nächten darzustellen geschieht (oder wenn man generell ohne Decken rumrennt), also wenn dann die Regeneration beeinflusst. Sicher bin ich mir damit nicht, weil eben nur die Probe angezeigt wird.
+** TODO Götter/Kulte-Probe in Gashok (Bannstrahler)
+Silencer[PN]: [...] In Gashok gibts ja diesen Zwischenfall der bei der ersten Übernachtung dort ausgelöst wird. Die Bannstrahler auf dem Marktplatz. Der Magier wurde auf Götter & Kulte geprüft, er hatte den höchsten Wert, was jetzt nahelegen würde, dass einfach das Partymitglied mit dem jeweils höchsten Wert geprüft wird.
