@@ -4,10 +4,17 @@
 */
 #include "mem.h"
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
+#include "v302de.h"
+
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 static inline
 unsigned short my_rol16(unsigned short op, unsigned char count) {
@@ -177,4 +184,6 @@ void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max) {
 	host_writew(max, host_readw(max) + x);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
