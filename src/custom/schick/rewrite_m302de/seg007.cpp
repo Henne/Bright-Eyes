@@ -82,7 +82,9 @@ int dice_roll(const int n, const int m, const int x)
 /**
 	calc_damage_range - calculate min/max damage of a weapon
 */
-void calc_damage_range(unsigned short n, unsigned short m, short x, Bit8u *min, Bit8u *max) {
+/* Borlandified and identical */
+void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u *max)
+{
 	host_writew(min, n+x);
 	host_writew(max, n*m+x);
 }

@@ -5,8 +5,7 @@ namespace M302de {
 int random_interval(const int, const int);
 int random_schick(const int);
 int dice_roll(const int, const int, const int);
-void calc_damage_range(unsigned short n, unsigned short m, short x,
-	Bit8u *min, Bit8u *max);
+void calc_damage_range(const int, const int, const int, Bit8u*, Bit8u*);
 unsigned short is_in_word_array(unsigned short val, Bit8u *p);
 unsigned short is_in_byte_array(char val, Bit8u *p);
 short dice_template(unsigned short val);

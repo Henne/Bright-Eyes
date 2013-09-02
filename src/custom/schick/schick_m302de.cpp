@@ -2078,9 +2078,9 @@ static int seg007(unsigned short offs)
 		return 1;
 	}
 	case 0x00a0: {
-		signed n = CPU_Pop16();
-		unsigned m = CPU_Pop16();
-		signed x = CPU_Pop16();
+		Bit32s n = CPU_Pop16();
+		Bit32s m = CPU_Pop16();
+		Bit32s x = CPU_Pop16();
 		RealPt pmin = CPU_Pop32();
 		RealPt pmax = CPU_Pop32();
 		CPU_Push32(pmax);
