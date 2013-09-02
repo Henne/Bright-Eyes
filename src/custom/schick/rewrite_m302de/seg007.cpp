@@ -40,29 +40,25 @@ int random_interval(const int lo, const int hi)
 */
 int random_schick(const int val)
 {
-	register short ax, bx, dx;
+	register short ax;
 
-	if (val == 0)
+
+	if (val == 0) {
 		return 0;
+	}
 
-	ax = ds_readw(0x4ba0);		/* get rand_seed */
-	ax = ax ^ ds_readw(0xc3bf);	/* XOR with rand_seed2 */
+	/* rand_seed XOR rand_seed2 */
+	ax = ds_readw(0x4ba0) ^ ds_readw(0xc3bf);
 	ax = _rotl(ax, 2);		/* ROL ax */
-	ax = ax + ds_readw(0xc3bf);	/* ADD rand_seed2 */
-	ax = ax ^ ds_readw(0x4ba0);	/* XOR with rand_seed */
+	ax = (ax + ds_readw(0xc3bf)) ^ ds_readw(0x4ba0);
 	ax = _rotl(ax, 3);
-	bx = ax;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
-	ax = (ax ^ dx) - dx + 1 ;
-	ds_writew(0x4ba0, ax);		/* update rand_seed */
-	ax = bx;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
-	ax = (ax ^ dx) - dx;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
 
-	ax = ((dx << 16) | ax) % val;	/* emulate a dx_ax register */
+	/* update rand_seed */
+	ds_writew(0x4ba0, __abs__(ax) + 1);
 
-	return ax + 1;
+	ax = __abs__(ax) % val;
+
+	return ++ax;
 }
 
 /**
