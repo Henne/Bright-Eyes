@@ -92,15 +92,14 @@ void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u 
 /**
 	is_in_word_array - checks if val is in a word array
 */
-unsigned short is_in_word_array(unsigned short val, Bit8u *p) {
+/* Borlandified and identical */
+int is_in_word_array(const int val, signed short *p)
+{
 
-	unsigned short i;
-	Bit8u *p_tmp;
+	int i;
 
-	for (i = 1; (short)host_readw(p) >= 0; i++) {
-		p_tmp = p;
-		p += 2;
-		if (host_readw(p_tmp) == val)
+	for (i = 1; host_readws((Bit8u*)p) >= 0; i++) {
+		if (host_readws((Bit8u*)(p++)) == val)
 			return i;
 	}
 

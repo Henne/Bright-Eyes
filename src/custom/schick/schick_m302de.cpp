@@ -2058,7 +2058,7 @@ static int seg007(unsigned short offs)
 		CPU_Push32(p);
 		CPU_Push16(val);
 
-		reg_ax = is_in_word_array(val, Real2Host(p));
+		reg_ax = is_in_word_array(val, (signed short*)Real2Host(p));
 
 		D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
 			val, RealSeg(p), RealOff(p), reg_ax);
