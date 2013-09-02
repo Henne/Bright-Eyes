@@ -9,6 +9,8 @@
 #if !defined V302DE_H
 #define V302DE_H
 
+#include <stdlib.h>
+
 #if !defined(__BORLANDC__)
 #include "schick.h"
 #endif
@@ -164,6 +166,11 @@ static inline void dec_ptr_bs(Bit8u *p)
 static inline void add_ptr_ws(Bit8u *p, Bit16s val)
 {
 	host_writews(p, host_readws(p) + val);
+}
+
+static inline int __abs__(int j)
+{
+	return abs(j);
 }
 
 /**
