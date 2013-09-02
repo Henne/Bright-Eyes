@@ -2066,14 +2066,14 @@ static int seg007(unsigned short offs)
 		return 1;
 	}
 	case 0x00ef: {
-		unsigned val = CPU_Pop16();
+		signed val = CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 		CPU_Push16(val);
 
 		reg_ax = is_in_byte_array((char)val, Real2Host(p));
 		D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
-			(char)val, RealSeg(p), RealOff(p), reg_ax);
+			(signed char)val, RealSeg(p), RealOff(p), reg_ax);
 
 		return 1;
 	}

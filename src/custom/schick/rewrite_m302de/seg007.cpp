@@ -109,15 +109,13 @@ int is_in_word_array(const int val, signed short *p)
 /**
 	is_in_byte_array - checks if val is in a byte array
 */
-unsigned short is_in_byte_array(char val, Bit8u *p) {
+/* Borlandified and identical */
+int is_in_byte_array(const signed char val, Bit8u *p)
+{
+	int i;
 
-	unsigned short i;
-	Bit8u *p_tmp;
-
-	for (i = 1; (signed char)host_readb(p) != -1; i++) {
-		p_tmp = p;
-		p += 1;
-		if (host_readb(p_tmp) == val)
+	for (i = 1; host_readbs(p) != -1; i++) {
+		if (host_readbs(p++) == val)
 			return i;
 	}
 
