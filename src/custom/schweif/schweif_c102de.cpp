@@ -107,6 +107,9 @@ static int seg012(unsigned short offs) {
 	case 0x121D: {
 		return 0;
 	}
+	case 0x1331: {
+		return 0;
+	}
 	case 0x1396: {
 		return 0;
 	}
@@ -122,7 +125,10 @@ static int seg012(unsigned short offs) {
 	case 0x1467: {
 		return 0;
 	}
-	default: return 0;
+	default: {
+		D2_ERR("Uncatched call to %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
 	}
 }
 
