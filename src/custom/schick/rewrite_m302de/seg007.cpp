@@ -158,38 +158,38 @@ int dice_template(const unsigned short val)
 /**
 	damage_range_template - writes damage range from enemy templates to mem
 */
-void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max) {
-	unsigned short n, m;
-	char x;
-	unsigned short i;
+/* Borlandified and identical */
+void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max)
+{
+	signed short n, m;
+	signed char x;
+	signed short i;
+	signed short tmp = val;
 
 	/* get dice formula n*Wm+x */
-	n = (val & 0xf000) >> 12;
+	n = _rotl(tmp & 0xf000, 4);
 
-	switch ((val & 0x0f00) >> 8) {
-		case 1:	m = 6;
-			break;
-		case 2: m = 20;
-			break;
-		case 3: m = 3;
-			break;
-		default:
-			m = 4;
-	}
+	i =_rotl(tmp & 0x0f00, 8);
 
-	x = (val & 0xff);
+	m = (i == 1) ? 6 : ((i == 2) ? 20 : ((i == 3) ? 3 : 4));
+
+	x = (signed char)tmp;
 
 	/* set vars to 0 */
-	host_writew(max, 0);
+#if !defined(__BORLANDC__)
 	host_writew(min, 0);
+	host_writew(max, 0);
+#else
+	host_writew(min, host_writew(max, 0));
+#endif
 
 	for (i = 0; i < n; i++) {
-		host_writew(min, host_readw(min) + 1); /* *min++; */
-		host_writew(max, host_readw(max) + m); /* *max += m; */
+		inc_ptr_ws(min);	/* *min++; */
+		add_ptr_ws(max, m);	/* *max += m; */
 	}
 
-	host_writew(min, host_readw(min) + x);
-	host_writew(max, host_readw(max) + x);
+	add_ptr_ws(min, x);
+	add_ptr_ws(max, x);
 }
 
 #if !defined(__BORLANDC__)
