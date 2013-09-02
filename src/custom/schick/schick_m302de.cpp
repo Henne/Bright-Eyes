@@ -2017,19 +2017,19 @@ static int seg007(unsigned short offs)
 	switch (offs) {
 
 	case 0x000b: {
-		unsigned lo = CPU_Pop16();
-		unsigned hi = CPU_Pop16();
+		Bit32s lo = CPU_Pop16();
+		Bit32s hi = CPU_Pop16();
 		CPU_Push16(hi);
 		CPU_Push16(lo);
 
 		reg_ax = random_interval(lo, hi);
 
-		D1_INFO("randomInterval %d - %d : %d\n", lo, hi, reg_ax);
+		D1_INFO("randomInterval %d - %d : %d\n", lo, hi, (Bit16u)reg_ax);
 
 		return 1;
 	}
 	case 0x002b: {
-		signed short p1 = CPU_Pop16();
+		Bit32s p1 = CPU_Pop16();
 		CPU_Push16(p1);
 
 		reg_ax = random_schick(p1);
@@ -2039,9 +2039,9 @@ static int seg007(unsigned short offs)
 		return 1;
 	}
 	case 0x007a: {
-		unsigned n = CPU_Pop16();
-		unsigned m = CPU_Pop16();
-		signed short x = CPU_Pop16();
+		Bit32s n = CPU_Pop16();
+		Bit32s m = CPU_Pop16();
+		Bit32s x = CPU_Pop16();
 		CPU_Push16(x);
 		CPU_Push16(m);
 		CPU_Push16(n);

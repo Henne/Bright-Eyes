@@ -2,9 +2,9 @@
 namespace M302de {
 #endif
 
-unsigned short random_interval(unsigned short lo, unsigned short hi);
-signed short random_schick(short val);
-short dice_roll(unsigned short n, unsigned short m, short x);
+int random_interval(const int, const int);
+int random_schick(const int);
+int dice_roll(const int, const int, const int);
 void calc_damage_range(unsigned short n, unsigned short m, short x,
 	Bit8u *min, Bit8u *max);
 unsigned short is_in_word_array(unsigned short val, Bit8u *p);

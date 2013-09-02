@@ -22,9 +22,11 @@ unsigned short my_rol16(unsigned short op, unsigned char count) {
 }
 
 /**
-	random_interval - generates a u16 random number between lo and hi
+	random_interval - generates a random number between lo and hi
 */
-unsigned short random_interval(unsigned short lo, unsigned short hi) {
+/* Borlandified and identical */
+int random_interval(const int lo, const int hi)
+{
 
 	return lo + random_schick(hi - lo + 1) - 1;
 }
@@ -32,9 +34,9 @@ unsigned short random_interval(unsigned short lo, unsigned short hi) {
 /**
 	random_schick - generates a u16 random number
 */
-signed short random_schick(short val)
+int random_schick(const int val)
 {
-	short ax, bx, dx;
+	register short ax, bx, dx;
 
 	if (val == 0)
 		return 0;
@@ -62,14 +64,19 @@ signed short random_schick(short val)
 /**
 	dice_roll - rolls a dice: n*Wm+x
 */
-short dice_roll(unsigned short n, unsigned short m, short x) {
-	unsigned short i;
-	unsigned short sum = 0;
+/* Borlandified and identical */
+int dice_roll(const int n, const int m, const int x)
+{
+	int sum = 0;
+	int i;
 
-	for (i=0; i < n; i++)
+	for (i = 0; i < n; i++) {
 		sum += random_schick(m);
+	}
 
-	return sum + x;
+	sum += x;
+
+	return sum;
 }
 
 /**
