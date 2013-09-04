@@ -179,6 +179,15 @@ static int seg016(unsigned short offs) {
 }
 
 #endif
+
+static int seg018(unsigned short offs) {
+	switch(offs) {
+	case 0x057D:{ // keypress_handler: alles außer Cursortasten
+		return 0;
+	}
+	default: return 0;
+	}
+}
 static int firstc=0;
 static int seg024(unsigned short offs)
 {
@@ -497,6 +506,13 @@ static int seg043(unsigned short offs)
 		set_video_mode((unsigned char)mode);
 		return 1;
 	}
+	case 0x24: {
+		Bit16u page = CPU_Pop16();
+		CPU_Push16(page);
+		D2_LOG("set_display_page(0x%x);\n", page);
+		set_display_page((unsigned char)page);
+		return 1;
+	}
 	case 0x3c: {
 		return 0;
 	}
@@ -528,6 +544,7 @@ static int seg046(unsigned short offs)
 	case 0x000C: return 0;
 	case 0x01BD: return 0;//redraw stuff under cursor
 	case 0x023E: return 0;//subfunction of 000c
+	default:     return 0;
 	}
 }
 
@@ -588,8 +605,120 @@ static int seg151(unsigned short offs)
 	}
 }
 
-static int segUnk(unsigned segm, unsigned short offs) {
+static int ovr249(unsigned short offs)
+{
 	switch(offs) {
+	case 0xB7D: {
+		RealPt arg00 = CPU_Pop32();
+		RealPt arg04 = CPU_Pop32();
+		RealPt arg08 = CPU_Pop32();
+		RealPt dialog_text = CPU_Pop32();
+		RealPt option_count = CPU_Pop32();
+		RealPt option_ptr = CPU_Pop32();
+		CPU_Push32(option_ptr);
+		CPU_Push32(option_count);
+		CPU_Push32(dialog_text);
+		CPU_Push32(arg08);
+		CPU_Push32(arg04);
+		CPU_Push32(arg00);
+	}
+	}
+}
+
+static int ovr265(unsigned short offs)
+{
+	switch(offs) {
+	case 0x0F3D: {
+		RealPt dialog_args = CPU_Pop32();
+		Bit16u textfield_size = CPU_Pop16();
+		RealPt dialog_string = CPU_Pop32();
+		CPU_Push32(dialog_string);
+		CPU_Push16(textfield_size);
+		CPU_Push32(dialog_args);
+		unsigned short* dargs = (unsigned short*)Real2Host(dialog_args);
+		/*D2_LOG("Dialog with Textfield(len:%d): %x, %x, %x : %s\n",
+		       textfield_size,
+		       dargs[0], dargs[1], dargs[2],
+		       (char*)Real2Host(dialog_string));*/
+		return 0;
+	}
+	case 0x0DDB: {
+		RealPt arg0 = CPU_Pop32();
+		RealPt arg4 = CPU_Pop32();
+		Bit16u arg8 = CPU_Pop16();
+		Bit16u argA = CPU_Pop16();
+		CPU_Push16(argA);
+		CPU_Push16(arg8);
+		CPU_Push32(arg4);
+		CPU_Push32(arg0);
+		//D2_LOG("SubDialog: %d, %s, %d, %d\n", Real2Host(arg0)[0], (char*)Real2Host(arg4), arg8, argA);
+		return 0;
+	}
+	default: return 0;
+	}
+}
+
+static int stub249(unsigned short offs)
+{
+	switch(offs) {
+	case 0x0020: return ovr249(0x0B6A);
+	case 0x0025: return ovr249(0x033A);
+	case 0x002A: return ovr249(0x0449);
+	case 0x002F: return ovr249(0x0000);
+	case 0x0034: return ovr249(0x00C4);
+	case 0x0039: return ovr249(0x0269);
+	case 0x003E: return ovr249(0x0B7D);
+	case 0x0043: return ovr249(0x103B);
+	case 0x0048: return ovr249(0x119F);
+	case 0x004D: return ovr249(0x149A);
+	}
+}
+
+static int stub250(unsigned short offs) // Todo
+{
+	switch(offs) {
+	case 0x0070: {
+		return 0;
+	}
+	default: return 0;
+	}
+}
+
+static int stub265(unsigned short offs)
+{
+	switch(offs) {
+	case 0x0020: return ovr265(0x01C5);
+	case 0x0025: return ovr265(0x0000);
+	case 0x002A: return ovr265(0x0087);
+	case 0x002F: return ovr265(0x04F4);
+	case 0x0034: return ovr265(0x0559);
+	case 0x0039: return ovr265(0x06DA);
+	case 0x003E: return ovr265(0x05C3);
+	case 0x0043: return ovr265(0x0634);
+	case 0x0048: return ovr265(0x0D35);
+	case 0x004D: return ovr265(0x0DDB);
+	case 0x0052: return ovr265(0x0270);
+	case 0x0057: return ovr265(0x0F3D);
+	case 0x005C: return ovr265(0x11DD);
+	case 0x0061: return ovr265(0x0A37);
+	case 0x0066: return ovr265(0x0A4D);
+	case 0x006B: return ovr265(0x0D27);
+	}
+}
+
+
+static int segUnk(unsigned segm, unsigned short offs)
+{
+	switch(offs) {
+		//case 0x003e: printf("call at %04x:%04x\n", segm, offs);
+	default: return 0;
+	}
+}
+
+static int segUnk_near(unsigned segm, unsigned short offs)
+{
+	switch(offs) {
+		//case 0x0DDB: printf("call at %04x:%04x\n", segm, offs);
 	default: return 0;
 	}
 }
@@ -604,6 +733,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x0a32: return seg007(offs);
 	case 0x0b97: return seg012(offs);
 	case 0x0ce1: return seg013(offs);
+	case 0x0ec6: return seg018(offs);
 	case 0x1288: return seg024(offs);
 	case 0x1a8a: return seg029(offs);
 	case 0x1aa4: return seg033(offs);
@@ -614,40 +744,17 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x1cce: return seg046(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);
+	case 0x2313: return stub249(offs);
+	case 0x2319: return stub250(offs);
+	case 0x2383: return stub265(offs);
+		//case 0x33a3: return ovr265(offs); break;
 	default:
 		return segUnk(segm, offs);
 	}
 }
 
-static int n_seg043(unsigned short offs)
+int schweif_nearcall_c102de(unsigned offs)
 {
-	switch (offs) {
-	case 0x0c: {
-		CPU_Pop16();
-		Bit16u mode = CPU_Pop16();
-		CPU_Push16(mode);
-		D2_LOG("set_video_mode(0x%x);\n", mode);
-		set_video_mode((unsigned char)mode);
-		return 1;
-	}
-	case 0x24: {
-		CPU_Pop16();
-		Bit16u page = CPU_Pop16();
-		CPU_Push16(page);
-		D2_LOG("set_display_page(0x%x);\n", page);
-		set_display_page((unsigned char)page);
-		return 1;
-	}
-	default:
-		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
-		exit(1);
-	}
-
-	return 0;
-
-}
-
-int schweif_nearcall_c102de(unsigned offs) {
 	unsigned short segm = SegValue(cs)-relocation;
 	int ret = 0;
 	unsigned short temp = CPU_Pop16();
@@ -657,6 +764,7 @@ int schweif_nearcall_c102de(unsigned offs) {
 	case 0x06bd: ret = seg004(offs); break;
 	case 0x0a32: ret = seg007(offs); break;
 	case 0x0ce1: ret = seg013(offs); break;
+	case 0x0ec6: ret = seg018(offs); break;
 	case 0x1288: ret = seg024(offs); break;
 	case 0x1a8a: ret = seg029(offs); break;
 	case 0x1aa4: ret = seg033(offs); break;
@@ -666,7 +774,8 @@ int schweif_nearcall_c102de(unsigned offs) {
 	case 0x1cce: ret = seg046(offs); break;
 	case 0x20be: ret = seg136(offs); break;
 	case 0x2119: ret = seg151(offs); break;
-	default:     ret = segUnk(segm, offs); break;
+		//case 0x33a3: ret = ovr265(offs); break;
+	default:     ret = segUnk_near(segm, offs); break;
 	}
 
 	if (!ret) CPU_Push16(temp);

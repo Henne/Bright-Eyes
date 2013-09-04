@@ -1,0 +1,40 @@
+Siehe auch [[http://www.crystals-dsa-foren.de/showthread.php?tid=3893&pid=110596#pid110596][Verbesserung der NLT]].
+* DSA1: Schicksalsklinge
+** Bug-Reports [0/1]
+*** TODO [[http://www.crystals-dsa-foren.de/showthread.php?tid=3893&pid=110551#pid110551][Fehlerliste von Borbaradwurm]] [1/4]
+**** TODO ITEMNAMES [0/4]
+- [ ] BASILIKENZUNGE > BASILISKENZUNGE
+- [ ] WOLFMESSER > WOLFSMESSER
+- [ ] KUKRISMENGLIBAR > KUKRISMENGBILAR
+- [ ] DAS SCHWERT GRIMRING > GRIMRING
+**** TODO MONNAMES [0/2]
+- [ ] HESHTOT > HESHTHOT
+- [ ] ORKCHAMPION > ORK-ELITEKÄMPFER
+**** TODO Weitere Rechtschreibfehler http://www.muenster.de/~kunar/dsa1/dsa1-fehler.htm
+**** DONE MONSTER.DAT [1/1]
+- [X] MR-Bug-Patch http://www.crystals-dsa-foren.de/showthr...4#pid69714
+**** IN_HEADS.NVF [0/1]
+- [ ] Eliane Windenbek (#34) blaue Haare -> braune Haare
+**** SCHICKM.EXE [0/1]
+***** TODO Waffentabelle [0/1]
+- [ ] Grimring;2W6+7;Talent:Zweihänder;160 Unzen
+**** Weiteres [0/4]
+- [ ] Anfangsdatum: 23. Travia 15 Hal
+- [ ] Erweitertes Inventar für Ringe, Gürtel, usw wie in Sternenschweif/Schatten über Riva
+- [ ] Reisen beim Verlassen eines Dungeons
+- [ ] User Interface Sounds abschaltbar
+* DSA2: Sternenschweif
+** Bug-Reports [0/2]
+*** TODO Falsche Auswertung von Proben-Ergebnissen
+[[http://www.crystals-dsa-foren.de/private.php?action=read&pmid=19382][Quelle: PM von Silencer, 21.09.2012]]
+Und zwar folgen auf manche Proben keine der eigentlich vorgesehenen Konsequenzen. Das ist mir insbesondere an zwei Stellen aufgefallen: 
+
+ 1. Beim ersten Auftrag von Dragan in Lowangen, den Vinsalter abholen und zu ihm bringen. Es wird beim Gespräch mit dem Vinsalter eine Charismaprobe abgelegt, vergeigt man diese kann man ihn nicht mitnehmen/wieder ansprechen. Nun in Bright Eyes ist es dagegen völlig egal, ob die Probe bestanden wird oder nicht. Laut Anzeige hatte ich die mehrfach nicht bestanden (mehrere Versuche) und der Vinsalter hat mir trotzdem die darauffolgende Gesprächsoption angeboten, also konnte ich ihn jedes Mal trotz nicht bestandener Probe mitnehmen. Diese wurde also immer gewertet, als ob ich sie jedes Mal bestanden hätte.
+
+ 2. Neben diesem "positiven" Beispiel, gibt es den umgekehrten Fall. In der Zwergenbinge (je nachdem welchen Eingang man benutzt) gibt es in der Ebene mit den Zwergengräbern eine Grube, diese kann man per Hebel von einer Seite aus deaktivieren. Wenn man vom Haupteingang kommt, muss man diese zunächst mit einem Helden überspringen. Eine GE Probe wird abgelegt. Und egal wie diese laut Logger ausfällt, man kommt einfach nicht über diese Grube. Erst als ich die normale Dosbox benutzt habe, funktionierte das reibungslos. 
+
+ Das sind zwei Beispiele, aber es gibt wohl noch mehr und mal werden die Proben immer als bestanden gewertet und mal immer als nicht bestanden. Daneben ist mir nur noch ein Grafikfehler im Sumpf aufgefallen, dort erscheinen senkrechte schwarze Streifen (keine Ahnung ob das mit Bright Eyes zusammenhängt). Bei der normalen Dosbox tritt dieser Fehler nicht auf.
+*** TODO [[http://www.crystals-dsa-foren.de/showthread.php?tid=3893&pid=110551#pid110551][Fehlerliste von Borbaradwurm]] [0/3]
+- [ ] Weg mit den irdischen Werbetafeln für Die Schicksalsklinge im Phextempel-Dungeon!
+- [ ] Untote in einem Zwölfgöttertempel!?
+- [ ] Kampf mit den "Verfolgern" sollte einmalig sein
