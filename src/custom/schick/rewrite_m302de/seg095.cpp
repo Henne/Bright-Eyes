@@ -82,7 +82,7 @@ unsigned short npc_meetings(unsigned short type_index)
 			ds_readw(TYPEINDEX) == 0x57 &&
 			!ds_readb(0x3601 + 6)) {
 
-			npc_ardora();
+			npc_erwo();
 		} else {
 			return 0;
 		}

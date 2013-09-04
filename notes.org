@@ -34,6 +34,7 @@ Und zwar folgen auf manche Proben keine der eigentlich vorgesehenen Konsequenzen
  2. Neben diesem "positiven" Beispiel, gibt es den umgekehrten Fall. In der Zwergenbinge (je nachdem welchen Eingang man benutzt) gibt es in der Ebene mit den Zwergengräbern eine Grube, diese kann man per Hebel von einer Seite aus deaktivieren. Wenn man vom Haupteingang kommt, muss man diese zunächst mit einem Helden überspringen. Eine GE Probe wird abgelegt. Und egal wie diese laut Logger ausfällt, man kommt einfach nicht über diese Grube. Erst als ich die normale Dosbox benutzt habe, funktionierte das reibungslos. 
 
  Das sind zwei Beispiele, aber es gibt wohl noch mehr und mal werden die Proben immer als bestanden gewertet und mal immer als nicht bestanden. Daneben ist mir nur noch ein Grafikfehler im Sumpf aufgefallen, dort erscheinen senkrechte schwarze Streifen (keine Ahnung ob das mit Bright Eyes zusammenhängt). Bei der normalen Dosbox tritt dieser Fehler nicht auf.
+** Feature Requests
 *** TODO [[http://www.crystals-dsa-foren.de/showthread.php?tid=3893&pid=110551#pid110551][Fehlerliste von Borbaradwurm]] [0/3]
 - [ ] Weg mit den irdischen Werbetafeln für Die Schicksalsklinge im Phextempel-Dungeon!
 - [ ] Untote in einem Zwölfgöttertempel!?
