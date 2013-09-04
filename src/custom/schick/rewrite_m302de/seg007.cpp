@@ -1,23 +1,38 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg007 (random, dice, min/max)
-	Functions rewritten: complete
-*/
-#include "mem.h"
+ *	Rewrite of DSA1 v3.02_de functions of seg007 (random, dice, min/max)
+ *	Functions rewritten: 8/8 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y SEG007.CPP
+ */
 
+#include <stdlib.h>
+
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
+#include "v302de.h"
+
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
+#if !defined(__BORLANDC__)
 static inline
-unsigned short my_rol16(unsigned short op, unsigned char count) {
+unsigned short _rotl(unsigned short op, unsigned char count) {
 	return (op << count) | (op >> (16 - count));
 }
+#endif
 
 /**
-	random_interval - generates a u16 random number between lo and hi
+	random_interval - generates a random number between lo and hi
 */
-unsigned short random_interval(unsigned short lo, unsigned short hi) {
+int random_interval(const int lo, const int hi)
+{
 
 	return lo + random_schick(hi - lo + 1) - 1;
 }
@@ -25,50 +40,51 @@ unsigned short random_interval(unsigned short lo, unsigned short hi) {
 /**
 	random_schick - generates a u16 random number
 */
-signed short random_schick(short val)
+int random_schick(const int val)
 {
-	short ax, bx, dx;
+	register short retval;
 
-	if (val == 0)
+
+	if (val == 0) {
 		return 0;
+	}
 
-	ax = ds_readw(0x4ba0);		/* get rand_seed */
-	ax = ax ^ ds_readw(0xc3bf);	/* XOR with rand_seed2 */
-	ax = my_rol16(ax, 2);		/* ROL ax */
-	ax = ax + ds_readw(0xc3bf);	/* ADD rand_seed2 */
-	ax = ax ^ ds_readw(0x4ba0);	/* XOR with rand_seed */
-	ax = my_rol16(ax, 3);
-	bx = ax;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
-	ax = (ax ^ dx) - dx + 1 ;
-	ds_writew(0x4ba0, ax);		/* update rand_seed */
-	ax = bx;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
-	ax = (ax ^ dx) - dx;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
+	/* rand_seed XOR rand_seed2 */
+	retval = ds_readw(0x4ba0) ^ ds_readw(0xc3bf);
+	retval = _rotl(retval, 2);		/* ROL retval */
+	retval = (retval + ds_readw(0xc3bf)) ^ ds_readw(0x4ba0);
+	retval = _rotl(retval, 3);
 
-	ax = ((dx << 16) | ax) % val;	/* emulate a dx_ax register */
+	/* update rand_seed */
+	ds_writew(0x4ba0, __abs__(retval) + 1);
 
-	return ax + 1;
+	retval = __abs__(retval) % val;
+
+	return ++retval;
 }
 
 /**
 	dice_roll - rolls a dice: n*Wm+x
 */
-short dice_roll(unsigned short n, unsigned short m, short x) {
-	unsigned short i;
-	unsigned short sum = 0;
+int dice_roll(const int n, const int m, const int x)
+{
+	int sum = 0;
+	int i;
 
-	for (i=0; i < n; i++)
+	for (i = 0; i < n; i++) {
 		sum += random_schick(m);
+	}
 
-	return sum + x;
+	sum += x;
+
+	return sum;
 }
 
 /**
 	calc_damage_range - calculate min/max damage of a weapon
 */
-void calc_damage_range(unsigned short n, unsigned short m, short x, Bit8u *min, Bit8u *max) {
+void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u *max)
+{
 	host_writew(min, n+x);
 	host_writew(max, n*m+x);
 }
@@ -76,15 +92,13 @@ void calc_damage_range(unsigned short n, unsigned short m, short x, Bit8u *min, 
 /**
 	is_in_word_array - checks if val is in a word array
 */
-unsigned short is_in_word_array(unsigned short val, Bit8u *p) {
+int is_in_word_array(const int val, signed short *p)
+{
 
-	unsigned short i;
-	Bit8u *p_tmp;
+	int i;
 
-	for (i = 1; (short)host_readw(p) >= 0; i++) {
-		p_tmp = p;
-		p += 2;
-		if (host_readw(p_tmp) == val)
+	for (i = 1; host_readws((Bit8u*)p) >= 0; i++) {
+		if (host_readws((Bit8u*)(p++)) == val)
 			return i;
 	}
 
@@ -94,15 +108,12 @@ unsigned short is_in_word_array(unsigned short val, Bit8u *p) {
 /**
 	is_in_byte_array - checks if val is in a byte array
 */
-unsigned short is_in_byte_array(char val, Bit8u *p) {
+int is_in_byte_array(const signed char val, Bit8u *p)
+{
+	int i;
 
-	unsigned short i;
-	Bit8u *p_tmp;
-
-	for (i = 1; (signed char)host_readb(p) != -1; i++) {
-		p_tmp = p;
-		p += 1;
-		if (host_readb(p_tmp) == val)
+	for (i = 1; host_readbs(p) != -1; i++) {
+		if (host_readbs(p++) == val)
 			return i;
 	}
 
@@ -112,69 +123,67 @@ unsigned short is_in_byte_array(char val, Bit8u *p) {
 /**
 	dice_template - rolls a dice from enemy templates
 */
-short dice_template(unsigned short val) {
-	unsigned short n, m;
-	char x;
-	unsigned short i, sum = 0;
+int dice_template(const unsigned short val)
+{
+	signed short n;
+	signed short m;
+	signed char x;
+	signed short i, sum = 0;
 
 	/* get dice formula n*Wm+x */
-	n = (val & 0xf000) >> 12;
+	n = _rotl(val & 0xf000, 4);
 
-	switch ((val & 0x0f00) >> 8) {
-		case 1:	m = 6;
-			break;
-		case 2: m = 20;
-			break;
-		case 3: m = 3;
-			break;
-		default:
-			m = 4;
-	}
+	i =_rotl(val & 0x0f00, 8);
 
-	x = (val & 0xff);
+	m = (i == 1) ? 6 : ((i == 2) ? 20 : ((i == 3) ? 3 : 4));
+
+	x = (signed char)val;
 
 	/* roll the dices */
 	for (i = 0; i < n; i++)
 		sum += random_schick(m);
 
-	return sum + x;
+	sum += x;
+
+	return sum;
 }
 
 /**
 	damage_range_template - writes damage range from enemy templates to mem
 */
-void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max) {
-	unsigned short n, m;
-	char x;
-	unsigned short i;
+void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max)
+{
+	signed short n, m;
+	signed char x;
+	signed short i;
+	signed short tmp = val;
 
 	/* get dice formula n*Wm+x */
-	n = (val & 0xf000) >> 12;
+	n = _rotl(tmp & 0xf000, 4);
 
-	switch ((val & 0x0f00) >> 8) {
-		case 1:	m = 6;
-			break;
-		case 2: m = 20;
-			break;
-		case 3: m = 3;
-			break;
-		default:
-			m = 4;
-	}
+	i =_rotl(tmp & 0x0f00, 8);
 
-	x = (val & 0xff);
+	m = (i == 1) ? 6 : ((i == 2) ? 20 : ((i == 3) ? 3 : 4));
+
+	x = (signed char)tmp;
 
 	/* set vars to 0 */
-	host_writew(max, 0);
+#if !defined(__BORLANDC__)
 	host_writew(min, 0);
+	host_writew(max, 0);
+#else
+	host_writew(min, host_writew(max, 0));
+#endif
 
 	for (i = 0; i < n; i++) {
-		host_writew(min, host_readw(min) + 1); /* *min++; */
-		host_writew(max, host_readw(max) + m); /* *max += m; */
+		inc_ptr_ws(min);	/* *min++; */
+		add_ptr_ws(max, m);	/* *max += m; */
 	}
 
-	host_writew(min, host_readw(min) + x);
-	host_writew(max, host_readw(max) + x);
+	add_ptr_ws(min, x);
+	add_ptr_ws(max, x);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

@@ -84,7 +84,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 		if ((((signed short)host_readw(item_p + 2) > 1) &&
 			(host_readb(get_itemsdat(host_readw(item_p)) + 2) >> 4) & 1) ||
-			is_in_word_array(host_readw(item_p), p_datseg + 0x29e)) {
+			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + 0x29e))) {
 			/* more than one item or special */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x120),

@@ -205,10 +205,10 @@ signed short weapon_check(Bit8u *hero) {
 			return -1;
 	}
 
-	if (is_in_word_array(item, p_datseg +  0x615c))
+	if (is_in_word_array(item, (signed short*)(p_datseg +  0x615c)))
 		return 1;
 
-	if (is_in_word_array(item, p_datseg + 0x616e))
+	if (is_in_word_array(item, (signed short*)(p_datseg + 0x616e)))
 		return 0;
 
 	return 2;

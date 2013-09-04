@@ -88,6 +88,7 @@ void custom_init(Section *sec)
 {
 //	custom_prog *p_current = new custom_prog;
 	sec->AddDestroyFunction(&custom_exit);
+	fprintf(stderr, "Bright Eyes, build date %s\n", __DATE__);
 }
 
 #endif /* DOSBOX_CUSTOM */

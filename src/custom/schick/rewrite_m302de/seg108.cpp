@@ -140,10 +140,10 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 		if (host_readb(item_p + 3) == 0) {
 
-			if (is_in_word_array(item, p_datseg + 0x8f1)) {
+			if (is_in_word_array(item, (signed short*)(p_datseg + 0x8f1))) {
 				GUI_output(get_ltx(0x7cc));
-			} else if (is_in_word_array(item, p_datseg + 0x8e7) ||
-					is_in_word_array(item, p_datseg + 0x8d3)) {
+			} else if (is_in_word_array(item, (signed short*)(p_datseg + 0x8e7)) ||
+					is_in_word_array(item, (signed short*)(p_datseg + 0x8d3))) {
 				/* herbs and poisons */
 				GUI_output(get_ltx(0x7d0));
 			} else {
@@ -265,8 +265,8 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 		} else {
 
 			/* check if item is an elexire */
-			l_si = is_in_word_array(item, p_datseg + 0x8ff);
-			id_bad_elex = is_in_word_array(item, p_datseg + 0x90f);
+			l_si = is_in_word_array(item, (signed short*)(p_datseg + 0x8ff));
+			id_bad_elex = is_in_word_array(item, (signed short*)(p_datseg + 0x90f));
 
 
 			if (l_si != 0) {

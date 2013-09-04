@@ -2,14 +2,13 @@
 namespace M302de {
 #endif
 
-unsigned short random_interval(unsigned short lo, unsigned short hi);
-signed short random_schick(short val);
-short dice_roll(unsigned short n, unsigned short m, short x);
-void calc_damage_range(unsigned short n, unsigned short m, short x,
-	Bit8u *min, Bit8u *max);
-unsigned short is_in_word_array(unsigned short val, Bit8u *p);
-unsigned short is_in_byte_array(char val, Bit8u *p);
-short dice_template(unsigned short val);
+int random_interval(const int, const int);
+int random_schick(const int);
+int dice_roll(const int, const int, const int);
+void calc_damage_range(const int, const int, const int, Bit8u*, Bit8u*);
+int is_in_word_array(const int, signed short*);
+int is_in_byte_array(const signed char, Bit8u*);
+int dice_template(const unsigned short);
 void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max);
 
 #if !defined(__BORLANDC__)

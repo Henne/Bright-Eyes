@@ -1395,7 +1395,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x51c2: {
-		unsigned int money;
+		Bit32s money;
 
 		money = get_party_money();
 		D1_INFO("Aktuelles Gruppenvermoegen = %dD %dS %dH\n",
@@ -1407,7 +1407,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x5221: {
-		unsigned int money = CPU_Pop32();
+		Bit32s money = CPU_Pop32();
 		CPU_Push32(money);
 
 		D1_INFO("Setze Gruppenvermoegen = %dD %dS %dH\n",
@@ -1417,7 +1417,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x5331: {
-		unsigned int money = CPU_Pop32();
+		Bit32s money = CPU_Pop32();
 		CPU_Push32(money);
 
 		D1_INFO("Aendere Gruppenvermoegen = %dD %dS %dH\n",
@@ -2017,19 +2017,19 @@ static int seg007(unsigned short offs)
 	switch (offs) {
 
 	case 0x000b: {
-		unsigned lo = CPU_Pop16();
-		unsigned hi = CPU_Pop16();
+		Bit32s lo = CPU_Pop16();
+		Bit32s hi = CPU_Pop16();
 		CPU_Push16(hi);
 		CPU_Push16(lo);
 
 		reg_ax = random_interval(lo, hi);
 
-		D1_INFO("randomInterval %d - %d : %d\n", lo, hi, reg_ax);
+		D1_INFO("randomInterval %d - %d : %d\n", lo, hi, (Bit16u)reg_ax);
 
 		return 1;
 	}
 	case 0x002b: {
-		signed short p1 = CPU_Pop16();
+		Bit32s p1 = CPU_Pop16();
 		CPU_Push16(p1);
 
 		reg_ax = random_schick(p1);
@@ -2039,9 +2039,9 @@ static int seg007(unsigned short offs)
 		return 1;
 	}
 	case 0x007a: {
-		unsigned n = CPU_Pop16();
-		unsigned m = CPU_Pop16();
-		signed short x = CPU_Pop16();
+		Bit32s n = CPU_Pop16();
+		Bit32s m = CPU_Pop16();
+		Bit32s x = CPU_Pop16();
 		CPU_Push16(x);
 		CPU_Push16(m);
 		CPU_Push16(n);
@@ -2058,7 +2058,7 @@ static int seg007(unsigned short offs)
 		CPU_Push32(p);
 		CPU_Push16(val);
 
-		reg_ax = is_in_word_array(val, Real2Host(p));
+		reg_ax = is_in_word_array(val, (signed short*)Real2Host(p));
 
 		D1_LOG("is_in_word_array(0x%x, 0x%04x:0x%04x) = %d\n",
 			val, RealSeg(p), RealOff(p), reg_ax);
@@ -2066,21 +2066,21 @@ static int seg007(unsigned short offs)
 		return 1;
 	}
 	case 0x00ef: {
-		unsigned val = CPU_Pop16();
+		Bit32s val = CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 		CPU_Push16(val);
 
 		reg_ax = is_in_byte_array((char)val, Real2Host(p));
 		D1_LOG("is_in_byte_array(0x%x, 0x%04x:0x%04x) = %d\n",
-			(char)val, RealSeg(p), RealOff(p), reg_ax);
+			(signed char)val, RealSeg(p), RealOff(p), reg_ax);
 
 		return 1;
 	}
 	case 0x00a0: {
-		signed n = CPU_Pop16();
-		unsigned m = CPU_Pop16();
-		signed x = CPU_Pop16();
+		Bit32s n = CPU_Pop16();
+		Bit32s m = CPU_Pop16();
+		Bit32s x = CPU_Pop16();
 		RealPt pmin = CPU_Pop32();
 		RealPt pmax = CPU_Pop32();
 		CPU_Push32(pmax);
@@ -3983,26 +3983,61 @@ static int seg071(unsigned short offs) {
 static int seg072(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x2f: {
-			/* Informer */
+			/* Informer: Isleif (2, {0,2,0xf, 0x10, 0x18, 0x19}) */
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x34: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x39: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x3e: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x43: {
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		case 0x48: {
 			/* Informer: Swafnild */
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
 			return 0;
 		}
 		default:
@@ -6157,7 +6192,7 @@ static int n_seg006(unsigned offs)
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 
-		D1_LOG("FIG_draw_char_pic(%d, %d)\n", v1, v2);
+		D1_LOG("n FIG_draw_char_pic(%d, %d)\n", v1, v2);
 		FIG_draw_char_pic(v1, v2);
 		return 1;
 	}
@@ -6168,7 +6203,7 @@ static int n_seg006(unsigned offs)
 		CPU_Push16(v2);
 		CPU_Push16(v1);
 
-		D1_INFO("n FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
+		D1_LOG("n FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
 		FIG_draw_enemy_pic(v1, v2);
 		return 1;
 	}

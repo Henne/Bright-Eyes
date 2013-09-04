@@ -9,8 +9,11 @@
 #include "schick.h"
 #endif
 
+#include <stdio.h>
+
 #include "string.h"
 
+#include "common.h"
 #include "v302de.h"
 
 #include "seg002.h"
@@ -27,44 +30,46 @@ namespace M302de {
 void spell_adler() {
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Adler, Wolf und Hammerhai\" ist nicht implementiert\n");
+#endif
 }
 
-void spell_arcano() {
-
-	Bit8u *tp;
+void spell_arcano()
+{
+	signed short target;
 	unsigned short slot;
-	signed char target;
 
 	/* get the spell target */
-	target = host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+
 
 	/* get a free mod_slot */
 	slot = get_free_mod_slot();
 
 	/* MR + 2 for 1 h */
-	set_mod_slot(slot, 0x1518, tp + 0x66, 2, target);
+	set_mod_slot(slot, 0x1518, Real2Host(ds_readd(0xe5b8)) + 0x66, 2, target);
 
 	/* "Die Magieresistenz von %s steigt um 2 Punkte." */
 	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 		(char*)get_dtp(98 * 4),
-		(char*)tp + 0x10);
+		(char*)Real2Host((RealPt)ds_readd(0xe5b8) + 0x10));
 }
 
 void spell_armatrutz()
 {
-	unsigned short max_boni, slot;
+	signed short max_boni;
+	signed short pos;
 	signed short boni;
-	signed char pos;
+	signed short slot;
 
 	max_boni = 0;
 
 	/* calc the maximal RS boni */
 	/* Original-Bug: you can get one RS point more that you have AE for */
-	while (max_boni * max_boni < host_readw(get_spelluser() + 0x64)) {
+	while (max_boni * max_boni < host_readws(get_spelluser() + 0x64)) {
 		max_boni++;
 	}
 
@@ -83,7 +88,7 @@ void spell_armatrutz()
 
 	if (boni != -1) {
 
-		pos = (signed char)get_hero_index(get_spelluser());
+		pos = get_hero_index(get_spelluser());
 		ds_writew(0xac0e, boni * boni);
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, 450, get_spelluser() + 0x30,
@@ -104,18 +109,16 @@ void spell_armatrutz()
 
 void spell_inc_ch() {
 
-	Bit8u *tp;
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* get the spell target */
-	target = host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
 
 	/* check if the target is the spelluser */
-	if (tp == get_spelluser()) {
+	if (Real2Host(ds_readd(0xe5b8)) == get_spelluser()) {
 
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -128,41 +131,41 @@ void spell_inc_ch() {
 	}
 
 	/* check if CH was already increased */
-	if (host_readb(tp + 0x3b) > host_readb(tp + 0x3a)) {
+	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3b) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3a)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(113 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(414 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* CH + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, tp + 0x3b, 2, target);
+		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(0xe5b8)) + 0x3b, 2, target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(101 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(414 * 4));
 	}
 }
 
 void spell_feuerbann()
 {
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* check if spell is already activated */
-	if (host_readb(get_spelluser() + 0x99) == 0) {
+	if (!host_readbs(get_spelluser() + 0x99)) {
 
-		target = (signed char)get_hero_index(get_spelluser());
+		target = get_hero_index(get_spelluser());
 
 		slot = get_free_mod_slot();
 
 		/* Duration = Level * 12 min */
-		set_mod_slot(slot, host_readb(get_spelluser() + 0x27) * 450,
+		set_mod_slot(slot, host_readbs(get_spelluser() + 0x27) * 450L,
 			get_spelluser() + 0x99, 1, target);
 
 		/* prepare message */
@@ -177,18 +180,16 @@ void spell_feuerbann()
 
 void spell_inc_ff() {
 
-	Bit8u *tp;
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
 
 	/* check if the target is the spelluser */
-	if (tp == get_spelluser()) {
+	if (Real2Host(ds_readd(0xe5b8)) == get_spelluser()) {
 
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -201,41 +202,39 @@ void spell_inc_ff() {
 	}
 
 	/* check if FF was already increased */
-	if (host_readb(tp + 0x3e) > host_readb(tp + 0x3d)) {
+	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3e) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3d)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(113 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(415 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* FF + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, tp + 0x3e, 2, target);
+		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(0xe5b8)) + 0x3e, 2, target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(101 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(415 * 4));
 	}
 }
 
 void spell_inc_ge() {
 
-	Bit8u *tp;
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
 
 	/* check if the target is the spelluser */
-	if (tp == get_spelluser()) {
+	if (Real2Host(ds_readd(0xe5b8)) == get_spelluser()) {
 
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -248,41 +247,39 @@ void spell_inc_ge() {
 	}
 
 	/* check if GE was already increased */
-	if (host_readb(tp + 0x41) > host_readb(tp + 0x40)) {
+	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x41) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x40)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(113 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(416 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* GE + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, tp + 0x41, 2, target);
+		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(0xe5b8)) + 0x41, 2, target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(101 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(416 * 4));
 	}
 }
 
 void spell_inc_in() {
 
-	Bit8u *tp;
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
 
 	/* check if the target is the spelluser */
-	if (tp == get_spelluser()) {
+	if (Real2Host(ds_readd(0xe5b8)) == get_spelluser()) {
 
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -295,41 +292,39 @@ void spell_inc_in() {
 	}
 
 	/* check if IN was already increased */
-	if (host_readb(tp + 0x44) > host_readb(tp + 0x43)) {
+	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x44) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x43)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(113 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(417 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, tp + 0x44, 2, target);
+		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(0xe5b8)) + 0x44, 2, target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(101 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(417 * 4));
 	}
 }
 
 void spell_inc_kk() {
 
-	Bit8u *tp;
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
 
 	/* check if the target is the spelluser */
-	if (tp == get_spelluser()) {
+	if (Real2Host(ds_readd(0xe5b8)) == get_spelluser()) {
 
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -342,41 +337,39 @@ void spell_inc_kk() {
 	}
 
 	/* check if KK was already increased */
-	if (host_readb(tp + 0x47) > host_readb(tp + 0x46)) {
+	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x47) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x46)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(113 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(418 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, tp + 0x47, 2, target);
+		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(0xe5b8)) + 0x47, 2, target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(101 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(418 * 4));
 	}
 }
 
 void spell_inc_kl() {
 
-	Bit8u *tp;
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
 
 	/* check if the target is the spelluser */
-	if (tp == get_spelluser()) {
+	if (Real2Host(ds_readd(0xe5b8)) == get_spelluser()) {
 
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -389,41 +382,39 @@ void spell_inc_kl() {
 	}
 
 	/* check if KL was already increased */
-	if (host_readb(tp + 0x38) > host_readb(tp + 0x37)) {
+	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x38) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x37)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(113 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(413 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* KL + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, tp + 0x38, 2, target);
+		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(0xe5b8)) + 0x38, 2, target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(101 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(413 * 4));
 	}
 }
 
 void spell_inc_mu() {
 
-	Bit8u *tp;
-	unsigned short slot;
-	signed char target;
+	signed short target;
+	signed short slot;
 
 	/* get the spell target */
-	target = (signed char)host_readb(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(0xe5b8, ds_readd(HEROS) + target * 0x6da);
-	tp = Real2Host(ds_readd(0xe5b8));
+	ds_writed(0xe5b8, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
 
 	/* check if the target is the spelluser */
-	if (tp == get_spelluser()) {
+	if (Real2Host(ds_readd(0xe5b8)) == get_spelluser()) {
 
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -436,23 +427,23 @@ void spell_inc_mu() {
 	}
 
 	/* check if MU was already increased */
-	if (host_readb(tp + 0x35) > host_readb(tp + 0x34)) {
+	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x35) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x34)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(113 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(412 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* MU + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, tp + 0x35, 2, target);
+		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(0xe5b8)) + 0x35, 2, target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(101 * 4),
-			(char*)tp + 0x10,
+			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(412 * 4));
 	}
 }
@@ -460,32 +451,39 @@ void spell_inc_mu() {
 void spell_mutabili() {
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Mutabili\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_paral()
 {
 
-	if (host_readb(get_spelluser() + 0x86) >= 10) {
+	if (host_readbs(get_spelluser() + 0x86) >= 10) {
 		/* cast an enemy */
-		ds_writed(0xe5b4, RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
 
+		/* BC-TODO: calculation of ptr could be better */
+		ds_writed(0xe5b4,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+		/* BC-TODO: add pointer or instruction */
 		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
 			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x04);
 
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x19c),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(0xe5b4))), 1)));
 	} else {
 		/* cast a hero */
 		/* TODO: the first check can be removed, cause it would not give a message */
 		if (get_spelluser() != get_spelltarget()) {
 
 			/* set the target  */
-			ds_writed(SPELLTARGET, ds_readd(HEROS) + (host_readb(get_spelluser() + 0x86) - 1) * 0x6da);
+			ds_writed(SPELLTARGET,
+				(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
 
 			/* check again */
-			if (get_spelluser() == get_spelltarget()) {
+			if (get_spelltarget() == get_spelluser()) {
 
 				/* never cast yourself */
 				ds_writew(0xac0e, 0);
@@ -494,6 +492,7 @@ void spell_paral()
 					(char*)get_dtp(0x1c0));
 			} else {
 				/* set the hero to stoned */
+				/* BC-TODO: add pointer or instruction */
 				host_writeb(get_spelltarget() + 0xaa, host_readb(get_spelltarget() + 0xaa) | 0x4);
 
 				/* prepare message */
@@ -511,20 +510,22 @@ void spell_paral()
 
 void spell_salander()
 {
-	Bit16s ae_cost;
+	signed short ae_cost;
 
+	/* BC-TODO: calculation of ptr could be better */
 	/* set a pointer */
-	ds_writed(0xe5b4, RealMake(datseg, 0xd0df + (signed char)host_readb(get_spelluser() + 0x86) * 62));
+	ds_writed(0xe5b4, (Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 	/* read a value from that struct */
-	ae_cost = (signed char)host_readb(Real2Host(ds_readd(0xe5b4)) + 0x19) * 3;
+	ae_cost = host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x19) * 3;
 
 	/* set the minimal astral cost to 25 AE */
 	if (ae_cost < 25)
 		ae_cost = 25;
 
-	if (host_readw(get_spelluser() + 0x64) >= ae_cost) {
+	if (host_readws(get_spelluser() + 0x64) >= ae_cost) {
 
+		/* BC-TODO: add pointer or instruction */
 		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
 			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x40);
 
@@ -532,7 +533,7 @@ void spell_salander()
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x1a0),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(0xe5b4))), 1)));
 
 		/* set AE cost */
 		ds_writew(0xac0e, ae_cost);
@@ -540,7 +541,7 @@ void spell_salander()
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_ltx(0x97c),
-			(char*)Real2Host(ds_readd(0xe5bc) + 0x10));
+			(char*)Real2Host(ds_readd(0xe5bc)) + 0x10);
 
 		/* no AE cost */
 		ds_writew(0xac0e, 0);
@@ -548,13 +549,15 @@ void spell_salander()
 }
 
 void spell_see() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"See und Fluss\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_visibili()
 {
-	unsigned short slot;
-	signed char pos;
+	signed short slot;
+	signed short pos;
 	signed short rounds;
 
 	/* ask the user how many rounds he wants to be invisible */
@@ -574,16 +577,16 @@ void spell_visibili()
 	}
 
 	/* check if the hero has enough AE */
-	if (rounds * 5 <= host_readw(get_spelluser() + 0x64)) {
+	if (rounds * 5 <= host_readws(get_spelluser() + 0x64)) {
 
 		ds_writew(0xac0e, rounds * 5);
 		pos = (signed char)get_hero_index(get_spelluser());
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, rounds * 450, get_spelluser() + 0x9a, 1, pos);
+		set_mod_slot(slot, (Bit32s)rounds * 450L, get_spelluser() + 0x9a, 1, pos);
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x1a8),
 			(char*)get_spelluser() + 0x10,
-			(char*)Real2Host(GUI_get_ptr(host_readb(get_spelluser() + 0x22), 0)));
+			(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_ltx(0x97c),
@@ -597,17 +600,21 @@ void spell_visibili()
 /* Transmutation / Veraenderung */
 
 void spell_abvenenum() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Abvenenum\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_aeolitus() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Aeolitus\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_brenne(void)
 {
-	signed short answer;
 	signed short oil_pos;
+	signed short answer;
 
 	signed short torch_pos;
 	signed short lantern_pos;
@@ -620,7 +627,8 @@ void spell_brenne(void)
 	if (ds_readw(LIGHT_TYPE) == 1) {
 		torch_pos = get_item_pos(get_spelluser(), 0x41);
 	} else {
-		if (ds_readw(LIGHT_TYPE) != 2) {
+		if (ds_readw(LIGHT_TYPE) == 2) {
+		} else {
 			torch_pos = get_item_pos(get_spelluser(), 0x41);
 		}
 
@@ -710,15 +718,17 @@ void spell_brenne(void)
 }
 
 void spell_claudibus() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Claudibus\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_dunkelheit() {
 
-	signed char level = host_readb(get_spelluser() + 0x27);
 
 	/* set dunkelheit duration (level + 3) hours */
-	ds_writed(0x2dc4 + 0x24, (level + 3) * 0x1518);
+	ds_writed(0x2dc4 + 0x24,
+		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */
 	strcpy((char*)Real2Host(ds_readd(0xd2f3)),
@@ -727,15 +737,17 @@ void spell_dunkelheit() {
 }
 
 void spell_erstarre() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Erstarre\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_flimflam() {
 
-	signed char level = host_readb(get_spelluser() + 0x27);
 
 	/* set flim flam duration (level + 3) hours */
-	ds_writed(0x2dc4 + 0x20, (level + 3) * 0x1518);
+	ds_writed(0x2dc4 + 0x20,
+		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */
 	strcpy((char*)Real2Host(ds_readd(0xd2f3)),
@@ -744,32 +756,32 @@ void spell_flimflam() {
 }
 
 void spell_schmelze() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Schmelze\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_silentium() {
 
+	signed short i;
+	signed short slot;
 	Bit8u *hero;
-	unsigned short slot;
-	signed char i;
 
 	hero = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
 		/* check class */
-		if (host_readb(hero + 0x21) == 0)
-			continue;
-		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* check dead */
-		if (host_readb(hero + 0xaa) & 1)
-			continue;
+		if ((host_readb(hero + 0x21) != 0) &&
+			/* check group */
+			(host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			/* check dead */
+			!(hero_dead(hero))) {
 
-		/* get a free mod_slot */
-		slot = get_free_mod_slot();
-		/* skill stealth + 10 for 12 minutes */
-		set_mod_slot(slot, 0x1c2, hero + 0x115, 10, i);
+			/* get a free mod_slot */
+			slot = get_free_mod_slot();
+			/* skill stealth + 10 for 12 minutes */
+			set_mod_slot(slot, 0x1c2, hero + 0x115, 10, i);
+		}
 	}
 
 	/* set AP cost */
@@ -781,7 +793,9 @@ void spell_silentium() {
 }
 
 void spell_sturmgebr() {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Sturmgebruell\" ist nicht implementiert\n");
+#endif
 }
 
 #if !defined(__BORLANDC__)

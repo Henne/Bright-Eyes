@@ -117,14 +117,17 @@ static inline Bit32s ds_readds(unsigned short offs) {
 	return (Bit32s)host_readd(p_datseg + offs);
 }
 
-static inline void ds_writeb(unsigned short offs, Bit8u val) {
+static inline Bit8u ds_writeb(unsigned short offs, Bit8u val) {
 	host_writeb(p_datseg + offs, val);
+	return val;
 }
-static inline void ds_writew(unsigned short offs, Bit16u val) {
+static inline Bit16u ds_writew(unsigned short offs, Bit16u val) {
 	host_writew(p_datseg + offs, val);
+	return val;
 }
-static inline void ds_writed(unsigned short offs, Bit32u val) {
+static inline Bit32u ds_writed(unsigned short offs, Bit32u val) {
 	host_writed(p_datseg + offs, val);
+	return val;
 }
 
 int schick_farcall_gen105(unsigned, unsigned);

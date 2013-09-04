@@ -1328,9 +1328,9 @@ static void update_hero_out()
 	hero_writed(0x1358, hero.money);
 
 	for (i = 0; i < 14; i++) {
-		hero_writeb(0x1360 + i * 3 + 0, hero.attribs[0].normal);
-		hero_writeb(0x1360 + i * 3 + 1, hero.attribs[0].current);
-		hero_writeb(0x1360 + i * 3 + 2, hero.attribs[0].mod);
+		hero_writeb(0x1360 + i * 3 + 0, hero.attribs[i].normal);
+		hero_writeb(0x1360 + i * 3 + 1, hero.attribs[i].current);
+		hero_writeb(0x1360 + i * 3 + 2, hero.attribs[i].mod);
 	}
 
 	hero_writew(0x138a, hero.le);
@@ -1363,7 +1363,7 @@ static void update_hero_out()
 static void prepare_path(char *p)
 {
 	while (*p) {
-#ifdef __WIN32__
+#if defined (WIN32)
 		if (*p == '/')
 			*p = '\\';
 #else
@@ -2431,7 +2431,6 @@ void save_chr()
 
 	/* try to open the filename */
 	fd = fopen(pwd, "rb");
-	free(pwd);
 
 	/* if the file exists ask if should overwrite */
 	if (fd) {
@@ -2443,7 +2442,9 @@ void save_chr()
 	}
 
 	/* here originally creat() was used */
-	fd = fopen(filename, "w+");
+	fd = fopen(pwd, "wb");
+	free(pwd);
+	pwd = NULL;
 
 	if (fd) {
 		/* write the CHR file to the current directory */
@@ -2460,8 +2461,9 @@ void save_chr()
 			strncat(pwd, path, 80);
 			prepare_path(pwd);
 
-			fd = fopen(pwd, "w+");
+			fd = fopen(pwd, "wb");
 			free(pwd);
+			pwd = NULL;
 
 			if (fd) {
 				fwrite(hero_out, 1, 1754, fd);

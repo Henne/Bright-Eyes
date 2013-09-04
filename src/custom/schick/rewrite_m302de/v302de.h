@@ -9,6 +9,8 @@
 #if !defined V302DE_H
 #define V302DE_H
 
+#include <stdlib.h>
+
 #if !defined(__BORLANDC__)
 #include "schick.h"
 #endif
@@ -105,6 +107,24 @@ static inline Bit32s host_readds(Bit8u* p)
 	return (Bit32s)host_readd(p);
 }
 
+static inline Bit8s host_writebs(Bit8u* p, Bit8s val)
+{
+	host_writeb(p, val);
+	return val;
+}
+
+static inline Bit16s host_writews(Bit8u* p, Bit16s val)
+{
+	host_writew(p, val);
+	return val;
+}
+
+static inline Bit32s host_writeds(Bit8u* p, Bit32s val)
+{
+	host_writed(p, val);
+	return val;
+}
+
 static inline int NOT_NULL(Bit8u* p)
 {
 	return (p != NULL && p != MemBase);
@@ -126,6 +146,31 @@ static inline void ds_writeb_z(Bitu addr, char val) {
 
 static inline Bit8u *get_hero(unsigned short index) {
 	return Real2Host(ds_readd(HEROS)) + index * 0x6da;
+}
+
+static inline void inc_ptr_bs(Bit8u *p)
+{
+	host_writebs(p, host_readbs(p) + 1);
+}
+
+static inline void inc_ptr_ws(Bit8u *p)
+{
+	host_writews(p, host_readws(p) + 1);
+}
+
+static inline void dec_ptr_bs(Bit8u *p)
+{
+	host_writebs(p, host_readbs(p) - 1);
+}
+
+static inline void add_ptr_ws(Bit8u *p, Bit16s val)
+{
+	host_writews(p, host_readws(p) + val);
+}
+
+static inline int __abs__(int j)
+{
+	return abs(j);
 }
 
 /**
@@ -305,6 +350,13 @@ extern char ds[0xffff];
 #define ds_writew(p, d) *(Bit16u*)(ds + p) = d
 #define ds_writed(p, d) *(Bit32u*)(ds + p) = d
 
+#define inc_ptr_bs(p)  ++*(Bit8s*)(p)
+#define inc_ptr_ws(p)  ++*(Bit16s*)(p)
+
+#define dec_ptr_bs(p) --*(Bit8s*)(p)
+
+#define add_ptr_ws(p, v)  *(Bit16s*)(p)+=v
+
 #define mem_readb(p) *(Bit8u*)(p)
 #define mem_readw(p) *(Bit16u*)(p)
 #define mem_readd(p) *(Bit32u*)(p)
@@ -352,8 +404,8 @@ extern Bit8u* city_ltx[];
 #define hero_unc(hero)  ((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_dup(hero)  ((*(struct hero_status*)(hero + 0xaa)).dup)
 
-#define get_spelluser() ds_readd(SPELLUSER)
-#define get_spelltarget() ds_readd(SPELLTARGET)
+#define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
+#define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
 
 #define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
 #define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))

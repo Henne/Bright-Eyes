@@ -217,7 +217,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 				if ((cb_val >= 10 && cb_val < 30 &&
 					!(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1))
 
-					|| (cb_val >= 0x32 && !is_in_word_array(cb_val + 0xffce, p_datseg + 0x5f46))) {
+					|| (cb_val >= 0x32 && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))) {
 #if !defined(__BORLANDC__)
 						D1_LOG("Reached a %d\n", cb_val);
 #endif
@@ -254,7 +254,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 				if (cb_val < 50)
 					continue;
-				if (is_in_word_array(cb_val + 0xffce, p_datseg + 0x5f46))
+				if (is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))
 					continue;
 			}
 			done = 1;
@@ -277,7 +277,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 				hero_dead(get_hero(cb_val - 1)) ||
 				hero_unc(get_hero(cb_val - 1))) {
 
-				if (cb_val >= 50 && is_in_word_array(cb_val + 0xffce, p_datseg + 0x5f46))
+				if (cb_val >= 50 && is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))
 					{
 						if (cb_val < 10)
 							continue;

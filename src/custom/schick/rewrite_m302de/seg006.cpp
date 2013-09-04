@@ -16,6 +16,8 @@
 #include "v302de.h"
 #include "common.h"
 
+#include "seg000.h"
+
 #include "seg002.h"
 #include "seg004.h"
 #include "seg006.h"
@@ -52,6 +54,7 @@ signed char FIG_set_array() {
 	return i;
 }
 
+/* BC-TODO: calculations are done in another way */
 void FIG_draw_figures(void)
 {
 	signed short l1, l2;
@@ -336,7 +339,7 @@ signed char FIG_add_to_list(signed char v) {
 		host_writed(Real2Host(ds_readd(0xe108)) + 0x1b, 0);
 
 #if !defined(__BORLANDC__)
-		D1_INFO("\tlist created x = %d, y = %d\n", x, y);
+		D1_LOG("\tlist created x = %d, y = %d\n", x, y);
 #endif
 
 		return host_readb(Real2Host(ds_readd(0xe108)) + 0x10);
@@ -469,7 +472,7 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	struct nvf_desc nvf;
 
 	/* BC-TODO */
-	p1 = (RealPt)(ds_readd(0xc3a9)) - 1288;
+	p1 = F_PADD((RealPt)(ds_readd(0xc3a9)), -1288);
 
 	p_enemy = p_datseg + 0xd0df + id * 62;
 

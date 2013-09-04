@@ -186,7 +186,7 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
  */
 unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 
-	Bit8u * array;
+	signed short *array;
 	unsigned char typus;
 
 	/* get the class of the hero */
@@ -197,7 +197,7 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 		D1_ERR("Warning: %s() typus == 0\n", __func__);
 
 	/* calculate the address of the class forbidden items array */
-	array = Real2Host(ds_readd(0x634 + typus * 4));
+	array = (signed short*)Real2Host(ds_readd(0x634 + typus * 4));
 
 	if (!is_in_word_array(item, array))
 		return 1;

@@ -5,8 +5,12 @@
 
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
+#include "common.h"
 
 #include "seg002.h"
 #include "seg026.h"
@@ -17,77 +21,84 @@
 #include "seg097.h"
 #include "seg120.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
+/* BC-TODO: identical, excluding the near calls */
 unsigned short npc_meetings(unsigned short type_index)
 {
 
-	/* check if an NPC is in the party */
-	if (host_readb(get_hero(6) + 0x21) != 0)
+	/* check if an NPC is in the party and if we
+		already had an NPC conversation here */
+	if (!host_readbs(get_hero(6) + 0x21) &&
+		(type_index != ds_readw(0x346e))) {
+
+		ds_writew(0x346e, type_index);
+
+		/* Nariell */
+		if (ds_readb(CURRENT_TOWN) == 0x17 &&
+			ds_readw(TYPEINDEX) == 0x30 &&
+			!ds_readb(0x3601 + 1)) {
+
+			npc_nariell();
+		} else
+
+		/* Harika */
+		if (ds_readb(CURRENT_TOWN) == 0x12 &&
+			ds_readw(TYPEINDEX) == 0x28 &&
+			!ds_readb(0x3601 + 2)) {
+
+			npc_harika();
+		} else
+
+		/* Curian */
+		if (ds_readb(CURRENT_TOWN) == 0x1d &&
+			ds_readw(TYPEINDEX) == 0x3c &&
+			!ds_readb(0x3601 + 3)) {
+
+			npc_curian();
+		} else
+
+		/* Ardora */
+		if (ds_readb(CURRENT_TOWN) == 0x1 &&
+			ds_readw(TYPEINDEX) == 0x6 &&
+			!ds_readb(0x3601 + 4) &&
+			ds_readb(0x3317) != 0) {
+
+			npc_ardora();
+		} else
+
+		/* Garsvik */
+		if (ds_readb(CURRENT_TOWN) == 0x27 &&
+			ds_readw(TYPEINDEX) == 0x4a &&
+			!ds_readb(0x3601 + 5)) {
+
+			npc_garsvik();
+		} else
+
+		/* Erwo */
+		if (ds_readb(CURRENT_TOWN) == 0x30 &&
+			ds_readw(TYPEINDEX) == 0x57 &&
+			!ds_readb(0x3601 + 6)) {
+
+			npc_ardora();
+		} else {
+			return 0;
+		}
+
+		return 1;
+	} else {
 		return 0;
-
-	/* check if we had an NPC conversation here */
-	if (ds_readw(0x346e) == type_index)
-		return 0;
-
-	ds_writew(0x346e, type_index);
-
-	/* Nariell */
-	if (ds_readw(CURRENT_TOWN) == 0x17 &&	ds_readw(TYPEINDEX) == 0x30 &&
-		ds_readb(0x3601 + 1) == 0) {
-
-		npc_nariell();
-		return 1;
 	}
-
-	/* Harika */
-	if (ds_readw(CURRENT_TOWN) == 0x12 &&	ds_readw(TYPEINDEX) == 0x28 &&
-		ds_readb(0x3601 + 2) == 0) {
-
-		npc_harika();
-		return 1;
-	}
-
-	/* Curian */
-	if (ds_readw(CURRENT_TOWN) == 0x1d &&	ds_readw(TYPEINDEX) == 0x3c &&
-		ds_readb(0x3601 + 3) == 0) {
-
-		npc_curian();
-		return 1;
-	}
-
-	/* Ardora */
-	if (ds_readw(CURRENT_TOWN) == 0x1 && ds_readw(TYPEINDEX) == 0x6 &&
-		ds_readb(0x3601 + 4) == 0 && ds_readb(0x3317) != 0) {
-
-		npc_ardora();
-		return 1;
-	}
-
-	/* Garsvik */
-	if (ds_readw(CURRENT_TOWN) == 0x27 &&	ds_readw(TYPEINDEX) == 0x4a &&
-		ds_readb(0x3601 + 5) == 0) {
-
-		npc_garsvik();
-		return 1;
-	}
-
-	/* Erwo */
-	if (ds_readw(CURRENT_TOWN) == 0x30 &&	ds_readw(TYPEINDEX) == 0x57 &&
-		ds_readb(0x3601 + 6) == 0) {
-
-		npc_ardora();
-		return 1;
-	}
-
-	return 0;
 }
 
+/* BC-TODO: identical, excluding the near calls */
 void npc_farewell()
 {
 	Bit8u *hero_i;
-	Bit16s tmp;
-	Bit16u i;
+	signed short i;
+	signed short tmp;
 
 	/* no NPC there */
 	if (host_readb(get_hero(6) + 0x21) == 0)
@@ -98,43 +109,41 @@ void npc_farewell()
 		return;
 
 	/* The NPC will be removed after 99 Months ingame time. Weird! */
-	if (check_hero(get_hero(6)) == 0 && ds_readw(0x3470) < 99)
+	if (check_hero(get_hero(6)) == 0 && ds_readws(0x3470) < 99)
 		return;
 
 	tmp = ds_readw(0x26bf);
 	load_buffer_1(0xe1);
 
-	switch (host_readb(get_hero(6) + 0x89)) {
+	switch (host_readbs(get_hero(6) + 0x89)) {
 		/* Nariell */
 		case 1: {
-			if (ds_readw(0x3470) >= 2)
+			if (ds_readws(0x3470) >= 2)
 				remove_npc(0x14, 0x1f, 0xe2,
 					get_ltx(0xbc4), get_dtp(0x24));
 			break;
 		}
 		/* Harika */
 		case 2: {
-			if (ds_readw(0x3470) >= 2) {
-				if (ds_readw(0x3470) >= 99 ||
-					ds_readw(CURRENT_TOWN) == 1 ||
-					ds_readw(CURRENT_TOWN) == 0x12 ||
-					ds_readw(CURRENT_TOWN) == 0x27 ||
-					ds_readw(CURRENT_TOWN) == 0x11) {
+			if (ds_readws(0x3470) >= 2) {
+				if (ds_readws(0x3470) >= 99 ||
+					ds_readb(CURRENT_TOWN) == 1 ||
+					ds_readb(CURRENT_TOWN) == 0x12 ||
+					ds_readb(CURRENT_TOWN) == 0x27 ||
+					ds_readb(CURRENT_TOWN) == 0x11) {
 
 					remove_npc(0x16, 0x1f, 0xe3,
 						get_ltx(0xbc8), get_dtp(0x4c));
 
 					hero_i = get_hero(0);
 					for (i = 0; i < 6; i++, hero_i += 0x6da) {
-						if (host_readb(hero_i + 0x21) == 0)
-							continue;
-						if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-							continue;
-						if (!hero_dead(hero_i))
-							continue;
+						if (host_readb(hero_i + 0x21) &&
+							(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+						(!hero_dead(hero_i))) {
 
 						/* try to increase sneaking */
 						inc_skill_novice(hero_i, 0xd);
+					}
 					}
 				}
 			}
@@ -142,28 +151,28 @@ void npc_farewell()
 		}
 		/* Curian */
 		case 3: {
-			if (ds_readw(0x3470) >= 6)
+			if (ds_readws(0x3470) >= 6)
 				remove_npc(0x19, 0x40, 0xe4,
 					get_ltx(0xbcc), get_dtp(0x74));
 			break;
 		}
 		/* Ardora */
 		case 4: {
-			if (ds_readw(0x3470) >= 1)
+			if (ds_readws(0x3470) >= 1)
 				remove_npc(0x15, 0x1f, 0xe5,
 					get_ltx(0xbd0), get_dtp(0xac));
 			break;
 		}
 		/* Garsvik */
 		case 5: {
-			if (ds_readw(0x3470) >= 2)
+			if (ds_readws(0x3470) >= 2)
 				remove_npc(0x17, 0x1f, 0xe6,
 					get_ltx(0xbd4), get_dtp(0xd4));
 			break;
 		}
 		/* Erwo */
 		case 6: {
-			if (ds_readw(0x3470) >= 2)
+			if (ds_readws(0x3470) >= 2)
 				remove_npc(0x18, 0x1f, 0xe7,
 					get_ltx(0xbd8), get_dtp(0xfc));
 			break;
@@ -187,7 +196,7 @@ void npc_nariell()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox(ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbc4), get_dtp(0x00),
 				3,
 				get_dtp(0x04), get_dtp(0x08),
@@ -196,20 +205,15 @@ void npc_nariell()
 
 	/* process the answer */
 	if (answer == 1) {
-		GUI_dialogbox(ds_readd(0xd2f3),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 			get_ltx(0xbc4), get_dtp(0x10), 0);
 	} else {
 		do {
-			if (answer == 2)
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
-						get_ltx(0xbc4), get_dtp(0x14),
-						2, get_dtp(0x1c),
-						get_dtp(0x20));
-			else
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
-						get_ltx(0xbc4), get_dtp(0x18),
-						2, get_dtp(0x1c),
-						get_dtp(0x20));
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
+					get_ltx(0xbc4),
+					(answer == 2) ? get_dtp(0x14): get_dtp(0x18),
+					2, get_dtp(0x1c),
+					get_dtp(0x20));
 		} while (answer == -1);
 
 		/* add nariell */
@@ -219,13 +223,12 @@ void npc_nariell()
 
 	/* load TAVERN.TLK */
 	load_tlk(0x82);
-
 }
 
 //static
 void npc_harika()
 {
-	unsigned int money;
+	Bit32s money;
 	signed short answer;
 
 	/* load NSC.LTX */
@@ -236,7 +239,7 @@ void npc_harika()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox(ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbc8), get_dtp(0x28),
 				3,
 				get_dtp(0x2c), get_dtp(0x30),
@@ -244,7 +247,7 @@ void npc_harika()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbc8),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbc8),
 			get_dtp(0x38), 0);
 	} else if (answer == 2) {
 		money = get_party_money();
@@ -255,7 +258,7 @@ void npc_harika()
 			answer = 1;
 
 		do {
-			answer = GUI_dialogbox(ds_readd(0xd2f3),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x3c),
 					(signed char)answer,
 					get_dtp(0x44), get_dtp(0x48));
@@ -279,7 +282,7 @@ void npc_harika()
 			answer = 1;
 
 		do {
-			answer = GUI_dialogbox(ds_readd(0xd2f3),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x40),
 					(signed char)answer,
 					get_dtp(0x44), get_dtp(0x48));
@@ -314,7 +317,7 @@ void npc_ardora()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox(ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbd0), get_dtp(0x78),
 				3,
 				get_dtp(0x7c), get_dtp(0x80),
@@ -323,18 +326,18 @@ void npc_ardora()
 
 	if (answer == 1) {
 		do {
-			answer = GUI_dialogbox(ds_readd(0xd2f3),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbd0), get_dtp(0x88),
 					2,
 					get_dtp(0x8c), get_dtp(0x90));
 		} while (answer == -1);
 
 		if (answer == 2) {
-			GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 				get_dtp(0x94), 0);
 		} else {
 			do {
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd0), get_dtp(0x9c),
 						2,
 						get_dtp(0xa0), get_dtp(0xa4));
@@ -343,18 +346,18 @@ void npc_ardora()
 			if (answer == 1) {
 				add_npc(0xe5);
 			} else {
-				GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+				GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 					get_dtp(0xa8), 0);
 			}
 		}
 	} else {
 		if (answer == 2) {
-			GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 				get_dtp(0x98), 0);
 		}
 
 		do {
-			answer = GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 					get_dtp(0x9c), 2,
 					get_dtp(0xa0), get_dtp(0xa4));
 		} while (answer == -1);
@@ -362,7 +365,7 @@ void npc_ardora()
 		if (answer == 1) {
 			add_npc(0xe5);
 		} else {
-			GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd0),
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd0),
 				get_dtp(0xa8), 0);
 		}
 	}
@@ -383,7 +386,7 @@ void npc_curian()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox(ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbcc), get_dtp(0x50),
 				3,
 				get_dtp(0x54), get_dtp(0x58),
@@ -391,17 +394,17 @@ void npc_curian()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbcc),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbcc),
 			get_dtp(0x60), 0);
 	} else {
 		do {
 			if (answer == 2)
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbcc), get_dtp(0x64),
 						2,
 						get_dtp(0x6c), get_dtp(0x70));
 			else
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbcc), get_dtp(0x68),
 						2,
 						get_dtp(0x6c), get_dtp(0x70));
@@ -430,7 +433,7 @@ void npc_garsvik()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox(ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbd4), get_dtp(0xb0),
 				3,
 				get_dtp(0xb4), get_dtp(0xb8),
@@ -438,17 +441,17 @@ void npc_garsvik()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd4),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd4),
 			get_dtp(0xc0), 0);
 	} else {
 		do {
 			if (answer == 2)
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd4), get_dtp(0xc4),
 						2,
 						get_dtp(0xcc), get_dtp(0xd0));
 			else
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd4), get_dtp(0xc8),
 						2,
 						get_dtp(0xcc), get_dtp(0xd0));
@@ -477,7 +480,7 @@ void npc_erwo()
 
 	/* show dialog window */
 	do {
-		answer = GUI_dialogbox(ds_readd(0xd2f3),
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 				get_ltx(0xbd8), get_dtp(0xd8),
 				3,
 				get_dtp(0xdc), get_dtp(0xe0),
@@ -485,17 +488,17 @@ void npc_erwo()
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox(ds_readd(0xd2f3), get_ltx(0xbd8),
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbd8),
 			get_dtp(0xe8), 0);
 	} else {
 		do {
 			if (answer == 2)
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd8), get_dtp(0xec),
 						2,
 						get_dtp(0xf4), get_dtp(0xf8));
 			else
-				answer = GUI_dialogbox(ds_readd(0xd2f3),
+				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 						get_ltx(0xbd8), get_dtp(0xf0),
 						2,
 						get_dtp(0xf4), get_dtp(0xf8));
@@ -530,7 +533,7 @@ void remove_npc(signed short head_index, signed char days,
 	if (NOT_NULL(text)) {
 		if (check_hero(get_hero(6)) != 0) {
 			load_in_head(head_index);
-			GUI_dialogbox(ds_readd(0xd2f3), name, text, 0);
+			GUI_dialogbox((RealPt)ds_readd(0xd2f3), name, text, 0);
 		}
 	}
 
@@ -582,4 +585,6 @@ void add_npc(signed short index)
 	draw_status_line();
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
