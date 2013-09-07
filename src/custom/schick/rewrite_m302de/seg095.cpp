@@ -264,7 +264,7 @@ void npc_harika()
 					get_dtp(0x44), get_dtp(0x48));
 		} while (answer == -1);
 
-		/* hier her for 20D */
+		/* hire her for 20D */
 		if (answer == 2) {
 			/* subtract 20D */
 			money -= 2000;
@@ -288,7 +288,7 @@ void npc_harika()
 					get_dtp(0x44), get_dtp(0x48));
 		} while (answer == -1);
 
-		/* hier her for 15D */
+		/* hire her for 15D */
 		if (answer == 2) {
 			/* subtract 15D */
 			money -= 1500;

@@ -627,7 +627,9 @@ static int ovr249(unsigned short offs)
 		CPU_Push32(arg08);
 		CPU_Push32(arg04);
 		CPU_Push32(arg00);
+		return 0;
 	}
+	default: return 0;
 	}
 }
 
