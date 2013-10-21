@@ -619,14 +619,23 @@ static int ovr249(unsigned short offs)
 		RealPt arg04 = CPU_Pop32();
 		RealPt arg08 = CPU_Pop32();
 		RealPt dialog_text = CPU_Pop32();
-		RealPt option_count = CPU_Pop32();
+		RealPt option_count_ptr = CPU_Pop32();
 		RealPt option_ptr = CPU_Pop32();
 		CPU_Push32(option_ptr);
-		CPU_Push32(option_count);
+		CPU_Push32(option_count_ptr);
 		CPU_Push32(dialog_text);
 		CPU_Push32(arg08);
 		CPU_Push32(arg04);
 		CPU_Push32(arg00);
+
+		RealPt* options = (RealPt*)Real2Host(option_ptr);
+		char* option_count = (char*)Real2Host(option_count_ptr);
+		D2_TRAC("Dialog mit %d Optionen: %s, Parameter: %x, %x, %x\n",
+		       *option_count,
+		       (char*)Real2Host(dialog_text),
+		       Real2Host(arg00)[0], arg04, arg08);
+		for (int i=0;  i < *option_count;  i++)
+		    D2_TRAC("- %s\n", Real2Host(options[i]));
 		return 0;
 	}
 	default: return 0;
@@ -644,22 +653,23 @@ static int ovr265(unsigned short offs)
 		CPU_Push16(textfield_size);
 		CPU_Push32(dialog_args);
 		unsigned short* dargs = (unsigned short*)Real2Host(dialog_args);
-		/*D2_LOG("Dialog with Textfield(len:%d): %x, %x, %x : %s\n",
+		D2_TRAC("Dialog mit Textfeld(len:%d): %x, %x, %x : %s\n",
 		       textfield_size,
 		       dargs[0], dargs[1], dargs[2],
-		       (char*)Real2Host(dialog_string));*/
+		       (char*)Real2Host(dialog_string));
 		return 0;
 	}
 	case 0x0DDB: {
-		RealPt arg0 = CPU_Pop32();
-		RealPt arg4 = CPU_Pop32();
-		Bit16u arg8 = CPU_Pop16();
-		Bit16u argA = CPU_Pop16();
+		RealPt zeilen = CPU_Pop32();
+		RealPt titel  = CPU_Pop32();
+		Bit16u arg8   = CPU_Pop16();
+		Bit16u argA   = CPU_Pop16();
 		CPU_Push16(argA);
 		CPU_Push16(arg8);
-		CPU_Push32(arg4);
-		CPU_Push32(arg0);
-		//D2_LOG("SubDialog: %d, %s, %d, %d\n", Real2Host(arg0)[0], (char*)Real2Host(arg4), arg8, argA);
+		CPU_Push32(titel);
+		CPU_Push32(zeilen);
+		D2_TRAC("SubDialog: %d Zeilen, Titel: %s, Optionen %d, %d\n",
+		       Real2Host(zeilen)[0], (char*)Real2Host(titel), arg8, argA);
 		return 0;
 	}
 	default: return 0;
