@@ -7,6 +7,8 @@
 #include "c102de_seg000.h"
 
 namespace C102de {
+    char current_datafile[13];
+    
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
 	ds_writew(0x895C + handle * 2, ds_readw(0x895C + handle * 2) & 0xfdff);
@@ -458,6 +460,16 @@ int seg000(unsigned short offs) {
 	return 0;
     }
     case 0x35B1: { // sub_135B1
+	RealPt filename   = CPU_Pop32();
+	Bit16u oflag      = CPU_Pop16();
+	Bit16u mode       = CPU_Pop16();
+	CPU_Push16(mode);
+	CPU_Push16(oflag);
+	CPU_Push32(filename);
+
+	strncpy(current_datafile, (char*)Real2Host(filename), 13);
+	D2_TRAC("Open file %s modes %x:%x:%x\n",
+	       Real2Host(filename), oflag, mode);
 	return 0;
     }
     case 0x376F: { // sub_1376F
@@ -539,39 +551,58 @@ int seg000(unsigned short offs) {
 	return 0;
     }
     case 0x3720: { // DOS_OpenFile
+	RealPt filename  = CPU_Pop32();
+	Bit16u attributes= CPU_Pop16();
+	CPU_Push16(attributes);
+	CPU_Push32(filename);
+	D2_TRAC("Open file %s mode %x\n", Real2Host(filename), attributes);
+	strncpy(current_datafile, (char*)Real2Host(filename), 13);
 	return 0;
     }
     case 0x0920: { // DOS_ReadFile
-	    Bit16u handle = CPU_Pop16();
-	    RealPt buf = CPU_Pop32();
-	    Bit16u count = CPU_Pop16();
-	    CPU_Push16(count);
-	    CPU_Push32(buf);
-	    CPU_Push16(handle);
+	Bit16u handle = CPU_Pop16();
+	RealPt buf = CPU_Pop32();
+	Bit16u count = CPU_Pop16();
+	CPU_Push16(count);
+	CPU_Push32(buf);
+	CPU_Push16(handle);
 	    
-	    /*D2_LOG("C-Lib _read(handle=%d, buffer=0x%x, len=%d)\n",
-	      handle, buf, count);*/
+	/*D2_LOG("C-Lib _read(handle=%d, buffer=0x%x, len=%d)\n",
+	  handle, buf, count);*/
 	    
-	    reg_ax = bc__read(handle, Real2Host(buf), count);
+	reg_ax = bc__read(handle, Real2Host(buf), count);
 	    
-	    return 1;
+	return 1;
     }
     case 0x0870: { // DOS_Seek
-	    Bit16u handle = CPU_Pop16();
-	    Bit32u pos = CPU_Pop32();
-	    Bit16u whence = CPU_Pop16();
-	    CPU_Push16(whence);
-	    CPU_Push32(pos);
-	    CPU_Push16(handle);
+	Bit16u handle = CPU_Pop16();
+	Bit32u pos = CPU_Pop32();
+	Bit16u whence = CPU_Pop16();
+	CPU_Push16(whence);
+	CPU_Push32(pos);
+	CPU_Push16(handle);
 	    
-	    Bit32s retval = bc_lseek(handle, pos, whence);
-	    /*D2_LOG("C-Lib lseek(Handle=0x%x, pos=%u, whence=%d, apos=%x)\n",
-	      handle, pos, whence, ((handle*2)-0x76A4)&0xFDFF);*/
+	Bit32s retval = bc_lseek(handle, pos, whence);
+	/*D2_LOG("C-Lib lseek(Handle=0x%x, pos=%x, whence=%d, apos=%x)\n",
+	  handle, pos, whence, ((handle*2)-0x76A4)&0xFDFF);*/
+	// If reading from a game archive, show the file.
+	if (handle == 0x08) {
+	    char buf[20];
+	    if (
+		(strcmp("STAR.DAT", current_datafile) == 0 && pos <= 0x04DA*20) ||
+		(strcmp("RAW.DAT",  current_datafile) == 0 && pos <= 0x01AF*20))
+	    {
+		// Read the chunk from the header
+		bc__read(0x08, (Bit8u*)buf, 20);
+		// Undo the reading
+		bc_lseek(handle, -20, SEEK_CUR);
+		printf("Reading %s from archive %s\n", (buf+2), current_datafile);
+	    }
+	}
+	reg_ax = retval & 0xffff;
+	reg_dx = (retval >> 16) & 0xffff;
 	
-	    reg_ax = retval & 0xffff;
-	    reg_dx = (retval >> 16) & 0xffff;
-	    
-	    return 1;
+	return 1;
     }
     case 0x0CB8: { // DOS_SeekEOF
 	return 0;

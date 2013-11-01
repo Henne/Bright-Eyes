@@ -62,10 +62,9 @@ unsigned short is_in_word_array(unsigned short val, Bit8u *p)
 {
 
 	while (host_readw(p) != 0) {
-		p += 2;
-
 		if (host_readw(p) == val)
 			return 1;
+		p += 2;
 	}
 
 	return 0;
