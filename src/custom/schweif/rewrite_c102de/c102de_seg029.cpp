@@ -16,9 +16,6 @@ static inline unsigned int val(const unsigned char *p) {
 }
 
 static unsigned long depackedlen(const unsigned char *p, unsigned long plen) {
-/*	DSA1/ROA1 doesn't use the first bytes as a signature "PP20".
- *	It's used instead for the lenght of the packed data. */
-
 	if (p[0] == 'P' && p[1] == 'P' && p[2] == '2' && p[3] == '0')
 		return val(p+plen-4);
 
@@ -27,19 +24,11 @@ static unsigned long depackedlen(const unsigned char *p, unsigned long plen) {
 
 	if (host_readd((Bit8u*)p) + 8 == plen)
 		return val(p+plen-4);
-
 	return 0; /* not a powerpacker file */
 }
 
-/*	DSA2 writes with this function direct to the graphics mem,
-	so we unpack it to buf and then with mem_writeb to gfx mem */
-static Bit8u buf[64000];
-
-void decomp_pp20(RealPt dst, Bit8u *src, unsigned int plen)
-{
-	signed int unplen;
-	signed int i;
-	PhysPt p_dst = Real2Phys(dst);
+unsigned int decomp_pp20(Bit8u *dst, Bit8u *src, unsigned int plen) {
+	size_t unplen;
 
 	if (plen < 4)
 		D2_ERR("PP20: Length argument is below 4\n");
@@ -49,14 +38,9 @@ void decomp_pp20(RealPt dst, Bit8u *src, unsigned int plen)
 	if (unplen == 0) {
 		D2_ERR("PP20: No PP20 file\n");
 	}
-	if (!ppDecrunch(&src[8],  buf, &src[4], plen - 12, unplen, src[plen - 1])) {
-		D2_ERR("error on ppDecrunch();\n");
-	}
+	ppDecrunch(&src[8],  dst, &src[4], plen - 12, unplen, src[plen -1]);
 
-	for (i = 0; i < unplen; i++)
-		mem_writeb_inline(p_dst + i, buf[i]);
-
-	return;
+	return unplen;
 }
 
 }

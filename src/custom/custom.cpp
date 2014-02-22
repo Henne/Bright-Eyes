@@ -5,13 +5,14 @@
 #include <stdio.h>
 
 #include "setup.h"
+#include "regs.h"
 #include "custom.h"
 #include "custom_hooks.h"
 static Bit8u custom_runs;
 
 static Bit8u schick_runs;
 static Bit8u schweif_runs;
-
+Bit16u custom_oldCS, custom_oldIP;
 //static class custom_prog running_progs[2];
 
 //static class custom_prog *current;
@@ -52,29 +53,33 @@ void custom_exit_prog(Bit8u exitcode)
 	}
 }
 
-int custom_calln(Bit16u ip)
+int custom_calln(Bit16u IP)
 {
+        custom_oldCS = SegValue(cs);
+	custom_oldIP = reg_ip;
 	if (!custom_runs)
 		return 0;
 
 	if (schick_runs)
-		return schick_calln16(ip);
+		return schick_calln16(IP);
 
 	if (schweif_runs)
-		return schweif_calln(ip);
+		return schweif_calln(IP);
 
 	return 0;
 }
 
-int custom_callf(Bitu cs, Bitu ip)
+int custom_callf(Bitu CS, Bitu IP)
 {
+        custom_oldCS = SegValue(cs);
+	custom_oldIP = reg_ip;
 	if (!custom_runs)
 		return 0;
 
 	if (schick_runs)
-		return schick_callf(cs, ip);
+		return schick_callf(CS, IP);
 	if (schweif_runs)
-		return schweif_callf(cs, ip);
+		return schweif_callf(CS, IP);
 
 	return 0;
 }

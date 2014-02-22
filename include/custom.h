@@ -17,6 +17,9 @@ class custom_prog {
 };
 
 #if DOSBOX_CUSTOM
+// old values of CS:IP (directly before the call), usable for diagnosis
+extern Bit16u custom_oldCS, custom_oldIP;
+
 
 void custom_init(Section *sec);
 

@@ -3,9 +3,10 @@
 
 #include <stdio.h>
 
-
 #include "cpu.h"
 #include "mem.h"
+
+#include "common.h"
 
 #define SCHWEIF_INFO
 #define SCHWEIF_LOG

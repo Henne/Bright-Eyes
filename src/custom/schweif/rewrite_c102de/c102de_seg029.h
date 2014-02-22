@@ -1,5 +1,3 @@
 namespace C102de {
-
-void decomp_pp20(RealPt, Bit8u*, unsigned int);
-
+    unsigned int decomp_pp20(Bit8u *dst, Bit8u *src, unsigned int plen);
 }

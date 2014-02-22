@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 #include "mem.h"
-
+#include "schweif.h"
 namespace C102de {
 
 typedef unsigned char uint8;

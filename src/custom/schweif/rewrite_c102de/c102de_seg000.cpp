@@ -309,7 +309,7 @@ int seg000(unsigned short offs) {
 	    //D2_LOG("strcmp(%s, %s) = %d\n", (char*)(Real2Host(str1)), (char*)(Real2Host(str2)), reg_ax);
 	    return 1;
     }
-    case 0x41A6: { // sub_141A6: strcpy
+    case 0x41A6: { // sub_141A6: strcpy: DONE
 	    RealPt dest   = CPU_Pop32();
 	    RealPt source = CPU_Pop32();
 	    CPU_Push32(source);
@@ -444,20 +444,55 @@ int seg000(unsigned short offs) {
     case 0x343A: { // sub_1343A
 	return 0;
     }
-    case 0x34AA: { // sub_134AA
+    case 0x34AA: { // sub_134AA: memcpy: DONE
+	RealPt dst = CPU_Pop32();
+	RealPt src = CPU_Pop32();
+	Bit16u len = CPU_Pop16();
+	CPU_Push16(len);
+	CPU_Push32(src);
+	CPU_Push32(dst);
+	memcpy(Real2Host(dst), Real2Host(src), len);
+	return 1;
+    }
+    case 0x34CE: { // sub_134CE: memset1: DONE
+	RealPt buffer = CPU_Pop32();
+	Bit16u length = CPU_Pop16();
+	Bit8u  value  = CPU_Pop16();
+	memset(Real2Host(buffer), value, length);
+	CPU_Push16(value);
+	CPU_Push16(length);
+	CPU_Push32(buffer);
+	return 1;
+    }
+    case 0x34F2: { // sub_13F2: memset2: TODO
 	return 0;
     }
-    case 0x34CE: { // sub_134CE
-	return 0;
+    case 0x3511: { // sub_13511: _memmove: DONE, OBSOLETE(by memmove)
+	RealPt src = CPU_Pop32();
+	RealPt dst = CPU_Pop32();
+	Bit16u len = CPU_Pop16();
+	CPU_Push16(len);
+	CPU_Push32(dst);
+	CPU_Push32(src);
+	memmove(Real2Host(dst), Real2Host(src), len);
+	return 1;
     }
-    case 0x34F2: { // sub_134F2
-	return 0;
-    }
-    case 0x3511: { // sub_13511
-	return 0;
-    }
-    case 0x3563: { // sub_13563
-	return 0;
+    case 0x3563: { // sub_13563: memmove: DONE
+	Bit16u dst_ofs = CPU_Pop16();
+	Bit16u dst_seg = CPU_Pop16();
+	Bit16u src_ofs = CPU_Pop16();
+	Bit16u src_seg = CPU_Pop16();
+	Bit16u length  = CPU_Pop16();
+	CPU_Push16(length);
+	CPU_Push16(dst_seg);
+	CPU_Push16(dst_ofs);
+	CPU_Push16(src_seg);
+	CPU_Push16(src_ofs);
+	
+	void* dst = MemBase + PhysMake(dst_seg, dst_ofs);
+	void* src = MemBase + PhysMake(src_seg, src_ofs);
+	memmove(dst, src, length);
+	return 1;
     }
     case 0x35B1: { // sub_135B1
 	RealPt filename   = CPU_Pop32();
@@ -468,7 +503,7 @@ int seg000(unsigned short offs) {
 	CPU_Push32(filename);
 
 	strncpy(current_datafile, (char*)Real2Host(filename), 13);
-	D2_TRAC("Open file %s modes %x:%x:%x\n",
+	D2_TRAC("Open file %s modes %x:%x\n",
 	       Real2Host(filename), oflag, mode);
 	return 0;
     }
@@ -586,6 +621,7 @@ int seg000(unsigned short offs) {
 	/*D2_LOG("C-Lib lseek(Handle=0x%x, pos=%x, whence=%d, apos=%x)\n",
 	  handle, pos, whence, ((handle*2)-0x76A4)&0xFDFF);*/
 	// If reading from a game archive, show the file.
+	/*
 	if (handle == 0x08) {
 	    char buf[20];
 	    if (
@@ -599,6 +635,7 @@ int seg000(unsigned short offs) {
 		printf("Reading %s from archive %s\n", (buf+2), current_datafile);
 	    }
 	}
+	*/
 	reg_ax = retval & 0xffff;
 	reg_dx = (retval >> 16) & 0xffff;
 	
@@ -733,7 +770,15 @@ int seg000(unsigned short offs) {
     case 0x0231: { // sub_10231
 	return 0;
     }
-    case 0x043C: { // sub_1043C
+    case 0x043C: { // sub_1043C: memcpy_CX: PEND
+	RealPt src = CPU_Pop32();
+	RealPt dst = CPU_Pop32();
+	CPU_Push32(dst);
+	CPU_Push32(src);
+	//D2_LOG("memcpy_cx %x bytes from %p to %p\n", reg_cx, src, dst);
+	// Funktioniert so nicht - warum auch immer.
+	//memcpy(Real2Host(dst), Real2Host(src), reg_cx);
+	//reg_ecx = 0;
 	return 0;
     }
     case 0x0425: { // sub_10425
