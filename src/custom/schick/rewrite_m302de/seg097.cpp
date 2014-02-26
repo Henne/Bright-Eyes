@@ -30,7 +30,6 @@ namespace M302de {
 char GUI_lookup_char_height(char c, unsigned short *p)
 {
 	short i;
-	Bit8u *tab = p_datseg + 0xab42;
 
 	for (i = 0; i != 210; i+=3) {
 		if (c != ds_readb(0xab42 + i))

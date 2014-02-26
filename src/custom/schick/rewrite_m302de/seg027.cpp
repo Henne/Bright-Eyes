@@ -214,7 +214,7 @@ RealPt load_fight_figs(signed short fig)
 
 		bc_close(fd);
 
-		if (dst = schick_alloc_emu(len)) {
+		if ((dst = schick_alloc_emu(len))) {
 #if !defined(__BORLANDC__)
 			D1_LOG("use HEAP for fig %d\n", fig);
 #endif
@@ -238,7 +238,7 @@ RealPt load_fight_figs(signed short fig)
 			D1_LOG("use EMS for fig %d\n", fig);
 #endif
 
-			if (ems_handle = alloc_EMS(len)) {
+			if ((ems_handle = alloc_EMS(len))) {
 
 				/* find a free slot */
 				for (i = 0; i < max_entries - 1; i++) {

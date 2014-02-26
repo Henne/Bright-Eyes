@@ -348,7 +348,7 @@ void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y) {
 			si += ds_readw(0xe4db);
 	l3 = si;
 
-	while (l4 = str[l2++]) {
+	while ((l4 = str[l2++])) {
 		/* handle line breaks */
 		if (l4 == 0x0d || l4 == 0x40) {
 			if (++l1 == ds_readw(0xe4d9)) {

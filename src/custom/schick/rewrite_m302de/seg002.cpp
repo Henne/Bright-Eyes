@@ -1790,7 +1790,7 @@ void passages_reset() {
  */
 void timewarp(Bit32u time)
 {
-	unsigned int i;
+	signed int i;
 	signed short td_bak;
 	signed short hour_diff;
 	unsigned int timer_bak;
@@ -2646,7 +2646,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			if (ds_readb(0xa842) != 0 && ds_readw(IN_FIGHT) == 0 &&
 				(count_heroes_available_in_group() == 0 ||
-				count_heroes_available_in_group() == 1 && is_hero_available_in_group(get_hero(6)))) {
+				(count_heroes_available_in_group() == 1 && is_hero_available_in_group(get_hero(6))))) {
 
 				ds_writeb(0x4333, 99);
 

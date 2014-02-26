@@ -48,7 +48,7 @@ unsigned short get_hero_CH_best()
 			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
-				/* check if dead */
+				/* check if not dead */
 			(host_readbs(hero_i + 0x3b) > ch_val)) {
 				/* check if CH is the highest */
 
@@ -80,7 +80,7 @@ unsigned short get_hero_KK_best() {
 			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
-				/* check if dead */
+				/* check if not dead */
 			(host_readbs(hero_i + 0x47) > kk_val)) {
 				/* check if KK is the highest */
 
