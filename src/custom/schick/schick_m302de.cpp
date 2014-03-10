@@ -6900,7 +6900,10 @@ static int n_seg075(unsigned short offs)
 {
 	switch (offs) {
 	case 0x000: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("DNG_floor_ceil();\n");
+		DNG_floor_ceil();
+		return 1;
 	}
 	case 0x0b9: {
 		return 0;
