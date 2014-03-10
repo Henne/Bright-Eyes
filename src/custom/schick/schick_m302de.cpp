@@ -755,8 +755,8 @@ static int seg001(unsigned short offs) {
 		return 1;
 	}
 	case 0x34f: {
-		D1_LOG("%s:%x()\n", __func__, offs);
-		seg001_034f();
+		D1_LOG("CD_audio_stop()\n");
+		CD_audio_stop();
 		return 1;
 	}
 	case 0x37a: {
@@ -5639,15 +5639,15 @@ static int n_seg001(unsigned offs)
 	/* Callers: 3 */
 	case 0x322: {
 		CPU_Pop16();
-		D1_LOG("seg001_0322()\n");
-		seg001_0322();
+		D1_LOG("CD_audio_stop_hsg()\n");
+		CD_audio_stop_hsg();
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x34f: {
 		CPU_Pop16();
-		D1_LOG("seg001_034f()\n");
-		seg001_034f();
+		D1_LOG("CD_audio_stop()\n");
+		CD_audio_stop();
 		return 1;
 	}
 	default:

@@ -13,9 +13,8 @@ void seg001_00c1(unsigned short);
 void seg001_02c4();
 signed short CD_bioskey(signed short);
 //static
-void seg001_0322();
-//static
-void seg001_034f();
+void CD_audio_stop_hsg(void);
+void CD_audio_stop();
 void CD_audio_pause();
 void CD_audio_play();
 

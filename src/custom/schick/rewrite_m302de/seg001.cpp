@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewriten: 6/19
- *	Borlandified and identical: 6/19
+ *	Functions rewriten: 6/21
+ *	Borlandified and identical: 6/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -151,8 +151,8 @@ void seg001_02c4() {
 	if (ds_readw(0x9b) != 1)
 		return;
 
-	seg001_0322();
-	seg001_0322();
+	CD_audio_stop_hsg();
+	CD_audio_stop_hsg();
 	seg001_00c1(ds_readw(0xbc40));
 	ds_writew(0x9b, 1);
 }
@@ -162,7 +162,10 @@ signed short CD_bioskey(signed short cmd) {
 	return bioskey(cmd);
 }
 
-void seg001_0322(void) {
+/* CD_audio_stop_hsg() - stop audio playback in HSG format */
+/* static */
+void CD_audio_stop_hsg(void) {
+
 	if (ds_readw(0x95) == 0)
 		return;
 
@@ -171,11 +174,12 @@ void seg001_0322(void) {
 	ds_writew(0x9b, 0);
 }
 
-void seg001_034f() {
+/* CD_audio_stop() - stop audio playback in HSG and redbook format */
+void CD_audio_stop() {
 	if (ds_readw(0x95) == 0)
 		return;
 
-	seg001_0322();
+	CD_audio_stop_hsg();
 	real_writew(reloc_game + 0x1238, 0x1f, 0);
 	CD_driver_request(RealMake(reloc_game + 0x1238, 0x1c));
 }
