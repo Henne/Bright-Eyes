@@ -183,6 +183,7 @@ void npc_farewell()
 		load_buffer_1(tmp);
 }
 
+/* BC-TODO: identical, excluding the near calls */
 //static
 void npc_nariell()
 {
@@ -229,7 +230,7 @@ void npc_nariell()
 void npc_harika()
 {
 	Bit32s money;
-	signed short answer;
+	signed short answer; /* TODO: should be in register si */
 
 	/* load NSC.LTX */
 	load_buffer_1(0xe1);
@@ -252,15 +253,12 @@ void npc_harika()
 	} else if (answer == 2) {
 		money = get_party_money();
 
-		if (money >= 2000)
-			answer = 2;
-		else
-			answer = 1;
+		answer = (money >= 2000) ? 2 : 1;
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x3c),
-					(signed char)answer,
+					answer,
 					get_dtp(0x44), get_dtp(0x48));
 		} while (answer == -1);
 
@@ -276,15 +274,12 @@ void npc_harika()
 	} else {
 		money = get_party_money();
 
-		if (money >= 1500)
-			answer = 2;
-		else
-			answer = 1;
+		answer = (money >= 1500) ? 2 : 1;
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
 					get_ltx(0xbc8), get_dtp(0x40),
-					(signed char)answer,
+					answer,
 					get_dtp(0x44), get_dtp(0x48));
 		} while (answer == -1);
 
