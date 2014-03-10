@@ -49,6 +49,7 @@
 #include "seg068.h"
 #include "seg072.h"
 #include "seg073.h"
+#include "seg075.h"
 #include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -4077,6 +4078,48 @@ static int seg073(unsigned short offs) {
 	}
 }
 
+static int seg075(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x25: {
+			return 0;
+		}
+		case 0x2a: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
+		case 0x57: {
+			return 0;
+		}
+		case 0x5c: {
+			return 0;
+		}
+		case 0x61: {
+			return 0;
+		}
+		case 0x66: {
+			return 0;
+		}
+		case 0x70: {
+			return 0;
+		}
+		case 0x75: {
+			return 0;
+		}
+		case 0x7a: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg095(unsigned short offs) {
 	switch (offs) {
 		case 0x3e: {
@@ -5516,7 +5559,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x13b4:	return seg072(offs);
 		case 0x13b9:	return seg073(offs);
 		case 0x13bd:	return 0;
-		case 0x13c3:	return 0;
+		case 0x13c3:	return seg075(offs);
 		case 0x13cb:	return 0;
 		case 0x13d1:	return 0;
 		case 0x13d7:	return 0;
@@ -6853,6 +6896,58 @@ static int n_seg072(unsigned short offs)
 	}
 }
 
+static int n_seg075(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		return 0;
+	}
+	case 0x0b9: {
+		return 0;
+	}
+	case 0x56b: {
+		return 0;
+	}
+	case 0x591: {
+		return 0;
+	}
+	case 0x5e5: {
+		return 0;
+	}
+	case 0x693: {
+		D1_LOG("DNG_draw_walls()\n");
+		return 0;
+	}
+	case 0x82e: {
+		return 0;
+	}
+	case 0x9ef: {
+		return 0;
+	}
+	case 0xa46: {
+		return 0;
+	}
+	case 0xaaa: {
+		return 0;
+	}
+	case 0xc6d: {
+		return 0;
+	}
+	case 0xc8e: {
+		return 0;
+	}
+	case 0x10de: {
+		return 0;
+	}
+	case 0x1168: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 
 static int n_seg095(unsigned short offs)
 {
@@ -7578,6 +7673,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x138a)) return n_seg064(offs);
 	else if (is_ovrseg(0x1392)) return n_seg066(offs);
 	else if (is_ovrseg(0x13b4)) return n_seg072(offs);
+	else if (is_ovrseg(0x13c3)) return n_seg075(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	/* seg097 */
 	if (is_ovrseg(0x1442)) {

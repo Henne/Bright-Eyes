@@ -5,8 +5,11 @@
  *
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
+#include <stdio.h>
 #include "string.h"
 
 #include "v302de.h"
@@ -15,7 +18,9 @@
 #include "seg007.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void thorwal_imman()
 {
@@ -53,13 +58,13 @@ void thorwal_imman()
 
 void thorwal_botschaft()
 {
-	bool closed = false;
+	int closed = 0;
 
 	/* At the 6th month in year 17 Hal another message is shown */
 	if (ds_readb(YEAR) > 17 ||
 		(ds_readb(YEAR) == 17 && ds_readb(MONTH) > 5)) {
 
-		closed = true;
+		closed = 1;
 	}
 
 	if (!closed)
@@ -85,4 +90,6 @@ void thorwal_mueller()
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
