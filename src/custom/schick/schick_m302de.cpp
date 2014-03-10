@@ -6584,7 +6584,7 @@ static int n_seg039(unsigned offs)
 		return 1;
 	}
 	case 0x546: {
-		Bit16u CS = CPU_Pop16();
+		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();

@@ -123,7 +123,7 @@ void schick_get_fname(char *dst, char *src) {
 	if (p == NULL)
 		p = src;
 
-	while (*dst++ = tolower(*p++));
+	while ((*dst++ = tolower(*p++)));
 	*dst = '\0';
 }
 
@@ -217,7 +217,8 @@ bool init_schick(char *name, unsigned short reloc, unsigned short _cs, unsigned 
 			schick--;
 			fromgame++;
 
-			D1_INFO("Gen gestartet\nreloc (0x%x)\n", reloc_gen);
+			D1_INFO("Gen gestartet\nreloc (0x%x)\n",
+				(unsigned int)reloc_gen);
 		}
 
 		/* enable profiler only on this version */
