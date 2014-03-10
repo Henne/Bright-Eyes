@@ -92,7 +92,7 @@ void draw_pic(PhysPt dst, Bit16u x, Bit16u y, Bit16u d1, Bit16u d2,
 
 			do {
 				for (i = w; i != 0; i--) {
-					if (al = mem_readb_inline(s++))
+					if ((al = mem_readb_inline(s++)))
 						mem_writeb_inline(d, al);
 					d++;
 				}

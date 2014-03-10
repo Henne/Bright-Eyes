@@ -2889,7 +2889,7 @@ void print_str(char *str, Bit16u x, Bit16u y)
 
 	x_bak = x;
 
-	while (c = str[i++]) {
+	while ((c = str[i++])) {
 		switch (c) {
 			case 0x0d: case 0x40: {
 				/* newline */
