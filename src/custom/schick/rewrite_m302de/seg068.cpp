@@ -24,7 +24,7 @@ void thorwal_imman()
 
 	tmp = get_current_season();
 
-	if ((tmp == 1 || tmp == 3) && (ds_readb(0x2dbf == 5))) {
+	if ((tmp == 1 || tmp == 3) && (ds_readb(0x2dbf) == 5)) {
 		/* ask to visit the game */
 		if (GUI_bool(get_city(0xdc)) == 0)
 			return;
