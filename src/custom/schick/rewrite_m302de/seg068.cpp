@@ -22,7 +22,8 @@
 namespace M302de {
 #endif
 
-void thorwal_imman()
+/* Borlandified and identical */
+void thorwal_imman(void)
 {
 
 	unsigned short tmp;
@@ -31,8 +32,7 @@ void thorwal_imman()
 
 	if ((tmp == 1 || tmp == 3) && (ds_readb(0x2dbf) == 5)) {
 		/* ask to visit the game */
-		if (GUI_bool(get_city(0xdc)) == 0)
-			return;
+		if (GUI_bool(get_city(0xdc)) != 0) {
 
 		tmp = random_schick(4) + 0x38;
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
@@ -49,6 +49,7 @@ void thorwal_imman()
 			random_schick(14));
 
 		GUI_input(Real2Host(ds_readd(0xd2f3)), 0);
+		}
 	} else {
 		/* no imman game at the moment */
 		GUI_input(get_city(0xd8), 0);
@@ -56,34 +57,28 @@ void thorwal_imman()
 
 }
 
-void thorwal_botschaft()
+/* Borlandified and identical */
+void thorwal_botschaft(void)
 {
 	int closed = 0;
 
 	/* At the 6th month in year 17 Hal another message is shown */
-	if (ds_readb(YEAR) > 17 ||
-		(ds_readb(YEAR) == 17 && ds_readb(MONTH) > 5)) {
+	if (ds_readbs(YEAR) > 17 ||
+		(ds_readbs(YEAR) == 17 && ds_readbs(MONTH) > 5)) {
 
 		closed = 1;
 	}
 
-	if (!closed)
-		GUI_input(get_city(0x110), 0);
-	else
-		GUI_input(get_city(0x114), 0);
+	GUI_input( (!closed) ? get_city(0x110): get_city(0x114), 0);
 }
 
-void thorwal_mueller()
+/* Borlandified and identical */
+void thorwal_mueller(void)
 {
-	if (GUI_bool(get_city(0x40)) == 1) {
+	if (GUI_bool(get_city(0x40))) {
 
-		if(ds_readw(0x3354) == 0) {
-			/* first_visit */
-			GUI_output(get_city(0x44));
-		} else {
-			/* after the first_visit */
-			GUI_output(get_city(0x48));
-		}
+		GUI_output((ds_readw(0x3354) == 0) ? /* first visit ? */
+			get_city(0x44) : get_city(0x48));
 
 		/* mark the miller as visited */
 		ds_writew(0x3354, 1);
