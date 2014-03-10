@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewriten: 6/21
- *	Borlandified and identical: 6/21
+ *	Functions rewriten: 9/21
+ *	Borlandified and identical: 9/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -340,19 +340,27 @@ unsigned long CD_get_tod(void)
 leave_tod:
 }
 
-/*
-void seg001_0322(void)
+
+/* Borlandified and identical */
+void CD_audio_stop_hsg(void)
 {
 	if (ds_readw(0x95) == 0)
 		return;
 
-	*((int*)MK_FP(0x1238 + 0x1000, 3)) = 0;
-*/
-	/* TODO: offset is optimized to byte */
-/*
-	CD_driver_request(MK_FP(0x1238 + 0x1000, 0x0000));
+	req[0].status = 0;
+	CD_driver_request(&req[0]);
 
 	ds_writew(0x9b, 0);
 }
-*/
+
+/* Borlandified and identical */
+void CD_audio_stop(void)
+{
+	if (ds_readw(0x95) == 0)
+		return;
+
+	CD_audio_stop_hsg();
+	req[1].status = 0;
+	CD_driver_request(&req[1]);
+}
 #endif	/* __BORLANDC__ */
