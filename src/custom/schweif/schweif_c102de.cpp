@@ -13,7 +13,7 @@
 #include "c102de_seg033.h"
 #include "c102de_seg034.h"
 #include "c102de_seg037.h"
-#include "c102de_seg041.h"
+//#include "c102de_seg041.h"
 #include "c102de_seg043.h"
 #include "c102de_seg136.h"
 
@@ -513,7 +513,7 @@ static int seg041(unsigned short offs) {
 	//CPU_Pop16();
 	RealPt ptr = CPU_Pop32();
 	CPU_Push32(ptr);
-	process_nvf((struct nvf_desc*)MemBase + Real2Phys(ptr));
+	//process_nvf((struct nvf_desc*)MemBase + Real2Phys(ptr));
 	return 0;
     }
     case 0x715: { // process_nvf2
