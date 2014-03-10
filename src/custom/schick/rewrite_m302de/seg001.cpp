@@ -1,3 +1,28 @@
+/*
+ *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
+ *	Functions rewriten: 6/19
+ *	Borlandified and identical: 6/19
+ *
+ *	Remarks:
+ *		The first part of this file is for inclusion in DOSBox.
+ *		Aim here is, that they work identical.
+ *
+ *		The second is a rewrite using the inline assembler of
+ *		Borland C++ 3.1. The aim is, to produce exactly the same
+ *		OPcodes like in the original. Seems to work. :)
+ *
+ *	MSCDEX:
+ *		In this segment are mostly calls to the MSCDEX-API.
+ *		It seems, that MSCDEX 2.1 is needed,
+ *		since function 0x10 (driver request) is called.
+ *		Further this code is written only on the first installed
+ *		CD-ROM drive.
+ *
+ *
+ */
+
+#if !defined(__BORLANDC__)
+
 #include "dosbox.h"
 #include "regs.h"
 #include "callback.h"
@@ -42,10 +67,10 @@ static unsigned short CD_get_first_drive() {
 
 unsigned short CD_set_drive_nr() {
 
-	if(CD_has_drives() == 0)
+	if (CD_has_drives() == 0)
 		return 0;
 
-	if(CD_count_drives() == 0)
+	if (CD_count_drives() == 0)
 		return 0;
 
 	ds_writew(0xbc52, CD_get_first_drive());
@@ -137,7 +162,7 @@ signed short CD_bioskey(signed short cmd) {
 	return bioskey(cmd);
 }
 
-void seg001_0322() {
+void seg001_0322(void) {
 	if (ds_readw(0x95) == 0)
 		return;
 
@@ -197,3 +222,133 @@ void CD_audio_play() {
 }
 
 }
+
+#else	/* __BORLANDC__ */
+
+
+#include "v302de.h"
+
+#include "seg013.h"
+
+/**
+ * CD_has_drives() - check if cdrom-drives are installed
+ *
+ * Returns: 0 - no drive, 1 - at least one drive
+ */
+/* Borlandified and identical */
+static int CD_has_drives(void)
+{
+	/* al ==  0: return number of drive letters */
+	asm {
+		mov ax, 0x1500
+		xor bx, bx
+		int 0x2f
+		xor ax, ax
+		or  bx, bx
+		jz has_cd
+		inc ax
+	}
+has_cd:
+
+	return _AX;
+}
+
+/* Borlandified and identical */
+static int CD_count_drives(void)
+{
+
+	asm {
+		mov ax, 0x1500
+		xor bx, bx
+		int 0x2f
+	}
+
+	return _BX;
+}
+
+/* Borlandified and identical */
+static int CD_get_first_drive(void)
+{
+	asm {
+		mov ax, 0x1500
+		xor bx, bx
+		int 0x2f
+	}
+
+	return _CX;
+}
+
+/* Borlandified and identical */
+static int CD_set_drive_nr(void)
+{
+	if (CD_has_drives() == 0)
+		return 0;
+
+	if (CD_count_drives() == 0)
+		return 0;
+
+	ds_writew(0xbc52, CD_get_first_drive());
+
+	return 1;
+}
+
+/* Borlandified and identical */
+static void CD_driver_request(void * request)
+{
+	asm {
+		mov ax, 0x1510
+		mov cx, [0xbc52]
+		les bx, request
+		int 0x2f
+	}
+}
+
+/* Borlandified and identical */
+/* TODO: check adresses of seg013 */
+static void CD_unused1(void)
+{
+	if (ds_readw(0x95) == 0)
+		return;
+
+	req[3].status = 0;
+	req[3].ptr = cd_buf1;
+	cd_buf1[0] = 0x0c;
+	CD_driver_request(&req[3]);
+}
+
+/**
+ * CD_get_tod() - get time of day
+ *
+ * Returns: clock ticks since midnight, the system time.
+ *
+ * TODO: produces a compiler warning and is a bit hacky
+ */
+/* Borlandified and identical */
+unsigned long CD_get_tod(void)
+{
+	asm {
+		mov ah, 0x0
+		int 0x1a
+		mov ax, dx
+		mov dx, cx
+		jmp near leave_tod
+	}
+leave_tod:
+}
+
+/*
+void seg001_0322(void)
+{
+	if (ds_readw(0x95) == 0)
+		return;
+
+	*((int*)MK_FP(0x1238 + 0x1000, 3)) = 0;
+*/
+	/* TODO: offset is optimized to byte */
+/*
+	CD_driver_request(MK_FP(0x1238 + 0x1000, 0x0000));
+
+	ds_writew(0x9b, 0);
+}
+*/
+#endif	/* __BORLANDC__ */
