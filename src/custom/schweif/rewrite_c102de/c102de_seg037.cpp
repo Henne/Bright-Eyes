@@ -1,70 +1,82 @@
 /*
-	Rewrite of DSA2 c1.02_de functions of seg037 (random, dice, min/max)
-	Functions rewritten: 4/4 (complete)
+ *	Rewrite of DSA2 c1.02_de functions of seg037 (random, dice, min/max)
+ *	Functions rewritten: 4/4 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y SEG037.CPP
 */
+// TODO: These functions are just copies of the ones in schick. Use these rather than doubling the code.
 
+#include <stdlib.h>
+
+#if !defined(__BORLANDC__)
 #include "schweif.h"
 
 #include "c102de_seg037.h"
 
-namespace C102de {
+#else
+#include "c102de.h"
 
-// TODO: These functions are just copies of the ones in schick. Use these rather than doubling the code.
-static inline unsigned short my_rol16(unsigned short op, unsigned char count)
-{
+#include "seg037.h"
+#endif
+
+
+#if !defined(__BORLANDC__)
+namespace C102de {
+#endif
+
+#if !defined(__BORLANDC__)
+static inline
+unsigned short _rotl(unsigned short op, unsigned char count) {
 	return (op << count) | (op >> (16 - count));
 }
+static inline int __abs__(int a) { return abs(a); };
+#endif
 
 /**
-	random_schweif - generates a u16 random number
+	random_interval - generates a random number between lo and hi
 */
-unsigned short random_schweif(signed short val)
+int random_interval(const int lo, const int hi)
 {
-	signed short ax, bx, dx;
-
-	if (val == 0)
-		return 0;
-
-	ax = ds_readw(0x869e);		/* get rand_seed */
-	ax = ax ^ ds_readw(0xcb74);	/* XOR with rand_seed2 */
-	ax = my_rol16(ax, 2);		/* ROL ax */
-	ax = ax + ds_readw(0xcb74);	/* ADD rand_seed2 */
-	ax = ax ^ ds_readw(0x869e);	/* XOR with rand_seed */
-	ax = my_rol16(ax, 3);
-	bx = ax;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
-	ax = (ax ^ dx) - dx + 1 ;
-	ds_writew(0x869e, ax);		/* update rand_seed */
-	ax = bx;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
-	ax = (ax ^ dx) - dx;
-	dx = (ax < 0) ? -1 : 0;		/* emulate CWD */
-
-	ax = ((dx << 16) | ax) % val;	/* emulate a dx_ax register */
-
-	return ax + 1;
-}
-
-
-/**
- *	random_interval() - generates a u16 random number between lo and hi
- */
-unsigned short random_interval(unsigned short lo, unsigned short hi) {
 
 	return lo + random_schweif(hi - lo + 1) - 1;
 }
 
-signed short dice_roll(unsigned short n, unsigned short m, signed short x)
+/**
+	random_schweif - generates a random number
+*/
+int random_schweif(const int val)
 {
-	signed short i;
-	signed short sum = 0;
+	short retval;
+	int tmp1, tmp2;
+
+	if (val) {
+
+		ds_writew(0x869e, __abs__(tmp1 = retval = (_rotl(retval = ((retval = (_rotl(retval = ds_readw(0x869e) ^ ds_readw(0xcb74), 2))) + ds_readw(0xcb74)) ^ ds_readw(0x869e), 3))) + 1);
+		tmp2 = retval;
+		retval = __abs__(retval) % val + 1;
+
+	} else {
+		retval = 0;
+	}
+
+	return retval;
+}
+
+/**
+	dice_roll - rolls a dice: n*Wm+x
+*/
+int dice_roll(const int n, const int m, const int x)
+{
+	int i;
+	int sum = 0;
 
 	for (i = 0; i < n; i++) {
 		sum += random_schweif(m);
 	}
 
 	sum += x;
-
 	if (sum < 0)
 		sum = 0;
 
@@ -72,13 +84,14 @@ signed short dice_roll(unsigned short n, unsigned short m, signed short x)
 }
 
 /**
- *	calc_damage_range() - calculate min/max damage of a weapon
- */
-void calc_damage_range(unsigned short n, unsigned short m, short x,
-				Bit8u *min, Bit8u *max)
+	calc_damage_range - calculate min/max damage of a weapon
+*/
+void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u *max)
 {
 	host_writew(min, n + x);
 	host_writew(max, n * m + x);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

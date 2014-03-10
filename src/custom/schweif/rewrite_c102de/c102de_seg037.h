@@ -1,8 +1,12 @@
+#if !defined(__BORLANDC__)
 namespace C102de {
+#endif
 
-unsigned short random_interval(unsigned short, unsigned short);
-unsigned short random_schweif(signed short);
-signed short dice_roll(unsigned short, unsigned short, signed short);
-void calc_damage_range(unsigned short, unsigned short, signed short,
-	Bit8u*, Bit8u *);
+int random_interval(const int, const int);
+int random_schweif(const int);
+int dice_roll(const int, const int, const int);
+void calc_damage_range(const int, const int, const int, Bit8u*, Bit8u*);
+
+#if !defined(__BORLANDC__)
 }
+#endif
