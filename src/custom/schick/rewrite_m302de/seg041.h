@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //0x25
 void FIG_output(Bit8u*);
@@ -15,4 +17,6 @@ signed short FIG_get_enemy_attack_damage(Bit8u*, Bit8u*, bool);
 //0x48
 void seg041_8c8();
 
+#if !defined(__BORLANDC__)
 }
+#endif

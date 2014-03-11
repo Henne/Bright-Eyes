@@ -7,11 +7,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#if !defined(__BORLANDC__)
 #include "callback.h"
 #include "regs.h"
 #include "dos_inc.h"
 
 #include "schick.h"
+#endif
 
 #include "common.h"
 #include "v302de.h"
@@ -35,7 +37,9 @@
 #include "seg108.h"
 #include "seg113.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void set_audio_track(Bit16u index)
 {
@@ -3363,4 +3367,6 @@ RealPt schick_alloc_emu(Bit32u size)
 	return bc_farcalloc(size, 1);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

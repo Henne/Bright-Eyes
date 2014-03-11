@@ -119,8 +119,13 @@ void spell_blitz()
 		/* cast an enemy */
 
 		/* set a pointer to the enemy */
+#if !defined(__BORLANDC__)
 		ds_writed(0xe5b4,
 			RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
+#else
+		ds_writed(0xe5b4,
+			(Bit32u)MK_FP(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
+#endif
 
 		/* set the rounds counter */
 		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x2f, 3);
