@@ -3,9 +3,12 @@
         Functions rewritten: 10/10
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg000.h"
 #include "seg002.h"
@@ -16,7 +19,9 @@
 #include "seg029.h"
 #include "seg096.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 struct coord {
 	unsigned short x,y;
@@ -40,16 +45,17 @@ static signed char icon_array[9] = {
 /**
  *	draw_playmask() - loads and draws the playmask to the screen
  */
+/* Borlandified and identical */
 //static
 void draw_playmask()
 {
 	ds_writew(0xc3cb, 0);
 
 	/* load the desired playmask */
-	if (ds_readb(0xbc62) == 0)
-		load_pp20(0);
-	else
+	if (ds_readb(0xbc62) != 0)
 		load_pp20(0xd6);
+	else
+		load_pp20(0);
 
 	ds_writeb(0x2845, 0);
 
@@ -84,11 +90,14 @@ void draw_playmask()
 	ds_writew(0xd2d5, 113);
 
 	ds_writew(0xd313, 205);
-
-	ds_writed(0x29e0, RealMake(datseg, 0x29e8));
+#if !defined(__BORLANDC__)
+	ds_writed(0x29e0, (long)RealMake(datseg, 0x29e8));
+#else
+	ds_writed(0x29e0, (long)MK_FP(datseg, 0x29e8));
+#endif
 	ds_writed(0x29e4, 0);
 
-	ds_writeb(0xc3cb, 1);
+	ds_writew(0xc3cb, 1);
 
 	refresh_screen_size();
 
@@ -101,16 +110,18 @@ void draw_playmask()
  *
  * A forename has a maximum length of 7 characters.
  */
+/* Borlandified and identical */
 void copy_forename(Bit8u *dst, Bit8u *name) {
 
-	unsigned short i;
+	int i;
 
 	for (i = 0; i < 7; i++) {
 		if (host_readb(name + i) == 0x20) {
 			host_writeb(dst + i, 0);
 			break;
+		} else {
+			host_writeb(dst + i, host_readb(name + i));
 		}
-		host_writeb(dst + i, host_readb(name + i));
 	}
 
 	host_writeb(dst + 7, 0);
@@ -121,10 +132,10 @@ void copy_forename(Bit8u *dst, Bit8u *name) {
  */
 void draw_status_line()
 {
-	Bit8u *src, *dst;
-	unsigned short i, j;
 	unsigned short fg_bak, bg_bak;
+	Bit8u *src, *dst;
 	Bit16s head_bak;
+	unsigned short i, j;
 
 	ds_writew(0xc3cb, 0);
 
@@ -132,7 +143,7 @@ void draw_status_line()
 
 	for (i = 0; i < 7; i++) {
 		/* Clear name field */
-		do_fill_rect(ds_readd(0xd2ff),
+		do_fill_rect((RealPt)ds_readd(0xd2ff),
 			ds_readw(0x2d01 + i * 2), 190,
 			ds_readw(0x2d01 + i * 2) + 41, 197, 0);
 
@@ -155,7 +166,7 @@ void draw_status_line()
 		wait_for_vsync();
 		update_mouse_cursor();
 
-		if (host_readb(get_hero(i) + 0x21) == 0) {
+		if (!host_readbs(get_hero(i) + 0x21)) {
 			clear_hero_icon(i);
 		} else {
 			if (host_readb(get_hero(i) + 0x87) == ds_readb(CURRENT_GROUP)) {
@@ -194,10 +205,8 @@ void draw_status_line()
 				}
 
 				/* set the src pointer of the head */
-				if (hero_dead(get_hero(i)))
-					src = Real2Host(ds_readd(0xd2f3));
-				else
-					src = get_hero(i) + 0x2da;
+				/* TODO: expression to complicated ? */
+				src = (hero_dead(get_hero(i))) ? Real2Host(ds_readd(DTP2)) : ((RealPt)get_hero(i) + 0x2da);
 
 				/* Gray out picture */
 				for (j = 0; j < 1024; src++, dst++, j++)
@@ -234,7 +243,7 @@ void draw_status_line()
 void clear_hero_icon(unsigned short pos) {
 
 	/* fill icon area black */
-	do_fill_rect(ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2), 157,
+	do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2), 157,
 		ds_readw(0x2d01 + pos * 2) + 31, 188, 0);
 
 	/* return if the hero has a class */
@@ -242,7 +251,7 @@ void clear_hero_icon(unsigned short pos) {
 		return;
 
 	/* fill bars area black */
-	do_fill_rect(ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
+	do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
 		ds_readw(0x2d01 + pos * 2) + 39, 188, 0);
 }
 
@@ -337,7 +346,7 @@ void draw_main_screen()
 
 void clear_loc_line() {
 	update_mouse_cursor();
-	do_fill_rect(ds_readd(0xd2ff), 3, 140, 316, 153, 0);
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 3, 140, 316, 153, 0);
 	refresh_screen_size();
 }
 
@@ -420,4 +429,6 @@ void deselect_hero_icon(unsigned short pos) {
 	set_textcolor(fg_bak, bg_bak);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
