@@ -206,7 +206,7 @@ void draw_status_line()
 
 				/* set the src pointer of the head */
 				/* TODO: expression to complicated ? */
-				src = (hero_dead(get_hero(i))) ? Real2Host(ds_readd(DTP2)) : ((RealPt)get_hero(i) + 0x2da);
+				src = (hero_dead(get_hero(i))) ? Real2Host(ds_readd(DTP2)) : (get_hero(i) + 0x2da);
 
 				/* Gray out picture */
 				for (j = 0; j < 1024; src++, dst++, j++)
