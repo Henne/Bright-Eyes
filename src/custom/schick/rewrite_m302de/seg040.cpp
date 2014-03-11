@@ -21,12 +21,13 @@
 namespace M302de {
 #endif
 
+/* Borlandified and identical */
 void FIG_chessboard_init(void)
 {
-	signed short obj_id;
+	signed short i;
+	signed short cb_x;
 	signed short cb_y;
-
-	signed short i, cb_x;
+	signed short obj_id;
 
 	/* initialize the chessboard */
 	memset(Real2Host(ds_readd(CHESSBOARD)), 0, 600);
@@ -56,7 +57,7 @@ void FIG_chessboard_init(void)
 					} else if (obj_id == 0x3d) {
 
 						for (i = 1; i < 8; i++) {
-							FIG_set_cb_field(cb_y, i + cb_x, -3);
+							FIG_set_cb_field(cb_y, cb_x + i, -3);
 						}
 					}
 
@@ -100,9 +101,9 @@ void FIG_draw_scenario(void)
 
 					/* NULL check */
 					if (host_readd(Real2Host(ds_readd(0xe388)) + obj_id * 4)) {
-						ptr = host_readd(Real2Host(ds_readd(0xe388)) + obj_id * 4);
+						ptr = (RealPt)host_readd(Real2Host(ds_readd(0xe388)) + obj_id * 4);
 					} else {
-						ptr = ds_readd(0xd86e);
+						ptr = (RealPt)ds_readd(0xd86e);
 
 						nvf.dst = Real2Host(ptr);
 						nvf.src = Real2Host(ds_readd(0xbd30));
@@ -139,7 +140,7 @@ void FIG_draw_scenario(void)
 					ds_writeb(0xe073, 0);
 					ds_writeb(0xe075, -1);
 					ds_writeb(0xe074, -1);
-					ds_writed(0xe07d, ptr);
+					ds_writed(0xe07d, (Bit32u)ptr);
 					ds_writeb(0xe077, obj_id >= 58 && obj_id <= 61 ? -1 : 50);
 					ds_writeb(0xe078, 1);
 					ds_writeb(0xe079, -1);
