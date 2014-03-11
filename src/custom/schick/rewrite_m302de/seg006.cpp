@@ -58,11 +58,10 @@ signed char FIG_set_array() {
 void FIG_draw_figures(void)
 {
 	signed short l1, l2;
-	//Bit8u screen_mode[8];
 	Bit8u *list_i;
 	struct screen_rect screen_mode;
-	signed short l_si, l_di;
 	RealPt gfx_dst_bak;
+	signed short l_si, l_di;
 
 	l1 = 10;
 	l2 = 118;
@@ -71,7 +70,6 @@ void FIG_draw_figures(void)
 	ds_writed(0xc00d, ds_readd(0xd303));
 
 	/* backup a structure */
-	//struct_copy(screen_mode, p_datseg + 0x2990, 8);
 	screen_mode = *((struct screen_rect*)(p_datseg + 0x2990));
 
 	list_i = Real2Host(ds_readd(0xe108));
