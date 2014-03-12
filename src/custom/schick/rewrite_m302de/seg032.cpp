@@ -4,13 +4,17 @@
 */
 #include <stdlib.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  *	FIG_set_cb_field - sets an object to a chessboard position
@@ -25,7 +29,8 @@ namespace M302de {
  *	is moving. The initial placements of static objects are also done
  *	with this function.
  */
-void FIG_set_cb_field(signed short y, signed short x, signed short object) {
+void FIG_set_cb_field(signed short y, signed short x, signed short object)
+{
 
 	/* check that the object is in the borders */
 	if (y < 0 || y > 24 || x < 0 || x > 24)
@@ -39,7 +44,8 @@ void FIG_set_cb_field(signed short y, signed short x, signed short object) {
  *
  *	This is simply done randomly.
  */
-unsigned short FIG_choose_next_hero() {
+unsigned short FIG_choose_next_hero()
+{
 	Bit8u *hero;
 	unsigned short retval;
 	unsigned short i, loop_cnt = 0;
@@ -105,8 +111,8 @@ unsigned short FIG_choose_next_hero() {
  *	This is simply done randomly.
  *	Orig_BUG: I had this loop running infinitely.
  */
-unsigned short FIG_choose_next_enemy() {
-
+unsigned short FIG_choose_next_enemy(void)
+{
 	Bit8u *enemy;
 	unsigned short retval;
 	unsigned short i, loop_cnt = 0;
@@ -166,8 +172,8 @@ unsigned short FIG_choose_next_enemy() {
  *	FIG_count_active_enemies -	return the number of active enemies
  *
  */
-unsigned short FIG_count_active_enemies() {
-
+unsigned short FIG_count_active_enemies(void)
+{
 	Bit8u *enemy;
 	unsigned short i, retval = 0;
 
@@ -208,8 +214,8 @@ unsigned short FIG_count_active_enemies() {
  *	Returns 1 if enemy can act or 0 if not.
  */
 //static
-unsigned short FIG_is_enemy_active(Bit8u *enemy) {
-
+unsigned short FIG_is_enemy_active(Bit8u *enemy)
+{
 		if ((host_readb(enemy + 0x31) >> 1) & 1)
 			return 0;
 		/* check if enemy is dead */
@@ -225,7 +231,7 @@ unsigned short FIG_is_enemy_active(Bit8u *enemy) {
 			return 0;
 		if ((host_readb(enemy + 0x32)) & 1)
 			return 0;
-		if (((signed char)host_readb(enemy + 0x35)) > 0)
+		if (host_readbs(enemy + 0x35) > 0)
 			return 0;
 
 		return 1;
@@ -236,8 +242,8 @@ unsigned short FIG_is_enemy_active(Bit8u *enemy) {
  *
  *	Returns the index of the firsta active hero.
  */
-signed short FIG_get_first_active_hero() {
-
+signed short FIG_get_first_active_hero(void)
+{
 	Bit8u *hero_i;
 	unsigned short i;
 
@@ -281,8 +287,8 @@ signed short FIG_get_first_active_hero() {
  *
  */
 //static
-unsigned short seg032_02db() {
-
+unsigned short seg032_02db(void)
+{
 	Bit8u *hero_i;
 	unsigned short i;
 
@@ -311,7 +317,8 @@ unsigned short seg032_02db() {
 }
 
 //static
-unsigned short FIG_fight_continues() {
+unsigned short FIG_fight_continues(void)
+{
 
 	if (seg032_02db()) {
 		ds_writew(0x5f14, 1);
@@ -329,4 +336,6 @@ unsigned short FIG_fight_continues() {
 	return 1;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
