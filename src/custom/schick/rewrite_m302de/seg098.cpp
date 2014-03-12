@@ -4,15 +4,21 @@
 */
 #include <stdlib.h>
 
+
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg002.h"
 #include "seg007.h"
 #include "seg041.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * FIG_do_spell_damage() - account physical spell damage in fight
@@ -52,7 +58,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set a pointer to the enemy */
 		ds_writed(0xe5b4,
-			RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 		/* do the damage */
 		FIG_damage_enemy(Real2Host(ds_readd(0xe5b4)), le, 0);
@@ -127,7 +133,6 @@ signed short get_attackee_parade(void)
 */
 short get_spell_cost(unsigned short spell, unsigned short half_cost)
 {
-
 	signed char ret;
 
 	ret = ds_readb(0x99d + 4 + spell * 10);
@@ -147,8 +152,8 @@ short get_spell_cost(unsigned short spell, unsigned short half_cost)
 /**
 	test_spell - makes a spell test
 */
-short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
-
+short test_spell(Bit8u *hero, unsigned short spell, signed char bonus)
+{
 	Bit8u *spell_desc;
 	signed short retval;
 
@@ -159,7 +164,7 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 	if (check_hero(hero) == 0)
 		return 0;
 	/* check if spell skill >= -5 */
-	if (host_readb(hero + spell + 0x13d) < -5)
+	if (host_readbs(hero + spell + 0x13d) < -5)
 		return 0;
 	/* check if hero has enough AE */
 	if (get_spell_cost(spell, 0) > host_readw(hero+0x64))
@@ -189,9 +194,11 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 	if (spell < 1 || spell > 85)
 		return 0;
 
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], bonus);
+#endif
 
-	bonus -= (signed char)host_readb(hero + spell + 0x13d);
+	bonus -= host_readbs(hero + spell + 0x13d);
 
 	retval = test_attrib3(hero, host_readb(spell_desc+1),
 		host_readb(spell_desc+2), host_readb(spell_desc+3), bonus);
@@ -205,7 +212,8 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus) {
 /**
 	test_spell_group - makes a spell test for all magic users in the current group
 */
-unsigned short test_spell_group(unsigned short spell, signed char bonus) {
+unsigned short test_spell_group(unsigned short spell, signed char bonus)
+{
 
 	Bit8u *hero_i = get_hero(0);
 	short i;
@@ -230,4 +238,6 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus) {
 	return 0;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
