@@ -3,20 +3,27 @@
 	Functions rewritten: 4/15
 */
 
+#include <stdio.h>
+
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg002.h"
 #include "seg026.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* Path ??? */
 void tevent_055(void)
 {
-	register signed short season;
+	signed short season;
 
 	season = get_current_season();
 
@@ -25,7 +32,7 @@ void tevent_055(void)
 
 		load_in_head(0x34);
 
-		GUI_dialogbox(ds_readd(DTP2), NULL, get_city(0), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_city(0), 0);
 
 		/* you got hold for 3 hours */
 		timewarp(0x3f48);
@@ -44,8 +51,8 @@ void tevent_063(void)
 	Bit8u *hero;
 	signed short vomiter;
 	signed short proof;
-	register signed short i;
-	register signed short max;
+	signed short i;
+	signed short max;
 
 	max = 9999;
 
@@ -98,14 +105,14 @@ void tevent_063(void)
 /* The rider Orvil <-> Ala */
 void tevent_065(void)
 {
-	register signed short answer;
+	signed short answer;
 
 	/* load dialog head */
 	load_in_head(0x38);
 
 	/* show dialogbox */
 	do {
-		answer = GUI_dialogbox(ds_readd(DTP2),
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
 				NULL,
 				get_city(0x12c),
 				3,
@@ -141,4 +148,6 @@ void tevent_065(void)
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
