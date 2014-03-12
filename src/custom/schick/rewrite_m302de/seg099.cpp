@@ -6,9 +6,12 @@
  *
 */
 
-#include "schick.h"
+#include <stdio.h>
+#include <string.h>
 
-#include "string.h"
+#if !defined(__BORLANDC__)
+#include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -18,15 +21,19 @@
 #include "seg097.h"
 #include "seg098.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
-void spell_destructibo()
+void spell_destructibo(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Destructibo\" ist nicht implementiert\n");
+#endif
 	ds_writew(0xac0e, -2);
 }
 
-void spell_gardanium()
+void spell_gardanium(void)
 {
 	signed short answer;
 
@@ -64,11 +71,11 @@ void spell_gardanium()
 	}
 }
 
-void spell_boeser_blick()
+void spell_boeser_blick(void)
 {
 	/* set attacked foe */
 	ds_writed(0xe5b4,
-		RealMake(datseg, host_readb(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+		(Bit32u)RealMake(datseg, host_readb(get_spelluser() + 0x86) * 0x3e + 0xd0df));
 
 	/* this spell does not work on all kind of sleletons */
 	if (host_readb(Real2Host(ds_readd(0xe5b4)) + 1) == 0x1c) {
@@ -89,16 +96,18 @@ void spell_boeser_blick()
 	}
 }
 
-void spell_grosse_gier()
+void spell_grosse_gier(void)
 {
+#if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Grosse Gier\" ist nicht implementiert\n");
+#endif
 	ds_writew(0xac0e, -2);
 }
 
-void spell_grosse_ver()
+void spell_grosse_ver(void)
 {
 	ds_writed(0xe5b4,
-		RealMake(datseg, host_readb(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+		(Bit32u)RealMake(datseg, host_readb(get_spelluser() + 0x86) * 0x3e + 0xd0df));
 
 	/* this spell does not work on all kind of sleletons */
 	if (host_readb(Real2Host(ds_readd(0xe5b4)) + 1) == 0x1c) {
@@ -123,24 +132,32 @@ void spell_grosse_ver()
 
 void spell_furor_blut(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Furor Blut\" ist nicht implementiert\n");
+#endif
 	ds_writew(0xac0e, -2);
 }
 
 void spell_geister_bannen(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Geister bannen\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_geister_rufen(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Geister rufen\" ist nicht implementiert\n");
+#endif
 	ds_writew(0xac0e, -2);
 }
 
 void spell_heptagon(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Heptagon\" ist nicht implementiert\n");
+#endif
 	ds_writew(0xac0e, -2);
 }
 
@@ -148,7 +165,8 @@ void spell_kraehenruf(void)
 {
 	signed short pa_value;
 	signed short caster_level;
-	signed short i, damage;
+	signed short i;
+	signed short damage;
 
 
 	caster_level = host_readbs(get_spelluser() + 0x27) + 2;
@@ -173,29 +191,41 @@ void spell_kraehenruf(void)
 
 void spell_elementare(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Elementare\" ist nicht implementiert\n");
+#endif
 	ds_writew(0xac0e, -2);
 }
 
 void spell_nihilatio(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Nihilatio\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_solidirid(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Solidirid\" ist nicht implementiert\n");
+#endif
 }
 
 void spell_motoricus(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Motoricus\" ist nicht implementiert\n");
+#endif
 	ds_writew(0xac0e, -2);
 }
 
 void spell_spurlos(void)
 {
+#if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Spurlos\" ist nicht implementiert\n");
+#endif
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
