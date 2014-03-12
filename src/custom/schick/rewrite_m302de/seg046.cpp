@@ -3,10 +3,14 @@
 	Functions rewritten: 4/4
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
 
 #include "common.h"
@@ -19,7 +23,9 @@
 #include "seg047.h"
 #include "seg096.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  *	status_show_spell -	prints spellname and value
@@ -185,12 +191,12 @@ void status_show(Bit16u index)
 	if (ds_readb(0x2845) != 20) {
 		ds_writew(0xc3cb, 0);
 		ds_writeb(0x2845, 20);
-		do_fill_rect(ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+		do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 		wait_for_vsync();
 		set_palette(p_datseg + 0x6372, 0, 0x20);
 	}
 
-	ds_writed(0x29e0, RealMake(datseg, 0x2ad8));
+	ds_writed(0x29e0, (Bit32u)RealMake(datseg, 0x2ad8));
 	ds_writed(0x29e4, 0);
 	ds_writed(0xd2fb, ds_readd(0xd303));
 	set_textcolor(0, 2);
@@ -269,7 +275,7 @@ void status_show(Bit16u index)
 			host_readw(hero + 0x24));
 		GUI_print_string(Real2Host(ds_readd(0xd2d3)), 59, 179);
 	} else {
-		do_fill_rect(ds_readd(0xd303), 0, 50, 319, 191, 2);
+		do_fill_rect((RealPt)ds_readd(0xd303), 0, 50, 319, 191, 2);
 	}
 
 	ds_writew(0xd313, 0x5f);
@@ -724,4 +730,6 @@ void status_show(Bit16u index)
 	refresh_screen_size();
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
