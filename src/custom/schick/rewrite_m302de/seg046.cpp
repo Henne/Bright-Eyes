@@ -67,23 +67,26 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
  *	@x2:	the rightmost x coordinate
  *	@gy:	the upper y coordinate of this talentgroup
  */
+/* Borlandified and identical */
 void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
 			unsigned short x1, unsigned short x2, unsigned short gy) {
-	char str[10];
 	unsigned short group;
-	unsigned short y;
+	char str[10];
 
 	group = talent - ftig;
-	y = group * 7 + gy;
 
 	/* print talentname */
-	GUI_print_string(get_ltx((talent + 0x30) * 4), x1, y);
+	GUI_print_string(get_ltx((talent + 0x30) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
-	sprintf(str, "%d", (signed char)host_readb(hero + 0x108 + talent));
+#if !defined(__BORLANDC__)
+	sprintf(str, "%d", host_readbs(hero + 0x108 + talent));
+#else
+	itoa(host_readbs(hero + 0x108 + talent) , str, 10);
+#endif
 
 	/* print value */
-	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), y);
+	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), gy + group * 7);
 }
 
 /**
