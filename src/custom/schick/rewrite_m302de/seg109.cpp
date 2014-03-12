@@ -3,7 +3,9 @@
 	Functions rewritten: 2/30
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -14,7 +16,9 @@
 #include "seg029.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 0x4f2 */
 /**
@@ -44,14 +48,14 @@ signed short enter_hut_question(void)
 /* The hunter Varnheim <-> Daspota */
 void tevent_002(void)
 {
-	register signed short answer;
+	signed short answer;
 
 	/* load dialog head */
 	load_in_head(0x0a);
 
 	/* show dialogbox */
 	do {
-		answer = GUI_dialogbox(ds_readd(DTP2),
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
 				NULL,
 				get_city(0x00),
 				3,
@@ -73,4 +77,6 @@ void tevent_002(void)
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
