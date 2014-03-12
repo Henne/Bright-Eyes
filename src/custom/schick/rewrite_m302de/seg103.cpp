@@ -9,6 +9,7 @@
 #endif
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg002.h"
 #include "seg007.h"
@@ -33,27 +34,27 @@ RealPt get_proper_hero(unsigned short skill) {
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
-		if (mem_readb(Real2Phys(hero_i) + 0x21) == 0)
+		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
 			continue;
 		/* Check if in current group */
-		if (mem_readb(Real2Phys(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
+		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
 			continue;
 		/* Check hero is dead */
 		if (hero_dead(Real2Host(hero_i)))
 			continue;
 		/* add current and maximum attibute values */
 		tmp = ds_readb(0xffe + skill * 4) * 3;
-		dx = mem_readb(Real2Phys(hero_i) + 0x35 + tmp);
-		dx += mem_readb(Real2Phys(hero_i) + 0x36 + tmp);
+		dx = host_readb(Real2Host(hero_i) + 0x35 + tmp);
+		dx += host_readb(Real2Host(hero_i) + 0x36 + tmp);
 		tmp = ds_readb(0xfff + skill * 4) * 3;
-		dx += mem_readb(Real2Phys(hero_i) + 0x35 + tmp);
-		dx += mem_readb(Real2Phys(hero_i) + 0x36 + tmp);
+		dx += host_readb(Real2Host(hero_i) + 0x35 + tmp);
+		dx += host_readb(Real2Host(hero_i) + 0x36 + tmp);
 		tmp = ds_readb(0x1000 + skill * 4) * 3;
-		dx += mem_readb(Real2Phys(hero_i) + 0x35 + tmp);
-		dx += mem_readb(Real2Phys(hero_i) + 0x36 + tmp);
+		dx += host_readb(Real2Host(hero_i) + 0x35 + tmp);
+		dx += host_readb(Real2Host(hero_i) + 0x36 + tmp);
 
 		/* add skillvalue */
-		dx += mem_readb(Real2Phys(hero_i + 0x108 + skill));
+		dx += host_readb(Real2Host(hero_i) + 0x108 + skill);
 
 		if (dx <= best)
 			continue;
