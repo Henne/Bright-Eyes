@@ -137,6 +137,7 @@ void status_show_talents(Bit8u *hero) {
 	}
 }
 
+#ifdef M302de_ORIGINAL_BUGFIX
 /**
  * set_status_string() - a helper for an Original Bugfix
  * @fmt:	format string
@@ -166,6 +167,7 @@ static void reset_status_string(char *fmt)
 
 	fp[1] = 'd';
 }
+#endif
 
 /**
  * status_show() - shows the status screen of a hero
@@ -173,7 +175,9 @@ static void reset_status_string(char *fmt)
 */
 void status_show(Bit16u index)
 {
+#ifdef M302de_ORIGINAL_BUGFIX
 	char le_fix[10];
+#endif
 	Bit8u *hero;
 	struct nvf_desc nvf;
 	Bit16u bak1, bak2, bak3, bak4;
@@ -419,7 +423,9 @@ void status_show(Bit16u index)
 			if (ds_readw(0xc003) == 2) {
 				/* advanded mode */
 
+#ifdef M302de_ORIGINAL_BUGFIX
 				/* Original-Bugfix: show permanent damage red */
+				char le_fix[10];
 				set_status_string((char*)get_city(0x34));
 
 				if (host_readb(hero + 0x7a)) {
@@ -442,6 +448,21 @@ void status_show(Bit16u index)
 					bp);							/* BP */
 				reset_status_string((char*)get_city(0x34));
 				/* Original-Bugfix end */
+#else
+
+				/* Original Behaviour: print max LE in black */
+				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+					(char*)get_city(0x34),
+					host_readw(hero + 0x60), host_readw(hero + 0x5e),	/* LE */
+					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
+					(signed char)host_readb(hero + 0x66),			/* MR */
+					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31), /* RS */
+					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) +
+						(signed char)host_readb(hero + 0x48),		/* Ausdauer*/
+					host_readw(hero + 0x2d8),				/* Last */
+					bp);							/* BP */
+#endif
+
 
 				GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 130);
 			} else {
@@ -478,7 +499,7 @@ void status_show(Bit16u index)
 					at = 0;
 				if (pa < 0)
 					pa = 0;
-
+#ifdef M302de_ORIGINAL_BUGFIX
 				/* Original-Bugfix: show permanent damage in red */
 				set_status_string((char*)get_city(0xd0));
 
@@ -505,6 +526,19 @@ void status_show(Bit16u index)
 
 				reset_status_string((char*)get_city(0xd0));
 				/* Original-Bugfix end */
+#else
+				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+					(char*)get_city(0xd0),
+					host_readw(hero + 0x60), host_readw(hero + 0x5e),	/* LE */
+					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
+					at, pa,							/* AT PA */
+					(signed char)host_readb(hero + 0x66),			/* MR */
+					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31),	/* RS */
+					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) +
+						(signed char)host_readb(hero + 0x48),		/* Ausdauer */
+					host_readw(hero + 0x2d8),				/* Last */
+					bp);							/* BP */
+#endif
 
 				GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 124);
 			}
