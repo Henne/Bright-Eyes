@@ -177,10 +177,8 @@ unsigned short get_next_passages(unsigned short type)
 	unsigned short i, destinations;
 
 	entry = p_datseg + 0x6f00;
-	destinations = 0;
-	i = 0;
 
-	for (i = 0; i < 45; entry += 8, i++) {
+	for (i = destinations = 0; i < 45; entry += 8, i++) {
 
 		if (type == 1) {
 			/* check passages in the next two days */
@@ -189,6 +187,7 @@ unsigned short get_next_passages(unsigned short type)
 				if (host_readb(entry) == ds_readb(CURRENT_TOWN) ||
 					host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 				{
+					/* TODO: BC: Target adress is calculeted before the value => other code */
 					ds_writeb(0x42bc + destinations * 12,
 						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 							host_readb(entry + 1):
@@ -201,6 +200,7 @@ unsigned short get_next_passages(unsigned short type)
 			if (host_readb(entry) == ds_readb(CURRENT_TOWN) ||
 				host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 			{
+				/* TODO: BC: Target adress is calculeted before the value => other code */
 				ds_writeb(0x42bc + destinations * 12,
 					host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 						host_readb(entry + 1):
@@ -209,8 +209,8 @@ unsigned short get_next_passages(unsigned short type)
 			}
 		}
 	}
-	return destinations;
 
+	return destinations;
 }
 
 unsigned short passage_arrival(void)
