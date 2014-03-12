@@ -215,8 +215,12 @@ unsigned short get_next_passages(unsigned short type)
 
 unsigned short passage_arrival(void)
 {
-	Bit8u *p1, *buildings, *p_sched;
-	signed short tmp, si, di;
+	signed short tmp;
+	Bit8u *p1;
+	Bit8u *buildings;
+	Bit8u *p_sched;
+	signed short si;
+	signed short di;
 
 	di = 0;
 	p1 = p_datseg + 0xa3a3;
@@ -225,7 +229,8 @@ unsigned short passage_arrival(void)
 
 	/* write the destination to a global variable */
 	ds_writew(0x4338, host_readb(p_sched));
-	if (ds_readw(0x4338) == (signed char)ds_readb(CURRENT_TOWN))
+	/* TODO: BC: not the same code, the written variable is reused in the if expr */
+	if (ds_readw(0x4338) == ds_readbs(CURRENT_TOWN))
 		ds_writew(0x4338, host_readb(p_sched + 1));
 
 	do {
@@ -246,35 +251,34 @@ unsigned short passage_arrival(void)
 		p1 += 6;
 	} while (di == 0 && host_readb(p1) != 0xff);
 
-	/* TODO: check until here */
-	if (di == 0)
-		return 0;
+	if (di != 0) {
 
-	/* save the old town in tmp */
-	tmp = (signed char)ds_readb(CURRENT_TOWN);
-	/* set the new current_town */
-	ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
+		/* save the old town in tmp */
+		tmp = (signed char)ds_readb(CURRENT_TOWN);
+		/* set the new current_town */
+		ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
 
-	/* load the area  of the new town */
-	call_load_area(1);
+		/* load the area  of the new town */
+		call_load_area(1);
 
 
-	/* search for the harbour in the map */
-	buildings = p_datseg + 0xc025;
-	while ((host_readb(buildings + 2) != 0x0b) ||
-			(host_readb(buildings + 3) != di)) {
-		buildings += 6;
+		/* search for the harbour in the map */
+		buildings = p_datseg + 0xc025;
+		while ((host_readb(buildings + 2) != 0x0b) ||
+				(host_readb(buildings + 3) != di)) {
+			buildings += 6;
+		}
+
+		/* set the position of the party */
+		si = host_readw(buildings + 4);
+		ds_writew(0x433a, (si >> 8) & 0xff);
+		ds_writew(0x433c, si & 0x0f);
+		ds_writew(0x433e, (si >> 4) & 0x0f);
+
+		/* restore the old town area / TODO: a bit bogus */
+		ds_writeb(CURRENT_TOWN, (unsigned char)tmp);
+		call_load_area(1);
 	}
-
-	/* set the position of the party */
-	si = host_readw(buildings + 4);
-	ds_writew(0x433a, (si >> 8) & 0xff);
-	ds_writew(0x433c, si & 0x0f);
-	ds_writew(0x433e, (si >> 4) & 0x0f);
-
-	/* restore the old town area / TODO: a bit bogus */
-	ds_writeb(CURRENT_TOWN, (unsigned char)tmp);
-	call_load_area(1);
 
 	return 0;
 
