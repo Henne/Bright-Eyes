@@ -53,57 +53,59 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 /**
  *	prepare_passages()	-
  */
+/* Borlandified and identical */
 unsigned short prepare_passages(void)
 {
-	Bit8u *entry;
+	signed short prepared;
+	signed short i;
 	RealPt ent;
-	unsigned short prepared, i;
 
-	entry = p_datseg + 0x6f00;
+#if !defined(__BORLANDC__)
 	ent = RealMake(datseg, 0x6f00);
-	prepared = 0;
+#else
+	ent = p_datseg + 0x6f00;
+#endif
 
-	for (i = 0; i < 45; entry += 8, ent += 8, i++) {
-		if (host_readb(entry + 4) == 0 &&
-			(host_readb(entry) == ds_readb(CURRENT_TOWN) ||
-			(host_readb(entry + 1) == ds_readb(CURRENT_TOWN)))) {
+	for (i = prepared = 0; i < 45; ent += 8, i++) {
+		if (!host_readbs(Real2Host(ent) + 4) &&
+			(host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN) ||
+			(host_readb(Real2Host(ent) + 1) == ds_readb(CURRENT_TOWN)))) {
 
 			/* prepare an entry of 12 byte for a passage today */
 			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
 			ds_writed(0x42b6 + prepared * 12, (Bit32u)ent);
 			ds_writeb(0x42ba + prepared * 12, 0);
-			ds_writeb(0x42bb + prepared * 12, host_readb(entry + 6));
+			ds_writeb(0x42bb + prepared * 12, host_readb(Real2Host(ent) + 6));
 			ds_writed(0x42b2 + prepared * 12,
-				(Bit32u)get_ship_name(host_readb(entry + 6), prepared));
+				(Bit32u)get_ship_name(host_readb(Real2Host(ent) + 6), prepared));
+
 			ds_writeb(0x42bc + prepared * 12,
-				host_readb(entry) == ds_readb(CURRENT_TOWN) ?
-					host_readb(entry + 1) :
-					host_readb(entry));
+				host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN) ?
+					host_readb(Real2Host(ent) + 1) :
+					host_readb(Real2Host(ent)));
 			prepared++;
 		} else {
 			/* not before 14.00 o'clock */
-			if (ds_readd(DAY_TIMER) < 0x1518 * 14)
-				continue;
-			/* only for ships tomorrow */
-			if (host_readb(entry + 4) != 1)
-				continue;
-			/* only in this city */
-			if (host_readb(entry) != ds_readb(CURRENT_TOWN) &&
-				host_readb(entry + 1) != ds_readb(CURRENT_TOWN))
-				continue;
-
-			/* prepare an entry of 12 byte for a passage tomorrow */
-			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
-			ds_writed(0x42b6 + prepared * 12, (Bit32u)ent);
-			ds_writeb(0x42ba + prepared * 12, 1);
-			ds_writeb(0x42bb + prepared * 12, host_readb(entry + 6));
-			ds_writed(0x42b2 + prepared * 12,
-				(Bit32u)get_ship_name(host_readb(entry + 6), prepared));
-			ds_writeb(0x42bc + prepared * 12,
-				host_readb(entry) == ds_readb(CURRENT_TOWN) ?
-					host_readb(entry + 1) :
-					host_readb(entry));
-			prepared++;
+			if (((signed long)ds_readd(DAY_TIMER) > (0x1518 * 14L))
+				/* only for ships tomorrow */
+				&& (host_readb(Real2Host(ent) + 4) == 1)
+				/* only in this city */
+				&& ((host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN))
+				|| (host_readb(Real2Host(ent) + 1) == ds_readb(CURRENT_TOWN))))
+			{
+				/* prepare an entry of 12 byte for a passage tomorrow */
+				ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
+				ds_writed(0x42b6 + prepared * 12, (Bit32u)ent);
+				ds_writeb(0x42ba + prepared * 12, 1);
+				ds_writeb(0x42bb + prepared * 12, host_readb(Real2Host(ent) + 6));
+				ds_writed(0x42b2 + prepared * 12,
+					(Bit32u)get_ship_name(host_readb(Real2Host(ent) + 6), prepared));
+				ds_writeb(0x42bc + prepared * 12 ,
+					host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN) ?
+						host_readb(Real2Host(ent) + 1) :
+						host_readb(Real2Host(ent)));
+				prepared++;
+			}
 		}
 	}
 	return prepared;
