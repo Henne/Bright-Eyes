@@ -5,7 +5,9 @@
 
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 #include "common.h"
@@ -17,7 +19,9 @@
 #include "seg010.h"
 #include "seg026.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void load_special_textures(signed short arg)
 {
@@ -192,8 +196,8 @@ void load_map(void)
 				EMS_map_memory(ds_readw(0xbd90), 1, 1);
 				EMS_map_memory(ds_readw(0xbd90), 2, 2);
 				EMS_map_memory(ds_readw(0xbd90), 3, 3);
-				bc_memmove(ds_readd(0x4baa),
-					ds_readd(0xd303), 64098);
+				bc_memmove((RealPt)ds_readd(0x4baa),
+					(RealPt)ds_readd(0xd303), 64098);
 			}
 		}
 	}
@@ -241,8 +245,6 @@ void load_npc(signed short index)
 		if (host_readb(npc_dst + 0x9b) > 10)
 			host_writeb(npc_dst + 0x9b, 10);
 	}
-
-
 }
 
 void save_npc(signed short index)
@@ -251,10 +253,9 @@ void save_npc(signed short index)
 
 	fd = load_archive_file(index | 0x8000);
 
-	bc__write(fd, ds_readd(HEROS) + 0x291c, 0x6da);
+	bc__write(fd, (RealPt)ds_readd(HEROS) + 0x291c, 0x6da);
 
 	bc_close(fd);
-
 }
 
 void load_splashes(void)
@@ -297,8 +298,8 @@ void load_informer_tlk(signed short index)
 	unsigned short partners;
 	unsigned short off;
 
-	register unsigned short fd;
-	register unsigned short i;
+	unsigned short fd;
+	unsigned short i;
 
 	ds_writew(0x26bd, index);
 
@@ -326,11 +327,11 @@ void load_informer_tlk(signed short index)
 	bc_close(fd);
 
 	split_textbuffer(Real2Host(ds_readd(CITY_LTX)),
-		ds_readd(0xc3a9), text_len);
+		(RealPt)ds_readd(0xc3a9), text_len);
 
 	/* adjust the pointers to the layouts */
 	for (i = 0; i < partners; i++, ptr += 0x26) {
-		host_writed(ptr, RealMake(datseg, host_readw(ptr) + 0x3794));
+		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + 0x3794));
 	}
 }
 
@@ -368,11 +369,11 @@ void load_tlk(signed short index)
 	bc_close(fd);
 
 	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)),
-		ds_readd(0xd2b5), text_len);
+		(RealPt)ds_readd(0xd2b5), text_len);
 
 	/* adjust the pointers to the layouts */
 	for (i = 0; i < partners; i++, ptr += 0x26) {
-		host_writed(ptr, RealMake(datseg, host_readw(ptr) + 0x3794));
+		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + 0x3794));
 	}
 }
 
@@ -385,7 +386,8 @@ void load_fightbg(signed short index)
 	decomp_pp20(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0xc3a9)),
 		Real2Host(ds_readd(0xd303)) + 4, get_readlength2(fd));
 	bc_close(fd);
-
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
