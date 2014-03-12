@@ -1,8 +1,9 @@
+#if !defined(__BORLANDC__)
 #include "paging.h"
+#include "schick.h"
+#endif
 
 #include "v302de.h"
-
-#include "schick.h"
 
 #include "seg002.h"
 #include "seg004.h"
@@ -10,7 +11,9 @@
 #include "seg096.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //000
 /**
@@ -19,7 +22,8 @@ namespace M302de {
 	@index: index of the word of which a worgroup should be made
 	@type: if index is true the index is an enemy, if not it is an item
 */
-RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned short type) {
+RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned short type)
+{
 	Bit8u *lp1;
 	unsigned short l2;
 	Bit8u *p_name;
@@ -83,12 +87,16 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 	if (ds_readw(0xa9eb) == 4)
 		ds_writew(0xa9eb, 0);
 
+#if !defined(__BORLANDC__)
 	D1_LOG("%s\n", (char*)p_datseg + 0xe50b + l4 * 40);
-	return RealMake(datseg, 0xe50b + l4 * 40);
+#endif
+
+	return (RealPt)RealMake(datseg, 0xe50b + l4 * 40);
 }
 
 //1a7
-RealPt GUI_name_plural(unsigned short v1, Bit8u *s) {
+RealPt GUI_name_plural(unsigned short v1, Bit8u *s)
+{
 	Bit8u *p = p_datseg + GRAMMAR_STRING;
 	char tmp;
 
@@ -111,12 +119,12 @@ RealPt GUI_name_plural(unsigned short v1, Bit8u *s) {
 	}
 
 	host_writeb(p, 0);
-	return RealMake(datseg, GRAMMAR_STRING);
+	return (RealPt)RealMake(datseg, GRAMMAR_STRING);
 }
 
-
 //290
-RealPt GUI_name_singular(Bit8u *s) {
+RealPt GUI_name_singular(Bit8u *s)
+{
 	Bit8u *p = p_datseg + GRAMMAR_STRING;
 	char tmp;
 
@@ -127,16 +135,18 @@ RealPt GUI_name_singular(Bit8u *s) {
 		host_writeb(p++, *s++);
 
 	host_writeb(p, 0);
-	return RealMake(datseg, GRAMMAR_STRING);
+	return (RealPt)RealMake(datseg, GRAMMAR_STRING);
 }
+
 //2f2
-RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3) {
+RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3)
+{
 	short l, tmp;
 
 	l = (v3 == 0) ? ds_readb(0x2ac + v2) : ds_readb(0x925);
 	tmp = ds_readb(0xaa30 + v1 * 3 + l);
 
-	return ds_readd(0xaa14 + tmp * 4);
+	return (RealPt)ds_readd(0xaa14 + tmp * 4);
 }
 
 //330
@@ -145,7 +155,8 @@ RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3) {
  * @genus:	gender of the hero
  * @causus:	the grammatical causus
 */
-RealPt GUI_get_ptr(Bit16u genus, Bit16u causus) {
+RealPt GUI_get_ptr(Bit16u genus, Bit16u causus)
+{
 
 	if (genus == 0) {
 		switch (causus) {
@@ -175,7 +186,8 @@ RealPt GUI_get_ptr(Bit16u genus, Bit16u causus) {
 //394
 /**
 */
-RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2) {
+RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2)
+{
 
 	if (v1 == 0) {
 		switch (v2) {
@@ -202,9 +214,11 @@ RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2) {
 	}
 }
 //3f8
-void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned short char_height) {
+void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned short char_height)
+{
 	Bit8u *ptr;
-	unsigned short y,x;
+	unsigned short y;
+	unsigned short x;
 
 	ptr = p_datseg + 0xce87;
 
@@ -213,15 +227,21 @@ void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned sh
 			mem_writeb_inline(dst+x, *ptr++);
 	}
 }
+
 //442
 /**
 	GUI_count_lines - return the number of lines a string needs on a screen
 */
-unsigned short GUI_count_lines(Bit8u *str) {
+unsigned short GUI_count_lines(Bit8u *str)
+{
 	Bit8u *str_loc;
-	unsigned short v6, lines;
-	short si, di;
-	unsigned short max_line_width, width_char, width_line;
+	unsigned short v6;
+	unsigned short lines;
+	short si;
+	short di;
+	unsigned short max_line_width;
+	unsigned short width_char;
+	unsigned short width_line;
 
 	lines = 0;
 
@@ -290,7 +310,8 @@ unsigned short GUI_count_lines(Bit8u *str) {
 }
 
 //5d7
-unsigned short GUI_print_header(Bit8u *str) {
+unsigned short GUI_print_header(Bit8u *str)
+{
 	unsigned short retval = 1;
 
 	update_mouse_cursor();
@@ -302,9 +323,13 @@ unsigned short GUI_print_header(Bit8u *str) {
 }
 
 //614
-void GUI_print_loc_line(Bit8u * str) {
-	unsigned short tmp1, tmp2;
-	unsigned short l1, l2, l3;
+void GUI_print_loc_line(Bit8u * str)
+{
+	unsigned short tmp1;
+	unsigned short tmp2;
+	unsigned short l1;
+	unsigned short l2;
+	unsigned short l3;
 
 	get_textcolor(&tmp1, &tmp2);
 	set_textcolor(0xff, 0);
@@ -328,10 +353,14 @@ void GUI_print_loc_line(Bit8u * str) {
 }
 
 //691
-void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y) {
-	unsigned short l1, l2, l3;
+void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y)
+{
+	unsigned short l1;
+	unsigned short l2;
+	unsigned short l3;
 	unsigned char l4;
-	unsigned short si, di;
+	unsigned short si;
+	unsigned short di;
 
 	si = x;
 	di = y;
@@ -396,16 +425,24 @@ void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y) {
 }
 
 //7f0
-unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short y) {
-	unsigned short char_width, font_index;
+unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short y)
+{
+	unsigned short char_width;
+	unsigned short font_index;
 
 	ds_writeb(0xe4d8, c);
 	font_index = GUI_lookup_char_width(c, &char_width);
-	D1_LOG("GUI_lookup_char_width(%c); w=%d, fi=%d\n", c, char_width, font_index);
+
+#if !defined(__BORLANDC__)
+	D1_LOG("GUI_lookup_char_width(%c); w=%d, fi=%d\n",
+		c, char_width, font_index);
+#endif
+
 	GUI_write_fonti_to_screen(font_index, char_width, x, y);
 
 	return char_width;
 }
+
 //82b
 unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p)
 {
@@ -428,10 +465,13 @@ unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p)
 	}
 }
 //88f
-void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_width, unsigned short x, unsigned short y) {
-	PhysPt p_font6 = ds_readd(0xd2c1);
+void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_width, unsigned short x, unsigned short y)
+{
+	RealPt p_font6 = ds_readd(0xd2c1);
 
+#if !defined(__BORLANDC__)
 	D1_LOG("GUI_write_fonti_to_screen(fi=%d, cw=%d,x=%d, y=%d)\n", font_index, char_width, x, y);
+#endif
 	GUI_blank_char();
 	GUI_font_to_buf(Real2Host(p_font6) + font_index * 8);
 	GUI_write_char_to_screen_xy(x, y, 7, char_width);
@@ -440,12 +480,16 @@ void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_wi
 /**
 	GUI_blank_char() - sets the area of a char to a color
 */
-void GUI_blank_char() {
+void GUI_blank_char(void)
+{
 	PhysPt ptr = PhysMake(datseg, 0xce87);
 	unsigned char color = ds_readb(0xd2c7);
-	unsigned char i,j;
+	unsigned char i;
+	unsigned char j;
 
+#if !defined(__BORLANDC__)
 	D1_LOG("ptr = 0x%x color = 0x%x\n", ptr, color);
+#endif
 
 	for (i = 0; i < 8; ptr += 8, i++) {
 		for (j = 0; j < 8; j++)
@@ -454,10 +498,12 @@ void GUI_blank_char() {
 }
 
 //8f8
-void GUI_font_to_buf(Bit8u *fc) {
+void GUI_font_to_buf(Bit8u *fc)
+{
 	Bit8u * p;
 	char c;
-	short i, j;
+	short i;
+	short j;
 
 	/* current text position */
 	p = p_datseg + 0xce87;
@@ -474,7 +520,8 @@ void GUI_font_to_buf(Bit8u *fc) {
 }
 
 //956
-void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width) {
+void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width)
+{
 	/* screen_start */
 	PhysPt dst = Real2Phys(ds_readd(0xd2fb));
 
@@ -487,10 +534,10 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
  * @fg:	foreground color index
  * @bg: background color index
  */
-void set_textcolor(unsigned short fg, unsigned short bg) {
+void set_textcolor(unsigned short fg, unsigned short bg)
+{
 	ds_writew(TEXTCOLOR_FG, fg);
 	ds_writew(TEXTCOLOR_BG, bg);
-
 }
 
 /**
@@ -499,12 +546,14 @@ void set_textcolor(unsigned short fg, unsigned short bg) {
  * @bg: background color index
  *
  */
-void get_textcolor(unsigned short *fg, unsigned short *bg) {
+void get_textcolor(unsigned short *fg, unsigned short *bg)
+{
 	host_writew((Bit8u*)fg, ds_readw(TEXTCOLOR_FG));
 	host_writew((Bit8u*)bg, ds_readw(TEXTCOLOR_BG));
 }
 
-unsigned short GUI_unused(Bit8u *str) {
+unsigned short GUI_unused(Bit8u *str)
+{
 	unsigned short lines = 0;
 
 	while (str) {
@@ -515,22 +564,28 @@ unsigned short GUI_unused(Bit8u *str) {
 	return lines;
 }
 //9D6
-unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir) {
-	unsigned short sum, tmp;
+unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir)
+{
+	unsigned short sum;
+	unsigned short tmp;
 
 	for (sum = 0; *p; sum += tmp)
 		if (dir) {
 			GUI_lookup_char_height(*p++, &tmp);
-			D1_INFO("%d\n", tmp); }
-		else
+#if !defined(__BORLANDC__)
+			D1_INFO("%d\n", tmp);
+#endif
+		} else
 			GUI_lookup_char_width(*p++, &tmp);
 
 	return sum;
 }
 
 //A26
-unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned short v2, unsigned short dir) {
-	unsigned short tmp, i;
+unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned short v2, unsigned short dir)
+{
+	unsigned short tmp;
+	unsigned short i;
 
 	for (i = 0; *p && *p != 0x40 && *p != 0x0d; i += tmp) {
 		if (dir)
@@ -548,9 +603,14 @@ unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned s
 	@line: number of the current line
 	@type: type of line 0 = top / 1 = middle normal / 2 = middle radio / 3 =bottom
 */
-void GUI_draw_popup_line(unsigned short line, unsigned short type) {
-	short i, popup_middle, popup_right, y;
-	short x, popup_left;
+void GUI_draw_popup_line(unsigned short line, unsigned short type)
+{
+	short i;
+	short popup_middle;
+	short popup_right;
+	short y;
+	short x;
+	short popup_left;
 
 	/* set the offsets in the popup.dat buffer */
 	switch (type) {
@@ -604,4 +664,6 @@ void GUI_draw_popup_line(unsigned short line, unsigned short type) {
 	do_pic_copy(0);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
