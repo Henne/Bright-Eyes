@@ -9,6 +9,7 @@
 #endif
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg007.h"
 
@@ -48,13 +49,17 @@ unsigned short FIG_choose_next_hero()
 {
 	Bit8u *hero;
 	unsigned short retval;
-	unsigned short i, loop_cnt = 0;
+	unsigned short i;
+#if !defined(__BORLANDC__)
+	unsigned short loop_cnt = 0;
+#endif
 	long tries[7] = {0, 0, 0, 0, 0, 0, 0};
 
 	do {
 		retval = random_schick(7) - 1;
 		tries[retval]++;
 
+#if !defined(__BORLANDC__)
 		if (++loop_cnt > 200) {
 			D1_ERR("Possible infinite loop in %s()\n", __func__);
 			D1_ERR("I'll try to get a possible hero\n");
@@ -94,6 +99,7 @@ unsigned short FIG_choose_next_hero()
 
 			return retval;
 		}
+#endif
 
 		hero = get_hero(retval);
 
@@ -115,7 +121,10 @@ unsigned short FIG_choose_next_enemy(void)
 {
 	Bit8u *enemy;
 	unsigned short retval;
-	unsigned short i, loop_cnt = 0;
+	unsigned short i;
+#if !defined(__BORLANDC__)
+	unsigned short loop_cnt = 0;
+#endif
 	long tries[20] = {	0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0,
@@ -125,6 +134,7 @@ unsigned short FIG_choose_next_enemy(void)
 		retval = random_schick(ds_readw(NR_OF_ENEMIES)) - 1;
 		tries[retval]++;
 
+#if !defined(__BORLANDC__)
 		if (++loop_cnt > 200) {
 			D1_ERR("Possible infinite loop in %s()\n", __func__);
 			D1_ERR("I'll try to get a possible enemy\n");
@@ -161,6 +171,7 @@ unsigned short FIG_choose_next_enemy(void)
 
 			return retval;
 		}
+#endif
 		enemy = p_datseg + ENEMY_SHEETS + retval * 62;
 
 	} while (host_readb(enemy) == 0 || host_readb(enemy + 0x28) == 0);

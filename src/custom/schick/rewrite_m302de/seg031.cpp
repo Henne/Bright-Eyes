@@ -3,14 +3,18 @@
 	Functions rewritten: 7/10
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
 #include "seg026.h"
 #include "seg073.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  * get_town_lookup_entry() - ?
@@ -20,7 +24,7 @@ namespace M302de {
 signed short get_town_lookup_entry(void)
 {
 	Bit8u *ptr;
-	register signed short i;
+	signed short i;
 
 	ptr = p_datseg + 0x5ed6;
 	for (i = 0; i < 15; i++, ptr += 4) {
@@ -45,16 +49,16 @@ signed short get_town_lookup_entry(void)
 RealPt get_informer_hint(void)
 {
 	Bit8u *ptr;
-	register signed short i;	/* cx */
+	signed short i;	/* cx */
 
 	ptr = p_datseg + 0x5ed6;
 	for (i = 0; i < 15; i++, ptr += 4) {
 		if (host_readb(ptr + 2) == ds_readb(CURRENT_TOWN)) {
-			return host_readd(Real2Host(ds_readd(TEXT_LTX) + (i + 0x2cb) * 4));
+			return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX) + (i + 0x2cb) * 4));
 		}
 	}
 
-	return host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xb54);
+	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xb54);
 }
 
 /* 0x5f2 */
@@ -64,7 +68,7 @@ RealPt get_informer_hint(void)
  */
 RealPt get_informer_name(void)
 {
-	return host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(0x5ed6 - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
+	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(0x5ed6 - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
 }
 
 /* 0x617 */
@@ -74,7 +78,7 @@ RealPt get_informer_name(void)
  */
 RealPt get_informer_name2(void)
 {
-	return host_readd(Real2Host(ds_readd(TEXT_LTX)) +
+	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) +
 			ds_readw(0x5ed6 + get_town_lookup_entry() * 4) * 4);
 }
 
@@ -103,8 +107,7 @@ RealPt load_current_town_gossip(void)
 	gossip_id = get_tavern_gossip();
 
 	/* return the pointer to the gossip (pointers are stored in the first 1000 bytes) */
-	return host_readd(Real2Host(ptr) + gossip_id * 4);
-
+	return (RealPt)host_readd(Real2Host(ptr) + gossip_id * 4);
 }
 
 /* 0x70b */
@@ -121,7 +124,7 @@ RealPt load_current_town_gossip(void)
 void drink_while_drinking(unsigned short amount)
 {
 	Bit8u *hero;
-	register unsigned short i;
+	unsigned short i;
 
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
@@ -142,11 +145,12 @@ void drink_while_drinking(unsigned short amount)
 		host_writeb(hero + 0x80, host_readb(hero + 0x80) - amount);
 
 		/* adjust food counter */
-		if ((signed char)host_readb(hero + 0x80) < 0) {
+		if (host_readbs(hero + 0x80) < 0) {
 			host_writeb(hero + 0x80, 0);
 		}
 	}
 }
+
 /* 0x77d */
 /**
  * eat_while_drinking() - eat food while sitting in a tavern
@@ -161,7 +165,7 @@ void drink_while_drinking(unsigned short amount)
 void eat_while_drinking(unsigned short amount)
 {
 	Bit8u *hero;
-	register unsigned short i;
+	unsigned short i;
 
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
@@ -182,10 +186,12 @@ void eat_while_drinking(unsigned short amount)
 		host_writeb(hero + 0x7f, host_readb(hero + 0x7f) - amount);
 
 		/* adjust food counter */
-		if ((signed char)host_readb(hero + 0x7f) < 0) {
+		if (host_readbs(hero + 0x7f) < 0) {
 			host_writeb(hero + 0x7f, 0);
 		}
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
