@@ -4,27 +4,32 @@
  *
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
 #include "seg002.h"
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
 	get_proper_hero - returns hero which seems best for a skill
 	@skill:		skill
 */
 RealPt get_proper_hero(unsigned short skill) {
-	RealPt hero_i, retval = 0;
+	RealPt hero_i;
+	RealPt retval = 0;
 	signed short best;
 	unsigned short i;
 	signed short tmp, dx;
 
 	best = -1;
-	hero_i = ds_readd(HEROS);
+	hero_i = (RealPt)ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
@@ -58,10 +63,12 @@ RealPt get_proper_hero(unsigned short skill) {
 		retval = hero_i;
 	}
 
+#if !defined(__BORLANDC__)
 	/* sanity check for Original Bug hunting */
 	if (retval == 0)
 		D1_ERR("Original-Bug: %s undefinierter Rückgabewert\n",
 			__func__);
+#endif
 
 	return retval;
 }
@@ -83,7 +90,9 @@ signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
 	if (skill > 51)
 		return 0;
 
+#if !defined(__BORLANDC__)
 	D1_INFO("Talentprobe %s %+d: ", names_skill[skill], bonus);
+#endif
 
 	/* special test if skill is a range weapon skill */
 	if ((skill == 7) || (skill == 8)) {
@@ -102,21 +111,29 @@ signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
 
 		/* Unlucky */
 		if (tmp == 20) {
+#if !defined(__BORLANDC__)
 			D1_INFO("Ungluecklich\n");
+#endif
 			return -1;
 		}
 		/* Lucky */
 		if (tmp == 1) {
+#if !defined(__BORLANDC__)
 			D1_INFO("Gluecklich\n");
+#endif
 			return 99;
 		}
 		/* test unsuccessful */
 		if (tmp > ax) {
+#if !defined(__BORLANDC__)
 			D1_INFO(" (%d) -> nicht bestanden\n", tmp);
+#endif
 			return 0;
 		}
 		/* test successful */
+#if !defined(__BORLANDC__)
 		D1_INFO(" (%d) -> bestanden\n", tmp);
+#endif
 		return ax - tmp + 1;
 	}
 
@@ -180,4 +197,6 @@ signed short bargain(Bit8u *hero, unsigned short items, signed int price,
 	return test_skill(hero, 0x15, mod);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
