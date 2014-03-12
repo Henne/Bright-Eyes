@@ -181,7 +181,8 @@ void status_show(Bit16u index)
 	RealPt hero;
 	struct nvf_desc nvf;
 	Bit16u bak1, bak2, bak3, bak4;
-	Bit16u i, j;
+	signed short i;
+	Bit16u j;
 	Bit16u bp;
 	Bit16s l1, at, pa;
 	signed short height;
@@ -222,13 +223,13 @@ void status_show(Bit16u index)
 	ds_writew(0xc017, 40);
 	ds_writed(0xc00d, ds_readd(0xd303));
 	/* the source must be passed here as RealPt */
-	ds_writed(0xc019, ds_readd(HEROS) + 0x6da * index + 0x2da);
+	ds_writed(0xc019, (Bit32u)(hero + 0x2da));
 	do_pic_copy(0);
 
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 
 	/* print invetory and silouette values */
-	if (ds_readw(0x2c9b) < 3) {
+	if (ds_readws(0x2c9b) < 3) {
 
 		nvf.src = Real2Host(ds_readd(0xd2a9));
 		nvf.type = 0;
@@ -259,32 +260,38 @@ void status_show(Bit16u index)
 			ds_writed(0xc00d, ds_readd(0xd2ff));
 
 			/* check if stackable */
-			if (((host_readb(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + 0x196)) + 2) >> 4) & 1) == 0)
-				continue;
+			/* TODO: bit flags operation */
+			if (((host_readbs(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + 0x196)) + 2) >> 4) & 1)) {
 
-			set_textcolor(0xff, 0);
-			/* originally itoa() */
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)), "%d",
-				host_readw(Real2Host(hero) + i * 14 + 0x196 + 2));
+				set_textcolor(0xff, 0);
+				/* originally itoa() */
+#if !defined(__BORLANDC__)
+				sprintf((char*)Real2Host(ds_readd(DTP2)), "%d",
+					host_readw(Real2Host(hero) + i * 14 + 0x196 + 2));
+#else
+				itoa(host_readw(Real2Host(hero) + i * 14 + 0x196 + 2),
+					(char*)Real2Host(ds_readd(DTP2)), 10);
+#endif
 
-			GUI_print_string(Real2Host(ds_readd(0xd2f3)),
-				ds_readw(0x63d2 + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(0xd2f3)), 0),
-				ds_readw(0x63d2 + i * 4 + 2) + 9);
+				GUI_print_string(Real2Host(ds_readd(DTP2)),
+					ds_readw(0x63d2 + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),
+					ds_readw(0x63d2 + i * 4 + 2) + 9);
 
-			set_textcolor(0, 2);
+				set_textcolor(0, 2);
+			}
 		}
 
 		/* print height */
-		sprintf((char*)Real2Host(ds_readd(0xd2d3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x84),
 			host_readb(Real2Host(hero) + 0x23));
-		GUI_print_string(Real2Host(ds_readd(0xd2d3)), 158, 116);
+		GUI_print_string(Real2Host(ds_readd(DTP2)), 158, 116);
 
 		/* print weight */
-		sprintf((char*)Real2Host(ds_readd(0xd2d3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x88),
 			host_readw(Real2Host(hero) + 0x24));
-		GUI_print_string(Real2Host(ds_readd(0xd2d3)), 59, 179);
+		GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 179);
 	} else {
 		do_fill_rect((RealPt)ds_readd(0xd303), 0, 50, 319, 191, 2);
 	}
@@ -304,25 +311,25 @@ void status_show(Bit16u index)
 		GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (0x9 + host_readb(Real2Host(hero) + 0x21)) * 4)), 59, 16);
 
 	/* show AP */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x9ac)),
 		host_readd(Real2Host(hero) + 0x28));
-	GUI_print_string(Real2Host(ds_readd(0xd2f3)), 59, 26);
+	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 26);
 
 	/* print level */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_city(0x1c),
 		host_readb(Real2Host(hero) + 0x27));
-	GUI_print_string(Real2Host(ds_readd(0xd2f3)), 59, 33);
+	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 33);
 
 	/* print money */
 	make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)),
 		host_readd(Real2Host(hero) + 0x2c));
 
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x4b0)),
 		(char*)Real2Host(ds_readd(0xd2eb)));
-	GUI_print_string(Real2Host(ds_readd(0xd2f3)), 59, 43);
+	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 43);
 
 	/* dead, unconscious or drunk */
 	if (hero_dead(Real2Host(hero)))
@@ -365,10 +372,10 @@ void status_show(Bit16u index)
 			/* print god */
 			ds_writew(0xd313, 265);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x28),
 					(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (host_readb(Real2Host(hero) + 0x26) + 0x15) * 4)));
-			GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 55);
+			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 55);
 
 			/* show attributes */
 			ds_writew(0xd313, 220);
@@ -392,7 +399,7 @@ void status_show(Bit16u index)
 					host_readb(Real2Host(hero) + i * 3 + 0x34));
 
 			}
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x30),
 				(char*)Real2Host(ds_readd(0xd2eb)),
 				(char*)Real2Host(ds_readd(0xd2eb)) + 70,
@@ -409,7 +416,7 @@ void status_show(Bit16u index)
 				(char*)Real2Host(ds_readd(0xd2eb)) + 60,
 				(char*)Real2Host(ds_readd(0xd2eb)) + 130);
 
-			GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 70);
+			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 70);
 
 			/* calculate BP */
 			bp = 8;
@@ -436,7 +443,7 @@ void status_show(Bit16u index)
 					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + 0x5e));
 				}
 
-				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x34),
 					host_readw(Real2Host(hero) + 0x60), le_fix,			/* LE */
 					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
@@ -451,7 +458,7 @@ void status_show(Bit16u index)
 #else
 
 				/* Original Behaviour: print max LE in black */
-				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x34),
 					host_readw(Real2Host(hero) + 0x60), host_readw(Real2Host(hero) + 0x5e),	/* LE */
 					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
@@ -464,7 +471,7 @@ void status_show(Bit16u index)
 #endif
 
 
-				GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 130);
+				GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 130);
 			} else {
 				/* novice mode */
 
@@ -512,7 +519,7 @@ void status_show(Bit16u index)
 				}
 
 
-				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0xd0),
 					host_readw(Real2Host(hero) + 0x60), le_fix,			/* LE */
 					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
@@ -527,7 +534,7 @@ void status_show(Bit16u index)
 				reset_status_string((char*)get_city(0xd0));
 				/* Original-Bugfix end */
 #else
-				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0xd0),
 					host_readw(Real2Host(hero) + 0x60), host_readw(Real2Host(hero) + 0x5e),	/* LE */
 					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
@@ -540,7 +547,7 @@ void status_show(Bit16u index)
 					bp);							/* BP */
 #endif
 
-				GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 124);
+				GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 124);
 			}
 
 			break;
@@ -586,7 +593,7 @@ void status_show(Bit16u index)
 			if (pa < 0)
 				pa = 0;
 
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x14),
 				host_readbs(Real2Host(hero) + 0x67),
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc0)),
@@ -626,7 +633,7 @@ void status_show(Bit16u index)
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xe0)),
 				host_readbs(Real2Host(hero) + 0x110) + fb);
 
-			GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 60);
+			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 60);
 			break;
 		}
 		/* skills */
