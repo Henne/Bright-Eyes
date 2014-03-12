@@ -11,7 +11,10 @@
 #include <stdarg.h>
 #include <ctype.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
 
 #include "seg000.h"
@@ -22,7 +25,9 @@
 #include "seg096.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 //000
 //129
@@ -49,7 +54,8 @@ char GUI_lookup_char_height(char c, unsigned short *p)
 }
 
 //1c2
-void GUI_1c2(unsigned short v1, unsigned short v2, RealPt v3) {
+void GUI_1c2(unsigned short v1, unsigned short v2, RealPt v3)
+{
 
 	GUI_blank_char();
 	GUI_font_to_buf(Real2Host(ds_readd(0xd2bd + v1 * 8)));
@@ -58,10 +64,13 @@ void GUI_1c2(unsigned short v1, unsigned short v2, RealPt v3) {
 
 //1f8
 //static
-signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsigned short num, unsigned short zero) {
+signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsigned short num, unsigned short zero)
+{
 	Bit8u *dst_start;
-	unsigned short si, di;
-	signed short pos, c;
+	unsigned short si;
+	unsigned short di;
+	signed short pos;
+	signed short c;
 	unsigned short length;
 
 	dst_start = dst;
@@ -229,7 +238,8 @@ void GUI_draw_radio_bg(Bit16u header, Bit16u options, Bit16u width,
 }
 
 //564
-void GUI_copy_smth(unsigned short width, unsigned short height) {
+void GUI_copy_smth(unsigned short width, unsigned short height)
+{
 	ds_writew(0xc011, ds_readw(0xbfff));
 	ds_writew(0xc013, ds_readw(0xc001));
 	ds_writew(0xc015, ds_readw(0xbfff) + width - 1);
@@ -357,7 +367,9 @@ signed short GUI_bool(Bit8u *text)
 void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 	unsigned short offset)
 {
-	unsigned short i, x, y;
+	unsigned short i;
+	unsigned short x;
+	unsigned short y;
 
 	update_mouse_cursor();
 
@@ -523,10 +535,10 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 {
 	Bit16s l1, l2, l3, l4, l5, l6;
 	Bit16s retval;
-	bool done;
+	signed short done;
 
 	l5 = -1;
-	done = false;
+	done = 0;
 
 	ds_writew(0xe5ae, 1);
 	ds_writew(0xe5b0, 1);
@@ -556,7 +568,7 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 		ds_writew(0xc3d5, 0);
 
 		while (!done) {
-			ds_writed(0x29e4, RealMake(datseg, 0x29cc));
+			ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x29cc));
 			handle_input();
 			ds_writed(0x29e4, 0);
 
@@ -571,13 +583,13 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 				ds_readw(0xc3d9) == 0x51) {
 
 				retval = -1;
-				done = true;
+				done = 1;
 				ds_writew(0xc3d3, 0);
 			}
 
 			if (ds_readw(0xc3d9) == 0x1c) {
 				retval = ds_readw(0xe5b0);
-				done = true;
+				done = 1;
 			}
 
 			/* Key UP */
@@ -601,10 +613,10 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 			if (ds_readw(0xac0b) != 0) {
 				if (ds_readw(0xc3d9) == 0x2c) {
 					retval = 1;
-					done = true;
+					done = 1;
 				} else if (ds_readw(0xc3d9) == 0x31) {
 					retval = 2;
-					done = true;
+					done = 1;
 				}
 			}
 		}
@@ -729,7 +741,10 @@ void GUI_dialog_na(unsigned short head_index, Bit8u *text)
 	if (head_index != 0)
 		load_in_head(head_index);
 
-	GUI_dialogbox(ds_readd(0xd2f3), NULL, text, 0);
+	GUI_dialogbox((RealPt)ds_readd(0xd2f3), NULL, text, 0);
 
 }
+
+#if !defined(__BORLANDC__)
 }
+#endif
