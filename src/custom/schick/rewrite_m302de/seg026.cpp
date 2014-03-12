@@ -1,6 +1,10 @@
+#include <stdio.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
 #include "common.h"
 
@@ -8,7 +12,9 @@
 #include "seg002.h"
 #include "seg026.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void load_buffer_1(signed short index)
 {
@@ -24,10 +30,9 @@ void load_buffer_1(signed short index)
 
 	bc_close(fd);
 
-	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)), ds_readd(0xd2b5), len);
+	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)), (RealPt)ds_readd(0xd2b5), len);
 
 	ds_writew(0x26bf, index);
-
 }
 
 void load_city_ltx(signed short index)
@@ -43,7 +48,7 @@ void load_city_ltx(signed short index)
 	len = read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 12000);
 	bc_close(fd);
 
-	split_textbuffer(Real2Host(ds_readd(CITY_LTX)), ds_readd(0xc3a9), len);
+	split_textbuffer(Real2Host(ds_readd(CITY_LTX)), (RealPt)ds_readd(0xc3a9), len);
 }
 
 void load_ltx(unsigned short index)
@@ -57,14 +62,14 @@ void load_ltx(unsigned short index)
 	bc_close(fd);
 
 	split_textbuffer(Real2Host(ds_readd(0xd019)),
-		ds_readd(0xd019) + 1000, len);
+		(RealPt)ds_readd(0xd019) + 1000, len);
 }
 
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
 	Bit32u i = 0;
 
-	host_writed(dst, src);
+	host_writed(dst, (Bit32u)src);
 	dst += 4;
 
 	for (; i != len; src++, i++) {
@@ -72,12 +77,12 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 		if (host_readb(Real2Host(src)) != 0)
 			continue;
 		/* write the adress of the next string */
-		host_writed(dst, src + 1);
+		host_writed(dst, (Bit32u)src + 1);
 		dst += 4;
 	}
 }
 
-void load_ggsts_nvf()
+void load_ggsts_nvf(void)
 {
 	Bit16u fd;
 
@@ -152,8 +157,8 @@ void write_chr_temp(unsigned short hero)
 		(char*)Real2Host(ds_readd(0x4c88)),		/* "TEMP\\%s" */
 		fname);
 
-	fd = bc__creat(ds_readd(0xd2eb), 0);
-	bc__write(fd, ds_readd(HEROS) + hero * 0x6da, 0x6da);
+	fd = bc__creat((RealPt)ds_readd(0xd2eb), 0);
+	bc__write(fd, (RealPt)ds_readd(HEROS) + hero * 0x6da, 0x6da);
 	bc_close(fd);
 }
 
@@ -177,7 +182,6 @@ void load_in_head(Bit16s head)
 	bc_close(fd);
 
 	ds_writew(0x515c, head);
-
 }
 
 void load_tempicon(unsigned short nr)
@@ -203,4 +207,6 @@ void load_tempicon(unsigned short nr)
 	process_nvf(&nvf);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
