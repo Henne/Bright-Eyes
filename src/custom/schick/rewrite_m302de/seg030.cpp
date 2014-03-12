@@ -3,8 +3,12 @@
 	Functions rewritten: 2/6
 */
 
+#include <stdio.h>
 #include <string.h>
+
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "common.h"
 #include "v302de.h"
@@ -13,7 +17,9 @@
 #include "seg030.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 0x11e */
 /* unused in the game */
@@ -39,7 +45,7 @@ void prepare_date_str(void)
 
 	hour = (signed short)(ds_readd(DAY_TIMER) / 0x1518);
 
-	if ((signed char)ds_readb(DAY_OF_MONTH) < 0) {
+	if (ds_readbs(DAY_OF_MONTH) < 0) {
 		/* Days of the nameless */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x61c),
@@ -66,4 +72,6 @@ void prepare_date_str(void)
 	}
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
