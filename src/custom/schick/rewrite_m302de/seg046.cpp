@@ -93,9 +93,10 @@ void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
  *	status_show_talents -	shows all talents and their values
  *	@hero:	the hero which talents should be shown
  */
+/* Borlandified and identical */
 void status_show_talents(Bit8u *hero) {
 
-	unsigned short i, j;
+	signed short i, j;
 
 	set_textcolor(0xff, 2);
 
@@ -124,10 +125,10 @@ void status_show_talents(Bit8u *hero) {
 	set_textcolor(0, 2);
 
 	for (i = 0; i < 7; i++) {
-		j = ds_readb(0x10ce + i * 2);
-		while (ds_readb(0x10ce + i * 2) + ds_readb(0x10cf + i * 2) > j) {
+		j = ds_readbs(0x10ce + i * 2);
+		while (ds_readbs(0x10ce + i * 2) + ds_readbs(0x10cf + i * 2) > j) {
 			status_show_talent(hero, j,
-				ds_readb(0x10ce + i * 2),
+				ds_readbs(0x10ce + i * 2),
 				ds_readw(0x6476 + i * 6),
 				ds_readw(0x6478 + i * 6),
 				ds_readw(0x647a + i * 6));
