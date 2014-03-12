@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
@@ -14,30 +16,32 @@
 #include "seg097.h"
 #include "seg105.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* DS:0x26ad */
 static unsigned short msg_counter;
 
 void FIG_output(Bit8u *str)
 {
-
 	if (*str == 0)
 		return;
 
 	GUI_output(str);
-
 }
 
 /**
  *	FIG_clear_msgs() - clears the fight messages buffer
 */
-void FIG_clear_msgs() {
+void FIG_clear_msgs(void)
+{
 	memset(p_datseg + 0xd333, 0 , 20);
 	msg_counter = 0;
 }
 
-void FIG_add_msg(unsigned short f_action, unsigned short damage) {
+void FIG_add_msg(unsigned short f_action, unsigned short damage)
+{
 	ds_writew(0xd333 + 4 * msg_counter, f_action);
 	ds_writew(0xd333 + 4 * msg_counter + 2 , damage);
 	if (msg_counter < 4)
@@ -98,7 +102,8 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
 signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool is_enemy)
 {
 	Bit8u *hero;
-	signed short pos, damage;
+	signed short pos;
+	signed short damage;
 	unsigned short dice;
 
 	dice = host_readw(attacker + 0x1e);
@@ -157,7 +162,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 	}
 
 	/* damage bonus */
-	damage += (signed char)host_readb(attacker + 0x2e);
+	damage += host_readbs(attacker + 0x2e);
 
 	/* half damage */
 	if (host_readb(attacker + 0x30) != 0)
@@ -166,7 +171,8 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 	return damage;
 }
 
-void seg041_8c8() {
+void seg041_8c8(void)
+{
 	unsigned short i;
 
 	for (i = 0; i < 8; i++)
@@ -176,8 +182,8 @@ void seg041_8c8() {
 //		memset(p_datseg + 0xd8ce, 0xffff, 0xf3 * 8);
 }
 
-signed short weapon_check(Bit8u *hero) {
-
+signed short weapon_check(Bit8u *hero)
+{
 	Bit8u *item_p;
 	unsigned short item;
 
@@ -214,4 +220,6 @@ signed short weapon_check(Bit8u *hero) {
 	return 2;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
