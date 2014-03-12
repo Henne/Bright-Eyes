@@ -3,7 +3,9 @@
 	Functions rewritten: 1/22
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "common.h"
 #include "v302de.h"
@@ -14,7 +16,9 @@
 #include "seg029.h"
 #include "seg097.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 0x900 */
 
@@ -62,4 +66,6 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed char type)
 	ds_writeb(CHECK_PARTY, 1);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
