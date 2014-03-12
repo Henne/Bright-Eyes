@@ -377,7 +377,7 @@ extern Bit8u* text_ltx[];
 extern Bit8u* dialog_text[];
 extern Bit8u* city_ltx[];
 
-#define RealMake(s, o) (RealPt)((s << 16) | o)
+#define RealMake(s, o) MK_FP(s, o)
 
 #define Real2Phys(p) (Bit8u*)(p)
 #define Real2Host(p) (Bit8u*)(p)
