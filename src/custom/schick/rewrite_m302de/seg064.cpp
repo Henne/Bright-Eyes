@@ -26,6 +26,7 @@ namespace M302de {
  *				6= cutter,7= fishing boat
  *	@arg2:		???
  */
+/* Borlandified and identical */
 RealPt get_ship_name(signed char ship_type, signed short arg2)
 {
 	signed char done, i;
@@ -37,14 +38,14 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 		name = ship_type * 10 + random_schick(10) + 0x29;
 		done = 1;
 		for (i = 0; i < arg2; i++) {
-			if (host_readd((Real2Host(ds_readd(0x42b2)) + i * 12))
-				!= host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4))
-				continue;
-			done = 0;
-			break;
+			if (ds_readd(0x42b2 + i * 12)
+				== host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4)) {
+				done = 0;
+				break;
+			}
 		}
 
-	} while (done == 0);
+	} while (!done);
 
 	return (RealPt)host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4);
 }
