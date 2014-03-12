@@ -49,7 +49,7 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 
 	/* convert value to string */
 #if !defined(__BORLANDC__)
-	sprintf(str, "%d", (signed char)host_readb(hero + 0x13d + spell));
+	sprintf(str, "%d", host_readbs(hero + 0x13d + spell));
 #else
 	itoa(host_readbs(hero + 0x13d + spell) , str, 10);
 #endif
@@ -377,8 +377,8 @@ void status_show(Bit16u index)
 
 			for (i = 0; i <= 13; i++) {
 
-				val = (signed char)host_readb(hero + i * 3 + 0x35);
-				val += (signed char)host_readb(hero + i * 3 + 0x36);
+				val = host_readbs(hero + i * 3 + 0x35);
+				val += host_readbs(hero + i * 3 + 0x36);
 
 				sprintf((char*)Real2Host(ds_readd(0xd2eb)) + i * 10,
 					(char*)get_city(0xcc),
@@ -413,11 +413,11 @@ void status_show(Bit16u index)
 
 			/* calculate BP */
 			bp = 8;
-			if ((signed char)host_readb(hero + 0x47) * 50 <= host_readw(hero + 0x2d8))
+			if (host_readbs(hero + 0x47) * 50 <= host_readw(hero + 0x2d8))
 				bp--;
-			if ((signed char)host_readb(hero + 0x47) * 75 <= host_readw(hero + 0x2d8))
+			if (host_readbs(hero + 0x47) * 75 <= host_readw(hero + 0x2d8))
 				bp -= 2;
-			if ((signed char)host_readb(hero + 0x47) * 100 <= host_readw(hero + 0x2d8))
+			if (host_readbs(hero + 0x47) * 100 <= host_readw(hero + 0x2d8))
 				bp -= 2;
 
 			if (ds_readw(0xc003) == 2) {
@@ -440,10 +440,10 @@ void status_show(Bit16u index)
 					(char*)get_city(0x34),
 					host_readw(hero + 0x60), le_fix,			/* LE */
 					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
-					(signed char)host_readb(hero + 0x66),			/* MR */
-					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31), /* RS */
-					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) +
-						(signed char)host_readb(hero + 0x48),		/* Ausdauer*/
+					host_readbs(hero + 0x66),			/* MR */
+					host_readbs(hero + 0x30) + host_readbs(hero + 0x31), /* RS */
+					host_readbs(hero + 0x47) + host_readw(hero + 0x60) +
+						host_readbs(hero + 0x48),		/* Ausdauer*/
 					host_readw(hero + 0x2d8),				/* Last */
 					bp);							/* BP */
 				reset_status_string((char*)get_city(0x34));
@@ -455,10 +455,10 @@ void status_show(Bit16u index)
 					(char*)get_city(0x34),
 					host_readw(hero + 0x60), host_readw(hero + 0x5e),	/* LE */
 					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
-					(signed char)host_readb(hero + 0x66),			/* MR */
-					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31), /* RS */
-					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) +
-						(signed char)host_readb(hero + 0x48),		/* Ausdauer*/
+					host_readbs(hero + 0x66),			/* MR */
+					host_readbs(hero + 0x30) + host_readbs(hero + 0x31), /* RS */
+					host_readbs(hero + 0x47) + host_readw(hero + 0x60) +
+						host_readbs(hero + 0x48),		/* Ausdauer*/
 					host_readw(hero + 0x2d8),				/* Last */
 					bp);							/* BP */
 #endif
@@ -473,26 +473,26 @@ void status_show(Bit16u index)
 
 				if (host_readb(hero + 0x78) < 7) {
 					/* melee weapons */
-					at = (signed char)host_readb(hero + 0x68 + (signed char)host_readb(hero + 0x78)) +
-						(signed char)host_readb(hero + 0x76) -
-						abs((signed char)host_readb(hero + 0x32)) / 2;
+					at = host_readbs(hero + 0x68 + host_readbs(hero + 0x78)) +
+						host_readbs(hero + 0x76) -
+						abs(host_readbs(hero + 0x32)) / 2;
 				} else {
 					/* range weapons */
-					at = (signed char)host_readb(hero + 0x68) -
-						abs((signed char)host_readb(hero + 0x32)) / 2;
+					at = host_readbs(hero + 0x68) -
+						abs(host_readbs(hero + 0x32)) / 2;
 				}
 				at += l1;
 
 				/* calculate PA base value */
 				if (host_readb(hero + 0x78) < 7) {
 					/* melee weapons */
-					pa = (signed char)host_readb(hero + 0x6f + (signed char)host_readb(hero + 0x78)) +
-						(signed char)host_readb(hero + 0x77) -
-						abs((signed char)host_readb(hero + 0x32)) / 2;
+					pa = host_readbs(hero + 0x6f + host_readbs(hero + 0x78)) +
+						host_readbs(hero + 0x77) -
+						abs(host_readbs(hero + 0x32)) / 2;
 				} else {
 					/* range weapons */
-					pa = (signed char)host_readb(hero + 0x6f) -
-						abs((signed char)host_readb(hero + 0x32)) / 2;
+					pa = host_readbs(hero + 0x6f) -
+						abs(host_readbs(hero + 0x32)) / 2;
 				}
 
 				if (at < 0)
@@ -517,10 +517,10 @@ void status_show(Bit16u index)
 					host_readw(hero + 0x60), le_fix,			/* LE */
 					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
 					at, pa,							/* AT PA */
-					(signed char)host_readb(hero + 0x66),			/* MR */
-					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31),	/* RS */
-					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) +
-						(signed char)host_readb(hero + 0x48),		/* Ausdauer */
+					host_readbs(hero + 0x66),			/* MR */
+					host_readbs(hero + 0x30) + host_readbs(hero + 0x31),	/* RS */
+					host_readbs(hero + 0x47) + host_readw(hero + 0x60) +
+						host_readbs(hero + 0x48),		/* Ausdauer */
 					host_readw(hero + 0x2d8),				/* Last */
 					bp);							/* BP */
 
@@ -532,10 +532,10 @@ void status_show(Bit16u index)
 					host_readw(hero + 0x60), host_readw(hero + 0x5e),	/* LE */
 					host_readw(hero + 0x64), host_readw(hero + 0x62),	/* AE */
 					at, pa,							/* AT PA */
-					(signed char)host_readb(hero + 0x66),			/* MR */
-					(signed char)host_readb(hero + 0x30) + (signed char)host_readb(hero + 0x31),	/* RS */
-					(signed char)host_readb(hero + 0x47) + host_readw(hero + 0x60) +
-						(signed char)host_readb(hero + 0x48),		/* Ausdauer */
+					host_readbs(hero + 0x66),			/* MR */
+					host_readbs(hero + 0x30) + host_readbs(hero + 0x31),	/* RS */
+					host_readbs(hero + 0x47) + host_readw(hero + 0x60) +
+						host_readbs(hero + 0x48),		/* Ausdauer */
 					host_readw(hero + 0x2d8),				/* Last */
 					bp);							/* BP */
 #endif
@@ -550,34 +550,34 @@ void status_show(Bit16u index)
 			ds_writew(0xd313, 275);
 			ds_writew(0xd315, 295);
 
-			fb = ((signed char)host_readb(hero + 0x38) +
-				(signed char)host_readb(hero + 0x39) +
-				(signed char)host_readb(hero + 0x41) +
-				(signed char)host_readb(hero + 0x42) +
-				(signed char)host_readb(hero + 0x47) +
-				(signed char)host_readb(hero + 0x48)) / 4;
+			fb = (host_readbs(hero + 0x38) +
+				host_readbs(hero + 0x39) +
+				host_readbs(hero + 0x41) +
+				host_readbs(hero + 0x42) +
+				host_readbs(hero + 0x47) +
+				host_readbs(hero + 0x48)) / 4;
 
 			if (host_readb(hero + 0x32) & 1)
 				l1 = -1;
 			else
 				l1 = 0;
 
-			if ((signed char)host_readb(hero + 0x78) < 7) {
-				at = (signed char)host_readb(hero + 0x68 + (signed char)host_readb(hero + 0x78)) +
-					(signed char)host_readb(hero + 0x76) -
-					abs((signed char)host_readb(hero + 0x32)) / 2;
+			if (host_readbs(hero + 0x78) < 7) {
+				at = host_readbs(hero + 0x68 + host_readbs(hero + 0x78)) +
+					host_readbs(hero + 0x76) -
+					abs(host_readbs(hero + 0x32)) / 2;
 			} else {
-				at = (signed char)host_readb(hero + 0x68) - abs((signed char)host_readb(hero + 0x32)) / 2;
+				at = host_readbs(hero + 0x68) - abs(host_readbs(hero + 0x32)) / 2;
 			}
 
 			at += l1;
 
-			if ((signed char)host_readb(hero + 0x78) < 7) {
-				pa = (signed char)host_readb(hero + 0x6f + (signed char)host_readb(hero + 0x78)) +
-					(signed char)host_readb(hero + 0x77) -
-					abs((signed char)host_readb(hero + 0x32)) / 2;
+			if (host_readbs(hero + 0x78) < 7) {
+				pa = host_readbs(hero + 0x6f + host_readbs(hero + 0x78)) +
+					host_readbs(hero + 0x77) -
+					abs(host_readbs(hero + 0x32)) / 2;
 			} else {
-				pa = (signed char)host_readb(hero + 0x6f) - abs((signed char)host_readb(hero + 0x32)) / 2;
+				pa = host_readbs(hero + 0x6f) - abs(host_readbs(hero + 0x32)) / 2;
 			}
 
 			if (at < 0)
@@ -588,43 +588,43 @@ void status_show(Bit16u index)
 
 			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 				(char*)get_city(0x14),
-				(signed char)host_readb(hero + 0x67),
+				host_readbs(hero + 0x67),
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc0)),
 
-				(signed char)host_readb(hero + 0x68) - abs((signed char)host_readb(hero + 0x32)) / 2,
-				(signed char)host_readb(hero + 0x6f) - abs((signed char)host_readb(hero + 0x32)) / 2,
+				host_readbs(hero + 0x68) - abs(host_readbs(hero + 0x32)) / 2,
+				host_readbs(hero + 0x6f) - abs(host_readbs(hero + 0x32)) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc4)),
 
-				(signed char)host_readb(hero + 0x69) - abs((signed char)host_readb(hero + 0x32)) / 2,
-				(signed char)host_readb(hero + 0x70) - abs((signed char)host_readb(hero + 0x32)) / 2,
+				host_readbs(hero + 0x69) - abs(host_readbs(hero + 0x32)) / 2,
+				host_readbs(hero + 0x70) - abs(host_readbs(hero + 0x32)) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc8)),
 
-				(signed char)host_readb(hero + 0x6a) - abs((signed char)host_readb(hero + 0x32)) / 2,
-				(signed char)host_readb(hero + 0x71) - abs((signed char)host_readb(hero + 0x32)) / 2,
+				host_readbs(hero + 0x6a) - abs(host_readbs(hero + 0x32)) / 2,
+				host_readbs(hero + 0x71) - abs(host_readbs(hero + 0x32)) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xcc)),
 
-				(signed char)host_readb(hero + 0x6b) - abs((signed char)host_readb(hero + 0x32)) / 2,
-				(signed char)host_readb(hero + 0x72) - abs((signed char)host_readb(hero + 0x32)) / 2,
+				host_readbs(hero + 0x6b) - abs(host_readbs(hero + 0x32)) / 2,
+				host_readbs(hero + 0x72) - abs(host_readbs(hero + 0x32)) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd0)),
 
-				(signed char)host_readb(hero + 0x6c) - abs((signed char)host_readb(hero + 0x32)) / 2,
-				(signed char)host_readb(hero + 0x73) - abs((signed char)host_readb(hero + 0x32)) / 2,
+				host_readbs(hero + 0x6c) - abs(host_readbs(hero + 0x32)) / 2,
+				host_readbs(hero + 0x73) - abs(host_readbs(hero + 0x32)) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd4)),
 
-				(signed char)host_readb(hero + 0x6d) - abs((signed char)host_readb(hero + 0x32)) / 2,
-				(signed char)host_readb(hero + 0x74) - abs((signed char)host_readb(hero + 0x32)) / 2,
+				host_readbs(hero + 0x6d) - abs(host_readbs(hero + 0x32)) / 2,
+				host_readbs(hero + 0x74) - abs(host_readbs(hero + 0x32)) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd8)),
 
-				(signed char)host_readb(hero + 0x6e) - abs((signed char)host_readb(hero + 0x32)) / 2,
-				(signed char)host_readb(hero + 0x75) - abs((signed char)host_readb(hero + 0x32)) / 2,
+				host_readbs(hero + 0x6e) - abs(host_readbs(hero + 0x32)) / 2,
+				host_readbs(hero + 0x75) - abs(host_readbs(hero + 0x32)) / 2,
 				at,
 				pa,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xdc)),
-				(signed char)host_readb(hero + 0x10f) + fb,
+				host_readbs(hero + 0x10f) + fb,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xe0)),
-				(signed char)host_readb(hero + 0x110) + fb);
+				host_readbs(hero + 0x110) + fb);
 
 			GUI_print_string(Real2Host(ds_readd(0xd2f3)), 200, 60);
 			break;
