@@ -1,4 +1,6 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 0x25 */
 void FIG_remove_smth(void);
@@ -9,4 +11,6 @@ signed short FIG_copy_it(Bit8u*, Bit8u*, signed char);
 /* 0x39 */
 void FIG_remove_smth2(void);
 
+#if !defined(__BORLANDC__)
 }
+#endif

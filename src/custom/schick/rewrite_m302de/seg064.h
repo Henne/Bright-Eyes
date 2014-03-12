@@ -1,4 +1,7 @@
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
 /*0x20*/
 RealPt print_passage_price(signed short, Bit8u*);
 /*0x25*/
@@ -11,4 +14,7 @@ unsigned short get_passage_travel_hours(signed short, signed short);
 unsigned short get_next_passages(unsigned short);
 /*0x39*/
 unsigned short passage_arrival(void);
+
+#if !defined(__BORLANDC__)
 }
+#endif
