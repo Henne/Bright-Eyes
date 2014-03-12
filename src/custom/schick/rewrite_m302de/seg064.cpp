@@ -2,9 +2,13 @@
 	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
 	Functions rewritten: 6/6 (complete)
 */
+
+#include <stdio.h>
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "common.h"
 #include "v302de.h"
@@ -12,7 +16,9 @@
 #include "seg007.h"
 #include "seg028.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  *	get_ship_name() - returns a pointer to the name of a ship
@@ -40,7 +46,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 
 	} while (done == 0);
 
-	return host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4);
+	return (RealPt)host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4);
 }
 
 /**
@@ -63,11 +69,11 @@ unsigned short prepare_passages(void)
 
 			/* prepare an entry of 12 byte for a passage today */
 			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
-			ds_writed(0x42b6 + prepared * 12, ent);
+			ds_writed(0x42b6 + prepared * 12, (Bit32u)ent);
 			ds_writeb(0x42ba + prepared * 12, 0);
 			ds_writeb(0x42bb + prepared * 12, host_readb(entry + 6));
 			ds_writed(0x42b2 + prepared * 12,
-				get_ship_name(host_readb(entry + 6), prepared));
+				(Bit32u)get_ship_name(host_readb(entry + 6), prepared));
 			ds_writeb(0x42bc + prepared * 12,
 				host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 					host_readb(entry + 1) :
@@ -87,11 +93,11 @@ unsigned short prepare_passages(void)
 
 			/* prepare an entry of 12 byte for a passage tomorrow */
 			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
-			ds_writed(0x42b6 + prepared * 12, ent);
+			ds_writed(0x42b6 + prepared * 12, (Bit32u)ent);
 			ds_writeb(0x42ba + prepared * 12, 1);
 			ds_writeb(0x42bb + prepared * 12, host_readb(entry + 6));
 			ds_writed(0x42b2 + prepared * 12,
-				get_ship_name(host_readb(entry + 6), prepared));
+				(Bit32u)get_ship_name(host_readb(entry + 6), prepared));
 			ds_writeb(0x42bc + prepared * 12,
 				host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 					host_readb(entry + 1) :
@@ -131,7 +137,7 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 	}
 	ds_writew(0x432a, price);
 
-	return ds_readd(0xd2eb);
+	return (RealPt)ds_readd(0xd2eb);
 
 }
 
@@ -269,4 +275,6 @@ unsigned short passage_arrival(void)
 
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
