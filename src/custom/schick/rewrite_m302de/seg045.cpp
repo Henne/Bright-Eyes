@@ -3,12 +3,17 @@
 	Functions rewritten: 3/8
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
 
 #include "seg006.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /* 0x137 */
 void FIG_remove_smth(void)
@@ -28,7 +33,7 @@ signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 {
 	signed short i;
 
-	for (i = 0; (signed char)host_readb(src) != term; i = i + 3) {
+	for (i = 0; host_readbs(src) != term; i = i + 3) {
 
 		host_writeb(dst, host_readb(src));
 		src++;
@@ -53,5 +58,6 @@ void FIG_remove_smth2(void)
 	ds_writeb(0xe38c, 0xff);
 }
 
+#if !defined(__BORLANDC__)
 }
-
+#endif
