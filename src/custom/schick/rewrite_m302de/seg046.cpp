@@ -36,23 +36,26 @@ namespace M302de {
  *	@x2:	the rightmost x coordinate
  *	@gy:	the upper y coordinate of this spellgroup
  */
+/* Borlandified and identical */
 void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 			unsigned short x1, unsigned short x2, unsigned short gy) {
-	char str[10];
 	unsigned short group;
-	unsigned short y;
+	char str[10];
 
 	group = spell - fsig;
-	y = group * 7 + gy;
 
 	/* print spellname */
-	GUI_print_string(get_ltx((spell + 0x6a) * 4), x1, y);
+	GUI_print_string(get_ltx((spell + 0x6a) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
+#if !defined(__BORLANDC__)
 	sprintf(str, "%d", (signed char)host_readb(hero + 0x13d + spell));
+#else
+	itoa(host_readbs(hero + 0x13d + spell) , str, 10);
+#endif
 
 	/* print value */
-	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), y);
+	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), gy + group * 7);
 }
 
 /**
