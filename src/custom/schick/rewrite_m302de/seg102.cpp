@@ -6,5 +6,14 @@
  *      Functions uncalled rewritten 0/2
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
+#if !defined(__BORLANDC__)
+namespace M302de {
+#endif
+
+#if !defined(__BORLANDC__)
+}
+#endif
