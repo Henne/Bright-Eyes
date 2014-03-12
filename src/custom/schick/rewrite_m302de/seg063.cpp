@@ -3,18 +3,23 @@
         Functions rewritten: 2/5
 */
 
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
 
 #include "v302de.h"
 
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
-void passages_init()
+void passages_init(void)
 {
 	Bit8u *p;
-	Bit16u si, i;
+	Bit16u si;
+	Bit16u i;
 
 	p = p_datseg + 0x6f00;
 	for (i = 0; i < 45; p += 8, i++) {
@@ -46,6 +51,7 @@ void passages_init()
 			}
 		}
 
+#if !defined(__BORLANDC__)
 	D1_LOG("%s - %s: %d %d %d %d %d %d\n",
 		(char*)get_ltx((host_readb(p + 0) + 0xeb) * 4),
 		(char*)get_ltx((host_readb(p + 1) + 0xeb) * 4),
@@ -55,6 +61,7 @@ void passages_init()
 		host_readb(p + 5),
 		host_readb(p + 6),
 		host_readb(p + 7));
+#endif
 	}
 }
 
@@ -69,5 +76,6 @@ unsigned short get_srout_len(Bit8u *ptr)
 	return i;
 }
 
+#if !defined(__BORLANDC__)
 }
-
+#endif
