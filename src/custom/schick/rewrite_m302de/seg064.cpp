@@ -118,6 +118,7 @@ unsigned short prepare_passages(void)
  *
  *	Returns a pointer to the buffer.
  */
+/* Borlandified and identical */
 RealPt print_passage_price(signed short price, Bit8u *entry)
 {
 	unsigned short di;
@@ -144,18 +145,19 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 
 }
 
+/* Borlandified and identical */
 unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 {
-	int hours;
+	Bit32u hours;
 
 	arg2 = (arg2 * 10 + 11) / 24;
 
 	/*	ds:0x331b = random(6)
 	 *	ds:0x331d = random(7) */
-	ds_writew(0x432c, (unsigned short)
-		((ds_readw(0x331d) + 6) * arg2 * (ds_readw(0x331b) * 15 + 100) + 499)/ 1000);
+	ds_writew(0x432c,
+		(arg2 * (ds_readw(0x331d) + 6) * (ds_readw(0x331b) * 15 + 100) + 499L) / 1000L);
 
-	hours = (ds_readw(0x432c) + 4) / 10;
+	hours = (ds_readws(0x432c) + 4) / 10;
 
 	if (hours == 0)
 		hours = 1;
