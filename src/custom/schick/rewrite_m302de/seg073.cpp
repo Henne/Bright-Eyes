@@ -3,12 +3,19 @@
         Functions rewritten: 2/4
 */
 
+#include <stdio.h>
+
+#if !defined(__BORLANDC__)
 #include "schick.h"
+#endif
+
 #include "v302de.h"
 
 #include "seg007.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 /**
  *	get_tavern_gossip() - get gossip in taverns
@@ -19,7 +26,8 @@ namespace M302de {
 unsigned short get_tavern_gossip(void)
 {
 	/* Orig-Bug: Informants can be reenabled if they had been set to 2 */
-	unsigned short r_si, r_di;
+	unsigned short r_si;
+	unsigned short r_di;
 
 	r_di = ds_readb(0x7c9d + ds_readb(CURRENT_TOWN));
 
@@ -456,7 +464,9 @@ RealPt get_drinkmate(void)
 		get_dtp(surname * 4),
 		get_dtp(((ds_readb(0x360d) - 1) == 0 ? 0xcf : 0xd0) * 4));
 
-	return ds_readd(0xd2eb);
+	return (RealPt)ds_readd(0xd2eb);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif
