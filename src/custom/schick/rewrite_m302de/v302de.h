@@ -420,6 +420,7 @@ extern Bit8u* city_ltx[];
 #define BORLAND_FAR __far
 
 #define get_cb_val(x, y) (host_readb((ds_readd(CHESSBOARD)) + y * 25 + x))
+#define set_cb_val(x, y, val) (host_writeb((ds_readd(CHESSBOARD)) + y * 25 + x, val))
 
 #endif
 #endif
