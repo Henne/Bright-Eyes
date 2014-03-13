@@ -44,7 +44,7 @@ char GUI_lookup_char_height(char c, unsigned short *p)
 		return ds_readb(0xab42 + i + 1) & 0xff;
 	}
 
-	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
+	if (c == (char)0x7e || c == (char)0xf0 || c == (char)0xf1 || c == (char)0xf2 || c == (char)0xf3) {
 		*p = 0;
 		return 0;
 	} else {
@@ -312,7 +312,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 		}
 	} else {
 		/* set action table */
-		ds_writed(0x29e4, RealMake(datseg, 0x29cc));
+		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x29cc));
 
 		if (ds_readw(0xc3c5) != 0) {
 			wait_for_keypress();
@@ -464,7 +464,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		ds_writew(0xc013, ds_readw(0xc001) + 7);
 		ds_writew(0xc015, ds_readw(0xbfff) + 37);
 		ds_writew(0xc017, ds_readw(0xc001) + 38);
-		ds_writed(0xc019, picture);
+		ds_writed(0xc019, (Bit32u)picture);
 
 		do_pic_copy(0);
 	}
