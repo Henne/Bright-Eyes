@@ -312,6 +312,7 @@ static inline char* get_itemname(unsigned short item)
 #else
 
 #include <DOS.H>
+#include <BIOS.H>
 
 #undef M302de_ORIGINAL_BUGFIX
 
