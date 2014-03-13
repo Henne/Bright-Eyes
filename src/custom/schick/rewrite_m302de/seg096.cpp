@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+
 #if !defined(__BORLANDC__)
 #include "paging.h"
 #include "schick.h"
@@ -161,24 +164,24 @@ RealPt GUI_get_ptr(Bit16u genus, Bit16u causus)
 	if (genus == 0) {
 		switch (causus) {
 			case 0:
-				return RealMake(datseg, 0xa9f3);
+				return (RealPt)RealMake(datseg, 0xa9f3);
 			case 1:
-				return RealMake(datseg, 0xa9fd);
+				return (RealPt)RealMake(datseg, 0xa9fd);
 			case 3:
-				return RealMake(datseg, 0xaa0a);
+				return (RealPt)RealMake(datseg, 0xaa0a);
 			default:
-				return RealMake(datseg, 0xaa06);
+				return (RealPt)RealMake(datseg, 0xaa06);
 		}
 	} else {
 		switch (causus) {
 			case 0:
-				return RealMake(datseg, 0xa9f6);
+				return (RealPt)RealMake(datseg, 0xa9f6);
 			case 1:
-				return RealMake(datseg, 0xaa02);
+				return (RealPt)RealMake(datseg, 0xaa02);
 			case 3:
-				return RealMake(datseg, 0xaa02);
+				return (RealPt)RealMake(datseg, 0xaa02);
 			default:
-				return RealMake(datseg, 0xa9f6);
+				return (RealPt)RealMake(datseg, 0xa9f6);
 		}
 	}
 }
@@ -192,24 +195,24 @@ RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2)
 	if (v1 == 0) {
 		switch (v2) {
 			case 0:
-				return RealMake(datseg, 0xa8d4);
+				return (RealPt)RealMake(datseg, 0xa8d4);
 			case 1:
-				return RealMake(datseg, 0xa8e0);
+				return (RealPt)RealMake(datseg, 0xa8e0);
 			case 3:
-				return RealMake(datseg, 0xa8e8);
+				return (RealPt)RealMake(datseg, 0xa8e8);
 			default:
-				return RealMake(datseg, 0xa8e4);
+				return (RealPt)RealMake(datseg, 0xa8e4);
 		}
 	} else {
 		switch (v2) {
 			case 0:
-				return RealMake(datseg, 0xa8d8);
+				return (RealPt)RealMake(datseg, 0xa8d8);
 			case 1:
-				return RealMake(datseg, 0xa8d4);
+				return (RealPt)RealMake(datseg, 0xa8d4);
 			case 3:
-				return RealMake(datseg, 0xa8d4);
+				return (RealPt)RealMake(datseg, 0xa8d4);
 			default:
-				return RealMake(datseg, 0xa8d4);
+				return (RealPt)RealMake(datseg, 0xa8d4);
 		}
 	}
 }
@@ -224,7 +227,7 @@ void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned sh
 
 	for (y = 0; y < char_width; ptr += 8 - char_height, dst += 320, y++) {
 		for (x = 0; x < char_height; x++)
-			mem_writeb_inline(dst+x, *ptr++);
+			mem_writeb(dst+x, *ptr++);
 	}
 }
 
@@ -467,7 +470,7 @@ unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p)
 //88f
 void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_width, unsigned short x, unsigned short y)
 {
-	RealPt p_font6 = ds_readd(0xd2c1);
+	RealPt p_font6 = (RealPt)ds_readd(0xd2c1);
 
 #if !defined(__BORLANDC__)
 	D1_LOG("GUI_write_fonti_to_screen(fi=%d, cw=%d,x=%d, y=%d)\n", font_index, char_width, x, y);
@@ -482,7 +485,7 @@ void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_wi
 */
 void GUI_blank_char(void)
 {
-	PhysPt ptr = PhysMake(datseg, 0xce87);
+	PhysPt ptr = (PhysPt)PhysMake(datseg, 0xce87);
 	unsigned char color = ds_readb(0xd2c7);
 	unsigned char i;
 	unsigned char j;
@@ -493,7 +496,7 @@ void GUI_blank_char(void)
 
 	for (i = 0; i < 8; ptr += 8, i++) {
 		for (j = 0; j < 8; j++)
-			mem_writeb_inline(ptr + j, color);
+			mem_writeb(ptr + j, color);
 	}
 }
 
