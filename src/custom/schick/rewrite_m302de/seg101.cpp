@@ -3,6 +3,10 @@
  *	Spells: Transformation / Transmutation
  *	Functions rewritten 26/26 (complete)
  *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg101.cpp
+ *
 */
 
 #if !defined(__BORLANDC__)
@@ -27,7 +31,8 @@ namespace M302de {
 #endif
 
 /* Transformation / Verwandlung */
-void spell_adler() {
+void spell_adler(void)
+{
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
 #if !defined(__BORLANDC__)
@@ -35,7 +40,7 @@ void spell_adler() {
 #endif
 }
 
-void spell_arcano()
+void spell_arcano(void)
 {
 	signed short target;
 	unsigned short slot;
@@ -58,7 +63,7 @@ void spell_arcano()
 		(char*)Real2Host((RealPt)ds_readd(0xe5b8) + 0x10));
 }
 
-void spell_armatrutz()
+void spell_armatrutz(void)
 {
 	signed short max_boni;
 	signed short pos;
@@ -107,7 +112,8 @@ void spell_armatrutz()
 	}
 }
 
-void spell_inc_ch() {
+void spell_inc_ch(void)
+{
 
 	signed short target;
 	signed short slot;
@@ -152,7 +158,7 @@ void spell_inc_ch() {
 	}
 }
 
-void spell_feuerbann()
+void spell_feuerbann(void)
 {
 	signed short target;
 	signed short slot;
@@ -178,7 +184,8 @@ void spell_feuerbann()
 	}
 }
 
-void spell_inc_ff() {
+void spell_inc_ff(void)
+{
 
 	signed short target;
 	signed short slot;
@@ -223,7 +230,8 @@ void spell_inc_ff() {
 	}
 }
 
-void spell_inc_ge() {
+void spell_inc_ge(void)
+{
 
 	signed short target;
 	signed short slot;
@@ -268,7 +276,8 @@ void spell_inc_ge() {
 	}
 }
 
-void spell_inc_in() {
+void spell_inc_in(void)
+{
 
 	signed short target;
 	signed short slot;
@@ -313,7 +322,8 @@ void spell_inc_in() {
 	}
 }
 
-void spell_inc_kk() {
+void spell_inc_kk(void)
+{
 
 	signed short target;
 	signed short slot;
@@ -358,7 +368,8 @@ void spell_inc_kk() {
 	}
 }
 
-void spell_inc_kl() {
+void spell_inc_kl(void)
+{
 
 	signed short target;
 	signed short slot;
@@ -403,7 +414,8 @@ void spell_inc_kl() {
 	}
 }
 
-void spell_inc_mu() {
+void spell_inc_mu(void)
+{
 
 	signed short target;
 	signed short slot;
@@ -448,7 +460,8 @@ void spell_inc_mu() {
 	}
 }
 
-void spell_mutabili() {
+void spell_mutabili(void)
+{
 	/* triggers the "spell failed" messages */
 	ds_writew(0xac0e, -2);
 #if !defined(__BORLANDC__)
@@ -456,7 +469,7 @@ void spell_mutabili() {
 #endif
 }
 
-void spell_paral()
+void spell_paral(void)
 {
 
 	if (host_readbs(get_spelluser() + 0x86) >= 10) {
@@ -466,9 +479,8 @@ void spell_paral()
 		ds_writed(0xe5b4,
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
-		/* BC-TODO: add pointer or instruction */
-		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
-			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x04);
+		/* set the enemy to stoned */
+		or_ptr_bs(Real2Host(ds_readd(0xe5b4)) + 0x31, 0x04);
 
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x19c),
@@ -476,7 +488,7 @@ void spell_paral()
 	} else {
 		/* cast a hero */
 		/* TODO: the first check can be removed, cause it would not give a message */
-		if (get_spelluser() != get_spelltarget()) {
+		if (get_spelltarget() != get_spelluser()) {
 
 			/* set the target  */
 			ds_writed(SPELLTARGET,
@@ -492,8 +504,7 @@ void spell_paral()
 					(char*)get_dtp(0x1c0));
 			} else {
 				/* set the hero to stoned */
-				/* BC-TODO: add pointer or instruction */
-				host_writeb(get_spelltarget() + 0xaa, host_readb(get_spelltarget() + 0xaa) | 0x4);
+				or_ptr_bs(get_spelltarget() + 0xaa, 0x4);
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
@@ -505,10 +516,9 @@ void spell_paral()
 			ds_writew(0xac0e, 0);
 		}
 	}
-
 }
 
-void spell_salander()
+void spell_salander(void)
 {
 	signed short ae_cost;
 
@@ -525,10 +535,7 @@ void spell_salander()
 
 	if (host_readws(get_spelluser() + 0x64) >= ae_cost) {
 
-		/* BC-TODO: add pointer or instruction */
-		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x31,
-			host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) | 0x40);
-
+		or_ptr_bs(Real2Host(ds_readd(0xe5b4)) + 0x31, 0x40);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
@@ -548,13 +555,14 @@ void spell_salander()
 	}
 }
 
-void spell_see() {
+void spell_see(void)
+{
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"See und Fluss\" ist nicht implementiert\n");
 #endif
 }
 
-void spell_visibili()
+void spell_visibili(void)
 {
 	signed short slot;
 	signed short pos;
@@ -580,7 +588,7 @@ void spell_visibili()
 	if (rounds * 5 <= host_readws(get_spelluser() + 0x64)) {
 
 		ds_writew(0xac0e, rounds * 5);
-		pos = (signed char)get_hero_index(get_spelluser());
+		pos = (signed short)get_hero_index(get_spelluser());
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, (Bit32s)rounds * 450L, get_spelluser() + 0x9a, 1, pos);
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
@@ -599,13 +607,15 @@ void spell_visibili()
 
 /* Transmutation / Veraenderung */
 
-void spell_abvenenum() {
+void spell_abvenenum(void)
+{
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Abvenenum\" ist nicht implementiert\n");
 #endif
 }
 
-void spell_aeolitus() {
+void spell_aeolitus(void)
+{
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Aeolitus\" ist nicht implementiert\n");
 #endif
@@ -717,13 +727,15 @@ void spell_brenne(void)
 	}
 }
 
-void spell_claudibus() {
+void spell_claudibus(void)
+{
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Claudibus\" ist nicht implementiert\n");
 #endif
 }
 
-void spell_dunkelheit() {
+void spell_dunkelheit(void)
+{
 
 
 	/* set dunkelheit duration (level + 3) hours */
@@ -736,13 +748,15 @@ void spell_dunkelheit() {
 
 }
 
-void spell_erstarre() {
+void spell_erstarre(void)
+{
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Erstarre\" ist nicht implementiert\n");
 #endif
 }
 
-void spell_flimflam() {
+void spell_flimflam(void)
+{
 
 
 	/* set flim flam duration (level + 3) hours */
@@ -755,13 +769,15 @@ void spell_flimflam() {
 
 }
 
-void spell_schmelze() {
+void spell_schmelze(void)
+{
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Schmelze\" ist nicht implementiert\n");
 #endif
 }
 
-void spell_silentium() {
+void spell_silentium(void)
+{
 
 	signed short i;
 	signed short slot;
@@ -792,7 +808,8 @@ void spell_silentium() {
 		(char*)get_dtp(111 * 4));
 }
 
-void spell_sturmgebr() {
+void spell_sturmgebr(void)
+{
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Sturmgebruell\" ist nicht implementiert\n");
 #endif
