@@ -420,6 +420,7 @@ extern Bit8u* city_ltx[];
 #define get_itemsdat(nr) (char*)((RealPt)ds_readd(ITEMSDAT) + nr * 12)
 
 #define struct_copy memcpy
+#define bc__creat _creat
 
 
 #define BORLAND_FAR __far
