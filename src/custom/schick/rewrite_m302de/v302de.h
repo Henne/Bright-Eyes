@@ -164,6 +164,11 @@ static inline void dec_ptr_bs(Bit8u *p)
 	host_writebs(p, host_readbs(p) - 1);
 }
 
+static inline void or_ptr_bs(Bit8u *p, const signed char val)
+{
+	host_writebs(p, host_readbs(p) | val);
+}
+
 static inline void add_ptr_ws(Bit8u *p, Bit16s val)
 {
 	host_writews(p, host_readws(p) + val);
@@ -356,6 +361,8 @@ extern char ds[0xffff];
 #define inc_ptr_ws(p)  ++*(Bit16s*)(p)
 
 #define dec_ptr_bs(p) --*(Bit8s*)(p)
+#define or_ptr_bs(p, val) *(Bit8s*)(p) |= val;
+
 
 #define add_ptr_ws(p, v)  *(Bit16s*)(p)+=v
 
