@@ -69,6 +69,16 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 		if (host_readb(item_p + 3) == 1) {
 			/* eating */
 
+#if !defined(__BORLANDC__)
+				int diff = host_readbs(consumer + 0x7f) - host_readbs(item_p + 4);
+				D1_INFO("%s isst %s mit Naehrwert %d. Der Hunger sinkt von %d auf %d\n",
+					(consumer + 0x10),
+					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(item))),
+					host_readbs(item_p + 4),
+					host_readbs(consumer + 0x7f),
+					(diff >= 0) ? diff : 0);
+#endif
+
 			/* subtract from hunger value */
 			sub_ptr_bs(consumer + 0x7f, host_readbs(item_p + 4));
 
@@ -89,6 +99,16 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 			/* check if item is not empty */
 			if (!ks_empty(owner + 0x196 + pos * 14)) {
+
+#if !defined(__BORLANDC__)
+				int diff = host_readbs(consumer + 0x80) - host_readbs(item_p + 4);
+				D1_INFO("%s trinkt aus %s mit Naehrwert %d. Der Durst sinkt von %d auf %d\n",
+					(consumer + 0x10),
+					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(item))),
+					host_readbs(item_p + 4),
+					host_readbs(consumer + 0x80),
+					(diff >= 0) ? diff : 0);
+#endif
 
 				/* subtract from thirst value */
 				sub_ptr_bs(consumer + 0x80, host_readbs(item_p + 4));
