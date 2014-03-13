@@ -421,6 +421,7 @@ extern Bit8u* city_ltx[];
 
 #define struct_copy memcpy
 #define bc__creat _creat
+#define bc_memmove memmove
 
 
 #define BORLAND_FAR __far
