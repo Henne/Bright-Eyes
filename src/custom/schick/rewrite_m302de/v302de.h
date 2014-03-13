@@ -249,6 +249,58 @@ static inline unsigned short hero_unc(Bit8u *hero) {
 		return 1;
 }
 
+/**
+ * ks_empty() -	check if a item in the knapsack is empty
+ * @item:	ptr to item
+ *
+ * 0 = filled / 1 = empty
+ */
+static inline unsigned short ks_empty(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 2) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * ks_half_empty() -	check if a item in the knapsack is half empty
+ * @item:	ptr to item
+ *
+ * 0 = filled / 1 = half empty
+ */
+static inline unsigned short ks_half_empty(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 1) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * item_food() -	check if a item is food
+ * @item:	ptr to item
+ *
+ * 0 = non food / 1 = food
+ */
+static inline unsigned short item_food(Bit8u *item) {
+	if (((host_readb(item + 0x02) >> 3) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * item_herb_potion() -	check if a item is a herb or potion
+ * @item:	ptr to item
+ *
+ * 0 = non / 1 = herb or potion
+ */
+static inline unsigned short item_herb_potion(Bit8u *item) {
+	if (((host_readb(item + 0x02) >> 5) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 static inline Bit8u *get_spelluser() {
 	return Real2Host(ds_readd(SPELLUSER));
 }
@@ -424,6 +476,12 @@ extern Bit8u* city_ltx[];
 #define hero_cursed(hero)  ((*(struct hero_status*)(hero + 0xaa)).cursed)
 #define hero_unc(hero)  ((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_dup(hero)  ((*(struct hero_status*)(hero + 0xaa)).dup)
+
+#define ks_half_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).half_empty)
+#define ks_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).empty)
+
+#define item_food(item)  ((*(struct item_status*)(item + 0x2)).food)
+#define item_herb_potion(item)  ((*(struct item_status*)(item + 0x2)).herb_potion)
 
 #define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
 #define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)

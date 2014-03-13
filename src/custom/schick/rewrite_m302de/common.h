@@ -63,4 +63,28 @@ struct hero_status {
 	unsigned short dummy	:6;
 };
 
+struct item_status {
+	/* item + 0x02 */
+	unsigned short bit0		 :1;
+	unsigned short bit1		 :1;
+	unsigned short bit2		 :1;
+	unsigned short food		 :1;
+	unsigned short bit4		 :1;
+	unsigned short herb_potion	 :1;
+	unsigned short bit6		 :1;
+	unsigned short bit7		 :1;
+};
+
+struct knapsack_status {
+	/* knapsack position + 0x04 */
+	unsigned short bit0		 :1;
+	unsigned short half_empty	 :1;
+	unsigned short empty		 :1;
+	unsigned short bit3		 :1;
+	unsigned short bit4		 :1;
+	unsigned short bit5		 :1;
+	unsigned short bit6		 :1;
+	unsigned short bit7		 :1;
+};
+
 #endif
