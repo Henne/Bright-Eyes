@@ -372,6 +372,11 @@ extern char ds[0xffff];
 
 #define get_hero(nr) ((Bit8u*)ds_readd(HEROS) + 0x6da * (nr))
 
+#ifdef M302de_ORIGINAL_BUGFIX
+#define ds_writeb_z(addr, val) (if (ds_readb(addr) == 0) ds_writeb(addr, val))
+#else
+#define ds_writeb_z(addr, val) (ds_writeb(addr, val))
+#endif
 
 extern Bit8u* text_ltx[];
 extern Bit8u* dialog_text[];
