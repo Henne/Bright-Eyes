@@ -56,7 +56,7 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
  *
  * This function has some tweaks, dependent on the fight number.
  */
-void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
+void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 {
 	unsigned short i;
 
@@ -99,7 +99,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, bool flag)
  *
  */
 
-signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool is_enemy)
+signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signed short is_enemy)
 {
 	Bit8u *hero;
 	signed short pos;
@@ -113,7 +113,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, bool 
 
 	damage = dice_template(dice);
 
-	if (is_enemy == 0) {
+	if (!is_enemy) {
 		/* the attacked is a hero */
 		hero = attacked;
 
