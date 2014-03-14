@@ -179,16 +179,19 @@ void status_show(Bit16u index)
 	char le_fix[10];
 #endif
 	RealPt hero;
-	struct nvf_desc nvf;
 	Bit16u bak1, bak2, bak3, bak4;
-	signed short i;
-	Bit16u j;
-	Bit16u bp;
-	Bit16s l1, at, pa;
-	signed short height;
-	signed short width;
-	Bit16s fb;
 	Bit8s val;
+	signed short width;
+	signed short height;
+	Bit16s at;
+	Bit16s pa;
+	Bit16s fb;
+	Bit16s l1;
+	Bit16u bp;
+	signed short i;
+	signed short j;
+
+	struct nvf_desc nvf;
 
 	bak1 = ds_readw(0xd313);
 	bak2 = ds_readw(0xd315);
@@ -261,7 +264,7 @@ void status_show(Bit16u index)
 
 			/* check if stackable */
 			/* TODO: bit flags operation */
-			if (((host_readbs(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + 0x196)) + 2) >> 4) & 1)) {
+			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + 0x196)))) {
 
 				set_textcolor(0xff, 0);
 				/* originally itoa() */
@@ -305,10 +308,9 @@ void status_show(Bit16u index)
 	/* print typus */
 	set_textcolor(0, 2);
 
-	if (host_readb(Real2Host(hero) + 0x22))
-		GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (0x251 + host_readb(Real2Host(hero) + 0x21)) * 4)), 59, 16);
-	else
-		GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (0x9 + host_readb(Real2Host(hero) + 0x21)) * 4)), 59, 16);
+	GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (
+	((host_readb(Real2Host(hero) + 0x22)) ? 0x251 : 0x9) + host_readbs(Real2Host(hero) + 0x21)) * 4)), 59, 16);
+
 
 	/* show AP */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -319,7 +321,7 @@ void status_show(Bit16u index)
 	/* print level */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_city(0x1c),
-		host_readb(Real2Host(hero) + 0x27));
+		host_readbs(Real2Host(hero) + 0x27));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 33);
 
 	/* print money */
@@ -374,7 +376,7 @@ void status_show(Bit16u index)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x28),
-					(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (host_readb(Real2Host(hero) + 0x26) + 0x15) * 4)));
+					(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (host_readbs(Real2Host(hero) + 0x26) + 0x15) * 4)));
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 55);
 
 			/* show attributes */
@@ -384,19 +386,19 @@ void status_show(Bit16u index)
 
 			for (i = 0; i <= 13; i++) {
 
-				val = host_readbs(Real2Host(hero) + i * 3 + 0x35);
-				val += host_readbs(Real2Host(hero) + i * 3 + 0x36);
+				val = host_readbs(Real2Host(hero) + i * 3 + 0x35)
+					+ host_readbs(Real2Host(hero) + i * 3 + 0x36);
 
 				sprintf((char*)Real2Host(ds_readd(0xd2eb)) + i * 10,
 					(char*)get_city(0xcc),
-					host_readb(Real2Host(hero) + i * 3 + 0x34) != val ?
+					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
 						(char*)get_city(0xc4) :
 						(char*)p_datseg + 0x64a0,
 					val,
-					host_readb(Real2Host(hero) + i * 3 + 0x34) != val ?
+					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
 						(char*)get_city(0xc8) :
 						(char*)p_datseg + 0x64a1,
-					host_readb(Real2Host(hero) + i * 3 + 0x34));
+					host_readbs(Real2Host(hero) + i * 3 + 0x34));
 
 			}
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -420,11 +422,11 @@ void status_show(Bit16u index)
 
 			/* calculate BP */
 			bp = 8;
-			if (host_readbs(Real2Host(hero) + 0x47) * 50 <= host_readw(Real2Host(hero) + 0x2d8))
+			if (host_readbs(Real2Host(hero) + 0x47) * 50 <= host_readws(Real2Host(hero) + 0x2d8))
 				bp--;
-			if (host_readbs(Real2Host(hero) + 0x47) * 75 <= host_readw(Real2Host(hero) + 0x2d8))
+			if (host_readbs(Real2Host(hero) + 0x47) * 75 <= host_readws(Real2Host(hero) + 0x2d8))
 				bp -= 2;
-			if (host_readbs(Real2Host(hero) + 0x47) * 100 <= host_readw(Real2Host(hero) + 0x2d8))
+			if (host_readbs(Real2Host(hero) + 0x47) * 100 <= host_readws(Real2Host(hero) + 0x2d8))
 				bp -= 2;
 
 			if (ds_readw(0xc003) == 2) {
@@ -464,8 +466,8 @@ void status_show(Bit16u index)
 					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
 					host_readbs(Real2Host(hero) + 0x66),			/* MR */
 					host_readbs(Real2Host(hero) + 0x30) + host_readbs(Real2Host(hero) + 0x31), /* RS */
-					host_readbs(Real2Host(hero) + 0x47) + host_readw(Real2Host(hero) + 0x60) +
-						host_readbs(Real2Host(hero) + 0x48),		/* Ausdauer*/
+					host_readbs(Real2Host(hero) + 0x48) + (host_readws(Real2Host(hero) + 0x60) +
+						host_readbs(Real2Host(hero) + 0x47)),		/* Ausdauer*/
 					host_readw(Real2Host(hero) + 0x2d8),				/* Last */
 					bp);							/* BP */
 #endif
