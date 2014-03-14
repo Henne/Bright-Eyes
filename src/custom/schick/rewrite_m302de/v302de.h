@@ -499,6 +499,10 @@ extern Bit8u* city_ltx[];
 #define host_writew(p, d)	(*(Bit16u*)(p) = d)
 #define host_writed(p, d)	(*(Bit32u*)(p) = d)
 
+#define host_writebs(p, d)	(*(Bit8s*)(p) = d)
+#define host_writews(p, d)	(*(Bit16s*)(p) = d)
+#define host_writeds(p, d)	(*(Bit32s*)(p) = d)
+
 #define mem_memcpy memcpy
 
 #define hero_dead(hero)  ((*(struct hero_status*)(hero + 0xaa)).dead)
@@ -534,8 +538,8 @@ extern Bit8u* city_ltx[];
 
 #define BORLAND_FAR __far
 
-#define get_cb_val(x, y) (host_readb((ds_readd(CHESSBOARD)) + y * 25 + x))
-#define set_cb_val(x, y, val) (host_writeb((ds_readd(CHESSBOARD)) + y * 25 + x, val))
+#define get_cb_val(x, y) (host_readbs((RealPt)ds_readd(CHESSBOARD) + y * 25 + x))
+#define set_cb_val(x, y, val) (host_writeb(((RealPt)ds_readd(CHESSBOARD)) + y * 25 + x, val))
 
 #endif
 #endif
