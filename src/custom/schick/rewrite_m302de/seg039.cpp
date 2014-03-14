@@ -25,24 +25,25 @@ namespace M302de {
 #endif
 
 /* is used at selecting a target */
+/* Borlandified and identical */
 signed short seg039_0000(signed short v1, signed short v2, signed short v3, signed short v4)
 {
-	return abs(v1 - v3) + abs(v2 - v4);
+	return __abs__(v1 - v3) + __abs__(v2 - v4);
 }
 
-signed short seg039_0023(Bit8u *hero) {
+/* Borlandified and identical */
+signed short seg039_0023(Bit8u *hero)
+{
 	Bit8u *ptr;
-	register signed short weapon;
-	register signed short retval = -1;
+	signed short retval = -1;
+	signed short weapon;
 
-	/* get equipped weapon of the hero */
-	weapon = host_readw(hero + 0x1c0);
-	/* make a pointer to the entry of ITEMS.DAT */
-	ptr = get_itemsdat(weapon);
+	/* get equipped weapon of the hero and make a pointer to the entry of ITEMS.DAT */
+	ptr = get_itemsdat((weapon = host_readw(hero + 0x1c0)));
 
 
 	/* not a weapon */
-	if (((host_readb(ptr + 2) >> 1) & 1)) {
+	if (item_weapon(ptr)) {
 
 		/* weapons are not MagicStaffs or Fightstaffs */
 		if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45)
@@ -64,7 +65,9 @@ signed short seg039_0023(Bit8u *hero) {
  * @enemy_id:	the ID of the enemy (MONSTER.DAT)
  * @round:	the fight round the enemy appears
  */
-void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round) {
+/* Borlandified and identical */
+void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round)
+{
 
 	Bit8u *temp;
 	Bit8u *sheet;
@@ -85,12 +88,10 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	/* roll attributes  and save them to the sheet */
 	for (i = 0; i < 7; i++) {
 
-		/* TODO: a = b = dice_template() */
-		signed char tmp;
-
-		tmp = (signed char)dice_template(host_readw(temp + i * 2 + 3));
-		host_writeb(sheet + i * 2 + 4, tmp);
-		host_writeb(sheet + i * 2 + 3, tmp);
+		/* UGLY: a = b = dice_template() */
+		host_writebs(sheet + i * 2 + 3,
+			host_writebs(sheet + i * 2 + 4,
+				dice_template(host_readw(temp + i * 2 + 3))));
 	}
 
 	/* roll out LE and save it to the sheet */
@@ -101,9 +102,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writew(sheet + 0x13, host_readw(sheet + 0x11));
 
 	/* roll out AE and save it to the sheet */
-	/* TODO: a = b = dice_template() */
-	host_writew(sheet + 0x17, dice_template(host_readw(temp + 0x13)));
-	host_writew(sheet + 0x15, host_readw(sheet + 0x17));
+	host_writews(sheet + 0x15, host_writews(sheet + 0x17, dice_template(host_readw(temp + 0x13))));
 
 	/* roll out MR  and save it */
 	host_writeb(sheet + 0x19,
@@ -116,8 +115,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	if (ds_readw(CURRENT_FIG_NR) == 0xbc)
 		host_writeb(sheet + 0x19, 5);
 	else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(sheet) != 0x48)
-			host_writeb(sheet + 0x31,
-				host_readb(sheet + 0x31) | 0x20);
+			or_ptr_bs(sheet + 0x31, 0x20);
 
 	/* copy the first encounter AP */
 	host_writeb(sheet + 0x1a, host_readb(temp + 0x17));
@@ -146,7 +144,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writeb(sheet + 0x25, host_readb(temp + 0x21));
 
 	/* bogus this value is 0x00 or 0x20 */
-	host_writeb(sheet + 0x31, host_readb(sheet + 0x31) & 0xfe);
+	and_ptr_bs(sheet + 0x31, 0xfe);
 
 	host_writeb(sheet + 0x26, 0xff);
 
@@ -181,7 +179,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		If the current fight == 0x5e and the enemy is "Kultist",
 		set a flag */
 	if (ds_readw(CURRENT_FIG_NR) == 0x5e && host_readb(sheet) == 0x38)
-		host_writeb(sheet + 0x32, host_readb(sheet + 0x32) | 4);
+		or_ptr_bs(sheet + 0x32, 0x4);
 }
 
 /**
