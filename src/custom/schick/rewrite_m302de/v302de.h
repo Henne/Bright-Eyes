@@ -505,6 +505,7 @@ extern Bit8u* city_ltx[];
 #define get_city(nr) (char*)(host_readd((RealPt)ds_readd(CITY_LTX) + nr))
 #define get_monname(nr) (char*)(host_readd((RealPt)ds_readd(MONNAMES) + nr * 4))
 #define get_itemsdat(nr) (char*)((RealPt)ds_readd(ITEMSDAT) + nr * 12)
+#define get_itemname(nr) (char*)((RealPt)(host_readd((RealPt)(ds_readd(ITEMSNAME)) + nr * 4)))
 
 #define struct_copy memcpy
 #define bc__creat _creat
