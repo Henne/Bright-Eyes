@@ -66,7 +66,7 @@ struct hero_status {
 struct item_status {
 	/* item + 0x02 */
 	unsigned short bit0		 :1;
-	unsigned short bit1		 :1;
+	unsigned short weapon		 :1;
 	unsigned short bit2		 :1;
 	unsigned short food		 :1;
 	unsigned short stackable	 :1;

@@ -276,6 +276,19 @@ static inline unsigned short ks_half_empty(Bit8u *ks) {
 }
 
 /**
+ * item_weapon() -	check if a item is a weapon
+ * @item:	ptr to item
+ *
+ * 0 = non weapon / 1 = weapon
+ */
+static inline unsigned short item_weapon(Bit8u *item) {
+	if (((host_readb(item + 0x02) >> 1) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * item_food() -	check if a item is food
  * @item:	ptr to item
  *
@@ -493,6 +506,7 @@ extern Bit8u* city_ltx[];
 #define ks_half_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).half_empty)
 #define ks_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).empty)
 
+#define item_weapon(item)  ((*(struct item_status*)(item + 0x2)).weapon)
 #define item_food(item)  ((*(struct item_status*)(item + 0x2)).food)
 #define item_stackable(item)  ((*(struct item_status*)(item + 0x2)).stackable)
 #define item_herb_potion(item)  ((*(struct item_status*)(item + 0x2)).herb_potion)
