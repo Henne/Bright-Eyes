@@ -4,17 +4,17 @@ namespace M302de {
 
 //0x20
 //static
-void draw_playmask();
+void draw_playmask(void);
 //0x25
-void draw_status_line();
+void draw_status_line(void);
 //0x2a
-void draw_icons();
+void draw_icons(void);
 //0x2f
-void draw_main_screen();
+void draw_main_screen(void);
 //0x34
 void clear_hero_icon(unsigned short);
 //0x39
-void clear_loc_line();
+void clear_loc_line(void);
 //0x3e
 void select_hero_icon(unsigned short);
 //0x43

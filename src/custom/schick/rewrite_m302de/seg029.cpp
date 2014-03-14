@@ -1,6 +1,10 @@
 /*
-        Rewrite of DSA1 v3.02_de functions of seg029 (playmask)
-        Functions rewritten: 10/10
+ *	Rewrite of DSA1 v3.02_de functions of seg029 (playmask)
+ *	Functions rewritten: 10/10 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg029.cpp
 */
 
 #if !defined(__BORLANDC__)
@@ -23,6 +27,7 @@
 namespace M302de {
 #endif
 
+#if 0
 struct coord {
 	unsigned short x,y;
 };
@@ -41,13 +46,13 @@ static signed char icon_array[9] = {
 	-2, -2, -2,
 	-2, -2, -2
 };
+#endif
 
 /**
  *	draw_playmask() - loads and draws the playmask to the screen
  */
-/* Borlandified and identical */
 //static
-void draw_playmask()
+void draw_playmask(void)
 {
 	ds_writew(0xc3cb, 0);
 
@@ -110,8 +115,8 @@ void draw_playmask()
  *
  * A forename has a maximum length of 7 characters.
  */
-/* Borlandified and identical */
-void copy_forename(Bit8u *dst, Bit8u *name) {
+void copy_forename(Bit8u *dst, Bit8u *name)
+{
 
 	int i;
 
@@ -130,12 +135,12 @@ void copy_forename(Bit8u *dst, Bit8u *name) {
 /**
  *	draw_status_line() - draws the status line (pictures and names)
  */
-void draw_status_line()
+void draw_status_line(void)
 {
 	unsigned short fg_bak, bg_bak;
 	Bit8u *src, *dst;
 	Bit16s head_bak;
-	unsigned short i, j;
+	signed short i, j;
 
 	ds_writew(0xc3cb, 0);
 
@@ -184,10 +189,8 @@ void draw_status_line()
 				}
 
 				/* set the src pointer of the head */
-				if (hero_dead(get_hero(i)))
-					ds_writed(0xc019, ds_readd(0xd2f3));
-				else
-					ds_writed(0xc019, ds_readd(HEROS) + i * 0x6da + 0x2da);
+				ds_writed(0xc019, (hero_dead(get_hero(i)) ? ds_readd(0xd2f3) :
+					(Bit32u)((RealPt)ds_readd(HEROS) + i * 0x6da + 0x2da)));
 
 				do_pic_copy(0);
 
@@ -220,7 +223,7 @@ void draw_status_line()
 
 				do_pic_copy(0);
 
-				if (head_bak == -1)
+				if (head_bak != -1)
 					load_in_head(head_bak);
 			}
 
@@ -240,19 +243,18 @@ void draw_status_line()
  * clear_hero_icon - fills hero icon and bars with black color
  * @pos:	position of the hero
  */
-void clear_hero_icon(unsigned short pos) {
+void clear_hero_icon(unsigned short pos)
+{
 
 	/* fill icon area black */
 	do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2), 157,
 		ds_readw(0x2d01 + pos * 2) + 31, 188, 0);
 
 	/* return if the hero has a class */
-	if (host_readb(get_hero(pos) + 0x21))
-		return;
-
-	/* fill bars area black */
-	do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
-		ds_readw(0x2d01 + pos * 2) + 39, 188, 0);
+	if (!host_readbs(get_hero(pos) + 0x21))
+		/* fill bars area black */
+		do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
+			ds_readw(0x2d01 + pos * 2) + 39, 188, 0);
 }
 
 /**
@@ -268,26 +270,22 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 
 	fd = load_archive_file(fileindex);
 
-	seg002_0c72(fd, icon * 576, 0);
+	seg002_0c72(fd, icon * 576L, 0);
 
 	read_archive_file(fd, Real2Host(ds_readd(0xd2e7)) + pos * 576, 576);
 
 	bc_close(fd);
 
-	if (fileindex == 0x0f)
-		/* Real Icon */
-		icon_array[pos] =  (signed char)icon;
-	else
-		/* Blank Icon */
-		icon_array[pos] = -1;
+	/* set a real or blank icon */
+	ds_writeb(0x5ecc + pos, (fileindex == 0x0f) ? icon : -1);
 }
 
 /**
  *	draw_icons() - draws all icons
  */
-void draw_icons()
+void draw_icons(void)
 {
-	Bit16u i;
+	signed short i;
 
 	if (ds_readb(0x2845) != 0)
 		return;
@@ -296,17 +294,17 @@ void draw_icons()
 
 	for (i = 0; i < 9; i++) {
 
-		ds_writew(0xc011, icon_pos[i].x);
-		ds_writew(0xc013, icon_pos[i].y);
-		ds_writew(0xc015, icon_pos[i].x + 23);
-		ds_writew(0xc017, icon_pos[i].y + 23);
-		ds_writed(0xc019, ds_readd(0xd2e7) + i * 576);
+		ds_writew(0xc011, ds_readw(0x2cdd + i * 4));
+		ds_writew(0xc013, ds_readw(0x2cdd + i * 4 + 2));
+		ds_writew(0xc015, ds_readw(0x2cdd + i * 4) + 23);
+		ds_writew(0xc017, ds_readw(0x2cdd + i * 4 + 2) + 23);
+		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2e7) + i * 576));
 
-		if (ds_readb(0xbd38 + i) != 0xff) {
-			if (icon_array[i] != ds_readb(0xbd38 + i))
-				load_icon(0x0f, ds_readb(0xbd38 + i), i);
+		if (ds_readbs(0xbd38 + i) != -1) {
+			if (ds_readbs(0x5ecc + i) != ds_readbs(0xbd38 + i))
+				load_icon(0x0f, ds_readbs(0xbd38 + i), i);
 		} else {
-			if (ds_readb(0x5ecc + i) != 0xff)
+			if (ds_readbs(0x5ecc + i) != -1)
 				load_icon(0x06, i, i);
 		}
 
@@ -319,7 +317,7 @@ void draw_icons()
 /**
  *	draw_main_screen() - draws the main screen
  */
-void draw_main_screen()
+void draw_main_screen(void)
 {
 	ds_writew(0xe111, 0xf1);
 	ds_writew(0xe10f, 0x1f);
@@ -338,13 +336,13 @@ void draw_main_screen()
 
 	draw_compass();
 
-	ds_writew(0xe10d, 1);
-	ds_writew(0xe113, 1);
+	ds_writew(0xe113, ds_writew(0xe10d, 1));
 
 	set_textcolor(0x1f, 0x1b);
 }
 
-void clear_loc_line() {
+void clear_loc_line(void)
+{
 	update_mouse_cursor();
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 3, 140, 316, 153, 0);
 	refresh_screen_size();
