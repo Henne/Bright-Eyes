@@ -6393,6 +6393,36 @@ static int n_seg028(unsigned offs) {
 	}
 }
 
+static int n_seg030(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		CPU_Pop16();
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("seg030_0000(%d);\n", arg);
+		RealPt retval = seg030_0000(arg);
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
+	}
+	case 0x8d: {
+		CPU_Pop16();
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("seg030_008d(%d);\n", arg);
+		RealPt retval = seg030_008d(arg);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg031(unsigned offs) {
 	switch (offs) {
 	case 0x56c: {
