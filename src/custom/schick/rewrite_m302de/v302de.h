@@ -289,6 +289,19 @@ static inline unsigned short item_food(Bit8u *item) {
 }
 
 /**
+ * item_stackable() -	check if a item is stackable
+ * @item:	ptr to item
+ *
+ * 0 = non stackable / 1 = stackable
+ */
+static inline unsigned short item_stackable(Bit8u *item) {
+	if (((host_readb(item + 0x02) >> 4) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * item_herb_potion() -	check if a item is a herb or potion
  * @item:	ptr to item
  *
@@ -481,6 +494,7 @@ extern Bit8u* city_ltx[];
 #define ks_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).empty)
 
 #define item_food(item)  ((*(struct item_status*)(item + 0x2)).food)
+#define item_stackable(item)  ((*(struct item_status*)(item + 0x2)).stackable)
 #define item_herb_potion(item)  ((*(struct item_status*)(item + 0x2)).herb_potion)
 
 #define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
