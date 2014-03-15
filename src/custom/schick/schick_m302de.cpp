@@ -7261,6 +7261,153 @@ static int n_seg095(unsigned short offs)
 	}
 }
 
+static int n_seg097(unsigned short offs)
+{
+
+	switch (offs) {
+#if 0
+	/* Callers: 0 */
+	case 0x000:
+	/* Callers: 1 */
+	case 0x129:
+		return 0;
+	/* Callers: 1 */
+	case 0x15e: {
+		CPU_Pop16();
+		unsigned short c = CPU_Pop16();
+		RealPt p_height = CPU_Pop32();
+		CPU_Push32(p_height);
+		CPU_Push16(c);
+
+		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
+		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x1c2:
+#endif
+	/* Callers: 1 */
+	case 0x1f8: {
+		CPU_Pop16();
+		RealPt dst = CPU_Pop32();
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		unsigned short num = CPU_Pop16();
+		unsigned short v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(num);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(dst);
+
+		D1_LOG("GUI_1f8(0x%x, %d, %d, %d, %d);",
+			dst, x, y, num, v4);
+
+		reg_ax = GUI_enter_text(Real2Host(dst),	x, y, num, v4);
+		D1_LOG(" = 0x%x\n", reg_ax);
+
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x4ae: {
+		CPU_Pop16();
+		Bit16u v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		Bit16u v3 = CPU_Pop16();
+		Bit16u v4 = CPU_Pop16();
+
+		D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
+			v1, v2, v3, v4);
+		GUI_draw_radio_bg(v1, v2, v3, v4);
+
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x564: {
+		CPU_Pop16();
+		unsigned short width = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		CPU_Push16(height);
+		CPU_Push16(width);
+
+		D1_LOG("GUI_copy_smth(%d, %d)\n", width, height);
+		GUI_copy_smth(width, height);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x59f: {
+		CPU_Pop16();
+		RealPt str = CPU_Pop32();
+		CPU_Push32(str);
+
+		D1_LOG("GUI_output()\n");
+		GUI_output(Real2Host(str));
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x5b4: {
+		CPU_Pop16();
+		RealPt str = CPU_Pop32();
+		unsigned short num = CPU_Pop16();
+		CPU_Push16(num);
+		CPU_Push32(str);
+
+		D1_LOG("GUI_input()\n");
+		reg_ax = GUI_input(Real2Host(str), num);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x7f4: {
+		CPU_Pop16();
+		Bit16s v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		Bit16u v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("GUI_fill_radio_button(%d, %d, %d);\n", v1, v2, v3);
+
+		GUI_fill_radio_button(v1, v2, v3);
+
+		return 1;
+
+	}
+	/* Callers: 1 */
+	case 0x893:
+		return 0;
+	/* Callers: 2 */
+	case 0xb43: {
+		CPU_Pop16();
+		Bit16u v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		Bit16u v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("GUI_menu_input(%d, %d, %d);\n", v1, v2, v3);
+
+		reg_ax = GUI_menu_input(v1, v2, v3);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0xd45:
+		   return 0;
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg098(unsigned short offs)
 {
 	switch (offs) {
@@ -7938,154 +8085,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x13b4)) return n_seg072(offs);
 	else if (is_ovrseg(0x13c3)) return n_seg075(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
-	/* seg097 */
-	if (is_ovrseg(0x1442)) {
-		switch (offs) {
-#if 0
-		/* Callers: 0 */
-		case 0x000:
-		/* Callers: 1 */
-		case 0x129:
-			return 0;
-		/* Callers: 1 */
-		case 0x15e: {
-			CPU_Pop16();
-			unsigned short c = CPU_Pop16();
-			RealPt p_height = CPU_Pop32();
-			CPU_Push32(p_height);
-			CPU_Push16(c);
-
-			reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
-			D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x1c2:
-#endif
-		/* Callers: 1 */
-		case 0x1f8: {
-			CPU_Pop16();
-			RealPt dst = CPU_Pop32();
-			unsigned short x = CPU_Pop16();
-			unsigned short y = CPU_Pop16();
-			unsigned short num = CPU_Pop16();
-			unsigned short v4 = CPU_Pop16();
-			CPU_Push16(v4);
-			CPU_Push16(num);
-			CPU_Push16(y);
-			CPU_Push16(x);
-			CPU_Push32(dst);
-
-			D1_LOG("GUI_1f8(0x%x, %u, %u, %u, %u);",
-				dst, x, y, num, v4);
-
-			reg_ax = GUI_enter_text(Real2Host(dst),
-					x, y, num, v4);
-			D1_LOG(" = 0x%x\n", reg_ax);
-
-			return 1;
-		}
-		/* Callers: 3 */
-		case 0x4ae: {
-			CPU_Pop16();
-			Bit16u v1 = CPU_Pop16();
-			Bit16u v2 = CPU_Pop16();
-			Bit16u v3 = CPU_Pop16();
-			Bit16u v4 = CPU_Pop16();
-
-			D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
-				v1, v2, v3, v4);
-			GUI_draw_radio_bg(v1, v2, v3, v4);
-
-			CPU_Push16(v4);
-			CPU_Push16(v3);
-			CPU_Push16(v2);
-			CPU_Push16(v1);
-
-			return 1;
-		}
-		/* Callers: 3 */
-		case 0x564: {
-			CPU_Pop16();
-			signed short width = CPU_Pop16();
-			signed short height = CPU_Pop16();
-			CPU_Push16(height);
-			CPU_Push16(width);
-
-			D1_LOG("GUI_copy_smth(%d, %d)\n", width, height);
-			GUI_copy_smth(width, height);
-
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x59f: {
-			CPU_Pop16();
-			RealPt str = CPU_Pop32();
-			CPU_Push32(str);
-
-			D1_LOG("GUI_output()\n");
-			GUI_output(Real2Host(str));
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x5b4: {
-			CPU_Pop16();
-			RealPt str = CPU_Pop32();
-			unsigned short num = CPU_Pop16();
-			CPU_Push16(num);
-			CPU_Push32(str);
-
-			D1_LOG("GUI_input()\n");
-			reg_ax = GUI_input(Real2Host(str), num);
-
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x7f4: {
-			CPU_Pop16();
-			Bit16s v1 = CPU_Pop16();
-			Bit16u v2 = CPU_Pop16();
-			Bit16u v3 = CPU_Pop16();
-			CPU_Push16(v3);
-			CPU_Push16(v2);
-			CPU_Push16(v1);
-
-			D1_LOG("GUI_fill_radio_button(%d, %d, %d);\n",
-				v1, v2, v3);
-
-			GUI_fill_radio_button(v1, v2, v3);
-
-			return 1;
-
-		}
-		/* Callers: 1 */
-		case 0x893:
-			return 0;
-		/* Callers: 2 */
-		case 0xb43: {
-			CPU_Pop16();
-			Bit16u v1 = CPU_Pop16();
-			Bit16u v2 = CPU_Pop16();
-			Bit16u v3 = CPU_Pop16();
-			CPU_Push16(v3);
-			CPU_Push16(v2);
-			CPU_Push16(v1);
-
-			D1_LOG("GUI_menu_input(%d, %d, %d);\n", v1, v2, v3);
-
-			reg_ax = GUI_menu_input(v1, v2, v3);
-
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0xd45:
-			   return 0;
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg097", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x1442)) return n_seg097(offs);
 	else if (is_ovrseg(0x1449)) return n_seg098(offs);
 	else if (is_ovrseg(0x147b)) return n_seg103(offs);
 	else if (is_ovrseg(0x1485)) return n_seg105(offs);
