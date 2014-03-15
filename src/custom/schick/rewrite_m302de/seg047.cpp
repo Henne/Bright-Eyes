@@ -632,22 +632,22 @@ void hero_get_drunken(Bit8u *hero)
 		host_writeb(hero + 0xa1, 1);
 
 		/* change good attributes */
-		inc_ptr_bs(hero + 0x35);
-		dec_ptr_bs(hero + 0x38);
-		dec_ptr_bs(hero + 0x3b);
-		dec_ptr_bs(hero + 0x3e);
-		dec_ptr_bs(hero + 0x41);
-		inc_ptr_bs(hero + 0x44);
-		inc_ptr_bs(hero + 0x47);
+		add_ptr_bs(hero + 0x35, 1);
+		sub_ptr_bs(hero + 0x38, 1);
+		sub_ptr_bs(hero + 0x3b, 1);
+		sub_ptr_bs(hero + 0x3e, 1);
+		sub_ptr_bs(hero + 0x41, 1);
+		add_ptr_bs(hero + 0x44, 1);
+		add_ptr_bs(hero + 0x47, 1);
 
 		/* Reset bad attributes */
-		inc_ptr_bs(hero + 0x4a);
-		dec_ptr_bs(hero + 0x4d);
-		dec_ptr_bs(hero + 0x50);
-		inc_ptr_bs(hero + 0x53);
-		dec_ptr_bs(hero + 0x56);
-		inc_ptr_bs(hero + 0x59);
-		inc_ptr_bs(hero + 0x5c);
+		add_ptr_bs(hero + 0x4a, 1);
+		sub_ptr_bs(hero + 0x4d, 1);
+		sub_ptr_bs(hero + 0x50, 1);
+		add_ptr_bs(hero + 0x53, 1);
+		sub_ptr_bs(hero + 0x56, 1);
+		add_ptr_bs(hero + 0x59, 1);
+		add_ptr_bs(hero + 0x5c, 1);
 
 		/* do a burp FX2.VOC */
 		if (ds_readb(0x2845) == 20) {
@@ -677,22 +677,22 @@ void hero_get_sober(Bit8u *hero) {
 	host_writeb(hero + 0xa1, 0);
 
 	/* Reset good attributes */
-	dec_ptr_bs(hero + 0x35);
-	inc_ptr_bs(hero + 0x38);
-	inc_ptr_bs(hero + 0x3b);
-	inc_ptr_bs(hero + 0x3e);
-	inc_ptr_bs(hero + 0x41);
-	dec_ptr_bs(hero + 0x44);
-	dec_ptr_bs(hero + 0x47);
+	sub_ptr_bs(hero + 0x35, 1);
+	add_ptr_bs(hero + 0x38, 1);
+	add_ptr_bs(hero + 0x3b, 1);
+	add_ptr_bs(hero + 0x3e, 1);
+	add_ptr_bs(hero + 0x41, 1);
+	sub_ptr_bs(hero + 0x44, 1);
+	sub_ptr_bs(hero + 0x47, 1);
 
 	/* Reset bad attributes */
-	dec_ptr_bs(hero + 0x4a);
-	inc_ptr_bs(hero + 0x4d);
-	inc_ptr_bs(hero + 0x50);
-	dec_ptr_bs(hero + 0x53);
-	inc_ptr_bs(hero + 0x56);
-	dec_ptr_bs(hero + 0x59);
-	dec_ptr_bs(hero + 0x5c);
+	sub_ptr_bs(hero + 0x4a, 1);
+	add_ptr_bs(hero + 0x4d, 1);
+	add_ptr_bs(hero + 0x50, 1);
+	sub_ptr_bs(hero + 0x53, 1);
+	add_ptr_bs(hero + 0x56, 1);
+	sub_ptr_bs(hero + 0x59, 1);
+	sub_ptr_bs(hero + 0x5c, 1);
 
 	if (ds_readb(0x2845) == 20)
 		ds_writew(0x2846, 1);
