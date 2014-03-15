@@ -268,12 +268,13 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos) {
  * Returns the position of item, if equipped, otherwise -1.
  * Is not used in the game.
  */
-signed short has_hero_equipped(Bit8u *hero, unsigned short item) {
-
-	unsigned short i;
+/* Borlandified and identical */
+signed short has_hero_equipped(Bit8u *hero, unsigned short item)
+{
+	signed short i;
 
 	for (i = 0; i < 7; i++)
-		if (host_readw(hero + 0x196 + item * 14) == item)
+		if (host_readw(hero + 0x196 + i * 14) == item)
 			return i;
 
 	return -1;
