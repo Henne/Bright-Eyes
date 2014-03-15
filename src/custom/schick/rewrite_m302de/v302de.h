@@ -174,6 +174,11 @@ static inline void and_ptr_bs(Bit8u *p, const signed char val)
 	host_writebs(p, host_readbs(p) & val);
 }
 
+static inline void add_ptr_bs(Bit8u *p, const signed char val)
+{
+	host_writebs(p, host_readbs(p) + val);
+}
+
 static inline void sub_ptr_bs(Bit8u *p, const signed char val)
 {
 	host_writebs(p, host_readbs(p) - val);
@@ -459,12 +464,14 @@ extern char ds[0xffff];
 #define ds_writew(p, d) *(Bit16u*)(ds + p) = d
 #define ds_writed(p, d) *(Bit32u*)(ds + p) = d
 
-#define inc_ptr_bs(p)  ++*(Bit8s*)(p)
-#define inc_ptr_ws(p)  ++*(Bit16s*)(p)
+#define inc_ptr_bs(p)	(*(Bit8s*)(p))++
+#define inc_ptr_ws(p)	(*(Bit16s*)(p))++
+#define dec_ptr_bs(p)	(*(Bit8s*)(p))--
+#define dec_ptr_ws(p)	(*(Bit16s*)(p))--
 
-#define dec_ptr_bs(p) --*(Bit8s*)(p)
 #define or_ptr_bs(p, val) *(Bit8s*)(p) |= val;
 #define and_ptr_bs(p, val) *(Bit8s*)(p) &= val;
+#define add_ptr_bs(p, v)  *(Bit8s*)(p)+=v
 #define sub_ptr_bs(p, v)  *(Bit8s*)(p)-=v
 
 
