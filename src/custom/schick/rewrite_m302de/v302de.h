@@ -404,6 +404,7 @@ static inline char* get_itemname(unsigned short item)
 
 #else
 
+#include <IO.H>
 #include <DOS.H>
 #include <BIOS.H>
 
@@ -533,6 +534,7 @@ extern Bit8u* city_ltx[];
 
 #define struct_copy memcpy
 #define bc__creat _creat
+#define bc_close close
 #define bc_memmove memmove
 
 
