@@ -14,6 +14,7 @@
 #endif
 
 #include "v302de.h"
+#include "common.h"
 
 #include "seg007.h"
 #include "seg096.h"
@@ -29,7 +30,9 @@ namespace M302de {
  *	@item:	the item which gets unequipped
  *	@pos:	the position of the item
  */
-void unequip(Bit8u *hero, unsigned short item, unsigned short pos) {
+/* Borlandified and identical */
+void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
+{
 
 	Bit8u *item_p;
 
@@ -40,30 +43,25 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos) {
 	item_p = get_itemsdat(item);
 
 	/* if item is an armor ? */
-	if (host_readb(item_p + 2) & 1) {
-		signed char rs_mod;
+	if (item_armor(item_p)) {
 
-		rs_mod = ds_readb(host_readb(item_p + 4) * 2 + 0x877);
-		host_writeb(hero + 0x30, host_readb(hero + 0x30) - rs_mod);
+		sub_ptr_bs(hero + 0x30, ds_readbs(host_readbs(item_p + 4) * 2 + 0x877));
 
-		rs_mod = host_readb(hero + 0x196 + 7 + pos * 14);
-		host_writeb(hero + 0x30, host_readb(hero + 0x30) + rs_mod);
+		add_ptr_bs(hero + 0x30, host_readbs(hero + 0x196 + 7 + pos * 14));
 
-		rs_mod = ds_readb(host_readb(item_p + 4) * 2 + 0x878);
-		host_writeb(hero + 0x32, host_readb(hero + 0x32) - rs_mod);
+		sub_ptr_bs(hero + 0x32, ds_readbs(host_readbs(item_p + 4) * 2 + 0x878));
 	}
 	/* if item is a weapon and in the right hand ? */
-	if (((host_readb(item_p + 2) >> 1) & 1) && pos == 3) {
-		host_writeb(hero + 0x78, 0);
-		host_writeb(hero + 0x77, 0);
-		host_writeb(hero + 0x76, 0);
+	if (item_weapon(item_p) && pos == 3) {
+		host_writebs(hero + 0x78, 0);
+		host_writebs(hero + 0x76, host_writebs(hero + 0x77, 0));
 	}
 	/* unequip Kraftguertel KK - 5 */
 	if (item == 183)
 		host_writeb(hero + 0x47, host_readb(hero + 0x47) - 5);
 	/* unequip Helm CH + 1 (cursed) */
 	if (item == 196)
-		host_writeb(hero + 0x3b, host_readb(hero + 0x3b) + 1);
+		inc_ptr_bs(hero + 0x3b);
 	/* unequip Silberschmuck TA + 1 */
 	if (item == 215)
 		host_writeb(hero + 0x56, host_readb(hero + 0x56) + 2);
@@ -88,6 +86,7 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos) {
  * @pos_b:	the position in the inventory of the equipper
  *
  */
+/* Borlandified and identical */
 void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed short pos_i, signed short pos_b)
 {
 	Bit8u *item_p;
@@ -97,24 +96,21 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		item_p = Real2Host(ds_readd(ITEMSDAT)) + item * 12;
 
 		/* armor and shield */
-		if (host_readb(item_p + 2) & 1) {
+		if (item_armor(item_p)) {
 
 			/* add RS boni */
-			host_writeb(equipper + 0x30,
-				host_readb(equipper + 0x30) + ds_readb(0x877 + host_readb(item_p + 4) * 2));
+			add_ptr_bs(equipper + 0x30, ds_readbs(0x877 + host_readbs(item_p + 4) * 2));
 
 			/* subtract used item value */
-			host_writeb(equipper + 0x30,
-				host_readb(equipper + 0x30) - host_readb(owner + 0x196 + 7 + pos_i * 14));
+			sub_ptr_bs(equipper + 0x30, host_readbs(owner + 0x196 + 7 + pos_i * 14));
 
 			/* add RS-BE */
-			host_writeb(equipper + 0x32,
-				host_readb(equipper + 0x32) + ds_readb(0x877  + 1 + host_readb(item_p + 4) * 2));
+			add_ptr_bs(equipper + 0x32, ds_readbs(0x877  + 1 + host_readbs(item_p + 4) * 2));
 
 		}
 
 		/* weapon right hand */
-		if (((host_readb(item_p + 2) >> 1) & 1) && (pos_b == 3)) {
+		if (item_weapon(item_p) && (pos_b == 3)) {
 
 			/* set weapon type */
 			host_writeb(equipper + 0x78, host_readb(item_p + 3));
@@ -139,15 +135,14 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		/* Helmet / Helm */
 		if (item == 0xc4) {
 			/* dec CH */
-			host_writeb(equipper + 0x3b,
-				host_readb(equipper + 0x3b) - 1);
+			dec_ptr_bs(equipper + 0x3b);
 		}
 
 		/* Silver Jewelry / Silberschmuckstueck (magisch) */
 		if (item == 0xd7) {
 			/* TA - 2 */
 			host_writeb(equipper + 0x56,
-				host_readb(equipper + 0x56) - 2);
+				host_readbs(equipper + 0x56) - 2);
 		}
 
 		/* Coronet or Ring / Stirnreif oder Ring */
@@ -186,27 +181,21 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
  *
  * Returns 1 if the hero can use the item and 0 if not.
  */
-unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
-
-	signed short *array;
-	unsigned char typus;
-
-	/* get the class of the hero */
-	typus =	host_readb(hero + 0x21);
+/* Borlandified and identical */
+unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
+{
 
 #if !defined(__BORLANDC__)
 	/* some new error check */
-	if (!typus)
+	if (!host_readbs(hero + 0x21)
 		D1_ERR("Warning: %s() typus == 0\n", __func__);
 #endif
 
 	/* calculate the address of the class forbidden items array */
-	array = (signed short*)Real2Host(ds_readd(0x634 + typus * 4));
-
-	if (!is_in_word_array(item, array))
+	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd(0x634 + host_readbs(hero + 0x21) * 4))))
+		return 0;
+	else
 		return 1;
-
-	return 0;
 }
 
 /**
@@ -289,19 +278,17 @@ signed short has_hero_equipped(Bit8u *hero, unsigned short item)
  * the hero doesn't own this item or has only full stacks of them.
  */
 //static
-signed short has_hero_stacked(Bit8u *hero, unsigned short item) {
-
-	unsigned short i;
+/* Borlandified and identical */
+signed short has_hero_stacked(Bit8u *hero, unsigned short item)
+{
+	signed short i;
 
 	for (i = 0; i < 23; i++) {
 		/* has the hero the item */
-		if (host_readw(hero + 0x196 + i * 14) != item)
-			continue;
 		/* is the number of items < 99 */
-		if (host_readw(hero + 0x196 + 2 + i * 14) >= 99)
-			continue;
-
-		return i;
+		if ((host_readw(hero + 0x196 + i * 14) == item) &&
+			 (host_readws(hero + 0x196 + 2 + i * 14) < 99))
+			return i;
 	}
 
 	return -1;
