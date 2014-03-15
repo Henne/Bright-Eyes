@@ -6,7 +6,9 @@
  *      Functions uncalled rewritten 1/1
 */
 
+#include <stdio.h>
 #include <string.h>
+
 #if !defined(__BORLANDC__)
 #include "schick.h"
 #endif
@@ -192,9 +194,11 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item) {
 	/* get the class of the hero */
 	typus =	host_readb(hero + 0x21);
 
+#if !defined(__BORLANDC__)
 	/* some new error check */
 	if (!typus)
 		D1_ERR("Warning: %s() typus == 0\n", __func__);
+#endif
 
 	/* calculate the address of the class forbidden items array */
 	array = (signed short*)Real2Host(ds_readd(0x634 + typus * 4));

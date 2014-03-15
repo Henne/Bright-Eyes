@@ -2,6 +2,8 @@
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
 	Functions rewritten: 5/8
 */
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -216,13 +218,13 @@ void equip_belt_ani(void)
 
 	do_border(Real2Phys(ds_readd(0xd2ff)), 209, 79, 215, 89, 9);
 
-	do_fill_rect(ds_readd(0xd2ff), 209, 79, 215, 89, 0);
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 209, 79, 215, 89, 0);
 
 	wait_for_vsync();
 	wait_for_vsync();
 	wait_for_vsync();
 
-	do_fill_rect(ds_readd(0xd2ff), 189, 69, 235, 99, 0);
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 189, 69, 235, 99, 0);
 
 	do_border(Real2Phys(ds_readd(0xd2ff)), 189, 69, 235, 99, 9);
 
@@ -230,7 +232,7 @@ void equip_belt_ani(void)
 	wait_for_vsync();
 	wait_for_vsync();
 
-	do_fill_rect(ds_readd(0xd2ff), 169, 59, 255, 109, 0);
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 169, 59, 255, 109, 0);
 
 	do_border(Real2Phys(ds_readd(0xd2ff)), 169, 59, 255, 109, 9);
 
@@ -238,7 +240,7 @@ void equip_belt_ani(void)
 	wait_for_vsync();
 	wait_for_vsync();
 
-	do_fill_rect(ds_readd(0xd2ff), 164, 54, 260, 114, 0);
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 164, 54, 260, 114, 0);
 
 	do_border(Real2Phys(ds_readd(0xd2ff)), 164, 54, 260, 114, 9);
 
@@ -246,7 +248,7 @@ void equip_belt_ani(void)
 	wait_for_vsync();
 	wait_for_vsync();
 
-	do_fill_rect(ds_readd(0xd2ff), 159, 49, 263, 117, 0);
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 159, 49, 263, 117, 0);
 
 	do_border(Real2Phys(ds_readd(0xd2ff)), 159, 49, 263, 117, 9);
 
