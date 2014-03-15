@@ -40,18 +40,16 @@ namespace M302de {
  * in the other.
  * If such a collision is detected this function returns 1 else 0.
  */
+/* Borlandified and identical */
 signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos)
 {
+	signed short retval = 0;
 	signed short other_pos;
-	register signed short retval;	/* di */
-	register signed short in_hand;	/* cx */
-
-	retval = 0;
+	signed short in_hand;
 
 	if (pos == 3 || pos == 4) {
 
 		other_pos = 3;
-
 
 		if (pos == 3) {
 			other_pos = 4;
@@ -62,10 +60,8 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 		if (in_hand) {
 
 			/* check if one hand has a two-handed weapon */
-			if ( (((host_readb(get_itemsdat(item) + 2) >> 1) & 1) &&
-				(host_readb(get_itemsdat(item) + 3) == 6)) ||
-				(((host_readb(get_itemsdat(in_hand) + 2) >> 1) & 1) &&
-				(host_readb(get_itemsdat(in_hand) + 3) == 6))) {
+			if ((item_weapon(get_itemsdat(item)) && host_readbs(get_itemsdat(item) + 3) == 6) ||
+			(item_weapon(get_itemsdat(in_hand)) && host_readbs(get_itemsdat(in_hand) + 3) == 6)) {
 					retval = 1;
 			}
 		}
