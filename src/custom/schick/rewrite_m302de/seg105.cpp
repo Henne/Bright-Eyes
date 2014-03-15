@@ -160,9 +160,9 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		/* Death-Head belt / Totenkopfguertel */
 		if (item == 0xb6) {
 
-			/* TA - 5 */
+			/* TA - 4 */
 			host_writeb(equipper + 0x56,
-				host_readb(equipper + 0x56) - 5);
+				host_readbs(equipper + 0x56) - 4);
 
 			if (ds_readb(0x2845) == 20) {
 				equip_belt_ani();
