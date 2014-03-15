@@ -65,7 +65,7 @@ struct hero_status {
 
 struct item_status {
 	/* item + 0x02 */
-	unsigned short bit0		 :1;
+	unsigned short armor		 :1;
 	unsigned short weapon		 :1;
 	unsigned short bit2		 :1;
 	unsigned short food		 :1;
@@ -86,5 +86,10 @@ struct knapsack_status {
 	unsigned short bit6		 :1;
 	unsigned short bit7		 :1;
 };
+
+/* Informer */
+enum {	JURGE = 1, HJORE, YASMA, UMBRIK, ISLEIF,
+	RAGNA, BEORN, ASGRIMM, ELIANE, OLVIR,
+	SWAFNILD, KOLBERG, UNICORN, ALGRID, TIOMAR };
 
 #endif
