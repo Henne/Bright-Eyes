@@ -187,7 +187,7 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 
 #if !defined(__BORLANDC__)
 	/* some new error check */
-	if (!host_readbs(hero + 0x21)
+	if (!host_readbs(hero + 0x21))
 		D1_ERR("Warning: %s() typus == 0\n", __func__);
 #endif
 
