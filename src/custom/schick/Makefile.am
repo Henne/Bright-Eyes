@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I./rewrite_m302de -Wall -pedantic
+AM_CPPFLAGS = -I$(top_srcdir)/include -I./rewrite_m302de -Wall -pedantic -Wno-variadic-macros
 
 SUBDIRS = rewrite_m302de rewrite_g105de
 
