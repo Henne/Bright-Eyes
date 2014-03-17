@@ -4,12 +4,16 @@
 */
 #include <string.h>
 
+#if !defined(__BORLANDC__)
 #include "regs.h"
 #include "callback.h"
+#endif
 
-#include "schick.h"
+#include "v302de.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 static unsigned short EMS_installed() {
 
@@ -106,4 +110,6 @@ unsigned short EMS_init() {
 	return 0;
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

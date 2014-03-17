@@ -12,11 +12,11 @@
  *   - further detection based on code by Georg Hoermann
  */
 
-#include "schick.h"
-
 #include "v302de.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 static inline unsigned int val(const unsigned char *p) {
 	return (p[0]<<16 | p[1] << 8 | p[2]);
@@ -127,5 +127,6 @@ void decomp_pp20(Bit8u *src, Bit8u *dst, Bit8u *p3, unsigned int plen) {
 	return;
 }
 
+#if !defined(__BORLANDC__)
 }
-
+#endif

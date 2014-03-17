@@ -3,10 +3,6 @@
  *	Functions rewritten: 1/18
  */
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "v302de.h"
 
 #if !defined(__BORLANDC__)

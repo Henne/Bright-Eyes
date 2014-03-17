@@ -3,21 +3,22 @@
 	Functions rewritten: 24/31
 */
 
+#if !defined(__BORLANDC__)
 #include "mem.h"
 #include "paging.h"
 #include "callback.h"
+#endif
 
-#include "schick.h"
 #include "v302de.h"
-
-#include "common.h"
 
 #include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg008.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 void init_ani(Bit16u v1)
 {
@@ -652,4 +653,6 @@ void map_effect(Bit8u *src)
 	ds_writew(0xe113, bak);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

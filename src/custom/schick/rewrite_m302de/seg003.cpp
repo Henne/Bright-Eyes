@@ -1,9 +1,5 @@
 #include "v302de.h"
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "seg097.h"
 
 #if !defined(__BORLANDC__)

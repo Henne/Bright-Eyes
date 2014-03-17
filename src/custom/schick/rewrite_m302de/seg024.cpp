@@ -3,10 +3,6 @@
 	Functions rewritten: 3/3
 */
 
-#if !defined (__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include <stdio.h>
 #include <string.h>
 

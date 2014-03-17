@@ -21,14 +21,14 @@
  *
  */
 
+#include "v302de.h"
+
 #if !defined(__BORLANDC__)
 
 #include "dosbox.h"
 #include "regs.h"
 #include "callback.h"
 #include "cpu.h"
-
-#include "schick.h"
 
 #include "seg000.h"
 #include "seg001.h"
@@ -229,8 +229,6 @@ void CD_audio_play() {
 
 #else	/* __BORLANDC__ */
 
-
-#include "v302de.h"
 
 #include "seg013.h"
 

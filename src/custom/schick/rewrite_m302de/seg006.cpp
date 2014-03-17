@@ -7,14 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mem.h"
-
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "v302de.h"
-#include "common.h"
 
 #include "seg000.h"
 

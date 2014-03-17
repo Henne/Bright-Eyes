@@ -9,12 +9,6 @@
 
 #include <stdio.h>
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
-#include "common.h"
-
 #include "v302de.h"
 
 #include "seg002.h"

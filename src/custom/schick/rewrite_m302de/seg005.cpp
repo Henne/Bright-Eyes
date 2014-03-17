@@ -8,8 +8,6 @@
 
 #if !defined(__BORLANDC__)
 #include "callback.h"
-
-#include "schick.h"
 #endif
 
 #include "v302de.h"

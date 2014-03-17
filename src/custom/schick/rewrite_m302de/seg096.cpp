@@ -3,7 +3,6 @@
 
 #if !defined(__BORLANDC__)
 #include "paging.h"
-#include "schick.h"
 #endif
 
 #include "v302de.h"

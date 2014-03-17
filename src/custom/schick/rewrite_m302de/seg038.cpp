@@ -6,10 +6,6 @@
  *      Functions uncalled rewritten 0/1
 */
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "v302de.h"
 
 #include "seg006.h"

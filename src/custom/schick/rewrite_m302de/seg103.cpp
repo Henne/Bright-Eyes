@@ -4,12 +4,7 @@
  *
 */
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "v302de.h"
-#include "common.h"
 
 #include "seg002.h"
 #include "seg007.h"

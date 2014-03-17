@@ -3,10 +3,6 @@
 	Functions rewritten: 7/10
 */
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "v302de.h"
 
 #include "seg026.h"

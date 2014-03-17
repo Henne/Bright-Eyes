@@ -3,11 +3,6 @@
 	Functions rewritten: 1/22
 */
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
-#include "common.h"
 #include "v302de.h"
 
 #include "seg004.h"

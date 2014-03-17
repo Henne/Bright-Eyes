@@ -7,11 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
-#include "common.h"
 #include "v302de.h"
 
 #if !defined(__BORLANDC__)

@@ -3,13 +3,16 @@
         Functions rewritten: 13/14
 */
 
+#if !defined(__BORLANDC__)
 #include "paging.h"
-
 #include "../../ints/int10.h"
+#endif
 
-#include "schick.h"
+#include "v302de.h"
 
+#if !defined(__BORLANDC__)
 namespace M302de {
+#endif
 
 unsigned short swap_u16(unsigned short val) {
 	return (val << 8) | (val >> 8);
@@ -299,4 +302,6 @@ void decomp_rle(unsigned short width, unsigned short height, Bit8u *dst,
 	} while (--height);
 }
 
+#if !defined(__BORLANDC__)
 }
+#endif

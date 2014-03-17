@@ -1,7 +1,3 @@
-#if !defined(SCHWEIF_H)
-#include "v302de.h"
-#endif
-
 #if !defined(COMMON_H)
 #define COMMON_H
 /**

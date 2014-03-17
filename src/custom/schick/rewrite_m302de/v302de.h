@@ -15,6 +15,8 @@
 #include "schick.h"
 #endif
 
+#include "common.h"
+
 #define UNICORN_MET	(0x2464)
 #define UNICORN_GET_MAP	(0x2465)
 #define UNICORN_TIMER	(0x2466)

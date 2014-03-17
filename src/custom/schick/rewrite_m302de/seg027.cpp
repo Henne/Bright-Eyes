@@ -3,12 +3,6 @@
 	Functions rewritten: 8/8 (complete)
 */
 
-#if !defined(__BORLANDC__)
-#include "dos_inc.h"
-
-#include "schick.h"
-#endif
-
 #include <string.h>
 
 #include "v302de.h"
@@ -538,7 +532,7 @@ unsigned short count_fight_enemies(signed short nr)
 		nr = 0;
 
 	/* seek to file position */
-	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
+	bc_lseek(fd, nr * 216 + 2, SEEK_SET);
 
 	/* read the fight entry */
 	bc__read(fd, buf, 216);
@@ -581,7 +575,7 @@ void read_fight_lst(signed short nr)
 	ds_writew(0x5eb2, nr);
 
 	/* seek to file position */
-	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
+	bc_lseek(fd, nr * 216 + 2, SEEK_SET);
 
 	/* read the fight entry */
 	bc__read(fd, Real2Host(ds_readd(PTR_FIGHT_LST)), 216);
@@ -609,7 +603,7 @@ void write_fight_lst(void)
 	fd = load_archive_file(0x8000 | 0xcd);
 
 	/* seek to the entry */
-	bc_lseek(fd, nr * 216 + 2, DOS_SEEK_SET);
+	bc_lseek(fd, nr * 216 + 2, SEEK_SET);
 
 	/* write it */
 	bc__write(fd, (RealPt)ds_readd(PTR_FIGHT_LST), 216);

@@ -11,10 +11,6 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "v302de.h"
 
 #include "seg000.h"

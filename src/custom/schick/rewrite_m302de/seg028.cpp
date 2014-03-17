@@ -5,12 +5,7 @@
 
 #include <string.h>
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include "v302de.h"
-#include "common.h"
 
 #include "seg000.h"
 #include "seg002.h"

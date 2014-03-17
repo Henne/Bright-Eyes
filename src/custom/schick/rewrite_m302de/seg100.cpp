@@ -5,10 +5,6 @@
  *
 */
 
-#if !defined(__BORLANDC__)
-#include "schick.h"
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

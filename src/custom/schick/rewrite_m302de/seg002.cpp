@@ -11,11 +11,8 @@
 #include "callback.h"
 #include "regs.h"
 #include "dos_inc.h"
-
-#include "schick.h"
 #endif
 
-#include "common.h"
 #include "v302de.h"
 
 #include "seg000.h"
