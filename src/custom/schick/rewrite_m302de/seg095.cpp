@@ -224,8 +224,8 @@ void npc_nariell()
 //static
 void npc_harika()
 {
-	Bit32s money;
-	signed short answer; /* TODO: should be in register si */
+	long money;
+	signed short answer;
 
 	/* load NSC.LTX */
 	load_buffer_1(0xe1);
@@ -289,6 +289,47 @@ void npc_harika()
 		}
 	}
 
+
+	/* load TAVERN.TLK */
+	load_tlk(0x82);
+}
+
+void npc_curian()
+{
+	signed short answer;
+
+	/* load NSC.LTX */
+	load_buffer_1(0xe1);
+
+	/* load head */
+	load_in_head(0x19);
+
+	/* show dialog window */
+	do {
+		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
+				get_ltx(0xbcc), get_dtp(0x50),
+				3,
+				get_dtp(0x54), get_dtp(0x58),
+				get_dtp(0x5c));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbcc),
+			get_dtp(0x60), 0);
+	} else {
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
+					get_ltx(0xbcc),
+					(answer == 2) ? get_dtp(0x64): get_dtp(0x68),
+					2,
+					get_dtp(0x6c), get_dtp(0x70));
+		} while (answer == -1);
+
+		/* add NPC */
+		if (answer == 2)
+			add_npc(0xe4);
+
+	}
 
 	/* load TAVERN.TLK */
 	load_tlk(0x82);
@@ -364,52 +405,6 @@ void npc_ardora()
 	load_tlk(0x82);
 }
 
-void npc_curian()
-{
-	signed short answer;
-
-	/* load NSC.LTX */
-	load_buffer_1(0xe1);
-
-	/* load head */
-	load_in_head(0x19);
-
-	/* show dialog window */
-	do {
-		answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
-				get_ltx(0xbcc), get_dtp(0x50),
-				3,
-				get_dtp(0x54), get_dtp(0x58),
-				get_dtp(0x5c));
-	} while (answer == -1);
-
-	if (answer == 1) {
-		GUI_dialogbox((RealPt)ds_readd(0xd2f3), get_ltx(0xbcc),
-			get_dtp(0x60), 0);
-	} else {
-		do {
-			if (answer == 2)
-				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
-						get_ltx(0xbcc), get_dtp(0x64),
-						2,
-						get_dtp(0x6c), get_dtp(0x70));
-			else
-				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
-						get_ltx(0xbcc), get_dtp(0x68),
-						2,
-						get_dtp(0x6c), get_dtp(0x70));
-		} while (answer == -1);
-
-	/* add NPC */
-	if (answer == 2)
-		add_npc(0xe4);
-
-	}
-
-	/* load TAVERN.TLK */
-	load_tlk(0x82);
-}
-
 //static
 void npc_garsvik()
 {
@@ -435,21 +430,16 @@ void npc_garsvik()
 			get_dtp(0xc0), 0);
 	} else {
 		do {
-			if (answer == 2)
-				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
-						get_ltx(0xbd4), get_dtp(0xc4),
-						2,
-						get_dtp(0xcc), get_dtp(0xd0));
-			else
-				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
-						get_ltx(0xbd4), get_dtp(0xc8),
-						2,
-						get_dtp(0xcc), get_dtp(0xd0));
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
+					get_ltx(0xbd4),
+					(answer == 2) ? get_dtp(0xc4): get_dtp(0xc8),
+					2,
+					get_dtp(0xcc), get_dtp(0xd0));
 		} while (answer == -1);
 
-	/* add NPC */
-	if (answer == 2)
-		add_npc(0xe6);
+		/* add NPC */
+		if (answer == 2)
+			add_npc(0xe6);
 
 	}
 
@@ -482,23 +472,18 @@ void npc_erwo()
 			get_dtp(0xe8), 0);
 	} else {
 		do {
-			if (answer == 2)
-				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
-						get_ltx(0xbd8), get_dtp(0xec),
-						2,
-						get_dtp(0xf4), get_dtp(0xf8));
-			else
-				answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
-						get_ltx(0xbd8), get_dtp(0xf0),
-						2,
-						get_dtp(0xf4), get_dtp(0xf8));
+			answer = GUI_dialogbox((RealPt)ds_readd(0xd2f3),
+					get_ltx(0xbd8),
+					(answer == 2) ? get_dtp(0xec): get_dtp(0xf0),
+					2,
+					get_dtp(0xf4), get_dtp(0xf8));
 		} while (answer == -1);
 
-	/* add NPC */
-	if (answer == 2)
-		add_npc(0xe7);
+		/* add NPC */
+		if (answer == 2)
+			add_npc(0xe7);
 
-	}
+		}
 
 	/* load TAVERN.TLK */
 	load_tlk(0x82);
@@ -531,11 +516,11 @@ void remove_npc(signed short head_index, signed char days,
 	memset(get_hero(6), 0, 0x6da);
 
 	/* dec group counter */
-	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
-		(ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) - 1));
+	dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
 
 	/* dec global hero counter */
-	ds_writeb(0x2d3c, ds_readb(0x2d3c) - 1);
+
+	dec_ds_bs(0x2d3c);
 
 	ds_writeb(0x46df, 1);
 
@@ -557,11 +542,10 @@ void add_npc(signed short index)
 	memcpy(get_hero(6) + 0x2da, Real2Host(ds_readd(0xd2f3)), 0x400);
 
 	/* increment heros in that group */
-	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
-		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) + 1);
+	inc_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
 
 	/* increment heros */
-	ds_writew(0x2d3c, ds_readw(0x2d3c) + 1);
+	inc_ds_bs(0x2d3c);
 
 	/* reset the months the NPC is in the group */
 	ds_writew(0x3470, 0);
