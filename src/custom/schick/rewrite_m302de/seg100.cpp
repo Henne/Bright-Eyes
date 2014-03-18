@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 13/20
+ *	Functions rewritten 14/20
  *
 */
 
@@ -23,6 +23,38 @@ namespace M302de {
 #endif
 
 /* Clairvoyance / Hellsicht */
+
+void spell_eigenschaften(void)
+{
+	signed short min;
+	signed short max;
+
+	ds_writed(0xe5b4,
+		(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+	damage_range_template(host_readws(Real2Host(ds_readd(0xe5b4)) + 0x1e),
+		(Bit8u*)&min, (Bit8u*)&max);
+
+	min = min * 8 / 10;
+	max = max * 8 / 10;
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x64),
+		Real2Host(GUI_name_singular(get_monname(host_readbs(Real2Host(ds_readd(0xe5b4)))))),
+		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x29),	/* Level */
+		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1c),	/* AT */
+		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1d),	/* PA */
+		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x2),		/* RS */
+		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1b),	/* Attacks */
+		(host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1b) > 1) ?
+			get_dtp(0x68) : get_dtp(0x6c),
+		min,							/* TPmin */
+		max,							/* TPmax */
+		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x13),	/* LE */
+		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x11),	/* LEmax */
+		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x17),	/* AE */
+		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x15));	/* AEmax */
+}
 
 /* Borlandified and identical */
 void spell_penetrizzel(void)

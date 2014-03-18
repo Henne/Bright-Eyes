@@ -4,6 +4,9 @@ namespace M302de {
 
 /* Clairvoyance / Hellsicht */
 
+/* 0x20 */
+void spell_eigenschaften(void);
+
 /* 0x2f */
 void spell_penetrizzel(void);
 /* 0x34 */
