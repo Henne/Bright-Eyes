@@ -5068,7 +5068,7 @@ static int seg105(unsigned short offs) {
 		}
 		case 0x34: {
 			RealPt hero = CPU_Pop32();
-			unsigned short pos = CPU_Pop16();
+			signed short pos = CPU_Pop16();
 			signed short nr = CPU_Pop16();
 			CPU_Push16(nr);
 			CPU_Push16(pos);
@@ -5137,7 +5137,7 @@ static int seg105(unsigned short offs) {
 		}
 		case 0x61: {
 			RealPt hero = CPU_Pop32();
-			Bit16u per = CPU_Pop16();
+			Bit16s per = CPU_Pop16();
 			RealPt text = CPU_Pop32();
 			CPU_Push32(text);
 			CPU_Push16(per);
@@ -7199,7 +7199,7 @@ static int n_seg105(unsigned offs) {
 	case 0x6d9: {
 		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
-		unsigned short pos = CPU_Pop16();
+		signed short pos = CPU_Pop16();
 		signed short nr = CPU_Pop16();
 		CPU_Push16(nr);
 		CPU_Push16(pos);
