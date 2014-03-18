@@ -67,7 +67,7 @@ struct item_status {
 	unsigned short food		 :1;
 	unsigned short stackable	 :1;
 	unsigned short herb_potion	 :1;
-	unsigned short bit6		 :1;
+	unsigned short undropable	 :1;
 	unsigned short bit7		 :1;
 };
 

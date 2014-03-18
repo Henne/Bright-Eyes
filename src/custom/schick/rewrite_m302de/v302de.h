@@ -353,6 +353,19 @@ static inline unsigned short item_herb_potion(Bit8u *item) {
 		return 1;
 }
 
+/**
+ * item_herb_undropable() -	check if a item is undropable
+ * @item:	ptr to item
+ *
+ * 0 = dropable / 1 = undropable
+ */
+static inline unsigned short item_undropable(Bit8u *item) {
+	if (((host_readb(item + 0x02) >> 6) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 static inline Bit8u *get_spelluser() {
 	return Real2Host(ds_readd(SPELLUSER));
 }
@@ -547,6 +560,7 @@ extern Bit8u* city_ltx[];
 #define item_food(item)  ((*(struct item_status*)(item + 0x2)).food)
 #define item_stackable(item)  ((*(struct item_status*)(item + 0x2)).stackable)
 #define item_herb_potion(item)  ((*(struct item_status*)(item + 0x2)).herb_potion)
+#define item_undropable(item)  ((*(struct item_status*)(item + 0x2)).undropable)
 
 #define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
 #define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
