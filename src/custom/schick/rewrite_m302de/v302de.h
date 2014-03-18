@@ -320,6 +320,19 @@ static inline unsigned short item_weapon(Bit8u *item) {
 }
 
 /**
+ * item_bit2() -	check if a item is bit2
+ * @item:	ptr to item
+ *
+ * 0 = non set / 1 = set
+ */
+static inline unsigned short item_bit2(Bit8u *item) {
+	if (((host_readb(item + 0x02) >> 2) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * item_food() -	check if a item is food
  * @item:	ptr to item
  *
@@ -563,6 +576,7 @@ extern Bit8u* city_ltx[];
 
 #define item_armor(item)  ((*(struct item_status*)(item + 0x2)).armor)
 #define item_weapon(item)  ((*(struct item_status*)(item + 0x2)).weapon)
+#define item_bit2(item)  ((*(struct item_status*)(item + 0x2)).bit2)
 #define item_food(item)  ((*(struct item_status*)(item + 0x2)).food)
 #define item_stackable(item)  ((*(struct item_status*)(item + 0x2)).stackable)
 #define item_herb_potion(item)  ((*(struct item_status*)(item + 0x2)).herb_potion)
