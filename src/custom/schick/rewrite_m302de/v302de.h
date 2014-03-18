@@ -152,6 +152,16 @@ static inline Bit8u *get_hero(unsigned short index) {
 	return Real2Host(ds_readd(HEROS)) + index * 0x6da;
 }
 
+static inline void inc_ds_bs(Bit16u off)
+{
+	ds_writeb(off, ds_readb(off) + 1);
+}
+
+static inline void dec_ds_bs(Bit16u off)
+{
+	ds_writeb(off, ds_readb(off) - 1);
+}
+
 static inline void inc_ptr_bs(Bit8u *p)
 {
 	host_writebs(p, host_readbs(p) + 1);
@@ -499,6 +509,9 @@ extern char ds[0xffff];
 #define ds_writeb(p, d) *(Bit8u*)(ds + p) = d
 #define ds_writew(p, d) *(Bit16u*)(ds + p) = d
 #define ds_writed(p, d) *(Bit32u*)(ds + p) = d
+
+#define inc_ds_bs(o) (*(Bit8s*)(ds + o))++
+#define dec_ds_bs(o) (*(Bit8s*)(ds + o))--
 
 #define inc_ptr_bs(p)	(*(Bit8s*)(p))++
 #define inc_ptr_ws(p)	(*(Bit16s*)(p))++
