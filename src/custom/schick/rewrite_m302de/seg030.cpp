@@ -21,20 +21,20 @@ namespace M302de {
 RealPt seg030_0000(signed short arg0)
 {
 	signed short i;
-	signed short v2;
+	signed short counter;
 
-	for (i = v2 = 0; i < 15; i++) {
+	for (i = counter = 0; i < 15; i++) {
 		if ((ds_readb(0x3364 + i) != 0)
 			&& (arg0 - 1 != i)
 			&& (i != 9)
 			&& (i != 11)
 			&& (i != 12)) {
 
-			v2++;
+			counter++;
 		}
 	}
 
-	if (v2 == 0) {
+	if (counter == 0) {
 		return seg030_008d(arg0);
 	} else {
 
