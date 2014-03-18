@@ -1,6 +1,9 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg010 (EMS)
-	Functions rewritten: 8/8
+ *	Rewrite of DSA1 v3.02_de functions of seg010 (EMS)
+ *	Functions rewritten: 8/8 (complete)
+ *
+ *	Remark: In the original game the EMS functions were written
+ *		with Turbo assembler, so look in seg010.asm
 */
 #include <string.h>
 

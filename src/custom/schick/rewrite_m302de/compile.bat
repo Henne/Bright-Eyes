@@ -46,6 +46,7 @@
 @REM
 @REM -- here start the complete
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG007.CPP
+@REM ..\BIN\TASM.EXE /os /z SEG010.asm SEG010.OBJ
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG029.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG047.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG053.CPP
