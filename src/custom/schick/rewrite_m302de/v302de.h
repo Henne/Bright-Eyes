@@ -15,7 +15,6 @@
 #include "schick.h"
 #endif
 
-#include "common.h"
 
 #define UNICORN_MET	(0x2464)
 #define UNICORN_GET_MAP	(0x2465)
@@ -94,6 +93,8 @@
 #define SPELLUSER	(0xe5bc)
 
 #if !defined(__BORLANDC__)
+
+#include "common.h"
 
 static inline Bit8s host_readbs(Bit8u* p)
 {
@@ -439,6 +440,8 @@ typedef signed long Bit32s;
 
 typedef Bit8u* RealPt;
 typedef Bit8u* PhysPt;
+
+#include "common.h"
 
 #define NOT_NULL(p) (p != NULL)
 
