@@ -57,6 +57,7 @@ void spell_destructibo(void)
 	ds_writew(0xac0e, -2);
 }
 
+/* Borlandified and identical */
 void spell_gardanium(void)
 {
 	signed short answer;
@@ -71,26 +72,26 @@ void spell_gardanium(void)
 	/* clear the textbuffer */
 	host_writeb(Real2Host(ds_readd(0xd2f3)), 0);
 
-	if (answer <= 0) {
-		ds_writew(0xac0e, 0);
-		return;
-	}
+	if (answer > 0) {
 
-	if (host_readw(get_spelluser() + 0x64) >= answer) {
-		/* enough AE */
+		if (host_readws(get_spelluser() + 0x64) >= answer) {
+			/* enough AE */
 
-		/* TODO: this adds the AE to a variable no one reads */
-		ds_writew(0x333e, ds_readw(0x333e) + answer);
-		/* set AE costs */
-		ds_writew(0xac0e, answer);
-		/* prepare the message */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
-			(char*)get_dtp(0x1c));
+			/* TODO: this adds the AE to a variable no one reads */
+			add_ds_ws(0x333e, answer);
+			/* set AE costs */
+			ds_writew(0xac0e, answer);
+			/* prepare the message */
+			strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+				(char*)get_dtp(0x1c));
+		} else {
+			/* not enough AE */
+			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				(char*)get_ltx(0x97c), (char*)get_spelluser() + 0x10);
+			/* set AE costs */
+			ds_writew(0xac0e, 0);
+		}
 	} else {
-		/* not enough AE */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
-			(char*)get_ltx(0x97c), (char*)get_spelluser() + 0x10);
-		/* set AE costs */
 		ds_writew(0xac0e, 0);
 	}
 }
