@@ -111,17 +111,21 @@ int ppDecrunch(uint8 *src, uint8 *dest, uint8 *offset_lens,
   /* return (src == buf_src) ? 1 : 0; */
 }
 
-void decomp_pp20(Bit8u *src, Bit8u *dst, Bit8u *p3, unsigned int plen) {
+void decomp_pp20(Bit8u *src, Bit8u *dst, Bit8u *p3, unsigned int plen)
+{
 	size_t unplen;
-
+#if !defined(__BORLANDC__)
 	if (plen < 4)
 		D1_ERR("PP20: Length argument is below 4\n");
+#endif
 
 	unplen = depackedlen(src, plen);
 
+#if !defined(__BORLANDC__)
 	if (unplen == 0) {
 		D1_ERR("PP20: No PP20 file\n");
 	}
+#endif
 	ppDecrunch(&src[8],  dst, &src[4], plen - 12, unplen, src[plen -1]);
 
 	return;

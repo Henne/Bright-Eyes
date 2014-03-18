@@ -177,7 +177,7 @@ RealPt seg006_033c(short v)
 
 	for (i = 0; i < 20; i++) {
 		if (v == ds_readbs(ENEMY_SHEETS + 38 + i * 62))
-			return RealMake(datseg, ENEMY_SHEETS + i * 62);
+			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * 62);
 	}
 
 	return 0;

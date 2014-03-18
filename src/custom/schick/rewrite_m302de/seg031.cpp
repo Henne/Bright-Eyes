@@ -97,7 +97,7 @@ RealPt load_current_town_gossip(void)
 	ds_writew(0x2ccb, 0xffff);
 
 	/* get the pointer to the ltx buffer */
-	ptr = ds_readd(0xd019);
+	ptr = (RealPt)ds_readd(0xd019);
 
 	/* get some gossip */
 	gossip_id = get_tavern_gossip();

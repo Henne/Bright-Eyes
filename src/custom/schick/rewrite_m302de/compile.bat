@@ -8,11 +8,20 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG002.CPP
 @REM
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG003.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG005.CPP
+@REM
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG008.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG009.CPP
+@REM
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG024.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG025.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG026.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG027.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG028.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG030.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG031.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG032.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG036.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG037.CPP
@@ -23,21 +32,28 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG044.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG045.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG046.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG050.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG053.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG063.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG066.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG068.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG072.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG073.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG075.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG095.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG096.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG097.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG098.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG099.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG100.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG102.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG103.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG105.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG106.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG109.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG111.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG113.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG117.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG120.CPP
 @REM
 @REM -- ready some work todo
