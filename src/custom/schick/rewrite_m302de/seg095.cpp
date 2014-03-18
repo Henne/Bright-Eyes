@@ -1,6 +1,10 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
-	Functions rewritten: 10/10 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of seg095 (NPCs)
+ *	Functions rewritten: 10/10 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yp SEG095.cpp
 */
 
 #include <string.h>
@@ -20,7 +24,6 @@
 namespace M302de {
 #endif
 
-/* BC-TODO: identical, excluding the near calls */
 unsigned short npc_meetings(unsigned short type_index)
 {
 
@@ -88,7 +91,6 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 }
 
-/* BC-TODO: identical, excluding the near calls */
 void npc_farewell()
 {
 	Bit8u *hero_i;
@@ -178,7 +180,6 @@ void npc_farewell()
 		load_buffer_1(tmp);
 }
 
-/* BC-TODO: identical, excluding the near calls */
 //static
 void npc_nariell()
 {
