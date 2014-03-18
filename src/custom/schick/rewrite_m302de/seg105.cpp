@@ -3,6 +3,11 @@
  *      Functions rewritten 14/14 (complete)
  *      Functions called rewritten 13/13
  *      Functions uncalled rewritten 1/1
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c - 1 -Yo seg105.cpp
+ *
 */
 
 #include <stdio.h>
