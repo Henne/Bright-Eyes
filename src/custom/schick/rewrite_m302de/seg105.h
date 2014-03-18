@@ -10,6 +10,8 @@ void add_equip_boni(Bit8u*, Bit8u*, signed short, signed short, signed short);
 signed short give_hero_new_item(Bit8u *hero, signed short, signed short, signed short);
 /* 0x34 */
 unsigned short drop_item(Bit8u *, signed short, signed short);
+/* 0x39 */
+signed short get_item(signed short, signed short, signed short);
 /* 0x3e */
 unsigned short can_hero_use_item(Bit8u *, unsigned short);
 /* 0x43 */

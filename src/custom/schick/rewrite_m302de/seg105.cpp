@@ -1,8 +1,7 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 13/14
- *
- *      Functions called rewritten 12/13
+ *      Functions rewritten 14/14 (complete)
+ *      Functions called rewritten 13/13
  *      Functions uncalled rewritten 1/1
 */
 
@@ -12,8 +11,10 @@
 #include "v302de.h"
 
 #include "seg007.h"
+#include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg105.h"
 #include "seg106.h"
 
 #if !defined(__BORLANDC__)
@@ -588,6 +589,79 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 			ds_readb(0x2d75) == 1)
 			ds_writeb(0x3f9f, 1);
 	}
+
+	return retval;
+}
+
+/**
+ * get_item()	- gives one item to the party
+ * @id:		ID of the item
+ * @unused:	unused parameter
+ * @nr:		number of items
+ *
+ * Returns the number of given items.
+ */
+/* Borlandified and identical */
+signed short get_item(signed short id, signed short unused, signed short nr)
+{
+	signed short i;
+	signed short retval = 0;
+	signed short v6;
+	signed short done = 0;
+	signed short dropper;
+	signed short vc;
+	Bit8u * hero_i;
+	signed short bak;
+
+	/* Special stacked items */
+	if (id == 0xfb) { id = 0x0a; nr = 200;} else
+	if (id == 0xfc) { id = 0x0d; nr = 50;} else
+	if (id == 0xfd) { id = 0x28; nr = 20;}
+
+	do {
+		hero_i = get_hero(0);
+		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+			if (host_readb(hero_i + 0x21) &&
+				host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP))
+			{
+
+				while ((nr > 0) && (v6 = give_hero_new_item(hero_i, id, 0, nr)) > 0) {
+					nr -= v6;
+					retval += v6;
+				}
+			}
+		}
+
+		if (nr > 0) {
+			bak = ds_readws(0xe318);
+			ds_writew(0xe318, 0);
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0x894),
+				GUI_names_grammar(((nr > 1) ? 4 : 0) + 2, id, 0));
+
+			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
+
+				dropper = select_hero_ok(get_ltx(0x898));
+
+				if (dropper != -1) {
+					hero_i = get_hero(dropper);
+					ds_writeb(0xae46, 1);
+					vc = select_item_to_drop(hero_i);
+					ds_writeb(0xae46, 0);
+
+					if (vc != -1) {
+						drop_item(hero_i, vc, -1);
+					}
+				}
+			} else {
+				done = 1;
+			}
+			ds_writew(0xe318, bak);
+		} else {
+			done = 1;
+		}
+	} while (done == 0);
 
 	return retval;
 }

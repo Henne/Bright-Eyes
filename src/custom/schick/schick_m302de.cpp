@@ -5081,7 +5081,18 @@ static int seg105(unsigned short offs) {
 			return 1;
 		}
 		case 0x39: {
-			return 0;
+			signed short id = CPU_Pop16();
+			signed short unused = CPU_Pop16();
+			signed short nr = CPU_Pop16();
+			CPU_Push16(nr);
+			CPU_Push16(unused);
+			CPU_Push16(id);
+
+			reg_ax = get_item(id, unused, nr);
+			D1_LOG("get_item(%d, %d, %d) = %d;\n",
+				id, unused, nr, reg_ax);
+
+			return 1;
 		}
 		case 0x3e: {
 			RealPt hero = CPU_Pop32();
