@@ -4622,7 +4622,8 @@ static int seg098(unsigned short offs) {
 static int seg099(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		spell_beherrschung();
+		return 1;
 	}
 	case 0x25: {
 		D1_LOG("spell_destructibo();\n");

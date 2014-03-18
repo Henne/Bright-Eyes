@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 15/39
+ *	Functions rewritten 16/39
  *
 */
 
@@ -21,6 +21,34 @@
 namespace M302de {
 #endif
 
+/* Borlandified and identical */
+void spell_beherrschung(void)
+{
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+	if (!hero_cursed(Real2Host(ds_readd(SPELLTARGET)))) {
+		ds_writew(0xac0e, -2);
+	} else {
+		if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
+			strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0));
+			ds_writew(0xac0e, 0);
+		} else {
+			ds_writew(0xac0e, random_interval(2, 5) * 4);
+
+			if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
+				ds_writew(0xac0e, -2);
+			} else {
+				and_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + 0xaa, 0xdf);
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x4),
+					(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
+			}
+		}
+	}
+}
+
+/* Borlandified and identical */
 void spell_destructibo(void)
 {
 #if !defined(__BORLANDC__)

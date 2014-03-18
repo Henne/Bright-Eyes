@@ -4,6 +4,8 @@ namespace M302de {
 
 /* Dispel / Antimagie */
 
+/* 0x20 */
+void spell_beherrschung(void);
 /* 0x25 */
 void spell_destructibo();
 /* 0x2a */
