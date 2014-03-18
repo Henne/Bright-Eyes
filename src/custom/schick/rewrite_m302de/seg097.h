@@ -24,7 +24,7 @@ void GUI_copy_smth(unsigned short width, unsigned short height);
 //0x57
 void GUI_fill_radio_button(signed short, unsigned short, unsigned short);
 //0x5c
-signed short GUI_dialogbox(RealPt, Bit8u*, Bit8u*, signed char, ...);
+signed short GUI_dialogbox(RealPt, Bit8u*, Bit8u*, signed short, ...);
 //0x61
 signed short GUI_menu_input(unsigned short, unsigned short, unsigned short);
 //0x6b

@@ -393,7 +393,7 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 
 //0x893
 signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
-		signed char options, ...)
+		signed short options, ...)
 {
 	va_list arguments;
 
@@ -438,7 +438,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	if (l_si < ds_readw(0xe4d9))
 		l_si = ds_readw(0xe4d9) - 1;
 
-	l4 = options + l_si;
+	l4 = (signed char)options + l_si;
 	l5 = (l4 + 2) * 8;
 	ds_writew(0xc001, (200 - (l5 + 2)) / 2);
 	ds_writew(0xd2d7, ds_readw(0xc001) + 5);
@@ -446,7 +446,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	update_mouse_cursor();
 	get_textcolor(&fg_bak, &bg_bak);
 
-	GUI_draw_radio_bg(l_si, options, l_di, l5);
+	GUI_draw_radio_bg(l_si, (signed char)options, l_di, l5);
 
 	if (picture != 0) {
 		/* draw a frame */
@@ -488,14 +488,14 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		l2 = ds_readw(0xd2d9) + 8;
 		l3 = (l_si + 1) * 8 + ds_readw(0xc001);
 
-		va_start(arguments, options);
-		for (i = 0; i < options; l3 += 8, i++) {
+		va_start(arguments, (signed char)options);
+		for (i = 0; i < (signed char)options; l3 += 8, i++) {
 			lp = va_arg(arguments, char*);
 			GUI_print_string((Bit8u*)lp, l2, l3);
 		}
 	}
 
-	retval = GUI_menu_input(options, l_si + 1, l_di);
+	retval = GUI_menu_input((signed char)options, l_si + 1, l_di);
 
 	GUI_copy_smth(l_di, l5);
 
