@@ -5110,7 +5110,12 @@ static int seg105(unsigned short offs) {
 			return 1;
 		}
 		case 0x52: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+			reg_ax = select_item_to_drop(Real2Host(hero));
+			D1_LOG("select_item_to_drop(%s) = %d\n",
+				schick_getCharname(hero), reg_ax);
+			return 1;
 		}
 		case 0x57: {
 			RealPt hero = CPU_Pop32();
@@ -7226,7 +7231,13 @@ static int n_seg105(unsigned offs) {
 		return 1;
 	}
 	case 0xc10: {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+		reg_ax = select_item_to_drop(Real2Host(hero));
+		D1_LOG("near select_item_to_drop(%s) = %d\n",
+			schick_getCharname(hero), reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

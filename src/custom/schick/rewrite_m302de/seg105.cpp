@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 12/14
+ *      Functions rewritten 13/14
  *
- *      Functions called rewritten 11/13
+ *      Functions called rewritten 12/13
  *      Functions uncalled rewritten 1/1
 */
 
@@ -672,6 +672,99 @@ void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)
 			return;
 		}
 	} while (1);
+}
+
+signed short select_item_to_drop(Bit8u *hero)
+{
+	signed short i;
+	signed short v4 = 0;
+	signed short v6 = 0;
+	signed short item;
+	signed short va;
+	signed short bak1, bak2, bak3;
+	RealPt ptr;
+	signed short str[23];
+	signed short di;
+
+	/* check if we drop equipped items or not */
+	i = (ds_readb(0xae46) != 0) ? 7 : 0;
+	for (; i < 23; i++) {
+		if ((item = host_readws(hero + 0x196 + i * 14))) {
+			str[v6] = i;
+			ds_writed(0xbf95 + v6 * 4 , (Bit32u)((RealPt)ds_readd(DTP2) + v6 * 30));
+			strcpy((char*)Real2Host(ds_readd(0xbf95 + v6 * 4)),
+				(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(item))));
+			v6++;
+		}
+	}
+
+	if (v6 == 0) {
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0xbb8),
+			(char*)(hero + 0x10));
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		return -1;
+	}
+	di = 0;
+	while (v4 != -1) {
+		va = -1;
+		if (v6 > 12) {
+			if (!di) {
+				i = 13;
+				va = i - 1;
+				ptr = (RealPt)ds_readd(0xbf95 + 4 * va);
+				ds_writed(0xbf95 + 4 * va,
+					host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xbbc));
+			} else {
+				i = v6 + 1;
+				va = i - 1;
+				ptr = (RealPt)ds_readd(0xbf95 + 4 * va);
+				ds_writed(0xbf95 + 4 * va,
+					host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xbbc));
+				i -= di;
+			}
+		} else {
+			i = v6;
+		}
+			bak1 = ds_readw(0xbffd);
+		bak2 = ds_readw(0x2ca2);
+		bak3 = ds_readw(0x2ca4);
+		ds_writew(0xbffd, 6);
+		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+		v4 = GUI_radio((Bit8u*)get_ltx(0xbc0), i,
+			Real2Host(ds_readd(0xbf95 + 0x00 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x04 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x08 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x0c + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x10 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x14 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x18 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x1c + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x20 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x24 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x28 + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x2c + di * 4)),
+			Real2Host(ds_readd(0xbf95 + 0x30 + di * 4)));
+		ds_writew(0xbffd, bak1);
+		ds_writew(0x2ca2, bak2);
+		ds_writew(0x2ca4, bak3);
+
+		if (va != -1) {
+			ds_writed(0xbf95 + 0x00 + va * 4, (Bit32u)ptr);
+		}
+		if ((v6 > 12) && (v4 == i)) {
+			di += 12;
+			if (di > v6) {
+				di = 0;
+			}
+		} else {
+			if (v4 != -1) {
+				return str[di + v4 - 1];
+			}
+		}
+	}
+
+	return -1;
 }
 
 #if !defined(__BORLANDC__)
