@@ -53,6 +53,9 @@ void spell_motoricus(void);
 /* 0xb1 */
 void spell_spurlos(void);
 
+/* 0xbb */
+void spell_ueber_eis(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif

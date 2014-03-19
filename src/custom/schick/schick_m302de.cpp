@@ -4736,7 +4736,8 @@ static int seg099(unsigned short offs) {
 		return 0;
 	}
 	case 0xbb: {
-		return 0;
+		spell_ueber_eis();
+		return 1;
 	}
 	case 0xc0: {
 		return 0;

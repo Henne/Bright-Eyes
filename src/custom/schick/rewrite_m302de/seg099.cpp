@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 16/39
+ *	Functions rewritten 17/39
  *
 */
 
@@ -249,6 +249,14 @@ void spell_spurlos(void)
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Spurlos\" ist nicht implementiert\n");
 #endif
+}
+
+void spell_ueber_eis(void)
+{
+#if !defined(__BORLANDC__)
+        D1_INFO("Zauberspruch \"Ueber Eis\" ist nicht implementiert\n");
+#endif
+	ds_writew(0xac0e, -2);
 }
 
 #if !defined(__BORLANDC__)
