@@ -57,6 +57,9 @@
 #define FNAMES		(0x4c8c)
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
+#define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
+#define SEG047_INIT2	(0x64b1)	/* signed short[7] filled with zeroes */
+#define SEG047_INIT3	(0x64bf)	/* signed short[7] filled with zeroes */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
 #define SPLASH_AE	(0xbcc7)

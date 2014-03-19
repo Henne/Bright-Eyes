@@ -20,6 +20,10 @@
 namespace M302de {
 #endif
 
+struct helper {
+	signed short v[7];
+};
+
 /**
  * get_hero_CH_best - get the index of the hero with the best CH value
  *
@@ -385,7 +389,14 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
  */
 signed short select_hero_from_group(Bit8u *title)
 {
+	/* Hack for
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
+	*/
+#if !defined (__BORLANDC__)
+	struct helper dst = {{0, 0, 0, 0, 0, 0, 0}};
+#else
+	struct helper dst = *(((struct helper*)(p_datseg + SEG047_INIT1)));
+#endif
 	signed short cnt;
 	signed short bak_1;
 	signed short bak_2;
@@ -409,7 +420,7 @@ signed short select_hero_from_group(Bit8u *title)
 
 			/* save pointer to the name of the hero */
 			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + 0x10));
-			dst[cnt] = i;
+			dst.v[cnt] = i;
 			cnt++;
 		}
 	}
@@ -437,7 +448,7 @@ signed short select_hero_from_group(Bit8u *title)
 		ds_writew(0xbffd, bak_1);
 
 		if (answer != -2)
-			return dst[answer];
+			return dst.v[answer];
 		else
 			return -1;
 	}
@@ -455,7 +466,14 @@ signed short select_hero_from_group(Bit8u *title)
  */
 signed short select_hero_ok(Bit8u *title)
 {
+	/* Hack for
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
+	*/
+#if !defined (__BORLANDC__)
+	struct helper dst = {{0, 0, 0, 0, 0, 0, 0}};
+#else
+	struct helper dst = *(((struct helper*)(p_datseg + SEG047_INIT2)));
+#endif
 	signed short cnt;
 	signed short bak_1;
 	signed short bak_2;
@@ -478,7 +496,7 @@ signed short select_hero_ok(Bit8u *title)
 
 			/* save pointer to the name of the hero */
 			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + 0x10));
-			dst[cnt] = i;
+			dst.v[cnt] = i;
 			cnt++;
 		}
 	}
@@ -506,7 +524,7 @@ signed short select_hero_ok(Bit8u *title)
 		ds_writew(0x2cdb, -1);
 
 		if (answer != -2)
-			return dst[answer];
+			return dst.v[answer];
 		else
 			return -1;
 	}
@@ -526,7 +544,14 @@ signed short select_hero_ok(Bit8u *title)
  */
 signed short select_hero_ok_forced(Bit8u *title)
 {
+	/* Hack for
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
+	*/
+#if !defined (__BORLANDC__)
+	struct helper dst = {{0, 0, 0, 0, 0, 0, 0}};
+#else
+	struct helper dst = *(((struct helper*)(p_datseg + SEG047_INIT3)));
+#endif
 	signed short cnt;
 	signed short bak_1;
 	signed short bak_2;
@@ -549,7 +574,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 
 			/* save pointer to the name of the hero */
 			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + 0x10));
-			dst[cnt] = i;
+			dst.v[cnt] = i;
 			cnt++;
 		}
 	}
@@ -580,7 +605,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 		ds_writew(0x2cdb, -1);
 		ds_writew(0xbffd, bak_1);
 
-		return dst[answer];
+		return dst.v[answer];
 	} else {
 
 		ds_writew(0x2cdb, -1);
