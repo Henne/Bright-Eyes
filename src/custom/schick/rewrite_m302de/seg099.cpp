@@ -175,6 +175,11 @@ void spell_verwandlung(void)
 				(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
 		} else {
 
+#ifdef M302de_ORIGINAL_BUGFIX
+			/* Broken format string, %S must be %s */
+			host_writeb(get_dtp(0x14) + 5, 's');
+#endif
+
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x14),
 				(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
