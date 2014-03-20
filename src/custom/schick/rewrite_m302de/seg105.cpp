@@ -643,7 +643,7 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x894),
-				GUI_names_grammar(((nr > 1) ? 4 : 0) + 2, id, 0));
+				(char*)Real2Host(GUI_names_grammar(((nr > 1) ? 4 : 0) + 2, id, 0)));
 
 			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 
