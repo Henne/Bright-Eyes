@@ -59,6 +59,18 @@ struct hero_status {
 	unsigned short dummy	:6;
 };
 
+struct enemy_status {
+	/* enemy + 0x31 */
+	unsigned short dead	:1;
+	unsigned short bit1	:1;
+	unsigned short bit2	:1;
+	unsigned short bit3	:1;
+	unsigned short bit4	:1;
+	unsigned short bit5	:1;
+	unsigned short bit6	:1;
+	unsigned short illusion	:1;
+};
+
 struct item_status {
 	/* item + 0x02 */
 	unsigned short armor		 :1;

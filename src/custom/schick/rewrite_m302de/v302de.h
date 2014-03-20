@@ -286,6 +286,19 @@ static inline unsigned short hero_unc(Bit8u *hero) {
 }
 
 /**
+ * enemy_illusion() -	check if enemy is an illusion
+ * @enemy:	ptr to enemy
+ *
+ * 0 = real / 1 = illusion
+ */
+static inline unsigned short enemy_illusion(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x31) >> 7) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * ks_empty() -	check if a item in the knapsack is empty
  * @item:	ptr to item
  *
@@ -593,6 +606,8 @@ extern Bit8u* city_ltx[];
 #define hero_cursed(hero)  ((*(struct hero_status*)(hero + 0xaa)).cursed)
 #define hero_unc(hero)  ((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_dup(hero)  ((*(struct hero_status*)(hero + 0xaa)).dup)
+
+#define enemy_illusion(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).illusion)
 
 #define ks_half_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).half_empty)
 #define ks_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).empty)
