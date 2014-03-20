@@ -10,6 +10,8 @@ void spell_beherrschung(void);
 void spell_destructibo();
 /* 0x2a */
 void spell_gardanium();
+/* 0x2f */
+void spell_illusionen(void);
 
 
 /* Domination / Beherrschung */

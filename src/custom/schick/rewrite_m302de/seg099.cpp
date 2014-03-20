@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 17/39
+ *	Functions rewritten 18/39
  *
 */
 
@@ -93,6 +93,46 @@ void spell_gardanium(void)
 		}
 	} else {
 		ds_writew(0xac0e, 0);
+	}
+}
+
+/* Borlandified and identical */
+void spell_illusionen(void)
+{
+	/* Set pointer to enemy target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+
+	/* check if enemy is an illusion */
+	if (enemy_illusion(Real2Host(ds_readd(SPELLTARGET_E)))) {
+
+		/* AEcosts = enemy level - spelluser_level */
+		ds_writew(0xac0e,
+			(host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x29)
+			 -host_readbs(get_spelluser() + 0x27)) * 2);
+
+		/* AEcost are at least 5 */
+		if (ds_readws(0xac0e) < 5)
+			ds_writew(0xac0e, 5);
+
+		/* check if spelluser has enough AE */
+		if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
+			/* NO: spell has no effect */
+			ds_writew(0xac0e, -2);
+		} else {
+			/* YES: spell has effect */
+			ds_writew(0xe3a4, 1);
+			/* kill enemy */
+			or_ptr_bs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x31, 1);
+		}
+	} else {
+		/* print a failure message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0xc),
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
+
+		/* costs 2 AE */
+		ds_writew(0xac0e, 2);
 	}
 }
 

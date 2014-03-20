@@ -92,6 +92,7 @@
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
+#define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 
