@@ -41,7 +41,12 @@ struct screen_rect {
  *	@unkn2:		yet unknown, maybe unused
  *	@unkn3:		yet unknown, but used
  *	@dup:		1 = Duplicatus active	/ not active
- *	@dummy:		yet unknown, maybe unused
+ *	@dummy1:	yet unknown, maybe unused
+ *	@dummy2:	yet unknown, maybe unused
+ *	@dummy3:	yet unknown, maybe unused
+ *	@dummy4:	yet unknown, maybe unused
+ *	@transf:	1 = hero is transformed / 0 not transformed
+ *	@dummy6:	yet unknown, maybe unused
  */
 struct hero_status {
 	/* hero + 0xaa */
@@ -56,7 +61,12 @@ struct hero_status {
 	/* hero + 0xab */
 	unsigned short unkn3	:1;
 	unsigned short dup	:1;
-	unsigned short dummy	:6;
+	unsigned short dummy1	:1;
+	unsigned short dummy2	:1;
+	unsigned short dummy3	:1;
+	unsigned short dummy4	:1;
+	unsigned short transf	:1;
+	unsigned short dummy6	:1;
 };
 
 struct enemy_status {

@@ -287,6 +287,20 @@ static inline unsigned short hero_unc(Bit8u *hero) {
 }
 
 /**
+ * hero_transformed() -	check if hero is transformed
+ * @hero:	ptr to hero
+ *
+ * 0 = not transformed / 1 = transformed
+ */
+static inline unsigned short hero_transformed(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 6) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * enemy_illusion() -	check if enemy is an illusion
  * @enemy:	ptr to enemy
  *
@@ -607,6 +621,8 @@ extern Bit8u* city_ltx[];
 #define hero_cursed(hero)  ((*(struct hero_status*)(hero + 0xaa)).cursed)
 #define hero_unc(hero)  ((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_dup(hero)  ((*(struct hero_status*)(hero + 0xaa)).dup)
+
+#define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
 #define enemy_illusion(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).illusion)
 
