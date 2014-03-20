@@ -20,6 +20,8 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+
 /**
  *
  *	@p:	pointer to an object 35 byte
@@ -27,65 +29,50 @@ namespace M302de {
  *	@y:	y coordinate on the screen
  *
 */
-unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y) {
-
+/* Borlandified and identical */
+unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y)
+{
 	Bit8u *i;
+	signed short ox;
+	signed short oy;
 
 	if (host_readb(p + 0x12) != 0) {
 
-		if (host_readb(p + 0xe) != 0xff || host_readb(p + 0x12) == 3) {
-
-			if (host_readb(p + 0x12) == 1)
-				host_writeb(p + 0x12, 2);
-
-			return 1;
-		}
-
-		i = Real2Host(ds_readd(0xe108));
+		if ((host_readbs(p + 0xe) != -1) || (host_readbs(p + 0x12) == 3))
+			goto damn_label;
 
 		/* i = i->next; */
-		for (; i != p; i = Real2Host(host_readd(i + 0x1b))) {
+		for (i = Real2Host(ds_readd(0xe108)); i != p; i = Real2Host(host_readd(i + 0x1b)))
+		{
 
-			if (host_readb(i + 0x12) < 2)
-				continue;
+			if (host_readbs(i + 0x12) >= 2) {
 
-			signed short i3, i4, i5, i6, i7, i8;
-			signed short osx, osy;
+				ox = 10 - host_readbs(i + 8) / 2
+					+ (host_readbs(i + 3) + host_readbs(i + 4)) * 10;
 
-			i3 = host_readbs(i + 3);
-			i4 = host_readbs(i + 4);
-			i5 = host_readbs(i + 5);
-			i6 = host_readbs(i + 6);
-			i7 = host_readbs(i + 7);
-			i8 = host_readbs(i + 8);
+				oy = 118 - host_readbs(i + 7)
+					+ (host_readbs(i + 3) - host_readbs(i + 4)) * 5;
 
-			osx = 10 - i8 / 2 + (i3 + i4) * 10 + i5;
-			osy = 118 - i7 + (i3 - i4) * 5 + i6;
+				ox += host_readbs(i + 5);
+				oy += host_readbs(i + 6);
 
-#if !defined(__BORLANDC__)
-		D1_LOG("3=%d 4=%d 5=%d 6=%d 7=%d 8=%d osx=%d osy=%d\n",
-			i3, i4, i5, i6, i7, i8, osx, osy);
-#endif
-
-			if (x + i8 < osx || x - i8 > osx)
-				continue;
-
-			if (y + i7 < osy || y - i7 > osy)
-				continue;
-
-			if (host_readb(p + 0x12) == 1)
-				host_writeb(p + 0x12, 2);
-
-			return 1;
+				if (!((x + host_readbs(p + 8) < ox)
+					|| (x - host_readbs(i + 8) > ox)
+					|| (y + host_readbs(p + 7) < oy)
+					|| (y - host_readbs(i + 7) > oy)))
+				{
+damn_label:
+					if (host_readb(p + 0x12) == 1)
+						host_writeb(p + 0x12, 2);
+					return 1;
+				}
+			}
+		}
 	}
 
-		return 0;
-
-	} else
-		return 0;
+	return 0;
 }
 
-/* Borlandified and identical */
 /**
  *	FIG_set_star_color() - set the color of the star in fights
  *	@ptr:	pointer to the star template
@@ -95,13 +82,14 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y) {
  *	Sets the color of the star which shows fight activities,
  *	like damage, in fights.
  */
+/* Borlandified and identical */
 void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color)
 {
 	PhysPt p;
 
 	color += 0x80;
 
-	for (p = ptr; --count; p++) {
+	for (p = ptr; count--; p++) {
 		if (mem_readb(p))
 			mem_writeb(p, color);
 	}
@@ -114,13 +102,19 @@ void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color)
  *
  *	Would return "einem Magier" if the enemy is a "Magier".
 */
+/* Borlandified and identical */
 //static
-RealPt FIG_name_3rd_case(unsigned short type, unsigned short pos) {
-
-	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
-	else
-		return GUI_names_grammar(3, pos, 1);
+#if !defined (__BORLANDC__)
+RealPt FIG_name_3rd_case(unsigned short type, unsigned short pos)
+#else
+RealPt FIG_name_3rd_case(unsigned short type, unsigned long pos)
+#endif
+{
+	if (type == 2) {
+		return (RealPt)ds_readd(HEROS) + (signed short)pos * 0x6da + 0x10;
+	} else {
+		return GUI_names_grammar(3, (signed short)pos, 1);
+	}
 }
 
 /*
@@ -130,13 +124,19 @@ RealPt FIG_name_3rd_case(unsigned short type, unsigned short pos) {
  *
  *	Would return "einen Magier" if the enemy is a "Magier".
 */
+/* Borlandified and identical */
 //static
-RealPt FIG_name_4th_case(unsigned short type, unsigned short pos) {
+#if !defined (__BORLANDC__)
+RealPt FIG_name_4th_case(unsigned short type, unsigned short pos)
+#else
+RealPt FIG_name_4th_case(unsigned short type, unsigned long pos)
+#endif
+{
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + (signed short)pos * 0x6da + 0x10;
 	else
-		return GUI_names_grammar(2, pos, 1);
+		return GUI_names_grammar(2, (signed short)pos, 1);
 }
 
 /*
@@ -146,13 +146,19 @@ RealPt FIG_name_4th_case(unsigned short type, unsigned short pos) {
  *
  *	Would return "ein Magier" if the enemy is a "Magier".
 */
+/* Borlandified and identical */
 //static
-RealPt FIG_name_1st_case(unsigned short type, unsigned short pos) {
+#if !defined (__BORLANDC__)
+RealPt FIG_name_1st_case(unsigned short type, unsigned short pos)
+#else
+RealPt FIG_name_1st_case(unsigned short type, unsigned long pos)
+#endif
+ {
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + (signed short)pos * 0x6da + 0x10;
 	else
-		return GUI_names_grammar(0, pos, 1);
+		return GUI_names_grammar(0, (signed short)pos, 1);
 }
 
 unsigned short fight_printer()
