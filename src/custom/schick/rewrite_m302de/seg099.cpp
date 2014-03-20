@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 18/39
+ *	Functions rewritten 19/39
  *
 */
 
@@ -135,6 +135,54 @@ void spell_illusionen(void)
 		ds_writew(0xac0e, 2);
 	}
 }
+
+/* Borlandified and identical */
+void spell_verwandlung(void)
+{
+	signed short i;
+
+	/* set spelltarget */
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+	if (hero_stoned(Real2Host(ds_readd(SPELLTARGET)))) {
+
+		/* set AEcosts */
+		ds_writew(0xac0e, random_schick(10) * 5);
+
+		/* check if spelluser has enough AE */
+		if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
+			/* NO: spell has no effect */
+			ds_writew(0xac0e, -2);
+		} else {
+			/* YES: spell has effect */
+			/* unset stoned bit */
+			and_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + 0xaa, 0xfb);
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x10),
+				(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
+		}
+	} else {
+		if (hero_transformed(Real2Host(ds_readd(SPELLTARGET)))) {
+
+			and_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + 0xab, 0xbf);
+
+			/* increase attributes */
+			for (i = 0; i <= 6; i++)
+				inc_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + 0x35 + i * 3);
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0x8d4),
+				(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
+		} else {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x14),
+				(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
+			ds_writew(0xac0e, 0);
+		}
+	}
+}
+
 
 void spell_boeser_blick(void)
 {

@@ -4640,7 +4640,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x34: {
-		return 0;
+		spell_verwandlung();
+		return 1;
 	}
 	case 0x39: {
 		return 0;
