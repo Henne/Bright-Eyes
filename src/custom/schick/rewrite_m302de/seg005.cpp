@@ -104,16 +104,12 @@ void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color)
 */
 /* Borlandified and identical */
 //static
-#if !defined (__BORLANDC__)
-RealPt FIG_name_3rd_case(unsigned short type, unsigned short pos)
-#else
-RealPt FIG_name_3rd_case(unsigned short type, unsigned long pos)
-#endif
+RealPt FIG_name_3rd_case(unsigned short type, volatile unsigned short pos)
 {
 	if (type == 2) {
-		return (RealPt)ds_readd(HEROS) + (signed short)pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
 	} else {
-		return GUI_names_grammar(3, (signed short)pos, 1);
+		return GUI_names_grammar(3, pos, 1);
 	}
 }
 
@@ -126,17 +122,13 @@ RealPt FIG_name_3rd_case(unsigned short type, unsigned long pos)
 */
 /* Borlandified and identical */
 //static
-#if !defined (__BORLANDC__)
-RealPt FIG_name_4th_case(unsigned short type, unsigned short pos)
-#else
-RealPt FIG_name_4th_case(unsigned short type, unsigned long pos)
-#endif
+RealPt FIG_name_4th_case(unsigned short type, volatile unsigned short pos)
 {
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + (signed short)pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
 	else
-		return GUI_names_grammar(2, (signed short)pos, 1);
+		return GUI_names_grammar(2, pos, 1);
 }
 
 /*
@@ -148,17 +140,13 @@ RealPt FIG_name_4th_case(unsigned short type, unsigned long pos)
 */
 /* Borlandified and identical */
 //static
-#if !defined (__BORLANDC__)
-RealPt FIG_name_1st_case(unsigned short type, unsigned short pos)
-#else
-RealPt FIG_name_1st_case(unsigned short type, unsigned long pos)
-#endif
+RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
  {
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + (signed short)pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
 	else
-		return GUI_names_grammar(0, (signed short)pos, 1);
+		return GUI_names_grammar(0, pos, 1);
 }
 
 unsigned short fight_printer()
