@@ -6893,7 +6893,7 @@ static int n_seg066(unsigned offs)
 		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		CPU_Push16(v1);
-		reg_ax = get_border_index(v1);
+		reg_ax = get_border_index((unsigned char)v1);
 		D1_LOG("get_border_index(%d) = %d\n", v1, reg_ax);
 		return 1;
 	}
