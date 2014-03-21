@@ -5178,7 +5178,19 @@ static int seg106(unsigned short offs)
 {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		Bit16s pos1 = CPU_Pop16();
+		Bit16s pos2 = CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+		CPU_Push16(pos2);
+		CPU_Push16(pos1);
+
+		D1_LOG("move_item(%d, %d, %s);\n",
+			pos1, pos2, (char*)Real2Host(hero) + 0x10);
+
+		move_item(pos1, pos2, Real2Host(hero));
+
+		return 1;
 	}
 	case 0x25: {
 		RealPt hero = CPU_Pop32();
@@ -7280,7 +7292,20 @@ static int n_seg106(unsigned offs) {
 		return 1;
 	}
 	case 0x9c: {
-		return 0;
+		CPU_Pop16();
+		Bit16s pos1 = CPU_Pop16();
+		Bit16s pos2 = CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+		CPU_Push16(pos2);
+		CPU_Push16(pos1);
+
+		D1_LOG("near move_item(%d, %d, %s);\n",
+			pos1, pos2, (char*)Real2Host(hero) + 0x10);
+
+		move_item(pos1, pos2, Real2Host(hero));
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

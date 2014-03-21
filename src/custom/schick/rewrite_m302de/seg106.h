@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void move_item(signed short, signed short, Bit8u*);
 /* 0x25 */
 void print_item_description(Bit8u*, signed short);
 /* 0x34 */

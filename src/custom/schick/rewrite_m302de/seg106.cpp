@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
-	Functions rewritten: 5/8
+	Functions rewritten: 6/8
 */
 
 #include <stdio.h>
@@ -19,6 +19,7 @@
 #include "seg008.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -63,6 +64,147 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 	}
 
 	return retval;
+}
+
+/* Borlandified and identical */
+void move_item(signed short pos1, signed short pos2, Bit8u *hero)
+{
+	signed short item1;
+	signed short item2;
+	signed short v3 = 0;
+	signed short temp;
+	struct knapsack_item tmp;
+
+	if (!check_hero(hero) || (pos1 == pos2)) { }
+	else {
+
+		if ((pos2 > 6) && (pos1 > 6)) {
+			/* Both items are in knapsacks */
+			v3 = 1;
+			item1 = host_readws(hero + 0x196 + pos1  * SIZEOF_KS_ITEM);
+			item2 = host_readws(hero + 0x196 + pos2  * SIZEOF_KS_ITEM);
+		} else {
+			item1 = host_readws(hero + 0x196 + pos1  * SIZEOF_KS_ITEM);
+			item2 = host_readws(hero + 0x196 + pos2  * SIZEOF_KS_ITEM);
+
+			if ((pos2 < pos1) || ((pos1 < 7) && (pos2 < 7))) {
+				if (pos1 < 7) {
+					if (item1 != 0)
+						v3 = 1;
+				} else {
+					v3 = 1;
+				}
+
+				if (v3 != 0) {
+					/* exchange positions */
+					temp = pos1;
+					pos1 = pos2;
+					pos2 = temp;
+
+					/* exchange ids */
+					temp = item1;
+					item1 = item2;
+					item2 = temp;
+				}
+			}
+
+			v3 = 0;
+
+			if ((item1 == 0) && (item2 == 0)) {
+				GUI_output(get_ltx(0x344));
+			} else {
+				if (item2 != 0) {
+					/* item have the same ids and are stackable */
+					if ((item2 == item1) && item_stackable(get_itemsdat(item1))) {
+						/* merge them */
+
+						/* add counter from item at pos2 to item at pos1 */
+						add_ks_counter(pos1, pos2, hero);
+
+						/* delete item at pos2 */
+						memset(hero + 0x196 + pos2 * SIZEOF_KS_ITEM,
+							0, SIZEOF_KS_ITEM);
+					} else {
+						if (!can_hero_use_item(hero, item2)) {
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_ltx(0x374),
+								(char*)hero + 0x10,
+								(char*)get_ltx( ((host_readbs(hero + 0x22) != 0 ? 0x251 : 0x9) + host_readbs(hero + 0x21)) * 4),
+								(char*)Real2Host(GUI_names_grammar(2, item2, 0)));
+
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+						} else {
+							if (!can_item_at_pos(item2, pos1)) {
+								if (is_in_word_array(item2, (signed short*)(p_datseg + 0x29e)))
+									sprintf((char*)Real2Host(ds_readd(DTP2)),
+										(char*)get_ltx(0x378),
+										(char*)Real2Host(GUI_names_grammar(0x4000, item2, 0)),
+										(char*)get_ltx(0x8b4));
+								else
+									sprintf((char*)Real2Host(ds_readd(DTP2)),
+										(char*)get_ltx(0x378),
+										(char*)Real2Host(GUI_names_grammar(0, item2, 0)),
+										(char*)get_ltx(0x8b0));
+								GUI_output(Real2Host(ds_readd(DTP2)));
+							} else {
+								if (two_hand_collision(hero, item2, pos1)) {
+
+									sprintf((char*)Real2Host(ds_readd(DTP2)),
+										(char*)get_ltx(0xcf4),
+										(char*)hero + 0x10);
+
+									GUI_output(Real2Host(ds_readd(DTP2)));
+
+								} else {
+									if (item1 != 0)
+										unequip(hero, item1, pos1);
+
+									add_equip_boni(hero, hero, item2, pos2, pos1);
+									v3 = 1;
+								}
+							}
+						}
+					}
+				} else {
+					unequip(hero, item1, pos1);
+					v3 = 1;
+				}
+			}
+		}
+
+		if (v3 != 0) {
+
+			/* item have the same ids and are stackable */
+			if ((item2 == item1) && item_stackable(get_itemsdat(item1))) {
+				/* merge them */
+
+				/* add counter from item at pos2 to item at pos1 */
+				add_ks_counter(pos1, pos2, hero);
+
+				/* delete item at pos2 */
+				memset(hero + 0x196 + pos2 * SIZEOF_KS_ITEM,
+							0, SIZEOF_KS_ITEM);
+			} else {
+
+#if !defined(__BORLANDC__)
+				struct_copy((Bit8u*)&tmp, hero + 0x196 + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+				struct_copy(hero + 0x196 + pos1 * SIZEOF_KS_ITEM,
+					hero + 0x196 + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+				struct_copy(hero + 0x196 + pos2 * SIZEOF_KS_ITEM, (Bit8u*)&tmp, SIZEOF_KS_ITEM);
+#else
+				/* exchange the items */
+				tmp = *(struct knapsack_item*)(hero + 0x196 + pos1 * SIZEOF_KS_ITEM);
+
+				*(struct knapsack_item*)(hero + 0x196 + pos1 * SIZEOF_KS_ITEM) =
+					*(struct knapsack_item*)(hero + 0x196 + pos2 * SIZEOF_KS_ITEM);
+				*(struct knapsack_item*)(hero + 0x196 + pos2 * SIZEOF_KS_ITEM) = tmp;
+#endif
+			}
+		}
+	}
+
+
 }
 
 void print_item_description(Bit8u *hero, signed short pos)

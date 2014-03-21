@@ -326,6 +326,10 @@ static inline unsigned short ks_empty(Bit8u *ks) {
 		return 1;
 }
 
+static inline void add_ks_counter(signed short i1, signed short i2, Bit8u *hero) {
+	add_ptr_ws(hero + 0x196 + i1 * 14 + 2, host_readw(hero + 0x196 + i2 * 14 + 2));
+}
+
 /**
  * ks_half_empty() -	check if a item in the knapsack is half empty
  * @item:	ptr to item
@@ -625,6 +629,8 @@ extern Bit8u* city_ltx[];
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
 #define enemy_illusion(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).illusion)
+
+#define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
 
 #define ks_half_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).half_empty)
 #define ks_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).empty)
