@@ -96,14 +96,14 @@ struct item_status {
 
 struct knapsack_status {
 	/* knapsack position + 0x04 */
-	unsigned short bit0		 :1;
+	unsigned short broken		 :1;
 	unsigned short half_empty	 :1;
 	unsigned short empty		 :1;
-	unsigned short bit3		 :1;
+	unsigned short magic_hidden	 :1;
 	unsigned short bit4		 :1;
-	unsigned short bit5		 :1;
-	unsigned short bit6		 :1;
-	unsigned short bit7		 :1;
+	unsigned short poison1		 :1;
+	unsigned short poison2		 :1;
+	unsigned short magic_known	 :1;
 
 	unsigned short bit8	:1;
 	unsigned short bit9	:1;

@@ -314,20 +314,16 @@ static inline unsigned short enemy_illusion(Bit8u *enemy) {
 }
 
 /**
- * ks_empty() -	check if a item in the knapsack is empty
+ * ks_broken() -	check if a item in the knapsack is broken
  * @item:	ptr to item
  *
- * 0 = filled / 1 = empty
+ * 0 = not broken / 1 = broken
  */
-static inline unsigned short ks_empty(Bit8u *ks) {
-	if (((host_readb(ks + 0x04) >> 2) & 1) == 0)
+static inline unsigned short ks_broken(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 0) & 1) == 0)
 		return 0;
 	else
 		return 1;
-}
-
-static inline void add_ks_counter(signed short i1, signed short i2, Bit8u *hero) {
-	add_ptr_ws(hero + 0x196 + i1 * 14 + 2, host_readw(hero + 0x196 + i2 * 14 + 2));
 }
 
 /**
@@ -341,6 +337,75 @@ static inline unsigned short ks_half_empty(Bit8u *ks) {
 		return 0;
 	else
 		return 1;
+}
+
+/**
+ * ks_empty() -	check if a item in the knapsack is empty
+ * @item:	ptr to item
+ *
+ * 0 = filled / 1 = empty
+ */
+static inline unsigned short ks_empty(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 2) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * ks_magic_hidden() -	check if a item in the knapsack is magic
+ * @item:	ptr to item
+ *
+ * 0 = not magic / 1 = magic
+ */
+static inline unsigned short ks_magic_hidden(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 3) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * ks_poison1() -	check if a item in the knapsack is poison1
+ * @item:	ptr to item
+ *
+ * 0 = no / 1 = yes
+ */
+static inline unsigned short ks_poison1(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 5) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * ks_poison2() -	check if a item in the knapsack is poison2
+ * @item:	ptr to item
+ *
+ * 0 = no / 1 = yes
+ */
+static inline unsigned short ks_poison2(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 6) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * ks_magic_known() -	check if a item in the knapsack is magic and you know
+ * @item:	ptr to item
+ *
+ * 0 = know not / 1 = you know its magic
+ */
+static inline unsigned short ks_magic_known(Bit8u *ks) {
+	if (((host_readb(ks + 0x04) >> 7) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline void add_ks_counter(signed short i1, signed short i2, Bit8u *hero) {
+	add_ptr_ws(hero + 0x196 + i1 * 14 + 2, host_readw(hero + 0x196 + i2 * 14 + 2));
 }
 
 /**
@@ -632,8 +697,13 @@ extern Bit8u* city_ltx[];
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
 
+#define ks_broken(ks)  ((*(struct knapsack_status*)(ks + 0x4)).broken)
 #define ks_half_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).half_empty)
 #define ks_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).empty)
+#define ks_magic_hidden(ks)  ((*(struct knapsack_status*)(ks + 0x4)).magic_hidden)
+#define ks_poison1(ks)  ((*(struct knapsack_status*)(ks + 0x4)).poison1)
+#define ks_poison2(ks)  ((*(struct knapsack_status*)(ks + 0x4)).poison2)
+#define ks_magic_known(ks)  ((*(struct knapsack_status*)(ks + 0x4)).magic_known)
 
 #define item_armor(item)  ((*(struct item_status*)(item + 0x2)).armor)
 #define item_weapon(item)  ((*(struct item_status*)(item + 0x2)).weapon)
