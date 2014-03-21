@@ -215,6 +215,7 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 
 }
 
+/* Borlandified and identical */
 void print_item_description(Bit8u *hero, signed short pos)
 {
 	Bit8u *item_p;
@@ -226,7 +227,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 		/* normal item */
 
 		if ((((signed short)host_readw(item_p + 2) > 1) &&
-			(host_readb(get_itemsdat(host_readw(item_p)) + 2) >> 4) & 1) ||
+			item_stackable(get_itemsdat(host_readw(item_p)))) ||
 			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + 0x29e))) {
 			/* more than one item or special */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -247,13 +248,13 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 
 	/* broken */
-	if ((host_readb(item_p + 4) & 1) != 0) {
+	if (ks_broken(item_p)) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x778));
 	}
 
 	/* magic */
-	if (((host_readb(item_p + 4) >> 3) & 1) != 0 &&	/* is magic */
-		((host_readb(item_p + 4) >> 7) & 1) != 0) { /* and you know it */
+	if (ks_magic_hidden(item_p) &&	/* is magic */
+		ks_magic_known(item_p)) { /* and you know it */
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x77c));
 	}
 
@@ -264,8 +265,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 	/* poisoned */
 	if (host_readw(item_p) == 0xc1 || host_readw(item_p) == 0xc8 ||
-		((host_readb(item_p + 4) >> 5) & 1) != 0 ||
-		((host_readb(item_p + 4) >> 6) & 1) != 0 ||
+		ks_poison1(item_p) || ks_poison2(item_p) ||
 		host_readb(hero + 0x196 + 9 + pos * 14) != 0) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x890));
 	}
@@ -274,7 +274,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	if (host_readw(item_p) == 0x85) {
 		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 			(char*)get_city(0xd4),
-			host_readb(hero + 0x195));
+			host_readbs(hero + 0x195));
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(0xd2eb)));
 	}
