@@ -87,6 +87,7 @@ struct item_status {
 	unsigned short weapon		 :1;
 	unsigned short bit2		 :1;
 	unsigned short food		 :1;
+
 	unsigned short stackable	 :1;
 	unsigned short herb_potion	 :1;
 	unsigned short undropable	 :1;
@@ -103,6 +104,34 @@ struct knapsack_status {
 	unsigned short bit5		 :1;
 	unsigned short bit6		 :1;
 	unsigned short bit7		 :1;
+
+	unsigned short bit8	:1;
+	unsigned short bit9	:1;
+	unsigned short bit10	:1;
+	unsigned short bit11	:1;
+	unsigned short bit12	:1;
+	unsigned short bit13	:1;
+	unsigned short bit14	:1;
+	unsigned short bit15	:1;
+};
+
+#define SIZEOF_KS_ITEM (14)
+
+struct knapsack_item {
+	signed short id;
+	signed short counter;
+
+	struct knapsack_status stat;
+	signed char bf;
+	signed char used;
+
+	signed char timer;
+	signed char poison_type;
+	signed char poison_counter;
+	signed char unused1;
+
+	signed char unused2;
+	signed char unused3;
 };
 
 /* Informer */
