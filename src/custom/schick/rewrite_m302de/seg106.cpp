@@ -263,7 +263,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	}
 
 	/* poisoned */
-	if (host_readw(item_p) == 0xc1 || host_readw(item_p) == 0xc3 ||
+	if (host_readw(item_p) == 0xc1 || host_readw(item_p) == 0xc8 ||
 		((host_readb(item_p + 4) >> 5) & 1) != 0 ||
 		((host_readb(item_p + 4) >> 6) & 1) != 0 ||
 		host_readb(hero + 0x196 + 9 + pos * 14) != 0) {
