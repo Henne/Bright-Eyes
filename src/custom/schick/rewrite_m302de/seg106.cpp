@@ -124,6 +124,10 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 						/* delete item at pos2 */
 						memset(hero + 0x196 + pos2 * SIZEOF_KS_ITEM,
 							0, SIZEOF_KS_ITEM);
+#ifdef M302de_ORIGINAL_BUGFIX
+						/* Decrement the item counter */
+						dec_ptr_bs(hero + 0x20);
+#endif
 					} else {
 						if (!can_hero_use_item(hero, item2)) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -185,6 +189,10 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 				/* delete item at pos2 */
 				memset(hero + 0x196 + pos2 * SIZEOF_KS_ITEM,
 							0, SIZEOF_KS_ITEM);
+#ifdef M302de_ORIGINAL_BUGFIX
+				/* Decrement the item counter */
+				dec_ptr_bs(hero + 0x20);
+#endif
 			} else {
 
 #if !defined(__BORLANDC__)
