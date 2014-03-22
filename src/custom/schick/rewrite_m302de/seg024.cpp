@@ -1,6 +1,10 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg024 (diary)
-	Functions rewritten: 3/3
+ *	Rewrite of DSA1 v3.02_de functions of seg024 (diary)
+ *	Functions rewritten: 3/3 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg024.cpp
 */
 
 #include <stdio.h>
@@ -19,6 +23,9 @@
 namespace M302de {
 #endif
 
+#if 0
+/* That comes in a later phase of development */
+
 /* DS:0x4900 - DS:0x496f */
 static const char diary_fmt[][30] = {
 	/* V3.02de */
@@ -30,12 +37,14 @@ static const char diary_fmt[][30] = {
 	"~~ABENTEUER IN %s.",
 	"~~RUMH\x8eNGEN IN %s."
 };
+#endif
 
-void diary_show()
+void diary_show(void)
 {
+	unsigned short fg_bak;
+	unsigned short bg_bak;
 	Bit16u bak1, bak2, bak3, bak4, bak5;
-	unsigned short fg_bak, bg_bak;
-	Bit16u i;
+	signed short i;
 
 	bak5 = ds_readw(0xbffd);
 	ds_writew(0xbffd, 3);
@@ -67,7 +76,7 @@ void diary_show()
 	i = 0;
 	do {
 		i = diary_print_entry(i);
-	} while (i < ds_readw(0x43ba));
+	} while (i < ds_readws(0x43ba));
 
 	ds_writew(0xc011, 0);
 	ds_writew(0xc013, 0);
@@ -86,8 +95,7 @@ void diary_show()
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(0xd2fb, ds_readd(0xd2ff));
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(0xc00d, ds_writed(0xd2fb, ds_readd(0xd2ff)));
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
@@ -96,40 +104,39 @@ void diary_show()
 	ds_writew(0xbffd, bak5);
 
 	delay_or_keypress(5000);
-
 }
 
-void diary_new_entry()
+void diary_new_entry(void)
 {
 	Bit8u *ptr;
 
 	/* move all entries if the list is full */
 	if (ds_readw(0x43ba) == 23) {
 		memcpy(p_datseg + 0x43bc, p_datseg + 0x43c4, 176);
-		ds_writew(0x43ba, ds_readw(0x43ba) - 1);
+		dec_ds_ws(0x43ba);
 	}
 
 	/* make a pointer to the last entry */
 	ptr = p_datseg + 0x43b4 + ds_readw(0x43ba) * 8;
 
 	/* avoid double entries for the same town */
-	if (ds_readb(CURRENT_TOWN) == host_readw(ptr + 6))
-		return;
+	if (ds_readbs(CURRENT_TOWN) != host_readw(ptr + 6)) {
 
-	/* make a pointer to the current entry */
-	ptr = p_datseg + 0x43bc + ds_readw(0x43ba) * 8;
+		/* make a pointer to the current entry */
+		ptr = p_datseg + 0x43bc + ds_readw(0x43ba) * 8;
 
-	/* increment entry counter */
-	ds_writew(0x43ba, ds_readw(0x43ba) + 1);
+		/* deccrement entry counter */
+		inc_ds_ws(0x43ba);
 
-	/* Write day of month */
-	host_writew(ptr, ds_readb(DAY_OF_MONTH));
-	/* Write month */
-	host_writew(ptr + 2, ds_readb(MONTH));
-	/* Write year */
-	host_writew(ptr + 4, ds_readb(YEAR));
-	/* Write city */
-	host_writew(ptr + 6, ds_readb(CURRENT_TOWN));
+		/* Write day of month */
+		host_writew(ptr, ds_readbs(DAY_OF_MONTH));
+		/* Write month */
+		host_writew(ptr + 2, ds_readbs(MONTH));
+		/* Write year */
+		host_writew(ptr + 4, ds_readbs(YEAR));
+		/* Write city */
+		host_writew(ptr + 6, ds_readbs(CURRENT_TOWN));
+	}
 }
 
 /**
@@ -138,11 +145,12 @@ void diary_new_entry()
  */
 Bit16u diary_print_entry(Bit16u line)
 {
+	signed short day;
+	signed short month;
+	signed short startline;
 	Bit8u *ptr;
 	char *city_name;
-	Bit16s di = 0;
-	Bit16u startline;
-	Bit16u day, month;
+	signed short di = 0;
 
 	memset(Real2Host(ds_readd(0xc3db)), 0, 64000);
 
@@ -156,35 +164,42 @@ Bit16u diary_print_entry(Bit16u line)
 		city_name = (char*)get_ltx((host_readw(ptr + 6) + 0xeb) * 4);
 
 		if (di == 0) {
-			if (strlen(city_name) > 24) {
+			if ((signed short)strlen(city_name) > 24) {
 				sprintf(getString(ds_readd(0xd2f3)),
-					diary_fmt[0], host_readw(ptr),
+					(char*)(p_datseg + 0x4900),
+					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
-			} else if (strlen(city_name) > 15 ) {
+			} else if ((signed short)strlen(city_name) > 15 ) {
 				sprintf(getString(ds_readd(0xd2f3)),
-					diary_fmt[1], host_readw(ptr),
+					(char*)(p_datseg + 0x490e),
+					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			} else {
 				sprintf(getString(ds_readd(0xd2f3)),
-					diary_fmt[2], host_readw(ptr),
+					(char*)(p_datseg + 0x491f),
+					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			}
 		} else {
-			if (strlen(city_name) > 24) {
+			if ((signed short)strlen(city_name) > 24) {
 				sprintf(getString(ds_readd(0xd2f3)),
-					diary_fmt[3], city_name);
-			} else if (strlen(city_name) > 15) {
+					(char*)(p_datseg + 0x493a),
+					city_name);
+			} else if ((signed short)strlen(city_name) > 15) {
 				sprintf(getString(ds_readd(0xd2f3)),
-					diary_fmt[4], city_name);
-			} else if (strlen(city_name) > 6) {
+					(char*)(p_datseg + 0x4940),
+					city_name);
+			} else if ((signed short)strlen(city_name) > 6) {
 				sprintf(getString(ds_readd(0xd2f3)),
-					diary_fmt[5], city_name);
+					(char*)(p_datseg + 0x4949),
+					city_name);
 			} else {
 				sprintf(getString(ds_readd(0xd2f3)),
-					diary_fmt[6], city_name);
+					(char*)(p_datseg + 0x495c),
+					city_name);
 			}
 		}
 		GUI_print_string(Real2Host(ds_readd(0xd2f3)),
@@ -193,14 +208,23 @@ Bit16u diary_print_entry(Bit16u line)
 		line++;
 		di++;
 
-	} while ((host_readw(ptr) == day) && (host_readw(ptr + 2) == month));
+	} while ((host_readws(ptr) == day) && (host_readws(ptr + 2) == month));
 
 	ds_writew(0xc011, 0);
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, line * 7);
 	ds_writed(0xc019, ds_readd(0xc3db));
-	ds_writed(0xc00d, startline * 2240 + ds_readd(0xd303) + 9600);
+#if !defined(__BORLANDC__)
+	ds_writed(0xc00d,
+		(Bit32u)(((RealPt)ds_readd(0xd303) + startline * 2240) + 9600));
+#else
+	/* TODO: ugly hack */
+	/*	this calculation of the address of
+		a twodimiensional array is done
+		here with inline assembly */
+	calc_twodim_array_ptr(0xd303, 0x8c0, startline, 9600, 0xc00d);
+#endif
 	do_pic_copy(2);
 
 	return line;

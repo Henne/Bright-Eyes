@@ -15,7 +15,6 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG008.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG009.CPP
 @REM
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG024.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG025.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG026.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG027.CPP
@@ -61,6 +60,7 @@
 @REM -- here start the complete
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG007.CPP
 @REM ..\BIN\TASM.EXE /os /z SEG010.asm SEG010.OBJ
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG024.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG029.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG047.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG053.CPP
