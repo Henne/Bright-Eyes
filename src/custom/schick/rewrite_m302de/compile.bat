@@ -6,13 +6,14 @@
 @REM
 @REM --the hard cases
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG002.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG008.CPP
 @REM
+@REM --the compiling cases
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG003.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG005.CPP
 @REM
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG008.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG009.CPP
 @REM
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG025.CPP
