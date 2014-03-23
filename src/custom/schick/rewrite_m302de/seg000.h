@@ -19,6 +19,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #include <IO.H>
 #include <DOS.H>
 #include <BIOS.H>
+#include <ALLOC.H>
 
 #define RealMake(s, o) MK_FP(s, o)
 #define PhysMake(s, o) RealMake(s, o)
@@ -28,6 +29,8 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 
 #define F_PADD(p, o) ((RealPt __huge)(p) + o)
+
+#define bc_farcalloc farcalloc
 
 #define bc_close close
 #define bc__creat _creat

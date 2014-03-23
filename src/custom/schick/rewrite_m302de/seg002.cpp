@@ -40,23 +40,29 @@ namespace M302de {
 
 void set_audio_track(Bit16u index)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push16(index);
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x17);
 	CPU_Pop16();
+#endif
 }
 
 void play_voc(Bit16u index)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push16(index);
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x832);
 	CPU_Pop16();
+#endif
 }
 
 void play_voc_delay(Bit16u index)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push16(index);
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x856);
 	CPU_Pop16();
+#endif
 }
 
 /**
@@ -66,13 +72,16 @@ void play_voc_delay(Bit16u index)
  * Returns the filehandle or 0xffff.
  */
 //static
-Bit16u open_and_seek_dat(unsigned short fileindex) {
+Bit16u open_and_seek_dat(unsigned short fileindex)
+{
 	Bit32u start, end;
 	Bit16u fd;
 
+#if !defined(__BORLANDC__)
 	/* open SCHICK.DAT */
 	if (!DOS_OpenFile("SCHICK.DAT", OPEN_READ, &fd))
 		return 0xffff;
+#endif
 
 	/* seek to the fileindex position in the offset table */
 	bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
@@ -132,19 +141,22 @@ void seg002_0c72(Bit16u handle, Bit32u off, Bit16u dummy) {
 
 Bit16u load_regular_file(Bit16u index)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push16(index);
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0xcb6);
 	CPU_Pop16();
 
 	return reg_ax;
+#endif
 }
 Bit16u load_archive_file(Bit16u index)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push16(index);
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0xd27);
 	CPU_Pop16();
-
 	return reg_ax;
+#endif
 }
 
 signed int process_nvf(struct nvf_desc *nvf) {
@@ -275,6 +287,7 @@ signed int process_nvf(struct nvf_desc *nvf) {
  * put the values in the emulated registers, instead in a structure.
  */
 void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
+#if !defined(__BORLANDC__)
 
 	if ((signed short)host_readw(p1) < 0)
 		return;
@@ -343,6 +356,7 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 	reg_di = bdi;
 
 	return;
+#endif
 }
 
 /**
@@ -415,7 +429,9 @@ void refresh_screen_size() {
 
 void handle_gui_input(void)
 {
+#if !defined(__BORLANDC__)
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1a34);
+#endif
 }
 
 void update_mouse_cursor1() {
@@ -452,7 +468,7 @@ void refresh_screen_size1() {
 	if (ds_readw(0x299e) < ds_readw(0x29a8))
 		ds_writew(0x299e, ds_readw(0x29a8));
 
-	if (ds_readw(0x299e > 195))
+	if (ds_readw(0x299e) > 195)
 		ds_writew(0x299e, 195);
 
 	save_mouse_bg();
@@ -476,7 +492,7 @@ void mouse_19dc() {
 	ds_writed(0xcec7, ds_readd(0xcecb));
 
 	/* check if the new cursor is the default cursor */
-	if (ds_readd(0xcecb) == RealMake(datseg, 0x2848)) {
+	if ((RealPt)ds_readd(0xcecb) == RealMake(datseg, 0x2848)) {
 		/* set cursor size 0x0 */
 		ds_writew(0x29a8, 0);
 		ds_writew(0x29a6, 0);
@@ -515,13 +531,16 @@ unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {
 
 void handle_input()
 {
+#if !defined(__BORLANDC__)
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1d67);
-
+#endif
 }
 
 void wait_for_keyboard1() {
 	while (CD_bioskey(1)) {
+#if !defined(__BORLANDC__)
 		D1_LOG("loop in %s\n", __func__);
+#endif
 		bioskey(0);
 	}
 }
@@ -949,7 +968,9 @@ void do_timers(void)
 
 	/* unknown timer */
 	if (ds_readd(0x3fa2) != 0) {
+#if !defined(__BORLANDC__)
 		D1_LOG("Unknown Dungeon Timer\n");
+#endif
 		ds_writed(0x3fa2, ds_readd(0x3fa2) - 1);
 	}
 
@@ -1159,7 +1180,9 @@ void sub_mod_timers(unsigned int val) {
 		if ((signed int)host_readd(sp) > 0)
 			continue;
 
+#if !defined(__BORLANDC__)
 		D1_LOG("Mod Timer %d rueckgesetzt\n", i);
+#endif
 
 		/* set timer to 0 */
 		host_writed(sp, 0);
@@ -1203,7 +1226,9 @@ void sub_mod_timers(unsigned int val) {
 				if (reset_target)
 					host_writeb(get_hero(h_index) + 0x7b, 0);
 			} else {
+#if !defined(__BORLANDC__)
 				D1_ERR("Invalid Mod Timer Target %d\n", target);
+#endif
 
 				/* reset all slots of invalid target */
 				for (j = 0; j < 100; j++) {
@@ -1317,9 +1342,11 @@ void seg002_2f7a(unsigned int fmin) {
 
 		/* I have no clue what is at offset 0x8b */
 		if ((signed int)host_readd(hero_i + 0x8b) > 0) {
+#if !defined(__BORLANDC__)
 			D1_INFO("Unknown Timer %s at 0x8b = %d\n",
 				(char*)hero_i + 0x10,
 				(signed int)host_readd(hero_i + 0x8b));
+#endif
 
 			host_writed(hero_i + 0x8b,
 				host_readd(hero_i + 0x8b) - fmin * 450);
@@ -1330,9 +1357,11 @@ void seg002_2f7a(unsigned int fmin) {
 
 		/* Timer set after Staffspell */
 		if ((int)host_readd(hero_i + 0x8f) > 0) {
+#if !defined(__BORLANDC__)
 			D1_INFO("Unknown Timer %s at 0x8f = %d\n",
 				(char*)(hero_i + 0x10),
 				host_readd(hero_i + 0x8f));
+#endif
 			host_writed(hero_i + 0x8f, host_readd(hero_i + 0x8f) - fmin * 450);
 			if ((int)host_readd(hero_i + 0x8f) < 0)
 				host_writed(hero_i + 0x8f, 0);
@@ -1438,7 +1467,9 @@ void magical_chainmail_damage(void)
 
 		/* unknown */
 		if (host_readb(hero_i + 0x9f) != 0) {
+#if !defined(__BORLANDC__)
 			D1_INFO("Bit is set \n");
+#endif
 			continue;
 		}
 
@@ -1493,7 +1524,9 @@ void herokeeping(void)
 							/* Lunchpack found, consume quiet */
 							ds_writeb(CONSUME_QUIET, 1);
 							consume(hero, hero, pos);
+#if !defined(__BORLANDC__)
 							D1_INFO("%s isst etwas\n", (char*)hero + 0x10);
+#endif
 							ds_writeb(CONSUME_QUIET, 0);
 
 							/* search for another Lunchpack */
@@ -1572,8 +1605,9 @@ void herokeeping(void)
 							if (pos != -1) {
 								/* drink it */
 								consume(hero, hero, pos);
+#if !defined(__BORLANDC__)
 								D1_INFO("%s trinkt etwas\n", (char*)hero + 0x10);
-
+#endif
 								/* nothing to drink message */
 								if ((get_item_pos(hero, 0x17) == -1)
 									&& (get_full_waterskin_pos(hero) == -1)) {
@@ -1959,7 +1993,9 @@ void draw_splash(unsigned short index, unsigned short type) {
 
 void wait_for_keyboard2() {
 	while (CD_bioskey(1)) {
+#if !defined(__BORLANDC__)
 		D1_LOG("loop in %s\n", __func__);
+#endif
 		bioskey(0);
 	}
 }
@@ -1999,10 +2035,11 @@ void wait_for_keypress() {
 
 void delay_or_keypress(Bit16u time)
 {
+#if !defined(__BORLANDC__)
 	CPU_Push16(time);
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x40d1);
 	CPU_Pop16();
-
+#endif
 }
 
 unsigned int swap_u32(unsigned int v) {
@@ -2025,15 +2062,19 @@ unsigned short alloc_EMS(Bit32u bytes) {
 	pages = (bytes / 0x4000) + 1;
 
 	if (EMS_get_num_pages_unalloced() < pages) {
+#if !defined(__BORLANDC__)
 		D1_ERR("EMS out of free pages %d/%d\n",
 			pages, EMS_get_num_pages_unalloced());
+#endif
 		return 0;
 	}
 
 	handle = EMS_alloc_pages(pages);
 
 	if (handle == 0) {
+#if !defined(__BORLANDC__)
 		D1_ERR("EMS cant alloc %d pages\n", pages);
+#endif
 		return 0;
 	}
 
@@ -2062,7 +2103,7 @@ void from_EMS(RealPt dst, unsigned short handle, Bit32u bytes)
 
 		bytes -= 0x4000;
 
-		bc_memmove(EMS_norm_ptr(ptr), ds_readd(0x4baa), v2);
+		bc_memmove(EMS_norm_ptr(ptr), (RealPt)ds_readd(0x4baa), v2);
 		di--;
 	} while (di != 0);
 
@@ -2090,7 +2131,7 @@ void to_EMS(unsigned short handle, RealPt src, Bit32u bytes)
 
 		bytes -= 0x4000;
 
-		bc_memmove(ds_readd(0x4baa), EMS_norm_ptr(ptr), v2);
+		bc_memmove((RealPt)ds_readd(0x4baa), EMS_norm_ptr(ptr), v2);
 		di--;
 	} while (di != 0);
 
@@ -2378,7 +2419,7 @@ void seg002_47e2() {
 	/* set destination */
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 	/* set source */
-	ds_writed(0xc019, RealMake(datseg, 0xbc63));
+	ds_writed(0xc019, (Bit32u)RealMake(datseg, 0xbc63));
 
 	do_save_rect();
 
@@ -2406,7 +2447,7 @@ void seg002_484f() {
 	/* set destination */
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 	/* set source */
-	ds_writed(0xc019, RealMake(datseg, 0xbc63));
+	ds_writed(0xc019, (Bit32u)RealMake(datseg, 0xbc63));
 
 	do_pic_copy(0);
 
@@ -2718,7 +2759,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 void add_hero_le(Bit8u *hero, signed short le) {
 
 	RealPt ptr;
-	unsigned short val_bak, tmp, ret;
+	signed short val_bak, tmp, ret;
 
 	/* dead heroes never get LE */
 	if (hero_dead(hero))
@@ -2846,11 +2887,15 @@ short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
 	short si = random_schick(20);
 	short tmp;
 
+#if !defined(__BORLANDC__)
 	D1_INFO("Eigenschaftsprobe %s auf %s %+d: W20 = %d",
 		(char*)(hero+0x10), names_attrib[attrib], bonus, si);
+#endif
 
 	if (si == 20) {
+#if !defined(__BORLANDC__)
 		D1_INFO("Ungluecklich\n");
+#endif
 		return -99;
 	}
 
@@ -2860,8 +2905,10 @@ short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
 	tmp += host_readb(hero + attrib*3 + 0x36);
 	tmp -= si + 1;
 
+#if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
 		tmp > 0 ? "bestanden" : "nicht bestanden", tmp);
+#endif
 
 	return tmp;
 }
@@ -2878,19 +2925,25 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 	unsigned short i;
 	short tmp;
 
+#if !defined(__BORLANDC__)
 	D1_INFO("%s -> (%s/%s/%s) %+d: ",
 		(char*)(hero+0x10), names_attrib[attrib1],
 		names_attrib[attrib2], names_attrib[attrib3], bonus);
+#endif
 
 	for (i = 0; i < 3; i++) {
 		tmp = random_schick(20);
 
+#if !defined(__BORLANDC__)
 		D1_INFO("%d ", tmp);
+#endif
 
 		if (tmp == 20) {
 			zw++;
 			if (zw == 2) {
+#if !defined(__BORLANDC__)
 				D1_INFO(" -> UNGLUECKLICH! nicht bestanden\n");
+#endif
 				return -99;
 			}
 		}
@@ -2908,9 +2961,10 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 
 	tmp -= si + 1;
 
+#if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
 		tmp > 0 ? "bestanden" : "nicht bestanden", tmp);
-
+#endif
 	return tmp;
 }
 
@@ -3053,7 +3107,8 @@ void add_party_money(Bit32s money) {
 /**
 	add_hero_ap - add AP
 */
-void add_hero_ap(Bit8u *hero, int ap) {
+void add_hero_ap(Bit8u *hero, int ap)
+{
 	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
 }
 
@@ -3112,7 +3167,9 @@ void add_hero_ap_all(short ap) {
 		if (hero_dead(hero_i))
 			continue;
 
+#if !defined(__BORLANDC__)
 		D1_INFO("%s erhaelt %d AP\n",(char*)(hero_i+0x10), ap);
+#endif
 
 		add_hero_ap(hero_i, ap);
 	}
@@ -3144,10 +3201,14 @@ void sub_hero_ap_all(signed short ap) {
 
 		if (ap <= (signed int)host_readd(hero_i+0x28)) {
 			ap = -ap;
+#if !defined(__BORLANDC__)
 			D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i+0x10), ap);
+#endif
 			add_hero_ap(hero_i, ap);
 		} else {
+#if !defined(__BORLANDC__)
 			D1_INFO("%s wird auf 0 AP gesetzt\n",(char*)(hero_i+0x10));
+#endif
 			host_writed(hero_i+0x28, 0);
 		}
 	}
@@ -3259,11 +3320,12 @@ void sub_group_le(signed short le)
  * Returns a pointer to the first available hero in the current group.
  * If none in available it returns a pointer to the first hero
  */
-RealPt get_first_hero_available_in_group() {
+RealPt get_first_hero_available_in_group()
+{
 	RealPt hero_i;
 	unsigned short i;
 
-	hero_i = ds_readd(HEROS);
+	hero_i = (RealPt)ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
@@ -3282,14 +3344,15 @@ RealPt get_first_hero_available_in_group() {
 		return hero_i;
 	}
 
-	return ds_readd(HEROS);
+	return (RealPt) ds_readd(HEROS);
 }
 
-RealPt get_second_hero_available_in_group() {
+RealPt get_second_hero_available_in_group()
+{
 	RealPt hero_i;
 	unsigned short i, tmp;
 
-	hero_i = ds_readd(HEROS);
+	hero_i = (RealPt)ds_readd(HEROS);
 	tmp = 0;
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
@@ -3309,7 +3372,7 @@ RealPt get_second_hero_available_in_group() {
 		tmp++;
 	}
 
-	return 0;
+	return (RealPt)0;
 }
 
 unsigned short count_heros_available() {
@@ -3361,7 +3424,7 @@ unsigned short count_heroes_available_in_group() {
 
 RealPt schick_alloc_emu(Bit32u size)
 {
-	return bc_farcalloc(size, 1);
+	return (RealPt)bc_farcalloc(size, 1);
 }
 
 #if !defined(__BORLANDC__)
