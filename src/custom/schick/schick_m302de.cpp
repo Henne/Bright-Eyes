@@ -22,6 +22,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg010.h"
+#include "seg011.h"
 #include "seg024.h"
 #include "seg025.h"
 #include "seg026.h"
@@ -2547,6 +2548,72 @@ static int seg010(unsigned short offs) {
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				__func__, offs);
 			exit(1);
+	}
+}
+
+static int seg011(unsigned short offs) {
+	switch (offs) {
+	case 0x6d1: {
+		D1_LOG("AIL_startup();\n");
+		AIL_startup();
+		return 1;
+	}
+	case 0x715: {
+		RealPt signoff_msg = CPU_Pop32();
+		D1_LOG("AIL_shutdown();\n");
+		AIL_shutdown(signoff_msg);
+		CPU_Push32(signoff_msg);
+		return 1;
+	}
+	case 0xc7d: {
+		Bit16u sequence = CPU_Pop16();
+		Bit16u driver = CPU_Pop16();
+		D1_INFO("AIL_start_sequence(0x%x, 0x%x);\n",
+			driver, sequence);
+		AIL_start_sequence(driver, sequence);
+		CPU_Push16(driver);
+		CPU_Push16(sequence);
+		return 1;
+	}
+	case 0xc83: {
+		Bit16u sequence = CPU_Pop16();
+		Bit16u driver = CPU_Pop16();
+		D1_INFO("AIL_stop_sequence(0x%x, 0x%x);\n",
+			driver, sequence);
+		AIL_stop_sequence(driver, sequence);
+		CPU_Push16(driver);
+		CPU_Push16(sequence);
+		return 1;
+	}
+	case 0xc8f: {
+		Bit16u sequence = CPU_Pop16();
+		Bit16u driver = CPU_Pop16();
+		reg_ax = AIL_sequence_status(driver, sequence);
+		D1_INFO("AIL_sequence_status(0x%x, 0x%x) = %d;\n",
+			driver, sequence, reg_ax);
+		CPU_Push16(driver);
+		CPU_Push16(sequence);
+		return 1;
+	}
+	case 0xca1: {
+		Bit16u ms = CPU_Pop16();
+		Bit16u percent = CPU_Pop16();
+		Bit16u sequence = CPU_Pop16();
+		Bit16u driver = CPU_Pop16();
+		AIL_set_relative_volume(driver, sequence, percent, ms);
+		D1_INFO("AIL_set_relative_volume(0x%x, 0x%x, %d, %d);\n",
+			driver, sequence, percent, ms);
+		CPU_Push16(driver);
+		CPU_Push16(sequence);
+		CPU_Push16(percent);
+		CPU_Push16(ms);
+		return 1;
+	}
+	default:
+		return 0;
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
 	}
 }
 
@@ -5541,7 +5608,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x0f18:	return seg008(offs);
 		case 0x0ff1:	return seg009(offs);
 		case 0x1030:	return seg010(offs);
-		case 0x1042:	return 0;
+		case 0x1042:	return seg011(offs);
 		case 0x1112:	return seg012(offs);
 		case 0x12db:	return seg024(offs);
 		case 0x12de:	return seg025(offs);
