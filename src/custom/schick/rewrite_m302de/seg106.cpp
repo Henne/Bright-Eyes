@@ -9,10 +9,7 @@
 
 #include "v302de.h"
 
-#if !defined(__BORLANDC__)
 #include "seg000.h"
-#endif
-
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"

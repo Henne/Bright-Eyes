@@ -581,10 +581,6 @@ static inline char* get_itemname(unsigned short item)
 
 #else
 
-#include <IO.H>
-#include <DOS.H>
-#include <BIOS.H>
-
 #undef M302de_ORIGINAL_BUGFIX
 
 typedef unsigned char Bit8u;
@@ -671,9 +667,6 @@ extern Bit8u* text_ltx[];
 extern Bit8u* dialog_text[];
 extern Bit8u* city_ltx[];
 
-#define RealMake(s, o) MK_FP(s, o)
-#define PhysMake(s, o) MK_FP(s, o)
-
 #define Real2Phys(p) (Bit8u*)(p)
 #define Real2Host(p) (Bit8u*)(p)
 #define getString(p) (char*)(p)
@@ -697,8 +690,6 @@ extern Bit8u* city_ltx[];
 /* TODO: ugly hack, BASM does not like 16bit immediate values with imul */
 #define calc_twodim_array_ptr(start, width, disp, off, dst) \
 asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start]; add ax, off; mov[dst + 2],dx; mov [dst],ax }
-
-#define mem_memcpy memcpy
 
 #define hero_dead(hero)  ((*(struct hero_status*)(hero + 0xaa)).dead)
 #define hero_sleeps(hero)  ((*(struct hero_status*)(hero + 0xaa)).sleeps)
@@ -739,14 +730,6 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 #define get_monname(nr) (char*)(host_readd((RealPt)ds_readd(MONNAMES) + nr * 4))
 #define get_itemsdat(nr) (char*)((RealPt)ds_readd(ITEMSDAT) + nr * 12)
 #define get_itemname(nr) (char*)((RealPt)(host_readd((RealPt)(ds_readd(ITEMSNAME)) + nr * 4)))
-
-#define struct_copy memcpy
-#define bc__creat _creat
-#define bc_close close
-#define bc_memmove memmove
-
-
-#define BORLAND_FAR __far
 
 #define get_cb_val(x, y) (host_readbs((RealPt)ds_readd(CHESSBOARD) + y * 25 + x))
 #define set_cb_val(x, y, val) (host_writeb(((RealPt)ds_readd(CHESSBOARD)) + y * 25 + x, val))
