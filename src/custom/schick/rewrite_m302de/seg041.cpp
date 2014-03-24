@@ -1,7 +1,9 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg041 (fight)
-        Functions rewritten: 7/9
+        Functions rewritten: 8/9
 */
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,37 +13,153 @@
 #include "seg007.h"
 #include "seg097.h"
 #include "seg105.h"
+#include "seg106.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
 
+#if 0
 /* DS:0x26ad */
 static unsigned short msg_counter;
+#endif
 
+/* Borlandified and identical */
+/**
+ * range_attack_ammo()	- check if a range attack can be done
+ * @hero:	the hero who attacks
+ * @arg:	0 = drop one unit, 1 = just check, 2 = check with output
+ *
+ * Returns: 0 = no ammo / 1 = have ammo
+*/
+signed short seg041_0020(Bit8u *hero, signed short arg)
+{
+	signed short right_hand;
+	signed short left_hand;
+	signed short retval;
+
+	retval = 0;
+
+	/* read the item ids from the hands */
+	right_hand = host_readws(hero + 0x1c0);
+	left_hand = host_readws(hero + 0x1ce);
+
+	switch (right_hand) {
+	case 0x5:	/* SPEER	/ spear */
+	case 0x10:	/* WURFBEIL	/ francesca */
+	case 0x11:	/* WURFSTERN	/ throwing star */
+	case 0x21:	/* WURFAXT	/ throwing axe */
+	case 0x62:	/* WURFMESSER	/ throwing dagger */
+	case 0x89:	/* SCHNEIDEZAHN	/ cutting tooth */
+	case 0xda:
+	{
+		if (!arg) {
+
+			if (ds_readws(0x5f12) < 30) {
+				ds_writew(0xe31a + ds_readw(0x5f12) * 2, right_hand);
+				inc_ds_ws(0x5f12);
+			}
+
+			drop_item(hero, 3, 1);
+
+			if (left_hand == right_hand) {
+				move_item(3, 4, hero);
+			}
+
+		}
+		retval = 1;
+		break;
+	}
+	case 0x9:	/* KURZBOGEN	/ SHORT BOW */
+	case 0x13:	/* LANGBOGEN	/ LONG BOW */
+	{
+		/* PFEIL / ARROWS */
+		if (left_hand != 10) {
+			if (arg != 2) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x20),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			}
+
+		} else {
+			if (!arg) {
+				drop_item(hero, 4, 1);
+			}
+			retval = 1;
+		}
+		break;
+	}
+	case 0xc:	/* ARMBRUST	/ CROSSBOW */
+	{
+		/* BOLZEN / BOLT */
+		if (left_hand != 13) {
+			if (arg != 2) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x24),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			}
+		} else {
+			if (!arg) {
+				drop_item(hero, 4, 1);
+			}
+			retval = 1;
+		}
+		break;
+	}
+	case 0x78:	/* SCHLEUDER	/ SLING */
+	{
+		if (left_hand != 999) {
+			if (arg != 2) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x28),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			}
+		} else {
+			if (!arg) {
+				drop_item(hero, 4, 1);
+			}
+			retval = 1;
+		}
+		break;
+	}
+	}
+	return retval;
+}
+
+/* Borlandified and identical */
 void FIG_output(Bit8u *str)
 {
-	if (*str == 0)
-		return;
-
-	GUI_output(str);
+	if (*str != 0) {
+		GUI_output(str);
+	}
 }
 
 /**
  *	FIG_clear_msgs() - clears the fight messages buffer
 */
+/* Borlandified and identical */
 void FIG_clear_msgs(void)
 {
 	memset(p_datseg + 0xd333, 0 , 20);
-	msg_counter = 0;
+	ds_writew(0x26ad, 0);
 }
 
+/* Borlandified and identical */
 void FIG_add_msg(unsigned short f_action, unsigned short damage)
 {
-	ds_writew(0xd333 + 4 * msg_counter, f_action);
-	ds_writew(0xd333 + 4 * msg_counter + 2 , damage);
-	if (msg_counter < 4)
-		msg_counter++;
+	ds_writew(0xd333 + 4 * ds_readws(0x26ad), f_action);
+	ds_writew(0xd333 + 2 + 4 * ds_readws(0x26ad) , damage);
+	if (ds_readws(0x26ad) < 4)
+		inc_ds_ws(0x26ad);
 }
 
 /**

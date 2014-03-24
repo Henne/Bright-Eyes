@@ -3480,7 +3480,14 @@ static int seg040(unsigned short offs) {
 static int seg041(unsigned short offs) {
 	switch(offs) {
 	case 0x20: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		Bit16u arg = CPU_Pop16();
+		reg_ax = seg041_0020(Real2Host(hero), (signed short)arg);
+		D1_INFO("seg041_0020(%s, %d); = %d\n",
+			(char*)Real2Host(hero) + 0x10, arg, reg_ax);
+		CPU_Push16(arg);
+		CPU_Push32(hero);
+		return 1;
 	}
 	case 0x25: {
 		RealPt str = CPU_Pop32();

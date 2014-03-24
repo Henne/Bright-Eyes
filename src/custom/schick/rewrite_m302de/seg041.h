@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+signed short seg041_0020(Bit8u*, signed short);
 //0x25
 void FIG_output(Bit8u*);
 //0x2a
