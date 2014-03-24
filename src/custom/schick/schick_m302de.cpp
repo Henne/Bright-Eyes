@@ -4393,7 +4393,7 @@ static int seg096(unsigned short offs) {
 			RealPt retval;
 
 			retval = GUI_get_ptr2(v1, v2);
-			D1_LOG("GUI_get_ptr2(%d,%d) = %s", v1, v2,
+			D1_LOG("GUI_get_ptr2(%d,%d) = %s",
 				v1, v2, getString(retval));
 
 			reg_ax = RealOff(retval);
