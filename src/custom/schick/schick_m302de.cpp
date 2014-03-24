@@ -6588,6 +6588,12 @@ static int n_seg030(unsigned offs) {
 		reg_dx = RealSeg(retval);
 		return 1;
 	}
+	case 0x14f: {
+		return 0;
+	}
+	case 0xfd5: {
+		return 0;
+	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 			__func__, offs);
@@ -7636,6 +7642,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
+	else if (is_ovrseg(0x12ff)) return n_seg030(offs);
 	else if (is_ovrseg(0x1303)) return n_seg031(offs);
 	/* seg032 */
 	if (is_ovrseg(0x1309)) {
