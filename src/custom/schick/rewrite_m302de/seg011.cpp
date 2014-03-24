@@ -1,7 +1,6 @@
 #if !defined(__BORLANDC__)
 
 #include "regs.h"
-#include "paging.h"
 #include "callback.h"
 
 #include "../schick.h"
@@ -20,6 +19,60 @@ void AIL_shutdown(RealPt signoff_msg)
 	CPU_Push32(signoff_msg);
 	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0x715);
 	CPU_Pop32();
+}
+
+void AIL_play_VOC_file(Bit16u driver, RealPt VOC_file, Bit16s block_marker)
+{
+	CPU_Push16(block_marker);
+	CPU_Push32(VOC_file);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xbff);
+	CPU_Pop16();
+	CPU_Pop32();
+	CPU_Pop16();
+}
+
+Bit16u AIL_format_VOC_file(Bit16u driver, RealPt VOC_file, Bit16s block_marker)
+{
+	CPU_Push16(block_marker);
+	CPU_Push32(VOC_file);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc05);
+	CPU_Pop16();
+	CPU_Pop32();
+	CPU_Pop16();
+	return reg_ax;
+}
+
+Bit16u AIL_VOC_playback_status(Bit16u driver)
+{
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc0b);
+	CPU_Pop16();
+	return reg_ax;
+}
+
+void AIL_start_digital_playback(Bit16u driver)
+{
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc11);
+	CPU_Pop16();
+}
+
+void AIL_stop_digital_playback(Bit16u driver)
+{
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc17);
+	CPU_Pop16();
+}
+
+void AIL_set_digital_playback_volume(Bit16u driver, Bit16u percent)
+{
+	CPU_Push16(percent);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc29);
+	CPU_Pop16();
+	CPU_Pop16();
 }
 
 Bit16u AIL_register_sequence(Bit16u driver, RealPt FORM_XMID, Bit16u sequence_num, RealPt state_table, RealPt controller_table)

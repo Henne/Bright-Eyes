@@ -2565,6 +2565,61 @@ static int seg011(unsigned short offs) {
 		CPU_Push32(signoff_msg);
 		return 1;
 	}
+	case 0xbff: {
+		Bit16u driver = CPU_Pop16();
+		RealPt VOC_file = CPU_Pop32();
+		Bit16s block_marker = (signed short)CPU_Pop16();
+		AIL_play_VOC_file(driver, VOC_file, block_marker);
+		D1_LOG("AIL_play_VOC_file(%d, 0x%x, %d);\n",
+			driver, VOC_file, block_marker);
+		CPU_Push16(block_marker);
+		CPU_Push32(VOC_file);
+		CPU_Push16(driver);
+		return 1;
+	}
+	case 0xc05: {
+		Bit16u driver = CPU_Pop16();
+		RealPt VOC_file = CPU_Pop32();
+		Bit16s block_marker = (signed short)CPU_Pop16();
+		reg_ax = AIL_format_VOC_file(driver, VOC_file, block_marker);
+		D1_LOG("AIL_format_VOC_file(%d, 0x%x, %d); = %d\n",
+			driver, VOC_file, block_marker, (signed short)reg_ax);
+		CPU_Push16(block_marker);
+		CPU_Push32(VOC_file);
+		CPU_Push16(driver);
+		return 1;
+	}
+	case 0xc0b: {
+		Bit16u driver = CPU_Pop16();
+		reg_ax = AIL_VOC_playback_status(driver);
+		D1_LOG("AIL_VOC_playback_status(); = %d\n", reg_ax);
+		CPU_Push16(driver);
+		return 1;
+	}
+	case 0xc11: {
+		Bit16u driver = CPU_Pop16();
+		D1_LOG("AIL_start_digital_playback();\n");
+		AIL_start_digital_playback(driver);
+		CPU_Push16(driver);
+		return 1;
+	}
+	case 0xc17: {
+		Bit16u driver = CPU_Pop16();
+		D1_LOG("AIL_stop_digital_playback();\n");
+		AIL_stop_digital_playback(driver);
+		CPU_Push16(driver);
+		return 1;
+	}
+	case 0xc29: {
+		Bit16u driver = CPU_Pop16();
+		Bit16u percent = CPU_Pop16();
+		D1_LOG("AIL_set_digital_playback_volume(%d, %d);\n",
+			driver, percent);
+		AIL_set_digital_playback_volume(driver, percent);
+		CPU_Push16(percent);
+		CPU_Push16(driver);
+		return 1;
+	}
 	case 0xc7d: {
 		Bit16u sequence = CPU_Pop16();
 		Bit16u driver = CPU_Pop16();
