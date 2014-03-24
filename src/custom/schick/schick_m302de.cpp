@@ -199,7 +199,7 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x6d0: {
-			unsigned short val = CPU_Pop16();
+			signed short val = CPU_Pop16();
 			CPU_Push16(val);
 
 			D1_LOG("C-Lib exit(%d)\n", val);
@@ -2424,7 +2424,7 @@ static int seg008(unsigned short offs) {
 		CPU_Push16(height);
 		CPU_Push16(width);
 
-		D1_GFX("decomp_rle(width=%d, height=%d, dst=0x%x:0x%x, src=0x%x:0x%x, tmp_buffer=0x%x:0x%x, mode=%d)\n",
+		D1_GFX("decomp_rle(width=%u, height=%u, dst=0x%x:0x%x, src=0x%x:0x%x, tmp_buffer=0x%x:0x%x, mode=%u)\n",
 			width, height,	RealSeg(dst), RealOff(dst),
 			RealSeg(src), RealOff(src), RealSeg(tmp_buffer),
 			RealOff(tmp_buffer), mode);
@@ -4402,8 +4402,8 @@ static int seg096(unsigned short offs) {
 	}
 	case 0x43: {
 		RealPt s = CPU_Pop32();
-		unsigned short x = CPU_Pop16();
-		unsigned short y = CPU_Pop16();
+		signed short x = CPU_Pop16();
+		signed short y = CPU_Pop16();
 		CPU_Push16(y);
 		CPU_Push16(x);
 		CPU_Push32(s);
