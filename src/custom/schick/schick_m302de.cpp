@@ -99,7 +99,7 @@ void schick_timer_disable()
 	irq_timer = NULL;
 
 	/* restore rand 2 code */
-	memcpy(MemBase + PhysMake(reloc_game + 0xb2a, 0x261),
+	memcpy(Real2Host(RealMake(reloc_game + 0xb2a, 0x261)),
 		irq_bak, 17 * sizeof(char));
 	memset(irq_bak, 0, 17 * sizeof(char));
 	D1_INFO("IRQ timer deaktiviert\n");
@@ -108,7 +108,7 @@ void schick_timer_disable()
 void schick_timer_enable()
 {
 	/* get the adress of the seed2 code */
-	Bit8u *loc = MemBase + PhysMake(reloc_game + 0xb2a, 0x261);
+	Bit8u *loc = Real2Host(RealMake(reloc_game + 0xb2a, 0x261));
 
 	/* copy seed2 code part */
 	memcpy(irq_bak, loc, 17 * sizeof(char));
@@ -176,7 +176,7 @@ static int seg000(unsigned short offs) {
 			RealPt path = CPU_Pop32();
 			CPU_Push32(path);
 
-			D1_LOG("chdir(%s)\n", (char*)MemBase+Real2Phys(path));
+			D1_LOG("chdir(%s)\n", (char*)Real2Host(path));
 
 			return 0;
 		}
@@ -514,7 +514,7 @@ static int seg000(unsigned short offs) {
 			D1_LOG("itoa(%d, 0x%04x:0x%04x, %d)\n",
 					value, RealSeg(string),
 					RealOff(string), radix);
-			sprintf((char*)MemBase+Real2Phys(string), "%d", value);
+			sprintf((char*)Real2Host(string), "%d", value);
 
 			reg_ax = RealOff(string);
 			reg_dx = RealSeg(string);
@@ -555,7 +555,7 @@ static int seg000(unsigned short offs) {
 			if (RealSeg(s) == 0xa000)
 				return 0;
 
-			memset(MemBase+Real2Phys(s), c, n);
+			memset(Real2Host(s), c, n);
 
 			reg_ax = RealOff(s);
 			reg_dx = RealSeg(s);
@@ -584,7 +584,7 @@ static int seg000(unsigned short offs) {
 			CPU_Push32(fname);
 
 			D1_LOG("open(\"%s\",\"%04x\")\n",
-					MemBase + Real2Phys(fname), mode);
+					(char*)Real2Host(fname), mode);
 			return 0;
 		}
 		case 0x3636: {
@@ -595,7 +595,7 @@ static int seg000(unsigned short offs) {
 			CPU_Push32(fname);
 
 			D1_LOG("C-Lib Unkn(\"%s\", 0x%04x)\n",
-					MemBase + Real2Phys(fname), mode);
+					(char*)Real2Host(fname), mode);
 			return 0;
 		}
 		case 0x36dd: {
@@ -603,7 +603,7 @@ static int seg000(unsigned short offs) {
 			RealPt p = CPU_Pop32();
 			CPU_Push32(p);
 
-			D1_LOG("printf(\"%s\")\n", MemBase + Real2Phys(p));
+			D1_LOG("printf(\"%s\")\n", (char*)Real2Host(p));
 			return 0;
 		}
 		case 0x3d74: {
@@ -618,7 +618,7 @@ static int seg000(unsigned short offs) {
 
 			D1_LOG("C-Lib sprintf(0x%04x:0x%04x, \"%s\", ...)\n",
 					RealSeg(str), RealOff(str),
-					MemBase + Real2Phys(format));
+					(char*)Real2Host(format));
 
 			return 0;
 		}
@@ -633,8 +633,7 @@ static int seg000(unsigned short offs) {
 					RealSeg(dest), RealOff(dest),
 					RealSeg(src), RealSeg(src));
 
-			strcat((char*)MemBase + Real2Phys(dest),
-				(char*)MemBase + Real2Phys(src));
+			strcat((char*)Real2Host(dest), (char*)Real2Host(src));
 
 			reg_ax = RealOff(dest);
 			reg_dx = RealSeg(dest);
@@ -652,8 +651,8 @@ static int seg000(unsigned short offs) {
 					RealSeg(s1), RealOff(s1),
 					RealSeg(s2), RealSeg(s2));
 
-			reg_ax = strcmp((char*)MemBase + Real2Phys(s1),
-					(char*)MemBase + Real2Phys(s2));
+			reg_ax = strcmp((char*)Real2Host(s1),
+					(char*)Real2Host(s2));
 
 			return 1;
 		}
@@ -668,8 +667,7 @@ static int seg000(unsigned short offs) {
 					RealSeg(dest), RealOff(dest),
 					RealSeg(src), RealSeg(src));
 
-			strcpy((char*)MemBase + Real2Phys(dest),
-				(char*)MemBase + Real2Phys(src));
+			strcpy((char*)Real2Host(dest), (char*)Real2Host(src));
 
 			reg_ax = RealOff(dest);
 			reg_dx = RealSeg(dest);
@@ -699,8 +697,8 @@ static int seg000(unsigned short offs) {
 					RealSeg(dest), RealOff(dest),
 					RealSeg(src), RealSeg(src), n);
 
-			strncpy((char*)MemBase + Real2Phys(dest),
-				(char*)MemBase + Real2Phys(src), n);
+			strncpy((char*)Real2Host(dest),
+				(char*)Real2Host(src), n);
 
 			reg_ax = RealOff(dest);
 			reg_dx = RealSeg(dest);
@@ -1436,7 +1434,7 @@ static int seg002(unsigned short offs) {
 
 		D1_INFO("%s erhaelt %d AP\n",
 					schick_getCharname(hero), ap);
-		add_hero_ap(MemBase+Real2Phys(hero), ap);
+		add_hero_ap(Real2Host(hero), ap);
 
 		return 1;
 	}
@@ -1473,7 +1471,7 @@ static int seg002(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = get_hero_index(MemBase+Real2Phys(hero));
+		reg_ax = get_hero_index(Real2Host(hero));
 		D1_LOG("get_hero_index(%s) = (%d)\n",
 				schick_getCharname(hero), reg_ax);
 		return 1;
@@ -2302,7 +2300,7 @@ static int seg008(unsigned short offs) {
 
 		pic_copy(Real2Phys(dst), x1, y1, x2, y2, val12, val14,
 			val16, val18, width, height,
-			MemBase+Real2Phys(src), mode);
+			Real2Host(src), mode);
 
 		return 1;
 	}
@@ -3704,7 +3702,7 @@ static int seg047(unsigned short offs) {
 		CPU_Push32(s_ptr);
 
 		D1_LOG("make_valuta_str(%x, %d);\n", s_ptr, money);
-		make_valuta_str((char*)MemBase + Real2Phys(s_ptr), money);
+		make_valuta_str((char*)Real2Host(s_ptr), money);
 
 		return 1;
 	}
@@ -4411,7 +4409,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(s);
 
 		D1_LOG("GUI_print_string(%s, %d, %d);\n", getString(s), x, y);
-		GUI_print_string(MemBase + Real2Phys(s), x, y);
+		GUI_print_string(Real2Host(s), x, y);
 		return 1;
 	}
 	case 0x48: {
@@ -4446,7 +4444,7 @@ static int seg096(unsigned short offs) {
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 
-		reg_ax = GUI_count_lines(MemBase + Real2Phys(ptr));
+		reg_ax = GUI_count_lines(Real2Host(ptr));
 		D1_LOG("GUI_count_lines(%s) = %d\n", getString(ptr),(unsigned short)reg_ax);
 
 		return 1;
@@ -4508,7 +4506,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(ptr);
 
 		D1_LOG("GUI_print_loc_line(%s)\n", getString(ptr));
-		GUI_print_loc_line(MemBase + Real2Phys(ptr));
+		GUI_print_loc_line(Real2Host(ptr));
 		return 1;
 	}
 	case 0x84: {
@@ -4516,7 +4514,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(str);
 
 		D1_LOG("GUI_print_header(%s)\n", getString(str));
-		GUI_print_header(MemBase + Real2Phys(str));
+		GUI_print_header(Real2Host(str));
 		return 1;
 	}
 	case 0x89: {
@@ -4525,7 +4523,7 @@ static int seg096(unsigned short offs) {
 		CPU_Push16(v1);
 		CPU_Push32(p);
 
-		reg_ax = GUI_get_space_for_string(MemBase + Real2Phys(p), (char)v1);
+		reg_ax = GUI_get_space_for_string(Real2Host(p), (char)v1);
 		D1_LOG("GUI_get_space_for_string(%s, %d) = %d\n",
 			getString(p), v1, reg_ax);
 
