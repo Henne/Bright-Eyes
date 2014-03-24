@@ -348,7 +348,7 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 		}
 
 		answer = GUI_radio( (mode == -1) ? get_ltx(0x8dc) : get_ltx(0x490),
-				i,
+				(signed char)i,
 				Real2Host(ds_readd(0xbf95)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
@@ -434,7 +434,7 @@ signed short select_hero_from_group(Bit8u *title)
 
 		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
-		answer = GUI_radio(title, cnt,
+		answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(0xbf95)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
@@ -509,7 +509,7 @@ signed short select_hero_ok(Bit8u *title)
 
 		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
-		answer = GUI_radio(title, cnt,
+		answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(0xbf95)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
@@ -588,7 +588,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 
 			ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
-			answer = GUI_radio(title, cnt,
+			answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(0xbf95)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),

@@ -387,7 +387,8 @@ void FIG_init_enemies(void)
 		}
 
 		/* load the sprites */
-		FIG_load_enemy_sprites(p_datseg + ENEMY_SHEETS + i * 62, x, y);
+		FIG_load_enemy_sprites(p_datseg + ENEMY_SHEETS + i * 62,
+			(signed char)x, (signed char)y);
 	}
 }
 

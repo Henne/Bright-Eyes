@@ -1823,7 +1823,7 @@ void passages_reset() {
  * timewarp() -	forwards the ingame time
  * @time:	ticks to forward
  */
-void timewarp(Bit32u time)
+void timewarp(Bit32s time)
 {
 	signed int i;
 	signed short td_bak;
@@ -1855,7 +1855,7 @@ void timewarp(Bit32u time)
 
 	/* calculate hours */
 	hour_old = timer_bak / 0x1518;
-	hour_new = ds_readd(DAY_TIMER) / 0x1518;
+	hour_new = (signed short)(ds_readd(DAY_TIMER) / 0x1518);
 
 	if (hour_old != hour_new) {
 		if (hour_new > hour_old) {
@@ -1879,13 +1879,13 @@ void timewarp(Bit32u time)
  * timewarp_until() -	forwards the ingame time
  * @time:	ticks to forward to e.g 6 AM
  */
-void timewarp_until(Bit32u time)
+void timewarp_until(Bit32s time)
 {
-	unsigned int i;
+	signed int i;
 	signed short td_bak;
 	signed short j;
 	signed short hour_diff;
-	unsigned int timer_bak;
+	signed int timer_bak;
 	register signed short hour_old, hour_new;
 
 	i = 0;
@@ -1914,7 +1914,7 @@ void timewarp_until(Bit32u time)
 
 	/* calculate hours */
 	hour_old = timer_bak / 0x1518;
-	hour_new = ds_readd(DAY_TIMER) / 0x1518;
+	hour_new = (signed short)(ds_readd(DAY_TIMER) / 0x1518);
 
 	if (hour_old != hour_new) {
 		if (hour_new > hour_old) {
@@ -2054,12 +2054,12 @@ unsigned int swap_u32(unsigned int v) {
  *
  *	Returns an EMS handle, to access the memory.
  */
-unsigned short alloc_EMS(Bit32u bytes) {
+unsigned short alloc_EMS(Bit32s bytes) {
 
-	unsigned short pages;
-	unsigned short handle;
+	signed short pages;
+	signed short handle;
 
-	pages = (bytes / 0x4000) + 1;
+	pages = (signed short)((bytes / 0x4000) + 1);
 
 	if (EMS_get_num_pages_unalloced() < pages) {
 #if !defined(__BORLANDC__)
@@ -2081,13 +2081,13 @@ unsigned short alloc_EMS(Bit32u bytes) {
 	return handle;
 }
 
-void from_EMS(RealPt dst, unsigned short handle, Bit32u bytes)
+void from_EMS(RealPt dst, unsigned short handle, Bit32s bytes)
 {
 	RealPt ptr;
-	unsigned short v1, v2, di;
+	signed short v1, v2, di;
 	signed short si;
 
-	di = bytes / 0x4000 + 1;
+	di = (signed short)(bytes / 0x4000 + 1);
 	si = 0;
 	v1 = 0;
 
@@ -2097,7 +2097,7 @@ void from_EMS(RealPt dst, unsigned short handle, Bit32u bytes)
 		si++;
 
 		if (bytes - 0x4000 < 0)
-			v2 = bytes;
+			v2 = (signed short)bytes;
 		else
 			v2 = 0x4000;
 
@@ -2109,13 +2109,13 @@ void from_EMS(RealPt dst, unsigned short handle, Bit32u bytes)
 
 }
 
-void to_EMS(unsigned short handle, RealPt src, Bit32u bytes)
+void to_EMS(unsigned short handle, RealPt src, Bit32s bytes)
 {
 	RealPt ptr;
-	unsigned short v1, v2, di;
+	signed short v1, v2, di;
 	signed short si;
 
-	di = bytes / 0x4000 + 1;
+	di = (signed short)(bytes / 0x4000 + 1);
 	si = 0;
 	v1 = 0;
 
@@ -2125,7 +2125,7 @@ void to_EMS(unsigned short handle, RealPt src, Bit32u bytes)
 		si++;
 
 		if (bytes - 0x4000 < 0)
-			v2 = bytes;
+			v2 = (signed short)bytes;
 		else
 			v2 = 0x4000;
 

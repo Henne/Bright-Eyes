@@ -291,7 +291,7 @@ void load_informer_tlk(signed short index)
 	Bit8u *ptr;
 	unsigned int text_len;
 	unsigned short partners;
-	unsigned short off;
+	Bit32u off;
 
 	unsigned short fd;
 	unsigned short i;

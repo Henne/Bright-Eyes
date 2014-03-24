@@ -91,7 +91,7 @@ void tevent_063(void)
 	i = get_free_mod_slot();
 
 	/* MU -2 for 24 hours */
-	set_mod_slot(i, 0x1fa40, hero + 0x35, -2, vomiter);
+	set_mod_slot(i, 0x1fa40, hero + 0x35, -2, (signed char)vomiter);
 
 	/* outro message */
 	GUI_output(get_city(0xc0));

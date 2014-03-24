@@ -7946,7 +7946,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			CPU_Push16(x);
 			CPU_Push32(dst);
 
-			D1_LOG("GUI_1f8(0x%x, %d, %d, %d, %d);",
+			D1_LOG("GUI_1f8(0x%x, %u, %u, %u, %u);",
 				dst, x, y, num, v4);
 
 			reg_ax = GUI_enter_text(Real2Host(dst),
@@ -7977,8 +7977,8 @@ int schick_nearcall_v302de(unsigned offs) {
 		/* Callers: 3 */
 		case 0x564: {
 			CPU_Pop16();
-			unsigned short width = CPU_Pop16();
-			unsigned short height = CPU_Pop16();
+			signed short width = CPU_Pop16();
+			signed short height = CPU_Pop16();
 			CPU_Push16(height);
 			CPU_Push16(width);
 

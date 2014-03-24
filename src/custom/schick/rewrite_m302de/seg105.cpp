@@ -810,7 +810,7 @@ signed short select_item_to_drop(Bit8u *hero)
 		bak3 = ds_readw(0x2ca4);
 		ds_writew(0xbffd, 6);
 		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
-		v4 = GUI_radio((Bit8u*)get_ltx(0xbc0), i,
+		v4 = GUI_radio((Bit8u*)get_ltx(0xbc0), (signed char)i,
 			Real2Host(ds_readd(0xbf95 + 0x00 + di * 4)),
 			Real2Host(ds_readd(0xbf95 + 0x04 + di * 4)),
 			Real2Host(ds_readd(0xbf95 + 0x08 + di * 4)),

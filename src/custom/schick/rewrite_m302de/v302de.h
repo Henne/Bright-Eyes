@@ -196,12 +196,12 @@ static inline void dec_ptr_bs(Bit8u *p)
 	host_writebs(p, host_readbs(p) - 1);
 }
 
-static inline void or_ptr_bs(Bit8u *p, const signed char val)
+static inline void or_ptr_bs(Bit8u *p, const unsigned char val)
 {
 	host_writebs(p, host_readbs(p) | val);
 }
 
-static inline void and_ptr_bs(Bit8u *p, const signed char val)
+static inline void and_ptr_bs(Bit8u *p, const unsigned char val)
 {
 	host_writebs(p, host_readbs(p) & val);
 }

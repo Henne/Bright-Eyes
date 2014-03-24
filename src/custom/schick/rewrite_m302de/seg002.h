@@ -54,8 +54,8 @@ void set_and_spin_lock();
 void passages_recalc();
 //static
 void passages_reset();
-void timewarp(Bit32u);
-void timewarp_until(Bit32u);
+void timewarp(Bit32s);
+void timewarp_until(Bit32s);
 void dec_splash();
 //static
 void draw_splash(unsigned short index, unsigned short type);
@@ -63,9 +63,9 @@ void wait_for_keyboard2();
 void wait_for_keypress();
 void delay_or_keypress(Bit16u);
 unsigned int swap_u32(unsigned int v);
-unsigned short alloc_EMS(Bit32u bytes);
-void from_EMS(RealPt, unsigned short, Bit32u);
-void to_EMS(unsigned short, RealPt, Bit32u bytes);
+unsigned short alloc_EMS(Bit32s);
+void from_EMS(RealPt, unsigned short, Bit32s);
+void to_EMS(unsigned short, RealPt, Bit32s);
 void set_to_ff();
 void draw_loc_icons(signed short, ...);
 unsigned short mod_timer(short val);
