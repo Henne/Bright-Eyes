@@ -1552,6 +1552,14 @@
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg120.h"
 						>
 					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg122.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\seg122.h"
+						>
+					</File>
 				</Filter>
 				</Filter>
 				<Filter

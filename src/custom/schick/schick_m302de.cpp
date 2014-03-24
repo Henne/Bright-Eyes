@@ -68,6 +68,7 @@
 #include "seg113.h"
 #include "seg117.h"
 #include "seg120.h"
+#include "seg122.h"
 
 using namespace M302de;
 
@@ -5644,8 +5645,19 @@ static int seg120(unsigned short offs) {
 	In seg122 is only an empty function.
 	We bypass it and avoid unneccesarry overlay magic.
 */
-static inline int seg122(unsigned short offs) {
-	return 1;
+static int seg122(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("do_location1()\n");
+			do_location1();
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
 }
 
 // Intercept far CALLs (both 32 and 16 bit)
