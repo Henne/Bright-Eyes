@@ -1,6 +1,10 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
-	Functions rewritten: 6/6 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of seg064 (harbour_helper)
+ *	Functions rewritten: 6/6 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1- Yo seg064.cpp
 */
 
 #include <stdio.h>
@@ -21,7 +25,6 @@ namespace M302de {
  *				6= cutter,7= fishing boat
  *	@arg2:		???
  */
-/* Borlandified and identical */
 RealPt get_ship_name(signed char ship_type, signed short arg2)
 {
 	signed char done, i;
@@ -48,7 +51,6 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 /**
  *	prepare_passages()	-
  */
-/* Borlandified and identical */
 unsigned short prepare_passages(void)
 {
 	signed short prepared;
@@ -113,7 +115,6 @@ unsigned short prepare_passages(void)
  *
  *	Returns a pointer to the buffer.
  */
-/* Borlandified and identical */
 RealPt print_passage_price(signed short price, Bit8u *entry)
 {
 	unsigned short di;
@@ -140,7 +141,6 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 
 }
 
-/* Borlandified and identical */
 unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 {
 	Bit32u hours;
@@ -169,7 +169,8 @@ unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 unsigned short get_next_passages(unsigned short type)
 {
 	Bit8u *entry;
-	unsigned short i, destinations;
+	signed short destinations;
+	signed short i;
 
 	entry = p_datseg + 0x6f00;
 
@@ -182,11 +183,17 @@ unsigned short get_next_passages(unsigned short type)
 				if (host_readb(entry) == ds_readb(CURRENT_TOWN) ||
 					host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 				{
-					/* TODO: BC: Target adress is calculeted before the value => other code */
-					ds_writeb(0x42bc + destinations * 12,
+#if !defined(__BORLANDC__)
+					ds_writeb(0x42b2 + 10 + destinations * 12,
 						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 							host_readb(entry + 1):
 							host_readb(entry));
+#else
+					((struct passages*)(p_datseg + 0x42b2))[destinations].town =
+						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
+							host_readb(entry + 1):
+							host_readb(entry);
+#endif
 					destinations++;
 				}
 			}
@@ -195,11 +202,17 @@ unsigned short get_next_passages(unsigned short type)
 			if (host_readb(entry) == ds_readb(CURRENT_TOWN) ||
 				host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 			{
-				/* TODO: BC: Target adress is calculeted before the value => other code */
-				ds_writeb(0x42bc + destinations * 12,
+#if !defined(__BORLANDC__)
+				ds_writeb(0x42b2 + 10 + destinations * 12,
 					host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 						host_readb(entry + 1):
 						host_readb(entry));
+#else
+					((struct passages*)(p_datseg + 0x42b2))[destinations].town =
+						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
+							host_readb(entry + 1):
+							host_readb(entry);
+#endif
 				destinations++;
 			}
 		}
@@ -222,10 +235,8 @@ unsigned short passage_arrival(void)
 
 	p_sched = p_datseg + 0x6f00 + ds_readb(0x42b1) * 8;
 
-	/* write the destination to a global variable */
-	ds_writew(0x4338, host_readb(p_sched));
-	/* TODO: BC: not the same code, the written variable is reused in the if expr */
-	if (ds_readw(0x4338) == ds_readbs(CURRENT_TOWN))
+	/* write the destination to a global variable (assignement in condition)*/
+	if ((ds_writew(0x4338, host_readb(p_sched))) == ds_readbs(CURRENT_TOWN))
 		ds_writew(0x4338, host_readb(p_sched + 1));
 
 	do {
