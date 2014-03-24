@@ -134,6 +134,15 @@ struct knapsack_item {
 	signed char unused3;
 };
 
+struct passages {
+	RealPt p1;
+	RealPt p2;
+	signed char flag;		/* 0 or 1, write only */
+	signed char v2;			/* 0, read only */
+	unsigned char town;		/* */
+	signed char v4;			/*  write only */
+};
+
 /* Informer */
 enum {	JURGE = 1, HJORE, YASMA, UMBRIK, ISLEIF,
 	RAGNA, BEORN, ASGRIMM, ELIANE, OLVIR,
