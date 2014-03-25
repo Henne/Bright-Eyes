@@ -9,6 +9,7 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
 #include "seg097.h"
@@ -170,17 +171,18 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
  *
  * This function has some tweaks, dependent on the fight number.
  */
+/* Borlandified and identical */
 void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 {
-	unsigned short i;
+	signed short i;
 
 	/* subtract the damage from the enemies LE */
-	host_writew(enemy + 0x13, host_readw(enemy + 0x13) - damage);
+	sub_ptr_ws(enemy + 0x13, damage);
 
 	/* are the enemies LE lower than 0 */
 	if ((signed short)host_readw(enemy + 0x13) <= 0) {
 		/* set a flag, maybe dead */
-		host_writeb(enemy + 0x31, host_readb(enemy + 0x31) | 1);
+		or_ptr_bs(enemy + 0x31, 1);
 		/* set LE to 0 */
 		host_writew(enemy + 0x13, 0);
 
@@ -188,16 +190,26 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 			/* slaying a special cultist */
 			/* set a flag in the status area */
 			ds_writeb(0x40f9, 0);
-		} else if (ds_readw(CURRENT_FIG_NR) == 0xc0 && host_readb(enemy) == 0x48) {
+
+		} else if ((ds_readw(CURRENT_FIG_NR) == 0xc0) &&
+				(host_readb(enemy) == 0x48) &&
+				!ds_readbs(0x5f30))
+		{
 			/* slaying the orc champion, ends the fight */
-			if (ds_readb(0x5f30) == 0)
 				ds_writew(IN_FIGHT, 0);
+
 		} else if (ds_readw(CURRENT_FIG_NR) == 0xb4 && host_readb(enemy) == 0x46) {
+
 			/* slaying Gorah make everything flee than Heshtot*/
-			for (i = 0; i < 20; i++)
+			for (i = 0; i < 20; i++) {
+#if !defined(__BORLANDC__)
 				if (ds_readb(ENEMY_SHEETS + 1 + i * 62) != 0x1a)
-					ds_writeb(ENEMY_SHEETS + 0x32 + i * 62,
-						ds_readb(ENEMY_SHEETS + 0x32 + i * 62) | 4);
+					or_ds_bs((ENEMY_SHEETS + 0x32) + i * 62, 4);
+#else
+				if ( ((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].gfx_id != 0x1a)
+					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].flags2 |= 4;
+#endif
+			}
 		}
 	}
 
