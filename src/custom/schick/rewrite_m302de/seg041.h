@@ -12,6 +12,8 @@ void FIG_clear_msgs();
 void FIG_add_msg(unsigned short, unsigned short);
 //0x34
 void FIG_damage_enemy(Bit8u*, Bit16s, signed short);
+/* 0x39 */
+signed short FIG_get_hero_melee_attack_damage(Bit8u*, Bit8u*, signed short);
 //0x3e
 signed short weapon_check(Bit8u *);
 //0x43

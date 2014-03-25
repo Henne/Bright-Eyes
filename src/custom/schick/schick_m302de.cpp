@@ -3522,7 +3522,21 @@ static int seg041(unsigned short offs) {
 		return 1;
 	}
 	case 0x39: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		RealPt target = CPU_Pop32();
+		Bit16u flag = CPU_Pop16();
+
+		reg_ax = FIG_get_hero_melee_attack_damage(Real2Host(hero), Real2Host(target), flag);
+		D1_LOG("FIG_get_hero_melee_attack_damage(%s, %s); = %d\n",
+			(char*)Real2Host(hero) + 0x10,
+			flag != 0 ? (char*)Real2Host(target) + 0x10 : "enemy",
+			reg_ax);
+
+		CPU_Push16(flag);
+		CPU_Push32(target);
+		CPU_Push32(hero);
+
+		return 1;
 	}
 	case 0x3e: {
 		RealPt hero = CPU_Pop32();

@@ -1,6 +1,6 @@
 /*
-        Rewrite of DSA1 v3.02_de functions of seg041 (fight)
-        Functions rewritten: 8/9
+ *	Rewrite of DSA1 v3.02_de functions of seg041 (fight)
+ *	Functions rewritten: 9/9 (complete)
 */
 
 #include <stdio.h>
@@ -12,7 +12,11 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
+#include "seg038.h"
+#include "seg039.h"
+#include "seg041.h"
 #include "seg097.h"
+#include "seg103.h"
 #include "seg105.h"
 #include "seg106.h"
 
@@ -215,6 +219,222 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 
 	if (!flag)
 		and_ptr_bs(enemy + 0x32, 0xfd);
+}
+
+/* Borlandified and identical */
+signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
+{
+	Bit8u* item_p_rh;
+	Bit8u* p2;
+	Bit8u* p3;
+	signed short target_size;
+	signed short right_hand;
+	signed short v3;
+	signed short v4;
+	signed short x_hero;
+	signed short y_hero;
+	signed short x_target;
+	signed short y_target;
+	signed short v9;
+	signed char enemy_gfx_id;
+	Bit8u* enemy_p;
+	signed short v11;
+
+	register signed short damage;
+	register signed short l_di;
+
+	l_di = 0;
+
+	if (attack_hero == 0) {
+		enemy_p = target;
+	}
+
+	right_hand = host_readw(hero + 0x1c0);
+
+	item_p_rh = get_itemsdat(right_hand);
+
+	v11 = weapon_check(hero);
+
+	if (v11 == -1) {
+		v11 = seg039_0023(hero);
+	}
+
+	if (v11 != -1) {
+
+		p2 = p_datseg + 0x6b0 + host_readbs(item_p_rh + 4) * 7;
+
+		damage = dice_roll(host_readbs(p2), 6, host_readbs(p2 + 1));
+
+		if (host_readbs(p2 + 4) != -1) {
+			/* 0x391 - 0x4da */
+			v9 = get_hero_index(hero);
+
+			FIG_search_obj_on_cb(v9 + 1, &x_hero, &y_hero);
+			FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x_target, &y_target);
+
+			v3 = seg039_0000(x_hero, y_hero, x_target, y_target);
+
+			if (v3 <= 2) {
+				v4 = 0;
+			} else if (v3 <= 4) {
+				v4 = 1;
+			} else if (v3 <= 6) {
+				v4 = 2;
+			} else if (v3 <= 9) {
+				v4 = 3;
+			} else if (v3 <= 15) {
+				v4 = 4;
+			} else if (v3 <= 20) {
+				v4 = 5;
+			} else {
+				v4 = 6;
+			}
+
+			p3 = p_datseg + 0x668 + host_readbs(p2 + 4) * 8;
+
+			if (attack_hero != 0) {
+				if (host_readbs(target + 0x21) == 6) {
+					/* ZWERG / DWARF */
+					target_size = 2;
+				} else {
+					target_size = 3;
+				}
+			} else {
+					/* size of the enemy */
+				target_size = host_readbs(target + 0x34);
+			}
+
+			l_di = (test_skill(hero,
+					(host_readbs(item_p_rh + 3) == 8 ? 8 : 7),
+					host_readbs(p3 + 7) + 2 * v4 - 2 * target_size) > 0)
+				? ds_readbs(0x668 + 8 * host_readbs(p2 + 4) + v4)
+				: -damage;
+
+			if (l_di != 0) {
+				damage += l_di;
+			}
+
+
+		} else {
+			/* 0x4dc - 0x502 */
+			l_di = host_readbs(hero + 0x47) + host_readbs(hero + 0x48) - host_readbs(p2 + 2);
+			if (l_di > 0) {
+				damage += l_di;
+			}
+		}
+	} else {
+		damage = random_schick(6);
+	}
+
+	if (attack_hero == 0) {
+		/* 0x517 - 0x600 */
+		enemy_gfx_id = host_readbs(enemy_p + 1);
+
+		if ((right_hand == 0xac) && (enemy_gfx_id == 0x1c || enemy_gfx_id == 0x22)) {
+			damage++;
+		} else {
+			if (right_hand == 0xc1) {
+				/* KUKRISDOLCH */
+
+				/* Interesting */
+				damage = 1000;
+
+				/* drop the KUKRISDOLCH and equip a normal DOLCH / DAGGER */
+				drop_item(hero, 3, 1);
+				give_hero_new_item(hero, 14, 1 ,1);
+				move_item(3, get_item_pos(hero, 14), hero);
+			} else if (right_hand == 0xc8) {
+				/* KUKRISMENGBILLAR */
+
+				/* Interesting */
+				damage = 1000;
+
+				/* drop the KUKRISDOLCH and equip a normal DOLCH / DAGGER */
+				drop_item(hero, 3, 1);
+				give_hero_new_item(hero, 109, 1 ,1);
+				move_item(3, get_item_pos(hero, 109), hero);
+			} else if ((right_hand == 0xd6) && (enemy_gfx_id == 0x1c)) {
+				/* SILBERSTREITKOLBEN */
+				damage += 4;
+			} else if ((right_hand == 0xb5) && (enemy_gfx_id == 0x18)) {
+				/* DAS SCHWERT GRIMRING */
+				damage += 5;
+			}
+		}
+	}
+
+	damage += host_readbs(hero + 0x98);
+
+	if (damage > 0) {
+		/* 0x612 - 0x6c4 */
+
+		if (ks_poison1(hero + 0x1c0)) {
+			damage += dice_roll(1, 6, 2);
+			and_ptr_bs(hero + 0x1c4, 0xdf);
+		}
+
+		if (ks_poison2(hero + 0x1c0)) {
+			damage += dice_roll(1, 20, 5);
+			and_ptr_bs(hero + 0x1c4, 0xbf);
+		}
+
+		if (host_readbs(hero + 0x1c0 + 9) != 0) {
+
+			if (host_readbs(hero + 0x1c0 + 9) == 3) {
+				or_ptr_bs(enemy_p + 0x32, 0x04);
+				and_ptr_bs(enemy_p + 0x32, 0xfd);
+			} else {
+
+				damage += 10 * ds_readws(0x2c70 + 2 * host_readbs(hero + 0x1c0 + 9));
+			}
+
+			dec_ptr_bs(hero + 0x1c0 + 10);
+
+			if (!host_readbs(hero + 0x1c0 + 10)) {
+				host_writebs(hero + 0x1c0 + 9, 0);
+			}
+		}
+	}
+
+	if (host_readbs(hero + 0x97) != 0) {
+		damage *= 2;
+	}
+
+	if ( (ds_readbs(0x3dda) != 0) &&
+		(host_readbs(hero + 0x21) == 6) &&
+		(attack_hero == 0) &&
+		(host_readbs(enemy_p + 1) == 0x18))
+	{
+		damage++;
+	}
+
+	if (attack_hero == 0) {
+		damage -= host_readbs(enemy_p + 2);
+
+		if (enemy_stoned(enemy_p)) {
+			damage = 0;
+		}
+
+		if ((host_readbs(enemy_p + 0x24) != 0) && !ks_magic_hidden(hero + 0x1c0)) {
+			damage = 0;
+		}
+
+		if (host_readws(enemy_p + 0x13) < damage) {
+			damage = host_readws(enemy_p + 0x13) + 1;
+		}
+	} else {
+		damage -= host_readbs(target + 0x30);
+
+		if (hero_stoned(target)) {
+			damage = 0;
+		}
+
+		if (host_readws(target + 0x60) < damage) {
+			damage = host_readws(target + 0x60) + 1;
+		}
+	}
+
+	return damage;
 }
 
 /**
