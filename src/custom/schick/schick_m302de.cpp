@@ -68,6 +68,7 @@
 #include "seg113.h"
 #include "seg117.h"
 #include "seg120.h"
+#include "seg121.h"
 #include "seg122.h"
 
 using namespace M302de;
@@ -5660,6 +5661,20 @@ static int seg120(unsigned short offs) {
 	}
 }
 
+static int seg121(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("poison_effect()\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 /*
 	In seg122 is only an empty function.
 	We bypass it and avoid unneccesarry overlay magic.
@@ -5793,7 +5808,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x14e7:	return 0;
 		case 0x14ed:	return 0;
 		case 0x14f0:	return seg120(offs);
-		case 0x14f6:	return 0;
+		case 0x14f6:	return seg121(offs);
 		case 0x14f9:	return seg122(offs);
 		default:
 			D1_TRAC("Unfetched Segment: 0x%04x\n", segm);
