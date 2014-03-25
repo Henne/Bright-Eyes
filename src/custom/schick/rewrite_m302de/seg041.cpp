@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg041 (fight)
  *	Functions rewritten: 9/9 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg041.cpp
 */
 
 #include <stdio.h>
@@ -29,7 +33,6 @@ namespace M302de {
 static unsigned short msg_counter;
 #endif
 
-/* Borlandified and identical */
 /**
  * range_attack_ammo()	- check if a range attack can be done
  * @hero:	the hero who attacks
@@ -140,7 +143,6 @@ signed short seg041_0020(Bit8u *hero, signed short arg)
 	return retval;
 }
 
-/* Borlandified and identical */
 void FIG_output(Bit8u *str)
 {
 	if (*str != 0) {
@@ -151,14 +153,12 @@ void FIG_output(Bit8u *str)
 /**
  *	FIG_clear_msgs() - clears the fight messages buffer
 */
-/* Borlandified and identical */
 void FIG_clear_msgs(void)
 {
 	memset(p_datseg + 0xd333, 0 , 20);
 	ds_writew(0x26ad, 0);
 }
 
-/* Borlandified and identical */
 void FIG_add_msg(unsigned short f_action, unsigned short damage)
 {
 	ds_writew(0xd333 + 4 * ds_readws(0x26ad), f_action);
@@ -175,7 +175,6 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
  *
  * This function has some tweaks, dependent on the fight number.
  */
-/* Borlandified and identical */
 void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 {
 	signed short i;
@@ -221,7 +220,6 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 		and_ptr_bs(enemy + 0x32, 0xfd);
 }
 
-/* Borlandified and identical */
 signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
 {
 	Bit8u* item_p_rh;
