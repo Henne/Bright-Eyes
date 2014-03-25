@@ -171,6 +171,11 @@ static inline void dec_ds_bs(Bit16u off)
 	ds_writeb(off, ds_readb(off) - 1);
 }
 
+static inline void or_ds_bs(Bit16u off, const unsigned char val)
+{
+	ds_writeb(off, ds_readb(off) | val);
+}
+
 static inline void inc_ds_ws(Bit16u off)
 {
 	ds_writew(off, ds_readws(off) + 1);
@@ -626,6 +631,8 @@ extern char ds[0xffff];
 
 #define inc_ds_ws(o) (*(Bit16s*)(ds + o))++
 #define dec_ds_ws(o) (*(Bit16s*)(ds + o))--
+
+#define or_ds_bs(o, val) *(Bit8s*)(ds + o) |= val
 
 #define add_ds_ws(o, val) (*(Bit16s*)(ds + o))+= val
 

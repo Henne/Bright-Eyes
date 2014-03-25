@@ -143,6 +143,36 @@ struct passages {
 	signed char v4;			/*  write only */
 };
 
+/* dummy */
+struct enemy_sheets {
+	signed char mon_id;
+	signed char gfx_id;
+	signed char v[0x2f];
+
+	/* 0x31 */
+	unsigned char flags1;
+
+	/* 0x32 */
+	unsigned char flags2;
+
+	/* 0x33 */
+	signed char unused_8;
+	signed char size;
+	signed char round_appear;
+	signed char flags3;
+
+	/* 0x37 */
+	signed char nr_shoot;
+	/* 0x38 */
+	signed short damage_shoot;
+	/* 0x3a */
+	signed char nr_throw;
+	/* 0x3b */
+	signed short damage_throw;
+	/* 0x3d */
+	signed char le_flee;
+};
+
 /* Informer */
 enum {	JURGE = 1, HJORE, YASMA, UMBRIK, ISLEIF,
 	RAGNA, BEORN, ASGRIMM, ELIANE, OLVIR,
