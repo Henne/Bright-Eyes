@@ -201,8 +201,8 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 		}
 	}
 
-	if (flag)
-		host_writeb(enemy + 0x32, host_readb(enemy + 0x32) & 0xfd);
+	if (!flag)
+		and_ptr_bs(enemy + 0x32, 0xfd);
 }
 
 /**
