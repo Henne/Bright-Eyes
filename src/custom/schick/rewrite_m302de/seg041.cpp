@@ -447,10 +447,11 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signed short is_enemy)
 {
-	Bit8u *hero;
 	signed short pos;
-	signed short damage;
-	unsigned short dice;
+	Bit8u *hero;
+
+	register signed short damage;
+	register signed short dice;
 
 	dice = host_readw(attacker + 0x1e);
 
@@ -464,18 +465,19 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		hero = attacked;
 
 		/* subtract RS */
-		damage -= host_readb(hero + 0x30);
+		damage -= host_readbs(hero + 0x30);
 
 		/* armour bonus against skelettons an zombies */
-		if (host_readb(hero + 0x1b2) == 0xc5 && (
+		if (host_readw(hero + 0x1b2) == 0xc5 && (
 			host_readb(attacker + 1) == 0x22 ||
-			host_readb(attacker + 1) == 0x1c))
+			host_readb(attacker + 1) == 0x1c)) {
 				damage -= 3;
+		}
 
 		/* get position of Totenkopfguertel/Skullbelt */
-		pos = get_item_pos(hero, 0xb6);
 
-		if (pos != -1 && (host_readb(attacker + 1) == 0x22 ||
+		if ( (pos = get_item_pos(hero, 0xb6)) != -1 &&
+			(host_readb(attacker + 1) == 0x22 ||
 			host_readb(attacker + 1) == 0x1c)) {
 
 			/* no damage for the hero who wears it */
@@ -495,10 +497,10 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* the attacked is an enemy */
 
 		/* subtract RS */
-		damage -= host_readb(attacked + 0x2);
+		damage -= host_readbs(attacked + 0x2);
 
 		/* check unknown flag, maybe stoned */
-		if (((host_readb(attacked + 0x31) >> 2) & 1) != 0)
+		if (enemy_stoned(attacked))
 			damage = 0;
 
 		/* check if the attacked is immune
@@ -512,58 +514,53 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 
 	/* half damage */
 	if (host_readb(attacker + 0x30) != 0)
-		damage = abs(damage) / 2;
+		damage /= 2;
 
 	return damage;
 }
 
 void seg041_8c8(void)
 {
-	unsigned short i;
+	signed short i;
 
 	for (i = 0; i < 8; i++)
 		memset(p_datseg + 0xd8ce + i * 0xf3, 0xffff, 0xf3);
 
-//		That would be better
-//		memset(p_datseg + 0xd8ce, 0xffff, 0xf3 * 8);
+	/* That would be better */
+	/* memset(p_datseg + 0xd8ce, 0xffff, 0xf3 * 8); */
 }
 
 signed short weapon_check(Bit8u *hero)
 {
 	Bit8u *item_p;
-	unsigned short item;
+
+	signed short item;
+	signed short l_di;
 
 	/* get the number of the equipped weapon */
 	item = host_readw(hero + 0x1c0);
 
 	item_p = get_itemsdat(item);
 
-	/* check if its a weapon */
-	if (((host_readw(item_p + 2) >> 1) & 1) == 0)
-		return -1;
-
-	if (host_readb(hero + 0x1c4) & 1)
-		return -1;
-
-	/* this test is always true */
-	if ((host_readw(item_p + 2) >> 1) & 1) {
-		unsigned char pos = host_readb(item_p + 3);
-
-		if (pos == 7 || pos == 8)
-			return -1;
-
-		/* At the legs, and no staffs */
-		if (pos == 5 && item != 133 && item != 69)
-			return -1;
+	if (!item_weapon(item_p) ||	/* check if its a weapon */
+		ks_broken(hero + 0x1c0) ||
+		(item_weapon(item_p) &&
+			((host_readbs(item_p + 3) == 7) ||
+			(host_readbs(item_p + 3) == 8) ||
+			(host_readbs(item_p + 3) == 5 && item != 133 && item != 69))))
+	{
+		l_di = -1;
+	} else {
+		if (is_in_word_array(item, (signed short*)(p_datseg + 0x615c))) {
+			l_di = 1;
+		} else if (is_in_word_array(item, (signed short*)(p_datseg + 0x616e))) {
+			l_di = 0;
+		} else {
+			l_di = 2;
+		}
 	}
 
-	if (is_in_word_array(item, (signed short*)(p_datseg +  0x615c)))
-		return 1;
-
-	if (is_in_word_array(item, (signed short*)(p_datseg + 0x616e)))
-		return 0;
-
-	return 2;
+	return l_di;
 }
 
 #if !defined(__BORLANDC__)
