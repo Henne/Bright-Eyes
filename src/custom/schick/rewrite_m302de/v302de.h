@@ -316,6 +316,19 @@ static inline unsigned short hero_transformed(Bit8u *hero) {
 }
 
 /**
+ * enemy_stoned() -	check if enemy is stoned
+ * @enemy:	ptr to enemy
+ *
+ * 0 = not stoned / 1 = stoned
+ */
+static inline unsigned short enemy_stoned(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x31) >> 3) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * enemy_illusion() -	check if enemy is an illusion
  * @enemy:	ptr to enemy
  *
@@ -708,6 +721,7 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
+#define enemy_stoned(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).stoned)
 #define enemy_illusion(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).illusion)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)

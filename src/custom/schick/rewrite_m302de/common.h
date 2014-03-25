@@ -73,7 +73,7 @@ struct enemy_status {
 	/* enemy + 0x31 */
 	unsigned short dead	:1;
 	unsigned short bit1	:1;
-	unsigned short bit2	:1;
+	unsigned short stoned	:1;
 	unsigned short bit3	:1;
 	unsigned short bit4	:1;
 	unsigned short bit5	:1;
