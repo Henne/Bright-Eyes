@@ -5666,7 +5666,8 @@ static int seg121(unsigned short offs)
 	switch (offs) {
 		case 0x20: {
 			D1_LOG("poison_effect()\n");
-			return 0;
+			poison_effect();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
