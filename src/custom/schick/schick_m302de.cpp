@@ -3596,8 +3596,26 @@ static int seg044(unsigned short offs) {
 	switch (offs) {
 
 	case 0x20: {
-		D1_LOG("%s:0x%x\n", __func__, offs);
-		return 0;
+		Bit16s a1 = CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s weapon_type = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		Bit8s a5 = (Bit8s)CPU_Pop16();
+		Bit8u a6 = (Bit8u)CPU_Pop16();
+		Bit16s a7 = CPU_Pop16();
+
+		D1_LOG("FIG_prepare_hero_fight_ani(%d, %s, w_type = %d, %d, %d, %u, %d)\n",
+			a1, schick_getCharname(hero), weapon_type, a4, a5, a6, a7);
+		FIG_prepare_hero_fight_ani(a1, Real2Host(hero), weapon_type, 103, a5, a6, a7);
+
+		CPU_Push16(a7);
+		CPU_Push16(a6);
+		CPU_Push16(a4);
+		CPU_Push16(a5);
+		CPU_Push16(weapon_type);
+		CPU_Push32(hero);
+		CPU_Push16(a1);
+		return 1;
 	}
 	case 0x25: {
 		D1_LOG("%s:0x%x\n", __func__, offs);

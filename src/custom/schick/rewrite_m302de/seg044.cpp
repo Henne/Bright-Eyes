@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg044 (Fightsystem)
-	Functions rewritten: 4/6
+	Functions rewritten: 5/6
 */
 
 #include "string.h"
@@ -8,7 +8,9 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg006.h"
 #include "seg007.h"
+#include "seg036.h"
 #include "seg038.h"
 
 #if !defined(__BORLANDC__)
@@ -116,6 +118,211 @@ Bit8s seg044_00ae(Bit16s ani)
 
 	return host_readb(p_off);
 }
+
+/**
+ *	FIG_prepare_hero_fight_ani()	- prepares the animation sequence of a hero in fights
+ *	@a1:	[0, 1]
+ *	@hero:	pointer to hero
+ *	@weapon_type:	the type of weapon for the animation [-1, 5], 3,4,5 are range weapons
+ *	@action_type:	{2, 15, 100, 102, 103}
+ *
+*/
+
+/* Borlandified and identical */
+void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapon_type, signed short f_action, signed char fid_attacker, signed char fid_target, signed short a7)
+{
+	signed short l1;
+	signed short attacker_x;
+	signed short attacker_y;
+	signed short target_x;
+	signed short target_y;
+	signed short dir;
+	signed short l7;
+	signed short l8;
+	signed short l9;
+	signed short l10;
+	Bit8u *p1;
+	Bit8u *p2;
+	signed short weapon;
+	Bit8u *p3;
+
+	p3 = Real2Host(ds_readd(0x2555 + host_readbs(hero + 0x9b) * 4));
+	weapon = host_readw(hero + 0x1c0);
+
+	if (fid_target != 0) {
+		FIG_search_obj_on_cb(fid_target, &target_x, &target_y);
+		FIG_search_obj_on_cb(fid_attacker, &attacker_x, &attacker_y);
+
+		if (attacker_x == target_x) {
+			if (target_y < attacker_y) {
+				dir = 1;
+			} else {
+				dir = 3;
+			}
+		} else {
+			if (target_x < attacker_x) {
+				dir = 2;
+			} else {
+				dir = 0;
+			}
+		}
+	} else {
+		dir = host_readbs(hero + 0x82);
+	}
+
+	if ((weapon_type == -1) || ((host_readbs(hero + 0x21) == 9) && (weapon == 0x85))) {
+
+		l1 = (f_action == 2) ? 45 :			/* melee attack */
+			(f_action == 102) ? 41 :		/* drink potion */
+			(f_action == 103) ? 53 :		/* cast spell */
+			49;
+
+	} else {
+		l1 = (f_action == 2) ?  21:			/* melee attack */
+			(f_action == 102) ? 41 :		/* drink potion */
+			(f_action == 103) ? 53 :		/* cast spell */
+			(f_action != 15) ? 25 :
+			(weapon_type == 3) ? 33 :
+			(weapon_type == 4) ? 57 :
+			61;
+	}
+
+	l1 += dir;
+	p1 = p_datseg + 0xd8cf + 0xf3 * a1;
+	p2 = p_datseg + 0xdc9b + 0xf3 * a1;
+
+	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readw(p3 + l1 * 2)));
+	ds_writeb(0xd9c0 + 0xf3 * a1, host_readb(hero + 0x9b));
+
+	if (check_hero(hero) && (host_readbs(hero + 0x82) != dir) &&
+
+		((f_action == 2) || (f_action == 15) || (f_action == 103) ||
+			((f_action == 100) && !ds_readbs(0xd84a + fid_attacker)) ||
+			((ds_readw(0xe3ac) != 0) && (a7 == 0)) ||
+			((ds_readw(0xe3aa) != 0) && (a7 == 1))))
+	{
+
+			ds_writeb(0xd8ce + a1 * 0xf3, 0);
+			l8 = l7 = -1;
+			l9 = host_readbs(hero + 0x82);
+			l8 = l9;
+			l9++;
+
+			if (l9 == 4) {
+				l9 = 0;
+			}
+
+			if (l9 != dir) {
+				l7 = l9;
+				l9++;
+				if (l9 == 4) {
+					l9 = 0;
+				}
+
+				if (l9 != dir) {
+					l8 = host_readbs(hero + 0x82) + 4;
+					l7 = -1;
+				}
+			}
+
+			host_writeb(hero + 0x82, dir);
+
+			if (l7 == -1) {
+				for (l10 = 0; l10 < 2; l10++) {
+					host_writeb(p1++, 0xfb);
+					host_writeb(p1++, 0);
+					host_writeb(p1++, 0);
+				}
+			}
+
+			p1 += copy_ani_seq(p1, host_readw(p3 + l8 * 2), 2);
+
+			if (l7 != -1) {
+				p1 += copy_ani_seq(p1, host_readw(p3 + l7 * 2), 2);
+			}
+
+			host_writeb(p1++, 0xfc);
+			host_writeb(p1++, seg044_00ae(host_readws(p3 + l1 * 2)));
+			host_writeb(p1++, 0);
+	} else {
+		for (l10 = 0; l10 < 5; l10++) {
+			host_writeb(p1++, 0xfb);
+			host_writeb(p1++, 0);
+			host_writeb(p1++, 0);
+		}
+	}
+
+	if ((check_hero(hero) && (f_action == 2)) ||
+		((f_action == 15) || (f_action == 102) || (f_action == 103) ||
+			((f_action == 100) && !ds_readbs(0xd84a + fid_attacker))))
+	{
+		p1 += copy_ani_seq(p1, host_readw(p3 + l1 *2), 2);
+
+		if ((weapon_type != -1) && (weapon_type < 3) &&
+			(host_readb(hero + 0x21) != 9) &&
+			(host_readb(hero + 0x21) != 8))
+		{
+			for (l10 = 0; l10 < 5; l10++) {
+				host_writeb(p2++, 0xfb);
+				host_writeb(p2++, 0);
+				host_writeb(p2++, 0);
+			}
+
+			p2 += copy_ani_seq(p2,
+				ds_readw(0x25fe +
+				((ds_readbs(0x268e + host_readbs(hero + 0x9b)) * 48 + weapon_type * 16) +
+				((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + 0x82) * 2)), 3);
+		}
+	}
+
+	if ((check_hero(hero) && ds_readw(0xe3ac) != 0 && a7 == 0) ||
+		((ds_readw(0xe3aa) != 0) && (a7 == 1))) {
+
+			p1 += copy_ani_seq(p1, host_readw(p3 + l1 * 2), 2);
+
+			if ((weapon_type != -1) && (weapon_type < 3) &&
+				(host_readb(hero + 0x21) != 9) &&
+				(host_readb(hero + 0x21) != 8))
+			{
+				p2 += copy_ani_seq(p2,
+					ds_readw(0x25fe +
+					((ds_readbs(0x268e + host_readbs(hero + 0x9b)) * 48 + weapon_type * 16) +
+					((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + 0x82) * 2)), 3);
+			}
+	}
+
+	if ( ((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
+		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
+	{
+		host_writeb(p1++, 0xfc);
+		host_writeb(p1++, seg044_00ae(host_readw(p3 + 0x28)));
+		host_writeb(p1++, 0);
+
+		p1 += copy_ani_seq(p1, host_readw(p3 + 0x28), 2);
+	}
+
+	if (check_hero(hero) ||
+		((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
+		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
+	{
+		FIG_set_0e(host_readb(hero + 0x81), a1);
+		host_writeb(p1, 0xff);
+
+		if ( (weapon_type != -1) && (weapon_type < 3) &&
+			(host_readb(hero + 0x21) != 9) &&
+			(host_readb(hero + 0x21) != 8))
+		{
+			FIG_set_0f(host_readb(hero + 0x81), a1 + 4);
+			host_writeb(p2, 0xff);
+		}
+	}
+
+	host_writeb(p1, 0xff);
+	if (f_action == 100) {
+		ds_writeb(0xd84a + fid_attacker, 1);
+	}
+}
+
 
 /**
  *
