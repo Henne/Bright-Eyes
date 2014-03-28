@@ -57,6 +57,8 @@
 #define FNAMES		(0x4c8c)
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
+#define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */
+#define KNIVE_WEAPONS	(0x616e)	/* signed short[5] terminated with -1 */
 #define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT2	(0x64b1)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT3	(0x64bf)	/* signed short[7] filled with zeroes */

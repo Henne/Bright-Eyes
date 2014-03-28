@@ -528,6 +528,12 @@ void seg041_8c8(void)
 	/* memset(p_datseg + 0xd8ce, 0xffff, 0xf3 * 8); */
 }
 
+/**
+ *	weapon_check()	-	check if a hero is equipped with a vaild weapon
+ *	@hero:	pointer to hero
+ *
+ *	Returns: -1 not a useful weapon, 0 = knive weapon, 1 = force weapon, 2 = everything else
+*/
 signed short weapon_check(Bit8u *hero)
 {
 	Bit8u *item_p;
@@ -535,7 +541,7 @@ signed short weapon_check(Bit8u *hero)
 	signed short item;
 	signed short l_di;
 
-	/* get the number of the equipped weapon */
+	/* get the ID of the equipped weapon */
 	item = host_readw(hero + 0x1c0);
 
 	item_p = get_itemsdat(item);
@@ -549,9 +555,9 @@ signed short weapon_check(Bit8u *hero)
 	{
 		l_di = -1;
 	} else {
-		if (is_in_word_array(item, (signed short*)(p_datseg + 0x615c))) {
+		if (is_in_word_array(item, (signed short*)(p_datseg + FORCE_WEAPONS))) {
 			l_di = 1;
-		} else if (is_in_word_array(item, (signed short*)(p_datseg + 0x616e))) {
+		} else if (is_in_word_array(item, (signed short*)(p_datseg + KNIVE_WEAPONS))) {
 			l_di = 0;
 		} else {
 			l_di = 2;
