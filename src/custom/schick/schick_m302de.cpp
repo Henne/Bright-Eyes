@@ -3606,7 +3606,7 @@ static int seg044(unsigned short offs) {
 
 		D1_LOG("FIG_prepare_hero_fight_ani(%d, %s, w_type = %d, %d, %d, %u, %d)\n",
 			a1, schick_getCharname(hero), weapon_type, a4, a5, a6, a7);
-		FIG_prepare_hero_fight_ani(a1, Real2Host(hero), weapon_type, 103, a5, a6, a7);
+		FIG_prepare_hero_fight_ani(a1, Real2Host(hero), weapon_type, a4, a5, a6, a7);
 
 		CPU_Push16(a7);
 		CPU_Push16(a6);
