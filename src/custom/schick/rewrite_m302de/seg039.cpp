@@ -25,8 +25,15 @@ signed short seg039_0000(signed short v1, signed short v2, signed short v3, sign
 	return __abs__(v1 - v3) + __abs__(v2 - v4);
 }
 
+
+/**
+ * FIG_get_range_weapon_type() - returns the type of the range weapon of a hero
+ * @hero:	pointer to hero
+ *
+ * Returns: range weapon type [3,5], 3 = shooting, 4 = throwing, 5 = spear weapon
+*/
 /* Borlandified and identical */
-signed short seg039_0023(Bit8u *hero)
+signed short FIG_get_range_weapon_type(Bit8u *hero)
 {
 	Bit8u *ptr;
 	signed short retval = -1;
@@ -39,7 +46,7 @@ signed short seg039_0023(Bit8u *hero)
 	/* not a weapon */
 	if (item_weapon(ptr)) {
 
-		/* weapons are not MagicStaffs or Fightstaffs */
+		/* MagicStaffs or Fightstaffs are spears, but no range weapons */
 		if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45)
 			retval =  5;
 
@@ -454,7 +461,7 @@ void FIG_init_heroes()
 		place_obj_on_cb(cb_x, cb_y, l_si + 1,
 			host_readb(hero + 0x21), host_readb(hero + 0x82));
 
-		l_di = seg039_0023(hero);
+		l_di = FIG_get_range_weapon_type(hero);
 
 		if (l_di != -1) {
 			ds_writeb(0xe068,

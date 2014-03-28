@@ -3380,8 +3380,8 @@ static int seg039(unsigned short offs) {
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
-			reg_ax = seg039_0023(Real2Host(hero));
-			D1_LOG("seg039_0023(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
+			reg_ax = FIG_get_range_weapon_type(Real2Host(hero));
+			D1_LOG("FIG_get_range_weapon_type(%s) = %d\n", schick_getCharname(hero), (signed short)reg_ax);
 
 			return 1;
 		}
@@ -6887,8 +6887,8 @@ static int n_seg039(unsigned offs)
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		reg_ax = seg039_0023(Real2Host(hero));
-		D1_LOG("seg039_0023(%s) = %d\n",
+		reg_ax = FIG_get_range_weapon_type(Real2Host(hero));
+		D1_LOG("FIG_get_range_weapon_type(%s) = %d\n",
 			schick_getCharname(hero), (signed short)reg_ax);
 
 		return 1;

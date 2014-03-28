@@ -254,7 +254,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	v11 = weapon_check(hero);
 
 	if (v11 == -1) {
-		v11 = seg039_0023(hero);
+		v11 = FIG_get_range_weapon_type(hero);
 	}
 
 	if (v11 != -1) {
