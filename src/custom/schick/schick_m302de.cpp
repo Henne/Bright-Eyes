@@ -6042,6 +6042,10 @@ static int n_seg002(unsigned short offs)
 		handle_input();
 		return 1;
 	}
+	case 0x1ee7: {
+		D1_LOG("main_loop();\n");
+		return 0;
+	}
 	/* Callers: 1 */
 	case 0x20bd: {
 		CPU_Pop16();
