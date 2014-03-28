@@ -352,7 +352,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	if (host_readbs(enemy + 1) < 22) {
 		weapon_type = 2;
 	}
-	if (host_readb(enemy + 0x30) != 0) {
+	if (host_readbs(enemy + 0x30) != 0) {
 		weapon_type = -1;
 	}
 
@@ -380,10 +380,10 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	l1 = (f_action == 2) ? 21 :			/* melee attack */
 		25;
 
-	if ((host_readb(enemy + 1) == 8) ||
-		(host_readb(enemy + 1) == 9) ||
-		(host_readb(enemy + 1) == 19) ||
-		(host_readb(enemy + 1) == 20))
+	if ((host_readbs(enemy + 1) == 8) ||
+		(host_readbs(enemy + 1) == 9) ||
+		(host_readbs(enemy + 1) == 19) ||
+		(host_readbs(enemy + 1) == 20))
 	{
 		weapon_type = -1;
 		l1 = (f_action == 2) ? 45 : 49;
@@ -401,11 +401,10 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 
 	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readw(p4 + l1 * 2)));
-	ds_writeb(0xd9c0 + 0xf3 * a1, host_readb(enemy + 1));
+	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(enemy + 1));
 
 	if ((host_readbs(enemy + 0x27) != dir) &&
-		(	( (f_action == 2) ||
-			(f_action == 15) ||
+		(	((f_action == 2) || (f_action == 15) ||
 			((f_action == 100) && !ds_readbs(0xd82d + fid_attacker))) ||
 			((ds_readw(0xe3ac) != 0) && (a7 == 0)) ||
 			((ds_readw(0xe3aa) != 0) && (a7 == 1))))
@@ -444,10 +443,10 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 			}
 		}
 
-		p1 += copy_ani_seq(p1, host_readw(p4 + l8 * 2), 1);
+		p1 += copy_ani_seq(p1, host_readws(p4 + l8 * 2), 1);
 
 		if (l7 != -1) {
-			p1 += copy_ani_seq(p1, host_readw(p4 + l7 * 2), 1);
+			p1 += copy_ani_seq(p1, host_readws(p4 + l7 * 2), 1);
 		}
 
 		host_writeb(p1++, 0xfc);
@@ -464,7 +463,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	if ((f_action == 2) ||((f_action == 15) ||
 		((f_action == 100) && !ds_readbs(0xd82d + fid_attacker))))
 	{
-		p1 += copy_ani_seq(p1, host_readw(p4 + l1 *2), 1);
+		p1 += copy_ani_seq(p1, host_readws(p4 + l1 *2), 1);
 
 		if (weapon_type != -1) {
 
@@ -475,48 +474,48 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 			}
 
 			p2 += copy_ani_seq(p2,
-				ds_readw(0x25fe +
+				ds_readws(0x25fe +
 				((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
 				((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + 0x27) * 2)), 3);
 		}
 	}
 
-	if ((ds_readw(0xe3ac) != 0 && a7 == 0) ||
-		((ds_readw(0xe3aa) != 0) && (a7 == 1))) {
+	if ((ds_readws(0xe3ac) != 0 && a7 == 0) ||
+		((ds_readws(0xe3aa) != 0) && (a7 == 1))) {
 
-			p1 += copy_ani_seq(p1, host_readw(p4 + l1 * 2), 1);
+			p1 += copy_ani_seq(p1, host_readws(p4 + l1 * 2), 1);
 
 			if (weapon_type != -1) {
 				p2 += copy_ani_seq(p2,
-					ds_readw(0x25fe +
+					ds_readws(0x25fe +
 					((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
 					((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + 0x27) * 2)), 3);
 			}
 	}
 
-	if ( ((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
-		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
+	if ( ((ds_readws(0xe3a8) != 0) && (a7 == 0)) ||
+		((ds_readws(0xe3a6) != 0) && (a7 == 1)))
 	{
 		host_writeb(p1++, 0xfc);
-		host_writeb(p1++, seg044_00ae(host_readw(p4 + 0x28)));
+		host_writeb(p1++, seg044_00ae(host_readws(p4 + 0x28)));
 		host_writeb(p1++, 0);
 
-		p1 += copy_ani_seq(p1, host_readw(p4 + 0x28), 1);
+		p1 += copy_ani_seq(p1, host_readws(p4 + 0x28), 1);
 	}
 
-	FIG_set_0e(host_readb(enemy + 0x26), a1);
+	FIG_set_0e(host_readbs(enemy + 0x26), a1);
 	host_writeb(p1, 0xff);
 
 	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + 0x25f9))	{
 		memcpy(p_datseg + 0xdab4 + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
 
-		p3 = Real2Host(FIG_get_ptr(host_readb(enemy + 0x26)));
+		p3 = Real2Host(FIG_get_ptr(host_readbs(enemy + 0x26)));
 
-		FIG_set_0e(ds_readb(0xe35a + host_readbs(p3 + 0x13)), a1 + 2);
+		FIG_set_0e(ds_readbs(0xe35a + host_readbs(p3 + 0x13)), a1 + 2);
 	}
 
 	if (weapon_type != -1) {
-		FIG_set_0e(host_readb(enemy + 0x26), a1 + 4);
+		FIG_set_0e(host_readbs(enemy + 0x26), a1 + 4);
 		host_writeb(p2, 0xff);
 	}
 
