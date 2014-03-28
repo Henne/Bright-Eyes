@@ -3618,8 +3618,24 @@ static int seg044(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		D1_LOG("%s:0x%x\n", __func__, offs);
-		return 0;
+		Bit16s a1 = CPU_Pop16();
+		RealPt mon = CPU_Pop32();
+		Bit16s a3 = CPU_Pop16();
+		Bit8s a4 = (Bit8s)CPU_Pop16();
+		Bit8u a5 = (Bit8u)CPU_Pop16();
+		Bit16s a6 = CPU_Pop16();
+
+		D1_LOG("FIG_prepare_enemy_fight_ani(%d, %s, %d, %d, %u, %d)\n",
+			a1, get_monname(host_readb(Real2Host(mon))), a3, a4, a5, a6);
+		FIG_prepare_enemy_fight_ani(a1, Real2Host(mon), a3, a4, a5, a6);
+
+		CPU_Push16(a6);
+		CPU_Push16(a5);
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push32(mon);
+		CPU_Push16(a1);
+		return 1;
 	}
 	case 0x2a: {
 		Bit16u v1 = CPU_Pop16();

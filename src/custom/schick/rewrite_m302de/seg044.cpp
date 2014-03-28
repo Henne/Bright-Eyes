@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg044 (Fightsystem)
-	Functions rewritten: 5/6
+	Functions rewritten: 6/6 (complete)
 */
 
 #include "string.h"
@@ -320,6 +320,208 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	host_writeb(p1, 0xff);
 	if (f_action == 100) {
 		ds_writeb(0xd84a + fid_attacker, 1);
+	}
+}
+
+/**
+ *	FIG_prepare_enemy_fight_ani()	- prepares the animation sequence of a hero in fights
+*/
+
+/* Borlandified and identical */
+void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_action, signed char fid_attacker, signed char fid_target, signed short a7)
+{
+	signed short l1;
+	signed short attacker_x;
+	signed short attacker_y;
+	signed short target_x;
+	signed short target_y;
+	signed short dir;
+	signed short l7;
+	signed short l8;
+	signed short l9;
+	signed short i;
+	signed short weapon;
+	Bit8u *p1;
+	Bit8u *p2;
+	Bit8u *p3;
+	Bit8u *p4;
+	signed short weapon_type;
+
+	weapon_type = -1;
+
+	if (host_readbs(enemy + 1) < 22) {
+		weapon_type = 2;
+	}
+	if (host_readb(enemy + 0x30) != 0) {
+		weapon_type = -1;
+	}
+
+	p4 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + 1) * 4));
+
+	FIG_search_obj_on_cb(fid_target, &target_x, &target_y);
+	FIG_search_obj_on_cb(fid_attacker, &attacker_x, &attacker_y);
+
+	if (attacker_x == target_x) {
+		if (target_y < attacker_y) {
+			dir = 1;
+		} else {
+			dir = 3;
+		}
+	} else {
+		if (target_x < attacker_x) {
+			dir = 2;
+		} else {
+			dir = 0;
+		}
+	}
+
+
+
+	l1 = (f_action == 2) ? 21 :			/* melee attack */
+		25;
+
+	if ((host_readb(enemy + 1) == 8) ||
+		(host_readb(enemy + 1) == 9) ||
+		(host_readb(enemy + 1) == 19) ||
+		(host_readb(enemy + 1) == 20))
+	{
+		weapon_type = -1;
+		l1 = (f_action == 2) ? 45 : 49;
+	}
+
+	if (f_action == 15) {
+		l1 = 33;
+		weapon_type = -1;
+	}
+
+	l1 += dir;
+
+	p1 = p_datseg + 0xd8cf + a1 * 0xf3;
+	p2 = p_datseg + 0xdc9b + a1 * 0xf3;
+
+
+	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readw(p4 + l1 * 2)));
+	ds_writeb(0xd9c0 + 0xf3 * a1, host_readb(enemy + 1));
+
+	if ((host_readbs(enemy + 0x27) != dir) &&
+		(	( (f_action == 2) ||
+			(f_action == 15) ||
+			((f_action == 100) && !ds_readbs(0xd82d + fid_attacker))) ||
+			((ds_readw(0xe3ac) != 0) && (a7 == 0)) ||
+			((ds_readw(0xe3aa) != 0) && (a7 == 1))))
+		{
+
+		ds_writeb(0xd8ce + a1 * 0xf3, 0);
+		l8 = l7 = -1;
+		l9 = host_readbs(enemy + 0x27);
+		l8 = l9;
+		l9++;
+
+		if (l9 == 4) {
+			l9 = 0;
+		}
+
+		if (l9 != dir) {
+			l7 = l9;
+			l9++;
+			if (l9 == 4) {
+				l9 = 0;
+			}
+
+			if (l9 != dir) {
+				l8 = host_readbs(enemy + 0x27) + 4;
+				l7 = -1;
+			}
+		}
+
+		host_writeb(enemy + 0x27, dir);
+
+		if (l7 == -1) {
+			for (i = 0; i < 2; i++) {
+				host_writeb(p1++, 0xfb);
+				host_writeb(p1++, 0);
+				host_writeb(p1++, 0);
+			}
+		}
+
+		p1 += copy_ani_seq(p1, host_readw(p4 + l8 * 2), 1);
+
+		if (l7 != -1) {
+			p1 += copy_ani_seq(p1, host_readw(p4 + l7 * 2), 1);
+		}
+
+		host_writeb(p1++, 0xfc);
+		host_writeb(p1++, seg044_00ae(host_readws(p4 + l1 * 2)));
+		host_writeb(p1++, 0);
+	} else {
+		for (i = 0; i < 5; i++) {
+			host_writeb(p1++, 0xfb);
+			host_writeb(p1++, 0);
+			host_writeb(p1++, 0);
+		}
+	}
+
+	if ((f_action == 2) ||((f_action == 15) ||
+		((f_action == 100) && !ds_readbs(0xd82d + fid_attacker))))
+	{
+		p1 += copy_ani_seq(p1, host_readw(p4 + l1 *2), 1);
+
+		if (weapon_type != -1) {
+
+			for (i = 0; i < 5; i++) {
+				host_writeb(p2++, 0xfb);
+				host_writeb(p2++, 0);
+				host_writeb(p2++, 0);
+			}
+
+			p2 += copy_ani_seq(p2,
+				ds_readw(0x25fe +
+				((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
+				((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + 0x27) * 2)), 3);
+		}
+	}
+
+	if ((ds_readw(0xe3ac) != 0 && a7 == 0) ||
+		((ds_readw(0xe3aa) != 0) && (a7 == 1))) {
+
+			p1 += copy_ani_seq(p1, host_readw(p4 + l1 * 2), 1);
+
+			if (weapon_type != -1) {
+				p2 += copy_ani_seq(p2,
+					ds_readw(0x25fe +
+					((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
+					((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + 0x27) * 2)), 3);
+			}
+	}
+
+	if ( ((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
+		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
+	{
+		host_writeb(p1++, 0xfc);
+		host_writeb(p1++, seg044_00ae(host_readw(p4 + 0x28)));
+		host_writeb(p1++, 0);
+
+		p1 += copy_ani_seq(p1, host_readw(p4 + 0x28), 1);
+	}
+
+	FIG_set_0e(host_readb(enemy + 0x26), a1);
+	host_writeb(p1, 0xff);
+
+	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + 0x25f9))	{
+		memcpy(p_datseg + 0xdab4 + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
+
+		p3 = Real2Host(FIG_get_ptr(host_readb(enemy + 0x26)));
+
+		FIG_set_0e(ds_readb(0xe35a + host_readbs(p3 + 0x13)), a1 + 2);
+	}
+
+	if (weapon_type != -1) {
+		FIG_set_0e(host_readb(enemy + 0x26), a1 + 4);
+		host_writeb(p2, 0xff);
+	}
+
+	if (f_action == 100) {
+		ds_writeb(0xd82d + fid_attacker, 1);
 	}
 }
 
