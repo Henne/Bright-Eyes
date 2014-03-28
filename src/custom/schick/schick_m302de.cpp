@@ -6303,6 +6303,29 @@ static int n_seg004(unsigned short offs)
 			CPU_Push16(v1);
 			return 1;
 		}
+		case 0x54b: {
+			return 0;
+		}
+		case 0x8e9: {
+			CPU_Pop16();
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			unsigned short v4 = CPU_Pop16();
+			unsigned short v5 = CPU_Pop16();
+			CPU_Push16(v5);
+			CPU_Push16(v4);
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_LOG("near draw_bar(%d,%d,%d,%d,%d)\n", v1, v2, v3, v4, v5);
+			draw_bar(v1, v2, v3, v4, v5);
+			return 1;
+		}
+		case 0xe31: {
+			return 0;
+		}
 		case 0xf54: {
 			CPU_Pop16();
 			Bit16s pos = CPU_Pop16();
@@ -6311,6 +6334,22 @@ static int n_seg004(unsigned short offs)
 			draw_wallclock(pos, night);
 			CPU_Push16(night);
 			CPU_Push16(pos);
+			return 1;
+		}
+		case 0x1147: {
+			CPU_Pop16();
+			RealPt dst = CPU_Pop32();
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			CPU_Push32(dst);
+
+			D1_LOG("near array_add(0x%04x:0x%04x, len=%d, op=%d, flag=%d);\n",
+				RealSeg(dst), RealOff(dst), v1, (char)v2, v3);
+			array_add(Real2Phys(dst), v1, (char)v2, v3);
 			return 1;
 		}
 		case 0x11da: {
@@ -6327,6 +6366,36 @@ static int n_seg004(unsigned short offs)
 			CPU_Push32(pal);
 			return 1;
 		}
+		case 0x1291: {
+			return 0;
+		}
+		case 0x12e8: {
+			CPU_Pop16();
+			RealPt dst = CPU_Pop32();
+			unsigned short x = CPU_Pop16();
+			unsigned short y1 = CPU_Pop16();
+			unsigned short y2 = CPU_Pop16();
+			unsigned short color = CPU_Pop16();
+			CPU_Push16(color);
+			CPU_Push16(y2);
+			CPU_Push16(y1);
+			CPU_Push16(x);
+			CPU_Push32(dst);
+
+			D1_LOG("near do_v_line(0x%04x:0x%04x, %d, %d, %d, 0x%02x);\n",
+				RealSeg(dst), RealOff(dst), x, y1, y2,
+				(unsigned char)color);
+			do_v_line(Real2Phys(dst), x, y1, y2, (unsigned char)color);
+			return 1;
+		}
+		case 0x13b7: {
+			CPU_Pop16();
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+			D1_LOG("near do_pic_copy(%d);\n", mode);
+			do_pic_copy(mode);
+			return 1;
+		}
 		case 0x150d: {
 			CPU_Pop16();
 			D1_LOG("wait_for_vsync()\n");
@@ -6334,7 +6403,8 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		default:
-			return 0;
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
 	}
 }
 
