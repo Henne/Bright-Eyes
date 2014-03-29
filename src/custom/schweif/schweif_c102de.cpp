@@ -664,7 +664,7 @@ static int seg134(unsigned short offs)
 		Bit16s chance = CPU_Pop16();
 
 		D2_INFO("%s erkrankt mit Wahrscheinlichkeit von %d%% an Krankheit %d\n",
-			schweif_getCharname(hero), disease, chance);
+			schweif_getCharname(hero), chance, disease);
 
 		CPU_Push16(chance);
 		CPU_Push16(disease);
