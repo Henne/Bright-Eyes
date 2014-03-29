@@ -775,6 +775,8 @@ static int stub249(unsigned short offs)
 	case 0x0043: return ovr249(0x103B);
 	case 0x0048: return ovr249(0x119F);
 	case 0x004D: return ovr249(0x149A);
+	default:
+		return 0;
 	}
 }
 
@@ -807,6 +809,8 @@ static int stub265(unsigned short offs)
 	case 0x0061: return ovr265(0x0A37);
 	case 0x0066: return ovr265(0x0A4D);
 	case 0x006B: return ovr265(0x0D27);
+	default:
+		return 0;
 	}
 }
 
