@@ -615,7 +615,7 @@ typedef Bit8u* PhysPt;
 
 #include "common.h"
 
-#define NOT_NULL(p) (p != NULL)
+#define NOT_NULL(p) ((p) != NULL)
 
 /* poring functions for Borland C++ */
 struct hero_struct {
