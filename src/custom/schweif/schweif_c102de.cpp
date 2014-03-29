@@ -636,6 +636,17 @@ static int seg136(unsigned short offs)
 static int seg134(unsigned short offs)
 {
 	switch (offs) {
+	case 0x3e: {
+		RealPt hero = CPU_Pop32();
+		Bit16s poison = CPU_Pop16();
+
+		D2_INFO("%s wurde mit Gift %d vergiftet\n",
+			schweif_getCharname(hero), poison);
+
+		CPU_Push16(poison);
+		CPU_Push32(hero);
+		return 0;
+	}
 	case 0x43: {
 		RealPt hero = CPU_Pop32();
 		Bit16s disease = CPU_Pop16();
