@@ -7,6 +7,7 @@
 #include "schweif.h"
 
 #include "c102de_seg000.h"
+#include "c102de_seg002.h"
 #include "c102de_seg013.h"
 #include "c102de_seg024.h"
 #include "c102de_seg029.h"
@@ -39,6 +40,26 @@ static int seg002(unsigned short offs)
 		CPU_Push32(pal);
 		D2_TRAC("set_color(%x, %x)\n", pal, first_col);
 		return 0;
+	}
+	case 0x46f: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = hero_is_diseased(Real2Host(hero));
+		D2_TRAC("hero_is_diseased(%s) = %d\n",
+			schweif_getCharname(hero), reg_ax);
+
+		return 1;
+	}
+	case 0x49b: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = hero_is_poisoned(Real2Host(hero));
+		D2_TRAC("hero_is_poisoned(%s) = %d\n",
+			schweif_getCharname(hero), reg_ax);
+
+		return 1;
 	}
 	default:
 		return 0;
