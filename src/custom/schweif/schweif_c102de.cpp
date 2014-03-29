@@ -633,6 +633,39 @@ static int seg136(unsigned short offs)
 	}
 }
 
+static int seg134(unsigned short offs)
+{
+	switch (offs) {
+	case 0x43: {
+		RealPt hero = CPU_Pop32();
+		Bit16s disease = CPU_Pop16();
+
+		D2_INFO("%s erkrankt an Krankheit %d\n",
+			schweif_getCharname(hero), disease);
+
+		CPU_Push16(disease);
+		CPU_Push32(hero);
+		return 0;
+	}
+	case 0x48: {
+		RealPt hero = CPU_Pop32();
+		Bit16s disease = CPU_Pop16();
+		Bit16s chance = CPU_Pop16();
+
+		D2_INFO("%s erkrankt mit Wahrscheinlichkeit von %d%% an Krankheit %d\n",
+			schweif_getCharname(hero), disease, chance);
+
+		CPU_Push16(chance);
+		CPU_Push16(disease);
+		CPU_Push32(hero);
+
+		return 0;
+	}
+	default:
+		return 0;
+	}
+}
+
 static int seg151(unsigned short offs)
 {
 	switch (offs) {
@@ -802,6 +835,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x1b42: return seg039(offs);
 	case 0x1c8a: return seg043(offs);
 	case 0x1cce: return seg046(offs);
+	case 0x20ad: return seg134(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);
 	case 0x2313: return stub249(offs);
