@@ -7063,6 +7063,44 @@ static int n_seg039(unsigned offs)
 	}
 }
 
+
+static int n_seg044(unsigned short offs)
+{
+	switch (offs) {
+	case 0x00: {
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16s a2 = CPU_Pop16();
+		Bit16u a3 = CPU_Pop16();
+
+		reg_ax = copy_ani_seq(Real2Host(p), a2, a3);
+		D1_LOG("copy_ani_seq(%x, %d, %d) = 0x%x\n",
+			p, a2, a3, reg_ax);
+
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push32(p);
+
+		return 1;
+	}
+	case 0xae: {
+		CPU_Pop16();
+
+		Bit16s ani = CPU_Pop16();
+
+		reg_ax = seg044_00ae(ani);
+		D1_LOG("seg44_00ae(%d) = %d\n", ani, reg_ax);
+
+		CPU_Push16(ani);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg045(unsigned short offs)
 {
 	switch (offs) {
@@ -8075,44 +8113,7 @@ int schick_nearcall_v302de(unsigned offs) {
 			exit(1);
 		}
 	}
-	/* seg044 */
-	if (is_ovrseg(0x133b)) {
-		switch (offs) {
-		case 0x00: {
-			CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			Bit16s a2 = CPU_Pop16();
-			Bit16u a3 = CPU_Pop16();
-
-			reg_ax = copy_ani_seq(Real2Host(p), a2, a3);
-			D1_LOG("copy_ani_seq(%x, %d, %d) = 0x%x\n",
-				p, a2, a3, reg_ax);
-
-			CPU_Push16(a3);
-			CPU_Push16(a2);
-			CPU_Push32(p);
-
-			return 1;
-		}
-		case 0xae: {
-			CPU_Pop16();
-
-			Bit16s ani = CPU_Pop16();
-
-			reg_ax = seg044_00ae(ani);
-			D1_LOG("seg44_00ae(%d) = %d\n", ani, reg_ax);
-
-			CPU_Push16(ani);
-
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg044", offs);
-			exit(1);
-		}
-	}
-
+	else if (is_ovrseg(0x133b)) return n_seg044(offs);
 	else if (is_ovrseg(0x133f)) return n_seg045(offs);
 
 	/* seg046 */
