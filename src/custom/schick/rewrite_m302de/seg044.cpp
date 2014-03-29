@@ -41,7 +41,7 @@ Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 		p_start = Real2Host(ds_readd(BUFFER_WEAPANIDAT));
 
 	/* get number of animation sequences */
-	nr_anis = host_readw(p_start);
+	nr_anis = host_readws(p_start);
 
 	/* sanity check */
 	if (ani < 0)
@@ -55,11 +55,11 @@ Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 	p_off += nr_anis + 2;
 
 	/* set p_off the first byte of the requested animation sequence */
-	length = host_readb(p_start + 2);
+	length = host_readbs(p_start + 2);
 
 	for (i = 1; i <= ani; i++) {
 		p_off += length;
-		length = host_readb(p_start + i + 2);
+		length = host_readbs(p_start + i + 2);
 	}
 
 	/* skip the first byte */
@@ -69,7 +69,7 @@ Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 
 	/* copy them */
 	for (i = 0; i < length; p_off++, dst++, i++)
-		host_writeb(dst, host_readb(p_off));
+		host_writeb(dst, host_readbs(p_off));
 
 	return length;
 }
@@ -90,7 +90,7 @@ Bit8s seg044_00ae(Bit16s ani)
 	p_start = Real2Host(ds_readd(BUFFER_ANIDAT));
 
 	/* get number of ani seqences in ANI.DAT */
-	nr_anis = host_readw(p_start);
+	nr_anis = host_readws(p_start);
 
 	if (ani < 0)
 		return 0;
@@ -101,11 +101,11 @@ Bit8s seg044_00ae(Bit16s ani)
 	p_off = p_start;
 	p_off += nr_anis + 2;
 
-	length = host_readb(p_start + 2);
+	length = host_readbs(p_start + 2);
 
 	for (i = 1; i <= ani; i++) {
 		p_off += length;
-		length = host_readb(p_start + i + 2);
+		length = host_readbs(p_start + i + 2);
 	}
 
 #if 0
@@ -147,7 +147,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	Bit8u *p3;
 
 	p3 = Real2Host(ds_readd(0x2555 + host_readbs(hero + 0x9b) * 4));
-	weapon = host_readw(hero + 0x1c0);
+	weapon = host_readws(hero + 0x1c0);
 
 	if (fid_target != 0) {
 		FIG_search_obj_on_cb(fid_target, &target_x, &target_y);
@@ -191,15 +191,15 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	p1 = p_datseg + 0xd8cf + 0xf3 * a1;
 	p2 = p_datseg + 0xdc9b + 0xf3 * a1;
 
-	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readw(p3 + l1 * 2)));
-	ds_writeb(0xd9c0 + 0xf3 * a1, host_readb(hero + 0x9b));
+	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readws(p3 + l1 * 2)));
+	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(hero + 0x9b));
 
 	if (check_hero(hero) && (host_readbs(hero + 0x82) != dir) &&
 
 		((f_action == 2) || (f_action == 15) || (f_action == 103) ||
 			((f_action == 100) && !ds_readbs(0xd84a + fid_attacker)) ||
-			((ds_readw(0xe3ac) != 0) && (a7 == 0)) ||
-			((ds_readw(0xe3aa) != 0) && (a7 == 1))))
+			((ds_readws(0xe3ac) != 0) && (a7 == 0)) ||
+			((ds_readws(0xe3aa) != 0) && (a7 == 1))))
 	{
 
 			ds_writeb(0xd8ce + a1 * 0xf3, 0);
@@ -235,10 +235,10 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 				}
 			}
 
-			p1 += copy_ani_seq(p1, host_readw(p3 + l8 * 2), 2);
+			p1 += copy_ani_seq(p1, host_readws(p3 + l8 * 2), 2);
 
 			if (l7 != -1) {
-				p1 += copy_ani_seq(p1, host_readw(p3 + l7 * 2), 2);
+				p1 += copy_ani_seq(p1, host_readws(p3 + l7 * 2), 2);
 			}
 
 			host_writeb(p1++, 0xfc);
@@ -256,7 +256,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		((f_action == 15) || (f_action == 102) || (f_action == 103) ||
 			((f_action == 100) && !ds_readbs(0xd84a + fid_attacker))))
 	{
-		p1 += copy_ani_seq(p1, host_readw(p3 + l1 *2), 2);
+		p1 += copy_ani_seq(p1, host_readws(p3 + l1 *2), 2);
 
 		if ((weapon_type != -1) && (weapon_type < 3) &&
 			(host_readb(hero + 0x21) != 9) &&
@@ -278,7 +278,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	if ((check_hero(hero) && ds_readw(0xe3ac) != 0 && a7 == 0) ||
 		((ds_readw(0xe3aa) != 0) && (a7 == 1))) {
 
-			p1 += copy_ani_seq(p1, host_readw(p3 + l1 * 2), 2);
+			p1 += copy_ani_seq(p1, host_readws(p3 + l1 * 2), 2);
 
 			if ((weapon_type != -1) && (weapon_type < 3) &&
 				(host_readb(hero + 0x21) != 9) &&
@@ -295,10 +295,10 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
 	{
 		host_writeb(p1++, 0xfc);
-		host_writeb(p1++, seg044_00ae(host_readw(p3 + 0x28)));
+		host_writeb(p1++, seg044_00ae(host_readws(p3 + 0x28)));
 		host_writeb(p1++, 0);
 
-		p1 += copy_ani_seq(p1, host_readw(p3 + 0x28), 2);
+		p1 += copy_ani_seq(p1, host_readws(p3 + 0x28), 2);
 	}
 
 	if (check_hero(hero) ||
@@ -400,7 +400,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	p2 = p_datseg + 0xdc9b + a1 * 0xf3;
 
 
-	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readw(p4 + l1 * 2)));
+	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readws(p4 + l1 * 2)));
 	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(enemy + 1));
 
 	if ((host_readbs(enemy + 0x27) != dir) &&
@@ -536,17 +536,21 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
  * @v6: 0 or 1
  */
 
+/* Borlandified and identical */
 void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 			Bit16u v5, Bit16u v6)
 {
 	signed short x_obj1, y_obj1;
 	signed short x_obj2, y_obj2;
-	Bit16s dir, l2, l3;
-	register Bit16s si, di;
+	signed short dir;
+	signed short l2;
+	signed short l3;
 	Bit8u *lp1;
 	Bit8u *lp2;
 
-	/* TODO: Stackframe is too large 2 Byte */
+	signed short l_di;
+	signed short l_si;
+
 
 	/* get a pointer from an array where the Monster-ID serves as index */
 	lp2 = Real2Host(ds_readd(0x2555 + host_readbs(hero + 0x9b) * 4));
@@ -569,54 +573,60 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 	if (obj2 == obj1)
 		dir = host_readbs(hero + 0x82);
 
-	if (v2 == 4) {
-		di = (v5 == 1) ? 37 : 29;
-	} else
-		di = 16;
 
-	if (v2 == 4)
-		di += dir;
-	else
-		di += host_readbs(hero + 0x82);
+	l_di = (v2 == 4) ? ((v5 == 1) ? 37 : 29) : 16;
+
+	l_di += (v2 == 4) ? dir : host_readbs(hero + 0x82);
 
 	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
 
-	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readw(lp2 + di * 2)));
+	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readws(lp2 + l_di * 2)));
 
+#if !defined(__BORLANDC__)
 	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(hero + 0x9b));
+#else
+	/* another ugly hack */
+	asm {
+		les bx, hero
+		mov al, [es:bx+0x9b]
+		mov bx, v1
+		db 0x69, 0xdb, 0xf3, 0x00
+		mov [bx + 0xd9c0], al
+	}
+#endif
 
 	if ((host_readbs(hero + 0x82) != dir) && (v2 == 4)) {
 
 		ds_writeb(0xd8ce + v1 * 0xf3, 0);
 		l3 = l2 = -1;
-		si = host_readbs(hero + 0x82);
-		l3 = si;
-		si++;
-		if (si == 4)
-			si = 0;
+		l_si = host_readbs(hero + 0x82);
+		l3 = l_si;
+		l_si++;
+		if (l_si == 4)
+			l_si = 0;
 
-		if (si != dir) {
-			l2 = si;
-			si++;
-			if (si == 4)
-				si = 0;
+		if (l_si != dir) {
+			l2 = l_si;
+			l_si++;
+			if (l_si == 4)
+				l_si = 0;
 
-			if (si != dir) {
+			if (l_si != dir) {
 				l3 = host_readbs(hero + 0x82) + 4;
 				l2 = -1;
 			}
 		}
 
-		host_writeb(hero + 0x82, (signed char)dir);
-		lp1 += copy_ani_seq(lp1, host_readw(lp2 + l3 * 2), 2);
+		host_writeb(hero + 0x82, dir);
+		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l3 * 2), 2);
 
 		if (l2 != -1)
-			lp1 += copy_ani_seq(lp1, host_readw(lp2 + l2 * 2), 2);
+			lp1 += copy_ani_seq(lp1, host_readws(lp2 + l2 * 2), 2);
 
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readw(lp2 + di * 2)));
+		host_writeb(lp1, seg044_00ae(host_readws(lp2 + l_di * 2)));
 		lp1++;
 
 		host_writeb(lp1, 0x00);
@@ -627,7 +637,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 		((ds_readw(0xe3a8) != 0) && (v6 == 0)) ||
 		((ds_readw(0xe3a6) != 0) && (v6 == 1))) {
 
-		lp1 += copy_ani_seq(lp1, host_readw(lp2 + di * 2), 2);
+		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l_di * 2), 2);
 	}
 
 	if (((ds_readw(0xe3a8) != 0) && (v6 == 0)) ||
@@ -636,13 +646,13 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readw(lp2 + 0x28)));
+		host_writeb(lp1, seg044_00ae(host_readws(lp2 + 0x28)));
 		lp1++;
 
 		host_writeb(lp1, 0x00);
 		lp1++;
 
-		lp1 += copy_ani_seq(lp1, host_readw(lp2 + 0x28), 2);
+		lp1 += copy_ani_seq(lp1, host_readws(lp2 + 0x28), 2);
 	}
 
 	host_writeb(lp1, 0xff);
@@ -662,19 +672,23 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 
  */
 
-void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
-								Bit16u v5)
+/* Borlandified and identical */
+void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target, signed char caster,
+								signed short v5)
 {
-	Bit8u *lp1;		/* mostly written */
-	Bit8u *lp2;		/* read only */
-	Bit16s l1, l2, l3;	/* indicees to lp2 */
+	signed short l1;
 	signed short x_target, y_target;
 	signed short x_caster, y_caster;
-	Bit16s dir, dir2;
+	signed short dir;
+	signed short l2, l3;	/* indicees to lp2 */
+	Bit8u *lp1;		/* mostly written */
+	Bit8u *lp2;		/* read only */
+
+	signed short dir2;
 
 
 	/* get a pointer from an array where the Monster-ID serves as index */
-	lp2 = Real2Host(ds_readd(0x2555 + host_readb(p + 1) * 4));
+	lp2 = Real2Host(ds_readd(0x2555 + host_readbs(p + 1) * 4));
 
 	FIG_search_obj_on_cb(caster, &x_caster, &y_caster);
 	FIG_search_obj_on_cb(target, &x_target, &y_target);
@@ -691,34 +705,27 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 			dir = 0;
 	}
 
-	if (target == caster)
-		dir = (signed char)host_readb(p + 0x27);
+	if (caster == target)
+		dir = host_readbs(p + 0x27);
 
 	/* this is true if a monster attacks a hero */
-	if (v2 == 4)
-		l1 = 29;
-	else
-		l1 = 16;
+	l1 = (v2 == 4) ? 29 : 16;
 
 	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
 
 	/* this is true if a monster attacks a hero */
-	if (v2 == 4)
-		l1 += dir;
-	else
-		l1 += (signed char)host_readb(p + 0x27);
+	l1 += (v2 == 4) ? dir : host_readbs(p + 0x27);
 
-	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readw(lp2 + l1 * 2)));
+	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readws(lp2 + l1 * 2)));
 
-	ds_writeb(0xd9c0 + v1 * 0xf3, host_readb(p + 1));
+	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(p + 1));
 
-	if (((signed char)host_readb(p + 0x27) != dir) && (v2 == 4)) {
+	if ((host_readbs(p + 0x27) != dir) && (v2 == 4)) {
 
 		ds_writeb(0xd8ce + v1 * 0xf3, 0);
-		l2 = -1;
-		l3 = -1;
+		l3 = l2 = -1;
 
-		dir2 = (signed char)host_readb(p + 0x27);
+		dir2 = host_readbs(p + 0x27);
 		l3 = dir2;
 		dir2++;
 		if (dir2 == 4)
@@ -731,29 +738,29 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 			if (dir2 == 4)
 				dir2 = 0;
 			if (dir2 != dir) {
-				l3 = (signed char)host_readb(p + 0x27) + 4;
+				l3 = host_readbs(p + 0x27) + 4;
 				l2 = -1;
 			}
 		}
 
-		host_writeb(p + 0x27, (signed char)dir);
+		host_writeb(p + 0x27, dir);
 
-		lp1 += copy_ani_seq(lp1, host_readw(lp2 + l3 * 2), 1);
+		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l3 * 2), 1);
 
 		if (l2 != -1)
-			lp1 += copy_ani_seq(lp1, host_readw(lp2 + l2 * 2), 1);
+			lp1 += copy_ani_seq(lp1, host_readws(lp2 + l2 * 2), 1);
 
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readw(lp2 + l1 * 2)));
+		host_writeb(lp1, seg044_00ae(host_readws(lp2 + l1 * 2)));
 		lp1++;
 
 		host_writeb(lp1, 0);
 		lp1++;
 	}
 
-	lp1 += copy_ani_seq(lp1, host_readw(lp2 + l1 * 2), 1);
+	lp1 += copy_ani_seq(lp1, host_readws(lp2 + l1 * 2), 1);
 
 	if (((ds_readw(0xe3a8) != 0) && (v5 == 0)) ||
 		((ds_readw(0xe3a6) != 0) && (v5 == 1))) {
@@ -761,23 +768,20 @@ void seg044_002f(Bit16u v1, Bit8u *p, Bit16u v2, Bit16s target, Bit16s caster,
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readw(lp2 + 0x28)));
+		host_writeb(lp1, seg044_00ae(host_readws(lp2 + 0x28)));
 		lp1++;
 
 		host_writeb(lp1, 0);
 		lp1++;
 
-		lp1 += copy_ani_seq(lp1, host_readw(lp2 + 0x28), 1);
+		lp1 += copy_ani_seq(lp1, host_readws(lp2 + 0x28), 1);
 	}
 
 	host_writeb(lp1, 0xff);
 
 	/* check if the moster sprite ID needs two fields */
-	if (is_in_byte_array(host_readb(p + 1),
-		p_datseg + TWO_FIELDED_SPRITE_ID)) {
-			memcpy(p_datseg + 0xdab4 + v1 * 0xf3,
-				p_datseg + 0xd8ce + v1 * 0xf3,
-				0xf3);
+	if (is_in_byte_array(host_readb(p + 1),	p_datseg + TWO_FIELDED_SPRITE_ID)) {
+		memcpy(p_datseg + 0xdab4 + v1 * 0xf3, p_datseg + 0xd8ce + v1 * 0xf3, 0xf3);
 	}
 
 }
