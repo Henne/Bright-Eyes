@@ -457,7 +457,7 @@ static int seg037(unsigned short offs)
 		CPU_Push16(upperBound);
 		CPU_Push16(lowerBound);
 		reg_ax = random_interval(lowerBound, upperBound);
-		D2_LOG("randomInterval(%d, %d) = %d\n",
+		D2_INFO("randomInterval(%d, %d) = %d\n",
 		       lowerBound, upperBound, reg_ax);
 		return 1;
 	}
@@ -465,7 +465,7 @@ static int seg037(unsigned short offs)
 		Bit16u range = CPU_Pop16();
 		CPU_Push16(range);
 		reg_ax = random_schweif(range);
-		D2_LOG("random(%d) = %d\n", range & 0xFF, reg_ax);
+		D2_INFO("random(%d) = %d\n", range & 0xFF, reg_ax);
 		return 1;
 	}
 	case 0x73: {
@@ -476,7 +476,7 @@ static int seg037(unsigned short offs)
 		CPU_Push16(m);
 		CPU_Push16(n);
 		reg_ax = dice_roll(n, m, x);
-		D2_LOG("wuerfel %dW%d%+d = %d\n", n, m, x, reg_ax);
+		D2_INFO("wuerfel %dW%d%+d = %d\n", n, m, x, reg_ax);
 		return 1;
 	}
 	case 0xa2: {
@@ -601,8 +601,8 @@ static int seg136(unsigned short offs)
 		CPU_Push16(bonus);
 		CPU_Push16(skill);
 		CPU_Push32(hero);
-		D2_LOG("Talentprobe %s auf %s %+d\n",
-		       (char*)Real2Host(hero + 0x22),
+		D2_INFO("Talentprobe %s auf %s %+d\n",
+		       schweif_getCharname(hero),
 		       schweif_common::names_skill[skill],
 		       (signed char)bonus);
 		return 0;
@@ -622,8 +622,8 @@ static int seg151(unsigned short offs)
 		CPU_Push16(bonus);
 		CPU_Push16(spell);
 		CPU_Push32(hero);
-		D2_LOG("Zauberprobe %s auf %s %+d\n",
-		       (char*)(Real2Host(hero) + 0x22),
+		D2_INFO("Zauberprobe %s auf %s %+d\n",
+		       schweif_getCharname(hero),
 		       schweif_common::names_spell[spell],
 		       (signed char)bonus);
 		return 0;

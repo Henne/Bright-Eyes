@@ -9,7 +9,7 @@
 #include "common.h"
 
 #define SCHWEIF_INFO
-#define SCHWEIF_LOG
+//#define SCHWEIF_LOG
 //#define SCHWEIF_TRAC
 #define SCHWEIF_GFX
 
@@ -49,8 +49,8 @@ static inline void RET(unsigned short val) {
 	reg_sp += val;
 }
 
-static inline Bit8u* schweif_getCharname(unsigned p) {
-    return MemBase+Real2Phys(p)+16;
+static inline Bit8u* schweif_getCharname(RealPt p) {
+    return MemBase+Real2Phys(p)+0x22;
 }
 
 static inline Bit8u* getString(unsigned p) {
