@@ -2,9 +2,12 @@
 namespace M302de {
 
 RealPt F_PADD(RealPt, Bit32s);
+void bc_exit(Bit16s);
+RealPt bc__dos_getvect(Bit8u);
+void bc__dos_setvect(Bit8u, RealPt);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
-signed short bioskey(signed short);
+signed short bc_bioskey(signed short);
 RealPt bc_farcalloc(Bit32u, Bit32u);
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
@@ -30,6 +33,11 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 #define F_PADD(p, o) ((RealPt __huge)(p) + o)
 
+#define bc_exit exit
+
+#define bc__dos_getvect _dos_getvect
+#define bc__dos_setvect _dos_setvect
+
 #define bc_farcalloc farcalloc
 
 #define bc_close close
@@ -38,6 +46,8 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc_lseek lseek
 #define bc__read read
 #define bc__write write
+
+#define bc_bioskey bioskey
 
 #define bc_itoa itoa
 

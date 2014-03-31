@@ -200,11 +200,12 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x6d0: {
-			signed short val = CPU_Pop16();
+			Bit16s val = CPU_Pop16();
 			CPU_Push16(val);
 
 			D1_LOG("C-Lib exit(%d)\n", val);
-			return 0;
+			bc_exit(val);
+			return 1;
 		}
 		case 0x6df: {
 			/* Not Called from far */
@@ -255,24 +256,33 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x816: {
-			unsigned short interruptno = CPU_Pop16();
+			Bit16u interruptno = CPU_Pop16();
+
+			RealPt p = bc__dos_getvect(interruptno);
+			D1_LOG("_dos_getvect(int=0x%x) = %x\n",
+				interruptno, p);
+
 			CPU_Push16(interruptno);
 
-			D1_LOG("_dos_getvect(int=0x%x)\n", interruptno);
+			reg_ax = RealOff(p);
+			reg_dx = RealSeg(p);
 
-			return 0;
+			return 1;
 		}
 		case 0x825: {
-			unsigned short interruptno = CPU_Pop16();
+			Bit16u interruptno = CPU_Pop16();
 			RealPt isr = CPU_Pop32();
-			CPU_Push32(isr);
-			CPU_Push16(interruptno);
 
 			D1_LOG("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
 				interruptno,
 				(unsigned short)(RealSeg(isr) - reloc_game),
 				RealOff(isr));
-			return 0;
+
+			bc__dos_setvect(interruptno, isr);
+
+			CPU_Push32(isr);
+			CPU_Push16(interruptno);
+			return 1;
 		}
 		case 0x839: {
 			return 0;
@@ -373,11 +383,11 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x176d: {
-			signed short cmd = CPU_Pop16();
-			CPU_Push16(cmd);
+			Bit16s cmd = CPU_Pop16();
 
-			reg_ax = bioskey(cmd);
+			reg_ax = bc_bioskey(cmd);
 			D1_LOG("bioskey(%d);\n", (char) cmd);
+			CPU_Push16(cmd);
 
 			return 1;
 		}

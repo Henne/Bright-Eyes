@@ -541,7 +541,7 @@ void wait_for_keyboard1() {
 #if !defined(__BORLANDC__)
 		D1_LOG("loop in %s\n", __func__);
 #endif
-		bioskey(0);
+		bc_bioskey(0);
 	}
 }
 
@@ -1996,7 +1996,7 @@ void wait_for_keyboard2() {
 #if !defined(__BORLANDC__)
 		D1_LOG("loop in %s\n", __func__);
 #endif
-		bioskey(0);
+		bc_bioskey(0);
 	}
 }
 
@@ -2011,7 +2011,7 @@ void wait_for_keypress() {
 		if (!CD_bioskey(1))
 			continue;
 
-		si = bioskey(0);
+		si = bc_bioskey(0);
 
 		if ((si & 0xff) != 0x20)
 			continue;
@@ -2028,7 +2028,7 @@ void wait_for_keypress() {
 	} while (!CD_bioskey(1) && ds_readw(0xc3d5) == 0);
 
 	if (CD_bioskey(1))
-		si = bioskey(0);
+		si = bc_bioskey(0);
 
 	ds_writew(0xc3d5, 0);
 }

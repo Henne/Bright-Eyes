@@ -109,7 +109,7 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 			ds_writew(0xc3d5, 0x00);
 			ds_writew(0xc3d1, 0x00);
 		} else {
-			ds_writew(0xc3d7, bioskey(0));
+			ds_writew(0xc3d7, bc_bioskey(0));
 			ds_writew(0xc3d9, (ds_readw(0xc3d7) >> 8));
 		}
 

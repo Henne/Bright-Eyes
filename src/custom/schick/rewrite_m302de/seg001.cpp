@@ -159,7 +159,7 @@ void seg001_02c4() {
 
 signed short CD_bioskey(signed short cmd) {
 	seg001_02c4();
-	return bioskey(cmd);
+	return bc_bioskey(cmd);
 }
 
 /* CD_audio_stop_hsg() - stop audio playback in HSG format */

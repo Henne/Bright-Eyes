@@ -20,6 +20,29 @@ RealPt F_PADD(RealPt p, Bit32s off)
 	return RealMake(reg_dx, reg_ax);
 }
 
+void bc_exit(Bit16s status)
+{
+	CPU_Push16(status);
+	CALLBACK_RunRealFar(reloc_game, 0x6df);
+	CPU_Pop16();
+}
+
+RealPt bc__dos_getvect(Bit8u __interruptno)
+{
+	CPU_Push16(__interruptno);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x816);
+	CPU_Pop16();
+	return RealMake(reg_dx, reg_ax);
+}
+
+void bc__dos_setvect(Bit8u __interruptno, RealPt handler)
+{
+	CPU_Push32(handler);
+	CPU_Push16(__interruptno);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x825);
+	CPU_Pop16();
+	CPU_Pop32();
+}
 
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
@@ -46,23 +69,12 @@ Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
 	return (Bit16s)count;
 }
 
-signed short bioskey(signed short cmd) {
-	reg_ah = cmd &  0xff;
-	reg_al = 0;
-	CALLBACK_RunRealInt(0x16);
-
-	if (GETFLAG(ZF)) {
-		if (!(cmd & 1))
-			return reg_ax;
-
-		return 0;
-	} else {
-		if (!(cmd & 1))
-			return reg_ax;
-		if (reg_ax)
-			return reg_ax;
-		return -1;
-	}
+signed short bc_bioskey(signed short cmd)
+{
+	CPU_Push16(cmd);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x176d);
+	CPU_Pop16();
+	return reg_ax;
 }
 
 RealPt bc_farcalloc(Bit32u nmemb, Bit32u size)
