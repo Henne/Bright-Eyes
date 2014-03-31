@@ -77,6 +77,13 @@ signed short bc_bioskey(signed short cmd)
 	return reg_ax;
 }
 
+void bc_farfree(RealPt ptr)
+{
+	CPU_Push32(ptr);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x1e55);
+	CPU_Pop32();
+}
+
 RealPt bc_farcalloc(Bit32u nmemb, Bit32u size)
 {
 	CPU_Push32(size);

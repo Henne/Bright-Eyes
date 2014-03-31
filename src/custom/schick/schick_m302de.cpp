@@ -396,11 +396,12 @@ static int seg000(unsigned short offs) {
 		}
 		case 0x1e55: {
 			RealPt ptr = CPU_Pop32();
+
+			D1_LOG("farfree(0x%08x)\n", ptr);
+			bc_farfree(ptr);
 			CPU_Push32(ptr);
 
-			D1_LOG("free(0x%04x:0x%04x)\n",
-				RealSeg(ptr), RealOff(ptr));
-			return 0;
+			return 1;
 		}
 		case 0x1f69: {
 			unsigned int size = CPU_Pop32();
