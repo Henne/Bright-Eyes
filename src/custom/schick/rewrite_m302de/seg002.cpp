@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 89/136
+	Functions rewritten: 91/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +24,7 @@
 #include "seg008.h"
 #include "seg009.h"
 #include "seg010.h"
+#include "seg011.h"
 #include "seg029.h"
 #include "seg039.h"
 #include "seg041.h"
@@ -45,6 +46,43 @@ void set_audio_track(Bit16u index)
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x17);
 	CPU_Pop16();
 #endif
+}
+
+void init_AIL(Bit32u size)
+{
+	if (ds_writed(0xbd0d, (Bit32u)schick_alloc_emu(size)) != 0) {
+		AIL_startup();
+		ds_writew(0xbcff, 1);
+	}
+}
+
+void exit_AIL(void)
+{
+	AIL_shutdown(NULL);
+
+	if (ds_readd(0xbd11) != 0) {
+		bc_farfree((RealPt)ds_readd(0xbd11));
+	}
+
+	if (ds_readd(0xbd15) != 0) {
+		bc_farfree((RealPt)ds_readd(0xbd15));
+	}
+
+	if (ds_readd(0xbd0d) != 0) {
+		bc_farfree((RealPt)ds_readd(0xbd0d));
+	}
+
+	if (ds_readd(0xbd09) != 0) {
+		bc_farfree((RealPt)ds_readd(0xbd09));
+	}
+
+	/* set all pointers to NULL */
+	ds_writed(0xbd11, ds_writed(0xbd15, ds_writed(0xbd0d, ds_writed(0xbd09, 0))));
+
+	if (ds_readw(0x447c) != 0) {
+		free_voc_buffer();
+	}
+
 }
 
 void play_voc(Bit16u index)

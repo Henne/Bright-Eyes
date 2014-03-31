@@ -818,9 +818,19 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x0045:	/* wird bei Musikmenu aufgerufen */
 	case 0x00e6:
-	case 0x01e0:
-	case 0x0209:
 		return 0;
+	case 0x01e0: {
+		Bit32u size = CPU_Pop32();
+		D1_LOG("far init_AIL(%d)\n", size);
+		init_AIL(size);
+		CPU_Push32(size);
+		return 1;
+	}
+	case 0x0209: {
+		D1_LOG("far exit_AIL()\n");
+		exit_AIL();
+		return 1;
+	}
 	case 0x06fe:
 	case 0x079f:
 		return 0;
@@ -5952,6 +5962,20 @@ static int n_seg002(unsigned short offs)
 {
 
 	switch (offs) {
+	case 0x01e0: {
+		CPU_Pop16();
+		Bit32u size = CPU_Pop32();
+		D1_LOG("near init_AIL(%d)\n", size);
+		init_AIL(size);
+		CPU_Push32(size);
+		return 1;
+	}
+	case 0x0209: {
+		CPU_Pop16();
+		D1_LOG("near exit_AIL()\n");
+		exit_AIL();
+		return 1;
+	}
 	case 0x0832: {
 		CPU_Pop16();
 		Bit16u index = CPU_Pop16();
