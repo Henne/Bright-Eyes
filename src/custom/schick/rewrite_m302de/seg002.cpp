@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 91/136
+	Functions rewritten: 92/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -83,6 +83,16 @@ void exit_AIL(void)
 		free_voc_buffer();
 	}
 
+}
+
+/* static */
+void stop_midi_playback(void)
+{
+	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3))
+	{
+		AIL_stop_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
+		AIL_release_sequence_handle(ds_readws(0xbd23), ds_readws(0xbd21));
+	}
 }
 
 void play_voc(Bit16u index)

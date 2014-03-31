@@ -5976,6 +5976,12 @@ static int n_seg002(unsigned short offs)
 		exit_AIL();
 		return 1;
 	}
+	case 0x06c7: {
+		CPU_Pop16();
+		D1_LOG("stop_midi_playback();\n");
+		stop_midi_playback();
+		return 1;
+	}
 	case 0x0832: {
 		CPU_Pop16();
 		Bit16u index = CPU_Pop16();

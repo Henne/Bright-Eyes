@@ -5,6 +5,8 @@ namespace M302de {
 void set_audio_track(Bit16u);
 void init_AIL(Bit32u);
 void exit_AIL(void);
+/* static */
+void stop_midi_playback(void);
 void play_voc(Bit16u);
 void play_voc_delay(Bit16u);
 /* static */
