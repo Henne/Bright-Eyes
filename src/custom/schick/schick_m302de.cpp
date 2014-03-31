@@ -5976,6 +5976,34 @@ static int n_seg002(unsigned short offs)
 		exit_AIL();
 		return 1;
 	}
+	case 0x0349: {
+		CPU_Pop16();
+		Bit16s seq = CPU_Pop16();
+		reg_ax = prepare_midi_playback(seq);
+		D1_LOG("prepare_midi_playback(%d)\n", seq);
+		CPU_Push16(seq);
+		return 1;
+	}
+	case 0x0413: {
+		CPU_Pop16();
+		Bit16s seq = CPU_Pop16();
+		reg_ax = start_midi_playback(seq);
+		D1_LOG("start_midi_playback(%d)\n", seq);
+		CPU_Push16(seq);
+		return 1;
+	}
+	case 0x043d: {
+		CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s patch = CPU_Pop16();
+		RealPt p = prepare_timbre(a1, patch);
+		D1_LOG("prepare_timbre(%d, %d) = %x\n", a1, patch, p);
+		CPU_Push16(patch);
+		CPU_Push16(a1);
+		reg_ax = RealOff(p);
+		reg_dx = RealSeg(p);
+		return 1;
+	}
 	case 0x04f2: {
 		CPU_Pop16();
 		Bit16s index = CPU_Pop16();

@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 94/136
+	Functions rewritten: 97/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -85,6 +85,77 @@ void exit_AIL(void)
 
 }
 
+/* static */
+signed short prepare_midi_playback(signed short sequence)
+{
+	signed short patch;
+	RealPt ptr;
+	signed short l_si;
+	signed short l_di;
+
+	if ((ds_writew(0xbd01, load_archive_file(0x97))) != -1) {
+
+		if ((ds_writew(0xbd21, AIL_register_sequence(ds_readw(0xbd23), (RealPt)ds_readd(0xbd0d), sequence, (RealPt)ds_readd(0xbd15), 0))) != -1) {
+
+			while ( (l_si = AIL_timbre_request(ds_readw(0xbd23), ds_readw(0xbd21))) != -1)
+			{
+				l_di = l_si >> 8;
+				patch = l_si & 0xff;
+
+				if ( (ptr = prepare_timbre(l_di, patch))) {
+					AIL_install_timbre(ds_readw(0xbd23), l_di, patch, ptr);
+					bc_farfree(ptr);
+				}
+			}
+
+			bc_close(ds_readw(0xbd01));
+			return 1;
+		} else {
+			bc_close(ds_readw(0xbd01));
+		}
+	}
+	return 0;
+}
+
+/* static */
+signed short start_midi_playback(signed short seq)
+{
+	if (prepare_midi_playback(seq)) {
+		AIL_start_sequence(ds_readw(0xbd23), seq);
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+
+/* static */
+RealPt prepare_timbre(signed short a1, signed short patch)
+{
+	RealPt buf;
+
+	seg002_0c72(ds_readws(0xbd01), 0, 0);
+
+	do {
+		read_archive_file(ds_readws(0xbd01), p_datseg + 0xbc5c, 6);
+
+		if (ds_readbs(0xbc5d) == -1) {
+			return (RealPt)0;
+		}
+	} while ((ds_readbs(0xbc5d) != a1) || (ds_readbs(0xbc5c) != patch));
+
+	seg002_0c72(ds_readws(0xbd01), ds_readd(0xbc5e), 0);
+
+	read_archive_file(ds_readws(0xbd01), p_datseg + 0xbc5a, 2);
+
+	buf = schick_alloc_emu(ds_readw(0xbc5a));
+
+	host_writew(Real2Host(buf), ds_readw(0xbc5a));
+
+	read_archive_file(ds_readws(0xbd01), Real2Host(buf) + 2, ds_readw(0xbc5a) - 2);
+
+	return buf;
+}
 /* static */
 signed short load_midi_file(signed short index)
 {

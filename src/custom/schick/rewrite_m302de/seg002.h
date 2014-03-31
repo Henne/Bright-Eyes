@@ -6,6 +6,12 @@ void set_audio_track(Bit16u);
 void init_AIL(Bit32u);
 void exit_AIL(void);
 /* static */
+signed short prepare_midi_playback(signed short);
+/* static */
+signed short start_midi_playback(signed short);
+/* static */
+RealPt prepare_timbre(signed short, signed short);
+/* static */
 signed short load_midi_file(signed short);
 /* static */
 signed short do_load_midi_file(signed short);
