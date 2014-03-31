@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 92/136
+	Functions rewritten: 94/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -83,6 +83,25 @@ void exit_AIL(void)
 		free_voc_buffer();
 	}
 
+}
+
+/* static */
+signed short load_midi_file(signed short index)
+{
+	return do_load_midi_file(index);
+}
+
+/* static */
+signed short do_load_midi_file(signed short index)
+{
+	signed short handle;
+
+	if ((handle = load_archive_file(index)) != -1) {
+		read_archive_file(handle, Real2Host(ds_readd(0xbd0d)), 0x7fff);
+		bc_close(handle);
+		return 1;
+	}
+	return 0;
 }
 
 /* static */

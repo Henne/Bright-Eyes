@@ -5976,6 +5976,22 @@ static int n_seg002(unsigned short offs)
 		exit_AIL();
 		return 1;
 	}
+	case 0x04f2: {
+		CPU_Pop16();
+		Bit16s index = CPU_Pop16();
+		reg_ax = load_midi_file(index);
+		D1_LOG("load_midi_file(%d)\n", index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x0502: {
+		CPU_Pop16();
+		Bit16s index = CPU_Pop16();
+		reg_ax = do_load_midi_file(index);
+		D1_LOG("do_load_midi_file(%d)\n", index);
+		CPU_Push16(index);
+		return 1;
+	}
 	case 0x06c7: {
 		CPU_Pop16();
 		D1_LOG("stop_midi_playback();\n");

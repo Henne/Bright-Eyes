@@ -6,6 +6,10 @@ void set_audio_track(Bit16u);
 void init_AIL(Bit32u);
 void exit_AIL(void);
 /* static */
+signed short load_midi_file(signed short);
+/* static */
+signed short do_load_midi_file(signed short);
+/* static */
 void stop_midi_playback(void);
 void play_voc(Bit16u);
 void play_voc_delay(Bit16u);
