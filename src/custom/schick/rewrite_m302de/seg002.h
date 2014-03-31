@@ -5,6 +5,8 @@ namespace M302de {
 void set_audio_track(Bit16u);
 void play_voc(Bit16u);
 void play_voc_delay(Bit16u);
+/* static */
+void free_voc_buffer(void);
 //static
 Bit16u open_and_seek_dat(unsigned short);
 unsigned int get_readlength2(signed short index);

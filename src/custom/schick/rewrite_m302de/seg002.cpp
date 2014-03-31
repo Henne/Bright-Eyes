@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 88/136
+	Functions rewritten: 89/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -63,6 +63,24 @@ void play_voc_delay(Bit16u index)
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x856);
 	CPU_Pop16();
 #endif
+}
+
+/* static */
+void free_voc_buffer(void)
+{
+	if (ds_readw(0x447c) != 0) {
+
+		if (ds_readd(0xbcef) != 0) {
+			bc_farfree((RealPt)ds_readd(0xbcef));
+		}
+
+		if (ds_readd(0xbceb) != 0) {
+			bc_farfree((RealPt)ds_readd(0xbceb));
+		}
+
+		ds_writed(0xbcec, ds_writed(0xbcef, 0));
+
+	}
 }
 
 /**

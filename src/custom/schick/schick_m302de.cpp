@@ -5960,6 +5960,12 @@ static int n_seg002(unsigned short offs)
 		CPU_Push16(index);
 		return 1;
 	}
+	case 0x08b5: {
+		CPU_Pop16();
+		D1_LOG("near free_voc_buffer();\n");
+		free_voc_buffer();
+		return 1;
+	}
 	case 0x0b7e: {
 		CPU_Pop16();
 		unsigned short fileindex = CPU_Pop16();
