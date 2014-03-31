@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 97/136
+	Functions rewritten: 98/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -173,6 +173,17 @@ signed short do_load_midi_file(signed short index)
 		return 1;
 	}
 	return 0;
+}
+
+/* static */
+void do_play_music_file(signed short index)
+{
+	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3)) {
+
+		stop_midi_playback();
+		load_midi_file(index);
+		start_midi_playback(0);
+	}
 }
 
 /* static */

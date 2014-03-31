@@ -6020,6 +6020,14 @@ static int n_seg002(unsigned short offs)
 		CPU_Push16(index);
 		return 1;
 	}
+	case 0x069c: {
+		CPU_Pop16();
+		Bit16s index = CPU_Pop16();
+		do_play_music_file(index);
+		D1_LOG("do_play_music_file(%d)\n", index);
+		CPU_Push16(index);
+		return 1;
+	}
 	case 0x06c7: {
 		CPU_Pop16();
 		D1_LOG("stop_midi_playback();\n");
