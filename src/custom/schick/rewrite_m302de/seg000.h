@@ -47,7 +47,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define struct_copy memcpy
 
 
-#define F_PADD(p, o) ((RealPt __huge)(p) + o)
+#define F_PADD(p, o) ((HugePt)(p) + o)
 
 #define bc_exit exit
 
