@@ -511,10 +511,23 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		case 0x3040: {
-			return 0;
+			RealPt path = CPU_Pop32();
+			RealPt ffblk = CPU_Pop32();
+			Bit16s attrib = CPU_Pop16();
+			reg_ax = bc_findfirst_dosbox(path, ffblk, attrib);
+			D1_LOG("findfirst(%s, %x, %d) = %d\n",
+				(char*)Real2Host(path), ffblk, attrib, reg_ax);
+			CPU_Push16(attrib);
+			CPU_Push32(ffblk);
+			CPU_Push32(path);
+			return 1;
 		}
 		case 0x3073: {
-			return 0;
+			RealPt ffblk = CPU_Pop32();
+			reg_ax = bc_findnext_dosbox(ffblk);
+			D1_LOG("findnext(%x) = %d\n", ffblk, reg_ax);
+			CPU_Push32(ffblk);
+			return 1;
 		}
 		case 0x30a0: {
 			return 0;

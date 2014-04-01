@@ -108,6 +108,50 @@ RealPt bc_farcalloc(Bit32u nmemb, Bit32u size)
 	return RealMake(reg_dx, reg_ax);
 }
 
+signed short bc_findfirst_dosbox(RealPt path, RealPt __ffblk, signed short __attrib)
+{
+	CPU_Push16(__attrib);
+	CPU_Push32(__ffblk);
+	CPU_Push32(path);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x3040);
+	CPU_Pop32();
+	CPU_Pop32();
+	CPU_Pop16();
+	return reg_ax;
+}
+
+signed short bc_findfirst(RealPt path, struct ffblk *__ffblk, signed short __attrib)
+{
+	Bit16u reg_esp_bak = reg_esp;
+	reg_esp -= 0x50;
+
+	Bit16s retval = bc_findfirst_dosbox(path, RealMake(SegValue(ss), reg_esp), __attrib);
+	memcpy(__ffblk, Real2Host(RealMake(SegValue(ss), reg_esp)), 43);
+
+	reg_esp = reg_esp_bak;
+	return retval;
+}
+
+signed short bc_findnext_dosbox(RealPt __ffblk)
+{
+	CPU_Push32(__ffblk);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x3073);
+	CPU_Pop32();
+	return reg_ax;
+}
+
+signed short bc_findnext(struct ffblk *__ffblk)
+{
+	Bit16u reg_esp_bak = reg_esp;
+	reg_esp -= 0x50;
+
+	Bit16s retval = bc_findnext_dosbox(RealMake(SegValue(ss), reg_esp));
+	memcpy(__ffblk, Real2Host(RealMake(SegValue(ss), reg_esp)), 43);
+
+	reg_esp = reg_esp_bak;
+	return retval;
+}
+
 Bit16s bc_close(Bit16u handle) {
 
 	if (handle >= ds_readw(0xb786))

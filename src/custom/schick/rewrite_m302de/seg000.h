@@ -1,6 +1,10 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 
+struct ffblk {
+	Bit8u a[44];
+};
+
 RealPt F_PADD(RealPt, Bit32s);
 void bc_exit(Bit16s);
 RealPt bc__dos_getvect(Bit8u);
@@ -12,6 +16,12 @@ signed short bc_bioskey(signed short);
 void bc_clrscr(void);
 void bc_farfree(RealPt);
 RealPt bc_farcalloc(Bit32u, Bit32u);
+
+signed short bc_findfirst(RealPt, struct ffblk*, signed short);
+signed short bc_findfirst_dosbox(RealPt, RealPt, signed short);
+signed short bc_findnext(struct ffblk*);
+signed short bc_findnext_dosbox(RealPt);
+
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
 RealPt bc_memmove(RealPt, RealPt, Bit16u);
@@ -25,6 +35,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #include <IO.H>
 #include <DOS.H>
 #include <BIOS.H>
+#include <DIR.H>
 #include <ALLOC.H>
 #include <CONIO.H>
 
@@ -58,6 +69,9 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc_farfree farfree
 
 #define bc_itoa itoa
+
+#define bc_findfirst findfirst
+#define bc_findnext findnext
 
 #define mem_memcpy memcpy
 #define bc_memmove memmove
