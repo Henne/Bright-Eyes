@@ -8,6 +8,7 @@ void bc__dos_setvect(Bit8u, RealPt);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
 signed short bc_bioskey(signed short);
+void bc_clrscr(void);
 void bc_farfree(RealPt);
 RealPt bc_farcalloc(Bit32u, Bit32u);
 Bit16s bc_close(Bit16u);
@@ -24,6 +25,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #include <DOS.H>
 #include <BIOS.H>
 #include <ALLOC.H>
+#include <CONIO.H>
 
 #define RealMake(s, o) MK_FP(s, o)
 #define PhysMake(s, o) RealMake(s, o)
@@ -49,6 +51,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc__write write
 
 #define bc_bioskey bioskey
+#define bc_clrscr clrscr
 #define bc_farfree farfree
 
 #define bc_itoa itoa

@@ -392,7 +392,9 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		case 0x1792: {
-			return 0;
+			D1_LOG("clrscr();\n");
+			bc_clrscr();
+			return 1;
 		}
 		case 0x1e55: {
 			RealPt ptr = CPU_Pop32();
