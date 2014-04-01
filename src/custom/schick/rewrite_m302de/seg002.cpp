@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 102/136
+	Functions rewritten: 103/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -64,6 +64,59 @@ void set_audio_track(Bit16u index)
 		} else {
 			/* we use AIL */
 			play_music_file(index);
+		}
+	}
+}
+
+/* Borlandified and identical */
+void sound_menu(void)
+{
+	signed short answer;
+
+	answer = GUI_radio(p_datseg + 0x47d8, 4,
+				p_datseg + 0x47e9,
+				p_datseg + 0x47f5,
+				p_datseg + 0x47ff,
+				p_datseg + 0x480b);
+
+	switch (answer - 1) {
+		case 0: {
+			ds_writeb(0x4476, 0);
+			ds_writeb(0x4477, 0);
+			break;
+		}
+		case 1: {
+			ds_writeb(0x4476, 1);
+			ds_writeb(0x4477, 0);
+			break;
+		}
+		case 2: {
+			ds_writeb(0x4476, 0);
+			ds_writeb(0x4477, 1);
+			break;
+		}
+		case 3: {
+			ds_writeb(0x4476, 1);
+			ds_writeb(0x4477, 1);
+			break;
+		}
+	}
+
+	if (ds_readb(0x4476) == 0) {
+		/* music disabled */
+		if (ds_readw(0xbcfd) != 0) {
+			CD_audio_pause();
+		} else {
+			stop_midi_playback();
+		}
+	} else {
+		if (ds_readws(0x447a) != -1) {
+			/* music enabled */
+			if (ds_readw(0xbcfd) != 0) {
+				CD_audio_play();
+			} else {
+				play_music_file(ds_readws(0x447a));
+			}
 		}
 	}
 }

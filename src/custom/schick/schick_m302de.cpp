@@ -836,7 +836,11 @@ static int seg002(unsigned short offs) {
 		set_audio_track(index);
 		return 1;
 	}
-	case 0x0045:	/* wird bei Musikmenu aufgerufen */
+	case 0x0045: {
+		D1_LOG("sound_menu()\n");
+		sound_menu();
+		return 1;
+	}
 	case 0x00e6:
 		return 0;
 	case 0x01e0: {
@@ -5997,6 +6001,12 @@ static int n_seg002(unsigned short offs)
 		D1_LOG("play_music_file(%d)\n", index);
 		play_music_file(index);
 		CPU_Push16(index);
+		return 1;
+	}
+	case 0x0045: {
+		CPU_Pop16();
+		D1_LOG("sound_menu()\n");
+		sound_menu();
 		return 1;
 	}
 	case 0x01e0: {
