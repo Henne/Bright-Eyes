@@ -27,6 +27,7 @@ Bit16s bc__close(Bit16u);
 RealPt bc_memmove(RealPt, RealPt, Bit16u);
 Bit16s bc__creat(RealPt, Bit16u);
 
+Bit16s bc__open(RealPt, Bit16u);
 Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 }
@@ -72,6 +73,8 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 #define bc_findfirst findfirst
 #define bc_findnext findnext
+
+#define bc__open _open
 
 #define mem_memcpy memcpy
 #define bc_memmove memmove

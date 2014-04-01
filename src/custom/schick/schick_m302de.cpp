@@ -611,13 +611,17 @@ static int seg000(unsigned short offs) {
 		case 0x34c7: {
 			/*open()*/
 			RealPt fname = CPU_Pop32();
-			unsigned short mode = CPU_Pop16();
+			Bit16u mode = CPU_Pop16();
+
+			reg_ax = bc__open(fname, mode);
+			D1_LOG("_open(\"%s\",\"%04x\") = %d\n",
+					(char*)Real2Host(fname),
+					mode,
+					(Bit16s)reg_ax);
+
 			CPU_Push16(mode);
 			CPU_Push32(fname);
-
-			D1_LOG("open(\"%s\",\"%04x\")\n",
-					(char*)Real2Host(fname), mode);
-			return 0;
+			return 1;
 		}
 		case 0x3636: {
 			/* sortof open() */
