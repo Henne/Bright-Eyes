@@ -5715,7 +5715,9 @@ static int seg120(unsigned short offs) {
 			return 0;
 		}
 		case 0x2f: {
-			return 0;
+			D1_LOG("cleanup_game()\n");
+			cleanup_game();
+			return 1;
 		}
 		case 0x34: {
 			return 0;
@@ -8079,7 +8081,10 @@ static int n_seg120(unsigned short offs)
 		return 1;
 	}
 	case 0xd85: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("near cleanup_game();\n");
+		cleanup_game();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

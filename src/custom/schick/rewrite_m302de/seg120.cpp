@@ -1,13 +1,18 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 2/11
+ *	Functions rewritten: 3/11
  */
+
+#include <stdio.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
+#include "seg001.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg008.h"
+#include "seg010.h"
 #include "seg028.h"
 #include "seg063.h"
 
@@ -85,6 +90,94 @@ void init_game_state(void)
 
 	ds_writed(0xbff9, ds_readd(0xd303));
 	load_splashes();
+}
+
+void cleanup_game(void)
+{
+	struct ffblk blk;
+	signed short l_si;
+	signed short l_di;
+
+	/* disable AIL */
+	exit_AIL();
+
+	/* disable CD-Audio */
+	if (ds_readw(0x95) != 0) {
+		CD_audio_stop();
+	}
+
+	/* free EMS memory */
+	if (ds_readb(0x26ab) != 0) {
+
+		for (l_si = 0; l_si < 37; l_si++) {
+			if (host_readw(Real2Host(ds_readd(0xe121)) + l_si * 8) != 0) {
+				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe121)) + l_si * 8) + 2);
+			}
+		}
+
+		/* free male and female figures */
+		for (l_si = 0; l_si < 43; l_si++) {
+
+			if ((host_readw(Real2Host(ds_readd(0xe11d)) + l_si * 12) != 0) &&
+				((host_readw(Real2Host(ds_readd(0xe11d)) + l_si * 12 + 6) != 0)))
+			{
+				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe11d)) + l_si * 12) + 6);
+			}
+
+			if ((host_readw(Real2Host(ds_readd(0xe119)) + l_si * 12) != 0) &&
+				((host_readw(Real2Host(ds_readd(0xe119)) + l_si * 12 + 6) != 0)))
+			{
+				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe119)) + l_si * 12) + 6);
+			}
+		}
+
+		/* free monster figures */
+		for (l_si = 0; l_si < 36; l_si++) {
+
+			if ((host_readw(Real2Host(ds_readd(0xe115)) + l_si * 12) != 0) &&
+				((host_readw(Real2Host(ds_readd(0xe115)) + l_si * 12 + 6) != 0)))
+			{
+				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe115)) + l_si * 12) + 6);
+			}
+		}
+
+		if (ds_readw(0xbd92) != 0) {
+			EMS_free_pages(ds_readw(0xbd92));
+		}
+
+		/* free map memory */
+		if (ds_readw(0xbd90) != 0) {
+			EMS_free_pages(ds_readw(0xbd90));
+		}
+	}
+
+	/* delete all files in TEMP */
+
+	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		(char*)Real2Host(ds_readd(0x4c88)),	/* contains "TEMP\\%s" */
+		(char*)p_datseg + 0xb4b9);		/* contains "*.*" */
+
+	l_di = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+
+	if (l_di == 0) {
+		do {
+			/* delete each found file */
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)Real2Host(ds_readd(0x4c88)),	/* contains "TEMP\\%s" */
+				((char*)(&blk)) + 30);			/* contains a filename */
+
+			bc_unlink((RealPt)ds_readd(0xd2eb));
+
+			l_di = bc_findnext(&blk);
+		} while (!l_di);
+	}
+
+	/* misc cleanups */
+	update_mouse_cursor();
+	disable_mouse();
+	reset_timer();
+	schick_reset_video();
+	bc_clrscr();
 }
 
 #if !defined(__BORLANDC__)
