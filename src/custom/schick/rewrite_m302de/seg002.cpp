@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 100/136
+	Functions rewritten: 101/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -556,6 +556,13 @@ short is_mouse_in_rect(unsigned short x1, unsigned short y1,
 		return 0;
 
 	return 1;
+}
+
+void disable_mouse(void)
+{
+	if (ds_readw(0xc3c7) == 2) {
+		mouse_reset_ehandler();
+	}
 }
 
 void mouse_reset_ehandler(void)

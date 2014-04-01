@@ -964,9 +964,14 @@ static int seg002(unsigned short offs) {
 
 		return 1;
 	}
-	case 0x165e:
-	case 0x16fd:
+	case 0x165e: {
 		return 0;
+	}
+	case 0x16fd: {
+		D1_LOG("disable_mouse()\n");
+		disable_mouse();
+		return 1;
+	}
 	case 0x1802: {
 		unsigned short x = CPU_Pop16();
 		unsigned short y = CPU_Pop16();
