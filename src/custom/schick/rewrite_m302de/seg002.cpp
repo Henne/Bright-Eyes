@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 101/136
+	Functions rewritten: 102/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -48,13 +48,24 @@ void play_music_file(signed short index)
 	}
 }
 
+/* Borlandified and identical */
 void set_audio_track(Bit16u index)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x17);
-	CPU_Pop16();
-#endif
+	CD_check();
+
+	/* only do something when index is not the current track */
+	if (ds_readw(0x447a) != index) {
+
+		ds_writew(0x447a, index);
+
+		if (ds_readw(0xbcfd) != 0) {
+			/* we use CD */
+			CD_set_track(index);
+		} else {
+			/* we use AIL */
+			play_music_file(index);
+		}
+	}
 }
 
 void init_AIL(Bit32u size)
