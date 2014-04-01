@@ -17,6 +17,8 @@ void CD_audio_stop_hsg(void);
 void CD_audio_stop();
 void CD_audio_pause();
 void CD_audio_play();
+void CD_set_track(signed short);
+void CD_check(void);
 
 #if !defined(__BORLANDC__)
 }

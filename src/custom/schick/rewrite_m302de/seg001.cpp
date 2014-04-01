@@ -23,6 +23,8 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
+
 #define CDA_DATASEG (0x1238)
 
 #if !defined(__BORLANDC__)
@@ -32,7 +34,6 @@
 #include "callback.h"
 #include "cpu.h"
 
-#include "seg000.h"
 #include "seg001.h"
 
 namespace M302de {
@@ -216,7 +217,7 @@ void CD_audio_play() {
 	if (ds_readw(0xa1) == 0)
 		return;
 
-	//CD_check();
+	CD_check();
 
 	/* reset CD pause */
 	ds_writew(0xa1, 0);
@@ -225,6 +226,18 @@ void CD_audio_play() {
 
 	real_writew(reloc_game + CDA_DATASEG, 0xc7, 0);
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0xc4));
+}
+
+void CD_set_track(signed short index)
+{
+	CPU_Push16(index);
+	CALLBACK_RunRealFar(reloc_game + 0x4ac, 0x4f4);
+	CPU_Pop16();
+}
+
+void CD_check(void)
+{
+	/* DUMMY */
 }
 
 }
@@ -362,5 +375,15 @@ void CD_audio_stop(void)
 	CD_audio_stop_hsg();
 	req[1].status = 0;
 	CD_driver_request(&req[1]);
+}
+
+void CD_set_track(signed short index)
+{
+	/* DUMMY */
+}
+
+void CD_check(void)
+{
+	/* DUMMY */
 }
 #endif	/* __BORLANDC__ */
