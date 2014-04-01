@@ -100,6 +100,8 @@
 
 #if !defined(__BORLANDC__)
 
+#define INTCAST RealPt
+
 #include "common.h"
 
 static inline Bit8s host_readbs(Bit8u* p)
@@ -602,6 +604,8 @@ static inline char* get_itemname(unsigned short item)
 #else
 
 #undef M302de_ORIGINAL_BUGFIX
+
+#define INTCAST void interrupt (*)(...)
 
 typedef unsigned char Bit8u;
 typedef signed char Bit8s;
