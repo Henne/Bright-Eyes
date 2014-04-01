@@ -2621,6 +2621,54 @@ static int seg011(unsigned short offs) {
 		CPU_Push32(signoff_msg);
 		return 1;
 	}
+	case 0xa1e: {
+		RealPt ptr = CPU_Pop32();
+		reg_ax = AIL_register_driver(ptr);
+		D1_LOG("AIL_register_driver(%x); = %d\n", ptr, (signed short)reg_ax);
+		CPU_Push32(ptr);
+		return 1;
+	}
+	case 0xad6: {
+		Bit16u driver = CPU_Pop16();
+		RealPt ret = AIL_describe_driver(driver);
+		D1_LOG("AIL_describe_driver(); = %x\n", ret);
+		CPU_Push16(driver);
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
+	case 0xafc: {
+		Bit16u driver = CPU_Pop16();
+		Bit16u io = CPU_Pop16();
+		Bit16u irq = CPU_Pop16();
+		Bit16u dma = CPU_Pop16();
+		Bit16u drq = CPU_Pop16();
+		reg_ax  = AIL_detect_device(driver, io, irq, dma, drq);
+		D1_LOG("AIL_detect_device(%d, 0x%x, 0x%x, %x, %x); = %x\n",
+			driver, io, irq, dma, drq, reg_ax);
+		CPU_Push16(drq);
+		CPU_Push16(dma);
+		CPU_Push16(irq);
+		CPU_Push16(io);
+		CPU_Push16(driver);
+		return 1;
+	}
+	case 0xb02: {
+		Bit16u driver = CPU_Pop16();
+		Bit16u io = CPU_Pop16();
+		Bit16u irq = CPU_Pop16();
+		Bit16u dma = CPU_Pop16();
+		Bit16u drq = CPU_Pop16();
+		AIL_init_driver(driver, io, irq, dma, drq);
+		D1_LOG("AIL_init_driver(%d, 0x%x, 0x%x, %x, %x); = %x\n",
+			driver, io, irq, dma, drq, reg_ax);
+		CPU_Push16(drq);
+		CPU_Push16(dma);
+		CPU_Push16(irq);
+		CPU_Push16(io);
+		CPU_Push16(driver);
+		return 1;
+	}
 	case 0xbff: {
 		Bit16u driver = CPU_Pop16();
 		RealPt VOC_file = CPU_Pop32();

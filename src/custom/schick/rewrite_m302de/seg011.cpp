@@ -21,6 +21,53 @@ void AIL_shutdown(RealPt signoff_msg)
 	CPU_Pop32();
 }
 
+Bit16s AIL_register_driver(RealPt driver)
+{
+	CPU_Push32(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xa1e);
+	CPU_Pop32();
+	return reg_ax;
+}
+
+RealPt AIL_describe_driver(Bit16u driver)
+{
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xad6);
+	CPU_Pop16();
+	return RealMake(reg_dx, reg_ax);
+}
+
+Bit16u AIL_detect_device(Bit16u driver, Bit16u IO_addr, Bit16u IRQ, Bit16u DMA, Bit16u DRQ)
+{
+	CPU_Push16(DRQ);
+	CPU_Push16(DMA);
+	CPU_Push16(IRQ);
+	CPU_Push16(IO_addr);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xad6);
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+	return reg_ax;
+}
+
+void AIL_init_driver(Bit16u driver, Bit16u IO_addr, Bit16u IRQ, Bit16u DMA, Bit16u DRQ)
+{
+	CPU_Push16(DRQ);
+	CPU_Push16(DMA);
+	CPU_Push16(IRQ);
+	CPU_Push16(IO_addr);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xb02);
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+}
+
 void AIL_play_VOC_file(Bit16u driver, RealPt VOC_file, Bit16s block_marker)
 {
 	CPU_Push16(block_marker);

@@ -5,6 +5,14 @@ void AIL_startup(void);
 
 void AIL_shutdown(RealPt signoff_msg);
 
+Bit16s AIL_register_driver(RealPt);
+
+RealPt AIL_describe_driver(Bit16u);
+
+Bit16u AIL_detect_device(Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
+
+void AIL_init_driver(Bit16u, Bit16u, Bit16u, Bit16u, Bit16u);
+
 void AIL_play_VOC_file(Bit16u, RealPt, Bit16s);
 
 Bit16u AIL_format_VOC_file(Bit16u, RealPt, Bit16s);
