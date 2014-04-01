@@ -2,6 +2,7 @@
 namespace M302de {
 #endif
 
+void reset_timer(void);
 void init_ani(Bit16u);
 void set_var_to_zero();
 void init_ani_busy_loop(unsigned short);

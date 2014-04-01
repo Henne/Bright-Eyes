@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 24/31
+	Functions rewritten: 25/31
 */
 
 #if !defined(__BORLANDC__)
@@ -19,6 +19,11 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+void reset_timer(void)
+{
+	bc__dos_setvect(8, (INTCAST)ds_readd(0xe274));
+}
 
 void init_ani(Bit16u v1)
 {

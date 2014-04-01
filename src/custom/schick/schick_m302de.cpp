@@ -1634,7 +1634,9 @@ static int seg004(unsigned short offs) {
 		return 0;
 	}
 	case 0x3e: {
-		return 0;
+		D1_LOG("reset_timer()\n");
+		reset_timer();
+		return 1;
 	}
 	case 0x55: {
 		Bit16u v1 = CPU_Pop16();

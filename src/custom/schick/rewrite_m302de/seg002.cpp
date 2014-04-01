@@ -573,7 +573,7 @@ void mouse_reset_ehandler(void)
 	signed short l4;
 	signed short l5;
 
-	bc__dos_setvect(0x87, (RealPt)ds_readd(0xbcdb));
+	bc__dos_setvect(0x87, (INTCAST) ds_readd(0xbcdb));
 
 	l1 = 0xc;
 	l3 = 0;
