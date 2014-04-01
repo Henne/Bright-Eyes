@@ -2,6 +2,7 @@
 namespace M302de {
 #endif
 
+void play_music_file(signed short);
 void set_audio_track(Bit16u);
 void init_AIL(Bit32u);
 void exit_AIL(void);

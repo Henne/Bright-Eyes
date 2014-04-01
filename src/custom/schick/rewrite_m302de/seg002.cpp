@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 98/136
+	Functions rewritten: 99/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +38,15 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+/* Borlandified and identical */
+/* static */
+void play_music_file(signed short index)
+{
+	if (ds_readbs(0x4476) != 0) {
+		do_play_music_file(index);
+	}
+}
 
 void set_audio_track(Bit16u index)
 {

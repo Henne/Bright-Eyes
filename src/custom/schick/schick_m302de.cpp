@@ -5962,6 +5962,14 @@ static int n_seg002(unsigned short offs)
 {
 
 	switch (offs) {
+	case 0x0002: {
+		CPU_Pop16();
+		Bit16s index = CPU_Pop16();
+		D1_LOG("play_music_file(%d)\n", index);
+		play_music_file(index);
+		CPU_Push16(index);
+		return 1;
+	}
 	case 0x01e0: {
 		CPU_Pop16();
 		Bit32u size = CPU_Pop32();
