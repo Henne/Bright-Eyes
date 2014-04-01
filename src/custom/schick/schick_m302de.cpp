@@ -6099,6 +6099,18 @@ static int n_seg002(unsigned short offs)
 		free_voc_buffer();
 		return 1;
 	}
+	case 0x0adf: {
+		CPU_Pop16();
+		RealPt fname = CPU_Pop32();
+		RealPt ret = read_digi_driver(fname);
+		D1_INFO("near read_digi_driver(%s); = %x\n",
+				Real2Host(fname), ret);
+		CPU_Push32(fname);
+
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
 	case 0x0b7e: {
 		CPU_Pop16();
 		unsigned short fileindex = CPU_Pop16();

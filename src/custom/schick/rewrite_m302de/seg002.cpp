@@ -34,6 +34,7 @@
 #include "seg106.h"
 #include "seg108.h"
 #include "seg113.h"
+#include "seg120.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -303,6 +304,38 @@ void free_voc_buffer(void)
 		ds_writed(0xbcec, ds_writed(0xbcef, 0));
 
 	}
+}
+
+RealPt read_digi_driver(RealPt fname)
+{
+#if !defined(__BORLANDC__)
+	CPU_Push32(fname);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0xadf);
+	CPU_Pop32();
+	return RealMake(reg_dx, reg_ax);
+
+#else
+	/* TODO: does not work atm */
+	Bit32u len;
+	RealPt buf;
+	RealPt ptr;
+
+	signed short handle;
+
+	if ( (handle = bc__open(fname, 0x8001)) != -1) {
+
+		len = 5000L;
+
+		ds_writed(0xbceb, (Bit32u)schick_alloc_emu(len + 16L));
+		ptr = ((HugePt)ds_readd(0xbceb)) + 15L;
+		buf = EMS_norm_ptr(ptr);
+		and_ptr_ds((Bit8u*)&ptr, 0xfffffff0);
+		bc__read(handle, Real2Host(buf), len);
+		bc_close(handle);
+		return buf;
+	}
+	return (RealPt)0;
+#endif
 }
 
 /**
