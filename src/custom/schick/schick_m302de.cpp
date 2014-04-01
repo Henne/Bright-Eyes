@@ -378,9 +378,14 @@ static int seg000(unsigned short offs) {
 			D1_LOG("toupper(%c) == %c\n", c, reg_ax);
 			return 1;
 		}
-		/* delete() */
+		/* unlink() or remove() */
 		case 0x11a7: {
-			return 0;
+			RealPt fname = CPU_Pop32();
+			reg_ax = bc_unlink(fname);
+			D1_LOG("unlink(%s) = %d\n",
+				Real2Host(fname), reg_ax);
+			CPU_Push32(fname);
+			return 1;
 		}
 		case 0x176d: {
 			Bit16s cmd = CPU_Pop16();

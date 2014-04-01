@@ -7,6 +7,7 @@ RealPt bc__dos_getvect(Bit8u);
 void bc__dos_setvect(Bit8u, RealPt);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
+signed short bc_unlink(RealPt);
 signed short bc_bioskey(signed short);
 void bc_clrscr(void);
 void bc_farfree(RealPt);
@@ -49,6 +50,8 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc_lseek lseek
 #define bc__read read
 #define bc__write write
+
+#define bc_unlink unlink
 
 #define bc_bioskey bioskey
 #define bc_clrscr clrscr
