@@ -6137,6 +6137,13 @@ static int n_seg002(unsigned short offs)
 
 		return 1;
 	}
+	/* Callers: 1 */
+	case 0x17ae: {
+		CPU_Pop16();
+		D1_LOG("mouse_reset_ehandler()\n");
+		mouse_reset_ehandler();
+		return 1;
+	}
 	/* Callers: 2 */
 	case 0x19dc: {
 		CPU_Pop16();

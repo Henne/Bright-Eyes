@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 99/136
+	Functions rewritten: 100/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -556,6 +556,26 @@ short is_mouse_in_rect(unsigned short x1, unsigned short y1,
 		return 0;
 
 	return 1;
+}
+
+void mouse_reset_ehandler(void)
+{
+	signed short l1;
+	signed short l2;
+	signed short l3;
+	signed short l4;
+	signed short l5;
+
+	bc__dos_setvect(0x87, (RealPt)ds_readd(0xbcdb));
+
+	l1 = 0xc;
+	l3 = 0;
+	l4 = 0;
+	l5 = 0;
+
+	mouse_action((Bit8u*)&l1, (Bit8u*)&l2, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5);
+
+	ds_writew(0x4484, 0);
 }
 
 /**
