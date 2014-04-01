@@ -102,6 +102,8 @@
 
 #define INTCAST RealPt
 
+typedef RealPt HugePt;
+
 #include "common.h"
 
 static inline Bit8s host_readbs(Bit8u* p)
@@ -621,6 +623,7 @@ typedef signed long Bit32s;
 
 typedef Bit8u* RealPt;
 typedef Bit8u* PhysPt;
+typedef Bit8u huge * HugePt;
 
 #include "common.h"
 
