@@ -44,7 +44,7 @@ Bit16u AIL_detect_device(Bit16u driver, Bit16u IO_addr, Bit16u IRQ, Bit16u DMA, 
 	CPU_Push16(IRQ);
 	CPU_Push16(IO_addr);
 	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xad6);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xafc);
 	CPU_Pop16();
 	CPU_Pop16();
 	CPU_Pop16();
@@ -163,11 +163,22 @@ Bit16u AIL_default_timbre_cache_size(Bit16u driver)
 	return reg_ax;
 }
 
+void AIL_define_timbre_cache(Bit16u driver, RealPt cache_addr, Bit16u cache_size)
+{
+	CPU_Push16(cache_size);
+	CPU_Push32(cache_addr);
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc59);
+	CPU_Pop16();
+	CPU_Pop32();
+	CPU_Pop16();
+}
+
 Bit16u AIL_timbre_request(Bit16u driver, Bit16u sequence)
 {
 	CPU_Push16(sequence);
 	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc53);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc5f);
 	CPU_Pop16();
 	CPU_Pop16();
 	return reg_ax;
@@ -179,7 +190,7 @@ void AIL_install_timbre(Bit16u driver, Bit16u bank, Bit16u patch, RealPt src_add
 	CPU_Push16(patch);
 	CPU_Push16(bank);
 	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc59);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc65);
 	CPU_Pop16();
 	CPU_Pop16();
 	CPU_Pop16();
@@ -223,7 +234,7 @@ void AIL_set_relative_volume(Bit16u driver, Bit16u sequence, Bit16u percent, Bit
 	CPU_Push16(percent);
 	CPU_Push16(sequence);
 	CPU_Push16(driver);
-	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc8f);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xca1);
 	CPU_Pop16();
 	CPU_Pop16();
 	CPU_Pop16();

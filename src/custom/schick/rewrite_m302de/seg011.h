@@ -33,6 +33,8 @@ void AIL_release_sequence_handle(Bit16s driver, Bit16s sequence);
 
 Bit16u AIL_default_timbre_cache_size(Bit16u);
 
+void AIL_define_timbre_cache(Bit16u, RealPt, Bit16u);
+
 Bit16u AIL_timbre_request(Bit16u driver, Bit16u sequence);
 
 void AIL_install_timbre(Bit16u driver, Bit16u bank, Bit16u patch, RealPt src_addr);
