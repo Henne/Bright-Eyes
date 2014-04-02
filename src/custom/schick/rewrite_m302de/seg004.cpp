@@ -9,6 +9,8 @@
 #include "callback.h"
 #endif
 
+#include <string.h>
+
 #include "v302de.h"
 
 #include "seg000.h"
@@ -201,7 +203,7 @@ void restore_rect(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, ch
 		for (j = 0; j < n; j++) {
 			c = *src++;
 			if (c)
-				mem_writeb_inline(dst + j, c);
+				mem_writeb(dst + j, c);
 		}
 }
 
@@ -258,7 +260,7 @@ void draw_mouse_cursor() {
 		mask = host_readw((Bit8u*)mouse_cursor++);
 		for (j = 0; j < width; j++)
 			if ((0x8000 >> j) & mask)
-				mem_writeb_inline(dst + j, 0xff);
+				mem_writeb(dst + j, 0xff);
 	}
 }
 
@@ -284,7 +286,7 @@ void save_mouse_bg() {
 
 	for (si = 0; si < va; src += 320, si++)
 		for (j = 0; j < v8; j++)
-			ds_writeb(0xcf0f + si * 16 + j , mem_readb_inline(src + j));
+			ds_writeb(0xcf0f + si * 16 + j , mem_readb(src + j));
 }
 
 void restore_mouse_bg() {
@@ -308,7 +310,7 @@ void restore_mouse_bg() {
 
 	for (si = 0; si < v4; dst += 320, si++)
 		for (j = 0; j < v3; j++)
-			mem_writeb_inline(dst + j, ds_readb(0xcf0f + si*16 + j));
+			mem_writeb(dst + j, ds_readb(0xcf0f + si*16 + j));
 
 }
 
@@ -572,8 +574,8 @@ void do_pic_copy(unsigned short mode) {
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	src = ds_readd(0xc019);
-	dst = ds_readd(0xc00d);
+	src = (PhysPt)ds_readd(0xc019);
+	dst = (PhysPt)ds_readd(0xc00d);
 
 	pic_copy(Real2Phys(dst), x1, y1, x2, y2, v1, v2, v3, v4, width, height, Real2Host(src), mode);
 }
@@ -589,14 +591,14 @@ void do_save_rect() {
 	x2 = ds_readw(0xc015);
 	y2 = ds_readw(0xc017);
 
-	src = ds_readd(0xc019);
-	dst = ds_readd(0xc00d);
+	src = (RealPt)ds_readd(0xc019);
+	dst = (RealPt)ds_readd(0xc00d);
 
 	v10 = y1 * 320 + x1;
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	save_rect(PhysMake(RealSeg(dst), RealOff(dst) + v10), Real2Phys(src), width, height);
+	save_rect(Real2Phys((dst)) + v10, (PhysPt)Real2Phys(src), width, height);
 }
 
 void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned short color) {
@@ -614,7 +616,9 @@ void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short
 
 void wait_for_vsync()
 {
+#if !defined(__BORLANDC__)
 	CALLBACK_RunRealFar(reloc_game + 0xb2a, 0x150d);
+#endif
 }
 
 /**

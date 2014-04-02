@@ -5,13 +5,13 @@
 @REM -j5 = #Errors
 @REM
 @REM --the hard cases
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG002.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG008.CPP
 @REM
 @REM --the compiling cases
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -IAIL -h -j1 SEG002.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG003.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG005.CPP
 @REM
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG009.CPP
@@ -59,6 +59,7 @@
 @REM -- here start the complete
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG007.CPP
 @REM ..\BIN\TASM.EXE /os /z SEG010.asm SEG010.OBJ
+@REM ..\BIN\TASM.EXE /m /w+ /ml /iAIL AIL\AIL.ASM SEG011.OBJ
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG024.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG029.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG041.CPP
