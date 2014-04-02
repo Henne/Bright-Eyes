@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 103/136
+	Functions rewritten: 104/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -829,11 +829,88 @@ unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {
 	return 0;
 }
 
-void handle_input()
+void handle_input(void)
 {
-#if !defined(__BORLANDC__)
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1d67);
-#endif
+	signed short l_si;
+	signed short l_di;
+
+	ds_writew(0xc3d7, ds_writew(0xc3d9, l_si = 0));
+
+	herokeeping();
+
+	if (CD_bioskey(1)) {
+
+		l_si = ds_writew(0xc3d7, bc_bioskey(0)) >> 8;
+		and_ds_ws(0xc3d7, 0xff);
+
+		if (l_si == 0x24) {
+			l_si = 0x2c;
+		}
+
+		if ((ds_readw(0xc3d7) == 0x11) && (ds_readw(0xbd25) == 0)) {
+			cleanup_game();
+			bc_exit(0);
+		}
+	}
+
+	if (ds_readw(0xc3d5) == 0) {
+
+		if (ds_readw(0xc3c7) == 0) {
+		}
+
+		if ((ds_readw(0xc3d7) == 0x13) && !ds_readbs(0x2c98)) {
+			sound_menu();
+		}
+
+		if ((ds_readw(0xc3d7) == 0x10) &&
+			(ds_readws(0xc3c5) == 0) &&
+			!ds_readbs(0x2c98) &&
+			(ds_readws(0xbd25) == 0))
+		{
+			inc_ds_ws(0x2c99);
+			ds_writew(0xc3c5, 1);
+			ds_writew(0xd2d1, 1);
+			ds_writew(0xbffd, 2);
+			GUI_output(p_datseg + 0x448a);		/* P A U S E */
+			ds_writew(0xbffd, 3);
+			ds_writew(0xd2d1, 0);
+			dec_ds_ws(0x2c99);
+
+			ds_writew(0xc3c5, l_si = ds_writew(0xc3c7, 0));
+		}
+	} else {
+		play_voc(0x121);
+		ds_writew(0xc3d5, 0);
+		l_si = 0;
+
+		if (NOT_NULL(Real2Host(ds_readd(0x29e4)))) {
+			l_si = get_mouse_action(ds_readw(0x299c),
+					ds_readw(0x299e),
+					Real2Host(ds_readd(0x29e4)));
+		}
+
+		if (!l_si && NOT_NULL(Real2Host(ds_readd(0x29e0)))) {
+			l_si = get_mouse_action(ds_readw(0x299c),
+					ds_readw(0x299e),
+					Real2Host(ds_readd(0x29e0)));
+		}
+
+		if (ds_readw(0xc3c7) == 2) {
+
+			for (l_di = 0; l_di < 25; l_di++) {
+
+				wait_for_vsync();
+
+				if (ds_readw(0xc3d5) != 0) {
+					ds_writew(0xc3cf, 1);
+					ds_writew(0xc3d5, 0);
+				}
+			}
+		}
+	}
+
+	mouse_19dc();
+	ds_writew(0xc3d9, l_si);
 }
 
 void wait_for_keyboard1() {
