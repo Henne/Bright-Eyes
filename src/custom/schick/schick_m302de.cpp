@@ -1642,7 +1642,9 @@ static int seg003(unsigned short offs) {
 			return 1;
 		}
 		case  0x002c: {
-			return 0;
+			D1_LOG("move()\n");
+			move();
+			return 1;
 		}
 		case  0x01e1: {
 			return 0;

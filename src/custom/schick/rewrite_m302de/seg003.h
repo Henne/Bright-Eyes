@@ -4,6 +4,8 @@ namespace M302de {
 
 signed short update_direction(unsigned char mod);
 
+void move(void);
+
 void no_way();
 
 #if !defined(__BORLANDC__)
