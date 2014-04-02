@@ -186,14 +186,16 @@ void read_sound_cfg(void)
 	}
 }
 
+/* Borlandified and identical */
 void init_AIL(Bit32u size)
 {
-	if (ds_writed(0xbd0d, (Bit32u)schick_alloc_emu(size)) != 0) {
+	if (NOT_NULL(Real2Host((RealPt)ds_writed(0xbd0d, schick_alloc_emu(size))))) {
 		AIL_startup();
 		ds_writew(0xbcff, 1);
 	}
 }
 
+/* Borlandified and identical */
 void exit_AIL(void)
 {
 	AIL_shutdown(NULL);
@@ -430,17 +432,10 @@ signed short load_digi_driver(RealPt fname, signed short type, signed short io, 
 
 RealPt read_digi_driver(RealPt fname)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push32(fname);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0xadf);
-	CPU_Pop32();
-	return RealMake(reg_dx, reg_ax);
-
-#else
 	/* TODO: does not work atm */
 	Bit32u len;
 	RealPt buf;
-	RealPt ptr;
+	Bit32u ptr;
 
 	signed short handle;
 
@@ -449,15 +444,15 @@ RealPt read_digi_driver(RealPt fname)
 		len = 5000L;
 
 		ds_writed(0xbceb, (Bit32u)schick_alloc_emu(len + 16L));
-		ptr = ((HugePt)ds_readd(0xbceb)) + 15L;
-		buf = EMS_norm_ptr(ptr);
-		and_ptr_ds((Bit8u*)&ptr, 0xfffffff0);
+		ptr = ds_readd(0xbceb) + 15L;
+		ptr &= 0xfffffff0;
+		buf = EMS_norm_ptr((RealPt)ptr);
+		/* and_ptr_ds((Bit8u*)&ptr, 0xfffffff0); */
 		bc__read(handle, Real2Host(buf), len);
 		bc_close(handle);
 		return buf;
 	}
 	return (RealPt)0;
-#endif
 }
 
 /**
@@ -504,8 +499,9 @@ Bit16u open_and_seek_dat(unsigned short fileindex)
 	return fd;
 }
 
-unsigned int get_readlength2(signed short index) {
-	return index == -1 ? 0 : ds_readd(0xbce7);
+unsigned int get_readlength2(signed short index)
+{
+	return index != -1 ? ds_readd(0xbce7) : 0;
 }
 
 unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len) {
