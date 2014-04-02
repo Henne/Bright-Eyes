@@ -122,6 +122,14 @@ void AIL_set_digital_playback_volume(Bit16u driver, Bit16u percent)
 	CPU_Pop16();
 }
 
+Bit16u AIL_state_table_size(Bit16u driver)
+{
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc41);
+	CPU_Pop16();
+	return reg_ax;
+}
+
 Bit16u AIL_register_sequence(Bit16u driver, RealPt FORM_XMID, Bit16u sequence_num, RealPt state_table, RealPt controller_table)
 {
 	CPU_Push32(controller_table);

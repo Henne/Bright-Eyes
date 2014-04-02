@@ -27,6 +27,8 @@ void AIL_set_digital_playback_volume(Bit16u, Bit16u);
 
 Bit16u AIL_register_sequence(Bit16u driver, RealPt FORM_XMID, Bit16u sequence_num, RealPt state_table, RealPt controller_table);
 
+Bit16u AIL_state_table_size(Bit16u);
+
 void AIL_release_sequence_handle(Bit16s driver, Bit16s sequence);
 
 Bit16u AIL_timbre_request(Bit16u driver, Bit16u sequence);
