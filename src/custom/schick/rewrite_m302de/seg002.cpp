@@ -251,13 +251,14 @@ RealPt read_music_driver(RealPt fname)
 	return (RealPt)0;
 }
 
+/* Borlandified and identical */
 /* static */
 signed short prepare_midi_playback(signed short sequence)
 {
-	signed short patch;
+	volatile signed short patch;
 	RealPt ptr;
-	signed short l_si;
-	signed short l_di;
+	unsigned short l_si;
+	unsigned short l_di;
 
 	if ((ds_writew(0xbd01, load_archive_file(0x97))) != -1) {
 
@@ -276,25 +277,27 @@ signed short prepare_midi_playback(signed short sequence)
 
 			bc_close(ds_readw(0xbd01));
 			return 1;
-		} else {
-			bc_close(ds_readw(0xbd01));
 		}
+
+		bc_close(ds_readw(0xbd01));
 	}
 	return 0;
 }
 
+/* Borlandified and identical */
 /* static */
 signed short start_midi_playback(signed short seq)
 {
 	if (prepare_midi_playback(seq)) {
 		AIL_start_sequence(ds_readw(0xbd23), seq);
 		return 1;
-	} else {
-		return 0;
 	}
+
+	return 0;
 }
 
 
+/* Borlandified and identical */
 /* static */
 RealPt prepare_timbre(signed short a1, signed short patch)
 {
@@ -322,12 +325,15 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 
 	return buf;
 }
+
+/* Borlandified and identical */
 /* static */
 signed short load_midi_file(signed short index)
 {
 	return do_load_midi_file(index);
 }
 
+/* Borlandified and identical */
 /* static */
 signed short do_load_midi_file(signed short index)
 {
