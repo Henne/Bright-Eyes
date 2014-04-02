@@ -127,7 +127,7 @@ void clear_ani() {
 	ds_writeb(0xc3ee, 0);
 	ds_writed(0xce35, 0);
 	ds_writew(0xce3d, 0);
-	ds_writew(0xce3c, 0);
+	ds_writew(0xce3b, 0);
 
 	for (i = 0; i < 10; i++) {
 		ds_writew(0xc3f4 + i * 0x107, 0);
