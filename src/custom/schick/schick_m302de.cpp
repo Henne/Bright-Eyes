@@ -862,9 +862,14 @@ static int seg002(unsigned short offs) {
 		exit_AIL();
 		return 1;
 	}
-	case 0x06fe:
-	case 0x079f:
+	case 0x06fe: {
+		D1_LOG("start_midi_playback_IRQ()");
+		start_midi_playback_IRQ();
+		return 1;
+	}
+	case 0x079f: {
 		return 0;
+	}
 	case 0x0832: {
 		Bit16u index = CPU_Pop16();
 		D1_LOG("play_voc(FX%d.VOC)\n", index - 288);

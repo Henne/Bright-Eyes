@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 106/136
+	Functions rewritten: 107/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -380,6 +380,19 @@ void stop_midi_playback(void)
 	{
 		AIL_stop_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
 		AIL_release_sequence_handle(ds_readws(0xbd23), ds_readws(0xbd21));
+	}
+}
+
+/* Borlandified and identical */
+void start_midi_playback_IRQ(void)
+{
+	if ((ds_readw(0xbcff) == 0) &&
+		(ds_readb(0x4476) != 0) &&
+		(host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3))
+	{
+		if (AIL_sequence_status(ds_readws(0xbd23), ds_readws(0xbd21)) == 2) {
+			AIL_start_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
+		}
 	}
 }
 
