@@ -6084,6 +6084,18 @@ static int n_seg002(unsigned short offs)
 		exit_AIL();
 		return 1;
 	}
+	case 0x02aa: {
+		CPU_Pop16();
+		RealPt fname = CPU_Pop32();
+		RealPt ret = read_music_driver(fname);
+		D1_INFO("near read_music_driver(%s); = %x\n",
+				Real2Host(fname), ret);
+		CPU_Push32(fname);
+
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
 	case 0x0349: {
 		CPU_Pop16();
 		Bit16s seq = CPU_Pop16();

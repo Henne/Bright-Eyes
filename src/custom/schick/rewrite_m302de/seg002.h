@@ -10,6 +10,8 @@ void read_sound_cfg(void);
 void init_AIL(Bit32u);
 void exit_AIL(void);
 /* static */
+RealPt read_music_driver(RealPt);
+/* static */
 signed short prepare_midi_playback(signed short);
 /* static */
 signed short start_midi_playback(signed short);

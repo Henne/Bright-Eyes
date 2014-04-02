@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 105/136
+	Functions rewritten: 106/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -221,6 +221,32 @@ void exit_AIL(void)
 		free_voc_buffer();
 	}
 
+}
+
+/* Borlandified and identical */
+RealPt read_music_driver(RealPt fname)
+{
+	Bit32u len;
+	RealPt buf;
+	Bit32u ptr;
+
+	signed short handle;
+
+	if ( (handle = bc__open(fname, 0x8001)) != -1) {
+
+		len = 16500L;
+
+		ds_writed(0xbd09, (Bit32u)schick_alloc_emu(len + 16L));
+		/* insane pointer casting */
+		ptr = (ds_readd(0xbd09) + 15L);
+		ptr &= 0xfffffff0;
+		buf = EMS_norm_ptr((RealPt)ptr);
+		/* and_ptr_ds((Bit8u*)&ptr, 0xfffffff0); */
+		bc__read(handle, Real2Host(buf), len);
+		bc_close(handle);
+		return buf;
+	}
+	return (RealPt)0;
 }
 
 /* static */
