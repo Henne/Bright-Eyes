@@ -41,13 +41,13 @@ void reset_timer(void)
 	bc__dos_setvect(8, (INTCAST)ds_readd(0xe274));
 }
 
+/* Borlandified and identical */
 void init_ani(Bit16u v1)
 {
 
-	Bit16u i;
+	signed short i;
 
-	/* return if current ani == -1 */
-	if (ds_readw(CURRENT_ANI) == 0xffff)
+	if (ds_readws(CURRENT_ANI) == -1)
 		return;
 
 	if ((v1 & 0x7f) != 2) {
@@ -99,10 +99,13 @@ void init_ani(Bit16u v1)
 	wait_for_vsync();
 }
 
-void set_var_to_zero() {
+/* Borlandified and identical */
+void set_var_to_zero(void)
+{
 	ds_writew(0x29ae, 0);
 }
 
+/* Borlandified and identical */
 void init_ani_busy_loop(unsigned short v1)
 {
 	/* set lock */
@@ -110,17 +113,19 @@ void init_ani_busy_loop(unsigned short v1)
 
 	init_ani(v1);
 
-	do {
+	 while (ds_readw(0x4a90) != 0) {
 #ifdef M302de_SPEEDFIX
 		/*	enter emulation mode frequently,
 			that the timer can reset this variable */
 		wait_for_vsync();
 #endif
-	 } while (ds_readw(0x4a90) != 0);
+	 }
 }
 
-void clear_ani() {
-	unsigned short i,j;
+/* Borlandified and identical */
+void clear_ani(void)
+{
+	signed short i, j;
 
 	ds_writew(0xc3e7, 0);
 	ds_writeb(0xc3ed, 0);

@@ -1034,10 +1034,9 @@ static int seg002(unsigned short offs) {
 		refresh_screen_size();
 		return 1;
 	case 0x1a34: {
-		return 0;
 		D1_LOG("handle_gui_input();\n");
-		handle_gui_input();
-		return 1;
+		//handle_gui_input();
+		return 0;
 	}
 	case 0x1cf2: {
 		unsigned short x = CPU_Pop16();
@@ -2876,10 +2875,9 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x3e: {
-		return 0;
 		D1_LOG("show_citizen();\n");
-		show_citizen();
-		return 1;
+		//show_citizen();
+		return 0;
 	}
 	case 0x48: {
 		return 0;
@@ -4072,8 +4070,9 @@ static int seg053(unsigned short offs) {
 			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualitaet: %d\n",
 				typi, 100 + price, qual);
 
-			do_healer();
-			return 1;
+			//do_healer();
+
+			return 0;
 		}
 		case 0x25: {
 			RealPt hero = CPU_Pop32();
