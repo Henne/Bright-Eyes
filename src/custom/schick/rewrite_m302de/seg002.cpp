@@ -402,6 +402,7 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 	return 0;
 }
 
+/* Borlandified and identical */
 /* static */
 void do_play_music_file(signed short index)
 {
@@ -413,6 +414,7 @@ void do_play_music_file(signed short index)
 	}
 }
 
+/* Borlandified and identical */
 /* static */
 void stop_midi_playback(void)
 {
