@@ -350,16 +350,56 @@ signed short do_load_midi_file(signed short index)
 /* static */
 signed short load_music_driver(RealPt fname, signed short type, signed short port)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push16(port);
-	CPU_Push16(type);
-	CPU_Push32(fname);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x53d);
-	CPU_Pop32();
-	CPU_Pop16();
-	CPU_Pop16();
-	return reg_ax;
-#endif
+
+	if (port &&
+		NOT_NULL(Real2Host((RealPt)ds_writed(0xbd19, read_music_driver(fname)))) &&
+		((ds_writew(0xbd23, AIL_register_driver((RealPt)ds_readd(0xbd19)))) != 0xffff))
+	{
+
+		ds_writed(0xbd1d, (Bit32u)AIL_describe_driver(ds_readw(0xbd23)));
+
+		if (host_readws(Real2Host((RealPt)ds_readd(0xbd1d)) + 2) == type)
+		{
+			if (port == -1) {
+				port = host_readws(Real2Host(ds_readd(0xbd1d)) + 0xc);
+			}
+
+			if (AIL_detect_device(ds_readw(0xbd23), port,
+				host_readws(Real2Host(ds_readd(0xbd1d)) + 0x0e),
+				host_readws(Real2Host(ds_readd(0xbd1d)) + 0x10),
+				host_readws(Real2Host(ds_readd(0xbd1d)) + 0x12)))
+			{
+				AIL_init_driver(ds_readw(0xbd23), port,
+					host_readws(Real2Host(ds_readd(0xbd1d)) + 0x0e),
+					host_readws(Real2Host(ds_readd(0xbd1d)) + 0x10),
+					host_readws(Real2Host(ds_readd(0xbd1d)) + 0x12));
+
+				if (type == 3) {
+					ds_writed(0xbd05, AIL_state_table_size(ds_readw(0xbd23)));
+					ds_writed(0xbd15, (Bit32u)schick_alloc_emu(ds_readd(0xbd05)));
+					ds_writew(0xbd03, AIL_default_timbre_cache_size(ds_readw(0xbd23)));
+
+					if (ds_readw(0xbd03) != 0) {
+						ds_writed(0xbd11, (Bit32u)schick_alloc_emu(ds_readw(0xbd03)));
+						AIL_define_timbre_cache(ds_readw(0xbd23),
+								(RealPt)ds_readd(0xbd11),
+								ds_readw(0xbd03));
+					}
+				}
+
+				ds_writew(0xbcff, 0);
+				return 1;
+			} else {
+
+				/* no sound hardware found */
+				GUI_output(Real2Host(RealMake(datseg, 0x486d)));
+				exit_AIL();
+			}
+		}
+	}
+
+	ds_writew(0xbcff, 1);
+	return 0;
 }
 
 /* static */
