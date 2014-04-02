@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 104/136
+	Functions rewritten: 105/136
 */
 #include <stdlib.h>
 #include <string.h>
@@ -119,6 +119,70 @@ void sound_menu(void)
 				play_music_file(ds_readws(0x447a));
 			}
 		}
+	}
+}
+
+/* Borlandified and identical */
+void read_sound_cfg(void)
+{
+	signed short port;
+	signed short l2;
+	signed short l3;
+	signed short l4;
+	signed short handle;
+
+	/* try to open SOUND.CFG */
+	if ( (handle = bc__open((RealPt)RealMake(datseg, 0x481d), 0x8001)) != -1) {
+
+		bc__read(handle, (Bit8u*)&port, 2);
+		bc__read(handle, (Bit8u*)&l2, 2);
+		bc__read(handle, (Bit8u*)&l3, 2);
+		bc__read(handle, (Bit8u*)&l4, 2);
+		bc_close(handle);
+
+#if !defined(__BORLANDC__)
+		/* be byte-ordering independent */
+		port = host_readws((Bit8u*)&port);
+		l2 = host_readws((Bit8u*)&l2);
+		l3 = host_readws((Bit8u*)&l3);
+		l4 = host_readws((Bit8u*)&l4);
+#endif
+
+		/* enable useage of audio-CD */
+		ds_writew(0xbcfd, ds_writew(0xbcff, 1));
+
+		/* disable loading of the music driver */
+		if (0) {
+
+			if (port != 0) {
+				load_music_driver((RealPt)RealMake(datseg, 0x4827), 3, port);
+			} else {
+
+				/* music was disabled in SOUND.CFG */
+				if (NOT_NULL(Real2Host(ds_readd(0xbd0d)))) {
+					bc_farfree((RealPt)ds_readd(0xbd0d));
+				}
+
+				ds_writed(0xbd0d, 0);
+			}
+		}
+
+		if (l3 != 0) {
+
+			if (ds_readw(0x447c) != 0) {
+
+				if (!load_digi_driver((RealPt)RealMake(datseg, 0x4831), 2, l3, l4)) {
+					ds_writew(0x447c, 0);
+				}
+			} else {
+				/* print that sound effects are disabled */
+				GUI_output(p_datseg + 0x483a);
+				ds_writew(0x447c, 0);
+			}
+		} else {
+			ds_writew(0x447c, 0);
+		}
+
 	}
 }
 

@@ -845,8 +845,11 @@ static int seg002(unsigned short offs) {
 		sound_menu();
 		return 1;
 	}
-	case 0x00e6:
-		return 0;
+	case 0x00e6: {
+		D1_LOG("read_sound_cfg()\n");
+		read_sound_cfg();
+		return 1;
+	}
 	case 0x01e0: {
 		Bit32u size = CPU_Pop32();
 		D1_LOG("far init_AIL(%d)\n", size);
@@ -6059,6 +6062,12 @@ static int n_seg002(unsigned short offs)
 		CPU_Pop16();
 		D1_LOG("sound_menu()\n");
 		sound_menu();
+		return 1;
+	}
+	case 0x00e6: {
+		CPU_Pop16();
+		D1_LOG("near read_sound_cfg()\n");
+		read_sound_cfg();
 		return 1;
 	}
 	case 0x01e0: {

@@ -5,6 +5,8 @@ namespace M302de {
 void play_music_file(signed short);
 void set_audio_track(Bit16u);
 void sound_menu(void);
+/* static */
+void read_sound_cfg(void);
 void init_AIL(Bit32u);
 void exit_AIL(void);
 /* static */
