@@ -2735,6 +2735,14 @@ static int seg011(unsigned short offs) {
 		CPU_Push16(driver);
 		return 1;
 	}
+	case 0xc53: {
+		Bit16u driver = CPU_Pop16();
+		reg_ax = AIL_default_timbre_cache_size(driver);
+		D1_LOG("AIL_default_timbre_cache_size(%d); = %d\n",
+			driver, reg_ax);
+		CPU_Push16(driver);
+		return 1;
+	}
 	case 0xc7d: {
 		Bit16u sequence = CPU_Pop16();
 		Bit16u driver = CPU_Pop16();

@@ -155,6 +155,14 @@ void AIL_release_sequence_handle(Bit16s driver, Bit16s sequence)
 	CPU_Pop16();
 }
 
+Bit16u AIL_default_timbre_cache_size(Bit16u driver)
+{
+	CPU_Push16(driver);
+	CALLBACK_RunRealFar(reloc_game + AIL_SEGMENT, 0xc53);
+	CPU_Pop16();
+	return reg_ax;
+}
+
 Bit16u AIL_timbre_request(Bit16u driver, Bit16u sequence)
 {
 	CPU_Push16(sequence);
