@@ -28,6 +28,8 @@ void play_voc_delay(Bit16u);
 /* static */
 void free_voc_buffer(void);
 /* static */
+signed short load_digi_driver(RealPt, signed short, signed short, signed short);
+/* static */
 RealPt read_digi_driver(RealPt);
 //static
 Bit16u open_and_seek_dat(unsigned short);

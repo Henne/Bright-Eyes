@@ -321,6 +321,23 @@ void free_voc_buffer(void)
 	}
 }
 
+signed short load_digi_driver(RealPt fname, signed short type, signed short io, signed short irq)
+{
+#if !defined(__BORLANDC__)
+	CPU_Push16(irq);
+	CPU_Push16(io);
+	CPU_Push16(type);
+	CPU_Push32(fname);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x9ff);
+	CPU_Pop32();
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+	return reg_ax;
+#endif
+
+}
+
 RealPt read_digi_driver(RealPt fname)
 {
 #if !defined(__BORLANDC__)

@@ -6160,6 +6160,20 @@ static int n_seg002(unsigned short offs)
 		free_voc_buffer();
 		return 1;
 	}
+	case 0x09ff: {
+		CPU_Pop16();
+		RealPt fname = CPU_Pop32();
+		Bit16s type = CPU_Pop16();
+		Bit16s io = CPU_Pop16();
+		Bit16s irq = CPU_Pop16();
+		reg_ax = load_digi_driver(fname, type, io, irq);
+		D1_LOG("load_digi_driver(%s, %, 0x%x, %d) = %d\n",
+			Real2Host(fname), type, io, irq, (signed short)reg_ax);
+		CPU_Push16(irq);
+		CPU_Push16(type);
+		CPU_Push32(fname);
+		return 1;
+	}
 	case 0x0adf: {
 		CPU_Pop16();
 		RealPt fname = CPU_Pop32();
