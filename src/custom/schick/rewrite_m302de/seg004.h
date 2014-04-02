@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+
+void save_and_set_timer(void);
+void set_timer(void);
 void reset_timer(void);
 void init_ani(Bit16u);
 void set_var_to_zero();

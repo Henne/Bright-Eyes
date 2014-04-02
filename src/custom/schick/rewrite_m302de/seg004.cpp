@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 25/31
+	Functions rewritten: 27/31
 */
 
 #if !defined(__BORLANDC__)
@@ -22,6 +22,20 @@
 namespace M302de {
 #endif
 
+/* Borlandified and identical */
+void save_and_set_timer(void)
+{
+	ds_writed(0xe274, (Bit32u) bc__dos_getvect(8));
+	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a , 0x244));
+}
+
+/* Borlandified and identical */
+void set_timer(void)
+{
+	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a , 0x244));
+}
+
+/* Borlandified and identical */
 void reset_timer(void)
 {
 	bc__dos_setvect(8, (INTCAST)ds_readd(0xe274));
