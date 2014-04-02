@@ -18,6 +18,8 @@ signed short load_midi_file(signed short);
 /* static */
 signed short do_load_midi_file(signed short);
 /* static */
+signed short load_music_driver(RealPt, signed short, signed short);
+/* static */
 void do_play_music_file(signed short);
 /* static */
 void stop_midi_playback(void);

@@ -6119,6 +6119,19 @@ static int n_seg002(unsigned short offs)
 		CPU_Push16(index);
 		return 1;
 	}
+	case 0x053d: {
+		CPU_Pop16();
+		RealPt fname = CPU_Pop32();
+		Bit16s type = CPU_Pop16();
+		Bit16s port = CPU_Pop16();
+		reg_ax = load_music_driver(fname, type, port);
+		D1_LOG("load_music_driver(%s, %, 0x%x) = %d\n",
+			Real2Host(fname), type, port, (signed short)reg_ax);
+		CPU_Push16(port);
+		CPU_Push16(type);
+		CPU_Push32(fname);
+		return 1;
+	}
 	case 0x069c: {
 		CPU_Pop16();
 		Bit16s index = CPU_Pop16();

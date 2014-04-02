@@ -250,6 +250,21 @@ signed short do_load_midi_file(signed short index)
 }
 
 /* static */
+signed short load_music_driver(RealPt fname, signed short type, signed short port)
+{
+#if !defined(__BORLANDC__)
+	CPU_Push16(port);
+	CPU_Push16(type);
+	CPU_Push32(fname);
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x53d);
+	CPU_Pop32();
+	CPU_Pop16();
+	CPU_Pop16();
+	return reg_ax;
+#endif
+}
+
+/* static */
 void do_play_music_file(signed short index)
 {
 	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3)) {
