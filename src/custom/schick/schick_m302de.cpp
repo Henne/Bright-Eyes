@@ -891,8 +891,13 @@ static int seg002(unsigned short offs) {
 		CPU_Push16(index);
 		return 1;
 	}
-	case 0x0890:
-		return 0;
+	case 0x0890: {
+		Bit32u size = CPU_Pop32();
+		alloc_voc_buffer(size);
+		D1_LOG("alloc_voc_buffer(%d)\n", size);
+		CPU_Push32(size);
+		return 1;
+	}
 	case 0x0c0e: {
 		short index = CPU_Pop16();
 		CPU_Push16(index);

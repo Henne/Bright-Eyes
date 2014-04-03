@@ -29,11 +29,22 @@ void do_play_music_file(signed short);
 void stop_midi_playback(void);
 void start_midi_playback_IRQ(void);
 signed short have_mem_for_sound(void);
-
-void play_voc(Bit16u);
-void play_voc_delay(Bit16u);
+void play_voc(signed short);
+void play_voc_delay(signed short);
+void alloc_voc_buffer(Bit32u);
 /* static */
 void free_voc_buffer(void);
+/* static */
+signed short read_new_voc_file(signed short);
+/* static */
+signed short read_voc_file(signed short);
+
+/* static */
+void SND_play_voc(signed short);
+/* static */
+void SND_stop_digi(void);
+/* static */
+void SND_set_volume(unsigned short);
 /* static */
 signed short load_digi_driver(RealPt, signed short, signed short, signed short);
 /* static */

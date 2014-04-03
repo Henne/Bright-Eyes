@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 110/138
+	Functions rewritten: 119/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -500,24 +500,37 @@ signed short have_mem_for_sound(void)
 	return retval;
 }
 
-void play_voc(Bit16u index)
+/* Borlandified and identical */
+void play_voc(signed short index)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x832);
-	CPU_Pop16();
-#endif
+	if (ds_readw(0x447c) && ds_readb(0x4477)) {
+		SND_set_volume(90);
+		SND_play_voc(index);
+	}
 }
 
-void play_voc_delay(Bit16u index)
+/* Borlandified and identical */
+void play_voc_delay(signed short index)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x856);
-	CPU_Pop16();
-#endif
+	if (ds_readw(0x447c) && ds_readb(0x4477)) {
+		SND_set_volume(90);
+		SND_play_voc(index);
+
+		while (AIL_VOC_playback_status(ds_readw(0xbcfb)) == 2) {
+			wait_for_vsync();
+		}
+	}
 }
 
+/* Borlandified and identical */
+void alloc_voc_buffer(Bit32u size)
+{
+	if (ds_readw(0x447c)) {
+		if (NOT_NULL(Real2Host(ds_writed(0xbcef, (Bit32u)schick_alloc_emu(size))))) ;
+	}
+}
+
+/* Borlandified and identical */
 /* static */
 void free_voc_buffer(void)
 {
@@ -531,31 +544,117 @@ void free_voc_buffer(void)
 			bc_farfree((RealPt)ds_readd(0xbceb));
 		}
 
-		ds_writed(0xbcec, ds_writed(0xbcef, 0));
+		ds_writed(0xbcef, ds_writed(0xbceb, 0));
 
 	}
 }
 
-signed short load_digi_driver(RealPt fname, signed short type, signed short io, signed short irq)
+/* Borlandified and identical */
+signed short read_new_voc_file(signed short index)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push16(irq);
-	CPU_Push16(io);
-	CPU_Push16(type);
-	CPU_Push32(fname);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x9ff);
-	CPU_Pop32();
-	CPU_Pop16();
-	CPU_Pop16();
-	CPU_Pop16();
-	return reg_ax;
-#endif
+	if (AIL_VOC_playback_status(ds_readw(0xbcfb)) == 2) {
+		SND_stop_digi();
+	}
 
+	if (read_voc_file(index)) {
+
+		AIL_format_VOC_file(ds_readw(0xbcfb), (RealPt)ds_readd(0xbcef), -1);
+		return 1;
+	}
+
+	return 0;
 }
 
+/* Borlandified and identical */
+signed short read_voc_file(signed short index)
+{
+	signed short handle;
+
+	if ( (handle = load_archive_file(index)) != -1) {
+		read_archive_file(handle, Real2Host(ds_readd(0xbcef)), 0x7fff);
+		bc_close(handle);
+		return 1;
+	}
+
+	return 0;
+}
+
+/* Borlandified and identical */
+void SND_play_voc(signed short index)
+{
+	if (ds_readw(0x447c)) {
+
+		AIL_stop_digital_playback(ds_readw(0xbcfb));
+		read_new_voc_file(index);
+		AIL_play_VOC_file(ds_readw(0xbcfb), (RealPt)ds_readd(0xbcef), -1);
+		AIL_start_digital_playback(ds_readw(0xbcfb));
+	}
+}
+
+/* Borlandified and identical */
+void SND_stop_digi(void)
+{
+	if (ds_readw(0x447c)) {
+		AIL_stop_digital_playback(ds_readw(0xbcfb));
+	}
+}
+
+/* Borlandified and identical */
+void SND_set_volume(unsigned short volume)
+{
+	if (ds_readw(0x447c)) {
+
+		AIL_set_digital_playback_volume(ds_readw(0xbcfb), volume);
+
+		if (!volume) {
+			SND_stop_digi();
+		}
+	}
+}
+
+/* static */
+/* Borlandified and identical */
+signed short load_digi_driver(RealPt fname, signed short type, signed short io, signed short irq)
+{
+
+	if (io &&
+		NOT_NULL(Real2Host((RealPt)ds_writed(0xbcf3, read_digi_driver(fname)))) &&
+		((ds_writew(0xbcfb, AIL_register_driver((RealPt)ds_readd(0xbcf3)))) != 0xffff))
+	{
+
+		ds_writed(0xbcf7, (Bit32u)AIL_describe_driver(ds_readw(0xbcfb)));
+
+		if (host_readws(Real2Host((RealPt)ds_readd(0xbcf7)) + 2) == type) {
+
+			if (io == -1) {
+				io = host_readws(Real2Host(ds_readd(0xbcf7)) + 0xc);
+				irq = host_readws(Real2Host(ds_readd(0xbcf7)) + 0xe);
+			}
+
+			if (AIL_detect_device(ds_readw(0xbcfb), io, irq,
+				host_readws(Real2Host(ds_readd(0xbcf7)) + 0x10),
+				host_readws(Real2Host(ds_readd(0xbcf7)) + 0x12)))
+			{
+				AIL_init_driver(ds_readw(0xbcfb), io, irq,
+					host_readws(Real2Host(ds_readd(0xbcf7)) + 0x10),
+					host_readws(Real2Host(ds_readd(0xbcf7)) + 0x12));
+
+				ds_writeb(0x4477, 1);
+				return 1;
+			} else {
+				/* no sound hardware found */
+				GUI_output(Real2Host(RealMake(datseg, 0x4896)));
+				free_voc_buffer();
+			}
+		}
+	}
+
+	return 0;
+}
+
+/* Borlandified and identical */
 RealPt read_digi_driver(RealPt fname)
 {
-	/* TODO: does not work atm */
 	Bit32u len;
 	RealPt buf;
 	Bit32u ptr;
@@ -570,7 +669,6 @@ RealPt read_digi_driver(RealPt fname)
 		ptr = ds_readd(0xbceb) + 15L;
 		ptr &= 0xfffffff0;
 		buf = EMS_norm_ptr((RealPt)ptr);
-		/* and_ptr_ds((Bit8u*)&ptr, 0xfffffff0); */
 		bc__read(handle, Real2Host(buf), len);
 		bc_close(handle);
 		return buf;
