@@ -435,7 +435,12 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		case 0x2315: {
-			return 0;
+			Bit32u mem = bc_farcoreleft();
+			D1_LOG("farcoreleft() = %u\n", mem);
+
+			reg_ax = mem & 0xffff;
+			reg_dx = mem >> 16;
+			return 1;
 		}
 		case 0x2411: {
 			return 0;

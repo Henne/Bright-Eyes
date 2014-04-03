@@ -15,6 +15,7 @@ signed short bc_unlink(RealPt);
 signed short bc_bioskey(signed short);
 void bc_clrscr(void);
 void bc_farfree(RealPt);
+Bit32u bc_farcoreleft(void);
 RealPt bc_farcalloc(Bit32u, Bit32u);
 
 signed short bc_findfirst(RealPt, struct ffblk*, signed short);
@@ -68,6 +69,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc_bioskey bioskey
 #define bc_clrscr clrscr
 #define bc_farfree farfree
+#define bc_farcoreleft farcoreleft
 
 #define bc_itoa itoa
 

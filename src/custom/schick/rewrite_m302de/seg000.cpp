@@ -97,6 +97,12 @@ void bc_farfree(RealPt ptr)
 	CPU_Pop32();
 }
 
+Bit32u bc_farcoreleft(void)
+{
+	CALLBACK_RunRealFar(reloc_game + 0, 0x2315);
+	return (reg_dx << 16) + reg_ax;
+}
+
 RealPt bc_farcalloc(Bit32u nmemb, Bit32u size)
 {
 	CPU_Push32(size);
