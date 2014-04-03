@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 107/136
+	Functions rewritten: 110/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -436,6 +436,68 @@ void start_midi_playback_IRQ(void)
 			AIL_start_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
 		}
 	}
+}
+
+/* These function is never called */
+/* Borlandified and identical */
+void cruft_1(void)
+{
+	if ((ds_readw(0xbcff) == 0) &&
+		(host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3))
+	{
+		AIL_start_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
+	}
+}
+
+/* These function is never called */
+/* Borlandified and identical */
+void cruft_2(signed short volume)
+{
+	if (ds_readw(0xbcff) == 0) {
+
+		if (host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3) {
+			AIL_set_relative_volume(ds_readws(0xbd23), ds_readws(0xbd21), volume, 0);
+		}
+
+		if (!volume) {
+			stop_midi_playback();
+		}
+	}
+}
+
+
+/* Borlandified and identical */
+signed short have_mem_for_sound(void)
+{
+	Bit32s size;
+	signed short retval;
+	struct ffblk blk;
+
+	if (!bc_findfirst((RealPt)RealMake(datseg, 0x488c), &blk, 0)) {
+		/* SOUND.ADV was found */
+		size = host_readd((Bit8u*)(&blk) + 26);
+		size += 4000L;
+
+		if (size < bc_farcoreleft()) {
+			retval = 1;
+
+			if (size + 25000L < bc_farcoreleft()) {
+
+				ds_writew(0x447c, 1);
+			}
+		} else {
+			retval = 0;
+		}
+	} else {
+		/* SOUND.ADV was not found */
+		retval = 1;
+
+		if (25000L < bc_farcoreleft()) {
+			ds_writew(0x447c, 1);
+		}
+	}
+
+	return retval;
 }
 
 void play_voc(Bit16u index)

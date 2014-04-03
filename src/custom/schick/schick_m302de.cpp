@@ -873,7 +873,9 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x079f: {
-		return 0;
+		reg_ax = have_mem_for_sound();
+		D1_LOG("have_mem_for_sound() = %d\n", reg_ax);
+		return 1;
 	}
 	case 0x0832: {
 		Bit16u index = CPU_Pop16();
@@ -6192,6 +6194,12 @@ static int n_seg002(unsigned short offs)
 		CPU_Pop16();
 		D1_LOG("stop_midi_playback();\n");
 		stop_midi_playback();
+		return 1;
+	}
+	case 0x079f: {
+		CPU_Pop16();
+		reg_ax = have_mem_for_sound();
+		D1_LOG("have_mem_for_sound() = %d\n", reg_ax);
 		return 1;
 	}
 	case 0x0832: {

@@ -28,6 +28,8 @@ void do_play_music_file(signed short);
 /* static */
 void stop_midi_playback(void);
 void start_midi_playback_IRQ(void);
+signed short have_mem_for_sound(void);
+
 void play_voc(Bit16u);
 void play_voc_delay(Bit16u);
 /* static */
