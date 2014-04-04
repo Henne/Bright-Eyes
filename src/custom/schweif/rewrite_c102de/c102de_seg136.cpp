@@ -43,7 +43,7 @@ signed short test_attrib(Bit8u* hero, unsigned short attrib, signed short bonus)
 	return tmp;
 }
 
-signed short test_basis(Bit8u *hero, signed short a1, signed short a2, signed short a3, signed char taw)
+signed short test_attrib3(Bit8u *hero, signed short a1, signed short a2, signed short a3, signed char taw)
 {
 	signed short throw_sum = 0;
 	signed short rolls;

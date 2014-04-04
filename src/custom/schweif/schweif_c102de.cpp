@@ -714,7 +714,7 @@ static int ovr136(unsigned short offs)
 		Bit16s a2 = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
 		Bit8s modifier = CPU_Pop16();
-		reg_ax = test_basis(Real2Host(hero), a1, a2, a3, modifier);
+		reg_ax = test_attrib3(Real2Host(hero), a1, a2, a3, modifier);
 		CPU_Push16((Bit16s)modifier);
 		CPU_Push16(a3);
 		CPU_Push16(a2);
