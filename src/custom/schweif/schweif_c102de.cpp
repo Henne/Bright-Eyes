@@ -726,6 +726,7 @@ static int ovr136(unsigned short offs)
 		RealPt hero = CPU_Pop32();
 		Bit16u skill = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
+		reg_ax = test_skill(Real2Host(hero), skill, bonus);
 		CPU_Push16(bonus);
 		CPU_Push16(skill);
 		CPU_Push32(hero);
@@ -733,7 +734,7 @@ static int ovr136(unsigned short offs)
 		       schweif_getCharname(hero),
 		       schweif_common::names_skill[skill],
 		       (signed char)bonus);
-		return 0;
+		return 1;
 	}
 	default:
 		return 0;
