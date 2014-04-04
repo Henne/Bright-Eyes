@@ -695,10 +695,10 @@ static int stub066(unsigned short offs)
 	return 0;
 }
 
-static int seg136(unsigned short offs)
+static int ovr136(unsigned short offs)
 {
 	switch(offs) {
-	case 0x48: {
+	case 0x6d5: {
 		RealPt hero = CPU_Pop32();
 		Bit16u attrib = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
@@ -708,7 +708,7 @@ static int seg136(unsigned short offs)
 		reg_ax = test_attrib(Real2Host(hero), attrib, bonus);
 		return 1;
 	}
-	case 0x4d: {
+	case 0x72d: {
 		RealPt hero = CPU_Pop32();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
@@ -722,7 +722,7 @@ static int seg136(unsigned short offs)
 		CPU_Push32(hero);
 		return 1;
 	}
-	case 0x61:{
+	case 0xa65:{
 		RealPt hero = CPU_Pop32();
 		Bit16u skill = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
@@ -738,6 +738,35 @@ static int seg136(unsigned short offs)
 	default:
 		return 0;
 	}
+}
+
+static int stub136(unsigned short offs)
+{
+	switch(offs) {
+	case 0x0020: return ovr136(0x0000);
+	case 0x002A: return ovr136(0x0127);
+	case 0x002F: return ovr136(0x01A0);
+	case 0x0034: return ovr136(0x0E3C);
+	case 0x0039: return ovr136(0x01F3);
+	case 0x003E: return ovr136(0x0549);
+	case 0x0043: return ovr136(0x0645);
+	case 0x0048: return ovr136(0x06D5);
+	case 0x004D: return ovr136(0x072D);
+	case 0x0052: return ovr136(0x0940);
+	case 0x0057: return ovr136(0x07FB);
+	case 0x005C: return ovr136(0x0832);
+	case 0x0061: return ovr136(0x0A65);
+	case 0x0066: return ovr136(0x0B70);
+	case 0x006B: return ovr136(0x0BD6);
+	case 0x0070: return ovr136(0x0D8C);
+	case 0x0075: return ovr136(0x0E64);
+	case 0x007A: return ovr136(0x0EA7);
+	case 0x007F: return ovr136(0x0EEA);
+	default:
+		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
+		exit(1);
+	}
+	return 0;
 }
 
 static int seg134(unsigned short offs)
@@ -959,7 +988,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x1cce: return seg046(offs);
 	case 0x1f18: return stub066(offs);
 	case 0x20ad: return seg134(offs);
-	case 0x20be: return seg136(offs);
+	case 0x20be: return stub136(offs);
 	case 0x2119: return seg151(offs);
 	case 0x2313: return stub249(offs);
 	case 0x2319: return stub250(offs);
@@ -990,7 +1019,7 @@ int schweif_nearcall_c102de(unsigned offs)
 	else if (segm == 0x1b42) ret = seg039(offs);
 	else if (segm == 0x1cce) ret = seg046(offs);
 	else if (is_ovrseg(0x1f18)) ret = ovr066(offs);
-	else if (is_ovrseg(0x20be)) ret = seg136(offs);
+	else if (is_ovrseg(0x20be)) ret = ovr136(offs);
 	else if (is_ovrseg(0x2119)) ret = seg151(offs);
 
 	//else if (is_ovrseg(0x33a3)) ret = ovr265(offs);
