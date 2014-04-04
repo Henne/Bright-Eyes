@@ -682,73 +682,80 @@ RealPt read_digi_driver(RealPt fname)
  *
  * Returns the filehandle or 0xffff.
  */
-//static
-Bit16u open_and_seek_dat(unsigned short fileindex)
+/* static */
+/* Borlandified and identical */
+signed short open_and_seek_dat(unsigned short fileindex)
 {
 	Bit32u start, end;
-	Bit16u fd;
+	signed short fd;
 
-#if !defined(__BORLANDC__)
 	/* open SCHICK.DAT */
-	if (!DOS_OpenFile("SCHICK.DAT", OPEN_READ, &fd))
-		return 0xffff;
+	if ( (fd =  bc__open((RealPt)RealMake(datseg, 0x48ca), 0x8001)) != -1) {
+
+		/* seek to the fileindex position in the offset table */
+		bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
+
+		/* read the start offset of the desired file */
+		bc__read(fd, (Bit8u*)&start, 4);
+
+		/* read the start offset of the next file */
+		bc__read(fd, (Bit8u*)&end, 4);
+#if !defined(__BORLANDC__)
+		/* BE-Fix */
+		start = host_readd((Bit8u*)&start);
+		end = host_readd((Bit8u*)&end);
 #endif
 
-	/* seek to the fileindex position in the offset table */
-	bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
+		/* seek to the desired file */
+		bc_lseek(fd, start, DOS_SEEK_SET);
 
-	/* read the start offset of the desired file */
-	bc__read(fd, (Bit8u*)&start, 4);
+		/* save the offset of the desired file */
+		ds_writed(0xbcdf, start);
 
-	/* read the start offset of the next file */
-	bc__read(fd, (Bit8u*)&end, 4);
-
-	/* BE-Fix */
-	start = host_readd((Bit8u*)&start);
-	end = host_readd((Bit8u*)&end);
-
-	/* seek to the desired file */
-	bc_lseek(fd, start, DOS_SEEK_SET);
-
-	/* save the offset of the desired file */
-	ds_writed(0xbcdf, start);
-
-	/* save the length of the desired file in 2 variables */
-	ds_writed(0xbce3, end - start);
-	ds_writed(0xbce7, end - start);
+		/* save the length of the desired file in 2 variables */
+		ds_writed(0xbce7, ds_writed(0xbce3, end - start));
+	}
 
 	return fd;
 }
 
-unsigned int get_readlength2(signed short index)
+/* Borlandified and identical */
+Bit32u get_readlength2(signed short index)
 {
 	return index != -1 ? ds_readd(0xbce7) : 0;
 }
 
-unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len) {
-
-	Bit16u readsize;
-
-	readsize = len;
+/* Borlandified and identical */
+unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
+{
 
 	/* no need to read */
-	if (ds_readd(0xbce3) == 0)
+	if (ds_readd(0xbce3) != 0) {
+
+		/* adjust number of bytes to read */
+		if (len > ds_readds(0xbce3))
+			len = ds_readw(0xbce3);
+
+		sub_ds_ds(0xbce3, len);
+
+		return bc__read(handle, buffer, len);
+	} else {
 		return 0;
-
-	/* adjust number of bytes to read */
-	if (len > ds_readd(0xbce3))
-		readsize = ds_readd(0xbce3) & 0xffff;
-
-	ds_writed(0xbce3, ds_readd(0xbce3) - readsize);
-
-	return bc__read(handle, buffer, readsize);
+	}
 }
 
+/* Borlandified and identical */
 void seg002_0c72(Bit16u handle, Bit32u off, Bit16u dummy) {
+
+	Bit32u file_off;
 
 	ds_writed(0xbce3, ds_readd(0xbce7) - off);
 
-	bc_lseek(handle, ds_readd(0xbcdf) + off, DOS_SEEK_SET);
+	file_off = ds_readd(0xbcdf) + off;
+
+	bc_lseek(handle, file_off, DOS_SEEK_SET);
+
+	return;
 }
 
 Bit16u load_regular_file(Bit16u index)

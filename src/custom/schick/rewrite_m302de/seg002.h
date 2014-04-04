@@ -50,8 +50,8 @@ signed short load_digi_driver(RealPt, signed short, signed short, signed short);
 /* static */
 RealPt read_digi_driver(RealPt);
 //static
-Bit16u open_and_seek_dat(unsigned short);
-unsigned int get_readlength2(signed short index);
+signed short open_and_seek_dat(unsigned short);
+Bit32u get_readlength2(signed short);
 unsigned short read_archive_file(Bit16u, Bit8u *, Bit16u);
 void seg002_0c72(Bit16u, Bit32u, Bit16u);
 Bit16u load_regular_file(Bit16u);
