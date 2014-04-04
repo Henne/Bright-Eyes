@@ -128,11 +128,11 @@ signed short bc_findfirst_dosbox(RealPt path, RealPt __ffblk, signed short __att
 
 signed short bc_findfirst(RealPt path, struct ffblk *__ffblk, signed short __attrib)
 {
-	Bit16u reg_esp_bak = reg_esp;
+	Bit32u reg_esp_bak = reg_esp;
 	reg_esp -= 0x50;
 
-	Bit16s retval = bc_findfirst_dosbox(path, RealMake(SegValue(ss), reg_esp), __attrib);
-	memcpy(__ffblk, Real2Host(RealMake(SegValue(ss), reg_esp)), 43);
+	Bit16s retval = bc_findfirst_dosbox(path, RealMake(SegValue(ss), reg_sp), __attrib);
+	memcpy(__ffblk, Real2Host(RealMake(SegValue(ss), reg_sp)), 43);
 
 	reg_esp = reg_esp_bak;
 	return retval;
@@ -148,11 +148,11 @@ signed short bc_findnext_dosbox(RealPt __ffblk)
 
 signed short bc_findnext(struct ffblk *__ffblk)
 {
-	Bit16u reg_esp_bak = reg_esp;
+	Bit32u reg_esp_bak = reg_esp;
 	reg_esp -= 0x50;
 
-	Bit16s retval = bc_findnext_dosbox(RealMake(SegValue(ss), reg_esp));
-	memcpy(__ffblk, Real2Host(RealMake(SegValue(ss), reg_esp)), 43);
+	Bit16s retval = bc_findnext_dosbox(RealMake(SegValue(ss), reg_sp));
+	memcpy(__ffblk, Real2Host(RealMake(SegValue(ss), reg_sp)), 43);
 
 	reg_esp = reg_esp_bak;
 	return retval;
