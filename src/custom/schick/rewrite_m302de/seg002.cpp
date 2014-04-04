@@ -1007,7 +1007,9 @@ Bit32s process_nvf(struct nvf_desc *nvf)
  * to call interrupts. We use the one of DOSBox, which means, that we
  * put the values in the emulated registers, instead in a structure.
  */
-void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
+/* Borlandified and identical */
+void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
+{
 #if !defined(__BORLANDC__)
 
 	if ((signed short)host_readw(p1) < 0)
@@ -1077,6 +1079,51 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5) {
 	reg_di = bdi;
 
 	return;
+#else
+	struct SREGS sregs;
+	union REGS wregs;
+
+	if (host_readws(p1) >= 0) {
+
+		wregs.x.ax = host_readw(p1);
+		wregs.x.bx = host_readw(p2);
+		wregs.x.cx = host_readw(p3);
+
+		switch (host_readw(p1)) {
+		case 0x9:	/* define Cursor in graphic mode */
+		case 0xc:	/* install event handler */
+		case 0x14:	/* swap event handler */
+		case 0x16:	/* save mouse state */
+		case 0x17:	/* load mouse state */
+		{
+			wregs.x.dx = host_readw(p4);
+			sregs.es = host_readw(p5);
+			break;
+		}
+		case 0x10: {
+			wregs.x.cx = host_readw(p2);
+			wregs.x.dx = host_readw(p3);
+			wregs.x.si = host_readw(p4);
+			wregs.x.di = host_readw(p5);
+			break;
+		}
+		default : {
+			wregs.x.dx = host_readw(p4);
+		}
+		}
+
+		int86x(0x33, &wregs, &wregs, &sregs);
+
+		if (host_readw(p1) == 0x14) {
+			host_writew(p2, sregs.es);
+		} else {
+			host_writew(p2, wregs.x.bx);
+		}
+
+		host_writew(p1, wregs.x.ax);
+		host_writew(p3, wregs.x.cx);
+		host_writew(p4, wregs.x.dx);
+	}
 #endif
 }
 
