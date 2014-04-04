@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 120/138
+	Functions rewritten: 123/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -758,6 +758,7 @@ void seg002_0c72(Bit16u handle, Bit32u off, Bit16u dummy) {
 	return;
 }
 
+/* Borlandified and identical */
 signed short load_regular_file(Bit16u index)
 {
 
@@ -777,14 +778,71 @@ signed short load_regular_file(Bit16u index)
 	return handle;
 }
 
-Bit16u load_archive_file(Bit16u index)
+/* Borlandified and identical */
+signed short load_archive_file(Bit16u index)
 {
+	bc_flushall();
+
+	return (index & 0x8000) ? open_temp_file(index & 0x7fff) : open_and_seek_dat(index);
+}
+
+/* Borlandified and identical */
+signed short open_temp_file(unsigned short index)
+{
+/* HACK: need a Real Pointer to 40 bytes on the DOSBox Stack */
 #if !defined(__BORLANDC__)
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0xd27);
-	CPU_Pop16();
-	return reg_ax;
+	RealPt tmppath = RealMake(SegValue(ss), reg_esp);
+	reg_esp -= 40;
+#else
+	unsigned char tmppath[40];
 #endif
+	signed short handle;
+
+	sprintf((char*)Real2Host(tmppath),
+		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)Real2Host(ds_readd(0x4c8c + index * 4)));
+
+	while ( (handle = bc__open(tmppath, 0x8004)) == -1) {
+
+		copy_from_archive_to_temp(index, tmppath);
+	}
+
+	/* get the length of the file */
+	ds_writed(0xbce7, ds_writed(0xbce3, bc_lseek(handle, 0, 2)));
+	/* seek to start */
+	bc_lseek(handle, 0, 0);
+
+	ds_writed(0xbcdf, 0);
+
+#if !defined(__BORLANDC__)
+	reg_esp += 40;
+#endif
+
+	return handle;
+}
+
+/* Borlandified and identical */
+void copy_from_archive_to_temp(unsigned short index, RealPt fname)
+{
+	signed short handle1;
+	signed short handle2;
+	signed short len;
+
+	if ( (handle1 = load_archive_file(index)) != -1) {
+
+		/* create new file in TEMP */
+		handle2 = bc__creat(fname, 0);
+
+		/* copy it */
+		while ( (len = read_archive_file(handle1, Real2Host(ds_readd(0xd303)), 60000)) && (len != -1))
+		{
+			bc__write(handle2, (RealPt)ds_readd(0xd303), len);
+		}
+
+		bc_close(handle1);
+		bc_close(handle2);
+	}
+
 }
 
 signed int process_nvf(struct nvf_desc *nvf) {

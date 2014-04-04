@@ -55,7 +55,9 @@ Bit32u get_readlength2(signed short);
 unsigned short read_archive_file(Bit16u, Bit8u *, Bit16u);
 void seg002_0c72(Bit16u, Bit32u, Bit16u);
 signed short load_regular_file(Bit16u);
-Bit16u load_archive_file(Bit16u);
+signed short load_archive_file(Bit16u);
+signed short open_temp_file(unsigned short);
+void copy_from_archive_to_temp(unsigned short, RealPt);
 signed int process_nvf(struct nvf_desc *);
 //static
 void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
