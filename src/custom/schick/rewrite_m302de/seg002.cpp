@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 123/138
+	Functions rewritten: 124/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -842,7 +842,29 @@ void copy_from_archive_to_temp(unsigned short index, RealPt fname)
 		bc_close(handle1);
 		bc_close(handle2);
 	}
+}
 
+/* Borlandified and identical */
+void copy_file_to_temp(RealPt src_file, RealPt fname)
+{
+	signed short handle1;
+	signed short handle2;
+	signed short len;
+
+	if ( (handle1 = bc__open(src_file, 0x8001)) != -1) {
+
+		/* create new file in TEMP */
+		handle2 = bc__creat(fname, 0);
+
+		/* copy it */
+		while ( (len = bc__read(handle1, Real2Host(ds_readd(0xd303)), 60000)) && (len != -1))
+		{
+			bc__write(handle2, (RealPt)ds_readd(0xd303), len);
+		}
+
+		bc_close(handle1);
+		bc_close(handle2);
+	}
 }
 
 signed int process_nvf(struct nvf_desc *nvf) {

@@ -963,7 +963,15 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x0e57: {
-		return 0;
+		RealPt src_file = CPU_Pop32();
+		RealPt fname = CPU_Pop32();
+
+		D1_LOG("copy_file_to_temp(%s, %s);\n",
+			Real2Host(src_file), Real2Host(fname));
+		copy_file_to_temp(src_file, fname);
+		CPU_Push32(fname);
+		CPU_Push32(src_file);
+		return 1;
 	}
 	case 0x0ed2: {
 			RealPt nvf_rp = CPU_Pop32();

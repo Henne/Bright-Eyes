@@ -58,6 +58,7 @@ signed short load_regular_file(Bit16u);
 signed short load_archive_file(Bit16u);
 signed short open_temp_file(unsigned short);
 void copy_from_archive_to_temp(unsigned short, RealPt);
+void copy_file_to_temp(RealPt, RealPt);
 signed int process_nvf(struct nvf_desc *);
 //static
 void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
