@@ -867,27 +867,32 @@ void copy_file_to_temp(RealPt src_file, RealPt fname)
 	}
 }
 
-signed int process_nvf(struct nvf_desc *nvf) {
-
+Bit32s process_nvf(struct nvf_desc *nvf)
+{
+	Bit32u offs;
+	volatile signed short pics;
+	volatile signed short height;
+	volatile signed short va;
+	Bit32u p_size;
+	Bit32u retval;
 	signed char nvf_type;
-	Bit8u *src, *dst;
-	int p_size;
-	int offs;
-	signed int retval;
-	short va;
-	short height;
-	short pics;
-	short width;
-	short i;
+#if !defined(__BORLANDC__)
+	Bit8u *nvf_nr;
+#else
+	Bit8u huge *nvf_nr;
+#endif
+	Bit8u *src;
+	Bit8u *dst;
 
-	Bit8u *p = nvf->src;
-	dst = nvf->dst;
+	signed short width;
+	signed short i;
 
-	nvf_type = host_readb(p);
+
+	nvf_type = host_readb(nvf->src);
 	va = nvf_type & 0x80;
 	nvf_type &= 0x7f;
 
-	pics = host_readw(p + 1);
+	pics = host_readws(nvf->src + 1);
 
 	if (nvf->nr < 0)
 		nvf->nr = 0;
@@ -898,79 +903,87 @@ signed int process_nvf(struct nvf_desc *nvf) {
 	switch (nvf_type) {
 
 	case 0x00:
-		width = host_readw(p + 3);
-		height = host_readw(p + 5);
-		p_size = height * width;
-		src =  p + nvf->nr * p_size + 7;
+		width = host_readw(nvf->src + 3);
+		height = host_readw(nvf->src + 5);
+		p_size = width * height;
+		src =  nvf->src + nvf->nr * p_size + 7;
 		break;
 
 	case 0x01:
-		offs = pics * 4 + 3;
+		offs = pics * 4 + 3L;
 		for (i = 0; i < nvf->nr; i++) {
-			width = host_readw(p + i * 4 + 3);
-			height = host_readw(p + i * 4 + 5);
+#if !defined(__BORLANDC__)
+			width = host_readw(nvf->src + i * 4 + 3);
+			height = host_readw(nvf->src + i * 4 + 5);
+#endif
 			offs += width * height;
 		}
 
-		width = host_readw(p + nvf->nr * 4 + 3);
-		height = host_readw(p + nvf->nr * 4 + 5);
+		width = host_readw(nvf->src + nvf->nr * 4 + 3);
+		height = host_readw(nvf->src + nvf->nr * 4 + 5);
 		p_size = width * height;
-		src = p + offs;
+		src = nvf->src + offs;
 		break;
 
 	case 0x02: case 0x04:
-		width = host_readw(p + 3);
-		height = host_readw(p + 5);
-		offs = pics * 4 + 7;
-		for (i = 0; i < nvf->nr; i++)
-			offs += host_readd(p  + (i * 4) + 7);
+		width = host_readw(nvf->src + 3);
+		height = host_readw(nvf->src + 5);
+		offs = pics * 4 + 7L;
+		for (i = 0; i < nvf->nr; i++) {
+			offs += host_readd(nvf->src  + (i * 4) + 7);
+		}
 
-		p_size = host_readd(p + nvf->nr * 4 + 7);
-		src = p + offs;
+		p_size = host_readd(nvf->src + nvf->nr * 4 + 7);
+		src = nvf->src + offs;
 		break;
 
 	case 0x03: case 0x05:
-		offs = pics * 8 + 3;
+		offs = pics * 8 + 3L;
 		for (i = 0; i < nvf->nr; i++)
-			offs += host_readd(p  + (i * 8) + 7);
+			offs += host_readd(nvf->src  + (i * 8) + 7);
 
-		width = host_readw(p + nvf->nr * 8 + 3);
-		height = host_readw(p + nvf->nr * 8 + 5);
-		p_size = host_readd(p + i * 8 + 7);
-		src = p + offs;
+		width = host_readw(nvf->src + nvf->nr * 8 + 3);
+		height = host_readw(nvf->src + nvf->nr * 8 + 5);
+		p_size = host_readd(nvf->src + i * 8 + 7);
+		src = nvf->src + offs;
 		break;
 	}
 
-	switch (nvf->type) {
+	if (!nvf->type) {
 
-	case 0:
 		/* PP20 decompression */
 
 		if (va != 0) {
 
 			/* get size from unpacked picture */
 			retval = host_readd(src);
-			retval = host_readd(src + (retval - 4));
+			nvf_nr = src;
+			nvf_nr += (retval + (-4L));
+			retval = host_readd(nvf_nr);
 			retval = swap_u32(retval) >> 8;
 
-		} else
+		} else {
 			retval = width * height;
+		}
 
-		decomp_pp20(src, dst, src + 4, p_size);
-		break;
+		/* TODO: this adding 4 to src produces a slightly different code */
+		decomp_pp20(src, nvf->dst, src + (signed char)4, p_size);
 
-	case 2: case 3: case 4: case 5:
+	} else if (nvf->type >= 2 && nvf->type <= 5) {
+
+		dst = nvf->dst;
+
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
 			Real2Host(ds_readd(0xd2eb)), nvf->type);
+#ifdef M302de_ORIGINAL_BUGFIX
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
 			on a Debug build, so we fix this for debuggings sake */
 		/* Orig-Fix */
 		retval = p_size;
-		break;
-
-	default:
+#endif
+	} else {
 		/* No decompression, just copy */
 		memmove(nvf->dst, src, (short)p_size);
 		retval = p_size;
@@ -2854,7 +2867,7 @@ void delay_or_keypress(Bit16u time)
 #endif
 }
 
-unsigned int swap_u32(unsigned int v) {
+Bit32u swap_u32(Bit32u v) {
 	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
 		((v >> 8) & 0xff) << 16 | (v&0xff) << 24;
 

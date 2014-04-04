@@ -59,7 +59,7 @@ signed short load_archive_file(Bit16u);
 signed short open_temp_file(unsigned short);
 void copy_from_archive_to_temp(unsigned short, RealPt);
 void copy_file_to_temp(RealPt, RealPt);
-signed int process_nvf(struct nvf_desc *);
+Bit32s process_nvf(struct nvf_desc *);
 //static
 void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
 short is_mouse_in_rect(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
@@ -111,7 +111,7 @@ void draw_splash(unsigned short index, unsigned short type);
 void wait_for_keyboard2();
 void wait_for_keypress();
 void delay_or_keypress(Bit16u);
-unsigned int swap_u32(unsigned int v);
+Bit32u swap_u32(Bit32u);
 unsigned short alloc_EMS(Bit32s);
 void from_EMS(RealPt, unsigned short, Bit32s);
 void to_EMS(unsigned short, RealPt, Bit32s);
