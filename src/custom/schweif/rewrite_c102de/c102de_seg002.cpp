@@ -4,6 +4,20 @@
 namespace C102de {
 #endif
 
+signed short get_item_pos(Bit8u *hero, signed short item_id)
+{
+	signed short i;
+
+	for (i = 0; i < 31; i++) {
+
+		if ((signed short)host_readw(hero + 0x1a8 + i * 0x1b) == item_id) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 signed short hero_is_diseased(Bit8u* hero)
 {
 	signed short i;

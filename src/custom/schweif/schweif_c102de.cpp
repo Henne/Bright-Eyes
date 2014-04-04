@@ -41,6 +41,18 @@ static int seg002(unsigned short offs)
 		D2_TRAC("set_color(%x, %x)\n", pal, first_col);
 		return 0;
 	}
+	case 0x43d: {
+		RealPt hero = CPU_Pop32();
+		Bit16s item_id = CPU_Pop16();
+		CPU_Push16(item_id);
+		CPU_Push32(hero);
+
+		reg_ax = get_item_pos(Real2Host(hero), item_id);
+		D2_INFO("get_item_pos(%s, 0x%x) = %d\n",
+			schweif_getCharname(hero), item_id, (signed short)reg_ax);
+
+		return 1;
+	}
 	case 0x46f: {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
