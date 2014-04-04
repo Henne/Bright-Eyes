@@ -21,6 +21,41 @@
 
 using namespace C102de;
 
+/**
+ *      get_ovrseg - returns segment of an overlay segment
+ *      @stub_seg:      segment of the overlay stub
+ *
+ * Borland uses a technique called overlay to load code on demand.
+ * At runtime you have a small stub segment where farcalls to this
+ * segment are directed to. If the segment is not in memory an
+ * interrupt 0x3f is generated, the code is loaded from the binarym
+ * and the stub is ajusted with far jumps to the corrosponding funcs.
+ */
+static int get_ovrseg(unsigned short stub_seg)
+{
+	Bit8u *p = MemBase + (relocation<<4) + (stub_seg<<4);
+
+	if (host_readw(p) != 0x3fcd) {
+		D2_ERR("Error: %x is not an overlay segment\n", stub_seg);
+		return 0;
+	}
+	if (host_readw(p + 0x20) == 0x3fcd) {
+	//      D2_ERR("Error: %x is not in memory\n", stub_seg);
+		return 0;
+	}
+	if (host_readb(p + 0x20) != 0xea) {
+		D2_ERR("No farjump in overlay segment\n");
+		return 0;
+	}
+	return host_readw(p + 0x23);
+}
+
+static int is_ovrseg(unsigned short stub_seg)
+{
+	return SegValue(cs) == get_ovrseg(stub_seg);
+}
+
+
 static int seg002(unsigned short offs)
 {
 	switch (offs) {
@@ -941,28 +976,27 @@ int schweif_nearcall_c102de(unsigned offs)
 	int ret = 0;
 	unsigned short temp = CPU_Pop16();
 
-	switch (segm) {
-	case 0x0000: ret = seg000(offs); break;
-	case 0x053a: ret = seg002(offs); break;
-	case 0x06bd: ret = seg004(offs); break;
-	case 0x0a32: ret = seg007(offs); break;
-	case 0x0ce1: ret = seg013(offs); break;
-	case 0x0ec6: ret = seg018(offs); break;
-	case 0x1288: ret = seg024(offs); break;
-	case 0x1a8a: ret = seg029(offs); break;
-	case 0x1aa4: ret = seg033(offs); break;
-	case 0x1ae4: ret = seg034(offs); break;
-	case 0x1b27: ret = seg037(offs); break;
-	case 0x1b42: ret = seg039(offs); break;
-	case 0x1cce: ret = seg046(offs); break;
-	case 0x1f18: ret = ovr066(offs); break;
-	case 0x20be: ret = seg136(offs); break;
-	case 0x2119: ret = seg151(offs); break;
-		//case 0x33a3: ret = ovr265(offs); break;
-	default:     ret = segUnk_near(segm, offs); break;
-	}
+	if (segm == 0x0000) ret = seg000(offs);
+	else if (segm == 0x053a) ret = seg002(offs);
+	else if (segm == 0x06bd) ret = seg004(offs);
+	else if (segm == 0x0a32) ret = seg007(offs);
+	else if (segm == 0x0ce1) ret = seg013(offs);
+	else if (segm == 0x0ec6) ret = seg018(offs);
+	else if (segm == 0x1288) ret = seg024(offs);
+	else if (segm == 0x1a8a) ret = seg029(offs);
+	else if (segm == 0x1aa4) ret = seg033(offs);
+	else if (segm == 0x1ae4) ret = seg034(offs);
+	else if (segm == 0x1b27) ret = seg037(offs);
+	else if (segm == 0x1b42) ret = seg039(offs);
+	else if (segm == 0x1cce) ret = seg046(offs);
+	else if (is_ovrseg(0x1f18)) ret = ovr066(offs);
+	else if (is_ovrseg(0x20be)) ret = seg136(offs);
+	else if (is_ovrseg(0x2119)) ret = seg151(offs);
+
+	//else if (is_ovrseg(0x33a3)) ret = ovr265(offs);
+	else ret = segUnk_near(segm, offs);
 
 	if (!ret) CPU_Push16(temp);
-	
+
 	return ret;
 }
