@@ -23,6 +23,8 @@ signed short bc_findfirst_dosbox(RealPt, RealPt, signed short);
 signed short bc_findnext(struct ffblk*);
 signed short bc_findnext_dosbox(RealPt);
 
+Bit16s bc_flushall(void);
+
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
 RealPt bc_memmove(RealPt, RealPt, Bit16u);
@@ -75,6 +77,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 #define bc_findfirst findfirst
 #define bc_findnext findnext
+#define bc_flushall flushall
 
 #define bc__open _open
 

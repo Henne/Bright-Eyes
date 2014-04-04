@@ -158,6 +158,12 @@ signed short bc_findnext(struct ffblk *__ffblk)
 	return retval;
 }
 
+Bit16s bc_flushall(void)
+{
+	CALLBACK_RunRealFar(reloc_game + 0, 0x30a0);
+	return reg_ax;
+}
+
 Bit16s bc_close(Bit16u handle) {
 
 	if (handle >= ds_readw(0xb786))
