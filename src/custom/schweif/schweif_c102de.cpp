@@ -231,7 +231,7 @@ static int seg013(unsigned short offs)
 		return 0;
 	}
 	case 0xc7d: {
-		return 1;
+		return 0;
 	}
 	case 0xf8e: {
 		return 0;
