@@ -16,6 +16,7 @@
 #include "c102de_seg037.h"
 //#include "c102de_seg041.h"
 #include "c102de_seg043.h"
+#include "c102de_seg066.h"
 #include "c102de_seg136.h"
 
 using namespace C102de;
@@ -608,6 +609,57 @@ static int seg046(unsigned short offs)
 	}
 }
 
+static int ovr066(unsigned short offs)
+{
+	switch(offs) {
+	case 0x0000: {
+		RealPt hero = CPU_Pop32();
+		Bit16s skill = CPU_Pop16();
+
+		reg_ax = get_skill_value(Real2Host(hero), skill);
+		D2_LOG("Talentwert von %s in %s ist %d\n",
+			schweif_getCharname(hero),
+			schweif_common::names_skill[skill],
+			(signed char)reg_ax);
+
+		CPU_Push16(skill);
+		CPU_Push32(hero);
+		return 1;
+	}
+	case 0x0044: return 0;
+	case 0x00D2: return 0;
+	case 0x013E: return 0;
+	case 0x0383: return 0;
+	case 0x0477: return 0;
+	case 0x055B: return 0;
+	case 0x08A9: return 0;
+	case 0x09B6: return 0;
+	case 0x0AC3: return 0;
+	case 0x0D95: return 0;
+	case 0x0F60: return 0;
+	case 0x1359: return 0;
+	default:
+		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
+		exit(1);
+	}
+	return 0;
+}
+
+static int stub066(unsigned short offs)
+{
+	switch(offs) {
+	case 0x0043: return ovr066(0x0AC3);
+	case 0x004D: return ovr066(0x013E);
+	case 0x0052: return ovr066(0x0000);
+	case 0x0057: return ovr066(0x0044);
+	case 0x005C: return ovr066(0x00D2);
+	default:
+		D2_ERR("Uncatched call to %s:0x%x()\n", __func__, offs);
+		exit(1);
+	}
+	return 0;
+}
+
 static int seg136(unsigned short offs)
 {
 	switch(offs) {
@@ -862,6 +914,7 @@ int schweif_farcall_c102de(unsigned segm, unsigned offs)
 	case 0x1b42: return seg039(offs);
 	case 0x1c8a: return seg043(offs);
 	case 0x1cce: return seg046(offs);
+	case 0x1f18: return stub066(offs);
 	case 0x20ad: return seg134(offs);
 	case 0x20be: return seg136(offs);
 	case 0x2119: return seg151(offs);
@@ -894,6 +947,7 @@ int schweif_nearcall_c102de(unsigned offs)
 	case 0x1b27: ret = seg037(offs); break;
 	case 0x1b42: ret = seg039(offs); break;
 	case 0x1cce: ret = seg046(offs); break;
+	case 0x1f18: ret = ovr066(offs); break;
 	case 0x20be: ret = seg136(offs); break;
 	case 0x2119: ret = seg151(offs); break;
 		//case 0x33a3: ret = ovr265(offs); break;
