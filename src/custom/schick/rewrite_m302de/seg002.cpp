@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 119/138
+	Functions rewritten: 120/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -758,16 +758,25 @@ void seg002_0c72(Bit16u handle, Bit32u off, Bit16u dummy) {
 	return;
 }
 
-Bit16u load_regular_file(Bit16u index)
+signed short load_regular_file(Bit16u index)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0xcb6);
-	CPU_Pop16();
 
-	return reg_ax;
-#endif
+	signed short handle;
+
+	if ( (handle = bc__open((RealPt)ds_readd(0x4c8c + index * 4), 0x8004)) == -1) {
+
+		/* prepare string which file is missing */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)Real2Host(ds_readd(0x4480)),
+			(char*)Real2Host(ds_readd(0x4c8c + index * 4)));
+		ds_writeb(0x2ca1, 1);
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		ds_writeb(0x2ca1, 0);
+	}
+
+	return handle;
 }
+
 Bit16u load_archive_file(Bit16u index)
 {
 #if !defined(__BORLANDC__)

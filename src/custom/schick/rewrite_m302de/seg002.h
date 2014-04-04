@@ -54,7 +54,7 @@ signed short open_and_seek_dat(unsigned short);
 Bit32u get_readlength2(signed short);
 unsigned short read_archive_file(Bit16u, Bit8u *, Bit16u);
 void seg002_0c72(Bit16u, Bit32u, Bit16u);
-Bit16u load_regular_file(Bit16u);
+signed short load_regular_file(Bit16u);
 Bit16u load_archive_file(Bit16u);
 signed int process_nvf(struct nvf_desc *);
 //static
