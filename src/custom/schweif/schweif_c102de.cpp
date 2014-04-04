@@ -882,6 +882,7 @@ int schweif_nearcall_c102de(unsigned offs)
 
 	switch (segm) {
 	case 0x0000: ret = seg000(offs); break;
+	case 0x053a: ret = seg002(offs); break;
 	case 0x06bd: ret = seg004(offs); break;
 	case 0x0a32: ret = seg007(offs); break;
 	case 0x0ce1: ret = seg013(offs); break;
