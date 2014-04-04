@@ -663,12 +663,6 @@ static int stub066(unsigned short offs)
 static int seg136(unsigned short offs)
 {
 	switch(offs) {
-#if 0
-	case 0x4D:{
-		D2_LOG("Probe-Basis\n");
-		return 0;
-	}
-#endif
 	case 0x48: {
 		RealPt hero = CPU_Pop32();
 		Bit16u attrib = CPU_Pop16();
@@ -677,6 +671,20 @@ static int seg136(unsigned short offs)
 		CPU_Push16(attrib);
 		CPU_Push32(hero);
 		reg_ax = test_attrib(Real2Host(hero), attrib, bonus);
+		return 1;
+	}
+	case 0x4d: {
+		RealPt hero = CPU_Pop32();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit8s modifier = CPU_Pop16();
+		reg_ax = test_basis(Real2Host(hero), a1, a2, a3, modifier);
+		CPU_Push16((Bit16s)modifier);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		CPU_Push32(hero);
 		return 1;
 	}
 	case 0x61:{

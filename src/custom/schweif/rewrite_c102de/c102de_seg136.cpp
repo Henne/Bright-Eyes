@@ -43,4 +43,39 @@ signed short test_attrib(Bit8u* hero, unsigned short attrib, signed short bonus)
 	return tmp;
 }
 
+signed short test_basis(Bit8u *hero, signed short a1, signed short a2, signed short a3, signed char taw)
+{
+	signed short throw_sum = 0;
+	signed short rolls;
+	signed short twens = 0;
+
+	signed short attrib_sum;
+	signed short this_throw;
+
+	for (rolls = 0; rolls < 3; throw_sum += this_throw, rolls++) {
+
+		this_throw = random_schweif(20);
+
+		if (this_throw == 20) {
+
+			twens++;
+
+			if (twens == 2) {
+				return -99;
+			}
+		}
+	}
+
+	throw_sum += taw;
+
+	attrib_sum = host_readbs(hero + 0x47 + a1 * 3) +
+			host_readbs(hero + 0x48 + a1 * 3) +
+			host_readbs(hero + 0x47 + a2 * 3) +
+			host_readbs(hero + 0x48 + a2 * 3) +
+			host_readbs(hero + 0x47 + a3 * 3) +
+			host_readbs(hero + 0x48 + a3 * 3);
+
+	return attrib_sum - throw_sum + 1;
+}
+
 }

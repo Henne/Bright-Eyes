@@ -95,6 +95,10 @@ static inline void ds_writed(unsigned short offs, Bit32u val) {
 	host_writed(p_datseg + offs, val);
 }
 
+static inline signed char host_readbs(Bit8u* p) {
+	return (Bit8s)host_readb(p);
+}
+
 int schweif_farcall_c102de(unsigned, unsigned);
 int schweif_nearcall_c102de(unsigned);
 
