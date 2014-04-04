@@ -28,7 +28,7 @@ signed short test_attrib(Bit8u* hero, unsigned short attrib, signed short bonus)
 			bonus, si);
 
 	if (si == 20) {
-		D2_INFO("Ungluecklich\n");
+		D2_INFO(" Ungluecklich\n");
 		return -99;
 	}
 
@@ -53,15 +53,31 @@ signed short test_attrib3(Bit8u *hero, signed short a1, signed short a2, signed 
 	signed short attrib_sum;
 	signed short this_throw;
 
+#if !defined(__BORLANDC__)
+	D2_INFO("%s -> (%s/%s/%s) %+d: ",
+		(char*)hero + 0x22,
+		schweif_common::names_attrib[a1],
+		schweif_common::names_attrib[a2],
+		schweif_common::names_attrib[a3],
+		taw);
+#endif
+
 	for (rolls = 0; rolls < 3; throw_sum += this_throw, rolls++) {
 
 		this_throw = random_schweif(20);
+
+#if !defined(__BORLANDC__)
+	D2_INFO("%d ", this_throw);
+#endif
 
 		if (this_throw == 20) {
 
 			twens++;
 
 			if (twens == 2) {
+#if !defined(__BORLANDC__)
+	D2_INFO("-> UNGLUECKLICH! nicht bestanden\n");
+#endif
 				return -99;
 			}
 		}
@@ -76,6 +92,11 @@ signed short test_attrib3(Bit8u *hero, signed short a1, signed short a2, signed 
 			host_readbs(hero + 0x47 + a3 * 3) +
 			host_readbs(hero + 0x48 + a3 * 3);
 
+#if !defined(__BORLANDC__)
+	D2_INFO("-> %s mit %d\n",
+		(attrib_sum - throw_sum + 1 > 0)? "bestanden" : "nicht bestanden",
+		attrib_sum -throw_sum + 1);
+#endif
 	return attrib_sum - throw_sum + 1;
 }
 
@@ -85,6 +106,10 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char modifier)
 	signed short l_di;
 
 	if ((skill >= 7) && (skill <= 51)) {
+
+#if !defined(__BORLANDC__)
+	D2_INFO("Talentprobe %s %+d: ", schweif_common::names_skill[skill], modifier);
+#endif
 
 		if ((skill == 7) || (skill == 8)) {
 			/* Range Attack test */
@@ -102,16 +127,29 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char modifier)
 			this_throw = random_schweif(20);
 
 			if (this_throw == 20) {
+#if !defined(__BORLANDC__)
+				D2_INFO("Ungluecklich\n");
+#endif
 				return -1;
 			}
 
 			if (this_throw == 1) {
+#if !defined(__BORLANDC__)
+				D2_INFO("Gluecklich\n");
+#endif
 				return 99;
 			}
 
 			if (this_throw <= l_di) {
+#if !defined(__BORLANDC__)
+				D2_INFO(" (%d) -> bestanden\n", this_throw);
+#endif
 				return l_di - this_throw + 1;
 			}
+
+#if !defined(__BORLANDC__)
+				D2_INFO(" (%d) -> nicht bestanden\n", this_throw);
+#endif
 		} else {
 			/* Skill test */
 

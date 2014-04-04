@@ -84,7 +84,7 @@ static int seg002(unsigned short offs)
 		CPU_Push32(hero);
 
 		reg_ax = get_item_pos(Real2Host(hero), item_id);
-		D2_INFO("get_item_pos(%s, 0x%x) = %d\n",
+		D2_LOG("get_item_pos(%s, 0x%x) = %d\n",
 			schweif_getCharname(hero), item_id, (signed short)reg_ax);
 
 		return 1;
@@ -730,10 +730,6 @@ static int ovr136(unsigned short offs)
 		CPU_Push16(bonus);
 		CPU_Push16(skill);
 		CPU_Push32(hero);
-		D2_INFO("Talentprobe %s auf %s %+d\n",
-		       schweif_getCharname(hero),
-		       schweif_common::names_skill[skill],
-		       (signed char)bonus);
 		return 1;
 	}
 	default:
