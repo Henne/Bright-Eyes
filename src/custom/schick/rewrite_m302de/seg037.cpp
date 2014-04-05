@@ -20,12 +20,13 @@ namespace M302de {
  * Returns the number of copied bytes.
  */
 
+/* Borlandified an identical */
 signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 {
 	Bit8u *buffer, *src;
-	signed short retval;
-	signed short max_nr;
+	signed char retval;
 	signed short i;
+	signed short max_nr;
 
 	/* ANI.DAT */
 	buffer = Real2Host(ds_readd(BUFFER_ANIDAT));
@@ -37,7 +38,10 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	max_nr = host_readw(buffer);
 
 	/* Sanity check of nr */
-	if (nr < 0 || nr > max_nr)
+	if (nr < 0)
+		return 0;
+
+	if (nr > max_nr)
 		return 0;
 
 	/* set src to the requested data entry */
