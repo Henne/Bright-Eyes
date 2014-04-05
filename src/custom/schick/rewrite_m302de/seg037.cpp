@@ -269,6 +269,13 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 			if (cb_val == 0)
 				continue;
 
+#ifdef M302de_ORIGINAL_BUGFIX
+			if (cb_val < 0) {
+				done = 1;
+				continue;
+			}
+#endif
+
 			if (cb_val >= 10 ||
 				hero_dead(get_hero(cb_val - 1)) ||
 				hero_unc(get_hero(cb_val - 1))) {
