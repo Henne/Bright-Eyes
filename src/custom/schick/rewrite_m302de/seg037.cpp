@@ -1,11 +1,17 @@
 /*
-        Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
-        Functions rewritten: 3/8
+ *	Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
+ *	Functions rewritten: 4/8
+ *
 */
+
+#include <string.h>
 
 #include "v302de.h"
 
+#include "seg005.h"
+#include "seg006.h"
 #include "seg007.h"
+#include "seg038.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -70,6 +76,108 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	/* return the number of copied bytes */
 
 	return retval;
+}
+
+/* DONOTBYPASS */
+/* Borlandified and identical */
+void seg037_00ae(Bit8u *enemy, signed short a2)
+{
+	signed char b1;
+	signed char b2;
+	signed char b3;
+	Bit8u *p1;
+	Bit8u *p2;
+	Bit8u *p3;
+
+	signed short i;
+
+	ds_writeb(0xd9c1, 0);
+	ds_writeb(0xdab3, host_readbs(enemy+1));
+	p1 = p_datseg + 0xd9c2;
+
+	i = 0;
+	p3 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + 1) * 4));
+
+	while (ds_readbs(0xd823 + i) != -1) {
+
+		if (host_readbs(enemy + 0x27) != ds_readbs(0xd823 + i)) {
+
+			b2 = b1 = -1;
+			b3 = host_readbs(enemy + 0x27);
+			b2 = b3;
+
+			b3++;
+
+			if (b3 == 4) {
+				b3 = 0;
+			}
+
+			if (ds_readbs(0xd823 + i) != b3) {
+
+				b1 = b3;
+				b3++;
+
+				if (b3 == 4) {
+					b3 = 0;
+				}
+
+				if (ds_readbs(0xd823 + i) != b3) {
+					b2 = host_readbs(enemy + 0x27) + 4;
+					b1 = -1;
+				}
+
+			}
+
+			host_writeb(enemy + 0x27, ds_readbs(0xd823 + i));
+
+			p1 += copy_ani_stuff(p1, host_readws(p3 + b2 * 2), 1);
+
+			if (b1 != -1) {
+
+				p1 += copy_ani_stuff(p1, host_readws(p3 + b1 * 2), 1);
+			}
+		}
+
+		if (ds_readbs(0xd823 + i) == ds_readbs(0xd824 + i)) {
+
+			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(0xd823 + i) + 0x0c) * 2), 1);
+			i += 2;
+			host_writeb(enemy + 0x23, host_readbs(enemy + 0x23) - 2);
+
+		} else {
+			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(0xd823 + i) + 0x08) * 2), 1);
+			i++;
+			dec_ptr_bs(enemy + 0x23);
+		}
+	}
+
+	/* terminate array */
+	host_writeb(p1, -1);
+
+	FIG_call_draw_pic();
+
+	FIG_remove_from_list(ds_readbs(0xe38e), 0);
+
+	ds_writeb(0xe38e, -1);
+
+	FIG_set_0e(host_readbs(enemy + 0x26), 1);
+
+	if (is_in_byte_array(host_readbs(enemy + 1), p_datseg + 0x25f9)) {
+
+		memcpy(p_datseg + 0xdba7, p_datseg + 0xd9c1, 0xf3);
+
+		p2 = Real2Host(FIG_get_ptr(host_readbs(enemy + 0x26)));
+
+		FIG_set_0e(ds_readbs(0xe35a + host_readbs(p2 + 0x13)), 3);
+	}
+
+	/* draw_fight_screen */
+	seg005_0598(0);
+
+	memset(p_datseg + 0xd9c1, -1, 0xf3);
+	memset(p_datseg + 0xdba7, -1, 0xf3);
+
+	FIG_init_list_elem(a2 + 10);
 }
 
 
