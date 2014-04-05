@@ -2212,31 +2212,37 @@ void seg002_2f7a(unsigned int fmin) {
 		if (host_readb(hero_i + 0x21) == 0)
 			continue;
 
-		/* I have no clue what is at offset 0x8b */
-		if ((signed int)host_readd(hero_i + 0x8b) > 0) {
-#if !defined(__BORLANDC__)
-			D1_INFO("Unknown Timer %s at 0x8b = %d\n",
-				(char*)hero_i + 0x10,
-				(signed int)host_readd(hero_i + 0x8b));
-#endif
+		/* Timer to the next healing attempt */
+		if (host_readds(hero_i + 0x8b) > 0) {
 
 			host_writed(hero_i + 0x8b,
-				host_readd(hero_i + 0x8b) - fmin * 450);
+				host_readds(hero_i + 0x8b) - fmin * 450);
+#if !defined(__BORLANDC__)
+			if (host_readds(hero_i + 0x8b) <= 0) {
+				D1_INFO("%s kann wieder geheilt werden\n",
+					(char*)hero_i + 0x10);
+			}
+#endif
 
-			if ((int)host_readd(hero_i + 0x8b) < 0)
+			if (host_readds(hero_i + 0x8b) < 0) {
 				host_writed(hero_i + 0x8b, 0);
+			}
 		}
 
 		/* Timer set after Staffspell */
-		if ((int)host_readd(hero_i + 0x8f) > 0) {
+		if (host_readds(hero_i + 0x8f) > 0) {
+			host_writed(hero_i + 0x8f, host_readds(hero_i + 0x8f) - fmin * 450);
 #if !defined(__BORLANDC__)
-			D1_INFO("Unknown Timer %s at 0x8f = %d\n",
-				(char*)(hero_i + 0x10),
-				host_readd(hero_i + 0x8f));
+			if (host_readds(hero_i + 0x8f) <= 0) {
+				D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
+					(char*)(hero_i + 0x10));
+			}
+
 #endif
-			host_writed(hero_i + 0x8f, host_readd(hero_i + 0x8f) - fmin * 450);
-			if ((int)host_readd(hero_i + 0x8f) < 0)
+			if (host_readds(hero_i + 0x8f) < 0) {
+
 				host_writed(hero_i + 0x8f, 0);
+			}
 		}
 
 		ds_writew(0x26bb, 1);
