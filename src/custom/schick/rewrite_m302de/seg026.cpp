@@ -45,17 +45,18 @@ void init_text(void)
 
 }
 
+/* Borlandified and identical */
 void load_buffer_1(signed short index)
 {
-	signed int len;
-	unsigned short fd;
+	Bit32s len;
+	signed short fd;
 
 	if (index == -1)
 		return;
 
 	fd = load_archive_file(index);
 
-	len = read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
+	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
 
 	bc_close(fd);
 
@@ -64,36 +65,39 @@ void load_buffer_1(signed short index)
 	ds_writew(0x26bf, index);
 }
 
+/* Borlandified and identical */
 void load_city_ltx(signed short index)
 {
-	unsigned int len;
-	unsigned short fd;
+	Bit32s len;
+	register signed short fd;
 
 	if (index == -1)
 		return;
 
 	ds_writew(0x26bd, index);
 	fd = load_archive_file(index);
-	len = read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 12000);
+	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 12000);
 	bc_close(fd);
 
 	split_textbuffer(Real2Host(ds_readd(CITY_LTX)), (RealPt)ds_readd(0xc3a9), len);
 }
 
+/* Borlandified and identical */
 void load_ltx(unsigned short index)
 {
-	unsigned int len;
-	unsigned short fd;
+	Bit32s len;
+	signed short fd;
 
 	fd = load_archive_file(index);
 	ds_writew(0x2ccb, 0xffff);
-	len = read_archive_file(fd, Real2Host(ds_readd(0xd019)) + 1000, 64000);
+	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(0xd019)) + 1000, 64000);
 	bc_close(fd);
 
 	split_textbuffer(Real2Host(ds_readd(0xd019)),
-		(RealPt)ds_readd(0xd019) + 1000, len);
+		F_PADD((RealPt)ds_readd(0xd019), 1000L), len);
 }
 
+/* Borlandified and identical */
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
 	Bit32u i = 0;
@@ -103,14 +107,16 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 
 	for (; i != len; src++, i++) {
 		/* continue if not the end of the string */
-		if (host_readb(Real2Host(src)) != 0)
-			continue;
-		/* write the adress of the next string */
-		host_writed(dst, (Bit32u)src + 1);
-		dst += 4;
+		if (!host_readbs(Real2Host(src))) {
+
+			/* write the adress of the next string */
+			host_writed(dst, (Bit32u)(src + 1));
+			dst += 4;
+		}
 	}
 }
 
+/* Borlandified and identical */
 void load_ggsts_nvf(void)
 {
 	Bit16u fd;
@@ -125,49 +131,59 @@ void load_ggsts_nvf(void)
 	ds_writew(0x2ccb, 0xffff);
 }
 
+/* Borlandified and identical */
 void prepare_chr_name(char *dst, char *src)
 {
 	char tmp_str[40];
-	unsigned short i;
+	signed short i;
 
 	strcpy(tmp_str, src);
 
 	for (i = 0; i < 8; i++) {
 
-		if (tmp_str[i] == '\0')
+		if (!tmp_str[i])
 			break;
 
+#if !defined(__BORLANDC__)
 		/* maybe !isalnum(tmp_str[i]) */
 		if ((ds_readb(0xb4e9 + tmp_str[i]) & 0x0e) == 0)
+#else
+		if (!isalnum(tmp_str[i]))
+#endif
 			tmp_str[i] = 0x5f;
+
+
 	}
 
 	strncpy(dst, tmp_str, 8);
 	dst[8] = '\0';
-	strcat(dst, ".CHR");
+	strcat(dst, (char*)p_datseg + 0x5e3e);
 }
 
+/* Borlandified and identical */
 void prepare_sg_name(char *dst, char *src)
 {
 	char tmp_str[40];
-	Bit16u i;
+	signed short i;
 
 	strcpy(tmp_str, src);
 
 	i = 0;
 	while (i < 8) {
-		if (tmp_str[i] == '\0') {
+		if (!tmp_str[i]) {
 			while (i < 8) {
 				/* fill up with underscores */
 				tmp_str[i] = 0x5f;
 				i++;
 			}
 			break;
-		} else {
-			if ((ds_readb(0xb4e9 + tmp_str[i]) & 0x0e) == 0)
-				tmp_str[i] = 0x5f;
 		}
-
+#if !defined(__BORLANDC__)
+		if ((ds_readb(0xb4e9 + tmp_str[i]) & 0x0e) == 0)
+#else
+		if (!isalnum(tmp_str[i]))
+#endif
+			tmp_str[i] = 0x5f;
 		i++;
 	}
 
