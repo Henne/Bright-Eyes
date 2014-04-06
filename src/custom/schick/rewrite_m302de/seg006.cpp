@@ -47,7 +47,7 @@ signed char FIG_set_array() {
 	return i;
 }
 
-/* BC-TODO: calculations are done in another way */
+/* Borlandified and identical */
 void FIG_draw_figures(void)
 {
 	signed short l1, l2;
@@ -70,15 +70,11 @@ void FIG_draw_figures(void)
 	do {
 
 		if (host_readb(list_i + 0x12) == 1) {
-			l_si = (host_readbs(list_i + 3)
-				+ host_readbs(list_i + 4)) * 10
-				+ l1
-				- abs(host_readbs(list_i + 8)) / 2;
+			l_si =	(l1 - host_readbs(list_i + 8) / 2) +
+				(host_readbs(list_i + 3) + host_readbs(list_i + 4)) * 10;
 
-			l_di = (host_readbs(list_i + 3)
-				- host_readbs(list_i + 4)) * 5
-				+ l2
-				- host_readbs(list_i + 7);
+			l_di =	(l2 - host_readbs(list_i + 7)) +
+				(host_readbs(list_i + 3) - host_readbs(list_i + 4)) * 5;
 
 			l_si += host_readbs(list_i + 5);
 			l_di += host_readbs(list_i + 6);
@@ -113,9 +109,8 @@ void FIG_draw_figures(void)
 			do_pic_copy(2);
 		}
 
-		list_i = Real2Host(host_readd(list_i + 0x1b));
 
-	} while (NOT_NULL(list_i));
+	} while (NOT_NULL(list_i = (Bit8u*)Real2Host((RealPt)host_readd(list_i + 0x1b))));
 
 	/* restore a structure */
 	//struct_copy(p_datseg + 0x2990, screen_mode, 8);
@@ -140,13 +135,13 @@ void FIG_set_gfx() {
 	ds_writed(0xc00d, (Bit32u)ptr_bak);
 }
 
-/* BC-TODO: functions in this segment are called with far call, not near */
+/* Borlandified and identical */
 void FIG_call_draw_pic(void)
 {
 	FIG_draw_pic();
 }
 
-/* BC-TODO: functions in this segment are called with far call, not near */
+/* Borlandified and identical */
 void FIG_draw_pic(void)
 {
 	mem_memcpy(Real2Phys(ds_readd(0xd303)),
@@ -176,7 +171,8 @@ RealPt seg006_033c(short v)
 	signed short i;
 
 	for (i = 0; i < 20; i++) {
-		if (v == ds_readbs(ENEMY_SHEETS + 38 + i * 62))
+		if (v == ds_readbs(ENEMY_SHEETS + 38 + (i * 62)))
+			/* BC-TODO: this pointer ist calculated in another order */
 			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * 62);
 	}
 
@@ -187,7 +183,7 @@ RealPt seg006_033c(short v)
 void FIG_set_0e(signed char id, signed char val) {
 	Bit8u *ptr = Real2Host(ds_readd(0xe108));
 
-	while (host_readb(ptr + 0x10) != id) {
+	while (host_readbs(ptr + 0x10) != id) {
 		if (host_readd(ptr + 0x1b) == 0)
 			return;
 		ptr = Real2Host(host_readd(ptr + 0x1b));
@@ -258,7 +254,11 @@ void FIG_set_0f(signed char id, signed char val) {
 	host_writeb(ptr + 0x0f, val);
 }
 
-/* Borlandified and nearly identical, see BC-TODO */
+struct dummy {
+	char a[35];
+};
+
+/* Borlandified and identical */
 void FIG_remove_from_list(signed char id, signed char v2)
 {
 	Bit8u* p = Real2Host(ds_readd(0xe108));
@@ -278,8 +278,8 @@ void FIG_remove_from_list(signed char id, signed char v2)
 	if (!v2)
 		ds_writeb(0xe089 + id, 0);
 	else
-		/* BC-TODO */
-		struct_copy(p_datseg + 0xe066, p, 35);
+//		struct_copy(p_datseg + 0xe066, p, 35);
+		*((struct dummy*)(p_datseg + 0xe066)) = *((struct dummy*)(p));
 
 	/* check if p == HEAD */
 	if (p == Real2Host(ds_readd(0xe108))) {
@@ -305,8 +305,9 @@ void FIG_remove_from_list(signed char id, signed char v2)
 	host_writeb(p + 0x10, 0xff);
 }
 
-/* Borlandified and nearly identical, see BC-TODO */
-signed char FIG_add_to_list(signed char v) {
+/* Borlandified and identical */
+signed char FIG_add_to_list(signed char v)
+{
 	RealPt p1;
 	RealPt p2;
 	signed short x, y;
@@ -320,7 +321,8 @@ signed char FIG_add_to_list(signed char v) {
 
 		ds_writed(0xe108, ds_readd(0xe37c));
 
-		struct_copy(Real2Host(ds_readd(0xe108)), p_datseg + 0xe066, 35);
+//		struct_copy(Real2Host(ds_readd(0xe108)), p_datseg + 0xe066, 35);
+		*((struct dummy*)(Real2Host(ds_readd(0xe108)))) = *((struct dummy*)(p_datseg + 0xe066));
 
 		if (v == -1)
 			host_writeb(Real2Host(ds_readd(0xe108)) + 0x10,
@@ -340,8 +342,8 @@ signed char FIG_add_to_list(signed char v) {
 		p1 += 35;
 	}
 
-	/* BC-TODO: */
-	struct_copy(Real2Host(p1), p_datseg + 0xe066, 35);
+//	struct_copy(Real2Host(p1), p_datseg + 0xe066, 35);
+	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + 0xe066));
 
 	if (v == -1)
 		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
@@ -350,13 +352,13 @@ signed char FIG_add_to_list(signed char v) {
 
 	p2 = (RealPt)ds_readd(0xe108);
 
-	if ((signed char)ds_readb(0xe077) != -1)
+	if (ds_readbs(0xe077) != -1)
 		for (; (signed char)mem_readb(Real2Phys(p2) + 3) <= x &&
 		((signed char)mem_readb(Real2Phys(p2) + 3) != x ||
 		(signed char)mem_readb(Real2Phys(p2) + 4) >= y) &&
 		((signed char)mem_readb(Real2Phys(p2) + 3) != x ||
 		(signed char)mem_readb(Real2Phys(p2) + 4) != y ||
-		(signed char)mem_readb(Real2Phys(p2) + 0x11) <= (signed char)ds_readb(0xe077))
+		(signed char)mem_readb(Real2Phys(p2) + 0x11) <= ds_readbs(0xe077))
 			/* p2 = p2->next */
 			 ; p2 = (RealPt)host_readd(Real2Host(p2) + 0x1b)) {
 
@@ -405,7 +407,8 @@ signed char FIG_add_to_list(signed char v) {
 	@hero_nr:	number of the hero
 */
 /* Borlandified and identical */
-void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
+void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr)
+{
 	RealPt hero;
 	unsigned short fg_bak, bg_bak;
 
@@ -452,7 +455,7 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr) {
  * @loc:	0 - left side, 1 = right side
  * @id:		ID of the enemy
  */
-/* Borlandified and nearly identical, see BC-TODO */
+/* Borlandified and identical */
 void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 {
 	signed short height_width;
@@ -462,7 +465,6 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 	RealPt p1;
 	struct nvf_desc nvf;
 
-	/* BC-TODO */
 	p1 = F_PADD((RealPt)(ds_readd(0xc3a9)), -1288);
 
 	p_enemy = p_datseg + 0xd0df + id * 62;
