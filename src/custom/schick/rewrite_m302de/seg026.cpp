@@ -11,6 +11,40 @@
 namespace M302de {
 #endif
 
+/* Borlandified and identical */
+void init_text(void)
+{
+	Bit32s len;
+	signed short handle;
+
+	/* FONT6 */
+	handle = load_archive_file(0x0b);
+	read_archive_file(handle, Real2Host(ds_readd(0xd2c1)), 1000);
+	bc_close(handle);
+
+	/* TEXT.LTX */
+	handle = load_archive_file(0x0e);
+	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2b9)), 64000);
+	bc_close(handle);
+
+	split_textbuffer(Real2Host(ds_readd(0xc3b5)), (RealPt)ds_readd(0xd2b9), len);
+
+	/* ITEMNAME */
+	handle = load_archive_file(0xd0);
+	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2a5)), 5000);
+	bc_close(handle);
+
+	split_textbuffer(Real2Host(ds_readd(0xe22f)), (RealPt)ds_readd(0xd2a5), len);
+
+	/* MONNAMES */
+	handle = load_archive_file(0xd1);
+	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2a1)), 5000);
+	bc_close(handle);
+
+	split_textbuffer(Real2Host(ds_readd(0xe129)), (RealPt)ds_readd(0xd2a1), len);
+
+}
+
 void load_buffer_1(signed short index)
 {
 	signed int len;

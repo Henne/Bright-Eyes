@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+//0x20
+void init_text(void);
 //0x25
 void split_textbuffer(Bit8u *, RealPt, Bit32u);
 //0x2a

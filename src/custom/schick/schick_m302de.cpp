@@ -2937,8 +2937,9 @@ static int seg026(unsigned short offs) {
 	switch (offs) {
 
 	case 0x20: {
-		D1_LOG("ip=0x%04X unknown()\n", offs);
-		return 0;
+		D1_LOG("init_text()\n");
+		init_text();
+		return 1;
 	}
 	case 0x25: {
 		RealPt src = CPU_Pop32();
