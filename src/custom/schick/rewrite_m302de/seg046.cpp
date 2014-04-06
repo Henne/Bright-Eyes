@@ -178,11 +178,10 @@ void status_show(Bit16u index)
 	Bit8s val;
 	signed short width;
 	signed short height;
-	Bit16s at;
-	Bit16s pa;
-	Bit16s fb;
-	Bit16s l1;
-	Bit16u bp;
+	signed short at;
+	signed short pa;
+	signed short l1;
+	signed short bp;
 	signed short i;
 	signed short j;
 
@@ -473,31 +472,31 @@ void status_show(Bit16u index)
 				/* novice mode */
 
 				/* calculate AT base value */
-				l1 = (host_readb(Real2Host(hero) + 0x32) & 1) ? -1: 0;
-
-				if (host_readb(Real2Host(hero) + 0x78) < 7) {
-					/* melee weapons */
-					at = host_readbs(Real2Host(hero) + 0x68 + host_readbs(Real2Host(hero) + 0x78)) +
-						host_readbs(Real2Host(hero) + 0x76) -
-						abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
+				if (host_readb(Real2Host(hero) + 0x32) & 1) {
+					l1 = -1;
 				} else {
-					/* range weapons */
-					at = host_readbs(Real2Host(hero) + 0x68) -
-						abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
+					l1 = 0;
 				}
+
+				at = (host_readbs(Real2Host(hero) + 0x78) < 7) ?
+					/* melee weapons */
+					(host_readbs(Real2Host(hero) + 0x68 + host_readbs(Real2Host(hero) + 0x78)) +
+						host_readbs(Real2Host(hero) + 0x76) -
+						(host_readbs(Real2Host(hero) + 0x32) / 2)) :
+					/* range weapons */
+					(host_readbs(Real2Host(hero) + 0x68) -
+						(host_readbs(Real2Host(hero) + 0x32) / 2));
 				at += l1;
 
 				/* calculate PA base value */
-				if (host_readb(Real2Host(hero) + 0x78) < 7) {
+				pa = (host_readbs(Real2Host(hero) + 0x78) < 7) ?
 					/* melee weapons */
-					pa = host_readbs(Real2Host(hero) + 0x6f + host_readbs(Real2Host(hero) + 0x78)) +
+					(host_readbs(Real2Host(hero) + 0x6f + host_readbs(Real2Host(hero) + 0x78)) +
 						host_readbs(Real2Host(hero) + 0x77) -
-						abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
-				} else {
+						(host_readbs(Real2Host(hero) + 0x32) / 2)) :
 					/* range weapons */
-					pa = host_readbs(Real2Host(hero) + 0x6f) -
-						abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
-				}
+					 (host_readbs(Real2Host(hero) + 0x6f) -
+						(host_readbs(Real2Host(hero) + 0x32) / 2));
 
 				if (at < 0)
 					at = 0;
@@ -538,7 +537,7 @@ void status_show(Bit16u index)
 					at, pa,							/* AT PA */
 					host_readbs(Real2Host(hero) + 0x66),			/* MR */
 					host_readbs(Real2Host(hero) + 0x30) + host_readbs(Real2Host(hero) + 0x31),	/* RS */
-					host_readbs(Real2Host(hero) + 0x47) + host_readw(Real2Host(hero) + 0x60) +
+					host_readws(Real2Host(hero) + 0x60) + host_readbs(Real2Host(hero) + 0x47) +
 						host_readbs(Real2Host(hero) + 0x48),		/* Ausdauer */
 					host_readw(Real2Host(hero) + 0x2d8),				/* Last */
 					bp);							/* BP */
@@ -554,7 +553,7 @@ void status_show(Bit16u index)
 			ds_writew(0xd313, 275);
 			ds_writew(0xd315, 295);
 
-			fb = (host_readbs(Real2Host(hero) + 0x38) +
+			j = (host_readbs(Real2Host(hero) + 0x38) +
 				host_readbs(Real2Host(hero) + 0x39) +
 				host_readbs(Real2Host(hero) + 0x41) +
 				host_readbs(Real2Host(hero) + 0x42) +
@@ -566,23 +565,19 @@ void status_show(Bit16u index)
 			else
 				l1 = 0;
 
-			if (host_readbs(Real2Host(hero) + 0x78) < 7) {
-				at = host_readbs(Real2Host(hero) + 0x68 + host_readbs(Real2Host(hero) + 0x78)) +
+			at = (host_readbs(Real2Host(hero) + 0x78) < 7) ?
+				(host_readbs(Real2Host(hero) + 0x68 + host_readbs(Real2Host(hero) + 0x78)) +
 					host_readbs(Real2Host(hero) + 0x76) -
-					abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
-			} else {
-				at = host_readbs(Real2Host(hero) + 0x68) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
-			}
+					host_readbs(Real2Host(hero) + 0x32) / 2) :
+				host_readbs(Real2Host(hero) + 0x68) - host_readbs(Real2Host(hero) + 0x32) / 2;
 
 			at += l1;
 
-			if (host_readbs(Real2Host(hero) + 0x78) < 7) {
-				pa = host_readbs(Real2Host(hero) + 0x6f + host_readbs(Real2Host(hero) + 0x78)) +
+			pa =  (host_readbs(Real2Host(hero) + 0x78) < 7) ?
+				host_readbs(Real2Host(hero) + 0x6f + host_readbs(Real2Host(hero) + 0x78)) +
 					host_readbs(Real2Host(hero) + 0x77) -
-					abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
-			} else {
-				pa = host_readbs(Real2Host(hero) + 0x6f) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2;
-			}
+					host_readbs(Real2Host(hero) + 0x32) / 2 :
+				host_readbs(Real2Host(hero) + 0x6f) - host_readbs(Real2Host(hero) + 0x32) / 2;
 
 			if (at < 0)
 				at = 0;
@@ -595,40 +590,40 @@ void status_show(Bit16u index)
 				host_readbs(Real2Host(hero) + 0x67),
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc0)),
 
-				host_readbs(Real2Host(hero) + 0x68) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
-				host_readbs(Real2Host(hero) + 0x6f) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
+				host_readbs(Real2Host(hero) + 0x68) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x6f) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc4)),
 
-				host_readbs(Real2Host(hero) + 0x69) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
-				host_readbs(Real2Host(hero) + 0x70) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
+				host_readbs(Real2Host(hero) + 0x69) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x70) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc8)),
 
-				host_readbs(Real2Host(hero) + 0x6a) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
-				host_readbs(Real2Host(hero) + 0x71) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
+				host_readbs(Real2Host(hero) + 0x6a) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x71) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xcc)),
 
-				host_readbs(Real2Host(hero) + 0x6b) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
-				host_readbs(Real2Host(hero) + 0x72) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
+				host_readbs(Real2Host(hero) + 0x6b) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x72) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd0)),
 
-				host_readbs(Real2Host(hero) + 0x6c) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
-				host_readbs(Real2Host(hero) + 0x73) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
+				host_readbs(Real2Host(hero) + 0x6c) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x73) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd4)),
 
-				host_readbs(Real2Host(hero) + 0x6d) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
-				host_readbs(Real2Host(hero) + 0x74) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
+				host_readbs(Real2Host(hero) + 0x6d) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x74) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd8)),
 
-				host_readbs(Real2Host(hero) + 0x6e) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
-				host_readbs(Real2Host(hero) + 0x75) - abs(host_readbs(Real2Host(hero) + 0x32)) / 2,
+				host_readbs(Real2Host(hero) + 0x6e) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x75) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				at,
 				pa,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xdc)),
-				host_readbs(Real2Host(hero) + 0x10f) + fb,
+				host_readbs(Real2Host(hero) + 0x10f) + j,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xe0)),
-				host_readbs(Real2Host(hero) + 0x110) + fb);
+				host_readbs(Real2Host(hero) + 0x110) + j);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 60);
 			break;
@@ -686,19 +681,19 @@ void status_show(Bit16u index)
 			/* print values */
 			set_textcolor(0, 2);
 
-			for (i = 0; i < 8; i++) {
+			for (j = 0; j < 8; j++) {
 
-				j = ds_readb(0xd03 + i * 2);
+				i = ds_readbs(0xd03 + j * 2);
 
-				while (ds_readb(0xd03 + i * 2) + ds_readb(0xd03 + 1 + i * 2) > j) {
+				while (ds_readbs(0xd03 + j * 2) + ds_readbs(0xd03 + 1 + j * 2) > i) {
 
 					status_show_spell(Real2Host(hero),
-						j,
-						ds_readb(0xd03 + i * 2),
-						ds_readw(0x642e + 0 + i * 6),
-						ds_readw(0x642e + 2 + i * 6),
-						ds_readw(0x642e + 4 + i * 6));
-					j++;
+						i,
+						ds_readbs(0xd03 + j * 2),
+						ds_readws(0x642e + 0 + j * 6),
+						ds_readws(0x642e + 2 + j * 6),
+						ds_readws(0x642e + 4 + j * 6));
+					i++;
 				}
 			}
 			break;
@@ -732,19 +727,19 @@ void status_show(Bit16u index)
 			/* show values */
 			set_textcolor(0, 2);
 
-			for (i = 0; i < 4; i++) {
+			for (j = 0; j < 4; j++) {
 
-				j = ds_readb(0xd13 + i * 2);
+				i = ds_readbs(0xd13 + j * 2);
 
-				while (ds_readb(0xd13 + i * 2) + ds_readb(0xd13 + 1 + i * 2) > j) {
+				while (ds_readbs(0xd13 + j * 2) + ds_readbs(0xd13 + 1 + j * 2) > i) {
 
 					status_show_spell(Real2Host(hero),
-						j,
-						ds_readb(0xd13 + i * 2),
-						ds_readw(0x645e + 0 + i * 6),
-						ds_readw(0x645e + 2 + i * 6),
-						ds_readw(0x645e + 4 + i * 6));
-					j++;
+						i,
+						ds_readbs(0xd13 + j * 2),
+						ds_readws(0x645e + 0 + j * 6),
+						ds_readws(0x645e + 2 + j * 6),
+						ds_readws(0x645e + 4 + j * 6));
+					i++;
 				}
 			}
 			break;
@@ -760,7 +755,7 @@ void status_show(Bit16u index)
 
 	ds_writew(0xc3cb, 1);
 
-	if (ds_readw(0x2c9b) >= 3) {
+	if (ds_readws(0x2c9b) >= 3) {
 		do_v_line(Real2Phys(ds_readd(0xd2ff)), 107, 54, 195, 0);
 		do_v_line(Real2Phys(ds_readd(0xd2ff)), 212, 54, 195, 0);
 	}
