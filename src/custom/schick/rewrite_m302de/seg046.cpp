@@ -1,6 +1,10 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg046 (Status)
-	Functions rewritten: 4/4
+ *	Rewrite of DSA1 v3.02_de functions of seg046 (Status)
+ *	Functions rewritten: 4/4 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg046.cpp
 */
 
 #include <stdio.h>
