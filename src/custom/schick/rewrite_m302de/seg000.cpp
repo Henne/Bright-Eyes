@@ -20,6 +20,18 @@ RealPt F_PADD(RealPt p, Bit32s off)
 	return RealMake(reg_dx, reg_ax);
 }
 
+Bit32s F_PSUB(RealPt p1, RealPt p2)
+{
+	reg_dx = RealSeg(p1);
+	reg_ax = RealOff(p1);
+
+	reg_cx = RealSeg(p2);
+	reg_bx = RealOff(p2);
+
+	CALLBACK_RunRealFar(reloc_game, 0xa10);
+	return ((reg_dx << 16) | reg_ax);
+}
+
 void bc_exit(Bit16s status)
 {
 	CPU_Push16(status);

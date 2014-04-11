@@ -6,6 +6,7 @@ struct ffblk {
 };
 
 RealPt F_PADD(RealPt, Bit32s);
+Bit32s F_PSUB(RealPt, RealPt);
 void bc_exit(Bit16s);
 RealPt bc__dos_getvect(Bit8u);
 void bc__dos_setvect(Bit8u, RealPt);
@@ -40,6 +41,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #include <DOS.H>
 #include <BIOS.H>
 #include <DIR.H>
+#include <CTYPE.H>
 #include <ALLOC.H>
 #include <CONIO.H>
 
@@ -51,6 +53,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 
 #define F_PADD(p, o) ((HugePt)(p) + o)
+#define F_PSUB(p1, p2) ((HugePt)(p1) - (HugePt)(p2))
 
 #define bc_exit exit
 
