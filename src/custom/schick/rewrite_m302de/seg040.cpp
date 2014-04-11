@@ -1,12 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg040 (scenarios)
- *	Functions rewritten: 2/3
+ *	Functions rewritten: 3/3
  */
 
 #include <string.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg006.h"
 #include "seg032.h"
@@ -72,6 +73,127 @@ void FIG_chessboard_init(void)
 			i++;
 		}
 	}
+}
+
+/* Borlandified and identical */
+void FIG_preload_gfx(void)
+{
+	Bit8u *p1;
+	signed short i;
+	struct nvf_desc nvf;
+	signed short handle;
+
+	ds_writed(0xe108, 0);
+
+	ds_writed(0xe37c, (Bit32u)F_PADD(ds_readd(0xd2db), -0x115d));
+
+	memset(Real2Host(ds_readd(0xe37c)), 0, 0x115d);
+	p1 = Real2Host(ds_readd(0xe37c));
+
+	for (i = 0; i < 127; i++) {
+		host_writeb(p1 + 0x10, -1);
+		p1+=0x23;
+		ds_writeb(0xe089 + i, 0);
+	}
+
+	ds_writed(0xd86a, (Bit32u)F_PADD(ds_readd(0xbd28), 0xd8));
+
+	ds_writed(0xd866, (Bit32u)((RealPt)ds_readd(0xd86a) + 0x1953));
+
+	ds_writed(0xe388, (Bit32u)F_PADD(ds_readd(0xd866), 0xf5f));
+
+	ds_writed(0xe384, (Bit32u)F_PADD(ds_readd(0xe388), 0xfc));
+
+	ds_writed(0xe380, (Bit32u)F_PADD(ds_readd(0xe384), 0x7e));
+
+	ds_writed(0xd86e, (Bit32u)F_PADD(ds_readd(0xe380), 0x7e));
+
+	ds_writed(0xbd30, (Bit32u)F_PADD(ds_readd(0xe37c), -0x4217));
+
+	/* set something in the hero charactersheet to -1 */
+	for (i = 0; i <= 6; i++) {
+		host_writeb(get_hero(i) + 0x81, -1);
+	}
+
+	/* set something in the enemy charactersheet to -1 */
+	for (i = 0; i < 20; i++) {
+		ds_writeb(i * 0x3e + 0xd34b, 0);
+		ds_writeb(i * 0x3e + 0xd371, -1);
+	}
+
+	for (i = 0; i < 90; i++) {
+		ds_writeb(0xd874 + i, -1);
+	}
+
+	for (i = 0; i <= 62; i++) {
+		host_writed(Real2Host(ds_readd(0xe388)) + i * 4, 0);
+		host_writews(Real2Host(ds_readd(0xe384)) + i * 2,
+			host_writews(Real2Host(ds_readd(0xe380)) + i * 2, 0));
+	}
+
+	ds_writeb(0xe38e, -1);
+
+	for (i = 0; i < 20; i++) {
+		ds_writeb(0xe38f + i, -1);
+	}
+
+	ds_writeb(0xe38d, -1);
+	ds_writeb(0xe38c, -1);
+
+	/* load ANI.DAT */
+	ds_writed(0xe378, ds_readd(0xd86e));
+	add_ds_ws(0xd86e, 9851);
+	handle = load_archive_file(0xd8);
+	read_archive_file(handle, Real2Host(ds_readd(0xe378)), 9851);
+	bc_close(handle);
+
+	/* load WEAPANI.DAT */
+	ds_writed(0xe374, ds_readd(0xd86e));
+	add_ds_ws(0xd86e, 1370);
+	handle = load_archive_file(0xd9);
+	read_archive_file(handle, Real2Host(ds_readd(0xe374)), 1370);
+	bc_close(handle);
+
+	/* process NVFs */
+
+	ds_writed(0xd862, ds_readd(0xd86e));
+	add_ds_ws(0xd86e, 300);
+
+	nvf.dst = Real2Host(ds_readd(0xd862));
+	nvf.src = Real2Host(ds_readd(0xd2e3));
+	nvf.nr = 10;
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&i;
+	nvf.height = (Bit8u*)&i;
+	process_nvf(&nvf);
+
+	ds_writed(0xd85e, ds_readd(0xd86e));
+	add_ds_ws(0xd86e, 300);
+
+	nvf.dst = Real2Host(ds_readd(0xd85e));
+	nvf.src = Real2Host(ds_readd(0xd2e3));
+	nvf.nr = 11;
+	nvf.type = 0;
+	process_nvf(&nvf);
+
+	ds_writed(0xd29d, ds_readd(0xd86e));
+	add_ds_ws(0xd86e, 0xe8c);
+
+	nvf.dst = Real2Host(ds_readd(0xd29d));
+	nvf.src = Real2Host(ds_readd(0xd2e3));
+	nvf.nr = 17;
+	nvf.type = 0;
+	process_nvf(&nvf);
+
+	ds_writed(0xd85a, ds_readd(0xd86e));
+	add_ds_ws(0xd86e, 400);
+	ds_writed(0xd856, ds_readd(0xd86e));
+	add_ds_ws(0xd86e, 1300);
+
+	ds_writed(0xe370, F_PSUB(ds_readd(0xbd30), ds_readd(0xd86e)));
+
+	ds_writew(0x605e, 0);
+	ds_writeb(0xe36f, 0);
 }
 
 void FIG_draw_scenario(void)

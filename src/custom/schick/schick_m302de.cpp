@@ -3612,7 +3612,9 @@ static int seg040(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		return 0;
+		D1_LOG("FIG_preload_gfx()\n");
+		FIG_preload_gfx();
+		return 1;
 	}
 	case 0x2a: {
 		D1_INFO("FIG_draw_scenario()\n");
