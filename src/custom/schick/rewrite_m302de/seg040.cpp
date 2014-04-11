@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg040 (scenarios)
- *	Functions rewritten: 3/3
+ *	Functions rewritten: 3/3 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg040.cpp
  */
 
 #include <string.h>
@@ -17,7 +21,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void FIG_chessboard_init(void)
 {
 	signed short i;
@@ -75,7 +78,6 @@ void FIG_chessboard_init(void)
 	}
 }
 
-/* Borlandified and identical */
 void FIG_preload_gfx(void)
 {
 	Bit8u *p1;
@@ -196,7 +198,6 @@ void FIG_preload_gfx(void)
 	ds_writeb(0xe36f, 0);
 }
 
-/* Borlandified and identical */
 void FIG_draw_scenario(void)
 {
 	signed short cb_x;
