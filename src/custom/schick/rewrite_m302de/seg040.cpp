@@ -196,15 +196,17 @@ void FIG_preload_gfx(void)
 	ds_writeb(0xe36f, 0);
 }
 
+/* Borlandified and identical */
 void FIG_draw_scenario(void)
 {
-	struct nvf_desc nvf;
-	RealPt ptr;
-	signed short height;
-	signed short width;
-	signed short obj_id;
-	signed short cb_y;
 	signed short cb_x;
+	signed short cb_y;
+	signed short obj_id;
+	signed short width;
+	signed short height;
+	RealPt ptr;
+	struct nvf_desc nvf;
+
 
 	for (cb_x = 0; cb_x < 24; cb_x++) {
 		for (cb_y = 0; cb_y < 24; cb_y++) {
@@ -236,9 +238,9 @@ void FIG_draw_scenario(void)
 						host_writew(Real2Host(ds_readd(0xe380)) + obj_id * 2, height);
 
 						/* adjust pointer */
-						ds_writed(0xd86e, ds_readd(0xd86e) + (height * width + 8));
+						add_ds_ws(0xd86e, (width * height + 8));
 						/* var -= height * width + 8; */
-						ds_writed(0xe370, ds_readd(0xe370) - (height * width + 8));
+						sub_ds_ds(0xe370, (width * height + 8L));
 					}
 
 					ds_writew(0xe066, 0);
@@ -251,8 +253,10 @@ void FIG_draw_scenario(void)
 					ds_writeb(0xe06e, host_readb(Real2Host(ds_readd(0xe384)) + obj_id * 2));
 					ds_writeb(0xe06f, 0);
 					ds_writeb(0xe070, 0);
-					ds_writeb(0xe071, host_readb(Real2Host(ds_readd(0xe384)) + obj_id * 2) - 1);
-					ds_writeb(0xe072, host_readb(Real2Host(ds_readd(0xe380)) + obj_id * 2) - 1);
+					ds_writeb(0xe071,
+						(signed char)(host_readbs(Real2Host(ds_readd(0xe384)) + obj_id * 2)-1));
+					ds_writeb(0xe072,
+						(signed char)(host_readbs(Real2Host(ds_readd(0xe380)) + obj_id * 2)-1));
 					ds_writeb(0xe07b, 0);
 					ds_writeb(0xe073, 0);
 					ds_writeb(0xe075, -1);
@@ -262,10 +266,8 @@ void FIG_draw_scenario(void)
 					ds_writeb(0xe078, 1);
 					ds_writeb(0xe079, -1);
 					ds_writeb(0xd874 + ds_readw(0x605e), FIG_add_to_list(-1));
-					/* inc */
-					ds_writew(0x605e, ds_readw(0x605e) + 1);
+					inc_ds_ws(0x605e);
 					place_obj_on_cb(cb_x, cb_y, obj_id + 50, obj_id, 0);
-					/* 0x5ba - 0x6aa */
 				}
 			}
 		}
