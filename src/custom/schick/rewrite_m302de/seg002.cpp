@@ -791,8 +791,8 @@ signed short open_temp_file(unsigned short index)
 {
 /* HACK: need a Real Pointer to 40 bytes on the DOSBox Stack */
 #if !defined(__BORLANDC__)
-	RealPt tmppath = RealMake(SegValue(ss), reg_esp);
 	reg_esp -= 40;
+	RealPt tmppath = RealMake(SegValue(ss), reg_sp);
 #else
 	unsigned char tmppath[40];
 #endif
