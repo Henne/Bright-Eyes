@@ -7422,7 +7422,17 @@ static int n_seg045(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0000: {
-		return 0;
+		CPU_Pop16();
+		Bit16s fight_id = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		D1_LOG("seg045_0000(%d, %d, %d);", fight_id, a2, a3);
+		seg045_0000(fight_id, a2, a3);
+
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(fight_id);
+		return 1;
 	}
 	case 0x014f: {
 		CPU_Pop16();

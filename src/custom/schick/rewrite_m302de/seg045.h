@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void seg045_0000(signed short, signed short, signed short);
+
 /* 0x25 */
 void FIG_remove_smth(void);
 
