@@ -170,9 +170,9 @@ void load_area_description(unsigned short type)
 	if (type != 0) {
 
 		/* calc archive file index */
-		if (ds_readb(0x2d6e) != 0)
+		if (ds_readb(DUNGEON_INDEX) != 0)
 			/* dungeon */
-			f_index = ds_readb(0x2d6e) + 0xf1;
+			f_index = ds_readb(DUNGEON_INDEX) + 0xf1;
 		else
 			/* city */
 			f_index = ds_readb(CURRENT_TOWN) + 0x19;
@@ -182,7 +182,7 @@ void load_area_description(unsigned short type)
 		/* save dungeon level */
 		ds_writew(0x5eba, ds_readb(0x2d75));
 
-		if (ds_readb(0x2d6e) != 0)
+		if (ds_readb(DUNGEON_INDEX) != 0)
 			ds_writew(0x5ebe, 1);
 		else
 			ds_writew(0x5ebe, 0);
@@ -190,7 +190,7 @@ void load_area_description(unsigned short type)
 		/* load DAT or DNG file */
 		fd = load_archive_file(f_index + 0x8000);
 
-		if (ds_readb(0x2d6e) == 0 &&
+		if (ds_readb(DUNGEON_INDEX) == 0 &&
 			(ds_readb(CURRENT_TOWN) == 1 || ds_readb(CURRENT_TOWN) == 0x27 ||
 				ds_readb(CURRENT_TOWN) == 0x12)) {
 			/* path taken in THORWAL PREM and PHEXCAER */
@@ -212,7 +212,7 @@ void load_area_description(unsigned short type)
 			bc__read(fd, p_datseg + 0xe442, 0x40);
 			ds_writew(0x5eb8, 0);
 
-			if (ds_readb(0x2d6e) == 0) {
+			if (ds_readb(DUNGEON_INDEX) == 0) {
 				/* TODO: is that neccessary ? */
 				memset(p_datseg + 0xc025, -1, 900);
 				ds_writew(0x5eb8,

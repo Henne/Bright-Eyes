@@ -584,12 +584,12 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 		}
 
 		/* check for the piratecave to bring efferd a gift */
-		if ((item == 0x66 || item == 0x61) && ds_readb(0x2d6e) == 0x0b &&
+		if ((item == 0x66 || item == 0x61) && ds_readb(DUNGEON_INDEX) == 0x0b &&
 			ds_readw(X_TARGET) == 9 && ds_readw(Y_TARGET) == 9)
 			ds_writeb(0x415f, 1);
 
 		/* check for the mine in oberorken to bring ingerimm a gift */
-		if (item_pleasing_ingerimm(item) && ds_readb(0x2d6e) == 0x0c &&
+		if (item_pleasing_ingerimm(item) && ds_readb(DUNGEON_INDEX) == 0x0c &&
 			ds_readw(X_TARGET) == 2 && ds_readw(Y_TARGET) == 14 &&
 			ds_readb(0x2d75) == 1)
 			ds_writeb(0x3f9f, 1);
