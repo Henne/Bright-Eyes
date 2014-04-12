@@ -79,6 +79,9 @@ struct enemy_status {
 	unsigned short bit5	:1;
 	unsigned short bit6	:1;
 	unsigned short illusion	:1;
+
+	unsigned short bit8	:1;
+	unsigned short bb	:1;
 };
 
 struct item_status {

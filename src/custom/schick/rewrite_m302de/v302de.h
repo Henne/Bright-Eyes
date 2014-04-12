@@ -342,6 +342,19 @@ static inline unsigned short hero_transformed(Bit8u *hero) {
 }
 
 /**
+ * enemy_dead() -	check if enemy is dead
+ * @enemy:	ptr to enemy
+ *
+ * 0 = alive / 1 = dead
+ */
+static inline unsigned short enemy_dead(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x31) >> 0) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * enemy_stoned() -	check if enemy is stoned
  * @enemy:	ptr to enemy
  *
@@ -362,6 +375,19 @@ static inline unsigned short enemy_stoned(Bit8u *enemy) {
  */
 static inline unsigned short enemy_illusion(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 7) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
+ * enemy_bb() -	check if enemy is under boeser blick spell
+ * @enemy:	ptr to enemy
+ *
+ * 0 = no / 1 = casted
+ */
+static inline unsigned short enemy_bb(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x32) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -757,8 +783,10 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
+#define enemy_dead(enemy)  ((*(struct enemy_status*)((enemy) + 0x31)).dead)
 #define enemy_stoned(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).stoned)
 #define enemy_illusion(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).illusion)
+#define enemy_bb(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).bb)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
 
