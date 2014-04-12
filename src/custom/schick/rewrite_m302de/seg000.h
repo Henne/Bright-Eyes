@@ -32,6 +32,9 @@ RealPt bc_memmove(RealPt, RealPt, Bit16u);
 Bit16s bc__creat(RealPt, Bit16u);
 
 Bit16s bc__open(RealPt, Bit16u);
+
+void bc_qsort(RealPt, Bit16u, Bit16u, RealPt);
+
 Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 }
@@ -86,6 +89,8 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 #define mem_memcpy memcpy
 #define bc_memmove memmove
+
+#define bc_qsort qsort
 
 #define DOS_SEEK_SET SEEK_SET
 #endif

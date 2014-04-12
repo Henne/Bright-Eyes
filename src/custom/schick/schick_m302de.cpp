@@ -648,7 +648,19 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x3d74: {
-			return 0;
+			RealPt base = CPU_Pop32();
+			Bit16u nmemb = CPU_Pop16();
+			Bit16u size = CPU_Pop16();
+			RealPt compar = CPU_Pop32();
+
+			D1_LOG("qsort(0x%x, 0x%x, 0x%x, 0x%x)\n",
+				base, nmemb, size, compar);
+			bc_qsort(base, nmemb, size, compar);
+			CPU_Push32(compar);
+			CPU_Push16(size);
+			CPU_Push16(nmemb);
+			CPU_Push32(base);
+			return 1;
 		}
 		/* ret 0x000a */
 		case 0x41d2: {

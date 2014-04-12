@@ -233,6 +233,19 @@ Bit16s bc__open(RealPt fname, Bit16u attrib)
 	return reg_ax;
 }
 
+void bc_qsort(RealPt base, Bit16u nmemb, Bit16u size, RealPt fcmp)
+{
+	CPU_Push32(fcmp);
+	CPU_Push16(size);
+	CPU_Push16(nmemb);
+	CPU_Push32(base);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x3d74);
+	CPU_Pop32();
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop32();
+}
+
 Bit32s bc__write(Bit16u fd, RealPt buf, Bit16u len)
 {
 	CPU_Push16(len);
