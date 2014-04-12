@@ -167,6 +167,11 @@ static inline void add_ds_ws(Bit16u off, Bit16s val)
 	ds_writew(off, ds_readws(off) + val);
 }
 
+static inline void sub_ds_ws(Bit16u off, Bit16s val)
+{
+	ds_writew(off, ds_readws(off) - val);
+}
+
 static inline void and_ds_ws(Bit16u off, Bit16s val)
 {
 	ds_writew(off, ds_readws(off) & val);
@@ -185,6 +190,11 @@ static inline void inc_ds_bs(Bit16u off)
 static inline void dec_ds_bs(Bit16u off)
 {
 	ds_writeb(off, ds_readb(off) - 1);
+}
+
+static inline void add_ds_bs(Bit16u off, Bit8s val)
+{
+	ds_writeb(off, ds_readbs(off) + val);
 }
 
 static inline void or_ds_bs(Bit16u off, const unsigned char val)
@@ -661,6 +671,8 @@ extern char ds[0xffff];
 #define inc_ds_bs(o) (*(Bit8s*)(ds + o))++
 #define dec_ds_bs(o) (*(Bit8s*)(ds + o))--
 
+#define add_ds_bs(o, val) (*(Bit8s*)(ds + o))+= (val)
+
 #define inc_ds_ws(o) (*(Bit16s*)(ds + o))++
 #define dec_ds_ws(o) (*(Bit16s*)(ds + o))--
 
@@ -721,6 +733,8 @@ extern Bit8u* city_ltx[];
 #define host_readws(p) *(Bit16s*)(p)
 #define host_readds(p) *(Bit32s*)(p)
 
+#define host_readws_disp_huge(p, disp) *((Bit16s*)(((Bit8u huge *)(p)) + (disp)))
+
 #define host_writeb(p, d)	(*(Bit8u*)(p) = d)
 #define host_writew(p, d)	(*(Bit16u*)(p) = d)
 #define host_writed(p, d)	(*(Bit32u*)(p) = d)
@@ -774,7 +788,7 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 #define get_itemsdat(nr) (char*)((RealPt)ds_readd(ITEMSDAT) + nr * 12)
 #define get_itemname(nr) (char*)((RealPt)(host_readd((RealPt)(ds_readd(ITEMSNAME)) + nr * 4)))
 
-#define get_cb_val(x, y) (host_readbs((RealPt)ds_readd(CHESSBOARD) + y * 25 + x))
+#define get_cb_val(x, y) (host_readbs((RealPt)ds_readd(CHESSBOARD) + ((y) * 25) + (x)))
 #define set_cb_val(x, y, val) (host_writeb(((RealPt)ds_readd(CHESSBOARD)) + y * 25 + x, val))
 
 #endif
