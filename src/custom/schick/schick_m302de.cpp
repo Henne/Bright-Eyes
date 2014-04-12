@@ -648,6 +648,7 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0x3d74: {
+			return 0;
 			RealPt base = CPU_Pop32();
 			Bit16u nmemb = CPU_Pop16();
 			Bit16u size = CPU_Pop16();
