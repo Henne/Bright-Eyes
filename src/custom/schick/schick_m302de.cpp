@@ -7260,7 +7260,7 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x00ae: {
-		D1_INFO("%s:%x\n", __func__, offs);
+		D1_LOG("%s:%x\n", __func__, offs);
 		return 0;
 	}
 	case 0x2e3: {
@@ -7301,11 +7301,11 @@ static int n_seg037(unsigned offs) {
 		return 0;
 	}
 	case 0x791: {
-		D1_INFO("%s:%x\n", __func__, offs);
+		D1_LOG("%s:%x\n", __func__, offs);
 		return 0;
 	}
 	case 0xb3e: {
-		D1_INFO("%s:%x\n", __func__, offs);
+		D1_LOG("%s:%x\n", __func__, offs);
 		return 0;
 	}
 	default:
