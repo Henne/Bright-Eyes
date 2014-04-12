@@ -26,7 +26,6 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG036.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG037.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG038.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG039.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG044.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG045.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG050.CPP
@@ -60,6 +59,7 @@
 @REM ..\BIN\TASM.EXE /m /w+ /ml /iAIL AIL\AIL.ASM SEG011.OBJ
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG024.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG029.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG039.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG040.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG041.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG046.CPP

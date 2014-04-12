@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg039 (fight)
  *	Functions rewritten 7/7 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg039.cpp
 */
 
 #include <stdlib.h>
@@ -20,7 +24,6 @@ namespace M302de {
 #endif
 
 /* is used at selecting a target */
-/* Borlandified and identical */
 signed short seg039_0000(signed short v1, signed short v2, signed short v3, signed short v4)
 {
 	return __abs__(v1 - v3) + __abs__(v2 - v4);
@@ -33,7 +36,6 @@ signed short seg039_0000(signed short v1, signed short v2, signed short v3, sign
  *
  * Returns: range weapon type [3,5], 3 = shooting, 4 = throwing, 5 = spear weapon
 */
-/* Borlandified and identical */
 signed short FIG_get_range_weapon_type(Bit8u *hero)
 {
 	Bit8u *ptr;
@@ -67,7 +69,6 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
  * @enemy_id:	the ID of the enemy (MONSTER.DAT)
  * @round:	the fight round the enemy appears
  */
-/* Borlandified and identical */
 void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round)
 {
 
@@ -194,7 +195,6 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
  *
  *	Returns 1 if the placement was successful or 0 if not.
  */
-/* Borlandified and identical */
 unsigned short place_obj_on_cb(signed short x, signed short y, signed short object, signed char type, signed char dir)
 {
 
@@ -254,7 +254,6 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 	return 1;
 }
 
-/* Borlandified and identical */
 void FIG_load_enemy_sprites(Bit8u *ptr, signed short v1, signed short v2)
 {
 	struct nvf_desc nvf;
@@ -395,7 +394,6 @@ void FIG_init_enemies(void)
 	}
 }
 
-/* Borlandified and identical */
 void FIG_init_heroes(void)
 {
 	Bit8u *hero;
