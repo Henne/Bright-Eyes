@@ -359,6 +359,8 @@ void FIG_init_enemies(void)
 
 			ds_writeb(ENEMY_SHEETS + 38 + i * 62, -1);
 		}
+
+		or_ds_bs(0xd37c + i * 62, 1);
 	}
 
 	ds_writew(NR_OF_ENEMIES, 0);
