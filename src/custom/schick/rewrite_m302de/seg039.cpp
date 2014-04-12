@@ -8,6 +8,7 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg006.h"
 #include "seg007.h"
@@ -193,83 +194,76 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
  *
  *	Returns 1 if the placement was successful or 0 if not.
  */
-unsigned short place_obj_on_cb(unsigned short x, unsigned short y, signed short object, signed char type, signed char dir) {
+/* Borlandified and identical */
+unsigned short place_obj_on_cb(signed short x, signed short y, signed short object, signed char type, signed char dir)
+{
 
 	signed short i;
 
-	/* check if an object is already on that field */
-	if (get_cb_val(x, y) > 0)
-		return 0;
-
-	/* check if the object nr is valid */
-	if (object < 0)
+	/* check if an object is already on that field
+		check if the object nr is valid */
+	if ((get_cb_val(x, y) > 0) || (object < 0))
 		return 0;
 
 	/* check if the object is decoration */
 	if (object >= 50) {
-		if (type == 57 || type == 56 || type == 62) {
-			FIG_set_cb_field(y + 1, x, (signed char)object);
-			FIG_set_cb_field(y + 1, x - 1, (signed char)object);
-			FIG_set_cb_field(y, x - 1, (signed char)object);
-		} else if (type == 9) {
-				FIG_set_cb_field(y, x + 1, (signed char)object);
-				FIG_set_cb_field(y - 1, x, (signed char)object);
-		} else if (type == 43 || type == 44 || type == 48 ||
-				type == 49 || type == 50 || type == 51 ||
-				type == 52 || type == 53 || type == 54 ||
-				type == 55) {
+		if ((signed char)type == 57 || (signed char)type == 56 || (signed char)type == 62) {
+			FIG_set_cb_field(y + 1, x, object);
+			FIG_set_cb_field(y + 1, x - 1, object);
+			FIG_set_cb_field(y, x - 1, object);
+		} else if ((signed char)type == 9) {
+				FIG_set_cb_field(y, x + 1, object);
+				FIG_set_cb_field(y - 1, x, object);
+		} else if ((signed char)type == 43 || (signed char)type == 44 || (signed char)type == 48 ||
+				(signed char)type == 49 || (signed char)type == 50 || (signed char)type == 51 ||
+				(signed char)type == 52 || (signed char)type == 53 || (signed char)type == 54 ||
+				(signed char)type == 55) {
 
-				FIG_set_cb_field(y + 1, x, (signed char)object);
-		} else if (type == 60) {
+				FIG_set_cb_field(y + 1, x, object);
+		} else if ((signed char)type == 60) {
 			for (i = 0; i < 7; i++)
-				FIG_set_cb_field(y + i, x, (signed char)object);
-		} else if (type == 61) {
+				FIG_set_cb_field(y + i, x, object);
+		} else if ((signed char)type == 61) {
 			for (i = 0; i < 7; i++)
-				FIG_set_cb_field(y, x + i, (signed char)object);
+				FIG_set_cb_field(y, x + i, object);
 		}
 	} else {
 		/* if object is an enemy an needs 2 fields */
 		if (object >= 10 &&
-			is_in_byte_array(type, p_datseg + TWO_FIELDED_SPRITE_ID))
+			is_in_byte_array((signed char)type, p_datseg + TWO_FIELDED_SPRITE_ID))
 		{
-			signed short x_diff, y_diff;
-
-			x_diff = ds_readw(0x6018 + dir * 4);
-			y_diff = ds_readw(0x601a + dir * 4);
 
 			/* check if field is empty */
-			if (get_cb_val(x + x_diff, y + y_diff) != 0)
+			if ((get_cb_val(x + ds_readws(0x6018 + dir * 4), y + ds_readws(0x601a + dir * 4)) != 0) ||
+				(y + ds_readws(0x601a + dir * 4) < 0) ||
+				(y + ds_readws(0x601a + dir * 4) > 23) ||
+				(x + ds_readws(0x6018 + dir * 4) < 0 ||
+				(x + ds_readws(0x6018 + dir * 4) > 23)))
+			{
 				return 0;
-
-			x_diff += x;
-			y_diff += y;
-
-			/* check if y is in the borders */
-			if (y_diff < 0 || y_diff > 23)
-				return 0;
-			/* check if x is in the borders */
-			if (x_diff < 0 || x_diff > 23)
-				return 0;
-
-			FIG_set_cb_field(y_diff, x_diff, object + 20);
+			}
+			FIG_set_cb_field(y + ds_readws(0x601a + dir * 4),
+				x + ds_readws(0x6018 + dir * 4),
+					object + 20);
 		}
 	}
 
 	/* set the object to the chessboard */
-	FIG_set_cb_field(y, x, (signed char)object);
+	FIG_set_cb_field(y, x, object);
 
 	return 1;
 }
 
-void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
+/* Borlandified and identical */
+void FIG_load_enemy_sprites(Bit8u *ptr, signed short v1, signed short v2)
 {
 	struct nvf_desc nvf;
 	signed short l1;
 
 	ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(ptr + 1) * 5));
 	ds_writeb(0xe068, host_readbs(ptr + 0x27));
-	ds_writeb(0xe069, v1);
-	ds_writeb(0xe06a, v2);
+	ds_writeb(0xe069, (signed char)v1);
+	ds_writeb(0xe06a, (signed char)v2);
 
 	ds_writeb(0xe06b,
 		ds_readb(0x1531 + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
@@ -283,9 +277,8 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
 		ds_writeb(0xe06f, ds_readbs(0x6030 + host_readbs(ptr + 0x27)));
 		ds_writeb(0xe071, ds_readbs(0x6034 + host_readbs(ptr + 0x27)));
 
-		/* TODO: b = a = ++a; */
-		ds_writeb(0xe36f, ds_readb(0xe36f) + 1);
-		ds_writeb(0xe079, ds_readb(0xe36f));
+		/* TODO: b = ++a; */
+		ds_writeb(0xe079, ds_writeb(0xe36f, ds_readb(0xe36f) + 1));
 	} else {
 		/* sprite uses one field */
 		ds_writeb(0xe06f, 0);
@@ -305,9 +298,8 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
 	ds_writed(0xe07d, ds_readd(0xd86e));
 	ds_writeb(0xe07a, 0);
 
-	/* TODO: add and sub in place */
-	ds_writew(0xd86e, ds_readw(0xd86e) + 0x508);
-	ds_writed(0xe370, ds_readd(0xe370) - 0x508);
+	add_ds_ws(0xd86e, 0x508);
+	sub_ds_ds(0xe370, 0x508);
 	ds_writeb(0xe077, 0x63);
 
 	ds_writeb(0xe078, host_readb(ptr + 0x35) == 0 ? 1 : 0);
@@ -331,8 +323,8 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
 		ds_writeb(0xe069, v1 + ds_readbs(0x6018 + host_readbs(ptr + 0x27) * 4));
 		ds_writeb(0xe06a, v2 + ds_readbs(0x601a + host_readbs(ptr + 0x27) * 4));
 
-		ds_writeb(0xe06b, ds_readb(0xe06b)  + ds_readb(0x6028 + host_readbs(ptr + 0x27)));
-		ds_writeb(0xe06c, ds_readb(0xe06c)  + ds_readb(0x602c + host_readbs(ptr + 0x27)));
+		add_ds_bs(0xe06b, ds_readbs(0x6028 + host_readbs(ptr + 0x27)));
+		add_ds_bs(0xe06c, ds_readbs(0x602c + host_readbs(ptr + 0x27)));
 		ds_writeb(0xe06f, ds_readb(0x6038 + host_readbs(ptr + 0x27)));
 		ds_writeb(0xe071, ds_readb(0x603c + host_readbs(ptr + 0x27)));
 		ds_writeb(0xe070, 0);
@@ -346,8 +338,8 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed char v1, signed char v2)
 
 void FIG_init_enemies(void)
 {
-	register signed short i;
-	register signed short x;
+	signed short i;
+	signed short x;
 	signed short y;
 
 	/* Cleanup the old enemy tables */
@@ -375,45 +367,50 @@ void FIG_init_enemies(void)
 				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x16),
 				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x1a));
 
-			/* TODO: inc a */
-			ds_writew(NR_OF_ENEMIES, ds_readw(NR_OF_ENEMIES) + 1);
+			inc_ds_ws(NR_OF_ENEMIES);
 		}
 	}
 
 	/* place the enemies on the chessboard */
-	for (i = 0; i < ds_readw(NR_OF_ENEMIES); i++) {
+	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
-		x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x17);
-		y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x18);
+		x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x17);
+		y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x18);
 
 
 		/* place only the enemies from round 0 */
-		if (!host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x1a)) {
+		if (!host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x1a)) {
 
 			place_obj_on_cb(x, y, i + 10,
-				ds_readb(ENEMY_SHEETS + 1 + i * 62),
+				ds_readbs(i * 62 + (ENEMY_SHEETS + 1)),
 				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x19));
 		}
 
 		/* load the sprites */
-		FIG_load_enemy_sprites(p_datseg + ENEMY_SHEETS + i * 62,
-			(signed char)x, (signed char)y);
+#if !defined(__BORLANDC__)
+		FIG_load_enemy_sprites(Real2Host(RealMake(datseg, ENEMY_SHEETS + i * 62)), x, y);
+#else
+		FIG_load_enemy_sprites((Bit8u*)&((enemy_sheets*)(p_datseg +  ENEMY_SHEETS))[i], x, y);
+#endif
 	}
 }
 
-void FIG_init_heroes()
+/* Borlandified and identical */
+void FIG_init_heroes(void)
 {
 	Bit8u *hero;
-	Bit16s cb_x, cb_y;
-	Bit16s l_si, l_di;
+	signed short cb_x;
+	signed short cb_y;
+	signed short l_si;
+	signed short l_di;
 
 	for (l_si = 0; l_si <= 6; l_si++) {
 
-		if (host_readb(get_hero(l_si) + 0x81) == 0xff)
-			continue;
+		if (host_readbs(get_hero(l_si) + 0x81) != -1) {
 
-		FIG_remove_from_list(host_readb(get_hero(l_si) + 0x81), 0);
-		host_writeb(get_hero(l_si) + 0x81, 0xff);
+			FIG_remove_from_list(host_readb(get_hero(l_si) + 0x81), 0);
+			host_writeb(get_hero(l_si) + 0x81, 0xff);
+		}
 	}
 
 	for (l_si = 0; l_si <= 6; l_si++) {
@@ -433,23 +430,23 @@ void FIG_init_heroes()
 		/* check special fight */
 		if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
 			if (hero == Real2Host(ds_readd(0x3e20))) {
-				cb_x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a);
-				cb_y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b);
+				cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a);
+				cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b);
 				host_writeb(hero + 0x82,
 					host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7c));
 			} else {
 				do {
 					l_di = random_schick(6);
 
-					cb_x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7a);
-					cb_y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7b);
+					cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7a);
+					cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7b);
 					host_writeb(hero + 0x82,
 						host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7c));
 				} while (get_cb_val(cb_x, cb_y) != 0);
 			}
 		} else {
-			cb_x = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a + 4 * l_si);
-			cb_y = host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b + 4 * l_si);
+			cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a + 4 * l_si);
+			cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b + 4 * l_si);
 			/* Direction */
 			host_writeb(hero + 0x82, host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7c + 4 * l_si));
 		}
@@ -457,7 +454,7 @@ void FIG_init_heroes()
 		/* heros sleep until they appear */
 		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_si * 4 + 0x7d) != 0) {
 			if (!hero_dead(hero))
-				host_writeb(hero + 0xaa, host_readb(hero + 0xaa) | 2);
+				or_ptr_bs(hero + 0xaa, 2);
 		}
 
 		place_obj_on_cb(cb_x, cb_y, l_si + 1,
@@ -467,34 +464,34 @@ void FIG_init_heroes()
 
 		if (l_di != -1) {
 			ds_writeb(0xe068,
-				ds_readb(0x10d0 + host_readb(hero + 0x82) + host_readb(hero + 0x9b) * 12 + l_di * 4));
+				ds_readb(0x10d0 + host_readbs(hero + 0x9b) * 12 + l_di * 4 + host_readbs(hero + 0x82)));
 		} else {
 			ds_writeb(0xe068, host_readb(hero + 0x82));
 		}
 
-		ds_writew(0xe066, ds_readb(0x12c0 + host_readb(hero + 0x9b) * 5));
-		ds_writeb(0xe069, (signed char)cb_x);
-		ds_writeb(0xe06a, (signed char)cb_y);
+		ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(hero + 0x9b) * 5));
+		ds_writeb(0xe069, cb_x);
+		ds_writeb(0xe06a, cb_y);
 		ds_writeb(0xe06b, 0);
 		ds_writeb(0xe06c, 0);
 
 		if (hero_dead(hero)) {
 			/* if hero is dead */
 			ds_writeb(0xe068,
-				ds_readb(0x1a13 + host_readb(hero + 0x9b) * 2));
+				ds_readb(0x1a13 + host_readbs(hero + 0x9b) * 2));
 			ds_writeb(0xe06b,
-				ds_readb(0x1539 + host_readb(hero + 0x9b) * 10));
+				ds_readb(0x1539 + host_readbs(hero + 0x9b) * 10));
 			ds_writeb(0xe06c,
-				ds_readb(0x1539 + 1 + host_readb(hero + 0x9b) * 10));
+				ds_readb(0x1539 + 1 + host_readbs(hero + 0x9b) * 10));
 		} else if (hero_sleeps(hero) || hero_unc(hero)) {
 			/* sleeps or is unconscious */
 			ds_writeb(0xe068,
-				host_readb(hero + 0x82) + ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2));
+				ds_readb(0x11e4 + host_readbs(hero + 0x9b) * 2) + host_readbs(hero + 0x82));
 
-			ds_writew(0xe06b,
-				ds_readb(0x1210 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
-			ds_writew(0xe06c,
-				ds_readb(0x1210 + 1 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+			ds_writeb(0xe06b,
+				ds_readbs(0x1210 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
+			ds_writeb(0xe06c,
+				ds_readbs(0x1210 + 1 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
 		}
 
 
@@ -511,8 +508,8 @@ void FIG_init_heroes()
 		ds_writeb(0xe074, 0xff);
 		ds_writed(0xe07d, ds_readd(0xd86e));
 		ds_writeb(0xe07a, 0);
-		ds_writew(0xd86e, ds_readw(0xd86e) + 0x508);
-		ds_writed(0xe370, ds_readd(0xe370) - 0x508);
+		add_ds_ws(0xd86e, 0x508);
+		sub_ds_ds(0xe370, 0x508);
 		ds_writeb(0xe077, 0x63);
 		ds_writeb(0xe078, 1);
 		ds_writeb(0xe079, 0xff);
