@@ -2,6 +2,9 @@
  *      Rewrite of DSA1 v3.02_de functions of seg006 (Fight)
  *      Functions rewritten 16/16 (complete)
  *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg006.cpp
 */
 
 #include <stdlib.h>
@@ -21,8 +24,8 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
-RealPt FIG_get_ptr(signed char v1) {
+RealPt FIG_get_ptr(signed char v1)
+{
 	RealPt ptr;
 	ptr = (RealPt)ds_readd(0xe108);
 
@@ -34,7 +37,6 @@ RealPt FIG_get_ptr(signed char v1) {
 	return ptr;
 }
 
-/* Borlandified and identical */
 //static
 signed char FIG_set_array() {
 	char i;
@@ -47,7 +49,6 @@ signed char FIG_set_array() {
 	return i;
 }
 
-/* Borlandified and identical */
 void FIG_draw_figures(void)
 {
 	signed short l1, l2;
@@ -118,7 +119,6 @@ void FIG_draw_figures(void)
 	ds_writed(0xc00d, (Bit32u)gfx_dst_bak);
 }
 
-/* Borlandified and identical */
 void FIG_set_gfx() {
 	RealPt ptr_bak;
 
@@ -135,13 +135,11 @@ void FIG_set_gfx() {
 	ds_writed(0xc00d, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void FIG_call_draw_pic(void)
 {
 	FIG_draw_pic();
 }
 
-/* Borlandified and identical */
 void FIG_draw_pic(void)
 {
 	mem_memcpy(Real2Phys(ds_readd(0xd303)),
@@ -154,7 +152,6 @@ void FIG_draw_pic(void)
 		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
 }
 
-/* Borlandified and identical */
 RealPt FIG_get_hero_ptr(unsigned short v1) {
 
 	signed short i;
@@ -172,14 +169,16 @@ RealPt seg006_033c(short v)
 
 	for (i = 0; i < 20; i++) {
 		if (v == ds_readbs(ENEMY_SHEETS + 38 + (i * 62)))
-			/* BC-TODO: this pointer ist calculated in another order */
+#if !defined(__BORLANDC__)
 			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * 62);
+#else
+			return (RealPt)&(((enemy_sheets*)(p_datseg + ENEMY_SHEETS))[i]);
+#endif
 	}
 
 	return 0;
 }
 
-/* Borlandified and identical */
 void FIG_set_0e(signed char id, signed char val) {
 	Bit8u *ptr = Real2Host(ds_readd(0xe108));
 
@@ -193,7 +192,6 @@ void FIG_set_0e(signed char id, signed char val) {
 }
 
 /* Used by range attack and spells with more than 1 field distance */
-/* Borlandified and identical */
 void FIG_reset_12_13(signed char id) {
 	Bit8u *ptr1, *ptr2;
 
@@ -217,7 +215,6 @@ void FIG_reset_12_13(signed char id) {
 	}
 }
 
-/* Borlandified and identical */
 void FIG_set_12_13(signed char id) {
 	Bit8u *ptr1, *ptr2;
 
@@ -242,7 +239,6 @@ void FIG_set_12_13(signed char id) {
 	}
 }
 
-/* Borlandified and identical */
 void FIG_set_0f(signed char id, signed char val) {
 	Bit8u *ptr = Real2Host(ds_readd(0xe108));
 
@@ -258,7 +254,6 @@ struct dummy {
 	char a[35];
 };
 
-/* Borlandified and identical */
 void FIG_remove_from_list(signed char id, signed char v2)
 {
 	Bit8u* p = Real2Host(ds_readd(0xe108));
@@ -305,7 +300,6 @@ void FIG_remove_from_list(signed char id, signed char v2)
 	host_writeb(p + 0x10, 0xff);
 }
 
-/* Borlandified and identical */
 signed char FIG_add_to_list(signed char v)
 {
 	RealPt p1;
@@ -406,7 +400,6 @@ signed char FIG_add_to_list(signed char v)
 	@pos:		0 upper left / 1 lower left
 	@hero_nr:	number of the hero
 */
-/* Borlandified and identical */
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr)
 {
 	RealPt hero;
@@ -455,7 +448,6 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr)
  * @loc:	0 - left side, 1 = right side
  * @id:		ID of the enemy
  */
-/* Borlandified and identical */
 void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 {
 	signed short height_width;
