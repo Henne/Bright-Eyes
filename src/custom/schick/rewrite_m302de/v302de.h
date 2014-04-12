@@ -678,7 +678,7 @@ struct hero_struct {
 	char typus;
 };
 
-extern char ds[0xffff];
+extern char ds[0xf7af];
 #define p_datseg (&ds[0x0000])
 #define datseg (FP_SEG(&ds[0x0000]))
 
