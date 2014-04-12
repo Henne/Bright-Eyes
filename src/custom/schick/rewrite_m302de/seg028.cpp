@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 11/19
+	Functions rewritten: 13/19
 */
 
 #include <string.h>
@@ -10,13 +10,108 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
+#include "seg008.h"
 #include "seg009.h"
 #include "seg010.h"
 #include "seg026.h"
+#include "seg028.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+/* Borlandified and identical */
+void prepare_dungeon_area(void)
+{
+	signed short index;
+	Bit32u v1;
+	Bit32u v2;
+	HugePt buf;
+
+	signed short l_si;
+	signed short handle;
+
+	index = ds_readbs(DUNGEON_INDEX) + 0x10f;
+
+	if (ds_readbs(0x2ca6) != ds_readbs(DUNGEON_INDEX)) {
+
+		load_area_description(1);
+		ds_writeb(0x2ca7, -1);
+		load_dungeon_ddt();
+	}
+
+	load_buffer_1(index);
+
+	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 1)) {
+
+		set_var_to_zero();
+		ds_writew(CURRENT_ANI, -1);
+
+		l_si = (ds_readbs(DUNGEON_INDEX) == 1) ? 0xb5 :
+			(((ds_readbs(DUNGEON_INDEX) == 2) ||
+				(ds_readbs(DUNGEON_INDEX) == 7) ||
+				(ds_readbs(DUNGEON_INDEX) == 9) ||
+				(ds_readbs(DUNGEON_INDEX) == 11) ||
+				(ds_readbs(DUNGEON_INDEX) == 12) ||
+				(ds_readbs(DUNGEON_INDEX) == 13) ||
+				(ds_readbs(DUNGEON_INDEX) == 14) ||
+				(ds_readbs(DUNGEON_INDEX) == 15)) ? 0xb7 : 0xb6);
+
+		ds_writeb(0x3616, (l_si == 0xb5) ? 0 : ((l_si == 0xb7) ? 1 : 2));
+
+		handle = load_archive_file(l_si);
+		v1 = v2 = 0;
+
+		/* clear palette */
+		buf = (HugePt)(ds_readd(0xd019));
+		memset(Real2Host(buf), 0, 0xc0);
+		wait_for_vsync();
+		set_palette(Real2Host(buf), 0x80, 0x40);
+
+		do {
+			v1 = read_archive_file(handle, Real2Host(buf), 0xfde8);
+			buf += v1;
+			v2 += v1;
+		} while (v1);
+
+		bc_close(handle);
+
+		ds_writed(0xe404, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(0xd019), v2), -0xc0));
+
+		ds_writew(0x2ccb, !ds_readbs(DUNGEON_INDEX));
+	}
+
+	ds_writeb(0x2ca6, ds_readbs(DUNGEON_INDEX));
+	ds_writeb(0x2ca7, -1);
+	set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
+}
+
+/* Borlandified and identical */
+void load_dungeon_ddt(void)
+{
+	signed short index;
+	signed short low;
+	signed short high;
+	signed short handle;
+
+	index = ds_readbs(DUNGEON_INDEX) + 0x100;
+	handle = load_archive_file(index);
+	read_archive_file(handle, (Bit8u*)&low, 2);
+	read_archive_file(handle, (Bit8u*)&high, 2);
+
+#if !defined(__BORLANDC__)
+	/* BE-Fix: */
+	low = host_readws((Bit8u*)&low);
+	high = host_readws((Bit8u*)&high);
+#endif
+
+	read_archive_file(handle, Real2Host(ds_readd(0xe494)), low);
+	read_archive_file(handle, Real2Host(ds_readd(0xe49c)), high - low);
+	read_archive_file(handle, Real2Host(ds_readd(0xe498)), 0x7d0);
+
+	bc_close(handle);
+
+}
 
 void load_special_textures(signed short arg)
 {

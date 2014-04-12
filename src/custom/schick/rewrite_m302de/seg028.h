@@ -4,8 +4,12 @@ namespace M302de {
 
 //0x2a
 void load_area_description(unsigned short);
+//0x34
+void prepare_dungeon_area(void);
 //0x39
 void load_map(void);
+//0x3e
+void load_dungeon_ddt(void);
 //0x4d
 void load_special_textures(signed short);
 //0x52
