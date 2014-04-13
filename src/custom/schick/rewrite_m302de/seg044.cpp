@@ -29,9 +29,9 @@ namespace M302de {
 Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 {
 	Bit8u *p_start, *p_off;
-	Bit16s nr_anis;
-	Bit16s i;
-	Bit8s length;
+	signed short nr_anis;
+	signed short i;
+	signed char length;
 
 	/* get pointer from ANI.DAT */
 	p_start = Real2Host(ds_readd(BUFFER_ANIDAT));
@@ -343,24 +343,31 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	signed short weapon;
 	Bit8u *p1;
 	Bit8u *p2;
-	Bit8u *p3;
-	Bit8u *p4;
+	Bit8u *p3;			/* only user for two sprited figures */
+	Bit8u *p4;			/* read only */
 	signed short weapon_type;
 
+	/* initialize with bare hands */
 	weapon_type = -1;
 
+	/* every enemy with the gfx_id < 22 has a sword type weapon */
 	if (host_readbs(enemy + 1) < 22) {
 		weapon_type = 2;
 	}
+
+	/* This byte is unknown atm */
 	if (host_readbs(enemy + 0x30) != 0) {
 		weapon_type = -1;
 	}
 
+	/* read a pointer from the datseg with the gfx_id as offset, read only */
 	p4 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + 1) * 4));
 
+	/* find both actors on the chessboard */
 	FIG_search_obj_on_cb(fid_target, &target_x, &target_y);
 	FIG_search_obj_on_cb(fid_attacker, &attacker_x, &attacker_y);
 
+	/* find out which direction the action will have */
 	if (attacker_x == target_x) {
 		if (target_y < attacker_y) {
 			dir = 1;
@@ -403,6 +410,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readws(p4 + l1 * 2)));
 	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(enemy + 1));
 
+	/* first the enemy may turn */
 	if ((host_readbs(enemy + 0x27) != dir) &&
 		(	((f_action == 2) || (f_action == 15) ||
 			((f_action == 100) && !ds_readbs(0xd82d + fid_attacker))) ||
@@ -411,7 +419,11 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		{
 
 		ds_writeb(0xd8ce + a1 * 0xf3, 0);
+
+		/* find out the new direction */
 		l8 = l7 = -1;
+
+		/* try to turn right 90 degrees */
 		l9 = host_readbs(enemy + 0x27);
 		l8 = l9;
 		l9++;
@@ -433,9 +445,13 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 			}
 		}
 
+
+		/* set the new direction in enemy sheet */
 		host_writeb(enemy + 0x27, dir);
 
+		/* only if the turn is 90 degree */
 		if (l7 == -1) {
+			/* do not move for 2 frames */
 			for (i = 0; i < 2; i++) {
 				host_writeb(p1++, 0xfb);
 				host_writeb(p1++, 0);
@@ -453,6 +469,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		host_writeb(p1++, seg044_00ae(host_readws(p4 + l1 * 2)));
 		host_writeb(p1++, 0);
 	} else {
+		/* do not move for 5 frames */
 		for (i = 0; i < 5; i++) {
 			host_writeb(p1++, 0xfb);
 			host_writeb(p1++, 0);
@@ -460,32 +477,40 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		}
 	}
 
-	if ((f_action == 2) ||((f_action == 15) ||
-		((f_action == 100) && !ds_readbs(0xd82d + fid_attacker))))
+	if ((f_action == 2) || (f_action == 15) ||
+		((f_action == 100) && !ds_readbs(0xd82d + fid_attacker)))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p4 + l1 *2), 1);
 
 		if (weapon_type != -1) {
 
+			/* do not move for 5 frames */
 			for (i = 0; i < 5; i++) {
 				host_writeb(p2++, 0xfb);
 				host_writeb(p2++, 0);
 				host_writeb(p2++, 0);
 			}
 
+			/* copy the weapon ani */
 			p2 += copy_ani_seq(p2,
 				ds_readws(0x25fe +
-				((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
-				((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + 0x27) * 2)), 3);
+					(	ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 +
+						weapon_type * 16 +
+						((f_action == 2) ? 0 : 1) * 8 +
+						host_readbs(enemy + 0x27) * 2
+					)
+				), 3);
 		}
 	}
 
-	if ((ds_readws(0xe3ac) != 0 && a7 == 0) ||
+	if (((ds_readws(0xe3ac) != 0) && (a7 == 0)) ||
 		((ds_readws(0xe3aa) != 0) && (a7 == 1))) {
 
 			p1 += copy_ani_seq(p1, host_readws(p4 + l1 * 2), 1);
 
 			if (weapon_type != -1) {
+
+				/* copy the weapon ani */
 				p2 += copy_ani_seq(p2,
 					ds_readws(0x25fe +
 					((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
@@ -504,9 +529,12 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	FIG_set_0e(host_readbs(enemy + 0x26), a1);
+	/* terminate figure animation array */
 	host_writeb(p1, 0xff);
 
+	/* does this sprite need two fields */
 	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + 0x25f9))	{
+
 		memcpy(p_datseg + 0xdab4 + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
 
 		p3 = Real2Host(FIG_get_ptr(host_readbs(enemy + 0x26)));
