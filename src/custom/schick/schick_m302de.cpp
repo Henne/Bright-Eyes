@@ -4423,6 +4423,22 @@ static int seg073(unsigned short offs) {
 	}
 }
 
+static int seg074(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x25: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg075(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -5305,6 +5321,11 @@ static int seg101(unsigned short offs) {
 	}
 }
 
+static int seg102(unsigned short offs)
+{
+	return 0;
+}
+
 static int seg103(unsigned short offs) {
 	switch (offs) {
 		case 0x20: { // Talentprobe
@@ -5964,7 +5985,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x13b1:	return seg071(offs);
 		case 0x13b4:	return seg072(offs);
 		case 0x13b9:	return seg073(offs);
-		case 0x13bd:	return 0;
+		case 0x13bd:	return seg074(offs);
 		case 0x13c3:	return seg075(offs);
 		case 0x13cb:	return 0;
 		case 0x13d1:	return 0;
@@ -5992,7 +6013,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x144f:	return seg099(offs);
 		case 0x145e:	return seg100(offs);
 		case 0x1467:	return seg101(offs);
-		case 0x1472:	return 0;
+		case 0x1472:	return seg102(offs);
 		case 0x147b:	return seg103(offs);
 		case 0x1480:	return 0;
 		case 0x1485:	return seg105(offs);
