@@ -70,6 +70,7 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 
 
 /* 0x137 */
+/* Borlandified and identical */
 void FIG_remove_smth(void)
 {
 	FIG_remove_from_list(ds_readb(0xe38d), 0);
@@ -83,11 +84,12 @@ void FIG_remove_smth(void)
  * @src:	pointer to sources
  * @term:	termination sign
  */
+/* Borlandified and identical */
 signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 {
 	signed short i;
 
-	for (i = 0; host_readbs(src) != term; i = i + 3) {
+	for (i = 0; host_readbs(src) != term; i += 3) {
 
 		host_writeb(dst, host_readb(src));
 		src++;
