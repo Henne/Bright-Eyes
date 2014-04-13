@@ -200,45 +200,36 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 
 	if (mode == 0) {
 
-		/* is a hero */
-		if ((cb_val > 0) && (cb_val < 10))
-			/* hero is not dead */
-			if (!hero_dead(get_hero(cb_val - 1)))
-				/* hero is not unconscious */
-				if (!hero_unc(get_hero(cb_val - 1)))
-					return 1;
+		if ( ((cb_val > 0) && (cb_val < 10) && (!hero_dead(get_hero(cb_val - 1))) && (!hero_unc(get_hero(cb_val - 1)))) ||
 
-		/* is an enemy */
-		if ((cb_val >= 10) && (cb_val < 30))
-			/* enemy is alive */
-			if ((ds_readb(0xd0df + cb_val * 62 + 0x31) & 1) == 0)
-				/* is under "Boeser Blick"-Spell */
-				if (((ds_readb(0xd0df + cb_val * 62 + 0x32) >> 1) & 1) == 1)
-					return 1;
-
-		return 0;
+			((cb_val >= 10) && (cb_val < 30)) && (!enemy_dead(p_datseg + 0xd0df + cb_val * 62))  &&
+				(!enemy_bb(p_datseg + 0xd0df + cb_val * 62)))
+		{
+			return 1;
+		} else {
+			return 0;
+		}
 
 	} else if (mode == 1) {
 
-		/* is an enemy */
-		if ((cb_val >= 10) && (cb_val < 30))
-			/* enemy is alive */
-			if ((ds_readb(0xd0df + cb_val * 62 + 0x31) & 1) == 0)
-					return 1;
-
-		return 0;
+		/* is a living enemy */
+		if ((cb_val >= 10) && (cb_val < 30) && (!enemy_dead(p_datseg + 0xd0df + cb_val * 62)))
+		{
+			return 1;
+		} else {
+			return 0;
+		}
 
 	} else if (mode == 2) {
 
-		/* is a hero */
-		if ((cb_val > 0) && (cb_val < 10))
-			/* hero is not dead */
-			if (!hero_dead(get_hero(cb_val - 1)))
-				/* hero is not unconscious */
-				if (!hero_unc(get_hero(cb_val - 1)))
-					return 1;
+		/* is a living, conscious hero */
+		if ((cb_val > 0) && (cb_val < 10) && (!hero_dead(get_hero(cb_val - 1))) && (!hero_unc(get_hero(cb_val - 1))))
+		{
+			return 1;
+		} else {
+			return 0;
+		}
 	}
-
 
 	return 0;
 }
@@ -250,21 +241,21 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
  * @dir:	looking direction
  * @mode:	0 = common, 1 = attack enemies only, 2 = attack heroes only
  *
- * The return value is 0 if theres nothing to attack in taht direction
+ * The return value is 0 if theres nothing to attack in that direction
  * or the ID of the attackee.
  */
 
 /*
- * Original-Bug: range attack of foes is possible with direct contacti
+ * Original-Bug: range attack of foes is possible with direct contact
 */
 
 signed short test_foe_range_attack(signed short x, signed short y, const signed short dir, signed short mode)
 {
 	signed char cb_val;
 	signed short dy;	/* run variables in dir */
-	signed short di;	/* run variables in dir */
 	signed short can_attack;
-	signed short done;
+	register signed short done;
+	register signed short di;	/* run variables in dir */
 
 	done = 0;
 	di = 0;
@@ -287,124 +278,98 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 		/* out of chessboard */
 		if (y + dy < 0 || y + dy > 23 || x + di < 0 || x + di > 23) {
 			done = 1;
-			continue;
-		}
+		} else {
 
-		/* get value from current field */
-		cb_val = get_cb_val(x + di, y + dy);
+			/* get value from current field */
+			cb_val = get_cb_val(x + di, y + dy);
 
-		if (mode == 0) {
-			/* hero or enemy reacheable from enemies position */
-			if ((cb_val > 0 && cb_val < 10 &&
-				!hero_dead(get_hero(cb_val - 1)) &&
-				!hero_unc(get_hero(cb_val - 1))) ||
+			if (mode == 0) {
+				/* hero or enemy reacheable from enemies position */
+				if (((cb_val > 0) && (cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1))) ||
+					((cb_val >= 10) && (cb_val < 30) && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1) &&
+					(enemy_bb(p_datseg + 0xd0df + 0x3e * cb_val))))
 
-				(cb_val >= 10 && cb_val < 30 &&
-				!(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1) &&
-				((ds_readb(0xd0df + 0x3e * cb_val + 0x32) >> 1) & 1)))
-
-			{
-				can_attack = 1;
-				done = 1;
-
-#if !defined(__BORLANDC__)
-				if (cb_val < 10)
-					D1_LOG("Attack hero %s\n",
-						(char*)get_hero(cb_val - 1) + 0x10);
-				else
-					D1_LOG("Attack foe\n");
-#endif
-
-				continue;
-			}
-
-			/* if field is not empty */
-			if (cb_val != 0) {
-
-				/* an enemy or another object */
-				if ((cb_val >= 10 && cb_val < 30 &&
-					!(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1))
-
-					|| (cb_val >= 0x32 && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))) {
-#if !defined(__BORLANDC__)
-						D1_LOG("Reached a %d\n", cb_val);
-#endif
-						done = 1;
-				}
-			}
-
-		} else if (mode == 1) {
-			/* attack foe first */
-			if (cb_val >= 10 && cb_val < 30 &&
-				(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1) == 0) {
-				can_attack = 1;
-				done = 1;
-				continue;
-			}
-			/* skip zeros */
-			if (cb_val == 0)
-				continue;
-
-
-			/* Original-Bugfix: the next if assumes
-					that a negative cb_val is a hero -> SEGFAULT*/
-#ifdef M302de_ORIGINAL_BUGFIX
-			if (cb_val < 0) {
-				done = 1;
-				continue;
-			}
-#endif
-
-			/* handle heroes or walls */
-			if (cb_val >= 10 ||
-				hero_dead(get_hero(cb_val - 1)) ||
-				hero_unc(get_hero(cb_val - 1))) {
-
-				if (cb_val < 50)
-					continue;
-				if (is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))
-					continue;
-			}
-			done = 1;
-			continue;
-		} else if (mode == 2) {
-			/* attack hero */
-			if (cb_val > 0 && cb_val < 10 &&
-				!hero_dead(get_hero(cb_val - 1)) &&
-				!hero_unc(get_hero(cb_val - 1))) {
+				{
 					can_attack = 1;
 					done = 1;
-					continue;
-			}
 
-			/* skip zeros */
-			if (cb_val == 0)
-				continue;
-
-#ifdef M302de_ORIGINAL_BUGFIX
-			if (cb_val < 0) {
-				done = 1;
-				continue;
-			}
+#if !defined(__BORLANDC__)
+					if (cb_val < 10)
+						D1_LOG("Attack hero %s\n",
+							(char*)get_hero(cb_val - 1) + 0x10);
+					else
+						D1_LOG("Attack foe\n");
 #endif
 
-			if (cb_val >= 10 ||
-				hero_dead(get_hero(cb_val - 1)) ||
-				hero_unc(get_hero(cb_val - 1))) {
+				} else
 
-				if (cb_val >= 50 && is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))
+				/* if field is not empty */
+				if (cb_val != 0) {
+
+					/* an enemy or another object */
+					if ((cb_val >= 10 && cb_val < 30 && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1))
+
+						|| (cb_val >= 0x32 && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))))
 					{
-						if (cb_val < 10)
-							continue;
-						if (cb_val >= 30)
-							continue;
-						if ((ds_readb(0xd0df + 0x3e * cb_val + 0x31)&1) != 0)
-							continue;
+#if !defined(__BORLANDC__)
+							D1_LOG("Reached a %d\n", cb_val);
+#endif
+							done = 1;
 					}
-			}
+				}
 
-			done = 1;
-			continue;
+			} else if (mode == 1) {
+				/* attack foe first */
+				if ((cb_val >= 10) && (cb_val < 30) && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1))
+				{
+					can_attack = 1;
+					done = 1;
+				} else
+				/* skip zeros */
+				if (cb_val != 0) {
+
+#ifdef M302de_ORIGINAL_BUGFIX
+					/* Original-Bugfix: the next if assumes
+						that a negative cb_val is a hero -> SEGFAULT*/
+					if (cb_val < 0) {
+						done = 1;
+					} else
+#endif
+
+					/* handle heroes or walls */
+					if (((cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1))) ||
+						((cb_val >= 50) && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))))
+					{
+						done = 1;
+					}
+				}
+
+			} else if (mode == 2) {
+				/* attack hero */
+				if ((cb_val > 0) && (cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1)))
+				{
+					can_attack = 1;
+					done = 1;
+				} else
+
+				/* skip zeros */
+				if (cb_val != 0) {
+
+#ifdef M302de_ORIGINAL_BUGFIX
+					if (cb_val < 0) {
+						done = 1;
+					} else
+#endif
+
+					if (((cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1))) ||
+						((cb_val >= 50) && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))) ||
+						((cb_val >= 10) && (cb_val < 30) && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31)&1)))
+					{
+						done = 1;
+					}
+				}
+
+			}
 		}
 	}
 
