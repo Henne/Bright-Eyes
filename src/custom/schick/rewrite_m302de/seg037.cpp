@@ -293,14 +293,6 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 					can_attack = 1;
 					done = 1;
 
-#if !defined(__BORLANDC__)
-					if (cb_val < 10)
-						D1_LOG("Attack hero %s\n",
-							(char*)get_hero(cb_val - 1) + 0x10);
-					else
-						D1_LOG("Attack foe\n");
-#endif
-
 				} else
 
 				/* if field is not empty */
@@ -311,9 +303,6 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 						|| (cb_val >= 0x32 && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))))
 					{
-#if !defined(__BORLANDC__)
-							D1_LOG("Reached a %d\n", cb_val);
-#endif
 							done = 1;
 					}
 				}
