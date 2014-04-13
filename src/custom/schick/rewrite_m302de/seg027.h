@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 //0x20
-void load_pp20(Bit16u);
+void load_pp20(signed short);
 /*0x25*/
 void load_ani(signed short);
 /* 0x2a */

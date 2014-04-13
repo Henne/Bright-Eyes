@@ -16,11 +16,11 @@
 namespace M302de {
 #endif
 
-void load_pp20(Bit16u index)
+void load_pp20(signed short index)
 {
+	volatile signed short fd;
 	RealPt buffer_ptr;
-	Bit16u fd;
-	Bit16u bi;
+	signed short bi;
 
 	if (index <= 5 || index == 0xd6 || index == 0x14 || index == 0xd7) {
 		/* These pictures are buffered for faster access */
@@ -45,9 +45,8 @@ void load_pp20(Bit16u index)
 				ds_readd(0x5e8e + bi * 4));
 		} else {
 			fd = load_archive_file(index);
-			buffer_ptr = schick_alloc_emu(get_readlength2(fd));
 
-			if (buffer_ptr) {
+			if (buffer_ptr = schick_alloc_emu(get_readlength2(fd))) {
 				/* successful allocation */
 
 				/* save pointer */
@@ -65,19 +64,20 @@ void load_pp20(Bit16u index)
 					Real2Host(ds_readd(0xd303)),
 					Real2Host(ds_readd(0x5e6a + bi * 4)) + 4,
 					ds_readd(0x5e8e + bi * 4));
+
 				bc_close(fd);
 			} else {
 				/* failed allocation */
 
 				/* read it directly */
 				read_archive_file(fd,
-					Real2Host(ds_readd(0xd303)) - 8,
+					Real2Host(ds_readd(0xd303)) -8,
 					64000);
 
 				/* decompress it */
-				decomp_pp20(Real2Host(ds_readd(0xd303)) - 8,
+				decomp_pp20(Real2Host(ds_readd(0xd303)) -8,
 					Real2Host(ds_readd(0xd303)),
-					Real2Host(ds_readd(0xd303)) - 8 + 4,
+					Real2Host(ds_readd(0xd303)) -8,
 					get_readlength2(fd));
 				bc_close(fd);
 			}
@@ -90,9 +90,9 @@ void load_pp20(Bit16u index)
 		read_archive_file(fd, Real2Host(ds_readd(0xd303)) - 8, 64000);
 
 		/* decompress it */
-		decomp_pp20(Real2Host(ds_readd(0xd303)) - 8,
+		decomp_pp20(Real2Host(ds_readd(0xd303)) -8,
 			Real2Host(ds_readd(0xd303)),
-			Real2Host(ds_readd(0xd303)) - 8 + 4,
+			Real2Host(ds_readd(0xd303)) -8 +4,
 			get_readlength2(fd));
 
 		bc_close(fd);
@@ -261,25 +261,26 @@ RealPt load_fight_figs(signed short fig)
  */
 void load_ani(const signed short nr)
 {
-	signed int area_size;
-	int len;
-	signed int len_3, len_4;
-	unsigned int offset, offset_2;
-	Bit8u *dst, *p6;
-	int ani_off, ani_len;
-	Bit8u *p5;
-	signed int p4;
-	signed int p3;
-	Bit8u *p2;
-	Bit8u *p1;
-	RealPt ani_buffer;
-	unsigned short ems_handle;
-	Bit8u *p_area;
-	unsigned short i;
-	unsigned short fd;
-	signed short area_changes;
-	signed short area_pics;
 	unsigned short i_area;
+	signed short area_pics;
+	signed short area_changes;
+	unsigned short fd;
+	signed short i;
+	Bit8u *p_area;
+	unsigned short ems_handle;
+	RealPt ani_buffer;
+	Bit8u *p1;
+	Bit8u *p2;
+	Bit32s p3;
+	Bit32s p4;
+	Bit8u *p5;
+	Bit32s ani_off, ani_len;
+	Bit8u *dst, *p6;
+	Bit32u offset, offset_2;
+	Bit32s len_3, len_4;
+	Bit32s len;
+	Bit32s area_size;
+
 	signed short di;
 
 
@@ -322,10 +323,9 @@ void load_ani(const signed short nr)
 
 		/* if EMS is enabled buffer it */
 		if (ds_readb(EMS_ENABLED) != 0) {
-			ems_handle = alloc_EMS(ani_len);
 
 			/* find an empty EMS slot */
-			if (ems_handle != 0) {
+			if ((ems_handle = alloc_EMS(ani_len))) {
 				for (i = 0; i < 36; i++)
 					if (host_readw(Real2Host(ds_readd(0xe121)) + i * 8) == 0)
 						break;
@@ -484,23 +484,25 @@ void load_ani(const signed short nr)
 void load_scenario(signed short nr)
 {
 	unsigned short fd;
-	signed short n;
-	char buf[2];
-
-	n = nr;
+	signed short buf;
 
 	/* load SCENARIO.LST */
 	fd = load_archive_file(0xc8);
 
 	/* read the first two bytes == nr of scenarios */
-	read_archive_file(fd, (Bit8u*)buf, 2);
+	read_archive_file(fd, (Bit8u*)&buf, 2);
+
+#if !defined(__BORLANDC__)
+	/* BE-fix: */
+	buf = host_readw((Bit8u*)&buf);
+#endif
 
 	/* check if scenario nr is valid */
-	if ((host_readw((Bit8u*)buf) < n) || (n < 1))
+	if ((buf < nr) || (nr < 1))
 		nr = 1;
 
 	/* seek to the scenario */
-	seg002_0c72(fd, (n - 1) * 621 + 2, 0);
+	seg002_0c72(fd, (nr - 1) * 621 + 2, 0);
 
 	/* read scenario */
 	read_archive_file(fd, Real2Host(ds_readd(SCENARIO_BUF)), 621);
@@ -567,6 +569,10 @@ void read_fight_lst(signed short nr)
 	/* read the first 2 bytes (max number of fights) */
 	bc__read(fd, (Bit8u*)&max, 2);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix: */
+	max = host_readw((Bit8u*)&max);
+#endif
 	/* sanity check for parameter nr */
 	if ((max - 1) < nr || nr <= 0)
 		nr = 0;
