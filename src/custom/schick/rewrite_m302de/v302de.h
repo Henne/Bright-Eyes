@@ -702,22 +702,23 @@ extern char ds[0xf7af];
 #define inc_ds_ws(o) (*(Bit16s*)(ds + o))++
 #define dec_ds_ws(o) (*(Bit16s*)(ds + o))--
 
-#define or_ds_bs(o, val) *(Bit8s*)(ds + o) |= val
+#define or_ds_bs(o, v) *(Bit8s*)(ds + o) |= v
 
-#define add_ds_ws(o, val) (*(Bit16s*)(ds + o))+= val
-#define and_ds_ws(o, val) (*(Bit16s*)(ds + o))&= val
+#define add_ds_ws(o, v) *(Bit16s*)(ds + o) += v
+#define and_ds_ws(o, v) *(Bit16s*)(ds + o) &= v
 
-#define sub_ds_ds(o, val) (*(Bit32s*)(ds + o))-= val
+#define sub_ds_ds(o, v) *(Bit32s*)(ds + o) -= v
 
-#define inc_ptr_bs(p)	(*(Bit8s*)(p))++
-#define inc_ptr_ws(p)	(*(Bit16s*)(p))++
-#define dec_ptr_bs(p)	(*(Bit8s*)(p))--
-#define dec_ptr_ws(p)	(*(Bit16s*)(p))--
+#define inc_ptr_bs(p)		(*(Bit8s*)(p))++
+#define dec_ptr_bs(p)		(*(Bit8s*)(p))--
 
-#define or_ptr_bs(p, val) *(Bit8s*)(p) |= val;
-#define and_ptr_bs(p, val) *(Bit8s*)(p) &= val;
-#define add_ptr_bs(p, v)  *(Bit8s*)(p)+=v
-#define sub_ptr_bs(p, v)  *(Bit8s*)(p)-=v
+#define inc_ptr_ws(p)		(*(Bit16s*)(p))++
+#define dec_ptr_ws(p)		(*(Bit16s*)(p))--
+
+#define or_ptr_bs(p, v)		*(Bit8s*)(p) |= v
+#define and_ptr_bs(p, v)	*(Bit8s*)(p) &= v
+#define add_ptr_bs(p, v)	*(Bit8s*)(p) += v
+#define sub_ptr_bs(p, v)	*(Bit8s*)(p) -= v
 
 
 #define add_ptr_ws(p, v)  *(Bit16s*)(p)+=v
@@ -759,8 +760,6 @@ extern Bit8u* city_ltx[];
 #define host_readws(p) *(Bit16s*)(p)
 #define host_readds(p) *(Bit32s*)(p)
 
-#define host_readws_disp_huge(p, disp) *((Bit16s*)(((Bit8u huge *)(p)) + (disp)))
-
 #define host_writeb(p, d)	(*(Bit8u*)(p) = d)
 #define host_writew(p, d)	(*(Bit16u*)(p) = d)
 #define host_writed(p, d)	(*(Bit32u*)(p) = d)
@@ -773,38 +772,38 @@ extern Bit8u* city_ltx[];
 #define calc_twodim_array_ptr(start, width, disp, off, dst) \
 asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start]; add ax, off; mov[dst + 2],dx; mov [dst],ax }
 
-#define hero_dead(hero)  ((*(struct hero_status*)(hero + 0xaa)).dead)
-#define hero_sleeps(hero)  ((*(struct hero_status*)(hero + 0xaa)).sleeps)
-#define hero_stoned(hero)  ((*(struct hero_status*)(hero + 0xaa)).stoned)
-#define hero_cham(hero)  ((*(struct hero_status*)(hero + 0xaa)).cham)
-#define hero_cursed(hero)  ((*(struct hero_status*)(hero + 0xaa)).cursed)
-#define hero_unc(hero)  ((*(struct hero_status*)(hero + 0xaa)).uncon)
-#define hero_dup(hero)  ((*(struct hero_status*)(hero + 0xaa)).dup)
+#define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
+#define hero_sleeps(hero)	((*(struct hero_status*)(hero + 0xaa)).sleeps)
+#define hero_stoned(hero)	((*(struct hero_status*)(hero + 0xaa)).stoned)
+#define hero_cham(hero)		((*(struct hero_status*)(hero + 0xaa)).cham)
+#define hero_cursed(hero)	((*(struct hero_status*)(hero + 0xaa)).cursed)
+#define hero_unc(hero)		((*(struct hero_status*)(hero + 0xaa)).uncon)
+#define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
 
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
-#define enemy_dead(enemy)  ((*(struct enemy_status*)((enemy) + 0x31)).dead)
-#define enemy_stoned(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).stoned)
-#define enemy_illusion(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).illusion)
-#define enemy_bb(enemy)  ((*(struct enemy_status*)(enemy + 0x31)).bb)
+#define enemy_dead(enemy)	((*(struct enemy_status*)(enemy + 0x31)).dead)
+#define enemy_stoned(enemy)	((*(struct enemy_status*)(enemy + 0x31)).stoned)
+#define enemy_illusion(enemy)	((*(struct enemy_status*)(enemy + 0x31)).illusion)
+#define enemy_bb(enemy)		((*(struct enemy_status*)(enemy + 0x31)).bb)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
 
-#define ks_broken(ks)  ((*(struct knapsack_status*)(ks + 0x4)).broken)
-#define ks_half_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).half_empty)
-#define ks_empty(ks)  ((*(struct knapsack_status*)(ks + 0x4)).empty)
-#define ks_magic_hidden(ks)  ((*(struct knapsack_status*)(ks + 0x4)).magic_hidden)
-#define ks_poison1(ks)  ((*(struct knapsack_status*)(ks + 0x4)).poison1)
-#define ks_poison2(ks)  ((*(struct knapsack_status*)(ks + 0x4)).poison2)
-#define ks_magic_known(ks)  ((*(struct knapsack_status*)(ks + 0x4)).magic_known)
+#define ks_broken(ks)		((*(struct knapsack_status*)(ks + 0x4)).broken)
+#define ks_half_empty(ks)	((*(struct knapsack_status*)(ks + 0x4)).half_empty)
+#define ks_empty(ks)		((*(struct knapsack_status*)(ks + 0x4)).empty)
+#define ks_magic_hidden(ks)	((*(struct knapsack_status*)(ks + 0x4)).magic_hidden)
+#define ks_poison1(ks)		((*(struct knapsack_status*)(ks + 0x4)).poison1)
+#define ks_poison2(ks)		((*(struct knapsack_status*)(ks + 0x4)).poison2)
+#define ks_magic_known(ks)	((*(struct knapsack_status*)(ks + 0x4)).magic_known)
 
-#define item_armor(item)  ((*(struct item_status*)(item + 0x2)).armor)
-#define item_weapon(item)  ((*(struct item_status*)(item + 0x2)).weapon)
-#define item_bit2(item)  ((*(struct item_status*)(item + 0x2)).bit2)
-#define item_food(item)  ((*(struct item_status*)(item + 0x2)).food)
-#define item_stackable(item)  ((*(struct item_status*)(item + 0x2)).stackable)
-#define item_herb_potion(item)  ((*(struct item_status*)(item + 0x2)).herb_potion)
-#define item_undropable(item)  ((*(struct item_status*)(item + 0x2)).undropable)
+#define item_armor(item)	((*(struct item_status*)(item + 0x2)).armor)
+#define item_weapon(item)	((*(struct item_status*)(item + 0x2)).weapon)
+#define item_bit2(item)		((*(struct item_status*)(item + 0x2)).bit2)
+#define item_food(item)		((*(struct item_status*)(item + 0x2)).food)
+#define item_stackable(item)	((*(struct item_status*)(item + 0x2)).stackable)
+#define item_herb_potion(item)	((*(struct item_status*)(item + 0x2)).herb_potion)
+#define item_undropable(item)	((*(struct item_status*)(item + 0x2)).undropable)
 
 #define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
 #define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
