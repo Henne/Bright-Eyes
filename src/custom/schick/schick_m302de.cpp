@@ -42,6 +42,7 @@
 #include "seg045.h"
 #include "seg046.h"
 #include "seg047.h"
+#include "seg049.h"
 #include "seg050.h"
 #include "seg053.h"
 #include "seg063.h"
@@ -4068,6 +4069,47 @@ static int seg047(unsigned short offs) {
 	}
 }
 
+static int seg049(unsigned short offs)
+{
+	switch(offs) {
+	case 0x20: {
+		D1_INFO("GRP_move_hero()\n");
+		return 0;
+	}
+	case 0x25: {
+		D1_INFO("GRP_change_heros()\n");
+		return 0;
+	}
+	case 0x2a: {
+		D1_INFO("GRP_???()\n");
+		return 0;
+	}
+	case 0x34: {
+		D1_INFO("GRP_split()\n");
+		return 0;
+	}
+	case 0x39: {
+		D1_INFO("GRP_merge()\n");
+		return 0;
+	}
+	case 0x3e: {
+		D1_INFO("GRP_switch_to_next()\n");
+		return 0;
+	}
+	case 0x43: {
+		D1_INFO("GRP_compare_heros()\n");
+		return 0;
+	}
+	case 0x48: {
+		D1_INFO("%s_%x()\n", __func__, offs);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int seg050(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -5960,7 +6002,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1344:	return seg046(offs);
 		case 0x1348:	return seg047(offs);
 		case 0x1350:	return 0;
-		case 0x1353:	return 0;
+		case 0x1353:	return seg049(offs);
 		case 0x1358:	return seg050(offs);
 		case 0x135c:	return 0;
 		case 0x135f:	return 0;
@@ -7492,6 +7534,24 @@ static int n_seg045(unsigned short offs)
 	}
 }
 
+static int n_seg049(unsigned short offs)
+{
+	switch (offs) {
+	case 0x01da: {
+		D1_INFO("%s_%x()\n", __func__, offs);
+		return 0;
+	}
+	case 0x0224: {
+		D1_INFO("%s_%x()\n", __func__, offs);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg050(unsigned short offs) {
 	switch (offs) {
 		case 0x0000: {
@@ -8546,6 +8606,7 @@ int schick_nearcall_v302de(unsigned offs) {
 		}
 	}
 
+	else if (is_ovrseg(0x1353)) return n_seg049(offs);
 	else if (is_ovrseg(0x1358)) return n_seg050(offs);
 	else if (is_ovrseg(0x1362)) return n_seg053(offs);
 	else if (is_ovrseg(0x1386)) return n_seg063(offs);
