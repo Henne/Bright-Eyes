@@ -117,6 +117,10 @@ static inline Bit32s ds_readds(unsigned short offs) {
 	return (Bit32s)host_readd(p_datseg + offs);
 }
 
+static inline Bit8s ds_writebs(unsigned short offs, Bit8s val) {
+	host_writeb(p_datseg + offs, val);
+	return val;
+}
 static inline Bit8u ds_writeb(unsigned short offs, Bit8u val) {
 	host_writeb(p_datseg + offs, val);
 	return val;
