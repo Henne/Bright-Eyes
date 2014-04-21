@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg049 (group management)
- *	Functions rewritten: 4/9
+ *	Functions rewritten: 5/9
  */
 
 #include <stdlib.h>
@@ -190,6 +190,54 @@ void GRP_split(void)
 		if (not_empty) {
 			GRP_save_pos(new_group);
 		}
+	}
+}
+
+/* Borlandified and identical */
+void GRP_merge(void)
+{
+	signed short answer;
+	signed short i;
+
+	answer = can_merge_group();
+
+	if (answer == -1) {
+
+		GUI_output(get_ltx(0x810));
+	} else {
+
+		do {
+
+			ds_writeb(0x2d3e + answer,
+				ds_writew(0x2d48 + answer * 2,
+				ds_writew(0x2d54 + answer * 2,
+				ds_writebs(0x2d68 + answer,
+				ds_writeb(0x2d6f + answer,
+				ds_writeb(0x2d76 + answer,
+				ds_writeb(0x2d7d + answer,
+				ds_writew(0x2d87 + answer * 2,
+				ds_writew(0x2d93 + answer * 2,
+				ds_writebs(0x2da0 + answer,
+				ds_writeb(0x2da7 + answer,
+				ds_writeb(0x2dae + answer,
+				ds_writeb(0x2db5 + answer, 0)))))))))))));
+
+			ds_writeb(0x2d36 + answer, 0);
+
+			for (i = 0; i <= 6; i++) {
+
+				if ((host_readbs(get_hero(i) + 0x21) != 0) &&
+					host_readbs(get_hero(i) + 0x87) == answer)
+				{
+					host_writeb(get_hero(i) + 0x87, ds_readbs(CURRENT_GROUP));
+					inc_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+				}
+			}
+			GRP_sort_heros();
+			answer = can_merge_group();
+		} while (answer != -1);
+
+		draw_status_line();
 	}
 }
 

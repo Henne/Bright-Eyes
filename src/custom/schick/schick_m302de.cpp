@@ -4090,8 +4090,9 @@ static int seg049(unsigned short offs)
 		return 1;
 	}
 	case 0x39: {
-		D1_INFO("GRP_merge()\n");
-		return 0;
+		D1_LOG("GRP_merge()\n");
+		GRP_merge();
+		return 1;
 	}
 	case 0x3e: {
 		D1_INFO("GRP_switch_to_next()\n");

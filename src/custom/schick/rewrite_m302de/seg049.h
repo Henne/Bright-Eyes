@@ -6,6 +6,8 @@ namespace M302de {
 void GRP_sort_heros(void);
 /* 0x34 */
 void GRP_split(void);
+/* 0x39 */
+void GRP_merge(void);
 
 /* 0x43 */
 int GRP_compare_heros(const void*, const void*);
