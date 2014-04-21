@@ -4097,12 +4097,20 @@ static int seg049(unsigned short offs)
 		return 0;
 	}
 	case 0x43: {
-		D1_INFO("GRP_compare_heros()\n");
-		return 0;
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		reg_ax = GRP_compare_heros((void*)Real2Host(p1), (void*)Real2Host(p2));
+		D1_LOG("GRP_compare_heros() = %d\n", (signed short)reg_ax);
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		return 1;
 	}
 	case 0x48: {
-		D1_INFO("%s_%x()\n", __func__, offs);
-		return 0;
+		Bit16s group = CPU_Pop16();
+		D1_LOG("GRP_save_pos(%d)\n", group);
+		GRP_save_pos(group);
+		CPU_Push16(group);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
@@ -7538,12 +7546,18 @@ static int n_seg049(unsigned short offs)
 {
 	switch (offs) {
 	case 0x01da: {
-		D1_INFO("%s_%x()\n", __func__, offs);
-		return 0;
+		CPU_Pop16();
+		GRP_sort_heros();
+		D1_LOG("near GRP_sort_heros()\n");
+		return 1;
 	}
 	case 0x0224: {
-		D1_INFO("%s_%x()\n", __func__, offs);
-		return 0;
+		CPU_Pop16();
+		Bit16s group = CPU_Pop16();
+		D1_LOG("near GRP_save_pos(%d)\n", group);
+		GRP_save_pos(group);
+		CPU_Push16(group);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
