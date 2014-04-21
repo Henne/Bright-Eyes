@@ -4,6 +4,8 @@ namespace M302de {
 
 /* 0x2f */
 void GRP_sort_heros(void);
+/* 0x34 */
+void GRP_split(void);
 
 /* 0x43 */
 int GRP_compare_heros(const void*, const void*);

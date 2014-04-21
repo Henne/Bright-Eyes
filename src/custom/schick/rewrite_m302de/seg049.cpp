@@ -1,13 +1,16 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg049 (group management)
- *	Functions rewritten: 3/9
+ *	Functions rewritten: 4/9
  */
 
 #include <stdlib.h>
 
 #include "v302de.h"
 
+#include "seg002.h"
 #include "seg029.h"
+#include "seg047.h"
+#include "seg097.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -146,6 +149,47 @@ void GRP_save_pos(signed short group)
 
 	if (!refresh) {
 		draw_status_line();
+	}
+}
+
+/* Borlandified and identical */
+void GRP_split(void)
+{
+	signed short new_group;
+	signed short not_empty;
+	signed short answer;
+
+	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + 0x21) != 0 ? 2 : 1)) {
+
+		GUI_output(get_ltx(0x808));
+	} else {
+
+		not_empty = 0;
+		new_group = 0;
+
+		while (ds_readbs(0x2d36 + new_group) != 0) {
+			new_group++;
+		}
+
+		do {
+			ds_writeb(0x64a2, 6);
+			answer = select_hero_from_group(get_ltx(0x80c));
+
+			if (answer == -1) {
+				break;
+			} else {
+
+				not_empty = 1;
+				host_writeb(get_hero(answer) + 0x87, new_group);
+				inc_ds_bs(0x2d36 + new_group);
+				dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+			}
+
+		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + 0x21) != 0 ? 2 : 1));
+
+		if (not_empty) {
+			GRP_save_pos(new_group);
+		}
 	}
 }
 
