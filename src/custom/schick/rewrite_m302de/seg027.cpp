@@ -529,6 +529,10 @@ unsigned short count_fight_enemies(signed short nr)
 	/* read the first 2 bytes (max number of fights) */
 	bc__read(fd, (Bit8u*)&max, 2);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix: */
+	max = host_readw((Bit8u*)&max);
+#endif
 	/* sanity check for parameter nr */
 	if ((max - 1) < nr || nr <= 0)
 		nr = 0;
