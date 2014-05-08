@@ -400,6 +400,11 @@ void equip_belt_ani(void)
 		nvf.height = (Bit8u*)&height;
 
 		process_nvf(&nvf);
+#if !defined(__BORLANDC__)
+		/* BE-fix */
+		width = host_readws((Bit8u*)&width);
+		height = host_readws((Bit8u*)&height);
+#endif
 
 		ds_writew(0xc011, 160);
 		ds_writew(0xc013, 50);

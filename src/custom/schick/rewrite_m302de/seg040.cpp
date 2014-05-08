@@ -232,6 +232,11 @@ void FIG_draw_scenario(void)
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;
 						process_nvf(&nvf);
+#if !defined(__BORLANDC__)
+						/* BE-fix */
+						width = host_readws((Bit8u*)&width);
+						height = host_readws((Bit8u*)&height);
+#endif
 
 						/* save sprite info */
 						host_writed(Real2Host(ds_readd(0xe388)) + obj_id * 4, ds_readd(0xd86e));
