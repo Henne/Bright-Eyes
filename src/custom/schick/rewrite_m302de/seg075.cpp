@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 1/20
+ *	Functions rewritten: 2/20
  */
 
 #include "v302de.h"
@@ -37,6 +37,33 @@ void DNG_floor_ceil(void)
 	nvf.height = (unsigned char*)&height;
 	process_nvf(&nvf);
 
+}
+
+/* 0xa46 */
+
+/**
+ * is_staff_lvl2_in_group() - check for stafflevel >= in current group
+ *
+ * returns 0 = false, 1 = true
+*/
+signed short is_staff_lvl2_in_group(void)
+{
+	Bit8u *hero_i;
+	signed short i;
+
+	hero_i = get_hero(0);
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+
+		if (host_readbs(hero_i + 0x21) &&
+			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			check_hero(hero_i) &&
+			(host_readbs(hero_i + 0x195) >= 2))
+		{
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 

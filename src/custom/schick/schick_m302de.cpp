@@ -7819,7 +7819,10 @@ static int n_seg075(unsigned short offs)
 		return 0;
 	}
 	case 0xa46: {
-		return 0;
+		CPU_Pop16();
+		reg_ax = is_staff_lvl2_in_group();
+		D1_LOG("is_staff_lvl2_in_group() %d\n", reg_ax);
+		return 1;
 	}
 	case 0xaaa: {
 		return 0;
