@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 2/20
+ *	Functions rewritten: 3/20
  */
 
 #include "v302de.h"
@@ -37,6 +37,242 @@ void DNG_floor_ceil(void)
 	nvf.height = (unsigned char*)&height;
 	process_nvf(&nvf);
 
+}
+
+/* Borlandified and identical */
+/* static */
+void DNG_turn(void)
+{
+	signed short tmp;
+
+	if ( ((tmp = div16(ds_readb(0xbd71))) == 15) || (tmp == 1)) {
+		ds_writeb(0xbd71, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd75))) == 15) || (tmp == 1)) {
+		ds_writeb(0xbd75, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd76))) == 15) || (tmp == 1)) {
+		ds_writeb(0xbd76, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd7c))) == 15) || (tmp == 1)) {
+		ds_writeb(0xbd7c, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd7d))) == 15) || (tmp == 1)) {
+		ds_writeb(0xbd7d, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd83))) == 15) || (tmp == 1)) {
+		ds_writeb(0xbd83, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd6e))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd77,
+			ds_writeb(0xbd7d,
+			ds_writeb(0xbd84, 0)));
+
+		if ( ((tmp = div16(ds_readb(0xbd73))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd72,
+				ds_writeb(0xbd78,
+				ds_writeb(0xbd7e,
+				ds_writeb(0xbd85, 0))));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd70))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd7b,
+			ds_writeb(0xbd83,
+			ds_writeb(0xbd8a, 0)));
+
+		if ( ((tmp = div16(ds_readb(0xbd73))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd74,
+				ds_writeb(0xbd7a,
+				ds_writeb(0xbd82,
+				ds_writeb(0xbd89, 0))));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd72))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd77,
+			ds_writeb(0xbd7e,
+			ds_writeb(0xbd84,
+			ds_writeb(0xbd85, 0))));
+
+		if ( ((tmp = div16(ds_readb(0xbd73))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd78, 0);
+		}
+
+		if ( ((tmp = div16(ds_readb(0xbd79))) == 15) || (tmp == 1)) {
+				ds_writeb(0xbd78,
+					ds_writeb(0xbd7f,
+					ds_writeb(0xbd80, 0)));
+
+				ds_writeb(0xbd86,
+					ds_writeb(0xbd87, 0));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd73))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd79,
+			ds_writeb(0xbd7f,
+			ds_writeb(0xbd80, 0)));
+
+		ds_writeb(0xbd81,
+			ds_writeb(0xbd86,
+			ds_writeb(0xbd87, 0)));
+
+		ds_writeb(0xbd88, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd74))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd7b,
+			ds_writeb(0xbd82,
+			ds_writeb(0xbd89,
+			ds_writeb(0xbd8a, 0))));
+
+		if ( ((tmp = div16(ds_readb(0xbd73))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd79,
+				ds_writeb(0xbd7a,
+				ds_writeb(0xbd7f, 0)));
+
+			ds_writeb(0xbd80,
+				ds_writeb(0xbd81,
+				ds_writeb(0xbd86, 0)));
+
+			ds_writeb(0xbd87,
+				ds_writeb(0xbd88, 0));
+
+		}
+
+		if ( ((tmp = div16(ds_readb(0xbd79))) == 15) || (tmp == 1)) {
+				ds_writeb(0xbd7a,
+					ds_writeb(0xbd80,
+					ds_writeb(0xbd81, 0)));
+
+				ds_writeb(0xbd87,
+					ds_writeb(0xbd88, 0));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd77))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd84, 0);
+
+		if ( ((tmp = div16(ds_readb(0xbd7f))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd7e,
+				ds_writeb(0xbd85, 0));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd7b))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd8a, 0);
+
+		if ( ((tmp = div16(ds_readb(0xbd81))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd82,
+				ds_writeb(0xbd89, 0));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd78))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd77,
+			ds_writeb(0xbd7e,
+			ds_writeb(0xbd84,
+			ds_writeb(0xbd85, 0))));
+
+		if ( ((tmp = div16(ds_readb(0xbd79))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd80, 0);
+		}
+
+		if ( ((tmp = div16(ds_readb(0xbd79))) == 15) || (tmp == 1) ||
+			((tmp = div16(ds_readb(0xbd80))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd7f,
+				ds_writeb(0xbd86,
+				ds_writeb(0xbd87, 0)));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd7a))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd7b,
+			ds_writeb(0xbd82,
+			ds_writeb(0xbd89,
+			ds_writeb(0xbd8a, 0))));
+
+		if ( ((tmp = div16(ds_readb(0xbd79))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd80, 0);
+		}
+
+		if ( ((tmp = div16(ds_readb(0xbd79))) == 15) || (tmp == 1) ||
+			((tmp = div16(ds_readb(0xbd80))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd81,
+				ds_writeb(0xbd87,
+				ds_writeb(0xbd88, 0)));
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd79))) == 15) || (tmp == 1)) {
+		ds_writeb(0xbd80,
+			ds_writeb(0xbd87, 0));
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd7e))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd84, 0);
+
+		if ( ((tmp = div16(ds_readb(0xbd86))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd85, 0);
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd82))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd8a, 0);
+
+		if ( ((tmp = div16(ds_readb(0xbd88))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd89, 0);
+		}
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd80))) == 15) || (tmp == 1)) {
+
+		ds_writeb(0xbd87, 0);
+	}
+
+	if ( ((tmp = div16(ds_readb(0xbd80))) == 15) || (tmp == 1) ||
+		((tmp = div16(ds_readb(0xbd87))) == 15) || (tmp == 1)) {
+
+		if ( ((tmp = div16(ds_readb(0xbd7f))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd86, 0);
+		}
+		if ( ((tmp = div16(ds_readb(0xbd81))) == 15) || (tmp == 1)) {
+
+			ds_writeb(0xbd88, 0);
+		}
+
+	}
 }
 
 /* 0xa46 */

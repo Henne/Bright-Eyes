@@ -7797,7 +7797,10 @@ static int n_seg075(unsigned short offs)
 		return 1;
 	}
 	case 0x0b9: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("DNG_turn()\n");
+		DNG_turn();
+		return 1;
 	}
 	case 0x56b: {
 		return 0;
