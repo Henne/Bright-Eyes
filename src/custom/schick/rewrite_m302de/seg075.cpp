@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 8/20
+ *	Functions rewritten: 9/20
  */
 
 #include "v302de.h"
@@ -8,6 +8,7 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg003.h"
+#include "seg004.h"
 #include "seg008.h"
 #include "seg075.h"
 
@@ -481,9 +482,28 @@ void DNG_stub4(void)
 }
 
 /* 0x9ef*/
+/* Borlandified and identical */
 void DNG_stub5(void)
 {
+	draw_compass();
 
+	ds_writew(0xc011, ds_readw(0xce41));
+	ds_writew(0xc013, ds_readw(0xce3f));
+	ds_writew(0xc015, ds_readw(0xce41) + 207);
+	ds_writew(0xc017, ds_readw(0xce3f) + 134);
+	ds_writed(0xc019, ds_readd(0xd303));
+
+	update_mouse_cursor();
+
+	ds_writeb(0x45b8, 0);
+
+	wait_for_vsync();
+
+	do_pic_copy(1);
+
+	DNG_lights();
+
+	refresh_screen_size();
 }
 
 /* 0xa46 */
