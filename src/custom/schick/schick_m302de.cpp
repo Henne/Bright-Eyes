@@ -4550,7 +4550,9 @@ static int seg075(unsigned short offs) {
 			return 0;
 		}
 		case 0x75: {
-			return 0;
+			reg_ax = DNG_check_climb_tools();
+			D1_LOG("DNG_check_climb_tools() = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x7a: {
 			return 0;

@@ -54,7 +54,7 @@ signed short is_staff_lvl2_in_group(void);
 void DNG_stub6(void);
 
 /* 0x75 */
-signed short DNG_stub7(void);
+signed short DNG_check_climb_tools(void);
 
 /* static */
 void DNG_turn(void);

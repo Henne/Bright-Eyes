@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 17/20
+ *	Functions rewritten: 18/20
  */
 
 #include <string.h>
@@ -804,7 +804,7 @@ void DNG_stub6(void)
 		}
 	} else {
 
-		if (((l_si = DNG_stub7()) != -1) &&
+		if (((l_si = DNG_check_climb_tools()) != -1) &&
 			((l_di = count_heroes_available_in_group()) > 1))
 		{
 
@@ -892,9 +892,30 @@ void DNG_stub6(void)
 }
 
 
-signed short DNG_stub7(void)
+/* Borlandified and identical */
+signed short DNG_check_climb_tools(void)
 {
+	signed short i;
+	Bit8u *hero;
 
+	hero = get_hero(0);
+
+	/* check for a mage with staffspell > 2 */
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		if ((host_readbs(hero + 0x21) != 0) &&
+			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			!hero_dead(hero) &&
+			(host_readbs(hero + 0x21) == 9) &&
+			(host_readbs(hero + 0x195) > 2))
+		{
+			return i + 1;
+		}
+	}
+
+	/* check for ladder or rope */
+	return ((get_first_hero_with_item(0x79) != -1) ||
+			(get_first_hero_with_item(0x20) != -1)) ? 0 : -1;
 }
 
 signed short DNG_stub8(signed short a1)
