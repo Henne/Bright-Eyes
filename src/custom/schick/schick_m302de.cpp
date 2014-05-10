@@ -4551,7 +4551,9 @@ static int seg075(unsigned short offs) {
 			return 1;
 		}
 		case 0x70: {
-			return 0;
+			DNG_stub6();
+			D1_LOG("DNG_stub6()\n");
+			return 1;
 		}
 		case 0x75: {
 			reg_ax = DNG_check_climb_tools();
