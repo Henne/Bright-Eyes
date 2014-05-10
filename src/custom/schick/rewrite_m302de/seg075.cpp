@@ -278,9 +278,16 @@ void DNG_turn(void)
 }
 
 /* 0x56b */
+/* Borlandified and identical */
 void DNG_stub1(void)
 {
-
+	DNG_floor_ceil();
+	move();
+	DNG_turn();
+	DNG_stub3();
+	DNG_stub4();
+	DNG_stub2();
+	DNG_stub5();
 }
 
 /* 0x591 */
