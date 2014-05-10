@@ -4503,7 +4503,11 @@ static int seg075(unsigned short offs) {
 			return 0;
 		}
 		case 0x43: {
-			return 0;
+			Bit16s a1 = CPU_Pop16();
+			D1_LOG("DNG_timestep(%d);\n", a1);
+			DNG_timestep(a1);
+			CPU_Push16(a1);
+			return 1;
 		}
 		case 0x57: {
 			return 0;

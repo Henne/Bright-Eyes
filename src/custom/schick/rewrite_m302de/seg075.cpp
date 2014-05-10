@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 10/20
+ *	Functions rewritten: 11/20
  */
 
 #include <string.h>
@@ -12,7 +12,9 @@
 #include "seg003.h"
 #include "seg004.h"
 #include "seg008.h"
+#include "seg027.h"
 #include "seg075.h"
+#include "seg097.h"
 #include "seg106.h"
 
 #if !defined(__BORLANDC__)
@@ -588,6 +590,66 @@ void DNG_lights(void)
 
 		wait_for_vsync();
 		set_palette(Real2Host(ds_readd(0xd2eb)), 0x80, 0x40);
+	}
+}
+
+/* Borlandified and identical */
+void DNG_timestep(signed short a1)
+{
+	signed short dir;
+
+	timewarp(90);
+
+	if ((ds_readws(DEATHTRAP) != 0) && !(dec_ds_ws(DEATHTRAP_STEPS))) {
+
+		/* deathship / Totenschiff sinks */
+		if (ds_readws(DEATHTRAP) == 1) {
+
+			load_ani(18);
+			init_ani(1);
+
+			GUI_output(get_dtp(0x5c));
+		}
+
+		ds_writeb(DUNGEON_INDEX, 0);
+
+		/* exit game */
+		ds_writew(0xc3c1, 1);
+	}
+
+	if (ds_readw(0xc3c1) == 0) {
+
+		dir = ds_readbs(DIRECTION);
+
+		if (a1 == 1) {
+
+			/* go forward */
+
+			if (!dir) {
+				dec_ds_ws(Y_TARGET);
+			} else if (dir == 1) {
+				inc_ds_ws(X_TARGET);
+			} else if (dir == 2) {
+				inc_ds_ws(Y_TARGET);
+			} else {
+				dec_ds_ws(X_TARGET);
+			}
+		} else {
+
+			/* go backward */
+
+			if (!dir) {
+				inc_ds_ws(Y_TARGET);
+			} else if (dir == 1) {
+				dec_ds_ws(X_TARGET);
+			} else if (dir == 2) {
+				dec_ds_ws(Y_TARGET);
+			} else {
+				inc_ds_ws(X_TARGET);
+			}
+		}
+
+		xor_ds_bs(0xe48c, 1);
 	}
 }
 

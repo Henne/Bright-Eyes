@@ -14,6 +14,9 @@ void DNG_draw_walls(signed short, signed short, signed short);
 /* 0x3e */
 void DNG_stub5(void);
 
+/* 0x43 */
+void DNG_timestep(signed short);
+
 /* 0x48 */
 void DNG_stub2(void);
 
