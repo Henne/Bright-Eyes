@@ -4529,10 +4529,14 @@ static int seg075(unsigned short offs) {
 			return 1;
 		}
 		case 0x57: {
-			return 0;
+			D1_LOG("DNG_open_door()\n");
+			DNG_open_door();
+			return 1;
 		}
 		case 0x5c: {
-			return 0;
+			D1_LOG("DNG_close_door()\n");
+			DNG_close_door();
+			return 1;
 		}
 		case 0x61: {
 			D1_LOG("DNG_lights()\n");

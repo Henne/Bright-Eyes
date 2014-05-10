@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 14/20
+ *	Functions rewritten: 16/20
  */
 
 #include <string.h>
@@ -685,6 +685,99 @@ void DNG_dec_level(void)
 	load_area_description(1);
 	DNG_update_pos();
 
+}
+
+/* Borlandified and identical */
+void DNG_open_door(void)
+{
+	signed short x;
+	signed short y;
+	signed short iters;
+	signed short i;
+
+	DNG_floor_ceil();
+	move();
+	ds_writebs((0xbd6e + 5), 32);
+	DNG_turn();
+	DNG_stub3();
+	DNG_stub4();
+
+	memmove(Real2Host(ds_readd(0xd303)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
+
+	if (!ds_readb(0x3616)) {
+		x = 45;
+		y = 38;
+		iters = 19;
+	} else if (ds_readb(0x3616) == 1) {
+		x = 47;
+		y = 30;
+		iters = 20;
+	} else {
+		x = 54;
+		y = 44;
+		iters = 17;
+	}
+
+	play_voc(0x12f);
+
+	update_mouse_cursor();
+
+	for (i = 0; i < iters; i++) {
+
+		door_frame(31, x, y, (i * 4) + 1);
+
+		DNG_stub5();
+
+		memmove(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
+	}
+
+	refresh_screen_size();
+}
+
+/* Borlandified and identical */
+void DNG_close_door(void)
+{
+	signed short x;
+	signed short y;
+	signed short iters;
+	signed short i;
+
+	DNG_floor_ceil();
+	move();
+	DNG_turn();
+	DNG_stub3();
+	DNG_stub4();
+
+	memmove(Real2Host(ds_readd(0xd303)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
+
+	if (!ds_readb(0x3616)) {
+		x = 45;
+		y = 38;
+		iters = 18;
+	} else if (ds_readb(0x3616) == 1) {
+		x = 47;
+		y = 30;
+		iters = 19;
+	} else {
+		x = 54;
+		y = 44;
+		iters = 16;
+	}
+
+	play_voc(0x12f);
+
+	update_mouse_cursor();
+
+	for (i = iters; i >= 0; i--) {
+
+		door_frame(31, x, y, (i * 4) + 1);
+
+		DNG_stub5();
+
+		memmove(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
+	}
+
+	refresh_screen_size();
 }
 
 

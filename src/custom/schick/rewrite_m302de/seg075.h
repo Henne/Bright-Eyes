@@ -35,6 +35,12 @@ void DNG_floor_ceil(void);
 /* 0x52 */
 void DNG_stub3(void);
 
+/* 0x57 */
+void DNG_open_door(void);
+
+/* 0x5c */
+void DNG_close_door(void);
+
 /* 0x61 */
 void DNG_lights(void);
 
