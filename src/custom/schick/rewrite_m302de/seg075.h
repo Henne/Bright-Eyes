@@ -44,8 +44,17 @@ void DNG_close_door(void);
 /* 0x61 */
 void DNG_lights(void);
 
+/* 0x66 */
+signed short DNG_stub8(signed short);
+
 /* 0x6b */
 signed short is_staff_lvl2_in_group(void);
+
+/* 0x70 */
+void DNG_stub6(void);
+
+/* 0x75 */
+signed short DNG_stub7(void);
 
 /* static */
 void DNG_turn(void);

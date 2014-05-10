@@ -1,9 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 16/20
+ *	Functions rewritten: 17/20
  */
 
 #include <string.h>
+#include <stdio.h>
 
 #include "v302de.h"
 
@@ -11,10 +12,13 @@
 #include "seg002.h"
 #include "seg003.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg008.h"
 #include "seg027.h"
 #include "seg028.h"
+#include "seg047.h"
 #include "seg075.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg106.h"
 
@@ -778,6 +782,124 @@ void DNG_close_door(void)
 	}
 
 	refresh_screen_size();
+}
+
+/* Borlandified and identical */
+void DNG_stub6(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short l1;
+	Bit8u *hero_auto;
+	Bit8u *hero1;
+	Bit8u *hero2;
+
+	play_voc(0x132);
+
+	if (ds_readb(DUNGEON_LIGHT) != 0) {
+
+		if (DNG_stub8(6)) {
+			ds_writew(X_TARGET, ds_readw(0x2d83));
+			ds_writew(Y_TARGET, ds_readw(0x2d85));
+		}
+	} else {
+
+		if (((l_si = DNG_stub7()) != -1) &&
+			((l_di = count_heroes_available_in_group()) > 1))
+		{
+
+			/* ropes oder staff */
+			host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+			if (l_si) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0xc00),
+					get_hero(l_si - 1) + 0x10);
+			}
+
+			if (l_di == 2) {
+
+				hero1 = Real2Host(get_first_hero_available_in_group());
+
+				hero2 = Real2Host(get_second_hero_available_in_group());
+
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)get_ltx(0xc04),
+					hero1 + 0x10,
+					hero2 + 0x10);
+
+				strcat((char*)Real2Host(ds_readd(DTP2)),
+					(char*)Real2Host(ds_readd(0xd2eb)));
+
+				if (test_attrib(hero1, 4, 2) <= 0) {
+
+					sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+						(char*)get_ltx(0xc08),
+						hero1 + 0x10,
+						hero2 + 0x10,
+						l_si = random_schick(3) + 1);
+
+					strcat((char*)Real2Host(ds_readd(DTP2)),
+						(char*)Real2Host(ds_readd(0xd2eb)));
+
+					sub_hero_le(hero2, l_si);
+				}
+			} else {
+
+				hero_auto = get_hero(l1 = get_hero_KK_best());
+
+				l_di--;
+
+				l_si = 0;
+
+				do {
+
+					if (l_si == l1) {
+						l_si++;
+					}
+
+					strcat((char*)Real2Host(ds_readd(DTP2)),
+						(char*)(get_hero(l_si++) + 0x10));
+
+					if (--l_di) {
+
+						strcat((char*)Real2Host(ds_readd(DTP2)),
+							(char*)((l_di >= 2) ? p_datseg + 0x92cc : p_datseg+ 0x92cf));
+					}
+
+				} while (l_di);
+
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)get_ltx(0xc0c),
+					hero_auto + 0x10,
+					Real2Host(GUI_get_ptr(host_readbs(hero_auto + 0x22), 0)),
+					Real2Host(GUI_get_ptr(host_readbs(hero_auto + 0x22), 2)));
+
+				strcat((char*)Real2Host(ds_readd(DTP2)),
+					(char*)Real2Host(ds_readd(0xd2eb)));
+
+			}
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+		} else {
+
+			sub_group_le(random_schick(5));
+		}
+
+		DNG_inc_level();
+	}
+}
+
+
+signed short DNG_stub7(void)
+{
+
+}
+
+signed short DNG_stub8(signed short a1)
+{
+
 }
 
 
