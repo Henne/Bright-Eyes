@@ -45,7 +45,7 @@ void DNG_close_door(void);
 void DNG_lights(void);
 
 /* 0x66 */
-signed short DNG_stub8(signed short);
+signed short DNG_fallpit(signed short);
 
 /* 0x6b */
 signed short is_staff_lvl2_in_group(void);

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 18/20
+ *	Functions rewritten: 19/20
  */
 
 #include <string.h>
@@ -17,6 +17,7 @@
 #include "seg027.h"
 #include "seg028.h"
 #include "seg047.h"
+#include "seg049.h"
 #include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -798,7 +799,7 @@ void DNG_stub6(void)
 
 	if (ds_readb(DUNGEON_LIGHT) != 0) {
 
-		if (DNG_stub8(6)) {
+		if (DNG_fallpit(6)) {
 			ds_writew(X_TARGET, ds_readw(0x2d83));
 			ds_writew(Y_TARGET, ds_readw(0x2d85));
 		}
@@ -918,9 +919,71 @@ signed short DNG_check_climb_tools(void)
 			(get_first_hero_with_item(0x20) != -1)) ? 0 : -1;
 }
 
-signed short DNG_stub8(signed short a1)
+/* Borlandified and identical */
+signed short DNG_fallpit(signed short a1)
 {
+	signed short l_si;
+	signed short l_di;
+	signed short l1;
+	signed short l2;
+	signed short retval;
 
+	l2 = 0;
+	retval = 0;
+
+	ds_writew(0x9312, 1);
+	l1 = random_schick(ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)));
+
+	if (ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) - 1 == l1) {
+		l1 = ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP));
+	}
+
+	if (ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) != l1) {
+
+		while (ds_readbs(0x2d36 + l2)) {
+			l2++;
+		}
+
+		for (l_di = 0; l_di < l1; l_di++) {
+
+			do {
+				l_si = random_schick(7) - 1;
+
+			} while ( (!host_readbs(get_hero(l_si) + 0x21)) ||
+					(host_readbs(get_hero(l_si) + 0x87) != ds_readbs(CURRENT_GROUP)) ||
+					((l1 == 1) && (l_si == 6)));
+
+			host_writeb(get_hero(l_si) + 0x87, l2);
+			inc_ds_bs(0x2d36 + l2);
+			dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+			sub_hero_le(get_hero(l_si), random_schick(a1));
+
+		}
+
+		GRP_save_pos(l2);
+		ds_writeb(0x2d76 + l2, ds_readbs(DUNGEON_LEVEL) + 1);
+
+		retval = 1;
+
+	} else {
+
+		l_si = 0;
+
+		for (l_di = 0; l_di < l1; l_di++) {
+
+			while (!host_readbs(get_hero(l_si) + 0x21) ||
+				(host_readbs(get_hero(l_si) + 0x87) != ds_readbs(CURRENT_GROUP)))
+			{
+				l_si++;
+			}
+
+			sub_hero_le(get_hero(l_si++), random_schick(a1));
+		}
+
+		DNG_inc_level();
+	}
+
+	return retval;
 }
 
 

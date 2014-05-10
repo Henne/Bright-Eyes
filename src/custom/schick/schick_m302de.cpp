@@ -4544,7 +4544,11 @@ static int seg075(unsigned short offs) {
 			return 1;
 		}
 		case 0x66: {
-			return 0;
+			Bit16s a1 = CPU_Pop16();
+			reg_ax = DNG_fallpit(a1);
+			D1_LOG("DNG_fallpit(%d) = %d\n", a1, reg_ax);
+			CPU_Push16(a1);
+			return 1;
 		}
 		case 0x70: {
 			return 0;
