@@ -56,6 +56,9 @@ void DNG_stub6(void);
 /* 0x75 */
 signed short DNG_check_climb_tools(void);
 
+/* 0x7a */
+void DNG_enter_dungeon(signed short);
+
 /* static */
 void DNG_turn(void);
 

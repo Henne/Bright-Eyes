@@ -4564,7 +4564,11 @@ static int seg075(unsigned short offs) {
 			return 1;
 		}
 		case 0x7a: {
-			return 0;
+			Bit16s dungeon_id = CPU_Pop16();
+			D1_LOG("DNG_enter_dungeon(%d)\n", dungeon_id);
+			DNG_enter_dungeon(dungeon_id);
+			CPU_Push16(dungeon_id);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

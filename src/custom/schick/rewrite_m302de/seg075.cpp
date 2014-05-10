@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 19/20
+ *	Functions rewritten: 20/20
  */
 
 #include <string.h>
@@ -986,6 +986,142 @@ signed short DNG_fallpit(signed short a1)
 	return retval;
 }
 
+void DNG_enter_dungeon(signed short dungeon_id)
+{
+	signed short x_pos;
+	signed short y_pos;
+	signed short level;
+	signed short dir;
+	signed short i;
+	Bit8u *ptr;
+
+	switch (dungeon_id - 1) {
+
+		case 0x0:  x_pos = 9;  y_pos = 11;  dir = 0;  level = 2;  break;
+		case 0x1:  x_pos = 1;  y_pos = 1;   dir = 2;  level = 0;  break;
+		case 0x2:  x_pos = 1;  y_pos = 8;   dir = 1;  level = 0;  break;
+		case 0x3:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case 0x4: {
+			x_pos = 6;
+			y_pos = 14;
+			dir = 0;
+			level = 0;
+			break;
+		}
+		case 0x5: {
+			x_pos = 13;
+			y_pos = 14;
+			dir = 0;
+			level = 0;
+			break;
+		}
+		case 0x6: {
+			x_pos = 1;
+			y_pos = 13;
+			dir = 0;
+			level = 0;
+			break;
+		}
+		case 0x7: {
+			x_pos = 1;
+			y_pos = 14;
+			dir = 1;
+			level = 0;
+			break;
+		}
+		case 0x8: {
+			x_pos = 7;
+			y_pos = 14;
+			dir = 0;
+			level = 0;
+			break;
+			break;
+		}
+		case 0x9: {
+			x_pos = 1;
+			y_pos = 3;
+			dir = 1;
+			level = 0;
+			break;
+		}
+		case 0xa: {
+			x_pos = 7;
+			y_pos = 14;
+			dir = 0;
+			level = 0;
+			break;
+		}
+		case 0xb: {
+			x_pos = 13;
+			y_pos = 14;
+			dir = 0;
+			level = 0;
+			break;
+		}
+		case 0xc: {
+			x_pos = 7;
+			y_pos = 14;
+			dir = 0;
+			level = 0;
+			ds_writeb(0x434d, 0);
+			ds_writeb(0x434e, count_heroes_in_group());
+			break;
+		}
+		case 0xd: {
+			x_pos = 1;
+			y_pos = 14;
+			dir = 3;
+			level = ds_writebs(LOCATION, 0);
+			break;
+		}
+		case 0xe: {
+			x_pos = 1;
+			y_pos = 11;
+			dir = 1;
+			level = 0;
+			break;
+		}
+	}
+
+	ds_writew(X_TARGET, x_pos);
+	ds_writew(Y_TARGET, y_pos);
+	ds_writeb(DIRECTION, dir);
+	ds_writeb(DUNGEON_LEVEL, level);
+	ds_writeb(DUNGEON_INDEX, dungeon_id);
+	ds_writeb(0x2d9f, ds_readb(LOCATION));
+	ds_writeb(0x2da6, ds_readb(CURRENT_TOWN));
+	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
+	ds_writeb(0x2ca6, ds_writeb(0x2ca7, -1));
+
+	if (dungeon_id == 14) {
+
+		ptr = Real2Host(ds_readd(0xd303)) + 0x1f4;
+		memset(Real2Host(ds_readd(0xd303)), 0, 0x120);
+		memcpy(Real2Host(ds_readd(0xd303)) + 0x1f4, p_datseg + 0x3e53, 0x120);
+
+		for (i = 0; i < 0x40; i++) {
+
+			pal_fade(ptr, Real2Host(ds_readd(0xd303)));
+			pal_fade(ptr + 0x60, Real2Host(ds_readd(0xd303)) + 0x60);
+			pal_fade(ptr + 0xc0, Real2Host(ds_readd(0xd303)) + 0xc0);
+
+			wait_for_vsync();
+
+			set_palette(ptr, 0, 0x20);
+			set_palette(ptr + 0x60, 0x80, 0x40);
+		}
+
+		do_fill_rect((RealPt)ds_readd(0xd303), 0, 0, 319, 199, 0);
+		ds_writew(0xc011, 0);
+		ds_writew(0xc013, 0);
+		ds_writew(0xc015, 240);
+		ds_writew(0xc017, 136);
+		ds_writed(0xc019, ds_readd(0xd303));
+		update_mouse_cursor();
+		do_pic_copy(1);
+		refresh_screen_size();
+	}
+}
 
 #if !defined(__BORLANDC__)
 }
