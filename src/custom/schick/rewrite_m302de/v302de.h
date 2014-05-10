@@ -38,6 +38,8 @@
 #define MONTH		(0x2dc1)
 #define YEAR		(0x2dc2)
 #define SPECIAL_DAY	(0x2dc3)
+#define DEATHTRAP_STEPS	(0x3310)	/* signed short */
+#define DEATHTRAP	(0x3312)	/* signed short */
 #define TREASURE_MAPS	(0x3332)	/* array char[9] */
 #define GOT_MAIN_QUEST	(0x334c)
 #define QUESTED_MONTHS	(0x334e)
