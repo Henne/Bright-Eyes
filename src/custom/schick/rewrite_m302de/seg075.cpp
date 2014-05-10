@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 4/20
+ *	Functions rewritten: 5/20
  */
 
 #include "v302de.h"
@@ -291,9 +291,21 @@ void DNG_stub1(void)
 }
 
 /* 0x591 */
+/* Borlandified and identical */
 void DNG_stub2(void)
 {
+	signed short tmp;
 
+	tmp = div16(ds_readb((0xbd6e + 1)));
+
+	if ((tmp == 2) || (tmp == 9)) {
+
+		if (div16(ds_readb((0xbd6e + 5))) == 15) {
+			DNG_draw_walls( ((ds_readb(0x3616) == 1) ? 0x4e :
+						((ds_readb(0x3616) == 2) ? 0x28 : 0x3e)),
+					0, 0x36);
+		}
+	}
 }
 
 /* 0x5e5 */

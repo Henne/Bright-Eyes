@@ -9,7 +9,7 @@ void DNG_stub1(void);
 void DNG_stub4(void);
 
 /* 0x39 */
-void DNG_draw_walls(void);
+void DNG_draw_walls(signed short, signed short, signed short);
 
 /* 0x3e */
 void DNG_stub5(void);
