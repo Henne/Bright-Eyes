@@ -1,10 +1,11 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 7/20
+ *	Functions rewritten: 8/20
  */
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg003.h"
 #include "seg008.h"
@@ -410,9 +411,73 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 }
 
 /* 0x82e */
+/* Borlandified and nearly identical */
 void DNG_stub4(void)
 {
+	volatile signed short l1;
+	volatile signed short l2;
+	signed char l3;
+	unsigned char l4;
+	unsigned char l5;
+	Bit8u *ptr;
 
+	signed short i;
+	signed short j;
+
+	for (i = 0; i < 22; i++) {
+
+		l3 = ds_readbs(0x92b6 + i);
+
+		l5 = ds_readbs(0xbd6e + l3);
+
+		l4 = div16(l5);
+
+		/* BC-TODO: access to a data structure */
+		ptr = (l4 == 6) ? Real2Host(RealMake(datseg, l3 * 4 + 0x9206)) :
+			(l4 == 5) ? p_datseg + 0x925e + l3 * 4 :
+			(l4 == 4) ? p_datseg + 0x91ae + l3 * 4 :
+			(l4 == 3) ? p_datseg + 0x91ae + l3 * 4 : p_datseg + 0x9156 + l3 * 4;
+
+
+		l1 = host_readws(ptr);
+		l2 = host_readws(ptr + 2);
+		l3 = ds_readbs(0xbd50 + l3);
+
+		if (l3 != -1) {
+
+			ptr = Real2Host(ds_readd(0xe48d)) + (l3 - 1) * 18;
+
+			if ((j = host_readws(ptr + 4)) != -1) {
+
+				if ((j & 0x4000) &&
+					((((l5 & 3) + 2) & 3) != ds_readbs(DIRECTION)))
+				{
+				} else {
+					DNG_draw_walls(l1 + host_readws(ptr), l2 + host_readws(ptr + 2), j);
+				}
+			}
+
+			if ((j = host_readws(ptr + 0xa)) != -1) {
+
+				if ((j & 0x4000) &&
+					((((l5 & 3) + 2) & 3) != ds_readbs(DIRECTION)))
+				{
+				} else {
+					DNG_draw_walls(l1 + host_readws(ptr + 6), l2 + host_readws(ptr + 8), j);
+				}
+			}
+
+			if ((j = host_readws(ptr + 0x10)) != -1) {
+
+				if ((j & 0x4000) &&
+					((((l5 & 3) + 2) & 3) != ds_readbs(DIRECTION)))
+				{
+				} else {
+					DNG_draw_walls(l1 + host_readws(ptr + 0x0c), l2 + host_readws(ptr + 0x0e), j);
+				}
+			}
+		}
+	}
 }
 
 /* 0x9ef*/
