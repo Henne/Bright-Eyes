@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 11/20
+ *	Functions rewritten: 14/20
  */
 
 #include <string.h>
@@ -13,6 +13,7 @@
 #include "seg004.h"
 #include "seg008.h"
 #include "seg027.h"
+#include "seg028.h"
 #include "seg075.h"
 #include "seg097.h"
 #include "seg106.h"
@@ -651,6 +652,39 @@ void DNG_timestep(signed short a1)
 
 		xor_ds_bs(0xe48c, 1);
 	}
+}
+
+/* Borlandified and identical */
+void DNG_update_pos(void)
+{
+	set_var_to_zero();
+
+	DNG_stub1();
+
+	ds_writew(0xe486, ds_readw(X_TARGET));
+	ds_writew(0xe484, ds_readw(Y_TARGET));
+	ds_writew(0xe482, ds_readbs(DIRECTION));
+
+}
+
+/* Borlandified and identical */
+void DNG_inc_level(void)
+{
+	ds_writew(0x9312, 1);
+	inc_ds_bs(DUNGEON_LEVEL);
+	load_area_description(1);
+	DNG_update_pos();
+
+}
+
+/* Borlandified and identical */
+void DNG_dec_level(void)
+{
+	ds_writew(0x9312, 1);
+	dec_ds_bs(DUNGEON_LEVEL);
+	load_area_description(1);
+	DNG_update_pos();
+
 }
 
 

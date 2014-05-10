@@ -4494,13 +4494,19 @@ static int seg074(unsigned short offs)
 static int seg075(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			D1_LOG("DNG_update_pos()\n");
+			DNG_update_pos();
+			return 1;
 		}
 		case 0x25: {
-			return 0;
+			D1_LOG("DNG_inc_level()\n");
+			DNG_inc_level();
+			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			D1_LOG("DNG_dec_level()\n");
+			DNG_dec_level();
+			return 1;
 		}
 		case 0x43: {
 			Bit16s a1 = CPU_Pop16();
@@ -7863,10 +7869,16 @@ static int n_seg075(unsigned short offs)
 		return 1;
 	}
 	case 0xc6d: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("near DNG_update_pos()\n");
+		DNG_update_pos();
+		return 1;
 	}
 	case 0xc8e: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("DNG_inc_level()\n");
+		DNG_inc_level();
+		return 1;
 	}
 	case 0x10de: {
 		return 0;

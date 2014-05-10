@@ -2,6 +2,15 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void DNG_update_pos(void);
+
+/* 0x25 */
+void DNG_inc_level(void);
+
+/* 0x2a */
+void DNG_dec_level(void);
+
 /* 0x2f */
 void DNG_stub1(void);
 
