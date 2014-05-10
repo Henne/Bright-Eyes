@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 5/20
+ *	Functions rewritten: 6/20
  */
 
 #include "v302de.h"
@@ -309,9 +309,30 @@ void DNG_stub2(void)
 }
 
 /* 0x5e5 */
+/* Borlandified and identical */
 void DNG_stub3(void)
 {
+	signed short i;
+	signed short tmp;
 
+	for (i = 21; i >= 0; i--) {
+
+		tmp = div16(ds_readb(0xbd6e + i));
+
+		ds_writeb(0xbd50 + i,
+			(tmp == 6) ? ds_readb(0x9090 + i) :
+				(tmp == 5) ? ds_readb(0x90a6 + i) :
+				(tmp == 3) ? ds_readb(0x90d2 + i) :
+				(tmp == 4) ? ds_readb(0x90bc + i) :
+				(tmp == 7) ? ds_readb(0x90e8 + i) :
+				(tmp == 1) ? ds_readb(0x90fe + i) :
+				(tmp == 2) ? ds_readb(0x9114 + i) :
+				(tmp == 9) ? ds_readb(0x912a + i) :
+				(tmp == 8) ? ds_readb(0x9140 + i) :
+				(tmp == 10) ? ds_readb(0x907a + i) :
+				(tmp == 11) ? ds_readb(0x907a + i) :
+				(tmp != 15) ? -1 : ds_readb(0x907a + i));
+	}
 }
 
 /* 0x693 */
