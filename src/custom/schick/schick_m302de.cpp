@@ -1680,7 +1680,20 @@ static int seg003(unsigned short offs) {
 			return 1;
 		}
 		case  0x01e1: {
-			return 0;
+			Bit16s nr = CPU_Pop16();
+			Bit16s x = CPU_Pop16();
+			Bit16s y = CPU_Pop16();
+			Bit16s frame = CPU_Pop16();
+
+			D1_LOG("door_frame(%d, %d, %d, %d);\n",
+				nr, x, y, frame);
+			door_frame(nr, x, y, frame);
+
+			CPU_Push16(frame);
+			CPU_Push16(y);
+			CPU_Push16(x);
+			CPU_Push16(nr);
+			return 1;
 		}
 		case  0x031e: {
 			return 0;

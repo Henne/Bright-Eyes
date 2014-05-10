@@ -1,12 +1,14 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg003 (movement)
- *	Functions rewritten: 3/5
+ *	Functions rewritten: 4/5
  *
 */
 
 #include "v302de.h"
 
 #include "seg000.h"
+#include "seg002.h"
+#include "seg008.h"
 #include "seg097.h"
 
 
@@ -115,6 +117,64 @@ void move(void)
 			ds_readw(0x2d44) + host_readbs(p3 + 2)));
 	}
 }
+
+/* Borlandified and identical */
+void door_frame(signed short nr, signed short x, signed short y, signed short frame)
+{
+	signed short width;
+	signed short height;
+	signed short l1;
+	Bit8u *p1;
+	Bit8u *p2;
+	struct nvf_desc nvf;
+
+	nvf.dst = Real2Host(F_PADD(ds_readd(0xd019), 0x2e248));
+	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.nr = nr;
+	nvf.type = 3;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	process_nvf(&nvf);
+
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	width = host_readws((Bit8u*)&width);
+	height = host_readws((Bit8u*)&height);
+#endif
+
+	height -= frame;
+	l1 = width;
+
+	p1 = Real2Host(F_PADD(F_PADD(ds_readd(0xd019), frame * width), 0x2e248));
+
+	if ((x < 0) && ((x + width) > 0)) {
+		width += x;
+		p1 += __abs__(x);
+		x = 0;
+	}
+
+	if ((y < 0) && ((y + height) > 0)) {
+		height -= y;
+		p1 += __abs__(y) * l1;
+		y = 0;
+	}
+
+	if ( (x < 208) && (y < 135) && (x >= 0) && (y >= 0)) {
+
+		if (x + width > 208) {
+			width = 208 - x;
+		}
+
+		if (y + height > 135) {
+			height = 135 - y;
+		}
+
+		p2 = Real2Host(ds_readd(0xd303)) + 208 * y + x;
+
+		copy_solid(p2, p1, width, height, 208, l1, 0);
+	}
+}
+
 
 /* Borlandified and identical */
 void no_way()
