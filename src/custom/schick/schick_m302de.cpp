@@ -4512,7 +4512,9 @@ static int seg075(unsigned short offs) {
 			return 0;
 		}
 		case 0x61: {
-			return 0;
+			D1_LOG("DNG_lights()\n");
+			DNG_lights();
+			return 1;
 		}
 		case 0x66: {
 			return 0;
@@ -7845,7 +7847,10 @@ static int n_seg075(unsigned short offs)
 		return 1;
 	}
 	case 0xaaa: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("DNG_lights()\n");
+		DNG_lights();
+		return 1;
 	}
 	case 0xc6d: {
 		return 0;

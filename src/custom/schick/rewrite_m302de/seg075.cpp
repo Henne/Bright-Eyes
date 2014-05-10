@@ -1,7 +1,9 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 9/20
+ *	Functions rewritten: 10/20
  */
+
+#include <string.h>
 
 #include "v302de.h"
 
@@ -11,6 +13,7 @@
 #include "seg004.h"
 #include "seg008.h"
 #include "seg075.h"
+#include "seg106.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -535,9 +538,57 @@ signed short is_staff_lvl2_in_group(void)
 }
 
 /* 0xaaa*/
+/* Borlandified and identical */
 void DNG_lights(void)
 {
+	signed short l1;
+	signed char l2;
 
+	signed short i;
+
+	if (div16(ds_readb((0xbd6e + 1))) != 11) {
+
+		/* copy palette */
+		memcpy(Real2Host(ds_readd(0xd2eb)), Real2Host(ds_readd(0xe404)), 0xc0);
+
+		if (!(ds_readb((0xbd6e + 1)) & 1)) {
+
+			if (ds_readd(0x2dc4 + 0x24)) {
+				l1 = 10;
+			} else if (ds_readd(0x2dc4 + 0x20) || is_staff_lvl2_in_group()) {
+				l1 = 0;
+			} else {
+				if ( (l1 = get_max_light_time()) != -1) {
+					l1 = 10 - l1;
+				} else {
+					l1 = 10;
+				}
+			}
+		} else {
+			if (ds_readd(0x2dc4 + 0x24)) {
+				l1 = 10;
+			} else {
+				l1 = 0;
+			}
+		}
+
+		ds_writeb(DUNGEON_LIGHT, (l1 == 9) ? 1 : (l1 == 10) ? 2 : 0);
+		l1 *= 3;
+
+		for (i = 0; i < 0xc0; i++) {
+
+			l2 = host_readbs(Real2Host(ds_readd(0xd2eb)) + i) - l1;
+
+			if (l2 < 0) {
+				l2 = 0;
+			}
+
+			host_writeb(Real2Host(ds_readd(0xd2eb)) + i, l2);
+		}
+
+		wait_for_vsync();
+		set_palette(Real2Host(ds_readd(0xd2eb)), 0x80, 0x40);
+	}
 }
 
 

@@ -43,6 +43,7 @@
 #define QUESTED_MONTHS	(0x334e)
 #define NPC_MONTHS	(0x3470)
 #define CURRENT_INFORMER	(0x3612)
+#define DUNGEON_LIGHT	(0x3613)	/* char (0,1,2) */
 #define TRAVELING	(0x3614)
 #define SPHERE_TIMER	(0x3c97)
 #define SPHERE_ACTIVE	(0x3c98)
