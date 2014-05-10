@@ -1,11 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 3/20
+ *	Functions rewritten: 4/20
  */
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg003.h"
+#include "seg075.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -275,6 +277,42 @@ void DNG_turn(void)
 	}
 }
 
+/* 0x56b */
+void DNG_stub1(void)
+{
+
+}
+
+/* 0x591 */
+void DNG_stub2(void)
+{
+
+}
+
+/* 0x5e5 */
+void DNG_stub3(void)
+{
+
+}
+
+/* 0x693 */
+void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
+{
+
+}
+
+/* 0x82e */
+void DNG_stub4(void)
+{
+
+}
+
+/* 0x9ef*/
+void DNG_stub5(void)
+{
+
+}
+
 /* 0xa46 */
 
 /**
@@ -300,6 +338,12 @@ signed short is_staff_lvl2_in_group(void)
 	}
 
 	return 0;
+}
+
+/* 0xaaa*/
+void DNG_lights(void)
+{
+
 }
 
 
