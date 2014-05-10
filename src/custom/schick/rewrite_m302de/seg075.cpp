@@ -1,12 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 6/20
+ *	Functions rewritten: 7/20
  */
 
 #include "v302de.h"
 
 #include "seg002.h"
 #include "seg003.h"
+#include "seg008.h"
 #include "seg075.h"
 
 #if !defined(__BORLANDC__)
@@ -336,9 +337,76 @@ void DNG_stub3(void)
 }
 
 /* 0x693 */
+/* Borlandified and identical */
 void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 {
+	signed short width;
+	signed short height;
+	signed short width2;
+	signed short height2;
+	signed short flag;
+	Bit8u *dst_ptr;
+	Bit8u *ptr2;
+	struct nvf_desc nvf;
 
+	flag = (a3 & 0x8000) ? 1 : 0;
+	a3 &= 0x3fff;
+
+	if ((a3 >= 8) && (a3 <= 13) && !ds_readbs(0xe48c)) {
+		a3 += 6;
+	} else {
+		if ((a3 >= 14) && (a3 <= 19) && !ds_readbs(0xe48c)) {
+			a3 -= 6;
+		}
+	}
+
+	nvf.dst = dst_ptr = Real2Host(ds_readd(0xd303)) + 0x7530;
+	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.nr = a3;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	nvf.type = 3;
+	process_nvf(&nvf);
+
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	height = host_readws((Bit8u*)&height);
+	width = host_readws((Bit8u*)&width);
+#endif
+
+	width2 = width;
+	height2 = height;
+
+	if ((a1 < 0) && ((a1 + width2) > 0)) {
+		width2 += a1;
+		dst_ptr += __abs__(a1);
+		a1 = 0;
+	}
+
+	if ((a2 < 0) && ((a2 + height2) > 0)) {
+		height2 -= a2;
+		dst_ptr += __abs__(a2) * width;
+		a2 = 0;
+	}
+
+	if ((a1 < 208) && (a2 < 135) && (a1 >= 0) && (a2 >= 0)) {
+
+		if (a1 + width2 > 208) {
+			width2 = 208 - a1;
+		}
+
+		if (a2 + height2 > 135) {
+			height2 = 135 - a2;
+		}
+
+		ptr2 = Real2Host(ds_readd(0xd303)) + 208 * a2 + a1;
+
+		if (!flag) {
+			copy_solid(ptr2, dst_ptr, width2, height2, 208, width, 128);
+		} else {
+			copy_solid_permuted(ptr2, dst_ptr + width2 - 1, width2, height2, 208, width, 128);
+		}
+	}
 }
 
 /* 0x82e */
