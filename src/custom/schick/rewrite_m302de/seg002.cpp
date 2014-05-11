@@ -4253,10 +4253,11 @@ RealPt get_second_hero_available_in_group()
 	return (RealPt)0;
 }
 
-unsigned short count_heros_available() {
+signed short count_heros_available(void)
+{
 	Bit8u *hero_i;
-	unsigned short retval;
-	unsigned short i;
+	signed short retval;
+	signed short i;
 
 	retval = 0;
 	hero_i = get_hero(0);
@@ -4279,7 +4280,8 @@ unsigned short count_heros_available() {
 	count_heroes_available_in_group
 */
 
-unsigned short count_heroes_available_in_group() {
+signed short count_heroes_available_in_group(void)
+{
 	Bit8u *hero_i = get_hero(0);
 	char i, heroes = 0;
 
