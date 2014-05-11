@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg049 (group management)
- *	Functions rewritten: 5/9
+ *	Functions rewritten: 6/9
  */
 
 #include <stdlib.h>
@@ -8,6 +8,8 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg008.h"
+#include "seg028.h"
 #include "seg029.h"
 #include "seg047.h"
 #include "seg097.h"
@@ -238,6 +240,141 @@ void GRP_merge(void)
 		} while (answer != -1);
 
 		draw_status_line();
+	}
+}
+
+/* Borlandified and identical */
+void GRP_switch_to_next(signed short mode)
+{
+	signed short i;
+	signed short state;
+
+	volatile signed short group;
+	volatile signed short done = 0;
+	volatile signed short dng_level;
+
+	group = ds_readbs(CURRENT_GROUP);
+
+	do {
+		/* select next group */
+		group++;
+
+		if (group == 6) {
+			group = 0;
+		}
+
+		if (ds_readbs(0x2d36 + group) != 0) {
+
+			state = 0;
+
+			for (i = 0; i < 6; i++) {
+
+				if ((host_readbs(get_hero(i) + 0x21) != 0) &&
+					(host_readbs(get_hero(i) + 0x87) == group) &&
+					check_hero(get_hero(i)))
+				{
+					if (host_readbs(get_hero(i) + 0x9f) != 0) {
+						/* hero is in prison */
+						state = 2;
+					} else {
+						/* hero is free */
+						state = 1;
+					}
+				}
+			}
+
+			if (!state || state == 2) {
+
+				if (mode == 0) {
+
+					if (!state) {
+						GUI_output(get_ltx(0x90));
+					} else {
+						if ((state == 2) && GUI_bool(get_ltx(0xc14))) {
+							timewarp_until(0x7e90);
+							done = 1;
+						}
+					}
+				}
+
+			} else {
+
+				if (state || mode != 2) {
+					done = 1;
+				}
+			}
+		}
+
+	} while (done == 0);
+
+	if (ds_readbs(CURRENT_GROUP) != group) {
+
+		if ( ( (ds_readbs(CURRENT_TOWN) != 0) && !ds_readbs(0x2d68 + group)) ||
+			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(0x2d68 + group) != 0)))
+		{
+			set_palette(p_datseg + 0x26c3, 0x00, 0x20);
+			set_palette(p_datseg + 0x26c3, 0x80, 0x20);
+			set_palette(p_datseg + 0x26c3, 0xa0, 0x20);
+		}
+
+		if ((ds_readbs(0x2d6f + group)) && (ds_readbs(0x2d6f + group) != ds_readbs(DUNGEON_INDEX)))
+		{
+			ds_writeb(0x2ca6, -1);
+			ds_writew(0x2ccb, -1);
+		}
+
+		if ((ds_readbs(0x2d68 + group)) && (ds_readbs(0x2d68 + group) != ds_readbs(CURRENT_TOWN)))
+		{
+			ds_writeb(0x2ca7, -1);
+			ds_writew(0x2ccb, -1);
+		}
+
+		/* save positions from the old group */
+		ds_writeb(0x2d3e + ds_readbs(CURRENT_GROUP), ds_readbs(DIRECTION));
+		ds_writew(0x2d48 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(X_TARGET));
+		ds_writew(0x2d54 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(Y_TARGET));
+		ds_writeb(0x2d61 + ds_readbs(CURRENT_GROUP), ds_readbs(LOCATION));
+		ds_writeb(0x2d68 + ds_readbs(CURRENT_GROUP), ds_readbs(CURRENT_TOWN));
+		ds_writeb(0x2d6f + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_INDEX));
+		ds_writeb(0x2d76 + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_LEVEL));
+		ds_writeb(0x2d7d + ds_readbs(CURRENT_GROUP), ds_readbs(0x2d7c));
+		ds_writew(0x2d87 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(0x2d83));
+		ds_writew(0x2d93 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(0x2d85));
+		ds_writeb(0x2da0 + ds_readbs(CURRENT_GROUP), ds_readbs(0x2d9f));
+		ds_writeb(0x2da7 + ds_readbs(CURRENT_GROUP), ds_readbs(0x2da6));
+		ds_writeb(0x2dae + ds_readbs(CURRENT_GROUP), ds_readbs(0x2dad));
+		ds_writeb(0x2db5 + ds_readbs(CURRENT_GROUP), ds_readbs(0x2db4));
+
+		/* set positions for the new group */
+		ds_writeb(CURRENT_GROUP, group);
+		ds_writeb(DIRECTION, ds_readb(0x2d3e + group));
+		ds_writew(X_TARGET, ds_readw(0x2d48 + group * 2));
+		ds_writew(Y_TARGET, ds_readw(0x2d54 + group * 2));
+		ds_writeb(LOCATION, ds_readb(0x2d61 + group));
+		ds_writeb(CURRENT_TOWN, ds_readb(0x2d68 + group));
+		ds_writeb(DUNGEON_INDEX, ds_readb(0x2d6f + group));
+		dng_level = ds_readbs(DUNGEON_LEVEL);
+		ds_writeb(DUNGEON_LEVEL, ds_readbs(0x2d76 + group));
+
+		if (dng_level != ds_readbs(DUNGEON_LEVEL)) {
+			load_area_description(1);
+		}
+
+		ds_writeb(0x2d7c, ds_readb(0x2d7d + group));
+		ds_writew(0x2d83, ds_readw(0x2d87 + group * 2));
+		ds_writew(0x2d85, ds_readw(0x2d93 + group * 2));
+		ds_writeb(0x2d9f, ds_readb(0x2da0 + group));
+		ds_writeb(0x2da6, ds_readb(0x2da7 + group));
+		ds_writeb(0x2dad, ds_readb(0x2dae + group));
+		ds_writeb(0x2db4, ds_readb(0x2db5 + group));
+
+		GRP_sort_heros();
+
+		for (group = 0; group <= 6; group++) {
+			ds_writeb(0x4219 + group, ds_writeb(0x4212 + group, 0));
+		}
+
+		ds_writew(0x2846, 1);
 	}
 }
 

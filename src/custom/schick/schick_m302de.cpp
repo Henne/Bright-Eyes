@@ -4113,8 +4113,11 @@ static int seg049(unsigned short offs)
 		return 1;
 	}
 	case 0x3e: {
-		D1_INFO("GRP_switch_to_next()\n");
-		return 0;
+		Bit16s mode = CPU_Pop16();
+		D1_INFO("GRP_switch_to_next(%d)\n", mode);
+		GRP_switch_to_next(mode);
+		CPU_Push16(mode);
+		return 1;
 	}
 	case 0x43: {
 		RealPt p1 = CPU_Pop32();

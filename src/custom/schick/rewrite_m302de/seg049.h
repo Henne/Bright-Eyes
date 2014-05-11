@@ -8,6 +8,8 @@ void GRP_sort_heros(void);
 void GRP_split(void);
 /* 0x39 */
 void GRP_merge(void);
+/* 0x3e */
+void GRP_switch_to_next(signed short);
 
 /* 0x43 */
 int GRP_compare_heros(const void*, const void*);
