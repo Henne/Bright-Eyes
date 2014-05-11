@@ -182,7 +182,7 @@ void GRP_split(void)
 			} else {
 
 				not_empty = 1;
-				host_writeb(get_hero(answer) + 0x87, new_group);
+				host_writeb(get_hero(answer) + 0x87, (signed char)new_group);
 				inc_ds_bs(0x2d36 + new_group);
 				dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
 			}
@@ -210,19 +210,19 @@ void GRP_merge(void)
 
 		do {
 
-			ds_writeb(0x2d3e + answer,
-				ds_writew(0x2d48 + answer * 2,
+			ds_writeb(0x2d3e + answer, (signed char)
+				(ds_writew(0x2d48 + answer * 2,
 				ds_writew(0x2d54 + answer * 2,
 				ds_writebs(0x2d68 + answer,
 				ds_writeb(0x2d6f + answer,
 				ds_writeb(0x2d76 + answer,
-				ds_writeb(0x2d7d + answer,
-				ds_writew(0x2d87 + answer * 2,
+				ds_writeb(0x2d7d + answer, (signed char)
+				(ds_writew(0x2d87 + answer * 2,
 				ds_writew(0x2d93 + answer * 2,
 				ds_writebs(0x2da0 + answer,
 				ds_writeb(0x2da7 + answer,
 				ds_writeb(0x2dae + answer,
-				ds_writeb(0x2db5 + answer, 0)))))))))))));
+				ds_writeb(0x2db5 + answer, 0)))))))))))))));
 
 			ds_writeb(0x2d36 + answer, 0);
 
@@ -346,7 +346,7 @@ void GRP_switch_to_next(signed short mode)
 		ds_writeb(0x2db5 + ds_readbs(CURRENT_GROUP), ds_readbs(0x2db4));
 
 		/* set positions for the new group */
-		ds_writeb(CURRENT_GROUP, group);
+		ds_writeb(CURRENT_GROUP, (signed char)group);
 		ds_writeb(DIRECTION, ds_readb(0x2d3e + group));
 		ds_writew(X_TARGET, ds_readw(0x2d48 + group * 2));
 		ds_writew(Y_TARGET, ds_readw(0x2d54 + group * 2));
