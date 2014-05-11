@@ -426,8 +426,8 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 /* Borlandified and nearly identical */
 void DNG_stub4(void)
 {
-	volatile signed short l1;
-	volatile signed short l2;
+	signed short l1;
+	signed short l2;
 	signed char l3;
 	unsigned char l4;
 	unsigned char l5;
@@ -442,7 +442,7 @@ void DNG_stub4(void)
 
 		l5 = ds_readbs(0xbd6e + l3);
 
-		l4 = div16(l5);
+		l4 = (unsigned char)div16(l5);
 
 		/* BC-TODO: access to a data structure */
 		ptr = (l4 == 6) ? Real2Host(RealMake(datseg, l3 * 4 + 0x9206)) :
@@ -953,7 +953,7 @@ signed short DNG_fallpit(signed short a1)
 					(host_readbs(get_hero(l_si) + 0x87) != ds_readbs(CURRENT_GROUP)) ||
 					((l1 == 1) && (l_si == 6)));
 
-			host_writeb(get_hero(l_si) + 0x87, l2);
+			host_writeb(get_hero(l_si) + 0x87, (unsigned char)l2);
 			inc_ds_bs(0x2d36 + l2);
 			dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
 			sub_hero_le(get_hero(l_si), random_schick(a1));
@@ -1064,7 +1064,7 @@ void DNG_enter_dungeon(signed short dungeon_id)
 			dir = 0;
 			level = 0;
 			ds_writeb(0x434d, 0);
-			ds_writeb(0x434e, count_heroes_in_group());
+			ds_writeb(0x434e, (signed char)count_heroes_in_group());
 			break;
 		}
 		case 0xd: {
@@ -1085,9 +1085,9 @@ void DNG_enter_dungeon(signed short dungeon_id)
 
 	ds_writew(X_TARGET, x_pos);
 	ds_writew(Y_TARGET, y_pos);
-	ds_writeb(DIRECTION, dir);
-	ds_writeb(DUNGEON_LEVEL, level);
-	ds_writeb(DUNGEON_INDEX, dungeon_id);
+	ds_writeb(DIRECTION, (signed char)dir);
+	ds_writeb(DUNGEON_LEVEL, (signed char)level);
+	ds_writeb(DUNGEON_INDEX, (signed char)dungeon_id);
 	ds_writeb(0x2d9f, ds_readb(LOCATION));
 	ds_writeb(0x2da6, ds_readb(CURRENT_TOWN));
 	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
