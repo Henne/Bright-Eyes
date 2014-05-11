@@ -42,10 +42,10 @@ void show_entrance(void)
 	}
 }
 
-/* 0x52 */
 /**
  * show_citizen() - the screen when entering a house in the city
  */
+/* Borlandified and identical */
 void show_citizen(void)
 {
 
@@ -58,8 +58,7 @@ void show_citizen(void)
 			draw_main_screen();
 			set_var_to_zero();
 			load_ani(20);
-			ds_writew(0x2846, 0);
-			init_ani(0);
+			init_ani(ds_writew(0x2846, 0));
 
 			strcpy((char*)Real2Host((RealPt)ds_readd(0xd2eb)),
 				(char*)get_dtp(ds_readw(CITYINDEX) * 4));
@@ -79,7 +78,7 @@ void show_citizen(void)
 			}
 		}
 
-	} while (ds_readw(ACTION) != 0 && ds_readw(0xc3d5) != 0);
+	} while ((ds_readw(ACTION) == 0) && (ds_readw(0xc3d5) == 0));
 
 	ds_writew(0xc3d5, 0);
 	set_var_to_zero();
