@@ -249,9 +249,9 @@ void GRP_switch_to_next(signed short mode)
 	signed short i;
 	signed short state;
 
-	volatile signed short group;
-	volatile signed short done = 0;
-	volatile signed short dng_level;
+	signed short group;
+	signed short done = 0;
+	signed short dng_level;
 
 	group = ds_readbs(CURRENT_GROUP);
 
