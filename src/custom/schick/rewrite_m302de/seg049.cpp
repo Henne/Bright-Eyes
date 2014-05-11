@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg049 (group management)
- *	Functions rewritten: 6/9
+ *	Functions rewritten: 7/9
  */
 
 #include <stdlib.h>
@@ -376,6 +376,78 @@ void GRP_switch_to_next(signed short mode)
 
 		ds_writew(0x2846, 1);
 	}
+}
+
+struct dummy {
+	char a[0x6da];
+};
+
+void GRP_swap_heros(void)
+{
+	signed short hero1_nr;
+	signed short hero2_nr;
+	signed char l2;
+	signed char l3;
+	signed char l4;
+	signed char l5;
+	signed char i;
+	signed char tmp[0x6da];
+
+	if ((ds_readw(0x29b4) == 0) || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+		return;
+	}
+
+	hero1_nr = select_hero_from_group(get_ltx(0x4b8));
+
+	if ((hero1_nr != -1) && (hero1_nr < 6)) {
+
+		hero2_nr = select_hero_from_group(get_ltx(0x4bc));
+
+		if ((hero2_nr != -1) && (hero1_nr != hero2_nr) && (hero2_nr < 6)) {
+
+			for (i = 0; i < 3; i++) {
+
+				if (ds_readbs(0xe3be + i) == hero1_nr) {
+					ds_writebs(0xe3be + i, (signed char)hero2_nr);
+				}
+			}
+
+			/* save hero1 in tmp */
+			*((struct dummy*)&tmp) = *((struct dummy*)get_hero(hero1_nr));
+
+			l2 = ds_readbs(0xe3d6 + hero1_nr);
+			l3 = ds_readbs(0xe3cf + hero1_nr);
+			l4 = ds_readbs(0xe3c8 + hero1_nr);
+			l5 = ds_readbs(0xe3c1 + hero1_nr);
+
+			*((struct dummy*)get_hero(hero1_nr)) = *((struct dummy*)get_hero(hero2_nr));
+
+			ds_writebs(0xe3d6 + hero1_nr, ds_readbs(0xe3d6 + hero2_nr));
+			ds_writebs(0xe3cf + hero1_nr, ds_readbs(0xe3cf + hero2_nr));
+			ds_writebs(0xe3c8 + hero1_nr, ds_readbs(0xe3c8 + hero2_nr));
+			ds_writebs(0xe3c1 + hero1_nr, ds_readbs(0xe3c1 + hero2_nr));
+
+			*((struct dummy*)get_hero(hero2_nr)) = *((struct dummy*)&tmp);
+
+			ds_writebs(0xe3d6 + hero2_nr, l2);
+			ds_writebs(0xe3cf + hero2_nr, l3);
+			ds_writebs(0xe3c8 + hero2_nr, l4);
+			ds_writebs(0xe3c1 + hero2_nr, l5);
+
+			if (host_readbs(get_hero(hero1_nr) + 0x21)) {
+				host_writebs(get_hero(hero1_nr) + 0x84, 100);
+			}
+
+			if (host_readbs(get_hero(hero2_nr) + 0x21)) {
+				host_writebs(get_hero(hero2_nr) + 0x84, 100);
+			}
+
+			host_writeb(get_hero(hero1_nr) + 0x8a, hero1_nr + 1);
+			host_writeb(get_hero(hero2_nr) + 0x8a, hero2_nr + 1);
+		}
+	}
+
+	draw_status_line();
 }
 
 #if !defined(__BORLANDC__)

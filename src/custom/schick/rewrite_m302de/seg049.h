@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void GRP_swap_heros(void);
+
 /* 0x2f */
 void GRP_sort_heros(void);
 /* 0x34 */
@@ -10,7 +13,6 @@ void GRP_split(void);
 void GRP_merge(void);
 /* 0x3e */
 void GRP_switch_to_next(signed short);
-
 /* 0x43 */
 int GRP_compare_heros(const void*, const void*);
 /* 0x48 */

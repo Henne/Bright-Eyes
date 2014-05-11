@@ -4091,11 +4091,12 @@ static int seg049(unsigned short offs)
 {
 	switch(offs) {
 	case 0x20: {
-		D1_INFO("GRP_move_hero()\n");
-		return 0;
+		D1_LOG("GRP_swap_heros()\n");
+		GRP_swap_heros();
+		return 1;
 	}
 	case 0x25: {
-		D1_INFO("GRP_change_heros()\n");
+		D1_INFO("GRP_move_hero()\n");
 		return 0;
 	}
 	case 0x2a: {
