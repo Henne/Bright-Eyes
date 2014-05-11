@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 7/15
+ *	Functions rewritten: 8/15
  */
 
 #include <string.h>
@@ -16,6 +16,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
 
@@ -23,6 +24,23 @@
 namespace M302de {
 #endif
 
+/* Borlandified and identical */
+void show_entrance(void)
+{
+	draw_main_screen();
+	set_var_to_zero();
+	load_ani(34);
+	init_ani(1);
+
+	if (GUI_bool(get_ltx(0xbe0))) {
+
+		init_ani_busy_loop(2);
+		DNG_enter_dungeon(ds_readws(TYPEINDEX));
+	} else {
+
+		turnaround();
+	}
+}
 
 /* 0x52 */
 /**

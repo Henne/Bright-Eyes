@@ -2922,7 +2922,9 @@ static int seg025(unsigned short offs) {
 		return 1;
 	}
 	case 0x39: {
-		return 0;
+		D1_LOG("show_entrance()\n");
+		show_entrance();
+		return 1;
 	}
 	case 0x3e: {
 		D1_LOG("show_citizen();\n");
