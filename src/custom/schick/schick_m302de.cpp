@@ -8402,7 +8402,7 @@ static int n_seg105(unsigned offs) {
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-			"seg105", offs);
+			__func__, offs);
 		exit(1);
 	}
 }
