@@ -4,6 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void GRP_swap_heros(void);
+/* 0x25 */
+void GRP_move_hero(signed short);
 
 /* 0x2f */
 void GRP_sort_heros(void);

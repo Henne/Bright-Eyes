@@ -4098,7 +4098,10 @@ static int seg049(unsigned short offs)
 		return 1;
 	}
 	case 0x25: {
-		D1_INFO("GRP_move_hero()\n");
+		Bit16s pos = CPU_Pop16();
+		D1_LOG("GRP_move_hero(%d)\n", pos);
+		//GRP_move_hero(pos);
+		CPU_Push16(pos);
 		return 0;
 	}
 	case 0x2a: {

@@ -1,13 +1,15 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg049 (group management)
- *	Functions rewritten: 7/9
+ *	Functions rewritten: 8/9
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg004.h"
 #include "seg008.h"
 #include "seg028.h"
 #include "seg029.h"
@@ -382,6 +384,7 @@ struct dummy {
 	char a[0x6da];
 };
 
+/* Borlandified and identical */
 void GRP_swap_heros(void)
 {
 	signed short hero1_nr;
@@ -448,6 +451,167 @@ void GRP_swap_heros(void)
 	}
 
 	draw_status_line();
+}
+
+/* Borlandified and identical */
+void GRP_move_hero(signed short src_pos)
+{
+
+	signed short dst_pos;
+	Bit8u *src;
+	Bit8u *dst;
+	signed char bak1;
+	signed char bak2;
+	signed char bak3;
+	signed char bak4;
+	signed char i;
+
+	/* dont move NPC */
+	if (src_pos != 6) {
+
+		ds_writew(0x2988, 157);
+		ds_writew(0x298c, 157);
+		ds_writew(0x298a, 1);
+		ds_writew(0x298e, 260);
+
+		update_mouse_cursor();
+
+		ds_writew(0x2998, 1);
+		ds_writew(0x299e, 157);
+
+		ds_writew(0x299c, ds_readw(0x2d01 + 2 * src_pos));
+		ds_writew(0xc011, ds_readw(0x299c));
+		ds_writew(0xc013, ds_readw(0x299e));
+		ds_writew(0xc015, ds_readw(0x299c) + 31);
+		ds_writew(0xc017, ds_readw(0x299e) + 31);
+		ds_writed(0xc019, ds_readd(0xd2f7));
+
+		do_save_rect();
+
+		ds_writew(0x2998, 0);
+
+		refresh_screen_size();
+
+		ds_writew(0x2998, 1);
+
+		ds_writew(0xc011, ds_readw(0x2d01 + 2 * src_pos));
+		ds_writew(0xc013, 157);
+		ds_writew(0xc015, ds_readw(0x2d01 + 2 * src_pos) + 31);
+		ds_writew(0xc017, 188);
+		ds_writed(0xc019, ds_readd(0xd303));
+
+		do_save_rect();
+
+		ds_writew(0x2998, 0);
+
+		update_mouse_cursor();
+
+		ds_writew(0x29a0, ds_readw(0x299c));
+		ds_writew(0x29a2, ds_readw(0x299e));
+
+		while (ds_readw(0xc3d5) == 0) {
+
+			if (ds_readw(0x29a4) != 0) {
+
+				ds_writew(0x2998, 1);
+
+				wait_for_vsync();
+
+				ds_writew(0xc011, ds_readw(0x29a0));
+				ds_writew(0xc013, ds_readw(0x29a2));
+				ds_writew(0xc015, ds_readw(0x29a0) + 31);
+				ds_writew(0xc017, ds_readw(0x29a2) + 31);
+				ds_writed(0xc019, ds_readd(0xd2f7));
+
+				do_pic_copy(0);
+
+				ds_writew(0xc011, ds_readw(0x299c));
+				ds_writew(0xc013, ds_readw(0x299e));
+				ds_writew(0xc015, ds_readw(0x299c) + 31);
+				ds_writew(0xc017, ds_readw(0x299e) + 31);
+				ds_writed(0xc019, ds_readd(0xd2f7));
+
+				do_save_rect();
+
+				ds_writed(0xc019, ds_readd(0xd303));
+
+				do_pic_copy(0);
+
+				ds_writew(0x29a0, ds_readw(0x299c));
+				ds_writew(0x29a2, ds_readw(0x299e));
+				ds_writew(0x29a4, 0);
+				ds_writew(0x2998, 0);
+			}
+		}
+
+		ds_writew(0xc011, ds_readw(0x29a0));
+		ds_writew(0xc013, ds_readw(0x29a2));
+		ds_writew(0xc015, ds_readw(0x29a0) + 31);
+		ds_writew(0xc017, ds_readw(0x29a2) + 31);
+		ds_writed(0xc019, ds_readd(0xd2f7));
+
+		do_pic_copy(0);
+
+		dst_pos = 6;
+		while (ds_readws(0x2d01 + --dst_pos * 2) > ds_readws(0x299c))
+		{
+			;
+		}
+
+		if (dst_pos < 0) {
+			dst_pos = 0;
+		}
+
+		if ((src_pos != dst_pos) && (dst_pos != 6)) {
+
+			dst = get_hero(dst_pos);
+			src = get_hero(src_pos);
+
+			if (!host_readbs(dst + 0x21) || (host_readbs(dst + 0x87) == ds_readbs(CURRENT_GROUP))) {
+
+				for (i = 0; i < 3; i++) {
+					if (ds_readbs(0xe3be + i) == src_pos) {
+						ds_writeb(0xe3be + i, dst_pos);
+					}
+				}
+
+				memcpy(Real2Host(ds_readd(0xd303)), src, 0x6da);
+
+				bak1 = ds_readbs(0xe3d6 + src_pos);
+				bak2 = ds_readbs(0xe3cf + src_pos);
+				bak3 = ds_readbs(0xe3c8 + src_pos);
+				bak4 = ds_readbs(0xe3c1 + src_pos);
+
+				*((struct dummy*)src) = *((struct dummy*)dst);
+
+				ds_writeb(0xe3d6 + src_pos, ds_readbs(0xe3d6 + dst_pos));
+				ds_writeb(0xe3cf + src_pos, ds_readbs(0xe3cf + dst_pos));
+				ds_writeb(0xe3c8 + src_pos, ds_readbs(0xe3c8 + dst_pos));
+				ds_writeb(0xe3c1 + src_pos, ds_readbs(0xe3c1 + dst_pos));
+
+				memcpy(dst, Real2Host(ds_readd(0xd303)), 0x6da);
+
+				ds_writeb(0xe3d6 + dst_pos, bak1);
+				ds_writeb(0xe3cf + dst_pos, bak2);
+				ds_writeb(0xe3c8 + dst_pos, bak3);
+				ds_writeb(0xe3c1 + dst_pos, bak4);
+
+				host_writeb(src + 0x84, 100);
+				host_writeb(dst + 0x84, 100);
+				host_writeb(dst + 0x8a, src_pos + 1);
+				host_writeb(src + 0x8a, dst_pos + 1);
+			}
+		}
+
+		ds_writew(0xc3d5, 0);
+		ds_writew(0x2988, 0);
+		ds_writew(0x298c, 199);
+		ds_writew(0x298a, 0);
+		ds_writew(0x298e, 319);
+
+		refresh_screen_size();
+		draw_status_line();
+	}
 }
 
 #if !defined(__BORLANDC__)
