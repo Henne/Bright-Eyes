@@ -312,6 +312,19 @@ static inline unsigned short hero_stoned(Bit8u *hero) {
 }
 
 /**
+ * hero_busy() -	check if hero is busy
+ * @hero:	ptr to hero
+ *
+ * 0 = not busy / 1 = busy
+ */
+static inline unsigned short hero_busy(Bit8u *hero) {
+	if (((host_readb(hero + 0xaa) >> 3) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/**
  * hero_cursed() -	check if hero is cursed
  * @hero:	ptr to hero
  *
@@ -788,6 +801,7 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 #define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
 #define hero_sleeps(hero)	((*(struct hero_status*)(hero + 0xaa)).sleeps)
 #define hero_stoned(hero)	((*(struct hero_status*)(hero + 0xaa)).stoned)
+#define hero_busy(hero)		((*(struct hero_status*)(hero + 0xaa)).busy)
 #define hero_cham(hero)		((*(struct hero_status*)(hero + 0xaa)).cham)
 #define hero_cursed(hero)	((*(struct hero_status*)(hero + 0xaa)).cursed)
 #define hero_unc(hero)		((*(struct hero_status*)(hero + 0xaa)).uncon)

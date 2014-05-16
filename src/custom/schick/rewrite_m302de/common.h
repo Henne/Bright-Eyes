@@ -53,7 +53,7 @@ struct hero_status {
 	unsigned short dead	:1;
 	unsigned short sleeps	:1;
 	unsigned short stoned	:1;
-	unsigned short unkn1	:1;
+	unsigned short busy	:1;
 	unsigned short cham	:1;
 	unsigned short cursed	:1;
 	unsigned short uncon	:1;
