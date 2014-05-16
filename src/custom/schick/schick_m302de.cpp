@@ -5490,7 +5490,17 @@ static int seg104(unsigned short offs)
 	D1_LOG("%s:0x%x\n", __func__, offs);
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			Bit16s receipe_index = CPU_Pop16();
+			Bit16s flag = CPU_Pop16();
+
+			reg_ax = do_alchemy(Real2Host(hero), (Bit8s)receipe_index, flag);
+			D1_LOG("do_alchemy(%s, %d, %d) = %d\n",
+				Real2Host(hero) + 0x10, (Bit8s)receipe_index, flag, (Bit16s)reg_ax);
+			CPU_Push16(flag);
+			CPU_Push16(receipe_index);
+			CPU_Push32(hero);
+			return 1;
 		}
 		case 0x2f: {
 			RealPt hero = CPU_Pop32();
@@ -8306,7 +8316,18 @@ static int n_seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x016d: {
-			return 0;
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16s receipe_index = CPU_Pop16();
+			Bit16s flag = CPU_Pop16();
+
+			reg_ax = do_alchemy(Real2Host(hero), (Bit8s)receipe_index, flag);
+			D1_LOG("do_alchemy(%s, %d, %d) = %d\n",
+				Real2Host(hero) + 0x10, (Bit8s)receipe_index, flag, (Bit16s)reg_ax);
+			CPU_Push16(flag);
+			CPU_Push16(receipe_index);
+			CPU_Push32(hero);
+			return 1;
 		}
 		case 0x07e6: {
 			return 0;

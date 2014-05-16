@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+signed short do_alchemy(Bit8u*, signed short, signed short);
+
 /* 0x25 */
 /* static */
 signed short hero_has_ingrendients(Bit8u*, signed short);

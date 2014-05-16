@@ -1,11 +1,15 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
- *	Functions rewritten: 2/9
+ *	Functions rewritten: 3/9
  */
+#include <stdio.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg096.h"
+#include "seg097.h"
+#include "seg103.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
@@ -82,6 +86,50 @@ void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 
 		i++;
 	}
+}
+
+signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short flag)
+{
+	Bit8u* r_ptr = p_datseg + 0xacda + recipe_index * 28;
+
+	hero_use_ingrendients(hero, recipe_index);
+
+	sub_ae_splash(hero, host_readws(r_ptr + 0x18));
+
+	and_ptr_bs(hero + 0xaa, 0xf7);
+	host_writeb(hero + 0x94, 0);
+	/* set heros receipe to 0 */
+	host_writeb(hero + 0x93, 0);
+	host_writeb(hero + 0x9c, 0);
+
+	if ((test_skill(hero, 0x20, host_readbs(r_ptr + 0x1a)) > 0) && (flag == 0))
+	{
+		/* success */
+
+		give_hero_new_item(hero, host_readws(r_ptr + 0x16), 1, 1);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0xb6c),
+			hero + 0x10,
+			Real2Host(GUI_names_grammar(1, host_readws(r_ptr + 0x16), 0)));
+
+		GUI_output(Real2Host(ds_readd(DTP2)));
+
+		return 1;
+	} else {
+		/* fail */
+
+		give_hero_new_item(hero, host_readws(r_ptr + 2), 1, 1);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0xb70),
+			hero + 0x10,
+			Real2Host(GUI_names_grammar(2, host_readws(r_ptr + 0x16), 0)));
+
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		return 0;
+	}
+
 }
 
 #if !defined(__BORLANDC__)
