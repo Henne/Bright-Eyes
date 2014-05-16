@@ -67,6 +67,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG064.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG095.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG101.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG104.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG105.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG108.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG121.CPP

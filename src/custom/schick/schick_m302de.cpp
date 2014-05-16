@@ -61,6 +61,7 @@
 #include "seg101.h"
 #include "seg102.h"
 #include "seg103.h"
+#include "seg104.h"
 #include "seg105.h"
 #include "seg106.h"
 #include "seg108.h"
@@ -5484,6 +5485,46 @@ static int seg103(unsigned short offs) {
 	}
 }
 
+static int seg104(unsigned short offs)
+{
+	D1_LOG("%s:0x%x\n", __func__, offs);
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x2f: {
+			RealPt hero = CPU_Pop32();
+			D1_LOG("get_hero_???(%s)\n", Real2Host(hero) + 0x10);
+			CPU_Push32(hero);
+			return 0;
+		}
+		case 0x39: {
+			return 0;
+		}
+		case 0x3e: {
+			D1_LOG("get_heaviest_hero()\n");
+			return 0;
+		}
+		case 0x43: {
+			RealPt hero = CPU_Pop32();
+			D1_LOG("get_hero_weight(%s)\n", Real2Host(hero) + 0x10);
+			CPU_Push32(hero);
+			return 0;
+		}
+		case 0x48: {
+			Bit16s skill = CPU_Pop16();
+			D1_LOG("get_skilled_hero_index(%s)\n", names_skill[skill]);
+			CPU_Push16(skill);
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+	return 0;
+}
+
 static int seg105(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -6122,7 +6163,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1467:	return seg101(offs);
 		case 0x1472:	return seg102(offs);
 		case 0x147b:	return seg103(offs);
-		case 0x1480:	return 0;
+		case 0x1480:	return seg104(offs);
 		case 0x1485:	return seg105(offs);
 		case 0x148c:	return seg106(offs);
 		case 0x1491:	return 0;
@@ -8237,6 +8278,30 @@ static int n_seg103(unsigned short offs)
 		return 0;
 	}
 }
+
+static int n_seg104(unsigned short offs)
+{
+	D1_LOG("%s:0x%x\n", __func__, offs);
+	switch (offs) {
+		case 0x0000: {
+			return 0;
+		}
+		case 0x00b2: {
+			return 0;
+		}
+		case 0x016d: {
+			return 0;
+		}
+		case 0x07e6: {
+			return 0;
+		}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__ , offs);
+		exit(1);
+	}
+}
+
 static int n_seg105(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
@@ -8729,6 +8794,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1442)) return n_seg097(offs);
 	else if (is_ovrseg(0x1449)) return n_seg098(offs);
 	else if (is_ovrseg(0x147b)) return n_seg103(offs);
+	else if (is_ovrseg(0x1480)) return n_seg104(offs);
 	else if (is_ovrseg(0x1485)) return n_seg105(offs);
 	else if (is_ovrseg(0x148c)) return n_seg106(offs);
 	else if (is_ovrseg(0x14c2)) return n_seg113(offs);

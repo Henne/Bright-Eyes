@@ -53,6 +53,7 @@ libschick_rewrite_m302de_a_SOURCES = common.h v302de.h\
 		seg101.cpp seg101.h\
 		seg102.cpp seg102.h\
 		seg103.cpp seg103.h\
+		seg104.cpp seg104.h\
 		seg105.cpp seg105.h\
 		seg106.cpp seg106.h\
 		seg108.cpp seg108.h\
