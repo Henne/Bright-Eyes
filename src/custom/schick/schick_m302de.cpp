@@ -8284,7 +8284,15 @@ static int n_seg104(unsigned short offs)
 	D1_LOG("%s:0x%x\n", __func__, offs);
 	switch (offs) {
 		case 0x0000: {
-			return 0;
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16s receipe_index = CPU_Pop16();
+			reg_ax = hero_has_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
+			D1_LOG("hero_has_ingrendients(%s, %d) = %d\n",
+				Real2Host(hero) + 0x10, (Bit8s)receipe_index, (Bit16s)reg_ax);
+			CPU_Push16(receipe_index);
+			CPU_Push32(hero);
+			return 1;
 		}
 		case 0x00b2: {
 			return 0;
