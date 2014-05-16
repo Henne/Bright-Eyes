@@ -8295,7 +8295,15 @@ static int n_seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x00b2: {
-			return 0;
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16s receipe_index = CPU_Pop16();
+			hero_use_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
+			D1_LOG("hero_use_ingrendients(%s, %d)\n",
+				Real2Host(hero) + 0x10, (Bit8s)receipe_index);
+			CPU_Push16(receipe_index);
+			CPU_Push32(hero);
+			return 1;
 		}
 		case 0x016d: {
 			return 0;
