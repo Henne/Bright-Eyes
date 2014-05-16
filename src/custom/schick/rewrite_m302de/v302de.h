@@ -96,6 +96,8 @@
 #define AUTOFIGHT	(0xe318)	/* ?16 */
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
+#define BOOKED_INN_DAYS	(0xe3f0)	/* signed char */
+#define SLEEP_QUALITY	(0xe3f1)	/* signed char */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
 #define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */
 #define SPELLTARGET	(0xe5b8)
