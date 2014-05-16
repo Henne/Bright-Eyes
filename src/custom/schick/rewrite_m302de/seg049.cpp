@@ -1,8 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg049 (group management)
- *	Functions rewritten: 8/9
+ *	Functions rewritten: 9/9 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg049.cpp
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -10,17 +15,19 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg008.h"
 #include "seg028.h"
 #include "seg029.h"
 #include "seg047.h"
+#include "seg096.h"
 #include "seg097.h"
+#include "seg104.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 int GRP_compare_heros(const void *p1, const void *p2)
 {
 	Bit8u *hero1, *hero2;
@@ -107,7 +114,6 @@ int GRP_compare_heros(const void *p1, const void *p2)
 	return 0;
 }
 
-/* Borlandified and identical */
 void GRP_sort_heros(void)
 {
 	signed short i;
@@ -119,7 +125,6 @@ void GRP_sort_heros(void)
 	}
 }
 
-/* Borlandified and identical */
 void GRP_save_pos(signed short group)
 {
 	signed short refresh = 0;
@@ -156,7 +161,6 @@ void GRP_save_pos(signed short group)
 	}
 }
 
-/* Borlandified and identical */
 void GRP_split(void)
 {
 	signed short new_group;
@@ -197,7 +201,6 @@ void GRP_split(void)
 	}
 }
 
-/* Borlandified and identical */
 void GRP_merge(void)
 {
 	signed short answer;
@@ -245,7 +248,6 @@ void GRP_merge(void)
 	}
 }
 
-/* Borlandified and identical */
 void GRP_switch_to_next(signed short mode)
 {
 	signed short i;
@@ -384,7 +386,6 @@ struct dummy {
 	char a[0x6da];
 };
 
-/* Borlandified and identical */
 void GRP_swap_heros(void)
 {
 	signed short hero1_nr;
@@ -453,7 +454,6 @@ void GRP_swap_heros(void)
 	draw_status_line();
 }
 
-/* Borlandified and identical */
 void GRP_move_hero(signed short src_pos)
 {
 
@@ -611,6 +611,144 @@ void GRP_move_hero(signed short src_pos)
 
 		refresh_screen_size();
 		draw_status_line();
+	}
+}
+
+void GRP_hero_sleep(Bit8u *hero, signed short quality)
+{
+	signed short le_regen;
+	signed short ae_regen;
+	signed short diff;
+	signed short tmp;
+
+	if (!hero_dead(hero) &&
+		(host_readd(hero + 0x8f) == 0) &&
+		(host_readbs(hero + 0x94) == 0))
+	{
+
+		if ((ds_readbs(TRAVEL_BY_SHIP) != 0) && (random_schick(100) < 10)) {
+			/* chance of motion sickness is 9% */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xc70),
+				hero + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+		} else {
+
+			if (!hero_is_diseased(hero) && !hero_is_poisoned(hero)) {
+
+				if (host_readbs(hero + 0x95) > 0) {
+					dec_ptr_bs(hero + 0x95);
+				}
+
+				if (!hero_busy(hero)) {
+
+					le_regen = random_schick(6) + quality;
+					ae_regen = random_schick(6) + quality;
+
+					/* Original-Bug: next operator should be <= */
+					if (le_regen < 0) {
+						le_regen = 1;
+					}
+
+					/* Original-Bug: next operator should be <= */
+					if (ae_regen < 0) {
+						ae_regen = 1;
+					}
+
+					/* swap LE and AE */
+					if ((host_readbs(hero + 0x21) >= 7) && (le_regen < ae_regen)) {
+						tmp = ae_regen;
+						ae_regen = le_regen;
+						le_regen = tmp;
+					}
+
+					if (host_readbs(hero + 0x95) > 0) {
+						le_regen += le_regen;
+						ae_regen += ae_regen;
+					}
+
+					/* Do LE */
+
+					diff = host_readws(hero + 0x5e) - host_readws(hero + 0x60);
+
+					if ((diff != 0) && le_regen) {
+
+						if (diff < le_regen) {
+							le_regen = diff;
+						}
+
+						add_hero_le(hero, le_regen);
+
+						strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+
+						if (le_regen > 1) {
+							strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+						}
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x4fc),
+							hero + 0x10,
+							le_regen,
+							(char*)Real2Host(ds_readd(0xd2eb)));
+						if (ds_readbs(0x2845) == 0) {
+							GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
+							delay_or_keypress(200);
+						} else {
+							if (ds_readbs(TRAVEL_BY_SHIP) != 0) {
+								GUI_output(Real2Host(ds_readd(DTP2)));
+							}
+						}
+
+					}
+
+					if (host_readbs(hero + 0x21) >= 7) {
+
+						diff = host_readws(hero + 0x62) - host_readws(hero + 0x64);
+
+						if ((diff != 0) && ae_regen) {
+
+							if (diff < ae_regen) {
+								ae_regen = diff;
+							}
+
+							add_hero_ae(hero, ae_regen);
+
+							strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+
+							if (ae_regen > 1) {
+								strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+							}
+
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_ltx(0x500),
+								hero + 0x10,
+								ae_regen,
+								(char*)Real2Host(ds_readd(0xd2eb)));
+
+							if (ds_readbs(0x2845) == 0) {
+								GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
+								delay_or_keypress(200);
+							} else {
+								if (ds_readbs(TRAVEL_BY_SHIP) != 0) {
+									GUI_output(Real2Host(ds_readd(DTP2)));
+								}
+							}
+						}
+					}
+				} else {
+					do_alchemy(hero, host_readbs(hero + 0x93), 0);
+				}
+			} else {
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x8b8),
+					hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			}
+		}
 	}
 }
 

@@ -65,6 +65,7 @@
 #define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT2	(0x64b1)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT3	(0x64bf)	/* signed short[7] filled with zeroes */
+#define TRAVEL_BY_SHIP	(0x7070)	/* ?8 0 = on land, 1 = at the ship */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
 #define SPLASH_AE	(0xbcc7)

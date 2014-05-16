@@ -4106,8 +4106,14 @@ static int seg049(unsigned short offs)
 		return 0;
 	}
 	case 0x2a: {
-		D1_INFO("GRP_???()\n");
-		return 0;
+		RealPt hero = CPU_Pop32();
+		Bit16s mod = CPU_Pop16();
+		D1_LOG("GRP_hero_sleep(%s, %d)\n",
+			Real2Host(hero) + 0x10, mod);
+		GRP_hero_sleep(Real2Host(hero), mod);
+		CPU_Push16(mod);
+		CPU_Push32(hero);
+		return 1;
 	}
 	case 0x34: {
 		D1_LOG("GRP_split()\n");

@@ -6,6 +6,8 @@ namespace M302de {
 void GRP_swap_heros(void);
 /* 0x25 */
 void GRP_move_hero(signed short);
+/* 0x2a */
+void GRP_hero_sleep(Bit8u*, signed short);
 
 /* 0x2f */
 void GRP_sort_heros(void);
