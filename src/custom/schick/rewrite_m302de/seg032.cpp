@@ -312,36 +312,32 @@ signed short FIG_get_first_active_hero(void)
  *
  */
 //static
+/* Borlandified and identical */
 unsigned short seg032_02db(void)
 {
 	Bit8u *hero_i;
-	unsigned short i;
+	signed short i;
 
-	if (FIG_get_first_active_hero() != -1)
+	if (FIG_get_first_active_hero() == -1) {
+		hero_i = get_hero(0);
+		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+			if ((host_readb(hero_i + 0x21) != 0) &&
+				(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+				!hero_dead(hero_i) &&
+				(host_readb(hero_i + 0x84) == 0x10))
+			{
+				return 1;
+			}
+		}
+
 		return 0;
-
-	hero_i = get_hero(0);
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* check group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* hero is dead */
-		if (hero_dead(hero_i))
-			continue;
-		/* unknown */
-		if (host_readb(hero_i + 0x84) != 0x10)
-			continue;
-
-		return 1;
+	} else {
+		return 0;
 	}
-
-	return 0;
 }
 
 //static
+/* Borlandified and identical */
 unsigned short FIG_fight_continues(void)
 {
 
