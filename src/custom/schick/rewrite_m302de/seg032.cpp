@@ -152,24 +152,28 @@ signed short FIG_choose_next_hero(void)
  *	This is simply done randomly.
  *	Orig_BUG: I had this loop running infinitely.
  */
-unsigned short FIG_choose_next_enemy(void)
+/* Borlandified and identical */
+signed short FIG_choose_next_enemy(void)
 {
-	Bit8u *enemy;
-	unsigned short retval;
-	unsigned short i;
+	signed short retval;
+
 #if !defined(__BORLANDC__)
+	Bit8u *enemy;
+	unsigned short i;
 	unsigned short loop_cnt = 0;
-#endif
 	long tries[20] = {	0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0};
+#endif
+
 	do {
 
 		retval = random_schick(ds_readw(NR_OF_ENEMIES)) - 1;
-		tries[retval]++;
 
 #if !defined(__BORLANDC__)
+		tries[retval]++;
+
 		if (++loop_cnt > 200) {
 			D1_ERR("Possible infinite loop in %s()\n", __func__);
 			D1_ERR("I'll try to get a possible enemy\n");
@@ -206,10 +210,10 @@ unsigned short FIG_choose_next_enemy(void)
 
 			return retval;
 		}
-#endif
 		enemy = p_datseg + ENEMY_SHEETS + retval * 62;
+#endif
 
-	} while (host_readb(enemy) == 0 || host_readb(enemy + 0x28) == 0);
+	} while (ds_readbs(ENEMY_SHEETS + retval * 62) == 0 || ds_readbs(ENEMY_SHEETS + 0x28 + retval * 62) == 0);
 
 	return retval;
 }

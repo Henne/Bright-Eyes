@@ -9,7 +9,7 @@ void draw_fight_screen_pal(signed short);
 //0x2f
 signed short FIG_choose_next_hero(void);
 //0x34
-unsigned short FIG_choose_next_enemy();
+signed short FIG_choose_next_enemy(void);
 //0x39
 unsigned short FIG_count_active_enemies();
 //0x3e
