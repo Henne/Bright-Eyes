@@ -8614,7 +8614,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	if (is_ovrseg(0x1309)) {
 		switch (offs) {
 		/* Callers: 1 */
-		case 0x25: {
+		case 0x0000: {
 			CPU_Pop16();
 			signed short row = CPU_Pop16();
 			signed short col = CPU_Pop16();
