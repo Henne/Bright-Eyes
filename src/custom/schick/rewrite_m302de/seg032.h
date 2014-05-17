@@ -11,7 +11,7 @@ signed short FIG_choose_next_hero(void);
 //0x34
 signed short FIG_choose_next_enemy(void);
 //0x39
-unsigned short FIG_count_active_enemies();
+signed short FIG_count_active_enemies(void);
 //0x3e
 unsigned short FIG_is_enemy_active(Bit8u *);
 //0x43

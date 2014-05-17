@@ -222,36 +222,27 @@ signed short FIG_choose_next_enemy(void)
  *	FIG_count_active_enemies -	return the number of active enemies
  *
  */
-unsigned short FIG_count_active_enemies(void)
+/* Borlandified and identical */
+signed short FIG_count_active_enemies(void)
 {
 	Bit8u *enemy;
-	unsigned short i, retval = 0;
+	signed short i, retval = 0;
 
 	for (i = 0; i < 20; i++) {
+
 		enemy = p_datseg + ENEMY_SHEETS + i * 62;
 
 		/* if enemy has no monster class */
-		if (host_readb(enemy) == 0)
-			continue;
-
-		/* check flags */
-		/* enemy is dead */
-		if ((host_readb(enemy + 0x31)) & 1)
-			continue;
-		if ((host_readb(enemy + 0x31) >> 2) & 1)
-			continue;
-		if ((host_readb(enemy + 0x31) >> 5) & 1)
-			continue;
-		if ((host_readb(enemy + 0x31) >> 6) & 1)
-			continue;
-		if ((host_readb(enemy + 0x31) >> 3) & 1)
-			continue;
-
-		/* unknown */
-		if (host_readb(enemy + 0x35))
-			continue;
-
-		retval++;
+		if ((host_readb(enemy) != 0) &&
+			!enemy_dead(enemy) &&
+			!enemy_stoned(enemy) &&
+			!enemy_cursed(enemy) &&
+			!enemy_uncon(enemy) &&
+			!enemy_busy(enemy) &&
+			!host_readbs(enemy + 0x35))
+		{
+			retval++;
+		}
 	}
 
 	return retval;
