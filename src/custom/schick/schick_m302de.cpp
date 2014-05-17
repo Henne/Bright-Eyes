@@ -3423,7 +3423,11 @@ static int seg032(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			Bit16s mode = CPU_Pop16();
+			D1_LOG("draw_fight_screen_pal(%d)\n", mode);
+			draw_fight_screen_pal(mode);
+			CPU_Push16(mode);
+			return 1;
 		}
 		case 0x39: {
 			reg_ax = FIG_count_active_enemies();
@@ -8624,6 +8628,14 @@ int schick_nearcall_v302de(unsigned offs) {
 			FIG_set_cb_field(row, col, obj);
 			D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
 				row, col, obj);
+			return 1;
+		}
+		case 0x0032: {
+			CPU_Pop16();
+			Bit16s mode = CPU_Pop16();
+			D1_LOG("draw_fight_screen_pal(%d)\n", mode);
+			draw_fight_screen_pal(mode);
+			CPU_Push16(mode);
 			return 1;
 		}
 		/* Callers: 1 */

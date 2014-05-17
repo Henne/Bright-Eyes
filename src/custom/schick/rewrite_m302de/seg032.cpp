@@ -1,12 +1,17 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten 8/12
+ *	Functions rewritten 9/12
 */
 #include <stdlib.h>
+#include <string.h>
 
 #include "v302de.h"
 
+#include "seg002.h"
+#include "seg005.h"
+#include "seg006.h"
 #include "seg007.h"
+#include "seg008.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -34,6 +39,40 @@ void FIG_set_cb_field(signed short y, signed short x, signed short object)
 		return;
 
 	set_cb_val(x, y, (signed char)object);
+}
+
+/* Borlandified and identical */
+void draw_fight_screen_pal(signed short mode)
+{
+	FIG_draw_pic();
+
+	/* check for palette update */
+	if (ds_readbs(0x2845) != -1) {
+
+		update_mouse_cursor();
+
+		/* clear framebuffer */
+#if !defined(__BORLANDC__)
+		PhysPt p = Real2Phys((RealPt)ds_readd(0xd2ff));
+
+		for (int i = 0; i < 64000; i+=4) {
+			mem_writed(p + i, 0);
+		}
+#else
+		memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+#endif
+
+		/* set palettes */
+		set_palette(p_datseg + 0x2783, 0x00, 0x20);
+		set_palette(p_datseg + 0x7d0e, 0x80, 0x14);
+		set_palette(Real2Host((RealPt)ds_readd(0xc3a9) + 0xfa02), 0x60, 0x20);
+
+		ds_writeb(0x2845, -1);
+
+		refresh_screen_size();
+	}
+
+	draw_fight_screen(mode);
 }
 
 /**
