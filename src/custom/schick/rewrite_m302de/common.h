@@ -74,10 +74,10 @@ struct enemy_status {
 	unsigned short dead	:1;
 	unsigned short bit1	:1;
 	unsigned short stoned	:1;
-	unsigned short bit3	:1;
+	unsigned short busy	:1;
 	unsigned short bit4	:1;
-	unsigned short bit5	:1;
-	unsigned short bit6	:1;
+	unsigned short cursed	:1;
+	unsigned short uncon	:1;
 	unsigned short illusion	:1;
 
 	unsigned short bit8	:1;

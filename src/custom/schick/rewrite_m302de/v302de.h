@@ -385,7 +385,28 @@ static inline unsigned short enemy_dead(Bit8u *enemy) {
  * 0 = not stoned / 1 = stoned
  */
 static inline unsigned short enemy_stoned(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x31) >> 2) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short enemy_busy(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x31) >> 3) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short enemy_cursed(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x31) >> 5) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short enemy_uncon(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x31) >> 6) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -812,6 +833,9 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 
 #define enemy_dead(enemy)	((*(struct enemy_status*)(enemy + 0x31)).dead)
 #define enemy_stoned(enemy)	((*(struct enemy_status*)(enemy + 0x31)).stoned)
+#define enemy_busy(enemy)	((*(struct enemy_status*)(enemy + 0x31)).busy)
+#define enemy_cursed(enemy)	((*(struct enemy_status*)(enemy + 0x31)).cursed)
+#define enemy_uncon(enemy)	((*(struct enemy_status*)(enemy + 0x31)).uncon)
 #define enemy_illusion(enemy)	((*(struct enemy_status*)(enemy + 0x31)).illusion)
 #define enemy_bb(enemy)		((*(struct enemy_status*)(enemy + 0x31)).bb)
 
