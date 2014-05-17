@@ -278,37 +278,26 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
  *
  *	Returns the index of the firsta active hero.
  */
+/* Borlandified and identical */
 signed short FIG_get_first_active_hero(void)
 {
 	Bit8u *hero_i;
-	unsigned short i;
+	signed short i;
 
 	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* check group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* hero is dead */
-		if (hero_dead(hero_i))
-			continue;
-		/* hero is stoned */
-		if (hero_stoned(hero_i))
-			continue;
-		/* hero is cursed */
-		if (hero_cursed(hero_i))
-			continue;
-		/* yet unknown */
-		if (host_readb(hero_i + 0xab) & 1)
-			continue;
-		/* hero is unconscious */
-		if (hero_unc(hero_i))
-			continue;
-
-		return i;
+		if ((host_readb(hero_i + 0x21) != 0) &&
+			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			!hero_dead(hero_i) &&
+			!hero_stoned(hero_i) &&
+			!hero_cursed(hero_i) &&
+			!hero_unkn3(hero_i) &&
+			!hero_unc(hero_i))
+		{
+			return i;
+		}
 	}
 
 	return -1;
