@@ -25,6 +25,7 @@ namespace M302de {
  *	is moving. The initial placements of static objects are also done
  *	with this function.
  */
+/* Borlandified and identical */
 void FIG_set_cb_field(signed short y, signed short x, signed short object)
 {
 
