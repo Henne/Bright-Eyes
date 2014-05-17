@@ -255,27 +255,22 @@ signed short FIG_count_active_enemies(void)
  *	Returns 1 if enemy can act or 0 if not.
  */
 //static
-unsigned short FIG_is_enemy_active(Bit8u *enemy)
+/* Borlandified and identical */
+signed short FIG_is_enemy_active(Bit8u *enemy)
 {
-		if ((host_readb(enemy + 0x31) >> 1) & 1)
-			return 0;
-		/* check if enemy is dead */
-		if ((host_readb(enemy + 0x31)) & 1)
-			return 0;
-		if ((host_readb(enemy + 0x31) >> 2) & 1)
-			return 0;
-		if ((host_readb(enemy + 0x32) >> 3) & 1)
-			return 0;
-		if ((host_readb(enemy + 0x31) >> 6) & 1)
-			return 0;
-		if ((host_readb(enemy + 0x31) >> 3) & 1)
-			return 0;
-		if ((host_readb(enemy + 0x32)) & 1)
-			return 0;
-		if (host_readbs(enemy + 0x35) > 0)
-			return 0;
+	if (enemy_sleeps(enemy) ||
+		enemy_dead(enemy) ||
+		enemy_stoned(enemy) ||
+		enemy_bit11(enemy) ||
+		enemy_uncon(enemy) ||
+		enemy_busy(enemy) ||
+		enemy_bit8(enemy) ||
+		(host_readbs(enemy + 0x35) > 0))
+	{
+		return 0;
+	}
 
-		return 1;
+	return 1;
 }
 
 /**
