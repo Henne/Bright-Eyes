@@ -351,6 +351,13 @@ static inline unsigned short hero_unc(Bit8u *hero) {
 		return 1;
 }
 
+static inline unsigned short hero_unkn3(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 0) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
 /**
  * hero_transformed() -	check if hero is transformed
  * @hero:	ptr to hero
@@ -850,6 +857,7 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 #define hero_unc(hero)		((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
 
+#define hero_unkn3(hero)  ((*(struct hero_status*)(hero + 0xaa)).unkn3)
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
 #define enemy_dead(enemy)	((*(struct enemy_status*)(enemy + 0x31)).dead)
