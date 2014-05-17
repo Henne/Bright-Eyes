@@ -378,6 +378,13 @@ static inline unsigned short enemy_dead(Bit8u *enemy) {
 		return 1;
 }
 
+static inline unsigned short enemy_sleeps(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x31) >> 0) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 /**
  * enemy_stoned() -	check if enemy is stoned
  * @enemy:	ptr to enemy
@@ -425,6 +432,13 @@ static inline unsigned short enemy_illusion(Bit8u *enemy) {
 		return 1;
 }
 
+static inline unsigned short enemy_bit8(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x32) >> 0) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 /**
  * enemy_bb() -	check if enemy is under boeser blick spell
  * @enemy:	ptr to enemy
@@ -433,6 +447,13 @@ static inline unsigned short enemy_illusion(Bit8u *enemy) {
  */
 static inline unsigned short enemy_bb(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 1) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
+static inline unsigned short enemy_bit11(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x32) >> 3) & 1) == 0)
 		return 0;
 	else
 		return 1;
@@ -832,12 +853,15 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
 #define enemy_dead(enemy)	((*(struct enemy_status*)(enemy + 0x31)).dead)
+#define enemy_sleeps(enemy)	((*(struct enemy_status*)(enemy + 0x31)).sleeps)
 #define enemy_stoned(enemy)	((*(struct enemy_status*)(enemy + 0x31)).stoned)
 #define enemy_busy(enemy)	((*(struct enemy_status*)(enemy + 0x31)).busy)
 #define enemy_cursed(enemy)	((*(struct enemy_status*)(enemy + 0x31)).cursed)
 #define enemy_uncon(enemy)	((*(struct enemy_status*)(enemy + 0x31)).uncon)
 #define enemy_illusion(enemy)	((*(struct enemy_status*)(enemy + 0x31)).illusion)
+#define enemy_bit8(enemy)	((*(struct enemy_status*)(enemy + 0x31)).bit8)
 #define enemy_bb(enemy)		((*(struct enemy_status*)(enemy + 0x31)).bb)
+#define enemy_bit11(enemy)	((*(struct enemy_status*)(enemy + 0x31)).bit11)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
 

@@ -72,7 +72,7 @@ struct hero_status {
 struct enemy_status {
 	/* enemy + 0x31 */
 	unsigned short dead	:1;
-	unsigned short bit1	:1;
+	unsigned short sleeps	:1;
 	unsigned short stoned	:1;
 	unsigned short busy	:1;
 	unsigned short bit4	:1;
@@ -82,6 +82,8 @@ struct enemy_status {
 
 	unsigned short bit8	:1;
 	unsigned short bb	:1;
+	unsigned short bit10	:1;
+	unsigned short bit11	:1;
 };
 
 struct item_status {
