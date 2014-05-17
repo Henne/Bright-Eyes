@@ -7354,6 +7354,102 @@ static int n_seg031(unsigned offs) {
 		exit(1);
 	}
 }
+
+static int n_seg032(unsigned offs)
+{
+	switch (offs) {
+	/* Callers: 1 */
+	case 0x0000: {
+		CPU_Pop16();
+		signed short row = CPU_Pop16();
+		signed short col = CPU_Pop16();
+		signed short object = CPU_Pop16();
+		CPU_Push16(object);
+		CPU_Push16(col);
+		CPU_Push16(row);
+
+		signed char obj = object & 0xff;
+
+		FIG_set_cb_field(row, col, obj);
+		D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
+			row, col, obj);
+		return 1;
+	}
+	case 0x0032: {
+		CPU_Pop16();
+		Bit16s mode = CPU_Pop16();
+		D1_LOG("draw_fight_screen_pal(%d)\n", mode);
+		draw_fight_screen_pal(mode);
+		CPU_Push16(mode);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0xa8: {
+		CPU_Pop16();
+		reg_ax = FIG_choose_next_hero();
+		D1_LOG("FIG_choose_next_hero() = %s\n",
+		schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0xfc: {
+		CPU_Pop16();
+		reg_ax = FIG_choose_next_enemy();
+		D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x12c: {
+		CPU_Pop16();
+		reg_ax = FIG_count_active_enemies();
+		D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x1ba: {
+		CPU_Pop16();
+		RealPt enemy = CPU_Pop32();
+		CPU_Push32(enemy);
+
+		reg_ax = FIG_is_enemy_active(Real2Host(enemy) );
+		D1_LOG("near FIG_is_enemy_active(); = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x242: {
+		CPU_Pop16();
+		reg_ax = FIG_get_first_active_hero();
+		D1_LOG("near FIG_get_first_active_hero() = %s\n",
+			reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2db: {
+		CPU_Pop16();
+		reg_ax = seg032_02db();
+		D1_LOG("near seg032_02db() = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x349: {
+		CPU_Pop16();
+		reg_ax = FIG_fight_continues();
+		D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
+		return 1;
+	}
+	case 0x380: {
+		return 0;
+	}
+	case 0xa38: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg036(unsigned offs)
 {
 	switch (offs) {
@@ -8610,93 +8706,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x12f9)) return n_seg029(offs);
 	else if (is_ovrseg(0x12ff)) return n_seg030(offs);
 	else if (is_ovrseg(0x1303)) return n_seg031(offs);
-	/* seg032 */
-	if (is_ovrseg(0x1309)) {
-		switch (offs) {
-		/* Callers: 1 */
-		case 0x0000: {
-			CPU_Pop16();
-			signed short row = CPU_Pop16();
-			signed short col = CPU_Pop16();
-			signed short object = CPU_Pop16();
-			CPU_Push16(object);
-			CPU_Push16(col);
-			CPU_Push16(row);
-
-			signed char obj = object & 0xff;
-
-			FIG_set_cb_field(row, col, obj);
-			D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
-				row, col, obj);
-			return 1;
-		}
-		case 0x0032: {
-			CPU_Pop16();
-			Bit16s mode = CPU_Pop16();
-			D1_LOG("draw_fight_screen_pal(%d)\n", mode);
-			draw_fight_screen_pal(mode);
-			CPU_Push16(mode);
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0xa8: {
-			CPU_Pop16();
-			reg_ax = FIG_choose_next_hero();
-			D1_LOG("FIG_choose_next_hero() = %s\n",
-				schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0xfc: {
-			CPU_Pop16();
-			reg_ax = FIG_choose_next_enemy();
-			D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x12c: {
-			CPU_Pop16();
-			reg_ax = FIG_count_active_enemies();
-			D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x1ba: {
-			CPU_Pop16();
-			RealPt enemy = CPU_Pop32();
-			CPU_Push32(enemy);
-
-			reg_ax = FIG_is_enemy_active(Real2Host(enemy) );
-			D1_LOG("near FIG_is_enemy_active(); = %d\n", reg_ax);
-			return 1;
-		}
-		/* Callers: 2 */
-		case 0x242: {
-			CPU_Pop16();
-			reg_ax = FIG_get_first_active_hero();
-			D1_LOG("near FIG_get_first_active_hero() = %s\n",
-				reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x2db: {
-			CPU_Pop16();
-			reg_ax = seg032_02db();
-			D1_LOG("near seg032_02db() = %d\n", reg_ax);
-			return 1;
-		}
-		/* Callers: 1 */
-		case 0x349: {
-			CPU_Pop16();
-			reg_ax = FIG_fight_continues();
-			D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
-			return 1;
-		}
-		default:
-			return 0;
-		}
-	}
-
+	else if (is_ovrseg(0x1309)) return n_seg032(offs);
 	else if (is_ovrseg(0x131a)) return n_seg036(offs);
 	else if (is_ovrseg(0x131f)) return n_seg037(offs);
 
