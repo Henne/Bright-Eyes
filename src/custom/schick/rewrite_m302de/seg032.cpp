@@ -80,21 +80,22 @@ void draw_fight_screen_pal(signed short mode)
  *
  *	This is simply done randomly.
  */
-unsigned short FIG_choose_next_hero()
+/* Borlandified and identical */
+signed short FIG_choose_next_hero(void)
 {
-	Bit8u *hero;
-	unsigned short retval;
-	unsigned short i;
 #if !defined(__BORLANDC__)
-	unsigned short loop_cnt = 0;
-#endif
+	signed short loop_cnt = 0;
 	long tries[7] = {0, 0, 0, 0, 0, 0, 0};
+#endif
+
+	signed short retval;
 
 	do {
 		retval = random_schick(7) - 1;
-		tries[retval]++;
 
 #if !defined(__BORLANDC__)
+		tries[retval]++;
+
 		if (++loop_cnt > 200) {
 			D1_ERR("Possible infinite loop in %s()\n", __func__);
 			D1_ERR("I'll try to get a possible hero\n");
@@ -104,15 +105,15 @@ unsigned short FIG_choose_next_hero()
 			/*
 			 * print random statistic
 			 */
-			for (i = 0; i < 7; i++)
+			for (int i = 0; i < 7; i++)
 				D1_ERR("tries[%d] = %ld\n", i, tries[i]);
 
 			/*
-			 * search by hand for a hero and dumpi the
+			 * search by hand for a hero and dump the
 			 * interesting bits
 			 */
-			hero = get_hero(0);
-			for (i = 0; i < 7; i++, hero += 0x6da) {
+			Bit8u *hero = get_hero(0);
+			for (int i = 0; i < 7; i++, hero += 0x6da) {
 				D1_ERR("Hero %d typus = %x group=%x current_group=%x actions=%x\n",
 					i, host_readb(hero + 0x21),
 					host_readb(hero + 0x87),
@@ -136,13 +137,12 @@ unsigned short FIG_choose_next_hero()
 		}
 #endif
 
-		hero = get_hero(retval);
 
 	/* search for a hero who has a class, is in the current group and
 		something still unknown */
-	} while (host_readb(hero + 0x21) == 0 ||
-			host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP) ||
-			host_readb(hero + 0x83) == 0);
+	} while (host_readb(get_hero(retval) + 0x21) == 0 ||
+			host_readb(get_hero(retval) + 0x87) != ds_readb(CURRENT_GROUP) ||
+			host_readb(get_hero(retval) + 0x83) == 0);
 
 	return retval;
 }

@@ -7,7 +7,7 @@ void FIG_set_cb_field(signed short, signed short, signed short);
 //0x2a
 void draw_fight_screen_pal(signed short);
 //0x2f
-unsigned short FIG_choose_next_hero();
+signed short FIG_choose_next_hero(void);
 //0x34
 unsigned short FIG_choose_next_enemy();
 //0x39
