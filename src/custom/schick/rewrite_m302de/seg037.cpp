@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
- *	Functions rewritten: 4/8
+ *	Functions rewritten: 5/8
  *
 */
 
@@ -388,6 +388,35 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 		return 0;
 	else
 		return cb_val;
+}
+
+/* Borlandified an identical */
+signed short get_foe_attack_mode(signed short a1, signed short a2)
+{
+	signed short retval = 0;
+	Bit8u *ptr = p_datseg + 0xf13 + a1 * 8;
+
+	if (a2 == 0) {
+
+		if ((host_readbs(ptr + 1) == 3) || (host_readbs(ptr + 1) == 2)) {
+			retval = 2;
+		} else {
+			if (host_readbs(ptr + 1) == 1) {
+				retval = 1;
+			} else {
+				retval = 3;
+			}
+		}
+
+	} else {
+		if (host_readbs(ptr + 1) == 3) {
+			retval = 1;
+		} else if (host_readbs(ptr + 1) == 0) {
+			retval = 3;
+		}
+	}
+
+	return retval;
 }
 
 #if !defined(__BORLANDC__)

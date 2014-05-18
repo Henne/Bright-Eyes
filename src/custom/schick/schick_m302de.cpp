@@ -7590,7 +7590,15 @@ static int n_seg037(unsigned offs) {
 		return 0;
 	}
 	case 0x725: {
-		return 0;
+		CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		reg_ax = get_foe_attack_mode(a1, a2);
+		D1_INFO("get_foe_attack_mode(%d, %d); = %d\n",
+			a1, a2, reg_ax);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		return 1;
 	}
 	case 0x791: {
 		D1_LOG("%s:%x\n", __func__, offs);
