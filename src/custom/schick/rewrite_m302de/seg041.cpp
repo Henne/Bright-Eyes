@@ -210,7 +210,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 					or_ds_bs((ENEMY_SHEETS + 0x32) + i * 62, 4);
 #else
 				if ( ((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].gfx_id != 0x1a)
-					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].flags2 |= 4;
+					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].status.bit10 = 1;
 #endif
 			}
 		}

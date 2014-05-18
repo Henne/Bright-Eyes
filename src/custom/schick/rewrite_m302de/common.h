@@ -155,10 +155,7 @@ struct enemy_sheets {
 	signed char v[0x2f];
 
 	/* 0x31 */
-	unsigned char flags1;
-
-	/* 0x32 */
-	unsigned char flags2;
+	struct enemy_status status;
 
 	/* 0x33 */
 	signed char unused_8;
