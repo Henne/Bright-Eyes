@@ -7537,7 +7537,7 @@ static int n_seg037(unsigned offs) {
 		Bit16u v1 = CPU_Pop16();
 		Bit16u v2 = CPU_Pop16();
 		CPU_Push16(v2);
-		CPU_Push16(v2);
+		CPU_Push16(v1);
 		CPU_Push32(p);
 
 		reg_ax = copy_ani_stuff(Real2Host(p), v1, v2);
