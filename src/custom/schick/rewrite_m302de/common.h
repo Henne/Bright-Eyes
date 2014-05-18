@@ -69,7 +69,7 @@ struct hero_status {
 	unsigned short dummy6	:1;
 };
 
-struct enemy_status {
+struct enemy_status1 {
 	/* enemy + 0x31 */
 	unsigned short dead	:1;
 	unsigned short sleeps	:1;
@@ -79,7 +79,9 @@ struct enemy_status {
 	unsigned short cursed	:1;
 	unsigned short uncon	:1;
 	unsigned short illusion	:1;
+};
 
+struct enemy_status2 {
 	unsigned short bit8	:1;
 	unsigned short bb	:1;
 	unsigned short bit10	:1;
@@ -155,7 +157,9 @@ struct enemy_sheets {
 	signed char v[0x2f];
 
 	/* 0x31 */
-	struct enemy_status status;
+	struct enemy_status1 status1;
+	/* 0x32 */
+	struct enemy_status2 status2;
 
 	/* 0x33 */
 	signed char unused_8;
