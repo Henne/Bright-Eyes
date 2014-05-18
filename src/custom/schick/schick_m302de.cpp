@@ -3473,7 +3473,16 @@ static int seg036(unsigned short offs) {
 			return 1;
 		}
 		case 0x48: {
-			D1_LOG("hero_ki()\n");
+			RealPt hero = CPU_Pop32();
+			Bit16s index = CPU_Pop16();
+			Bit16s x = CPU_Pop16();
+			Bit16s y = CPU_Pop16();
+			D1_LOG("KI_hero(%s, %d, %d, %d)\n",
+					Real2Host(hero) + 0x10, index, x, y);
+			CPU_Push16(y);
+			CPU_Push16(x);
+			CPU_Push16(index);
+			CPU_Push32(hero);
 			return 0;
 		}
 		default:
