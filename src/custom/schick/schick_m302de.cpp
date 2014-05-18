@@ -3880,7 +3880,7 @@ static int seg044(unsigned short offs) {
 		D1_LOG("seg044_002f(%d, 0x%x, %d, %d, %d, %d)\n",
 			v1, p, v2, obj1, obj2, v5);
 
-		seg044_002f(v1, Real2Host(p), v2, obj1, obj2, v5);
+		seg044_002f(v1, Real2Host(p), v2, (Bit8s)obj1, (Bit8s)obj2, v5);
 
 		CPU_Push16(v5);
 		CPU_Push16(obj2);
