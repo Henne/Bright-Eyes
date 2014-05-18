@@ -3464,7 +3464,13 @@ static int seg033(unsigned short offs) {
 static int seg036(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			RealPt in_ptr = CPU_Pop32();
+			Bit16s a2 = CPU_Pop16();
+			D1_LOG("far seg036_00ae(%x, %d)\n", in_ptr, a2);
+			seg036_00ae(Real2Host(in_ptr), a2);
+			CPU_Push16(a2);
+			CPU_Push32(in_ptr);
+			return 1;
 		}
 		case 0x48: {
 			D1_LOG("hero_ki()\n");
@@ -7469,7 +7475,14 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x0ae: {
-		return 0;
+		CPU_Pop16();
+		RealPt in_ptr = CPU_Pop32();
+		Bit16s a2 = CPU_Pop16();
+		D1_LOG("near seg036_00ae(%x, %d)\n", in_ptr, a2);
+		seg036_00ae(Real2Host(in_ptr), a2);
+		CPU_Push16(a2);
+		CPU_Push32(in_ptr);
+		return 1;
 	}
 	case 0x27f: {
 		return 0;
