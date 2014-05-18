@@ -190,6 +190,7 @@ void seg037_00ae(Bit8u *enemy, signed short a2)
  *
  * The return value is 0 if theres nothing to attack else 1
  */
+/* Borlandified and identical */
 unsigned short test_foe_melee_attack(signed short x, signed short y,
 		signed short dx, signed short dy, signed short mode)
 {
@@ -252,6 +253,7 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
  * Original-Bug: range attack of foes is possible with direct contact
 */
 
+/* Borlandified and identical */
 signed short test_foe_range_attack(signed short x, signed short y, const signed short dir, signed short mode)
 {
 	signed char cb_val;
@@ -288,10 +290,15 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 			if (mode == 0) {
 				/* hero or enemy reacheable from enemies position */
-				if (((cb_val > 0) && (cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1))) ||
-					((cb_val >= 10) && (cb_val < 30) && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1) &&
-					(enemy_bb(p_datseg + 0xd0df + 0x3e * cb_val))))
-
+				if ( (
+					(cb_val > 0) && (cb_val < 10) &&
+						!hero_dead(get_hero(cb_val - 1)) &&
+						!hero_unc(get_hero(cb_val - 1))
+					) || (
+					(cb_val >= 10) && (cb_val < 30) &&
+						!enemy_dead(p_datseg + 0xd0df + 0x3e * cb_val) &&
+						enemy_bb(p_datseg + 0xd0df + 0x3e * cb_val))
+				)
 				{
 					can_attack = 1;
 					done = 1;
@@ -302,9 +309,14 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 				if (cb_val != 0) {
 
 					/* an enemy or another object */
-					if ((cb_val >= 10 && cb_val < 30 && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1))
+					if ( (
+						(cb_val >= 10) && (cb_val < 30) &&
+							!enemy_dead(p_datseg + 0xd0df + 0x3e * cb_val)
+						) || (
+						(cb_val >= 0x32) &&
+							!is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))
 
-						|| (cb_val >= 0x32 && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))))
+					)
 					{
 							done = 1;
 					}
@@ -312,7 +324,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 			} else if (mode == 1) {
 				/* attack foe first */
-				if ((cb_val >= 10) && (cb_val < 30) && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31) & 1))
+				if ((cb_val >= 10) && (cb_val < 30) && !enemy_dead(p_datseg + 0xd0df + 0x3e * cb_val))
 				{
 					can_attack = 1;
 					done = 1;
@@ -353,9 +365,16 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 					} else
 #endif
 
-					if (((cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1))) ||
-						((cb_val >= 50) && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))) ||
-						((cb_val >= 10) && (cb_val < 30) && !(ds_readb(0xd0df + 0x3e * cb_val + 0x31)&1)))
+					if ( (
+						(cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) &&
+						!hero_unc(get_hero(cb_val - 1))
+						) || (
+						(cb_val >= 50) &&
+							!is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))
+						) || (
+						(cb_val >= 10) && (cb_val < 30) &&
+							!enemy_dead(p_datseg + 0xd0df + 0x3e * cb_val))
+					)
 					{
 						done = 1;
 					}
