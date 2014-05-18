@@ -7545,8 +7545,15 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x00ae: {
-		D1_LOG("%s:%x\n", __func__, offs);
-		return 0;
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		D1_LOG("seg037_00ae(%x, %d);\n", p, v1);
+		seg037_00ae(Real2Host(p), v1);
+		return 1;
 	}
 	case 0x2e3: {
 		CPU_Pop16();
