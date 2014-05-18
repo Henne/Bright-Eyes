@@ -23,25 +23,25 @@ namespace M302de {
  * Returns 0 if the object was not found. If the object was
  * found it returns 1 and stores the coordinates at the pointers.
  */
+/* Borlandified and identical */
 unsigned short FIG_search_obj_on_cb(signed short obj, signed short *px, signed short *py)
 {
 
-	signed short x, y;
 
-	for (x = 0; x < 25; x++)
-		for (y = 0; y < 24; y++)
-			if (get_cb_val(x, y) == obj) {
-				*px = x;
-				*py = y;
+	for (*px = 0; *px < 25; ++*px) {
+		for (*py = 0; *py < 24; ++*py) {
+			if (get_cb_val(*px, *py) == obj) {
 				return 1;
 			}
+		}
+	}
 
-	*px = x;
-	*py = y;
 	return 0;
 }
 
-void FIG_init_list_elem(signed short obj) {
+/* Borlandified and identical */
+void FIG_init_list_elem(signed short obj)
+{
 
 	signed short x, y;
 
