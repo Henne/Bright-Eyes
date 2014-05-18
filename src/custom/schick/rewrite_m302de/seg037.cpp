@@ -199,10 +199,14 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 
 	if (mode == 0) {
 
-		if ( ((cb_val > 0) && (cb_val < 10) && (!hero_dead(get_hero(cb_val - 1))) && (!hero_unc(get_hero(cb_val - 1)))) ||
-
-			((cb_val >= 10) && (cb_val < 30)) && (!enemy_dead(p_datseg + 0xd0df + cb_val * 62))  &&
-				(!enemy_bb(p_datseg + 0xd0df + cb_val * 62)))
+		if ( ((cb_val > 0) && (cb_val < 10) &&
+			(!hero_dead(get_hero(cb_val - 1))) &&
+			(!hero_unc(get_hero(cb_val - 1)))
+			) || (
+			(cb_val >= 10) && (cb_val < 30)) &&
+				(!enemy_dead(p_datseg + 0xd0df + cb_val * 62))  &&
+				(enemy_bb(p_datseg + 0xd0df + cb_val * 62))
+			)
 		{
 			return 1;
 		} else {
