@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg036 (Fight Hero KI)
- *	Functions rewritten: 5/10
+ *	Functions rewritten: 6/10
  */
 
 #include <string.h>
@@ -10,7 +10,9 @@
 #include "seg002.h"
 #include "seg005.h"
 #include "seg006.h"
+#include "seg032.h"
 #include "seg038.h"
+#include "seg106.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -155,6 +157,69 @@ void seg036_00ae(Bit8u *in_ptr, signed short a2)
 	draw_fight_screen(0);
 	memset(p_datseg + 0xd8ce, -1, 0xf3);
 	FIG_init_list_elem(a2 + 1);
+}
+
+/**
+ * KI_change_hero_weapon() - changes the weapon of a hero
+ * @hero:	the hero with a broken weapon
+ *
+ * Returns
+ *	 1 if a weapon was found or
+ *	 0 if the hero fights now with bare hands.
+*/
+/* Borlandified  and identical */
+signed short KI_change_hero_weapon(Bit8u *hero)
+{
+	signed short pos;
+	signed short has_new_weapon = 0;
+	Bit8u *item_p;
+	signed short item_id;
+	Bit8u *ptr;
+
+	for (pos = 7; pos < 23; pos++) {
+
+		item_id = host_readws(hero + 0x196 + pos * 14);
+		item_p = get_itemsdat(item_id);
+
+		/* grab the first melee weapon on top of the knapsack,
+		 * and exchange it with the broken weapon. */
+		if (item_weapon(item_p) &&
+			(host_readbs(item_p + 3) != 7) &&
+			(host_readbs(item_p + 3) != 8) &&
+			(host_readbs(item_p + 3) != 5))
+		{
+			move_item(3, pos, hero);
+			has_new_weapon = 1;
+			break;
+		}
+	}
+
+	if (!has_new_weapon) {
+
+		/* find a free slot, to get rid of the broken weapon */
+		for (pos = 7; pos < 23; pos++) {
+			if (host_readws(hero + 0x196 + pos * 14) == 0) {
+				move_item(3, pos, hero);
+				has_new_weapon = 2;
+				break;
+			}
+		}
+
+		/* if nothing helps, put it in the left hand */
+		if (!has_new_weapon) {
+			move_item(3, 4, hero);
+		}
+
+		has_new_weapon = 0;
+	}
+
+	ptr = Real2Host(FIG_get_ptr(host_readbs(hero + 0x81)));
+	host_writeb(ptr + 0x2, host_readbs(hero + 0x82));
+	host_writeb(ptr + 0xd, -1);
+	draw_fight_screen_pal(0);
+	host_writeb(hero + 0x33, host_readbs(hero + 0x33) - 2);
+
+	return has_new_weapon;
 }
 
 /* 0x39b */

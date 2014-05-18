@@ -7485,7 +7485,13 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x27f: {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		reg_ax = KI_change_hero_weapon(Real2Host(hero));
+		D1_LOG("KI_change_hero_weapon(%s) = %d\n",
+			Real2Host(hero) + 0x10, reg_ax);
+		CPU_Push32(hero);
+		return 1;
 	}
 	case 0x39b: {
 		CPU_Pop16();
