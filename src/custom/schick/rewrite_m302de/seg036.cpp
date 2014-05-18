@@ -234,6 +234,7 @@ signed short KI_change_hero_weapon(Bit8u *hero)
  *
  * Returns 1 if an attack is possible in that mode, else 0.
  */
+/* Borlandified  and identical */
 signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 			signed short offset_x, signed short offset_y,
 			signed short mode)
@@ -242,26 +243,25 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 
 	if (mode == 1) {
 		/* target is hero or enemy */
-		if ((target > 0) && (target < 10) &&
+		if ( ( (target > 0) && (target < 10) &&
 			!hero_dead(get_hero(target - 1)) &&
-			!hero_unc(get_hero(target - 1))) {
+			!hero_unc(get_hero(target - 1))
+			) || (
 
+			((target >= 10) && (target < 30) &&
+				!enemy_dead(p_datseg + 0xd0df + target * 0x3e) &&
+				enemy_bb(p_datseg + 0xd0df + target * 0x3e))))
+		{
 			return 1;
-
-		} else if ((target >= 10) && (target < 30) &&
-			!(ds_readb(0xd0df + target * 0x3e + 0x31) & 1) &&
-			/* TODO: this is mysterious */
-			!((ds_readb(0xd0df + target * 0x3e + 0x32) >> 1) & 1)) {
-
-			return 1;
+		} else {
+			return 0;
 		}
-
-		return 0;
 
 	} else if (!mode) {
 		/* target is an enemy */
 		if ((target >= 10) && (target < 30) &&
-			!(ds_readb(0xd0df + target * 0x3e + 0x31) & 1)) {
+			!enemy_dead(p_datseg + 0xd0df + target * 0x3e))
+		{
 			return 1;
 		} else {
 			return 0;
@@ -276,8 +276,9 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 		} else {
 			return 0;
 		}
-	} else
-		return 0;
+	}
+
+	return 0;
 }
 
 /* 0x863 */
