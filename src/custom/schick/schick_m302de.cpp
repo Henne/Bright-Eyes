@@ -1974,7 +1974,7 @@ static int seg005(unsigned short offs) {
 		case 0x598: {
 
 			Bit16u val = CPU_Pop16();
-			D1_INFO("draw_fight_screen(%d);\n", val);
+			D1_LOG("draw_fight_screen(%d);\n", val);
 			CPU_Push16(val);
 
 			draw_fight_screen(val);
@@ -3656,7 +3656,7 @@ static int seg040(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
-		D1_INFO("FIG_draw_scenario()\n");
+		D1_LOG("FIG_draw_scenario()\n");
 		FIG_draw_scenario();
 		return 1;
 	}
@@ -3672,7 +3672,7 @@ static int seg041(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		Bit16u arg = CPU_Pop16();
 		reg_ax = seg041_0020(Real2Host(hero), (signed short)arg);
-		D1_INFO("seg041_0020(%s, %d); = %d\n",
+		D1_LOG("seg041_0020(%s, %d); = %d\n",
 			(char*)Real2Host(hero) + 0x10, arg, reg_ax);
 		CPU_Push16(arg);
 		CPU_Push32(hero);
@@ -4131,7 +4131,7 @@ static int seg049(unsigned short offs)
 	}
 	case 0x3e: {
 		Bit16s mode = CPU_Pop16();
-		D1_INFO("GRP_switch_to_next(%d)\n", mode);
+		D1_LOG("GRP_switch_to_next(%d)\n", mode);
 		GRP_switch_to_next(mode);
 		CPU_Push16(mode);
 		return 1;
@@ -4405,7 +4405,7 @@ static int seg071(unsigned short offs) {
 			return 0;
 		}
 		case 0x2a: {
-			D1_INFO("dialog_alrik_derondan();\n");
+			D1_LOG("dialog_alrik_derondan();\n");
 			return 0;
 		}
 		default:
@@ -4611,7 +4611,7 @@ static int seg095(unsigned short offs) {
 			remove_npc(head_index, (signed char)days, index,
 				Real2Host(name), Real2Host(text));
 
-			D1_INFO("remove_npc(%x, %d, %x, %x, %x);\n",
+			D1_LOG("remove_npc(%x, %d, %x, %x, %x);\n",
 				head_index, (signed char)days, index,
 				name, text);
 
@@ -4631,13 +4631,13 @@ static int seg095(unsigned short offs) {
 		}
 		case 0x48: {
 			Bit16u type = CPU_Pop16();
-			D1_INFO("npcmeetings(%x);\n", type);
+			D1_LOG("npcmeetings(%x);\n", type);
 			reg_ax = npc_meetings(type);
 			CPU_Push16(type);
 			return 1;
 		}
 		case 0x4d: {
-			D1_INFO("npc_farewell();\n");
+			D1_LOG("npc_farewell();\n");
 			npc_farewell();
 			return 1;
 		}
@@ -6335,7 +6335,7 @@ static int n_seg002(unsigned short offs)
 		CPU_Pop16();
 		RealPt fname = CPU_Pop32();
 		RealPt ret = read_music_driver(fname);
-		D1_INFO("near read_music_driver(%s); = %x\n",
+		D1_LOG("near read_music_driver(%s); = %x\n",
 				Real2Host(fname), ret);
 		CPU_Push32(fname);
 
@@ -6452,7 +6452,7 @@ static int n_seg002(unsigned short offs)
 		CPU_Pop16();
 		RealPt fname = CPU_Pop32();
 		RealPt ret = read_digi_driver(fname);
-		D1_INFO("near read_digi_driver(%s); = %x\n",
+		D1_LOG("near read_digi_driver(%s); = %x\n",
 				Real2Host(fname), ret);
 		CPU_Push32(fname);
 
@@ -6731,14 +6731,14 @@ static int n_seg002(unsigned short offs)
 	case 0x47e2: {
 		CPU_Pop16();
 		seg002_47e2();
-		D1_INFO("seg002_47e2();\n");
+		D1_LOG("seg002_47e2();\n");
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x484f: {
 		CPU_Pop16();
 		seg002_484f();
-		D1_INFO("seg002_484f();\n");
+		D1_LOG("seg002_484f();\n");
 		return 1;
 	}
 	/* Callers: 2 */
@@ -8535,7 +8535,7 @@ static int n_seg105(unsigned offs) {
 		CPU_Push32(hero);
 
 		reg_ax = hero_count_item(Real2Host(hero), item);
-		D1_INFO("hero_count_item(%s, %s) = %d\n",
+		D1_LOG("hero_count_item(%s, %s) = %d\n",
 			schick_getCharname(hero),
 			get_itemname(item), reg_ax);
 
