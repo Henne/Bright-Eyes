@@ -7574,20 +7574,19 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x417: {
-		Bit16u CS = CPU_Pop16();
+		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		Bit16s dir = CPU_Pop16();
 		Bit16s v4 = CPU_Pop16();
+		reg_ax = test_foe_range_attack(x, y, dir, v4);
+		D1_LOG("test_foe_range_attack(%d, %d, %d, %d); = %d attacker = %d\n",
+			x, y, dir, v4, reg_ax, get_cb_val(x, y));
 		CPU_Push16(v4);
 		CPU_Push16(dir);
 		CPU_Push16(y);
 		CPU_Push16(x);
-		reg_ax = test_foe_range_attack(x, y, dir, v4);
-		D1_LOG("test_foe_range_attack(%d, %d, %d, %d); = %d attacker = %d\n",
-			x, y, dir, v4, reg_ax, get_cb_val(x, y));
-		CPU_Push16(CS);
-		return 0;
+		return 1;
 	}
 	case 0x725: {
 		CPU_Pop16();
