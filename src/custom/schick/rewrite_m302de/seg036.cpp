@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg036 (Fight Hero KI)
- *	Functions rewritten: 6/10
+ *	Functions rewritten: 7/10
  */
 
 #include <string.h>
@@ -10,6 +10,7 @@
 #include "seg002.h"
 #include "seg005.h"
 #include "seg006.h"
+#include "seg007.h"
 #include "seg032.h"
 #include "seg038.h"
 #include "seg106.h"
@@ -279,6 +280,99 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 	}
 
 	return 0;
+}
+
+signed short KI_search_spell_target(signed short x, signed short y,
+				signed short dir, signed short mode)
+{
+	signed short x_diff;
+	signed short y_diff;
+	signed char obj_id;
+	signed short done;
+	signed short will_attack;
+
+	done = 0;
+	x_diff = 0;
+	y_diff = 0;
+	will_attack = 0;
+
+	while (done == 0) {
+
+		/* calculate the offset from direction */
+		if (dir == 0) {
+			x_diff++;
+		} else if (dir == 1) {
+			y_diff--;
+		} else if (dir == 2) {
+			x_diff--;
+		} else {
+			y_diff++;
+		}
+
+		/* check the field is on the chessboard */
+		if ((y + y_diff < 0) || (y + y_diff > 23) ||
+			(x + x_diff < 0) || (x + x_diff > 23))
+		{
+			done = 1;
+			continue;
+		}
+
+		/* get the fight object ID of the object on that field */
+		obj_id = get_cb_val(x + x_diff, y + y_diff);
+
+		if (mode == 1) {
+
+			/* attack everyone */
+			if ( ((obj_id > 0) && (obj_id < 10) &&
+				!hero_dead(get_hero(obj_id - 1)) &&
+				!hero_unc(get_hero(obj_id - 1))
+				) || (
+				(obj_id >= 10) && (obj_id < 30) &&
+					!enemy_dead(p_datseg + 0xd0df + obj_id * 62) &&
+					enemy_bb(p_datseg + 0xd0df + obj_id * 62))
+				)
+			{
+				will_attack = 1;
+				done = 1;
+
+			} else if ( (obj_id != 0) && (((obj_id >= 10) && (obj_id < 30) &&
+					!enemy_dead(p_datseg + 0xd0df + obj_id * 62)
+					) || (obj_id >= 50) &&
+						!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46))
+					))
+				{
+					done = 1;
+				}
+
+		} else if (mode == 0) {
+
+			/* attack only enemies */
+			if ((obj_id >= 10) && (obj_id < 30) && !enemy_dead(p_datseg + 0xd0df + obj_id * 62))
+			{
+				will_attack = 1;
+				done = 1;
+			} else if ((obj_id != 0) &&
+					 (
+						 ((obj_id < 10) &&
+						!hero_dead(get_hero(obj_id - 1)) &&
+						!hero_unc(get_hero(obj_id - 1))
+						) || (
+							(obj_id >= 50) &&
+							!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46))
+						)
+					)
+				)
+				{
+					done = 1;
+				}
+		}
+	}
+
+	if (will_attack == 0) {
+		return 0;
+	} else {
+		return obj_id;
+	}
 }
 
 /* 0x863 */

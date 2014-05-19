@@ -14,6 +14,9 @@ signed short KI_change_hero_weapon(Bit8u*);
 /* 0x2a */
 signed short KI_can_attack_neighbour(signed short, signed short, signed short,
 					signed short, signed short);
+/* 0x2f */
+signed KI_search_spell_target(signed short, signed short, signed short, signed short);
+
 /* 0x39 */
 signed short KI_get_spell(signed short, signed short);
 
