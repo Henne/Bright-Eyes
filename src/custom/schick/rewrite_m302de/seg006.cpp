@@ -403,7 +403,7 @@ signed char FIG_add_to_list(signed char v)
 void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr)
 {
 	RealPt hero;
-	unsigned short fg_bak, bg_bak;
+	signed short fg_bak, bg_bak;
 
 	hero = (RealPt)ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
 	ds_writed(0xc019, (Bit32u)(hero + 0x2da));
@@ -452,8 +452,8 @@ void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
 {
 	signed short height_width;
 	Bit8u *p_enemy;
-	unsigned short fg_bak;
-	unsigned short bg_bak;
+	signed short fg_bak;
+	signed short bg_bak;
 	RealPt p1;
 	struct nvf_desc nvf;
 

@@ -4860,8 +4860,8 @@ static int seg096(unsigned short offs) {
 		CPU_Push32(p1);
 
 		D1_LOG("get_textcolor();\n");
-		get_textcolor((unsigned short*)Real2Host(p1),
-			(unsigned short*)Real2Host(p2));
+		get_textcolor((signed short*)Real2Host(p1),
+			(signed short*)Real2Host(p2));
 
 		return 1;
 	}
@@ -4921,7 +4921,7 @@ static int seg097(unsigned short offs) {
 		CPU_Push32(p_height);
 		CPU_Push16(c);
 
-		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
+		reg_ax = GUI_lookup_char_height(c & 0xff, (signed short*)Real2Host(p_height));
 		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
 		return 1;
 	}

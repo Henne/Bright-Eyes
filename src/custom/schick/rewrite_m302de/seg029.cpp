@@ -132,7 +132,7 @@ void copy_forename(Bit8u *dst, Bit8u *name)
  */
 void draw_status_line(void)
 {
-	unsigned short fg_bak, bg_bak;
+	signed short fg_bak, bg_bak;
 	Bit8u *src, *dst;
 	Bit16s head_bak;
 	signed short i, j;
@@ -351,7 +351,7 @@ void clear_loc_line(void)
  */
 void select_hero_icon(unsigned short pos) {
 
-	unsigned short fg_bak, bg_bak;
+	signed short fg_bak, bg_bak;
 
 	/* paint a blue border for the pic and bars */
 	do_border(Real2Phys(ds_readd(0xd2ff)),
@@ -391,7 +391,7 @@ void select_hero_icon(unsigned short pos) {
 /* TODO: this function an select_hero_icon() can be merged into one. */
 void deselect_hero_icon(unsigned short pos) {
 
-	unsigned short fg_bak, bg_bak;
+	signed short fg_bak, bg_bak;
 
 	/* paint a gray border for the pic and bars */
 	do_border(Real2Phys(ds_readd(0xd2ff)),

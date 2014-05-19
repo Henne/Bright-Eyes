@@ -159,8 +159,8 @@ RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
 
 unsigned short fight_printer(void)
 {
-	unsigned short fg_bak;
-	unsigned short bg_bak;
+	signed short fg_bak;
+	signed short bg_bak;
 	RealPt gfx_pos_bak;
 	Bit16u x;
 	char str[6];

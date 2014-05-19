@@ -18,6 +18,11 @@
 namespace M302de {
 #endif
 
+
+struct dummy {
+	signed short a[3];
+};
+
 //000
 /**
 	GUI_names_grammar - makes a grammatical wordgroup
@@ -25,28 +30,27 @@ namespace M302de {
 	@index: index of the word of which a worgroup should be made
 	@type: if index is true the index is an enemy, if not it is an item
 */
-RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned short type)
+RealPt GUI_names_grammar(signed short flag, signed short index, signed short type)
 {
-	Bit8u *lp1;
-	unsigned short l2;
+	signed short *lp1;
+	signed short l2 = 0;
 	Bit8u *p_name;
-	short l4;
-	Bit8u lp5[6];
-
-	l2 = 0;
-	struct_copy(lp5, p_datseg + 0xa9ed, 6);
+	signed short l4;
+#if !defined(__BORLANDC__)
+	struct dummy lp5 = { {0x1000, 0x2000, 0x3000} };
+#else
+	struct dummy lp5 = *(struct dummy*)(p_datseg + 0xa9ed);
+#endif
 
 	if (type == 0) {
 		/* string_array_itemnames */
 		p_name = (Bit8u*)get_itemname(index);
 
-		flag += host_readw(lp5 + 2 * ds_readb(0x02ac + index));
+		flag += lp5.a[ds_readbs(0x02ac + index)];
 
-		lp1 = p_datseg + 0x270;
-		do {
-			l4 = host_readw(lp1);
-			lp1 += 2;
-		} while (l4 != -1 && l4 != index);
+		lp1 = (signed short*)(p_datseg + 0x270);
+
+		while (((l4 = host_readw((Bit8u*)(lp1++))) != -1) && (l4 != index));
 
 		if (l4 == index) {
 			flag += 4;
@@ -57,48 +61,44 @@ RealPt GUI_names_grammar(unsigned short flag, unsigned short index, unsigned sho
 		}
 	} else {
 		p_name = get_monname(index);
-		flag += host_readw(lp5 + 2 * ds_readb(0x0925 + index));
+		flag += lp5.a[ds_readbs(0x0925 + index)];
 	}
 
-	if (flag & 0x8000)
-		lp1 = p_datseg + 0xa953 + (flag & 0xf) * 6;
-	else if (flag & 0x4000)
-			lp1 = p_datseg + 0xa9b3;
-		else
-			lp1 = p_datseg + 0xa983 + (flag & 0xf) * 6;
-
+	lp1 = (flag & 0x8000) ? (signed short*)(p_datseg + 0xa953 + (flag & 0xf) * 6) :
+			((flag & 0x4000) ? (signed short*)(p_datseg + 0xa9b3) :
+				(signed short*)(p_datseg + 0xa983 + (flag & 0xf) * 6));
 
 
 	sprintf((char*)p_datseg + 0xe50b + ds_readw(0xa9eb) * 40,
 		(l2 == 0) ? (char*)Real2Host(ds_readd(0xa9e3)) : (char*)Real2Host(ds_readd(0xa9e7)),
-		(char*)Real2Host(ds_readd(0xa917 + (host_readw(lp1 + ((((flag & 0x3000) - 1) >> 12) << 1)) << 2))),
+		(char*)Real2Host(ds_readd(0xa917 + 4 * host_readws((Bit8u*)lp1 + 2 * (((flag & 0x3000) - 1) >> 12)))),
 		(char*)Real2Host(GUI_name_plural(flag, p_name)));
 
 	p_name = p_datseg + ds_readw(0xa9eb) * 40 + 0xe50b;
 
 	if (host_readb(p_name) == 0x20) {
 		do {
-			p_name++;
-			l4 = host_readb(p_name);
+			l4 = host_readbs(++p_name);
 			host_writeb(p_name - 1, (signed char)l4);
 		} while (l4 != 0);
 	}
 
 	l4 = ds_readw(0xa9eb);
-	ds_writew(0xa9eb, ds_readw(0xa9eb) + 1);
 
-	if (ds_readw(0xa9eb) == 4)
+	if (inc_ds_ws(0xa9eb) == 4)
 		ds_writew(0xa9eb, 0);
 
 #if !defined(__BORLANDC__)
 	D1_LOG("%s\n", (char*)p_datseg + 0xe50b + l4 * 40);
 #endif
 
-	return (RealPt)RealMake(datseg, 0xe50b + l4 * 40);
+	/* TODO: BCC calculates the return value in another order */
+	return (RealPt)RealMake(datseg, 0xe50b + (l4 * 40));
 }
 
 //1a7
-RealPt GUI_name_plural(unsigned short v1, Bit8u *s)
+/* Borlandified and identical */
+RealPt GUI_name_plural(signed short v1, Bit8u *s)
 {
 	Bit8u *p = p_datseg + GRAMMAR_STRING;
 	char tmp;
@@ -126,6 +126,7 @@ RealPt GUI_name_plural(unsigned short v1, Bit8u *s)
 }
 
 //290
+/* Borlandified and identical */
 RealPt GUI_name_singular(Bit8u *s)
 {
 	Bit8u *p = p_datseg + GRAMMAR_STRING;
@@ -134,7 +135,7 @@ RealPt GUI_name_singular(Bit8u *s)
 	while ((tmp = *s++) && (tmp != 0x2e))
 		host_writeb(p++, tmp);
 
-	while ((*s) && (*s != 0x2e))
+	while ((tmp = *s) && (tmp != 0x2e))
 		host_writeb(p++, *s++);
 
 	host_writeb(p, 0);
@@ -142,14 +143,14 @@ RealPt GUI_name_singular(Bit8u *s)
 }
 
 //2f2
-RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3)
+/* Borlandified and identical */
+RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
 {
-	short l, tmp;
+	signed short l;
 
-	l = (v3 == 0) ? ds_readb(0x2ac + v2) : ds_readb(0x925);
-	tmp = ds_readb(0xaa30 + v1 * 3 + l);
+	l = (v3 == 0) ? ds_readbs(0x2ac + v2) : ds_readbs(v2 + 0x925);
 
-	return (RealPt)ds_readd(0xaa14 + tmp * 4);
+	return (RealPt)ds_readd(0xaa14 + 4 * ds_readbs(0xaa30 + v1 * 3 + l));
 }
 
 //330
@@ -158,70 +159,48 @@ RealPt GUI_2f2(unsigned short v1, unsigned short v2, unsigned short v3)
  * @genus:	gender of the hero
  * @causus:	the grammatical causus
 */
-RealPt GUI_get_ptr(Bit16u genus, Bit16u causus)
+/* Borlandified and identical */
+RealPt GUI_get_ptr(signed short genus, signed short causus)
 {
-
 	if (genus == 0) {
-		switch (causus) {
-			case 0:
-				return (RealPt)RealMake(datseg, 0xa9f3);
-			case 1:
-				return (RealPt)RealMake(datseg, 0xa9fd);
-			case 3:
-				return (RealPt)RealMake(datseg, 0xaa0a);
-			default:
-				return (RealPt)RealMake(datseg, 0xaa06);
-		}
+		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa9f3) :
+				((causus == 1) ? (RealPt)RealMake(datseg, 0xa9fd) :
+				((causus == 3) ? (RealPt)RealMake(datseg, 0xaa0a) :
+					(RealPt)RealMake(datseg, 0xaa06)));
 	} else {
-		switch (causus) {
-			case 0:
-				return (RealPt)RealMake(datseg, 0xa9f6);
-			case 1:
-				return (RealPt)RealMake(datseg, 0xaa02);
-			case 3:
-				return (RealPt)RealMake(datseg, 0xaa02);
-			default:
-				return (RealPt)RealMake(datseg, 0xa9f6);
-		}
+		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa9f6) :
+				((causus == 1) ? (RealPt)RealMake(datseg, 0xaa02) :
+				((causus == 3) ? (RealPt)RealMake(datseg, 0xaa02) :
+					(RealPt)RealMake(datseg, 0xa9f6)));
 	}
 }
 
 //394
 /**
 */
-RealPt GUI_get_ptr2(unsigned short v1, unsigned short v2)
+/* Borlandified and identical */
+RealPt GUI_get_ptr2(signed short genus, signed short causus)
 {
-
-	if (v1 == 0) {
-		switch (v2) {
-			case 0:
-				return (RealPt)RealMake(datseg, 0xa8d4);
-			case 1:
-				return (RealPt)RealMake(datseg, 0xa8e0);
-			case 3:
-				return (RealPt)RealMake(datseg, 0xa8e8);
-			default:
-				return (RealPt)RealMake(datseg, 0xa8e4);
-		}
+	if (genus == 0) {
+		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa8d4) :
+				((causus == 1) ? (RealPt)RealMake(datseg, 0xa8e0) :
+				((causus == 3) ? (RealPt)RealMake(datseg, 0xa8e8) :
+					(RealPt)RealMake(datseg, 0xa8e4)));
 	} else {
-		switch (v2) {
-			case 0:
-				return (RealPt)RealMake(datseg, 0xa8d8);
-			case 1:
-				return (RealPt)RealMake(datseg, 0xa8d4);
-			case 3:
-				return (RealPt)RealMake(datseg, 0xa8d4);
-			default:
-				return (RealPt)RealMake(datseg, 0xa8d4);
-		}
+		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa8d8) :
+				((causus == 1) ? (RealPt)RealMake(datseg, 0xa8d4) :
+				((causus == 3) ? (RealPt)RealMake(datseg, 0xa8d4) :
+					(RealPt)RealMake(datseg, 0xa8d8)));
 	}
 }
+
 //3f8
-void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned short char_height)
+/* Borlandified and identical */
+void GUI_write_char_to_screen(PhysPt dst, signed short char_width, signed short char_height)
 {
 	Bit8u *ptr;
-	unsigned short y;
-	unsigned short x;
+	signed short y;
+	signed short x;
 
 	ptr = p_datseg + 0xce87;
 
@@ -237,14 +216,15 @@ void GUI_write_char_to_screen(PhysPt dst, unsigned short char_width, unsigned sh
 */
 unsigned short GUI_count_lines(Bit8u *str)
 {
+	signed short si;
+	signed short di;
+
 	Bit8u *str_loc;
-	unsigned short v6;
-	unsigned short lines;
-	short si;
-	short di;
-	unsigned short max_line_width;
-	unsigned short width_char;
-	unsigned short width_line;
+	signed short v6;
+	signed short lines;
+	signed short max_line_width;
+	signed short width_char;
+	signed short width_line;
 
 	lines = 0;
 
@@ -253,7 +233,7 @@ unsigned short GUI_count_lines(Bit8u *str)
 
 	/* replace all CR and CL with Whitespaces */
 	for (str_loc = str; *str_loc; str_loc++)
-		if (*str_loc == 0x0a || *str_loc == 0x0d)
+		if (*str_loc == 0x0d || *str_loc == 0x0a)
 			*str_loc = 0x20;
 
 	str_loc = str;
@@ -261,7 +241,7 @@ unsigned short GUI_count_lines(Bit8u *str)
 	max_line_width = ds_readw(0xd2d5);
 
 	if (ds_readw(0xe4db) != 0)
-		ds_writew(0xd2d5, ds_readw(0xd2d5) - ds_readw(0xe4db));
+		sub_ds_ws(0xd2d5, ds_readws(0xe4db));
 
 	width_line = 0;
 
@@ -269,18 +249,24 @@ unsigned short GUI_count_lines(Bit8u *str)
 		GUI_lookup_char_width(str_loc[si], &width_char);
 		width_line += width_char;
 
-		if (width_line >=  ds_readw(0xd2d5)) {
-			if ( di != v6) {
+		if (width_line >=  ds_readws(0xd2d5)) {
+			if (di != v6) {
 				/* TODO: this caused a crash on
 					no_way() in the city */
 				str_loc[di] = 0x0d;
-				str_loc += di;
+				/* TODO: BCC produces other code here */
+				str_loc = str_loc + di;
 			} else {
-				str_loc[si] = 0x0d;
-				str_loc += si + 1;
+				/* TODO: BCC merges both writes to str_loc */
+				if (1) {
+					str_loc[si] = 0x0d;
+					/* TODO: BCC produces other code here */
+					str_loc = si + str_loc + 1;
+				}
 			}
+
 			if (++lines == ds_readw(0xe4d9))
-				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
+				add_ds_ws(0xd2d5, ds_readws(0xe4db));
 
 			v6 = si = di = width_line = 0;
 		}
@@ -289,22 +275,22 @@ unsigned short GUI_count_lines(Bit8u *str)
 			di = si;
 
 		if (str_loc[si] == 0x40) {
-			str_loc += si + 1;
+			str_loc = str_loc + si + 1;
 			si = -1;
 			v6 = di = width_line = 0;
 			if (++lines == ds_readw(0xe4d9))
-				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
+				add_ds_ws(0xd2d5, ds_readws(0xe4db));
 		}
 	}
 
-	if (width_line >= ds_readw(0xd2d5)) {
+	if (width_line >= ds_readws(0xd2d5)) {
 
 		if (v6 == di)
 			str_loc[si - 1] = 0;
 		else {
 			str_loc[di] = 0x0d;
 			if (++lines == ds_readw(0xe4d9))
-				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
+				add_ds_ws(0xd2d5, ds_readws(0xe4db));
 		}
 	}
 
@@ -313,33 +299,35 @@ unsigned short GUI_count_lines(Bit8u *str)
 }
 
 //5d7
-unsigned short GUI_print_header(Bit8u *str)
+/* Borlandified and identical */
+signed short GUI_print_header(Bit8u *str)
 {
-	unsigned short retval = 1;
+	signed short retval = 1;
 
 	update_mouse_cursor();
 	retval = GUI_count_lines(str);
-	GUI_print_string(str, ds_readw(0xd2d9), ds_readw(0xd2d7));
+	GUI_print_string(str, ds_readws(0xd2d9), ds_readws(0xd2d7));
 	refresh_screen_size();
 
 	return retval;
 }
 
 //614
+/* Borlandified and identical */
 void GUI_print_loc_line(Bit8u * str)
 {
-	unsigned short tmp1;
-	unsigned short tmp2;
-	unsigned short l1;
-	unsigned short l2;
-	unsigned short l3;
+	signed short tmp1;
+	signed short tmp2;
+	signed short l1;
+	signed short l2;
+	signed short l3;
 
 	get_textcolor(&tmp1, &tmp2);
 	set_textcolor(0xff, 0);
 
-	l1 = ds_readw(0xd2d9);
-	l2 = ds_readw(0xd2d7);
-	l3 = ds_readw(0xd2d5);
+	l1 = ds_readws(0xd2d9);
+	l2 = ds_readws(0xd2d7);
+	l3 = ds_readws(0xd2d5);
 
 	ds_writew(0xd2d9, 6);
 	ds_writew(0xd2d7, 143);
@@ -356,82 +344,79 @@ void GUI_print_loc_line(Bit8u * str)
 }
 
 //691
-void GUI_print_string(Bit8u *str, unsigned short x, unsigned short y)
+/* Borlandified and identical */
+void GUI_print_string(Bit8u *str, signed short x, signed short y)
 {
-	unsigned short l1;
-	unsigned short l2;
-	unsigned short l3;
+	signed short l1;
+	signed short l2;
+	signed short l3;
 	unsigned char l4;
-	unsigned short si;
-	unsigned short di;
-
-	si = x;
-	di = y;
 
 	l1 = 0;
 	l2 = 0;
 
 	update_mouse_cursor();
 
-	if (ds_readw(0xd2d1) == 1) {
-		si = GUI_get_first_pos_centered(str, x, ds_readw(0xd2d5), 0);
+	if (ds_readws(0xd2d1) == 1) {
+		x = GUI_get_first_pos_centered(str, x, ds_readws(0xd2d5), 0);
 	} else
-		if (ds_readw(0xe4db))
-			si += ds_readw(0xe4db);
-	l3 = si;
+		if (ds_readws(0xe4db))
+			x += ds_readws(0xe4db);
+	l3 = x;
 
 	while ((l4 = str[l2++])) {
 		/* handle line breaks */
 		if (l4 == 0x0d || l4 == 0x40) {
-			if (++l1 == ds_readw(0xe4d9)) {
-				ds_writew(0xd2d5, ds_readw(0xd2d5) + ds_readw(0xe4db));
-				l3 -= ds_readw(0xe4db);
+			if (++l1 == ds_readws(0xe4d9)) {
+				add_ds_ws(0xd2d5, ds_readws(0xe4db));
+				l3 -= ds_readws(0xe4db);
 			}
-			di += 7;
-			if (ds_readw(0xd2d1) == 1)
-				si = GUI_get_first_pos_centered(str + l2, ds_readw(0xd2d9), ds_readw(0xd2d5), 0);
-			else
-				si = l3;
+			y += 7;
+			x = (ds_readw(0xd2d1) == 1) ?
+				GUI_get_first_pos_centered(str + l2, ds_readws(0xd2d9), ds_readws(0xd2d5), 0) : l3;
 
 			continue;
 		}
 
 		if (l4 == 0x7e) {
-			if (si < ds_readw(0xd313))
-				si = ds_readw(0xd313);
-			else if (si < ds_readw(0xd315))
-				si = ds_readw(0xd315);
-			else if (si < ds_readw(0xd317))
-				si = ds_readw(0xd317);
-			else if (si < ds_readw(0xd319))
-				si = ds_readw(0xd319);
-			else if (si < ds_readw(0xd31b))
-				si = ds_readw(0xd31b);
-			else if (si < ds_readw(0xd31d))
-				si = ds_readw(0xd31d);
-			else if (si < ds_readw(0xd31f))
-				si = ds_readw(0xd31f);
+			if (x < ds_readws(0xd313))
+				x = ds_readws(0xd313);
+			else if (x < ds_readws(0xd315))
+				x = ds_readws(0xd315);
+			else if (x < ds_readws(0xd317))
+				x = ds_readws(0xd317);
+			else if (x < ds_readws(0xd319))
+				x = ds_readws(0xd319);
+			else if (x < ds_readws(0xd31b))
+				x = ds_readws(0xd31b);
+			else if (x < ds_readws(0xd31d))
+				x = ds_readws(0xd31d);
+			else if (x < ds_readws(0xd31f))
+				x = ds_readws(0xd31f);
 			continue;
 		}
 
-		if (l4 == 0xf0 || l4 == 0xf1 || l4 == 0xf2 || l4 == 0xf3) {
+		if (l4 == (char)0xf0 || l4 == (char)0xf1 || l4 == (char)0xf2 || l4 == (char)0xf3) {
 			ds_writew(0xd2c5, l4 - 0xf0);
 			continue;
 		}
 
-		if (l4 == 0x3c)
+		if (l4 == 0x3c) {
 			l4 = 0x3e;
+		} else { }
 
-		si += GUI_print_char(l4, si, di);
+		x += GUI_print_char(l4, x, y);
 	}
+
 	refresh_screen_size();
 }
 
 //7f0
-unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short y)
+/* Borlandified and identical */
+signed short GUI_print_char(unsigned char c, unsigned short x, unsigned short y)
 {
-	unsigned short char_width;
-	unsigned short font_index;
+	signed short char_width;
+	signed short font_index;
 
 	ds_writeb(0xe4d8, c);
 	font_index = GUI_lookup_char_width(c, &char_width);
@@ -447,60 +432,55 @@ unsigned short GUI_print_char(unsigned char c, unsigned short x, unsigned short 
 }
 
 //82b
-unsigned short GUI_lookup_char_width(unsigned char c, unsigned short *p)
+/* Borlandified and identical */
+signed short GUI_lookup_char_width(signed char c, signed short *p)
 {
-	unsigned short i;
+	signed short i;
 
 	for (i = 0; i != 75 * 3; i += 3) {
-		if (c != ds_readb(0xaa51 + i))
-			continue;
+		if (c == ds_readbs(0xaa51 + i)) {
 
-		*p = ds_readb(0xaa51 + i + 2) & 0xff;
-		return ds_readb(0xaa51 + i + 1) & 0xff;
+			*p = ds_readbs(0xaa51 + i + 2) & 0xff;
+			return ds_readbs(0xaa51 + i + 1) & 0xff;
+		}
 	}
 
-	if (c == 0x7e || c == 0xf0 || c == 0xf1 || c == 0xf2 || c == 0xf3) {
-		*p = 0;
-		return 0;
-	} else {
-		*p = 5;
-		return 0;
+	if (c == (char)0x7e || c == (char)0xf0 || c == (char)0xf1 || c == (char)0xf2 || c == (char)0xf3)
+	{
+		return host_writews((Bit8u*)p, 0);
 	}
+
+	host_writew((Bit8u*)p, 5);
+	return 0;
 }
+
 //88f
+/* Borlandified and identical */
 void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_width, unsigned short x, unsigned short y)
 {
-	RealPt p_font6 = (RealPt)ds_readd(0xd2c1);
-
-#if !defined(__BORLANDC__)
-	D1_LOG("GUI_write_fonti_to_screen(fi=%d, cw=%d,x=%d, y=%d)\n", font_index, char_width, x, y);
-#endif
 	GUI_blank_char();
-	GUI_font_to_buf(Real2Host(p_font6) + font_index * 8);
+	GUI_font_to_buf(Real2Host(ds_readd(0xd2c1)) + font_index * 8);
 	GUI_write_char_to_screen_xy(x, y, 7, char_width);
 }
 //8c5
 /**
 	GUI_blank_char() - sets the area of a char to a color
 */
+/* Borlandified and identical */
 void GUI_blank_char(void)
 {
 	PhysPt ptr = (PhysPt)PhysMake(datseg, 0xce87);
-	unsigned char color = ds_readb(0xd2c7);
-	unsigned char i;
-	unsigned char j;
-
-#if !defined(__BORLANDC__)
-	D1_LOG("ptr = 0x%x color = 0x%x\n", ptr, color);
-#endif
+	signed short i;
+	signed short j;
 
 	for (i = 0; i < 8; ptr += 8, i++) {
 		for (j = 0; j < 8; j++)
-			mem_writeb(ptr + j, color);
+			mem_writeb(ptr + j, ds_readbs(0xd2c7));
 	}
 }
 
 //8f8
+/* Borlandified and identical */
 void GUI_font_to_buf(Bit8u *fc)
 {
 	Bit8u * p;
@@ -523,12 +503,12 @@ void GUI_font_to_buf(Bit8u *fc)
 }
 
 //956
+/* Borlandified and identical */
 void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width)
 {
 	/* screen_start */
-	PhysPt dst = Real2Phys(ds_readd(0xd2fb));
+	PhysPt dst = Real2Phys(ds_readd(0xd2fb)) + y * 320 + x;
 
-	dst += y * 320 + x;
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }
 
@@ -537,7 +517,8 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
  * @fg:	foreground color index
  * @bg: background color index
  */
-void set_textcolor(unsigned short fg, unsigned short bg)
+/* Borlandified and identical */
+void set_textcolor(signed short fg, signed short bg)
 {
 	ds_writew(TEXTCOLOR_FG, fg);
 	ds_writew(TEXTCOLOR_BG, bg);
@@ -549,55 +530,64 @@ void set_textcolor(unsigned short fg, unsigned short bg)
  * @bg: background color index
  *
  */
-void get_textcolor(unsigned short *fg, unsigned short *bg)
+/* Borlandified and identical */
+void get_textcolor(signed short *fg, signed short *bg)
 {
 	host_writew((Bit8u*)fg, ds_readw(TEXTCOLOR_FG));
 	host_writew((Bit8u*)bg, ds_readw(TEXTCOLOR_BG));
 }
 
+/* Borlandified and identical */
 unsigned short GUI_unused(Bit8u *str)
 {
 	unsigned short lines = 0;
 
-	while (str) {
+	while (*str) {
 		if (*str++ == 0x0d)
 			lines++;
 	}
 
 	return lines;
 }
-//9D6
-unsigned short GUI_get_space_for_string(Bit8u *p, unsigned short dir)
-{
-	unsigned short sum;
-	unsigned short tmp;
 
-	for (sum = 0; *p; sum += tmp)
+//9D6
+/* Borlandified and identical */
+signed short GUI_get_space_for_string(Bit8u *p, signed short dir)
+{
+	signed short sum;
+	signed short tmp;
+
+	for (sum = 0; *p; sum += tmp) {
 		if (dir) {
 			GUI_lookup_char_height(*p++, &tmp);
-#if !defined(__BORLANDC__)
-			D1_INFO("%d\n", tmp);
-#endif
-		} else
+		} else {
 			GUI_lookup_char_width(*p++, &tmp);
+		}
+	}
 
 	return sum;
 }
 
 //A26
-unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned short v2, unsigned short dir)
+/* Borlandified and identical */
+signed short GUI_get_first_pos_centered(Bit8u *p, signed short x, signed short v2, unsigned short dir)
 {
-	unsigned short tmp;
-	unsigned short i;
+	register signed short i;
+	register signed short c;
+	signed short tmp;
 
-	for (i = 0; *p && *p != 0x40 && *p != 0x0d; i += tmp) {
+	for (i = 0;  (c = host_readbs(p)) && (c != 0x40) && (c != 0x0d); i += tmp) {
 		if (dir)
 			GUI_lookup_char_height(*p++, &tmp);
 		else
 			GUI_lookup_char_width(*p++, &tmp);
 	}
 
-	return (v2 - i) / 2 + x;
+	v2 -= i;
+	v2 >>= 1;
+	v2 += x;
+
+	return v2;
 }
 
 //A93
@@ -606,14 +596,15 @@ unsigned short GUI_get_first_pos_centered(Bit8u *p, unsigned short x, unsigned s
 	@line: number of the current line
 	@type: type of line 0 = top / 1 = middle normal / 2 = middle radio / 3 =bottom
 */
-void GUI_draw_popup_line(unsigned short line, unsigned short type)
+/* Borlandified and identical */
+void GUI_draw_popup_line(signed short line, signed short type)
 {
+	short popup_left;
 	short i;
 	short popup_middle;
 	short popup_right;
 	short y;
 	short x;
-	short popup_left;
 
 	/* set the offsets in the popup.dat buffer */
 	switch (type) {
@@ -639,28 +630,28 @@ void GUI_draw_popup_line(unsigned short line, unsigned short type)
 			break;
 	}
 
-	x = ds_readw(0xbfff);
-	y = (line * 8) + ds_readw(0xc001);
+	x = ds_readws(0xbfff);
+	y = ds_readws(0xc001) + (line * 8);
 	ds_writew(0xc011, x);
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, x + 15);
 	ds_writew(0xc017, y + 7);
-	ds_writed(0xc019, ds_readd(0xd2ad) + popup_left);
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2ad) + popup_left));
 
 	do_pic_copy(0);
 
-	ds_writed(0xc019, ds_readd(0xd2ad) + popup_middle);
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2ad) + popup_middle));
 
 	x += 16;
 
-	for (i = 0; i < ds_readw(0xbffd); i++) {
+	for (i = 0; i < ds_readws(0xbffd); i++) {
 		ds_writew(0xc011, x);
 		ds_writew(0xc015, x + 31);
 		do_pic_copy(0);
 		x += 32;
 	}
 
-	ds_writed(0xc019, ds_readd(0xd2ad) + popup_right);
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2ad) + popup_right));
 	ds_writew(0xc011, x);
 	ds_writew(0xc015, x + 15);
 
