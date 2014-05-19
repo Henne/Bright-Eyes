@@ -1,9 +1,9 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg038 (Fight)
- *      Functions rewritten 3/6
+ *      Functions rewritten 4/6
  *
  *      Functions called rewritten 3/5
- *      Functions uncalled rewritten 0/1
+ *      Functions uncalled rewritten 1/1
 */
 
 #include "v302de.h"
@@ -71,6 +71,17 @@ void FIG_init_list_elem(signed short obj)
 	ds_writeb(0xe079, -1);
 
 	ds_writeb(0xe38e, FIG_add_to_list(-1));
+}
+
+/* Borlandified and identical */
+void FIG_unused(signed short a1, signed short a2,  Bit8u *p1, Bit8u *p2)
+{
+	signed short loc1 = 10;
+	signed short loc2 = 118;
+
+	host_writew(p2, ((loc2 - a2) + ((a1 - loc1) / 2)) / 10);
+	host_writew(p1, (a1 - loc1) / 10 - host_readws(p2));
+
 }
 
 //static
