@@ -7656,6 +7656,53 @@ static int n_seg037(unsigned offs) {
 	}
 }
 
+static int n_seg038(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		CPU_Pop16();
+		signed short obj = CPU_Pop16();
+		RealPt px = CPU_Pop32();
+		RealPt py = CPU_Pop32();
+		CPU_Push32(py);
+		CPU_Push32(px);
+		CPU_Push16(obj);
+
+		reg_ax = FIG_search_obj_on_cb(obj,
+			(signed short*)Real2Host(px),
+			(signed short*)Real2Host(py));
+
+		D1_LOG("near FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
+			obj, mem_readw(Real2Phys(px)),
+			mem_readw(Real2Phys(py)), reg_ax);
+
+		host_writew(Real2Host(px),
+			*((signed short*)Real2Host(px)));
+		host_writew(Real2Host(py),
+			*((signed short*)Real2Host(py)));
+
+		return 1;
+	}
+	case 0x143: {
+		return 0;
+	}
+	case 0x457: {
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+
+		reg_ax = FIG_count_smth(Real2Host(p));
+		D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			"seg038", offs);
+		exit(1);
+	}
+}
+
 static int n_seg039(unsigned offs)
 {
 
@@ -8765,53 +8812,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1309)) return n_seg032(offs);
 	else if (is_ovrseg(0x131a)) return n_seg036(offs);
 	else if (is_ovrseg(0x131f)) return n_seg037(offs);
-
-	/* seg038 */
-	if (is_ovrseg(0x1324)) {
-		switch (offs) {
-		case 0x000: {
-			CPU_Pop16();
-			signed short obj = CPU_Pop16();
-			RealPt px = CPU_Pop32();
-			RealPt py = CPU_Pop32();
-			CPU_Push32(py);
-			CPU_Push32(px);
-			CPU_Push16(obj);
-
-			reg_ax = FIG_search_obj_on_cb(obj,
-					(signed short*)Real2Host(px),
-					(signed short*)Real2Host(py));
-
-			D1_LOG("near FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
-				obj, mem_readw(Real2Phys(px)),
-				mem_readw(Real2Phys(py)), reg_ax);
-
-			host_writew(Real2Host(px),
-				*((signed short*)Real2Host(px)));
-			host_writew(Real2Host(py),
-				*((signed short*)Real2Host(py)));
-
-			return 1;
-		}
-		case 0x143: {
-			return 0;
-		}
-		case 0x457: {
-			CPU_Pop16();
-			RealPt p = CPU_Pop32();
-			CPU_Push32(p);
-
-			reg_ax = FIG_count_smth(Real2Host(p));
-			D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
-
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg038", offs);
-			exit(1);
-		}
-	}
+	else if (is_ovrseg(0x1324)) return n_seg038(offs);
 	else if (is_ovrseg(0x1328)) return n_seg039(offs);
 	/* seg041 */
 	if (is_ovrseg(0x1330)) {
