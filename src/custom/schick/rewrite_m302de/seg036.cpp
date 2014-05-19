@@ -353,6 +353,9 @@ signed short KI_search_spell_target(signed short x, signed short y,
 				done = 1;
 			} else if ((obj_id != 0) &&
 					 (
+#ifdef M302de_ORIGINAL_BUGFIX
+						(obj_id > 0) &&
+#endif
 						 ((obj_id < 10) &&
 						!hero_dead(get_hero(obj_id - 1)) &&
 						!hero_unc(get_hero(obj_id - 1))
