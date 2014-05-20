@@ -57,6 +57,85 @@ void spell_eigenschaften(void)
 		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x15));	/* AEmax */
 }
 
+void spell_exposami(void)
+{
+	signed short j;
+	signed short v4;
+	signed short v6;
+	signed short arr[20][2];
+
+	signed short new_si;
+	signed short new_di;
+
+	new_di = 0;
+	new_si = 0;
+	for ( ; new_si < ds_readws(0xd872); new_si++) {
+
+		if (host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * new_si + 0x1a) != 0) {
+
+			v4 = host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * new_si + 0x16);
+			v6 = 0;
+			for (j = 0; j <= new_di; j++) {
+				if (arr[j][0] == v4) {
+					arr[j][1]++;
+					v6 = 1;
+					break;
+				}
+			}
+
+			if (v6 == 0) {
+				arr[new_di][0] = v4;
+				arr[new_di][1] = 1;
+				new_di++;
+			}
+		}
+	}
+
+	if (new_di) {
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x7c));
+
+		for (new_si = 0; new_di - 1 > new_si; new_si++) {
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)get_dtp(0x84),
+				arr[new_si][1],
+				(char*)Real2Host(GUI_names_grammar(((arr[new_si][1] > 1)? 4 : 0) + 0x4000,
+									arr[new_si][0], 1)));
+			strcat((char*)Real2Host(ds_readd(DTP2)),
+				(char*)Real2Host(ds_readd(0xd2eb)));
+
+			if (new_di - 2 > new_si) {
+				strcat((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x70));
+			}
+		}
+
+		if (new_di > 1) {
+			strcat((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x74));
+		}
+
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)get_dtp(0x84),
+			arr[new_di - 1][1],	/* TODO: this field access produces other code */
+			(char*)Real2Host(GUI_names_grammar((arr[new_di -1 ][1] > 1 ? 4 : 0) + 0x4000,
+								arr[new_di - 1][0], 1)));
+#if defined(__BORLANDC__)
+	asm {nop }
+#endif
+
+		strcat((char*)Real2Host(ds_readd(DTP2)),
+			(char*)Real2Host(ds_readd(0xd2eb)));
+
+		strcat((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x78));
+	} else {
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x80));
+	}
+
+}
+
 /* Borlandified and identical */
 void spell_penetrizzel(void)
 {

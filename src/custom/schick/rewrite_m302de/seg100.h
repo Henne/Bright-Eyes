@@ -6,6 +6,8 @@ namespace M302de {
 
 /* 0x20 */
 void spell_eigenschaften(void);
+/* 0x25 */
+void spell_exposami(void);
 
 /* 0x2f */
 void spell_penetrizzel(void);

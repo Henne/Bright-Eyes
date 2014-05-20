@@ -5267,7 +5267,8 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		return 0;
+		spell_exposami();
+		return 1;
 	}
 	case 0x2a: {
 		return 0;
