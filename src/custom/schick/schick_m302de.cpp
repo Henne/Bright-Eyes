@@ -7685,7 +7685,32 @@ static int n_seg038(unsigned offs)
 		return 1;
 	}
 	case 0x143: {
-		return 0;
+		CPU_Pop16();
+		RealPt in_ptr = CPU_Pop32();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s arg4 = CPU_Pop16();
+		Bit16s arg5 = CPU_Pop16();
+		Bit16s arg6 = CPU_Pop16();
+		Bit16s arg7 = CPU_Pop16();
+		Bit16s arg8 = CPU_Pop16();
+
+		D1_LOG("FIG_backtrack(%x, %d, %d, %d, %d, %d, %d, %d)\n",
+			in_ptr, x, y, arg4, arg5, arg6, arg7, arg8);
+
+		FIG_backtrack(Real2Host(in_ptr), x, y, arg4, (Bit8s)arg5,
+							arg6, arg7, arg8);
+
+		CPU_Push16(arg8);
+		CPU_Push16(arg7);
+		CPU_Push16(arg6);
+		CPU_Push16(arg5);
+		CPU_Push16(arg4);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(in_ptr);
+
+		return 1;
 	}
 	case 0x457: {
 		CPU_Pop16();
