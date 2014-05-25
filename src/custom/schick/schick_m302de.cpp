@@ -3921,7 +3921,19 @@ static int seg045(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f: {
-		D1_LOG("%s:%x();\n", __func__, offs);
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		Bit16s a5 = CPU_Pop16();
+		reg_ax = seg045_01a0(a1, a2, a3, a4, a5);
+		D1_LOG("seg045_01a0(%d, %d, %d, %d, %d); = %d\n",
+			a1, a2, a3, a4, a5, (Bit16s)reg_ax);
+		CPU_Push16(a5);
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
 		return 0;
 	}
 	case 0x39: {

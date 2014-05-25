@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg045 (fight helper)
-	Functions rewritten: 4/8
+	Functions rewritten: 5/8
 */
 
 #include "v302de.h"
@@ -8,6 +8,7 @@
 #include "seg002.h"
 #include "seg006.h"
 #include "seg038.h"
+#include "seg039.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -105,6 +106,40 @@ signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 	}
 
 	return i;
+}
+
+/* Borlandified and identical */
+signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id1, signed short fight_id2, signed short a5)
+{
+	signed short i;
+	Bit8u *ptr;
+	signed short id1_x;
+	signed short id1_y;
+	signed short id2_x;
+	signed short id2_y;
+	signed short distance;
+
+	FIG_search_obj_on_cb(fight_id2, &id2_x, &id2_y);
+	FIG_search_obj_on_cb(fight_id1, &id1_x, &id1_y);
+
+	distance = seg039_0000(id1_x, id1_y, id2_x, id2_y);
+
+	if (distance <= 1) {
+		return 0;
+	}
+
+	ptr = p_datseg + 0xd8cf + a1 * 0xf3;
+	ds_writeb(0xd8ce + a1 * 0xf3, 0);
+	ds_writeb(0xd9c0 + a1 * 0xf3, 0);
+
+	for (i = 0; distance - 1 > i; i++) {
+		ptr += FIG_copy_it(ptr, Real2Host(host_readd(Real2Host(ds_readd(0x6324 + a2 * 4)) + a5 * 4)), -1);
+	}
+
+	host_writeb(ptr, -1);
+	seg045_0000(fight_id1, a2, a5);
+
+	return 1;
 }
 
 /* 0x37c */
