@@ -3557,7 +3557,8 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				host_writeb(hero + 0xd7 + i * 5, 0);
 			}
 
-			if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
+			/* FINAL FIGHT */
+			if (ds_readw(CURRENT_FIG_NR) == 192) {
 				if (hero == Real2Host(ds_readd(0x3e20))) {
 					ds_writew(0xc3c1, 1);
 					ds_writew(IN_FIGHT, 0);
@@ -3609,7 +3610,8 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 					FIG_add_msg(7, 0);
 
-					if (ds_readw(CURRENT_FIG_NR) == 0xc0) {
+					/* FINAL FIGHT */
+					if (ds_readw(CURRENT_FIG_NR) == 192) {
 						if (hero == Real2Host(ds_readd(0x3e20))) {
 							ds_writew(0xc3c1, 1);
 							ds_writew(IN_FIGHT, 0);
