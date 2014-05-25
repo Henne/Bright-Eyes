@@ -3552,7 +3552,22 @@ static int seg038(unsigned short offs) {
 			return 1;
 		}
 		case 0x39: {
-			return 0;
+			RealPt in_ptr = CPU_Pop32();
+			Bit16s a1 = CPU_Pop16();
+			Bit16s x_in = CPU_Pop16();
+			Bit16s y_in = CPU_Pop16();
+			Bit16s a4 = CPU_Pop16();
+
+			reg_ax = seg038(Real2Host(in_ptr), a1, x_in, y_in, a4);
+			D1_LOG("seg038(%x, %d, %d, %d, %d) = %d\n",
+				in_ptr, a1, x_in, y_in, a4, (Bit16s)reg_ax);
+
+			CPU_Push16(a4);
+			CPU_Push16(y_in);
+			CPU_Push16(x_in);
+			CPU_Push16(a1);
+			CPU_Push32(in_ptr);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

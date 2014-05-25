@@ -10,12 +10,13 @@ void FIG_init_list_elem(signed short);
 /* static */
 void FIG_unused(signed short, signed short, Bit8u*, Bit8u*);
 /* 0x2f */
+/* static */
 void FIG_backtrack(Bit8u*, signed short, signed short, signed short, signed char, signed short, signed short, signed short);
-
-
 /* 0x34 */
 /* static */
-unsigned short FIG_count_smth(Bit8u*);
+signed short FIG_count_smth(Bit8u*);
+/* 0x39 */
+signed short seg038(Bit8u *, signed short, signed short, signed short, signed short);
 
 #if !defined(__BORLANDC__)
 }
