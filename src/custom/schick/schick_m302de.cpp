@@ -7903,7 +7903,17 @@ static int n_seg045(unsigned short offs)
 		return 1;
 	}
 	case 0x0273: {
-		return 0;
+		CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		D1_INFO("seg045_0273(%d, %d, %d);\n", a1, a2, a3);
+		seg045_0273((signed char)a1, (signed char)a2, a3);
+
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

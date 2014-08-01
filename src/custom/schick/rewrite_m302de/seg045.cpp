@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg045 (fight helper)
-	Functions rewritten: 5/8
+	Functions rewritten: 6/8
 */
 
 #include "v302de.h"
@@ -142,7 +142,72 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id
 	return 1;
 }
 
+/* Borlandified and identical */
+/*
+
+	a3 = {1}
+*/
+void seg045_0273(signed short x, signed short y, signed short a3)
+{
+	unsigned short height;
+	unsigned short width;
+
+	/* TODO: some kind of initialized structure */
+	signed short l3;
+	Bit8u *l4;
+	Bit32s l5;
+
+	struct nvf_desc nvf;
+
+	l3 = ds_readws(0x633c);
+	l4 = Real2Host(ds_readd(0x633e));
+	l5 = ds_readd(0x6342);
+
+	nvf.dst = Real2Host(ds_readd(0xd856));
+	nvf.src = Real2Host(ds_readd(0xd866));
+	/* TODO: ugly */
+	nvf.nr = host_readbs((Bit8u*)&l3 + a3 - 1);
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	process_nvf(&nvf);
+
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	height = host_readws((Bit8u*)&height);
+	width = host_readws((Bit8u*)&width);
+#endif
+
+	ds_writew(0xe066, 0);
+	/* TODO: ugly */
+	ds_writeb(0xe068, host_readbs((Bit8u*)&l3 + a3 - 1));
+	ds_writeb(0xe069, x);
+	ds_writeb(0xe06a, y);
+
+	/* TODO: ugly */
+	ds_writeb(0xe06b, host_readbs(((Bit8u*)&(l3)) - 6 + a3 * 2));
+	/* TODO: ugly */
+	ds_writeb(0xe06c, host_readbs(((Bit8u*)&(l3)) - 10 + a3 * 2));
+
+	ds_writeb(0xe06d, height);
+	ds_writeb(0xe06e, width);
+	ds_writeb(0xe06f, 0);
+	ds_writeb(0xe070, 0);
+	ds_writeb(0xe071, width - 1);
+	ds_writeb(0xe072, height - 1);
+	ds_writeb(0xe07b, 0);
+	ds_writeb(0xe073, 0);
+	ds_writeb(0xe075, -1);
+	ds_writeb(0xe074, -1);
+	ds_writed(0xe07d, ds_readd(0xd856));
+	ds_writeb(0xe077, 99);
+	ds_writeb(0xe078, 0);
+	ds_writeb(0xe079, -1);
+	ds_writeb(0xe38c, FIG_add_to_list(-1));
+}
+
 /* 0x37c */
+/* Borlandified and identical */
 void FIG_remove_smth2(void)
 {
 	FIG_remove_from_list(ds_readb(0xe38c), 0);
