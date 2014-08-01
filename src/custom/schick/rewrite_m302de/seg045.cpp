@@ -1,7 +1,11 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg045 (fight helper)
-	Functions rewritten: 8/8 (complete)
-*/
+ *	Rewrite of DSA1 v3.02_de functions of seg045 (fight helper)
+ *	Functions rewritten: 8/8 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y SEG045.CPP
+ */
 
 #include "v302de.h"
 
@@ -14,9 +18,6 @@
 namespace M302de {
 #endif
 
-/* 0x000 */
-
-/* Borlandified and identical */
 void seg045_0000(signed short fight_id, signed short type, signed short a3)
 {
 	signed short obj_x;
@@ -69,23 +70,18 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 	ds_writeb(0xe38d, FIG_add_to_list(-1));
 }
 
-
-/* 0x137 */
-/* Borlandified and identical */
 void FIG_remove_smth(void)
 {
 	FIG_remove_from_list(ds_readb(0xe38d), 0);
 	ds_writeb(0xe38d, 0xff);
 }
 
-/* 0x14f */
 /**
  * FIG_copy_it() - copies chunks of 3 bytes
  * @dst:	pointer to destination
  * @src:	pointer to sources
  * @term:	termination sign
  */
-/* Borlandified and identical */
 signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 {
 	signed short i;
@@ -108,7 +104,6 @@ signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 	return i;
 }
 
-/* Borlandified and identical */
 signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id1, signed short fight_id2, signed short a5)
 {
 	signed short i;
@@ -142,11 +137,6 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id
 	return 1;
 }
 
-/* Borlandified and identical */
-/*
-
-	a3 = {1}
-*/
 void seg045_0273(signed short x, signed short y, signed short a3)
 {
 	unsigned short height;
@@ -206,16 +196,12 @@ void seg045_0273(signed short x, signed short y, signed short a3)
 	ds_writeb(0xe38c, FIG_add_to_list(-1));
 }
 
-/* 0x37c */
-/* Borlandified and identical */
 void FIG_remove_smth2(void)
 {
 	FIG_remove_from_list(ds_readb(0xe38c), 0);
 	ds_writeb(0xe38c, 0xff);
 }
 
-/* 0x394 */
-/* Borlandified and identical */
 void seg045_0394(signed short a1, Bit8u *hero, signed short a3)
 {
 	Bit8u *ptr;
@@ -234,8 +220,6 @@ void seg045_0394(signed short a1, Bit8u *hero, signed short a3)
 	seg045_0273(x, y, a3);
 }
 
-/* 0x41b */
-/* Borlandified and identical */
 void seg045_041b(signed short a1, Bit8u *enemy, signed short a3)
 {
 	Bit8u *ptr;
