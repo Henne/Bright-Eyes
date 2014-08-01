@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg045 (fight helper)
-	Functions rewritten: 6/8
+	Functions rewritten: 8/8 (complete)
 */
 
 #include "v302de.h"
@@ -212,6 +212,46 @@ void FIG_remove_smth2(void)
 {
 	FIG_remove_from_list(ds_readb(0xe38c), 0);
 	ds_writeb(0xe38c, 0xff);
+}
+
+/* 0x394 */
+/* Borlandified and identical */
+void seg045_0394(signed short a1, Bit8u *hero, signed short a3)
+{
+	Bit8u *ptr;
+	signed short x;
+	signed short y;
+
+	FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x, &y);
+
+	ptr = p_datseg + a1 * 0xf3 + 0xd8cf;
+
+	ds_writeb(0xd8ce + a1 * 0xf3, 0);
+	ds_writeb(0xd9c0 + a1 * 0xf3, -1);
+
+	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + a3 * 4)), -1);
+	host_writeb(ptr, -1);
+	seg045_0273(x, y, a3);
+}
+
+/* 0x41b */
+/* Borlandified and identical */
+void seg045_041b(signed short a1, Bit8u *enemy, signed short a3)
+{
+	Bit8u *ptr;
+	signed short x;
+	signed short y;
+
+	FIG_search_obj_on_cb(host_readbs(enemy + 0x2d), &x, &y);
+
+	ptr = p_datseg + a1 * 0xf3 + 0xd8cf;
+
+	ds_writeb(0xd8ce + a1 * 0xf3, 0);
+	ds_writeb(0xd9c0 + a1 * 0xf3, -1);
+
+	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + a3 * 4)), -1);
+	host_writeb(ptr, -1);
+	seg045_0273(x, y, a3);
 }
 
 #if !defined(__BORLANDC__)

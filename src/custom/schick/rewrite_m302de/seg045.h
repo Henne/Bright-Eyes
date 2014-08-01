@@ -20,6 +20,12 @@ void seg045_0273(signed short, signed short, signed short);
 /* 0x39 */
 void FIG_remove_smth2(void);
 
+/* 0x3e */
+void seg045_0394(signed short, Bit8u*, signed short);
+
+/* 0x43 */
+void seg045_041b(signed short, Bit8u*, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -3942,12 +3942,32 @@ static int seg045(unsigned short offs) {
 		return 1;
 	}
 	case 0x3e: {
-		D1_LOG("%s:%x();\n", __func__, offs);
-		return 0;
+		Bit16s a1 = CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s a3 = CPU_Pop16();
+
+		D1_INFO("seg045_0394(%d, %s, %d);\n",
+			a1, schick_getCharname(hero), a3);
+		seg045_0394(a1, Real2Host(hero), a3);
+
+		CPU_Push16(a3);
+		CPU_Push32(hero);
+		CPU_Push16(a1);
+		return 1;
 	}
 	case 0x43: {
-		D1_LOG("%s:%x();\n", __func__, offs);
-		return 0;
+		Bit16s a1 = CPU_Pop16();
+		RealPt enemy = CPU_Pop32();
+		Bit16s a3 = CPU_Pop16();
+
+		D1_INFO("seg045_0394(%d, enemy, %d);\n",
+			a1, a3);
+		seg045_0394(a1, Real2Host(enemy), a3);
+
+		CPU_Push16(a3);
+		CPU_Push32(enemy);
+		CPU_Push16(a1);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
