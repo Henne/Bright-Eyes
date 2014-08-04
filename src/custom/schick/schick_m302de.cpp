@@ -7690,8 +7690,21 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x791: {
-		D1_LOG("%s:%x\n", __func__, offs);
-		return 0;
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		Bit16u a2 = CPU_Pop16();
+		Bit16u a3 = CPU_Pop16();
+		Bit16u x = CPU_Pop16();
+		Bit16u y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push32(p);
+
+		reg_ax = seg037_0791(Real2Host(p), a2, a3, x, y);
+		D1_INFO("seg037_0791(%x, %d, %d, %d, %d); = %x\n", p, a2, a3, x, y, reg_ax);
+		return 1;
 	}
 	case 0xb3e: {
 		D1_LOG("%s:%x\n", __func__, offs);

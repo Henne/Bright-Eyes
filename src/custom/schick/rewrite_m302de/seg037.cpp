@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
- *	Functions rewritten: 5/8
+ *	Functions rewritten: 6/8
  *
 */
 
@@ -418,6 +418,174 @@ signed short get_foe_attack_mode(signed short a1, signed short a2)
 
 	return retval;
 }
+
+struct coords {
+	signed short x,y;
+};
+
+struct dummy {
+	struct coords d[4];
+};
+
+/* Borlandified and identical */
+signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed short x, signed short y)
+{
+	signed short l1;
+	signed short l2;
+	signed short l3;
+	signed short retval;
+	signed short mode;
+	signed short l6;
+	signed short l7;
+	struct dummy diff;
+	signed short l_si;
+	signed short l_di;
+
+#if !defined(__BORLANDC__)
+	diff = { { {0, 1}, {0, -1}, {-1, 0}, {0, 1} }};
+#else
+	diff = *(struct dummy*)(p_datseg + 0x5fd8);
+#endif
+
+	retval = 0;
+
+	l1 = l_si = 0;
+	while ((l_si < 5) && (ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + l_si++) != -1))
+	{
+		l1++;
+	}
+
+	l3 = 0;
+	while ((l3 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+
+		l7 = 0;
+
+		for (l_si = 0; l_si < l1; l_si++) {
+
+			l2 = ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + l_si);
+
+			if (ds_readbs(0xf15 + l2 * 8) == 1) {
+
+				if (random_schick(100) < 75) {
+					l7 = 1;
+					break;
+				}
+			}
+		}
+
+		if (l7 == 0) {
+			l2 = ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + random_interval(0, l1 - 1));
+		}
+
+		host_writeb(enemy + 0x2d, 0);
+
+		if ( (mode = get_foe_attack_mode(l2, a3)) > 0) {
+
+			if (mode == 3) {
+				host_writeb(enemy + 0x2d, a2 + 10);
+				host_writeb(enemy + 0x2c, l2);
+				retval = 1;
+				l3 = 1;
+			} else {
+
+				if (!ds_readbs(0xf15 + l2 * 8)) {
+
+					while ((host_readbs(enemy + 0x23) != 0) && (l3 == 0)) {
+
+						l_si = host_readbs(enemy + 0x27);
+						l_di = 0;
+
+						while (!host_readbs(enemy + 0x2d) && (l_di < 4)) {
+
+							if (test_foe_melee_attack(x, y, diff.d[l_si].x, diff.d[l_si].y, mode)) {
+								host_writeb(enemy + 0x2d, get_cb_val(x + diff.d[l_si].x, y + diff.d[l_si].y));
+							}
+
+							l_di++;
+							if (++l_si == 4) {
+								l_si = 0;
+							}
+						}
+
+						if (host_readbs(enemy + 0x2d)) {
+							host_writeb(enemy + 0x2c, l2);
+							retval = 1;
+							l3 = 1;
+						} else if (host_readbs(enemy + 0x23) > 0) {
+							if (!enemy_cursed(enemy)) {
+
+								if (mode == 1)
+									l6 = seg038(enemy, a2, x, y, 2);
+								else
+									l6 = seg038(enemy, a2, x, y, 0);
+
+								if (l6 != -1) {
+									seg037_00ae(enemy, a2);
+									FIG_search_obj_on_cb(a2 + 10, &x, &y);
+
+									if (host_readbs(enemy + 0x23) < 3) {
+										host_writeb(enemy + 0x23, 0);
+									}
+								} else {
+									host_writeb(enemy + 0x23, 0);
+								}
+							} else {
+								host_writeb(enemy + 0x23, 0);
+							}
+						}
+					}
+				} else {
+
+					while ((l3 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+
+						l_si = host_readbs(enemy + 0x27);
+						l_di = 0;
+
+						while (!host_readbs(enemy + 0x2d) && (l_di < 4)) {
+
+							host_writeb(enemy + 0x2d, test_foe_range_attack(x, y, l_si, mode));
+
+							l_di++;
+							if (++l_si == 4) {
+								l_si = 0;
+							}
+						}
+
+						if (host_readbs(enemy + 0x2d)) {
+							host_writeb(enemy + 0x2c, l2);
+							retval = 1;
+							l3 = 1;
+						} else if (host_readbs(enemy + 0x23) > 0) {
+							if (!enemy_cursed(enemy)) {
+
+								if (mode == 1)
+									l6 = seg038(enemy, a2, x, y, 7);
+								else
+									l6 = seg038(enemy, a2, x, y, 6);
+
+								if (l6 != -1) {
+									seg037_00ae(enemy, a2);
+									FIG_search_obj_on_cb(a2 + 10, &x, &y);
+
+									if (host_readbs(enemy + 0x23) < 5) {
+										host_writeb(enemy + 0x23, 0);
+									}
+								} else {
+									host_writeb(enemy + 0x23, 0);
+								}
+							} else {
+								host_writeb(enemy + 0x23, 0);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return retval;
+}
+
 
 #if !defined(__BORLANDC__)
 }

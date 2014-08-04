@@ -21,6 +21,10 @@ signed short test_foe_range_attack(signed short, signed short, const signed shor
 /* static */
 signed short get_foe_attack_mode(signed short, signed short);
 
+/* 0x34 */
+/* static */
+signed short seg037_0791(Bit8u*, signed short, signed short, signed short, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif
