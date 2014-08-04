@@ -286,7 +286,7 @@ signed short FIG_count_smth(Bit8u *p)
 	return count;
 }
 
-signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed short a4)
+signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed char a4)
 {
 	signed short l_si;
 	signed short i;

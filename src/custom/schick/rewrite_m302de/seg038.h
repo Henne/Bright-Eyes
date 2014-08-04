@@ -16,7 +16,7 @@ void FIG_backtrack(Bit8u*, signed short, signed short, signed short, signed char
 /* static */
 signed short FIG_count_smth(Bit8u*);
 /* 0x39 */
-signed short seg038(Bit8u *, signed short, signed short, signed short, signed short);
+signed short seg038(Bit8u *, signed short, signed short, signed short, signed char);
 
 #if !defined(__BORLANDC__)
 }
