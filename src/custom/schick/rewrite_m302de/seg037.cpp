@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
- *	Functions rewritten: 6/8
+ *	Functions rewritten: 7/8
  *
 */
 
@@ -586,6 +586,68 @@ signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed 
 	return retval;
 }
 
+/* Borlandified and identical */
+signed short seg037_0b3e(Bit8u* enemy, signed short a2, signed short a3, signed short x, signed short y)
+{
+
+	signed short l1;
+	signed short l2;
+	signed short retval;
+	signed short l4;
+	signed short l_di;
+
+	retval = 0;
+
+	l2 = 0;
+
+	while ((l2 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+
+		host_writeb(enemy + 0x2d, 0);
+
+		while ( (l2 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+
+			l_di = host_readbs(enemy + 0x27);
+			l1 = 0;
+
+			while ( !host_readbs(enemy + 0x2d) && (l1 < 4)) {
+
+				host_writeb(enemy + 0x2d, test_foe_range_attack(x, y, l_di, a3));
+				l1++;
+				if (++l_di == 4) {
+					l_di = 0;
+				}
+			}
+
+			if (host_readbs(enemy + 0x2d) != 0) {
+				retval = 1;
+				l2 = 1;
+			} else if (host_readbs(enemy + 0x23) > 0) {
+
+					if (!enemy_cursed(enemy)) {
+						if (a3 == 0)
+							l4 = seg038(enemy, a2, x, y, 6);
+						else
+							l4 = seg038(enemy, a2, x, y, 7);
+
+						if (l4 != -1) {
+							seg037_00ae(enemy, a2);
+							FIG_search_obj_on_cb(a2 + 10, &x, &y);
+
+							if (host_readbs(enemy + 0x23) < 3) {
+								host_writeb(enemy + 0x23, 0);
+							}
+						} else {
+							host_writeb(enemy + 0x23, 0);
+						}
+					} else {
+						host_writeb(enemy + 0x23, 0);
+					}
+			}
+		}
+	}
+
+	return retval;
+}
 
 #if !defined(__BORLANDC__)
 }
