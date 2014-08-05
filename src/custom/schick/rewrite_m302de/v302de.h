@@ -24,6 +24,7 @@
 #define TIMERS_DISABLED	(0x2c99)
 #define CURRENT_ANI	(0x2ccf)
 #define IN_FIGHT	(0x2cd5)
+#define FIGHT_ROUND	(0x2cd7)
 #define CURRENT_GROUP	(0x2d35)
 #define DIRECTION	(0x2d3d)
 #define X_TARGET	(0x2d44)
@@ -57,6 +58,7 @@
 #define FOOD_MOD	(0x4496)
 #define CONSUME_QUIET	(0x4648)
 #define DELAY_FACTOR	(0x4b66)
+#define EMM_SIG		(0x4ba2)	/* char[8] */
 #define FNAMES		(0x4c8c)
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
