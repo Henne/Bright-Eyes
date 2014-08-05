@@ -464,6 +464,13 @@ static inline unsigned short enemy_bb(Bit8u *enemy) {
 		return 1;
 }
 
+static inline unsigned short enemy_bit10(Bit8u *enemy) {
+	if (((host_readb(enemy + 0x32) >> 2) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 static inline unsigned short enemy_bit11(Bit8u *enemy) {
 	if (((host_readb(enemy + 0x32) >> 3) & 1) == 0)
 		return 0;
@@ -876,6 +883,7 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 
 #define enemy_bit8(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit8)
 #define enemy_bb(enemy)		(((struct enemy_sheets*)(enemy))->status2.bb)
+#define enemy_bit10(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit10)
 #define enemy_bit11(enemy)	(((struct enemy_sheets*)(enemy))->status2.bit11)
 
 #define add_ks_counter(i1, i2, hero) (    ((struct knapsack_item*)(hero + 0x196))[i1].counter+=((struct knapsack_item*)(hero + 0x196))[i2].counter)
