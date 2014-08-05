@@ -3507,8 +3507,9 @@ static int seg037(unsigned short offs) {
 
 			D1_LOG("enemy_turn(%x, %x, %d, %d);\n",
 				p, active, x, y);
+			enemy_turn(Real2Host(p), active, x, y);
 
-			return 0;
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
- *	Functions rewritten: 7/8
+ *	Functions rewritten: 8/8 (complete)
  *
 */
 
@@ -11,6 +11,7 @@
 #include "seg005.h"
 #include "seg006.h"
 #include "seg007.h"
+#include "seg032.h"
 #include "seg038.h"
 
 #if !defined(__BORLANDC__)
@@ -647,6 +648,201 @@ signed short seg037_0b3e(Bit8u* enemy, signed short a2, signed short a3, signed 
 	}
 
 	return retval;
+}
+
+/* Borlandified an identical */
+void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed short y)
+{
+	signed short l1;
+	signed short mode;
+	signed short dir;
+	signed short l3;
+	signed short done;
+	signed short l5;
+	signed short l6;
+	signed short l7;
+	struct dummy diff;
+	signed short l_di;
+
+	done = 0;
+
+#if !defined(__BORLANDC__)
+	diff = { { {1, 0}, {0, -1}, {-1, 0}, {0, 1} }};
+#else
+	diff = *(struct dummy*)(p_datseg + 0x5fe8);
+#endif
+
+	if (ds_readws(CURRENT_FIG_NR) == 180) {
+		/* F064: fight against GORAH */
+
+		if (host_readbs(enemy) == 0x46) {
+
+			if (ds_readws(FIGHT_ROUND) < 5) {
+				host_writeb(enemy + 0x23, 0);
+			}
+		}
+
+	} else if ((ds_readws(CURRENT_FIG_NR) == 189) &&
+			(random_interval(8, 12) <= ds_readws(FIGHT_ROUND))) {
+		/* F099: fight against four HARPIES */
+
+			or_ptr_bs(enemy + 0x32, 4);
+
+	} else if ((ds_readws(CURRENT_FIG_NR) == 191) &&
+			(FIG_count_active_enemies() <= 3)) {
+		/* F122: fight against 13 WOLVES */
+
+			or_ptr_bs(enemy + 0x32, 4);
+
+	} else if (ds_readws(CURRENT_FIG_NR) == 192) {
+		/* F144: final fight */
+
+		if (enemy_cursed(enemy)) {
+			host_writeb(enemy + 0x23, 0);
+		}
+	}
+
+	while ( (done == 0) && (host_readbs(enemy + 0x23) > 0)) {
+
+		if (ds_readbs(0xe38e) != -1) {
+			FIG_remove_from_list(ds_readbs(0xe38e), 0);
+			ds_writebs(0xe38e, -1);
+		}
+
+		FIG_init_list_elem(enemy_nr + 10);
+
+		draw_fight_screen_pal(0);
+
+		host_writeb(enemy + 0x2d, 0);
+		host_writeb(enemy + 0x2b, 1);
+
+		/* should I flee */
+		if (host_readbs(enemy + 0x3d) >= host_readws(enemy + 0x13)) {
+			or_ptr_bs(enemy + 0x32, 4);
+		}
+
+		/* chance of 4% that an illusion enemy disappears */
+		if (random_schick(100) < 5) {
+			and_ptr_bs(enemy + 0x31, 0xdf);
+		}
+
+		if (!enemy_bit10(enemy)) {
+
+			mode = 0;
+
+			if (enemy_bb(enemy)) {
+				mode = 1;
+			}
+
+			/* enemy can cast spells and has AE >= 5 left */
+			if ((host_readbs(enemy + 0x25) != -1) && (host_readws(enemy + 0x17) >= 5) &&
+				(seg037_0791(enemy, enemy_nr, mode, x, y)))
+			{
+				host_writeb(enemy + 0x2b, 4);
+
+				/* adjust BP */
+				host_writeb(enemy + 0x23, host_readbs(enemy + 0x23) -5);
+
+				if (host_readbs(enemy + 0x23) < 0) {
+					host_writeb(enemy + 0x23, 0);
+				}
+				return;
+			}
+
+			/* enemy has range weapons */
+			if ( ((host_readbs(enemy + 0x37) > 0) || (host_readbs(enemy + 0x3a) > 0)) &&
+				seg037_0b3e(enemy, enemy_nr, mode, x, y))
+			{
+				host_writeb(enemy + 0x2b, 15);
+
+				/* adjust BP */
+				host_writeb(enemy + 0x23, host_readbs(enemy + 0x23) -3);
+
+				if (host_readbs(enemy + 0x23) < 0) {
+					host_writeb(enemy + 0x23, 0);
+				}
+				return;
+			}
+
+			host_writeb(enemy + 0x2d, 0);
+			dir = host_readbs(enemy + 0x27);
+			l3 = 0;
+			while (!(host_readbs(enemy + 0x2d)) && (l3 < 4)) {
+
+				if (test_foe_melee_attack(x, y, diff.d[dir].x, diff.d[dir].y, mode)) {
+
+					l5 = 1;
+
+					if (is_in_byte_array(host_readbs(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
+					{
+
+						l_di = get_cb_val(x - diff.d[dir].x, y - diff.d[dir].y);
+
+						if (l_di && (enemy_nr + 30 != l_di)) {
+
+							if ((l_di < 0) || (l_di >= 50) || (l_di >= 30) ||
+								((l_di > 0) && (l_di < 10) && !hero_dead(get_hero(l_di - 1))) ||
+								((l_di < 30) && (l_di >= 10) && !(enemy_dead(p_datseg + 0xd0df + 0x3e * l_di))))
+							{
+								l5 = 0;
+							}
+						}
+					}
+
+					if (l5 != 0) {
+						host_writeb(enemy + 0x2d, get_cb_val(x + diff.d[dir].x, y + diff.d[dir].y));
+					}
+				}
+
+				l3++;
+				if (++dir == 4) {
+					dir = 0;
+				}
+			}
+		}
+
+		if (host_readbs(enemy + 0x2d) != 0) {
+			host_writeb(enemy + 0x2b, 2);
+			host_writeb(enemy + 0x23, host_readbs(enemy + 0x23) -3);
+			done = 1;
+		} else if (host_readbs(enemy + 0x23) > 0) {
+
+			if (!enemy_cursed(enemy)) {
+
+				if (enemy_bit10(enemy)) {
+					l1 = seg038(enemy, enemy_nr, x, y, 4);
+					host_writeb(enemy + 0x23, 0);
+				} else {
+					if (enemy_bb(enemy))
+						l1 = seg038(enemy, enemy_nr, x, y, 2);
+					else
+						l1 = seg038(enemy, enemy_nr, x, y, 0);
+				}
+
+				if (l1 != -1) {
+					l6 = x;
+					l7 = y;
+					seg037_00ae(enemy, enemy_nr);
+					FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
+
+					if ((l6 == x) && (l7 == y)) {
+						host_writeb(enemy + 0x23, 0);
+					}
+
+					if (host_readbs(enemy + 0x23) < 3) {
+						host_writeb(enemy + 0x23, 0);
+					}
+
+				} else {
+					host_writeb(enemy + 0x23, 0);
+				}
+			} else {
+				host_writeb(enemy + 0x23, 0);
+			}
+
+			host_writeb(enemy + 0x2b, 1);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
