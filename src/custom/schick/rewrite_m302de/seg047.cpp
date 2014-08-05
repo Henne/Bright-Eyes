@@ -157,6 +157,11 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 #endif
 
 	if (!hero_dead(hero)) {
+#if !defined(__BORLANDC__)
+		D1_INFO("%s erkrankt an %s\n",
+			(char*)hero + 0x10,
+			(char*)get_ltx((disease + 0x193) * 4));
+#endif
 
 		host_writeb(hero + disease * 5 + 0xae, 0xff);
 		host_writeb(hero + disease * 5 + 0xaf, 0x00);
