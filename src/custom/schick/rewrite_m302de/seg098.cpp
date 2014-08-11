@@ -52,16 +52,16 @@ void FIG_do_spell_damage(signed short le)
 		/* attack enemy */
 
 		/* set a pointer to the enemy */
-		ds_writed(0xe5b4,
+		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 		/* do the damage */
-		FIG_damage_enemy(Real2Host(ds_readd(0xe5b4)), le, 0);
+		FIG_damage_enemy(Real2Host(ds_readd(SPELLTARGET_E)), le, 0);
 		/* add a message (green star with le) */
 		FIG_add_msg(0x0b, le);
 
 		/* set a variable if the enemy died */
-		if (host_readb(Real2Host(ds_readd(0xe5b4)) + 0x31) & 1) {
+		if (host_readb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x31) & 1) {
 			ds_writew(0xe3a6, 1);
 		}
 	}
@@ -113,11 +113,11 @@ signed short get_attackee_parade(void)
 		/* attacked an enemy */
 
 		/* set a global pointer to the target */
-		ds_writew(0xe5b4+2, datseg);
-		ds_writew(0xe5b4,
+		ds_writew(SPELLTARGET_E+2, datseg);
+		ds_writew(SPELLTARGET_E,
 			host_readbs(get_spelluser() + 0x86) * 62 + 0xd0df);
 
-		return host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1d);
+		return host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1d);
 	}
 }
 

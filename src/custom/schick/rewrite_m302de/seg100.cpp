@@ -30,10 +30,10 @@ void spell_eigenschaften(void)
 	signed short min;
 	signed short max;
 
-	ds_writed(0xe5b4,
+	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
-	damage_range_template(host_readws(Real2Host(ds_readd(0xe5b4)) + 0x1e),
+	damage_range_template(host_readws(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1e),
 		(Bit8u*)&min, (Bit8u*)&max);
 
 	min = min * 8 / 10;
@@ -41,20 +41,20 @@ void spell_eigenschaften(void)
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x64),
-		Real2Host(GUI_name_singular(get_monname(host_readbs(Real2Host(ds_readd(0xe5b4)))))),
-		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x29),	/* Level */
-		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1c),	/* AT */
-		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1d),	/* PA */
-		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x2),		/* RS */
-		host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1b),	/* Attacks */
-		(host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x1b) > 1) ?
+		Real2Host(GUI_name_singular(get_monname(host_readbs(Real2Host(ds_readd(SPELLTARGET_E)))))),
+		host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x29),	/* Level */
+		host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1c),	/* AT */
+		host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1d),	/* PA */
+		host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x2),		/* RS */
+		host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1b),	/* Attacks */
+		(host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1b) > 1) ?
 			get_dtp(0x68) : get_dtp(0x6c),
 		min,							/* TPmin */
 		max,							/* TPmax */
-		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x13),	/* LE */
-		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x11),	/* LEmax */
-		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x17),	/* AE */
-		host_readws(Real2Host(ds_readd(0xe5b4)) + 0x15));	/* AEmax */
+		host_readws(Real2Host(ds_readd(SPELLTARGET_E)) + 0x13),	/* LE */
+		host_readws(Real2Host(ds_readd(SPELLTARGET_E)) + 0x11),	/* LEmax */
+		host_readws(Real2Host(ds_readd(SPELLTARGET_E)) + 0x17),	/* AE */
+		host_readws(Real2Host(ds_readd(SPELLTARGET_E)) + 0x15));	/* AEmax */
 }
 
 void spell_exposami(void)
@@ -228,20 +228,20 @@ void spell_blitz()
 
 		/* set a pointer to the enemy */
 #if !defined(__BORLANDC__)
-		ds_writed(0xe5b4,
+		ds_writed(SPELLTARGET_E,
 			RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
 #else
-		ds_writed(0xe5b4,
+		ds_writed(SPELLTARGET_E,
 			(Bit32u)MK_FP(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
 #endif
 
 		/* set the rounds counter */
-		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x2f, 3);
+		host_writeb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x2f, 3);
 
 		/* prepare the message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x154),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
 	}
 }
 

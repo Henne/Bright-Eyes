@@ -275,23 +275,23 @@ void spell_bannbaladin(void)
 void spell_boeser_blick(void)
 {
 	/* set attacked foe */
-	ds_writed(0xe5b4,
+	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
 
 	/* this spell does not work on all kind of sleletons */
-	if (host_readb(Real2Host(ds_readd(0xe5b4)) + 1) == 0x1c) {
+	if (host_readb(Real2Host(ds_readd(SPELLTARGET_E)) + 1) == 0x1c) {
 		ds_writew(0xac0e, -2);
 	} else {
 		/* set "Boeser Blick" Flag */
-		or_ptr_bs(Real2Host(ds_readd(0xe5b4)) + 0x32, 2);
+		or_ptr_bs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x32, 2);
 
 		/* set number of attacks to 2 */
-		host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x1b, 2);
+		host_writeb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1b, 2);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x28),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
 
 	}
 }
@@ -308,11 +308,11 @@ void spell_grosse_gier(void)
 /* Borlandified and identical */
 void spell_grosse_ver(void)
 {
-	ds_writed(0xe5b4,
+	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
 
 	/* this spell does not work on all kind of sleletons */
-	if (host_readb(Real2Host(ds_readd(0xe5b4)) + 1) == 0x1c) {
+	if (host_readb(Real2Host(ds_readd(SPELLTARGET_E)) + 1) == 0x1c) {
 		ds_writew(0xac0e, -2);
 		return;
 	} else {
@@ -322,12 +322,12 @@ void spell_grosse_ver(void)
 	}
 
 	/* Sub -2 from AT */
-	host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x1c,
-		host_readb(Real2Host(ds_readd(0xe5b4)) + 0x1c) - 2);
+	host_writeb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1c,
+		host_readb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1c) - 2);
 
 	/* Sub -2 from PA */
-	host_writeb(Real2Host(ds_readd(0xe5b4)) + 0x1d,
-		host_readb(Real2Host(ds_readd(0xe5b4)) + 0x1d) - 2);
+	host_writeb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1d,
+		host_readb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1d) - 2);
 }
 
 /* Borlandified and identical */

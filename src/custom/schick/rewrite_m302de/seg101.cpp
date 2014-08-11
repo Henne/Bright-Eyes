@@ -479,15 +479,15 @@ void spell_paral(void)
 		/* cast an enemy */
 
 		/* BC-TODO: calculation of ptr could be better */
-		ds_writed(0xe5b4,
+		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 		/* set the enemy to stoned */
-		or_ptr_bs(Real2Host(ds_readd(0xe5b4)) + 0x31, 0x04);
+		or_ptr_bs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x31, 0x04);
 
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x19c),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
 	} else {
 		/* cast a hero */
 		/* TODO: the first check can be removed, cause it would not give a message */
@@ -527,10 +527,10 @@ void spell_salander(void)
 
 	/* BC-TODO: calculation of ptr could be better */
 	/* set a pointer */
-	ds_writed(0xe5b4, (Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+	ds_writed(SPELLTARGET_E, (Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 	/* read a value from that struct */
-	ae_cost = host_readbs(Real2Host(ds_readd(0xe5b4)) + 0x19) * 3;
+	ae_cost = host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x19) * 3;
 
 	/* set the minimal astral cost to 25 AE */
 	if (ae_cost < 25)
@@ -538,12 +538,12 @@ void spell_salander(void)
 
 	if (host_readws(get_spelluser() + 0x64) >= ae_cost) {
 
-		or_ptr_bs(Real2Host(ds_readd(0xe5b4)) + 0x31, 0x40);
+		or_ptr_bs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x31, 0x40);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x1a0),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(0xe5b4))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
 
 		/* set AE cost */
 		ds_writew(0xac0e, ae_cost);
