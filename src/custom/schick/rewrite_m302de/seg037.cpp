@@ -80,7 +80,7 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 }
 
 /* Borlandified and identical */
-void seg037_00ae(Bit8u *enemy, signed short a2)
+void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 {
 	signed char b1;
 	signed char b2;
@@ -142,11 +142,13 @@ void seg037_00ae(Bit8u *enemy, signed short a2)
 
 			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(0xd823 + i) + 0x0c) * 2), 1);
 			i += 2;
+			/* BP - 2 */
 			host_writeb(enemy + 0x23, host_readbs(enemy + 0x23) - 2);
 
 		} else {
 			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(0xd823 + i) + 0x08) * 2), 1);
 			i++;
+			/* BP - 1 */
 			dec_ptr_bs(enemy + 0x23);
 		}
 	}
@@ -177,7 +179,7 @@ void seg037_00ae(Bit8u *enemy, signed short a2)
 	memset(p_datseg + 0xd9c1, -1, 0xf3);
 	memset(p_datseg + 0xdba7, -1, 0xf3);
 
-	FIG_init_list_elem(a2 + 10);
+	FIG_init_list_elem(enemy_nr + 10);
 }
 
 
@@ -429,11 +431,11 @@ struct dummy {
 };
 
 /* Borlandified and identical */
-signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed short x, signed short y)
+signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attack_foe, signed short x, signed short y)
 {
-	signed short l1;
+	signed short available_spells;
 	signed short l2;
-	signed short l3;
+	signed short done;
 	signed short retval;
 	signed short mode;
 	signed short l6;
@@ -450,18 +452,18 @@ signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed 
 
 	retval = 0;
 
-	l1 = l_si = 0;
+	available_spells = l_si = 0;
 	while ((l_si < 5) && (ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + l_si++) != -1))
 	{
-		l1++;
+		available_spells++;
 	}
 
-	l3 = 0;
-	while ((l3 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+	done = 0;
+	while ((done == 0) && (host_readbs(enemy + 0x23) > 0)) {
 
 		l7 = 0;
 
-		for (l_si = 0; l_si < l1; l_si++) {
+		for (l_si = 0; l_si < available_spells; l_si++) {
 
 			l2 = ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + l_si);
 
@@ -475,23 +477,23 @@ signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed 
 		}
 
 		if (l7 == 0) {
-			l2 = ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + random_interval(0, l1 - 1));
+			l2 = ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + random_interval(0, available_spells - 1));
 		}
 
 		host_writeb(enemy + 0x2d, 0);
 
-		if ( (mode = get_foe_attack_mode(l2, a3)) > 0) {
+		if ( (mode = get_foe_attack_mode(l2, attack_foe)) > 0) {
 
 			if (mode == 3) {
-				host_writeb(enemy + 0x2d, a2 + 10);
+				host_writeb(enemy + 0x2d, enemy_nr + 10);
 				host_writeb(enemy + 0x2c, l2);
 				retval = 1;
-				l3 = 1;
+				done = 1;
 			} else {
 
 				if (!ds_readbs(0xf15 + l2 * 8)) {
 
-					while ((host_readbs(enemy + 0x23) != 0) && (l3 == 0)) {
+					while ((host_readbs(enemy + 0x23) != 0) && (done == 0)) {
 
 						l_si = host_readbs(enemy + 0x27);
 						l_di = 0;
@@ -511,18 +513,18 @@ signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed 
 						if (host_readbs(enemy + 0x2d)) {
 							host_writeb(enemy + 0x2c, l2);
 							retval = 1;
-							l3 = 1;
+							done = 1;
 						} else if (host_readbs(enemy + 0x23) > 0) {
 							if (!enemy_cursed(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, a2, x, y, 2);
+									l6 = seg038(enemy, enemy_nr, x, y, 2);
 								else
-									l6 = seg038(enemy, a2, x, y, 0);
+									l6 = seg038(enemy, enemy_nr, x, y, 0);
 
 								if (l6 != -1) {
-									seg037_00ae(enemy, a2);
-									FIG_search_obj_on_cb(a2 + 10, &x, &y);
+									seg037_00ae(enemy, enemy_nr);
+									FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
 
 									if (host_readbs(enemy + 0x23) < 3) {
 										host_writeb(enemy + 0x23, 0);
@@ -537,7 +539,7 @@ signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed 
 					}
 				} else {
 
-					while ((l3 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+					while ((done == 0) && (host_readbs(enemy + 0x23) > 0)) {
 
 						l_si = host_readbs(enemy + 0x27);
 						l_di = 0;
@@ -555,18 +557,18 @@ signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed 
 						if (host_readbs(enemy + 0x2d)) {
 							host_writeb(enemy + 0x2c, l2);
 							retval = 1;
-							l3 = 1;
+							done = 1;
 						} else if (host_readbs(enemy + 0x23) > 0) {
 							if (!enemy_cursed(enemy)) {
 
 								if (mode == 1)
-									l6 = seg038(enemy, a2, x, y, 7);
+									l6 = seg038(enemy, enemy_nr, x, y, 7);
 								else
-									l6 = seg038(enemy, a2, x, y, 6);
+									l6 = seg038(enemy, enemy_nr, x, y, 6);
 
 								if (l6 != -1) {
-									seg037_00ae(enemy, a2);
-									FIG_search_obj_on_cb(a2 + 10, &x, &y);
+									seg037_00ae(enemy, enemy_nr);
+									FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
 
 									if (host_readbs(enemy + 0x23) < 5) {
 										host_writeb(enemy + 0x23, 0);
@@ -584,55 +586,66 @@ signed short seg037_0791(Bit8u* enemy, signed short a2, signed short a3, signed 
 		}
 	}
 
+#if !defined(__BORLANDC__)
+	if (retval)
+		D1_INFO("Zauberspruch %d\n", host_readbs(enemy + 0x2c));
+	else
+		D1_INFO("Kein Zauberspruch\n");
+#endif
+
 	return retval;
 }
 
 /* Borlandified and identical */
-signed short seg037_0b3e(Bit8u* enemy, signed short a2, signed short a3, signed short x, signed short y)
+signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attack_foe, signed short x, signed short y)
 {
 
-	signed short l1;
-	signed short l2;
+	signed short cnt;
+	signed short done;
 	signed short retval;
 	signed short l4;
-	signed short l_di;
+	signed short dir;
 
 	retval = 0;
 
-	l2 = 0;
+	done = 0;
 
-	while ((l2 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+	while ((done == 0) && (host_readbs(enemy + 0x23) > 0)) {
 
+		/* reset the attackee ID */
 		host_writeb(enemy + 0x2d, 0);
 
-		while ( (l2 == 0) && (host_readbs(enemy + 0x23) > 0)) {
+		while ( (done == 0) && (host_readbs(enemy + 0x23) > 0)) {
 
-			l_di = host_readbs(enemy + 0x27);
-			l1 = 0;
+			dir = host_readbs(enemy + 0x27);
+			cnt = 0;
 
-			while ( !host_readbs(enemy + 0x2d) && (l1 < 4)) {
+			/* check clockwise for someone to attack */
+			while ( !host_readbs(enemy + 0x2d) && (cnt < 4)) {
 
-				host_writeb(enemy + 0x2d, test_foe_range_attack(x, y, l_di, a3));
-				l1++;
-				if (++l_di == 4) {
-					l_di = 0;
+				host_writeb(enemy + 0x2d,
+					test_foe_range_attack(x, y, dir, attack_foe));
+				cnt++;
+				if (++dir == 4) {
+					dir = 0;
 				}
 			}
 
 			if (host_readbs(enemy + 0x2d) != 0) {
+				/* found someone to attack */
 				retval = 1;
-				l2 = 1;
+				done = 1;
 			} else if (host_readbs(enemy + 0x23) > 0) {
 
 					if (!enemy_cursed(enemy)) {
-						if (a3 == 0)
-							l4 = seg038(enemy, a2, x, y, 6);
+						if (attack_foe == 0)
+							l4 = seg038(enemy, enemy_nr, x, y, 6);
 						else
-							l4 = seg038(enemy, a2, x, y, 7);
+							l4 = seg038(enemy, enemy_nr, x, y, 7);
 
 						if (l4 != -1) {
-							seg037_00ae(enemy, a2);
-							FIG_search_obj_on_cb(a2 + 10, &x, &y);
+							seg037_00ae(enemy, enemy_nr);
+							FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
 
 							if (host_readbs(enemy + 0x23) < 3) {
 								host_writeb(enemy + 0x23, 0);
@@ -654,7 +667,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short a2, signed short a3, signed 
 void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed short y)
 {
 	signed short l1;
-	signed short mode;
+	signed short attack_foe;
 	signed short dir;
 	signed short l3;
 	signed short done;
@@ -672,10 +685,12 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 	diff = *(struct dummy*)(p_datseg + 0x5fe8);
 #endif
 
+	/* check if we are in a special fight */
 	if (ds_readws(CURRENT_FIG_NR) == 180) {
 		/* F064: fight against GORAH */
 
 		if (host_readbs(enemy) == 0x46) {
+			/* GORAH waits the first 5 rounds */
 
 			if (ds_readws(FIGHT_ROUND) < 5) {
 				host_writeb(enemy + 0x23, 0);
@@ -718,26 +733,37 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 
 		/* should I flee */
 		if (host_readbs(enemy + 0x3d) >= host_readws(enemy + 0x13)) {
+#if !defined(__BORLANDC__)
+			D1_INFO("Feind %d flieht\n", enemy_nr);
+#endif
 			or_ptr_bs(enemy + 0x32, 4);
 		}
 
 		/* chance of 4% that an illusion enemy disappears */
 		if (random_schick(100) < 5) {
+#if !defined(__BORLANDC__)
+			if (enemy_illusion(enemy)) {
+				D1_INFO("Feind %d verliert seinen Illusionszauber\n", enemy_nr);
+			}
+#endif
 			and_ptr_bs(enemy + 0x31, 0xdf);
 		}
 
 		if (!enemy_bit10(enemy)) {
 
-			mode = 0;
+			attack_foe = 0;
 
 			if (enemy_bb(enemy)) {
-				mode = 1;
+				attack_foe = 1;
 			}
 
 			/* enemy can cast spells and has AE >= 5 left */
 			if ((host_readbs(enemy + 0x25) != -1) && (host_readws(enemy + 0x17) >= 5) &&
-				(seg037_0791(enemy, enemy_nr, mode, x, y)))
+				(seg037_0791(enemy, enemy_nr, attack_foe, x, y)))
 			{
+#if !defined(__BORLANDC__)
+				D1_INFO("Feind %d zaubert\n", enemy_nr);
+#endif
 				host_writeb(enemy + 0x2b, 4);
 
 				/* adjust BP */
@@ -751,8 +777,11 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 
 			/* enemy has range weapons */
 			if ( ((host_readbs(enemy + 0x37) > 0) || (host_readbs(enemy + 0x3a) > 0)) &&
-				seg037_0b3e(enemy, enemy_nr, mode, x, y))
+				seg037_0b3e(enemy, enemy_nr, attack_foe, x, y))
 			{
+#if !defined(__BORLANDC__)
+				D1_INFO("Feind %d greift mit Fernkampfwaffe an\n", enemy_nr);
+#endif
 				host_writeb(enemy + 0x2b, 15);
 
 				/* adjust BP */
@@ -769,7 +798,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 			l3 = 0;
 			while (!(host_readbs(enemy + 0x2d)) && (l3 < 4)) {
 
-				if (test_foe_melee_attack(x, y, diff.d[dir].x, diff.d[dir].y, mode)) {
+				if (test_foe_melee_attack(x, y, diff.d[dir].x, diff.d[dir].y, attack_foe)) {
 
 					l5 = 1;
 

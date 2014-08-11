@@ -7684,7 +7684,7 @@ static int n_seg037(unsigned offs) {
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		reg_ax = get_foe_attack_mode(a1, a2);
-		D1_INFO("get_foe_attack_mode(%d, %d); = %d\n",
+		D1_LOG("get_foe_attack_mode(%d, %d); = %d\n",
 			a1, a2, reg_ax);
 		CPU_Push16(a2);
 		CPU_Push16(a1);
@@ -7704,7 +7704,7 @@ static int n_seg037(unsigned offs) {
 		CPU_Push32(p);
 
 		reg_ax = seg037_0791(Real2Host(p), a2, a3, x, y);
-		D1_INFO("seg037_0791(%x, %d, %d, %d, %d); = %x\n", p, a2, a3, x, y, reg_ax);
+		D1_LOG("seg037_0791(%x, %d, %d, %d, %d); = %x\n", p, a2, a3, x, y, reg_ax);
 		return 1;
 	}
 	case 0xb3e: {
