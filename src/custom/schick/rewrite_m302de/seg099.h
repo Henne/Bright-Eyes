@@ -20,7 +20,8 @@ void spell_verwandlung(void);
 
 /* 0x39 */
 void spell_band();
-
+/* 0x3e */
+void spell_bannbaladin();
 /* 0x43 */
 void spell_boeser_blick();
 /* 0x48 */

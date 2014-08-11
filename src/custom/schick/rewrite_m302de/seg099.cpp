@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 20/39
+ *	Functions rewritten 21/39
  *
 */
 
@@ -238,6 +238,37 @@ void spell_band(void)
 	}
 }
 
+/* Borlandified and identical */
+void spell_bannbaladin(void)
+{
+
+	/* Set pointer to enemy target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+
+	if (host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x36) != 0) {
+
+		ds_writew(0xac0e, 0);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x20),
+				Real2Host(GUI_names_grammar(0,
+					host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
+	} else {
+
+		if (host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 1) == 0x1c) {
+			ds_writew(0xac0e, -2);
+			return;
+		}
+
+		or_ptr_bs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x32, 1);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x24),
+				Real2Host(GUI_names_grammar(0x8000,
+					host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
+	}
+}
 
 void spell_boeser_blick(void)
 {

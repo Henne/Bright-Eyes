@@ -5188,10 +5188,10 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x3e: {
-		return 0;
+		spell_bannbaladin();
+		return 1;
 	}
 	case 0x43: {
-		D1_LOG("spell_boeser_blick();\n");
 		spell_boeser_blick();
 		return 1;
 	}
