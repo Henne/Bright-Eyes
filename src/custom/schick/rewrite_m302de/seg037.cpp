@@ -1,6 +1,10 @@
 /*
- *	Rewrite of DSA1 v3.02_de functions of seg037 (fight helper)
+ *	Rewrite of DSA1 v3.02_de functions of seg037 (fight: enemy attack)
  *	Functions rewritten: 8/8 (complete)
+ *
+ *	Borlandifier and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg037.cpp
  *
 */
 
@@ -26,8 +30,6 @@ namespace M302de {
  *
  * Returns the number of copied bytes.
  */
-
-/* Borlandified an identical */
 signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 {
 	Bit8u *buffer, *src;
@@ -79,7 +81,6 @@ signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 	return retval;
 }
 
-/* Borlandified and identical */
 void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 {
 	signed char b1;
@@ -193,7 +194,6 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
  *
  * The return value is 0 if theres nothing to attack else 1
  */
-/* Borlandified and identical */
 unsigned short test_foe_melee_attack(signed short x, signed short y,
 		signed short dx, signed short dy, signed short mode)
 {
@@ -255,8 +255,6 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 /*
  * Original-Bug: range attack of foes is possible with direct contact
 */
-
-/* Borlandified and identical */
 signed short test_foe_range_attack(signed short x, signed short y, const signed short dir, signed short mode)
 {
 	signed char cb_val;
@@ -393,7 +391,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 		return cb_val;
 }
 
-/* Borlandified an identical */
+
 signed short get_foe_attack_mode(signed short a1, signed short a2)
 {
 	signed short retval = 0;
@@ -430,7 +428,6 @@ struct dummy {
 	struct coords d[4];
 };
 
-/* Borlandified and identical */
 signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attack_foe, signed short x, signed short y)
 {
 	signed short available_spells;
@@ -596,7 +593,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 	return retval;
 }
 
-/* Borlandified and identical */
+
 signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attack_foe, signed short x, signed short y)
 {
 
@@ -663,7 +660,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 	return retval;
 }
 
-/* Borlandified an identical */
+
 void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed short y)
 {
 	signed short l1;
