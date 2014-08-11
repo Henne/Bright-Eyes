@@ -28,6 +28,8 @@ void spell_boeser_blick();
 void spell_grosse_gier();
 /* 0x4d */
 void spell_grosse_ver();
+/* 0x52 */
+void spell_herrdertiere(void);
 
 
 /* Demonologie / Demonology */

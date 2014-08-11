@@ -5196,17 +5196,16 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x48: {
-		D1_LOG("spell_grosse_gier();\n");
 		spell_grosse_gier();
 		return 1;
 	}
 	case 0x4d: {
-		D1_LOG("spell_grosse_ver();\n");
 		spell_grosse_ver();
 		return 1;
 	}
 	case 0x52: {
-		return 0;
+		spell_herrdertiere();
+		return 1;
 	}
 	case 0x57: {
 		return 0;
