@@ -67,6 +67,12 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	nvf.height = (Bit8u*)&height;
 	process_nvf(&nvf);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	height = host_readws((Bit8u*)&height);
+	width = host_readws((Bit8u*)&width);
+#endif
+
 	copy_width = width;
 	copy_height = height;
 
