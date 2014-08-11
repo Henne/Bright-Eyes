@@ -18,6 +18,9 @@ void spell_verwandlung(void);
 
 /* Domination / Beherrschung */
 
+/* 0x39 */
+void spell_band();
+
 /* 0x43 */
 void spell_boeser_blick();
 /* 0x48 */
