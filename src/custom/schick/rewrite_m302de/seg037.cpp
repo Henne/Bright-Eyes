@@ -442,7 +442,14 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 	signed short l_di;
 
 #if !defined(__BORLANDC__)
-	diff = { { {0, 1}, {0, -1}, {-1, 0}, {0, 1} }};
+	diff.d[0].x = 0;
+	diff.d[0].y = 1;
+	diff.d[1].x = 0;
+	diff.d[1].y = -1;
+	diff.d[2].x = -1;
+	diff.d[2].y = 0;
+	diff.d[3].x = 0;
+	diff.d[3].y = 1;
 #else
 	diff = *(struct dummy*)(p_datseg + 0x5fd8);
 #endif
@@ -677,7 +684,14 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 	done = 0;
 
 #if !defined(__BORLANDC__)
-	diff = { { {1, 0}, {0, -1}, {-1, 0}, {0, 1} }};
+	diff.d[0].x = 1;
+	diff.d[0].y = 0;
+	diff.d[1].x = 0;
+	diff.d[1].y = -1;
+	diff.d[2].x = -1;
+	diff.d[2].y = 0;
+	diff.d[3].x = 0;
+	diff.d[3].y = 1;
 #else
 	diff = *(struct dummy*)(p_datseg + 0x5fe8);
 #endif
