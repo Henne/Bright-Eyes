@@ -30,6 +30,14 @@ void spell_grosse_gier();
 void spell_grosse_ver();
 /* 0x52 */
 void spell_herrdertiere(void);
+/* 0x57 */
+void spell_horriphobus(void);
+/* 0x5c */
+void spell_magischerraub(void);
+/* 0x61 */
+void spell_respondami(void);
+/* 0x66 */
+void spell_sanftmut(void);
 
 
 /* Demonologie / Demonology */

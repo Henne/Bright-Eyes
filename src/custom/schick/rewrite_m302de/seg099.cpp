@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 22/39
+ *	Functions rewritten 26/39
  *
 */
 
@@ -362,6 +362,50 @@ void spell_herrdertiere(void)
 					host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
 		}
 	}
+}
+
+/* Borlandified and identical */
+void spell_horriphobus(void)
+{
+
+	/* Set pointer to enemy target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+
+	/* this spell does not work on all kind of sleletons */
+	if (host_readb(Real2Host(ds_readd(SPELLTARGET_E)) + 1) == 0x1c) {
+		ds_writew(0xac0e, -2);
+	} else {
+		or_ptr_bs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x32, 4);
+		and_ptr_bs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x32, 0xfd);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x30),
+			Real2Host(GUI_names_grammar(0x8000,
+				host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
+	}
+}
+
+/* Borlandified and identical */
+void spell_magischerraub(void)
+{
+#if !defined(__BORLANDC__)
+        D1_INFO("Zauberspruch \"Magischer Raub\" ist nicht implementiert\n");
+#endif
+}
+
+/* Borlandified and identical */
+void spell_respondami(void)
+{
+#if !defined(__BORLANDC__)
+        D1_INFO("Zauberspruch \"Respondami\" ist nicht implementiert\n");
+#endif
+}
+
+/* Borlandified and identical */
+void spell_sanftmut(void)
+{
+	spell_herrdertiere();
 }
 
 /* Demonologie / Demonology */

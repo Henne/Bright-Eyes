@@ -5208,16 +5208,20 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x57: {
-		return 0;
+		spell_horriphobus();
+		return 1;
 	}
 	case 0x5c: {
-		return 0;
+		spell_magischerraub();
+		return 1;
 	}
 	case 0x61: {
-		return 0;
+		spell_respondami();
+		return 1;
 	}
 	case 0x66: {
-		return 0;
+		spell_sanftmut();
+		return 1;
 	}
 	case 0x6b: {
 		return 0;
