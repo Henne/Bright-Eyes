@@ -672,6 +672,10 @@ static inline Bit8u *get_spelltarget() {
 	return Real2Host(ds_readd(SPELLTARGET));
 }
 
+static inline Bit8u *get_spelltarget_e() {
+	return Real2Host(ds_readd(SPELLTARGET_E));
+}
+
 static inline Bit8u *get_fname(unsigned short off) {
 	return Real2Host(ds_readd(FNAMES + off * 4));
 }
@@ -906,6 +910,7 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 
 #define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
 #define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
+#define get_spelltarget_e() (Bit8u*)ds_readd(SPELLTARGET_E)
 
 #define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
 #define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
