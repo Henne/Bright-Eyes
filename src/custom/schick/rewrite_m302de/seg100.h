@@ -8,7 +8,8 @@ namespace M302de {
 void spell_eigenschaften(void);
 /* 0x25 */
 void spell_exposami(void);
-
+/* 0x2a */
+void spell_odem_arcanum(void);
 /* 0x2f */
 void spell_penetrizzel(void);
 /* 0x34 */

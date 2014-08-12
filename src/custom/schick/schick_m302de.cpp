@@ -5323,7 +5323,8 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
-		return 0;
+		spell_odem_arcanum();
+		return 1;
 	}
 	case 0x2f: {
 		spell_penetrizzel();

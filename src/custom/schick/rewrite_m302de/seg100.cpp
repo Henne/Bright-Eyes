@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 14/20
+ *	Functions rewritten 15/20
  *
 */
 
@@ -18,6 +18,7 @@
 #include "seg097.h"
 #include "seg098.h"
 #include "seg099.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -138,6 +139,34 @@ void spell_exposami(void)
 		/* no more hidden enemies */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x80));
+	}
+}
+
+void spell_odem_arcanum(void)
+{
+	signed short pos;
+	signed short id;
+
+	pos = select_item_to_drop(get_spelluser());
+
+	id = host_readws(get_spelluser() + pos * 14 + 0x196);
+
+	if (id) {
+
+		if (ks_magic_hidden(get_spelluser() + pos * 14 + 0x196)) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x144),
+				(char*)Real2Host(GUI_names_grammar(0x8000, id, 0)));
+
+			/* set known flag */
+			or_ptr_bs(get_spelluser() + pos * 14 + 0x19a, 0x80);
+
+		} else {
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x148),
+				(char*)Real2Host(GUI_names_grammar(0x8000, id, 0)));
+		}
 	}
 }
 
