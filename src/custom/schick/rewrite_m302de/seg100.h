@@ -24,6 +24,8 @@ void spell_chamaelioni(void);
 void spell_duplicatus(void);
 /* 0x43 */
 void spell_harmlos(void);
+/* 0x48 */
+void spell_hexenknoten(void);
 
 
 /* Combat / Kampf */

@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 15/20
+ *	Functions rewritten 16/20
  *
 */
 
@@ -13,7 +13,9 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg006.h"
 #include "seg007.h"
+#include "seg039.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
@@ -233,7 +235,101 @@ void spell_harmlos(void)
 #endif
 }
 
+/* Borlandified and identical */
+void spell_hexenknoten(void)
+{
+	Bit8u *ptr;
+	RealPt rp;
+	signed short x;
+	signed short y;
+	signed short nr;
+	signed short height;
+	signed short width;
+	struct nvf_desc nvf;
+
+	if (ds_readds(0xe370) < 0x240) {
+		ds_writew(0xac0e, -2);
+		return;
+	}
+
+	ptr = Real2Host(FIG_get_ptr(host_readbs(get_spelluser() + 0x81)));
+	x = host_readbs(ptr + 3);
+	y = host_readbs(ptr + 4);
+
+	if (!host_readbs(get_spelluser() + 0x82)) {
+		x++;
+	}
+	if (host_readbs(get_spelluser() + 0x82) == 1) {
+		y--;
+	}
+	if (host_readbs(get_spelluser() + 0x82) == 2) {
+		x--;
+	}
+	if (host_readbs(get_spelluser() + 0x82) == 3) {
+		y++;
+	}
+
+	if (get_cb_val(x, y) != 0) {
+		ds_writew(0xac0e, -2);
+		return;
+	}
+
+	nr = 24;
+
+	if (NOT_NULL(Real2Host(ds_readd(0xacc8)))) {
+		rp = (RealPt)ds_readd(0xacc8);
+	} else {
+		rp = (RealPt)ds_readd(0xd86e);
+		nvf.dst = Real2Host(rp);
+		nvf.src = Real2Host(ds_readd(0xd866));
+		nvf.nr = nr;
+		nvf.type = 0;
+		nvf.width = (Bit8u*)&width;
+		nvf.height = (Bit8u*)&height;
+		process_nvf(&nvf);
+
+#if !defined(__BORLANDC__)
+		/* BE-fix */
+		width = host_readws((Bit8u*)&width);
+		height = host_readws((Bit8u*)&height);
+#endif
+
+		ds_writed(0xacc8, ds_readd(0xd86e));
+
+		/* move pointer further */
+		add_ds_ws(0xd86e, width * height + 8);
+
+		sub_ds_ds(0xe370, width * height + 8L);
+	}
+
+	ds_writew(0xe066, 0);
+	ds_writeb(0xe068, 127);
+	ds_writeb(0xe069, x);
+	ds_writeb(0xe06a, y);
+	ds_writeb(0xe06b, 0);
+	ds_writeb(0xe06c, 0);
+	ds_writeb(0xe06d, height);
+	ds_writeb(0xe06e, width);
+	ds_writeb(0xe06f, 0);
+	ds_writeb(0xe070, 0);
+	ds_writeb(0xe071, (signed char)(width -1));
+	ds_writeb(0xe072, (signed char)(height-1));
+	ds_writeb(0xe073, 0);
+	ds_writeb(0xe075, -1);
+	ds_writeb(0xe074, -1);
+	ds_writed(0xe07d, (Bit32u)rp);
+	ds_writeb(0xe077, 50);
+	ds_writeb(0xe078, 1);
+	ds_writeb(0xe079, -1);
+
+	FIG_add_to_list(-1);
+
+	place_obj_on_cb(x, y, 127, 127, 0);
+}
+
+
 /* Combat / Kampf */
+
 void spell_blitz()
 {
 
