@@ -147,6 +147,7 @@ void FIG_do_spell_damage(signed short le)
  *
  * This function is only used by the spell Kraehenruf.
 */
+/* Borlandified and identical */
 signed short get_attackee_parade(void)
 {
 
@@ -155,43 +156,25 @@ signed short get_attackee_parade(void)
 
 		/* attacked a hero */
 
-		/* TODO: these vars are only for better
-			readability.
-		*/
-		Bit8u *hptr;
-		short ax, dx;
-
-
 		ds_writed(SPELLTARGET,
-			ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da);
-
-		hptr = Real2Host(ds_readd(SPELLTARGET));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
 
 		/* calculate PA  */
 
 		/* PA = PA-Current-Weapon - AT-Modificator - 1/2 * RS-BE */
 
-		ax = host_readbs(hptr + host_readbs(hptr + 0x78) + 0x6f);
-		dx = host_readbs(hptr + 0x79);
-		ax -= dx;
-
-		/* Rüstungsschutz Behinderung */
-		dx = host_readbs(hptr + 0x32);
-		dx = dx >= 0 ? dx / 2 : (dx + 1) / 2;
-
-		ax -= dx;
-
-		return ax;
+		return host_readbs(get_spelltarget() + host_readbs(get_spelltarget() + 0x78) + 0x6f)
+			- host_readbs(get_spelltarget() + 0x79)
+			- host_readbs(get_spelltarget() + 0x32) / 2;
 	} else {
 
 		/* attacked an enemy */
 
 		/* set a global pointer to the target */
-		ds_writew(SPELLTARGET_E+2, datseg);
-		ds_writew(SPELLTARGET_E,
-			host_readbs(get_spelluser() + 0x86) * 62 + 0xd0df);
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
-		return host_readbs(Real2Host(ds_readd(SPELLTARGET_E)) + 0x1d);
+		return host_readbs(get_spelltarget_e() + 0x1d);
 	}
 }
 
