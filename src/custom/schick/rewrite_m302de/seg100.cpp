@@ -400,12 +400,12 @@ void spell_ecliptifactus()
 			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 				(char*)get_dtp(0x160),
 				(char*)(get_spelluser() + 0x10),
-				(char*)Real2Host(GUI_get_ptr(host_readb(get_spelluser() + 0x22), 2)),
+				(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 3)),
 				rounds);
 		} else {
 			/* prepare the message */
 			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
-				(char*)get_ltx(0x97e),
+				(char*)get_ltx(0x97c),
 				(char*)get_spelluser() + 0x10);
 			/* set costs to 0 */
 			ds_writew(0xac0e, 0);
