@@ -213,21 +213,25 @@ signed short get_attackee_rs(void)
  *	@spell:		numberof the spell
  *	@half cost:	the caster needs only half AE
 */
-short get_spell_cost(unsigned short spell, unsigned short half_cost)
+/* Borlandified and identical */
+signed short get_spell_cost(signed short spell, signed short half_cost)
 {
 	signed char ret;
 
-	ret = ds_readb(0x99d + 4 + spell * 10);
+	ret = ds_readbs(0x99d + 4 + spell * 10);
 
 	if (half_cost != 0) {
-		if (ret == -1)
+		if (ret == -1) {
 			ret = (signed char)random_interval(5, 10);
-		else
-			ret = abs(ret) / 2;
+		} else {
+			ret /= 2;
+		}
 
-		if (ret == 0)
+		if (!ret) {
 			ret = 1;
+		}
 	}
+
 	return ret;
 }
 
