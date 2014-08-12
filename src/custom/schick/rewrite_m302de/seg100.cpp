@@ -330,20 +330,20 @@ void spell_hexenknoten(void)
 
 /* Combat / Kampf */
 
-void spell_blitz()
+/* Borlandified and identical */
+void spell_blitz(void)
 {
 
-	if (host_readb(get_spelluser() + 0x86) < 10) {
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
 		/* cast a hero */
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
 	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
 
-		/* do not cast yourself */
 		if (get_spelltarget() == get_spelluser()) {
 
-			ds_writeb(0xac0e, 0);
+			ds_writew(0xac0e, 0);
 
 			strcpy((char*)Real2Host(ds_readd(0xd2f3)),
 				(char*)get_dtp(0x1c0));
@@ -362,10 +362,10 @@ void spell_blitz()
 		/* set a pointer to the enemy */
 #if !defined(__BORLANDC__)
 		ds_writed(SPELLTARGET_E,
-			RealMake(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
+			RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 #else
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)MK_FP(datseg, 0xd0df + host_readb(get_spelluser() + 0x86) * 62));
+			(Bit32u)MK_FP(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 #endif
 
 		/* set the rounds counter */
@@ -374,14 +374,15 @@ void spell_blitz()
 		/* prepare the message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x154),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readb(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(Real2Host(ds_readd(SPELLTARGET_E))), 1)));
 	}
 }
 
-void spell_ecliptifactus()
+/* Borlandified and identical */
+void spell_ecliptifactus(void)
 {
 	signed short rounds;
-	unsigned short ae;
+	signed short ae;
 
 	/* ask how many rounds */
 	rounds = GUI_input(get_dtp(0x15c), 1);
@@ -391,7 +392,7 @@ void spell_ecliptifactus()
 		/* calculate the AE costs */
 		ae = rounds * 2 + 5;
 
-		if (host_readw(get_spelluser() + 0x64) >= ae) {
+		if (host_readws(get_spelluser() + 0x64) >= ae) {
 			/* set AP costs */
 			ds_writew(0xac0e, ae);
 			/* enable the spell */

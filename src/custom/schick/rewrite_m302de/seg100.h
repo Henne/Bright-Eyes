@@ -31,9 +31,9 @@ void spell_hexenknoten(void);
 /* Combat / Kampf */
 
 /* 0x4d */
-void spell_blitz();
+void spell_blitz(void);
 /* 0x52 */
-void spell_ecliptifactus();
+void spell_ecliptifactus(void);
 
 /* 0x5c */
 void spell_fulminictus();
