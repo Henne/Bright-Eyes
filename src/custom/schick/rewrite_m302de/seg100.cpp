@@ -142,6 +142,7 @@ void spell_exposami(void)
 	}
 }
 
+/* Borlandified and identical */
 void spell_odem_arcanum(void)
 {
 	signed short pos;
@@ -187,7 +188,8 @@ void spell_penetrizzel(void)
 	}
 }
 
-void spell_sensibar()
+/* Borlandified and identical */
+void spell_sensibar(void)
 {
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Sensibar\" ist nicht implementiert\n");
@@ -195,35 +197,36 @@ void spell_sensibar()
 }
 
 /* Illusion */
-void spell_chamaelioni()
+/* Borlandified and identical */
+void spell_chamaelioni(void)
 {
 	/* set the flag for this spell */
-	host_writeb(get_spelluser() + 0xaa,
-		host_readb(get_spelluser() + 0xaa) | 0x10);
+	or_ptr_bs(get_spelluser() + 0xaa, 0x10);
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 		(char*)get_dtp(0x14c),
 		(char*)get_spelluser() + 0x10,
-		(char*)Real2Host(GUI_get_ptr(host_readb(get_spelluser() + 0x22), 0)));
+		(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
 
 }
 
-void spell_duplicatus()
+/* Borlandified and identical */
+void spell_duplicatus(void)
 {
 	/* set the flag for this spell */
-	host_writeb(get_spelluser() + 0xab,
-		host_readb(get_spelluser() + 0xab) | 4);
+	or_ptr_bs(get_spelluser() + 0xab, 0x04);
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 		(char*)get_dtp(0x150),
 		(char*)get_spelluser() + 0x10,
-		(char*)Real2Host(GUI_get_ptr(host_readb(get_spelluser() + 0x22), 0)));
+		(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
 
 }
 
-void spell_harmlos()
+/* Borlandified and identical */
+void spell_harmlos(void)
 {
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Harmlos\" ist nicht implementiert\n");

@@ -13,17 +13,17 @@ void spell_odem_arcanum(void);
 /* 0x2f */
 void spell_penetrizzel(void);
 /* 0x34 */
-void spell_sensibar();
+void spell_sensibar(void);
 
 
 /* Illusion */
 
 /* 0x39 */
-void spell_chamaelioni();
+void spell_chamaelioni(void);
 /* 0x3e */
-void spell_duplicatus();
+void spell_duplicatus(void);
 /* 0x43 */
-void spell_harmlos();
+void spell_harmlos(void);
 
 
 /* Combat / Kampf */
