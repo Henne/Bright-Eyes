@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 17/20
+ *	Functions rewritten 18/20
  *
 */
 
@@ -482,15 +482,15 @@ void spell_eisenrost(void)
 			}
 		}
 	}
-
 }
 
+/* Borlandified and identical */
 void spell_fulminictus(void)
 {
 	signed short damage;
 
-	if ((host_readb(get_spelluser() + 0x86) < 10) &&
-		get_hero(host_readb(get_spelluser() + 0x86) - 1) == get_spelluser()) {
+	if ((host_readbs(get_spelluser() + 0x86) < 10) &&
+		get_hero(host_readbs(get_spelluser() + 0x86) - 1) == get_spelluser()) {
 
 		/* do not attack yourself */
 
@@ -517,9 +517,7 @@ void spell_fulminictus(void)
 
 		/* set costs to damage AE */
 		ds_writew(0xac0e, damage);
-
 	}
-
 }
 
 void spell_radau(void)
