@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
-        Functions rewritten: 6/11
+        Functions rewritten: 7/11
 */
 #include <stdlib.h>
 
@@ -175,6 +175,36 @@ signed short get_attackee_parade(void)
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 		return host_readbs(get_spelltarget_e() + 0x1d);
+	}
+}
+
+/**
+ * get_attackee_rs()  - calculates the RS value of one who is attacked
+ *
+ * This function is unused.
+*/
+/* Borlandified and identical */
+signed short get_attackee_rs(void)
+{
+	/* check if enemy or hero is attacked */
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
+
+		/* attacked a hero */
+
+		ds_writed(SPELLTARGET,
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+		return host_readbs(get_spelltarget() + 0x30);
+
+	} else {
+
+		/* attacked an enemy */
+
+		/* set a global pointer to the target */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+		return host_readbs(get_spelltarget_e() + 0x02);
 	}
 }
 
