@@ -5359,7 +5359,8 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x57: {
-		return 0;
+		spell_eisenrost();
+		return 1;
 	}
 	case 0x5c: {
 		spell_fulminictus();

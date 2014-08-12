@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 16/20
+ *	Functions rewritten 17/20
  *
 */
 
@@ -413,6 +413,79 @@ void spell_ecliptifactus(void)
 		}
 	} else {
 		ds_writew(0xac0e, -2);
+	}
+}
+
+/* Borlandified and identical */
+void spell_eisenrost(void)
+{
+	signed short id;
+
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
+		/* cast a hero */
+
+		/* set the spell target */
+		ds_writed(SPELLTARGET,
+	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+		if (get_spelltarget() == get_spelluser()) {
+
+			ds_writew(0xac0e, 0);
+
+			strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+				(char*)get_dtp(0x1c0));
+		} else {
+			/* get weapon id of the target */
+			id = host_readws(get_spelltarget() + 0x1c0);
+
+			if (!id) {
+				/* no weapon in hand */
+				ds_writew(0xac0e, -2);
+			} else {
+				/* check if weapon is already broken */
+				if (ks_broken(get_spelltarget() + 0x1c0)) {
+
+					strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+						(char*)get_dtp(0x168));
+
+				} else {
+
+					if (host_readbs(get_spelltarget() + 0x1c6) > 0) {
+						/* set broken flag */
+						or_ptr_bs(get_spelltarget() + 0x1c4, 0x01);
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_dtp(0x170),
+							(char*)Real2Host(GUI_names_grammar(0x8000, id, 0)),
+							(char*)(get_spelltarget() + 0x10));
+					} else {
+						ds_writew(0xac0e, -2);
+					}
+				}
+			}
+		}
+	} else {
+		/* set a pointer to the enemy */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+		/* check if target is an animal */
+		if (host_readbs(get_spelltarget_e() + 0x36) != 0) {
+			sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x164));
+		} else {
+			/* check if weapon is already broken */
+			if (host_readbs(get_spelltarget_e() + 0x30) != 0) {
+				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x168));
+			} else {
+
+				/* set weapon broken */
+				host_writeb(get_spelltarget_e() + 0x30, 1);
+
+				/* prepare message */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x16c),
+					(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
+			}
+		}
 	}
 
 }

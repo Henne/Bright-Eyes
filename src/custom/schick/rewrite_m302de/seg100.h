@@ -34,7 +34,8 @@ void spell_hexenknoten(void);
 void spell_blitz(void);
 /* 0x52 */
 void spell_ecliptifactus(void);
-
+/* 0x57 */
+void spell_eisenrost(void);
 /* 0x5c */
 void spell_fulminictus();
 
