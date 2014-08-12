@@ -106,7 +106,7 @@ void npc_farewell()
 		return;
 
 	/* The NPC will be removed after 99 Months ingame time. Weird! */
-	if (check_hero(get_hero(6)) == 0 && ds_readws(0x3470) < 99)
+	if (check_hero(get_hero(6)) == 0 && ds_readws(NPC_MONTHS) < 99)
 		return;
 
 	tmp = ds_readw(0x26bf);
@@ -115,15 +115,15 @@ void npc_farewell()
 	switch (host_readbs(get_hero(6) + 0x89)) {
 		/* Nariell */
 		case 1: {
-			if (ds_readws(0x3470) >= 2)
+			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x14, 0x1f, 0xe2,
 					get_ltx(0xbc4), get_dtp(0x24));
 			break;
 		}
 		/* Harika */
 		case 2: {
-			if (ds_readws(0x3470) >= 2) {
-				if (ds_readws(0x3470) >= 99 ||
+			if (ds_readws(NPC_MONTHS) >= 2) {
+				if (ds_readws(NPC_MONTHS) >= 99 ||
 					ds_readb(CURRENT_TOWN) == 1 ||
 					ds_readb(CURRENT_TOWN) == 0x12 ||
 					ds_readb(CURRENT_TOWN) == 0x27 ||
@@ -136,11 +136,12 @@ void npc_farewell()
 					for (i = 0; i < 6; i++, hero_i += 0x6da) {
 						if (host_readb(hero_i + 0x21) &&
 							(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
-						(!hero_dead(hero_i))) {
+							(!hero_dead(hero_i)))
+						{
 
-						/* try to increase sneaking */
-						inc_skill_novice(hero_i, 0xd);
-					}
+							/* try to increase sneaking */
+							inc_skill_novice(hero_i, 0xd);
+						}
 					}
 				}
 			}
@@ -148,28 +149,28 @@ void npc_farewell()
 		}
 		/* Curian */
 		case 3: {
-			if (ds_readws(0x3470) >= 6)
+			if (ds_readws(NPC_MONTHS) >= 6)
 				remove_npc(0x19, 0x40, 0xe4,
 					get_ltx(0xbcc), get_dtp(0x74));
 			break;
 		}
 		/* Ardora */
 		case 4: {
-			if (ds_readws(0x3470) >= 1)
+			if (ds_readws(NPC_MONTHS) >= 1)
 				remove_npc(0x15, 0x1f, 0xe5,
 					get_ltx(0xbd0), get_dtp(0xac));
 			break;
 		}
 		/* Garsvik */
 		case 5: {
-			if (ds_readws(0x3470) >= 2)
+			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x17, 0x1f, 0xe6,
 					get_ltx(0xbd4), get_dtp(0xd4));
 			break;
 		}
 		/* Erwo */
 		case 6: {
-			if (ds_readws(0x3470) >= 2)
+			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x18, 0x1f, 0xe7,
 					get_ltx(0xbd8), get_dtp(0xfc));
 			break;
@@ -549,7 +550,7 @@ void add_npc(signed short index)
 	inc_ds_bs(0x2d3c);
 
 	/* reset the months the NPC is in the group */
-	ds_writew(0x3470, 0);
+	ds_writew(NPC_MONTHS, 0);
 
 	/* set a number to deciede between the NPCs (1-6) */
 	host_writeb(get_hero(6) + 0x89, index - 0xe1);
