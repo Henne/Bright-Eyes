@@ -337,8 +337,8 @@ void spell_blitz()
 		/* cast a hero */
 
 		/* set the spell target */
-		ds_writed(0xe5b8,
-			ds_readd((HEROS) + (host_readb(get_spelluser() + 0x86) - 1) * 0x6da));
+		ds_writed(SPELLTARGET,
+	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
 
 		/* do not cast yourself */
 		if (get_spelltarget() == get_spelluser()) {
