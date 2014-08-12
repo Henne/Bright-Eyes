@@ -25,6 +25,7 @@ namespace M302de {
 
 /* Clairvoyance / Hellsicht */
 
+/* Borlandified and identical */
 void spell_eigenschaften(void)
 {
 	signed short min;
@@ -57,83 +58,87 @@ void spell_eigenschaften(void)
 		host_readws(Real2Host(ds_readd(SPELLTARGET_E)) + 0x15));	/* AEmax */
 }
 
+/* Borlandified and identical */
 void spell_exposami(void)
 {
 	signed short j;
-	signed short v4;
-	signed short v6;
-	signed short arr[20][2];
+	signed short id;
+	signed short changed;
+	int arr[20][2];
 
-	signed short new_si;
-	signed short new_di;
+	signed short i;
+	signed short count;
 
-	new_di = 0;
-	new_si = 0;
-	for ( ; new_si < ds_readws(0xd872); new_si++) {
+	count = 0;
 
-		if (host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * new_si + 0x1a) != 0) {
+	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
-			v4 = host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * new_si + 0x16);
-			v6 = 0;
-			for (j = 0; j <= new_di; j++) {
-				if (arr[j][0] == v4) {
+		if (host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * i + 0x1a) != 0) {
+
+			id = host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * i + 0x16);
+
+			changed = 0;
+
+			for (j = 0; j <= count; j++) {
+				if (arr[j][0] == id) {
+					/* found an entry with this id */
 					arr[j][1]++;
-					v6 = 1;
+					changed = 1;
 					break;
 				}
 			}
 
-			if (v6 == 0) {
-				arr[new_di][0] = v4;
-				arr[new_di][1] = 1;
-				new_di++;
+			/* create a new entry */
+			if (changed == 0) {
+				arr[count][0] = id;
+				arr[count][1] = 1;
+				count++;
 			}
 		}
 	}
 
-	if (new_di) {
+
+	if (count) {
+		/* Intro text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x7c));
 
-		for (new_si = 0; new_di - 1 > new_si; new_si++) {
+		for (i = 0; count - 1 > i; i++) {
 			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
-				(char*)get_dtp(0x84),
-				arr[new_si][1],
-				(char*)Real2Host(GUI_names_grammar(((arr[new_si][1] > 1)? 4 : 0) + 0x4000,
-									arr[new_si][0], 1)));
+				(char*)get_dtp(0x84),		/* "%d %s" */
+				arr[i][1],
+				(char*)Real2Host(GUI_names_grammar(((arr[i][1] > 1)? 4 : 0) + 0x4000,
+									arr[i][0], 1)));
 			strcat((char*)Real2Host(ds_readd(DTP2)),
 				(char*)Real2Host(ds_readd(0xd2eb)));
 
-			if (new_di - 2 > new_si) {
+			if (count - 2 > i) {
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x70));
+					(char*)get_dtp(0x70));		/* "," */
 			}
 		}
 
-		if (new_di > 1) {
+		if (count > 1) {
 			strcat((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x74));
+				(char*)get_dtp(0x74));		/* "AND" */
 		}
 
 		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 			(char*)get_dtp(0x84),
-			arr[new_di - 1][1],	/* TODO: this field access produces other code */
-			(char*)Real2Host(GUI_names_grammar((arr[new_di -1 ][1] > 1 ? 4 : 0) + 0x4000,
-								arr[new_di - 1][0], 1)));
-#if defined(__BORLANDC__)
-	asm {nop }
-#endif
+			arr[count - 1][1],	/* TODO: this field access produces other code */
+			(char*)Real2Host(GUI_names_grammar((arr[count - 1][1] > 1 ? 4 : 0) + 0x4000,
+								arr[count - 1][0], 1)));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(0xd2eb)));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(0x78));
+			(char*)get_dtp(0x78));			/* "." */
 	} else {
+		/* no more hidden enemies */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x80));
 	}
-
 }
 
 /* Borlandified and identical */
