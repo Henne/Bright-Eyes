@@ -8524,7 +8524,14 @@ static int n_seg098(unsigned short offs)
 
 	/* Callers: 1 */
 	case 0x0000 : {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		magic_heal_ani(Real2Host(hero));
+		D1_LOG("magic_heal_ani(%s)\n", schick_getCharname(hero));
+
+		return 1;
 	}
 	/* Callers: 4 */
 	case 0x0339 : {

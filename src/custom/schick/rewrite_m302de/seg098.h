@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x34 */
+/* static */
+void magic_heal_ani(Bit8u*);
 /* 0x39 */
 void FIG_do_spell_damage(signed short);
 /* 0x3e */

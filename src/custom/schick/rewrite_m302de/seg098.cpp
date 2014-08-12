@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
-        Functions rewritten: 5/11
+        Functions rewritten: 6/11
 */
 #include <stdlib.h>
 
@@ -8,17 +8,92 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg004.h"
 #include "seg007.h"
+#include "seg029.h"
 #include "seg041.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
 
+
+struct dummy1 {
+	signed short a[5];
+};
+
+/**
+ * magic_heal_ani() - show some stars on the picture of a healed hero
+ * @hero:	the hero who heals
+ *
+*/
+/* Borlandified and identical */
+void magic_heal_ani(Bit8u *hero)
+{
+	signed short target_nr;
+	struct dummy1 a = *(struct dummy1*)(p_datseg + 0xac10);
+	RealPt target;
+	signed short fd;
+	signed short i;
+
+#if !defined(__BORLANDC__)
+	a.a[0] = 0;
+	a.a[1] = 1;
+	a.a[2] = 2;
+	a.a[3] = 1;
+	a.a[4] = 0;
+#endif
+
+	/* load SPSTAR.NVF */
+	fd = load_archive_file(0x83);
+	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 0x400);
+	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)) + 0x400, 0x400);
+	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)) + 0x800, 0x400);
+	bc_close(fd);
+
+	target_nr = host_readbs(hero + 0x86) - 1;
+	target = (RealPt)ds_readd(HEROS) + 0x6da * target_nr;
+
+	ds_writew(0xc01d, 0);
+	ds_writew(0xc01f, 0);
+	ds_writew(0xc021, 31);
+	ds_writew(0xc023, 31);
+
+	for (i = 0; i < 5; i++) {
+
+		/* copy hero picture into buffer */
+		ds_writew(0xc011, 0);
+		ds_writew(0xc013, 0);
+		ds_writew(0xc015, 31);
+		ds_writew(0xc017, 31);
+		ds_writed(0xc00d, ds_readd(0xd303));
+		ds_writed(0xc019, (Bit32u)(target + 0x2da));
+		do_pic_copy(0);
+
+		/* copy stars over it */
+		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xc3a9) + (a.a[i] * 1024)));
+		do_pic_copy(2);
+
+		/* copy buffer content to screen */
+		ds_writew(0xc011, ds_readw(0x2d01 + 2 * target_nr));
+		ds_writew(0xc013, 157);
+		ds_writew(0xc015, ds_readw(0x2d01 + 2 * target_nr) + 31);
+		ds_writew(0xc017, 188);
+		ds_writed(0xc019, ds_readd(0xd303));
+		ds_writed(0xc00d, ds_readd(0xd2ff));
+		do_pic_copy(3);
+
+		delay_or_keypress(10);
+	}
+
+	draw_status_line();
+}
+
 /**
  * FIG_do_spell_damage() - account physical spell damage in fight
  * @le:	LE someone looses
 */
+/* Borlandified and identical */
 void FIG_do_spell_damage(signed short le)
 {
 
@@ -30,7 +105,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set pointer */
 		ds_writed(SPELLTARGET,
-			ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da);
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
 
 
 		/* ensure the spelluser does not attack himself */
@@ -56,16 +131,15 @@ void FIG_do_spell_damage(signed short le)
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
 		/* do the damage */
-		FIG_damage_enemy(Real2Host(ds_readd(SPELLTARGET_E)), le, 0);
+		FIG_damage_enemy(get_spelltarget_e(), le, 0);
 		/* add a message (green star with le) */
 		FIG_add_msg(0x0b, le);
 
 		/* set a variable if the enemy died */
-		if (host_readb(Real2Host(ds_readd(SPELLTARGET_E)) + 0x31) & 1) {
+		if (enemy_dead(get_spelltarget_e())) {
 			ds_writew(0xe3a6, 1);
 		}
 	}
-
 }
 
 /**
