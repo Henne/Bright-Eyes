@@ -53,9 +53,9 @@ void spell_scharfes_auge(void);
 /* Communication / Verstaendigung */
 
 /* 0x7a */
-void spell_hexenblick();
+void spell_hexenblick(void);
 /* 0x7f */
-void spell_necropathia();
+void spell_necropathia(void);
 
 #if !defined(__BORLANDC__)
 }

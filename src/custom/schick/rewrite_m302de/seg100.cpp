@@ -765,6 +765,7 @@ void spell_saft_kraft(void)
 
 }
 
+/* Borlandified and identical */
 void spell_scharfes_auge(void)
 {
 	signed short target;
@@ -774,7 +775,8 @@ void spell_scharfes_auge(void)
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
 	/* set a pointer to the target */
-	ds_writed(SPELLTARGET, ds_readd(HEROS) + 0x6da * target);
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * target));
 
 	/* all range talents are boosted + 3 */
 
@@ -794,14 +796,16 @@ void spell_scharfes_auge(void)
 
 
 /* Communication / Verstaendigung */
-void spell_hexenblick()
+/* Borlandified and identical */
+void spell_hexenblick(void)
 {
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Hexenblick\" ist nicht implementiert\n");
 #endif
 }
 
-void spell_necropathia()
+/* Borlandified and identical */
+void spell_necropathia(void)
 {
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Necropathia\" ist nicht implementiert\n");
