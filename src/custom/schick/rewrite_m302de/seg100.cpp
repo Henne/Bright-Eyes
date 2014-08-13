@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 19/20
+ *	Functions rewritten 20/20 (complete)
  *
 */
 
@@ -653,6 +653,63 @@ void spell_ignifaxius(void)
 
 	/* set spell costs */
 	ds_writew(0xac0e, damage);
+}
+
+/* Borlandified and identical */
+void spell_plumbumbarum(void)
+{
+	signed short slot;
+	signed short hero_pos;
+
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
+
+		/* target is a hero */
+
+		hero_pos = host_readbs(get_spelluser() + 0x86) - 1;
+
+		/* set the spell target */
+		ds_writed(SPELLTARGET,
+	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * 0x6da));
+
+		if (get_spelltarget() == get_spelluser()) {
+
+			/* don't attack yourself */
+			ds_writew(0xac0e, 0);
+
+			/* prepare message */
+			strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x1c0));
+
+		} else {
+
+			/* give a short AT-malus of -3 to the targets current weapon */
+			slot = get_free_mod_slot();
+			set_mod_slot(slot, 0x2d,
+				get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
+				-3, hero_pos);
+
+			/* prepare the message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x178),
+				(char*)get_spelltarget() + 0x10);
+			}
+
+		return;
+
+	}
+
+	/* target is a enemy */
+
+	/* set a pointer to the enemy */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+	/* AT-malus of -3 (permanent) */
+	sub_ptr_bs(get_spelltarget_e() + 0x1c, 3);
+
+	/* prepare the message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x17c),
+		(char*)Real2Host(GUI_names_grammar(0x8001, host_readbs(get_spelltarget_e()), 1)));
 }
 
 void spell_radau(void)

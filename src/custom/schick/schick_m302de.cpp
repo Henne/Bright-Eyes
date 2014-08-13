@@ -5371,7 +5371,8 @@ static int seg100(unsigned short offs) {
 		return 1;
 	}
 	case 0x66: {
-		return 0;
+		spell_plumbumbarum();
+		return 1;
 	}
 	case 0x6b: {
 		spell_radau();

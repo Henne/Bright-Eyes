@@ -40,7 +40,8 @@ void spell_eisenrost(void);
 void spell_fulminictus();
 /* 0x61 */
 void spell_ignifaxius(void);
-
+/* 0x66 */
+void spell_plumbumbarum(void);
 /* 0x6b */
 void spell_radau();
 
