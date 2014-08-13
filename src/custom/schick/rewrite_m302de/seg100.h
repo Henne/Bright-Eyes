@@ -43,8 +43,7 @@ void spell_ignifaxius(void);
 /* 0x66 */
 void spell_plumbumbarum(void);
 /* 0x6b */
-void spell_radau();
-
+void spell_radau(void);
 /* 0x70 */
 void spell_saft_kraft(void);
 /* 0x75 */

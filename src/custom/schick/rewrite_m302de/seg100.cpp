@@ -712,11 +712,13 @@ void spell_plumbumbarum(void)
 		(char*)Real2Host(GUI_names_grammar(0x8001, host_readbs(get_spelltarget_e()), 1)));
 }
 
+/* Borlandified and identical */
 void spell_radau(void)
 {
 	spell_kraehenruf();
 }
 
+/* Borlandified and identical */
 void spell_saft_kraft(void)
 {
 	signed short target;
@@ -729,27 +731,29 @@ void spell_saft_kraft(void)
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
 	/* set a pointer to the target */
-	ds_writed(SPELLTARGET, ds_readd(HEROS) + 0x6da * target);
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * target));
 
 
 	/* +5 on AT of the current weapon */
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, abs(rounds) * 9,
-		Real2Host(ds_readd(SPELLTARGET)) + 0x68 + host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x78),
+	set_mod_slot(slot, rounds * 9L,
+		get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
 		5, (signed char)target);
 
 	/* -5 on PA of the current weapon */
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, abs(rounds) * 9,
-		Real2Host(ds_readd(SPELLTARGET)) + 0x6f + host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x78),
+	set_mod_slot(slot, rounds * 9L,
+		get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
 		-5, (signed char)target);
 
 	/* TODO: this position is unknown */
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, abs(rounds) * 9, Real2Host(ds_readd(SPELLTARGET)) + 0x98, 5, (signed char)target);
+	set_mod_slot(slot, rounds * 9L,
+		get_spelltarget() + 0x98, 5, (signed char)target);
 
 	/* set ae costs */
 	ds_writew(0xac0e, rounds);
@@ -757,7 +761,7 @@ void spell_saft_kraft(void)
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(96 * 4),
-		(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
+		(char*)get_spelltarget() + 0x10);
 
 }
 
