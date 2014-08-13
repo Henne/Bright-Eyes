@@ -522,10 +522,11 @@ void spell_heptagon(void)
 	ds_writew(0xac0e, -2);
 }
 
+/* Borlandified and identical */
 void spell_kraehenruf(void)
 {
-	signed short pa_value;
 	signed short caster_level;
+	signed short pa_value;
 	signed short i;
 	signed short damage;
 
@@ -539,11 +540,11 @@ void spell_kraehenruf(void)
 	for (i = 0; i < caster_level; i++) {
 
 		/* only 40 % chance of success */
-		if (random_schick(20) > 8)
-			continue;
+		if (random_schick(20) <= 8) {
 
-		if (random_schick(20) > pa_value) {
-			damage++;
+			if (random_schick(20) > pa_value) {
+				damage++;
+			}
 		}
 	}
 
