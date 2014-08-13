@@ -38,6 +38,8 @@ void spell_magischerraub(void);
 void spell_respondami(void);
 /* 0x66 */
 void spell_sanftmut(void);
+/* 0x6b */
+void spell_somnigravis(void);
 
 
 /* Demonologie / Demonology */

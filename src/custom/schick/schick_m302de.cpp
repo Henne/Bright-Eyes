@@ -5224,7 +5224,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x6b: {
-		return 0;
+		spell_somnigravis();
+		return 1;
 	}
 	case 0x70: {
 		return 0;

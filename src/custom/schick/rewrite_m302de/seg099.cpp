@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 26/39
+ *	Functions rewritten 27/39
  *
 */
 
@@ -406,6 +406,60 @@ void spell_respondami(void)
 void spell_sanftmut(void)
 {
 	spell_herrdertiere();
+}
+
+/* Borlandified and identical */
+void spell_somnigravis(void)
+{
+
+	if (host_readbs(get_spelluser() + 0x86) >= 10) {
+		/* cast an enemy */
+
+		/* Set pointer to enemy target */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+
+		/* this spell does not work on all kind of sleletons */
+		if (host_readb(get_spelltarget_e() + 1) == 0x1c) {
+			ds_writew(0xac0e, -2);
+			return;
+		}
+
+		/* set the flag */
+		or_ptr_bs(get_spelltarget_e() + 0x31, 2);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x34),
+			Real2Host(GUI_names_grammar(0x8000,
+				host_readbs(get_spelltarget_e()), 1)));
+		return;
+	}
+
+	/* cast hero */
+
+	/* Set pointer to hero target */
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
+		/* don't cast yourself */
+
+		/* set AE costs */
+		ds_writew(0xac0e, 0);
+
+		/* prepare message */
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x1c0));
+	} else {
+		/* set the flag */
+		or_ptr_bs(get_spelltarget() + 0xaa, 2);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x34),
+			(char*)get_spelltarget() + 0x10);
+	}
 }
 
 /* Demonologie / Demonology */
