@@ -606,7 +606,9 @@ void spell_skelettarius(void)
 	}
 }
 
+/* Elemente / Elements */
 
+/* Borlandified and identical */
 void spell_elementare(void)
 {
 #if !defined(__BORLANDC__)
@@ -615,6 +617,7 @@ void spell_elementare(void)
 	ds_writew(0xac0e, -2);
 }
 
+/* Borlandified and identical */
 void spell_nihilatio(void)
 {
 #if !defined(__BORLANDC__)
@@ -622,6 +625,7 @@ void spell_nihilatio(void)
 #endif
 }
 
+/* Borlandified and identical */
 void spell_solidirid(void)
 {
 #if !defined(__BORLANDC__)
