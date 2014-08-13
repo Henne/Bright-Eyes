@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 32/39
+ *	Functions rewritten 33/39
  *
 */
 
@@ -763,12 +763,70 @@ void spell_transversalis(void)
 	ds_writew(0x7de5, ds_writew(0x7de7, -1));
 }
 
+/* Borlandified and identical */
 void spell_ueber_eis(void)
 {
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Ueber Eis\" ist nicht implementiert\n");
 #endif
 	ds_writew(0xac0e, -2);
+}
+
+
+/* Heilung / Healing */
+
+/* Borlandified and identical */
+void spell_balsam(void)
+{
+
+	signed short le;
+
+	/* Set pointer to hero target */
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+	ds_writew(0xac0e, 0);
+
+	if ((ds_readw(0xe318) != 0) ||
+		((host_readbs(get_spelluser() + 0x89) != 0) && ds_readws(IN_FIGHT) != 0))
+	{
+		/* automatic */
+		le = (host_readws(get_spelltarget() + 0x5e) - host_readws(get_spelltarget() + 0x60)) / 2;
+	} else {
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x4c),
+			(char*)get_spelluser() + 0x10,
+			(char*)get_spelltarget() + 0x10);
+
+		/* ask question */
+		le = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+
+		/* terminate string */
+		host_writeb(Real2Host(ds_readd(DTP2)), 0);
+	}
+
+	if (le != -1) {
+
+		if (le < 7) {
+			/* costs are at least 7 */
+			ds_writew(0xac0e, 7);
+		} else {
+			if (host_readws(get_spelltarget() + 0x5e) - host_readws(get_spelltarget() + 0x60) < le) {
+				ds_writew(0xac0e, host_readws(get_spelltarget() + 0x5e) - host_readws(get_spelltarget() + 0x60));
+				le = ds_readws(0xac0e);
+			} else {
+				ds_writew(0xac0e, le);
+			}
+		}
+
+		if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
+			ds_writew(0xac0e, host_readws(get_spelluser() + 0x64));
+			le = ds_readws(0xac0e);
+		}
+
+		add_hero_le(get_spelltarget(), le);
+	}
 }
 
 #if !defined(__BORLANDC__)

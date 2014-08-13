@@ -85,6 +85,12 @@ void spell_transversalis(void);
 /* 0xbb */
 void spell_ueber_eis(void);
 
+
+/* Heilung / Healing */
+
+/* 0xc0 */
+void spell_balsam(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif

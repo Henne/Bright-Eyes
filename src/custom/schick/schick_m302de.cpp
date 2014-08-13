@@ -5301,7 +5301,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xc0: {
-		return 0;
+		spell_balsam();
+		return 1;
 	}
 	case 0xc5: {
 		return 0;
