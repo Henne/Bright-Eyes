@@ -5228,7 +5228,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x70: {
-		return 0;
+		spell_zwingtanz();
+		return 1;
 	}
 	case 0x75: {
 		spell_furor_blut();

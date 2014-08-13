@@ -40,6 +40,8 @@ void spell_respondami(void);
 void spell_sanftmut(void);
 /* 0x6b */
 void spell_somnigravis(void);
+/* 0x70 */
+void spell_zwingtanz(void);
 
 
 /* Demonologie / Demonology */

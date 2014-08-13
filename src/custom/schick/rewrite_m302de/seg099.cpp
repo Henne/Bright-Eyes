@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 27/39
+ *	Functions rewritten 28/39
  *
 */
 
@@ -459,6 +459,29 @@ void spell_somnigravis(void)
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x34),
 			(char*)get_spelltarget() + 0x10);
+	}
+}
+
+/* Borlandified and identical */
+void spell_zwingtanz(void)
+{
+	/* Set pointer to enemy target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+
+	/* this spell does not work on all kind of sleletons */
+	if (host_readb(get_spelltarget_e() + 1) == 0x1c) {
+		ds_writew(0xac0e, -2);
+	} else {
+
+		/* set the flag */
+		or_ptr_bs(get_spelltarget_e() + 0x32, 8);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x38),
+			Real2Host(GUI_names_grammar(0x8000,
+				host_readbs(get_spelltarget_e()), 1)));
 	}
 }
 
