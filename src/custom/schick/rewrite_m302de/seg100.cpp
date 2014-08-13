@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 18/20
+ *	Functions rewritten 19/20
  *
 */
 
@@ -518,6 +518,141 @@ void spell_fulminictus(void)
 		/* set costs to damage AE */
 		ds_writew(0xac0e, damage);
 	}
+}
+
+/* Borlandified and identical */
+void spell_ignifaxius(void)
+{
+	signed short rs_malus;
+	signed short hero_pos;
+	signed short slot;
+	signed short mummy = 0;
+	Bit8u *p_armour;
+	signed short damage;
+	signed short level;
+
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
+
+		if (get_hero(host_readbs(get_spelluser() + 0x86) - 1) == get_spelluser()) {
+
+			/* don't attack yourself */
+			ds_writew(0xac0e, 0);
+
+			/* prepare message */
+			strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x1c0));
+			return;;
+		}
+	}
+
+	/* get spell level... */
+	if ((ds_readws(0xe318) == 0) && (host_readbs(get_spelluser() + 0x89) == 0)) {
+		/* ... manual mode */
+
+		/* prepare question of spell level */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x174),
+			host_readbs(get_spelluser() + 0x27) + 1);
+
+		level = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+
+		if (level <= 0) {
+			/* abort */
+			/* terminate string */
+			host_writeb(Real2Host(ds_readd(DTP2)), 0);
+			ds_writew(0xac0e, 0);
+			return;
+		}
+
+		/* adjust wrong input */
+		if ((host_readbs(get_spelluser() + 0x27) + 1) < level) {
+			level = host_readbs(get_spelluser() + 0x27) + 1;
+		}
+
+	} else {
+		/* ... autofight mode */
+		level = host_readbs(get_spelluser() + 0x27) + 1;
+	}
+
+	/* calculate: damage = level * W6 */
+	damage = dice_roll(level, 6, 0);
+
+	/* damage must not exceed AE of the spelluser */
+	if (host_readws(get_spelluser() + 0x64) < damage) {
+		damage = host_readws(get_spelluser() + 0x64);
+	}
+
+	/* damage doubles if the target is a mummy */
+	if ((host_readbs(get_spelluser() + 0x86) >= 10) &&
+		(host_readbs(p_datseg + host_readbs(get_spelluser() + 0x86) * 62 + 0xd0df + 1) == 0x1e))
+	{
+		damage *= 2;
+		mummy = 1;
+	}
+
+	/* do the damage to the target */
+	FIG_do_spell_damage(damage);
+
+	rs_malus = damage / 10;
+
+	if (host_readbs(get_spelluser() + 0x86) < 10) {
+
+		/* target is a hero */
+
+		hero_pos = host_readbs(get_spelluser() + 0x86) - 1;
+
+		/* set the spell target */
+		ds_writed(SPELLTARGET,
+	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * 0x6da));
+
+		/* get a pointer to the armour */
+		p_armour = get_spelltarget() + 0x1b2;
+
+		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
+
+			/* adjust rs_malus */
+			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2)) {
+				rs_malus = ds_readbs(0x877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2) - host_readbs(p_armour + 7);
+			}
+
+			/* add rs_malus to the armour */
+			add_ptr_bs(p_armour + 7, rs_malus);
+			/* subtract rs_malus from RS1 */
+			sub_ptr_bs(get_spelltarget() + 0x30, rs_malus);
+		}
+
+		/* get an AT/PA-Malus of -level / 2 for the current weapon and one hour */
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 0x1518,
+			get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
+			-level / 2, hero_pos);
+
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 0x1518,
+			get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
+			-level / 2, hero_pos);
+
+	} else {
+		/* target is a enemy */
+
+		/* set a pointer to the enemy */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+
+		sub_ptr_bs(get_spelltarget_e() + 0x2, rs_malus);
+		sub_ptr_bs(get_spelltarget_e() + 0x1c, level / 2);
+		sub_ptr_bs(get_spelltarget_e() + 0x1d, level / 2);
+
+	}
+
+	/* terminate output string */
+	host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+	if (mummy != 0) {
+		damage /= 2;
+	}
+
+	/* set spell costs */
+	ds_writew(0xac0e, damage);
 }
 
 void spell_radau(void)

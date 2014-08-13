@@ -38,6 +38,8 @@ void spell_ecliptifactus(void);
 void spell_eisenrost(void);
 /* 0x5c */
 void spell_fulminictus();
+/* 0x61 */
+void spell_ignifaxius(void);
 
 /* 0x6b */
 void spell_radau();
