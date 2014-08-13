@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 29/39
+ *	Functions rewritten 30/39
  *
 */
 
@@ -631,6 +631,53 @@ void spell_solidirid(void)
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Solidirid\" ist nicht implementiert\n");
 #endif
+}
+
+
+/* Bewegung / Movement */
+
+/* Borlandified and identical */
+void spell_axxeleratus(void)
+{
+	signed short hero_pos;
+	signed short slot;
+
+	hero_pos = host_readbs(get_spelluser() + 0x86) - 1;
+
+	/* Set pointer to hero target */
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * 0x6da));
+
+	if (!host_readbs(get_spelltarget() + 0xa0)) {
+
+		/* AT-bonus for the current weapon */
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 90,
+			get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
+			2, hero_pos);
+
+		/* PA-bonus for the current weapon */
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 90,
+			get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
+			2, hero_pos);
+
+		/* axxeleratus active flag */
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 90,
+			get_spelltarget() + 0xa0,
+			1, hero_pos);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x44),
+			(char*)get_spelltarget() + 0x10);
+
+	} else {
+		/* axxeleratus already active */
+		ds_writew(0xac0e, -2);
+	}
+
 }
 
 void spell_motoricus(void)

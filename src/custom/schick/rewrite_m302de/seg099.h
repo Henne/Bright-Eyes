@@ -71,6 +71,9 @@ void spell_solidirid(void);
 
 /* Bewegung / Movement */
 
+/* 0xa2 */
+void spell_axxeleratus(void);
+
 /* 0xac */
 void spell_motoricus(void);
 /* 0xb1 */

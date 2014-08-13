@@ -5268,7 +5268,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xa2: {
-		return 0;
+		spell_axxeleratus();
+		return 1;
 	}
 	case 0xa7: {
 		return 0;
