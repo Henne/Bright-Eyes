@@ -4583,6 +4583,11 @@ static int seg074(unsigned short offs)
 			return 0;
 		}
 		case 0x25: {
+			D1_LOG("select_teleport_dest();\n");
+#if 0
+			reg_ax = select_teleport_dest();
+			return 1;
+#endif
 			return 0;
 		}
 		default:
@@ -8215,6 +8220,42 @@ static int n_seg072(unsigned short offs)
 	}
 }
 
+static int n_seg074(unsigned short offs)
+{
+	switch (offs) {
+	case 0x24a: {
+		return 0;
+	}
+	case 0x270: {
+		return 0;
+	}
+	case 0x295: {
+		return 0;
+	}
+	case 0x2ba: {
+		return 0;
+	}
+	case 0x305: {
+		return 0;
+	}
+	case 0x5f9: {
+		return 0;
+	}
+	case 0x72b: {
+		return 0;
+	}
+	case 0x7b2: {
+		return 0;
+	}
+	case 0xbbb: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg075(unsigned short offs)
 {
 	switch (offs) {
@@ -9029,6 +9070,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x138a)) return n_seg064(offs);
 	else if (is_ovrseg(0x1392)) return n_seg066(offs);
 	else if (is_ovrseg(0x13b4)) return n_seg072(offs);
+	else if (is_ovrseg(0x13bd)) return n_seg074(offs);
 	else if (is_ovrseg(0x13c3)) return n_seg075(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	else if (is_ovrseg(0x1442)) return n_seg097(offs);
