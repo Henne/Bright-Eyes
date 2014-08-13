@@ -713,14 +713,15 @@ void spell_foramen(void)
 	ds_writew(0xd013, 1);
 }
 
+/* Borlandified and identical */
 void spell_motoricus(void)
 {
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Motoricus\" ist nicht implementiert\n");
 #endif
-	ds_writew(0xac0e, -2);
 }
 
+/* Borlandified and identical */
 void spell_spurlos(void)
 {
 #if !defined(__BORLANDC__)
