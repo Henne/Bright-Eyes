@@ -3,6 +3,10 @@
  *	Spells: Clairvoyance / Illusion / Combat / Communication
  *	Functions rewritten 20/20 (complete)
  *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg100.cpp
+ *
 */
 
 #include <stdio.h>
@@ -28,7 +32,6 @@ namespace M302de {
 
 /* Clairvoyance / Hellsicht */
 
-/* Borlandified and identical */
 void spell_eigenschaften(void)
 {
 	signed short min;
@@ -61,7 +64,6 @@ void spell_eigenschaften(void)
 		host_readws(get_spelltarget_e() + 0x15));	/* AEmax */
 }
 
-/* Borlandified and identical */
 void spell_exposami(void)
 {
 	signed short j;
@@ -144,7 +146,6 @@ void spell_exposami(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_odem_arcanum(void)
 {
 	signed short pos;
@@ -173,7 +174,6 @@ void spell_odem_arcanum(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_penetrizzel(void)
 {
 	signed short y;
@@ -190,7 +190,6 @@ void spell_penetrizzel(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_sensibar(void)
 {
 #if !defined(__BORLANDC__)
@@ -199,7 +198,6 @@ void spell_sensibar(void)
 }
 
 /* Illusion */
-/* Borlandified and identical */
 void spell_chamaelioni(void)
 {
 	/* set the flag for this spell */
@@ -213,7 +211,6 @@ void spell_chamaelioni(void)
 
 }
 
-/* Borlandified and identical */
 void spell_duplicatus(void)
 {
 	/* set the flag for this spell */
@@ -227,7 +224,6 @@ void spell_duplicatus(void)
 
 }
 
-/* Borlandified and identical */
 void spell_harmlos(void)
 {
 #if !defined(__BORLANDC__)
@@ -235,7 +231,6 @@ void spell_harmlos(void)
 #endif
 }
 
-/* Borlandified and identical */
 void spell_hexenknoten(void)
 {
 	Bit8u *ptr;
@@ -330,7 +325,6 @@ void spell_hexenknoten(void)
 
 /* Combat / Kampf */
 
-/* Borlandified and identical */
 void spell_blitz(void)
 {
 
@@ -373,7 +367,6 @@ void spell_blitz(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_ecliptifactus(void)
 {
 	signed short rounds;
@@ -411,7 +404,6 @@ void spell_ecliptifactus(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_eisenrost(void)
 {
 	signed short id;
@@ -484,7 +476,6 @@ void spell_eisenrost(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_fulminictus(void)
 {
 	signed short damage;
@@ -520,7 +511,6 @@ void spell_fulminictus(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_ignifaxius(void)
 {
 	signed short rs_malus;
@@ -655,7 +645,6 @@ void spell_ignifaxius(void)
 	ds_writew(0xac0e, damage);
 }
 
-/* Borlandified and identical */
 void spell_plumbumbarum(void)
 {
 	signed short slot;
@@ -712,13 +701,11 @@ void spell_plumbumbarum(void)
 		(char*)Real2Host(GUI_names_grammar(0x8001, host_readbs(get_spelltarget_e()), 1)));
 }
 
-/* Borlandified and identical */
 void spell_radau(void)
 {
 	spell_kraehenruf();
 }
 
-/* Borlandified and identical */
 void spell_saft_kraft(void)
 {
 	signed short target;
@@ -765,7 +752,6 @@ void spell_saft_kraft(void)
 
 }
 
-/* Borlandified and identical */
 void spell_scharfes_auge(void)
 {
 	signed short target;
@@ -796,7 +782,6 @@ void spell_scharfes_auge(void)
 
 
 /* Communication / Verstaendigung */
-/* Borlandified and identical */
 void spell_hexenblick(void)
 {
 #if !defined(__BORLANDC__)
@@ -804,7 +789,6 @@ void spell_hexenblick(void)
 #endif
 }
 
-/* Borlandified and identical */
 void spell_necropathia(void)
 {
 #if !defined(__BORLANDC__)
