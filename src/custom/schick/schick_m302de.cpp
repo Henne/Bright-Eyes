@@ -5272,7 +5272,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xa7: {
-		return 0;
+		spell_foramen();
+		return 1;
 	}
 	case 0xac: {
 		spell_motoricus();

@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 30/39
+ *	Functions rewritten 31/39
  *
 */
 
@@ -16,6 +16,7 @@
 #include "seg006.h"
 #include "seg007.h"
 #include "seg039.h"
+#include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
@@ -678,6 +679,38 @@ void spell_axxeleratus(void)
 		ds_writew(0xac0e, -2);
 	}
 
+}
+
+/* Borlandified and identical */
+void spell_foramen(void)
+{
+	signed short x;
+	signed short y;
+
+	if (ds_readws(0xd011) != 5) {
+		return;
+	}
+
+	x = ds_readws(X_TARGET);
+	y = ds_readws(Y_TARGET);
+
+	switch (ds_readbs(DIRECTION)) {
+		case 0:	y--; break;
+		case 1:	x++; break;
+		case 2: y++; break;
+		case 3: x--; break;
+	}
+
+	and_ptr_bs(Real2Host(ds_readd(0xe488)) + y * 16 + x, 0x0f);
+	or_ptr_bs(Real2Host(ds_readd(0xe488)) + y * 16 + x, 0x20);
+	ds_writeb(0xbd4d, host_readbs(Real2Host(ds_readd(0xe488)) + y * 16 + x));
+
+	DNG_open_door();
+
+	add_hero_ap(get_spelluser(), 1);
+
+	ds_writebs(0xbd3e, ds_writebs(0xbd3f, ds_writebs(0xbd40, -1)));
+	ds_writew(0xd013, 1);
 }
 
 void spell_motoricus(void)
