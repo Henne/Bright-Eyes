@@ -1525,7 +1525,7 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x5349: {
 		RealPt hero = CPU_Pop32();
-		int ap = CPU_Pop32();
+		Bit32s ap = CPU_Pop32();
 		CPU_Push32(ap);
 		CPU_Push32(hero);
 
