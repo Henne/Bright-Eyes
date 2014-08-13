@@ -487,6 +487,7 @@ void spell_zwingtanz(void)
 
 /* Demonologie / Demonology */
 
+/* Borlandified and identical */
 void spell_furor_blut(void)
 {
 #if !defined(__BORLANDC__)
@@ -495,6 +496,7 @@ void spell_furor_blut(void)
 	ds_writew(0xac0e, -2);
 }
 
+/* Borlandified and identical */
 void spell_geister_bannen(void)
 {
 #if !defined(__BORLANDC__)
@@ -502,6 +504,7 @@ void spell_geister_bannen(void)
 #endif
 }
 
+/* Borlandified and identical */
 void spell_geister_rufen(void)
 {
 #if !defined(__BORLANDC__)
@@ -510,6 +513,7 @@ void spell_geister_rufen(void)
 	ds_writew(0xac0e, -2);
 }
 
+/* Borlandified and identical */
 void spell_heptagon(void)
 {
 #if !defined(__BORLANDC__)
