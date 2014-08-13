@@ -56,7 +56,8 @@ void spell_geister_rufen(void);
 void spell_heptagon(void);
 /* 0x89 */
 void spell_kraehenruf(void);
-
+/* 0x8e */
+void spell_skelettarius(void);
 
 /* Elemente / Elements */
 

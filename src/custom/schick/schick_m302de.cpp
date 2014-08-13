@@ -5252,7 +5252,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0x8e: {
-		return 0;
+		spell_skelettarius();
+		return 1;
 	}
 	case 0x93: {
 		spell_elementare();

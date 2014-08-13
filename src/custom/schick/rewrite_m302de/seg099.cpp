@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 28/39
+ *	Functions rewritten 29/39
  *
 */
 
@@ -13,7 +13,9 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg006.h"
 #include "seg007.h"
+#include "seg039.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
@@ -550,6 +552,60 @@ void spell_kraehenruf(void)
 
 	FIG_do_spell_damage(damage);
 }
+
+/* Borlandified and identical */
+void spell_skelettarius(void)
+{
+	Bit8u *enemy;
+	signed short x;
+	signed short y;
+	signed char unk;
+
+	/* Set pointer to enemy target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
+
+	/* check if the enemy is dead */
+	if (!enemy_dead(get_spelltarget_e())) {
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x3c),
+			Real2Host(GUI_names_grammar(0x8000,
+				host_readbs(get_spelltarget_e()), 1)));
+
+		/* set ae costs */
+		ds_writew(0xac0e, 0);
+	} else {
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x40),
+			Real2Host(GUI_names_grammar(0x8000,
+				host_readbs(get_spelltarget_e()), 1)));
+
+		enemy = Real2Host(FIG_get_ptr(host_readbs(get_spelltarget_e() + 0x26)));
+
+		x = host_readbs(enemy + 3);
+		y = host_readbs(enemy + 4);
+
+		if (host_readbs(enemy + 0x13) != -1) {
+			FIG_remove_from_list(ds_readbs(0xe35a + host_readbs(enemy + 0x13)), 0);
+		}
+
+		FIG_remove_from_list(host_readbs(get_spelltarget_e() + 0x26), 0);
+
+		unk = host_readbs(get_spelltarget_e() + 0x28);
+
+		fill_enemy_sheet(host_readbs(get_spelluser() + 0x86) - 10, 0x10, 0);
+
+		FIG_load_enemy_sprites(get_spelltarget_e(), x, y);
+
+		or_ptr_bs(get_spelltarget_e() + 0x32, 2);
+		host_writebs(get_spelltarget_e() + 0x28, unk);
+	}
+}
+
 
 void spell_elementare(void)
 {
