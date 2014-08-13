@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 31/39
+ *	Functions rewritten 32/39
  *
 */
 
@@ -16,6 +16,7 @@
 #include "seg006.h"
 #include "seg007.h"
 #include "seg039.h"
+#include "seg074.h"
 #include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -727,6 +728,39 @@ void spell_spurlos(void)
 #if !defined(__BORLANDC__)
         D1_INFO("Zauberspruch \"Spurlos\" ist nicht implementiert\n");
 #endif
+}
+
+/* Borlandified and identical */
+/* TODO: this is a stub as long as select_teleport_dest() is not implemented */
+void spell_transversalis(void)
+{
+	if (!ds_readbs(DUNGEON_INDEX) && !ds_readbs(CURRENT_TOWN)) {
+
+		/* prepare message */
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x48));
+
+	} else {
+		/* set spell costs */
+		ds_writew(0xac0e, select_teleport_dest());
+
+		if (ds_readws(0xac0e) > 0) {
+			/* check AE */
+			if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
+				/* abort */
+				ds_writew(0xac0e, -2);
+			} else {
+				/* play sound */
+				play_voc(0x130);
+
+				/* set new coordinates */
+				ds_writew(X_TARGET, ds_readws(0x7de5));
+				ds_writew(Y_TARGET, ds_readws(0x7de7));
+			}
+		}
+	}
+
+	ds_writew(0x7de5, ds_writew(0x7de7, -1));
 }
 
 void spell_ueber_eis(void)
