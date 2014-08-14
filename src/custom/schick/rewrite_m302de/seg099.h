@@ -90,6 +90,8 @@ void spell_ueber_eis(void);
 
 /* 0xc0 */
 void spell_balsam(void);
+/* 0xc5 */
+void spell_hexenspeichel(void);
 
 #if !defined(__BORLANDC__)
 }

@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 33/39
+ *	Functions rewritten 34/39
  *
 */
 
@@ -826,6 +826,54 @@ void spell_balsam(void)
 		}
 
 		add_hero_le(get_spelltarget(), le);
+	}
+}
+
+/* Borlandified and identical */
+void spell_hexenspeichel(void)
+{
+	signed short le;
+
+	/* Set pointer to hero target */
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+	/* set costs to 0 */
+	ds_writew(0xac0e, 0);
+
+	if (get_spelltarget() == get_spelluser()) {
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x50),
+			(char*)get_spelluser() + 0x10);
+		return;
+	}
+
+	/* prepare question */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x4c),
+		(char*)get_spelluser() + 0x10,
+		(char*)get_spelltarget() + 0x10);
+
+	le = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+
+	host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+	if (le != -1) {
+
+		if (host_readws(get_spelltarget() + 0x5e) - host_readws(get_spelltarget() + 0x60) < le * 2) {
+			ds_writew(0xac0e,
+				(host_readws(get_spelltarget() + 0x5e) - host_readws(get_spelltarget() + 0x60)) * 2);
+		} else {
+			if (host_readws(get_spelluser() + 0x64 ) < ds_readws(0xac0e)) {
+				ds_writew(0xac0e, host_readws(get_spelluser() + 0x64));
+			} else {
+				ds_writew(0xac0e, le * 2);
+			}
+		}
+
+		add_hero_le(get_spelltarget(), ds_readws(0xac0e) / 2);
 	}
 }
 
