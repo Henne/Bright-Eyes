@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 36/39
+ *	Functions rewritten 37/39
  *
 */
 
@@ -932,6 +932,35 @@ void spell_ruhe_koerper(void)
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0xcc),
 		(char*)get_spelltarget() + 0x10);
+}
+
+/* Borlandified and identical */
+void spell_tiere_heilen(void)
+{
+
+#if !defined(__BORLANDC__)
+        D1_INFO("Zauberspruch \"Tiere heilen\" ist nicht implementiert und dient nur zum AE ausgeben.\n");
+#endif
+	signed short ae;
+
+	/* set AE costs to 0 */
+	ds_writew(0xac0e, 0);
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x5c),
+		(char*)get_spelluser() + 0x10);
+
+	/* ask how many AE should be spent */
+	ae = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+
+	/* terminate string */
+	host_writebs(Real2Host(ds_readd(DTP2)), 0);
+
+	if (ae != -1) {
+		/* set AE costs to AE */
+		ds_writew(0xac0e, ae);
+	}
 }
 
 #if !defined(__BORLANDC__)

@@ -96,6 +96,8 @@ void spell_hexenspeichel(void);
 void spell_klarum_purum(void);
 /* 0xcf */
 void spell_ruhe_koerper(void);
+/* 0xd4 */
+void spell_tiere_heilen(void);
 
 #if !defined(__BORLANDC__)
 }

@@ -5317,7 +5317,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xd4: {
-		return 0;
+		spell_tiere_heilen();
+		return 1;
 	}
 	case 0xd9: {
 		return 0;
