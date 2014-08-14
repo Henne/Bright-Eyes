@@ -1,3 +1,12 @@
+/*
+ *	Rewrite of DSA1 v3.02_de functions of seg096 (text output)
+ *	Functions rewritten 23/23 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg096.cpp
+ *
+*/
 #include <stdio.h>
 #include <string.h>
 
@@ -102,7 +111,6 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 }
 
 //1a7
-/* Borlandified and identical */
 RealPt GUI_name_plural(signed short v1, Bit8u *s)
 {
 	Bit8u *p = p_datseg + GRAMMAR_STRING;
@@ -131,7 +139,6 @@ RealPt GUI_name_plural(signed short v1, Bit8u *s)
 }
 
 //290
-/* Borlandified and identical */
 RealPt GUI_name_singular(Bit8u *s)
 {
 	Bit8u *p = p_datseg + GRAMMAR_STRING;
@@ -148,7 +155,6 @@ RealPt GUI_name_singular(Bit8u *s)
 }
 
 //2f2
-/* Borlandified and identical */
 RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
 {
 	signed short l;
@@ -164,7 +170,6 @@ RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
  * @genus:	gender of the hero
  * @causus:	the grammatical causus
 */
-/* Borlandified and identical */
 RealPt GUI_get_ptr(signed short genus, signed short causus)
 {
 	if (genus == 0) {
@@ -183,7 +188,6 @@ RealPt GUI_get_ptr(signed short genus, signed short causus)
 //394
 /**
 */
-/* Borlandified and identical */
 RealPt GUI_get_ptr2(signed short genus, signed short causus)
 {
 	if (genus == 0) {
@@ -200,7 +204,6 @@ RealPt GUI_get_ptr2(signed short genus, signed short causus)
 }
 
 //3f8
-/* Borlandified and identical */
 void GUI_write_char_to_screen(PhysPt dst, signed short char_width, signed short char_height)
 {
 	Bit8u *ptr;
@@ -299,7 +302,6 @@ unsigned short GUI_count_lines(Bit8u *str)
 }
 
 //5d7
-/* Borlandified and identical */
 signed short GUI_print_header(Bit8u *str)
 {
 	signed short retval = 1;
@@ -313,7 +315,6 @@ signed short GUI_print_header(Bit8u *str)
 }
 
 //614
-/* Borlandified and identical */
 void GUI_print_loc_line(Bit8u * str)
 {
 	signed short tmp1;
@@ -344,7 +345,6 @@ void GUI_print_loc_line(Bit8u * str)
 }
 
 //691
-/* Borlandified and identical */
 void GUI_print_string(Bit8u *str, signed short x, signed short y)
 {
 	signed short l1;
@@ -417,7 +417,6 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 }
 
 //7f0
-/* Borlandified and identical */
 signed short GUI_print_char(unsigned char c, unsigned short x, unsigned short y)
 {
 	signed short char_width;
@@ -437,7 +436,6 @@ signed short GUI_print_char(unsigned char c, unsigned short x, unsigned short y)
 }
 
 //82b
-/* Borlandified and identical */
 signed short GUI_lookup_char_width(signed char c, signed short *p)
 {
 	signed short i;
@@ -460,7 +458,6 @@ signed short GUI_lookup_char_width(signed char c, signed short *p)
 }
 
 //88f
-/* Borlandified and identical */
 void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_width, unsigned short x, unsigned short y)
 {
 	GUI_blank_char();
@@ -471,7 +468,6 @@ void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_wi
 /**
 	GUI_blank_char() - sets the area of a char to a color
 */
-/* Borlandified and identical */
 void GUI_blank_char(void)
 {
 	PhysPt ptr = (PhysPt)PhysMake(datseg, 0xce87);
@@ -485,7 +481,6 @@ void GUI_blank_char(void)
 }
 
 //8f8
-/* Borlandified and identical */
 void GUI_font_to_buf(Bit8u *fc)
 {
 	Bit8u * p;
@@ -508,7 +503,6 @@ void GUI_font_to_buf(Bit8u *fc)
 }
 
 //956
-/* Borlandified and identical */
 void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width)
 {
 	/* screen_start */
@@ -522,7 +516,6 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
  * @fg:	foreground color index
  * @bg: background color index
  */
-/* Borlandified and identical */
 void set_textcolor(signed short fg, signed short bg)
 {
 	ds_writew(TEXTCOLOR_FG, fg);
@@ -535,14 +528,12 @@ void set_textcolor(signed short fg, signed short bg)
  * @bg: background color index
  *
  */
-/* Borlandified and identical */
 void get_textcolor(signed short *fg, signed short *bg)
 {
 	host_writew((Bit8u*)fg, ds_readw(TEXTCOLOR_FG));
 	host_writew((Bit8u*)bg, ds_readw(TEXTCOLOR_BG));
 }
 
-/* Borlandified and identical */
 unsigned short GUI_unused(Bit8u *str)
 {
 	unsigned short lines = 0;
@@ -556,7 +547,6 @@ unsigned short GUI_unused(Bit8u *str)
 }
 
 //9D6
-/* Borlandified and identical */
 signed short GUI_get_space_for_string(Bit8u *p, signed short dir)
 {
 	signed short sum;
@@ -574,7 +564,6 @@ signed short GUI_get_space_for_string(Bit8u *p, signed short dir)
 }
 
 //A26
-/* Borlandified and identical */
 signed short GUI_get_first_pos_centered(Bit8u *p, signed short x, signed short v2, unsigned short dir)
 {
 	register signed short i;
@@ -601,7 +590,6 @@ signed short GUI_get_first_pos_centered(Bit8u *p, signed short x, signed short v
 	@line: number of the current line
 	@type: type of line 0 = top / 1 = middle normal / 2 = middle radio / 3 =bottom
 */
-/* Borlandified and identical */
 void GUI_draw_popup_line(signed short line, signed short type)
 {
 	short popup_left;
