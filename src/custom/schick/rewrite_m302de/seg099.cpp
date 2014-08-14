@@ -2,7 +2,11 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 39/39
+ *	Functions rewritten 39/39 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg099.cpp
  *
 */
 
@@ -28,7 +32,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void spell_beherrschung(void)
 {
 	ds_writed(SPELLTARGET,
@@ -55,7 +58,6 @@ void spell_beherrschung(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_destructibo(void)
 {
 #if !defined(__BORLANDC__)
@@ -64,7 +66,6 @@ void spell_destructibo(void)
 	ds_writew(0xac0e, -2);
 }
 
-/* Borlandified and identical */
 void spell_gardanium(void)
 {
 	signed short answer;
@@ -103,7 +104,6 @@ void spell_gardanium(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_illusionen(void)
 {
 	/* Set pointer to enemy target */
@@ -143,7 +143,6 @@ void spell_illusionen(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_verwandlung(void)
 {
 	signed short i;
@@ -195,7 +194,6 @@ void spell_verwandlung(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_band(void)
 {
 	if (host_readbs(get_spelluser() + 0x86) >= 10) {
@@ -245,7 +243,6 @@ void spell_band(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_bannbaladin(void)
 {
 
@@ -277,7 +274,6 @@ void spell_bannbaladin(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_boeser_blick(void)
 {
 	/* set attacked foe */
@@ -302,7 +298,6 @@ void spell_boeser_blick(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_grosse_gier(void)
 {
 #if !defined(__BORLANDC__)
@@ -311,7 +306,6 @@ void spell_grosse_gier(void)
 	ds_writew(0xac0e, -2);
 }
 
-/* Borlandified and identical */
 void spell_grosse_ver(void)
 {
 	ds_writed(SPELLTARGET_E,
@@ -336,7 +330,6 @@ void spell_grosse_ver(void)
 		host_readb(get_spelltarget_e() + 0x1d) - 2);
 }
 
-/* Borlandified and identical */
 void spell_herrdertiere(void)
 {
 
@@ -370,7 +363,6 @@ void spell_herrdertiere(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_horriphobus(void)
 {
 
@@ -392,7 +384,6 @@ void spell_horriphobus(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_magischerraub(void)
 {
 #if !defined(__BORLANDC__)
@@ -400,7 +391,6 @@ void spell_magischerraub(void)
 #endif
 }
 
-/* Borlandified and identical */
 void spell_respondami(void)
 {
 #if !defined(__BORLANDC__)
@@ -408,13 +398,11 @@ void spell_respondami(void)
 #endif
 }
 
-/* Borlandified and identical */
 void spell_sanftmut(void)
 {
 	spell_herrdertiere();
 }
 
-/* Borlandified and identical */
 void spell_somnigravis(void)
 {
 
@@ -468,7 +456,6 @@ void spell_somnigravis(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_zwingtanz(void)
 {
 	/* Set pointer to enemy target */
@@ -493,7 +480,6 @@ void spell_zwingtanz(void)
 
 /* Demonologie / Demonology */
 
-/* Borlandified and identical */
 void spell_furor_blut(void)
 {
 #if !defined(__BORLANDC__)
@@ -502,7 +488,6 @@ void spell_furor_blut(void)
 	ds_writew(0xac0e, -2);
 }
 
-/* Borlandified and identical */
 void spell_geister_bannen(void)
 {
 #if !defined(__BORLANDC__)
@@ -510,7 +495,6 @@ void spell_geister_bannen(void)
 #endif
 }
 
-/* Borlandified and identical */
 void spell_geister_rufen(void)
 {
 #if !defined(__BORLANDC__)
@@ -519,7 +503,6 @@ void spell_geister_rufen(void)
 	ds_writew(0xac0e, -2);
 }
 
-/* Borlandified and identical */
 void spell_heptagon(void)
 {
 #if !defined(__BORLANDC__)
@@ -528,7 +511,6 @@ void spell_heptagon(void)
 	ds_writew(0xac0e, -2);
 }
 
-/* Borlandified and identical */
 void spell_kraehenruf(void)
 {
 	signed short caster_level;
@@ -557,7 +539,6 @@ void spell_kraehenruf(void)
 	FIG_do_spell_damage(damage);
 }
 
-/* Borlandified and identical */
 void spell_skelettarius(void)
 {
 	Bit8u *enemy;
@@ -612,7 +593,6 @@ void spell_skelettarius(void)
 
 /* Elemente / Elements */
 
-/* Borlandified and identical */
 void spell_elementare(void)
 {
 #if !defined(__BORLANDC__)
@@ -621,7 +601,6 @@ void spell_elementare(void)
 	ds_writew(0xac0e, -2);
 }
 
-/* Borlandified and identical */
 void spell_nihilatio(void)
 {
 #if !defined(__BORLANDC__)
@@ -629,7 +608,6 @@ void spell_nihilatio(void)
 #endif
 }
 
-/* Borlandified and identical */
 void spell_solidirid(void)
 {
 #if !defined(__BORLANDC__)
@@ -640,7 +618,6 @@ void spell_solidirid(void)
 
 /* Bewegung / Movement */
 
-/* Borlandified and identical */
 void spell_axxeleratus(void)
 {
 	signed short hero_pos;
@@ -684,7 +661,6 @@ void spell_axxeleratus(void)
 
 }
 
-/* Borlandified and identical */
 void spell_foramen(void)
 {
 	signed short x;
@@ -716,7 +692,6 @@ void spell_foramen(void)
 	ds_writew(0xd013, 1);
 }
 
-/* Borlandified and identical */
 void spell_motoricus(void)
 {
 #if !defined(__BORLANDC__)
@@ -724,7 +699,6 @@ void spell_motoricus(void)
 #endif
 }
 
-/* Borlandified and identical */
 void spell_spurlos(void)
 {
 #if !defined(__BORLANDC__)
@@ -732,7 +706,6 @@ void spell_spurlos(void)
 #endif
 }
 
-/* Borlandified and identical */
 /* TODO: this is a stub as long as select_teleport_dest() is not implemented */
 void spell_transversalis(void)
 {
@@ -765,7 +738,6 @@ void spell_transversalis(void)
 	ds_writew(0x7de5, ds_writew(0x7de7, -1));
 }
 
-/* Borlandified and identical */
 void spell_ueber_eis(void)
 {
 #if !defined(__BORLANDC__)
@@ -777,7 +749,6 @@ void spell_ueber_eis(void)
 
 /* Heilung / Healing */
 
-/* Borlandified and identical */
 void spell_balsam(void)
 {
 
@@ -831,7 +802,6 @@ void spell_balsam(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_hexenspeichel(void)
 {
 	signed short le;
@@ -879,7 +849,6 @@ void spell_hexenspeichel(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_klarum_purum(void)
 {
 	signed short poison;
@@ -919,7 +888,6 @@ void spell_klarum_purum(void)
 	}
 }
 
-/* Borlandified and identical */
 void spell_ruhe_koerper(void)
 {
 	/* Set pointer to hero target */
@@ -935,7 +903,6 @@ void spell_ruhe_koerper(void)
 		(char*)get_spelltarget() + 0x10);
 }
 
-/* Borlandified and identical */
 void spell_tiere_heilen(void)
 {
 
@@ -968,7 +935,6 @@ void spell_tiere_heilen(void)
 
 /* Hellsicht / Clarvoyance */
 
-/* Borlandified and identical */
 void spell_adleraug(void)
 {
 	signed short slot;
@@ -987,7 +953,6 @@ void spell_adleraug(void)
 		(char*)get_spelluser() + 0x10);
 }
 
-/* Borlandified and identical */
 RealPt spell_analues(void)
 {
 	signed short item_id;
