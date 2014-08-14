@@ -5321,10 +5321,16 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xd9: {
-		return 0;
+		spell_adleraug();
+		return 1;
 	}
 	case 0xde: {
-		return 0;
+		RealPt retval;
+		retval = spell_analues();
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);

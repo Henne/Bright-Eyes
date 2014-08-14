@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 37/39
+ *	Functions rewritten 39/39
  *
 */
 
@@ -22,6 +22,7 @@
 #include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -961,6 +962,84 @@ void spell_tiere_heilen(void)
 		/* set AE costs to AE */
 		ds_writew(0xac0e, ae);
 	}
+}
+
+
+
+/* Hellsicht / Clarvoyance */
+
+/* Borlandified and identical */
+void spell_adleraug(void)
+{
+	signed short slot;
+	signed short hero_pos;
+
+	hero_pos = get_hero_index(get_spelluser());
+
+	slot = get_free_mod_slot();
+
+	/* Perception / Sinnesschaerfe + 7 */
+	set_mod_slot(slot, 0x21c, get_spelluser() + 0x13b, 7, hero_pos);
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x60),
+		(char*)get_spelluser() + 0x10);
+}
+
+/* Borlandified and identical */
+RealPt spell_analues(void)
+{
+	signed short item_id;
+	signed short i;
+	signed short item_pos;
+
+	/* set analyzation capabilities */
+	if (ds_readw(IN_ACADEMY) == 99) {
+		ds_writew(0xe5b2, 99);
+	}
+
+	item_pos = select_item_to_drop(get_spelluser());
+	item_id = host_readws(get_spelluser() + 14 * item_pos + 0x196);
+
+	strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_dtp(0xd0));
+
+	if (item_id) {
+
+		for (i = 0; ds_readws(0xac3c + i * 5) != -1; i++) {
+
+			if (ds_readws(0xac3c + i * 5) == item_id) {
+
+				/* check if the spellcaster is able to analyze this item */
+				if (ds_readws(0xac3e + i * 5) <= ds_readws(0xe5b2)) {
+
+					/* copy the matching result string */
+					strcpy((char*)Real2Host(ds_readd(0xd2eb)),
+						(char*)get_dtp(ds_readbs(0xac40 + i * 5) * 4));
+
+					/* set the magic flag */
+					or_ptr_bs(get_spelluser() + item_pos * 14 + 0x19a, 0x80);
+					break;
+				} else {
+					/* nothing found string */
+					strcpy((char*)Real2Host(ds_readd(0xd2eb)),
+						(char*)get_dtp(0xdc));
+					break;
+				}
+			}
+		}
+	}
+
+	if (ds_readws(IN_ACADEMY) != 99) {
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0xd4),
+			(char*)get_spelluser() + 0x10,
+			(char*)Real2Host(ds_readd(0xd2eb)));
+	}
+
+	return (RealPt)ds_readd(0xd2eb);
 }
 
 #if !defined(__BORLANDC__)

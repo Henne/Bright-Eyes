@@ -98,6 +98,11 @@ void spell_klarum_purum(void);
 void spell_ruhe_koerper(void);
 /* 0xd4 */
 void spell_tiere_heilen(void);
+/* 0xd9 */
+void spell_adleraug(void);
+/* 0xde */
+RealPt spell_analues(void);
+
 
 #if !defined(__BORLANDC__)
 }
