@@ -23,6 +23,10 @@ struct dummy {
 	signed short a[3];
 };
 
+struct dummy2 {
+	char a[40];
+};
+
 //000
 /**
 	GUI_names_grammar - makes a grammatical wordgroup
@@ -50,7 +54,7 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 
 		lp1 = (signed short*)(p_datseg + 0x270);
 
-		while (((l4 = host_readw((Bit8u*)(lp1++))) != -1) && (l4 != index));
+		while (((l4 = host_readws((Bit8u*)(lp1++))) != -1) && (l4 != index));
 
 		if (l4 == index) {
 			flag += 4;
@@ -89,11 +93,12 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		ds_writew(0xa9eb, 0);
 
 #if !defined(__BORLANDC__)
-	D1_LOG("%s\n", (char*)p_datseg + 0xe50b + l4 * 40);
+	return (RealPt)RealMake(datseg, 0xe50b + (l4 * 40));
+#else
+	/* TODO: Sorry dear ! */
+	return (RealPt) (&((struct dummy2*)(p_datseg + 0xe50b))[l4]);
 #endif
 
-	/* TODO: BCC calculates the return value in another order */
-	return (RealPt)RealMake(datseg, 0xe50b + (l4 * 40));
 }
 
 //1a7
@@ -254,15 +259,10 @@ unsigned short GUI_count_lines(Bit8u *str)
 				/* TODO: this caused a crash on
 					no_way() in the city */
 				str_loc[di] = 0x0d;
-				/* TODO: BCC produces other code here */
 				str_loc = str_loc + di;
 			} else {
-				/* TODO: BCC merges both writes to str_loc */
-				if (1) {
-					str_loc[si] = 0x0d;
-					/* TODO: BCC produces other code here */
-					str_loc = si + str_loc + 1;
-				}
+				str_loc[si] = 0x0d;
+				str_loc = &str_loc[si + 1];
 			}
 
 			if (++lines == ds_readw(0xe4d9))
@@ -275,7 +275,7 @@ unsigned short GUI_count_lines(Bit8u *str)
 			di = si;
 
 		if (str_loc[si] == 0x40) {
-			str_loc = str_loc + si + 1;
+			str_loc = &str_loc[si + 1];
 			si = -1;
 			v6 = di = width_line = 0;
 			if (++lines == ds_readw(0xe4d9))
