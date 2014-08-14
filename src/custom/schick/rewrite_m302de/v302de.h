@@ -44,6 +44,7 @@
 #define TREASURE_MAPS	(0x3332)	/* array char[9] */
 #define GOT_MAIN_QUEST	(0x334c)
 #define QUESTED_MONTHS	(0x334e)
+#define IN_ACADEMY	(0x3362)	/* s16 */
 #define NPC_MONTHS	(0x3470)
 #define CURRENT_INFORMER	(0x3612)
 #define DUNGEON_LIGHT	(0x3613)	/* char (0,1,2) */
