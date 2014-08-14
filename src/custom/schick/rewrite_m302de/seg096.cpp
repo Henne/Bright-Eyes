@@ -396,7 +396,12 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 			continue;
 		}
 
-		if (l4 == (char)0xf0 || l4 == (char)0xf1 || l4 == (char)0xf2 || l4 == (char)0xf3) {
+		/* changes of the text color are only control bytes */
+		if (l4 == (unsigned char)0xf0 ||
+			l4 == (unsigned char)0xf1 ||
+			l4 == (unsigned char)0xf2 ||
+			l4 == (unsigned char)0xf3)
+		{
 			ds_writew(0xd2c5, l4 - 0xf0);
 			continue;
 		}
