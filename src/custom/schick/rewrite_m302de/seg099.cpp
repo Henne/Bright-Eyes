@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 34/39
+ *	Functions rewritten 35/39
  *
 */
 
@@ -16,6 +16,7 @@
 #include "seg006.h"
 #include "seg007.h"
 #include "seg039.h"
+#include "seg047.h"
 #include "seg074.h"
 #include "seg075.h"
 #include "seg096.h"
@@ -874,6 +875,46 @@ void spell_hexenspeichel(void)
 		}
 
 		add_hero_le(get_spelltarget(), ds_readws(0xac0e) / 2);
+	}
+}
+
+/* Borlandified and identical */
+void spell_klarum_purum(void)
+{
+	signed short poison;
+
+	/* Set pointer to hero target */
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+	poison = hero_is_poisoned(get_spelltarget());
+
+	if (!poison) {
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x54),
+			(char*)get_spelltarget() + 0x10);
+
+		ds_writew(0xac0e, 0);
+		return;
+	}
+
+	/* AE-cost = poison cost */
+	ds_writew(0xac0e, ds_readws(0x2c70 + poison * 2));
+
+	if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
+		/* not enough AE */
+		ds_writew(0xac0e, -2);
+	} else {
+		/* reset poison */
+		host_writeb(get_spelltarget() + poison * 5 + 0xd7, 0);
+		host_writeb(get_spelltarget() + poison * 5 + 0xd6, 1);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x58),
+			(char*)get_spelltarget() + 0x10);
 	}
 }
 

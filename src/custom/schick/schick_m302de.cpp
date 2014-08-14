@@ -5309,7 +5309,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xca: {
-		return 0;
+		spell_klarum_purum();
+		return 1;
 	}
 	case 0xcf: {
 		return 0;
