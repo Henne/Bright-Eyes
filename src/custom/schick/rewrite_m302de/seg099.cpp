@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 35/39
+ *	Functions rewritten 36/39
  *
 */
 
@@ -916,6 +916,22 @@ void spell_klarum_purum(void)
 			(char*)get_dtp(0x58),
 			(char*)get_spelltarget() + 0x10);
 	}
+}
+
+/* Borlandified and identical */
+void spell_ruhe_koerper(void)
+{
+	/* Set pointer to hero target */
+	ds_writed(SPELLTARGET,
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+
+	/* set the flag */
+	host_writeb(get_spelltarget() + 0x95, 1);
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0xcc),
+		(char*)get_spelltarget() + 0x10);
 }
 
 #if !defined(__BORLANDC__)

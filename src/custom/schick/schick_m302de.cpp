@@ -5313,7 +5313,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xcf: {
-		return 0;
+		spell_ruhe_koerper();
+		return 1;
 	}
 	case 0xd4: {
 		return 0;

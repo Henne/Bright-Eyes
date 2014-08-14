@@ -94,6 +94,8 @@ void spell_balsam(void);
 void spell_hexenspeichel(void);
 /* 0xca */
 void spell_klarum_purum(void);
+/* 0xcf */
+void spell_ruhe_koerper(void);
 
 #if !defined(__BORLANDC__)
 }
