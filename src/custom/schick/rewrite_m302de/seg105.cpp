@@ -382,7 +382,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 #if 1
 							host_writew(hero + 0x196 + 2 + di * 14,
 								(item_stackable(item_p)) ? si :
-									(item_bit2(item_p)) ?
+									(item_useable(item_p)) ?
 										ds_readbs(0x8aa + host_readbs(item_p + 4) * 3): 0);
 #else
 
@@ -390,7 +390,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							if (item_stackable(item_p))
 								/* write stackable items */
 								host_writew(hero + 0x196 + 2 + di * 14, si);
-							else if (item_bit2(item_p))
+							else if (item_useable(item_p))
 									/* unknown */
 									host_writew(hero + 0x196 + 2 + di * 14,
 										ds_readbs(0x8aa + host_readbs(item_p + 4) * 3));

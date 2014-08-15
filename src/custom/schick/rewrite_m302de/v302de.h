@@ -16,6 +16,7 @@
 #endif
 
 
+#define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
 #define UNICORN_MET	(0x2464)
 #define UNICORN_GET_MAP	(0x2465)
 #define UNICORN_TIMER	(0x2466)
@@ -106,6 +107,10 @@
 #define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
+#define USED_ITEM_DESC	(0xe5c6)	/* pointer to the item description */
+#define USED_ITEM_ID	(0xe5ca)	/* s16 used_item ID */
+#define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
+#define ITEMUSER	(0xe5ce)	/* pointer to hero */
 
 #if !defined(__BORLANDC__)
 
@@ -601,12 +606,12 @@ static inline unsigned short item_weapon(Bit8u *item) {
 }
 
 /**
- * item_bit2() -	check if a item is bit2
+ * item_useable() -	check if a item is useable
  * @item:	ptr to item
  *
- * 0 = non set / 1 = set
+ * 0 = no / 1 = yes
  */
-static inline unsigned short item_bit2(Bit8u *item) {
+static inline unsigned short item_useable(Bit8u *item) {
 	if (((host_readb(item + 0x02) >> 2) & 1) == 0)
 		return 0;
 	else
@@ -653,7 +658,7 @@ static inline unsigned short item_herb_potion(Bit8u *item) {
 }
 
 /**
- * item_herb_undropable() -	check if a item is undropable
+ * item_undropable() -	check if a item is undropable
  * @item:	ptr to item
  *
  * 0 = dropable / 1 = undropable
@@ -675,6 +680,10 @@ static inline Bit8u *get_spelltarget() {
 
 static inline Bit8u *get_spelltarget_e() {
 	return Real2Host(ds_readd(SPELLTARGET_E));
+}
+
+static inline Bit8u *get_itemuser() {
+	return Real2Host(ds_readd(ITEMUSER));
 }
 
 static inline Bit8u *get_fname(unsigned short off) {
@@ -903,7 +912,7 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 
 #define item_armor(item)	((*(struct item_status*)(item + 0x2)).armor)
 #define item_weapon(item)	((*(struct item_status*)(item + 0x2)).weapon)
-#define item_bit2(item)		((*(struct item_status*)(item + 0x2)).bit2)
+#define item_useable(item)	((*(struct item_status*)(item + 0x2)).useable)
 #define item_food(item)		((*(struct item_status*)(item + 0x2)).food)
 #define item_stackable(item)	((*(struct item_status*)(item + 0x2)).stackable)
 #define item_herb_potion(item)	((*(struct item_status*)(item + 0x2)).herb_potion)
@@ -912,6 +921,8 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 #define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
 #define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
 #define get_spelltarget_e() (Bit8u*)ds_readd(SPELLTARGET_E)
+
+#define get_itemuser() (Bit8u*)ds_readd(ITEMUSER)
 
 #define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
 #define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
