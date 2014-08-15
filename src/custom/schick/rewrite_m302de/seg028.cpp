@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 13/19
+	Functions rewritten: 14/19
 */
 
 #include <string.h>
@@ -228,6 +228,50 @@ void load_area_description(unsigned short type)
 void call_load_area(unsigned short type)
 {
 	load_area_description(type);
+}
+
+void unused_store(signed short nr)
+{
+	signed short width;
+	signed short height;
+	Bit8u *ptr;
+	struct nvf_desc nvf;
+	signed short size;
+
+	nvf.dst = Real2Host(ds_readd(0xd303)) + 30000;
+	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.nr = nr;
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	process_nvf(&nvf);
+
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	width = host_readws((Bit8u*)&width);
+	height = host_readws((Bit8u*)&height);
+#endif
+
+	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x53c0), 0);
+	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x53c0) + 1, 1);
+	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x53c0) + 2, 2);
+	EMS_map_memory(ds_readws(0xbd92), 0, 3);
+
+	size = width * height;
+	memmove(Real2Host(RealMake(ds_readw(0x4bac), ds_readw(0x4baa) + ds_readws(0x5ec2))),
+			Real2Host(RealMake(ds_readw(0xd303 + 2), ds_readws(0xd303) + 0x7530)),
+			size);
+
+	ptr = nr * 5 + Real2Host(ds_readd(0xbd8c));
+
+	host_writeb(ptr, ds_readws(0x5ec0));
+	host_writeb(ptr + 1, ds_readws(0x5ec2) >> 8);
+	host_writew(ptr + 2, width);
+	host_writeb(ptr + 4, height);
+
+	ds_writew(0x5ec0, ((ds_readws(0x5ec2) + size) >> 14) + ds_readws(0x5ec0));
+	ds_writew(0x5ec2, ((((ds_readws(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
+
 }
 
 void load_map(void)

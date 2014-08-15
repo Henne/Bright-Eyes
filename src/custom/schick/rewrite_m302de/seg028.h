@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+//0x20
+void unused_store(signed short);
 //0x2a
 void load_area_description(unsigned short);
 //0x34
