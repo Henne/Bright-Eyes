@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg107 (using items)
- *	Functions rewritten: 2/14
+ *	Functions rewritten: 5/14
  */
 
 #include <stdio.h>
@@ -25,10 +25,10 @@ namespace M302de {
 
 static void (*handler[])(void) = {
 	NULL,
-	item_ring,
-	dummy2,
-	dummy3,
-	dummy4,
+	item_arcano,
+	item_read_recipe,
+	item_read_document,
+	item_armatrutz,
 	dummy5,
 	dummy6,
 	dummy7,
@@ -97,14 +97,14 @@ void use_item(signed short item_pos, signed short hero_pos)
 }
 
 /* Borlandified and identical */
-void item_ring(void)
+void item_arcano(void)
 {
 	signed short b1_index;
 
 	/* save index off buffer1 */
 	b1_index = ds_readws(0x26bf);
 
-	/* load */
+	/* load SPELLTXT*/
 	load_buffer_1(0xde);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
@@ -121,33 +121,94 @@ void item_ring(void)
 	}
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
+		/* need to reload buffer1 */
 		load_buffer_1(b1_index);
 	}
-
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
 }
 
-void dummy2(void)
+/* Borlandified and identical */
+void item_read_recipe(void)
 {
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	Bit8u *str;
+
+	switch (ds_readws(USED_ITEM_ID)) {
+	case 0xa7: str = get_ltx(0x9fc); break;
+	case 0xa9: str = get_ltx(0xa00); break;
+	case 0xca: str = get_ltx(0xa24); break;
+	case 0xcb: str = get_ltx(0xa28); break;
+	case 0xcc: str = get_ltx(0xa2c); break;
+	case 0xcd: str = get_ltx(0xa30); break;
+	case 0xce: str = get_ltx(0xa34); break;
+	case 0xba: str = get_ltx(0xaa4); break;
+	case 0xf0: str = get_ltx(0xaa8); break;
+	case 0xf2: str = get_ltx(0xab0); break;
+	case 0xf3: str = get_ltx(0xab4); break;
+	case 0xf4: str = get_ltx(0xab8); break;
+	case 0xf1: str = get_ltx(0xaac); break;
+	}
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_ltx(0x9f0),
+		(char*)str);
+
+	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
-void dummy3(void)
+/* Borlandified and identical */
+void item_read_document(void)
 {
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	Bit8u *str;
+	signed short bak;
+
+	switch (ds_readws(USED_ITEM_ID)) {
+	case 0xaa: str = get_ltx(0xa04); break;
+	case 0xbb: str = get_ltx(0xa14); break;
+	case 0xbd: str = get_ltx(0xa18); break;
+	case 0xbe: str = get_ltx(0xa1c); break;
+	case 0xc0: str = get_ltx(0xa20); break;
+	case 0xde: str = get_ltx(0xa38); break;
+	case 0xe0: str = get_ltx(0xa3c); break;
+	case 0xeb: str = get_ltx(0xa44); break;
+	case 0xf7: str = get_ltx(0xbdc); break;
+	}
+
+	bak = ds_readws(0xbffd);
+	ds_writew(0xbffd, 7);
+	GUI_output(str);
+	ds_writew(0xbffd, bak);
 }
 
-void dummy4(void)
+/* Borlandified and identical */
+void item_armatrutz(void)
 {
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	signed short b1_index;
+
+	/* save index off buffer1 */
+	b1_index = ds_readws(0x26bf);
+
+	/* load SPELLTXT*/
+	load_buffer_1(0xde);
+
+	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
+
+	/* ask who should be affected */
+	host_writeb(get_spelluser() + 0x86,
+		select_hero_from_group(get_ltx(0x9f4)) + 1);
+
+	if (host_readbs(get_spelluser() + 0x86) > 0) {
+		/* use it */
+		spell_armatrutz();
+		/* decrement usage counter */
+		dec_ptr_ws(get_itemuser() + 0x198 + ds_readws(USED_ITEM_POS) * 14);
+
+		GUI_output(Real2Host(ds_readd(DTP2)));
+	}
+
+	if ((b1_index != -1) && (b1_index != 0xde)) {
+		/* need to reload buffer1 */
+		load_buffer_1(b1_index);
+	}
 }
 
 void dummy5(void)

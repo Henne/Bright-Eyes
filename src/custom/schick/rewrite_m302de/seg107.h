@@ -6,16 +6,16 @@ namespace M302de {
 void use_item(signed short, signed short);
 
 /* 0x25 */
-void item_ring(void);
+void item_arcano(void);
 
 /* 0x2a */
-void dummy2(void);
+void item_read_recipe(void);
 
 /* 0x2f */
-void dummy3(void);
+void item_read_document(void);
 
 /* 0x34 */
-void dummy4(void);
+void item_armatrutz(void);
 
 /* 0x39 */
 void dummy5(void);
