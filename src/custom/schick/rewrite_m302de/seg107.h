@@ -30,10 +30,10 @@ void item_orcdocument(void);
 void item_weapon_poison(void);
 
 /* 0x4d */
-void dummy9(void);
+void item_myastmatic(void);
 
 /* 0x52 */
-void dummy10(void);
+void item_hylailic(void);
 
 /* 0x57 */
 void dummy11(void);

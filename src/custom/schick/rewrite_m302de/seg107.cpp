@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg107 (using items)
- *	Functions rewritten: 9/14
+ *	Functions rewritten: 11/14
  */
 
 #include <stdio.h>
@@ -35,8 +35,8 @@ static void (*handler[])(void) = {
 	item_debtbook,
 	item_orcdocument,
 	item_weapon_poison,
-	dummy9,
-	dummy10,
+	item_myastmatic,
+	item_hylailic,
 	dummy11,
 	dummy12,
 	dummy13
@@ -402,20 +402,22 @@ void item_weapon_poison(void)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
-void dummy9(void)
+void item_myastmatic(void)
 {
 	/* MYASTMATIC, ID 238 */
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	if (ds_readws(IN_FIGHT) == 0) {
+		GUI_output(get_ltx(0xabc));
+		return;
+	}
 }
 
-void dummy10(void)
+void item_hylailic(void)
 {
 	/* HYLAILIC FIRE, ID 239 */
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	if (ds_readws(IN_FIGHT) == 0) {
+		GUI_output(get_ltx(0xabc));
+		return;
+	}
 }
 
 void dummy11(void)
