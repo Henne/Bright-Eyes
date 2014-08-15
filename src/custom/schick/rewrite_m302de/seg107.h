@@ -6,7 +6,7 @@ namespace M302de {
 void use_item(signed short, signed short);
 
 /* 0x25 */
-void dummy1(void);
+void item_ring(void);
 
 /* 0x2a */
 void dummy2(void);

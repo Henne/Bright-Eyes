@@ -249,6 +249,11 @@ static inline void dec_ptr_bs(Bit8u *p)
 	host_writebs(p, host_readbs(p) - 1);
 }
 
+static inline void dec_ptr_ws(Bit8u *p)
+{
+	host_writews(p, host_readws(p) - 1);
+}
+
 static inline void or_ptr_bs(Bit8u *p, const unsigned char val)
 {
 	host_writebs(p, host_readbs(p) | val);

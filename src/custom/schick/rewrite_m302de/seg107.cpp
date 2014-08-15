@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg107 (using items)
- *	Functions rewritten: 1/14
+ *	Functions rewritten: 2/14
  */
 
 #include <stdio.h>
@@ -9,8 +9,11 @@
 
 #include "seg002.h"
 #include "seg007.h"
+#include "seg026.h"
+#include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg101.h"
 #include "seg107.h"
 #include "seg108.h"
 
@@ -22,7 +25,7 @@ namespace M302de {
 
 static void (*handler[])(void) = {
 	NULL,
-	dummy1,
+	item_ring,
 	dummy2,
 	dummy3,
 	dummy4,
@@ -79,8 +82,10 @@ void use_item(signed short item_pos, signed short hero_pos)
 				consume(get_itemuser(), get_itemuser(), item_pos);
 
 			} else if ((host_readws(get_itemuser() + 14 * ds_readws(USED_ITEM_POS) + 0x198)) <= 0) {
+				/* magic item is used up */
 				GUI_output(get_ltx(0x9f8));
 			} else {
+				/* special item */
 #if !defined(__BORLANDC__)
 				func = handler[ds_readbs(0x8ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
 #else
@@ -91,8 +96,34 @@ void use_item(signed short item_pos, signed short hero_pos)
 	}
 }
 
-void dummy1(void)
+/* Borlandified and identical */
+void item_ring(void)
 {
+	signed short b1_index;
+
+	/* save index off buffer1 */
+	b1_index = ds_readws(0x26bf);
+
+	/* load */
+	load_buffer_1(0xde);
+
+	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
+
+	/* ask who should be affected */
+	host_writeb(get_spelluser() + 0x86,
+		select_hero_from_group(get_ltx(0x9f4)) + 1);
+
+	if (host_readbs(get_spelluser() + 0x86) > 0) {
+		/* use it */
+		spell_arcano();
+		/* decrement usage counter */
+		dec_ptr_ws(get_itemuser() + 0x198 + ds_readws(USED_ITEM_POS) * 14);
+	}
+
+	if ((b1_index != -1) && (b1_index != 0xde)) {
+		load_buffer_1(b1_index);
+	}
+
 #if !defined(__BORLANDC__)
 	D1_INFO("Item %s\n", __func__);
 #endif
