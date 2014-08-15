@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg107 (using items)
- *	Functions rewritten: 5/14
+ *	Functions rewritten: 9/14
  */
 
 #include <stdio.h>
@@ -14,6 +14,8 @@
 #include "seg096.h"
 #include "seg097.h"
 #include "seg101.h"
+#include "seg103.h"
+#include "seg105.h"
 #include "seg107.h"
 #include "seg108.h"
 
@@ -29,10 +31,10 @@ static void (*handler[])(void) = {
 	item_read_recipe,
 	item_read_document,
 	item_armatrutz,
-	dummy5,
-	dummy6,
-	dummy7,
-	dummy8,
+	item_flimflam,
+	item_debtbook,
+	item_orcdocument,
+	item_weapon_poison,
 	dummy9,
 	dummy10,
 	dummy11,
@@ -99,6 +101,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 /* Borlandified and identical */
 void item_arcano(void)
 {
+	/* RING ID 165 */
 	signed short b1_index;
 
 	/* save index off buffer1 */
@@ -182,6 +185,8 @@ void item_read_document(void)
 /* Borlandified and identical */
 void item_armatrutz(void)
 {
+	/*	SILVER CORONET
+		ID 171, 245 */
 	signed short b1_index;
 
 	/* save index off buffer1 */
@@ -211,36 +216,195 @@ void item_armatrutz(void)
 	}
 }
 
-void dummy5(void)
+/* Borlandified and identical */
+void item_flimflam(void)
 {
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	/* AMULET, ID 174 */
+	signed short b1_index;
+
+	/* save index off buffer1 */
+	b1_index = ds_readws(0x26bf);
+
+	/* load SPELLTXT*/
+	load_buffer_1(0xde);
+
+	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
+
+	spell_flimflam();
+
+	/* decrement usage counter */
+	dec_ptr_ws(get_itemuser() + 0x198 + ds_readws(USED_ITEM_POS) * 14);
+
+	if ((b1_index != -1) && (b1_index != 0xde)) {
+		/* need to reload buffer1 */
+		load_buffer_1(b1_index);
+	}
+
+	GUI_output(Real2Host(ds_readd(DTP2)));
+
 }
 
-void dummy6(void)
+/* Borlandified and identical */
+void item_debtbook(void)
 {
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	/* DEBTBOOK, ID 176 */
+	if (ds_readbs(0x333c) != 0) {
+
+		/* mark this event */
+		ds_writeb(0x333c, 0);
+
+		/* 15 AP */
+		add_hero_ap_all(15);
+
+		/* mark informer Hjore as known */
+		ds_writeb(0x3365, 1);
+	}
+
+	GUI_output(get_ltx(0xa08));
 }
 
-void dummy7(void)
+/* Borlandified and identical */
+void item_orcdocument(void)
 {
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	/* ORCDOCUMENT, ID 179 */
+
+	/* Languages + 4, or already read successful */
+	if ((test_skill(get_itemuser(), 0x28, 4) > 0) || (ds_readb(0x333d) != 0)) {
+
+		if (!ds_readbs(0x333d)) {
+			add_group_ap(20);
+			ds_writeb(0x333d, 1);
+		}
+
+		GUI_output(get_ltx(0xa10));
+	} else {
+		GUI_output(get_ltx(0xa0c));
+	}
 }
 
-void dummy8(void)
+/* Borlandified and identical */
+void item_weapon_poison(void)
 {
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	/*	WEAPON POISON, EXPURGICUM, VOMICUM
+		ID 55-59, 141-144, 166, 168 */
+
+	signed short bottle;
+
+	if ((host_readws(get_itemuser() + 0x1c0) != 0) &&
+		(host_readws(get_itemuser() + 0x1c0) != 9) &&
+		(host_readws(get_itemuser() + 0x1c0) != 19) &&
+		(host_readws(get_itemuser() + 0x1c0) != 12))
+	{
+
+		switch (ds_readws(USED_ITEM_ID)) {
+		case 168 : {
+			/* VOMICUM */
+			or_ptr_bs(get_itemuser() + 0x1c4, 0x40);
+
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 168), 1);
+
+			bottle = 42;
+			break;
+		}
+		case 166 : {
+			/* EXPURGICUM */
+			or_ptr_bs(get_itemuser() + 0x1c4, 0x20);
+
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 166), 1);
+
+			bottle = 42;
+			break;
+		}
+		case 55: {
+			/* SHURIN-BULB POISON / KROETENSCHEMELGIFT */
+			host_writeb(get_itemuser() + 0x1c9, 1);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 55), 1);
+			bottle = 31;
+			break;
+		}
+		case 56: {
+			/* ARAX POISON / ARAXGIFT */
+			host_writeb(get_itemuser() + 0x1c9, 2);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 56), 1);
+			bottle = 31;
+			break;
+		}
+		case 57: {
+			/* FEAR POISON / ANGSTGIFT */
+			host_writeb(get_itemuser() + 0x1c9, 3);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 57), 1);
+			bottle = 31;
+			break;
+		}
+		case 58: {
+			/* SLEPPING POISON / SCHALFGIFT */
+			host_writeb(get_itemuser() + 0x1c9, 4);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 58), 1);
+			bottle = 31;
+			break;
+		}
+		case 59: {
+			/* GOLDEN GLUE / GOLDLEIM */
+			host_writeb(get_itemuser() + 0x1c9, 5);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 59), 1);
+			bottle = 31;
+			break;
+		}
+		case 141: {
+			/* LOTUS POISON / LOTUSGIFT */
+			host_writeb(get_itemuser() + 0x1c9, 7);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 141), 1);
+			bottle = 31;
+			break;
+		}
+		case 142: {
+			/* KUKRIS */
+			host_writeb(get_itemuser() + 0x1c9, 8);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 142), 1);
+			bottle = 31;
+			break;
+		}
+		case 143: {
+			/* BANE DUST / BANNSTAUB */
+			host_writeb(get_itemuser() + 0x1c9, 9);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 143), 1);
+			bottle = 31;
+			break;
+		}
+		case 144: {
+			host_writeb(get_itemuser() + 0x1c9, 6);
+			host_writeb(get_itemuser() + 0x1ca, 5);
+			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 144), 1);
+			bottle = 31;
+			break;
+		}
+		}
+
+		give_hero_new_item(get_itemuser(), bottle, 1, 1);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0xb8c),
+			(char*)Real2Host(GUI_names_grammar(0x8000, host_readws(get_itemuser() + 0x1c0), 0)));
+	} else {
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0xc94),
+			(char*)get_itemuser() + 0x10);
+	}
+
+	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
 void dummy9(void)
 {
+	/* MYASTMATIC, ID 238 */
 #if !defined(__BORLANDC__)
 	D1_INFO("Item %s\n", __func__);
 #endif
@@ -248,6 +412,7 @@ void dummy9(void)
 
 void dummy10(void)
 {
+	/* HYLAILIC FIRE, ID 239 */
 #if !defined(__BORLANDC__)
 	D1_INFO("Item %s\n", __func__);
 #endif
@@ -255,6 +420,7 @@ void dummy10(void)
 
 void dummy11(void)
 {
+	/* BOOK, ID 246 */
 #if !defined(__BORLANDC__)
 	D1_INFO("Item %s\n", __func__);
 #endif
@@ -262,6 +428,8 @@ void dummy11(void)
 
 void dummy12(void)
 {
+	/*	LANTERN, TORCH, TINDERBOX, LANTERN
+		ID 25, 65, 85, 249 */
 #if !defined(__BORLANDC__)
 	D1_INFO("Item %s\n", __func__);
 #endif
@@ -269,6 +437,8 @@ void dummy12(void)
 
 void dummy13(void)
 {
+	/*	MAGIC BREADBAG, BAG
+		ID 184, 221 */
 #if !defined(__BORLANDC__)
 	D1_INFO("Item %s\n", __func__);
 #endif

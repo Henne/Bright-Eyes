@@ -18,16 +18,16 @@ void item_read_document(void);
 void item_armatrutz(void);
 
 /* 0x39 */
-void dummy5(void);
+void item_flimflam(void);
 
 /* 0x3e */
-void dummy6(void);
+void item_debtbook(void);
 
 /* 0x43 */
-void dummy7(void);
+void item_orcdocument(void);
 
 /* 0x48 */
-void dummy8(void);
+void item_weapon_poison(void);
 
 /* 0x4d */
 void dummy9(void);
