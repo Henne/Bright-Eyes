@@ -1538,7 +1538,7 @@ static int seg002(unsigned short offs) {
 	}
 	case 0x535f: {
 		/* APs verteilen */
-		signed int group_ap = CPU_Pop32();
+		Bit32s group_ap = CPU_Pop32();
 		CPU_Push32(group_ap);
 
 		D1_INFO("Gruppe erhaelt %d AP\n", group_ap);

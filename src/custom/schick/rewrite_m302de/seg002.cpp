@@ -3996,7 +3996,7 @@ void add_hero_ap(Bit8u *hero, Bit32s ap)
  *	add_group_ap - divides AP to the current group
  *	@ap:	AP to divide
  */
-void add_group_ap(signed int ap) {
+void add_group_ap(Bit32s ap) {
 
 	Bit8u *hero_i;
 	unsigned short i;
