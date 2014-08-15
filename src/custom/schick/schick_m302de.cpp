@@ -64,6 +64,7 @@
 #include "seg104.h"
 #include "seg105.h"
 #include "seg106.h"
+#include "seg107.h"
 #include "seg108.h"
 #include "seg109.h"
 #include "seg111.h"
@@ -5864,6 +5865,18 @@ static int seg106(unsigned short offs)
 	}
 }
 
+static int seg107(unsigned short offs)
+{
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg108(unsigned short offs)
 {
 	switch (offs) {
@@ -6285,7 +6298,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1480:	return seg104(offs);
 		case 0x1485:	return seg105(offs);
 		case 0x148c:	return seg106(offs);
-		case 0x1491:	return 0;
+		case 0x1491:	return seg107(offs);
 		case 0x1498:	return seg108(offs);
 		case 0x149b:	return seg109(offs);
 		case 0x14a7:	return 0;
