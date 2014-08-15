@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg107 (using items)
- *	Functions rewritten: 11/14
+ *	Functions rewritten: 12/14
  */
 
 #include <stdio.h>
@@ -37,7 +37,7 @@ static void (*handler[])(void) = {
 	item_weapon_poison,
 	item_myastmatic,
 	item_hylailic,
-	dummy11,
+	item_magic_book,
 	dummy12,
 	dummy13
 };
@@ -420,12 +420,18 @@ void item_hylailic(void)
 	}
 }
 
-void dummy11(void)
+void item_magic_book(void)
 {
 	/* BOOK, ID 246 */
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+
+	/* print message */
+	GUI_output(get_ltx(0xbb4));
+
+	/* Heptagon +2 */
+	add_ptr_bs(get_itemuser() + 0x152, 2);
+
+	/* drop the book */
+	drop_item(get_itemuser(), get_item_pos(get_itemuser(), 246), 1);
 }
 
 void dummy12(void)

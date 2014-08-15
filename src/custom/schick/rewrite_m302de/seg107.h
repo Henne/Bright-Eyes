@@ -36,7 +36,7 @@ void item_myastmatic(void);
 void item_hylailic(void);
 
 /* 0x57 */
-void dummy11(void);
+void item_magic_book(void);
 
 /* 0x5c */
 void dummy12(void);
