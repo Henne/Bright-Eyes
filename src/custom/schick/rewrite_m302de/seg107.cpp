@@ -452,6 +452,12 @@ void item_brenne(void)
 	if (ds_readws(USED_ITEM_ID) == 249) {
 		/* refill burning lantern */
 
+#ifdef M302de_ORIGINAL_BUGFIX
+		if (get_spelluser() != get_itemuser()) {
+			ds_writed(SPELLUSER, ds_readd(ITEMUSER));
+		}
+#endif
+
 		/* look for oil at the spelluser() ??? */
 		pos = get_item_pos(get_spelluser(), 41);
 
