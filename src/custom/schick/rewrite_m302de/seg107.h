@@ -42,7 +42,7 @@ void item_magic_book(void);
 void item_brenne(void);
 
 /* 0x61 */
-void dummy13(void);
+void item_bag(void);
 
 #if !defined(__BORLANDC__)
 }

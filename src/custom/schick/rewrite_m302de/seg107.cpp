@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg107 (using items)
- *	Functions rewritten: 13/14
+ *	Functions rewritten: 14/14 (complete)
  */
 
 #include <stdio.h>
@@ -39,7 +39,7 @@ static void (*handler[])(void) = {
 	item_hylailic,
 	item_magic_book,
 	item_brenne,
-	dummy13
+	item_bag
 };
 
 #endif
@@ -518,13 +518,33 @@ void item_brenne(void)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
-void dummy13(void)
+/* Borlandified and identical */
+void item_bag(void)
 {
 	/*	MAGIC BREADBAG, BAG
 		ID 184, 221 */
+
+	Bit8u *ptr;
+
+	if ((ds_readbs(DUNGEON_INDEX) == 7) && (ds_readbs(DUNGEON_LEVEL) == 0)) {
+		/* set ptr to the map */
+		ptr = p_datseg + 0xbd95;
+
+		/* remove the wall there */
+		host_writeb(ptr + 0x3a, 1);
+	}
 #if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
+	else {
+		D1_INFO("WARNUNG:\tDer BEUTEL wurde nicht im ersten Level der Magierruine geoeffnet!\n");
+		D1_INFO("\t\tEventuell kann das Spiel nicht mehr erfolgreich beendet werden.\n");
+	}
 #endif
+
+	/* print message */
+	GUI_output(get_ltx(0xc1c));
+
+	/* drop the BAG */
+	drop_item(get_itemuser(), get_item_pos(get_itemuser(), 221), 1);
 }
 
 #if !defined(__BORLANDC__)
