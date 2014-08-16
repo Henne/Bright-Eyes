@@ -39,7 +39,7 @@ void item_hylailic(void);
 void item_magic_book(void);
 
 /* 0x5c */
-void dummy12(void);
+void item_brenne(void);
 
 /* 0x61 */
 void dummy13(void);

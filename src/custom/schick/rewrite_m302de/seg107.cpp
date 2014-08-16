@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg107 (using items)
- *	Functions rewritten: 12/14
+ *	Functions rewritten: 13/14
  */
 
 #include <stdio.h>
@@ -38,7 +38,7 @@ static void (*handler[])(void) = {
 	item_myastmatic,
 	item_hylailic,
 	item_magic_book,
-	dummy12,
+	item_brenne,
 	dummy13
 };
 
@@ -434,13 +434,82 @@ void item_magic_book(void)
 	drop_item(get_itemuser(), get_item_pos(get_itemuser(), 246), 1);
 }
 
-void dummy12(void)
+/* Borlandified and identical */
+void item_brenne(void)
 {
 	/*	LANTERN, TORCH, TINDERBOX, LANTERN
 		ID 25, 65, 85, 249 */
-#if !defined(__BORLANDC__)
-	D1_INFO("Item %s\n", __func__);
-#endif
+	signed short b1_index;
+	signed short pos;
+	signed short refill_pos;
+
+	/* save index off buffer1 */
+	b1_index = ds_readws(0x26bf);
+
+	/* load SPELLTXT*/
+	load_buffer_1(0xde);
+
+	if (ds_readws(USED_ITEM_ID) == 249) {
+		/* refill burning lantern */
+
+		/* look for oil at the spelluser() ??? */
+		pos = get_item_pos(get_spelluser(), 41);
+
+		if (pos != -1) {
+			/* look for the burning lantern at the spelluser() ??? */
+			refill_pos = get_item_pos(get_spelluser(), 249);
+
+			/* reset the burning time of the lantern */
+			host_writeb(get_itemuser() + 0x19e + refill_pos * 14, 100);
+
+			/* drop the oil */
+			drop_item(get_itemuser(), pos, 1);
+
+			/* give a copper flask */
+			give_hero_new_item(get_itemuser(), 42, 0, 1);
+
+			/* prepare message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x1dc),
+				(char*)get_itemuser() + 0x10);
+		} else {
+			/* prepare message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x1e0),
+				(char*)get_itemuser() + 0x10);
+		}
+	} else {
+
+		if (get_item_pos(get_itemuser(), 85) == -1) {
+			/* No tinderbox */
+			/* prepare message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x1e8),
+				(char*)get_itemuser() + 0x10);
+		} else {
+
+			if (ds_readws(USED_ITEM_ID) == 65) {
+				/* TORCH */
+				ds_writew(0xaee8, 1);
+			} else if (ds_readws(USED_ITEM_ID) == 25 ) {
+				/* LANTERN */
+				ds_writew(0xaee8, 2);
+			} else {
+				ds_writew(0xaee8, 0);
+			}
+
+			ds_writed(SPELLUSER, ds_readd(ITEMUSER));
+
+			spell_brenne();
+		}
+	}
+
+	if ((b1_index != -1) && (b1_index != 0xde)) {
+		/* need to reload buffer1 */
+		load_buffer_1(b1_index);
+	}
+
+	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
 void dummy13(void)
