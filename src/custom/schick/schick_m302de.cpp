@@ -5874,16 +5874,12 @@ static int seg107(unsigned short offs)
 		CPU_Push16(hero_pos);
 		CPU_Push16(item_pos);
 		D1_LOG("use_item(%d, %d)\n", item_pos, hero_pos);
-#if 0
+
 		use_item(item_pos, hero_pos);
 
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	default:
-		return 0;
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 		exit(1);
 	}
