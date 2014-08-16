@@ -1,6 +1,10 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg044 (Fightsystem)
-	Functions rewritten: 6/6 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of seg044 (Fightsystem)
+ *	Functions rewritten: 6/6 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg044.cpp
 */
 
 #include "string.h"
