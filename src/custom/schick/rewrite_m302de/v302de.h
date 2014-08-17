@@ -82,6 +82,7 @@
 #define TEXT_LTX	(0xc3b5)
 #define ACTION		(0xc3d9)	/* ? short */
 #define ANI_MAIN_PTR	(0xce35)
+#define TEXTCOLOR	(0xd2c5)
 #define TEXTCOLOR_BG	(0xd2c7)
 #define TEXTCOLOR_FG	(0xd2c9)
 #define DTP2		(0xd2f3)

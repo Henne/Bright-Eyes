@@ -1,9 +1,9 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 13/16
+ *      Functions rewritten 15/16
  *
  *      Functions called rewritten 12/13
- *      Functions uncalled rewritten 1/3
+ *      Functions uncalled rewritten 3/3
 */
 
 #include <string.h>
@@ -26,36 +26,104 @@ namespace M302de {
 #endif
 
 //000
-//129
-//15e
-char GUI_lookup_char_height(char c, signed short *p)
+/* Borlandified and identical */
+void GUI_unused1(Bit8u *a1, signed short a2, signed short a3)
 {
-	short i;
+	signed short l1;
+	signed short l2;
+	signed char c;
 
-	for (i = 0; i != 210; i+=3) {
-		if (c != ds_readb(0xab42 + i))
-			continue;
+	l1 = 0;
 
-		*p = ds_readb(0xab42 + i + 2) & 0xff;
-		return ds_readb(0xab42 + i + 1) & 0xff;
+	update_mouse_cursor();
+
+	if (ds_readws(0xd2d1) == 1) {
+		a2 = GUI_get_first_pos_centered(a1, a2, ds_readws(0xd2d5), 1);
+	}
+
+	l2 = a2;
+
+	while (c = host_readbs(a1 + l1++)) {
+
+		if ((c == 0x0d) || (c == 0x40)) {
+			a3 += 10;
+
+			a2 = (ds_readws(0xd2d1) == 1) ?
+				GUI_get_first_pos_centered(a1 + l1, ds_readws(0xd2d9), ds_readws(0xd2d5), 1) : l2;
+
+		} else if (c == 0x7e) {
+			if (a2 < ds_readws(0xd313)) {
+				a2 = ds_readws(0xd313);
+			} else if (a2 < ds_readws(0xd315)) {
+				a2 = ds_readws(0xd315);
+			} else if (a2 < ds_readws(0xd317)) {
+				a2 = ds_readws(0xd317);
+			} else if (a2 < ds_readws(0xd319)) {
+				a2 = ds_readws(0xd319);
+			} else if (a2 < ds_readws(0xd31b)) {
+				a2 = ds_readws(0xd31b);
+			} else if (a2 < ds_readws(0xd31d)) {
+				a2 = ds_readws(0xd31d);
+			} else if (a2 < ds_readws(0xd31f)) {
+				a2 = ds_readws(0xd31f);
+			}
+		} else if ((c == (signed char)0xf0) || (c == (signed char)0xf1) || (c == (signed char)0xf2) || (c == (signed char)0xf3)) {
+			ds_writew(TEXTCOLOR, (unsigned char)c + 0xff10);
+		} else {
+			a2 += GUI_unused2(c, (RealPt)RealMake(a3, a2));
+		}
+	}
+
+	refresh_screen_size();
+}
+
+//129
+/* Borlandified and identical */
+signed short GUI_unused2(signed short c, RealPt p)
+{
+	signed short v1;
+	signed short v2;
+
+	v2 = GUI_lookup_char_height(c, &v1);
+#if !defined(__BORLANDC__)
+	v1 = host_readws((Bit8u*)&v1);
+#endif
+	GUI_1c2(v2, v1, p);
+
+	return v1;
+}
+
+//15e
+/* Borlandified and identical */
+signed short GUI_lookup_char_height(signed char c, signed short *p)
+{
+	signed short i;
+
+	for (i = 0; i != 201; i+=3) {
+		if (c == ds_readbs(0xab42 + i)) {
+
+			host_writew((Bit8u*)p, ((signed short)ds_readbs(0xab44 + i)) & 0xff);
+			return ds_readbs(0xab43 + i) & 0xff;
+		}
 	}
 
 	if (c == (char)0x7e || c == (char)0xf0 || c == (char)0xf1 || c == (char)0xf2 || c == (char)0xf3) {
-		*p = 0;
-		return 0;
-	} else {
-		*p = 8;
-		return 0;
+		return host_writews((Bit8u*)p, 0);
 	}
+
+	host_writew((Bit8u*)p, 8);
+
+	return 0;
 }
 
 //1c2
-void GUI_1c2(unsigned short v1, unsigned short v2, RealPt v3)
+/* Borlandified and identical */
+void GUI_1c2(signed short v1, signed short v2, RealPt v3)
 {
 
 	GUI_blank_char();
-	GUI_font_to_buf(Real2Host(ds_readd(0xd2bd + v1 * 8)));
-	GUI_write_char_to_screen(v3, 8, v2);
+	GUI_font_to_buf(Real2Host(ds_readd(0xd2bd)) + v1 * 8);
+	GUI_write_char_to_screen(Real2Phys(v3), 8, v2);
 }
 
 //1f8

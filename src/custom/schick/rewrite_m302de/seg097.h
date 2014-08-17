@@ -2,10 +2,12 @@
 namespace M302de {
 #endif
 
+//20
+void GUI_unused1(Bit8u*, signed short, signed short);
 //25
-char GUI_lookup_char_height(char c, signed short *p);
+signed short GUI_lookup_char_height(signed char c, signed short *p);
 //2a
-void GUI_1c2(unsigned short v1, unsigned short v2, unsigned short v3, unsigned short v4);
+void GUI_1c2(signed short, signed short, RealPt);
 //2f
 signed short GUI_enter_text(Bit8u *, unsigned short, unsigned short, unsigned short, unsigned short);
 //0x34
@@ -16,6 +18,8 @@ void GUI_output(Bit8u*);
 signed short GUI_bool(Bit8u*);
 //0x43
 signed short GUI_radio(Bit8u*, signed char, ...);
+//0x48
+signed short GUI_unused2(signed short, RealPt);
 //4d
 void GUI_draw_radio_bg(Bit16u, Bit16u, Bit16u, Bit16u);
 // 52
