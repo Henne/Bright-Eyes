@@ -301,6 +301,7 @@ void GUI_draw_radio_bg(signed short header, signed short options, signed short w
 }
 
 //564
+/* Borlandified and identical */
 void GUI_copy_smth(unsigned short width, unsigned short height)
 {
 	ds_writew(0xc011, ds_readw(0xbfff));
@@ -311,23 +312,33 @@ void GUI_copy_smth(unsigned short width, unsigned short height)
 	do_pic_copy(0);
 }
 
+/* Borlandified and identical */
 void GUI_output(Bit8u *str)
 {
 	GUI_input(str, 0);
 }
 
+/* Borlandified and identical */
 signed short GUI_input(Bit8u *str, unsigned short num)
 {
-	signed short fg_bak, bg_bak;
-	Bit16s retval, l2, l3, l4, l5, l6, l7;
-	Bit16s l_si, l_di;
+	signed short retval;
+	signed short l2;
+	signed short fg_bak;
+	signed short bg_bak;
+	signed short l3;
+	signed short l4;
+	signed short l5;
+	signed short l6;
+	signed short l7;
+	signed short l_si;
+	signed short l_di;
 
 	retval = 0;
 
 	l7 = ds_readw(0xc3cb);
 	ds_writew(0xc3cb, 0);
 
-	if (!NOT_NULL(str) || *str == '\0' || ds_readw(AUTOFIGHT) != 0)
+	if (!NOT_NULL(str) || !host_readbs(str) || ds_readw(AUTOFIGHT) != 0)
 		return -1;
 
 	l6 = ds_readw(0xe113);
@@ -340,7 +351,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	l5 = ds_readw(0xd2d5);
 
 	l_di = (ds_readw(0xbffd) * 32) + 32;
-	ds_writew(0xbfff, (320 - l_di) / 2 + ds_readw(0x2ca2));
+	ds_writew(0xbfff, ((signed short)(320u - l_di) >> 1) + ds_readws(0x2ca2));
 
 	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
 	ds_writew(0xd2d5, l_di - 8);
@@ -352,7 +363,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 
 	l2 = (l_si + 2) * 8;
 
-	ds_writew(0xc001, (200 - l2) / 2 + ds_readw(0x2ca4));
+	ds_writew(0xc001, ((signed short)(200u - l2) >> 1) + ds_readw(0x2ca4));
 	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
 
 	get_textcolor(&fg_bak, &bg_bak);
@@ -368,10 +379,10 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	refresh_screen_size();
 
 	if (num != 0) {
-		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), (l_di - num * 6) / 2 + ds_readw(0xbfff), l_si * 8 + ds_readw(0xc001) - 2, num, 0) == -1) {
-			retval = -1;
+		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), ds_readws(0xbfff) + ((signed short)(l_di - num * 6) >> 1), ds_readws(0xc001) + l_si * 8 -2, num, 0) != -1) {
+			retval = atol((char*)Real2Host(ds_readd(0xd2ef)));
 		} else {
-			retval = (unsigned short)atol((char*)Real2Host(ds_readd(0xd2ef)));
+			retval = -1;
 		}
 	} else {
 		/* set action table */
@@ -399,7 +410,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	ds_writew(0xd2d7, l4);
 	ds_writew(0xd2d5, l5);
 
-	ds_writew(0xc3d9, 0);
+	ds_writew(ACTION, 0);
 	ds_writeb(0x2c98, 0);
 
 	ds_writew(0xe113, l6);
