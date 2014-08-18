@@ -265,10 +265,11 @@ dummy:
 
 //4ae
 //static
-void GUI_draw_radio_bg(Bit16u header, Bit16u options, Bit16u width,
-								Bit16u height)
+/* Borlandified and identical */
+void GUI_draw_radio_bg(signed short header, signed short options, signed short width,
+								signed short height)
 {
-	Bit16u i;
+	signed short i;
 
 	/* set upper left coordinates */
 	ds_writew(0xc011, ds_readw(0xbfff));

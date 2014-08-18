@@ -21,7 +21,7 @@ signed short GUI_radio(Bit8u*, signed char, ...);
 //0x48
 signed short GUI_unused2(signed short, RealPt);
 //4d
-void GUI_draw_radio_bg(Bit16u, Bit16u, Bit16u, Bit16u);
+void GUI_draw_radio_bg(signed short,signed short, signed short, signed short);
 // 52
 //static
 void GUI_copy_smth(unsigned short width, unsigned short height);

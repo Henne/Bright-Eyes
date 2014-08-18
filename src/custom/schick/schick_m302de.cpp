@@ -8505,10 +8505,10 @@ static int n_seg097(unsigned short offs)
 	/* Callers: 3 */
 	case 0x4ae: {
 		CPU_Pop16();
-		Bit16u v1 = CPU_Pop16();
-		Bit16u v2 = CPU_Pop16();
-		Bit16u v3 = CPU_Pop16();
-		Bit16u v4 = CPU_Pop16();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
 
 		D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
 			v1, v2, v3, v4);
