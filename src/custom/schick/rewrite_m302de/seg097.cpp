@@ -420,6 +420,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	return retval;
 }
 
+/* Borlandified and identical */
 signed short GUI_bool(Bit8u *text)
 {
 	signed short ret_radio;
@@ -429,10 +430,7 @@ signed short GUI_bool(Bit8u *text)
 	ret_radio = GUI_radio(text, 2, get_ltx(0x08), get_ltx(0x0c));
 	ds_writew(0xac0b, 0);
 
-	if (ret_radio == 1)
-		return 1;
-	else
-		return 0;
+	return (ret_radio == 1) ? 1 : 0;
 }
 
 
