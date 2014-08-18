@@ -599,42 +599,39 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 
 //0xb43
 //static
-signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
-			unsigned short width)
+/* Borlandified and identical */
+signed short GUI_menu_input(signed short positions, signed short h_lines,
+			signed short width)
 {
-	Bit16s l1, l2, l3, l4, l5, l6;
-	Bit16s retval;
+	volatile signed short l1, l2, l3, l4, l5, l6;
 	signed short done;
+	signed short retval;
 
 	l5 = -1;
 	done = 0;
 
-	ds_writew(0xe5ae, 1);
-	ds_writew(0xe5b0, 1);
-	ds_writew(0xe5b0, ds_readw(0xe5b0) + ds_readw(0xe5ac));
+	ds_writew(0xe5b0, ds_writew(0xe5ae, 1));
+	add_ds_ws(0xe5b0, ds_readws(0xe5ac));
 
 	if (positions != 0) {
 		l6 = h_lines * 8;
 		l3 = ds_readw(0x299c);
 		l4 = ds_readw(0x299e);
-		ds_writew(0x299c, ds_readw(0xbfff) + 90);
-		ds_writew(0x29a0, ds_readw(0xbfff) + 90);
-		l1 = ds_readw(0xc001) + l6;
-		l2 = ds_readw(0xe5ac) * 8 + l1;
-		ds_writew(0x299e, l2);
-		ds_writew(0x29a2, l2);
+		ds_writew(0x29a0, ds_writew(0x299c, ds_readw(0xbfff) + 90));
+		l1 = ds_readws(0xc001) + l6;
+
+		ds_writew(0x29a2, ds_writew(0x299e, (l2 = l1 + ds_readws(0xe5ac) * 8)));
 
 		mouse_move_cursor(ds_readw(0x299c), ds_readw(0x299e));
 
-		ds_writew(0x298e, ds_readw(0xbfff) + width - 16);
-		ds_writew(0x298a, ds_readw(0xbfff));
-		ds_writew(0x2988, ds_readw(0xc001) + l6);
-		ds_writew(0x298c, positions * 8 + l6 + ds_readw(0xc001) - 1);
+		ds_writew(0x298e, ds_readws(0xbfff) + width - 16);
+		ds_writew(0x298a, ds_readws(0xbfff));
+		ds_writew(0x2988, ds_readws(0xc001) + l6);
+
+		ds_writew(0x298c, l6 + ds_readws(0xc001) - 1 + positions * 8);
 		refresh_screen_size();
 
-		ds_writew(0xc3d3, 0);
-		ds_writew(0xc3d1, 0);
-		ds_writew(0xc3d5, 0);
+		ds_writew(0xc3d5, ds_writew(0xc3d1, ds_writew(0xc3d3, 0)));
 
 		while (!done) {
 			ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x29cc));
@@ -648,42 +645,39 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 			}
 
 			if (ds_readw(0xc3d3) != 0 ||
-				ds_readw(0xc3d9) == 1 ||
-				ds_readw(0xc3d9) == 0x51) {
+				ds_readw(ACTION) == 1 ||
+				ds_readw(ACTION) == 0x51) {
 
 				retval = -1;
 				done = 1;
 				ds_writew(0xc3d3, 0);
 			}
 
-			if (ds_readw(0xc3d9) == 0x1c) {
+			if (ds_readw(ACTION) == 0x1c) {
 				retval = ds_readw(0xe5b0);
 				done = 1;
 			}
 
 			/* Key UP */
-			if (ds_readw(0xc3d9) == 0x48) {
-				ds_writew(0xe5b0, ds_readw(0xe5b0) - 1);
-				if (ds_readw(0xe5b0) + 1 == 1)
+			if (ds_readw(ACTION) == 0x48) {
+				if (dec_ds_ws_post(0xe5b0) == 1)
 					ds_writew(0xe5b0, positions);
 			}
 			/* Key DOWN */
-			if (ds_readw(0xc3d9) == 0x50) {
-				ds_writew(0xe5b0, ds_readw(0xe5b0) + 1);
-				if (ds_readw(0xe5b0) - 1 == positions)
+			if (ds_readw(ACTION) == 0x50) {
+				if (inc_ds_ws_post(0xe5b0) == positions)
 					ds_writew(0xe5b0, 1);
 			}
 
 			if (ds_readw(0x299e) != l2) {
 				l2 = ds_readw(0x299e);
-				ds_writew(0xe5b0, (l2 - l1) / 8 + 1);
+				ds_writew(0xe5b0, ((l2 - l1) >> 3) + 1);
 			}
 
 			if (ds_readw(0xac0b) != 0) {
-				if (ds_readw(0xc3d9) == 0x2c) {
-					retval = 1;
-					done = 1;
-				} else if (ds_readw(0xc3d9) == 0x31) {
+				if (ds_readw(ACTION) == 0x2c) {
+					retval = done = 1;
+				} else if (ds_readw(ACTION) == 0x31) {
 					retval = 2;
 					done = 1;
 				}
@@ -692,10 +686,8 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 
 		update_mouse_cursor();
 
-		ds_writew(0x299c, l3);
-		ds_writew(0x29a0, l3);
-		ds_writew(0x299e, l4);
-		ds_writew(0x29a2, l4);
+		ds_writew(0x29a0, ds_writew(0x299c, l3));
+		ds_writew(0x29a2, ds_writew(0x299e, l4));
 		ds_writew(0x298e, 319);
 		ds_writew(0x298a, 0);
 		ds_writew(0x2988, 0);
@@ -704,13 +696,14 @@ signed short GUI_menu_input(unsigned short positions, unsigned short h_lines,
 		mouse_move_cursor(ds_readw(0x299c), ds_readw(0x299e));
 
 	} else {
-		delay_or_keypress(10000);
-		if (ds_readw(0xc3d9) != 0)
-			retval = -1;
+		do {
+			delay_or_keypress(10000);
+		} while (ds_readw(ACTION) == 0);
+
+		retval = -1;
 	}
 
-	ds_writew(0xe5ae, 0);
-	ds_writew(0xe5ac, 0);
+	ds_writew(0xe5ac, ds_writew(0xe5ae, 0));
 
 	return retval;
 }

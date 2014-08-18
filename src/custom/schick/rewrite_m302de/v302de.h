@@ -230,9 +230,19 @@ static inline signed short inc_ds_ws(Bit16u off)
 	return ds_writew(off, ds_readws(off) + 1);
 }
 
+static inline signed short inc_ds_ws_post(Bit16u off)
+{
+	return ds_writew(off, ds_readws(off) + 1) - 1;
+}
+
 static inline Bit16s dec_ds_ws(Bit16u off)
 {
 	return ds_writew(off, ds_readws(off) - 1);
+}
+
+static inline Bit16s dec_ds_ws_post(Bit16u off)
+{
+	return ds_writew(off, ds_readws(off) - 1) + 1;
 }
 
 static inline void inc_ptr_bs(Bit8u *p)
@@ -808,6 +818,9 @@ extern char ds[0xf7af];
 
 #define inc_ds_ws(o) ++(*(Bit16s*)(ds + o))
 #define dec_ds_ws(o) --(*(Bit16s*)(ds + o))
+
+#define inc_ds_ws_post(o) (*(Bit16s*)(ds + o))++
+#define dec_ds_ws_post(o) (*(Bit16s*)(ds + o))--
 
 #define or_ds_bs(o, v) *(Bit8s*)(ds + o) |= v
 #define xor_ds_bs(o, v) *(Bit8s*)(ds + o) ^= v
