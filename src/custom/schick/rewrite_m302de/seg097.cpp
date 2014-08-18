@@ -469,19 +469,18 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 }
 
 //0x893
+/* Borlandified and identical */
 signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		signed short options, ...)
 {
 	va_list arguments;
-
-	char *lp;
-	unsigned short i;
-	Bit16s l2, l3, l4, l5, l6;
+	signed short i;
+	signed short l2, l3, l4, l5, l6;
 	signed short fg_bak, bg_bak;
-	Bit16s l7, l8, l9, l10;
+	signed short l7, l8, l9, l10;
 	signed short retval;
-	Bit16s l11, l12, l13;
-	Bit16s l_si, l_di;
+	signed short l11, l12, l13;
+	signed short l_si, l_di;
 
 	l13 = ds_readw(0x29ae);
 	l12 = ds_readw(0xc3cb);
@@ -499,11 +498,11 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	ds_writew(0xbffd, 9);
 
 	l_di = ds_readw(0xbffd) * 32 + 32;
-	ds_writew(0xbfff, (320 - l_di) / 2 + ds_readw(0x2ca2));
+	ds_writew(0xbfff, ((signed short)(320 - l_di) >> 1) + ds_readw(0x2ca2));
 	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
 	ds_writew(0xd2d5, l_di - 8);
 	l10 = ds_readw(0xd313);
-	ds_writew(0xd313, ds_readw(0xd2d9) + ds_readw(0xd2d5) - 24);
+	ds_writew(0xd313, ds_readws(0xd2d9) + ds_readws(0xd2d5) - 24);
 	ds_writew(0xe4db, 40);
 	ds_writew(0xe4d9, 5);
 
@@ -512,12 +511,12 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	if (NOT_NULL(name))
 		l_si += 2;
 
-	if (l_si < ds_readw(0xe4d9))
+	if (l_si < ds_readws(0xe4d9))
 		l_si = ds_readw(0xe4d9) - 1;
 
-	l4 = (signed char)options + l_si;
+	l4 = l_si + (signed char)options;
 	l5 = (l4 + 2) * 8;
-	ds_writew(0xc001, (200 - (l5 + 2)) / 2);
+	ds_writew(0xc001, (200 - (l5 + 2)) >> 1);
 	ds_writew(0xd2d7, ds_readw(0xc001) + 5);
 
 	update_mouse_cursor();
@@ -551,24 +550,23 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		/* set text color */
 		ds_writew(0xd2c5, 0);
 
-		ds_writew(0xd2d7, ds_readw(0xd2d7) + 14);
-		ds_writew(0xe4d9, ds_readw(0xe4d9) - 2);
+		add_ds_ws(0xd2d7, 14);
+		sub_ds_ws(0xe4d9, 2);
 	}
 
-	if (l_si != 0)
+	if (l_si != 0) {
 		GUI_print_header(text);
+	}
 
-	ds_writew(0xe4d9, 0);
-	ds_writew(0xe4db, 0);
+	ds_writew(0xe4db, ds_writew(0xe4d9, 0));
 
-	if (options != 0) {
+	if ((signed char)options != 0) {
 		l2 = ds_readw(0xd2d9) + 8;
-		l3 = (l_si + 1) * 8 + ds_readw(0xc001);
+		l3 = ds_readws(0xc001) + (l_si + 1) * 8;
 
 		va_start(arguments, options);
 		for (i = 0; i < (signed char)options; l3 += 8, i++) {
-			lp = va_arg(arguments, char*);
-			GUI_print_string((Bit8u*)lp, l2, l3);
+			GUI_print_string((Bit8u*)va_arg(arguments, char*), l2, l3);
 		}
 	}
 
@@ -589,9 +587,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 
 	ds_writew(0xe113, l11);
 
-	ds_writeb(0x2c98, 0);
-	/* reset action */
-	ds_writeb(0xc3d9, 0);
+	ds_writew(ACTION, ds_writebs(0x2c98, 0));
 
 	ds_writew(0xc3cb, l12);
 
