@@ -708,21 +708,23 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 	return retval;
 }
 
+/* Borlandified and identical */
 signed short GUI_radio(Bit8u *text, signed char options, ...)
 {
+	signed short i;
+	signed short l_di;
+
 	va_list arguments;
-	char *str;
-	Bit16s l3, l4, l5, l6;
+	signed short l3, l4, l5, l6;
 	signed short fg_bak, bg_bak;
-	Bit16s l7, l8, l9, l10, l11;
+	signed short l7, l8, l9, l10, l11;
 	signed short retval;
-	Bit16s l12;
-	Bit16s i, l_di;
+	signed short l12;
 
 	l12 = ds_readw(0xc3cb);
 	ds_writew(0xc3cb, 0);
 
-	if (options == 0) {
+	if (!options) {
 		GUI_output(text);
 		return 0;
 	}
@@ -734,17 +736,17 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	l9 = ds_readw(0xd2d5);
 
 	l11 = ds_readw(0xbffd) * 32 + 32;
-	ds_writew(0xbfff, (320 - l11) / 2 + ds_readw(0x2ca2));
+	ds_writew(0xbfff, ((320 - l11) >> 1) + ds_readw(0x2ca2));
 	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
 	ds_writew(0xd2d5, l11 - 8);
 
 	l10 = ds_readw(0xd313);
-	ds_writew(0xd313, ds_readw(0xd2d9) + ds_readw(0xd2d5) - 24);
+	ds_writew(0xd313, ds_readws(0xd2d9) + ds_readws(0xd2d5) - 24);
 
 	l_di = GUI_count_lines(text);
-	l5 = options + l_di;
+	l5 = l_di + options;
 	l6 = (l5 + 2) * 8;
-	ds_writew(0xc001, (200 - l6 + 2) / 2 + ds_readw(0x2ca4));
+	ds_writew(0xc001, ((200 - l6 + 2) >> 1) + ds_readw(0x2ca4));
 	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
 
 	update_mouse_cursor();
@@ -756,7 +758,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 		GUI_print_header(text);
 
 	l3 = ds_readw(0xd2d9) + 8;
-	l4 = (l_di + 1) * 8 + ds_readw(0xc001);
+	l4 = ds_readws(0xc001) + (l_di + 1) * 8;
 
 	va_start(arguments, options);
 	for (i = 0; i < options; l4 += 8, i++) {
@@ -765,12 +767,11 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
 			set_textcolor(0xc9, 0xdf);
 
-		str = va_arg(arguments, char*);
-		GUI_print_string((Bit8u*)str, l3, l4);
+		GUI_print_string((Bit8u*)va_arg(arguments, char*), l3, l4);
 
 		/* reset highlight special option */
 		if (ds_readw(0xc003) == 1 && ds_readw(0x2cdb) == i)
-			set_textcolor(0xdf, 0xff);
+			set_textcolor(0xff, 0xdf);
 	}
 
 	retval = GUI_menu_input(options, l_di + 1, l11);
@@ -783,13 +784,10 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	ds_writew(0xd2d7, l8);
 	ds_writew(0xd2d5, l9);
 	ds_writew(0xd313, l10);
-	ds_writeb(0x2c98, 0);
-
-	ds_writew(0xc3d9, 0);
+	ds_writew(ACTION, ds_writebs(0x2c98, 0));
 	ds_writew(0xc3cb, l12);
 
 	return retval;
-	/* TODO: 0xe48 - 0xf36 */
 }
 
 /**
