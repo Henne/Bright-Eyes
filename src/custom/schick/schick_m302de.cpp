@@ -8485,21 +8485,20 @@ static int n_seg097(unsigned short offs)
 	case 0x1f8: {
 		CPU_Pop16();
 		RealPt dst = CPU_Pop32();
-		unsigned short x = CPU_Pop16();
-		unsigned short y = CPU_Pop16();
-		unsigned short num = CPU_Pop16();
-		unsigned short v4 = CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s num = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
 		CPU_Push16(v4);
 		CPU_Push16(num);
 		CPU_Push16(y);
 		CPU_Push16(x);
 		CPU_Push32(dst);
 
-		D1_LOG("GUI_1f8(0x%x, %d, %d, %d, %d);",
-			dst, x, y, num, v4);
 
 		reg_ax = GUI_enter_text(Real2Host(dst),	x, y, num, v4);
-		D1_LOG(" = 0x%x\n", reg_ax);
+		D1_LOG("GUI_enter_text(0x%x, %d, %d, %d, %d); = 0x%x\n",
+			dst, x, y, num, v4, reg_ax);
 
 		return 1;
 	}

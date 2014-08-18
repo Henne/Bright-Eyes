@@ -128,14 +128,15 @@ void GUI_1c2(signed short v1, signed short v2, RealPt v3)
 
 //1f8
 //static
-signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsigned short num, unsigned short zero)
+/* Borlandified and identical */
+signed short GUI_enter_text(Bit8u* dst, signed short x, signed short y, signed short num, signed short zero)
 {
-	Bit8u *dst_start;
-	unsigned short si;
-	unsigned short di;
+	signed short di;
+	register signed short si;
 	signed short pos;
 	signed short c;
-	unsigned short length;
+	Bit8u *dst_start;
+	signed short length;
 
 	dst_start = dst;
 	update_mouse_cursor();
@@ -145,11 +146,11 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 
 	if (zero == 0) {
 		for (si = 0; si < num; si++) {
-			if (ds_readw(0x26b7) != 0 && length >= si) {
+			if ((ds_readws(0x26b7) != 0) && (length >= si)) {
 				GUI_print_char(0x20, di, y);
 				GUI_print_char(*dst, di, y);
-				dst++;
 				pos++;
+				dst++;
 				di += 6;
 				x = di;
 			} else {
@@ -168,88 +169,84 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 	ds_writew(0xc3d1, 0);
 
 	c = 0;
-	while (c != 0xd || pos == 0) {
-		/* This loop is evil */
-		do {} while (CD_bioskey(1) == 0 && ds_readw(0xc3d1) == 0);
+	while ((c != 0xd) || (pos == 0)) {
+		do {
+			goto dummy;
+dummy:
 
-		if (ds_readw(0xc3d1) != 0) {
-			ds_writew(0xc3d7, 0x0d);
-			ds_writew(0xc3d5, 0x00);
-			ds_writew(0xc3d1, 0x00);
-		} else {
-			ds_writew(0xc3d7, bc_bioskey(0));
-			ds_writew(0xc3d9, (ds_readw(0xc3d7) >> 8));
-		}
+			/* This loop is evil */
+			do {;} while ((CD_bioskey(1) == 0) && (ds_readws(0xc3d1) == 0));
 
-		ds_writew(0xc3d7, ds_readw(0xc3d7) & 0xff);
+			if (ds_readws(0xc3d1) != 0) {
+				ds_writew(0xc3d7, 0x0d);
+				ds_writew(0xc3d1, ds_writew(0xc3d5, 0x00));
+			} else {
+				ds_writew(ACTION, (signed short)(ds_writew(0xc3d7, bc_bioskey(0))) >> 8);
+				and_ds_ws(0xc3d7, 0xff);
+			}
 
-		if (ds_readw(0xc3d9) == 0 && ds_readw(0xc3d7) == 0)
-			continue;
+		} while ((ds_readws(ACTION) == 0) && (ds_readws(0xc3d7) == 0));
 
-		c = (signed short)ds_readw(0xc3d7);
+		c = ds_readws(0xc3d7);
 
-		if (c == 0x0d)
-			continue;
+		if (c == 0x0d) {
 
-		if (ds_readw(0xc3d9) == 1) {
+		} else if (ds_readw(ACTION) == 1) {
 			host_writeb(dst_start, 0);
 			refresh_screen_size();
-			ds_writew(0xc3d9, 0);
+			ds_writew(ACTION, 0);
 			return -1;
-		}
+		} else if (c == 8) {
+			if (pos > 0) {
 
-		if (c == 8) {
-			if (pos <= 0)
-				continue;
+				if ((zero == 1) && (pos != num)) {
+					GUI_print_char(0x20, di, y);
+				}
 
-			if (zero == 1 && pos != num)
+				di -= 6;
+				pos--;
+				dst--;
 				GUI_print_char(0x20, di, y);
-
-			di -= 6;
-			pos--;
-			dst--;
-			GUI_print_char(0x20, di, y);
-			GUI_print_char(0x5f, di, y);
-			continue;
-		}
+				GUI_print_char(0x5f, di, y);
+			}
+		} else
 
 		/* check if character is valid */
-		if (c < 0x20 && c > 0x7a &&
-			c != 0x81 && c != 0x84 && c != 0x94)
-				continue;
-		/* is_alpha(c) */
-		if (ds_readb(0xb4e9 + c) & 0xc)
-			c = toupper(c);
+		if (((c >= 0x20) && (c <= 0x7a)) ||
+			(c == 0x81) || (c == 0x84) || (c == 0x94))
+		{
+			/* is_alpha(c) */
+			if (ds_readb(0xb4e9 + c) & 0xc)
+				c = toupper(c);
 
-		/* ae */
-		if (c == 0x84)
-			c = (signed char)0x8e;
-		/* oe */
-		if (c == 0x94)
-			c = (signed char)0x99;
-		/* ue */
-		if (c == 0x81)
-			c = (signed char)0x9a;
+			/* ae */
+			if (c == 0x84)
+				c = (signed char)0x8e;
+			/* oe */
+			if (c == 0x94)
+				c = (signed char)0x99;
+			/* ue */
+			if (c == 0x81)
+				c = (signed char)0x9a;
 
-		/* are we at the end of the input field ? */
-		if (pos == num) {
-			dst--;
-			di -= 6;
-			pos--;
+			/* are we at the end of the input field ? */
+			if (pos == num) {
+				dst--;
+				di -= 6;
+				pos--;
+			}
+
+			host_writeb(dst++, c);
+			GUI_print_char(0x20, di, y);
+			GUI_print_char(c, di, y);
+			di += 6;
+			pos++;
+
+			if ((zero == 1) && (pos != num)) {
+				GUI_print_char(0x20, di, y);
+				GUI_print_char(0x5f, di, y);
+			}
 		}
-
-		host_writeb(dst++, (signed char)c);
-		GUI_print_char(0x20, di, y);
-		GUI_print_char((unsigned char)c, di, y);
-		di += 6;
-		pos++;
-
-		if (zero != 1)
-			continue;
-		if (pos == num)
-			continue;
-		GUI_print_char(0x20, di, y);
-		GUI_print_char(0x5f, di, y);
 	}
 
 	if (zero == 0) {
@@ -262,6 +259,7 @@ signed short GUI_enter_text(Bit8u* dst, unsigned short x, unsigned short y, unsi
 
 	host_writeb(dst, 0);
 	refresh_screen_size();
+
 	return 0;
 }
 

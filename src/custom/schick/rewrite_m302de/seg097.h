@@ -9,7 +9,7 @@ signed short GUI_lookup_char_height(signed char c, signed short *p);
 //2a
 void GUI_1c2(signed short, signed short, RealPt);
 //2f
-signed short GUI_enter_text(Bit8u *, unsigned short, unsigned short, unsigned short, unsigned short);
+signed short GUI_enter_text(Bit8u *, signed short, signed short, signed short, signed short);
 //0x34
 signed short GUI_input(Bit8u*, unsigned short);
 //0x39
