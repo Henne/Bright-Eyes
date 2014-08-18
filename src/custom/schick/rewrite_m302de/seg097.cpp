@@ -436,12 +436,13 @@ signed short GUI_bool(Bit8u *text)
 
 //0x7f4
 ///static
+/* Borlandified and identical */
 void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 	unsigned short offset)
 {
-	unsigned short i;
-	unsigned short x;
-	unsigned short y;
+	signed short i;
+	signed short x;
+	signed short y;
 
 	update_mouse_cursor();
 
@@ -449,7 +450,7 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 
 	if (old_pos != -1) {
 
-		x = (offset + old_pos) * 8 + ds_readw(0xc001) + 2;
+		x = ds_readws(0xc001) + (offset + old_pos) * 8 + 2;
 
 		/* clear the old button */
 		for (i = 0; i < 4; i++)
@@ -457,7 +458,7 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 				(signed char)0xd8);
 	}
 
-	x = (offset + new_pos) * 8 + ds_readw(0xc001) + 2;
+	x = ds_readws(0xc001) + (offset + new_pos) * 8 + 2;
 
 	/* fill the new button */
 	for (i = 0; i < 4; i++)
