@@ -8,6 +8,8 @@ void move(void);
 
 void door_frame(signed short, signed short, signed short, signed short);
 
+void loot_corpse(Bit8u*, Bit8u*, Bit8u*);
+
 void no_way();
 
 #if !defined(__BORLANDC__)

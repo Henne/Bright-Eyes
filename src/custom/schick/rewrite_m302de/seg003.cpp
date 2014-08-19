@@ -4,6 +4,8 @@
  *
 */
 
+#include <stdio.h>
+
 #include "v302de.h"
 
 #include "seg000.h"
@@ -173,6 +175,53 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
 
 		copy_solid(p2, p1, width, height, 208, l1, 0);
 	}
+}
+
+void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
+{
+	signed short answer;
+
+	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		(!host_readbs(p3)) ? (char*)get_ltx(0x82c) : (char*)get_ltx(0x83c),
+		p2);
+
+	if (!host_readbs(p3)) {
+
+		ds_writew(0xbffd, 7);
+
+		answer = GUI_radio(Real2Host(ds_readd(0xd2eb)), 3,
+					get_ltx(0x830),
+					get_ltx(0x834),
+					get_ltx(0x838)) - 1;
+
+		ds_writew(0xbffd, 3);
+
+		if (answer == 0) {
+#if !defined(__BORLANDC__)
+			/* TODO */
+#else
+			((void(*)(Bit8u*))(Real2Host(host_readd(p1 + 0xb))))(p1);
+#endif
+
+
+			if (!host_readbs(p3)) {
+				/* mark this corpse as: left alone */
+				host_writeb(p3, 1);
+				/* Boron - 20 */
+				sub_ds_ds(0x3162, 20);
+			}
+		} else if (answer == 1) {
+			if (!host_readbs(p3)) {
+				/* mark this corpse as: left alone */
+				host_writeb(p3, 1);
+				/* Boron + 20 */
+				add_ds_ds(0x3162, 20);
+			}
+		}
+	} else {
+		GUI_output(Real2Host(ds_readd(0xd2eb)));
+	}
+
 }
 
 
