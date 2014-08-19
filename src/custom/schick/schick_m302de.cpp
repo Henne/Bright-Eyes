@@ -3949,7 +3949,7 @@ static int seg045(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		Bit16s a3 = CPU_Pop16();
 
-		D1_INFO("seg045_0394(%d, %s, %d);\n",
+		D1_LOG("seg045_0394(%d, %s, %d);\n",
 			a1, schick_getCharname(hero), a3);
 		seg045_0394(a1, Real2Host(hero), a3);
 
@@ -3963,7 +3963,7 @@ static int seg045(unsigned short offs) {
 		RealPt enemy = CPU_Pop32();
 		Bit16s a3 = CPU_Pop16();
 
-		D1_INFO("seg045_0394(%d, enemy, %d);\n",
+		D1_LOG("seg045_0394(%d, enemy, %d);\n",
 			a1, a3);
 		seg045_0394(a1, Real2Host(enemy), a3);
 
@@ -8025,7 +8025,7 @@ static int n_seg045(unsigned short offs)
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
-		D1_INFO("seg045_0273(%d, %d, %d);\n", a1, a2, a3);
+		D1_LOG("seg045_0273(%d, %d, %d);\n", a1, a2, a3);
 		seg045_0273((signed char)a1, (signed char)a2, a3);
 
 		CPU_Push16(a3);
