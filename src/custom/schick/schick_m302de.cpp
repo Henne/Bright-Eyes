@@ -9003,8 +9003,10 @@ static int n_seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x02a3: {
-		D1_INFO("do_boar_hunt();\n");
-		return 0;
+		CPU_Pop16();
+		D1_LOG("hunt_wildboar();\n");
+		hunt_wildboar();
+		return 1;
 	}
 	case 0x047f: {
 		D1_INFO("do_bear_hunt();\n");

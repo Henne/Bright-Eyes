@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (2xTravelevent, hunt and helpers)
- *	Functions rewritten: 4/16
+ *	Functions rewritten: 5/16
  */
 
 #include <stdio.h>
@@ -145,6 +145,83 @@ void hunt_karen(void)
 		} else {
 			/* no hunting weapon in the group */
 			GUI_output(get_city(0x24));
+		}
+	}
+
+	resume_traveling();
+}
+
+/* Borlandified and identical */
+void hunt_wildboar(void)
+{
+	signed short answer;
+	Bit8u *hero;
+	signed short i;
+	signed short passed;
+
+	pause_traveling(25);
+
+	do {
+		answer = GUI_radio(get_city(0x28), 2, get_city(0x2c), get_city(0x30));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */
+		if ((get_first_hero_with_item(9) != -1) ||
+			(get_first_hero_with_item(19) != -1) ||
+			(get_first_hero_with_item(12) != -1) ||
+			(get_first_hero_with_item(5) != -1))
+		{
+
+			hero = get_hero(0);
+			/* make a STEALTH+0 test and count the heroes who passed it */
+			for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+
+				if ((host_readbs(hero + 0x21) != 0) &&
+					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					!hero_dead(hero) &&
+					(test_skill(hero, 13, 0) > 0))
+				{
+					passed++;
+				}
+			}
+
+			if (count_heroes_in_group() <= passed) {
+				/* all heros passed STEALTH */
+
+				GUI_output(get_city(0x3c));
+
+				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
+				hero = get_hero(0);
+				for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+
+					if ((host_readbs(hero + 0x21) != 0) &&
+						(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+						!hero_dead(hero) &&
+						(test_skill(hero, 7, 0) > 0))
+					{
+						passed++;
+					}
+				}
+
+				if ((count_heroes_in_group() / 2) <= passed) {
+					/* over the half of the group passed MISSLE WEAPON+0 */
+
+					GUI_output(get_city(0x44));
+					/* get 30 FOOD PACKAGES */
+					get_item(45, 1, 30);
+
+				} else {
+					/* everybody failed MISSLE WEAPON+0 */
+					GUI_output(get_city(0x40));
+				}
+			} else {
+				/* at least one hero failed STEALTH+0 */
+				GUI_output(get_city(0x38));
+			}
+		} else {
+			/* no hunting weapon in the group */
+			GUI_output(get_city(0x48));
 		}
 	}
 
