@@ -25,7 +25,7 @@ signed short select_hero_from_group(Bit8u *);
 /* 0x52 */
 signed short select_hero_ok(Bit8u *);
 /* 0x57 */
-unsigned short count_heroes_in_group(void);
+signed short count_heroes_in_group(void);
 /* 0x5c */
 unsigned short get_hero_CH_best();
 /* 0x61 */

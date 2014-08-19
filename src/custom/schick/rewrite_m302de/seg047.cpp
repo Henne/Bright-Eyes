@@ -623,11 +623,11 @@ signed short select_hero_ok_forced(Bit8u *title)
  *
  * Returns how many alive heros are in the group.
  */
-unsigned short count_heroes_in_group(void)
+signed short count_heroes_in_group(void)
 {
 	Bit8u *hero_i;
 	signed short i;
-	unsigned short retval;
+	signed short retval;
 
 	retval = 0;
 
