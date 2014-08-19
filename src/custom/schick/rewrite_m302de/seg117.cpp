@@ -20,6 +20,7 @@ namespace M302de {
 #endif
 
 /* static */
+/* Borlandified and identical */
 void pause_traveling(signed short ani_nr)
 {
 
@@ -41,16 +42,14 @@ void pause_traveling(signed short ani_nr)
 	ds_writeb(0xb132, 1);
 
 	/* c = b = a = 0 */
-	ds_writew(0xe113, 0);
-	ds_writew(0x2ca2, 0);
-	ds_writeb(TRAVELING, 0);
+	ds_writeb(TRAVELING, ds_writew(0x2ca2, ds_writew(0xe113, 0)));
 
 	ds_writew(0x2ca4, ani_nr == 21 ? 60: 70);
 	ds_writew(0xbffd, 9);
-
 }
 
 /* static */
+/* Borlandified and identical */
 void resume_traveling(void)
 {
 	ds_writew(0x2ca2, ds_readw(0xe5d9));
@@ -60,13 +59,10 @@ void resume_traveling(void)
 
 	set_var_to_zero();
 
-	/* b = a = 1 */
-	ds_writeb(TRAVELING, 1);
-	ds_writew(0x2846, 1);
+	ds_writew(0x2846, ds_writeb(TRAVELING, 1));
 
 	ds_writeb(0xe5d2, 0);
 	ds_writeb(0xb132, 0);
-
 }
 
 /* should be static */
