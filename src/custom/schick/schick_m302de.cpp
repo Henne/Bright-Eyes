@@ -4679,8 +4679,12 @@ static int seg076(unsigned short offs) {
 			return 0;
 		}
 		case 0x48: {
+			RealPt msg = CPU_Pop32();
+			CPU_Push32(msg);
+
 			D1_LOG("print_msg_with_first_hero()\n");
-			return 0;
+			print_msg_with_first_hero(Real2Host(msg));
+			return 1;
 		}
 		case 0x52: {
 			return 0;
@@ -8417,7 +8421,13 @@ static int n_seg076(unsigned short offs)
 		return 0;
 	}
 	case 0x576: {
-		return 0;
+		CPU_Pop16();
+		RealPt msg = CPU_Pop32();
+		CPU_Push32(msg);
+
+		D1_LOG("near print_msg_with_first_hero()\n");
+		print_msg_with_first_hero(Real2Host(msg));
+		return 1;
 	}
 	case 0x71d: {
 		return 0;
