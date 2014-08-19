@@ -52,6 +52,7 @@
 #include "seg072.h"
 #include "seg073.h"
 #include "seg075.h"
+#include "seg076.h"
 #include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -4668,6 +4669,29 @@ static int seg075(unsigned short offs) {
 	}
 }
 
+static int seg076(unsigned short offs) {
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("do_Dungeon()\n");
+			return 0;
+		}
+		case 0x25: {
+			return 0;
+		}
+		case 0x48: {
+			D1_LOG("print_msg_with_first_hero()\n");
+			return 0;
+		}
+		case 0x52: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg095(unsigned short offs) {
 	switch (offs) {
 		case 0x3e: {
@@ -6275,7 +6299,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x13b9:	return seg073(offs);
 		case 0x13bd:	return seg074(offs);
 		case 0x13c3:	return seg075(offs);
-		case 0x13cb:	return 0;
+		case 0x13cb:	return seg076(offs);
 		case 0x13d1:	return 0;
 		case 0x13d7:	return 0;
 		case 0x13dd:	return 0;
@@ -8386,6 +8410,38 @@ static int n_seg075(unsigned short offs)
 	}
 }
 
+static int n_seg076(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		return 0;
+	}
+	case 0x576: {
+		return 0;
+	}
+	case 0x71d: {
+		return 0;
+	}
+	case 0xc73: {
+		return 0;
+	}
+	case 0xd28: {
+		return 0;
+	}
+	case 0xdaa: {
+		return 0;
+	}
+	case 0xe89: {
+		return 0;
+	}
+	case 0x11e7: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
 
 static int n_seg095(unsigned short offs)
 {
@@ -9108,6 +9164,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x13b4)) return n_seg072(offs);
 	else if (is_ovrseg(0x13bd)) return n_seg074(offs);
 	else if (is_ovrseg(0x13c3)) return n_seg075(offs);
+	else if (is_ovrseg(0x13cb)) return n_seg076(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	else if (is_ovrseg(0x1442)) return n_seg097(offs);
 	else if (is_ovrseg(0x1449)) return n_seg098(offs);
