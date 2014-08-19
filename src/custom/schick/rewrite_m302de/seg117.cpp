@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (2xTravelevent, hunt and helpers)
- *	Functions rewritten: 3/16
+ *	Functions rewritten: 4/16
  */
 
 #include <stdio.h>
@@ -13,7 +13,10 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg047.h"
 #include "seg097.h"
+#include "seg103.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -63,6 +66,89 @@ void resume_traveling(void)
 
 	ds_writeb(0xe5d2, 0);
 	ds_writeb(0xb132, 0);
+}
+
+/* Borlandified and identical */
+void hunt_karen(void)
+{
+	signed short answer;
+	Bit8u *hero;
+	signed short passed;
+	signed short i;
+
+	pause_traveling(21);
+
+	do {
+		answer = GUI_radio(get_city(0x00), 2, get_city(0x04), get_city(0x08));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		/* check for a hunting weapon, BOWS, CROSSBOWS or SPEAR */
+		if ((get_first_hero_with_item(9) != -1) ||
+			(get_first_hero_with_item(19) != -1) ||
+			(get_first_hero_with_item(12) != -1) ||
+			(get_first_hero_with_item(5) != -1))
+		{
+
+			hero = get_hero(0);
+			/* make a STEALTH+2 test and count the heroes who passed it */
+			for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+
+				if ((host_readbs(hero + 0x21) != 0) &&
+					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					!hero_dead(hero) &&
+					(test_skill(hero, 13, 2) > 0))
+				{
+					passed++;
+				}
+			}
+
+			if (count_heroes_in_group() <= passed) {
+				/* all heros passed STEALTH */
+
+				GUI_output(get_city(0x14));
+
+				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
+				hero = get_hero(0);
+				for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+
+					if ((host_readbs(hero + 0x21) != 0) &&
+						(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+						!hero_dead(hero) &&
+						(test_skill(hero, 7, 0) > 0))
+					{
+						passed++;
+					}
+				}
+
+				if ((count_heroes_in_group() / 2) <= passed) {
+					/* over the half of the group passed MISSLE WEAPON+0 */
+
+					GUI_output(get_city(0x20));
+					/* get 80 FOOD PACKAGES */
+					get_item(45, 1, 80);
+
+				} else if (passed) {
+					/* at least one of the group passed MISSLE WEAPON+0 */
+
+					GUI_output(get_city(0x1c));
+					/* get 40 FOOD PACKAGES */
+					get_item(45, 1, 40);
+				} else {
+					/* everybody failed MISSLE WEAPON+0 */
+					GUI_output(get_city(0x18));
+				}
+			} else {
+				/* at least one hero failed STEALTH+2 */
+				GUI_output(get_city(0x10));
+			}
+		} else {
+			/* no hunting weapon in the group */
+			GUI_output(get_city(0x24));
+		}
+	}
+
+	resume_traveling();
 }
 
 /* should be static */

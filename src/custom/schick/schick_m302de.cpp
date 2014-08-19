@@ -8997,8 +8997,10 @@ static int n_seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x00a0: {
-		D1_INFO("do_stag_hunt();\n");
-		return 0;
+		CPU_Pop16();
+		D1_LOG("hunt_karen();\n");
+		hunt_karen();
+		return 1;
 	}
 	case 0x02a3: {
 		D1_INFO("do_boar_hunt();\n");
