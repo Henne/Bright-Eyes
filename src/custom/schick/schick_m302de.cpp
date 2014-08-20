@@ -5678,9 +5678,12 @@ static int seg104(unsigned short offs)
 		}
 		case 0x43: {
 			RealPt hero = CPU_Pop32();
-			D1_LOG("get_hero_weight(%s)\n", Real2Host(hero) + 0x10);
 			CPU_Push32(hero);
-			return 0;
+
+			reg_ax = get_hero_weight(Real2Host(hero));
+			D1_LOG("get_hero_weight(%s)\n", Real2Host(hero) + 0x10);
+
+			return 1;
 		}
 		case 0x48: {
 			Bit16s skill = CPU_Pop16();

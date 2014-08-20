@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
- *	Functions rewritten: 7/9
+ *	Functions rewritten: 8/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -375,6 +375,7 @@ signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 	return retval;
 }
 
+/* Borlandified and identical */
 signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short handycap, signed short flag)
 {
 	signed short disease;
@@ -495,6 +496,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 	return retval;
 }
 
+/* Borlandified and identical */
 RealPt get_heaviest_hero(void)
 {
 	RealPt hero;
@@ -521,6 +523,12 @@ RealPt get_heaviest_hero(void)
 	}
 
 	return retval;
+}
+
+/* Borlandified and identical */
+signed short get_hero_weight(Bit8u *hero)
+{
+	return host_readws(hero + 0x24) + host_readws(hero + 0x2d8);
 }
 
 #if !defined(__BORLANDC__)
