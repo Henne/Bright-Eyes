@@ -8801,7 +8801,16 @@ static int n_seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x07e6: {
-			return 0;
+			CPU_Pop16();
+			RealPt hero = CPU_Pop32();
+			Bit16s disease = CPU_Pop16();
+			CPU_Push16(disease);
+			CPU_Push32(hero);
+
+			reg_ax = has_herb_for_disease(Real2Host(hero), disease);
+			D1_LOG("has_herb_for_disease(%s, disease) = %d\n",
+				schick_getCharname(hero), disease, reg_ax);
+			return 1;
 		}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

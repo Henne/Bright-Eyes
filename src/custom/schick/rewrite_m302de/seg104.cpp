@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
- *	Functions rewritten: 4/9
+ *	Functions rewritten: 5/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -318,6 +318,55 @@ signed short plan_alchemy(Bit8u *hero)
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
+	}
+
+	return retval;
+}
+
+/* Borlandified and identical */
+signed short has_herb_for_disease(Bit8u *hero, signed short disease)
+{
+	signed short retval = 0;
+
+	switch (disease) {
+	case 1:
+	case 3: {
+		retval = 99;
+		break;
+	}
+	case 2: {
+		/* a subset of herbs */
+		if (get_item_pos(hero, 123) != -1) retval = 123;
+		else if (get_item_pos(hero, 61) != -1) retval = 61;
+		else if (get_item_pos(hero, 60) != -1) retval = 60;
+		else if (get_item_pos(hero, 64) != -1) retval = 64;
+		else if (get_item_pos(hero, 124) != -1) retval = 124;
+		else if (get_item_pos(hero, 129) != -1) retval = 129;
+		else if (get_item_pos(hero, 125) != -1) retval = 125;
+		else if (get_item_pos(hero, 156) != -1) retval = 156;
+		else if (get_item_pos(hero, 130) != -1) retval = 130;
+		break;
+	}
+	case 4: {
+		/* DONF SPRING */
+		if (get_item_pos(hero, 124) != -1) retval = 124;
+		break;
+	}
+	case 5: {
+		/* JORUGA ROOT & GULMOND LEAF */
+		if ((get_item_pos(hero, 130) != -1) && (get_item_pos(hero, 63) != -1)) retval = 999;
+		break;
+	}
+	case 6: {
+		/* WHIRLWEED */
+		if (get_item_pos(hero, 61) != -1) retval = 61;
+		break;
+	}
+	case 7: {
+		/* JORUGA ROOT */
+		if (get_item_pos(hero, 130) != -1) retval = 130;
+		break;
+	}
 	}
 
 	return retval;

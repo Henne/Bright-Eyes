@@ -16,6 +16,9 @@ void hero_use_ingrendients(Bit8u*, signed short);
 /* 0x2f */
 signed short plan_alchemy(Bit8u*);
 
+/* 0x34 */
+signed short has_herb_for_disease(Bit8u*, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif
