@@ -5642,9 +5642,10 @@ static int seg104(unsigned short offs)
 		}
 		case 0x2f: {
 			RealPt hero = CPU_Pop32();
-			D1_LOG("get_hero_???(%s)\n", Real2Host(hero) + 0x10);
 			CPU_Push32(hero);
-			return 0;
+			reg_ax = plan_alchemy(Real2Host(hero));
+			D1_LOG("plan_alchemy(%s) = %d\n", schick_getCharname(hero), reg_ax);
+			return 1;
 		}
 		case 0x39: {
 			return 0;

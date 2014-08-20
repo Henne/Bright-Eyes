@@ -1,12 +1,14 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
- *	Functions rewritten: 3/9
+ *	Functions rewritten: 4/9
  */
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg049.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -130,6 +132,195 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 		return 0;
 	}
 
+}
+
+/* Borlandified and identical */
+signed short plan_alchemy(Bit8u *hero)
+{
+	signed short retval;
+	signed short l_si;
+	signed short item_pos;
+	signed short recipes;
+	signed short answer;
+	signed short l4;
+	signed short l5;
+	signed short i;
+	signed char recipe_index;
+	Bit8u *hero_p;
+	signed short l7;
+	signed char array[13];
+
+
+	retval = 1;
+	recipes = 0;
+	item_pos = get_item_pos(hero, 47);
+	if (item_pos == -1) {
+		/* no alchemyset */
+		GUI_output(get_dtp(0xa8));
+		retval = 0;
+	} else {
+
+		/* count all recipes an prepare the menu */
+		for (i = 0; i <= 12; i++) {
+			if (get_item_pos(hero, ds_readws(0xacda + i * 28)) != -1) {
+
+				strcpy((char*)Real2Host(ds_readd(DTP2)) + recipes * 50,
+					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(0xacf0 + i * 28)))));
+
+				ds_writed(0xbf95 + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
+				array[recipes] = i;
+				recipes++;
+			}
+		}
+
+		if (recipes != 0) {
+			/* ask which recipe should be used */
+			l7 = ds_readws(0xbffd);
+			ds_writew(0xbffd, 7);
+
+			answer = GUI_radio(get_dtp(0xac), recipes,
+						Real2Host(ds_readd(0xbf95)),
+						Real2Host(ds_readd(0xbf99)),
+						Real2Host(ds_readd(0xbf9d)),
+						Real2Host(ds_readd(0xbfa1)),
+						Real2Host(ds_readd(0xbfa5)),
+						Real2Host(ds_readd(0xbfa9)),
+						Real2Host(ds_readd(0xbfad)),
+						Real2Host(ds_readd(0xbfb1)),
+						Real2Host(ds_readd(0xbfb5)),
+						Real2Host(ds_readd(0xbfb9)),
+						Real2Host(ds_readd(0xbfbd)),
+						Real2Host(ds_readd(0xbfc1)),
+						Real2Host(ds_readd(0xbfc5)),
+						Real2Host(ds_readd(0xbfc9)));
+
+			ds_writew(0xbffd, l7);
+
+			if (answer != -1) {
+
+				recipe_index = array[answer -1];
+
+				if (hero_has_ingrendients(hero, recipe_index)) {
+
+					/* check AE costs */
+					if (ds_readws(0xacf2 + recipe_index * 28) > host_readws(hero + 0x64)) {
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x97c),
+							(char*)hero + 0x10);
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+
+							retval = 0;
+					} else {
+
+						if ((ds_readbs(LOCATION) == 7) && (ds_readbs(SLEEP_QUALITY) == -1)) {
+
+							GUI_output(get_ltx(0x568));
+
+							return 0;
+						}
+
+						/* check if the alchemic process takes more than 8h */
+						if ((ds_readbs(0xacf5 + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != 7)) {
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_dtp(0xb0),
+									ds_readbs(0xacf5 + recipe_index * 28));
+
+									GUI_output(Real2Host(ds_readd(DTP2)));
+
+									retval = 0;
+						} else {
+							if ((ds_readbs(0x2d3c) > 1) &&
+								(ds_readbs(LOCATION) != 6) &&
+								(ds_readbs(0xacf5 + recipe_index * 28) > 8))
+							{
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_dtp(0xb4),
+									ds_readbs(0xacf5 + recipe_index * 28));
+
+								sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+									(char*)get_dtp(0xbc),
+									(char*)hero + 0x10);
+
+								ds_writew(0xbffd, 7);
+
+								do {
+									l4 = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
+											get_dtp(0xb8),
+											Real2Host(ds_readd(0xd2eb)),
+											get_dtp(0xc0));
+								} while (l4 == -1);
+
+								ds_writew(0xbffd, 3);
+
+							} else {
+								l4 = 1;
+							}
+
+							if (l4 == 1) {
+								timewarp(ds_readbs(0xacf5 + recipe_index *28) * 0x1518L);
+
+								if (ds_readbs(LOCATION) != 6) {
+									hero_p = get_hero(0);
+									for (i = 0; i <= 6; i++, hero_p += 0x6da) {
+										if ((host_readbs(hero_p + 0x21) != 0) &&
+											(host_readbs(hero_p + 0x87) == ds_readbs(CURRENT_GROUP)))
+										{
+											GRP_hero_sleep(hero_p, ds_readbs(0xe3f1));
+										}
+									}
+								} else {
+									host_writed(hero + 0x8f, 0x1fa40);
+								}
+
+								retval = do_alchemy(hero, recipe_index, 0);
+
+								ds_writeb(0xe3f1, -1);
+
+							} else if (l4 == 2) {
+
+								/* find a empty group */
+								for (l5 = 0; ds_readbs(0x2d36 + l5) != 0; l5++);
+
+								host_writeb(hero + 0x87, l5);
+								inc_ds_bs(0x2d36 + l5);
+								dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+
+								host_writeb(hero + 0x94,
+									ds_readbs(0xacf5 + recipe_index * 28) / 24);
+
+								host_writeb(hero + 0x93, recipe_index);
+								host_writeb(hero + 0x9c, ds_readbs(TYPEINDEX));
+								or_ptr_bs(hero + 0xaa, 8);
+
+								GRP_save_pos(l5);
+							} else {
+								retval = 0;
+							}
+						}
+					}
+				} else {
+					/* not all ingrendients */
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0xc4),
+						(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(0xe5c4)))));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+			}
+		} else {
+			/* no recipes */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0xc8),
+				(char*)hero + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+		}
+	}
+
+	return retval;
 }
 
 #if !defined(__BORLANDC__)
