@@ -19,6 +19,9 @@ signed short plan_alchemy(Bit8u*);
 /* 0x34 */
 signed short has_herb_for_disease(Bit8u*, signed short);
 
+/* 0x39 */
+signed short talent_cure_disease(Bit8u*, Bit8u*, signed short, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -5648,7 +5648,25 @@ static int seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x39: {
-			return 0;
+			RealPt healer = CPU_Pop32();
+			RealPt patient = CPU_Pop32();
+			Bit16s handycap = CPU_Pop16();
+			Bit16s flag = CPU_Pop16();
+			CPU_Push16(flag);
+			CPU_Push16(handycap);
+			CPU_Push32(patient);
+			CPU_Push32(healer);
+
+			reg_ax = talent_cure_disease(Real2Host(healer),
+							Real2Host(patient),
+							handycap, flag);
+
+			D1_LOG("talent_cure_disease(%s, %s, %d, %d) = %d\n",
+				schick_getCharname(healer),
+				schick_getCharname(patient),
+				handycap, flag, reg_ax);
+
+			return 1;
 		}
 		case 0x3e: {
 			D1_LOG("get_heaviest_hero()\n");

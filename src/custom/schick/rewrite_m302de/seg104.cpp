@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
- *	Functions rewritten: 5/9
+ *	Functions rewritten: 6/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -8,7 +8,10 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg026.h"
+#include "seg047.h"
 #include "seg049.h"
+#include "seg053.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -367,6 +370,126 @@ signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 		if (get_item_pos(hero, 130) != -1) retval = 130;
 		break;
 	}
+	}
+
+	return retval;
+}
+
+signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short handycap, signed short flag)
+{
+	signed short disease;
+	signed short retval;
+
+	signed short damage;
+	signed short bak;
+	signed short herb;
+
+	retval = 0;
+
+	if (flag) {
+		bak = ds_readws(0x26bf);
+		load_buffer_1(222);
+	}
+
+	if (is_hero_healable(patient)) {
+
+		disease = hero_is_diseased(patient);
+
+		if (!disease) {
+			/* not diseased */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0x738),
+				(char*)patient + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+		} else if (host_readds(patient + 0x8b) > 0) {
+
+			/* recently tried to cure with talent */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xae4),
+				(char*)patient + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+		} else if (!(herb = has_herb_for_disease(healer, disease))) {
+			/* no herb for this disease */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x1d8),
+				(char*)healer + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+		} else {
+			timewarp(0x1c2);
+
+			/* set timer */
+			host_writed(patient + 0x8b, 0x5460);
+
+			if ((flag != 0) || (test_skill(healer, 45, handycap) > 0)) {
+
+				if (((retval = test_skill(healer, 45, ds_readbs(0x2c50 + 2 * disease) + handycap)) > 0) &&
+					(disease != 1) && (disease != 3))
+				{
+
+					add_hero_le(patient, retval);
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0xadc),
+						(char*)healer + 0x10,
+						(char*)patient + 0x10,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(patient + 0x22), 3)),
+						retval);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					/* cure the disease */
+					host_writeb(patient + 0xae + disease * 5, 1);
+					host_writeb(patient + 0xaf + disease * 5, 0);
+
+					if (herb == 999) {
+						/* drop JOGURA & GULMOND LEAF */
+						drop_item(healer, get_item_pos(healer, 130), 1);
+						drop_item(healer, get_item_pos(healer, 63), 1);
+					} else {
+						/* drop the herb */
+						drop_item(healer, get_item_pos(healer, herb), 1);
+					}
+
+					retval = 1;
+				} else {
+					damage = 3;
+
+					if (host_readws(patient + 0x60) <= damage) {
+						damage = host_readws(patient + 0x60) - 1;
+					}
+
+					sub_hero_le(patient, damage);
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0xad8),
+						(char*)patient + 0x10, damage);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+
+			} else {
+				/* failed to heal */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0xae0),
+					(char*)healer + 0x10,
+					(char*)patient + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			}
+		}
+
+
+		if ((flag != 0) && (bak != -1) && (bak != 222)) {
+			load_buffer_1(bak);
+		}
 	}
 
 	return retval;
