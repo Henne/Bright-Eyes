@@ -5669,8 +5669,12 @@ static int seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x3e: {
+			RealPt retval = get_heaviest_hero();
 			D1_LOG("get_heaviest_hero()\n");
-			return 0;
+
+			reg_ax = RealOff(retval);
+			reg_dx = RealSeg(retval);
+			return 1;
 		}
 		case 0x43: {
 			RealPt hero = CPU_Pop32();

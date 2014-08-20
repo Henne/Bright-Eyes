@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
- *	Functions rewritten: 6/9
+ *	Functions rewritten: 7/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -489,6 +489,34 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 
 		if ((flag != 0) && (bak != -1) && (bak != 222)) {
 			load_buffer_1(bak);
+		}
+	}
+
+	return retval;
+}
+
+RealPt get_heaviest_hero(void)
+{
+	RealPt hero;
+	RealPt retval;
+
+	signed short weight;
+	signed short w_max;
+	signed short i;
+
+	w_max = 0;
+	hero = (RealPt)ds_readd(HEROS);
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		if ((host_readbs(Real2Host(hero) + 0x21) != 0) &&
+			(host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP)))
+		{
+			weight = host_readws(Real2Host(hero) + 0x24) + host_readws(Real2Host(hero) + 0x2d8);
+
+			if (weight > w_max) {
+				w_max = weight;
+				retval = hero;
+			}
 		}
 	}
 
