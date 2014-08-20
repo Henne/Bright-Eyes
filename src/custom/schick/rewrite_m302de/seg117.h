@@ -16,8 +16,9 @@ void hunt_wildboar(void);
 /* 0x2a */
 void hunt_cavebear(void);
 
+/* 0x2f */
 /* should be static */
-void do_snake_attack(void);
+void hunt_viper(void);
 
 #if !defined(__BORLANDC__)
 }

@@ -292,7 +292,7 @@ void hunt_cavebear(void)
 
 
 /* should be static */
-void do_snake_attack(void)
+void hunt_viper(void)
 {
 	signed short choosen_hero;
 	Bit8u *hero_i;
@@ -308,21 +308,16 @@ void do_snake_attack(void)
 
 	for (i = l_di = 0; i <= 6; i++, hero_i += 0x6da) {
 
-		/* hero is invalid */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-
-		/* hero is not in current group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-
-		/* hero is dead */
-		if (hero_dead(hero_i))
-			continue;
-
-		/* Original-Bug: something was forgotten */
+		/* hero is valid */
+		/* hero is in current group */
+		/* hero is not dead */
 		/* check GE+0 */
-		if (test_attrib(hero_i, 4, 0) < l_di) {
+		/* Original-Bug: something was forgotten */
+		if ((host_readb(hero_i + 0x21) != 0) &&
+			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			(!hero_dead(hero_i)) &&
+			(test_attrib(hero_i, 4, 0) < l_di))
+		{
 			/* remember the hero */
 			choosen_hero = i;
 		}

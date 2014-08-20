@@ -9017,8 +9017,8 @@ static int n_seg117(unsigned short offs)
 
 	case 0x060c: {
 		CPU_Pop16();
-		D1_INFO("do_snake_attack();\n");
-		do_snake_attack();
+		D1_LOG("hunt_viper();\n");
+		hunt_viper();
 		return 1;
 	}
 	case 0x0981: {
