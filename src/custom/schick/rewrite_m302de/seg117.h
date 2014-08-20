@@ -13,6 +13,9 @@ void hunt_karen(void);
 /* 0x25 */
 void hunt_wildboar(void);
 
+/* 0x2a */
+void hunt_cavebear(void);
+
 /* should be static */
 void do_snake_attack(void);
 

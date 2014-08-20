@@ -9009,9 +9009,12 @@ static int n_seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x047f: {
-		D1_INFO("do_bear_hunt();\n");
-		return 0;
+		CPU_Pop16();
+		D1_LOG("hunt_cavebear();\n");
+		hunt_cavebear();
+		return 1;
 	}
+
 	case 0x060c: {
 		CPU_Pop16();
 		D1_INFO("do_snake_attack();\n");

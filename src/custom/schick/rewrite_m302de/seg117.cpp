@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (2xTravelevent, hunt and helpers)
- *	Functions rewritten: 5/16
+ *	Functions rewritten: 6/16
  */
 
 #include <stdio.h>
@@ -227,6 +227,69 @@ void hunt_wildboar(void)
 
 	resume_traveling();
 }
+
+/* Borlandified and identical */
+void hunt_cavebear(void)
+{
+	Bit8u *hero;
+	signed short answer;
+	signed short i;
+
+	pause_traveling(32);
+
+	do {
+		answer = GUI_radio(get_city(0x4c), 2, get_city(0x50), get_city(0x54));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		/* print message */
+		GUI_output(get_city(0x60));
+
+		/* time to flee = 1.5 hour */
+		timewarp(0x1fa4);
+
+	} else {
+		GUI_output(get_city(0x58));
+
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+			if ((host_readbs(hero + 0x21) != 0) &&
+				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				!hero_dead(hero))
+			{
+
+				/* AT of the current weapon - (RS-BE / 2) <= 1W20 */
+				if ((host_readbs(hero + 0x68 + host_readbs(hero + 0x78)) - (host_readbs(hero + 0x32) / 2)) <= random_schick(20))
+				{
+#if !defined(__BORLANDC__)
+					D1_INFO("%-16s erhaelt 5 AP fuer eine gelungene Attacke.\n",
+						(char*)(hero + 0x10));
+#endif
+					add_hero_ap(hero, 5);
+				}
+
+				/* PA of the current weapon - (RS-BE / 2) <= 1W20 */
+				if ((host_readbs(hero + 0x6f + host_readbs(hero + 0x78)) - (host_readbs(hero + 0x32) / 2)) > random_schick(20))
+				{
+#if !defined(__BORLANDC__)
+					D1_INFO("%-16s erhaelt 3 AP fuer eine misslungene Parade.\n",
+						(char*)(hero + 0x10));
+#endif
+
+					add_hero_ap(hero, 3);
+					sub_hero_le(hero, dice_roll(2, 6, 0));
+				}
+			}
+		}
+
+		GUI_output(get_city(0x5c));
+	}
+
+	resume_traveling();
+}
+
 
 /* should be static */
 void do_snake_attack(void)
