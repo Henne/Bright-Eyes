@@ -5635,8 +5635,16 @@ static int seg103(unsigned short offs) {
 					schick_getCharname(hero), flag, reg_ax);
 			return 1;
 		}
-		case 0x43:
-			return 0;
+		case 0x43: {
+			Bit16s bonus = CPU_Pop16();
+			RealPt msg = CPU_Pop32();
+			CPU_Push32(msg);
+			CPU_Push16(bonus);
+
+			reg_ax = GUI_use_talent2((Bit8s)bonus, Real2Host(msg));
+			D1_INFO("GUI_use_talent2(%d, %s) = %d\n", bonus, Real2Host(msg), reg_ax);
+			return 1;
+		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				__func__, offs);
