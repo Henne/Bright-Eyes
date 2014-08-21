@@ -4,14 +4,15 @@ namespace M302de {
 
 /* 0x20 */
 signed short test_skill(Bit8u *hero, signed short, signed char);
-//25
-signed short bargain(Bit8u *hero, unsigned short nice, signed int price,
-			signed short percent, signed char mod_init);
+
+/* 0x25 */
+signed short bargain(Bit8u*, signed short, Bit32s, signed short, signed char);
 
 /* 0x2a */
 signed short GUI_use_talent(signed short, signed char);
 
 /* 0x2f */
+/* can be static */
 signed short select_talent(void);
 
 /* 0x34 */

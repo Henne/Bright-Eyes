@@ -739,44 +739,34 @@ signed short GUI_use_talent2(signed char bonus, Bit8u *msg)
  *	Returns the result of the throw. A value greater than zero
  *	means success, below or zero means failed.
  */
-signed short bargain(Bit8u *hero, unsigned short items, signed int price,
-	signed short percent, signed char mod_init) {
+/* Borlandified and identical */
+signed short bargain(Bit8u *hero, signed short items, Bit32s price,
+	signed short percent, signed char mod_init)
+{
 
-	signed char mod;
-
-	mod = mod_init;
+	signed char mod = mod_init;
 
 	/* maybe a special NPC ? */
-	if (host_readb(get_hero(6) + 0x89) == 2)
+	if (host_readb(get_hero(6) + 0x89) == 2) {
 		mod -= 2;
+	}
 
 	/* the more different items you buy, the easier the bargain */
-	if (items == 1)
-		mod += 2;
-	else if (items == 2)
-		mod += 1;
-	else if (items < 5)
-		mod += 0;
-	else if (items < 9)
-		mod -= 1;
-	else mod -= 2;
+	mod += (items == 1) ? 2 :
+			((items == 2) ?  1 :
+			((items < 5)  ?  0 :
+			((items < 9)  ? -1 : -2)));
 
 	/* the higher the price, the easier the bargain */
-	if (price < 100)
-		mod += 2;
-	if (price < 500)
-		mod += 1;
-	if (price < 1000)
-		mod += 0;
-	if (price < 2000)
-		mod -= 1;
-	else
-		mod -= 2;
+	mod += (price < 100) ? 2 :
+			((price < 500)  ?  1 :
+			((price < 1000) ?  0 :
+			((price < 2000) ? -1 : -2 )));
 
 	/* the lower the percent, the easier the bargain */
 	mod += percent / 5 + 1;
 
-	return test_skill(hero, 0x15, mod);
+	return test_skill(hero, 21, mod);
 }
 
 #if !defined(__BORLANDC__)

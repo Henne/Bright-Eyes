@@ -5591,24 +5591,22 @@ static int seg103(unsigned short offs) {
 		}
 		case 0x25: {
 			RealPt hero = CPU_Pop32();
-			unsigned short items = CPU_Pop16();
-			signed int price = CPU_Pop32();
-			signed short percent = CPU_Pop16();
-			unsigned short mod_init = CPU_Pop16();
+			Bit16s items = CPU_Pop16();
+			Bit32s price = CPU_Pop32();
+			Bit16s percent = CPU_Pop16();
+			Bit16s mod_init = CPU_Pop16();
 			CPU_Push16(mod_init);
 			CPU_Push16(percent);
 			CPU_Push32(price);
 			CPU_Push32(items);
 			CPU_Push32(hero);
 
-			signed char m_init = (signed char) (mod_init & 0xff);
-
 			reg_ax = bargain(Real2Host(hero), items,
-					price, percent, m_init);
+					price, percent, (Bit8s)mod_init);
 
 			D1_LOG("bargain(%s,%d,%d,%d,%d);\n",
 				schick_getCharname(hero),
-				items, price, percent, m_init);
+				items, price, percent, mod_init);
 
 			return 1;
 		}
