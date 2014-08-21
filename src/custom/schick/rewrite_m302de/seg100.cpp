@@ -273,6 +273,7 @@ void spell_hexenknoten(void)
 
 	if (NOT_NULL(Real2Host(ds_readd(0xacc8)))) {
 		rp = (RealPt)ds_readd(0xacc8);
+		/* TODO: graphic bug if cast more than once */
 	} else {
 		rp = (RealPt)ds_readd(0xd86e);
 		nvf.dst = Real2Host(rp);
