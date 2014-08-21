@@ -5613,9 +5613,21 @@ static int seg103(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a:
-		case 0x34:
+			return 0;
+		case 0x34: {
+			RealPt hero = CPU_Pop32();
+			Bit16s flag = CPU_Pop16();
+			CPU_Push16(flag);
+			CPU_Push32(hero);
+
+			reg_ax = LVL_select_talent(Real2Host(hero), flag);
+
+			D1_LOG("LVL_select_talent(%s, %d) = %d\n",
+					schick_getCharname(hero), flag, reg_ax);
+			return 1;
+		}
 		case 0x43:
-			 return 0;
+			return 0;
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
 				__func__, offs);
