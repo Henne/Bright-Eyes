@@ -113,46 +113,46 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 	get_proper_hero - returns hero which seems best for a skill
 	@skill:		skill
 */
-RealPt get_proper_hero(unsigned short skill) {
-	RealPt hero_i;
-	RealPt retval = 0;
-	signed short best;
-	unsigned short i;
-	signed short tmp, dx;
+/* Borlandified and identical */
+RealPt get_proper_hero(signed short skill)
+{
+	signed short i;
+	signed short cur;
 
-	best = -1;
+	signed short max = -1;
+	RealPt hero_i;
+	RealPt retval;
+
+#if !defined(__BORLANDC__)
+	retval = 0;
+#endif
+
 	hero_i = (RealPt)ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
-		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
-			continue;
-		/* Check if in current group */
-		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Check hero is dead */
-		if (hero_dead(Real2Host(hero_i)))
-			continue;
-		/* add current and maximum attibute values */
-		tmp = ds_readb(0xffe + skill * 4) * 3;
-		dx = host_readb(Real2Host(hero_i) + 0x35 + tmp);
-		dx += host_readb(Real2Host(hero_i) + 0x36 + tmp);
-		tmp = ds_readb(0xfff + skill * 4) * 3;
-		dx += host_readb(Real2Host(hero_i) + 0x35 + tmp);
-		dx += host_readb(Real2Host(hero_i) + 0x36 + tmp);
-		tmp = ds_readb(0x1000 + skill * 4) * 3;
-		dx += host_readb(Real2Host(hero_i) + 0x35 + tmp);
-		dx += host_readb(Real2Host(hero_i) + 0x36 + tmp);
+		if ((host_readbs(Real2Host(hero_i) + 0x21) != 0) &&
+			/* Check if in current group */
+			(host_readb(Real2Host(hero_i) + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			/* Check hero is not dead */
+			!hero_dead(Real2Host(hero_i))) {
 
-		/* add skillvalue */
-		dx += host_readb(Real2Host(hero_i) + 0x108 + skill);
+			/* add current and maximum attibute values */
+			cur =	host_readbs(Real2Host(hero_i) + 0x35 + 3 * ds_readbs(0xffe + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + 0x36 + 3 * ds_readbs(0xffe + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + 0x35 + 3 * ds_readbs(0xfff + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + 0x36 + 3 * ds_readbs(0xfff + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + 0x35 + 3 * ds_readbs(0x1000 + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + 0x36 + 3 * ds_readbs(0x1000 + 4 * skill)) + +
+				host_readbs(Real2Host(hero_i) + 0x108 + skill);
 
-		if (dx <= best)
-			continue;
+			if (cur > max) {
 
-		/* if the sum is greater than the current best */
-		best = dx;
-		retval = hero_i;
+				/* if the sum is greater than the current best */
+				max = cur;
+				retval = hero_i;
+			}
+		}
 	}
 
 #if !defined(__BORLANDC__)

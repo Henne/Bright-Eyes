@@ -11,9 +11,9 @@ signed short bargain(Bit8u *hero, unsigned short nice, signed int price,
 /* 0x34 */
 signed short LVL_select_talent(Bit8u *, signed short);
 
-//39
-//static
-RealPt get_proper_hero(unsigned short skill);
+/* 0x39 */
+/* can be static */
+RealPt get_proper_hero(signed short);
 
 #if !defined(__BORLANDC__)
 }
