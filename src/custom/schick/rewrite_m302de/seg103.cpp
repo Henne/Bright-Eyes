@@ -2,6 +2,10 @@
  *      Rewrite of DSA1 v3.02_de functions of seg103 (talents)
  *      Functions rewritten 8/8 (complete)
  *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg103.cpp
+ *
 */
 
 #include <stdio.h>
@@ -25,7 +29,6 @@ struct dummy {
 	char a[6];
 };
 
-/* Borlandified and identical */
 signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 {
 	signed short i;
@@ -117,7 +120,6 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 	get_proper_hero - returns hero which seems best for a skill
 	@skill:		skill
 */
-/* Borlandified and identical */
 RealPt get_proper_hero(signed short skill)
 {
 	signed short i;
@@ -175,7 +177,6 @@ RealPt get_proper_hero(signed short skill)
 	@skill:	the skill to test
 	@bonus: the modification
 */
-/* Borlandified and identical */
 signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 {
 	signed short randval;
@@ -256,7 +257,6 @@ struct dummy2 {
 	signed char a[6];
 };
 
-/* Borlandified and identical */
 signed short select_talent(void)
 {
 	signed short l_si = -1;
@@ -310,7 +310,6 @@ signed short select_talent(void)
 	return l_si;
 }
 
-/* Borlandified and identical */
 signed short use_talent(signed short hero_pos, signed char bonus, signed short talent)
 {
 	register signed short l_si;
@@ -686,7 +685,6 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 	return l_si;
 }
 
-/* Borlandified and identical */
 signed short GUI_use_talent(signed short hero_pos, signed char bonus)
 {
 	signed short talent;
@@ -702,7 +700,6 @@ signed short GUI_use_talent(signed short hero_pos, signed char bonus)
 	return use_talent(hero_pos, bonus, talent);
 }
 
-/* Borlandified and identical */
 signed short GUI_use_talent2(signed char bonus, Bit8u *msg)
 {
 	signed short hero_pos;
@@ -739,7 +736,6 @@ signed short GUI_use_talent2(signed char bonus, Bit8u *msg)
  *	Returns the result of the throw. A value greater than zero
  *	means success, below or zero means failed.
  */
-/* Borlandified and identical */
 signed short bargain(Bit8u *hero, signed short items, Bit32s price,
 	signed short percent, signed char mod_init)
 {
