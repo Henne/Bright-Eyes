@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg103 (talents)
- *      Functions rewritten 6/8
+ *      Functions rewritten 7/8
  *
 */
 
@@ -684,6 +684,22 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 	}
 
 	return l_si;
+}
+
+/* Borlandified and identical */
+signed short GUI_use_talent(signed short hero_pos, signed char bonus)
+{
+	signed short talent;
+	Bit8u *hero;
+
+	hero = get_hero(hero_pos);
+
+	if (!check_hero(hero)) {
+		return -1;
+	}
+
+	talent = select_talent();
+	return use_talent(hero_pos, bonus, talent);
 }
 
 /**

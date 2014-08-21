@@ -8,6 +8,9 @@ signed short test_skill(Bit8u *hero, signed short, signed char);
 signed short bargain(Bit8u *hero, unsigned short nice, signed int price,
 			signed short percent, signed char mod_init);
 
+/* 0x2a */
+signed short GUI_use_talent(signed short, signed char);
+
 /* 0x2f */
 signed short select_talent(void);
 

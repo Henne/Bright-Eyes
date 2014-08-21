@@ -5612,8 +5612,17 @@ static int seg103(unsigned short offs) {
 
 			return 1;
 		}
-		case 0x2a:
-			return 0;
+		case 0x2a: {
+			Bit16s hero_pos = CPU_Pop16();
+			Bit16s bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(hero_pos);
+
+			reg_ax = GUI_use_talent(hero_pos, (Bit8s)bonus);
+			D1_INFO("GUI_use_talent(%d, %d) = %d\n",
+				hero_pos, (Bit8s)bonus, (Bit16s)reg_ax);
+			return 1;
+		}
 		case 0x34: {
 			RealPt hero = CPU_Pop32();
 			Bit16s flag = CPU_Pop16();
