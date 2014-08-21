@@ -5598,7 +5598,7 @@ static int seg103(unsigned short offs) {
 			CPU_Push16(mod_init);
 			CPU_Push16(percent);
 			CPU_Push32(price);
-			CPU_Push32(items);
+			CPU_Push16(items);
 			CPU_Push32(hero);
 
 			reg_ax = bargain(Real2Host(hero), items,
