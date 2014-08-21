@@ -5687,9 +5687,13 @@ static int seg104(unsigned short offs)
 		}
 		case 0x48: {
 			Bit16s skill = CPU_Pop16();
-			D1_LOG("get_skilled_hero_index(%s)\n", names_skill[skill]);
 			CPU_Push16(skill);
-			return 0;
+
+			reg_ax = get_skilled_hero_pos(skill);
+			D1_LOG("get_skilled_hero_index(%s) = %d\n",
+				names_skill[skill], reg_ax);
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

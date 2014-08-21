@@ -28,6 +28,9 @@ RealPt get_heaviest_hero(void);
 /* 0x43 */
 signed short get_hero_weight(Bit8u*);
 
+/* 0x48 */
+signed short get_skilled_hero_pos(signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

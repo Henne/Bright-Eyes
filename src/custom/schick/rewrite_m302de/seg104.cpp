@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
- *	Functions rewritten: 8/9
+ *	Functions rewritten: 9/9 (complete)
  */
 #include <stdio.h>
 #include <string.h>
@@ -529,6 +529,44 @@ RealPt get_heaviest_hero(void)
 signed short get_hero_weight(Bit8u *hero)
 {
 	return host_readws(hero + 0x24) + host_readws(hero + 0x2d8);
+}
+
+/* Borlandified and identical */
+signed short get_skilled_hero_pos(signed short skill)
+{
+	signed short i;
+	signed short cur;
+
+	signed short max;
+	signed short pos;
+	Bit8u *hero;
+
+	max = -100;
+
+	hero = get_hero(0);
+
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		if ((host_readbs(hero + 0x21) != 0) &&
+			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+		{
+
+			cur =	host_readbs(hero + 0x35 + 3 * (ds_readbs(0xffe + 4 * skill))) +
+				host_readbs(hero + 0x36 + 3 * (ds_readbs(0xffe + 4 * skill))) +
+				host_readbs(hero + 0x35 + 3 * (ds_readbs(0xfff + 4 * skill))) +
+				host_readbs(hero + 0x36 + 3 * (ds_readbs(0xfff + 4 * skill))) +
+				host_readbs(hero + 0x35 + 3 * (ds_readbs(0x1000 + 4 * skill))) +
+				host_readbs(hero + 0x36 + 3 * (ds_readbs(0x1000 + 4 * skill))) +
+				host_readbs(hero + 0x108 + skill);
+
+			if (cur > max) {
+				max = cur;
+				pos = i;
+			}
+		}
+	}
+
+	return pos;
 }
 
 #if !defined(__BORLANDC__)
