@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg104 (heros)
+ *	Rewrite of DSA1 v3.02_de functions of seg104 (alchemy, cure disease, heros)
  *	Functions rewritten: 9/9 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg104.cpp
  */
 #include <stdio.h>
 #include <string.h>
@@ -21,7 +25,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
@@ -61,7 +64,6 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 	return retval;
 }
 
-/* Borlandified and identical */
 void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
@@ -137,7 +139,6 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 
 }
 
-/* Borlandified and identical */
 signed short plan_alchemy(Bit8u *hero)
 {
 	signed short retval;
@@ -326,7 +327,6 @@ signed short plan_alchemy(Bit8u *hero)
 	return retval;
 }
 
-/* Borlandified and identical */
 signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 {
 	signed short retval = 0;
@@ -375,7 +375,6 @@ signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 	return retval;
 }
 
-/* Borlandified and identical */
 signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short handycap, signed short flag)
 {
 	signed short disease;
@@ -496,7 +495,6 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 	return retval;
 }
 
-/* Borlandified and identical */
 RealPt get_heaviest_hero(void)
 {
 	RealPt hero;
@@ -525,13 +523,11 @@ RealPt get_heaviest_hero(void)
 	return retval;
 }
 
-/* Borlandified and identical */
 signed short get_hero_weight(Bit8u *hero)
 {
 	return host_readws(hero + 0x24) + host_readws(hero + 0x2d8);
 }
 
-/* Borlandified and identical */
 signed short get_skilled_hero_pos(signed short skill)
 {
 	signed short i;
