@@ -171,71 +171,81 @@ RealPt get_proper_hero(signed short skill)
 	@skill:	the skill to test
 	@bonus: the modification
 */
-signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus) {
-	unsigned short tmp;
-	signed short ax;
+/* Borlandified and identical */
+signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
+{
+	signed short randval;
+	signed short e_skillval;
 
 	/* dont test for weapon skills */
-	if (skill < 7)
-		return 0;
-	/* check if skill number is valid */
-	if (skill > 51)
-		return 0;
+	if ((skill >= 7) && (skill <= 51)) {
 
 #if !defined(__BORLANDC__)
-	D1_INFO("Talentprobe %s %+d: ", names_skill[skill], bonus);
+		D1_INFO("Talentprobe %s %+d: ", names_skill[skill], bonus);
 #endif
 
-	/* special test if skill is a range weapon skill */
-	if ((skill == 7) || (skill == 8)) {
-		/* add boni and current attributes together */
-		ax = host_readb(hero + 0x38) + host_readb(hero + 0x39);
-		ax += host_readb(hero + 0x41) + host_readb(hero + 0x42);
-		ax += host_readb(hero + 0x47) + host_readb(hero + 0x48);
-		ax = ax / 4;
+		/* special test if skill is a range weapon skill */
+		if ((skill == 7) || (skill == 8)) {
 
-		/* add skill value */
-		ax += host_readb(hero + 0x108 + skill);
+			/* calculate range weapon base value */
+			e_skillval = (host_readbs(hero + 0x38) + host_readbs(hero + 0x39) +
+				host_readbs(hero + 0x41) + host_readbs(hero + 0x42) +
+				host_readbs(hero + 0x47) + host_readbs(hero + 0x48)) / 4;
 
-		ax -= bonus;
+			/* add skill value */
+			e_skillval += host_readbs(hero + 0x108 + skill);
+			/* sub handycap */
+			e_skillval -= bonus;
 
-		tmp = random_schick(20);
+			randval = random_schick(20);
 
-		/* Unlucky */
-		if (tmp == 20) {
+			/* Unlucky */
+			if (randval == 20) {
 #if !defined(__BORLANDC__)
-			D1_INFO("Ungluecklich\n");
+				D1_INFO("Ungluecklich\n");
 #endif
-			return -1;
-		}
-		/* Lucky */
-		if (tmp == 1) {
+				return -1;
+			}
+			/* Lucky */
+			if (randval == 1) {
 #if !defined(__BORLANDC__)
-			D1_INFO("Gluecklich\n");
+				D1_INFO("Gluecklich\n");
 #endif
-			return 99;
-		}
-		/* test unsuccessful */
-		if (tmp > ax) {
+				return 99;
+			}
+			if (randval <= e_skillval) {
+				/* test successful */
 #if !defined(__BORLANDC__)
-			D1_INFO(" (%d) -> nicht bestanden\n", tmp);
+				D1_INFO(" (%d) -> bestanden\n", randval);
+#endif
+				return e_skillval - randval + 1;
+			}
+
+			/* test unsuccessful */
+#if !defined(__BORLANDC__)
+			D1_INFO(" (%d) -> nicht bestanden\n", randval);
 #endif
 			return 0;
 		}
-		/* test successful */
-#if !defined(__BORLANDC__)
-		D1_INFO(" (%d) -> bestanden\n", tmp);
+
+		/* automatically get hero with best senses in beginner mode */
+		if ((skill == 51) && (ds_readws(0xc003) == 1)) {
+			hero = Real2Host(get_proper_hero(51));
+
+#if defined(__BORLANDC__)
+			/* seems to have been debug stuff with conditional compilation */
+			if (0) return 0;
 #endif
-		return ax - tmp + 1;
+		}
+
+		/* do the test */
+		bonus -= host_readbs(hero + 0x108 + skill);
+
+		return test_attrib3(hero, ds_readbs(0xffe + skill * 4), ds_readbs(0xfff + skill * 4), ds_readbs(0x1000 + skill * 4), bonus);
+
 	}
 
-	/* automatically get hero with best senses in beginner mode */
-	if (skill == 51 && ds_readb(0xc003) == 1)
-		hero = Real2Host(get_proper_hero(51));
-
-	/* do the test */
-	return test_attrib3(hero, ds_readb(0xffe + skill * 4), ds_readb(0xfff + skill * 4), ds_readb(0x1000 + skill * 4), bonus - host_readb(hero + 0x108 + skill));
-
+	return 0;
 }
 
 /**

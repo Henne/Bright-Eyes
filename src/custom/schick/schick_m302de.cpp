@@ -5576,8 +5576,8 @@ static int seg103(unsigned short offs) {
 	switch (offs) {
 		case 0x20: { // Talentprobe
 			RealPt hero = CPU_Pop32();
-			unsigned short skill = CPU_Pop16();
-			signed short bonus = CPU_Pop16();
+			Bit16s skill = CPU_Pop16();
+			Bit16s bonus = CPU_Pop16();
 			CPU_Push16(bonus);
 			CPU_Push16(skill);
 			CPU_Push32(hero);
@@ -8783,16 +8783,16 @@ static int n_seg103(unsigned short offs)
 		// Talentprobe
 		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
-		unsigned skill = CPU_Pop16();
-		signed bonus = CPU_Pop16();
+		Bit16s skill = CPU_Pop16();
+		Bit16s bonus = CPU_Pop16();
 		CPU_Push16(bonus);
 		CPU_Push16(skill);
 		CPU_Push32(hero);
 
 		D1_LOG("Talentprobe: %s %+d\n ",
-			names_skill[skill], (char)bonus);
+			names_skill[skill], (signed char)bonus);
 
-		reg_ax = test_skill(Real2Host(hero), skill, bonus);
+		reg_ax = test_skill(Real2Host(hero), skill, (signed char)bonus);
 
 		return 1;
 	}

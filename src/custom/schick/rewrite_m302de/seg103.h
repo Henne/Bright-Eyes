@@ -2,8 +2,8 @@
 namespace M302de {
 #endif
 
-//20
-signed short test_skill(Bit8u *hero, unsigned short skill, signed char bonus);
+/* 0x20 */
+signed short test_skill(Bit8u *hero, signed short, signed char);
 //25
 signed short bargain(Bit8u *hero, unsigned short nice, signed int price,
 			signed short percent, signed char mod_init);
