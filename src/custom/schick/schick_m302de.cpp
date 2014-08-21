@@ -8796,6 +8796,12 @@ static int n_seg103(unsigned short offs)
 
 		return 1;
 	}
+	case 0x0537: {
+		CPU_Pop16();
+		reg_ax = select_talent();
+		D1_LOG("select_talent() = %s\n", names_skill[reg_ax]);
+		return 1;
+	}
 	default:
 		return 0;
 	}

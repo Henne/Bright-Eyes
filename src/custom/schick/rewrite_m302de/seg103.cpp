@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg103 (talents)
- *      Functions rewritten 4/8
+ *      Functions rewritten 5/8
  *
 */
 
@@ -246,6 +246,64 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 	}
 
 	return 0;
+}
+
+struct dummy2 {
+	signed char a[6];
+};
+
+/* Borlandified and identical */
+signed short select_talent(void)
+{
+	signed short l_si = -1;
+	signed short nr_talents = 3;
+	/* available skills {44, 45, 46, -1, -1, -1} */
+	dummy2 a = *(dummy2*)(p_datseg + 0xacd4);
+
+	/* add skills for special location */
+	/* 9 = ACROBATICS, 32 = ALCHEMY, 43 = CHEAT, 47 = INSTRUMENT, 49 = PICKPOCKET, */
+	if (ds_readbs(LOCATION) == 3) {
+		/* TAVERN */
+		a.a[nr_talents] = 9;
+		nr_talents++;
+
+		if (ds_readws(0x6532) == 0) {
+			a.a[nr_talents] = 43;
+			nr_talents++;
+		}
+
+		a.a[nr_talents] = 47;
+		nr_talents++;
+	} else if ((ds_readbs(LOCATION) == 6) || (ds_readbs(LOCATION) == 7)) {
+		/* CAMP (Wildernes) or INN */
+		a.a[nr_talents] = 32;
+		nr_talents++;
+	} else if (ds_readbs(LOCATION) == 9) {
+		/* MARKET */
+		a.a[nr_talents] = 9;
+		nr_talents++;
+		a.a[nr_talents] = 49;
+		nr_talents++;
+	} else if (ds_readbs(LOCATION) == 5) {
+		/* MERCHANT */
+		a.a[nr_talents] = 49;
+		nr_talents++;
+	}
+
+	l_si = GUI_radio(get_ltx(0x368), nr_talents,
+				get_ltx((a.a[0] + 48) * 4),
+				get_ltx((a.a[1] + 48) * 4),
+				get_ltx((a.a[2] + 48) * 4),
+				get_ltx((a.a[3] + 48) * 4),
+				get_ltx((a.a[4] + 48) * 4),
+				get_ltx((a.a[5] + 48) * 4),
+				get_ltx((a.a[6] + 48) * 4));
+
+	if (l_si != -1) {
+		return a.a[l_si - 1];
+	}
+
+	return l_si;
 }
 
 /**
