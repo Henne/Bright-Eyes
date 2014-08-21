@@ -142,7 +142,6 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 signed short plan_alchemy(Bit8u *hero)
 {
 	signed short retval;
-	signed short l_si;
 	signed short item_pos;
 	signed short recipes;
 	signed short answer;
