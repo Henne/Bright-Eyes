@@ -18,6 +18,10 @@ signed short LVL_select_talent(Bit8u *, signed short);
 /* can be static */
 RealPt get_proper_hero(signed short);
 
+/* 0x3e */
+/* can be static */
+signed short use_talent(signed short, signed char, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

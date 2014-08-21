@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg103 (talents)
- *      Functions rewritten 5/8
+ *      Functions rewritten 6/8
  *
 */
 
@@ -11,7 +11,11 @@
 
 #include "seg002.h"
 #include "seg007.h"
+#include "seg026.h"
+#include "seg047.h"
+#include "seg053.h"
 #include "seg097.h"
+#include "seg104.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -301,6 +305,382 @@ signed short select_talent(void)
 
 	if (l_si != -1) {
 		return a.a[l_si - 1];
+	}
+
+	return l_si;
+}
+
+/* Borlandified and identical */
+signed short use_talent(signed short hero_pos, signed char bonus, signed short talent)
+{
+	register signed short l_si;
+	signed short l_di;
+
+	signed short patient_pos;
+	signed short le;
+	Bit8u *hero;
+	Bit8u *patient;
+	Bit32s money;
+	signed short poison;
+	signed short bak;
+
+	l_si = 1;
+
+	hero = get_hero(hero_pos);
+
+	if (talent != -1) {
+
+		bak = ds_readws(0x26bf);
+
+		load_buffer_1(222);
+
+		switch(talent) {
+		case 44 : {
+			ds_writeb(0x64a2, hero_pos);
+
+			patient_pos = select_hero_from_group(get_ltx(0x730));
+
+			if (patient_pos != -1) {
+				patient = get_hero(patient_pos);
+				if (is_hero_healable(patient)) {
+
+					poison = hero_is_poisoned(patient);
+
+					if (poison == 0) {
+						/* patient is not poisoned */
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x73c),
+							(char*)patient + 0x10);
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					} else if (host_readds(patient + 0x8b) > 0) {
+						/* patient timer is not zero */
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0xae4),
+							(char*)patient + 0x10);
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					} else {
+						/* set patient timer */
+						host_writed(patient + 0x8b, 0x5460);
+
+						if (test_skill(hero, 44, bonus) > 0) {
+
+							timewarp(0x708);
+
+							if (test_skill(hero, 44, ds_readbs(0x2c70 + 2 * poison) + bonus) > 0) {
+								/* success */
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xac8),
+									(char*)hero + 0x10,
+									(char*)patient + 0x10);
+
+								GUI_output(Real2Host(ds_readd(DTP2)));
+
+								host_writeb(patient + 0xd7 + 5 * poison, 0);
+								host_writeb(patient + 0xd6 + 5 * poison, 1);
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xad0),
+									(char*)hero + 0x10,
+									(char*)patient + 0x10);
+
+								if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
+
+									do {
+										le = GUI_input(get_ltx(0xad4), 2);
+									} while (le <= 0);
+
+									if ((l_si = test_skill(hero, 44, le + bonus)) > 0) {
+
+										sprintf((char*)Real2Host(ds_readd(DTP2)),
+											(char*)get_ltx(0xacc),
+											(char*)hero + 0x10,
+											(char*)patient + 0x10,
+											le);
+
+										add_hero_le(patient, le);
+
+										GUI_output(Real2Host(ds_readd(DTP2)));
+									} else {
+										l_di = 3;
+
+										if (host_readws(patient + 0x60) <= l_di) {
+											l_di = host_readws(patient + 0x60) - 1;
+										}
+
+										sub_hero_le(patient, l_di);
+
+										sprintf((char*)Real2Host(ds_readd(DTP2)),
+											(char*)get_ltx(0xad8),
+											(char*)patient + 0x10,
+											l_di);
+
+										GUI_output(Real2Host(ds_readd(DTP2)));
+
+										l_si = 0;
+									}
+								}
+							} else {
+								/* healing failed */
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xac4),
+									(char*)hero + 0x10,
+									(char*)patient + 0x10);
+
+								GUI_output(Real2Host(ds_readd(DTP2)));
+							}
+						} else {
+							/* recognizing the poison failed */
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_ltx(0xac0),
+								(char*)hero + 0x10,
+								(char*)patient + 0x10);
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+						}
+					}
+				}
+			}
+			break;
+		}
+		case 45 : {
+			ds_writeb(0x64a2, hero_pos);
+
+			patient_pos = select_hero_from_group(get_ltx(0x730));
+
+			if (patient_pos != -1) {
+				patient = get_hero(patient_pos);
+
+				talent_cure_disease(hero, patient, bonus, 0);
+			}
+			break;
+		}
+		case 46 : {
+			ds_writeb(0x64a2, hero_pos);
+
+			patient_pos = select_hero_from_group(get_ltx(0x730));
+
+			if (patient_pos != -1) {
+				patient = get_hero(patient_pos);
+				if (is_hero_healable(patient)) {
+
+					if (host_readws(patient + 0x60) >= host_readws(patient + 0x5e)) {
+						/* no need to heal */
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x734),
+							(char*)patient + 0x10);
+
+						GUI_output(Real2Host(ds_readd(DTP2)));
+					} else if (host_readds(patient + 0x8b) > 0) {
+						/* timer is still running */
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0xae4),
+							(char*)patient + 0x10);
+
+						GUI_output(Real2Host(ds_readd(DTP2)));
+
+					} else {
+						host_writed(patient + 0x8b, 0x1fa40L);
+
+						if (test_skill(hero, 46, bonus) > 0) {
+							if (test_skill(hero, 46, bonus) > 0) {
+
+								l_si = (host_readbs(hero + 0x136) > 1) ? host_readbs(hero + 0x136) : 1;
+
+								add_hero_le(patient, l_si);
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xacc),
+									(char*)hero + 0x10,
+									(char*)patient + 0x10,
+									l_si);
+
+								GUI_output(Real2Host(ds_readd(DTP2)));
+							} else {
+								l_di = 3;
+
+								if (host_readws(patient + 0x60) <= l_di) {
+									l_di = host_readws(patient + 0x60) - 1;
+								}
+
+								sub_hero_le(patient, l_di);
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xad8),
+									(char*)patient + 0x10,
+									l_di);
+
+								GUI_output(Real2Host(ds_readd(DTP2)));
+
+								l_si = 0;
+
+								host_writed(patient + 0x8f, 0x1fa40L);
+							}
+						} else {
+
+							if (random_schick(20) <= 7) {
+								/* infected */
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xaec),
+									(char*)hero + 0x10,
+									(char*)patient + 0x10);
+
+								host_writeb(patient + 0xb3, -1);
+								host_writeb(patient + 0xb4, 0);
+							} else {
+								/* just failed */
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xae8),
+									(char*)hero + 0x10,
+									(char*)patient + 0x10);
+							}
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+						}
+					}
+				}
+			}
+			break;
+		}
+		case 9 : {
+
+			if (ds_readds((0x2dc4 + 0x18)) > 0) {
+
+				GUI_output(get_dtp(0x88));
+
+			} else {
+
+				if (test_skill(hero, 9, bonus) > 0) {
+
+					money = random_interval(10, 200);
+
+					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0x8c),
+						(char*)hero + 0x10,
+						Real2Host(ds_readd(0xd2eb)));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					add_party_money(money);
+
+					ds_writed((0x2dc4 + 0x18), 0xa8c0);
+					ds_writew(0x2846, 1);
+				} else {
+					GUI_output(get_dtp(0x90));
+
+					ds_writed((0x2dc4 + 0x18), 0xa8c0);
+					l_si = -1;
+				}
+			}
+			break;
+		}
+		case 47 : {
+
+			if (ds_readds((0x2dc4 + 0x1c)) > 0) {
+
+				GUI_output(get_dtp(0x94));
+
+			} else {
+
+				if (test_skill(hero, 47, bonus) > 0) {
+
+					money = random_interval(100, 300);
+
+					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0x8c),
+						(char*)hero + 0x10,
+						Real2Host(ds_readd(0xd2eb)));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					add_party_money(money);
+
+					ds_writed((0x2dc4 + 0x1c), 0xa8c0);
+					ds_writew(0x2846, 1);
+				} else {
+					GUI_output(get_dtp(0x90));
+
+					ds_writed((0x2dc4 + 0x1c), 0xa8c0);
+					l_si = -1;
+				}
+			}
+			break;
+		}
+		case 43 : {
+
+			if (test_skill(hero, 43, bonus) > 0) {
+
+				money = random_interval(500, 1000);
+
+				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x98),
+					Real2Host(ds_readd(0xd2eb)),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				add_party_money(money);
+
+				ds_writew(0x2846, 1);
+			} else {
+				GUI_output(get_dtp(0x9c));
+
+				ds_writeb(0x318a + ds_readws(TYPEINDEX), 1);
+
+				l_si = -1;
+			}
+
+			break;
+		}
+		case 49 : {
+
+			if (test_skill(hero, 49, bonus) > 0) {
+
+				money = random_interval(500, 1000);
+
+				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0xa0),
+					Real2Host(ds_readd(0xd2eb)),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				add_party_money(money);
+
+				ds_writew(0x2846, 1);
+			} else {
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0xa4),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				set_party_money(0);
+
+				ds_writew(0x2846, 1);
+
+				l_si = -1;
+			}
+
+			break;
+		}
+		case 32 : {
+			/* ALCHEMY */
+			l_si = plan_alchemy(hero);
+			break;
+		}
+		}
+
+		if ((bak != -1) && (bak != 222)) {
+			load_buffer_1(bak);
+		}
 	}
 
 	return l_si;

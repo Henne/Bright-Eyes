@@ -8802,6 +8802,22 @@ static int n_seg103(unsigned short offs)
 		D1_LOG("select_talent() = %s\n", names_skill[reg_ax]);
 		return 1;
 	}
+	case 0x06bf: {
+		CPU_Pop16();
+		Bit16s hero = CPU_Pop16();
+		Bit16s bonus = CPU_Pop16();
+		Bit16s skill = CPU_Pop16();
+		CPU_Push16(skill);
+		CPU_Push16(bonus);
+		CPU_Push16(hero);
+
+		reg_ax = use_talent(hero, (signed char)bonus, skill);
+
+		D1_LOG("use_talent(): %s %+d\n",
+			names_skill[skill], (signed char)bonus);
+
+		return 1;
+	}
 	default:
 		return 0;
 	}
