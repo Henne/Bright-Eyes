@@ -632,7 +632,7 @@ void draw_fight_screen(Bit16u val)
 							}
 
 							target_id = get_cb_val(host_readbs(list_i + 3), host_readbs(list_i + 4));
-							host_writeb(list_i + 0x14, target_id);
+							host_writeb(list_i + 0x14, (signed char)target_id);
 							FIG_set_cb_field(host_readbs(list_i + 4), host_readbs(list_i + 3), height);
 
 							obj_x = 10 - (host_readbs(list_i + 8) / 2) +
@@ -677,9 +677,9 @@ void draw_fight_screen(Bit16u val)
 
 									ptr_3 = FIG_get_ptr(ds_readbs(0xd105 + target_id * 0x3e));
 
-									host_writeb(Real2Host(ptr_3) + 0x14,  height);
+									host_writeb(Real2Host(ptr_3) + 0x14,  (signed char)height);
 								} else {
-									host_writeb(list_i + 0x14, target_id);
+									host_writeb(list_i + 0x14, (signed char)target_id);
 								}
 
 								/* check chessboard bounds */
@@ -895,7 +895,7 @@ void draw_fight_screen(Bit16u val)
 			}
 
 			if (w_arr[i] != -1) {
-				FIG_remove_from_list(w_arr[i], 0);
+				FIG_remove_from_list((signed char)w_arr[i], 0);
 			}
 		}
 

@@ -264,10 +264,10 @@ void unused_store(signed short nr)
 
 	ptr = nr * 5 + Real2Host(ds_readd(0xbd8c));
 
-	host_writeb(ptr, ds_readws(0x5ec0));
+	host_writeb(ptr, (signed char)ds_readws(0x5ec0));
 	host_writeb(ptr + 1, ds_readws(0x5ec2) >> 8);
 	host_writew(ptr + 2, width);
-	host_writeb(ptr + 4, height);
+	host_writeb(ptr + 4, (signed char)height);
 
 	ds_writew(0x5ec0, ((ds_readws(0x5ec2) + size) >> 14) + ds_readws(0x5ec0));
 	ds_writew(0x5ec2, ((((ds_readws(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));

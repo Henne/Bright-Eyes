@@ -3561,9 +3561,9 @@ static int seg038(unsigned short offs) {
 			Bit16s y_in = CPU_Pop16();
 			Bit16s a4 = CPU_Pop16();
 
-			reg_ax = seg038(Real2Host(in_ptr), a1, x_in, y_in, a4);
+			reg_ax = seg038(Real2Host(in_ptr), a1, x_in, y_in, (Bit8s)a4);
 			D1_LOG("seg038(%x, %d, %d, %d, %d) = %d\n",
-				in_ptr, a1, x_in, y_in, a4, (Bit16s)reg_ax);
+				in_ptr, a1, x_in, y_in, (Bit8s)a4, (Bit16s)reg_ax);
 
 			CPU_Push16(a4);
 			CPU_Push16(y_in);

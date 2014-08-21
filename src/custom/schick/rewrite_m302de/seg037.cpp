@@ -490,7 +490,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 
 			if (mode == 3) {
 				host_writeb(enemy + 0x2d, enemy_nr + 10);
-				host_writeb(enemy + 0x2c, l2);
+				host_writeb(enemy + 0x2c, (signed char)l2);
 				retval = 1;
 				done = 1;
 			} else {
@@ -515,7 +515,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 						}
 
 						if (host_readbs(enemy + 0x2d)) {
-							host_writeb(enemy + 0x2c, l2);
+							host_writeb(enemy + 0x2c, (signed char)l2);
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + 0x23) > 0) {
@@ -550,7 +550,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 
 						while (!host_readbs(enemy + 0x2d) && (l_di < 4)) {
 
-							host_writeb(enemy + 0x2d, test_foe_range_attack(x, y, l_si, mode));
+							host_writeb(enemy + 0x2d, (signed char)test_foe_range_attack(x, y, l_si, mode));
 
 							l_di++;
 							if (++l_si == 4) {
@@ -559,7 +559,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 						}
 
 						if (host_readbs(enemy + 0x2d)) {
-							host_writeb(enemy + 0x2c, l2);
+							host_writeb(enemy + 0x2c, (signed char)l2);
 							retval = 1;
 							done = 1;
 						} else if (host_readbs(enemy + 0x23) > 0) {
@@ -628,7 +628,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 			while ( !host_readbs(enemy + 0x2d) && (cnt < 4)) {
 
 				host_writeb(enemy + 0x2d,
-					test_foe_range_attack(x, y, dir, attack_foe));
+					(signed char)test_foe_range_attack(x, y, dir, attack_foe));
 				cnt++;
 				if (++dir == 4) {
 					dir = 0;

@@ -728,8 +728,8 @@ static inline Bit8u *get_dtp(unsigned short off) {
 	return Real2Host(host_readd(Real2Host(ds_readd(DIALOG_TEXT) + off)));
 }
 
-static inline signed char get_cb_val(unsigned short x, unsigned short y) {
-	return host_readb(Real2Host(ds_readd(CHESSBOARD)) + y * 25 + x);
+static inline signed char get_cb_val(signed short x, signed short y) {
+	return host_readbs(Real2Host(ds_readd(CHESSBOARD)) + y * 25 + x);
 }
 
 static inline void set_cb_val(unsigned short x, unsigned short y, signed char val) {

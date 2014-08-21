@@ -100,7 +100,7 @@ signed short FIG_choose_next_hero(void)
 			D1_ERR("Possible infinite loop in %s()\n", __func__);
 			D1_ERR("I'll try to get a possible hero\n");
 
-			retval = 0xffff;
+			retval = -1;
 
 			/*
 			 * print random statistic
@@ -178,7 +178,7 @@ signed short FIG_choose_next_enemy(void)
 			D1_ERR("Possible infinite loop in %s()\n", __func__);
 			D1_ERR("I'll try to get a possible enemy\n");
 
-			retval = 0xffff;
+			retval = -1;
 
 			/*
 			 * print random statistic
