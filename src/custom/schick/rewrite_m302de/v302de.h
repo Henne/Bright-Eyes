@@ -108,6 +108,7 @@
 #define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
+#define SPELLUSER_E	(0xe5c0)
 #define USED_ITEM_DESC	(0xe5c6)	/* pointer to the item description */
 #define USED_ITEM_ID	(0xe5ca)	/* s16 used_item ID */
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
@@ -691,17 +692,22 @@ static inline unsigned short item_undropable(Bit8u *item) {
 		return 1;
 }
 
-static inline Bit8u *get_spelluser() {
-	return Real2Host(ds_readd(SPELLUSER));
+static inline Bit8u *get_spelltarget_e() {
+	return Real2Host(ds_readd(SPELLTARGET_E));
 }
 
 static inline Bit8u *get_spelltarget() {
 	return Real2Host(ds_readd(SPELLTARGET));
 }
 
-static inline Bit8u *get_spelltarget_e() {
-	return Real2Host(ds_readd(SPELLTARGET_E));
+static inline Bit8u *get_spelluser() {
+	return Real2Host(ds_readd(SPELLUSER));
 }
+
+static inline Bit8u *get_spelluser_e() {
+	return Real2Host(ds_readd(SPELLUSER_E));
+}
+
 
 static inline Bit8u *get_itemuser() {
 	return Real2Host(ds_readd(ITEMUSER));
@@ -943,9 +949,10 @@ asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start];
 #define item_herb_potion(item)	((*(struct item_status*)(item + 0x2)).herb_potion)
 #define item_undropable(item)	((*(struct item_status*)(item + 0x2)).undropable)
 
-#define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
-#define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
 #define get_spelltarget_e() (Bit8u*)ds_readd(SPELLTARGET_E)
+#define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
+#define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
+#define get_spelluser_e() (Bit8u*)ds_readd(SPELLUSER_E)
 
 #define get_itemuser() (Bit8u*)ds_readd(ITEMUSER)
 
