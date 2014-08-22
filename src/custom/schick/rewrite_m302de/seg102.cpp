@@ -1,9 +1,9 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 1/22
+ *      Functions rewritten 3/22
  *
  *      Functions called rewritten 1/20
- *      Functions uncalled rewritten 0/2
+ *      Functions uncalled rewritten 2/2 (complete)
 */
 
 #include "v302de.h"
@@ -59,6 +59,60 @@ void MON_do_damage(signed short damage)
 		}
 	}
 }
+
+/* Borlandified and identical */
+/* unused */
+signed short MON_get_target_PA(void)
+{
+	if (host_readbs(get_spelluser_e() + 0x2d) < 10) {
+		/* target is a hero */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET,
+			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+
+		/* calc and return PA-value */
+		return host_readbs(get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78))
+			- host_readbs(get_spelltarget() + 0x79);
+
+	} else {
+		/* target is a monster */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser_e() + 0x2d) * 62));
+
+		/* calc and return PA-value */
+		return host_readbs(get_spelltarget_e() + 0x1d);
+	}
+}
+
+/* Borlandified and identical */
+/* unused */
+signed short MON_get_target_RS(void)
+{
+	if (host_readbs(get_spelluser_e() + 0x2d) < 10) {
+		/* target is a hero */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET,
+			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+
+		/* return RS-value */
+		return host_readbs(get_spelltarget() + 0x30);
+
+	} else {
+		/* target is a monster */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser_e() + 0x2d) * 62));
+
+		/* return PA-value */
+		return host_readbs(get_spelltarget_e() + 0x02);
+	}
+}
+
 
 #if !defined(__BORLANDC__)
 }
