@@ -8791,6 +8791,26 @@ static int n_seg098(unsigned short offs)
 	}
 }
 
+static int n_seg102(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		Bit16s damage = CPU_Pop16();
+		CPU_Push16(damage);
+
+		D1_INFO("MON_do_damage(%d)\n", damage);
+		MON_do_damage(damage);
+
+		return 1;
+	}
+	default:
+		return 0;
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+
 static int n_seg103(unsigned short offs)
 {
 	switch (offs) {
@@ -9273,6 +9293,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	else if (is_ovrseg(0x1442)) return n_seg097(offs);
 	else if (is_ovrseg(0x1449)) return n_seg098(offs);
+	else if (is_ovrseg(0x1472)) return n_seg102(offs);
 	else if (is_ovrseg(0x147b)) return n_seg103(offs);
 	else if (is_ovrseg(0x1480)) return n_seg104(offs);
 	else if (is_ovrseg(0x1485)) return n_seg105(offs);
