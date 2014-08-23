@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 4/22
+ *      Functions rewritten 5/22
  *
- *      Functions called rewritten 2/20
+ *      Functions called rewritten 3/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -128,6 +128,31 @@ signed short MON_get_val(signed short mspell_nr, signed short flag)
 
 
 	return l1;
+}
+
+
+/**
+ * MON_test_skill() -	talent test for monsters
+ * @monster:		pointer to monster
+ * @t1:			nr of 1st attribute
+ * @t2:			nr of 2nd attribute
+ * @t3:			nr of 3rd attribute
+ * @bonus:		modificator
+*/
+
+/* Borlandified and identical */
+signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, signed short t3, signed char bonus)
+{
+	signed short randval;
+	signed short attr_sum;
+
+	randval = dice_roll(3, 20, bonus);
+
+	attr_sum = host_readbs(monster + 0x04 + 2 * t1)
+		+ host_readbs(monster + 0x04 + 2 * t2)
+		+ host_readbs(monster + 0x04 + 2 * t3);
+
+	return attr_sum - randval + 1;
 }
 
 #if !defined(__BORLANDC__)

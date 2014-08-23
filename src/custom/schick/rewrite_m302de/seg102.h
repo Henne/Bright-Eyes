@@ -18,6 +18,10 @@ signed short MON_get_target_RS(void);
 /* should be static */
 signed short MON_get_val(signed short, signed short);
 
+/* 0x7f */
+/* should be static */
+signed short MON_test_attrib3(Bit8u*, signed short, signed short, signed short, signed char);
+
 #if !defined(__BORLANDC__)
 }
 #endif

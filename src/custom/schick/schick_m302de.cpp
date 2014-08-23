@@ -8815,6 +8815,24 @@ static int n_seg102(unsigned short offs)
 
 		return 1;
 	}
+	case 0x1cf: {
+		CPU_Pop16();
+		RealPt mon = CPU_Pop32();
+		Bit16s t1 = CPU_Pop16();
+		Bit16s t2 = CPU_Pop16();
+		Bit16s t3 = CPU_Pop16();
+		Bit16s bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(t3);
+		CPU_Push16(t2);
+		CPU_Push16(t1);
+		CPU_Push32(mon);
+
+		reg_ax = MON_test_attrib3(Real2Host(mon), t1, t2, t3, bonus);
+		D1_INFO("MON_test_attrib3(%d, %d, %d, %d) = %d\n", t1, t2, t3, bonus, reg_ax);
+
+		return 1;
+	}
 	default:
 		return 0;
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
