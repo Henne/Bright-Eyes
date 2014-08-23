@@ -8847,8 +8847,19 @@ static int n_seg102(unsigned short offs)
 
 		return 1;
 	}
+	case 0x2c2: {
+		CPU_Pop16();
+		RealPt mon = CPU_Pop32();
+		Bit16s ae = CPU_Pop16();
+		CPU_Push16(ae);
+		CPU_Push32(mon);
+
+		MON_sub_ae(Real2Host(mon), ae);
+		D1_INFO("MON_test_skill(%d)\n", ae);
+
+		return 1;
+	}
 	default:
-		return 0;
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 		exit(1);
 	}

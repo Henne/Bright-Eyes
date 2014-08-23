@@ -26,6 +26,10 @@ signed short MON_test_attrib3(Bit8u*, signed short, signed short, signed short, 
 /* should be static */
 signed short MON_test_skill(Bit8u*, signed short, signed char);
 
+/* 0x89 */
+/* should be static */
+void MON_sub_ae(Bit8u*, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

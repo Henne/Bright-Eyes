@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 6/22
+ *      Functions rewritten 7/22
  *
- *      Functions called rewritten 4/20
+ *      Functions called rewritten 5/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -179,6 +179,18 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char 
 	}
 
 	return 0;
+}
+
+/* Borlandified and identical */
+void MON_sub_ae(Bit8u *monster, signed short ae)
+{
+	if (!enemy_dead(monster)) {
+		sub_ptr_ws(monster + 0x17, ae);
+
+		if (host_readws(monster + 0x17) < 0) {
+			host_writew(monster + 0x17, 0);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
