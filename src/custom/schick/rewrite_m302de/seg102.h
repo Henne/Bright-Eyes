@@ -14,6 +14,10 @@ signed short MON_get_target_PA(void);
 /* unused */
 signed short MON_get_target_RS(void);
 
+/* 0x7a */
+/* should be static */
+signed short MON_get_val(signed short, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 3/22
+ *      Functions rewritten 4/22
  *
- *      Functions called rewritten 1/20
+ *      Functions called rewritten 2/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -10,6 +10,7 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg007.h"
 #include "seg041.h"
 
 #if !defined(__BORLANDC__)
@@ -113,6 +114,21 @@ signed short MON_get_target_RS(void)
 	}
 }
 
+/* Borlandified and identical */
+signed short MON_get_val(signed short mspell_nr, signed short flag)
+{
+	signed char l1;
+
+	l1 = ds_readbs(0xf13 + 8 * mspell_nr);
+
+	if (flag != 0) {
+
+		l1 = (l1 == -1) ? random_interval(5, 10) : l1 / 2;
+	}
+
+
+	return l1;
+}
 
 #if !defined(__BORLANDC__)
 }

@@ -8803,6 +8803,18 @@ static int n_seg102(unsigned short offs)
 
 		return 1;
 	}
+	case 0x18e: {
+		CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		D1_INFO("MON_get_val(%d, %d) = %d\n", a1, a2, reg_ax);
+		reg_ax = MON_get_val(a1, a2);
+
+		return 1;
+	}
 	default:
 		return 0;
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
