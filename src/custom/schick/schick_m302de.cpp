@@ -8810,8 +8810,8 @@ static int n_seg102(unsigned short offs)
 		CPU_Push16(a2);
 		CPU_Push16(a1);
 
-		D1_INFO("MON_get_val(%d, %d) = %d\n", a1, a2, reg_ax);
-		reg_ax = MON_get_val(a1, a2);
+		D1_INFO("MON_get_spell_cost(%d, %d) = %d\n", a1, a2, reg_ax);
+		reg_ax = MON_get_spell_cost(a1, a2);
 
 		return 1;
 	}

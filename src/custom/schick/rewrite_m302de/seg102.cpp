@@ -115,19 +115,18 @@ signed short MON_get_target_RS(void)
 }
 
 /* Borlandified and identical */
-signed short MON_get_val(signed short mspell_nr, signed short flag)
+signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
 {
-	signed char l1;
+	signed char cost;
 
-	l1 = ds_readbs(0xf13 + 8 * mspell_nr);
+	cost = ds_readbs(0xf13 + 8 * mspell_nr);
 
 	if (flag != 0) {
 
-		l1 = (l1 == -1) ? random_interval(5, 10) : l1 / 2;
+		cost = (cost == -1) ? random_interval(5, 10) : cost / 2;
 	}
 
-
-	return l1;
+	return cost;
 }
 
 

@@ -16,7 +16,7 @@ signed short MON_get_target_RS(void);
 
 /* 0x7a */
 /* should be static */
-signed short MON_get_val(signed short, signed short);
+signed short MON_get_spell_cost(signed short, signed short);
 
 /* 0x7f */
 /* should be static */
