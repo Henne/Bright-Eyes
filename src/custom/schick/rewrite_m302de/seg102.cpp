@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 5/22
+ *      Functions rewritten 6/22
  *
- *      Functions called rewritten 3/20
+ *      Functions called rewritten 4/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -153,6 +153,32 @@ signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, 
 		+ host_readbs(monster + 0x04 + 2 * t3);
 
 	return attr_sum - randval + 1;
+}
+
+/* Borlandified and identical */
+signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char bonus)
+{
+	Bit8u *desc;
+
+	desc = p_datseg + 0xf13 + 8 * mspell_nr;
+
+	/* depends on MR */
+	if (host_readbs(desc + 6) != 0) {
+
+		/* add MR */
+		bonus += (host_readbs(monster + 0x2d) >= 10) ?
+			ds_readbs(0xd0f8 + 62 * host_readbs(monster + 0x2d)) :
+			host_readbs(get_hero(host_readbs(monster + 0x2d) - 1) + 0x66);
+	}
+
+	/* check if the monster spell has a valid ID */
+	if ((mspell_nr >= 1) && (mspell_nr <= 14)) {
+		return MON_test_attrib3(monster, host_readbs(desc + 3),
+			host_readbs(desc + 4), host_readbs(desc + 5),
+			bonus);
+	}
+
+	return 0;
 }
 
 #if !defined(__BORLANDC__)
