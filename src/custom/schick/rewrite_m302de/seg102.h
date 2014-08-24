@@ -11,6 +11,9 @@ void mspell_verwandlung(void);
 /* 0x2a */
 void mspell_bannbaladin(void);
 
+/* 0x2f */
+void mspell_boeser_blick(void);
+
 /* 0x6b */
 /* should be static */
 void MON_do_damage(signed short);

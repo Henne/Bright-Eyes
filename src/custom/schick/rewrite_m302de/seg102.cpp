@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 10/22
+ *      Functions rewritten 11/22
  *
- *      Functions called rewritten 8/20
+ *      Functions called rewritten 9/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -27,6 +27,7 @@ static void (*mspell[])(void) = {
 	NULL,
 	mspell_verwandlung,
 	mspell_bannbaladin,
+	mspell_boeser_blick,
 };
 
 #endif
@@ -337,6 +338,22 @@ void mspell_bannbaladin(void)
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x1cc),
+		get_spelltarget() + 0x10);
+}
+
+/* Borlandified and identical */
+void mspell_boeser_blick(void)
+{
+	/* set pointer to hero target */
+	ds_writed(SPELLTARGET,
+                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * 0x6da));
+
+	/* set the flag */
+	or_ptr_bs(get_spelltarget() + 0xaa, 0x20);
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x1d0),
 		get_spelltarget() + 0x10);
 }
 
