@@ -251,6 +251,7 @@ void spell_bannbaladin(void)
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser() + 0x86) * 0x3e + 0xd0df));
 
 	if (host_readbs(get_spelltarget_e() + 0x36) != 0) {
+		/* spell does not work on animals */
 
 		ds_writew(0xac0e, 0);
 
@@ -261,6 +262,7 @@ void spell_bannbaladin(void)
 	} else {
 
 		if (host_readbs(get_spelltarget_e() + 1) == 0x1c) {
+			/* spell does not work on skeletons */
 			ds_writew(0xac0e, -2);
 			return;
 		}
