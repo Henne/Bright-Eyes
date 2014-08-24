@@ -5585,6 +5585,10 @@ static int seg102(unsigned short offs)
 		mspell_boeser_blick();
 		return 1;
 	}
+	case 0x34: {
+		mspell_horriphobus();
+		return 1;
+	}
 	default:
 		return 0;
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
