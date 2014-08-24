@@ -2,6 +2,10 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+signed short MON_cast_spell(RealPt, signed char);
+
+
 /* 0x6b */
 /* should be static */
 void MON_do_damage(signed short);

@@ -1,20 +1,32 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 7/22
+ *      Functions rewritten 8/22
  *
- *      Functions called rewritten 5/20
+ *      Functions called rewritten 6/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
+
+#include <stdio.h>
 
 #include "v302de.h"
 
 #include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
+#include "seg026.h"
 #include "seg041.h"
+#include "seg096.h"
+#include "seg102.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
+#if !defined(__BORLANDC__)
+static void (*mspell[])(void) = {
+	NULL,
+};
+
 #endif
 
 /* Borlandified and identical */
@@ -191,6 +203,82 @@ void MON_sub_ae(Bit8u *monster, signed short ae)
 		}
 	}
 }
+
+/* Borlandified and identical */
+signed short MON_cast_spell(RealPt monster, signed char bonus)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short cost;
+	void (*func)(void);
+	volatile signed short bak;
+
+	l_si = host_readbs(Real2Host(monster) + 0x2c);
+
+	if (l_si > 0) {
+
+		cost = MON_get_spell_cost(l_si, 0);
+
+		/* check AE */
+		if (host_readws(Real2Host(monster) + 0x17) < cost) {
+			return -1;
+		}
+
+		ds_writew(0xe5b2, MON_test_skill(Real2Host(monster), l_si, bonus));
+
+		if ((ds_readws(0xe5b2) <= 0) || (ds_readds(0x2dc4) > 0)) {
+
+			/* spell failed */
+			MON_sub_ae(Real2Host(monster), MON_get_spell_cost(l_si, 1));
+
+			return 0;
+
+		} else {
+
+			ds_writed(SPELLUSER_E, (Bit32u)monster);
+
+			ds_writew(0xaccc, -1);
+
+			/* terminate output string */
+			host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+			bak = ds_readws(0x26bf);
+
+			load_buffer_1(222);
+
+#if !defined(__BORLANDC__)
+			func = mspell[l_si];
+#else
+			func = (void (*)(void))ds_readd(0xfc2 + 4 * l_si);
+#endif
+
+			func();
+
+			if ((bak != -1) && (bak != 222)) {
+				load_buffer_1(bak);
+			}
+
+			l_di = 1;
+
+			if (ds_readws(0xaccc) == 0) {
+				l_di = -1;
+			} else if (ds_readws(0xaccc) == -2) {
+				MON_sub_ae(Real2Host(monster), MON_get_spell_cost(l_si, 1));
+				l_di = 0;
+			} else if (ds_readws(0xaccc) != -1) {
+				MON_sub_ae(Real2Host(monster), ds_readws(0xaccc));
+			} else {
+				MON_sub_ae(Real2Host(monster), cost);
+			}
+
+			return l_di;
+		}
+	} else {
+		return 0;
+	}
+
+}
+
 
 #if !defined(__BORLANDC__)
 }
