@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 8/22
+ *      Functions rewritten 9/22
  *
- *      Functions called rewritten 6/20
+ *      Functions called rewritten 7/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -25,6 +25,7 @@ namespace M302de {
 #if !defined(__BORLANDC__)
 static void (*mspell[])(void) = {
 	NULL,
+	mspell_verwandlung,
 };
 
 #endif
@@ -279,6 +280,48 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 
 }
 
+/* Borlandified and identical */
+void mspell_verwandlung(void)
+{
+	/* set pointer to monster target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser_e() + 0x2d) * 0x3e + 0xd0df));
+
+	if (enemy_stoned(get_spelltarget_e())) {
+
+		/* set the spellcosts */
+		ds_writew(0xaccc, 5 * random_schick(10));
+
+		if (host_readws(get_spelluser_e() + 0x17) < ds_readws(0xaccc)) {
+			ds_writew(0xaccc, host_readws(get_spelluser_e() + 0x17));
+		} else {
+			/* unset stoned flag */
+			and_ptr_bs(get_spelltarget_e() + 0x31, 0xfb);
+
+			/* prepare message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x1c8),
+				Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
+		}
+	} else {
+		if (enemy_uncon(get_spelltarget_e())) {
+
+			/* set the spellcosts */
+			ds_writew(0xaccc, 5 * random_schick(10));
+
+			if (host_readws(get_spelluser_e() + 0x17) < ds_readws(0xaccc)) {
+				ds_writew(0xaccc, host_readws(get_spelluser_e() + 0x17));
+			} else {
+				/* unset uncon flag */
+				and_ptr_bs(get_spelltarget_e() + 0x31, 0xbf);
+
+				ds_writew(0x618e, 1);
+			}
+		} else {
+			ds_writew(0xaccc, 2);
+		}
+	}
+}
 
 #if !defined(__BORLANDC__)
 }

@@ -5569,7 +5569,19 @@ static int seg101(unsigned short offs) {
 
 static int seg102(unsigned short offs)
 {
-	return 0;
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		mspell_verwandlung();
+		return 1;
+	}
+	default:
+		return 0;
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
 }
 
 static int seg103(unsigned short offs) {
