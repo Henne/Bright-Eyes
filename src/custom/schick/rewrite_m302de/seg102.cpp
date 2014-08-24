@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 12/22
+ *      Functions rewritten 13/22
  *
- *      Functions called rewritten 10/20
+ *      Functions called rewritten 11/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -29,6 +29,7 @@ static void (*mspell[])(void) = {
 	mspell_bannbaladin,		/*  2 */
 	mspell_boeser_blick,		/*  3 */
 	mspell_horriphobus,		/*  4 */
+	mspell_axxeleratus,		/*  5 */
 };
 
 #endif
@@ -373,6 +374,27 @@ void mspell_horriphobus(void)
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x1d4),
 		get_spelltarget() + 0x10);
+}
+
+/* Borlandified and identical */
+void mspell_axxeleratus(void)
+{
+	/* set pointer to monster target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser_e() + 0x2d) * 0x3e + 0xd0df));
+
+	/* #Attacks + 1 */
+	inc_ptr_bs(get_spelltarget_e() + 0x1b);
+
+	/* AT +1 */
+	add_ptr_bs(get_spelltarget_e() + 0x1c, 1);
+
+	/* PA +1 */
+	add_ptr_bs(get_spelltarget_e() + 0x1d, 1);
+
+	/* BP * 2 */
+	host_writebs(get_spelltarget_e() + 0x23, 2 * host_readbs(get_spelltarget_e() + 0x23));
+
 }
 
 #if !defined(__BORLANDC__)
