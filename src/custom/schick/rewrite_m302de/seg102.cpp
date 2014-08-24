@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 13/22
+ *      Functions rewritten 14/22
  *
- *      Functions called rewritten 11/20
+ *      Functions called rewritten 12/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -30,6 +30,7 @@ static void (*mspell[])(void) = {
 	mspell_boeser_blick,		/*  3 */
 	mspell_horriphobus,		/*  4 */
 	mspell_axxeleratus,		/*  5 */
+	mspell_balsam,			/*  6 */
 };
 
 #endif
@@ -395,6 +396,37 @@ void mspell_axxeleratus(void)
 	/* BP * 2 */
 	host_writebs(get_spelltarget_e() + 0x23, 2 * host_readbs(get_spelltarget_e() + 0x23));
 
+}
+
+/* Borlandified and identical */
+/* Original-Bug: how much LE are restored, when le is 7? */
+void mspell_balsam(void)
+{
+	signed short le;
+
+	/* set pointer to monster target */
+	ds_writed(SPELLTARGET_E,
+		(Bit32u)RealMake(datseg, host_readbs(get_spelluser_e() + 0x2d) * 0x3e + 0xd0df));
+
+	ds_writew(0xaccc, 0);
+
+	le = (host_readws(get_spelltarget_e() + 0x11) - host_readws(get_spelltarget_e() + 0x13)) / 2;
+
+	if (le) {
+
+		if (le < 7) {
+			/* AE costs are at least 7 */
+			ds_writew(0xaccc, 7);
+		}
+
+		/* adjust costs with */
+		if (host_readws(get_spelluser_e() + 0x17) < ds_readws(0xaccc)) {
+
+			ds_writew(0xaccc, host_readws(get_spelluser_e() + 0x17));
+		}
+
+		add_ptr_ws(get_spelltarget_e() + 0x13, ds_readws(0xaccc));
+	}
 }
 
 #if !defined(__BORLANDC__)
