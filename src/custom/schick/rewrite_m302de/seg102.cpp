@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 9/22
+ *      Functions rewritten 10/22
  *
- *      Functions called rewritten 7/20
+ *      Functions called rewritten 8/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -26,6 +26,7 @@ namespace M302de {
 static void (*mspell[])(void) = {
 	NULL,
 	mspell_verwandlung,
+	mspell_bannbaladin,
 };
 
 #endif
@@ -321,6 +322,22 @@ void mspell_verwandlung(void)
 			ds_writew(0xaccc, 2);
 		}
 	}
+}
+
+/* Borlandified and identical */
+void mspell_bannbaladin(void)
+{
+	/* set pointer to hero target */
+	ds_writed(SPELLTARGET,
+                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * 0x6da));
+
+	/* set the flag */
+	or_ptr_bs(get_spelltarget() + 0xab, 0x08);
+
+	/* prepare message */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x1cc),
+		get_spelltarget() + 0x10);
 }
 
 #if !defined(__BORLANDC__)

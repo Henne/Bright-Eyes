@@ -8,6 +8,9 @@ signed short MON_cast_spell(RealPt, signed char);
 /* 0x25 */
 void mspell_verwandlung(void);
 
+/* 0x2a */
+void mspell_bannbaladin(void);
+
 /* 0x6b */
 /* should be static */
 void MON_do_damage(signed short);
