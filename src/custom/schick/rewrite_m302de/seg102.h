@@ -23,6 +23,9 @@ void mspell_axxeleratus(void);
 /* 0x3e */
 void mspell_balsam(void);
 
+/* 0x43 */
+void mspell_blitz(void);
+
 /* 0x6b */
 /* should be static */
 void MON_do_damage(signed short);

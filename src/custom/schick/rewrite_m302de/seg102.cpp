@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 14/22
+ *      Functions rewritten 15/22
  *
- *      Functions called rewritten 12/20
+ *      Functions called rewritten 13/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -31,6 +31,7 @@ static void (*mspell[])(void) = {
 	mspell_horriphobus,		/*  4 */
 	mspell_axxeleratus,		/*  5 */
 	mspell_balsam,			/*  6 */
+	mspell_blitz,			/*  7 */
 };
 
 #endif
@@ -426,6 +427,41 @@ void mspell_balsam(void)
 		}
 
 		add_ptr_ws(get_spelltarget_e() + 0x13, ds_readws(0xaccc));
+	}
+}
+
+
+/* Borlandified and identical */
+void mspell_blitz(void)
+{
+	if (host_readbs(get_spelluser_e() + 0x2d) < 10) {
+		/* target is a hero */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET,
+			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+
+		/* set blitz timer to 3 rounds */
+		host_writeb(get_spelltarget() + 0x96, 3);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x158),
+			get_spelltarget() + 0x10);
+	} else {
+		/* target is a monster */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser_e() + 0x2d) * 62));
+
+		/* set blitz timer to 3 rounds */
+		host_writeb(get_spelltarget_e() + 0x2f, 3);
+
+		/* prepare message */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x154),
+			Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
 	}
 }
 
