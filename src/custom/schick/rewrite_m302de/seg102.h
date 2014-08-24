@@ -29,6 +29,10 @@ void mspell_blitz(void);
 /* 0x48 */
 void mspell_eisenrost(void);
 
+/* 0x4d */
+void mspell_fulminictus(void);
+
+
 /* 0x6b */
 /* should be static */
 void MON_do_damage(signed short);

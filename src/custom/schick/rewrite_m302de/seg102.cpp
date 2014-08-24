@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 16/22
+ *      Functions rewritten 17/22
  *
- *      Functions called rewritten 14/20
+ *      Functions called rewritten 15/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -33,6 +33,7 @@ static void (*mspell[])(void) = {
 	mspell_balsam,			/*  6 */
 	mspell_blitz,			/*  7 */
 	mspell_eisenrost,		/*  8 */
+	mspell_fulminictus,		/*  9 */
 };
 
 #endif
@@ -519,6 +520,30 @@ void mspell_eisenrost(void)
 				Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
 		}
 	}
+}
+
+/* Borlandified and identical */
+void mspell_fulminictus(void)
+{
+	signed short damage;
+
+	/* roll 3W6 */
+	damage = dice_roll(3, 6, 0);
+
+	/* add the level of the spelluser */
+	damage += host_readbs(get_spelluser_e() + 0x29);
+
+	/* adjust damage */
+	if (host_readws(get_spelluser_e() + 0x17) < damage) {
+		damage =  host_readws(get_spelluser_e() + 0x17);
+	}
+
+	/* do the damage */
+	MON_do_damage(damage);
+
+	/* set the cost */
+	ds_writew(0xaccc, damage);
+
 }
 
 #if !defined(__BORLANDC__)
