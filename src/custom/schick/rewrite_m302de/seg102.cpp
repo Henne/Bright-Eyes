@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 15/22
+ *      Functions rewritten 16/22
  *
- *      Functions called rewritten 13/20
+ *      Functions called rewritten 14/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -32,6 +32,7 @@ static void (*mspell[])(void) = {
 	mspell_axxeleratus,		/*  5 */
 	mspell_balsam,			/*  6 */
 	mspell_blitz,			/*  7 */
+	mspell_eisenrost,		/*  8 */
 };
 
 #endif
@@ -462,6 +463,61 @@ void mspell_blitz(void)
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x154),
 			Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
+	}
+}
+
+/* Borlandified and identical */
+void mspell_eisenrost(void)
+{
+	signed short id;
+
+	if (host_readbs(get_spelluser_e() + 0x2d) < 10) {
+		/* target is a hero */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET,
+			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+
+		id = host_readws(get_spelltarget() + 0x1c0);
+
+		if (!id) {
+			/* target hero has no weapon */
+			ds_writew(0xaccc, 2);
+		} else if (!ks_broken(get_spelltarget() + 0x1c0)) {
+
+			if (host_readbs(get_spelltarget() + 0x1c6) > 0) {
+
+				/* set the broken flag */
+				or_ptr_bs(get_spelltarget() + 0x1c4, 1);
+
+				/* prepare message */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x170),
+					Real2Host(GUI_names_grammar(0x8000, id, 0)),
+					get_spelltarget() + 0x10);
+			} else {
+				ds_writew(0xaccc, -2);
+			}
+		}
+
+	} else {
+		/* target is a monster */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser_e() + 0x2d) * 62));
+
+		/* if weapon is not broken */
+		if (!host_readbs(get_spelltarget_e() + 0x30)) {
+
+			/* set weapon broken */
+			host_writebs(get_spelltarget_e() + 0x30, 1);
+
+			/* prepare message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x16c),
+				Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
+		}
 	}
 }
 

@@ -26,6 +26,9 @@ void mspell_balsam(void);
 /* 0x43 */
 void mspell_blitz(void);
 
+/* 0x48 */
+void mspell_eisenrost(void);
+
 /* 0x6b */
 /* should be static */
 void MON_do_damage(signed short);

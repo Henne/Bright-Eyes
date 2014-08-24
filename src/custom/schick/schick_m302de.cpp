@@ -5601,6 +5601,10 @@ static int seg102(unsigned short offs)
 		mspell_blitz();
 		return 1;
 	}
+	case 0x48: {
+		mspell_eisenrost();
+		return 1;
+	}
 	default:
 		return 0;
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
