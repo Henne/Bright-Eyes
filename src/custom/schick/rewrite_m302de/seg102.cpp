@@ -4,6 +4,9 @@
  *
  *      Functions called rewritten 20/20 (complete)
  *      Functions uncalled rewritten 2/2 (complete)
+ *
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg102.cpp
 */
 
 #include <stdio.h>
@@ -43,7 +46,6 @@ static void (*mspell[])(void) = {
 
 #endif
 
-/* Borlandified and identical */
 void MON_do_damage(signed short damage)
 {
 	if (damage > 0) {
@@ -87,7 +89,6 @@ void MON_do_damage(signed short damage)
 	}
 }
 
-/* Borlandified and identical */
 /* unused */
 signed short MON_get_target_PA(void)
 {
@@ -114,7 +115,6 @@ signed short MON_get_target_PA(void)
 	}
 }
 
-/* Borlandified and identical */
 /* unused */
 signed short MON_get_target_RS(void)
 {
@@ -140,7 +140,6 @@ signed short MON_get_target_RS(void)
 	}
 }
 
-/* Borlandified and identical */
 signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
 {
 	signed char cost;
@@ -165,7 +164,6 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
  * @bonus:		modificator
 */
 
-/* Borlandified and identical */
 signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, signed short t3, signed char bonus)
 {
 	signed short randval;
@@ -180,7 +178,6 @@ signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, 
 	return attr_sum - randval + 1;
 }
 
-/* Borlandified and identical */
 signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char bonus)
 {
 	Bit8u *desc;
@@ -206,7 +203,6 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char 
 	return 0;
 }
 
-/* Borlandified and identical */
 void MON_sub_ae(Bit8u *monster, signed short ae)
 {
 	if (!enemy_dead(monster)) {
@@ -218,7 +214,6 @@ void MON_sub_ae(Bit8u *monster, signed short ae)
 	}
 }
 
-/* Borlandified and identical */
 signed short MON_cast_spell(RealPt monster, signed char bonus)
 {
 	signed short l_si;
@@ -293,7 +288,6 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 
 }
 
-/* Borlandified and identical */
 void mspell_verwandlung(void)
 {
 	/* set pointer to monster target */
@@ -336,7 +330,6 @@ void mspell_verwandlung(void)
 	}
 }
 
-/* Borlandified and identical */
 void mspell_bannbaladin(void)
 {
 	/* set pointer to hero target */
@@ -352,7 +345,6 @@ void mspell_bannbaladin(void)
 		get_spelltarget() + 0x10);
 }
 
-/* Borlandified and identical */
 void mspell_boeser_blick(void)
 {
 	/* set pointer to hero target */
@@ -368,7 +360,6 @@ void mspell_boeser_blick(void)
 		get_spelltarget() + 0x10);
 }
 
-/* Borlandified and identical */
 void mspell_horriphobus(void)
 {
 	/* set pointer to hero target */
@@ -385,7 +376,6 @@ void mspell_horriphobus(void)
 		get_spelltarget() + 0x10);
 }
 
-/* Borlandified and identical */
 void mspell_axxeleratus(void)
 {
 	/* set pointer to monster target */
@@ -406,7 +396,6 @@ void mspell_axxeleratus(void)
 
 }
 
-/* Borlandified and identical */
 /* Original-Bug: how much LE are restored, when le is 7? */
 void mspell_balsam(void)
 {
@@ -438,7 +427,6 @@ void mspell_balsam(void)
 }
 
 
-/* Borlandified and identical */
 void mspell_blitz(void)
 {
 	if (host_readbs(get_spelluser_e() + 0x2d) < 10) {
@@ -472,7 +460,6 @@ void mspell_blitz(void)
 	}
 }
 
-/* Borlandified and identical */
 void mspell_eisenrost(void)
 {
 	signed short id;
@@ -527,7 +514,6 @@ void mspell_eisenrost(void)
 	}
 }
 
-/* Borlandified and identical */
 void mspell_fulminictus(void)
 {
 	signed short damage;
@@ -550,7 +536,6 @@ void mspell_fulminictus(void)
 	ds_writew(0xaccc, damage);
 }
 
-/* Borlandified and identical */
 void mspell_ignifaxius(void)
 {
 	signed short damage;
@@ -635,7 +620,6 @@ void mspell_ignifaxius(void)
 	ds_writew(0xaccc, damage);
 }
 
-/* Borlandified and identical */
 void mspell_plumbumbarum(void)
 {
 	signed short slot;
@@ -677,7 +661,6 @@ void mspell_plumbumbarum(void)
 	}
 }
 
-/* Borlandified and identical */
 void mspell_saft_kraft(void)
 {
 
@@ -701,7 +684,6 @@ void mspell_saft_kraft(void)
 	ds_writew(0xaccc, random_schick(20));
 }
 
-/* Borlandified and identical */
 void mspell_armatrutz(void)
 {
 	signed short i;
@@ -721,7 +703,6 @@ void mspell_armatrutz(void)
 	add_ptr_bs(get_spelluser_e() + 2, rs_bonus);
 }
 
-/* Borlandified and identical */
 void mspell_paral(void)
 {
 
