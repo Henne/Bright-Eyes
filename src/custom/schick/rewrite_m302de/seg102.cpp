@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 17/22
+ *      Functions rewritten 18/22
  *
- *      Functions called rewritten 15/20
+ *      Functions called rewritten 16/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -34,6 +34,7 @@ static void (*mspell[])(void) = {
 	mspell_blitz,			/*  7 */
 	mspell_eisenrost,		/*  8 */
 	mspell_fulminictus,		/*  9 */
+	mspell_ignifaxius,		/* 10 */
 };
 
 #endif
@@ -543,7 +544,91 @@ void mspell_fulminictus(void)
 
 	/* set the cost */
 	ds_writew(0xaccc, damage);
+}
 
+/* Borlandified and identical */
+void mspell_ignifaxius(void)
+{
+	signed short damage;
+	signed short level;
+	signed short rs_malus;
+	signed short hero_pos;
+	signed short slot;
+	Bit8u *p_armour;
+
+	/* get the level of the spelluser */
+	level = host_readbs(get_spelluser_e() + 0x29);
+
+	/* roll the damage: damage = level * W6 */
+	damage = dice_roll(level, 6, 0);
+
+	/* damage must not exceed AE of the spelluser */
+	if (host_readws(get_spelluser_e() + 0x17) < damage) {
+		damage = host_readws(get_spelluser_e() + 0x17);
+	}
+
+	/* do the damage */
+	MON_do_damage(damage);
+
+	/* calc RS malus */
+	rs_malus = damage / 10;
+
+	if (host_readbs(get_spelluser_e() + 0x2d) < 10) {
+		/* target is a hero */
+
+		/* get the position of the target hero */
+		hero_pos = host_readbs(get_spelluser_e() + 0x2d) - 1;
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET,
+			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+
+		/* pointer to the armour of the target hero */
+		p_armour = get_spelltarget() + 0x1b2;
+
+		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
+
+			/* adjust rs_malus */
+			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
+			{
+				rs_malus = ds_readbs(0x877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
+						- host_readbs(p_armour + 7);
+			}
+
+			host_writeb(p_armour + 7, host_readbs(p_armour + 7) + rs_malus);
+			host_writeb(get_spelltarget()  + 0x30, host_readbs(get_spelltarget() + 0x30) - rs_malus);
+		}
+
+		/* AT - level / 2 */
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 0x1518, get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78), -level / 2, hero_pos);
+
+		/* PA - level / 2 */
+		slot = get_free_mod_slot();
+		set_mod_slot(slot, 0x1518, get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78), -level / 2, hero_pos);
+
+	} else {
+		/* target is a monster */
+
+		/* set the pointer to the target */
+		ds_writed(SPELLTARGET_E,
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser_e() + 0x2d) * 62));
+
+		/* subtract RS malus */
+		sub_ptr_bs(get_spelltarget_e() + 0x02, rs_malus);
+
+		/* AT - level / 2 */
+		host_writeb(get_spelltarget_e() + 0x1c,
+			host_readbs(get_spelltarget_e() + 0x1c) - level / 2);
+
+		/* PA - level / 2 */
+		host_writeb(get_spelltarget_e() + 0x1d,
+			host_readbs(get_spelltarget_e() + 0x1d) - level / 2);
+	}
+
+	/* terminate output string */
+	host_writebs(Real2Host(ds_readd(DTP2)), 0);
+	ds_writew(0xaccc, damage);
 }
 
 #if !defined(__BORLANDC__)
