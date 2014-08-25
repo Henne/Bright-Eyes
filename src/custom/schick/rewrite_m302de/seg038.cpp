@@ -4,6 +4,10 @@
  *
  *      Functions called rewritten 5/5
  *      Functions uncalled rewritten 1/1
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg038.cpp
 */
 
 #include <string.h>
@@ -27,7 +31,6 @@ namespace M302de {
  * Returns 0 if the object was not found. If the object was
  * found it returns 1 and stores the coordinates at the pointers.
  */
-/* Borlandified and identical */
 unsigned short FIG_search_obj_on_cb(signed short obj, signed short *px, signed short *py)
 {
 
@@ -43,7 +46,6 @@ unsigned short FIG_search_obj_on_cb(signed short obj, signed short *px, signed s
 	return 0;
 }
 
-/* Borlandified and identical */
 void FIG_init_list_elem(signed short obj)
 {
 
@@ -77,7 +79,6 @@ void FIG_init_list_elem(signed short obj)
 	ds_writeb(0xe38e, FIG_add_to_list(-1));
 }
 
-/* Borlandified and identical */
 void FIG_unused(signed short a1, signed short a2,  Bit8u *p1, Bit8u *p2)
 {
 	signed short loc1 = 10;
@@ -97,7 +98,6 @@ struct dummy {
 	struct vec2 o[4];
 };
 
-/* Borlandified and identical */
 void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 			signed short bp_needed, signed char bp_avail,
 			signed short arg6, signed short arg7, signed short arg8)
@@ -252,7 +252,6 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 }
 
 //static
-/* Borlandified and identical */
 signed short FIG_count_smth(signed char *p)
 {
 
@@ -275,7 +274,6 @@ signed short FIG_count_smth(signed char *p)
 	return count;
 }
 
-/* Borlandified and identical */
 signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed short a4)
 {
 	signed short l_si;
