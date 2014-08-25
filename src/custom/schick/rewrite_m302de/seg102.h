@@ -38,6 +38,9 @@ void mspell_ignifaxius(void);
 /* 0x57 */
 void mspell_plumbumbarum(void);
 
+/* 0x5c */
+void mspell_saft_kraft(void);
+
 
 /* 0x6b */
 /* should be static */

@@ -5617,6 +5617,10 @@ static int seg102(unsigned short offs)
 		mspell_plumbumbarum();
 		return 1;
 	}
+	case 0x5c: {
+		mspell_saft_kraft();
+		return 1;
+	}
 	default:
 		return 0;
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
