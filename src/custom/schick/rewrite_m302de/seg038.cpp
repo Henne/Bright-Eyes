@@ -275,7 +275,8 @@ signed short FIG_count_smth(signed char *p)
 	return count;
 }
 
-signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed char a4)
+/* Borlandified and identical */
+signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed short a4)
 {
 	signed short l_si;
 	signed short i;
@@ -346,11 +347,8 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 				if ((obj_id < 10) && (hero_dead(get_hero(obj_id - 1)) || hero_unc(get_hero(obj_id - 1))))
 				{
 					host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
-				} else if ((obj_id >= 10) && (obj_id < 30) && ((ds_readbs(0xd110 + obj_id * 62) & 1)))
+				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + 0xd110 + obj_id * 62)))
 				{
-#if defined(__BORLANDC__)
-	asm {  db 0xe9, 0x00, 0x00; nop; }
-#endif
 						host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
 				}
 			}
