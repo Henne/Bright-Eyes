@@ -35,6 +35,9 @@ void mspell_fulminictus(void);
 /* 0x52 */
 void mspell_ignifaxius(void);
 
+/* 0x57 */
+void mspell_plumbumbarum(void);
+
 
 /* 0x6b */
 /* should be static */
