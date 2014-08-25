@@ -97,6 +97,7 @@ struct dummy {
 	struct vec2 o[4];
 };
 
+/* Borlandified and identical */
 void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 			signed short bp_needed, signed char bp_avail,
 			signed short arg6, signed short arg7, signed short arg8)
@@ -225,7 +226,7 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 
 		if (host_readbs(ptr_cur) != -1) {
 
-			lvar12 = FIG_count_smth(ptr_cur);
+			lvar12 = FIG_count_smth((signed char*)ptr_cur);
 
 			if (lvar12 < min) {
 
@@ -251,37 +252,25 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 }
 
 //static
-signed short FIG_count_smth(Bit8u *p)
+/* Borlandified and identical */
+signed short FIG_count_smth(signed char *p)
 {
 
 	signed short i = 0;
 	signed short count = 0;
 
-	if (host_readbs(p) == -1) {
+	if (p[0] == -1) {
 		return 99;
 	}
 
-#if !defined(__BORLANDC__)
-	while (host_readbs(p + ++i) != -1) {
-		if (host_readb(p + i - 1) != host_readb(p + i))
-			count++;
-	}
-#else
-#if 0
-	while ((((signed char*)p)[++i]) != -1) {
+	i++;
+	while (p[i] != -1) {
 		if (p[i - 1] != p[i]) {
 			count++;
 		}
-	}
-#else
-	while ((((signed char*)p)[i]) != -1) {
-		if (p[i - 1] != p[i]) {
-			count++;
-		}
+
 		i++;
 	}
-#endif
-#endif
 
 	return count;
 }
@@ -621,7 +610,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 					FIG_backtrack(ptr2, arr1[i], arr2[i], l_var2, host_readbs(in_ptr + 0x33), a4, two_fields, a1);
 				}
 
-				l_var11 = FIG_count_smth(p_datseg + 0xd823);
+				l_var11 = FIG_count_smth((signed char*)p_datseg + 0xd823);
 
 				if ((l_var11 == 0)) {
 					l_var13 = i;

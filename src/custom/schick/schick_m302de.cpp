@@ -7989,7 +7989,7 @@ static int n_seg038(unsigned offs)
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 
-		reg_ax = FIG_count_smth(Real2Host(p));
+		reg_ax = FIG_count_smth((signed char*)Real2Host(p));
 		D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
 
 		return 1;

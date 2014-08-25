@@ -14,7 +14,7 @@ void FIG_unused(signed short, signed short, Bit8u*, Bit8u*);
 void FIG_backtrack(Bit8u*, signed short, signed short, signed short, signed char, signed short, signed short, signed short);
 /* 0x34 */
 /* static */
-signed short FIG_count_smth(Bit8u*);
+signed short FIG_count_smth(signed char*);
 /* 0x39 */
 signed short seg038(Bit8u *, signed short, signed short, signed short, signed char);
 
