@@ -41,6 +41,9 @@ void mspell_plumbumbarum(void);
 /* 0x5c */
 void mspell_saft_kraft(void);
 
+/* 0x61 */
+void mspell_armatrutz(void);
+
 
 /* 0x6b */
 /* should be static */

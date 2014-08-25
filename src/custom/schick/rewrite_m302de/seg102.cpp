@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 20/22
+ *      Functions rewritten 21/22
  *
- *      Functions called rewritten 18/20
+ *      Functions called rewritten 19/20
  *      Functions uncalled rewritten 2/2 (complete)
 */
 
@@ -37,6 +37,7 @@ static void (*mspell[])(void) = {
 	mspell_ignifaxius,		/* 10 */
 	mspell_plumbumbarum,		/* 11 */
 	mspell_saft_kraft,		/* 12 */
+	mspell_armatrutz,		/* 13 */
 };
 
 #endif
@@ -697,6 +698,26 @@ void mspell_saft_kraft(void)
 
 	/* set spellcost */
 	ds_writew(0xaccc, random_schick(20));
+}
+
+/* Borlandified and identical */
+void mspell_armatrutz(void)
+{
+	signed short i;
+	signed short rs_bonus;
+
+	i = 0;
+	while ((i * i) < host_readws(get_spelluser_e() + 0x17)) {
+		i++;
+	}
+
+	rs_bonus = random_interval(1, i);
+
+	/* set spellcost */
+	ds_writew(0xaccc, rs_bonus * rs_bonus);
+
+	/* RS + rs_bonus */
+	add_ptr_bs(get_spelluser_e() + 2, rs_bonus);
 }
 
 #if !defined(__BORLANDC__)
