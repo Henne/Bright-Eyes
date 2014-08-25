@@ -307,6 +307,16 @@ static inline int __abs__(int j)
 }
 
 /**
+ * test_bit0() -	check if bit0 ist set
+ * @p:			pointer
+ *
+ * 0 = not set / 1 = set
+ */
+static inline int test_bit0(Bit8u *p) {
+	return (host_readbs(p) & 1) ? 1 : 0;
+}
+
+/**
  * hero_dead() -	check if hero is dead
  * @hero:	ptr to hero
  *
@@ -905,6 +915,11 @@ extern Bit8u* city_ltx[];
 /* TODO: ugly hack, BASM does not like 16bit immediate values with imul */
 #define calc_twodim_array_ptr(start, width, disp, off, dst) \
 asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start]; add ax, off; mov[dst + 2],dx; mov [dst],ax }
+struct bittest {
+	unsigned short bit0:1;
+};
+
+#define test_bit0(a)		((*(struct bittest*)(a)).bit0)
 
 #define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
 #define hero_sleeps(hero)	((*(struct hero_status*)(hero + 0xaa)).sleeps)
