@@ -85,7 +85,7 @@ signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short 
 }
 
 /* Borlandified  and identical */
-void seg036_00ae(Bit8u *in_ptr, signed short a2)
+void seg036_00ae(Bit8u *hero, signed short hero_pos)
 {
 	signed short i;
 	signed char dir1;
@@ -95,19 +95,19 @@ void seg036_00ae(Bit8u *in_ptr, signed short a2)
 	Bit8u *ptr2;
 
 	ds_writeb(0xd8ce, 0);
-	ds_writeb(0xd9c0, host_readbs(in_ptr + 0x9b));
+	ds_writeb(0xd9c0, host_readbs(hero + 0x9b));
 
 	ptr1 = p_datseg + 0xd8cf;
-	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(in_ptr + 0x9b)));
+	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(hero + 0x9b)));
 
 	i = 0;
 
 	while (ds_readbs(0xd823 + i) != -1) {
 
-		if (host_readbs(in_ptr + 0x82) != ds_readbs(0xd823 + i)) {
+		if (host_readbs(hero + 0x82) != ds_readbs(0xd823 + i)) {
 
 			dir2 = dir1 = -1;
-			dir3 = host_readbs(in_ptr + 0x82);
+			dir3 = host_readbs(hero + 0x82);
 			dir2 = dir3;
 			dir3++;
 
@@ -126,12 +126,14 @@ void seg036_00ae(Bit8u *in_ptr, signed short a2)
 
 				if (ds_readbs(0xd823 + i) != dir3) {
 
-					dir2 = host_readbs(in_ptr + 0x82) + 4;
+					dir2 = host_readbs(hero + 0x82) + 4;
 					dir1 = -1;
 				}
 			}
 
-			host_writeb(in_ptr + 0x82, ds_readbs(0xd823 + i));
+			/* set heros looking direction */
+			host_writeb(hero + 0x82, ds_readbs(0xd823 + i));
+
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + dir2 * 2), 2);
 
 			if (dir1 != -1) {
@@ -142,11 +144,13 @@ void seg036_00ae(Bit8u *in_ptr, signed short a2)
 		if (ds_readbs(0xd823 + i) == ds_readbs(0xd824 + i)) {
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(0xd823 + i) + 12) * 2), 2);
 			i += 2;
-			host_writeb(in_ptr + 0x33, host_readbs(in_ptr + 0x33) - 2);
+			/* BP - 2 */
+			host_writeb(hero + 0x33, host_readbs(hero + 0x33) - 2);
 		} else {
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(0xd823 + i) + 8) * 2), 2);
-			i ++;
-			dec_ptr_bs(in_ptr + 0x33);
+			i++;
+			/* BP - 1 */
+			dec_ptr_bs(hero + 0x33);
 		}
 	}
 
@@ -154,10 +158,10 @@ void seg036_00ae(Bit8u *in_ptr, signed short a2)
 	FIG_call_draw_pic();
 	FIG_remove_from_list(ds_readbs(0xe38e), 0);
 	ds_writeb(0xe38e, -1);
-	FIG_set_0e(host_readbs(in_ptr + 0x81), 0);
+	FIG_set_0e(host_readbs(hero + 0x81), 0);
 	draw_fight_screen(0);
 	memset(p_datseg + 0xd8ce, -1, 0xf3);
-	FIG_init_list_elem(a2 + 1);
+	FIG_init_list_elem(hero_pos + 1);
 }
 
 /**
