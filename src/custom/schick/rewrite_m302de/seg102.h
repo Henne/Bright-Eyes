@@ -44,6 +44,8 @@ void mspell_saft_kraft(void);
 /* 0x61 */
 void mspell_armatrutz(void);
 
+/* 0x66 */
+void mspell_paral(void);
 
 /* 0x6b */
 /* should be static */
