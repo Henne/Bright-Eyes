@@ -986,6 +986,7 @@ signed short DNG_fallpit(signed short a1)
 	return retval;
 }
 
+/* Borlandified and identical */
 void DNG_enter_dungeon(signed short dungeon_id)
 {
 	signed short x_pos;
@@ -995,92 +996,57 @@ void DNG_enter_dungeon(signed short dungeon_id)
 	signed short i;
 	Bit8u *ptr;
 
-	switch (dungeon_id - 1) {
+	switch (dungeon_id) {
 
-		case 0x0:  x_pos = 9;  y_pos = 11;  dir = 0;  level = 2;  break;
-		case 0x1:  x_pos = 1;  y_pos = 1;   dir = 2;  level = 0;  break;
-		case 0x2:  x_pos = 1;  y_pos = 8;   dir = 1;  level = 0;  break;
-		case 0x3:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
-		case 0x4: {
-			x_pos = 6;
-			y_pos = 14;
-			dir = 0;
-			level = 0;
-			break;
-		}
-		case 0x5: {
-			x_pos = 13;
-			y_pos = 14;
-			dir = 0;
-			level = 0;
-			break;
-		}
-		case 0x6: {
-			x_pos = 1;
-			y_pos = 13;
-			dir = 0;
-			level = 0;
-			break;
-		}
-		case 0x7: {
-			x_pos = 1;
-			y_pos = 14;
-			dir = 1;
-			level = 0;
-			break;
-		}
-		case 0x8: {
+		case 1:  x_pos = 9;  y_pos = 11;  dir = 0;  level = 2;  break;
+		case 2:  x_pos = 1;  y_pos = 1;   dir = 2;  level = 0;  break;
+		case 3:  x_pos = 1;  y_pos = 8;   dir = 1;  level = 0;  break;
+
+#if !defined(__BORLANDC__)
+		case 4:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+#else
+mark1:		case 4:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+#endif
+
+		case 5:  x_pos = 6;  y_pos = 14;  dir = 0;  level = 0;  break;
+		case 6:  x_pos = 13; y_pos = 14;  dir = 0;  level = 0;  break;
+		case 7:  x_pos = 1;  y_pos = 13;  dir = 0;  level = 0;  break;
+		case 8:  x_pos = 1;  y_pos = 14;  dir = 1;  level = 0;  break;
+
+#if !defined(__BORLANDC__)
+		case 9:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+#else
+		case 9:  goto mark1;
+mark2:			   goto mark1;
+#endif
+
+		case 10:  x_pos = 1;  y_pos = 3;   dir = 1;  level = 0;  break;
+
+#if !defined(__BORLANDC__)
+		case 11:  x_pos = 7;  y_pos = 14;  dir = 0;  level = 0;  break;
+#else
+		case 11:  goto mark2;
+#endif
+
+		case 12:  x_pos = 13; y_pos = 14;  dir = 0;  level = 0;  break;
+		case 13: {
 			x_pos = 7;
 			y_pos = 14;
 			dir = 0;
 			level = 0;
-			break;
-			break;
-		}
-		case 0x9: {
-			x_pos = 1;
-			y_pos = 3;
-			dir = 1;
-			level = 0;
-			break;
-		}
-		case 0xa: {
-			x_pos = 7;
-			y_pos = 14;
-			dir = 0;
-			level = 0;
-			break;
-		}
-		case 0xb: {
-			x_pos = 13;
-			y_pos = 14;
-			dir = 0;
-			level = 0;
-			break;
-		}
-		case 0xc: {
-			x_pos = 7;
-			y_pos = 14;
-			dir = 0;
-			level = 0;
+
 			ds_writeb(0x434d, 0);
 			ds_writeb(0x434e, (signed char)count_heroes_in_group());
 			break;
 		}
-		case 0xd: {
+		case 14: {
 			x_pos = 1;
 			y_pos = 14;
 			dir = 3;
 			level = ds_writebs(LOCATION, 0);
 			break;
 		}
-		case 0xe: {
-			x_pos = 1;
-			y_pos = 11;
-			dir = 1;
-			level = 0;
-			break;
-		}
+		case 15:  x_pos = 1;  y_pos = 11;   dir = 1;  level = 0;  break;
 	}
 
 	ds_writew(X_TARGET, x_pos);
