@@ -3467,22 +3467,40 @@ static int seg033(unsigned short offs) {
 static int seg034(unsigned short offs)
 {
 	switch (offs) {
-		case 0x20: {
-			return 0;
-		}
-		case 0x25: {
-			return 0;
-		}
-		case 0x2a: {
-			return 0;
-		}
-		case 0x34: {
-			return 0;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				__func__, offs);
-			exit(1);
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		Bit16s a5 = CPU_Pop16();
+		Bit16s a6 = CPU_Pop16();
+		Bit16s a7 = CPU_Pop16();
+		CPU_Push16(a7);
+		CPU_Push16(a6);
+		CPU_Push16(a5);
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		reg_ax = seg034_000(a1, a2, a3, a4, a5, a6, a7);
+		D1_LOG("seg034_000(%d, %d, %d, %d, %d, %d, %d) = %d\n",
+			a1, a2, a3, a4, a5, a6, a7, (Bit16s)reg_ax);
+		return 1;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
 	}
 }
 
@@ -7752,7 +7770,26 @@ static int n_seg034(unsigned offs)
 {
 	switch (offs) {
 	case 0x000: {
-		return 0;
+		CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		Bit16s a5 = CPU_Pop16();
+		Bit16s a6 = CPU_Pop16();
+		Bit16s a7 = CPU_Pop16();
+		CPU_Push16(a7);
+		CPU_Push16(a6);
+		CPU_Push16(a5);
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		reg_ax = seg034_000(a1, a2, a3, a4, a5, a6, a7);
+		D1_LOG("near seg034_000(%d, %d, %d, %d, %d, %d, %d) = %d\n",
+			a1, a2, a3, a4, a5, a6, a7, (Bit16s)reg_ax);
+		return 1;
 	}
 	case 0x718: {
 		return 0;
