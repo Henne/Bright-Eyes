@@ -3605,17 +3605,17 @@ static int seg038(unsigned short offs) {
 static int seg039(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			unsigned short v1 = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			unsigned short v3 = CPU_Pop16();
-			unsigned short v4 = CPU_Pop16();
+			Bit16s v1 = CPU_Pop16();
+			Bit16s v2 = CPU_Pop16();
+			Bit16s v3 = CPU_Pop16();
+			Bit16s v4 = CPU_Pop16();
 			CPU_Push16(v4);
 			CPU_Push16(v3);
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			reg_ax = seg039_0000(v1, v2, v3, v4);
-			D1_LOG("seg039(%d,%d,%d,%d); = %d\n",
+			reg_ax = calc_beeline(v1, v2, v3, v4);
+			D1_LOG("calc_beeline(%d,%d,%d,%d); = %d\n",
 				v1, v2, v3, v4, reg_ax);
 
 			return 1;

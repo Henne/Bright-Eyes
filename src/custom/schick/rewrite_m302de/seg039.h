@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 /* 0x20 */
-signed short seg039_0000(signed short, signed short, signed short, signed short);
+signed short calc_beeline(signed short, signed short, signed short, signed short);
 /* 0x25 */
 signed short FIG_get_range_weapon_type(Bit8u *);
 /* 0x2a */

@@ -227,7 +227,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	Bit8u* p3;
 	signed short target_size;
 	signed short right_hand;
-	signed short v3;
+	signed short beeline;
 	signed short v4;
 	signed short x_hero;
 	signed short y_hero;
@@ -270,19 +270,19 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			FIG_search_obj_on_cb(v9 + 1, &x_hero, &y_hero);
 			FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x_target, &y_target);
 
-			v3 = seg039_0000(x_hero, y_hero, x_target, y_target);
+			beeline = calc_beeline(x_hero, y_hero, x_target, y_target);
 
-			if (v3 <= 2) {
+			if (beeline <= 2) {
 				v4 = 0;
-			} else if (v3 <= 4) {
+			} else if (beeline <= 4) {
 				v4 = 1;
-			} else if (v3 <= 6) {
+			} else if (beeline <= 6) {
 				v4 = 2;
-			} else if (v3 <= 9) {
+			} else if (beeline <= 9) {
 				v4 = 3;
-			} else if (v3 <= 15) {
+			} else if (beeline <= 15) {
 				v4 = 4;
-			} else if (v3 <= 20) {
+			} else if (beeline <= 20) {
 				v4 = 5;
 			} else {
 				v4 = 6;

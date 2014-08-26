@@ -23,10 +23,21 @@
 namespace M302de {
 #endif
 
-/* is used at selecting a target */
-signed short seg039_0000(signed short v1, signed short v2, signed short v3, signed short v4)
+/**
+ * \brief	calculates the beeline
+ *
+ *		This function calculates the between two points on the chessboard.
+ *		It is also used as a heuristic.
+ * \param x1	x-coordinate of the first point
+ * \param y1	y-coordinate of the first point
+ * \param x2	x-coordinate of the second point
+ * \param y2	y-coordinate of the seconn point
+ *
+ * \return		beeline between the two points
+ */
+signed short calc_beeline(signed short x1, signed short y1, signed short x2, signed short y2)
 {
-	return __abs__(v1 - v3) + __abs__(v2 - v4);
+	return __abs__(x1 - x2) + __abs__(y1 - y2);
 }
 
 
