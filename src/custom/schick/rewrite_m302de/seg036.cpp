@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg036 (Fight Hero KI)
- *	Functions rewritten: 7/10
+ *	Functions rewritten: 8/10
  */
 
 #include <string.h>
@@ -12,7 +12,9 @@
 #include "seg006.h"
 #include "seg007.h"
 #include "seg032.h"
+#include "seg036.h"
 #include "seg038.h"
+#include "seg039.h"
 #include "seg106.h"
 
 #if !defined(__BORLANDC__)
@@ -380,6 +382,103 @@ signed short KI_search_spell_target(signed short x, signed short y,
 	} else {
 		return obj_id;
 	}
+}
+
+/**
+ * \brief		selects a target to be attacked from hero with a spell
+ *
+ * \param hero		pointer to the hero
+ * \param hero_pos	position of the hero in the party
+ * \param mode		TODO
+ * \param x		x-coordinate of the hero
+ * \param y		y-coordinate of the hero
+ *
+ * \return		0 = no target found, 1 = target_found (long distance), 2 = target fount (short distance)
+ */
+/* Borlandified  and identical */
+signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short mode, signed short x, signed short y)
+{
+	signed short dir;
+	signed short count;
+	signed short done;
+	signed short retval;
+	signed short l5;
+	signed short target_x;
+	signed short target_y;
+
+	retval = 0;
+	done = 0;
+
+	while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+
+		/* reset target fight-id */
+		host_writeb(hero + 0x86, 0);
+
+		if (host_readbs(hero + 0x33) >= 3) {
+
+			dir = host_readbs(hero + 0x82);
+
+			count = 0;
+
+			/* try to find a target clockwise from current direction */
+			while (!host_readbs(hero + 0x86) && (count < 4)) {
+
+				host_writebs(hero + 0x86, (signed char)KI_search_spell_target(x, y, dir, mode));
+
+				count++;
+
+				if (++dir == 4) {
+					dir = 0;
+				}
+			}
+		}
+
+		/* check if a target was found */
+		if (host_readbs(hero + 0x86) != 0) {
+			/* yes */
+
+			FIG_search_obj_on_cb(host_readbs(hero + 0x86), &target_x, &target_y);
+
+			if (calc_beeline(target_x, target_y, x, y) < 2) {
+				retval = 2;
+			} else {
+				retval = 1;
+			}
+
+			done = 1;
+
+		} else {
+			/* try a more expensive search */
+
+			if (!hero_unkn2(hero)) {
+
+				if (mode == 0) {
+					l5 = seg038(hero, hero_pos, x, y, 9);
+				} else {
+					l5 = seg038(hero, hero_pos, x, y, 8);
+				}
+
+				if (l5 != -1) {
+					seg036_00ae(hero, hero_pos);
+
+					FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
+
+					if (host_readbs(hero + 0x33) < 3) {
+						/* set BP to 0 */
+						host_writeb(hero + 0x33, 0);
+					}
+				} else {
+					/* set BP to 0 */
+					host_writeb(hero + 0x33, 0);
+				}
+			} else {
+				/* set BP to 0 */
+				host_writeb(hero + 0x33, 0);
+			}
+		}
+	}
+
+	return retval;
 }
 
 /* 0x863 */
