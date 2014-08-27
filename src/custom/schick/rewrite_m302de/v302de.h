@@ -394,6 +394,14 @@ static inline unsigned short hero_unc(Bit8u *hero) {
 		return 1;
 }
 
+static inline unsigned short hero_unkn2(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xaa) >> 7) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 static inline unsigned short hero_unkn3(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 0) & 1) == 0)
@@ -928,9 +936,11 @@ struct bittest {
 #define hero_cham(hero)		((*(struct hero_status*)(hero + 0xaa)).cham)
 #define hero_cursed(hero)	((*(struct hero_status*)(hero + 0xaa)).cursed)
 #define hero_unc(hero)		((*(struct hero_status*)(hero + 0xaa)).uncon)
-#define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
+#define hero_unkn2(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn2)
 
 #define hero_unkn3(hero)  ((*(struct hero_status*)(hero + 0xaa)).unkn3)
+#define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
+
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 
 #define enemy_dead(enemy)	(((struct enemy_sheets*)(enemy))->status1.dead)
