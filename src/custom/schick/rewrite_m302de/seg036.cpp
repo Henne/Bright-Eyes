@@ -288,6 +288,7 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 	return 0;
 }
 
+/* Borlandified  and identical */
 signed short KI_search_spell_target(signed short x, signed short y,
 				signed short dir, signed short mode)
 {
@@ -484,13 +485,17 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 /* 0x863 */
 
 /**
- * KI_get_spell() - ???
- * @spell:	spell index
- * @mode:	mode 0/1
+ * \brief		TODO
+ *
+ * \param spell		spell index
+ * \param mode		mode 0/1
+ *
+ * \return		TODO	{-1, 0, 1, 2}
  */
+/* Borlandified  and identical */
 signed short KI_get_spell(signed short spell, signed short mode)
 {
-	Bit8u * p;
+	Bit8u *p;
 	signed short retval = -1;
 
 	/* make a pointer to the spell description */
