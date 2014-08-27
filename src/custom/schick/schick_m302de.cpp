@@ -3520,13 +3520,15 @@ static int seg036(unsigned short offs) {
 			Bit16s index = CPU_Pop16();
 			Bit16s x = CPU_Pop16();
 			Bit16s y = CPU_Pop16();
-			D1_LOG("KI_hero(%s, %d, %d, %d)\n",
-					Real2Host(hero) + 0x10, index, x, y);
 			CPU_Push16(y);
 			CPU_Push16(x);
 			CPU_Push16(index);
 			CPU_Push32(hero);
-			return 0;
+
+			D1_LOG("KI_hero(%s, %d, %d, %d)\n",
+					Real2Host(hero) + 0x10, index, x, y);
+			KI_hero(Real2Host(hero), index, x, y);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

@@ -36,6 +36,9 @@ signed short seg036_8cf(Bit8u*, signed short, signed short, signed short, signed
 /* should be static */
 signed short KI_count_heros(signed short);
 
+/* 0x48 */
+void KI_hero(Bit8u*, signed short, signed short, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

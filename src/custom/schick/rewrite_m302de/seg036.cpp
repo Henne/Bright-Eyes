@@ -1,12 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg036 (Fight Hero KI)
- *	Functions rewritten: 9/10
+ *	Functions rewritten: 10/10 (complete)
  */
 
 #include <string.h>
 
 #include "v302de.h"
 
+#include "seg001.h"
 #include "seg002.h"
 #include "seg005.h"
 #include "seg006.h"
@@ -15,6 +16,7 @@
 #include "seg036.h"
 #include "seg038.h"
 #include "seg039.h"
+#include "seg041.h"
 #include "seg106.h"
 
 #if !defined(__BORLANDC__)
@@ -743,6 +745,292 @@ signed short KI_count_heros(signed short hero_pos)
 	}
 
 	return cnt;
+}
+
+/**
+ * \brief		TODO
+ *
+ * \param hero		pointer to the hero
+ * \param hero_pos	position of the hero in the party
+ * \param x		x-coordinate of the hero
+ * \param y		y-coordinate of the hero
+ */
+/* Borlandified  and identical */
+void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
+{
+	signed short l_di;
+	signed short l1;
+	signed short done;
+	signed short l4;
+	signed short l5;
+	signed short x_bak;
+	signed short y_bak;
+	signed short l8;
+	signed short hero_x;
+	signed short hero_y;
+
+#if !defined(__BORLANDC__)
+	struct dummy a;
+	a.a[0].x = 1;
+	a.a[0].y = 0;
+	a.a[1].x = 0;
+	a.a[1].y = -1;
+	a.a[2].x = -1;
+	a.a[2].y = 0;
+	a.a[3].x = 0;
+	a.a[3].y = 1;
+#else
+	struct dummy a = *(struct dummy*)(p_datseg + 0x5fc7);
+#endif
+
+	done = 0;
+	l5 = 1;
+	host_writeb(hero + 0x84, 1);
+	if (host_readbs(hero + 0x89) > 0) {
+
+		if (host_readbs(hero + 0x89) == 1) {
+			/* equip LONGBOW and ARROWS in the first round,
+			 * if the hero has them in the inventory */
+			if ((ds_readws(FIGHT_ROUND) == 0) &&
+				(host_readws(hero + 0x1c0) != 19) &&
+				(get_item_pos(hero, 10) != -1) &&
+				(get_item_pos(hero, 19) != -1))
+			{
+				move_item(3, get_item_pos(hero, 19), hero);
+
+				if (host_readws(hero + 0x1ce) != 10) {
+					move_item(4, get_item_pos(hero, 10), hero);
+				}
+			}
+
+		} else if (host_readbs(hero + 0x89) == 2) {
+
+			if (host_readws(hero + 0x60) <= 12) {
+
+				/* equip LONGBOW and ARROWS in the first round,
+				 * if the hero has them in the inventory */
+				if ((ds_readws(FIGHT_ROUND) == 0) &&
+					(host_readws(hero + 0x1c0) != 19) &&
+					(get_item_pos(hero, 10) != -1) &&
+					(get_item_pos(hero, 19) != -1))
+				{
+					move_item(3, get_item_pos(hero, 19), hero);
+
+					if (host_readws(hero + 0x1ce) != 10) {
+						move_item(4, get_item_pos(hero, 10), hero);
+					}
+				} else if (FIG_get_range_weapon_type(hero) == -1)
+				{
+					host_writebs(hero + 0x84, 16);
+				}
+			}
+
+		} else if (host_readbs(hero + 0x89) == 3) {
+
+			if ((host_readws(hero + 0x60) < 10) &&
+				(host_readws(hero + 0x64) < 10))
+			{
+				host_writeb(hero + 0x84, 16);
+			}
+
+		} else if (host_readbs(hero + 0x89) == 4) {
+
+			if (host_readws(hero + 0x60) < 8)
+			{
+				host_writeb(hero + 0x84, 16);
+			}
+
+		} else if (host_readbs(hero + 0x89) == 5) {
+
+			if (!KI_count_heros(hero_pos)) {
+				host_writeb(hero + 0x84, 16);
+			}
+
+		} else if (host_readbs(hero + 0x89) == 6) {
+
+			if (host_readws(hero + 0x60) < 15)
+			{
+				host_writeb(hero + 0x84, 16);
+			}
+
+		}
+
+		if (FIG_get_first_active_hero() == 6) {
+			host_writeb(hero + 0x84, 16);
+		}
+
+		if (host_readbs(hero + 0x84) == 16) {
+
+			FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
+
+			if ((hero_x - 1 >= 0) && (hero_x + 1 <= 25) &&
+				(hero_y -1 >= 0) && (hero_y + 1 <= 25) &&
+				(get_cb_val(hero_x, hero_y + 1) != 0) &&
+				(get_cb_val(hero_x, hero_y - 1) != 0) &&
+				(get_cb_val(hero_x + 1, hero_y) != 0) &&
+				(get_cb_val(hero_x - 1, hero_y) != 0))
+			{
+				host_writeb(hero + 0x84, 1);
+			}
+		}
+	}
+
+	if (host_readbs(hero + 0x33) == 1) {
+		/* set BP to 0 */
+		host_writebs(hero + 0x33, 0);
+	}
+
+	while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+
+		seg001_02c4();
+
+		if ((host_readbs(hero + 0x84) == 16) && (host_readbs(hero + 0x33) > 0)) {
+
+			if (!hero_unkn2(hero)) {
+
+				l4 = seg038(hero, hero_pos, x, y, 5);
+
+				if (l4 != -1) {
+
+					x_bak = x;
+					y_bak = y;
+
+					seg036_00ae(hero, hero_pos);
+
+					host_writeb(hero + 0x86, 0);
+
+					if (FIG_search_obj_on_cb(hero_pos + 1, &x, &y)) {
+
+						host_writeb(hero + 0x84, 1);
+
+						if ((x_bak == x) && (y_bak == y)) {
+
+							host_writeb(hero + 0x33, 0);
+						}
+					} else {
+						host_writeb(hero + 0x33, 0);
+					}
+
+					if (host_readbs(hero + 0x33) < 3) {
+						host_writeb(hero + 0x33, 0);
+					}
+
+				} else {
+					host_writeb(hero + 0x33, 0);
+				}
+			} else {
+				host_writeb(hero + 0x33, 0);
+			}
+
+		} else {
+
+			if ((host_readbs(hero + 0x21) >= 7) &&		/* magic user */
+				(host_readws(hero + 0x64) > 10) &&	/* AE > 10 */
+				(l5 != 0) &&
+				(ds_readws(CURRENT_FIG_NR) != 192) &&	/* not in the final fight */
+				(ds_readbs(0x5f31) != 0))		/* ??? a bool variable, maybe autofight magic */
+			{
+				if (seg036_8cf(hero, hero_pos, hero_cursed(hero), x, y)) {
+
+					host_writeb(hero + 0x84, 4);
+					host_writeb(hero + 0x33, 0);
+
+				} else {
+					l5 = 0;
+				}
+			}
+
+			if ((host_readbs(hero + 0x84) == 1) && (host_readbs(hero + 0x33) > 0)) {
+
+				if (FIG_get_range_weapon_type(hero) != -1) {
+
+					if (seg041_0020(hero, 2)) {
+
+						l8 = KI_select_spell_target(hero, hero_pos, hero_cursed(hero), x, y);
+
+						if (l8 != 0) {
+							if (l8 == 2) {
+								if (!KI_change_hero_weapon(hero)) {
+									done = 1;
+								}
+							} else {
+								host_writeb(hero + 0x84, 15);
+							}
+						}
+
+						/* set BP to 0 */
+						host_writeb(hero + 0x33, 0);
+					} else {
+						if (!KI_change_hero_weapon(hero)) {
+							done = 1;
+						}
+					}
+				} else {
+					host_writeb(hero + 0x86, 0);
+
+					if (host_readbs(hero + 0x33) >= 3) {
+
+						l_di = host_readbs(hero + 0x82);
+						l1 = 0;
+
+						while (!host_readbs(hero + 0x86) && (l1 < 4)) {
+
+							if (KI_can_attack_neighbour(x, y, a.a[l_di].x, a.a[l_di].y, hero_cursed(hero)))
+							{
+								host_writeb(hero + 0x86, get_cb_val(x + a.a[l_di].x, y + a.a[l_di].y));
+							}
+
+							l1++;
+							if (++l_di == 4) {
+								l_di = 0;
+							}
+						}
+					}
+
+					if (host_readbs(hero + 0x86) != 0) {
+
+						host_writeb(hero + 0x84, 2);
+						host_writeb(hero + 0x33, 0);
+
+					} else {
+
+						if (!hero_unkn2(hero)) {
+
+							if (!hero_cursed(hero)) {
+								l4  = seg038(hero , hero_pos, x, y, 3);
+							} else {
+								l4  = seg038(hero , hero_pos, x, y, 1);
+							}
+
+							if (l4 != -1) {
+								x_bak = x;
+								y_bak = y;
+
+								seg036_00ae(hero, hero_pos);
+
+								host_writeb(hero + 0x84, 1);
+								host_writeb(hero + 0x86, 0);
+
+								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
+
+								if ((x_bak == x) && (y_bak == y)) {
+									host_writeb(hero + 0x33, 0);
+								}
+
+								if (host_readbs(hero + 0x33) < 3) {
+									host_writeb(hero + 0x33, 0);
+								}
+							} else {
+								host_writeb(hero + 0x33, 0);
+							}
+						} else {
+							host_writeb(hero + 0x33, 0);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
