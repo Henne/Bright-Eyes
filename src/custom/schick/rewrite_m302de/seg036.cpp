@@ -722,26 +722,24 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short mode, s
 /* 0xc39 */
 
 /**
- * KI_count_available_heros() - count heros in group
- * @index:	index of the calling hero
+ * \brief	count the other heros in the current group
  *
- * Retval: Number of heros in the group - 1
+ * \param	hero_pos	position of the calling hero
+ *
+ * \return	number of heros in the group - 1
  */
-signed short KI_count_heros(signed short index)
+/* Borlandified  and identical */
+signed short KI_count_heros(signed short hero_pos)
 {
 	signed short cnt = 0;
 	signed short i;
 
 	/* for each hero in this group */
-	for (i = 0; ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) > i; i++) {
+	for (i = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > i; i++) {
 
-		if (i == index)
-			continue;
-
-		if (!check_hero(get_hero(i)))
-			continue;
-
-		cnt++;
+		if ((i != hero_pos) && check_hero(get_hero(i))) {
+			cnt++;
+		}
 	}
 
 	return cnt;
