@@ -23,6 +23,9 @@ signed short KI_select_spell_target(Bit8u*, signed short, signed short, signed s
 /* 0x39 */
 signed short KI_get_spell(signed short, signed short);
 
+/* 0x34 */
+signed short seg036_8cf(Bit8u*, signed short, signed short, signed short, signed short);
+
 /* 0x43 */
 signed short KI_count_heros(signed short);
 

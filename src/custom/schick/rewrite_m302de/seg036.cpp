@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg036 (Fight Hero KI)
- *	Functions rewritten: 8/10
+ *	Functions rewritten: 9/10
  */
 
 #include <string.h>
@@ -513,6 +513,207 @@ signed short KI_get_spell(signed short spell, signed short mode)
 			retval = 1;
 		else if (host_readb(p + 7) == 0)
 			retval = 2;
+	}
+
+	return retval;
+}
+
+struct coord {
+	signed short x;
+	signed short y;
+};
+
+struct dummy {
+	struct coord a[4];
+};
+
+/**
+ * \brief		TODO
+ *
+ * \param hero		pointer to the hero
+ * \param hero_pos	position of the hero in the party
+ * \param mode		TODO
+ * \param x		x-coordinate of the hero
+ * \param y		y-coordinate of the hero
+ *
+ * \return		{0, 1}
+ */
+/* Borlandified  and identical */
+signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short mode, signed short x, signed short y)
+{
+	signed short l_si;
+	signed short count;
+	signed short spell;
+	signed short done;
+	signed short retval;
+	signed short spell_mode;
+	signed short l5;
+	signed short decided;
+
+#if !defined(__BORLANDC__)
+	struct dummy a;
+	a.a[0].x = 1;
+	a.a[0].y = 0;
+	a.a[1].x = 0;
+	a.a[1].y = -1;
+	a.a[2].x = -1;
+	a.a[2].y = 0;
+	a.a[3].x = 0;
+	a.a[3].y = 1;
+#else
+	struct dummy a = *(struct dummy*)(p_datseg + 0x5fb7);
+#endif
+
+	retval = 0;
+	done = 0;
+
+	while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+
+		decided = 0;
+
+		for (l_si = 0; l_si <= 10; l_si++) {
+
+			/* get a spell from an array */
+			spell = ds_readbs(0x5fac + l_si);
+
+			if ((ds_readbs(0x9a5 + 10 * spell) == 1) && (random_schick(100) < 50))
+			{
+				decided = 1;
+				break;
+
+			} else if (random_schick(100) < 25) {
+				decided = 1;
+				break;
+			}
+		}
+
+		if (decided == 0) {
+
+			spell = ds_readbs(0x5fac + random_interval(0, 10));
+		}
+
+		/* reset the target of the hero */
+		host_writebs(hero + 0x86, 0);
+
+		if ((spell_mode = KI_get_spell(spell, mode)) != -1) {
+
+			if (spell_mode == 2) {
+
+				/* set target to hero */
+				host_writebs(hero + 0x86, hero_pos + 1);
+				/* set spell */
+				host_writebs(hero + 0x85, (signed char)spell);
+				retval = 1;
+				done = 1;
+			} else {
+
+				if (!ds_readbs(0x9a5 + 10 * spell)) {
+
+					while ((host_readbs(hero + 0x33) != 0) && (done == 0)) {
+
+						l_si = host_readbs(hero + 0x82);
+
+						count = 0;
+						while ((!host_readbs(hero + 0x86)) && (count < 4)) {
+
+							if (KI_can_attack_neighbour(x, y, a.a[l_si].x, a.a[l_si].y, spell_mode)) {
+								host_writebs(hero + 0x86, get_cb_val(x + a.a[l_si].x, y + a.a[l_si].y));
+							}
+
+							count++;
+
+							if (++l_si == 4) {
+								l_si = 0;
+							}
+						}
+
+						if (host_readbs(hero + 0x86) != 0) {
+
+							if (host_readbs(hero + 0x33) >= 5) {
+								/* enough BP */
+								host_writeb(hero + 0x85, (signed char)spell);
+								retval = 1;
+							} else {
+								/* set BP to 0 */
+								host_writeb(hero + 0x33, 0);
+							}
+
+							done = 1;
+						} else if (!hero_unkn2(hero)) {
+
+							if (spell_mode == 0) {
+								l5 = seg038(hero, hero_pos, x, y, 3);
+							} else {
+								l5 = seg038(hero, hero_pos, x, y, 1);
+							}
+
+							if (l5 != -1) {
+								seg036_00ae(hero, hero_pos);
+								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
+							} else {
+								/* set BP to 0 */
+								host_writeb(hero + 0x33, 0);
+							}
+
+						} else {
+							/* set BP to 0 */
+							host_writeb(hero + 0x33, 0);
+						}
+					}
+				} else {
+					while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+
+						l_si = host_readbs(hero + 0x82);
+
+						count = 0;
+
+						while ((!host_readbs(hero + 0x86)) && (count < 4)) {
+
+							host_writebs(hero + 0x86, (signed char)KI_search_spell_target(x, y, l_si, spell_mode));
+
+							count++;
+
+							if (++l_si == 4) {
+								l_si = 0;
+							}
+						}
+
+						if (host_readbs(hero + 0x86) != 0) {
+
+							if (host_readbs(hero + 0x33) >= 5) {
+								/* enough BP */
+								host_writeb(hero + 0x85, (signed char)spell);
+								retval = 1;
+							} else {
+								/* set BP to 0 */
+								host_writeb(hero + 0x33, 0);
+							}
+
+							done = 1;
+						} else if (!hero_unkn2(hero)) {
+
+							if (spell_mode == 0) {
+								l5 = seg038(hero, hero_pos, x, y, 9);
+							} else {
+								l5 = seg038(hero, hero_pos, x, y, 8);
+							}
+
+							if (l5 != -1) {
+								seg036_00ae(hero, hero_pos);
+								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
+							} else {
+								/* set BP to 0 */
+								host_writeb(hero + 0x33, 0);
+							}
+
+						} else {
+							/* set BP to 0 */
+							host_writeb(hero + 0x33, 0);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	return retval;
