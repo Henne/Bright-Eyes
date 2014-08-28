@@ -5619,7 +5619,7 @@ static int seg102(unsigned short offs)
 		CPU_Push16(bonus);
 		CPU_Push32(mon);
 
-		reg_ax = MON_cast_spell(mon, bonus);
+		reg_ax = MON_cast_spell(mon, (Bit8s)bonus);
 		D1_INFO("MON_cast_spell(..., %d) = %d\n", bonus, (Bit16s)reg_ax);
 		return 1;
 	}
@@ -9012,7 +9012,7 @@ static int n_seg102(unsigned short offs)
 		CPU_Push16(t1);
 		CPU_Push32(mon);
 
-		reg_ax = MON_test_attrib3(Real2Host(mon), t1, t2, t3, bonus);
+		reg_ax = MON_test_attrib3(Real2Host(mon), t1, t2, t3, (Bit8s)bonus);
 		D1_INFO("MON_test_attrib3(%d, %d, %d, %d) = %d\n", t1, t2, t3, bonus, reg_ax);
 
 		return 1;
@@ -9026,7 +9026,7 @@ static int n_seg102(unsigned short offs)
 		CPU_Push16(mspell_nr);
 		CPU_Push32(mon);
 
-		reg_ax = MON_test_skill(Real2Host(mon), mspell_nr, bonus);
+		reg_ax = MON_test_skill(Real2Host(mon), mspell_nr, (Bit8s)bonus);
 		D1_INFO("MON_test_skill(%d, %d) = %d\n", mspell_nr, bonus, reg_ax);
 
 		return 1;
