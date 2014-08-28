@@ -3492,7 +3492,21 @@ static int seg034(unsigned short offs)
 		return 1;
 	}
 	case 0x2a: {
-		return 0;
+		RealPt a1 = CPU_Pop32();
+		RealPt a2 = CPU_Pop32();
+		Bit16s a3 = CPU_Pop16();
+		CPU_Push16(a3);
+		CPU_Push32(a2);
+		CPU_Push32(a1);
+
+		reg_ax = (Bit16s)seg034_2e3(Real2Host(a1), Real2Host(a2), a3);
+
+		D1_INFO("seg034_2e3(*a1 = %d, *a2 = %d, a3 = %d) = %d\n",
+			host_readws(Real2Host(a1)),
+			host_readws(Real2Host(a2)),
+			a3, (Bit16s)reg_ax);
+
+		return 1;
 	}
 	case 0x34: {
 		return 0;
