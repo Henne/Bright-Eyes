@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg036 (Fight Hero KI)
  *	Functions rewritten: 10/10 (complete)
+ *	Borlandified and identical
+ *
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg036.cpp
  */
 
 #include <string.h>
@@ -23,9 +27,6 @@
 namespace M302de {
 #endif
 
-/* static */
-/* Borlandified  and identical */
-
 /**
  * KI_copy_ani_sequence() - copies an ani sequence
  * @dst:	destination pointer for data
@@ -34,6 +35,7 @@ namespace M302de {
  *
  * Returns the length of the sequence in bytes.
  */
+/* static */
 signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short mode)
 {
 	Bit8u *p_datbuffer;
@@ -87,7 +89,6 @@ signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short 
 	return len;
 }
 
-/* Borlandified  and identical */
 void seg036_00ae(Bit8u *hero, signed short hero_pos)
 {
 	signed short i;
@@ -173,7 +174,6 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
  *
  * \return	1 if a weapon was found, 0 if the hero fights now with bare hands
 */
-/* Borlandified  and identical */
 signed short KI_change_hero_weapon(Bit8u *hero)
 {
 	signed short pos;
@@ -238,7 +238,6 @@ signed short KI_change_hero_weapon(Bit8u *hero)
  *
  * Returns 1 if an attack is possible in that mode, else 0.
  */
-/* Borlandified  and identical */
 signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 			signed short offset_x, signed short offset_y,
 			signed short mode)
@@ -295,7 +294,6 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
  *
  * \return		0 = no target found, fight-id of the target
  */
-/* Borlandified  and identical */
 signed short KI_search_spell_target(signed short x, signed short y,
 				signed short dir, signed short cursed)
 {
@@ -403,7 +401,6 @@ signed short KI_search_spell_target(signed short x, signed short y,
  *
  * \return		0 = no target found, 1 = target_found (long distance), 2 = target fount (short distance)
  */
-/* Borlandified  and identical */
 signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
 {
 	signed short dir;
@@ -497,7 +494,6 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
  *
  * \return		TODO	{-1, 0, 1, 2}
  */
-/* Borlandified  and identical */
 signed short KI_get_spell(signed short spell, signed short cursed)
 {
 	Bit8u *p;
@@ -543,7 +539,6 @@ struct dummy {
  *
  * \return		{0, 1}
  */
-/* Borlandified  and identical */
 signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
 {
 	signed short l_si;
@@ -731,7 +726,6 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
  *
  * \return	number of heros in the group - 1
  */
-/* Borlandified  and identical */
 signed short KI_count_heros(signed short hero_pos)
 {
 	signed short cnt = 0;
@@ -756,7 +750,6 @@ signed short KI_count_heros(signed short hero_pos)
  * \param x		x-coordinate of the hero
  * \param y		y-coordinate of the hero
  */
-/* Borlandified  and identical */
 void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 {
 	signed short l_di;
