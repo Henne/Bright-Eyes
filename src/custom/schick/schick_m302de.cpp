@@ -7808,7 +7808,23 @@ static int n_seg034(unsigned offs)
 		return 1;
 	}
 	case 0x718: {
-		return 0;
+		CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		RealPt a3 = CPU_Pop32();
+		RealPt a4 = CPU_Pop32();
+		Bit16s a5 = CPU_Pop16();
+		Bit16s a6 = CPU_Pop16();
+		CPU_Push16(a6);
+		CPU_Push16(a5);
+		CPU_Push32(a4);
+		CPU_Push32(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		seg034_718(a1, a2, Real2Host(a3), Real2Host(a4), a5, a6);
+
+		return 1;
 	}
 	case 0xaec: {
 		return 0;

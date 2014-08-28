@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg034 (fight system)
- *	Functions rewritten: 2/6
+ *	Functions rewritten: 3/6
  */
 
 #include "v302de.h"
@@ -327,6 +327,83 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 	draw_fight_screen_pal(0);
 
 	return get_cb_val(host_readws(px), host_readws(py));
+}
+
+struct coord {
+	signed short x;
+	signed short y;
+};
+
+struct dummy {
+	struct coord a[4];
+};
+
+/* Borlandified and identical */
+void seg034_718(signed short x, signed short y, Bit8u *px, Bit8u *py, signed short dir, signed short mode)
+{
+	signed short new_dir;
+	signed short dist;
+	signed short new_x;
+	signed short new_y;
+	signed char done;
+
+#if !defined(__BORLANDC__)
+        struct dummy a;
+        a.a[0].x = 1;
+        a.a[0].y = 0;
+        a.a[1].x = 0;
+        a.a[1].y = -1;
+        a.a[2].x = -1;
+        a.a[2].y = 0;
+        a.a[3].x = 0;
+        a.a[3].y = 1;
+#else
+        struct dummy a = *(struct dummy*)(p_datseg + 0x5f7c);
+#endif
+
+	done = 0;
+
+	host_writew(px, x);
+	host_writew(py, y);
+
+	if (get_cb_val(x, y) == 0) {
+
+		if (mode == 0) {
+			return;
+		}
+
+		if (get_cb_val(x - a.a[dir].x, y - a.a[dir].y) == 0) {
+			return;
+		}
+	}
+
+	dist = 1;
+
+	while (!done) {
+
+		for (new_dir = 0; new_dir < 4; new_dir++) {
+
+			new_x = host_readws(px) + a.a[new_dir].x * dist;
+			new_y = host_readws(py) + a.a[new_dir].y * dist;
+
+			if ((new_x >= 0) && (new_x < 24) && (new_y >= 0) && (new_y < 24) &&
+				!get_cb_val(new_x, new_y))
+			{
+
+				if ((mode == 0) ||
+					(!get_cb_val(new_x - a.a[dir].x, new_y - a.a[dir].y)))
+				{
+
+					done = 1;
+					host_writew(px, new_x);
+					host_writew(py, new_y);
+					break;
+				}
+			}
+		}
+
+		dist++;
+	}
 }
 
 #if !defined(__BORLANDC__)
