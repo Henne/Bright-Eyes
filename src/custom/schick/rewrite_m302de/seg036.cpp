@@ -23,7 +23,6 @@
 namespace M302de {
 #endif
 
-/* 0x000 */
 /* static */
 /* Borlandified  and identical */
 
@@ -169,12 +168,10 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 }
 
 /**
- * KI_change_hero_weapon() - changes the weapon of a hero
- * @hero:	the hero with a broken weapon
+ * \brief	changes the weapon of a hero
+ * \param hero	pointer to the hero with a broken weapon
  *
- * Returns
- *	 1 if a weapon was found or
- *	 0 if the hero fights now with bare hands.
+ * \return	1 if a weapon was found, 0 if the hero fights now with bare hands
 */
 /* Borlandified  and identical */
 signed short KI_change_hero_weapon(Bit8u *hero)
@@ -230,8 +227,6 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 
 	return has_new_weapon;
 }
-
-/* 0x39b */
 
 /**
  * KI_can_attack_neighbour() - check if a neighbour can be attacked
@@ -290,9 +285,19 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 	return 0;
 }
 
+/**
+ * \brief		TODO
+ *
+ * \param x		x-coordinate of the hero
+ * \param y		y-coordinate of the hero
+ * \param dir		looking direction of the hero
+ * \param cursed	0 = hero is not cursed, 1 = hero is cursed
+ *
+ * \return		0 = no target found, fight-id of the target
+ */
 /* Borlandified  and identical */
 signed short KI_search_spell_target(signed short x, signed short y,
-				signed short dir, signed short mode)
+				signed short dir, signed short cursed)
 {
 	signed short x_diff;
 	signed short y_diff;
@@ -329,7 +334,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 		/* get the fight object ID of the object on that field */
 		obj_id = get_cb_val(x + x_diff, y + y_diff);
 
-		if (mode == 1) {
+		if (cursed == 1) {
 
 			/* attack everyone */
 			if ( ((obj_id > 0) && (obj_id < 10) &&
@@ -353,7 +358,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 					done = 1;
 				}
 
-		} else if (mode == 0) {
+		} else if (cursed == 0) {
 
 			/* attack only enemies */
 			if ((obj_id >= 10) && (obj_id < 30) && !enemy_dead(p_datseg + 0xd0df + obj_id * 62))
@@ -392,14 +397,14 @@ signed short KI_search_spell_target(signed short x, signed short y,
  *
  * \param hero		pointer to the hero
  * \param hero_pos	position of the hero in the party
- * \param mode		TODO
+ * \param cursed	0 = hero is not cursed, 1 = hero is cursed
  * \param x		x-coordinate of the hero
  * \param y		y-coordinate of the hero
  *
  * \return		0 = no target found, 1 = target_found (long distance), 2 = target fount (short distance)
  */
 /* Borlandified  and identical */
-signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short mode, signed short x, signed short y)
+signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
 {
 	signed short dir;
 	signed short count;
@@ -426,7 +431,7 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 			/* try to find a target clockwise from current direction */
 			while (!host_readbs(hero + 0x86) && (count < 4)) {
 
-				host_writebs(hero + 0x86, (signed char)KI_search_spell_target(x, y, dir, mode));
+				host_writebs(hero + 0x86, (signed char)KI_search_spell_target(x, y, dir, cursed));
 
 				count++;
 
@@ -455,7 +460,7 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 
 			if (!hero_unkn2(hero)) {
 
-				if (mode == 0) {
+				if (cursed == 0) {
 					l5 = seg038(hero, hero_pos, x, y, 9);
 				} else {
 					l5 = seg038(hero, hero_pos, x, y, 8);
@@ -484,18 +489,16 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 	return retval;
 }
 
-/* 0x863 */
-
 /**
  * \brief		TODO
  *
  * \param spell		spell index
- * \param mode		mode 0/1
+ * \param cursed	0 = hero is not cursed, 1 = hero is cursed
  *
  * \return		TODO	{-1, 0, 1, 2}
  */
 /* Borlandified  and identical */
-signed short KI_get_spell(signed short spell, signed short mode)
+signed short KI_get_spell(signed short spell, signed short cursed)
 {
 	Bit8u *p;
 	signed short retval = -1;
@@ -503,7 +506,7 @@ signed short KI_get_spell(signed short spell, signed short mode)
 	/* make a pointer to the spell description */
 	p = p_datseg + spell * 10 + 0x99d;
 
-	if (mode == 0) {
+	if (cursed == 0) {
 		if (host_readb(p + 7) == 2)
 			retval = 1;
 		else if (host_readb(p + 7) == 1 || host_readb(p + 7) == 3)
@@ -534,14 +537,14 @@ struct dummy {
  *
  * \param hero		pointer to the hero
  * \param hero_pos	position of the hero in the party
- * \param mode		TODO
+ * \param cursed	0 = hero is not cursed, 1 = hero is cursed
  * \param x		x-coordinate of the hero
  * \param y		y-coordinate of the hero
  *
  * \return		{0, 1}
  */
 /* Borlandified  and identical */
-signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short mode, signed short x, signed short y)
+signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
 {
 	signed short l_si;
 	signed short count;
@@ -597,7 +600,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short mode, s
 		/* reset the target of the hero */
 		host_writebs(hero + 0x86, 0);
 
-		if ((spell_mode = KI_get_spell(spell, mode)) != -1) {
+		if ((spell_mode = KI_get_spell(spell, cursed)) != -1) {
 
 			if (spell_mode == 2) {
 
@@ -720,8 +723,6 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short mode, s
 
 	return retval;
 }
-
-/* 0xc39 */
 
 /**
  * \brief	count the other heros in the current group
