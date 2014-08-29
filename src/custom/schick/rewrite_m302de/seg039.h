@@ -14,7 +14,7 @@ void fill_enemy_sheet(unsigned short, signed char, unsigned char);
 #if !defined(__BORLANDC__)
 unsigned short place_obj_on_cb(signed short, signed short, signed short, signed char, signed char);
 #else
-unsigned short place_obj_on_cb(signed short, signed short, signed short, signed short, signed char);
+unsigned short place_obj_on_cb(signed short, signed short, signed short, signed short, signed short);
 #endif
 
 /* 0x34 */
