@@ -437,7 +437,7 @@ static inline unsigned short enemy_dead(Bit8u *enemy) {
 }
 
 static inline unsigned short enemy_sleeps(Bit8u *enemy) {
-	if (((host_readb(enemy + 0x31) >> 0) & 1) == 0)
+	if (((host_readb(enemy + 0x31) >> 1) & 1) == 0)
 		return 0;
 	else
 		return 1;
