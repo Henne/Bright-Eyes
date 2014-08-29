@@ -1,6 +1,11 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
-	Functions rewritten: 8/8 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of seg027 (file loader)
+ *	Functions rewritten: 8/8 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg027.cpp
+ *
 */
 
 #include <string.h>
@@ -16,7 +21,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void load_pp20(signed short index)
 {
 	volatile signed short fd;
@@ -130,7 +134,6 @@ void load_pp20(signed short index)
  *
  */
 /* Original-Bug: when using EMS for caching something strage happens. */
-/* Borlandified and identical */
 RealPt load_fight_figs(signed short fig)
 {
 	signed short i;
@@ -282,7 +285,6 @@ RealPt load_fight_figs(signed short fig)
  *	load_ani() -	loads an animation
  *	@nr:	number of the animation
  */
-/* Borlandified and identical */
 void load_ani(const signed short nr)
 {
 	signed short i_area;
@@ -540,7 +542,6 @@ void load_ani(const signed short nr)
 	}
 }
 
-/* Borlandified and identical */
 void load_scenario(signed short nr)
 {
 	unsigned short fd;
@@ -571,8 +572,7 @@ void load_scenario(signed short nr)
 	bc_close(fd);
 }
 
-/* Borlandified and identical */
-unsigned short count_fight_enemies(signed short nr)
+signed short count_fight_enemies(signed short nr)
 {
 	signed short i;
 	signed short retval;
@@ -621,7 +621,6 @@ unsigned short count_fight_enemies(signed short nr)
 	return retval;
 }
 
-/* Borlandified and identical */
 void read_fight_lst(signed short nr)
 {
 	unsigned short fd;
@@ -663,7 +662,6 @@ void read_fight_lst(signed short nr)
 	bc_close(fd);
 }
 
-/* Borlandified and identical */
 void write_fight_lst(void)
 {
 	signed short nr;
@@ -684,8 +682,7 @@ void write_fight_lst(void)
 	bc_close(fd);
 }
 
-/* Borlandified and identical */
-void init_common_buffers()
+void init_common_buffers(void)
 {
 	unsigned short fd;
 	signed short bytes;
