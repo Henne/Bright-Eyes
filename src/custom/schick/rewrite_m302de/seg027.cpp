@@ -540,6 +540,7 @@ void load_ani(const signed short nr)
 	}
 }
 
+/* Borlandified and identical */
 void load_scenario(signed short nr)
 {
 	unsigned short fd;
@@ -557,11 +558,11 @@ void load_scenario(signed short nr)
 #endif
 
 	/* check if scenario nr is valid */
-	if ((buf < nr) || (nr < 1))
+	if ((nr > buf) || (nr < 1))
 		nr = 1;
 
 	/* seek to the scenario */
-	seg002_0c72(fd, (nr - 1) * 621 + 2, 0);
+	seg002_0c72(fd, 621L * (nr - 1) + 2, 0);
 
 	/* read scenario */
 	read_archive_file(fd, Real2Host(ds_readd(SCENARIO_BUF)), 621);
@@ -570,13 +571,14 @@ void load_scenario(signed short nr)
 	bc_close(fd);
 }
 
+/* Borlandified and identical */
 unsigned short count_fight_enemies(signed short nr)
 {
+	signed short i;
+	signed short retval;
 	Bit8u *buf;
 	unsigned short fd;
-	unsigned short max;
-	unsigned short retval;
-	unsigned short i;
+	signed short max;
 
 	retval = 0;
 
@@ -593,11 +595,11 @@ unsigned short count_fight_enemies(signed short nr)
 	max = host_readw((Bit8u*)&max);
 #endif
 	/* sanity check for parameter nr */
-	if ((max - 1) < nr || nr <= 0)
+	if ((nr > (max - 1)) || (nr < 0))
 		nr = 0;
 
 	/* seek to file position */
-	bc_lseek(fd, nr * 216 + 2, SEEK_SET);
+	bc_lseek(fd, 216L * nr + 2, SEEK_SET);
 
 	/* read the fight entry */
 	bc__read(fd, buf, 216);
@@ -607,24 +609,23 @@ unsigned short count_fight_enemies(signed short nr)
 
 	/* check all enemies */
 	for (i = 0; i < 20; i++) {
-		/* no enemy */
-		if (host_readb(buf + 0x16 + i * 5) == 0)
-			continue;
-		/* enemy does not appear in the first round */
-		if (host_readb(buf + 0x1a + i * 5) != 0)
-			continue;
-		/* increment counter */
-		retval++;
+		/* no enemy and enemy does not appear in the first round */
+		if ((host_readb(buf + 0x16 + i * 5) != 0)
+			&& (!host_readbs(buf + 0x1a + i * 5)))
+		{
+			/* increment counter */
+			retval++;
+		}
 	}
 
 	return retval;
 }
 
+/* Borlandified and identical */
 void read_fight_lst(signed short nr)
 {
-	char fight_name[21];
 	unsigned short fd;
-	unsigned short max;
+	signed short max;
 
 	/* load FIGHT.LST from TEMP dir */
 	fd = load_archive_file(0x8000 | 0xcd);
@@ -637,19 +638,20 @@ void read_fight_lst(signed short nr)
 	max = host_readw((Bit8u*)&max);
 #endif
 	/* sanity check for parameter nr */
-	if ((max - 1) < nr || nr <= 0)
+	if ((max - 1) < nr || nr < 0)
 		nr = 0;
 
 	/* write the fight number to a global var */
 	ds_writew(0x5eb2, nr);
 
 	/* seek to file position */
-	bc_lseek(fd, nr * 216 + 2, SEEK_SET);
+	bc_lseek(fd, 216L * nr + 2, SEEK_SET);
 
 	/* read the fight entry */
 	bc__read(fd, Real2Host(ds_readd(PTR_FIGHT_LST)), 216);
 
 #if !defined(__BORLANDC__)
+	char fight_name[21];
 	/* Improvement */
 	strncpy(fight_name, (char*)Real2Host(ds_readd(PTR_FIGHT_LST)), 20);
 	fight_name[20] = '\0';
@@ -661,6 +663,7 @@ void read_fight_lst(signed short nr)
 	bc_close(fd);
 }
 
+/* Borlandified and identical */
 void write_fight_lst(void)
 {
 	signed short nr;
@@ -672,7 +675,7 @@ void write_fight_lst(void)
 	fd = load_archive_file(0x8000 | 0xcd);
 
 	/* seek to the entry */
-	bc_lseek(fd, nr * 216 + 2, SEEK_SET);
+	bc_lseek(fd, 216L * nr + 2, SEEK_SET);
 
 	/* write it */
 	bc__write(fd, (RealPt)ds_readd(PTR_FIGHT_LST), 216);
@@ -681,15 +684,15 @@ void write_fight_lst(void)
 	bc_close(fd);
 }
 
+/* Borlandified and identical */
 void init_common_buffers()
 {
-
 	unsigned short fd;
-	unsigned short bytes;
+	signed short bytes;
 
 	/* load POPUP.DAT */
 	fd = load_archive_file(0x99);
-	bytes = read_archive_file(fd, Real2Host(ds_readd(0xd2ad) - 8), 500);
+	bytes = read_archive_file(fd, Real2Host((RealPt)ds_readd(0xd2ad) - 8), 500);
 	bc_close(fd);
 
 	/* decompress POPUP.DAT */
