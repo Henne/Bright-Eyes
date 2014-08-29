@@ -215,12 +215,12 @@ void FIG_reset_12_13(signed char id) {
 	}
 }
 
-void FIG_set_12_13(signed char id) {
+void FIG_set_12_13(signed short id) {
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = Real2Host(ds_readd(0xe108));
 
-	while (host_readb(ptr1 + 0x10) != id) {
+	while (host_readb(ptr1 + 0x10) != (signed char)id) {
 		if (host_readd(ptr1 + 0x1b) == 0)
 			return;
 		ptr1 = Real2Host(host_readd(ptr1 + 0x1b));
