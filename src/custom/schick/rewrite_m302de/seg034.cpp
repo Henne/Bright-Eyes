@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg034 (fight system)
- *	Functions rewritten: 3/6
+ *	Functions rewritten: 4/6
  */
 
 #include "v302de.h"
@@ -403,6 +403,103 @@ void seg034_718(signed short x, signed short y, Bit8u *px, Bit8u *py, signed sho
 		}
 
 		dist++;
+	}
+}
+
+/* Borlandified and identical */
+void seg034_87b(void)
+{
+	signed short i;
+	signed short x;
+	signed short y;
+	signed short l4;
+	Bit8u *p1;
+	Bit8u *p2;
+	Bit8u *p3;
+
+#if !defined(__BORLANDC__)
+        struct dummy a;
+        a.a[0].x = 1;
+        a.a[0].y = 0;
+        a.a[1].x = 0;
+        a.a[1].y = -1;
+        a.a[2].x = -1;
+        a.a[2].y = 0;
+        a.a[3].x = 0;
+        a.a[3].y = 1;
+#else
+        struct dummy a = *(struct dummy*)(p_datseg + 0x5f8c);
+#endif
+
+	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
+
+		p1 = p_datseg + ENEMY_SHEETS + 62 * i;
+
+		if (host_readbs(p1 + 0x35) > 0) {
+
+			dec_ptr_bs(p1 + 0x35);
+
+			if (!host_readbs(p1 + 0x35)) {
+
+				if (!enemy_bit10(p1)) {
+
+					if (is_in_byte_array(host_readbs(p1 + 0x01), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+
+						seg034_718(	host_readbs(Real2Host(ds_readd(0xbd28)) + 0x17 + 5 * i),
+								host_readbs(Real2Host(ds_readd(0xbd28)) + 0x18 + 5 * i),
+								(Bit8u*)&x, (Bit8u*)&y,
+								host_readbs(Real2Host(ds_readd(0xbd28)) + 0x19 + 5 * i),
+								1);
+
+						p2 = Real2Host(FIG_get_ptr(host_readbs(p1 + 0x26)));
+
+						host_writebs(p2 + 3, (signed char)x);
+						host_writebs(p2 + 4, (signed char)y);
+
+						l4 = ds_readbs(0xe35a + host_readbs(p2 + 0x13));
+
+						p3 = Real2Host(FIG_get_ptr(l4));
+
+						host_writeb(p3 + 3,
+								x - a.a[host_readbs(Real2Host(ds_readd(0xbd28)) + 0x19 + 5 * i)].x);
+						host_writeb(p3 + 4,
+								y - a.a[host_readbs(Real2Host(ds_readd(0xbd28)) + 0x19 + 5 * i)].y);
+
+						FIG_remove_from_list(host_readbs(p1 + 0x26), 1);
+
+						FIG_add_to_list(host_readbs(p1 + 0x26));
+
+						FIG_remove_from_list(l4, 1);
+
+						FIG_add_to_list(l4);
+					} else {
+						seg034_718(	host_readbs(Real2Host(ds_readd(0xbd28)) + 0x17 + 5 * i),
+								host_readbs(Real2Host(ds_readd(0xbd28)) + 0x18 + 5 * i),
+								(Bit8u*)&x, (Bit8u*)&y,
+								host_readbs(Real2Host(ds_readd(0xbd28)) + 0x19 + 5 * i),
+								0);
+
+						p2 = Real2Host(FIG_get_ptr(host_readbs(p1 + 0x26)));
+
+						host_writebs(p2 + 3, (signed char)x);
+						host_writebs(p2 + 4, (signed char)y);
+
+						FIG_remove_from_list(host_readbs(p1 + 0x26), 1);
+
+						FIG_add_to_list(host_readbs(p1 + 0x26));
+					}
+
+					place_obj_on_cb(x, y, i + 10, host_readbs(p1 + 1),
+						(signed short)host_readbs(Real2Host(ds_readd(0xbd28)) + 0x19 + 5 * i));
+
+					FIG_set_12_13(host_readbs(p1 + 0x26));
+
+				} else {
+					/* set the enemy dead */
+					or_ptr_bs(p1 + 0x31, 1);
+				}
+			}
+		}
 	}
 }
 
