@@ -745,7 +745,7 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 }
 
 /* Borlandified and identical */
-void seg002_0c72(Bit16u handle, Bit32u off, Bit16u dummy) {
+void seg002_0c72(Bit16u handle, Bit32s off, Bit16u dummy) {
 
 	Bit32u file_off;
 
