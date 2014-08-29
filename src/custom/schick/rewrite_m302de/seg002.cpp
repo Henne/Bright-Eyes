@@ -966,8 +966,15 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 			retval = width * height;
 		}
 
-		/* TODO: this adding 4 to src produces a slightly different code */
+#if !defined(__BORLANDC__)
 		decomp_pp20(src, nvf->dst, src + (signed char)4, p_size);
+#else
+		decomp_pp20(src,
+			nvf->dst,
+			FP_OFF(src) + 4,
+			FP_SEG(src),
+			p_size);
+#endif
 
 	} else if (nvf->type >= 2 && nvf->type <= 5) {
 

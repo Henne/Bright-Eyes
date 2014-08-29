@@ -517,8 +517,15 @@ void load_fightbg(signed short index)
 
 	fd = load_archive_file(index);
 	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 30000);
-	decomp_pp20(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0xc3a9)),
-		Real2Host(ds_readd(0xd303)) + 4, get_readlength2(fd));
+	decomp_pp20(Real2Host(ds_readd(0xd303)),
+			Real2Host(ds_readd(0xc3a9)),
+#if !defined(__BORLANDC__)
+			Real2Host(ds_readd(0xd303)) + 4,
+#else
+			FP_OFF(ds_readd(0xd303)) + 4,
+			FP_SEG(ds_readd(0xd303)),
+#endif
+			get_readlength2(fd));
 	bc_close(fd);
 }
 

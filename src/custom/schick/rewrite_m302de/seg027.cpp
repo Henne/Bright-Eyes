@@ -41,8 +41,14 @@ void load_pp20(signed short index)
 			/* already buffered, just decomp */
 			decomp_pp20(Real2Host(ds_readd(0x5e6a + bi * 4)),
 				Real2Host(ds_readd(0xd303)),
-				Real2Host(ds_readd(0x5e6a + bi * 4)) + 4,
+#if !defined(__BORLANDC__)
+				Real2Host(ds_readd(0x5e6a) + 4 + bi) + 4,
+#else
+				ds_readw(0x5e6a + 4 * bi) + 4,
+				ds_readw(0x5e6c + 4 * bi),
+#endif
 				ds_readd(0x5e8e + bi * 4));
+
 		} else {
 			fd = load_archive_file(index);
 
@@ -62,7 +68,12 @@ void load_pp20(signed short index)
 				/* decompress */
 				decomp_pp20(Real2Host(ds_readd(0x5e6a + bi * 4)),
 					Real2Host(ds_readd(0xd303)),
-					Real2Host(ds_readd(0x5e6a + bi * 4)) + 4,
+#if !defined(__BORLANDC__)
+					Real2Host(ds_readd(0x5e6a + 4 + bi)) + 4,
+#else
+					ds_readw((0x5e6a + 0) + bi * 4) + 4,
+					ds_readw((0x5e6a + 2) + bi * 4),
+#endif
 					ds_readd(0x5e8e + bi * 4));
 
 				bc_close(fd);
@@ -77,8 +88,14 @@ void load_pp20(signed short index)
 				/* decompress it */
 				decomp_pp20(Real2Host(ds_readd(0xd303)) -8,
 					Real2Host(ds_readd(0xd303)),
-					Real2Host(ds_readd(0xd303)) -8,
+#if !defined(__BORLANDC__)
+					Real2Host(ds_readd(0xd303)) -8 +4,
+#else
+					FP_OFF((RealPt)ds_readd(0xd303) -8) +4,
+					FP_SEG((RealPt)ds_readd(0xd303) -8),
+#endif
 					get_readlength2(fd));
+
 				bc_close(fd);
 			}
 		}
@@ -92,7 +109,12 @@ void load_pp20(signed short index)
 		/* decompress it */
 		decomp_pp20(Real2Host(ds_readd(0xd303)) -8,
 			Real2Host(ds_readd(0xd303)),
-			Real2Host(ds_readd(0xd303)) -8 +4,
+#if !defined(__BORLANDC__)
+			Real2Host(ds_readd(0xd303) - 8 + 4),
+#else
+			FP_OFF((RealPt)ds_readd(0xd303) - 8) + 4,
+			FP_SEG((RealPt)ds_readd(0xd303) - 8),
+#endif
 			get_readlength2(fd));
 
 		bc_close(fd);
@@ -384,7 +406,12 @@ void load_ani(const signed short nr)
 
 		decomp_pp20(Real2Host(ds_readd(ANI_MAIN_PTR)),
 			Real2Host(ds_readd(0xd303)),
-			Real2Host(ds_readd(ANI_MAIN_PTR)) + 4,
+#if !defined(__BORLANDC__)
+			Real2Host(ds_readd(ANI_MAIN_PTR) + 4),
+#else
+			FP_OFF((RealPt)ds_readd(ANI_MAIN_PTR)) + 4,
+			FP_SEG((RealPt)ds_readd(ANI_MAIN_PTR)),
+#endif
 			len_4);
 
 		offset = len_3 - len_4;
@@ -427,9 +454,14 @@ void load_ani(const signed short nr)
 			area_size = host_readd(p1);
 			area_size = swap_u32(area_size) >> 8;
 
-			decomp_pp20(Real2Host(ds_readd(0xc3db)) + p4,
+			decomp_pp20(Real2Host(F_PADD(ds_readd(0xc3db), p4)),
 				Real2Host(ds_readd(0xd303)),
+#if !defined(__BORLANDC__)
 				Real2Host(ds_readd(0xc3db)) + p4 + 4,
+#else
+				FP_OFF(F_PADD(ds_readd(0xc3db), p4)) + 4,
+				FP_SEG(F_PADD(ds_readd(0xc3db), p4)),
+#endif
 				len_4);
 
 			offset_2 = area_size - len_4;
@@ -634,9 +666,14 @@ void init_common_buffers()
 	bc_close(fd);
 
 	/* decompress POPUP.DAT */
-	decomp_pp20(Real2Host(ds_readd(0xd2ad) - 8),
+	decomp_pp20(Real2Host((RealPt)ds_readd(0xd2ad) - 8),
 		Real2Host(ds_readd(0xd2ad)),
-		Real2Host(ds_readd(0xd2ad) - 8 + 4),
+#if !defined(__BORLANDC__)
+		Real2Host(ds_readd(0xd2ad)) - 8 + 4,
+#else
+		FP_OFF((RealPt)ds_readd(0xd2ad) - 8) + 4,
+		FP_SEG((RealPt)ds_readd(0xd2ad) - 8),
+#endif
 		bytes);
 
 	/* load COMPASS */
