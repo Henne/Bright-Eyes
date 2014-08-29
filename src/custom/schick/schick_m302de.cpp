@@ -7829,7 +7829,9 @@ static int n_seg034(unsigned offs)
 		return 1;
 	}
 	case 0xaec: {
-		return 0;
+		CPU_Pop16();
+		reg_ax = seg034_aec();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

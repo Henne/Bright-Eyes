@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg034 (fight system)
- *	Functions rewritten: 4/6
+ *	Functions rewritten: 5/6
  */
 
 #include "v302de.h"
@@ -501,6 +501,22 @@ void seg034_87b(void)
 			}
 		}
 	}
+}
+
+/* Borlandified and identical */
+signed short seg034_aec(void)
+{
+	signed short i = 0;
+
+	while (ds_readbs(0xd823 + i) != -1) {
+		i++;
+	}
+
+	if (ds_readbs((0xd823 + 1) + i) == -2) {
+		return 99;
+	}
+
+	return i;
 }
 
 #if !defined(__BORLANDC__)

@@ -15,6 +15,9 @@ void seg034_718(signed short, signed short, Bit8u*, Bit8u*, signed short, signed
 /* 0x34 */
 void seg034_87b(void);
 
+/* 0x39 */
+signed short seg034_aec(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif
