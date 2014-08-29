@@ -16,6 +16,7 @@
 namespace M302de {
 #endif
 
+/* Borlandified and identical */
 void load_pp20(signed short index)
 {
 	volatile signed short fd;
@@ -156,7 +157,7 @@ RealPt load_fight_figs(signed short fig)
 			Real2Host(ds_readd(0xd2db)), 20000);
 		src = (RealPt)ds_readd(0xd2db);
 		ds_writew(0x2cd3, fig);
-	} else if ((signed short)ds_readw(0x2cd1) != -1) {
+	} else if (ds_readws(0x2cd1) != -1) {
 		src = (RealPt)ds_readd(0xd2db);
 		ds_writew(0x2cd3, fig);
 	} else {
