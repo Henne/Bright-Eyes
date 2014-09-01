@@ -14,7 +14,13 @@ signed short select_teleport_dest(void);
 /* 0x2f */
 /* should be static */
 void seg074_305(signed short);
+#endif
 
+/* 0x2a */
+/* should be static */
+unsigned short is_discovered(signed short, signed short);
+
+#if defined(__BORLANDC__)
 /* 0x3e */
 /* should be static */
 void seg074_7b2(void);
