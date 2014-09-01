@@ -30,6 +30,10 @@ void seg074_7b2(void);
 /* should be static */
 unsigned short get_mapval_small(signed short, signed short);
 
+/* 0x48 */
+/* should be static */
+unsigned short get_mapval_large(signed short, signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif
