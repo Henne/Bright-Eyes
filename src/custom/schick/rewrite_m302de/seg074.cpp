@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 1/11
+ *	Functions rewritten: 2/11
  */
 
 #include "v302de.h"
@@ -130,6 +130,12 @@ void show_automap(void)
 	}
 }
 #endif
+
+/* Borlandified and identical */
+unsigned short is_discovered(signed short x, signed short y)
+{
+	return ds_readb(0xe442 + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
+}
 
 #if defined(__BORLANDC__)
 void seg074_305(signed short a1)

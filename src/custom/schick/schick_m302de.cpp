@@ -52,6 +52,7 @@
 #include "seg068.h"
 #include "seg072.h"
 #include "seg073.h"
+#include "seg074.h"
 #include "seg075.h"
 #include "seg076.h"
 #include "seg095.h"
@@ -8564,7 +8565,15 @@ static int n_seg074(unsigned short offs)
 {
 	switch (offs) {
 	case 0x24a: {
-		return 0;
+		CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = is_discovered(x, y);
+		D1_LOG("is_discovered(%d, %d) = %d\n", x, y, reg_ax);
+		return 1;
 	}
 	case 0x270: {
 		return 0;
