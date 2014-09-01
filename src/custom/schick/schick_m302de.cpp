@@ -8598,7 +8598,13 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x2ba: {
-		return 0;
+		CPU_Pop16();
+		Bit16s group_nr = CPU_Pop16();
+		CPU_Push16(group_nr);
+
+		reg_ax = is_group_in_prison(group_nr);
+		D1_LOG("is_group_in_prison(%d) = %d\n", group_nr, reg_ax);
+		return 1;
 	}
 	case 0x305: {
 		return 0;

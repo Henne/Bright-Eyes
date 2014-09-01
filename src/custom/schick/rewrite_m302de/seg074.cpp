@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 4/11
+ *	Functions rewritten: 5/11
  */
 
 #include "v302de.h"
@@ -167,6 +167,31 @@ unsigned short get_mapval_large(signed short x, signed short y)
 	Bit8u *map = p_datseg + 0xbd95;
 
 	return host_readb(map + 32 * y + x);
+}
+
+/**
+ * \brief	checks if the group is in prison
+ *
+ * \param group_nr	number of the group
+ *
+ * \return	the value of the "in_prison" flag
+ */
+/* Borlandified and identical */
+signed short is_group_in_prison(signed short group_nr)
+{
+	Bit8u *hero = get_hero(0);
+	signed short i;
+
+	for (i = 0; i < 6; i++, hero += 0x6da) {
+
+		if ((host_readbs(hero + 0x21) != 0) &&
+			(host_readbs(hero + 0x87) == group_nr))
+		{
+			return host_readbs(hero + 0x9f);
+		}
+	}
+
+	return 0;
 }
 
 #if defined(__BORLANDC__)

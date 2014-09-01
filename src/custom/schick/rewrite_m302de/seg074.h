@@ -34,6 +34,10 @@ unsigned short get_mapval_small(signed short, signed short);
 /* should be static */
 unsigned short get_mapval_large(signed short, signed short);
 
+/* 0x4d */
+/* should be static */
+signed short is_group_in_prison(signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif
