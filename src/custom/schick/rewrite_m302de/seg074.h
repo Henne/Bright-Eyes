@@ -21,6 +21,14 @@ void seg074_305(signed short);
 unsigned short is_discovered(signed short, signed short);
 
 #if defined(__BORLANDC__)
+/* 0x34 */
+/* should be static */
+void seg074_5f9(signed short, signed short, signed short, signed short);
+
+/* 0x39 */
+/* should be static */
+void seg074_72b(signed short, signed short, signed short);
+
 /* 0x3e */
 /* should be static */
 void seg074_7b2(void);
@@ -37,6 +45,12 @@ unsigned short get_mapval_large(signed short, signed short);
 /* 0x4d */
 /* should be static */
 signed short is_group_in_prison(signed short);
+
+#if defined(__BORLANDC__)
+/* 0x52 */
+signed short seg074_bbb(signed short, signed short);
+#endif
+
 
 #if !defined(__BORLANDC__)
 }

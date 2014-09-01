@@ -1,13 +1,16 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 5/11
+ *	Functions rewritten: 6/11
  */
+
+#include <string.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
 #include "seg004.h"
 #include "seg029.h"
+#include "seg066.h"
 #include "seg074.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -195,7 +198,111 @@ signed short is_group_in_prison(signed short group_nr)
 }
 
 #if defined(__BORLANDC__)
-void seg074_305(signed short a1)
+void seg074_305(signed short x_off)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short x;
+	signed short y;
+	signed short loc1;
+
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 6);
+	ds_writew(0xc017, 6);
+
+	/* set buffer to 0 */
+	memset(Real2Host(ds_readd(0xd303)), 0, 64000);
+
+	for (y = 0; y < 16; y++) {
+		for (x = 0; x < 16; x++) {
+			if (is_discovered(x + x_off, y)) {
+
+				if (ds_readbs(DUNGEON_INDEX) != 0) {
+
+					l_si = div16(get_mapval_small(x, y));
+
+					seg074_5f9(x, y,
+						(l_si <= 0)? 19 :
+							(((l_si == 1) || (l_si == 9) || l_si == 2) ? 11 :
+							((l_si == 4) ? 6 :
+							((l_si == 3) ? 3 :
+							((l_si == 5) ? 2 :
+							((l_si == 8) ? 17 :
+							((l_si == 6) ? 9 : 1)))))), -1);
+
+
+				} else {
+
+					if (!(l_si = seg074_bbb(x + x_off, y))) {
+						l_si = get_border_index((ds_readb(0xbd94) == 16) ?
+										get_mapval_small(x, y) :
+										get_mapval_large(x + x_off, y));
+					}
+
+					seg074_5f9(x, y,
+						(l_si <= 0)? 19 :
+							((l_si == 6) ? 3 :
+							((l_si == 7) ? 18 :
+							((l_si == 8) ? 1 :
+							((l_si == 1) ? 12 :
+							((l_si == 9) ? 6 :
+							((l_si == 10) ? 15 :
+							((l_si == 11) ? 9 :
+							((l_si == 12) ? 5 :
+							((l_si == 13) ? 10 :
+							(((l_si >= 2) && (l_si <= 5)) ? 11 : 0)))))))))), -1);
+
+					if ((l_si != 0) && (l_si != 7) && (l_si != 6) && (l_si != 8)) {
+
+						loc1 = (ds_readb(0xbd94) == 16) ?
+										get_mapval_small(x, y) :
+										get_mapval_large(x + x_off, y);
+
+						loc1 &= 3;
+						seg074_72b(x, y, loc1);
+					}
+				}
+			}
+		}
+	}
+
+	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) {
+
+		seg074_5f9(ds_readws(X_TARGET) - x_off,	ds_readws(Y_TARGET),
+				4, ds_readbs(DIRECTION));
+	}
+
+	for (l_di = 0; l_di < 6; l_di++) {
+
+		if ((ds_readbs(CURRENT_GROUP) != l_di) &&
+			(ds_readbs(0x2d36 + l_di) > 0) &&
+			(ds_readb(0x2d76 + l_di) == ds_readbs(DUNGEON_LEVEL)) &&
+			(ds_readb(0x2d68 + l_di) == ds_readbs(CURRENT_TOWN)) &&
+			(ds_readb(0x2d6f + l_di) == ds_readbs(DUNGEON_INDEX)) &&
+			!is_group_in_prison(l_di) &&
+			(ds_readws(0x2d48 + 2 * l_di) - x_off >= 0) &&
+			(ds_readws(0x2d48 + 2 * l_di) - x_off <= 16))
+		{
+			seg074_5f9(ds_readws(0x2d48 + 2 * l_di) - x_off,
+					ds_readws(0x2d54 + 2 * l_di),
+					16,
+					ds_readbs(0x2d3e + l_di));
+		}
+	}
+
+	if (((ds_readws(0x7de5) - x_off) >= 0) && ((ds_readws(0x7de5) - x_off) <= 16)) {
+
+		seg074_5f9(ds_readws(0x7de5) - x_off,	ds_readws(0x7de7), 7, -1);
+	}
+}
+
+void seg074_5f9(signed short x, signed short y, signed short a3, signed short dir)
+{
+
+}
+
+void seg074_72b(signed short x, signed short y, signed short l3)
 {
 }
 
@@ -211,6 +318,13 @@ signed short select_teleport_dest(void)
 {
 	return -1;
 }
+
+#if defined(__BORLANDC__)
+signed short seg074_bbb(signed short x, signed short y)
+{
+	return x + y;
+}
+#endif
 
 #if !defined(__BORLANDC__)
 }
