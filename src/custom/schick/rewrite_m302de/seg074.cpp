@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 2/11
+ *	Functions rewritten: 3/11
  */
 
 #include "v302de.h"
@@ -135,6 +135,22 @@ void show_automap(void)
 unsigned short is_discovered(signed short x, signed short y)
 {
 	return ds_readb(0xe442 + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
+}
+
+/**
+ * \brief	get value of automap field from small (16x16) maps
+ *
+ * \param	x	x-coordinate
+ * \param	y	y-coordinate
+ *
+ * \return	value of the field at (x,y)
+ */
+/* Borlandified and identical */
+unsigned short get_mapval_small(signed short x, signed short y)
+{
+	Bit8u *map = p_datseg + 0xbd95;
+
+	return host_readb(map + 16 * y + x);
 }
 
 #if defined(__BORLANDC__)

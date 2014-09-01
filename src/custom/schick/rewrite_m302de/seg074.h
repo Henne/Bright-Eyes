@@ -26,6 +26,9 @@ unsigned short is_discovered(signed short, signed short);
 void seg074_7b2(void);
 #endif
 
+/* 0x43 */
+/* should be static */
+unsigned short get_mapval_small(signed short, signed short);
 
 #if !defined(__BORLANDC__)
 }
