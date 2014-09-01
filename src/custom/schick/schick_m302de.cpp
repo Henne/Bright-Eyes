@@ -8576,7 +8576,15 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x270: {
-		return 0;
+		CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = get_mapval_small(x, y);
+		D1_LOG("get_mapval_small(%d, %d) = %d\n", x, y, reg_ax);
+		return 1;
 	}
 	case 0x295: {
 		return 0;
