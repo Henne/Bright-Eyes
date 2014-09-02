@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 9/11
+ *	Functions rewritten: 10/11
  */
 
 #include <string.h>
@@ -476,7 +476,160 @@ void draw_automap_to_screen(void)
 /* TODO: stub function for transversalis */
 signed short select_teleport_dest(void)
 {
+#if !defined(__BORLANDC__)
 	return -1;
+#else
+	signed short l_si;
+	signed short l_di;
+
+	signed short answer;
+	signed short done;
+	signed short dungeon;
+	signed short town;
+	signed short ae_costs;
+	signed short bak;
+
+	draw_main_screen();
+
+	dungeon = ds_readbs(DUNGEON_INDEX);
+	town = ds_readbs(CURRENT_TOWN);
+	ds_writeb(CURRENT_TOWN, ds_writeb(DUNGEON_INDEX, 0));
+
+	l_si = ((ds_readb(0xbd94) == 16) ? 0 :
+			((ds_readws(0x2d44) - 8 < 0) ? 0 :
+			((ds_readws(0x2d44) - 8 > 15) ? 16 : ds_readws(0x2d44) - 8)));
+
+	ds_writew(0x7de5, ds_readws(X_TARGET));
+	ds_writew(0x7de7, ds_readws(Y_TARGET));
+	ds_writeb(DUNGEON_INDEX, (signed char)dungeon);
+	ds_writeb(CURRENT_TOWN, (signed char)town);
+	bak = ds_readws(0xbffd);
+	ds_writew(0xbffd, 3);
+
+	seg074_305(l_si);
+
+	clear_ani_pal();
+
+	draw_automap_to_screen();
+
+	set_ani_pal(p_datseg + 0x7d0e);
+
+	if (ds_readb(0xbd94) == 16) {
+		draw_loc_icons(1, 11);
+	} else {
+		draw_loc_icons(3, 27, 26, 11);
+	}
+
+	done = 0;
+
+	do {
+		handle_input();
+
+		if ((ds_readw(0xc3d3) != 0) || (ds_readw(ACTION) == 73)) {
+
+			if (ds_readb(0xbd94) == 16) {
+				answer = GUI_radio(get_ltx(0x9a0), 1, get_ltx(0x9a4)) - 1;
+			} else {
+				answer = GUI_radio(get_ltx(0x9a0), 3,
+							 get_ltx(0x998),
+							 get_ltx(0x99c),
+							 get_ltx(0x9a4)) - 1;
+			}
+
+			if (answer != -2) {
+				ds_writew(ACTION, answer + 129);
+			}
+		}
+
+		if ((ds_readw(ACTION) == 75) &&
+			(ds_readws(0x7de5) > 0) &&
+			is_discovered(ds_readws(0x7de5) - 1, ds_readws(0x7de7)))
+		{
+			dec_ds_ws(0x7de5);
+			seg074_305(l_si);
+			draw_automap_to_screen();
+
+		} else if ((ds_readw(ACTION) == 72) &&
+			(ds_readws(0x7de7) > 0) &&
+			is_discovered(ds_readws(0x7de5), ds_readws(0x7de7) - 1))
+		{
+			dec_ds_ws(0x7de7);
+			seg074_305(l_si);
+			draw_automap_to_screen();
+
+		} else if ((ds_readw(ACTION) == 77) &&
+			(ds_readb(0xbd94) - 1 > ds_readws(0x7de5)) &&
+			is_discovered(ds_readws(0x7de5) + 1, ds_readws(0x7de7)))
+		{
+			inc_ds_ws(0x7de5);
+			seg074_305(l_si);
+			draw_automap_to_screen();
+
+		} else if ((ds_readw(ACTION) == 80) &&
+			(ds_readws(0x7de7) < 16) &&
+			is_discovered(ds_readws(0x7de5), ds_readws(0x7de7) + 1))
+		{
+			inc_ds_ws(0x7de7);
+			seg074_305(l_si);
+			draw_automap_to_screen();
+		}
+
+		if (ds_readb(0xbd94) != 16) {
+
+			if ((ds_readw(ACTION) == 129) && (l_si > 0)) {
+				seg074_305(--l_si);
+				draw_automap_to_screen();
+			}
+
+			if ((ds_readw(ACTION) == 130) && (l_si < 16)) {
+				seg074_305(++l_si);
+				draw_automap_to_screen();
+			}
+		}
+
+		if (((ds_readw(ACTION) == 129) && (ds_readb(0xbd94) == 16)) ||
+			((ds_readw(ACTION) == 131) && (ds_readb(0xbd94) != 16)))
+		{
+			done = 1;
+		}
+
+
+	} while (done == 0);
+
+	l_di = (ds_readb(0xbd94) == 16) ?
+		get_mapval_small(ds_readws(0x7de5), ds_readws(0x7de7)) :
+		get_mapval_large(ds_readws(0x7de5), ds_readws(0x7de7));
+
+	if (ds_readbs(CURRENT_TOWN) != 0) {
+		l_di = get_border_index(l_di);
+	} else {
+		l_di = div16(l_di);
+	}
+
+	ae_costs = 0;
+
+	if ((ds_readws(0x7de5) == ds_readws(X_TARGET)) &&
+		(ds_readws(0x7de7) == ds_readws(Y_TARGET)))
+	{
+		ae_costs = 0;
+		host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+	} else if (((ds_readbs(DUNGEON_INDEX) != 0) && (l_di == 15)) ||
+			((ds_readbs(CURRENT_TOWN) != 0) && (((l_di >= 2) && (l_di <= 5)) ||
+			(l_di == 6))))
+	{
+		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x98c));
+		ae_costs = -2;
+	} else {
+		host_writeb(Real2Host(ds_readd(DTP2)), 0);
+		ae_costs = 15;
+	}
+
+	ds_writew(0xbffd, bak);
+	ds_writew(0x2846, 1);
+
+	return ae_costs;
+#endif
 }
 
 #if defined(__BORLANDC__)
