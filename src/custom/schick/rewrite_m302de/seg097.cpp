@@ -43,7 +43,7 @@ void GUI_unused1(Bit8u *a1, signed short a2, signed short a3)
 
 	l2 = a2;
 
-	while (c = host_readbs(a1 + l1++)) {
+	while ((c = host_readbs(a1 + l1++))) {
 
 		if ((c == 0x0d) || (c == 0x40)) {
 			a3 += 10;

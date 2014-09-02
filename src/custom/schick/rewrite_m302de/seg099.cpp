@@ -136,7 +136,7 @@ void spell_illusionen(void)
 		/* print a failure message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xc),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
+			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 
 		/* costs 2 AE */
 		ds_writew(0xac0e, 2);
@@ -213,7 +213,7 @@ void spell_band(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x18),
-				Real2Host(GUI_names_grammar(0x8000,
+				Real2Host(GUI_names_grammar((signed short)0x8000,
 					host_readbs(get_spelltarget_e()), 1)));
 	} else {
 		/* cast hero */
@@ -271,7 +271,7 @@ void spell_bannbaladin(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x24),
-				Real2Host(GUI_names_grammar(0x8000,
+				Real2Host(GUI_names_grammar((signed short)0x8000,
 					host_readbs(get_spelltarget_e()), 1)));
 	}
 }
@@ -295,7 +295,7 @@ void spell_boeser_blick(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 			(char*)get_dtp(0x28),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readbs(get_spelltarget_e()), 1)));
+			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 
 	}
 }
@@ -359,7 +359,7 @@ void spell_herrdertiere(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x24),
-				Real2Host(GUI_names_grammar(0x8000,
+				Real2Host(GUI_names_grammar((signed short)0x8000,
 					host_readbs(get_spelltarget_e()), 1)));
 		}
 	}
@@ -381,7 +381,7 @@ void spell_horriphobus(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x30),
-			Real2Host(GUI_names_grammar(0x8000,
+			Real2Host(GUI_names_grammar((signed short)0x8000,
 				host_readbs(get_spelltarget_e()), 1)));
 	}
 }
@@ -427,7 +427,7 @@ void spell_somnigravis(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x34),
-			Real2Host(GUI_names_grammar(0x8000,
+			Real2Host(GUI_names_grammar((signed short)0x8000,
 				host_readbs(get_spelltarget_e()), 1)));
 		return;
 	}
@@ -475,7 +475,7 @@ void spell_zwingtanz(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x38),
-			Real2Host(GUI_names_grammar(0x8000,
+			Real2Host(GUI_names_grammar((signed short)0x8000,
 				host_readbs(get_spelltarget_e()), 1)));
 	}
 }
@@ -558,7 +558,7 @@ void spell_skelettarius(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x3c),
-			Real2Host(GUI_names_grammar(0x8000,
+			Real2Host(GUI_names_grammar((signed short)0x8000,
 				host_readbs(get_spelltarget_e()), 1)));
 
 		/* set ae costs */
@@ -568,7 +568,7 @@ void spell_skelettarius(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x40),
-			Real2Host(GUI_names_grammar(0x8000,
+			Real2Host(GUI_names_grammar((signed short)0x8000,
 				host_readbs(get_spelltarget_e()), 1)));
 
 		enemy = Real2Host(FIG_get_ptr(host_readbs(get_spelltarget_e() + 0x26)));
@@ -637,19 +637,19 @@ void spell_axxeleratus(void)
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, 90,
 			get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
-			2, hero_pos);
+			2, (signed char)hero_pos);
 
 		/* PA-bonus for the current weapon */
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, 90,
 			get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
-			2, hero_pos);
+			2, (signed char)hero_pos);
 
 		/* axxeleratus active flag */
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, 90,
 			get_spelltarget() + 0xa0,
-			1, hero_pos);
+			1, (signed char)hero_pos);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -946,7 +946,7 @@ void spell_adleraug(void)
 	slot = get_free_mod_slot();
 
 	/* Perception / Sinnesschaerfe + 7 */
-	set_mod_slot(slot, 0x21c, get_spelluser() + 0x13b, 7, hero_pos);
+	set_mod_slot(slot, 0x21c, get_spelluser() + 0x13b, 7, (signed char)hero_pos);
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
