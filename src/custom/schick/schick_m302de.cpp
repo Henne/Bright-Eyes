@@ -5375,12 +5375,8 @@ static int seg099(unsigned short offs) {
 		return 1;
 	}
 	case 0xb6: {
-#if 0
-		spell_transversalis()
+		spell_transversalis();
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0xbb: {
 		spell_ueber_eis();

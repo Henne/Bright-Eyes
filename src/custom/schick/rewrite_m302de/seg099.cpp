@@ -708,7 +708,6 @@ void spell_spurlos(void)
 #endif
 }
 
-/* TODO: this is a stub as long as select_teleport_dest() is not implemented */
 void spell_transversalis(void)
 {
 	if (!ds_readbs(DUNGEON_INDEX) && !ds_readbs(CURRENT_TOWN)) {

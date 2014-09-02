@@ -80,7 +80,6 @@ void spell_motoricus(void);
 /* 0xb1 */
 void spell_spurlos(void);
 /* 0xb6 */
-/* TODO: stub warning */
 void spell_transversalis(void);
 /* 0xbb */
 void spell_ueber_eis(void);
