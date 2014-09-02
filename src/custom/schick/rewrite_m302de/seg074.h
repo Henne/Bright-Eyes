@@ -10,11 +10,9 @@ void show_automap(void);
 /* 0x25 */
 signed short select_teleport_dest(void);
 
-#if defined(__BORLANDC__)
 /* 0x2f */
 /* should be static */
 void seg074_305(signed short);
-#endif
 
 /* 0x2a */
 /* should be static */

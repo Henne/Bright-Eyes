@@ -8607,7 +8607,13 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x305: {
-		return 0;
+		CPU_Pop16();
+		Bit16s x_off = CPU_Pop16();
+		CPU_Push16(x_off);
+
+		seg074_305(x_off);
+		D1_LOG("seg074_305(%d)\n", x_off);
+		return 1;
 	}
 	case 0x5f9: {
 		CPU_Pop16();

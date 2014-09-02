@@ -197,7 +197,6 @@ signed short is_group_in_prison(signed short group_nr)
 	return 0;
 }
 
-#if defined(__BORLANDC__)
 void seg074_305(signed short x_off)
 {
 	signed short l_si;
@@ -296,7 +295,6 @@ void seg074_305(signed short x_off)
 		draw_automap_square(ds_readws(0x7de5) - x_off,	ds_readws(0x7de7), 7, -1);
 	}
 }
-#endif
 
 /**
  * \brief	draws a building on the automap
