@@ -28,11 +28,9 @@ void draw_automap_square(signed short, signed short, signed short, signed short)
 /* should be static */
 void draw_automap_entrance(signed short, signed short, signed short);
 
-#if defined(__BORLANDC__)
 /* 0x3e */
 /* should be static */
-void seg074_7b2(void);
-#endif
+void draw_automap_to_screen(void);
 
 /* 0x43 */
 /* should be static */

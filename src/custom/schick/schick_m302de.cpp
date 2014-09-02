@@ -8638,7 +8638,10 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x7b2: {
-		return 0;
+		CPU_Pop16();
+		draw_automap_to_screen();
+		D1_LOG("draw_automap_to_screen()\n");
+		return 1;
 	}
 	case 0xbbb: {
 		return 0;

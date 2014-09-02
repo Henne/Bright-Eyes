@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 8/11
+ *	Functions rewritten: 9/11
  */
 
 #include <string.h>
@@ -71,7 +71,7 @@ void show_automap(void)
 
 				seg074_305(l_si);
 				clear_ani_pal();
-				seg074_7b2();
+				draw_automap_to_screen();
 				set_ani_pal(p_datseg + 0x7d0e);
 				ds_writew(0x2846, 0);
 			}
@@ -103,7 +103,7 @@ void show_automap(void)
 
 					if (l_si > 0) {
 						seg074_305(--l_si);
-						seg074_7b2();
+						draw_automap_to_screen();
 					}
 				}
 
@@ -111,7 +111,7 @@ void show_automap(void)
 
 					if (l_si < 16) {
 						seg074_305(++l_si);
-						seg074_7b2();
+						draw_automap_to_screen();
 					}
 				}
 			}
@@ -430,13 +430,48 @@ void draw_automap_entrance(signed short x, signed short y, signed short dir)
 	host_writeb(dst + c + c, 0);
 }
 
-#if defined(__BORLANDC__)
-void seg074_7b2(void)
+struct coords {
+	signed short x, y;
+};
+
+struct dummy {
+	struct coords a[2];
+};
+
+void draw_automap_to_screen(void)
 {
+	struct dummy bak;
+
+	/* save screen coordinates */
+	bak = *(struct dummy*)(p_datseg + 0x2990);
+
+	/* set the screen coordinates */
+	ds_writew(0x2992, ds_writew(0x2990, 0));
+	ds_writew(0x2996, ds_readw(0xce41) + 208);
+	ds_writew(0x2994, ds_readw(0xce3f) + 135);
+
+	ds_writed(0xc019, ds_readd(0xd303));
+
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 319);
+	ds_writew(0xc017, 134);
+
+	ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd2ff) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
+
+	update_mouse_cursor();
+
+	ds_writew(0x4a92, 1);
+	do_pic_copy(1);
+	ds_writew(0x4a92, 0);
+
+	refresh_screen_size();
+
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+
+	/* restore screen coordinates */
+	*(struct dummy*)(p_datseg + 0x2990) = bak;
 }
-
-#endif
-
 
 /* TODO: stub function for transversalis */
 signed short select_teleport_dest(void)
