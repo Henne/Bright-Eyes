@@ -120,7 +120,7 @@ void draw_loc_icons(signed short, ...);
 unsigned short mod_timer(short val);
 void draw_compass();
 short can_merge_group();
-unsigned short div16(unsigned char val);
+signed short div16(signed short);
 void select_with_mouse(Bit8u *p1, Bit8u *p2);
 void select_with_keyboard(Bit8u *p1, Bit8u *p2);
 void set_automap_tile(unsigned short x, unsigned short y);

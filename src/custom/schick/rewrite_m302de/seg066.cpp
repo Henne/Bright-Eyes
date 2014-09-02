@@ -15,7 +15,7 @@ namespace M302de {
 #endif
 
 /* 0xb73 */
-signed short get_border_index(unsigned char val)
+signed short get_border_index(signed short val)
 {
 	signed short i;
 

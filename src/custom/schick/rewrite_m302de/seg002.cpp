@@ -3162,8 +3162,9 @@ short can_merge_group() {
 	return retval;
 }
 
-unsigned short div16(unsigned char val) {
-	return val >> 4;
+signed short div16(signed short val)
+{
+	return ((unsigned char)val) >> 4;
 }
 
 /* This function is called in shops at sell/buy screens */
