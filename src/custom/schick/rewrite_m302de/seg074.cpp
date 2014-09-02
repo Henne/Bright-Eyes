@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 7/11
+ *	Functions rewritten: 8/11
  */
 
 #include <string.h>
@@ -260,7 +260,7 @@ void seg074_305(signed short x_off)
 										get_mapval_large(x + x_off, y);
 
 						loc1 &= 3;
-						seg074_72b(x, y, loc1);
+						draw_automap_entrance(x, y, loc1);
 					}
 				}
 			}
@@ -391,11 +391,46 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 
 }
 
-#if defined(__BORLANDC__)
-void seg074_72b(signed short x, signed short y, signed short l3)
+/**
+ * \brief	draws the entrance of a automap building
+ *
+ * \param	x	x-coordinate of the building
+ * \param	y	y-coordinate of the building
+ * \param	dir	direction of the entrance, 0 = NORTH, 1 = EAST,...
+ */
+void draw_automap_entrance(signed short x, signed short y, signed short dir)
 {
+	unsigned short l_si = y;
+	signed short d = dir;
+	signed short c;
+	Bit8u *dst;
+
+	l_si <<= 3;
+	l_si *= 320;
+
+	dst = Real2Host(ds_readd(0xd303)) + l_si + 8 * x + 0xca8;
+
+	if (!d) {
+		dst += 2;
+		c = 1;
+	} else if (d == 1) {
+		dst += 646;
+		c = 320;
+	} else if (d == 2) {
+		dst += 1922;
+		c = 1;
+	} else {
+		dst += 640;
+		c = 320;
+	}
+
+	/* set 3 pixel to black */
+	host_writeb(dst, 0);
+	host_writeb(dst + c, 0);
+	host_writeb(dst + c + c, 0);
 }
 
+#if defined(__BORLANDC__)
 void seg074_7b2(void)
 {
 }

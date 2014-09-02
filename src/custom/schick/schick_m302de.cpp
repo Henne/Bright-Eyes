@@ -8625,7 +8625,17 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x72b: {
-		return 0;
+		CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		CPU_Push16(dir);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		draw_automap_entrance(x, y, dir);
+		D1_LOG("draw_automap_entrance(%d, %d, %d)\n", x, y, dir);
+		return 1;
 	}
 	case 0x7b2: {
 		return 0;

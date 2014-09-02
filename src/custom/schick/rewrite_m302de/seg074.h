@@ -24,11 +24,11 @@ unsigned short is_discovered(signed short, signed short);
 /* should be static */
 void draw_automap_square(signed short, signed short, signed short, signed short);
 
-#if defined(__BORLANDC__)
 /* 0x39 */
 /* should be static */
-void seg074_72b(signed short, signed short, signed short);
+void draw_automap_entrance(signed short, signed short, signed short);
 
+#if defined(__BORLANDC__)
 /* 0x3e */
 /* should be static */
 void seg074_7b2(void);
