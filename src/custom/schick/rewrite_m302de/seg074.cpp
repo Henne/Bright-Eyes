@@ -471,12 +471,13 @@ void draw_automap_to_screen(void)
 	*(struct dummy*)(p_datseg + 0x2990) = bak;
 }
 
-/* TODO: stub function for transversalis */
+/**
+ * \brief	select a teleport destination
+ *
+ * \return	costs for teleport in AE
+ */
 signed short select_teleport_dest(void)
 {
-#if !defined(__BORLANDC__)
-	return -1;
-#else
 	signed short l_si;
 	signed short l_di;
 
@@ -627,7 +628,6 @@ signed short select_teleport_dest(void)
 	ds_writew(0x2846, 1);
 
 	return ae_costs;
-#endif
 }
 
 signed short seg074_bbb(signed short x, signed short y)

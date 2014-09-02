@@ -4646,11 +4646,8 @@ static int seg074(unsigned short offs)
 		}
 		case 0x25: {
 			D1_LOG("select_teleport_dest();\n");
-#if 0
 			reg_ax = select_teleport_dest();
 			return 1;
-#endif
-			return 0;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
