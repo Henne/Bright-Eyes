@@ -20,11 +20,11 @@ void seg074_305(signed short);
 /* should be static */
 unsigned short is_discovered(signed short, signed short);
 
-#if defined(__BORLANDC__)
 /* 0x34 */
 /* should be static */
-void seg074_5f9(signed short, signed short, signed short, signed short);
+void draw_automap_square(signed short, signed short, signed short, signed short);
 
+#if defined(__BORLANDC__)
 /* 0x39 */
 /* should be static */
 void seg074_72b(signed short, signed short, signed short);

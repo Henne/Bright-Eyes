@@ -8610,7 +8610,19 @@ static int n_seg074(unsigned short offs)
 		return 0;
 	}
 	case 0x5f9: {
-		return 0;
+		CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		CPU_Push16(dir);
+		CPU_Push16(a3);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		draw_automap_square(x, y, a3, dir);
+		D1_LOG("draw_automap_square(%d, %d, %d, %d)\n", x, y, a3, dir);
+		return 1;
 	}
 	case 0x72b: {
 		return 0;

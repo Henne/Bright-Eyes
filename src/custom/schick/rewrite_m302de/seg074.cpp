@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 6/11
+ *	Functions rewritten: 7/11
  */
 
 #include <string.h>
@@ -222,7 +222,7 @@ void seg074_305(signed short x_off)
 
 					l_si = div16(get_mapval_small(x, y));
 
-					seg074_5f9(x, y,
+					draw_automap_square(x, y,
 						(l_si <= 0)? 19 :
 							(((l_si == 1) || (l_si == 9) || l_si == 2) ? 11 :
 							((l_si == 4) ? 6 :
@@ -240,7 +240,7 @@ void seg074_305(signed short x_off)
 										get_mapval_large(x + x_off, y));
 					}
 
-					seg074_5f9(x, y,
+					draw_automap_square(x, y,
 						(l_si <= 0)? 19 :
 							((l_si == 6) ? 3 :
 							((l_si == 7) ? 18 :
@@ -269,8 +269,8 @@ void seg074_305(signed short x_off)
 
 	if (((ds_readws(X_TARGET) - x_off) >= 0) && ((ds_readws(X_TARGET) - x_off) <= 16)) {
 
-		seg074_5f9(ds_readws(X_TARGET) - x_off,	ds_readws(Y_TARGET),
-				4, ds_readbs(DIRECTION));
+		draw_automap_square(ds_readws(X_TARGET) - x_off, ds_readws(Y_TARGET),
+					4, ds_readbs(DIRECTION));
 	}
 
 	for (l_di = 0; l_di < 6; l_di++) {
@@ -284,7 +284,7 @@ void seg074_305(signed short x_off)
 			(ds_readws(0x2d48 + 2 * l_di) - x_off >= 0) &&
 			(ds_readws(0x2d48 + 2 * l_di) - x_off <= 16))
 		{
-			seg074_5f9(ds_readws(0x2d48 + 2 * l_di) - x_off,
+			draw_automap_square(ds_readws(0x2d48 + 2 * l_di) - x_off,
 					ds_readws(0x2d54 + 2 * l_di),
 					16,
 					ds_readbs(0x2d3e + l_di));
@@ -293,15 +293,105 @@ void seg074_305(signed short x_off)
 
 	if (((ds_readws(0x7de5) - x_off) >= 0) && ((ds_readws(0x7de5) - x_off) <= 16)) {
 
-		seg074_5f9(ds_readws(0x7de5) - x_off,	ds_readws(0x7de7), 7, -1);
+		draw_automap_square(ds_readws(0x7de5) - x_off,	ds_readws(0x7de7), 7, -1);
 	}
 }
+#endif
 
-void seg074_5f9(signed short x, signed short y, signed short a3, signed short dir)
+/**
+ * \brief	draws a building on the automap
+ *
+ * \param x	x-coordinate on the automap
+ * \param y	y-coordiante on the automap
+ * \param color	the color
+ * \param dir	directory of the entrance, -1 for none
+ */
+void draw_automap_square(signed short x, signed short y, signed short color, signed short dir)
 {
+	signed short i;
+	unsigned short l_di;
+	RealPt dst;
+	signed char array[50];
+
+	l_di = y;
+	l_di <<= 3;
+	l_di *= 320;
+
+	dst = (RealPt)ds_readd(0xd303) + l_di + 8 * x + 0xca8;
+
+	for (i = 0; i < 49; i++) {
+		array[i] = color;
+	}
+
+	if ((color == 4) || (color == 16)) {
+
+		if (dir == 0) {
+
+			memcpy(Real2Host(ds_readd(0xd2eb)), p_datseg + 0x7d52, 49);
+
+		} else if (dir == 2) {
+
+			for (i = 0; i < 49; i++) {
+				host_writeb(Real2Host(ds_readd(0xd2eb)) + i, ds_readb(0x7d52 + (48 - i)));
+			}
+
+		} else if (dir == 1) {
+
+			memcpy(Real2Host(ds_readd(0xd2eb)), p_datseg + 0x7d83, 49);
+
+		} else {
+
+			for (i = 0; i < 49; i++) {
+				host_writeb(Real2Host(ds_readd(0xd2eb)) + i, ds_readb(0x7d83 + (48 - i)));
+			}
+		}
+
+		for (i = 0; i < 49; i++) {
+			if (!host_readbs(Real2Host(ds_readd(0xd2eb)) + i)) {
+				array[i] = 0;
+			}
+		}
+	}
+
+	if (color == 7) {
+
+		for (i = 0; i < 49; i++) {
+			if (!ds_readb(0x7db4 + i)) {
+				array[i] = 0;
+			} else {
+				array[i] = color;
+			}
+		}
+	}
+
+	ds_writed(0xc00d, (Bit32u)dst);
+
+#if !defined(__BORLANDC__)
+	/* need 50 bytes on the DOSBox-Stack */
+	reg_esp -= 50;
+
+	/* make a pointer to this position */
+	Bit8u *p = Real2Host(RealMake(SegValue(ss), reg_sp));
+
+	/* copy the array from host stack to DOSBox stack */
+	for (i = 0; i < 50; i++, p++) {
+		host_writeb(p, array[i]);
+	}
+
+	/* save the pointer as the graphic source */
+	ds_writed(0xc019, (Bit32u)RealMake(SegValue(ss), reg_sp));
+
+	/* free 50 bytes */
+	reg_esp += 50;
+#else
+	ds_writed(0xc019, (Bit32u)&array);
+#endif
+	/* */
+	do_pic_copy(0);
 
 }
 
+#if defined(__BORLANDC__)
 void seg074_72b(signed short x, signed short y, signed short l3)
 {
 }
