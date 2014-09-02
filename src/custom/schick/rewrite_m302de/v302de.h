@@ -31,8 +31,8 @@
 #define X_TARGET	(0x2d44)
 #define Y_TARGET	(0x2d46)
 #define LOCATION	(0x2d60)
-#define CURRENT_TOWN	(0x2d67)
-#define DUNGEON_INDEX	(0x2d6e)
+#define CURRENT_TOWN	(0x2d67)	/* signed char */
+#define DUNGEON_INDEX	(0x2d6e)	/* signed char */
 #define DUNGEON_LEVEL	(0x2d75)
 #define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)
@@ -48,7 +48,7 @@
 #define IN_ACADEMY	(0x3362)	/* s16 */
 #define NPC_MONTHS	(0x3470)
 #define CURRENT_INFORMER	(0x3612)
-#define DUNGEON_LIGHT	(0x3613)	/* char (0,1,2) */
+#define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
 #define TRAVELING	(0x3614)
 #define SPHERE_TIMER	(0x3c97)
 #define SPHERE_ACTIVE	(0x3c98)
