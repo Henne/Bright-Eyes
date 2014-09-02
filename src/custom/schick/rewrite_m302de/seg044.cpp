@@ -229,7 +229,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 				}
 			}
 
-			host_writeb(hero + 0x82, dir);
+			host_writeb(hero + 0x82, (signed char)dir);
 
 			if (l7 == -1) {
 				for (l10 = 0; l10 < 2; l10++) {
@@ -310,7 +310,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
 	{
 		FIG_set_0e(host_readb(hero + 0x81), a1);
-		host_writeb(p1, 0xff);
+		host_writebs(p1, -1);
 
 		if ( (weapon_type != -1) && (weapon_type < 3) &&
 			(host_readb(hero + 0x21) != 9) &&
@@ -344,7 +344,6 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	signed short l8;
 	signed short l9;
 	signed short i;
-	signed short weapon;
 	Bit8u *p1;
 	Bit8u *p2;
 	Bit8u *p3;			/* only user for two sprited figures */
@@ -451,7 +450,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 
 		/* set the new direction in enemy sheet */
-		host_writeb(enemy + 0x27, dir);
+		host_writebs(enemy + 0x27, (signed char)dir);
 
 		/* only if the turn is 90 degree */
 		if (l7 == -1) {
@@ -534,7 +533,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 	FIG_set_0e(host_readbs(enemy + 0x26), a1);
 	/* terminate figure animation array */
-	host_writeb(p1, 0xff);
+	host_writebs(p1, -1);
 
 	/* does this sprite need two fields */
 	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + 0x25f9))	{
@@ -650,7 +649,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 			}
 		}
 
-		host_writeb(hero + 0x82, dir);
+		host_writebs(hero + 0x82, (signed char)dir);
 		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l3 * 2), 2);
 
 		if (l2 != -1)
@@ -776,7 +775,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target,
 			}
 		}
 
-		host_writeb(p + 0x27, dir);
+		host_writebs(p + 0x27, (signed char)dir);
 
 		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l3 * 2), 1);
 

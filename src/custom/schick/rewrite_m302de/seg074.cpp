@@ -317,7 +317,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 	dst = (RealPt)ds_readd(0xd303) + l_di + 8 * x + 0xca8;
 
 	for (i = 0; i < 49; i++) {
-		array[i] = color;
+		array[i] = (signed char)color;
 	}
 
 	if ((color == 4) || (color == 16)) {
@@ -356,7 +356,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 			if (!ds_readb(0x7db4 + i)) {
 				array[i] = 0;
 			} else {
-				array[i] = color;
+				array[i] = (signed char)color;
 			}
 		}
 	}

@@ -571,7 +571,7 @@ void GRP_move_hero(signed short src_pos)
 
 				for (i = 0; i < 3; i++) {
 					if (ds_readbs(0xe3be + i) == src_pos) {
-						ds_writeb(0xe3be + i, dst_pos);
+						ds_writebs(0xe3be + i, (signed char)dst_pos);
 					}
 				}
 

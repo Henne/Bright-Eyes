@@ -38,8 +38,8 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 		obj_x += 2;
 	}
 
-	ds_writeb(0xe069, obj_x);
-	ds_writeb(0xe06a, obj_y);
+	ds_writebs(0xe069, (signed char)obj_x);
+	ds_writebs(0xe06a, (signed char)obj_y);
 	ds_writeb(0xe06b, ds_readb(0x6198 + type * 8 + a3 * 2));
 	ds_writeb(0xe06c, ds_readb(0x61c8 + type * 8 + a3 * 2));
 	ds_writeb(0xe06d, ds_readb(0x6204 + type * 2));
@@ -171,20 +171,20 @@ void seg045_0273(signed short x, signed short y, signed short a3)
 	ds_writew(0xe066, 0);
 	/* TODO: ugly */
 	ds_writeb(0xe068, host_readbs((Bit8u*)&l3 + a3 - 1));
-	ds_writeb(0xe069, x);
-	ds_writeb(0xe06a, y);
+	ds_writeb(0xe069, (signed char)x);
+	ds_writeb(0xe06a, (signed char)y);
 
 	/* TODO: ugly */
 	ds_writeb(0xe06b, host_readbs(((Bit8u*)&(l3)) - 6 + a3 * 2));
 	/* TODO: ugly */
 	ds_writeb(0xe06c, host_readbs(((Bit8u*)&(l3)) - 10 + a3 * 2));
 
-	ds_writeb(0xe06d, height);
-	ds_writeb(0xe06e, width);
+	ds_writeb(0xe06d, (unsigned char)height);
+	ds_writeb(0xe06e, (unsigned char)width);
 	ds_writeb(0xe06f, 0);
 	ds_writeb(0xe070, 0);
-	ds_writeb(0xe071, width - 1);
-	ds_writeb(0xe072, height - 1);
+	ds_writeb(0xe071, (unsigned char)(width - 1));
+	ds_writeb(0xe072, (unsigned char)(height - 1));
 	ds_writeb(0xe07b, 0);
 	ds_writeb(0xe073, 0);
 	ds_writeb(0xe075, -1);

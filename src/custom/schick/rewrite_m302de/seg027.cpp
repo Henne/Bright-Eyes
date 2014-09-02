@@ -57,7 +57,7 @@ void load_pp20(signed short index)
 		} else {
 			fd = load_archive_file(index);
 
-			if (buffer_ptr = schick_alloc_emu(get_readlength2(fd))) {
+			if ((buffer_ptr = schick_alloc_emu(get_readlength2(fd)))) {
 				/* successful allocation */
 
 				/* save pointer */
