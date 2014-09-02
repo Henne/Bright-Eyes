@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
  *	Functions rewritten: 11/11 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg074.cpp
  */
 
 #include <string.h>
@@ -20,7 +24,6 @@ namespace M302de {
 #endif
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void show_automap(void)
 {
 	signed short l_si;
@@ -134,7 +137,6 @@ void show_automap(void)
 }
 #endif
 
-/* Borlandified and identical */
 unsigned short is_discovered(signed short x, signed short y)
 {
 	return ds_readb(0xe442 + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
@@ -148,7 +150,6 @@ unsigned short is_discovered(signed short x, signed short y)
  *
  * \return	value of the field at (x,y)
  */
-/* Borlandified and identical */
 unsigned short get_mapval_small(signed short x, signed short y)
 {
 	Bit8u *map = p_datseg + 0xbd95;
@@ -164,7 +165,6 @@ unsigned short get_mapval_small(signed short x, signed short y)
  *
  * \return	value of the field at (x,y)
  */
-/* Borlandified and identical */
 unsigned short get_mapval_large(signed short x, signed short y)
 {
 	Bit8u *map = p_datseg + 0xbd95;
@@ -179,7 +179,6 @@ unsigned short get_mapval_large(signed short x, signed short y)
  *
  * \return	the value of the "in_prison" flag
  */
-/* Borlandified and identical */
 signed short is_group_in_prison(signed short group_nr)
 {
 	Bit8u *hero = get_hero(0);
