@@ -44,11 +44,9 @@ unsigned short get_mapval_large(signed short, signed short);
 /* should be static */
 signed short is_group_in_prison(signed short);
 
-#if defined(__BORLANDC__)
 /* 0x52 */
+/* should be static */
 signed short seg074_bbb(signed short, signed short);
-#endif
-
 
 #if !defined(__BORLANDC__)
 }

@@ -8644,7 +8644,15 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0xbbb: {
-		return 0;
+		CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = seg074_bbb(x, y);
+		D1_LOG("seg074_bbb(%d, %d) = %d\n", x, y, reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);

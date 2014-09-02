@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg074 (automap)
- *	Functions rewritten: 10/11
+ *	Functions rewritten: 11/11 (complete)
  */
 
 #include <string.h>
@@ -632,12 +632,60 @@ signed short select_teleport_dest(void)
 #endif
 }
 
-#if defined(__BORLANDC__)
 signed short seg074_bbb(signed short x, signed short y)
 {
-	return x + y;
+	Bit8u *p;
+	unsigned short d = (x << 8) + y;
+
+	if (ds_readbs(CURRENT_TOWN) == 1) {
+
+		if (d == 1037) {
+			return 13;
+		} else if (d == 1282) {
+			return 8;
+		} else if ((d == 1281) || (d == 1284) || (d ==774) || (d == 3336) ||
+				(d == 5131) || (d == 1285) || (d == 778))
+		{
+			return 9;
+		}
+	} else if (ds_readbs(CURRENT_TOWN) == 39) {
+		if (d == 7177) {
+			return 9;
+		}
+	} else if (ds_readbs(CURRENT_TOWN) == 32) {
+		if (d == 270) {
+			return 8;
+		}
+	}
+
+	p = p_datseg + 0xc025;
+
+	do {
+
+		if (host_readws(p) == d) {
+
+			if (host_readbs(p + 2) == 2) {
+				return 1;
+			}
+			if (host_readbs(p + 2) == 5) {
+				return 10;
+			}
+			if (host_readbs(p + 2) == 8) {
+				return 11;
+			}
+			if ((host_readbs(p + 2) == 3) || (host_readbs(p + 2) == 7)) {
+				return 9;
+			}
+			if (host_readbs(p + 2) == 4) {
+				return 12;
+			}
+		}
+
+		p += 6;
+	} while (host_readws(p) != -1);
+
+	return 0;
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }
