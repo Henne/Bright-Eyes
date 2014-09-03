@@ -31,7 +31,7 @@ signed short get_spell_cost(signed short, signed short);
 /* can be static */
 signed short can_use_spellclass(Bit8u*, signed short);
 /* 0x52 */
-unsigned short test_spell_group(unsigned short spell, signed char bonus);
+signed short test_spell_group(signed short, signed char);
 
 #if !defined(__BORLANDC__)
 }

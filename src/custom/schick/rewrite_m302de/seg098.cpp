@@ -680,29 +680,31 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 /**
 	test_spell_group - makes a spell test for all magic users in the current group
 */
-unsigned short test_spell_group(unsigned short spell, signed char bonus)
+/* Borlandified and identical */
+signed short test_spell_group(signed short spell, signed char bonus)
 {
 
 	Bit8u *hero_i = get_hero(0);
-	short i;
+	signed short i;
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* Check class is magicuser */
-		if (host_readb(hero_i + 0x21) < 7)
-			continue;
-		/* Check class  BOGUS */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* Check in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Check if dead */
-		if (hero_dead(hero_i))
-			continue;
 
-		if (test_spell(hero_i, spell, bonus) > 0)
-			return 1;
+		/* Check class is magicuser */
+		if ((host_readbs(hero_i + 0x21) >= 7) &&
+			/* Check class  BOGUS */
+			(host_readbs(hero_i + 0x21) != 0) &&
+			/* Check in group */
+			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			/* Check if dead */
+			!hero_dead(hero_i))
+		{
+
+			if (test_spell(hero_i, spell, bonus) > 0) {
+				return 1;
+			}
+		}
 	}
+
 	return 0;
 }
 
