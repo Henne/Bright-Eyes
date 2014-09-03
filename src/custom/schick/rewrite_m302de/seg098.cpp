@@ -656,9 +656,7 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus)
 			if ((ds_readb(addr) >> 6) & 1)
 				return 0;
 		} else {
-			addr = ((char)host_readb(hero+0x86) - 1) * 0x6da;
-			bonus += host_readb(p_datseg + HEROS + addr + 0x66);
-
+			bonus += host_readbs(get_hero(host_readbs(hero + 0x86) - 1) + 0x66);
 		}
 	}
 
