@@ -623,59 +623,58 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 /**
 	test_spell - makes a spell test
 */
-short test_spell(Bit8u *hero, unsigned short spell, signed char bonus)
+/* Borlandified and identical */
+signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 {
-	Bit8u *spell_desc;
 	signed short retval;
+	Bit8u *spell_desc;
 
 	/* check if class is magic user */
-	if (host_readb(hero+0x21) < 7)
+	if ((host_readbs(hero + 0x21) < 7) || (check_hero(hero) == 0)) {
 		return 0;
-	/* check hero */
-	if (check_hero(hero) == 0)
-		return 0;
+	}
 	/* check if spell skill >= -5 */
-	if (host_readbs(hero + spell + 0x13d) < -5)
+	if (host_readbs(hero + spell_nr + 0x13d) < -5)
 		return 0;
 	/* check if hero has enough AE */
-	if (get_spell_cost(spell, 0) > host_readw(hero+0x64))
+	if (get_spell_cost(spell_nr, 0) > host_readws(hero + 0x64))
 		return -99;
 
-	spell_desc = p_datseg + spell * 10 + 0x99d;
+	spell_desc = p_datseg + spell_nr * 10 + 0x99d;
 
-	if (host_readb(spell_desc+0x9) != 0) {
+	if (host_readb(spell_desc + 0x9) != 0) {
 
-		unsigned short addr;
+		if (host_readbs(hero + 0x86) >= 10) {
 
-		if ((char)host_readb(hero+0x86) >= 10) {
+			bonus += ds_readbs(host_readbs(hero + 0x86) * 62 + 0xd0f8);
 
-			addr = (char)host_readb(hero+0x86) * 62 + 0xd0f8;
-			bonus += ds_readb(addr);
-
-			addr = (char)host_readb(hero+0x86) * 62 + 0xd110;
-			if ((ds_readb(addr) >> 6) & 1)
+			if (test_bit6(p_datseg + host_readbs(hero + 0x86) * 62 + 0xd110)) {
 				return 0;
+			}
 		} else {
 			bonus += host_readbs(get_hero(host_readbs(hero + 0x86) - 1) + 0x66);
 		}
 	}
 
-	if (spell < 1 || spell > 85)
-		return 0;
+	if ((spell_nr >= 1) && (spell_nr <= 85)) {
 
 #if !defined(__BORLANDC__)
-	D1_INFO("Zauberprobe : %s %+d ", names_spell[spell], bonus);
+		D1_INFO("Zauberprobe : %s %+d ", names_spell[spell_nr], bonus);
 #endif
 
-	bonus -= host_readbs(hero + spell + 0x13d);
+		bonus -= host_readbs(hero + spell_nr + 0x13d);
 
-	retval = test_attrib3(hero, host_readb(spell_desc+1),
-		host_readb(spell_desc+2), host_readb(spell_desc+3), bonus);
+		retval = test_attrib3(hero, host_readbs(spell_desc+1),
+			host_readbs(spell_desc+2), host_readbs(spell_desc+3), bonus);
 
-	if (retval == -99)
-		return -1;
+		if (retval == -99) {
+			retval = -1;
+		}
 
-	return retval;
+		return retval;
+	}
+
+	return 0;
 }
 
 /**

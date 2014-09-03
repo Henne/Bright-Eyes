@@ -8,7 +8,7 @@ signed short use_magic(Bit8u*);
 #endif
 
 /* 0x25 */
-short test_spell(Bit8u *hero, unsigned short spell, signed char bonus);
+signed short test_spell(Bit8u*, signed short, signed char);
 
 #if defined(__BORLANDC__)
 /* 0x2a */
