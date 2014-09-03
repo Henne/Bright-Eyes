@@ -2,8 +2,18 @@
 namespace M302de {
 #endif
 
+#if defined(__BORLANDC__)
+/* 0x20 */
+signed short use_magic(Bit8u*);
+#endif
+
 /* 0x25 */
 short test_spell(Bit8u *hero, unsigned short spell, signed char bonus);
+
+#if defined(__BORLANDC__)
+/* 0x2a */
+signed short select_spell(Bit8u*, signed short, signed char);
+#endif
 
 /* 0x34 */
 /* static */

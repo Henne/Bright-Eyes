@@ -1,7 +1,9 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
-        Functions rewritten: 7/11
+        Functions rewritten: 8/11
 */
+
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "v302de.h"
@@ -12,6 +14,9 @@
 #include "seg007.h"
 #include "seg029.h"
 #include "seg041.h"
+#include "seg097.h"
+#include "seg098.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -235,6 +240,160 @@ signed short get_spell_cost(signed short spell, signed short half_cost)
 	return ret;
 }
 
+#if defined(__BORLANDC__)
+/**
+ * \brief use magic menu, meditation and staffspell logic
+ *
+ * \param hero	pointer to the hero
+ *
+ * \return {0, 1, 2}
+ */
+/* Borlandified and identical */
+signed short use_magic(Bit8u *hero)
+{
+	signed short le;
+	signed short retval;
+	signed short answer;
+	signed short thonny_pos;
+
+	retval = 0;
+
+	answer = GUI_radio(get_ltx(0x524), 3, get_ltx(0x4dc), get_ltx(0x4e0), get_ltx(0x354));
+
+	if (answer != -1) {
+
+		switch(answer) {
+		case 1: {
+			/* Meditation */
+
+			if (host_readbs(hero + 0x21) != 9) {
+				/* not a mage, need thonnys */
+
+
+				if ((thonny_pos = get_item_pos(hero, 131)) == -1) {
+					GUI_output(get_ltx(0xc58));
+					return 0;
+				}
+			} else {
+				/* a mage */
+				thonny_pos = -1;
+			}
+
+			/* Aks how many LE should be used */
+			le = GUI_input(get_ltx(0x534), 2);
+
+			if (le != -1) {
+				retval = 2;
+
+				if (thonny_pos != -1) {
+					/* drop a thonny */
+					drop_item(hero, thonny_pos, 1);
+				}
+
+				/* adjust LE */
+				if (host_readws(hero + 0x62) - host_readws(hero + 0x64)  < le) {
+					le = host_readws(hero + 0x62) - host_readws(hero + 0x64);
+				}
+
+				/* spend one AE point */
+				sub_ae_splash(hero, 1);
+
+				if (test_attrib3(hero, 0, 2, 6, 0) > 0) {
+					/* Success */
+
+					if (host_readws(hero + 0x60) <= le + 8) {
+						le = host_readws(hero + 0x60) - 8;
+					}
+
+					sub_hero_le(hero, le + 3);
+					add_hero_ae(hero, le);
+				} else {
+					/* Failed, print only a message */
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0xc6c),
+						(char*)hero + 0x10);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+			}
+			break;
+		}
+		case 2: {
+			/* Staffspell */
+
+			if (host_readbs(hero + 0x21) != 9) {
+				/* only for mages */
+				GUI_output(get_ltx(0x64c));
+				return 0;
+			}
+
+			if (host_readbs(hero + 0x195) == 7) {
+				GUI_output(get_ltx(0x53c));
+			} else {
+
+				if (ds_readbs((0x972 + 5) + 6 * host_readbs(hero + 0x195)) <= host_readws(hero + 0x64)) {
+					/* check AE */
+
+					retval = 1;
+
+					/* Original-Bug: the second attribute is used twice here */
+					if (test_attrib3(hero,
+						ds_readbs((0x972 + 1) + 6 * host_readbs(hero + 0x195)),
+						ds_readbs((0x972 + 2) + 6 * host_readbs(hero + 0x195)),
+						ds_readbs((0x972 + 2) + 6 * host_readbs(hero + 0x195)),
+						ds_readbs((0x972 + 4) + 6 * host_readbs(hero + 0x195))) > 0)
+					{
+						/* Success */
+
+						/* print a message */
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x54c),
+							host_readbs(hero + 0x195) + 1);
+
+						GUI_output(Real2Host(ds_readd(DTP2)));
+
+						sub_ae_splash(hero, ds_readbs((0x972 + 5) + 6 * host_readbs(hero + 0x195)));
+
+						sub_ptr_ws(hero + 0x62,	ds_readbs((0x972 + 6) + 6 * host_readbs(hero + 0x195)));
+
+						/* Staffspell level +1 */
+						inc_ptr_bs(hero + 0x195);
+
+						/* set the timer */
+						host_writed(hero + 0x8f, 0xfd20);
+
+						/* let some time pass */
+						timewarp(0x6978);
+					} else {
+						/* Failed */
+						GUI_output(get_ltx(0x548));
+
+						/* only half of the AE costs */
+						sub_ae_splash(hero, ds_readbs((0x972 + 5) + 6 * host_readbs(hero + 0x195)) / 2);
+
+						/* let some time pass */
+						timewarp(0x2a30);
+					}
+				} else {
+					/* not enough AE */
+					GUI_output(get_ltx(0x544));
+				}
+			}
+
+			break;
+		}
+		case 3: {
+			/* Cast Spell */
+			select_spell(hero, 1, 0);
+			break;
+		}
+		}
+	}
+
+	return retval;
+}
+#endif
+
 /**
 	test_spell - makes a spell test
 */
@@ -323,6 +482,12 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus)
 	}
 	return 0;
 }
+
+#if defined(__BORLANDC__)
+signed short select_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
+{
+}
+#endif
 
 #if !defined(__BORLANDC__)
 }
