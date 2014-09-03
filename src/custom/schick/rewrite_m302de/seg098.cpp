@@ -1,7 +1,7 @@
 /*
-        Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
-        Functions rewritten: 9/11
-*/
+ *	Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
+ *	Functions rewritten: 9/12
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
