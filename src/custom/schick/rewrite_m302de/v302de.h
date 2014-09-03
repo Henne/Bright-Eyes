@@ -317,6 +317,16 @@ static inline int test_bit0(Bit8u *p) {
 }
 
 /**
+ * test_bit6() -	check if bit6 ist set
+ * @p:			pointer
+ *
+ * 0 = not set / 1 = set
+ */
+static inline int test_bit6(Bit8u *p) {
+	return ((host_readbs(p) >> 6) & 1) ? 1 : 0;
+}
+
+/**
  * hero_dead() -	check if hero is dead
  * @hero:	ptr to hero
  *
@@ -925,9 +935,17 @@ extern Bit8u* city_ltx[];
 asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start]; add ax, off; mov[dst + 2],dx; mov [dst],ax }
 struct bittest {
 	unsigned short bit0:1;
+	unsigned short bit1:1;
+	unsigned short bit2:1;
+	unsigned short bit3:1;
+	unsigned short bit4:1;
+	unsigned short bit5:1;
+	unsigned short bit6:1;
+	unsigned short bit7:1;
 };
 
 #define test_bit0(a)		((*(struct bittest*)(a)).bit0)
+#define test_bit6(a)		((*(struct bittest*)(a)).bit6)
 
 #define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
 #define hero_sleeps(hero)	((*(struct hero_status*)(hero + 0xaa)).sleeps)
