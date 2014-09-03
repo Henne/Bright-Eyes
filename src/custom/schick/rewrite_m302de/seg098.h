@@ -12,8 +12,11 @@ short test_spell(Bit8u *hero, unsigned short spell, signed char bonus);
 
 #if defined(__BORLANDC__)
 /* 0x2a */
-signed short select_spell(Bit8u*, signed short, signed char);
+signed short use_spell(Bit8u*, signed short, signed char);
 #endif
+
+/* 0x2f */
+signed short select_spell(Bit8u*, signed short);
 
 /* 0x34 */
 /* static */

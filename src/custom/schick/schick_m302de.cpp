@@ -5199,8 +5199,16 @@ static int seg098(unsigned short offs) {
 		return 0;
 	}
 	case 0x2f: {
-		D1_TRAC("Seg098:0x%04x()\n", offs);
-		return 0;
+		RealPt hero = CPU_Pop32();
+		Bit16s show_vals = CPU_Pop16();
+		CPU_Push16(show_vals);
+		CPU_Push32(hero);
+
+		reg_ax = select_spell(Real2Host(hero), show_vals);
+
+		D1_LOG("select_spell(%s, %d) = %d\n",
+			schick_getCharname(hero), show_vals, reg_ax);
+		return 1;
 	}
 	case 0x39: {
 		Bit16s le = CPU_Pop16();
@@ -9051,7 +9059,17 @@ static int n_seg098(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x0786 : {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s show_vals = CPU_Pop16();
+		CPU_Push16(show_vals);
+		CPU_Push32(hero);
+
+		reg_ax = select_spell(Real2Host(hero), show_vals);
+
+		D1_LOG("select_spell(%s, %d) = %d\n",
+			schick_getCharname(hero), show_vals, reg_ax);
+		return 1;
 	}
 	/* Callers: 1 */
 	case 0x0e1f : {

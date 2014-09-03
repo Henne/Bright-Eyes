@@ -1,10 +1,11 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
- *	Functions rewritten: 9/12
+ *	Functions rewritten: 10/12
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -384,7 +385,7 @@ signed short use_magic(Bit8u *hero)
 		}
 		case 3: {
 			/* Cast Spell */
-			select_spell(hero, 1, 0);
+			use_spell(hero, 1, 0);
 			break;
 		}
 		}
@@ -422,6 +423,201 @@ signed short can_use_spellclass(Bit8u *hero, signed short spellclass_nr)
 	}
 
 	return 0;
+}
+
+struct dummy3	{ char a[3]; };
+struct dummy5	{ char a[5]; };
+struct dummy6	{ char a[6]; };
+struct dummy8	{ char a[8]; };
+struct dummy12	{ char a[12]; };
+
+/* Borlandified and identical */
+signed short select_spell(Bit8u *hero, signed short show_vals)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short answer1;
+	signed short first_spell;
+	signed short retval = -1;
+	dummy6 str_val = *(dummy6*)(p_datseg + 0xac1a);
+	dummy5 col_str = *(dummy5*)(p_datseg + 0xac20);
+	dummy3 str = *(dummy3*)(p_datseg + 0xac25);
+	dummy8 col_str_val = *(dummy8*)(p_datseg + 0xac28);
+	dummy12 ones = *(dummy12*)(p_datseg + 0xac30);
+
+	if ((show_vals == 0) && (ds_readws(0xc003) == 2)) {
+		show_vals = 2;
+	}
+
+	/* only for magic users */
+	if (host_readbs(hero + 0x21) < 7) {
+		GUI_output(get_ltx(0x528));
+		return -2;
+	}
+
+	if (show_vals == 1) {
+
+		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x334));
+
+		if (host_readbs(hero + 0x193) > 1) {
+			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+		}
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0x330),
+			(host_readbs(hero + 0x193) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
+			host_readbs(hero + 0x193),
+			Real2Host(ds_readd(0xd2eb)));
+
+		answer1 = GUI_radio(Real2Host(ds_readd(DTP2)), 12,
+					get_ltx(0x300), get_ltx(0x304),
+					get_ltx(0x308), get_ltx(0x30c),
+					get_ltx(0x310), get_ltx(0x314),
+					get_ltx(0x318), get_ltx(0x31c),
+					get_ltx(0x190), get_ltx(0x324),
+					get_ltx(0x328), get_ltx(0x32c)) - 1;
+	} else {
+
+		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x360));
+
+		for (l_di = 0; l_di < 12; l_di++) {
+
+			ds_writed(0xbf95 + 4 * l_di,
+				(Bit32u)((RealPt)ds_readd(DTP2) + 50 * (l_di + 1)));
+
+			ones.a[l_di] = can_use_spellclass(hero, l_di);
+
+			sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+				(ones.a[l_di] != 0) ? str.a : col_str.a,
+				get_ltx(4 * (l_di + 192)));
+		}
+
+		answer1 = GUI_radio(Real2Host(ds_readd(DTP2)), 12,
+					Real2Host(ds_readd((0xbf95 + 0x00))),
+					Real2Host(ds_readd((0xbf95 + 0x04))),
+					Real2Host(ds_readd((0xbf95 + 0x08))),
+					Real2Host(ds_readd((0xbf95 + 0x0c))),
+					Real2Host(ds_readd((0xbf95 + 0x10))),
+					Real2Host(ds_readd((0xbf95 + 0x14))),
+					Real2Host(ds_readd((0xbf95 + 0x18))),
+					Real2Host(ds_readd((0xbf95 + 0x1c))),
+					Real2Host(ds_readd((0xbf95 + 0x20))),
+					Real2Host(ds_readd((0xbf95 + 0x24))),
+					Real2Host(ds_readd((0xbf95 + 0x28))),
+					Real2Host(ds_readd((0xbf95 + 0x2c)))) - 1;
+	}
+
+	if (answer1 != -2) {
+
+		if (!ones.a[answer1]) {
+			/* this cant use any spells of this class */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0x8bc),
+				(char*)hero + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			retval = -2;
+		} else {
+
+			first_spell = ds_readbs(0xd03 + 2 * answer1);
+
+			for (l_di = 0; l_di < ds_readbs(0xd04 + 2 * answer1); l_di++) {
+
+				ds_writed(0xbf95 + 4 * l_di,
+					(Bit32u)((RealPt)ds_readd(DTP2) + 50 * (l_di)));
+
+
+				if (show_vals == 1) {
+
+					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+						(char*)str_val.a,
+						(char*)get_ltx(4 * (first_spell + l_di + 106)),
+						host_readbs(hero + 0x13d + first_spell + l_di));
+				} else if (
+					(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + l_di)) == 1)) ||
+					((ds_readw(IN_FIGHT) == 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + l_di)) != 1))) &&
+					(host_readbs(hero + 0x13d + first_spell + l_di) >= -5))
+				{
+
+					if (show_vals == 2) {
+						sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+							(char*)str_val.a,
+							(char*)get_ltx(4 * (first_spell + l_di + 106)),
+							host_readbs(hero + 0x13d + first_spell + l_di));
+					} else {
+						sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+							(char*)str.a,
+							(char*)get_ltx(4 * (first_spell + l_di + 106)));
+					}
+				} else if (show_vals == 2) {
+					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+						(char*)col_str_val.a,
+						(char*)get_ltx(4 * (first_spell + l_di + 106)),
+						host_readbs(hero + 0x13d + first_spell + l_di));
+				} else {
+					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+						(char*)col_str.a,
+						(char*)get_ltx(4 * (first_spell + l_di + 106)));
+				}
+			}
+
+			retval = GUI_radio(get_ltx(0x364), ds_readbs(0xd04 + 2 * answer1),
+					Real2Host(ds_readd((0xbf95 + 0x00))),
+					Real2Host(ds_readd((0xbf95 + 0x04))),
+					Real2Host(ds_readd((0xbf95 + 0x08))),
+					Real2Host(ds_readd((0xbf95 + 0x0c))),
+					Real2Host(ds_readd((0xbf95 + 0x10))),
+					Real2Host(ds_readd((0xbf95 + 0x14))),
+					Real2Host(ds_readd((0xbf95 + 0x18))),
+					Real2Host(ds_readd((0xbf95 + 0x1c))),
+					Real2Host(ds_readd((0xbf95 + 0x20))),
+					Real2Host(ds_readd((0xbf95 + 0x24))),
+					Real2Host(ds_readd((0xbf95 + 0x28))),
+					Real2Host(ds_readd((0xbf95 + 0x2c))),
+					Real2Host(ds_readd((0xbf95 + 0x30))),
+					Real2Host(ds_readd((0xbf95 + 0x34))),
+					Real2Host(ds_readd((0xbf95 + 0x38))),
+					Real2Host(ds_readd((0xbf95 + 0x3c))));
+
+			if (retval != -1) {
+				if ((host_readbs((retval + first_spell) + hero + 0x13c) < -5) &&
+					(show_vals == 0))
+				{
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0x8c0),
+						(char*)hero + 0x10);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+					retval = -1;
+				} else {
+					retval += first_spell -1;
+				}
+			}
+		}
+
+		if (retval > 0) {
+			if ((ds_readw(IN_FIGHT) == 0) &&
+				(ds_readbs((0x99d + 5) + 10 * retval) == 1) &&
+				(show_vals == 0))
+			{
+				GUI_output(get_ltx(0x93c));
+				retval = -2;
+			} else {
+				if ((ds_readw(IN_FIGHT) != 0) &&
+					(ds_readbs((0x99d + 5) + 10 * retval) == -1))
+				{
+					GUI_output(get_ltx(0x940));
+					retval = -2;
+				}
+			}
+		}
+	} else {
+		retval = -2;
+	}
+
+	return retval;
 }
 
 /**
@@ -514,7 +710,7 @@ unsigned short test_spell_group(unsigned short spell, signed char bonus)
 }
 
 #if defined(__BORLANDC__)
-signed short select_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
+signed short use_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 {
 }
 #endif
