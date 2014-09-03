@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
-        Functions rewritten: 8/11
+        Functions rewritten: 9/11
 */
 
 #include <stdio.h>
@@ -393,6 +393,36 @@ signed short use_magic(Bit8u *hero)
 	return retval;
 }
 #endif
+
+/**
+ * \brief check if a spellclass can be used
+ *
+ * \param hero		pointer to the hero
+ * \param spellclass_nr	the number of the spellclass
+ *
+ * \return 0 = can't be used, 1 = can be used
+*/
+/* Borlandified and identical */
+signed short can_use_spellclass(Bit8u *hero, signed short spellclass_nr)
+{
+	signed short i;
+	signed short first_spell;
+
+
+	first_spell = ds_readbs(0xd03 + 2 * spellclass_nr);
+	for (i = 0; ds_readbs(0xd04 + 2 * spellclass_nr) > i; i++) {
+
+		if ((host_readbs(hero + 0x13d + first_spell + i) >= -5) &&
+			(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + i)) == 1)) ||
+			((ds_readw(IN_FIGHT) == 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + i)) != 1))))
+		{
+			return 1;
+		}
+
+	}
+
+	return 0;
+}
 
 /**
 	test_spell - makes a spell test

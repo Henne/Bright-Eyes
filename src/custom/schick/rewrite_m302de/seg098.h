@@ -24,7 +24,9 @@ void FIG_do_spell_damage(signed short);
 signed short get_attackee_parade(void);
 /* 0x48 */
 signed short get_spell_cost(signed short, signed short);
-
+/* 0x4d */
+/* can be static */
+signed short can_use_spellclass(Bit8u*, signed short);
 /* 0x52 */
 unsigned short test_spell_group(unsigned short spell, signed char bonus);
 

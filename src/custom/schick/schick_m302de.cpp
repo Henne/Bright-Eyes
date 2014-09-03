@@ -9036,9 +9036,18 @@ static int n_seg098(unsigned short offs)
 
 		return 1;
 	}
-	/* Callers: 1 */
 	case 0x071d : {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s spellclass_nr = CPU_Pop16();
+		CPU_Push16(spellclass_nr);
+		CPU_Push32(hero);
+
+		reg_ax = can_use_spellclass(Real2Host(hero), spellclass_nr);
+		D1_LOG("can_use_spellclass(%s, %d) = %d\n",
+			schick_getCharname(hero), spellclass_nr, reg_ax);
+
+		return 1;
 	}
 	/* Callers: 1 */
 	case 0x0786 : {
