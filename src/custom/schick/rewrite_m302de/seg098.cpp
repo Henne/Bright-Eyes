@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
  *	Functions rewritten: 12/12 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg098.cpp
  */
 
 #include <stdio.h>
@@ -140,7 +144,6 @@ struct dummy1 {
  * @hero:	the hero who heals
  *
 */
-/* Borlandified and identical */
 void magic_heal_ani(Bit8u *hero)
 {
 	signed short target_nr;
@@ -206,7 +209,6 @@ void magic_heal_ani(Bit8u *hero)
  * FIG_do_spell_damage() - account physical spell damage in fight
  * @le:	LE someone looses
 */
-/* Borlandified and identical */
 void FIG_do_spell_damage(signed short le)
 {
 
@@ -260,7 +262,6 @@ void FIG_do_spell_damage(signed short le)
  *
  * This function is only used by the spell Kraehenruf.
 */
-/* Borlandified and identical */
 signed short get_attackee_parade(void)
 {
 
@@ -296,7 +297,6 @@ signed short get_attackee_parade(void)
  *
  * This function is unused.
 */
-/* Borlandified and identical */
 signed short get_attackee_rs(void)
 {
 	/* check if enemy or hero is attacked */
@@ -326,7 +326,6 @@ signed short get_attackee_rs(void)
  *	@spell:		numberof the spell
  *	@half cost:	the caster needs only half AE
 */
-/* Borlandified and identical */
 signed short get_spell_cost(signed short spell, signed short half_cost)
 {
 	signed char ret;
@@ -355,7 +354,6 @@ signed short get_spell_cost(signed short spell, signed short half_cost)
  *
  * \return {0, 1, 2}
  */
-/* Borlandified and identical */
 signed short use_magic(RealPt hero)
 {
 	signed short le;
@@ -508,7 +506,6 @@ signed short use_magic(RealPt hero)
  *
  * \return 0 = can't be used, 1 = can be used
 */
-/* Borlandified and identical */
 signed short can_use_spellclass(Bit8u *hero, signed short spellclass_nr)
 {
 	signed short i;
@@ -536,7 +533,6 @@ struct dummy6	{ char a[6]; };
 struct dummy8	{ char a[8]; };
 struct dummy12	{ char a[12]; };
 
-/* Borlandified and identical */
 signed short select_spell(Bit8u *hero, signed short show_vals)
 {
 	signed short l_di;
@@ -727,7 +723,6 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 /**
 	test_spell - makes a spell test
 */
-/* Borlandified and identical */
 signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 {
 	signed short retval;
@@ -784,7 +779,6 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 /**
 	test_spell_group - makes a spell test for all magic users in the current group
 */
-/* Borlandified and identical */
 signed short test_spell_group(signed short spell, signed char bonus)
 {
 
@@ -812,7 +806,6 @@ signed short test_spell_group(signed short spell, signed char bonus)
 	return 0;
 }
 
-/* Borlandified and identical */
 signed short select_magic_user(void)
 {
 	signed short answer;
@@ -830,7 +823,6 @@ signed short select_magic_user(void)
 	return -2;
 }
 
-/* Borlandified and identical */
 signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 {
 	signed short retval = 1;
