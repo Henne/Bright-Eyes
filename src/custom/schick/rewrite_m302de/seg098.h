@@ -32,6 +32,10 @@ signed short get_spell_cost(signed short, signed short);
 signed short can_use_spellclass(Bit8u*, signed short);
 /* 0x52 */
 signed short test_spell_group(signed short, signed char);
+#if defined(__BORLANDC__)
+/* 0x57 */
+signed short select_magic_user(void);
+#endif
 
 #if !defined(__BORLANDC__)
 }

@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
- *	Functions rewritten: 10/12
+ *	Functions rewritten: 11/12
  */
 
 #include <stdio.h>
@@ -15,6 +15,7 @@
 #include "seg007.h"
 #include "seg029.h"
 #include "seg041.h"
+#include "seg047.h"
 #include "seg097.h"
 #include "seg098.h"
 #include "seg105.h"
@@ -707,6 +708,26 @@ signed short test_spell_group(signed short spell, signed char bonus)
 
 	return 0;
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+signed short select_magic_user(void)
+{
+	signed short answer;
+
+	/* select the hero who shoulds cast a spell */
+	answer = select_hero_ok(get_ltx(0x4f4));
+
+	if (answer != -1) {
+		/* valid answer => cast spell */
+		return use_spell(get_hero(answer), 1, 0);
+	}
+
+	/* abort with error message */
+	return -2;
+}
+
+#endif
 
 #if defined(__BORLANDC__)
 signed short use_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
