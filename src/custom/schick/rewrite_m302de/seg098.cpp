@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg098 (Magic)
- *	Functions rewritten: 11/12
+ *	Functions rewritten: 12/12 (complete)
  */
 
 #include <stdio.h>
@@ -13,17 +13,123 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
+#include "seg026.h"
 #include "seg029.h"
 #include "seg041.h"
 #include "seg047.h"
 #include "seg097.h"
 #include "seg098.h"
+#include "seg099.h"
+#include "seg100.h"
+#include "seg101.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
 
+#if !defined(__BORLANDC__)
+static void (*spellhandler[])(void) = {
+	NULL,
+	/* Dispel / Antimagie */
+	spell_beherrschung,
+	spell_destructibo,
+	spell_gardanium,
+	spell_illusionen,
+	spell_verwandlung,
+	/* Domionation / Beherrschung */
+	spell_band,
+	spell_bannbaladin,
+	spell_boeser_blick,
+	spell_grosse_gier,
+	spell_grosse_ver,
+	spell_herrdertiere,
+	spell_horriphobus,
+	spell_magischerraub,
+	spell_respondami,
+	spell_sanftmut,
+	spell_somnigravis,
+	spell_zwingtanz,
+	/* Demonology / Demonologie */
+	spell_furor_blut,
+	spell_geister_bannen,
+	spell_geister_rufen,
+	spell_heptagon,
+	spell_kraehenruf,
+	spell_skelettarius,
+	/* Elements / Elemente */
+	spell_elementare,
+	spell_nihilatio,
+	spell_solidirid,
+	/* Movement / Bewegung */
+	spell_axxeleratus,
+	spell_foramen,
+	spell_motoricus,
+	spell_spurlos,
+	spell_transversalis,
+	spell_ueber_eis,
+	/* Healing / Heilung */
+	spell_balsam,
+	spell_hexenspeichel,
+	spell_klarum_purum,
+	spell_ruhe_koerper,
+	spell_tiere_heilen,
+	/* Clarivoyance / Hellsicht */
+	spell_adleraug,
+	(void(*)(void))spell_analues,
+	spell_eigenschaften,
+	spell_exposami,
+	spell_odem_arcanum,
+	spell_penetrizzel,
+	spell_sensibar,
+	/* Illusion */
+	spell_chamaelioni,
+	spell_duplicatus,
+	spell_harmlos,
+	spell_hexenknoten,
+	/* Combat / Kampf */
+	spell_blitz,
+	spell_ecliptifactus,
+	spell_eisenrost,
+	spell_fulminictus,
+	spell_ignifaxius,
+	spell_plumbumbarum,
+	spell_radau,
+	spell_saft_kraft,
+	spell_scharfes_auge,
+	/* Communication / Verstaendigung */
+	spell_hexenblick,
+	spell_necropathia,
+	/* Transformation / Verwandlung */
+	spell_adler,
+	spell_arcano,
+	spell_armatrutz,
+	spell_inc_ch,
+	spell_feuerbann,
+	spell_inc_ff,
+	spell_inc_ge,
+	spell_inc_in,
+	spell_inc_kk,
+	spell_inc_kl,
+	spell_inc_mu,
+	spell_mutabili,
+	spell_paral,
+	spell_salander,
+	spell_see,
+	spell_visibili,
+	/* Transmutation / Veraenderung */
+	spell_abvenenum,
+	spell_aeolitus,
+	spell_brenne,
+	spell_claudibus,
+	spell_dunkelheit,
+	spell_erstarre,
+	spell_flimflam,
+	spell_schmelze,
+	spell_silentium,
+	spell_sturmgebr
+};
+#endif
 
 struct dummy1 {
 	signed short a[5];
@@ -435,7 +541,6 @@ struct dummy12	{ char a[12]; };
 /* Borlandified and identical */
 signed short select_spell(Bit8u *hero, signed short show_vals)
 {
-	signed short l_si;
 	signed short l_di;
 	signed short answer1;
 	signed short first_spell;
@@ -729,11 +834,167 @@ signed short select_magic_user(void)
 
 #endif
 
-#if defined(__BORLANDC__)
-signed short use_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
+/* Borlandified and identical */
+signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 {
-}
+	signed short retval = 1;
+	signed short l_di;
+	signed short ae_cost;
+	signed short bak;
+	Bit8u *ptr;
+	void (*func)(void);
+	signed short l4;
+
+	if (!check_hero(Real2Host(hero)) && !hero_cursed(Real2Host(hero))) {
+
+		return 0;
+	}
+
+	bak = ds_readws(0xbffd);
+	ds_writew(0xbffd, 3);
+
+	if (a2 == 1) {
+		l_di = select_spell(Real2Host(hero), 0);
+
+		if (l_di > 0) {
+			/* pointer to the spell description */
+			ptr = p_datseg + 0x99d + 10 * l_di;
+			/* reset the spelltarget of the hero */
+			host_writeb(Real2Host(hero) + 0x86, 0);
+
+			if ((host_readbs(ptr + 0x7) != 0) && (host_readbs(ptr + 7) != 4)) {
+
+				if (host_readbs(ptr + 0x7) == 1) {
+
+					GUI_output(get_ltx(0x3a8));
+
+				} else {
+
+					host_writeb(Real2Host(hero) + 0x86, select_hero_from_group(get_ltx(0xbc)) + 1);
+
+					if (host_readbs(Real2Host(hero) + 0x86) <= 0) {
+						l_di = -1;
+					}
+				}
+			}
+		}
+
+	} else {
+		l_di = host_readbs(Real2Host(hero) + 0x85);
+	}
+
+	if (l_di > 0) {
+
+		/* pointer to the spell description */
+		ptr = p_datseg + 0x99d + 10 * l_di;
+
+		if ((ds_readws(IN_FIGHT) == 0) && (host_readbs(ptr + 5) == 1)) {
+			GUI_output(get_ltx(0x93c));
+			retval = 0;
+
+		} else if ((ds_readws(IN_FIGHT) != 0) && (host_readbs(ptr + 5) == -1)) {
+			GUI_output(get_ltx(0x940));
+			retval = 0;
+		}
+
+		if (retval) {
+
+			ds_writew(0xe5b2, test_spell(Real2Host(hero), l_di, bonus));
+
+			if (ds_readws(0xe5b2) == -99) {
+
+				/* prepare output */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x97c),
+					(char*)Real2Host(hero) + 0x10);
+
+				if (ds_readws(IN_FIGHT) == 0) {
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+
+				retval = -1;
+
+			} else if ((ds_readws(0xe5b2) <= 0) || (ds_readds(0x2dc4) > 0)) {
+
+				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x978));
+
+				sub_ae_splash(Real2Host(hero), get_spell_cost(l_di, 1));
+
+				if (ds_readws(IN_FIGHT) == 0) {
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+
+				retval = 0;
+			} else {
+				/* set global spelluser variable */
+				ds_writed(SPELLUSER, (Bit32u)hero);
+
+				ae_cost = get_spell_cost(l_di, 0);
+
+				ds_writew(0xac0e, -1);
+
+				host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+				l4 = ds_readws(0x26bf);
+
+				load_buffer_1(222);
+#if !defined(__BORLANDC__)
+				func = spellhandler[l_di];
+#else
+				func = (void (*)(void))ds_readd(0xdbb + 4 * l_di);
 #endif
+				func();
+
+				if ((l4 != -1) && (l4 != 222)) {
+					load_buffer_1(l4);
+				}
+
+				retval = 1;
+
+				if (ds_readws(0xac0e) == 0) {
+					retval = -1;
+
+					if (!host_readbs(Real2Host(ds_readd(DTP2)))) {
+						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x978));
+					}
+				} else if (ds_readws(0xac0e) == -2) {
+
+					strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x978));
+					sub_ae_splash(Real2Host(hero), get_spell_cost(l_di, 1));
+					retval = 0;
+				} else if (ds_readws(0xac0e) != -1) {
+					sub_ae_splash(Real2Host(hero), ds_readws(0xac0e));
+				} else {
+					sub_ae_splash(Real2Host(hero), ae_cost);
+				}
+
+				if (ds_readws(IN_FIGHT) == 0) {
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					if (retval > 0) {
+						play_voc(305);
+
+						if ((host_readbs(Real2Host(hero) + 0x86) < 10) &&
+							(host_readbs(Real2Host(hero) + 0x86) > 0) &&
+							(ds_readbs(0x2845) == 0))
+						{
+							magic_heal_ani(Real2Host(hero));
+						}
+					}
+				}
+			}
+		} else {
+			retval = 0;
+		}
+	} else {
+		retval = -1;
+	}
+
+	ds_writew(0xbffd, bak);
+
+	return retval;
+}
 
 #if !defined(__BORLANDC__)
 }

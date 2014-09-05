@@ -7,9 +7,9 @@ namespace M302de {
 /* 0x20 */
 void spell_beherrschung(void);
 /* 0x25 */
-void spell_destructibo();
+void spell_destructibo(void);
 /* 0x2a */
-void spell_gardanium();
+void spell_gardanium(void);
 /* 0x2f */
 void spell_illusionen(void);
 /* 0x34 */
@@ -19,15 +19,15 @@ void spell_verwandlung(void);
 /* Domination / Beherrschung */
 
 /* 0x39 */
-void spell_band();
+void spell_band(void);
 /* 0x3e */
-void spell_bannbaladin();
+void spell_bannbaladin(void);
 /* 0x43 */
-void spell_boeser_blick();
+void spell_boeser_blick(void);
 /* 0x48 */
-void spell_grosse_gier();
+void spell_grosse_gier(void);
 /* 0x4d */
-void spell_grosse_ver();
+void spell_grosse_ver(void);
 /* 0x52 */
 void spell_herrdertiere(void);
 /* 0x57 */

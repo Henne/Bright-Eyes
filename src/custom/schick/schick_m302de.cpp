@@ -5185,18 +5185,18 @@ static int seg098(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
-		/* Zauber auswaehlen */
 		RealPt hero = CPU_Pop32();
-		unsigned short a1 = CPU_Pop16();
-		unsigned short a2 = CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
 		CPU_Push16(a2);
 		CPU_Push16(a1);
 		CPU_Push32(hero);
 
-		D1_LOG("Menu: Zauber auswaehlen(%s, %d, %d)\n",
-			schick_getCharname(hero), a1, a2);
+		reg_ax = use_spell(hero, a1, (Bit8s)a2);
+		D1_LOG("use_spell(%s, %d, %d) = %d\n",
+			schick_getCharname(hero), a1, a2, (Bit16s)reg_ax);
 
-		return 0;
+		return 1;
 	}
 	case 0x2f: {
 		RealPt hero = CPU_Pop32();
@@ -9096,7 +9096,19 @@ static int n_seg098(unsigned short offs)
 	}
 	/* Callers: 2 */
 	case 0x1000 : {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		CPU_Push32(hero);
+
+		reg_ax = use_spell(hero, a1, (Bit8s)a2);
+		D1_LOG("use_spell(%s, %d, %d) = %d\n",
+			schick_getCharname(hero), a1, a2, (Bit16s)reg_ax);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

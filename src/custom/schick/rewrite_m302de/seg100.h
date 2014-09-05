@@ -37,7 +37,7 @@ void spell_ecliptifactus(void);
 /* 0x57 */
 void spell_eisenrost(void);
 /* 0x5c */
-void spell_fulminictus();
+void spell_fulminictus(void);
 /* 0x61 */
 void spell_ignifaxius(void);
 /* 0x66 */
