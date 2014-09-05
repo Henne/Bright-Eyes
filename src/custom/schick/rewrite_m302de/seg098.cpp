@@ -814,7 +814,6 @@ signed short test_spell_group(signed short spell, signed char bonus)
 	return 0;
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 signed short select_magic_user(void)
 {
@@ -825,14 +824,13 @@ signed short select_magic_user(void)
 
 	if (answer != -1) {
 		/* valid answer => cast spell */
-		return use_spell(get_hero(answer), 1, 0);
+/*		return use_spell(get_hero(answer), 1, 0); */
+		return use_spell((RealPt)ds_readd(HEROS) + 0x6da * answer, 1, 0);
 	}
 
 	/* abort with error message */
 	return -2;
 }
-
-#endif
 
 /* Borlandified and identical */
 signed short use_spell(RealPt hero, signed short a2, signed char bonus)

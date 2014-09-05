@@ -5248,13 +5248,9 @@ static int seg098(unsigned short offs) {
 		return 1;
 	}
 	case 0x57: {
-#if 0
 		reg_ax = select_magic_user();
-		D1_INFO("select_magic_user() = %d\n", (Bit16s)reg_ax);
+		D1_LOG("select_magic_user() = %d\n", (Bit16s)reg_ax);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
