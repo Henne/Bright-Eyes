@@ -348,7 +348,6 @@ signed short get_spell_cost(signed short spell, signed short half_cost)
 	return ret;
 }
 
-#if defined(__BORLANDC__)
 /**
  * \brief use magic menu, meditation and staffspell logic
  *
@@ -357,7 +356,7 @@ signed short get_spell_cost(signed short spell, signed short half_cost)
  * \return {0, 1, 2}
  */
 /* Borlandified and identical */
-signed short use_magic(Bit8u *hero)
+signed short use_magic(RealPt hero)
 {
 	signed short le;
 	signed short retval;
@@ -374,11 +373,11 @@ signed short use_magic(Bit8u *hero)
 		case 1: {
 			/* Meditation */
 
-			if (host_readbs(hero + 0x21) != 9) {
+			if (host_readbs(Real2Host(hero) + 0x21) != 9) {
 				/* not a mage, need thonnys */
 
 
-				if ((thonny_pos = get_item_pos(hero, 131)) == -1) {
+				if ((thonny_pos = get_item_pos(Real2Host(hero), 131)) == -1) {
 					GUI_output(get_ltx(0xc58));
 					return 0;
 				}
@@ -395,31 +394,31 @@ signed short use_magic(Bit8u *hero)
 
 				if (thonny_pos != -1) {
 					/* drop a thonny */
-					drop_item(hero, thonny_pos, 1);
+					drop_item(Real2Host(hero), thonny_pos, 1);
 				}
 
 				/* adjust LE */
-				if (host_readws(hero + 0x62) - host_readws(hero + 0x64)  < le) {
-					le = host_readws(hero + 0x62) - host_readws(hero + 0x64);
+				if (host_readws(Real2Host(hero) + 0x62) - host_readws(Real2Host(hero) + 0x64)  < le) {
+					le = host_readws(Real2Host(hero) + 0x62) - host_readws(Real2Host(hero) + 0x64);
 				}
 
 				/* spend one AE point */
-				sub_ae_splash(hero, 1);
+				sub_ae_splash(Real2Host(hero), 1);
 
-				if (test_attrib3(hero, 0, 2, 6, 0) > 0) {
+				if (test_attrib3(Real2Host(hero), 0, 2, 6, 0) > 0) {
 					/* Success */
 
-					if (host_readws(hero + 0x60) <= le + 8) {
-						le = host_readws(hero + 0x60) - 8;
+					if (host_readws(Real2Host(hero) + 0x60) <= le + 8) {
+						le = host_readws(Real2Host(hero) + 0x60) - 8;
 					}
 
-					sub_hero_le(hero, le + 3);
-					add_hero_ae(hero, le);
+					sub_hero_le(Real2Host(hero), le + 3);
+					add_hero_ae(Real2Host(hero), le);
 				} else {
 					/* Failed, print only a message */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xc6c),
-						(char*)hero + 0x10);
+						(char*)Real2Host(hero) + 0x10);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -429,46 +428,46 @@ signed short use_magic(Bit8u *hero)
 		case 2: {
 			/* Staffspell */
 
-			if (host_readbs(hero + 0x21) != 9) {
+			if (host_readbs(Real2Host(hero) + 0x21) != 9) {
 				/* only for mages */
 				GUI_output(get_ltx(0x64c));
 				return 0;
 			}
 
-			if (host_readbs(hero + 0x195) == 7) {
+			if (host_readbs(Real2Host(hero) + 0x195) == 7) {
 				GUI_output(get_ltx(0x53c));
 			} else {
 
-				if (ds_readbs((0x972 + 5) + 6 * host_readbs(hero + 0x195)) <= host_readws(hero + 0x64)) {
+				if (ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + 0x195)) <= host_readws(Real2Host(hero) + 0x64)) {
 					/* check AE */
 
 					retval = 1;
 
 					/* Original-Bug: the second attribute is used twice here */
-					if (test_attrib3(hero,
-						ds_readbs((0x972 + 1) + 6 * host_readbs(hero + 0x195)),
-						ds_readbs((0x972 + 2) + 6 * host_readbs(hero + 0x195)),
-						ds_readbs((0x972 + 2) + 6 * host_readbs(hero + 0x195)),
-						ds_readbs((0x972 + 4) + 6 * host_readbs(hero + 0x195))) > 0)
+					if (test_attrib3(Real2Host(hero),
+						ds_readbs((0x972 + 1) + 6 * host_readbs(Real2Host(hero) + 0x195)),
+						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + 0x195)),
+						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + 0x195)),
+						ds_readbs((0x972 + 4) + 6 * host_readbs(Real2Host(hero) + 0x195))) > 0)
 					{
 						/* Success */
 
 						/* print a message */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x54c),
-							host_readbs(hero + 0x195) + 1);
+							host_readbs(Real2Host(hero) + 0x195) + 1);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
-						sub_ae_splash(hero, ds_readbs((0x972 + 5) + 6 * host_readbs(hero + 0x195)));
+						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + 0x195)));
 
-						sub_ptr_ws(hero + 0x62,	ds_readbs((0x972 + 6) + 6 * host_readbs(hero + 0x195)));
+						sub_ptr_ws(Real2Host(hero) + 0x62,	ds_readbs((0x972 + 6) + 6 * host_readbs(Real2Host(hero) + 0x195)));
 
 						/* Staffspell level +1 */
-						inc_ptr_bs(hero + 0x195);
+						inc_ptr_bs(Real2Host(hero) + 0x195);
 
 						/* set the timer */
-						host_writed(hero + 0x8f, 0xfd20);
+						host_writed(Real2Host(hero) + 0x8f, 0xfd20);
 
 						/* let some time pass */
 						timewarp(0x6978);
@@ -477,7 +476,7 @@ signed short use_magic(Bit8u *hero)
 						GUI_output(get_ltx(0x548));
 
 						/* only half of the AE costs */
-						sub_ae_splash(hero, ds_readbs((0x972 + 5) + 6 * host_readbs(hero + 0x195)) / 2);
+						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + 0x195)) / 2);
 
 						/* let some time pass */
 						timewarp(0x2a30);
@@ -500,7 +499,6 @@ signed short use_magic(Bit8u *hero)
 
 	return retval;
 }
-#endif
 
 /**
  * \brief check if a spellclass can be used

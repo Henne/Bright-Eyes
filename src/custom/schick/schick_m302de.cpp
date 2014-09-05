@@ -5167,9 +5167,11 @@ static int seg098(unsigned short offs) {
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		D1_LOG("Menu: Magie Anwenden %s\n", schick_getCharname(hero));
+		reg_ax = use_magic(hero);
+		D1_LOG("use_magic(%s) = %d\n",
+			schick_getCharname(hero), (Bit16s)reg_ax);
 
-		return 0;
+		return 1;
 	}
 	case 0x25: {
 		/* Zauberprobe */
