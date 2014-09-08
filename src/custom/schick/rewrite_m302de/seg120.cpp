@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 3/11
+ *	Functions rewritten: 4/11
  */
 
 #include <stdio.h>
@@ -11,14 +11,236 @@
 #include "seg001.h"
 #include "seg002.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg008.h"
 #include "seg010.h"
 #include "seg028.h"
+#include "seg029.h"
+#include "seg047.h"
+#include "seg049.h"
 #include "seg063.h"
+#include "seg096.h"
+#include "seg097.h"
+#include "seg098.h"
+#include "seg104.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+/* Borlandified and identical */
+void rabies(RealPt hero, signed short hero_pos)
+{
+	signed short answer;
+	signed short l_di;
+	signed short done;
+	signed short bak;
+	Bit8u *hero2;
+	signed short group_bak;
+	signed short group_nr;
+	signed char sex_bak;
+
+	done = 0;
+
+	group_bak = ds_readbs(CURRENT_GROUP);
+	sex_bak = host_readbs(Real2Host(hero) + 0x22);
+	group_nr = host_readbs(Real2Host(hero) + 0x87);
+
+	/* TODO : Sex = 50, what means 50 ? */
+	host_writeb(Real2Host(hero) + 0x22, 50);
+
+	/* switch to the group of the hero */
+	while (ds_readbs(CURRENT_GROUP) != group_nr) {
+		GRP_switch_to_next(1);
+	}
+
+	hero_pos = 0;
+	while (host_readbs(get_hero(hero_pos) + 0x22) != 50) {
+		hero_pos++;
+	}
+
+	hero = (RealPt)ds_readd(HEROS) + 0x6da * hero_pos;
+	host_writeb(Real2Host(hero) + 0x22, sex_bak);
+
+	if (ds_readbs(0x2845) == 0) {
+		draw_status_line();
+	}
+
+	while (done == 0) {
+
+		if (count_heroes_available_in_group() > 1) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xb94),
+				(char*)Real2Host(hero) + 0x10,
+				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + 0x22), 2)),
+				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + 0x22), 2)));
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)) + 500,
+				(char*)get_ltx(0xb98),
+				(char*)Real2Host(hero) + 0x10);
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)) + 600,
+				(char*)get_ltx(0xb9c),
+				(char*)Real2Host(hero) + 0x10);
+
+			bak = ds_readws(0xbffd);
+			ds_writew(0xbffd, 6);
+
+			answer = GUI_dialogbox(hero + 0x2da,
+						Real2Host(hero) + 0x10,
+						Real2Host(ds_readd(DTP2)),
+						3,
+						Real2Host(ds_readd(DTP2)) + 500,
+						Real2Host(ds_readd(DTP2)) + 600,
+						get_ltx(0xba0));
+
+			ds_writew(0xbffd, bak);
+
+			if (answer == 1) {
+				/* knock the infected hero out */
+
+				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + 0x60) / 2);
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0xba4),
+					(char*)Real2Host(hero) + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				ds_writeb(0x64a2, (signed char)hero_pos);
+
+				answer = select_hero_ok(get_ltx(0x62c));
+
+				if (answer != -1) {
+
+					talent_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
+				}
+
+				done = 1;
+
+			} else if (answer == 2) {
+				/* calm the hero */
+
+				for (l_di = 0; l_di <= 6; l_di++) {
+
+					/* one of the other heros must pass CH+0 */
+					if ((l_di != hero_pos) &&
+						(test_attrib(get_hero(l_di), 2, 0) != 0))
+					{
+						done = 1;
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0xba8),
+							(char*)Real2Host(hero) + 0x10);
+
+						GUI_output(Real2Host(ds_readd(DTP2)));
+
+						ds_writeb(0x64a2, (signed char)hero_pos);
+
+						answer = select_hero_ok(get_ltx(0x62c));
+
+						if (answer != -1) {
+							talent_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
+						}
+						break;
+					}
+				}
+			} else if (answer == 3) {
+				/* cast a spell */
+
+				ds_writeb(0x64a2, (signed char)hero_pos);
+
+				answer = select_hero_ok(get_ltx(0x354));
+
+				if (answer != -1) {
+
+					hero2 = get_hero(answer);
+
+					/* check that hero2 is a magic user */
+					if (host_readbs(hero2 + 0x21) >= 7) {
+
+						/* need 15 AE */
+						if (host_readws(hero2 + 0x64) >= 15) {
+
+							/* spell must succeed */
+							if (test_spell(hero2, 15, 0)) {
+
+								done = 1;
+
+								sub_ae_splash(hero2, 15);
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_ltx(0xba8),
+									(char*)Real2Host(hero) + 0x10);
+
+								GUI_output(Real2Host(ds_readd(DTP2)));
+
+								ds_writeb(0x64a2, (signed char)hero_pos);
+
+								answer = select_hero_ok(get_ltx(0x62c));
+
+								if ((answer != -1) && (answer != hero_pos)) {
+									talent_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
+								}
+							}
+						} else {
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_ltx(0x97c),
+								(char*)hero2 + 0x10);
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+						}
+					}
+				}
+			}
+		} else {
+
+			/* Hero has rabies / Tollwut */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xbac),
+				(char*)Real2Host(hero) + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			done = 1;
+		}
+
+		if (done == 0) {
+			/* every other hero in the group looses 1W6+2 LE */
+			hero2 = get_hero(0);
+			for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+
+				if ((l_di != hero_pos) &&
+					(host_readbs(hero2 + 0x21) != 0) &&
+					(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					!hero_dead(hero2))
+				{
+					sub_hero_le(hero2, dice_roll(1, 6, 2));
+				}
+			}
+
+			/* hero has berserker fury / Berserkerwut */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xc5c),
+				(char*)Real2Host(hero) + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			done = 1;
+		}
+	}
+
+	/* switch back to the group */
+	while (ds_readbs(CURRENT_GROUP) != group_bak) {
+		GRP_switch_to_next(1);
+	}
+
+	if (ds_readbs(0x2845) == 0) {
+		draw_status_line();
+	}
+}
 
 /* Borlandified and identical */
 void refresh_colors(void)

@@ -6365,7 +6365,14 @@ static int seg120(unsigned short offs) {
 			return 1;
 		}
 		case 0x34: {
-			return 0;
+			RealPt hero = CPU_Pop32();
+			Bit16s hero_pos = CPU_Pop16();
+			CPU_Push16(hero_pos);
+			CPU_Push32(hero);
+
+			rabies(hero, hero_pos);
+
+			return 1;
 		}
 		case 0x3e: {
 			D1_LOG("refresh_colors();\n");

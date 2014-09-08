@@ -8,6 +8,9 @@ void init_game_state(void);
 /* 0x2f */
 void cleanup_game(void);
 
+/* 0x34 */
+void rabies(RealPt, signed short);
+
 /* 0x3e */
 void refresh_colors(void);
 
