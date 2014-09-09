@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg034 (fight system)
  *	Functions rewritten: 6/6 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg034.cpp
  */
 
 #include <stdio.h>
@@ -33,7 +37,6 @@ namespace M302de {
  *
  * \return	TODO {0, 1}
  **/
-/* Borlandified and identical */
 signed short seg034_000(signed short x_hero, signed short y_hero,
 			signed short x, signed short y,
 			signed short x_diff, signed short y_diff,
@@ -145,7 +148,6 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
  *
  * \return	fight-id of the target
  */
-/* Borlandified and identical */
 signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 {
 	signed short x_diff;
@@ -344,7 +346,6 @@ struct dummy {
 	struct coord a[4];
 };
 
-/* Borlandified and identical */
 void seg034_718(signed short x, signed short y, Bit8u *px, Bit8u *py, signed short dir, signed short mode)
 {
 	signed short new_dir;
@@ -412,7 +413,6 @@ void seg034_718(signed short x, signed short y, Bit8u *px, Bit8u *py, signed sho
 	}
 }
 
-/* Borlandified and identical */
 void seg034_87b(void)
 {
 	signed short i;
@@ -509,7 +509,6 @@ void seg034_87b(void)
 	}
 }
 
-/* Borlandified and identical */
 signed short seg034_aec(void)
 {
 	signed short i = 0;
@@ -533,7 +532,6 @@ signed short seg034_aec(void)
  * \param px		pointer to the x-coordinate on the chessboard
  * \param py		pointer to the y-coordinate on the chessboard
  */
-/* Borlandified and identical */
 void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 {
 	signed short l_si;
