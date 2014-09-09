@@ -2,6 +2,10 @@
  *	Rewrite of DSA1 v3.02_de functions of seg119 (disease effect)
  *	Functions rewritten: 1/1 (complete)
  *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg119.cpp
+ *
  */
 
 #include <stdio.h>
@@ -31,9 +35,8 @@ namespace M302de {
  */
 
 /**
- * \brief Effects of disease
+ * \brief Effects of diseases
  */
-/* Borlandified and identical */
 void disease_effect(void)
 {
 	signed short i;
