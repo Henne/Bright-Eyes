@@ -22,6 +22,8 @@
 #define UNICORN_TIMER	(0x2466)
 #define TWO_FIELDED_SPRITE_ID (0x25f9)	/* char[5] array */
 #define EMS_ENABLED	(0x26ab)
+#define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
+#define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
 #define TIMERS_DISABLED	(0x2c99)
 #define CURRENT_ANI	(0x2ccf)
 #define IN_FIGHT	(0x2cd5)

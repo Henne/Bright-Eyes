@@ -1453,7 +1453,7 @@ void timers_daily() {
 		host_writeb(hero_i + 0x94, host_readb(hero_i + 0x94) - 1);
 	}
 
-	ds_writew(0x26b9, 1);
+	ds_writew(CHECK_DISEASE, 1);
 
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* Original-BUG: Reenable identifying item in the academy */
@@ -2252,7 +2252,7 @@ void seg002_2f7a(unsigned int fmin) {
 			}
 		}
 
-		ds_writew(0x26bb, 1);
+		ds_writew(CHECK_POISON, 1);
 	}
 }
 
