@@ -73,6 +73,7 @@
 #include "seg111.h"
 #include "seg113.h"
 #include "seg117.h"
+#include "seg119.h"
 #include "seg120.h"
 #include "seg121.h"
 #include "seg122.h"
@@ -6345,6 +6346,18 @@ static int seg117(unsigned short offs)
 	}
 }
 
+static int seg119(unsigned short offs)
+{
+	switch (offs) {
+	case 0x20: {
+		D1_LOG("disease_effect();\n");
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
 
 static int seg120(unsigned short offs) {
 	switch (offs) {
@@ -6544,7 +6557,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x14d8:	return 0;
 		case 0x14e0:	return seg117(offs);
 		case 0x14e7:	return 0;
-		case 0x14ed:	return 0;
+		case 0x14ed:	return seg119(offs);
 		case 0x14f0:	return seg120(offs);
 		case 0x14f6:	return seg121(offs);
 		case 0x14f9:	return seg122(offs);
