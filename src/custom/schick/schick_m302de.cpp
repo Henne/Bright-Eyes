@@ -5764,7 +5764,7 @@ static int seg103(unsigned short offs) {
 			CPU_Push16(hero_pos);
 
 			reg_ax = GUI_use_talent(hero_pos, (Bit8s)bonus);
-			D1_INFO("GUI_use_talent(%d, %d) = %d\n",
+			D1_LOG("GUI_use_talent(%d, %d) = %d\n",
 				hero_pos, (Bit8s)bonus, (Bit16s)reg_ax);
 			return 1;
 		}
@@ -5787,7 +5787,7 @@ static int seg103(unsigned short offs) {
 			CPU_Push16(bonus);
 
 			reg_ax = GUI_use_talent2((Bit8s)bonus, Real2Host(msg));
-			D1_INFO("GUI_use_talent2(%d, %s) = %d\n", bonus, Real2Host(msg), reg_ax);
+			D1_LOG("GUI_use_talent2(%d, %s) = %d\n", bonus, Real2Host(msg), reg_ax);
 			return 1;
 		}
 		default:
