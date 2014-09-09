@@ -3470,7 +3470,19 @@ static int seg034(unsigned short offs)
 {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		Bit16s hero_pos = CPU_Pop16();
+		RealPt px = CPU_Pop32();
+		RealPt py = CPU_Pop32();
+		CPU_Push32(py);
+		CPU_Push32(px);
+		CPU_Push16(hero_pos);
+		CPU_Push32(hero);
+
+		D1_LOG("FIG_move_hero(%s, %d)\n", schick_getCharname(hero), hero_pos);
+		FIG_move_hero(Real2Host(hero), hero_pos, Real2Host(px), Real2Host(py));
+
+		return 1;
 	}
 	case 0x25: {
 		Bit16s a1 = CPU_Pop16();
