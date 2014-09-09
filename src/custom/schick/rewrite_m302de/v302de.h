@@ -822,6 +822,8 @@ typedef Bit8u* RealPt;
 typedef Bit8u* PhysPt;
 typedef Bit8u huge * HugePt;
 
+#include <DOS.H>
+
 #include "common.h"
 
 #define NOT_NULL(p) ((p) != NULL)
@@ -836,7 +838,7 @@ struct hero_struct {
 
 extern char ds[0xf7af];
 #define p_datseg (&ds[0x0000])
-#define datseg (FP_SEG(&ds[0x0000]))
+#define datseg (_DS)
 
 #define ds_readb(p) (*(Bit8u*)(ds + p))
 #define ds_readw(p) (*(Bit16u*)(ds + p))
