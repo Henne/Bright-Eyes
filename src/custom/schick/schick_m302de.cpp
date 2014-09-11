@@ -8330,11 +8330,10 @@ static int n_seg044(unsigned short offs)
 		CPU_Pop16();
 
 		Bit16s ani = CPU_Pop16();
-
-		reg_ax = seg044_00ae(ani);
-		D1_LOG("seg44_00ae(%d) = %d\n", ani, reg_ax);
-
 		CPU_Push16(ani);
+
+		reg_ax = (Bit16s)get_seq_header(ani);
+		D1_INFO("get_seq_header(%d) = %d\n", ani, (Bit16s)reg_ax);
 
 		return 1;
 	}

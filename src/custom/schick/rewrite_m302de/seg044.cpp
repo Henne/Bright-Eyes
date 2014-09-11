@@ -22,17 +22,18 @@ namespace M302de {
 #endif
 
 /**
- * copy_ani_seq() - copies an animation sequence
- * @dst:	where to copy the sequence
- * @ani:	the number of the animation sequence
- * @type:	type of animation (3 = WEAPANI.DAT else ANI.DAT)
+ * \brief copies an animation sequence
  *
- * @return	the number of copied bytes
+ * \param dst	where to copy the sequence
+ * \param ani	the number of the animation sequence
+ * \param type	type of animation (3 = WEAPANI.DAT else ANI.DAT)
+ *
+ * \return	the number of copied bytes
  */
 /* Borlandified and identical */
 Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 {
-	Bit8u *p_start, *p_off;
+	Bit8u *p_start, *p_seq;
 	signed short nr_anis;
 	signed short i;
 	signed char length;
@@ -54,38 +55,41 @@ Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 	if (ani > nr_anis)
 		return 0;
 
-	/* set p_off the the first data byte */
-	p_off = p_start;
-	p_off += nr_anis + 2;
+	/* set p_seq to the first sequence */
+	p_seq = p_start;
+	p_seq += nr_anis + 2;
 
-	/* set p_off the first byte of the requested animation sequence */
+	/* set length to the length of the first sequence */
 	length = host_readbs(p_start + 2);
 
+	/* fast forward to the requestet sequence */
 	for (i = 1; i <= ani; i++) {
-		p_off += length;
+		p_seq += length;
 		length = host_readbs(p_start + i + 2);
 	}
 
 	/* skip the first byte */
-	p_off++;
+	p_seq++;
 	/* calc the length of the sequence */
 	length -= 2;
+	/* REMARK: the first an the last byte of the sequence are skipped */
 
 	/* copy them */
-	for (i = 0; i < length; p_off++, dst++, i++)
-		host_writeb(dst, host_readbs(p_off));
+	for (i = 0; i < length; p_seq++, dst++, i++)
+		host_writeb(dst, host_readbs(p_seq));
 
 	return length;
 }
 
 /**
- * seg044_00ae() - return the first byte of a sequence from ANI.DAT
- * @ani:	the number of the animation sequence
+ * \brief	TODO
+ * \param	ani	the number of the animation sequence
+ * \return	the first byte of the sequence from ANI.DAT {0,1,2,3,4}
  */
 /* Borlandified and identical */
-Bit8s seg044_00ae(Bit16s ani)
+Bit8s get_seq_header(Bit16s ani)
 {
-	Bit8u *p_start, *p_off;
+	Bit8u *p_start, *p_seq;
 	Bit8s length;
 	Bit16s nr_anis;
 	Bit16s i;
@@ -96,31 +100,27 @@ Bit8s seg044_00ae(Bit16s ani)
 	/* get number of ani seqences in ANI.DAT */
 	nr_anis = host_readws(p_start);
 
-	if (ani < 0)
+	if (ani < 0) {
 		return 0;
+	}
 
-	if (ani > nr_anis)
+	if (ani > nr_anis) {
 		return 0;
+	}
 
-	p_off = p_start;
-	p_off += nr_anis + 2;
+	p_seq = p_start;
+	p_seq += nr_anis + 2;
 
 	length = host_readbs(p_start + 2);
 
 	for (i = 1; i <= ani; i++) {
-		p_off += length;
+		/* set pointer to the start of the next sequence */
+		p_seq += length;
+		/* set length to the length of the next sequence */
 		length = host_readbs(p_start + i + 2);
 	}
 
-#if 0
-	D1_INFO("ani = 0x%x\tlength = %d\n", ani, length);
-	for (i = 0; i < length; i++) {
-		D1_INFO("%x ", host_readb(p_off + i));
-	}
-	D1_INFO("\n");
-#endif
-
-	return host_readb(p_off);
+	return host_readbs(p_seq);
 }
 
 /**
@@ -195,7 +195,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	p1 = p_datseg + 0xd8cf + 0xf3 * a1;
 	p2 = p_datseg + 0xdc9b + 0xf3 * a1;
 
-	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readws(p3 + l1 * 2)));
+	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p3 + l1 * 2)));
 	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(hero + 0x9b));
 
 	if (check_hero(hero) && (host_readbs(hero + 0x82) != dir) &&
@@ -246,7 +246,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 			}
 
 			host_writeb(p1++, 0xfc);
-			host_writeb(p1++, seg044_00ae(host_readws(p3 + l1 * 2)));
+			host_writeb(p1++, get_seq_header(host_readws(p3 + l1 * 2)));
 			host_writeb(p1++, 0);
 	} else {
 		for (l10 = 0; l10 < 5; l10++) {
@@ -299,7 +299,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
 	{
 		host_writeb(p1++, 0xfc);
-		host_writeb(p1++, seg044_00ae(host_readws(p3 + 0x28)));
+		host_writeb(p1++, get_seq_header(host_readws(p3 + 0x28)));
 		host_writeb(p1++, 0);
 
 		p1 += copy_ani_seq(p1, host_readws(p3 + 0x28), 2);
@@ -410,7 +410,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	p2 = p_datseg + 0xdc9b + a1 * 0xf3;
 
 
-	ds_writeb(0xd8ce + 0xf3 * a1, seg044_00ae(host_readws(p4 + l1 * 2)));
+	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p4 + l1 * 2)));
 	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(enemy + 1));
 
 	/* first the enemy may turn */
@@ -469,7 +469,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		}
 
 		host_writeb(p1++, 0xfc);
-		host_writeb(p1++, seg044_00ae(host_readws(p4 + l1 * 2)));
+		host_writeb(p1++, get_seq_header(host_readws(p4 + l1 * 2)));
 		host_writeb(p1++, 0);
 	} else {
 		/* do not move for 5 frames */
@@ -525,7 +525,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		((ds_readws(0xe3a6) != 0) && (a7 == 1)))
 	{
 		host_writeb(p1++, 0xfc);
-		host_writeb(p1++, seg044_00ae(host_readws(p4 + 0x28)));
+		host_writeb(p1++, get_seq_header(host_readws(p4 + 0x28)));
 		host_writeb(p1++, 0);
 
 		p1 += copy_ani_seq(p1, host_readws(p4 + 0x28), 1);
@@ -612,7 +612,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 
 	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
 
-	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readws(lp2 + l_di * 2)));
+	ds_writeb(0xd8ce + v1 * 0xf3, get_seq_header(host_readws(lp2 + l_di * 2)));
 
 #if !defined(__BORLANDC__)
 	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(hero + 0x9b));
@@ -658,7 +658,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readws(lp2 + l_di * 2)));
+		host_writeb(lp1, get_seq_header(host_readws(lp2 + l_di * 2)));
 		lp1++;
 
 		host_writeb(lp1, 0x00);
@@ -678,7 +678,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readws(lp2 + 0x28)));
+		host_writeb(lp1, get_seq_header(host_readws(lp2 + 0x28)));
 		lp1++;
 
 		host_writeb(lp1, 0x00);
@@ -748,7 +748,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target,
 	/* this is true if a monster attacks a hero */
 	l1 += (v2 == 4) ? dir : host_readbs(p + 0x27);
 
-	ds_writeb(0xd8ce + v1 * 0xf3, seg044_00ae(host_readws(lp2 + l1 * 2)));
+	ds_writeb(0xd8ce + v1 * 0xf3, get_seq_header(host_readws(lp2 + l1 * 2)));
 
 	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(p + 1));
 
@@ -785,7 +785,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target,
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readws(lp2 + l1 * 2)));
+		host_writeb(lp1, get_seq_header(host_readws(lp2 + l1 * 2)));
 		lp1++;
 
 		host_writeb(lp1, 0);
@@ -800,7 +800,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target,
 		host_writeb(lp1, 0xfc);
 		lp1++;
 
-		host_writeb(lp1, seg044_00ae(host_readws(lp2 + 0x28)));
+		host_writeb(lp1, get_seq_header(host_readws(lp2 + 0x28)));
 		lp1++;
 
 		host_writeb(lp1, 0);
