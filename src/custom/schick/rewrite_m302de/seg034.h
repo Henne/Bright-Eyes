@@ -16,7 +16,7 @@ signed char seg034_2e3(Bit8u*, Bit8u*, const signed short);
 void seg034_718(signed short, signed short, Bit8u*, Bit8u*, signed short, signed short);
 
 /* 0x34 */
-void seg034_87b(void);
+void FIG_latecomers(void);
 
 /* 0x39 */
 signed short seg034_aec(void);

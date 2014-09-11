@@ -3523,8 +3523,8 @@ static int seg034(unsigned short offs)
 		return 1;
 	}
 	case 0x34: {
-		D1_LOG("seg034_87b()\n");
-		seg034_87b();
+		D1_LOG("FIG_latecomers()\n");
+		FIG_latecomers();
 		return 1;
 	}
 	default:
