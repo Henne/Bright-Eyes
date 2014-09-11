@@ -24,27 +24,44 @@
 namespace M302de {
 #endif
 
-RealPt FIG_get_ptr(signed char v1)
+/**
+ * \brief	TODO
+ * \param	fight_id	fight_id
+ * \return	a pointer to the list elemtent or to the list head in error case
+ */
+RealPt FIG_get_ptr(signed char fight_id)
 {
-	RealPt ptr;
-	ptr = (RealPt)ds_readd(0xe108);
+	RealPt ptr = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	while (mem_readb(Real2Phys(ptr + 0x10)) != v1) {
-		if (mem_readd(Real2Phys(ptr + 0x1b)) == 0)
-			return (RealPt)ds_readd(0xe108);
-		ptr = (RealPt)mem_readd(Real2Phys(ptr + 0x1b));
+	while (host_readbs(Real2Host(ptr) + 0x10) != fight_id) {
+
+		/* check if its the last element */
+		if (host_readd(Real2Host(ptr) + 0x1b) == 0) {
+			/* return list head */
+			return (RealPt)ds_readd(FIG_LIST_HEAD);
+		}
+
+		/* set ptr to the next element */
+		ptr = (RealPt)host_readd(Real2Host(ptr) + 0x1b);
 	}
+
 	return ptr;
 }
 
 //static
-signed char FIG_set_array() {
-	char i;
+signed char FIG_set_array(void)
+{
+	signed char i = 0;
 
 	/* find first element that is zero */
-	for (i = 0; ds_readb(0xe089 + i) != 0; i++);
+	while (ds_readb(0xe089 + i) != 0) {
+
+		i++;
+	}
+
 	/* make it 1 */
 	ds_writeb(0xe089 + i, 1);
+
 	/* return the number of the index */
 	return i;
 }
@@ -66,7 +83,7 @@ void FIG_draw_figures(void)
 	/* backup a structure */
 	screen_mode = *((struct screen_rect*)(p_datseg + 0x2990));
 
-	list_i = Real2Host(ds_readd(0xe108));
+	list_i = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 	do {
 
@@ -179,14 +196,19 @@ RealPt seg006_033c(short v)
 	return 0;
 }
 
-void FIG_set_0e(signed char id, signed char val) {
-	Bit8u *ptr = Real2Host(ds_readd(0xe108));
+void FIG_set_0e(signed char id, signed char val)
+{
+	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 	while (host_readbs(ptr + 0x10) != id) {
-		if (host_readd(ptr + 0x1b) == 0)
+
+		if (host_readd(ptr + 0x1b) == 0) {
 			return;
+		}
+
 		ptr = Real2Host(host_readd(ptr + 0x1b));
 	}
+
 	host_writeb(ptr + 0x0e, val);
 	host_writeb(ptr + 0x12, 1);
 }
@@ -195,7 +217,7 @@ void FIG_set_0e(signed char id, signed char val) {
 void FIG_reset_12_13(signed char id) {
 	Bit8u *ptr1, *ptr2;
 
-	ptr1 = Real2Host(ds_readd(0xe108));
+	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 	while (host_readb(ptr1 + 0x10) != id) {
 		if (host_readd(ptr1 + 0x1b) == 0)
@@ -206,7 +228,7 @@ void FIG_reset_12_13(signed char id) {
 
 	if (host_readbs(ptr1 + 0x13) != -1) {
 
-		ptr2 = Real2Host(ds_readd(0xe108));
+		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 		while (ds_readb(0xe35a + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
 			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
@@ -218,7 +240,7 @@ void FIG_reset_12_13(signed char id) {
 void FIG_set_12_13(signed short id) {
 	Bit8u *ptr1, *ptr2;
 
-	ptr1 = Real2Host(ds_readd(0xe108));
+	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 	while (host_readb(ptr1 + 0x10) != (signed char)id) {
 		if (host_readd(ptr1 + 0x1b) == 0)
@@ -229,7 +251,7 @@ void FIG_set_12_13(signed short id) {
 
 	if (host_readbs(ptr1 + 0x13) != -1) {
 
-		ptr2 = Real2Host(ds_readd(0xe108));
+		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 		while (ds_readb(0xe35a + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
 			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
@@ -240,7 +262,7 @@ void FIG_set_12_13(signed short id) {
 }
 
 void FIG_set_0f(signed char id, signed char val) {
-	Bit8u *ptr = Real2Host(ds_readd(0xe108));
+	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 	while (host_readb(ptr + 0x10) != id) {
 		if (host_readd(ptr + 0x1b) == 0)
@@ -256,7 +278,7 @@ struct dummy {
 
 void FIG_remove_from_list(signed char id, signed char v2)
 {
-	Bit8u* p = Real2Host(ds_readd(0xe108));
+	Bit8u* p = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 	/* NULL check */
 	if (!NOT_NULL(p))
@@ -277,12 +299,12 @@ void FIG_remove_from_list(signed char id, signed char v2)
 		*((struct dummy*)(p_datseg + 0xe066)) = *((struct dummy*)(p));
 
 	/* check if p == HEAD */
-	if (p == Real2Host(ds_readd(0xe108))) {
+	if (p == Real2Host(ds_readd(FIG_LIST_HEAD))) {
 		/* Set HEAD: head = p->next;*/
-		ds_writed(0xe108, host_readd(p + 0x1b));
-		if (ds_readd(0xe108) != 0)
+		ds_writed(FIG_LIST_HEAD, host_readd(p + 0x1b));
+		if (ds_readd(FIG_LIST_HEAD) != 0)
 			/* head->prev = NULL */
-			host_writed(Real2Host(ds_readd(0xe108)) + 0x1f, 0);
+			host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1f, 0);
 	} else {
 		/* check if p == tail */
 		if (host_readd(p + 0x1b) == 0) {
@@ -307,29 +329,29 @@ signed char FIG_add_to_list(signed char v)
 	signed short x, y;
 
 	p1 = (RealPt)ds_readd(0xe37c);
-	x = (signed char)ds_readb(0xe069);
-	y = (signed char)ds_readb(0xe06a);
+	x = ds_readbs(0xe069);
+	y = ds_readbs(0xe06a);
 
 	/* FIG_list_start == NULL */
-	if (ds_readd(0xe108) == 0) {
+	if (ds_readd(FIG_LIST_HEAD) == 0) {
 
-		ds_writed(0xe108, ds_readd(0xe37c));
+		ds_writed(FIG_LIST_HEAD, ds_readd(0xe37c));
 
-//		struct_copy(Real2Host(ds_readd(0xe108)), p_datseg + 0xe066, 35);
-		*((struct dummy*)(Real2Host(ds_readd(0xe108)))) = *((struct dummy*)(p_datseg + 0xe066));
+//		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + 0xe066, 35);
+		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + 0xe066));
 
 		if (v == -1)
-			host_writeb(Real2Host(ds_readd(0xe108)) + 0x10,
+			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10,
 				FIG_set_array());
 
-		host_writed(Real2Host(ds_readd(0xe108)) + 0x1f, 0);
-		host_writed(Real2Host(ds_readd(0xe108)) + 0x1b, 0);
+		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1f, 0);
+		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1b, 0);
 
 #if !defined(__BORLANDC__)
 		D1_LOG("\tlist created x = %d, y = %d\n", x, y);
 #endif
 
-		return host_readb(Real2Host(ds_readd(0xe108)) + 0x10);
+		return host_readb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10);
 	}
 
 	while ((signed char)host_readb(Real2Host(p1) + 0x10) != -1) {
@@ -344,7 +366,7 @@ signed char FIG_add_to_list(signed char v)
 	else
 		host_writeb(Real2Host(p1) + 0x10, v);
 
-	p2 = (RealPt)ds_readd(0xe108);
+	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
 
 	if (ds_readbs(0xe077) != -1)
 		for (; (signed char)mem_readb(Real2Phys(p2) + 3) <= x &&
@@ -383,7 +405,7 @@ signed char FIG_add_to_list(signed char v)
 		host_writed(Real2Host(host_readd(Real2Host(p2) + 0x1f)) + 0x1b, (Bit32u)p1);
 	else
 		/* FIG_list_start = p1 */
-		ds_writed(0xe108, (Bit32u)p1);
+		ds_writed(FIG_LIST_HEAD, (Bit32u)p1);
 
 	/* p2->prev = p1 */
 	host_writed(Real2Host(p2) + 0x1f, (Bit32u)p1);

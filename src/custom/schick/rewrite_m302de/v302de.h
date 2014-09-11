@@ -91,6 +91,7 @@
 #define ENEMY_SHEETS	(0xd34b)	/* struct enemy[20] */
 #define CHESSBOARD	(0xd852)
 #define NR_OF_ENEMIES	(0xd872)	/* ? short */
+#define FIG_LIST_HEAD	(0xe108)	/* RealPtr to a list */
 #define WALLCLOCK_Y	(0xe10f)
 #define WALLCLOCK_X	(0xe111)
 #define MEM_SLOTS_MON	(0xe115)

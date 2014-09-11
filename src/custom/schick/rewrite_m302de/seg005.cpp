@@ -52,7 +52,7 @@ unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y)
 			goto damn_label;
 
 		/* i = i->next; */
-		for (i = Real2Host(ds_readd(0xe108)); i != p; i = Real2Host(host_readd(i + 0x1b)))
+		for (i = Real2Host(ds_readd(FIG_LIST_HEAD)); i != p; i = Real2Host(host_readd(i + 0x1b)))
 		{
 
 			if (host_readbs(i + 0x12) >= 2) {
@@ -322,7 +322,7 @@ void draw_fight_screen(Bit16u val)
 
 	update_mouse_cursor();
 
-	list_i = Real2Host(ds_readd(0xe108));
+	list_i = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 	do {
 		/* Check for each list entry if a sprite is needed */
@@ -353,7 +353,7 @@ void draw_fight_screen(Bit16u val)
 		ds_writew(0xe2a8 + i * 2, -1);
 	}
 
-	list_i = Real2Host(ds_readd(0xe108));
+	list_i = Real2Host(ds_readd(FIG_LIST_HEAD));
 	flag = 0;
 
 	do {
@@ -409,7 +409,7 @@ void draw_fight_screen(Bit16u val)
 		ds_writed(0xc00d, ds_writed(0xd2fb, ds_readd(0xd303)));
 
 
-		for (list_i = Real2Host(ds_readd(0xe108)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
+		for (list_i = Real2Host(ds_readd(FIG_LIST_HEAD)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
 			if (host_readb(list_i + 0x12) == 2)
 				host_writeb(list_i + 0x12, 1);
 		}
@@ -434,7 +434,7 @@ void draw_fight_screen(Bit16u val)
 		ds_writed(0xc019, ds_readd(0xc3a9));
 		do_pic_copy(3);
 
-		list_i = Real2Host(ds_readd(0xe108));
+		list_i = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 		do {
 			ptr = 0;	/* NULL */
@@ -927,7 +927,7 @@ void draw_fight_screen(Bit16u val)
 		ds_writed(0xc00d, ds_readd(0xd303));
 	}
 
-	for (list_i = Real2Host(ds_readd(0xe108)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
+	for (list_i = Real2Host(ds_readd(FIG_LIST_HEAD)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
 		if (host_readb(list_i + 0x12) != 0)
 			host_writeb(list_i + 0x12, 1);
 	}

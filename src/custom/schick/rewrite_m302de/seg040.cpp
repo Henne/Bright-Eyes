@@ -85,7 +85,7 @@ void FIG_preload_gfx(void)
 	struct nvf_desc nvf;
 	signed short handle;
 
-	ds_writed(0xe108, 0);
+	ds_writed(FIG_LIST_HEAD, 0);
 
 	ds_writed(0xe37c, (Bit32u)F_PADD(ds_readd(0xd2db), -0x115d));
 
