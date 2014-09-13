@@ -25,7 +25,7 @@ namespace M302de {
 #endif
 
 /**
- * \brief	TODO
+ * \brief	search in a DL-list for an element
  * \param	fight_id	fight_id
  * \return	a pointer to the list elemtent or to the list head in error case
  */
@@ -48,7 +48,7 @@ RealPt FIG_get_ptr(signed char fight_id)
 	return ptr;
 }
 
-//static
+/* static */
 signed char FIG_set_array(void)
 {
 	signed char i = 0;
@@ -127,7 +127,6 @@ void FIG_draw_figures(void)
 			do_pic_copy(2);
 		}
 
-
 	} while (NOT_NULL(list_i = (Bit8u*)Real2Host((RealPt)host_readd(list_i + 0x1b))));
 
 	/* restore a structure */
@@ -136,10 +135,12 @@ void FIG_draw_figures(void)
 	ds_writed(0xc00d, (Bit32u)gfx_dst_bak);
 }
 
-void FIG_set_gfx() {
+void FIG_set_gfx(void)
+{
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)ds_readd(0xc00d);
+
 	ds_writew(0xc011, 0);
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
@@ -149,6 +150,7 @@ void FIG_set_gfx() {
 	update_mouse_cursor();
 	do_pic_copy(0);
 	refresh_screen_size();
+
 	ds_writed(0xc00d, (Bit32u)ptr_bak);
 }
 
@@ -161,27 +163,30 @@ void FIG_draw_pic(void)
 {
 	mem_memcpy(Real2Phys(ds_readd(0xd303)),
 		Real2Phys(ds_readd(0xc3a9)), 64000);
+
 	ds_writew(0x26af, 1);
 
-	if (ds_readw(0x26b3))
+	if (ds_readw(0x26b3)) {
 		FIG_draw_char_pic(0, ds_readw(0x26b3));
-	else if (ds_readw(0x26b5))
+	} else if (ds_readw(0x26b5)) {
 		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
+	}
 }
 
-RealPt FIG_get_hero_ptr(unsigned short v1) {
-
+RealPt FIG_get_hero_ptr(signed short v1)
+{
 	signed short i;
 
-	for (i = 0; i <= 6; i++)
-		if (host_readbs(Real2Host((RealPt)ds_readd(HEROS)) + i * 0x6da + 0x81) == v1)
+	for (i = 0; i <= 6; i++) {
+		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * 0x6da + 0x81) == v1)
 			return (RealPt)ds_readd(HEROS) + i * 0x6da;
+	}
+
 	return (RealPt)ds_readd(HEROS);
 }
 
-RealPt seg006_033c(short v)
+RealPt seg006_033c(signed short v)
 {
-
 	signed short i;
 
 	for (i = 0; i < 20; i++) {
@@ -196,34 +201,43 @@ RealPt seg006_033c(short v)
 	return 0;
 }
 
-void FIG_set_0e(signed char id, signed char val)
+void FIG_set_0e(signed char fight_id, signed char val)
 {
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readbs(ptr + 0x10) != id) {
+	while (host_readbs(ptr + 0x10) != fight_id) {
 
+		/* check for end of list */
 		if (host_readd(ptr + 0x1b) == 0) {
 			return;
 		}
 
+		/* set ptr to ptr->next */
 		ptr = Real2Host(host_readd(ptr + 0x1b));
 	}
 
 	host_writeb(ptr + 0x0e, val);
+
+	/* set presence flag */
 	host_writeb(ptr + 0x12, 1);
 }
 
 /* Used by range attack and spells with more than 1 field distance */
-void FIG_reset_12_13(signed char id) {
+void FIG_reset_12_13(signed char fight_id)
+{
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr1 + 0x10) != id) {
-		if (host_readd(ptr1 + 0x1b) == 0)
+	while (host_readb(ptr1 + 0x10) != fight_id) {
+
+		if (host_readd(ptr1 + 0x1b) == 0) {
 			return;
+		}
+
 		ptr1 = Real2Host(host_readd(ptr1 + 0x1b));
 	}
+
 	host_writeb(ptr1 + 0x12, 0);
 
 	if (host_readbs(ptr1 + 0x13) != -1) {
@@ -237,16 +251,21 @@ void FIG_reset_12_13(signed char id) {
 	}
 }
 
-void FIG_set_12_13(signed short id) {
+void FIG_set_12_13(signed short fight_id)
+{
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr1 + 0x10) != (signed char)id) {
-		if (host_readd(ptr1 + 0x1b) == 0)
+	while (host_readb(ptr1 + 0x10) != (signed char)fight_id) {
+
+		if (host_readd(ptr1 + 0x1b) == 0){
 			return;
+		}
+
 		ptr1 = Real2Host(host_readd(ptr1 + 0x1b));
 	}
+
 	host_writeb(ptr1 + 0x12, 1);
 
 	if (host_readbs(ptr1 + 0x13) != -1) {
@@ -254,21 +273,28 @@ void FIG_set_12_13(signed short id) {
 		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
 		while (ds_readb(0xe35a + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
+
 			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
+
 		}
 
 		host_writeb(ptr2 + 0x12, 1);
 	}
 }
 
-void FIG_set_0f(signed char id, signed char val) {
+void FIG_set_0f(signed char fight_id, signed char val)
+{
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr + 0x10) != id) {
-		if (host_readd(ptr + 0x1b) == 0)
+	while (host_readb(ptr + 0x10) != fight_id) {
+
+		if (host_readd(ptr + 0x1b) == 0) {
 			return;
+		}
+
 		ptr = Real2Host(host_readd(ptr + 0x1b));
 	}
+
 	host_writeb(ptr + 0x0f, val);
 }
 
@@ -276,7 +302,7 @@ struct dummy {
 	char a[35];
 };
 
-void FIG_remove_from_list(signed char id, signed char v2)
+void FIG_remove_from_list(signed char fight_id, signed char v2)
 {
 	Bit8u* p = Real2Host(ds_readd(FIG_LIST_HEAD));
 
@@ -284,19 +310,23 @@ void FIG_remove_from_list(signed char id, signed char v2)
 	if (!NOT_NULL(p))
 		return;
 
-	while (host_readb(p + 0x10) != id) {
+	while (host_readb(p + 0x10) != fight_id) {
+
 		/* if (ptr->next == NULL); */
-		if (host_readd(p + 0x1b) == 0)
+		if (host_readd(p + 0x1b) == 0) {
 			return;
+		}
+
 		/* ptr = ptr->next; */
 		p = Real2Host(host_readd(p + 0x1b));
 	}
 
-	if (!v2)
-		ds_writeb(0xe089 + id, 0);
-	else
+	if (!v2) {
+		ds_writeb(0xe089 + fight_id, 0);
+	} else {
 //		struct_copy(p_datseg + 0xe066, p, 35);
 		*((struct dummy*)(p_datseg + 0xe066)) = *((struct dummy*)(p));
+	}
 
 	/* check if p == HEAD */
 	if (p == Real2Host(ds_readd(FIG_LIST_HEAD))) {
@@ -318,8 +348,10 @@ void FIG_remove_from_list(signed char id, signed char v2)
 			host_writed(Real2Host(host_readd(p + 0x1b)) + 0x1f, host_readd(p + 0x1f));
 		}
 	}
+
 	memset(p, 0, 35);
-	host_writeb(p + 0x10, 0xff);
+
+	host_writeb(p + 0x10, -1);
 }
 
 signed char FIG_add_to_list(signed char v)
@@ -340,9 +372,10 @@ signed char FIG_add_to_list(signed char v)
 //		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + 0xe066, 35);
 		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + 0xe066));
 
-		if (v == -1)
+		if (v == -1) {
 			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10,
 				FIG_set_array());
+		}
 
 		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1f, 0);
 		host_writed(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x1b, 0);
@@ -354,17 +387,18 @@ signed char FIG_add_to_list(signed char v)
 		return host_readb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10);
 	}
 
-	while ((signed char)host_readb(Real2Host(p1) + 0x10) != -1) {
+	while (host_readbs(Real2Host(p1) + 0x10) != -1) {
 		p1 += 35;
 	}
 
 //	struct_copy(Real2Host(p1), p_datseg + 0xe066, 35);
 	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + 0xe066));
 
-	if (v == -1)
+	if (v == -1) {
 		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
-	else
+	} else {
 		host_writeb(Real2Host(p1) + 0x10, v);
+	}
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
 
@@ -418,16 +452,16 @@ signed char FIG_add_to_list(signed char v)
 }
 
 /**
-	FIG_draw_char_pic - draws the heroes picture to the fight screen
-	@pos:		0 upper left / 1 lower left
-	@hero_nr:	number of the hero
+ * \brief		draws the heroes picture to the fight screen
+ * \param loc		0 = upper left, 1 = lower left
+ * \param hero_pos	position of the hero
 */
-void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr)
+void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 {
 	RealPt hero;
 	signed short fg_bak, bg_bak;
 
-	hero = (RealPt)ds_readd(HEROS) + (hero_nr - 1)  * 0x6da;
+	hero = (RealPt)ds_readd(HEROS) + (hero_pos - 1)  * 0x6da;
 	ds_writed(0xc019, (Bit32u)(hero + 0x2da));
 
 	get_textcolor(&fg_bak, &bg_bak);
@@ -436,7 +470,7 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr)
 	ds_writed(0xc00d, ds_readd(0xd303));
 	ds_writed(0xd2fb, ds_readd(0xd303));
 
-	if (pos == 0) {
+	if (loc == 0) {
 
 		do_border(Real2Phys(ds_readd(0xd303)), 1, 9, 34, 42, 29);
 		ds_writew(0xc011, 2);
@@ -466,11 +500,11 @@ void FIG_draw_char_pic(unsigned short pos, unsigned short hero_nr)
 }
 
 /**
- * FIG_draw_enemy_pic() - draws a picture of the enemy when on turn
- * @loc:	0 - left side, 1 = right side
- * @id:		ID of the enemy
+ * \brief	draws a picture of the monster, when on turn
+ * \param loc	0 = left side, 1 = right side
+ * \param id	ID of the enemy
  */
-void FIG_draw_enemy_pic(unsigned short loc, unsigned short id)
+void FIG_draw_enemy_pic(signed short loc, signed short id)
 {
 	signed short height_width;
 	Bit8u *p_enemy;
