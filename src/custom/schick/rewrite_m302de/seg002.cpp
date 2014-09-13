@@ -2297,7 +2297,7 @@ void sub_light_timers(signed int quarter) {
 					signed short tmp_1;
 					host_writeb(hero_i + 0x20, host_readb(hero_i + 0x20) - 1);
 
-					tmp_1 = mem_readw(Real2Phys(ds_readd(ITEMSDAT)) + 0x10d);
+					tmp_1 = host_readw(Real2Host(ds_readd(ITEMSDAT)) + 0x10d);
 					host_writew(hero_i + 0x2d8,
 						host_readb(hero_i + 0x2d8) - tmp_1);
 
