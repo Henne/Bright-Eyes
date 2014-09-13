@@ -42,10 +42,10 @@ signed short calc_beeline(signed short x1, signed short y1, signed short x2, sig
 
 
 /**
- * FIG_get_range_weapon_type() - returns the type of the range weapon of a hero
- * @hero:	pointer to hero
+ * \brief get the type of the range weapon of a hero
+ * \param hero	pointer to hero
  *
- * Returns: range weapon type [3,5], 3 = shooting, 4 = throwing, 5 = spear weapon
+ * \return range weapon type {-1, 3, 4, 5}: -1 = none, 3 = shooting, 4 = throwing, 5 = spear weapon
 */
 signed short FIG_get_range_weapon_type(Bit8u *hero)
 {
@@ -61,24 +61,28 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 	if (item_weapon(ptr)) {
 
 		/* MagicStaffs or Fightstaffs are spears, but no range weapons */
-		if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45)
-			retval =  5;
+		if (host_readb(ptr + 3) == 5 && weapon != 0x85 && weapon != 0x45) {
 
-		else if (host_readb(ptr + 3) == 7)
+			retval = 5;
+
+		} else if (host_readb(ptr + 3) == 7) {
+
 			retval = 3;
 
-		else if (host_readb(ptr + 3) == 8)
+		} else if (host_readb(ptr + 3) == 8) {
+
 			retval = 4;
+		}
 	}
 
 	return retval;
 }
 
 /**
- * fill_enemy_sheet - fills an enemies sheet from a template
- * @sheet_nr:	the number of the sheet
- * @enemy_id:	the ID of the enemy (MONSTER.DAT)
- * @round:	the fight round the enemy appears
+ * \brief fills an enemies sheet from a template
+ * \param sheet_nr	the number of the sheet
+ * \param enemy_id	the ID of the enemy (MONSTER.DAT)
+ * \param round		the fight round the enemy appears
  */
 void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round)
 {
@@ -123,13 +127,18 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		(signed char)dice_template(host_readw(temp + 0x15)));
 
 	/* Terrible hack:
-		if the current fight is 0xbc, set MR to 5 (Travel-Event 84),
-		if the current fight is 0xc0, and the enemy
+		if the current fight is 188, set MR to 5 (Travel-Event 84),
+		if the current fight is 192, and the enemy
 		is no "Orkchampion" then set a flag */
-	if (ds_readw(CURRENT_FIG_NR) == 188)
+	if (ds_readw(CURRENT_FIG_NR) == 188) {
+
 		host_writeb(sheet + 0x19, 5);
-	else if (ds_readw(CURRENT_FIG_NR) == 192 && host_readb(sheet) != 0x48)
+
+	} else if ((ds_readw(CURRENT_FIG_NR) == 192) && (host_readb(sheet) != 0x48)) {
+
 			or_ptr_bs(sheet + 0x31, 0x20);
+
+	}
 
 	/* copy the first encounter AP */
 	host_writeb(sheet + 0x1a, host_readb(temp + 0x17));
@@ -172,7 +181,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	/* set the fight round the enemy appears */
 	host_writeb(sheet + 0x35, round);
 
-	/* set to ? */
+	/* copy the looking direction */
 	host_writeb(sheet + 0x27,
 		host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + sheet_nr * 5 + 0x19));
 
@@ -190,21 +199,24 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writeb(sheet + 0x3d, host_readb(temp + 0x2b));
 
 	/* Another hack:
-		If the current fight == 0x5e and the enemy is "Kultist",
+		If the current fight == 94 and the enemy is "Kultist",
 		set a flag */
-	if ((ds_readw(CURRENT_FIG_NR) == 94) && (host_readb(sheet) == 0x38))
+	if ((ds_readw(CURRENT_FIG_NR) == 94) && (host_readb(sheet) == 0x38)) {
+
 		or_ptr_bs(sheet + 0x32, 0x4);
+
+	}
 }
 
 /**
- *	place_obj_on_cb -	places an object on the chessboard
- *	@x:		X-Coordinate
- *	@y:		Y-Coordinate
- *	@object:	object number
- *	@type:		typus for heros, monster_id for enemies
- *	@dir:		looking direction
+ *	\brief		places an object on the chessboard
+ *	\param	x	X-Coordinate
+ *	\param	y	Y-Coordinate
+ *	\param	object	object ID
+ *	\param	type	typus for heros, monster_id for enemies
+ *	\param	dir	looking direction
  *
- *	Returns 1 if the placement was successful or 0 if not.
+ *	\return 1 if the placement was successful or 0 if not.
  */
 unsigned short place_obj_on_cb(signed short x, signed short y, signed short object, signed char type, signed char dir)
 {
@@ -213,12 +225,13 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 
 	/* check if an object is already on that field
 		check if the object nr is valid */
-	if ((get_cb_val(x, y) > 0) || (object < 0))
+	if ((get_cb_val(x, y) > 0) || (object < 0)) {
 		return 0;
+	}
 
 	/* check if the object is decoration */
 	if (object >= 50) {
-		if ((signed char)type == 57 || (signed char)type == 56 || (signed char)type == 62) {
+		if (((signed char)type == 57) || ((signed char)type == 56) || ((signed char)type == 62)) {
 			FIG_set_cb_field(y + 1, x, object);
 			FIG_set_cb_field(y + 1, x - 1, object);
 			FIG_set_cb_field(y, x - 1, object);
@@ -253,6 +266,7 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 			{
 				return 0;
 			}
+
 			FIG_set_cb_field(y + ds_readws(0x601a + dir * 4),
 				x + ds_readws(0x6018 + dir * 4),
 					object + 20);
@@ -265,15 +279,22 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 	return 1;
 }
 
-void FIG_load_enemy_sprites(Bit8u *ptr, signed short v1, signed short v2)
+/**
+ * \brief load the sprites from monsters
+ *
+ * \param ptr	pointer to a monster datasheet
+ * \param x	x-coordinate on the chessboard
+ * \param y	y-coordinate on the chessboard
+ */
+void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 {
 	struct nvf_desc nvf;
 	signed short l1;
 
 	ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(ptr + 1) * 5));
 	ds_writeb(0xe068, host_readbs(ptr + 0x27));
-	ds_writeb(0xe069, (signed char)v1);
-	ds_writeb(0xe06a, (signed char)v2);
+	ds_writeb(0xe069, (signed char)x);
+	ds_writeb(0xe06a, (signed char)y);
 
 	ds_writeb(0xe06b,
 		ds_readb(0x1531 + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
@@ -293,7 +314,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short v1, signed short v2)
 		/* sprite uses one field */
 		ds_writeb(0xe06f, 0);
 		ds_writeb(0xe071, 0x1f);
-		ds_writeb(0xe079, 0xff);
+		ds_writeb(0xe079, -1);
 	}
 
 	ds_writeb(0xe070, 0);
@@ -301,17 +322,18 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short v1, signed short v2)
 	ds_writeb(0xe06d, 0x28);
 	ds_writeb(0xe06e, 0x20);
 	ds_writeb(0xe07b, 1);
-	ds_writeb(0xe07c, host_readbs(ptr + 1));
+	ds_writeb(0xe07c, host_readbs(ptr + 1)); /* gfx_set_id */
 	ds_writeb(0xe073, -1);
 	ds_writeb(0xe075, -1);
 	ds_writeb(0xe074, -1);
-	ds_writed(0xe07d, ds_readd(0xd86e));
-	ds_writeb(0xe07a, 0);
+	ds_writed(0xe07d, ds_readd(0xd86e)); /* ->prev */
+	ds_writeb(0xe07a, 0); /* ->next */
 
 	add_ds_ws(0xd86e, 0x508);
 	sub_ds_ds(0xe370, 0x508);
 	ds_writeb(0xe077, 0x63);
 
+	/* check presence in the first round */
 	ds_writeb(0xe078, host_readb(ptr + 0x35) == 0 ? 1 : 0);
 
 	if (is_in_byte_array(host_readb(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
@@ -330,8 +352,8 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short v1, signed short v2)
 
 	if (is_in_byte_array(host_readb(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-		ds_writeb(0xe069, v1 + ds_readbs(0x6018 + host_readbs(ptr + 0x27) * 4));
-		ds_writeb(0xe06a, v2 + ds_readbs(0x601a + host_readbs(ptr + 0x27) * 4));
+		ds_writeb(0xe069, x + ds_readbs(0x6018 + host_readbs(ptr + 0x27) * 4));
+		ds_writeb(0xe06a, y + ds_readbs(0x601a + host_readbs(ptr + 0x27) * 4));
 
 		add_ds_bs(0xe06b, ds_readbs(0x6028 + host_readbs(ptr + 0x27)));
 		add_ds_bs(0xe06c, ds_readbs(0x602c + host_readbs(ptr + 0x27)));
