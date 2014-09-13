@@ -384,7 +384,7 @@ signed char FIG_add_to_list(signed char v)
 		D1_LOG("\tlist created x = %d, y = %d\n", x, y);
 #endif
 
-		return host_readb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10);
+		return host_readbs(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10);
 	}
 
 	while (host_readbs(Real2Host(p1) + 0x10) != -1) {
@@ -425,7 +425,7 @@ signed char FIG_add_to_list(signed char v)
 #if !defined(__BORLANDC__)
 				D1_LOG("\tlist appended x = %d, y = %d\n", x, y);
 #endif
-				return host_readb(Real2Host(p1) + 0x10);
+				return host_readbs(Real2Host(p1) + 0x10);
 			}
 
 			/* p2 = p2->next */
@@ -451,7 +451,7 @@ signed char FIG_add_to_list(signed char v)
 #if !defined(__BORLANDC__)
 	D1_LOG("\tlist insert x = %d, y = %d\n", x, y);
 #endif
-	return host_readb(Real2Host(p1) + 0x10);
+	return host_readbs(Real2Host(p1) + 0x10);
 }
 
 /**
