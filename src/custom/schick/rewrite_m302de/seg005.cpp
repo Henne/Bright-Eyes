@@ -84,23 +84,25 @@ damn_label:
 }
 
 /**
- *	FIG_set_star_color() - set the color of the star in fights
- *	@ptr:	pointer to the star template
- *	@count: number of bytes the star has
- *	@color: 1=red/2=green/3=blue/4=yellow/11=darkbrown/12=lightbrown/13=pink
+ * \brief	set the color of the star in fights
+ *		Sets the color of the star which shows fight activities,
+ *		like damage, in fights.
  *
- *	Sets the color of the star which shows fight activities,
- *	like damage, in fights.
+ * \param	ptr	pointer to the star template
+ * \count	number of bytes the star has
+ * \color	1=red/2=green/3=blue/4=yellow/11=darkbrown/12=lightbrown/13=pink
+ *
  */
-void FIG_set_star_color(PhysPt ptr, unsigned short count, unsigned char color)
+void FIG_set_star_color(Bit8u *ptr, unsigned short count, unsigned char color)
 {
-	PhysPt p;
+	Bit8u *p;
 
 	color += 0x80;
 
 	for (p = ptr; count--; p++) {
-		if (mem_readb(p))
-			mem_writeb(p, color);
+		if (host_readb(p)) {
+			host_writeb(p, color);
+		}
 	}
 }
 
@@ -194,7 +196,7 @@ unsigned short fight_printer(void)
 			ds_writed(0xd2fb, ds_readd(0xd303));
 			get_textcolor(&fg_bak, &bg_bak);
 
-			FIG_set_star_color(Real2Phys(ds_readd(0xd29d)),
+			FIG_set_star_color(Real2Host(ds_readd(0xd29d)),
 				3724, ds_readb(0x4b6b + f_action));
 
 			ds_writew(0xc011, 0);

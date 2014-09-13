@@ -7383,9 +7383,9 @@ static int n_seg005(unsigned short offs)
 		CPU_Push16(count);
 		CPU_Push32(p);
 
-		FIG_set_star_color(Real2Phys(p), count, val & 0xff);
+		FIG_set_star_color(Real2Host(p), count, (Bit8u)val);
 		D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
-			p, count, val & 0xff);
+			p, count, (Bit8u)val);
 
 		return 1;
 	}
