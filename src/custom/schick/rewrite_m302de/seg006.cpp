@@ -402,15 +402,14 @@ signed char FIG_add_to_list(signed char v)
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	if (ds_readbs(0xe077) != -1)
-		for (; (signed char)mem_readb(Real2Phys(p2) + 3) <= x &&
-		((signed char)mem_readb(Real2Phys(p2) + 3) != x ||
-		(signed char)mem_readb(Real2Phys(p2) + 4) >= y) &&
-		((signed char)mem_readb(Real2Phys(p2) + 3) != x ||
-		(signed char)mem_readb(Real2Phys(p2) + 4) != y ||
-		(signed char)mem_readb(Real2Phys(p2) + 0x11) <= ds_readbs(0xe077))
-			/* p2 = p2->next */
-			 ; p2 = (RealPt)host_readd(Real2Host(p2) + 0x1b)) {
+	if (ds_readbs(0xe077) != -1) {
+		while ((host_readbs(Real2Host(p2) + 3) <= x) &&
+		(host_readbs(Real2Host(p2) + 3) != x ||
+		host_readbs(Real2Host(p2) + 4) >= y) &&
+		(host_readbs(Real2Host(p2) + 3) != x ||
+		host_readbs(Real2Host(p2) + 4) != y ||
+		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs(0xe077)))
+		{
 
 			/* p2->next != NULL */
 			if (host_readd(Real2Host(p2) + 0x1b) == 0) {
@@ -428,7 +427,11 @@ signed char FIG_add_to_list(signed char v)
 #endif
 				return host_readb(Real2Host(p1) + 0x10);
 			}
+
+			/* p2 = p2->next */
+			p2 = (RealPt)host_readd(Real2Host(p2) + 0x1b);
 		}
+	}
 
 	/* p1->prev = p2->prev; */
 	host_writed(Real2Host(p1) + 0x1f, host_readd(Real2Host(p2) + 0x1f));
