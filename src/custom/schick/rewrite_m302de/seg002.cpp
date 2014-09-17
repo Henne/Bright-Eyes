@@ -260,9 +260,9 @@ signed short prepare_midi_playback(signed short sequence)
 	unsigned short l_si;
 	unsigned short l_di;
 
-	if ((ds_writew(0xbd01, load_archive_file(0x97))) != -1) {
+	if ((ds_writews(0xbd01, load_archive_file(0x97))) != -1) {
 
-		if ((ds_writew(0xbd21, AIL_register_sequence(ds_readw(0xbd23), (RealPt)ds_readd(0xbd0d), sequence, (RealPt)ds_readd(0xbd15), 0))) != -1) {
+		if ((ds_writews(0xbd21, AIL_register_sequence(ds_readw(0xbd23), (RealPt)ds_readd(0xbd0d), sequence, (RealPt)ds_readd(0xbd15), 0))) != -1) {
 
 			while ( (l_si = AIL_timbre_request(ds_readw(0xbd23), ds_readw(0xbd21))) != -1)
 			{
