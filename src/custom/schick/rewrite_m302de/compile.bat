@@ -9,7 +9,7 @@
 @REM
 @REM --the compiling cases
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -IAIL -h -j1 SEG002.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -IAIL -j1 SEG002.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG003.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP
 @REM
