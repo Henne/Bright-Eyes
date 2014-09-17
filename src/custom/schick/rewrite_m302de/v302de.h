@@ -850,6 +850,7 @@ extern char ds[0xf7af];
 #define ds_readds(p) *(Bit32s*)(ds + p)
 
 #define ds_writebs(p, d) *(Bit8s*)(ds + p) = d
+#define ds_writews(p, d) (*(Bit16s*)(ds + p) = d)
 
 #define ds_writeb(p, d) *(Bit8u*)(ds + p) = d
 #define ds_writew(p, d) *(Bit16u*)(ds + p) = d

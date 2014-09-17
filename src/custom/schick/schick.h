@@ -129,6 +129,10 @@ static inline Bit16u ds_writew(unsigned short offs, Bit16u val) {
 	host_writew(p_datseg + offs, val);
 	return val;
 }
+static inline Bit16s ds_writews(unsigned short offs, Bit16s val) {
+	host_writew(p_datseg + offs, val);
+	return val;
+}
 static inline Bit32u ds_writed(unsigned short offs, Bit32u val) {
 	host_writed(p_datseg + offs, val);
 	return val;
