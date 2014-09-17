@@ -867,32 +867,36 @@ void copy_file_to_temp(RealPt src_file, RealPt fname)
 	}
 }
 
+/* Borlandified and identical */
 Bit32s process_nvf(struct nvf_desc *nvf)
 {
+	signed short i;
 	Bit32u offs;
-	volatile signed short pics;
-	volatile signed short height;
-	volatile signed short va;
+	signed short pics;
+	signed short width;
+	signed short height;
+	signed short va;
 	Bit32u p_size;
 	Bit32u retval;
 	signed char nvf_type;
 #if !defined(__BORLANDC__)
 	Bit8u *nvf_nr;
+	Bit8u *src;
 #else
 	Bit8u huge *nvf_nr;
+	Bit8u huge *src;
 #endif
-	Bit8u *src;
 	Bit8u *dst;
-
-	signed short width;
-	signed short i;
-
 
 	nvf_type = host_readb(nvf->src);
 	va = nvf_type & 0x80;
 	nvf_type &= 0x7f;
 
-	pics = host_readws(nvf->src + 1);
+#if !defined(__BORLANDC__)
+	pics = host_readws(H_PADD(nvf->src, 1L));
+#else
+	pics = host_readws(Real2Host(H_PADD(nvf->src, 1L)));
+#endif
 
 	if (nvf->nr < 0)
 		nvf->nr = 0;
@@ -903,10 +907,10 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 	switch (nvf_type) {
 
 	case 0x00:
-		width = host_readw(nvf->src + 3);
-		height = host_readw(nvf->src + 5);
+		width = host_readws(H_PADD(nvf->src, 3));
+		height = host_readws(H_PADD(nvf->src, 5));
 		p_size = width * height;
-		src =  nvf->src + nvf->nr * p_size + 7;
+		src =  H_PADD(nvf->src, nvf->nr * p_size + 7);
 		break;
 
 	case 0x01:
@@ -919,33 +923,33 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 			offs += width * height;
 		}
 
-		width = host_readw(nvf->src + nvf->nr * 4 + 3);
-		height = host_readw(nvf->src + nvf->nr * 4 + 5);
+		width = host_readw(H_PADD(nvf->src, nvf->nr * 4 + 3));
+		height = host_readw(H_PADD(nvf->src, nvf->nr * 4 + 5));
 		p_size = width * height;
-		src = nvf->src + offs;
+		src = H_PADD(nvf->src, offs);
 		break;
 
 	case 0x02: case 0x04:
-		width = host_readw(nvf->src + 3);
-		height = host_readw(nvf->src + 5);
+		width = host_readw(H_PADD(nvf->src, 3L));
+		height = host_readw(H_PADD(nvf->src, 5));
 		offs = pics * 4 + 7L;
 		for (i = 0; i < nvf->nr; i++) {
-			offs += host_readd(nvf->src  + (i * 4) + 7);
+			offs += host_readd(H_PADD(nvf->src, (i * 4) + 7));
 		}
 
-		p_size = host_readd(nvf->src + nvf->nr * 4 + 7);
-		src = nvf->src + offs;
+		p_size = host_readd(H_PADD(nvf->src, nvf->nr * 4 + 7));
+		src = H_PADD(nvf->src, offs);
 		break;
 
 	case 0x03: case 0x05:
 		offs = pics * 8 + 3L;
 		for (i = 0; i < nvf->nr; i++)
-			offs += host_readd(nvf->src  + (i * 8) + 7);
+			offs += host_readd(H_PADD(nvf->src, (i * 8) + 7));
 
-		width = host_readw(nvf->src + nvf->nr * 8 + 3);
-		height = host_readw(nvf->src + nvf->nr * 8 + 5);
-		p_size = host_readd(nvf->src + i * 8 + 7);
-		src = nvf->src + offs;
+		width = host_readw(H_PADD(nvf->src, nvf->nr * 8 + 3));
+		height = host_readw(H_PADD(nvf->src, nvf->nr * 8 + 5));
+		p_size = host_readd(H_PADD(nvf->src, i * 8 + 7));
+		src = H_PADD(nvf->src, offs);
 		break;
 	}
 
