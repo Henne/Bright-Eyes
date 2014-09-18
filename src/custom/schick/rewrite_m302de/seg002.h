@@ -60,6 +60,9 @@ signed short open_temp_file(unsigned short);
 void copy_from_archive_to_temp(unsigned short, RealPt);
 void copy_file_to_temp(RealPt, RealPt);
 Bit32s process_nvf(struct nvf_desc *);
+#if defined(__BORLANDC__)
+void interrupt mouse_isr(void);
+#endif
 //static
 void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
 short is_mouse_in_rect(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);

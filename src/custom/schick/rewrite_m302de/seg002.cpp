@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 124/138
+	Functions rewritten: 125/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1137,6 +1137,81 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
 	}
 #endif
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void interrupt mouse_isr(void)
+{
+	signed short l_si = _AX;
+	signed short l1;
+	signed short l3;
+	signed short l4;
+	signed short l5;
+	signed short l6;
+
+	if (ds_readws(0x2998) == 0) {
+
+		if (l_si & 0x2) {
+			ds_writew(0xc3d5, 1);
+			ds_writew(0xc3d1, 1);
+		}
+
+		if (l_si & 0x8) {
+			ds_writew(0xc3d3, 1);
+		}
+
+		if (((ds_readb(0x2d6e) != 0) || (ds_readb(0x2d67) != 0)) &&
+				!ds_readbs(0x2d60) &&
+				!ds_readbs(0x2c98) &&
+				(ds_readbs(0x2845) == 0))
+		{
+
+			ds_writed(0xcecb, (Bit32u) (is_mouse_in_rect(68, 4, 171, 51) ? RealMake(datseg, 0x2888):
+							(is_mouse_in_rect(68, 89, 171, 136) ? RealMake(datseg, 0x28c8) :
+							(is_mouse_in_rect(16, 36, 67, 96) ? RealMake(datseg, 0x2908) :
+							(is_mouse_in_rect(172, 36, 223, 96) ? RealMake(datseg, 0x2948) :
+							(!is_mouse_in_rect(16, 4, 223, 138) ? RealMake(datseg, 0x2848) :
+								(void*)ds_readd(0xcecb)))))));
+		} else {
+			if (ds_readbs(0x2c98) != 0) {
+				ds_writed(0xcecb, (Bit32u) RealMake(datseg, 0x2848));
+			}
+		}
+
+		if (l_si & 1) {
+			l1 = 3;
+			l4 = ds_readws(0x299c);
+			l5 = ds_readws(0x299e);
+
+			mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
+
+			ds_writew(0x299c, l4);
+			ds_writew(0x299e, l5);
+
+			if (ds_readws(0x299c) > ds_readws(0x298e)) {
+				ds_writew(0x299c, ds_readws(0x298e));
+			}
+			if (ds_readws(0x299c) < ds_readws(0x298a)) {
+				ds_writew(0x299c, ds_readws(0x298a));
+			}
+			if (ds_readws(0x299e) < ds_readws(0x2988)) {
+				ds_writew(0x299e, ds_readws(0x2988));
+			}
+			if (ds_readws(0x299e) > ds_readws(0x298c)) {
+				ds_writew(0x299e, ds_readws(0x298c));
+			}
+
+			l1 = 4;
+			l4 = ds_readws(0x299c);
+			l5 = ds_readws(0x299e);
+
+			mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
+
+			ds_writew(0x29a4, 1);
+		}
+	}
+}
+#endif
 
 /**
  *	is_mouse_in_rect - checks if the mouse cursor is in a rectangle
