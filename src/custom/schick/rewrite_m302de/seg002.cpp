@@ -1446,41 +1446,42 @@ void update_mouse_cursor1(void)
 	}
 }
 
-void refresh_screen_size1() {
-
+/* Borlandified and identical */
+void refresh_screen_size1(void)
+{
 	/* check lock */
-	if (ds_readw(0x2998))
-		return;
+	if (ds_readw(0x2998) == 0) {
 
-	ds_writew(0x299a, ds_readw(0x299a) + 1);
+		inc_ds_ws(0x299a);
 
-	if (ds_readw(0x299a))
-		return;
+		if (ds_readw(0x299a) == 0) {
 
-	/* get lock */
-	ds_writew(0x2998, 1);
+			/* get lock */
+			ds_writew(0x2998, 1);
 
-	if (ds_readw(0x299c) < ds_readw(0x29a6))
-		ds_writew(0x299c, ds_readw(0x29a6));
+			if (ds_readws(0x299c) < ds_readws(0x29a6))
+				ds_writew(0x299c, ds_readw(0x29a6));
 
-	if (ds_readw(0x299c) > 315)
-		ds_writew(0x299c, 315);
+			if (ds_readws(0x299c) > 315)
+				ds_writew(0x299c, 315);
 
-	if (ds_readw(0x299e) < ds_readw(0x29a8))
-		ds_writew(0x299e, ds_readw(0x29a8));
+			if (ds_readws(0x299e) < ds_readws(0x29a8))
+				ds_writew(0x299e, ds_readw(0x29a8));
 
-	if (ds_readw(0x299e) > 195)
-		ds_writew(0x299e, 195);
+			if (ds_readws(0x299e) > 195)
+				ds_writew(0x299e, 195);
 
-	save_mouse_bg();
-	ds_writew(0x29a0, ds_readw(0x299c));
-	ds_writew(0x29a2, ds_readw(0x299e));
-	ds_writew(0x29aa, ds_readw(0x29a6));
-	ds_writew(0x29ac, ds_readw(0x29a8));
-	draw_mouse_cursor();
+			save_mouse_bg();
+			ds_writew(0x29a0, ds_readw(0x299c));
+			ds_writew(0x29a2, ds_readw(0x299e));
+			ds_writew(0x29aa, ds_readw(0x29a6));
+			ds_writew(0x29ac, ds_readw(0x29a8));
+			draw_mouse_cursor();
 
-	/* put lock */
-	ds_writew(0x2998, 0);
+			/* put lock */
+			ds_writew(0x2998, 0);
+		}
+	}
 }
 
 void mouse_19dc() {

@@ -83,7 +83,7 @@ void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor(void);
 void refresh_screen_size(void);
 void update_mouse_cursor1(void);
-void refresh_screen_size1();
+void refresh_screen_size1(void);
 //static
 void mouse_19dc();
 void handle_gui_input(void);
