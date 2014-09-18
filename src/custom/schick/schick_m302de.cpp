@@ -8393,6 +8393,72 @@ static int n_seg045(unsigned short offs)
 	}
 }
 
+static int n_seg046(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned short spell = CPU_Pop16();
+		unsigned short fsig = CPU_Pop16();
+		unsigned short x1 = CPU_Pop16();
+		unsigned short x2 = CPU_Pop16();
+		unsigned short yg = CPU_Pop16();
+		CPU_Push16(yg);
+		CPU_Push16(x2);
+		CPU_Push16(x1);
+		CPU_Push16(fsig);
+		CPU_Push16(spell);
+		CPU_Push32(hero);
+
+		D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
+			schick_getCharname(hero), spell, fsig, x1, x2, yg);
+		status_show_spell(Real2Host(hero), spell,
+			fsig, x1, x2, yg);
+
+		return 1;
+	}
+	case 0x08d: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		unsigned short talent = CPU_Pop16();
+		unsigned short ftig = CPU_Pop16();
+		unsigned short x1 = CPU_Pop16();
+		unsigned short x2 = CPU_Pop16();
+		unsigned short yg = CPU_Pop16();
+		CPU_Push16(yg);
+		CPU_Push16(x2);
+		CPU_Push16(x1);
+		CPU_Push16(ftig);
+		CPU_Push16(talent);
+		CPU_Push32(hero);
+
+		D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
+			schick_getCharname(hero), talent, ftig, x1, x2, yg);
+		status_show_talent(Real2Host(hero), talent,
+			ftig, x1, x2, yg);
+
+		return 1;
+	}
+	case 0x11a: {
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		D1_LOG("status_show_talents(%s);\n",
+			schick_getCharname(hero));
+
+		status_show_talents(Real2Host(hero));
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg049(unsigned short offs)
 {
 	switch (offs) {
@@ -9665,73 +9731,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	}
 	else if (is_ovrseg(0x133b)) return n_seg044(offs);
 	else if (is_ovrseg(0x133f)) return n_seg045(offs);
-
-	/* seg046 */
-	if (is_ovrseg(0x1344)) {
-		switch (offs) {
-		case 0x000: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			unsigned short spell = CPU_Pop16();
-			unsigned short fsig = CPU_Pop16();
-			unsigned short x1 = CPU_Pop16();
-			unsigned short x2 = CPU_Pop16();
-			unsigned short yg = CPU_Pop16();
-			CPU_Push16(yg);
-			CPU_Push16(x2);
-			CPU_Push16(x1);
-			CPU_Push16(fsig);
-			CPU_Push16(spell);
-			CPU_Push32(hero);
-
-			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
-				schick_getCharname(hero), spell, fsig, x1, x2, yg);
-			status_show_spell(Real2Host(hero), spell,
-				fsig, x1, x2, yg);
-
-			return 1;
-		}
-		case 0x08d: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			unsigned short talent = CPU_Pop16();
-			unsigned short ftig = CPU_Pop16();
-			unsigned short x1 = CPU_Pop16();
-			unsigned short x2 = CPU_Pop16();
-			unsigned short yg = CPU_Pop16();
-			CPU_Push16(yg);
-			CPU_Push16(x2);
-			CPU_Push16(x1);
-			CPU_Push16(ftig);
-			CPU_Push16(talent);
-			CPU_Push32(hero);
-
-			D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
-				schick_getCharname(hero), talent, ftig, x1, x2, yg);
-			status_show_talent(Real2Host(hero), talent,
-				ftig, x1, x2, yg);
-
-			return 1;
-		}
-		case 0x11a: {
-			CPU_Pop16();
-			RealPt hero = CPU_Pop32();
-			CPU_Push32(hero);
-
-			D1_LOG("status_show_talents(%s);\n",
-				schick_getCharname(hero));
-
-			status_show_talents(Real2Host(hero));
-
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
-				"seg046", offs);
-			exit(1);
-		}
-	}
-
+	else if (is_ovrseg(0x1344)) return n_seg046(offs);
 	else if (is_ovrseg(0x1353)) return n_seg049(offs);
 	else if (is_ovrseg(0x1358)) return n_seg050(offs);
 	else if (is_ovrseg(0x1362)) return n_seg053(offs);
