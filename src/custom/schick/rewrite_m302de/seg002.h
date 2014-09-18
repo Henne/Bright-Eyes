@@ -82,7 +82,7 @@ void seg002_1880(signed short);
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor(void);
 void refresh_screen_size(void);
-void update_mouse_cursor1();
+void update_mouse_cursor1(void);
 void refresh_screen_size1();
 //static
 void mouse_19dc();

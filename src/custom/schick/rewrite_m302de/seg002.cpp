@@ -1431,14 +1431,18 @@ void refresh_screen_size(void)
 	refresh_screen_size1();
 }
 
-void update_mouse_cursor1() {
+/* Borlandified and identical */
+void update_mouse_cursor1(void)
+{
 	if (ds_readw(0x2998) == 0) {
+
 		if  (ds_readw(0x299a) == 0) {
 			ds_writew(0x2998, 1);
 			restore_mouse_bg();
 			ds_writew(0x2998, 0);
 		}
-		ds_writew(0x299a, ds_readw(0x299a) - 1);
+
+		dec_ds_ws(0x299a);
 	}
 }
 
