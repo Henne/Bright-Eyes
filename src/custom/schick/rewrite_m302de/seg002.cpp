@@ -1368,15 +1368,21 @@ void mouse_reset_ehandler(void)
 }
 
 /**
- * mouse_move_cursor -	move the mouse cursor to a position
- * @x:	X - coordinate
- * @y:	Y - coordinate
+ * \brief	move the mouse cursor to a position on the screen
+ *
+ * \param x	X - coordinate
+ * \param y	Y - coordinate
  */
-void mouse_move_cursor(unsigned short x, unsigned short y) {
-	unsigned short v1 = 4;
-	unsigned short v2 = 0xdead;
+/* Borlandified and identical */
+void mouse_move_cursor(signed short x, signed short y)
+{
+	signed short l1 = 4;
+	signed short l3;
+	signed short l4 = x;
+	signed short l5 = y;
+	signed short l6;
 
-	mouse_action((Bit8u*)&v1, (Bit8u*)&v2, (Bit8u*)&x, (Bit8u*)&y, (Bit8u*)&v2);
+	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
 }
 
 /**

@@ -76,7 +76,7 @@ void seg002_17ae(void);
 #endif
 void disable_mouse(void);
 void mouse_reset_ehandler(void);
-void mouse_move_cursor(unsigned short x, unsigned short y);
+void mouse_move_cursor(signed short, signed short);
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor();
 void refresh_screen_size();
