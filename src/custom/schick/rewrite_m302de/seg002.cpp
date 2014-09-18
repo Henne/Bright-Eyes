@@ -1322,6 +1322,7 @@ void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
 #endif
 
 
+/* Borlandified and identical */
 void mouse_reset_ehandler(void)
 {
 	signed short l1;
