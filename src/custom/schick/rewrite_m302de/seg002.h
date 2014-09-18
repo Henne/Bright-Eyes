@@ -70,6 +70,7 @@ signed short is_mouse_in_rect(signed short, signed short, signed short, signed s
 void mouse_init(void);
 void seg002_16fd(void);
 void seg002_170e(void);
+void call_mouse_isr(void);
 void mouse_irq_init(signed short, void interrupt *);
 void seg002_17ae(void);
 #endif

@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 128/138
+ *	Functions rewritten: 129/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1288,6 +1288,12 @@ void seg002_170e(Bit8u *a1, Bit8u *a2, Bit8u *a3, Bit8u *a4)
 	host_writew(a1, 5);
 
 	mouse_action(a1, a2, a3, a4, (Bit8u*)&tmp);
+}
+
+/* Borlandified and identical */
+void call_mouse_isr(void)
+{
+	mouse_isr();
 }
 
 void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
