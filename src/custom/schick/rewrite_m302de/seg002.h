@@ -85,7 +85,7 @@ void refresh_screen_size(void);
 void update_mouse_cursor1(void);
 void refresh_screen_size1(void);
 //static
-void mouse_19dc();
+void mouse_19dc(void);
 void handle_gui_input(void);
 unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p);
 void handle_input();

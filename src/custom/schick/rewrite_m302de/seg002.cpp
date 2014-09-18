@@ -1484,30 +1484,29 @@ void refresh_screen_size1(void)
 	}
 }
 
-void mouse_19dc() {
-
+/* Borlandified and identical */
+void mouse_19dc(void)
+{
 	/* return if mouse was not moved and the cursor remains */
-	if (ds_readw(0x29a4) == 0 && ds_readd(0xcec7) == ds_readd(0xcecb))
-		return;
+	if ((ds_readw(0x29a4) != 0) || (ds_readd(0xcec7) != ds_readd(0xcecb))) {
 
-	/* set new cursor */
-	ds_writed(0xcec7, ds_readd(0xcecb));
+		/* set new cursor */
+		ds_writed(0xcec7, ds_readd(0xcecb));
 
-	/* check if the new cursor is the default cursor */
-	if ((RealPt)ds_readd(0xcecb) == RealMake(datseg, 0x2848)) {
-		/* set cursor size 0x0 */
-		ds_writew(0x29a8, 0);
-		ds_writew(0x29a6, 0);
-	} else {
-		/* set cursor size 8x8 */
-		ds_writew(0x29a8, 8);
-		ds_writew(0x29a6, 8);
+		/* check if the new cursor is the default cursor */
+		if (Real2Host(ds_readd(0xcecb)) == p_datseg + 0x2848) {
+			/* set cursor size 0x0 */
+			ds_writew(0x29a6, ds_writew(0x29a8, 0));
+		} else {
+			/* set cursor size 8x8 */
+			ds_writew(0x29a6, ds_writew(0x29a8, 8));
+		}
+
+		/* reset mouse was moved */
+		ds_writew(0x29a4, 0);
+		update_mouse_cursor1();
+		refresh_screen_size1();
 	}
-
-	/* reset mouse was moved */
-	ds_writew(0x29a4, 0);
-	update_mouse_cursor1();
-	refresh_screen_size1();
 }
 
 void handle_gui_input(void)
