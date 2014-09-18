@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 127/138
+ *	Functions rewritten: 128/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1278,6 +1278,16 @@ void seg002_16fd(void)
 	if (ds_readw(0xc3c7) == 2) {
 		seg002_17ae();
 	}
+}
+
+/* Borlandified and identical */
+void seg002_170e(Bit8u *a1, Bit8u *a2, Bit8u *a3, Bit8u *a4)
+{
+	signed short tmp;
+
+	host_writew(a1, 5);
+
+	mouse_action(a1, a2, a3, a4, (Bit8u*)&tmp);
 }
 
 void mouse_irq_init(signed short irq_nr, void interrupt *(isr))

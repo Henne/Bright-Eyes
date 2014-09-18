@@ -69,6 +69,7 @@ signed short is_mouse_in_rect(signed short, signed short, signed short, signed s
 #if defined(__BORLANDC__)
 void mouse_init(void);
 void seg002_16fd(void);
+void seg002_170e(void);
 void mouse_irq_init(signed short, void interrupt *);
 void seg002_17ae(void);
 #endif
