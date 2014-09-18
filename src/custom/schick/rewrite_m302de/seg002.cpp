@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
-	Functions rewritten: 125/138
+	Functions rewritten: 126/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1235,6 +1235,48 @@ signed short is_mouse_in_rect(signed short x1, signed short y1,
 
 	return ((m_x >= x1) && (m_x <= x2) && (m_y >= y1) && (m_y <= y2)) ? 1 : 0;
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void mouse_init(void)
+{
+	signed short l1;
+	signed short l3;
+	signed short l4;
+	signed short l5;
+	signed short l6;
+
+	if (ds_readw(0xc3c7) == 2) {
+
+		l1 = 0;
+
+		mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
+
+		if (l1 == 0) {
+			ds_writew(0xc3c7, 0);
+		}
+
+		ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+		ds_writed(0xcec7, (Bit32u)RealMake(datseg, 0x2848));
+
+		if (ds_readw(0xc3c7) == 2) {
+
+			l1 = 4;
+			l4 = ds_readws(0x299c);
+			l5 = ds_readws(0x299e);
+
+			mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
+
+			mouse_irq_init(0x1f, mouse_isr);
+		}
+	}
+}
+
+void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
+{
+
+}
+#endif
 
 void disable_mouse(void)
 {
