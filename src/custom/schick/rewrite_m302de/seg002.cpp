@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 129/138
+ *	Functions rewritten: 130/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1296,10 +1296,28 @@ void call_mouse_isr(void)
 	mouse_isr();
 }
 
+/* Borlandified and identical */
 void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
 {
+	signed short l1;
+	signed short l3;
+	signed short l4;
+	signed short l5;
+	signed short l6;
 
+	l1 = 12;
+	l4 = irq_nr;
+	l5 = FP_OFF(call_mouse_isr);
+	l6 = FP_SEG(call_mouse_isr);
+
+	ds_writed(0xbcdb, (Bit32u)bc__dos_getvect(0x78));
+	bc__dos_setvect(0x78, (INTCAST)isr);
+
+	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
+
+	ds_writew(0x4484, 1);
 }
+
 void seg002_17ae(void)
 {
 
