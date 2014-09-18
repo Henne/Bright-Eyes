@@ -1214,26 +1214,26 @@ void interrupt mouse_isr(void)
 #endif
 
 /**
- *	is_mouse_in_rect - checks if the mouse cursor is in a rectangle
- *	@x1:	upper left x coordinate
- *	@y1:	upper left y coordinate
- *	@x2:	bottom right x coordinate
- *	@y2:	bottom right y coordinate
+ * \brief	checks if the mouse cursor is in a rectangle
  *
- * Returns 0 if the pointer is not in this rectangle, otherwise 1.
+ * \param x1	upper left x coordinate
+ * \param y1	upper left y coordinate
+ * \param x2	bottom right x coordinate
+ * \param y2	bottom right y coordinate
+ *
+ * \return 1 if the pointer is in this rectangle, otherwise 0
  */
-short is_mouse_in_rect(unsigned short x1, unsigned short y1,
-				unsigned short x2, unsigned short y2) {
-	unsigned short m_x;
-	unsigned short m_y;
+/* Borlandified and identical */
+signed short is_mouse_in_rect(signed short x1, signed short y1,
+				signed short x2, signed short y2)
+{
+	signed short m_x;
+	signed short m_y;
 
-	m_x = ds_readw(0x299c);
-	m_y = ds_readw(0x299e);
+	m_x = ds_readws(0x299c);
+	m_y = ds_readws(0x299e);
 
-	if ((m_x < x1) || (m_x > x2) || (m_y < y1) || (m_y > y2))
-		return 0;
-
-	return 1;
+	return ((m_x >= x1) && (m_x <= x2) && (m_y >= y1) && (m_y <= y2)) ? 1 : 0;
 }
 
 void disable_mouse(void)

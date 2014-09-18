@@ -65,7 +65,7 @@ void interrupt mouse_isr(void);
 #endif
 //static
 void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
-short is_mouse_in_rect(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
+signed short is_mouse_in_rect(signed short, signed short, signed short, signed short);
 void disable_mouse(void);
 void mouse_reset_ehandler(void);
 void mouse_move_cursor(unsigned short x, unsigned short y);
