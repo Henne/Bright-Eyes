@@ -275,6 +275,17 @@ signed short FIG_count_smth(signed char *p)
 	return count;
 }
 
+/**
+ * \brief		TODO
+ *
+ * \param in_ptr	pointer to hero or monster, depends on value of a4
+ * \param a1		nr of hero or monster
+ * \param x_in		x-coordinate
+ * \param y_in		y-coordinate
+ * \param a4		fight_action
+ *
+ * \return {-1,1}
+*/
 signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed short a4)
 {
 	signed short l_si;
@@ -359,42 +370,42 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 		for (i = 0; i <= 6; i++) {
 			if ((a4 != 8) || (i != a1)) {
 
-					hero_ptr = get_hero(i);
+				hero_ptr = get_hero(i);
 
-					if ((host_readbs(hero_ptr + 0x21) != 0) &&
-						(host_readbs(hero_ptr + 0x87) == ds_readbs(CURRENT_GROUP)) &&
-						!hero_dead(hero_ptr))
-					{
-						FIG_search_obj_on_cb(i + 1, &l_var6, &l_var7);
+				if ((host_readbs(hero_ptr + 0x21) != 0) &&
+					(host_readbs(hero_ptr + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					!hero_dead(hero_ptr))
+				{
+					FIG_search_obj_on_cb(i + 1, &l_var6, &l_var7);
 
-						for (l_var10 = 0; l_var10 < 4; l_var10++) {
+					for (l_var10 = 0; l_var10 < 4; l_var10++) {
 
-							l_var17 = 0;
-							l_var18 = 1;
+						l_var17 = 0;
+						l_var18 = 1;
 
-							while (l_var17 == 0) {
+						while (l_var17 == 0) {
 
-								l_var5 = l_var7 + l_var18 * dst.o[l_var10].y;
-								l_var4 = l_var6 + l_var18 * dst.o[l_var10].x;
+							l_var5 = l_var7 + l_var18 * dst.o[l_var10].y;
+							l_var4 = l_var6 + l_var18 * dst.o[l_var10].x;
 
 
-								if ((l_var5 < 0) || (l_var5 > 23) ||
-									/* Original-Bug: */
-									 (l_var4 < 0) || (l_var5 > 23))
+							if ((l_var5 < 0) || (l_var5 > 23) ||
+								/* Original-Bug: */
+								 (l_var4 < 0) || (l_var5 > 23))
+							{
+								l_var17 = 1;
+							} else {
+								if (!host_readbs(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4))
 								{
-									l_var17 = 1;
+									host_writeb(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4, 9);
 								} else {
-									if (!host_readbs(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4))
-									{
-										host_writeb(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4, 9);
-									} else {
-										l_var17 = 1;
-									}
+									l_var17 = 1;
 								}
-								l_var18++;
 							}
+							l_var18++;
 						}
 					}
+				}
 			}
 		}
 	}
@@ -487,7 +498,6 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 										host_writeb(ptr2 + (l_var5 * 25) + l_var4, l_var2);
 										l_var3 = 1;
 									}
-								/* DONE: 0x9ba - 0xa63 */
 								} else {
 									if (l_var15 < 0) {
 
@@ -502,7 +512,6 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 										} else {
 											host_writeb(ptr2 + (l_var5 * 25) + l_var4, 100);
 										}
-										/* DONE: 0xa66 - 0xac1 */
 									} else if (l_var15 == 124) {
 										arr3[l_si] = 1;
 										arr1[l_si] = l_var4;
@@ -541,7 +550,6 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 												}
 											}
 										}
-										/* DONE: 0xb64 - 0xc38 */
 									} else if (l_var15 < 50) {
 										if (l_var15 == 49) {
 											arr3[l_si] = 1;
@@ -570,7 +578,6 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 											}
 										}
 									}
-										/* DONE: 0xc3b - 0xd5e */
 								}
 							}
 						} else {
@@ -586,7 +593,6 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 									break;
 								}
 							}
-							/* TODO: 0xd60 - 0xddd */
 						}
 					}
 				}
@@ -625,7 +631,6 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 			} else {
 				FIG_backtrack(ptr2, arr1[l_var13], arr2[l_var13], l_var2, host_readbs(in_ptr + 0x33), a4, two_fields, a1);
 			}
-		/* DONE: 0xde9 - 0xf27 */
 		}
 	}
 
