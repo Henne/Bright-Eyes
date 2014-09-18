@@ -82,11 +82,11 @@ void seg002_1880(signed short);
 void make_ggst_cursor(Bit8u *icon);
 void update_mouse_cursor(void);
 void refresh_screen_size(void);
-void handle_gui_input(void);
 void update_mouse_cursor1();
 void refresh_screen_size1();
 //static
 void mouse_19dc();
+void handle_gui_input(void);
 unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p);
 void handle_input();
 void wait_for_keyboard1();

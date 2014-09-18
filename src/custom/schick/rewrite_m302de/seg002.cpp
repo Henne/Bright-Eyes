@@ -1431,13 +1431,6 @@ void refresh_screen_size(void)
 	refresh_screen_size1();
 }
 
-void handle_gui_input(void)
-{
-#if !defined(__BORLANDC__)
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1a34);
-#endif
-}
-
 void update_mouse_cursor1() {
 	if (ds_readw(0x2998) == 0) {
 		if  (ds_readw(0x299a) == 0) {
@@ -1510,6 +1503,13 @@ void mouse_19dc() {
 	ds_writew(0x29a4, 0);
 	update_mouse_cursor1();
 	refresh_screen_size1();
+}
+
+void handle_gui_input(void)
+{
+#if !defined(__BORLANDC__)
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1a34);
+#endif
 }
 
 unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {
