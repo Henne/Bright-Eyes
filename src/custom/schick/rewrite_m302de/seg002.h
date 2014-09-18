@@ -68,13 +68,13 @@ void mouse_action(Bit8u *, Bit8u *, Bit8u *, Bit8u *, Bit8u *);
 signed short is_mouse_in_rect(signed short, signed short, signed short, signed short);
 #if defined(__BORLANDC__)
 void mouse_init(void);
-void seg002_16fd(void);
-void seg002_170e(void);
-void call_mouse_isr(void);
-void mouse_irq_init(signed short, void interrupt *);
-void seg002_17ae(void);
 #endif
 void disable_mouse(void);
+void seg002_170e(void);
+#if defined(__BORLANDC__)
+void call_mouse_isr(void);
+void mouse_irq_init(signed short, void interrupt *);
+#endif
 void mouse_reset_ehandler(void);
 void mouse_move_cursor(signed short, signed short);
 void make_ggst_cursor(Bit8u *icon);
