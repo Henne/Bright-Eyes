@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 129/138
+ *	Functions rewritten: 131/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -1360,6 +1360,33 @@ void mouse_move_cursor(signed short x, signed short y)
 
 	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
 }
+
+/* Borlandified and identical */
+/* unused */
+void seg002_1838(signed short a1, signed short a2, signed short a3, signed short a4)
+{
+	signed short l1 = 9;
+	signed short l3 = a1;
+	signed short l4 = a2;
+	signed short l5 = a3;
+	signed short l6 = a4;
+
+	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
+}
+
+/* Borlandified and identical */
+/* unused */
+void seg002_1880(signed short a1)
+{
+	signed short l1 = 29;
+	signed short l3 = a1;
+	signed short l4;
+	signed short l5;
+	signed short l6;
+
+	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
+}
+
 
 /**
 	make_ggst_cursor - makes a mouse cursor from a selected item
