@@ -1392,32 +1392,42 @@ void seg002_1880(signed short a1)
 	make_ggst_cursor - makes a mouse cursor from a selected item
 	@p:	pointer to the icon of the item
 */
-void make_ggst_cursor(Bit8u *icon) {
-	unsigned short y, x;
-	unsigned short tmp;
+/* Borlandified and identical */
+void make_ggst_cursor(Bit8u *icon)
+{
+	signed short y;
+	signed short x;
 
 	/* clear the bitmask */
-	for (y = 0; y < 16; y++)
+	for (y = 0; y < 16; y++) {
 		ds_writew(0xceef + y * 2, 0);
+	}
 
 	/* make a bitmask from the icon */
-	for (y = 0; y < 16; y++)
-		for (x = 0; x < 16; x++)
+	for (y = 0; y < 16; y++) {
+		for (x = 0; x < 16; x++) {
 			/* if pixelcolor of the icon is not black */
 			if (*icon++ != 0x40) {
-				tmp = ds_readw(0xceef + y * 2);
-				ds_writew(0xceef + y * 2, tmp | (0x8000 >> x));
+				or_ds_ws(0xceef + y * 2, (0x8000 >> x));
 			}
+		}
+	}
 
 	/* copy and negate the bitmask */
-	for (y = 0; y < 16; y++)
+	for (y = 0; y < 16; y++) {
 		ds_writew(0xcecf + y * 2, ~ds_readw(0xceef + y * 2));
+	}
 }
 
-void update_mouse_cursor() {
+/* Borlandified and identical */
+void update_mouse_cursor(void)
+{
 	update_mouse_cursor1();
 }
-void refresh_screen_size() {
+
+/* Borlandified and identical */
+void refresh_screen_size(void)
+{
 	refresh_screen_size1();
 }
 
