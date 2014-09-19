@@ -27,6 +27,11 @@ void print_msg_with_first_hero(Bit8u *msg)
 	return;
 }
 
+void do_dungeon(void)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif

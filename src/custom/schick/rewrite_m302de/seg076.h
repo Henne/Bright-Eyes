@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void do_dungeon(void);
+
 /* 0x48 */
 void print_msg_with_first_hero(Bit8u*);
 
