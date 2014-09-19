@@ -14,6 +14,11 @@
 namespace M302de {
 #endif
 
+void do_town(void)
+{
+	DUMMY_WARNING();
+}
+
 /* 0xb73 */
 signed short get_border_index(signed short val)
 {

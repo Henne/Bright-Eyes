@@ -5,6 +5,9 @@ namespace M302de {
 /* 0x2a */
 signed short get_border_index(signed short);
 
+/* 0x39 */
+void do_town(void);
+
 /* 0x4d */
 void load_city_texture(signed short, signed short, signed short, signed short);
 
