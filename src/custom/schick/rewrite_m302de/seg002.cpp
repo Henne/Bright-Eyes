@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 131/138
+ *	Functions rewritten: 132/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -26,9 +26,12 @@
 #include "seg010.h"
 #include "seg011.h"
 #include "seg029.h"
+#include "seg030.h"
 #include "seg039.h"
 #include "seg041.h"
 #include "seg047.h"
+#include "seg048.h"
+#include "seg049.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg106.h"
@@ -1509,10 +1512,152 @@ void mouse_19dc(void)
 	}
 }
 
+/* Borlandified and identical */
 void handle_gui_input(void)
 {
 #if !defined(__BORLANDC__)
 	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1a34);
+#else
+	signed short l_si;
+	signed short l_di;
+	signed short l1;
+
+	ds_writew(0xc3d7, ds_writew(ACTION, l_si = 0));
+
+	herokeeping();
+
+	if (CD_bioskey(1)) {
+
+		l_si = (ds_writews(0xc3d7, bc_bioskey(0))) >> 8;
+		and_ds_ws(0xc3d7, 0xff);
+
+		if (l_si == 0x24) {
+			l_si = 0x2c;
+		}
+
+		if ((ds_readw(0xc3d7) == 0x11) && (ds_readw(0xbd25) == 0)) {
+			cleanup_game();
+			bc_exit(0);
+		}
+	}
+
+	if (ds_readw(0xc3d5) == 0) {
+
+		ds_writew(0x29ba, 0);
+
+		if (ds_readw(0xc3c7) == 0) {
+		}
+
+		if (ds_readw(0xc3d7) == 5) {
+			seg048_1498();
+			l_si = 0;
+		}
+
+		if (ds_readw(0xc3d7) == 15) {
+			GRP_swap_heros();
+			l_si = 0;
+		}
+
+		if ((ds_readw(0xc3d7) == 0x13) && !ds_readbs(0x2c98)) {
+			sound_menu();
+		}
+
+		if ((ds_readw(0xc3d7) == 0x10) &&
+			(ds_readws(0xc3c5) == 0) &&
+			!ds_readbs(0x2c98) &&
+			(ds_readws(0xbd25) == 0))
+		{
+			ds_writew(0xc3c5, 1);
+			inc_ds_ws(0x2c99);
+			ds_writew(0xd2d1, 1);
+			l_di = ds_readws(0xbffd);
+			ds_writew(0xbffd, 2);
+			GUI_output(p_datseg + 0x448a);		/* P A U S E */
+			ds_writew(0xbffd, l_di);
+			ds_writew(0xd2d1, 0);
+			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
+			dec_ds_ws(0x2c99);
+		}
+	} else {
+		play_voc(0x121);
+		ds_writew(0xc3d5, 0);
+		l_si = 0;
+
+		if (NOT_NULL(Real2Host(ds_readd(0x29e4)))) {
+			l_si = get_mouse_action(ds_readw(0x299c),
+					ds_readw(0x299e),
+					Real2Host(ds_readd(0x29e4)));
+		}
+
+		if (!l_si && NOT_NULL(Real2Host(ds_readd(0x29e0)))) {
+			l_si = get_mouse_action(ds_readw(0x299c),
+					ds_readw(0x299e),
+					Real2Host(ds_readd(0x29e0)));
+		}
+
+		if (ds_readw(0xc3c7) == 2) {
+
+			for (l1 = 0; l1 < 15; l1++) {
+				wait_for_vsync();
+			}
+
+			if (ds_readw(0xc3d5) != 0) {
+				ds_writew(0xc3cf, 1);
+				ds_writew(0xc3d5, 0);
+			}
+		}
+
+		if ((l_si >= 0xf1) && (l_si <= 0xf8)) {
+
+			if (ds_readws(0xc3cf) != 0) {
+
+				if ((host_readbs(get_hero(l_si - 241) + 0x21) != 0) &&
+						host_readbs(get_hero(l_si - 241) + 0x87) == ds_readbs(CURRENT_GROUP))
+				{
+					seg048_00d0(l_si - 241);
+					l_si = 0;
+					ds_writew(0xc3cf, 0);
+					ds_writew(0xc3d5, 0);
+				}
+			} else {
+				if ((ds_readws(0x29b4) != 0) &&
+					(host_readbs(get_hero(l_si - 241) + 0x21) != 0) &&
+						host_readbs(get_hero(l_si - 241) + 0x87) == ds_readbs(CURRENT_GROUP))
+				{
+					GRP_move_hero(l_si - 241);
+					l_si = 0;
+					ds_writew(0xc3cf, 0);
+					ds_writew(0xc3d5, 0);
+				}
+			}
+		} else if (l_si == 0xfd) {
+			/* Credits */
+
+			l_si = 0;
+			l_di = ds_readws(0xbffd);
+			ds_writew(0xbffd, 5);
+			ds_writew(0xd2d1, 1);
+			GUI_output(get_ltx(0x628));
+			ds_writew(0xd2d1, 0);
+			ds_writew(0xbffd, l_di);
+
+		} else if (l_si == 0xfc) {
+			/* Clock */
+			l_si = 0;
+			l_di = ds_readws(0xbffd);
+			ds_writew(0xbffd, 5);
+			ds_writew(0xd2d1, 1);
+			prepare_date_str();
+			GUI_output(Real2Host(ds_readd(DTP2)));
+			ds_writew(0xd2d1, 0);
+			ds_writew(0xbffd, l_di);
+
+		}
+	}
+
+	mouse_19dc();
+	ds_writew(ACTION, l_si);
+
 #endif
 }
 
