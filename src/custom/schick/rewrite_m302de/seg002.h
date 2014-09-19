@@ -88,7 +88,7 @@ void refresh_screen_size1(void);
 void mouse_19dc(void);
 void handle_gui_input(void);
 signed short get_mouse_action(signed short, signed short, Bit8u*);
-void handle_input();
+void handle_input(void);
 void wait_for_keyboard1();
 //static
 void timers_daily();
