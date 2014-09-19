@@ -1681,6 +1681,7 @@ signed short get_mouse_action(signed short x, signed short y, Bit8u *p)
 	return 0;
 }
 
+/* Borlandified and identical */
 void handle_input(void)
 {
 	signed short l_si;
@@ -1692,7 +1693,7 @@ void handle_input(void)
 
 	if (CD_bioskey(1)) {
 
-		l_si = ds_writew(0xc3d7, bc_bioskey(0)) >> 8;
+		l_si = (ds_writews(0xc3d7, bc_bioskey(0))) >> 8;
 		and_ds_ws(0xc3d7, 0xff);
 
 		if (l_si == 0x24) {
@@ -1728,7 +1729,7 @@ void handle_input(void)
 			ds_writew(0xd2d1, 0);
 			dec_ds_ws(0x2c99);
 
-			ds_writew(0xc3c5, l_si = ds_writew(0xc3c7, 0));
+			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
 		}
 	} else {
 		play_voc(0x121);
@@ -1756,6 +1757,7 @@ void handle_input(void)
 				if (ds_readw(0xc3d5) != 0) {
 					ds_writew(0xc3cf, 1);
 					ds_writew(0xc3d5, 0);
+					break;
 				}
 			}
 		}
