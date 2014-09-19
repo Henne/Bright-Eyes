@@ -1767,11 +1767,11 @@ void handle_input(void)
 	ds_writew(0xc3d9, l_si);
 }
 
-void wait_for_keyboard1() {
+/* Borlandified and identical */
+void wait_for_keyboard1(void)
+{
 	while (CD_bioskey(1)) {
-#if !defined(__BORLANDC__)
-		D1_LOG("loop in %s\n", __func__);
-#endif
+
 		bc_bioskey(0);
 	}
 }
