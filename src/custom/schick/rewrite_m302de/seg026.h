@@ -8,6 +8,8 @@ void init_text(void);
 void split_textbuffer(Bit8u *, RealPt, Bit32u);
 //0x2a
 void load_ggsts_nvf();
+/* 0x2f */
+signed short load_save_game(void);
 //0x3e
 void write_chr_temp(unsigned short);
 //0x48
