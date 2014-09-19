@@ -1661,24 +1661,23 @@ void handle_gui_input(void)
 #endif
 }
 
-unsigned short get_mouse_action(unsigned short x, unsigned short y, Bit8u *p) {
+/* Borlandified and identical */
+signed short get_mouse_action(signed short x, signed short y, Bit8u *p)
+{
+	signed short i;
 
-	unsigned short i;
+	for (i = 0; host_readws(p + i * 10) != -1; i++) {
 
-	for (i = 0; host_readw(p + i * 10) != 0xffff; i++) {
-
-		if (host_readw(p + i * 10) > x)
-			continue;
-		if (host_readw(p + i * 10 + 4) < x)
-			continue;
-		if (host_readw(p + i * 10 + 2) > y)
-			continue;
-		if (host_readw(p + i * 10 + 6) < y)
-			continue;
-
-		return host_readw(p + i * 10 + 8);
+		if ((host_readws(p + i * 10) <= x) &&
+			(host_readws(p + i * 10 + 4) >= x) &&
+			(host_readws(p + i * 10 + 2) <= y) &&
+			(host_readws(p + i * 10 + 6) >= y))
+		{
+			return host_readw(p + i * 10 + 8);
+		}
 
 	}
+
 	return 0;
 }
 
