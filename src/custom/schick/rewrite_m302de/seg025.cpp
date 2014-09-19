@@ -152,6 +152,11 @@ signed short show_storytext(void)
 	return 0;
 }
 
+void do_location(void)
+{
+	DUMMY_WARNING();
+}
+
 /* 0xea9 */
 /**
  * turnaround() - turn around in a pseudo 3d-view
