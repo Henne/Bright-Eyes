@@ -198,9 +198,9 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 	}
 }
 
-void save_rect(PhysPt src, PhysPt dest, unsigned short width, unsigned short height) {
+void save_rect(RealPt src, RealPt dest, unsigned short width, unsigned short height) {
 	for (; height; height--) {
-		mem_memcpy(dest, src, width);
+		mem_memcpy(Real2Phys(dest), Real2Phys(src), width);
 		src += 320;
 		dest += width;
 	}

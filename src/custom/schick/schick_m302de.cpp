@@ -2442,7 +2442,7 @@ static int seg008(unsigned short offs) {
 
 		rptr = (rptr >> 16) | (rptr << 16);
 
-		save_rect(Real2Phys(rptr), Real2Phys(dst), width, height);
+		save_rect(rptr, dst, width, height);
 
 		if (RealSeg(rptr) == 0xa000)
 			D1_GFX("save_rect(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",

@@ -617,7 +617,7 @@ void do_save_rect() {
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	save_rect(Real2Phys((dst)) + v10, (PhysPt)Real2Phys(src), width, height);
+	save_rect(dst + v10, src, width, height);
 }
 
 void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned short color) {
