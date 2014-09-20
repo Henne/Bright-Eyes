@@ -55,7 +55,7 @@ void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, u
 	}
 }
 
-void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
+void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
 	unsigned short val1, unsigned short val2,
 	unsigned short val3, unsigned short val4,
 	unsigned short src_width, unsigned short src_height,
@@ -129,16 +129,16 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 			if (ds_readw(0x4a92)) {
 				do {
 					if (lines >= 40 || cols <= 75 || cols >= 150)
-						if (mem_readb_inline(dst) >= 0xc8)
+						if (mem_readb(Real2Phys(dst)) >= 0xc8)
 							continue;
 
-					mem_writeb_inline(dst, *src);
+					mem_writeb(Real2Phys(dst), *src);
 
 				} while (src++ && dst++ && --cols);
 			} else {
 				while (cols--) {
-					if (mem_readb_inline(dst) < 0xc8)
-						mem_writeb_inline(dst, *src);
+					if (mem_readb(Real2Phys(dst)) < 0xc8)
+						mem_writeb(Real2Phys(dst), *src);
 					src++;
 					dst++;
 				}
@@ -159,7 +159,7 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 			cols = cur_width;
 			do {
 				if (*src != 0)
-					mem_writeb_inline(dst, *src);
+					mem_writeb(Real2Phys(dst), *src);
 				src++;
 				dst++;
 			} while (--cols);
@@ -178,7 +178,7 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 		bx = 320 - cur_width;
 		do {
 			for (cols = cur_width; cols; cols--)
-				mem_writeb_inline(dst++, *src++);
+				mem_writeb(Real2Phys(dst++), *src++);
 			dst += bx;
 			src += bx;
 		} while (--lines > 0);
@@ -190,7 +190,7 @@ void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
 		bx = 320 - cur_width;
 		do {
 			for (cols = cur_width; cols; cols--)
-				mem_writeb_inline(dst++, *src++);
+				mem_writeb(Real2Phys(dst++), *src++);
 			dst += bx;
 			src += lv5;
 		} while (--lines > 0);

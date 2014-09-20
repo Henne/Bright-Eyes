@@ -2423,7 +2423,7 @@ static int seg008(unsigned short offs) {
 				val12, val14, val16, val18,
 				width, height, RealSeg(src), RealOff(src), mode);
 
-		pic_copy(Real2Phys(dst), x1, y1, x2, y2, val12, val14,
+		pic_copy(dst, x1, y1, x2, y2, val12, val14,
 			val16, val18, width, height,
 			Real2Host(src), mode);
 

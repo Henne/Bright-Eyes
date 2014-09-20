@@ -577,7 +577,8 @@ void do_pic_copy(unsigned short mode) {
 	short x2, y2;
 	short v1, v2, v3, v4;
 	short width, height;
-	RealPt src, dst;
+	Bit8u *src;
+	RealPt dst;
 	short x1, y1;
 
 	x1 = ds_readw(0xc011);
@@ -593,10 +594,10 @@ void do_pic_copy(unsigned short mode) {
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	src = (PhysPt)ds_readd(0xc019);
-	dst = (PhysPt)ds_readd(0xc00d);
+	src = Real2Host(ds_readd(0xc019));
+	dst = (RealPt)ds_readd(0xc00d);
 
-	pic_copy(Real2Phys(dst), x1, y1, x2, y2, v1, v2, v3, v4, width, height, Real2Host(src), mode);
+	pic_copy(dst, x1, y1, x2, y2, v1, v2, v3, v4, width, height, src, mode);
 }
 
 void do_save_rect() {

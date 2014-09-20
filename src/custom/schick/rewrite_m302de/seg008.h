@@ -10,7 +10,7 @@ void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors);
 void draw_h_line(PhysPt ptr, unsigned short count, unsigned char color);
 void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space);
 
-void pic_copy(PhysPt dst, short x1, short y1, short x2, short y2,
+void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
         unsigned short val1, unsigned short val2,
         unsigned short val3, unsigned short val4,
         unsigned short width, unsigned short height,
