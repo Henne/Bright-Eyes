@@ -206,13 +206,15 @@ void save_rect(PhysPt src, PhysPt dest, unsigned short width, unsigned short hei
 	}
 }
 
-void fill_rect(PhysPt ptr, unsigned char color, unsigned short width, unsigned short height) {
+void fill_rect(RealPt ptr, unsigned char color, unsigned short width, unsigned short height) {
 	unsigned short x;
 
 	for (; height; height--) {
-		for (x = 0; x < width; x++)
-			mem_writeb_inline(ptr++ , color);
-	ptr += 320 - width;
+		for (x = 0; x < width; x++) {
+			mem_writeb(Real2Phys(ptr++) , color);
+		}
+
+		ptr += 320 - width;
 	}
 }
 

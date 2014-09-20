@@ -2469,7 +2469,7 @@ static int seg008(unsigned short offs) {
 		/* Seg and Off are swapped */
 		rptr = (rptr >> 16) | (rptr << 16);
 
-		fill_rect(Real2Phys(rptr), (unsigned char)color, width, height);
+		fill_rect(rptr, (unsigned char)color, width, height);
 
 		if (RealSeg(rptr) == 0xa000)
 

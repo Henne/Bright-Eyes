@@ -629,7 +629,7 @@ void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short
 	dst += y * 320 + x;
 
 	update_mouse_cursor();
-	fill_rect(Real2Phys(dst), (unsigned char)color, width, height);
+	fill_rect(dst, (unsigned char)color, width, height);
 	refresh_screen_size();
 }
 
