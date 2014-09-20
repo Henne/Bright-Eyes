@@ -850,69 +850,69 @@ extern char ds[0xf7af];
 #define p_datseg (&ds[0x0000])
 #define datseg (_DS)
 
-#define ds_readb(p) (*(Bit8u*)(ds + p))
-#define ds_readw(p) (*(Bit16u*)(ds + p))
-#define ds_readd(p) (*(Bit32u*)(ds + p))
+#define ds_readb(p)		(*(Bit8u*)(ds + p))
+#define ds_readw(p)		(*(Bit16u*)(ds + p))
+#define ds_readd(p)		(*(Bit32u*)(ds + p))
 
-#define ds_readbs(p) *(Bit8s*)(ds + p)
-#define ds_readws(p) *(Bit16s*)(ds + p)
-#define ds_readds(p) *(Bit32s*)(ds + p)
+#define ds_readbs(p)		(*(Bit8s*)(ds + p))
+#define ds_readws(p)		(*(Bit16s*)(ds + p))
+#define ds_readds(p)		(*(Bit32s*)(ds + p))
 
-#define ds_writebs(p, d) *(Bit8s*)(ds + p) = d
-#define ds_writews(p, d) (*(Bit16s*)(ds + p) = d)
+#define ds_writebs(p, d)	(*(Bit8s*)(ds + p) = d)
+#define ds_writews(p, d)	(*(Bit16s*)(ds + p) = d)
 
-#define ds_writeb(p, d) *(Bit8u*)(ds + p) = d
-#define ds_writew(p, d) *(Bit16u*)(ds + p) = d
-#define ds_writed(p, d) *(Bit32u*)(ds + p) = d
+#define ds_writeb(p, d)		(*(Bit8u*)(ds + p) = d)
+#define ds_writew(p, d)		(*(Bit16u*)(ds + p) = d)
+#define ds_writed(p, d)		(*(Bit32u*)(ds + p) = d)
 
-#define inc_ds_bs(o) (*(Bit8s*)(ds + o))++
-#define dec_ds_bs(o) (*(Bit8s*)(ds + o))--
+#define inc_ds_bs(o)		((*(Bit8s*)(ds + o))++)
+#define dec_ds_bs(o)		((*(Bit8s*)(ds + o))--)
 
-#define add_ds_bs(o, val) (*(Bit8s*)(ds + o))+= (val)
+#define add_ds_bs(o, val) 	((*(Bit8s*)(ds + o))+= (val))
 
-#define inc_ds_ws(o) ++(*(Bit16s*)(ds + o))
-#define dec_ds_ws(o) --(*(Bit16s*)(ds + o))
+#define inc_ds_ws(o)		(++(*(Bit16s*)(ds + o)))
+#define dec_ds_ws(o)		(--(*(Bit16s*)(ds + o)))
 
-#define inc_ds_ws_post(o) (*(Bit16s*)(ds + o))++
-#define dec_ds_ws_post(o) (*(Bit16s*)(ds + o))--
+#define inc_ds_ws_post(o)	((*(Bit16s*)(ds + o))++)
+#define dec_ds_ws_post(o) 	((*(Bit16s*)(ds + o))--)
 
-#define or_ds_bs(o, v) *(Bit8s*)(ds + o) |= v
-#define or_ds_ws(o, v) *(Bit16s*)(ds + o) |= v
-#define xor_ds_bs(o, v) *(Bit8s*)(ds + o) ^= v
+#define or_ds_bs(o, v)		(*(Bit8s*)(ds + o) |= v)
+#define or_ds_ws(o, v)		(*(Bit16s*)(ds + o) |= v)
+#define xor_ds_bs(o, v)		(*(Bit8s*)(ds + o) ^= v)
 
-#define add_ds_ws(o, v) *(Bit16s*)(ds + o) += v
-#define sub_ds_ws(o, v) *(Bit16s*)(ds + o) -= v
-#define and_ds_ws(o, v) *(Bit16s*)(ds + o) &= v
+#define add_ds_ws(o, v)		(*(Bit16s*)(ds + o) += v)
+#define sub_ds_ws(o, v)		(*(Bit16s*)(ds + o) -= v)
+#define and_ds_ws(o, v)		(*(Bit16s*)(ds + o) &= v)
 
-#define add_ds_ds(o, v) *(Bit32s*)(ds + o) += v
-#define sub_ds_ds(o, v) *(Bit32s*)(ds + o) -= v
+#define add_ds_ds(o, v)		(*(Bit32s*)(ds + o) += v)
+#define sub_ds_ds(o, v)		(*(Bit32s*)(ds + o) -= v)
 
-#define inc_ptr_bs(p)		(*(Bit8s*)(p))++
-#define dec_ptr_bs(p)		(*(Bit8s*)(p))--
+#define inc_ptr_bs(p)		((*(Bit8s*)(p))++)
+#define dec_ptr_bs(p)		((*(Bit8s*)(p))--)
 
-#define inc_ptr_ws(p)		(*(Bit16s*)(p))++
-#define dec_ptr_ws(p)		(*(Bit16s*)(p))--
+#define inc_ptr_ws(p)		((*(Bit16s*)(p))++)
+#define dec_ptr_ws(p)		((*(Bit16s*)(p))--)
 
-#define or_ptr_bs(p, v)		*(Bit8s*)(p) |= v
-#define and_ptr_bs(p, v)	*(Bit8s*)(p) &= v
-#define add_ptr_bs(p, v)	*(Bit8s*)(p) += v
-#define sub_ptr_bs(p, v)	*(Bit8s*)(p) -= v
+#define or_ptr_bs(p, v)		(*(Bit8s*)(p) |= v)
+#define and_ptr_bs(p, v)	(*(Bit8s*)(p) &= v)
+#define add_ptr_bs(p, v)	(*(Bit8s*)(p) += v)
+#define sub_ptr_bs(p, v)	(*(Bit8s*)(p) -= v)
 
 
-#define add_ptr_ws(p, v)  *(Bit16s*)(p)+=v
-#define sub_ptr_ws(p, v)  *(Bit16s*)(p)-=v
+#define add_ptr_ws(p, v)	(*(Bit16s*)(p)+=v)
+#define sub_ptr_ws(p, v)	(*(Bit16s*)(p)-=v)
 
-#define mem_readb(p) *(Bit8u*)(p)
-#define mem_readw(p) *(Bit16u*)(p)
-#define mem_readd(p) *(Bit32u*)(p)
+#define mem_readb(p) (*(Bit8u*)(p))
+#define mem_readw(p) (*(Bit16u*)(p))
+#define mem_readd(p) (*(Bit32u*)(p))
 
-#define mem_readbs(p) *(Bit8s*)(p)
-#define mem_readws(p) *(Bit16s*)(p)
-#define mem_readds(p) *(Bit32s*)(p)
+#define mem_readbs(p) (*(Bit8s*)(p))
+#define mem_readws(p) (*(Bit16s*)(p))
+#define mem_readds(p) (*(Bit32s*)(p))
 
-#define mem_writeb(p, d) *(Bit8u*)(p) = d
-#define mem_writew(p, d) *(Bit16u*)(p) = d
-#define mem_writed(p, d) *(Bit32u*)(p) = d
+#define mem_writeb(p, d) (*(Bit8u*)(p) = d)
+#define mem_writew(p, d) (*(Bit16u*)(p) = d)
+#define mem_writed(p, d) (*(Bit32u*)(p) = d)
 
 #define get_hero(nr) ((Bit8u*)ds_readd(HEROS) + 0x6da * (nr))
 
@@ -926,17 +926,17 @@ extern Bit8u* text_ltx[];
 extern Bit8u* dialog_text[];
 extern Bit8u* city_ltx[];
 
-#define Real2Phys(p) (Bit8u*)(p)
-#define Real2Host(p) (Bit8u*)(p)
-#define getString(p) (char*)(p)
+#define Real2Phys(p) ((Bit8u*)(p))
+#define Real2Host(p) ((Bit8u*)(p))
+#define getString(p) ((char*)(p))
 
-#define host_readb(p) *(Bit8u*)(p)
-#define host_readw(p) *(Bit16u*)(p)
-#define host_readd(p) *(Bit32u*)(p)
+#define host_readb(p) (*(Bit8u*)(p))
+#define host_readw(p) (*(Bit16u*)(p))
+#define host_readd(p) (*(Bit32u*)(p))
 
-#define host_readbs(p) *(Bit8s*)(p)
-#define host_readws(p) *(Bit16s*)(p)
-#define host_readds(p) *(Bit32s*)(p)
+#define host_readbs(p) (*(Bit8s*)(p))
+#define host_readws(p) (*(Bit16s*)(p))
+#define host_readds(p) (*(Bit32s*)(p))
 
 #define host_writeb(p, d)	(*(Bit8u*)(p) = d)
 #define host_writew(p, d)	(*(Bit16u*)(p) = d)
@@ -972,7 +972,7 @@ struct bittest {
 #define hero_unc(hero)		((*(struct hero_status*)(hero + 0xaa)).uncon)
 #define hero_unkn2(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn2)
 
-#define hero_unkn3(hero)  ((*(struct hero_status*)(hero + 0xaa)).unkn3)
+#define hero_unkn3(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn3)
 #define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
 
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
@@ -1008,12 +1008,12 @@ struct bittest {
 #define item_herb_potion(item)	((*(struct item_status*)(item + 0x2)).herb_potion)
 #define item_undropable(item)	((*(struct item_status*)(item + 0x2)).undropable)
 
-#define get_spelltarget_e() (Bit8u*)ds_readd(SPELLTARGET_E)
-#define get_spelltarget() (Bit8u*)ds_readd(SPELLTARGET)
-#define get_spelluser() (Bit8u*)ds_readd(SPELLUSER)
-#define get_spelluser_e() (Bit8u*)ds_readd(SPELLUSER_E)
+#define get_spelltarget_e()	((Bit8u*)ds_readd(SPELLTARGET_E))
+#define get_spelltarget()	((Bit8u*)ds_readd(SPELLTARGET))
+#define get_spelluser()		((Bit8u*)ds_readd(SPELLUSER))
+#define get_spelluser_e()	((Bit8u*)ds_readd(SPELLUSER_E))
 
-#define get_itemuser() (Bit8u*)ds_readd(ITEMUSER)
+#define get_itemuser() ((Bit8u*)ds_readd(ITEMUSER))
 
 #define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
 #define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
