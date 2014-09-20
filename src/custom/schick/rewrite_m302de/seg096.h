@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 //20
-void GUI_write_char_to_screen(PhysPt, signed short, signed short);
+void GUI_write_char_to_screen(RealPt, signed short, signed short);
 //25
 RealPt GUI_names_grammar(signed short, signed short, signed short);
 //2a

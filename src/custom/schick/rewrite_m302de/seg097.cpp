@@ -123,7 +123,7 @@ void GUI_1c2(signed short v1, signed short v2, RealPt v3)
 
 	GUI_blank_char();
 	GUI_font_to_buf(Real2Host(ds_readd(0xd2bd)) + v1 * 8);
-	GUI_write_char_to_screen(Real2Phys(v3), 8, v2);
+	GUI_write_char_to_screen(v3, 8, v2);
 }
 
 //1f8
