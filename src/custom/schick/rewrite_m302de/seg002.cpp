@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 133/138
+ *	Functions rewritten: 135/142
 */
 #include <stdlib.h>
 #include <string.h>
