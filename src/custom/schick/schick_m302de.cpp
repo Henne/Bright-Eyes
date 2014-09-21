@@ -8371,7 +8371,7 @@ static int n_seg044(unsigned short offs)
 		CPU_Push16(ani);
 
 		reg_ax = (Bit16s)get_seq_header(ani);
-		D1_INFO("get_seq_header(%d) = %d\n", ani, (Bit16s)reg_ax);
+		D1_LOG("get_seq_header(%d) = %d\n", ani, (Bit16s)reg_ax);
 
 		return 1;
 	}
