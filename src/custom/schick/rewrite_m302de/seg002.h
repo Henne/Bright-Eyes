@@ -111,6 +111,7 @@ void sub_light_timers(signed int);
 //static
 void magical_chainmail_damage(void);
 void herokeeping(void);
+void check_level_up(void);
 void set_and_spin_lock();
 //static
 void passages_recalc();

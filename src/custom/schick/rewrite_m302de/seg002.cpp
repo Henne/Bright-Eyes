@@ -2970,6 +2970,11 @@ void herokeeping(void)
 	ds_writeb(0x4649, 0);
 }
 
+void check_level_up(void)
+{
+	DUMMY_WARNING();
+}
+
 void set_and_spin_lock() {
 	ds_writew(0xbcd6, 1);
 	while (ds_readw(0xbcd6)) {};
