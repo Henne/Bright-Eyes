@@ -90,6 +90,8 @@ void handle_gui_input(void);
 signed short get_mouse_action(signed short, signed short, Bit8u*);
 void handle_input(void);
 void wait_for_keyboard1(void);
+/* static */
+void game_loop(void);
 //static
 void timers_daily();
 //static

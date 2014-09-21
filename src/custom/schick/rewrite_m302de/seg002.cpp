@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 132/138
+ *	Functions rewritten: 133/138
 */
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +25,8 @@
 #include "seg009.h"
 #include "seg010.h"
 #include "seg011.h"
+#include "seg025.h"
+#include "seg026.h"
 #include "seg029.h"
 #include "seg030.h"
 #include "seg039.h"
@@ -32,12 +34,17 @@
 #include "seg047.h"
 #include "seg048.h"
 #include "seg049.h"
+#include "seg066.h"
+#include "seg076.h"
+#include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg106.h"
 #include "seg108.h"
 #include "seg113.h"
+#include "seg119.h"
 #include "seg120.h"
+#include "seg121.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -1774,6 +1781,125 @@ void wait_for_keyboard1(void)
 
 		bc_bioskey(0);
 	}
+}
+
+/* Borlandified and identical */
+void game_loop(void)
+{
+#if defined(__BORLANDC__)
+	signed short answer;
+
+	while (ds_readw(0xc3c1) == 0) {
+
+		if (ds_readbs(LOCATION) != 0) {
+			do_location();
+		} else if (ds_readbs(CURRENT_TOWN) != 0) {
+			do_town();
+		} else if (ds_readbs(DUNGEON_INDEX) != 0) {
+			do_dungeon();
+		} else if (ds_readbs(0x3614) != 0) {
+			/* do_travel_mode();	seg093 */
+			/* TODO: replace with do_travel_mode() */
+			do_dungeon();
+		}
+
+		if (ds_readb(0x2d34) == 99) {
+			ds_writew(0xc3c1, 5);
+		}
+
+		if (ds_readw(CHECK_DISEASE) != 0) {
+			disease_effect();
+		}
+
+		if (ds_readw(CHECK_POISON) != 0) {
+			poison_effect();
+		}
+
+		if (ds_readbs(0x4495) != 0) {
+
+			ds_writeb(0x4495, 0);
+
+			if (!count_heros_available() ||
+				((count_heros_available() == 1) && check_hero(get_hero(6))))
+			{
+				/* no heros or only the NPC can act => GAME OVER */
+				ds_writew(0xc3c1, 1);
+
+			} else if (!count_heroes_available_in_group() ||
+				((count_heroes_available_in_group() == 1) && is_hero_available_in_group(get_hero(6))))
+			{
+				/* no heros or only the NPC in this group can act => switch to next */
+				GRP_switch_to_next(2);
+			}
+
+		}
+
+		if ((host_readbs(get_hero(6) + 0x21) != 0) &&
+			((ds_readbs(CURRENT_TOWN) != 0) || (ds_readws(0xc3c1) == 99)) &&
+			(ds_readws(NPC_MONTHS) >= 1) &&
+			(ds_readbs(0x4494) != ds_readws(NPC_MONTHS)))
+		{
+			npc_farewell();
+			ds_writeb(0x4494, (signed short)ds_readws(NPC_MONTHS));
+		}
+
+		if ((ds_readws(IN_FIGHT) == 0) &&
+			((ds_readws(0xc3c1) == 0) || (ds_readws(0xc3c1) == 99)) &&
+			!ds_readbs(LOCATION))
+		{
+			check_level_up();
+		}
+
+		if (ds_readbs(0x46df) != 0) {
+
+			ds_writeb(0x46df, 0);
+
+			if (ds_readbs(0x2845) == 0) {
+				draw_status_line();
+			}
+		}
+
+		if ((ds_readws(0xc3c1) != 0) && (ds_readbs(0x4475) != 0)) {
+			refresh_colors();
+		}
+
+		if (ds_readws(0xc3c1) == 1) {
+			/* TODO: replace with show_game_over() */
+			do_dungeon();
+		}
+
+		if (ds_readws(0xc3c1) == 4) {
+			/* TODO: replace show_times_up() */
+			do_dungeon();
+		}
+
+		if ((ds_readws(0xc3c1) == 1) ||
+			ds_readws(0xc3c1) == 2 ||
+			ds_readws(0xc3c1) == 4 ||
+			ds_readws(0xc3c1) == 5 ||
+			ds_readws(0xc3c1) == 7)
+		{
+			ds_writeb(LOCATION, 0);
+
+			do {
+				answer = load_save_game();
+
+			} while (answer == -1);
+
+			if (answer) {
+				ds_writew(0xc3c1, 0);
+				refresh_colors();
+			}
+		}
+
+		if (ds_readw(0xc3c1) == 99) {
+			/* TODO: replace with play_outro() */
+			do_dungeon();
+			cleanup_game();
+			bc_exit(0);
+		}
+	}
+#endif
 }
 
 //static
