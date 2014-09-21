@@ -2142,18 +2142,25 @@ void nightfall(void)
 	}
 }
 
-unsigned short get_current_season() {
+/**
+ * \brief get season
+ * \return number of the season {0 = WINTER, 1,2,3}
+ */
+/* Borlandified and identical */
+signed short get_current_season(void)
+{
 	/* Check Winter */
-	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463e))
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463e)) {
 		return 0;
 	/* Check Summer */
-	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x4642))
+	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x4642)) {
 		return 2;
 	/* Check Spring */
-	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463a))
+	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463a)) {
 		return 1;
-
-	return 3;
+	} else {
+		return 3;
+	}
 }
 
 void do_timers(void)
