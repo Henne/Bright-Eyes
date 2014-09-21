@@ -93,7 +93,7 @@ void wait_for_keyboard1(void);
 /* static */
 void game_loop(void);
 //static
-void timers_daily();
+void timers_daily(void);
 //static
 void seg002_2177();
 void pal_fade(Bit8u*, Bit8u*);

@@ -1902,35 +1902,38 @@ void game_loop(void)
 #endif
 }
 
+/* Borlandified and identical */
 //static
-void timers_daily() {
+void timers_daily(void)
+{
 	Bit8u *hero_i;
-	unsigned short i = 0;
+	signed short i = 0;
 
 	/* Smith / items to repair */
 	for (i = 0; i < 50; i++) {
-		if (ds_readw(0x31e2 + i * 6)) {
-			/* set state to zero */
-			ds_writew(0x31e4 + i * 6, 0);
+
+		if (ds_readw(0x31e2 + i * 6) != 0) {
 			/* set time to 6:00 am */
-			ds_writew(0x31e4 + i * 4, 32400);
+			ds_writed(0x31e4 + i * 6, 32400L);
 		}
 	}
 
 	/* reset insulted merchants */
-	for (i = 0; i < 94; i++)
+	for (i = 0; i < 94; i++) {
 		ds_writeb(0x3592 + i, 0);
+	}
 
 	hero_i = get_hero(0);
 	for (i = 0; i <=6; i++, hero_i += 0x6da) {
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		if ((signed char)host_readb(hero_i + 0x94) <= 0)
-			continue;
 
-		host_writeb(hero_i + 0x94, host_readb(hero_i + 0x94) - 1);
+		if ((host_readb(get_hero(i) + 0x21) != 0) &&
+			(host_readbs(hero_i + 0x94) > 0))
+		{
+			dec_ptr_bs(hero_i + 0x94);
+		}
 	}
 
+	/* enable disease check */
 	ds_writew(CHECK_DISEASE, 1);
 
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -1939,19 +1942,24 @@ void timers_daily() {
 #endif
 
 	/* Decrase monthly credit cens timer (bank) */
-	if ((signed short)ds_readw(0x335e) > 0) {
-		ds_writew(0x335e, ds_readw(0x335e) - 1);
-		if (ds_readw(0x335e) == 0)
+	if (ds_readws(0x335e) > 0) {
+
+		dec_ds_ws(0x335e);
+
+		if (ds_readws(0x335e) == 0) {
 			ds_writew(0x3350, 0);
+		}
 	}
 
 	/* Days until you run in trouble, if you have more
 		than 1000S debt at the bank */
-	if ((signed short)ds_readw(0x3360) > 0) {
-		ds_writew(0x3360, ds_readw(0x3360) - 1);
+	if (ds_readws(0x3360) > 0) {
 
-		if (ds_readw(0x3360) == 0)
+		dec_ds_ws(0x3360);
+
+		if (ds_readws(0x3360) == 0) {
 			ds_writew(0x3360, -1);
+		}
 	}
 }
 
