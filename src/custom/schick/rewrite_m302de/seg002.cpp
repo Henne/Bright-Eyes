@@ -2027,32 +2027,32 @@ void pal_fade(Bit8u *dst, Bit8u *p2)
 	}
 }
 
-void pal_fade_in(Bit8u *dst, Bit8u *p2, unsigned short v3, unsigned short colors) {
-	unsigned short i, si;
-
-	signed char c1, c2;
+/* Borlandified and identical */
+void pal_fade_in(Bit8u *dst, Bit8u *p2, signed short v3, signed short colors)
+{
+	signed short i, si;
 
 	si = 0x40 - v3;
 
 	for (i = 0; i < colors; i++) {
 
-		c1 = host_readb(dst + i * 3);
-		c2 = host_readb(p2 + i * 3);
+		if ((host_readbs((p2 + 0) + 3 * i) >= si) &&
+			(host_readbs((p2 + 0) + 3 * i) > host_readbs((dst + 0) + 3 * i)))
+		{
+			inc_ptr_bs((dst + 0) + i * 3);
+		}
 
-		if ((c2 >= si) && (c2 > c1))
-			host_writeb(dst + i * 3, c1 + 1);
+		if ((host_readbs((p2 + 1) + 3 * i) >= si) &&
+			(host_readbs((p2 + 1) + 3 * i) > host_readbs((dst + 1) + 3 * i)))
+		{
+			inc_ptr_bs((dst + 1) + i * 3);
+		}
 
-		c1 = host_readb(dst + i * 3 + 1);
-		c2 = host_readb(p2 + i * 3 + 1);
-
-		if ((c2 >= si) && (c2 > c1))
-			host_writeb(dst + i * 3 + 1, c1 + 1);
-
-		c1 = host_readb(dst + i * 3 + 2);
-		c2 = host_readb(p2 + i * 3 + 2);
-
-		if ((c2 >= si) && (c2 > c1))
-			host_writeb(dst + i * 3 + 2, c1 + 1);
+		if ((host_readbs((p2 + 2) + 3 * i) >= si) &&
+			(host_readbs((p2 + 2) + 3 * i) > host_readbs((dst + 2) + 3 * i)))
+		{
+			inc_ptr_bs((dst + 2) + i * 3);
+		}
 	}
 }
 
