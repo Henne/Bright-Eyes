@@ -1976,41 +1976,53 @@ void seg002_2177(void)
 	}
 }
 
-void pal_fade(Bit8u *dst, Bit8u *p2) {
-	unsigned short i;
+/* Borlandified and identical */
+void pal_fade(Bit8u *dst, Bit8u *p2)
+{
+	signed short i;
 
 	for (i = 0; i < 32; i++) {
-		signed char v1;
-		signed char v2;
 
-		v1 = host_readb(dst + i * 3);
-		v2 = host_readb(p2 + i * 3);
+		if ((host_readbs(p2 + 3 * i) < host_readbs(dst + 3 * i)) &&
+			(host_readbs(dst + 3 * i) > 0))
+		{
 
-		if (v2 < v1 && v1 > 0)
-			host_writeb(dst + i * 3, v1 - 1);
-		else {
-			if (v2 > v1 && v1 < 0x3f)
-				host_writeb(dst + i * 3, v1 + 1);
-		};
+			dec_ptr_bs(dst + i * 3);
 
-		v1 = host_readb(dst + i * 3 + 1);
-		v2 = host_readb(p2 + i * 3 + 1);
+		} else {
+			if ((host_readbs(p2 + 3 * i) > host_readbs(dst + 3 * i)) &&
+				(host_readbs(dst + 3 * i) < 0x3f))
+			{
+				inc_ptr_bs(dst + i * 3);
+			}
+		}
 
-		if (v2 < v1 && v1 > 0)
-			host_writeb(dst + i * 3 + 1, v1 - 1);
-		else {
-			if (v2 > v1 && v1 < 0x3f)
-				host_writeb(dst + i * 3 + 1, v1 + 1);
-		};
+		if ((host_readbs((p2 + 1) + 3 * i) < host_readbs((dst + 1) + 3 * i)) &&
+			(host_readbs((dst + 1) + 3 * i) > 0))
+		{
 
-		v1 = host_readb(dst + i * 3 + 2);
-		v2 = host_readb(p2 + i * 3 + 2);
+			dec_ptr_bs((dst + 1) + i * 3);
 
-		if (v2 < v1 && v1 > 0)
-			host_writeb(dst + i * 3 + 2, v1 - 1);
-		else {
-			if (v2 > v1 && v1 < 0x3f)
-				host_writeb(dst + i * 3 + 2, v1 + 1);
+		} else {
+			if ((host_readbs((p2 + 1) + 3 * i) > host_readbs((dst + 1) + 3 * i)) &&
+				(host_readbs((dst + 1) + 3 * i) < 0x3f))
+			{
+				inc_ptr_bs((dst + 1) + i * 3);
+			}
+		}
+
+		if ((host_readbs((p2 + 2) + 3 * i) < host_readbs((dst + 2) + 3 * i)) &&
+			(host_readbs((dst + 2) + 3 * i) > 0))
+		{
+
+			dec_ptr_bs((dst + 2) + i * 3);
+
+		} else {
+			if ((host_readbs((p2 + 2) + 3 * i) > host_readbs((dst + 2) + 3 * i)) &&
+				(host_readbs((dst + 2) + 3 * i) < 0x3f))
+			{
+				inc_ptr_bs((dst + 2) + i * 3);
+			}
 		}
 	}
 }
