@@ -192,7 +192,7 @@ void read_sound_cfg(void)
 /* Borlandified and identical */
 void init_AIL(Bit32u size)
 {
-	if (NOT_NULL(Real2Host((RealPt)ds_writed(0xbd0d, schick_alloc_emu(size))))) {
+	if (NOT_NULL(Real2Host((RealPt)ds_writed(0xbd0d, (Bit32u)schick_alloc_emu(size))))) {
 		AIL_startup();
 		ds_writew(0xbcff, 1);
 	}
@@ -355,7 +355,7 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 {
 
 	if (port &&
-		NOT_NULL(Real2Host((RealPt)ds_writed(0xbd19, read_music_driver(fname)))) &&
+		NOT_NULL(Real2Host((RealPt)ds_writed(0xbd19, (Bit32u)read_music_driver(fname)))) &&
 		((ds_writew(0xbd23, AIL_register_driver((RealPt)ds_readd(0xbd19)))) != 0xffff))
 	{
 
@@ -621,7 +621,7 @@ signed short load_digi_driver(RealPt fname, signed short type, signed short io, 
 {
 
 	if (io &&
-		NOT_NULL(Real2Host((RealPt)ds_writed(0xbcf3, read_digi_driver(fname)))) &&
+		NOT_NULL(Real2Host((RealPt)ds_writed(0xbcf3, (Bit32u)read_digi_driver(fname)))) &&
 		((ds_writew(0xbcfb, AIL_register_driver((RealPt)ds_readd(0xbcf3)))) != 0xffff))
 	{
 
