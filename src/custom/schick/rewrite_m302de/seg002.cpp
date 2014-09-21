@@ -1963,12 +1963,17 @@ void timers_daily(void)
 	}
 }
 
-//static
-void seg002_2177() {
-	unsigned short i;
+/* Borlandified and identical */
+/* static */
+void seg002_2177(void)
+{
+	signed short i;
 
-	for (i = 0; ds_readw(0x70a8 + i * 8) != 0xffff; i++)
-		ds_writew(0x70ae + i * 8, random_interval(ds_readw(0x70a8 + i * 8), 20));
+	for (i = 0; ds_readws(0x70a8 + i * 8) != -1; i++) {
+
+		ds_writew(0x70ae + i * 8,
+			random_interval(ds_readws(0x70a8 + i * 8), 20));
+	}
 }
 
 void pal_fade(Bit8u *dst, Bit8u *p2) {

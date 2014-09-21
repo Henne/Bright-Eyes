@@ -94,8 +94,8 @@ void wait_for_keyboard1(void);
 void game_loop(void);
 //static
 void timers_daily(void);
-//static
-void seg002_2177();
+/* static */
+void seg002_2177(void);
 void pal_fade(Bit8u*, Bit8u*);
 void pal_fade_in(Bit8u*, Bit8u*, unsigned short, unsigned short);
 void dawning(void);
