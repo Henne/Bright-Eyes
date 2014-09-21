@@ -2100,52 +2100,46 @@ void dawning(void)
 }
 
 /**
- * nightfall() - adjusts palettes in the evening
+ * \brief	adjusts palettes in the evening
  *
  */
+/* Borlandified and identical */
 void nightfall(void)
 {
-	/* Between 6 and 7 */
-	if ((ds_readd(DAY_TIMER) < 0x1a5e0) || (ds_readd(DAY_TIMER) >= 0x1baf8))
-		return;
+	/* Between 20 and 21 */
+	if ((ds_readds(DAY_TIMER) >= 0x1a5e0L) &&
+		(ds_readds(DAY_TIMER) <= 0x1baf8L) &&
+		!((ds_readds(DAY_TIMER) - 0x1a5e0L) % 0x54))
+	{
 
-	/* in 64 steps */
-	if (((ds_readd(DAY_TIMER) - 0x1a5e0) % 0x54) != 0)
-		return;
+		/* floor */
+		pal_fade(p_datseg + 0x3e53, p_datseg + 0x4498);
+		/* buildings */
+		pal_fade(p_datseg + 0x3eb3, p_datseg + 0x44f8);
+		/* sky */
+		pal_fade(p_datseg + 0x3f13, p_datseg + 0x4558);
 
-	/* floor */
-	pal_fade(p_datseg + 0x3e53, p_datseg + 0x4498);
-	/* buildings */
-	pal_fade(p_datseg + 0x3eb3, p_datseg + 0x44f8);
-	/* sky */
-	pal_fade(p_datseg + 0x3f13, p_datseg + 0x4558);
+		/* in a town */
+		if (ds_readbs(CURRENT_TOWN) &&
+			/* not in a dungeon */
+			!ds_readbs(DUNGEON_INDEX) &&
+			/* not in a location */
+			!ds_readbs(LOCATION) &&
+			/* not in a travel mode */
+			!ds_readb(TRAVELING) &&
+			/* unknown */
+			!ds_readb(0xe5d2) &&
+			/* unknown */
+			!ds_readbs(0x45b8) &&
+			/* unknown */
+			(ds_readbs(0x2845) == 0))
+		{
+			wait_for_vsync();
 
-	/* not in a town */
-	if (ds_readb(CURRENT_TOWN) == 0)
-		return;
-	/* in a dungeon */
-	if (ds_readb(DUNGEON_INDEX) != 0)
-		return;
-	/* in a location */
-	if (ds_readb(LOCATION) != 0)
-		return;
-	/* in a travel mode */
-	if (ds_readb(TRAVELING) != 0)
-		return;
-	/* unknown */
-	if (ds_readb(0xe5d2) != 0)
-		return;
-	/* unknown */
-	if (ds_readb(0x45b8) != 0)
-		return;
-	/* unknown */
-	if (ds_readb(0x2845) != 0)
-		return;
-
-	wait_for_vsync();
-
-	set_palette(p_datseg + 0x3e53, 0, 0x20);
-	set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+			set_palette(p_datseg + 0x3e53, 0, 0x20);
+			set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+		}
+	}
 }
 
 unsigned short get_current_season() {
