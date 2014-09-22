@@ -117,7 +117,7 @@ void herokeeping(void);
 void check_level_up(void);
 #endif
 void seg002_37c4(void);
-void set_and_spin_lock();
+void set_and_spin_lock(void);
 //static
 void passages_recalc();
 //static

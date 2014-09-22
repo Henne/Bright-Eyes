@@ -3322,9 +3322,25 @@ void seg002_37c4(void)
 	*(struct dummy*)(p_datseg + 0xc00d) = a;
 }
 
-void set_and_spin_lock() {
+/* Borlandified and identical */
+void set_and_spin_lock(void)
+{
 	ds_writew(0xbcd6, 1);
-	while (ds_readw(0xbcd6)) {};
+
+	while (ds_readw(0xbcd6)) {
+#if !defined(__BORLANDC__)
+		/* deadlock avoidance */
+		static int cnt = 0;
+
+		if (cnt % 256 == 0) {
+			wait_for_vsync();
+		}
+
+		cnt++;
+#else
+	/* just spin */
+#endif
+	}
 }
 
 void passages_recalc() {
