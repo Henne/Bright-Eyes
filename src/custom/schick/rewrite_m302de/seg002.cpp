@@ -2612,13 +2612,15 @@ void sub_mod_timers(Bit32s val) {
 				D1_ERR("Invalid Mod Timer Target %d\n", target);
 #endif
 
-				/* reset all slots of invalid target */
-				for (j = 0; j < 100; j++) {
-					if (ds_readb(0x2d32 + j * 8) != target)
-						continue;
-					host_writeb(sp + 7, 0);
-					host_writeb(sp + 6, 0);
-					host_writew(sp + 4, 0);
+					/* reset all slots of invalid target */
+					for (j = 0; j < 100; j++) {
+						if (ds_readb(0x2e32 + j * 8) == target) {
+							host_writeb(sp + 6,
+									host_writebs(sp + 7, 0));
+
+							host_writew(sp + 4, 0);
+						}
+					}
 				}
 			}
 
