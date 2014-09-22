@@ -2798,17 +2798,22 @@ void seg002_2f7a(Bit32s fmin)
 }
 
 /**
- *	sub_light_timers - decrements the light timers
- *	@quarter:	the time in quarters of an hour
+ * \brief		decrements the light timers
+ *
+ * \param quarter	the time in quarters of an hour
  *
  *	This function decrements the timers of burning torches and lanterns.
  *	If the time of the lightsource is up the toch is removed from the
  *	inventory and the lantern is turned off.
 */
-void sub_light_timers(Bit32s quarter) {
+/* Borlandified and identical */
+void sub_light_timers(Bit32s quarter)
+{
+	signed short j;
+	signed short i;
+
 	Bit8u *hero_i;
-	unsigned short i,j;
-	unsigned char tmp;
+	signed char tmp;
 
 	if (ds_readw(TIMERS_DISABLED))
 		return;
@@ -2817,48 +2822,48 @@ void sub_light_timers(Bit32s quarter) {
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
+		if (host_readb(hero_i + 0x21) != 0) {
 
-		if (quarter > 120)
-			tmp = 120;
-		else
-			tmp = quarter & 0xff;
-
-		for (j = 0; j < 23; j++) {
-			signed char cur;
-			if (host_readw(hero_i + 0x196 + 14 * j) == 0x16) {
-				/* Torch, burning */
-
-				cur = host_readb(hero_i + 0x196 + 8 + 14 * j);
-				cur -= tmp;
-				host_writeb(hero_i + 0x196 + 8 + 14 * j, cur);
-
-				if (cur <= 0) {
-					signed short tmp_1;
-					host_writeb(hero_i + 0x20, host_readb(hero_i + 0x20) - 1);
-
-					tmp_1 = host_readw(Real2Host(ds_readd(ITEMSDAT)) + 0x10d);
-					host_writew(hero_i + 0x2d8,
-						host_readb(hero_i + 0x2d8) - tmp_1);
-
-					/* Remove Torch from inventory */
-					memset(hero_i + 0x196 + 14 * j, 0, 14);
-				}
-			} else if (host_readw(hero_i + 0x196 + j * 14) == 0xf9) {
-				/* Lantern, burning */
-				cur = host_readb(hero_i + 0x196 + 8 + 14 * j);
-				cur -= tmp;
-				host_writeb(hero_i + 0x196 + 8 + 14 * j, cur);
-
-				if (cur <= 0) {
-					/* Set timer to 0 */
-					host_writeb(hero_i + 0x196 + 8 + j * 14, 0);
-					/* Set burning lantern to a not burning lantern */
-					host_writew(hero_i + 0x196 + j * 14, 0x19);
-				}
+			if (quarter > 120) {
+				tmp = 120;
+			} else {
+				tmp = quarter;
 			}
 
+			for (j = 0; j < 23; j++) {
+
+				if (host_readw(hero_i + 0x196 + 14 * j) == 0x16) {
+
+					/* Torch, burning */
+
+					sub_ptr_bs(hero_i + 0x196 + 8 + 14 * j, tmp);
+
+					if (host_readbs(hero_i + 0x196 + 8 + 14 * j) <= 0)
+					{
+						/* decrement item counter */
+						dec_ptr_bs(hero_i + 0x20);
+
+						/* subtract weight of a torch */
+						sub_ptr_ws(hero_i + 0x2d8,
+							host_readws(Real2Host(ds_readd(ITEMSDAT)) + 0x10d));
+
+						/* Remove Torch from inventory */
+						memset(hero_i + 0x196 + 14 * j, 0, 14);
+					}
+
+				} else if (host_readw(hero_i + 0x196 + 14 * j) == 0xf9) {
+
+					/* Lantern, burning */
+					sub_ptr_bs(hero_i + 0x196 + 8 + 14 * j, tmp);
+
+					if (host_readbs(hero_i + 0x196 + 8 + 14 * j) <= 0) {
+						/* Set timer to 0 */
+						host_writeb(hero_i + 0x196 + 8 + 14 * j, 0);
+						/* Set burning lantern to a not burning lantern */
+						host_writew(hero_i + 0x196 + 14 * j, 0x19);
+					}
+				}
+			}
 		}
 	}
 }
