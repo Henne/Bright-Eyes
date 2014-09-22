@@ -126,7 +126,7 @@ void timewarp(Bit32s);
 void timewarp_until(Bit32s);
 void dec_splash(void);
 //static
-void draw_splash(unsigned short index, unsigned short type);
+void draw_splash(signed short, signed short);
 void wait_for_keyboard2();
 void wait_for_keypress();
 void delay_or_keypress(Bit16u);

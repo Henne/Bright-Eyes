@@ -3549,29 +3549,25 @@ void dec_splash(void)
 }
 
 /**
-	draw_splash - draws a splash
-	@index:	on which slot the splash is drawn
-	@type:	kind of damage (0 = LE / !0 = AE)
+ * \brief		draws a splash on a hero portrait
+ *
+ * \param hero_pos	on which slot the splash is drawn
+ * \param type		kind of damage (0 = red,LE / !0 = yellow,AE)
 */
-//static
-void draw_splash(unsigned short index, unsigned short type) {
-	Bit8u *splash;
-
+/* Borlandified and identical */
+/* static */
+void draw_splash(signed short hero_pos, signed short type)
+{
 	/* Could be in fight */
-	if (ds_readb(0x2845))
-		return;
+	if (ds_readb(0x2845) == 0) {
 
-	if (type == 0)
-		/* splash 1 / red / LE */
-		splash = Real2Host(ds_readd(SPLASH_LE));
-	else
-		/* splash 2 / yellow / AE */
-		splash = Real2Host(ds_readd(SPLASH_AE));
+		Bit8u *splash = (type == 0) ? Real2Host(ds_readd(SPLASH_LE)) : Real2Host(ds_readd(SPLASH_AE));
 
-	restore_rect_rle(Real2Phys(ds_readd(0xd2ff)), splash, ds_readw(0x2d01 + index*2), 157, 32, 32, 2);
+		restore_rect_rle(Real2Phys(ds_readd(0xd2ff)), splash, ds_readw(0x2d01 + 2 * hero_pos), 157, 32, 32, 2);
 
-	/* how long the splash should be displayed */
-	ds_writeb(0xbccf + index, 10);
+		/* how long the splash should be displayed */
+		ds_writeb(0xbccf + hero_pos, 10);
+	}
 }
 
 void wait_for_keyboard2() {
