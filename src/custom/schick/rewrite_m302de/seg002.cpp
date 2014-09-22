@@ -2680,52 +2680,65 @@ signed short get_free_mod_slot(void)
 	return i;
 }
 
-void set_mod_slot(unsigned short slot_nr, Bit32u timer_value, Bit8u *ptr,
-	signed char mod, signed char who) {
+/* Borlandified and identical */
+void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
+	signed char mod, signed char who)
+{
+	signed short j;
 
+#if !defined (__BORLANDC__)
 	Bit8u *mod_ptr;
-	unsigned short j;
-	unsigned short new_target;
-	signed char i;
+#else
+	Bit8u huge *mod_ptr;
+#endif
 	signed char target;
+	signed short i;
+	signed short new_target;
 
-	if (who == -1)
+
+	if (who == -1) {
 		/* mod slot is on savegame */
 		mod_ptr = p_datseg + 0x2d34;
-	else {
+	} else {
 		/* mod slot is on a hero/npc */
 		mod_ptr = get_hero(who);
 
-		if (host_readb(mod_ptr + 0x7b) != 0) {
+		if (host_readb(get_hero(who) + 0x7b) != 0) {
 			/* hero/npc has a target number */
-			target = host_readb(mod_ptr + 0x7b);
+			target = host_readbs(get_hero(who) + 0x7b);
 		} else {
 			/* hero/npc has no target number */
 
-		for (i = 1; i < 8; i++) {
-			new_target = 1;
-			for (j = 0; j <= 6; j++) {
-				if (i != host_readb(get_hero(j) + 0x7b))
-					continue;
-				new_target = 0;
+			for (i = 1; i < 8; i++) {
+
+				new_target = 1;
+				for (j = 0; j <= 6; j++) {
+					if (host_readbs(get_hero(j) + 0x7b) == i) {
+						new_target = 0;
+						break;
+					}
+				}
+
+				if (new_target != 0) {
+					target = i;
+					break;
+				}
 			}
 
-			if (new_target) {
-				target = i;
-				break;
-			}
-		}
-
-		host_writeb(get_hero(who) + 0x7b, target);
+			host_writeb(get_hero(who) + 0x7b, target);
 		}
 
 		ds_writeb(0x2e2c + slot_nr * 8 + 6, target);
 	}
 
 	ds_writeb(0x2e2c + slot_nr * 8 + 7, mod);
+#if !defined (__BORLANDC__)
 	ds_writew(0x2e2c + slot_nr * 8 + 4, ptr - mod_ptr);
+#else
+	ds_writew(0x2e2c + slot_nr * 8 + 4, (Bit8u huge*)ptr - mod_ptr);
+#endif
 	ds_writed(0x2e2c + slot_nr * 8, timer_value);
-	host_writeb(ptr, host_readb(ptr) + mod);
+	add_ptr_bs(ptr, mod);
 }
 
 /**
