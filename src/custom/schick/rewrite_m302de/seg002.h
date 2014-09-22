@@ -101,9 +101,9 @@ void pal_fade_in(Bit8u*, Bit8u*, signed short, signed short);
 void dawning(void);
 void nightfall(void);
 signed short get_current_season(void);
+/* static */
+void do_census(void);
 void do_timers(void);
-//static
-void do_census();
 void sub_ingame_timers(unsigned int);
 void sub_mod_timers(unsigned int);
 unsigned short get_free_mod_slot();

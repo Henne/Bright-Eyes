@@ -2163,6 +2163,60 @@ signed short get_current_season(void)
 	}
 }
 
+
+/**
+ * \brief	calc census for the bank depot
+ *
+ * If you put money on the bank, you get 5%.
+ * If you borrowed money you pay 15%.
+ */
+/* Borlandified and identical */
+/* static */
+void do_census(void)
+{
+
+	signed short si = 0;
+	Bit32s val;
+
+	if (ds_readws(BANK_DEPOSIT) > 0) {
+		si = 1;
+	} else if (ds_readws(BANK_DEPOSIT) < 0) {
+			si = -1;
+	}
+
+	/* bank transactions, no census */
+	if (si == 0)
+		return;
+
+	/* convert to heller */
+	val = ds_readws(BANK_DEPOSIT) * 10L;
+	val += ds_readws(BANK_HELLER);
+
+	if (val < 0)
+		/* 15% Interest for borrowed money */
+		val += val * 15 / 100L / 12L;
+	else if (val > 0)
+		/* 5% Interest for deposited money */
+			val += val * 5 / 100L / 12L;
+
+	/* remember the heller */
+	ds_writew(BANK_HELLER, val % 10);
+
+	if (val < 0) {
+		ds_writew(BANK_HELLER, -__abs__(ds_readws(BANK_HELLER)));
+	}
+
+	/* save the new deposit */
+	ds_writew(BANK_DEPOSIT, val / 10);
+
+	/* fixup over- and underflows */
+	if ((ds_readws(BANK_DEPOSIT) < 0) && (si == 1))
+		ds_writew(BANK_DEPOSIT, 32760);
+	else if ((ds_readws(BANK_DEPOSIT) > 0) && (si == -1))
+			ds_writew(BANK_DEPOSIT, -32760);
+
+}
+
 void do_timers(void)
 {
 	Bit8u *ptr;
@@ -2446,59 +2500,6 @@ void do_timers(void)
 	/* at 9 o'clock */
 	if (ds_readd(DAY_TIMER) == 0xbdd8)
 		passages_reset();
-}
-
-/**
- * do_census -	calc census for the bank depot
- *
- * If you put money on the bank, you get 5%.
- * If you borrowed money you pay 15%.
- */
-//static
-void do_census() {
-
-	signed int val;
-	signed short si = 0;
-	signed short deposit;
-
-	deposit = ds_readw(0x335c);
-
-	if (deposit > 0)
-		si = 1;
-	else if (deposit < 0)
-			si = -1;
-
-	/* bank transactions, no census */
-	if (si == 0)
-		return;
-
-	/* convert to heller */
-	val = deposit * 10;
-	val += (signed short)ds_readw(0x4646);
-
-	if (val < 0)
-		/* 15% Interest for borrowed money */
-		val += val * 15 / 100 / 12;
-	else if (val > 0)
-		/* 5% Interest for deposited money */
-			val += val * 5 / 100 / 12;
-
-	/* remember the heller */
-	ds_writew(0x4646, val % 10);
-
-	if (val < 0) {
-		ds_writew(0x4646, -abs((signed short)ds_readw(0x4646)));
-	}
-
-	/* save the new deposit */
-	ds_writew(0x335c, deposit = val / 10);
-
-	/* fixup over- and underflows */
-	if (deposit < 0 && si == 1)
-		ds_writew(0x335c, 32760);
-	else if (deposit > 0 && si == -1)
-			ds_writew(0x335c, -32760);
-
 }
 
 /**

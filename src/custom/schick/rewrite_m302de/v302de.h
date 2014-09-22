@@ -47,6 +47,7 @@
 #define TREASURE_MAPS	(0x3332)	/* array char[9] */
 #define GOT_MAIN_QUEST	(0x334c)
 #define QUESTED_MONTHS	(0x334e)
+#define BANK_DEPOSIT	(0x335c)	/* signed short */
 #define IN_ACADEMY	(0x3362)	/* s16 */
 #define NPC_MONTHS	(0x3470)
 #define CURRENT_INFORMER	(0x3612)
@@ -60,6 +61,7 @@
 #define TYPEINDEX	(0x4224)
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
+#define BANK_HELLER	(0x4646)	/* signed short */
 #define CONSUME_QUIET	(0x4648)
 #define DELAY_FACTOR	(0x4b66)
 #define EMM_SIG		(0x4ba2)	/* char[8] */
