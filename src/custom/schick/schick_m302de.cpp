@@ -1182,7 +1182,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f7a: {
-		unsigned int v1 = CPU_Pop32();
+		Bit32s v1 = CPU_Pop32();
 		CPU_Push32(v1);
 
 		D1_LOG("seg002_2f7a(v1=%d);\n", v1);
@@ -1191,7 +1191,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x3071: {
-		signed int quarter = CPU_Pop32();
+		Bit32s quarter = CPU_Pop32();
 		CPU_Push32(quarter);
 
 		D1_LOG("sub_light_timers(quarter=%d);\n", quarter);
@@ -7089,7 +7089,7 @@ static int n_seg002(unsigned short offs)
 	/* Callers: 4 */
 	case 0x2f7a: {
 		CPU_Pop16();
-		unsigned int val = CPU_Pop32();
+		Bit32s val = CPU_Pop32();
 		CPU_Push32(val);
 		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
 		seg002_2f7a(val);
@@ -7098,7 +7098,7 @@ static int n_seg002(unsigned short offs)
 	/* Callers: 4 */
 	case 0x3071: {
 		CPU_Pop16();
-		signed int quarter = CPU_Pop32();
+		Bit32s quarter = CPU_Pop32();
 		CPU_Push32(quarter);
 
 		D1_LOG("near sub_light_timers(quarter=%d);\n", quarter);

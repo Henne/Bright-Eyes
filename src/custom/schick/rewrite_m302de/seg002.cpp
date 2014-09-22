@@ -2703,7 +2703,7 @@ void set_mod_slot(unsigned short slot_nr, Bit32u timer_value, Bit8u *ptr,
  *
  *	@fmin:	five minutes
  */
-void seg002_2f7a(unsigned int fmin) {
+void seg002_2f7a(Bit32s fmin) {
 
 	Bit8u *hero_i;
 	unsigned short i;
@@ -2763,7 +2763,7 @@ void seg002_2f7a(unsigned int fmin) {
  *	If the time of the lightsource is up the toch is removed from the
  *	inventory and the lantern is turned off.
 */
-void sub_light_timers(signed int quarter) {
+void sub_light_timers(Bit32s quarter) {
 	Bit8u *hero_i;
 	unsigned short i,j;
 	unsigned char tmp;

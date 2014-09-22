@@ -108,8 +108,8 @@ void sub_ingame_timers(Bit32s);
 void sub_mod_timers(Bit32s);
 unsigned short get_free_mod_slot();
 void set_mod_slot(unsigned short, Bit32u, Bit8u *, signed char, signed char);
-void seg002_2f7a(unsigned int fmin);
-void sub_light_timers(signed int);
+void seg002_2f7a(Bit32s);
+void sub_light_timers(Bit32s);
 //static
 void magical_chainmail_damage(void);
 void herokeeping(void);
