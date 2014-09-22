@@ -2869,47 +2869,37 @@ void sub_light_timers(Bit32s quarter)
 }
 
 /**
- * magical_chainmail_damage() - damage if a cursed chainmail is worn
+ * \brief	damage if a cursed chainmail is worn
  *
  */
+/* Borlandified and identical */
 void magical_chainmail_damage(void)
 {
-	Bit8u *hero_i;
 	signed short i;
+	Bit8u *hero_i;
 
 	if (ds_readw(TIMERS_DISABLED) != 0) {
 		return;
 	}
 
-	if (ds_readw(TRAVELING) != 0)
-		ds_writeb(0x4649, 1);
-	else
-		ds_writeb(0x4649, 2);
+	ds_writeb(0x4649, (ds_readb(TRAVELING) != 0) ? 1 : 2);
 
 	for (i = 0; i <= 6; i++) {
+
 		/* check typus */
-		if (host_readb(get_hero(i) + 0x21) == 0)
-			continue;
+		if (host_readb(get_hero(i) + 0x21) != 0) {
 
-		hero_i = get_hero(i);
+			hero_i = get_hero(i);
 
-		if (hero_dead(hero_i))
-			continue;
-
-		/* unknown */
-		if (host_readb(hero_i + 0x9f) != 0) {
-#if !defined(__BORLANDC__)
-			D1_INFO("Bit is set \n");
-#endif
-			continue;
+			if (!hero_dead(hero_i) &&
+				/* unknown */
+				!host_readbs(hero_i + 0x9f) &&
+				/* check magical chainmail is equipped */
+				(host_readw(hero_i + 0x1b2) == 0xc5))
+			{
+				sub_hero_le(hero_i, 1);
+			}
 		}
-
-		/* check magical chainmail */
-		if (host_readw(hero_i + 0x1b2) != 0xc5) {
-			continue;
-		}
-
-		sub_hero_le(hero_i, 1);
 	}
 }
 
