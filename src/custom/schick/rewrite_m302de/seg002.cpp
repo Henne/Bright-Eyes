@@ -2503,26 +2503,30 @@ void do_timers(void)
 }
 
 /**
-	sub_ingame_timers - subtracts val from the ingame timers
-	@val:	vaule to subtract from the ingame timers
+ * \brief	subtracts val from the ingame timers
+ * \param val	vaule to subtract from the ingame timers
 */
-void sub_ingame_timers(Bit32s val) {
-
-	short i = 0;
+/* Borlandified and identical */
+void sub_ingame_timers(Bit32s val)
+{
+	signed short i = 0;
 
 	if (ds_readw(TIMERS_DISABLED))
 		return;
 
 	for (i = 0; i < 26; i++) {
-		/* dont sub if already zero */
-		if (ds_readd(0x2dc4 + i * 4) == 0)
-			continue;
-		/* subtract val from timer*/
-		ds_writed(0x2dc4 + i * 4, ds_readd(0x2dc4 + i * 4) - val);
 
-		/* if the timer is lower zero set to zero */
-		if ((int)ds_readd(0x2dc4 + i * 4) < 0)
-			ds_writed(0x2dc4 + i * 4, 0);
+		/* only subtract if greater than zero */
+		if (ds_readds(0x2dc4 + i * 4) > 0) {
+
+			/* subtract val from timer*/
+			sub_ds_ds(0x2dc4 + i * 4, val);
+
+			/* if the timer is now lower than zero, set the timer to zero */
+			if (ds_readds(0x2dc4 + i * 4) < 0) {
+				ds_writed(0x2dc4 + i * 4, 0);
+			}
+		}
 	}
 }
 
