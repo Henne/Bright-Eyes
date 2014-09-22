@@ -525,10 +525,10 @@ void set_ani_pal(Bit8u *pal)
 	set_palette(pal, 0, 0x20);
 }
 
-void do_h_line(PhysPt ptr, unsigned short x1, unsigned short x2, unsigned short y, char color) {
+void do_h_line(RealPt ptr, unsigned short x1, unsigned short x2, unsigned short y, char color) {
 
 	unsigned short count, tmp;
-	PhysPt dst;
+	RealPt dst;
 
 	if (x1 == x2)
 		return;
@@ -538,10 +538,11 @@ void do_h_line(PhysPt ptr, unsigned short x1, unsigned short x2, unsigned short 
 		x1 = x2;
 		x2 = tmp;
 	}
-	count = x2 - x1 +1;
-	dst = y *320 + x1 + ptr;
 
-	draw_h_line(dst, count, color);
+	count = x2 - x1 + 1;
+	dst = y * 320 + x1 + ptr;
+
+	draw_h_line(Real2Phys(dst), count, color);
 }
 
 void do_v_line(RealPt ptr, unsigned short y, unsigned short x1, unsigned short x2, char color) {
@@ -566,8 +567,8 @@ void do_v_line(RealPt ptr, unsigned short y, unsigned short x1, unsigned short x
 
 void do_border(RealPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color) {
 	update_mouse_cursor();
-	do_h_line(Real2Phys(dst), x1, x2, y1, color);
-	do_h_line(Real2Phys(dst), x1, x2, y2, color);
+	do_h_line(dst, x1, x2, y1, color);
+	do_h_line(dst, x1, x2, y2, color);
 	do_v_line(dst, x1, y1, y2, color);
 	do_v_line(dst, x2, y1, y2, color);
 	refresh_screen_size();
