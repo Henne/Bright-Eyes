@@ -3465,13 +3465,14 @@ void timewarp(Bit32s time)
  * timewarp_until() -	forwards the ingame time
  * @time:	ticks to forward to e.g 6 AM
  */
+/* Borlandified and identical */
 void timewarp_until(Bit32s time)
 {
-	signed int i;
+	Bit32s i;
 	signed short td_bak;
 	signed short j;
 	signed short hour_diff;
-	signed int timer_bak;
+	Bit32s timer_bak;
 	register signed short hour_old, hour_new;
 
 	i = 0;
@@ -3488,7 +3489,7 @@ void timewarp_until(Bit32s time)
 		if (i % 768 == 0)
 			wait_for_vsync();
 #endif
-	} while (time != ds_readd(DAY_TIMER));
+	} while (ds_readds(DAY_TIMER) != time);
 
 	sub_ingame_timers(i);
 
