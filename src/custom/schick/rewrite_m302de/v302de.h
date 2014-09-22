@@ -203,7 +203,7 @@ static inline void and_ds_ws(Bit16u off, Bit16s val)
 
 static inline Bit32s add_ds_ds(Bit16u off, Bit32s val)
 {
-	return ds_writed(off, ds_readds(off) - val);
+	return ds_writed(off, ds_readds(off) + val);
 }
 
 static inline Bit32s sub_ds_ds(Bit16u off, Bit32s val)
