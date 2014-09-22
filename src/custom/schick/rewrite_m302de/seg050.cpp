@@ -81,6 +81,12 @@ void inc_skill_novice(Bit8u *hero, unsigned short skill)
 	}
 }
 
+signed short level_up(signed short hero_pos)
+{
+	DUMMY_WARNING();
+	return -1;
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
