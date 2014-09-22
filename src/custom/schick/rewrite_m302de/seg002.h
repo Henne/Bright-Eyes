@@ -118,8 +118,8 @@ void check_level_up(void);
 #endif
 void seg002_37c4(void);
 void set_and_spin_lock(void);
-//static
-void passages_recalc();
+/* static */
+void passages_recalc(void);
 //static
 void passages_reset();
 void timewarp(Bit32s);

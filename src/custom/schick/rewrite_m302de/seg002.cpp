@@ -3343,66 +3343,40 @@ void set_and_spin_lock(void)
 	}
 }
 
-void passages_recalc() {
+/* Borlandified and identical */
+void passages_recalc(void)
+{
+	signed short i;
+	signed short di;
+	signed short locvar;
 	Bit8u *p;
-	unsigned short locvar;
-	unsigned short di,i;
-
-	signed char tmp;
 
 	p = p_datseg + 0x6f00;
 
-	switch (get_current_season()) {
-		case 2:
-			/* summer */
-			locvar = 2;
-			break;
-		case 0:
-			/* winter */
-			locvar = 4;
-			break;
-		default:
-			locvar = 0;
-	}
+	i = get_current_season();
+
+	locvar = (i == 2) ? 2 : ((i == 0) ? 4 : 0);
 
 	for (i = 0; i < 45; p += 8, i++) {
-		tmp = host_readb(p + 4);
-		host_writeb(p + 4, tmp - 1);
 
-		if (tmp != -1)
-			continue;
+		if (dec_ptr_bs(p + 4) == -1) {
 
-		host_writeb(p + 7, (unsigned char)random_interval(70, 130));
-		host_writeb(p + 4, random_interval(0, (char)host_readb(p + 3) * 10 + (char)host_readb(p + 3) * locvar) / 10);
+			host_writeb(p + 7, (unsigned char)random_interval(70, 130));
+			host_writeb(p + 4, random_interval(0, host_readbs(p + 3) * 10 + host_readbs(p + 3) * locvar) / 10);
 
-		di = random_schick(100);
+			di = random_schick(100);
 
-		if (host_readb(p + 5) == 0) {
-			if (di <= 50)
-				tmp = 0;
-			else if (di <= 80)
-				tmp = 1;
-			else if (di <= 95)
-				tmp = 2;
-			else
-				tmp = 3;
-		} else {
-			if (di <= 10)
-				tmp = 4;
-			else if (di <= 40)
-				tmp = 5;
-			else if (di <= 80)
-				tmp = 6;
-			else
-				tmp = 7;
+			host_writeb(p + 6,
+				(!host_readbs(p + 5)) ?
+					((di <= 50) ? 0 : ((di <= 80) ? 1 : (di <= 95) ? 2 : 3)) :
+					((di <= 10) ? 4 : ((di <= 40) ? 5 : (di <= 80) ? 6 : 7)));
 		}
-		host_writeb(p + 7, tmp);
-
 	}
 
 	/* If a passage is hired decrement Passage days timer */
-	if (ds_readb(0x42ae) == 0xaa)
-		ds_writeb(0x42af, ds_readb(0x42af) - 1);
+	if (ds_readb(0x42ae) == 0xaa) {
+		dec_ds_bs(0x42af);
+	}
 }
 
 void passages_reset() {
