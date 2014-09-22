@@ -1595,7 +1595,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x554c: {
-		unsigned short item = CPU_Pop16();
+		Bit16s item = CPU_Pop16();
 		CPU_Push16(item);
 
 		reg_ax = get_first_hero_with_item(item);
@@ -7218,15 +7218,14 @@ static int n_seg002(unsigned short offs)
 	/* Callers: 1 */
 	case 0x55b1: {
 		CPU_Pop16();
-		unsigned short item = CPU_Pop16();
-		Bitu group = CPU_Pop16() & 0xff;
+		Bit16s item = CPU_Pop16();
+		Bit16s group = CPU_Pop16();
 		CPU_Push16(group);
 		CPU_Push16(item);
 
-		reg_ax = get_first_hero_with_item_in_group(item, (signed char)group);
+		reg_ax = get_first_hero_with_item_in_group(item, group);
 		D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
-			get_itemname(item), item, group,
-			(short)reg_ax);
+			get_itemname(item), item, group, (Bit16s)reg_ax);
 
 		return 1;
 	}

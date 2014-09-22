@@ -4679,7 +4679,7 @@ int get_item_pos(Bit8u *hero, unsigned short item)
 	return -1;
 }
 
-short get_first_hero_with_item(unsigned short item) {
+signed short get_first_hero_with_item(signed short item) {
 	Bit8u *hero_i = get_hero(0);
 	int i,j;
 
@@ -4699,7 +4699,7 @@ short get_first_hero_with_item(unsigned short item) {
 	return -1;
 }
 
-signed short get_first_hero_with_item_in_group(unsigned short item, signed char group) {
+signed short get_first_hero_with_item_in_group(signed short item, signed short group) {
 	Bit8u *hero_i = get_hero(0);
 	int i,j;
 
