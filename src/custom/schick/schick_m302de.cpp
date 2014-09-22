@@ -2349,7 +2349,7 @@ static int seg008(unsigned short offs) {
 		CPU_Push16(cnt);
 		CPU_Push32(rptr);
 
-		draw_h_line(Real2Phys(rptr), cnt, (unsigned char)color);
+		draw_h_line(rptr, cnt, (unsigned char)color);
 
 		if (RealSeg(rptr) == 0xa000)
 			D1_GFX("HLine(X=%03d,Y=%03d,len=%u,color=0x%02x);\n",

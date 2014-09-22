@@ -7,7 +7,7 @@ void set_video_mode(unsigned char mode);
 void set_video_page(unsigned char mode);
 void set_color(Bit8u *ptr, unsigned char color);
 void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors);
-void draw_h_line(PhysPt ptr, unsigned short count, unsigned char color);
+void draw_h_line(RealPt, unsigned short, unsigned char);
 void draw_h_spaced_dots(PhysPt ptr, unsigned short count, unsigned char color, unsigned short space);
 
 void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,

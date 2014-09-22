@@ -542,7 +542,7 @@ void do_h_line(RealPt ptr, unsigned short x1, unsigned short x2, unsigned short 
 	count = x2 - x1 + 1;
 	dst = y * 320 + x1 + ptr;
 
-	draw_h_line(Real2Phys(dst), count, color);
+	draw_h_line(dst, count, color);
 }
 
 void do_v_line(RealPt ptr, unsigned short y, unsigned short x1, unsigned short x2, char color) {
