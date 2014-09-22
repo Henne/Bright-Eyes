@@ -2531,16 +2531,23 @@ void sub_ingame_timers(Bit32s val)
 }
 
 /**
-	sub_mod_timers - subtracts val from the modification timers
-	@val:	vaule to subtract from the modification timers
+ * \brief	subtracts val from the modification timers
+ * \param val	vaule to subtract from the modification timers
 */
-void sub_mod_timers(Bit32s val) {
-	Bit8u *sp;
-	Bit8u *mp;
-	unsigned short i, j;
+/* Borlandified and identical */
+void sub_mod_timers(Bit32s val)
+{
+	signed short i;
+	signed short j;
 	signed short h_index;
+#if !defined(__BORLANDC__)
+	Bit8u *mp;
+#else
+	Bit8u huge *mp;
+#endif
 	unsigned char target;
 	unsigned char reset_target;
+	Bit8u *sp;
 
 	h_index = -1;
 
@@ -2548,68 +2555,72 @@ void sub_mod_timers(Bit32s val) {
 		return;
 
 	for (i = 0; i < 100; i++) {
-		/* make a pointer to the slot */
-		sp = p_datseg + 0x2e2c + i * 8;
 
 		/* if timer is 0 continue */
-		if (host_readd(sp) == 0)
+		if (ds_readd(0x2e2c + 8 * i) == 0)
 			continue;
 
 		/* subtract diff from timer */
-		host_writed(sp, host_readd(sp) - val);
+		sub_ds_ds(0x2e2c + 8 * i, val);
+
 
 		/* if timer > 0 continue */
-		if ((signed int)host_readd(sp) > 0)
-			continue;
+		if (ds_readds(0x2e2c + 8 * i) <= 0) {
+
 
 #if !defined(__BORLANDC__)
-		D1_LOG("Mod Timer %d rueckgesetzt\n", i);
+			D1_LOG("Mod Timer %d rueckgesetzt\n", i);
 #endif
 
-		/* set timer to 0 */
-		host_writed(sp, 0);
+			/* set timer to 0 */
+			ds_writed(0x2e2c + 8 * i, 0);
 
-		if (host_readb(sp + 6) != 0) {
-			/* target is a hero/npc */
+			/* make a pointer to the slot */
+			sp = p_datseg + 0x2e2c + i * 8;
 
-			/* get the hero index from the target */
-			target = host_readb(sp + 6);
-			for (j = 0; j <= 6; j++) {
-				if (host_readb(get_hero(j) + 0x7b) != target)
-					continue;
-				h_index = j;
-				break;
-			}
+			if (host_readb(sp + 6) != 0) {
+				/* target is a hero/npc */
 
-			if (h_index != -1) {
-				/* if a hero/npc is determined */
-
-				mp = get_hero(h_index);
-				/* make a pointer to the heros attribute mod */
-				mp += host_readw(sp + 4);
-				/* subtract the mod */
-				host_writeb(mp, host_readb(mp) - host_readb(sp + 7));
-
-				if (ds_readb(0x2845) == 20)
-					ds_writew(0x2846, 1);
-
-				/* reset target */
-				host_writeb(sp + 6, 0);
-
-				/* reset target if no other slots of target */
-				reset_target = 1;
-				for (j = 0; j < 100; j++) {
-					if (ds_readb(0x2e32 + j * 8) != target)
-						continue;
-					reset_target = 0;
-					break;
+				/* get the hero index from the target */
+				target = host_readb(sp + 6);
+				for (j = 0; j <= 6; j++) {
+					if (host_readbs(get_hero(j) + 0x7b) == target) {
+						h_index = j;
+						break;
+					}
 				}
 
-				if (reset_target)
-					host_writeb(get_hero(h_index) + 0x7b, 0);
-			} else {
+				if (h_index != -1) {
+					/* if a hero/npc is determined */
+
+					mp = get_hero(h_index);
+					/* make a pointer to the heros attribute mod */
+					mp += (Bit32u)host_readw(sp + 4);
+					/* subtract the mod */
+					sub_ptr_bs(mp, host_readbs(sp + 7));
+
+					if (ds_readb(0x2845) == 20) {
+						ds_writew(0x2846, 1);
+					}
+
+					/* reset target */
+					host_writeb(sp + 6, 0);
+
+					/* reset target if no other slots of target */
+					reset_target = 1;
+					for (j = 0; j < 100; j++) {
+						if (ds_readb(0x2e32 + j * 8) == target) {
+							reset_target = 0;
+							break;
+						}
+					}
+
+					if (reset_target) {
+						host_writeb(get_hero(h_index) + 0x7b, 0);
+					}
+				} else {
 #if !defined(__BORLANDC__)
-				D1_ERR("Invalid Mod Timer Target %d\n", target);
+					D1_ERR("Invalid Mod Timer Target %d\n", target);
 #endif
 
 					/* reset all slots of invalid target */
@@ -2622,19 +2633,20 @@ void sub_mod_timers(Bit32s val) {
 						}
 					}
 				}
+
+			} else {
+				/* target affects the savegame */
+				mp = p_datseg + 0x2d34;
+				mp += host_readw(sp + 4);
+				sub_ptr_bs(mp, host_readbs(sp + 7));
 			}
 
-		} else {
-			/* target affects the savegame */
-			mp = p_datseg + 0x2d34;
-			mp += host_readw(sp + 4);
-			host_writeb(mp, host_readb(mp) - host_readb(sp + 7));
-		}
+			/* reset offset, target, and modificator */
+			host_writeb(sp + 6,
+				host_writebs(sp + 7, 0));
 
-		/* reset offset, target, and modificator */
-		host_writeb(sp + 7, 0);
-		host_writeb(sp + 6, 0);
-		host_writew(sp + 4, 0);
+			host_writew(sp + 4, 0);
+		}
 	}
 }
 
