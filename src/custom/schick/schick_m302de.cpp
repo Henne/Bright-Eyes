@@ -1215,7 +1215,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x3ca6: {
-		Bit32u time = CPU_Pop32();
+		Bit32s time = CPU_Pop32();
 		CPU_Push32(time);
 		D1_LOG("timewarp(0x%x);\n", time);
 		timewarp(time);

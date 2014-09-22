@@ -3405,15 +3405,16 @@ void passages_reset(void)
 }
 
 /**
- * timewarp() -	forwards the ingame time
- * @time:	ticks to forward
+ * \brief	forwards the ingame time
+ * \param time	ticks to forward
  */
+/* Borlandified and identical */
 void timewarp(Bit32s time)
 {
-	signed int i;
+	Bit32s i;
 	signed short td_bak;
 	signed short hour_diff;
-	unsigned int timer_bak;
+	Bit32s timer_bak;
 	register signed short hour_old, hour_new;
 
 	timer_bak = ds_readd(DAY_TIMER);
