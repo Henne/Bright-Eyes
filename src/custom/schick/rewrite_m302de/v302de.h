@@ -17,9 +17,6 @@
 
 
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
-#define UNICORN_MET	(0x2464)
-#define UNICORN_GET_MAP	(0x2465)
-#define UNICORN_TIMER	(0x2466)
 #define TWO_FIELDED_SPRITE_ID (0x25f9)	/* char[5] array */
 #define EMS_ENABLED	(0x26ab)
 #define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
@@ -49,6 +46,9 @@
 #define QUESTED_MONTHS	(0x334e)
 #define BANK_DEPOSIT	(0x335c)	/* signed short */
 #define IN_ACADEMY	(0x3362)	/* s16 */
+#define UNICORN_MET	(0x3464)
+#define UNICORN_GET_MAP	(0x3465)
+#define UNICORN_TIMER	(0x3466)
 #define NPC_MONTHS	(0x3470)
 #define CURRENT_INFORMER	(0x3612)
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
