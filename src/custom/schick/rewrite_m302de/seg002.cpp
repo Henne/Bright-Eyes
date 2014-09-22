@@ -2745,10 +2745,11 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
  *
  *	@fmin:	five minutes
  */
-void seg002_2f7a(Bit32s fmin) {
-
+/* Borlandified and identical */
+void seg002_2f7a(Bit32s fmin)
+{
+	signed short i;
 	Bit8u *hero_i;
-	unsigned short i;
 
 	if (ds_readw(TIMERS_DISABLED) != 0)
 		return;
@@ -2757,43 +2758,42 @@ void seg002_2f7a(Bit32s fmin) {
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
+		if (host_readb(hero_i + 0x21) != 0) {
 
-		/* Timer to the next healing attempt */
-		if (host_readds(hero_i + 0x8b) > 0) {
+			/* Timer to the next healing attempt */
+			if (host_readds(hero_i + 0x8b) > 0) {
 
-			host_writed(hero_i + 0x8b,
-				host_readds(hero_i + 0x8b) - fmin * 450);
+				sub_ptr_ds(hero_i + 0x8b, fmin * 450);
 #if !defined(__BORLANDC__)
-			if (host_readds(hero_i + 0x8b) <= 0) {
-				D1_INFO("%s kann wieder geheilt werden\n",
-					(char*)hero_i + 0x10);
-			}
+				if (host_readds(hero_i + 0x8b) <= 0) {
+					D1_INFO("%s kann wieder geheilt werden\n",
+						(char*)hero_i + 0x10);
+				}
 #endif
 
-			if (host_readds(hero_i + 0x8b) < 0) {
-				host_writed(hero_i + 0x8b, 0);
+				if (host_readds(hero_i + 0x8b) < 0) {
+					host_writed(hero_i + 0x8b, 0);
+				}
 			}
-		}
 
-		/* Timer set after Staffspell */
-		if (host_readds(hero_i + 0x8f) > 0) {
-			host_writed(hero_i + 0x8f, host_readds(hero_i + 0x8f) - fmin * 450);
+			/* Timer set after Staffspell */
+			if (host_readds(hero_i + 0x8f) > 0) {
+				sub_ptr_ds(hero_i + 0x8f, fmin * 450);
 #if !defined(__BORLANDC__)
-			if (host_readds(hero_i + 0x8f) <= 0) {
-				D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
-					(char*)(hero_i + 0x10));
-			}
+				if (host_readds(hero_i + 0x8f) <= 0) {
+					D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
+						(char*)(hero_i + 0x10));
+				}
 
 #endif
-			if (host_readds(hero_i + 0x8f) < 0) {
+				if (host_readds(hero_i + 0x8f) < 0) {
 
-				host_writed(hero_i + 0x8f, 0);
+					host_writed(hero_i + 0x8f, 0);
+				}
 			}
-		}
 
-		ds_writew(CHECK_POISON, 1);
+			ds_writew(CHECK_POISON, 1);
+		}
 	}
 }
 
