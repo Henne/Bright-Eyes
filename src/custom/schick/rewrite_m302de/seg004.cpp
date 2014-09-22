@@ -562,7 +562,7 @@ void do_v_line(RealPt ptr, unsigned short y, unsigned short x1, unsigned short x
 	count = x2 - x1 + 1;
 	dst = x1 * 320 + y + ptr;
 
-	draw_h_spaced_dots(Real2Phys(dst), count, color, 320);
+	draw_h_spaced_dots(dst, count, color, 320);
 }
 
 void do_border(RealPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color) {

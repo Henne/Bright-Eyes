@@ -2370,7 +2370,7 @@ static int seg008(unsigned short offs) {
 		CPU_Push16(cnt);
 		CPU_Push32(rptr);
 
-		draw_h_spaced_dots(Real2Phys(rptr), cnt,
+		draw_h_spaced_dots(rptr, cnt,
 			(unsigned char)color, space);
 		if (RealSeg(rptr) == 0xa000)
 			D1_GFX("HSpacedDots(X=%03d,Y=%03u,%03u,0x%02x,%u);\n",
