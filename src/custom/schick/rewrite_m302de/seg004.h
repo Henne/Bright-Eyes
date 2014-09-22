@@ -18,7 +18,7 @@ void save_mouse_bg();
 void restore_mouse_bg();
 void load_objects_nvf(void);
 void draw_wallclock(signed short, signed short);
-void array_add(PhysPt dst, unsigned short len, unsigned char op, unsigned short flag);
+void array_add(Bit8u*, unsigned short, unsigned char, unsigned short);
 void schick_set_video();
 void schick_reset_video();
 void clear_ani_pal();

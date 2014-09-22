@@ -362,7 +362,7 @@ void load_objects_nvf(void)
 	nvf.nr = 15;
 	process_nvf(&nvf);
 
-	array_add(Real2Phys(ds_readd(0xd2e3)), 0xd3f, 0xe0, 2);
+	array_add(Real2Host(ds_readd(0xd2e3)), 0xd3f, 0xe0, 2);
 
 }
 
@@ -481,17 +481,17 @@ void draw_wallclock(signed short pos, signed short night)
 	@op:	operator
 	@flag:	if 2, op will not be added if array element is 0
 */
-void array_add(PhysPt dst, unsigned short len, unsigned char op, unsigned short flag) {
+void array_add(Bit8u *dst, unsigned short len, unsigned char op, unsigned short flag) {
 	unsigned short i;
 	char tmp;
 
 	for (i = 0; i < len; i++) {
-		tmp = mem_readb(dst+i);
+		tmp = host_readb(dst + i);
 
 		if (flag == 2 && !tmp)
 			continue;
 
-		mem_writeb(dst + i, tmp + op);
+		host_writeb(dst + i, tmp + op);
 	}
 }
 

@@ -1859,7 +1859,7 @@ static int seg004(unsigned short offs) {
 
 		D1_LOG("array_add(0x%04x:0x%04x, len=%d, op=%d, flag=%d);\n",
 			RealSeg(dst), RealOff(dst), v1, (char)v2, v3);
-		array_add(Real2Phys(dst), v1, (char)v2, v3);
+		array_add(Real2Host(dst), v1, (char)v2, v3);
 		return 1;
 	}
 	case 0x1190: {
@@ -7313,7 +7313,7 @@ static int n_seg004(unsigned short offs)
 
 			D1_LOG("near array_add(0x%04x:0x%04x, len=%d, op=%d, flag=%d);\n",
 				RealSeg(dst), RealOff(dst), v1, (char)v2, v3);
-			array_add(Real2Phys(dst), v1, (char)v2, v3);
+			array_add(Real2Host(dst), v1, (char)v2, v3);
 			return 1;
 		}
 		case 0x11da: {

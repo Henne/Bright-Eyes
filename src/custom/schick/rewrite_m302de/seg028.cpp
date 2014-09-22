@@ -301,7 +301,7 @@ void load_map(void)
 
 	process_nvf(&nvf);
 
-	array_add(Real2Phys(ds_readd(0xc3db)) + 18000, 3003, 0xe0, 2);
+	array_add(Real2Host(ds_readd(0xc3db)) + 18000, 3003, 0xe0, 2);
 
 	ds_writeb(0x2845, 5);
 
