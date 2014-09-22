@@ -3522,33 +3522,29 @@ void timewarp_until(Bit32s time)
 }
 
 /**
-	restore_splash - decrements splash timer and restores picture
+ * \brief	decrements splash timer and restores picture
 */
-void dec_splash() {
-	unsigned char i;
+/* Borlandified and identical */
+void dec_splash(void)
+{
+	signed short i;
 
 	for (i = 0; i <= 6; i++) {
-		/* I have no clue */
-		if (ds_readb(0x2c98))
-			continue;
-		/* Check if splash timer is 0 */
-		if (ds_readb(0xbccf + i) == 0)
-			continue;
-		/* decrement splash timer */
-		ds_writeb(0xbcff + i, ds_readb(0xbcff + i) - 1);
-		/* Check splash timer again if 0 */
-		if (ds_readb(0xbccf + i) == 0)
-			continue;
-		/* I have no clue */
-		/* Could be in fight */
-		if (ds_readb(0x2845))
-			continue;
-		/* check if hero is dead */
-		if (hero_dead(get_hero(i)))
-			continue;
 
-		restore_rect((RealPt)ds_readd(0xd2ff), get_hero(i) + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
-
+		/* I have no clue */
+		if (!ds_readbs(0x2c98) &&
+			/* Check if splash timer is 0 */
+			(ds_readbs(0xbccf + i) != 0) &&
+			!add_ds_bu(0xbccf + i, -1) &&
+			/* Check splash timer again if 0 */
+			/* I have no clue */
+			/* Could be in fight */
+			(ds_readb(0x2845) == 0) &&
+			/* check if hero is dead */
+			!hero_dead(get_hero(i)))
+		{
+			restore_rect((RealPt)ds_readd(0xd2ff), get_hero(i) + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
+		}
 	}
 }
 

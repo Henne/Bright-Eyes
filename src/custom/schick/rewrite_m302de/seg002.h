@@ -124,7 +124,7 @@ void passages_recalc(void);
 void passages_reset();
 void timewarp(Bit32s);
 void timewarp_until(Bit32s);
-void dec_splash();
+void dec_splash(void);
 //static
 void draw_splash(unsigned short index, unsigned short type);
 void wait_for_keyboard2();
