@@ -3393,7 +3393,7 @@ void dec_splash() {
 		if (hero_dead(get_hero(i)))
 			continue;
 
-		restore_rect(Real2Phys(ds_readd(0xd2ff)), get_hero(i) + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
+		restore_rect((RealPt)ds_readd(0xd2ff), get_hero(i) + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
 
 	}
 }

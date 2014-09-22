@@ -1795,7 +1795,7 @@ static int seg004(unsigned short offs) {
 		CPU_Push32(ptr1);
 
 		D1_LOG("restore_rect(%d %d %d %d)\n", x, y , n, m);
-		restore_rect(Real2Phys(ptr1), Real2Host(ptr2), x, y,
+		restore_rect(ptr1, Real2Host(ptr2), x, y,
 			(char)n, (char)m);
 		return 1;
 	}

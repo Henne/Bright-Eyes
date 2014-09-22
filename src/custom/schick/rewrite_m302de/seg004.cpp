@@ -211,7 +211,7 @@ void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, 
 		refresh_screen_size();
 }
 
-void restore_rect(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, char n, char m) {
+void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, char n, char m) {
 
 	unsigned short i, j;
 	char c;
@@ -222,7 +222,7 @@ void restore_rect(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, ch
 		for (j = 0; j < n; j++) {
 			c = *src++;
 			if (c)
-				mem_writeb(dst + j, c);
+				mem_writeb(Real2Phys(dst) + j, c);
 		}
 }
 
