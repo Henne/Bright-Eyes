@@ -2506,7 +2506,7 @@ void do_timers(void)
 	sub_ingame_timers - subtracts val from the ingame timers
 	@val:	vaule to subtract from the ingame timers
 */
-void sub_ingame_timers(unsigned int val) {
+void sub_ingame_timers(Bit32s val) {
 
 	short i = 0;
 
@@ -2530,7 +2530,7 @@ void sub_ingame_timers(unsigned int val) {
 	sub_mod_timers - subtracts val from the modification timers
 	@val:	vaule to subtract from the modification timers
 */
-void sub_mod_timers(unsigned int val) {
+void sub_mod_timers(Bit32s val) {
 	Bit8u *sp;
 	Bit8u *mp;
 	unsigned short i, j;

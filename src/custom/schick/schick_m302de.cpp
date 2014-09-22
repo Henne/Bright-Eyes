@@ -1140,7 +1140,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x2bf6: {
-		unsigned int val = CPU_Pop32();
+		Bit32s val = CPU_Pop32();
 		CPU_Push32(val);
 
 		D1_LOG("far sub_ingame_timers(val = %u);\n", val);
@@ -1148,7 +1148,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x2c5e: {
-		unsigned int val = CPU_Pop32();
+		Bit32s val = CPU_Pop32();
 		CPU_Push32(val);
 
 		D1_LOG("sub_mod_timers(%d);\n", val);
