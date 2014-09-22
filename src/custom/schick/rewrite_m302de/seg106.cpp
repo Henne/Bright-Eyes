@@ -354,7 +354,7 @@ void equip_belt_ani(void)
 
 	set_palette(p_pal, 0x80, 0x20);
 
-	do_border(Real2Phys(ds_readd(0xd2ff)), 209, 79, 215, 89, 9);
+	do_border((RealPt)ds_readd(0xd2ff), 209, 79, 215, 89, 9);
 
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 209, 79, 215, 89, 0);
 
@@ -364,7 +364,7 @@ void equip_belt_ani(void)
 
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 189, 69, 235, 99, 0);
 
-	do_border(Real2Phys(ds_readd(0xd2ff)), 189, 69, 235, 99, 9);
+	do_border((RealPt)ds_readd(0xd2ff), 189, 69, 235, 99, 9);
 
 	wait_for_vsync();
 	wait_for_vsync();
@@ -372,7 +372,7 @@ void equip_belt_ani(void)
 
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 169, 59, 255, 109, 0);
 
-	do_border(Real2Phys(ds_readd(0xd2ff)), 169, 59, 255, 109, 9);
+	do_border((RealPt)ds_readd(0xd2ff), 169, 59, 255, 109, 9);
 
 	wait_for_vsync();
 	wait_for_vsync();
@@ -380,7 +380,7 @@ void equip_belt_ani(void)
 
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 164, 54, 260, 114, 0);
 
-	do_border(Real2Phys(ds_readd(0xd2ff)), 164, 54, 260, 114, 9);
+	do_border((RealPt)ds_readd(0xd2ff), 164, 54, 260, 114, 9);
 
 	wait_for_vsync();
 	wait_for_vsync();
@@ -388,7 +388,7 @@ void equip_belt_ani(void)
 
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 159, 49, 263, 117, 0);
 
-	do_border(Real2Phys(ds_readd(0xd2ff)), 159, 49, 263, 117, 9);
+	do_border((RealPt)ds_readd(0xd2ff), 159, 49, 263, 117, 9);
 
 	for (i = 0; i < 12; i++) {
 

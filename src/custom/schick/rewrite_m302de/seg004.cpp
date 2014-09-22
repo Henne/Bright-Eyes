@@ -564,12 +564,12 @@ void do_v_line(PhysPt ptr, unsigned short y, unsigned short x1, unsigned short x
 	draw_h_spaced_dots(dst, count, color, 320);
 }
 
-void do_border(PhysPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color) {
+void do_border(RealPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color) {
 	update_mouse_cursor();
-	do_h_line(dst, x1, x2, y1, color);
-	do_h_line(dst, x1, x2, y2, color);
-	do_v_line(dst, x1, y1, y2, color);
-	do_v_line(dst, x2, y1, y2, color);
+	do_h_line(Real2Phys(dst), x1, x2, y1, color);
+	do_h_line(Real2Phys(dst), x1, x2, y2, color);
+	do_v_line(Real2Phys(dst), x1, y1, y2, color);
+	do_v_line(Real2Phys(dst), x2, y1, y2, color);
 	refresh_screen_size();
 }
 

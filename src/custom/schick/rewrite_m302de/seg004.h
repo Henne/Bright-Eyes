@@ -25,7 +25,7 @@ void clear_ani_pal();
 void set_ani_pal(Bit8u*);
 void do_h_line(PhysPt ptr,unsigned short x1, unsigned short x2, unsigned short y, char color);
 void do_v_line(PhysPt ptr, unsigned short, unsigned short, unsigned short, char);
-void do_border(PhysPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color);
+void do_border(RealPt, unsigned short, unsigned short, unsigned short, unsigned short, char);
 void do_pic_copy(unsigned short mode);
 void do_save_rect();
 void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned short color);

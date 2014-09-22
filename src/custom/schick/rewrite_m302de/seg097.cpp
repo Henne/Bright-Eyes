@@ -526,7 +526,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 
 	if (picture != 0) {
 		/* draw a frame */
-		do_border(Real2Phys(ds_readd(0xd2ff)),
+		do_border((RealPt)ds_readd(0xd2ff),
 			ds_readw(0xbfff) + 5, ds_readw(0xc001) + 6,
 			ds_readw(0xbfff) + 38, ds_readw(0xc001) + 39,
 				(signed char)0xff);

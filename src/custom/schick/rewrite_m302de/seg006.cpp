@@ -475,7 +475,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 
 	if (loc == 0) {
 
-		do_border(Real2Phys(ds_readd(0xd303)), 1, 9, 34, 42, 29);
+		do_border((RealPt)ds_readd(0xd303), 1, 9, 34, 42, 29);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
@@ -488,7 +488,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 		draw_bar(1, 0, host_readw(Real2Host(hero) + 0x64),
 			host_readw(Real2Host(hero) + 0x62), 1);
 	} else {
-		do_border(Real2Phys(ds_readd(0xd303)), 1, 157, 34, 190, 29);
+		do_border((RealPt)ds_readd(0xd303), 1, 157, 34, 190, 29);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 158);
 		ds_writew(0xc015, 33);
@@ -544,7 +544,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 	ds_writed(0xd2fb, ds_readd(0xd303));
 
 	if (loc == 0) {
-		do_border(Real2Phys(ds_readd(0xd303)), 1, 9, 34, 50, 0x1d);
+		do_border((RealPt)ds_readd(0xd303), 1, 9, 34, 50, 0x1d);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
@@ -553,7 +553,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 		do_pic_copy(0);
 		GUI_print_string(Real2Host(GUI_name_singular(get_monname(host_readbs(p_enemy)))), 1, 1);
 	} else {
-		do_border(Real2Phys(ds_readd(0xd303)), 1, 149, 34, 190, 0x1d);
+		do_border((RealPt)ds_readd(0xd303), 1, 149, 34, 190, 0x1d);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 150);
 		ds_writew(0xc015, 33);

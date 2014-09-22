@@ -354,12 +354,12 @@ void select_hero_icon(unsigned short pos) {
 	signed short fg_bak, bg_bak;
 
 	/* paint a blue border for the pic and bars */
-	do_border(Real2Phys(ds_readd(0xd2ff)),
+	do_border((RealPt)ds_readd(0xd2ff),
 		ds_readw(0x2d01 + pos * 2) - 1, 156,
 		ds_readw(0x2d01 + pos * 2) + 42, 189, (signed char)0xfc);
 
 	/* paint a blue border for the name */
-	do_border(Real2Phys(ds_readd(0xd2ff)),
+	do_border((RealPt)ds_readd(0xd2ff),
 		ds_readw(0x2d01 + pos * 2) - 1, 189,
 		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xfc);
 
@@ -394,12 +394,12 @@ void deselect_hero_icon(unsigned short pos) {
 	signed short fg_bak, bg_bak;
 
 	/* paint a gray border for the pic and bars */
-	do_border(Real2Phys(ds_readd(0xd2ff)),
+	do_border((RealPt)ds_readd(0xd2ff),
 		ds_readw(0x2d01 + pos * 2) - 1, 156,
 		ds_readw(0x2d01 + pos * 2) + 42, 189, (signed char)0xe6);
 
 	/* paint a gray border for the name */
-	do_border(Real2Phys(ds_readd(0xd2ff)),
+	do_border((RealPt)ds_readd(0xd2ff),
 		ds_readw(0x2d01 + pos * 2) - 1, 189,
 		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xe6);
 

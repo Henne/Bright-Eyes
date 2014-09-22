@@ -1922,7 +1922,7 @@ static int seg004(unsigned short offs) {
 		D1_LOG("do_border(0x%04x:0x%04x, %d, %d, %d, %d, 0x%02x);\n",
 			RealSeg(dst), RealOff(dst), x1, x2, y1, y2,
 			(unsigned char)color);
-		do_border(Real2Phys(dst), x1, x2, y1, y2, (unsigned char)color);
+		do_border((RealPt)dst, x1, x2, y1, y2, (unsigned char)color);
 		return 1;
 	}
 	case 0x13b7: {
