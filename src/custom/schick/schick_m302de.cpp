@@ -1817,7 +1817,7 @@ static int seg004(unsigned short offs) {
 
 		D1_LOG("restore_rect_rle(%d %d %d %d %d)\n", x, y , w, h, v1);
 
-		restore_rect_rle(Real2Phys(ptr1), Real2Host(ptr2),
+		restore_rect_rle(ptr1, Real2Host(ptr2),
 			x, y, (char)w, (char)h, v1);
 		return 1;
 	}

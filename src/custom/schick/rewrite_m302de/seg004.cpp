@@ -226,7 +226,7 @@ void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, ch
 		}
 }
 
-void restore_rect_rle(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y, char width, char height, unsigned short v1) {
+void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, char width, char height, unsigned short v1) {
 	unsigned short i, si, di;
 	unsigned char c, cnt, tmp;
 
@@ -241,12 +241,12 @@ void restore_rect_rle(PhysPt dst, Bit8u *src, unsigned short x, unsigned short y
 				tmp = *src++;
 				if (tmp || v1 != 2)
 					for (di = 0; di < cnt; di++)
-						mem_writeb(dst + si + di, tmp);
+						mem_writeb(Real2Phys(dst) + si + di, tmp);
 				si += cnt;
 				continue;
 			}
 			if (c || v1 != 2)
-				mem_writeb(dst + si, c);
+				mem_writeb(Real2Phys(dst) + si, c);
 			si++;
 		}
 	}

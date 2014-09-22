@@ -12,7 +12,7 @@ void init_ani_busy_loop(unsigned short);
 void clear_ani(void);
 void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode);
 void restore_rect(RealPt, Bit8u*, unsigned short, unsigned short, char, char);
-void restore_rect_rle(PhysPt ptr1, Bit8u *ptr2, unsigned short x, unsigned short y, char n ,char m, unsigned short v1);
+void restore_rect_rle(RealPt, Bit8u*, unsigned short, unsigned short, char, char, unsigned short);
 void draw_mouse_cursor();
 void save_mouse_bg();
 void restore_mouse_bg();
