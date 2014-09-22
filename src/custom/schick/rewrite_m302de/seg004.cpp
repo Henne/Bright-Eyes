@@ -165,7 +165,7 @@ void clear_ani(void)
 	since in fight mode only the active hero is shown.
 */
 void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode) {
-	PhysPt dst;
+	RealPt dst;
 	unsigned short x, lost;
 	unsigned short i, y_min;
 
@@ -175,11 +175,11 @@ void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, 
 	if (mode == 0) {
 		x = ds_readw(0x2d01 + hero * 2) + type * 4 + 34;
 		y_min = 188;
-		dst = Real2Phys(ds_readd(0xd2ff));
+		dst = (RealPt)ds_readd(0xd2ff);
 	} else {
 		x = type * 4 + 36;
 		y_min = 42;
-		dst = Real2Phys(ds_readd(0xd303));
+		dst = (RealPt)ds_readd(0xd303);
 	}
 
 	if (pts_cur == 0) {
@@ -544,10 +544,10 @@ void do_h_line(PhysPt ptr, unsigned short x1, unsigned short x2, unsigned short 
 	draw_h_line(dst, count, color);
 }
 
-void do_v_line(PhysPt ptr, unsigned short y, unsigned short x1, unsigned short x2, char color) {
+void do_v_line(RealPt ptr, unsigned short y, unsigned short x1, unsigned short x2, char color) {
 
 	unsigned short count, tmp;
-	PhysPt dst;
+	RealPt dst;
 
 	if (x1 == x2)
 		return;
@@ -561,15 +561,15 @@ void do_v_line(PhysPt ptr, unsigned short y, unsigned short x1, unsigned short x
 	count = x2 - x1 + 1;
 	dst = x1 * 320 + y + ptr;
 
-	draw_h_spaced_dots(dst, count, color, 320);
+	draw_h_spaced_dots(Real2Phys(dst), count, color, 320);
 }
 
 void do_border(RealPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color) {
 	update_mouse_cursor();
 	do_h_line(Real2Phys(dst), x1, x2, y1, color);
 	do_h_line(Real2Phys(dst), x1, x2, y2, color);
-	do_v_line(Real2Phys(dst), x1, y1, y2, color);
-	do_v_line(Real2Phys(dst), x2, y1, y2, color);
+	do_v_line(dst, x1, y1, y2, color);
+	do_v_line(dst, x2, y1, y2, color);
 	refresh_screen_size();
 }
 

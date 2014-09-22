@@ -1902,7 +1902,7 @@ static int seg004(unsigned short offs) {
 		D1_LOG("do_v_line(0x%04x:0x%04x, %d, %d, %d, 0x%02x);\n",
 			RealSeg(dst), RealOff(dst), x, y1, y2,
 			(unsigned char)color);
-		do_v_line(Real2Phys(dst), x, y1, y2, (unsigned char)color);
+		do_v_line(dst, x, y1, y2, (unsigned char)color);
 		return 1;
 	}
 	case 0x1342: {
@@ -7349,7 +7349,7 @@ static int n_seg004(unsigned short offs)
 			D1_LOG("near do_v_line(0x%04x:0x%04x, %d, %d, %d, 0x%02x);\n",
 				RealSeg(dst), RealOff(dst), x, y1, y2,
 				(unsigned char)color);
-			do_v_line(Real2Phys(dst), x, y1, y2, (unsigned char)color);
+			do_v_line(dst, x, y1, y2, (unsigned char)color);
 			return 1;
 		}
 		case 0x13b7: {

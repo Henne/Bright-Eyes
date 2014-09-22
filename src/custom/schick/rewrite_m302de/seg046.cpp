@@ -760,8 +760,8 @@ void status_show(Bit16u index)
 	ds_writew(0xc3cb, 1);
 
 	if (ds_readws(0x2c9b) >= 3) {
-		do_v_line(Real2Phys(ds_readd(0xd2ff)), 107, 54, 195, 0);
-		do_v_line(Real2Phys(ds_readd(0xd2ff)), 212, 54, 195, 0);
+		do_v_line((RealPt)ds_readd(0xd2ff), 107, 54, 195, 0);
+		do_v_line((RealPt)ds_readd(0xd2ff), 212, 54, 195, 0);
 	}
 
 	ds_writew(0xd313, bak1);

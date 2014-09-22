@@ -454,7 +454,7 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 
 		/* clear the old button */
 		for (i = 0; i < 4; i++)
-			do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3,
+			do_v_line((RealPt)ds_readd(0xd2ff), y + i, x, x + 3,
 				(signed char)0xd8);
 	}
 
@@ -462,7 +462,7 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 
 	/* fill the new button */
 	for (i = 0; i < 4; i++)
-		do_v_line(Real2Phys(ds_readd(0xd2ff)), y + i, x, x + 3,
+		do_v_line((RealPt)ds_readd(0xd2ff), y + i, x, x + 3,
 			(signed char)0xd9);
 
 	refresh_screen_size();
