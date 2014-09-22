@@ -113,7 +113,9 @@ void sub_light_timers(Bit32s);
 //static
 void magical_chainmail_damage(void);
 void herokeeping(void);
+#if defined(__BORLANDC__)
 void check_level_up(void);
+#endif
 void set_and_spin_lock();
 //static
 void passages_recalc();

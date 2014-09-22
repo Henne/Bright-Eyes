@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 135/142
+ *	Functions rewritten: 136/142
 */
 #include <stdlib.h>
 #include <string.h>
@@ -34,6 +34,7 @@
 #include "seg047.h"
 #include "seg048.h"
 #include "seg049.h"
+#include "seg050.h"
 #include "seg066.h"
 #include "seg076.h"
 #include "seg095.h"
@@ -3134,10 +3135,36 @@ void herokeeping(void)
 	ds_writeb(0x4649, 0);
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
 void check_level_up(void)
 {
-	DUMMY_WARNING();
+	signed short i;
+	signed short done;
+	Bit8u *hero;
+
+	if (ds_readw(TIMERS_DISABLED) != 0) {
+		return;
+	}
+
+	do {
+		done = 0;
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+			if ((host_readbs(hero + 0x21) != 0) &&
+				!hero_dead(hero) &&
+				(host_readbs(hero + 0x27) < 20) &&
+				(ds_readds(LEVEL_AP_TAB + 4 * host_readbs(hero + 0x27)) < host_readds(hero + 0x28)))
+			{
+				level_up(i);
+				done = 1;
+			}
+		}
+
+	} while(done);
 }
+#endif
 
 void set_and_spin_lock() {
 	ds_writew(0xbcd6, 1);

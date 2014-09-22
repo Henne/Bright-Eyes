@@ -63,6 +63,7 @@
 #define FOOD_MOD	(0x4496)
 #define BANK_HELLER	(0x4646)	/* signed short */
 #define CONSUME_QUIET	(0x4648)
+#define LEVEL_AP_TAB	(0x464e)	/* Bit32s[21] */
 #define DELAY_FACTOR	(0x4b66)
 #define EMM_SIG		(0x4ba2)	/* char[8] */
 #define FNAMES		(0x4c8c)
