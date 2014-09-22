@@ -106,7 +106,7 @@ void do_census(void);
 void do_timers(void);
 void sub_ingame_timers(Bit32s);
 void sub_mod_timers(Bit32s);
-unsigned short get_free_mod_slot();
+signed short get_free_mod_slot(void);
 void set_mod_slot(unsigned short, Bit32u, Bit8u *, signed char, signed char);
 void seg002_2f7a(Bit32s);
 void sub_light_timers(Bit32s);

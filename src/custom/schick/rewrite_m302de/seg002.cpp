@@ -2650,23 +2650,34 @@ void sub_mod_timers(Bit32s val)
 	}
 }
 
-unsigned short get_free_mod_slot() {
-	unsigned short i;
+/**
+ * \brief	get a free modification slot
+ *
+ * \return	number of the modification slot
+ */
+/* Borlandified and identical */
+signed short get_free_mod_slot(void)
+{
+	signed short i;
 
 	for (i = 0; i < 100; i++) {
-		if (ds_readw(0x2e2c + i * 8 + 4))
-			continue;
-		break;
+
+		if (ds_readw(0x2e2c + i * 8 + 4) == 0) {
+			break;
+		}
 	}
 
-	if (i != 100)
-		return i;
+	if (i == 100) {
 
-	/* set timer of slot 0 to 1 */
-	host_writed(p_datseg + 0x2e2c, 1);
-	/* subtract one */
-	sub_mod_timers(1);
-	return 0;
+		/* set timer of slot 0 to 1 */
+		host_writed(p_datseg + 0x2e2c, 1);
+		/* subtract one */
+		sub_mod_timers(1);
+
+		return 0;
+	}
+
+	return i;
 }
 
 void set_mod_slot(unsigned short slot_nr, Bit32u timer_value, Bit8u *ptr,
