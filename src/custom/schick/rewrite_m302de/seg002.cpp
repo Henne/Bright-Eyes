@@ -2217,11 +2217,12 @@ void do_census(void)
 
 }
 
+/* Borlandified and identical */
 void do_timers(void)
 {
-	Bit8u *ptr;
-	unsigned char afternoon;
 	Bit8u *hero_i;
+	signed char afternoon;
+	Bit8u *ptr;
 	signed short i, di;
 
 	afternoon = 0;
@@ -2234,106 +2235,106 @@ void do_timers(void)
 	nightfall();
 
 	/* inc day timer */
-	ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) + 1);
+	add_ds_ds(DAY_TIMER, 1);
 
-	if (ds_readb(0xbcda) == 0) {
+	if (!ds_readbs(0xbcda)) {
 		sub_ingame_timers(1);
 		sub_mod_timers(1);
 	}
 
-	if (ds_readb(0xbcda) == 0) {
+	if (!ds_readbs(0xbcda)) {
 
 		/* set day timer to pm */
 		/* TODO: afternoon is useless */
-		if (ds_readd(DAY_TIMER) > 0xfd20) {
-			ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) - 0xfd20);
+		if (ds_readds(DAY_TIMER) >= 0xfd20) {
+			sub_ds_ds(DAY_TIMER, 0xfd20);
 			afternoon = 1;
 		}
 
 		/* every 5 minutes ingame */
-		if (ds_readd(DAY_TIMER) % 0x1c2 == 0) {
+		if (!(ds_readds(DAY_TIMER) % 0x1c2)) {
 			seg002_2f7a(1);
 		}
 
 		/* every 15 minutes ingame */
-		if (ds_readd(DAY_TIMER) % 0x546 == 0) {
+		if (!(ds_readds(DAY_TIMER) % 0x546)) {
 			sub_light_timers(1);
 		}
 		/* every hour ingame */
-		if (ds_readd(DAY_TIMER) % 0x1518 == 0) {
+		if (!(ds_readds(DAY_TIMER) % 0x1518)) {
+
 			magical_chainmail_damage();
 
 			/* decrement unicorn timer */
 			if (ds_readb(UNICORN_GET_MAP) != 0 &&
-				ds_readb(UNICORN_TIMER) != 0) {
-					ds_writeb(UNICORN_TIMER,
-						ds_readb(UNICORN_TIMER) - 1);
+				ds_readb(UNICORN_TIMER) != 0)
+			{
+				dec_ds_bs(UNICORN_TIMER);
 			}
 
 			/* handle sphere timer */
 			if (ds_readb(SPHERE_TIMER) != 0) {
-				ds_writeb(SPHERE_TIMER,
-					ds_readb(SPHERE_TIMER) - 1);
 
-				if (ds_readb(SPHERE_TIMER) == 0) {
+				if (!add_ds_bu(SPHERE_TIMER, -1)) {
 					ds_writeb(SPHERE_ACTIVE, 1);
 				}
 			}
 
 			/* two timers of a dungeon */
-			if (ds_readb(0x3cc6) != 0) {
-				ds_writeb(0x3cc6, ds_readb(0x3cc6) - 1);
+			if (ds_readbs(0x3cc6) != 0) {
+				dec_ds_bs(0x3cc6);
 			}
-			if (ds_readb(0x3cc7) != 0) {
-				ds_writeb(0x3cc7, ds_readb(0x3cc7) - 1);
+			if (ds_readbs(0x3cc7) != 0) {
+				dec_ds_bs(0x3cc7);
 			}
 		}
 
 		/* reset the day timer to 24h time */
-		if (afternoon)
-			ds_writed(DAY_TIMER, ds_readd(DAY_TIMER) + 0xfd20);
+		if (afternoon) {
+			add_ds_ds(DAY_TIMER, 0xfd20L);
+		}
 	}
 
 	/* at 6 o'clock in the morninig */
-	if (ds_readd(DAY_TIMER) == 0x7e90) {
+	if (ds_readd(DAY_TIMER) == 0x7e90L) {
 
 		hero_i = get_hero(0);
 
 		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+
 			/* check typus */
-			if (host_readb(hero_i + 0x21) == 0)
-				continue;
+			if ((host_readb(hero_i + 0x21) != 0) &&
+				/* unknown flag */
+				(host_readb(hero_i + 0x9f) != 0))
+			{
 
-			/* unknown flag */
-			if (host_readb(hero_i + 0x9f) == 0)
-				continue;
+				/* reset flag */
+				host_writeb(hero_i + 0x9f, 0);
 
-			/* reset flag */
-			host_writeb(hero_i + 0x9f, 0);
+				ds_writeb(0x2d61 + host_readbs(hero_i + 0x87),
+					ds_readb(0x2da0 + host_readbs(hero_i + 0x87)));
 
-			ds_writeb(0x2d61 + host_readb(hero_i + 0x87),
-				ds_readb(0x2da0 + host_readb(hero_i + 0x87)));
-
-			ds_writew(0x2d48 + host_readb(hero_i + 0x87) * 2,
-				ds_readw(0x2d87 + host_readb(hero_i + 0x87) * 2));
-			ds_writew(0x2d54 + host_readb(hero_i + 0x87) * 2,
-				ds_readw(0x2d93 + host_readb(hero_i + 0x87) * 2));
+				ds_writew(0x2d48 + host_readbs(hero_i + 0x87) * 2,
+					ds_readw(0x2d87 + host_readbs(hero_i + 0x87) * 2));
+				ds_writew(0x2d54 + host_readbs(hero_i + 0x87) * 2,
+					ds_readw(0x2d93 + host_readbs(hero_i + 0x87) * 2));
+			}
 		}
 	}
 
 	/* at 10 o'clock */
 	if (ds_readd(DAY_TIMER) == 0xd2f0) {
+
 		hero_i = get_hero(0);
 
 		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 			/* check typus */
-			if (host_readb(hero_i + 0x21) == 0)
-				continue;
-			/* check drunken */
-			if (host_readb(hero_i + 0xa1) == 0)
-				continue;
-
-			hero_get_sober(hero_i);
+			if ((host_readb(hero_i + 0x21) != 0) &&
+				/* check drunken */
+				(host_readb(hero_i + 0xa1) != 0))
+			{
+				hero_get_sober(hero_i);
+			}
 		}
 	}
 
@@ -2341,56 +2342,49 @@ void do_timers(void)
 	if (ds_readd(MAGE_POISON) != 0) {
 
 		/* decrement the timer */
-		ds_writed(MAGE_POISON, ds_readd(MAGE_POISON) - 1);
+		sub_ds_ds(MAGE_POISON, 1);
 
 		/* every 15 minutes  do damage */
 		if (ds_readd(MAGE_POISON) % 0x546 == 0) {
 
 			ptr = get_hero(0);
-			for (i = 0; i <= 6; i++, ptr = get_hero(i)) {
+
+			for (i = 0; i <= 6; i++, ptr += 0x6da) {
 
 				/* check typus */
-				if (host_readb(ptr + 0x21) == 0)
-					continue;
+				if (host_readb(ptr + 0x21) != 0) {
 
-				/* get group nr */
-				di = host_readb(ptr + 0x87);
+					/* get group nr */
+					di = host_readbs(ptr + 0x87);
 
-				/* hero is in group and in mage dungeon */
-				if (ds_readb(CURRENT_GROUP) == di &&
-					ds_readb(DUNGEON_INDEX) == 7) {
+					/* hero is in group and in mage dungeon */
+					if ((ds_readbs(CURRENT_GROUP) == di) &&
+						(ds_readb(DUNGEON_INDEX) == 7))
+					{
 
-					switch (ds_readb(DUNGEON_LEVEL)) {
-					case 1: {
-						/* 1W6-1 */
-						sub_hero_le(ptr,
-							dice_roll(1, 6,	-1));
-						break;
-					}
-					case 2: {
-						/* 1W6+1 */
-						sub_hero_le(ptr,
-							dice_roll(1, 6, 1));
-						break;
-					}
-					}
-				} else {
-					if (ds_readb(0x2d6f + di) != 7)
-						continue;
+						if (ds_readbs(DUNGEON_LEVEL) == 1) {
+							/* 1W6-1 */
+							sub_hero_le(ptr,
+								dice_roll(1, 6,	-1));
+						} else if (ds_readbs(DUNGEON_LEVEL) == 2) {
+							/* 1W6+1 */
+							sub_hero_le(ptr,
+								dice_roll(1, 6, 1));
+						}
 
-					switch (ds_readb(0x2d76 + di)) {
-					case 1: {
-						/* 1W6-1 */
-						sub_hero_le(ptr,
-							dice_roll(1, 6, -1));
-						break;
-					}
-					case 2: {
-						/* 1W6+1 */
-						sub_hero_le(ptr,
-							dice_roll(1, 6, 1));
-						break;
-					}
+					} else {
+						if (ds_readb(0x2d6f + di) == 7) {
+
+							if (ds_readbs(0x2d76 + di) == 1) {
+								/* 1W6-1 */
+								sub_hero_le(ptr,
+									dice_roll(1, 6, -1));
+							} else if (ds_readbs(0x2d76 + di) == 2) {
+								/* 1W6+1 */
+								sub_hero_le(ptr,
+									dice_roll(1, 6, 1));
+							}
+						}
 					}
 				}
 			}
@@ -2402,11 +2396,11 @@ void do_timers(void)
 #if !defined(__BORLANDC__)
 		D1_LOG("Unknown Dungeon Timer\n");
 #endif
-		ds_writed(0x3fa2, ds_readd(0x3fa2) - 1);
+		sub_ds_ds(0x3fa2, 1);
 	}
 
 	/* at 24 o'clock, daily stuff */
-	if (ds_readd(DAY_TIMER) > 0x1fa40) {
+	if (ds_readds(DAY_TIMER) >= 0x1fa40L) {
 
 		timers_daily();
 
@@ -2416,44 +2410,48 @@ void do_timers(void)
 		ds_writed(DAY_TIMER, 0);
 
 		/* inc DAY date */
-		ds_writeb(DAY_OF_WEEK, ds_readb(DAY_OF_WEEK) + 1);
-		ds_writeb(DAY_OF_MONTH, ds_readb(DAY_OF_MONTH) + 1);
-		if (ds_readb(DAY_OF_WEEK) == 7)
+		inc_ds_bs(DAY_OF_WEEK);
+		inc_ds_bs(DAY_OF_MONTH);
+
+		if (ds_readb(DAY_OF_WEEK) == 7) {
 			ds_writeb(DAY_OF_WEEK, 0);
+		}
 
 		/* decrement NPC timers */
 		for (i = 1; i < 7; i++) {
-			if (ds_readb(0x3601 + i) == 0)
-				continue;
-			if ((signed char)ds_readb(0x3601 + i) == -1)
-				continue;
 
-			ds_writeb(0x3601 + i, ds_readb(0x3601 + i) - 1);
+			if ((ds_readbs(0x3601 + i) != 0) &&
+				(ds_readbs(0x3601 + i) != -1))
+			{
+				dec_ds_bs(0x3601 + i);
+			}
 		}
 
 		/* drug timer (phexcaer) */
-		if (ds_readb(0x3f76) != 0)
-			ds_writeb(0x3f76, ds_readb(0x3f76) - 1);
+		if (ds_readb(0x3f76) != 0) {
+			dec_ds_bs(0x3f76);
+		}
 
 		/* unknown timer */
-		if (ds_readb(0x4332) != 0)
-			ds_writeb(0x4332, ds_readb(0x4332) - 1);
+		if (ds_readb(0x4332) != 0) {
+			dec_ds_bs(0x4332);
+		}
 
 		/* calendar */
 		if (ds_readb(DAY_OF_MONTH) == 31) {
 			/* new month */
 			ds_writeb(DAY_OF_MONTH, 1);
-			ds_writeb(MONTH, ds_readb(MONTH) + 1);
+			inc_ds_bs(MONTH);
 
 			/* increment quested months counter */
-			if (ds_readw(GOT_MAIN_QUEST) != 0)
-				ds_writew(QUESTED_MONTHS,
-					ds_readw(QUESTED_MONTHS) + 1);
+			if (ds_readw(GOT_MAIN_QUEST) != 0) {
+				inc_ds_ws(QUESTED_MONTHS);
+			}
 
 			/* increment the months the NPC is in the group */
-			if (host_readb(get_hero(6) + 0x21) != 0)
-				ds_writew(NPC_MONTHS,
-					ds_readw(NPC_MONTHS) + 1);
+			if (host_readb(get_hero(6) + 0x21) != 0) {
+				inc_ds_ws(NPC_MONTHS);
+			}
 
 			do_census();
 
@@ -2465,7 +2463,7 @@ void do_timers(void)
 			/* new year */
 			if (ds_readb(DAY_OF_MONTH) == 0) {
 				ds_writeb(MONTH, 1);
-				ds_writeb(YEAR, ds_readb(YEAR) + 1);
+				inc_ds_bs(YEAR);
 				ds_writeb(DAY_OF_MONTH, 1);
 			}
 		}
@@ -2473,15 +2471,14 @@ void do_timers(void)
 		/* check if we have a special day */
 		ds_writeb(SPECIAL_DAY, 0);
 
-		for (i = 0; ds_readb(0x45b9 + i * 3) != 0xff; i++) {
+		for (i = 0; ds_readbs(0x45b9 + 3 * i) != -1; i++) {
 
-			if (ds_readb(0x45b9 + i * 3) != ds_readb(MONTH))
-				continue;
-			if (ds_readb(0x45b9 + 1 + i * 3) != ds_readb(DAY_OF_MONTH))
-				continue;
-
-			ds_writeb(SPECIAL_DAY, ds_readb(0x45b9 + 2 + i * 3));
-			break;
+			if ((ds_readbs(0x45b9 + 3 * i) == ds_readbs(MONTH)) &&
+				(ds_readbs((0x45b9 + 1) + 3 * i) == ds_readbs(DAY_OF_MONTH)))
+			{
+				ds_writeb(SPECIAL_DAY, ds_readb((0x45b9 + 2) + 3 * i));
+				break;
+			}
 		}
 
 		passages_recalc();
@@ -2500,8 +2497,9 @@ void do_timers(void)
 	}
 
 	/* at 9 o'clock */
-	if (ds_readd(DAY_TIMER) == 0xbdd8)
+	if (ds_readd(DAY_TIMER) == 0xbdd8) {
 		passages_reset();
+	}
 }
 
 /**
