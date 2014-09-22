@@ -3379,23 +3379,29 @@ void passages_recalc(void)
 	}
 }
 
-void passages_reset() {
-	Bit8u *p;
-	unsigned short i;
+/* Borlandified and identical */
+void passages_reset(void)
+{
+	signed short i;
+	Bit8u *p = p_datseg + 0x6f00;
 
-	p = p_datseg + 0x6f00;
-
+#ifdef M302de_ORIGINAL_BUGFIX
+	for (i = 0; i < 45; p += 8, i++)
+#else
 	/* Orig-BUG: the loop operates only on the first element
 		sizeof(element) == 8 */
-	/* for (i = 0; i < 45; i++) */
-
-	for (i = 0; i < 45; p += 8, i++)
-		if (host_readb(p + 4) == 0)
+	for (i = 0; i < 45; i++)
+#endif
+	{
+		if (!host_readbs(p + 4)) {
 			host_writeb(p + 4, -1);
+		}
+	}
 
 	/* If a passage is hired and the timer is zero, reset the passage */
-	if ((ds_readb(0x42ae) == 170) && (ds_readb(0x42af) == 0))
+	if ((ds_readb(0x42ae) == 0xaa) && !ds_readb(0x42af)) {
 		ds_writeb(0x42ae, 0);
+	}
 }
 
 /**
