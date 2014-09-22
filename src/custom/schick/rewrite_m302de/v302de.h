@@ -282,9 +282,10 @@ static inline void inc_ptr_ws(Bit8u *p)
 	host_writews(p, host_readws(p) + 1);
 }
 
-static inline void dec_ptr_bs(Bit8u *p)
+static inline Bit8s dec_ptr_bs(Bit8u *p)
 {
 	host_writebs(p, host_readbs(p) - 1);
+	return host_readbs(p) + 1;
 }
 
 static inline void dec_ptr_ws(Bit8u *p)
