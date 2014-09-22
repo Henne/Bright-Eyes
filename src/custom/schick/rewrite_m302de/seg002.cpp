@@ -2491,9 +2491,11 @@ void do_timers(void)
 		ds_writew(0x331d, random_schick(7));
 
 		/* check if times up */
-		if (ds_readb(YEAR) == 17 && ds_readb(MONTH) >= 10 &&
-			ds_readb(DAY_OF_MONTH) >= 17) {
-			ds_writeb(0xc3c1, 4);
+		if ((ds_readbs(YEAR) == 17) &&
+			(ds_readbs(MONTH) >= 10) &&
+			(ds_readbs(DAY_OF_MONTH) >= 17))
+		{
+			ds_writew(0xc3c1, 4);
 		}
 	}
 
