@@ -1205,7 +1205,9 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x37c4: {
-			return 0;
+		D1_LOG("seg002_37c4();\n");
+		seg002_37c4();
+		return 1;
 	}
 	case 0x3b4f:  {
 		D1_LOG("set_and_spin_lock()\n");

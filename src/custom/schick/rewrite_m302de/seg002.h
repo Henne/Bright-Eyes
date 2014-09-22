@@ -116,6 +116,7 @@ void herokeeping(void);
 #if defined(__BORLANDC__)
 void check_level_up(void);
 #endif
+void seg002_37c4(void);
 void set_and_spin_lock();
 //static
 void passages_recalc();

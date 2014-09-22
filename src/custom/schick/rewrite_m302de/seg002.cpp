@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 136/142
+ *	Functions rewritten: 137/142
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3165,6 +3165,162 @@ void check_level_up(void)
 	} while(done);
 }
 #endif
+
+struct dummy {
+	char a[24];
+};
+
+/* Borlandified and identical */
+void seg002_37c4(void)
+{
+	signed short l_si = 0;
+	RealPt p1;
+	RealPt p2;
+	RealPt p3;
+	struct dummy a = *(struct dummy*)(p_datseg + 0xc00d);
+
+	p1 = (RealPt)ds_readd(0xd2b1) + 2000;
+	p2 = (RealPt)ds_readd(0xd2b1) + 2100;
+	p3 = (RealPt)ds_readd(0xd2b1) + 1000;
+
+	if ((ds_readws(0xe4a3) != 0) && (ds_readb(TRAVELING))) {
+
+		ds_writew(0xe4ad,
+				ds_readws(0xa43b + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
+		ds_writew(0xe4ab,
+				ds_readws(0xa43d + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
+
+		ds_writew(0xc011, ds_readws(0xe4ad) - 4);
+		ds_writew(0xc013, ds_readws(0xe4ab) - 4);
+		ds_writew(0xc015, ds_readws(0xe4ad) + 4);
+		ds_writew(0xc017, ds_readws(0xe4ab) + 4);
+		ds_writed(0xc019, (Bit32u)p1);
+
+		if (is_mouse_in_rect(ds_readws(0xc011) - 16, ds_readws(0xc013) - 16, ds_readws(0xc015) + 16, ds_readws(0xc017) + 16))
+		{
+			update_mouse_cursor();
+			l_si = 1;
+		}
+
+		do_pic_copy(0);
+
+		if (l_si) {
+			refresh_screen_size();
+		}
+
+		ds_writew(0xe4a3, l_si = 0);
+	}
+
+	if (ds_readws(0xe4a5) != 0) {
+
+		ds_writew(0xc011, ds_readws(0xe4a9) - 4);
+		ds_writew(0xc013, ds_readws(0xe4a7) - 4);
+		ds_writew(0xc015, ds_readws(0xe4a9) + 4);
+		ds_writew(0xc017, ds_readws(0xe4a7) + 4);
+		ds_writed(0xc019, (Bit32u)p2);
+
+		if (is_mouse_in_rect(ds_readws(0xc011) - 16, ds_readws(0xc013) - 16, ds_readws(0xc015) + 16, ds_readws(0xc017) + 16))
+		{
+			update_mouse_cursor();
+			l_si = 1;
+		}
+
+		if (ds_readws(0xe4a5) != 0) {
+			do_pic_copy(0);
+		}
+
+		if (l_si) {
+			refresh_screen_size();
+		}
+
+		l_si = ds_writew(0xe4a5, 0);
+	}
+
+	if (ds_readws(0xe4b1) != 0) {
+
+		ds_writew(0xc011, ds_readws(0xe4b1) - 4);
+		ds_writew(0xc013, ds_readws(0xe4af) - 4);
+		ds_writew(0xc015, ds_readws(0xe4b1) + 4);
+		ds_writew(0xc017, ds_readws(0xe4af) + 4);
+		ds_writed(0xc019, (Bit32u)p2);
+
+		if (is_mouse_in_rect(ds_readws(0xc011) - 16, ds_readws(0xc013) - 16, ds_readws(0xc015) + 16, ds_readws(0xc017) + 16))
+		{
+			update_mouse_cursor();
+			l_si = 1;
+		}
+
+		do_save_rect();
+
+		if (l_si) {
+			refresh_screen_size();
+		}
+
+		ds_writew(0xe4a5, 1);
+		ds_writew(0xe4a9, ds_readw(0xe4b1));
+		ds_writew(0xe4a7, ds_readw(0xe4af));
+		l_si = 0;
+
+		if ((ds_readws(0xe5ae) != 0) && (ds_readb(TRAVELING))) {
+
+			ds_writew(0xe4ad,
+					ds_readws(0xa43b + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
+			ds_writew(0xe4ab,
+					ds_readws(0xa43d + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
+
+			ds_writew(0xc011, ds_readws(0xe4ad) - 4);
+			ds_writew(0xc013, ds_readws(0xe4ab) - 4);
+			ds_writew(0xc015, ds_readws(0xe4ad) + 4);
+			ds_writew(0xc017, ds_readws(0xe4ab) + 4);
+			ds_writed(0xc019, (Bit32u)p1);
+
+			if (is_mouse_in_rect(ds_readws(0xc011) - 16, ds_readws(0xc013) - 16, ds_readws(0xc015) + 16, ds_readws(0xc017) + 16))
+			{
+				update_mouse_cursor();
+				l_si = 1;
+			}
+
+			do_save_rect();
+			ds_writed(0xc019, (Bit32u)(p3 + 100 * ds_readws(0xbcd8)));
+			do_pic_copy(2);
+
+			if (l_si) {
+				refresh_screen_size();
+			}
+
+			ds_writew(0xe4a3, ds_readws(0xe5b0));
+			l_si = 0;
+		}
+
+		ds_writew(0xc011, ds_readws(0xe4b1) - 4);
+		ds_writew(0xc013, ds_readws(0xe4af) - 4);
+		ds_writew(0xc015, ds_readws(0xe4b1) + 4);
+		ds_writew(0xc017, ds_readws(0xe4af) + 4);
+		ds_writed(0xc019, (Bit32u)(p3 + 100 * (ds_readws(0xbcd8) + 5)));
+
+		if (is_mouse_in_rect(ds_readws(0xc011) - 16, ds_readws(0xc013) - 16, ds_readws(0xc015) + 16, ds_readws(0xc017) + 16))
+		{
+			update_mouse_cursor();
+			l_si = 1;
+		}
+
+		do_pic_copy(2);
+
+		if (l_si) {
+			refresh_screen_size();
+		}
+
+		ds_writew(0xe4a5, 1);
+	}
+
+
+	ds_writew(0xbcd6, 0);
+	inc_ds_ws(0xbcd8);
+
+	mod_ds_ws(0xbcd8, 5);
+
+	*(struct dummy*)(p_datseg + 0xc00d) = a;
+}
 
 void set_and_spin_lock() {
 	ds_writew(0xbcd6, 1);
