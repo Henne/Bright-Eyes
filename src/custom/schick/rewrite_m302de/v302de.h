@@ -181,7 +181,7 @@ static inline void ds_writeb_z(Bitu addr, char val) {
 
 static inline Bit8u *get_hero(signed short index) {
 	if (index < 0 || index > 6) {
-		D1_ERR("ERROR: Versuch auf Held and position %d zuzugreifen\n", index);
+		D1_ERR("ERROR: Versuch auf Held an Position %d zuzugreifen\n", index);
 	}
 	return Real2Host(ds_readd(HEROS)) + index * 0x6da;
 }
