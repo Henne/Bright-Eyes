@@ -4323,54 +4323,57 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 }
 
 /**
-	add_hero_ae - add AE points to heros current AE
+ * \brief	add AE points to heros current AE
 */
-void add_hero_ae(Bit8u* hero, short ae) {
-
-	short tmp;
-
+/* Borlandified and identical */
+void add_hero_ae(Bit8u* hero, signed short ae)
+{
 	/* dont add AE if hero is dead or ae = 0 */
-	if (hero_dead(hero) || ae == 0)
-		return;
+	if (!hero_dead(hero) && (ae > 0)) {
 
-	tmp = ds_readw(0xc3cb);
-	ds_writew(0xc3cb, 0);
+		signed short tmp = ds_readw(0xc3cb);
+		ds_writew(0xc3cb, 0);
 
-	/* add AE to heros current AE */
-	host_writew(hero+0x64, host_readw(hero+0x64) + ae);
+		/* add AE to heros current AE */
+		add_ptr_ws(hero + 0x64, ae);
 
-	/* if current AE is greater than AE maximum
-		set current AE to AE maximum */
-	if (host_readw(hero+0x64) > host_readw(hero+0x62))
-		host_writew(hero+0x64, host_readw(hero+0x62));
+		/* if current AE is greater than AE maximum
+			set current AE to AE maximum */
+		if (host_readws(hero + 0x64) > host_readws(hero + 0x62))
+			host_writew(hero + 0x64, host_readws(hero + 0x62));
 
-	ds_writew(0xc3cb, tmp);
+		ds_writew(0xc3cb, tmp);
+	}
 }
 
 /**
- * sub_hero_le() - subtracts LE from a hero
- * @hero:	pointer to the hero
- * @le:		LE to loose
+ * \brief	subtracts LE from a hero
  *
+ * \param hero	pointer to the hero
+ * \param le	LE the hero looses
  */
+/* Borlandified and identical */
 void sub_hero_le(Bit8u *hero, signed short le)
 {
-	Bit8u *hero_i, *ptr;
-	signed short bak, old_le, i;
+	signed short i;
+	signed short bak;
+	signed short old_le;
+	Bit8u *ptr;
+	Bit8u *hero_i;
 
-	if (!hero_dead(hero) && le > 0) {
+	if (!hero_dead(hero) && (le > 0)) {
 
 		bak = ds_readw(0xc3cb);
 		ds_writew(0xc3cb, 0);
 
 		/* do the damage */
 		old_le = host_readw(hero + 0x60);
-		host_writew(hero + 0x60, old_le - le);
+		sub_ptr_ws(hero + 0x60, le);
 
 		if (hero_sleeps(hero)) {
+
 			/* awake him/her */
-			host_writeb(hero + 0xaa,
-				host_readb(hero + 0xaa) & 0xfd);
+			and_ptr_bs(hero + 0xaa, 0xfd);
 
 			/* in fight mode */
 			if (ds_readw(IN_FIGHT) != 0) {
@@ -4378,7 +4381,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 				/* update looking dir and other  */
 				host_writeb(ptr + 2, host_readb(hero + 0x82));
-				host_writeb(ptr + 0xd, 0xff);
+				host_writeb(ptr + 0xd, -1);
 				host_writeb(ptr + 5, 0);
 				host_writeb(ptr + 6, 0);
 			}
@@ -4392,7 +4395,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			host_writew(hero + 0x60, 0);
 
 			/* mark hero as dead */
-			host_writew(hero + 0xaa, host_readw(hero + 0xaa) | 1);
+			or_ptr_bs(hero + 0xaa, 1);
 
 			/* unknown */
 			ds_writeb(0x4212 + get_hero_index(hero), 0);
@@ -4400,8 +4403,9 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			/* unknown */
 			host_writeb(hero + 0x84, 100);
 
-			if (ds_readb(0x2845) == 0)
+			if (ds_readb(0x2845) == 0) {
 				ds_writeb(0x46df, 1);
+			}
 
 			/* reset sickness */
 			for (i = 1; i <= 7; i++) {
@@ -4423,13 +4427,16 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				}
 			}
 
-			if (ds_readb(0xa842) != 0 && ds_readw(IN_FIGHT) == 0 &&
-				(count_heroes_available_in_group() == 0 ||
-				(count_heroes_available_in_group() == 1 && is_hero_available_in_group(get_hero(6))))) {
+			if ((ds_readb(0xa842) != 0)
+				&& (ds_readw(IN_FIGHT) == 0) &&
+				(!count_heroes_available_in_group() ||
+				((count_heroes_available_in_group() == 1) && (is_hero_available_in_group(get_hero(6))))))
+			{
 
 				ds_writeb(0x4333, 99);
 
-				for (hero_i = get_hero(0), i = 0; i <=6; i++, hero_i = get_hero(i)) {
+				hero_i = get_hero(0);
+				for (i = 0; i <=6; i++, hero_i += 0x6da) {
 					/* no typus */
 					if ((host_readbs(hero_i + 0x21) != 0) &&
 						(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
@@ -4440,10 +4447,10 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			}
 
 		} else {
-			if (old_le >= 5 && (signed short)host_readw(hero + 0x60) < 5) {
+			if ((old_le >= 5) && (host_readws(hero + 0x60) < 5)) {
+
 				/* make hero unsonscious */
-				host_writeb(hero + 0xaa,
-					host_readb(hero + 0xaa) | 0x40);
+				or_ptr_bs(hero + 0xaa, 0x40);
 
 				/* unknown yet */
 				host_writeb(hero + 0x84, 10);
@@ -4453,14 +4460,19 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 				/* in fight mode */
 				if (ds_readw(IN_FIGHT) != 0) {
+
 					ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+
 					host_writeb(ptr + 2,
-						ds_readb(0x11e4 + host_readb(hero + 0x9b) * 2) + host_readb(hero + 0x82));
-					host_writeb(ptr + 0x0d, 0xff);
+						ds_readb(0x11e4 + host_readbs(hero + 0x9b) * 2) + host_readbs(hero + 0x82));
+
+					host_writeb(ptr + 0x0d, -1);
+
 					host_writeb(ptr + 5,
-						ds_readb(0x1210 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+						ds_readb(0x1210 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
+
 					host_writeb(ptr + 6,
-						ds_readb(0x1211 + host_readb(hero + 0x9b) * 8 + host_readb(hero + 0x82) * 2));
+						ds_readb(0x1211 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
 
 
 					FIG_add_msg(7, 0);
