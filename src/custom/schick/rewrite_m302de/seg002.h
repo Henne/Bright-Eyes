@@ -167,7 +167,7 @@ signed short compare_name(Bit8u*);
 signed short test_attrib(Bit8u*, signed short, signed short);
 signed short test_attrib3(Bit8u*, signed short, signed short, signed short, signed char);
 signed short unused_cruft(void);
-unsigned short get_random_hero();
+signed short get_random_hero(void);
 Bit32s get_party_money();
 void set_party_money(Bit32s);
 void add_party_money(Bit32s);

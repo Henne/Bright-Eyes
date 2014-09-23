@@ -4755,30 +4755,32 @@ signed short unused_cruft(void)
 }
 
 /**
-	get_random_hero - return index of a randomly choosen hero
+ * \brief	selects a hero randomly
+ *
+ * \return position of a randomly choosen hero
 */
 /* Original-Bug: can loop forever if the position is greater than the
 	number of heroes in the group */
-unsigned short get_random_hero() {
-	Bit8u *hero;
-	unsigned short cur_hero;
-	unsigned short i, pos = 0;
-	char cur_group;
+/* Borlandified and identical */
+signed short get_random_hero(void)
+{
+	signed short cur_hero;
 
 	do {
 		/* get number of current group */
-		cur_group = ds_readb(CURRENT_GROUP);
-		cur_hero = random_schick(ds_readb(0x2d36 + cur_group));
-		cur_hero--;
+		cur_hero = random_schick(ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) - 1;
 
-		/* Original-Bugfix */
-		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+#ifdef M302de_ORIGINAL_BUGFIX
+		signed short pos = 0;
+
+		Bit8u *hero = get_hero(0);
+		for (int i = 0; i <= 6; i++, hero += 0x6da) {
+
 			/* Check if hero has a class */
-			if (host_readb(hero+0x21) == 0)
+			if (host_readbs(hero + 0x21) == 0)
 				continue;
 			/* Check if in current group */
-			if (host_readb(hero + 0x87) != cur_group)
+			if (host_readbs(hero + 0x87) != ds_readbs(CURRENT_GROUP))
 				continue;
 
 			if (pos == cur_hero) {
@@ -4788,22 +4790,16 @@ unsigned short get_random_hero() {
 
 			pos++;
 		}
+		cur_hero = pos;
+#endif
 
-		hero = get_hero(pos);
+	} while (!host_readbs(get_hero(cur_hero) + 0x21) ||
+			/* Check if in current group */
+			(host_readbs(get_hero(cur_hero) + 0x87) != ds_readbs(CURRENT_GROUP)) ||
+			/* Check if dead */
+			hero_dead(get_hero(cur_hero)));
 
-		/* Check if hero has a class */
-		if (host_readb(hero+0x21) == 0)
-			continue;
-		/* Check if in current group */
-		if (host_readb(hero+0x87) != cur_group)
-			continue;
-		/* Check if dead */
-		if (hero_dead(hero))
-			continue;
-
-		return pos;
-
-	} while (1);
+	return cur_hero;
 }
 
 /**
