@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 141/144
+ *	Functions rewritten: 142/145
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3743,6 +3743,16 @@ void unused_delay(signed short nr)
 	while (i < nr) {
 		wait_for_vsync();
 		i++;
+	}
+}
+
+/* Borlandified and identical */
+/* unused */
+void unused_spinlock(void)
+{
+	ds_writew(0xc3c9, 1);
+
+	while (ds_readw(0xc3c9) != 0) {
 	}
 }
 
