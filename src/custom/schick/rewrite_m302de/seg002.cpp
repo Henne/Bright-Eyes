@@ -3621,30 +3621,32 @@ void seg002_4031(Bit8u *ptr)
 	delay_or_keypress(150 * GUI_print_header(ptr));
 }
 
-void wait_for_keypress() {
+/* Borlandified and identical */
+void wait_for_keypress(void)
+{
+	signed short si;
 
-	unsigned short si;
-	/* flushall() */
+	bc_flushall();
 
 	ds_writew(0xc3d5, 0);
 
 	do {
-		if (!CD_bioskey(1))
-			continue;
+		if (CD_bioskey(1)) {
 
-		si = bc_bioskey(0);
+			si = bc_bioskey(0);
 
-		if ((si & 0xff) != 0x20)
-			continue;
-		if (ds_readw(0xc3c5) != 0)
-			continue;
+			if (((si & 0xff) == 0x20) &&
+				(ds_readw(0xc3c5) == 0))
+			{
 
-		seg002_47e2();
+				seg002_47e2();
 
-		do {} while (!CD_bioskey(1));
+				while (!CD_bioskey(1)) {;}
 
-		seg002_484f();
-		break;
+				seg002_484f();
+				break;
+			}
+		}
 
 	} while (!CD_bioskey(1) && ds_readw(0xc3d5) == 0);
 

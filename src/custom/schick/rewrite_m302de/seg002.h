@@ -131,7 +131,7 @@ void timewarp_until_midnight(void);
 void wait_for_keyboard2(void);
 /* static */
 void seg002_4031(void);
-void wait_for_keypress();
+void wait_for_keypress(void);
 void delay_or_keypress(Bit16u);
 Bit32u swap_u32(Bit32u);
 unsigned short alloc_EMS(Bit32s);
