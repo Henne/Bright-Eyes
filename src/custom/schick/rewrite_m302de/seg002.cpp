@@ -4632,14 +4632,19 @@ signed short compare_name(Bit8u *name)
 }
 
 /**
-	test_attrib - make an attribute test
-
-	A test is positive if the return value is greater than zero.
-*/
-short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
-
-	short si = random_schick(20);
-	short tmp;
+ * \brief		make an attribute test
+ *
+ * \param hero		pointer to the hero
+ * \param attrib	number of the attribute
+ * \param bonus		handicap
+ *
+ * \return the result of the test, successful if greater than zero.
+ */
+/* Borlandified and identical */
+signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
+{
+	signed short si = random_schick(20);
+	signed short tmp;
 
 #if !defined(__BORLANDC__)
 	D1_INFO("Eigenschaftsprobe %s auf %s %+d: W20 = %d",
@@ -4651,20 +4656,19 @@ short test_attrib(Bit8u* hero, unsigned short attrib, short bonus) {
 		D1_INFO("Ungluecklich\n");
 #endif
 		return -99;
+	} else {
+
+		si += bonus;
 	}
 
-	si += bonus;
-
-	tmp = host_readb(hero + attrib*3 + 0x35);
-	tmp += host_readb(hero + attrib*3 + 0x36);
-	tmp -= si + 1;
+	tmp = host_readbs(hero + 3 * attrib + 0x35) + host_readbs(hero + 3 * attrib + 0x36);
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
-		tmp > 0 ? "bestanden" : "nicht bestanden", tmp);
+		(tmp - si + 1) > 0 ? "bestanden" : "nicht bestanden", (tmp - si + 1));
 #endif
 
-	return tmp;
+	return tmp - si + 1;
 }
 
 /**
