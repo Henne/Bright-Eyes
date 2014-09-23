@@ -4148,12 +4148,13 @@ void set_automap_tiles(signed short x, signed short y)
 }
 
 /**
+ * \brief
 */
-void seg002_47e2() {
-	Bit8u bak[24];
-
+/* Borlandified and identical */
+void seg002_47e2(void)
+{
 	/* save gfx settings to stack */
-	struct_copy(bak, p_datseg + 0xc00d, 24);
+	struct dummy a = *(struct dummy*)(p_datseg + 0xc00d);
 
 	/* set range 0,0 - 7,7 */
 	ds_writew(0xc011, 0);
@@ -4171,7 +4172,7 @@ void seg002_47e2() {
 	GUI_print_char('P', 0, 0);
 
 	/* restore gfx settings from stack */
-	struct_copy(p_datseg + 0xc00d, bak, 24);
+	*(struct dummy*)(p_datseg + 0xc00d) = a;
 }
 
 /**
