@@ -120,6 +120,10 @@
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
 #define ITEMUSER	(0xe5ce)	/* pointer to hero */
 
+
+#define HOURS(n)	(n * 90L * 60L)
+#define MINUTES(n)	(n * 90L)
+
 #if !defined(__BORLANDC__)
 
 #define INTCAST RealPt
