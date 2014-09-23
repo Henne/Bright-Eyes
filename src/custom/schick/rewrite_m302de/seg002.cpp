@@ -4247,23 +4247,21 @@ signed short check_hero_no2(Bit8u *hero)
 }
 
 /**
-	check_hero_no3 - returns true if heros not dead, stoned or unconscious
-	should be static
-*/
-unsigned short check_hero_no3(Bit8u *hero) {
-
-	/* Check if hero has a class */
-	if (host_readb(hero+0x21) == 0)
+ * \brief check if hero is not dead, stoned or unconscious
+ * \param hero	pointer to the hero
+ * \return {0, 1}
+ */
+/* should be static */
+/* Borlandified and identical */
+signed short check_hero_no3(Bit8u *hero)
+{
+	if (!host_readbs(hero + 0x21) ||
+		hero_dead(hero) ||
+		hero_stoned(hero) ||
+		hero_unc(hero))
+	{
 		return 0;
-	/* Check if dead */
-	if (hero_dead(hero))
-		return 0;
-	/* Check if stoned */
-	if (hero_stoned(hero))
-		return 0;
-	/* Check if unconscious */
-	if (hero_unc(hero))
-		return 0;
+	}
 
 	return 1;
 }
