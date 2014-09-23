@@ -149,7 +149,7 @@ signed short div16(signed short);
 void select_with_mouse(Bit8u*, Bit8u*);
 void select_with_keyboard(Bit8u*, Bit8u*);
 void set_automap_tile(signed short, signed short);
-void set_automap_tiles(unsigned short x, unsigned short y);
+void set_automap_tiles(signed short, signed short);
 void seg002_47e2();
 void seg002_484f();
 unsigned short check_hero(Bit8u* hero);
