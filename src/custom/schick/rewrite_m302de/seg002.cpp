@@ -4386,7 +4386,8 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 		draw_splash(get_hero_index(hero), 0);
 
-		if ((signed short)host_readw(hero + 0x60) < 0) {
+		if (host_readws(hero + 0x60) <= 0) {
+
 			/* set LE to 0 */
 			host_writew(hero + 0x60, 0);
 
