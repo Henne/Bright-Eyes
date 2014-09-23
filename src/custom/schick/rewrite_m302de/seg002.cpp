@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 144/147
+ *	Functions rewritten: 145/148
 */
 #include <stdlib.h>
 #include <string.h>
@@ -4734,6 +4734,24 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 		(tmp - si + 1) > 0 ? "bestanden" : "nicht bestanden", (tmp - si + 1));
 #endif
 	return tmp - si + 1;
+}
+
+/* Borlandified and identical */
+signed short unused_cruft(void)
+{
+
+	signed short l_si;
+
+	if (!ds_readbs(0x2d3c)) {
+		return -1;
+	}
+
+	do {
+		l_si = random_schick(6) - 1;
+
+	} while (!(host_readbs(get_hero(l_si) + 0x21)) || (host_readbs(get_hero(l_si) + 0x87) != ds_readbs(CURRENT_GROUP)));
+
+	return l_si;
 }
 
 /**
