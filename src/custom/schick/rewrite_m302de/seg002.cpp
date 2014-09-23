@@ -4431,14 +4431,11 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 				for (hero_i = get_hero(0), i = 0; i <=6; i++, hero_i = get_hero(i)) {
 					/* no typus */
-					if (host_readb(hero_i + 0x21) == 0)
-						continue;
-
-					/* not in current group */
-					if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-						continue;
-
-					hero_disappear(hero_i, i, -1);
+					if ((host_readbs(hero_i + 0x21) != 0) &&
+						(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
+					{
+						hero_disappear(hero_i, i, -1);
+					}
 				}
 			}
 
