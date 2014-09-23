@@ -3756,10 +3756,25 @@ void unused_spinlock(void)
 	}
 }
 
-Bit32u swap_u32(Bit32u v) {
-	return ((v >> 24) & 0xff) | ((v >> 16) & 0xff) << 8 |
-		((v >> 8) & 0xff) << 16 | (v&0xff) << 24;
+/**
+ * \brief	calculates a 32bit BigEndian value into LittleEndian
+ * \param v	32bit BE value
+ * \return	32bit LE value
+ */
+/* Borlandified and identical */
+Bit32u swap_u32(Bit32u v)
+{
+	register signed short tmp;
+	signed short a[2];
+	Bit32s *ptr = (Bit32s*)(&a[0]);
 
+	*ptr = host_readd((Bit8u*)&v);
+
+	tmp = a[0];
+	a[0] = swap_u16(a[1]);
+	a[1] = swap_u16(tmp);
+
+	return host_readd((Bit8u*)ptr);
 }
 
 /**
