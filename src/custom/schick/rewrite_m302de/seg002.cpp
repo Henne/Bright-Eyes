@@ -1695,7 +1695,7 @@ void handle_input(void)
 	signed short l_si;
 	signed short l_di;
 
-	ds_writew(0xc3d7, ds_writew(0xc3d9, l_si = 0));
+	ds_writew(0xc3d7, ds_writew(ACTION, l_si = 0));
 
 	herokeeping();
 
@@ -1772,7 +1772,7 @@ void handle_input(void)
 	}
 
 	mouse_19dc();
-	ds_writew(0xc3d9, l_si);
+	ds_writew(ACTION, l_si);
 }
 
 /* Borlandified and identical */
