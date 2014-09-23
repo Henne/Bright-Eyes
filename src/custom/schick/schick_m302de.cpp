@@ -1314,11 +1314,11 @@ static int seg002(unsigned short offs) {
 		return 0;
 	}
 	case 0x4485: {
-		short val = CPU_Pop16();
+		Bit16s val = CPU_Pop16();
 		CPU_Push16(val);
 
-		reg_ax = mod_timer(val);
-		D1_LOG("mod_timer(%d) = %d\n", val, reg_eax);
+		reg_ax = mod_day_timer(val);
+		D1_LOG("mod_day_timer(%d) = %d\n", val, reg_eax);
 		return 1;
 	}
 	case 0x44aa: {

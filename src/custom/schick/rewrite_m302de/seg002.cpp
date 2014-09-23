@@ -3919,11 +3919,10 @@ void draw_loc_icons(signed short icons, ...)
 	}
 }
 
-unsigned short mod_timer(short val) {
-	if (ds_readd(DAY_TIMER) % val == 0)
-		return 1;
-
-	return 0;
+/* Borlandified and identical */
+signed short mod_day_timer(signed short val)
+{
+	return ((ds_readds(DAY_TIMER) % val) == 0) ? 1 : 0;
 }
 
 void draw_compass() {

@@ -142,7 +142,7 @@ void from_EMS(RealPt, signed short, Bit32s);
 void to_EMS(signed short, RealPt, Bit32s);
 void set_to_ff(void);
 void draw_loc_icons(signed short, ...);
-unsigned short mod_timer(short val);
+signed short mod_day_timer(signed short);
 void draw_compass();
 short can_merge_group();
 signed short div16(signed short);
