@@ -4016,27 +4016,26 @@ signed short div16(signed short val)
 }
 
 /* This function is called in shops at sell/buy screens */
-void select_with_mouse(Bit8u *p1, Bit8u *p2) {
-	unsigned short i;
+/* Borlandified and identical */
+void select_with_mouse(Bit8u *p1, Bit8u *p2)
+{
+	signed short i;
 
 	/* something mouse related */
-	if (ds_readw(0xc3c7) != 2)
+	if (ds_readw(0xc3c7) != 2) {
 		return;
+	}
 
 	for (i = 0; i < 15; i++) {
-		if (ds_readw(0x46a3 + i * 2) > ds_readw(0x299c))
-			continue;
-		if (ds_readw(0x46a3 + i * 2) + 50 < ds_readw(0x299c))
-			continue;
-		if (ds_readw(0x46c1 + i * 2) > ds_readw(0x299e))
-			continue;
-		if (ds_readw(0x46c1 + i * 2) + 17 < ds_readw(0x299e))
-			continue;
-		if (host_readw(p2 + i * 7) == 0)
-			continue;
-
-		host_writew(p1, i);
-		return;
+		if ((ds_readws(0x46a3 + i * 2) <= ds_readws(0x299c)) &&
+			(ds_readws(0x46a3 + i * 2) + 50 >= ds_readws(0x299c)) &&
+			(ds_readws(0x46c1 + i * 2) <= ds_readws(0x299e)) &&
+			(ds_readws(0x46c1 + i * 2) + 17 >= ds_readws(0x299e)) &&
+			(host_readws(p2 + i * 7) != 0))
+		{
+			host_writew(p1, i);
+			return;
+		}
 	}
 }
 
