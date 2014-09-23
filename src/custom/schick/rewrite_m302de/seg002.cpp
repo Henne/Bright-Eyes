@@ -4039,48 +4039,49 @@ void select_with_mouse(Bit8u *p1, Bit8u *p2)
 	}
 }
 
-void select_with_keyboard(Bit8u *p1, Bit8u *p2) {
-	unsigned short pos;
+/* Borlandified and identical */
+void select_with_keyboard(Bit8u *p1, Bit8u *p2)
+{
+	signed short pos = host_readws(p1);
 
-	pos = host_readw(p1);
-
-	switch (ds_readw(0xc3d9)) {
+	if (ds_readw(ACTION) == 72) {
 		/* Key UP */
-		case 'H': {
-			if (pos) {
+		if (pos) {
+			pos--;
+		} else {
+			pos = 14;
+			while (host_readw(p2 + pos * 7) == 0) {
 				pos--;
-			} else {
-				pos = 14;
-				while (host_readw(p2 + pos * 7) == 0) {
-					pos--;
-				}
 			}
-			break;
 		}
+	} else if (ds_readw(ACTION) == 80) {
 		/* Key DOWN */
-		case 'P': {
-			if (pos < 14 && (host_readw(p2 + (pos + 1) * 7) != 0))
+		if (pos < 14) {
+			if (host_readw(p2 + (pos + 1) * 7) != 0) {
 				pos++;
-			else
+			} else {
 				pos = 0;
-			break;
+			}
+		} else {
+			pos = 0;
 		}
+	} else if (ds_readw(ACTION) == 77) {
 		/* Key RIGHT */
-		case 'M': {
-			if (pos < 10) {
-				if (host_readw(p2 + (pos + 5) * 7) != 0)
-					pos += 5;
-			} else
-				pos -= 10;
-			break;
+		if (pos < 10) {
+			if (host_readw(p2 + (pos + 5) * 7) != 0) {
+				pos += 5;
+			}
+		} else {
+			pos -= 10;
 		}
+	} else if (ds_readw(ACTION) == 75) {
 		/* Key LEFT */
-		case 'K': {
-			if (pos <= 4) {
-				if (host_readw(p2 + (pos + 10) * 7) != 0)
-					pos += 10;
-			} else
-				pos -= 5;
+		if (pos > 4) {
+			pos -= 5;
+		} else {
+			if (host_readw(p2 + (pos + 10) * 7) != 0) {
+				pos += 10;
+			}
 		}
 	}
 
