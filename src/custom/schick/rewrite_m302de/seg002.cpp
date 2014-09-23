@@ -4475,9 +4475,9 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				}
 			}
 		}
-	}
 
-	ds_writew(0xc3cb, bak);
+		ds_writew(0xc3cb, bak);
+	}
 
 	if (ds_readw(IN_FIGHT) == 0) {
 		ds_writeb(CHECK_PARTY, 1);
