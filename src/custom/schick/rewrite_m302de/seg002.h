@@ -140,7 +140,7 @@ Bit32u swap_u32_unused(Bit32u);
 signed short alloc_EMS(Bit32s);
 void from_EMS(RealPt, signed short, Bit32s);
 void to_EMS(signed short, RealPt, Bit32s);
-void set_to_ff();
+void set_to_ff(void);
 void draw_loc_icons(signed short, ...);
 unsigned short mod_timer(short val);
 void draw_compass();

@@ -3871,11 +3871,14 @@ void to_EMS(signed short handle, RealPt src, Bit32s bytes)
 
 }
 
-void set_to_ff() {
-	unsigned i;
+/* Borlandified and identical */
+void set_to_ff(void)
+{
+	signed short i;
 
-	for (i = 0; i < 9; i++)
-		ds_writeb(0xbd38 + i, 0xff);
+	for (i = 0; i < 9; i++) {
+		ds_writeb(0xbd38 + i, -1);
+	}
 }
 
 /* 0x43fd */
