@@ -4089,18 +4089,14 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 }
 
 /**
-	set_automap_tile - marks a tile in the automap as seen
-	@x:	X xoordinate
-	@y:	Y xoordinate
+ * \brief	marks a tile in the automap as seen
+ * \param x	X coordinate
+ * \param y	Y coordinate
 */
-void set_automap_tile(unsigned short x, unsigned short y) {
-	unsigned short offs;
-	char bit, tiles;
-
-	offs = y * 4 + x / 8;
-	bit = ds_readb(0x7d4a + (x & 7));
-	tiles = ds_readb(0xe442 + offs);
-	ds_writeb(0xe442 + offs, tiles | bit);
+/* Borlandified and identical */
+void set_automap_tile(signed short x, signed short y)
+{
+	or_ds_bs(0xe442 + (4 * y + (x >> 3)), ds_readb(0x7d4a + (x & 0x7)));
 }
 
 /**
