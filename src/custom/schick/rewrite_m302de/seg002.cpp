@@ -4497,61 +4497,58 @@ void sub_hero_le(Bit8u *hero, signed short le)
 }
 
 /**
- *	add_hero_le	-	regenerates LE of a hero
- *	@hero:		pointer to the hero
- *	@le:		LE to be regenerated
+ * \brief	regenerates LE of a hero
+ * \param hero	pointer to the hero
+ * \param le	LE to be regenerated
  *
- *	This functions does some magic in fights under circumstances.
+ * This functions does some magic in fights, when a hero awakes.
  */
-void add_hero_le(Bit8u *hero, signed short le) {
-
-	RealPt ptr;
-	signed short val_bak, tmp, ret;
+/* Borlandified and identical */
+void add_hero_le(Bit8u *hero, signed short le)
+{
+	signed short val_bak;
+	Bit8u *ptr;
+	signed short ret;
 
 	/* dead heroes never get LE */
-	if (hero_dead(hero))
-		return;
-	/* this function is only for adding */
-	if (le <= 0)
-		return;
+	if (!hero_dead(hero) && (le > 0)) {
 
-	val_bak = ds_readw(0xc3cb);
-	ds_writew(0xc3cb, 0);
+		val_bak = ds_readw(0xc3cb);
+		ds_writew(0xc3cb, 0);
 
-	/* add LE */
-	host_writew(hero + 0x60, host_readw(hero + 0x60) + le);
+		/* add LE */
+		add_ptr_ws(hero + 0x60, le);
 
-	/* set LE to maximum if greater than maximum */
-	if (host_readw(hero + 0x60) > host_readw(hero + 0x5e))
-		host_writew(hero + 0x60, host_readw(hero + 0x5e));
+		/* set LE to maximum if greater than maximum */
+		if (host_readws(hero + 0x60) > host_readws(hero + 0x5e))
+			host_writew(hero + 0x60, host_readws(hero + 0x5e));
 
-	/* if current LE is >= 5 and the hero is unconscissous */
-	if (host_readw(hero + 0x60) >= 5 && hero_unc(hero)) {
+		/* if current LE is >= 5 and the hero is unconscissous */
+		if ((host_readws(hero + 0x60) >= 5) && hero_unc(hero)) {
 
-		/* awake */
-		host_writeb(hero + 0xaa, host_readb(hero + 0xaa) & 0xbf);
+			/* awake */
+			and_ptr_bs(hero + 0xaa, 0xbf);
 
-		/* maybe if we are in a fight */
-		if (ds_readw(IN_FIGHT)) {
-			ptr = FIG_get_ptr(host_readb(hero + 0x81));
-			ret = FIG_get_range_weapon_type(hero);
+			/* maybe if we are in a fight */
+			if (ds_readw(IN_FIGHT)) {
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+				ret = FIG_get_range_weapon_type(hero);
 
-			if (ret != -1) {
-				tmp = (signed char)host_readb(hero + 0x9b) * 12;
-				tmp += 4 * ret;
-				tmp +=(signed char)host_readb(hero + 0x82);
-				mem_writeb(Real2Phys(ptr) + 2, ds_readb(0x10d0 + tmp));
-			} else {
-				mem_writeb(Real2Phys(ptr) + 2, host_readb(hero + 0x82));
+				if (ret != -1) {
+					host_writeb(ptr + 2, ds_readb(0x10d0 +
+						host_readbs(hero + 0x9b) * 12 + 4 * ret + host_readbs(hero + 0x82)));
+				} else {
+					host_writeb(ptr + 2, host_readb(hero + 0x82));
+				}
+
+				host_writeb(ptr + 0x0d, -1);
+				host_writeb(ptr + 5, 0);
+				host_writeb(ptr + 6, 0);
 			}
-			mem_writeb(Real2Phys(ptr) + 0x0d, 0xff);
-			mem_writeb(Real2Phys(ptr) + 5, 0x00);
-			mem_writeb(Real2Phys(ptr) + 6, 0x00);
 		}
+
+		ds_writew(0xc3cb, val_bak);
 	}
-
-
-	ds_writew(0xc3cb, val_bak);
 }
 
 /**
