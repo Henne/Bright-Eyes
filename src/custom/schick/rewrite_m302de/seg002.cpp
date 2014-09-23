@@ -3925,53 +3925,51 @@ signed short mod_day_timer(signed short val)
 	return ((ds_readds(DAY_TIMER) % val) == 0) ? 1 : 0;
 }
 
-void draw_compass() {
-
-	struct nvf_desc n;
-	signed short height;
+/* Borlandified and identical */
+void draw_compass(void)
+{
 	signed short width;
+	signed short height;
+	struct nvf_desc n;
 
 	/* No compass in a location */
-	if (ds_readb(LOCATION))
-		return;
-	/* Has something to do with traveling */
-	if (ds_readb(0xb132))
-		return;
-	/* Not in town or dungeon */
-	if (!ds_readb(DUNGEON_INDEX) && !ds_readb(CURRENT_TOWN))
-		return;
-	/* I have no clue */
-	if (ds_readb(0x4475) == 2)
-		return;
+	if (!ds_readbs(LOCATION) &&
+		/* Has something to do with traveling */
+		!ds_readbs(0xb132) &&
+		/* Not in town or dungeon */
+		((ds_readbs(DUNGEON_INDEX) != 0) || (ds_readbs(CURRENT_TOWN) != 0)) &&
+		/* I have no clue */
+		(ds_readb(0x4475) != 2))
+	{
 
-	/* set src */
-	n.dst = Real2Host(ds_readd(0xd2f7));
-	/* set dst */
-	n.src = Real2Host(ds_readd(0xd2b1));
-	/* set nr */
-	n.nr = ds_readbs(DIRECTION);
-	/* set type*/
-	n.type = 0;
+		/* set src */
+		n.dst = Real2Host(ds_readd(0xd2f7));
+		/* set dst */
+		n.src = Real2Host(ds_readd(0xd2b1));
+		/* set nr */
+		n.nr = ds_readbs(DIRECTION);
+		/* set type*/
+		n.type = 0;
 
-	n.height = (Bit8u*)&height;
-	n.width = (Bit8u*)&width;
+		n.width = (Bit8u*)&width;
+		n.height = (Bit8u*)&height;
 
-	/* process the nvf */
-	process_nvf(&n);
+		/* process the nvf */
+		process_nvf(&n);
 
-	/* set x and y values */
-	ds_writew(0xc011, 94);
-	ds_writew(0xc013, 115);
-	ds_writew(0xc015, 145);
-	ds_writew(0xc017, 136);
+		/* set x and y values */
+		ds_writew(0xc011, 94);
+		ds_writew(0xc013, 115);
+		ds_writew(0xc015, 145);
+		ds_writew(0xc017, 136);
 
-	/* set source */
-	ds_writed(0xc019, ds_readd(0xd2f7));
+		/* set source */
+		ds_writed(0xc019, ds_readd(0xd2f7));
 
-	update_mouse_cursor();
-	do_pic_copy(2);
-	refresh_screen_size();
-
+		update_mouse_cursor();
+		do_pic_copy(2);
+		refresh_screen_size();
+	}
 }
 
 short can_merge_group() {

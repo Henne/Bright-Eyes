@@ -143,7 +143,7 @@ void to_EMS(signed short, RealPt, Bit32s);
 void set_to_ff(void);
 void draw_loc_icons(signed short, ...);
 signed short mod_day_timer(signed short);
-void draw_compass();
+void draw_compass(void);
 short can_merge_group();
 signed short div16(signed short);
 void select_with_mouse(Bit8u *p1, Bit8u *p2);
