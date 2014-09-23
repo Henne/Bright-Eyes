@@ -47,7 +47,7 @@ static RealPt EMS_get_frame_ptr() {
 	return RealMake(0, 0);
 }
 
-unsigned short EMS_get_num_pages_unalloced() {
+signed short EMS_get_num_pages_unalloced(void) {
 
 	reg_ax = 0x4200;
 	CALLBACK_RunRealInt(0x67);
