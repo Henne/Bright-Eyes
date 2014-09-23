@@ -3602,7 +3602,9 @@ void timewarp_until_midnight(void)
 	ds_writew(TIMERS_DISABLED, td_bak);
 }
 
-void wait_for_keyboard2() {
+/* Borlandified and identical */
+void wait_for_keyboard2(void)
+{
 	while (CD_bioskey(1)) {
 #if !defined(__BORLANDC__)
 		D1_LOG("loop in %s\n", __func__);
