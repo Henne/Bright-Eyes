@@ -4119,8 +4119,10 @@ void set_automap_tiles(unsigned short x, unsigned short y) {
 	if (x > 0)
 		set_automap_tile(x - 1, y);
 	set_automap_tile(x, y);
-	if (ds_readb(0xbd94) - 1 > y)
+
+	if (ds_readb(0xbd94) - 1 > x) {
 		set_automap_tile(x + 1, y);
+	}
 
 	/* set lower line */
 	if (y < 15) {
