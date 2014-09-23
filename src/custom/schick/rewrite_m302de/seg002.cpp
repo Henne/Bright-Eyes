@@ -4552,73 +4552,67 @@ void add_hero_le(Bit8u *hero, signed short le)
 }
 
 /**
- *	add_group_le	-	regenerates LE of a group
- *	@le:		LE to be regenerated
+ * \brief	regenerates LE of a group
  *
+ * \param le	LE to be regenerated
  */
-void add_group_le(signed short le) {
+/* Borlandified and identical */
+void add_group_le(signed short le)
+{
 
 	Bit8u *hero;
-	unsigned short i;
+	signed short i;
 
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
-		/* check class */
-		if (host_readb(hero + 0x21) == 0)
-			continue;
-		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
 
-		add_hero_le(hero, le);
+		/* check class and group */
+		if ((host_readb(hero + 0x21) != 0) &&
+			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+		{
+			add_hero_le(hero, le);
+		}
 	}
 }
 
 /**
- * do_starve_damage() - damages starving heros
- * @hero:	a pointer to the hero
- * @index:	the index number of the hero
- * @type:	the type of message which should be printed
-		0 = hunger / 1 = thirst
+ * \brief	damages starving heros
+ *
+ * \param hero	a pointer to the hero
+ * \param index	the index number of the hero
+ * \param type	the type of message which should be printed (0 = hunger / 1 = thirst)
  */
-void do_starve_damage(Bit8u *hero, Bit16u index, Bit16u type)
+/* Borlandified and identical */
+void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 {
-	Bit16u bak;
-
 	/* check if the hero is dead */
-	if (hero_dead(hero))
-		return;
+	if (!hero_dead(hero)) {
 
-	/* save this value locally */
-	bak = ds_readw(0xc3cb);
-	ds_writew(0xc3cb, 0);
+		/* save this value locally */
+		signed short bak = ds_readw(0xc3cb);
+		ds_writew(0xc3cb, 0);
 
-	/* decrement the heros LE */
-	host_writew(hero + 0x60, host_readw(hero + 0x60) - 1);
+		/* decrement the heros LE */
+		dec_ptr_ws(hero + 0x60);
 
-	/* set the critical message type for the hero */
-	if (type != 0)
-		/* thirst */
-		ds_writeb(FOOD_MESSAGE + index, 1);
-	else
-		/* hunger */
-		ds_writeb(FOOD_MESSAGE + index, 2);
+		/* set the critical message type for the hero */
+		ds_writeb(FOOD_MESSAGE + index, type != 0 ? 1 : 2);
 
-	if (host_readw(hero + 0x60) <= 0) {
+		if (host_readws(hero + 0x60) <= 0) {
 
-		/* don't let the hero die */
-		host_writew(hero + 0x60, 1);
+			/* don't let the hero die */
+			host_writew(hero + 0x60, 1);
 
-		/* decrement the max LE and save them at 0x7a */
-		if (host_readw(hero + 0x5e) >= 2) {
-			host_writew(hero + 0x5e, host_readw(hero + 0x5e) - 1);
-			host_writeb(hero + 0x7a, host_readb(hero + 0x7a) + 1);
+			/* decrement the max LE and save them at 0x7a */
+			if (host_readws(hero + 0x5e) >= 2) {
+				dec_ptr_ws(hero + 0x5e);
+				inc_ptr_bs(hero + 0x7a);
+			}
 		}
+
+		/* restore the locally save value */
+		ds_writew(0xc3cb, bak);
 	}
-
-	/* restore the locally save value */
-	ds_writew(0xc3cb, bak);
-
 }
 
 /**

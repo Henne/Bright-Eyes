@@ -156,13 +156,13 @@ signed short check_hero(Bit8u*);
 signed short check_hero_no2(Bit8u*);
 signed short check_hero_no3(Bit8u*);
 signed short is_hero_available_in_group(Bit8u*);
-/* static */
-void do_starve_damage(Bit8u*, Bit16u, Bit16u);
 void sub_ae_splash(Bit8u*, signed short);
 void add_hero_ae(Bit8u*, signed short);
 void sub_hero_le(Bit8u*, signed short);
 void add_hero_le(Bit8u*, signed short);
-void add_group_le(signed short le);
+void add_group_le(signed short);
+/* static */
+void do_starve_damage(Bit8u*, signed short, signed short);
 short test_attrib(Bit8u* hero, unsigned short attrib, short bonus);
 short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, signed char bonus);
 unsigned short get_random_hero();
