@@ -4277,46 +4277,48 @@ signed short is_hero_available_in_group(Bit8u *hero)
 	return 0;
 }
 
-/*
- *	sub_ae_splash -	subtract current ae with a splash
- *	@hero:	the magicuser
- *	@ae:	astralenergy to subtract
+/**
+ * \brief	subtract current ae with a splash
+ * \param hero	the magicuser
+ * \param ae	astralenergy to subtract
  */
-void sub_ae_splash(Bit8u *hero, signed short ae) {
+/* Borlandified and identical */
+void sub_ae_splash(Bit8u *hero, signed short ae)
+{
+	if (!hero_dead(hero) && (ae > 0)) {
 
-	unsigned short tmp;
+		signed short tmp = ds_readw(0xc3cb);
+		ds_writew(0xc3cb, 0);
 
-	if (hero_dead(hero) || ae <= 0)
-		return;
+		/* If Mage has 4th Staffspell */
+		if ((host_readb(hero + 0x21) == 9) && (host_readbs(hero + 0x195) >= 4)) {
+			ae -= 2;
+			if (ae < 0)
+				ae = 0;
+		}
 
-	tmp = ds_readw(0xc3cb);
-	ds_writew(0xc3cb, 0);
+		/* Calc new AE */
+		sub_ptr_ws(hero + 0x64, ae);
 
-	/* If Mage has 4th Staffspell */
-	if (host_readb(hero + 0x21) == 9 && host_readb(hero + 0x195) >= 4) {
-		ae -= 2;
-		if (ae < 0)
-			ae = 0;
-	}
+		/* Draw the splash */
+		draw_splash(get_hero_index(hero), 1);
 
-	/* Calc new AE */
-	host_writew(hero + 0x64, (signed short)(host_readw(hero + 0x64) - ae));
-	/* Draw the splash */
-	draw_splash(get_hero_index(hero), 1);
-	/* set AE to 0 if they have gotten lower than 0 */
-	if ((signed short)host_readw(hero + 0x64) < 0)
-		host_writew(hero + 0x64, 0);
+		/* set AE to 0 if they have gotten lower than 0 */
+		if (host_readws(hero + 0x64) < 0) {
+			host_writew(hero + 0x64, 0);
+		}
 
-	ds_writew(0xc3cb, tmp);
+		ds_writew(0xc3cb, tmp);
 
 #ifdef M302de_ORIGINAL_BUGFIX
-	/* AE Bar was not updated in Pseudo 3D mode */
-	if (ds_readw(IN_FIGHT) == 0 && ds_readw(0xc3cf) != 0) {
-		/* redraw AE Bar */
-		draw_bar(1, get_hero_index(hero), host_readw(hero + 0x64),
-			host_readw(hero + 0x62), 0);
-	}
+		/* AE Bar was not updated in Pseudo 3D mode */
+		if (ds_readw(IN_FIGHT) == 0 && ds_readw(0xc3cf) != 0) {
+			/* redraw AE Bar */
+			draw_bar(1, get_hero_index(hero), host_readw(hero + 0x64),
+				host_readw(hero + 0x62), 0);
+		}
 #endif
+	}
 
 }
 
