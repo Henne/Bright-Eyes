@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 138/142
+ *	Functions rewritten: 139/143
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3611,6 +3611,14 @@ void wait_for_keyboard2(void)
 #endif
 		bc_bioskey(0);
 	}
+}
+
+
+/* Borlandified and identical */
+/* unused */
+void seg002_4031(Bit8u *ptr)
+{
+	delay_or_keypress(150 * GUI_print_header(ptr));
 }
 
 void wait_for_keypress() {
