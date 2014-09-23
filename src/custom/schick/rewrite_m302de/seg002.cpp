@@ -3819,31 +3819,29 @@ signed short alloc_EMS(Bit32s bytes)
 	return 0;
 }
 
-void from_EMS(RealPt dst, unsigned short handle, Bit32s bytes)
+/* Borlandified and identical */
+void from_EMS(RealPt dst, signed short handle, Bit32s bytes)
 {
-	RealPt ptr;
-	signed short v1, v2, di;
 	signed short si;
+	signed short di;
+	signed short v1, v2;
+	RealPt ptr;
 
 	di = (signed short)(bytes / 0x4000 + 1);
-	si = 0;
-	v1 = 0;
+	v1 = si = 0;
 
 	do {
 		EMS_map_memory(handle, v1++, 0);
-		ptr = (si << 0x0e) + dst;
+		ptr = F_PADD(dst, (((Bit32s)si) << 0x0e));
 		si++;
 
-		if (bytes - 0x4000 < 0)
-			v2 = (signed short)bytes;
-		else
-			v2 = 0x4000;
+		v2 = (bytes - 0x4000 > 0) ? 0x4000 : bytes;
 
 		bytes -= 0x4000;
 
 		bc_memmove(EMS_norm_ptr(ptr), (RealPt)ds_readd(0x4baa), v2);
-		di--;
-	} while (di != 0);
+
+	} while (--di != 0);
 
 }
 
