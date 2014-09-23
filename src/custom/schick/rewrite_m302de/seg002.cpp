@@ -4009,6 +4009,7 @@ signed short can_merge_group(void)
 	return retval;
 }
 
+/* Borlandified and identical */
 signed short div16(signed short val)
 {
 	return ((unsigned char)val) >> 4;
