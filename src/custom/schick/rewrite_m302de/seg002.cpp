@@ -4266,15 +4266,15 @@ signed short check_hero_no3(Bit8u *hero)
 	return 1;
 }
 
-unsigned short is_hero_available_in_group(Bit8u *hero) {
+/* Borlandified and identical */
+signed short is_hero_available_in_group(Bit8u *hero)
+{
 
-	if (check_hero(hero) == 0)
-		return 0;
-	/* Check if in group */
-	if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-		return 0;
+	if (check_hero(hero) && (host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))) {
+		return 1;
+	}
 
-	return 1;
+	return 0;
 }
 
 /*
