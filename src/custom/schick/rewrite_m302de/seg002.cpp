@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 137/142
+ *	Functions rewritten: 138/142
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3568,6 +3568,38 @@ void draw_splash(signed short hero_pos, signed short type)
 		/* how long the splash should be displayed */
 		ds_writeb(0xbccf + hero_pos, 10);
 	}
+}
+
+
+/**
+ * \brief	fast forward the ingame time to midnight
+ */
+/* Borlandified and identical */
+void timewarp_until_midnight(void)
+{
+	Bit32s ticks_left;
+	signed short td_bak;
+
+	/* save the timers status */
+	td_bak = ds_readw(TIMERS_DISABLED);
+
+	/* enable timers */
+	ds_writew(TIMERS_DISABLED, 0);
+
+	/* calculate the ticks left on this day */
+	ticks_left = (HOURS(24) -1) - ds_readd(DAY_TIMER);
+
+	/* set the day timer to the last tick of this day */
+	ds_writed(DAY_TIMER, (HOURS(24) - 1));
+
+	do_timers();
+	sub_ingame_timers(ticks_left);
+	sub_mod_timers(ticks_left);
+	seg002_2f7a(ticks_left / 450);
+	sub_light_timers(100);
+
+	/* restore the timer status */
+	ds_writew(TIMERS_DISABLED, td_bak);
 }
 
 void wait_for_keyboard2() {

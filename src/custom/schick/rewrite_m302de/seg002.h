@@ -127,6 +127,7 @@ void timewarp_until(Bit32s);
 void dec_splash(void);
 //static
 void draw_splash(signed short, signed short);
+void timewarp_until_midnight(void);
 void wait_for_keyboard2();
 void wait_for_keypress();
 void delay_or_keypress(Bit16u);

@@ -1233,6 +1233,11 @@ static int seg002(unsigned short offs) {
 		dec_splash();
 		return 1;
 	}
+	case 0x3f9a: {
+		D1_LOG("timewarp_until_midnight();\n");
+		timewarp_until_midnight();
+		return 1;
+	}
 	case 0x4016: {
 		D1_LOG("wait_for_keyboard2()\n");
 		wait_for_keyboard2();
