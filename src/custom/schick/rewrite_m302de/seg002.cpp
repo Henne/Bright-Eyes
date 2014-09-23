@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 140/143
+ *	Functions rewritten: 141/144
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3731,6 +3731,18 @@ void delay_or_keypress(signed short duration)
 		wait_for_vsync();
 
 		counter++;
+	}
+}
+
+/* Borlandified and identical */
+/* unused */
+void unused_delay(signed short nr)
+{
+	signed short i = 0;
+
+	while (i < nr) {
+		wait_for_vsync();
+		i++;
 	}
 }
 
