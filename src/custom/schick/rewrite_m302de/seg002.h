@@ -165,7 +165,7 @@ void add_group_le(signed short);
 void do_starve_damage(Bit8u*, signed short, signed short);
 signed short compare_name(Bit8u*);
 signed short test_attrib(Bit8u*, signed short, signed short);
-short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, signed char bonus);
+signed short test_attrib3(Bit8u*, signed short, signed short, signed short, signed char);
 unsigned short get_random_hero();
 Bit32s get_party_money();
 void set_party_money(Bit32s);

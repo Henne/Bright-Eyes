@@ -4672,16 +4672,27 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 }
 
 /**
-	test_attrib3 - make three attribute tests
+ * \brief		make three attribute tests
+ *
+ * \param hero		pointer to the hero
+ * \param attrib1	attribute 1
+ * \param attrib2	attribute 2
+ * \param attrib3	attribute 3
+ * \param bonus		handycap
+ *
+ * \return		a test is positive if the return value is greater than zero
+ */
+/* Borlandified and identical */
+signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char bonus)
+{
 
-	A test is positive if the return value is greater than zero.
-*/
-short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, unsigned short attrib3, signed char bonus) {
+	signed short i;
+	signed short si;
+	signed short tmp;
+	signed short zw;
 
-	short si = 0;
-	unsigned short zw = 0;
-	unsigned short i;
-	short tmp;
+	zw = 0;
+	si = 0;
 
 #if !defined(__BORLANDC__)
 	D1_INFO("%s -> (%s/%s/%s) %+d: ",
@@ -4690,6 +4701,7 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 #endif
 
 	for (i = 0; i < 3; i++) {
+
 		tmp = random_schick(20);
 
 #if !defined(__BORLANDC__)
@@ -4697,33 +4709,31 @@ short test_attrib3(Bit8u* hero, unsigned short attrib1, unsigned short attrib2, 
 #endif
 
 		if (tmp == 20) {
-			zw++;
-			if (zw == 2) {
+			if (++zw == 2) {
 #if !defined(__BORLANDC__)
 				D1_INFO(" -> UNGLUECKLICH! nicht bestanden\n");
 #endif
 				return -99;
 			}
 		}
+
 		si += tmp;
 	}
 
 	si += bonus;
 
-	tmp = (char)host_readb(hero + attrib1*3 + 0x35);
-	tmp += (char)host_readb(hero + attrib1*3 + 0x36);
-	tmp += (char)host_readb(hero + attrib2*3 + 0x35);
-	tmp += (char)host_readb(hero + attrib2*3 + 0x36);
-	tmp += (char)host_readb(hero + attrib3*3 + 0x35);
-	tmp += (char)host_readb(hero + attrib3*3 + 0x36);
-
-	tmp -= si + 1;
+	tmp = host_readbs(hero + 3 * attrib1 + 0x35) +
+		host_readbs(hero + 3 * attrib1 + 0x36) +
+		host_readbs(hero + 3 * attrib2 + 0x35) +
+		host_readbs(hero + 3 * attrib2 + 0x36) +
+		host_readbs(hero + 3 * attrib3 + 0x35) +
+		host_readbs(hero + 3 * attrib3 + 0x36);
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
-		tmp > 0 ? "bestanden" : "nicht bestanden", tmp);
+		(tmp - si + 1) > 0 ? "bestanden" : "nicht bestanden", (tmp - si + 1));
 #endif
-	return tmp;
+	return tmp - si + 1;
 }
 
 /**
