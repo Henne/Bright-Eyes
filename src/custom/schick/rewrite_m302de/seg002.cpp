@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 143/146
+ *	Functions rewritten: 144/147
 */
 #include <stdlib.h>
 #include <string.h>
@@ -4613,6 +4613,22 @@ void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 		/* restore the locally save value */
 		ds_writew(0xc3cb, bak);
 	}
+}
+
+/* unused */
+/* Borlandified and identical */
+signed short compare_name(Bit8u *name)
+{
+	signed short i;
+
+	for (i = 0; i < 6; i++) {
+
+		if (!strcmp((char*)(get_hero(i) + 0x10), (char*)name)) {
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 /**
