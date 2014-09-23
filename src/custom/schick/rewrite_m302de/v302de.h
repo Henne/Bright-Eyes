@@ -898,7 +898,7 @@ extern char ds[0xf7af];
 #define dec_ds_ws(o)		(--(*(Bit16s*)(ds + o)))
 
 #define inc_ds_ws_post(o)	((*(Bit16s*)(ds + o))++)
-#define dec_ds_ws_post(o) 	((*(Bit16s*)(ds + o))--)
+#define dec_ds_ws_post(o)	((*(Bit16s*)(ds + o))--)
 
 #define or_ds_bs(o, v)		(*(Bit8s*)(ds + o) |= v)
 #define or_ds_ws(o, v)		(*(Bit16s*)(ds + o) |= v)
