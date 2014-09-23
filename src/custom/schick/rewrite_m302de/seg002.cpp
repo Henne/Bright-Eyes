@@ -3799,31 +3799,24 @@ Bit32u swap_u32_unused(Bit32u v)
  *
  *	Returns an EMS handle, to access the memory.
  */
-unsigned short alloc_EMS(Bit32s bytes) {
-
-	signed short pages;
+/* Borlandified and identical */
+signed short alloc_EMS(Bit32s bytes)
+{
 	signed short handle;
 
-	pages = (signed short)((bytes / 0x4000) + 1);
+	/* calculate the number of needes EMS pages */
+	handle = (signed short)((bytes / 0x4000) + 1);
 
-	if (EMS_get_num_pages_unalloced() < pages) {
-#if !defined(__BORLANDC__)
-		D1_ERR("EMS out of free pages %d/%d\n",
-			pages, EMS_get_num_pages_unalloced());
-#endif
-		return 0;
+	/* check if enought EMS is free */
+	if (EMS_get_num_pages_unalloced() >= handle) {
+
+		/* if allocation was successful return the handle */
+		if ((handle = EMS_alloc_pages(handle)) != 0) {
+			return handle;
+		}
 	}
 
-	handle = EMS_alloc_pages(pages);
-
-	if (handle == 0) {
-#if !defined(__BORLANDC__)
-		D1_ERR("EMS cant alloc %d pages\n", pages);
-#endif
-		return 0;
-	}
-
-	return handle;
+	return 0;
 }
 
 void from_EMS(RealPt dst, unsigned short handle, Bit32s bytes)

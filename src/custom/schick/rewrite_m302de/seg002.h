@@ -137,7 +137,7 @@ void unused_delay(signed short);
 void unused_spinlock(void);
 Bit32u swap_u32(Bit32u);
 Bit32u swap_u32_unused(Bit32u);
-unsigned short alloc_EMS(Bit32s);
+signed short alloc_EMS(Bit32s);
 void from_EMS(RealPt, unsigned short, Bit32s);
 void to_EMS(unsigned short, RealPt, Bit32s);
 void set_to_ff();
