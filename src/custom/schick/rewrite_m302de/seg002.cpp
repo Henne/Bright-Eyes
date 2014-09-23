@@ -3972,40 +3972,38 @@ void draw_compass(void)
 	}
 }
 
-short can_merge_group() {
-	short retval = -1;
-	char cur_heroes;
-	short i;
+/* Borlandified and identical */
+signed short can_merge_group(void)
+{
+	signed short i;
+	signed short retval = -1;
 
-	cur_heroes = ds_readb((short)ds_readb(CURRENT_GROUP) + 0x2d36);
-	if (cur_heroes == ds_readb(0x2d3c))
-		return retval;
+	if (ds_readbs(ds_readbs(CURRENT_GROUP) + 0x2d36) == ds_readbs(0x2d3c)) {
 
-	for (i = 0; i < 6; i++) {
-		if (i == (char)ds_readb(CURRENT_GROUP))
-			continue;
-		if (0 == ds_readb(i + 0x2d36))
-			continue;
-		/* check XTarget */
-		if (ds_readw(i * 2 + 0x2d48) != ds_readw(X_TARGET))
-			continue;
-		/* check YTarget */
-		if (ds_readw(i * 2 + 0x2d54) != ds_readw(Y_TARGET))
-			continue;
-		/* check Location */
-		if (ds_readb(0x2d61 + i) != ds_readb(LOCATION))
-			continue;
-		/* check currentTown */
-		if (ds_readb(0x2d68 + i) != ds_readb(CURRENT_TOWN))
-			continue;
-		/* check DungeonIndex */
-		if (ds_readb(0x2d6f + i) != ds_readb(DUNGEON_INDEX))
-			continue;
-		/* check DungeonLevel */
-		if (ds_readb(0x2d76 + i) != ds_readb(DUNGEON_LEVEL))
-			continue;
+		retval = -1;
 
-		retval = i;
+	} else {
+
+		for (i = 0; i < 6; i++)	{
+
+			if ((i != ds_readbs(CURRENT_GROUP)) &&
+				(0 != ds_readb(i + 0x2d36)) &&
+				/* check XTarget */
+				(ds_readw(i * 2 + 0x2d48) == ds_readw(X_TARGET)) &&
+				/* check YTarget */
+				(ds_readw(i * 2 + 0x2d54) == ds_readw(Y_TARGET)) &&
+				/* check Location */
+				(ds_readb(0x2d61 + i) == ds_readb(LOCATION)) &&
+				/* check currentTown */
+				(ds_readb(0x2d68 + i) == ds_readb(CURRENT_TOWN)) &&
+				/* check DungeonIndex */
+				(ds_readb(0x2d6f + i) == ds_readb(DUNGEON_INDEX)) &&
+				/* check DungeonLevel */
+				(ds_readb(0x2d76 + i) == ds_readb(DUNGEON_LEVEL)))
+			{
+				retval = i;
+			}
+		}
 	}
 
 	return retval;
