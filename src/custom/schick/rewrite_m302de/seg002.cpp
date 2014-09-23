@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 142/145
+ *	Functions rewritten: 143/146
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3773,6 +3773,22 @@ Bit32u swap_u32(Bit32u v)
 	tmp = a[0];
 	a[0] = swap_u16(a[1]);
 	a[1] = swap_u16(tmp);
+
+	return host_readd((Bit8u*)ptr);
+}
+
+/* unused */
+/* Borlandified and identical */
+Bit32u swap_u32_unused(Bit32u v)
+{
+	signed short a[2];
+	signed short tmp;
+	Bit32s *ptr = (Bit32s*)(&a[0]);
+
+	tmp = *ptr = host_readd((Bit8u*)&v);
+
+	a[0] = a[1];
+	a[1] = tmp;
 
 	return host_readd((Bit8u*)ptr);
 }
