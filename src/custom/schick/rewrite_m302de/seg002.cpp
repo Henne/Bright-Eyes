@@ -3881,12 +3881,12 @@ void set_to_ff(void)
 	}
 }
 
-/* 0x43fd */
 /**
- * draw_loc_icons - draws the icons of locations
- * @icons:	number of icons
- * @... :	icon ids
+ * \brief	draws the icons of locations
+ * \param icons	number of icons
+ * \param ...	icon ids
  */
+/* Borlandified and identical */
 void draw_loc_icons(signed short icons, ...)
 {
 	signed short icons_bak[9];
