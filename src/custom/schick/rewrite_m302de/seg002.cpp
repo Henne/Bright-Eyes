@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 139/143
+ *	Functions rewritten: 140/143
 */
 #include <stdlib.h>
 #include <string.h>
@@ -3656,13 +3656,82 @@ void wait_for_keypress(void)
 	ds_writew(0xc3d5, 0);
 }
 
-void delay_or_keypress(Bit16u time)
+/**
+ * \brief	wait for some time is elapsed or a key is pressed
+ *
+ * \param	duration	the maximal time to wait
+ */
+/* Borlandified and identical */
+void delay_or_keypress(signed short duration)
 {
-#if !defined(__BORLANDC__)
-	CPU_Push16(time);
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x40d1);
-	CPU_Pop16();
-#endif
+	signed short done = 0;;
+	signed short counter = 0;
+
+	while (counter < duration) {
+
+		ds_writeb(0x46a2, 1);
+		handle_input();
+		ds_writeb(0x46a2, 0);
+
+		if (ds_readb(0x7c42) != 0) {
+
+			if (ds_readw(ACTION) != 0) {
+
+				if (ds_readw(ACTION) == 57) {
+
+					seg002_47e2();
+					while (!CD_bioskey(1)) { ; }
+					seg002_484f();
+					done = 1;
+
+				} else {
+
+					if ((ds_readw(ACTION) != 72) &&
+						(ds_readw(ACTION) != 80) &&
+						(ds_readw(ACTION) != 77) &&
+						(ds_readw(ACTION) != 75))
+					{
+						done = 1;
+					}
+				}
+			} else {
+
+				if (ds_readw(0xc3d3) != 0) {
+					done = 1;
+				}
+			}
+		} else {
+
+			if (ds_readw(ACTION) != 0) {
+
+				if (ds_readw(ACTION) == 57) {
+
+					seg002_47e2();
+					while (!CD_bioskey(1)) { ; }
+					seg002_484f();
+				}
+
+				done = 1;
+
+			} else {
+
+				if (ds_readw(0xc3d3) != 0) {
+					done = 1;
+				}
+			}
+		}
+
+
+		if (done) {
+			ds_writew(0xc3d3, 0);
+			ds_writew(ACTION, 28);
+			break;
+		}
+
+		wait_for_vsync();
+
+		counter++;
+	}
 }
 
 Bit32u swap_u32(Bit32u v) {
