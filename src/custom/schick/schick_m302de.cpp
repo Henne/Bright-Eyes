@@ -6454,7 +6454,9 @@ static int seg119(unsigned short offs)
 static int seg120(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			reg_ax = init_memory();
+			D1_LOG("init_memory() = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x25: {
 			D1_LOG("init_game_state()\n");

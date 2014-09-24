@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+signed short init_memory(void);
+
 /* 0x25 */
 void init_game_state(void);
 

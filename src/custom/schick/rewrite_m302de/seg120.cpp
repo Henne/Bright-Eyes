@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 5/11
+ *	Functions rewritten: 6/11
  */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "seg007.h"
 #include "seg008.h"
 #include "seg010.h"
+#include "seg026.h"
 #include "seg028.h"
 #include "seg029.h"
 #include "seg047.h"
@@ -267,6 +268,84 @@ void init_global_buffer(void)
 	ds_writed(0xd019, ds_writed(0xd015, ds_readd(0xc3db)));
 	ds_writed(0xce43, 0);
 
+}
+
+/* Borlandified and identical */
+signed short init_memory(void)
+{
+	signed short error = 0;
+	Bit32u freemem;
+
+	/* disable EMS memory */
+	ds_writeb(EMS_ENABLED, 0);
+
+	if (EMS_init()) {
+		bc_OvrInitEms(0, 0, 0);
+	} else {
+		;
+	}
+
+	/* set the pointer for the framebuffer */
+	ds_writed(0xd2fb, ds_writed(0xd2ff, (Bit32u)RealMake(0xa000, 0x0000)));
+
+	/* allocate small chunks of memory */
+	ds_writed(ITEMSNAME,		(Bit32u)schick_alloc_emu(1016));
+	ds_writed(ITEMSDAT,		(Bit32u)schick_alloc_emu(3060));
+	ds_writed(0xd2a1,		(Bit32u)schick_alloc_emu(950));
+	ds_writed(MONNAMES,		(Bit32u)schick_alloc_emu(308));
+	ds_writed(0xe121,		(Bit32u)schick_alloc_emu(296));
+	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
+	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
+	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
+	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * 0x6da));
+	ds_writed(0xe494,		(Bit32u)schick_alloc_emu(630));
+	ds_writed(0xe49c,		(Bit32u)schick_alloc_emu(225));
+	ds_writed(0xe498,		(Bit32u)schick_alloc_emu(80));
+	ds_writed(BUF_FONT6,		(Bit32u)schick_alloc_emu(592));
+	ds_writed(0xd2bd,		(Bit32u)schick_alloc_emu(1000));
+	ds_writed(0xd299,		(Bit32u)schick_alloc_emu(500));
+	ds_writed(CHESSBOARD,		(Bit32u)schick_alloc_emu(625));
+	ds_writed(POPUP,		(Bit32u)(schick_alloc_emu(1673) + 8));
+	ds_writed(ICON,			(Bit32u)(schick_alloc_emu(1500) + 8));
+	ds_writed(BUF_ICON,		(Bit32u)schick_alloc_emu(5184));
+	ds_writed(TOWNPAL_BUF,		(Bit32u)schick_alloc_emu(288));
+
+	freemem = bc_farcoreleft();
+
+	if (freemem > 334000) {
+
+		if (freemem >= 357000) {
+			ds_writed(BUFFERSIZE, 357000);
+			ds_writeb(LARGE_BUF, 1);
+		} else {
+			ds_writed(BUFFERSIZE, 334000);
+			ds_writeb(LARGE_BUF, 0);
+		}
+
+		init_global_buffer();
+
+	} else {
+
+		printf((char*)p_datseg + 0xb317, 329000 - freemem);
+
+		wait_for_keypress();
+		error = 1;
+	}
+
+	if (!error) {
+
+		init_text();
+
+		ds_writed(0xd2df, (Bit32u)F_PADD(ds_readd(0xd019), 180000));
+		if (ds_readb(LARGE_BUF) == 1) {
+			add_ds_ws(0xd2df, 23000);
+		}
+
+		ds_writed(0xd2db, (Bit32u)F_PADD(ds_readd(0xd2df), -20000));
+		ds_writed(0xd2a9, (Bit32u)F_PADD(ds_readd(0xd2db), -16771));
+	}
+
+	return error;
 }
 
 /* Borlandified and identical */
