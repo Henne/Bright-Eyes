@@ -4974,40 +4974,38 @@ void add_hero_ap_all(signed short ap)
 }
 
 /**
-	sub_hero_ap_all - sub AP
-
-	sub AP from every hero
+ * \brief	subtracts AP from every hero in the group
+ *
+ * \param ap	AP to subtract
 */
-void sub_hero_ap_all(signed short ap) {
+/* Borlandified and identical */
+void sub_hero_ap_all(signed short ap)
+{
+	signed short i;
 	Bit8u *hero_i;
-	int i;
 
 	if (ap < 0)
 		return;
 
 	hero_i = get_hero(0);
-	for (i = 0; i <= 6; hero_i += 0x6da, i++) {
-		/* Check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* Check in group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Check if dead */
-		if (hero_dead(hero_i))
-			continue;
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 
-		if (ap <= (signed int)host_readd(hero_i+0x28)) {
-			ap = -ap;
+		/* Check class, group and deadness */
+		if (host_readbs(hero_i + 0x21) &&
+			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			!hero_dead(hero_i))
+		{
+			if (ap <= host_readd(hero_i + 0x28)) {
 #if !defined(__BORLANDC__)
-			D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i+0x10), ap);
+				D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i+0x10), -ap);
 #endif
-			add_hero_ap(hero_i, ap);
-		} else {
+				add_hero_ap(hero_i, -((Bit32s)ap));
+			} else {
 #if !defined(__BORLANDC__)
-			D1_INFO("%s wird auf 0 AP gesetzt\n",(char*)(hero_i+0x10));
+				D1_INFO("%s wird auf 0 AP gesetzt\n",(char*)(hero_i+0x10));
 #endif
-			host_writed(hero_i+0x28, 0);
+				host_writed(hero_i + 0x28, 0);
+			}
 		}
 	}
 
