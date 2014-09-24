@@ -382,6 +382,7 @@ Bit32s get_diskspace(void)
 
 }
 
+/* Borlandified and identical */
 void init_game_state(void)
 {
 	signed short i;
@@ -410,9 +411,7 @@ void init_game_state(void)
 	ds_writeb(DIRECTION, 0);
 	ds_writeb(DUNGEON_INDEX, 0);
 
-	/* BC-TODO: var = current_town = 1; */
-	ds_writeb(CURRENT_TOWN, 1);
-	ds_writeb(0x2da6, 1);
+	ds_writeb(0x2da6, ds_writeb(CURRENT_TOWN, 1));
 
 	ds_writew(0xbffd, 3);
 
