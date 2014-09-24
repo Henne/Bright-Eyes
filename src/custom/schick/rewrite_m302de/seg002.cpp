@@ -359,6 +359,7 @@ signed short do_load_midi_file(signed short index)
 }
 
 /* static */
+/* Borlandified and identical */
 signed short load_music_driver(RealPt fname, signed short type, signed short port)
 {
 
