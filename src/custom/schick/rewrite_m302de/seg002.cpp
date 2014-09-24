@@ -4913,33 +4913,32 @@ void add_hero_ap(Bit8u *hero, Bit32s ap)
 }
 
 /**
- *	add_group_ap - divides AP to the current group
- *	@ap:	AP to divide
+ * \brief	shares AP in the current group
+ * \param ap	AP to share
  */
-void add_group_ap(Bit32s ap) {
-
+/* Borlandified and identical */
+void add_group_ap(Bit32s ap)
+{
+	signed short i;
 	Bit8u *hero_i;
-	unsigned short i;
 
-	if (ap < 0)
+	if (ap < 0) {
 		return;
+	}
 
 	ap = ap / count_heroes_in_group();
 
 	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* Check class */
-		if (host_readb(hero_i + 0x21) == 0)
-			continue;
-		/* Check if in current group */
-		if (host_readb(hero_i + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Check if hero is dead */
-		if (hero_dead(hero_i))
-			continue;
 
-		add_hero_ap(hero_i, ap);
+		/* Check class, group and deadness */
+		if (host_readbs(hero_i + 0x21) &&
+			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			!hero_dead(hero_i))
+		{
+			add_hero_ap(hero_i, ap);
+		}
 	}
 }
 
