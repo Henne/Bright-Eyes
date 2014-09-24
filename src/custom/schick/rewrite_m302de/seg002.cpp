@@ -5170,29 +5170,32 @@ RealPt get_first_hero_available_in_group(void)
 	return (RealPt) ds_readd(HEROS);
 }
 
-RealPt get_second_hero_available_in_group()
+/**
+ * \brief return a pointer to the second available hero in the group
+ *
+ * \return a pointer to the second available hero in the group or NULL.
+ */
+/* Borlandified and identical */
+RealPt get_second_hero_available_in_group(void)
 {
+	signed short i;
+	signed short tmp;
 	RealPt hero_i;
-	unsigned short i, tmp;
 
 	hero_i = (RealPt)ds_readd(HEROS);
-	tmp = 0;
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* Check class */
-		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
-			continue;
-		/* Check group */
-		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Check if hero is available */
-		if (check_hero(Real2Host(hero_i)) == 0)
-			continue;
+	for (i = tmp = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class, group and check_hero() */
+		if (host_readbs(Real2Host(hero_i) + 0x21) &&
+			(host_readbs(Real2Host(hero_i) + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			check_hero(Real2Host(hero_i)))
+		{
+			if (tmp) {
+				return hero_i;
+			}
 
-		if (tmp)
-			return hero_i;
-
-		tmp++;
+			tmp++;
+		}
 	}
 
 	return (RealPt)0;
