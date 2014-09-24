@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 146/148
+ *	Functions rewritten: 147/148
 */
 #include <stdlib.h>
 #include <string.h>
@@ -27,6 +27,7 @@
 #include "seg011.h"
 #include "seg025.h"
 #include "seg026.h"
+#include "seg027.h"
 #include "seg029.h"
 #include "seg030.h"
 #include "seg039.h"
@@ -5266,6 +5267,148 @@ void seg002_57f1(void)
 
 	}
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+int schick_main(int argc, char** argv)
+{
+	signed short l_si;
+	signed short l_di;
+	Bit32s l3;
+	signed short savegame;
+	signed short len;
+
+	ds_writew(0xbd25, 1);
+	ds_writeb(0xbc62, 1);
+
+	init_AIL(16000);
+
+	/* randomize() */
+	srand(time((RealPt)0));
+
+	save_display_stat((RealPt)RealMake(datseg, 0xd30b));
+
+	if (!init_memory()) {
+
+		ds_writew(0xd309, 1);
+
+		schick_set_video();
+
+		ds_writew(0xc3c7, 2);
+
+		mouse_init();
+
+		if (ds_readw(0xc3c7) == 0) {
+			ds_writew(0x299a, -10);
+		}
+
+		init_game_state();
+
+		save_and_set_timer();
+
+		init_common_buffers();
+
+		ds_writew(0xbffd, 3);
+
+		refresh_screen_size();
+
+		if (argc == 2) {
+
+			/* some trick to disable the cd check */
+
+			len = strlen(argv[1]);
+
+			l_si = 0;
+			ds_writed(0x00c3, 1);
+
+			while (l_si < len) {
+
+				ds_writed(0x00c3, argv[1][0] * ds_readds(0x00c3));
+				argv[1]++;
+				l_si++;
+			}
+		}
+
+		prepare_dirs();
+
+		if (have_mem_for_sound()) {
+
+			read_sound_cfg();
+			alloc_voc_buffer(20000);
+
+		} else {
+			/* disable sound */
+			exit_AIL();
+			GUI_output(p_datseg + 0x48d5);
+		}
+
+		CD_init();
+
+		if (ds_readw(0x0095) == 0) {
+			/* CD init failed */
+			cleanup_game();
+			exit(0);
+		}
+
+
+		/* select game mode */
+		ds_writew(0xc003, -1);
+
+		while (ds_readw(0xc003) == -1) {
+			ds_writew(0xc003, GUI_radio(get_ltx(0x14), 2, get_ltx(0x18), get_ltx(0x1c)));
+		}
+
+		if (copy_protection()) {
+
+			ds_writew(0xbffd, 3);
+
+			l3 = get_diskspace();
+
+			if (l3 < 0) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0xc9c), -l3);
+				GUI_output(Real2Host(ds_readd(DTP2)));
+				cleanup_game();
+
+			} else {
+
+				/* ask for generation or game */
+				do {
+					l_di = GUI_radio(get_ltx(0xcd0), 2, get_ltx(0xcd4), get_ltx(0xcd8)) - 1;
+
+				} while (l_di == -1);
+
+				if (l_di == 1) {
+					call_gen();
+				}
+
+				wait_for_keyboard2();
+
+
+				/* load a savegame */
+				do {
+					savegame = load_save_game();
+				} while (savegame == -1);
+
+				ds_writew(0xbd25, 0);
+
+				/* start the game */
+				game_loop();
+
+				cleanup_game();
+			}
+		} else {
+			cleanup_game();
+		}
+
+	} else {
+		/* not enough memory */
+		exit_AIL();
+		schick_reset_video();
+		bc_clrscr();
+	}
+}
+#endif
 
 RealPt schick_alloc_emu(Bit32u size)
 {
