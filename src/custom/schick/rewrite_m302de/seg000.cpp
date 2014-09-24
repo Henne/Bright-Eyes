@@ -67,6 +67,13 @@ Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
 }
 
+void bc_srand(Bit16u seed)
+{
+	CPU_Push16(seed);
+	CALLBACK_RunRealFar(reloc_game + 0, 0xbac);
+	CPU_Pop16();
+}
+
 Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
 
 	if ((ds_readw(0xb788 + handle * 2) & 2))

@@ -345,11 +345,12 @@ static int seg000(unsigned short offs) {
 			return 0;
 		}
 		case 0xbac: {
-			unsigned short val = CPU_Pop16();
-			CPU_Push16(val);
+			Bit16u seed = CPU_Pop16();
+			CPU_Push16(seed);
 
-			D1_LOG("C-Lib srand(%d)\n", val);
-			return 0;
+			D1_LOG("srand(%d)\n", seed);
+			bc_srand(seed);
+			return 1;
 		}
 		case 0xbbd: {
 			D1_LOG("rand()\n");

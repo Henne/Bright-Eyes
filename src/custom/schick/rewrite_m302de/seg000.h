@@ -14,6 +14,7 @@ void bc_exit(Bit16s);
 RealPt bc__dos_getvect(Bit8u);
 void bc__dos_setvect(Bit8u, RealPt);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
+void bc_srand(Bit16u);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
 Bit32s bc_time(RealPt);
 signed short bc_unlink(RealPt);
@@ -76,6 +77,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc__creat _creat
 
 #define bc_lseek lseek
+#define bc_srand srand
 #define bc__read read
 #define bc__write write
 
