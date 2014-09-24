@@ -124,6 +124,8 @@
 #define USED_ITEM_ID	(0xe5ca)	/* s16 used_item ID */
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
 #define ITEMUSER	(0xe5ce)	/* pointer to hero */
+#define BUFFERSIZE	(0xe5dc)	/* ?32 size of the global buffer */
+#define LARGE_BUF	(0xe5e4)	/* s8 {0,1} */
 
 
 #define HOURS(n)	(n * 90L * 60L)

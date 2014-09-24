@@ -246,7 +246,7 @@ void rabies(RealPt hero, signed short hero_pos)
 void init_global_buffer(void)
 {
 
-	ds_writed(0xe5e0, (Bit32u)schick_alloc_emu(ds_readd(0xe5dc)));
+	ds_writed(0xe5e0, (Bit32u)schick_alloc_emu(ds_readd(BUFFERSIZE)));
 	ds_writed(0xd303, (Bit32u)F_PADD(ds_readd(0xe5e0), 8));
 	ds_writed(0xd2b9, (Bit32u)F_PADD(ds_readd(0xd303), 65000));
 
