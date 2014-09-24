@@ -5055,21 +5055,33 @@ signed short get_item_pos(Bit8u *hero, signed short item)
 	return -1;
 }
 
-signed short get_first_hero_with_item(signed short item) {
+/**
+ * \brief	gets the position of the first hero with an item
+ *
+ * \param item	item ID to look for
+ *
+ * \return position of the hero or -1 if nobody of the group has this item
+*/
+/* Borlandified and identical */
+signed short get_first_hero_with_item(signed short item)
+{
+	signed short j;
+	signed short i;
 	Bit8u *hero_i = get_hero(0);
-	int i,j;
 
-	for (i = 0; i <= 6; i++ , hero_i += 0x6da) {
-		/* Check class */
-		if (host_readb(hero_i+0x21) == 0)
-			continue;
-		/* Check if in current group */
-		if (host_readb(hero_i+0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Search inventar */
-		for (j = 0; j < 23; j++)
-			if (host_readw(hero_i + j * 14 + 0x196) == item)
-				return i;
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+
+		/* Check class and group */
+		if (host_readbs(hero_i + 0x21) &&
+			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
+		{
+			/* Search inventar */
+			for (j = 0; j < 23; j++) {
+				if (host_readw(hero_i + j * 14 + 0x196) == item) {
+					return i;
+				}
+			}
+		}
 	}
 
 	return -1;
