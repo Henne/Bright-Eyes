@@ -276,4 +276,17 @@ Bit32s bc__write(Bit16u fd, RealPt buf, Bit16u len)
 	return reg_ax;
 }
 
+Bit16s bc_OvrInitEms(Bit16u __emsHandle, Bit16u __emsFirst, Bit16u __emsPages)
+{
+	CPU_Push16(__emsPages);
+	CPU_Push16(__emsFirst);
+	CPU_Push16(__emsHandle);
+	CALLBACK_RunRealFar(reloc_game + 0x1112, 0x8ed);
+	CPU_Pop16();
+	CPU_Pop16();
+	CPU_Pop16();
+
+	return reg_ax;
+}
+
 }

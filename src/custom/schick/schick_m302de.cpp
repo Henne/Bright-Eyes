@@ -2890,15 +2890,18 @@ static int seg012(unsigned short offs) {
 			return 0;
 		}
 		case 0x8ed: {
-			unsigned short v1 = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			unsigned short v3 = CPU_Pop16();
+			Bit16u v1 = CPU_Pop16();
+			Bit16u v2 = CPU_Pop16();
+			Bit16u v3 = CPU_Pop16();
 			CPU_Push16(v3);
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 
-			D1_LOG("seg12_8ed(%u, %u, %u);\n", v1, v2, v3);
-			return 0;
+			reg_ax = bc_OvrInitEms(v1, v2, v3);
+			D1_LOG("_OvrInitEms(%u, %u, %u) = %d;\n",
+				v1, v2, v3, (Bit16s)reg_ax);
+
+			return 1;
 		}
 		case 0xd29: {
 			D1_LOG("seg12_d29();\n");

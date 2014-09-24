@@ -42,6 +42,8 @@ void bc_qsort(RealPt, Bit16u, Bit16u, RealPt);
 
 Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
+Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
+
 }
 #else
 
@@ -104,4 +106,6 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc_qsort qsort
 
 #define DOS_SEEK_SET SEEK_SET
+
+#define bc_OvrInitEms _OvrInitEms
 #endif
