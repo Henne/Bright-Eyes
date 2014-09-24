@@ -5122,25 +5122,25 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
 
 
 /**
- * sub_group_le() - subtracts LE from every group member
- * @le:		LE to remove
+ * \brief	subtracts LE from every group member
+ *
+ * \param le	LE to subtract
  */
+/* Borlandified and identical */
 void sub_group_le(signed short le)
 {
-	Bit8u * hero;
-	register signed short i;
+	signed short i;
+	Bit8u *hero_i;
 
 	for (i = 0; i <= 6; i++) {
 
-		hero = get_hero(i);
+		hero_i = get_hero(i);
 
-		if (host_readb(hero + 0x21) == 0)
-			continue;
-
-		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-
-		sub_hero_le(hero, le);
+		if (host_readbs(hero_i + 0x21) &&
+			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
+		{
+			sub_hero_le(hero_i, le);
+		}
 	}
 }
 
