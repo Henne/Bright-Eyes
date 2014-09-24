@@ -5201,24 +5201,29 @@ RealPt get_second_hero_available_in_group(void)
 	return (RealPt)0;
 }
 
+/**
+ * \brief	count available heros
+ *
+ * \ return	number of available heros in all groups
+ */
+/* Borlandified and identical */
 signed short count_heros_available(void)
 {
-	Bit8u *hero_i;
-	signed short retval;
 	signed short i;
+	signed short retval;
+	Bit8u *hero_i;
 
 	retval = 0;
 	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
 		/* Check class */
-		if (host_readb(hero_i+0x21) == 0)
-			continue;
 		/* Check if hero is available */
-		if (!check_hero(hero_i)|| !check_hero_no2(hero_i))
-			continue;
-
-		retval++;
+		if (host_readbs(hero_i + 0x21) &&
+			(check_hero(hero_i) || check_hero_no2(hero_i)))
+		{
+			retval++;
+		}
 	}
 
 	return retval;
