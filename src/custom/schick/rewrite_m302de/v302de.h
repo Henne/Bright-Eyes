@@ -92,9 +92,12 @@
 #define TEXTCOLOR	(0xd2c5)
 #define TEXTCOLOR_BG	(0xd2c7)
 #define TEXTCOLOR_FG	(0xd2c9)
+#define BUF_ICON	(0xd2e7)	/* RealPt */
 #define DTP2		(0xd2f3)
+#define ICON		(0xd2f7)	/* RealPt */
+#define TOWNPAL_BUF	(0xd321)	/* RealPt */
 #define ENEMY_SHEETS	(0xd34b)	/* struct enemy[20] */
-#define CHESSBOARD	(0xd852)
+#define CHESSBOARD	(0xd852)	/* RealPt */
 #define NR_OF_ENEMIES	(0xd872)	/* ? short */
 #define FIG_LIST_HEAD	(0xe108)	/* RealPtr to a list */
 #define WALLCLOCK_Y	(0xe10f)

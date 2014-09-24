@@ -484,7 +484,7 @@ void GRP_move_hero(signed short src_pos)
 		ds_writew(0xc013, ds_readw(0x299e));
 		ds_writew(0xc015, ds_readw(0x299c) + 31);
 		ds_writew(0xc017, ds_readw(0x299e) + 31);
-		ds_writed(0xc019, ds_readd(0xd2f7));
+		ds_writed(0xc019, ds_readd(ICON));
 
 		do_save_rect();
 
@@ -521,7 +521,7 @@ void GRP_move_hero(signed short src_pos)
 				ds_writew(0xc013, ds_readw(0x29a2));
 				ds_writew(0xc015, ds_readw(0x29a0) + 31);
 				ds_writew(0xc017, ds_readw(0x29a2) + 31);
-				ds_writed(0xc019, ds_readd(0xd2f7));
+				ds_writed(0xc019, ds_readd(ICON));
 
 				do_pic_copy(0);
 
@@ -529,7 +529,7 @@ void GRP_move_hero(signed short src_pos)
 				ds_writew(0xc013, ds_readw(0x299e));
 				ds_writew(0xc015, ds_readw(0x299c) + 31);
 				ds_writew(0xc017, ds_readw(0x299e) + 31);
-				ds_writed(0xc019, ds_readd(0xd2f7));
+				ds_writed(0xc019, ds_readd(ICON));
 
 				do_save_rect();
 
@@ -548,7 +548,7 @@ void GRP_move_hero(signed short src_pos)
 		ds_writew(0xc013, ds_readw(0x29a2));
 		ds_writew(0xc015, ds_readw(0x29a0) + 31);
 		ds_writew(0xc017, ds_readw(0x29a2) + 31);
-		ds_writed(0xc019, ds_readd(0xd2f7));
+		ds_writed(0xc019, ds_readd(ICON));
 
 		do_pic_copy(0);
 

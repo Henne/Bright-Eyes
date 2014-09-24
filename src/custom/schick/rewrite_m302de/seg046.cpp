@@ -243,7 +243,7 @@ void status_show(Bit16u index)
 			if (host_readw(Real2Host(hero) + i * 14 + 0x196) == 0)
 				continue;
 
-			nvf.dst = Real2Host(ds_readd(0xd2f7));
+			nvf.dst = Real2Host(ds_readd(ICON));
 			/* set nr */
 			nvf.nr = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + 0x196)));
 
@@ -255,7 +255,7 @@ void status_show(Bit16u index)
 			ds_writew(0xc015, ds_readw(0x63d2 + i * 4) + 15);
 			ds_writew(0xc017, ds_readw(0x63d2 + i * 4 + 2) + 15);
 			ds_writed(0xc00d, ds_readd(0xd303));
-			ds_writed(0xc019, ds_readd(0xd2f7));
+			ds_writed(0xc019, ds_readd(ICON));
 			do_pic_copy(0);
 
 			ds_writed(0xc00d, ds_readd(0xd2ff));

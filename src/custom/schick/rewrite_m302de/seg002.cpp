@@ -2072,11 +2072,11 @@ void dawning(void)
 	{
 
 		/* floor */
-		pal_fade(p_datseg + 0x3e53, Real2Host(ds_readd(0xd321)));
+		pal_fade(p_datseg + 0x3e53, Real2Host(ds_readd(TOWNPAL_BUF)));
 		/* buildings */
-		pal_fade(p_datseg + 0x3eb3, Real2Host(ds_readd(0xd321)) + 0x60);
+		pal_fade(p_datseg + 0x3eb3, Real2Host(ds_readd(TOWNPAL_BUF)) + 0x60);
 		/* sky */
-		pal_fade(p_datseg + 0x3f13, Real2Host(ds_readd(0xd321)) + 0xc0);
+		pal_fade(p_datseg + 0x3f13, Real2Host(ds_readd(TOWNPAL_BUF)) + 0xc0);
 
 		/* in a town */
 		if (ds_readbs(CURRENT_TOWN) &&
@@ -3944,7 +3944,7 @@ void draw_compass(void)
 	{
 
 		/* set src */
-		n.dst = Real2Host(ds_readd(0xd2f7));
+		n.dst = Real2Host(ds_readd(ICON));
 		/* set dst */
 		n.src = Real2Host(ds_readd(0xd2b1));
 		/* set nr */
@@ -3965,7 +3965,7 @@ void draw_compass(void)
 		ds_writew(0xc017, 136);
 
 		/* set source */
-		ds_writed(0xc019, ds_readd(0xd2f7));
+		ds_writed(0xc019, ds_readd(ICON));
 
 		update_mouse_cursor();
 		do_pic_copy(2);

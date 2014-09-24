@@ -740,7 +740,7 @@ void init_common_buffers(void)
 
 	/* load TOWNPAL.DAT */
 	fd = load_archive_file(0x8d);
-	read_archive_file(fd, Real2Host(ds_readd(0xd321)), 288);
+	read_archive_file(fd, Real2Host(ds_readd(TOWNPAL_BUF)), 288);
 	bc_close(fd);
 
 }

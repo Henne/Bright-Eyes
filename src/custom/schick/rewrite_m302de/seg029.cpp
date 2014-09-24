@@ -267,7 +267,7 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 
 	seg002_0c72(fd, icon * 576L, 0);
 
-	read_archive_file(fd, Real2Host(ds_readd(0xd2e7)) + pos * 576, 576);
+	read_archive_file(fd, Real2Host(ds_readd(BUF_ICON)) + pos * 576, 576);
 
 	bc_close(fd);
 
@@ -293,7 +293,7 @@ void draw_icons(void)
 		ds_writew(0xc013, ds_readw(0x2cdd + i * 4 + 2));
 		ds_writew(0xc015, ds_readw(0x2cdd + i * 4) + 23);
 		ds_writew(0xc017, ds_readw(0x2cdd + i * 4 + 2) + 23);
-		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2e7) + i * 576));
+		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
 
 		if (ds_readbs(0xbd38 + i) != -1) {
 			if (ds_readbs(0x5ecc + i) != ds_readbs(0xbd38 + i))
