@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 27/38
+	Functions rewritten: 28/38
 */
 
 #if !defined(__BORLANDC__)
@@ -308,8 +308,15 @@ void interrupt timer_isr(void)
 	/* call the old timer ISR */
 	((INTCAST)(ds_readd(0xe274)))();
 }
-#endif
 
+/* Borlandified and identical */
+void unused_gfx_spinlock(void)
+{
+	Bit32s v = ds_readds(0xe234);
+
+	while (v == ds_readds(0xe234)) { ; }
+}
+#endif
 
 void seg004_045b(void)
 {
