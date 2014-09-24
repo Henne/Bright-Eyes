@@ -4890,10 +4890,13 @@ void set_party_money(Bit32s money)
 }
 
 /**
- *	add_party_money	-	adds money to the current group
- *	@money:		money to add
+ * \brief	adds money to the current group
+ *
+ * \param money	money to add
 */
-void add_party_money(Bit32s money) {
+/* Borlandified and identical */
+void add_party_money(Bit32s money)
+{
 	set_party_money(get_party_money() + money);
 }
 
