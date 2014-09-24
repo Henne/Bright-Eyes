@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 6/11
+ *	Functions rewritten: 7/11
  */
 
 #include <stdio.h>
@@ -362,7 +362,26 @@ void refresh_colors(void)
 
 }
 
-/* Borlandified and nearly identical, see BC-TODO */
+
+/* Borlandified and nearly identical */
+Bit32s get_diskspace(void)
+{
+	unsigned short a[4];
+	Bit32s space;
+
+#if !defined(__BORLANDC__)
+	bc_dos_getdiskfree(bc_getdisk() + 1, (Bit8u*)&a);
+#else
+	/* BC-TODO: here the return value of get_disk() produces other code */
+	bc_dos_getdiskfree(((signed char)bc_getdisk()) + 1, (diskfree_t*)&a);
+#endif;
+
+	space = (Bit32s)a[0] * (Bit32s)a[2] * (Bit32s)a[3];
+
+	return space - 204800;
+
+}
+
 void init_game_state(void)
 {
 	signed short i;

@@ -6503,7 +6503,11 @@ static int seg120(unsigned short offs) {
 			return 1;
 		}
 		case 0x43: {
-			return 0;
+			Bit32s retval = get_diskspace();
+			D1_LOG("get_diskspace() = %d\n", retval);
+			reg_ax = retval;
+			reg_dx = retval >> 16;
+			return 1;
 		}
 		case 0x48: {
 			return 0;

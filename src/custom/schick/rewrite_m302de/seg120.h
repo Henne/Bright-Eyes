@@ -21,6 +21,9 @@ void init_global_buffer(void);
 /* 0x3e */
 void refresh_colors(void);
 
+/* 0x43 */
+Bit32s get_diskspace(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif
