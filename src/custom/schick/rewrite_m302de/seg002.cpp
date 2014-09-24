@@ -4803,24 +4803,26 @@ signed short get_random_hero(void)
 }
 
 /**
-	get_party_money - summs up the money of the current party
+ * \brief	get the money of the current group
+ *
+ * \return	the sum of the money of all heros in the current group
 */
-Bit32s get_party_money() {
+/* Borlandified and identical */
+Bit32s get_party_money(void)
+{
+	signed short i;
+	Bit32s sum = 0;
 	Bit8u* hero;
-	Bit32s sum;
-	short i;
 
-	sum = 0;
 	hero = get_hero(0);
 
-	for (i=0; i < 6; i++, hero+=0x6da) {
-		/* Check if hero has a class */
-		if (host_readb(hero+0x21) == 0)
-			continue;
-		/* Check if hero is in current party */
-		if (host_readb(hero+0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		sum += host_readd(hero+0x2c);
+	for (i=0; i < 6; i++, hero += 0x6da) {
+		/* Check if hero has a class and is in the current group */
+		if (host_readbs(hero + 0x21) &&
+			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+		{
+			sum += host_readds(hero + 0x2c);
+		}
 	}
 
 	return sum;
