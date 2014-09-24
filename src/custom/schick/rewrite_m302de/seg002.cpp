@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 147/148
+ *	Functions rewritten: 148/148 (complete)
 */
 #include <stdlib.h>
 #include <string.h>
@@ -5416,9 +5416,90 @@ RealPt schick_alloc_emu(Bit32u size)
 	return (RealPt)bc_farcalloc(size, 1);
 }
 
+/* Borlandified and identical */
 signed short copy_protection(void)
 {
-	DUMMY_WARNING();
+	signed short i;
+	signed short l_di;
+	signed short tries;
+	signed short l1;
+
+	load_buffer_1(21);
+
+	ds_writew(0xbffd, 4);
+
+	set_textcolor(0xff, 0);
+
+	tries = 0;
+
+	while (tries < 3) {
+
+		if (random_schick(100) <= 50) {
+			/* handbook question */
+
+			/* select a question */
+			l_di = random_schick(10) - 1;
+
+			/* prepare the string */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x9c),
+				ds_readbs((0x46fc + 3) + 19 * l_di),
+				ds_readbs((0x46fc + 2) + 19 * l_di),
+				ds_readbs((0x46fc + 1) + 19 * l_di),
+				ds_readbs((0x46fc + 0) + 19 * l_di));
+
+			/* print version number */
+			GUI_print_string(p_datseg + 0x46ec, 290, 190);
+
+			/* ask the question */
+			GUI_input(Real2Host(ds_readd(DTP2)), 20);
+
+			l1 = strlen((char*)Real2Host(ds_readd(0xd2ef)));
+
+			/* transform the input string in uppercase letters and bitwise invert them */
+			for (i = 0; i < l1; i++) {
+				host_writeb(Real2Host(ds_readd(0xd2ef)) + i,
+					~toupper(host_readbs(Real2Host(ds_readd(0xd2ef)) + i)));
+			}
+
+			if (!strcmp((char*)(p_datseg + (0x46fc + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(0xd2ef)))) {
+				return 1;
+			}
+		} else {
+			/* map question */
+
+			/* select a question */
+			l_di = random_schick(10) - 1;
+
+			/* prepare the string */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0xa0),
+				get_dtp(4 * (0x29 + ds_readbs((0x47ba + 0) + 3 * l_di))),
+				get_ltx(4 * (0xeb + ds_readbs((0x47ba + 1) + 3 * l_di))));
+
+			/* print version number */
+			GUI_print_string(p_datseg + 0x46ec, 290, 190);
+
+			/* ask the question */
+			GUI_input(Real2Host(ds_readd(DTP2)), 20);
+
+			l1 = strlen((char*)Real2Host(ds_readd(0xd2ef)));
+
+			/* transform the input string in uppercase letters */
+			for (i = 0; i < l1; i++) {
+				host_writeb(Real2Host(ds_readd(0xd2ef)) + i,
+					toupper(host_readbs(Real2Host(ds_readd(0xd2ef)) + i)));
+			}
+
+			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((0x047ba + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(0xd2ef)))) {
+				return 1;
+			}
+		}
+
+		tries++;
+	}
+
+	return 0;
 }
 
 #if !defined(__BORLANDC__)

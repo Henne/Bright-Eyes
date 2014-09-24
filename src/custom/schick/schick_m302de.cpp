@@ -7290,8 +7290,12 @@ static int n_seg002(unsigned short offs)
 	/* Callers: 1 */
 	case 0x5a81: {
 		CPU_Pop16();
+#if 1
 		reg_ax = 1;
 		D1_LOG("Kopierschutzabfrage umgangen\n");
+#else
+		copy_protection();
+#endif
 		return 1;
 	}
 	default:
