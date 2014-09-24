@@ -1282,13 +1282,14 @@ void mouse_init(void)
 
 			mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
 
-			mouse_irq_init(0x1f, mouse_isr);
+			/* TODO: we keep the magic numbers here until we can build the binary
+			mouse_irq_init(0x1f, mouse_isr); */
+			mouse_irq_init(0x1f, (INTCAST)RealMake(0x51e, 0x1454));
 		}
 	}
 }
 #endif
 
-/* Borlandified and identical */
 void disable_mouse(void)
 {
 	if (ds_readw(0xc3c7) == 2) {
@@ -1324,8 +1325,12 @@ void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
 
 	l1 = 12;
 	l4 = irq_nr;
-	l5 = FP_OFF(call_mouse_isr);
-	l6 = FP_SEG(call_mouse_isr);
+
+	/* TODO : keep the numbers here until we can build the binary */
+/*	l5 = FP_OFF(call_mouse_isr);
+	l6 = FP_SEG(call_mouse_isr); */
+	l5 = 0x1742;
+	l6 = 0x51e;
 
 	ds_writed(0xbcdb, (Bit32u)bc__dos_getvect(0x78));
 	bc__dos_setvect(0x78, (INTCAST)isr);
