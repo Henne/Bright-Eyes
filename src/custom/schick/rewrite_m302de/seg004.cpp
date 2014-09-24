@@ -153,6 +153,18 @@ void clear_ani(void)
 		}
 	 }
 }
+
+
+void seg004_045b(void)
+{
+	DUMMY_WARNING();
+}
+
+void seg004_0e31(void)
+{
+	DUMMY_WARNING();
+}
+
 /**
 	draw_bar - draws a bar to visualize LE or AE
 	@type:		0 = LE / 1 = AE
