@@ -5230,26 +5230,23 @@ signed short count_heros_available(void)
 }
 
 /**
-	count_heroes_available_in_group
+ * \brief	TODO
 */
-
+/* Borlandified and identical */
 signed short count_heroes_available_in_group(void)
 {
+	signed short heroes = 0;
+	signed short i;
 	Bit8u *hero_i = get_hero(0);
-	char i, heroes = 0;
 
-	for (i=0; i <= 6; i++, hero_i += 0x6da) {
-		/* Check class */
-		if (host_readb(hero_i+0x21) == 0)
-			continue;
-		/* Check if in current group */
-		if (host_readb(hero_i+0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Check if hero is available */
-		if (check_hero_no2(hero_i) == 0)
-			continue;
-
-		heroes++;
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		/* Check class, group and check_hero_no2() */
+		if (host_readbs(hero_i + 0x21) &&
+			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			check_hero_no2(hero_i))
+		{
+			heroes++;
+		}
 	}
 
 	return heroes;
