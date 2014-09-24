@@ -5033,21 +5033,23 @@ signed short get_hero_index(Bit8u *hero)
 }
 
 /**
- *	get_item_pos() - gets item position
- *	@hero:	pointer to the hero
- *	@item:	item ID to look for
+ * \brief	gets item position
  *
- *	Returns the position of the item or -1 if the item is not in the
- *	indventory .
+ * \param hero	pointer to the hero
+ * \param item	item ID to look for
+ *
+ * \return position of the item or -1 if the item is not in the inventory.
 */
-int get_item_pos(Bit8u *hero, unsigned short item)
+/* Borlandified and identical */
+signed short get_item_pos(Bit8u *hero, signed short item)
 {
 
-	register int i;	/* dx */
+	signed short i;
 
 	for (i = 0; i < 23; i++) {
-		if (item == host_readw(hero + i * 14 + 0x196))
+		if (item == host_readws(hero + i * 14 + 0x196)) {
 			return i;
+		}
 	}
 
 	return -1;
