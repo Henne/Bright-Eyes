@@ -5410,6 +5410,7 @@ int schick_main(int argc, char** argv)
 }
 #endif
 
+/* Borlandified and identical */
 RealPt schick_alloc_emu(Bit32u size)
 {
 	return (RealPt)bc_farcalloc(size, 1);
