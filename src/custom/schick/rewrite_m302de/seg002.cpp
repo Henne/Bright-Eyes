@@ -5272,6 +5272,11 @@ RealPt schick_alloc_emu(Bit32u size)
 	return (RealPt)bc_farcalloc(size, 1);
 }
 
+signed short copy_protection(void)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif

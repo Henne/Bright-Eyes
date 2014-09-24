@@ -186,6 +186,7 @@ signed short count_heros_available(void);
 signed short count_heroes_available_in_group(void);
 void seg002_57f1(void);
 RealPt schick_alloc_emu(Bit32u);
+signed short copy_protection(void);
 
 #if !defined(__BORLANDC__)
 }
