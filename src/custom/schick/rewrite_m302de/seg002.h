@@ -175,7 +175,7 @@ void add_hero_ap(Bit8u*, Bit32s);
 void add_group_ap(Bit32s);
 void add_hero_ap_all(signed short);
 void sub_hero_ap_all(signed short);
-unsigned short get_hero_index(Bit8u* hero);
+signed short get_hero_index(Bit8u*);
 int get_item_pos(Bit8u* hero, unsigned short item);
 signed short get_first_hero_with_item(signed short);
 signed short get_first_hero_with_item_in_group(signed short, signed short);

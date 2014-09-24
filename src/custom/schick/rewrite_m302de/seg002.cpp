@@ -5008,21 +5008,28 @@ void sub_hero_ap_all(signed short ap)
 			}
 		}
 	}
-
 }
 
 /**
-	get_hero_index - gets hero index
+ * \brief	gets the position of a hero
+ *
+ * \param hero	pointer to the hero
+ *
+ * \return	position of the hero
 */
+/* Borlandified and identical */
+signed short get_hero_index(Bit8u *hero)
+{
+	signed short i = 0;
+	Bit8u *p;
 
-unsigned short get_hero_index(Bit8u *hero) {
-	Bit8u *first_hero = get_hero(0);
-	int i = 0;
-
-	while (hero != first_hero + i*0x6da)
+	p = get_hero(i);
+	while (hero != p) {
 		i++;
-	return i;
+		p = get_hero(i);
+	}
 
+	return i;
 }
 
 /**
