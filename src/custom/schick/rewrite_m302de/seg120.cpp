@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 7/11
+ *	Functions rewritten: 8/11
  */
 
 #include <stdio.h>
@@ -436,6 +436,13 @@ void init_game_state(void)
 
 	ds_writed(0xbff9, ds_readd(0xd303));
 	load_splashes();
+}
+
+/* Borlandified and identical */
+static signed short err_handler(void)
+{
+	bc_hardresume(3);
+	return 1;
 }
 
 void cleanup_game(void)
