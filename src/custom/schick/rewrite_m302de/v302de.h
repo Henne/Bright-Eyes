@@ -87,6 +87,8 @@
 #define TEXT_LTX	(0xc3b5)
 #define ACTION		(0xc3d9)	/* ? short */
 #define ANI_MAIN_PTR	(0xce35)
+#define POPUP		(0xd2ad)	/* RealPt */
+#define BUF_FONT6	(0xd2c1)	/* RealPt */
 #define TEXTCOLOR	(0xd2c5)
 #define TEXTCOLOR_BG	(0xd2c7)
 #define TEXTCOLOR_FG	(0xd2c9)

@@ -19,7 +19,7 @@ void init_text(void)
 
 	/* FONT6 */
 	handle = load_archive_file(0x0b);
-	read_archive_file(handle, Real2Host(ds_readd(0xd2c1)), 1000);
+	read_archive_file(handle, Real2Host(ds_readd(BUF_FONT6)), 1000);
 	bc_close(handle);
 
 	/* TEXT.LTX */

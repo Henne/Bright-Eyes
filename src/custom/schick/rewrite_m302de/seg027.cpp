@@ -689,17 +689,17 @@ void init_common_buffers(void)
 
 	/* load POPUP.DAT */
 	fd = load_archive_file(0x99);
-	bytes = read_archive_file(fd, Real2Host((RealPt)ds_readd(0xd2ad) - 8), 500);
+	bytes = read_archive_file(fd, Real2Host((RealPt)ds_readd(POPUP) - 8), 500);
 	bc_close(fd);
 
 	/* decompress POPUP.DAT */
-	decomp_pp20(Real2Host((RealPt)ds_readd(0xd2ad) - 8),
-		Real2Host(ds_readd(0xd2ad)),
+	decomp_pp20(Real2Host((RealPt)ds_readd(POPUP) - 8),
+		Real2Host(ds_readd(POPUP)),
 #if !defined(__BORLANDC__)
-		Real2Host(ds_readd(0xd2ad)) - 8 + 4,
+		Real2Host(ds_readd(POPUP)) - 8 + 4,
 #else
-		FP_OFF((RealPt)ds_readd(0xd2ad) - 8) + 4,
-		FP_SEG((RealPt)ds_readd(0xd2ad) - 8),
+		FP_OFF((RealPt)ds_readd(POPUP) - 8) + 4,
+		FP_SEG((RealPt)ds_readd(POPUP) - 8),
 #endif
 		bytes);
 

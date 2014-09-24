@@ -461,7 +461,7 @@ signed short GUI_lookup_char_width(signed char c, signed short *p)
 void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_width, unsigned short x, unsigned short y)
 {
 	GUI_blank_char();
-	GUI_font_to_buf(Real2Host(ds_readd(0xd2c1)) + font_index * 8);
+	GUI_font_to_buf(Real2Host(ds_readd(BUF_FONT6)) + font_index * 8);
 	GUI_write_char_to_screen_xy(x, y, 7, char_width);
 }
 //8c5
@@ -629,11 +629,11 @@ void GUI_draw_popup_line(signed short line, signed short type)
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, x + 15);
 	ds_writew(0xc017, y + 7);
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2ad) + popup_left));
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(POPUP) + popup_left));
 
 	do_pic_copy(0);
 
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2ad) + popup_middle));
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(POPUP) + popup_middle));
 
 	x += 16;
 
@@ -644,7 +644,7 @@ void GUI_draw_popup_line(signed short line, signed short type)
 		x += 32;
 	}
 
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2ad) + popup_right));
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(POPUP) + popup_right));
 	ds_writew(0xc011, x);
 	ds_writew(0xc015, x + 15);
 
