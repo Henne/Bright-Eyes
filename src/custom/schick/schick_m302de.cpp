@@ -372,12 +372,17 @@ static int seg000(unsigned short offs) {
 		}
 		case 0x1123: {
 			/* time(), user for randomize */
-			unsigned int time = CPU_Pop32();
-			CPU_Push32(time);
+			RealPt tp = CPU_Pop32();
+			CPU_Push32(tp);
 
-			D1_LOG("C-Lib time(0x%04x)\n", time);
+			Bit32s retval = bc_time(tp);
 
-			return 0;
+			D1_LOG("C-Lib time(0x%04x) = %d\n", tp, retval);
+
+			reg_ax = retval;
+			reg_dx = retval >> 16;
+
+			return 1;
 		}
 		case 0x117b: {
 			signed short c = CPU_Pop16();

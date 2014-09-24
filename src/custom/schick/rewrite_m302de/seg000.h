@@ -15,6 +15,7 @@ RealPt bc__dos_getvect(Bit8u);
 void bc__dos_setvect(Bit8u, RealPt);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
+Bit32s bc_time(RealPt);
 signed short bc_unlink(RealPt);
 signed short bc_bioskey(signed short);
 void bc_clrscr(void);
@@ -50,6 +51,7 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #include <CTYPE.H>
 #include <ALLOC.H>
 #include <CONIO.H>
+#include <TIME.H>
 
 #define RealMake(s, o) MK_FP(s, o)
 #define PhysMake(s, o) RealMake(s, o)
@@ -76,6 +78,8 @@ Bit32s bc__write(Bit16u, RealPt, Bit16u);
 #define bc_lseek lseek
 #define bc__read read
 #define bc__write write
+
+#define bc_time time
 
 #define bc_unlink unlink
 

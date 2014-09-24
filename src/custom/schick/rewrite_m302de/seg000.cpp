@@ -81,6 +81,16 @@ Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
 	return (Bit16s)count;
 }
 
+
+Bit32s bc_time(RealPt p)
+{
+	CPU_Push32(p);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x1123);
+	CPU_Pop32();
+
+	return reg_ax;
+}
+
 signed short bc_unlink(RealPt fname)
 {
 	CPU_Push32(fname);
