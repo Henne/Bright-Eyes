@@ -184,6 +184,7 @@ RealPt get_first_hero_available_in_group(void);
 RealPt get_second_hero_available_in_group(void);
 signed short count_heros_available(void);
 signed short count_heroes_available_in_group(void);
+void seg002_57f1(void);
 RealPt schick_alloc_emu(Bit32u);
 
 #if !defined(__BORLANDC__)

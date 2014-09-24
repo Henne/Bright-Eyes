@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
- *	Functions rewritten: 145/148
+ *	Functions rewritten: 146/148
 */
 #include <stdlib.h>
 #include <string.h>
@@ -5250,6 +5250,20 @@ signed short count_heroes_available_in_group(void)
 	}
 
 	return heroes;
+}
+
+/* Borlandified and identical */
+void seg002_57f1(void)
+{
+	if (!count_heros_available()) {
+		/* game over */
+		ds_writew(0xc3c1, 1);
+
+	} else if (!count_heroes_available_in_group()) {
+
+		GRP_switch_to_next(2);
+
+	}
 }
 
 RealPt schick_alloc_emu(Bit32u size)

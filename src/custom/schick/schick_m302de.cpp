@@ -1648,12 +1648,14 @@ static int seg002(unsigned short offs) {
 		D1_LOG("count_heros_available() = %d\n", reg_ax);
 		return 1;
 	}
-	case 0x57f1: {
-		return 0;
-	}
 	case 0x5799: {
 		reg_ax = count_heroes_available_in_group();
 		D1_LOG("count_heroes_available_in_group() = %d\n", reg_ax);
+		return 1;
+	}
+	case 0x57f1: {
+		D1_LOG("seg002_57f1()\n");
+		seg002_57f1();
 		return 1;
 	}
 	case 0x5816: {
