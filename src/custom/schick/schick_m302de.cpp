@@ -263,7 +263,21 @@ static int seg000(unsigned short offs) {
 		}
 		/* dos_getdiskfree() */
 		case 0x7ed: {
-			return 0;
+
+			Bit16u drive = CPU_Pop16();
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+			CPU_Push16(drive);
+
+			bc_dos_getdiskfree(drive, Real2Host(p));
+
+			D1_LOG("disk = %d, %d, %d, %d\n",
+				host_readw(Real2Host(p) + 0),
+				host_readw(Real2Host(p) + 2),
+				host_readw(Real2Host(p) + 4),
+				host_readw(Real2Host(p) + 6));
+
+			return 1;
 		}
 		case 0x816: {
 			Bit16u interruptno = CPU_Pop16();

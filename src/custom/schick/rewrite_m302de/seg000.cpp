@@ -16,6 +16,26 @@ Bit16s bc_getdisk(void)
 	return reg_ax;
 }
 
+void bc_dos_getdiskfree(Bit16u drive, Bit8u *p)
+{
+	Bit32u esp_bak = reg_esp;
+
+	CPU_Push32(RealMake(SegValue(ss), reg_sp - 32));
+	CPU_Push16(drive);
+	CALLBACK_RunRealFar(reloc_game, 0x7ed);
+	CPU_Pop16();
+	CPU_Pop32();
+
+	reg_esp -= 32;
+
+	host_writew(p + 0, CPU_Pop16());
+	host_writew(p + 2, CPU_Pop16());
+	host_writew(p + 4, CPU_Pop16());
+	host_writew(p + 6, CPU_Pop16());
+
+	reg_esp = esp_bak;
+}
+
 RealPt F_PADD(RealPt p, Bit32s off)
 {
 	reg_dx = RealSeg(p);

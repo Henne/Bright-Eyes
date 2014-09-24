@@ -7,6 +7,8 @@ struct ffblk {
 
 Bit16s bc_getdisk(void);
 
+void bc_dos_getdiskfree(Bit16u, Bit8u*);
+
 RealPt F_PADD(RealPt, Bit32s);
 Bit32s F_PSUB(RealPt, RealPt);
 
@@ -66,6 +68,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 
 
 #define bc_getdisk getdisk
+#define bc_dos_getdiskfree _dos_getdiskfree
 
 #define F_PADD(p, o) ((HugePt)(p) + o)
 #define F_PSUB(p1, p2) ((HugePt)(p1) - (HugePt)(p2))
