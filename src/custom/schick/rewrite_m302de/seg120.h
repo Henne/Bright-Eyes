@@ -27,6 +27,9 @@ void refresh_colors(void);
 /* 0x43 */
 Bit32s get_diskspace(void);
 
+/* 0x52 */
+void call_gen(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -538,6 +538,11 @@ void cleanup_game(void)
 	bc_clrscr();
 }
 
+void call_gen(void)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
