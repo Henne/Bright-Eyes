@@ -258,7 +258,7 @@ RealPt read_music_driver(RealPt fname)
 		ptr &= 0xfffffff0;
 		buf = EMS_norm_ptr((RealPt)ptr);
 		/* and_ptr_ds((Bit8u*)&ptr, 0xfffffff0); */
-		bc__read(handle, Real2Host(buf), len);
+		bc__read(handle, Real2Host(buf), (unsigned short)len);
 		bc_close(handle);
 		return buf;
 	}
@@ -493,10 +493,10 @@ signed short have_mem_for_sound(void)
 		size = host_readd((Bit8u*)(&blk) + 26);
 		size += 4000L;
 
-		if (size < bc_farcoreleft()) {
+		if ((Bit32u)size < bc_farcoreleft()) {
 			retval = 1;
 
-			if (size + 25000L < bc_farcoreleft()) {
+			if ((Bit32u)(size + 25000L) < bc_farcoreleft()) {
 
 				ds_writew(0x447c, 1);
 			}
@@ -684,7 +684,7 @@ RealPt read_digi_driver(RealPt fname)
 		ptr = ds_readd(0xbceb) + 15L;
 		ptr &= 0xfffffff0;
 		buf = EMS_norm_ptr((RealPt)ptr);
-		bc__read(handle, Real2Host(buf), len);
+		bc__read(handle, Real2Host(buf), (unsigned short)len);
 		bc_close(handle);
 		return buf;
 	}
@@ -2212,7 +2212,7 @@ void do_census(void)
 	}
 
 	/* save the new deposit */
-	ds_writew(BANK_DEPOSIT, val / 10);
+	ds_writew(BANK_DEPOSIT, (signed short)(val / 10));
 
 	/* fixup over- and underflows */
 	if ((ds_readws(BANK_DEPOSIT) < 0) && (si == 1))
@@ -2725,7 +2725,7 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 				}
 
 				if (new_target != 0) {
-					target = i;
+					target = (signed char)i;
 					break;
 				}
 			}
@@ -2832,7 +2832,7 @@ void sub_light_timers(Bit32s quarter)
 			if (quarter > 120) {
 				tmp = 120;
 			} else {
-				tmp = quarter;
+				tmp = (signed char)quarter;
 			}
 
 			for (j = 0; j < 23; j++) {
@@ -3444,7 +3444,7 @@ void timewarp(Bit32s time)
 	sub_light_timers(time / 0x546);
 
 	/* calculate hours */
-	hour_old = timer_bak / 0x1518;
+	hour_old = (signed short)(timer_bak / 0x1518);
 	hour_new = (signed short)(ds_readd(DAY_TIMER) / 0x1518);
 
 	if (hour_old != hour_new) {
@@ -3504,8 +3504,8 @@ void timewarp_until(Bit32s time)
 	sub_light_timers(i / 0x546);
 
 	/* calculate hours */
-	hour_old = timer_bak / 0x1518;
-	hour_new = (signed short)(ds_readd(DAY_TIMER) / 0x1518);
+	hour_old = (signed short)(timer_bak / 0x1518);
+	hour_new = (signed short)(ds_readds(DAY_TIMER) / 0x1518);
 
 	if (hour_old != hour_new) {
 		if (hour_new > hour_old) {
@@ -3789,7 +3789,7 @@ Bit32u swap_u32_unused(Bit32u v)
 	signed short tmp;
 	Bit32s *ptr = (Bit32s*)(&a[0]);
 
-	tmp = *ptr = host_readd((Bit8u*)&v);
+	tmp = (signed short)(*ptr = host_readd((Bit8u*)&v));
 
 	a[0] = a[1];
 	a[1] = tmp;
@@ -3839,7 +3839,7 @@ void from_EMS(RealPt dst, signed short handle, Bit32s bytes)
 		ptr = F_PADD(dst, (((Bit32s)si) << 0x0e));
 		si++;
 
-		v2 = (bytes - 0x4000 > 0) ? 0x4000 : bytes;
+		v2 = (bytes - 0x4000 > 0) ? 0x4000 : (signed short)bytes;
 
 		bytes -= 0x4000;
 
@@ -3865,7 +3865,7 @@ void to_EMS(signed short handle, RealPt src, Bit32s bytes)
 		ptr = F_PADD(src, ((((Bit32s)si) << 0x0e)));
 		si++;
 
-		v2 = (bytes - 0x4000 > 0) ? 0x4000 : bytes;
+		v2 = (bytes - 0x4000 > 0) ? 0x4000 : (signed short)bytes;
 
 		bytes -= 0x4000;
 
@@ -4999,7 +4999,7 @@ void sub_hero_ap_all(signed short ap)
 			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero_i))
 		{
-			if (ap <= host_readd(hero_i + 0x28)) {
+			if ((Bit32u)ap <= host_readd(hero_i + 0x28)) {
 #if !defined(__BORLANDC__)
 				D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i+0x10), -ap);
 #endif
