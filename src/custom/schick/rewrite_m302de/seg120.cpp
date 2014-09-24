@@ -445,6 +445,11 @@ static signed short err_handler(void)
 	return 1;
 }
 
+void prepare_dirs(void)
+{
+	DUMMY_WARNING();
+}
+
 void cleanup_game(void)
 {
 	struct ffblk blk;

@@ -8,6 +8,9 @@ signed short init_memory(void);
 /* 0x25 */
 void init_game_state(void);
 
+/* 0x2a */
+void prepare_dirs(void);
+
 /* 0x2f */
 void cleanup_game(void);
 
