@@ -11,6 +11,10 @@ void cleanup_game(void);
 /* 0x34 */
 void rabies(RealPt, signed short);
 
+/* 0x39 */
+/* should be static */
+void init_global_buffer(void);
+
 /* 0x3e */
 void refresh_colors(void);
 

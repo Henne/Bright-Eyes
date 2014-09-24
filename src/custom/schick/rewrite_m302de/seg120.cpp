@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 4/11
+ *	Functions rewritten: 5/11
  */
 
 #include <stdio.h>
@@ -240,6 +240,33 @@ void rabies(RealPt hero, signed short hero_pos)
 	if (ds_readbs(0x2845) == 0) {
 		draw_status_line();
 	}
+}
+
+/* Borlandified and identical */
+void init_global_buffer(void)
+{
+
+	ds_writed(0xe5e0, (Bit32u)schick_alloc_emu(ds_readd(0xe5dc)));
+	ds_writed(0xd303, (Bit32u)F_PADD(ds_readd(0xe5e0), 8));
+	ds_writed(0xd2b9, (Bit32u)F_PADD(ds_readd(0xd303), 65000));
+
+	ds_writed(TEXT_LTX, (Bit32u)F_PADD(ds_readd(0xd2b9), 30500));
+	ds_writed(DIALOG_TEXT, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3360));
+	ds_writed(CITY_LTX, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3960));
+
+	ds_writed(0xd2e3, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
+	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(0xd2e3), 3400)));
+	ds_writed(0xd2ef, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
+	ds_writed(0xd2eb, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
+	ds_writed(0xd2a5, (Bit32u)(F_PADD(ds_readd(0xd2eb), 300)));
+	ds_writed(0xd2b1, (Bit32u)(F_PADD(ds_readd(0xd2a5), 3880)));
+	ds_writed(0xd2b5, (Bit32u)(F_PADD(ds_readd(0xd2b1), 2200)));
+	ds_writed(0xc3a9, (Bit32u)(F_PADD(ds_readd(0xd2b5), 10000)));
+	ds_writed(0xc3db, (Bit32u)(F_PADD(ds_readd(0xd2b5), 22008)));
+
+	ds_writed(0xd019, ds_writed(0xd015, ds_readd(0xc3db)));
+	ds_writed(0xce43, 0);
+
 }
 
 /* Borlandified and identical */

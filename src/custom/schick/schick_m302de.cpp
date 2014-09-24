@@ -9735,7 +9735,10 @@ static int n_seg120(unsigned short offs)
 {
 	switch (offs) {
 	case 0x578: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("init_global_buffer()\n");
+		init_global_buffer();
+		return 1;
 	}
 	case 0x99f: {
 		CPU_Pop16();
