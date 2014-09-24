@@ -5087,21 +5087,34 @@ signed short get_first_hero_with_item(signed short item)
 	return -1;
 }
 
-signed short get_first_hero_with_item_in_group(signed short item, signed short group) {
+/**
+ * \brief	gets the position of the first hero with an item in a specified group
+ *
+ * \param item	item ID to look for
+ * \param group	group number
+ *
+ * \return position of the hero or -1 if nobody in the specified group has this item
+*/
+/* Borlandified and identical */
+signed short get_first_hero_with_item_in_group(signed short item, signed short group)
+{
+	signed short j;
+	signed short i;
 	Bit8u *hero_i = get_hero(0);
-	int i,j;
 
-	for (i = 0; i <= 6; i++ , hero_i += 0x6da) {
-		/* Check class */
-		if (host_readb(hero_i+0x21) == 0)
-			continue;
-		/* Check if in that group */
-		if (host_readb(hero_i+0x87) != group)
-			continue;
-		/* Search inventar */
-		for (j = 0; j < 23; j++)
-			if (host_readw(hero_i + j * 14 + 0x196) == item)
-				return i;
+	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+
+		/* Check class and group */
+		if (host_readbs(hero_i + 0x21) &&
+			(host_readbs(hero_i + 0x87) == (signed char)group))
+		{
+			/* Search inventar */
+			for (j = 0; j < 23; j++) {
+				if (host_readws(hero_i + j * 14 + 0x196) == item) {
+					return i;
+				}
+			}
+		}
 	}
 
 	return -1;
