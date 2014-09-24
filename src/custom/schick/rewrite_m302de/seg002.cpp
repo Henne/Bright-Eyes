@@ -4829,16 +4829,20 @@ Bit32s get_party_money(void)
 }
 
 /**
- *	set_party_money -	shares money between current party members
- *	@money:		the money to share
+ * \brief	shares money between current party members
+ *
+ * \param money	the money to share
  *
  *	If only a NPC is in that party, he gets all the money.
  *	If a hero is dead and in the current party, his money is set to 0.
 */
-void set_party_money(Bit32s money) {
-	Bit8u *hero;
+/* Borlandified and identical */
+void set_party_money(Bit32s money)
+{
+	signed short heroes = 0;
+	signed short i;
 	Bit32s hero_money;
-	unsigned short i, heroes = 0;
+	Bit8u *hero;
 
 	if (money < 0)
 		money = 0;
@@ -4847,36 +4851,41 @@ void set_party_money(Bit32s money) {
 
 	/* set hero to NPC */
 	hero = get_hero(6);
+
 	/* if we have an NPC in current group and alive */
-	if (host_readb(hero + 0x21) &&
-		host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
-		hero_dead(hero) == 0) {
+	if (host_readbs(hero + 0x21) &&
+		(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		!hero_dead(hero)) {
 
 		/* If only the NPC is in that group give him all the money */
-		if (heroes <= 1) {
-			host_writed(hero + 0x2c, host_readd(hero + 0x2c) + money);
-			heroes = 0;
-		} else
+		if (heroes > 1) {
 			heroes--;
+		} else {
+			add_ptr_ds(hero + 0x2c, money);
+			heroes = 0;
+		}
 	}
 
-	if (heroes == 0)
-		return;
+	if (heroes != 0) {
 
-	hero_money = money / heroes;
+		hero_money = money / heroes;
 
-	hero = get_hero(0);
+		hero = get_hero(0);
 
-	for (i = 0; i < 6; i++, hero += 0x6da) {
+		for (i = 0; i < 6; i++, hero += 0x6da) {
 
-		if (host_readb(hero + 0x21) &&
-			host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
-			hero_dead(hero) == 0) {
-			/* account the money to hero */
-			host_writed(hero + 0x2c, hero_money);
-		} else
-			if (host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP))
-				host_writed(hero + 0x2c, 0);
+			if (host_readbs(hero + 0x21) &&
+				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				!hero_dead(hero))
+			{
+				/* account the money to hero */
+				host_writed(hero + 0x2c, hero_money);
+			} else {
+				if (host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) {
+					host_writed(hero + 0x2c, 0);
+				}
+			}
+		}
 	}
 }
 
