@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 27/31
+	Functions rewritten: 28/31
 */
 
 #if !defined(__BORLANDC__)
@@ -153,6 +153,162 @@ void clear_ani(void)
 		}
 	 }
 }
+
+#if defined(__BORLANDC__)
+
+struct dummy {
+	char a[24];
+};
+
+/* Borlandified and identical */
+void interrupt timer_isr(void)
+{
+	signed short i;
+	signed short l_di;
+	signed char flag;
+	Bit8u *ptr;
+	struct dummy a;
+
+	add_ds_ds(0xe234, 1);
+
+	inc_ds_ws(0xc3bf);
+
+	if (ds_readws(0xc3bf) < 0) {
+		ds_writew(0xc3bf, 0);
+	}
+
+	if ((ds_readw(0xe318) != 0) &&
+		(bc_bioskey(1) || (ds_readw(0xc3d5) != 0)))
+	{
+		ds_writew(0xe318, 2);
+		ds_writew(0xc3d5, 0);
+	}
+
+	start_midi_playback_IRQ();
+
+
+	if (ds_readw(DELAY_TIMER) != 0) {
+		dec_ds_ws(DELAY_TIMER);
+	}
+
+	/* another timer used in fights */
+	if ((ds_readws(0x4b79) > 0) &&
+		(ds_readws(0x26b1) != 0) &&
+		(ds_readbs(0x4b94) != 0))
+	{
+		dec_ds_ws(0x4b79);
+	}
+
+	if (!ds_readbs(0xbcda)) {
+		do_timers();
+	}
+
+	seg004_045b();
+	seg002_37c4();
+	seg004_0e31();
+	dec_splash();
+
+	if (ds_readws(0x29ae) != 0) {
+
+		/* disable interrupts */
+		asm { cli; }
+
+		ds_writew((0x2990 + 0), ds_readw(0xce3f));
+		ds_writew((0x2990 + 2), ds_readw(0xce41));
+		ds_writew((0x2990 + 4), ds_readw(0xce3f) + 135);
+		ds_writew((0x2990 + 6), ds_readw(0xce41) + 208);
+		a = *(struct dummy*)(p_datseg + 0xc00d);
+
+		l_di = ds_readbs(0xc3ee);
+
+		if (!l_di && (ds_readw(0x4a90))) {
+
+			ds_writew(0x29ae, 0);
+			ds_writew(0x4a90, 0);
+		}
+
+		for (i = 0; i < l_di; i++) {
+
+			ptr = p_datseg + 0xc3ef + 0x107 * i;
+
+			if (host_readws(ptr + 0x5d)) {
+				sub_ds_ws(0xe260 + 2 * i, 5);
+
+				if (ds_readws(0xe260 + 2 * i) <= 0) {
+
+					add_ds_ws(0xe24c + 2 * i, ds_readws(0xe238 + 2 * i));
+
+					if (ds_readws(0xe24c + 2 * i) == host_readws(ptr + 0x5d)) {
+
+						if (host_readbs(ptr + 0xb) != 0) {
+							ds_writew(0xe238 + 2 * i, -1);
+							dec_ds_ws(0xe24c + 2 * i);
+						} else {
+							ds_writew(0xe24c + 2 * i, 0);
+						}
+
+						if (ds_readws(0x4a90) != 0) {
+							ds_writew(0x29ae, 0);
+							ds_writew(0x4a90, 0);
+							break;
+						}
+					}
+
+					if ((ds_readws(0xe24c + 2 * i) == 0) &&
+						(host_readb(ptr + 0xb) != 0))
+					{
+						ds_writew(0xe238 + 2 * i, 1);
+					}
+
+					ds_writew(0xe260 + 2 * i, 2 * (host_readws(ptr + 0x61 + 4 * ds_readws(0xe24c + 2 * i))));
+
+					flag = 0;
+
+					if ((ds_readws(0x299c) >= ds_readws(0xce41)) &&
+						(ds_readws(0xce41) + ds_readws(0xc3e7) >= ds_readws(0x299c)) &&
+						(ds_readws(0x299e) >= ds_readws(0xce3f)) &&
+						(ds_readws(0xce3f) + ds_readb(0xc3ed) >= ds_readws(0x299e) ))
+					{
+						flag = 1;
+						update_mouse_cursor();
+					}
+
+					/* set screen coordinates */
+					ds_writew(0xc011,
+						ds_readws(0xce41) + host_readw(ptr + 5));
+					ds_writew(0xc013,
+						ds_readws(0xce3f) + host_readb(ptr + 7));
+					ds_writew(0xc015,
+						ds_readws(0xce41) + host_readw(ptr + 5) + host_readw(ptr + 9) - 1);
+					ds_writew(0xc017,
+						ds_readws(0xce3f) + host_readb(ptr + 7) + host_readb(ptr + 8) - 1);
+					ds_writed(0xc019,
+						host_readd(ptr + 0xd + 4 *(host_readws(ptr + 0x5f + 4 * ds_readw(0xe24c + 2 * i)) -1)));
+
+					do_pic_copy(1);
+
+					if (flag != 0) {
+						refresh_screen_size();
+						flag = 0;
+					}
+				}
+			}
+		}
+
+		*(struct dummy*)(p_datseg + 0xc00d) = a;
+		ds_writew((0x2990 + 0), 0);
+		ds_writew((0x2990 + 2), 0);
+		ds_writew((0x2990 + 4), 199);
+		ds_writew((0x2990 + 6), 319);
+
+		/* enable interrupts */
+		asm {sti; }
+	}
+
+	/* call the old timer ISR */
+	((INTCAST)(ds_readd(0xe274)))();
+}
+#endif
 
 
 void seg004_045b(void)

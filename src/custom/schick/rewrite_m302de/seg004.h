@@ -10,6 +10,9 @@ void init_ani(Bit16u);
 void set_var_to_zero(void);
 void init_ani_busy_loop(unsigned short);
 void clear_ani(void);
+#if defined(__BORLANDC__)
+void interrupt timer_isr(void);
+#endif
 void seg004_045b(void);
 void seg004_0e31(void);
 void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode);
