@@ -2310,10 +2310,12 @@ static int seg008(unsigned short offs) {
 		RealPt addr = CPU_Pop32();
 		CPU_Push32(addr);
 
-		D1_GFX("SaveDisplayStat(dstat=0x%x:0x%x);\n",
+		D1_GFX("save_display_stat(dstat=0x%x:0x%x);\n",
 			RealSeg(addr), RealOff(addr));
 
-		return 0;
+		save_display_stat(addr);
+
+		return 1;
 	}
 	case 0xea: {
 		RealPt ptr = CPU_Pop32();

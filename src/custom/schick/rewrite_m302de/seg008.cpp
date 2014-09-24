@@ -6,6 +6,7 @@
 #if !defined(__BORLANDC__)
 #include "paging.h"
 #include "../../ints/int10.h"
+#include "callback.h"
 #endif
 
 #include "v302de.h"
@@ -26,6 +27,13 @@ void set_video_mode(unsigned char mode) {
 
 void set_video_page(unsigned char mode) {
 	INT10_SetActivePage(mode);
+}
+
+void save_display_stat(RealPt p)
+{
+	CPU_Push32(p);
+	CALLBACK_RunRealFar(reloc_game + 0xf18, 0x40);
+	CPU_Pop32();
 }
 
 void set_color(Bit8u *ptr, unsigned char color){
