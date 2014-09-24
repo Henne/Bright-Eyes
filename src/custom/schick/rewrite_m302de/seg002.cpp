@@ -64,7 +64,9 @@ void play_music_file(signed short index)
 /* Borlandified and identical */
 void set_audio_track(Bit16u index)
 {
+#if defined(__BORLANDC__)
 	CD_check();
+#endif
 
 	/* only do something when index is not the current track */
 	if (ds_readw(0x447a) != index) {
