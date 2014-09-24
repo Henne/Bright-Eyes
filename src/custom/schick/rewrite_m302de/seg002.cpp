@@ -1,6 +1,13 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg002 (misc)
  *	Functions rewritten: 148/148 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y -IAIL seg002.cpp
+ *
+ *	Remark:		Needs header of AIL (Miles Sound System)
+ *
 */
 #include <stdlib.h>
 #include <string.h>
@@ -52,7 +59,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 /* static */
 void play_music_file(signed short index)
 {
@@ -61,7 +67,6 @@ void play_music_file(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 void set_audio_track(Bit16u index)
 {
 #if defined(__BORLANDC__)
@@ -83,7 +88,6 @@ void set_audio_track(Bit16u index)
 	}
 }
 
-/* Borlandified and identical */
 void sound_menu(void)
 {
 	signed short answer;
@@ -136,7 +140,6 @@ void sound_menu(void)
 	}
 }
 
-/* Borlandified and identical */
 void read_sound_cfg(void)
 {
 	signed short port;
@@ -200,7 +203,6 @@ void read_sound_cfg(void)
 	}
 }
 
-/* Borlandified and identical */
 void init_AIL(Bit32u size)
 {
 	if (NOT_NULL(Real2Host((RealPt)ds_writed(0xbd0d, (Bit32u)schick_alloc_emu(size))))) {
@@ -209,7 +211,6 @@ void init_AIL(Bit32u size)
 	}
 }
 
-/* Borlandified and identical */
 void exit_AIL(void)
 {
 	AIL_shutdown(NULL);
@@ -239,7 +240,6 @@ void exit_AIL(void)
 
 }
 
-/* Borlandified and identical */
 RealPt read_music_driver(RealPt fname)
 {
 	Bit32u len;
@@ -265,7 +265,6 @@ RealPt read_music_driver(RealPt fname)
 	return (RealPt)0;
 }
 
-/* Borlandified and identical */
 /* static */
 signed short prepare_midi_playback(signed short sequence)
 {
@@ -298,7 +297,6 @@ signed short prepare_midi_playback(signed short sequence)
 	return 0;
 }
 
-/* Borlandified and identical */
 /* static */
 signed short start_midi_playback(signed short seq)
 {
@@ -311,7 +309,6 @@ signed short start_midi_playback(signed short seq)
 }
 
 
-/* Borlandified and identical */
 /* static */
 RealPt prepare_timbre(signed short a1, signed short patch)
 {
@@ -340,14 +337,12 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 	return buf;
 }
 
-/* Borlandified and identical */
 /* static */
 signed short load_midi_file(signed short index)
 {
 	return do_load_midi_file(index);
 }
 
-/* Borlandified and identical */
 /* static */
 signed short do_load_midi_file(signed short index)
 {
@@ -362,7 +357,6 @@ signed short do_load_midi_file(signed short index)
 }
 
 /* static */
-/* Borlandified and identical */
 signed short load_music_driver(RealPt fname, signed short type, signed short port)
 {
 
@@ -417,7 +411,6 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 	return 0;
 }
 
-/* Borlandified and identical */
 /* static */
 void do_play_music_file(signed short index)
 {
@@ -429,7 +422,6 @@ void do_play_music_file(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 /* static */
 void stop_midi_playback(void)
 {
@@ -440,7 +432,6 @@ void stop_midi_playback(void)
 	}
 }
 
-/* Borlandified and identical */
 void start_midi_playback_IRQ(void)
 {
 	if ((ds_readw(0xbcff) == 0) &&
@@ -454,7 +445,6 @@ void start_midi_playback_IRQ(void)
 }
 
 /* These function is never called */
-/* Borlandified and identical */
 void cruft_1(void)
 {
 	if ((ds_readw(0xbcff) == 0) &&
@@ -465,7 +455,6 @@ void cruft_1(void)
 }
 
 /* These function is never called */
-/* Borlandified and identical */
 void cruft_2(signed short volume)
 {
 	if (ds_readw(0xbcff) == 0) {
@@ -481,7 +470,6 @@ void cruft_2(signed short volume)
 }
 
 
-/* Borlandified and identical */
 signed short have_mem_for_sound(void)
 {
 	Bit32s size;
@@ -515,7 +503,6 @@ signed short have_mem_for_sound(void)
 	return retval;
 }
 
-/* Borlandified and identical */
 void play_voc(signed short index)
 {
 	if (ds_readw(0x447c) && ds_readb(0x4477)) {
@@ -524,7 +511,6 @@ void play_voc(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 void play_voc_delay(signed short index)
 {
 	if (ds_readw(0x447c) && ds_readb(0x4477)) {
@@ -537,7 +523,6 @@ void play_voc_delay(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 void alloc_voc_buffer(Bit32u size)
 {
 	if (ds_readw(0x447c)) {
@@ -545,7 +530,6 @@ void alloc_voc_buffer(Bit32u size)
 	}
 }
 
-/* Borlandified and identical */
 /* static */
 void free_voc_buffer(void)
 {
@@ -564,7 +548,6 @@ void free_voc_buffer(void)
 	}
 }
 
-/* Borlandified and identical */
 signed short read_new_voc_file(signed short index)
 {
 	if (AIL_VOC_playback_status(ds_readw(0xbcfb)) == 2) {
@@ -580,7 +563,6 @@ signed short read_new_voc_file(signed short index)
 	return 0;
 }
 
-/* Borlandified and identical */
 signed short read_voc_file(signed short index)
 {
 	signed short handle;
@@ -594,7 +576,6 @@ signed short read_voc_file(signed short index)
 	return 0;
 }
 
-/* Borlandified and identical */
 void SND_play_voc(signed short index)
 {
 	if (ds_readw(0x447c)) {
@@ -606,7 +587,6 @@ void SND_play_voc(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 void SND_stop_digi(void)
 {
 	if (ds_readw(0x447c)) {
@@ -614,7 +594,6 @@ void SND_stop_digi(void)
 	}
 }
 
-/* Borlandified and identical */
 void SND_set_volume(unsigned short volume)
 {
 	if (ds_readw(0x447c)) {
@@ -628,7 +607,6 @@ void SND_set_volume(unsigned short volume)
 }
 
 /* static */
-/* Borlandified and identical */
 signed short load_digi_driver(RealPt fname, signed short type, signed short io, signed short irq)
 {
 
@@ -667,7 +645,6 @@ signed short load_digi_driver(RealPt fname, signed short type, signed short io, 
 	return 0;
 }
 
-/* Borlandified and identical */
 RealPt read_digi_driver(RealPt fname)
 {
 	Bit32u len;
@@ -698,7 +675,6 @@ RealPt read_digi_driver(RealPt fname)
  * Returns the filehandle or 0xffff.
  */
 /* static */
-/* Borlandified and identical */
 signed short open_and_seek_dat(unsigned short fileindex)
 {
 	Bit32u start, end;
@@ -734,13 +710,11 @@ signed short open_and_seek_dat(unsigned short fileindex)
 	return fd;
 }
 
-/* Borlandified and identical */
 Bit32u get_readlength2(signed short index)
 {
 	return index != -1 ? ds_readd(0xbce7) : 0;
 }
 
-/* Borlandified and identical */
 unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 {
 
@@ -759,7 +733,6 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 	}
 }
 
-/* Borlandified and identical */
 void seg002_0c72(Bit16u handle, Bit32s off, Bit16u dummy) {
 
 	Bit32u file_off;
@@ -773,7 +746,6 @@ void seg002_0c72(Bit16u handle, Bit32s off, Bit16u dummy) {
 	return;
 }
 
-/* Borlandified and identical */
 signed short load_regular_file(Bit16u index)
 {
 
@@ -793,7 +765,6 @@ signed short load_regular_file(Bit16u index)
 	return handle;
 }
 
-/* Borlandified and identical */
 signed short load_archive_file(Bit16u index)
 {
 	bc_flushall();
@@ -801,7 +772,6 @@ signed short load_archive_file(Bit16u index)
 	return (index & 0x8000) ? open_temp_file(index & 0x7fff) : open_and_seek_dat(index);
 }
 
-/* Borlandified and identical */
 signed short open_temp_file(unsigned short index)
 {
 /* HACK: need a Real Pointer to 40 bytes on the DOSBox Stack */
@@ -836,7 +806,6 @@ signed short open_temp_file(unsigned short index)
 	return handle;
 }
 
-/* Borlandified and identical */
 void copy_from_archive_to_temp(unsigned short index, RealPt fname)
 {
 	signed short handle1;
@@ -859,7 +828,6 @@ void copy_from_archive_to_temp(unsigned short index, RealPt fname)
 	}
 }
 
-/* Borlandified and identical */
 void copy_file_to_temp(RealPt src_file, RealPt fname)
 {
 	signed short handle1;
@@ -882,7 +850,6 @@ void copy_file_to_temp(RealPt src_file, RealPt fname)
 	}
 }
 
-/* Borlandified and identical */
 Bit32s process_nvf(struct nvf_desc *nvf)
 {
 	signed short i;
@@ -1033,7 +1000,6 @@ Bit32s process_nvf(struct nvf_desc *nvf)
  * to call interrupts. We use the one of DOSBox, which means, that we
  * put the values in the emulated registers, instead in a structure.
  */
-/* Borlandified and identical */
 void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
 {
 #if !defined(__BORLANDC__)
@@ -1154,7 +1120,6 @@ void mouse_action(Bit8u *p1, Bit8u *p2, Bit8u *p3, Bit8u *p4, Bit8u *p5)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void interrupt mouse_isr(void)
 {
 	signed short l_si = _AX;
@@ -1238,7 +1203,6 @@ void interrupt mouse_isr(void)
  *
  * \return 1 if the pointer is in this rectangle, otherwise 0
  */
-/* Borlandified and identical */
 signed short is_mouse_in_rect(signed short x1, signed short y1,
 				signed short x2, signed short y2)
 {
@@ -1252,7 +1216,6 @@ signed short is_mouse_in_rect(signed short x1, signed short y1,
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void mouse_init(void)
 {
 	signed short l1;
@@ -1297,7 +1260,6 @@ void disable_mouse(void)
 	}
 }
 
-/* Borlandified and identical */
 void seg002_170e(Bit8u *a1, Bit8u *a2, Bit8u *a3, Bit8u *a4)
 {
 	signed short tmp;
@@ -1308,13 +1270,11 @@ void seg002_170e(Bit8u *a1, Bit8u *a2, Bit8u *a3, Bit8u *a4)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void call_mouse_isr(void)
 {
 	mouse_isr();
 }
 
-/* Borlandified and identical */
 void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
 {
 	signed short l1;
@@ -1342,7 +1302,6 @@ void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
 #endif
 
 
-/* Borlandified and identical */
 void mouse_reset_ehandler(void)
 {
 	signed short l1;
@@ -1369,7 +1328,6 @@ void mouse_reset_ehandler(void)
  * \param x	X - coordinate
  * \param y	Y - coordinate
  */
-/* Borlandified and identical */
 void mouse_move_cursor(signed short x, signed short y)
 {
 	signed short l1 = 4;
@@ -1381,7 +1339,6 @@ void mouse_move_cursor(signed short x, signed short y)
 	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
 }
 
-/* Borlandified and identical */
 /* unused */
 void seg002_1838(signed short a1, signed short a2, signed short a3, signed short a4)
 {
@@ -1394,7 +1351,6 @@ void seg002_1838(signed short a1, signed short a2, signed short a3, signed short
 	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
 }
 
-/* Borlandified and identical */
 /* unused */
 void seg002_1880(signed short a1)
 {
@@ -1412,7 +1368,6 @@ void seg002_1880(signed short a1)
 	make_ggst_cursor - makes a mouse cursor from a selected item
 	@p:	pointer to the icon of the item
 */
-/* Borlandified and identical */
 void make_ggst_cursor(Bit8u *icon)
 {
 	signed short y;
@@ -1439,19 +1394,16 @@ void make_ggst_cursor(Bit8u *icon)
 	}
 }
 
-/* Borlandified and identical */
 void update_mouse_cursor(void)
 {
 	update_mouse_cursor1();
 }
 
-/* Borlandified and identical */
 void refresh_screen_size(void)
 {
 	refresh_screen_size1();
 }
 
-/* Borlandified and identical */
 void update_mouse_cursor1(void)
 {
 	if (ds_readw(0x2998) == 0) {
@@ -1466,7 +1418,6 @@ void update_mouse_cursor1(void)
 	}
 }
 
-/* Borlandified and identical */
 void refresh_screen_size1(void)
 {
 	/* check lock */
@@ -1504,7 +1455,6 @@ void refresh_screen_size1(void)
 	}
 }
 
-/* Borlandified and identical */
 void mouse_19dc(void)
 {
 	/* return if mouse was not moved and the cursor remains */
@@ -1529,7 +1479,6 @@ void mouse_19dc(void)
 	}
 }
 
-/* Borlandified and identical */
 void handle_gui_input(void)
 {
 #if !defined(__BORLANDC__)
@@ -1678,7 +1627,6 @@ void handle_gui_input(void)
 #endif
 }
 
-/* Borlandified and identical */
 signed short get_mouse_action(signed short x, signed short y, Bit8u *p)
 {
 	signed short i;
@@ -1698,7 +1646,6 @@ signed short get_mouse_action(signed short x, signed short y, Bit8u *p)
 	return 0;
 }
 
-/* Borlandified and identical */
 void handle_input(void)
 {
 	signed short l_si;
@@ -1784,7 +1731,6 @@ void handle_input(void)
 	ds_writew(ACTION, l_si);
 }
 
-/* Borlandified and identical */
 void wait_for_keyboard1(void)
 {
 	while (CD_bioskey(1)) {
@@ -1793,7 +1739,6 @@ void wait_for_keyboard1(void)
 	}
 }
 
-/* Borlandified and identical */
 void game_loop(void)
 {
 #if defined(__BORLANDC__)
@@ -1912,7 +1857,6 @@ void game_loop(void)
 #endif
 }
 
-/* Borlandified and identical */
 //static
 void timers_daily(void)
 {
@@ -1973,7 +1917,6 @@ void timers_daily(void)
 	}
 }
 
-/* Borlandified and identical */
 /* static */
 void seg002_2177(void)
 {
@@ -1986,7 +1929,6 @@ void seg002_2177(void)
 	}
 }
 
-/* Borlandified and identical */
 void pal_fade(Bit8u *dst, Bit8u *p2)
 {
 	signed short i;
@@ -2037,7 +1979,6 @@ void pal_fade(Bit8u *dst, Bit8u *p2)
 	}
 }
 
-/* Borlandified and identical */
 void pal_fade_in(Bit8u *dst, Bit8u *p2, signed short v3, signed short colors)
 {
 	signed short i, si;
@@ -2070,7 +2011,6 @@ void pal_fade_in(Bit8u *dst, Bit8u *p2, signed short v3, signed short colors)
  * \brief	adjusts palettes in the morning
  *
  */
-/* Borlandified and identical */
 void dawning(void)
 {
 	/* Between 6 and 7, in 64 steps */
@@ -2113,7 +2053,6 @@ void dawning(void)
  * \brief	adjusts palettes in the evening
  *
  */
-/* Borlandified and identical */
 void nightfall(void)
 {
 	/* Between 20 and 21 */
@@ -2156,7 +2095,6 @@ void nightfall(void)
  * \brief get season
  * \return number of the season {0 = WINTER, 1,2,3}
  */
-/* Borlandified and identical */
 signed short get_current_season(void)
 {
 	/* Check Winter */
@@ -2180,7 +2118,6 @@ signed short get_current_season(void)
  * If you put money on the bank, you get 5%.
  * If you borrowed money you pay 15%.
  */
-/* Borlandified and identical */
 /* static */
 void do_census(void)
 {
@@ -2227,7 +2164,6 @@ void do_census(void)
 
 }
 
-/* Borlandified and identical */
 void do_timers(void)
 {
 	Bit8u *hero_i;
@@ -2516,7 +2452,6 @@ void do_timers(void)
  * \brief	subtracts val from the ingame timers
  * \param val	vaule to subtract from the ingame timers
 */
-/* Borlandified and identical */
 void sub_ingame_timers(Bit32s val)
 {
 	signed short i = 0;
@@ -2544,7 +2479,6 @@ void sub_ingame_timers(Bit32s val)
  * \brief	subtracts val from the modification timers
  * \param val	vaule to subtract from the modification timers
 */
-/* Borlandified and identical */
 void sub_mod_timers(Bit32s val)
 {
 	signed short i;
@@ -2665,7 +2599,6 @@ void sub_mod_timers(Bit32s val)
  *
  * \return	number of the modification slot
  */
-/* Borlandified and identical */
 signed short get_free_mod_slot(void)
 {
 	signed short i;
@@ -2690,7 +2623,6 @@ signed short get_free_mod_slot(void)
 	return i;
 }
 
-/* Borlandified and identical */
 void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 	signed char mod, signed char who)
 {
@@ -2755,7 +2687,6 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
  *
  *	@fmin:	five minutes
  */
-/* Borlandified and identical */
 void seg002_2f7a(Bit32s fmin)
 {
 	signed short i;
@@ -2816,7 +2747,6 @@ void seg002_2f7a(Bit32s fmin)
  *	If the time of the lightsource is up the toch is removed from the
  *	inventory and the lantern is turned off.
 */
-/* Borlandified and identical */
 void sub_light_timers(Bit32s quarter)
 {
 	signed short j;
@@ -2882,7 +2812,6 @@ void sub_light_timers(Bit32s quarter)
  * \brief	damage if a cursed chainmail is worn
  *
  */
-/* Borlandified and identical */
 void magical_chainmail_damage(void)
 {
 	signed short i;
@@ -2917,7 +2846,6 @@ void magical_chainmail_damage(void)
  * \brief	consume food if needed and print warnings to the user
  *
  */
-/* Borlandified and identical */
 void herokeeping(void)
 {
 	register signed short i, pos;
@@ -3145,7 +3073,6 @@ void herokeeping(void)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void check_level_up(void)
 {
 	signed short i;
@@ -3179,7 +3106,6 @@ struct dummy {
 	char a[24];
 };
 
-/* Borlandified and identical */
 void seg002_37c4(void)
 {
 	signed short l_si = 0;
@@ -3331,7 +3257,6 @@ void seg002_37c4(void)
 	*(struct dummy*)(p_datseg + 0xc00d) = a;
 }
 
-/* Borlandified and identical */
 void set_and_spin_lock(void)
 {
 	ds_writew(0xbcd6, 1);
@@ -3352,7 +3277,6 @@ void set_and_spin_lock(void)
 	}
 }
 
-/* Borlandified and identical */
 void passages_recalc(void)
 {
 	signed short i;
@@ -3388,7 +3312,6 @@ void passages_recalc(void)
 	}
 }
 
-/* Borlandified and identical */
 void passages_reset(void)
 {
 	signed short i;
@@ -3417,7 +3340,6 @@ void passages_reset(void)
  * \brief	forwards the ingame time
  * \param time	ticks to forward
  */
-/* Borlandified and identical */
 void timewarp(Bit32s time)
 {
 	Bit32s i;
@@ -3474,7 +3396,6 @@ void timewarp(Bit32s time)
  * timewarp_until() -	forwards the ingame time
  * @time:	ticks to forward to e.g 6 AM
  */
-/* Borlandified and identical */
 void timewarp_until(Bit32s time)
 {
 	Bit32s i;
@@ -3533,7 +3454,6 @@ void timewarp_until(Bit32s time)
 /**
  * \brief	decrements splash timer and restores picture
 */
-/* Borlandified and identical */
 void dec_splash(void)
 {
 	signed short i;
@@ -3563,7 +3483,6 @@ void dec_splash(void)
  * \param hero_pos	on which slot the splash is drawn
  * \param type		kind of damage (0 = red,LE / !0 = yellow,AE)
 */
-/* Borlandified and identical */
 /* static */
 void draw_splash(signed short hero_pos, signed short type)
 {
@@ -3583,7 +3502,6 @@ void draw_splash(signed short hero_pos, signed short type)
 /**
  * \brief	fast forward the ingame time to midnight
  */
-/* Borlandified and identical */
 void timewarp_until_midnight(void)
 {
 	Bit32s ticks_left;
@@ -3611,7 +3529,6 @@ void timewarp_until_midnight(void)
 	ds_writew(TIMERS_DISABLED, td_bak);
 }
 
-/* Borlandified and identical */
 void wait_for_keyboard2(void)
 {
 	while (CD_bioskey(1)) {
@@ -3623,14 +3540,12 @@ void wait_for_keyboard2(void)
 }
 
 
-/* Borlandified and identical */
 /* unused */
 void seg002_4031(Bit8u *ptr)
 {
 	delay_or_keypress(150 * GUI_print_header(ptr));
 }
 
-/* Borlandified and identical */
 void wait_for_keypress(void)
 {
 	signed short si;
@@ -3670,7 +3585,6 @@ void wait_for_keypress(void)
  *
  * \param	duration	the maximal time to wait
  */
-/* Borlandified and identical */
 void delay_or_keypress(signed short duration)
 {
 	signed short done = 0;;
@@ -3743,7 +3657,6 @@ void delay_or_keypress(signed short duration)
 	}
 }
 
-/* Borlandified and identical */
 /* unused */
 void unused_delay(signed short nr)
 {
@@ -3755,7 +3668,6 @@ void unused_delay(signed short nr)
 	}
 }
 
-/* Borlandified and identical */
 /* unused */
 void unused_spinlock(void)
 {
@@ -3770,7 +3682,6 @@ void unused_spinlock(void)
  * \param v	32bit BE value
  * \return	32bit LE value
  */
-/* Borlandified and identical */
 Bit32u swap_u32(Bit32u v)
 {
 	register signed short tmp;
@@ -3787,7 +3698,6 @@ Bit32u swap_u32(Bit32u v)
 }
 
 /* unused */
-/* Borlandified and identical */
 Bit32u swap_u32_unused(Bit32u v)
 {
 	signed short a[2];
@@ -3808,7 +3718,6 @@ Bit32u swap_u32_unused(Bit32u v)
  *
  *	Returns an EMS handle, to access the memory.
  */
-/* Borlandified and identical */
 signed short alloc_EMS(Bit32s bytes)
 {
 	signed short handle;
@@ -3828,7 +3737,6 @@ signed short alloc_EMS(Bit32s bytes)
 	return 0;
 }
 
-/* Borlandified and identical */
 void from_EMS(RealPt dst, signed short handle, Bit32s bytes)
 {
 	signed short si;
@@ -3854,7 +3762,6 @@ void from_EMS(RealPt dst, signed short handle, Bit32s bytes)
 
 }
 
-/* Borlandified and identical */
 void to_EMS(signed short handle, RealPt src, Bit32s bytes)
 {
 	signed short si;
@@ -3880,7 +3787,6 @@ void to_EMS(signed short handle, RealPt src, Bit32s bytes)
 
 }
 
-/* Borlandified and identical */
 void set_to_ff(void)
 {
 	signed short i;
@@ -3895,7 +3801,6 @@ void set_to_ff(void)
  * \param icons	number of icons
  * \param ...	icon ids
  */
-/* Borlandified and identical */
 void draw_loc_icons(signed short icons, ...)
 {
 	signed short icons_bak[9];
@@ -3928,13 +3833,11 @@ void draw_loc_icons(signed short icons, ...)
 	}
 }
 
-/* Borlandified and identical */
 signed short mod_day_timer(signed short val)
 {
 	return ((ds_readds(DAY_TIMER) % val) == 0) ? 1 : 0;
 }
 
-/* Borlandified and identical */
 void draw_compass(void)
 {
 	signed short width;
@@ -3981,7 +3884,6 @@ void draw_compass(void)
 	}
 }
 
-/* Borlandified and identical */
 signed short can_merge_group(void)
 {
 	signed short i;
@@ -4018,14 +3920,12 @@ signed short can_merge_group(void)
 	return retval;
 }
 
-/* Borlandified and identical */
 signed short div16(signed short val)
 {
 	return ((unsigned char)val) >> 4;
 }
 
 /* This function is called in shops at sell/buy screens */
-/* Borlandified and identical */
 void select_with_mouse(Bit8u *p1, Bit8u *p2)
 {
 	signed short i;
@@ -4048,7 +3948,6 @@ void select_with_mouse(Bit8u *p1, Bit8u *p2)
 	}
 }
 
-/* Borlandified and identical */
 void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 {
 	signed short pos = host_readws(p1);
@@ -4102,7 +4001,6 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
  * \param x	X coordinate
  * \param y	Y coordinate
 */
-/* Borlandified and identical */
 void set_automap_tile(signed short x, signed short y)
 {
 	or_ds_bs(0xe442 + (4 * y + (x >> 3)), ds_readb(0x7d4a + (x & 0x7)));
@@ -4114,7 +4012,6 @@ void set_automap_tile(signed short x, signed short y)
  * \param x	X xoordinate
  * \param y	Y xoordinate
 */
-/* Borlandified and identical */
 void set_automap_tiles(signed short x, signed short y)
 {
 	/* set upper line */
@@ -4159,7 +4056,6 @@ void set_automap_tiles(signed short x, signed short y)
 /**
  * \brief
 */
-/* Borlandified and identical */
 void seg002_47e2(void)
 {
 	/* save gfx settings to stack */
@@ -4186,7 +4082,6 @@ void seg002_47e2(void)
 
 /**
 */
-/* Borlandified and identical */
 void seg002_484f(void)
 {
 	/* save gfx settings to stack */
@@ -4217,7 +4112,6 @@ void seg002_484f(void)
  * \return {0, 1}
  */
 /* should be static */
-/* Borlandified and identical */
 signed short check_hero(Bit8u *hero)
 {
 	if (!host_readbs(hero + 0x21) ||
@@ -4239,7 +4133,6 @@ signed short check_hero(Bit8u *hero)
  * \brief	returns true if heros not dead, stoned or unconscious
 */
 /* should be static */
-/* Borlandified and identical */
 signed short check_hero_no2(Bit8u *hero)
 {
 
@@ -4261,7 +4154,6 @@ signed short check_hero_no2(Bit8u *hero)
  * \return {0, 1}
  */
 /* should be static */
-/* Borlandified and identical */
 signed short check_hero_no3(Bit8u *hero)
 {
 	if (!host_readbs(hero + 0x21) ||
@@ -4275,7 +4167,6 @@ signed short check_hero_no3(Bit8u *hero)
 	return 1;
 }
 
-/* Borlandified and identical */
 signed short is_hero_available_in_group(Bit8u *hero)
 {
 
@@ -4291,7 +4182,6 @@ signed short is_hero_available_in_group(Bit8u *hero)
  * \param hero	the magicuser
  * \param ae	astralenergy to subtract
  */
-/* Borlandified and identical */
 void sub_ae_splash(Bit8u *hero, signed short ae)
 {
 	if (!hero_dead(hero) && (ae > 0)) {
@@ -4334,7 +4224,6 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 /**
  * \brief	add AE points to heros current AE
 */
-/* Borlandified and identical */
 void add_hero_ae(Bit8u* hero, signed short ae)
 {
 	/* dont add AE if hero is dead or ae = 0 */
@@ -4361,7 +4250,6 @@ void add_hero_ae(Bit8u* hero, signed short ae)
  * \param hero	pointer to the hero
  * \param le	LE the hero looses
  */
-/* Borlandified and identical */
 void sub_hero_le(Bit8u *hero, signed short le)
 {
 	signed short i;
@@ -4512,7 +4400,6 @@ void sub_hero_le(Bit8u *hero, signed short le)
  *
  * This functions does some magic in fights, when a hero awakes.
  */
-/* Borlandified and identical */
 void add_hero_le(Bit8u *hero, signed short le)
 {
 	signed short val_bak;
@@ -4565,7 +4452,6 @@ void add_hero_le(Bit8u *hero, signed short le)
  *
  * \param le	LE to be regenerated
  */
-/* Borlandified and identical */
 void add_group_le(signed short le)
 {
 
@@ -4591,7 +4477,6 @@ void add_group_le(signed short le)
  * \param index	the index number of the hero
  * \param type	the type of message which should be printed (0 = hunger / 1 = thirst)
  */
-/* Borlandified and identical */
 void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 {
 	/* check if the hero is dead */
@@ -4625,7 +4510,6 @@ void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 }
 
 /* unused */
-/* Borlandified and identical */
 signed short compare_name(Bit8u *name)
 {
 	signed short i;
@@ -4649,7 +4533,6 @@ signed short compare_name(Bit8u *name)
  *
  * \return the result of the test, successful if greater than zero.
  */
-/* Borlandified and identical */
 signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 {
 	signed short si = random_schick(20);
@@ -4691,7 +4574,6 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
  *
  * \return		a test is positive if the return value is greater than zero
  */
-/* Borlandified and identical */
 signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char bonus)
 {
 
@@ -4745,7 +4627,6 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 	return tmp - si + 1;
 }
 
-/* Borlandified and identical */
 signed short unused_cruft(void)
 {
 
@@ -4770,7 +4651,6 @@ signed short unused_cruft(void)
 */
 /* Original-Bug: can loop forever if the position is greater than the
 	number of heroes in the group */
-/* Borlandified and identical */
 signed short get_random_hero(void)
 {
 	signed short cur_hero;
@@ -4816,7 +4696,6 @@ signed short get_random_hero(void)
  *
  * \return	the sum of the money of all heros in the current group
 */
-/* Borlandified and identical */
 Bit32s get_party_money(void)
 {
 	signed short i;
@@ -4845,7 +4724,6 @@ Bit32s get_party_money(void)
  *	If only a NPC is in that party, he gets all the money.
  *	If a hero is dead and in the current party, his money is set to 0.
 */
-/* Borlandified and identical */
 void set_party_money(Bit32s money)
 {
 	signed short heroes = 0;
@@ -4903,7 +4781,6 @@ void set_party_money(Bit32s money)
  *
  * \param money	money to add
 */
-/* Borlandified and identical */
 void add_party_money(Bit32s money)
 {
 	set_party_money(get_party_money() + money);
@@ -4915,7 +4792,6 @@ void add_party_money(Bit32s money)
  * \param hero	pointer to the hero
  * \param ap	AP the hero should get
 */
-/* Borlandified and identical */
 void add_hero_ap(Bit8u *hero, Bit32s ap)
 {
 	add_ptr_ds(hero + 0x28, ap);
@@ -4925,7 +4801,6 @@ void add_hero_ap(Bit8u *hero, Bit32s ap)
  * \brief	shares AP in the current group
  * \param ap	AP to share
  */
-/* Borlandified and identical */
 void add_group_ap(Bit32s ap)
 {
 	signed short i;
@@ -4956,7 +4831,6 @@ void add_group_ap(Bit32s ap)
  *
  * \param ap	AP to add
 */
-/* Borlandified and identical */
 void add_hero_ap_all(signed short ap)
 {
 	Bit8u *hero_i;
@@ -4987,7 +4861,6 @@ void add_hero_ap_all(signed short ap)
  *
  * \param ap	AP to subtract
 */
-/* Borlandified and identical */
 void sub_hero_ap_all(signed short ap)
 {
 	signed short i;
@@ -5026,7 +4899,6 @@ void sub_hero_ap_all(signed short ap)
  *
  * \return	position of the hero
 */
-/* Borlandified and identical */
 signed short get_hero_index(Bit8u *hero)
 {
 	signed short i = 0;
@@ -5049,7 +4921,6 @@ signed short get_hero_index(Bit8u *hero)
  *
  * \return position of the item or -1 if the item is not in the inventory.
 */
-/* Borlandified and identical */
 signed short get_item_pos(Bit8u *hero, signed short item)
 {
 
@@ -5071,7 +4942,6 @@ signed short get_item_pos(Bit8u *hero, signed short item)
  *
  * \return position of the hero or -1 if nobody of the group has this item
 */
-/* Borlandified and identical */
 signed short get_first_hero_with_item(signed short item)
 {
 	signed short j;
@@ -5104,7 +4974,6 @@ signed short get_first_hero_with_item(signed short item)
  *
  * \return position of the hero or -1 if nobody in the specified group has this item
 */
-/* Borlandified and identical */
 signed short get_first_hero_with_item_in_group(signed short item, signed short group)
 {
 	signed short j;
@@ -5135,7 +5004,6 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
  *
  * \param le	LE to subtract
  */
-/* Borlandified and identical */
 void sub_group_le(signed short le)
 {
 	signed short i;
@@ -5158,7 +5026,6 @@ void sub_group_le(signed short le)
  *
  * \return a pointer to the first available hero. If none in available it returns a pointer to the first hero.
  */
-/* Borlandified and identical */
 RealPt get_first_hero_available_in_group(void)
 {
 	signed short i;
@@ -5184,7 +5051,6 @@ RealPt get_first_hero_available_in_group(void)
  *
  * \return a pointer to the second available hero in the group or NULL.
  */
-/* Borlandified and identical */
 RealPt get_second_hero_available_in_group(void)
 {
 	signed short i;
@@ -5215,7 +5081,6 @@ RealPt get_second_hero_available_in_group(void)
  *
  * \ return	number of available heros in all groups
  */
-/* Borlandified and identical */
 signed short count_heros_available(void)
 {
 	signed short i;
@@ -5241,7 +5106,6 @@ signed short count_heros_available(void)
 /**
  * \brief	TODO
 */
-/* Borlandified and identical */
 signed short count_heroes_available_in_group(void)
 {
 	signed short heroes = 0;
@@ -5261,7 +5125,6 @@ signed short count_heroes_available_in_group(void)
 	return heroes;
 }
 
-/* Borlandified and identical */
 void seg002_57f1(void)
 {
 	if (!count_heros_available()) {
@@ -5276,7 +5139,6 @@ void seg002_57f1(void)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 int schick_main(int argc, char** argv)
 {
 	signed short l_si;
@@ -5417,13 +5279,11 @@ int schick_main(int argc, char** argv)
 }
 #endif
 
-/* Borlandified and identical */
 RealPt schick_alloc_emu(Bit32u size)
 {
 	return (RealPt)bc_farcalloc(size, 1);
 }
 
-/* Borlandified and identical */
 signed short copy_protection(void)
 {
 	signed short i;
