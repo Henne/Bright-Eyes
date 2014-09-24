@@ -173,7 +173,7 @@ void set_party_money(Bit32s);
 void add_party_money(Bit32s);
 void add_hero_ap(Bit8u*, Bit32s);
 void add_group_ap(Bit32s);
-void add_hero_ap_all(short ap);
+void add_hero_ap_all(signed short);
 void sub_hero_ap_all(short ap);
 unsigned short get_hero_index(Bit8u* hero);
 int get_item_pos(Bit8u* hero, unsigned short item);
