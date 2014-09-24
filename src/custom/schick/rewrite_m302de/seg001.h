@@ -19,6 +19,7 @@ void CD_audio_pause();
 void CD_audio_play();
 void CD_set_track(signed short);
 void CD_check(void);
+void CD_init(void);
 
 #if !defined(__BORLANDC__)
 }

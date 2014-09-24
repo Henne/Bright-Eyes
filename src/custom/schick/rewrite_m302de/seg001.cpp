@@ -237,7 +237,12 @@ void CD_set_track(signed short index)
 
 void CD_check(void)
 {
-	/* DUMMY */
+	DUMMY_WARNING();
+}
+
+void CD_init(void)
+{
+	DUMMY_WARNING();
 }
 
 }
