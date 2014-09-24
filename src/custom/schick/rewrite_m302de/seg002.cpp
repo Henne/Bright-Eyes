@@ -5145,33 +5145,26 @@ void sub_group_le(signed short le)
 }
 
 /**
- * get_first_hero_available_in_group - return a pointer to the first available hero
+ * \brief return a pointer to the first available hero
  *
- * Returns a pointer to the first available hero in the current group.
- * If none in available it returns a pointer to the first hero
+ * \return a pointer to the first available hero. If none in available it returns a pointer to the first hero.
  */
-RealPt get_first_hero_available_in_group()
+/* Borlandified and identical */
+RealPt get_first_hero_available_in_group(void)
 {
-	RealPt hero_i;
-	unsigned short i;
-
-	hero_i = (RealPt)ds_readd(HEROS);
+	signed short i;
+	RealPt hero_i = (RealPt)ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		/* Check class */
-		if (host_readb(Real2Host(hero_i) + 0x21) == 0)
-			continue;
-		/* Check group */
-		if (host_readb(Real2Host(hero_i) + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-		/* Check dead BOGUS */
-		if (hero_dead(Real2Host(hero_i)))
-			continue;
-		/* Check if hero is available */
-		if (check_hero(Real2Host(hero_i)) == 0)
-			continue;
 
-		return hero_i;
+		/* Check class, group, deadness and check_hero() */
+		if (host_readbs(Real2Host(hero_i) + 0x21) &&
+			(host_readbs(Real2Host(hero_i) + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			!hero_dead(Real2Host(hero_i)) &&
+			check_hero(Real2Host(hero_i)))
+		{
+			return hero_i;
+		}
 	}
 
 	return (RealPt) ds_readd(HEROS);
