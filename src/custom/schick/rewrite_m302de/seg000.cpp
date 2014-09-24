@@ -10,6 +10,12 @@
 
 namespace M302de {
 
+Bit16s bc_getdisk(void)
+{
+	CALLBACK_RunRealFar(reloc_game, 0x781);
+	return reg_ax;
+}
+
 RealPt F_PADD(RealPt p, Bit32s off)
 {
 	reg_dx = RealSeg(p);

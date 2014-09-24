@@ -253,7 +253,9 @@ static int seg000(unsigned short offs) {
 		}
 		/* getdisk() */
 		case 0x781: {
-			return 0;
+			reg_ax = bc_getdisk();
+			D1_LOG("Drive %c\n", reg_ax + 'A');
+			return 1;
 		}
 		/* setdisk() */
 		case 0x79b: {

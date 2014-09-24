@@ -5,6 +5,8 @@ struct ffblk {
 	Bit8u a[44];
 };
 
+Bit16s bc_getdisk(void);
+
 RealPt F_PADD(RealPt, Bit32s);
 Bit32s F_PSUB(RealPt, RealPt);
 
@@ -62,6 +64,8 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 /* helper, use only when neccessary */
 #define struct_copy memcpy
 
+
+#define bc_getdisk getdisk
 
 #define F_PADD(p, o) ((HugePt)(p) + o)
 #define F_PSUB(p1, p2) ((HugePt)(p1) - (HugePt)(p2))
