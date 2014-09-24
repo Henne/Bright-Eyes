@@ -4901,11 +4901,15 @@ void add_party_money(Bit32s money)
 }
 
 /**
-	add_hero_ap - add AP
+ * \brief	add AP to a hero
+ *
+ * \param hero	pointer to the hero
+ * \param ap	AP the hero should get
 */
+/* Borlandified and identical */
 void add_hero_ap(Bit8u *hero, Bit32s ap)
 {
-	host_writed(hero+0x28, host_readd(hero+0x28) + ap);
+	add_ptr_ds(hero + 0x28, ap);
 }
 
 /**
