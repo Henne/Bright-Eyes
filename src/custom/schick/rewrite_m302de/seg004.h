@@ -26,7 +26,7 @@ void draw_wallclock(signed short, signed short);
 void array_add(Bit8u*, signed short, signed short, signed short);
 void schick_set_video(void);
 void schick_reset_video(void);
-void clear_ani_pal();
+void clear_ani_pal(void);
 void set_ani_pal(Bit8u*);
 void do_h_line(RealPt, unsigned short, unsigned short, unsigned short, char);
 void do_v_line(RealPt, unsigned short, unsigned short, unsigned short, char);

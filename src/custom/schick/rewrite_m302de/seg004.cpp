@@ -930,14 +930,18 @@ void schick_reset_video(void)
 	set_video_page(ds_readws(0xd30b));
 }
 
-void clear_ani_pal()
-{
-	Bit8u pal[0x60];
+struct dummy4 {
+	char a[0x60];
+};
 
-	struct_copy(pal, p_datseg + 0x4b06, 0x60);
+/* Borlandified and identical */
+void clear_ani_pal(void)
+{
+	struct dummy4 pal = *(struct dummy4*)(p_datseg + 0x4b06);
 
 	wait_for_vsync();
-	set_palette(pal, 0, 0x20);
+
+	set_palette((Bit8u*)&pal, 0, 0x20);
 }
 
 void set_ani_pal(Bit8u *pal)
