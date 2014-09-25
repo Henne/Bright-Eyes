@@ -1107,8 +1107,10 @@ void do_save_rect(void)
 	save_rect(dst, src, width, height);
 }
 
-void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned short color) {
-	unsigned short width, height;
+/* Borlandified and identical */
+void do_fill_rect(RealPt dst, signed short x, signed short y, signed short w, signed short h, signed short color)
+{
+	signed short width, height;
 
 	width = w - x + 1;
 	height = h - y + 1;
@@ -1116,7 +1118,7 @@ void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short
 	dst += y * 320 + x;
 
 	update_mouse_cursor();
-	fill_rect(dst, (unsigned char)color, width, height);
+	fill_rect(dst, color, width, height);
 	refresh_screen_size();
 }
 
