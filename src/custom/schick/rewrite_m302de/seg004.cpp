@@ -1053,13 +1053,15 @@ void do_border(RealPt dst, signed short x1, signed short y1, signed short x2, si
 	refresh_screen_size();
 }
 
-void do_pic_copy(unsigned short mode) {
+/* Borlandified and identical */
+void do_pic_copy(unsigned short mode)
+{
+	short x1, y1;
 	short x2, y2;
 	short v1, v2, v3, v4;
 	short width, height;
 	Bit8u *src;
 	RealPt dst;
-	short x1, y1;
 
 	x1 = ds_readw(0xc011);
 	y1 = ds_readw(0xc013);
