@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 8/15
+ *	Functions rewritten: 9/15
  */
 
 #include <string.h>
@@ -16,9 +16,11 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg049.h"
 #include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg103.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -84,6 +86,105 @@ void show_citizen(void)
 	set_var_to_zero();
 	copy_palette();
 	turnaround();
+}
+
+/**
+ * \brief	break into a house
+ */
+/* Borlandified and identical */
+void do_house(void)
+{
+	signed short i;
+	signed short l_di;
+	Bit8u *hero;
+
+	/* prepare the question */
+	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(4 * ds_readws(CITYINDEX)));
+
+	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x9bc));
+
+	ds_writew(0xe5ac, 1);
+
+	if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
+
+		/* break into the house */
+
+		set_var_to_zero();
+		load_ani(10);
+		init_ani(0);
+
+		/* print a randomized text */
+		GUI_output(get_ltx(4 * (random_schick(8) + 623)));
+
+		hero = get_hero(0);
+
+		for (i = 0; i < 6; i++, hero += 0x6da) {
+
+			if ((host_readbs(hero + 0x21) != 0) &&
+				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				!hero_dead(hero) &&
+				(test_skill(hero, 17, -2) <= 0))
+			{
+				/* every hero must pass a sneak -2 test */
+
+				i = ds_readbs(CURRENT_TOWN);
+
+				if ((i == 1) || (i == 39) || (i == 18) || (i == 17)) {
+
+					/* sneak test failed in a town with guards */
+
+					GUI_output(get_ltx(0x9e0));
+
+					l_di = 0;
+
+					for (i = 0; i < 6; i++) {
+
+						hero = get_hero(i);
+
+						if (check_hero(hero) && !host_readbs(hero + 0x9f)) {
+							l_di = 1;
+						}
+					}
+
+					if ((ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) < ds_readbs(0x2d3c)) && l_di)
+					{
+						i = 0;
+
+						while (host_readbs(get_hero(i) + 0x87) == ds_readbs(CURRENT_GROUP))
+						{
+							/* imprison hero */
+							host_writeb(get_hero(i) + 0x9f, 1);
+							i++;
+						}
+
+						GRP_switch_to_next(1);
+
+					} else {
+
+						if (ds_readds(DAY_TIMER) < HOURS(6)) {
+							/* before 6:00 turn clock to 0:00 */
+							timewarp_until(0);
+						}
+
+						timewarp_until(HOURS(6));
+
+						GUI_output(get_ltx(0x9e4));
+					}
+				}
+				break;
+			}
+		}
+
+		set_var_to_zero();
+
+		turnaround();
+
+	} else {
+		ds_writeb(LOCATION, ds_readb(0x2d9f));
+		ds_writew(X_TARGET, ds_readw(0x2d83));
+		ds_writew(Y_TARGET, ds_readw(0x2d85));
+	}
+
 }
 
 /* 0x483 */

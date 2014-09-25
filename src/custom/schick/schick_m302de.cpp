@@ -2971,7 +2971,9 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x48: {
-		return 0;
+		D1_LOG("do_house();\n");
+		do_house();
+		return 1;
 	}
 	case 0x4d: {
 		return 0;

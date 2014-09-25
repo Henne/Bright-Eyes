@@ -13,6 +13,8 @@ void show_entrance(void);
 void show_citizen(void);
 /* 0x43 */
 signed short show_storytext(void);
+/* 0x48 */
+void do_house(void);
 /* 0x52 */
 void enter_map(void);
 /* 0x61 */
