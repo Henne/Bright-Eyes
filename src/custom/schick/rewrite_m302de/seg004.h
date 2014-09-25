@@ -24,7 +24,7 @@ void load_objects_nvf(void);
 void update_wallclock(void);
 void draw_wallclock(signed short, signed short);
 void array_add(Bit8u*, signed short, signed short, signed short);
-void schick_set_video();
+void schick_set_video(void);
 void schick_reset_video();
 void clear_ani_pal();
 void set_ani_pal(Bit8u*);

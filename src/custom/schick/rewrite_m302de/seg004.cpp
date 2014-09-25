@@ -910,13 +910,17 @@ void array_add(Bit8u *dst, signed short len, signed short op, signed short flag)
 	}
 }
 
-void schick_set_video()
-{
-	Bit8u pal_black[3];
+struct dummy3 {
+	char a[3];
+};
 
-	struct_copy(pal_black, p_datseg + 0x4b03, 3);
+/* Borlandified and identical */
+void schick_set_video(void)
+{
+	struct dummy3 pal_black = *(struct dummy3*)(p_datseg + 0x4b03);;
+
 	set_video_mode(0x13);
-	set_color(pal_black, 0xff);
+	set_color((Bit8u*)&pal_black, 0xff);
 }
 
 void schick_reset_video() {
