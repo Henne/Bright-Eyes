@@ -54,7 +54,7 @@ void draw_h_line(RealPt ptr, unsigned short count, signed short color) {
 		mem_writeb(Real2Phys(ptr) + i, color);
 }
 
-void draw_h_spaced_dots(RealPt ptr, unsigned short count, unsigned char color, unsigned short space) {
+void draw_h_spaced_dots(RealPt ptr, signed short count, signed short color, signed short space) {
 	unsigned short i;
 
 	for (i = 0; i < count; i++) {

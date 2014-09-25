@@ -1020,9 +1020,11 @@ void do_h_line(RealPt ptr, signed short x1, signed short x2, signed short y, sig
 	draw_h_line(dst, count, color);
 }
 
-void do_v_line(RealPt ptr, unsigned short y, unsigned short x1, unsigned short x2, char color) {
-
-	unsigned short count, tmp;
+/* Borlandified and identical */
+void do_v_line(RealPt ptr, signed short y, signed short x1, signed short x2, signed char color)
+{
+	signed short tmp;
+	signed short count;
 	RealPt dst;
 
 	if (x1 == x2)
