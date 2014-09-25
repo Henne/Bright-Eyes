@@ -61,6 +61,8 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #include <CONIO.H>
 #include <TIME.H>
 
+#define RealSeg(p) FP_SEG(p)
+#define RealOff(p) FP_OFF(p)
 #define RealMake(s, o) MK_FP(s, o)
 #define PhysMake(s, o) RealMake(s, o)
 
