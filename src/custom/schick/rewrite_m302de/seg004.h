@@ -14,7 +14,7 @@ void clear_ani(void);
 void interrupt timer_isr(void);
 #endif
 void update_status_bars(void);
-void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode);
+void draw_bar(unsigned short, signed short, signed short, signed short, signed short);
 void restore_rect(RealPt, Bit8u*, unsigned short, unsigned short, char, char);
 void restore_rect_rle(RealPt, Bit8u*, unsigned short, unsigned short, char, char, unsigned short);
 void draw_mouse_cursor();

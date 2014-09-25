@@ -465,20 +465,26 @@ void update_status_bars(void)
 }
 
 /**
-	draw_bar - draws a bar to visualize LE or AE
-	@type:		0 = LE / 1 = AE
-	@hero:		number of hero when mode is zero
-	@pts_cur:	current points
-	@pts_max:	maximum points
-	@mode:		0 on game mask, 1 in fight
-
+ * \brief	draws a bar to visualize LE or AE
+ *
+ * \param type		type of bar, 0 = LE / 1 = AE
+ * \param hero		number of hero when mode is zero
+ * \param pts_cur	current points
+ * \param pts_max	maximum points
+ * \param mode		0 on game mask, 1 in fight
+*/
+/* Remark:
 	It should be used, either hero or mode is zero,
 	since in fight mode only the active hero is shown.
 */
-void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode) {
+/* Borlandified and identical */
+void draw_bar(unsigned short type, signed short hero, signed short pts_cur, signed short pts_max, signed short mode)
+{
+	signed short i;
+	signed short y_min;
+	signed short x;
+	signed short lost;
 	RealPt dst;
-	unsigned short x, lost;
-	unsigned short i, y_min;
 
 	if (mode == 0)
 		update_mouse_cursor();
@@ -495,31 +501,42 @@ void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, 
 
 	if (pts_cur == 0) {
 		/* draw 4 black vertical lines */
-		for (i = 0; i < 3; i++)
+		for (i = 0; i < 3; i++) {
 			do_v_line(dst, x + i, y_min - 30, y_min, 0);
-	} else
+		}
+	} else {
 		if (pts_cur == pts_max) {
 			/* draw 4 full lines in the color of the type */
-			for (i = 0; i < 3; i++)
+			for (i = 0; i < 3; i++) {
 				do_v_line(dst, x + i, y_min - 30, y_min,
 					ds_readb(0x4a94 + type * 2));
+			}
 		} else {
-			lost = 30 * pts_cur / pts_max;
+			lost = 30;
+			lost *= pts_cur;
+			lost /= pts_max;
 
-			if (lost == 0)
-				lost++;
+			if (lost == 0) {
+				lost = 1;
+			}
+
 			/* draw visible part */
-			for (i = 0; i < 3; i++)
+			for (i = 0; i < 3; i++) {
 				do_v_line(dst, x + i, y_min - lost, y_min,
 					ds_readb(0x4a94 + type * 2));
+			}
+
 			/* draw black part */
-			for (i = 0; i < 3; i++)
+			for (i = 0; i < 3; i++) {
 				do_v_line(dst, x + i, y_min - 30,
 					y_min - lost - 1, 0);
+			}
 		}
+	}
 
-	if (mode == 0)
+	if (mode == 0) {
 		refresh_screen_size();
+	}
 }
 
 void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, char n, char m) {
