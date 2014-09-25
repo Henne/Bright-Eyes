@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 30/38
+	Functions rewritten: 36/38
 */
 
 #if !defined(__BORLANDC__)
@@ -950,6 +950,53 @@ void set_ani_pal(Bit8u *pal)
 	wait_for_vsync();
 	set_palette(pal, 0, 0x20);
 }
+
+#if defined(__BORLANDC__)
+/* a bunch of EGA routines */
+
+/* Borlandified and identical */
+void unused_ega1(unsigned char a)
+{
+	outportb(0x3ce, 5);
+	outportb(0x3cf, a);
+}
+
+/* Borlandified and identical */
+void unused_ega2(unsigned char a)
+{
+	outportb(0x3c4, 2);
+	outportb(0x3c5, a);
+}
+
+/* Borlandified and identical */
+void unused_ega3(unsigned char a)
+{
+	outportb(0x3ce, 0);
+	outportb(0x3cf, a);
+}
+
+/* Borlandified and identical */
+void unused_ega4(unsigned char a)
+{
+	outportb(0x3ce, 1);
+	outportb(0x3cf, a);
+}
+
+/* Borlandified and identical */
+void unused_ega5(unsigned char a)
+{
+	outportb(0x3ce, 4);
+	outportb(0x3cf, a);
+}
+
+/* Borlandified and identical */
+void unused_ega6(unsigned char a)
+{
+	outportb(0x3ce, 8);
+	outportb(0x3cf, a);
+}
+
+#endif
 
 void do_h_line(RealPt ptr, unsigned short x1, unsigned short x2, unsigned short y, char color) {
 
