@@ -206,23 +206,25 @@ void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
 	}
 }
 
-void save_rect(RealPt src, RealPt dest, unsigned short width, unsigned short height) {
+void save_rect(Bit16u seg, Bit16u off, RealPt dest, unsigned short width, unsigned short height)
+{
 	for (; height; height--) {
-		mem_memcpy(Real2Phys(dest), Real2Phys(src), width);
-		src += 320;
+		mem_memcpy(Real2Phys(dest), Real2Phys(RealMake(seg, off)), width);
+		off += 320;
 		dest += width;
 	}
 }
 
-void fill_rect(RealPt ptr, signed short color, signed short width, signed short height) {
+void fill_rect(Bit16u seg, Bit16u off, signed short color, signed short width, signed short height)
+{
 	unsigned short x;
 
 	for (; height; height--) {
 		for (x = 0; x < width; x++) {
-			mem_writeb(Real2Phys(ptr++) , color);
+			mem_writeb(Real2Phys(RealMake(seg, off++)) , color);
 		}
 
-		ptr += 320 - width;
+		off += 320 - width;
 	}
 }
 

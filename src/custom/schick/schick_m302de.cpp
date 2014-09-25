@@ -2471,11 +2471,8 @@ static int seg008(unsigned short offs) {
 		CPU_Push16(width);
 		CPU_Push32(dst);
 		CPU_Push32(rptr);
-		/* Seg and Off are swapped */
 
-		rptr = (rptr >> 16) | (rptr << 16);
-
-		save_rect(rptr, dst, width, height);
+		save_rect(RealSeg(rptr), RealOff(rptr), dst, width, height);
 
 		if (RealSeg(rptr) == 0xa000)
 			D1_GFX("save_rect(X=%u,Y=%u,dst=0x%04x:0x%04x,width=%u, height=%u)\n",
@@ -2499,10 +2496,7 @@ static int seg008(unsigned short offs) {
 		CPU_Push16(color);
 		CPU_Push32(rptr);
 
-		/* Seg and Off are swapped */
-		rptr = (rptr >> 16) | (rptr << 16);
-
-		fill_rect(rptr, (unsigned char)color, width, height);
+		fill_rect(RealSeg(rptr), RealOff(rptr), color, width, height);
 
 		if (RealSeg(rptr) == 0xa000)
 

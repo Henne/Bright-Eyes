@@ -1104,7 +1104,7 @@ void do_save_rect(void)
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	save_rect(dst, src, width, height);
+	save_rect(RealSeg(dst), RealOff(dst), src, width, height);
 }
 
 /* Borlandified and identical */
@@ -1118,7 +1118,7 @@ void do_fill_rect(RealPt dst, signed short x, signed short y, signed short w, si
 	dst += y * 320 + x;
 
 	update_mouse_cursor();
-	fill_rect(dst, color, width, height);
+	fill_rect(RealSeg(dst), RealOff(dst), color, width, height);
 	refresh_screen_size();
 }
 
