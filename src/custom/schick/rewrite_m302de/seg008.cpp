@@ -214,7 +214,7 @@ void save_rect(RealPt src, RealPt dest, unsigned short width, unsigned short hei
 	}
 }
 
-void fill_rect(RealPt ptr, unsigned char color, unsigned short width, unsigned short height) {
+void fill_rect(RealPt ptr, signed short color, signed short width, signed short height) {
 	unsigned short x;
 
 	for (; height; height--) {

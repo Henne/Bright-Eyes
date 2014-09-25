@@ -18,7 +18,7 @@ void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
         Bit8u *src, unsigned short mode);
 
 void save_rect(RealPt src, RealPt dest, unsigned short width, unsigned short height);
-void fill_rect(RealPt ptr, unsigned char color, unsigned short width, unsigned short height);
+void fill_rect(RealPt ptr, signed short, signed short, signed short);
 void copy_solid_permuted(Bit8u *dst, Bit8u *src, unsigned short width_to_copy,
 	unsigned short height, unsigned short dst_width,
 	unsigned short src_width, unsigned short solid);
