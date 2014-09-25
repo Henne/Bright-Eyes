@@ -47,7 +47,7 @@ void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors){
 			ptr[i*3], ptr[i*3+1], ptr[i*3+2]);
 }
 
-void draw_h_line(RealPt ptr, unsigned short count, unsigned char color) {
+void draw_h_line(RealPt ptr, unsigned short count, signed short color) {
 	unsigned short i;
 
 	for (i = 0; i < count; i++)

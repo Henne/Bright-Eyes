@@ -8,7 +8,7 @@ void set_video_page(signed short);
 void save_display_stat(RealPt);
 void set_color(Bit8u *ptr, unsigned char color);
 void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors);
-void draw_h_line(RealPt, unsigned short, unsigned char);
+void draw_h_line(RealPt, unsigned short, signed short);
 void draw_h_spaced_dots(RealPt, unsigned short, unsigned char, unsigned short);
 
 void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
