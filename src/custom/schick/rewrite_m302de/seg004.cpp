@@ -886,23 +886,27 @@ void draw_wallclock(signed short pos, signed short night)
 }
 
 /**
-	array_add - adds op to each element of an array
-	@dst:	pointer to array
-	@len:	length of array
-	@op:	operator
-	@flag:	if 2, op will not be added if array element is 0
+ * \brief	adds op to each element of an array
+ *
+ * \param dst	pointer to array
+ * \param len	length of array
+ * \param op	operator
+ * \param flag	if 2, op will not be added if array element is 0
 */
-void array_add(Bit8u *dst, unsigned short len, unsigned char op, unsigned short flag) {
-	unsigned short i;
-	char tmp;
+/* Borlandified and identical */
+void array_add(Bit8u *dst, signed short len, signed short op, signed short flag)
+{
+	signed short i;
 
 	for (i = 0; i < len; i++) {
-		tmp = host_readb(dst + i);
 
-		if (flag == 2 && !tmp)
-			continue;
-
-		host_writeb(dst + i, tmp + op);
+		if (flag == 2) {
+			if (host_readb(dst + i) != 0) {
+				add_ptr_bs(dst + i, op);
+			}
+		} else {
+			add_ptr_bs(dst + i, op);
+		}
 	}
 }
 
