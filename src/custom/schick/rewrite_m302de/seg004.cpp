@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 28/38
+	Functions rewritten: 29/38
 */
 
 #if !defined(__BORLANDC__)
@@ -203,7 +203,7 @@ void interrupt timer_isr(void)
 		do_timers();
 	}
 
-	seg004_045b();
+	update_status_bars();
 	seg002_37c4();
 	seg004_0e31();
 	dec_splash();
@@ -318,14 +318,150 @@ void unused_gfx_spinlock(void)
 }
 #endif
 
-void seg004_045b(void)
+/* Borlandified and identical */
+void update_status_bars(void)
 {
-	DUMMY_WARNING();
-}
+	signed short i;
+	Bit8u *hero;
 
-void seg004_0e31(void)
-{
-	DUMMY_WARNING();
+	ds_writew(0xc3c9, 0);
+
+	if (ds_readw(0xc3cb) != 0) {
+
+		if (ds_readbs(0x2845) == 20) {
+			/* in the status menu */
+
+			hero = get_hero(ds_readws(0x2c9d));
+
+			/* adjust hunger to 100% */
+			if (host_readbs(hero + 0x7f) >= 100) {
+				host_writeb(hero + 0x7f, ds_writeb(0x2c9f, 100));
+			}
+
+			/* adjust thirst to 100% */
+			if (host_readbs(hero + 0x80) >= 100) {
+				host_writeb(hero + 0x80, ds_writeb(0x2ca0, 100));
+			}
+
+			/* hunger and thirst are at 100% */
+			if ((ds_readbs(0x2c9f) == 100) && (ds_readbs(0x2ca0) == 100)) {
+				ds_writeb(0x4a9a, ds_readbs(0x4a9c));
+				ds_writeb(0x4a9b, ds_readbs(0x4a9d));
+			}
+
+#if !defined(__BORLANDC__)
+			CPU_CLI();
+#else
+			asm { cli };
+#endif
+
+			if (ds_readbs(0x2c9f) == 100) {
+
+				if (inc_ds_bs_post(0x4a9a) == 25) {
+
+					xor_ds_bs(0x4a9b, 1);
+
+					update_mouse_cursor();
+
+					for (i = 0; i < 6; i++) {
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 36, ds_readb(0x4a9b) ? 9 : 10);
+					}
+
+					refresh_screen_size();
+
+					ds_writeb(0x4a9a, 0);
+				}
+
+			} else if (host_readbs(hero + 0x7f) != ds_readbs(0x2c9f)) {
+
+				ds_writeb(0x2c9f, host_readbs(hero + 0x7f));
+
+				update_mouse_cursor();
+
+				for (i = 0; i < 6; i++) {
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(0x2c9f) / 2 + 260, i + 36, 9);
+						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(0x2c9f) / 2 + 260, 310, i + 36, 10);
+				}
+
+				refresh_screen_size();
+			}
+
+			if (ds_readbs(0x2ca0) == 100) {
+
+				if (inc_ds_bs_post(0x4a9c) == 25) {
+
+					xor_ds_bs(0x4a9d, 1);
+
+					update_mouse_cursor();
+
+					for (i = 0; i < 6; i++) {
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 43, ds_readb(0x4a9d) ? 11 : 12);
+					}
+
+					refresh_screen_size();
+
+					ds_writeb(0x4a9c, 0);
+				}
+
+			} else if (host_readbs(hero + 0x80) != ds_readbs(0x2ca0)) {
+
+				ds_writeb(0x2ca0, host_readbs(hero + 0x80));
+
+				update_mouse_cursor();
+
+				for (i = 0; i < 6; i++) {
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(0x2ca0) / 2 + 260, i + 43, 11);
+						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(0x2ca0) / 2 + 260, 310, i + 43, 12);
+				}
+
+				refresh_screen_size();
+			}
+
+#if !defined(__BORLANDC__)
+			CPU_STI();
+#else
+			asm { sti };
+#endif
+		} else if (ds_readbs(0x2845) == 0) {
+			/* in the screen with the playmask */
+
+			for (i = 0; i <= 6; i++) {
+
+				if (host_readbs(get_hero(i) + 0x21) != 0) {
+
+					hero = get_hero(i);
+
+					/* draw LE bars */
+					if ((ds_readws(0x2c1a + 8 * i) != host_readws(hero + 0x60)) ||
+						(ds_readws(0x2c18 + 8 * i) != host_readws(hero + 0x5e)))
+					{
+						draw_bar(0, i, host_readws(hero + 0x60), host_readws(hero + 0x5e), 0);
+						ds_writew(0x2c18 + 8 * i, host_readws(hero + 0x5e));
+						ds_writew(0x2c1a + 8 * i, host_readws(hero + 0x60));
+					}
+
+					/* draw AE bars */
+					if ((ds_readws(0x2c1e + 8 * i) != host_readws(hero + 0x64)) ||
+						(ds_readws(0x2c1c + 8 * i) != host_readws(hero + 0x62)))
+					{
+						draw_bar(1, i, host_readws(hero + 0x64), host_readws(hero + 0x62), 0);
+						ds_writew(0x2c1c + 8 * i, host_readws(hero + 0x62));
+						ds_writew(0x2c1e + 8 * i, host_readws(hero + 0x64));
+					}
+				} else {
+					if (ds_readws(0x2c18 + 8 * i) != 0) {
+						draw_bar(0, i, 0, 0, 0);
+						ds_writew(0x2c18 + 8 * i, ds_writew(0x2c1a + 8 * i, 0));
+					}
+
+					if (ds_readws(0x2c1c + 8 * i) != 0) {
+						draw_bar(1, i, 0, 0, 0);
+						ds_writew(0x2c1c + 8 * i, ds_writew(0x2c1e + 8 * i, 0));
+					}
+				}
+			}
+		}
+	}
 }
 
 /**
@@ -506,6 +642,11 @@ void restore_mouse_bg() {
 		for (j = 0; j < v3; j++)
 			mem_writeb(dst + j, ds_readb(0xcf0f + si*16 + j));
 
+}
+
+void seg004_0e31(void)
+{
+	DUMMY_WARNING();
 }
 
 void load_objects_nvf(void)

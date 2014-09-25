@@ -1794,7 +1794,9 @@ static int seg004(unsigned short offs) {
 		return 0;
 	}
 	case 0x54b: {
-		return 0;
+		D1_LOG("far update_status_bars()\n");
+		update_status_bars();
+		return 1;
 	}
 	case 0x8e9: {
 		unsigned short v1 = CPU_Pop16();
@@ -7315,7 +7317,10 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0x54b: {
-			return 0;
+			CPU_Pop16();
+			D1_LOG("near update_status_bars()\n");
+			update_status_bars();
+			return 1;
 		}
 		case 0x8e9: {
 			CPU_Pop16();

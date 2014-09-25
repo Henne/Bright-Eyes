@@ -13,14 +13,14 @@ void clear_ani(void);
 #if defined(__BORLANDC__)
 void interrupt timer_isr(void);
 #endif
-void seg004_045b(void);
-void seg004_0e31(void);
+void update_status_bars(void);
 void draw_bar(unsigned short type, unsigned short hero, unsigned short pts_cur, unsigned short pts_max, unsigned short mode);
 void restore_rect(RealPt, Bit8u*, unsigned short, unsigned short, char, char);
 void restore_rect_rle(RealPt, Bit8u*, unsigned short, unsigned short, char, char, unsigned short);
 void draw_mouse_cursor();
 void save_mouse_bg();
 void restore_mouse_bg();
+void seg004_0e31(void);
 void load_objects_nvf(void);
 void draw_wallclock(signed short, signed short);
 void array_add(Bit8u*, unsigned short, unsigned char, unsigned short);
