@@ -1152,43 +1152,47 @@ void wait_for_vsync(void)
 }
 
 /**
- * map_effect() - the snow effect for the map screen
- * @src:	pointer to a picture
+ * \brief	the snow effect for the map screen
+ * \src:	pointer to a picture
  *
  */
 void map_effect(Bit8u *src)
 {
+	unsigned short si;
+	unsigned short i;
+	signed short seed;
 	signed short bak;
-	unsigned short seed;
-	unsigned short si, i;
 
 	seed = 0;
 
-	bak = ds_readw(0xe113);
+	bak = ds_readws(0xe113);
 	ds_writew(0xe113, 0);
 
 	wait_for_vsync();
+
 	update_mouse_cursor();
 
-	i = 0;
-	while (i < 64000) {
-		si = (seed * 17 + 87) & 0xffff;
-		seed = si;
+	for (i = 0; i < 64000; i++) {
 
-		if (si >= 64000)
-			continue;
+		do {
+			si = (seed * 17 + 87) & 0xffff;
+
+			seed = si;
+
+		} while (si >= 64000);
+
 
 		mem_writeb(Real2Phys(ds_readd(0xd2ff)) + si, host_readb(src + si));
-		i++;
 
-/* this too fast now, we slow it down a bit */
-#if 1
-		if ((i & 0x3ff) == 0x3ff)
+#ifdef M302de_SPEEDFIX
+		/* this too fast,  we slow it down a bit */
+		if ((i & 0x1ff) == 0x1ff)
 			wait_for_vsync();
 #endif
 	}
 
 	refresh_screen_size();
+
 	ds_writew(0xe113, bak);
 }
 
