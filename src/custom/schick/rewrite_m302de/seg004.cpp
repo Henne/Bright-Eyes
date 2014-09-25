@@ -923,9 +923,11 @@ void schick_set_video(void)
 	set_color((Bit8u*)&pal_black, 0xff);
 }
 
-void schick_reset_video() {
-	set_video_mode((signed char)ds_readw(0xd30d));
-	set_video_page((signed char)ds_readw(0xd30b));
+/* Borlandified and identical */
+void schick_reset_video(void)
+{
+	set_video_mode(ds_readws(0xd30d));
+	set_video_page(ds_readws(0xd30b));
 }
 
 void clear_ani_pal()
