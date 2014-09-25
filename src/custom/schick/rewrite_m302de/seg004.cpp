@@ -563,14 +563,22 @@ void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, si
 	refresh_screen_size();
 }
 
-void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, char width, char height, unsigned short v1) {
-	unsigned short i, si, di;
-	unsigned char c, cnt, tmp;
+/* Borlandified and identical */
+void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, signed char width, signed char height, unsigned short v1)
+{
+	signed short si;
+	signed short di;
+	signed short i;
+	signed char c;
+	unsigned char cnt;
+	signed char tmp;
+	PhysPt p = Real2Phys(dst);
 
-	dst += y * 320 + x;
+	p += y * 320 + x;
 	update_mouse_cursor();
 
-	for (i = 0; i < height; dst += 320, i++) {
+	for (i = 0; i < height; p += 320, i++) {
+
 		si = 0;
 		while (si < width) {
 			if ((c = *src++) == 0x7f) {
@@ -578,15 +586,16 @@ void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y
 				tmp = *src++;
 				if (tmp || v1 != 2)
 					for (di = 0; di < cnt; di++)
-						mem_writeb(Real2Phys(dst) + si + di, tmp);
+						mem_writeb(p + si + di, tmp);
 				si += cnt;
 				continue;
 			}
 			if (c || v1 != 2)
-				mem_writeb(Real2Phys(dst) + si, c);
+				mem_writeb(p + si, c);
 			si++;
 		}
 	}
+
 	refresh_screen_size();
 }
 
