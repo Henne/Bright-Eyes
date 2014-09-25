@@ -21,12 +21,12 @@ unsigned short swap_u16(unsigned short val) {
 	return (val << 8) | (val >> 8);
 }
 
-void set_video_mode(unsigned char mode) {
+void set_video_mode(signed short mode) {
 	INT10_SetVideoMode(mode);
 }
 
-void set_video_page(unsigned char mode) {
-	INT10_SetActivePage(mode);
+void set_video_page(signed short page) {
+	INT10_SetActivePage(page);
 }
 
 void save_display_stat(RealPt p)
