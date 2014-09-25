@@ -154,12 +154,11 @@ void clear_ani(void)
 	 }
 }
 
-#if defined(__BORLANDC__)
-
 struct dummy {
 	char a[24];
 };
 
+#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void interrupt timer_isr(void)
 {
@@ -774,25 +773,30 @@ void update_wallclock(void)
 	}
 }
 
+struct dummy2 {
+	char a[8];
+};
+
 /**
- * draw_wallclock() - draws day-  and nighttime
- * @pos:	position
- * @night:	0 = day / 1 = night
+ * \brief	draws the clock in day- or nighttime
+ *
+ * \param pos	position of the sun/moon
+ * \param night	0 = day / 1 = night
  *
  */
+/* Borlandified and identical */
 void draw_wallclock(signed short pos, signed short night)
 {
-	Bit8u gfx_bak[24];
-	Bit8u fullscreen_bak[8];
-	signed short mouse_updated;
 	signed short y;
+	signed short mouse_updated;
+	struct dummy2 fullscreen_bak;
+	struct dummy gfx_bak;
 
 	mouse_updated = 0;
 
 	/* make backups */
-	struct_copy(gfx_bak, p_datseg + 0xc00d, 0x18);
-
-	struct_copy(fullscreen_bak, p_datseg + 0x2990, 8);
+	gfx_bak = *(struct dummy*)(p_datseg + 0xc00d);
+	fullscreen_bak = *(struct dummy2*)(p_datseg + 0x2990);
 
 	/* set pointer */
 	ds_writed(0xc00d, ds_readd(0xd2ff));
@@ -800,35 +804,35 @@ void draw_wallclock(signed short pos, signed short night)
 
 	/* calculate y value */
 	/* Original-Bug: off-by-one with pos > 80 */
-	y = ds_readw(WALLCLOCK_Y) + (signed char)ds_readb(0x4aa0 + pos);
+	y = ds_readws(WALLCLOCK_Y) + ds_readbs(0x4aa0 + pos);
 
 	/* calculate x value */
-	pos = pos + ds_readw(WALLCLOCK_X) - 2;
+	pos += ds_readws(WALLCLOCK_X) - 2;
 
 	/* set window */
-	ds_writew(0x2990, ds_readw(WALLCLOCK_Y));
-	ds_writew(0x2992, ds_readw(WALLCLOCK_X));
-	ds_writew(0x2994, ds_readw(WALLCLOCK_Y) + 22);
-	ds_writew(0x2996, ds_readw(WALLCLOCK_X) + 78);
+	ds_writew(0x2990, ds_readws(WALLCLOCK_Y));
+	ds_writew(0x2992, ds_readws(WALLCLOCK_X));
+	ds_writew(0x2994, ds_readws(WALLCLOCK_Y) + 22);
+	ds_writew(0x2996, ds_readws(WALLCLOCK_X) + 78);
 
 	/* set palette (night/day) */
-	set_palette(p_datseg + (!night ? 0x4af1 : 0x4afa), 0xfa, 3);
+	set_palette((!night ? (p_datseg + 0x4af1) : (p_datseg + 0x4afa)), 0xfa, 3);
 
 	/* check if mouse is in that window */
-	if (is_mouse_in_rect(ds_readw(WALLCLOCK_X) - 6,
-				ds_readw(WALLCLOCK_Y) - 6,
-				ds_readw(WALLCLOCK_X) + 85,
-				ds_readw(WALLCLOCK_Y) + 28)) {
+	if (is_mouse_in_rect(ds_readws(WALLCLOCK_X) - 6,
+				ds_readws(WALLCLOCK_Y) - 6,
+				ds_readws(WALLCLOCK_X) + 85,
+				ds_readws(WALLCLOCK_Y) + 28)) {
 
 			update_mouse_cursor();
 			mouse_updated = 1;
 	}
 
 	/* set coordinates */
-	ds_writew(0xc011, ds_readw(WALLCLOCK_X));
-	ds_writew(0xc013, ds_readw(WALLCLOCK_Y));
-	ds_writew(0xc015, ds_readw(WALLCLOCK_X) + 78);
-	ds_writew(0xc017, ds_readw(WALLCLOCK_Y) + 20);
+	ds_writew(0xc011, ds_readws(WALLCLOCK_X));
+	ds_writew(0xc013, ds_readws(WALLCLOCK_Y));
+	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
+	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 20);
 	ds_writed(0xc019, ds_readd(0xd2e3));
 
 	/* draw backgroud */
@@ -840,34 +844,34 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, pos + 7);
 	ds_writew(0xc017, y + 6);
-	ds_writed(0xc019, ds_readd(0xd2e3) + (!night ? 0xcaf: 0xcef));
+	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(0xd2e3) + 0xcaf: (RealPt)ds_readd(0xd2e3) + 0xcef));
 
 	/* draw sun/moon */
 	do_pic_copy(2);
 
 
 	/* set coordinates */
-	ds_writew(0xc011, ds_readw(WALLCLOCK_X));
-	ds_writew(0xc013, ds_readw(WALLCLOCK_Y) + 3);
-	ds_writew(0xc015, ds_readw(WALLCLOCK_X) + 78);
-	ds_writew(0xc017, ds_readw(WALLCLOCK_Y) + 22);
-	ds_writed(0xc019, ds_readd(0xd2e3) + 0x683);
+	ds_writew(0xc011, ds_readws(WALLCLOCK_X));
+	ds_writew(0xc013, ds_readws(WALLCLOCK_Y) + 3);
+	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
+	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 22);
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xd2e3) + 0x683));
 
 	/* draw backgroud */
 	do_pic_copy(2);
 
 	/* restore fullscreen */
-	struct_copy(p_datseg + 0x2990, fullscreen_bak, 8);
+	*(struct dummy2*)(p_datseg + 0x2990) = fullscreen_bak;
 
 	/* happens in travel mode */
 	if (ds_readb(0x2845) == 5) {
 
 		/* set coordinates */
-		ds_writew(0xc011, ds_readw(WALLCLOCK_X) - 5);
-		ds_writew(0xc013, ds_readw(WALLCLOCK_Y) - 4);
-		ds_writew(0xc015, ds_readw(WALLCLOCK_X) + 85);
-		ds_writew(0xc017, ds_readw(WALLCLOCK_Y) + 28);
-		ds_writed(0xc019, ds_readd(0xc3db) + 0x4650);
+		ds_writew(0xc011, ds_readws(WALLCLOCK_X) - 5);
+		ds_writew(0xc013, ds_readws(WALLCLOCK_Y) - 4);
+		ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 85);
+		ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 28);
+		ds_writed(0xc019, (Bit32u)(F_PADD(ds_readds(0xc3db), 0x4650)));
 
 		/* draw backgroud */
 		do_pic_copy(2);
@@ -878,7 +882,7 @@ void draw_wallclock(signed short pos, signed short night)
 	}
 
 	/* restore gfx */
-	struct_copy(p_datseg + 0xc00d, gfx_bak, 0x18);
+	*(struct dummy*)(p_datseg + 0xc00d) = gfx_bak;
 }
 
 /**
