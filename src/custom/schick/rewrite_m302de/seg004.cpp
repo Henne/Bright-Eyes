@@ -638,10 +638,16 @@ void draw_mouse_cursor(void)
 	}
 }
 
-void save_mouse_bg() {
+/* Borlandified and identical */
+void save_mouse_bg(void)
+{
 	PhysPt src;
-	short di,v6,v8,va;
-	short si, j;
+	signed short di;
+	signed short v6;
+	signed short v8;
+	signed short va;
+	signed short si;
+	signed short j;
 
 	src = Real2Phys(ds_readd(0xd2ff));
 
@@ -650,17 +656,21 @@ void save_mouse_bg() {
 
 	v8 = va = 16;
 
-	if (di > 304)
+	if (di > 304) {
 		v8 = 320 - di;
+	}
 
-	if (v6 > 184)
+	if (v6 > 184) {
 		va = 200 - v6;
+	}
 
 	src += v6 * 320 + di;
 
-	for (si = 0; si < va; src += 320, si++)
-		for (j = 0; j < v8; j++)
+	for (si = 0; si < va; src += 320, si++) {
+		for (j = 0; j < v8; j++) {
 			ds_writeb(0xcf0f + si * 16 + j , mem_readb(src + j));
+		}
+	}
 }
 
 void restore_mouse_bg() {
