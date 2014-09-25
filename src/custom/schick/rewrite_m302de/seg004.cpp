@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
  *	Functions rewritten: 37/37 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg004.cpp
 */
 
 #if !defined(__BORLANDC__)
@@ -22,26 +26,22 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void save_and_set_timer(void)
 {
 	ds_writed(0xe274, (Bit32u) bc__dos_getvect(8));
 	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a , 0x244));
 }
 
-/* Borlandified and identical */
 void set_timer(void)
 {
 	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a , 0x244));
 }
 
-/* Borlandified and identical */
 void reset_timer(void)
 {
 	bc__dos_setvect(8, (INTCAST)ds_readd(0xe274));
 }
 
-/* Borlandified and identical */
 void init_ani(Bit16u v1)
 {
 
@@ -99,13 +99,11 @@ void init_ani(Bit16u v1)
 	wait_for_vsync();
 }
 
-/* Borlandified and identical */
 void set_var_to_zero(void)
 {
 	ds_writew(0x29ae, 0);
 }
 
-/* Borlandified and identical */
 void init_ani_busy_loop(unsigned short v1)
 {
 	/* set lock */
@@ -122,7 +120,6 @@ void init_ani_busy_loop(unsigned short v1)
 	 }
 }
 
-/* Borlandified and identical */
 void clear_ani(void)
 {
 	signed short i, j;
@@ -159,7 +156,6 @@ struct dummy {
 };
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void interrupt timer_isr(void)
 {
 	signed short i;
@@ -308,7 +304,6 @@ void interrupt timer_isr(void)
 	((INTCAST)(ds_readd(0xe274)))();
 }
 
-/* Borlandified and identical */
 void unused_gfx_spinlock(void)
 {
 	Bit32s v = ds_readds(0xe234);
@@ -317,7 +312,6 @@ void unused_gfx_spinlock(void)
 }
 #endif
 
-/* Borlandified and identical */
 void update_status_bars(void)
 {
 	signed short i;
@@ -476,7 +470,6 @@ void update_status_bars(void)
 	It should be used, either hero or mode is zero,
 	since in fight mode only the active hero is shown.
 */
-/* Borlandified and identical */
 void draw_bar(unsigned short type, signed short hero, signed short pts_cur, signed short pts_max, signed short mode)
 {
 	signed short i;
@@ -538,7 +531,6 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 	}
 }
 
-/* Borlandified and identical */
 void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, signed char n, signed char m)
 {
 	signed short i;
@@ -562,7 +554,6 @@ void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, si
 	refresh_screen_size();
 }
 
-/* Borlandified and identical */
 void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, signed char width, signed char height, unsigned short v1)
 {
 	signed short si;
@@ -598,7 +589,6 @@ void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y
 	refresh_screen_size();
 }
 
-/* Borlandified and identical */
 void draw_mouse_cursor(void)
 {
 	signed short x;
@@ -637,7 +627,6 @@ void draw_mouse_cursor(void)
 	}
 }
 
-/* Borlandified and identical */
 void save_mouse_bg(void)
 {
 	PhysPt src;
@@ -672,7 +661,6 @@ void save_mouse_bg(void)
 	}
 }
 
-/* Borlandified and identical */
 void restore_mouse_bg(void)
 {
 	signed short si;
@@ -705,7 +693,6 @@ void restore_mouse_bg(void)
 
 }
 
-/* Borlandified and identical */
 void load_objects_nvf(void)
 {
 	struct nvf_desc nvf;
@@ -739,7 +726,6 @@ void load_objects_nvf(void)
 
 }
 
-/* Borlandified and identical */
 void update_wallclock(void)
 {
 	signed short night;
@@ -784,7 +770,6 @@ struct dummy2 {
  * \param night	0 = day / 1 = night
  *
  */
-/* Borlandified and identical */
 void draw_wallclock(signed short pos, signed short night)
 {
 	signed short y;
@@ -893,7 +878,6 @@ void draw_wallclock(signed short pos, signed short night)
  * \param op	operator
  * \param flag	if 2, op will not be added if array element is 0
 */
-/* Borlandified and identical */
 void array_add(Bit8u *dst, signed short len, signed short op, signed short flag)
 {
 	signed short i;
@@ -914,7 +898,6 @@ struct dummy3 {
 	char a[3];
 };
 
-/* Borlandified and identical */
 void schick_set_video(void)
 {
 	struct dummy3 pal_black = *(struct dummy3*)(p_datseg + 0x4b03);;
@@ -923,7 +906,6 @@ void schick_set_video(void)
 	set_color((Bit8u*)&pal_black, 0xff);
 }
 
-/* Borlandified and identical */
 void schick_reset_video(void)
 {
 	set_video_mode(ds_readws(0xd30d));
@@ -934,7 +916,6 @@ struct dummy4 {
 	char a[0x60];
 };
 
-/* Borlandified and identical */
 void clear_ani_pal(void)
 {
 	struct dummy4 pal = *(struct dummy4*)(p_datseg + 0x4b06);
@@ -944,7 +925,6 @@ void clear_ani_pal(void)
 	set_palette((Bit8u*)&pal, 0, 0x20);
 }
 
-/* Borlandified and identical */
 void set_ani_pal(Bit8u *pal)
 {
 	wait_for_vsync();
@@ -954,42 +934,36 @@ void set_ani_pal(Bit8u *pal)
 #if defined(__BORLANDC__)
 /* a bunch of EGA routines */
 
-/* Borlandified and identical */
 void unused_ega1(unsigned char a)
 {
 	outportb(0x3ce, 5);
 	outportb(0x3cf, a);
 }
 
-/* Borlandified and identical */
 void unused_ega2(unsigned char a)
 {
 	outportb(0x3c4, 2);
 	outportb(0x3c5, a);
 }
 
-/* Borlandified and identical */
 void unused_ega3(unsigned char a)
 {
 	outportb(0x3ce, 0);
 	outportb(0x3cf, a);
 }
 
-/* Borlandified and identical */
 void unused_ega4(unsigned char a)
 {
 	outportb(0x3ce, 1);
 	outportb(0x3cf, a);
 }
 
-/* Borlandified and identical */
 void unused_ega5(unsigned char a)
 {
 	outportb(0x3ce, 4);
 	outportb(0x3cf, a);
 }
 
-/* Borlandified and identical */
 void unused_ega6(unsigned char a)
 {
 	outportb(0x3ce, 8);
@@ -998,7 +972,6 @@ void unused_ega6(unsigned char a)
 
 #endif
 
-/* Borlandified and identical */
 void do_h_line(RealPt ptr, signed short x1, signed short x2, signed short y, signed char color)
 {
 	signed short tmp;
@@ -1020,7 +993,6 @@ void do_h_line(RealPt ptr, signed short x1, signed short x2, signed short y, sig
 	draw_h_line(dst, count, color);
 }
 
-/* Borlandified and identical */
 void do_v_line(RealPt ptr, signed short y, signed short x1, signed short x2, signed char color)
 {
 	signed short tmp;
@@ -1042,7 +1014,6 @@ void do_v_line(RealPt ptr, signed short y, signed short x1, signed short x2, sig
 	draw_h_spaced_dots(dst, count, color, 320);
 }
 
-/* Borlandified and identical */
 void do_border(RealPt dst, signed short x1, signed short y1, signed short x2, signed short y2, signed char color)
 {
 	update_mouse_cursor();
@@ -1053,7 +1024,6 @@ void do_border(RealPt dst, signed short x1, signed short y1, signed short x2, si
 	refresh_screen_size();
 }
 
-/* Borlandified and identical */
 void do_pic_copy(unsigned short mode)
 {
 	short x1, y1;
@@ -1082,7 +1052,6 @@ void do_pic_copy(unsigned short mode)
 	pic_copy(dst, x1, y1, x2, y2, v1, v2, v3, v4, width, height, src, mode);
 }
 
-/* Borlandified and identical */
 void do_save_rect(void)
 {
 	signed short x1,y1;
@@ -1107,7 +1076,6 @@ void do_save_rect(void)
 	save_rect(RealSeg(dst), RealOff(dst), src, width, height);
 }
 
-/* Borlandified and identical */
 void do_fill_rect(RealPt dst, signed short x, signed short y, signed short w, signed short h, signed short color)
 {
 	signed short width, height;
@@ -1122,7 +1090,6 @@ void do_fill_rect(RealPt dst, signed short x, signed short y, signed short w, si
 	refresh_screen_size();
 }
 
-/* Borlandified and identical */
 void wait_for_vsync(void)
 {
 #if !defined(__BORLANDC__)
