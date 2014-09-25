@@ -673,16 +673,24 @@ void save_mouse_bg(void)
 	}
 }
 
-void restore_mouse_bg() {
+/* Borlandified and identical */
+void restore_mouse_bg(void)
+{
+	signed short si;
+	signed short di;
+	signed short j;
+
 	PhysPt dst;
-	short v2, v3, v4;
-	short si, di, j;
+	signed short v2;
+	signed short v3;
+	signed short v4;
+
 
 	/* gfx memory */
 	dst = Real2Phys(ds_readd(0xd2ff));
 	di = ds_readw(0x29a0) - ds_readw(0x29aa);
 	v2 = ds_readw(0x29a2) - ds_readw(0x29ac);
-	v4 = v3 = 16;
+	v3 = v4 = 16;
 
 	if (di > 304)
 		v3 = 320 - di;
