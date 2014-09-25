@@ -599,11 +599,18 @@ void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y
 	refresh_screen_size();
 }
 
-void draw_mouse_cursor() {
-	short mask, x, y, width, height;
+/* Borlandified and identical */
+void draw_mouse_cursor(void)
+{
+	signed short x;
+	register unsigned short mask;
+	signed char i;
+	signed char j;
 	PhysPt dst;
-	short *mouse_cursor;
-	char i,j;
+	signed short *mouse_cursor;
+	signed short y;
+	signed short width;
+	signed short height;
 
 	dst = Real2Phys(ds_readd(0xd2ff));
 	mouse_cursor = (short*)(Real2Host(ds_readd(0xcecb)) + 32);
@@ -622,7 +629,9 @@ void draw_mouse_cursor() {
 	dst += y * 320 + x;
 
 	for (i = 0; i < height; dst += 320, i++) {
+
 		mask = host_readw((Bit8u*)mouse_cursor++);
+
 		for (j = 0; j < width; j++)
 			if ((0x8000 >> j) & mask)
 				mem_writeb(dst + j, 0xff);
