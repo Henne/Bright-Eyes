@@ -1,6 +1,6 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 36/38
+ *	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
+ *	Functions rewritten: 37/37 (complete)
 */
 
 #if !defined(__BORLANDC__)
@@ -1122,10 +1122,32 @@ void do_fill_rect(RealPt dst, signed short x, signed short y, signed short w, si
 	refresh_screen_size();
 }
 
-void wait_for_vsync()
+/* Borlandified and identical */
+void wait_for_vsync(void)
 {
 #if !defined(__BORLANDC__)
 	CALLBACK_RunRealFar(reloc_game + 0xb2a, 0x150d);
+#else
+
+	register unsigned short tmp;
+
+	outportb(0x3d4, 0x11);
+
+	tmp = inportb(0x3d5);
+	tmp &= 0xffdf;
+
+	outportb(0x3d4, 0x11);
+	outportb(0x3d5, tmp);
+
+	do {
+		tmp = inportb(0x3da);
+
+	} while ((tmp & 0x8) || (tmp & 0x1));
+
+	do {
+		tmp = inportb(0x3da);
+
+	} while (!(tmp & 0x8) || !(tmp & 0x1));
 #endif
 }
 
