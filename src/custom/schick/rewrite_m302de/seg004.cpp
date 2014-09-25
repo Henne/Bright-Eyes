@@ -539,19 +539,28 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 	}
 }
 
-void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, char n, char m) {
+/* Borlandified and identical */
+void restore_rect(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, signed char n, signed char m)
+{
+	signed short i;
+	signed short j;
+	signed char c;
+	PhysPt p;
 
-	unsigned short i, j;
-	char c;
+	update_mouse_cursor();
 
-	dst += y * 320 + x;
+	p = Real2Phys(dst);
+	p += y * 320 + x;
 
-	for (i = 0; i < m; dst += 320, i++)
+	for (i = 0; i < m; p += 320, i++) {
 		for (j = 0; j < n; j++) {
 			c = *src++;
 			if (c)
-				mem_writeb(Real2Phys(dst) + j, c);
+				mem_writeb(p + j, c);
 		}
+	}
+
+	refresh_screen_size();
 }
 
 void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y, char width, char height, unsigned short v1) {
