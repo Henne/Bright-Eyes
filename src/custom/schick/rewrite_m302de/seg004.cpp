@@ -998,9 +998,11 @@ void unused_ega6(unsigned char a)
 
 #endif
 
-void do_h_line(RealPt ptr, unsigned short x1, unsigned short x2, unsigned short y, char color) {
-
-	unsigned short count, tmp;
+/* Borlandified and identical */
+void do_h_line(RealPt ptr, signed short x1, signed short x2, signed short y, signed char color)
+{
+	signed short tmp;
+	signed short count;
 	RealPt dst;
 
 	if (x1 == x2)
