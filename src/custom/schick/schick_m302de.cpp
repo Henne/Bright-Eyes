@@ -1875,9 +1875,6 @@ static int seg004(unsigned short offs) {
 		load_objects_nvf();
 		return 1;
 	}
-	case 0xe31: {
-		return 0;
-	}
 	case 0xf54: {
 		return 0;
 	}
@@ -7340,7 +7337,10 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0xe31: {
-			return 0;
+			CPU_Pop16();
+			D1_LOG("update_wallclock()\n");
+			update_wallclock();
+			return 1;
 		}
 		case 0xf54: {
 			CPU_Pop16();

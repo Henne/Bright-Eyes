@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg004 (Graphic)
-	Functions rewritten: 29/38
+	Functions rewritten: 30/38
 */
 
 #if !defined(__BORLANDC__)
@@ -205,7 +205,7 @@ void interrupt timer_isr(void)
 
 	update_status_bars();
 	seg002_37c4();
-	seg004_0e31();
+	update_wallclock();
 	dec_splash();
 
 	if (ds_readws(0x29ae) != 0) {
@@ -740,9 +740,38 @@ void load_objects_nvf(void)
 
 }
 
-void seg004_0e31(void)
+/* Borlandified and identical */
+void update_wallclock(void)
 {
-	DUMMY_WARNING();
+	signed short night;
+	Bit32s d;
+
+	if ((ds_readw(0xe113) != 0) &&
+		((ds_readb(0x2845) == 0) || (ds_readb(0x2845) == 5)) &&
+		!ds_readbs(0x2c98))
+	{
+
+		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(19))) {
+			/* day */
+			d = ds_readds(DAY_TIMER) - HOURS(7);
+		} else {
+			if (ds_readds(DAY_TIMER) < HOURS(7)) {
+				/* morning */
+				d = ds_readds(DAY_TIMER) + HOURS(5);
+			} else {
+				/* evening */
+				d = ds_readds(DAY_TIMER) + HOURS(-19);
+			}
+		}
+
+		if (((d % 771) != ds_readws(0x4a9e)) || (ds_readw(0xe10d) != 0)) {
+
+			ds_writew(0xe10d, 0);
+			night = ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(19))) ? 0 : 1;
+			draw_wallclock(d / 771, night);
+			ds_writew(0x4a9e, d / 771);
+		}
+	}
 }
 
 /**
