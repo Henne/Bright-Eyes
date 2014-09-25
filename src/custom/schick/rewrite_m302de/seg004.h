@@ -20,8 +20,8 @@ void restore_rect_rle(RealPt, Bit8u*, unsigned short, unsigned short, signed cha
 void draw_mouse_cursor(void);
 void save_mouse_bg(void);
 void restore_mouse_bg(void);
-void seg004_0e31(void);
 void load_objects_nvf(void);
+void seg004_0e31(void);
 void draw_wallclock(signed short, signed short);
 void array_add(Bit8u*, unsigned short, unsigned char, unsigned short);
 void schick_set_video();

@@ -706,11 +706,7 @@ void restore_mouse_bg(void)
 
 }
 
-void seg004_0e31(void)
-{
-	DUMMY_WARNING();
-}
-
+/* Borlandified and identical */
 void load_objects_nvf(void)
 {
 	struct nvf_desc nvf;
@@ -744,6 +740,10 @@ void load_objects_nvf(void)
 
 }
 
+void seg004_0e31(void)
+{
+	DUMMY_WARNING();
+}
 
 /**
  * draw_wallclock() - draws day-  and nighttime
