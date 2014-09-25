@@ -27,6 +27,10 @@
 namespace M302de {
 #endif
 
+#if defined(__BORLANDC__)
+signed short div16(unsigned char);
+#endif
+
 /* Borlandified and identical */
 /* static */
 void DNG_floor_ceil(void)
@@ -676,7 +680,7 @@ void DNG_update_pos(void)
 void DNG_inc_level(void)
 {
 	ds_writew(0x9312, 1);
-	inc_ds_bs(DUNGEON_LEVEL);
+	inc_ds_bs_post(DUNGEON_LEVEL);
 	load_area_description(1);
 	DNG_update_pos();
 
@@ -686,7 +690,7 @@ void DNG_inc_level(void)
 void DNG_dec_level(void)
 {
 	ds_writew(0x9312, 1);
-	dec_ds_bs(DUNGEON_LEVEL);
+	dec_ds_bs_post(DUNGEON_LEVEL);
 	load_area_description(1);
 	DNG_update_pos();
 
@@ -954,8 +958,8 @@ signed short DNG_fallpit(signed short a1)
 					((l1 == 1) && (l_si == 6)));
 
 			host_writeb(get_hero(l_si) + 0x87, (unsigned char)l2);
-			inc_ds_bs(0x2d36 + l2);
-			dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+			inc_ds_bs_post(0x2d36 + l2);
+			dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 			sub_hero_le(get_hero(l_si), random_schick(a1));
 
 		}

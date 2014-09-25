@@ -2215,7 +2215,7 @@ void do_timers(void)
 			if (ds_readb(UNICORN_GET_MAP) != 0 &&
 				ds_readb(UNICORN_TIMER) != 0)
 			{
-				dec_ds_bs(UNICORN_TIMER);
+				dec_ds_bs_post(UNICORN_TIMER);
 			}
 
 			/* handle sphere timer */
@@ -2228,10 +2228,10 @@ void do_timers(void)
 
 			/* two timers of a dungeon */
 			if (ds_readbs(0x3cc6) != 0) {
-				dec_ds_bs(0x3cc6);
+				dec_ds_bs_post(0x3cc6);
 			}
 			if (ds_readbs(0x3cc7) != 0) {
-				dec_ds_bs(0x3cc7);
+				dec_ds_bs_post(0x3cc7);
 			}
 		}
 
@@ -2356,8 +2356,8 @@ void do_timers(void)
 		ds_writed(DAY_TIMER, 0);
 
 		/* inc DAY date */
-		inc_ds_bs(DAY_OF_WEEK);
-		inc_ds_bs(DAY_OF_MONTH);
+		inc_ds_bs_post(DAY_OF_WEEK);
+		inc_ds_bs_post(DAY_OF_MONTH);
 
 		if (ds_readb(DAY_OF_WEEK) == 7) {
 			ds_writeb(DAY_OF_WEEK, 0);
@@ -2369,25 +2369,25 @@ void do_timers(void)
 			if ((ds_readbs(0x3601 + i) != 0) &&
 				(ds_readbs(0x3601 + i) != -1))
 			{
-				dec_ds_bs(0x3601 + i);
+				dec_ds_bs_post(0x3601 + i);
 			}
 		}
 
 		/* drug timer (phexcaer) */
 		if (ds_readb(0x3f76) != 0) {
-			dec_ds_bs(0x3f76);
+			dec_ds_bs_post(0x3f76);
 		}
 
 		/* unknown timer */
 		if (ds_readb(0x4332) != 0) {
-			dec_ds_bs(0x4332);
+			dec_ds_bs_post(0x4332);
 		}
 
 		/* calendar */
 		if (ds_readb(DAY_OF_MONTH) == 31) {
 			/* new month */
 			ds_writeb(DAY_OF_MONTH, 1);
-			inc_ds_bs(MONTH);
+			inc_ds_bs_post(MONTH);
 
 			/* increment quested months counter */
 			if (ds_readw(GOT_MAIN_QUEST) != 0) {
@@ -2409,7 +2409,7 @@ void do_timers(void)
 			/* new year */
 			if (ds_readb(DAY_OF_MONTH) == 0) {
 				ds_writeb(MONTH, 1);
-				inc_ds_bs(YEAR);
+				inc_ds_bs_post(YEAR);
 				ds_writeb(DAY_OF_MONTH, 1);
 			}
 		}
@@ -3308,7 +3308,7 @@ void passages_recalc(void)
 
 	/* If a passage is hired decrement Passage days timer */
 	if (ds_readb(0x42ae) == 0xaa) {
-		dec_ds_bs(0x42af);
+		dec_ds_bs_post(0x42af);
 	}
 }
 

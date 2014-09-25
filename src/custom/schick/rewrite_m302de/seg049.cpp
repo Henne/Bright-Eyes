@@ -189,8 +189,8 @@ void GRP_split(void)
 
 				not_empty = 1;
 				host_writeb(get_hero(answer) + 0x87, (signed char)new_group);
-				inc_ds_bs(0x2d36 + new_group);
-				dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+				inc_ds_bs_post(0x2d36 + new_group);
+				dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 			}
 
 		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + 0x21) != 0 ? 2 : 1));
@@ -237,7 +237,7 @@ void GRP_merge(void)
 					host_readbs(get_hero(i) + 0x87) == answer)
 				{
 					host_writeb(get_hero(i) + 0x87, ds_readbs(CURRENT_GROUP));
-					inc_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+					inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 				}
 			}
 			GRP_sort_heros();

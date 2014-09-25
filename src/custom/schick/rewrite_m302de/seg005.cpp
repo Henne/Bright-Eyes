@@ -174,7 +174,7 @@ unsigned short fight_printer(void)
 		ds_writew(0x26b1, 0);
 
 	if (ds_readw(0x4b79) == 0 && ds_readb(0x4b94) != 0) {
-		inc_ds_bs(0x4b78);
+		inc_ds_bs_post(0x4b78);
 		ds_writeb(0x4b94, 0);
 
 		ds_writew(0x4b79, ds_readw(AUTOFIGHT) ? 10: ds_readws(DELAY_FACTOR) * 6);

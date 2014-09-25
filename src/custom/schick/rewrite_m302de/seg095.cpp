@@ -518,11 +518,10 @@ void remove_npc(signed short head_index, signed char days,
 	memset(get_hero(6), 0, 0x6da);
 
 	/* dec group counter */
-	dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+	dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
 	/* dec global hero counter */
-
-	dec_ds_bs(0x2d3c);
+	dec_ds_bs_post(0x2d3c);
 
 	ds_writeb(0x46df, 1);
 
@@ -544,10 +543,10 @@ void add_npc(signed short index)
 	memcpy(get_hero(6) + 0x2da, Real2Host(ds_readd(0xd2f3)), 0x400);
 
 	/* increment heros in that group */
-	inc_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+	inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
 	/* increment heros */
-	inc_ds_bs(0x2d3c);
+	inc_ds_bs_post(0x2d3c);
 
 	/* reset the months the NPC is in the group */
 	ds_writew(NPC_MONTHS, 0);

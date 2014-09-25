@@ -288,8 +288,8 @@ signed short plan_alchemy(Bit8u *hero)
 								for (l5 = 0; ds_readbs(0x2d36 + l5) != 0; l5++);
 
 								host_writeb(hero + 0x87, l5);
-								inc_ds_bs(0x2d36 + l5);
-								dec_ds_bs(0x2d36 + ds_readbs(CURRENT_GROUP));
+								inc_ds_bs_post(0x2d36 + l5);
+								dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
 								host_writeb(hero + 0x94,
 									ds_readbs(0xacf5 + recipe_index * 28) / 24);

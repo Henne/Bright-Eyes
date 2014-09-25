@@ -24,6 +24,11 @@ namespace M302de {
 #endif
 
 #if defined(__BORLANDC__)
+/* this function is called with different argument types fomr different segments */
+signed short div16(signed short);
+#endif
+
+#if defined(__BORLANDC__)
 void show_automap(void)
 {
 	signed short l_si;

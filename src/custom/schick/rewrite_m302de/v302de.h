@@ -228,15 +228,32 @@ static inline Bit32s sub_ds_ds(Bit16u off, Bit32s val)
 	return ds_writed(off, ds_readds(off) - val);
 }
 
-static inline void inc_ds_bs(Bit16u off)
+/* Increment and Decrement on Bit8s variables in the datasegment */
+
+static inline Bit8s inc_ds_bs(Bit16u off)
 {
-	ds_writeb(off, ds_readb(off) + 1);
+	return ds_writeb(off, ds_readbs(off) + 1);
 }
 
-static inline void dec_ds_bs(Bit16u off)
+static inline Bit8s dec_ds_bs(Bit16u off)
 {
-	ds_writeb(off, ds_readb(off) - 1);
+	return ds_writeb(off, ds_readbs(off) - 1);
 }
+
+static inline Bit8s inc_ds_bs_post(Bit16u off)
+{
+	Bit8s val = ds_readbs(off);
+	ds_writeb(off, ds_readbs(off) + 1);
+	return val;
+}
+
+static inline Bit8s dec_ds_bs_post(Bit16u off)
+{
+	Bit8s val = ds_readbs(off);
+	ds_writeb(off, ds_readbs(off) - 1);
+	return val;
+}
+
 
 static inline void add_ds_bs(Bit16u off, Bit8s val)
 {
@@ -900,8 +917,10 @@ extern char ds[0xf7af];
 #define ds_writew(p, d)		(*(Bit16u*)(ds + p) = d)
 #define ds_writed(p, d)		(*(Bit32u*)(ds + p) = d)
 
-#define inc_ds_bs(o)		((*(Bit8s*)(ds + o))++)
-#define dec_ds_bs(o)		((*(Bit8s*)(ds + o))--)
+#define inc_ds_bs(o)		(++(*(Bit8s*)(ds + o)))
+#define dec_ds_bs(o)		(--(*(Bit8s*)(ds + o)))
+#define inc_ds_bs_post(o)	((*(Bit8s*)(ds + o))++)
+#define dec_ds_bs_post(o)	((*(Bit8s*)(ds + o))--)
 
 #define add_ds_bs(o, val)	((*(Bit8s*)(ds + o))+= (val))
 #define add_ds_bu(o, val)	((*(Bit8u*)(ds + o))+= (val))
