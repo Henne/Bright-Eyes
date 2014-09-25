@@ -944,6 +944,7 @@ void clear_ani_pal(void)
 	set_palette((Bit8u*)&pal, 0, 0x20);
 }
 
+/* Borlandified and identical */
 void set_ani_pal(Bit8u *pal)
 {
 	wait_for_vsync();
