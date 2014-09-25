@@ -1082,10 +1082,14 @@ void do_pic_copy(unsigned short mode)
 	pic_copy(dst, x1, y1, x2, y2, v1, v2, v3, v4, width, height, src, mode);
 }
 
-void do_save_rect() {
-	unsigned short width,height,x1,y1,x2,y2;
-	RealPt dst,src;
-	unsigned short v10;
+/* Borlandified and identical */
+void do_save_rect(void)
+{
+	signed short x1,y1;
+	signed short width,height;
+	signed short x2,y2;
+	RealPt src;
+	RealPt dst;
 
 	x1 = ds_readw(0xc011);
 	y1 = ds_readw(0xc013);
@@ -1096,11 +1100,11 @@ void do_save_rect() {
 	src = (RealPt)ds_readd(0xc019);
 	dst = (RealPt)ds_readd(0xc00d);
 
-	v10 = y1 * 320 + x1;
+	dst += y1 * 320 + x1;
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	save_rect(dst + v10, src, width, height);
+	save_rect(dst, src, width, height);
 }
 
 void do_fill_rect(RealPt dst, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned short color) {
