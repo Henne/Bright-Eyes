@@ -1042,7 +1042,9 @@ void do_v_line(RealPt ptr, signed short y, signed short x1, signed short x2, sig
 	draw_h_spaced_dots(dst, count, color, 320);
 }
 
-void do_border(RealPt dst, unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, char color) {
+/* Borlandified and identical */
+void do_border(RealPt dst, signed short x1, signed short y1, signed short x2, signed short y2, signed char color)
+{
 	update_mouse_cursor();
 	do_h_line(dst, x1, x2, y1, color);
 	do_h_line(dst, x1, x2, y2, color);
