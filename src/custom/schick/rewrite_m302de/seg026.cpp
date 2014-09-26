@@ -144,15 +144,10 @@ void prepare_chr_name(char *dst, char *src)
 		if (!tmp_str[i])
 			break;
 
-#if !defined(__BORLANDC__)
 		/* maybe !isalnum(tmp_str[i]) */
-		if ((ds_readb(0xb4e9 + tmp_str[i]) & 0x0e) == 0)
-#else
-		if (!isalnum(tmp_str[i]))
-#endif
+		if (!(ds_readbs(0xb4e9 + tmp_str[i]) & 0x0e)) {
 			tmp_str[i] = 0x5f;
-
-
+		}
 	}
 
 	strncpy(dst, tmp_str, 8);
@@ -170,6 +165,7 @@ void prepare_sg_name(char *dst, char *src)
 
 	i = 0;
 	while (i < 8) {
+
 		if (!tmp_str[i]) {
 			while (i < 8) {
 				/* fill up with underscores */
@@ -178,12 +174,11 @@ void prepare_sg_name(char *dst, char *src)
 			}
 			break;
 		}
-#if !defined(__BORLANDC__)
-		if ((ds_readb(0xb4e9 + tmp_str[i]) & 0x0e) == 0)
-#else
-		if (!isalnum(tmp_str[i]))
-#endif
+
+		/* maybe !isalnum(tmp_str[i]) */
+		if (!(ds_readbs(0xb4e9 + tmp_str[i]) & 0x0e)) {
 			tmp_str[i] = 0x5f;
+		}
 		i++;
 	}
 
