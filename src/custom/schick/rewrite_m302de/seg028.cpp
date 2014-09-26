@@ -397,7 +397,7 @@ void load_splashes(void)
 	struct nvf_desc nvf;
 	signed short height;
 	signed short width;
-	unsigned short fd;
+	signed short fd;
 
 	/* read SPLASHES.DAT */
 	fd = load_archive_file(0xec);
@@ -412,7 +412,7 @@ void load_splashes(void)
 	nvf.type = 1;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
-	fd = process_nvf(&nvf);
+	fd = (signed short)process_nvf(&nvf);
 
 	/* nvf.dst = splash_ae = ds_readd() */
 	ds_writed(SPLASH_AE, ds_readd(0xd2bd) + fd);
@@ -422,7 +422,7 @@ void load_splashes(void)
 	nvf.type = 1;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
-	fd = process_nvf(&nvf);
+	fd = (signed short)process_nvf(&nvf);
 }
 
 void load_informer_tlk(signed short index)
@@ -453,7 +453,7 @@ void load_informer_tlk(signed short index)
 	read_archive_file(fd, ptr, partners * 0x26);
 
 	/* read the dialog layouts */
-	read_archive_file(fd, p_datseg + 0x3794, off - partners * 0x26);
+	read_archive_file(fd, p_datseg + 0x3794, (Bit16u)(off - partners * 0x26));
 
 	/* read the text */
 	text_len = read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 10000);
