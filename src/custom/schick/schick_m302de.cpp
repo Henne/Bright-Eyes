@@ -4930,7 +4930,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x7f: {
-		return 0;
+		D1_LOG("chest_ignifax_heavy()\n");
+		chest_ignifax_heavy();
+		return 1;
 	}
 	case 0x84: {
 		return 0;

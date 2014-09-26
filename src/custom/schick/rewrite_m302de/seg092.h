@@ -32,6 +32,9 @@ void chest_ignifax_normal(void);
 /* 0x7a */
 void chest_ignifax_brutal(void);
 
+/* 0x7a */
+void chest_ignifax_heavy(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif
