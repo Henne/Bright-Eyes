@@ -29,6 +29,9 @@ void chest_stoned(void);
 /* 0x75 */
 void chest_ignifax_normal(void);
 
+/* 0x7a */
+void chest_ignifax_brutal(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 9/22
+ *	Functions rewritten: 10/22
  */
 
 #include "v302de.h"
@@ -111,6 +111,16 @@ void chest_ignifax_normal(void)
 
 	/* the first hero gets wounded with 2W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
+}
+
+/* Borlandified and identical */
+void chest_ignifax_brutal(void)
+{
+	/* a protected chest */
+	print_msg_with_first_hero(get_ltx(0xc24));
+
+	/* the first hero gets wounded with 4W6 */
+	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
 #if !defined(__BORLANDC__)
