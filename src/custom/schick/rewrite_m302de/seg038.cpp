@@ -196,7 +196,7 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 							bp_left--;
 							found = 1;
 						} else {
-							host_writeb(ptr_cur + bp_left, dir);
+							host_writebs(ptr_cur + bp_left, (signed char)dir);
 							bp_left--;
 						}
 
@@ -495,7 +495,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 														(host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
 														((l_var9 < 24) && (l_var9 >= 0) && (l_var8 < 24) && (l_var8 >= 0))))))
 									{
-										host_writeb(ptr2 + (l_var5 * 25) + l_var4, l_var2);
+										host_writebs(ptr2 + (l_var5 * 25) + l_var4, (signed char)l_var2);
 										l_var3 = 1;
 									}
 								} else {
