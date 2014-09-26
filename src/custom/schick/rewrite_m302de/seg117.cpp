@@ -45,7 +45,7 @@ void pause_traveling(signed short ani_nr)
 	ds_writeb(0xb132, 1);
 
 	/* c = b = a = 0 */
-	ds_writeb(TRAVELING, ds_writew(0x2ca2, ds_writew(0xe113, 0)));
+	ds_writeb(TRAVELING, (unsigned char)ds_writew(0x2ca2, ds_writew(0xe113, 0)));
 
 	ds_writew(0x2ca4, ani_nr == 21 ? 60: 70);
 	ds_writew(0xbffd, 9);
