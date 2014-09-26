@@ -4900,7 +4900,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x61: {
-		return 0;
+		D1_LOG("chest_poisoned2()\n");
+		chest_poisoned2();
+		return 1;
 	}
 	case 0x66: {
 		return 0;
