@@ -4910,7 +4910,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x6b: {
-		return 0;
+		D1_LOG("chest_protected_brutal()\n");
+		chest_protected_brutal();
+		return 1;
 	}
 	case 0x70: {
 		return 0;

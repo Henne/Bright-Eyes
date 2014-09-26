@@ -20,6 +20,9 @@ void chest_poisoned2(void);
 /* 0x66 */
 void chest_poisoned3(void);
 
+/* 0x6b */
+void chest_protected_brutal(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif
