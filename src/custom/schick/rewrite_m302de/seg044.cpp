@@ -546,7 +546,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	if (weapon_type != -1) {
-		FIG_set_0e(host_readbs(enemy + 0x26), a1 + 4);
+		FIG_set_0f(host_readbs(enemy + 0x26), a1 + 4);
 		/* terminate weapon animation array */
 		host_writeb(p2, 0xff);
 	}

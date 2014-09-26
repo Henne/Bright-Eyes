@@ -3948,7 +3948,7 @@ static int seg044(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		return 0;
+	//	return 0;
 		Bit16s a1 = CPU_Pop16();
 		RealPt mon = CPU_Pop32();
 		Bit16s a3 = CPU_Pop16();
