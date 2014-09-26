@@ -19,17 +19,18 @@ namespace M302de {
  *	Returns index of the message.
  *	This sets also some Informers and camp grounds
 */
+/* Borlandified and identical */
 unsigned short get_tavern_gossip(void)
 {
 	/* Orig-Bug: Informants can be reenabled if they had been set to 2 */
 	unsigned short r_si;
 	unsigned short r_di;
 
-	r_di = ds_readb(0x7c9d + ds_readb(CURRENT_TOWN));
+	r_di = ds_readb(0x7c9d + ds_readbs(CURRENT_TOWN));
 
 	r_si = r_di = random_schick(r_di) - 1;
 
-	switch (ds_readb(CURRENT_TOWN) - 1) {
+	switch (ds_readbs(CURRENT_TOWN) - 1) {
 	/* Thorwal */
 	case 0x00: {
 		if (r_si == 6)
@@ -116,8 +117,7 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 3)
 			ds_writeb(0x3df5, 1);
 		else if (r_si == 4) {
-			ds_writeb(0x3dfa, 1);
-			ds_writeb(0x3df9, 1);
+			ds_writeb(0x3df9, ds_writeb(0x3dfa, 1));
 		}
 
 		break;
@@ -159,14 +159,13 @@ unsigned short get_tavern_gossip(void)
 	/* Auplog */
 	case 0x0d: {
 		if (r_si == 1) {
-			ds_writeb(0x3db0, 1);	/* Restplaces */
-			ds_writeb(0x3daf, 1);
+			/* Restplaces */
+			ds_writeb(0x3daf, ds_writeb(0x3db0, 1));
 		}
 		else if (r_si == 2)
 			ds_writeb(0x3dbc, 1);
 		else if (r_si == 3) {
-			ds_writeb(0x3dbc, 1);
-			ds_writeb(0x3dd5, 1);
+			ds_writeb(0x3dd5, ds_writeb(0x3dbc, 1));
 		}
 
 		break;
@@ -174,8 +173,8 @@ unsigned short get_tavern_gossip(void)
 	/* Vilnheim */
 	case 0x0e: {
 		if (r_si == 1) {
-			ds_writeb(0x3db0, 1);	/* Restplaces */
-			ds_writeb(0x3daf, 1);
+			/* Restplaces */
+			ds_writeb(0x3daf, ds_writeb(0x3db0, 1));
 		}
 		else if (r_si == 2)
 			ds_writeb(0x3db1, 1);
@@ -183,8 +182,7 @@ unsigned short get_tavern_gossip(void)
 			ds_writeb(0x3db2, 1);
 		}
 		else if (r_si == 4) {
-			ds_writeb(0x3db5, 1);
-			ds_writeb(0x3db4, 1);
+			ds_writeb(0x3db4, ds_writeb(0x3db5, 1));
 		}
 		else if (r_si == 5) {
 			ds_writeb(0x3db6, 1);
@@ -195,8 +193,8 @@ unsigned short get_tavern_gossip(void)
 	/* Bodon */
 	case 0x0f: {
 		if (r_si == 3) {
-			ds_writeb(0x3db0, 1);	/* Restplaces */
-			ds_writeb(0x3daf, 1);
+			/* Restplaces */
+			ds_writeb(0x3daf, ds_writeb(0x3db0, 1));
 		}
 		else if (r_si == 4)
 			ds_writeb(0x3db1, 1);
@@ -204,8 +202,7 @@ unsigned short get_tavern_gossip(void)
 			ds_writeb(0x3db2, 1);
 		}
 		else if (r_si == 6) {
-			ds_writeb(0x3db5, 1);
-			ds_writeb(0x3db4, 1);
+			ds_writeb(0x3db4, ds_writeb(0x3db5, 1));
 		}
 		else if (r_si == 7) {
 			ds_writeb(0x3db6, 1);
@@ -227,8 +224,7 @@ unsigned short get_tavern_gossip(void)
 		if (r_si == 1)
 			ds_writeb(0x3db6, 1);	/* Restplaces */
 		else if (r_si == 2) {
-			ds_writeb(0x3db5, 1);
-			ds_writeb(0x3db4, 1);
+			ds_writeb(0x3db4, ds_writeb(0x3db5, 1));
 		}
 		else if (r_si == 3)
 			ds_writeb(0x3db2, 1);
@@ -277,9 +273,8 @@ unsigned short get_tavern_gossip(void)
 	/* Thoss */
 	case 0x18: {
 		if (r_si == 1) {
-			ds_writeb(0x3dcf, 1);	/* Restplaces */
-			ds_writeb(0x3dce, 1);
-			ds_writeb(0x3dcd, 1);
+			/* Restplaces */
+			ds_writeb(0x3dcd, ds_writeb(0x3dce, ds_writeb(0x3dcf, 1)));
 		}
 		else if (r_si == 2)
 			ds_writeb(0x3df1, 1);
@@ -291,9 +286,7 @@ unsigned short get_tavern_gossip(void)
 		if (r_si == 1)
 			ds_writeb(0x3dcb, 1);	/* Restplaces */
 		else if (r_si == 2) {
-			ds_writeb(0x3dcf, 1);
-			ds_writeb(0x3dce, 1);
-			ds_writeb(0x3dcd, 1);
+			ds_writeb(0x3dcd, ds_writeb(0x3dce, ds_writeb(0x3dcf, 1)));
 		}
 
 		break;
@@ -301,8 +294,8 @@ unsigned short get_tavern_gossip(void)
 	/* Overthorn */
 	case 0x1b: {
 		if (r_si == 1) {
-			ds_writeb(0x3dd6, 1);	/* Restplaces */
-			ds_writeb(0x3dc7, 1);
+			/* Restplaces */
+			ds_writeb(0x3dc7, ds_writeb(0x3dd6, 1));
 		}
 		else if (r_si == 2)
 			ds_writeb(0x3dcb, 1);
@@ -332,8 +325,8 @@ unsigned short get_tavern_gossip(void)
 	/* Runinshaven */
 	case 0x23: {
 		if (r_si == 1) {
-			ds_writeb(0x3e0b, 1);	/* Restplaces */
-			ds_writeb(0x3e02, 1);
+			/* Restplaces */
+			ds_writeb(0x3e02, ds_writeb(0x3e0b, 1));
 		}
 
 		break;
@@ -346,14 +339,13 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 2)
 			ds_writeb(0x3dc0, 1);
 		else if (r_si == 3) {
-			ds_writeb(0x3dc6, 1);
-			ds_writeb(0x3dc2, 1);
+			ds_writeb(0x3dc2, ds_writeb(0x3dc6, 1));
 		}
 		else if (r_si == 4)
 			ds_writeb(0x3dc3, 1);
 		else if (r_si == 5) {
-			ds_writeb(0x3dc7, 1);
-			ds_writeb(0x3dc7, 1);	/* Yes this was done twice */
+			/* Yes this was done twice */
+			ds_writeb(0x3dc7, ds_writeb(0x3dc7, 1));
 		}
 
 		break;
@@ -361,16 +353,15 @@ unsigned short get_tavern_gossip(void)
 	/* Skjal */
 	case 0x25: {
 		if (r_si == 1) {
-			ds_writeb(0x3dc6, 1);	/* Restplaces */
-			ds_writeb(0x3dc2, 1);
+			/* Restplaces */
+			ds_writeb(0x3dc2, ds_writeb(0x3dc6, 1));
 		}
 		else if (r_si == 2)
 			ds_writeb(0x3dc3, 1);
 		else if (r_si == 3)
 			ds_writeb(0x3dd9, 1);
 		else if (r_si == 4) {
-			ds_writeb(0x3e12, 1);
-			ds_writeb(0x3e11, 1);
+			ds_writeb(0x3e11, ds_writeb(0x3e12, 1));
 		}
 
 		break;
@@ -396,8 +387,8 @@ unsigned short get_tavern_gossip(void)
 		if (r_si == 2)
 			ds_writeb(0x3dbc, 1);	/* Restplaces */
 		else if (r_si == 3) {
-			ds_writeb(0x3dbc, 1);	/* Restplace */
-			ds_writeb(0x3dd5, 1);	/* Huntplace */
+			/* hunt and Restplace */
+			ds_writeb(0x3dd5, ds_writeb(0x3dbc, 1));
 		}
 		else if (r_si == 9)
 			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck wt */
@@ -440,7 +431,7 @@ unsigned short get_tavern_gossip(void)
 	}
 	}
 
-	return r_di + ds_readb(0x7cd1 + ds_readb(CURRENT_TOWN));
+	return r_di + ds_readb(0x7cd1 + ds_readbs(CURRENT_TOWN));
 
 }
 
