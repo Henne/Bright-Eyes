@@ -56,6 +56,7 @@
 #include "seg074.h"
 #include "seg075.h"
 #include "seg076.h"
+#include "seg092.h"
 #include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -4855,6 +4856,74 @@ static int seg077(unsigned short offs)
 			exit(1);
 	}
 }
+static int seg092(unsigned short offs) {
+	switch (offs) {
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	case 0x66: {
+		return 0;
+	}
+	case 0x6b: {
+		return 0;
+	}
+	case 0x70: {
+		return 0;
+	}
+	case 0x75: {
+		return 0;
+	}
+	case 0x7a: {
+		return 0;
+	}
+	case 0x7f: {
+		return 0;
+	}
+	case 0x84: {
+		return 0;
+	}
+	case 0x89: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
 
 static int seg095(unsigned short offs) {
 	switch (offs) {
@@ -6639,7 +6708,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1411:	return 0;
 		case 0x1417:	return 0;
 		case 0x141b:	return 0;
-		case 0x1420:	return 0;
+		case 0x1420:	return seg092(offs);
 		case 0x1429:	return 0;
 		case 0x142c:	return 0;
 		case 0x1432:	return seg095(offs);
@@ -9042,6 +9111,22 @@ static int n_seg076(unsigned short offs)
 	}
 }
 
+static int n_seg092(unsigned short offs)
+{
+	switch (offs) {
+	case 0x4d6: {
+		return 0;
+	}
+	case 0x66d: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg095(unsigned short offs)
 {
 	switch (offs) {
@@ -9827,6 +9912,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x13bd)) return n_seg074(offs);
 	else if (is_ovrseg(0x13c3)) return n_seg075(offs);
 	else if (is_ovrseg(0x13cb)) return n_seg076(offs);
+	else if (is_ovrseg(0x1420)) return n_seg092(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	else if (is_ovrseg(0x1442)) return n_seg097(offs);
 	else if (is_ovrseg(0x1449)) return n_seg098(offs);
