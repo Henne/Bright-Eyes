@@ -501,8 +501,8 @@ void FIG_init_heroes(void)
 		}
 
 		ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(hero + 0x9b) * 5));
-		ds_writeb(0xe069, cb_x);
-		ds_writeb(0xe06a, cb_y);
+		ds_writeb(0xe069, (signed char)cb_x);
+		ds_writeb(0xe06a, (signed char)cb_y);
 		ds_writeb(0xe06b, 0);
 		ds_writeb(0xe06c, 0);
 
