@@ -435,6 +435,7 @@ unsigned short get_tavern_gossip(void)
 
 }
 
+/* Borlandified and identical */
 RealPt get_drinkmate(void)
 {
 	unsigned short name, surname;
