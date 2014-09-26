@@ -4864,7 +4864,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
-		return 0;
+		D1_LOG("chest_closed()\n");
+		chest_closed();
+		return 1;
 	}
 	case 0x2f: {
 		return 0;
