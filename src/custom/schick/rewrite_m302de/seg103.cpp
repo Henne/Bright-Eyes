@@ -294,7 +294,7 @@ signed short select_talent(void)
 		nr_talents++;
 	}
 
-	l_si = GUI_radio(get_ltx(0x368), nr_talents,
+	l_si = GUI_radio(get_ltx(0x368), (signed char)nr_talents,
 				get_ltx((a.a[0] + 48) * 4),
 				get_ltx((a.a[1] + 48) * 4),
 				get_ltx((a.a[2] + 48) * 4),
@@ -335,7 +335,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 		switch(talent) {
 		case 44 : {
-			ds_writeb(0x64a2, hero_pos);
+			ds_writeb(0x64a2, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ltx(0x730));
 
@@ -442,7 +442,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 			break;
 		}
 		case 45 : {
-			ds_writeb(0x64a2, hero_pos);
+			ds_writeb(0x64a2, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ltx(0x730));
 
@@ -454,7 +454,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 			break;
 		}
 		case 46 : {
-			ds_writeb(0x64a2, hero_pos);
+			ds_writeb(0x64a2, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ltx(0x730));
 

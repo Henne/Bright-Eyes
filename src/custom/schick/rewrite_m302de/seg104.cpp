@@ -171,7 +171,7 @@ signed short plan_alchemy(Bit8u *hero)
 					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(0xacf0 + i * 28)))));
 
 				ds_writed(0xbf95 + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
-				array[recipes] = i;
+				array[recipes] = (signed char)i;
 				recipes++;
 			}
 		}
@@ -181,7 +181,7 @@ signed short plan_alchemy(Bit8u *hero)
 			l7 = ds_readws(0xbffd);
 			ds_writew(0xbffd, 7);
 
-			answer = GUI_radio(get_dtp(0xac), recipes,
+			answer = GUI_radio(get_dtp(0xac), (signed char)recipes,
 						Real2Host(ds_readd(0xbf95)),
 						Real2Host(ds_readd(0xbf99)),
 						Real2Host(ds_readd(0xbf9d)),
@@ -287,7 +287,7 @@ signed short plan_alchemy(Bit8u *hero)
 								/* find a empty group */
 								for (l5 = 0; ds_readbs(0x2d36 + l5) != 0; l5++);
 
-								host_writeb(hero + 0x87, l5);
+								host_writebs(hero + 0x87, (signed char)l5);
 								inc_ds_bs_post(0x2d36 + l5);
 								dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
@@ -427,7 +427,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 			/* set timer */
 			host_writed(patient + 0x8b, 0x5460);
 
-			if ((flag != 0) || (test_skill(healer, 45, handycap) > 0)) {
+			if ((flag != 0) || (test_skill(healer, 45, (signed char)handycap) > 0)) {
 
 				if (((retval = test_skill(healer, 45, ds_readbs(0x2c50 + 2 * disease) + handycap)) > 0) &&
 					(disease != 1) && (disease != 3))
