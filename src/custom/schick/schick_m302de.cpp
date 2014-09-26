@@ -4920,7 +4920,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x75: {
-		return 0;
+		D1_LOG("chest_ignifax_normal()\n");
+		chest_ignifax_normal();
+		return 1;
 	}
 	case 0x7a: {
 		return 0;

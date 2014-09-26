@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 8/22
+ *	Functions rewritten: 9/22
  */
 
 #include "v302de.h"
@@ -101,6 +101,16 @@ void chest_stoned(void)
 
 	/* and make him stoned */
 	or_ptr_bs(Real2Host(ds_readd(0x3e20)) + 0xaa, 0x04);
+}
+
+/* Borlandified and identical */
+void chest_ignifax_normal(void)
+{
+	/* a protected chest */
+	print_msg_with_first_hero(get_ltx(0xc24));
+
+	/* the first hero gets wounded with 2W6 */
+	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
 }
 
 #if !defined(__BORLANDC__)
