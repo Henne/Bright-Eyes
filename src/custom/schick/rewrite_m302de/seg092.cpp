@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 7/22
+ *	Functions rewritten: 8/22
  */
 
 #include "v302de.h"
@@ -88,6 +88,19 @@ void chest_protected_brutal(void)
 
 	/* the first hero gets wounded with 4W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
+}
+
+/* Borlandified and identical */
+void chest_stoned(void)
+{
+	/* a protected chest */
+	print_msg_with_first_hero(get_ltx(0xc20));
+
+	/* save pointer of the first hero */
+	ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group());
+
+	/* and make him stoned */
+	or_ptr_bs(Real2Host(ds_readd(0x3e20)) + 0xaa, 0x04);
 }
 
 #if !defined(__BORLANDC__)
