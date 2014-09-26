@@ -309,7 +309,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
 		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
 	{
-		FIG_set_0e(host_readb(hero + 0x81), a1);
+		FIG_set_0e(host_readb(hero + 0x81), (signed char)a1);
 		host_writebs(p1, -1);
 
 		if ( (weapon_type != -1) && (weapon_type < 3) &&
@@ -531,7 +531,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		p1 += copy_ani_seq(p1, host_readws(p4 + 0x28), 1);
 	}
 
-	FIG_set_0e(host_readbs(enemy + 0x26), a1);
+	FIG_set_0e(host_readbs(enemy + 0x26), (signed char)a1);
 	/* terminate figure animation array */
 	host_writebs(p1, -1);
 
