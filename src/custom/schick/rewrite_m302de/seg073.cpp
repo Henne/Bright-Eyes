@@ -114,7 +114,7 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 2)
 			ds_writeb(0x3df0, 1);
 		else if (r_si == 3)
-			ds_writeb(0x3df0, 1);
+			ds_writeb(0x3df5, 1);
 		else if (r_si == 4) {
 			ds_writeb(0x3dfa, 1);
 			ds_writeb(0x3df9, 1);
@@ -148,8 +148,10 @@ unsigned short get_tavern_gossip(void)
 
 		break;
 	}
-	/* Rukian */
-	case 0x0b: {
+	/* Rukian and Angbodirtal */
+	case 0x0b:
+	case 0x0c:
+	 {
 		if (r_si == 1)
 			ds_writeb(0x3dad, 1);	/* Restplaces */
 		break;
@@ -305,8 +307,8 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 2)
 			ds_writeb(0x3dcb, 1);
 		else if (r_si == 3) {
-			ds_writeb(0x3de1, 1);	/* Restplaces */
-			ds_writeb(0x3de2, 1);
+			/* Restplaces */
+			ds_writeb(0x3e11, ds_writeb(0x3e12, 1));
 		}
 		else if (r_si == 4)
 			ds_writeb(0x3e13, 1);
@@ -384,7 +386,7 @@ unsigned short get_tavern_gossip(void)
 	}
 	/* Rybon */
 	case 0x28: {
-		if (r_si != 0)
+		if (r_si == 0)
 			ds_writeb(0x3df1, 1);	/* Restplaces */
 
 		break;
