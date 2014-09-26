@@ -318,8 +318,8 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 
 			FIG_remove_from_list(ds_readbs(0xe38f), 1);
 
-			ds_writeb(0xe069, host_readws(px));
-			ds_writeb(0xe06a, host_readws(py));
+			ds_writeb(0xe069, (signed char)host_readws(px));
+			ds_writeb(0xe06a, (signed char)host_readws(py));
 
 			FIG_add_to_list(ds_readbs(0xe38f));
 			FIG_draw_figures();
@@ -471,7 +471,7 @@ void FIG_latecomers(void)
 
 						l4 = ds_readbs(0xe35a + host_readbs(p2 + 0x13));
 
-						p3 = Real2Host(FIG_get_ptr(l4));
+						p3 = Real2Host(FIG_get_ptr((signed char)l4));
 
 						host_writeb(p3 + 3,
 								x - a.a[host_readbs(Real2Host(ds_readd(0xbd28)) + 0x19 + 5 * i)].x);
@@ -482,9 +482,9 @@ void FIG_latecomers(void)
 
 						FIG_add_to_list(host_readbs(p_mon + 0x26));
 
-						FIG_remove_from_list(l4, 1);
+						FIG_remove_from_list((signed char)l4, 1);
 
-						FIG_add_to_list(l4);
+						FIG_add_to_list((signed char)l4);
 					} else {
 						seg034_718(	host_readbs(Real2Host(ds_readd(0xbd28)) + 0x17 + 5 * i),
 								host_readbs(Real2Host(ds_readd(0xbd28)) + 0x18 + 5 * i),
@@ -681,8 +681,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 			FIG_remove_from_list(ds_readbs(0xe38f), 0);
 
-			ds_writeb(0xe069, x);
-			ds_writeb(0xe06a, y);
+			ds_writeb(0xe069, (signed char)x);
+			ds_writeb(0xe06a, (signed char)y);
 			ds_writed(0xe07d, ds_readd(0xd85e));
 			ds_writeb(0xe079, -1);
 			ds_writeb(0xe38f, FIG_add_to_list(-1));
@@ -741,7 +741,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 					} else {
 						FIG_set_cb_field(y, x, 124);
 						l4 = seg038(hero, hero_pos, host_readws(px), host_readws(py), 10);
-						l13 = seg034_aec();
+						l13 = (signed char)seg034_aec();
 					}
 
 					if (l15 != 0) {
