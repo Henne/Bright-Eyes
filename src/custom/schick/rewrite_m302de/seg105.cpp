@@ -509,7 +509,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 
 			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
 				(char*)get_ltx(0x718),
-				(char*)Real2Host(GUI_names_grammar(0x8002, item, 0)));
+				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item, 0)));
 
 			GUI_output(Real2Host(ds_readd(0xd2f3)));
 		} else {
