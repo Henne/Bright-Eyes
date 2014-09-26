@@ -4869,7 +4869,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f: {
-		return 0;
+		D1_LOG("chest_protected_heavy()\n");
+		chest_protected_heavy();
+		return 1;
 	}
 	case 0x34: {
 		return 0;
