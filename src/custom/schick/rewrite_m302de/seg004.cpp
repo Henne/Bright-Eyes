@@ -753,8 +753,8 @@ void update_wallclock(void)
 
 			ds_writew(0xe10d, 0);
 			night = ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(19))) ? 0 : 1;
-			draw_wallclock(d / 771, night);
-			ds_writew(0x4a9e, d / 771);
+			draw_wallclock((signed short)(d / 771), night);
+			ds_writew(0x4a9e, (signed short)(d / 771));
 		}
 	}
 }
