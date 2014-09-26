@@ -4859,7 +4859,9 @@ static int seg077(unsigned short offs)
 static int seg092(unsigned short offs) {
 	switch (offs) {
 	case 0x25: {
-		return 0;
+		D1_LOG("chest_protected_normal()\n");
+		chest_protected_normal();
+		return 1;
 	}
 	case 0x2a: {
 		return 0;
