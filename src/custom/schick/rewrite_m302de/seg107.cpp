@@ -396,7 +396,7 @@ void item_weapon_poison(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xb8c),
-			(char*)Real2Host(GUI_names_grammar(0x8000, host_readws(get_itemuser() + 0x1c0), 0)));
+			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readws(get_itemuser() + 0x1c0), 0)));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xc94),
