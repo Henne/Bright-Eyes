@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg117 (2xTravelevent, hunt and helpers)
+ *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
  *	Functions rewritten: 6/16
  */
 

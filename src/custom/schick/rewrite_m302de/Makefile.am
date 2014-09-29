@@ -24,13 +24,17 @@ libschick_rewrite_m302de_a_SOURCES = common.h v302de.h\
 		seg030.cpp seg030.h\
 		seg031.cpp seg031.h\
 		seg032.cpp seg032.h\
+		seg033.cpp seg033.h\
 		seg034.cpp seg034.h\
+		seg035.cpp seg035.h\
 		seg036.cpp seg036.h\
 		seg037.cpp seg037.h\
 		seg038.cpp seg038.h\
 		seg039.cpp seg039.h\
 		seg040.cpp seg040.h\
 		seg041.cpp seg041.h\
+		seg042.cpp seg042.h\
+		seg043.cpp seg043.h\
 		seg044.cpp seg044.h\
 		seg045.cpp seg045.h\
 		seg046.cpp seg046.h\
@@ -38,17 +42,50 @@ libschick_rewrite_m302de_a_SOURCES = common.h v302de.h\
 		seg048.cpp seg048.h\
 		seg049.cpp seg049.h\
 		seg050.cpp seg050.h\
+		seg051.cpp seg051.h\
+		seg052.cpp seg052.h\
 		seg053.cpp seg053.h\
+		seg054.cpp seg054.h\
+		seg055.cpp seg055.h\
+		seg056.cpp seg056.h\
+		seg057.cpp seg057.h\
+		seg058.cpp seg058.h\
+		seg059.cpp seg059.h\
+		seg060.cpp seg060.h\
+		seg061.cpp seg061.h\
+		seg062.cpp seg062.h\
 		seg063.cpp seg063.h\
 		seg064.cpp seg064.h\
+		seg065.cpp seg065.h\
 		seg066.cpp seg066.h\
+		seg067.cpp seg067.h\
 		seg068.cpp seg068.h\
+		seg069.cpp seg069.h\
+		seg070.cpp seg070.h\
+		seg071.cpp seg071.h\
 		seg072.cpp seg072.h\
 		seg073.cpp seg073.h\
 		seg074.cpp seg074.h\
 		seg075.cpp seg075.h\
 		seg076.cpp seg076.h\
+		seg077.cpp seg077.h\
+		seg078.cpp seg078.h\
+		seg079.cpp seg079.h\
+		seg080.cpp seg080.h\
+		seg081.cpp seg081.h\
+		seg082.cpp seg082.h\
+		seg083.cpp seg083.h\
+		seg084.cpp seg084.h\
+		seg085.cpp seg085.h\
+		seg086.cpp seg086.h\
+		seg087.cpp seg087.h\
+		seg088.cpp seg088.h\
+		seg089.cpp seg089.h\
+		seg090.cpp seg090.h\
+		seg091.cpp seg091.h\
 		seg092.cpp seg092.h\
+		seg093.cpp seg093.h\
+		seg094.cpp seg094.h\
 		seg095.cpp seg095.h\
 		seg096.cpp seg096.h\
 		seg097.cpp seg097.h\
@@ -64,9 +101,15 @@ libschick_rewrite_m302de_a_SOURCES = common.h v302de.h\
 		seg107.cpp seg107.h\
 		seg108.cpp seg108.h\
 		seg109.cpp seg109.h\
+		seg110.cpp seg110.h\
 		seg111.cpp seg111.h\
+		seg112.cpp seg112.h\
 		seg113.cpp seg113.h\
+		seg114.cpp seg114.h\
+		seg115.cpp seg115.h\
+		seg116.cpp seg116.h\
 		seg117.cpp seg117.h\
+		seg118.cpp seg118.h\
 		seg119.cpp seg119.h\
 		seg120.cpp seg120.h\
 		seg121.cpp seg121.h\

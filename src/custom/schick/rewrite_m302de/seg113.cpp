@@ -1,5 +1,5 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg113 (travel events)
+	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
 	Functions rewritten: 1/22
 */
 
