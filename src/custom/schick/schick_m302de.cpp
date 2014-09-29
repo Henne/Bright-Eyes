@@ -3614,7 +3614,9 @@ static int seg034(unsigned short offs)
 static int seg035(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		D1_LOG("FIG_tidy_monsters()\n");
+		FIG_tidy_monsters();
+		return 1;
 	}
 	case 0x25: {
 		return 0;
