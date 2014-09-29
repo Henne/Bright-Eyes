@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg100 (spells 2/3)
  *	Spells: Clairvoyance / Illusion / Combat / Communication
- *	Functions rewritten 20/20 (complete)
+ *	Functions rewritten: 20/20 (complete)
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1

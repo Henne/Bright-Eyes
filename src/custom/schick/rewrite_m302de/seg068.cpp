@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten 3/13
+ *	Functions rewritten: 3/13
  *
 */
 

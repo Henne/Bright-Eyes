@@ -1,3 +1,8 @@
+/**
+ *	Rewrite of DSA1 v3.02_de functions of seg009 (PP20 decompressor)
+ *	Functions rewritten: 1/1
+ */
+
 /* Code from Heikki Orsila's amigadepack 0.02 to replace previous
  * PowerPack depacker with license issues.
  *

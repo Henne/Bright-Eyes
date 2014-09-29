@@ -1,3 +1,7 @@
+/**
+ *	Rewrite of DSA1 v3.02_de functions of seg026 (texts savegames)
+ *	Functions rewritten: 11/15
+ */
 #include <stdio.h>
 #include <string.h>
 

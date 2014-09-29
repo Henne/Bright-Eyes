@@ -1,10 +1,10 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg102 (spells of monsters)
- *      Functions rewritten 22/22 (complete)
- *
+ *      Functions rewritten: 22/22 (complete)
  *      Functions called rewritten 20/20 (complete)
  *      Functions uncalled rewritten 2/2 (complete)
  *
+ *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg102.cpp
 */

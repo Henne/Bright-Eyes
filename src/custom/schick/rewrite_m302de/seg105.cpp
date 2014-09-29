@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg105 (inventory)
- *      Functions rewritten 14/14 (complete)
+ *      Functions rewritten: 14/14 (complete)
  *      Functions called rewritten 13/13
  *      Functions uncalled rewritten 1/1
  *

@@ -290,7 +290,7 @@ void hunt_cavebear(void)
 	resume_traveling();
 }
 
-
+/* Borlandified and identical */
 /* should be static */
 void hunt_viper(void)
 {

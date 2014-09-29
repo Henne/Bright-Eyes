@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg048 ()
- *      Functions rewritten 0/3
+ *      Functions rewritten: 0/3
  *
 */
 

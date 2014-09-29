@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 0/18
+ *	Functions rewritten: 0/13
  */
 
 #include "v302de.h"

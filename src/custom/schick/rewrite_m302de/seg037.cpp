@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg037 (fight: enemy attack)
  *	Functions rewritten: 8/8 (complete)
  *
- *	Borlandifier and identical
+ *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg037.cpp
  *

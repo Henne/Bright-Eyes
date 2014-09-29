@@ -1,3 +1,7 @@
+/**
+ *	Rewrite of DSA1 v3.02_de functions of seg011 (AIL, miles sound system)
+ *	Functions rewritten: 0/0
+ */
 #if !defined(__BORLANDC__)
 
 #include "regs.h"

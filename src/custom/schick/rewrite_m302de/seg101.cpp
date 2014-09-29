@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg101 (spells 3/3)
  *	Spells: Transformation / Transmutation
- *	Functions rewritten 26/26 (complete)
+ *	Functions rewritten: 26/26 (complete)
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1

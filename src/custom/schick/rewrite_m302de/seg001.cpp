@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewriten: 9/21
+ *	Functions rewritten: 9/21
  *	Borlandified and identical: 9/21
  *
  *	Remarks:

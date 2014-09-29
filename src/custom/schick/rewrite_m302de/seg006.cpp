@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg006 (Fight)
- *      Functions rewritten 16/16 (complete)
+ *      Functions rewritten: 16/16 (complete)
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1

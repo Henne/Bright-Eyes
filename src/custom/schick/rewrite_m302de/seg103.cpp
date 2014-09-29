@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg103 (talents)
- *      Functions rewritten 8/8 (complete)
+ *      Functions rewritten: 8/8 (complete)
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1

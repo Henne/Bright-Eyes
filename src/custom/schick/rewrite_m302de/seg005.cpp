@@ -2,6 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg005 (fight)
  *	Functions rewritten: 9/9 (complete)
  *
+ *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg005.cpp
  */

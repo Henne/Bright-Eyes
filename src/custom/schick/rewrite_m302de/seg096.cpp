@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg096 (text output)
- *	Functions rewritten 23/23 (complete)
+ *	Functions rewritten: 23/23 (complete)
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1

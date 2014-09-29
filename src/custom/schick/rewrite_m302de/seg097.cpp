@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten 15/16
+ *      Functions rewritten: 15/16
  *
  *      Functions called rewritten 12/13
  *      Functions uncalled rewritten 3/3

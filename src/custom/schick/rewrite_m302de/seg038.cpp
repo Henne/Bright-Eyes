@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg038 (Fight)
- *      Functions rewritten 6/6
+ *      Functions rewritten: 6/6
  *
  *      Functions called rewritten 5/5
  *      Functions uncalled rewritten 1/1

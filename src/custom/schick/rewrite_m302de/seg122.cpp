@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg122 (dummy_location)
- *      Functions rewritten 1/1
+ *      Functions rewritten: 1/1
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1

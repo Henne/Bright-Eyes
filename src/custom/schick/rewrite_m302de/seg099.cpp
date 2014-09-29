@@ -2,7 +2,7 @@
  *	Rewrite of DSA1 v3.02_de functions of seg099 (spells 1/3)
  *	Spells:		Dispell / Domination / Demonology / Elements /
  *			Movement / Healing / Clairvoyance
- *	Functions rewritten 39/39 (complete)
+ *	Functions rewritten: 39/39 (complete)
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
