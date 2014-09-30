@@ -3624,7 +3624,9 @@ static int seg035(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
-		return 0;
+		D1_LOG("FIG_split_ap()\n");
+		FIG_split_ap();
+		return 1;
 	}
 	case 0x2f: {
 		return 0;

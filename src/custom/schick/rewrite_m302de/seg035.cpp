@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg035 (fightsystem)
- *	Functions rewritten: 2/4
+ *	Functions rewritten: 3/4
  */
 
 #include <stdio.h>
@@ -193,6 +193,69 @@ void FIG_loot_monsters(void)
 	}
 
 	ds_writew(0xe318, bak1);
+}
+
+/**
+ * \brief	give the group the AP after a fight
+ */
+/* Borlandified and identical */
+void FIG_split_ap(void)
+{
+	signed short l_si;
+	signed short ap;
+	signed short known_ap;
+	signed short bak;
+
+	ap = 0;
+	bak = ds_readws(0xe318);
+	ds_writew(0xe318, 0);
+
+	/* calculate ap from all monsters in that fight */
+	for (l_si = 0; l_si < 20; l_si++) {
+
+		if (ds_readbs(ENEMY_SHEETS + 62 * l_si) != 0) {
+
+			if (ds_readbs(0x4351 + ds_readbs(ENEMY_SHEETS + 62 * l_si)) != 0) {
+
+				/* monster is already known */
+				known_ap = ds_readbs((ENEMY_SHEETS + 26) + 62 * l_si) / 10;
+				ap += (known_ap == 0 ? 1 : known_ap);
+			} else {
+				/* first time bonus */
+				ap += ds_readbs((ENEMY_SHEETS + 26) + 62 * l_si);
+			}
+		}
+	}
+
+	/* mark each monster type from that fight */
+	for (l_si = 0; l_si < 20; l_si++) {
+
+		if (ds_readbs(ENEMY_SHEETS + 62 * l_si) != 0) {
+
+			ds_writeb(0x4351 + ds_readbs(ENEMY_SHEETS + 62 * l_si), 1);
+		}
+	}
+
+	if (count_heroes_available_in_group() > ap) {
+		/* every hero gets at least 1 AP */
+
+		ap = count_heroes_available_in_group();
+
+	} else {
+		/* every hero should get the same AP */
+		while ((ap % count_heroes_available_in_group())) {
+			ap++;
+		}
+	}
+
+	/* prepare output */
+	sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x84), ap);
+	GUI_output(Real2Host(ds_readd(DTP2)));
+
+	/* give AP to the group */
+	add_group_ap(ap);
+
+	ds_writew(0xe318, bak);
 }
 
 #if !defined(__BORLANDC__)
