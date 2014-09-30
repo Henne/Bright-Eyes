@@ -3619,7 +3619,9 @@ static int seg035(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		return 0;
+		D1_LOG("FIG_loot_monsters()\n");
+		FIG_loot_monsters();
+		return 1;
 	}
 	case 0x2a: {
 		return 0;
