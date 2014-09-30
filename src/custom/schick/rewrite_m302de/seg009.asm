@@ -5,11 +5,15 @@ pp20		segment	dword public 'CODE'
 		assume cs:pp20
 		assume es:nothing, ss:nothing, ds:@DATA
 
+NOP3		MACRO
+		nop
+		nop
+		nop
+		ENDM
+
 ADJUST_SEG	MACRO	SEG
 		jnb	$ +14
-		nop
-		nop
-		nop
+		NOP3
 		push	ax
 		mov	ax, SEG
 		sub	ax, 1000h
@@ -35,9 +39,7 @@ arg_E		= word ptr  14h
 		mov	dx, [bp+arg_2]
 		add	ax, [bp+arg_C]
 		jnb	short loc_1FF31
-		nop
-		nop
-		nop
+		NOP3
 		add	dx, 1000h
 
 loc_1FF31:
@@ -56,16 +58,12 @@ loc_1FF31:
 		mov	bl, [si+2]
 		and	al, al
 		jz	short loc_1FF85
-		nop
-		nop
-		nop
+		NOP3
 
 loc_1FF62:
 		shr	dx, 1
 		jnz	short loc_1FF81
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -85,9 +83,7 @@ loc_1FF85:
 		mov	dx, [bp+arg_6]
 		add	ax, bx
 		jnb	short loc_1FF99
-		nop
-		nop
-		nop
+		NOP3
 		add	dx, 1000h
 
 loc_1FF99:
@@ -111,9 +107,7 @@ loc_1FF99:
 loc_1FFC0:
 		shr	dx, 1
 		jnz	short loc_1FFDF
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -133,9 +127,7 @@ loc_1FFE7:
 		xor	ax, ax
 		shr	dx, 1
 		jnz	short loc_20008
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -148,9 +140,7 @@ loc_20008:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_20029
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -169,9 +159,7 @@ loc_20031:
 		mov	al, 0
 		shr	dx, 1
 		jnz	short loc_20052
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -184,9 +172,7 @@ loc_20052:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_20073
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -199,9 +185,7 @@ loc_20073:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_20094
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -214,9 +198,7 @@ loc_20094:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_200B5
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -229,9 +211,7 @@ loc_200B5:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_200D6
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -244,9 +224,7 @@ loc_200D6:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_200F7
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -259,9 +237,7 @@ loc_200F7:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_20118
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -274,9 +250,7 @@ loc_20118:
 		rcl	al, 1
 		shr	dx, 1
 		jnz	short loc_20139
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 
@@ -311,27 +285,21 @@ loc_20156:
 		adc	cx, bx
 		cmp	cx, [bp+arg_6]
 		ja	short loc_20183
-		nop
-		nop
-		nop
+		NOP3
 		jnb	short loc_20178
 		jmp	loc_20309
 
 loc_20178:
 		cmp	ax, [bp+arg_4]
 		ja	short loc_20183
-		nop
-		nop
-		nop
+		NOP3
 		jmp	loc_20309
 
 loc_20183:
 		mov	bl, 0
 		shr	dx, 1
 		jnz	short loc_201A4
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 
 loc_2018F:
@@ -345,9 +313,7 @@ loc_201A4:
 		rcl	bl, 1
 		shr	dx, 1
 		jnz	short loc_201C5
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 		mov	dx, [si]
@@ -371,9 +337,7 @@ loc_201C5:
 loc_201DB:
 		shr	dx, 1
 		jnz	short loc_201FA
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 		mov	dx, [si]
@@ -383,9 +347,7 @@ loc_201DB:
 
 loc_201FA:
 		jb	short loc_20201
-		nop
-		nop
-		nop
+		NOP3
 		mov	cl, 7
 
 loc_20201:
@@ -395,9 +357,7 @@ loc_20201:
 loc_20205:
 		shr	dx, 1
 		jnz	short loc_20224
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 		mov	dx, [si]
@@ -414,9 +374,7 @@ loc_20229:
 		xor	cx, cx
 		shr	dx, 1
 		jnz	short loc_2024A
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 		mov	dx, [si]
@@ -428,9 +386,7 @@ loc_2024A:
 		rcl	cl, 1
 		shr	dx, 1
 		jnz	short loc_2026B
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 		mov	dx, [si]
@@ -442,9 +398,7 @@ loc_2026B:
 		rcl	cl, 1
 		shr	dx, 1
 		jnz	short loc_2028C
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 		mov	dx, [si]
@@ -467,9 +421,7 @@ loc_20298:
 loc_2029C:
 		shr	dx, 1
 		jnz	short loc_202BB
-		nop
-		nop
-		nop
+		NOP3
 		sub	si, 2
 		ADJUST_SEG ds
 		mov	dx, [si]
@@ -510,9 +462,7 @@ loc_202DD:
 
 loc_202FC:
 		jb	short loc_20309
-		nop
-		nop
-		nop
+		NOP3
 		cmp	ax, [bp+arg_4]
 		jbe	short loc_20309
 
