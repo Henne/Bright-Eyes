@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg035 (fightsystem)
- *	Functions rewritten: 3/4
+ *	Functions rewritten: 4/4 (complete)
  */
 
 #include <stdio.h>
@@ -11,6 +11,9 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg032.h"
+#include "seg034.h"
+#include "seg038.h"
+#include "seg039.h"
 #include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -256,6 +259,85 @@ void FIG_split_ap(void)
 	add_group_ap(ap);
 
 	ds_writew(0xe318, bak);
+}
+
+/**
+ * \brief		test if a range attack is possible
+ *
+ * \param hero		pointer to the hero
+ * \param hero_pos	position of the hero
+ *
+ * \return		1 = range attack is possible, 0 = ... not possible
+ */
+/* Borlandified and identical */
+signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
+{
+	signed short i;
+	signed short retval;	/* retval */
+	signed short target_x;
+	signed short target_y;
+	signed short hero_x;
+	signed short hero_y;
+
+	retval = 1;
+
+	/* get position of the target */
+	FIG_search_obj_on_cb(host_readbs(hero + 0x86), &target_x, &target_y);
+
+	/* get position of the hero */
+	FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
+
+	/* check that the range attack is in the same line */
+	if ((hero_x != target_x) && (hero_y != target_y)) {
+		GUI_output(get_dtp(0xb4));
+		retval = 0;
+	}
+
+	if (calc_beeline(hero_x, hero_y, target_x, target_y) != 1) {
+
+		/* exchange coordinates if needed */
+		if (hero_x > target_x) {
+			i = hero_x;
+			hero_x = target_x;
+			target_x = i;
+		}
+
+		/* exchange coordinates if needed */
+		if (hero_y > target_y) {
+			i = hero_y;
+			hero_y = target_y;
+			target_y = i;
+		}
+
+		if (hero_x != target_x) {
+
+			for (i = hero_x; i < target_x; i++) {
+
+				if (!seg034_000(hero_x, hero_y, i, hero_y, 1, 0, 99)) {
+					GUI_output(get_dtp(0xb4));
+					retval = 0;
+					break;
+				}
+			}
+		} else {
+			for (i = hero_y; i < target_y; i++) {
+
+				if (!seg034_000(hero_x, hero_y, hero_x, i, 0, 1, 99)) {
+					GUI_output(get_dtp(0xb4));
+					retval = 0;
+					break;
+				}
+			}
+		}
+	} else {
+
+		if (host_readbs(hero + 0x84) == 15) {
+			GUI_output(get_ltx(0x7f0));
+			retval = 0;
+		}
+	}
+
+	return retval;
 }
 
 #if !defined(__BORLANDC__)

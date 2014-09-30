@@ -3629,7 +3629,17 @@ static int seg035(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		Bit16s hero_pos = CPU_Pop16();
+		CPU_Push16(hero_pos);
+		CPU_Push32(hero);
+
+		reg_ax = check_hero_range_attack(Real2Host(hero), hero_pos);
+
+		D1_LOG("check_hero_range_attack(%s, %d) = %d\n",
+			schick_getCharname(hero), hero_pos, reg_ax);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
