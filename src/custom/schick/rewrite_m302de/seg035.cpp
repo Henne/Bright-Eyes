@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg035 (fightsystem)
  *	Functions rewritten: 4/4 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg035.cpp
  */
 
 #include <stdio.h>
@@ -34,7 +38,6 @@ struct dummy62 {
 /**
  * \brief compress monsters
  */
-/* Borlandified and identical */
 void FIG_tidy_monsters(void)
 {
 	signed short i;
@@ -79,7 +82,6 @@ void FIG_tidy_monsters(void)
 	}
 }
 
-/* Borlandified and identical */
 void FIG_loot_monsters(void)
 {
 	signed short l_si;
@@ -201,7 +203,6 @@ void FIG_loot_monsters(void)
 /**
  * \brief	give the group the AP after a fight
  */
-/* Borlandified and identical */
 void FIG_split_ap(void)
 {
 	signed short l_si;
@@ -269,7 +270,6 @@ void FIG_split_ap(void)
  *
  * \return		1 = range attack is possible, 0 = ... not possible
  */
-/* Borlandified and identical */
 signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 {
 	signed short i;
