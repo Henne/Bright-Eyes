@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg033 (fightsystem: menu)
- *	Functions rewritten: 1/1
+ *	Functions rewritten: 1/1 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg033.cpp
  */
 
 #include <stdio.h>
@@ -36,7 +40,6 @@ namespace M302de {
  * \param x		x-coordinate on the chessboard
  * \param y		y-coordinate on the chessboard
  */
-/* Borlandified and identical */
 void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 {
 	register signed short l_si;
