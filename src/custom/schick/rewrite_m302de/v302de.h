@@ -265,6 +265,11 @@ static inline Bit8u add_ds_bu(Bit16u off, Bit8s val)
 	return ds_writeb(off, ds_readb(off) + val);
 }
 
+static inline void and_ds_bs(Bit16u off, Bit8s val)
+{
+	ds_writeb(off, ds_readbs(off) & val);
+}
+
 static inline void or_ds_bs(Bit16u off, const unsigned char val)
 {
 	ds_writeb(off, ds_readb(off) | val);
@@ -931,6 +936,7 @@ extern char ds[0xf7af];
 #define inc_ds_ws_post(o)	((*(Bit16s*)(ds + o))++)
 #define dec_ds_ws_post(o)	((*(Bit16s*)(ds + o))--)
 
+#define and_ds_bs(o, v)		(*(Bit8s*)(ds + o) &= v)
 #define or_ds_bs(o, v)		(*(Bit8s*)(ds + o) |= v)
 #define or_ds_ws(o, v)		(*(Bit16s*)(ds + o) |= v)
 #define xor_ds_bs(o, v)		(*(Bit8s*)(ds + o) ^= v)
