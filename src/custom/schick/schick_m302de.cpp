@@ -3533,8 +3533,19 @@ static int seg032(unsigned short offs) {
 static int seg033(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			D1_LOG("HERO_TURN()\n");
-			return 0;
+			RealPt hero = CPU_Pop32();
+			Bit16s hero_pos = CPU_Pop16();
+			Bit16s x = CPU_Pop16();
+			Bit16s y = CPU_Pop16();
+			CPU_Push16(y);
+			CPU_Push16(x);
+			CPU_Push16(hero_pos);
+			CPU_Push32(hero);
+
+			D1_LOG("FIG_menu()\n");
+			FIG_menu(Real2Host(hero), hero_pos, x, y) ;
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
