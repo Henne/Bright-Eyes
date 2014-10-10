@@ -710,7 +710,7 @@ void init_common_buffers(void)
 
 	/* load ITEMS.DAT */
 	fd = load_archive_file(0xdc);
-	bytes = read_archive_file(fd, Real2Host(ds_readd(0xe22b)), 3060);
+	bytes = read_archive_file(fd, Real2Host(ds_readd(ITEMSDAT)), 3060);
 	bc_close(fd);
 
 	/* load ANIS.TAB */
