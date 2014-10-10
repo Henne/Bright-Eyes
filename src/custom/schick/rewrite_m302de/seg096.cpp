@@ -485,7 +485,7 @@ void GUI_blank_char(void)
 
 	for (i = 0; i < 8; ptr += 8, i++) {
 		for (j = 0; j < 8; j++)
-			mem_writeb(ptr + j, ds_readbs(0xd2c7));
+			mem_writeb(ptr + j, ds_readbs(TEXTCOLOR_BG));
 	}
 }
 
