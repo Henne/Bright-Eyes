@@ -479,10 +479,10 @@ void cleanup_game(void)
 		/* free male and female figures */
 		for (l_si = 0; l_si < 43; l_si++) {
 
-			if ((host_readw(Real2Host(ds_readd(0xe11d)) + l_si * 12) != 0) &&
-				((host_readw(Real2Host(ds_readd(0xe11d)) + l_si * 12 + 6) != 0)))
+			if ((host_readw(Real2Host(ds_readd(MEM_SLOTS_MFIG)) + l_si * 12) != 0) &&
+				((host_readw(Real2Host(ds_readd(MEM_SLOTS_MFIG)) + l_si * 12 + 6) != 0)))
 			{
-				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe11d)) + l_si * 12) + 6);
+				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_MFIG)) + l_si * 12) + 6);
 			}
 
 			if ((host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + l_si * 12) != 0) &&
