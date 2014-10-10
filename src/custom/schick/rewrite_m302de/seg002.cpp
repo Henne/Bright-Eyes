@@ -1770,9 +1770,9 @@ void game_loop(void)
 			poison_effect();
 		}
 
-		if (ds_readbs(0x4495) != 0) {
+		if (ds_readbs(CHECK_PARTY) != 0) {
 
-			ds_writeb(0x4495, 0);
+			ds_writeb(CHECK_PARTY, 0);
 
 			if (!count_heros_available() ||
 				((count_heros_available() == 1) && check_hero(get_hero(6))))
