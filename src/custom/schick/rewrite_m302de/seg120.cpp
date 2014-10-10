@@ -468,7 +468,7 @@ void cleanup_game(void)
 	}
 
 	/* free EMS memory */
-	if (ds_readb(0x26ab) != 0) {
+	if (ds_readb(EMS_ENABLED) != 0) {
 
 		for (l_si = 0; l_si < 37; l_si++) {
 			if (host_readw(Real2Host(ds_readd(0xe121)) + l_si * 8) != 0) {
