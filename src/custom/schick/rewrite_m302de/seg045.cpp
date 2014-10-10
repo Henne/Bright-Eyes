@@ -47,8 +47,8 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 	ds_writeb(0xe06f, 0);
 	ds_writeb(0xe070, 0);
 
-	ds_writeb(0xe071, (signed char)(ds_readb(0x6210 + type * 2) - 1));
-	ds_writeb(0xe072, (signed char)(ds_readb(0x6204 + type * 2) - 1));
+	ds_writebs(0xe071, ds_readbs(0x6210 + type * 2) - 1);
+	ds_writebs(0xe072, ds_readbs(0x6204 + type * 2) - 1);
 	ds_writeb(0xe07b, 0);
 	ds_writeb(0xe073, 0);
 	ds_writeb(0xe075, -1);

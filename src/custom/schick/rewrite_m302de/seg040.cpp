@@ -259,10 +259,10 @@ void FIG_draw_scenario(void)
 					ds_writeb(0xe06e, host_readb(Real2Host(ds_readd(0xe384)) + obj_id * 2));
 					ds_writeb(0xe06f, 0);
 					ds_writeb(0xe070, 0);
-					ds_writeb(0xe071,
-						(signed char)(host_readbs(Real2Host(ds_readd(0xe384)) + obj_id * 2)-1));
-					ds_writeb(0xe072,
-						(signed char)(host_readbs(Real2Host(ds_readd(0xe380)) + obj_id * 2)-1));
+					ds_writebs(0xe071,
+						host_readbs(Real2Host(ds_readd(0xe384)) + obj_id * 2) - 1);
+					ds_writebs(0xe072,
+						host_readbs(Real2Host(ds_readd(0xe380)) + obj_id * 2) - 1);
 					ds_writeb(0xe07b, 0);
 					ds_writeb(0xe073, 0);
 					ds_writeb(0xe075, -1);

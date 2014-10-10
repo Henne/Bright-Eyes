@@ -308,8 +308,8 @@ void spell_hexenknoten(void)
 	ds_writeb(0xe06e, (signed char)width);
 	ds_writeb(0xe06f, 0);
 	ds_writeb(0xe070, 0);
-	ds_writeb(0xe071, (signed char)(width -1));
-	ds_writeb(0xe072, (signed char)(height-1));
+	ds_writebs(0xe071, (signed char)(width) - 1);
+	ds_writebs(0xe072, (signed char)(height) - 1);
 	ds_writeb(0xe073, 0);
 	ds_writeb(0xe075, -1);
 	ds_writeb(0xe074, -1);
