@@ -64,7 +64,7 @@ void move(void)
 	for (i = 0; i < 29; i++, p3 += 2) {
 		v2 = 0;
 		x = ds_readws(X_TARGET) + host_readbs(p3);
-		y = ds_readw(0x2d46) + host_readbs(p3 + 1);
+		y = ds_readw(Y_TARGET) + host_readbs(p3 + 1);
 
 		if (x < 0) {
 			x = 0;
@@ -102,20 +102,20 @@ void move(void)
 	if (ds_readb(0xbd94) == 0x10) {
 		/* dungeon mode */
 		ds_writeb(0xbd4d, host_readb(p1 +
-			((ds_readw(0x2d46) + host_readbs(p3 + 1)) << 4) +
+			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 4) +
 			ds_readw(X_TARGET) + host_readbs(p3)));
 
 		ds_writeb(0xbd4e, host_readb(p1 +
-			((ds_readw(0x2d46) + host_readbs(p3 + 3)) << 4) +
+			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 4) +
 			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
 	} else {
 		/* city mode */
 		ds_writeb(0xbd4d, host_readb(p2 +
-			((ds_readw(0x2d46) + host_readbs(p3 + 1)) << 5) +
+			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 5) +
 			 ds_readw(X_TARGET) + host_readbs(p3)));
 
 		ds_writeb(0xbd4e, host_readb(p2 +
-			((ds_readw(0x2d46) + host_readbs(p3 + 3)) << 5) +
+			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 5) +
 			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
 	}
 }
