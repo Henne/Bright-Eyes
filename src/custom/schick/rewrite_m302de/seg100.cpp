@@ -78,9 +78,9 @@ void spell_exposami(void)
 
 	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
-		if (host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * i + 0x1a) != 0) {
+		if (host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * i + 0x1a) != 0) {
 
-			id = host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * i + 0x16);
+			id = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * i + 0x16);
 
 			changed = 0;
 

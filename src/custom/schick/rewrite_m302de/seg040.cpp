@@ -98,7 +98,7 @@ void FIG_preload_gfx(void)
 		ds_writeb(0xe089 + i, 0);
 	}
 
-	ds_writed(0xd86a, (Bit32u)F_PADD(ds_readd(0xbd28), 0xd8));
+	ds_writed(0xd86a, (Bit32u)F_PADD(ds_readd(PTR_FIGHT_LST), 0xd8));
 
 	ds_writed(0xd866, (Bit32u)((RealPt)ds_readd(0xd86a) + 0x1953));
 

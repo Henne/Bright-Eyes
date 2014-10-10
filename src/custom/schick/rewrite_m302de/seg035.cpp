@@ -52,21 +52,21 @@ void FIG_tidy_monsters(void)
 			(enemy_dead(Real2Host(RealMake(datseg, ENEMY_SHEETS + 62 * i))) ||
 			enemy_uncon(Real2Host(RealMake(datseg, ENEMY_SHEETS + 62 * i))) ||
 			enemy_stoned(Real2Host(RealMake(datseg, ENEMY_SHEETS + 62 * i))) ||
-			((host_readbs(Real2Host(ds_readd(0xbd28)) + 5 * i + 0x1a) != 0) && (monsters == 0))))
+			((host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * i + 0x1a) != 0) && (monsters == 0))))
 		{
 
 			if (i == 19) {
 				/* just clear the last one */
-				memset(Real2Host(ds_readd(0xbd28)) + 5 * i + 0x16, 0, 5);
+				memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * i + 0x16, 0, 5);
 				break;
 			} else {
 				/* move the next monsters one position to the front */
 				for (j = i; j < 19; j++) {
 
-					*(struct dummy5*)(Real2Host(ds_readd(0xbd28)) + 5 * j + 0x16) =
-						*(struct dummy5*)(Real2Host(ds_readd(0xbd28)) + 5 * (j + 1) + 0x16);
+					*(struct dummy5*)(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * j + 0x16) =
+						*(struct dummy5*)(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * (j + 1) + 0x16);
 
-					memset(Real2Host(ds_readd(0xbd28)) + 5 * (j + 1) + 0x16, 0, 5);
+					memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * (j + 1) + 0x16, 0, 5);
 
 					*(struct dummy62*)(p_datseg + ENEMY_SHEETS + 62 * j) =
 						*(struct dummy62*)(p_datseg + ENEMY_SHEETS + 62 * (j + 1));
@@ -111,7 +111,7 @@ void FIG_loot_monsters(void)
 
 		l_di = l3 = 0;
 
-		while (((l1 = host_readws(Real2Host(ds_readd(0xbd28)) + 2 * l_di + 0x96)) != 0) &&
+		while (((l1 = host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * l_di + 0x96)) != 0) &&
 			/* ITEM 164 is "BONE WITH RUNES" */
 			(l_di < 30) && (l1 != 164))
 		{
@@ -160,18 +160,18 @@ void FIG_loot_monsters(void)
 
 			if ((l4 != -2) && ((l5 == 0) || ((l5 != 0) && (l6 - 1 != l4)))) {
 
-				if (!get_item(host_readws(Real2Host(ds_readd(0xbd28)) + 2 * (l4 + l_si) + 0x96), 1, 1))
+				if (!get_item(host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l4 + l_si) + 0x96), 1, 1))
 				{
 					l4 = -2;
 				} else {
-					host_writew(Real2Host(ds_readd(0xbd28)) + 2 * (l4 + l_si) + 0x96, 0);
+					host_writew(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l4 + l_si) + 0x96, 0);
 
 					for (l_di = l4 + l_si; l_di < 29; l_di++) {
 
-						host_writew(Real2Host(ds_readd(0xbd28)) + 2 * (l_di) + 0x96,
-							host_readws(Real2Host(ds_readd(0xbd28)) + 2 * (l_di + 1) + 0x96));
+						host_writew(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l_di) + 0x96,
+							host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l_di + 1) + 0x96));
 
-						host_writew(Real2Host(ds_readd(0xbd28)) + 2 * (l_di + 1) + 0x96, 0);
+						host_writew(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l_di + 1) + 0x96, 0);
 					}
 				}
 			}
@@ -181,9 +181,9 @@ void FIG_loot_monsters(void)
 		}
 	} while (l4 != -2);
 
-	money = host_readws(Real2Host(ds_readd(0xbd28)) + 0xd2) * 100;
-	money += host_readws(Real2Host(ds_readd(0xbd28)) + 0xd4) * 10;
-	money += host_readws(Real2Host(ds_readd(0xbd28)) + 0xd6);
+	money = host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0xd2) * 100;
+	money += host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0xd4) * 10;
+	money += host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0xd6);
 
 	if (money > 0) {
 
