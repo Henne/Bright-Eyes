@@ -32,7 +32,7 @@ void do_h_line(RealPt, signed short, signed short, signed short, signed char);
 void do_v_line(RealPt, signed short, signed short, signed short, signed char);
 void do_border(RealPt, signed short, signed short, signed short, signed short, signed char);
 void do_pic_copy(unsigned short mode);
-void do_save_rect();
+void do_save_rect(void);
 void do_fill_rect(RealPt, signed short, signed short, signed short, signed short, signed short);
 void wait_for_vsync(void);
 void map_effect(Bit8u*);

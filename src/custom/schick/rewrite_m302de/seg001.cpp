@@ -138,7 +138,7 @@ void seg001_00c1(unsigned short track_nr) {
 	ds_writed(0xbc4a, CD_get_tod());
 }
 
-void seg001_02c4() {
+void seg001_02c4(void) {
 
 	signed int val;
 

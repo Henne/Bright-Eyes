@@ -91,7 +91,7 @@ unsigned short npc_meetings(unsigned short type_index)
 	}
 }
 
-void npc_farewell()
+void npc_farewell(void)
 {
 	Bit8u *hero_i;
 	signed short i;
@@ -182,7 +182,7 @@ void npc_farewell()
 }
 
 //static
-void npc_nariell()
+void npc_nariell(void)
 {
 	signed short answer;
 
@@ -224,7 +224,7 @@ void npc_nariell()
 }
 
 //static
-void npc_harika()
+void npc_harika(void)
 {
 	long money;
 	signed short answer;
@@ -296,7 +296,7 @@ void npc_harika()
 	load_tlk(0x82);
 }
 
-void npc_curian()
+void npc_curian(void)
 {
 	signed short answer;
 
@@ -338,7 +338,7 @@ void npc_curian()
 }
 
 //static
-void npc_ardora()
+void npc_ardora(void)
 {
 	signed short answer;
 
@@ -408,7 +408,7 @@ void npc_ardora()
 }
 
 //static
-void npc_garsvik()
+void npc_garsvik(void)
 {
 	signed short answer;
 
@@ -450,7 +450,7 @@ void npc_garsvik()
 }
 
 //static
-void npc_erwo()
+void npc_erwo(void)
 {
 	signed short answer;
 

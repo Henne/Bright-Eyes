@@ -10,7 +10,7 @@ void CD_driver_request(RealPt req);
 unsigned int CD_get_tod();
 //static
 void seg001_00c1(unsigned short);
-void seg001_02c4();
+void seg001_02c4(void);
 signed short CD_bioskey(signed short);
 //static
 void CD_audio_stop_hsg(void);
