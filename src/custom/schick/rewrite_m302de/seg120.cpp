@@ -485,10 +485,10 @@ void cleanup_game(void)
 				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe11d)) + l_si * 12) + 6);
 			}
 
-			if ((host_readw(Real2Host(ds_readd(0xe119)) + l_si * 12) != 0) &&
-				((host_readw(Real2Host(ds_readd(0xe119)) + l_si * 12 + 6) != 0)))
+			if ((host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + l_si * 12) != 0) &&
+				((host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + l_si * 12 + 6) != 0)))
 			{
-				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe119)) + l_si * 12) + 6);
+				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + l_si * 12) + 6);
 			}
 		}
 
