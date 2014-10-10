@@ -375,7 +375,7 @@ void GRP_switch_to_next(signed short mode)
 		GRP_sort_heros();
 
 		for (group = 0; group <= 6; group++) {
-			ds_writeb(0x4219 + group, ds_writeb(0x4212 + group, 0));
+			ds_writeb(FOOD_MESSAGE + group, ds_writeb(0x4212 + group, 0));
 		}
 
 		ds_writew(0x2846, 1);
