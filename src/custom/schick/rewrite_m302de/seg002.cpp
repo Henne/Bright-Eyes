@@ -1752,7 +1752,7 @@ void game_loop(void)
 			do_town();
 		} else if (ds_readbs(DUNGEON_INDEX) != 0) {
 			do_dungeon();
-		} else if (ds_readbs(0x3614) != 0) {
+		} else if (ds_readbs(TRAVELING) != 0) {
 			/* do_travel_mode();	seg093 */
 			/* TODO: replace with do_travel_mode() */
 			do_dungeon();
