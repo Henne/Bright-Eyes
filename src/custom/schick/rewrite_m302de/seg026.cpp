@@ -45,7 +45,7 @@ void init_text(void)
 	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2a1)), 5000);
 	bc_close(handle);
 
-	split_textbuffer(Real2Host(ds_readd(0xe129)), (RealPt)ds_readd(0xd2a1), len);
+	split_textbuffer(Real2Host(ds_readd(MONNAMES)), (RealPt)ds_readd(0xd2a1), len);
 
 }
 
