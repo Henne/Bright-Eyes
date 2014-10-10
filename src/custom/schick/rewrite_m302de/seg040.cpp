@@ -150,10 +150,10 @@ void FIG_preload_gfx(void)
 	bc_close(handle);
 
 	/* load WEAPANI.DAT */
-	ds_writed(0xe374, ds_readd(0xd86e));
+	ds_writed(BUFFER_WEAPANIDAT, ds_readd(0xd86e));
 	add_ds_ws(0xd86e, 1370);
 	handle = load_archive_file(0xd9);
-	read_archive_file(handle, Real2Host(ds_readd(0xe374)), 1370);
+	read_archive_file(handle, Real2Host(ds_readd(BUFFER_WEAPANIDAT)), 1370);
 	bc_close(handle);
 
 	/* process NVFs */
