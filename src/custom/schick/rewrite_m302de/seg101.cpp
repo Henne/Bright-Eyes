@@ -551,7 +551,7 @@ void spell_salander(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x97c),
-			(char*)Real2Host(ds_readd(0xe5bc)) + 0x10);
+			(char*)Real2Host(ds_readd(SPELLUSER)) + 0x10);
 
 		/* no AE cost */
 		ds_writew(0xac0e, 0);
