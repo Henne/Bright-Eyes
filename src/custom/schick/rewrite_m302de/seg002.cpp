@@ -1141,7 +1141,7 @@ void interrupt mouse_isr(void)
 		}
 
 		if (((ds_readb(0x2d6e) != 0) || (ds_readb(0x2d67) != 0)) &&
-				!ds_readbs(0x2d60) &&
+				!ds_readbs(LOCATION) &&
 				!ds_readbs(0x2c98) &&
 				(ds_readbs(0x2845) == 0))
 		{
