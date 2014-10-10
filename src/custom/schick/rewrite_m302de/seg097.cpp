@@ -86,6 +86,7 @@ signed short GUI_unused2(signed short c, RealPt p)
 
 	v2 = GUI_lookup_char_height(c, &v1);
 #if !defined(__BORLANDC__)
+	/* BE-fix */
 	v1 = host_readws((Bit8u*)&v1);
 #endif
 	GUI_1c2(v2, v1, p);
@@ -99,7 +100,7 @@ signed short GUI_lookup_char_height(signed char c, signed short *p)
 {
 	signed short i;
 
-	for (i = 0; i != 201; i+=3) {
+	for (i = 0; i != 201; i += 3) {
 		if (c == ds_readbs(0xab42 + i)) {
 
 			host_writew((Bit8u*)p, ((signed short)ds_readbs(0xab44 + i)) & 0xff);
@@ -107,7 +108,12 @@ signed short GUI_lookup_char_height(signed char c, signed short *p)
 		}
 	}
 
-	if (c == (char)0x7e || c == (char)0xf0 || c == (char)0xf1 || c == (char)0xf2 || c == (char)0xf3) {
+	if ((c == (signed char)0x7e)
+			|| (c == (signed char)0xf0)
+			|| (c == (signed char)0xf1)
+			|| (c == (signed char)0xf2)
+			|| (c == (signed char)0xf3))
+	{
 		return host_writews((Bit8u*)p, 0);
 	}
 
