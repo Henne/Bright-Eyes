@@ -37,7 +37,7 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 	signed short l1;
 	signed short retval = -1;
 	/* string on stack "%s~%d" */
-	dummy format_str = *(struct dummy*)(p_datseg + 0xacce);
+	struct dummy format_str = *(struct dummy*)(p_datseg + 0xacce);
 
 	if (show_values != 0) {
 
@@ -262,7 +262,7 @@ signed short select_talent(void)
 	signed short l_si = -1;
 	signed short nr_talents = 3;
 	/* available skills {44, 45, 46, -1, -1, -1} */
-	dummy2 a = *(dummy2*)(p_datseg + 0xacd4);
+	struct dummy2 a = *(struct dummy2*)(p_datseg + 0xacd4);
 
 	/* add skills for special location */
 	/* 9 = ACROBATICS, 32 = ALCHEMY, 43 = CHEAT, 47 = INSTRUMENT, 49 = PICKPOCKET, */

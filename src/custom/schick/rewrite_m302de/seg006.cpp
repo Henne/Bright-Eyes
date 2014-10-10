@@ -194,7 +194,7 @@ RealPt seg006_033c(signed short v)
 #if !defined(__BORLANDC__)
 			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * 62);
 #else
-			return (RealPt)&(((enemy_sheets*)(p_datseg + ENEMY_SHEETS))[i]);
+			return (RealPt)&(((struct enemy_sheets*)(p_datseg + ENEMY_SHEETS))[i]);
 #endif
 	}
 

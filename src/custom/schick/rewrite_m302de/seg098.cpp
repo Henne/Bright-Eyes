@@ -539,11 +539,11 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 	signed short answer1;
 	signed short first_spell;
 	signed short retval = -1;
-	dummy6 str_val = *(dummy6*)(p_datseg + 0xac1a);
-	dummy5 col_str = *(dummy5*)(p_datseg + 0xac20);
-	dummy3 str = *(dummy3*)(p_datseg + 0xac25);
-	dummy8 col_str_val = *(dummy8*)(p_datseg + 0xac28);
-	dummy12 ones = *(dummy12*)(p_datseg + 0xac30);
+	struct dummy6 str_val = *(struct dummy6*)(p_datseg + 0xac1a);
+	struct dummy5 col_str = *(struct dummy5*)(p_datseg + 0xac20);
+	struct dummy3 str = *(struct dummy3*)(p_datseg + 0xac25);
+	struct dummy8 col_str_val = *(struct dummy8*)(p_datseg + 0xac28);
+	struct dummy12 ones = *(struct dummy12*)(p_datseg + 0xac30);
 
 	if ((show_vals == 0) && (ds_readws(0xc003) == 2)) {
 		show_vals = 2;

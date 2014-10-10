@@ -422,7 +422,7 @@ void FIG_init_enemies(void)
 #if !defined(__BORLANDC__)
 		FIG_load_enemy_sprites(Real2Host(RealMake(datseg, ENEMY_SHEETS + i * 62)), x, y);
 #else
-		FIG_load_enemy_sprites((Bit8u*)&((enemy_sheets*)(p_datseg +  ENEMY_SHEETS))[i], x, y);
+		FIG_load_enemy_sprites((Bit8u*)&((struct enemy_sheets*)(p_datseg +  ENEMY_SHEETS))[i], x, y);
 #endif
 	}
 }
