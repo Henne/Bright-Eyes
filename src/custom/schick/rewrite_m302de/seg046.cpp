@@ -306,13 +306,13 @@ void status_show(Bit16u index)
 	/* print typus */
 	set_textcolor(0, 2);
 
-	GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (
+	GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (
 	((host_readb(Real2Host(hero) + 0x22)) ? 0x251 : 0x9) + host_readbs(Real2Host(hero) + 0x21)) * 4)), 59, 16);
 
 
 	/* show AP */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x9ac)),
+		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x9ac)),
 		host_readd(Real2Host(hero) + 0x28));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 26);
 
@@ -327,7 +327,7 @@ void status_show(Bit16u index)
 		host_readd(Real2Host(hero) + 0x2c));
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x4b0)),
+		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x4b0)),
 		(char*)Real2Host(ds_readd(0xd2eb)));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 43);
 
@@ -374,7 +374,7 @@ void status_show(Bit16u index)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x28),
-					(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + (host_readbs(Real2Host(hero) + 0x26) + 0x15) * 4)));
+					(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (host_readbs(Real2Host(hero) + 0x26) + 0x15) * 4)));
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 55);
 
 			/* show attributes */
@@ -592,41 +592,41 @@ void status_show(Bit16u index)
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x14),
 				host_readbs(Real2Host(hero) + 0x67),
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc0)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc0)),
 
 				host_readbs(Real2Host(hero) + 0x68) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				host_readbs(Real2Host(hero) + 0x6f) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc4)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc4)),
 
 				host_readbs(Real2Host(hero) + 0x69) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				host_readbs(Real2Host(hero) + 0x70) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xc8)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc8)),
 
 				host_readbs(Real2Host(hero) + 0x6a) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				host_readbs(Real2Host(hero) + 0x71) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xcc)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xcc)),
 
 				host_readbs(Real2Host(hero) + 0x6b) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				host_readbs(Real2Host(hero) + 0x72) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd0)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd0)),
 
 				host_readbs(Real2Host(hero) + 0x6c) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				host_readbs(Real2Host(hero) + 0x73) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd4)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd4)),
 
 				host_readbs(Real2Host(hero) + 0x6d) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				host_readbs(Real2Host(hero) + 0x74) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xd8)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd8)),
 
 				host_readbs(Real2Host(hero) + 0x6e) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				host_readbs(Real2Host(hero) + 0x75) - host_readbs(Real2Host(hero) + 0x32) / 2,
 				at,
 				pa,
 
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xdc)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xdc)),
 				host_readbs(Real2Host(hero) + 0x10f) + j,
 
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0xe0)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xe0)),
 				host_readbs(Real2Host(hero) + 0x110) + j);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 60);
@@ -643,43 +643,43 @@ void status_show(Bit16u index)
 			set_textcolor(0xff, 2);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x300)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x300)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x300)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x300)), 5, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x308)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x308)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x308)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x308)), 110, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x314)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x314)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x314)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x314)), 215, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x304)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x304)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x304)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x304)), 5, 100, 0),
 				97);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x30c)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x30c)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x30c)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x30c)), 110, 100, 0),
 				104);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x318)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x318)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x318)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x318)), 215, 100, 0),
 				97);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x310)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x310)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x310)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x310)), 110, 100, 0),
 				132);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x31c)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x31c)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x31c)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x31c)), 215, 100, 0),
 				153);
 
 			/* print values */
@@ -708,23 +708,23 @@ void status_show(Bit16u index)
 			set_textcolor(0xff, 2);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x190)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x190)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x190)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x190)), 5, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x324)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x324)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x324)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x324)), 5, 100, 0),
 				129);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x328)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x328)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x328)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x328)), 110, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x32c)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(0xc3b5)) + 0x32c)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x32c)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x32c)), 215, 100, 0),
 				55);
 
 
