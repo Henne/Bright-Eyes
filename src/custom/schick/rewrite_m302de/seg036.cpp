@@ -922,7 +922,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				(host_readws(hero + 0x64) > 10) &&	/* AE > 10 */
 				(l5 != 0) &&
 				(ds_readws(CURRENT_FIG_NR) != 192) &&	/* not in the final fight */
-				(ds_readbs(0x5f31) != 0))		/* ??? a bool variable, maybe autofight magic */
+				(ds_readbs(AUTOFIGHT_MAGIC) != 0))		/* ??? a bool variable, maybe autofight magic */
 			{
 				if (seg036_8cf(hero, hero_pos, hero_cursed(hero), x, y)) {
 
