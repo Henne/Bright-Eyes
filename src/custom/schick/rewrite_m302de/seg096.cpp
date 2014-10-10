@@ -366,20 +366,21 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 	l3 = x;
 
 	while ((l4 = str[l2++])) {
+
 		/* handle line breaks */
-		if (l4 == 0x0d || l4 == 0x40) {
+		if ((l4 == 0x0d) || (l4 == 0x40)) {
+
 			if (++l1 == ds_readws(0xe4d9)) {
 				add_ds_ws(0xd2d5, ds_readws(0xe4db));
 				l3 -= ds_readws(0xe4db);
 			}
+
 			y += 7;
 			x = (ds_readw(0xd2d1) == 1) ?
 				GUI_get_first_pos_centered(str + l2, ds_readws(0xd2d9), ds_readws(0xd2d5), 0) : l3;
 
-			continue;
-		}
+		} else	if (l4 == 0x7e) {
 
-		if (l4 == 0x7e) {
 			if (x < ds_readws(0xd313))
 				x = ds_readws(0xd313);
 			else if (x < ds_readws(0xd315))
@@ -394,24 +395,22 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 				x = ds_readws(0xd31d);
 			else if (x < ds_readws(0xd31f))
 				x = ds_readws(0xd31f);
-			continue;
-		}
 
-		/* changes of the text color are only control bytes */
-		if (l4 == (unsigned char)0xf0 ||
-			l4 == (unsigned char)0xf1 ||
-			l4 == (unsigned char)0xf2 ||
-			l4 == (unsigned char)0xf3)
+		} else if (l4 == (unsigned char)0xf0 ||
+				l4 == (unsigned char)0xf1 ||
+				l4 == (unsigned char)0xf2 ||
+				l4 == (unsigned char)0xf3)
 		{
+			/* changes of the text color are only control bytes */
 			ds_writew(0xd2c5, l4 - 0xf0);
-			continue;
+		} else	{
+
+			if (l4 == 0x3c) {
+				l4 = 0x3e;
+			} else { }
+
+			x += GUI_print_char(l4, x, y);
 		}
-
-		if (l4 == 0x3c) {
-			l4 = 0x3e;
-		} else { }
-
-		x += GUI_print_char(l4, x, y);
 	}
 
 	refresh_screen_size();
