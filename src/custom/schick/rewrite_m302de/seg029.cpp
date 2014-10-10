@@ -315,7 +315,7 @@ void draw_icons(void)
 void draw_main_screen(void)
 {
 	ds_writew(0xe111, 0xf1);
-	ds_writew(0xe10f, 0x1f);
+	ds_writew(WALLCLOCK_Y, 0x1f);
 	ds_writew(0xe113, 0);
 
 	set_var_to_zero();
