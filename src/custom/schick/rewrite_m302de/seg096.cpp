@@ -507,7 +507,7 @@ void GUI_font_to_buf(Bit8u *fc)
 		c = *fc++;
 		for (j = 0; j < 8; j++)
 			if ((0x80 >> j) & c)
-				 p[j] = ds_readb(0xd2c9 + ds_readw(TEXTCOLOR) * 2);
+				 p[j] = ds_readb(TEXTCOLOR_FG + ds_readw(TEXTCOLOR) * 2);
 	}
 }
 
