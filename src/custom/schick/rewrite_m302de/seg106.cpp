@@ -426,7 +426,7 @@ void equip_belt_ani(void)
 	/* a = b = c = -1 */
 	ds_writeb(0x2ca7, -1);
 	ds_writeb(0x2ca6, -1);
-	ds_writew(0x2ccf, -1);
+	ds_writew(CURRENT_ANI, -1);
 }
 
 /**
