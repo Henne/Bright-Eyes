@@ -76,13 +76,13 @@ unsigned short CD_set_drive_nr() {
 	if (CD_count_drives() == 0)
 		return 0;
 
-	ds_writew(0xbc52, CD_get_first_drive());
+	ds_writew(CD_DRIVE_NR, CD_get_first_drive());
 	return 1;
 }
 
 void CD_driver_request(RealPt req) {
 	reg_ax = 0x1510;
-	reg_cx = ds_readw(0xbc52);
+	reg_cx = ds_readw(CD_DRIVE_NR);
 	CPU_SetSegGeneral(es, RealSeg(req));
 	reg_bx = RealOff(req);
 	CALLBACK_RunRealInt(0x2f);
@@ -309,7 +309,7 @@ static int CD_set_drive_nr(void)
 	if (CD_count_drives() == 0)
 		return 0;
 
-	ds_writew(0xbc52, CD_get_first_drive());
+	ds_writew(CD_DRIVE_NR, CD_get_first_drive());
 
 	return 1;
 }
@@ -319,7 +319,7 @@ static void CD_driver_request(void * request)
 {
 	asm {
 		mov ax, 0x1510
-		mov cx, [0xbc52]
+		mov cx, [CD_DRIVE_NR]
 		les bx, request
 		int 0x2f
 	}
