@@ -271,7 +271,7 @@ signed short plan_alchemy(Bit8u *hero)
 										if ((host_readbs(hero_p + 0x21) != 0) &&
 											(host_readbs(hero_p + 0x87) == ds_readbs(CURRENT_GROUP)))
 										{
-											GRP_hero_sleep(hero_p, ds_readbs(0xe3f1));
+											GRP_hero_sleep(hero_p, ds_readbs(SLEEP_QUALITY));
 										}
 									}
 								} else {
@@ -280,7 +280,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 								retval = do_alchemy(hero, recipe_index, 0);
 
-								ds_writeb(0xe3f1, -1);
+								ds_writeb(SLEEP_QUALITY, -1);
 
 							} else if (l4 == 2) {
 
