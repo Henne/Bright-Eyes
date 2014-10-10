@@ -303,7 +303,11 @@ static int seg000(unsigned short offs) {
 		}
 		/* setdisk() */
 		case 0x79b: {
-			return 0;
+			Bit16s drive = CPU_Pop16();
+			CPU_Push16(drive);
+			reg_ax = bc_setdisk(drive);
+			D1_LOG("setdisk(%c) = %d\n", drive + 'A', (Bit16s)reg_ax);
+			return 1;
 		}
 		/* dos_getdiskfree() */
 		case 0x7ed: {

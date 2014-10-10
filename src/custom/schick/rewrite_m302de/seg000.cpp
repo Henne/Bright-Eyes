@@ -16,6 +16,14 @@ Bit16s bc_getdisk(void)
 	return reg_ax;
 }
 
+Bit16s bc_setdisk(Bit16s __drive)
+{
+	CPU_Push16(__drive);
+	CALLBACK_RunRealFar(reloc_game, 0x79b);
+	CPU_Pop16();
+	return reg_ax;
+}
+
 void bc_dos_getdiskfree(Bit16u drive, Bit8u *p)
 {
 	Bit32u esp_bak = reg_esp;
