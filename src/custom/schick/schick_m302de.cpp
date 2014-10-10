@@ -9556,6 +9556,7 @@ static int n_seg102(unsigned short offs)
 {
 	switch (offs) {
 	case 0x000: {
+		CPU_Pop16();
 		Bit16s damage = CPU_Pop16();
 		CPU_Push16(damage);
 
