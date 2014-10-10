@@ -112,7 +112,7 @@ void prepare_date_str(void)
 		/* Normal day */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x590),
-			get_ltx((0x15d + ds_readbs(0x2dbf)) * 4),
+			get_ltx((0x15d + ds_readbs(DAY_OF_WEEK)) * 4),
 			ds_readbs(DAY_OF_MONTH),
 			get_ltx((0x15 + ds_readbs(MONTH)) * 4),
 			get_ltx((0x227 + get_current_season()) * 4),
