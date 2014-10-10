@@ -165,7 +165,7 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 
 	FIG_set_0e(host_readbs(enemy + 0x26), 1);
 
-	if (is_in_byte_array(host_readbs(enemy + 1), p_datseg + 0x25f9)) {
+	if (is_in_byte_array(host_readbs(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
 		memcpy(p_datseg + 0xdba7, p_datseg + 0xd9c1, 0xf3);
 

@@ -536,7 +536,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	host_writebs(p1, -1);
 
 	/* does this sprite need two fields */
-	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + 0x25f9))	{
+	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID))	{
 
 		memcpy(p_datseg + 0xdab4 + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
 

@@ -330,7 +330,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 	if ((a4 == 0) || (a4 == 2) || (a4 == 4) || (a4 == 6) || (a4 == 7))
 	{
 		ptr3 = in_ptr;
-		if (is_in_byte_array(host_readbs(ptr3 + 1), p_datseg + 0x25f9))
+		if (is_in_byte_array(host_readbs(ptr3 + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 		{
 			two_fields = 1;
 		}
