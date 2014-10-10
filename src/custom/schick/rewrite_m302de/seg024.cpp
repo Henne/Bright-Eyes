@@ -166,19 +166,19 @@ Bit16u diary_print_entry(Bit16u line)
 
 		if (di == 0) {
 			if ((signed short)strlen(city_name) > 24) {
-				sprintf(getString(ds_readd(0xd2f3)),
+				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + 0x4900),
 					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			} else if ((signed short)strlen(city_name) > 15 ) {
-				sprintf(getString(ds_readd(0xd2f3)),
+				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + 0x490e),
 					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			} else {
-				sprintf(getString(ds_readd(0xd2f3)),
+				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + 0x491f),
 					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
@@ -186,24 +186,24 @@ Bit16u diary_print_entry(Bit16u line)
 			}
 		} else {
 			if ((signed short)strlen(city_name) > 24) {
-				sprintf(getString(ds_readd(0xd2f3)),
+				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + 0x493a),
 					city_name);
 			} else if ((signed short)strlen(city_name) > 15) {
-				sprintf(getString(ds_readd(0xd2f3)),
+				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + 0x4940),
 					city_name);
 			} else if ((signed short)strlen(city_name) > 6) {
-				sprintf(getString(ds_readd(0xd2f3)),
+				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + 0x4949),
 					city_name);
 			} else {
-				sprintf(getString(ds_readd(0xd2f3)),
+				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + 0x495c),
 					city_name);
 			}
 		}
-		GUI_print_string(Real2Host(ds_readd(0xd2f3)),
+		GUI_print_string(Real2Host(ds_readd(DTP2)),
 			65, (line - startline) * 7);
 		ptr += 8;
 		line++;

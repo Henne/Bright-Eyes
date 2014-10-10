@@ -807,7 +807,7 @@ void GUI_dialog_na(unsigned short head_index, Bit8u *text)
 	if (head_index != 0)
 		load_in_head(head_index);
 
-	GUI_dialogbox((RealPt)ds_readd(0xd2f3), NULL, text, 0);
+	GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, text, 0);
 
 }
 

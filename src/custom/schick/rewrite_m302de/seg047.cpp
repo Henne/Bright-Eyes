@@ -299,11 +299,11 @@ void update_atpa(Bit8u *hero)
 		host_writeb(hero + 0x67, erg.quot);
 
 		/* prepare message */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x20), host_readbs(hero + 0x67));
 
 		/* print message */
-		GUI_output(Real2Host(ds_readd(0xd2f3)));
+		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		for (i = 0; i < 7; i++) {
 			/* add diff to AT value */

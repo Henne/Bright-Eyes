@@ -149,7 +149,7 @@ void draw_status_line(void)
 
 		if (host_readb(get_hero(i) + 0x21) != 0) {
 
-			copy_forename(Real2Host(ds_readd(0xd2f3)),
+			copy_forename(Real2Host(ds_readd(DTP2)),
 				get_hero(i) + 0x10);
 
 			set_textcolor(0xff, 0);
@@ -159,8 +159,8 @@ void draw_status_line(void)
 				set_textcolor(0x6f, 0);
 
 			/* print the name */
-			GUI_print_string(Real2Host(ds_readd(0xd2f3)),
-				GUI_get_first_pos_centered(Real2Host(ds_readd(0xd2f3)),	ds_readw(0x2d01 + i * 2), 43, 0), 190);
+			GUI_print_string(Real2Host(ds_readd(DTP2)),
+				GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)),	ds_readw(0x2d01 + i * 2), 43, 0), 190);
 		}
 
 		wait_for_vsync();
@@ -184,7 +184,7 @@ void draw_status_line(void)
 				}
 
 				/* set the src pointer of the head */
-				ds_writed(0xc019, (hero_dead(get_hero(i)) ? ds_readd(0xd2f3) :
+				ds_writed(0xc019, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
 					(Bit32u)((RealPt)ds_readd(HEROS) + i * 0x6da + 0x2da)));
 
 				do_pic_copy(0);
@@ -367,14 +367,14 @@ void select_hero_icon(unsigned short pos) {
 	get_textcolor(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
-	copy_forename(Real2Host(ds_readd(0xd2f3)), get_hero(pos) + 0x10);
+	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + 0x10);
 
 	/* set the textcolors */
 	set_textcolor(0xfc, 0);
 
 	/* print forename */
-	GUI_print_string(Real2Host(ds_readd(0xd2f3)),
-		GUI_get_first_pos_centered(Real2Host(ds_readd(0xd2f3)),
+	GUI_print_string(Real2Host(ds_readd(DTP2)),
+		GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)),
 			ds_readw(0x2d01 + pos * 2), 43, 0), 190);
 
 
@@ -407,14 +407,14 @@ void deselect_hero_icon(unsigned short pos) {
 	get_textcolor(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
-	copy_forename(Real2Host(ds_readd(0xd2f3)), get_hero(pos) + 0x10);
+	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + 0x10);
 
 	/* set the textcolors */
 	set_textcolor(0xff, 0);
 
 	/* print forename */
-	GUI_print_string(Real2Host(ds_readd(0xd2f3)),
-		GUI_get_first_pos_centered(Real2Host(ds_readd(0xd2f3)),
+	GUI_print_string(Real2Host(ds_readd(DTP2)),
+		GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)),
 			ds_readw(0x2d01 + pos * 2), 43, 0), 190);
 
 

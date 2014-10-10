@@ -54,7 +54,7 @@ void spell_arcano(void)
 			(signed char)target);
 
 	/* "Die Magieresistenz von %s steigt um 2 Punkte." */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(98 * 4),
 		(char*)Real2Host((RealPt)ds_readd(0xe5b8) + 0x10));
 }
@@ -79,9 +79,9 @@ void spell_armatrutz(void)
 		max_boni = 9;
 
 	/* aks the user which boni he wants */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x18c), max_boni);
-	boni = GUI_input(Real2Host(ds_readd(0xd2f3)), 1);
+	boni = GUI_input(Real2Host(ds_readd(DTP2)), 1);
 
 	/* fix wrong input */
 	if (boni > max_boni)
@@ -96,7 +96,7 @@ void spell_armatrutz(void)
 			(signed char)boni, (signed char)pos);
 
 		/* prepare output message */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x190), (char*)get_spelluser() + 0x10, boni);
 
 	} else {
@@ -104,7 +104,7 @@ void spell_armatrutz(void)
 		/* set AE to 0 */
 		ds_writew(0xac0e, 0);
 		/* avoid the textbox output */
-		host_writeb(Real2Host(ds_readd(0xd2f3)), 0);
+		host_writeb(Real2Host(ds_readd(DTP2)), 0);
 	}
 }
 
@@ -126,7 +126,7 @@ void spell_inc_ch(void)
 		ds_writew(0xac0e, 0);
 
 		/* copy message text */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(112 * 4));
 
 		return;
@@ -135,7 +135,7 @@ void spell_inc_ch(void)
 	/* check if CH was already increased */
 	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3b) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3a)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(414 * 4));
@@ -148,7 +148,7 @@ void spell_inc_ch(void)
 				2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(414 * 4));
@@ -172,7 +172,7 @@ void spell_feuerbann(void)
 			get_spelluser() + 0x99, 1, (signed char)target);
 
 		/* prepare message */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x198),
 			(char*)get_spelluser() + 0x10);
 	} else {
@@ -199,7 +199,7 @@ void spell_inc_ff(void)
 		ds_writew(0xac0e, 0);
 
 		/* copy message text */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(112 * 4));
 
 		return;
@@ -208,7 +208,7 @@ void spell_inc_ff(void)
 	/* check if FF was already increased */
 	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3e) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x3d)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(415 * 4));
@@ -221,7 +221,7 @@ void spell_inc_ff(void)
 				2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(415 * 4));
@@ -246,7 +246,7 @@ void spell_inc_ge(void)
 		ds_writew(0xac0e, 0);
 
 		/* copy message text */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(112 * 4));
 
 		return;
@@ -255,7 +255,7 @@ void spell_inc_ge(void)
 	/* check if GE was already increased */
 	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x41) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x40)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(416 * 4));
@@ -268,7 +268,7 @@ void spell_inc_ge(void)
 				2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(416 * 4));
@@ -293,7 +293,7 @@ void spell_inc_in(void)
 		ds_writew(0xac0e, 0);
 
 		/* copy message text */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(112 * 4));
 
 		return;
@@ -302,7 +302,7 @@ void spell_inc_in(void)
 	/* check if IN was already increased */
 	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x44) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x43)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(417 * 4));
@@ -315,7 +315,7 @@ void spell_inc_in(void)
 				 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(417 * 4));
@@ -340,7 +340,7 @@ void spell_inc_kk(void)
 		ds_writew(0xac0e, 0);
 
 		/* copy message text */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(112 * 4));
 
 		return;
@@ -349,7 +349,7 @@ void spell_inc_kk(void)
 	/* check if KK was already increased */
 	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x47) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x46)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(418 * 4));
@@ -362,7 +362,7 @@ void spell_inc_kk(void)
 				2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(418 * 4));
@@ -387,7 +387,7 @@ void spell_inc_kl(void)
 		ds_writew(0xac0e, 0);
 
 		/* copy message text */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(112 * 4));
 
 		return;
@@ -396,7 +396,7 @@ void spell_inc_kl(void)
 	/* check if KL was already increased */
 	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x38) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x37)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(413 * 4));
@@ -409,7 +409,7 @@ void spell_inc_kl(void)
 				2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(413 * 4));
@@ -434,7 +434,7 @@ void spell_inc_mu(void)
 		ds_writew(0xac0e, 0);
 
 		/* copy message text */
-		strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(112 * 4));
 
 		return;
@@ -443,7 +443,7 @@ void spell_inc_mu(void)
 	/* check if MU was already increased */
 	if (host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x35) > host_readbs(Real2Host(ds_readd(0xe5b8)) + 0x34)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(412 * 4));
@@ -456,7 +456,7 @@ void spell_inc_mu(void)
 				2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
 			(char*)Real2Host(ds_readd(0xe5b8)) + 0x10,
 			(char*)get_ltx(412 * 4));
@@ -485,7 +485,7 @@ void spell_paral(void)
 		/* set the enemy to stoned */
 		or_ptr_bs(get_spelltarget_e() + 0x31, 0x04);
 
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x19c),
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 	} else {
@@ -503,14 +503,14 @@ void spell_paral(void)
 				/* never cast yourself */
 				ds_writew(0xac0e, 0);
 
-				strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+				strcpy((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x1c0));
 			} else {
 				/* set the hero to stoned */
 				or_ptr_bs(get_spelltarget() + 0xaa, 0x4);
 
 				/* prepare message */
-				sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x19c),
 					(char*)get_spelltarget() + 0x10);
 			}
@@ -541,7 +541,7 @@ void spell_salander(void)
 		or_ptr_bs(get_spelltarget_e() + 0x31, 0x40);
 
 		/* prepare message */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x1a0),
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 
@@ -549,7 +549,7 @@ void spell_salander(void)
 		ds_writew(0xac0e, ae_cost);
 	} else {
 		/* prepare message */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x97c),
 			(char*)Real2Host(ds_readd(0xe5bc)) + 0x10);
 
@@ -572,9 +572,9 @@ void spell_visibili(void)
 	signed short rounds;
 
 	/* ask the user how many rounds he wants to be invisible */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x1a4), (char*)get_spelluser() + 0x10);
-	rounds = GUI_input(Real2Host(ds_readd(0xd2f3)), 2);
+	rounds = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 
 	/* the spell has also no effect if it is already active */
 	if ((rounds <= 0) || (host_readb(get_spelluser() + 0x9a) != 0)) {
@@ -582,7 +582,7 @@ void spell_visibili(void)
 		/* set AE to 0 */
 		ds_writew(0xac0e, 0);
 		/* clear output string */
-		host_writeb(Real2Host(ds_readd(0xd2f3)), 0);
+		host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
 		return;
 	}
@@ -596,12 +596,12 @@ void spell_visibili(void)
 		set_mod_slot(slot, (Bit32s)rounds * 450L, get_spelluser() + 0x9a,
 				1, (signed char)pos);
 
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x1a8),
 			(char*)get_spelluser() + 0x10,
 			(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
 	} else {
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x97c),
 			(char*)get_spelluser() + 0x10);
 
@@ -748,7 +748,7 @@ void spell_dunkelheit(void)
 		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */
-	strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+	strcpy((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(109 * 4));
 
 }
@@ -769,7 +769,7 @@ void spell_flimflam(void)
 		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */
-	strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+	strcpy((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(110 * 4));
 
 }
@@ -810,7 +810,7 @@ void spell_silentium(void)
 	ds_writew(0xac0e, 5);
 
 	/* copy message text */
-	strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+	strcpy((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(111 * 4));
 }
 

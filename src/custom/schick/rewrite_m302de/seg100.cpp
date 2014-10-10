@@ -204,7 +204,7 @@ void spell_chamaelioni(void)
 	or_ptr_bs(get_spelluser() + 0xaa, 0x10);
 
 	/* prepare the message */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x14c),
 		(char*)get_spelluser() + 0x10,
 		(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
@@ -217,7 +217,7 @@ void spell_duplicatus(void)
 	or_ptr_bs(get_spelluser() + 0xab, 0x04);
 
 	/* prepare the message */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x150),
 		(char*)get_spelluser() + 0x10,
 		(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
@@ -340,14 +340,14 @@ void spell_blitz(void)
 
 			ds_writew(0xac0e, 0);
 
-			strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+			strcpy((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x1c0));
 		} else {
 			/* set the rounds counter */
 			host_writeb(get_spelltarget() + 0x96, 3);
 
 			/* prepare the message */
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x158),
 				(char*)get_spelltarget() + 0x10);
 		}
@@ -362,7 +362,7 @@ void spell_blitz(void)
 		host_writeb(get_spelltarget_e() + 0x2f, 3);
 
 		/* prepare the message */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x154),
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 	}
@@ -387,14 +387,14 @@ void spell_ecliptifactus(void)
 			/* enable the spell */
 			host_writeb(get_spelluser() + 0x97, (signed char)rounds + 1);
 			/* prepare the message */
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x160),
 				(char*)(get_spelluser() + 0x10),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 3)),
 				rounds);
 		} else {
 			/* prepare the message */
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x97c),
 				(char*)get_spelluser() + 0x10);
 			/* set costs to 0 */
@@ -420,7 +420,7 @@ void spell_eisenrost(void)
 
 			ds_writew(0xac0e, 0);
 
-			strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+			strcpy((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x1c0));
 		} else {
 			/* get weapon id of the target */
@@ -433,7 +433,7 @@ void spell_eisenrost(void)
 				/* check if weapon is already broken */
 				if (ks_broken(get_spelltarget() + 0x1c0)) {
 
-					strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+					strcpy((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x168));
 
 				} else {

@@ -507,22 +507,22 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 		if (item_undropable(p_item)) {
 			/* this item is not droppable */
 
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x718),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item, 0)));
 
-			GUI_output(Real2Host(ds_readd(0xd2f3)));
+			GUI_output(Real2Host(ds_readd(DTP2)));
 		} else {
 			/* this item is droppable */
 
 			if (item_stackable(p_item)) {
 				if (nr == -1) {
-					sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x36c),
 						(char*)Real2Host(GUI_names_grammar(6, item, 0)));
 
 					do {
-						answer = GUI_input(Real2Host(ds_readd(0xd2f3)), 2);
+						answer = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 					} while (answer < 0);
 
 					nr = answer;

@@ -582,7 +582,7 @@ signed short count_fight_enemies(signed short nr)
 
 	retval = 0;
 
-	buf = Real2Host(ds_readd(0xd2f3));
+	buf = Real2Host(ds_readd(DTP2));
 
 	/* load FIGHT.LST from TEMP dir */
 	fd = load_archive_file(0x8000 | 0xcd);

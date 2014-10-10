@@ -31,7 +31,7 @@ void thorwal_imman(void)
 		if (GUI_bool(get_city(0xdc)) != 0) {
 
 		tmp = random_schick(4) + 0x38;
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0xe0),
 			/* winner */
 			(char*)get_city(tmp * 4),
@@ -44,7 +44,7 @@ void thorwal_imman(void)
 			/* loosers points */
 			random_schick(14));
 
-		GUI_input(Real2Host(ds_readd(0xd2f3)), 0);
+		GUI_input(Real2Host(ds_readd(DTP2)), 0);
 		}
 	} else {
 		/* no imman game at the moment */

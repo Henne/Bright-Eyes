@@ -227,7 +227,7 @@ void load_in_head(Bit16s head)
 
 	seg002_0c72(fd, head * 1024, 0);
 
-	read_archive_file(fd, Real2Host(ds_readd(0xd2f3)), 1024);
+	read_archive_file(fd, Real2Host(ds_readd(DTP2)), 1024);
 
 	bc_close(fd);
 

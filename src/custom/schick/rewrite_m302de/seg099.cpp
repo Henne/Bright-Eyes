@@ -71,14 +71,14 @@ void spell_gardanium(void)
 	signed short answer;
 
 	/* prepare a question */
-	sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x8), (char*)(get_spelluser() + 0x10));
 
 	/* ask and get the answer */
-	answer = GUI_input(Real2Host(ds_readd(0xd2f3)), 2);
+	answer = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 
 	/* clear the textbuffer */
-	host_writeb(Real2Host(ds_readd(0xd2f3)), 0);
+	host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
 	if (answer > 0) {
 
@@ -90,11 +90,11 @@ void spell_gardanium(void)
 			/* set AE costs */
 			ds_writew(0xac0e, answer);
 			/* prepare the message */
-			strcpy((char*)Real2Host(ds_readd(0xd2f3)),
+			strcpy((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x1c));
 		} else {
 			/* not enough AE */
-			sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x97c), (char*)get_spelluser() + 0x10);
 			/* set AE costs */
 			ds_writew(0xac0e, 0);
@@ -293,7 +293,7 @@ void spell_boeser_blick(void)
 		host_writeb(get_spelltarget_e() + 0x1b, 2);
 
 		/* prepare message */
-		sprintf((char*)Real2Host(ds_readd(0xd2f3)),
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x28),
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 
