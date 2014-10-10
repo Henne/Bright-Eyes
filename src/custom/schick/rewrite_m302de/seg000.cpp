@@ -10,6 +10,31 @@
 
 namespace M302de {
 
+Bit16s bc_getcurdir(Bit16s drive, char *dir)
+{
+	Bit32u esp_bak = reg_esp;
+
+	CPU_Push32(RealMake(SegValue(ss), reg_sp - 100));
+	CPU_Push16(drive);
+	CALLBACK_RunRealFar(reloc_game, 0x73e);
+	CPU_Pop16();
+	CPU_Pop32();
+
+	reg_esp -= 100;
+
+	char *str = (char*)Real2Host(RealMake(SegValue(ss), reg_esp));
+
+
+	if (strlen(str) > 40) {
+		D1_ERR("Error: Verzeichnis zu tief. maximal 40 Zeichen\n");
+	}
+
+	strcpy(dir, str);
+
+	reg_esp = esp_bak;
+	return reg_ax;
+}
+
 Bit16s bc_getdisk(void)
 {
 	CALLBACK_RunRealFar(reloc_game, 0x781);

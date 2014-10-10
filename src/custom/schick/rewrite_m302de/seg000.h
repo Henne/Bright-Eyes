@@ -5,6 +5,7 @@ struct ffblk {
 	Bit8u a[44];
 };
 
+Bit16s bc_getcurdir(Bit16s, char*);
 Bit16s bc_getdisk(void);
 Bit16s bc_setdisk(Bit16s);
 
@@ -72,6 +73,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define struct_copy memcpy
 
 
+#define bc_getcurdir getcurdir
 #define bc_getdisk getdisk
 #define bc_setdisk setdisk
 #define bc_dos_getdiskfree _dos_getdiskfree

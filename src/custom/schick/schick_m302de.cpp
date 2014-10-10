@@ -293,7 +293,15 @@ static int seg000(unsigned short offs) {
 		}
 		/* getcurdir() */
 		case 0x73e: {
-			 return 0;
+			Bit16s drive = CPU_Pop16();
+			RealPt dir = CPU_Pop32();
+			CPU_Push32(dir);
+			CPU_Push16(drive);
+
+			reg_ax = bc_getcurdir(drive, (char*)Real2Host(dir));
+			D1_LOG("getcurdir(%d, %s) = %d\n",
+				drive, Real2Host(dir), (Bit16s)reg_ax);
+			return 1;
 		}
 		/* getdisk() */
 		case 0x781: {
