@@ -1140,7 +1140,7 @@ void interrupt mouse_isr(void)
 			ds_writew(0xc3d3, 1);
 		}
 
-		if (((ds_readb(0x2d6e) != 0) || (ds_readb(CURRENT_TOWN) != 0)) &&
+		if (((ds_readb(DUNGEON_INDEX) != 0) || (ds_readb(CURRENT_TOWN) != 0)) &&
 				!ds_readbs(LOCATION) &&
 				!ds_readbs(0x2c98) &&
 				(ds_readbs(0x2845) == 0))
