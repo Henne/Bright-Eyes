@@ -499,8 +499,8 @@ signed short select_teleport_dest(void)
 	ds_writeb(CURRENT_TOWN, ds_writeb(DUNGEON_INDEX, 0));
 
 	l_si = ((ds_readb(0xbd94) == 16) ? 0 :
-			((ds_readws(0x2d44) - 8 < 0) ? 0 :
-			((ds_readws(0x2d44) - 8 > 15) ? 16 : ds_readws(0x2d44) - 8)));
+			((ds_readws(X_TARGET) - 8 < 0) ? 0 :
+			((ds_readws(X_TARGET) - 8 > 15) ? 16 : ds_readws(X_TARGET) - 8)));
 
 	ds_writew(0x7de5, ds_readws(X_TARGET));
 	ds_writew(0x7de7, ds_readws(Y_TARGET));
