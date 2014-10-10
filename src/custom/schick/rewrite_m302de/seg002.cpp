@@ -1534,7 +1534,7 @@ void handle_gui_input(void)
 			(ds_readws(0xbd25) == 0))
 		{
 			ds_writew(0xc3c5, 1);
-			inc_ds_ws(0x2c99);
+			inc_ds_ws(TIMERS_DISABLED);
 			ds_writew(0xd2d1, 1);
 			l_di = ds_readws(0xbffd);
 			ds_writew(0xbffd, 2);
@@ -1542,7 +1542,7 @@ void handle_gui_input(void)
 			ds_writew(0xbffd, l_di);
 			ds_writew(0xd2d1, 0);
 			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
-			dec_ds_ws(0x2c99);
+			dec_ds_ws(TIMERS_DISABLED);
 		}
 	} else {
 		play_voc(0x121);
@@ -1684,14 +1684,14 @@ void handle_input(void)
 			!ds_readbs(0x2c98) &&
 			(ds_readws(0xbd25) == 0))
 		{
-			inc_ds_ws(0x2c99);
+			inc_ds_ws(TIMERS_DISABLED);
 			ds_writew(0xc3c5, 1);
 			ds_writew(0xd2d1, 1);
 			ds_writew(0xbffd, 2);
 			GUI_output(p_datseg + 0x448a);		/* P A U S E */
 			ds_writew(0xbffd, 3);
 			ds_writew(0xd2d1, 0);
-			dec_ds_ws(0x2c99);
+			dec_ds_ws(TIMERS_DISABLED);
 
 			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
 		}
