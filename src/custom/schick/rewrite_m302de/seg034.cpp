@@ -798,7 +798,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 					} else if (host_readbs(hero + 0x33) < l13) {
 						l_si = 2;
 					} else if ((x > 23) || (x < 0) || (y > 23) || (y < 0) || (get_cb_val(x, y) < 0)) {
-						if ((host_readbs(Real2Host(ds_readd(0xbd2c)) + 0x14) > 3) || (x >= 0))
+						if ((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) || (x >= 0))
 						{
 							l_si = 1;
 						}

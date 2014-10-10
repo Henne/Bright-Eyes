@@ -582,8 +582,8 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 							}
 						} else {
 							if (((a4 == 4) || (a4 == 5)) &&
-								((host_readbs(Real2Host(ds_readd(0xbd2c)) + 0x14) > 3) ||
-									((host_readbs(Real2Host(ds_readd(0xbd2c)) + 0x14) <= 3) && ((l_var4 > 23) || (l_var5 > 23) || (l_var5 < 0)))))
+								((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) ||
+									((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) <= 3) && ((l_var4 > 23) || (l_var5 > 23) || (l_var5 < 0)))))
 							{
 								arr3[l_si] = 1;
 								arr1[l_si] = l_var4;
