@@ -90,7 +90,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			}
 			done = 1;
 
-		} else if (hero_cursed(hero) || (host_readbs(hero + 0x89) > 0)|| (ds_readws(0xe318) != 0)) {
+		} else if (hero_cursed(hero) || (host_readbs(hero + 0x89) > 0)|| (ds_readws(AUTOFIGHT) != 0)) {
 
 			host_writeb(hero + 0x84, 10);
 

@@ -536,7 +536,7 @@ void spell_ignifaxius(void)
 	}
 
 	/* get spell level... */
-	if ((ds_readws(0xe318) == 0) && (host_readbs(get_spelluser() + 0x89) == 0)) {
+	if ((ds_readws(AUTOFIGHT) == 0) && (host_readbs(get_spelluser() + 0x89) == 0)) {
 		/* ... manual mode */
 
 		/* prepare question of spell level */

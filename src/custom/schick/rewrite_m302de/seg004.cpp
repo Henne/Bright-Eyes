@@ -172,10 +172,10 @@ void interrupt timer_isr(void)
 		ds_writew(0xc3bf, 0);
 	}
 
-	if ((ds_readw(0xe318) != 0) &&
+	if ((ds_readw(AUTOFIGHT) != 0) &&
 		(bc_bioskey(1) || (ds_readw(0xc3d5) != 0)))
 	{
-		ds_writew(0xe318, 2);
+		ds_writew(AUTOFIGHT, 2);
 		ds_writew(0xc3d5, 0);
 	}
 

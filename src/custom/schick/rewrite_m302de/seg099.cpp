@@ -761,7 +761,7 @@ void spell_balsam(void)
 
 	ds_writew(0xac0e, 0);
 
-	if ((ds_readw(0xe318) != 0) ||
+	if ((ds_readw(AUTOFIGHT) != 0) ||
 		((host_readbs(get_spelluser() + 0x89) != 0) && ds_readws(IN_FIGHT) != 0))
 	{
 		/* automatic */

@@ -638,8 +638,8 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 		}
 
 		if (nr > 0) {
-			bak = ds_readws(0xe318);
-			ds_writew(0xe318, 0);
+			bak = ds_readws(AUTOFIGHT);
+			ds_writew(AUTOFIGHT, 0);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x894),
@@ -662,7 +662,7 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 			} else {
 				done = 1;
 			}
-			ds_writew(0xe318, bak);
+			ds_writew(AUTOFIGHT, bak);
 		} else {
 			done = 1;
 		}
