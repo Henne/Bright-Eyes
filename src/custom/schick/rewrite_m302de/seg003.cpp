@@ -57,9 +57,9 @@ void move(void)
 
 	/* direction */
 
-	p3 = Real2Host(RealMake(datseg, ((ds_readb(0x2d3d) == 0) ? 0x4970 :
-				((ds_readb(0x2d3d) == 1) ? 0x49ae :
-				((ds_readb(0x2d3d) == 2) ? 0x49ec : 0x4a2a)))));
+	p3 = Real2Host(RealMake(datseg, ((ds_readb(DIRECTION) == 0) ? 0x4970 :
+				((ds_readb(DIRECTION) == 1) ? 0x49ae :
+				((ds_readb(DIRECTION) == 2) ? 0x49ec : 0x4a2a)))));
 
 	for (i = 0; i < 29; i++, p3 += 2) {
 		v2 = 0;

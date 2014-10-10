@@ -51,7 +51,7 @@ void DNG_floor_ceil(void)
 	/* Load ceiling */
 	nvf.dst = Real2Host(ds_readd(0xd303)) + 0x4030;
 	nvf.src = Real2Host(ds_readd(0xd019));
-	nvf.nr = (!(ds_readbs(0x2d3d)&1)) ? 1 : 2;
+	nvf.nr = (!(ds_readbs(DIRECTION)&1)) ? 1 : 2;
 	nvf.type = (!ds_readbs(0xe48c)) ? 3 : 5;
 	nvf.width = (unsigned char*)&width;
 	nvf.height = (unsigned char*)&height;
