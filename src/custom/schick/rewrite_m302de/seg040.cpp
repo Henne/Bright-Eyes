@@ -119,7 +119,7 @@ void FIG_preload_gfx(void)
 
 	/* set something in the enemy charactersheet to -1 */
 	for (i = 0; i < 20; i++) {
-		ds_writeb(i * 0x3e + 0xd34b, 0);
+		ds_writeb(i * 0x3e + ENEMY_SHEETS, 0);
 		ds_writeb(i * 0x3e + 0xd371, -1);
 	}
 
