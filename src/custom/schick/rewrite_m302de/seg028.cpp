@@ -180,7 +180,7 @@ void load_area_description(unsigned short type)
 		/* save archive index */
 		ds_writew(0x5ebc, f_index);
 		/* save dungeon level */
-		ds_writew(0x5eba, ds_readb(0x2d75));
+		ds_writew(0x5eba, ds_readb(DUNGEON_LEVEL));
 
 		if (ds_readb(DUNGEON_INDEX) != 0)
 			ds_writew(0x5ebe, 1);
@@ -206,7 +206,7 @@ void load_area_description(unsigned short type)
 			ds_writeb(0xbd94, 0x20);
 		} else {
 			/* Seek to Dungeon Level * 320 */
-			bc_lseek(fd, ds_readb(0x2d75) * 320, 0);
+			bc_lseek(fd, ds_readb(DUNGEON_LEVEL) * 320, 0);
 			bc__read(fd, p_datseg + 0xbd95, 0x100);
 			/* read automap tiles */
 			bc__read(fd, p_datseg + 0xe442, 0x40);
