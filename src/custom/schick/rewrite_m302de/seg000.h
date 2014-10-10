@@ -27,6 +27,7 @@ signed short bc_bioskey(signed short);
 void bc_clrscr(void);
 void bc_farfree(RealPt);
 Bit32u bc_farcoreleft(void);
+void bc_harderr(RealPt);
 void bc_hardresume(Bit16s);
 RealPt bc_farcalloc(Bit32u, Bit32u);
 
@@ -85,6 +86,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc__dos_getvect _dos_getvect
 #define bc__dos_setvect _dos_setvect
 
+#define bc_harderr harderr
 #define bc_hardresume hardresume
 #define bc_farcalloc farcalloc
 

@@ -521,7 +521,11 @@ static int seg000(unsigned short offs) {
 			return 1;
 		}
 		case 0x2411: {
-			return 0;
+			RealPt p = CPU_Pop32();
+			CPU_Push32(p);
+			D1_LOG("harderr(%x)\n", p);
+			bc_harderr(p);
+			return 1;
 		}
 		case 0x2596: {
 			return 0;

@@ -177,12 +177,20 @@ RealPt bc_farcalloc(Bit32u nmemb, Bit32u size)
 	return RealMake(reg_dx, reg_ax);
 }
 
+void bc_harderr(RealPt p)
+{
+	CPU_Push32(p);
+	CALLBACK_RunRealFar(reloc_game, 0x2411);
+	CPU_Pop32();
+}
+
 void bc_hardresume(Bit16s __axret)
 {
 	CPU_Push16(__axret);
 	CALLBACK_RunRealFar(reloc_game, 0x2423);
 	CPU_Pop16();
 }
+
 signed short bc_findfirst_dosbox(RealPt path, RealPt __ffblk, signed short __attrib)
 {
 	CPU_Push16(__attrib);
