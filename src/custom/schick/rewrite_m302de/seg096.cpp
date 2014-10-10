@@ -4,7 +4,7 @@
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
- *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg096.cpp
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg096.cpp
  *
 */
 #include <stdio.h>
@@ -254,6 +254,7 @@ unsigned short GUI_count_lines(Bit8u *str)
 	width_line = 0;
 
 	for ( ; str_loc[si]; si++) {
+
 		GUI_lookup_char_width(str_loc[si], &width_char);
 		width_line += width_char;
 
@@ -426,6 +427,8 @@ signed short GUI_print_char(unsigned char c, unsigned short x, unsigned short y)
 	font_index = GUI_lookup_char_width(c, &char_width);
 
 #if !defined(__BORLANDC__)
+	/* BE-fix */
+	char_width = host_readws((Bit8u*)&char_width);
 	D1_LOG("GUI_lookup_char_width(%c); w=%d, fi=%d\n",
 		c, char_width, font_index);
 #endif
@@ -441,14 +444,21 @@ signed short GUI_lookup_char_width(signed char c, signed short *p)
 	signed short i;
 
 	for (i = 0; i != 75 * 3; i += 3) {
+
 		if (c == ds_readbs(0xaa51 + i)) {
 
-			*p = ds_readbs(0xaa51 + i + 2) & 0xff;
+			host_writew((Bit8u*)p,
+				ds_readbs(0xaa51 + i + 2) & 0xff);
+
 			return ds_readbs(0xaa51 + i + 1) & 0xff;
 		}
 	}
 
-	if (c == (char)0x7e || c == (char)0xf0 || c == (char)0xf1 || c == (char)0xf2 || c == (char)0xf3)
+	if ((c == (signed char)0x7e)
+		|| (c == (signed char)0xf0)
+		|| (c == (signed char)0xf1)
+		|| (c == (signed char)0xf2)
+		|| (c == (signed char)0xf3))
 	{
 		return host_writews((Bit8u*)p, 0);
 	}
@@ -558,6 +568,10 @@ signed short GUI_get_space_for_string(Bit8u *p, signed short dir)
 		} else {
 			GUI_lookup_char_width(*p++, &tmp);
 		}
+#if !defined(__BORLANDC__)
+		/* BE-fix */
+		tmp = host_readws((Bit8u*)&tmp);
+#endif
 	}
 
 	return sum;
@@ -575,6 +589,11 @@ signed short GUI_get_first_pos_centered(Bit8u *p, signed short x, signed short v
 			GUI_lookup_char_height(*p++, &tmp);
 		else
 			GUI_lookup_char_width(*p++, &tmp);
+
+#if !defined(__BORLANDC__)
+		/* BE-fix */
+		tmp = host_readws((Bit8u*)&tmp);
+#endif
 	}
 
 	v2 -= i;
