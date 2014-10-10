@@ -549,12 +549,12 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 
 	if (NOT_NULL(name)) {
 		/* set text color */
-		ds_writew(0xd2c5, 1);
+		ds_writew(TEXTCOLOR, 1);
 
 		GUI_print_string(name, ds_readw(0xd2d9), ds_readw(0xd2d7));
 
 		/* set text color */
-		ds_writew(0xd2c5, 0);
+		ds_writew(TEXTCOLOR, 0);
 
 		add_ds_ws(0xd2d7, 14);
 		sub_ds_ws(0xe4d9, 2);

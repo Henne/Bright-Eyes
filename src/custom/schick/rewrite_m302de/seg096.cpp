@@ -402,7 +402,7 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 				l4 == (unsigned char)0xf3)
 		{
 			/* changes of the text color are only control bytes */
-			ds_writew(0xd2c5, l4 - 0xf0);
+			ds_writew(TEXTCOLOR, l4 - 0xf0);
 		} else	{
 
 			if (l4 == 0x3c) {
@@ -507,7 +507,7 @@ void GUI_font_to_buf(Bit8u *fc)
 		c = *fc++;
 		for (j = 0; j < 8; j++)
 			if ((0x80 >> j) & c)
-				 p[j] = ds_readb(0xd2c9 + ds_readw(0xd2c5) * 2);
+				 p[j] = ds_readb(0xd2c9 + ds_readw(TEXTCOLOR) * 2);
 	}
 }
 
