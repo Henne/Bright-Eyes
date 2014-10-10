@@ -500,12 +500,12 @@ void item_brenne(void)
 
 			if (ds_readws(USED_ITEM_ID) == 65) {
 				/* TORCH */
-				ds_writew(0xaee8, 1);
+				ds_writew(LIGHT_TYPE, 1);
 			} else if (ds_readws(USED_ITEM_ID) == 25 ) {
 				/* LANTERN */
-				ds_writew(0xaee8, 2);
+				ds_writew(LIGHT_TYPE, 2);
 			} else {
-				ds_writew(0xaee8, 0);
+				ds_writew(LIGHT_TYPE, 0);
 			}
 
 			ds_writed(SPELLUSER, ds_readd(ITEMUSER));
