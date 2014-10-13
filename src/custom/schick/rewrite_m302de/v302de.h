@@ -128,8 +128,8 @@
 #define LARGE_BUF	(0xe5e4)	/* s8 {0,1} */
 
 
-#define HOURS(n)	(n * 90L * 60L)
 #define MINUTES(n)	(n * 90L)
+#define HOURS(n)	(MINUTES(n) * 60L)
 
 #if !defined(__BORLANDC__)
 
