@@ -913,6 +913,8 @@ struct hero_struct {
 	char typus;
 };
 
+#define reloc_game (0)
+
 extern char ds[0xf7af];
 #define p_datseg (&ds[0x0000])
 #define datseg (_DS)

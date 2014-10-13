@@ -29,12 +29,12 @@ namespace M302de {
 void save_and_set_timer(void)
 {
 	ds_writed(0xe274, (Bit32u) bc__dos_getvect(8));
-	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a , 0x244));
+	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a + reloc_game, 0x244));
 }
 
 void set_timer(void)
 {
-	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a , 0x244));
+	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a + reloc_game, 0x244));
 }
 
 void reset_timer(void)
