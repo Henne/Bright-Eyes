@@ -1814,10 +1814,14 @@ static int seg003(unsigned short offs) {
 static int seg004(unsigned short offs) {
 	switch (offs) {
 	case 0x05: {
-		return 0;
+		D1_LOG("save_and_set_timer()\n");
+		save_and_set_timer();
+		return 1;
 	}
 	case 0x29: {
-		return 0;
+		D1_LOG("set_timer()\n");
+		set_timer();
+		return 1;
 	}
 	case 0x3e: {
 		D1_LOG("reset_timer()\n");
