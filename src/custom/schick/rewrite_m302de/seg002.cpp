@@ -3491,7 +3491,7 @@ void draw_splash(signed short hero_pos, signed short type)
 
 		Bit8u *splash = (type == 0) ? Real2Host(ds_readd(SPLASH_LE)) : Real2Host(ds_readd(SPLASH_AE));
 
-		restore_rect_rle(Real2Phys(ds_readd(0xd2ff)), splash, ds_readw(0x2d01 + 2 * hero_pos), 157, 32, 32, 2);
+		restore_rect_rle((RealPt)ds_readd(0xd2ff), splash, ds_readw(0x2d01 + 2 * hero_pos), 157, 32, 32, 2);
 
 		/* how long the splash should be displayed */
 		ds_writeb(0xbccf + hero_pos, 10);
