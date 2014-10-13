@@ -886,7 +886,11 @@ static inline char* get_itemname(unsigned short item)
 
 #undef M302de_ORIGINAL_BUGFIX
 
+#ifdef __cplusplus
 #define INTCAST void interrupt (*)(...)
+#else
+#define INTCAST void interrupt (*)()
+#endif
 
 typedef unsigned char Bit8u;
 typedef signed char Bit8s;
