@@ -133,7 +133,7 @@ Bit8s get_seq_header(Bit16s ani)
 */
 
 /* Borlandified and identical */
-void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapon_type, signed short f_action, signed char fid_attacker, signed char fid_target, signed short a7)
+void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapon_type, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
 {
 	signed short l1;
 	signed short attacker_x;
@@ -153,9 +153,9 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	p3 = Real2Host(ds_readd(0x2555 + host_readbs(hero + 0x9b) * 4));
 	weapon = host_readws(hero + 0x1c0);
 
-	if (fid_target != 0) {
-		FIG_search_obj_on_cb(fid_target, &target_x, &target_y);
-		FIG_search_obj_on_cb(fid_attacker, &attacker_x, &attacker_y);
+	if ((signed char)fid_target != 0) {
+		FIG_search_obj_on_cb((signed char)fid_target, &target_x, &target_y);
+		FIG_search_obj_on_cb((signed char)fid_attacker, &attacker_x, &attacker_y);
 
 		if (attacker_x == target_x) {
 			if (target_y < attacker_y) {
@@ -201,7 +201,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	if (check_hero(hero) && (host_readbs(hero + 0x82) != dir) &&
 
 		((f_action == 2) || (f_action == 15) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs(0xd84a + fid_attacker)) ||
+			((f_action == 100) && !ds_readbs(0xd84a + (signed char)fid_attacker)) ||
 			((ds_readws(0xe3ac) != 0) && (a7 == 0)) ||
 			((ds_readws(0xe3aa) != 0) && (a7 == 1))))
 	{
@@ -258,7 +258,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	if ((check_hero(hero) && (f_action == 2)) ||
 		((f_action == 15) || (f_action == 102) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs(0xd84a + fid_attacker))))
+			((f_action == 100) && !ds_readbs(0xd84a + (signed char)fid_attacker))))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p3 + l1 *2), 2);
 
@@ -323,7 +323,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	host_writeb(p1, 0xff);
 	if (f_action == 100) {
-		ds_writeb(0xd84a + fid_attacker, 1);
+		ds_writeb(0xd84a + (signed char)fid_attacker, 1);
 	}
 }
 
@@ -332,7 +332,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 */
 
 /* Borlandified and identical */
-void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_action, signed char fid_attacker, signed char fid_target, signed short a7)
+void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
 {
 	signed short l1;
 	signed short attacker_x;
@@ -367,8 +367,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	p4 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + 1) * 4));
 
 	/* find both actors on the chessboard */
-	FIG_search_obj_on_cb(fid_target, &target_x, &target_y);
-	FIG_search_obj_on_cb(fid_attacker, &attacker_x, &attacker_y);
+	FIG_search_obj_on_cb((signed char)fid_target, &target_x, &target_y);
+	FIG_search_obj_on_cb((signed char)fid_attacker, &attacker_x, &attacker_y);
 
 	/* find out which direction the action will have */
 	if (attacker_x == target_x) {
@@ -416,7 +416,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	/* first the enemy may turn */
 	if ((host_readbs(enemy + 0x27) != dir) &&
 		(	((f_action == 2) || (f_action == 15) ||
-			((f_action == 100) && !ds_readbs(0xd82d + fid_attacker))) ||
+			((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker))) ||
 			((ds_readw(0xe3ac) != 0) && (a7 == 0)) ||
 			((ds_readw(0xe3aa) != 0) && (a7 == 1))))
 		{
@@ -481,7 +481,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	if ((f_action == 2) || (f_action == 15) ||
-		((f_action == 100) && !ds_readbs(0xd82d + fid_attacker)))
+		((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker)))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p4 + l1 *2), 1);
 
@@ -552,7 +552,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	if (f_action == 100) {
-		ds_writeb(0xd82d + fid_attacker, 1);
+		ds_writeb(0xd82d + (signed char)fid_attacker, 1);
 	}
 }
 
@@ -569,7 +569,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
  */
 
 /* Borlandified and identical */
-void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
+void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 			Bit16u v5, Bit16u v6)
 {
 	signed short x_obj1, y_obj1;
@@ -587,8 +587,8 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 	/* get a pointer from an array where the Monster-ID serves as index */
 	lp2 = Real2Host(ds_readd(0x2555 + host_readbs(hero + 0x9b) * 4));
 
-	FIG_search_obj_on_cb(obj2, &x_obj2, &y_obj2);
-	FIG_search_obj_on_cb(obj1, &x_obj1, &y_obj1);
+	FIG_search_obj_on_cb((signed char)obj2, &x_obj2, &y_obj2);
+	FIG_search_obj_on_cb((signed char)obj1, &x_obj1, &y_obj1);
 
 	if (x_obj1 == x_obj2) {
 		if (y_obj2 < y_obj1)
@@ -602,7 +602,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
 			dir = 0;
 	}
 
-	if (obj2 == obj1)
+	if ((signed char)obj2 == (signed char)obj1)
 		dir = host_readbs(hero + 0x82);
 
 
@@ -705,7 +705,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit8s obj1, Bit8s obj2,
  */
 
 /* Borlandified and identical */
-void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target, signed char caster,
+void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target, signed short caster,
 								signed short v5)
 {
 	signed short l1;
@@ -722,8 +722,8 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target,
 	/* get a pointer from an array where the Monster-ID serves as index */
 	lp2 = Real2Host(ds_readd(0x2555 + host_readbs(p + 1) * 4));
 
-	FIG_search_obj_on_cb(caster, &x_caster, &y_caster);
-	FIG_search_obj_on_cb(target, &x_target, &y_target);
+	FIG_search_obj_on_cb((signed char)caster, &x_caster, &y_caster);
+	FIG_search_obj_on_cb((signed char)target, &x_target, &y_target);
 
 	if (x_target == x_caster) {
 		if (y_caster < y_target)
@@ -737,7 +737,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed char target,
 			dir = 0;
 	}
 
-	if (caster == target)
+	if ((signed char)caster == (signed char)target)
 		dir = host_readbs(p + 0x27);
 
 	/* this is true if a monster attacks a hero */
