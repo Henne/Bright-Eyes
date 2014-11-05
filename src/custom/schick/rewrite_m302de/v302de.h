@@ -454,6 +454,18 @@ static inline unsigned short hero_busy(Bit8u *hero) {
 }
 
 /**
+ * \brief		is hero under chamaelioni spell
+ * \param	hero	pointer to hero
+ *
+ * \return 0 = no / 1 = yes
+ */
+static inline unsigned short hero_cham(Bit8u *hero) {
+	if (((host_readb(hero + 0xaa) >> 4) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+/**
  * hero_cursed() -	check if hero is cursed
  * @hero:	ptr to hero
  *
