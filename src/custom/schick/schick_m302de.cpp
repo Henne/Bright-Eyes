@@ -4021,7 +4021,15 @@ static int seg043(unsigned short offs) {
 	switch (offs) {
 
 	case 0x20: {
-		return 0;
+		RealPt monster = CPU_Pop32();
+		Bit16s target = CPU_Pop16();
+		CPU_Push16(target);
+		CPU_Push32(monster);
+
+		D1_LOG("seg043_0000(%x, %d)\n", monster, target);
+		seg043_0000(monster, target);
+
+		return 1;
 	}
 	case 0x25: {
 		return 0;
