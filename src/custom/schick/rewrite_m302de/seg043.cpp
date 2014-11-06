@@ -1,7 +1,12 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg043 (fightsystem)
- *	Functions rewritten: 1/2
+ *	Functions rewritten: 2/2 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg043.cpp
  */
+#include <string.h>
 
 #include "v302de.h"
 
@@ -14,7 +19,10 @@
 #include "seg041.h"
 #include "seg044.h"
 #include "seg045.h"
+#include "seg097.h"
 #include "seg102.h"
+#include "seg105.h"
+#include "seg107.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -726,6 +734,167 @@ void seg043_0000(RealPt monster, signed short target)
 	}
 
 	refresh_screen_size();
+}
+
+/**
+ * \brief
+ *
+ * \param hero			pointer to the hero who uses the item
+ * \param target_monster	pointer to the monster
+ * \param target_hero		pointer to the hero
+ * \param flag			bool value, used when a hero attacks a hero
+ * \param hero_pos		position of the hero
+ */
+void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed short flag, signed short hero_pos)
+{
+	signed short damage;
+
+	signed short l3;
+	signed short hylailic = 0;
+	signed short usecase;
+	signed short item_id = host_readws(hero + 0x1ce);
+	Bit8u *p_item = get_itemsdat(item_id);
+
+	if (item_herb_potion(p_item)) {
+		usecase = 1;
+	} else if (!item_useable(p_item) || (host_readws(hero + 0x1d0) == 0)) {
+		usecase = 0;
+	} else {
+		usecase = 2;
+	}
+
+	host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+	if (host_readws(hero + 0x1ce) == 238) {
+		/* MIASTHMATIC */
+
+		/* 1W6 + 4 */
+		damage = dice_roll(1, 6, 4);
+
+		if (host_readbs(hero + 0x86) >= 10) {
+
+			strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x94));
+
+			FIG_damage_enemy(target_monster, damage, 0);
+
+			FIG_add_msg(11, damage);
+
+			if (enemy_dead(target_monster)) {
+				ds_writew(0xe3a6, 1);
+			}
+		} else {
+
+			if (flag != 0) {
+
+				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x94));
+
+				sub_hero_le(target_hero, damage);
+
+				FIG_add_msg(8, damage);
+
+				if (hero_dead(target_hero)) {
+					ds_writew(0xe3a6, 1);
+				}
+			}
+		}
+
+		/* drop the item in the left hand */
+		drop_item(hero, 4, 1);
+
+	} else if (host_readws(hero + 0x1ce) == 239) {
+
+		/* HYLAILIC FIRE */
+
+		if (host_readbs(hero + 0x86) >= 10) {
+
+			/* .. used on a monster */
+
+			FIG_damage_enemy(target_monster, 20, 0);
+
+			FIG_add_msg(11, 20);
+
+			if (enemy_dead(target_monster)) {
+				ds_writew(0xe3a6, 1);
+			}
+		} else {
+			/* .. used on another hero */
+			if (flag != 0) {
+
+				sub_hero_le(target_hero, 20);
+
+				FIG_add_msg(8, 20);
+
+				if (hero_dead(target_hero)) {
+					ds_writew(0xe3a6, 1);
+				}
+			}
+		}
+
+		/* drop the item in the left hand */
+		drop_item(hero, 4, 1);
+
+		hylailic = 1;
+	} else {
+		/* use item in the regular way */
+
+		use_item(4, hero_pos);
+
+		/* TODO: needless */
+		host_writeb(Real2Host(ds_readd(DTP2)), 0);
+	}
+
+	if (usecase > 0) {
+
+		seg041_8c8();
+
+		FIG_prepare_hero_fight_ani(0, hero, -1, usecase == 1 ? 102 : 103, hero_pos + 1, host_readbs(hero + 0x86), 0);
+
+		l3 = 0;
+
+		if (hylailic != 0) {
+			seg045_0394(6, hero, 2);
+		} else {
+			ds_writew(0x26b1, 1);
+		}
+
+		draw_fight_screen_pal(0);
+
+		if (hylailic != 0) {
+
+			FIG_set_0e(ds_readbs(0xe38c), 6);
+
+			l3 = 1;
+
+			ds_writew(0x26b1, 1);
+
+			draw_fight_screen(1);
+		}
+
+		if (l3 != 0) {
+			FIG_remove_smth2();
+		}
+
+		if (ds_readws(0xe3a6) != 0) {
+
+			if (flag != 0) {
+				FIG_prepare_hero_fight_ani(1, target_hero, -1, 0, host_readbs(hero + 0x86), hero_pos + 1, 1);
+			} else {
+				FIG_prepare_enemy_fight_ani(1, target_monster, 0, host_readbs(hero + 0x86), hero_pos + 1, 1);
+			}
+
+		}
+
+		if ((l3 != 0) || (ds_readws(0xe3a6) != 0)) {
+			draw_fight_screen(0);
+		}
+
+		seg041_8c8();
+	}
+
+	if (host_readb(Real2Host(ds_readd(DTP2))) != 0) {
+		/* show output string if needed */
+		GUI_output(Real2Host(ds_readd(DTP2)));
+	}
 }
 
 #if !defined(__BORLANDC__)

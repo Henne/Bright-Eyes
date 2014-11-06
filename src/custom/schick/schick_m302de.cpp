@@ -4032,7 +4032,26 @@ static int seg043(unsigned short offs) {
 		return 1;
 	}
 	case 0x25: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		RealPt target_monster = CPU_Pop32();
+		RealPt target_hero = CPU_Pop32();
+		Bit16s flag = CPU_Pop16();
+		Bit16s hero_pos = CPU_Pop16();
+		CPU_Push16(hero_pos);
+		CPU_Push16(flag);
+		CPU_Push32(target_hero);
+		CPU_Push32(target_monster);
+		CPU_Push32(hero);
+
+		D1_LOG("FIG_use_item(%s, %s, %s, %d, %d);\n",
+			schick_getCharname(hero),
+			get_monname(host_readbs(Real2Host(target_monster))),
+			schick_getCharname(target_hero),
+			flag, hero_pos);
+
+		FIG_use_item(Real2Host(hero), Real2Host(target_monster), Real2Host(target_hero), flag, hero_pos);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
