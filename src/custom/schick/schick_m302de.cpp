@@ -4026,8 +4026,8 @@ static int seg043(unsigned short offs) {
 		CPU_Push16(target);
 		CPU_Push32(monster);
 
-		D1_LOG("seg043_0000(%x, %d)\n", monster, target);
-		seg043_0000(monster, target);
+		D1_LOG("FIG_do_monster_action(%x, %d)\n", monster, target);
+		FIG_do_monster_action(monster, target);
 
 		return 1;
 	}

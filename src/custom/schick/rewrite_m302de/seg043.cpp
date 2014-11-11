@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg043 (fightsystem)
+ *	Rewrite of DSA1 v3.02_de functions of seg043 (fightsystem: monster action, use item)
  *	Functions rewritten: 2/2 (complete)
  *
  *	Borlandified and identical
@@ -41,12 +41,12 @@ struct msg {
 };
 
 /**
- * \brief	monster attacks a target
+ * \brief	execute the fight action of a monster
  *
  * \param	monster		pointer to a monster datasheet
- * \param	target		fight_id of the target (target < 10 => hero, else monster)
+ * \param	monster_pos	position of the monster (fight_id = monster_pos + 10)
  */
-void seg043_0000(RealPt monster, signed short target)
+void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 {
 	signed short damage;
 
@@ -119,7 +119,7 @@ void seg043_0000(RealPt monster, signed short target)
 				(l17 == 0))
 			{
 				FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + 0x2d), &target_x, &target_y);
-				FIG_search_obj_on_cb(target + 0x0a, &hero_x, &hero_y);
+				FIG_search_obj_on_cb(monster_pos + 10, &hero_x, &hero_y);
 
 				if (hero_x == target_x) {
 
@@ -438,16 +438,16 @@ void seg043_0000(RealPt monster, signed short target)
 
 				if (check_hero(hero) || (ds_readws(0xe3a6) != 0)) {
 
-					FIG_prepare_hero_fight_ani(0, hero, weapon_type, 100, host_readbs(Real2Host(monster) + 0x2d), target + 10, 1);
+					FIG_prepare_hero_fight_ani(0, hero, weapon_type, 100, host_readbs(Real2Host(monster) + 0x2d), monster_pos + 10, 1);
 				}
 
 			} else if (l17 == 0) {
-					FIG_prepare_enemy_fight_ani(0, mon, 100, host_readbs(Real2Host(monster) + 0x2d), target + 10, 1);
+					FIG_prepare_enemy_fight_ani(0, mon, 100, host_readbs(Real2Host(monster) + 0x2d), monster_pos + 10, 1);
 			} else if (ds_readws(0xe3a6) != 0) {
-					FIG_prepare_enemy_fight_ani(0, mon, 0, host_readbs(Real2Host(monster) + 0x2d), target + 10, 1);
+					FIG_prepare_enemy_fight_ani(0, mon, 0, host_readbs(Real2Host(monster) + 0x2d), monster_pos + 10, 1);
 			}
 
-			FIG_prepare_enemy_fight_ani(1, Real2Host(monster), 2, target + 10, host_readbs(Real2Host(monster) + 0x2d), 0);
+			FIG_prepare_enemy_fight_ani(1, Real2Host(monster), 2, monster_pos + 10, host_readbs(Real2Host(monster) + 0x2d), 0);
 			ds_writew(0x26b1, 1);
 			draw_fight_screen_pal(0);
 			seg041_8c8();
@@ -512,9 +512,9 @@ void seg043_0000(RealPt monster, signed short target)
 
 				FIG_call_draw_pic();
 
-				FIG_prepare_enemy_fight_ani(0, Real2Host(monster), 15, target + 10, host_readbs(Real2Host(monster) + 0x2d), 0);
+				FIG_prepare_enemy_fight_ani(0, Real2Host(monster), 15, monster_pos + 10, host_readbs(Real2Host(monster) + 0x2d), 0);
 
-				l12 = seg045_01a0(7, l11, target + 10, host_readbs(Real2Host(monster) + 0x2d), host_readbs(Real2Host(monster) + 0x27));
+				l12 = seg045_01a0(7, l11, monster_pos + 10, host_readbs(Real2Host(monster) + 0x2d), host_readbs(Real2Host(monster) + 0x27));
 
 				FIG_set_0e(host_readbs(Real2Host(monster) + 0x26), 0);
 
@@ -535,10 +535,10 @@ void seg043_0000(RealPt monster, signed short target)
 
 					if (attack_hero != 0) {
 
-						FIG_prepare_hero_fight_ani(1, hero, -1, 0, host_readbs(Real2Host(monster) + 0x2d), target + 10, 1);
+						FIG_prepare_hero_fight_ani(1, hero, -1, 0, host_readbs(Real2Host(monster) + 0x2d), monster_pos + 10, 1);
 					} else {
 
-						FIG_prepare_enemy_fight_ani(1, mon, 0, host_readbs(Real2Host(monster) + 0x2d), target + 10, 1);
+						FIG_prepare_enemy_fight_ani(1, mon, 0, host_readbs(Real2Host(monster) + 0x2d), monster_pos + 10, 1);
 					}
 				}
 
@@ -574,7 +574,7 @@ void seg043_0000(RealPt monster, signed short target)
 
 					if (l13 != -1) {
 
-						seg044_002f(0, Real2Host(monster), 4, target + 10, host_readbs(Real2Host(monster) + 0x2d), 0);
+						seg044_002f(0, Real2Host(monster), 4, monster_pos + 10, host_readbs(Real2Host(monster) + 0x2d), 0);
 					}
 
 					if (l13 > 0) {
@@ -589,7 +589,7 @@ void seg043_0000(RealPt monster, signed short target)
 
 								if (!attack_hero) {
 
-									seg044_002f(1, mon, 99, host_readbs(Real2Host(monster) + 0x2d), target + 10, 1);
+									seg044_002f(1, mon, 99, host_readbs(Real2Host(monster) + 0x2d), monster_pos + 10, 1);
 								} else {
 
 									if (check_hero(hero) || (ds_readws(0xe3a6) != 0)) {
@@ -604,7 +604,7 @@ void seg043_0000(RealPt monster, signed short target)
 							(host_readbs(Real2Host(monster) + 0x01) != 7) &&
 							(host_readbs(Real2Host(monster) + 0x2d) > 0))
 						{
-							l12 = seg045_01a0(7, l11, target + 10, host_readbs(Real2Host(monster) + 0x2d), host_readbs(Real2Host(monster) + 0x27));
+							l12 = seg045_01a0(7, l11, monster_pos + 10, host_readbs(Real2Host(monster) + 0x2d), host_readbs(Real2Host(monster) + 0x27));
 						}
 
 					}
