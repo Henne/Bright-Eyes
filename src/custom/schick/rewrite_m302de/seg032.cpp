@@ -1,17 +1,23 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten: 9/12
+ *	Functions rewritten: 10/12
 */
 #include <stdlib.h>
 #include <string.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg005.h"
 #include "seg006.h"
 #include "seg007.h"
 #include "seg008.h"
+#include "seg033.h"
+#include "seg037.h"
+#include "seg038.h"
+#include "seg042.h"
+#include "seg043.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -355,6 +361,329 @@ unsigned short FIG_fight_continues(void)
 		return 0;
 
 	return 1;
+}
+
+/* Borlandified and identical */
+void FIG_do_round(void)
+{
+	signed short i;
+	signed short hero_attacks;
+	signed short monster_attacks;
+	signed short pos;
+	signed short x_coord;
+	signed short y_coord;
+	signed short l3;
+	signed char turn;
+	RealPt hero;
+	RealPt monster;
+	signed short x;
+	signed short y;
+	Bit8u *p1;
+
+	if (!FIG_fight_continues()) {
+		/* this fight is over */
+		ds_writew(IN_FIGHT, 0);
+	}
+
+#if !defined(__BORLANDC__)
+	D1_INFO("Kampfrunde %d beginnt\n", ds_readws(FIGHT_ROUND));
+#endif
+
+	hero_attacks = 0;
+
+	/* initialize heros #attacks and BP */
+	for (i = 0; i <= 6; ds_writeb((0xd84a + 1) + i, 0), i++) {
+
+		hero = (RealPt)ds_readd(HEROS) + 0x6da * i;
+
+		if ((host_readbs(Real2Host(hero) + 0x21) != 0) &&
+			(host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			(host_readbs(Real2Host(hero) + 0x84) != 16))
+		{
+			/* set #attacks to 1 */
+			host_writeb(Real2Host(hero) + 0x83, 1);
+
+			/* give this hero 8 BP */
+			host_writeb(Real2Host(hero) + 0x33, 8);
+
+			if (host_readbs(Real2Host(hero) + 0x47) * 50 <= host_readws(Real2Host(hero) + 0x2d8)) {
+				/* give BP Malus -1 */
+				dec_ptr_bs(Real2Host(hero) + 0x33);
+			}
+
+			if (host_readbs(Real2Host(hero) + 0x47) * 75 <= host_readws(Real2Host(hero) + 0x2d8)) {
+				/* give BP Malus -2 */
+				sub_ptr_bs(Real2Host(hero) + 0x33, 2);
+			}
+
+			if (host_readbs(Real2Host(hero) + 0x47) * 100 <= host_readws(Real2Host(hero) + 0x2d8)) {
+				/* give BP Malus -2 */
+				sub_ptr_bs(Real2Host(hero) + 0x33, 2);
+
+			}
+
+			/* TODO: */
+			host_writew(Real2Host(hero) + 0x9d, 0);
+
+			hero_attacks++;
+
+			if (host_readbs(Real2Host(hero) + 0xa0) != 0) {
+				/* Axxeleratus => BP + 4 */
+				add_ptr_bs(Real2Host(hero) + 0x33, 4);
+
+				/* one extra attack */
+				inc_ptr_bs(Real2Host(hero) + 0x83);
+
+				hero_attacks++;
+			}
+
+			if (host_readbs(Real2Host(hero) + 0x47) * 110 <= host_readws(Real2Host(hero) + 0x2d8)) {
+				/* too much weight, set BP to 1 */
+				host_writeb(Real2Host(hero) + 0x33, 1);
+			}
+		}
+	}
+
+	monster_attacks = 0;
+
+	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
+
+		/* set #attacks */
+		ds_writeb(0xd373 + 62 * i, ds_readbs(0xd366 + 62 * i));
+
+		monster_attacks += ds_readbs(0xd366 + 62 * i);
+
+		/* set BP */
+		ds_writeb(0xd36e + 62 * i, ds_readbs(0xd36d + 62 * i));
+
+		ds_writeb(0xd837 + i, 0);
+	}
+
+	l3 = 0;
+
+
+	/* turn == 0 means monsters attack first, turn == 1 means heros attack fisrt */
+	turn = (ds_readbs(0x26ac) == 2 ? 1 : (ds_readbs(0x26ac) == 1 ? 0 : random_interval(0, 1)));
+
+
+	while ((ds_readws(IN_FIGHT) != 0) && (hero_attacks + monster_attacks > 0)) {
+
+		if (ds_readws(0xe318) == 2) {
+			ds_writew(0xe318, 0);
+		}
+
+		/* decide if heros or monsters are next */
+		if (l3 == 0) {
+
+			/* flip turn */
+			turn ^= 1;
+
+			if (!turn) {
+
+				if (hero_attacks <= monster_attacks) {
+					l3 = 1;
+				} else if (!hero_attacks) {
+					turn = 1;
+				} else if (monster_attacks != 0) {
+					l3 = hero_attacks / monster_attacks;
+				} else {
+					l3 = hero_attacks;
+				}
+			}
+
+			if (turn == 1) {
+
+				if (monster_attacks == 0) {
+					turn = 0;
+					l3 = 1;
+				} else if (monster_attacks <= hero_attacks) {
+					l3 = 1;
+				} else {
+					l3 = (hero_attacks ? monster_attacks / hero_attacks : monster_attacks);
+				}
+			}
+		}
+
+		if (turn == 0) {
+			/* heros on turn */
+
+			pos = FIG_choose_next_hero();
+
+			hero = (RealPt)ds_readd(HEROS) + 0x6da * pos;
+
+			dec_ptr_bs(Real2Host(hero) + 0x83);
+
+			if (hero_sleeps(Real2Host(hero)) && !hero_dead(Real2Host(hero))) {
+
+				/* hero sleeps and is not dead */
+
+				if (random_schick(100) < 75) {
+
+					/* awake him (or her) */
+
+					and_ptr_bs(Real2Host(hero) + 0xaa, 0xfd);
+
+					p1 = Real2Host(FIG_get_ptr(host_readbs(Real2Host(hero) + 0x81)));
+
+					host_writeb(p1 + 0x02, host_readbs(Real2Host(hero) + 0x82));
+					host_writeb(p1 + 0x0d, -1);
+					host_writeb(p1 + 0x05, 0);
+					host_writeb(p1 + 0x06, 0);
+				}
+			}
+
+			if (FIG_search_obj_on_cb(pos + 1, &x_coord, &y_coord) &&
+				check_hero(Real2Host(hero)))
+			{
+				if (host_readbs(Real2Host(hero) + 0x96) != 0) {
+					dec_ptr_bs(Real2Host(hero) + 0x96);
+				} else {
+					if (host_readbs(Real2Host(hero) + 0x97) != 0) {
+						dec_ptr_bs(Real2Host(hero) + 0x97);
+					}
+
+					/* save the fight_id of this hero */
+					ds_writew(0x26b3, pos + 1);
+
+					/* select a fight action */
+					FIG_menu(Real2Host(hero), pos, x_coord, y_coord);
+
+					if ((host_readbs(Real2Host(hero) + 0x84) == 2) ||
+						(host_readbs(Real2Host(hero) + 0x84) == 4) ||
+						(host_readbs(Real2Host(hero) + 0x84) == 5) ||
+						(host_readbs(Real2Host(hero) + 0x84) == 15))
+					{
+
+						FIG_do_hero_action(hero, pos);
+
+						if (host_readbs(Real2Host(hero) + 0x86) >= 10) {
+
+							if (host_readbs(Real2Host(hero) + 0x86) >= 30) {
+								sub_ptr_bs(Real2Host(hero) + 0x86, 20);
+							}
+
+							if (test_bit0(p_datseg + 0xd110 + 62 * host_readbs(Real2Host(hero) + 0x86)))
+							{
+								if (is_in_byte_array(host_readbs(p_datseg + 0xd0e0 + 62 * host_readbs(Real2Host(hero) + 0x86)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								{
+
+									FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + 0x86) + 20, &x, &y);
+
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(hero) + 0x86))));
+									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
+
+									if (host_readbs(p1 + 0x14) >= 0) {
+										FIG_set_cb_field(y, x, host_readbs(p1 + 0x14));
+									} else {
+										FIG_set_cb_field(host_readbs(p1 + 0x04), host_readbs(p1 + 0x03), 0);
+									}
+								}
+							}
+						}
+
+						herokeeping();
+					}
+
+					/* set fight_id of the hero to 0 */
+					ds_writew(0x26b3, 0);
+				}
+			}
+
+			if (!FIG_fight_continues()) {
+				/* this fight is over */
+				ds_writew(IN_FIGHT, 0);
+			}
+
+			hero_attacks--;
+
+		} else {
+			/* monsters on turn */
+
+			pos = FIG_choose_next_enemy();
+
+			monster = (RealPt)RealMake(datseg, 0xd34b + 62 * pos);
+
+			dec_ptr_bs(Real2Host(monster) + 0x28);
+
+			if (FIG_search_obj_on_cb(pos + 10, &x_coord, &y_coord) &&
+				FIG_is_enemy_active(Real2Host(monster)))
+			{
+				if (host_readbs(Real2Host(monster) + 0x2f) != 0) {
+					dec_ptr_bs(Real2Host(monster) + 0x2f);
+				} else {
+
+					ds_writew(0x26b5, pos + 10);
+
+					host_writebs(Real2Host(monster) + 0x2b, 1);
+
+					enemy_turn(Real2Host(monster), pos, x_coord, y_coord);
+
+					if ((host_readbs(Real2Host(monster) + 0x2b) == 2) ||
+						(host_readbs(Real2Host(monster) + 0x2b) == 4) ||
+						(host_readbs(Real2Host(monster) + 0x2b) == 5) ||
+						(host_readbs(Real2Host(monster) + 0x2b) == 15))
+					{
+
+						FIG_do_monster_action(monster, pos);
+
+						if (host_readbs(Real2Host(monster) + 0x2d) >= 10) {
+
+							if (host_readbs(Real2Host(monster) + 0x2d) >= 30) {
+								sub_ptr_bs(Real2Host(monster) + 0x2d, 20);
+							}
+
+							if (test_bit0(p_datseg + 0xd110 + 62 * host_readbs(Real2Host(monster) + 0x2d)))
+							{
+								if (is_in_byte_array(host_readbs(p_datseg + 0xd0e0 + 62 * host_readbs(Real2Host(monster) + 0x2d)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								{
+
+									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + 0x2d) + 20, &x, &y);
+
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(monster) + 0x2d))));
+									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
+
+									if (host_readbs(p1 + 0x14) >= 0) {
+										FIG_set_cb_field(y, x, host_readbs(p1 + 0x14));
+									} else {
+										FIG_set_cb_field(host_readbs(p1 + 0x04), host_readbs(p1 + 0x03), 0);
+									}
+								}
+							}
+						}
+
+						herokeeping();
+					}
+
+					ds_writew(0x26b5, 0);
+				}
+			}
+
+			if (!FIG_fight_continues()) {
+				ds_writew(IN_FIGHT, 0);
+			}
+
+			monster_attacks--;
+		}
+
+		l3--;
+
+		if (ds_readbs(0xe38e) != -1) {
+
+			FIG_remove_from_list(ds_readbs(0xe38e), 0);
+			ds_writeb(0xe38e, -1);
+		}
+
+		if (ds_readbs(0xe38f) != -1) {
+
+			FIG_remove_from_list(ds_readbs(0xe38f), 0);
+			ds_writeb(0xe38f, -1);
+		}
+
+	}
+
+#if !defined(__BORLANDC__)
+	D1_INFO("Kampfrunde %d endet\n", ds_readws(FIGHT_ROUND));
+#endif
 }
 
 #if !defined(__BORLANDC__)

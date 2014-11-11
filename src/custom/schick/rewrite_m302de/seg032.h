@@ -25,6 +25,8 @@ signed short FIG_get_first_active_hero(void);
 unsigned short seg032_02db(void);
 //0x4d
 unsigned short FIG_fight_continues(void);
+//0x52
+void FIG_do_round(void);
 
 #if !defined(__BORLANDC__)
 }
