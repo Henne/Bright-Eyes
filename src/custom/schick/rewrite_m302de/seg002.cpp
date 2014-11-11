@@ -3825,6 +3825,8 @@ void draw_loc_icons(signed short icons, ...)
 		}
 	}
 
+	va_end(arguments);
+
 	if (icons_bak[i] != -1)
 		changed = 1;
 

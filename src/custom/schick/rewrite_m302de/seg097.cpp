@@ -576,6 +576,8 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		}
 	}
 
+	va_end(arguments);
+
 	retval = GUI_menu_input((signed char)options, l_si + 1, l_di);
 
 	GUI_copy_smth(l_di, l5);
