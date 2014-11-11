@@ -3,7 +3,12 @@ namespace M302de {
 #endif
 
 //0x25
+#if !defined(__BORLANDC__)
+void FIG_set_cb_field(signed short, signed short, signed char);
+#else
 void FIG_set_cb_field(signed short, signed short, signed short);
+#endif
+
 //0x2a
 void draw_fight_screen_pal(signed short);
 //0x2f

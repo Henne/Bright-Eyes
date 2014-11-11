@@ -31,14 +31,14 @@ namespace M302de {
  *	with this function.
  */
 /* Borlandified and identical */
-void FIG_set_cb_field(signed short y, signed short x, signed short object)
+void FIG_set_cb_field(signed short y, signed short x, signed char object)
 {
 
 	/* check that the object is in the borders */
 	if (y < 0 || y > 24 || x < 0 || x > 24)
 		return;
 
-	set_cb_val(x, y, (signed char)object);
+	set_cb_val(x, y, object);
 }
 
 /* Borlandified and identical */
