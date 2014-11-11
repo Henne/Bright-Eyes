@@ -42,8 +42,7 @@ namespace M302de {
  */
 void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 {
-	register signed short l_si;
-	register signed short l_di;
+	signed short l_di;
 	signed short l1;
 	signed short l3;
 	signed short done;

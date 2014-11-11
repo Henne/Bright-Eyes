@@ -792,8 +792,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 								ds_writeb((0xe066 + 5), 0);
 								ds_writeb((0xe066 + 6), 0);
-								ds_writeb((0xe066 + 7), height);
-								ds_writeb((0xe066 + 8), width);
+								ds_writeb((0xe066 + 7), (signed char)height);
+								ds_writeb((0xe066 + 8), (signed char)width);
 								ds_writeb((0xe066 + 9), 0);
 								ds_writeb((0xe066 + 10), 0);
 								ds_writeb((0xe066 + 11), (signed char)(width - 1));
