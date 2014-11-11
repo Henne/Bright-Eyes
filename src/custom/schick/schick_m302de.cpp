@@ -4016,6 +4016,27 @@ static int seg041(unsigned short offs) {
 	}
 }
 
+static int seg042(unsigned short offs) {
+
+	switch (offs) {
+
+	case 0x20: {
+		RealPt hero = CPU_Pop32();
+		Bit16s target = CPU_Pop16();
+		CPU_Push16(target);
+		CPU_Push32(hero);
+
+		D1_LOG("FIG_do_hero_action(%s, %d)\n", schick_getCharname(hero), target);
+		FIG_do_hero_action(hero, target);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
 static int seg043(unsigned short offs) {
 
 	switch (offs) {
@@ -6818,7 +6839,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1328:	return seg039(offs);
 		case 0x132d:	return seg040(offs);
 		case 0x1330:	return seg041(offs);
-		case 0x1335:	return 0;
+		case 0x1335:	return seg042(offs);
 		case 0x1338:	return seg043(offs);
 		case 0x133b:	return seg044(offs);
 		case 0x133f:	return seg045(offs);
