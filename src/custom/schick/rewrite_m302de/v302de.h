@@ -382,6 +382,16 @@ static inline int test_bit0(Bit8u *p) {
 }
 
 /**
+ * test_bit1() -	check if bit1 ist set
+ * @p:			pointer
+ *
+ * 0 = not set / 1 = set
+ */
+static inline int test_bit1(Bit8u *p) {
+	return ((host_readbs(p) >> 1) & 1) ? 1 : 0;
+}
+
+/**
  * test_bit2() -	check if bit2 ist set
  * @p:			pointer
  *
@@ -389,6 +399,26 @@ static inline int test_bit0(Bit8u *p) {
  */
 static inline int test_bit2(Bit8u *p) {
 	return ((host_readbs(p) >> 2) & 1) ? 1 : 0;
+}
+
+/**
+ * test_bit3() -	check if bit3 ist set
+ * @p:			pointer
+ *
+ * 0 = not set / 1 = set
+ */
+static inline int test_bit3(Bit8u *p) {
+	return ((host_readbs(p) >> 3) & 1) ? 1 : 0;
+}
+
+/**
+ * test_bit5() -	check if bit5 ist set
+ * @p:			pointer
+ *
+ * 0 = not set / 1 = set
+ */
+static inline int test_bit5(Bit8u *p) {
+	return ((host_readbs(p) >> 5) & 1) ? 1 : 0;
 }
 
 /**
@@ -1063,7 +1093,10 @@ struct bittest {
 };
 
 #define test_bit0(a)		((*(struct bittest*)(a)).bit0)
+#define test_bit1(a)		((*(struct bittest*)(a)).bit1)
 #define test_bit2(a)		((*(struct bittest*)(a)).bit2)
+#define test_bit3(a)		((*(struct bittest*)(a)).bit3)
+#define test_bit5(a)		((*(struct bittest*)(a)).bit5)
 #define test_bit6(a)		((*(struct bittest*)(a)).bit6)
 
 #define hero_dead(hero)		((*(struct hero_status*)(hero + 0xaa)).dead)
