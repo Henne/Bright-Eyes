@@ -3623,7 +3623,7 @@ static int seg034(unsigned short offs)
 
 		reg_ax = (Bit16s)seg034_2e3(Real2Host(a1), Real2Host(a2), a3);
 
-		D1_INFO("seg034_2e3(*a1 = %d, *a2 = %d, a3 = %d) = %d\n",
+		D1_LOG("seg034_2e3(*a1 = %d, *a2 = %d, a3 = %d) = %d\n",
 			host_readws(Real2Host(a1)),
 			host_readws(Real2Host(a2)),
 			a3, (Bit16s)reg_ax);
@@ -5994,7 +5994,7 @@ static int seg102(unsigned short offs)
 		CPU_Push32(mon);
 
 		reg_ax = MON_cast_spell(mon, (Bit8s)bonus);
-		D1_INFO("MON_cast_spell(..., %d) = %d\n", bonus, (Bit16s)reg_ax);
+		D1_LOG("MON_cast_spell(..., %d) = %d\n", bonus, (Bit16s)reg_ax);
 		return 1;
 	}
 	case 0x25: {
@@ -6673,23 +6673,23 @@ static int seg117(unsigned short offs)
 		return 0;
 	}
 	case 0x4d: {
-		D1_INFO("%s:0x%x()\n", __func__, offs);
+		D1_LOG("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x52: {
-		D1_INFO("%s:0x%x()\n", __func__, offs);
+		D1_LOG("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x57: {
-		D1_INFO("%s:0x%x()\n", __func__, offs);
+		D1_LOG("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x5c: {
-		D1_INFO("%s:0x%x()\n", __func__, offs);
+		D1_LOG("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	case 0x61: {
-		D1_INFO("%s:0x%x()\n", __func__, offs);
+		D1_LOG("%s:0x%x()\n", __func__, offs);
 		return 0;
 	}
 	default:
