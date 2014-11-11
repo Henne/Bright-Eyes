@@ -27,6 +27,8 @@ unsigned short seg032_02db(void);
 unsigned short FIG_fight_continues(void);
 //0x52
 void FIG_do_round(void);
+//0x57
+void FIG_load_ship_sprites(void);
 
 #if !defined(__BORLANDC__)
 }

@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten: 10/12
+ *	Functions rewritten: 11/12
 */
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +9,7 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg004.h"
 #include "seg005.h"
 #include "seg006.h"
 #include "seg007.h"
@@ -18,6 +19,7 @@
 #include "seg038.h"
 #include "seg042.h"
 #include "seg043.h"
+#include "seg097.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -684,6 +686,103 @@ void FIG_do_round(void)
 #if !defined(__BORLANDC__)
 	D1_INFO("Kampfrunde %d endet\n", ds_readws(FIGHT_ROUND));
 #endif
+}
+
+
+/*
+ * \brief	loads some special textures for the ghost ship
+ */
+/* Borlandified and identical */
+void FIG_load_ship_sprites(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short i;
+	signed short width;
+	signed short height;
+	signed short const1 = 10;
+	signed short const2 = 118;
+	signed short l3;
+	signed short l4;
+	Bit8u *ptr;
+	struct nvf_desc nvf;
+
+	for (i = 0; i < 24; i++) {
+
+		for (l_di = 0; l_di < 24; l_di++) {
+
+			l_si = host_readbs(Real2Host(ds_readd(0xbd2c)) + 0x15 + 25 * i + l_di);
+
+			if ((l_si >= 108) && (l_si <= 111)) {
+
+				l_si -= 50;
+
+			if (NOT_NULL(Real2Host(host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si)))) {
+
+				/* this sprite has already been buffered */
+
+				ptr = Real2Host(host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si));
+
+			} else {
+				/* this sprite has not been used yet */
+
+				ptr = Real2Host(ds_readd(0xd86e));
+
+				nvf.dst = ptr;
+				nvf.src = Real2Host(ds_readd(0xbd30));
+				nvf.nr = l_si;
+				nvf.type = 0;
+				nvf.width = (Bit8u*)&width;
+				nvf.height = (Bit8u*)&height;
+
+				process_nvf(&nvf);
+#if !defined(__BORLANDC__)
+				/* BE-fix */
+				width = host_readws((Bit8u*)&width);
+				height = host_readws((Bit8u*)&height);
+#endif
+
+				/* buffer this picture */
+				host_writed(Real2Host(ds_readd(0xe388)) + 4 * l_si, ds_readd(0xd86e));
+				host_writew(Real2Host(ds_readd(0xe384)) + 2 * l_si, width);
+				host_writew(Real2Host(ds_readd(0xe380)) + 2 * l_si, height);
+
+				/* adjust the pointer */
+				add_ds_ws(0xd86e, width * height + 8);
+
+				/* adjust the counter */
+				sub_ds_ds(0xe370, width * height + 8L);
+
+				/* check for error */
+				if (ds_readds(0xe370) < 0L) {
+					/* "ERROR ON OBJECT MALLOC" */
+					GUI_input(p_datseg + 0x5f18, 0);
+				}
+			}
+
+
+			/* calculate screen coordinates */
+			l3 = const1 - host_readws(Real2Host(ds_readd(0xe384)) + 2 * l_si) / 2 + 10 * (l_di + i);
+			l4 = const2 - host_readws(Real2Host(ds_readd(0xe380)) + 2 * l_si) + 5 * (l_di - i);
+
+			l3 += ds_readws(0x6060 + 2 * l_si);
+			l4 += ds_readws(0x60de + 2 * l_si);
+
+			/* set screen coordinates */
+			ds_writew(0xc011, l3);
+			ds_writew(0xc013, l4);
+			ds_writew(0xc015, l3 + host_readws(Real2Host(ds_readd(0xe384)) + 2 * l_si) - 1);
+			ds_writew(0xc017, l4 + host_readws(Real2Host(ds_readd(0xe380)) + 2 * l_si) - 1);
+			ds_writed(0xc019, host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si));
+			ds_writed(0xc00d, ds_readd(0xc3a9));
+
+			do_pic_copy(2);
+
+			ds_writed(0xc00d, ds_readd(0xd2ff));
+
+			}
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)

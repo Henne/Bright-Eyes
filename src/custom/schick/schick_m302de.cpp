@@ -8171,7 +8171,10 @@ static int n_seg032(unsigned offs)
 		return 1;
 	}
 	case 0xa38: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("FIG_load_ship_sprites()\n");
+		FIG_load_ship_sprites();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
