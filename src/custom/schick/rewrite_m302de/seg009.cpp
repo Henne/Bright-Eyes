@@ -1,6 +1,9 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg009 (PP20 decompressor)
  *	Functions rewritten: 1/1
+ *
+ *	Borlandified and identical
+ *	Take a look in seg009.asm
  */
 
 /* Code from Heikki Orsila's amigadepack 0.02 to replace previous
