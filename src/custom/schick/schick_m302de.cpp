@@ -5265,6 +5265,39 @@ static int seg090(unsigned short offs)
 	}
 }
 
+static int seg091(unsigned short offs)
+{
+	switch (offs) {
+		case 0x2f: {
+			return 0;
+		}
+		case 0x34: {
+			return 0;
+		}
+		case 0x39: {
+			return 0;
+		}
+		case 0x3e: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
+		case 0x48: {
+			Bit16s fight_id = CPU_Pop16();
+			CPU_Push16(fight_id);
+
+			D1_LOG("DNG13_fight_intro(%d)\n", fight_id);
+			DNG13_fight_intro(fight_id);
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg092(unsigned short offs) {
 	switch (offs) {
 	case 0x25: {
@@ -7138,7 +7171,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x140b:	return 0;
 		case 0x1411:	return 0;
 		case 0x1417:	return seg090(offs);
-		case 0x141b:	return 0;
+		case 0x141b:	return seg091(offs);
 		case 0x1420:	return seg092(offs);
 		case 0x1429:	return 0;
 		case 0x142c:	return 0;
@@ -9561,6 +9594,25 @@ static int n_seg090(unsigned short offs)
 	}
 }
 
+static int n_seg091(unsigned short offs)
+{
+	switch (offs) {
+	case 0x44f: {
+		return 0;
+	}
+	case 0x613: {
+		return 0;
+	}
+	case 0x721: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+			__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg092(unsigned short offs)
 {
 	switch (offs) {
@@ -10364,6 +10416,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x13c3)) return n_seg075(offs);
 	else if (is_ovrseg(0x13cb)) return n_seg076(offs);
 	else if (is_ovrseg(0x1417)) return n_seg090(offs);
+	else if (is_ovrseg(0x141b)) return n_seg091(offs);
 	else if (is_ovrseg(0x1420)) return n_seg092(offs);
 	else if (is_ovrseg(0x1432)) return n_seg095(offs);
 	else if (is_ovrseg(0x1442)) return n_seg097(offs);
