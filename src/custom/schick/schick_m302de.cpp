@@ -5241,6 +5241,57 @@ static int seg086(unsigned short offs)
 	}
 }
 
+static int seg088(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			return 0;
+		}
+		case 0x25: {
+			Bit16s fight_id = CPU_Pop16();
+			CPU_Push16(fight_id);
+
+			D1_LOG("DNG14_fight_intro(%d)\n", fight_id);
+			DNG14_fight_intro(fight_id);
+			return 1;
+		}
+		case 0x2a: {
+			return 0;
+		}
+		case 0x2f: {
+			return 0;
+		}
+		case 0x34: {
+			return 0;
+		}
+		case 0x39: {
+			return 0;
+		}
+		case 0x3e: {
+			return 0;
+		}
+		case 0x43: {
+			return 0;
+		}
+		case 0x48: {
+			return 0;
+		}
+		case 0x4d: {
+			return 0;
+		}
+		case 0x52: {
+			return 0;
+		}
+		case 0x57: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg090(unsigned short offs)
 {
 	switch (offs) {
@@ -7168,7 +7219,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x13fc:	return 0;
 		case 0x1401:	return seg086(offs);
 		case 0x1408:	return 0;
-		case 0x140b:	return 0;
+		case 0x140b:	return seg088(offs);
 		case 0x1411:	return 0;
 		case 0x1417:	return seg090(offs);
 		case 0x141b:	return seg091(offs);
