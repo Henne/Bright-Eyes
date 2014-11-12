@@ -1,8 +1,8 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg097 (GUI)
- *      Functions rewritten: 15/16
+ *      Functions rewritten: 16/16 (complete)
  *
- *      Functions called rewritten 12/13
+ *      Functions called rewritten 13/13
  *      Functions uncalled rewritten 3/3
 */
 
@@ -18,6 +18,16 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg026.h"
+
+#include "seg078.h"
+#include "seg080.h"
+#include "seg081.h"
+#include "seg084.h"
+#include "seg086.h"
+#include "seg088.h"
+#include "seg090.h"
+#include "seg091.h"
+
 #include "seg096.h"
 #include "seg097.h"
 
@@ -796,6 +806,44 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	ds_writew(0xc3cb, l12);
 
 	return retval;
+}
+
+/**
+ * \brief	shows a fight intro message
+ * \param	fight_id	ID of the fight
+ */
+/* Borlandified and identical */
+void GUI_print_fight_intro_msg(signed short fight_id)
+{
+	signed short bak = ds_readws(0xbffd);
+	ds_writew(0xbffd, 7);
+
+	if (ds_readbs(DUNGEON_INDEX) == 2) {
+		DNG2_fight_intro(fight_id);
+	}
+	if (ds_readbs(DUNGEON_INDEX) == 5) {
+		DNG5_fight_intro(fight_id);
+	}
+	if (ds_readbs(DUNGEON_INDEX) == 6) {
+		DNG6_fight_intro(fight_id);
+	}
+	if (ds_readbs(DUNGEON_INDEX) == 9) {
+		DNG9_fight_intro(fight_id);
+	}
+	if (ds_readbs(DUNGEON_INDEX) == 11) {
+		DNG11_fight_intro(fight_id);
+	}
+	if (ds_readbs(DUNGEON_INDEX) == 12) {
+		DNG12_fight_intro(fight_id);
+	}
+	if (ds_readbs(DUNGEON_INDEX) == 13) {
+		DNG13_fight_intro(fight_id);
+	}
+	if (ds_readbs(DUNGEON_INDEX) == 14) {
+		DNG14_fight_intro(fight_id);
+	}
+
+	ds_writew(0xbffd, bak);
 }
 
 /**

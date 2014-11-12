@@ -5826,11 +5826,12 @@ static int seg097(unsigned short offs) {
 		return 0;
 	}
 	case 0x66: {
-		unsigned short fight = CPU_Pop16();
-		CPU_Push16(fight);
+		Bit16s fight_id = CPU_Pop16();
+		CPU_Push16(fight_id);
 
-		D1_LOG("GUI_Dungeon(0x%x)\n", fight);
-		return 0;
+		D1_LOG("GUI_print_fight_intro_msg(%d)\n", fight_id);
+		GUI_print_fight_intro_msg(fight_id);
+		return 1;
 	}
 	case 0x6b: {
 		Bit16u head = CPU_Pop16();
