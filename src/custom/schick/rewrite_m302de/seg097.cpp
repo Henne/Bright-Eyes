@@ -4,6 +4,10 @@
  *
  *      Functions called rewritten 13/13
  *      Functions uncalled rewritten 3/3
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg097.cpp
 */
 
 #include <string.h>
@@ -35,8 +39,6 @@
 namespace M302de {
 #endif
 
-//000
-/* Borlandified and identical */
 void GUI_unused1(Bit8u *a1, signed short a2, signed short a3)
 {
 	signed short l1;
@@ -87,8 +89,6 @@ void GUI_unused1(Bit8u *a1, signed short a2, signed short a3)
 	refresh_screen_size();
 }
 
-//129
-/* Borlandified and identical */
 signed short GUI_unused2(signed short c, RealPt p)
 {
 	signed short v1;
@@ -104,8 +104,6 @@ signed short GUI_unused2(signed short c, RealPt p)
 	return v1;
 }
 
-//15e
-/* Borlandified and identical */
 signed short GUI_lookup_char_height(signed char c, signed short *p)
 {
 	signed short i;
@@ -132,8 +130,6 @@ signed short GUI_lookup_char_height(signed char c, signed short *p)
 	return 0;
 }
 
-//1c2
-/* Borlandified and identical */
 void GUI_1c2(signed short v1, signed short v2, RealPt v3)
 {
 
@@ -142,9 +138,7 @@ void GUI_1c2(signed short v1, signed short v2, RealPt v3)
 	GUI_write_char_to_screen(v3, 8, v2);
 }
 
-//1f8
 //static
-/* Borlandified and identical */
 signed short GUI_enter_text(Bit8u* dst, signed short x, signed short y, signed short num, signed short zero)
 {
 	signed short di;
@@ -279,9 +273,7 @@ dummy:
 	return 0;
 }
 
-//4ae
 //static
-/* Borlandified and identical */
 void GUI_draw_radio_bg(signed short header, signed short options, signed short width,
 								signed short height)
 {
@@ -316,8 +308,6 @@ void GUI_draw_radio_bg(signed short header, signed short options, signed short w
 	wait_for_keyboard1();
 }
 
-//564
-/* Borlandified and identical */
 void GUI_copy_smth(unsigned short width, unsigned short height)
 {
 	ds_writew(0xc011, ds_readw(0xbfff));
@@ -328,13 +318,11 @@ void GUI_copy_smth(unsigned short width, unsigned short height)
 	do_pic_copy(0);
 }
 
-/* Borlandified and identical */
 void GUI_output(Bit8u *str)
 {
 	GUI_input(str, 0);
 }
 
-/* Borlandified and identical */
 signed short GUI_input(Bit8u *str, unsigned short num)
 {
 	signed short retval;
@@ -436,7 +424,6 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	return retval;
 }
 
-/* Borlandified and identical */
 signed short GUI_bool(Bit8u *text)
 {
 	signed short ret_radio;
@@ -450,9 +437,7 @@ signed short GUI_bool(Bit8u *text)
 }
 
 
-//0x7f4
-///static
-/* Borlandified and identical */
+//static
 void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 	unsigned short offset)
 {
@@ -484,8 +469,6 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 	refresh_screen_size();
 }
 
-//0x893
-/* Borlandified and identical */
 signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		signed short options, ...)
 {
@@ -615,9 +598,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	return retval;
 }
 
-//0xb43
 //static
-/* Borlandified and identical */
 signed short GUI_menu_input(signed short positions, signed short h_lines,
 			signed short width)
 {
@@ -726,7 +707,6 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 	return retval;
 }
 
-/* Borlandified and identical */
 signed short GUI_radio(Bit8u *text, signed char options, ...)
 {
 	signed short i;
@@ -812,7 +792,6 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
  * \brief	shows a fight intro message
  * \param	fight_id	ID of the fight
  */
-/* Borlandified and identical */
 void GUI_print_fight_intro_msg(signed short fight_id)
 {
 	signed short bak = ds_readws(0xbffd);
