@@ -5372,6 +5372,9 @@ static int seg092(unsigned short offs) {
 	case 0x39: {
 		return 0;
 	}
+	case 0x3e: {
+		return 0;
+	}
 	case 0x43: {
 		return 0;
 	}
