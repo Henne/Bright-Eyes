@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I../ -I../../schick -I../../schick/rewrite_m302de
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir)/../ -I$(srcdir)/../../schick -I$(srcdir)/../../schick/rewrite_m302de
 
 noinst_LIBRARIES = libschweif_rewrite_c102de.a
 

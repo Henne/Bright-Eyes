@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I../ -Wall -pedantic -Wno-variadic-macros
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir)/.. -Wall -pedantic -Wno-variadic-macros
 
 noinst_LIBRARIES = libschick_rewrite_g105de.a
 
