@@ -15,6 +15,9 @@ void do_town(void);
 /* 0x4d */
 void load_city_texture(signed short, signed short, signed short, signed short);
 
+/* 0x61 */
+void seg066_172b(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif

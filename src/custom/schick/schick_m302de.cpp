@@ -4651,8 +4651,9 @@ static int seg066(unsigned short offs)
 		return 0;
 	}
 	case 0x61: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
-		return 0;
+		D1_LOG("seg066_172b()\n");
+		seg066_172b();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

@@ -1,6 +1,6 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg025 (city)
- *	Functions rewritten: 2/18
+ *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
+ *	Functions rewritten: 3/18
  */
 
 #include <stdlib.h>
@@ -113,6 +113,52 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 		copy_solid(dst, src, copy_width, copy_height, 208, width,
 			v4 == 0 ? 0 : 128);
 	}
+}
+
+/* 0x172b */
+void seg066_172b(void)
+{
+	signed short l_si;
+	signed short l_di;
+	Bit8u *ptr = p_datseg + 0xbd95;
+
+	ds_writeb(0xe400, ds_writeb(0xe401, ds_writeb(0xe402, ds_writeb(0xe403, 0))));
+
+	for (l_di = 0; ds_readb(0xbd94) * 16 > l_di; l_di++) {
+
+		l_si = get_border_index(host_readbs(ptr + l_di));
+
+		if (l_si == 2) {
+			inc_ds_bs_post(0xe400);
+		} else if (l_si == 3) {
+			inc_ds_bs_post(0xe401);
+		} else if ((l_si == 4) || (l_si == 1)) {
+			inc_ds_bs_post(0xe402);
+		} else if (l_si == 5) {
+			inc_ds_bs_post(0xe403);
+		}
+	}
+
+	l_di = 5;
+	l_si = 2000;
+
+	if (ds_readb(0xe400) < l_si) {
+		l_si = ds_readb(0xe400 + (l_di = 0));
+	}
+
+	if (ds_readb(0xe401) < l_si) {
+		l_si = ds_readb(0xe400 + (l_di = 1));
+	}
+
+	if (ds_readb(0xe402) < l_si) {
+		l_si = ds_readb(0xe400 + (l_di = 2));
+	}
+
+	if (ds_readb(0xe403) < l_si) {
+		l_si = ds_readb(0xe400 + (l_di = 3));
+	}
+
+	ds_writeb(0xe400 + l_di, 0);
 }
 
 #if !defined(__BORLANDC__)
