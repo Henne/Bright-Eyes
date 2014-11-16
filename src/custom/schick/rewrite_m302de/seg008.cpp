@@ -40,7 +40,7 @@ void set_color(Bit8u *ptr, unsigned char color){
 	INT10_SetSingleDacRegister(color, ptr[0], ptr[1], ptr[2]);
 }
 
-void set_palette(Bit8u *ptr, unsigned char first_color, unsigned short colors){
+void set_palette(Bit8u *ptr, unsigned short first_color, unsigned short colors){
 	unsigned short i;
 	for (i = 0; i < colors; i++)
 		INT10_SetSingleDacRegister(first_color + i,
