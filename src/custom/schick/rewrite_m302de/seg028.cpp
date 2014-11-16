@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 14/19
+	Functions rewritten: 16/19
 */
 
 #include <string.h>
@@ -15,6 +15,7 @@
 #include "seg010.h"
 #include "seg026.h"
 #include "seg028.h"
+#include "seg066.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -113,9 +114,128 @@ void load_dungeon_ddt(void)
 
 }
 
+/* Borlandified and identical */
+void seg028_0224(void)
+{
+	signed short l_si;
+	signed short l1;
+	RealPt arr[4];
+
+	l1 = ds_readbs(CURRENT_TOWN) + 77;
+
+	if (ds_readbs(0x2ca7) != ds_readbs(CURRENT_TOWN)) {
+		load_area_description(1);
+		ds_writeb(0x2ca6, -1);
+	}
+
+	load_buffer_1(l1);
+
+	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 0)) {
+
+		set_var_to_zero();
+
+		ds_writew(CURRENT_ANI, -1);
+
+		seg066_172b();
+
+		ds_writed(0xe3fc, ds_readd(0xd019));
+
+		for (l_si = 0; l_si < 4; l_si++) {
+
+			if (ds_readb(0xe400 + l_si) != 0) {
+
+				arr[l_si] = seg028_0444(!l_si ? 186 : (l_si == 1 ? 187 : (l_si == 2 ? 188 : 189)), 0, 0, 0);
+
+
+			}
+		}
+
+		for (l_si = 0; l_si < 4; l_si++) {
+			if (!ds_readb(0xe400 + l_si)) {
+
+				arr[l_si] = (!l_si ? arr[l_si + 1] : arr[l_si - 1]);
+			}
+		}
+
+		ds_writed(0xe41c, (Bit32u)arr[0]);
+		ds_writed(0xe420, (Bit32u)arr[1]);
+		ds_writed(0xe424, (Bit32u)arr[2]);
+		ds_writed(0xe428, (Bit32u)arr[3]);
+
+		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
+		{
+			ds_writed(0xe418, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
+
+			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(0xe404)), 0xc0);
+		} else {
+			ds_writed(0xe418, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
+		}
+
+		ds_writed(0xe414, (Bit32u) seg028_0444(!ds_readbs(0xe5e4)? 184: 287, 0, 0x20, 0));
+
+		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
+		{
+			memcpy(p_datseg + 0x3e53, Real2Host(ds_readd(0xe404)), 0x60);
+		}
+
+		ds_writew(0x2ccb, 1);
+	}
+
+	ds_writeb(0x2ca7, ds_readbs(CURRENT_TOWN));
+	ds_writeb(0x2ca6, -1);
+
+	set_automap_tiles(ds_readw(X_TARGET), ds_readw(Y_TARGET));
+}
+
+/* Borlandified and identical */
+RealPt seg028_0444(signed short index, signed short firstcol, signed short colors, signed short ref)
+{
+	signed short fd;
+	Bit32s v1;
+	Bit32s v2;
+	RealPt ptr;
+
+	ptr = (RealPt)ds_readd(0xe3fc);
+
+	fd = load_archive_file(index);
+
+	v1 = v2 = 0L;
+
+	do {
+		v1 = read_archive_file(fd, Real2Host(ds_readd(0xe3fc)), 65000);
+
+#if !defined(__BORLANDC__)
+		F_PADA(RealMake(datseg, 0xe3fc), v1);
+#else
+		*(HugePt*)(p_datseg + 0xe3fc) += v1;
+#endif
+
+		v2 += v1;
+
+	} while (v1);
+
+	bc_close(fd);
+
+	if (colors) {
+
+		ds_writed(0xe404, (Bit32u)(ptr + v2 - 3 * colors));
+
+		if ((ref != 0) && (!ds_readb(0x4475))) {
+
+			wait_for_vsync();
+
+			set_palette(Real2Host(ds_readd(0xe404)), firstcol, colors);
+		}
+	}
+
+	return ptr;
+
+}
+
+/* Borlandified and identical */
 void load_special_textures(signed short arg)
 {
-	Bit16u fd;
+	signed short fd;
 
 	/* load 0xe8 LTURM.NVF else FINGER.NVF */
 	fd = load_archive_file(arg == 9 ? 0xe8 : 0xe9);
@@ -124,9 +244,10 @@ void load_special_textures(signed short arg)
 
 }
 
+/* Borlandified and identical */
 void call_load_buffer(void)
 {
-	load_buffer_1((signed short)ds_readw(0x26bf));
+	load_buffer_1(ds_readws(0x26bf));
 }
 
 /**

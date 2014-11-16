@@ -12,6 +12,10 @@ void prepare_dungeon_area(void);
 void load_map(void);
 //0x3e
 void load_dungeon_ddt(void);
+//0x43
+RealPt seg028_0444(signed short, signed short, signed short, signed short);
+//0x48
+void seg028_0224(void);
 //0x4d
 void load_special_textures(signed short);
 //0x52

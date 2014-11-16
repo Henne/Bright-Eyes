@@ -8268,10 +8268,29 @@ static int n_seg028(unsigned offs) {
 		return 0;
 	}
 	case 0x224: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("seg028_0224()\n");
+		seg028_0224();
+		return 1;
 	}
 	case 0x444: {
-		return 0;
+		CPU_Pop16();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		RealPt retval = seg028_0444(a1, a2, a3, a4);
+		D1_LOG("seg028_0444(%d, %d, %d, %d) = %x\n",
+			a1, a2, a3 ,a4, retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
 	}
 	case 0x56a: {
 		CPU_Pop16();
