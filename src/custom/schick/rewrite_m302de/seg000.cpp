@@ -73,6 +73,15 @@ void bc_dos_getdiskfree(Bit16u drive, Bit8u *p)
 	reg_esp = esp_bak;
 }
 
+void F_PADA(RealPt p, Bit32s off)
+{
+	reg_dx = RealSeg(p);
+	reg_ax = RealOff(p);
+	reg_cx = off >> 16;
+	reg_bx = off & 0xffff;
+	CALLBACK_RunRealFar(reloc_game, 0x928);
+}
+
 RealPt F_PADD(RealPt p, Bit32s off)
 {
 	reg_dx = RealSeg(p);
