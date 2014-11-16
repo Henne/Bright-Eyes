@@ -70,8 +70,12 @@ void prepare_dungeon_area(void)
 		set_palette(Real2Host(buf), 0x80, 0x40);
 
 		do {
-			v1 = read_archive_file(handle, Real2Host(buf), 0xfde8);
+			v1 = read_archive_file(handle, Real2Host(buf), 65000);
+#if !defined(__BORLANDC__)
+			buf = F_PADD(buf, v1);
+#else
 			buf += v1;
+#endif
 			v2 += v1;
 		} while (v1);
 

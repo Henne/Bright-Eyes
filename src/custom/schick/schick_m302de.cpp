@@ -8262,7 +8262,10 @@ static int n_seg026(unsigned short offs)
 static int n_seg028(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("prepare_dungeon_area()\n");
+		prepare_dungeon_area();
+		return 1;
 	}
 	case 0x19e: {
 		CPU_Pop16();
