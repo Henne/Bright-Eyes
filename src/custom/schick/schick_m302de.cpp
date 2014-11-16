@@ -8265,7 +8265,10 @@ static int n_seg028(unsigned offs) {
 		return 0;
 	}
 	case 0x19e: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("load_dungeon_ddt()\n");
+		load_dungeon_ddt();
+		return 1;
 	}
 	case 0x224: {
 		CPU_Pop16();
