@@ -20,6 +20,8 @@ void seg028_0224(void);
 void load_special_textures(signed short);
 //0x52
 void call_load_buffer(void);
+//0x75
+void seg028_0555(signed short);
 //0x5c
 void call_load_area(unsigned short);
 //0x61

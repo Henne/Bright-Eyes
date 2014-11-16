@@ -3286,7 +3286,11 @@ static int seg028(unsigned short offs) {
 		return 1;
 	}
 	case 0x57: {
-		return 0;
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("seg028_0555(%d);\n", arg);
+		seg028_0555(arg);
+		return 1;
 	}
 	case 0x5c: {
 		Bit16s arg = CPU_Pop16();

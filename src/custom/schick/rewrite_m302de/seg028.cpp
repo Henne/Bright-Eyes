@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 16/19
+	Functions rewritten: 17/19
 */
 
 #include <string.h>
@@ -252,6 +252,16 @@ void load_special_textures(signed short arg)
 void call_load_buffer(void)
 {
 	load_buffer_1(ds_readws(0x26bf));
+}
+
+/* Borlandified and identical */
+void seg028_0555(signed short town)
+{
+	if (town == 1) {
+		seg028_0224();
+	} else {
+		prepare_dungeon_area();
+	}
 }
 
 /**
