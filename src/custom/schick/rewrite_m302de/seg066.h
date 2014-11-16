@@ -3,7 +3,11 @@ namespace M302de {
 #endif
 
 /* 0x2a */
-signed short get_border_index(signed short);
+#if !defined(__BORLANDC__)
+signed short get_border_index(unsigned char);
+#else
+signed short get_border_index(unsigned short);
+#endif
 
 /* 0x39 */
 void do_town(void);

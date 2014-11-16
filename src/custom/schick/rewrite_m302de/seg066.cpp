@@ -20,7 +20,7 @@ void do_town(void)
 }
 
 /* 0xb73 */
-signed short get_border_index(signed short val)
+signed short get_border_index(unsigned char val)
 {
 	signed short i;
 
