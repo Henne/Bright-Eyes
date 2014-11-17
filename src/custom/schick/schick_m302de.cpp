@@ -4752,7 +4752,9 @@ static int seg069(unsigned short offs)
 static int seg070(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			D1_LOG("PHX_fuhrhaus()\n");
+			PHX_fuhrhaus();
+			return 1;
 		}
 		case 0x25: {
 			return 0;
