@@ -680,9 +680,10 @@ void unused_load_archive_file(signed short index, signed short a2, Bit32u seg)
 }
 
 
+/* Borlandified and identical */
 void load_fightbg(signed short index)
 {
-	unsigned short fd;
+	signed short fd;
 
 	fd = load_archive_file(index);
 	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 30000);
