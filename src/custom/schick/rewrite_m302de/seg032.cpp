@@ -711,7 +711,7 @@ void FIG_load_ship_sprites(void)
 
 		for (l_di = 0; l_di < 24; l_di++) {
 
-			l_si = host_readbs(Real2Host(ds_readd(0xbd2c)) + 0x15 + 25 * i + l_di);
+			l_si = host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x15 + 25 * i + l_di);
 
 			if ((l_si >= 108) && (l_si <= 111)) {
 
