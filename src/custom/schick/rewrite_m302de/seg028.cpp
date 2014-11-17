@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 18/19
+	Functions rewritten: 19/19 (complete)
 */
 
 #include <string.h>
@@ -668,6 +668,17 @@ void load_tlk(signed short index)
 		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + 0x3794));
 	}
 }
+
+/* Borlandified and identical */
+void unused_load_archive_file(signed short index, signed short a2, Bit32u seg)
+{
+	signed short fd;
+
+	fd = load_archive_file(index);
+	read_archive_file(fd, Real2Host(RealMake(seg, a2)), 64000);
+	bc_close(fd);
+}
+
 
 void load_fightbg(signed short index)
 {
