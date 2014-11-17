@@ -507,12 +507,14 @@ void load_map(void)
 	ds_writew(0xe113, bak);
 }
 
+/* Borlandified and identical */
 void load_npc(signed short index)
 {
 	Bit8u *npc_dst;
-	unsigned short fd;
+	signed short fd;
 
-	npc_dst = get_hero(0) + 0x291c;
+	npc_dst = get_hero(6);
+
 	/* load from temp directory */
 	fd = load_archive_file(index | 0x8000);
 	bc__read(fd, npc_dst, 0x6da);
@@ -522,12 +524,12 @@ void load_npc(signed short index)
 		/* female */
 		/* set an unknown variable to typus + 11 */
 		host_writeb(npc_dst + 0x9b, host_readb(npc_dst + 0x21) + 11);
-		if (host_readb(npc_dst + 0x9b) > 21)
+		if (host_readbs(npc_dst + 0x9b) > 21)
 			host_writeb(npc_dst + 0x9b, 21);
 	} else {
 		/* male */
 		host_writeb(npc_dst + 0x9b, host_readb(npc_dst + 0x21));
-		if (host_readb(npc_dst + 0x9b) > 10)
+		if (host_readbs(npc_dst + 0x9b) > 10)
 			host_writeb(npc_dst + 0x9b, 10);
 	}
 }
