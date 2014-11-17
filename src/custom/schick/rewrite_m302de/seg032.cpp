@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
- *	Functions rewritten: 11/12
+ *	Functions rewritten: 12/12 (complete)
 */
 #include <stdlib.h>
 #include <string.h>
@@ -14,12 +14,23 @@
 #include "seg006.h"
 #include "seg007.h"
 #include "seg008.h"
+#include "seg026.h"
+#include "seg027.h"
+#include "seg028.h"
 #include "seg033.h"
+#include "seg034.h"
+#include "seg035.h"
 #include "seg037.h"
 #include "seg038.h"
+#include "seg039.h"
+#include "seg040.h"
 #include "seg042.h"
 #include "seg043.h"
+#include "seg049.h"
 #include "seg097.h"
+#include "seg105.h"
+#include "seg113.h"
+#include "seg120.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -783,6 +794,394 @@ void FIG_load_ship_sprites(void)
 			}
 		}
 	}
+}
+
+/**
+ * \brief	the heros encounter a fight
+ *
+ * \param	fight_nr	number of the fight
+ *
+ * \return 0 = ???, 1 = no monsters in the fight, 2 = , 3 = sneaked arround
+ */
+signed short do_fight(signed short fight_nr)
+{
+	signed short l_di;
+
+	signed short fd;
+	signed short l1;
+	signed short l3;
+	signed short l4;
+	signed short l5;
+	signed short retval = 0;
+	Bit8u *hero;
+	Bit8u *ptr;
+	signed short l7;
+	signed short bak1;
+	signed short bak2;
+	signed short bak3;
+	signed short bak4;
+	signed short bak5;
+	signed short tmp[6];
+
+	if ((ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) == 1)
+		&& (host_readbs(get_hero(0) + 0x9a) != 0))
+	{
+		/* only one hero in the group with spell_visibili active */
+		return 3;
+	}
+
+	if (ds_readb(0x41c6) != 0) {
+		return 0;
+	}
+
+	if (!count_fight_enemies(fight_nr)) {
+		return 1;
+	}
+
+	ds_writew(TIMERS_DISABLED, 1);
+	ds_writew(CURRENT_FIG_NR, fight_nr);
+
+	bak5 = ds_readws(0xbffd);
+	ds_writew(0xbffd, 3);
+
+	/* set some pointers */
+	ds_writed(SCENARIO_BUF, (Bit32u)F_PADD(ds_readd(0xc3a9), 64100));
+	ds_writed(0xe125, (Bit32u)F_PADD(ds_readd(SCENARIO_BUF), 621));
+	ds_writed(0xbd28, (Bit32u)F_PADD(ds_readd(0xe125), 3476));
+
+	read_fight_lst(fight_nr);
+
+	load_scenario(host_readws(Real2Host(ds_readd(0xbd28)) + 0x14));
+
+	if (!host_readbs(Real2Host(ds_readd(0xbd28)) + 0x13)) {
+		/* we have not seen the intro message yet: show and mark as seen */
+		GUI_print_fight_intro_msg(fight_nr);
+
+		host_writeb(Real2Host(ds_readd(0xbd28)) + 0x13, 1);
+	}
+
+	if (ds_readws(0x5f16) > 0) {
+
+		memset(Real2Host(ds_readd(0xbd28)) + 5 * ds_readws(0x5f16) + 22, 0, 5 * (20 - ds_readws(0x5f16)));
+		ds_writew(0x5f16, 0);
+	}
+
+	/* state that we are in a fight */
+	ds_writew(IN_FIGHT, 1);
+
+	/* set some vars to 0 */
+	ds_writew(0xe318, ds_writew(FIGHT_ROUND, ds_writew(0x5f14, 0)));
+	/* set some vars to -1 */
+	ds_writew(0x2cd1, ds_writew(0x2cd3, -1));
+	ds_writew(0x4b9e, -1);
+
+	ds_writew(0x2846, 1);
+
+	ds_writed(0x29e0, (Bit32u)RealMake(datseg, 0x29cc));
+
+	ds_writew(0xe113, 0);
+
+	/* open MONSTER.DAT */
+	fd = load_archive_file(218);
+	read_archive_file(fd, Real2Host(ds_readd(0xe125)), 3476);
+	bc_close(fd);
+
+	ds_writew(0x5f12, 0);
+
+	for (l_di = 0; l_di < 30; l_di++) {
+		ds_writew(0xe31a + 2 * l_di, 0);
+	}
+
+	load_buffer_1(21);
+
+	/* open OBJECTS.NVF */
+	fd = load_archive_file(7);
+	read_archive_file(fd, Real2Host(ds_readd(0xd2e3)), 3000);
+	bc_close(fd);
+
+	FIG_chessboard_init();
+
+	FIG_preload_gfx();
+
+	/* open FIGHTOBJ.NVF */
+	fd = load_archive_file(199);
+	read_archive_file(fd, Real2Host(ds_readd(0xbd30)), 16919);
+	bc_close(fd);
+
+	set_var_to_zero();
+	update_mouse_cursor();
+
+	if (host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) {
+
+		load_fightbg(host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) + 197);
+
+	} else {
+
+		load_fightbg(host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) + 1);
+
+	}
+
+	FIG_load_ship_sprites();
+
+	FIG_draw_scenario();
+
+	/* open WEAPONS.NVF */
+	fd = load_archive_file(176);
+	read_archive_file(fd, Real2Host(ds_readd(0xd86a)), 6483);
+	bc_close(fd);
+
+	/* open SPELLOBJ.NVF */
+	fd = load_archive_file(178);
+	read_archive_file(fd, Real2Host(ds_readd(0xd866)), 3935);
+	bc_close(fd);
+
+	FIG_init_enemies();
+	FIG_init_heroes();
+
+	set_audio_track(213);
+
+	/* the fight happens in this loop */
+	while (ds_readws(IN_FIGHT) != 0) {
+
+		if (ds_readws(0x2846) != 0) {
+			draw_fight_screen_pal(0);
+			ds_writew(0x2846, 0);
+		}
+
+		/* TODO: isnt that bogus? */
+		if (ds_readws(IN_FIGHT) != 0) {
+
+			/* fight a round */
+			FIG_do_round();
+			/* increment round counter */
+			inc_ds_ws(FIGHT_ROUND);
+			/* do a timewarp */
+			timewarp(9L);
+
+			if (ds_readws(IN_FIGHT) != 0) {
+				FIG_latecomers();
+			}
+
+			if ((fight_nr == 138) && (ds_readws(FIGHT_ROUND) >= 10)) {
+				/* This fight ends after 9 rounds */
+				ds_writew(IN_FIGHT, 0);
+			}
+		}
+	}
+
+	refresh_screen_size();
+
+	if (ds_readws(0xc3c7) == 2) {
+
+		while (ds_readws(0x299a) < 0) {
+			refresh_screen_size();
+		}
+	}
+
+	if (ds_readws(0xc3c1) != 7) {
+
+		hero = get_hero(0);
+		for (l_di = 0; l_di <=6; l_di++, hero += 0x6da) {
+
+			if ((host_readbs(hero + 0x21) != 0)
+				&& (host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+			{
+
+				and_ptr_bs(hero + 0xaa, 0x7f);
+				and_ptr_bs(hero + 0xaa, 0xfd);
+				and_ptr_bs(hero + 0xaa, 0xef);
+				and_ptr_bs(hero + 0xab, 0xfb);
+				and_ptr_bs(hero + 0xab, 0xfe);
+				host_writebs(hero + 0x96, 0);
+				host_writebs(hero + 0x97, 0);
+				host_writebs(hero + 0x84, 1);
+			}
+		}
+
+		if (ds_readws(0xc3c1) != 0) {
+
+			if ((fight_nr != 192) && count_heros_available()) {
+
+				ds_writew(0xc3c1, 0);
+
+				if (ds_readbs(0xa842) != 0) {
+
+					ds_writeb(0x4333, 99);
+					ptr = get_hero(0);
+					for (l1 = 0; l1 <=6; l1++, ptr += 0x6da) {
+
+						if ((host_readbs(ptr + 0x21) != 0)
+							&& (host_readbs(ptr + 0x87) == ds_readbs(CURRENT_GROUP)))
+						{
+							hero_disappear(ptr, l1, -2);
+						}
+					}
+				}
+
+				GRP_switch_to_next(2);
+
+				if (ds_readbs(CURRENT_TOWN) != 0) {
+					ds_writeb(0x4475, 3);
+				}
+			}
+
+			retval = 2;
+		}
+
+		if (ds_readws(0x5f14) != 0) {
+			retval = 1;
+		}
+
+		if (retval == 0) {
+			/* the heros won the fight => loot */
+
+			l_di = 0;
+			while (ds_readws(0xe31a + 2 * l_di) != 0) {
+				/* give automatic items to the heros. dropped broken weapons ?*/
+				get_item(ds_readws(0xe31a + 2 * l_di++), 0, 1);
+			}
+
+			FIG_loot_monsters();
+			FIG_split_ap();
+
+			if ((ds_readws(0x5f16) != 0) && (ds_readws(0x26c1) == 0)) {
+
+				for (l_di = 0; l_di < 20; l_di++) {
+					or_ds_bs(0xd37c + 62 * l_di, 1);
+				}
+			}
+
+		}
+
+		if ((retval != 2) && (ds_readws(0x26c1) == 0)) {
+
+			FIG_tidy_monsters();
+			write_fight_lst();
+		}
+
+		if ((retval == 1) && (ds_readbs(DUNGEON_INDEX) != 0)) {
+
+			l7 = 0;
+
+			for (l_di = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > l_di; l_di++) {
+
+				hero = get_hero(l_di);
+
+				if (host_readws(hero + 0x9d) != 0) {
+
+					l3 = 0;
+
+					for (l1 = 0; l1 < l7; l1++) {
+						if (tmp[l1] == host_readws(hero + 0x9d)) {
+							l3 = 1;
+						}
+					}
+
+					if (l3 == 0) {
+						tmp[l7++] = host_readws(hero + 0x9d);
+					}
+				}
+			}
+
+			if (l7 > 0) {
+
+				for (l_di = 0; l7 - 1 > l_di; l_di++) {
+
+					l4 = 0;
+					while (ds_readb(0x2d36 + l4) != 0) {
+						l4++;
+					}
+
+					l5 = ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP));
+					bak1 = ds_readws(X_TARGET);
+					bak2 = ds_readws(Y_TARGET);
+					bak4 = ds_readbs(DIRECTION);
+					bak3 = ds_readbs(DUNGEON_LEVEL);
+
+					ds_writew(X_TARGET, (tmp[l_di] >> 8) & 0x0f);
+					ds_writew(Y_TARGET, tmp[l_di] & 0x0f);
+					ds_writeb(DIRECTION, (tmp[l_di] & 0xf0) >> 4);
+					ds_writeb(DUNGEON_LEVEL, tmp[l_di] >> 12);
+
+					for (l1 = 0; l1 < l5; l1++) {
+
+						hero = get_hero(l1);
+
+						if (tmp[l_di] == host_readws(hero + 0x9d)) {
+
+							host_writeb(hero + 0x87, (signed char)l4);
+							host_writew(hero + 0x9d, 0);
+							inc_ds_bs_post(0x2d36 + l4);
+							dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+						}
+					}
+
+					GRP_save_pos(l4 | 0x8000);
+					ds_writews(X_TARGET, bak1);
+					ds_writews(Y_TARGET, bak2);
+					ds_writebs(DIRECTION, (signed char)bak4);
+					ds_writebs(DUNGEON_LEVEL, (signed char)bak3);
+				}
+
+				l5 = ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP));
+
+				for (l1 = 0; l1 < l5; l1++) {
+					host_writews(get_hero(l1) + 0x9d, 0);
+				}
+
+				ds_writew(X_TARGET, (tmp[l_di] >> 8) & 0x0f);
+				ds_writew(Y_TARGET, tmp[l_di] & 0x0f);
+				ds_writeb(DIRECTION, (tmp[l_di] & 0xf0) >> 4);
+
+				ds_writebs(0x2db4, ds_readbs(DUNGEON_LEVEL));
+				ds_writeb(DUNGEON_LEVEL, tmp[l_di] >> 12);
+
+				if (ds_readbs(DUNGEON_LEVEL) != ds_readbs(0x2db4)) {
+					load_area_description(1);
+				}
+			}
+		}
+
+	} else {
+		ds_writeb(0x4333, 99);
+		retval = 4;
+	}
+
+	ds_writeb(0x26ac, ds_writeb(0x2cce, 0));
+	ds_writew(0x26c1, 0);
+	ds_writew(0x5f16, 0);
+	ds_writew(IN_FIGHT, 0);
+	ds_writew(0x2846, 1);
+	ds_writew(CURRENT_ANI, -1);
+	ds_writew(0x2ccb, -1);
+	ds_writew(TIMERS_DISABLED, 0);
+	ds_writew(0xe318, 0);
+	ds_writeb(0x4495, 1);
+	ds_writew(0xbffd, bak5);
+	ds_writeb(0x2845, -2);
+
+	update_mouse_cursor();
+
+	/* clear the screen */
+	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+
+	refresh_colors();
+
+	ds_writed(0xbff9, ds_readd(0xd303));
+
+	if (!ds_readb(0x3614)) {
+		seg028_0555(ds_readbs(DUNGEON_INDEX) != 0 ? 0 : 1);
+	}
+
+	load_objects_nvf();
+	refresh_screen_size();
+
+	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(0x3614)) {
+		ds_writeb(0x4475, 3);
+	}
+
+
+	return retval;
 }
 
 #if !defined(__BORLANDC__)

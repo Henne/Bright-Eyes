@@ -3507,11 +3507,12 @@ static int seg031(unsigned short offs) {
 static int seg032(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			unsigned short v1 = CPU_Pop16();
-			CPU_Push16(v1);
+			Bit16s fight_id = CPU_Pop16();
+			CPU_Push16(fight_id);
 
-			D1_LOG("Kampf 0x%02x\n", v1);
-			return 0;
+			D1_LOG("Kampf 0x%02x\n", fight_id);
+			reg_ax = do_fight(fight_id);
+			return 1;
 		}
 		case 0x25: {
 			signed short row = CPU_Pop16();
