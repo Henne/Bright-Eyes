@@ -4767,7 +4767,9 @@ static int seg070(unsigned short offs) {
 			return 1;
 		}
 		case 0x2f: {
-			return 0;
+			D1_LOG("PHX_villa_gremob()\n");
+			PHX_villa_gremob();
+			return 1;
 		}
 		case 0x34: {
 			return 0;

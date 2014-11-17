@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg070 (phexcaer: buildings 1/2)
- *	Functions rewritten: 3/7
+ *	Functions rewritten: 4/7
  */
 #include <stdio.h>
 
@@ -10,6 +10,7 @@
 #include "seg002.h"
 #include "seg007.h"
 #include "seg026.h"
+#include "seg032.h"
 #include "seg047.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -232,6 +233,19 @@ void PHX_spielhaus(void)
 		}
 
 		set_party_money(money);
+	}
+}
+
+/**
+ * \brief	the villa of Ektor Gremob
+ */
+/* Borlandified and identical */
+void PHX_villa_gremob(void)
+{
+	GUI_output(!ds_readb(GREMOB_INVITED)? get_city(0xa0) : get_city(0x9c));
+
+	if (ds_readb(GREMOB_INVITED) != 0) {
+		do_fight(239);
 	}
 }
 

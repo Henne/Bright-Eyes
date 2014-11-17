@@ -8,6 +8,8 @@ void PHX_fuhrhaus(void);
 void PHX_stadthaus(void);
 /* 0x2a */
 void PHX_spielhaus(void);
+/* 0x2f */
+void PHX_villa_gremob(void);
 
 #if !defined(__BORLANDC__)
 }
