@@ -666,7 +666,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 				seg041_8c8();
 
-				if (ds_readw(0xe318) != 0) {
+				if (ds_readw(AUTOFIGHT) != 0) {
 					ds_writew(0xc011, ds_writew(0xc01d, 0));
 					ds_writew(0xc013, ds_writew(0xc01f, 194));
 					ds_writew(0xc015, 318);

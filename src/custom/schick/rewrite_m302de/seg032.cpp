@@ -470,8 +470,8 @@ void FIG_do_round(void)
 
 	while ((ds_readws(IN_FIGHT) != 0) && (hero_attacks + monster_attacks > 0)) {
 
-		if (ds_readws(0xe318) == 2) {
-			ds_writew(0xe318, 0);
+		if (ds_readws(AUTOFIGHT) == 2) {
+			ds_writew(AUTOFIGHT, 0);
 		}
 
 		/* decide if heros or monsters are next */
