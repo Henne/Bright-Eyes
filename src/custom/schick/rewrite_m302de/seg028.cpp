@@ -425,11 +425,12 @@ RealPt unused_load(signed short nr)
 	return (RealPt)ds_readd(0x4baa) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr + 1);
 }
 
+/* Borlandified and identical */
 void load_map(void)
 {
+	signed short fd;
+	signed short bak;
 	struct nvf_desc nvf;
-	unsigned short bak;
-	unsigned short fd;
 
 	bak = ds_readw(0xe113);
 	ds_writew(0xe113, 0);
@@ -447,12 +448,12 @@ void load_map(void)
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;
-	nvf.dst = Real2Host(ds_readd(0xc3db)) + 18000;
+	nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(0xc3db), 18000));
 	nvf.nr = 16;
 
 	process_nvf(&nvf);
 
-	array_add(Real2Host(ds_readd(0xc3db)) + 18000, 3003, 0xe0, 2);
+	array_add(Real2Host(F_PADD((RealPt)ds_readd(0xc3db), 18000)), 3003, 0xe0, 2);
 
 	ds_writeb(0x2845, 5);
 
@@ -468,14 +469,13 @@ void load_map(void)
 	} else {
 		/* or read KARTE.DAT from file */
 		fd = load_archive_file(5);
-		ds_writed(0x432e, ds_readd(0xd303));
-		read_archive_file(fd, Real2Host(ds_readd(0x432e)), 64098);
+
+		read_archive_file(fd, Real2Host(ds_writed(0x432e, ds_readd(0xd303))), 64098);
 		bc_close(fd);
 
 		if (ds_readb(EMS_ENABLED) != 0) {
-			ds_writew(0xbd90, alloc_EMS(64100));
 
-			if (ds_readw(0xbd90) != 0) {
+			if ((ds_writew(0xbd90, alloc_EMS(64100)))) {
 				/* map the map into EMS */
 				EMS_map_memory(ds_readw(0xbd90), 0, 0);
 				EMS_map_memory(ds_readw(0xbd90), 1, 1);
@@ -494,12 +494,12 @@ void load_map(void)
 
 	/* load HSROUT.DAT */
 	fd = load_archive_file(0xa);
-	read_archive_file(fd, Real2Host(ds_readd(0xc3db)) + 7600, 3800);
+	read_archive_file(fd, Real2Host(F_PADD(ds_readd(0xc3db), 7600)), 3800);
 	bc_close(fd);
 
 	/* load SROUT.DAT */
 	fd = load_archive_file(9);
-	read_archive_file(fd, Real2Host(ds_readd(0xc3db)) + 11400, 5900);
+	read_archive_file(fd, Real2Host(F_PADD(ds_readd(0xc3db), 11400)), 5900);
 	bc_close(fd);
 
 	load_buffer_1(0x13);
