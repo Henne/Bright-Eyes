@@ -365,6 +365,7 @@ void call_load_area(signed short type)
 	load_area_description(type);
 }
 
+/* Borlandified and identical */
 void unused_store(signed short nr)
 {
 	signed short width;
@@ -387,14 +388,14 @@ void unused_store(signed short nr)
 	height = host_readws((Bit8u*)&height);
 #endif
 
-	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x53c0), 0);
-	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x53c0) + 1, 1);
-	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x53c0) + 2, 2);
+	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x5ec0), 0);
+	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x5ec0) + 1, 1);
+	EMS_map_memory(ds_readws(0xbd92), ds_readws(0x5ec0) + 2, 2);
 	EMS_map_memory(ds_readws(0xbd92), 0, 3);
 
 	size = width * height;
-	memmove(Real2Host(RealMake(ds_readw(0x4bac), ds_readw(0x4baa) + ds_readws(0x5ec2))),
-			Real2Host(RealMake(ds_readw(0xd303 + 2), ds_readws(0xd303) + 0x7530)),
+	memmove(Real2Host((RealPt)ds_readd(0x4baa) + ds_readws(0x5ec2)),
+			Real2Host((RealPt)ds_readd(0xd303) + 0x7530),
 			size);
 
 	ptr = nr * 5 + Real2Host(ds_readd(0xbd8c));
@@ -404,9 +405,8 @@ void unused_store(signed short nr)
 	host_writew(ptr + 2, width);
 	host_writeb(ptr + 4, (signed char)height);
 
-	ds_writew(0x5ec0, ((ds_readws(0x5ec2) + size) >> 14) + ds_readws(0x5ec0));
-	ds_writew(0x5ec2, ((((ds_readws(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
-
+	ds_writew(0x5ec0, (ds_readw(0x5ec0) + ((ds_readw(0x5ec2) + size) >> 14)));
+	ds_writew(0x5ec2, ((((ds_readw(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
 }
 
 void load_map(void)
