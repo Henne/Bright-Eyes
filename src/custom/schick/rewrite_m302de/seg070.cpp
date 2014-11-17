@@ -81,11 +81,26 @@ void PHX_stadthaus(void)
 
 	} else {
 
+#ifdef M302de_ORIGINAL_BUGFIX
+		signed short answer2;
+#endif
 		money = get_party_money();
 
 		/* reuse answer as number of options */
 		answer = money >= 1000 ? 3 : 1;
 
+#ifdef M302de_ORIGINAL_BUGFIX
+
+		do {
+			answer2 = GUI_radio(get_city(0x4c), (signed char)answer,
+						get_city(0x54),
+						get_city(0x50),
+						get_city(0x58));
+		} while (answer2 == -1);
+
+		answer = answer2;
+
+#else
 		/* Original-Bug: pressing ESC calls GUI_radio() again with -1 options */
 		do {
 			answer = GUI_radio(get_city(0x4c), answer,
@@ -94,6 +109,7 @@ void PHX_stadthaus(void)
 						get_city(0x58));
 
 		} while (answer == -1);
+#endif
 
 		if (answer == 1) {
 
