@@ -1,13 +1,18 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg070 (phexcaer: buildings 1/2)
- *	Functions rewritten: 2/7
+ *	Functions rewritten: 3/7
  */
+#include <stdio.h>
+
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg026.h"
+#include "seg047.h"
 #include "seg097.h"
+#include "seg103.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -126,6 +131,110 @@ void PHX_stadthaus(void)
 		}
 	}
 }
+
+/**
+ * \brief	spielhaus of Phexcaer
+ */
+/* Borlandified and identical */
+void PHX_spielhaus(void)
+{
+	signed short answer;
+	signed short counter;
+	signed short pos;
+	Bit32s money;
+	Bit8u *hero;
+
+	do {
+		answer = GUI_radio(get_city(0x64), 3,
+					get_city(0x68),
+					get_city(0x6c),
+					get_city(0x70));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		GUI_output(get_city(0x74));
+
+		hero = get_hero(0);
+
+		for (pos = counter = answer = 0; pos <= 6; pos++, hero += 0x6da) {
+
+			if ((host_readbs(hero + 0x21) != 0) &&
+				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				!hero_dead(hero) &&
+				(test_skill(hero, 43, 3) > 0))
+			{
+				/* Gambling +3 */
+				counter++;
+			}
+		}
+
+		pos = random_schick(20);
+
+		money = get_party_money();
+
+		if ((count_heroes_in_group() >> 1) < counter) {
+
+			/* you loose: at least the half of your group have not passed the test */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0x78), pos);
+
+			money -= pos * 100;
+
+			if (money < 0) {
+				money = 0;
+			}
+		} else {
+
+			/* you win */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0x7c), pos);
+
+			money += pos * 100;
+		}
+
+		set_party_money(money);
+
+		GUI_output(Real2Host(ds_readd(DTP2)));
+
+	} else if (answer == 2) {
+
+		GUI_output(get_city(0x80));
+
+		/* You are now able to talk to Alrik */
+		ds_writeb(ALRIK_DERONDAN, 1);
+
+	} else {
+
+		money = get_party_money();
+
+		pos = money >= 500 ? 3 : 2;
+
+		do {
+			answer = GUI_radio(get_city(0x84), (signed char)pos,
+						get_city(0x88),
+						get_city(0x90),
+						get_city(0x8c));
+
+		} while (answer == -1);
+
+		GUI_output(answer == 3 ? get_city(0x98): get_city(0x94));
+
+		if (answer == 3) {
+
+			money -= 500;
+
+			if (money < 0) {
+				money = 0;
+			}
+		}
+
+		set_party_money(money);
+	}
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
