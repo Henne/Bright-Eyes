@@ -847,22 +847,22 @@ signed short do_fight(signed short fight_nr)
 	/* set some pointers */
 	ds_writed(SCENARIO_BUF, (Bit32u)F_PADD(ds_readd(0xc3a9), 64100));
 	ds_writed(0xe125, (Bit32u)F_PADD(ds_readd(SCENARIO_BUF), 621));
-	ds_writed(0xbd28, (Bit32u)F_PADD(ds_readd(0xe125), 3476));
+	ds_writed(PTR_FIGHT_LST, (Bit32u)F_PADD(ds_readd(0xe125), 3476));
 
 	read_fight_lst(fight_nr);
 
-	load_scenario(host_readws(Real2Host(ds_readd(0xbd28)) + 0x14));
+	load_scenario(host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x14));
 
-	if (!host_readbs(Real2Host(ds_readd(0xbd28)) + 0x13)) {
+	if (!host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x13)) {
 		/* we have not seen the intro message yet: show and mark as seen */
 		GUI_print_fight_intro_msg(fight_nr);
 
-		host_writeb(Real2Host(ds_readd(0xbd28)) + 0x13, 1);
+		host_writeb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x13, 1);
 	}
 
 	if (ds_readws(0x5f16) > 0) {
 
-		memset(Real2Host(ds_readd(0xbd28)) + 5 * ds_readws(0x5f16) + 22, 0, 5 * (20 - ds_readws(0x5f16)));
+		memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * ds_readws(0x5f16) + 22, 0, 5 * (20 - ds_readws(0x5f16)));
 		ds_writew(0x5f16, 0);
 	}
 
@@ -870,7 +870,7 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(IN_FIGHT, 1);
 
 	/* set some vars to 0 */
-	ds_writew(0xe318, ds_writew(FIGHT_ROUND, ds_writew(0x5f14, 0)));
+	ds_writew(AUTOFIGHT, ds_writew(FIGHT_ROUND, ds_writew(0x5f14, 0)));
 	/* set some vars to -1 */
 	ds_writew(0x2cd1, ds_writew(0x2cd3, -1));
 	ds_writew(0x4b9e, -1);
@@ -1155,8 +1155,8 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(CURRENT_ANI, -1);
 	ds_writew(0x2ccb, -1);
 	ds_writew(TIMERS_DISABLED, 0);
-	ds_writew(0xe318, 0);
-	ds_writeb(0x4495, 1);
+	ds_writew(AUTOFIGHT, 0);
+	ds_writeb(CHECK_PARTY, 1);
 	ds_writew(0xbffd, bak5);
 	ds_writeb(0x2845, -2);
 
@@ -1169,14 +1169,14 @@ signed short do_fight(signed short fight_nr)
 
 	ds_writed(0xbff9, ds_readd(0xd303));
 
-	if (!ds_readb(0x3614)) {
+	if (!ds_readb(TRAVELING)) {
 		seg028_0555(ds_readbs(DUNGEON_INDEX) != 0 ? 0 : 1);
 	}
 
 	load_objects_nvf();
 	refresh_screen_size();
 
-	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(0x3614)) {
+	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(TRAVELING)) {
 		ds_writeb(0x4475, 3);
 	}
 
