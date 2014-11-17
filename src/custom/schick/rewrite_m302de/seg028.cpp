@@ -534,13 +534,14 @@ void load_npc(signed short index)
 	}
 }
 
+/* Borlandified and identical */
 void save_npc(signed short index)
 {
-	Bit16u fd;
+	signed short fd;
 
 	fd = load_archive_file(index | 0x8000);
 
-	bc__write(fd, (RealPt)ds_readd(HEROS) + 0x291c, 0x6da);
+	bc__write(fd, (RealPt)ds_readd(HEROS) + 6 * 0x6da, 0x6da);
 
 	bc_close(fd);
 }
