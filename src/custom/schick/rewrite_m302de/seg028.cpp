@@ -624,13 +624,15 @@ void load_informer_tlk(signed short index)
 	}
 }
 
+/* Borlandified and identical */
 void load_tlk(signed short index)
 {
+	signed short i;
+	signed short fd;
+	Bit32s text_len;
+	Bit32s off;
+	signed short partners;
 	Bit8u *ptr;
-	unsigned int off, text_len;
-	unsigned short partners;
-	unsigned short fd;
-	unsigned short i;
 
 	ds_writew(0x26bd, index);
 
@@ -640,20 +642,21 @@ void load_tlk(signed short index)
 	read_archive_file(fd, (Bit8u*)&off, 4);
 	read_archive_file(fd, (Bit8u*)&partners, 2);
 
+#if !defined(__BORLANDC__)
 	/* BE-Fix */
 	off = host_readd((Bit8u*)&off);
 	partners = host_readw((Bit8u*)&partners);
+#endif
 
 	/* read the partner structures */
-	read_archive_file(fd,
-		ptr = Real2Host(RealMake(datseg, 0x3618)), partners * 0x26);
+	read_archive_file(fd, ptr = p_datseg + 0x3618, partners * 0x26);
 
 	/* read the dialog layouts */
 	read_archive_file(fd,
 		Real2Host(RealMake(datseg, 0x3794)), off - partners * 0x26);
 
 	/* read the text */
-	text_len = read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
+	text_len = (signed short)read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
 
 	bc_close(fd);
 
