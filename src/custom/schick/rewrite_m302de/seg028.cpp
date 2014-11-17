@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 17/19
+	Functions rewritten: 18/19
 */
 
 #include <string.h>
@@ -407,6 +407,22 @@ void unused_store(signed short nr)
 
 	ds_writew(0x5ec0, (ds_readw(0x5ec0) + ((ds_readw(0x5ec2) + size) >> 14)));
 	ds_writew(0x5ec2, ((((ds_readw(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
+}
+
+/* Borlandified and identical */
+RealPt unused_load(signed short nr)
+{
+	signed short l_si;
+
+	EMS_map_memory(ds_readws(0xbd92), 0, 3);
+
+	l_si = host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr);
+
+	EMS_map_memory(ds_readws(0xbd92), l_si, 0);
+	EMS_map_memory(ds_readws(0xbd92), l_si + 1, 1);
+	EMS_map_memory(ds_readws(0xbd92), l_si + 2, 2);
+
+	return (RealPt)ds_readd(0x4baa) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr + 1);
 }
 
 void load_map(void)
