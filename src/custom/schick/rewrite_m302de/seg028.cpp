@@ -1,6 +1,13 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg028 (map / file loader)
-	Functions rewritten: 19/19 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of seg028 (file loader: maps, npcs, special textures, dialogs, fight backgrounds)
+ *	Functions rewritten: 19/19 (complete)
+ *
+ *	Functions called rewritten: 16/16
+ *	Functions uncalled rewritten: 3/3
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg028.cpp
 */
 
 #include <string.h>
@@ -21,7 +28,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void prepare_dungeon_area(void)
 {
 	signed short index;
@@ -91,7 +97,6 @@ void prepare_dungeon_area(void)
 	set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
 }
 
-/* Borlandified and identical */
 void load_dungeon_ddt(void)
 {
 	signed short index;
@@ -118,7 +123,6 @@ void load_dungeon_ddt(void)
 
 }
 
-/* Borlandified and identical */
 void seg028_0224(void)
 {
 	signed short l_si;
@@ -191,7 +195,6 @@ void seg028_0224(void)
 	set_automap_tiles(ds_readw(X_TARGET), ds_readw(Y_TARGET));
 }
 
-/* Borlandified and identical */
 RealPt seg028_0444(signed short index, signed short firstcol, signed short colors, signed short ref)
 {
 	signed short fd;
@@ -236,7 +239,6 @@ RealPt seg028_0444(signed short index, signed short firstcol, signed short color
 
 }
 
-/* Borlandified and identical */
 void load_special_textures(signed short arg)
 {
 	signed short fd;
@@ -248,13 +250,11 @@ void load_special_textures(signed short arg)
 
 }
 
-/* Borlandified and identical */
 void call_load_buffer(void)
 {
 	load_buffer_1(ds_readws(0x26bf));
 }
 
-/* Borlandified and identical */
 void seg028_0555(signed short town)
 {
 	if (town == 1) {
@@ -272,7 +272,6 @@ void seg028_0555(signed short town)
  *	1 = do both
  *	2 = only read new area (loading a savegame)
 */
-/* Borlandified and identical */
 void load_area_description(signed short type)
 {
 	signed short f_index;
@@ -359,13 +358,11 @@ void load_area_description(signed short type)
 	}
 }
 
-/* Borlandified and identical */
 void call_load_area(signed short type)
 {
 	load_area_description(type);
 }
 
-/* Borlandified and identical */
 void unused_store(signed short nr)
 {
 	signed short width;
@@ -409,7 +406,6 @@ void unused_store(signed short nr)
 	ds_writew(0x5ec2, ((((ds_readw(0x5ec2) + size) & 0x3fff) + 0x100) & 0xff00));
 }
 
-/* Borlandified and identical */
 RealPt unused_load(signed short nr)
 {
 	signed short l_si;
@@ -425,7 +421,6 @@ RealPt unused_load(signed short nr)
 	return (RealPt)ds_readd(0x4baa) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr + 1);
 }
 
-/* Borlandified and identical */
 void load_map(void)
 {
 	signed short fd;
@@ -507,7 +502,6 @@ void load_map(void)
 	ds_writew(0xe113, bak);
 }
 
-/* Borlandified and identical */
 void load_npc(signed short index)
 {
 	Bit8u *npc_dst;
@@ -534,7 +528,6 @@ void load_npc(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 void save_npc(signed short index)
 {
 	signed short fd;
@@ -546,7 +539,6 @@ void save_npc(signed short index)
 	bc_close(fd);
 }
 
-/* Borlandified and identical */
 void load_splashes(void)
 {
 	signed short fd;
@@ -578,7 +570,6 @@ void load_splashes(void)
 	process_nvf(&nvf);
 }
 
-/* Borlandified and identical */
 void load_informer_tlk(signed short index)
 {
 	signed short i;
@@ -624,7 +615,6 @@ void load_informer_tlk(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 void load_tlk(signed short index)
 {
 	signed short i;
@@ -669,7 +659,6 @@ void load_tlk(signed short index)
 	}
 }
 
-/* Borlandified and identical */
 void unused_load_archive_file(signed short index, signed short a2, Bit32u seg)
 {
 	signed short fd;
@@ -680,7 +669,6 @@ void unused_load_archive_file(signed short index, signed short a2, Bit32u seg)
 }
 
 
-/* Borlandified and identical */
 void load_fightbg(signed short index)
 {
 	signed short fd;
