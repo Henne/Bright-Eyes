@@ -300,6 +300,19 @@ Bit16s bc__close(Bit16u handle) {
 	return 0;
 }
 
+RealPt bc_memset(RealPt dst, Bit8s val, Bit16u count)
+{
+	PhysPt d;
+
+	d = Real2Phys(dst);
+
+	while (count--) {
+		mem_writeb_inline(d++, val);
+	}
+
+	return dst;
+}
+
 RealPt bc_memmove(RealPt dst, RealPt src, Bit16u len)
 {
 	PhysPt s, d;

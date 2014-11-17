@@ -42,6 +42,9 @@ Bit16s bc_flushall(void);
 
 Bit16s bc_close(Bit16u);
 Bit16s bc__close(Bit16u);
+
+RealPt bc_memset(RealPt, Bit8s, Bit16u);
+
 RealPt bc_memmove(RealPt, RealPt, Bit16u);
 Bit16s bc__creat(RealPt, Bit16u);
 
@@ -120,6 +123,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc__open _open
 
 #define mem_memcpy memcpy
+#define bc_memset memset
 #define bc_memmove memmove
 
 #define bc_qsort qsort
