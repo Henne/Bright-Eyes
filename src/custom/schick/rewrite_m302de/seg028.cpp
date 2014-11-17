@@ -546,12 +546,13 @@ void save_npc(signed short index)
 	bc_close(fd);
 }
 
+/* Borlandified and identical */
 void load_splashes(void)
 {
-	struct nvf_desc nvf;
-	signed short height;
-	signed short width;
 	signed short fd;
+	signed short width;
+	signed short height;
+	struct nvf_desc nvf;
 
 	/* read SPLASHES.DAT */
 	fd = load_archive_file(0xec);
@@ -559,8 +560,7 @@ void load_splashes(void)
 	bc_close(fd);
 
 	/* nvf.dst = splash_le = ds_readd() */
-	ds_writed(SPLASH_LE, ds_readd(0xd2bd));
-	nvf.dst = Real2Host(ds_readd(0xd2bd));
+	nvf.dst = Real2Host(ds_writed(SPLASH_LE, ds_readd(0xd2bd)));
 	nvf.src = Real2Host(ds_readd(0xd303));
 	nvf.nr = 0;
 	nvf.type = 1;
@@ -569,14 +569,13 @@ void load_splashes(void)
 	fd = (signed short)process_nvf(&nvf);
 
 	/* nvf.dst = splash_ae = ds_readd() */
-	ds_writed(SPLASH_AE, ds_readd(0xd2bd) + fd);
-	nvf.dst = Real2Host(ds_readd(0xd2bd)) + fd;
+	nvf.dst = Real2Host(ds_writed(SPLASH_AE, (Bit32u)((RealPt)ds_readd(0xd2bd) + fd)));
 	nvf.src = Real2Host(ds_readd(0xd303));
 	nvf.nr = 1;
 	nvf.type = 1;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
-	fd = (signed short)process_nvf(&nvf);
+	process_nvf(&nvf);
 }
 
 void load_informer_tlk(signed short index)
