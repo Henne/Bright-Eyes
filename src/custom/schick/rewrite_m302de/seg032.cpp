@@ -1,6 +1,11 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg032 (fight)
  *	Functions rewritten: 12/12 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg032.cpp
+ *
 */
 #include <stdlib.h>
 #include <string.h>
@@ -49,7 +54,6 @@ namespace M302de {
  *	is moving. The initial placements of static objects are also done
  *	with this function.
  */
-/* Borlandified and identical */
 void FIG_set_cb_field(signed short y, signed short x, signed char object)
 {
 
@@ -60,7 +64,6 @@ void FIG_set_cb_field(signed short y, signed short x, signed char object)
 	set_cb_val(x, y, object);
 }
 
-/* Borlandified and identical */
 void draw_fight_screen_pal(signed short mode)
 {
 	FIG_draw_pic();
@@ -99,7 +102,6 @@ void draw_fight_screen_pal(signed short mode)
  *
  *	This is simply done randomly.
  */
-/* Borlandified and identical */
 signed short FIG_choose_next_hero(void)
 {
 #if !defined(__BORLANDC__)
@@ -171,7 +173,6 @@ signed short FIG_choose_next_hero(void)
  *	This is simply done randomly.
  *	Orig_BUG: I had this loop running infinitely.
  */
-/* Borlandified and identical */
 signed short FIG_choose_next_enemy(void)
 {
 	signed short retval;
@@ -241,7 +242,6 @@ signed short FIG_choose_next_enemy(void)
  *	FIG_count_active_enemies -	return the number of active enemies
  *
  */
-/* Borlandified and identical */
 signed short FIG_count_active_enemies(void)
 {
 	Bit8u *enemy;
@@ -274,7 +274,6 @@ signed short FIG_count_active_enemies(void)
  *	Returns 1 if enemy can act or 0 if not.
  */
 //static
-/* Borlandified and identical */
 signed short FIG_is_enemy_active(Bit8u *enemy)
 {
 	if (enemy_sleeps(enemy) ||
@@ -297,7 +296,6 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
  *
  *	Returns the index of the firsta active hero.
  */
-/* Borlandified and identical */
 signed short FIG_get_first_active_hero(void)
 {
 	Bit8u *hero_i;
@@ -331,7 +329,6 @@ signed short FIG_get_first_active_hero(void)
  *
  */
 //static
-/* Borlandified and identical */
 unsigned short seg032_02db(void)
 {
 	Bit8u *hero_i;
@@ -356,7 +353,6 @@ unsigned short seg032_02db(void)
 }
 
 //static
-/* Borlandified and identical */
 unsigned short FIG_fight_continues(void)
 {
 
@@ -376,7 +372,6 @@ unsigned short FIG_fight_continues(void)
 	return 1;
 }
 
-/* Borlandified and identical */
 void FIG_do_round(void)
 {
 	signed short i;
@@ -703,7 +698,6 @@ void FIG_do_round(void)
 /*
  * \brief	loads some special textures for the ghost ship
  */
-/* Borlandified and identical */
 void FIG_load_ship_sprites(void)
 {
 	signed short l_si;
