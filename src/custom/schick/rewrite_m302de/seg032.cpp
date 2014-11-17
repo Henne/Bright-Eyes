@@ -603,7 +603,7 @@ void FIG_do_round(void)
 
 			pos = FIG_choose_next_enemy();
 
-			monster = (RealPt)RealMake(datseg, 0xd34b + 62 * pos);
+			monster = (RealPt)RealMake(datseg, ENEMY_SHEETS + 62 * pos);
 
 			dec_ptr_bs(Real2Host(monster) + 0x28);
 
