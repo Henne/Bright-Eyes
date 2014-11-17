@@ -23,7 +23,7 @@ void call_load_buffer(void);
 //0x75
 void seg028_0555(signed short);
 //0x5c
-void call_load_area(unsigned short);
+void call_load_area(signed short);
 //0x61
 void load_npc(signed short);
 //0x66

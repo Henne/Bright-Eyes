@@ -359,7 +359,8 @@ void load_area_description(signed short type)
 	}
 }
 
-void call_load_area(unsigned short type)
+/* Borlandified and identical */
+void call_load_area(signed short type)
 {
 	load_area_description(type);
 }
