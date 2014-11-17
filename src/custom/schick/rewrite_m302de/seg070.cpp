@@ -175,7 +175,11 @@ void PHX_spielhaus(void)
 
 		money = get_party_money();
 
+#ifdef M302de_ORIGINAL_BUGFIX
+		if ((count_heroes_in_group() >> 1) >= counter) {
+#else
 		if ((count_heroes_in_group() >> 1) < counter) {
+#endif
 
 			/* you loose: at least the half of your group have not passed the test */
 
