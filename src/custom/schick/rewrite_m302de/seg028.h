@@ -5,7 +5,7 @@ namespace M302de {
 //0x20
 void unused_store(signed short);
 //0x2a
-void load_area_description(unsigned short);
+void load_area_description(signed short);
 //0x34
 void prepare_dungeon_area(void);
 //0x39

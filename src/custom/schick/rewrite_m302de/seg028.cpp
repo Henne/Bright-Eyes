@@ -272,19 +272,20 @@ void seg028_0555(signed short town)
  *	1 = do both
  *	2 = only read new area (loading a savegame)
 */
-void load_area_description(unsigned short type)
+/* Borlandified and identical */
+void load_area_description(signed short type)
 {
-	unsigned short f_index;
-	unsigned short fd;
+	signed short f_index;
+	signed short fd;
 
 	if (ds_readw(0x5ebc) != 0) {
 		if (type != 2) {
 			fd = load_archive_file(ds_readw(0x5ebc) + 0x8000);
 
-			if (ds_readw(0x5ebe) == 0 && ds_readb(0xbd94) == 0x20) {
+			if ((ds_readw(0x5ebe) == 0) && (ds_readb(0xbd94) == 0x20)) {
 				bc__write(fd, RealMake(datseg, 0xbd95), 0x200);
 			} else {
-				bc_lseek(fd, ds_readw(0x5eba) * 0x140, 0);
+				bc_lseek(fd, ds_readws(0x5eba) * 0x140, 0);
 				bc__write(fd, RealMake(datseg, 0xbd95), 0x100);
 			}
 			/* write automap tiles */
@@ -295,39 +296,35 @@ void load_area_description(unsigned short type)
 
 			bc_close(fd);
 
-			ds_writew(0x5ebe, 0);
-			ds_writew(0x5eb8, 0);
-			ds_writew(0x5eba, 0);
-			ds_writew(0x5ebc, 0);
+			ds_writew(0x5ebc, ds_writew(0x5eba, ds_writew(0x5eb8, ds_writew(0x5ebe, 0))));
 		}
 	}
 
 	if (type != 0) {
 
 		/* calc archive file index */
-		if (ds_readb(DUNGEON_INDEX) != 0)
+		if (ds_readbs(DUNGEON_INDEX) != 0) {
 			/* dungeon */
-			f_index = ds_readb(DUNGEON_INDEX) + 0xf1;
-		else
+			ds_writew(0x5ebc, f_index = ds_readbs(DUNGEON_INDEX) + 0xf1);
+		} else {
 			/* city */
-			f_index = ds_readb(CURRENT_TOWN) + 0x19;
+			ds_writew(0x5ebc, f_index = ds_readbs(CURRENT_TOWN) + 0x19);
+		}
 
-		/* save archive index */
-		ds_writew(0x5ebc, f_index);
 		/* save dungeon level */
-		ds_writew(0x5eba, ds_readb(DUNGEON_LEVEL));
+		ds_writew(0x5eba, ds_readbs(DUNGEON_LEVEL));
 
-		if (ds_readb(DUNGEON_INDEX) != 0)
-			ds_writew(0x5ebe, 1);
-		else
-			ds_writew(0x5ebe, 0);
+		/* save if we are in a dungeon */
+		ds_writew(0x5ebe, ds_readbs(DUNGEON_INDEX) != 0 ? 1 : 0);
 
 		/* load DAT or DNG file */
 		fd = load_archive_file(f_index + 0x8000);
 
-		if (ds_readb(DUNGEON_INDEX) == 0 &&
-			(ds_readb(CURRENT_TOWN) == 1 || ds_readb(CURRENT_TOWN) == 0x27 ||
-				ds_readb(CURRENT_TOWN) == 0x12)) {
+		if (!ds_readbs(DUNGEON_INDEX) &&
+			(ds_readb(CURRENT_TOWN) == 1
+				|| ds_readb(CURRENT_TOWN) == 39
+				|| ds_readb(CURRENT_TOWN) == 18))
+		{
 			/* path taken in THORWAL PREM and PHEXCAER */
 			bc__read(fd, p_datseg + 0xbd95, 0x200);
 			/* read automap tiles */
@@ -335,19 +332,21 @@ void load_area_description(unsigned short type)
 
 			/* TODO: is that neccessary ? */
 			memset(p_datseg + 0xc025, -1, 900);
+
 			ds_writew(0x5eb8,
 				bc__read(fd, p_datseg + 0xc025, 1000));
 
 			ds_writeb(0xbd94, 0x20);
 		} else {
 			/* Seek to Dungeon Level * 320 */
-			bc_lseek(fd, ds_readb(DUNGEON_LEVEL) * 320, 0);
+			bc_lseek(fd, ds_readbs(DUNGEON_LEVEL) * 320, 0);
 			bc__read(fd, p_datseg + 0xbd95, 0x100);
+
 			/* read automap tiles */
 			bc__read(fd, p_datseg + 0xe442, 0x40);
 			ds_writew(0x5eb8, 0);
 
-			if (ds_readb(DUNGEON_INDEX) == 0) {
+			if (!ds_readbs(DUNGEON_INDEX)) {
 				/* TODO: is that neccessary ? */
 				memset(p_datseg + 0xc025, -1, 900);
 				ds_writew(0x5eb8,
