@@ -746,6 +746,16 @@ void spell_saft_kraft(void)
 	/* set ae costs */
 	ds_writew(0xac0e, rounds);
 
+#ifdef M302de_ORIGINAL_BUGFIX
+	char *p = (char*)get_dtp(96 * 4);
+
+	if (p[10] == 'L' && p[11] == 'E') {
+		/* change "VERWANDLET" into "VERWANDELT" */
+		p[10] = 'E';
+		p[11] = 'L';
+	}
+#endif
+
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(96 * 4),
