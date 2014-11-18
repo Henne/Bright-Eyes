@@ -256,6 +256,10 @@ unsigned short GUI_count_lines(Bit8u *str)
 	for ( ; str_loc[si]; si++) {
 
 		GUI_lookup_char_width(str_loc[si], &width_char);
+#if !defined(__BORLANDC__)
+		/* BE-fix */
+		width_char = host_readws((Bit8u*)&width_char);
+#endif
 		width_line += width_char;
 
 		if (width_line >=  ds_readws(0xd2d5)) {
