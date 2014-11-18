@@ -63,6 +63,12 @@ void FIG_init_list_elem(signed short obj)
 
 	FIG_search_obj_on_cb(obj, &x, &y);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	x = host_readws((Bit8u*)&x);
+	y = host_readws((Bit8u*)&y);
+#endif
+
 	/* This initializes a 35 byte structure at DS:0xe066 */
 	ds_writew(0xe066, 0);
 	ds_writeb((0xe066 + 2), 0);
@@ -388,6 +394,11 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 				{
 					FIG_search_obj_on_cb(i + 1, &l_var6, &l_var7);
 
+#if !defined(__BORLANDC__)
+					/* BE-fix */
+					l_var6 = host_readws((Bit8u*)&l_var6);
+					l_var7 = host_readws((Bit8u*)&l_var7);
+#endif
 					for (l_var10 = 0; l_var10 < 4; l_var10++) {
 
 						l_var17 = 0;
@@ -431,6 +442,12 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 				if ((host_readbs(enemy_ptr) != 0) && !enemy_dead(enemy_ptr)) {
 
 					FIG_search_obj_on_cb(i + 10, &l_var6, &l_var7);
+
+#if !defined(__BORLANDC__)
+					/* BE-fix */
+					l_var6 = host_readws((Bit8u*)&l_var6);
+					l_var7 = host_readws((Bit8u*)&l_var7);
+#endif
 					for (l_var10 = 0; l_var10 < 4; l_var10++) {
 						l_var17 = 0;
 						l_var18 = 1;

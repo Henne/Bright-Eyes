@@ -543,6 +543,13 @@ void FIG_do_round(void)
 			if (FIG_search_obj_on_cb(pos + 1, &x_coord, &y_coord) &&
 				check_hero(Real2Host(hero)))
 			{
+
+#if !defined(__BORLANDC__)
+				/* BE-fix */
+				x_coord = host_readws((Bit8u*)&x_coord);
+				y_coord = host_readws((Bit8u*)&y_coord);
+#endif
+
 				if (host_readbs(Real2Host(hero) + 0x96) != 0) {
 					dec_ptr_bs(Real2Host(hero) + 0x96);
 				} else {
@@ -576,6 +583,13 @@ void FIG_do_round(void)
 								{
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + 0x86) + 20, &x, &y);
+
+#if !defined(__BORLANDC__)
+									/* BE-fix */
+									x = host_readws((Bit8u*)&x);
+									y = host_readws((Bit8u*)&y);
+#endif
+
 
 									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(hero) + 0x86))));
 									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
@@ -616,6 +630,11 @@ void FIG_do_round(void)
 			if (FIG_search_obj_on_cb(pos + 10, &x_coord, &y_coord) &&
 				FIG_is_enemy_active(Real2Host(monster)))
 			{
+#if !defined(__BORLANDC__)
+				/* BE-fix */
+				x_coord = host_readws((Bit8u*)&x_coord);
+				y_coord = host_readws((Bit8u*)&y_coord);
+#endif
 				if (host_readbs(Real2Host(monster) + 0x2f) != 0) {
 					dec_ptr_bs(Real2Host(monster) + 0x2f);
 				} else {
@@ -646,6 +665,12 @@ void FIG_do_round(void)
 								{
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + 0x2d) + 20, &x, &y);
+
+#if !defined(__BORLANDC__)
+									/* BE-fix */
+									x = host_readws((Bit8u*)&x);
+									y = host_readws((Bit8u*)&y);
+#endif
 
 									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(monster) + 0x2d))));
 									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));

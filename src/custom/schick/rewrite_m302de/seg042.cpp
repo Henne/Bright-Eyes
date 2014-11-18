@@ -129,6 +129,13 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + 0x86), &target_x, &target_y);
 				FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
 
+#if !defined(__BORLANDC__)
+				/* BE-fix */
+				target_x = host_readws((Bit8u*)&target_x);
+				target_y = host_readws((Bit8u*)&target_y);
+				hero_x = host_readws((Bit8u*)&hero_x);
+				hero_y = host_readws((Bit8u*)&hero_y);
+#endif
 				if (hero_x == target_x) {
 
 					if (target_y < hero_y) {

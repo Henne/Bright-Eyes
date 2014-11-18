@@ -444,6 +444,12 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 
 			FIG_search_obj_on_cb(host_readbs(hero + 0x86), &target_x, &target_y);
 
+#if !defined(__BORLANDC__)
+			/* BE-fix */
+			target_x = host_readws((Bit8u*)&target_x);
+			target_y = host_readws((Bit8u*)&target_y);
+#endif
+
 			if (calc_beeline(target_x, target_y, x, y) < 2) {
 				retval = 2;
 			} else {
@@ -468,6 +474,11 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 
 					FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
 
+#if !defined(__BORLANDC__)
+					/* BE-fix */
+					x = host_readws((Bit8u*)&x);
+					y = host_readws((Bit8u*)&y);
+#endif
 					if (host_readbs(hero + 0x33) < 3) {
 						/* set BP to 0 */
 						host_writeb(hero + 0x33, 0);
@@ -650,6 +661,11 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 							if (l5 != -1) {
 								seg036_00ae(hero, hero_pos);
 								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
+#if !defined(__BORLANDC__)
+								/* BE-fix */
+								x = host_readws((Bit8u*)&x);
+								y = host_readws((Bit8u*)&y);
+#endif
 							} else {
 								/* set BP to 0 */
 								host_writeb(hero + 0x33, 0);
@@ -701,6 +717,11 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 							if (l5 != -1) {
 								seg036_00ae(hero, hero_pos);
 								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
+#if !defined(__BORLANDC__)
+								/* BE-fix */
+								x = host_readws((Bit8u*)&x);
+								y = host_readws((Bit8u*)&y);
+#endif
 							} else {
 								/* set BP to 0 */
 								host_writeb(hero + 0x33, 0);
@@ -857,6 +878,11 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 			FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
 
+#if !defined(__BORLANDC__)
+			/* BE-fix */
+			hero_x = host_readws((Bit8u*)&hero_x);
+			hero_y = host_readws((Bit8u*)&hero_y);
+#endif
 			if ((hero_x - 1 >= 0) && (hero_x + 1 <= 25) &&
 				(hero_y -1 >= 0) && (hero_y + 1 <= 25) &&
 				(get_cb_val(hero_x, hero_y + 1) != 0) &&
@@ -895,6 +921,11 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 					if (FIG_search_obj_on_cb(hero_pos + 1, &x, &y)) {
 
+#if !defined(__BORLANDC__)
+						/* BE-fix */
+						x = host_readws((Bit8u*)&x);
+						y = host_readws((Bit8u*)&y);
+#endif
 						host_writeb(hero + 0x84, 1);
 
 						if ((x_bak == x) && (y_bak == y)) {
@@ -1007,6 +1038,11 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
 
+#if !defined(__BORLANDC__)
+								/* BE-fix */
+								x = host_readws((Bit8u*)&x);
+								y = host_readws((Bit8u*)&y);
+#endif
 								if ((x_bak == x) && (y_bak == y)) {
 									host_writeb(hero + 0x33, 0);
 								}

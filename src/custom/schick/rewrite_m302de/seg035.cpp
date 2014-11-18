@@ -287,6 +287,13 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 	/* get position of the hero */
 	FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	target_x = host_readws((Bit8u*)&target_x);
+	target_y = host_readws((Bit8u*)&target_y);
+	hero_x = host_readws((Bit8u*)&hero_x);
+	hero_y = host_readws((Bit8u*)&hero_y);
+#endif
 	/* check that the range attack is in the same line */
 	if ((hero_x != target_x) && (hero_y != target_y)) {
 		GUI_output(get_dtp(0xb4));

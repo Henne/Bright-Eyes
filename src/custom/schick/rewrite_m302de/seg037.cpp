@@ -530,6 +530,11 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 									seg037_00ae(enemy, enemy_nr);
 									FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
 
+#if !defined(__BORLANDC__)
+									/* BE-fix */
+									x = host_readws((Bit8u*)&x);
+									y = host_readws((Bit8u*)&y);
+#endif
 									if (host_readbs(enemy + 0x23) < 3) {
 										host_writeb(enemy + 0x23, 0);
 									}
@@ -574,6 +579,11 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 									seg037_00ae(enemy, enemy_nr);
 									FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
 
+#if !defined(__BORLANDC__)
+									/* BE-fix */
+									x = host_readws((Bit8u*)&x);
+									y = host_readws((Bit8u*)&y);
+#endif
 									if (host_readbs(enemy + 0x23) < 5) {
 										host_writeb(enemy + 0x23, 0);
 									}
@@ -651,6 +661,11 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 							seg037_00ae(enemy, enemy_nr);
 							FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
 
+#if !defined(__BORLANDC__)
+							/* BE-fix */
+							x = host_readws((Bit8u*)&x);
+							y = host_readws((Bit8u*)&y);
+#endif
 							if (host_readbs(enemy + 0x23) < 3) {
 								host_writeb(enemy + 0x23, 0);
 							}
@@ -865,6 +880,11 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 					seg037_00ae(enemy, enemy_nr);
 					FIG_search_obj_on_cb(enemy_nr + 10, &x, &y);
 
+#if !defined(__BORLANDC__)
+					/* BE-fix */
+					x = host_readws((Bit8u*)&x);
+					y = host_readws((Bit8u*)&y);
+#endif
 					if ((l6 == x) && (l7 == y)) {
 						host_writeb(enemy + 0x23, 0);
 					}

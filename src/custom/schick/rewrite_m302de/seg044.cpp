@@ -157,6 +157,13 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		FIG_search_obj_on_cb((signed char)fid_target, &target_x, &target_y);
 		FIG_search_obj_on_cb((signed char)fid_attacker, &attacker_x, &attacker_y);
 
+#if !defined(__BORLANDC__)
+		/* BE-fix */
+		target_x = host_readws((Bit8u*)&target_x);
+		target_y = host_readws((Bit8u*)&target_y);
+		attacker_x = host_readws((Bit8u*)&attacker_x);
+		attacker_y = host_readws((Bit8u*)&attacker_y);
+#endif
 		if (attacker_x == target_x) {
 			if (target_y < attacker_y) {
 				dir = 1;
@@ -370,6 +377,13 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	FIG_search_obj_on_cb((signed char)fid_target, &target_x, &target_y);
 	FIG_search_obj_on_cb((signed char)fid_attacker, &attacker_x, &attacker_y);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	target_x = host_readws((Bit8u*)&target_x);
+	target_y = host_readws((Bit8u*)&target_y);
+	attacker_x = host_readws((Bit8u*)&attacker_x);
+	attacker_y = host_readws((Bit8u*)&attacker_y);
+#endif
 	/* find out which direction the action will have */
 	if (attacker_x == target_x) {
 		if (target_y < attacker_y) {
@@ -590,6 +604,14 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 	FIG_search_obj_on_cb((signed char)obj2, &x_obj2, &y_obj2);
 	FIG_search_obj_on_cb((signed char)obj1, &x_obj1, &y_obj1);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	x_obj1 = host_readws((Bit8u*)&x_obj1);
+	y_obj1 = host_readws((Bit8u*)&y_obj1);
+	x_obj2 = host_readws((Bit8u*)&x_obj2);
+	y_obj2 = host_readws((Bit8u*)&y_obj2);
+#endif
+
 	if (x_obj1 == x_obj2) {
 		if (y_obj2 < y_obj1)
 			dir = 1;
@@ -725,6 +747,13 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	FIG_search_obj_on_cb((signed char)caster, &x_caster, &y_caster);
 	FIG_search_obj_on_cb((signed char)target, &x_target, &y_target);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	x_caster = host_readws((Bit8u*)&x_caster);
+	y_caster = host_readws((Bit8u*)&y_caster);
+	x_target = host_readws((Bit8u*)&x_target);
+	x_target = host_readws((Bit8u*)&y_target);
+#endif
 	if (x_target == x_caster) {
 		if (y_caster < y_target)
 			dir = 1;

@@ -26,6 +26,12 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 
 	FIG_search_obj_on_cb(fight_id, &obj_x, &obj_y);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	obj_x = host_readws((Bit8u*)&obj_x);
+	obj_y = host_readws((Bit8u*)&obj_y);
+#endif
+
 	ds_writew(0xe066, 0);
 
 	ds_writeb(0xe068, ds_readb(type * 2 + 0x61f8));
@@ -116,6 +122,14 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id
 
 	FIG_search_obj_on_cb(fight_id2, &id2_x, &id2_y);
 	FIG_search_obj_on_cb(fight_id1, &id1_x, &id1_y);
+
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	id1_x = host_readws((Bit8u*)&id1_x);
+	id1_y = host_readws((Bit8u*)&id1_y);
+	id2_x = host_readws((Bit8u*)&id2_x);
+	id2_y = host_readws((Bit8u*)&id2_y);
+#endif
 
 	beeline = calc_beeline(id1_x, id1_y, id2_x, id2_y);
 
@@ -212,6 +226,12 @@ void seg045_0394(signed short a1, Bit8u *hero, signed short spell_ani_id)
 	/* search the target on the chessboard */
 	FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x, &y);
 
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	x = host_readws((Bit8u*)&x);
+	y = host_readws((Bit8u*)&y);
+#endif
+
 	ptr = p_datseg + a1 * 0xf3 + 0xd8cf;
 
 	ds_writeb(0xd8ce + a1 * 0xf3, 0);
@@ -229,6 +249,12 @@ void seg045_041b(signed short a1, Bit8u *enemy, signed short spell_ani_id)
 	Bit8u *ptr;
 	signed short x;
 	signed short y;
+
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	x = host_readws((Bit8u*)&x);
+	y = host_readws((Bit8u*)&y);
+#endif
 
 	/* search the target on the chessboard */
 	FIG_search_obj_on_cb(host_readbs(enemy + 0x2d), &x, &y);

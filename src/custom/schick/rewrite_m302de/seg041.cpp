@@ -270,6 +270,13 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			FIG_search_obj_on_cb(v9 + 1, &x_hero, &y_hero);
 			FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x_target, &y_target);
 
+#if !defined(__BORLANDC__)
+			/* BE-fix */
+			x_hero = host_readws((Bit8u*)&x_hero);
+			y_hero = host_readws((Bit8u*)&y_hero);
+			x_target = host_readws((Bit8u*)&x_target);
+			y_target = host_readws((Bit8u*)&y_target);
+#endif
 			beeline = calc_beeline(x_hero, y_hero, x_target, y_target);
 
 			if (beeline <= 2) {
