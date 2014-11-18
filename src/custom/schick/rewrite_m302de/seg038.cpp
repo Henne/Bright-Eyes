@@ -33,11 +33,21 @@ namespace M302de {
  */
 unsigned short FIG_search_obj_on_cb(signed short obj, signed short *px, signed short *py)
 {
-
-
+	/* This is the readable version */
+	/*
 	for (*px = 0; *px < 25; ++*px) {
 		for (*py = 0; *py < 24; ++*py) {
 			if (get_cb_val(*px, *py) == obj) {
+				return 1;
+			}
+		}
+	}
+	*/
+
+	/* This is the Endian save version */
+	for (host_writew((Bit8u*)px, 0); host_readws((Bit8u*)px) < 25; inc_ptr_ws((Bit8u*)px)) {
+		for (host_writew((Bit8u*)py, 0); host_readws((Bit8u*)py) < 24; inc_ptr_ws((Bit8u*)py)) {
+			if (get_cb_val(host_readws((Bit8u*)px), host_readws((Bit8u*)py)) == obj) {
 				return 1;
 			}
 		}
