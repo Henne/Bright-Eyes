@@ -202,12 +202,13 @@ void FIG_remove_smth2(void)
 	ds_writeb(0xe38c, 0xff);
 }
 
-void seg045_0394(signed short a1, Bit8u *hero, signed short a3)
+void seg045_0394(signed short a1, Bit8u *hero, signed short spell_ani_id)
 {
 	Bit8u *ptr;
 	signed short x;
 	signed short y;
 
+	/* search the target on the chessboard */
 	FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x, &y);
 
 	ptr = p_datseg + a1 * 0xf3 + 0xd8cf;
@@ -215,17 +216,20 @@ void seg045_0394(signed short a1, Bit8u *hero, signed short a3)
 	ds_writeb(0xd8ce + a1 * 0xf3, 0);
 	ds_writeb(0xd9c0 + a1 * 0xf3, -1);
 
-	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + a3 * 4)), -1);
+	/* copy the ani sequence and terminate it */
+	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + spell_ani_id * 4)), -1);
 	host_writeb(ptr, -1);
-	seg045_0273(x, y, a3);
+
+	seg045_0273(x, y, spell_ani_id);
 }
 
-void seg045_041b(signed short a1, Bit8u *enemy, signed short a3)
+void seg045_041b(signed short a1, Bit8u *enemy, signed short spell_ani_id)
 {
 	Bit8u *ptr;
 	signed short x;
 	signed short y;
 
+	/* search the target on the chessboard */
 	FIG_search_obj_on_cb(host_readbs(enemy + 0x2d), &x, &y);
 
 	ptr = p_datseg + a1 * 0xf3 + 0xd8cf;
@@ -233,9 +237,11 @@ void seg045_041b(signed short a1, Bit8u *enemy, signed short a3)
 	ds_writeb(0xd8ce + a1 * 0xf3, 0);
 	ds_writeb(0xd9c0 + a1 * 0xf3, -1);
 
-	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + a3 * 4)), -1);
+	/* copy the ani sequence and terminate it */
+	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + spell_ani_id * 4)), -1);
 	host_writeb(ptr, -1);
-	seg045_0273(x, y, a3);
+
+	seg045_0273(x, y, spell_ani_id);
 }
 
 #if !defined(__BORLANDC__)
