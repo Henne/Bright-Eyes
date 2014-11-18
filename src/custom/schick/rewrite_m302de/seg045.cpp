@@ -130,33 +130,37 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id
 	for (i = 0; beeline - 1 > i; i++) {
 		ptr += FIG_copy_it(ptr, Real2Host(host_readd(Real2Host(ds_readd(0x6324 + a2 * 4)) + a5 * 4)), -1);
 	}
-
 	host_writeb(ptr, -1);
+
 	seg045_0000(fight_id1, a2, a5);
 
 	return 1;
 }
 
-void seg045_0273(signed short x, signed short y, signed short a3)
+struct dummy2 {
+	signed char a[2];
+};
+
+struct dummy4 {
+	signed short a[2];
+};
+
+void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 {
 	unsigned short height;
 	unsigned short width;
 
 	/* TODO: some kind of initialized structure */
-	signed short l3;
-	Bit8u *l4;
-	Bit32s l5;
+	struct dummy2 a = *(struct dummy2*)(p_datseg + 0x633c);
+	struct dummy4 b = *(struct dummy4*)(p_datseg + 0x633e);
+	struct dummy4 c = *(struct dummy4*)(p_datseg + 0x6342);
 
 	struct nvf_desc nvf;
 
-	l3 = ds_readws(0x633c);
-	l4 = Real2Host(ds_readd(0x633e));
-	l5 = ds_readd(0x6342);
-
 	nvf.dst = Real2Host(ds_readd(0xd856));
 	nvf.src = Real2Host(ds_readd(0xd866));
-	/* TODO: ugly */
-	nvf.nr = host_readbs((Bit8u*)&l3 + a3 - 1);
+
+	nvf.nr = a.a[spell_ani_id - 1];
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -169,15 +173,12 @@ void seg045_0273(signed short x, signed short y, signed short a3)
 #endif
 
 	ds_writew(0xe066, 0);
-	/* TODO: ugly */
-	ds_writeb(0xe068, host_readbs((Bit8u*)&l3 + a3 - 1));
+	ds_writeb(0xe068, a.a[spell_ani_id - 1]);
 	ds_writeb(0xe069, (signed char)x);
 	ds_writeb(0xe06a, (signed char)y);
 
-	/* TODO: ugly */
-	ds_writeb(0xe06b, host_readbs(((Bit8u*)&(l3)) - 6 + a3 * 2));
-	/* TODO: ugly */
-	ds_writeb(0xe06c, host_readbs(((Bit8u*)&(l3)) - 10 + a3 * 2));
+	ds_writeb(0xe06b, b.a[spell_ani_id - 1]);
+	ds_writeb(0xe06c, c.a[spell_ani_id - 1]);
 
 	ds_writeb(0xe06d, (unsigned char)height);
 	ds_writeb(0xe06e, (unsigned char)width);
