@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg070 (phexcaer: buildings 1/2)
- *	Functions rewritten: 4/7
+ *	Functions rewritten: 5/7
  */
 #include <stdio.h>
 
@@ -8,8 +8,10 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg004.h"
 #include "seg007.h"
 #include "seg026.h"
+#include "seg027.h"
 #include "seg032.h"
 #include "seg047.h"
 #include "seg097.h"
@@ -251,6 +253,58 @@ void PHX_villa_gremob(void)
 	if (ds_readb(GREMOB_INVITED) != 0) {
 		do_fight(239);
 	}
+}
+
+/**
+ * \brief	the brothel
+ */
+/* Borlandified and identical */
+void PHX_bordell(void)
+{
+	signed short answer;
+
+	load_ani(24);
+
+	init_ani(0);
+
+	do {
+		answer = GUI_radio(get_city(0xa4), 3,
+					get_city(0xa8),
+					get_city(0xac),
+					get_city(0xb0));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		do {
+			answer = GUI_radio(get_city(0xb4), 3,
+						get_city(0xb8),
+						get_city(0xbc),
+						get_city(0xc0));
+
+		} while (answer == -1);
+
+		GUI_input(answer == 3 ? get_city(0xcc) : get_city(0xd0), 0);
+
+		if ((answer == 1) || (answer == 2)) {
+			ds_writeb(HARLOT_DATE, 1);
+		}
+
+	} else if (answer == 2) {
+
+		add_ds_ds(0x317e, 30L);
+
+		timewarp_until(0x93a8);
+
+		GUI_input(get_city(0xc4), 0);
+
+	} else if (answer == 3) {	/* this check is bogus */
+
+		GUI_input(get_city(0xc8), 0);
+	}
+
+	set_var_to_zero();
 }
 
 #if !defined(__BORLANDC__)
