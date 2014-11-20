@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg070 (phexcaer: buildings 1/2)
- *	Functions rewritten: 5/7
+ *	Functions rewritten: 6/7
  */
 #include <stdio.h>
 
@@ -16,6 +16,7 @@
 #include "seg047.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -302,6 +303,162 @@ void PHX_bordell(void)
 	} else if (answer == 3) {	/* this check is bogus */
 
 		GUI_input(get_city(0xc8), 0);
+	}
+
+	set_var_to_zero();
+}
+
+/**
+ * \brief	the pharmacy
+ */
+/* Borlandified and identical */
+void PHX_apotheke(void)
+{
+	signed short answer;
+	signed short options;
+	Bit32s money;
+
+	load_ani(23);
+
+	init_ani(0);
+
+	do {
+		answer = GUI_radio(get_city(0xd4), 3,
+					get_city(0xd8),
+					get_city(0xdc),
+					get_city(0xe0));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		money = get_party_money();
+
+		options = money >= 1000 ? 3 : 2;
+
+
+		do {
+			answer = GUI_radio(get_city(0xe4), options,
+						get_city(0xf8),
+						get_city(0xf4),
+						get_city(0xf0));
+
+		} while (answer == -1);
+
+		if (answer == 3) {
+
+			money -= 1000;
+
+			set_party_money(money);
+
+			get_item(61, 1, 1);
+		} else {
+			GUI_input(get_city(0x114), 0);
+		}
+
+	} else if (answer == 2) {
+
+		money = get_party_money();
+
+		answer = money >= 500 ? 3 : 2;
+
+		do {
+			answer = GUI_radio(get_city(0xe8), answer,
+						get_city(0xfc),
+						get_city(0x104),
+						get_city(0x100));
+
+		} while (answer == -1);
+
+
+		if (answer == 3) {
+
+			money -= 500;
+
+			set_party_money(money);
+
+			GUI_input(get_city(0x11c), 0);
+		} else {
+
+			GUI_input(answer == 1 ? get_city(0x118) : get_city(0x114), 0);
+
+		}
+	} else {
+
+		do {
+			answer = GUI_radio(get_city(0xec), 3,
+						get_city(0x108),
+						get_city(0x10c),
+						get_city(0x110));
+
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			GUI_input(get_city(0x114), 0);
+
+		} else if (answer == 2) {
+
+			do {
+				answer = GUI_radio(get_city(0x120), 3,
+							get_city(0xdc),
+							get_city(0x124),
+							get_city(0x128));
+
+			} while (answer == -1);
+
+			if (answer == 1) {
+				money = get_party_money();
+
+				answer = money >= 500 ? 3 : 2;
+
+				do {
+					answer = GUI_radio(get_city(0xe8), answer,
+								get_city(0xfc),
+								get_city(0x104),
+								get_city(0x100));
+
+				} while (answer == -1);
+
+				if (answer == 3) {
+
+					money -= 500;
+
+					set_party_money(money);
+
+					GUI_input(get_city(0x11c), 0);
+				} else {
+					GUI_input(answer == 1 ? get_city(0x118) : get_city(0x114), 0);
+				}
+			} else {
+				GUI_input(get_city(0x12c), 0);
+			}
+
+		} else {
+
+			money = get_party_money();
+
+			answer = money >= 1000 ? 3 : 2;
+
+			do {
+				answer = GUI_radio(get_city(0xe4), answer,
+							get_city(0xf8),
+							get_city(0xf4),
+							get_city(0xf0));
+
+			} while (answer == -1);
+
+			if (answer == 3) {
+
+				money -= 1000;
+
+				set_party_money(money);
+
+				get_item(61, 1, 1);
+			} else {
+				GUI_input(get_city(0x114), 0);
+			}
+		}
 	}
 
 	set_var_to_zero();

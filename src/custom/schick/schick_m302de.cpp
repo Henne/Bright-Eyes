@@ -4777,7 +4777,9 @@ static int seg070(unsigned short offs) {
 			return 1;
 		}
 		case 0x39: {
-			return 0;
+			D1_LOG("PHX_apotheke()\n");
+			PHX_apotheke();
+			return 1;
 		}
 		case 0x3e: {
 			return 0;

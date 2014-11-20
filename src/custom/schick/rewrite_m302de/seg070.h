@@ -12,6 +12,8 @@ void PHX_spielhaus(void);
 void PHX_villa_gremob(void);
 /* 0x34 */
 void PHX_bordell(void);
+/* 0x39 */
+void PHX_apotheke(void);
 
 #if !defined(__BORLANDC__)
 }
