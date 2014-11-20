@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg070 (phexcaer: buildings 1/2)
  *	Functions rewritten: 7/7 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg070.cpp
  */
 #include <stdio.h>
 
@@ -26,7 +30,6 @@ namespace M302de {
 /**
  * \brief		carriage station
  */
-/* Borlandified and identical */
 void PHX_fuhrhaus(void)
 {
 	signed short answer;
@@ -71,7 +74,6 @@ void PHX_fuhrhaus(void)
 /**
  * \brief	stadthaus of Phexcaer
  */
-/* Borlandified and identical */
 void PHX_stadthaus(void)
 {
 	signed short answer;
@@ -140,7 +142,6 @@ void PHX_stadthaus(void)
 /**
  * \brief	spielhaus of Phexcaer
  */
-/* Borlandified and identical */
 void PHX_spielhaus(void)
 {
 	signed short answer;
@@ -247,7 +248,6 @@ void PHX_spielhaus(void)
 /**
  * \brief	the villa of Ektor Gremob
  */
-/* Borlandified and identical */
 void PHX_villa_gremob(void)
 {
 	GUI_output(!ds_readb(GREMOB_INVITED)? get_city(0xa0) : get_city(0x9c));
@@ -260,7 +260,6 @@ void PHX_villa_gremob(void)
 /**
  * \brief	the brothel
  */
-/* Borlandified and identical */
 void PHX_bordell(void)
 {
 	signed short answer;
@@ -312,7 +311,6 @@ void PHX_bordell(void)
 /**
  * \brief	the pharmacy
  */
-/* Borlandified and identical */
 void PHX_apotheke(void)
 {
 	signed short answer;
@@ -468,7 +466,6 @@ void PHX_apotheke(void)
 /**
  * \brief	the healer
  */
-/* Borlandified and identical */
 void PHX_healer(void)
 {
 	signed short answer;
