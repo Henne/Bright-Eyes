@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg070 (phexcaer: buildings 1/2)
- *	Functions rewritten: 6/7
+ *	Functions rewritten: 7/7 (complete)
  */
 #include <stdio.h>
 
@@ -14,6 +14,7 @@
 #include "seg027.h"
 #include "seg032.h"
 #include "seg047.h"
+#include "seg053.h"
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
@@ -457,6 +458,124 @@ void PHX_apotheke(void)
 				get_item(61, 1, 1);
 			} else {
 				GUI_input(get_city(0x114), 0);
+			}
+		}
+	}
+
+	set_var_to_zero();
+}
+
+/**
+ * \brief	the healer
+ */
+/* Borlandified and identical */
+void PHX_healer(void)
+{
+	signed short answer;
+	Bit32s money;
+
+	answer = random_schick(100);
+
+	if (answer <= 70) {
+
+		GUI_output(get_city(0x130));
+
+	} else if (answer <= 85) {
+
+		GUI_output(get_city(0x134));
+
+	} else {
+
+		load_ani(23);
+
+		init_ani(0);
+
+		do {
+			answer = GUI_radio(get_city(0x138), 3,
+						get_city(0x13c),
+						get_city(0x140),
+						get_city(0x144));
+
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			GUI_output(get_city(0x148));
+
+			/* enter the healer */
+			ds_writew(TYPEINDEX, 13);
+			ds_writew(CITYINDEX, 15);
+
+			do_healer();
+
+		} else if (answer == 3) {
+
+			GUI_output(get_city(0x150));
+
+		} else {
+			/* answer == 2 */
+			do {
+				answer = GUI_radio(get_city(0x14c), 3,
+							get_city(0x154),
+							get_city(0x158),
+							get_city(0x15c));
+
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				do {
+					answer = GUI_radio(get_city(0x160), 3,
+								get_city(0x164),
+								get_city(0x168),
+								get_city(0x16c));
+
+				} while (answer == -1);
+
+			} else if (answer == 2) {
+
+				money = get_party_money();
+
+				if (money >= 200) {
+
+					GUI_output(get_city(0x170));
+
+					money -= 200;
+
+					set_party_money(money);
+				} else {
+					GUI_output(get_city(0x18c));
+				}
+			} else {
+
+				money = get_party_money();
+
+				answer = money >= 500 ? 3 : (money >= 10 ? 2 : 1);
+
+				do {
+					answer = GUI_radio(get_city(0x174), answer,
+								get_city(0x180),
+								get_city(0x178),
+								get_city(0x17c));
+
+				} while (answer == -1);
+
+				if (answer == 2) {
+
+					money -= 10;
+
+					set_party_money(money);
+
+					GUI_output(get_city(0x184));
+
+				} else if (answer == 3) {
+
+					money -= 500;
+
+					set_party_money(money);
+
+					GUI_output(get_city(0x188));
+				}
 			}
 		}
 	}

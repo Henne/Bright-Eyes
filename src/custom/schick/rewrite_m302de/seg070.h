@@ -14,6 +14,8 @@ void PHX_villa_gremob(void);
 void PHX_bordell(void);
 /* 0x39 */
 void PHX_apotheke(void);
+/* 0x3e */
+void PHX_healer(void);
 
 #if !defined(__BORLANDC__)
 }
