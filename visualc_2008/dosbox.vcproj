@@ -1093,7 +1093,15 @@
 					Name="schick_rewrite_m302de"
 					>
 					<File
-						RelativePath="..\src\custom\schick\rewrite_m302de\schick_common.h"
+						RelativePath="..\src\custom\schick\rewrite_m302de\common.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\v302de.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\symbols.h"
 						>
 					</File>
 					<File
