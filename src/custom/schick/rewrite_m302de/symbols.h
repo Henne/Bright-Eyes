@@ -51,6 +51,7 @@
 #define MAGE_POISON	(0x3cb6)
 #define GREMOB_INVITED	(0x3f74)	/* unsigned char {0, 1} */
 #define HARLOT_DATE	(0x3f75)	/* unsigned char {0, 1} */
+#define DRUG_TIMER	(0x3f76)	/* unsigned char {0, 1, ..., 10} */
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define FOOD_MESSAGE	(0x4219)
 #define CITYINDEX	(0x4222)
