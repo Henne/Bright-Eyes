@@ -4800,7 +4800,9 @@ static int seg070(unsigned short offs) {
 static int seg071(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			D1_LOG("PHX_drogentempel()\n");
+			PHX_drogentempel();
+			return 1;
 		}
 		case 0x25: {
 			return 0;
