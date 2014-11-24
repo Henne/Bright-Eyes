@@ -8,6 +8,12 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+void do_temple(void)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
