@@ -427,7 +427,7 @@ void status_show(Bit16u index)
 			if (host_readbs(Real2Host(hero) + 0x47) * 100 <= host_readws(Real2Host(hero) + 0x2d8))
 				bp -= 2;
 
-			if (ds_readw(0xc003) == 2) {
+			if (ds_readw(GAME_MODE) == 2) {
 				/* advanded mode */
 
 #ifdef M302de_ORIGINAL_BUGFIX

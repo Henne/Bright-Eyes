@@ -81,6 +81,7 @@
 #define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
 #define HEROS		(0xbd34)
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
+#define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
 #define DIALOG_TEXT	(0xc3b1)
 #define CITY_LTX	(0xc3ad)
 #define TEXT_LTX	(0xc3b5)

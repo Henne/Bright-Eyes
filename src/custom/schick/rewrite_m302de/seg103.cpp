@@ -234,7 +234,7 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		}
 
 		/* automatically get hero with best senses in beginner mode */
-		if ((skill == 51) && (ds_readws(0xc003) == 1)) {
+		if ((skill == 51) && (ds_readws(GAME_MODE) == 1)) {
 			hero = Real2Host(get_proper_hero(51));
 
 #if defined(__BORLANDC__)

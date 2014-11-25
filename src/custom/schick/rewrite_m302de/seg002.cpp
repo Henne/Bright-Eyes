@@ -5223,10 +5223,10 @@ int schick_main(int argc, char** argv)
 
 
 		/* select game mode */
-		ds_writew(0xc003, -1);
+		ds_writew(GAME_MODE, -1);
 
-		while (ds_readw(0xc003) == -1) {
-			ds_writew(0xc003, GUI_radio(get_ltx(0x14), 2, get_ltx(0x18), get_ltx(0x1c)));
+		while (ds_readw(GAME_MODE) == -1) {
+			ds_writew(GAME_MODE, GUI_radio(get_ltx(0x14), 2, get_ltx(0x18), get_ltx(0x1c)));
 		}
 
 		if (copy_protection()) {
