@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg071 (phexcaer: buildings 2/2)
- *	Functions rewritten: 1/3
+ *	Functions rewritten: 2/3
  */
 
 #include "v302de.h"
@@ -11,6 +11,7 @@
 #include "seg027.h"
 #include "seg032.h"
 #include "seg047.h"
+#include "seg061.h"
 #include "seg097.h"
 
 #if !defined(__BORLANDC__)
@@ -179,6 +180,183 @@ void PHX_drogentempel(void)
 	}
 
 	set_var_to_zero();
+}
+
+/**
+ * \brief the Phextemple of Phexcaer
+ *
+ * This function shows how to enter a temple manually.
+ * Also there is some code, which will never be executed,
+ * because PTEMPLE_CLOSED is initially 0 and never changes.
+*/
+
+/* Borlandified and identical */
+void PHX_phextempel(void)
+{
+	signed short answer;		/* the selected answer from the dialogs */
+	signed short old_tb_width;	/* saving the width of the textboxes */
+	signed short old_loc;		/* saving the nr of the old location */
+
+	old_tb_width = ds_readws(0xbffd);
+
+	/* this variable is never != 0 */
+	if (ds_readb(PTEMPLE_CLOSED) != 0) {
+
+		/* the cleric is gone */
+		GUI_output(get_city(0xf0));
+
+	} else {
+
+		/* load the picture of THE FEMALE CLERIC */
+
+		load_in_head(12);
+
+		/* show introduction text */
+		GUI_output(get_city(0x84));
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0x80), get_city(0x88),
+					3,
+					get_city(0x8c),
+					get_city(0x90),
+					get_city(0x94));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0x98),
+						3,
+						get_city(0x9c),
+						get_city(0xa0),
+						get_city(0xa4));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xc8), 0);
+			} else {
+
+				/* enter the temple */
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xcc), 0);
+
+				ds_writew(TYPEINDEX, 59);
+
+				ds_writew(0xbffd, 3);
+
+				old_loc = ds_readbs(LOCATION);
+
+				ds_writeb(LOCATION, 2);
+
+				do_temple();
+
+				ds_writeb(LOCATION, old_loc);
+
+				ds_writew(0xbffd, old_tb_width);
+			}
+
+		} else if (answer == 2) {
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xa8),
+						3,
+						get_city(0xac),
+						get_city(0xb0),
+						get_city(0xb4));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xc8), 0);
+
+			} else if (answer == 2) {
+
+				do {
+					answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+							get_city(0x80), get_city(0xd0),
+							3,
+							get_city(0xd4),
+							get_city(0xd8),
+							get_city(0xdc));
+				} while (answer == -1);
+
+				if (answer == 2) {
+
+					GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xe0), 0);
+				}
+
+			} else {
+
+				/* enter the temple */
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xcc), 0);
+
+				ds_writew(TYPEINDEX, 59);
+
+				ds_writew(0xbffd, 3);
+
+				old_loc = ds_readbs(LOCATION);
+
+				ds_writeb(LOCATION, 2);
+
+				do_temple();
+
+				ds_writeb(LOCATION, old_loc);
+
+				ds_writew(0xbffd, old_tb_width);
+			}
+
+		} else {
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xb8),
+						3,
+						get_city(0xbc),
+						get_city(0xc0),
+						get_city(0xc4));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xe4), 0);
+			} else if (answer == 2) {
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xe8), 0);
+			} else if (answer == 3) {
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0x80), get_city(0xec), 0);
+			}
+
+			/* enter the temple */
+
+			ds_writew(TYPEINDEX, 59);
+
+			ds_writew(0xbffd, 3);
+
+			old_loc = ds_readbs(LOCATION);
+
+			ds_writeb(LOCATION, 2);
+
+			do_temple();
+
+			ds_writeb(LOCATION, old_loc);
+
+			ds_writew(0xbffd, old_tb_width);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)

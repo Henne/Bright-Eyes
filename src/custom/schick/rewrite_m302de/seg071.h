@@ -4,6 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void PHX_drogentempel(void);
+/* 0x25 */
+void PHX_phextempel(void);
 
 #if !defined(__BORLANDC__)
 }
