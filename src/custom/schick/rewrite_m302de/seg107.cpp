@@ -180,10 +180,10 @@ void item_read_document(void)
 	case 0xf7: str = get_ltx(0xbdc); break;
 	}
 
-	bak = ds_readws(0xbffd);
-	ds_writew(0xbffd, 7);
+	bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
 	GUI_output(str);
-	ds_writew(0xbffd, bak);
+	ds_writew(TEXTBOX_WIDTH, bak);
 }
 
 /* Borlandified and identical */

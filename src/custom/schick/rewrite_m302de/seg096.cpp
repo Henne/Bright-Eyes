@@ -659,7 +659,7 @@ void GUI_draw_popup_line(signed short line, signed short type)
 
 	x += 16;
 
-	for (i = 0; i < ds_readws(0xbffd); i++) {
+	for (i = 0; i < ds_readws(TEXTBOX_WIDTH); i++) {
 		ds_writew(0xc011, x);
 		ds_writew(0xc015, x + 31);
 		do_pic_copy(0);

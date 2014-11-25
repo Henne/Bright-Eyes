@@ -47,8 +47,8 @@ void diary_show(void)
 	Bit16u bak1, bak2, bak3, bak4, bak5;
 	signed short i;
 
-	bak5 = ds_readw(0xbffd);
-	ds_writew(0xbffd, 3);
+	bak5 = ds_readw(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
 
 	ds_writeb(0x45b8, 1);
 	ds_writew(0xe113, 0);
@@ -102,7 +102,7 @@ void diary_show(void)
 	ds_writew(0xd2d5, bak1);
 	ds_writew(0xd313, bak3);
 	ds_writew(0xd315, bak4);
-	ds_writew(0xbffd, bak5);
+	ds_writew(TEXTBOX_WIDTH, bak5);
 
 	delay_or_keypress(5000);
 }

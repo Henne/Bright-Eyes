@@ -178,8 +178,8 @@ signed short plan_alchemy(Bit8u *hero)
 
 		if (recipes != 0) {
 			/* ask which recipe should be used */
-			l7 = ds_readws(0xbffd);
-			ds_writew(0xbffd, 7);
+			l7 = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 7);
 
 			answer = GUI_radio(get_dtp(0xac), (signed char)recipes,
 						Real2Host(ds_readd(0xbf95)),
@@ -197,7 +197,7 @@ signed short plan_alchemy(Bit8u *hero)
 						Real2Host(ds_readd(0xbfc5)),
 						Real2Host(ds_readd(0xbfc9)));
 
-			ds_writew(0xbffd, l7);
+			ds_writew(TEXTBOX_WIDTH, l7);
 
 			if (answer != -1) {
 
@@ -247,7 +247,7 @@ signed short plan_alchemy(Bit8u *hero)
 									(char*)get_dtp(0xbc),
 									(char*)hero + 0x10);
 
-								ds_writew(0xbffd, 7);
+								ds_writew(TEXTBOX_WIDTH, 7);
 
 								do {
 									l4 = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
@@ -256,7 +256,7 @@ signed short plan_alchemy(Bit8u *hero)
 											get_dtp(0xc0));
 								} while (l4 == -1);
 
-								ds_writew(0xbffd, 3);
+								ds_writew(TEXTBOX_WIDTH, 3);
 
 							} else {
 								l4 = 1;

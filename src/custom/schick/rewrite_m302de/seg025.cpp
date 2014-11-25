@@ -291,8 +291,8 @@ void tumult(void)
 {
 	signed short bak;
 
-	bak = ds_readw(0xbffd);
-	ds_writew(0xbffd, 7);
+	bak = ds_readw(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
 
 	/* print message */
 	GUI_output(get_ltx(0xbf0));
@@ -317,7 +317,7 @@ void tumult(void)
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
-	ds_writew(0xbffd, bak);
+	ds_writew(TEXTBOX_WIDTH, bak);
 }
 
 /* 0x10b3 */

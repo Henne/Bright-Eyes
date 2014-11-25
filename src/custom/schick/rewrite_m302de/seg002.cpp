@@ -1536,10 +1536,10 @@ void handle_gui_input(void)
 			ds_writew(0xc3c5, 1);
 			inc_ds_ws(TIMERS_DISABLED);
 			ds_writew(0xd2d1, 1);
-			l_di = ds_readws(0xbffd);
-			ds_writew(0xbffd, 2);
+			l_di = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 2);
 			GUI_output(p_datseg + 0x448a);		/* P A U S E */
-			ds_writew(0xbffd, l_di);
+			ds_writew(TEXTBOX_WIDTH, l_di);
 			ds_writew(0xd2d1, 0);
 			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
 			dec_ds_ws(TIMERS_DISABLED);
@@ -1600,23 +1600,23 @@ void handle_gui_input(void)
 			/* Credits */
 
 			l_si = 0;
-			l_di = ds_readws(0xbffd);
-			ds_writew(0xbffd, 5);
+			l_di = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 5);
 			ds_writew(0xd2d1, 1);
 			GUI_output(get_ltx(0x628));
 			ds_writew(0xd2d1, 0);
-			ds_writew(0xbffd, l_di);
+			ds_writew(TEXTBOX_WIDTH, l_di);
 
 		} else if (l_si == 0xfc) {
 			/* Clock */
 			l_si = 0;
-			l_di = ds_readws(0xbffd);
-			ds_writew(0xbffd, 5);
+			l_di = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 5);
 			ds_writew(0xd2d1, 1);
 			prepare_date_str();
 			GUI_output(Real2Host(ds_readd(DTP2)));
 			ds_writew(0xd2d1, 0);
-			ds_writew(0xbffd, l_di);
+			ds_writew(TEXTBOX_WIDTH, l_di);
 
 		}
 	}
@@ -1687,9 +1687,9 @@ void handle_input(void)
 			inc_ds_ws(TIMERS_DISABLED);
 			ds_writew(0xc3c5, 1);
 			ds_writew(0xd2d1, 1);
-			ds_writew(0xbffd, 2);
+			ds_writew(TEXTBOX_WIDTH, 2);
 			GUI_output(p_datseg + 0x448a);		/* P A U S E */
-			ds_writew(0xbffd, 3);
+			ds_writew(TEXTBOX_WIDTH, 3);
 			ds_writew(0xd2d1, 0);
 			dec_ds_ws(TIMERS_DISABLED);
 
@@ -5179,7 +5179,7 @@ int schick_main(int argc, char** argv)
 
 		init_common_buffers();
 
-		ds_writew(0xbffd, 3);
+		ds_writew(TEXTBOX_WIDTH, 3);
 
 		refresh_screen_size();
 
@@ -5231,7 +5231,7 @@ int schick_main(int argc, char** argv)
 
 		if (copy_protection()) {
 
-			ds_writew(0xbffd, 3);
+			ds_writew(TEXTBOX_WIDTH, 3);
 
 			l3 = get_diskspace();
 
@@ -5295,7 +5295,7 @@ signed short copy_protection(void)
 
 	load_buffer_1(21);
 
-	ds_writew(0xbffd, 4);
+	ds_writew(TEXTBOX_WIDTH, 4);
 
 	set_textcolor(0xff, 0);
 

@@ -99,14 +99,14 @@ void do_healer(void)
 
 		if (ds_readw(0xc3d3) != 0 || ds_readw(ACTION) == 0x49) {
 
-			ds_writew(0xbffd, 4);
+			ds_writew(TEXTBOX_WIDTH, 4);
 
 			answer = GUI_radio(get_ltx(0x72c), 4,
 						get_ltx(0x71c),
 						get_ltx(0x720),
 						get_ltx(0x724),
 						get_ltx(0x728)) - 1;
-			ds_writew(0xbffd, 3);
+			ds_writew(TEXTBOX_WIDTH, 3);
 
 			if (answer != -2) {
 				ds_writew(ACTION, answer + 0x81);

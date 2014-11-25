@@ -354,7 +354,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	l4 = ds_readw(0xd2d7);
 	l5 = ds_readw(0xd2d5);
 
-	l_di = (ds_readw(0xbffd) * 32) + 32;
+	l_di = (ds_readw(TEXTBOX_WIDTH) * 32) + 32;
 	ds_writew(0xbfff, ((signed short)(320u - l_di) >> 1) + ds_readws(0x2ca2));
 
 	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
@@ -395,7 +395,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 		if (ds_readw(0xc3c5) != 0) {
 			wait_for_keypress();
 		} else {
-			delay_or_keypress(l_si * ds_readw(0xbffd) * 50);
+			delay_or_keypress(l_si * ds_readw(TEXTBOX_WIDTH) * 50);
 		}
 
 		/* delete action table */
@@ -493,10 +493,10 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	l7 = ds_readw(0xd2d9);
 	l8 = ds_readw(0xd2d7);
 	l9 = ds_readw(0xd2d5);
-	l6 = ds_readw(0xbffd);
-	ds_writew(0xbffd, 9);
+	l6 = ds_readw(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 9);
 
-	l_di = ds_readw(0xbffd) * 32 + 32;
+	l_di = ds_readw(TEXTBOX_WIDTH) * 32 + 32;
 	ds_writew(0xbfff, ((signed short)(320 - l_di) >> 1) + ds_readw(0x2ca2));
 	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
 	ds_writew(0xd2d5, l_di - 8);
@@ -582,7 +582,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	ds_writew(0xd2d7, l8);
 	ds_writew(0xd2d5, l9);
 
-	ds_writew(0xbffd, l6);
+	ds_writew(TEXTBOX_WIDTH, l6);
 
 	ds_writew(0xd313, l10);
 
@@ -733,7 +733,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	l8 = ds_readw(0xd2d7);
 	l9 = ds_readw(0xd2d5);
 
-	l11 = ds_readw(0xbffd) * 32 + 32;
+	l11 = ds_readw(TEXTBOX_WIDTH) * 32 + 32;
 	ds_writew(0xbfff, ((320 - l11) >> 1) + ds_readw(0x2ca2));
 	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
 	ds_writew(0xd2d5, l11 - 8);
@@ -794,8 +794,8 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
  */
 void GUI_print_fight_intro_msg(signed short fight_id)
 {
-	signed short bak = ds_readws(0xbffd);
-	ds_writew(0xbffd, 7);
+	signed short bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
 
 	if (ds_readbs(DUNGEON_INDEX) == 2) {
 		DNG2_fight_intro(fight_id);
@@ -822,7 +822,7 @@ void GUI_print_fight_intro_msg(signed short fight_id)
 		DNG14_fight_intro(fight_id);
 	}
 
-	ds_writew(0xbffd, bak);
+	ds_writew(TEXTBOX_WIDTH, bak);
 }
 
 /**

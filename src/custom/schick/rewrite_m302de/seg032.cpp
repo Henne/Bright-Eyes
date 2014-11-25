@@ -860,8 +860,8 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(TIMERS_DISABLED, 1);
 	ds_writew(CURRENT_FIG_NR, fight_nr);
 
-	bak5 = ds_readws(0xbffd);
-	ds_writew(0xbffd, 3);
+	bak5 = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
 
 	/* set some pointers */
 	ds_writed(SCENARIO_BUF, (Bit32u)F_PADD(ds_readd(0xc3a9), 64100));
@@ -1176,7 +1176,7 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(TIMERS_DISABLED, 0);
 	ds_writew(AUTOFIGHT, 0);
 	ds_writeb(CHECK_PARTY, 1);
-	ds_writew(0xbffd, bak5);
+	ds_writew(TEXTBOX_WIDTH, bak5);
 	ds_writeb(0x2845, -2);
 
 	update_mouse_cursor();

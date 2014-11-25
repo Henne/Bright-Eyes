@@ -39,7 +39,7 @@ void pause_traveling(signed short ani_nr)
 
 	ds_writew(0xe5d9, ds_readw(0x2ca2));
 	ds_writew(0xe5d7, ds_readw(0x2ca4));
-	ds_writew(0xe5d5, ds_readw(0xbffd));
+	ds_writew(0xe5d5, ds_readw(TEXTBOX_WIDTH));
 	ds_writew(0xe5d3, ds_readw(0xe113));
 
 	ds_writeb(0xb132, 1);
@@ -48,7 +48,7 @@ void pause_traveling(signed short ani_nr)
 	ds_writeb(TRAVELING, (unsigned char)ds_writew(0x2ca2, ds_writew(0xe113, 0)));
 
 	ds_writew(0x2ca4, ani_nr == 21 ? 60: 70);
-	ds_writew(0xbffd, 9);
+	ds_writew(TEXTBOX_WIDTH, 9);
 }
 
 /* static */
@@ -57,7 +57,7 @@ void resume_traveling(void)
 {
 	ds_writew(0x2ca2, ds_readw(0xe5d9));
 	ds_writew(0x2ca4, ds_readw(0xe5d7));
-	ds_writew(0xbffd, ds_readw(0xe5d5));
+	ds_writew(TEXTBOX_WIDTH, ds_readw(0xe5d5));
 	ds_writew(0xe113, ds_readw(0xe5d3));
 
 	set_var_to_zero();

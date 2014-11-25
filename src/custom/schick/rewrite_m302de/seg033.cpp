@@ -480,8 +480,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							}
 
 							refresh_screen_size();
-							bak = ds_readws(0xbffd);
-							ds_writews(0xbffd, 6);
+							bak = ds_readws(TEXTBOX_WIDTH);
+							ds_writews(TEXTBOX_WIDTH, 6);
 
 							l_di = GUI_radio(Real2Host(ds_readd(0xd2eb)), l100,
 									Real2Host(ds_readd((0xbf95 + 0x00))),
@@ -501,7 +501,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 									Real2Host(ds_readd((0xbf95 + 0x38))),
 									Real2Host(ds_readd((0xbf95 + 0x3c))));
 
-							ds_writews(0xbffd, bak);
+							ds_writews(TEXTBOX_WIDTH, bak);
 
 							update_mouse_cursor();
 
@@ -557,8 +557,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + 0x1c0), 0)));
 
 							refresh_screen_size();
-							bak = ds_readws(0xbffd);
-							ds_writews(0xbffd, 6);
+							bak = ds_readws(TEXTBOX_WIDTH);
+							ds_writews(TEXTBOX_WIDTH, 6);
 
 							l_di = GUI_radio(Real2Host(ds_readd(0xd2eb)), l100,
 									Real2Host(ds_readd((0xbf95 + 0x00))),
@@ -578,7 +578,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 									Real2Host(ds_readd((0xbf95 + 0x38))),
 									Real2Host(ds_readd((0xbf95 + 0x3c))));
 
-							ds_writews(0xbffd, bak);
+							ds_writews(TEXTBOX_WIDTH, bak);
 
 							update_mouse_cursor();
 
@@ -793,8 +793,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(char*)hero + 0x10);
 
 						refresh_screen_size();
-						bak = ds_readws(0xbffd);
-						ds_writews(0xbffd, 6);
+						bak = ds_readws(TEXTBOX_WIDTH);
+						ds_writews(TEXTBOX_WIDTH, 6);
 
 						l_di = GUI_radio(Real2Host(ds_readd(0xd2eb)), l100,
 								Real2Host(ds_readd((0xbf95 + 0x00))),
@@ -814,7 +814,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								Real2Host(ds_readd((0xbf95 + 0x38))),
 								Real2Host(ds_readd((0xbf95 + 0x3c))));
 
-						ds_writews(0xbffd, bak);
+						ds_writews(TEXTBOX_WIDTH, bak);
 
 						update_mouse_cursor();
 

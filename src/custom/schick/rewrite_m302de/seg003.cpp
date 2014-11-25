@@ -187,14 +187,14 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 
 	if (!host_readbs(p3)) {
 
-		ds_writew(0xbffd, 7);
+		ds_writew(TEXTBOX_WIDTH, 7);
 
 		answer = GUI_radio(Real2Host(ds_readd(0xd2eb)), 3,
 					get_ltx(0x830),
 					get_ltx(0x834),
 					get_ltx(0x838)) - 1;
 
-		ds_writew(0xbffd, 3);
+		ds_writew(TEXTBOX_WIDTH, 3);
 
 		if (answer == 0) {
 #if !defined(__BORLANDC__)

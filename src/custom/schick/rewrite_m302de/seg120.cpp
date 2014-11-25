@@ -85,8 +85,8 @@ void rabies(RealPt hero, signed short hero_pos)
 				(char*)get_ltx(0xb9c),
 				(char*)Real2Host(hero) + 0x10);
 
-			bak = ds_readws(0xbffd);
-			ds_writew(0xbffd, 6);
+			bak = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 6);
 
 			answer = GUI_dialogbox(hero + 0x2da,
 						Real2Host(hero) + 0x10,
@@ -96,7 +96,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						Real2Host(ds_readd(DTP2)) + 600,
 						get_ltx(0xba0));
 
-			ds_writew(0xbffd, bak);
+			ds_writew(TEXTBOX_WIDTH, bak);
 
 			if (answer == 1) {
 				/* knock the infected hero out */
@@ -416,7 +416,7 @@ void init_game_state(void)
 
 	ds_writeb(0x2da6, ds_writeb(CURRENT_TOWN, 1));
 
-	ds_writew(0xbffd, 3);
+	ds_writew(TEXTBOX_WIDTH, 3);
 
 	/* timer */
 	/* ds_writed(DAY_TIMER, 24 * 0x1518 - 1);*/

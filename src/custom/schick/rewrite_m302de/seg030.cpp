@@ -84,11 +84,11 @@ void print_date(void)
 	unsigned short bak;
 
 	prepare_date_str();
-	bak = ds_readw(0xbffd);
-	ds_writew(0xbffd, 3);
+	bak = ds_readw(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
 
 	GUI_input(Real2Host(ds_readd(DTP2)), 0);
-	ds_writew(0xbffd, bak);
+	ds_writew(TEXTBOX_WIDTH, bak);
 }
 
 /* 0x14f */

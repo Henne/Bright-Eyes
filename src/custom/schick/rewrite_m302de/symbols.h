@@ -80,6 +80,7 @@
 #define SCENARIO_BUF	(0xbd2c)
 #define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
 #define HEROS		(0xbd34)
+#define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define DIALOG_TEXT	(0xc3b1)
 #define CITY_LTX	(0xc3ad)
 #define TEXT_LTX	(0xc3b5)

@@ -838,8 +838,8 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 		return 0;
 	}
 
-	bak = ds_readws(0xbffd);
-	ds_writew(0xbffd, 3);
+	bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
 
 	if (a2 == 1) {
 		l_di = select_spell(Real2Host(hero), 0);
@@ -979,7 +979,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 		retval = -1;
 	}
 
-	ds_writew(0xbffd, bak);
+	ds_writew(TEXTBOX_WIDTH, bak);
 
 	return retval;
 }

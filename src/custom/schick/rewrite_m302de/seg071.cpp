@@ -197,7 +197,7 @@ void PHX_phextempel(void)
 	signed short old_tb_width;	/* saving the width of the textboxes */
 	signed short old_loc;		/* saving the nr of the old location */
 
-	old_tb_width = ds_readws(0xbffd);
+	old_tb_width = ds_readws(TEXTBOX_WIDTH);
 
 	/* this variable is never != 0 */
 	if (ds_readb(PTEMPLE_CLOSED) != 0) {
@@ -247,7 +247,7 @@ void PHX_phextempel(void)
 
 				ds_writew(TYPEINDEX, 59);
 
-				ds_writew(0xbffd, 3);
+				ds_writew(TEXTBOX_WIDTH, 3);
 
 				old_loc = ds_readbs(LOCATION);
 
@@ -257,7 +257,7 @@ void PHX_phextempel(void)
 
 				ds_writeb(LOCATION, old_loc);
 
-				ds_writew(0xbffd, old_tb_width);
+				ds_writew(TEXTBOX_WIDTH, old_tb_width);
 			}
 
 		} else if (answer == 2) {
@@ -302,7 +302,7 @@ void PHX_phextempel(void)
 
 				ds_writew(TYPEINDEX, 59);
 
-				ds_writew(0xbffd, 3);
+				ds_writew(TEXTBOX_WIDTH, 3);
 
 				old_loc = ds_readbs(LOCATION);
 
@@ -312,7 +312,7 @@ void PHX_phextempel(void)
 
 				ds_writeb(LOCATION, old_loc);
 
-				ds_writew(0xbffd, old_tb_width);
+				ds_writew(TEXTBOX_WIDTH, old_tb_width);
 			}
 
 		} else {
@@ -344,7 +344,7 @@ void PHX_phextempel(void)
 
 			ds_writew(TYPEINDEX, 59);
 
-			ds_writew(0xbffd, 3);
+			ds_writew(TEXTBOX_WIDTH, 3);
 
 			old_loc = ds_readbs(LOCATION);
 
@@ -354,7 +354,7 @@ void PHX_phextempel(void)
 
 			ds_writeb(LOCATION, old_loc);
 
-			ds_writew(0xbffd, old_tb_width);
+			ds_writew(TEXTBOX_WIDTH, old_tb_width);
 		}
 	}
 }

@@ -588,10 +588,10 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				}
 
 				/* print output: maybe garbage - string not set to 0 */
-				bak = ds_readw(0xbffd);
-				ds_writew(0xbffd, 5);
+				bak = ds_readw(TEXTBOX_WIDTH);
+				ds_writew(TEXTBOX_WIDTH, 5);
 				GUI_output(Real2Host(ds_readd(DTP2)));
-				ds_writew(0xbffd, bak);
+				ds_writew(TEXTBOX_WIDTH, bak);
 			}
 		}
 

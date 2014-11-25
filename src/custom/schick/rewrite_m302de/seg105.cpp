@@ -805,10 +805,10 @@ signed short select_item_to_drop(Bit8u *hero)
 		} else {
 			i = v6;
 		}
-			bak1 = ds_readw(0xbffd);
+			bak1 = ds_readw(TEXTBOX_WIDTH);
 		bak2 = ds_readw(0x2ca2);
 		bak3 = ds_readw(0x2ca4);
-		ds_writew(0xbffd, 6);
+		ds_writew(TEXTBOX_WIDTH, 6);
 		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 		v4 = GUI_radio((Bit8u*)get_ltx(0xbc0), (signed char)i,
 			Real2Host(ds_readd(0xbf95 + 0x00 + di * 4)),
@@ -824,7 +824,7 @@ signed short select_item_to_drop(Bit8u *hero)
 			Real2Host(ds_readd(0xbf95 + 0x28 + di * 4)),
 			Real2Host(ds_readd(0xbf95 + 0x2c + di * 4)),
 			Real2Host(ds_readd(0xbf95 + 0x30 + di * 4)));
-		ds_writew(0xbffd, bak1);
+		ds_writew(TEXTBOX_WIDTH, bak1);
 		ds_writew(0x2ca2, bak2);
 		ds_writew(0x2ca4, bak3);
 

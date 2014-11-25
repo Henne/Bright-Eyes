@@ -410,8 +410,8 @@ signed short select_hero_from_group(Bit8u *title)
 	register signed short i;
 	register signed short answer;
 
-	bak_1 = ds_readw(0xbffd);
-	ds_writew(0xbffd, 3);
+	bak_1 = ds_readw(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
 	for (i = 0; i <= 6; i++) {
@@ -450,7 +450,7 @@ signed short select_hero_from_group(Bit8u *title)
 
 		ds_writew(0x2ca2, bak_2);
 		ds_writew(0x2ca4, bak_3);
-		ds_writew(0xbffd, bak_1);
+		ds_writew(TEXTBOX_WIDTH, bak_1);
 
 		if (answer != -2)
 			return dst.v[answer];
@@ -458,7 +458,7 @@ signed short select_hero_from_group(Bit8u *title)
 			return -1;
 	}
 
-	ds_writew(0xbffd, bak_1);
+	ds_writew(TEXTBOX_WIDTH, bak_1);
 	return -1;
 }
 
@@ -487,8 +487,8 @@ signed short select_hero_ok(Bit8u *title)
 	register signed short i;
 	register signed short answer;
 
-	bak_1 = ds_readw(0xbffd);
-	ds_writew(0xbffd, 3);
+	bak_1 = ds_readw(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
 	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += 0x6da) {
@@ -525,7 +525,7 @@ signed short select_hero_ok(Bit8u *title)
 
 		ds_writew(0x2ca2, bak_2);
 		ds_writew(0x2ca4, bak_3);
-		ds_writew(0xbffd, bak_1);
+		ds_writew(TEXTBOX_WIDTH, bak_1);
 		ds_writew(0x2cdb, -1);
 
 		if (answer != -2)
@@ -534,7 +534,7 @@ signed short select_hero_ok(Bit8u *title)
 			return -1;
 	}
 
-	ds_writew(0xbffd, bak_1);
+	ds_writew(TEXTBOX_WIDTH, bak_1);
 	ds_writew(0x2cdb, -1);
 	return -1;
 }
@@ -565,8 +565,8 @@ signed short select_hero_ok_forced(Bit8u *title)
 	register signed short i;
 	register signed short answer;
 
-	bak_1 = ds_readw(0xbffd);
-	ds_writew(0xbffd, 3);
+	bak_1 = ds_readw(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
 	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += 0x6da) {
@@ -608,7 +608,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 		} while (answer == -2);
 
 		ds_writew(0x2cdb, -1);
-		ds_writew(0xbffd, bak_1);
+		ds_writew(TEXTBOX_WIDTH, bak_1);
 
 		return dst.v[answer];
 	} else {
