@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg071 (phexcaer: buildings 2/2)
- *	Functions rewritten: 2/3
+ *	Functions rewritten: 3/3 (complete)
  */
 
 #include "v302de.h"
@@ -9,6 +9,7 @@
 #include "seg004.h"
 #include "seg026.h"
 #include "seg027.h"
+#include "seg028.h"
 #include "seg032.h"
 #include "seg047.h"
 #include "seg061.h"
@@ -357,6 +358,183 @@ void PHX_phextempel(void)
 			ds_writew(TEXTBOX_WIDTH, old_tb_width);
 		}
 	}
+}
+
+/**
+ * \brief the dialog with ALRIK DERONDAN
+ *
+*/
+
+/* Borlandified and identical */
+void PHX_alrik_derondan(void)
+{
+	signed short answer;
+	signed short l_di = 0;
+	Bit32s money;
+
+	/* load PHEX2.LTX */
+	load_city_ltx(239);
+
+	/* load the picture of ALRIK DERONDAN */
+	load_in_head(3);
+
+	do {
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+				get_city(0xf4), get_city(0xf8),
+				3,
+				get_city(0xfc),
+				get_city(0x100),
+				get_city(0x104));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4), get_city(0x108),
+					3,
+					get_city(0x10c),
+					get_city(0x110),
+					get_city(0x114));
+		} while (answer == -1);
+
+		if (answer == 3) {
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+						get_city(0xf4), get_city(0x128),
+						3,
+						get_city(0x12c),
+						get_city(0x130),
+						get_city(0x134));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4), get_city(0x144), 0);
+
+				ds_writeb(0x3f79, 1);
+
+			} else if (answer == 2) {
+				l_di = 1;
+			} else {
+				l_di = 3;
+			}
+		} else {
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4), get_city(0x138), 0);
+		}
+
+	} else if (answer == 2) {
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4), get_city(0x118),
+					3,
+					get_city(0x11c),
+					get_city(0x120),
+					get_city(0x124));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4), get_city(0x138), 0);
+
+		} else if (answer == 2) {
+			l_di = 2;
+		} else {
+			l_di = 1;
+		}
+	} else {
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4), get_city(0x128),
+					3,
+					get_city(0x12c),
+					get_city(0x130),
+					get_city(0x134));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+				get_city(0xf4), get_city(0x144), 0);
+
+			ds_writeb(0x3f79, 1);
+		} else if (answer == 2) {
+			l_di = 1;
+		} else {
+			l_di = 3;
+		}
+	}
+
+	if ((l_di == 2) || (l_di == 3)) {
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4),
+					l_di == 3 ? get_city(0x148) : get_city(0x13c),
+					3,
+					get_city(0x150),
+					get_city(0x154),
+					get_city(0x158));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+				get_city(0xf4), get_city(0x15c), 0);
+		} else if (answer == 2) {
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+				get_city(0xf4), get_city(0x160), 0);
+		} else {
+
+			l_di = 1;
+		}
+	}
+
+	if (l_di == 1) {
+
+		money = get_party_money();
+
+		answer = money >= 500 ? 3 : 2;
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+					get_city(0xf4),
+					get_city(0x140),
+					answer,
+					get_city(0x164),
+					get_city(0x16c),
+					get_city(0x168));
+		} while (answer == -1);
+
+		if (answer == 3) {
+
+			money -= 500;
+			set_party_money(money);
+
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+				get_city(0xf4), get_city(0x170), 0);
+
+		} else if (answer == 2) {
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+				get_city(0xf4), get_city(0x138), 0);
+		} else {
+
+			GUI_dialogbox((RealPt)ds_readd(DTP2),
+				get_city(0xf4),
+				(test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0) ? get_city(0x170) : get_city(0x138),
+				0);
+		}
+	}
+
+	/* reset the flag */
+	ds_writeb(ALRIK_DERONDAN, 0);
+
+	/* load TAVERN.TLK */
+	load_tlk(130);
 }
 
 #if !defined(__BORLANDC__)

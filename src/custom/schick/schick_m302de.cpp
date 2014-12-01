@@ -4814,8 +4814,9 @@ static int seg071(unsigned short offs) {
 #endif
 		}
 		case 0x2a: {
-			D1_LOG("dialog_alrik_derondan();\n");
-			return 0;
+			D1_LOG("PHX_alrik_derondan()\n");
+			PHX_alrik_derondan();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
