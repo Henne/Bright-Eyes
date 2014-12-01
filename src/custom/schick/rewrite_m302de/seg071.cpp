@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg071 (phexcaer: buildings 2/2)
  *	Functions rewritten: 3/3 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg071.cpp
  */
 
 #include "v302de.h"
@@ -19,7 +23,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void PHX_drogentempel(void)
 {
 	signed short answer;
@@ -190,8 +193,6 @@ void PHX_drogentempel(void)
  * Also there is some code, which will never be executed,
  * because PTEMPLE_CLOSED is initially 0 and never changes.
 */
-
-/* Borlandified and identical */
 void PHX_phextempel(void)
 {
 	signed short answer;		/* the selected answer from the dialogs */
@@ -364,8 +365,6 @@ void PHX_phextempel(void)
  * \brief the dialog with ALRIK DERONDAN
  *
 */
-
-/* Borlandified and identical */
 void PHX_alrik_derondan(void)
 {
 	signed short answer;
