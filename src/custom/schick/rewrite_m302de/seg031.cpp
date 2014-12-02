@@ -22,7 +22,7 @@ signed short get_town_lookup_entry(void)
 	Bit8u *ptr;
 	signed short i;
 
-	ptr = p_datseg + 0x5ed6;
+	ptr = p_datseg + INFORMER_TAB;
 	for (i = 0; i < 15; i++, ptr += 4) {
 		if (host_readb(ptr + 2) == ds_readb(CURRENT_TOWN)) {
 			return i;
@@ -47,7 +47,7 @@ RealPt get_informer_hint(void)
 	Bit8u *ptr;
 	signed short i;	/* cx */
 
-	ptr = p_datseg + 0x5ed6;
+	ptr = p_datseg + INFORMER_TAB;
 	for (i = 0; i < 15; i++, ptr += 4) {
 		if (host_readb(ptr + 2) == ds_readb(CURRENT_TOWN)) {
 			return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX) + (i + 0x2cb) * 4));
@@ -64,7 +64,7 @@ RealPt get_informer_hint(void)
  */
 RealPt get_informer_name(void)
 {
-	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(0x5ed6 - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
+	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(INFORMER_TAB - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
 }
 
 /* 0x617 */
@@ -75,7 +75,7 @@ RealPt get_informer_name(void)
 RealPt get_informer_name2(void)
 {
 	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) +
-			ds_readw(0x5ed6 + get_town_lookup_entry() * 4) * 4);
+			ds_readw(INFORMER_TAB + get_town_lookup_entry() * 4) * 4);
 }
 
 /* 0x63b */

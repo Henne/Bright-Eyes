@@ -44,6 +44,7 @@
 #define INFORMER_RAGNA	(0x3369)	/* unsigned char {0,1,2} */
 #define INFORMER_BEORN	(0x336a)	/* unsigned char {0,1,2} */
 #define INFORMER_ASGRIMM	(0x336b)	/* unsigned char {0,1,2} */
+#define INFORMER_ELIANE	(0x336c)	/* unsigned char {0,1,2} */
 #define INFORMER_ALGRID	(0x3371)	/* unsigned char {0,1,2} */
 #define UNICORN_MET	(0x3464)
 #define UNICORN_GET_MAP	(0x3465)
