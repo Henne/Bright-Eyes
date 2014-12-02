@@ -22,10 +22,11 @@ namespace M302de {
 #endif
 
 /**
- *	get_tavern_gossip() - get gossip in taverns
+ * \brief	get gossip in taverns
  *
- *	Returns index of the message.
- *	This sets also some Informers and camp grounds
+ * \return	index of the gossip message
+ *
+ * This sets also some informers and camp grounds as known.
 */
 unsigned short get_tavern_gossip(void)
 {
@@ -442,9 +443,13 @@ unsigned short get_tavern_gossip(void)
 
 }
 
+/**
+ * \brief generates the name of a drinkmate and copies it to a buffer
+ */
 RealPt get_drinkmate(void)
 {
-	unsigned short name, surname;
+	signed short name;
+	signed short surname;
 
 	name = ((ds_readb(0x360d) - 1) == 0 ? 0xa7 : 0xbb);
 	name += random_schick(20) - 1;
