@@ -150,6 +150,12 @@ struct passages {
 	signed char v4;			/*  write only */
 };
 
+struct informer {
+	signed short name;		/* in TEXT.LTX */
+	signed char  city;		/* -1 = no city, else city id */
+	signed char unknown;		/* {0, 1} */
+};
+
 /* dummy */
 struct enemy_sheets {
 	signed char mon_id;
