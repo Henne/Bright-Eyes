@@ -1,6 +1,6 @@
 /*
-        Rewrite of DSA1 v3.02_de functions of seg073 (tavern helper)
-        Functions rewritten: 3/4
+ *	Rewrite of DSA1 v3.02_de functions of seg073 (tavern: gossip, drinkmates, quests & informers)
+ *	Functions rewritten: 4/4 (complete)
 */
 
 #include <stdio.h>
@@ -8,6 +8,8 @@
 #include "v302de.h"
 
 #include "seg007.h"
+#include "seg030.h"
+#include "seg031.h"
 #include "seg071.h"
 #include "seg097.h"
 
@@ -568,6 +570,53 @@ signed short tavern_quest_infos(void)
 
 	return l_si ? 1 : 0;
 }
+
+#if defined(__BORLANDC__)
+/**
+ * \brief	follow a informer from the tavern to his/her home
+ */
+/* Borlandified and identical */
+void tavern_follow_informer(void)
+{
+
+	switch (get_town_lookup_entry() + 1) {
+	case 1: {
+		seg030_0279(6, 0);
+		ds_writew(0x2d83, 8);
+		ds_writew(0x2d85, 6);
+		ds_writeb(DIRECTION, 3);
+		break;
+	}
+	case 6: {
+		seg030_0279(8, 0);
+		ds_writew(0x2d83, 5);
+		ds_writew(0x2d85, 4);
+		ds_writeb(DIRECTION, 3);
+		break;
+	}
+	case 7: {
+		seg030_0279(8, 1);
+		ds_writew(0x2d83, 12);
+		ds_writew(0x2d85, 10);
+		ds_writeb(DIRECTION, 1);
+		break;
+	}
+	case 8: {
+		seg030_0279(10, 1);
+		ds_writew(0x2d83, ds_writew(0x2d85, 7));
+		ds_writeb(DIRECTION, 1);
+		break;
+	}
+	case 14: {
+		seg030_0279(8, 2);
+		ds_writew(0x2d83, 5);
+		ds_writew(0x2d85, 8);
+		ds_writeb(DIRECTION, 0);
+		break;
+	}
+	}
+}
+#endif
 
 #if !defined(__BORLANDC__)
 }
