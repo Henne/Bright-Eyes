@@ -4910,8 +4910,9 @@ static int seg073(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a: {
-			D1_LOG("tavern_special()\n");
-			return 0;
+			reg_ax = tavern_quest_infos();
+			D1_LOG("tavern_quest_infos() = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x2f: {
 			return 0;

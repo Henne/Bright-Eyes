@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg073 (tavern helper)
-        Functions rewritten: 2/4
+        Functions rewritten: 3/4
 */
 
 #include <stdio.h>
@@ -8,6 +8,8 @@
 #include "v302de.h"
 
 #include "seg007.h"
+#include "seg071.h"
+#include "seg097.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -455,6 +457,116 @@ RealPt get_drinkmate(void)
 		get_dtp(((ds_readb(0x360d) - 1) == 0 ? 0xcf : 0xd0) * 4));
 
 	return (RealPt)ds_readd(0xd2eb);
+}
+
+/**
+ * \brief	get quest information in taverns / meet informants
+ *
+ * \return	TODO {0, 1}
+ */
+/* Borlandified and identical */
+signed short tavern_quest_infos(void)
+{
+	signed short l_si;
+
+	if (ds_readws(HEARD_ANNOUNCE) == 0) {
+
+		/* print the announcement from the hetman */
+		GUI_output(get_dtp(0x348));
+
+		/* remember you heard the announcement */
+		ds_writews(HEARD_ANNOUNCE, 1);
+
+		/* calculate the day in a week */
+		/* not used in the game */
+		/* TODO: Does this work with the nameless days ? */
+		ds_writeb(ANNOUNCE_DAY, ds_readbs(DAY_OF_MONTH) + 7);
+
+		if (ds_readbs(ANNOUNCE_DAY) > 30) {
+
+			sub_ds_bs(ANNOUNCE_DAY, 30);
+		}
+		/* Original-Bug: which return value here? */
+
+	} else if ((ds_readbs(CURRENT_TOWN) == 1) &&
+			!(ds_readb(QUEST_DEADSHIP)) &&
+			(ds_readws(TYPEINDEX) == 6))
+	{
+		/* print the message about a ghost ship */
+		GUI_output(get_dtp(0x344));
+
+		/* remember that */
+		ds_writeb(QUEST_DEADSHIP, l_si = 1);
+
+	} else if ((ds_readbs(CURRENT_TOWN) == 38) &&
+			(ds_readws(TYPEINDEX) == 69) &&
+			(ds_readb(INFORMER_JURGE) != 2) &&
+			(ds_readb(INFORMER_JURGE) != 0) &&
+			!(ds_readb(0x344c)))
+	{
+		/* meet Informer Jurge */
+
+		if (random_schick(100) <= 30) {
+			ds_writeb(CURRENT_INFORMER, l_si = 1);
+		}
+
+	} else if ((ds_readbs(CURRENT_TOWN) == 46) &&
+			(ds_readws(TYPEINDEX) == 84) &&
+			(ds_readb(INFORMER_RAGNA) != 2) &&
+			(ds_readb(INFORMER_RAGNA) != 0))
+	{
+		/* meet Informer Ragna */
+
+		if (random_schick(100) <= 30) {
+			ds_writeb(CURRENT_INFORMER, l_si = 6);
+		}
+
+	} else if ((ds_readbs(CURRENT_TOWN) == 13) &&
+			((ds_readws(TYPEINDEX) == 27) || (ds_readws(TYPEINDEX) == 28)) &&
+			(ds_readb(INFORMER_BEORN) != 2) &&
+			(ds_readb(INFORMER_BEORN) != 0))
+	{
+		/* meet Informer Beorn */
+
+		if (((ds_readws(TYPEINDEX) == 27) && (random_schick(100) <= 50)) ||
+			((ds_readws(TYPEINDEX) == 28) && (random_schick(100) <= 20)))
+		{
+			ds_writeb(CURRENT_INFORMER, l_si = 7);
+		}
+
+
+	} else if ((ds_readbs(CURRENT_TOWN) == 3) &&
+			((ds_readws(TYPEINDEX) == 14) || (ds_readws(TYPEINDEX) == 15)) &&
+			(ds_readb(INFORMER_ASGRIMM) != 2) &&
+			(ds_readb(INFORMER_ASGRIMM) != 0) &&
+			(ds_readws(GOT_MAIN_QUEST) != 0))
+	{
+		/* meet Informer Asgrimm */
+
+		if (random_schick(100) <= 50) {
+			ds_writeb(CURRENT_INFORMER, l_si = 8);
+		}
+
+	} else if ((ds_readbs(CURRENT_TOWN) == 31) &&
+			((ds_readws(TYPEINDEX) == 61) || (ds_readws(TYPEINDEX) == 62)) &&
+			(ds_readb(INFORMER_ALGRID) != 2) &&
+			(ds_readb(INFORMER_ALGRID) != 0))
+	{
+		/* meet Informer Algrid */
+
+		if (((ds_readws(TYPEINDEX) == 61) && (random_schick(100) <= 50)) ||
+			((ds_readws(TYPEINDEX) == 62) && (random_schick(100) <= 20)))
+		{
+			ds_writeb(CURRENT_INFORMER, l_si = 14);
+		}
+
+	} else if ((ds_readbs(CURRENT_TOWN) == 18) && (ds_readb(ALRIK_DERONDAN))) {
+
+		/* meet Alrik Derondan */
+		PHX_alrik_derondan();
+	}
+
+	return l_si ? 1 : 0;
 }
 
 #if !defined(__BORLANDC__)
