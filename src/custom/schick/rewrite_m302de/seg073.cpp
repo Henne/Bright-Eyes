@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg073 (tavern: gossip, drinkmates, quests & informers)
  *	Functions rewritten: 4/4 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg073.cpp
 */
 
 #include <stdio.h>
@@ -23,7 +27,6 @@ namespace M302de {
  *	Returns index of the message.
  *	This sets also some Informers and camp grounds
 */
-/* Borlandified and identical */
 unsigned short get_tavern_gossip(void)
 {
 	/* Orig-Bug: Informants can be reenabled if they had been set to 2 */
@@ -439,7 +442,6 @@ unsigned short get_tavern_gossip(void)
 
 }
 
-/* Borlandified and identical */
 RealPt get_drinkmate(void)
 {
 	unsigned short name, surname;
@@ -466,7 +468,6 @@ RealPt get_drinkmate(void)
  *
  * \return	TODO {0, 1}
  */
-/* Borlandified and identical */
 signed short tavern_quest_infos(void)
 {
 	signed short l_si;
@@ -575,7 +576,6 @@ signed short tavern_quest_infos(void)
 /**
  * \brief	follow a informer from the tavern to his/her home
  */
-/* Borlandified and identical */
 void tavern_follow_informer(void)
 {
 
