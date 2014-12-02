@@ -24,7 +24,7 @@ RealPt seg030_0000(signed short arg0)
 	signed short counter;
 
 	for (i = counter = 0; i < 15; i++) {
-		if ((ds_readb(0x3364 + i) != 0)
+		if ((ds_readb(INFORMER_JURGE + i) != 0)
 			&& (arg0 - 1 != i)
 			&& (i != 9)
 			&& (i != 11)
@@ -53,7 +53,7 @@ RealPt seg030_008d(signed short arg0)
 	signed short v2;
 
 	for (i = v2 = 0; i < 15; i++) {
-		if (!(ds_readb(0x3364 + i))
+		if (!(ds_readb(INFORMER_JURGE + i))
 			&& (arg0 - 1 != i)
 			&& (i != 9)
 			&& (i != 11)

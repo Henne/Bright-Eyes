@@ -35,15 +35,22 @@
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
 #define TREASURE_MAPS	(0x3332)	/* array char[9] */
-#define GOT_MAIN_QUEST	(0x334c)
+#define HEARD_ANNOUNCE	(0x334a)	/* signed short: 0 = not heard, 1 = heard, 3 = spoke with hetman */
+#define GOT_MAIN_QUEST	(0x334c)	/* signed short {0,1} */
 #define QUESTED_MONTHS	(0x334e)
 #define BANK_DEPOSIT	(0x335c)	/* signed short */
 #define IN_ACADEMY	(0x3362)	/* s16 */
+#define INFORMER_JURGE	(0x3364)	/* unsigned char and unsigned char[15], {0,1,2} */
+#define INFORMER_RAGNA	(0x3369)	/* unsigned char {0,1,2} */
+#define INFORMER_BEORN	(0x336a)	/* unsigned char {0,1,2} */
+#define INFORMER_ASGRIMM	(0x336b)	/* unsigned char {0,1,2} */
+#define INFORMER_ALGRID	(0x3371)	/* unsigned char {0,1,2} */
 #define UNICORN_MET	(0x3464)
 #define UNICORN_GET_MAP	(0x3465)
 #define UNICORN_TIMER	(0x3466)
 #define NPC_MONTHS	(0x3470)
-#define CURRENT_INFORMER	(0x3612)
+#define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
+#define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
 #define TRAVELING	(0x3614)
 #define SPHERE_TIMER	(0x3c97)
@@ -57,6 +64,7 @@
 #define FOOD_MESSAGE	(0x4219)
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
+#define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
 #define BANK_HELLER	(0x4646)	/* signed short */
@@ -65,6 +73,7 @@
 #define DELAY_FACTOR	(0x4b66)
 #define EMM_SIG		(0x4ba2)	/* char[8] */
 #define FNAMES		(0x4c8c)
+#define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
 #define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */

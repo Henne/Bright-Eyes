@@ -36,7 +36,7 @@ unsigned short get_tavern_gossip(void)
 		if (r_si == 6)
 			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck */
 		else if (r_si == 7)
-			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson */
+			ds_writeb_z(INFORMER_ASGRIMM, 1);	/* Asgrimm Thurboldsson */
 
 		break;
 	}
@@ -49,7 +49,7 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 9)
 			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck */
 		else if (r_si == 10)
-			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson */
+			ds_writeb_z(INFORMER_ASGRIMM, 1);	/* Asgrimm Thurboldsson */
 
 		break;
 	}
@@ -133,7 +133,7 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 11)
 			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck ? */
 		else if (r_si == 12)
-			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson ? */
+			ds_writeb_z(INFORMER_ASGRIMM, 1);	/* Asgrimm Thurboldsson ? */
 
 		break;
 	}
@@ -144,7 +144,7 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 7)
 			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck ? */
 		else if (r_si == 8)
-			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson ? */
+			ds_writeb_z(INFORMER_ASGRIMM, 1);	/* Asgrimm Thurboldsson ? */
 
 		break;
 	}
@@ -393,7 +393,7 @@ unsigned short get_tavern_gossip(void)
 		else if (r_si == 9)
 			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck wt */
 		else if (r_si == 10)
-			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson wt */
+			ds_writeb_z(INFORMER_ASGRIMM, 1);	/* Asgrimm Thurboldsson wt */
 
 		break;
 	}
@@ -402,7 +402,7 @@ unsigned short get_tavern_gossip(void)
 		if (r_si == 7)
 			ds_writeb_z(0x336c, 1);	/* Eliane Windenbeck wt */
 		else if (r_si == 8)
-			ds_writeb_z(0x336b, 1);	/* Asgrimm Thurboldsson wt */
+			ds_writeb_z(INFORMER_ASGRIMM, 1);	/* Asgrimm Thurboldsson wt */
 
 		break;
 	}
