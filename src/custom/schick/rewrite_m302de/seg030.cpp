@@ -129,6 +129,11 @@ void prepare_date_str(void)
 	}
 }
 
+void seg030_0279(signed short a1, signed short a2)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif

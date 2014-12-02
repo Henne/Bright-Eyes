@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void seg030_0279(signed short, signed short);
 /* 0x25 */
 void print_date(void);
 /* 0x2a */
