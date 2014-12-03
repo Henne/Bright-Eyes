@@ -7168,7 +7168,9 @@ static int seg120(unsigned short offs) {
 			return 0;
 		}
 		case 0x4d: {
-			return 0;
+			D1_LOG("game_over_screen()\n");
+			game_over_screen();
+			return 1;
 		}
 		case 0x52: {
 			return 0;

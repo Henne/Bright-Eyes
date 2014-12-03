@@ -1819,8 +1819,7 @@ void game_loop(void)
 		}
 
 		if (ds_readws(0xc3c1) == 1) {
-			/* TODO: replace with show_game_over() */
-			do_dungeon();
+			game_over_screen();
 		}
 
 		if (ds_readws(0xc3c1) == 4) {

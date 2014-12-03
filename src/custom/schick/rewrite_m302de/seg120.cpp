@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc: rabies, game init, DOS-related)
- *	Functions rewritten: 9/11
+ *	Functions rewritten: 10/11
  */
 
 #include <stdio.h>
@@ -665,6 +665,58 @@ void cleanup_game(void)
 	reset_timer();
 	schick_reset_video();
 	bc_clrscr();
+}
+
+/**
+ * \brief	shows the game over screen
+ */
+/* Borlandified and identical */
+void game_over_screen(void)
+{
+	signed short handle;
+
+	set_var_to_zero();
+
+	set_audio_track(150);
+
+	/* load SKULL.NVF */
+	handle = load_archive_file(137);
+
+	read_archive_file(handle, Real2Host(ds_readd(0xd303)), 64200);
+
+	bc_close(handle);
+
+	update_mouse_cursor();
+
+	ds_writew(0xe113, 0);
+
+	wait_for_vsync();
+
+	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
+	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
+
+#if !defined(__BORLANDC__)
+	for (int i = 0; i < 64000; i++) {
+		mem_writeb(Real2Phys(ds_readd(0xd2ff)) + i, host_readb(Real2Host(ds_readd(0xd303)) + i));
+	}
+#else
+	memcpy((Bit8u*)ds_readd(0xd2ff), (Bit8u*)ds_readd(0xd303), 64000);
+#endif
+
+	set_palette(Real2Host(ds_readd(0xd303)) + 64002, 0x00, 0x40);
+
+	wait_for_keypress();
+
+	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+
+	wait_for_vsync();
+
+	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
+	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
+
+	refresh_screen_size();
+
+	ds_writeb(0x2845, -1);
 }
 
 void call_gen(void)

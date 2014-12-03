@@ -27,6 +27,9 @@ void refresh_colors(void);
 /* 0x43 */
 Bit32s get_diskspace(void);
 
+/* 0x4d */
+void game_over_screen(void);
+
 /* 0x52 */
 void call_gen(void);
 
