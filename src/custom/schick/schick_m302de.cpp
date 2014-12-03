@@ -7133,7 +7133,9 @@ static int seg120(unsigned short offs) {
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			D1_LOG("prepare_dirs()\n");
+			prepare_dirs();
+			return 1;
 		}
 		case 0x2f: {
 			D1_LOG("cleanup_game()\n");

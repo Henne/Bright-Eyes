@@ -1,9 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg120 (misc)
- *	Functions rewritten: 8/11
+ *	Rewrite of DSA1 v3.02_de functions of seg120 (misc: rabies, game init, DOS-related)
+ *	Functions rewritten: 9/11
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -24,6 +25,7 @@
 #include "seg097.h"
 #include "seg098.h"
 #include "seg104.h"
+#include "seg120.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -442,15 +444,138 @@ void init_game_state(void)
 }
 
 /* Borlandified and identical */
-static signed short err_handler(void)
+int err_handler(void)
 {
 	bc_hardresume(3);
 	return 1;
 }
 
+/* Borlandified and identical */
 void prepare_dirs(void)
 {
-	DUMMY_WARNING();
+	signed short l_si;
+	signed short l_di;
+	signed short drive;
+	signed short drive_bak;
+	signed short errorval;
+	struct ffblk blk;
+	char gamepath[40];
+
+#if !defined(__BORLANDC__)
+	bc_harderr(RealMake(reloc_game + 0x3c0, 0x48));
+#else
+	/* TODO: only the adress differs, should be the stub adress */
+	bc_harderr((int(*)(int, int, int, int))err_handler);
+#endif
+
+	drive_bak = drive = bc_getdisk();
+
+	errorval = 0;
+	while (errorval != 2) {
+
+		bc_setdisk(drive);
+
+		/* copy "X:\\" */
+		strcpy(gamepath, (char*)p_datseg + 0xb393);
+
+		/* set drive name in path */
+		gamepath[0] = drive + 'A';
+
+		if (drive_bak == drive) {
+			bc_getcurdir(0, &gamepath[3]);
+		} else {
+			gamepath[2] = '\0';
+		}
+
+		strcpy((char*)Real2Host(ds_readd(0xd2eb)), gamepath);
+		/* "\\TEMP" */
+		strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0xb311);
+
+		if (!bc_chdir((char*)Real2Host(ds_readd(0xd2eb)))) {
+			/*	check if it's possible to change to TEMP-dir: OK
+				change to gamepath */
+
+			bc_chdir(gamepath);
+			errorval = 2;
+
+		} else {
+
+			if (bc_mkdir((char*)Real2Host(ds_readd(0xd2eb)))) {
+				errorval = 1;
+			} else {
+				errorval = 2;
+			}
+		}
+
+		if (errorval == 1) {
+
+			/* ERROR, cant write => exit */
+
+			GUI_output(p_datseg + 0xb397);
+
+			cleanup_game();
+
+			bc_exit(0);
+		}
+	}
+
+	/* delete *.* in TEMP-dir */
+	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)p_datseg + 0xb4af);
+
+	l_si = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+
+	if (!l_si) {
+
+		do {
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)Real2Host(ds_readd(0x4c88)),
+				((char*)(&blk)) + 30);			/* contains a filename */
+
+			bc_unlink((RealPt)ds_readd(0xd2eb));
+
+			l_si = bc_findnext(&blk);
+
+		} while (!l_si);
+	}
+
+	/* search for "*.CHR" in the gamepath */
+	l_si = bc_findfirst((RealPt)RealMake(datseg, 0xb4b3), &blk, 0);
+
+	while (!l_si) {
+
+		/* open CHR-file and copy it into TEMP-dir */
+#if !defined(__BORLANDC__)
+		/* need a RealPt => create one on the stack */
+		char *str = (char*)Real2Host(RealMake(SegValue(ss), reg_esp - 100));
+
+		strcpy(str, ((char*)(&blk)) + 30);
+
+		l_di = bc__open(RealMake(SegValue(ss), reg_esp - 100), 0x8004);
+
+#else
+		l_di = bc__open(((char*)&blk) + 30, 0x8004);
+#endif
+
+		bc__read(l_di, Real2Host(ds_readd(0xd303)), 0x6da);
+
+		bc_close(l_di);
+
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)Real2Host(ds_readd(0x4c88)),
+			((char*)(&blk)) + 30);			/* contains a filename */
+
+		l_di = bc__creat((RealPt)ds_readd(0xd2eb), 0);
+
+		bc__write(l_di, (RealPt)ds_readd(0xd303), 0x6da);
+
+		bc_close(l_di);
+
+		l_si = bc_findnext(&blk);
+	}
+
+	bc_setdisk(drive_bak);
 }
 
 void cleanup_game(void)
