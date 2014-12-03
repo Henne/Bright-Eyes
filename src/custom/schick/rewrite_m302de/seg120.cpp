@@ -578,6 +578,7 @@ void prepare_dirs(void)
 	bc_setdisk(drive_bak);
 }
 
+/* Borlandified and identical */
 void cleanup_game(void)
 {
 	struct ffblk blk;
@@ -597,7 +598,7 @@ void cleanup_game(void)
 
 		for (l_si = 0; l_si < 37; l_si++) {
 			if (host_readw(Real2Host(ds_readd(0xe121)) + l_si * 8) != 0) {
-				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe121)) + l_si * 8) + 2);
+				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe121)) + 2 + l_si * 8));
 			}
 		}
 
@@ -607,13 +608,13 @@ void cleanup_game(void)
 			if ((host_readw(Real2Host(ds_readd(MEM_SLOTS_MFIG)) + l_si * 12) != 0) &&
 				((host_readw(Real2Host(ds_readd(MEM_SLOTS_MFIG)) + l_si * 12 + 6) != 0)))
 			{
-				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_MFIG)) + l_si * 12) + 6);
+				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_MFIG)) + 6 + l_si * 12));
 			}
 
 			if ((host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + l_si * 12) != 0) &&
 				((host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + l_si * 12 + 6) != 0)))
 			{
-				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + l_si * 12) + 6);
+				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_WFIG)) + 6 + l_si * 12));
 			}
 		}
 
@@ -623,7 +624,7 @@ void cleanup_game(void)
 			if ((host_readw(Real2Host(ds_readd(MEM_SLOTS_MON)) + l_si * 12) != 0) &&
 				((host_readw(Real2Host(ds_readd(MEM_SLOTS_MON)) + l_si * 12 + 6) != 0)))
 			{
-				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_MON)) + l_si * 12) + 6);
+				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_MON)) + 6 + l_si * 12));
 			}
 		}
 
