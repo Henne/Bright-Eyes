@@ -4,8 +4,9 @@ namespace M302de {
 
 /* 0x20 */
 void level_up(signed short);
-
-//0x2f
+/* 0x25 */
+void inc_spell_advanced(Bit8u*, signed short);
+/* 0x2f */
 void inc_skill_novice(Bit8u*, unsigned short);
 
 #if !defined(__BORLANDC__)

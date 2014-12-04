@@ -9282,17 +9282,18 @@ static int n_seg049(unsigned short offs)
 static int n_seg050(unsigned short offs) {
 	switch (offs) {
 		case 0x0000: {
-			Bit16u cs = CPU_Pop16();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
-			Bit16u spell = CPU_Pop16();
+			Bit16s spell = CPU_Pop16();
 
 			D1_LOG("inc_spell_advanced(%s, %s);\n",
 				schick_getCharname(hero), names_spell[spell]);
 
+			inc_spell_advanced(Real2Host(hero), spell);
+
 			CPU_Push16(spell);
 			CPU_Push32(hero);
-			CPU_Push16(cs);
-			return 0;
+			return 1;
 		}
 		case 0x01ec: {
 			Bit16u cs = CPU_Pop16();
