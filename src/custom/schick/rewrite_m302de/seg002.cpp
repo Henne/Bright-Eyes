@@ -1215,9 +1215,9 @@ signed short is_mouse_in_rect(signed short x1, signed short y1,
 	return ((m_x >= x1) && (m_x <= x2) && (m_y >= y1) && (m_y <= y2)) ? 1 : 0;
 }
 
-#if defined(__BORLANDC__)
 void mouse_init(void)
 {
+#if defined(__BORLANDC__)
 	signed short l1;
 	signed short l3;
 	signed short l4;
@@ -1247,11 +1247,13 @@ void mouse_init(void)
 
 			/* TODO: we keep the magic numbers here until we can build the binary
 			mouse_irq_init(0x1f, mouse_isr); */
-			mouse_irq_init(0x1f, (INTCAST)RealMake(0x51e, 0x1454));
+			mouse_irq_init(0x1f, (INTCAST)RealMake(reloc_game + 0x51e, 0x1454));
 		}
 	}
-}
+#else
+	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x165e);
 #endif
+}
 
 void disable_mouse(void)
 {
