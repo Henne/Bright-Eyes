@@ -36,6 +36,8 @@ void bc_harderr(RealPt);
 void bc_hardresume(Bit16s);
 RealPt bc_farcalloc(Bit32u, Bit32u);
 
+Bit16s bc_spawnl(Bit16s, RealPt, RealPt, RealPt, RealPt, RealPt, RealPt);
+
 signed short bc_findfirst(RealPt, struct ffblk*, signed short);
 signed short bc_findfirst_dosbox(RealPt, RealPt, signed short);
 signed short bc_findnext(struct ffblk*);
@@ -71,6 +73,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #include <ALLOC.H>
 #include <CONIO.H>
 #include <TIME.H>
+#include <PROCESS.H>
 
 #define RealSeg(p) FP_SEG(p)
 #define RealOff(p) FP_OFF(p)
@@ -102,6 +105,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc_harderr harderr
 #define bc_hardresume hardresume
 #define bc_farcalloc farcalloc
+#define bc_spawnl spawnl
 
 #define bc_close close
 #define bc__creat _creat

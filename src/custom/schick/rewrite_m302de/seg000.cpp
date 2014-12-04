@@ -273,6 +273,27 @@ void bc_hardresume(Bit16s __axret)
 	CPU_Pop16();
 }
 
+Bit16s bc_spawnl(Bit16s mode, RealPt a2, RealPt a3, RealPt a4, RealPt a5, RealPt a6, RealPt a7)
+{
+	CPU_Push32(a7);
+	CPU_Push32(a6);
+	CPU_Push32(a5);
+	CPU_Push32(a4);
+	CPU_Push32(a3);
+	CPU_Push32(a2);
+	CPU_Push16(mode);
+	CALLBACK_RunRealFar(reloc_game, 0x2d82);
+	CPU_Pop16();
+	CPU_Pop32();
+	CPU_Pop32();
+	CPU_Pop32();
+	CPU_Pop32();
+	CPU_Pop32();
+	CPU_Pop32();
+
+	return reg_ax;
+}
+
 signed short bc_findfirst_dosbox(RealPt path, RealPt __ffblk, signed short __attrib)
 {
 	CPU_Push16(__attrib);
