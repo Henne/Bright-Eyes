@@ -422,11 +422,9 @@ void init_game_state(void)
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	/* timer */
-	/* ds_writed(DAY_TIMER, 24 * 0x1518 - 1);*/
-	ds_writed(DAY_TIMER, 0x1fa3f);
+	ds_writed(DAY_TIMER, HOURS(24) - 1);
 	timewarp_until(1);
-	/* ds_writed(DAY_TIMER,  8 * 0x1518); */
-	ds_writed(DAY_TIMER,  0xa8c0);
+	ds_writed(DAY_TIMER,  HOURS(8));
 	ds_writeb(DAY_OF_WEEK, 4);
 	ds_writeb(DAY_OF_MONTH, 17);
 	ds_writeb(MONTH, 1);
@@ -451,7 +449,7 @@ int err_handler(void)
 	return 1;
 }
 
-/* Borlandified and identical */
+/* Borlandified and nearly identical */
 void prepare_dirs(void)
 {
 	signed short l_si;
@@ -465,7 +463,7 @@ void prepare_dirs(void)
 #if !defined(__BORLANDC__)
 	bc_harderr(RealMake(reloc_game + 0x3c0, 0x48));
 #else
-	/* TODO: only the adress differs, should be the stub adress */
+	/* BC-TODO: only the adress differs, should be the stub adress */
 	bc_harderr((int(*)(int, int, int, int))err_handler);
 #endif
 
