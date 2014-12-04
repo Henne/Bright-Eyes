@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg120 (misc: rabies, game init, DOS-related)
- *	Functions rewritten: 10/11
+ *	Functions rewritten: 11/11 (complete)
  */
 
 #include <stdio.h>
@@ -16,6 +16,7 @@
 #include "seg008.h"
 #include "seg010.h"
 #include "seg026.h"
+#include "seg027.h"
 #include "seg028.h"
 #include "seg029.h"
 #include "seg047.h"
@@ -713,9 +714,91 @@ void game_over_screen(void)
 	ds_writeb(0x2845, -1);
 }
 
+/* Borlandified and identical */
 void call_gen(void)
 {
-	DUMMY_WARNING();
+	Bit32u freemem;
+	signed short ret;
+
+	update_mouse_cursor();
+
+	exit_AIL();
+
+	/* free the global buffer */
+	bc_farfree((RealPt)ds_readd(0xe5e0));
+
+	freemem = bc_farcoreleft();
+
+	/* ret = spawnl(0, "gen.exe", "gen.exe", "b", gamemode == 2 ? "a" : "b", "1", NULL); */
+	ret = bc_spawnl(0,
+#if !defined(__BORLANDC__)
+			RealMake(datseg, 0xb4bd), RealMake(datseg, 0xb4c5),
+#else
+			(char*)RealMake(datseg, 0xb4bd), (char*)RealMake(datseg, 0xb4c5),
+#endif
+			RealMake(datseg, 0xb4cd),
+			ds_readws(GAME_MODE) == 2 ? RealMake(datseg, 0xb4cf) : RealMake(datseg, 0xb4d1),
+			RealMake(datseg, 0xb4d3), NULL);
+
+	refresh_screen_size();
+
+	if (ret == -1) {
+
+		/* perror("Generation") */
+#if !defined(__BORLANDC__)
+		bc_perror(RealMake(datseg, 0xb4d5));
+#else
+		bc_perror((char*)RealMake(datseg, 0xb4d5));
+#endif
+
+		wait_for_keypress();
+
+		cleanup_game();
+	} else {
+
+		init_AIL(16000);
+
+		init_global_buffer();
+
+		mouse_init();
+
+		set_timer();
+
+		init_text();
+
+		init_common_buffers();
+
+		refresh_colors();
+
+		load_objects_nvf();
+
+		if (have_mem_for_sound()) {
+
+			read_sound_cfg();
+
+			alloc_voc_buffer(20000);
+		} else {
+			exit_AIL();
+		}
+
+		ds_writed(0xd2df, (Bit32u)F_PADD(ds_readd(0xd019), 180000));
+		if (ds_readb(LARGE_BUF) == 1) {
+			add_ds_ws(0xd2df, 23000);
+		}
+
+		ds_writed(0xd2db, (Bit32u)F_PADD(ds_readd(0xd2df), -20000));
+		ds_writed(0xd2a9, (Bit32u)F_PADD(ds_readd(0xd2db), -16771));
+
+		ds_writed(DAY_TIMER, HOURS(24) - 1);
+		timewarp_until(1);
+		ds_writed(DAY_TIMER, HOURS(8));
+
+		ds_writeb(DAY_OF_WEEK, 4);
+		ds_writeb(DAY_OF_MONTH, 17);
+		ds_writeb(MONTH, 1);
+		ds_writeb(YEAR, 15);
+	}
+
 }
 
 #if !defined(__BORLANDC__)

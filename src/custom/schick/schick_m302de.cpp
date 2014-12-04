@@ -7173,7 +7173,9 @@ static int seg120(unsigned short offs) {
 			return 1;
 		}
 		case 0x52: {
-			return 0;
+			D1_LOG("call_gen()\n");
+			call_gen();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
