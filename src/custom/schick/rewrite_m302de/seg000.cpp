@@ -371,6 +371,11 @@ RealPt bc_memmove(RealPt dst, RealPt src, Bit16u len)
 	return dst;
 }
 
+RealPt bc_memcpy(RealPt dst, RealPt src, Bit16u len)
+{
+	return bc_memmove(dst, src, len);
+}
+
 Bit16s bc__creat(RealPt name, Bit16u attrib)
 {
 	CPU_Push16(attrib);
