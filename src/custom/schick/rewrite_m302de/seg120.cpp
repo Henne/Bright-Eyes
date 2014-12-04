@@ -695,13 +695,7 @@ void game_over_screen(void)
 	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
 
-#if !defined(__BORLANDC__)
-	for (int i = 0; i < 64000; i++) {
-		mem_writeb(Real2Phys(ds_readd(0xd2ff)) + i, host_readb(Real2Host(ds_readd(0xd303)) + i));
-	}
-#else
-	memcpy((Bit8u*)ds_readd(0xd2ff), (Bit8u*)ds_readd(0xd303), 64000);
-#endif
+	bc_memcpy((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(0xd303), 64000);
 
 	set_palette(Real2Host(ds_readd(0xd303)) + 64002, 0x00, 0x40);
 
