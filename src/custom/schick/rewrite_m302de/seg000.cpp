@@ -408,6 +408,13 @@ Bit16s bc__creat(RealPt name, Bit16u attrib)
 	return reg_ax;
 }
 
+void bc_perror(RealPt __s)
+{
+	CPU_Push32(__s);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x3685);
+	CPU_Pop32();
+}
+
 Bit16s bc__open(RealPt fname, Bit16u attrib)
 {
 	CPU_Push16(attrib);
