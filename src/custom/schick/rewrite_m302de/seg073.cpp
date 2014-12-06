@@ -34,7 +34,7 @@ unsigned short get_tavern_gossip(void)
 	unsigned short r_si;
 	unsigned short r_di;
 
-	r_di = ds_readb(0x7c9d + ds_readbs(CURRENT_TOWN));
+	r_di = ds_readb(MAX_GOSSIP + ds_readbs(CURRENT_TOWN));
 
 	r_si = r_di = random_schick(r_di) - 1;
 
