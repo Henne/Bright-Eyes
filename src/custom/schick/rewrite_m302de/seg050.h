@@ -9,7 +9,7 @@ void inc_spell_advanced(Bit8u*, signed short);
 /* 0x2a */
 void inc_skill_advanced(Bit8u*, signed short);
 /* 0x2f */
-void inc_skill_novice(Bit8u*, unsigned short);
+void inc_skill_novice(Bit8u*, signed short);
 
 #if !defined(__BORLANDC__)
 }

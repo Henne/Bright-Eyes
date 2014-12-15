@@ -4522,7 +4522,7 @@ static int seg050(unsigned short offs) {
 		}
 		case 0x2f: {
 			RealPt hero = CPU_Pop32();
-			Bit16u skill = CPU_Pop16();
+			Bit16s skill = CPU_Pop16();
 
 			D1_LOG("inc_skill_novice(%s, %s);\n",
 				schick_getCharname(hero), names_skill[skill]);
@@ -9312,7 +9312,7 @@ static int n_seg050(unsigned short offs) {
 		case 0x03d2: {
 			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
-			Bit16u skill = CPU_Pop16();
+			Bit16s skill = CPU_Pop16();
 
 			D1_LOG("inc_skill_novice(%s, %s);\n",
 				schick_getCharname(hero), names_skill[skill]);

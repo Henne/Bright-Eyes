@@ -210,25 +210,26 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 }
 
 /**
- * inc_skill_novice() - tries to increace a skill in novice mode
- * @hero:	pointer to the hero
- * @skill:	number of the skill
+ * \brief		tries to increase a skill in novice mode
+ * \param	hero	pointer to the hero
+ * \param	skill	number of the skill
  *
- * Remarks:	This function is quiet and does not check how many times
- *		a skill can be increased. So the correct rules come
- *		from the array which contain the skills.
+ * This function is quiet and does not check how many times
+ *	a skill can be increased. So the correct rules come
+ *	from the array which contain the skills.
  */
-void inc_skill_novice(Bit8u *hero, unsigned short skill)
+/* Borlandified and identical */
+void inc_skill_novice(Bit8u *hero, signed short skill)
 {
-	unsigned short done;
-	unsigned short randval;
+	signed short done;
+	signed short randval;
 
 	done = 0;
 
 	while (!done) {
 		/* leave the loop if 3 incs failes or the skill value is 18 */
-		if (host_readb(Real2Host(ds_readd(0xe3b6)) + skill * 2) == 3 ||
-			host_readb(hero + 0x108 + skill) == 18) {
+		if ((host_readb(Real2Host(ds_readd(0xe3b6)) + skill * 2) == 3) ||
+			(host_readbs(hero + 0x108 + skill) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
 			D1_INFO("%s hatt alle Versuche aufgebraucht\n", hero + 0x10);
@@ -237,14 +238,14 @@ void inc_skill_novice(Bit8u *hero, unsigned short skill)
 		}
 
 		/* dec available skill incs */
-		host_writeb(hero + 0x13c, host_readb(hero + 0x13c) - 1);
+		dec_ptr_bs(hero + 0x13c);
 
 		/* check if available skill incs are 0 */
-		if (!(signed char)host_readb(hero + 0x13c))
+		if (!host_readbs(hero + 0x13c))
 			done = 1;
 
 		/* on a  skill value < 11 use 2W6 else 3W6 */
-		if ((signed char)host_readb(hero + 0x108 + skill) >= 11)
+		if (host_readbs(hero + 0x108 + skill) >= 11)
 			randval = random_interval(3, 18);
 		else
 			randval = random_interval(2, 12);
