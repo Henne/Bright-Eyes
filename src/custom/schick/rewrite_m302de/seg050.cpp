@@ -1,7 +1,8 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg050 (level up)
- *	Functions rewritten: 2/5
+ *	Functions rewritten: 3/5
 */
+#include <stdio.h>
 
 #include "v302de.h"
 
@@ -115,6 +116,95 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 
 			/* increment the try counter */
 			inc_ptr_bs(Real2Host(ds_readd(0xe3b2)) + 2 * spell);
+		}
+	}
+}
+
+/**
+ * \brief		tries to increase a skill in advanced mode
+ * \param	hero	pointer to the hero
+ * \param	skill	number of the skill
+ */
+/* Borlandified and identical */
+void inc_skill_advanced(Bit8u *hero, signed short skill)
+{
+	signed short randval;
+	signed short max_incs;
+
+	max_incs = ds_readbs(0x0ffe + 4 * skill + 3);
+
+
+	if (host_readbs(Real2Host(ds_readd(0xe3b6)) + 2 * skill + 1) >= max_incs) {
+
+		/* no increase is possible */
+
+		GUI_output(get_city(0xac));
+
+	} else if (host_readbs(Real2Host(ds_readd(0xe3b6)) + 2 * skill) == 3) {
+
+		/* used up legal increase */
+
+		GUI_output(get_city(0xb0));
+	} else {
+		/* try to increase */
+
+		dec_ptr_bs(hero + 0x13c);
+
+		if (host_readbs(hero + 0x108 + skill) >= 11) {
+			randval = random_interval(3, 18);
+		} else {
+			randval = random_interval(2, 12);
+		}
+
+		if (host_readbs(hero + 0x108 + skill) < randval) {
+
+			/* success */
+
+			GUI_output(get_city(0x94));
+
+			/* increment spell value */
+			inc_ptr_bs(hero + skill + 0x108);
+
+			/* set the try counter to 0 */
+			host_writebs(Real2Host(ds_readd(0xe3b6)) + 2 * skill, 0);
+			/* increment the increase counter */
+			inc_ptr_bs(Real2Host(ds_readd(0xe3b6)) + 2 * skill + 1);
+
+			if (skill <= 6) {
+				/* increment a melee weapon skill */
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x6a8), get_ltx(4 * (48 + skill)));
+
+				randval = -1;
+
+				/* AT - value */
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)get_ltx(0x6ac), host_readbs(hero + skill + 0x68));
+
+				/* PA - value */
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)) + 50,
+					(char*)get_ltx(0x6b0), host_readbs(hero + skill + 0x6f));
+
+				do {
+					randval = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+								Real2Host(ds_readd(0xd2eb)),
+								Real2Host(ds_readd(0xd2eb)) + 50);
+				} while (randval == -1);
+
+				if (randval == 1) {
+					inc_ptr_bs(hero + 0x68 + skill);
+				} else {
+					inc_ptr_bs(hero + 0x6f + skill);
+				}
+			}
+
+		} else {
+			/* fail */
+			GUI_output(get_ltx(0x548));
+
+			/* increment the try counter */
+			inc_ptr_bs(Real2Host(ds_readd(0xe3b6)) + 2 * skill);
 		}
 	}
 }

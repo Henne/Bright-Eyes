@@ -9296,17 +9296,18 @@ static int n_seg050(unsigned short offs) {
 			return 1;
 		}
 		case 0x01ec: {
-			Bit16u cs = CPU_Pop16();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
-			Bit16u skill = CPU_Pop16();
+			Bit16s skill = CPU_Pop16();
 
 			D1_LOG("inc_skill_advanced(%s, %s);\n",
 				schick_getCharname(hero), names_skill[skill]);
 
+			inc_skill_advanced(Real2Host(hero), skill);
+
 			CPU_Push16(skill);
 			CPU_Push32(hero);
-			CPU_Push16(cs);
-			return 0;
+			return 1;
 		}
 		case 0x03d2: {
 			CPU_Pop16();
