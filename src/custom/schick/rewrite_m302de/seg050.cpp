@@ -227,55 +227,54 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 	done = 0;
 
 	while (!done) {
+
 		/* leave the loop if 3 incs failes or the skill value is 18 */
-		if ((host_readb(Real2Host(ds_readd(0xe3b6)) + skill * 2) == 3) ||
+		if ((host_readbs(Real2Host(ds_readd(0xe3b6)) + skill * 2) == 3) ||
 			(host_readbs(hero + 0x108 + skill) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
 			D1_INFO("%s hatt alle Versuche aufgebraucht\n", hero + 0x10);
 #endif
-			continue;
-		}
+		} else {
 
-		/* dec available skill incs */
-		dec_ptr_bs(hero + 0x13c);
+			/* dec available skill incs */
+			dec_ptr_bs(hero + 0x13c);
 
-		/* check if available skill incs are 0 */
-		if (!host_readbs(hero + 0x13c))
-			done = 1;
+			/* check if available skill incs are 0 */
+			if (!host_readbs(hero + 0x13c))
+				done = 1;
 
-		/* on a  skill value < 11 use 2W6 else 3W6 */
-		if (host_readbs(hero + 0x108 + skill) >= 11)
-			randval = random_interval(3, 18);
-		else
-			randval = random_interval(2, 12);
-
-		/* check if increase success */
-		if ((signed char)host_readb(hero + 0x108 + skill) < randval) {
-			/* inc skill value */
-			host_writeb(hero + 0x108 + skill,
-				host_readb(hero + 0x108 + skill) + 1);
-
-			/* reset failed counter */
-			host_writeb(Real2Host(ds_readd(0xe3b6) + skill * 2), 0);
-
-			done = 1;
-
-			/* adjust AT PA values */
-			if (skill <= 6) {
-				if (host_readb(hero + 0x68 + skill) > host_readb(hero + 0x6f + skill)) {
-					host_writeb(hero + 0x6f + skill,
-						host_readb(hero + 0x6f + skill) + 1);
-				} else {
-					host_writeb(hero + 0x68 + skill,
-						host_readb(hero + 0x68 + skill) + 1);
-				}
+			/* on a  skill value < 11 use 2W6 else 3W6 */
+			if (host_readbs(hero + 0x108 + skill) >= 11) {
+				randval = random_interval(3, 18);
+			} else {
+				randval = random_interval(2, 12);
 			}
 
-		} else {
-			/* inc failed oounter */
-			host_writeb(Real2Host(ds_readd(0xe3b6)) + skill * 2,
-				host_readb(Real2Host(ds_readd(0xe3b6)) + skill * 2) + 1);
+			/* check if increase success */
+			if (host_readbs(hero + 0x108 + skill) < randval) {
+
+				/* inc skill value */
+				inc_ptr_bs(hero + 0x108 + skill);
+
+				/* reset failed counter */
+				host_writeb(Real2Host(ds_readd(0xe3b6)) + 2 * skill, 0);
+
+				done = 1;
+
+				/* adjust AT PA values */
+				if (skill <= 6) {
+					if (host_readbs(hero + 0x68 + skill) > host_readbs(hero + 0x6f + skill)) {
+						inc_ptr_bs(hero + 0x6f + skill);
+					} else {
+						inc_ptr_bs(hero + 0x68 + skill);
+					}
+				}
+
+			} else {
+				/* inc failed counter */
+				inc_ptr_bs(Real2Host(ds_readd(0xe3b6)) + 2 * skill);
+			}
 		}
 	}
 }
