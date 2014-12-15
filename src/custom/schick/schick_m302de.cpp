@@ -9323,17 +9323,17 @@ static int n_seg050(unsigned short offs) {
 			return 1;
 		}
 		case 0x04b1: {
-			Bit16u cs = CPU_Pop16();
+			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
-			Bit16u spell = CPU_Pop16();
+			Bit16s spell = CPU_Pop16();
 
 			D1_LOG("inc_spell_novice(%s, %s);\n",
 				schick_getCharname(hero), names_spell[spell]);
 
+			inc_spell_novice(Real2Host(hero), spell);
 			CPU_Push16(spell);
 			CPU_Push32(hero);
-			CPU_Push16(cs);
-			return 0;
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

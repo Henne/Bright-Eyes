@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg050 (level up)
- *	Functions rewritten: 3/5
+ *	Functions rewritten: 4/5
 */
 #include <stdio.h>
 
@@ -274,6 +274,65 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 			} else {
 				/* inc failed counter */
 				inc_ptr_bs(Real2Host(ds_readd(0xe3b6)) + 2 * skill);
+			}
+		}
+	}
+}
+
+/**
+ * \brief		tries to increase a spell in novice mode
+ * \param	hero	pointer to the hero
+ * \param	spell	number of the spell
+ *
+ * This function is quiet and does not check how many times
+ *	a spell can be increased. So the correct rules come
+ *	from the array which contain the spells.
+ */
+/* Borlandified and identical */
+void inc_spell_novice(Bit8u *hero, signed short spell)
+{
+	signed short done;
+	signed short randval;
+
+	done = 0;
+
+	while (!done) {
+		/* leave the loop if 3 incs failes or the spell value is 18 */
+		if ((host_readb(Real2Host(ds_readd(0xe3b2)) + 2 * spell) == 3) ||
+			(host_readbs(hero + 0x13d + spell) == 18)) {
+			done = 1;
+#if !defined(__BORLANDC__)
+			D1_INFO("%s hatt alle Versuche aufgebraucht\n", hero + 0x10);
+#endif
+		} else {
+
+			/* dec available spell incs */
+			dec_ptr_bs(hero + 0x193);
+
+			/* check if available spell incs are 0 */
+			if (!host_readbs(hero + 0x193))
+				done = 1;
+
+			/* on a  spell value < 11 use 2W6 else 3W6 */
+			if (host_readbs(hero + 0x13d + spell) >= 11)
+				randval = random_interval(3, 18);
+			else
+				randval = random_interval(2, 12);
+
+			/* check if increase success */
+			if (host_readbs(hero + 0x13d + spell) < randval) {
+
+				/* inc spell value */
+				inc_ptr_bs(hero + 0x13d + spell);
+
+				/* reset failed counter */
+				host_writeb(Real2Host(ds_readd(0xe3b2)) + 2 * spell, 0);
+
+				done = 1;
+
+			} else {
+				/* inc failed oounter */
+				inc_ptr_bs(Real2Host(ds_readd(0xe3b2)) + 2 * spell);
 			}
 		}
 	}
