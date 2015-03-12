@@ -5501,7 +5501,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x84: {
-		return 0;
+		D1_LOG("chest_crossbow_bolts()\n");
+		chest_crossbow_bolts();
+		return 1;
 	}
 	case 0x89: {
 		return 0;

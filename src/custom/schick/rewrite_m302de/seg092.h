@@ -35,6 +35,9 @@ void chest_ignifax_brutal(void);
 /* 0x7a */
 void chest_ignifax_heavy(void);
 
+/* 0x82 */
+void chest_crossbow_bolts(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif
