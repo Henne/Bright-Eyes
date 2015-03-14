@@ -5371,7 +5371,9 @@ static int seg090(unsigned short offs)
 			return 0;
 		}
 		case 0x2a: {
-			return 0;
+			D1_LOG("DNG_handler_oberorken()\n");
+			reg_ax = DNG_handler_oberorken();
+			return 1;
 		}
 		case 0x2f: {
 			Bit16s fight_id = CPU_Pop16();

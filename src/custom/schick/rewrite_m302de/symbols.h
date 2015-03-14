@@ -62,6 +62,8 @@
 #define DRUG_TIMER	(0x3f76)	/* unsigned char {0, 1, ..., 10} */
 #define PTEMPLE_CLOSED	(0x3f77)	/* unsigned char {0, 1} */
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
+#define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
+#define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
 #define FOOD_MESSAGE	(0x4219)
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
