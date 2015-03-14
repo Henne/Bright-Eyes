@@ -3051,7 +3051,9 @@ static int seg025(unsigned short offs) {
 		return 0;
 	}
 	case 0x5c: {
-		return 0;
+		D1_LOG("leave_dungeon()\n");
+		leave_dungeon();
+		return 1;
 	}
 	case 0x61: {
 		D1_LOG("tumult();\n");

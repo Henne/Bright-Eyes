@@ -17,6 +17,8 @@ signed short show_storytext(void);
 void do_house(void);
 /* 0x52 */
 void enter_map(void);
+/* 0x5c */
+void leave_dungeon(void);
 /* 0x61 */
 void tumult(void);
 /* 0x66 */

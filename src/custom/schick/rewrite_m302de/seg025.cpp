@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 9/15
+ *	Functions rewritten: 10/15
  */
 
 #include <string.h>
@@ -281,6 +281,49 @@ void turnaround(void)
 	ds_writeb(0x45b8, 1);
 	ds_writew(0x2846, 1);
 
+}
+
+void leave_dungeon(void)
+{
+	signed short i;
+	Bit8u *ptr;
+
+	DNG_lights();
+	ptr = Real2Host(ds_readd(0xd2eb));
+
+	memset(Real2Host(ds_readd(0xd2eb)), 0, 0xc0);
+
+	for (i = 0; i < 64; i++) {
+
+		pal_fade(ptr, Real2Host(ds_readd(0xd303)));
+		pal_fade(ptr + 0x60, Real2Host(ds_readd(0xd303)) + 0x60);
+		wait_for_vsync();
+		set_palette(ptr, 0x80, 0x40);
+	}
+
+	ds_writeb(LOCATION, ds_writeb(0x2d9f, 0));
+	ds_writeb(CURRENT_TOWN, ds_readb(0x2da6));
+	ds_writeb(0x2dad, ds_readb(DUNGEON_INDEX));
+	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));
+	ds_writeb(0x4475, ds_writew(0x2846, 1));
+
+	do_fill_rect((RealPt)ds_readd(0xd303), 0, 0, 319, 199, 0);
+
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 240);
+	ds_writew(0xc017, 136);
+	ds_writed(0xc019, ds_readd(0xd303));
+
+	update_mouse_cursor();
+
+	do_pic_copy(1);
+	refresh_screen_size();
+	wait_for_vsync();
+	set_palette(Real2Host(ds_readd(0xd303)), 0 , 0x20);
+
+	/* disable the deathtrap */
+	ds_writew(DEATHTRAP, 0);
 }
 
 /* 0x100a */
