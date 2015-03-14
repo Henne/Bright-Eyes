@@ -143,9 +143,7 @@ void draw_loc_icons(signed short, ...);
 signed short mod_day_timer(signed short);
 void draw_compass(void);
 signed short can_merge_group(void);
-#if !defined(__BORLANDC__)
 signed short div16(signed short);
-#endif
 void select_with_mouse(Bit8u*, Bit8u*);
 void select_with_keyboard(Bit8u*, Bit8u*);
 void set_automap_tile(signed short, signed short);
