@@ -9747,7 +9747,12 @@ static int n_seg090(unsigned short offs)
 {
 	switch (offs) {
 	case 0xa94: {
-		return 0;
+		CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		D1_LOG("DNG_clear_corridor()\n");
+		DNG_clear_corridor(Real2Host(p));
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
