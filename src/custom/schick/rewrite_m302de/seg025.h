@@ -15,6 +15,8 @@ void show_citizen(void);
 signed short show_storytext(void);
 /* 0x48 */
 void do_house(void);
+/* 0x4d */
+void do_informer(void);
 /* 0x52 */
 void enter_map(void);
 /* 0x5c */

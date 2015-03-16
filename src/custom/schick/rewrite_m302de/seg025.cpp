@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 10/15
+ *	Functions rewritten: 11/15
  */
 
 #include <string.h>
@@ -16,6 +16,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg030.h"
 #include "seg049.h"
 #include "seg075.h"
 #include "seg096.h"
@@ -185,6 +186,35 @@ void do_house(void)
 		ds_writew(Y_TARGET, ds_readw(0x2d85));
 	}
 
+}
+
+/* Borlandified and identical */
+void do_informer(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	signed short nr = ds_readws(TYPEINDEX) - 1;
+
+	if (!nr) seg030_0279(6, 0);
+	else if (nr == 1) seg030_0279(6, 1);
+	else if (nr == 2) seg030_0279(7, 0);
+	else if (nr == 3) seg030_0279(7, 1);
+	else if (nr == 4) seg030_0279(7, 2);
+	else if (nr == 5) seg030_0279(8, 0);
+	else if (nr == 6) seg030_0279(8, 1);
+	else if (nr == 7) seg030_0279(10, 1);
+	else if (nr == 8) seg030_0279(9, 0);
+	else if (nr == 9) seg030_0279(10, 0);
+	else if (nr == 10) seg030_0279(12, 0);
+	else if (nr == 11) seg030_0279(11, 0);
+	else if (nr == 12) seg030_0279(11, 2);
+	else if (nr == 13) seg030_0279(8, 2);
+	else if (nr == 14) seg030_0279(9, 1);
+
+	turnaround();
+
+#endif
 }
 
 /* 0x483 */
