@@ -592,7 +592,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 		if (item_pleasing_ingerimm(item) && ds_readb(DUNGEON_INDEX) == 0x0c &&
 			ds_readw(X_TARGET) == 2 && ds_readw(Y_TARGET) == 14 &&
 			ds_readb(DUNGEON_LEVEL) == 1)
-			ds_writeb(0x3f9f, 1);
+			ds_writeb(INGERIMM_SACRIFICE, 1);
 	}
 
 	return retval;
