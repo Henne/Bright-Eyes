@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 17/22
+ *	Functions rewritten: 18/22
  */
 
 #include <string.h>
@@ -330,6 +330,36 @@ void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
 }
+
+/**
+ * \brief	check if a hero has lockpicks
+ * \param hero	pointer to the hero
+ * \return	-1 = no lockpicks, -2 = all lockpicks are broken, else position of the lockpicks
+ */
+/* Borlandified and identical */
+signed short hero_has_lockpicks(Bit8u *hero)
+{
+	signed short retval = -1;
+	signed short i;
+
+	/* in each knapsack slot... */
+	for (i = 0; i < 23; i++) {
+
+		/* ... check for lockpicks ... */
+		if (host_readws(hero + 0x196 + 14 * i) == 35) {
+
+			/* ... which are not broken */
+			if (!ks_broken(hero + 0x196 + 14 * i)) {
+				return i;
+			} else {
+				retval = -2;
+			}
+		}
+	}
+
+	return retval;
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -53,6 +53,9 @@ void chest_ignifax_heavy(void);
 /* 0x82 */
 void chest_crossbow_bolts(void);
 
+/* 0x89 */
+signed short hero_has_lockpicks(Bit8u*);
+
 #if !defined(__BORLANDC__)
 }
 #endif

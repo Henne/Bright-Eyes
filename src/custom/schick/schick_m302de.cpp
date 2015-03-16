@@ -5533,7 +5533,13 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x89: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = hero_has_lockpicks(Real2Host(hero));
+		D1_LOG("hero_has_lockpicks(%s)= %d\n",
+			schick_getCharname(hero), (Bit16s)reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -9821,7 +9827,14 @@ static int n_seg092(unsigned short offs)
 		return 1;
 	}
 	case 0x66d: {
-		return 0;
+		CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = hero_has_lockpicks(Real2Host(hero));
+		D1_LOG("near hero_has_lockpicks(%s)= %d\n",
+			schick_getCharname(hero), (Bit16s)reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
