@@ -9790,7 +9790,16 @@ static int n_seg092(unsigned short offs)
 {
 	switch (offs) {
 	case 0x4d6: {
-		return 0;
+		CPU_Pop16();
+		RealPt chest = CPU_Pop32();
+		Bit16s item_nr = CPU_Pop16();
+		CPU_Push16(item_nr);
+		CPU_Push32(chest);
+
+		D1_LOG("delete_chest_item(%d)\n", item_nr);
+		delete_chest_item(Real2Host(chest), item_nr);
+
+		return 1;
 	}
 	case 0x66d: {
 		return 0;

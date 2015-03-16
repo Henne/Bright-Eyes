@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 14/22
+ *	Functions rewritten: 15/22
  */
 
 #include "v302de.h"
@@ -175,6 +175,29 @@ void chest_fulminictus(void)
 
 	/* the first hero gets wounded with 4W6+5 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 5));
+}
+
+/**
+ * \brief deletes an item from a chest
+ * \param chest		pointer to the chest
+ * \param item_nr	the number of the item to be deleted
+ */
+/* Borlandified and identical */
+void delete_chest_item(Bit8u *chest, signed short item_nr)
+{
+	signed char tmp;
+
+	do {
+#if defined(__BORLANDC__)
+		Real2Host(host_readd(chest + 0xb))[item_nr] = tmp = Real2Host(host_readd(chest + 0xb))[item_nr + 1];
+#else
+		host_writeb(Real2Host(host_readd(chest + 0xb)) + item_nr,
+			tmp = host_readbs(Real2Host(host_readd(chest + 0xb)) + item_nr + 1));
+#endif
+		item_nr++;
+
+	} while (tmp != -1);
+
 }
 
 #if !defined(__BORLANDC__)

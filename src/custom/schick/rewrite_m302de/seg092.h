@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void delete_chest_item(Bit8u*, signed short);
+
 /* 0x25 */
 void chest_protected_normal(void);
 
