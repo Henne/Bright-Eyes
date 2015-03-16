@@ -14,6 +14,9 @@ void chest_protected_heavy(void);
 /* 0x34 */
 void chest_cursed(void);
 
+/* 0x39 */
+void chest_fulminictus(void);
+
 /* 0x5c */
 void chest_poisoned1(void);
 

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 13/22
+ *	Functions rewritten: 14/22
  */
 
 #include "v302de.h"
@@ -165,6 +165,16 @@ void chest_cursed(void)
 		/* print a message */
 		print_msg_with_first_hero(get_ltx(0x8cc));
 	}
+}
+
+/* Borlandified and identical */
+void chest_fulminictus(void)
+{
+	/* a protected chest */
+	print_msg_with_first_hero(get_ltx(0x8d0));
+
+	/* the first hero gets wounded with 4W6+5 */
+	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 5));
 }
 
 #if !defined(__BORLANDC__)

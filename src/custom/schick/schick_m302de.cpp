@@ -5446,7 +5446,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x39: {
-		return 0;
+		D1_LOG("chest_fulminictus()\n");
+		chest_fulminictus();
+		return 1;
 	}
 	case 0x3e: {
 		return 0;
