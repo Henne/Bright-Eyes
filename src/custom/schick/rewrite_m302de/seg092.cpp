@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 12/22
+ *	Functions rewritten: 13/22
  */
 
 #include "v302de.h"
@@ -141,6 +141,30 @@ void chest_crossbow_bolts(void)
 
 	/* the first hero gets wounded with 2W6+6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 6));
+}
+
+/* Borlandified and identical */
+void chest_cursed(void)
+{
+	signed short i;
+	Bit8u *hero;
+
+	/* get the group leader */
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	if (!hero_transformed(hero)) {
+
+		/* set transformed flag */
+		or_ptr_bs(hero + 0xab, 0x40);
+
+		/* decrement each good attribute */
+		for (i = 0; i <= 6; i++) {
+			dec_ptr_bs(hero + 0x35 + 3 * i);
+		}
+
+		/* print a message */
+		print_msg_with_first_hero(get_ltx(0x8cc));
+	}
 }
 
 #if !defined(__BORLANDC__)

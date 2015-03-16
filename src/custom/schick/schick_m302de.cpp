@@ -5441,7 +5441,9 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x34: {
-		return 0;
+		D1_LOG("chest_cursed()\n");
+		chest_cursed();
+		return 1;
 	}
 	case 0x39: {
 		return 0;

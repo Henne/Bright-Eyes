@@ -11,6 +11,9 @@ void chest_closed(void);
 /* 0x2f */
 void chest_protected_heavy(void);
 
+/* 0x34 */
+void chest_cursed(void);
+
 /* 0x5c */
 void chest_poisoned1(void);
 
