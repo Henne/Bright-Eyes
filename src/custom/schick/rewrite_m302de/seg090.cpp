@@ -1,6 +1,11 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg090 (dungeon: oberorken mine)
  *	Functions rewritten: 4/4 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg090.cpp
+ *
  */
 
 #include "v302de.h"
@@ -24,7 +29,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG_handler_oberorken(void)
 {
 	signed short target_pos;
@@ -312,7 +316,6 @@ signed short DNG_handler_oberorken(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void DNG_clear_corridor(Bit8u *ptr)
 {
 	/* ask if the corridor should be cleared */
@@ -331,7 +334,6 @@ void DNG_clear_corridor(Bit8u *ptr)
 	}
 }
 
-/* Borlandified and identical */
 void DNG_oberorken_chest(Bit8u *chest)
 {
 	RealPt ptr_bak;
