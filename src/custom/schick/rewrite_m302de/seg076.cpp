@@ -23,7 +23,7 @@ void print_msg_with_first_hero(Bit8u *msg)
 	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 		(char*)msg, (char*)hero + 0x10);
 
-	GUI_input(Real2Host(ds_readd(0xd2eb)), 2);
+	GUI_input(Real2Host(ds_readd(0xd2eb)), 0);
 	return;
 }
 
