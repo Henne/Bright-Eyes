@@ -5368,7 +5368,12 @@ static int seg090(unsigned short offs)
 {
 	switch (offs) {
 		case 0x25: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG_oberorken_chest()\n");
+			DNG_oberorken_chest(Real2Host(chest));
+			return 1;
 		}
 		case 0x2a: {
 			D1_LOG("DNG_handler_oberorken()\n");

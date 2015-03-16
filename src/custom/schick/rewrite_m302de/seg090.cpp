@@ -1,18 +1,20 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg090 (dungeon: oberorken mine)
- *	Functions rewritten: 4/4
+ *	Functions rewritten: 4/4 (complete)
  */
 
 #include "v302de.h"
 
 #include <stdio.h>
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
 #include "seg025.h"
 #include "seg075.h"
 #include "seg076.h"
 #include "seg090.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -327,6 +329,20 @@ void DNG_clear_corridor(Bit8u *ptr)
 		ds_writew(X_TARGET, ds_readws(0x2d83));
 		ds_writew(Y_TARGET, ds_readws(0x2d85));
 	}
+}
+
+/* Borlandified and identical */
+void DNG_oberorken_chest(Bit8u *chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(chest + 0x0b);
+
+	host_writed(chest + 0x0b, (Bit32u)RealMake(datseg, 0x3faa));
+
+	loot_simple_chest(chest);
+
+	host_writed(chest + 0x0b, (Bit32u)ptr_bak);
 }
 
 /**
