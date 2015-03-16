@@ -5451,7 +5451,12 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x3e: {
-		return 0;
+		RealPt chest = CPU_Pop32();
+		CPU_Push32(chest);
+
+		D1_LOG("loot_simple_chest()\n");
+		loot_simple_chest(Real2Host(chest));
+		return 1;
 	}
 	case 0x43: {
 		return 0;
