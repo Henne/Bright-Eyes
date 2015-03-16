@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg090 (dungeon: oberorken mine)
- *	Functions rewritten: 3/4
+ *	Functions rewritten: 4/4
  */
 
 #include "v302de.h"
@@ -25,7 +25,7 @@ namespace M302de {
 /* Borlandified and identical */
 signed short DNG_handler_oberorken(void)
 {
-	signed short l_si;
+	signed short target_pos;
 	signed short i;
 	signed short tw_bak;
 	Bit32s money;
@@ -35,7 +35,7 @@ signed short DNG_handler_oberorken(void)
 	ptr = p_datseg + 0xbd95;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writews(TEXTBOX_WIDTH, 7);
-	l_si = (ds_readbs(DUNGEON_LEVEL) << 12)
+	target_pos = (ds_readbs(DUNGEON_LEVEL) << 12)
 			+ (ds_readws(X_TARGET) << 8)
 			+ ds_readws(Y_TARGET);
 
@@ -49,7 +49,7 @@ signed short DNG_handler_oberorken(void)
 		if (ds_readbs(0x3f9e) > 0) dec_ds_bs(0x3f9e);
 	}
 
-	if (l_si == 0x1608 && l_si != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1 && ds_readbs(0x3fa1) != 0) {
+	if (target_pos == 0x1608 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1 && ds_readbs(0x3fa1) != 0) {
 
 		if (test_skill(hero, 0x33, 6) > 0) {
 
@@ -65,12 +65,12 @@ signed short DNG_handler_oberorken(void)
 		}
 	} else {
 
-		if ((	l_si == 0x1107 || l_si == 0x1207 || l_si == 0x1307 ||
-			l_si == 0x1407 || l_si == 0x1507 || l_si == 0x1607 ||
-			l_si == 0x1108 || l_si == 0x1208 || l_si == 0x1308 ||
-			l_si == 0x1408 || l_si == 0x1508 || l_si == 0x1608 ||
-			l_si == 0x1109 || l_si == 0x1209 || l_si == 0x1309 ||
-			l_si == 0x1409 || l_si == 0x1509 || l_si == 0x1609 )
+		if ((	target_pos == 0x1107 || target_pos == 0x1207 || target_pos == 0x1307 ||
+			target_pos == 0x1407 || target_pos == 0x1507 || target_pos == 0x1607 ||
+			target_pos == 0x1108 || target_pos == 0x1208 || target_pos == 0x1308 ||
+			target_pos == 0x1408 || target_pos == 0x1508 || target_pos == 0x1608 ||
+			target_pos == 0x1109 || target_pos == 0x1209 || target_pos == 0x1309 ||
+			target_pos == 0x1409 || target_pos == 0x1509 || target_pos == 0x1609 )
 			&& ds_readbs(0x3fa6) != 0)
 		{
 			ds_writeb(0x3fa1, 1);
@@ -134,15 +134,15 @@ signed short DNG_handler_oberorken(void)
 		}
 	}
 
-	if (l_si == 0x0d09 && l_si != ds_readws(0x330e) && !ds_readbs(0x3f9b)) {
+	if (target_pos == 0x0d09 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9b)) {
 		DNG_clear_corridor(p_datseg + 0x3f9b);
-	} else if (l_si == 0x0e08 && l_si != ds_readws(0x330e) && !ds_readbs(0x3f9c)) {
+	} else if (target_pos == 0x0e08 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9c)) {
 		DNG_clear_corridor(p_datseg + 0x3f9c);
-	} else if (l_si == 0x0d07 && l_si != ds_readws(0x330e) && !ds_readbs(0x3f9d)) {
+	} else if (target_pos == 0x0d07 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9d)) {
 		DNG_clear_corridor(p_datseg + 0x3f9d);
-	} else if (l_si == 0x0e05 && l_si != ds_readws(0x330e) && !ds_readbs(0x3f9e)) {
+	} else if (target_pos == 0x0e05 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9e)) {
 		DNG_clear_corridor(p_datseg + 0x3f9e);
-	} else if (l_si == 0x0804 && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x0804 && target_pos != ds_readws(0x330e)) {
 
 		GUI_output(get_dtp(0x0c));
 
@@ -175,61 +175,61 @@ signed short DNG_handler_oberorken(void)
 				}
 			}
 		}
-	} else if (l_si == 0x0503 && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x0503 && target_pos != ds_readws(0x330e)) {
 		GUI_output(get_dtp(0x2c));
 		DNG_fallpit(6);
-	} else if (l_si == 0x0406 && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x0406 && target_pos != ds_readws(0x330e)) {
 		GUI_output(get_dtp(0x2c));
 		ds_writews(X_TARGET, 1);
 		ds_writews(Y_TARGET, 3);
 		DNG_inc_level();
-	} else if (l_si == 0x060d && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x060d && target_pos != ds_readws(0x330e)) {
 
 		print_msg_with_first_hero(get_dtp(0x34));
 
 		sub_hero_le(hero, random_schick(6));
-	} else if (l_si == 0x120e && l_si != ds_readws(0x330e) && !ds_readb(INGERIMM_HINT)) {
+	} else if (target_pos == 0x120e && target_pos != ds_readws(0x330e) && !ds_readb(INGERIMM_HINT)) {
 		GUI_output(get_dtp(0x38));
-	} else if (l_si == 0x120e) {
+	} else if (target_pos == 0x120e) {
 		if (ds_readb(INGERIMM_SACRIFICE) != 0 && !ds_readb(INGERIMM_HINT)) {
 			ds_writeb(INGERIMM_HINT, 1);
 			ds_writeb(INGERIMM_SACRIFICE, 0);
 			GUI_output(get_dtp(0x3c));
 		}
-	} else if (l_si == 0x130a && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x130a && target_pos != ds_readws(0x330e)) {
 		if (div16(host_readb(ptr + 0xb3)) == 2) {
 			and_ptr_bs(ptr + 0xb3, 0xf);
 			or_ptr_bs(ptr + 0xb3, 0x10);
 		}
-	} else if (l_si == 0x1307 && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x1307 && target_pos != ds_readws(0x330e)) {
 		if (div16(host_readb(ptr + 0x63)) == 2) {
 			and_ptr_bs(ptr + 0x63, 0xf);
 			or_ptr_bs(ptr + 0x63, 0x10);
 		}
-	} else if (l_si == 0x1108 && l_si != ds_readws(0x330e) && ds_readbs(DIRECTION) == 3) {
+	} else if (target_pos == 0x1108 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 3) {
 
 		if (GUI_bool(get_dtp(0x40))) {
 			GUI_output(get_dtp(0x44));
 		}
-	} else if (l_si == 0x1302 && l_si != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2) {
+	} else if (target_pos == 0x1302 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2) {
 		GUI_output(get_dtp(0x5c));
 		ds_writew(X_TARGET, 1);
 		ds_writew(Y_TARGET, 3);
 		ds_writeb(DIRECTION, 3);
 		DNG_update_pos();
-	} else if (l_si == 0x1203 && l_si != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1) {
+	} else if (target_pos == 0x1203 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1) {
 		GUI_output(get_dtp(0x5c));
 		ds_writew(X_TARGET, 5);
 		ds_writew(Y_TARGET, 3);
 		ds_writeb(DIRECTION, 1);
 		DNG_update_pos();
-	} else if (l_si == 0x1403 && l_si != ds_readws(0x330e) && ds_readbs(DIRECTION) == 3) {
+	} else if (target_pos == 0x1403 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 3) {
 		GUI_output(get_dtp(0x5c));
 		ds_writew(X_TARGET, 3);
 		ds_writew(Y_TARGET, 1);
 		ds_writeb(DIRECTION, 0);
 		DNG_update_pos();
-	} else if (l_si == 0x1b06 && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x1b06 && target_pos != ds_readws(0x330e)) {
 
 		if (GUI_bool(get_dtp(0x60))) {
 			if (ds_readb(0x3fa8) != 0) {
@@ -273,7 +273,7 @@ signed short DNG_handler_oberorken(void)
 			ds_writew(X_TARGET, ds_readw(0x2d83));
 			ds_writew(Y_TARGET, ds_readw(0x2d85));
 		}
-	} else if (l_si == 0x1e03 && l_si != ds_readws(0x330e) && ds_readb(0x3fa9) != 0) {
+	} else if (target_pos == 0x1e03 && target_pos != ds_readws(0x330e) && ds_readb(0x3fa9) != 0) {
 
 		if (test_skill(hero, 0x33, 2) > 0) {
 
@@ -297,7 +297,7 @@ signed short DNG_handler_oberorken(void)
 			GUI_output(get_dtp(0x6c));
 			sub_group_le(dice_roll(3, 6, 0));
 		}
-	} else if (l_si == 0x0d0f && l_si != ds_readws(0x330e)) {
+	} else if (target_pos == 0x0d0f && target_pos != ds_readws(0x330e)) {
 		leave_dungeon();
 		ds_writew(X_TARGET, 1);
 		ds_writew(Y_TARGET, 6);
@@ -305,7 +305,7 @@ signed short DNG_handler_oberorken(void)
 	}
 
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
-	ds_writews(0x330e, l_si);
+	ds_writews(0x330e, target_pos);
 
 	return 0;
 }
