@@ -5459,7 +5459,16 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x43: {
-		return 0;
+		RealPt chest = CPU_Pop32();
+		RealPt text1 = CPU_Pop32();
+		RealPt text2 = CPU_Pop32();
+		CPU_Push32(text2);
+		CPU_Push32(text1);
+		CPU_Push32(chest);
+
+		D1_LOG("loot_chest()\n");
+		loot_chest(Real2Host(chest), Real2Host(text1), Real2Host(text2));
+		return 1;
 	}
 	case 0x48: {
 		return 0;

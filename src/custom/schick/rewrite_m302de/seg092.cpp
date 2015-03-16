@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 16/22
+ *	Functions rewritten: 17/22
  */
 
 #include <string.h>
@@ -185,7 +185,7 @@ void chest_fulminictus(void)
 
 
 /**
- * \brief loot a chest, with standart text messages
+ * \brief loot a chest, with standard text messages
  * \param chest			pointer to the chest
  */
 /* Borlandified and identical */
@@ -268,6 +268,68 @@ void delete_chest_item(Bit8u *chest, signed short item_nr)
 
 }
 
+/**
+ * \brief loot a chest, with different text messages
+ * \param chest			pointer to the chest
+ * \param text_non_empty	shown text if chest is not empty
+ * \param text_empty		shown text if chest is empty
+ */
+/* Borlandified and identical */
+void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
+{
+	signed short item_nr;
+	signed short item_id;
+	signed short tw_bak;
+	char names[20][20];
+
+	host_writeb(chest + 0x2, 0);
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writews(TEXTBOX_WIDTH, 7);
+
+	do {
+
+		item_nr = 0;
+
+		/* write the names of the items in the chest into names[] */
+		while((item_id = host_readb(Real2Host(host_readd(chest + 0x0b)) + item_nr)) != (signed short)0x00ff) {
+
+
+			strcpy(names[item_nr++],
+				(char*)Real2Host(GUI_name_plural(0, (Bit8u*)get_itemname(item_id))));
+		}
+
+		if (item_nr == 0) {
+			/* this chest is empty */
+			GUI_output(text_empty);
+			break;
+		} else {
+
+			/* show radio menu with item names */
+			item_nr = GUI_radio(text_non_empty, item_nr,
+						names[0], names[1], names[2], names[3],
+						names[4], names[5], names[6], names[7],
+						names[8], names[9], names[10], names[11],
+						names[12], names[13], names[14], names[15],
+						names[16], names[17], names[18], names[19]) - 1;
+
+			if (item_nr != -2) {
+				/* if not pressed ESC */
+				if (get_item(host_readb(Real2Host(host_readd(chest + 0xb)) + item_nr), 1, 1))
+				{
+					/* got the item in inventory => remove from chest */
+					delete_chest_item(chest, item_nr);
+				} else {
+					/* group has not taken the item */
+					item_nr = -2;
+				}
+			}
+		}
+
+	} while (item_nr != -2);
+
+	ds_writews(TEXTBOX_WIDTH, tw_bak);
+}
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -23,6 +23,9 @@ void chest_fulminictus(void);
 /* 0x3e */
 void loot_simple_chest(Bit8u*);
 
+/* 0x43 */
+void loot_chest(Bit8u*, Bit8u*, Bit8u*);
+
 /* 0x5c */
 void chest_poisoned1(void);
 
