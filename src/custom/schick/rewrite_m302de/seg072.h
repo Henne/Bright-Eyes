@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void INF_jurge_hjore(signed short, signed short);
+
 /* static */
 short count_map_parts(void);
 
