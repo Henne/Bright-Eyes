@@ -3048,7 +3048,9 @@ static int seg025(unsigned short offs) {
 		return 1;
 	}
 	case 0x57: {
-		return 0;
+		D1_LOG("show_treasure_map();\n");
+		show_treasure_map();
+		return 1;
 	}
 	case 0x5c: {
 		D1_LOG("leave_dungeon()\n");
@@ -8283,7 +8285,10 @@ static int n_seg025(unsigned short offs)
 {
 	switch (offs) {
 	case 0x4a2: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("show_treasure_map();\n");
+		show_treasure_map();
+		return 1;
 	}
 	case 0xca8: {
 		return 0;

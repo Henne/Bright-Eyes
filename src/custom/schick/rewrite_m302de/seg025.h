@@ -19,6 +19,8 @@ void do_house(void);
 void do_informer(void);
 /* 0x52 */
 void enter_map(void);
+/* 0x57 */
+void show_treasure_map(void);
 /* 0x5c */
 void leave_dungeon(void);
 /* 0x61 */

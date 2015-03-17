@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 11/15
+ *	Functions rewritten: 12/15
  */
 
 #include <string.h>
@@ -8,6 +8,7 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
@@ -226,6 +227,162 @@ void enter_map(void)
 
 	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
 	ds_writeb(TRAVELING, 1);
+}
+
+/* Borlandified and identical */
+void show_treasure_map(void)
+{
+	signed short l_si;
+	signed short tw_bak;
+	signed short count;	/* #collected treasure map parts */
+	signed short width;
+	signed short height;
+	signed short bak;
+	Bit32s length;
+	struct nvf_desc nvf;
+
+	/* count the collected treasure map parts */
+	for (l_si = count = 0; l_si < 9; l_si++) {
+		if (ds_readbs(TREASURE_MAPS + l_si) != 0) {
+			count++;
+		}
+	}
+
+	if (count == 0) {
+		/* no treasure map parts found */
+		GUI_output(get_ltx(0x984));
+	} else {
+		ds_writeb(0x45b8, 1);
+		bak = ds_readbs(0x2845);
+		ds_writeb(0x2845, -1);
+		set_var_to_zero();
+
+		/* load SKARTE.NVF */
+		l_si = load_archive_file(206);
+
+		read_archive_file(l_si, Real2Host(ds_readd(0xc3db)), 30000);
+
+		length = get_readlength2(l_si);
+
+		bc_close(l_si);
+
+		/* clear the screen */
+		wait_for_vsync();
+
+		set_palette(p_datseg + 0x26c3, 0, 0x20);
+
+		do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+
+		update_mouse_cursor();
+
+		for (l_si = 0; l_si < 10; l_si++) {
+
+			if (ds_readbs(TREASURE_MAPS + l_si) != 0 &&
+				(l_si != 9 || (l_si == 9 && !ds_readbs(TREASURE_MAPS + 6))))
+			{
+				/* decompress picture */
+				nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(0xc3db), 30000));
+				nvf.src = Real2Host(ds_readd(0xc3db));
+				nvf.nr = l_si;
+				nvf.type = 0;
+				nvf.width = (Bit8u*)&width;
+				nvf.height = (Bit8u*)&height;
+
+				process_nvf(&nvf);
+
+				#if !defined(__BORLANDC__)
+				/* BE-fix */
+				width = host_readws((Bit8u*)&width);
+				height = host_readws((Bit8u*)&height);
+				#endif
+
+				/* copy to screen */
+				ds_writew(0xc011, ds_readws(TMAP_X + 2 * l_si));
+				ds_writew(0xc013, ds_readws(TMAP_Y + 2 * l_si));
+				ds_writew(0xc015, ds_readws(TMAP_X + 2 * l_si) + width - 1);
+				ds_writew(0xc017, ds_readws(TMAP_Y + 2 * l_si) + height - 1);
+				ds_writed(0xc019, (Bit32u)F_PADD((RealPt)ds_readd(0xc3db), 30000));
+				ds_writed(0xc00d, ds_readd(0xd2ff));
+				do_pic_copy(0);
+			}
+		}
+
+		wait_for_vsync();
+
+		set_palette(Real2Host(F_PADD(F_PADD((RealPt)ds_readd(0xc3db), length), -0x60)), 0, 0x20);
+
+		refresh_screen_size();
+
+		if (ds_readb(TMAP_DOUBLE1) != 0) {
+			/* unicorn brought a piece you already have */
+			tw_bak = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 3);
+
+			GUI_output(get_ltx(0xca0));
+
+			ds_writew(TEXTBOX_WIDTH, tw_bak);
+			ds_writeb(TMAP_DOUBLE1, 0);
+		}
+
+		if (ds_readb(TMAP_DOUBLE2) != 0) {
+			/* you got a piece you already have from the unicorn */
+			tw_bak = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 3);
+
+			GUI_output(get_ltx(0xca4));
+
+			ds_writew(TEXTBOX_WIDTH, tw_bak);
+			ds_writeb(TMAP_DOUBLE2, 0);
+		}
+
+		if (count >= 7 && !ds_readb(FIND_HYGGELIK)) {
+			/* the way can now be found */
+
+			tw_bak = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 3);
+
+			/* */
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)get_ltx(0xb5c),
+				(char*)get_hero(get_random_hero()) + 0x10);
+
+			GUI_output(Real2Host(ds_readd(0xd2eb)));
+
+			ds_writew(TEXTBOX_WIDTH, tw_bak);
+			ds_writeb(FIND_HYGGELIK, 1);
+		}
+
+		delay_or_keypress(1000);
+
+		if (ds_readb(0x4c3a) != 0) {
+			/* copy to screen */
+			ds_writew(0xc011, 0);
+			ds_writew(0xc013, 0);
+			ds_writew(0xc015, 319);
+			ds_writew(0xc017, 199);
+			ds_writed(0xc019, ds_readd(0xd303));
+			ds_writed(0xc00d, ds_readd(0xd2ff));
+
+			update_mouse_cursor();
+			wait_for_vsync();
+
+			set_palette(Real2Host(ds_readd(0xd303)) + 64000 + 2, 0, 0x20);
+
+			do_pic_copy(0);
+
+			refresh_screen_size();
+
+			ds_writeb(0x4c3a, 0);
+			ds_writeb(0x45b8, 0);
+			ds_writeb(0x2845, bak);
+		} else {
+			ds_writew(CURRENT_ANI, -1);
+			ds_writew(0x2846, 1);
+			ds_writew(0x2ccb, -1);
+			ds_writeb(0x45b8, 0);
+			draw_main_screen();
+		}
+	}
 }
 
 

@@ -57,6 +57,7 @@
 #define SPHERE_TIMER	(0x3c97)
 #define SPHERE_ACTIVE	(0x3c98)
 #define MAGE_POISON	(0x3cb6)
+#define FIND_HYGGELIK	(0x3ddc)	/* unsigned char {0, 1} you are now able to find Hyggelik */
 #define GREMOB_INVITED	(0x3f74)	/* unsigned char {0, 1} */
 #define HARLOT_DATE	(0x3f75)	/* unsigned char {0, 1} */
 #define DRUG_TIMER	(0x3f76)	/* unsigned char {0, 1, ..., 10} */
@@ -75,6 +76,8 @@
 #define LEVEL_AP_TAB	(0x464e)	/* Bit32s[21] */
 #define DELAY_FACTOR	(0x4b66)
 #define EMM_SIG		(0x4ba2)	/* char[8] */
+#define TMAP_X		(0x4c12)	/* signed short[10] */
+#define TMAP_Y		(0x4c26)	/* signed short[10] */
 #define FNAMES		(0x4c8c)
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
@@ -85,6 +88,8 @@
 #define SEG047_INIT2	(0x64b1)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT3	(0x64bf)	/* signed short[7] filled with zeroes */
 #define TRAVEL_BY_SHIP	(0x7070)	/* ?8 0 = on land, 1 = at the ship */
+#define TMAP_DOUBLE1	(0x7c9a)	/* ?8 1 = unicorn brought a piece you already have */
+#define TMAP_DOUBLE2	(0x7c9b)	/* ?8 1 = you got a piece you already have from the unicorn */
 #define MAX_GOSSIP	(0x7c9d)	/* s8[52], maximum of different gossips per town */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
