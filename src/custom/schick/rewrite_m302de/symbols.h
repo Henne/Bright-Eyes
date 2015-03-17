@@ -41,10 +41,13 @@
 #define BANK_DEPOSIT	(0x335c)	/* signed short */
 #define IN_ACADEMY	(0x3362)	/* s16 */
 #define INFORMER_JURGE	(0x3364)	/* unsigned char and unsigned char[15], {0,1,2} */
+#define INFORMER_HJORE	(0x3365)	/* unsigned char {0,1,2} */
+#define INFORMER_YASMA	(0x3366)	/* unsigned char {0,1,2} */
 #define INFORMER_RAGNA	(0x3369)	/* unsigned char {0,1,2} */
 #define INFORMER_BEORN	(0x336a)	/* unsigned char {0,1,2} */
 #define INFORMER_ASGRIMM	(0x336b)	/* unsigned char {0,1,2} */
 #define INFORMER_ELIANE	(0x336c)	/* unsigned char {0,1,2} */
+#define INFORMER_SWAFNILD	(0x336e)	/* unsigned char {0,1,2} */
 #define INFORMER_ALGRID	(0x3371)	/* unsigned char {0,1,2} */
 #define UNICORN_MET	(0x3464)
 #define UNICORN_GET_MAP	(0x3465)

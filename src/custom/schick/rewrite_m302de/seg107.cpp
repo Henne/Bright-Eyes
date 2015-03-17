@@ -261,7 +261,7 @@ void item_debtbook(void)
 		add_hero_ap_all(15);
 
 		/* mark informer Hjore as known */
-		ds_writeb_z(0x3365, 1);
+		ds_writeb_z(INFORMER_HJORE, 1);
 	}
 
 	GUI_output(get_ltx(0xa08));
