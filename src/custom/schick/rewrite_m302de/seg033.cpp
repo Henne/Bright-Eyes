@@ -187,7 +187,18 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						/* let the player select a move destination */
 
 						refresh_screen_size();
+#if !defined(__BORLANDC__)
+						/* BE-fix */
+						x = host_readws((Bit8u*)&x);
+						y = host_readws((Bit8u*)&y);
+#endif
 						FIG_move_hero(hero, hero_pos, (Bit8u*)&x, (Bit8u*)&y);
+
+#if !defined(__BORLANDC__)
+						/* BE-fix */
+						x = host_readws((Bit8u*)&x);
+						y = host_readws((Bit8u*)&y);
+#endif
 						update_mouse_cursor();
 						and_ptr_bs(hero + 0xaa, 0xef);
 
@@ -216,13 +227,33 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					if ((l7 = FIG_get_range_weapon_type(hero)) == -1) {
 						/* not a range weapon */
 						refresh_screen_size();
+#if !defined(__BORLANDC__)
+						/* BE-fix */
+						l5 = host_readws((Bit8u*)&l5);
+						l6 = host_readws((Bit8u*)&l6);
+#endif
 						l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, 1);
+#if !defined(__BORLANDC__)
+						/* BE-fix */
+						l5 = host_readws((Bit8u*)&l5);
+						l6 = host_readws((Bit8u*)&l6);
+#endif
 						update_mouse_cursor();
 					} else {
 						if (seg041_0020(hero, 1)) {
 							/* a range weapon */
 							refresh_screen_size();
+#if !defined(__BORLANDC__)
+							/* BE-fix */
+							l5 = host_readws((Bit8u*)&l5);
+							l6 = host_readws((Bit8u*)&l6);
+#endif
 							l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, 99);
+#if !defined(__BORLANDC__)
+							/* BE-fix */
+							l5 = host_readws((Bit8u*)&l5);
+							l6 = host_readws((Bit8u*)&l6);
+#endif
 							update_mouse_cursor();
 						}
 					}
@@ -348,7 +379,17 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 										weapon_id = 99;
 									}
 									refresh_screen_size();
+#if !defined(__BORLANDC__)
+									/* BE-fix */
+									l5 = host_readws((Bit8u*)&l5);
+									l6 = host_readws((Bit8u*)&l6);
+#endif
 									l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, weapon_id);
+#if !defined(__BORLANDC__)
+									/* BE-fix */
+									l5 = host_readws((Bit8u*)&l5);
+									l6 = host_readws((Bit8u*)&l6);
+#endif
 									update_mouse_cursor();
 
 									if (l8 != -99) {
@@ -414,7 +455,17 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							l5 = x;
 							l6 = y;
 							refresh_screen_size();
+#if !defined(__BORLANDC__)
+							/* BE-fix */
+							l5 = host_readws((Bit8u*)&l5);
+							l6 = host_readws((Bit8u*)&l6);
+#endif
 							l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, 99);
+#if !defined(__BORLANDC__)
+							/* BE-fix */
+							l5 = host_readws((Bit8u*)&l5);
+							l6 = host_readws((Bit8u*)&l6);
+#endif
 							update_mouse_cursor();
 							host_writeb(hero + 0x86, l8);
 						} else {
