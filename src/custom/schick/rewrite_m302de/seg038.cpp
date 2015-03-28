@@ -141,7 +141,10 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 	Bit8u *ptr[4];
 
 #if !defined(__BORLANDC__)
-	struct_copy((Bit8u*)&dst, p_datseg + 0x5ff8, 16);
+	for (int i = 0; i < 4; i++) {
+		dst.o[i].x = host_readws(p_datseg + 0x5ff8 + 4 * i);
+		dst.o[i].y = host_readws(p_datseg + 0x5ff8 + 4 * i + 2);
+	}
 #else
 	dst = *((struct dummy*)(p_datseg + 0x5ff8));
 #endif
@@ -335,7 +338,10 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 	struct dummy dst;
 
 #if !defined(__BORLANDC__)
-	struct_copy((Bit8u*)&dst, p_datseg + 0x6008, 16);
+	for (int i = 0; i < 4; i++) {
+		dst.o[i].x = host_readws(p_datseg + 0x6008 + 4 * i);
+		dst.o[i].y = host_readws(p_datseg + 0x6008 + 4 * i + 2);
+	}
 #else
 	dst = *((struct dummy*)(p_datseg + 0x6008));
 #endif
