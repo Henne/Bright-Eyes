@@ -4,12 +4,15 @@ namespace M302de {
 
 /* 0x20 */
 void INF_jurge_hjore(signed short, signed short);
-
-/* static */
-short count_map_parts(void);
-
+/* 0x25 */
 /* static */
 short has_intro_letter(void);
+/* 0x2a */
+/* static */
+short count_map_parts(void);
+/* 0x2f */
+void INF_yasma_umbrik_isleif(signed short, signed short);
+
 
 #if !defined(__BORLANDC__)
 }

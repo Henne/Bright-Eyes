@@ -4842,13 +4842,13 @@ static int seg072(unsigned short offs) {
 			return 1;
 		}
 		case 0x2f: {
-			/* Informer: Isleif (2, {0,2,0xf, 0x10, 0x18, 0x19}) */
 			Bit16s v1 = CPU_Pop16();
 			Bit16s v2 = CPU_Pop16();
 			CPU_Push16(v2);
 			CPU_Push16(v1);
-			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
-			return 0;
+			D1_INFO("Informant %s Zustand %d\n", v1 == 0 ? "Yasma" : (v1 == 1 ? "Umbrik" : "Isleif"), v2);
+			INF_yasma_umbrik_isleif(v1, v2);
+			return 1;
 		}
 		case 0x34: {
 			Bit16s v1 = CPU_Pop16();
