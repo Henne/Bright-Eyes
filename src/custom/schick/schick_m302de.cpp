@@ -9874,7 +9874,12 @@ static int n_seg094(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0092: {
-		return 0;
+		CPU_Pop16();
+		Bit16s town_id = CPU_Pop16();
+		CPU_Push16(town_id);
+		D1_LOG("set_textbox_positions(%d)\n", town_id);
+		set_textbox_positions(town_id);
+		return 1;
 	}
 	case 0x0125: {
 		return 0;
