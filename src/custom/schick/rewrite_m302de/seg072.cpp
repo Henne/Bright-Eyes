@@ -197,10 +197,11 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 }
 
 /**
- * count_map_parts - counts the parts of the treasure map
+ * \brief counts the collected parts of the treasure map
+ * \return the number of map parts
  */
 /* Borlandified and identical */
-short count_map_parts(void)
+signed short count_map_parts(void)
 {
 	int i;
 	int parts;
@@ -214,11 +215,12 @@ short count_map_parts(void)
 }
 
 /**
- * has_intro_letter - check if a hero in the group has the introduction letter
+ * \brief check if a hero in the group has the letter of introduction
+ * \return 0 = no letter, 1 = have the letter
  *
  */
 /* Borlandified and identical */
-short has_intro_letter(void)
+signed short has_intro_letter(void)
 {
 	/* check for the introduction letter / Empfehlungsschreiben */
 	return (get_first_hero_with_item(0xeb) != -1) ? 1 : 0;
