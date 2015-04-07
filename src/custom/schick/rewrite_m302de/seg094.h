@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x2f */
+void prepare_map_marker(void);
 /* 0x34 */
 /* static */
 void set_textbox_positions(signed short);

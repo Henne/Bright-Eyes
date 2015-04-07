@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 1/11
+ *	Functions rewritten: 2/11
  */
 
 #include "v302de.h"
@@ -12,6 +12,36 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+/* Borlandified and identical */
+void prepare_map_marker(void)
+{
+	signed short i;
+	signed short fd;
+	signed short dummy;
+	struct nvf_desc nvf;
+
+	/* load OBJECTS.NVF */
+	fd = load_archive_file(7);
+
+	read_archive_file(fd, Real2Host(ds_readd(0xd2b1)), 2000);
+
+	bc_close(fd);
+
+
+	for (i = 0; i < 10; i++) {
+		nvf.dst = Real2Host(ds_readd(0xd2b1)) + 100 * i + 1000;
+		nvf.src = Real2Host(ds_readd(0xd2b1));
+		nvf.nr = i;
+		nvf.type = 0;
+		nvf.width = (Bit8u*)&dummy;
+		nvf.height = (Bit8u*)&dummy;
+
+		process_nvf(&nvf);
+	}
+
+	set_textbox_positions(ds_readbs(CURRENT_TOWN));
+}
 
 /* Borlandified and identical */
 void set_textbox_positions(signed short town_id)

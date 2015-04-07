@@ -5560,7 +5560,9 @@ static int seg094(unsigned short offs) {
 		return 0;
 	}
 	case 0x2f: {
-		return 0;
+		D1_LOG("prepare_map_marker()\n");
+		prepare_map_marker();
+		return 1;
 	}
 	case 0x48: {
 		return 0;
