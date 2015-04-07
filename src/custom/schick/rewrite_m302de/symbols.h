@@ -43,17 +43,26 @@
 #define INFORMER_JURGE	(0x3364)	/* unsigned char and unsigned char[15], {0,1,2} */
 #define INFORMER_HJORE	(0x3365)	/* unsigned char {0,1,2} */
 #define INFORMER_YASMA	(0x3366)	/* unsigned char {0,1,2} */
+#define INFORMER_UMBRIK	(0x3367)	/* unsigned char {0,1,2} */
+#define INFORMER_ISLEIF	(0x3368)	/* unsigned char {0,1,2} */
 #define INFORMER_RAGNA	(0x3369)	/* unsigned char {0,1,2} */
 #define INFORMER_BEORN	(0x336a)	/* unsigned char {0,1,2} */
 #define INFORMER_ASGRIMM	(0x336b)	/* unsigned char {0,1,2} */
 #define INFORMER_ELIANE	(0x336c)	/* unsigned char {0,1,2} */
+#define INFORMER_OLVIR	(0x336d)	/* unsigned char {0,2} */
 #define INFORMER_SWAFNILD	(0x336e)	/* unsigned char {0,1,2} */
+#define INFORMER_TREBORN	(0x336f)	/* unsigned char {0,1} */
+#define INFORMER_UNICORN	(0x3370)	/* unsigned char {0,2} */
 #define INFORMER_ALGRID	(0x3371)	/* unsigned char {0,1,2} */
+#define INFORMER_TIOMAR	(0x3372)	/* unsigned char {0,1,2} */
+#define QUEST_GORAH	(0x344d)	/* unsigned char {0,1 } */
+#define QUEST_NAMELESS_GOT	(0x3455)	/* unsigned char {0, 1} */
 #define UNICORN_MET	(0x3464)
 #define UNICORN_GET_MAP	(0x3465)
 #define UNICORN_TIMER	(0x3466)
 #define NPC_MONTHS	(0x3470)
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
+#define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
 #define TRAVELING	(0x3614)
@@ -94,6 +103,7 @@
 #define TMAP_DOUBLE1	(0x7c9a)	/* ?8 1 = unicorn brought a piece you already have */
 #define TMAP_DOUBLE2	(0x7c9b)	/* ?8 1 = you got a piece you already have from the unicorn */
 #define MAX_GOSSIP	(0x7c9d)	/* s8[52], maximum of different gossips per town */
+#define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
 #define SPLASH_AE	(0xbcc7)

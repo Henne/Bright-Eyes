@@ -3122,9 +3122,9 @@ void seg002_37c4(void)
 	if ((ds_readws(0xe4a3) != 0) && (ds_readb(TRAVELING))) {
 
 		ds_writew(0xe4ad,
-				ds_readws(0xa43b + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
+				ds_readws(TOWN_POSITIONS + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
 		ds_writew(0xe4ab,
-				ds_readws(0xa43d + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
+				ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
 
 		ds_writew(0xc011, ds_readws(0xe4ad) - 4);
 		ds_writew(0xc013, ds_readws(0xe4ab) - 4);
@@ -3200,9 +3200,9 @@ void seg002_37c4(void)
 		if ((ds_readws(0xe5ae) != 0) && (ds_readb(TRAVELING))) {
 
 			ds_writew(0xe4ad,
-					ds_readws(0xa43b + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
+					ds_readws(TOWN_POSITIONS + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
 			ds_writew(0xe4ab,
-					ds_readws(0xa43d + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
+					ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
 
 			ds_writew(0xc011, ds_readws(0xe4ad) - 4);
 			ds_writew(0xc013, ds_readws(0xe4ab) - 4);

@@ -133,10 +133,10 @@ void tevent_065(void)
 			/* Original-Bug: if Umbrik is done the value 2
 					is overwritten with 1 */
 #ifdef M302de_ORIGINAL_BUGFIX
-			if (ds_readb(0x3367) == 0)
-				ds_writeb(0x3367, 1);
+			if (ds_readb(INFORMER_UMBRIK) == 0)
+				ds_writeb(INFORMER_UMBRIK, 1);
 #else
-			ds_writeb(0x3367, 1);
+			ds_writeb(INFORMER_UMBRIK, 1);
 #endif
 		}
 
