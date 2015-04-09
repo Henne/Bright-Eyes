@@ -1,13 +1,17 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg072 (informers)
- *	Functions rewritten: 4/9
+ *	Functions rewritten: 5/9
  */
+#include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg025.h"
 #include "seg072.h"
+#include "seg095.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
@@ -192,6 +196,175 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 		} else if (state == 24) {
 			/* TODO: what does that mean ? */
 			ds_writew(0xe30e, ds_readb(0x3450) != 0 ? 25 : 26);
+		}
+	}
+}
+
+/**
+ * \brief dialog logic for the informers ragna, beorn and algrid
+ * \param informer	0 = ragna, 1 = beorn, 2 = algrid
+ * \param state		state of the dialog
+ */
+/* Borlandified and identical */
+void INF_ragna_beorn_algrid(signed short informer, signed short state)
+{
+	unsigned char tmp;
+	signed short l_di;
+
+	if (informer == 0) {
+		/* RAGNA FIRUNJASDOTTER */
+
+		if (!state) {
+			ds_writew(0xe30e, ds_readb(INFORMER_RAGNA) == 2 ? 1 : 3);
+		} else if (state == 4) {
+			ds_writew(0xe30e, count_map_parts() ? 9 : 10);
+		} else if (state == 8 || state == 25) {
+			/* mark RAGNA FIRUNJASDOTTER as done */
+			ds_writeb(INFORMER_RAGNA, 2);
+		} else if (state == 12) {
+			/* TODO: what does that mean ? */
+			ds_writeb(0x3451, 1);
+		} else if (state == 14) {
+			/* mark ISLEIF OLGARDSSON as known */
+			if (!ds_readb(INFORMER_ISLEIF)) ds_writeb(INFORMER_ISLEIF, 1);
+			/* mark SWAFNILD EGILSDOTTER as known */
+			if (!ds_readb(INFORMER_SWAFNILD)) ds_writeb(INFORMER_SWAFNILD, 1);
+		} else if (state == 16) {
+			/* mark JURGE TORFINSSON as known */
+			if (!ds_readb(INFORMER_JURGE)) ds_writeb(INFORMER_JURGE, 1);
+		} else if (state == 17) {
+			/* TODO: what does that mean ? */
+			ds_writew(0xe30e, ds_readb(0x3451) != 0 ? 18 : 19);
+		} else if (state == 21) {
+			/* check if the party already has this map piece */
+			if (ds_readb(TREASURE_MAPS + 3) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+			/* get the map piece */
+			ds_writeb(TREASURE_MAPS + 3, 1);
+			/* each of the heros gets 10 AP */
+			add_hero_ap_all(10);
+		} else if (state == 22) {
+			/* test the group leader on KL+5, to get the map */
+			if (test_attrib(get_hero(0), 1, 5) > 0) {
+				/* check if the party already has this map piece */
+				if (ds_readb(TREASURE_MAPS + 3) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+				/* get the map piece */
+				ds_writeb(TREASURE_MAPS + 3, 1);
+				/* each of the heros gets 10 AP */
+				add_hero_ap_all(10);
+			}
+		} else if (state == 23) {
+
+			/* she only shows you the map piece */
+
+			tmp = ds_readb(TREASURE_MAPS + 3);
+
+			/* check if the party already has this map piece */
+			if (ds_readb(TREASURE_MAPS + 3) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+
+			/* get the map piece */
+			ds_writeb(TREASURE_MAPS + 3, 1);
+
+			show_treasure_map();
+			/* remove the map piece */
+			ds_writeb(TREASURE_MAPS + 3, tmp);
+		}
+	} else if (informer == 1) {
+			/* BEORN HJALLASSON */
+
+			if (!state) {
+				ds_writew(0xe30e, ds_readb(INFORMER_BEORN) == 2 ? 1 : 2);
+			} else if (state == 2) {
+				/* is ERWO in the group ? */
+				ds_writew(0xe30e,
+					host_readbs(get_hero(6) + 0x89) == 6 && is_hero_available_in_group(get_hero(6)) ? 3 : 15);
+			} else if (state == 6) {
+
+				/* copy the name */
+				strcpy((char*)(p_datseg + 0xe42e), (char*)(get_hero(6) + 0x10));
+				/* set a pointer */
+				ds_writed(0xe308, (Bit32u)RealMake(datseg, 0xe42e));
+				/* copy the picture of the NPC */
+				memcpy(Real2Host(ds_readd(DTP2)), get_hero(6) + 0x2da, 0x400);
+				/* remove the NPC from the group */
+				remove_npc(24, 31, 231, get_ltx(0xbd8), (Bit8u*)0);
+
+				ds_writew(0x2846, 1);
+
+			} else if (state == 7 || state == 8 || state == 9 || state == 10) {
+				timewarp(MINUTES(30));
+			} else if (state == 11 || state == 26) {
+				/* check if the party already has this map piece */
+				if (ds_readb(TREASURE_MAPS + 4) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+				/* get the map piece */
+				ds_writeb(TREASURE_MAPS + 4, 1);
+				/* each of the heros gets 10 AP */
+				add_hero_ap_all(10);
+
+				show_treasure_map();
+			} else if (state == 12 || state == 29) {
+				/* mark BEORN HJALLASSON as done */
+				ds_writeb(INFORMER_BEORN, 2);
+			} else if (state == 13 || state == 22) {
+				/* make HJORE AHRENSSON known */
+				if (!ds_readb(INFORMER_HJORE)) ds_writeb(INFORMER_HJORE, 1);
+				/* mark RAGNA FIRUNJASDOTTER as known */
+				if (!ds_readb(INFORMER_RAGNA)) ds_writeb(INFORMER_RAGNA, 1);
+				/* mark SWAFNILD EGILSDOTTER as known */
+				if (!ds_readb(INFORMER_SWAFNILD)) ds_writeb(INFORMER_SWAFNILD, 1);
+			} else if (state == 18) {
+				/* TODO: what does that mean ? */
+				ds_writeb(0x3452, 1);
+			} else if (state == 23) {
+				/* TODO: what does that mean ? */
+				ds_writeb(0x3454, 1);
+			} else if (state == 24) {
+				ds_writew(0xe30e, ds_readb(0x3452) != 0 && ds_readb(0x3453) != 0 && ds_readb(0x3454) != 0 ? 26 : 27);
+			} else if (state == 25) {
+				/* TODO: what does that mean ? */
+				ds_writeb(0x3453, 1);
+			} else if (state == 27) {
+
+				l_di = 10;
+
+				if (ds_readb(0x3454) && !ds_readb(0x3453) && !ds_readb(0x3452)) {
+					l_di = 4;
+				} else if (ds_readb(0x3454) && ds_readb(0x3453) && !ds_readb(0x3452)) {
+					l_di = -2;
+				} else if (ds_readb(0x3454) && !ds_readb(0x3453) && ds_readb(0x3452)) {
+					l_di = -2;
+				} else if (!ds_readb(0x3454) && ds_readb(0x3453) && !ds_readb(0x3452)) {
+					l_di = 6;
+				} else if (!ds_readb(0x3454) && !ds_readb(0x3453) && ds_readb(0x3452)) {
+					l_di = 6;
+				} else if (ds_readb(0x3452) && ds_readb(0x3453)) {
+					l_di = 0;
+				}
+
+				ds_writew(0xe30e, test_attrib(get_hero(0), 2, l_di) > 0 ? 26 : 28);
+			}
+	} else if (informer == 2) {
+		/* ALGRID TRONDESDOTTER */
+
+		if (!state) {
+			/* TODO: check what happens here */
+			ds_writew(0xe30e, ds_readb(0x360f) ? 23 : (ds_readb(INFORMER_ALGRID) == 2 ? 1 : 22));
+		} else if (state == 2) {
+			/* mark ALGRID TRONDESDOTTER as done */
+			ds_writeb(INFORMER_ALGRID, 2);
+
+			ds_writew(0xe30e, ds_readb(INFORMER_JURGE) == 2 ? 3 : 4);
+		} else if (state == 3) {
+			/* TODO: check what happens here */
+			ds_writew(0xe30e, ds_readb(0x3467) ? 5 : 6);
+		} else if (state == 4) {
+			/* TODO: check what happens here */
+			ds_writew(0xe30e, ds_readb(0x3467) ? 7 : 8);
+		} else if (state == 14) {
+			/* make TIOMAR SWAFNILDSSON known */
+			if (!ds_readb(INFORMER_TIOMAR)) ds_writeb(INFORMER_TIOMAR, 1);
+
+			/* make TREBORN KOLBERG known */
+			if (!ds_readb(INFORMER_TREBORN)) ds_writeb(INFORMER_TREBORN, 1);
 		}
 	}
 }

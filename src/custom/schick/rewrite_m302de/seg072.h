@@ -12,6 +12,8 @@ signed short has_intro_letter(void);
 signed short count_map_parts(void);
 /* 0x2f */
 void INF_yasma_umbrik_isleif(signed short, signed short);
+/* 0x34 */
+void INF_ragna_beorn_algrid(signed short, signed short);
 
 
 #if !defined(__BORLANDC__)
