@@ -8,6 +8,15 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+void do_merchant(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+#endif
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
