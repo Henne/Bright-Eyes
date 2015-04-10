@@ -57,9 +57,11 @@
 #define INFORMER_TIOMAR	(0x3372)	/* unsigned char {0,1,2} */
 #define QUEST_GORAH	(0x344d)	/* unsigned char {0,1 } */
 #define QUEST_NAMELESS_GOT	(0x3455)	/* unsigned char {0, 1} */
-#define UNICORN_MET	(0x3464)
+#define TREBORN_DATE	(0x3463)	/* unsigned char {0,1} */
+#define UNICORN_HERO_POS	(0x3464) /* unsigned char {0-6} */
 #define UNICORN_GET_MAP	(0x3465)
 #define UNICORN_TIMER	(0x3466)
+#define UNICORN_HERO_PTR	(0x346a)	/* RealPt */
 #define NPC_MONTHS	(0x3470)
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
