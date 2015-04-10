@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg072 (informers)
- *	Functions rewritten: 9/9
+ *	Rewrite of DSA1 v3.02_de functions of seg072 (informer scripting)
+ *	Functions rewritten: 9/9 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg072.cpp
  */
 #include <stdio.h>
 #include <string.h>
@@ -28,7 +32,6 @@ namespace M302de {
  * \param informer	0 = jurge, 1 = hjore
  * \param state		state of the dialog
  */
-/* Borlandified and identical */
 void INF_jurge_hjore(signed short informer, signed short state)
 {
 
@@ -108,7 +111,6 @@ void INF_jurge_hjore(signed short informer, signed short state)
  * \param informer	0 = yasma, 1 = umbrik, 2 = isleif
  * \param state		state of the dialog
  */
-/* Borlandified and identical */
 void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 {
 	Bit8u *hero;
@@ -210,7 +212,6 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
  * \param informer	0 = ragna, 1 = beorn, 2 = algrid
  * \param state		state of the dialog
  */
-/* Borlandified and identical */
 void INF_ragna_beorn_algrid(signed short informer, signed short state)
 {
 	unsigned char tmp;
@@ -379,7 +380,6 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
  * \param informer	0 = eliane, 1 = tiomar
  * \param state		state of the dialog
  */
-/* Borlandified and identical */
 void INF_eliane_tiomar(signed short informer, signed short state)
 {
 	if (!informer) {
@@ -473,7 +473,6 @@ void INF_eliane_tiomar(signed short informer, signed short state)
  * \param informer	0 = olvir, 1 = asgrimm
  * \param state		state of the dialog
  */
-/* Borlandified and identical */
 void INF_olvir_asgrimm(signed short informer, signed short state)
 {
 	Bit8u *hero;
@@ -566,7 +565,6 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
  * \param informer	0 = treborn, 1 = treborn, 2 = unicorn
  * \param state		state of the dialog
  */
-/* Borlandified and identical */
 void INF_treborn_unicorn(signed short informer, signed short state)
 {
 #if !defined(__BORLANDC__)
@@ -714,7 +712,6 @@ void INF_treborn_unicorn(signed short informer, signed short state)
  * \param informer	0 = treborn, 1 = unicorn
  * \param state		state of the dialog
  */
-/* Borlandified and identical */
 void INF_swafnild_unicorn(signed short informer, signed short state)
 {
 	if (!informer) {
@@ -828,7 +825,6 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
  * \brief counts the collected parts of the treasure map
  * \return the number of map parts
  */
-/* Borlandified and identical */
 signed short count_map_parts(void)
 {
 	int i;
@@ -847,7 +843,6 @@ signed short count_map_parts(void)
  * \return 0 = no letter, 1 = have the letter
  *
  */
-/* Borlandified and identical */
 signed short has_intro_letter(void)
 {
 	/* check for the introduction letter / Empfehlungsschreiben */
