@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg072 (informers)
- *	Functions rewritten: 8/9
+ *	Functions rewritten: 9/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -707,6 +707,121 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 		}
 	}
 #endif
+}
+
+/**
+ * \brief dialog logic for the informers swafnild and unicorn (2nd meeting)
+ * \param informer	0 = treborn, 1 = unicorn
+ * \param state		state of the dialog
+ */
+/* Borlandified and identical */
+void INF_swafnild_unicorn(signed short informer, signed short state)
+{
+	if (!informer) {
+		/* SWAFNILD EGILSDOTTER */
+
+		if (state == 1) {
+			ds_writew(0xe30e, ds_readb(INFORMER_SWAFNILD) == 2 ? 3 : 7);
+		} else if (state == 4) {
+			ds_writew(0xe30e, ds_readb(0x3462) != 0 ? 38 : 39);
+		} else if (state == 7) {
+
+			if ((ds_readbs(CURRENT_TOWN) >= 1 && ds_readbs(CURRENT_TOWN) <= 10) ||
+				(ds_readbs(CURRENT_TOWN) >= 40 && ds_readbs(CURRENT_TOWN) <= 44))
+			{
+				ds_writeb(SWAFNILD_TP1, 39);
+				ds_writeb(SWAFNILD_TP2, 38);
+				ds_writeb(SWAFNILD_TP3, 37);
+				ds_writeb(SWAFNILD_TP4, 35);
+			} else if (ds_readbs(CURRENT_TOWN) >= 30 && ds_readbs(CURRENT_TOWN) <= 34) {
+				ds_writeb(SWAFNILD_TP1, 37);
+				ds_writeb(SWAFNILD_TP2, 38);
+				ds_writeb(SWAFNILD_TP3, 39);
+				ds_writeb(SWAFNILD_TP4, 42);
+			} else {
+				ds_writeb(SWAFNILD_TP1, 33);
+				ds_writeb(SWAFNILD_TP2, 34);
+				ds_writeb(SWAFNILD_TP3, 36);
+				ds_writeb(SWAFNILD_TP4, 32);
+			}
+		} else if (state == 17) {
+			/* mark RAGNA FIRUNJASDOTTER as known */
+			if (!ds_readb(INFORMER_RAGNA)) ds_writeb(INFORMER_RAGNA, 1);
+			/* make BEORN HJALLASSON known */
+			if (!ds_readb(INFORMER_BEORN)) ds_writeb(INFORMER_BEORN, 1);
+			/* make TIOMAR SWAFNILDSSON known */
+			if (!ds_readb(INFORMER_TIOMAR)) ds_writeb(INFORMER_TIOMAR, 1);
+		} else if (state == 18) {
+			/* test CH+5 */
+			ds_writew(0xe30e, test_attrib(get_hero(0), 2, 5) > 0 ? 19 : 20);
+		} else if (state == 21) {
+			/* mark SWAFNILD EGILSDOTTER as done */
+			ds_writeb(INFORMER_SWAFNILD, 2);
+			ds_writeb(0x3462, 1);
+		} else if (state == 22) {
+			/* test CH+3 */
+			ds_writew(0xe30e, test_attrib(get_hero(0), 2, 3) > 0 ? 24 : 23);
+		} else if (state == 24 || state == 41) {
+			/* mark SWAFNILD EGILSDOTTER as done */
+			ds_writeb(INFORMER_SWAFNILD, 2);
+		} else if (state == 32) {
+				/* check if the party already has this map piece */
+				if (ds_readb(TREASURE_MAPS + 6) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+				/* get the map piece */
+				ds_writeb(TREASURE_MAPS + 6, 1);
+				/* each of the heros gets 10 AP */
+				add_hero_ap_all(10);
+
+				show_treasure_map();
+		} else if (state == 37) {
+
+			ds_writeb(CURRENT_TOWN, ds_readb(0x3461) == 1 ? ds_readb(SWAFNILD_TP1) :
+						ds_readb(0x3461) == 2 ? ds_readb(SWAFNILD_TP2) : ds_readb(SWAFNILD_TP3));
+
+			switch (ds_readbs(CURRENT_TOWN)) {
+				case 39: ds_writew(0x2d83, 22); ds_writew(0x2d85,  8); break;
+				case 33: ds_writew(0x2d83,  4); ds_writew(0x2d85,  3); break;
+				case 37: ds_writew(0x2d83,  9); ds_writew(0x2d85, 10); break;
+				case 38: ds_writew(0x2d83, 11); ds_writew(0x2d85, 11); break;
+				case 34: ds_writew(0x2d83,  4); ds_writew(0x2d85, 12); break;
+				case 36: ds_writew(0x2d83,  6); ds_writew(0x2d85,  6); break;
+			}
+
+			ds_writeb(0x2d9f, 0);
+			ds_writeb(0x7c9c, 1);
+
+			timewarp_until_midnight();
+		} else if (state == 42) {
+			ds_writeb(0x3461, 1);
+		} else if (state == 43) {
+			ds_writeb(0x3461, 2);
+		} else if (state == 44) {
+			ds_writeb(0x3461, 3);
+		}
+
+	} else if (informer == 1) {
+		/* EINHORN / UNICORN (second meeting) */
+
+		if (state == 3) {
+			signed short i;
+
+			/* search a map part the party does not have */
+			for (i = 0; i < 9; i++) {
+				if (!ds_readbs(TREASURE_MAPS + i)) {
+					ds_writeb(TREASURE_MAPS + i, 2);
+					i = 99;
+					break;
+				}
+			}
+
+			/* check if the group had all map parts */
+			if (i != 99) {
+				ds_writeb(TMAP_DOUBLE1, 1);
+			}
+
+			show_treasure_map();
+		}
+	}
 }
 
 /**

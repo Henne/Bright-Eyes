@@ -20,7 +20,8 @@ void INF_eliane_tiomar(signed short, signed short);
 void INF_olvir_asgrimm(signed short, signed short);
 /* 0x43 */
 void INF_treborn_unicorn(signed short, signed short);
-
+/* 0x48 */
+void INF_swafnild_unicorn(signed short, signed short);
 
 #if !defined(__BORLANDC__)
 }
