@@ -18,6 +18,8 @@ void INF_ragna_beorn_algrid(signed short, signed short);
 void INF_eliane_tiomar(signed short, signed short);
 /* 0x3e */
 void INF_olvir_asgrimm(signed short, signed short);
+/* 0x43 */
+void INF_treborn_unicorn(signed short, signed short);
 
 
 #if !defined(__BORLANDC__)

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg072 (informers)
- *	Functions rewritten: 7/9
+ *	Functions rewritten: 8/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -9,12 +9,15 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg007.h"
 #include "seg025.h"
 #include "seg047.h"
+#include "seg055.h"
 #include "seg072.h"
 #include "seg095.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg113.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -556,6 +559,154 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
 			if (!ds_readb(INFORMER_RAGNA)) ds_writeb(INFORMER_RAGNA, 1);
 		}
 	}
+}
+
+/**
+ * \brief dialog logic for the informers treborn and unicorn (1st meeting)
+ * \param informer	0 = treborn, 1 = treborn, 2 = unicorn
+ * \param state		state of the dialog
+ */
+/* Borlandified and identical */
+void INF_treborn_unicorn(signed short informer, signed short state)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	Bit32s money;
+	signed short enough_money;
+
+	money = get_party_money();
+
+	if (!informer) {
+		/* TREBORN KOLBERG (first meeting) */
+
+		enough_money = money >= 6000 ? 1 : 0;
+
+		if (!state) {
+			ds_writew(0xe30e, ds_readb(INFORMER_TREBORN) != 0 ? -1 : 1);
+		} else if (state == 1) {
+			/* mark TREBORN KOLBERG as met */
+			if (!ds_readb(INFORMER_TREBORN)) ds_writeb(INFORMER_TREBORN, 1);
+		} else if (state == 5) {
+			ds_writew(0xe30e, enough_money ? 7 : 8);
+		} else if (state == 9) {
+
+			/* buy the map */
+			money -= 6000;
+			set_party_money(money);
+
+			/* check if the party already has this map piece */
+			if (ds_readb(TREASURE_MAPS + 7) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+			/* get the map piece */
+			ds_writeb(TREASURE_MAPS + 7, 1);
+			/* each of the heros gets 10 AP */
+			add_hero_ap_all(10);
+
+			/* mark ALGRID TRONDESDOTTER as known */
+			/* Original-BUG: this would reactivate algrid */
+			ds_writeb(INFORMER_ALGRID, ds_writeb(0x3467, 1));
+
+			show_treasure_map();
+
+		} else if (state == 11) {
+			/* mark JURGE TORFINSSON as known */
+			if (!ds_readb(INFORMER_JURGE)) ds_writeb(INFORMER_JURGE, 1);
+		} else if (state == 13) {
+			ds_writew(0xe30e, enough_money ? 14 : 15);
+		} else if (state == 17) {
+			ds_writew(0xe30e, enough_money ? 19 : 20);
+		} else if (state == 18) {
+			ds_writew(TYPEINDEX, 91);
+			do_merchant();
+		} else if (state == 21) {
+			ds_writeb(0x3463, 1);
+		} else if (state == 23) {
+			ds_writew(0xe30e, enough_money ? 25 : 24);
+		}
+	} else if (informer == 1) {
+		/* TREBORN KOLBERG (second meeting) */
+
+		enough_money = money >= 7500 ? 1 : 0;
+
+		if (!state) {
+			ds_writew(0xe30e, !ds_readb(0x3463) ? -1 : 1);
+		} else if (state == 2) {
+			ds_writew(0xe30e, enough_money ? 3 : 4);
+		} else if (state == 5) {
+			ds_writew(0xe30e, enough_money ? 6 : 7);
+		} else if (state == 12) {
+			/* buy the map */
+			money -= 7500;
+			set_party_money(money);
+
+			/* check if the party already has this map piece */
+			if (ds_readb(TREASURE_MAPS + 7) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+			/* get the map piece */
+			ds_writeb(TREASURE_MAPS + 7, 1);
+			/* each of the heros gets 10 AP */
+			add_hero_ap_all(10);
+
+			/* mark ALGRID TRONDESDOTTER as known */
+			/* Original-BUG: this would reactivate algrid */
+			ds_writeb(INFORMER_ALGRID, ds_writeb(0x3467, 1));
+
+			show_treasure_map();
+		} else if (state == 14) {
+			/* mark JURGE TORFINSSON as known */
+			if (!ds_readb(INFORMER_JURGE)) ds_writeb(INFORMER_JURGE, 1);
+		}
+
+	} else if (informer == 2) {
+		/* EINHORN / UNICORN (first meeting) */
+
+		if (!state) {
+			ds_writew(0xe30e, ds_readb(INFORMER_UNICORN) == 2 ? 1 : 2);
+		} else if (state == 2) {
+			/* select the hero with the highest CH value */
+			/* REMARK: what if the NPC is choosen ? */
+			/* REMARK: what if the positions are changed ? */
+			/* REMARK: what if the game is saved and the heros are at another mem location ? */
+			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * ds_writeb(UNICORN_HERO_POS, get_hero_CH_best())));
+		} else if (state == 7) {
+			timewarp(HOURS(1));
+		} else if (state == 8) {
+			timewarp(HOURS(1));
+			/* mark UNICORN as done */
+			ds_writeb(INFORMER_UNICORN, 2);
+		} else if (state == 9) {
+			/* mark UNICORN as done */
+			ds_writeb(INFORMER_UNICORN, 2);
+		} else if (state == 10) {
+			/* test FF+2 */
+			ds_writew(0xe30e, test_attrib(Real2Host(ds_readd(UNICORN_HERO_PTR)), 4, 2) > 0 ? 11 : 14);
+		} else if (state == 11) {
+			/* test FF+5 */
+			ds_writew(0xe30e, test_attrib(Real2Host(ds_readd(UNICORN_HERO_PTR)), 4, 5) > 0 ? 12 : 13);
+		} else if (state == 15) {
+			ds_writew(0xe30e, random_schick(100) <= 50 ? 16 : 17);
+		} else if (state == 16) {
+			/* the hero disappears */
+			hero_disappear(Real2Host(ds_readd(UNICORN_HERO_PTR)), ds_readb(UNICORN_HERO_POS), -1);
+		} else if (state == 17) {
+			/* the hero gets heavily wounded, 1 LE left */
+			sub_hero_le(Real2Host(ds_readd(UNICORN_HERO_PTR)), host_readws(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x60) - 1);
+			/* the party opens a camp */
+			ds_writeb(LOCATION, 6);
+			do_location();
+		} else if (state == 18) {
+			timewarp(HOURS(2));
+		} else if (state == 25) {
+			/* the UNICORN will get the map */
+			ds_writeb(UNICORN_GET_MAP, 1);
+
+			/* the hero gets 100 AP */
+			add_hero_ap(Real2Host(ds_readd(UNICORN_HERO_PTR)), 100);
+
+			/* set the unicorn timer (in days) */
+			ds_writeb(UNICORN_TIMER, random_schick(24) + 36);
+		}
+	}
+#endif
 }
 
 /**
