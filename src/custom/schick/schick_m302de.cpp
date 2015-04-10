@@ -4873,8 +4873,9 @@ static int seg072(unsigned short offs) {
 			Bit16s v2 = CPU_Pop16();
 			CPU_Push16(v2);
 			CPU_Push16(v1);
-			D1_LOG("Informant 0x%x(0x%x 0x%x)\n", offs, v1, v2);
-			return 0;
+			D1_INFO("Informant %s Zustand %d\n", v1 == 0 ? "Olvir" : "Asgrimm", v2);
+			INF_olvir_asgrimm(v1, v2);
+			return 1;
 		}
 		case 0x43: {
 			Bit16s v1 = CPU_Pop16();

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg072 (informers)
- *	Functions rewritten: 6/9
+ *	Functions rewritten: 7/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -462,6 +462,99 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 			ds_writew(0xe30e, ds_readb(INFORMER_UMBRIK) == 2 ? 46 : 47);
 		}
 
+	}
+}
+
+/**
+ * \brief dialog logic for the informers olvir and asgrimm
+ * \param informer	0 = olvir, 1 = asgrimm
+ * \param state		state of the dialog
+ */
+/* Borlandified and identical */
+void INF_olvir_asgrimm(signed short informer, signed short state)
+{
+	Bit8u *hero;
+
+	if (!informer) {
+		/* OLVIR GUNDRIDSSON */
+
+		if (!state) {
+			ds_writew(0xe30e, ds_readb(INFORMER_OLVIR) == 2 ? 1 : 2);
+		} else if (state == 2) {
+			/* mark OLVIR GUNDRIDSSON as done */
+			ds_writeb(INFORMER_OLVIR, 2);
+		} else if (state == 8) {
+			ds_writeb(0x3456, ds_writeb(0x345a, 1));
+		} else if (state == 9) {
+			ds_writeb(0x3457, ds_writeb(0x345b, 1));
+		} else if (state == 10) {
+			ds_writeb(0x3458, ds_writeb(0x345c, 1));
+		} else if (state == 12 || state == 13 || state == 23 || state == 24 || state == 29 || state == 30) {
+			timewarp(MINUTES(30));
+		} else if (state == 14 || state == 15 || state == 21 || state == 22 || state == 28) {
+			timewarp(HOURS(1));
+		} else if (state == 16) {
+			ds_writew(0xe30e, ds_readb(0x3459) != 0 ? 19 : 13);
+			ds_writeb(0x3459, 1);
+		} else if (state == 17) {
+			ds_writew(0xe30e, ds_readb(0x3459) != 0 ? 19 : 14);
+			ds_writeb(0x3459, 1);
+		} else if (state == 18) {
+			ds_writew(0xe30e, ds_readb(0x3459) != 0 ? 19 : 15);
+			ds_writeb(0x3459, 1);
+		} else if (state == 26) {
+			ds_writew(0xe30e, ds_readb(0x3459) != 0 ? 19 : 22);
+			ds_writeb(0x3459, 1);
+		} else if (state == 27) {
+			ds_writew(0xe30e, ds_readb(0x3459) != 0 ? 19 : 23);
+			ds_writeb(0x3459, 1);
+		} else if (state == 31) {
+			ds_writew(0xe30e, ds_readb(0x3459) != 0 ? 19 : 29);
+			ds_writeb(0x3459, 1);
+		} else if (state == 32) {
+			ds_writew(0xe30e, ds_readb(0x3459) != 0 ? 19 : 30);
+			ds_writeb(0x3459, 1);
+		} else if (state == 33) {
+			ds_writew(0xe30e, ds_readb(0x345a) != 0 ? 11 : (ds_readb(0x345b) != 0 ? 35 : 36));
+		} else if (state == 34) {
+			ds_writeb(0x345a, 0);
+			ds_writeb(0x345b, 1);
+		} else if (state == 35) {
+			ds_writeb(0x345b, 0);
+			ds_writeb(0x345c, 1);
+		} else if (state == 37) {
+			ds_writew(0xe30e, ds_readb(0x3457) != 0 ? 39 : 40);
+		} else if (state == 39) {
+			ds_writew(0xe30e, ds_readb(0x3456) != 0 ? 42 : 41);
+		}
+	} else if (informer == 1) {
+		/* ASGRIMM THURBOLDSSON */
+
+		if (!state) {
+			ds_writew(0xe30e, ds_readb(0x360f) != 0 ? 22 : (ds_readw(GOT_MAIN_QUEST) == 0|| ds_readb(INFORMER_ASGRIMM) == 2 ? 1 : 2));
+		} else if (state == 2) {
+			/* mark ASGRIMM THURBOLDSSON as done */
+			ds_writeb(INFORMER_ASGRIMM, 2);
+		} else if (state == 7) {
+			signed short i;
+			/* ASGRIMM takes a meal with the heros */
+			hero = get_hero(0);
+			for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+				if ((host_readbs(hero + 0x21) != 0) &&
+					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					!hero_dead(hero))
+				{
+					/* set hunger and thirst to 0 */
+					host_writebs(hero + 0x7f, host_writebs(hero + 0x80, 0));
+				}
+			}
+		} else if (state == 16) {
+			/* make HJORE AHRENSSON known */
+			if (!ds_readb(INFORMER_HJORE)) ds_writeb(INFORMER_HJORE, 1);
+			/* mark RAGNA FIRUNJASDOTTER as known */
+			if (!ds_readb(INFORMER_RAGNA)) ds_writeb(INFORMER_RAGNA, 1);
+		}
 	}
 }
 
