@@ -34,7 +34,7 @@
 #define SPECIAL_DAY	(0x2dc3)
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
-#define TREASURE_MAPS	(0x3332)	/* array char[9] */
+#define TREASURE_MAPS	(0x3332)	/* signed char[9] */
 #define HEARD_ANNOUNCE	(0x334a)	/* signed short: 0 = not heard, 1 = heard, 3 = spoke with hetman */
 #define GOT_MAIN_QUEST	(0x334c)	/* signed short {0,1} */
 #define QUESTED_MONTHS	(0x334e)
@@ -57,6 +57,10 @@
 #define INFORMER_TIOMAR	(0x3372)	/* unsigned char {0,1,2} */
 #define QUEST_GORAH	(0x344d)	/* unsigned char {0,1 } */
 #define QUEST_NAMELESS_GOT	(0x3455)	/* unsigned char {0, 1} */
+#define SWAFNILD_TP1	(0x345d)	/* unsigned char */
+#define SWAFNILD_TP2	(0x345e)	/* unsigned char */
+#define SWAFNILD_TP3	(0x345f)	/* unsigned char */
+#define SWAFNILD_TP4	(0x3460)	/* unsigned char */
 #define TREBORN_DATE	(0x3463)	/* unsigned char {0,1} */
 #define UNICORN_HERO_POS	(0x3464) /* unsigned char {0-6} */
 #define UNICORN_GET_MAP	(0x3465)
