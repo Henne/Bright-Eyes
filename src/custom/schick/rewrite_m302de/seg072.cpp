@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg072 (informers)
- *	Functions rewritten: 5/9
+ *	Functions rewritten: 6/9
  */
 #include <stdio.h>
 #include <string.h>
@@ -10,8 +10,10 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg025.h"
+#include "seg047.h"
 #include "seg072.h"
 #include "seg095.h"
+#include "seg103.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
@@ -366,6 +368,100 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 			/* make TREBORN KOLBERG known */
 			if (!ds_readb(INFORMER_TREBORN)) ds_writeb(INFORMER_TREBORN, 1);
 		}
+	}
+}
+
+/**
+ * \brief dialog logic for the informers eliane and tiomar
+ * \param informer	0 = eliane, 1 = tiomar
+ * \param state		state of the dialog
+ */
+/* Borlandified and identical */
+void INF_eliane_tiomar(signed short informer, signed short state)
+{
+	if (!informer) {
+		/* ELIANE WINDENBECK */
+
+		if (!state) {
+			ds_writew(0xe30e, ds_readb(QUEST_NAMELESS_GOT) || ds_readw(GOT_MAIN_QUEST) == 0 ? 1 : 6);
+		} else if (state == 1) {
+			ds_writew(0xe30e, ds_readb(QUEST_NAMELESS_DONE) && ds_readb(INFORMER_ELIANE) != 2 ? 2 : 3);
+		} else if (state == 5 || state == 27) {
+				/* check if the party already has this map piece */
+				if (ds_readb(TREASURE_MAPS + 5) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+				/* get the map piece */
+				ds_writeb(TREASURE_MAPS + 5, 1);
+				/* each of the heros gets 10 AP */
+				add_hero_ap_all(10);
+
+				show_treasure_map();
+
+				/* mark ELIANE WINDENBECK as done */
+				ds_writeb(INFORMER_ELIANE, 2);
+		} else if (state == 19) {
+			ds_writew(0xe30e, ds_readb(QUEST_NAMELESS_DONE) ? 20 : 30);
+			ds_writeb(QUEST_NAMELESS_GOT, 1);
+		} else if (state == 16) {
+			/* mark YASMA THINMARSDOTTER as known */
+			if (!ds_readb(INFORMER_YASMA)) ds_writeb(INFORMER_YASMA, 1);
+			/* mark SWAFNILD EGILSDOTTER as known */
+			if (!ds_readb(INFORMER_SWAFNILD)) ds_writeb(INFORMER_SWAFNILD, 1);
+			/* mark ASGRIMM THURBOLDSSON as known */
+			if (!ds_readb(INFORMER_ASGRIMM)) ds_writeb(INFORMER_ASGRIMM, 1);
+		} else if (state == 24) {
+			/* the group has the SCHWARZE STATUETTE/BLACK FIGURINE */
+			ds_writew(0xe30e, get_first_hero_with_item(248) != -1 ? 27 : 28);
+		}
+	} else if (informer == 1) {
+		/* TIOMAR SWAFNILDSSON */
+
+		if (!state) {
+			ds_writew(0xe30e, ds_readb(0x360f) != 0 ?
+						44 :
+						(!ds_readb(INFORMER_TIOMAR) || ds_readb(INFORMER_TIOMAR) == 2 ?	2 : 1));
+		} else if (state == 1) {
+			ds_writew(0xe30e, ds_readb(0x3469) != 0 ? 36 : 3);
+		} else if (state == 4) {
+			ds_writew(0xe30e, get_first_hero_with_item(247) != -1 ? 6 : 7);
+		} else if (state == 12 || state == 42) {
+				/* check if the party already has this map piece */
+				if (ds_readb(TREASURE_MAPS + 8) == 2) ds_writeb(TMAP_DOUBLE2, 1);
+				/* get the map piece */
+				ds_writeb(TREASURE_MAPS + 8, 1);
+				/* each of the heros gets 10 AP */
+				add_hero_ap_all(10);
+
+				show_treasure_map();
+
+				/* mark TIOMAR SWAFNILDSSON as done */
+				ds_writeb(INFORMER_TIOMAR, 2);
+		} else if (state == 17) {
+			/* mark JURGE TORFINSSON as known */
+			if (!ds_readb(INFORMER_JURGE)) ds_writeb(INFORMER_JURGE, 1);
+			/* mark ISLEIF OLGARDSSON as known */
+			if (!ds_readb(INFORMER_ISLEIF)) ds_writeb(INFORMER_ISLEIF, 1);
+		} else if (state == 20) {
+			/* drink with TIOMAR */
+			timewarp(HOURS(1));
+			ds_writew(0xe30e, test_skill(get_hero(ds_writeb(0x3468, get_random_hero())) , 18, 0) > 0 ? 21 : 22);
+		} else if (state == 22) {
+			/* TIOMARS drinkmate gets drunken */
+			hero_get_drunken(get_hero(ds_readb(0x3468)));
+		} else if (state == 31) {
+			/* mark JURGE TORFINSSON as known */
+			if (!ds_readb(INFORMER_JURGE)) ds_writeb(INFORMER_JURGE, 1);
+			/* mark ISLEIF OLGARDSSON as known */
+			if (!ds_readb(INFORMER_ISLEIF)) ds_writeb(INFORMER_ISLEIF, 1);
+			/* mark UMBRIK SIEBENSTEIN as known */
+			if (!ds_readb(INFORMER_UMBRIK)) ds_writeb(INFORMER_UMBRIK, 1);
+		} else if (state == 34) {
+			ds_writeb(0x3469, 1);
+		} else if (state == 36) {
+			ds_writew(0xe30e, get_first_hero_with_item(247) != -1 ? 37 : 2);
+		} else if (state == 45) {
+			ds_writew(0xe30e, ds_readb(INFORMER_UMBRIK) == 2 ? 46 : 47);
+		}
+
 	}
 }
 

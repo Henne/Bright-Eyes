@@ -14,6 +14,8 @@ signed short count_map_parts(void);
 void INF_yasma_umbrik_isleif(signed short, signed short);
 /* 0x34 */
 void INF_ragna_beorn_algrid(signed short, signed short);
+/* 0x39 */
+void INF_eliane_tiomar(signed short, signed short);
 
 
 #if !defined(__BORLANDC__)
