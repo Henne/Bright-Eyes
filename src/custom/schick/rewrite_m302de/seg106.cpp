@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
-	Functions rewritten: 7/8
+	Functions rewritten: 8/8 (complete)
 */
 
 #include <stdio.h>
@@ -208,8 +208,6 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 			}
 		}
 	}
-
-
 }
 
 /* Borlandified and identical */
@@ -277,6 +275,363 @@ void print_item_description(Bit8u *hero, signed short pos)
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
+}
+
+/* Borlandified and identical */
+void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short pos2)
+{
+	signed short l_di;
+	register signed short pos1 = old_pos1;
+
+	signed short item1;
+	signed short item2;
+	Bit8u *item1_desc;
+	Bit8u *item2_desc;
+	signed short flag;
+	signed short desc1_5;
+	signed short desc2_5;
+	struct knapsack_item tmp;
+
+
+	item1 = host_readws(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+
+	/* check if item1 is an item */
+	if (item1 == 0) {
+		GUI_output(get_ltx(0x344));
+		return;
+	}
+
+	item2 = host_readws(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM);
+
+	item1_desc = get_itemsdat(item1);
+	item2_desc = get_itemsdat(item2);
+
+	if (item_undropable(item1_desc)) {
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0x718),
+			(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item1, 0)));
+
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		return;
+	}
+
+	if (item_undropable(item2_desc)) {
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0x718),
+			(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item2, 0)));
+
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		return;
+
+	}
+
+	/* identical until here */
+	if (pos2 < 7) {
+		if (!can_hero_use_item(hero2, item1)) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0x374),
+				(char*)(hero2 + 0x10),
+				(char*)get_ltx(((host_readbs(hero2 + 0x22) ? 593 : 9) + host_readbs(hero2 + 0x21)) * 4),
+				(char*)Real2Host(GUI_names_grammar(2, item1, 0)));
+
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+			return;
+
+		} else if (!can_item_at_pos(item1, pos2)) {
+
+			if (is_in_word_array(item1, (signed short*)(p_datseg + 0x29e))) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x378),
+					(char*)Real2Host(GUI_names_grammar(0x4000, item1, 0)),
+					(char*)get_ltx(0x8b4));
+			} else {
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x378),
+					(char*)Real2Host(GUI_names_grammar(0, item1, 0)),
+					(char*)get_ltx(0x8b0));
+			}
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+			return;
+
+		} else if (two_hand_collision(hero2, item1, pos2)) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0x10c),
+				(char*)(hero2 + 0x10));
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+			return;
+		}
+	}
+#if defined(__BORLANDC__)
+	/* this assembler code here is only for comparization the disassemblies */
+		asm { db 0x9a, 0xff, 0xff, 0x00, 0x00 }
+		asm { db 0x9a, 0xff, 0xff, 0x00, 0x00 }
+#endif
+
+/* 0x8ff */
+
+	if ((item2 != 0) && (pos1 < 7)) {
+
+		if (!can_hero_use_item(hero1, item2)) {
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0x374),
+				(char*)(hero1 + 0x10),
+				(char*)get_ltx(((host_readbs(hero1 + 0x22) ? 593 : 9) + host_readbs(hero1 + 0x21)) * 4),
+				(char*)Real2Host(GUI_names_grammar(2, item2, 0)));
+
+#if defined(__BORLANDC__)
+			desc1_5 = desc1_5;
+#endif
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+			return;
+
+		} else if (!can_item_at_pos(item2, pos1)) {
+
+			if (is_in_word_array(item2, (signed short*)(p_datseg + 0x29e))) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x378),
+					(char*)Real2Host(GUI_names_grammar(0x4000, item2, 0)),
+					(char*)get_ltx(0x8b4));
+			} else {
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x378),
+					(char*)Real2Host(GUI_names_grammar(0, item2, 0)),
+					(char*)get_ltx(0x8b0));
+			}
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+			return;
+		}
+	}
+
+/* 0xa14 */
+
+	/* identical from here */
+	if (item2 != 0) {
+
+		flag = 1;
+		if ((item2 == item1) && item_stackable(item2_desc)) {
+
+			flag = 0;
+			l_di = 1;
+
+			if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) > 1) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0x348),
+					host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM),
+					(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
+					(char*)hero2 + 0x10);
+
+
+				l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+			}
+
+			if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) < l_di) {
+				l_di = host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM);
+			}
+
+			if ((l_di > 0) && (host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM) < 99)) {
+
+				if (host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM) + l_di > 99) {
+					l_di = 99 - host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM);
+				}
+
+				while ((host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+					l_di--;
+				}
+
+				if (l_di > 0) {
+					add_ptr_ws(hero2 + 0x2d8, host_readws(item1_desc + 5) * l_di);
+					add_ptr_ws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM, l_di);
+					drop_item(hero1, pos1, l_di);
+				} else {
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0xc2c),
+						(char*)hero2 + 0x10);
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+			}
+		}
+
+		if (flag != 0) {
+
+			desc1_5 = (item_stackable(item1_desc)) ?
+				host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) * host_readw(item1_desc + 5) :
+				host_readws(item1_desc + 5);
+
+			desc2_5 = (item_stackable(item2_desc)) ?
+				host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM) * host_readw(item2_desc + 5) :
+				host_readws(item2_desc + 5);
+
+			if (host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + desc1_5 - desc2_5) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_ltx(0xc2c),
+					(char*)hero2 + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			} else {
+				if (pos1 < 7) {
+					unequip(hero1, item1, pos1);
+					add_equip_boni(hero2, hero1, item2, pos2, pos1);
+				}
+
+				if (pos2 < 7) {
+					unequip(hero2, item2, pos2);
+					add_equip_boni(hero1, hero2, item1, pos1, pos2);
+				}
+
+				/* exchange two items */
+#if !defined(__BORLANDC__)
+				struct_copy((Bit8u*)&tmp, hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+#else
+				tmp = *(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM);
+#endif
+
+				sub_ptr_ws(hero2 + 0x2d8, desc2_5);
+
+#if !defined(__BORLANDC__)
+				struct_copy(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM,
+						hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM,
+						SIZEOF_KS_ITEM);
+#else
+				*(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM) =
+					*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+#endif
+
+				add_ptr_ws(hero2 + 0x2d8, desc1_5);
+				sub_ptr_ws(hero1 + 0x2d8, desc1_5);
+
+#if !defined(__BORLANDC__)
+				struct_copy(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM,
+						(Bit8u*)&tmp,
+						SIZEOF_KS_ITEM);
+#else
+				*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM) = tmp;
+#endif
+
+				add_ptr_ws(hero1 + 0x2d8, desc2_5);
+
+				/* item counter */
+				dec_ptr_bs(hero1 + 0x20);
+				inc_ptr_bs(hero2 + 0x20);
+
+				/* special items */
+				if (item2 == 0xa1) {
+					host_writeb(hero1 + 0x125, host_readbs(hero1 + 0x125) + 3);
+					host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + -3);
+				}
+				if (item2 == 0xa3) {
+					host_writeb(hero1 + 0x66, host_readbs(hero1 + 0x66) + 5);
+					host_writeb(hero2 + 0x66, host_readbs(hero2 + 0x66) + -5);
+				}
+				if (item1 == 0xa1) {
+					host_writeb(hero1 + 0x125, host_readbs(hero1 + 0x125) + -3);
+					host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + 3);
+				}
+				if (item1 == 0xa3) {
+					host_writeb(hero1 + 0x66, host_readbs(hero1 + 0x66) + -5);
+					host_writeb(hero2 + 0x66, host_readbs(hero2 + 0x66) + 5);
+				}
+			}
+		}
+	} else if (item_stackable(item1_desc)) {
+
+		l_di = 1;
+
+		if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) > 1) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0x348),
+				host_readws(hero1+ 0x198 + pos1 * SIZEOF_KS_ITEM),
+				(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
+				(char*)hero2 + 0x10);
+
+
+			l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+		}
+
+		if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) < l_di) {
+			l_di = host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM);
+		}
+
+		while ((host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+			l_di--;
+		}
+
+		if (l_di > 0) {
+#if !defined(__BORLANDC__)
+			struct_copy(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM,
+				hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+#else
+			*(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM) =
+					*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+#endif
+			add_ptr_ws(hero2 + 0x2d8, host_readws(item1_desc + 5) * l_di);
+			host_writews(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM, l_di);
+			drop_item(hero1, pos1, l_di);
+
+		} else {
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xc2c),
+				(char*)hero2 + 0x10);
+			GUI_output(Real2Host(ds_readd(DTP2)));
+		}
+	} else if (host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + host_readws(item1_desc + 5)) {
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0xc2c),
+			(char*)hero2 + 0x10);
+		GUI_output(Real2Host(ds_readd(DTP2)));
+	} else {
+
+		/* do the change */
+
+		if (pos1 < 7) {
+			unequip(hero1, item1, pos1);
+		}
+
+		if (pos2 < 7) {
+			add_equip_boni(hero1, hero2, item1, pos1, pos2);
+		}
+
+#if !defined(__BORLANDC__)
+		struct_copy(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM,
+			hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+#else
+		*(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM) =
+			*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+#endif
+		/* adjust weight */
+		add_ptr_ws(hero2 + 0x2d8, host_readws(item1_desc + 5));
+		sub_ptr_ws(hero1 + 0x2d8, host_readws(item1_desc + 5));
+
+		/* adjust item counter */
+		dec_ptr_bs(hero1 + 0x20);
+		inc_ptr_bs(hero2 + 0x20);
+
+		/* clear slot */
+		memset(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM, 0, SIZEOF_KS_ITEM);
+
+		/* special items */
+		if (item1 == 0xa1) {
+			host_writeb(hero1 + 0x125, host_readbs(hero1 + 0x125) + -3);
+			host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + 3);
+		}
+		if (item1 == 0xa3) {
+			host_writeb(hero1 + 0x66, host_readbs(hero1 + 0x66) + -5);
+			host_writeb(hero2 + 0x66, host_readbs(hero2 + 0x66) + 5);
+		}
+	}
 }
 
 struct items_all {

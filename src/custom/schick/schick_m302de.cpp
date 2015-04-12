@@ -6886,7 +6886,19 @@ static int seg106(unsigned short offs)
 		return 1;
 	}
 	case 0x2a: {
-		return 0;
+		RealPt hero1 = CPU_Pop32();
+		Bit16s pos1 = CPU_Pop16();
+		RealPt hero2 = CPU_Pop32();
+		Bit16s pos2 = CPU_Pop16();
+		D1_INFO("pass_item(%s, %d, %s, %d);\n",
+			schick_getCharname(hero1), pos1,
+			schick_getCharname(hero2), pos2);
+		pass_item(Real2Host(hero1), pos1, Real2Host(hero2), pos2);
+		CPU_Push16(pos2);
+		CPU_Push32(hero2);
+		CPU_Push16(pos1);
+		CPU_Push32(hero1);
+		return 1;
 	}
 	case 0x2f: {
 		RealPt hero = CPU_Pop32();
