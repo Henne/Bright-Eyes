@@ -486,28 +486,26 @@ void equip_belt_ani(void)
 }
 
 /**
- * get_full_waterskin_pos() - search for a full waterskin
- * @hero:	pointer to the hero
+ * \brief	search for a full waterskin
+ * \param hero	pointer to the hero
+ * \return	position of a non-empty waterskin
  */
+/* Borlandified and identical */
 signed short get_full_waterskin_pos(Bit8u *hero)
 {
-	signed short i, pos;
-
-	pos = -1;
+	signed short pos = -1;
+	signed short i;
 
 	/* Original-BUG: should start from inventory pos 0 */
 	for (i = 7; i < 23; i++) {
 
-		/* look for a waterskin...*/
-		if (host_readw(hero + 0x196 + i * 14) != 0x1e)
-			continue;
-
-		/* ...which is not empty */
-		if ((host_readb(hero + 0x196 + 4 + i * 14) >> 2) & 1)
-			continue;
-
-		pos = i;
-		break;
+		/* look for a non-empty waterskin */
+		if ((host_readw(hero + 0x196 + i * 14) == 30) &&
+			!ks_empty(hero + 0x196 + i * 14))
+		{
+			pos = i;
+			break;
+		}
 	}
 
 	return pos;
