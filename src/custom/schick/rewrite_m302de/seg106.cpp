@@ -379,20 +379,21 @@ signed short get_max_light_time(void)
 }
 
 /**
- * equip_belt_ani() - shows an animation of a man equipping a belt
+ * \brief	shows an animation of a man equipping a belt
  *
  * This is only executed when equipping a skullbelt.
  */
+/* Borlandified and identical */
 void equip_belt_ani(void)
 {
-	struct nvf_desc nvf;
-	Bit8u *p_pal;
-	unsigned int nvf_length;
-	signed short height;
-	signed short width;
-
 	signed short i;
 	signed short handle;
+
+	signed short width;
+	signed short height;
+	Bit32s nvf_length;
+	Bit8u *p_pal;
+	struct nvf_desc nvf;
 
 	/* open GUERTEL.NVF */
 	handle = load_archive_file(0x84);
@@ -401,13 +402,14 @@ void equip_belt_ani(void)
 	nvf_length = read_archive_file(handle,
 			Real2Host(ds_readd(0xc3db)), 64000);
 	/* read NVF part 2 */
-	nvf_length += read_archive_file(handle,
-			Real2Host(ds_readd(0xc3db)) + 64000, 64000);
+	nvf_length += read_archive_file(handle, Real2Host(F_PADD(ds_readd(0xc3db), 64000)), 64000);
 
 	bc_close(handle);
 
 	/* calculate palette pointer */
-	p_pal = Real2Host(ds_readd(0xc3db)) + nvf_length - 0x60;
+	p_pal = Real2Host(F_PADD(F_PADD(ds_readd(0xc3db), nvf_length), -0x60));
+
+	wait_for_vsync();
 
 	set_palette(p_pal, 0x80, 0x20);
 
@@ -480,10 +482,7 @@ void equip_belt_ani(void)
 		refresh_screen_size();
 	}
 
-	/* a = b = c = -1 */
-	ds_writeb(0x2ca7, -1);
-	ds_writeb(0x2ca6, -1);
-	ds_writew(CURRENT_ANI, -1);
+	ds_writew(CURRENT_ANI, ds_writebs(0x2ca6, ds_writebs(0x2ca7, -1)));
 }
 
 /**
