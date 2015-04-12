@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
-	Functions rewritten: 6/8
+	Functions rewritten: 7/8
 */
 
 #include <stdio.h>
@@ -277,6 +277,62 @@ void print_item_description(Bit8u *hero, signed short pos)
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
+}
+
+struct items_all {
+	signed short a[4];
+};
+
+/* Borlandified and identical */
+void startup_equipment(Bit8u *hero)
+{
+	signed short i;
+	struct items_all all;
+#if !defined(__BORLANDC__)
+	all.a[0] = 30;
+	all.a[1] = 45;
+	all.a[2] = 45;
+	all.a[3] = 49;
+#else
+	*(struct items_all*)&all = *(struct items_all*)(p_datseg + 0xaea8);
+#endif
+
+	for (i = 0; i < 4; i++) {
+		give_hero_new_item(hero, all.a[i], 1, 1);
+	}
+
+	move_item(5, 9, hero);
+
+	if (host_readbs(hero + 0x22) != 0 && host_readbs(hero + 0x21) != 3 && host_readbs(hero + 0x21) != 9) {
+		give_hero_new_item(hero, 48, 1, 1);
+		move_item(2, 9, hero);
+	}
+
+	i = 0;
+	while (ds_readws(0xae40 + 8 * host_readbs(hero + 0x21) + 2 * i) != -1 && (i < 4)) {
+
+		give_hero_new_item(hero, ds_readws(0xae40 + 8 * host_readbs(hero + 0x21) + 2 * i++), 1, 1);
+
+		if (i == 1) {
+			move_item(3, 9, hero);
+		}
+	}
+
+	if (host_readbs(hero + 0x21) == 3) {
+		move_item(2, get_item_pos(hero, 53), hero);
+	}
+
+	if (host_readbs(hero + 0x21) == 9) {
+		move_item(2, get_item_pos(hero, 75), hero);
+	}
+
+	if (host_readbs(hero + 0x21) == 2 ||
+		host_readbs(hero + 0x21) == 10 ||
+		host_readbs(hero + 0x21) == 12)
+	{
+		give_hero_new_item(hero, 10, 1, 20);
+		move_item(4, get_item_pos(hero, 10), hero);
+	}
 }
 
 /**

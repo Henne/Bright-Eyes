@@ -6889,7 +6889,12 @@ static int seg106(unsigned short offs)
 		return 0;
 	}
 	case 0x2f: {
-		return 0;
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		D1_LOG("startup_equipment(%s);\n", schick_getCharname(hero));
+		startup_equipment(Real2Host(hero));
+		return 1;
 	}
 	case 0x39: {
 		reg_ax = get_max_light_time();

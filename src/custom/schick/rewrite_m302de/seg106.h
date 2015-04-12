@@ -6,6 +6,8 @@ namespace M302de {
 void move_item(signed short, signed short, Bit8u*);
 /* 0x25 */
 void print_item_description(Bit8u*, signed short);
+/* 0x2f */
+void startup_equipment(Bit8u*);
 /* 0x34 */
 signed short two_hand_collision(Bit8u*, signed short, signed short);
 /* 0x39 */
