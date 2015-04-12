@@ -336,9 +336,10 @@ void startup_equipment(Bit8u *hero)
 }
 
 /**
- * get_max_light_time() - get the maximum time of a burning lightsource
+ * \brief	get the maximum time of a burning lightsource
  *
  */
+/* Borlandified and identical */
 signed short get_max_light_time(void)
 {
 	Bit8u *hero;
@@ -361,14 +362,14 @@ signed short get_max_light_time(void)
 			/* search for a burning torch */
 			if (host_readw(hero + 0x196 + j * 14) == 0x16) {
 
-				if (host_readb(hero + j * 14 + 0x196 + 8) > retval) {
-					retval = host_readb(hero + j * 14 + 0x196 + 8);
+				if (host_readbs(hero + j * 14 + 0x196 + 8) > retval) {
+					retval = host_readbs(hero + j * 14 + 0x196 + 8);
 				}
 			} else if (host_readw(hero + 0x196 + j * 14) == 0xf9) {
 				/* search for a burning lantern */
 
-				if (host_readb(hero + j * 14 + 0x196 + 8) / 10 > retval) {
-					retval = host_readb(hero + j * 14 + 0x196 + 8) / 10;
+				if (host_readbs(hero + j * 14 + 0x196 + 8) / 10 > retval) {
+					retval = host_readbs(hero + j * 14 + 0x196 + 8) / 10;
 				}
 			}
 		}
