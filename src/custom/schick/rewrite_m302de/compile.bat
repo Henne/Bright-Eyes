@@ -6,6 +6,8 @@
 @REM
 @REM --the hard cases
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG008.CPP
+@REM -Os, -Od, -k- geht auch
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG106.CPP
 @REM
 @REM --the compiling cases
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
@@ -25,7 +27,6 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG075.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG076.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG092.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG106.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG109.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG111.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG113.CPP
