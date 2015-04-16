@@ -9333,7 +9333,10 @@ static int n_seg048(unsigned short offs)
 {
 	switch(offs) {
 	case 0x00: {
-		return 0;
+		CPU_Pop16();
+		D1_LOG("reset_item_selector()\n");
+		reset_item_selector();
+		return 1;
 	}
 	case 0xd0: {
 		return 0;
