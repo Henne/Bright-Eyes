@@ -233,7 +233,7 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 			(host_readbs(hero + 0x108 + skill) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
-			D1_INFO("%s hatt alle Versuche aufgebraucht\n", hero + 0x10);
+			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + 0x10);
 #endif
 		} else {
 
@@ -302,7 +302,7 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 			(host_readbs(hero + 0x13d + spell) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
-			D1_INFO("%s hatt alle Versuche aufgebraucht\n", hero + 0x10);
+			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + 0x10);
 #endif
 		} else {
 
