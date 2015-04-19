@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg050 (level up)
- *	Functions rewritten: 5/5
+ *	Functions rewritten: 5/5 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg050.cpp
 */
 #include <stdio.h>
 
@@ -35,7 +39,6 @@ struct dummy {
  * \param	hero	pointer to the hero
  * \param	spell	number of the spell
  */
-/* Borlandified and identical */
 void inc_spell_advanced(Bit8u *hero, signed short spell)
 {
 	signed short l_di = 1;
@@ -134,7 +137,6 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
  * \param	hero	pointer to the hero
  * \param	skill	number of the skill
  */
-/* Borlandified and identical */
 void inc_skill_advanced(Bit8u *hero, signed short skill)
 {
 	signed short randval;
@@ -227,7 +229,6 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
  *	a skill can be increased. So the correct rules come
  *	from the array which contain the skills.
  */
-/* Borlandified and identical */
 void inc_skill_novice(Bit8u *hero, signed short skill)
 {
 	signed short done;
@@ -297,7 +298,6 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
  *	a spell can be increased. So the correct rules come
  *	from the array which contain the spells.
  */
-/* Borlandified and identical */
 void inc_spell_novice(Bit8u *hero, signed short spell)
 {
 	signed short done;
@@ -351,7 +351,6 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
  * \brief		brings your hero to the next level
  * \param hero_pos	the position of the hero
  */
-/* Borlandified and identical */
 void level_up(signed short hero_pos)
 {
 	register signed short l_si;
