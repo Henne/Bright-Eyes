@@ -3073,7 +3073,6 @@ void herokeeping(void)
 	ds_writeb(0x4649, 0);
 }
 
-#if defined(__BORLANDC__)
 void check_level_up(void)
 {
 	signed short i;
@@ -3101,7 +3100,6 @@ void check_level_up(void)
 
 	} while(done);
 }
-#endif
 
 struct dummy {
 	char a[24];

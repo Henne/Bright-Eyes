@@ -7914,6 +7914,12 @@ static int n_seg002(unsigned short offs)
 
 		return 1;
 	}
+	case 0x373a: {
+		CPU_Pop16();
+		D1_LOG("check_level_up();\n");
+		check_level_up();
+		return 1;
+	}
 	/* Callers: 1 */
 	case 0x3b63: {
 		CPU_Pop16();
