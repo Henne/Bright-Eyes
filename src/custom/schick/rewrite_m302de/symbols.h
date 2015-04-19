@@ -18,6 +18,7 @@
 #define CURRENT_ANI	(0x2ccf)
 #define IN_FIGHT	(0x2cd5)
 #define FIGHT_ROUND	(0x2cd7)
+#define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
 #define CURRENT_GROUP	(0x2d35)
 #define DIRECTION	(0x2d3d)
 #define X_TARGET	(0x2d44)

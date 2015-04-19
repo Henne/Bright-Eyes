@@ -4517,12 +4517,13 @@ static int seg049(unsigned short offs)
 static int seg050(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			Bit16u hero_nr = CPU_Pop16();
+			Bit16u hero_pos = CPU_Pop16();
 
-			D1_LOG("level_up(%s);\n", get_hero(hero_nr) + 0x10);
+			D1_LOG("level_up(%s);\n", get_hero(hero_pos) + 0x10);
+			level_up(hero_pos);
 
-			CPU_Push16(hero_nr);
-			return 0;
+			CPU_Push16(hero_pos);
+			return 1;
 		}
 		case 0x2f: {
 			RealPt hero = CPU_Pop32();
