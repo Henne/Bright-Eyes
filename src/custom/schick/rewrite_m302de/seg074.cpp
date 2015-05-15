@@ -24,11 +24,10 @@ namespace M302de {
 #endif
 
 #if defined(__BORLANDC__)
-/* this function is called with different argument types fomr different segments */
+/* this function is called with different argument types from different segments */
 signed short div16(signed short);
 #endif
 
-#if defined(__BORLANDC__)
 void show_automap(void)
 {
 	signed short l_si;
@@ -40,7 +39,7 @@ void show_automap(void)
 	signed short bak;
 
 	if (!ds_readb(DUNGEON_LIGHT) ||
-		((ds_readbs(DUNGEON_LIGHT) == 1) && (test_skill(get_first_hero_available_in_group(), 28, 6) > 0)))
+		((ds_readbs(DUNGEON_LIGHT) == 1) && (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 6) > 0)))
 	{
 
 		ds_writeb(0x45b8, 1);
@@ -140,7 +139,6 @@ void show_automap(void)
 		GUI_output(get_ltx(0xc10));
 	}
 }
-#endif
 
 unsigned short is_discovered(signed short x, signed short y)
 {

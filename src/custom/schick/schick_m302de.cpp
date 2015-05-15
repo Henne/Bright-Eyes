@@ -4955,7 +4955,9 @@ static int seg074(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			D1_LOG("show_automap()\n");
+			show_automap();
+			return 1;
 		}
 		case 0x25: {
 			D1_LOG("select_teleport_dest();\n");
