@@ -1158,8 +1158,8 @@ static int seg002(unsigned short offs) {
 		return 1;
 	case 0x1a34: {
 		D1_LOG("handle_gui_input();\n");
-		//handle_gui_input();
-		return 0;
+		handle_gui_input();
+		return 1;
 	}
 	case 0x1cf2: {
 		unsigned short x = CPU_Pop16();

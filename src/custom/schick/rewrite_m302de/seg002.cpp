@@ -1483,9 +1483,6 @@ void mouse_19dc(void)
 
 void handle_gui_input(void)
 {
-#if !defined(__BORLANDC__)
-	CALLBACK_RunRealFar(reloc_game + 0x51e, 0x1a34);
-#else
 	signed short l_si;
 	signed short l_di;
 	signed short l1;
@@ -1625,8 +1622,6 @@ void handle_gui_input(void)
 
 	mouse_19dc();
 	ds_writew(ACTION, l_si);
-
-#endif
 }
 
 signed short get_mouse_action(signed short x, signed short y, Bit8u *p)
