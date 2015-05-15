@@ -1517,7 +1517,7 @@ void handle_gui_input(void)
 		}
 
 		if (ds_readw(0xc3d7) == 5) {
-			seg048_1498();
+			status_select_hero();
 			l_si = 0;
 		}
 

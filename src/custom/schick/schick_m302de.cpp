@@ -4438,7 +4438,9 @@ static int seg048(unsigned short offs)
 {
 	switch(offs) {
 	case 0x20: {
-		return 0;
+		D1_LOG("status_select_hero()\n");
+		status_select_hero();
+		return 1;
 	}
 	case 0x25: {
 		Bit16s hero_pos = CPU_Pop16();

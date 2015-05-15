@@ -1,6 +1,6 @@
 /*
  *      Rewrite of DSA1 v3.02_de functions of seg048 (status menu)
- *      Functions rewritten: 2/3
+ *      Functions rewritten: 3/3 (complete)
  *
 */
 #include <stdio.h>
@@ -841,9 +841,19 @@ void status_menu(signed short hero_pos)
 	}
 }
 
-void seg048_1498(void)
+/* Borlandified and identical */
+void status_select_hero(void)
 {
-	DUMMY_WARNING();
+
+	if (ds_readws(0x29b2) == 0 || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+		/* Yes, it was written that way! */
+	} else {
+		signed short hero_pos = select_hero_from_group(get_ltx(0x4b4));
+
+		if (hero_pos != -1) {
+			status_menu(hero_pos);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
