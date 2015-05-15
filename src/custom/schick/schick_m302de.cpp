@@ -4441,7 +4441,11 @@ static int seg048(unsigned short offs)
 		return 0;
 	}
 	case 0x25: {
-		return 0;
+		Bit16s hero_pos = CPU_Pop16();
+		CPU_Push16(hero_pos);
+		D1_LOG("status_menu(%d);\n", hero_pos);
+		status_menu(hero_pos);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",
@@ -9346,7 +9350,12 @@ static int n_seg048(unsigned short offs)
 		return 1;
 	}
 	case 0xd0: {
-		return 0;
+		CPU_Pop16();
+		Bit16s hero_pos = CPU_Pop16();
+		CPU_Push16(hero_pos);
+		D1_LOG("status_menu(%d);\n", hero_pos);
+		status_menu(hero_pos);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",

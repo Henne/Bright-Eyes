@@ -1582,7 +1582,7 @@ void handle_gui_input(void)
 				if ((host_readbs(get_hero(l_si - 241) + 0x21) != 0) &&
 						host_readbs(get_hero(l_si - 241) + 0x87) == ds_readbs(CURRENT_GROUP))
 				{
-					seg048_00d0(l_si - 241);
+					status_menu(l_si - 241);
 					l_si = 0;
 					ds_writew(0xc3cf, 0);
 					ds_writew(0xc3d5, 0);
