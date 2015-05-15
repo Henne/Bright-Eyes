@@ -3031,8 +3031,8 @@ static int seg025(unsigned short offs) {
 	}
 	case 0x3e: {
 		D1_LOG("show_citizen();\n");
-		//show_citizen();
-		return 0;
+		show_citizen();
+		return 1;
 	}
 	case 0x48: {
 		D1_LOG("do_house();\n");

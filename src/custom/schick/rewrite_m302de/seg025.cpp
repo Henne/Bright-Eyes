@@ -52,11 +52,11 @@ void show_entrance(void)
 /* Borlandified and identical */
 void show_citizen(void)
 {
-
 	ds_writew(0x2846, 1);
 
 	do {
 		handle_gui_input();
+
 		if (ds_readw(0x2846) != 0) {
 
 			draw_main_screen();
