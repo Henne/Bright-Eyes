@@ -617,7 +617,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			ds_writew(TYPEINDEX, 91);
 			do_merchant();
 		} else if (state == 21) {
-			ds_writeb(0x3463, 1);
+			ds_writeb(TREBORN_DATE, 1);
 		} else if (state == 23) {
 			ds_writew(0xe30e, enough_money ? 25 : 24);
 		}
@@ -627,7 +627,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 		enough_money = money >= 7500 ? 1 : 0;
 
 		if (!state) {
-			ds_writew(0xe30e, !ds_readb(0x3463) ? -1 : 1);
+			ds_writew(0xe30e, !ds_readb(TREBORN_DATE) ? -1 : 1);
 		} else if (state == 2) {
 			ds_writew(0xe30e, enough_money ? 3 : 4);
 		} else if (state == 5) {
