@@ -4559,9 +4559,9 @@ static int seg053(unsigned short offs) {
 			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualitaet: %d\n",
 				typi, 100 + price, qual);
 
-			//do_healer();
+			do_healer();
 
-			return 0;
+			return 1;
 		}
 		case 0x25: {
 			RealPt hero = CPU_Pop32();
