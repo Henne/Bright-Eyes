@@ -190,7 +190,7 @@ void prepare_sg_name(char *dst, char *src)
 	dst[8] = '\0';
 }
 
-signed short load_save_game(void)
+signed short load_game_state(void)
 {
 	DUMMY_WARNING();
 	return -1;

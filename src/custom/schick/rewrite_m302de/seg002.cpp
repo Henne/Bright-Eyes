@@ -1833,7 +1833,7 @@ void game_loop(void)
 			ds_writeb(LOCATION, 0);
 
 			do {
-				answer = load_save_game();
+				answer = load_game_state();
 
 			} while (answer == -1);
 
@@ -5252,7 +5252,7 @@ int schick_main(int argc, char** argv)
 
 				/* load a savegame */
 				do {
-					savegame = load_save_game();
+					savegame = load_game_state();
 				} while (savegame == -1);
 
 				ds_writew(0xbd25, 0);
