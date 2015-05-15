@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg026 (texts savegames)
- *	Functions rewritten: 11/15
+ *	Functions rewritten: 12/15
  */
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +10,8 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg026.h"
+#include "seg028.h"
+#include "seg097.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -190,8 +192,225 @@ void prepare_sg_name(char *dst, char *src)
 	dst[8] = '\0';
 }
 
+/* Borlandified and identical */
 signed short load_game_state(void)
 {
+	register signed short handle_gs;
+	signed short i;
+	signed short handle;
+	signed short answer;
+	signed short l1;
+	HugePt p_status_start;
+	HugePt p_status_end;
+	signed short status_length;
+	signed short l2;
+	signed short l3;
+	signed short retval;
+	signed short l4;
+	RealPt hero_i;
+	signed char version[4];
+	struct ffblk blk;
+	char name[20];
+
+	retval = 0;
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+
+	/* select a game state */
+	answer = GUI_radio(get_ltx(0), 6,
+			p_datseg + (0xe2da + 0),
+			p_datseg + (0xe2da + 9),
+			p_datseg + (0xe2da + 18),
+			p_datseg + (0xe2da + 27),
+			p_datseg + (0xe2da + 36),
+			get_ltx(0xb84)) -1;
+
+	/* sanity check if answer is in range */
+	if (answer != -2 && answer != 5) {
+
+		prepare_sg_name((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0xe2da + 9 * answer);
+		/* concat with ".gam" */
+		strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0x5e43);
+
+		/* open the game state file */
+		if ((handle_gs = bc__open((RealPt)ds_readd(0xd2eb), 0x8001)) == -1) {
+			GUI_output(get_ltx(0x9ec));
+			retval = -1;
+			return retval;
+		}
+
+		update_mouse_cursor();
+
+		/* something ani related */
+		l1 = ds_readws(0xc3cb);
+		ds_writew(0xc3cb, 0);
+
+		l4 = ds_readws(0x29ae);
+		ds_writew(0x29ae, 0);
+
+		/* delete every file in TEMP */
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			/* "TEMP\\%s" */
+			(char*)Real2Host(ds_readd(0x4c88)),
+			/* "*.*" */
+			(char*)p_datseg + 0x5e48);
+
+		l2 = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+
+		if (l2 == 0) {
+
+			do {
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)Real2Host(ds_readd(0x4c88)),
+					((char*)(&blk))+ 30);
+
+				bc_unlink((RealPt)ds_readd(0xd2eb));
+
+				l2 = bc_findnext(&blk);
+
+			} while (l2 == 0);
+		}
+
+		/* init */
+		ds_writed(0xe2d2, ds_readd(DTP2));
+		memset(Real2Host(ds_readd(0xe2d2)), 0, 286 * 4);
+
+		/* read version info */
+		bc__read(handle_gs, Real2Host(ds_readd(0xd2eb)), 12);
+		bc__read(handle_gs, (Bit8u*)&version[3], 1);
+		bc__read(handle_gs, (Bit8u*)&version[2], 1);
+		bc__read(handle_gs, (Bit8u*)&version[0], 1);
+		bc__read(handle_gs, (Bit8u*)&version[1], 1);
+
+		bc__read(handle_gs, p_datseg + 0x2d34, 4);
+
+		/* read game status */
+		p_status_start = (HugePt)RealMake(datseg, 0x2d34);
+		p_status_end = (HugePt)RealMake(datseg, 0x4474);
+#if !defined(__BORLANDC__)
+		status_length = F_PSUB(p_status_end, p_status_start);
+#else
+		status_length = p_status_end - p_status_start;
+#endif
+
+		bc__read(handle_gs, p_datseg + 0x2d34, status_length);
+
+		ds_writeb(0x45b8, 1);
+
+		/* read file table */
+		bc__read(handle_gs, Real2Host(ds_readd(0xe2d2)), 286 * 4);
+
+		/* create for each saved file in gam a file in TEMP */
+		for (i = 0; i < 286; i++) {
+
+			if (host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i)) {
+
+				/* write file content to TEMP */
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)Real2Host(ds_readd(0x4c88)),
+					(char*)Real2Host(ds_readd(0x4c8c + 4 * i)));
+
+				handle = bc__creat((RealPt)ds_readd(0xd2eb), 0);
+
+				bc__read(handle_gs, Real2Host(ds_readd(0xd303)), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
+				bc__write(handle, (RealPt)ds_readd(0xd303), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
+				bc_close(handle);
+			}
+		}
+
+		/* clear the heros */
+		hero_i = (RealPt)ds_readd(HEROS);
+		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+			memset(Real2Host(hero_i), 0, 0x6da);
+		}
+
+		hero_i = (RealPt)ds_readd(0xd303);
+
+		do {
+			l3 = bc__read(handle_gs, Real2Host(hero_i), 0x6da);
+
+			if (l3 != 0) {
+
+				prepare_chr_name(name, Real2Host(hero_i));
+
+				/* write file content to TEMP */
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)Real2Host(ds_readd(0x4c88)),
+					name);
+
+				handle = bc__creat((RealPt)ds_readd(0xd2eb), 0);
+
+				bc__write(handle, hero_i, 0x6da);
+				bc_close(handle);
+
+				if (host_readbs(Real2Host(hero_i) + 0x8a) != 0) {
+
+					prepare_chr_name(name, Real2Host(hero_i));
+
+					read_chr_temp(name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
+				}
+			}
+		} while (l3 != 0);
+
+		bc_close(handle_gs);
+
+		/* search for "*.CHR" */
+		l2 = bc_findfirst(p_datseg + 0x5e4c, &blk, 0);
+
+		while (l2 == 0) {
+
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)Real2Host(ds_readd(0x4c88)),
+				((char*)(&blk)) + 30);
+
+			if ((handle_gs = bc__open((char*)Real2Host(ds_readd(0xd2eb)), 0x8004)) == -1) {
+
+				handle = bc__open((char*)(&blk) + 30, 0x8004);
+				bc__read(handle, Real2Host(ds_readd(0xd303)), 0x6da);
+				bc_close(handle);
+
+				handle_gs = bc__creat(Real2Host(ds_readd(0xd2eb)), 0);
+				bc__write(handle_gs, (RealPt)ds_readd(0xd303), 0x6da);
+			} else {
+				/* Yes, indeed! */
+			}
+
+			bc_close(handle_gs);
+
+			l2 = bc_findnext(&blk);
+		}
+
+		for (i = 226; i <= 231; i++) {
+			load_npc(i);
+
+			if (host_readbs(get_hero(6) + 0x8a) != 7) {
+				memset(get_hero(6), 0, 0x6da);
+			} else {
+				break;
+			}
+		}
+
+		ds_writew(0x2ccb, -1);
+		ds_writew(0x2846, retval = 1);
+		ds_writew(CHECK_DISEASE, 0);
+		ds_writew(CHECK_POISON, 0);
+		ds_writeb(0x4475, 3);
+
+		if (ds_readbs(LOCATION) != 2) {
+			ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+		}
+
+		load_area_description(2);
+
+		ds_writews(0xc3cb, l1);
+		ds_writews(0x29ae, l4);
+
+		refresh_screen_size();
+	}
+
+#endif
+	return retval;
 }
 
 signed short read_chr_temp(Bit8u* str, signed short a1, signed short a2)
