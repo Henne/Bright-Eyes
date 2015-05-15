@@ -192,8 +192,14 @@ void prepare_sg_name(char *dst, char *src)
 
 signed short load_game_state(void)
 {
+}
+
+signed short read_chr_temp(Bit8u* str, signed short a1, signed short a2)
+{
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
-	return -1;
+#endif
+	return 0;
 }
 
 void write_chr_temp(unsigned short hero)
