@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg026 (texts savegames)
- *	Functions rewritten: 12/15
+ *	Functions rewritten: 13/15
  */
 #include <stdio.h>
 #include <string.h>
@@ -411,6 +411,306 @@ signed short load_game_state(void)
 
 #endif
 	return retval;
+}
+
+/**
+ * \brief writes a game state file
+ * \return 1 = OK, 0 = error
+ */
+/* Borlandified and identical */
+signed short save_game_state(void)
+{
+	signed short l_di;
+	HugePt p_status_start;
+	HugePt p_status_end;
+	unsigned short status_len;
+	signed short handle;
+	signed short tw_bak;
+	signed short l1;
+	signed short slot;
+	Bit32u filepos;
+	Bit32u filepos2;
+	signed short flag;
+	Bit32u len;
+	struct ffblk blk;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 5);
+
+	/* prepare the header for the radio box */
+	if (ds_readws(0xc3c1) == 99) {
+
+		/* game done */
+		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0xca8));
+
+	} else {
+
+		if (ds_readbs(LOCATION) != 2 && ds_readws(0xc3c1) != 99) {
+
+			/* save outside the temple */
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xcb4),
+				1,
+				get_ltx(0x620),
+				p_datseg + 0x5e52);
+
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)get_ltx(4),
+				(char*)Real2Host(ds_readd(DTP2)));
+		} else {
+
+			/* save inside a temple */
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)get_ltx(4),
+				(char*)p_datseg + 0x5e53);
+		}
+	}
+
+	/* get the slot number */
+	slot = GUI_radio(Real2Host(ds_readd(0xd2eb)), 6,
+			p_datseg + (0xe2da + 9 * 0),
+			p_datseg + (0xe2da + 9 * 1),
+			p_datseg + (0xe2da + 9 * 2),
+			p_datseg + (0xe2da + 9 * 3),
+			p_datseg + (0xe2da + 9 * 4),
+			get_ltx(0xb84)) - 1;
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+
+	ds_writed(0xe2d2, ds_readd(DTP2));
+	memset(Real2Host(ds_readd(0xe2d2)), 0, 4 * 286);
+
+	if (slot != -2 && slot != 5) {
+
+		do {
+			/* ask for filename */
+			ds_writew(0x26b7, 1);
+			strcpy((char*)Real2Host(ds_readd(0xd2ef)), (char*)p_datseg + 0xe2da + 9 * slot);
+			GUI_input(get_ltx(0x9e8), 8);
+			ds_writew(0x26b7, 0);
+
+			if (host_readbs(Real2Host(ds_readd(0xd2ef))) == 0) {
+				return 0;
+			}
+
+			flag = 0;
+
+			prepare_sg_name((char*)Real2Host(ds_readd(0xd2eb)), (char*)Real2Host(ds_readd(0xd2ef)));
+
+			for (tw_bak = 0; tw_bak < 5; tw_bak++) {
+
+				prepare_sg_name((char*)Real2Host(ds_readd(0xd2eb)) + 50, (char*)p_datseg + 0xe2da + 9 * tw_bak);
+
+				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(0xd2eb)), (char*)Real2Host(ds_readd(0xd2eb)) + 50)) {
+
+					GUI_output(get_ltx(0xc98));
+					flag = 1;
+				}
+			}
+		} while (flag != 0);
+
+		/* delete the previous file of that slot */
+		prepare_sg_name((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0xe2da + 9 * slot);
+		strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0x5e54);
+		bc_unlink((RealPt)ds_readd(0xd2eb));
+		strcpy((char*)p_datseg + 0xe2da + 9 * slot, (char*)Real2Host(ds_readd(0xd2ef)));
+
+		/* create a CHR-file for each hero in TEMP */
+		for (tw_bak = 0; tw_bak < 6; tw_bak++) {
+
+			if (host_readbs(get_hero(tw_bak) + 0x21) != 0) {
+
+				/* save position on the playmask */
+				host_writebs(get_hero(tw_bak) + 0x8a, tw_bak + 1);
+
+				if (ds_readws(0xc3c1) != 99 &&
+					ds_readbs(LOCATION) != 2 &&
+					host_readds(get_hero(tw_bak) + 0x28) > 0)
+				{
+					add_hero_ap(get_hero(tw_bak), -1L);
+				}
+
+				write_chr_temp(tw_bak);
+			}
+		}
+
+		/* save the current NPC in TEMP */
+		if (host_readbs(get_hero(6) + 0x21) != 0) {
+
+			host_writeb(get_hero(6) + 0x8a, 7);
+			save_npc(host_readbs(get_hero(6) + 0x89) + 225);
+		}
+
+		load_area_description(1);
+
+		p_status_start = (HugePt)RealMake(datseg, 0x2d34);
+		p_status_end = (HugePt)RealMake(datseg, 0x4474);
+#if !defined(__BORLANDC__)
+		status_len = F_PSUB(p_status_end, p_status_start);
+#else
+		status_len = p_status_end - p_status_start;
+#endif
+
+		prepare_sg_name((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0xe2da + 9 * slot);
+		strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0x5e59);
+
+		while ((l_di = bc__creat((RealPt)ds_readd(0xd2eb), 0)) == -1) {
+			GUI_output(get_ltx(0x570));
+			return 0;
+		}
+
+#if !defined(__BORLANDC__)
+		bc_time((RealPt)RealMake(datseg, 0xe2d6));
+#else
+		bc_time((Bit32s*)RealMake(datseg, 0xe2d6));
+#endif
+
+		filepos = 0;
+
+		/* write version identifier 16 bytes */
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46e0), 12);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46fb), 1);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46fa), 1);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46f8), 1);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46f9), 1);
+
+		/* write fileposition 4 bytes */
+		/* this will be updated later to find the data of the CHR files */
+#if !defined(__BORLANDC__)
+		/*	The value of filepos needs to be written to the file in
+		 *	LE format. bc__write() needs an adress in RealMode-Space,
+		 *	so some space on the stack is allocated.
+		 */
+		{
+			Bit32u esp_bak = reg_esp;
+			reg_esp -= 64;
+			RealPt fp_le = RealMake(SegValue(ss), reg_esp);
+
+			host_writed(Real2Host(fp_le), filepos);
+			filepos += bc__write(l_di, fp_le, 4);
+
+			reg_esp = esp_bak;
+		}
+#else
+		filepos += bc__write(l_di, &filepos, 4);
+#endif
+
+		/* save the satus section 5952 bytes */
+		filepos += bc__write(l_di, p_status_start, status_len);
+
+		/* check if enough bytes were written */
+		if (status_len + 16 + 4L != filepos) {
+			GUI_output(get_ltx(0x570));
+			bc_close(l_di);
+			return 0;
+		}
+
+		filepos2 = filepos;
+		len = (Bit16u)bc__write(l_di, (RealPt)ds_readd(0xe2d2), 4 * 286);
+		filepos += len;
+
+		if (len != 4 * 286) {
+			GUI_output(get_ltx(0x570));
+			bc_close(l_di);
+			return 0;
+		}
+
+		/* save all changed files from SCHICK.DAT */
+		for (tw_bak = 0; tw_bak < 286; tw_bak++) {
+
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)Real2Host(ds_readd(0x4c88)),
+				(char*)Real2Host(ds_readd(FNAMES + 4 * tw_bak)));
+
+			l1 = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+
+
+			if (l1 == 0) {
+
+				handle = load_archive_file(tw_bak + 0x8000);
+				host_writed(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak, get_readlength2(handle));
+				bc__read(handle, Real2Host(ds_readd(0xd303)), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak));
+				bc_close(handle);
+
+				len = (Bit16u)bc__write(l_di, (RealPt)ds_readd(0xd303), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak));
+				filepos += len;
+
+				if ((Bit16u)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak) != len) {
+					GUI_output(get_ltx(0x570));
+					bc_close(l_di);
+					return 0;
+				}
+			}
+		}
+
+		/* skip back to the start of the offset of the CHR data */
+		bc_lseek(l_di, 16, 0);
+#if !defined(__BORLANDC__)
+		/*	The value of filepos needs to be written to the file in
+		 *	LE format. bc__write() needs an adress in RealMode-Space,
+		 *	so some space on the stack is allocated.
+		 */
+		{
+			Bit32u esp_bak = reg_esp;
+			reg_esp -= 64;
+			RealPt fp_le = RealMake(SegValue(ss), reg_esp);
+
+			host_writed(Real2Host(fp_le), filepos);
+			bc__write(l_di, fp_le, 4);
+
+			reg_esp = esp_bak;
+		}
+#else
+		bc__write(l_di, &filepos, 4);
+#endif
+
+		/* write the file table */
+		bc_lseek(l_di, filepos2, 0);
+		bc__write(l_di, (RealPt)ds_readd(0xe2d2), 4 * 286);
+
+		/* append all CHR files */
+		bc_lseek(l_di, filepos, 0);
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)Real2Host(ds_readd(0x4c88)),
+			(char*)p_datseg + 0x5e5e);
+
+		l1 = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+		do {
+			/* create the CHR filename */
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)Real2Host(ds_readd(0x4c88)),
+				((char*)(&blk)) + 30);
+
+			/* read the CHR file from temp */
+			handle = bc__open((RealPt)ds_readd(0xd2eb), 0x8004);
+			bc__read(handle, Real2Host(ds_readd(0xd303)), 0x6da);
+			bc_close(handle);
+
+			/* append it */
+			len = bc__write(l_di, (RealPt)ds_readd(0xd303), 0x6da);
+
+			if (len != 0x6da) {
+				GUI_output(get_ltx(0x570));
+				bc_close(l_di);
+				return 0;
+			}
+
+			l1 = bc_findnext(&blk);
+
+		} while (l1 == 0);
+
+		bc_close(l_di);
+
+		/* rewrite GAMES.NAM */
+		l_di = bc__creat((RealPt)ds_readd(FNAMES + 0x33c), 0);
+		bc__write(l_di, RealMake(datseg, 0xe2da), 45);
+		bc_close(l_di);
+
+		return 1;
+	}
+
+	return 0;
 }
 
 signed short read_chr_temp(Bit8u* str, signed short a1, signed short a2)

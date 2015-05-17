@@ -3104,8 +3104,9 @@ static int seg026(unsigned short offs) {
 		return 0;
 	}
 	case 0x34: {
-		D1_LOG("ip=0x%04X ChooseSaveSavegame()\n", offs);
-		return 0;
+		reg_ax = save_game_state();
+		D1_LOG("save_game_state() = %d\n", (Bit16s)reg_ax);
+		return 1;
 	}
 	case 0x39: {
 		D1_LOG("ip=0x%4X unknown()\n", offs);
