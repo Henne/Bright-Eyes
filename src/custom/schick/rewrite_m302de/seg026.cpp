@@ -786,19 +786,24 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 
 }
 
-void write_chr_temp(unsigned short hero)
+/**
+ * \brief	writes a CHR file to temp
+ * \param hero_pos	position of the hero
+ */
+/* Borlandified and identical */
+void write_chr_temp(unsigned short hero_pos)
 {
 	char fname[20];
 	unsigned short fd;
 
-	prepare_chr_name(fname, (char*)get_hero(hero));
+	prepare_chr_name(fname, (char*)get_hero(hero_pos));
 
 	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 		(char*)Real2Host(ds_readd(0x4c88)),		/* "TEMP\\%s" */
 		fname);
 
 	fd = bc__creat((RealPt)ds_readd(0xd2eb), 0);
-	bc__write(fd, (RealPt)ds_readd(HEROS) + hero * 0x6da, 0x6da);
+	bc__write(fd, (RealPt)ds_readd(HEROS) + 0x6da * hero_pos, 0x6da);
 	bc_close(fd);
 }
 
