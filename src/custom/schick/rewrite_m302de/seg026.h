@@ -16,6 +16,8 @@ signed short save_game_state(void);
 signed short read_chr_temp(RealPt, signed short, signed short);
 //0x3e
 void write_chr_temp(unsigned short);
+/* 0x43 */
+signed short copy_chr_names(Bit8u*, signed short);
 //0x48
 void load_in_head(Bit16s);
 //0x4d

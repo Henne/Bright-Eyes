@@ -3131,8 +3131,14 @@ static int seg026(unsigned short offs) {
 		return 1;
 	}
 	case 0x43: {
-		D1_LOG("ip=0x%4X ChooseFreeHero()\n", offs);
-		return 0;
+		RealPt ptr = CPU_Pop32();
+		Bit16s flag = CPU_Pop16();
+		CPU_Push16(flag);
+		CPU_Push32(ptr);
+
+		reg_ax = copy_chr_names(Real2Host(ptr), flag);
+		D1_LOG("copy_chr_names(0x%x, %d) = %d\n", ptr, flag, (Bit16s)reg_ax);
+		return 1;
 	}
 	case 0x48: {
 		Bit16s head = CPU_Pop16();

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg026 (texts savegames)
- *	Functions rewritten: 14/15
+ *	Functions rewritten: 15/15 (complete)
  */
 #include <stdio.h>
 #include <string.h>
@@ -808,9 +808,58 @@ void write_chr_temp(unsigned short hero_pos)
 }
 
 /**
- *	load_in_head() - loads a head icon from IN_HEADS.NVF
- *	@head:	index of the desired head
+ * \brief		copy the names from CHR file
+ * \param ptr		pointer
+ * \param temple_id	> 0 the id of the temple, -1 on delete mode
+ * \return # of CHR-files in TEMP-dir
  */
+/* Borlandified and identical */
+signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
+{
+	signed short count = 0;
+	signed short l_di;
+	signed short handle;
+	Bit8u *buf;
+	struct ffblk blk;
+
+	buf = Real2Host(ds_readd(0xd303)) + 60000;
+	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)p_datseg + 0x5e64);
+
+	l_di = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+
+	if (!l_di) {
+
+		do {
+			/* create the CHR filename */
+			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				(char*)Real2Host(ds_readd(0x4c88)),
+				((char*)(&blk)) + 30);
+
+			/* read the CHR file from temp */
+			handle = bc__open((RealPt)ds_readd(0xd2eb), 0x8004);
+			bc__read(handle, buf, 0x6da);
+			bc_close(handle);
+
+			if ((host_readbs(buf + 0x88) == temple_id && !host_readbs(buf + 0x8a)) ||
+				(!host_readbs(buf + 0x8a) && temple_id == -1))
+			{
+				strcpy((char*)ptr + 32 * count, (char*)buf);
+				strcpy((char*)ptr + 32 * count + 16, (char*)buf + 16);
+				count++;
+			}
+
+			l_di = bc_findnext(&blk);
+
+		} while (!l_di);
+
+		return count;
+	} else {
+		return 0;
+	}
+}
+
 void load_in_head(Bit16s head)
 {
 	Bit16u fd;
