@@ -3100,8 +3100,9 @@ static int seg026(unsigned short offs) {
 		return 1;
 	}
 	case 0x2f: {
-		D1_LOG("short ChooseLoadSavegame(void)\n");
-		return 0;
+		reg_ax = load_game_state();
+		D1_LOG("load_game_state() = %d\n", (Bit16s)reg_ax);
+		return 1;
 	}
 	case 0x34: {
 		reg_ax = save_game_state();

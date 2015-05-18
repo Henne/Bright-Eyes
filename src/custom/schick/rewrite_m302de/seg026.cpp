@@ -209,9 +209,6 @@ signed short load_game_state(void)
 	char name[20];
 
 	retval = 0;
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 
 	/* select a game state */
 	answer = GUI_radio(get_ltx(0), 6,
@@ -305,7 +302,7 @@ signed short load_game_state(void)
 				/* write file content to TEMP */
 				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 					(char*)Real2Host(ds_readd(0x4c88)),
-					(char*)Real2Host(ds_readd(0x4c8c + 4 * i)));
+					(char*)Real2Host(ds_readd(FNAMES + 4 * i)));
 
 				handle = bc__creat((RealPt)ds_readd(0xd2eb), 0);
 
@@ -328,7 +325,7 @@ signed short load_game_state(void)
 
 			if (l3 != 0) {
 
-				prepare_chr_name(name, Real2Host(hero_i));
+				prepare_chr_name(name, (char*)Real2Host(hero_i));
 
 				/* write file content to TEMP */
 				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
@@ -342,13 +339,16 @@ signed short load_game_state(void)
 
 				if (host_readbs(Real2Host(hero_i) + 0x8a) != 0) {
 
-					prepare_chr_name(name, Real2Host(hero_i));
+					prepare_chr_name(name, (char*)Real2Host(hero_i));
 #if !defined(__BORLANDC__)
 					{
 						/* create a char[20] on the stack */
 						Bit32u esp_bak = reg_esp;
-						esp -= 20;
+						reg_esp -= 20;
+
 						RealPt r_name = RealMake(SegValue(ss), reg_esp);
+						strncpy((char*)Real2Host(r_name), name, 20);
+						host_writeb(Real2Host(r_name) + 20, 0);
 						read_chr_temp(r_name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
 						reg_esp = esp_bak;
 					}
@@ -362,7 +362,7 @@ signed short load_game_state(void)
 		bc_close(handle_gs);
 
 		/* search for "*.CHR" */
-		l2 = bc_findfirst(p_datseg + 0x5e4c, &blk, 0);
+		l2 = bc_findfirst((RealPt)RealMake(datseg, 0x5e4c), &blk, 0);
 
 		while (l2 == 0) {
 
@@ -370,13 +370,24 @@ signed short load_game_state(void)
 				(char*)Real2Host(ds_readd(0x4c88)),
 				((char*)(&blk)) + 30);
 
-			if ((handle_gs = bc__open((char*)Real2Host(ds_readd(0xd2eb)), 0x8004)) == -1) {
-
+			if ((handle_gs = bc__open((RealPt)ds_readd(0xd2eb), 0x8004)) == -1) {
+#if !defined(__BORLANDC__)
+				{
+					Bit32u esp_bak = reg_esp;
+					reg_esp -= 128;
+					RealPt fname = RealMake(SegValue(ss), reg_esp);
+					strncpy((char*)Real2Host(fname), (char*)(&blk) + 30, 128);
+					host_writeb(Real2Host(fname) + 128, 0);
+					handle = bc__open(fname, 0x8004);
+					reg_esp = esp_bak;
+				}
+#else
 				handle = bc__open((char*)(&blk) + 30, 0x8004);
+#endif
 				bc__read(handle, Real2Host(ds_readd(0xd303)), 0x6da);
 				bc_close(handle);
 
-				handle_gs = bc__creat(Real2Host(ds_readd(0xd2eb)), 0);
+				handle_gs = bc__creat((RealPt)ds_readd(0xd2eb), 0);
 				bc__write(handle_gs, (RealPt)ds_readd(0xd303), 0x6da);
 			} else {
 				/* Yes, indeed! */
@@ -415,7 +426,6 @@ signed short load_game_state(void)
 		refresh_screen_size();
 	}
 
-#endif
 	return retval;
 }
 
