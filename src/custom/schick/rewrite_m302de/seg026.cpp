@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg026 (texts savegames)
  *	Functions rewritten: 15/15 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg026.cpp
  */
 #include <stdio.h>
 #include <string.h>
@@ -18,7 +22,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void init_text(void)
 {
 	Bit32s len;
@@ -52,7 +55,6 @@ void init_text(void)
 
 }
 
-/* Borlandified and identical */
 void load_buffer_1(signed short index)
 {
 	Bit32s len;
@@ -72,7 +74,6 @@ void load_buffer_1(signed short index)
 	ds_writew(0x26bf, index);
 }
 
-/* Borlandified and identical */
 void load_city_ltx(signed short index)
 {
 	Bit32s len;
@@ -89,7 +90,6 @@ void load_city_ltx(signed short index)
 	split_textbuffer(Real2Host(ds_readd(CITY_LTX)), (RealPt)ds_readd(0xc3a9), len);
 }
 
-/* Borlandified and identical */
 void load_ltx(unsigned short index)
 {
 	Bit32s len;
@@ -104,7 +104,6 @@ void load_ltx(unsigned short index)
 		F_PADD((RealPt)ds_readd(0xd019), 1000L), len);
 }
 
-/* Borlandified and identical */
 void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 {
 	Bit32u i = 0;
@@ -123,7 +122,6 @@ void split_textbuffer(Bit8u *dst, RealPt src, Bit32u len)
 	}
 }
 
-/* Borlandified and identical */
 void load_ggsts_nvf(void)
 {
 	Bit16u fd;
@@ -138,7 +136,6 @@ void load_ggsts_nvf(void)
 	ds_writew(0x2ccb, 0xffff);
 }
 
-/* Borlandified and identical */
 void prepare_chr_name(char *dst, char *src)
 {
 	char tmp_str[40];
@@ -162,7 +159,6 @@ void prepare_chr_name(char *dst, char *src)
 	strcat(dst, (char*)p_datseg + 0x5e3e);
 }
 
-/* Borlandified and identical */
 void prepare_sg_name(char *dst, char *src)
 {
 	char tmp_str[40];
@@ -193,7 +189,6 @@ void prepare_sg_name(char *dst, char *src)
 	dst[8] = '\0';
 }
 
-/* Borlandified and identical */
 signed short load_game_state(void)
 {
 	register signed short handle_gs;
@@ -428,7 +423,6 @@ signed short load_game_state(void)
  * \brief writes a game state file
  * \return 1 = OK, 0 = error
  */
-/* Borlandified and identical */
 signed short save_game_state(void)
 {
 	signed short l_di;
@@ -731,7 +725,6 @@ signed short save_game_state(void)
  * \param a2		???
  * \return 1 = OK, 0 = Error
 */
-/* Borlandified and identical */
 signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 {
 	signed short handle;
@@ -790,7 +783,6 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
  * \brief	writes a CHR file to temp
  * \param hero_pos	position of the hero
  */
-/* Borlandified and identical */
 void write_chr_temp(unsigned short hero_pos)
 {
 	char fname[20];
@@ -813,7 +805,6 @@ void write_chr_temp(unsigned short hero_pos)
  * \param temple_id	> 0 the id of the temple, -1 on delete mode
  * \return # of CHR-files in TEMP-dir
  */
-/* Borlandified and identical */
 signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 {
 	signed short count = 0;
@@ -864,7 +855,6 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
  * \brief	loads a head icon from IN_HEADS.NVF
  * \param head	index of the desired head
  */
-/* Borlandified and identical */
 void load_in_head(signed short head)
 {
 	signed short handle;
@@ -887,7 +877,6 @@ void load_in_head(signed short head)
  * \brief	load a temple icon
  * \param nr	the number of the icon
  */
-/* Borlandified and identical */
 void load_tempicon(signed short nr)
 {
 	struct nvf_desc nvf;
