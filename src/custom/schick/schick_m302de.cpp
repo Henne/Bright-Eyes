@@ -3109,8 +3109,19 @@ static int seg026(unsigned short offs) {
 		return 1;
 	}
 	case 0x39: {
-		D1_LOG("ip=0x%4X unknown()\n", offs);
-		return 0;
+		RealPt str = CPU_Pop32();
+		Bit16s hero_pos = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(hero_pos);
+		CPU_Push32(str);
+
+		reg_ax = read_chr_temp(str, hero_pos, a2);
+		D1_LOG("read_chr_temp(%s, %d, %d) = %d\n",
+			(char*)Real2Host(str),
+			hero_pos,
+			a2, reg_ax);
+		return 1;
 	}
 	case 0x3e: {
 		Bit16u hero = CPU_Pop16();
@@ -8424,7 +8435,20 @@ static int n_seg026(unsigned short offs)
 		return 1;
 	}
 	case 0x1021: {
-		return 0;
+		CPU_Pop16();
+		RealPt str = CPU_Pop32();
+		Bit16s hero_pos = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(hero_pos);
+		CPU_Push32(str);
+
+		reg_ax = read_chr_temp(str, hero_pos, a2);
+		D1_LOG("read_chr_temp(%s, %d, %d) = %d\n",
+			(char*)Real2Host(str),
+			hero_pos,
+			a2, reg_ax);
+		return 1;
 	}
 	case 0x117f: {
 		CPU_Pop16();

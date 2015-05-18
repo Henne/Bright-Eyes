@@ -13,7 +13,7 @@ signed short load_game_state(void);
 /* 0x34 */
 signed short save_game_state(void);
 /* 0x39 */
-signed short read_chr_temp(Bit8u*, signed short, signed short);
+signed short read_chr_temp(RealPt, signed short, signed short);
 //0x3e
 void write_chr_temp(unsigned short);
 //0x48

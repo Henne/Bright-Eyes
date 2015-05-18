@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg026 (texts savegames)
- *	Functions rewritten: 13/15
+ *	Functions rewritten: 14/15
  */
 #include <stdio.h>
 #include <string.h>
@@ -12,6 +12,7 @@
 #include "seg026.h"
 #include "seg028.h"
 #include "seg097.h"
+#include "seg106.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -347,8 +348,18 @@ signed short load_game_state(void)
 				if (host_readbs(Real2Host(hero_i) + 0x8a) != 0) {
 
 					prepare_chr_name(name, Real2Host(hero_i));
-
+#if !defined(__BORLANDC__)
+					{
+						/* create a char[20] on the stack */
+						Bit32u esp_bak = reg_esp;
+						esp -= 20;
+						RealPt r_name = RealMake(SegValue(ss), reg_esp);
+						read_chr_temp(r_name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
+						reg_esp = esp_bak;
+					}
+#else
 					read_chr_temp(name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
+#endif
 				}
 			}
 		} while (l3 != 0);
@@ -713,12 +724,66 @@ signed short save_game_state(void)
 	return 0;
 }
 
-signed short read_chr_temp(Bit8u* str, signed short a1, signed short a2)
+/**
+ * \brief reads a CHR file from TEMP-dir
+ * \param fname		filename
+ * \param hero_pos	position of the hero
+ * \param a2		???
+ * \return 1 = OK, 0 = Error
+*/
+/* Borlandified and identical */
+signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
-	return 0;
+	signed short handle;
+	signed short hero_size = 0x6da;
+	Bit8u *hero;
+
+	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)Real2Host(fname));
+
+	if ((handle = bc__open((RealPt)ds_readd(0xd2eb), 0x8004)) == -1) {
+		copy_file_to_temp(fname, (RealPt)ds_readd(0xd2eb));
+		handle = bc__open((RealPt)ds_readd(0xd2eb), 0x8004);
+	}
+
+	if (handle != -1) {
+
+		hero = get_hero(hero_pos);
+		bc__read(handle, hero, hero_size);
+		bc_close(handle);
+
+		host_writeb(hero + 0x87, a2);
+
+		if (host_readbs(hero + 0x22) == 1) {
+			host_writeb(hero + 0x9b, host_readbs(hero + 0x21) + 11);
+
+			if (host_readbs(hero + 0x9b) > 21) {
+				host_writeb(hero + 0x9b, 21);
+			}
+		} else {
+			host_writeb(hero + 0x9b, host_readbs(hero + 0x21));
+
+			if (host_readbs(hero + 0x9b) > 10) {
+				host_writeb(hero + 0x9b, 10);
+			}
+		}
+
+		if (!host_readbs(hero + 0x7c)) {
+
+			startup_equipment(hero);
+			host_writeb(get_hero(hero_pos) + 0x7c, 1);
+
+			write_chr_temp(hero_pos);
+		}
+
+	} else {
+		GUI_output(get_ltx(0x10));
+		return 0;
+	}
+
+	return 1;
+
 }
 
 void write_chr_temp(unsigned short hero)
