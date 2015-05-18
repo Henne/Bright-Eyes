@@ -860,43 +860,54 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 	}
 }
 
-void load_in_head(Bit16s head)
+/**
+ * \brief	loads a head icon from IN_HEADS.NVF
+ * \param head	index of the desired head
+ */
+/* Borlandified and identical */
+void load_in_head(signed short head)
 {
-	Bit16u fd;
+	signed short handle;
 
-	if (head < 0)
-		return;
+	if (head >= 0) {
 
-	fd = load_archive_file(0xb3);
+		handle = load_archive_file(0xb3);
 
-	seg002_0c72(fd, head * 1024, 0);
+		seg002_0c72(handle, 1024L * head, 0);
 
-	read_archive_file(fd, Real2Host(ds_readd(DTP2)), 1024);
+		read_archive_file(handle, Real2Host(ds_readd(DTP2)), 1024);
 
-	bc_close(fd);
+		bc_close(handle);
 
-	ds_writew(0x515c, head);
+		ds_writew(0x515c, head);
+	}
 }
 
-void load_tempicon(unsigned short nr)
+/**
+ * \brief	load a temple icon
+ * \param nr	the number of the icon
+ */
+/* Borlandified and identical */
+void load_tempicon(signed short nr)
 {
 	struct nvf_desc nvf;
-	unsigned short fd;
+	signed short handle;
 
-	if (nr == 14)
+	if (nr == 14) {
 		nr = 7;
+	}
 
 	/* load TEMPICON */
-	fd = load_archive_file(0xb4);
-	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 7000);
-	bc_close(fd);
+	handle = load_archive_file(0xb4);
+	read_archive_file(handle, Real2Host(ds_readd(0xc3a9)), 7000);
+	bc_close(handle);
 
 	nvf.dst = Real2Host(ds_readd(0xc3a9)) + 7000;
 	nvf.src = Real2Host(ds_readd(0xc3a9));
 	nvf.nr = nr;
 	nvf.type = 0;
-	nvf.width = (Bit8u*)&fd;
-	nvf.height = (Bit8u*)&fd;
+	nvf.width = (Bit8u*)&handle;
+	nvf.height = (Bit8u*)&handle;
 
 	process_nvf(&nvf);
 }
