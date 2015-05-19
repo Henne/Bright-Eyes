@@ -4599,6 +4599,40 @@ static int seg053(unsigned short offs) {
 	}
 }
 
+static int seg061(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("do_temple();\n");
+			return 0;
+		}
+		case 0x2f: {
+			D1_LOG("char_erase();\n");
+			return 0;
+		}
+		case 0x34: {
+			D1_LOG("wonder1();\n");
+			return 0;
+		}
+		case 0x39: {
+			D1_LOG("wonder2();\n");
+			return 0;
+		}
+		case 0x3e: {
+			D1_LOG("wonder3();\n");
+			return 0;
+		}
+		case 0x43: {
+			D1_LOG("wonder4();\n");
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg063(unsigned short offs)
 {
 	switch (offs) {
@@ -7387,7 +7421,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1373:	return 0;
 		case 0x1377:	return 0;
 		case 0x137b:	return 0;
-		case 0x137e:	return 0;
+		case 0x137e:	return seg061(offs);
 		case 0x1383:	return 0;
 		case 0x1386:	return seg063(offs);
 		case 0x138a:	return seg064(offs);
@@ -9508,6 +9542,24 @@ static int n_seg053(unsigned short offs) {
 	}
 }
 
+static int n_seg061(unsigned offs) {
+	switch (offs) {
+		case 0x57b: {
+			return 0;
+		}
+		case 0x74a: {
+			return 0;
+		}
+		case 0x89d: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int n_seg063(unsigned offs) {
 	switch (offs) {
 	case 0x999: {
@@ -10766,6 +10818,7 @@ int schick_nearcall_v302de(unsigned offs) {
 	else if (is_ovrseg(0x1353)) return n_seg049(offs);
 	else if (is_ovrseg(0x1358)) return n_seg050(offs);
 	else if (is_ovrseg(0x1362)) return n_seg053(offs);
+	else if (is_ovrseg(0x137e)) return n_seg061(offs);
 	else if (is_ovrseg(0x1386)) return n_seg063(offs);
 	else if (is_ovrseg(0x138a)) return n_seg064(offs);
 	else if (is_ovrseg(0x1392)) return n_seg066(offs);
