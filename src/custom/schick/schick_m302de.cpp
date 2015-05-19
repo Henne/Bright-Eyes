@@ -9559,7 +9559,13 @@ static int n_seg053(unsigned short offs) {
 static int n_seg061(unsigned offs) {
 	switch (offs) {
 		case 0x57b: {
-			return 0;
+			CPU_Pop16();
+			Bit16s temple_id = CPU_Pop16();
+			CPU_Push16(temple_id);
+
+			D1_LOG("char_add(%d)\n", temple_id);
+			char_add(temple_id);
+			return 1;
 		}
 		case 0x74a: {
 			return 0;

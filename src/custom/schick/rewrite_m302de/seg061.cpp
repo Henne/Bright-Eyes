@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
- *	Functions rewritten: 1/8
+ *	Functions rewritten: 2/8
  */
 #include <stdio.h>
 
@@ -227,13 +227,69 @@ void do_temple(void)
 #endif
 }
 
+/* Borlandified and identical */
 void char_add(signed short temple_id)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
+	signed short l_si;
+	signed short l_di;
+	signed short i;
+	RealPt ptr;
+	Bit8u *hero;
 
-#endif
+	ptr = (RealPt)ds_readd(0xd303) + 50000;
+	l_di = copy_chr_names(Real2Host(ptr), temple_id);
+
+	if (ds_readbs(0x2d3c) == 7 ||
+		(ds_readbs(0x2d3c) == 6 && !host_readbs(get_hero(6) + 0x21)))
+	{
+		GUI_output(get_ltx(0x480));
+	} else {
+
+		do {
+
+			if (!l_di) {
+				GUI_output(get_ltx(0x488));
+				l_si = -1;
+			} else {
+
+				l_si = menu_enter_delete(ptr, l_di, 1);
+
+				if (l_si != -1) {
+
+					hero = get_hero(0);
+
+					for (i = 0; i < 6; i++, hero += 0x6da) {
+
+						if (!host_readbs(hero + 0x21)) {
+
+							prepare_chr_name((char*)Real2Host(ds_readd(DTP2)),
+										(char*)(Real2Host(ptr) + 32 * l_si));
+
+							if (read_chr_temp((RealPt)ds_readd(DTP2), i, ds_readbs(CURRENT_GROUP))) {
+								inc_ds_bs_post(0x2d3c);
+								inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+								host_writebs(hero + 0x8a, i + 1);
+								write_chr_temp(i);
+							}
+							break;
+						}
+					}
+
+					draw_main_screen();
+					init_ani(2);
+
+					/* location string */
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0x3ac),
+						(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+						(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
+				}
+
+				l_di = copy_chr_names(Real2Host(ptr), temple_id);
+			}
+		} while (l_si != -1 && ds_readbs(0x2d3c) < (host_readbs(get_hero(6) + 0x21) ? 7 : 6));
+	}
 }
 
 void char_letgo(signed short temple_id)
