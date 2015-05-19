@@ -11,7 +11,39 @@ namespace M302de {
 
 void do_temple(void)
 {
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+
+#endif
+}
+
+void char_add(signed short temple_id)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+
+#endif
+}
+
+void char_letgo(signed short temple_id)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+
+#endif
+}
+
+signed short char_erase(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+
+#endif
+	return 1;
 }
 
 #if !defined(__BORLANDC__)
