@@ -4607,8 +4607,9 @@ static int seg061(unsigned short offs)
 			return 0;
 		}
 		case 0x2f: {
-			D1_LOG("char_erase();\n");
-			return 0;
+			reg_ax = char_erase();
+			D1_LOG("char_erase(); = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x34: {
 			D1_LOG("wonder1();\n");
@@ -9577,7 +9578,10 @@ static int n_seg061(unsigned offs) {
 			return 1;
 		}
 		case 0x89d: {
-			return 0;
+			CPU_Pop16();
+			reg_ax = char_erase();
+			D1_LOG("char_erase(); = %d\n", reg_ax);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

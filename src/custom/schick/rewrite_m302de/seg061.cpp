@@ -1,12 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
- *	Functions rewritten: 3/8
+ *	Functions rewritten: 4/8
  */
 #include <stdio.h>
 #include <string.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
@@ -343,13 +344,63 @@ void char_letgo(signed short temple_id)
 	}
 }
 
+/* Borlandified and identical */
 signed short char_erase(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
+	signed short l_si;
+	signed short l_di;
+	signed short unlink_ret;
+	RealPt ptr;
 
-#endif
+	if (ds_readbs(0x4c3a) != 0) {
+		ptr = F_PADD((HugePt)ds_readd(0xc3db), 30000);
+	} else {
+		ptr = (RealPt)ds_readd(0xd303) + 50000;
+	}
+
+	l_di = copy_chr_names(Real2Host(ptr), -1);
+
+	do {
+		if (!l_di) {
+			l_si = -1;
+		} else {
+			l_si = menu_enter_delete(ptr, l_di, -1);
+
+			if (l_si != -1) {
+				strcpy((char*)Real2Host(ds_readd(DTP2)),
+					(char*)Real2Host(ptr) + 32 * l_si);
+
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)get_ltx(0x49c),
+					(char*)Real2Host(ds_readd(DTP2)));
+
+				if (GUI_bool(Real2Host(ds_readd(0xd2eb)))) {
+
+					prepare_chr_name((char*)Real2Host(ds_readd(0xd2eb)),
+								(char*)Real2Host(ds_readd(DTP2)));
+
+					unlink_ret = bc_unlink((RealPt)ds_readd(0xd2eb));
+
+					if (unlink_ret != 0) {
+						GUI_output(get_ltx(0x498));
+						return 0;
+					}
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)p_datseg + 0x6e72,
+						(char*)Real2Host(ds_readd(0xd2eb)));
+					bc_unlink((RealPt)ds_readd(DTP2));
+				}
+
+				l_di = copy_chr_names(Real2Host(ptr), -1);
+
+			} else {
+				return 0;
+			}
+		}
+
+	} while (l_si != -1);
+
 	return 1;
 }
 
