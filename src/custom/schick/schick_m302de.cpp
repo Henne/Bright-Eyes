@@ -9568,7 +9568,13 @@ static int n_seg061(unsigned offs) {
 			return 1;
 		}
 		case 0x74a: {
-			return 0;
+			CPU_Pop16();
+			Bit16s temple_id = CPU_Pop16();
+			CPU_Push16(temple_id);
+
+			D1_LOG("char_letgo(%d)\n", temple_id);
+			char_letgo(temple_id);
+			return 1;
 		}
 		case 0x89d: {
 			return 0;

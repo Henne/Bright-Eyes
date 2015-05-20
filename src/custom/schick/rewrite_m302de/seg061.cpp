@@ -1,8 +1,9 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
- *	Functions rewritten: 2/8
+ *	Functions rewritten: 3/8
  */
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -16,6 +17,7 @@
 #include "seg047.h"
 #include "seg061.h"
 #include "seg062.h"
+#include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
 
@@ -292,13 +294,53 @@ void char_add(signed short temple_id)
 	}
 }
 
+/* Borlandified and identical */
 void char_letgo(signed short temple_id)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
+	signed short hero_pos;
+	Bit8u *hero;
 
-#endif
+	if (!ds_readbs(0x2d3c) || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+		GUI_output(get_ltx(0x3a0));
+	} else {
+
+		do {
+
+			hero_pos = select_hero_from_group(get_ltx(0x9a8));
+
+			if (hero_pos != -1) {
+
+				if (hero_pos == 6) {
+					/* let go an NPC */
+					ds_writew(NPC_MONTHS, 99);
+					npc_farewell();
+				} else {
+					/* let go a hero */
+					hero = get_hero(hero_pos);
+					dec_ds_bs_post(0x2d3c);
+					dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+
+					host_writeb(hero + 0x88, temple_id);
+					host_writeb(hero + 0x8a, 0);
+
+					write_chr_temp(hero_pos);
+
+					memset(hero, 0, 0x6da);
+
+					draw_main_screen();
+					init_ani(2);
+
+					/* location string */
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0x3ac),
+						(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+						(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
+				}
+			}
+
+		} while (hero_pos != -1 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > (host_readbs(get_hero(6) + 0x21) ? 1 : 0));
+	}
 }
 
 signed short char_erase(void)
