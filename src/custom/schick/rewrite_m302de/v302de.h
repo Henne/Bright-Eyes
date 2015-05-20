@@ -431,6 +431,14 @@ static inline unsigned short hero_unkn3(Bit8u *hero) {
 		return 1;
 }
 
+static inline unsigned short hero_dummy4(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 5) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 static inline unsigned short hero_dummy1(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 2) & 1) == 0)
@@ -1005,6 +1013,7 @@ struct bittest {
 
 #define hero_unkn3(hero)	((*(struct hero_status*)(hero + 0xaa)).unkn3)
 #define hero_dummy1(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy1)
+#define hero_dummy4(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy4)
 #define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
 
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
