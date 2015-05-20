@@ -4623,8 +4623,12 @@ static int seg061(unsigned short offs)
 			return 1;
 		}
 		case 0x39: {
-			D1_LOG("wonder2();\n");
-			return 0;
+			RealPt str = CPU_Pop32();
+			CPU_Push32(str);
+
+			D1_LOG("miracle_resurrect(%p);\n", str);
+			miracle_resurrect(Real2Host(str));
+			return 1;
 		}
 		case 0x3e: {
 			D1_LOG("wonder3();\n");

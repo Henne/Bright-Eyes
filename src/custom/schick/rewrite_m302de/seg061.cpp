@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
- *	Functions rewritten: 5/8
+ *	Functions rewritten: 6/8
  */
 #include <stdio.h>
 #include <string.h>
@@ -458,6 +458,39 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 				(char*)get_hero(hero_pos) + 0x10,
 				le_in,
 				(char*)Real2Host(ds_readd(0xd2eb)));
+	}
+}
+
+/* Borlandified and identical */
+void miracle_resurrect(Bit8u *str)
+{
+	signed short i;
+	Bit8u *hero;
+
+	for (i = 0; i <= 6; i++) {
+		hero = get_hero(i);
+
+		if (hero_dead(hero) &&
+			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dummy4(hero))
+		{
+
+			/* resurrect from the dead */
+			and_ptr_bs(hero + 0xaa, 0xfe);
+
+			/* add 7 LE */
+			add_hero_le(hero, 7);
+
+			/* update_ the status line */
+			draw_status_line();
+
+			/* prepare a message */
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)str,
+				(char*)hero + 0x10);
+
+			break;
+		}
 	}
 }
 

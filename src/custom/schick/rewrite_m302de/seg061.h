@@ -12,6 +12,8 @@ void char_letgo(signed short);
 signed short char_erase(void);
 /* 0x34 */
 void miracle_heal_hero(signed short, Bit8u*);
+/* 0x39 */
+void miracle_resurrect(Bit8u*);
 
 #if !defined(__BORLANDC__)
 }
