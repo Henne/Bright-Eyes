@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
- *	Functions rewritten: 4/8
+ *	Functions rewritten: 5/8
  */
 #include <stdio.h>
 #include <string.h>
@@ -402,6 +402,63 @@ signed short char_erase(void)
 	} while (l_si != -1);
 
 	return 1;
+}
+
+/**
+ * \brief		MIRACLE heal one hero
+ * \param le_in		healable LE maximum
+ * \param str		a format-string for the output
+ */
+/* Borlandified and identical */
+void miracle_heal_hero(signed short le_in, Bit8u *str)
+{
+	signed short i;
+	signed short le;
+	signed short hero_pos;
+	signed short le_diff;
+	Bit8u *hero;
+
+	le = 0;
+	hero_pos = -1;
+
+	/* search for the hero with the largest LE-difference */
+	for (i = 0; i <= 6; i++) {
+		hero = get_hero(i);
+
+		if (host_readbs(hero + 0x21) != 0 &&
+			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero) &&
+			!hero_dummy4(hero) &&
+			!hero_dead(hero) &&
+			((le_diff = host_readws(hero + 0x5e) - host_readws(hero + 0x60)) > le))
+		{
+			le = le_diff;
+			hero_pos = i;
+		}
+	}
+
+	if (hero_pos != -1) {
+
+		/* adjust le_in if the maximum is not reached */
+		if (le_in > le) {
+			le_in = le;
+		}
+
+		add_hero_le(get_hero(hero_pos), le_in);
+
+		/* prepare a message */
+		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+
+		if (le_in > 1) {
+			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+		}
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)str,
+				(char*)get_hero(hero_pos) + 0x10,
+				le_in,
+				(char*)Real2Host(ds_readd(0xd2eb)));
+	}
 }
 
 #if !defined(__BORLANDC__)
