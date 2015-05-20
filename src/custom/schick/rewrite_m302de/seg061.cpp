@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
+ *	Rewrite of DSA1 v3.02_de functions of seg061 (temple, chr-management, miracles)
  *	Functions rewritten: 8/8 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -1 -c -Yo seg061.cpp
  */
 #include <stdio.h>
 #include <string.h>
@@ -26,7 +30,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void do_temple(void)
 {
 #if !defined(__BORLANDC__)
@@ -230,7 +233,6 @@ void do_temple(void)
 #endif
 }
 
-/* Borlandified and identical */
 void char_add(signed short temple_id)
 {
 	signed short l_si;
@@ -295,7 +297,6 @@ void char_add(signed short temple_id)
 	}
 }
 
-/* Borlandified and identical */
 void char_letgo(signed short temple_id)
 {
 	signed short hero_pos;
@@ -344,7 +345,6 @@ void char_letgo(signed short temple_id)
 	}
 }
 
-/* Borlandified and identical */
 signed short char_erase(void)
 {
 	signed short l_si;
@@ -409,7 +409,6 @@ signed short char_erase(void)
  * \param le_in		healable LE maximum
  * \param str		a format-string for the output
  */
-/* Borlandified and identical */
 void miracle_heal_hero(signed short le_in, Bit8u *str)
 {
 	signed short i;
@@ -461,7 +460,6 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 	}
 }
 
-/* Borlandified and identical */
 void miracle_resurrect(Bit8u *str)
 {
 	signed short i;
@@ -500,7 +498,6 @@ void miracle_resurrect(Bit8u *str)
  * \param timer_value	how long should the modification last
  * \param mod		modification value
  */
-/* Borlandified and identical */
 void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 {
 	signed short i;
@@ -529,7 +526,6 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
  * \param str		format string for output
  * \param mode		0 = magic, != 0 repair
  */
-/* Borlandified and identical */
 void miracle_weapon(Bit8u *str, signed short mode)
 {
 	signed short i;
