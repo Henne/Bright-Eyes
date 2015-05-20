@@ -16,6 +16,8 @@ void miracle_heal_hero(signed short, Bit8u*);
 void miracle_resurrect(Bit8u*);
 /* 0x3e */
 void miracle_modify(unsigned short, Bit32s, signed short);
+/* 0x43 */
+void miracle_weapon(Bit8u*, signed short);
 
 #if !defined(__BORLANDC__)
 }

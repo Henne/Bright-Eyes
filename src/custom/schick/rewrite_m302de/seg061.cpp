@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
- *	Functions rewritten: 7/8
+ *	Functions rewritten: 8/8 (complete)
  */
 #include <stdio.h>
 #include <string.h>
@@ -521,6 +521,79 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 
 			set_mod_slot(slot, timer_value, Real2Host(ptr), mod, i);
 		}
+	}
+}
+
+/**
+ * \brief		MIRACLE repair or magicise weapon
+ * \param str		format string for output
+ * \param mode		0 = magic, != 0 repair
+ */
+/* Borlandified and identical */
+void miracle_weapon(Bit8u *str, signed short mode)
+{
+	signed short i;
+	signed short j;
+	signed short done;
+	signed short item_id;
+	Bit8u *hero;
+
+	j = done = 0;
+
+	while (j <= 6 && done == 0) {
+
+		hero = get_hero(j);
+
+		if (host_readbs(hero + 0x21) != 0 &&
+			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero) &&
+			!hero_dummy4(hero))
+		{
+			for (i = 0; i < 23; i++)
+			{
+
+				if ((item_id = host_readws(hero + 0x196 + 14 * i)) &&
+					item_weapon(get_itemsdat(item_id)))
+				{
+
+					if (mode == 0) {
+						/* make a non-broken, non-magic weapon magic */
+
+						if (!ks_broken(hero + 0x196 + 14 * i) &&
+							!ks_magic_hidden(hero + 0x196 + 14 * i))
+						{
+							/* weapon is magic and known */
+							or_ptr_bs(hero + 0x196 + 4 + 14 * i, 0x08);
+							or_ptr_bs(hero + 0x196 + 4 + 14 * i, 0x80);
+
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)str,
+								(char*)Real2Host(GUI_names_grammar(0x8000, item_id, 0)),
+								(char*)hero + 0x10);
+
+							done = 1;
+							break;
+						}
+					} else {
+						/* repair a broken weapon */
+						if (ks_broken(hero + 0x196 + 14 * i))
+						{
+							and_ptr_bs(hero + 0x196 + 4 + 14 * i, 0xfe);
+
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)str,
+								(char*)Real2Host(GUI_names_grammar(0x8000, item_id, 0)),
+								(char*)hero + 0x10);
+
+							done = 1;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		j++;
 	}
 }
 

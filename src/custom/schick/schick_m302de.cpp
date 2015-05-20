@@ -4643,8 +4643,14 @@ static int seg061(unsigned short offs)
 			return 1;
 		}
 		case 0x43: {
-			D1_LOG("wonder4();\n");
-			return 0;
+			RealPt str = CPU_Pop32();
+			Bit16s mode = CPU_Pop16();
+			CPU_Push16(mode);
+			CPU_Push32(str);
+
+			D1_LOG("miracle_weapon(%p,%d);\n", str, mode);
+			miracle_weapon(Real2Host(str), mode);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
