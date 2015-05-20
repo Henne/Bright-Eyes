@@ -4631,8 +4631,16 @@ static int seg061(unsigned short offs)
 			return 1;
 		}
 		case 0x3e: {
-			D1_LOG("wonder3();\n");
-			return 0;
+			Bit16u offset = CPU_Pop16();
+			Bit32s timer_value = CPU_Pop32();
+			Bit16s mod = CPU_Pop16();
+			CPU_Push16(mod);
+			CPU_Push32(timer_value);
+			CPU_Push16(mod);
+
+			D1_LOG("miracle_modify(%d,0x%x,%d);\n", offset, timer_value, mod);
+			miracle_modify(offset, timer_value, mod);
+			return 1;
 		}
 		case 0x43: {
 			D1_LOG("wonder4();\n");

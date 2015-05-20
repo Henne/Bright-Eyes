@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg061 (temple)
- *	Functions rewritten: 6/8
+ *	Functions rewritten: 7/8
  */
 #include <stdio.h>
 #include <string.h>
@@ -490,6 +490,36 @@ void miracle_resurrect(Bit8u *str)
 				(char*)hero + 0x10);
 
 			break;
+		}
+	}
+}
+
+/**
+ * \brief		MIRACLE modify all living group members
+ * \param offset	offset in the datasheet
+ * \param timer_value	how long should the modification last
+ * \param mod		modification value
+ */
+/* Borlandified and identical */
+void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
+{
+	signed short i;
+	signed short slot;
+	HugePt ptr;
+	RealPt hero = (RealPt)ds_readd(HEROS);
+
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
+			host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(Real2Host(hero)) &&
+			!hero_dummy4(Real2Host(hero)))
+		{
+			slot = get_free_mod_slot();
+			ptr = hero;
+			ptr += offset;
+
+			set_mod_slot(slot, timer_value, Real2Host(ptr), mod, i);
 		}
 	}
 }
