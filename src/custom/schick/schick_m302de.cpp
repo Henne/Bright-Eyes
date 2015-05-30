@@ -4636,7 +4636,7 @@ static int seg061(unsigned short offs)
 			Bit16s mod = CPU_Pop16();
 			CPU_Push16(mod);
 			CPU_Push32(timer_value);
-			CPU_Push16(mod);
+			CPU_Push16(offset);
 
 			D1_LOG("miracle_modify(%d,0x%x,%d);\n", offset, timer_value, mod);
 			miracle_modify(offset, timer_value, mod);
