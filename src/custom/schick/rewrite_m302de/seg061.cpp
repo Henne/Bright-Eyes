@@ -211,10 +211,10 @@ void do_temple(void)
 
 						if (10 * donation >= money) {
 							/* donate all money */
-							add_ds_ds(0x314e + 4 * ds_readws(0xe3f8), money / 10);
+							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), money / 10);
 							money = 0;
 						} else {
-							add_ds_ds(0x314e + 4 * ds_readws(0xe3f8), donation);
+							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), donation);
 							money -= 10 * donation;
 						}
 
