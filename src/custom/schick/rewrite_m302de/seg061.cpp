@@ -32,9 +32,6 @@ namespace M302de {
 
 void do_temple(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short l_si;
 	signed short l_di;
 	signed short input;
@@ -230,7 +227,6 @@ void do_temple(void)
 	turnaround();
 
 	ds_writew(0x29b6, ds_writew(0x29b8, 1));
-#endif
 }
 
 void char_add(signed short temple_id)

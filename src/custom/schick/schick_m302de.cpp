@@ -4604,7 +4604,8 @@ static int seg061(unsigned short offs)
 	switch (offs) {
 		case 0x20: {
 			D1_LOG("do_temple();\n");
-			return 0;
+			do_temple();
+			return 1;
 		}
 		case 0x2f: {
 			reg_ax = char_erase();
