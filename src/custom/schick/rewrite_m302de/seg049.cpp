@@ -510,7 +510,10 @@ void GRP_move_hero(signed short src_pos)
 		ds_writew(0x29a2, ds_readw(0x299e));
 
 		while (ds_readw(0xc3d5) == 0) {
-
+#if !defined(__BORLANDC__)
+			/* call DOSBOX to handle mouse ISR */
+			wait_for_vsync();
+#endif
 			if (ds_readw(0x29a4) != 0) {
 
 				ds_writew(0x2998, 1);
