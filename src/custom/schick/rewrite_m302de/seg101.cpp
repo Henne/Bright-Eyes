@@ -744,7 +744,7 @@ void spell_dunkelheit(void)
 
 
 	/* set dunkelheit duration (level + 3) hours */
-	ds_writed(0x2dc4 + 0x24,
+	ds_writed(INGAME_TIMERS + 0x24,
 		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */
@@ -765,7 +765,7 @@ void spell_flimflam(void)
 
 
 	/* set flim flam duration (level + 3) hours */
-	ds_writed(0x2dc4 + 0x20,
+	ds_writed(INGAME_TIMERS + 0x20,
 		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
 
 	/* copy message text */

@@ -565,9 +565,9 @@ void DNG_lights(void)
 
 		if (!(ds_readb((0xbd6e + 1)) & 1)) {
 
-			if (ds_readd(0x2dc4 + 0x24)) {
+			if (ds_readd(INGAME_TIMERS + 0x24)) {
 				l1 = 10;
-			} else if (ds_readd(0x2dc4 + 0x20) || is_staff_lvl2_in_group()) {
+			} else if (ds_readd(INGAME_TIMERS + 0x20) || is_staff_lvl2_in_group()) {
 				l1 = 0;
 			} else {
 				if ( (l1 = get_max_light_time()) != -1) {
@@ -577,7 +577,7 @@ void DNG_lights(void)
 				}
 			}
 		} else {
-			if (ds_readd(0x2dc4 + 0x24)) {
+			if (ds_readd(INGAME_TIMERS + 0x24)) {
 				l1 = 10;
 			} else {
 				l1 = 0;

@@ -233,7 +233,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				atpa++;
 			}
 
-			if (ds_readd(0x2dc4 + 0x24)) {
+			if (ds_readd(INGAME_TIMERS + 0x24)) {
 				atpa -= 4;
 			}
 
@@ -249,7 +249,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					l11--;
 				}
 
-				if (ds_readd(0x2dc4 + 0x24)) {
+				if (ds_readd(INGAME_TIMERS + 0x24)) {
 					l11 -= 4;
 				}
 
@@ -369,7 +369,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						}
 					}
 
-					if (ds_readd(0x2dc4 + 0x24)) {
+					if (ds_readd(INGAME_TIMERS + 0x24)) {
 						l10 -= 4;
 					}
 

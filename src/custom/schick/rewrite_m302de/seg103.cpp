@@ -542,7 +542,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 		}
 		case 9 : {
 
-			if (ds_readds((0x2dc4 + 0x18)) > 0) {
+			if (ds_readds((INGAME_TIMERS + 0x18)) > 0) {
 
 				GUI_output(get_dtp(0x88));
 
@@ -563,12 +563,12 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					add_party_money(money);
 
-					ds_writed((0x2dc4 + 0x18), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
 					ds_writew(0x2846, 1);
 				} else {
 					GUI_output(get_dtp(0x90));
 
-					ds_writed((0x2dc4 + 0x18), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
 					l_si = -1;
 				}
 			}
@@ -576,7 +576,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 		}
 		case 47 : {
 
-			if (ds_readds((0x2dc4 + 0x1c)) > 0) {
+			if (ds_readds((INGAME_TIMERS + 0x1c)) > 0) {
 
 				GUI_output(get_dtp(0x94));
 
@@ -597,12 +597,12 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					add_party_money(money);
 
-					ds_writed((0x2dc4 + 0x1c), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
 					ds_writew(0x2846, 1);
 				} else {
 					GUI_output(get_dtp(0x90));
 
-					ds_writed((0x2dc4 + 0x1c), 0xa8c0);
+					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
 					l_si = -1;
 				}
 			}

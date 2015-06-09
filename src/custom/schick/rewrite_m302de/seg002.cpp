@@ -2458,14 +2458,14 @@ void sub_ingame_timers(Bit32s val)
 	for (i = 0; i < 26; i++) {
 
 		/* only subtract if greater than zero */
-		if (ds_readds(0x2dc4 + i * 4) > 0) {
+		if (ds_readds(INGAME_TIMERS + i * 4) > 0) {
 
 			/* subtract val from timer*/
-			sub_ds_ds(0x2dc4 + i * 4, val);
+			sub_ds_ds(INGAME_TIMERS + i * 4, val);
 
 			/* if the timer is now lower than zero, set the timer to zero */
-			if (ds_readds(0x2dc4 + i * 4) < 0) {
-				ds_writed(0x2dc4 + i * 4, 0);
+			if (ds_readds(INGAME_TIMERS + i * 4) < 0) {
+				ds_writed(INGAME_TIMERS + i * 4, 0);
 			}
 		}
 	}

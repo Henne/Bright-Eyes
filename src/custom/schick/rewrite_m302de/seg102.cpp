@@ -235,7 +235,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 
 		ds_writew(0xe5b2, MON_test_skill(Real2Host(monster), l_si, bonus));
 
-		if ((ds_readws(0xe5b2) <= 0) || (ds_readds(0x2dc4) > 0)) {
+		if ((ds_readws(0xe5b2) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
 
 			/* spell failed */
 			MON_sub_ae(Real2Host(monster), MON_get_spell_cost(l_si, 1));

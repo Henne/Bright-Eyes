@@ -33,6 +33,7 @@
 #define MONTH		(0x2dc1)
 #define YEAR		(0x2dc2)
 #define SPECIAL_DAY	(0x2dc3)
+#define INGAME_TIMERS	(0x2dc4)	/* signed long[26] */
 #define GODS_ESTIMATION (0x314e)	/* signed long[15] */
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */

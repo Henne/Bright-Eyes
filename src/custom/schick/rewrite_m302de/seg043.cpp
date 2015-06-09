@@ -205,13 +205,13 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 			}
 
 			/* spell_dunkelheit() is active => AT-4, PA-4*/
-			if (ds_readds(0x2dc4 + 0x24)) {
+			if (ds_readds(INGAME_TIMERS + 0x24)) {
 				at -= 4;
 				pa -= 4;
 			}
 
 			l7 = host_readbs(Real2Host(monster) + 0x1c);
-			if (ds_readds(0x2dc4 + 0x24)) {
+			if (ds_readds(INGAME_TIMERS + 0x24)) {
 				l7 -= 4;
 			}
 

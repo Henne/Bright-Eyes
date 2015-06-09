@@ -902,7 +902,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				retval = -1;
 
-			} else if ((ds_readws(0xe5b2) <= 0) || (ds_readds(0x2dc4) > 0)) {
+			} else if ((ds_readws(0xe5b2) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x978));
 
