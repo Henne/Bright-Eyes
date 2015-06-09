@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg062 (temple: wonder)
  *	Functions rewritten: 1/1 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg062.cpp
  */
 
 #include <stdio.h>
@@ -23,7 +27,6 @@ struct dummy15 {
 	signed char a[15];
 };
 
-/* Borlandified and identical */
 void ask_miracle(void)
 {
 	signed short l_si;
