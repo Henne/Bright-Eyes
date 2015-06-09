@@ -4664,7 +4664,8 @@ static int seg062(unsigned short offs)
 	switch (offs) {
 		case 0x20: {
 			D1_LOG("ask_miracle();\n");
-			return 0;
+			ask_miracle();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
