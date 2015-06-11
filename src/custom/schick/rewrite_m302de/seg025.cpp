@@ -781,15 +781,15 @@ void leave_dungeon(void)
 	ds_writew(DEATHTRAP, 0);
 }
 
-/* 0x100a */
 /**
- * tumult() - party gets 1W6 LE damage
+ * \brief	party gets 1W6 LE damage
  */
+/* Borlandified and identical */
 void tumult(void)
 {
-	signed short bak;
+	signed short tw_bak;
 
-	bak = ds_readw(TEXTBOX_WIDTH);
+	tw_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
 	/* print message */
@@ -798,24 +798,19 @@ void tumult(void)
 	/* each hero in the group looses 1W6 LE */
 	sub_group_le(random_schick(6));
 
-	if (ds_readb(CURRENT_TOWN) == 0x27 || ds_readb(CURRENT_TOWN) == 0x12 ||
-		ds_readb(CURRENT_TOWN) == 0x1 || ds_readb(CURRENT_TOWN) == 0x11) {
 
-			/* the guards */
-
-			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xbf4),
-				(char*)get_ltx(0xbf8));
-	} else {
-			/* a mob */
-			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xbf4),
-				(char*)get_ltx(0xbfc));
-	}
+	/* the guards or a mob */
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_ltx(0xbf4),
+		((ds_readb(CURRENT_TOWN) == 39 ||	/* PREM */
+			ds_readb(CURRENT_TOWN) == 18 ||	/* PHEXCAER */
+			ds_readb(CURRENT_TOWN) == 1 ||	/* THORWAL */
+			ds_readb(CURRENT_TOWN) == 17)	/* OBERORKEN */
+				? (char*)get_ltx(0xbf8) : (char*)get_ltx(0xbfc)));
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
-	ds_writew(TEXTBOX_WIDTH, bak);
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
 /* 0x10b3 */
