@@ -3017,7 +3017,13 @@ static int seg025(unsigned short offs) {
 		return 1;
 	}
 	case 0x2a: {
+		D1_LOG("game_options();\n");
+#if 0
+		game_options();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x2f: {
 		D1_LOG("far copy_palette();\n");
@@ -8447,7 +8453,21 @@ static int n_seg025(unsigned short offs)
 		return 1;
 	}
 	case 0xca8: {
+#if 0
+
+		CPU_Pop16();
+		Bit16s id = CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push16(id);
+		D1_LOG("draw_icon(%d,%d,%d);\n", id, x, y);
+		draw_icon(id, x, y);
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0xd54: {
 		CPU_Pop16();

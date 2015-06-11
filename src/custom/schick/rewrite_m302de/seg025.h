@@ -5,8 +5,12 @@ namespace M302de {
 void do_location(void);
 /* 0x25 */
 void turnaround(void);
+/* 0x2a */
+void game_options(void);
 /* 0x2f */
 void copy_palette(void);
+/* 0x34 */
+void draw_icon(signed short, signed short, signed short);
 /* 0x39 */
 void show_entrance(void);
 /* 0x3e */

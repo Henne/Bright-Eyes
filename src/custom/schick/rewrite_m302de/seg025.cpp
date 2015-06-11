@@ -385,6 +385,19 @@ void show_treasure_map(void)
 	}
 }
 
+void game_options(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#endif
+}
+
+void draw_icon(signed short id, signed short x, signed short y)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#endif
+}
 
 /* 0xd54 */
 /**
