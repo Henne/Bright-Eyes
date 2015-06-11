@@ -744,7 +744,7 @@ void leave_dungeon(void)
 	DNG_lights();
 	ptr = Real2Host(ds_readd(0xd2eb));
 
-	memset(Real2Host(ds_readd(0xd2eb)), 0, 0xc0);
+	memset(Real2Host(ds_readd(0xd303)), 0, 0xc0);
 
 	for (i = 0; i < 64; i++) {
 
