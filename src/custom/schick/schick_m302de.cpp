@@ -8453,8 +8453,6 @@ static int n_seg025(unsigned short offs)
 		return 1;
 	}
 	case 0xca8: {
-#if 0
-
 		CPU_Pop16();
 		Bit16s id = CPU_Pop16();
 		Bit16s x = CPU_Pop16();
@@ -8465,9 +8463,6 @@ static int n_seg025(unsigned short offs)
 		D1_LOG("draw_icon(%d,%d,%d);\n", id, x, y);
 		draw_icon(id, x, y);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0xd54: {
 		CPU_Pop16();

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 13/15
+ *	Functions rewritten: 14/15
  */
 
 #include <string.h>
@@ -591,11 +591,31 @@ signed short game_options(void)
 	return done == -1 ? 1 : 0;
 }
 
+/* Borlandified and identical */
 void draw_icon(signed short id, signed short x, signed short y)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short handle;
+	RealPt ptr_bak;
+
+	handle = load_archive_file(15);
+
+	seg002_0c72(handle, id * 576L, 0);
+
+	read_archive_file(handle, Real2Host(ds_readd(ICON)), 576);
+
+	bc_close(handle);
+
+	ptr_bak = (RealPt)ds_readd(0xc00d);
+
+	ds_writed(0xc019, ds_readd(ICON));
+	ds_writew(0xc011, x);
+	ds_writew(0xc013, y);
+	ds_writew(0xc015, x + 23);
+	ds_writew(0xc017, y + 23);
+	ds_writed(0xc00d, ds_readd(0xd303));
+	do_pic_copy(2);
+
+	ds_writed(0xc00d, (Bit32u)ptr_bak);
 }
 
 /* 0xd54 */
