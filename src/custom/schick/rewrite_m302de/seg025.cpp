@@ -49,7 +49,7 @@ void show_entrance(void)
 }
 
 /**
- * show_citizen() - the screen when entering a house in the city
+ * \brief	the screen when entering a house in the city
  */
 /* Borlandified and identical */
 void show_citizen(void)
@@ -712,9 +712,8 @@ void do_location(void)
 #endif
 }
 
-/* 0xea9 */
 /**
- * turnaround() - turn around in a pseudo 3d-view
+ * \brief	turn around in a pseudo 3d-view
  */
 /* Borlandified and identical */
 void turnaround(void)
@@ -813,11 +812,10 @@ void tumult(void)
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
-/* 0x10b3 */
-
 /**
- * fade_into() - fade when leaving a location
+ * \brief	fade when leaving a location
  */
+/* Borlandified and identical */
 void fade_into(void)
 {
 	Bit8u *ptr;
@@ -845,7 +843,7 @@ void fade_into(void)
 
 }
 
-/* 0x114a */
+/* Borlandified and identical */
 void copy_palette(void)
 {
 	memcpy(Real2Host(ds_readd(0xd303)) + 0xfa00, Real2Host(ds_readd(0xce3b)), 0x60);
