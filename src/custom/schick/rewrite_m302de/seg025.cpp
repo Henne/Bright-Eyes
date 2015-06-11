@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
  *	Functions rewritten: 15/15 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg025.cpp
  */
 
 #include <string.h>
@@ -30,7 +34,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void show_entrance(void)
 {
 	draw_main_screen();
@@ -51,7 +54,6 @@ void show_entrance(void)
 /**
  * \brief	the screen when entering a house in the city
  */
-/* Borlandified and identical */
 void show_citizen(void)
 {
 	ds_writew(0x2846, 1);
@@ -95,7 +97,6 @@ void show_citizen(void)
 /**
  * \brief	break into a house
  */
-/* Borlandified and identical */
 void do_house(void)
 {
 	signed short i;
@@ -191,7 +192,6 @@ void do_house(void)
 
 }
 
-/* Borlandified and identical */
 void do_informer(void)
 {
 #if !defined(__BORLANDC__)
@@ -220,7 +220,6 @@ void do_informer(void)
 #endif
 }
 
-/* Borlandified and identical */
 void enter_map(void)
 {
 	ds_writew(0x4334, ds_readw(TYPEINDEX));
@@ -231,7 +230,6 @@ void enter_map(void)
 	ds_writeb(TRAVELING, 1);
 }
 
-/* Borlandified and identical */
 void show_treasure_map(void)
 {
 	signed short l_si;
@@ -387,7 +385,6 @@ void show_treasure_map(void)
 	}
 }
 
-/* Borlandified and identical */
 signed short game_options(void)
 {
 	signed short done;
@@ -591,7 +588,6 @@ signed short game_options(void)
 	return done == -1 ? 1 : 0;
 }
 
-/* Borlandified and identical */
 void draw_icon(signed short id, signed short x, signed short y)
 {
 	signed short handle;
@@ -626,7 +622,6 @@ void draw_icon(signed short id, signed short x, signed short y)
  * These were introduced in V3.00 (de and en) to find better into the story.
  */
 /* static */
-/* Borlandified and identical */
 signed short show_storytext(void)
 {
 	Bit8u *ptr;
@@ -670,7 +665,6 @@ signed short show_storytext(void)
 	}
 }
 
-/* Borlandified and identical */
 void do_location(void)
 {
 #if !defined(__BORLANDC__)
@@ -715,7 +709,6 @@ void do_location(void)
 /**
  * \brief	turn around in a pseudo 3d-view
  */
-/* Borlandified and identical */
 void turnaround(void)
 {
 	set_var_to_zero();
@@ -735,7 +728,6 @@ void turnaround(void)
 	ds_writew(0x2846, ds_writebs(0x45b8, 1));
 }
 
-/* Borlandified and identical */
 void leave_dungeon(void)
 {
 	signed short i;
@@ -783,7 +775,6 @@ void leave_dungeon(void)
 /**
  * \brief	party gets 1W6 LE damage
  */
-/* Borlandified and identical */
 void tumult(void)
 {
 	signed short tw_bak;
@@ -815,7 +806,6 @@ void tumult(void)
 /**
  * \brief	fade when leaving a location
  */
-/* Borlandified and identical */
 void fade_into(void)
 {
 	Bit8u *ptr;
@@ -843,7 +833,6 @@ void fade_into(void)
 
 }
 
-/* Borlandified and identical */
 void copy_palette(void)
 {
 	memcpy(Real2Host(ds_readd(0xd303)) + 0xfa00, Real2Host(ds_readd(0xce3b)), 0x60);
