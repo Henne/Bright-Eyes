@@ -736,6 +736,7 @@ void turnaround(void)
 	ds_writew(0x2846, ds_writebs(0x45b8, 1));
 }
 
+/* Borlandified and identical */
 void leave_dungeon(void)
 {
 	signed short i;
