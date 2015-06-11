@@ -716,6 +716,7 @@ void do_location(void)
 /**
  * turnaround() - turn around in a pseudo 3d-view
  */
+/* Borlandified and identical */
 void turnaround(void)
 {
 	set_var_to_zero();
@@ -728,13 +729,11 @@ void turnaround(void)
 	ds_writew(Y_TARGET, ds_readw(0x2d85));
 
 	/* recalc direction */
-	ds_writeb(DIRECTION, (ds_readb(DIRECTION) + 2) % 4);
+	ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) % 4);
 
 	set_to_ff();
 
-	ds_writeb(0x45b8, 1);
-	ds_writew(0x2846, 1);
-
+	ds_writew(0x2846, ds_writebs(0x45b8, 1));
 }
 
 void leave_dungeon(void)
