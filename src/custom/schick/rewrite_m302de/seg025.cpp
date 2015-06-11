@@ -758,6 +758,7 @@ void leave_dungeon(void)
 	ds_writeb(CURRENT_TOWN, ds_readb(0x2da6));
 	ds_writeb(0x2dad, ds_readb(DUNGEON_INDEX));
 	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));
+	ds_writebs(0x2ca7, -1);
 	ds_writeb(0x4475, ds_writew(0x2846, 1));
 
 	do_fill_rect((RealPt)ds_readd(0xd303), 0, 0, 319, 199, 0);
