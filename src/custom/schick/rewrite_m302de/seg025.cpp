@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 14/15
+ *	Functions rewritten: 15/15 (complete)
  */
 
 #include <string.h>
@@ -670,9 +670,46 @@ signed short show_storytext(void)
 	}
 }
 
+/* Borlandified and identical */
 void do_location(void)
 {
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+	signed short bak1;
+	signed short bak2;
+	signed short tw_bak;
+	signed short tm_bak;
+	void (*func)(void);
+
+	tm_bak = ds_readb(TRAVELING);
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	bak1 = ds_readws(0x2ca2);
+	bak2 = ds_readws(0x2ca4);
+
+	ds_writew(0x2ca2, 0);
+	ds_writew(0x2ca4, 0);
+	ds_writeb(TRAVELING, 0);
+	ds_writew(TEXTBOX_WIDTH, 3);
+
+	func = (void (*)(void))ds_readd(0x4c3b + 4 * ds_readbs(0x2d60));
+
+	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+
+	if (func) {
+		func();
+	}
+
+	ds_writew(0x2ca2, bak1);
+	ds_writew(0x2ca4, bak2);
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+
+	if (!ds_readb(TRAVELING)) {
+		ds_writeb(TRAVELING, tm_bak);
+	}
+	ds_writebs(0x2ca8, -1);
+
+#endif
 }
 
 /* 0xea9 */
