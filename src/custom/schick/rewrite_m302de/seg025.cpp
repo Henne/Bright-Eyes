@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg025 (locations)
- *	Functions rewritten: 12/15
+ *	Functions rewritten: 13/15
  */
 
 #include <string.h>
@@ -13,12 +13,14 @@
 #include "seg004.h"
 #include "seg007.h"
 #include "seg008.h"
+#include "seg024.h"
 #include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg030.h"
 #include "seg049.h"
+#include "seg061.h"
 #include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -385,11 +387,208 @@ void show_treasure_map(void)
 	}
 }
 
-void game_options(void)
+/* Borlandified and identical */
+signed short game_options(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short done;
+	signed short answer;
+	signed short fg_bak;
+	signed short bg_bak;
+	signed short bak1;
+	signed short bak2;
+	signed short tw_bak;
+	signed short game_state;
+	signed short new_delay;
+
+	done = 0;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 3);
+	ds_writeb(0x45b8, 1);
+	ds_writew(0xe113, 0);
+	ds_writew(0x2ccb, -1);
+	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+
+	load_pp20(177);
+	ds_writeb(0x2845, 177);
+
+	get_textcolor(&fg_bak, &bg_bak);
+
+	ds_writed(0xd2fb, ds_readd(0xc3db));
+
+	bak1 = ds_readws(0xd2d5);
+	bak2 = ds_readws(0xd2d9);
+	ds_writew(0xd2d5, 200);
+	ds_writew(0xd2d9, 70);
+
+	set_textcolor(4, 0);
+
+	memset(Real2Host(ds_readd(0xc3db)), 0, 20000);
+
+	prepare_date_str();
+
+	GUI_print_header(Real2Host(ds_readd(DTP2)));
+
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 319);
+	ds_writew(0xc017, 61);
+	ds_writed(0xc019, ds_readd(0xc3db));
+	ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd303) + 9600));
+	do_pic_copy(2);
+
+	memset(Real2Host(ds_readd(0xc3db)), 0, 28000);
+
+	if (ds_readbs(CURRENT_TOWN) != 0) {
+		/* if the party is in a town */
+		load_buffer_1(19);
+
+		GUI_print_header(get_dtp(4 * (ds_readbs(CURRENT_TOWN) - 1)));
+
+		load_buffer_1(ds_readbs(CURRENT_TOWN) + 25);
+
+		ds_writew(0xc011, 0);
+		ds_writew(0xc013, 0);
+		ds_writew(0xc015, 319);
+		ds_writew(0xc017, 86);
+		ds_writed(0xc019, ds_readd(0xc3db));
+		ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd303) + 22400));
+		do_pic_copy(2);
+	}
+
+	/* draw the icons */
+	draw_icon(3, 5, 30);
+	draw_icon(4, 5, 60);
+	draw_icon(2, 5, 90);
+
+	draw_icon(44, 70, 170);
+	draw_icon(52, 110, 170);
+	draw_icon(51, 150, 170);
+	draw_icon(53, 190, 170);
+	draw_icon(5, 236, 170);
+
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 319);
+	ds_writew(0xc017, 199);
+	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+
+	update_mouse_cursor();
+	wait_for_vsync();
+
+	set_palette(Real2Host(ds_readd(0xd303)) + 64002, 0, 32);
+
+	do_pic_copy(0);
+	refresh_screen_size();
+
+	set_textcolor(fg_bak, bg_bak);
+
+	ds_writed(0xc00d, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+
+	ds_writew(0xd2d9, bak2);
+	ds_writew(0xd2d5, bak1);
+	ds_writed(0xbff9, ds_readd(0xc3db));
+
+	do {
+		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x4bae));
+		handle_input();
+		ds_writed(0x29e4, (Bit32u)0);
+
+		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+
+			/* use the radio menu */
+			answer = GUI_radio(get_ltx(0x938), 9,
+						get_ltx(0x390),
+						get_ltx(0x394),
+						get_ltx(0x494),
+						get_ltx(0x980),
+						get_ltx(0xcf8),
+						get_ltx(0xcf0),
+						get_ltx(0xcfc),
+						get_ltx(0x930),
+						get_ltx(0x934)) - 1;
+
+			if (answer != -2) {
+				ds_writew(ACTION, answer + 129);
+			}
+		}
+
+		if (ds_readws(ACTION) == 129) {
+
+			do {
+				game_state = load_game_state();
+			} while (game_state == -1);
+
+			if (game_state != 0) {
+				done = 1;
+			}
+
+		} else if (ds_readws(ACTION) == 130) {
+
+			if (save_game_state()) {
+				done = 1;
+			}
+
+		} else if (ds_readws(ACTION) == 131) {
+
+			ds_writeb(0x4c3a, 1);
+			char_erase();
+			ds_writeb(0x4c3a, 0);
+
+		} else if (ds_readws(ACTION) == 132) {
+
+			ds_writeb(0x4c3a, 1);
+			show_treasure_map();
+			ds_writeb(0x45b8, 1);
+
+		} else if (ds_readws(ACTION) == 133) {
+
+			diary_show();
+			done = 1;
+		} else if (ds_readws(ACTION) == 134) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xcec),
+				ds_readws(DELAY_FACTOR));
+
+			new_delay = GUI_input(Real2Host(ds_readd(DTP2)), 2);
+
+			if (new_delay != -1) {
+				ds_writew(DELAY_FACTOR, new_delay);
+			}
+
+		} else if (ds_readws(ACTION) == 135) {
+
+			sound_menu();
+
+		} else if (ds_readws(ACTION) == 136) {
+
+			if (GUI_bool(get_ltx(0x4ac))) {
+
+				done = -1;
+				ds_writew(0xc3c1, 3);
+			}
+
+		} else if (ds_readws(ACTION) == 137) {
+			done = 1;
+		}
+
+	} while (!done);
+
+	ds_writed(0xbff9, ds_readd(0xd303));
+
+	ds_writews(0x2cd1, ds_writews(0x2cd3, ds_writews(CURRENT_ANI, ds_writebs(0x2845, -1))));
+	ds_writew(0x2846, 1);
+	ds_writeb(0x45b8, 0);
+
+	if (ds_readbs(CURRENT_TOWN) != 0) {
+		ds_writeb(0x4475, 3);
+	}
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+
+	return done == -1 ? 1 : 0;
 }
 
 void draw_icon(signed short id, signed short x, signed short y)

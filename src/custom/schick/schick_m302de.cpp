@@ -3019,7 +3019,7 @@ static int seg025(unsigned short offs) {
 	case 0x2a: {
 		D1_LOG("game_options();\n");
 #if 0
-		game_options();
+		reg_ax = game_options();
 		return 1;
 #else
 		return 0;

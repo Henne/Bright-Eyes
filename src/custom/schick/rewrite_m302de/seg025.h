@@ -6,7 +6,7 @@ void do_location(void);
 /* 0x25 */
 void turnaround(void);
 /* 0x2a */
-void game_options(void);
+signed short game_options(void);
 /* 0x2f */
 void copy_palette(void);
 /* 0x34 */
