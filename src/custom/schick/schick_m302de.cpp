@@ -4571,6 +4571,22 @@ static int seg050(unsigned short offs) {
 	}
 }
 
+static int seg052(const unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			D1_LOG("Citycamp();\n");
+			do_citycamp();
+			return 1;
+		}
+		default: {
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+		}
+	}
+}
+
 static int seg053(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -7452,7 +7468,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1353:	return seg049(offs);
 		case 0x1358:	return seg050(offs);
 		case 0x135c:	return 0;
-		case 0x135f:	return 0;
+		case 0x135f:	return seg052(offs);
 		case 0x1362:	return seg053(offs);
 		case 0x1365:	return 0;
 		case 0x1369:	return 0;
