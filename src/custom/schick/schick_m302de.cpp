@@ -4615,10 +4615,10 @@ static int seg061(unsigned short offs)
 			return 1;
 		}
 		case 0x34: {
-			RealPt str = CPU_Pop32();
 			Bit16s le_in = CPU_Pop16();
-			CPU_Push16(le_in);
+			RealPt str = CPU_Pop32();
 			CPU_Push32(str);
+			CPU_Push16(le_in);
 
 			D1_LOG("miracle_heal_hero(%d,%p);\n", le_in, str);
 			miracle_heal_hero(le_in, Real2Host(str));
