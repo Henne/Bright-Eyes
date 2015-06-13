@@ -35,22 +35,23 @@ void ask_miracle(void)
 	signed short disease;
 	signed short fi_bak;
 	signed short l3;
-	signed short l4;
+	signed short bonus;
 	signed short l5;
 	signed short i;
 	signed short slot;
 	signed short item_id;
 #if !defined(__BORLANDC__)
-	struct dummy15 ga1 = *(struct dummy15*)(p_datseg + 0x6ea4);
-	struct dummy15 ga2 = *(struct dummy15*)(p_datseg + 0x6eb3);
+	struct dummy15 ga1 = {{0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0}};
+	struct dummy15 god_dice = {{0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10}};
 #else
 	struct dummy15 ga1 = *(struct dummy15*)(p_datseg + 0x6ea4);
-	struct dummy15 ga2 = *(struct dummy15*)(p_datseg + 0x6eb3);
+	struct dummy15 god_dice = *(struct dummy15*)(p_datseg + 0x6eb3);
 #endif
 
 	l3 = 0;
 	fi_bak = ds_readws(0x26bd);
 
+	/* load WONDERS.LTX */
 	load_city_ltx(223);
 
 	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0));
@@ -58,19 +59,20 @@ void ask_miracle(void)
 	/* check gods estimation */
 	if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) >= 100) {
 
-		l4 = (ga1.a[ds_readws(0xe3f8)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) / 100) / 10) - l3;
+		bonus = (ga1.a[ds_readws(0xe3f8)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) / 100) / 10) - l3;
 
 		if (ds_readbs(CURRENT_TOWN) == 23) {
-			l4 += 2;
+			/* CLANEGH */
+			bonus += 2;
 		}
 
 		sub_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), 10);
 
-		if (random_schick(100) <= ga2.a[ds_readws(0xe3f8)] + l4) {
+		if (random_schick(100) <= god_dice.a[ds_readws(0xe3f8)] + bonus) {
 
-			l_si = random_schick(ga2.a[ds_readws(0xe3f8)]);
+			l_si = random_schick(god_dice.a[ds_readws(0xe3f8)]);
 
-			if (ga2.a[ds_readws(0xe3f8)] == l_si) {
+			if (god_dice.a[ds_readws(0xe3f8)] == l_si) {
 				miracle_resurrect(get_city(0x8c));
 			} else {
 				switch (ds_readws(0xe3f8)) {
