@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg052 (citycamp)
  *	Functions rewritten: 1/1 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg052.cpp
  */
 #include <stdio.h>
 
@@ -28,7 +32,6 @@ namespace M302de {
 /**
  * \brief	camp in a city or a dungeon
  */
-/* Borlandified and identical */
 void do_citycamp(void)
 {
 	signed short l_si;
