@@ -54,7 +54,7 @@ void do_temple(void)
 			/* search which god owns this temple */
 			ds_writew(0xe3f8, 1);
 			for (l_si = 1; l_si < 15; l_si++) {
-				if (is_in_byte_array(ds_readws(TYPEINDEX), Real2Host(ds_readd(0x6e36 + 4 * l_si))))
+				if (is_in_byte_array((signed char)ds_readws(TYPEINDEX), Real2Host(ds_readd(0x6e36 + 4 * l_si))))
 				{
 					ds_writew(0xe3f8, l_si);
 					break;
@@ -318,7 +318,7 @@ void char_letgo(signed short temple_id)
 					dec_ds_bs_post(0x2d3c);
 					dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
-					host_writeb(hero + 0x88, temple_id);
+					host_writeb(hero + 0x88, (signed char)temple_id);
 					host_writeb(hero + 0x8a, 0);
 
 					write_chr_temp(hero_pos);
@@ -512,7 +512,7 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 			ptr = hero;
 			ptr += offset;
 
-			set_mod_slot(slot, timer_value, Real2Host(ptr), mod, i);
+			set_mod_slot(slot, timer_value, Real2Host(ptr), (signed char)mod, (signed char)i);
 		}
 	}
 }
@@ -560,7 +560,7 @@ void miracle_weapon(Bit8u *str, signed short mode)
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,
-								(char*)Real2Host(GUI_names_grammar(0x8000, item_id, 0)),
+								(char*)Real2Host(GUI_names_grammar((signed short)0x8000, item_id, 0)),
 								(char*)hero + 0x10);
 
 							done = 1;
@@ -574,7 +574,7 @@ void miracle_weapon(Bit8u *str, signed short mode)
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,
-								(char*)Real2Host(GUI_names_grammar(0x8000, item_id, 0)),
+								(char*)Real2Host(GUI_names_grammar((signed short)0x8000, item_id, 0)),
 								(char*)hero + 0x10);
 
 							done = 1;
