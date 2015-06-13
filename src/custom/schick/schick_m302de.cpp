@@ -4617,6 +4617,42 @@ static int seg053(unsigned short offs) {
 	}
 }
 
+static int seg056(const unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			RealPt p1 = CPU_Pop32();
+			RealPt p2 = CPU_Pop32();
+			CPU_Push32(p2);
+			CPU_Push32(p1);
+#if 0
+			Bit32s retval;
+			retval = shop_compar(Real2Host(p1), Real2Host(p2));
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			D1_INFO("shop_compar() = %d\n", (Bit16s)reg_ax);
+			return 1;
+#else
+			return 0;
+#endif
+		}
+		case 0x25: {
+			D1_INFO("2\n");
+			return 0;
+		}
+		case 0x2a: {
+			D1_INFO("3\n");
+			return 0;
+		}
+		default: {
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+		}
+	}
+}
+
 static int seg061(unsigned short offs)
 {
 	switch (offs) {
@@ -7472,7 +7508,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1362:	return seg053(offs);
 		case 0x1365:	return 0;
 		case 0x1369:	return 0;
-		case 0x136d:	return 0;
+		case 0x136d:	return seg056(offs);
 		case 0x1370:	return 0;
 		case 0x1373:	return 0;
 		case 0x1377:	return 0;
