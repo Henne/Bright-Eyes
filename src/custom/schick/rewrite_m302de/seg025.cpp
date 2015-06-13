@@ -686,7 +686,7 @@ void do_location(void)
 	ds_writeb(TRAVELING, 0);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
-	func = (void (*)(void))ds_readd(0x4c3b + 4 * ds_readbs(0x2d60));
+	func = (void (*)(void))ds_readd(0x4c3b + 4 * ds_readbs(LOCATION));
 
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
 
