@@ -733,7 +733,8 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 	}
 }
 
-void seg002_0c72(Bit16u handle, Bit32s off, Bit16u dummy) {
+void seg002_0c72(Bit16u handle, Bit32s off, ...)
+{
 
 	Bit32u file_off;
 

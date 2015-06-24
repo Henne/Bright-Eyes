@@ -58,7 +58,9 @@ signed short DNG_handler_oberorken(void)
 
 	if (target_pos == 0x1608 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1 && ds_readbs(0x3fa1) != 0) {
 		/* secret door from water trap */
+#if !defined(__BORLANDC__)
 		D1_INFO("Geheimtuere\n");
+#endif
 		if (test_skill(hero, 0x33, 6) > 0) {
 
 			GUI_output(get_dtp(0x54));
@@ -176,11 +178,15 @@ signed short DNG_handler_oberorken(void)
 
 			if (i == 1) {
 				/* lift arm */
+#if !defined(__BORLANDC__)
 				D1_INFO("nichts passiert\n");
+#endif
 				GUI_output(get_dtp(0x24));
 			} else if (i == 2) {
 				/* press arm */
+#if !defined(__BORLANDC__)
 				D1_INFO("Einsturz des Tunnels verhindern (buggy)\n");
+#endif
 
 				GUI_output(get_dtp(0x24));
 
@@ -199,7 +205,9 @@ signed short DNG_handler_oberorken(void)
 					money -= 100;
 					set_party_money(money);
 				}
+#if !defined(__BORLANDC__)
 				D1_INFO("nichts passiert\n");
+#endif
 			}
 		}
 	} else if (target_pos == 0x0503 && target_pos != ds_readws(0x330e)) {
@@ -218,10 +226,14 @@ signed short DNG_handler_oberorken(void)
 		sub_hero_le(hero, random_schick(6));
 	} else if (target_pos == 0x120e && target_pos != ds_readws(0x330e) && !ds_readb(INGERIMM_HINT)) {
 		/* lower Ingerimm idol */
+#if !defined(__BORLANDC__)
 		D1_INFO("Untere Ingerimstatue\n");
+#endif
 		GUI_output(get_dtp(0x38));
 	} else if (target_pos == 0x120e) {
+#if !defined(__BORLANDC__)
 		D1_INFO("Test auf Ingerimm-Opfer\n");
+#endif
 		if (ds_readb(INGERIMM_SACRIFICE) != 0 && !ds_readb(INGERIMM_HINT)) {
 			/* hint to secret door */
 			ds_writeb(INGERIMM_HINT, 1);
@@ -229,13 +241,17 @@ signed short DNG_handler_oberorken(void)
 			GUI_output(get_dtp(0x3c));
 		}
 	} else if (target_pos == 0x130a && target_pos != ds_readws(0x330e)) {
+#if !defined(__BORLANDC__)
 		D1_INFO("In Wasserfalle gefangen\n");
+#endif
 		if (div16(host_readb(ptr + 0xb3)) == 2) {
 			and_ptr_bs(ptr + 0xb3, 0xf);
 			or_ptr_bs(ptr + 0xb3, 0x10);
 		}
 	} else if (target_pos == 0x1307 && target_pos != ds_readws(0x330e)) {
+#if !defined(__BORLANDC__)
 		D1_INFO("In Wasserfalle gefangen\n");
+#endif
 		if (div16(host_readb(ptr + 0x63)) == 2) {
 			and_ptr_bs(ptr + 0x63, 0xf);
 			or_ptr_bs(ptr + 0x63, 0x10);
@@ -247,28 +263,36 @@ signed short DNG_handler_oberorken(void)
 			GUI_output(get_dtp(0x44));
 		}
 	} else if (target_pos == 0x1302 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2) {
+#if !defined(__BORLANDC__)
 		D1_INFO("Rueckwaerts gehen\n");
+#endif
 		GUI_output(get_dtp(0x5c));
 		ds_writew(X_TARGET, 1);
 		ds_writew(Y_TARGET, 3);
 		ds_writeb(DIRECTION, 3);
 		DNG_update_pos();
 	} else if (target_pos == 0x1203 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1) {
+#if !defined(__BORLANDC__)
 		D1_INFO("Rueckwaerts gehen\n");
+#endif
 		GUI_output(get_dtp(0x5c));
 		ds_writew(X_TARGET, 5);
 		ds_writew(Y_TARGET, 3);
 		ds_writeb(DIRECTION, 1);
 		DNG_update_pos();
 	} else if (target_pos == 0x1403 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 3) {
+#if !defined(__BORLANDC__)
 		D1_INFO("Rueckwaerts gehen\n");
+#endif
 		GUI_output(get_dtp(0x5c));
 		ds_writew(X_TARGET, 3);
 		ds_writew(Y_TARGET, 1);
 		ds_writeb(DIRECTION, 0);
 		DNG_update_pos();
 	} else if (target_pos == 0x1b06 && target_pos != ds_readws(0x330e)) {
+#if !defined(__BORLANDC__)
 		D1_INFO("Illusionswand und Grube\n");
+#endif
 
 		if (GUI_bool(get_dtp(0x60))) {
 			if (ds_readb(0x3fa8) != 0) {
