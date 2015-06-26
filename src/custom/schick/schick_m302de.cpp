@@ -2831,7 +2831,7 @@ static int seg011(unsigned short offs) {
 	case 0xbff: {
 		Bit16u driver = CPU_Pop16();
 		RealPt VOC_file = CPU_Pop32();
-		Bit16s block_marker = (signed short)CPU_Pop16();
+		Bit16s block_marker = CPU_Pop16();
 		AIL_play_VOC_file(driver, VOC_file, block_marker);
 		D1_LOG("AIL_play_VOC_file(%d, 0x%x, %d);\n",
 			driver, VOC_file, block_marker);
@@ -2843,7 +2843,7 @@ static int seg011(unsigned short offs) {
 	case 0xc05: {
 		Bit16u driver = CPU_Pop16();
 		RealPt VOC_file = CPU_Pop32();
-		Bit16s block_marker = (signed short)CPU_Pop16();
+		Bit16s block_marker = CPU_Pop16();
 		reg_ax = AIL_format_VOC_file(driver, VOC_file, block_marker);
 		D1_LOG("AIL_format_VOC_file(%d, 0x%x, %d); = %d\n",
 			driver, VOC_file, block_marker, (signed short)reg_ax);
@@ -7599,7 +7599,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 static int n_seg000(unsigned offs) {
 	switch (offs) {
 		case 0xb33: {
-			CPU_Pop16();
 			Bit16u handle = CPU_Pop16();
 			Bit32u pos = CPU_Pop32();
 			Bit16u whence = CPU_Pop16();
@@ -7626,14 +7625,12 @@ static int n_seg001(unsigned offs)
 	switch (offs) {
 	/* Callers: 1 */
 	case 0x35: {
-		CPU_Pop16();
 		reg_ax = CD_set_drive_nr();
 		D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 6 */
 	case 0x5c: {
-		CPU_Pop16();
 		RealPt req = CPU_Pop32();
 		CPU_Push32(req);
 
@@ -7643,7 +7640,6 @@ static int n_seg001(unsigned offs)
 	}
 	/* Callers: 4 */
 	case 0xb2: {
-		CPU_Pop16();
 		unsigned int retval;
 
 		retval = CD_get_tod();
@@ -7655,7 +7651,6 @@ static int n_seg001(unsigned offs)
 	}
 	/* Callers: 2 */
 	case 0xc1: {
-		CPU_Pop16();
 		unsigned short track_nr = CPU_Pop16();
 		CPU_Push16(track_nr);
 		D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
@@ -7664,14 +7659,12 @@ static int n_seg001(unsigned offs)
 	}
 	/* Callers: 3 */
 	case 0x322: {
-		CPU_Pop16();
 		D1_LOG("CD_audio_stop_hsg()\n");
 		CD_audio_stop_hsg();
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x34f: {
-		CPU_Pop16();
 		D1_LOG("CD_audio_stop()\n");
 		CD_audio_stop();
 		return 1;
@@ -7686,7 +7679,6 @@ static int n_seg002(unsigned short offs)
 
 	switch (offs) {
 	case 0x0002: {
-		CPU_Pop16();
 		Bit16s index = CPU_Pop16();
 		D1_LOG("play_music_file(%d)\n", index);
 		play_music_file(index);
@@ -7694,19 +7686,16 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0045: {
-		CPU_Pop16();
 		D1_LOG("sound_menu()\n");
 		sound_menu();
 		return 1;
 	}
 	case 0x00e6: {
-		CPU_Pop16();
 		D1_LOG("near read_sound_cfg()\n");
 		read_sound_cfg();
 		return 1;
 	}
 	case 0x01e0: {
-		CPU_Pop16();
 		Bit32u size = CPU_Pop32();
 		D1_LOG("near init_AIL(%d)\n", size);
 		init_AIL(size);
@@ -7714,13 +7703,11 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0209: {
-		CPU_Pop16();
 		D1_LOG("near exit_AIL()\n");
 		exit_AIL();
 		return 1;
 	}
 	case 0x02aa: {
-		CPU_Pop16();
 		RealPt fname = CPU_Pop32();
 		RealPt ret = read_music_driver(fname);
 		D1_LOG("near read_music_driver(%s); = %x\n",
@@ -7732,7 +7719,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0349: {
-		CPU_Pop16();
 		Bit16s seq = CPU_Pop16();
 		reg_ax = prepare_midi_playback(seq);
 		D1_LOG("prepare_midi_playback(%d)\n", seq);
@@ -7740,7 +7726,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0413: {
-		CPU_Pop16();
 		Bit16s seq = CPU_Pop16();
 		reg_ax = start_midi_playback(seq);
 		D1_LOG("start_midi_playback(%d)\n", seq);
@@ -7748,7 +7733,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x043d: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s patch = CPU_Pop16();
 		RealPt p = prepare_timbre(a1, patch);
@@ -7760,7 +7744,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x04f2: {
-		CPU_Pop16();
 		Bit16s index = CPU_Pop16();
 		reg_ax = load_midi_file(index);
 		D1_LOG("load_midi_file(%d)\n", index);
@@ -7768,7 +7751,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0502: {
-		CPU_Pop16();
 		Bit16s index = CPU_Pop16();
 		reg_ax = do_load_midi_file(index);
 		D1_LOG("do_load_midi_file(%d)\n", index);
@@ -7776,7 +7758,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x053d: {
-		CPU_Pop16();
 		RealPt fname = CPU_Pop32();
 		Bit16s type = CPU_Pop16();
 		Bit16s port = CPU_Pop16();
@@ -7789,7 +7770,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x069c: {
-		CPU_Pop16();
 		Bit16s index = CPU_Pop16();
 		do_play_music_file(index);
 		D1_LOG("do_play_music_file(%d)\n", index);
@@ -7797,19 +7777,16 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x06c7: {
-		CPU_Pop16();
 		D1_LOG("stop_midi_playback();\n");
 		stop_midi_playback();
 		return 1;
 	}
 	case 0x079f: {
-		CPU_Pop16();
 		reg_ax = have_mem_for_sound();
 		D1_LOG("have_mem_for_sound() = %d\n", reg_ax);
 		return 1;
 	}
 	case 0x0832: {
-		CPU_Pop16();
 		Bit16u index = CPU_Pop16();
 		D1_LOG("near play_voc(FX%d)\n", index - 288);
 		play_voc(index);
@@ -7817,13 +7794,11 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x08b5: {
-		CPU_Pop16();
 		D1_LOG("near free_voc_buffer();\n");
 		free_voc_buffer();
 		return 1;
 	}
 	case 0x09ff: {
-		CPU_Pop16();
 		RealPt fname = CPU_Pop32();
 		Bit16s type = CPU_Pop16();
 		Bit16s io = CPU_Pop16();
@@ -7837,7 +7812,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0adf: {
-		CPU_Pop16();
 		RealPt fname = CPU_Pop32();
 		RealPt ret = read_digi_driver(fname);
 		D1_LOG("near read_digi_driver(%s); = %x\n",
@@ -7849,7 +7823,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0b7e: {
-		CPU_Pop16();
 		unsigned short fileindex = CPU_Pop16();
 		CPU_Push16(fileindex);
 
@@ -7860,7 +7833,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0c28: {
-		CPU_Pop16();
 		Bit16u handle = CPU_Pop16();
 		RealPt buf = CPU_Pop32();
 		Bit16u len = CPU_Pop16();
@@ -7875,7 +7847,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x0c72: {
-		CPU_Pop16();
 		Bit16u handle = CPU_Pop16();
 		Bit32u off = CPU_Pop32();
 		Bit16u dummy = CPU_Pop16();
@@ -7889,7 +7860,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x1361: {
-		CPU_Pop16();
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
 		RealPt p3 = CPU_Pop32();
@@ -7913,7 +7883,6 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 2 */
 	case 0x1634: {
-		CPU_Pop16();
 		unsigned short v1 = CPU_Pop16();
 		unsigned short v2 = CPU_Pop16();
 		unsigned short v3 = CPU_Pop16();
@@ -7931,21 +7900,18 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x17ae: {
-		CPU_Pop16();
 		D1_LOG("mouse_reset_ehandler()\n");
 		mouse_reset_ehandler();
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x19dc: {
-		CPU_Pop16();
 		D1_LOG("mouse_19dc()\n");
 		mouse_19dc();
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x1cf2: {
-		CPU_Pop16();
 		unsigned short x = CPU_Pop16();
 		unsigned short y = CPU_Pop16();
 		RealPt p = CPU_Pop32();
@@ -7960,7 +7926,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x1d67: {
-		CPU_Pop16();
 		D1_LOG("handle_input();\n");
 		handle_input();
 		return 1;
@@ -7971,21 +7936,18 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x20bd: {
-		CPU_Pop16();
 		timers_daily();
 		D1_LOG("timers_daily();\n");
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x2177: {
-		CPU_Pop16();
 		seg002_2177();
 		D1_LOG("seg002_2177();\n");
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x21ab: {
-		CPU_Pop16();
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
 		CPU_Push32(p2);
@@ -8008,26 +7970,22 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x25ce: {
-		CPU_Pop16();
 		reg_ax = get_current_season();
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x2628: {
-		CPU_Pop16();
 		D1_LOG("do_census();\n");
 		do_census();
 		return 1;
 	}
 	case 0x274e: {
-		CPU_Pop16();
 		D1_LOG("near do_timers();\n");
 		do_timers();
 		return 1;
 	}
 	/* Callers: 4 */
 	case 0x2bf6: {
-		CPU_Pop16();
 		unsigned int val = CPU_Pop32();
 		CPU_Push32(val);
 		D1_LOG("near sub_ingame_timers(val = %u);\n", val);
@@ -8036,7 +7994,6 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 4 */
 	case 0x2c5e: {
-		CPU_Pop16();
 		unsigned int val = CPU_Pop32();
 		CPU_Push32(val);
 
@@ -8046,7 +8003,6 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 4 */
 	case 0x2f7a: {
-		CPU_Pop16();
 		Bit32s val = CPU_Pop32();
 		CPU_Push32(val);
 		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
@@ -8055,7 +8011,6 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 4 */
 	case 0x3071: {
-		CPU_Pop16();
 		Bit32s quarter = CPU_Pop32();
 		CPU_Push32(quarter);
 
@@ -8065,7 +8020,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x31a2: {
-		CPU_Pop16();
 		D1_LOG("magical_chainmail_damage()\n");
 		magical_chainmail_damage();
 		return 1;
@@ -8077,34 +8031,29 @@ static int n_seg002(unsigned short offs)
 			return 0;
 
 		D1_LOG("near herokeeping();\n");
-		CPU_Pop16();
 		herokeeping();
 
 		return 1;
 	}
 	case 0x373a: {
-		CPU_Pop16();
 		D1_LOG("check_level_up();\n");
 		check_level_up();
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x3b63: {
-		CPU_Pop16();
 		passages_recalc();
 		D1_LOG("passages_recalc();\n");
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x3c63: {
-		CPU_Pop16();
 		passages_reset();
 		D1_LOG("passages_reset();\n");
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x3f3e: {
-		CPU_Pop16();
 		unsigned short index = CPU_Pop16();
 		unsigned short type = CPU_Pop16();
 		CPU_Push16(type);
@@ -8116,28 +8065,24 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x4016: {
-		CPU_Pop16();
 		D1_LOG("near wait_for_keyboard2()\n");
 		wait_for_keyboard2();
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x47e2: {
-		CPU_Pop16();
 		seg002_47e2();
 		D1_LOG("seg002_47e2();\n");
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x484f: {
-		CPU_Pop16();
 		seg002_484f();
 		D1_LOG("seg002_484f();\n");
 		return 1;
 	}
 	/* Callers: 2 */
 	case 0x49d8: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
@@ -8148,7 +8093,6 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x4adc: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s le = CPU_Pop16();
 		CPU_Push16(le);
@@ -8163,7 +8107,6 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x4f49: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16u index = CPU_Pop16();
 		Bit16u type = CPU_Pop16();
@@ -8181,7 +8124,6 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x55b1: {
-		CPU_Pop16();
 		Bit16s item = CPU_Pop16();
 		Bit16s group = CPU_Pop16();
 		CPU_Push16(group);
@@ -8195,14 +8137,12 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 2 */
 	case 0x573e: {
-		CPU_Pop16();
 		reg_ax = count_heros_available();
 		D1_LOG("count_heros_available() = %d;\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 3 */
 	case 0x5799: {
-		CPU_Pop16();
 		reg_ax = count_heroes_available_in_group();
 		D1_LOG("count_heroes_available_in_group() = %d;\n",
 			reg_ax);
@@ -8210,7 +8150,6 @@ static int n_seg002(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x5a81: {
-		CPU_Pop16();
 #if 1
 		reg_ax = 1;
 		D1_LOG("Kopierschutzabfrage umgangen\n");
@@ -8228,7 +8167,6 @@ static int n_seg004(unsigned short offs)
 {
 	switch (offs) {
 		case 0x55: {
-			CPU_Pop16();
 			Bit16u v1 = CPU_Pop16();
 			D1_LOG("near init_ani(%d)\n", v1);
 			init_ani(v1);
@@ -8236,13 +8174,11 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0x54b: {
-			CPU_Pop16();
 			D1_LOG("near update_status_bars()\n");
 			update_status_bars();
 			return 1;
 		}
 		case 0x8e9: {
-			CPU_Pop16();
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
 			unsigned short v3 = CPU_Pop16();
@@ -8259,13 +8195,11 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0xe31: {
-			CPU_Pop16();
 			D1_LOG("update_wallclock()\n");
 			update_wallclock();
 			return 1;
 		}
 		case 0xf54: {
-			CPU_Pop16();
 			Bit16s pos = CPU_Pop16();
 			Bit16s night = CPU_Pop16();
 			D1_LOG("near wallclock(%d, %d)\n", pos, night);
@@ -8275,7 +8209,6 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0x1147: {
-			CPU_Pop16();
 			RealPt dst = CPU_Pop32();
 			unsigned short v1 = CPU_Pop16();
 			unsigned short v2 = CPU_Pop16();
@@ -8291,13 +8224,11 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0x11da: {
-			CPU_Pop16();
 			D1_LOG("clear_ani_pal()\n");
 			clear_ani_pal();
 			return 1;
 		}
 		case 0x1209: {
-			CPU_Pop16();
 			RealPt pal = CPU_Pop32();
 			D1_LOG("set_ani_pal()\n");
 			set_ani_pal(Real2Host(pal));
@@ -8308,7 +8239,6 @@ static int n_seg004(unsigned short offs)
 			return 0;
 		}
 		case 0x12e8: {
-			CPU_Pop16();
 			RealPt dst = CPU_Pop32();
 			unsigned short x = CPU_Pop16();
 			unsigned short y1 = CPU_Pop16();
@@ -8327,7 +8257,6 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0x13b7: {
-			CPU_Pop16();
 			unsigned short mode = CPU_Pop16();
 			CPU_Push16(mode);
 			D1_LOG("near do_pic_copy(%d);\n", mode);
@@ -8335,7 +8264,6 @@ static int n_seg004(unsigned short offs)
 			return 1;
 		}
 		case 0x150d: {
-			CPU_Pop16();
 			D1_LOG("wait_for_vsync()\n");
 			wait_for_vsync();
 			return 1;
@@ -8350,7 +8278,6 @@ static int n_seg005(unsigned short offs)
 {
 	switch (offs) {
 	case 0xb: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		signed short x = CPU_Pop16();
 		signed short y = CPU_Pop16();
@@ -8365,7 +8292,6 @@ static int n_seg005(unsigned short offs)
 		return 1;
 	}
 	case 0x144: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		unsigned short count = CPU_Pop16();
 		unsigned short val = CPU_Pop16();
@@ -8380,7 +8306,6 @@ static int n_seg005(unsigned short offs)
 		return 1;
 	}
 	case 0x181: {
-		CPU_Pop16();
 		unsigned short type = CPU_Pop16();
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
@@ -8396,7 +8321,6 @@ static int n_seg005(unsigned short offs)
 		return 1;
 	}
 	case 0x1b6: {
-		CPU_Pop16();
 		unsigned short type = CPU_Pop16();
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
@@ -8412,7 +8336,6 @@ static int n_seg005(unsigned short offs)
 		return 1;
 	}
 	case 0x1eb: {
-		CPU_Pop16();
 		unsigned short type = CPU_Pop16();
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
@@ -8428,19 +8351,16 @@ static int n_seg005(unsigned short offs)
 		return 1;
 	}
 	case 0x220: {
-		CPU_Pop16();
 		reg_ax = fight_printer();
 		D1_LOG("fight_printer()\n");
 		return 1;
 	}
 	case 0x1ba7: {
-		CPU_Pop16();
 		set_delay_timer();
 		D1_LOG("set_delay_timer()\n");
 		return 1;
 	}
 	case 0x1bb2: {
-		CPU_Pop16();
 		fight_delay();
 		D1_LOG("fight_delay()\n");
 		return 1;
@@ -8455,15 +8375,11 @@ static int n_seg006(unsigned offs)
 	switch (offs) {
 	/* Callers: 1 */
 	case 0x5a: {
-		CPU_Pop16();
-
 		reg_ax = FIG_set_array();
-
 		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
 		return 1;
 	}
 	case 0x82b: {
-		CPU_Pop16();
 		unsigned short v1 = CPU_Pop16();
 		unsigned short v2 = CPU_Pop16();
 		CPU_Push16(v2);
@@ -8474,7 +8390,6 @@ static int n_seg006(unsigned offs)
 		return 1;
 	}
 	case 0x99f: {
-		CPU_Pop16();
 		unsigned short v1 = CPU_Pop16();
 		unsigned short v2 = CPU_Pop16();
 		CPU_Push16(v2);
@@ -8493,7 +8408,6 @@ static int n_seg024(unsigned short offs)
 {
 	switch (offs) {
 	case 0x1d3: {
-		CPU_Pop16();
 		Bit16u line = CPU_Pop16();
 		CPU_Push16(line);
 		reg_ax = diary_print_entry(line);
@@ -8510,13 +8424,11 @@ static int n_seg025(unsigned short offs)
 {
 	switch (offs) {
 	case 0x4a2: {
-		CPU_Pop16();
 		D1_LOG("show_treasure_map();\n");
 		show_treasure_map();
 		return 1;
 	}
 	case 0xca8: {
-		CPU_Pop16();
 		Bit16s id = CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
@@ -8528,19 +8440,16 @@ static int n_seg025(unsigned short offs)
 		return 1;
 	}
 	case 0xd54: {
-		CPU_Pop16();
 		D1_LOG("show_storytext();\n");
 		reg_ax = show_storytext();
 		return 1;
 	}
 	case 0xea9: {
-		CPU_Pop16();
 		D1_LOG("near turnaround();\n");
 		turnaround();
 		return 1;
 	}
 	case 0x114a: {
-		CPU_Pop16();
 		D1_LOG("copy_palette();\n");
 		copy_palette();
 		return 1;
@@ -8555,7 +8464,6 @@ static int n_seg026(unsigned short offs)
 {
 	switch (offs) {
 	case 0x23e: {
-		CPU_Pop16();
 		RealPt src = CPU_Pop32();
 		RealPt dst = CPU_Pop32();
 		Bit32u len = CPU_Pop32();
@@ -8569,7 +8477,6 @@ static int n_seg026(unsigned short offs)
 		return 1;
 	}
 	case 0x2d3: {
-		CPU_Pop16();
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
 		CPU_Push32(p2);
@@ -8581,7 +8488,6 @@ static int n_seg026(unsigned short offs)
 		return 1;
 	}
 	case 0x347: {
-		CPU_Pop16();
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
 		CPU_Push32(p2);
@@ -8592,7 +8498,6 @@ static int n_seg026(unsigned short offs)
 		return 1;
 	}
 	case 0x1021: {
-		CPU_Pop16();
 		RealPt str = CPU_Pop32();
 		Bit16s hero_pos = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
@@ -8608,7 +8513,6 @@ static int n_seg026(unsigned short offs)
 		return 1;
 	}
 	case 0x117f: {
-		CPU_Pop16();
 		Bit16u hero = CPU_Pop16();
 		CPU_Push16(hero);
 		D1_LOG("write_chr_temp(%d)\n", hero);
@@ -8624,25 +8528,21 @@ static int n_seg026(unsigned short offs)
 static int n_seg028(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		D1_LOG("prepare_dungeon_area()\n");
 		prepare_dungeon_area();
 		return 1;
 	}
 	case 0x19e: {
-		CPU_Pop16();
 		D1_LOG("load_dungeon_ddt()\n");
 		load_dungeon_ddt();
 		return 1;
 	}
 	case 0x224: {
-		CPU_Pop16();
 		D1_LOG("seg028_0224()\n");
 		seg028_0224();
 		return 1;
 	}
 	case 0x444: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
@@ -8661,7 +8561,6 @@ static int n_seg028(unsigned offs) {
 		return 1;
 	}
 	case 0x56a: {
-		CPU_Pop16();
 		Bit16s arg = CPU_Pop16();
 		CPU_Push16(arg);
 		D1_LOG("load_area_description(%d);\n", arg);
@@ -8678,13 +8577,11 @@ static int n_seg028(unsigned offs) {
 static int n_seg029(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		D1_LOG("draw_playmask();\n");
 		draw_playmask();
 		return 1;
 	}
 	case 0x0e8: {
-		CPU_Pop16();
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
 		CPU_Push32(p2);
@@ -8696,13 +8593,11 @@ static int n_seg029(unsigned offs) {
 		return 1;
 	}
 	case 0x127: {
-		CPU_Pop16();
 		D1_LOG("draw_status_line();\n");
 		draw_status_line();
 		return 1;
 	}
 	case 0x417: {
-		CPU_Pop16();
 		unsigned short pos = CPU_Pop16();
 		CPU_Push16(pos);
 
@@ -8711,7 +8606,6 @@ static int n_seg029(unsigned offs) {
 		return 1;
 	}
 	case 0x492: {
-		CPU_Pop16();
 		Bit16u index = CPU_Pop16();
 		Bit16u icon = CPU_Pop16();
 		Bit16u pos = CPU_Pop16();
@@ -8726,13 +8620,11 @@ static int n_seg029(unsigned offs) {
 		return 1;
 	}
 	case 0x4fd: {
-		CPU_Pop16();
 		D1_LOG("draw_icons();\n");
 		draw_icons();
 		return 1;
 	}
 	case 0x5ff: {
-		CPU_Pop16();
 		D1_LOG("near clear_loc_line();\n");
 		clear_loc_line();
 		return 1;
@@ -8746,7 +8638,6 @@ static int n_seg029(unsigned offs) {
 static int n_seg030(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		Bit16s arg = CPU_Pop16();
 		CPU_Push16(arg);
 		D1_LOG("seg030_0000(%d);\n", arg);
@@ -8756,7 +8647,6 @@ static int n_seg030(unsigned offs) {
 		return 1;
 	}
 	case 0x8d: {
-		CPU_Pop16();
 		Bit16s arg = CPU_Pop16();
 		CPU_Push16(arg);
 		D1_LOG("seg030_008d(%d);\n", arg);
@@ -8782,15 +8672,11 @@ static int n_seg030(unsigned offs) {
 static int n_seg031(unsigned offs) {
 	switch (offs) {
 	case 0x56c: {
-		CPU_Pop16();
-
 		reg_ax = get_town_lookup_entry();
 		D1_LOG("get_town_lookup_entry(); = %d\n", reg_ax);
 		return 1;
 	}
 	case 0x63b: {
-		CPU_Pop16();
-
 		RealPt retval;
 
 		retval = load_current_town_gossip();
@@ -8813,7 +8699,6 @@ static int n_seg032(unsigned offs)
 	switch (offs) {
 	/* Callers: 1 */
 	case 0x0000: {
-		CPU_Pop16();
 		signed short row = CPU_Pop16();
 		signed short col = CPU_Pop16();
 		signed short object = CPU_Pop16();
@@ -8829,7 +8714,6 @@ static int n_seg032(unsigned offs)
 		return 1;
 	}
 	case 0x0032: {
-		CPU_Pop16();
 		Bit16s mode = CPU_Pop16();
 		D1_LOG("draw_fight_screen_pal(%d)\n", mode);
 		draw_fight_screen_pal(mode);
@@ -8838,7 +8722,6 @@ static int n_seg032(unsigned offs)
 	}
 	/* Callers: 1 */
 	case 0xa8: {
-		CPU_Pop16();
 		reg_ax = FIG_choose_next_hero();
 		D1_LOG("FIG_choose_next_hero() = %s\n",
 		schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
@@ -8846,21 +8729,18 @@ static int n_seg032(unsigned offs)
 	}
 	/* Callers: 1 */
 	case 0xfc: {
-		CPU_Pop16();
 		reg_ax = FIG_choose_next_enemy();
 		D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x12c: {
-		CPU_Pop16();
 		reg_ax = FIG_count_active_enemies();
 		D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x1ba: {
-		CPU_Pop16();
 		RealPt enemy = CPU_Pop32();
 		CPU_Push32(enemy);
 
@@ -8870,7 +8750,6 @@ static int n_seg032(unsigned offs)
 	}
 	/* Callers: 2 */
 	case 0x242: {
-		CPU_Pop16();
 		reg_ax = FIG_get_first_active_hero();
 		D1_LOG("near FIG_get_first_active_hero() = %s\n",
 			reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
@@ -8878,26 +8757,22 @@ static int n_seg032(unsigned offs)
 	}
 	/* Callers: 1 */
 	case 0x2db: {
-		CPU_Pop16();
 		reg_ax = seg032_02db();
 		D1_LOG("near seg032_02db() = %d\n", reg_ax);
 		return 1;
 	}
 	/* Callers: 1 */
 	case 0x349: {
-		CPU_Pop16();
 		reg_ax = FIG_fight_continues();
 		D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
 		return 1;
 	}
 	case 0x380: {
-		CPU_Pop16();
 		D1_LOG("FIG_do_round()\n");
 		FIG_do_round();
 		return 1;
 	}
 	case 0xa38: {
-		CPU_Pop16();
 		D1_LOG("FIG_load_ship_sprites()\n");
 		FIG_load_ship_sprites();
 		return 1;
@@ -8913,7 +8788,6 @@ static int n_seg034(unsigned offs)
 {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
@@ -8935,7 +8809,6 @@ static int n_seg034(unsigned offs)
 		return 1;
 	}
 	case 0x718: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		RealPt a3 = CPU_Pop32();
@@ -8954,7 +8827,6 @@ static int n_seg034(unsigned offs)
 		return 1;
 	}
 	case 0xaec: {
-		CPU_Pop16();
 		reg_ax = seg034_aec();
 		return 1;
 	}
@@ -8970,7 +8842,6 @@ static int n_seg036(unsigned offs)
 {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
@@ -8985,7 +8856,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x0ae: {
-		CPU_Pop16();
 		RealPt in_ptr = CPU_Pop32();
 		Bit16s a2 = CPU_Pop16();
 		D1_LOG("near seg036_00ae(%x, %d)\n", in_ptr, a2);
@@ -8995,7 +8865,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x27f: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		reg_ax = KI_change_hero_weapon(Real2Host(hero));
 		D1_LOG("KI_change_hero_weapon(%s) = %d\n",
@@ -9004,7 +8873,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x39b: {
-		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
 		Bit16s v3 = CPU_Pop16();
@@ -9023,7 +8891,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x4cf: {
-		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
 		Bit16s v3 = CPU_Pop16();
@@ -9040,7 +8907,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x6f7: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
@@ -9059,7 +8925,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x863: {
-		CPU_Pop16();
 		Bit16s spell = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
 		CPU_Push16(v2);
@@ -9070,7 +8935,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0x8cf: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
@@ -9089,7 +8953,6 @@ static int n_seg036(unsigned offs)
 		return 1;
 	}
 	case 0xc39: {
-		CPU_Pop16();
 		Bit16u v = CPU_Pop16();
 		CPU_Push16(v);
 
@@ -9107,7 +8970,6 @@ static int n_seg036(unsigned offs)
 static int n_seg037(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16u v1 = CPU_Pop16();
 		Bit16u v2 = CPU_Pop16();
@@ -9120,7 +8982,6 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x00ae: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16s v1 = CPU_Pop16();
 		CPU_Push16(v1);
@@ -9131,7 +8992,6 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x2e3: {
-		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
 		Bit16s v3 = CPU_Pop16();
@@ -9149,7 +9009,6 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x417: {
-		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		Bit16s dir = CPU_Pop16();
@@ -9164,7 +9023,6 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x725: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		reg_ax = get_foe_attack_mode(a1, a2);
@@ -9175,7 +9033,6 @@ static int n_seg037(unsigned offs) {
 		return 1;
 	}
 	case 0x791: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16u a2 = CPU_Pop16();
 		Bit16u a3 = CPU_Pop16();
@@ -9206,7 +9063,6 @@ static int n_seg038(unsigned offs)
 {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		signed short obj = CPU_Pop16();
 		RealPt px = CPU_Pop32();
 		RealPt py = CPU_Pop32();
@@ -9230,7 +9086,6 @@ static int n_seg038(unsigned offs)
 		return 1;
 	}
 	case 0x143: {
-		CPU_Pop16();
 		RealPt in_ptr = CPU_Pop32();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
@@ -9258,7 +9113,6 @@ static int n_seg038(unsigned offs)
 		return 1;
 	}
 	case 0x457: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 
@@ -9280,7 +9134,6 @@ static int n_seg039(unsigned offs)
 	switch(offs) {
 
 	case 0x23: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
@@ -9291,7 +9144,6 @@ static int n_seg039(unsigned offs)
 		return 1;
 	}
 	case 0x97: {
-		CPU_Pop16();
 		unsigned short sheet_nr = CPU_Pop16();
 		unsigned short enemy_id_16 = CPU_Pop16();
 		unsigned short round_16 = CPU_Pop16();
@@ -9310,7 +9162,6 @@ static int n_seg039(unsigned offs)
 		return 1;
 	}
 	case 0x317: {
-		CPU_Pop16();
 		unsigned short x = CPU_Pop16();
 		unsigned short y = CPU_Pop16();
 		signed short object = CPU_Pop16();
@@ -9332,7 +9183,6 @@ static int n_seg039(unsigned offs)
 		return 1;
 	}
 	case 0x546: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
@@ -9356,7 +9206,6 @@ static int n_seg041(unsigned offs)
 {
 	switch (offs) {
 	case 0x8f1: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
@@ -9378,7 +9227,6 @@ static int n_seg044(unsigned short offs)
 {
 	switch (offs) {
 	case 0x00: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		Bit16s a2 = CPU_Pop16();
 		Bit16u a3 = CPU_Pop16();
@@ -9394,8 +9242,6 @@ static int n_seg044(unsigned short offs)
 		return 1;
 	}
 	case 0xae: {
-		CPU_Pop16();
-
 		Bit16s ani = CPU_Pop16();
 		CPU_Push16(ani);
 
@@ -9414,7 +9260,6 @@ static int n_seg045(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0000: {
-		CPU_Pop16();
 		Bit16s fight_id = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
@@ -9427,7 +9272,6 @@ static int n_seg045(unsigned short offs)
 		return 1;
 	}
 	case 0x014f: {
-		CPU_Pop16();
 		RealPt p1 = CPU_Pop32();
 		RealPt p2 = CPU_Pop32();
 		Bit16s v = CPU_Pop16();
@@ -9441,7 +9285,6 @@ static int n_seg045(unsigned short offs)
 		return 1;
 	}
 	case 0x0273: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
@@ -9464,7 +9307,6 @@ static int n_seg046(unsigned short offs)
 {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		unsigned short spell = CPU_Pop16();
 		unsigned short fsig = CPU_Pop16();
@@ -9486,7 +9328,6 @@ static int n_seg046(unsigned short offs)
 		return 1;
 	}
 	case 0x08d: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		unsigned short talent = CPU_Pop16();
 		unsigned short ftig = CPU_Pop16();
@@ -9508,7 +9349,6 @@ static int n_seg046(unsigned short offs)
 		return 1;
 	}
 	case 0x11a: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
@@ -9530,13 +9370,11 @@ static int n_seg048(unsigned short offs)
 {
 	switch(offs) {
 	case 0x00: {
-		CPU_Pop16();
 		D1_LOG("reset_item_selector()\n");
 		reset_item_selector();
 		return 1;
 	}
 	case 0xd0: {
-		CPU_Pop16();
 		Bit16s hero_pos = CPU_Pop16();
 		CPU_Push16(hero_pos);
 		D1_LOG("status_menu(%d);\n", hero_pos);
@@ -9554,13 +9392,11 @@ static int n_seg049(unsigned short offs)
 {
 	switch (offs) {
 	case 0x01da: {
-		CPU_Pop16();
 		GRP_sort_heros();
 		D1_LOG("near GRP_sort_heros()\n");
 		return 1;
 	}
 	case 0x0224: {
-		CPU_Pop16();
 		Bit16s group = CPU_Pop16();
 		D1_LOG("near GRP_save_pos(%d)\n", group);
 		GRP_save_pos(group);
@@ -9577,7 +9413,6 @@ static int n_seg049(unsigned short offs)
 static int n_seg050(unsigned short offs) {
 	switch (offs) {
 		case 0x0000: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s spell = CPU_Pop16();
 
@@ -9591,7 +9426,6 @@ static int n_seg050(unsigned short offs) {
 			return 1;
 		}
 		case 0x01ec: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s skill = CPU_Pop16();
 
@@ -9605,7 +9439,6 @@ static int n_seg050(unsigned short offs) {
 			return 1;
 		}
 		case 0x03d2: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s skill = CPU_Pop16();
 
@@ -9618,7 +9451,6 @@ static int n_seg050(unsigned short offs) {
 			return 1;
 		}
 		case 0x04b1: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s spell = CPU_Pop16();
 
@@ -9640,7 +9472,6 @@ static int n_seg050(unsigned short offs) {
 static int n_seg053(unsigned short offs) {
 	switch (offs) {
 		case 0x0000: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			CPU_Push32(hero);
 
@@ -9661,7 +9492,6 @@ static int n_seg053(unsigned short offs) {
 static int n_seg061(unsigned offs) {
 	switch (offs) {
 		case 0x57b: {
-			CPU_Pop16();
 			Bit16s temple_id = CPU_Pop16();
 			CPU_Push16(temple_id);
 
@@ -9670,7 +9500,6 @@ static int n_seg061(unsigned offs) {
 			return 1;
 		}
 		case 0x74a: {
-			CPU_Pop16();
 			Bit16s temple_id = CPU_Pop16();
 			CPU_Push16(temple_id);
 
@@ -9679,7 +9508,6 @@ static int n_seg061(unsigned offs) {
 			return 1;
 		}
 		case 0x89d: {
-			CPU_Pop16();
 			reg_ax = char_erase();
 			D1_LOG("char_erase(); = %d\n", reg_ax);
 			return 1;
@@ -9700,7 +9528,6 @@ static int n_seg063(unsigned offs) {
 		return 0;
 	}
 	case 0xf6f: {
-		CPU_Pop16();
 		RealPt ptr = CPU_Pop32();
 		CPU_Push32(ptr);
 		reg_ax = get_srout_len(Real2Host(ptr));
@@ -9717,13 +9544,11 @@ static int n_seg063(unsigned offs) {
 static int n_seg064(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-		RealPt tmp;
-		CPU_Pop16();
 		Bit16s arg1 = CPU_Pop16();
 		Bit16s arg2 = CPU_Pop16();
 		CPU_Push16(arg2);
 		CPU_Push16(arg1);
-		tmp = get_ship_name((signed char)arg1, arg2);
+		RealPt tmp = get_ship_name((signed char)arg1, arg2);
 		D1_LOG("get_ship_name(%d, %d); = 0x%x\n",
 			(signed char)arg1, arg2, tmp);
 
@@ -9757,7 +9582,6 @@ static int n_seg066(unsigned offs)
 		return 0;
 	}
 	case 0xb73: {
-		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		CPU_Push16(v1);
 		reg_ax = get_border_index((unsigned char)v1);
@@ -9774,7 +9598,6 @@ static int n_seg066(unsigned offs)
 		return 0;
 	}
 	case 0xf62: {
-		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
 		Bit16s v3 = CPU_Pop16();
@@ -9813,13 +9636,11 @@ static int n_seg072(unsigned short offs)
 {
 	switch (offs) {
 	case 0x146a: {
-		CPU_Pop16();
 		D1_LOG("count_map_parts()\n");
 		reg_ax = count_map_parts();
 		return 1;
 	}
 	case 0x148b: {
-		CPU_Pop16();
 		D1_LOG("has_intro_letter()\n");
 		reg_ax = has_intro_letter();
 		return 1;
@@ -9834,7 +9655,6 @@ static int n_seg074(unsigned short offs)
 {
 	switch (offs) {
 	case 0x24a: {
-		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		CPU_Push16(y);
@@ -9845,7 +9665,6 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x270: {
-		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		CPU_Push16(y);
@@ -9856,7 +9675,6 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x295: {
-		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		CPU_Push16(y);
@@ -9867,7 +9685,6 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x2ba: {
-		CPU_Pop16();
 		Bit16s group_nr = CPU_Pop16();
 		CPU_Push16(group_nr);
 
@@ -9876,7 +9693,6 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x305: {
-		CPU_Pop16();
 		Bit16s x_off = CPU_Pop16();
 		CPU_Push16(x_off);
 
@@ -9885,7 +9701,6 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x5f9: {
-		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
@@ -9900,7 +9715,6 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x72b: {
-		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		Bit16s dir = CPU_Pop16();
@@ -9913,13 +9727,11 @@ static int n_seg074(unsigned short offs)
 		return 1;
 	}
 	case 0x7b2: {
-		CPU_Pop16();
 		draw_automap_to_screen();
 		D1_LOG("draw_automap_to_screen()\n");
 		return 1;
 	}
 	case 0xbbb: {
-		CPU_Pop16();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
 		CPU_Push16(y);
@@ -9939,37 +9751,31 @@ static int n_seg075(unsigned short offs)
 {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		D1_LOG("DNG_floor_ceil();\n");
 		DNG_floor_ceil();
 		return 1;
 	}
 	case 0x0b9: {
-		CPU_Pop16();
 		D1_LOG("DNG_turn()\n");
 		DNG_turn();
 		return 1;
 	}
 	case 0x56b: {
-		CPU_Pop16();
 		D1_LOG("DNG_stub1();\n");
 		DNG_stub1();
 		return 1;
 	}
 	case 0x591: {
-		CPU_Pop16();
 		D1_LOG("DNG_stub2()\n");
 		DNG_stub2();
 		return 1;
 	}
 	case 0x5e5: {
-		CPU_Pop16();
 		D1_LOG("DNG_stub3()\n");
 		DNG_stub3();
 		return 1;
 	}
 	case 0x693: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		Bit16s a3 = CPU_Pop16();
@@ -9981,37 +9787,31 @@ static int n_seg075(unsigned short offs)
 		return 1;
 	}
 	case 0x82e: {
-		CPU_Pop16();
 		D1_LOG("DNG_stub4();\n");
 		DNG_stub4();
 		return 1;
 	}
 	case 0x9ef: {
-		CPU_Pop16();
 		D1_LOG("DNG_stub5();\n");
 		DNG_stub5();
 		return 1;
 	}
 	case 0xa46: {
-		CPU_Pop16();
 		reg_ax = is_staff_lvl2_in_group();
 		D1_LOG("is_staff_lvl2_in_group() %d\n", reg_ax);
 		return 1;
 	}
 	case 0xaaa: {
-		CPU_Pop16();
 		D1_LOG("DNG_lights()\n");
 		DNG_lights();
 		return 1;
 	}
 	case 0xc6d: {
-		CPU_Pop16();
 		D1_LOG("near DNG_update_pos()\n");
 		DNG_update_pos();
 		return 1;
 	}
 	case 0xc8e: {
-		CPU_Pop16();
 		D1_LOG("DNG_inc_level()\n");
 		DNG_inc_level();
 		return 1;
@@ -10035,7 +9835,6 @@ static int n_seg076(unsigned short offs)
 		return 0;
 	}
 	case 0x576: {
-		CPU_Pop16();
 		RealPt msg = CPU_Pop32();
 		CPU_Push32(msg);
 
@@ -10071,7 +9870,6 @@ static int n_seg090(unsigned short offs)
 {
 	switch (offs) {
 	case 0xa94: {
-		CPU_Pop16();
 		RealPt p = CPU_Pop32();
 		CPU_Push32(p);
 		D1_LOG("DNG_clear_corridor()\n");
@@ -10108,7 +9906,6 @@ static int n_seg092(unsigned short offs)
 {
 	switch (offs) {
 	case 0x4d6: {
-		CPU_Pop16();
 		RealPt chest = CPU_Pop32();
 		Bit16s item_nr = CPU_Pop16();
 		CPU_Push16(item_nr);
@@ -10120,7 +9917,6 @@ static int n_seg092(unsigned short offs)
 		return 1;
 	}
 	case 0x66d: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
@@ -10140,7 +9936,6 @@ static int n_seg094(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0092: {
-		CPU_Pop16();
 		Bit16s town_id = CPU_Pop16();
 		CPU_Push16(town_id);
 		D1_LOG("set_textbox_positions(%d)\n", town_id);
@@ -10174,37 +9969,30 @@ static int n_seg095(unsigned short offs)
 {
 	switch (offs) {
 	case 0x335: {
-		CPU_Pop16();
 		npc_nariell();
 		return 1;
 	}
 	case 0x44d: {
-		CPU_Pop16();
 		npc_harika();
 		return 1;
 	}
 	case 0x62d: {
-		CPU_Pop16();
 		npc_curian();
 		return 1;
 	}
 	case 0x746: {
-		CPU_Pop16();
 		npc_ardora();
 		return 1;
 	}
 	case 0x9a5: {
-		CPU_Pop16();
 		npc_garsvik();
 		return 1;
 	}
 	case 0xad0: {
-		CPU_Pop16();
 		npc_erwo();
 		return 1;
 	}
 	case 0xbfb: {
-		CPU_Pop16();
 		Bit16s head_index = CPU_Pop16();
 		Bit16s days = CPU_Pop16();
 		Bit16s index = CPU_Pop16();
@@ -10226,7 +10014,6 @@ static int n_seg095(unsigned short offs)
 		return 1;
 	}
 	case 0xcb8: {
-		CPU_Pop16();
 		Bit16s index = CPU_Pop16();
 		D1_LOG("add_npc(%s);\n", get_fname(index));
 		add_npc(index);
@@ -10251,7 +10038,6 @@ static int n_seg097(unsigned short offs)
 		return 0;
 	/* Callers: 1 */
 	case 0x15e: {
-		CPU_Pop16();
 		unsigned short c = CPU_Pop16();
 		RealPt p_height = CPU_Pop32();
 		CPU_Push32(p_height);
@@ -10266,7 +10052,6 @@ static int n_seg097(unsigned short offs)
 #endif
 	/* Callers: 1 */
 	case 0x1f8: {
-		CPU_Pop16();
 		RealPt dst = CPU_Pop32();
 		Bit16s x = CPU_Pop16();
 		Bit16s y = CPU_Pop16();
@@ -10287,7 +10072,6 @@ static int n_seg097(unsigned short offs)
 	}
 	/* Callers: 3 */
 	case 0x4ae: {
-		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
 		Bit16s v3 = CPU_Pop16();
@@ -10306,7 +10090,6 @@ static int n_seg097(unsigned short offs)
 	}
 	/* Callers: 3 */
 	case 0x564: {
-		CPU_Pop16();
 		unsigned short width = CPU_Pop16();
 		unsigned short height = CPU_Pop16();
 		CPU_Push16(height);
@@ -10319,7 +10102,6 @@ static int n_seg097(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x59f: {
-		CPU_Pop16();
 		RealPt str = CPU_Pop32();
 		CPU_Push32(str);
 
@@ -10329,7 +10111,6 @@ static int n_seg097(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x5b4: {
-		CPU_Pop16();
 		RealPt str = CPU_Pop32();
 		unsigned short num = CPU_Pop16();
 		CPU_Push16(num);
@@ -10342,7 +10123,6 @@ static int n_seg097(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x7f4: {
-		CPU_Pop16();
 		Bit16s v1 = CPU_Pop16();
 		Bit16u v2 = CPU_Pop16();
 		Bit16u v3 = CPU_Pop16();
@@ -10362,7 +10142,6 @@ static int n_seg097(unsigned short offs)
 		return 0;
 	/* Callers: 2 */
 	case 0xb43: {
-		CPU_Pop16();
 		Bit16u v1 = CPU_Pop16();
 		Bit16u v2 = CPU_Pop16();
 		Bit16u v3 = CPU_Pop16();
@@ -10391,7 +10170,6 @@ static int n_seg098(unsigned short offs)
 
 	/* Callers: 1 */
 	case 0x0000 : {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
@@ -10402,7 +10180,6 @@ static int n_seg098(unsigned short offs)
 	}
 	/* Callers: 4 */
 	case 0x0339 : {
-		CPU_Pop16();
 		unsigned short spell = CPU_Pop16();
 		unsigned short half_cost = CPU_Pop16();
 		CPU_Push16(half_cost);
@@ -10416,7 +10193,6 @@ static int n_seg098(unsigned short offs)
 		return 1;
 	}
 	case 0x071d : {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s spellclass_nr = CPU_Pop16();
 		CPU_Push16(spellclass_nr);
@@ -10430,7 +10206,6 @@ static int n_seg098(unsigned short offs)
 	}
 	/* Callers: 1 */
 	case 0x0786 : {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s show_vals = CPU_Pop16();
 		CPU_Push16(show_vals);
@@ -10445,7 +10220,6 @@ static int n_seg098(unsigned short offs)
 	/* Callers: 1 */
 	case 0x0e1f : {
 		// Zauberprobe
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		unsigned spell = CPU_Pop16();
 		signed bonus = CPU_Pop16();
@@ -10462,7 +10236,6 @@ static int n_seg098(unsigned short offs)
 	}
 	/* Callers: 2 */
 	case 0x1000 : {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
@@ -10486,7 +10259,6 @@ static int n_seg102(unsigned short offs)
 {
 	switch (offs) {
 	case 0x000: {
-		CPU_Pop16();
 		Bit16s damage = CPU_Pop16();
 		CPU_Push16(damage);
 
@@ -10496,7 +10268,6 @@ static int n_seg102(unsigned short offs)
 		return 1;
 	}
 	case 0x18e: {
-		CPU_Pop16();
 		Bit16s a1 = CPU_Pop16();
 		Bit16s a2 = CPU_Pop16();
 		CPU_Push16(a2);
@@ -10508,7 +10279,6 @@ static int n_seg102(unsigned short offs)
 		return 1;
 	}
 	case 0x1cf: {
-		CPU_Pop16();
 		RealPt mon = CPU_Pop32();
 		Bit16s t1 = CPU_Pop16();
 		Bit16s t2 = CPU_Pop16();
@@ -10526,7 +10296,6 @@ static int n_seg102(unsigned short offs)
 		return 1;
 	}
 	case 0x22a: {
-		CPU_Pop16();
 		RealPt mon = CPU_Pop32();
 		Bit16s mspell_nr = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
@@ -10540,7 +10309,6 @@ static int n_seg102(unsigned short offs)
 		return 1;
 	}
 	case 0x2c2: {
-		CPU_Pop16();
 		RealPt mon = CPU_Pop32();
 		Bit16s ae = CPU_Pop16();
 		CPU_Push16(ae);
@@ -10563,7 +10331,6 @@ static int n_seg103(unsigned short offs)
 	switch (offs) {
 	case 0x040f: {
 		// Talentprobe
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s skill = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
@@ -10579,13 +10346,11 @@ static int n_seg103(unsigned short offs)
 		return 1;
 	}
 	case 0x0537: {
-		CPU_Pop16();
 		reg_ax = select_talent();
 		D1_LOG("select_talent() = %s\n", names_skill[reg_ax]);
 		return 1;
 	}
 	case 0x06bf: {
-		CPU_Pop16();
 		Bit16s hero = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
 		Bit16s skill = CPU_Pop16();
@@ -10610,7 +10375,6 @@ static int n_seg104(unsigned short offs)
 	D1_LOG("%s:0x%x\n", __func__, offs);
 	switch (offs) {
 		case 0x0000: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s receipe_index = CPU_Pop16();
 			reg_ax = hero_has_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
@@ -10621,7 +10385,6 @@ static int n_seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x00b2: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s receipe_index = CPU_Pop16();
 			hero_use_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
@@ -10632,7 +10395,6 @@ static int n_seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x016d: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s receipe_index = CPU_Pop16();
 			Bit16s flag = CPU_Pop16();
@@ -10646,7 +10408,6 @@ static int n_seg104(unsigned short offs)
 			return 1;
 		}
 		case 0x07e6: {
-			CPU_Pop16();
 			RealPt hero = CPU_Pop32();
 			Bit16s disease = CPU_Pop16();
 			CPU_Push16(disease);
@@ -10667,7 +10428,6 @@ static int n_seg104(unsigned short offs)
 static int n_seg105(unsigned offs) {
 	switch (offs) {
 	case 0x000: {
-	    CPU_Pop16();
 	    RealPt hero = CPU_Pop32();
 	    unsigned short item = CPU_Pop16();
 	    unsigned short pos = CPU_Pop16();
@@ -10683,7 +10443,6 @@ static int n_seg105(unsigned offs) {
 	    return 1;
 	}
 	case 0x3aa: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		unsigned short item = CPU_Pop16();
 		CPU_Push16(item);
@@ -10697,7 +10456,6 @@ static int n_seg105(unsigned offs) {
 		return 1;
 	}
 	case 0x3e8: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s item = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
@@ -10714,7 +10472,6 @@ static int n_seg105(unsigned offs) {
 		return 1;
 	}
 	case 0x675: {
-		CPU_Pop16();
 		unsigned short item = CPU_Pop16();
 		CPU_Push16(item);
 
@@ -10725,7 +10482,6 @@ static int n_seg105(unsigned offs) {
 		return 1;
 	}
 	case 0x6d9: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		signed short pos = CPU_Pop16();
 		signed short nr = CPU_Pop16();
@@ -10740,7 +10496,6 @@ static int n_seg105(unsigned offs) {
 		return 1;
 	}
 	case 0xada: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		unsigned short item = CPU_Pop16();
 		CPU_Push16(item);
@@ -10754,7 +10509,6 @@ static int n_seg105(unsigned offs) {
 		return 1;
 	}
 	case 0xc10: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 		reg_ax = select_item_to_drop(Real2Host(hero));
@@ -10772,7 +10526,6 @@ static int n_seg105(unsigned offs) {
 static int n_seg106(unsigned offs) {
 	switch (offs) {
 	case 0x00: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s item = CPU_Pop16();
 		Bit16s pos = CPU_Pop16();
@@ -10787,7 +10540,6 @@ static int n_seg106(unsigned offs) {
 		return 1;
 	}
 	case 0x9c: {
-		CPU_Pop16();
 		Bit16s pos1 = CPU_Pop16();
 		Bit16s pos2 = CPU_Pop16();
 		RealPt hero = CPU_Pop32();
@@ -10812,7 +10564,6 @@ static int n_seg106(unsigned offs) {
 static int n_seg113(unsigned offs) {
 	switch (offs) {
 	case 0x900: {
-		CPU_Pop16();
 		RealPt hero = CPU_Pop32();
 		Bit16s idx = CPU_Pop16();
 		Bit16s arg2 = CPU_Pop16();
@@ -10836,7 +10587,6 @@ static int n_seg117(unsigned short offs)
 {
 	switch (offs) {
 	case 0x0000: {
-		CPU_Pop16();
 		Bit16s ani_nr = CPU_Pop16();
 		CPU_Push16(ani_nr);
 
@@ -10846,32 +10596,27 @@ static int n_seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x006a: {
-		CPU_Pop16();
 		D1_LOG("resume_traveling();\n");
 		resume_traveling();
 		return 1;
 	}
 	case 0x00a0: {
-		CPU_Pop16();
 		D1_LOG("hunt_karen();\n");
 		hunt_karen();
 		return 1;
 	}
 	case 0x02a3: {
-		CPU_Pop16();
 		D1_LOG("hunt_wildboar();\n");
 		hunt_wildboar();
 		return 1;
 	}
 	case 0x047f: {
-		CPU_Pop16();
 		D1_LOG("hunt_cavebear();\n");
 		hunt_cavebear();
 		return 1;
 	}
 
 	case 0x060c: {
-		CPU_Pop16();
 		D1_LOG("hunt_viper();\n");
 		hunt_viper();
 		return 1;
@@ -10894,19 +10639,16 @@ static int n_seg120(unsigned short offs)
 {
 	switch (offs) {
 	case 0x578: {
-		CPU_Pop16();
 		D1_LOG("init_global_buffer()\n");
 		init_global_buffer();
 		return 1;
 	}
 	case 0x99f: {
-		CPU_Pop16();
 		D1_LOG("refresh_colors();\n");
 		refresh_colors();
 		return 1;
 	}
 	case 0xd85: {
-		CPU_Pop16();
 		D1_LOG("near cleanup_game();\n");
 		cleanup_game();
 		return 1;
@@ -10917,61 +10659,68 @@ static int n_seg120(unsigned short offs)
 	}
 }
 
-int schick_nearcall_v302de(unsigned offs) {
+int schick_nearcall_v302de(unsigned offs)
+{
 
-	unsigned short segm = SegValue(cs)-reloc_game;
+	Bit16u segm = SegValue(cs) - reloc_game;
+
+	int retval = 0;
+
+	Bit16u CS = CPU_Pop16();
 
 	/* Borland C-Lib */
-	if (segm == 0) return n_seg000(offs);
-	else if (segm == 0x4ac) return n_seg001(offs);
-	else if (segm == 0x51e) return n_seg002(offs);
-	else if (segm == 0xb2a) return n_seg004(offs);
-	else if (segm == 0xc85) return n_seg005(offs);
-	else if (segm == 0xe41) return n_seg006(offs);
-	else if (is_ovrseg(0x12db)) return n_seg024(offs);
-	else if (is_ovrseg(0x12de)) return n_seg025(offs);
-	else if (is_ovrseg(0x12e5)) return n_seg026(offs);
-	else if (is_ovrseg(0x12f1)) return n_seg028(offs);
-	else if (is_ovrseg(0x12f9)) return n_seg029(offs);
-	else if (is_ovrseg(0x12ff)) return n_seg030(offs);
-	else if (is_ovrseg(0x1303)) return n_seg031(offs);
-	else if (is_ovrseg(0x1309)) return n_seg032(offs);
-	else if (is_ovrseg(0x1312)) return n_seg034(offs);
-	else if (is_ovrseg(0x131a)) return n_seg036(offs);
-	else if (is_ovrseg(0x131f)) return n_seg037(offs);
-	else if (is_ovrseg(0x1324)) return n_seg038(offs);
-	else if (is_ovrseg(0x1328)) return n_seg039(offs);
-	else if (is_ovrseg(0x1330)) return n_seg041(offs);
-	else if (is_ovrseg(0x133b)) return n_seg044(offs);
-	else if (is_ovrseg(0x133f)) return n_seg045(offs);
-	else if (is_ovrseg(0x1344)) return n_seg046(offs);
-	else if (is_ovrseg(0x1350)) return n_seg048(offs);
-	else if (is_ovrseg(0x1353)) return n_seg049(offs);
-	else if (is_ovrseg(0x1358)) return n_seg050(offs);
-	else if (is_ovrseg(0x1362)) return n_seg053(offs);
-	else if (is_ovrseg(0x137e)) return n_seg061(offs);
-	else if (is_ovrseg(0x1386)) return n_seg063(offs);
-	else if (is_ovrseg(0x138a)) return n_seg064(offs);
-	else if (is_ovrseg(0x1392)) return n_seg066(offs);
-	else if (is_ovrseg(0x13b4)) return n_seg072(offs);
-	else if (is_ovrseg(0x13bd)) return n_seg074(offs);
-	else if (is_ovrseg(0x13c3)) return n_seg075(offs);
-	else if (is_ovrseg(0x13cb)) return n_seg076(offs);
-	else if (is_ovrseg(0x1417)) return n_seg090(offs);
-	else if (is_ovrseg(0x141b)) return n_seg091(offs);
-	else if (is_ovrseg(0x1420)) return n_seg092(offs);
-	else if (is_ovrseg(0x142c)) return n_seg094(offs);
-	else if (is_ovrseg(0x1432)) return n_seg095(offs);
-	else if (is_ovrseg(0x1442)) return n_seg097(offs);
-	else if (is_ovrseg(0x1449)) return n_seg098(offs);
-	else if (is_ovrseg(0x1472)) return n_seg102(offs);
-	else if (is_ovrseg(0x147b)) return n_seg103(offs);
-	else if (is_ovrseg(0x1480)) return n_seg104(offs);
-	else if (is_ovrseg(0x1485)) return n_seg105(offs);
-	else if (is_ovrseg(0x148c)) return n_seg106(offs);
-	else if (is_ovrseg(0x14c2)) return n_seg113(offs);
-	else if (is_ovrseg(0x14e0)) return n_seg117(offs);
-	else if (is_ovrseg(0x14f0)) return n_seg120(offs);
+	if (segm == 0) retval = n_seg000(offs);
+	else if (segm == 0x4ac) retval = n_seg001(offs);
+	else if (segm == 0x51e) retval = n_seg002(offs);
+	else if (segm == 0xb2a) retval = n_seg004(offs);
+	else if (segm == 0xc85) retval = n_seg005(offs);
+	else if (segm == 0xe41) retval = n_seg006(offs);
+	else if (is_ovrseg(0x12db)) retval = n_seg024(offs);
+	else if (is_ovrseg(0x12de)) retval = n_seg025(offs);
+	else if (is_ovrseg(0x12e5)) retval = n_seg026(offs);
+	else if (is_ovrseg(0x12f1)) retval = n_seg028(offs);
+	else if (is_ovrseg(0x12f9)) retval = n_seg029(offs);
+	else if (is_ovrseg(0x12ff)) retval = n_seg030(offs);
+	else if (is_ovrseg(0x1303)) retval = n_seg031(offs);
+	else if (is_ovrseg(0x1309)) retval = n_seg032(offs);
+	else if (is_ovrseg(0x1312)) retval = n_seg034(offs);
+	else if (is_ovrseg(0x131a)) retval = n_seg036(offs);
+	else if (is_ovrseg(0x131f)) retval = n_seg037(offs);
+	else if (is_ovrseg(0x1324)) retval = n_seg038(offs);
+	else if (is_ovrseg(0x1328)) retval = n_seg039(offs);
+	else if (is_ovrseg(0x1330)) retval = n_seg041(offs);
+	else if (is_ovrseg(0x133b)) retval = n_seg044(offs);
+	else if (is_ovrseg(0x133f)) retval = n_seg045(offs);
+	else if (is_ovrseg(0x1344)) retval = n_seg046(offs);
+	else if (is_ovrseg(0x1350)) retval = n_seg048(offs);
+	else if (is_ovrseg(0x1353)) retval = n_seg049(offs);
+	else if (is_ovrseg(0x1358)) retval = n_seg050(offs);
+	else if (is_ovrseg(0x1362)) retval = n_seg053(offs);
+	else if (is_ovrseg(0x137e)) retval = n_seg061(offs);
+	else if (is_ovrseg(0x1386)) retval = n_seg063(offs);
+	else if (is_ovrseg(0x138a)) retval = n_seg064(offs);
+	else if (is_ovrseg(0x1392)) retval = n_seg066(offs);
+	else if (is_ovrseg(0x13b4)) retval = n_seg072(offs);
+	else if (is_ovrseg(0x13bd)) retval = n_seg074(offs);
+	else if (is_ovrseg(0x13c3)) retval = n_seg075(offs);
+	else if (is_ovrseg(0x13cb)) retval = n_seg076(offs);
+	else if (is_ovrseg(0x1417)) retval = n_seg090(offs);
+	else if (is_ovrseg(0x141b)) retval = n_seg091(offs);
+	else if (is_ovrseg(0x1420)) retval = n_seg092(offs);
+	else if (is_ovrseg(0x142c)) retval = n_seg094(offs);
+	else if (is_ovrseg(0x1432)) retval = n_seg095(offs);
+	else if (is_ovrseg(0x1442)) retval = n_seg097(offs);
+	else if (is_ovrseg(0x1449)) retval = n_seg098(offs);
+	else if (is_ovrseg(0x1472)) retval = n_seg102(offs);
+	else if (is_ovrseg(0x147b)) retval = n_seg103(offs);
+	else if (is_ovrseg(0x1480)) retval = n_seg104(offs);
+	else if (is_ovrseg(0x1485)) retval = n_seg105(offs);
+	else if (is_ovrseg(0x148c)) retval = n_seg106(offs);
+	else if (is_ovrseg(0x14c2)) retval = n_seg113(offs);
+	else if (is_ovrseg(0x14e0)) retval = n_seg117(offs);
+	else if (is_ovrseg(0x14f0)) retval = n_seg120(offs);
 
-	return 0;
+	if (retval == 0) CPU_Push16(CS);
+
+	return retval;
 }
