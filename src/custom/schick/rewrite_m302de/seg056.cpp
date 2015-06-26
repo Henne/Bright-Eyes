@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg056 (merchant: buy)
  *	Functions rewritten: 3/3 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg056.cpp
  */
 #include <stdio.h>
 #include <string.h>
@@ -29,7 +33,6 @@ namespace M302de {
  * \param p2_in second pointer
  * \return -1 -> p1 < p2; 0 -> p1 == p2; 1 -> p1 > p1
  */
-/* Borlandified and identical */
 int shop_compar(const void *p1_in, const void *p2_in)
 {
 	Bit32s v1;
@@ -66,7 +69,6 @@ struct dummy_c6 {
 /**
  * \brief	shows the buy-screen an provides interaction
  */
-/* Borlandified and identical */
 void buy_screen(void)
 {
 	signed short l_di;
@@ -625,7 +627,6 @@ void buy_screen(void)
  * \param item_pos	position of the item in the heros inventory
  * \param shop_pos	position if the item in the sales array
  */
-/* Borlandified and identical */
 void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, signed short shop_pos)
 {
 	signed short item_id;
