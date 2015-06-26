@@ -4638,8 +4638,9 @@ static int seg056(const unsigned short offs)
 #endif
 		}
 		case 0x25: {
-			D1_INFO("2\n");
-			return 0;
+			D1_LOG("buy_screen();\n");
+			buy_screen();
+			return 1;
 		}
 		case 0x2a: {
 			D1_INFO("3\n");
