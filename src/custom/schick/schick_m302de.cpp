@@ -9517,6 +9517,18 @@ static int n_seg053(unsigned short offs) {
 	}
 }
 
+static int n_seg055(unsigned short offs)
+{
+	switch (offs) {
+		case 0x0000: return seg055(0x2a);
+		case 0x0622: return seg055(0x25);
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",
+				__func__, offs);
+			exit(1);
+	}
+}
+
 static int n_seg061(unsigned offs) {
 	switch (offs) {
 		case 0x57b: {
@@ -10724,6 +10736,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1353)) retval = n_seg049(offs);
 	else if (is_ovrseg(0x1358)) retval = n_seg050(offs);
 	else if (is_ovrseg(0x1362)) retval = n_seg053(offs);
+	else if (is_ovrseg(0x1369)) retval = n_seg055(offs);
 	else if (is_ovrseg(0x137e)) retval = n_seg061(offs);
 	else if (is_ovrseg(0x1386)) retval = n_seg063(offs);
 	else if (is_ovrseg(0x138a)) retval = n_seg064(offs);
