@@ -4643,8 +4643,22 @@ static int seg056(const unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			D1_INFO("3\n");
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			Bit16s item_pos = CPU_Pop16();
+			Bit16s shop_pos = CPU_Pop16();
+			CPU_Push16(shop_pos);
+			CPU_Push16(item_pos);
+			CPU_Push32(hero);
+			CPU_Push32(ptr);
+
+
+			D1_LOG("insert_sell_items(0x%x, %s, %d, %d)\n",
+				ptr, schick_getCharname(hero), item_pos, shop_pos);
+
+			insert_sell_items(Real2Host(ptr), Real2Host(hero), item_pos, shop_pos);
+
+			return 1;
 		}
 		default: {
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg056 (merchant: buy)
- *	Functions rewritten: 2/3
+ *	Functions rewritten: 3/3 (complete)
  */
 #include <stdio.h>
 #include <string.h>
@@ -616,6 +616,67 @@ void buy_screen(void)
 	set_textcolor(fg_bak, bg_bak);
 	ds_writew(0x2846, 1);
 	ds_writeb(0x2845, -1);
+}
+
+/**
+ * \brief		inserts the items of the hero into a sales array
+ * \param shop_ptr	pointer to the shop description
+ * \param hero		pointer to the hero
+ * \param item_pos	position of the item in the heros inventory
+ * \param shop_pos	position if the item in the sales array
+ */
+/* Borlandified and identical */
+void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, signed short shop_pos)
+{
+	signed short item_id;
+	signed short sellable = 0;
+
+	item_id = host_readws(hero + 0x196 + 14 * item_pos);
+	host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos, item_id);
+
+	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
+		/* WEAPON SHOP */
+		if (host_readbs(shop_ptr + 1) == 1) {
+			sellable = 1;
+		}
+	} else if (item_herb_potion(get_itemsdat(item_id))) {
+		/* HERB SHOP */
+		if (host_readbs(shop_ptr + 1) == 2) {
+			sellable = 1;
+		}
+	} else {
+		/* CHANDLER SHOP */
+		if (host_readbs(shop_ptr + 1) == 3) {
+			sellable = 1;
+		}
+	}
+
+	if (!sellable) {
+		/* this item cannot be sold here */
+		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 0);
+		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4, 1);
+
+	} else if (ks_broken(hero + 0x196 + 14 * item_pos) ||
+			 host_readbs(hero + 0x19d + 14 * item_pos) != 0)
+	{
+		/* this item is broken or empty */
+		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 1);
+		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4, 1);
+
+	} else {
+		/* calculate the price */
+		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2,
+			(host_readws(get_itemsdat(item_id) + 8) + (host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100) ) / 2);
+		/* adjust price to 1 if zero */
+		if (host_readws(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2) == 0) {
+			host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 1);
+		}
+
+		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4,
+			host_readbs(get_itemsdat(item_id) + 7));
+	}
+
+	host_writeb(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 6, item_pos);
 }
 
 #if !defined(__BORLANDC__)
