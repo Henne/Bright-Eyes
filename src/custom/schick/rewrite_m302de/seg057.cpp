@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg057 (merchant: sell)
  *	Functions rewritten: 1/1 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg057.cpp
  */
 
 #include <stdio.h>
@@ -39,7 +43,6 @@ struct dummy_c5 {
 /**
  * \brief	shows the sell-screen an provides interaction
  */
-/* Borlandified and identical */
 void sell_screen(Bit8u *shop_ptr)
 {
 	signed short l_di;
