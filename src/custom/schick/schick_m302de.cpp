@@ -4683,6 +4683,23 @@ static int seg056(const unsigned short offs)
 	}
 }
 
+static int seg057(const unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			RealPt shop_ptr = CPU_Pop32();
+			CPU_Push32(shop_ptr);
+			D1_LOG("sell_screen(%x)\n", shop_ptr);
+			sell_screen(Real2Host(shop_ptr));
+			return 1;
+		}
+		default: {
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+		}
+	}
+}
+
 static int seg061(unsigned short offs)
 {
 	switch (offs) {
@@ -7508,7 +7525,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x1365:	return 0;
 		case 0x1369:	return seg055(offs);
 		case 0x136d:	return seg056(offs);
-		case 0x1370:	return 0;
+		case 0x1370:	return seg057(offs);
 		case 0x1373:	return 0;
 		case 0x1377:	return 0;
 		case 0x137b:	return 0;
