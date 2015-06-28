@@ -4870,6 +4870,20 @@ static int seg066(unsigned short offs)
 	}
 }
 
+static int n_seg067(unsigned);
+static int seg067(unsigned short offs)
+{
+	switch (offs) {
+	case 0x4d: return n_seg067(0x0000);
+	case 0x52: return n_seg067(0x0ca8);
+	case 0x57: return n_seg067(0x0ce6);
+	case 0x5c: return n_seg067(0x0d27);
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg068(unsigned short offs)
 {
 	switch (offs) {
@@ -7535,7 +7549,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x138a:	return seg064(offs);
 		case 0x138e:	return 0;
 		case 0x1392:	return seg066(offs);
-		case 0x139a:	return 0;
+		case 0x139a:	return seg067(offs);
 		case 0x13a1:	return seg068(offs);
 		case 0x13a8:	return seg069(offs);
 		case 0x13ac:	return seg070(offs);
@@ -9667,6 +9681,67 @@ static int n_seg066(unsigned offs)
 	}
 }
 
+static int n_seg067(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		D1_LOG("city_event_switch()\n");
+		return 0;
+	}
+	case 0x009a: {
+		D1_LOG("city_event0()\n");
+		return 0;
+	}
+	case 0x02eb: {
+		D1_LOG("city_event1()\n");
+		return 0;
+	}
+	case 0x04a6: {
+		D1_LOG("city_event2()\n");
+		return 0;
+	}
+	case 0x05aa: {
+		D1_LOG("city_event3()\n");
+		return 0;
+	}
+	case 0x0707: {
+		D1_LOG("city_event4()\n");
+		return 0;
+	}
+	case 0x07b2: {
+		D1_LOG("city_event5()\n");
+		return 0;
+	}
+	case 0x090a: {
+		D1_LOG("city_event6()\n");
+		return 0;
+	}
+	case 0x0b2d: {
+		D1_LOG("city_event7()\n");
+		return 0;
+	}
+	case 0x0c1c: {
+		D1_LOG("city_event8()\n");
+		return 0;
+	}
+	case 0x0ca8: {
+		D1_LOG("waffinfo_small()\n");
+		return 0;
+	}
+	case 0x0ce6: {
+		D1_LOG("waffinfo_medium()\n");
+		return 0;
+	}
+	case 0x0d27: {
+		D1_LOG("waffinfo_large()\n");
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg072(unsigned short offs)
 {
 	switch (offs) {
@@ -10729,6 +10804,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1386)) retval = n_seg063(offs);
 	else if (is_ovrseg(0x138a)) retval = n_seg064(offs);
 	else if (is_ovrseg(0x1392)) retval = n_seg066(offs);
+	else if (is_ovrseg(0x139a)) retval = n_seg067(offs);
 	else if (is_ovrseg(0x13b4)) retval = n_seg072(offs);
 	else if (is_ovrseg(0x13bd)) retval = n_seg074(offs);
 	else if (is_ovrseg(0x13c3)) retval = n_seg075(offs);
