@@ -1,13 +1,19 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 1/13
+ *	Functions rewritten: 2/13
  */
+
+#include <stdio.h>
 
 #include "v302de.h"
 
+#include "seg002.h"
 #include "seg007.h"
 #include "seg026.h"
 #include "seg067.h"
+#include "seg096.h"
+#include "seg097.h"
+#include "seg103.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -52,11 +58,70 @@ void city_event_switch(void)
 #endif
 }
 
+/**
+ * \brief	a hero may loose W20 S to a pickpocket
+ */
+/* Borlandified and identical */
 void city_event_1(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short randval;
+	signed short answer;
+	RealPt hero;
+
+	hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+
+	randval = random_schick(20);
+
+	if (test_skill(Real2Host(hero), 51, 2) <= 0) {
+
+		/* TODO:	check the format strings in the english version
+		 *		they may be broken.
+		 *		Or, at least some changes on the code are neccessary.
+		 */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(4 * (random_schick(4) - 1)),
+			(char*)Real2Host(hero) + 0x10,
+			randval);
+
+		GUI_dialogbox(hero + 0x2da, Real2Host(hero) + 0x10, Real2Host(ds_readd(DTP2)), 0);
+
+		randval *= 10;
+
+		sub_ptr_ds(Real2Host(hero) + 0x2c, randval);
+
+		if (host_readds(Real2Host(hero) + 0x2c) < 0) {
+			host_writeds(Real2Host(hero) + 0x2c, 0);
+		}
+	} else {
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(4 * (random_schick(4) + 3)),
+			(char*)Real2Host(hero) + 0x10,
+			(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + 0x22), 1)));
+
+		answer = GUI_dialogbox(hero + 0x2da, Real2Host(hero) + 0x10, Real2Host(ds_readd(DTP2)), 3,
+				get_dtp(4 * (random_schick(4) + 7)),
+				get_dtp(4 * (random_schick(4) + 11)),
+				get_dtp(4 * (random_schick(4) + 15)));
+
+		if (answer == 1) {
+			GUI_output(get_dtp(4 * (random_schick(4) + 19)));
+		} else {
+
+			randval = random_schick(5) - 1;
+
+			if (randval == 2) {
+				GUI_output(get_dtp(0x68));
+				GUI_output(get_dtp(0x6c));
+				GUI_output(get_dtp(0x70));
+			} else {
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(4 * (randval + 24)),
+					(char*)Real2Host(hero) + 0x10);
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			}
+		}
+	}
 }
 
 void city_event_2(void)
