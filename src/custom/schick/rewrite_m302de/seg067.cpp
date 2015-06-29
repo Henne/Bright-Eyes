@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 3/13
+ *	Functions rewritten: 4/13
  */
 
 #include <stdio.h>
@@ -170,11 +170,31 @@ void city_event_2(void)
 	}
 }
 
+/**
+ * \brief	a beggar asks for 1D
+ */
+/* Borlandified and identical */
 void city_event_3(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short answer;
+	Bit32s money;
+
+	load_in_head(43);
+
+	money = get_party_money();
+
+	answer = money >= 100 ? 3 : 2;
+
+	answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 58)), answer,
+			get_dtp(4 * (random_schick(4) + 62)),
+			get_dtp(4 * (random_schick(4) + 66)),
+			get_dtp(4 * (random_schick(4) + 70)));
+
+	if (answer == 3) {
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 74)), 0);
+		money -= 100;
+		set_party_money(money);
+	}
 }
 
 void city_event_4(void)
