@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 4/13
+ *	Functions rewritten: 5/13
  */
 
 #include <stdio.h>
@@ -10,6 +10,7 @@
 #include "seg002.h"
 #include "seg007.h"
 #include "seg026.h"
+#include "seg031.h"
 #include "seg067.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -197,11 +198,39 @@ void city_event_3(void)
 	}
 }
 
+/**
+ * \brief	a beggar asks for 1D and tells some gossip
+ */
+/* Borlandified and identical */
 void city_event_4(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short answer;
+	Bit32s money;
+
+	load_in_head(43);
+
+	money = get_party_money();
+
+	answer = money >= 100 ? 3 : 2;
+
+	answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 58)), answer,
+			get_dtp(4 * (random_schick(4) + 78)),
+			get_dtp(4 * (random_schick(4) + 82)),
+			get_dtp(4 * (random_schick(4) + 86)));
+
+	if (answer == 3) {
+		money -= 100;
+		set_party_money(money);
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 90)), 0);
+
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(4 * (random_schick(4) + 94)),
+			(char*)Real2Host(load_current_town_gossip()));
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
+	}
 }
 
 void city_event_5(void)
