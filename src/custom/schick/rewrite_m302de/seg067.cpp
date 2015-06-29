@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 5/13
+ *	Functions rewritten: 6/13
  */
 
 #include <stdio.h>
@@ -233,11 +233,34 @@ void city_event_4(void)
 	}
 }
 
+/* Borlandified and identical */
 void city_event_5(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short randval;
+	signed short tw_bak;
+	RealPt hero;
+
+	load_in_head(48);
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writews(TEXTBOX_WIDTH, 5);
+
+	randval = random_schick(4) - 1;
+
+	if (randval == 1) {
+
+		hero = get_first_hero_available_in_group();
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(4 * (randval + 99)),
+			(char*)Real2Host(hero) + 0x10);
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
+	} else {
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (randval + 99)), 0);
+	}
+
+	ds_writews(TEXTBOX_WIDTH, tw_bak);
 }
 
 void city_event_6(void)
