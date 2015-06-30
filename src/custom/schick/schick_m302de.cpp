@@ -9752,8 +9752,11 @@ static int n_seg067(unsigned offs)
 		return 1;
 	}
 	case 0x0d27: {
-		D1_LOG("waffinfo_large()\n");
-		return 0;
+		D1_LOG("waffinfo_general()\n");
+		RealPt ret = waffinfo_general();
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
