@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 10/13
+ *	Functions rewritten: 11/13
  */
 
 #include <stdio.h>
@@ -415,11 +415,23 @@ void city_event_9(void)
 	}
 }
 
+/**
+ * \brief	return a pointer to a weapon related information
+ */
+/* Borlandified and identical */
 RealPt waffinfo_weapons(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short randval;
+	Bit8u *ptr;
+
+	/* load WAFFINFO.LTX */
+	load_ltx(241);
+
+	ptr = Real2Host(ds_readd(0xd019));
+
+	randval = random_schick(19) - 1;
+
+	return (RealPt)host_readd(ptr + 4 * randval);
 }
 
 RealPt waffinfo_herbs(void)

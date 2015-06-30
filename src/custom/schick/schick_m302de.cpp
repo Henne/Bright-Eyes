@@ -9738,8 +9738,11 @@ static int n_seg067(unsigned offs)
 		return 1;
 	}
 	case 0x0ca8: {
-		D1_LOG("waffinfo_small()\n");
-		return 0;
+		D1_LOG("waffinfo_weapons()\n");
+		RealPt ret = waffinfo_weapons();
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
 	}
 	case 0x0ce6: {
 		D1_LOG("waffinfo_medium()\n");
