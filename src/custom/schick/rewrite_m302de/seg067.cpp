@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 7/13
+ *	Functions rewritten: 8/13
  */
 
 #include <stdio.h>
@@ -302,11 +302,62 @@ void city_event_6(void)
 #endif
 }
 
+/**
+ * \brief	some harmless events
+ */
+/* Borlandified and identical */
 void city_event_7(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#endif
+	signed short randval;
+	RealPt hero;
+
+	randval = random_schick(4) - 1;
+	hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+
+	if (!randval) {
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(0x1ec),
+			(char*)Real2Host(hero) + 0x10);
+
+		GUI_dialogbox(hero + 0x2da, Real2Host(hero) + 0x10, Real2Host(ds_readd(DTP2)) + 0x400, 0);
+
+	} else if (randval == 1) {
+
+		load_in_head(12);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(0x1f0),
+			(char*)Real2Host(hero) + 0x10);
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(0x1f4),
+			(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + 0x22), 3)));
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
+
+	} else if (randval == 2) {
+
+		load_in_head(47);
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(0x1f8), 0);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(0x1fc),
+			(char*)Real2Host(hero) + 0x10);
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(0x200),
+			(char*)Real2Host(hero) + 0x10);
+
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
+	} else {
+		GUI_output(get_dtp(0x204));
+	}
 }
 
 void city_event_8(void)
