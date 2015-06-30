@@ -9733,8 +9733,9 @@ static int n_seg067(unsigned offs)
 		return 1;
 	}
 	case 0x0c1c: {
-		D1_LOG("city_event8()\n");
-		return 0;
+		D1_LOG("city_event_9()\n");
+		city_event_9();
+		return 1;
 	}
 	case 0x0ca8: {
 		D1_LOG("waffinfo_small()\n");
