@@ -9714,8 +9714,13 @@ static int n_seg067(unsigned offs)
 		return 1;
 	}
 	case 0x07b2: {
-		D1_LOG("city_event5()\n");
+		D1_LOG("city_event_6()\n");
+#if 0
+		city_event_6();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x090a: {
 		D1_LOG("city_event6()\n");

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
- *	Functions rewritten: 6/13
+ *	Functions rewritten: 7/13
  */
 
 #include <stdio.h>
@@ -11,6 +11,7 @@
 #include "seg007.h"
 #include "seg026.h"
 #include "seg031.h"
+#include "seg055.h"
 #include "seg067.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -263,10 +264,41 @@ void city_event_5(void)
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
 }
 
+/**
+ * \brief	meet a merchant
+ */
+/* Borlandified and identical */
 void city_event_6(void)
 {
 #if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+	signed short answer;
+	signed short bak;
+
+	if (ds_readds(DAY_TIMER) >= HOURS(8) && ds_readds(DAY_TIMER) <= HOURS(20)) {
+
+		load_in_head(4);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(4 * (random_schick(4) + 102)),
+			(char*)get_hero(get_random_hero()) + 0x10);
+
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 3,
+			get_dtp(4 * (random_schick(4) + 106)),
+			get_dtp(4 * (random_schick(4) + 110)),
+			get_dtp(4 * (random_schick(4) + 114)));
+
+		if (answer == 1 || answer == 2) {
+			GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 118)), 0);
+		} else if (answer == 3) {
+			bak = ds_readbs(LOCATION);
+			ds_writeb(LOCATION, 5);
+			ds_writew(TYPEINDEX, 93);
+			do_merchant();
+			ds_writeb(LOCATION, bak);
+		}
+	}
 #endif
 }
 
