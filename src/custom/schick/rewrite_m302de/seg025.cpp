@@ -199,21 +199,21 @@ void do_informer(void)
 #else
 	signed short nr = ds_readws(TYPEINDEX) - 1;
 
-	if (!nr) seg030_0279(6, 0);
-	else if (nr == 1) seg030_0279(6, 1);
-	else if (nr == 2) seg030_0279(7, 0);
-	else if (nr == 3) seg030_0279(7, 1);
-	else if (nr == 4) seg030_0279(7, 2);
-	else if (nr == 5) seg030_0279(8, 0);
-	else if (nr == 6) seg030_0279(8, 1);
-	else if (nr == 7) seg030_0279(10, 1);
-	else if (nr == 8) seg030_0279(9, 0);
-	else if (nr == 9) seg030_0279(10, 0);
-	else if (nr == 10) seg030_0279(12, 0);
-	else if (nr == 11) seg030_0279(11, 0);
-	else if (nr == 12) seg030_0279(11, 2);
-	else if (nr == 13) seg030_0279(8, 2);
-	else if (nr == 14) seg030_0279(9, 1);
+	if (!nr) do_tlk(6, 0);
+	else if (nr == 1) do_tlk(6, 1);
+	else if (nr == 2) do_tlk(7, 0);
+	else if (nr == 3) do_tlk(7, 1);
+	else if (nr == 4) do_tlk(7, 2);
+	else if (nr == 5) do_tlk(8, 0);
+	else if (nr == 6) do_tlk(8, 1);
+	else if (nr == 7) do_tlk(10, 1);
+	else if (nr == 8) do_tlk(9, 0);
+	else if (nr == 9) do_tlk(10, 0);
+	else if (nr == 10) do_tlk(12, 0);
+	else if (nr == 11) do_tlk(11, 0);
+	else if (nr == 12) do_tlk(11, 2);
+	else if (nr == 13) do_tlk(8, 2);
+	else if (nr == 14) do_tlk(9, 1);
 
 	turnaround();
 
