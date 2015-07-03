@@ -134,6 +134,11 @@ void seg030_0279(signed short a1, signed short a2)
 	DUMMY_WARNING();
 }
 
+void seg030_0fd5(void)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
