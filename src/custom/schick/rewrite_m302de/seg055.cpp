@@ -17,6 +17,21 @@ void do_merchant(void)
 #endif
 }
 
+void TLK_ghandel(signed short state)
+{
+	DUMMY_WARNING();
+}
+
+void TLK_khandel(signed short state)
+{
+	DUMMY_WARNING();
+}
+
+void TLK_whandel(signed short state)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
