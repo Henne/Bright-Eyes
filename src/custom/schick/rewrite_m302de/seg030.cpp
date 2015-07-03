@@ -1,6 +1,10 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg030 (???)
-	Functions rewritten: 6/6 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of seg030 (tlk_logic, date_printer)
+ *	Functions rewritten: 6/6 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg030.cpp
 */
 
 #include <stdio.h>
@@ -29,7 +33,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 RealPt seg030_0000(signed short arg0)
 {
 	signed short i;
@@ -58,7 +61,6 @@ RealPt seg030_0000(signed short arg0)
 	}
 }
 
-/* Borlandified and identical */
 RealPt seg030_008d(signed short arg0)
 {
 	signed short i;
@@ -88,9 +90,7 @@ RealPt seg030_008d(signed short arg0)
 	}
 }
 
-/* 0x11e */
 /* unused in the game */
-/* Borlandified and identical */
 void print_date(void)
 {
 	unsigned short bak;
@@ -103,8 +103,6 @@ void print_date(void)
 	ds_writew(TEXTBOX_WIDTH, bak);
 }
 
-/* 0x14f */
-/* Borlandified and identical */
 void prepare_date_str(void)
 {
 	unsigned short unused;
@@ -145,7 +143,6 @@ struct dummy3 {
 	signed short a, b;
 };
 
-/* Borlandified and identical */
 void do_talk(signed short talk_id, signed short tlk_informer)
 {
 #if !defined(__BORLANDC__)
