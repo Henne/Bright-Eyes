@@ -9,7 +9,7 @@ void print_date(void);
 /* 0x2a */
 void prepare_date_str(void);
 /* 0x2f */
-void seg030_0fd5(void);
+void talk_switch(void);
 /* 0x34 */
 RealPt seg030_008d(signed short);
 /* 0x39 */

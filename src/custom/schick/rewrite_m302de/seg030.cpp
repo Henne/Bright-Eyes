@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg030 (???)
-	Functions rewritten: 5/6
+	Functions rewritten: 6/6 (complete)
 */
 
 #include <stdio.h>
@@ -14,8 +14,16 @@
 #include "seg026.h"
 #include "seg028.h"
 #include "seg030.h"
+#include "seg032.h"
+#include "seg054.h"
+#include "seg055.h"
+#include "seg058.h"
+#include "seg066.h"
+#include "seg072.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg116.h"
+#include "seg117.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -501,7 +509,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 		ds_writews(0xe30e, -1);
 
 		if (host_readws(ptr1) & 0x8000 || host_readws(ptr1) == -1) {
-			seg030_0fd5();
+			talk_switch();
 		}
 
 		ds_writew(DIALOG_STATE, ds_readws(0xe30e) == -1 ? host_readb(ptr1 + 5) : ds_readws(0xe30e));
@@ -534,9 +542,271 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 #endif
 }
 
-void seg030_0fd5(void)
+/* Borlandified and identical */
+void talk_switch(void)
 {
-	DUMMY_WARNING();
+	signed short state;
+
+	state = ds_readws(DIALOG_STATE);
+
+	if (ds_readws(TLK_ID) == 3) {
+		/* DASPOTA1.TLK */
+
+		if (ds_readws(DIALOG_INFORMER) == 0) {
+			if ((state == 1 || state == 2 || state == 3) && !ds_readb(0x3320)) {
+
+				ds_writew(0x26c1, 1);
+
+				if (!do_fight(193)) {
+					if (GUI_bool(get_dtp(0x58))) {
+
+						ds_writew(0x26c1, 0);
+
+						if (!do_fight(194)) {
+							ds_writeb(0x3320, 1);
+						}
+					}
+				}
+
+				ds_writew(0x26c1, 0);
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 1) {
+
+			if (state == 1 && !ds_readb(0x3321)) {
+
+				if (!do_fight(195)) {
+					ds_writeb(0x3321, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 2) {
+
+			if ((state == 4 || state == 6) && !ds_readb(0x3322)) {
+
+				if (!do_fight(196)) {
+					ds_writeb(0x3322, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 3) {
+
+			if (state == 4 && !ds_readb(0x3323)) {
+
+				if (!do_fight(197)) {
+					ds_writeb(0x3323, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 4) {
+
+			if ((state == 1 || state == 4 || state == 7) && !ds_readb(0x3324)) {
+
+				if (!do_fight(198)) {
+					ds_writeb(0x3324, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 5) {
+
+			if ((state == 4 || state == 5) && !ds_readb(0x3325)) {
+
+				if (!do_fight(199)) {
+					ds_writeb(0x3325, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 6) {
+
+			if ((state == 1 || state == 4 || state == 7) && !ds_readb(0x3326)) {
+
+				if (!do_fight(201)) {
+					ds_writeb(0x3326, 1);
+				}
+			}
+		}
+
+	} else if (ds_readws(TLK_ID) == 4) {
+		/* DASPOTA2.TLK */
+
+		if (ds_readws(DIALOG_INFORMER) == 0) {
+
+			if (state == 4 && !ds_readb(0x3327)) {
+
+				if (!do_fight(202)) {
+					ds_writeb(0x3327, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 1) {
+
+			if (state == 1 && !ds_readb(0x3328)) {
+
+				if (!do_fight(203)) {
+					ds_writeb(0x3328, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 2) {
+
+			if (state == 1 && !ds_readb(0x3329)) {
+
+				if (!do_fight(204)) {
+					ds_writeb(0x3329, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 3) {
+
+			if (state == 4 && !ds_readb(0x332a)) {
+
+				if (!do_fight(205)) {
+					ds_writeb(0x332a, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 4) {
+
+			if (state == 1 && !ds_readb(0x332b)) {
+
+				if (!do_fight(206)) {
+					ds_writeb(0x332b, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 5) {
+
+			if (state == 5 && !ds_readb(0x332c)) {
+
+				if (!do_fight(208)) {
+					ds_writeb(0x332c, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 6) {
+
+			if (state == 1 && !ds_readb(0x332d)) {
+
+				if (!do_fight(209)) {
+					ds_writeb(0x332d, 1);
+				}
+			}
+		}
+
+	} else if (ds_readws(TLK_ID) == 5) {
+		/* DASPOTA3.TLK */
+
+		if (ds_readws(DIALOG_INFORMER) == 0) {
+
+			if ((state == 4 || state == 6) && !ds_readb(0x332f)) {
+
+				if (!do_fight(210)) {
+					ds_writeb(0x332f, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 1) {
+
+			if ((state == 4 || state == 5 || state == 6) && !ds_readb(0x3330)) {
+
+				if (!do_fight(211)) {
+					ds_writeb(0x3330, 1);
+				}
+			}
+		}
+
+		if (ds_readws(DIALOG_INFORMER) == 2) {
+
+			if ((state == 6 || state == 7) && !ds_readb(0x3331)) {
+
+				if (!do_fight(212)) {
+					ds_writeb(0x3331, 1);
+				}
+			}
+		}
+
+	} else if (ds_readws(TLK_ID) == 6) {
+		/* INFO1.TLK */
+		INF_jurge_hjore(ds_readws(DIALOG_INFORMER), state);
+
+	} else if (ds_readws(TLK_ID) == 7) {
+		/* INFO2.TLK */
+		INF_yasma_umbrik_isleif(ds_readws(DIALOG_INFORMER), state);
+
+	} else if (ds_readws(TLK_ID) == 8) {
+		/* INFO3.TLK */
+		INF_ragna_beorn_algrid(ds_readws(DIALOG_INFORMER), state);
+
+	} else if (ds_readws(TLK_ID) == 9) {
+		/* INFO4.TLK */
+		INF_eliane_tiomar(ds_readws(DIALOG_INFORMER), state);
+
+	} else if (ds_readws(TLK_ID) == 10) {
+		/* INFO5.TLK */
+		INF_olvir_asgrimm(ds_readws(DIALOG_INFORMER), state);
+
+	} else if (ds_readws(TLK_ID) == 11) {
+		/* INFO6.TLK */
+		/* TODO: actually disabled */
+		INF_treborn_unicorn(ds_readws(DIALOG_INFORMER), state);
+
+	} else if (ds_readws(TLK_ID) == 12) {
+		/* INFO7.TLK */
+		INF_swafnild_unicorn(ds_readws(DIALOG_INFORMER), state);
+
+	} else if (ds_readws(TLK_ID) == 13) {
+		/* TODO: actually disabled */
+		/* SCHMIED.TLK */
+		TLK_schmied(state);
+
+	} else if (ds_readws(TLK_ID) == 14) {
+		/* TODO: actually disabled */
+		/* GHANDEL.TLK */
+		TLK_ghandel(state);
+
+	} else if (ds_readws(TLK_ID) == 15) {
+		/* TODO: actually disabled */
+		/* KHANDEL.TLK */
+		TLK_khandel(state);
+
+	} else if (ds_readws(TLK_ID) == 16) {
+		/* TODO: actually disabled */
+		/* WHANDEL.TLK */
+		TLK_whandel(state);
+
+	} else if (ds_readws(TLK_ID) == 1) {
+		/* TODO: actually disabled */
+		/* HERBERG.TLK */
+		TLK_herberg(state);
+
+	} else if (ds_readws(TLK_ID) == 0) {
+		/* TODO: actually disabled */
+		/* F092.TLK */
+		TLK_old_woman(state);
+
+	} else if (ds_readws(TLK_ID) == 17) {
+		/* TODO: actually disabled */
+		/* F115.TLK */
+		TLK_way_to_ruin(state);
+
+	} else if (ds_readws(TLK_ID) == 18) {
+		/* TODO: actually disabled */
+		/* EREMIT.TLK */
+		TLK_eremit(state);
+	}
 }
 
 #if !defined(__BORLANDC__)

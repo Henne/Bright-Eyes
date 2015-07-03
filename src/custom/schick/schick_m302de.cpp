@@ -3417,6 +3417,8 @@ static int seg029(unsigned short offs) {
 	}
 }
 
+static int n_seg030(unsigned);
+
 static int seg030(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
@@ -3427,9 +3429,7 @@ static int seg030(unsigned short offs) {
 			prepare_date_str();
 			return 1;
 		}
-		case 0x2f: {
-			return 0;
-		}
+		case 0x2f: return n_seg030(0xfd5); break;
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 			exit(1);
@@ -8716,6 +8716,18 @@ static int n_seg030(unsigned offs) {
 		return 0;
 	}
 	case 0xfd5: {
+		D1_LOG("talk_switch();\n");
+
+		/* TODO: all TLK_ID [0,19] */
+		Bit16s id = ds_readws(TLK_ID);
+
+		if ((id >= 3 && id <= 10) ||
+			id == 12)
+		{
+			talk_switch();
+			return 1;
+		}
+
 		return 0;
 	}
 	default:
