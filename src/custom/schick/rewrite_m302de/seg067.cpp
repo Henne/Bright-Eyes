@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg067 (city)
+ *	Rewrite of DSA1 v3.02_de functions of seg067 (cityevents, waffinfo)
  *	Functions rewritten: 13/13 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg067.cpp
  */
 
 #include <stdio.h>
@@ -24,7 +28,6 @@ namespace M302de {
 /**
  * \brief	select a random city event type
  */
-/* Borlandified and identical */
 void city_event_switch(void)
 {
 #if !defined(__BORLANDC__)
@@ -63,7 +66,6 @@ void city_event_switch(void)
 /**
  * \brief	a hero may loose W20 S to a pickpocket
  */
-/* Borlandified and identical */
 void city_event_1(void)
 {
 	signed short randval;
@@ -129,7 +131,6 @@ void city_event_1(void)
 /**
  * \brief	a hero may loose all money to a pickpocket
  */
-/* Borlandified and identical */
 void city_event_2(void)
 {
 	signed short answer;
@@ -175,7 +176,6 @@ void city_event_2(void)
 /**
  * \brief	a beggar asks for 1D
  */
-/* Borlandified and identical */
 void city_event_3(void)
 {
 	signed short answer;
@@ -202,7 +202,6 @@ void city_event_3(void)
 /**
  * \brief	a beggar asks for 1D and tells some gossip
  */
-/* Borlandified and identical */
 void city_event_4(void)
 {
 	signed short answer;
@@ -234,7 +233,6 @@ void city_event_4(void)
 	}
 }
 
-/* Borlandified and identical */
 void city_event_5(void)
 {
 	signed short randval;
@@ -267,7 +265,6 @@ void city_event_5(void)
 /**
  * \brief	meet a merchant
  */
-/* Borlandified and identical */
 void city_event_6(void)
 {
 #if !defined(__BORLANDC__)
@@ -305,7 +302,6 @@ void city_event_6(void)
 /**
  * \brief	some harmless events
  */
-/* Borlandified and identical */
 void city_event_7(void)
 {
 	signed short randval;
@@ -363,7 +359,6 @@ void city_event_7(void)
 /**
  * \brief	some harmless events
  */
-/* Borlandified and identical */
 void city_event_8(void)
 {
 	signed short randval;
@@ -398,7 +393,6 @@ void city_event_8(void)
 /**
  * \brief	some harmless events
  */
-/* Borlandified and identical */
 void city_event_9(void)
 {
 	signed short randval = random_schick(4) - 1;
@@ -418,7 +412,6 @@ void city_event_9(void)
 /**
  * \brief	return a pointer to a weapon related information
  */
-/* Borlandified and identical */
 RealPt waffinfo_weapons(void)
 {
 	signed short randval;
@@ -437,7 +430,6 @@ RealPt waffinfo_weapons(void)
 /**
  * \brief	return a pointer to a herb related information
  */
-/* Borlandified and identical */
 RealPt waffinfo_herbs(void)
 {
 	signed short randval;
@@ -456,7 +448,6 @@ RealPt waffinfo_herbs(void)
 /**
  * \brief	return a pointer to a general information
  */
-/* Borlandified and identical */
 RealPt waffinfo_general(void)
 {
 	signed short randval;
