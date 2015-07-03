@@ -152,6 +152,7 @@
 #define ITEMSNAME	(0xe22f)
 #define DELAY_TIMER	(0xe2d0)
 #define DIALOG_INFORMER	(0xe30c)	/* ?16 */
+#define DIALOG_DONE	(0xe310)	/* ?16 {0, 1} */
 #define DIALOG_STATE	(0xe312)	/* ?16 */
 #define TLK_ID		(0xe314)	/* ?16 */
 #define CURRENT_FIG_NR	(0xe316)
