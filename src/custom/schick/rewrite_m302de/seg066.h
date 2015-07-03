@@ -9,6 +9,9 @@ signed short get_border_index(unsigned char);
 signed short get_border_index(unsigned short);
 #endif
 
+/* 0x34 */
+void TLK_eremit(signed short);
+
 /* 0x39 */
 void do_town(void);
 

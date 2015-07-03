@@ -354,6 +354,11 @@ void hunt_viper(void)
 	resume_traveling();
 }
 
+void TLK_way_to_ruin(signed short state)
+{
+	DUMMY_WARNING();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif

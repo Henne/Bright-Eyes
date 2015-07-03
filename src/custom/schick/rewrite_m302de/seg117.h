@@ -20,6 +20,9 @@ void hunt_cavebear(void);
 /* should be static */
 void hunt_viper(void);
 
+/* 0x5c */
+void TLK_way_to_ruin(signed short);
+
 #if !defined(__BORLANDC__)
 }
 #endif

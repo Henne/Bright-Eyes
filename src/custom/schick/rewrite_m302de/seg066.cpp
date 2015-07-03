@@ -14,6 +14,11 @@
 namespace M302de {
 #endif
 
+void TLK_eremit(signed short)
+{
+	DUMMY_WARNING();
+}
+
 void do_town(void)
 {
 	DUMMY_WARNING();
