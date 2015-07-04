@@ -4,7 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void do_merchant(void);
-
+/* 0x25 */
+void talk_merchant(void);
 /* 0x2a */
 void add_item_to_shop(Bit8u*, signed short, signed short);
 /* 0x2f */

@@ -35,6 +35,14 @@ void do_merchant(void)
 #endif
 }
 
+void talk_merchant(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+#endif
+}
+
 void TLK_ghandel(signed short state)
 {
 	DUMMY_WARNING();
