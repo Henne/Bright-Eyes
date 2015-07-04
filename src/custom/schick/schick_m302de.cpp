@@ -9524,7 +9524,16 @@ static int n_seg055(unsigned short offs)
 {
 	switch (offs) {
 		case 0x0000: {
-			return 0;
+			RealPt shop_ptr = CPU_Pop32();
+			Bit16s item_id = CPU_Pop16();
+			Bit16s pos = CPU_Pop16();
+			CPU_Push16(pos);
+			CPU_Push16(item_id);
+			CPU_Push32(shop_ptr);
+
+			D1_LOG("add_item_to_shop(%x, %s, %d)\n", shop_ptr, get_itemname(item_id), pos);
+			add_item_to_shop(Real2Host(shop_ptr), item_id, pos);
+			return 1;
 		}
 		case 0x007a: {
 			const Bit8u typi = ds_readb(0x4224);
