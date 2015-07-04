@@ -1893,23 +1893,23 @@ void timers_daily(void)
 #endif
 
 	/* Decrase monthly credit cens timer (bank) */
-	if (ds_readws(0x335e) > 0) {
+	if (ds_readws(DAYS_TO_CENS) > 0) {
 
-		dec_ds_ws(0x335e);
+		dec_ds_ws(DAYS_TO_CENS);
 
-		if (ds_readws(0x335e) == 0) {
+		if (ds_readws(DAYS_TO_CENS) == 0) {
 			ds_writew(0x3350, 0);
 		}
 	}
 
 	/* Days until you run in trouble, if you have more
 		than 1000S debt at the bank */
-	if (ds_readws(0x3360) > 0) {
+	if (ds_readws(DEBT_DAYS) > 0) {
 
-		dec_ds_ws(0x3360);
+		dec_ds_ws(DEBT_DAYS);
 
-		if (ds_readws(0x3360) == 0) {
-			ds_writew(0x3360, -1);
+		if (ds_readws(DEBT_DAYS) == 0) {
+			ds_writew(DEBT_DAYS, -1);
 		}
 	}
 }

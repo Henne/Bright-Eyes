@@ -42,6 +42,8 @@
 #define GOT_MAIN_QUEST	(0x334c)	/* signed short {0,1} */
 #define QUESTED_MONTHS	(0x334e)
 #define BANK_DEPOSIT	(0x335c)	/* signed short */
+#define DAYS_TO_CENS	(0x335e)	/* signed short */
+#define DEBT_DAYS	(0x3360)	/* signed short */
 #define IN_ACADEMY	(0x3362)	/* s16 */
 #define INFORMER_JURGE	(0x3364)	/* unsigned char and unsigned char[15], {0,1,2} */
 #define INFORMER_HJORE	(0x3365)	/* unsigned char {0,1,2} */
