@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg055 (merchant: main)
- *	Functions rewritten: 2/6
+ *	Functions rewritten: 3/6
  */
 #include <string.h>
 
@@ -12,6 +12,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg031.h"
 #include "seg055.h"
 #include "seg056.h"
 #include "seg057.h"
@@ -266,11 +267,21 @@ void do_merchant(void)
 #endif
 }
 
+/* Borlandified and identical */
 void talk_merchant(void)
 {
 #if !defined(__BORLANDC__)
 	DUMMY_WARNING();
 #else
+	signed short tlk_id;
+
+	switch (ds_readbs(0x6870 + 9 * ds_readws(TYPEINDEX) + 1)) {
+		case 1: tlk_id = 16; break;
+		case 2: tlk_id = 15; break;
+		case 3: tlk_id = 14; break;
+	}
+
+	do_random_talk(tlk_id, 0);
 #endif
 }
 
