@@ -12,6 +12,11 @@
 namespace M302de {
 #endif
 
+void do_random_talk(signed short talk_id, signed short informer_id)
+{
+	DUMMY_WARNING();
+}
+
 /**
  * get_town_lookup_entry() - ?
  *

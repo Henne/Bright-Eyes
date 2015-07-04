@@ -1,8 +1,12 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
 /* 0x20 */
 RealPt load_current_town_gossip(void);
+/* 0x25 */
+void do_random_talk(signed short, signed short);
+
 /* 0x2f */
 signed short get_town_lookup_entry(void);
 /* 0x34 */
@@ -15,6 +19,7 @@ RealPt get_informer_name2(void);
 void drink_while_drinking(unsigned short);
 /* 0x4d */
 void eat_while_drinking(unsigned short);
+
 #if !defined(__BORLANDC__)
 }
 #endif
