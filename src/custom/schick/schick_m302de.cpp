@@ -8699,7 +8699,7 @@ static int n_seg030(unsigned offs) {
 		Bit16s id = ds_readws(TLK_ID);
 
 		if ((id >= 3 && id <= 10) ||
-			id == 12)
+			id == 12 || id == 14)
 		{
 			talk_switch();
 			return 1;
@@ -9554,7 +9554,12 @@ static int n_seg055(unsigned short offs)
 			return 0;
 		}
 		case 0x0660: {
-			return 0;
+			Bit16s state = CPU_Pop16();
+			CPU_Push16(state);
+
+			D1_LOG("TLK_ghandel(%d)\n", state);
+			TLK_ghandel(state);
+			return 1;
 		}
 		case 0x06e1: {
 			return 0;

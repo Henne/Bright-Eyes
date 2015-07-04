@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg055 (merchant: main)
- *	Functions rewritten: 3/6
+ *	Functions rewritten: 4/6
  */
 #include <string.h>
 
@@ -285,9 +285,19 @@ void talk_merchant(void)
 #endif
 }
 
+/* Borlandified and identical */
 void TLK_ghandel(signed short state)
 {
-	DUMMY_WARNING();
+	if (!state) {
+		ds_writew(0xe30e, ds_readb(0x34d6 + ds_readws(TYPEINDEX)) != 0 ? 1 : 4);
+	} else if (state == 1) {
+		ds_writew(0xe30e, ds_readb(0x3534 + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
+	} else if (state == 6 && ds_readws(TYPEINDEX) != 90) {
+		ds_writeb(0x34d6 + ds_readws(TYPEINDEX), 1);
+	} else if (state == 10) {
+		/* test CH+0 */
+		ds_writew(0xe30e, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0 ? 11 : 12);
+	}
 }
 
 void TLK_khandel(signed short state)
