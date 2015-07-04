@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg055 (merchant: main)
- *	Functions rewritten: 5/6
+ *	Functions rewritten: 6/6 (complete)
  */
 #include <string.h>
 
@@ -19,6 +19,7 @@
 #include "seg057.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg103.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -324,9 +325,31 @@ void TLK_khandel(signed short state)
 	}
 }
 
+/* Borlandified and identical */
 void TLK_whandel(signed short state)
 {
-	DUMMY_WARNING();
+	if (!state) {
+		ds_writew(0xe30e, ds_readb(0x34d6 + ds_readws(TYPEINDEX)) != 0 ? 26 : 1);
+	} else if (state == 7 || state == 13) {
+		tumult();
+		if (ds_readws(TYPEINDEX) != 90) {
+			ds_writeb(0x34d6 + ds_readws(TYPEINDEX), 1);
+		}
+
+	} else if ((state == 8 || state == 16) && ds_readws(TYPEINDEX) != 90) {
+		ds_writeb(0x34d6 + ds_readws(TYPEINDEX), 1);
+	} else if (state == 18) {
+		/* test CH+0 */
+		ds_writew(0xe30e, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0 ? 19 : -1);
+	} else if (state == 25) {
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 21, 0) > 0) {
+			ds_writew(0xe30e, 23);
+			ds_writew(0xe3f6, 3);
+		} else {
+			ds_writew(0xe30e, 24);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
