@@ -4594,39 +4594,16 @@ static int seg053(unsigned short offs) {
 	}
 }
 
+static int n_seg055(unsigned short);
+
 static int seg055(unsigned short offs)
 {
 	switch (offs) {
-		case 0x20: {
-			const Bit8u typi = ds_readb(0x4224);
-			const Bit8s price = ds_readbs(typi * 9 + 0x6870);
-			const Bit8s h_type = ds_readb(typi * 9 + 0x6870 + 1);
-			const Bit8s sortiment = ds_readb(typi * 9 + 0x6870 + 2);
-
-			const char h_types[][10] = { "UNGUELTIG", "Waffen", "Kraeuter", "Kraemer" };
-			const char *h_string = (h_type >= 1 && h_type <= 3) ? h_types[h_type] : h_types[0];
-
-			D1_INFO("Haendler-Nr: %d / Haendlertyp: %s\n", typi, h_string);
-			D1_INFO("\tPreise: %+2d%% [70, 180]\n", 100 + price);
-			D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
-
-			return 0;
-		}
-		case 0x25: {
-			return 0;
-		}
-		case 0x2a: {
-			return 0;
-		}
-		case 0x2f: {
-			return 0;
-		}
-		case 0x34: {
-			return 0;
-		}
-		case 0x39: {
-			return 0;
-		}
+		case 0x20: return n_seg055(0x007a);
+		case 0x25: return n_seg055(0x0622);
+		case 0x2f: return n_seg055(0x0660);
+		case 0x34: return n_seg055(0x06e1);
+		case 0x39: return n_seg055(0x078e);
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 			exit(1);
@@ -9546,8 +9523,36 @@ static int n_seg053(unsigned short offs) {
 static int n_seg055(unsigned short offs)
 {
 	switch (offs) {
-		case 0x0000: return seg055(0x2a);
-		case 0x0622: return seg055(0x25);
+		case 0x0000: {
+			return 0;
+		}
+		case 0x007a: {
+			const Bit8u typi = ds_readb(0x4224);
+			const Bit8s price = ds_readbs(typi * 9 + 0x6870);
+			const Bit8s h_type = ds_readb(typi * 9 + 0x6870 + 1);
+			const Bit8s sortiment = ds_readb(typi * 9 + 0x6870 + 2);
+
+			const char h_types[][10] = { "UNGUELTIG", "Waffen", "Kraeuter", "Kraemer" };
+			const char *h_string = (h_type >= 1 && h_type <= 3) ? h_types[h_type] : h_types[0];
+
+			D1_INFO("Haendler-Nr: %d / Haendlertyp: %s\n", typi, h_string);
+			D1_INFO("\tPreise: %+2d%% [70, 180]\n", 100 + price);
+			D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
+
+			return 0;
+		}
+		case 0x0622: {
+			return 0;
+		}
+		case 0x0660: {
+			return 0;
+		}
+		case 0x06e1: {
+			return 0;
+		}
+		case 0x078e: {
+			return 0;
+		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
 			exit(1);
