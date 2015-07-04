@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg055 (merchant: main)
  *	Functions rewritten: 6/6 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg055.cpp
  */
 #include <string.h>
 
@@ -31,7 +35,6 @@ namespace M302de {
  * \param item_id	item_id
  * \param pos		position in the shop
  */
-/* Borlandified and identical */
 void add_item_to_shop(Bit8u *shop_ptr, signed short item_id, signed short pos)
 {
 	host_writews(Real2Host(ds_readd(0xc009)) + 7 * pos, item_id);
@@ -47,7 +50,6 @@ struct dummy7 {
 	char a[7];
 };
 
-/* Borlandified and identical */
 void do_merchant(void)
 {
 #if !defined(__BORLANDC__)
@@ -269,7 +271,6 @@ void do_merchant(void)
 #endif
 }
 
-/* Borlandified and identical */
 void talk_merchant(void)
 {
 #if !defined(__BORLANDC__)
@@ -287,7 +288,6 @@ void talk_merchant(void)
 #endif
 }
 
-/* Borlandified and identical */
 void TLK_ghandel(signed short state)
 {
 	if (!state) {
@@ -302,7 +302,6 @@ void TLK_ghandel(signed short state)
 	}
 }
 
-/* Borlandified and identical */
 void TLK_khandel(signed short state)
 {
 	if (!state) {
@@ -325,7 +324,6 @@ void TLK_khandel(signed short state)
 	}
 }
 
-/* Borlandified and identical */
 void TLK_whandel(signed short state)
 {
 	if (!state) {
