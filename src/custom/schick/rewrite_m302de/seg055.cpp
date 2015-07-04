@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg055 (merchant: main)
- *	Functions rewritten: 4/6
+ *	Functions rewritten: 5/6
  */
 #include <string.h>
 
@@ -8,6 +8,7 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
@@ -300,9 +301,27 @@ void TLK_ghandel(signed short state)
 	}
 }
 
+/* Borlandified and identical */
 void TLK_khandel(signed short state)
 {
-	DUMMY_WARNING();
+	if (!state) {
+		ds_writew(0xe30e, ds_readb(0x34d6 + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
+	} else if (state == 5) {
+		tumult();
+		if (ds_readws(TYPEINDEX) != 90) {
+			ds_writeb(0x34d6 + ds_readws(TYPEINDEX), 1);
+		}
+
+	} else if (state == 7 && ds_readws(TYPEINDEX) != 90) {
+		ds_writeb(0x34d6 + ds_readws(TYPEINDEX), 1);
+	} else if (state == 8) {
+		ds_writew(0xe30e, random_schick(20) <= 3 ? 9 : -1);
+	} else if (state == 11) {
+		ds_writew(0xe3f6, 3);
+	} else if (state == 12) {
+		/* test CH+4 */
+		ds_writew(0xe30e, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 4) > 0 ? 13 : 10);
+	}
 }
 
 void TLK_whandel(signed short state)
