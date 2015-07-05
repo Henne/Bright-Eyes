@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg054 (inn)
  *	Functions rewritten: 4/4 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg054.cpp
  */
 
 #include <stdio.h>
@@ -25,7 +29,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void talk_inn(void)
 {
 #if !defined(__BORLANDC__)
@@ -38,7 +41,6 @@ void talk_inn(void)
 /**
  * \brief	returns a pointer to the first busy hero, who is not in this group, but in this location
  */
-/* Borlandified and identical */
 RealPt get_first_busy_hero(void)
 {
 	RealPt hero;
@@ -61,7 +63,6 @@ RealPt get_first_busy_hero(void)
 /**
  * \brief	location handler for inns
  */
-/* Borlandified and identical */
 void do_inn(void)
 {
 #if !defined(__BORLANDC__)
@@ -458,7 +459,6 @@ void do_inn(void)
 #endif
 }
 
-/* Borlandified and identical */
 void TLK_herberg(signed short state)
 {
 	Bit8u *hero = Real2Host(get_first_hero_available_in_group());
