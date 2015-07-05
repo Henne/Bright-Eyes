@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void do_inn(void);
 /* 0x25 */
 void do_talk_inn(void);
 /* 0x2a */
