@@ -4594,6 +4594,19 @@ static int seg053(unsigned short offs) {
 	}
 }
 
+static int n_seg054(unsigned short);
+
+static int seg054(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: return n_seg054(0x007c);
+		case 0x2f: return n_seg054(0x0ca2);
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+	}
+}
+
 static int n_seg055(unsigned short);
 
 static int seg055(unsigned short offs)
@@ -7513,7 +7526,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs) {
 		case 0x135c:	return 0;
 		case 0x135f:	return seg052(offs);
 		case 0x1362:	return seg053(offs);
-		case 0x1365:	return 0;
+		case 0x1365:	return seg054(offs);
 		case 0x1369:	return seg055(offs);
 		case 0x136d:	return seg056(offs);
 		case 0x1370:	return seg057(offs);
@@ -9520,6 +9533,33 @@ static int n_seg053(unsigned short offs) {
 	}
 }
 
+static int n_seg054(unsigned short offs)
+{
+	switch (offs) {
+		case 0x0000: {
+			D1_LOG("talk_inn()\n");
+			return 0;
+		}
+		case 0x0011: {
+			D1_LOG("get_first_unbusy_hero()\n");
+			return 0;
+		}
+		case 0x007c: {
+			D1_LOG("do_inn()\n");
+			return 0;
+		}
+		case 0x0ca2: {
+			Bit16s state = CPU_Pop16();
+			CPU_Push16(state);
+			D1_LOG("TLK_herberg(%d)\n", state);
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
 static int n_seg055(unsigned short offs)
 {
 	switch (offs) {
@@ -10862,6 +10902,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1353)) retval = n_seg049(offs);
 	else if (is_ovrseg(0x1358)) retval = n_seg050(offs);
 	else if (is_ovrseg(0x1362)) retval = n_seg053(offs);
+	else if (is_ovrseg(0x1365)) retval = n_seg054(offs);
 	else if (is_ovrseg(0x1369)) retval = n_seg055(offs);
 	else if (is_ovrseg(0x137e)) retval = n_seg061(offs);
 	else if (is_ovrseg(0x1386)) retval = n_seg063(offs);
