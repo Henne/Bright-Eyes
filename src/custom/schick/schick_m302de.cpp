@@ -8711,7 +8711,7 @@ static int n_seg030(unsigned offs) {
 		/* TODO: all TLK_ID [0,19] */
 		Bit16s id = ds_readws(TLK_ID);
 
-		if ((id >= 3 && id <= 10) ||
+		if (id == 1 || (id >= 3 && id <= 10) ||
 			id == 12 || id == 14 || id == 15 || id == 16)
 		{
 			talk_switch();
@@ -9557,7 +9557,8 @@ static int n_seg054(unsigned short offs)
 			Bit16s state = CPU_Pop16();
 			CPU_Push16(state);
 			D1_LOG("TLK_herberg(%d)\n", state);
-			return 0;
+			TLK_herberg(state);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
