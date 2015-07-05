@@ -9541,8 +9541,13 @@ static int n_seg054(unsigned short offs)
 			return 0;
 		}
 		case 0x0011: {
-			D1_LOG("get_first_unbusy_hero()\n");
-			return 0;
+			RealPt hero = get_first_busy_hero();
+			D1_LOG("get_first_busy_hero() = %s\n",
+				hero != NULL ? schick_getCharname(hero) : "NULL");
+
+			reg_ax = RealOff(hero);
+			reg_dx = RealSeg(hero);
+			return 1;
 		}
 		case 0x007c: {
 			D1_LOG("do_inn()\n");
