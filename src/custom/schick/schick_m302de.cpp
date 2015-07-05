@@ -7886,8 +7886,6 @@ static int seg053(unsigned short offs) {
 	}
 }
 
-static int n_seg054(unsigned short);
-
 static int seg054(unsigned short offs)
 {
 	switch (offs) {
@@ -7898,8 +7896,6 @@ static int seg054(unsigned short offs)
 			exit(1);
 	}
 }
-
-static int n_seg055(unsigned short);
 
 static int seg055(unsigned short offs)
 {
@@ -7981,8 +7977,6 @@ static int seg057(const unsigned short offs)
 		}
 	}
 }
-
-static int n_seg058(const unsigned short offs);
 
 static int seg058(const unsigned short offs)
 {
@@ -8166,7 +8160,6 @@ static int seg066(unsigned short offs)
 	}
 }
 
-static int n_seg067(unsigned);
 static int seg067(unsigned short offs)
 {
 	switch (offs) {
