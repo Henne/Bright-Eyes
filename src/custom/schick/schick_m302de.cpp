@@ -7493,128 +7493,6 @@ static int seg122(unsigned short offs)
 	}
 }
 
-// Intercept far CALLs (both 32 and 16 bit)
-int schick_farcall_v302de(unsigned segm, unsigned offs) {
-
-	switch (segm) {
-		case 0x0000:	return seg000(offs);
-		case 0x04ac:	return seg001(offs);
-		case 0x051e:	return seg002(offs);
-		case 0x0ae7:	return seg003(offs);
-		case 0x0b2a:	return seg004(offs);
-		case 0x0c85:	return seg005(offs);
-		case 0x0e41:	return seg006(offs);
-		case 0x0ef8:	return seg007(offs);
-		case 0x0f18:	return seg008(offs);
-		case 0x0ff1:	return seg009(offs);
-		case 0x1030:	return seg010(offs);
-		case 0x1042:	return seg011(offs);
-		case 0x1112:	return seg012(offs);
-		case 0x12db:	return seg024(offs);
-		case 0x12de:	return seg025(offs);
-		case 0x12e5:	return seg026(offs);
-		case 0x12ec:	return seg027(offs);
-		case 0x12f1:	return seg028(offs);
-		case 0x12f9:	return seg029(offs);
-		case 0x12ff:	return seg030(offs);
-		case 0x1303:	return seg031(offs);
-		case 0x1309:	return seg032(offs);
-		case 0x130f:	return seg033(offs);
-		case 0x1312:	return seg034(offs);
-		case 0x1316:	return seg035(offs);
-		case 0x131a:	return seg036(offs);
-		case 0x131f:	return seg037(offs);
-		case 0x1324:	return seg038(offs);
-		case 0x1328:	return seg039(offs);
-		case 0x132d:	return seg040(offs);
-		case 0x1330:	return seg041(offs);
-		case 0x1335:	return seg042(offs);
-		case 0x1338:	return seg043(offs);
-		case 0x133b:	return seg044(offs);
-		case 0x133f:	return seg045(offs);
-		case 0x1344:	return seg046(offs);
-		case 0x1348:	return seg047(offs);
-		case 0x1350:	return seg048(offs);
-		case 0x1353:	return seg049(offs);
-		case 0x1358:	return seg050(offs);
-		case 0x135c:	return 0;
-		case 0x135f:	return seg052(offs);
-		case 0x1362:	return seg053(offs);
-		case 0x1365:	return seg054(offs);
-		case 0x1369:	return seg055(offs);
-		case 0x136d:	return seg056(offs);
-		case 0x1370:	return seg057(offs);
-		case 0x1373:	return seg058(offs);
-		case 0x1377:	return 0;
-		case 0x137b:	return 0;
-		case 0x137e:	return seg061(offs);
-		case 0x1383:	return seg062(offs);
-		case 0x1386:	return seg063(offs);
-		case 0x138a:	return seg064(offs);
-		case 0x138e:	return 0;
-		case 0x1392:	return seg066(offs);
-		case 0x139a:	return seg067(offs);
-		case 0x13a1:	return seg068(offs);
-		case 0x13a8:	return seg069(offs);
-		case 0x13ac:	return seg070(offs);
-		case 0x13b1:	return seg071(offs);
-		case 0x13b4:	return seg072(offs);
-		case 0x13b9:	return seg073(offs);
-		case 0x13bd:	return seg074(offs);
-		case 0x13c3:	return seg075(offs);
-		case 0x13cb:	return seg076(offs);
-		case 0x13d1:	return seg077(offs);
-		case 0x13d7:	return seg078(offs);
-		case 0x13dd:	return 0;
-		case 0x13e4:	return seg080(offs);
-		case 0x13e9:	return seg081(offs);
-		case 0x13ed:	return 0;
-		case 0x13f0:	return 0;
-		case 0x13f6:	return seg084(offs);
-		case 0x13fc:	return 0;
-		case 0x1401:	return seg086(offs);
-		case 0x1408:	return 0;
-		case 0x140b:	return seg088(offs);
-		case 0x1411:	return 0;
-		case 0x1417:	return seg090(offs);
-		case 0x141b:	return seg091(offs);
-		case 0x1420:	return seg092(offs);
-		case 0x1429:	return 0;
-		case 0x142c:	return seg094(offs);
-		case 0x1432:	return seg095(offs);
-		case 0x1438:	return seg096(offs);
-		case 0x1442:	return seg097(offs);
-		case 0x1449:	return seg098(offs);
-		case 0x144f:	return seg099(offs);
-		case 0x145e:	return seg100(offs);
-		case 0x1467:	return seg101(offs);
-		case 0x1472:	return seg102(offs);
-		case 0x147b:	return seg103(offs);
-		case 0x1480:	return seg104(offs);
-		case 0x1485:	return seg105(offs);
-		case 0x148c:	return seg106(offs);
-		case 0x1491:	return seg107(offs);
-		case 0x1498:	return seg108(offs);
-		case 0x149b:	return seg109(offs);
-		case 0x14a7:	return 0;
-		case 0x14b4:	return seg111(offs);
-		case 0x14bb:	return 0;
-		case 0x14c2:	return seg113(offs);
-		case 0x14cb:	return 0;
-		case 0x14d1:	return 0;
-		case 0x14d8:	return 0;
-		case 0x14e0:	return seg117(offs);
-		case 0x14e7:	return 0;
-		case 0x14ed:	return seg119(offs);
-		case 0x14f0:	return seg120(offs);
-		case 0x14f6:	return seg121(offs);
-		case 0x14f9:	return seg122(offs);
-		default:
-			D1_TRAC("Unfetched Segment: 0x%04x\n", segm);
-			return 0;
-	}
-}
-
 static int n_seg000(unsigned offs) {
 	switch (offs) {
 		case 0xb33: {
@@ -10906,6 +10784,128 @@ static int n_seg120(unsigned short offs)
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 		exit(1);
+	}
+}
+
+// Intercept far CALLs (both 32 and 16 bit)
+int schick_farcall_v302de(unsigned segm, unsigned offs)
+{
+	switch (segm) {
+		case 0x0000:	return seg000(offs);
+		case 0x04ac:	return seg001(offs);
+		case 0x051e:	return seg002(offs);
+		case 0x0ae7:	return seg003(offs);
+		case 0x0b2a:	return seg004(offs);
+		case 0x0c85:	return seg005(offs);
+		case 0x0e41:	return seg006(offs);
+		case 0x0ef8:	return seg007(offs);
+		case 0x0f18:	return seg008(offs);
+		case 0x0ff1:	return seg009(offs);
+		case 0x1030:	return seg010(offs);
+		case 0x1042:	return seg011(offs);
+		case 0x1112:	return seg012(offs);
+		case 0x12db:	return seg024(offs);
+		case 0x12de:	return seg025(offs);
+		case 0x12e5:	return seg026(offs);
+		case 0x12ec:	return seg027(offs);
+		case 0x12f1:	return seg028(offs);
+		case 0x12f9:	return seg029(offs);
+		case 0x12ff:	return seg030(offs);
+		case 0x1303:	return seg031(offs);
+		case 0x1309:	return seg032(offs);
+		case 0x130f:	return seg033(offs);
+		case 0x1312:	return seg034(offs);
+		case 0x1316:	return seg035(offs);
+		case 0x131a:	return seg036(offs);
+		case 0x131f:	return seg037(offs);
+		case 0x1324:	return seg038(offs);
+		case 0x1328:	return seg039(offs);
+		case 0x132d:	return seg040(offs);
+		case 0x1330:	return seg041(offs);
+		case 0x1335:	return seg042(offs);
+		case 0x1338:	return seg043(offs);
+		case 0x133b:	return seg044(offs);
+		case 0x133f:	return seg045(offs);
+		case 0x1344:	return seg046(offs);
+		case 0x1348:	return seg047(offs);
+		case 0x1350:	return seg048(offs);
+		case 0x1353:	return seg049(offs);
+		case 0x1358:	return seg050(offs);
+		case 0x135c:	return 0;
+		case 0x135f:	return seg052(offs);
+		case 0x1362:	return seg053(offs);
+		case 0x1365:	return seg054(offs);
+		case 0x1369:	return seg055(offs);
+		case 0x136d:	return seg056(offs);
+		case 0x1370:	return seg057(offs);
+		case 0x1373:	return seg058(offs);
+		case 0x1377:	return 0;
+		case 0x137b:	return 0;
+		case 0x137e:	return seg061(offs);
+		case 0x1383:	return seg062(offs);
+		case 0x1386:	return seg063(offs);
+		case 0x138a:	return seg064(offs);
+		case 0x138e:	return 0;
+		case 0x1392:	return seg066(offs);
+		case 0x139a:	return seg067(offs);
+		case 0x13a1:	return seg068(offs);
+		case 0x13a8:	return seg069(offs);
+		case 0x13ac:	return seg070(offs);
+		case 0x13b1:	return seg071(offs);
+		case 0x13b4:	return seg072(offs);
+		case 0x13b9:	return seg073(offs);
+		case 0x13bd:	return seg074(offs);
+		case 0x13c3:	return seg075(offs);
+		case 0x13cb:	return seg076(offs);
+		case 0x13d1:	return seg077(offs);
+		case 0x13d7:	return seg078(offs);
+		case 0x13dd:	return 0;
+		case 0x13e4:	return seg080(offs);
+		case 0x13e9:	return seg081(offs);
+		case 0x13ed:	return 0;
+		case 0x13f0:	return 0;
+		case 0x13f6:	return seg084(offs);
+		case 0x13fc:	return 0;
+		case 0x1401:	return seg086(offs);
+		case 0x1408:	return 0;
+		case 0x140b:	return seg088(offs);
+		case 0x1411:	return 0;
+		case 0x1417:	return seg090(offs);
+		case 0x141b:	return seg091(offs);
+		case 0x1420:	return seg092(offs);
+		case 0x1429:	return 0;
+		case 0x142c:	return seg094(offs);
+		case 0x1432:	return seg095(offs);
+		case 0x1438:	return seg096(offs);
+		case 0x1442:	return seg097(offs);
+		case 0x1449:	return seg098(offs);
+		case 0x144f:	return seg099(offs);
+		case 0x145e:	return seg100(offs);
+		case 0x1467:	return seg101(offs);
+		case 0x1472:	return seg102(offs);
+		case 0x147b:	return seg103(offs);
+		case 0x1480:	return seg104(offs);
+		case 0x1485:	return seg105(offs);
+		case 0x148c:	return seg106(offs);
+		case 0x1491:	return seg107(offs);
+		case 0x1498:	return seg108(offs);
+		case 0x149b:	return seg109(offs);
+		case 0x14a7:	return 0;
+		case 0x14b4:	return seg111(offs);
+		case 0x14bb:	return 0;
+		case 0x14c2:	return seg113(offs);
+		case 0x14cb:	return 0;
+		case 0x14d1:	return 0;
+		case 0x14d8:	return 0;
+		case 0x14e0:	return seg117(offs);
+		case 0x14e7:	return 0;
+		case 0x14ed:	return seg119(offs);
+		case 0x14f0:	return seg120(offs);
+		case 0x14f6:	return seg121(offs);
+		case 0x14f9:	return seg122(offs);
+		default:
+			D1_TRAC("Unfetched Segment: 0x%04x\n", segm);
+			return 0;
 	}
 }
 
