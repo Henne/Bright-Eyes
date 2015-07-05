@@ -214,7 +214,3299 @@ static int is_ovrseg(unsigned short stub_seg) {
 	return SegValue(cs) == get_ovrseg(stub_seg);
 }
 
+static int n_seg000(unsigned offs) {
+	switch (offs) {
+		case 0xb33: {
+			Bit16u handle = CPU_Pop16();
+			Bit32u pos = CPU_Pop32();
+			Bit16u whence = CPU_Pop16();
+			CPU_Push16(whence);
+			CPU_Push32(pos);
+			CPU_Push16(handle);
 
+			Bit32s retval = bc_lseek(handle, pos, whence);
+
+			D1_LOG("C-Lib near lseek(Handle=0x%x, pos=%u, whence=%d)\n",
+				handle, pos, whence);
+
+			reg_ax = retval & 0xffff;
+			reg_dx = (retval >> 16) & 0xffff;
+
+			return 1;
+		}
+		default:
+			return 0;
+	}
+}
+
+static int n_seg001(unsigned offs)
+{
+	switch (offs) {
+	/* Callers: 1 */
+	case 0x35: {
+		reg_ax = CD_set_drive_nr();
+		D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 6 */
+	case 0x5c: {
+		RealPt req = CPU_Pop32();
+		CPU_Push32(req);
+
+		CD_driver_request(req);
+		D1_LOG("CD_driver_request();\n");
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0xb2: {
+		unsigned int retval;
+
+		retval = CD_get_tod();
+
+		D1_LOG("CD_get_tod(); = %d\n", retval);
+		reg_ax = retval & 0xffff;
+		reg_dx = (retval >> 16) & 0xffff;
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0xc1: {
+		unsigned short track_nr = CPU_Pop16();
+		CPU_Push16(track_nr);
+		D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
+		seg001_00c1(track_nr);
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x322: {
+		D1_LOG("CD_audio_stop_hsg()\n");
+		CD_audio_stop_hsg();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x34f: {
+		D1_LOG("CD_audio_stop()\n");
+		CD_audio_stop();
+		return 1;
+	}
+	case 0x0432: {
+		return 0;
+	}
+	case 0x056b: {
+		return 0;
+	}
+	case 0x0681: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg002(unsigned short offs)
+{
+
+	switch (offs) {
+	case 0x0002: {
+		Bit16s index = CPU_Pop16();
+		D1_LOG("play_music_file(%d)\n", index);
+		play_music_file(index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x0045: {
+		D1_LOG("sound_menu()\n");
+		sound_menu();
+		return 1;
+	}
+	case 0x00e6: {
+		D1_LOG("near read_sound_cfg()\n");
+		read_sound_cfg();
+		return 1;
+	}
+	case 0x01e0: {
+		Bit32u size = CPU_Pop32();
+		D1_LOG("near init_AIL(%d)\n", size);
+		init_AIL(size);
+		CPU_Push32(size);
+		return 1;
+	}
+	case 0x0209: {
+		D1_LOG("near exit_AIL()\n");
+		exit_AIL();
+		return 1;
+	}
+	case 0x02aa: {
+		RealPt fname = CPU_Pop32();
+		RealPt ret = read_music_driver(fname);
+		D1_LOG("near read_music_driver(%s); = %x\n",
+				Real2Host(fname), ret);
+		CPU_Push32(fname);
+
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
+	case 0x0349: {
+		Bit16s seq = CPU_Pop16();
+		reg_ax = prepare_midi_playback(seq);
+		D1_LOG("prepare_midi_playback(%d)\n", seq);
+		CPU_Push16(seq);
+		return 1;
+	}
+	case 0x0413: {
+		Bit16s seq = CPU_Pop16();
+		reg_ax = start_midi_playback(seq);
+		D1_LOG("start_midi_playback(%d)\n", seq);
+		CPU_Push16(seq);
+		return 1;
+	}
+	case 0x043d: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s patch = CPU_Pop16();
+		RealPt p = prepare_timbre(a1, patch);
+		D1_LOG("prepare_timbre(%d, %d) = %x\n", a1, patch, p);
+		CPU_Push16(patch);
+		CPU_Push16(a1);
+		reg_ax = RealOff(p);
+		reg_dx = RealSeg(p);
+		return 1;
+	}
+	case 0x04f2: {
+		Bit16s index = CPU_Pop16();
+		reg_ax = load_midi_file(index);
+		D1_LOG("load_midi_file(%d)\n", index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x0502: {
+		Bit16s index = CPU_Pop16();
+		reg_ax = do_load_midi_file(index);
+		D1_LOG("do_load_midi_file(%d)\n", index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x053d: {
+		RealPt fname = CPU_Pop32();
+		Bit16s type = CPU_Pop16();
+		Bit16s port = CPU_Pop16();
+		reg_ax = load_music_driver(fname, type, port);
+		D1_LOG("load_music_driver(%s, %, 0x%x) = %d\n",
+			Real2Host(fname), type, port, (signed short)reg_ax);
+		CPU_Push16(port);
+		CPU_Push16(type);
+		CPU_Push32(fname);
+		return 1;
+	}
+	case 0x069c: {
+		Bit16s index = CPU_Pop16();
+		do_play_music_file(index);
+		D1_LOG("do_play_music_file(%d)\n", index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x06c7: {
+		D1_LOG("stop_midi_playback();\n");
+		stop_midi_playback();
+		return 1;
+	}
+	case 0x079f: {
+		reg_ax = have_mem_for_sound();
+		D1_LOG("have_mem_for_sound() = %d\n", reg_ax);
+		return 1;
+	}
+	case 0x0832: {
+		Bit16u index = CPU_Pop16();
+		D1_LOG("near play_voc(FX%d)\n", index - 288);
+		play_voc(index);
+		CPU_Push16(index);
+		return 1;
+	}
+	case 0x0890: {
+		Bit32s size = CPU_Pop32();
+		CPU_Push32(size);
+		D1_LOG("alloc_voc_buffer(%d)\n", size);
+		alloc_voc_buffer(size);
+		return 1;
+	}
+	case 0x08b5: {
+		D1_LOG("near free_voc_buffer();\n");
+		free_voc_buffer();
+		return 1;
+	}
+	case 0x09ff: {
+		RealPt fname = CPU_Pop32();
+		Bit16s type = CPU_Pop16();
+		Bit16s io = CPU_Pop16();
+		Bit16s irq = CPU_Pop16();
+		reg_ax = load_digi_driver(fname, type, io, irq);
+		D1_LOG("load_digi_driver(%s, %, 0x%x, %d) = %d\n",
+			Real2Host(fname), type, io, irq, (signed short)reg_ax);
+		CPU_Push16(irq);
+		CPU_Push16(type);
+		CPU_Push32(fname);
+		return 1;
+	}
+	case 0x0adf: {
+		RealPt fname = CPU_Pop32();
+		RealPt ret = read_digi_driver(fname);
+		D1_LOG("near read_digi_driver(%s); = %x\n",
+				Real2Host(fname), ret);
+		CPU_Push32(fname);
+
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
+	case 0x0b7e: {
+		unsigned short fileindex = CPU_Pop16();
+		CPU_Push16(fileindex);
+
+		reg_ax = open_and_seek_dat(fileindex);
+
+		D1_LOG("open_and_seek_dat(%s);\n", get_fname(fileindex));
+
+		return 1;
+	}
+	case 0x0c28: {
+		Bit16u handle = CPU_Pop16();
+		RealPt buf = CPU_Pop32();
+		Bit16u len = CPU_Pop16();
+		CPU_Push16(len);
+		CPU_Push32(buf);
+		CPU_Push16(handle);
+
+		D1_LOG("near read_archive_file(%d, %x, %d);\n",
+			handle, buf, len);
+		reg_ax = read_archive_file(handle, Real2Host(buf), len);
+
+		return 1;
+	}
+	case 0x0c72: {
+		Bit16u handle = CPU_Pop16();
+		Bit32u off = CPU_Pop32();
+		Bit16u dummy = CPU_Pop16();
+		CPU_Push16(dummy);
+		CPU_Push32(off);
+		CPU_Push16(handle);
+
+		D1_LOG("near seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
+		seg002_0c72(handle, off, dummy);
+
+		return 1;
+	}
+	case 0x1361: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		RealPt p3 = CPU_Pop32();
+		RealPt p4 = CPU_Pop32();
+		RealPt p5 = CPU_Pop32();
+		CPU_Push32(p5);
+		CPU_Push32(p4);
+		CPU_Push32(p3);
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		D1_LOG("mouse_action()\n");
+
+		mouse_action(Real2Host(p1),
+			Real2Host(p2),
+			Real2Host(p3),
+			Real2Host(p4),
+			Real2Host(p5));
+
+		return 1;
+	}
+	case 0x1454: {
+		return 0;
+	}
+	/* Callers: 2 */
+	case 0x1634: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		unsigned short v3 = CPU_Pop16();
+		unsigned short v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax  = is_mouse_in_rect(v1, v2, v3, v4);
+		D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
+			v1, v2, v3, v4, reg_ax);
+
+		return 1;
+	}
+	case 0x165e: {
+		D1_LOG("mouse_init()\n");
+		mouse_init();
+		return 1;
+	}
+	case 0x1742: {
+		return 0;
+	}
+	case 0x174c: {
+		return 0;
+	}
+	/* Callers: 1 */
+	case 0x17ae: {
+		D1_LOG("mouse_reset_ehandler()\n");
+		mouse_reset_ehandler();
+		return 1;
+	}
+	case 0x192b: {
+		refresh_screen_size();
+		return 1;
+	}
+	case 0x195d: {
+		refresh_screen_size1();
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x19dc: {
+		D1_LOG("mouse_19dc()\n");
+		mouse_19dc();
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x1cf2: {
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = get_mouse_action(x, y, Real2Host(p));
+
+		D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
+			x, y, p, reg_ax);
+		return 1;
+	}
+	case 0x1d67: {
+		D1_LOG("handle_input();\n");
+		handle_input();
+		return 1;
+	}
+	case 0x1ee7: {
+		D1_LOG("main_loop();\n");
+		return 0;
+	}
+	/* Callers: 1 */
+	case 0x20bd: {
+		timers_daily();
+		D1_LOG("timers_daily();\n");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2177: {
+		seg002_2177();
+		D1_LOG("seg002_2177();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x21ab: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		D1_LOG("pal_fade(%x,%x);\n", p1, p2);
+		pal_fade(Real2Host(p1), Real2Host(p2));
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2400: {
+		dawning();
+		D1_LOG("dawning()\n");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x24f0: {
+		D1_LOG("nightfall()\n");
+		nightfall();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x25ce: {
+		reg_ax = get_current_season();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2628: {
+		D1_LOG("do_census();\n");
+		do_census();
+		return 1;
+	}
+	case 0x274e: {
+		D1_LOG("near do_timers();\n");
+		do_timers();
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x2bf6: {
+		unsigned int val = CPU_Pop32();
+		CPU_Push32(val);
+		D1_LOG("near sub_ingame_timers(val = %u);\n", val);
+		sub_ingame_timers(val);
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x2c5e: {
+		unsigned int val = CPU_Pop32();
+		CPU_Push32(val);
+
+		D1_LOG("sub_mod_timers(%d);\n", val);
+		sub_mod_timers(val);
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x2f7a: {
+		Bit32s val = CPU_Pop32();
+		CPU_Push32(val);
+		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
+		seg002_2f7a(val);
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x3071: {
+		Bit32s quarter = CPU_Pop32();
+		CPU_Push32(quarter);
+
+		D1_LOG("near sub_light_timers(quarter=%d);\n", quarter);
+		sub_light_timers(quarter);
+
+		return 1;
+	}
+	case 0x31a2: {
+		D1_LOG("magical_chainmail_damage()\n");
+		magical_chainmail_damage();
+		return 1;
+	}
+	case 0x3230: {
+		/* input routines are called faster now,
+		   so heros would starve earlier if the cycles are to high */
+		if (reg_eip == 0x1d7b || reg_eip == 0x1a4b)
+			return 0;
+
+		D1_LOG("near herokeeping();\n");
+		herokeeping();
+
+		return 1;
+	}
+	case 0x373a: {
+		D1_LOG("check_level_up();\n");
+		check_level_up();
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x3b63: {
+		passages_recalc();
+		D1_LOG("passages_recalc();\n");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x3c63: {
+		passages_reset();
+		D1_LOG("passages_reset();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x3f3e: {
+		unsigned short index = CPU_Pop16();
+		unsigned short type = CPU_Pop16();
+		CPU_Push16(type);
+		CPU_Push16(index);
+
+		D1_LOG("draw_splash(%d, %d);\n", index, type);
+		draw_splash(index, type);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x4016: {
+		D1_LOG("near wait_for_keyboard2()\n");
+		wait_for_keyboard2();
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x47e2: {
+		seg002_47e2();
+		D1_LOG("seg002_47e2();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x484f: {
+		seg002_484f();
+		D1_LOG("seg002_484f();\n");
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x49d8: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = is_hero_available_in_group(Real2Host(hero));
+		D1_LOG("is_hero_available_in_group(%s) = %d\n",
+		schick_getCharname(hero), reg_ax);
+
+		return 1;
+	}
+	case 0x4adc: {
+		RealPt hero = CPU_Pop32();
+		Bit16s le = CPU_Pop16();
+		CPU_Push16(le);
+		CPU_Push32(hero);
+
+		D1_LOG("near sub_hero_le(%s, %d);\n",
+			(char*)Real2Host(hero) + 0x10, le);
+
+		sub_hero_le(Real2Host(hero), le);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x4f49: {
+		RealPt hero = CPU_Pop32();
+		Bit16u index = CPU_Pop16();
+		Bit16u type = CPU_Pop16();
+
+		D1_LOG("do_starve_damage(%s, %d, %d);\n",
+			schick_getCharname(hero), index, type);
+
+		do_starve_damage(Real2Host(hero), index, type);
+
+		CPU_Push16(type);
+		CPU_Push16(index);
+		CPU_Push32(hero);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x55b1: {
+		Bit16s item = CPU_Pop16();
+		Bit16s group = CPU_Pop16();
+		CPU_Push16(group);
+		CPU_Push16(item);
+
+		reg_ax = get_first_hero_with_item_in_group(item, group);
+		D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
+			get_itemname(item), item, group, (Bit16s)reg_ax);
+
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x573e: {
+		reg_ax = count_heros_available();
+		D1_LOG("count_heros_available() = %d;\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x5799: {
+		reg_ax = count_heroes_available_in_group();
+		D1_LOG("count_heroes_available_in_group() = %d;\n",
+			reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x5a81: {
+#if 1
+		reg_ax = 1;
+		D1_LOG("Kopierschutzabfrage umgangen\n");
+#else
+		copy_protection();
+#endif
+		return 1;
+	}
+	default:
+		return 0;
+	}
+}
+
+static int n_seg004(unsigned short offs)
+{
+	switch (offs) {
+		case 0x55: {
+			Bit16u v1 = CPU_Pop16();
+			D1_LOG("near init_ani(%d)\n", v1);
+			init_ani(v1);
+			CPU_Push16(v1);
+			return 1;
+		}
+		case 0x54b: {
+			D1_LOG("near update_status_bars()\n");
+			update_status_bars();
+			return 1;
+		}
+		case 0x8e9: {
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			unsigned short v4 = CPU_Pop16();
+			unsigned short v5 = CPU_Pop16();
+			CPU_Push16(v5);
+			CPU_Push16(v4);
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+
+			D1_LOG("near draw_bar(%d,%d,%d,%d,%d)\n", v1, v2, v3, v4, v5);
+			draw_bar(v1, v2, v3, v4, v5);
+			return 1;
+		}
+		case 0xe31: {
+			D1_LOG("update_wallclock()\n");
+			update_wallclock();
+			return 1;
+		}
+		case 0xf54: {
+			Bit16s pos = CPU_Pop16();
+			Bit16s night = CPU_Pop16();
+			D1_LOG("near wallclock(%d, %d)\n", pos, night);
+			draw_wallclock(pos, night);
+			CPU_Push16(night);
+			CPU_Push16(pos);
+			return 1;
+		}
+		case 0x1147: {
+			RealPt dst = CPU_Pop32();
+			unsigned short v1 = CPU_Pop16();
+			unsigned short v2 = CPU_Pop16();
+			unsigned short v3 = CPU_Pop16();
+			CPU_Push16(v3);
+			CPU_Push16(v2);
+			CPU_Push16(v1);
+			CPU_Push32(dst);
+
+			D1_LOG("near array_add(0x%04x:0x%04x, len=%d, op=%d, flag=%d);\n",
+				RealSeg(dst), RealOff(dst), v1, (char)v2, v3);
+			array_add(Real2Host(dst), v1, (char)v2, v3);
+			return 1;
+		}
+		case 0x11da: {
+			D1_LOG("clear_ani_pal()\n");
+			clear_ani_pal();
+			return 1;
+		}
+		case 0x1209: {
+			RealPt pal = CPU_Pop32();
+			D1_LOG("set_ani_pal()\n");
+			set_ani_pal(Real2Host(pal));
+			CPU_Push32(pal);
+			return 1;
+		}
+		case 0x1291: {
+			return 0;
+		}
+		case 0x12e8: {
+			RealPt dst = CPU_Pop32();
+			unsigned short x = CPU_Pop16();
+			unsigned short y1 = CPU_Pop16();
+			unsigned short y2 = CPU_Pop16();
+			unsigned short color = CPU_Pop16();
+			CPU_Push16(color);
+			CPU_Push16(y2);
+			CPU_Push16(y1);
+			CPU_Push16(x);
+			CPU_Push32(dst);
+
+			D1_LOG("near do_v_line(0x%04x:0x%04x, %d, %d, %d, 0x%02x);\n",
+				RealSeg(dst), RealOff(dst), x, y1, y2,
+				(unsigned char)color);
+			do_v_line(dst, x, y1, y2, (unsigned char)color);
+			return 1;
+		}
+		case 0x13b7: {
+			unsigned short mode = CPU_Pop16();
+			CPU_Push16(mode);
+			D1_LOG("near do_pic_copy(%d);\n", mode);
+			do_pic_copy(mode);
+			return 1;
+		}
+		case 0x150d: {
+			D1_LOG("wait_for_vsync()\n");
+			wait_for_vsync();
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+	}
+}
+
+static int n_seg005(unsigned short offs)
+{
+	switch (offs) {
+	case 0xb: {
+		RealPt p = CPU_Pop32();
+		signed short x = CPU_Pop16();
+		signed short y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(p);
+
+		reg_ax = FIG_obj_needs_refresh(Real2Host(p), x, y);
+		D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
+			p, x, y, reg_ax);
+
+		return 1;
+	}
+	case 0x144: {
+		RealPt p = CPU_Pop32();
+		unsigned short count = CPU_Pop16();
+		unsigned short val = CPU_Pop16();
+		CPU_Push16(val);
+		CPU_Push16(count);
+		CPU_Push32(p);
+
+		FIG_set_star_color(Real2Host(p), count, (Bit8u)val);
+		D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
+			p, count, (Bit8u)val);
+
+		return 1;
+	}
+	case 0x181: {
+		unsigned short type = CPU_Pop16();
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(type);
+
+		RealPt retval = FIG_name_3rd_case(type, pos);
+		D1_LOG("FIG_name_3rd_case(%d,%d) = %s\n",
+			type, pos, getString(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x1b6: {
+		unsigned short type = CPU_Pop16();
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(type);
+
+		RealPt retval = FIG_name_4th_case(type, pos);
+		D1_LOG("FIG_name_4th_case(%d,%d) = %s\n",
+			type, pos, getString(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x1eb: {
+		unsigned short type = CPU_Pop16();
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(type);
+
+		RealPt retval = FIG_name_1st_case(type, pos);
+		D1_LOG("FIG_name_1st_case(%d,%d) = %s\n",
+			type, pos, getString(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	case 0x220: {
+		reg_ax = fight_printer();
+		D1_LOG("fight_printer()\n");
+		return 1;
+	}
+	case 0x1ba7: {
+		set_delay_timer();
+		D1_LOG("set_delay_timer()\n");
+		return 1;
+	}
+	case 0x1bb2: {
+		fight_delay();
+		D1_LOG("fight_delay()\n");
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg006(unsigned offs)
+{
+	switch (offs) {
+	/* Callers: 1 */
+	case 0x5a: {
+		reg_ax = FIG_set_array();
+		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
+		return 1;
+	}
+	case 0x82b: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("n FIG_draw_char_pic(%d, %d)\n", v1, v2);
+		FIG_draw_char_pic(v1, v2);
+		return 1;
+	}
+	case 0x99f: {
+		unsigned short v1 = CPU_Pop16();
+		unsigned short v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("n FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
+		FIG_draw_enemy_pic(v1, v2);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg024(unsigned short offs)
+{
+	switch (offs) {
+	case 0x1d3: {
+		Bit16u line = CPU_Pop16();
+		CPU_Push16(line);
+		reg_ax = diary_print_entry(line);
+		D1_LOG("diary_print_entry(%d); == %d\n", line, reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg025(unsigned short offs)
+{
+	switch (offs) {
+	case 0x4a2: {
+		D1_LOG("show_treasure_map();\n");
+		show_treasure_map();
+		return 1;
+	}
+	case 0xca8: {
+		Bit16s id = CPU_Pop16();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push16(id);
+		D1_LOG("draw_icon(%d,%d,%d);\n", id, x, y);
+		draw_icon(id, x, y);
+		return 1;
+	}
+	case 0xd54: {
+		D1_LOG("show_storytext();\n");
+		reg_ax = show_storytext();
+		return 1;
+	}
+	case 0xea9: {
+		D1_LOG("near turnaround();\n");
+		turnaround();
+		return 1;
+	}
+	case 0x114a: {
+		D1_LOG("copy_palette();\n");
+		copy_palette();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg026(unsigned short offs)
+{
+	switch (offs) {
+	case 0x23e: {
+		RealPt src = CPU_Pop32();
+		RealPt dst = CPU_Pop32();
+		Bit32u len = CPU_Pop32();
+
+		D1_LOG("split_textbuffer(%x, %x, %d)\n",
+			src, dst, len);
+		split_textbuffer(Real2Host(src), dst, len);
+		CPU_Push32(len);
+		CPU_Push32(dst);
+		CPU_Push32(src);
+		return 1;
+	}
+	case 0x2d3: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		D1_LOG("prepare_chr_name(%x, %s);\n", p1,
+			(char*)Real2Host(p2));
+		prepare_chr_name((char*)Real2Host(p1),
+			(char*)Real2Host(p2));
+		return 1;
+	}
+	case 0x347: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		D1_LOG("prepare_sg_name(%x, %s);\n", p1, (char*)Real2Host(p2));
+		prepare_sg_name((char*)Real2Host(p1),
+			(char*)Real2Host(p2));
+		return 1;
+	}
+	case 0x1021: {
+		RealPt str = CPU_Pop32();
+		Bit16s hero_pos = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(hero_pos);
+		CPU_Push32(str);
+
+		reg_ax = read_chr_temp(str, hero_pos, a2);
+		D1_LOG("read_chr_temp(%s, %d, %d) = %d\n",
+			(char*)Real2Host(str),
+			hero_pos,
+			a2, reg_ax);
+		return 1;
+	}
+	case 0x117f: {
+		Bit16u hero = CPU_Pop16();
+		CPU_Push16(hero);
+		D1_LOG("write_chr_temp(%d)\n", hero);
+		write_chr_temp(hero);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg028(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		D1_LOG("prepare_dungeon_area()\n");
+		prepare_dungeon_area();
+		return 1;
+	}
+	case 0x19e: {
+		D1_LOG("load_dungeon_ddt()\n");
+		load_dungeon_ddt();
+		return 1;
+	}
+	case 0x224: {
+		D1_LOG("seg028_0224()\n");
+		seg028_0224();
+		return 1;
+	}
+	case 0x444: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		RealPt retval = seg028_0444(a1, a2, a3, a4);
+		D1_LOG("seg028_0444(%d, %d, %d, %d) = %x\n",
+			a1, a2, a3 ,a4, retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
+	}
+	case 0x56a: {
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("load_area_description(%d);\n", arg);
+		load_area_description(arg);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg029(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		D1_LOG("draw_playmask();\n");
+		draw_playmask();
+		return 1;
+	}
+	case 0x0e8: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+
+		copy_forename(Real2Host(p1), Real2Host(p2));
+		D1_LOG("near copy_forename(%s, %s)\n",
+			(char*)Real2Host(p1), (char*)Real2Host(p2));
+		return 1;
+	}
+	case 0x127: {
+		D1_LOG("draw_status_line();\n");
+		draw_status_line();
+		return 1;
+	}
+	case 0x417: {
+		unsigned short pos = CPU_Pop16();
+		CPU_Push16(pos);
+
+		clear_hero_icon(pos);
+		D1_LOG("clear_hero_icon(%d)\n", pos);
+		return 1;
+	}
+	case 0x492: {
+		Bit16u index = CPU_Pop16();
+		Bit16u icon = CPU_Pop16();
+		Bit16u pos = CPU_Pop16();
+
+		D1_LOG("load_icon(%x, %x, %x);\n", index, icon, pos);
+		load_icon(index, icon, pos);
+
+		CPU_Push16(pos);
+		CPU_Push16(icon);
+		CPU_Push16(index);
+
+		return 1;
+	}
+	case 0x4fd: {
+		D1_LOG("draw_icons();\n");
+		draw_icons();
+		return 1;
+	}
+	case 0x5ff: {
+		D1_LOG("near clear_loc_line();\n");
+		clear_loc_line();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg030(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("seg030_0000(%d);\n", arg);
+		RealPt retval = seg030_0000(arg);
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
+	}
+	case 0x8d: {
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+		D1_LOG("seg030_008d(%d);\n", arg);
+		RealPt retval = seg030_008d(arg);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
+	}
+	case 0x14f: {
+		return 0;
+	}
+	case 0xfd5: {
+		D1_LOG("talk_switch();\n");
+
+		/* TODO: all TLK_ID [0,19] */
+		Bit16s id = ds_readws(TLK_ID);
+
+		if (id == 1 || (id >= 3 && id <= 10) ||
+			id == 12 || id == 14 || id == 15 || id == 16)
+		{
+			talk_switch();
+			return 1;
+		}
+
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg031(unsigned offs) {
+	switch (offs) {
+	case 0x56c: {
+		reg_ax = get_town_lookup_entry();
+		D1_LOG("get_town_lookup_entry(); = %d\n", reg_ax);
+		return 1;
+	}
+	case 0x63b: {
+		RealPt retval;
+
+		retval = load_current_town_gossip();
+		D1_LOG("near load_current_town_gossip() = 0x%x\n", retval);
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg032(unsigned offs)
+{
+	switch (offs) {
+	/* Callers: 1 */
+	case 0x0000: {
+		signed short row = CPU_Pop16();
+		signed short col = CPU_Pop16();
+		signed short object = CPU_Pop16();
+		CPU_Push16(object);
+		CPU_Push16(col);
+		CPU_Push16(row);
+
+		signed char obj = object & 0xff;
+
+		FIG_set_cb_field(row, col, obj);
+		D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
+			row, col, obj);
+		return 1;
+	}
+	case 0x0032: {
+		Bit16s mode = CPU_Pop16();
+		D1_LOG("draw_fight_screen_pal(%d)\n", mode);
+		draw_fight_screen_pal(mode);
+		CPU_Push16(mode);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0xa8: {
+		reg_ax = FIG_choose_next_hero();
+		D1_LOG("FIG_choose_next_hero() = %s\n",
+		schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0xfc: {
+		reg_ax = FIG_choose_next_enemy();
+		D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x12c: {
+		reg_ax = FIG_count_active_enemies();
+		D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x1ba: {
+		RealPt enemy = CPU_Pop32();
+		CPU_Push32(enemy);
+
+		reg_ax = FIG_is_enemy_active(Real2Host(enemy) );
+		D1_LOG("near FIG_is_enemy_active(); = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x242: {
+		reg_ax = FIG_get_first_active_hero();
+		D1_LOG("near FIG_get_first_active_hero() = %s\n",
+			reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x2db: {
+		reg_ax = seg032_02db();
+		D1_LOG("near seg032_02db() = %d\n", reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x349: {
+		reg_ax = FIG_fight_continues();
+		D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
+		return 1;
+	}
+	case 0x380: {
+		D1_LOG("FIG_do_round()\n");
+		FIG_do_round();
+		return 1;
+	}
+	case 0xa38: {
+		D1_LOG("FIG_load_ship_sprites()\n");
+		FIG_load_ship_sprites();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg034(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		Bit16s a5 = CPU_Pop16();
+		Bit16s a6 = CPU_Pop16();
+		Bit16s a7 = CPU_Pop16();
+		CPU_Push16(a7);
+		CPU_Push16(a6);
+		CPU_Push16(a5);
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		reg_ax = seg034_000(a1, a2, a3, a4, a5, a6, a7);
+		D1_LOG("near seg034_000(%d, %d, %d, %d, %d, %d, %d) = %d\n",
+			a1, a2, a3, a4, a5, a6, a7, (Bit16s)reg_ax);
+		return 1;
+	}
+	case 0x718: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		RealPt a3 = CPU_Pop32();
+		RealPt a4 = CPU_Pop32();
+		Bit16s a5 = CPU_Pop16();
+		Bit16s a6 = CPU_Pop16();
+		CPU_Push16(a6);
+		CPU_Push16(a5);
+		CPU_Push32(a4);
+		CPU_Push32(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		seg034_718(a1, a2, Real2Host(a3), Real2Host(a4), a5, a6);
+
+		return 1;
+	}
+	case 0xaec: {
+		reg_ax = seg034_aec();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+
+static int n_seg036(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = KI_copy_ani_sequence(Real2Host(p), v1, v2);
+		D1_LOG("KI_copy_ani_sequence(%x, %d, %d); = %d\n",
+			p, v1, v2, (signed char)reg_ax);
+
+		return 1;
+	}
+	case 0x0ae: {
+		RealPt in_ptr = CPU_Pop32();
+		Bit16s a2 = CPU_Pop16();
+		D1_LOG("near seg036_00ae(%x, %d)\n", in_ptr, a2);
+		seg036_00ae(Real2Host(in_ptr), a2);
+		CPU_Push16(a2);
+		CPU_Push32(in_ptr);
+		return 1;
+	}
+	case 0x27f: {
+		RealPt hero = CPU_Pop32();
+		reg_ax = KI_change_hero_weapon(Real2Host(hero));
+		D1_LOG("KI_change_hero_weapon(%s) = %d\n",
+			Real2Host(hero) + 0x10, reg_ax);
+		CPU_Push32(hero);
+		return 1;
+	}
+	case 0x39b: {
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		Bit16s v5 = CPU_Pop16();
+		CPU_Push16(v5);
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax = KI_can_attack_neighbour(v1, v2, v3, v4, v5);
+
+		D1_LOG("KI_can_attack_neighbour(%d,%d,%d,%d,%d); = %d\n",
+			v1, v2, v3, v4, v5, reg_ax);
+		return 1;
+	}
+	case 0x4cf: {
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax = KI_search_spell_target(v1, v2, v3, v4);
+
+		D1_LOG("KI_get_spell_targed_id(%d,%d,%d,%d); = %d\n",
+			v1, v2, v3, v4, reg_ax);
+		return 1;
+	}
+	case 0x6f7: {
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = KI_select_spell_target(Real2Host(p), v1, v2, v3, v4);
+		D1_LOG("KI_select_spell_target(%s, %d, %d, %d, %d) = %d\n",
+			schick_getCharname(p), v1, v2, v3, v4, reg_ax);
+
+		return 1;
+	}
+	case 0x863: {
+		Bit16s spell = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(spell);
+		reg_ax = KI_get_spell(spell, v2);
+		D1_LOG("KI_get_spell(%s, %d); = %d\n",
+			names_spell[spell], v2, (signed short)reg_ax);
+		return 1;
+	}
+	case 0x8cf: {
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = seg036_8cf(Real2Host(p), v1, v2, v3, v4);
+		D1_LOG("seg036_8cf(%s, %d, %d, %d, %d) = %d\n",
+			schick_getCharname(p), v1, v2, v3, v4, reg_ax);
+
+		return 1;
+	}
+	case 0xc39: {
+		Bit16u v = CPU_Pop16();
+		CPU_Push16(v);
+
+		reg_ax = KI_count_heros(v);
+		D1_LOG("KI_count_heros(%d); = %d\n", v, reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg037(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		RealPt p = CPU_Pop32();
+		Bit16u v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		reg_ax = copy_ani_stuff(Real2Host(p), v1, v2);
+		D1_LOG("copy_ani_stuff(%x, %d, %d); = %x\n", p, v1, v2, reg_ax);
+		return 1;
+	}
+	case 0x00ae: {
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		D1_LOG("seg037_00ae(%x, %d);\n", p, v1);
+		seg037_00ae(Real2Host(p), v1);
+		return 1;
+	}
+	case 0x2e3: {
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		Bit16s v5 = CPU_Pop16();
+		CPU_Push16(v5);
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		reg_ax = test_foe_melee_attack(v1, v2, v3, v4, v5);
+		D1_LOG("test_foe_melee_attack(%d, %d, %d, %d, %d); = %x\n",
+				v1, v2, v3, v4, v5, reg_ax);
+		return 1;
+	}
+	case 0x417: {
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		reg_ax = test_foe_range_attack(x, y, dir, v4);
+		D1_LOG("test_foe_range_attack(%d, %d, %d, %d); = %d attacker = %d\n",
+			x, y, dir, v4, reg_ax, get_cb_val(x, y));
+		CPU_Push16(v4);
+		CPU_Push16(dir);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		return 1;
+	}
+	case 0x725: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		reg_ax = get_foe_attack_mode(a1, a2);
+		D1_LOG("get_foe_attack_mode(%d, %d); = %d\n",
+			a1, a2, reg_ax);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		return 1;
+	}
+	case 0x791: {
+		RealPt p = CPU_Pop32();
+		Bit16u a2 = CPU_Pop16();
+		Bit16u a3 = CPU_Pop16();
+		Bit16u x = CPU_Pop16();
+		Bit16u y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push32(p);
+
+		reg_ax = seg037_0791(Real2Host(p), a2, a3, x, y);
+		D1_LOG("seg037_0791(%x, %d, %d, %d, %d); = %x\n", p, a2, a3, x, y, reg_ax);
+		return 1;
+	}
+	case 0xb3e: {
+		D1_LOG("%s:%x\n", __func__, offs);
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg038(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		signed short obj = CPU_Pop16();
+		RealPt px = CPU_Pop32();
+		RealPt py = CPU_Pop32();
+		CPU_Push32(py);
+		CPU_Push32(px);
+		CPU_Push16(obj);
+
+		reg_ax = FIG_search_obj_on_cb(obj,
+			(signed short*)Real2Host(px),
+			(signed short*)Real2Host(py));
+
+		D1_LOG("near FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
+			obj, mem_readw(Real2Phys(px)),
+			mem_readw(Real2Phys(py)), reg_ax);
+
+		host_writew(Real2Host(px),
+			*((signed short*)Real2Host(px)));
+		host_writew(Real2Host(py),
+			*((signed short*)Real2Host(py)));
+
+		return 1;
+	}
+	case 0x143: {
+		RealPt in_ptr = CPU_Pop32();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s arg4 = CPU_Pop16();
+		Bit16s arg5 = CPU_Pop16();
+		Bit16s arg6 = CPU_Pop16();
+		Bit16s arg7 = CPU_Pop16();
+		Bit16s arg8 = CPU_Pop16();
+
+		D1_LOG("FIG_backtrack(%x, %d, %d, %d, %d, %d, %d, %d)\n",
+			in_ptr, x, y, arg4, arg5, arg6, arg7, arg8);
+
+		FIG_backtrack(Real2Host(in_ptr), x, y, arg4, (Bit8s)arg5,
+							arg6, arg7, arg8);
+
+		CPU_Push16(arg8);
+		CPU_Push16(arg7);
+		CPU_Push16(arg6);
+		CPU_Push16(arg5);
+		CPU_Push16(arg4);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(in_ptr);
+
+		return 1;
+	}
+	case 0x457: {
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+
+		reg_ax = FIG_count_smth((signed char*)Real2Host(p));
+		D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg039(unsigned offs)
+{
+
+	switch(offs) {
+
+	case 0x23: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = FIG_get_range_weapon_type(Real2Host(hero));
+		D1_LOG("FIG_get_range_weapon_type(%s) = %d\n",
+			schick_getCharname(hero), (signed short)reg_ax);
+
+		return 1;
+	}
+	case 0x97: {
+		unsigned short sheet_nr = CPU_Pop16();
+		unsigned short enemy_id_16 = CPU_Pop16();
+		unsigned short round_16 = CPU_Pop16();
+		CPU_Push16(round_16);
+		CPU_Push16(enemy_id_16);
+		CPU_Push16(sheet_nr);
+
+		signed char enemy = (signed char)(enemy_id_16 & 0xff);
+		signed char round = (signed char)(round_16 & 0xff);
+
+		D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
+			sheet_nr, enemy, round);
+
+		fill_enemy_sheet(sheet_nr, enemy, round);
+
+		return 1;
+	}
+	case 0x317: {
+		unsigned short x = CPU_Pop16();
+		unsigned short y = CPU_Pop16();
+		signed short object = CPU_Pop16();
+		unsigned short v2_16 = CPU_Pop16();
+		unsigned short dir_16 = CPU_Pop16();
+		CPU_Push16(dir_16);
+		CPU_Push16(v2_16);
+		CPU_Push16(object);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		signed char v2 = (signed char)(v2_16 & 0xff);
+		signed char dir = (signed char)(dir_16 & 0xff);
+
+		reg_ax = place_obj_on_cb(x, y, object, v2, dir);
+		D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
+				x, y, object, v2, dir, reg_ax);
+
+		return 1;
+	}
+	case 0x546: {
+		RealPt p = CPU_Pop32();
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+		CPU_Push32(p);
+
+		D1_LOG("FIG_load_enemy_sprites(%x, %d, %d);\n", p, v1, v2);
+		FIG_load_enemy_sprites(Real2Host(p),
+			(signed char)v1, (signed char)v2);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg041(unsigned offs)
+{
+	switch (offs) {
+	case 0x8f1: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = weapon_check(Real2Host(hero));
+
+		D1_LOG("near weapon_check(%s); = %d\n",
+			schick_getCharname(hero), (signed short)reg_ax);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg044(unsigned short offs)
+{
+	switch (offs) {
+	case 0x00: {
+		RealPt p = CPU_Pop32();
+		Bit16s a2 = CPU_Pop16();
+		Bit16u a3 = CPU_Pop16();
+
+		reg_ax = copy_ani_seq(Real2Host(p), a2, a3);
+		D1_LOG("copy_ani_seq(%x, %d, %d) = 0x%x\n",
+			p, a2, a3, reg_ax);
+
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push32(p);
+
+		return 1;
+	}
+	case 0xae: {
+		Bit16s ani = CPU_Pop16();
+		CPU_Push16(ani);
+
+		reg_ax = (Bit16s)get_seq_header(ani);
+		D1_LOG("get_seq_header(%d) = %d\n", ani, (Bit16s)reg_ax);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg045(unsigned short offs)
+{
+	switch (offs) {
+	case 0x0000: {
+		Bit16s fight_id = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		D1_LOG("seg045_0000(%d, %d, %d);", fight_id, a2, a3);
+		seg045_0000(fight_id, a2, a3);
+
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(fight_id);
+		return 1;
+	}
+	case 0x014f: {
+		RealPt p1 = CPU_Pop32();
+		RealPt p2 = CPU_Pop32();
+		Bit16s v = CPU_Pop16();
+
+		CPU_Push16(v);
+		CPU_Push32(p2);
+		CPU_Push32(p1);
+		reg_ax = FIG_copy_it(Real2Host(p1), Real2Host(p2), (signed char)v);
+		D1_LOG("FIG_copy_it(%x, %x, %x) = %d\n",
+			p1, p2, (signed char)v, reg_ax);
+		return 1;
+	}
+	case 0x0273: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		D1_LOG("seg045_0273(%d, %d, %d);\n", a1, a2, a3);
+		seg045_0273((signed char)a1, (signed char)a2, a3);
+
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg046(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		RealPt hero = CPU_Pop32();
+		unsigned short spell = CPU_Pop16();
+		unsigned short fsig = CPU_Pop16();
+		unsigned short x1 = CPU_Pop16();
+		unsigned short x2 = CPU_Pop16();
+		unsigned short yg = CPU_Pop16();
+		CPU_Push16(yg);
+		CPU_Push16(x2);
+		CPU_Push16(x1);
+		CPU_Push16(fsig);
+		CPU_Push16(spell);
+		CPU_Push32(hero);
+
+		D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
+			schick_getCharname(hero), spell, fsig, x1, x2, yg);
+		status_show_spell(Real2Host(hero), spell,
+			fsig, x1, x2, yg);
+
+		return 1;
+	}
+	case 0x08d: {
+		RealPt hero = CPU_Pop32();
+		unsigned short talent = CPU_Pop16();
+		unsigned short ftig = CPU_Pop16();
+		unsigned short x1 = CPU_Pop16();
+		unsigned short x2 = CPU_Pop16();
+		unsigned short yg = CPU_Pop16();
+		CPU_Push16(yg);
+		CPU_Push16(x2);
+		CPU_Push16(x1);
+		CPU_Push16(ftig);
+		CPU_Push16(talent);
+		CPU_Push32(hero);
+
+		D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
+			schick_getCharname(hero), talent, ftig, x1, x2, yg);
+		status_show_talent(Real2Host(hero), talent,
+			ftig, x1, x2, yg);
+
+		return 1;
+	}
+	case 0x11a: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		D1_LOG("status_show_talents(%s);\n",
+			schick_getCharname(hero));
+
+		status_show_talents(Real2Host(hero));
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg048(unsigned short offs)
+{
+	switch(offs) {
+	case 0x00: {
+		D1_LOG("reset_item_selector()\n");
+		reset_item_selector();
+		return 1;
+	}
+	case 0xd0: {
+		Bit16s hero_pos = CPU_Pop16();
+		CPU_Push16(hero_pos);
+		D1_LOG("status_menu(%d);\n", hero_pos);
+		status_menu(hero_pos);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg049(unsigned short offs)
+{
+	switch (offs) {
+	case 0x01da: {
+		GRP_sort_heros();
+		D1_LOG("near GRP_sort_heros()\n");
+		return 1;
+	}
+	case 0x0224: {
+		Bit16s group = CPU_Pop16();
+		D1_LOG("near GRP_save_pos(%d)\n", group);
+		GRP_save_pos(group);
+		CPU_Push16(group);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg050(unsigned short offs) {
+	switch (offs) {
+		case 0x0000: {
+			RealPt hero = CPU_Pop32();
+			Bit16s spell = CPU_Pop16();
+
+			D1_LOG("inc_spell_advanced(%s, %s);\n",
+				schick_getCharname(hero), names_spell[spell]);
+
+			inc_spell_advanced(Real2Host(hero), spell);
+
+			CPU_Push16(spell);
+			CPU_Push32(hero);
+			return 1;
+		}
+		case 0x01ec: {
+			RealPt hero = CPU_Pop32();
+			Bit16s skill = CPU_Pop16();
+
+			D1_LOG("inc_skill_advanced(%s, %s);\n",
+				schick_getCharname(hero), names_skill[skill]);
+
+			inc_skill_advanced(Real2Host(hero), skill);
+
+			CPU_Push16(skill);
+			CPU_Push32(hero);
+			return 1;
+		}
+		case 0x03d2: {
+			RealPt hero = CPU_Pop32();
+			Bit16s skill = CPU_Pop16();
+
+			D1_LOG("inc_skill_novice(%s, %s);\n",
+				schick_getCharname(hero), names_skill[skill]);
+			inc_skill_novice(Real2Host(hero), skill);
+
+			CPU_Push16(skill);
+			CPU_Push32(hero);
+			return 1;
+		}
+		case 0x04b1: {
+			RealPt hero = CPU_Pop32();
+			Bit16s spell = CPU_Pop16();
+
+			D1_LOG("inc_spell_novice(%s, %s);\n",
+				schick_getCharname(hero), names_spell[spell]);
+
+			inc_spell_novice(Real2Host(hero), spell);
+			CPU_Push16(spell);
+			CPU_Push32(hero);
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
+static int n_seg053(unsigned short offs) {
+	switch (offs) {
+		case 0x0000: {
+			RealPt hero = CPU_Pop32();
+			CPU_Push32(hero);
+
+			reg_ax = is_hero_healable(Real2Host(hero));
+
+			D1_LOG("near is_hero_healable(%s); = %d\n",
+				Real2Host(hero) + 0x10, reg_ax);
+
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
+static int n_seg054(unsigned short offs)
+{
+	switch (offs) {
+		case 0x0000: {
+			D1_LOG("talk_inn()\n");
+			return 0;
+		}
+		case 0x0011: {
+			RealPt hero = get_first_busy_hero();
+			D1_LOG("get_first_busy_hero() = %s\n",
+				hero != NULL ? schick_getCharname(hero) : "NULL");
+
+			reg_ax = RealOff(hero);
+			reg_dx = RealSeg(hero);
+			return 1;
+		}
+		case 0x007c: {
+			D1_LOG("do_inn()\n");
+			return 0;
+		}
+		case 0x0ca2: {
+			Bit16s state = CPU_Pop16();
+			CPU_Push16(state);
+			D1_LOG("TLK_herberg(%d)\n", state);
+			TLK_herberg(state);
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
+static int n_seg055(unsigned short offs)
+{
+	switch (offs) {
+		case 0x0000: {
+			RealPt shop_ptr = CPU_Pop32();
+			Bit16s item_id = CPU_Pop16();
+			Bit16s pos = CPU_Pop16();
+			CPU_Push16(pos);
+			CPU_Push16(item_id);
+			CPU_Push32(shop_ptr);
+
+			D1_LOG("add_item_to_shop(%x, %s, %d)\n", shop_ptr, get_itemname(item_id), pos);
+			add_item_to_shop(Real2Host(shop_ptr), item_id, pos);
+			return 1;
+		}
+		case 0x007a: {
+			const Bit8u typi = ds_readb(0x4224);
+			const Bit8s price = ds_readbs(typi * 9 + 0x6870);
+			const Bit8s h_type = ds_readb(typi * 9 + 0x6870 + 1);
+			const Bit8s sortiment = ds_readb(typi * 9 + 0x6870 + 2);
+
+			const char h_types[][10] = { "UNGUELTIG", "Waffen", "Kraeuter", "Kraemer" };
+			const char *h_string = (h_type >= 1 && h_type <= 3) ? h_types[h_type] : h_types[0];
+
+			D1_INFO("Haendler-Nr: %d / Haendlertyp: %s\n", typi, h_string);
+			D1_INFO("\tPreise: %3d%% [70, 180]\n", 100 + price);
+			D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
+
+			return 0;
+		}
+		case 0x0622: {
+			return 0;
+		}
+		case 0x0660: {
+			Bit16s state = CPU_Pop16();
+			CPU_Push16(state);
+
+			D1_LOG("TLK_ghandel(%d)\n", state);
+			TLK_ghandel(state);
+			return 1;
+		}
+		case 0x06e1: {
+			Bit16s state = CPU_Pop16();
+			CPU_Push16(state);
+
+			D1_LOG("TLK_khandel(%d)\n", state);
+			TLK_khandel(state);
+			return 1;
+		}
+		case 0x078e: {
+			Bit16s state = CPU_Pop16();
+			CPU_Push16(state);
+
+			D1_LOG("TLK_whandel(%d)\n", state);
+			TLK_whandel(state);
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
+static int n_seg058(const unsigned short offs)
+{
+	switch (offs) {
+		case 0x0000: {
+			return 0;
+		}
+		case 0x01f9: {
+			return 0;
+		}
+		case 0x0dc3: {
+			return 0;
+		}
+		case 0x0f96: {
+			return 0;
+		}
+		case 0x0fa7: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
+static int n_seg061(unsigned offs) {
+	switch (offs) {
+		case 0x57b: {
+			Bit16s temple_id = CPU_Pop16();
+			CPU_Push16(temple_id);
+
+			D1_LOG("char_add(%d)\n", temple_id);
+			char_add(temple_id);
+			return 1;
+		}
+		case 0x74a: {
+			Bit16s temple_id = CPU_Pop16();
+			CPU_Push16(temple_id);
+
+			D1_LOG("char_letgo(%d)\n", temple_id);
+			char_letgo(temple_id);
+			return 1;
+		}
+		case 0x89d: {
+			reg_ax = char_erase();
+			D1_LOG("char_erase(); = %d\n", reg_ax);
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
+static int n_seg063(unsigned offs) {
+	switch (offs) {
+	case 0x999: {
+		return 0;
+	}
+	case 0xa0e: {
+		return 0;
+	}
+	case 0xf6f: {
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+		reg_ax = get_srout_len(Real2Host(ptr));
+		D1_LOG("get_srout_len(0x%x) = %d;\n", ptr, reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg064(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+		Bit16s arg1 = CPU_Pop16();
+		Bit16s arg2 = CPU_Pop16();
+		CPU_Push16(arg2);
+		CPU_Push16(arg1);
+		RealPt tmp = get_ship_name((signed char)arg1, arg2);
+		D1_LOG("get_ship_name(%d, %d); = 0x%x\n",
+			(signed char)arg1, arg2, tmp);
+
+		reg_ax = RealOff(tmp);
+		reg_dx = RealSeg(tmp);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg066(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		return 0;
+	}
+	case 0x0dd: {
+		return 0;
+	}
+	case 0x5fc: {
+		return 0;
+	}
+	case 0x692: {
+		return 0;
+	}
+	case 0x6c1: {
+		return 0;
+	}
+	case 0xb73: {
+		Bit16s v1 = CPU_Pop16();
+		CPU_Push16(v1);
+		reg_ax = get_border_index((unsigned char)v1);
+		D1_LOG("get_border_index(%d) = %d\n", v1, reg_ax);
+		return 1;
+	}
+	case 0xbad: {
+		return 0;
+	}
+	case 0xc50: {
+		return 0;
+	}
+	case 0xd1d: {
+		return 0;
+	}
+	case 0xf62: {
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		load_city_texture(v1, v2, v3, v4);
+
+		D1_LOG("load_city_texture(%d, %d, %x, %d)\n",
+			v1, v2, v3, v4);
+		return 1;
+	}
+	case 0x10c8: {
+		return 0;
+	}
+	case 0x10e9: {
+		return 0;
+	}
+	case 0x14dd: {
+		return 0;
+	}
+	case 0x159b: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg067(unsigned offs)
+{
+	switch (offs) {
+	case 0x000: {
+		D1_LOG("city_event_switch()\n");
+		return 0;
+	}
+	case 0x009a: {
+		D1_LOG("city_event_1()\n");
+		city_event_1();
+		return 1;
+	}
+	case 0x02eb: {
+		D1_LOG("city_event_2()\n");
+		city_event_2();
+		return 1;
+	}
+	case 0x04a6: {
+		D1_LOG("city_event_3()\n");
+		city_event_3();
+		return 1;
+	}
+	case 0x05aa: {
+		D1_LOG("city_event_4()\n");
+		city_event_4();
+		return 1;
+	}
+	case 0x0707: {
+		D1_LOG("city_event_5()\n");
+		city_event_5();
+		return 1;
+	}
+	case 0x07b2: {
+		D1_LOG("city_event_6()\n");
+#if 0
+		city_event_6();
+		return 1;
+#else
+		return 0;
+#endif
+	}
+	case 0x090a: {
+		D1_LOG("city_event_7()\n");
+		city_event_7();
+		return 1;
+	}
+	case 0x0b2d: {
+		D1_LOG("city_event_8()\n");
+		city_event_8();
+		return 1;
+	}
+	case 0x0c1c: {
+		D1_LOG("city_event_9()\n");
+		city_event_9();
+		return 1;
+	}
+	case 0x0ca8: {
+		D1_LOG("waffinfo_weapons()\n");
+		RealPt ret = waffinfo_weapons();
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
+	case 0x0ce6: {
+		D1_LOG("waffinfo_herbs()\n");
+		RealPt ret = waffinfo_herbs();
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
+	case 0x0d27: {
+		D1_LOG("waffinfo_general()\n");
+		RealPt ret = waffinfo_general();
+		reg_ax = RealOff(ret);
+		reg_dx = RealSeg(ret);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg072(unsigned short offs)
+{
+	switch (offs) {
+	case 0x146a: {
+		D1_LOG("count_map_parts()\n");
+		reg_ax = count_map_parts();
+		return 1;
+	}
+	case 0x148b: {
+		D1_LOG("has_intro_letter()\n");
+		reg_ax = has_intro_letter();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg074(unsigned short offs)
+{
+	switch (offs) {
+	case 0x24a: {
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = is_discovered(x, y);
+		D1_LOG("is_discovered(%d, %d) = %d\n", x, y, reg_ax);
+		return 1;
+	}
+	case 0x270: {
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = get_mapval_small(x, y);
+		D1_LOG("get_mapval_small(%d, %d) = %d\n", x, y, reg_ax);
+		return 1;
+	}
+	case 0x295: {
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = get_mapval_large(x, y);
+		D1_LOG("get_mapval_large(%d, %d) = %d\n", x, y, reg_ax);
+		return 1;
+	}
+	case 0x2ba: {
+		Bit16s group_nr = CPU_Pop16();
+		CPU_Push16(group_nr);
+
+		reg_ax = is_group_in_prison(group_nr);
+		D1_LOG("is_group_in_prison(%d) = %d\n", group_nr, reg_ax);
+		return 1;
+	}
+	case 0x305: {
+		Bit16s x_off = CPU_Pop16();
+		CPU_Push16(x_off);
+
+		seg074_305(x_off);
+		D1_LOG("seg074_305(%d)\n", x_off);
+		return 1;
+	}
+	case 0x5f9: {
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		CPU_Push16(dir);
+		CPU_Push16(a3);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		draw_automap_square(x, y, a3, dir);
+		D1_LOG("draw_automap_square(%d, %d, %d, %d)\n", x, y, a3, dir);
+		return 1;
+	}
+	case 0x72b: {
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		CPU_Push16(dir);
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		draw_automap_entrance(x, y, dir);
+		D1_LOG("draw_automap_entrance(%d, %d, %d)\n", x, y, dir);
+		return 1;
+	}
+	case 0x7b2: {
+		draw_automap_to_screen();
+		D1_LOG("draw_automap_to_screen()\n");
+		return 1;
+	}
+	case 0xbbb: {
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+
+		reg_ax = seg074_bbb(x, y);
+		D1_LOG("seg074_bbb(%d, %d) = %d\n", x, y, reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg075(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		D1_LOG("DNG_floor_ceil();\n");
+		DNG_floor_ceil();
+		return 1;
+	}
+	case 0x0b9: {
+		D1_LOG("DNG_turn()\n");
+		DNG_turn();
+		return 1;
+	}
+	case 0x56b: {
+		D1_LOG("DNG_stub1();\n");
+		DNG_stub1();
+		return 1;
+	}
+	case 0x591: {
+		D1_LOG("DNG_stub2()\n");
+		DNG_stub2();
+		return 1;
+	}
+	case 0x5e5: {
+		D1_LOG("DNG_stub3()\n");
+		DNG_stub3();
+		return 1;
+	}
+	case 0x693: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		D1_LOG("DNG_draw_walls(%d, %d, %d)\n", a1, a2, a3);
+		DNG_draw_walls(a1, a2, a3);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		return 1;
+	}
+	case 0x82e: {
+		D1_LOG("DNG_stub4();\n");
+		DNG_stub4();
+		return 1;
+	}
+	case 0x9ef: {
+		D1_LOG("DNG_stub5();\n");
+		DNG_stub5();
+		return 1;
+	}
+	case 0xa46: {
+		reg_ax = is_staff_lvl2_in_group();
+		D1_LOG("is_staff_lvl2_in_group() %d\n", reg_ax);
+		return 1;
+	}
+	case 0xaaa: {
+		D1_LOG("DNG_lights()\n");
+		DNG_lights();
+		return 1;
+	}
+	case 0xc6d: {
+		D1_LOG("near DNG_update_pos()\n");
+		DNG_update_pos();
+		return 1;
+	}
+	case 0xc8e: {
+		D1_LOG("DNG_inc_level()\n");
+		DNG_inc_level();
+		return 1;
+	}
+	case 0x10de: {
+		return 0;
+	}
+	case 0x1168: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg076(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		return 0;
+	}
+	case 0x576: {
+		RealPt msg = CPU_Pop32();
+		CPU_Push32(msg);
+
+		D1_LOG("near print_msg_with_first_hero()\n");
+		print_msg_with_first_hero(Real2Host(msg));
+		return 1;
+	}
+	case 0x71d: {
+		return 0;
+	}
+	case 0xc73: {
+		return 0;
+	}
+	case 0xd28: {
+		return 0;
+	}
+	case 0xdaa: {
+		return 0;
+	}
+	case 0xe89: {
+		return 0;
+	}
+	case 0x11e7: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg090(unsigned short offs)
+{
+	switch (offs) {
+	case 0xa94: {
+		RealPt p = CPU_Pop32();
+		CPU_Push32(p);
+		D1_LOG("DNG_clear_corridor()\n");
+		DNG_clear_corridor(Real2Host(p));
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg091(unsigned short offs)
+{
+	switch (offs) {
+	case 0x44f: {
+		return 0;
+	}
+	case 0x613: {
+		return 0;
+	}
+	case 0x721: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg092(unsigned short offs)
+{
+	switch (offs) {
+	case 0x4d6: {
+		RealPt chest = CPU_Pop32();
+		Bit16s item_nr = CPU_Pop16();
+		CPU_Push16(item_nr);
+		CPU_Push32(chest);
+
+		D1_LOG("delete_chest_item(%d)\n", item_nr);
+		delete_chest_item(Real2Host(chest), item_nr);
+
+		return 1;
+	}
+	case 0x66d: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		reg_ax = hero_has_lockpicks(Real2Host(hero));
+		D1_LOG("near hero_has_lockpicks(%s)= %d\n",
+			schick_getCharname(hero), (Bit16s)reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg094(unsigned short offs)
+{
+	switch (offs) {
+	case 0x0092: {
+		Bit16s town_id = CPU_Pop16();
+		CPU_Push16(town_id);
+		D1_LOG("set_textbox_positions(%d)\n", town_id);
+		set_textbox_positions(town_id);
+		return 1;
+	}
+	case 0x0125: {
+		return 0;
+	}
+	case 0x0de2: {
+		return 0;
+	}
+	case 0x0f0e: {
+		return 0;
+	}
+	case 0x0f58: {
+		return 0;
+	}
+	case 0x105d: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+
+static int n_seg095(unsigned short offs)
+{
+	switch (offs) {
+	case 0x335: {
+		npc_nariell();
+		return 1;
+	}
+	case 0x44d: {
+		npc_harika();
+		return 1;
+	}
+	case 0x62d: {
+		npc_curian();
+		return 1;
+	}
+	case 0x746: {
+		npc_ardora();
+		return 1;
+	}
+	case 0x9a5: {
+		npc_garsvik();
+		return 1;
+	}
+	case 0xad0: {
+		npc_erwo();
+		return 1;
+	}
+	case 0xbfb: {
+		Bit16s head_index = CPU_Pop16();
+		Bit16s days = CPU_Pop16();
+		Bit16s index = CPU_Pop16();
+		RealPt name = CPU_Pop32();
+		RealPt text = CPU_Pop32();
+
+		remove_npc(head_index, (signed char)days, index,
+			Real2Host(name), Real2Host(text));
+
+		D1_LOG("remove_npc(%x, %d, %x, %x, %x);\n",
+			head_index, (signed char)days, index,
+			name, text);
+
+		CPU_Push32(text);
+		CPU_Push32(name);
+		CPU_Push16(index);
+		CPU_Push16(days);
+		CPU_Push16(head_index);
+		return 1;
+	}
+	case 0xcb8: {
+		Bit16s index = CPU_Pop16();
+		D1_LOG("add_npc(%s);\n", get_fname(index));
+		add_npc(index);
+		CPU_Push16(index);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg097(unsigned short offs)
+{
+
+	switch (offs) {
+#if 0
+	/* Callers: 0 */
+	case 0x000:
+	/* Callers: 1 */
+	case 0x129:
+		return 0;
+	/* Callers: 1 */
+	case 0x15e: {
+		unsigned short c = CPU_Pop16();
+		RealPt p_height = CPU_Pop32();
+		CPU_Push32(p_height);
+		CPU_Push16(c);
+
+		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
+		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x1c2:
+#endif
+	/* Callers: 1 */
+	case 0x1f8: {
+		RealPt dst = CPU_Pop32();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		Bit16s num = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+		CPU_Push16(v4);
+		CPU_Push16(num);
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(dst);
+
+
+		reg_ax = GUI_enter_text(Real2Host(dst),	x, y, num, v4);
+		D1_LOG("GUI_enter_text(0x%x, %d, %d, %d, %d); = 0x%x\n",
+			dst, x, y, num, v4, reg_ax);
+
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x4ae: {
+		Bit16s v1 = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s v3 = CPU_Pop16();
+		Bit16s v4 = CPU_Pop16();
+
+		D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
+			v1, v2, v3, v4);
+		GUI_draw_radio_bg(v1, v2, v3, v4);
+
+		CPU_Push16(v4);
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		return 1;
+	}
+	/* Callers: 3 */
+	case 0x564: {
+		unsigned short width = CPU_Pop16();
+		unsigned short height = CPU_Pop16();
+		CPU_Push16(height);
+		CPU_Push16(width);
+
+		D1_LOG("GUI_copy_smth(%d, %d)\n", width, height);
+		GUI_copy_smth(width, height);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x59f: {
+		RealPt str = CPU_Pop32();
+		CPU_Push32(str);
+
+		D1_LOG("GUI_output()\n");
+		GUI_output(Real2Host(str));
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x5b4: {
+		RealPt str = CPU_Pop32();
+		unsigned short num = CPU_Pop16();
+		CPU_Push16(num);
+		CPU_Push32(str);
+
+		D1_LOG("GUI_input()\n");
+		reg_ax = GUI_input(Real2Host(str), num);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x7f4: {
+		Bit16s v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		Bit16u v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("GUI_fill_radio_button(%d, %d, %d);\n", v1, v2, v3);
+
+		GUI_fill_radio_button(v1, v2, v3);
+
+		return 1;
+
+	}
+	/* Callers: 1 */
+	case 0x893:
+		return 0;
+	/* Callers: 2 */
+	case 0xb43: {
+		Bit16u v1 = CPU_Pop16();
+		Bit16u v2 = CPU_Pop16();
+		Bit16u v3 = CPU_Pop16();
+		CPU_Push16(v3);
+		CPU_Push16(v2);
+		CPU_Push16(v1);
+
+		D1_LOG("GUI_menu_input(%d, %d, %d);\n", v1, v2, v3);
+
+		reg_ax = GUI_menu_input(v1, v2, v3);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0xd45:
+		   return 0;
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg098(unsigned short offs)
+{
+	switch (offs) {
+
+	/* Callers: 1 */
+	case 0x0000 : {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+
+		magic_heal_ani(Real2Host(hero));
+		D1_LOG("magic_heal_ani(%s)\n", schick_getCharname(hero));
+
+		return 1;
+	}
+	/* Callers: 4 */
+	case 0x0339 : {
+		unsigned short spell = CPU_Pop16();
+		unsigned short half_cost = CPU_Pop16();
+		CPU_Push16(half_cost);
+		CPU_Push16(spell);
+
+		reg_ax = get_spell_cost(spell, half_cost);
+
+		D1_LOG("get_spell_cost(%s, %d) = %d\n",
+			names_spell[spell], half_cost, (short)reg_ax);
+
+		return 1;
+	}
+	case 0x071d : {
+		RealPt hero = CPU_Pop32();
+		Bit16s spellclass_nr = CPU_Pop16();
+		CPU_Push16(spellclass_nr);
+		CPU_Push32(hero);
+
+		reg_ax = can_use_spellclass(Real2Host(hero), spellclass_nr);
+		D1_LOG("can_use_spellclass(%s, %d) = %d\n",
+			schick_getCharname(hero), spellclass_nr, reg_ax);
+
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x0786 : {
+		RealPt hero = CPU_Pop32();
+		Bit16s show_vals = CPU_Pop16();
+		CPU_Push16(show_vals);
+		CPU_Push32(hero);
+
+		reg_ax = select_spell(Real2Host(hero), show_vals);
+
+		D1_LOG("select_spell(%s, %d) = %d\n",
+			schick_getCharname(hero), show_vals, reg_ax);
+		return 1;
+	}
+	/* Callers: 1 */
+	case 0x0e1f : {
+		// Zauberprobe
+		RealPt hero = CPU_Pop32();
+		unsigned spell = CPU_Pop16();
+		signed bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(spell);
+		CPU_Push32(hero);
+
+		D1_LOG("Zauberprobe: %s %+d ",
+			names_spell[spell], (signed char)bonus);
+
+		reg_ax = test_spell(Real2Host(hero),
+			spell, (signed char)bonus);
+		return 1;
+	}
+	/* Callers: 2 */
+	case 0x1000 : {
+		RealPt hero = CPU_Pop32();
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		CPU_Push32(hero);
+
+		reg_ax = use_spell(hero, a1, (Bit8s)a2);
+		D1_LOG("use_spell(%s, %d, %d) = %d\n",
+			schick_getCharname(hero), a1, a2, (Bit16s)reg_ax);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg102(unsigned short offs)
+{
+	switch (offs) {
+	case 0x000: {
+		Bit16s damage = CPU_Pop16();
+		CPU_Push16(damage);
+
+		D1_INFO("MON_do_damage(%d)\n", damage);
+		MON_do_damage(damage);
+
+		return 1;
+	}
+	case 0x18e: {
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+
+		D1_INFO("MON_get_spell_cost(%d, %d) = %d\n", a1, a2, reg_ax);
+		reg_ax = MON_get_spell_cost(a1, a2);
+
+		return 1;
+	}
+	case 0x1cf: {
+		RealPt mon = CPU_Pop32();
+		Bit16s t1 = CPU_Pop16();
+		Bit16s t2 = CPU_Pop16();
+		Bit16s t3 = CPU_Pop16();
+		Bit16s bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(t3);
+		CPU_Push16(t2);
+		CPU_Push16(t1);
+		CPU_Push32(mon);
+
+		reg_ax = MON_test_attrib3(Real2Host(mon), t1, t2, t3, (Bit8s)bonus);
+		D1_INFO("MON_test_attrib3(%d, %d, %d, %d) = %d\n", t1, t2, t3, bonus, reg_ax);
+
+		return 1;
+	}
+	case 0x22a: {
+		RealPt mon = CPU_Pop32();
+		Bit16s mspell_nr = CPU_Pop16();
+		Bit16s bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(mspell_nr);
+		CPU_Push32(mon);
+
+		reg_ax = MON_test_skill(Real2Host(mon), mspell_nr, (Bit8s)bonus);
+		D1_INFO("MON_test_skill(%d, %d) = %d\n", mspell_nr, bonus, reg_ax);
+
+		return 1;
+	}
+	case 0x2c2: {
+		RealPt mon = CPU_Pop32();
+		Bit16s ae = CPU_Pop16();
+		CPU_Push16(ae);
+		CPU_Push32(mon);
+
+		MON_sub_ae(Real2Host(mon), ae);
+		D1_INFO("MON_test_skill(%d)\n", ae);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+
+static int n_seg103(unsigned short offs)
+{
+	switch (offs) {
+	case 0x040f: {
+		// Talentprobe
+		RealPt hero = CPU_Pop32();
+		Bit16s skill = CPU_Pop16();
+		Bit16s bonus = CPU_Pop16();
+		CPU_Push16(bonus);
+		CPU_Push16(skill);
+		CPU_Push32(hero);
+
+		D1_LOG("Talentprobe: %s %+d\n ",
+			names_skill[skill], (signed char)bonus);
+
+		reg_ax = test_skill(Real2Host(hero), skill, (signed char)bonus);
+
+		return 1;
+	}
+	case 0x0537: {
+		reg_ax = select_talent();
+		D1_LOG("select_talent() = %s\n", names_skill[reg_ax]);
+		return 1;
+	}
+	case 0x06bf: {
+		Bit16s hero = CPU_Pop16();
+		Bit16s bonus = CPU_Pop16();
+		Bit16s skill = CPU_Pop16();
+		CPU_Push16(skill);
+		CPU_Push16(bonus);
+		CPU_Push16(hero);
+
+		reg_ax = use_talent(hero, (signed char)bonus, skill);
+
+		D1_LOG("use_talent(): %s %+d\n",
+			names_skill[skill], (signed char)bonus);
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg104(unsigned short offs)
+{
+	D1_LOG("%s:0x%x\n", __func__, offs);
+	switch (offs) {
+		case 0x0000: {
+			RealPt hero = CPU_Pop32();
+			Bit16s receipe_index = CPU_Pop16();
+			reg_ax = hero_has_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
+			D1_LOG("hero_has_ingrendients(%s, %d) = %d\n",
+				Real2Host(hero) + 0x10, (Bit8s)receipe_index, (Bit16s)reg_ax);
+			CPU_Push16(receipe_index);
+			CPU_Push32(hero);
+			return 1;
+		}
+		case 0x00b2: {
+			RealPt hero = CPU_Pop32();
+			Bit16s receipe_index = CPU_Pop16();
+			hero_use_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
+			D1_LOG("hero_use_ingrendients(%s, %d)\n",
+				Real2Host(hero) + 0x10, (Bit8s)receipe_index);
+			CPU_Push16(receipe_index);
+			CPU_Push32(hero);
+			return 1;
+		}
+		case 0x016d: {
+			RealPt hero = CPU_Pop32();
+			Bit16s receipe_index = CPU_Pop16();
+			Bit16s flag = CPU_Pop16();
+
+			reg_ax = do_alchemy(Real2Host(hero), (Bit8s)receipe_index, flag);
+			D1_LOG("do_alchemy(%s, %d, %d) = %d\n",
+				Real2Host(hero) + 0x10, (Bit8s)receipe_index, flag, (Bit16s)reg_ax);
+			CPU_Push16(flag);
+			CPU_Push16(receipe_index);
+			CPU_Push32(hero);
+			return 1;
+		}
+		case 0x07e6: {
+			RealPt hero = CPU_Pop32();
+			Bit16s disease = CPU_Pop16();
+			CPU_Push16(disease);
+			CPU_Push32(hero);
+
+			reg_ax = has_herb_for_disease(Real2Host(hero), disease);
+			D1_LOG("has_herb_for_disease(%s, disease) = %d\n",
+				schick_getCharname(hero), disease, reg_ax);
+			return 1;
+		}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg105(unsigned offs) {
+	switch (offs) {
+	case 0x000: {
+	    RealPt hero = CPU_Pop32();
+	    unsigned short item = CPU_Pop16();
+	    unsigned short pos = CPU_Pop16();
+	    CPU_Push16(pos);
+	    CPU_Push16(item);
+	    CPU_Push32(hero);
+
+	    D1_LOG("unequip(%s, %s, %d);\n",
+		    schick_getCharname(hero),
+		    get_itemname(item), pos);
+		    unequip(Real2Host(hero), item, pos);
+
+	    return 1;
+	}
+	case 0x3aa: {
+		RealPt hero = CPU_Pop32();
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		reg_ax = has_hero_stacked(Real2Host(hero), item);
+		D1_LOG("has_hero_stacked(%s, %s) = %d\n",
+			schick_getCharname(hero),
+			get_itemname(item), (signed short)reg_ax);
+
+		return 1;
+	}
+	case 0x3e8: {
+		RealPt hero = CPU_Pop32();
+		Bit16s item = CPU_Pop16();
+		Bit16s v2 = CPU_Pop16();
+		Bit16s nr = CPU_Pop16();
+		CPU_Push16(nr);
+		CPU_Push16(v2);
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		reg_ax = give_hero_new_item(Real2Host(hero), item, v2, nr);
+		D1_LOG("near give_hero_new_item(%s, %s, %d, %d); = %d\n",
+			(char*)Real2Host(hero) + 0x10,
+			get_itemname(item), v2, nr, (signed short)reg_ax);
+		return 1;
+	}
+	case 0x675: {
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+
+		reg_ax = item_pleasing_ingerimm(item);
+		D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
+			get_itemname(item), reg_ax);
+
+		return 1;
+	}
+	case 0x6d9: {
+		RealPt hero = CPU_Pop32();
+		signed short pos = CPU_Pop16();
+		signed short nr = CPU_Pop16();
+		CPU_Push16(nr);
+		CPU_Push16(pos);
+		CPU_Push32(hero);
+
+		reg_ax = drop_item(Real2Host(hero), pos, nr);
+		D1_LOG("drop_item(%s, %d, %d); = %d\n",
+			schick_getCharname(hero), pos, nr, reg_ax);
+
+		return 1;
+	}
+	case 0xada: {
+		RealPt hero = CPU_Pop32();
+		unsigned short item = CPU_Pop16();
+		CPU_Push16(item);
+		CPU_Push32(hero);
+
+		reg_ax = hero_count_item(Real2Host(hero), item);
+		D1_LOG("hero_count_item(%s, %s) = %d\n",
+			schick_getCharname(hero),
+			get_itemname(item), reg_ax);
+
+		return 1;
+	}
+	case 0xc10: {
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+		reg_ax = select_item_to_drop(Real2Host(hero));
+		D1_LOG("near select_item_to_drop(%s) = %d\n",
+			schick_getCharname(hero), reg_ax);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg106(unsigned offs) {
+	switch (offs) {
+	case 0x00: {
+		RealPt hero = CPU_Pop32();
+		Bit16s item = CPU_Pop16();
+		Bit16s pos = CPU_Pop16();
+		CPU_Push16(pos);
+		CPU_Push16(item);
+		CPU_Push32(hero);
+		reg_ax = two_hand_collision(Real2Host(hero), item, pos);
+
+		D1_LOG("two_hand_collision(%s, 0x%x, %d); == %d\n",
+			(char*)Real2Host(hero) + 0x10, item, pos, reg_ax);
+
+		return 1;
+	}
+	case 0x9c: {
+		Bit16s pos1 = CPU_Pop16();
+		Bit16s pos2 = CPU_Pop16();
+		RealPt hero = CPU_Pop32();
+		CPU_Push32(hero);
+		CPU_Push16(pos2);
+		CPU_Push16(pos1);
+
+		D1_LOG("near move_item(%d, %d, %s);\n",
+			pos1, pos2, (char*)Real2Host(hero) + 0x10);
+
+		move_item(pos1, pos2, Real2Host(hero));
+
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg113(unsigned offs) {
+	switch (offs) {
+	case 0x900: {
+		RealPt hero = CPU_Pop32();
+		Bit16s idx = CPU_Pop16();
+		Bit16s arg2 = CPU_Pop16();
+		CPU_Push16(arg2);
+		CPU_Push16(idx);
+		CPU_Push32(hero);
+		D1_LOG("hero_disappear(%s, %d, %d);\n",
+			Real2Host(hero) + 0x10, idx, (signed char)arg2);
+
+		hero_disappear(Real2Host(hero), idx, (signed char)arg2);
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg117(unsigned short offs)
+{
+	switch (offs) {
+	case 0x0000: {
+		Bit16s ani_nr = CPU_Pop16();
+		CPU_Push16(ani_nr);
+
+		D1_LOG("pause_traveling(%d);\n", ani_nr);
+		pause_traveling(ani_nr);
+
+		return 1;
+	}
+	case 0x006a: {
+		D1_LOG("resume_traveling();\n");
+		resume_traveling();
+		return 1;
+	}
+	case 0x00a0: {
+		D1_LOG("hunt_karen();\n");
+		hunt_karen();
+		return 1;
+	}
+	case 0x02a3: {
+		D1_LOG("hunt_wildboar();\n");
+		hunt_wildboar();
+		return 1;
+	}
+	case 0x047f: {
+		D1_LOG("hunt_cavebear();\n");
+		hunt_cavebear();
+		return 1;
+	}
+
+	case 0x060c: {
+		D1_LOG("hunt_viper();\n");
+		hunt_viper();
+		return 1;
+	}
+	case 0x0981: {
+		D1_INFO("do_bison_hunt();\n");
+		return 0;
+	}
+	case 0x0a8c: {
+		D1_INFO("do_rhino_attack();\n");
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
+static int n_seg120(unsigned short offs)
+{
+	switch (offs) {
+	case 0x578: {
+		D1_LOG("init_global_buffer()\n");
+		init_global_buffer();
+		return 1;
+	}
+	case 0x99f: {
+		D1_LOG("refresh_colors();\n");
+		refresh_colors();
+		return 1;
+	}
+	case 0xd85: {
+		D1_LOG("near cleanup_game();\n");
+		cleanup_game();
+		return 1;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
 
 /* Borland C++ runtime */
 static int seg000(unsigned short offs) {
@@ -7490,3300 +10782,6 @@ static int seg122(unsigned short offs)
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 			exit(1);
-	}
-}
-
-static int n_seg000(unsigned offs) {
-	switch (offs) {
-		case 0xb33: {
-			Bit16u handle = CPU_Pop16();
-			Bit32u pos = CPU_Pop32();
-			Bit16u whence = CPU_Pop16();
-			CPU_Push16(whence);
-			CPU_Push32(pos);
-			CPU_Push16(handle);
-
-			Bit32s retval = bc_lseek(handle, pos, whence);
-
-			D1_LOG("C-Lib near lseek(Handle=0x%x, pos=%u, whence=%d)\n",
-				handle, pos, whence);
-
-			reg_ax = retval & 0xffff;
-			reg_dx = (retval >> 16) & 0xffff;
-
-			return 1;
-		}
-		default:
-			return 0;
-	}
-}
-
-static int n_seg001(unsigned offs)
-{
-	switch (offs) {
-	/* Callers: 1 */
-	case 0x35: {
-		reg_ax = CD_set_drive_nr();
-		D1_LOG("CD_set_drive_nr(); = %d:\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 6 */
-	case 0x5c: {
-		RealPt req = CPU_Pop32();
-		CPU_Push32(req);
-
-		CD_driver_request(req);
-		D1_LOG("CD_driver_request();\n");
-		return 1;
-	}
-	/* Callers: 4 */
-	case 0xb2: {
-		unsigned int retval;
-
-		retval = CD_get_tod();
-
-		D1_LOG("CD_get_tod(); = %d\n", retval);
-		reg_ax = retval & 0xffff;
-		reg_dx = (retval >> 16) & 0xffff;
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0xc1: {
-		unsigned short track_nr = CPU_Pop16();
-		CPU_Push16(track_nr);
-		D1_LOG("seg001_00c1(track_nr = %d)\n", track_nr);
-		seg001_00c1(track_nr);
-		return 1;
-	}
-	/* Callers: 3 */
-	case 0x322: {
-		D1_LOG("CD_audio_stop_hsg()\n");
-		CD_audio_stop_hsg();
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x34f: {
-		D1_LOG("CD_audio_stop()\n");
-		CD_audio_stop();
-		return 1;
-	}
-	case 0x0432: {
-		return 0;
-	}
-	case 0x056b: {
-		return 0;
-	}
-	case 0x0681: {
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg002(unsigned short offs)
-{
-
-	switch (offs) {
-	case 0x0002: {
-		Bit16s index = CPU_Pop16();
-		D1_LOG("play_music_file(%d)\n", index);
-		play_music_file(index);
-		CPU_Push16(index);
-		return 1;
-	}
-	case 0x0045: {
-		D1_LOG("sound_menu()\n");
-		sound_menu();
-		return 1;
-	}
-	case 0x00e6: {
-		D1_LOG("near read_sound_cfg()\n");
-		read_sound_cfg();
-		return 1;
-	}
-	case 0x01e0: {
-		Bit32u size = CPU_Pop32();
-		D1_LOG("near init_AIL(%d)\n", size);
-		init_AIL(size);
-		CPU_Push32(size);
-		return 1;
-	}
-	case 0x0209: {
-		D1_LOG("near exit_AIL()\n");
-		exit_AIL();
-		return 1;
-	}
-	case 0x02aa: {
-		RealPt fname = CPU_Pop32();
-		RealPt ret = read_music_driver(fname);
-		D1_LOG("near read_music_driver(%s); = %x\n",
-				Real2Host(fname), ret);
-		CPU_Push32(fname);
-
-		reg_ax = RealOff(ret);
-		reg_dx = RealSeg(ret);
-		return 1;
-	}
-	case 0x0349: {
-		Bit16s seq = CPU_Pop16();
-		reg_ax = prepare_midi_playback(seq);
-		D1_LOG("prepare_midi_playback(%d)\n", seq);
-		CPU_Push16(seq);
-		return 1;
-	}
-	case 0x0413: {
-		Bit16s seq = CPU_Pop16();
-		reg_ax = start_midi_playback(seq);
-		D1_LOG("start_midi_playback(%d)\n", seq);
-		CPU_Push16(seq);
-		return 1;
-	}
-	case 0x043d: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s patch = CPU_Pop16();
-		RealPt p = prepare_timbre(a1, patch);
-		D1_LOG("prepare_timbre(%d, %d) = %x\n", a1, patch, p);
-		CPU_Push16(patch);
-		CPU_Push16(a1);
-		reg_ax = RealOff(p);
-		reg_dx = RealSeg(p);
-		return 1;
-	}
-	case 0x04f2: {
-		Bit16s index = CPU_Pop16();
-		reg_ax = load_midi_file(index);
-		D1_LOG("load_midi_file(%d)\n", index);
-		CPU_Push16(index);
-		return 1;
-	}
-	case 0x0502: {
-		Bit16s index = CPU_Pop16();
-		reg_ax = do_load_midi_file(index);
-		D1_LOG("do_load_midi_file(%d)\n", index);
-		CPU_Push16(index);
-		return 1;
-	}
-	case 0x053d: {
-		RealPt fname = CPU_Pop32();
-		Bit16s type = CPU_Pop16();
-		Bit16s port = CPU_Pop16();
-		reg_ax = load_music_driver(fname, type, port);
-		D1_LOG("load_music_driver(%s, %, 0x%x) = %d\n",
-			Real2Host(fname), type, port, (signed short)reg_ax);
-		CPU_Push16(port);
-		CPU_Push16(type);
-		CPU_Push32(fname);
-		return 1;
-	}
-	case 0x069c: {
-		Bit16s index = CPU_Pop16();
-		do_play_music_file(index);
-		D1_LOG("do_play_music_file(%d)\n", index);
-		CPU_Push16(index);
-		return 1;
-	}
-	case 0x06c7: {
-		D1_LOG("stop_midi_playback();\n");
-		stop_midi_playback();
-		return 1;
-	}
-	case 0x079f: {
-		reg_ax = have_mem_for_sound();
-		D1_LOG("have_mem_for_sound() = %d\n", reg_ax);
-		return 1;
-	}
-	case 0x0832: {
-		Bit16u index = CPU_Pop16();
-		D1_LOG("near play_voc(FX%d)\n", index - 288);
-		play_voc(index);
-		CPU_Push16(index);
-		return 1;
-	}
-	case 0x0890: {
-		Bit32s size = CPU_Pop32();
-		CPU_Push32(size);
-		D1_LOG("alloc_voc_buffer(%d)\n", size);
-		alloc_voc_buffer(size);
-		return 1;
-	}
-	case 0x08b5: {
-		D1_LOG("near free_voc_buffer();\n");
-		free_voc_buffer();
-		return 1;
-	}
-	case 0x09ff: {
-		RealPt fname = CPU_Pop32();
-		Bit16s type = CPU_Pop16();
-		Bit16s io = CPU_Pop16();
-		Bit16s irq = CPU_Pop16();
-		reg_ax = load_digi_driver(fname, type, io, irq);
-		D1_LOG("load_digi_driver(%s, %, 0x%x, %d) = %d\n",
-			Real2Host(fname), type, io, irq, (signed short)reg_ax);
-		CPU_Push16(irq);
-		CPU_Push16(type);
-		CPU_Push32(fname);
-		return 1;
-	}
-	case 0x0adf: {
-		RealPt fname = CPU_Pop32();
-		RealPt ret = read_digi_driver(fname);
-		D1_LOG("near read_digi_driver(%s); = %x\n",
-				Real2Host(fname), ret);
-		CPU_Push32(fname);
-
-		reg_ax = RealOff(ret);
-		reg_dx = RealSeg(ret);
-		return 1;
-	}
-	case 0x0b7e: {
-		unsigned short fileindex = CPU_Pop16();
-		CPU_Push16(fileindex);
-
-		reg_ax = open_and_seek_dat(fileindex);
-
-		D1_LOG("open_and_seek_dat(%s);\n", get_fname(fileindex));
-
-		return 1;
-	}
-	case 0x0c28: {
-		Bit16u handle = CPU_Pop16();
-		RealPt buf = CPU_Pop32();
-		Bit16u len = CPU_Pop16();
-		CPU_Push16(len);
-		CPU_Push32(buf);
-		CPU_Push16(handle);
-
-		D1_LOG("near read_archive_file(%d, %x, %d);\n",
-			handle, buf, len);
-		reg_ax = read_archive_file(handle, Real2Host(buf), len);
-
-		return 1;
-	}
-	case 0x0c72: {
-		Bit16u handle = CPU_Pop16();
-		Bit32u off = CPU_Pop32();
-		Bit16u dummy = CPU_Pop16();
-		CPU_Push16(dummy);
-		CPU_Push32(off);
-		CPU_Push16(handle);
-
-		D1_LOG("near seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
-		seg002_0c72(handle, off, dummy);
-
-		return 1;
-	}
-	case 0x1361: {
-		RealPt p1 = CPU_Pop32();
-		RealPt p2 = CPU_Pop32();
-		RealPt p3 = CPU_Pop32();
-		RealPt p4 = CPU_Pop32();
-		RealPt p5 = CPU_Pop32();
-		CPU_Push32(p5);
-		CPU_Push32(p4);
-		CPU_Push32(p3);
-		CPU_Push32(p2);
-		CPU_Push32(p1);
-
-		D1_LOG("mouse_action()\n");
-
-		mouse_action(Real2Host(p1),
-			Real2Host(p2),
-			Real2Host(p3),
-			Real2Host(p4),
-			Real2Host(p5));
-
-		return 1;
-	}
-	case 0x1454: {
-		return 0;
-	}
-	/* Callers: 2 */
-	case 0x1634: {
-		unsigned short v1 = CPU_Pop16();
-		unsigned short v2 = CPU_Pop16();
-		unsigned short v3 = CPU_Pop16();
-		unsigned short v4 = CPU_Pop16();
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		reg_ax  = is_mouse_in_rect(v1, v2, v3, v4);
-		D1_LOG("near is_mouse_in_rect(%d, %d, %d, %d); = %d \n",
-			v1, v2, v3, v4, reg_ax);
-
-		return 1;
-	}
-	case 0x165e: {
-		D1_LOG("mouse_init()\n");
-		mouse_init();
-		return 1;
-	}
-	case 0x1742: {
-		return 0;
-	}
-	case 0x174c: {
-		return 0;
-	}
-	/* Callers: 1 */
-	case 0x17ae: {
-		D1_LOG("mouse_reset_ehandler()\n");
-		mouse_reset_ehandler();
-		return 1;
-	}
-	case 0x192b: {
-		refresh_screen_size();
-		return 1;
-	}
-	case 0x195d: {
-		refresh_screen_size1();
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x19dc: {
-		D1_LOG("mouse_19dc()\n");
-		mouse_19dc();
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x1cf2: {
-		unsigned short x = CPU_Pop16();
-		unsigned short y = CPU_Pop16();
-		RealPt p = CPU_Pop32();
-		CPU_Push32(p);
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		reg_ax = get_mouse_action(x, y, Real2Host(p));
-
-		D1_LOG("near get_mouse_action(x=%d, y=%d, p=%x) = %x;\n",
-			x, y, p, reg_ax);
-		return 1;
-	}
-	case 0x1d67: {
-		D1_LOG("handle_input();\n");
-		handle_input();
-		return 1;
-	}
-	case 0x1ee7: {
-		D1_LOG("main_loop();\n");
-		return 0;
-	}
-	/* Callers: 1 */
-	case 0x20bd: {
-		timers_daily();
-		D1_LOG("timers_daily();\n");
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x2177: {
-		seg002_2177();
-		D1_LOG("seg002_2177();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x21ab: {
-		RealPt p1 = CPU_Pop32();
-		RealPt p2 = CPU_Pop32();
-		CPU_Push32(p2);
-		CPU_Push32(p1);
-		D1_LOG("pal_fade(%x,%x);\n", p1, p2);
-		pal_fade(Real2Host(p1), Real2Host(p2));
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x2400: {
-		dawning();
-		D1_LOG("dawning()\n");
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x24f0: {
-		D1_LOG("nightfall()\n");
-		nightfall();
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x25ce: {
-		reg_ax = get_current_season();
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x2628: {
-		D1_LOG("do_census();\n");
-		do_census();
-		return 1;
-	}
-	case 0x274e: {
-		D1_LOG("near do_timers();\n");
-		do_timers();
-		return 1;
-	}
-	/* Callers: 4 */
-	case 0x2bf6: {
-		unsigned int val = CPU_Pop32();
-		CPU_Push32(val);
-		D1_LOG("near sub_ingame_timers(val = %u);\n", val);
-		sub_ingame_timers(val);
-		return 1;
-	}
-	/* Callers: 4 */
-	case 0x2c5e: {
-		unsigned int val = CPU_Pop32();
-		CPU_Push32(val);
-
-		D1_LOG("sub_mod_timers(%d);\n", val);
-		sub_mod_timers(val);
-		return 1;
-	}
-	/* Callers: 4 */
-	case 0x2f7a: {
-		Bit32s val = CPU_Pop32();
-		CPU_Push32(val);
-		D1_LOG("near seg002_2f7a(fmin=%d);\n", val);
-		seg002_2f7a(val);
-		return 1;
-	}
-	/* Callers: 4 */
-	case 0x3071: {
-		Bit32s quarter = CPU_Pop32();
-		CPU_Push32(quarter);
-
-		D1_LOG("near sub_light_timers(quarter=%d);\n", quarter);
-		sub_light_timers(quarter);
-
-		return 1;
-	}
-	case 0x31a2: {
-		D1_LOG("magical_chainmail_damage()\n");
-		magical_chainmail_damage();
-		return 1;
-	}
-	case 0x3230: {
-		/* input routines are called faster now,
-		   so heros would starve earlier if the cycles are to high */
-		if (reg_eip == 0x1d7b || reg_eip == 0x1a4b)
-			return 0;
-
-		D1_LOG("near herokeeping();\n");
-		herokeeping();
-
-		return 1;
-	}
-	case 0x373a: {
-		D1_LOG("check_level_up();\n");
-		check_level_up();
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x3b63: {
-		passages_recalc();
-		D1_LOG("passages_recalc();\n");
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x3c63: {
-		passages_reset();
-		D1_LOG("passages_reset();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x3f3e: {
-		unsigned short index = CPU_Pop16();
-		unsigned short type = CPU_Pop16();
-		CPU_Push16(type);
-		CPU_Push16(index);
-
-		D1_LOG("draw_splash(%d, %d);\n", index, type);
-		draw_splash(index, type);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x4016: {
-		D1_LOG("near wait_for_keyboard2()\n");
-		wait_for_keyboard2();
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x47e2: {
-		seg002_47e2();
-		D1_LOG("seg002_47e2();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x484f: {
-		seg002_484f();
-		D1_LOG("seg002_484f();\n");
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x49d8: {
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-
-		reg_ax = is_hero_available_in_group(Real2Host(hero));
-		D1_LOG("is_hero_available_in_group(%s) = %d\n",
-		schick_getCharname(hero), reg_ax);
-
-		return 1;
-	}
-	case 0x4adc: {
-		RealPt hero = CPU_Pop32();
-		Bit16s le = CPU_Pop16();
-		CPU_Push16(le);
-		CPU_Push32(hero);
-
-		D1_LOG("near sub_hero_le(%s, %d);\n",
-			(char*)Real2Host(hero) + 0x10, le);
-
-		sub_hero_le(Real2Host(hero), le);
-
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x4f49: {
-		RealPt hero = CPU_Pop32();
-		Bit16u index = CPU_Pop16();
-		Bit16u type = CPU_Pop16();
-
-		D1_LOG("do_starve_damage(%s, %d, %d);\n",
-			schick_getCharname(hero), index, type);
-
-		do_starve_damage(Real2Host(hero), index, type);
-
-		CPU_Push16(type);
-		CPU_Push16(index);
-		CPU_Push32(hero);
-
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x55b1: {
-		Bit16s item = CPU_Pop16();
-		Bit16s group = CPU_Pop16();
-		CPU_Push16(group);
-		CPU_Push16(item);
-
-		reg_ax = get_first_hero_with_item_in_group(item, group);
-		D1_LOG("get_first_hero_with_item_in_group(%s = (%d), %d) = %d\n",
-			get_itemname(item), item, group, (Bit16s)reg_ax);
-
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x573e: {
-		reg_ax = count_heros_available();
-		D1_LOG("count_heros_available() = %d;\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 3 */
-	case 0x5799: {
-		reg_ax = count_heroes_available_in_group();
-		D1_LOG("count_heroes_available_in_group() = %d;\n",
-			reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x5a81: {
-#if 1
-		reg_ax = 1;
-		D1_LOG("Kopierschutzabfrage umgangen\n");
-#else
-		copy_protection();
-#endif
-		return 1;
-	}
-	default:
-		return 0;
-	}
-}
-
-static int n_seg004(unsigned short offs)
-{
-	switch (offs) {
-		case 0x55: {
-			Bit16u v1 = CPU_Pop16();
-			D1_LOG("near init_ani(%d)\n", v1);
-			init_ani(v1);
-			CPU_Push16(v1);
-			return 1;
-		}
-		case 0x54b: {
-			D1_LOG("near update_status_bars()\n");
-			update_status_bars();
-			return 1;
-		}
-		case 0x8e9: {
-			unsigned short v1 = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			unsigned short v3 = CPU_Pop16();
-			unsigned short v4 = CPU_Pop16();
-			unsigned short v5 = CPU_Pop16();
-			CPU_Push16(v5);
-			CPU_Push16(v4);
-			CPU_Push16(v3);
-			CPU_Push16(v2);
-			CPU_Push16(v1);
-
-			D1_LOG("near draw_bar(%d,%d,%d,%d,%d)\n", v1, v2, v3, v4, v5);
-			draw_bar(v1, v2, v3, v4, v5);
-			return 1;
-		}
-		case 0xe31: {
-			D1_LOG("update_wallclock()\n");
-			update_wallclock();
-			return 1;
-		}
-		case 0xf54: {
-			Bit16s pos = CPU_Pop16();
-			Bit16s night = CPU_Pop16();
-			D1_LOG("near wallclock(%d, %d)\n", pos, night);
-			draw_wallclock(pos, night);
-			CPU_Push16(night);
-			CPU_Push16(pos);
-			return 1;
-		}
-		case 0x1147: {
-			RealPt dst = CPU_Pop32();
-			unsigned short v1 = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			unsigned short v3 = CPU_Pop16();
-			CPU_Push16(v3);
-			CPU_Push16(v2);
-			CPU_Push16(v1);
-			CPU_Push32(dst);
-
-			D1_LOG("near array_add(0x%04x:0x%04x, len=%d, op=%d, flag=%d);\n",
-				RealSeg(dst), RealOff(dst), v1, (char)v2, v3);
-			array_add(Real2Host(dst), v1, (char)v2, v3);
-			return 1;
-		}
-		case 0x11da: {
-			D1_LOG("clear_ani_pal()\n");
-			clear_ani_pal();
-			return 1;
-		}
-		case 0x1209: {
-			RealPt pal = CPU_Pop32();
-			D1_LOG("set_ani_pal()\n");
-			set_ani_pal(Real2Host(pal));
-			CPU_Push32(pal);
-			return 1;
-		}
-		case 0x1291: {
-			return 0;
-		}
-		case 0x12e8: {
-			RealPt dst = CPU_Pop32();
-			unsigned short x = CPU_Pop16();
-			unsigned short y1 = CPU_Pop16();
-			unsigned short y2 = CPU_Pop16();
-			unsigned short color = CPU_Pop16();
-			CPU_Push16(color);
-			CPU_Push16(y2);
-			CPU_Push16(y1);
-			CPU_Push16(x);
-			CPU_Push32(dst);
-
-			D1_LOG("near do_v_line(0x%04x:0x%04x, %d, %d, %d, 0x%02x);\n",
-				RealSeg(dst), RealOff(dst), x, y1, y2,
-				(unsigned char)color);
-			do_v_line(dst, x, y1, y2, (unsigned char)color);
-			return 1;
-		}
-		case 0x13b7: {
-			unsigned short mode = CPU_Pop16();
-			CPU_Push16(mode);
-			D1_LOG("near do_pic_copy(%d);\n", mode);
-			do_pic_copy(mode);
-			return 1;
-		}
-		case 0x150d: {
-			D1_LOG("wait_for_vsync()\n");
-			wait_for_vsync();
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-			exit(1);
-	}
-}
-
-static int n_seg005(unsigned short offs)
-{
-	switch (offs) {
-	case 0xb: {
-		RealPt p = CPU_Pop32();
-		signed short x = CPU_Pop16();
-		signed short y = CPU_Pop16();
-		CPU_Push16(y);
-		CPU_Push16(x);
-		CPU_Push32(p);
-
-		reg_ax = FIG_obj_needs_refresh(Real2Host(p), x, y);
-		D1_LOG("FIG_obj_needs_refresh(%x, x=%d, y=%d); = %d\n",
-			p, x, y, reg_ax);
-
-		return 1;
-	}
-	case 0x144: {
-		RealPt p = CPU_Pop32();
-		unsigned short count = CPU_Pop16();
-		unsigned short val = CPU_Pop16();
-		CPU_Push16(val);
-		CPU_Push16(count);
-		CPU_Push32(p);
-
-		FIG_set_star_color(Real2Host(p), count, (Bit8u)val);
-		D1_LOG("FIG_set_star_color(%x,%d,%d)\n",
-			p, count, (Bit8u)val);
-
-		return 1;
-	}
-	case 0x181: {
-		unsigned short type = CPU_Pop16();
-		unsigned short pos = CPU_Pop16();
-		CPU_Push16(pos);
-		CPU_Push16(type);
-
-		RealPt retval = FIG_name_3rd_case(type, pos);
-		D1_LOG("FIG_name_3rd_case(%d,%d) = %s\n",
-			type, pos, getString(retval));
-
-		reg_ax = RealOff(retval);
-		reg_dx = RealSeg(retval);
-
-		return 1;
-	}
-	case 0x1b6: {
-		unsigned short type = CPU_Pop16();
-		unsigned short pos = CPU_Pop16();
-		CPU_Push16(pos);
-		CPU_Push16(type);
-
-		RealPt retval = FIG_name_4th_case(type, pos);
-		D1_LOG("FIG_name_4th_case(%d,%d) = %s\n",
-			type, pos, getString(retval));
-
-		reg_ax = RealOff(retval);
-		reg_dx = RealSeg(retval);
-
-		return 1;
-	}
-	case 0x1eb: {
-		unsigned short type = CPU_Pop16();
-		unsigned short pos = CPU_Pop16();
-		CPU_Push16(pos);
-		CPU_Push16(type);
-
-		RealPt retval = FIG_name_1st_case(type, pos);
-		D1_LOG("FIG_name_1st_case(%d,%d) = %s\n",
-			type, pos, getString(retval));
-
-		reg_ax = RealOff(retval);
-		reg_dx = RealSeg(retval);
-
-		return 1;
-	}
-	case 0x220: {
-		reg_ax = fight_printer();
-		D1_LOG("fight_printer()\n");
-		return 1;
-	}
-	case 0x1ba7: {
-		set_delay_timer();
-		D1_LOG("set_delay_timer()\n");
-		return 1;
-	}
-	case 0x1bb2: {
-		fight_delay();
-		D1_LOG("fight_delay()\n");
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg006(unsigned offs)
-{
-	switch (offs) {
-	/* Callers: 1 */
-	case 0x5a: {
-		reg_ax = FIG_set_array();
-		D1_LOG("FIG_set_array(); = %d\n", (char)reg_ax);
-		return 1;
-	}
-	case 0x82b: {
-		unsigned short v1 = CPU_Pop16();
-		unsigned short v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		D1_LOG("n FIG_draw_char_pic(%d, %d)\n", v1, v2);
-		FIG_draw_char_pic(v1, v2);
-		return 1;
-	}
-	case 0x99f: {
-		unsigned short v1 = CPU_Pop16();
-		unsigned short v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		D1_LOG("n FIG_draw_enemy_pic(%d, %d)\n", v1, v2);
-		FIG_draw_enemy_pic(v1, v2);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg024(unsigned short offs)
-{
-	switch (offs) {
-	case 0x1d3: {
-		Bit16u line = CPU_Pop16();
-		CPU_Push16(line);
-		reg_ax = diary_print_entry(line);
-		D1_LOG("diary_print_entry(%d); == %d\n", line, reg_ax);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg025(unsigned short offs)
-{
-	switch (offs) {
-	case 0x4a2: {
-		D1_LOG("show_treasure_map();\n");
-		show_treasure_map();
-		return 1;
-	}
-	case 0xca8: {
-		Bit16s id = CPU_Pop16();
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		CPU_Push16(y);
-		CPU_Push16(x);
-		CPU_Push16(id);
-		D1_LOG("draw_icon(%d,%d,%d);\n", id, x, y);
-		draw_icon(id, x, y);
-		return 1;
-	}
-	case 0xd54: {
-		D1_LOG("show_storytext();\n");
-		reg_ax = show_storytext();
-		return 1;
-	}
-	case 0xea9: {
-		D1_LOG("near turnaround();\n");
-		turnaround();
-		return 1;
-	}
-	case 0x114a: {
-		D1_LOG("copy_palette();\n");
-		copy_palette();
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg026(unsigned short offs)
-{
-	switch (offs) {
-	case 0x23e: {
-		RealPt src = CPU_Pop32();
-		RealPt dst = CPU_Pop32();
-		Bit32u len = CPU_Pop32();
-
-		D1_LOG("split_textbuffer(%x, %x, %d)\n",
-			src, dst, len);
-		split_textbuffer(Real2Host(src), dst, len);
-		CPU_Push32(len);
-		CPU_Push32(dst);
-		CPU_Push32(src);
-		return 1;
-	}
-	case 0x2d3: {
-		RealPt p1 = CPU_Pop32();
-		RealPt p2 = CPU_Pop32();
-		CPU_Push32(p2);
-		CPU_Push32(p1);
-		D1_LOG("prepare_chr_name(%x, %s);\n", p1,
-			(char*)Real2Host(p2));
-		prepare_chr_name((char*)Real2Host(p1),
-			(char*)Real2Host(p2));
-		return 1;
-	}
-	case 0x347: {
-		RealPt p1 = CPU_Pop32();
-		RealPt p2 = CPU_Pop32();
-		CPU_Push32(p2);
-		CPU_Push32(p1);
-		D1_LOG("prepare_sg_name(%x, %s);\n", p1, (char*)Real2Host(p2));
-		prepare_sg_name((char*)Real2Host(p1),
-			(char*)Real2Host(p2));
-		return 1;
-	}
-	case 0x1021: {
-		RealPt str = CPU_Pop32();
-		Bit16s hero_pos = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		CPU_Push16(a2);
-		CPU_Push16(hero_pos);
-		CPU_Push32(str);
-
-		reg_ax = read_chr_temp(str, hero_pos, a2);
-		D1_LOG("read_chr_temp(%s, %d, %d) = %d\n",
-			(char*)Real2Host(str),
-			hero_pos,
-			a2, reg_ax);
-		return 1;
-	}
-	case 0x117f: {
-		Bit16u hero = CPU_Pop16();
-		CPU_Push16(hero);
-		D1_LOG("write_chr_temp(%d)\n", hero);
-		write_chr_temp(hero);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg028(unsigned offs) {
-	switch (offs) {
-	case 0x000: {
-		D1_LOG("prepare_dungeon_area()\n");
-		prepare_dungeon_area();
-		return 1;
-	}
-	case 0x19e: {
-		D1_LOG("load_dungeon_ddt()\n");
-		load_dungeon_ddt();
-		return 1;
-	}
-	case 0x224: {
-		D1_LOG("seg028_0224()\n");
-		seg028_0224();
-		return 1;
-	}
-	case 0x444: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		Bit16s a3 = CPU_Pop16();
-		Bit16s a4 = CPU_Pop16();
-		CPU_Push16(a4);
-		CPU_Push16(a3);
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-
-		RealPt retval = seg028_0444(a1, a2, a3, a4);
-		D1_LOG("seg028_0444(%d, %d, %d, %d) = %x\n",
-			a1, a2, a3 ,a4, retval);
-
-		reg_ax = RealOff(retval);
-		reg_dx = RealSeg(retval);
-		return 1;
-	}
-	case 0x56a: {
-		Bit16s arg = CPU_Pop16();
-		CPU_Push16(arg);
-		D1_LOG("load_area_description(%d);\n", arg);
-		load_area_description(arg);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg029(unsigned offs) {
-	switch (offs) {
-	case 0x000: {
-		D1_LOG("draw_playmask();\n");
-		draw_playmask();
-		return 1;
-	}
-	case 0x0e8: {
-		RealPt p1 = CPU_Pop32();
-		RealPt p2 = CPU_Pop32();
-		CPU_Push32(p2);
-		CPU_Push32(p1);
-
-		copy_forename(Real2Host(p1), Real2Host(p2));
-		D1_LOG("near copy_forename(%s, %s)\n",
-			(char*)Real2Host(p1), (char*)Real2Host(p2));
-		return 1;
-	}
-	case 0x127: {
-		D1_LOG("draw_status_line();\n");
-		draw_status_line();
-		return 1;
-	}
-	case 0x417: {
-		unsigned short pos = CPU_Pop16();
-		CPU_Push16(pos);
-
-		clear_hero_icon(pos);
-		D1_LOG("clear_hero_icon(%d)\n", pos);
-		return 1;
-	}
-	case 0x492: {
-		Bit16u index = CPU_Pop16();
-		Bit16u icon = CPU_Pop16();
-		Bit16u pos = CPU_Pop16();
-
-		D1_LOG("load_icon(%x, %x, %x);\n", index, icon, pos);
-		load_icon(index, icon, pos);
-
-		CPU_Push16(pos);
-		CPU_Push16(icon);
-		CPU_Push16(index);
-
-		return 1;
-	}
-	case 0x4fd: {
-		D1_LOG("draw_icons();\n");
-		draw_icons();
-		return 1;
-	}
-	case 0x5ff: {
-		D1_LOG("near clear_loc_line();\n");
-		clear_loc_line();
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg030(unsigned offs) {
-	switch (offs) {
-	case 0x000: {
-		Bit16s arg = CPU_Pop16();
-		CPU_Push16(arg);
-		D1_LOG("seg030_0000(%d);\n", arg);
-		RealPt retval = seg030_0000(arg);
-		reg_ax = RealOff(retval);
-		reg_dx = RealSeg(retval);
-		return 1;
-	}
-	case 0x8d: {
-		Bit16s arg = CPU_Pop16();
-		CPU_Push16(arg);
-		D1_LOG("seg030_008d(%d);\n", arg);
-		RealPt retval = seg030_008d(arg);
-
-		reg_ax = RealOff(retval);
-		reg_dx = RealSeg(retval);
-		return 1;
-	}
-	case 0x14f: {
-		return 0;
-	}
-	case 0xfd5: {
-		D1_LOG("talk_switch();\n");
-
-		/* TODO: all TLK_ID [0,19] */
-		Bit16s id = ds_readws(TLK_ID);
-
-		if (id == 1 || (id >= 3 && id <= 10) ||
-			id == 12 || id == 14 || id == 15 || id == 16)
-		{
-			talk_switch();
-			return 1;
-		}
-
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg031(unsigned offs) {
-	switch (offs) {
-	case 0x56c: {
-		reg_ax = get_town_lookup_entry();
-		D1_LOG("get_town_lookup_entry(); = %d\n", reg_ax);
-		return 1;
-	}
-	case 0x63b: {
-		RealPt retval;
-
-		retval = load_current_town_gossip();
-		D1_LOG("near load_current_town_gossip() = 0x%x\n", retval);
-
-		reg_ax = RealOff(retval);
-		reg_dx = RealSeg(retval);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg032(unsigned offs)
-{
-	switch (offs) {
-	/* Callers: 1 */
-	case 0x0000: {
-		signed short row = CPU_Pop16();
-		signed short col = CPU_Pop16();
-		signed short object = CPU_Pop16();
-		CPU_Push16(object);
-		CPU_Push16(col);
-		CPU_Push16(row);
-
-		signed char obj = object & 0xff;
-
-		FIG_set_cb_field(row, col, obj);
-		D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
-			row, col, obj);
-		return 1;
-	}
-	case 0x0032: {
-		Bit16s mode = CPU_Pop16();
-		D1_LOG("draw_fight_screen_pal(%d)\n", mode);
-		draw_fight_screen_pal(mode);
-		CPU_Push16(mode);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0xa8: {
-		reg_ax = FIG_choose_next_hero();
-		D1_LOG("FIG_choose_next_hero() = %s\n",
-		schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0xfc: {
-		reg_ax = FIG_choose_next_enemy();
-		D1_LOG("FIG_choose_next_enemy() = %d\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x12c: {
-		reg_ax = FIG_count_active_enemies();
-		D1_LOG("near FIG_count_active_enemies() = %d\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x1ba: {
-		RealPt enemy = CPU_Pop32();
-		CPU_Push32(enemy);
-
-		reg_ax = FIG_is_enemy_active(Real2Host(enemy) );
-		D1_LOG("near FIG_is_enemy_active(); = %d\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x242: {
-		reg_ax = FIG_get_first_active_hero();
-		D1_LOG("near FIG_get_first_active_hero() = %s\n",
-			reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x2db: {
-		reg_ax = seg032_02db();
-		D1_LOG("near seg032_02db() = %d\n", reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x349: {
-		reg_ax = FIG_fight_continues();
-		D1_LOG("FIG_fight_continues() = %d\n", reg_ax);
-		return 1;
-	}
-	case 0x380: {
-		D1_LOG("FIG_do_round()\n");
-		FIG_do_round();
-		return 1;
-	}
-	case 0xa38: {
-		D1_LOG("FIG_load_ship_sprites()\n");
-		FIG_load_ship_sprites();
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg034(unsigned offs)
-{
-	switch (offs) {
-	case 0x000: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		Bit16s a3 = CPU_Pop16();
-		Bit16s a4 = CPU_Pop16();
-		Bit16s a5 = CPU_Pop16();
-		Bit16s a6 = CPU_Pop16();
-		Bit16s a7 = CPU_Pop16();
-		CPU_Push16(a7);
-		CPU_Push16(a6);
-		CPU_Push16(a5);
-		CPU_Push16(a4);
-		CPU_Push16(a3);
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-
-		reg_ax = seg034_000(a1, a2, a3, a4, a5, a6, a7);
-		D1_LOG("near seg034_000(%d, %d, %d, %d, %d, %d, %d) = %d\n",
-			a1, a2, a3, a4, a5, a6, a7, (Bit16s)reg_ax);
-		return 1;
-	}
-	case 0x718: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		RealPt a3 = CPU_Pop32();
-		RealPt a4 = CPU_Pop32();
-		Bit16s a5 = CPU_Pop16();
-		Bit16s a6 = CPU_Pop16();
-		CPU_Push16(a6);
-		CPU_Push16(a5);
-		CPU_Push32(a4);
-		CPU_Push32(a3);
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-
-		seg034_718(a1, a2, Real2Host(a3), Real2Host(a4), a5, a6);
-
-		return 1;
-	}
-	case 0xaec: {
-		reg_ax = seg034_aec();
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-
-static int n_seg036(unsigned offs)
-{
-	switch (offs) {
-	case 0x000: {
-		RealPt p = CPU_Pop32();
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-		CPU_Push32(p);
-
-		reg_ax = KI_copy_ani_sequence(Real2Host(p), v1, v2);
-		D1_LOG("KI_copy_ani_sequence(%x, %d, %d); = %d\n",
-			p, v1, v2, (signed char)reg_ax);
-
-		return 1;
-	}
-	case 0x0ae: {
-		RealPt in_ptr = CPU_Pop32();
-		Bit16s a2 = CPU_Pop16();
-		D1_LOG("near seg036_00ae(%x, %d)\n", in_ptr, a2);
-		seg036_00ae(Real2Host(in_ptr), a2);
-		CPU_Push16(a2);
-		CPU_Push32(in_ptr);
-		return 1;
-	}
-	case 0x27f: {
-		RealPt hero = CPU_Pop32();
-		reg_ax = KI_change_hero_weapon(Real2Host(hero));
-		D1_LOG("KI_change_hero_weapon(%s) = %d\n",
-			Real2Host(hero) + 0x10, reg_ax);
-		CPU_Push32(hero);
-		return 1;
-	}
-	case 0x39b: {
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s v3 = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		Bit16s v5 = CPU_Pop16();
-		CPU_Push16(v5);
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		reg_ax = KI_can_attack_neighbour(v1, v2, v3, v4, v5);
-
-		D1_LOG("KI_can_attack_neighbour(%d,%d,%d,%d,%d); = %d\n",
-			v1, v2, v3, v4, v5, reg_ax);
-		return 1;
-	}
-	case 0x4cf: {
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s v3 = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		reg_ax = KI_search_spell_target(v1, v2, v3, v4);
-
-		D1_LOG("KI_get_spell_targed_id(%d,%d,%d,%d); = %d\n",
-			v1, v2, v3, v4, reg_ax);
-		return 1;
-	}
-	case 0x6f7: {
-		RealPt p = CPU_Pop32();
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s v3 = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-		CPU_Push32(p);
-
-		reg_ax = KI_select_spell_target(Real2Host(p), v1, v2, v3, v4);
-		D1_LOG("KI_select_spell_target(%s, %d, %d, %d, %d) = %d\n",
-			schick_getCharname(p), v1, v2, v3, v4, reg_ax);
-
-		return 1;
-	}
-	case 0x863: {
-		Bit16s spell = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(spell);
-		reg_ax = KI_get_spell(spell, v2);
-		D1_LOG("KI_get_spell(%s, %d); = %d\n",
-			names_spell[spell], v2, (signed short)reg_ax);
-		return 1;
-	}
-	case 0x8cf: {
-		RealPt p = CPU_Pop32();
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s v3 = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-		CPU_Push32(p);
-
-		reg_ax = seg036_8cf(Real2Host(p), v1, v2, v3, v4);
-		D1_LOG("seg036_8cf(%s, %d, %d, %d, %d) = %d\n",
-			schick_getCharname(p), v1, v2, v3, v4, reg_ax);
-
-		return 1;
-	}
-	case 0xc39: {
-		Bit16u v = CPU_Pop16();
-		CPU_Push16(v);
-
-		reg_ax = KI_count_heros(v);
-		D1_LOG("KI_count_heros(%d); = %d\n", v, reg_ax);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg037(unsigned offs) {
-	switch (offs) {
-	case 0x000: {
-		RealPt p = CPU_Pop32();
-		Bit16u v1 = CPU_Pop16();
-		Bit16u v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-		CPU_Push32(p);
-
-		reg_ax = copy_ani_stuff(Real2Host(p), v1, v2);
-		D1_LOG("copy_ani_stuff(%x, %d, %d); = %x\n", p, v1, v2, reg_ax);
-		return 1;
-	}
-	case 0x00ae: {
-		RealPt p = CPU_Pop32();
-		Bit16s v1 = CPU_Pop16();
-		CPU_Push16(v1);
-		CPU_Push32(p);
-
-		D1_LOG("seg037_00ae(%x, %d);\n", p, v1);
-		seg037_00ae(Real2Host(p), v1);
-		return 1;
-	}
-	case 0x2e3: {
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s v3 = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		Bit16s v5 = CPU_Pop16();
-		CPU_Push16(v5);
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		reg_ax = test_foe_melee_attack(v1, v2, v3, v4, v5);
-		D1_LOG("test_foe_melee_attack(%d, %d, %d, %d, %d); = %x\n",
-				v1, v2, v3, v4, v5, reg_ax);
-		return 1;
-	}
-	case 0x417: {
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		Bit16s dir = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		reg_ax = test_foe_range_attack(x, y, dir, v4);
-		D1_LOG("test_foe_range_attack(%d, %d, %d, %d); = %d attacker = %d\n",
-			x, y, dir, v4, reg_ax, get_cb_val(x, y));
-		CPU_Push16(v4);
-		CPU_Push16(dir);
-		CPU_Push16(y);
-		CPU_Push16(x);
-		return 1;
-	}
-	case 0x725: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		reg_ax = get_foe_attack_mode(a1, a2);
-		D1_LOG("get_foe_attack_mode(%d, %d); = %d\n",
-			a1, a2, reg_ax);
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-		return 1;
-	}
-	case 0x791: {
-		RealPt p = CPU_Pop32();
-		Bit16u a2 = CPU_Pop16();
-		Bit16u a3 = CPU_Pop16();
-		Bit16u x = CPU_Pop16();
-		Bit16u y = CPU_Pop16();
-		CPU_Push16(y);
-		CPU_Push16(x);
-		CPU_Push16(a3);
-		CPU_Push16(a2);
-		CPU_Push32(p);
-
-		reg_ax = seg037_0791(Real2Host(p), a2, a3, x, y);
-		D1_LOG("seg037_0791(%x, %d, %d, %d, %d); = %x\n", p, a2, a3, x, y, reg_ax);
-		return 1;
-	}
-	case 0xb3e: {
-		D1_LOG("%s:%x\n", __func__, offs);
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg038(unsigned offs)
-{
-	switch (offs) {
-	case 0x000: {
-		signed short obj = CPU_Pop16();
-		RealPt px = CPU_Pop32();
-		RealPt py = CPU_Pop32();
-		CPU_Push32(py);
-		CPU_Push32(px);
-		CPU_Push16(obj);
-
-		reg_ax = FIG_search_obj_on_cb(obj,
-			(signed short*)Real2Host(px),
-			(signed short*)Real2Host(py));
-
-		D1_LOG("near FIG_search_obj_on_cb(obj=%d, x=%d, y=%d) = %d\n",
-			obj, mem_readw(Real2Phys(px)),
-			mem_readw(Real2Phys(py)), reg_ax);
-
-		host_writew(Real2Host(px),
-			*((signed short*)Real2Host(px)));
-		host_writew(Real2Host(py),
-			*((signed short*)Real2Host(py)));
-
-		return 1;
-	}
-	case 0x143: {
-		RealPt in_ptr = CPU_Pop32();
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		Bit16s arg4 = CPU_Pop16();
-		Bit16s arg5 = CPU_Pop16();
-		Bit16s arg6 = CPU_Pop16();
-		Bit16s arg7 = CPU_Pop16();
-		Bit16s arg8 = CPU_Pop16();
-
-		D1_LOG("FIG_backtrack(%x, %d, %d, %d, %d, %d, %d, %d)\n",
-			in_ptr, x, y, arg4, arg5, arg6, arg7, arg8);
-
-		FIG_backtrack(Real2Host(in_ptr), x, y, arg4, (Bit8s)arg5,
-							arg6, arg7, arg8);
-
-		CPU_Push16(arg8);
-		CPU_Push16(arg7);
-		CPU_Push16(arg6);
-		CPU_Push16(arg5);
-		CPU_Push16(arg4);
-		CPU_Push16(y);
-		CPU_Push16(x);
-		CPU_Push32(in_ptr);
-
-		return 1;
-	}
-	case 0x457: {
-		RealPt p = CPU_Pop32();
-		CPU_Push32(p);
-
-		reg_ax = FIG_count_smth((signed char*)Real2Host(p));
-		D1_LOG("FIG_count_smth(%x) = %d\n", p, reg_ax);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg039(unsigned offs)
-{
-
-	switch(offs) {
-
-	case 0x23: {
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-
-		reg_ax = FIG_get_range_weapon_type(Real2Host(hero));
-		D1_LOG("FIG_get_range_weapon_type(%s) = %d\n",
-			schick_getCharname(hero), (signed short)reg_ax);
-
-		return 1;
-	}
-	case 0x97: {
-		unsigned short sheet_nr = CPU_Pop16();
-		unsigned short enemy_id_16 = CPU_Pop16();
-		unsigned short round_16 = CPU_Pop16();
-		CPU_Push16(round_16);
-		CPU_Push16(enemy_id_16);
-		CPU_Push16(sheet_nr);
-
-		signed char enemy = (signed char)(enemy_id_16 & 0xff);
-		signed char round = (signed char)(round_16 & 0xff);
-
-		D1_LOG("near fill_enemy_sheet(%d, %d, %d);\n",
-			sheet_nr, enemy, round);
-
-		fill_enemy_sheet(sheet_nr, enemy, round);
-
-		return 1;
-	}
-	case 0x317: {
-		unsigned short x = CPU_Pop16();
-		unsigned short y = CPU_Pop16();
-		signed short object = CPU_Pop16();
-		unsigned short v2_16 = CPU_Pop16();
-		unsigned short dir_16 = CPU_Pop16();
-		CPU_Push16(dir_16);
-		CPU_Push16(v2_16);
-		CPU_Push16(object);
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		signed char v2 = (signed char)(v2_16 & 0xff);
-		signed char dir = (signed char)(dir_16 & 0xff);
-
-		reg_ax = place_obj_on_cb(x, y, object, v2, dir);
-		D1_LOG("place_obj_on_cb(x=%d,y=%d,obj=%d,%d,dir=%d); = %d\n",
-				x, y, object, v2, dir, reg_ax);
-
-		return 1;
-	}
-	case 0x546: {
-		RealPt p = CPU_Pop32();
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-		CPU_Push32(p);
-
-		D1_LOG("FIG_load_enemy_sprites(%x, %d, %d);\n", p, v1, v2);
-		FIG_load_enemy_sprites(Real2Host(p),
-			(signed char)v1, (signed char)v2);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg041(unsigned offs)
-{
-	switch (offs) {
-	case 0x8f1: {
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-
-		reg_ax = weapon_check(Real2Host(hero));
-
-		D1_LOG("near weapon_check(%s); = %d\n",
-			schick_getCharname(hero), (signed short)reg_ax);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg044(unsigned short offs)
-{
-	switch (offs) {
-	case 0x00: {
-		RealPt p = CPU_Pop32();
-		Bit16s a2 = CPU_Pop16();
-		Bit16u a3 = CPU_Pop16();
-
-		reg_ax = copy_ani_seq(Real2Host(p), a2, a3);
-		D1_LOG("copy_ani_seq(%x, %d, %d) = 0x%x\n",
-			p, a2, a3, reg_ax);
-
-		CPU_Push16(a3);
-		CPU_Push16(a2);
-		CPU_Push32(p);
-
-		return 1;
-	}
-	case 0xae: {
-		Bit16s ani = CPU_Pop16();
-		CPU_Push16(ani);
-
-		reg_ax = (Bit16s)get_seq_header(ani);
-		D1_LOG("get_seq_header(%d) = %d\n", ani, (Bit16s)reg_ax);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg045(unsigned short offs)
-{
-	switch (offs) {
-	case 0x0000: {
-		Bit16s fight_id = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		Bit16s a3 = CPU_Pop16();
-		D1_LOG("seg045_0000(%d, %d, %d);", fight_id, a2, a3);
-		seg045_0000(fight_id, a2, a3);
-
-		CPU_Push16(a3);
-		CPU_Push16(a2);
-		CPU_Push16(fight_id);
-		return 1;
-	}
-	case 0x014f: {
-		RealPt p1 = CPU_Pop32();
-		RealPt p2 = CPU_Pop32();
-		Bit16s v = CPU_Pop16();
-
-		CPU_Push16(v);
-		CPU_Push32(p2);
-		CPU_Push32(p1);
-		reg_ax = FIG_copy_it(Real2Host(p1), Real2Host(p2), (signed char)v);
-		D1_LOG("FIG_copy_it(%x, %x, %x) = %d\n",
-			p1, p2, (signed char)v, reg_ax);
-		return 1;
-	}
-	case 0x0273: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		Bit16s a3 = CPU_Pop16();
-		D1_LOG("seg045_0273(%d, %d, %d);\n", a1, a2, a3);
-		seg045_0273((signed char)a1, (signed char)a2, a3);
-
-		CPU_Push16(a3);
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg046(unsigned short offs)
-{
-	switch (offs) {
-	case 0x000: {
-		RealPt hero = CPU_Pop32();
-		unsigned short spell = CPU_Pop16();
-		unsigned short fsig = CPU_Pop16();
-		unsigned short x1 = CPU_Pop16();
-		unsigned short x2 = CPU_Pop16();
-		unsigned short yg = CPU_Pop16();
-		CPU_Push16(yg);
-		CPU_Push16(x2);
-		CPU_Push16(x1);
-		CPU_Push16(fsig);
-		CPU_Push16(spell);
-		CPU_Push32(hero);
-
-		D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
-			schick_getCharname(hero), spell, fsig, x1, x2, yg);
-		status_show_spell(Real2Host(hero), spell,
-			fsig, x1, x2, yg);
-
-		return 1;
-	}
-	case 0x08d: {
-		RealPt hero = CPU_Pop32();
-		unsigned short talent = CPU_Pop16();
-		unsigned short ftig = CPU_Pop16();
-		unsigned short x1 = CPU_Pop16();
-		unsigned short x2 = CPU_Pop16();
-		unsigned short yg = CPU_Pop16();
-		CPU_Push16(yg);
-		CPU_Push16(x2);
-		CPU_Push16(x1);
-		CPU_Push16(ftig);
-		CPU_Push16(talent);
-		CPU_Push32(hero);
-
-		D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
-			schick_getCharname(hero), talent, ftig, x1, x2, yg);
-		status_show_talent(Real2Host(hero), talent,
-			ftig, x1, x2, yg);
-
-		return 1;
-	}
-	case 0x11a: {
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-
-		D1_LOG("status_show_talents(%s);\n",
-			schick_getCharname(hero));
-
-		status_show_talents(Real2Host(hero));
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg048(unsigned short offs)
-{
-	switch(offs) {
-	case 0x00: {
-		D1_LOG("reset_item_selector()\n");
-		reset_item_selector();
-		return 1;
-	}
-	case 0xd0: {
-		Bit16s hero_pos = CPU_Pop16();
-		CPU_Push16(hero_pos);
-		D1_LOG("status_menu(%d);\n", hero_pos);
-		status_menu(hero_pos);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg049(unsigned short offs)
-{
-	switch (offs) {
-	case 0x01da: {
-		GRP_sort_heros();
-		D1_LOG("near GRP_sort_heros()\n");
-		return 1;
-	}
-	case 0x0224: {
-		Bit16s group = CPU_Pop16();
-		D1_LOG("near GRP_save_pos(%d)\n", group);
-		GRP_save_pos(group);
-		CPU_Push16(group);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg050(unsigned short offs) {
-	switch (offs) {
-		case 0x0000: {
-			RealPt hero = CPU_Pop32();
-			Bit16s spell = CPU_Pop16();
-
-			D1_LOG("inc_spell_advanced(%s, %s);\n",
-				schick_getCharname(hero), names_spell[spell]);
-
-			inc_spell_advanced(Real2Host(hero), spell);
-
-			CPU_Push16(spell);
-			CPU_Push32(hero);
-			return 1;
-		}
-		case 0x01ec: {
-			RealPt hero = CPU_Pop32();
-			Bit16s skill = CPU_Pop16();
-
-			D1_LOG("inc_skill_advanced(%s, %s);\n",
-				schick_getCharname(hero), names_skill[skill]);
-
-			inc_skill_advanced(Real2Host(hero), skill);
-
-			CPU_Push16(skill);
-			CPU_Push32(hero);
-			return 1;
-		}
-		case 0x03d2: {
-			RealPt hero = CPU_Pop32();
-			Bit16s skill = CPU_Pop16();
-
-			D1_LOG("inc_skill_novice(%s, %s);\n",
-				schick_getCharname(hero), names_skill[skill]);
-			inc_skill_novice(Real2Host(hero), skill);
-
-			CPU_Push16(skill);
-			CPU_Push32(hero);
-			return 1;
-		}
-		case 0x04b1: {
-			RealPt hero = CPU_Pop32();
-			Bit16s spell = CPU_Pop16();
-
-			D1_LOG("inc_spell_novice(%s, %s);\n",
-				schick_getCharname(hero), names_spell[spell]);
-
-			inc_spell_novice(Real2Host(hero), spell);
-			CPU_Push16(spell);
-			CPU_Push32(hero);
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-			exit(1);
-	}
-}
-
-static int n_seg053(unsigned short offs) {
-	switch (offs) {
-		case 0x0000: {
-			RealPt hero = CPU_Pop32();
-			CPU_Push32(hero);
-
-			reg_ax = is_hero_healable(Real2Host(hero));
-
-			D1_LOG("near is_hero_healable(%s); = %d\n",
-				Real2Host(hero) + 0x10, reg_ax);
-
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-			exit(1);
-	}
-}
-
-static int n_seg054(unsigned short offs)
-{
-	switch (offs) {
-		case 0x0000: {
-			D1_LOG("talk_inn()\n");
-			return 0;
-		}
-		case 0x0011: {
-			RealPt hero = get_first_busy_hero();
-			D1_LOG("get_first_busy_hero() = %s\n",
-				hero != NULL ? schick_getCharname(hero) : "NULL");
-
-			reg_ax = RealOff(hero);
-			reg_dx = RealSeg(hero);
-			return 1;
-		}
-		case 0x007c: {
-			D1_LOG("do_inn()\n");
-			return 0;
-		}
-		case 0x0ca2: {
-			Bit16s state = CPU_Pop16();
-			CPU_Push16(state);
-			D1_LOG("TLK_herberg(%d)\n", state);
-			TLK_herberg(state);
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-			exit(1);
-	}
-}
-
-static int n_seg055(unsigned short offs)
-{
-	switch (offs) {
-		case 0x0000: {
-			RealPt shop_ptr = CPU_Pop32();
-			Bit16s item_id = CPU_Pop16();
-			Bit16s pos = CPU_Pop16();
-			CPU_Push16(pos);
-			CPU_Push16(item_id);
-			CPU_Push32(shop_ptr);
-
-			D1_LOG("add_item_to_shop(%x, %s, %d)\n", shop_ptr, get_itemname(item_id), pos);
-			add_item_to_shop(Real2Host(shop_ptr), item_id, pos);
-			return 1;
-		}
-		case 0x007a: {
-			const Bit8u typi = ds_readb(0x4224);
-			const Bit8s price = ds_readbs(typi * 9 + 0x6870);
-			const Bit8s h_type = ds_readb(typi * 9 + 0x6870 + 1);
-			const Bit8s sortiment = ds_readb(typi * 9 + 0x6870 + 2);
-
-			const char h_types[][10] = { "UNGUELTIG", "Waffen", "Kraeuter", "Kraemer" };
-			const char *h_string = (h_type >= 1 && h_type <= 3) ? h_types[h_type] : h_types[0];
-
-			D1_INFO("Haendler-Nr: %d / Haendlertyp: %s\n", typi, h_string);
-			D1_INFO("\tPreise: %3d%% [70, 180]\n", 100 + price);
-			D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
-
-			return 0;
-		}
-		case 0x0622: {
-			return 0;
-		}
-		case 0x0660: {
-			Bit16s state = CPU_Pop16();
-			CPU_Push16(state);
-
-			D1_LOG("TLK_ghandel(%d)\n", state);
-			TLK_ghandel(state);
-			return 1;
-		}
-		case 0x06e1: {
-			Bit16s state = CPU_Pop16();
-			CPU_Push16(state);
-
-			D1_LOG("TLK_khandel(%d)\n", state);
-			TLK_khandel(state);
-			return 1;
-		}
-		case 0x078e: {
-			Bit16s state = CPU_Pop16();
-			CPU_Push16(state);
-
-			D1_LOG("TLK_whandel(%d)\n", state);
-			TLK_whandel(state);
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-			exit(1);
-	}
-}
-
-static int n_seg058(const unsigned short offs)
-{
-	switch (offs) {
-		case 0x0000: {
-			return 0;
-		}
-		case 0x01f9: {
-			return 0;
-		}
-		case 0x0dc3: {
-			return 0;
-		}
-		case 0x0f96: {
-			return 0;
-		}
-		case 0x0fa7: {
-			return 0;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-			exit(1);
-	}
-}
-
-static int n_seg061(unsigned offs) {
-	switch (offs) {
-		case 0x57b: {
-			Bit16s temple_id = CPU_Pop16();
-			CPU_Push16(temple_id);
-
-			D1_LOG("char_add(%d)\n", temple_id);
-			char_add(temple_id);
-			return 1;
-		}
-		case 0x74a: {
-			Bit16s temple_id = CPU_Pop16();
-			CPU_Push16(temple_id);
-
-			D1_LOG("char_letgo(%d)\n", temple_id);
-			char_letgo(temple_id);
-			return 1;
-		}
-		case 0x89d: {
-			reg_ax = char_erase();
-			D1_LOG("char_erase(); = %d\n", reg_ax);
-			return 1;
-		}
-		default:
-			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-			exit(1);
-	}
-}
-
-static int n_seg063(unsigned offs) {
-	switch (offs) {
-	case 0x999: {
-		return 0;
-	}
-	case 0xa0e: {
-		return 0;
-	}
-	case 0xf6f: {
-		RealPt ptr = CPU_Pop32();
-		CPU_Push32(ptr);
-		reg_ax = get_srout_len(Real2Host(ptr));
-		D1_LOG("get_srout_len(0x%x) = %d;\n", ptr, reg_ax);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg064(unsigned offs) {
-	switch (offs) {
-	case 0x000: {
-		Bit16s arg1 = CPU_Pop16();
-		Bit16s arg2 = CPU_Pop16();
-		CPU_Push16(arg2);
-		CPU_Push16(arg1);
-		RealPt tmp = get_ship_name((signed char)arg1, arg2);
-		D1_LOG("get_ship_name(%d, %d); = 0x%x\n",
-			(signed char)arg1, arg2, tmp);
-
-		reg_ax = RealOff(tmp);
-		reg_dx = RealSeg(tmp);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg066(unsigned offs)
-{
-	switch (offs) {
-	case 0x000: {
-		return 0;
-	}
-	case 0x0dd: {
-		return 0;
-	}
-	case 0x5fc: {
-		return 0;
-	}
-	case 0x692: {
-		return 0;
-	}
-	case 0x6c1: {
-		return 0;
-	}
-	case 0xb73: {
-		Bit16s v1 = CPU_Pop16();
-		CPU_Push16(v1);
-		reg_ax = get_border_index((unsigned char)v1);
-		D1_LOG("get_border_index(%d) = %d\n", v1, reg_ax);
-		return 1;
-	}
-	case 0xbad: {
-		return 0;
-	}
-	case 0xc50: {
-		return 0;
-	}
-	case 0xd1d: {
-		return 0;
-	}
-	case 0xf62: {
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s v3 = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		load_city_texture(v1, v2, v3, v4);
-
-		D1_LOG("load_city_texture(%d, %d, %x, %d)\n",
-			v1, v2, v3, v4);
-		return 1;
-	}
-	case 0x10c8: {
-		return 0;
-	}
-	case 0x10e9: {
-		return 0;
-	}
-	case 0x14dd: {
-		return 0;
-	}
-	case 0x159b: {
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg067(unsigned offs)
-{
-	switch (offs) {
-	case 0x000: {
-		D1_LOG("city_event_switch()\n");
-		return 0;
-	}
-	case 0x009a: {
-		D1_LOG("city_event_1()\n");
-		city_event_1();
-		return 1;
-	}
-	case 0x02eb: {
-		D1_LOG("city_event_2()\n");
-		city_event_2();
-		return 1;
-	}
-	case 0x04a6: {
-		D1_LOG("city_event_3()\n");
-		city_event_3();
-		return 1;
-	}
-	case 0x05aa: {
-		D1_LOG("city_event_4()\n");
-		city_event_4();
-		return 1;
-	}
-	case 0x0707: {
-		D1_LOG("city_event_5()\n");
-		city_event_5();
-		return 1;
-	}
-	case 0x07b2: {
-		D1_LOG("city_event_6()\n");
-#if 0
-		city_event_6();
-		return 1;
-#else
-		return 0;
-#endif
-	}
-	case 0x090a: {
-		D1_LOG("city_event_7()\n");
-		city_event_7();
-		return 1;
-	}
-	case 0x0b2d: {
-		D1_LOG("city_event_8()\n");
-		city_event_8();
-		return 1;
-	}
-	case 0x0c1c: {
-		D1_LOG("city_event_9()\n");
-		city_event_9();
-		return 1;
-	}
-	case 0x0ca8: {
-		D1_LOG("waffinfo_weapons()\n");
-		RealPt ret = waffinfo_weapons();
-		reg_ax = RealOff(ret);
-		reg_dx = RealSeg(ret);
-		return 1;
-	}
-	case 0x0ce6: {
-		D1_LOG("waffinfo_herbs()\n");
-		RealPt ret = waffinfo_herbs();
-		reg_ax = RealOff(ret);
-		reg_dx = RealSeg(ret);
-		return 1;
-	}
-	case 0x0d27: {
-		D1_LOG("waffinfo_general()\n");
-		RealPt ret = waffinfo_general();
-		reg_ax = RealOff(ret);
-		reg_dx = RealSeg(ret);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg072(unsigned short offs)
-{
-	switch (offs) {
-	case 0x146a: {
-		D1_LOG("count_map_parts()\n");
-		reg_ax = count_map_parts();
-		return 1;
-	}
-	case 0x148b: {
-		D1_LOG("has_intro_letter()\n");
-		reg_ax = has_intro_letter();
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg074(unsigned short offs)
-{
-	switch (offs) {
-	case 0x24a: {
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		reg_ax = is_discovered(x, y);
-		D1_LOG("is_discovered(%d, %d) = %d\n", x, y, reg_ax);
-		return 1;
-	}
-	case 0x270: {
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		reg_ax = get_mapval_small(x, y);
-		D1_LOG("get_mapval_small(%d, %d) = %d\n", x, y, reg_ax);
-		return 1;
-	}
-	case 0x295: {
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		reg_ax = get_mapval_large(x, y);
-		D1_LOG("get_mapval_large(%d, %d) = %d\n", x, y, reg_ax);
-		return 1;
-	}
-	case 0x2ba: {
-		Bit16s group_nr = CPU_Pop16();
-		CPU_Push16(group_nr);
-
-		reg_ax = is_group_in_prison(group_nr);
-		D1_LOG("is_group_in_prison(%d) = %d\n", group_nr, reg_ax);
-		return 1;
-	}
-	case 0x305: {
-		Bit16s x_off = CPU_Pop16();
-		CPU_Push16(x_off);
-
-		seg074_305(x_off);
-		D1_LOG("seg074_305(%d)\n", x_off);
-		return 1;
-	}
-	case 0x5f9: {
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		Bit16s a3 = CPU_Pop16();
-		Bit16s dir = CPU_Pop16();
-		CPU_Push16(dir);
-		CPU_Push16(a3);
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		draw_automap_square(x, y, a3, dir);
-		D1_LOG("draw_automap_square(%d, %d, %d, %d)\n", x, y, a3, dir);
-		return 1;
-	}
-	case 0x72b: {
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		Bit16s dir = CPU_Pop16();
-		CPU_Push16(dir);
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		draw_automap_entrance(x, y, dir);
-		D1_LOG("draw_automap_entrance(%d, %d, %d)\n", x, y, dir);
-		return 1;
-	}
-	case 0x7b2: {
-		draw_automap_to_screen();
-		D1_LOG("draw_automap_to_screen()\n");
-		return 1;
-	}
-	case 0xbbb: {
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		CPU_Push16(y);
-		CPU_Push16(x);
-
-		reg_ax = seg074_bbb(x, y);
-		D1_LOG("seg074_bbb(%d, %d) = %d\n", x, y, reg_ax);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg075(unsigned short offs)
-{
-	switch (offs) {
-	case 0x000: {
-		D1_LOG("DNG_floor_ceil();\n");
-		DNG_floor_ceil();
-		return 1;
-	}
-	case 0x0b9: {
-		D1_LOG("DNG_turn()\n");
-		DNG_turn();
-		return 1;
-	}
-	case 0x56b: {
-		D1_LOG("DNG_stub1();\n");
-		DNG_stub1();
-		return 1;
-	}
-	case 0x591: {
-		D1_LOG("DNG_stub2()\n");
-		DNG_stub2();
-		return 1;
-	}
-	case 0x5e5: {
-		D1_LOG("DNG_stub3()\n");
-		DNG_stub3();
-		return 1;
-	}
-	case 0x693: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		Bit16s a3 = CPU_Pop16();
-		D1_LOG("DNG_draw_walls(%d, %d, %d)\n", a1, a2, a3);
-		DNG_draw_walls(a1, a2, a3);
-		CPU_Push16(a3);
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-		return 1;
-	}
-	case 0x82e: {
-		D1_LOG("DNG_stub4();\n");
-		DNG_stub4();
-		return 1;
-	}
-	case 0x9ef: {
-		D1_LOG("DNG_stub5();\n");
-		DNG_stub5();
-		return 1;
-	}
-	case 0xa46: {
-		reg_ax = is_staff_lvl2_in_group();
-		D1_LOG("is_staff_lvl2_in_group() %d\n", reg_ax);
-		return 1;
-	}
-	case 0xaaa: {
-		D1_LOG("DNG_lights()\n");
-		DNG_lights();
-		return 1;
-	}
-	case 0xc6d: {
-		D1_LOG("near DNG_update_pos()\n");
-		DNG_update_pos();
-		return 1;
-	}
-	case 0xc8e: {
-		D1_LOG("DNG_inc_level()\n");
-		DNG_inc_level();
-		return 1;
-	}
-	case 0x10de: {
-		return 0;
-	}
-	case 0x1168: {
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg076(unsigned short offs)
-{
-	switch (offs) {
-	case 0x000: {
-		return 0;
-	}
-	case 0x576: {
-		RealPt msg = CPU_Pop32();
-		CPU_Push32(msg);
-
-		D1_LOG("near print_msg_with_first_hero()\n");
-		print_msg_with_first_hero(Real2Host(msg));
-		return 1;
-	}
-	case 0x71d: {
-		return 0;
-	}
-	case 0xc73: {
-		return 0;
-	}
-	case 0xd28: {
-		return 0;
-	}
-	case 0xdaa: {
-		return 0;
-	}
-	case 0xe89: {
-		return 0;
-	}
-	case 0x11e7: {
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg090(unsigned short offs)
-{
-	switch (offs) {
-	case 0xa94: {
-		RealPt p = CPU_Pop32();
-		CPU_Push32(p);
-		D1_LOG("DNG_clear_corridor()\n");
-		DNG_clear_corridor(Real2Host(p));
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg091(unsigned short offs)
-{
-	switch (offs) {
-	case 0x44f: {
-		return 0;
-	}
-	case 0x613: {
-		return 0;
-	}
-	case 0x721: {
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg092(unsigned short offs)
-{
-	switch (offs) {
-	case 0x4d6: {
-		RealPt chest = CPU_Pop32();
-		Bit16s item_nr = CPU_Pop16();
-		CPU_Push16(item_nr);
-		CPU_Push32(chest);
-
-		D1_LOG("delete_chest_item(%d)\n", item_nr);
-		delete_chest_item(Real2Host(chest), item_nr);
-
-		return 1;
-	}
-	case 0x66d: {
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-
-		reg_ax = hero_has_lockpicks(Real2Host(hero));
-		D1_LOG("near hero_has_lockpicks(%s)= %d\n",
-			schick_getCharname(hero), (Bit16s)reg_ax);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg094(unsigned short offs)
-{
-	switch (offs) {
-	case 0x0092: {
-		Bit16s town_id = CPU_Pop16();
-		CPU_Push16(town_id);
-		D1_LOG("set_textbox_positions(%d)\n", town_id);
-		set_textbox_positions(town_id);
-		return 1;
-	}
-	case 0x0125: {
-		return 0;
-	}
-	case 0x0de2: {
-		return 0;
-	}
-	case 0x0f0e: {
-		return 0;
-	}
-	case 0x0f58: {
-		return 0;
-	}
-	case 0x105d: {
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-
-static int n_seg095(unsigned short offs)
-{
-	switch (offs) {
-	case 0x335: {
-		npc_nariell();
-		return 1;
-	}
-	case 0x44d: {
-		npc_harika();
-		return 1;
-	}
-	case 0x62d: {
-		npc_curian();
-		return 1;
-	}
-	case 0x746: {
-		npc_ardora();
-		return 1;
-	}
-	case 0x9a5: {
-		npc_garsvik();
-		return 1;
-	}
-	case 0xad0: {
-		npc_erwo();
-		return 1;
-	}
-	case 0xbfb: {
-		Bit16s head_index = CPU_Pop16();
-		Bit16s days = CPU_Pop16();
-		Bit16s index = CPU_Pop16();
-		RealPt name = CPU_Pop32();
-		RealPt text = CPU_Pop32();
-
-		remove_npc(head_index, (signed char)days, index,
-			Real2Host(name), Real2Host(text));
-
-		D1_LOG("remove_npc(%x, %d, %x, %x, %x);\n",
-			head_index, (signed char)days, index,
-			name, text);
-
-		CPU_Push32(text);
-		CPU_Push32(name);
-		CPU_Push16(index);
-		CPU_Push16(days);
-		CPU_Push16(head_index);
-		return 1;
-	}
-	case 0xcb8: {
-		Bit16s index = CPU_Pop16();
-		D1_LOG("add_npc(%s);\n", get_fname(index));
-		add_npc(index);
-		CPU_Push16(index);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg097(unsigned short offs)
-{
-
-	switch (offs) {
-#if 0
-	/* Callers: 0 */
-	case 0x000:
-	/* Callers: 1 */
-	case 0x129:
-		return 0;
-	/* Callers: 1 */
-	case 0x15e: {
-		unsigned short c = CPU_Pop16();
-		RealPt p_height = CPU_Pop32();
-		CPU_Push32(p_height);
-		CPU_Push16(c);
-
-		reg_ax = GUI_lookup_char_height(c & 0xff, (unsigned short*)Real2Host(p_height));
-		D1_LOG("GUI_lookup_char_height() = %d\n", (char)reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x1c2:
-#endif
-	/* Callers: 1 */
-	case 0x1f8: {
-		RealPt dst = CPU_Pop32();
-		Bit16s x = CPU_Pop16();
-		Bit16s y = CPU_Pop16();
-		Bit16s num = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-		CPU_Push16(v4);
-		CPU_Push16(num);
-		CPU_Push16(y);
-		CPU_Push16(x);
-		CPU_Push32(dst);
-
-
-		reg_ax = GUI_enter_text(Real2Host(dst),	x, y, num, v4);
-		D1_LOG("GUI_enter_text(0x%x, %d, %d, %d, %d); = 0x%x\n",
-			dst, x, y, num, v4, reg_ax);
-
-		return 1;
-	}
-	/* Callers: 3 */
-	case 0x4ae: {
-		Bit16s v1 = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s v3 = CPU_Pop16();
-		Bit16s v4 = CPU_Pop16();
-
-		D1_LOG("GUI_draw_radio_bg(%d, %d, %d, %d);\n",
-			v1, v2, v3, v4);
-		GUI_draw_radio_bg(v1, v2, v3, v4);
-
-		CPU_Push16(v4);
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		return 1;
-	}
-	/* Callers: 3 */
-	case 0x564: {
-		unsigned short width = CPU_Pop16();
-		unsigned short height = CPU_Pop16();
-		CPU_Push16(height);
-		CPU_Push16(width);
-
-		D1_LOG("GUI_copy_smth(%d, %d)\n", width, height);
-		GUI_copy_smth(width, height);
-
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x59f: {
-		RealPt str = CPU_Pop32();
-		CPU_Push32(str);
-
-		D1_LOG("GUI_output()\n");
-		GUI_output(Real2Host(str));
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x5b4: {
-		RealPt str = CPU_Pop32();
-		unsigned short num = CPU_Pop16();
-		CPU_Push16(num);
-		CPU_Push32(str);
-
-		D1_LOG("GUI_input()\n");
-		reg_ax = GUI_input(Real2Host(str), num);
-
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x7f4: {
-		Bit16s v1 = CPU_Pop16();
-		Bit16u v2 = CPU_Pop16();
-		Bit16u v3 = CPU_Pop16();
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		D1_LOG("GUI_fill_radio_button(%d, %d, %d);\n", v1, v2, v3);
-
-		GUI_fill_radio_button(v1, v2, v3);
-
-		return 1;
-
-	}
-	/* Callers: 1 */
-	case 0x893:
-		return 0;
-	/* Callers: 2 */
-	case 0xb43: {
-		Bit16u v1 = CPU_Pop16();
-		Bit16u v2 = CPU_Pop16();
-		Bit16u v3 = CPU_Pop16();
-		CPU_Push16(v3);
-		CPU_Push16(v2);
-		CPU_Push16(v1);
-
-		D1_LOG("GUI_menu_input(%d, %d, %d);\n", v1, v2, v3);
-
-		reg_ax = GUI_menu_input(v1, v2, v3);
-
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0xd45:
-		   return 0;
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg098(unsigned short offs)
-{
-	switch (offs) {
-
-	/* Callers: 1 */
-	case 0x0000 : {
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-
-		magic_heal_ani(Real2Host(hero));
-		D1_LOG("magic_heal_ani(%s)\n", schick_getCharname(hero));
-
-		return 1;
-	}
-	/* Callers: 4 */
-	case 0x0339 : {
-		unsigned short spell = CPU_Pop16();
-		unsigned short half_cost = CPU_Pop16();
-		CPU_Push16(half_cost);
-		CPU_Push16(spell);
-
-		reg_ax = get_spell_cost(spell, half_cost);
-
-		D1_LOG("get_spell_cost(%s, %d) = %d\n",
-			names_spell[spell], half_cost, (short)reg_ax);
-
-		return 1;
-	}
-	case 0x071d : {
-		RealPt hero = CPU_Pop32();
-		Bit16s spellclass_nr = CPU_Pop16();
-		CPU_Push16(spellclass_nr);
-		CPU_Push32(hero);
-
-		reg_ax = can_use_spellclass(Real2Host(hero), spellclass_nr);
-		D1_LOG("can_use_spellclass(%s, %d) = %d\n",
-			schick_getCharname(hero), spellclass_nr, reg_ax);
-
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x0786 : {
-		RealPt hero = CPU_Pop32();
-		Bit16s show_vals = CPU_Pop16();
-		CPU_Push16(show_vals);
-		CPU_Push32(hero);
-
-		reg_ax = select_spell(Real2Host(hero), show_vals);
-
-		D1_LOG("select_spell(%s, %d) = %d\n",
-			schick_getCharname(hero), show_vals, reg_ax);
-		return 1;
-	}
-	/* Callers: 1 */
-	case 0x0e1f : {
-		// Zauberprobe
-		RealPt hero = CPU_Pop32();
-		unsigned spell = CPU_Pop16();
-		signed bonus = CPU_Pop16();
-		CPU_Push16(bonus);
-		CPU_Push16(spell);
-		CPU_Push32(hero);
-
-		D1_LOG("Zauberprobe: %s %+d ",
-			names_spell[spell], (signed char)bonus);
-
-		reg_ax = test_spell(Real2Host(hero),
-			spell, (signed char)bonus);
-		return 1;
-	}
-	/* Callers: 2 */
-	case 0x1000 : {
-		RealPt hero = CPU_Pop32();
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-		CPU_Push32(hero);
-
-		reg_ax = use_spell(hero, a1, (Bit8s)a2);
-		D1_LOG("use_spell(%s, %d, %d) = %d\n",
-			schick_getCharname(hero), a1, a2, (Bit16s)reg_ax);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg102(unsigned short offs)
-{
-	switch (offs) {
-	case 0x000: {
-		Bit16s damage = CPU_Pop16();
-		CPU_Push16(damage);
-
-		D1_INFO("MON_do_damage(%d)\n", damage);
-		MON_do_damage(damage);
-
-		return 1;
-	}
-	case 0x18e: {
-		Bit16s a1 = CPU_Pop16();
-		Bit16s a2 = CPU_Pop16();
-		CPU_Push16(a2);
-		CPU_Push16(a1);
-
-		D1_INFO("MON_get_spell_cost(%d, %d) = %d\n", a1, a2, reg_ax);
-		reg_ax = MON_get_spell_cost(a1, a2);
-
-		return 1;
-	}
-	case 0x1cf: {
-		RealPt mon = CPU_Pop32();
-		Bit16s t1 = CPU_Pop16();
-		Bit16s t2 = CPU_Pop16();
-		Bit16s t3 = CPU_Pop16();
-		Bit16s bonus = CPU_Pop16();
-		CPU_Push16(bonus);
-		CPU_Push16(t3);
-		CPU_Push16(t2);
-		CPU_Push16(t1);
-		CPU_Push32(mon);
-
-		reg_ax = MON_test_attrib3(Real2Host(mon), t1, t2, t3, (Bit8s)bonus);
-		D1_INFO("MON_test_attrib3(%d, %d, %d, %d) = %d\n", t1, t2, t3, bonus, reg_ax);
-
-		return 1;
-	}
-	case 0x22a: {
-		RealPt mon = CPU_Pop32();
-		Bit16s mspell_nr = CPU_Pop16();
-		Bit16s bonus = CPU_Pop16();
-		CPU_Push16(bonus);
-		CPU_Push16(mspell_nr);
-		CPU_Push32(mon);
-
-		reg_ax = MON_test_skill(Real2Host(mon), mspell_nr, (Bit8s)bonus);
-		D1_INFO("MON_test_skill(%d, %d) = %d\n", mspell_nr, bonus, reg_ax);
-
-		return 1;
-	}
-	case 0x2c2: {
-		RealPt mon = CPU_Pop32();
-		Bit16s ae = CPU_Pop16();
-		CPU_Push16(ae);
-		CPU_Push32(mon);
-
-		MON_sub_ae(Real2Host(mon), ae);
-		D1_INFO("MON_test_skill(%d)\n", ae);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-
-static int n_seg103(unsigned short offs)
-{
-	switch (offs) {
-	case 0x040f: {
-		// Talentprobe
-		RealPt hero = CPU_Pop32();
-		Bit16s skill = CPU_Pop16();
-		Bit16s bonus = CPU_Pop16();
-		CPU_Push16(bonus);
-		CPU_Push16(skill);
-		CPU_Push32(hero);
-
-		D1_LOG("Talentprobe: %s %+d\n ",
-			names_skill[skill], (signed char)bonus);
-
-		reg_ax = test_skill(Real2Host(hero), skill, (signed char)bonus);
-
-		return 1;
-	}
-	case 0x0537: {
-		reg_ax = select_talent();
-		D1_LOG("select_talent() = %s\n", names_skill[reg_ax]);
-		return 1;
-	}
-	case 0x06bf: {
-		Bit16s hero = CPU_Pop16();
-		Bit16s bonus = CPU_Pop16();
-		Bit16s skill = CPU_Pop16();
-		CPU_Push16(skill);
-		CPU_Push16(bonus);
-		CPU_Push16(hero);
-
-		reg_ax = use_talent(hero, (signed char)bonus, skill);
-
-		D1_LOG("use_talent(): %s %+d\n",
-			names_skill[skill], (signed char)bonus);
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg104(unsigned short offs)
-{
-	D1_LOG("%s:0x%x\n", __func__, offs);
-	switch (offs) {
-		case 0x0000: {
-			RealPt hero = CPU_Pop32();
-			Bit16s receipe_index = CPU_Pop16();
-			reg_ax = hero_has_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
-			D1_LOG("hero_has_ingrendients(%s, %d) = %d\n",
-				Real2Host(hero) + 0x10, (Bit8s)receipe_index, (Bit16s)reg_ax);
-			CPU_Push16(receipe_index);
-			CPU_Push32(hero);
-			return 1;
-		}
-		case 0x00b2: {
-			RealPt hero = CPU_Pop32();
-			Bit16s receipe_index = CPU_Pop16();
-			hero_use_ingrendients(Real2Host(hero), (Bit8s)receipe_index);
-			D1_LOG("hero_use_ingrendients(%s, %d)\n",
-				Real2Host(hero) + 0x10, (Bit8s)receipe_index);
-			CPU_Push16(receipe_index);
-			CPU_Push32(hero);
-			return 1;
-		}
-		case 0x016d: {
-			RealPt hero = CPU_Pop32();
-			Bit16s receipe_index = CPU_Pop16();
-			Bit16s flag = CPU_Pop16();
-
-			reg_ax = do_alchemy(Real2Host(hero), (Bit8s)receipe_index, flag);
-			D1_LOG("do_alchemy(%s, %d, %d) = %d\n",
-				Real2Host(hero) + 0x10, (Bit8s)receipe_index, flag, (Bit16s)reg_ax);
-			CPU_Push16(flag);
-			CPU_Push16(receipe_index);
-			CPU_Push32(hero);
-			return 1;
-		}
-		case 0x07e6: {
-			RealPt hero = CPU_Pop32();
-			Bit16s disease = CPU_Pop16();
-			CPU_Push16(disease);
-			CPU_Push32(hero);
-
-			reg_ax = has_herb_for_disease(Real2Host(hero), disease);
-			D1_LOG("has_herb_for_disease(%s, disease) = %d\n",
-				schick_getCharname(hero), disease, reg_ax);
-			return 1;
-		}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg105(unsigned offs) {
-	switch (offs) {
-	case 0x000: {
-	    RealPt hero = CPU_Pop32();
-	    unsigned short item = CPU_Pop16();
-	    unsigned short pos = CPU_Pop16();
-	    CPU_Push16(pos);
-	    CPU_Push16(item);
-	    CPU_Push32(hero);
-
-	    D1_LOG("unequip(%s, %s, %d);\n",
-		    schick_getCharname(hero),
-		    get_itemname(item), pos);
-		    unequip(Real2Host(hero), item, pos);
-
-	    return 1;
-	}
-	case 0x3aa: {
-		RealPt hero = CPU_Pop32();
-		unsigned short item = CPU_Pop16();
-		CPU_Push16(item);
-		CPU_Push32(hero);
-
-		reg_ax = has_hero_stacked(Real2Host(hero), item);
-		D1_LOG("has_hero_stacked(%s, %s) = %d\n",
-			schick_getCharname(hero),
-			get_itemname(item), (signed short)reg_ax);
-
-		return 1;
-	}
-	case 0x3e8: {
-		RealPt hero = CPU_Pop32();
-		Bit16s item = CPU_Pop16();
-		Bit16s v2 = CPU_Pop16();
-		Bit16s nr = CPU_Pop16();
-		CPU_Push16(nr);
-		CPU_Push16(v2);
-		CPU_Push16(item);
-		CPU_Push32(hero);
-
-		reg_ax = give_hero_new_item(Real2Host(hero), item, v2, nr);
-		D1_LOG("near give_hero_new_item(%s, %s, %d, %d); = %d\n",
-			(char*)Real2Host(hero) + 0x10,
-			get_itemname(item), v2, nr, (signed short)reg_ax);
-		return 1;
-	}
-	case 0x675: {
-		unsigned short item = CPU_Pop16();
-		CPU_Push16(item);
-
-		reg_ax = item_pleasing_ingerimm(item);
-		D1_LOG("item_pleasing_ingerimm(%s); = %d\n",
-			get_itemname(item), reg_ax);
-
-		return 1;
-	}
-	case 0x6d9: {
-		RealPt hero = CPU_Pop32();
-		signed short pos = CPU_Pop16();
-		signed short nr = CPU_Pop16();
-		CPU_Push16(nr);
-		CPU_Push16(pos);
-		CPU_Push32(hero);
-
-		reg_ax = drop_item(Real2Host(hero), pos, nr);
-		D1_LOG("drop_item(%s, %d, %d); = %d\n",
-			schick_getCharname(hero), pos, nr, reg_ax);
-
-		return 1;
-	}
-	case 0xada: {
-		RealPt hero = CPU_Pop32();
-		unsigned short item = CPU_Pop16();
-		CPU_Push16(item);
-		CPU_Push32(hero);
-
-		reg_ax = hero_count_item(Real2Host(hero), item);
-		D1_LOG("hero_count_item(%s, %s) = %d\n",
-			schick_getCharname(hero),
-			get_itemname(item), reg_ax);
-
-		return 1;
-	}
-	case 0xc10: {
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-		reg_ax = select_item_to_drop(Real2Host(hero));
-		D1_LOG("near select_item_to_drop(%s) = %d\n",
-			schick_getCharname(hero), reg_ax);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg106(unsigned offs) {
-	switch (offs) {
-	case 0x00: {
-		RealPt hero = CPU_Pop32();
-		Bit16s item = CPU_Pop16();
-		Bit16s pos = CPU_Pop16();
-		CPU_Push16(pos);
-		CPU_Push16(item);
-		CPU_Push32(hero);
-		reg_ax = two_hand_collision(Real2Host(hero), item, pos);
-
-		D1_LOG("two_hand_collision(%s, 0x%x, %d); == %d\n",
-			(char*)Real2Host(hero) + 0x10, item, pos, reg_ax);
-
-		return 1;
-	}
-	case 0x9c: {
-		Bit16s pos1 = CPU_Pop16();
-		Bit16s pos2 = CPU_Pop16();
-		RealPt hero = CPU_Pop32();
-		CPU_Push32(hero);
-		CPU_Push16(pos2);
-		CPU_Push16(pos1);
-
-		D1_LOG("near move_item(%d, %d, %s);\n",
-			pos1, pos2, (char*)Real2Host(hero) + 0x10);
-
-		move_item(pos1, pos2, Real2Host(hero));
-
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg113(unsigned offs) {
-	switch (offs) {
-	case 0x900: {
-		RealPt hero = CPU_Pop32();
-		Bit16s idx = CPU_Pop16();
-		Bit16s arg2 = CPU_Pop16();
-		CPU_Push16(arg2);
-		CPU_Push16(idx);
-		CPU_Push32(hero);
-		D1_LOG("hero_disappear(%s, %d, %d);\n",
-			Real2Host(hero) + 0x10, idx, (signed char)arg2);
-
-		hero_disappear(Real2Host(hero), idx, (signed char)arg2);
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg117(unsigned short offs)
-{
-	switch (offs) {
-	case 0x0000: {
-		Bit16s ani_nr = CPU_Pop16();
-		CPU_Push16(ani_nr);
-
-		D1_LOG("pause_traveling(%d);\n", ani_nr);
-		pause_traveling(ani_nr);
-
-		return 1;
-	}
-	case 0x006a: {
-		D1_LOG("resume_traveling();\n");
-		resume_traveling();
-		return 1;
-	}
-	case 0x00a0: {
-		D1_LOG("hunt_karen();\n");
-		hunt_karen();
-		return 1;
-	}
-	case 0x02a3: {
-		D1_LOG("hunt_wildboar();\n");
-		hunt_wildboar();
-		return 1;
-	}
-	case 0x047f: {
-		D1_LOG("hunt_cavebear();\n");
-		hunt_cavebear();
-		return 1;
-	}
-
-	case 0x060c: {
-		D1_LOG("hunt_viper();\n");
-		hunt_viper();
-		return 1;
-	}
-	case 0x0981: {
-		D1_INFO("do_bison_hunt();\n");
-		return 0;
-	}
-	case 0x0a8c: {
-		D1_INFO("do_rhino_attack();\n");
-		return 0;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
-	}
-}
-
-static int n_seg120(unsigned short offs)
-{
-	switch (offs) {
-	case 0x578: {
-		D1_LOG("init_global_buffer()\n");
-		init_global_buffer();
-		return 1;
-	}
-	case 0x99f: {
-		D1_LOG("refresh_colors();\n");
-		refresh_colors();
-		return 1;
-	}
-	case 0xd85: {
-		D1_LOG("near cleanup_game();\n");
-		cleanup_game();
-		return 1;
-	}
-	default:
-		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
-		exit(1);
 	}
 }
 
