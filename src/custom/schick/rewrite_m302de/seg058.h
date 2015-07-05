@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void do_smith(void);
+
 /* 0x34 */
 void TLK_schmied(signed short);
 
