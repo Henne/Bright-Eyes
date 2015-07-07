@@ -2246,7 +2246,22 @@ static int n_seg058(const unsigned short offs)
 {
 	switch (offs) {
 		case 0x0000: {
-			return 0;
+			RealPt smith_ptr = CPU_Pop32();
+			RealPt hero = CPU_Pop32();
+			Bit16s item_pos = CPU_Pop16();
+			Bit16s smith_pos = CPU_Pop16();
+			CPU_Push16(smith_pos);
+			CPU_Push16(item_pos);
+			CPU_Push32(hero);
+			CPU_Push32(smith_ptr);
+
+			D1_LOG("add_item_to_smith(%x, %s, %d, %d);\n",
+				smith_ptr,
+				schick_getCharname(hero),
+				item_pos,
+				smith_pos);
+			add_item_to_smith(Real2Host(smith_ptr), Real2Host(hero), item_pos, smith_pos);
+			return 1;
 		}
 		case 0x01f9: {
 			return 0;
