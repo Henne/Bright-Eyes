@@ -481,6 +481,11 @@ void do_smith(void)
 	DUMMY_WARNING();
 }
 
+void talk_smith(void)
+{
+	DUMMY_WARNING();
+}
+
 void TLK_schmied(signed short state)
 {
 	DUMMY_WARNING();
