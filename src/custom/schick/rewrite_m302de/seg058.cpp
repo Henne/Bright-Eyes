@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg058 (smith)
- *	Functions rewritten: 3/5
+ *	Functions rewritten: 4/5
  */
 
 #include <stdio.h>
@@ -15,6 +15,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg031.h"
 #include "seg047.h"
 #include "seg056.h"
 #include "seg058.h"
@@ -573,7 +574,11 @@ void do_smith(void)
 
 void talk_smith(void)
 {
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+	do_random_talk(13, 0);
+#endif
 }
 
 void TLK_schmied(signed short state)
