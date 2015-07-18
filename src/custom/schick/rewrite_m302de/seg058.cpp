@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg058 (smith)
- *	Functions rewritten: 2/5
+ *	Functions rewritten: 3/5
  */
 
 #include <stdio.h>
@@ -11,9 +11,13 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
+#include "seg025.h"
+#include "seg026.h"
+#include "seg027.h"
 #include "seg029.h"
 #include "seg047.h"
 #include "seg056.h"
+#include "seg058.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -476,9 +480,95 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	}
 }
 
+/**
+ * \brief	handler for entering smith location
+ */
+/* Borlandified and identical */
 void do_smith(void)
 {
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+	signed short done = 0;
+	signed short answer;
+	Bit8u *smith_ptr;
+
+	if (ds_readds(DAY_TIMER) < HOURS(6) || ds_readds(DAY_TIMER) > HOURS(20)) {
+
+		GUI_output(get_ltx(0x78c));
+		turnaround();
+		return;
+	}
+
+	if (ds_readbs(0x3472 + ds_readws(TYPEINDEX)) != 0 ||
+		ds_readbs(0x34a4 + ds_readws(TYPEINDEX)) != 0 ||
+		(ds_readws(TYPEINDEX) == 1 && ds_readb(0x3fc6))) {
+
+		talk_smith();
+		turnaround();
+		return;
+	}
+
+	load_ggsts_nvf();
+	ds_writew(0x2846, 1);
+	smith_ptr = p_datseg + 0x6c10 + 2 * ds_readws(TYPEINDEX);
+	ds_writew(0xe3f6, 4);
+
+	while (!done) {
+
+		if (ds_readws(0x2846) != 0) {
+
+			draw_loc_icons(3, 21, 18, 8);
+			draw_main_screen();
+			set_var_to_zero();
+			load_ani(5);
+			init_ani(0);
+			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
+			set_audio_track(146);
+			ds_writew(0x2846, 0);
+		}
+
+		handle_gui_input();
+
+		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+
+			ds_writew(TEXTBOX_WIDTH, 4);
+
+			answer = GUI_radio(get_ltx(0x7c0), 3,
+						get_ltx(0x55c),
+						get_ltx(0x7c4),
+						get_ltx(0x7c8)) - 1;
+
+			/* TODO: why should it be 3??? Better make a backup */
+			ds_writew(TEXTBOX_WIDTH, 3);
+
+			if (answer != -2) {
+				ds_writew(ACTION, answer + 129);
+			}
+		}
+
+		if (ds_readws(ACTION) == 131) {
+			done = 1;
+		} else if (ds_readws(ACTION) == 129) {
+
+			talk_smith();
+			ds_writew(0x2846, 1);
+
+			if (ds_readbs(0x3472 + ds_readws(TYPEINDEX)) != 0 ||
+				ds_readbs(0x34a4 + ds_readws(TYPEINDEX)) != 0 ||
+				ds_readbs(DUNGEON_INDEX) != 0)
+			{
+				done = 1;
+			}
+		} else if (ds_readws(ACTION) == 130) {
+			repair_screen(smith_ptr, ds_readws(TYPEINDEX));
+		}
+	}
+
+	turnaround();
+	copy_palette();
+
+#endif
 }
 
 void talk_smith(void)
