@@ -2264,7 +2264,15 @@ static int n_seg058(const unsigned short offs)
 			return 1;
 		}
 		case 0x01f9: {
-			return 0;
+			RealPt smith_ptr = CPU_Pop32();
+			Bit16s a1 = CPU_Pop16();
+			CPU_Push16(a1);
+			CPU_Push32(smith_ptr);
+
+			D1_LOG("repair_screen(%x, %d)\n", smith_ptr, a1);
+			repair_screen(Real2Host(smith_ptr), a1);
+
+			return 1;
 		}
 		case 0x0dc3: {
 			return 0;
