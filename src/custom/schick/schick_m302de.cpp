@@ -1325,7 +1325,7 @@ static int n_seg030(unsigned offs) {
 		Bit16s id = ds_readws(TLK_ID);
 
 		if (id == 1 || (id >= 3 && id <= 10) ||
-			id == 12 || id == 14 || id == 15 || id == 16)
+			(id >= 12 && id <= 16))
 		{
 			talk_switch();
 			return 1;

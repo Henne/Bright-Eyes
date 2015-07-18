@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg058 (smith)
  *	Functions rewritten: 5/5 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg058.cpp
  */
 
 #include <stdio.h>
@@ -37,7 +41,6 @@ namespace M302de {
  * \param item_pos	the position of the item in the inventory
  * \param smith_pos	the position of the item in the repair list
  */
-/* Borlandified and identical */
 void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, signed short smith_pos)
 {
 	signed short item_id;
@@ -105,7 +108,6 @@ struct dummy_c5 {
  * \param smith_ptr	pointer to the smith descriptor
  * \param a1		???
  */
-/* Borlandified and identical */
 void repair_screen(Bit8u *smith_ptr, signed short a1)
 {
 	register signed short l_si;
@@ -485,7 +487,6 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 /**
  * \brief	handler for entering smith location
  */
-/* Borlandified and identical */
 void do_smith(void)
 {
 #if !defined(__BORLANDC__)
@@ -582,7 +583,6 @@ void talk_smith(void)
 #endif
 }
 
-/* Borlandified and identical */
 void TLK_schmied(signed short state)
 {
 	if (!state) {
