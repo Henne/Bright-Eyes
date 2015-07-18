@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg058 (smith)
- *	Functions rewritten: 4/5
+ *	Functions rewritten: 5/5 (complete)
  */
 
 #include <stdio.h>
@@ -19,6 +19,7 @@
 #include "seg047.h"
 #include "seg056.h"
 #include "seg058.h"
+#include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -581,9 +582,32 @@ void talk_smith(void)
 #endif
 }
 
+/* Borlandified and identical */
 void TLK_schmied(signed short state)
 {
-	DUMMY_WARNING();
+	if (!state) {
+		ds_writew(0xe30e, ds_readb(0x3472 + ds_readws(TYPEINDEX)) != 0 ? 1 :
+					(ds_readws(TYPEINDEX) == 17 ? 27 :
+					(ds_readws(TYPEINDEX) == 1 && ds_readb(0x3fc6) != 0 ? 28 : 4)));
+	} else if (state == 1) {
+		ds_writew(0xe30e, ds_readb(0x34a4 + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
+	} else if (state == 3) {
+		ds_writeb(0x34a4 + ds_readws(TYPEINDEX), 1);
+	} else if (state == 6 || state == 26) {
+		tumult();
+		ds_writeb(0x3472 + ds_readws(TYPEINDEX), ds_writeb(0x34a4 + ds_readws(TYPEINDEX), 1));
+	} else if (state == 11 || state == 14 || state == 16 || state == 23) {
+		ds_writeb(0x3472 + ds_readws(TYPEINDEX), 1);
+	} else if (state == 19 || state == 31) {
+		ds_writew(0xe3f6, 3);
+	} else if (state == 30) {
+
+		DNG_enter_dungeon(14);
+		ds_writeb(DUNGEON_LEVEL, 3);
+		ds_writews(0x2d83, ds_writews(X_TARGET, 11));
+		ds_writews(0x2d85, ds_writews(Y_TARGET, 2));
+		ds_writeb(DIRECTION, 2);
+	}
 }
 
 #if !defined(__BORLANDC__)

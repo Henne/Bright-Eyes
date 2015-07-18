@@ -2281,7 +2281,12 @@ static int n_seg058(const unsigned short offs)
 			return 0;
 		}
 		case 0x0fa7: {
-			return 0;
+			Bit16s state = CPU_Pop16();
+			CPU_Push16(state);
+
+			D1_LOG("TLK_schmied(%d)\n", state);
+			TLK_schmied(state);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
