@@ -1,6 +1,10 @@
 /*
- *	Rewrite of DSA1 v3.02_de functions of seg031 (???)
+ *	Rewrite of DSA1 v3.02_de functions of seg031 (tavern helpers)
  *	Functions rewritten: 10/10 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg031.cpp
 */
 
 #include <stdio.h>
@@ -26,7 +30,6 @@ struct s2 {
 	signed short b;
 };
 
-/* Borlandified and identical */
 void do_random_talk(signed short talk_id, signed short informer_id)
 {
 	signed short l_si;
@@ -207,7 +210,6 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 	load_buffer_1(ds_readws(0x26bf));
 }
 
-/* Borlandified and identical */
 /* This function is dead code */
 RealPt get_informer_forename(void)
 {
@@ -245,7 +247,6 @@ RealPt get_informer_forename(void)
  *
  * return a value between 0 and 15
  */
-/* Borlandified and identical */
 signed short get_town_lookup_entry(void)
 {
 	Bit8u *ptr;
@@ -269,7 +270,6 @@ signed short get_town_lookup_entry(void)
  * Game Info: You can ask in some towns where informers live.
  * This function returns a pointer to the answer or to an empty string.
  */
-/* Borlandified and identical */
 RealPt get_informer_hint(void)
 {
 	signed short i;
@@ -289,7 +289,6 @@ RealPt get_informer_hint(void)
  * \brief	get the name on the current informer
  * \return	a pointer to the name of the informer
  */
-/* Borlandified and identical */
 RealPt get_informer_name(void)
 {
 	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(INFORMER_TAB - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
@@ -300,7 +299,6 @@ RealPt get_informer_name(void)
  * \return	a pointer to the name of the informer
  *
  */
-/* Borlandified and identical */
 RealPt get_informer_name2(void)
 {
 	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) +
@@ -311,7 +309,6 @@ RealPt get_informer_name2(void)
  * \brief	loads a gossip message from the current town
  * \return	a pointer to the message.
  */
-/* Borlandified and identical */
 RealPt load_current_town_gossip(void)
 {
 	signed short gossip_id;
@@ -333,7 +330,6 @@ RealPt load_current_town_gossip(void)
 	return (RealPt)host_readd(ptr + 4 * gossip_id);
 }
 
-/* Borlandified and identical */
 RealPt get_random_tavern_message(void)
 {
 	signed short randval;
@@ -374,7 +370,6 @@ RealPt get_random_tavern_message(void)
  * Also this function is called in taverns with amount = 10,
  * and in the thorwalian dungeon with 100.
  */
-/* Borlandified and identical */
 void drink_while_drinking(signed short amount)
 {
 	Bit8u *hero;
@@ -408,7 +403,6 @@ void drink_while_drinking(signed short amount)
  * Also this function is called only at one play with amount = 100,
  * so there is space for tuning.
  */
-/* Borlandified and identical */
 void eat_while_drinking(signed short amount)
 {
 	Bit8u *hero;
