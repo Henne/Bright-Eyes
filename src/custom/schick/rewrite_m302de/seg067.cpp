@@ -267,9 +267,6 @@ void city_event_5(void)
  */
 void city_event_6(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short answer;
 	signed short bak;
 
@@ -296,7 +293,6 @@ void city_event_6(void)
 			ds_writeb(LOCATION, bak);
 		}
 	}
-#endif
 }
 
 /**
