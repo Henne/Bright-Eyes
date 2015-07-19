@@ -6,7 +6,8 @@ namespace M302de {
 RealPt load_current_town_gossip(void);
 /* 0x25 */
 void do_random_talk(signed short, signed short);
-
+/* 0x2a */
+RealPt get_informer_forename(void);
 /* 0x2f */
 signed short get_town_lookup_entry(void);
 /* 0x34 */

@@ -1,6 +1,6 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 8/10
+	Functions rewritten: 9/10
 */
 
 #include <stdio.h>
@@ -205,6 +205,39 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 
 	ds_writews(0x26bd, ds_writews(0x2ccf, -1));
 	load_buffer_1(ds_readws(0x26bf));
+}
+
+/* Borlandified and identical */
+/* This function is dead code */
+RealPt get_informer_forename(void)
+{
+	signed short i;
+	char tmp;
+	Bit8u *p_info;
+	Bit8u *informer_name;
+
+	p_info = p_datseg + 0x5ed6;
+
+	for (i = 0; i < 15; i++, p_info += 4) {
+
+		if (host_readbs(p_info + 2) == ds_readbs(CURRENT_TOWN)) {
+
+			i = 0;
+			informer_name = get_ltx(4 * host_readws(p_info));
+
+			do {
+				tmp = host_readbs(informer_name);
+				informer_name++;
+				i++;
+			} while (tmp != ' ');
+
+			strncpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(4 * host_readws(p_info)), i);
+#ifdef M302de_ORIGINAL_BUGFIX
+			break;
+#endif
+		}
+	}
+	return (RealPt)ds_readd(0xd2eb);
 }
 
 /**
