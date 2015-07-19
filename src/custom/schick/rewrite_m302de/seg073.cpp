@@ -586,34 +586,34 @@ void tavern_follow_informer(void)
 
 	switch (get_town_lookup_entry() + 1) {
 	case 1: {
-		do_tlk(6, 0);
+		do_talk(6, 0);
 		ds_writew(0x2d83, 8);
 		ds_writew(0x2d85, 6);
 		ds_writeb(DIRECTION, 3);
 		break;
 	}
 	case 6: {
-		do_tlk(8, 0);
+		do_talk(8, 0);
 		ds_writew(0x2d83, 5);
 		ds_writew(0x2d85, 4);
 		ds_writeb(DIRECTION, 3);
 		break;
 	}
 	case 7: {
-		do_tlk(8, 1);
+		do_talk(8, 1);
 		ds_writew(0x2d83, 12);
 		ds_writew(0x2d85, 10);
 		ds_writeb(DIRECTION, 1);
 		break;
 	}
 	case 8: {
-		do_tlk(10, 1);
+		do_talk(10, 1);
 		ds_writew(0x2d83, ds_writew(0x2d85, 7));
 		ds_writeb(DIRECTION, 1);
 		break;
 	}
 	case 14: {
-		do_tlk(8, 2);
+		do_talk(8, 2);
 		ds_writew(0x2d83, 5);
 		ds_writew(0x2d85, 8);
 		ds_writeb(DIRECTION, 0);
