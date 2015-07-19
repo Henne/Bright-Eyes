@@ -307,32 +307,30 @@ RealPt get_informer_name2(void)
 			ds_readw(INFORMER_TAB + get_town_lookup_entry() * 4) * 4);
 }
 
-/* 0x63b */
 /**
- * load_current_town_gossip() - loads a gossip message from the current town
- *
- * Returns a pointer to the message.
+ * \brief	loads a gossip message from the current town
+ * \return	a pointer to the message.
  */
+/* Borlandified and identical */
 RealPt load_current_town_gossip(void)
 {
-	RealPt ptr;
-	unsigned short gossip_id;
+	signed short gossip_id;
+	Bit8u *ptr;
 
 	/* load TOWN.LTX */
-	load_ltx(ds_readb(CURRENT_TOWN) + 0x4d);
+	load_ltx(ds_readbs(CURRENT_TOWN) + 0x4d);
 
 	/* mark some buffers invalid */
-	ds_writew(CURRENT_ANI, 0xffff);
-	ds_writew(0x2ccb, 0xffff);
+	ds_writews(0x2ccb, ds_writews(CURRENT_ANI, -1));
 
 	/* get the pointer to the ltx buffer */
-	ptr = (RealPt)ds_readd(0xd019);
+	ptr = Real2Host(ds_readd(0xd019));
 
 	/* get some gossip */
 	gossip_id = get_tavern_gossip();
 
 	/* return the pointer to the gossip (pointers are stored in the first 1000 bytes) */
-	return (RealPt)host_readd(Real2Host(ptr) + gossip_id * 4);
+	return (RealPt)host_readd(ptr + 4 * gossip_id);
 }
 
 /* 0x70b */
