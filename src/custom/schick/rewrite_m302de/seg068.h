@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void THO_eisenhof(void);
 //0x25
 void thorwal_imman();
 //0x2a

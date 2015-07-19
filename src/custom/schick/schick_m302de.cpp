@@ -8228,8 +8228,9 @@ static int seg068(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			D1_LOG("thorwal_eisenhof();\n");
-			return 0;
+			D1_LOG("THO_eisenhof();\n");
+			THO_eisenhof();
+			return 1;
 		}
 		case 0x25: {
 			D1_LOG("thorwal_imman();\n");

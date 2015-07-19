@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 3/13
+ *	Functions rewritten: 4/13
  *
 */
 
@@ -12,11 +12,52 @@
 
 #include "seg002.h"
 #include "seg007.h"
+#include "seg058.h"
 #include "seg097.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+/* Borlandified and identical */
+void THO_eisenhof(void)
+{
+	signed short answer;
+	Bit32s money;
+
+	do {
+		answer = GUI_radio(get_city(0xbc), 3,
+					get_city(0xc0),
+					get_city(0xc4),
+					get_city(0xc8));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		ds_writews(TYPEINDEX, 41);
+		do_smith();
+
+	} else if (answer == 2) {
+
+		GUI_input(get_city(0xcc), 0);
+
+		money = get_party_money();
+		money -= 10;
+		set_party_money(money);
+
+		/* test for CH+0 */
+		if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0) {
+
+			GUI_input(get_city(0xd0), 0);
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(4 * (random_schick(26) + 55)));
+			GUI_input(Real2Host(ds_readd(DTP2)), 0);
+		} else {
+			GUI_input(get_city(0xd4), 0);
+		}
+	}
+}
 
 /* Borlandified and identical */
 void thorwal_imman(void)
