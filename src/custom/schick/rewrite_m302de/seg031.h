@@ -16,6 +16,8 @@ RealPt get_informer_hint(void);
 RealPt get_informer_name(void);
 /* 0x3e */
 RealPt get_informer_name2(void);
+/* 0x43 */
+RealPt get_random_tavern_message(void);
 /* 0x48 */
 void drink_while_drinking(unsigned short);
 /* 0x4d */

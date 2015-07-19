@@ -1,6 +1,6 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg031 (???)
-	Functions rewritten: 9/10
+ *	Rewrite of DSA1 v3.02_de functions of seg031 (???)
+ *	Functions rewritten: 10/10 (complete)
 */
 
 #include <stdio.h>
@@ -331,6 +331,36 @@ RealPt load_current_town_gossip(void)
 
 	/* return the pointer to the gossip (pointers are stored in the first 1000 bytes) */
 	return (RealPt)host_readd(ptr + 4 * gossip_id);
+}
+
+/* Borlandified and identical */
+RealPt get_random_tavern_message(void)
+{
+	signed short randval;
+	RealPt ptr;
+
+	randval = random_schick(20) - 1;
+
+	ptr = (RealPt)host_readd(Real2Host(ds_readd(0xc3b1)) + 4 * (randval + 147));
+
+	if (!randval || randval == 19) {
+
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)Real2Host(ptr),
+			(char*)Real2Host(load_current_town_gossip()));
+
+		return (RealPt)ds_readd(0xd2eb);
+
+	} else if (randval == 3) {
+
+		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			(char*)Real2Host(ptr),
+			(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+
+		return (RealPt)ds_readd(0xd2eb);
+	} else {
+		return ptr;
+	}
 }
 
 /* 0x70b */

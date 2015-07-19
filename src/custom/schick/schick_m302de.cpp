@@ -1366,6 +1366,17 @@ static int n_seg031(unsigned offs) {
 
 		return 1;
 	}
+	case 0x683: {
+		RealPt retval;
+
+		retval = get_random_tavern_message();
+		D1_LOG("get_random_tavern_mesasge() = %s\n", Real2Host(retval));
+
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+
+		return 1;
+	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 		exit(1);
@@ -6827,9 +6838,7 @@ static int seg031(unsigned short offs) {
 
 		return 1;
 	}
-		case 0x43: {
-			return 0;
-		}
+	case 0x43: return n_seg031(0x0683);
 	case 0x48: {
 		Bit16s amount = CPU_Pop16();
 		CPU_Push16(amount);
