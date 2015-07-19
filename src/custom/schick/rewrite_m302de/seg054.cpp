@@ -61,9 +61,6 @@ RealPt get_first_busy_hero(void)
  */
 void do_inn(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short i;
 	signed short answer;
 	signed short done;
@@ -452,7 +449,6 @@ void do_inn(void)
 		GRP_switch_to_next(1);
 		draw_status_line();
 	}
-#endif
 }
 
 void TLK_herberg(signed short state)

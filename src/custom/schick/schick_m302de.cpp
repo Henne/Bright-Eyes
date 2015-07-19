@@ -2175,7 +2175,8 @@ static int n_seg054(unsigned short offs)
 		}
 		case 0x007c: {
 			D1_LOG("do_inn()\n");
-			return 0;
+			do_inn();
+			return 1;
 		}
 		case 0x0ca2: {
 			Bit16s state = CPU_Pop16();
