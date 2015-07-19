@@ -21,7 +21,7 @@ RealPt get_random_tavern_message(void);
 /* 0x48 */
 void drink_while_drinking(signed short);
 /* 0x4d */
-void eat_while_drinking(unsigned short);
+void eat_while_drinking(signed short);
 
 #if !defined(__BORLANDC__)
 }

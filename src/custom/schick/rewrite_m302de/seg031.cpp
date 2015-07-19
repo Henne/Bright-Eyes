@@ -398,10 +398,9 @@ void drink_while_drinking(signed short amount)
 	}
 }
 
-/* 0x77d */
 /**
- * eat_while_drinking() - eat food while sitting in a tavern
- * @amount:	how much food you get
+ * \brief		eat food while sitting in a tavern
+ * \param amount	how much food you get
  *
  * TODO:
  * This function is only called while sitting in a tavern.
@@ -409,32 +408,26 @@ void drink_while_drinking(signed short amount)
  * Also this function is called only at one play with amount = 100,
  * so there is space for tuning.
  */
-void eat_while_drinking(unsigned short amount)
+/* Borlandified and identical */
+void eat_while_drinking(signed short amount)
 {
 	Bit8u *hero;
-	unsigned short i;
+	signed short i;
 
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
 
-		/* is hero valid */
-		if (host_readb(hero + 0x21) == 0)
-			continue;
+		if (host_readbs(hero + 0x21) != 0 &&
+			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero)) {
 
-		/* is hero in group */
-		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
+			/* sub food amount */
+			host_writeb(hero + 0x7f, host_readb(hero + 0x7f) - amount);
 
-		/* hero is dead */
-		if (hero_dead(hero))
-			continue;
-
-		/* sub food amount */
-		host_writeb(hero + 0x7f, host_readb(hero + 0x7f) - amount);
-
-		/* adjust food counter */
-		if (host_readbs(hero + 0x7f) < 0) {
-			host_writeb(hero + 0x7f, 0);
+			/* adjust food counter */
+			if (host_readbs(hero + 0x7f) < 0) {
+				host_writeb(hero + 0x7f, 0);
+			}
 		}
 	}
 }
