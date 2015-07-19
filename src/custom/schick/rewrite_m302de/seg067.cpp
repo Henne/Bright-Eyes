@@ -30,9 +30,6 @@ namespace M302de {
  */
 void city_event_switch(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	/* load STRASSE.LTX */
 	load_buffer_1(224);
 
@@ -60,7 +57,6 @@ void city_event_switch(void)
 	/* update the current position / make the step */
 	ds_writews(X_TARGET, ds_readws(0x2d83));
 	ds_writews(Y_TARGET, ds_readws(0x2d85));
-#endif
 }
 
 /**

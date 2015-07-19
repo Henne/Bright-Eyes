@@ -2458,7 +2458,8 @@ static int n_seg067(unsigned offs)
 	switch (offs) {
 	case 0x000: {
 		D1_LOG("city_event_switch()\n");
-		return 0;
+		city_event_switch();
+		return 1;
 	}
 	case 0x009a: {
 		D1_LOG("city_event_1()\n");
