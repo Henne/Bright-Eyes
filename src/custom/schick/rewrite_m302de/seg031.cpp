@@ -285,21 +285,22 @@ RealPt get_informer_hint(void)
 	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xb54);
 }
 
-/* 0x5f2 */
 /**
- * get_informer_name() - get the name on the current informer
- *
+ * \brief	get the name on the current informer
+ * \return	a pointer to the name of the informer
  */
+/* Borlandified and identical */
 RealPt get_informer_name(void)
 {
 	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(INFORMER_TAB - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
 }
 
-/* 0x617 */
 /**
- * get_informer_name2() - get the name of the informer in this town
+ * \brief	get the name of the informer in this town
+ * \return	a pointer to the name of the informer
  *
  */
+/* Borlandified and identical */
 RealPt get_informer_name2(void)
 {
 	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) +
