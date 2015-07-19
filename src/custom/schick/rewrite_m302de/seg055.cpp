@@ -52,9 +52,6 @@ struct dummy7 {
 
 void do_merchant(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short l_si;
 	signed short item_pos;
 	signed short done;
@@ -268,7 +265,6 @@ void do_merchant(void)
 	copy_palette();
 
 	turnaround();
-#endif
 }
 
 void talk_merchant(void)

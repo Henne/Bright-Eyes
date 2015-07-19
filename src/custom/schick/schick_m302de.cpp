@@ -2219,7 +2219,9 @@ static int n_seg055(unsigned short offs)
 			D1_INFO("\tPreise: %3d%% [70, 180]\n", 100 + price);
 			D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
 
-			return 0;
+			do_merchant();
+
+			return 1;
 		}
 		case 0x0622: {
 			D1_LOG("talk_merchant()\n");
