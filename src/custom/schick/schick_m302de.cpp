@@ -1324,8 +1324,7 @@ static int n_seg030(unsigned offs) {
 		/* TODO: all TLK_ID [0,19] */
 		Bit16s id = ds_readws(TLK_ID);
 
-		if (id == 1 || (id >= 3 && id <= 10) ||
-			(id >= 12 && id <= 16))
+		if (id == 1 || (id >= 3 && id <= 16))
 		{
 			talk_switch();
 			return 1;
@@ -8421,12 +8420,8 @@ static int seg072(unsigned short offs) {
 			CPU_Push16(v2);
 			CPU_Push16(v1);
 			D1_INFO("Informant %s Zustand %d\n", v1 == 0 || v1 == 1 ? "Treborn" : "Einhorn", v2);
-#if 0
 			INF_treborn_unicorn(v1, v2);
 			return 1;
-#else
-			return 0;
-#endif
 		}
 		case 0x48: {
 			/* Informer: Swafnild */

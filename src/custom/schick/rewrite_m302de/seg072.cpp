@@ -567,9 +567,6 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
  */
 void INF_treborn_unicorn(signed short informer, signed short state)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	Bit32s money;
 	signed short enough_money;
 
@@ -704,7 +701,6 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			ds_writeb(UNICORN_TIMER, random_schick(24) + 36);
 		}
 	}
-#endif
 }
 
 /**
