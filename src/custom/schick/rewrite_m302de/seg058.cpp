@@ -489,9 +489,6 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
  */
 void do_smith(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short done = 0;
 	signed short answer;
 	Bit8u *smith_ptr;
@@ -570,8 +567,6 @@ void do_smith(void)
 
 	turnaround();
 	copy_palette();
-
-#endif
 }
 
 void talk_smith(void)

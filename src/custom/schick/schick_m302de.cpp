@@ -2285,7 +2285,9 @@ static int n_seg058(const unsigned short offs)
 			return 1;
 		}
 		case 0x0dc3: {
-			return 0;
+			D1_LOG("do_smith();\n");
+			do_smith();
+			return 1;
 		}
 		case 0x0f96: {
 			D1_LOG("talk_smith()\n");
