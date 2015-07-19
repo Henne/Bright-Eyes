@@ -31,11 +31,7 @@ namespace M302de {
 
 void talk_inn(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	do_random_talk(1, 0);
-#endif
 }
 
 /**

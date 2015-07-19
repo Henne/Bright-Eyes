@@ -2161,7 +2161,8 @@ static int n_seg054(unsigned short offs)
 	switch (offs) {
 		case 0x0000: {
 			D1_LOG("talk_inn()\n");
-			return 0;
+			talk_inn();
+			return 1;
 		}
 		case 0x0011: {
 			RealPt hero = get_first_busy_hero();

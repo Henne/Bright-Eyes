@@ -5,7 +5,7 @@ namespace M302de {
 /* 0x20 */
 void do_inn(void);
 /* 0x25 */
-void do_talk_inn(void);
+void talk_inn(void);
 /* 0x2a */
 RealPt get_first_busy_hero(void);
 /* 0x2f */
