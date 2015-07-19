@@ -241,10 +241,11 @@ RealPt get_informer_forename(void)
 }
 
 /**
- * get_town_lookup_entry() - ?
+ * \brief ?
  *
  * return a value between 0 and 15
  */
+/* Borlandified and identical */
 signed short get_town_lookup_entry(void)
 {
 	Bit8u *ptr;
