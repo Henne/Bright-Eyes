@@ -2288,7 +2288,9 @@ static int n_seg058(const unsigned short offs)
 			return 0;
 		}
 		case 0x0f96: {
-			return 0;
+			D1_LOG("talk_smith()\n");
+			talk_smith();
+			return 1;
 		}
 		case 0x0fa7: {
 			Bit16s state = CPU_Pop16();

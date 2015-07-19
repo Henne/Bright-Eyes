@@ -576,11 +576,7 @@ void do_smith(void)
 
 void talk_smith(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	do_random_talk(13, 0);
-#endif
 }
 
 void TLK_schmied(signed short state)
