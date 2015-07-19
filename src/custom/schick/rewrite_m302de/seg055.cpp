@@ -273,9 +273,6 @@ void do_merchant(void)
 
 void talk_merchant(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short tlk_id;
 
 	switch (ds_readbs(0x6870 + 9 * ds_readws(TYPEINDEX) + 1)) {
@@ -285,7 +282,6 @@ void talk_merchant(void)
 	}
 
 	do_random_talk(tlk_id, 0);
-#endif
 }
 
 void TLK_ghandel(signed short state)
