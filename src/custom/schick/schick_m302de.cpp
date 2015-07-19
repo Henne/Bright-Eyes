@@ -1341,6 +1341,16 @@ static int n_seg030(unsigned offs) {
 
 static int n_seg031(unsigned offs) {
 	switch (offs) {
+	case 0x0000: {
+		Bit16s talk_id = CPU_Pop16();
+		Bit16s informer_id = CPU_Pop16();
+		CPU_Push16(informer_id);
+		CPU_Push16(talk_id);
+
+		D1_INFO("do_random_talk(%d, %d)\n", talk_id, informer_id);
+		do_random_talk(talk_id, informer_id);
+		return 1;
+	}
 	case 0x56c: {
 		reg_ax = get_town_lookup_entry();
 		D1_LOG("get_town_lookup_entry(); = %d\n", reg_ax);
@@ -6770,9 +6780,7 @@ static int seg031(unsigned short offs) {
 
 		return 1;
 	}
-		case 0x25: {
-			return 0;
-		}
+	case 0x25: return n_seg031(0x0000);
 	case 0x2f: {
 		reg_ax = get_town_lookup_entry();
 		D1_LOG("far get_town_lookup_entry(); = %d\n", reg_ax);
