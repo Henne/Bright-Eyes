@@ -285,7 +285,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 #if !defined(__BORLANDC__)
 		/* BE-fix */
-		item = host_readws((Bit8u*)&l6);
+		l6 = host_readws((Bit8u*)&l6);
 #endif
 
 		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x2c04));
