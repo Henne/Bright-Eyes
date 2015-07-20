@@ -2147,6 +2147,40 @@ static int n_seg050(unsigned short offs) {
 	}
 }
 
+static int n_seg051(unsigned short offs)
+{
+	switch (offs) {
+		case 0x0000: {
+			D1_LOG("do_wildcamp()\n");
+			return 0;
+		}
+		case 0x0929: {
+			RealPt hero = CPU_Pop32();
+			Bit16s herb_hours = CPU_Pop16();
+			Bit16s mod = CPU_Pop16();
+			CPU_Push16(mod);
+			CPU_Push16(herb_hours);
+			CPU_Push32(hero);
+			D1_LOG("gather_herbs(%s, %d, %d)\n",
+				schick_getCharname(hero), herb_hours, mod);
+			reg_ax = reg_ax;
+			return 0;
+		}
+		case 0x0b5b: {
+			Bit16s mod = CPU_Pop16();
+			Bit16s hero_pos = CPU_Pop16();
+			CPU_Push16(hero_pos);
+			CPU_Push16(mod);
+			D1_LOG("replenish_stocks(%d, %d)\n", mod, hero_pos);
+			reg_ax = reg_ax;
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
 static int n_seg053(unsigned short offs) {
 	switch (offs) {
 		case 0x0000: {
@@ -7893,6 +7927,18 @@ static int seg050(unsigned short offs) {
 	}
 }
 
+static int seg051(const unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: return n_seg051(0x0000);
+		case 0x25: return n_seg051(0x0b5b);
+		case 0x2a: return n_seg051(0x0929);
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg052(const unsigned short offs)
 {
 	switch (offs) {
@@ -10870,7 +10916,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		case 0x1350:	return seg048(offs);
 		case 0x1353:	return seg049(offs);
 		case 0x1358:	return seg050(offs);
-		case 0x135c:	return 0;
+		case 0x135c:	return seg051(offs);
 		case 0x135f:	return seg052(offs);
 		case 0x1362:	return seg053(offs);
 		case 0x1365:	return seg054(offs);
@@ -10984,6 +11030,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1350)) retval = n_seg048(offs);
 	else if (is_ovrseg(0x1353)) retval = n_seg049(offs);
 	else if (is_ovrseg(0x1358)) retval = n_seg050(offs);
+	else if (is_ovrseg(0x135c)) retval = n_seg051(offs);
 	else if (is_ovrseg(0x1362)) retval = n_seg053(offs);
 	else if (is_ovrseg(0x1365)) retval = n_seg054(offs);
 	else if (is_ovrseg(0x1369)) retval = n_seg055(offs);
