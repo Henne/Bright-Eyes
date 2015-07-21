@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 19/22
+ *	Functions rewritten: 20/22
  */
 
 #include <stdio.h>
@@ -15,6 +15,7 @@
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg103.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
@@ -454,8 +455,70 @@ void seg092_06b4(signed short a1)
 		}
 	}
 #endif
-
 }
+
+/* Borlandified and identical */
+void use_lockpicks_on_chest(RealPt chest_ptr)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	signed short l_si;
+	signed short l_di;
+	Bit8u *hero;
+
+	hero = get_first_hero_available_in_group();
+
+	if ((l_si = hero_has_lockpicks(hero)) != -1) {
+
+		if (l_si != -2) {
+
+			l_di = test_skill(hero, 48, host_readbs(Real2Host(chest_ptr) + 2));
+
+			if (l_di == -99) {
+				/* unlucky, your lockpicks break... */
+
+				print_msg_with_first_hero(get_ltx(0x854));
+				or_ptr_bs(hero + 0x19a + 14 * l_si, 1);
+
+				/* ... and you trigger the trap */
+				if ((RealPt)host_readd(Real2Host(chest_ptr) + 7)) {
+					((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
+				}
+
+			} else if (l_di <= 0) {
+				/* trigger the trap */
+				if ((RealPt)host_readd(Real2Host(chest_ptr) + 7)) {
+					((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
+				}
+
+			} else {
+				/* success */
+
+				add_hero_ap(hero, 1);
+
+				if ((RealPt)host_readd(Real2Host(chest_ptr) + 11)) {
+
+					((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+
+					if ((RealPt)host_readd(Real2Host(chest_ptr) + 7) == (RealPt)&chest_protected_heavy) {
+						add_hero_ap(hero, 5);
+					}
+
+				}
+
+				ds_writew(0xe4a0, 1);
+			}
+
+		} else {
+			print_msg_with_first_hero(get_ltx(0x84c));
+		}
+	} else {
+		print_msg_with_first_hero(get_ltx(0x848));
+	}
+#endif
+}
+
 
 #if !defined(__BORLANDC__)
 }
