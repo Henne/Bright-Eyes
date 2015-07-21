@@ -1,8 +1,9 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 18/22
+ *	Functions rewritten: 19/22
  */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "v302de.h"
@@ -358,6 +359,102 @@ signed short hero_has_lockpicks(Bit8u *hero)
 	}
 
 	return retval;
+}
+
+void (*func)(RealPt);
+
+struct chest {
+	signed short id;
+	signed char mod;
+	void (*func1)(RealPt);
+	void (*func2)(void);
+	void (*func3)(RealPt);
+	unsigned short ap;
+	unsigned short money;
+	signed short food;
+};
+
+/* Borlandified and identical */
+void seg092_06b4(signed short a1)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	signed short x;
+	signed short y;
+	signed short chest_id;
+	signed short l4;
+	RealPt chest_ptr;
+	Bit8u *ptr;
+
+	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
+	ptr = p_datseg + 0xbd95;
+	ds_writew(0xe4a0, 0);
+	x = ds_readws(X_TARGET);
+	y = ds_readws(Y_TARGET);
+
+	if (a1 != 0) {
+		switch(ds_readbs(DIRECTION)) {
+			case 0: y--; break;
+			case 1: x++; break;
+			case 2: y++; break;
+			case 3: x--; break;
+		}
+	}
+
+	l4 = host_readb(ptr + 16 * y + x) & 2;
+	chest_id = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+
+	play_voc(301);
+
+	do {
+
+		if (host_readws(Real2Host(chest_ptr)) == chest_id) {
+
+			if (l4 != 0 && host_readd(Real2Host(chest_ptr) + 11)) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+			} else if (host_readbs(Real2Host(chest_ptr) + 2) != 0) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 3)))(chest_ptr);
+			} else if ((RealPt)host_readd(Real2Host(chest_ptr) + 3)) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 3)))(chest_ptr);
+			} else if ((RealPt)host_readd(Real2Host(chest_ptr) + 11)) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+				ds_writew(0xe4a0, 1);
+			} else if (host_readws(Real2Host(chest_ptr) + 17) != 0) {
+				ds_writew(0xe4a0, 1);
+			}
+
+			break;
+		}
+
+	} while (host_readws(Real2Host(((struct chest*)chest_ptr)++)) != -1);
+
+	if (l4 == 0 && ds_readws(0xe4a0) != 0) {
+
+		if (host_readws(Real2Host(chest_ptr) + 15) != 0) {
+			/* There are AP in the chest */
+			add_hero_ap_all(host_readws(Real2Host(chest_ptr) + 15));
+		}
+
+		if (host_readws(Real2Host(chest_ptr) + 17) != 0) {
+
+			/* There is money in the chest */
+			make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), host_readw(Real2Host(chest_ptr) + 17));
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xc64),
+				(char*)Real2Host(ds_readd(0xd2eb)));
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			set_party_money(get_party_money() + host_readw(Real2Host(chest_ptr) + 17));
+		}
+
+		if (host_readws(Real2Host(chest_ptr) + 19) != 0) {
+			/* There are FOOD PACKAGES in the chest */
+			get_item(45, 1, host_readws(Real2Host(chest_ptr) + 19));
+		}
+	}
+#endif
+
 }
 
 #if !defined(__BORLANDC__)
