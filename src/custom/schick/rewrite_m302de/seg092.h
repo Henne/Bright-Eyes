@@ -32,6 +32,9 @@ void seg092_06b4(signed short);
 /* 0x4d */
 void use_lockpicks_on_chest(RealPt);
 
+/* 0x52 */
+void use_key_on_chest(RealPt);
+
 /* 0x5c */
 void chest_poisoned1(void);
 

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 20/22
+ *	Functions rewritten: 21/22
  */
 
 #include <stdio.h>
@@ -519,6 +519,30 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 #endif
 }
 
+/* Borlandified and identical */
+void use_key_on_chest(RealPt chest_ptr)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	signed short key_pos;
+	Bit8u *hero;
+
+	hero = get_first_hero_available_in_group();
+
+	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1) {
+
+		if (!ks_broken(hero + 0x196 + 14 * key_pos)) {
+
+			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+
+			ds_writew(0xe4a0, 1);
+		}
+	} else {
+		((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
+	}
+#endif
+}
 
 #if !defined(__BORLANDC__)
 }
