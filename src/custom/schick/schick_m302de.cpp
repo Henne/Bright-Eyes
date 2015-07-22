@@ -9074,7 +9074,14 @@ static int seg092(unsigned short offs) {
 		return 0;
 	}
 	case 0x57: {
-		return 0;
+		RealPt chest = CPU_Pop32();
+		RealPt text1 = CPU_Pop32();
+		CPU_Push32(text1);
+		CPU_Push32(chest);
+
+		D1_LOG("loot_multi_chest()\n");
+		loot_multi_chest(Real2Host(chest), Real2Host(text1));
+		return 1;
 	}
 	case 0x5c: {
 		D1_LOG("chest_poisoned1()\n");

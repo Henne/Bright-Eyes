@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 21/22
+ *	Functions rewritten: 22/22 (complete)
  */
 
 #include <stdio.h>
@@ -542,6 +542,100 @@ void use_key_on_chest(RealPt chest_ptr)
 		((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
 	}
 #endif
+}
+
+/* Borlandified and identical */
+void loot_multi_chest(Bit8u *chest, Bit8u *msg)
+{
+	unsigned short l_si;
+	signed short item_nr;
+	signed short item_cnt;
+	signed short tw_bak;
+	char temp_str[10];
+	signed short len;
+	char names[20][25];
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
+
+	do {
+
+		item_nr = 0;
+		while ((item_cnt = host_readb((item_nr + item_nr) + chest)) != 255) {
+
+			names[item_nr][0] = '\0';
+
+			if ((l_si = chest[item_nr + item_nr + 1]) > 1) {
+#if defined(__BORLANDC__)
+				itoa(l_si, names[item_nr], 10);
+#else
+				sprintf(names[item_nr], "%d", l_si);
+#endif
+				strcat(names[item_nr], (char*)p_datseg + 0x9dc4);
+			}
+
+			strcat(names[item_nr++], (char*)Real2Host(GUI_name_plural( ((signed short)(l_si > 1 ? (unsigned short)1 : (unsigned short)0)) ? 4 : 0, (Bit8u*)get_itemname(item_cnt))));
+		}
+
+		if (item_nr != 0) {
+
+			item_nr = GUI_radio(msg, item_nr,
+				names[0], names[1], names[2], names[3],
+				names[4], names[5], names[6], names[7],
+				names[8], names[9], names[10], names[11],
+				names[12], names[13], names[14], names[15],
+				names[16], names[17], names[18], names[19]) - 1;
+
+			if (item_nr != -2) {
+				item_nr += item_nr;
+#if defined(__BORLANDC__)
+				itoa(chest[item_nr + 1], temp_str, 10);
+#else
+				sprintf(temp_str, "%d", host_readb(chest + item_nr + 1));
+#endif
+				len = strlen(temp_str);
+
+				do {
+					item_cnt = (l_si = chest[item_nr + 1]) > 1 ? GUI_input(get_ltx(0x944), len) : l_si;
+
+				} while (item_cnt < 0);
+
+				if (item_cnt > l_si) {
+					item_cnt = l_si;
+				}
+
+				if (item_cnt != 0) {
+
+					if (chest[item_nr] == 250) {
+						add_party_money(item_cnt * 100L);
+					} else {
+						item_cnt = get_item(chest[item_nr], 1, item_cnt);
+					}
+
+					if (item_cnt == l_si) {
+
+						do {
+							chest[item_nr] = (item_cnt = chest[item_nr + 2]);
+							chest[item_nr + 1] = chest[item_nr + 3];
+							item_nr += 2;
+						} while (item_cnt != 255);
+
+					} else if (item_cnt != 0) {
+						chest[item_nr + 1] -= item_cnt;
+					} else {
+						item_nr = -2;
+					}
+				}
+			}
+
+
+		} else {
+			item_nr = -2;
+		}
+
+	} while (item_nr != -2);
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
 #if !defined(__BORLANDC__)
