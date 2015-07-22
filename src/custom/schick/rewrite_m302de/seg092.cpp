@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
  *	Functions rewritten: 22/22 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg092.cpp
  */
 
 #include <stdio.h>
@@ -22,7 +26,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void chest_protected_normal(void)
 {
 	/* a protected chest */
@@ -32,14 +35,12 @@ void chest_protected_normal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), random_schick(6));
 }
 
-/* Borlandified and identical */
 void chest_closed(void)
 {
 	/* a protected chest */
 	print_msg_with_first_hero(get_ltx(0x81c));
 }
 
-/* Borlandified and identical */
 void chest_protected_heavy(void)
 {
 	/* a protected chest */
@@ -49,7 +50,6 @@ void chest_protected_heavy(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_poisoned1(void)
 {
 	/* a protected chest */
@@ -62,7 +62,6 @@ void chest_poisoned1(void)
 	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 1);
 }
 
-/* Borlandified and identical */
 void chest_poisoned2(void)
 {
 	/* a protected chest */
@@ -75,7 +74,6 @@ void chest_poisoned2(void)
 	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 2);
 }
 
-/* Borlandified and identical */
 void chest_poisoned3(void)
 {
 	/* a protected chest */
@@ -88,7 +86,6 @@ void chest_poisoned3(void)
 	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 8);
 }
 
-/* Borlandified and identical */
 void chest_protected_brutal(void)
 {
 	/* a protected chest */
@@ -98,7 +95,6 @@ void chest_protected_brutal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_stoned(void)
 {
 	/* a protected chest */
@@ -111,7 +107,6 @@ void chest_stoned(void)
 	or_ptr_bs(Real2Host(ds_readd(0x3e20)) + 0xaa, 0x04);
 }
 
-/* Borlandified and identical */
 void chest_ignifax_normal(void)
 {
 	/* a protected chest */
@@ -121,7 +116,6 @@ void chest_ignifax_normal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_ignifax_brutal(void)
 {
 	/* a protected chest */
@@ -131,7 +125,6 @@ void chest_ignifax_brutal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_ignifax_heavy(void)
 {
 	/* a protected chest */
@@ -141,7 +134,6 @@ void chest_ignifax_heavy(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(3, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_crossbow_bolts(void)
 {
 	/* a protected chest */
@@ -151,7 +143,6 @@ void chest_crossbow_bolts(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 6));
 }
 
-/* Borlandified and identical */
 void chest_cursed(void)
 {
 	signed short i;
@@ -175,7 +166,6 @@ void chest_cursed(void)
 	}
 }
 
-/* Borlandified and identical */
 void chest_fulminictus(void)
 {
 	/* a protected chest */
@@ -190,7 +180,6 @@ void chest_fulminictus(void)
  * \brief loot a chest, with standard text messages
  * \param chest			pointer to the chest
  */
-/* Borlandified and identical */
 void loot_simple_chest(Bit8u *chest)
 {
 	signed short item_nr;
@@ -252,7 +241,6 @@ void loot_simple_chest(Bit8u *chest)
  * \param chest		pointer to the chest
  * \param item_nr	the number of the item to be deleted
  */
-/* Borlandified and identical */
 void delete_chest_item(Bit8u *chest, signed short item_nr)
 {
 	signed char tmp;
@@ -276,7 +264,6 @@ void delete_chest_item(Bit8u *chest, signed short item_nr)
  * \param text_non_empty	shown text if chest is not empty
  * \param text_empty		shown text if chest is empty
  */
-/* Borlandified and identical */
 void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 {
 	signed short item_nr;
@@ -338,7 +325,6 @@ void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
  * \param hero	pointer to the hero
  * \return	-1 = no lockpicks, -2 = all lockpicks are broken, else position of the lockpicks
  */
-/* Borlandified and identical */
 signed short hero_has_lockpicks(Bit8u *hero)
 {
 	signed short retval = -1;
@@ -375,7 +361,6 @@ struct chest {
 	signed short food;
 };
 
-/* Borlandified and identical */
 void seg092_06b4(signed short a1)
 {
 #if !defined(__BORLANDC__)
@@ -457,7 +442,6 @@ void seg092_06b4(signed short a1)
 #endif
 }
 
-/* Borlandified and identical */
 void use_lockpicks_on_chest(RealPt chest_ptr)
 {
 #if !defined(__BORLANDC__)
@@ -519,7 +503,6 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 #endif
 }
 
-/* Borlandified and identical */
 void use_key_on_chest(RealPt chest_ptr)
 {
 #if !defined(__BORLANDC__)
@@ -544,7 +527,6 @@ void use_key_on_chest(RealPt chest_ptr)
 #endif
 }
 
-/* Borlandified and identical */
 void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 {
 	unsigned short l_si;
