@@ -10733,8 +10733,9 @@ static int seg117(unsigned short offs)
 {
 	switch (offs) {
 	case 0x34: {
-		D1_INFO("do_octopus_attack();\n");
-		return 0;
+		D1_LOG("octopus_attack();\n");
+		octopus_attack();
+		return 1;
 	}
 	case 0x43: {
 		D1_INFO("do_pirate_attack();\n");
