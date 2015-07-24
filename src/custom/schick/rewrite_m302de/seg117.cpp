@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 8/16
+ *	Functions rewritten: 9/16
  */
 
 #include <stdio.h>
@@ -460,7 +460,37 @@ void hunt_bison(void)
 	}
 
 	resume_traveling();
+}
 
+/* Borlandified and identical */
+void hunt_rhino(void)
+{
+	signed short answer;
+	Bit8u *hero;
+
+	pause_traveling(33);
+
+	do {
+		answer = GUI_radio(get_city(0x9c), 2, get_city(0xa0), get_city(0xa4));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+		timewarp(MINUTES(30));
+		GUI_output(get_city(0xb0));
+	} else {
+		GUI_output(get_city(0xa8));
+
+		hero = get_hero(get_random_hero());
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_city(0xac),
+			(char*)hero + 0x10);
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		sub_hero_le(hero, dice_roll(2, 6, 0));
+		add_hero_ap(hero, 6);
+	}
+
+	resume_traveling();
 }
 
 void TLK_way_to_ruin(signed short state)
