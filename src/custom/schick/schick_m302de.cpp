@@ -3560,8 +3560,9 @@ static int n_seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x0981: {
-		D1_INFO("do_bison_hunt();\n");
-		return 0;
+		D1_LOG("hunt_bison();\n");
+		hunt_bison();
+		return 1;
 	}
 	case 0x0a8c: {
 		D1_INFO("do_rhino_attack();\n");

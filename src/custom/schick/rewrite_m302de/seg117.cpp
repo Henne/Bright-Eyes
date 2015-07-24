@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 7/16
+ *	Functions rewritten: 8/16
  */
 
 #include <stdio.h>
@@ -429,6 +429,38 @@ void octopus_attack(void)
 	ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 	status_menu(get_hero_index(Real2Host(get_first_hero_available_in_group())));
 	resume_traveling();
+}
+
+/* Borlandified and identical */
+void hunt_bison(void)
+{
+	signed short answer;
+	Bit8u *hero;
+
+	pause_traveling(29);
+
+	do {
+		answer = GUI_radio(get_city(0x84), 2, get_city(0x88), get_city(0x8c));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+		timewarp(MINUTES(30));
+		GUI_output(get_city(0x98));
+	} else {
+		GUI_output(get_city(0x90));
+
+		hero = get_hero(get_random_hero());
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_city(0x94),
+			(char*)hero + 0x10);
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		sub_hero_le(hero, random_schick(6));
+		add_hero_ap(hero, 2);
+	}
+
+	resume_traveling();
+
 }
 
 void TLK_way_to_ruin(signed short state)

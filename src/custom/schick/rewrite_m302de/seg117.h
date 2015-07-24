@@ -23,6 +23,9 @@ void hunt_viper(void);
 /* 0x34 */
 void octopus_attack(void);
 
+/* 0x39 */
+void hunt_bison(void);
+
 /* 0x5c */
 void TLK_way_to_ruin(signed short);
 
