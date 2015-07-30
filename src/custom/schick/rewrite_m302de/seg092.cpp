@@ -1,8 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg092 (treasures)
- *	Functions rewritten: 18/22
+ *	Functions rewritten: 22/22 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg092.cpp
  */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "v302de.h"
@@ -14,13 +19,13 @@
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg103.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void chest_protected_normal(void)
 {
 	/* a protected chest */
@@ -30,14 +35,12 @@ void chest_protected_normal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), random_schick(6));
 }
 
-/* Borlandified and identical */
 void chest_closed(void)
 {
 	/* a protected chest */
 	print_msg_with_first_hero(get_ltx(0x81c));
 }
 
-/* Borlandified and identical */
 void chest_protected_heavy(void)
 {
 	/* a protected chest */
@@ -47,7 +50,6 @@ void chest_protected_heavy(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_poisoned1(void)
 {
 	/* a protected chest */
@@ -60,7 +62,6 @@ void chest_poisoned1(void)
 	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 1);
 }
 
-/* Borlandified and identical */
 void chest_poisoned2(void)
 {
 	/* a protected chest */
@@ -73,7 +74,6 @@ void chest_poisoned2(void)
 	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 2);
 }
 
-/* Borlandified and identical */
 void chest_poisoned3(void)
 {
 	/* a protected chest */
@@ -86,7 +86,6 @@ void chest_poisoned3(void)
 	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 8);
 }
 
-/* Borlandified and identical */
 void chest_protected_brutal(void)
 {
 	/* a protected chest */
@@ -96,7 +95,6 @@ void chest_protected_brutal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_stoned(void)
 {
 	/* a protected chest */
@@ -109,7 +107,6 @@ void chest_stoned(void)
 	or_ptr_bs(Real2Host(ds_readd(0x3e20)) + 0xaa, 0x04);
 }
 
-/* Borlandified and identical */
 void chest_ignifax_normal(void)
 {
 	/* a protected chest */
@@ -119,7 +116,6 @@ void chest_ignifax_normal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_ignifax_brutal(void)
 {
 	/* a protected chest */
@@ -129,7 +125,6 @@ void chest_ignifax_brutal(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_ignifax_heavy(void)
 {
 	/* a protected chest */
@@ -139,7 +134,6 @@ void chest_ignifax_heavy(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(3, 6, 0));
 }
 
-/* Borlandified and identical */
 void chest_crossbow_bolts(void)
 {
 	/* a protected chest */
@@ -149,7 +143,6 @@ void chest_crossbow_bolts(void)
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 6));
 }
 
-/* Borlandified and identical */
 void chest_cursed(void)
 {
 	signed short i;
@@ -173,7 +166,6 @@ void chest_cursed(void)
 	}
 }
 
-/* Borlandified and identical */
 void chest_fulminictus(void)
 {
 	/* a protected chest */
@@ -188,7 +180,6 @@ void chest_fulminictus(void)
  * \brief loot a chest, with standard text messages
  * \param chest			pointer to the chest
  */
-/* Borlandified and identical */
 void loot_simple_chest(Bit8u *chest)
 {
 	signed short item_nr;
@@ -250,7 +241,6 @@ void loot_simple_chest(Bit8u *chest)
  * \param chest		pointer to the chest
  * \param item_nr	the number of the item to be deleted
  */
-/* Borlandified and identical */
 void delete_chest_item(Bit8u *chest, signed short item_nr)
 {
 	signed char tmp;
@@ -274,7 +264,6 @@ void delete_chest_item(Bit8u *chest, signed short item_nr)
  * \param text_non_empty	shown text if chest is not empty
  * \param text_empty		shown text if chest is empty
  */
-/* Borlandified and identical */
 void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 {
 	signed short item_nr;
@@ -336,7 +325,6 @@ void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
  * \param hero	pointer to the hero
  * \return	-1 = no lockpicks, -2 = all lockpicks are broken, else position of the lockpicks
  */
-/* Borlandified and identical */
 signed short hero_has_lockpicks(Bit8u *hero)
 {
 	signed short retval = -1;
@@ -358,6 +346,278 @@ signed short hero_has_lockpicks(Bit8u *hero)
 	}
 
 	return retval;
+}
+
+void (*func)(RealPt);
+
+struct chest {
+	signed short id;
+	signed char mod;
+	void (*func1)(RealPt);
+	void (*func2)(void);
+	void (*func3)(RealPt);
+	unsigned short ap;
+	unsigned short money;
+	signed short food;
+};
+
+void seg092_06b4(signed short a1)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	signed short x;
+	signed short y;
+	signed short chest_id;
+	signed short l4;
+	RealPt chest_ptr;
+	Bit8u *ptr;
+
+	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
+	ptr = p_datseg + 0xbd95;
+	ds_writew(0xe4a0, 0);
+	x = ds_readws(X_TARGET);
+	y = ds_readws(Y_TARGET);
+
+	if (a1 != 0) {
+		switch(ds_readbs(DIRECTION)) {
+			case 0: y--; break;
+			case 1: x++; break;
+			case 2: y++; break;
+			case 3: x--; break;
+		}
+	}
+
+	l4 = host_readb(ptr + 16 * y + x) & 2;
+	chest_id = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
+
+	play_voc(301);
+
+	do {
+
+		if (host_readws(Real2Host(chest_ptr)) == chest_id) {
+
+			if (l4 != 0 && host_readd(Real2Host(chest_ptr) + 11)) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+			} else if (host_readbs(Real2Host(chest_ptr) + 2) != 0) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 3)))(chest_ptr);
+			} else if ((RealPt)host_readd(Real2Host(chest_ptr) + 3)) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 3)))(chest_ptr);
+			} else if ((RealPt)host_readd(Real2Host(chest_ptr) + 11)) {
+				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+				ds_writew(0xe4a0, 1);
+			} else if (host_readws(Real2Host(chest_ptr) + 17) != 0) {
+				ds_writew(0xe4a0, 1);
+			}
+
+			break;
+		}
+
+	} while (host_readws(Real2Host(((struct chest*)chest_ptr)++)) != -1);
+
+	if (l4 == 0 && ds_readws(0xe4a0) != 0) {
+
+		if (host_readws(Real2Host(chest_ptr) + 15) != 0) {
+			/* There are AP in the chest */
+			add_hero_ap_all(host_readws(Real2Host(chest_ptr) + 15));
+		}
+
+		if (host_readws(Real2Host(chest_ptr) + 17) != 0) {
+
+			/* There is money in the chest */
+			make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), host_readw(Real2Host(chest_ptr) + 17));
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xc64),
+				(char*)Real2Host(ds_readd(0xd2eb)));
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			set_party_money(get_party_money() + host_readw(Real2Host(chest_ptr) + 17));
+		}
+
+		if (host_readws(Real2Host(chest_ptr) + 19) != 0) {
+			/* There are FOOD PACKAGES in the chest */
+			get_item(45, 1, host_readws(Real2Host(chest_ptr) + 19));
+		}
+	}
+#endif
+}
+
+void use_lockpicks_on_chest(RealPt chest_ptr)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	signed short l_si;
+	signed short l_di;
+	Bit8u *hero;
+
+	hero = get_first_hero_available_in_group();
+
+	if ((l_si = hero_has_lockpicks(hero)) != -1) {
+
+		if (l_si != -2) {
+
+			l_di = test_skill(hero, 48, host_readbs(Real2Host(chest_ptr) + 2));
+
+			if (l_di == -99) {
+				/* unlucky, your lockpicks break... */
+
+				print_msg_with_first_hero(get_ltx(0x854));
+				or_ptr_bs(hero + 0x19a + 14 * l_si, 1);
+
+				/* ... and you trigger the trap */
+				if ((RealPt)host_readd(Real2Host(chest_ptr) + 7)) {
+					((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
+				}
+
+			} else if (l_di <= 0) {
+				/* trigger the trap */
+				if ((RealPt)host_readd(Real2Host(chest_ptr) + 7)) {
+					((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
+				}
+
+			} else {
+				/* success */
+
+				add_hero_ap(hero, 1);
+
+				if ((RealPt)host_readd(Real2Host(chest_ptr) + 11)) {
+
+					((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+
+					if ((RealPt)host_readd(Real2Host(chest_ptr) + 7) == (RealPt)&chest_protected_heavy) {
+						add_hero_ap(hero, 5);
+					}
+
+				}
+
+				ds_writew(0xe4a0, 1);
+			}
+
+		} else {
+			print_msg_with_first_hero(get_ltx(0x84c));
+		}
+	} else {
+		print_msg_with_first_hero(get_ltx(0x848));
+	}
+#endif
+}
+
+void use_key_on_chest(RealPt chest_ptr)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	signed short key_pos;
+	Bit8u *hero;
+
+	hero = get_first_hero_available_in_group();
+
+	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1) {
+
+		if (!ks_broken(hero + 0x196 + 14 * key_pos)) {
+
+			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+
+			ds_writew(0xe4a0, 1);
+		}
+	} else {
+		((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
+	}
+#endif
+}
+
+void loot_multi_chest(Bit8u *chest, Bit8u *msg)
+{
+	unsigned short l_si;
+	signed short item_nr;
+	signed short item_cnt;
+	signed short tw_bak;
+	char temp_str[10];
+	signed short len;
+	char names[20][25];
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
+
+	do {
+
+		item_nr = 0;
+		while ((item_cnt = host_readb((item_nr + item_nr) + chest)) != 255) {
+
+			names[item_nr][0] = '\0';
+
+			if ((l_si = chest[item_nr + item_nr + 1]) > 1) {
+#if defined(__BORLANDC__)
+				itoa(l_si, names[item_nr], 10);
+#else
+				sprintf(names[item_nr], "%d", l_si);
+#endif
+				strcat(names[item_nr], (char*)p_datseg + 0x9dc4);
+			}
+
+			strcat(names[item_nr++], (char*)Real2Host(GUI_name_plural( ((signed short)(l_si > 1 ? (unsigned short)1 : (unsigned short)0)) ? 4 : 0, (Bit8u*)get_itemname(item_cnt))));
+		}
+
+		if (item_nr != 0) {
+
+			item_nr = GUI_radio(msg, item_nr,
+				names[0], names[1], names[2], names[3],
+				names[4], names[5], names[6], names[7],
+				names[8], names[9], names[10], names[11],
+				names[12], names[13], names[14], names[15],
+				names[16], names[17], names[18], names[19]) - 1;
+
+			if (item_nr != -2) {
+				item_nr += item_nr;
+#if defined(__BORLANDC__)
+				itoa(chest[item_nr + 1], temp_str, 10);
+#else
+				sprintf(temp_str, "%d", host_readb(chest + item_nr + 1));
+#endif
+				len = strlen(temp_str);
+
+				do {
+					item_cnt = (l_si = chest[item_nr + 1]) > 1 ? GUI_input(get_ltx(0x944), len) : l_si;
+
+				} while (item_cnt < 0);
+
+				if (item_cnt > l_si) {
+					item_cnt = l_si;
+				}
+
+				if (item_cnt != 0) {
+
+					if (chest[item_nr] == 250) {
+						add_party_money(item_cnt * 100L);
+					} else {
+						item_cnt = get_item(chest[item_nr], 1, item_cnt);
+					}
+
+					if (item_cnt == l_si) {
+
+						do {
+							chest[item_nr] = (item_cnt = chest[item_nr + 2]);
+							chest[item_nr + 1] = chest[item_nr + 3];
+							item_nr += 2;
+						} while (item_cnt != 255);
+
+					} else if (item_cnt != 0) {
+						chest[item_nr + 1] -= item_cnt;
+					} else {
+						item_nr = -2;
+					}
+				}
+			}
+
+
+		} else {
+			item_nr = -2;
+		}
+
+	} while (item_nr != -2);
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
 #if !defined(__BORLANDC__)

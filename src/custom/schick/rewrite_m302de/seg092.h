@@ -26,6 +26,18 @@ void loot_simple_chest(Bit8u*);
 /* 0x43 */
 void loot_chest(Bit8u*, Bit8u*, Bit8u*);
 
+/* 0x48 */
+void seg092_06b4(signed short);
+
+/* 0x4d */
+void use_lockpicks_on_chest(RealPt);
+
+/* 0x52 */
+void use_key_on_chest(RealPt);
+
+/* 0x57 */
+void loot_multi_chest(Bit8u*, Bit8u*);
+
 /* 0x5c */
 void chest_poisoned1(void);
 

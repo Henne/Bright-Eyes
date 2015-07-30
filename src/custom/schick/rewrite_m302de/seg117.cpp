@@ -1,9 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 6/16
+ *	Functions rewritten: 9/16
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -14,6 +15,7 @@
 #include "seg027.h"
 #include "seg029.h"
 #include "seg047.h"
+#include "seg048.h"
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
@@ -349,6 +351,143 @@ void hunt_viper(void)
 		}
 	} else {
 		GUI_output(get_city(0x6c));
+	}
+
+	resume_traveling();
+}
+
+/* Borlandified and identical */
+void octopus_attack(void)
+{
+	signed short i;
+	signed short hits;
+	signed short tmp;
+	char overboard[7];
+	Bit8u *hero;
+
+	hits = 0;
+	pause_traveling(31);
+	memset(overboard, 0, 7);
+
+	GUI_output(get_city(0x70));
+	GUI_output(get_city(0x74));
+
+	do {
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+			if (host_readbs(hero + 0x21) != 0 &&
+				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero) &&
+				!overboard[i])
+			{
+				/* ORIGINAL-BUG: bad things happen only when the result of the test is 0 or -1.
+				 * all other results are success.
+				*/
+				/* GE+0 */
+				if (!(tmp = test_attrib(hero, 4, 0))) {
+					/* strangling attack */
+
+					add_hero_ap(hero, 5);
+					sub_hero_le(hero, random_schick(6));
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x78),
+						(char*)hero + 0x10);
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+				} else if (tmp == -1) {
+					/* over board */
+
+					add_hero_ap(hero, 20);
+					sub_hero_le(hero, random_schick(6));
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x7c),
+						(char*)hero + 0x10);
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					if (test_skill(hero, 14, 0) <= 0) {
+						sub_hero_le(hero, random_schick(6));
+						overboard[i] = 1;
+					}
+
+				} else {
+					/* chance to hit the beast */
+
+					if (host_readbs(hero + 0x68 + host_readbs(hero + 0x78)) <= random_schick(20)) {
+						hits++;
+					}
+				}
+			}
+		}
+		/* ORIGINAL-BUG: infinite-loop if all heroes are overboard */
+	} while (hits <= 5);
+
+	sub_group_le(3);
+	add_hero_ap_all(5);
+	GUI_output(get_city(0x80));
+
+	ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+	status_menu(get_hero_index(Real2Host(get_first_hero_available_in_group())));
+	resume_traveling();
+}
+
+/* Borlandified and identical */
+void hunt_bison(void)
+{
+	signed short answer;
+	Bit8u *hero;
+
+	pause_traveling(29);
+
+	do {
+		answer = GUI_radio(get_city(0x84), 2, get_city(0x88), get_city(0x8c));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+		timewarp(MINUTES(30));
+		GUI_output(get_city(0x98));
+	} else {
+		GUI_output(get_city(0x90));
+
+		hero = get_hero(get_random_hero());
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_city(0x94),
+			(char*)hero + 0x10);
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		sub_hero_le(hero, random_schick(6));
+		add_hero_ap(hero, 2);
+	}
+
+	resume_traveling();
+}
+
+/* Borlandified and identical */
+void hunt_rhino(void)
+{
+	signed short answer;
+	Bit8u *hero;
+
+	pause_traveling(33);
+
+	do {
+		answer = GUI_radio(get_city(0x9c), 2, get_city(0xa0), get_city(0xa4));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+		timewarp(MINUTES(30));
+		GUI_output(get_city(0xb0));
+	} else {
+		GUI_output(get_city(0xa8));
+
+		hero = get_hero(get_random_hero());
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_city(0xac),
+			(char*)hero + 0x10);
+		GUI_output(Real2Host(ds_readd(DTP2)));
+		sub_hero_le(hero, dice_roll(2, 6, 0));
+		add_hero_ap(hero, 6);
 	}
 
 	resume_traveling();
