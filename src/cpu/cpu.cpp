@@ -1077,6 +1077,7 @@ void CPU_CALL(bool use32,Bitu selector,Bitu offset,Bitu oldeip) {
 		switch (inst) {
 			case 0x9a: reg_ip += 5; break;
 			case 0xff: reg_ip += 3; break;
+			case 0x26: reg_ip += 4; break;
 			default: E_Exit("Unknown call instruction 0x%x\n,", inst);
 		}
 		return;
