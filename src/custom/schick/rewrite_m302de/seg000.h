@@ -45,8 +45,8 @@ signed short bc_findnext_dosbox(RealPt);
 
 Bit16s bc_flushall(void);
 
-Bit16s bc_close(Bit16u);
-Bit16s bc__close(Bit16u);
+Bit16s bc_close(Bit16s);
+Bit16s bc__close(Bit16s);
 
 RealPt bc_memcpy(RealPt, RealPt, Bit16u);
 RealPt bc_memset(RealPt, Bit8s, Bit16u);

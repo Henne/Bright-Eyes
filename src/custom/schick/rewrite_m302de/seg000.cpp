@@ -344,25 +344,22 @@ Bit16s bc_flushall(void)
 	return reg_ax;
 }
 
-Bit16s bc_close(Bit16u handle) {
+Bit16s bc_close(Bit16s handle)
+{
+	CPU_Push16(handle);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x2eb2);
+	CPU_Pop16();
 
-	if (handle >= ds_readw(0xb786))
-		return -1;
-
-	ds_writew(0xb788 + handle * 2, 0);
-
-	return bc__close(handle);
-
+	return reg_ax;
 }
 
-Bit16s bc__close(Bit16u handle) {
+Bit16s bc__close(Bit16s handle)
+{
+	CPU_Push16(handle);
+	CALLBACK_RunRealFar(reloc_game + 0, 0x2eda);
+	CPU_Pop16();
 
-	if (!DOS_CloseFile(handle))
-		return -1;
-
-	ds_writew(0xb788 + handle * 2, 0);
-
-	return 0;
+	return reg_ax;
 }
 
 RealPt bc_memset(RealPt dst, Bit8s val, Bit16u count)
