@@ -3576,13 +3576,13 @@ void wait_for_keypress(void)
 }
 
 /**
- * \brief	wait for some time is elapsed or a key is pressed
+ * \brief	wait until duration time is elapsed or a key is pressed
  *
- * \param	duration	the maximal time to wait
+ * \param	duration	the maximal time to wait (1 = 15ms, 66 = 1s)
  */
 void delay_or_keypress(signed short duration)
 {
-	signed short done = 0;;
+	signed short done = 0;
 	signed short counter = 0;
 
 	while (counter < duration) {
