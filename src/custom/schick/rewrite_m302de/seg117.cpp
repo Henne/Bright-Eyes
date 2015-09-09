@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 13/16
+ *	Functions rewritten: 14/16
  */
 
 #include <stdio.h>
@@ -690,6 +690,20 @@ void search_ruin1(void)
 	set_var_to_zero();
 #endif
 
+}
+
+/* Borlandified and identical */
+void search_ruin2(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	if (ds_readb(FIND_HYGGELIK) != 0) {
+		ds_writeb(0x3dfb, 1);
+		do_talk(17, 0);
+		set_var_to_zero();
+	}
+#endif
 }
 
 void TLK_way_to_ruin(signed short state)
