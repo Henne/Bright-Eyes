@@ -10750,8 +10750,12 @@ static int seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x4d: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
-		return 0;
+		Bit16s arg = CPU_Pop16();
+		CPU_Push16(arg);
+
+		D1_LOG("random_encounter(%d)\n", arg);
+		random_encounter(arg);
+		return 1;
 	}
 	case 0x52: {
 		D1_LOG("%s:0x%x()\n", __func__, offs);

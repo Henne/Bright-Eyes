@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 11/16
+ *	Functions rewritten: 12/16
  */
 
 #include <stdio.h>
@@ -539,6 +539,144 @@ void do_wild8_fight(void)
 	ds_writeb(TRAVELING, 1);
 	ds_writew(0x2ca2, bak1);
 	ds_writew(0x2ca4, bak2);
+}
+
+/* Borlandified and identical */
+void random_encounter(signed short arg)
+{
+	signed short l_si;
+	signed short i;
+	signed short randval;
+	signed short bak1;
+	signed short bak2;
+	signed short bak3;
+
+	l_si = 0;
+
+	if (random_schick(100) > 33) {
+		l_si = 1;
+	}
+
+	bak1 = ds_readws(0x2ca2);
+	bak2 = ds_readws(0x2ca4);
+	bak3 = ds_readws(0xe113);
+	ds_writew(0x2ca2, 0);
+	ds_writew(0x2ca4, 0);
+
+	arg = ds_readb(0xb17d + arg);
+
+	randval = random_schick(100);
+
+	for (i = 0; i < 14; i++) {
+
+		if ((ds_readb(0xb1b9 + 7 * i + arg) <= randval) && (ds_readb(0xb1b9 + 7 * i + arg) != 0)) {
+
+			ds_writeb(TRAVELING, ds_writew(0xe113, 0));
+			ds_writeb(0xb132, 1);
+			ds_writew(0x26c1, 1);
+
+			switch (i) {
+				case 0: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(6) + 1);
+						/* Fight: WILD1 */
+						do_fight(243);
+					}
+					break;
+				}
+				case 1: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(3));
+						/* Fight: WILD2 */
+						do_fight(244);
+					}
+					break;
+				}
+				case 2: {
+					hunt_karen();
+					break;
+				}
+				case 3: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(2));
+						/* Fight: WILD3 */
+						do_fight(245);
+					}
+					break;
+				}
+				case 4: {
+					hunt_viper();
+					break;
+				}
+				case 5: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(6) + 1);
+						/* Fight: WILD4 */
+						do_fight(246);
+					}
+					break;
+				}
+				case 6: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(3) + 3);
+						/* Fight: WILD4 */
+						do_fight(246);
+					}
+					break;
+				}
+				case 7: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(2) + 1);
+						/* Fight: WILD5 */
+						do_fight(247);
+					}
+					break;
+				}
+				case 8: {
+					hunt_rhino();
+					break;
+				}
+				case 9: {
+					hunt_wildboar();
+					break;
+				}
+				case 10: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(3));
+						/* Fight: WILD6 */
+						do_fight(248);
+					}
+					break;
+				}
+				case 11: {
+					hunt_bison();
+					break;
+				}
+				case 12: {
+					if (!l_si) {
+						ds_writew(0x5f16, random_schick(3));
+						/* Fight: WILD7 */
+						do_fight(249);
+					}
+					break;
+				}
+				case 13: {
+					hunt_cavebear();
+					break;
+				}
+			}
+
+			ds_writew(0x26c1, 0);
+			ds_writeb(TRAVELING, 1);
+			ds_writeb(0xb132, 0);
+			break;
+		}
+	}
+
+	ds_writew(0x2ca2, bak1);
+	ds_writew(0x2ca4, bak2);
+	ds_writew(0xe113, bak3);
+	load_buffer_1(19);
 }
 
 void TLK_way_to_ruin(signed short state)

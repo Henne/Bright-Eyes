@@ -35,6 +35,9 @@ void pirates_attack(void);
 /* 0x48 */
 void do_wild8_fight(void);
 
+/* 0x4d */
+void random_encounter(signed short);
+
 /* 0x5c */
 void TLK_way_to_ruin(signed short);
 
