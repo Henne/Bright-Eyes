@@ -32,6 +32,9 @@ void hunt_rhino(void);
 /* 0x43 */
 void pirates_attack(void);
 
+/* 0x48 */
+void do_wild8_fight(void);
+
 /* 0x5c */
 void TLK_way_to_ruin(signed short);
 

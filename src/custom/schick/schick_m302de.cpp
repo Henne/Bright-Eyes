@@ -10745,8 +10745,9 @@ static int seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x48: {
-		D1_INFO("wilderness_events();\n");
-		return 0;
+		D1_LOG("do_wild8_fight();\n");
+		do_wild8_fight();
+		return 1;
 	}
 	case 0x4d: {
 		D1_LOG("%s:0x%x()\n", __func__, offs);

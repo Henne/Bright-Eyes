@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 10/16
+ *	Functions rewritten: 11/16
  */
 
 #include <stdio.h>
@@ -514,6 +514,31 @@ void pirates_attack(void)
 	status_menu(get_hero_index(Real2Host(get_first_hero_available_in_group())));
 
 	resume_traveling();
+}
+
+/* Borlandified and identical */
+void do_wild8_fight(void)
+{
+	signed short bak1;
+	signed short bak2;
+
+	bak1 = ds_readws(0x2ca2);
+	bak2 = ds_readws(0x2ca4);
+	ds_writew(0xe5d3, ds_readws(0xe113));
+	ds_writew(0x2ca2, 0);
+	ds_writew(0x2ca4, 0);
+	ds_writeb(TRAVELING, 0);
+
+	ds_writew(0x5f16, random_interval(5, 10));
+	ds_writew(0x26c1, 1);
+
+	/* Fight: WILD8 */
+	do_fight(250);
+
+	ds_writew(0x4248, 0);
+	ds_writeb(TRAVELING, 1);
+	ds_writew(0x2ca2, bak1);
+	ds_writew(0x2ca4, bak2);
 }
 
 void TLK_way_to_ruin(signed short state)
