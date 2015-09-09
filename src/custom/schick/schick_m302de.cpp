@@ -10758,8 +10758,13 @@ static int seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x52: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
+#if 0
+		D1_LOG("search_ruin1()\n");
+		search_ruin1();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x57: {
 		D1_LOG("%s:0x%x()\n", __func__, offs);

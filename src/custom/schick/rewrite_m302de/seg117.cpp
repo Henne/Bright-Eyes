@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 12/16
+ *	Functions rewritten: 13/16
  */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg030.h"
 #include "seg032.h"
 #include "seg047.h"
 #include "seg048.h"
@@ -677,6 +678,18 @@ void random_encounter(signed short arg)
 	ds_writew(0x2ca4, bak2);
 	ds_writew(0xe113, bak3);
 	load_buffer_1(19);
+}
+
+/* Borlandified and identical */
+void search_ruin1(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	do_talk(17, 0);
+	set_var_to_zero();
+#endif
+
 }
 
 void TLK_way_to_ruin(signed short state)
