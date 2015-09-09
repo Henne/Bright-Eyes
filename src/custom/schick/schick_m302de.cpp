@@ -10740,8 +10740,9 @@ static int seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x43: {
-		D1_INFO("do_pirate_attack();\n");
-		return 0;
+		D1_LOG("pirates_attack();\n");
+		pirates_attack();
+		return 1;
 	}
 	case 0x48: {
 		D1_INFO("wilderness_events();\n");

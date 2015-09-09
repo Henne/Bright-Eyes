@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 9/16
+ *	Functions rewritten: 10/16
  */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg032.h"
 #include "seg047.h"
 #include "seg048.h"
 #include "seg097.h"
@@ -489,6 +490,28 @@ void hunt_rhino(void)
 		sub_hero_le(hero, dice_roll(2, 6, 0));
 		add_hero_ap(hero, 6);
 	}
+
+	resume_traveling();
+}
+
+/* Borlandified and identical */
+void pirates_attack(void)
+{
+	pause_traveling(9);
+
+	GUI_output(get_city(0xb4));
+	GUI_output(get_city(0xb8));
+	GUI_output(get_city(0xbc));
+
+	ds_writew(0x5f16, random_interval(3, 8));
+	ds_writew(0x26c1, 1);
+
+	/* Fight: S001 */
+	do_fight(251);
+
+	ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+
+	status_menu(get_hero_index(Real2Host(get_first_hero_available_in_group())));
 
 	resume_traveling();
 }

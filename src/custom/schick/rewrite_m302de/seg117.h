@@ -29,6 +29,9 @@ void hunt_bison(void);
 /* 0x3e */
 void hunt_rhino(void);
 
+/* 0x43 */
+void pirates_attack(void);
+
 /* 0x5c */
 void TLK_way_to_ruin(signed short);
 
