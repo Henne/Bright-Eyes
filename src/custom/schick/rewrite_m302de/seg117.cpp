@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 14/16
+ *	Functions rewritten: 15/16
  */
 
 #include <stdio.h>
@@ -11,6 +11,7 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
+#include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
@@ -21,6 +22,7 @@
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg109.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -706,12 +708,136 @@ void search_ruin2(void)
 #endif
 }
 
+/* Borlandified and identical */
 void TLK_way_to_ruin(signed short state)
 {
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+	signed short i;
+	RealPt hero;
+	Bit8u *hero2;
+
+	hero2 = Real2Host(get_first_hero_available_in_group());
+
+	if (!state) {
+		ds_writew(0xe30e, ds_readb(0x3dfb) != 0 ? 45 : 66);
+		ds_writew(0xb21b, 0);
+	} else if (state == 66 || state == 45) {
+		show_treasure_map();
+	} else if (state == 4 || state == 7) {
+		timewarp(HOURS(1));
+	} else if (state == 6) {
+		hero = get_hero(get_random_hero());
+		ds_writew(0xe30e, test_skill(hero, 31, 6) > 0 ? 8 : 7);
+	} else if (state == 8) {
+		timewarp(HOURS(1));
+		seg109_067e(0, 30);
+	} else if (state == 9) {
+
+		do {
+			hero = (RealPt)ds_readds(HEROS) + 0x6da * ds_readws(0xb21b);
+			inc_ds_ws(0xb21b);
+
+			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
+				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(Real2Host(hero))) {
+
+				ds_writed(RUIN_HERO, (Bit32u)hero);
+				break;
+			}
+
+		} while (ds_readws(0xb21b) != 7);
+
+		ds_writew(0xe30e, ds_readws(0xb21b) == 7 ? 13 : 10);
+	} else if (state == 10) {
+		ds_writew(0xe30e, test_skill(Real2Host(ds_readd(RUIN_HERO)), 14, 5) > 0 ? 11 : 12);
+	} else if (state == 12) {
+		sub_hero_le(Real2Host(ds_readd(RUIN_HERO)), random_schick(4) + 1);
+
+		/* Original-Bug: hero != RUIN_HERO */
+		hero_disease_test(Real2Host(ds_readd(RUIN_HERO)), 2,
+			25 - (host_readbs(Real2Host(hero) + 0x47) + host_readbs(Real2Host(hero + 0x48))));
+
+		loose_random_item(Real2Host(ds_readd(RUIN_HERO)), 10, get_ltx(0x7e8));
+
+	} else if (state == 13 || state == 25 || state == 34 || state == 59 || state == 62) {
+		timewarp(MINUTES(30));
+	} else if (state == 14 || state == 64) {
+		timewarp(MINUTES(10));
+	} else if (state == 15 || state == 16) {
+		timewarp(MINUTES(20));
+	} else if (state == 17) {
+		ds_writew(0xe30e, test_skill(hero2, 28, 5) > 0 ? 18 : 19);
+	} else if (state == 19) {
+		timewarp(MINUTES(20));
+		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * get_random_hero()));
+		ds_writew(0xe30e, test_skill(Real2Host(ds_readd(RUIN_HERO)), 4, 2) > 0 ? 20 : 21);
+	} else if (state == 20) {
+		loose_random_item(get_hero(get_random_hero()), 5, get_ltx(0x7e8));
+	} else if (state == 21) {
+		timewarp(MINUTES(10));
+		loose_random_item(hero2, 10, get_ltx(0x7e8));
+		sub_hero_le(hero2, random_schick(4) + 2);
+	} else if (state == 22 || state == 30 || state == 52 || state == 53) {
+		timewarp(HOURS(3));
+	} else if (state == 26 || state == 36 || state == 37 || state == 38 || state == 39) {
+		timewarp(HOURS(1));
+	} else if (state == 27 || state == 29 || state == 65) {
+		timewarp(HOURS(2));
+	} else if (state == 54) {
+		timewarp(HOURS(5));
+	} else if (state == 28) {
+
+		hero = (RealPt)ds_readds(HEROS);
+
+		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += 0x6da) {
+
+			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
+				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(Real2Host(hero)) &&
+				test_skill(Real2Host(hero), 28, 0) > 0) {
+
+					inc_ds_ws(0xb21b);
+			}
+		}
+
+		ds_writew(0xe30e, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 29 : 30);
+
+	} else if (state == 41) {
+		ds_writeb(0xe5d2, 1);
+		load_ani(11);
+		draw_main_screen();
+		init_ani(0);
+		timewarp(MINUTES(90));
+		ds_writew(0x2846, 1);
+	} else if (state == 42 || state == 60) {
+		timewarp(MINUTES(150));
+	} else if (state == 67 || state == 44) {
+		ds_writeb(0x4333, 15);
+
+	} else if (state == 48) {
+
+		hero = (RealPt)ds_readds(HEROS);
+
+		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += 0x6da) {
+
+			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
+				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(Real2Host(hero)) &&
+				test_skill(Real2Host(hero), 28, 0) > 0) {
+
+					inc_ds_ws(0xb21b);
+			}
+		}
+
+		ds_writew(0xe30e, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 49 : 50);
+	}
+
+	ds_writeb(0xe5d2, 0);
+#endif
 }
 
 #if !defined(__BORLANDC__)
 }
 #endif
-

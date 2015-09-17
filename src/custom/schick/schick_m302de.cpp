@@ -10776,8 +10776,13 @@ static int seg117(unsigned short offs)
 #endif
 	}
 	case 0x5c: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
+#if 0
+		D1_LOG("TLK_way_to_ruin()\n");
+		TLK_way_to_ruin();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x61: {
 		D1_LOG("%s:0x%x()\n", __func__, offs);
