@@ -433,8 +433,8 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 					} else if (l_si == 14 || l_si == 15 || l_si == 76) {
 
 						sprintf(dst, fmt,
-							(char*)Real2Host(ds_readd(0x3e1c)) + 0x10,
-							(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(0x3e1c)) + 0x22), 0)));
+							(char*)Real2Host(ds_readd(RUIN_HERO)) + 0x10,
+							(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(RUIN_HERO)) + 0x22), 0)));
 
 					} else if (l_si == 26 || l_si == 65) {
 
