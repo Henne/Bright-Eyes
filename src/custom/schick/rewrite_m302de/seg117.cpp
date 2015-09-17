@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
  *	Functions rewritten: 16/16 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg117.cpp
  */
 
 #include <stdio.h>
@@ -29,7 +33,6 @@ namespace M302de {
 #endif
 
 /* static */
-/* Borlandified and identical */
 void pause_traveling(signed short ani_nr)
 {
 
@@ -58,7 +61,6 @@ void pause_traveling(signed short ani_nr)
 }
 
 /* static */
-/* Borlandified and identical */
 void resume_traveling(void)
 {
 	ds_writew(0x2ca2, ds_readw(0xe5d9));
@@ -74,7 +76,6 @@ void resume_traveling(void)
 	ds_writeb(0xb132, 0);
 }
 
-/* Borlandified and identical */
 void hunt_karen(void)
 {
 	signed short answer;
@@ -157,7 +158,6 @@ void hunt_karen(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 void hunt_wildboar(void)
 {
 	signed short answer;
@@ -234,7 +234,6 @@ void hunt_wildboar(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 void hunt_cavebear(void)
 {
 	Bit8u *hero;
@@ -296,7 +295,6 @@ void hunt_cavebear(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 /* should be static */
 void hunt_viper(void)
 {
@@ -360,7 +358,6 @@ void hunt_viper(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 void octopus_attack(void)
 {
 	signed short i;
@@ -435,7 +432,6 @@ void octopus_attack(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 void hunt_bison(void)
 {
 	signed short answer;
@@ -466,7 +462,6 @@ void hunt_bison(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 void hunt_rhino(void)
 {
 	signed short answer;
@@ -497,7 +492,6 @@ void hunt_rhino(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 void pirates_attack(void)
 {
 	pause_traveling(9);
@@ -519,7 +513,6 @@ void pirates_attack(void)
 	resume_traveling();
 }
 
-/* Borlandified and identical */
 void do_wild8_fight(void)
 {
 	signed short bak1;
@@ -544,7 +537,6 @@ void do_wild8_fight(void)
 	ds_writew(0x2ca4, bak2);
 }
 
-/* Borlandified and identical */
 void random_encounter(signed short arg)
 {
 	signed short l_si;
@@ -682,7 +674,6 @@ void random_encounter(signed short arg)
 	load_buffer_1(19);
 }
 
-/* Borlandified and identical */
 void search_ruin1(void)
 {
 #if !defined(__BORLANDC__)
@@ -694,7 +685,6 @@ void search_ruin1(void)
 
 }
 
-/* Borlandified and identical */
 void search_ruin2(void)
 {
 #if !defined(__BORLANDC__)
@@ -708,7 +698,6 @@ void search_ruin2(void)
 #endif
 }
 
-/* Borlandified and identical */
 void TLK_way_to_ruin(signed short state)
 {
 #if !defined(__BORLANDC__)
@@ -838,7 +827,6 @@ void TLK_way_to_ruin(signed short state)
 #endif
 }
 
-/* Borlandified and identical */
 void unicorn_first_encounter(void)
 {
 #if !defined(__BORLANDC__)
