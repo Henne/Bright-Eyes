@@ -41,6 +41,14 @@ signed short enter_hut_question(void)
 	return answer;
 }
 
+void seg109_067e(signed short mod, signed short time)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+#endif
+}
+
 /* The hunter Varnheim <-> Daspota */
 void tevent_002(void)
 {

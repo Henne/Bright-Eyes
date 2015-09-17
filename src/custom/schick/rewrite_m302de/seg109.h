@@ -4,6 +4,9 @@ namespace M302de {
 
 void tevent_002(void);
 
+/* 0x3e */
+void seg109_067e(signed short, signed short);
+
 /* 0xb1 */
 signed short enter_hut_question(void);
 #if !defined(__BORLANDC__)
