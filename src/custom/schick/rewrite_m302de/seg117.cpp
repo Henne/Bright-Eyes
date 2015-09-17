@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg117 (travel events 9 / 10, hunt and helpers)
- *	Functions rewritten: 15/16
+ *	Functions rewritten: 16/16 (complete)
  */
 
 #include <stdio.h>
@@ -835,6 +835,19 @@ void TLK_way_to_ruin(signed short state)
 	}
 
 	ds_writeb(0xe5d2, 0);
+#endif
+}
+
+/* Borlandified and identical */
+void unicorn_first_encounter(void)
+{
+#if !defined(__BORLANDC__)
+	DUMMY_WARNING();
+#else
+	if (!ds_readb(0x3ddb) && ds_readws(GOT_MAIN_QUEST) != 0) {
+		do_talk(11, 2);
+		ds_writeb(0x3ddb, 1);
+	}
 #endif
 }
 

@@ -47,6 +47,9 @@ void search_ruin2(void);
 /* 0x5c */
 void TLK_way_to_ruin(signed short);
 
+/* 0x61 */
+void unicorn_first_encounter(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif

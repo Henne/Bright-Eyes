@@ -10785,8 +10785,13 @@ static int seg117(unsigned short offs)
 #endif
 	}
 	case 0x61: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
+#if 0
+		D1_LOG("unicorn_first_encounter()\n");
+		unicorn_first_encounter();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
