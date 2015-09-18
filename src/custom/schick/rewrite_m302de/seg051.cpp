@@ -1,9 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg051 (wilderness camp)
- *	Functions rewritten: 1/3
+ *	Functions rewritten: 2/3
 */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -22,6 +23,7 @@
 #include "seg098.h"
 #include "seg103.h"
 #include "seg104.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -375,9 +377,85 @@ void do_wildcamp(void)
 #endif
 }
 
+/* Borlandified and identical */
 signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 {
-	DUMMY_WARNING();
+	signed short i;
+	signed short herbs;
+	Bit8u *ptr;
+	signed char herb_count[12];
+
+	memset(herb_count, 0 , 12);
+
+	timewarp(HOURS((hours + 1)));
+
+	ptr = p_datseg + 0x669c;
+
+	for (herbs = i = 0; i < 12; i++, ptr += 4) {
+
+		if (host_readb(ptr) == ds_readb(0x66d0)) {
+			add_ptr_bs(ptr + 1, 10);
+			inc_ptr_bs(ptr + 2);
+		}
+
+		if (random_schick(100) <= host_readb(ptr + 1) &&
+			test_skill(hero, 29, host_readb(ptr + 3) - hours + mod) > 0) {
+
+			herb_count[i] = give_hero_new_item(hero, host_readb(ptr), 0, random_schick(host_readb(ptr + 2)));
+
+			if (herb_count[i] != 0) {
+				herbs++;
+			}
+		}
+
+		if (host_readb(ptr) == ds_readb(0x66d0)) {
+			sub_ptr_bs(ptr + 1, 10);
+			dec_ptr_bs(ptr + 2);
+		}
+	}
+
+	if (herbs) {
+
+		/* print a sentence with all the herb names */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0x520),
+			(char*)hero + 0x10);
+
+		for (i = 0; i < 12; i++) {
+
+			if (herb_count[i] != 0) {
+
+				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					(char*)p_datseg + 0x66d1, /* "%d %s" */
+					herb_count[i],
+					Real2Host(GUI_names_grammar((herb_count[i] > 1 ? 4 : 0) + 0x4002, ds_readb(0x669c + 4 * i), 0)));
+
+				strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(0xd2eb)));
+
+				if (--herbs > 1) {
+					/* add a comma ", " */
+					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + 0x66d7);
+				} else if (herbs == 1) {
+					/* add an and " UND " */
+					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + 0x66da);
+				}
+			}
+		}
+
+		/* add a dot "." */
+		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + 0x66e0);
+
+	} else {
+
+		/* no herbs found */
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0x558),
+			(char*)hero + 0x10);
+	}
+
+	GUI_output(Real2Host(ds_readd(DTP2)));
+
 	return 0;
 }
 

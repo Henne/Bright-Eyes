@@ -2168,8 +2168,10 @@ static int n_seg051(unsigned short offs)
 			CPU_Push32(hero);
 			D1_LOG("gather_herbs(%s, %d, %d)\n",
 				schick_getCharname(hero), herb_hours, mod);
-			reg_ax = reg_ax;
-			return 0;
+
+			reg_ax = gather_herbs(Real2Host(hero), herb_hours, mod);
+
+			return 1;
 		}
 		case 0x0b5b: {
 			Bit16s mod = CPU_Pop16();
