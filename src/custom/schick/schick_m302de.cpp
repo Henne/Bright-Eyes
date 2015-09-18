@@ -8394,13 +8394,9 @@ static int seg070(unsigned short offs) {
 			return 1;
 		}
 		case 0x3e: {
-#if 0
 			D1_LOG("PHX_healer()\n");
 			PHX_healer();
 			return 1;
-#else
-			return 0;
-#endif
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
