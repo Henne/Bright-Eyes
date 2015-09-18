@@ -709,7 +709,7 @@ signed short GUI_use_talent2(signed char bonus, Bit8u *msg)
 
 	if (talent != -1) {
 
-		ds_writew(0x2cdb, get_skilled_hero_pos(talent));
+		ds_writew(SKILLED_HERO_POS, get_skilled_hero_pos(talent));
 
 		hero_pos = select_hero_ok(msg);
 

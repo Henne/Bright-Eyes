@@ -762,13 +762,13 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	for (i = 0; i < options; l4 += 8, i++) {
 
 		/* highlight special option */
-		if (ds_readw(GAME_MODE) == 1 && ds_readw(0x2cdb) == i)
+		if (ds_readw(GAME_MODE) == 1 && ds_readw(SKILLED_HERO_POS) == i)
 			set_textcolor(0xc9, 0xdf);
 
 		GUI_print_string((Bit8u*)va_arg(arguments, char*), l3, l4);
 
 		/* reset highlight special option */
-		if (ds_readw(GAME_MODE) == 1 && ds_readw(0x2cdb) == i)
+		if (ds_readw(GAME_MODE) == 1 && ds_readw(SKILLED_HERO_POS) == i)
 			set_textcolor(0xff, 0xdf);
 	}
 

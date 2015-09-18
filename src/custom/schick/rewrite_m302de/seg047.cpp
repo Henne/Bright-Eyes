@@ -526,7 +526,7 @@ signed short select_hero_ok(Bit8u *title)
 		ds_writew(0x2ca2, bak_2);
 		ds_writew(0x2ca4, bak_3);
 		ds_writew(TEXTBOX_WIDTH, bak_1);
-		ds_writew(0x2cdb, -1);
+		ds_writew(SKILLED_HERO_POS, -1);
 
 		if (answer != -2)
 			return dst.v[answer];
@@ -535,7 +535,7 @@ signed short select_hero_ok(Bit8u *title)
 	}
 
 	ds_writew(TEXTBOX_WIDTH, bak_1);
-	ds_writew(0x2cdb, -1);
+	ds_writew(SKILLED_HERO_POS, -1);
 	return -1;
 }
 
@@ -607,13 +607,13 @@ signed short select_hero_ok_forced(Bit8u *title)
 
 		} while (answer == -2);
 
-		ds_writew(0x2cdb, -1);
+		ds_writew(SKILLED_HERO_POS, -1);
 		ds_writew(TEXTBOX_WIDTH, bak_1);
 
 		return dst.v[answer];
 	} else {
 
-		ds_writew(0x2cdb, -1);
+		ds_writew(SKILLED_HERO_POS, -1);
 		return 0;
 	}
 }
