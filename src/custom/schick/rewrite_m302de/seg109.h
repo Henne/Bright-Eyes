@@ -5,10 +5,10 @@ namespace M302de {
 #if defined(__BORLANDC__)
 /* 0x2f */
 void TRV_found_herb_place(signed short);
+#endif
 
 /* 0x34 */
 void TRV_inside_herb_place(void);
-#endif
 
 void tevent_002(void);
 

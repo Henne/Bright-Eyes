@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 6/30
+ *	Functions rewritten: 7/30
 */
 
 #include <stdio.h>
@@ -14,6 +14,8 @@
 #include "seg027.h"
 #include "seg029.h"
 #include "seg032.h"
+#include "seg047.h"
+#include "seg051.h"
 #include "seg097.h"
 #include "seg109.h"
 
@@ -126,12 +128,37 @@ void TRV_found_herb_place(signed short a0)
 		TRV_inside_herb_place();
 	}
 }
+#endif
 
+/* Borlandified and identical */
 void TRV_inside_herb_place(void)
 {
+	signed short hero_pos;
+	signed short hours;
+	signed short bak;
 
+	load_ani(1);
+	draw_main_screen();
+	init_ani(0);
+	hero_pos = select_hero_ok(get_ltx(0x518));
+
+	if (hero_pos != -1) {
+
+		hours = GUI_input(get_ltx(0x51c), 1);
+
+		if (hours > 0) {
+			bak = ds_readbs(0x45b8);
+			ds_writebs(0x45b8, 1);
+
+			gather_herbs(get_hero(hero_pos), hours - 1, -3);
+
+			ds_writebs(0x45b8, bak);
+		}
+	}
+
+	set_var_to_zero();
+	ds_writew(0x2846, 1);
 }
-#endif
 
 /* 0x4f2 */
 /**

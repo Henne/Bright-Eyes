@@ -3546,7 +3546,9 @@ static int n_seg109(unsigned offs)
 #endif
 	}
 	case 0x01ff: {
-		return 0;
+		D1_LOG("TRV_inside_herb_place()\n");
+		TRV_inside_herb_place();
+		return 1;
 	}
 	case 0x0297: {
 		return 0;
@@ -10691,6 +10693,7 @@ static int seg109(unsigned short offs) {
 			return 0;
 		}
 		case 0x2f: return n_seg109(0x014c);
+		case 0x34: return n_seg109(0x01ff);
 		case 0x57: {
 			tevent_002();
 			return 1;
