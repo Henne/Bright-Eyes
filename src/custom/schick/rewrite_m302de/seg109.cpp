@@ -1,6 +1,6 @@
 /*
-	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
-	Functions rewritten: 2/30
+ *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
+ *	Functions rewritten: 3/30
 */
 
 #include "v302de.h"
@@ -15,6 +15,28 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
+
+/* Borlandified and identical */
+void TRV_load_textfile(signed short travel_event)
+{
+	load_buffer_1(190);
+
+	if (travel_event == -1) {
+		travel_event = ds_readws(0xb133);
+	}
+
+	load_city_ltx( (travel_event == 37 || travel_event == 47 || travel_event == 100) ? 237 :
+			( travel_event == 16 ? 198 :
+			( travel_event < 30 ? 191 :
+			( travel_event < 54 ? 192 :
+			( travel_event < 70 ? 193 :
+			( travel_event < 90 ? 194 :
+			( travel_event < 111 ? 195 :
+			( travel_event < 126 ? 196 :
+			( travel_event < 143 ? 197 : 198)))))))));
+
+	ds_writews(0xb133, travel_event);
+}
 
 /* 0x4f2 */
 /**

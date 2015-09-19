@@ -3507,15 +3507,11 @@ static int n_seg109(unsigned offs)
 {
 	switch (offs) {
 	case 0x0000: {
-#if 0
 		Bit16s t_event = CPU_Pop16();
 		CPU_Push16(t_event);
-		D1_INFO("TRV_load_textfile(%d)\n", t_event);
+		D1_LOG("TRV_load_textfile(%d)\n", t_event);
 		TRV_load_textfile(t_event);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x008f: {
 		return 0;
@@ -10675,6 +10671,7 @@ static int seg109(unsigned short offs) {
 			tevent_002();
 			return 1;
 		}
+		case 0x9d: return n_seg109(0x0000);
 		case 0xa2: {
 			unsigned short tevent = CPU_Pop16();
 			CPU_Push16(tevent);
