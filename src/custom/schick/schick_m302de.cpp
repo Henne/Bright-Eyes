@@ -3503,6 +3503,113 @@ static int n_seg106(unsigned offs) {
 	}
 }
 
+static int n_seg109(unsigned offs)
+{
+	switch (offs) {
+	case 0x0000: {
+#if 0
+		Bit16s t_event = CPU_Pop16();
+		CPU_Push16(t_event);
+		D1_INFO("TRV_load_textfile(%d)\n", t_event);
+		TRV_load_textfile(t_event);
+		return 1;
+#else
+		return 0;
+#endif
+	}
+	case 0x008f: {
+		return 0;
+	}
+	case 0x012b: {
+		return 0;
+	}
+	case 0x014c: {
+		return 0;
+	}
+	case 0x01ff: {
+		return 0;
+	}
+	case 0x0297: {
+		return 0;
+	}
+	case 0x03a5: {
+		return 0;
+	}
+	case 0x0493: {
+		return 0;
+	}
+	case 0x04f2: {
+		return 0;
+	}
+	case 0x0536: {
+		return 0;
+	}
+	case 0x05a7: {
+		return 0;
+	}
+	case 0x067e: {
+		return 0;
+	}
+	case 0x07c5: {
+		return 0;
+	}
+	case 0x0991: {
+		return 0;
+	}
+	case 0x09a1: {
+		return 0;
+	}
+	case 0x0a3e: {
+		return 0;
+	}
+	case 0x0a5a: {
+		return 0;
+	}
+	case 0x0ab1: {
+		return 0;
+	}
+	case 0x0e51: {
+		return 0;
+	}
+	case 0x0e89: {
+		return 0;
+	}
+	case 0x0ea5: {
+		return 0;
+	}
+	case 0x0ec5: {
+		return 0;
+	}
+	case 0x1281: {
+		return 0;
+	}
+	case 0x12b9: {
+		return 0;
+	}
+	case 0x12fb: {
+		return 0;
+	}
+	case 0x130b: {
+		return 0;
+	}
+	case 0x1329: {
+		return 0;
+	}
+	case 0x1347: {
+		return 0;
+	}
+	case 0x1365: {
+		return 0;
+	}
+	case 0x1381: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg113(unsigned offs) {
 	switch (offs) {
 	case 0x900: {
@@ -11031,7 +11138,6 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 
 int schick_nearcall_v302de(unsigned offs)
 {
-
 	Bit16u segm = SegValue(cs) - reloc_game;
 
 	int retval = 0;
@@ -11091,6 +11197,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1480)) retval = n_seg104(offs);
 	else if (is_ovrseg(0x1485)) retval = n_seg105(offs);
 	else if (is_ovrseg(0x148c)) retval = n_seg106(offs);
+	else if (is_ovrseg(0x149b)) retval = n_seg109(offs);
 	else if (is_ovrseg(0x14c2)) retval = n_seg113(offs);
 	else if (is_ovrseg(0x14e0)) retval = n_seg117(offs);
 	else if (is_ovrseg(0x14f0)) retval = n_seg120(offs);
