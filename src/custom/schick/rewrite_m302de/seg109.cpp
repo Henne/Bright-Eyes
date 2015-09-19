@@ -1,17 +1,21 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 5/30
+ *	Functions rewritten: 6/30
 */
+
+#include <stdio.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg032.h"
 #include "seg097.h"
+#include "seg109.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -92,6 +96,42 @@ signed short TRV_fight_event(signed short fight_nr, signed short travel_event)
 
 	return retval;
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void TRV_found_herb_place(signed short a0)
+{
+	signed short answer;
+	signed short randval;
+	Bit8u *hero;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	randval = random_schick(5) + 2;
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x0000),
+		(char*)get_dtp(4 * randval),
+		(char*)hero + 0x10,
+		(char*)(a0 != 0 ? get_dtp(0x00a8) : p_datseg + 0xb13b));
+
+	do {
+		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+				get_dtp(0x0004),
+				get_dtp(0x0008));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+		TRV_inside_herb_place();
+	}
+}
+
+void TRV_inside_herb_place(void)
+{
+
+}
+#endif
 
 /* 0x4f2 */
 /**
