@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 4/30
+ *	Functions rewritten: 5/30
 */
 
 #include "v302de.h"
@@ -10,6 +10,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg032.h"
 #include "seg097.h"
 
 #if !defined(__BORLANDC__)
@@ -74,6 +75,23 @@ void TRV_event(signed short travel_event)
 	ds_writew(0xe113, 1);
 }
 #endif
+
+/**
+ * \brief	executes a fight and load a textfile
+ * \param fight_nr	ID of the fight
+ * \param travel_event	ID of the travel event
+ * \return return value of the fight
+ */
+/* Borlandified and identical */
+signed short TRV_fight_event(signed short fight_nr, signed short travel_event)
+{
+	signed short retval;
+
+	retval = do_fight(fight_nr);
+	TRV_load_textfile(travel_event);
+
+	return retval;
+}
 
 /* 0x4f2 */
 /**

@@ -15,6 +15,9 @@ void TRV_load_textfile(signed short);
 void TRV_event(signed short);
 #endif
 
+/* 0xa7 */
+signed short TRV_fight_event(signed short, signed short);
+
 /* 0xb1 */
 signed short enter_hut_question(void);
 #if !defined(__BORLANDC__)

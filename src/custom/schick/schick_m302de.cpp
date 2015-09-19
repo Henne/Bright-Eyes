@@ -3526,7 +3526,13 @@ static int n_seg109(unsigned offs)
 #endif
 	}
 	case 0x012b: {
-		return 0;
+		Bit16s fight_nr = CPU_Pop16();
+		Bit16s t_event = CPU_Pop16();
+		CPU_Push16(t_event);
+		CPU_Push16(fight_nr);
+		reg_ax = TRV_fight_event(fight_nr, t_event);
+		D1_LOG("TRV_fight_event(%d, %d,) = %d\n", fight_nr, t_event, reg_ax);
+		return 1;
 	}
 	case 0x014c: {
 		return 0;
@@ -10682,6 +10688,7 @@ static int seg109(unsigned short offs) {
 		}
 		case 0x9d: return n_seg109(0x0000);
 		case 0xa2: return n_seg109(0x008f);
+		case 0xa7: return n_seg109(0x012b);
 		case 0xb1: {
 			reg_ax = enter_hut_question();
 			D1_LOG("enter_hut_question(); = %d\n",
