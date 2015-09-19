@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg051 (wilderness camp)
  *	Functions rewritten: 3/3 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg051.cpp
 */
 
 #include <stdio.h>
@@ -29,7 +33,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void do_wildcamp(void)
 {
 	signed short l_si;
@@ -373,7 +376,6 @@ void do_wildcamp(void)
 	turnaround();
 }
 
-/* Borlandified and identical */
 signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 {
 	signed short i;
@@ -461,7 +463,6 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
  * \param tries	how often was tried to replenish stocks
  * \returns 0 if replenish was not possible or 1 if replenish was possible
  */
-/* Borlandified and identical */
 signed short replenish_stocks(signed short mod, signed short tries)
 {
 	signed short hero_pos;
