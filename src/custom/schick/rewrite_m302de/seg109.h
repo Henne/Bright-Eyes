@@ -10,6 +10,11 @@ void seg109_067e(signed short, signed short);
 /* 0x9d */
 void TRV_load_textfile(signed short);
 
+/* 0xa2 */
+#if defined(__BORLANDC__)
+void TRV_event(signed short);
+#endif
+
 /* 0xb1 */
 signed short enter_hut_question(void);
 #if !defined(__BORLANDC__)

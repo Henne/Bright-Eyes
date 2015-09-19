@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 3/30
+ *	Functions rewritten: 4/30
 */
 
 #include "v302de.h"
@@ -37,6 +37,43 @@ void TRV_load_textfile(signed short travel_event)
 
 	ds_writews(0xb133, travel_event);
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void TRV_event(signed short travel_event)
+{
+	signed short tw_bak;
+	signed short bak1;
+	signed short bak2;
+	signed short traveling_bak;
+	void (*event_handler)(void);
+
+	TRV_load_textfile(travel_event);
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	bak1 = ds_readws(0x2ca2);
+	bak2 = ds_readws(0x2ca4);
+	traveling_bak = ds_readb(TRAVELING);
+	ds_writews(0x2ca2, 0);
+	ds_writews(0x2ca4, 0);
+	ds_writeb(TRAVELING, 0);
+	ds_writews(TEXTBOX_WIDTH, 9);
+	ds_writeb(0x2c98, 1);
+	ds_writeb(0xb132, 1);
+
+	event_handler = (void (*)(void))ds_readd(0xaeea + 4 * travel_event);
+	if (event_handler) event_handler();
+
+	ds_writeb(0xb132, 0);
+	ds_writeb(TRAVELING, traveling_bak);
+	ds_writews(0x2ca2, bak1);
+	ds_writews(0x2ca4, bak2);
+	ds_writews(TEXTBOX_WIDTH, tw_bak);
+	ds_writeb(0x2c98, 0);
+	load_buffer_1(19);
+	ds_writew(0xe113, 1);
+}
+#endif
 
 /* 0x4f2 */
 /**

@@ -3514,7 +3514,16 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x008f: {
+		Bit16s t_event = CPU_Pop16();
+		CPU_Push16(t_event);
+
+		D1_INFO("Reisebegegnung %d\n", t_event);
+#if 0
+		TRV_event(t_event);
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x012b: {
 		return 0;
@@ -10672,13 +10681,7 @@ static int seg109(unsigned short offs) {
 			return 1;
 		}
 		case 0x9d: return n_seg109(0x0000);
-		case 0xa2: {
-			unsigned short tevent = CPU_Pop16();
-			CPU_Push16(tevent);
-
-			D1_INFO("Reisebegegnung %d\n", tevent);
-			return 0;
-		}
+		case 0xa2: return n_seg109(0x008f);
 		case 0xb1: {
 			reg_ax = enter_hut_question();
 			D1_LOG("enter_hut_question(); = %d\n",
