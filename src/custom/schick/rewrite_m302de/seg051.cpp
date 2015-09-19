@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg051 (wilderness camp)
- *	Functions rewritten: 2/3
+ *	Functions rewritten: 3/3 (complete)
 */
 
 #include <stdio.h>
@@ -459,10 +459,137 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 	return 0;
 }
 
-signed short replenish_stocks(signed short mod, signed short hero_pos)
+/**
+ * \brief	replenish the stocks (water and food)
+ * \param mod	modificator for the skill test
+ * \param tries	how often was tried to replenish stocks
+ * \returns 0 if replenish was not possible or 1 if replenish was possible
+ */
+/* Borlandified and identical */
+signed short replenish_stocks(signed short mod, signed short tries)
 {
-	DUMMY_WARNING();
-	return 0;
+	signed short hero_pos;
+	signed short l_di;
+	signed short retval;
+	signed short j;
+	RealPt hero;
+	Bit8u *hero2;
+
+	retval = 0;
+	mod += 5;
+
+	ds_writews(SKILLED_HERO_POS, get_skilled_hero_pos(31));
+	hero_pos = select_hero_ok(get_ltx(0x508));
+
+	if (hero_pos != -1 && hero_busy(get_hero(hero_pos))) {
+		GUI_output(get_ltx(0xb68));
+		hero_pos = -1;
+	}
+
+	if (hero_pos != -1) {
+
+		if (ds_readb(0xe3c8 + hero_pos) != 0) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_ltx(0xc88),
+				(char*)get_hero(hero_pos) + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+		} else {
+
+			if (ds_readb(0xe3c1 + hero_pos) != 0 ||
+				ds_readb(0xe3cf + hero_pos) != 0 ||
+				ds_readb(0xe3d6 + hero_pos) != 0)
+			{
+				GUI_output(get_ltx(0x52c));
+
+			} else {
+
+				if (tries < 2) {
+
+					timewarp(HOURS(1));
+					ds_writed(0x3e20, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+					ds_writeb(0xe3c8 + hero_pos, 1);
+					retval = 1;
+
+					/* search for water */
+					if (test_skill(Real2Host(hero), 31, mod) > 0 || ds_readd(INGAME_TIMERS + 4)) {
+
+						/* found water */
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x510),
+							(char*)Real2Host(hero) + 0x10);
+
+						/* fill up all waterskins and remove thirst of all living heros in the current group */
+						hero2 = get_hero(0);
+						for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+							if (host_readbs(hero2 + 0x21) != 0 &&
+								host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP) &&
+								!hero_dead(hero2))
+							{
+								host_writebs(hero2 + 0x80, 0);
+
+								for (j = 0; j < 23; j++) {
+									if (host_readws(hero2 + 14 * j + 0x196) == 30) {
+										and_ptr_bs(hero2 + 14 * j + 0x196 + 4, 0xfb);
+										and_ptr_bs(hero2 + 14 * j + 0x196 + 4, 0xfd);
+									}
+								}
+							}
+						}
+					} else {
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x550),
+							(char*)Real2Host(hero) + 0x10);
+					}
+
+					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
+					delay_or_keypress(200);
+
+					/* search for food */
+					if (test_skill(Real2Host(hero), 26, mod) > 0 || ds_readd(INGAME_TIMERS + 0xc)) {
+
+						/* remove hunger of all living heros in the current group */
+						hero2 = get_hero(0);
+						for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+							if (host_readbs(hero2 + 0x21) != 0 &&
+								host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP) &&
+								!hero_dead(hero2))
+							{
+								host_writebs(hero2 + 0x7f, 0);
+							}
+						}
+
+						/* the group may get three food packages */
+						if (!get_item(45, 1, 3)) {
+							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x4c8));
+							ds_writew(0x2846, 1);
+						} else {
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_ltx(0x514),
+								(char*)Real2Host(hero) + 0x10);
+						}
+
+					} else {
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_ltx(0x554),
+							(char*)Real2Host(hero) + 0x10);
+					}
+
+					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
+					delay_or_keypress(200);
+
+				} else {
+					GUI_output(get_ltx(0x50c));
+				}
+			}
+		}
+	}
+
+	return retval;
 }
 
 #if !defined(__BORLANDC__)

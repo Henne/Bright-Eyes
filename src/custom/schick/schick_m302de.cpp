@@ -2175,12 +2175,12 @@ static int n_seg051(unsigned short offs)
 		}
 		case 0x0b5b: {
 			Bit16s mod = CPU_Pop16();
-			Bit16s hero_pos = CPU_Pop16();
-			CPU_Push16(hero_pos);
+			Bit16s tries = CPU_Pop16();
+			CPU_Push16(tries);
 			CPU_Push16(mod);
-			D1_LOG("replenish_stocks(%d, %d)\n", mod, hero_pos);
-			reg_ax = reg_ax;
-			return 0;
+			D1_LOG("replenish_stocks(%d, %d)\n", mod, tries);
+			reg_ax = replenish_stocks(mod, tries);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
