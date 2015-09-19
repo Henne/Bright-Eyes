@@ -32,9 +32,6 @@ namespace M302de {
 /* Borlandified and identical */
 void do_wildcamp(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short l_si;
 	signed short l_di;
 	signed short i;
@@ -374,7 +371,6 @@ void do_wildcamp(void)
 	}
 
 	turnaround();
-#endif
 }
 
 /* Borlandified and identical */

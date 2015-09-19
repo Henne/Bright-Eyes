@@ -2151,13 +2151,9 @@ static int n_seg051(unsigned short offs)
 {
 	switch (offs) {
 		case 0x0000: {
-#if 0
 			D1_LOG("do_wildcamp()\n");
 			do_wildcamp();
 			return 1;
-#else
-			return 0;
-#endif
 		}
 		case 0x0929: {
 			RealPt hero = CPU_Pop32();
