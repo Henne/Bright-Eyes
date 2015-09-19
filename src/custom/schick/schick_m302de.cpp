@@ -3535,15 +3535,11 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x014c: {
-#if 0
 		Bit16s a0 = CPU_Pop16();
 		CPU_Push16(a0);
 		D1_LOG("TRV_found_herb_place(%d)\n", a0);
 		TRV_found_herb_place(a0);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x01ff: {
 		D1_LOG("TRV_inside_herb_place()\n");

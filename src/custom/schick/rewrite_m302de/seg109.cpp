@@ -99,7 +99,6 @@ signed short TRV_fight_event(signed short fight_nr, signed short travel_event)
 	return retval;
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void TRV_found_herb_place(signed short a0)
 {
@@ -128,7 +127,6 @@ void TRV_found_herb_place(signed short a0)
 		TRV_inside_herb_place();
 	}
 }
-#endif
 
 /* Borlandified and identical */
 void TRV_inside_herb_place(void)
