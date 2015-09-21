@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 8/30
+ *	Functions rewritten: 9/30
 */
 
 #include <stdio.h>
@@ -206,6 +206,42 @@ signed short TRV_found_camp_place(signed short a0)
 	return 0;
 }
 #endif
+
+/* Borlandified and identical */
+void TRV_found_replenish_place(signed short a0)
+{
+	signed short hero_pos;
+	signed short answer;
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x040),
+		(char*)get_dtp(4 * (random_schick(5) + 11)),
+		(char*)(a0 != 0 ? get_dtp(0xb4) : p_datseg + 0xb13d));
+	do {
+		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+					get_dtp(0x54),
+					get_dtp(0x58));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		load_ani(1);
+		draw_main_screen();
+		init_ani(0);
+
+		hero_pos = get_hero_index(Real2Host(get_first_hero_available_in_group()));
+
+		ds_writeb(0xe3c8 + hero_pos, ds_writeb(0xe3c1 + hero_pos, ds_writeb(0xe3cf + hero_pos, ds_writeb(0xe3d6 + hero_pos, 0))));
+
+		replenish_stocks(-3, hero_pos);
+
+		timewarp(HOURS(1));
+
+		set_var_to_zero();
+
+		ds_writew(0x2846, 1);
+	}
+}
 
 /* 0x4f2 */
 /**

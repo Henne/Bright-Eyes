@@ -7,6 +7,9 @@ namespace M302de {
 signed short TRV_found_camp_place(signed short);
 #endif
 
+/* 0x25 */
+void TRV_found_replenish_place(signed short);
+
 /* 0x2f */
 void TRV_found_herb_place(signed short);
 
