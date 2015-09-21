@@ -3583,7 +3583,9 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x0536: {
-		return 0;
+		reg_ax = TRV_follow_trail_question();
+		D1_LOG("TRV_follow_trail_question(); = %d\n", (signed short)reg_ax);
+		return 1;
 	}
 	case 0x05a7: {
 		return 0;
@@ -10705,6 +10707,7 @@ static int seg109(unsigned short offs) {
 	switch (offs) {
 		case 0x20: return n_seg109(0x0297);
 		case 0x25: return n_seg109(0x03a5);
+		case 0x2a: return n_seg109(0x0536);
 		case 0x2f: return n_seg109(0x014c);
 		case 0x34: return n_seg109(0x01ff);
 		case 0x57: {

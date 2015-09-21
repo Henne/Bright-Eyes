@@ -10,6 +10,9 @@ signed short TRV_found_camp_place(signed short);
 /* 0x25 */
 void TRV_found_replenish_place(signed short);
 
+/* 0x2a */
+signed short TRV_follow_trail_question(void);
+
 /* 0x2f */
 void TRV_found_herb_place(signed short);
 

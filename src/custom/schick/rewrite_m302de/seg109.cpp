@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 10/30
+ *	Functions rewritten: 11/30
 */
 
 #include <stdio.h>
@@ -307,6 +307,28 @@ signed short TRV_enter_hut_question(void)
 	ds_writew(0x2846, 1);
 
 	return answer;
+}
+
+/* Borlandified and identical */
+signed short TRV_follow_trail_question(void)
+{
+	signed short answer;
+	Bit8u *hero;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x64),
+		(char*)hero + 0x10);
+
+	do {
+		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+				get_dtp(0x68),
+				get_dtp(0x6c));
+
+	} while (answer == -1);
+
+	return answer - 1;
 }
 
 void seg109_067e(signed short mod, signed short time)
