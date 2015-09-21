@@ -3588,7 +3588,21 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x05a7: {
+#if 0
+		RealPt msg = CPU_Pop32();
+		Bit16s time = CPU_Pop16();
+		Bit16s mod = CPU_Pop16();
+		CPU_Push16(mod);
+		CPU_Push16(time);
+		CPU_Push32(msg);
+
+		reg_ax = TRV_cross_a_ford(Real2Host(msg), time, mod);
+		D1_LOG("TRV_cross_a_ford(%s, time, mod) = %d\n",
+			(char*)Real2Host(msg), time, mod, (signed short)reg_ax);
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x067e: {
 		return 0;
@@ -10710,6 +10724,7 @@ static int seg109(unsigned short offs) {
 		case 0x2a: return n_seg109(0x0536);
 		case 0x2f: return n_seg109(0x014c);
 		case 0x34: return n_seg109(0x01ff);
+		case 0x39: return n_seg109(0x05a7);
 		case 0x57: {
 			tevent_002();
 			return 1;

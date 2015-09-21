@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 11/30
+ *	Functions rewritten: 12/30
 */
 
 #include <stdio.h>
@@ -330,6 +330,51 @@ signed short TRV_follow_trail_question(void)
 
 	return answer - 1;
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
+{
+	signed short answer;
+	signed short done;
+
+	done = 0;
+	ds_writeb(0xe5d2, 1);
+
+	load_ani(7);
+	draw_main_screen();
+	init_ani(0);
+
+	do {
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x88),
+			(char*)msg);
+
+		do {
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+						get_dtp(0x8c),
+						get_dtp(0x90));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			done = 1;
+			seg109_067e(mod, time);
+		} else {
+			answer = GUI_bool(get_dtp(0x9c));
+
+			if (answer == 1) {
+				done = ds_writew(0x4336, 1);
+			}
+		}
+
+	} while (!done);
+
+	set_var_to_zero();
+	ds_writeb(0xe5d2, 0);
+	ds_writew(0x2846, 1);
+	return 1;
+}
+#endif
 
 void seg109_067e(signed short mod, signed short time)
 {
