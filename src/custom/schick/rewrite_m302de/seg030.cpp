@@ -795,7 +795,6 @@ void talk_switch(void)
 		TLK_old_woman(state);
 
 	} else if (ds_readws(TLK_ID) == 17) {
-		/* TODO: actually disabled */
 		/* F115.TLK */
 		TLK_way_to_ruin(state);
 

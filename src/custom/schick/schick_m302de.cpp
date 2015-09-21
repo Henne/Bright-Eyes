@@ -1324,7 +1324,7 @@ static int n_seg030(unsigned offs) {
 		/* TODO: all TLK_ID [0,19] */
 		Bit16s id = ds_readws(TLK_ID);
 
-		if (id == 1 || (id >= 3 && id <= 16))
+		if (id == 1 || (id >= 3 && id <= 17))
 		{
 			talk_switch();
 			return 1;
@@ -10931,13 +10931,11 @@ static int seg117(unsigned short offs)
 #endif
 	}
 	case 0x5c: {
-#if 0
-		D1_LOG("TLK_way_to_ruin()\n");
-		TLK_way_to_ruin();
+		Bit16s state = CPU_Pop16();
+		CPU_Push16(state);
+		D1_LOG("TLK_way_to_ruin(%d)\n", state);
+		TLK_way_to_ruin(state);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x61: {
 #if 0

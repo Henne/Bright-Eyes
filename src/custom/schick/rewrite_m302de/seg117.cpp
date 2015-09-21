@@ -700,9 +700,6 @@ void search_ruin2(void)
 
 void TLK_way_to_ruin(signed short state)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short i;
 	RealPt hero;
 	Bit8u *hero2;
@@ -717,8 +714,8 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 4 || state == 7) {
 		timewarp(HOURS(1));
 	} else if (state == 6) {
-		hero = get_hero(get_random_hero());
-		ds_writew(0xe30e, test_skill(hero, 31, 6) > 0 ? 8 : 7);
+		hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+		ds_writew(0xe30e, test_skill(Real2Host(hero), 31, 6) > 0 ? 8 : 7);
 	} else if (state == 8) {
 		timewarp(HOURS(1));
 		TRV_ford_test(0, 30);
@@ -824,7 +821,6 @@ void TLK_way_to_ruin(signed short state)
 	}
 
 	ds_writeb(0xe5d2, 0);
-#endif
 }
 
 void unicorn_first_encounter(void)
