@@ -3588,7 +3588,6 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x05a7: {
-#if 0
 		RealPt msg = CPU_Pop32();
 		Bit16s time = CPU_Pop16();
 		Bit16s mod = CPU_Pop16();
@@ -3597,12 +3596,9 @@ static int n_seg109(unsigned offs)
 		CPU_Push32(msg);
 
 		reg_ax = TRV_cross_a_ford(Real2Host(msg), time, mod);
-		D1_LOG("TRV_cross_a_ford(%s, time, mod) = %d\n",
+		D1_LOG("TRV_cross_a_ford(%s, %d, %d) = %d\n",
 			(char*)Real2Host(msg), time, mod, (signed short)reg_ax);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x067e: {
 		Bit16s time = CPU_Pop16();

@@ -332,7 +332,6 @@ signed short TRV_follow_trail_question(void)
 	return answer - 1;
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 {
@@ -375,7 +374,6 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 	ds_writew(0x2846, 1);
 	return 1;
 }
-#endif
 
 /* Borlandified and identical */
 void TRV_ford_test(signed short mod, signed short time)

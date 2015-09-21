@@ -20,9 +20,7 @@ void TRV_found_herb_place(signed short);
 void TRV_inside_herb_place(void);
 
 /* 0x39 */
-#if defined(__BORLANDC__)
 signed short TRV_cross_a_ford(Bit8u*, signed short, signed short);
-#endif
 
 void tevent_002(void);
 
