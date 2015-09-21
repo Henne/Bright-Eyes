@@ -269,26 +269,22 @@ void TRV_found_inn(signed short city, signed short type)
 }
 #endif
 
-/* 0x4f2 */
 /**
- * enter_hut_question() - question if you want to rest in a hut
- *
- * Returns the answer 0 = no, 1 = yes
+ * \brief	question if you want to rest in a hut
+ * \return the answer 0 = no, 1 = yes
  */
-signed short enter_hut_question(void)
+/* Borlandified and identical */
+signed short TRV_enter_hut_question(void)
 {
 	signed short answer;
 
 	load_ani(8);
-
 	draw_main_screen();
-
 	init_ani(0);
 
 	answer = GUI_bool(get_dtp(0x60));
 
 	set_var_to_zero();
-
 	ds_writew(0x2846, 1);
 
 	return answer;

@@ -38,7 +38,7 @@ void TRV_found_inn(signed short, signed short);
 #endif
 
 /* 0xb1 */
-signed short enter_hut_question(void);
+signed short TRV_enter_hut_question(void);
 #if !defined(__BORLANDC__)
 }
 #endif

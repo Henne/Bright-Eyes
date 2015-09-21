@@ -3578,7 +3578,9 @@ static int n_seg109(unsigned offs)
 #endif
 	}
 	case 0x04f2: {
-		return 0;
+		reg_ax = TRV_enter_hut_question();
+		D1_LOG("TRV_enter_hut_question(); = %d\n", (signed short)reg_ax);
+		return 1;
 	}
 	case 0x0536: {
 		return 0;
@@ -10713,14 +10715,8 @@ static int seg109(unsigned short offs) {
 		case 0xa2: return n_seg109(0x008f);
 		case 0xa7: return n_seg109(0x012b);
 		case 0xac: return n_seg109(0x0493);
-		case 0xb1: {
-			reg_ax = enter_hut_question();
-			D1_LOG("enter_hut_question(); = %d\n",
-				(signed short)reg_ax);
-			return 1;
-		}
-		default:
-			return 0;
+		case 0xb1: return n_seg109(0x04f2);
+		default:   return 0;
 	}
 }
 
