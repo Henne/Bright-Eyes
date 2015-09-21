@@ -793,7 +793,6 @@ void talk_switch(void)
 		TLK_way_to_ruin(state);
 
 	} else if (ds_readws(TLK_ID) == 18) {
-		/* TODO: actually disabled */
 		/* EREMIT.TLK */
 		TLK_eremit(state);
 	}

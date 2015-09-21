@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 3/18
+ *	Functions rewritten: 4/18
  */
 
 #include <stdlib.h>
@@ -14,9 +14,33 @@
 namespace M302de {
 #endif
 
-void TLK_eremit(signed short)
+void TLK_eremit(signed short state)
 {
-	DUMMY_WARNING();
+	signed short i;
+	Bit8u *hero;
+
+	if (!state) {
+		ds_writew(0xe30e, ds_readb(0x3615) != 0 ? 1 : 2);
+	} else if (state == 6) {
+
+		hero = get_hero(0);
+		for (i = 0 ; i <= 6; i++, hero += 0x6da) {
+
+			/* remove hunger and thirst */
+			host_writeb(hero + 0x7f, host_writebs(hero + 0x80, 0));
+
+			/* heal all wounds */
+			add_hero_le(hero, host_readws(hero + 0x5e));
+		}
+
+	} else if (state == 10) {
+		/* group learns about two places to rest */
+		ds_writeb(0xe309, ds_writeb(0x3e08, 1));
+	} else if (state == 13) {
+		ds_writeb(0x3615, 1);
+	} else if (state == 14) {
+		timewarp(MINUTES(30));
+	}
 }
 
 void do_town(void)
