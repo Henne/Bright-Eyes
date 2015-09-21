@@ -757,7 +757,6 @@ void talk_switch(void)
 
 	} else if (ds_readws(TLK_ID) == 11) {
 		/* INFO6.TLK */
-		/* TODO: actually disabled */
 		INF_treborn_unicorn(ds_readws(DIALOG_INFORMER), state);
 
 	} else if (ds_readws(TLK_ID) == 12) {
@@ -765,27 +764,22 @@ void talk_switch(void)
 		INF_swafnild_unicorn(ds_readws(DIALOG_INFORMER), state);
 
 	} else if (ds_readws(TLK_ID) == 13) {
-		/* TODO: actually disabled */
 		/* SCHMIED.TLK */
 		TLK_schmied(state);
 
 	} else if (ds_readws(TLK_ID) == 14) {
-		/* TODO: actually disabled */
 		/* GHANDEL.TLK */
 		TLK_ghandel(state);
 
 	} else if (ds_readws(TLK_ID) == 15) {
-		/* TODO: actually disabled */
 		/* KHANDEL.TLK */
 		TLK_khandel(state);
 
 	} else if (ds_readws(TLK_ID) == 16) {
-		/* TODO: actually disabled */
 		/* WHANDEL.TLK */
 		TLK_whandel(state);
 
 	} else if (ds_readws(TLK_ID) == 1) {
-		/* TODO: actually disabled */
 		/* HERBERG.TLK */
 		TLK_herberg(state);
 

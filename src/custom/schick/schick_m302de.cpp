@@ -1324,13 +1324,10 @@ static int n_seg030(unsigned offs) {
 		/* TODO: all TLK_ID [0,19] */
 		Bit16s id = ds_readws(TLK_ID);
 
-		if (id == 1 || (id >= 3 && id <= 17))
-		{
-			talk_switch();
-			return 1;
-		}
+		if (id == 0 || id == 18) return 0;
 
-		return 0;
+		talk_switch();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
