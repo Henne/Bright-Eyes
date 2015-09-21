@@ -246,7 +246,13 @@ void TRV_found_replenish_place(signed short a0)
 		ds_writeb(0xe3c8 + hero_pos, ds_writeb(0xe3c1 + hero_pos, ds_writeb(0xe3cf + hero_pos, ds_writeb(0xe3d6 + hero_pos, 0))));
 #endif
 
+		/* Original-Bug: the second argument is is the counter of replenish tries, not the position of the leader.
+		 * Trigger:	Leave the first two hero slots empty an call this function. */
+#ifdef M302de_ORIGINAL_BUGFIX
+		replenish_stocks(-3, 0);
+#else
 		replenish_stocks(-3, hero_pos);
+#endif
 
 		timewarp(HOURS(1));
 
