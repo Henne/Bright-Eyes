@@ -3605,7 +3605,14 @@ static int n_seg109(unsigned offs)
 #endif
 	}
 	case 0x067e: {
-		return 0;
+		Bit16s time = CPU_Pop16();
+		Bit16s mod = CPU_Pop16();
+		CPU_Push16(mod);
+		CPU_Push16(time);
+
+		TRV_ford_test(time, mod);
+		D1_LOG("TRV_ford_test(%d, %d)\n", time, mod);
+		return 1;
 	}
 	case 0x07c5: {
 		return 0;
@@ -10725,6 +10732,7 @@ static int seg109(unsigned short offs) {
 		case 0x2f: return n_seg109(0x014c);
 		case 0x34: return n_seg109(0x01ff);
 		case 0x39: return n_seg109(0x05a7);
+		case 0x3e: return n_seg109(0x067e);
 		case 0x57: {
 			tevent_002();
 			return 1;

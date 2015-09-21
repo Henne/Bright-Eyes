@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 12/30
+ *	Functions rewritten: 13/30
 */
 
 #include <stdio.h>
@@ -18,6 +18,7 @@
 #include "seg047.h"
 #include "seg051.h"
 #include "seg097.h"
+#include "seg105.h"
 #include "seg109.h"
 
 #if !defined(__BORLANDC__)
@@ -358,7 +359,7 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 
 		if (answer == 1) {
 			done = 1;
-			seg109_067e(mod, time);
+			TRV_ford_test(mod, time);
 		} else {
 			answer = GUI_bool(get_dtp(0x9c));
 
@@ -376,12 +377,43 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 }
 #endif
 
-void seg109_067e(signed short mod, signed short time)
+/* Borlandified and identical */
+void TRV_ford_test(signed short mod, signed short time)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
-#endif
+	signed short i;
+	Bit8u *hero;
+
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+		if (host_readbs(hero + 0x21) != 0 &&
+			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero))
+		{
+
+			if (test_attrib(hero, 4, mod) == 0) {
+				/* test failed */
+				timewarp(MINUTES(time));
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x94),
+					(char*)hero + 0x10);
+
+				hero_disease_test(hero, 2, 20 - (host_readbs(hero + 0x47) + host_readbs(hero + 0x48)));
+
+				loose_random_item(hero, 1, get_ltx(0x7e8));
+			} else {
+				/* test succeded */
+				timewarp(MINUTES(10));
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x98),
+					(char*)hero + 0x10);
+			}
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+		}
+	}
 }
 
 /* The hunter Varnheim <-> Daspota */

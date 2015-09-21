@@ -27,7 +27,7 @@ signed short TRV_cross_a_ford(Bit8u*, signed short, signed short);
 void tevent_002(void);
 
 /* 0x3e */
-void seg109_067e(signed short, signed short);
+void TRV_ford_test(signed short, signed short);
 
 /* 0x9d */
 void TRV_load_textfile(signed short);

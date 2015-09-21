@@ -721,7 +721,7 @@ void TLK_way_to_ruin(signed short state)
 		ds_writew(0xe30e, test_skill(hero, 31, 6) > 0 ? 8 : 7);
 	} else if (state == 8) {
 		timewarp(HOURS(1));
-		seg109_067e(0, 30);
+		TRV_ford_test(0, 30);
 	} else if (state == 9) {
 
 		do {
