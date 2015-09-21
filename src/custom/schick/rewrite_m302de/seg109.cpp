@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 9/30
+ *	Functions rewritten: 10/30
 */
 
 #include <stdio.h>
@@ -242,6 +242,32 @@ void TRV_found_replenish_place(signed short a0)
 		ds_writew(0x2846, 1);
 	}
 }
+
+#if defined(__BORLANDC__)
+/* depends on: do_location() */
+/* Borlandified and identical */
+void TRV_found_inn(signed short city, signed short type)
+{
+	load_ani(12);
+	draw_main_screen();
+	init_ani(0);
+
+	if (GUI_bool(get_dtp(0x5c))) {
+		ds_writew(CITYINDEX, city);
+		ds_writew(TYPEINDEX, type);
+		ds_writeb(LOCATION, 7);
+
+		do_location();
+
+		ds_writeb(LOCATION, 0);
+
+		TRV_load_textfile(-1);
+	}
+
+	set_var_to_zero();
+	ds_writew(0x2846, 1);
+}
+#endif
 
 /* 0x4f2 */
 /**

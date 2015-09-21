@@ -3565,7 +3565,17 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x0493: {
+#if 0
+		Bit16s city = CPU_Pop16();
+		Bit16s type = CPU_Pop16();
+		CPU_Push16(type);
+		CPU_Push16(city);
+		D1_LOG("TRV_found_inn(%d, %d)\n", city, type);
+		TRV_found_inn(city, type);
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x04f2: {
 		return 0;
@@ -10702,6 +10712,7 @@ static int seg109(unsigned short offs) {
 		case 0x9d: return n_seg109(0x0000);
 		case 0xa2: return n_seg109(0x008f);
 		case 0xa7: return n_seg109(0x012b);
+		case 0xac: return n_seg109(0x0493);
 		case 0xb1: {
 			reg_ax = enter_hut_question();
 			D1_LOG("enter_hut_question(); = %d\n",

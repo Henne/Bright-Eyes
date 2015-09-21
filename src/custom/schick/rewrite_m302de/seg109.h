@@ -32,6 +32,11 @@ void TRV_event(signed short);
 /* 0xa7 */
 signed short TRV_fight_event(signed short, signed short);
 
+/* 0xac */
+#if defined(__BORLANDC__)
+void TRV_found_inn(signed short, signed short);
+#endif
+
 /* 0xb1 */
 signed short enter_hut_question(void);
 #if !defined(__BORLANDC__)
