@@ -2,6 +2,11 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+#if defined(__BORLANDC__)
+signed short TRV_found_camp_place(signed short);
+#endif
+
 /* 0x2f */
 void TRV_found_herb_place(signed short);
 

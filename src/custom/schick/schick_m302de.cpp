@@ -3547,7 +3547,15 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x0297: {
+#if 0
+		Bit16s a0 = CPU_Pop16();
+		CPU_Push16(a0);
+		D1_LOG("TRV_found_camp_place(%d)\n", a0);
+		TRV_found_camp_place(a0);
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x03a5: {
 		return 0;
@@ -10679,15 +10687,7 @@ static int seg108(unsigned short offs)
 
 static int seg109(unsigned short offs) {
 	switch (offs) {
-		case 0x20: {
-			unsigned short kampf = CPU_Pop16();
-			unsigned short v2 = CPU_Pop16();
-			CPU_Push16(v2);
-			CPU_Push16(kampf);
-
-			D1_LOG("Event? : Kampf = 0x%02x 0x%02x\n", kampf, v2);
-			return 0;
-		}
+		case 0x20: return n_seg109(0x0297);
 		case 0x2f: return n_seg109(0x014c);
 		case 0x34: return n_seg109(0x01ff);
 		case 0x57: {

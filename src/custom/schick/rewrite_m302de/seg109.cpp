@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 7/30
+ *	Functions rewritten: 8/30
 */
 
 #include <stdio.h>
@@ -10,6 +10,7 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
+#include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
@@ -157,6 +158,54 @@ void TRV_inside_herb_place(void)
 	set_var_to_zero();
 	ds_writew(0x2846, 1);
 }
+
+/* Borlandified and identical */
+#if defined(__BORLANDC__)
+/* depends on: do_location() */
+signed short TRV_found_camp_place(signed short a0)
+{
+	signed short answer;
+	signed short randval;
+
+	randval = random_schick(5) + 10;
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x020),
+		(char*)get_dtp(4 * randval),
+		(char*)(a0 == 1 ? get_dtp(0xa8) : (a0 == 2 ? get_dtp(0xb4) : p_datseg + 0xb13c)));
+	do {
+		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+					get_dtp(0x24),
+					get_dtp(0x28));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		ds_writew(0xd32d, ds_writews(0xd331, ds_writews(0xd32f, 0)));
+
+		if (a0 == 1) {
+			ds_writews(0xd331, -3);
+		} else if (a0 == 2) {
+			ds_writews(0xd32f, -3);
+		}
+
+		ds_writeb(0xe4c8, 1);
+		ds_writeb(LOCATION, 6);
+
+		do_location();
+
+		ds_writeb(LOCATION, ds_writeb(0xe4c8, 0));
+
+		TRV_load_textfile(-1);
+
+		ds_writew(0xd32d, ds_writews(0xd331, ds_writews(0xd32f, 0)));
+		ds_writew(0x2846, 2);
+
+		return 1;
+	}
+
+	return 0;
+}
+#endif
 
 /* 0x4f2 */
 /**
