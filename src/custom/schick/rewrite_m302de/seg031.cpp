@@ -206,7 +206,7 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 
 	} while (ds_readws(DIALOG_DONE) == 0);
 
-	ds_writews(0x26bd, ds_writews(0x2ccf, -1));
+	ds_writews(0x26bd, ds_writews(CURRENT_ANI, -1));
 	load_buffer_1(ds_readws(0x26bf));
 }
 
@@ -218,7 +218,7 @@ RealPt get_informer_forename(void)
 	Bit8u *p_info;
 	Bit8u *informer_name;
 
-	p_info = p_datseg + 0x5ed6;
+	p_info = p_datseg + INFORMER_TAB;
 
 	for (i = 0; i < 15; i++, p_info += 4) {
 
@@ -337,7 +337,7 @@ RealPt get_random_tavern_message(void)
 
 	randval = random_schick(20) - 1;
 
-	ptr = (RealPt)host_readd(Real2Host(ds_readd(0xc3b1)) + 4 * (randval + 147));
+	ptr = (RealPt)host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + 4 * (randval + 147));
 
 	if (!randval || randval == 19) {
 

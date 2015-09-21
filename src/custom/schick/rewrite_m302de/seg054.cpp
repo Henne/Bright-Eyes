@@ -375,13 +375,13 @@ void do_inn(void)
 
 					done = 1;
 					ds_writews(COMBO_MODE, 0);
-					ds_writebs(0x4496, 1);
+					ds_writebs(FOOD_MOD, 1);
 
 					do {
 						timewarp_until(HOURS(8));
 					} while (dec_ds_bs(BOOKED_INN_DAYS));
 
-					ds_writeb(0x4496, 0);
+					ds_writeb(FOOD_MOD, 0);
 
 					hero = (RealPt)ds_readd(HEROS);
 					for (i = 0; i <= 6; i++, hero += 0x6da) {
