@@ -229,9 +229,22 @@ void TRV_found_replenish_place(signed short a0)
 		draw_main_screen();
 		init_ani(0);
 
+		/* Original-Bug: This code assumes, that the leader of the group will replenish the stocks,
+		 *		 which may not be the case, since replenish_stocks() asks who may do it.
+		 *		 To be prepared clear these arrays for all heros.
+		*/
+#ifdef M302de_ORIGINAL_BUGFIX
+		for (hero_pos = 0; hero_pos <= 7; hero_pos++) {
+			ds_writeb(0xe3c8 + hero_pos,
+				ds_writeb(0xe3c1 + hero_pos,
+				ds_writeb(0xe3cf + hero_pos,
+				ds_writeb(0xe3d6 + hero_pos, 0))));
+		}
+#else
 		hero_pos = get_hero_index(Real2Host(get_first_hero_available_in_group()));
 
 		ds_writeb(0xe3c8 + hero_pos, ds_writeb(0xe3c1 + hero_pos, ds_writeb(0xe3cf + hero_pos, ds_writeb(0xe3d6 + hero_pos, 0))));
+#endif
 
 		replenish_stocks(-3, hero_pos);
 
