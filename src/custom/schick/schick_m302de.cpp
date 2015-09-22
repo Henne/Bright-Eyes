@@ -3608,7 +3608,14 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x07c5: {
-		return 0;
+		RealPt msg = CPU_Pop32();
+		Bit16s price = CPU_Pop16();
+		CPU_Push16(price);
+		CPU_Push32(msg);
+
+		reg_ax = TRV_ferry(Real2Host(msg), price);
+		D1_LOG("TRV_ferry(%s, %d) = %d\n", Real2Host(msg), price, reg_ax);
+		return 1;
 	}
 	case 0x0991: {
 		return 0;

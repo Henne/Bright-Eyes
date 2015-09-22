@@ -27,6 +27,9 @@ void tevent_002(void);
 /* 0x3e */
 void TRV_ford_test(signed short, signed short);
 
+/* 0x43 */
+signed short TRV_ferry(Bit8u*, signed short);
+
 /* 0x9d */
 void TRV_load_textfile(signed short);
 

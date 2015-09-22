@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 13/30
+ *	Functions rewritten: 14/30
 */
 
 #include <stdio.h>
@@ -417,6 +417,78 @@ void TRV_ford_test(signed short mod, signed short time)
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
 	}
+}
+
+/* Borlandified and identical */
+signed short TRV_ferry(Bit8u *msg, signed short price)
+{
+	signed short done;
+	signed short answer;
+	signed short nr_heros;
+	Bit32u p_money;
+
+	done = 0;
+	nr_heros = count_heroes_in_group();
+
+	do {
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x70),
+			(char*)msg,
+			price, 5 * price);
+
+		do {
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
+						get_dtp(0x74),
+						get_dtp(0x78),
+						get_dtp(0x7c));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			price *= 5 * nr_heros;
+			p_money = get_party_money();
+
+			if (price > p_money) {
+				GUI_output(get_ltx(0x644));
+			} else {
+				done = 1;
+				p_money -= price;
+				set_party_money(p_money);
+				timewarp(MINUTES(30));
+			}
+
+		} else if (answer == 2) {
+
+			price *= nr_heros;
+			p_money = get_party_money();
+
+			if (price > p_money) {
+				GUI_output(get_ltx(0x644));
+			} else {
+				p_money -= price;
+				set_party_money(p_money);
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x80),
+					done = random_schick(6));
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				timewarp(HOURS(done));
+
+				done = 1;
+			}
+		} else {
+
+			if (GUI_bool(get_dtp(0x84))) {
+				ds_writew(0x4336, done = 1);
+			}
+		}
+
+	} while (!done);
+
+	return 1;
 }
 
 /* The hunter Varnheim <-> Daspota */
