@@ -500,12 +500,13 @@ void tevent_001(void)
 #endif
 
 /* The hunter Varnheim <-> Daspota */
+/* Borlandified and identical */
 void tevent_002(void)
 {
 	signed short answer;
 
 	/* load dialog head */
-	load_in_head(0x0a);
+	load_in_head(10);
 
 	/* show dialogbox */
 	do {
@@ -522,12 +523,9 @@ void tevent_002(void)
 	/* talk to the hunter for 15 min */
 	if (answer == 1 || answer == 2) {
 
-		if (answer == 1)
-			GUI_dialog_na(0, get_city(0x10));
-		else
-			GUI_dialog_na(0, get_city(0x14));
+		GUI_dialog_na(0, answer == 1 ? get_city(0x10) : get_city(0x14));
 
-		timewarp(0x546);
+		timewarp(MINUTES(15));
 	}
 }
 

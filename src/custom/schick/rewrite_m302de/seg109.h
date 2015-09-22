@@ -22,8 +22,6 @@ void TRV_inside_herb_place(void);
 /* 0x39 */
 signed short TRV_cross_a_ford(Bit8u*, signed short, signed short);
 
-void tevent_002(void);
-
 /* 0x3e */
 void TRV_ford_test(signed short, signed short);
 
@@ -34,6 +32,9 @@ signed short TRV_ferry(Bit8u*, signed short);
 #if defined(__BORLANDC__)
 void tevent_001(void);
 #endif
+
+/* 0x57 */
+void tevent_002(void);
 
 /* 0x9d */
 void TRV_load_textfile(signed short);
