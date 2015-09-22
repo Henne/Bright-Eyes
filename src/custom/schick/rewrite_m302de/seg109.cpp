@@ -390,8 +390,13 @@ void TRV_ford_test(signed short mod, signed short time)
 			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{
-
-			if (test_attrib(hero, 4, mod) == 0) {
+			/* Original-Bugfix: tests fail if their result is lower or equal than zero */
+#ifdef M302de_ORIGINAL_BUGFIX
+			if (test_attrib(hero, 4, mod) < 0)
+#else
+			if (test_attrib(hero, 4, mod) == 0)
+#endif
+			{
 				/* test failed */
 				timewarp(MINUTES(time));
 
