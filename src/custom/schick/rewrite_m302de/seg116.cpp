@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 1/17
+ *	Functions rewritten: 2/17
  */
 
 #include "v302de.h"
@@ -9,6 +9,7 @@
 #include "seg025.h"
 #include "seg026.h"
 #include "seg097.h"
+#include "seg103.h"
 #include "seg109.h"
 
 #if !defined(__BORLANDC__)
@@ -64,6 +65,45 @@ void tevent_130(void)
 	}
 }
 #endif
+
+/* Borlandified and identical */
+void tevent_131(void)
+{
+	/* entrance to the pirate cave */
+	signed short answer;
+
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), 51, 8) > 0 && !ds_readb(0x3e05)) {
+
+		ds_writeb(0x3e05, 1);
+
+		GUI_output(get_city(0x70));
+
+		do {
+			answer = GUI_radio(get_city(0x74), 2,
+						get_city(0x78),
+						get_city(0x7c));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			ds_writeb(0x4333, 11);
+		}
+
+	} else {
+
+		if (ds_readb(0x3e05) != 0) {
+
+			do {
+				answer = GUI_radio(get_city(0x80), 2,
+							get_city(0x84),
+							get_city(0x88));
+			} while (answer == -1);
+
+			if (answer == 1) {
+				ds_writeb(0x4333, 11);
+			}
+		}
+	}
+}
 
 void TLK_old_woman(signed short state)
 {
