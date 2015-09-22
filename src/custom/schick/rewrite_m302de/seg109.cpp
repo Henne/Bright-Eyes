@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 14/30
+ *	Functions rewritten: 15/30
 */
 
 #include <stdio.h>
@@ -490,6 +490,14 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 
 	return 1;
 }
+
+/* Borlandified and identical */
+#if defined(__BORLANDC__)
+void tevent_001(void)
+{
+	TRV_found_inn(40, 65);
+}
+#endif
 
 /* The hunter Varnheim <-> Daspota */
 void tevent_002(void)
