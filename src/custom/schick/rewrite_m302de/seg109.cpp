@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 15/30
+ *	Functions rewritten: 16/30
 */
 
 #include <stdio.h>
@@ -527,6 +527,12 @@ void tevent_002(void)
 
 		timewarp(MINUTES(15));
 	}
+}
+
+/* Borlandified and identical */
+void tevent_003(void)
+{
+	TRV_ferry(get_dtp(0x114), 5);
 }
 
 #if !defined(__BORLANDC__)
