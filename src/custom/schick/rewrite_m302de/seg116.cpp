@@ -1,15 +1,20 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 3/17
+ *	Functions rewritten: 4/17
  */
+
+#include <stdio.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg105.h"
 #include "seg109.h"
 
 #if !defined(__BORLANDC__)
@@ -126,6 +131,60 @@ void tevent_132(void)
 	}
 }
 #endif
+
+/* Borlandified and identical */
+void tevent_133(void)
+{
+	signed short i;
+	signed short answer;
+	Bit8u *hero;
+
+	do {
+		answer = GUI_radio(get_city(0x8c), 2,
+					get_city(0x90),
+					get_city(0x94));
+	} while (answer == -1);
+
+	if (answer == 1) {
+		ds_writews(0x4336, 1);
+	} else {
+
+		GUI_output(get_city(0x98));
+
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+			if (host_readbs(hero + 0x21) != 0 &&
+				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero))
+			{
+				timewarp(HOURS(1));
+
+				if (test_attrib(hero, 4, 4) <= 0) {
+					/* test failed */
+
+					timewarp(HOURS(1));
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x9c),
+						(char*)hero + 0x10,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 3)),
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					sub_hero_le(hero, random_schick(8));
+
+					loose_random_item(hero, 50, get_ltx(0x7e8));
+					loose_random_item(hero, 50, get_ltx(0x7e8));
+					loose_random_item(hero, 50, get_ltx(0x7e8));
+				}
+			}
+		}
+
+		GUI_output(get_city(0xa0));
+	}
+}
 
 void TLK_old_woman(signed short state)
 {

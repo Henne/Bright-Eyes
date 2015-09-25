@@ -10955,7 +10955,9 @@ static int seg116(unsigned short offs)
 #endif
 	}
 	case 0x61: {
-		return 0;
+		D1_LOG("tevent_133()\n");
+		tevent_133();
+		return 1;
 	}
 	case 0x66: {
 		return 0;

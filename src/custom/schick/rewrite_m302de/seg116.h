@@ -12,6 +12,8 @@ void tevent_131(void);
 #if defined(__BORLANDC__)
 void tevent_132(void);
 #endif
+/* 0x61 */
+void tevent_133(void);
 
 /* 0x70 */
 void TLK_old_woman(signed short);
