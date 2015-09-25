@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void tevent_135(void);
+
 /* 0x52 */
 #if defined(__BORLANDC__)
 void tevent_130(void);

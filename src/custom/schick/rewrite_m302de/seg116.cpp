@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 5/17
+ *	Functions rewritten: 6/17
  */
 
 #include <stdio.h>
@@ -8,9 +8,13 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg004.h"
 #include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
+#include "seg027.h"
+#include "seg029.h"
+#include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -197,6 +201,149 @@ void tevent_134(void)
 		ds_writeb(0x66d0, -1);
 		ds_writeb(0x3e08, 1);
 	}
+}
+
+/* Borlandified and identical */
+void tevent_135(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short answer;
+	signed short done;
+	signed short count;
+	Bit8u *hero;
+
+	load_ani(1);
+	draw_main_screen();
+	init_ani(0);
+
+	GUI_output(get_city(0xa4));
+
+	do {
+		answer = GUI_radio(get_city(0xa8), 2,
+					get_city(0xac),
+					get_city(0xb0));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		do {
+			done = 0;
+
+			hero = get_hero(select_hero_ok_forced(get_city(0xb4)));
+
+			l_si = 1;
+			if (test_skill(hero, 10, -1) > 0) {
+				l_si = 2;
+				GUI_output(get_city(0xb8));
+
+				if (test_skill(hero, 10, 1) > 0) {
+					l_si = 3;
+					GUI_output(get_city(0xbc));
+
+					if (test_skill(hero, 10, 0) > 0) {
+						l_si = 4;
+						GUI_output(get_city(0xc0));
+
+						if (test_skill(hero, 10, 2) > 0) {
+							l_si = 5;
+							GUI_output(get_city(0xc4));
+
+							if (test_skill(hero, 10, 1) > 0) {
+
+								GUI_output(get_city(0xc8));
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)),
+									(char*)get_city(0xd8),
+									(char*)hero + 0x10,
+									(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 3)));
+								GUI_output(Real2Host(ds_readd(DTP2)));
+
+								load_in_head(45);
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+									(char*)get_city(0xdc),
+									(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)),
+									(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)));
+
+								GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+								for (l_di = count = 0; l_di < 9; l_di++) {
+									if (ds_readb(TREASURE_MAPS + l_di) != 0) {
+										count++;
+									}
+								}
+
+								if (count < 5) {
+									sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+										(char*)get_city(0xe0),
+										(char*)hero + 0x10,
+										(char*)get_city(0xe4));
+								} else {
+									sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+										(char*)get_city(0xe0),
+										(char*)hero + 0x10,
+										(char*)get_dtp(4 * random_interval(54, 67)));
+								}
+
+								GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+								if (!(host_readbs(hero + 0x7c) & 0x2)) {
+									or_ptr_bs(hero + 0x7c, 2);
+									inc_ptr_bs(hero + 0x43);
+									inc_ptr_bs(hero + 0x44);
+								}
+
+								sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+									(char*)get_city(0xe8),
+									(char*)hero + 0x10,
+									(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)));
+								GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+								l_si = 0;
+								done = 1;
+							}
+						}
+					}
+				}
+			}
+
+			if (l_si) {
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0xcc),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				l_di = random_interval(ds_readb(0xb172 + 2 * l_si), host_readb((p_datseg + 0xb172 + 1) + (2 * l_si)));
+				l_si = host_readws(hero + 0x60);
+				l_si -= l_di;
+
+				sub_hero_le(hero, l_di);
+
+				if (l_si <= 0) {
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)(!l_si ? get_city(0xd4) : get_city(0xd0)),
+						(char*)hero + 0x10);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+
+				if (count_heroes_available_in_group()) {
+
+					if (!GUI_bool(get_city(0xec))) {
+						done = 1;
+					}
+				} else {
+					done = 1;
+				}
+			}
+
+		} while (done == 0);
+	}
+
+	set_var_to_zero();
+	ds_writew(0x2846, 1);
 }
 
 void TLK_old_woman(signed short state)

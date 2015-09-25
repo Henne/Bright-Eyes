@@ -10902,7 +10902,9 @@ static int seg116(unsigned short offs)
 {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		D1_LOG("tevent_135()\n");
+		tevent_135();
+		return 1;
 	}
 	case 0x25: {
 		return 0;
