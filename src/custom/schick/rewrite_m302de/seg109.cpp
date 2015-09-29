@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 18/30
+ *	Functions rewritten: 19/30
 */
 
 #include <stdio.h>
@@ -670,6 +670,18 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	ds_writew(0x2846, 1);
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void tevent_005(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 0) > 0 && !ds_readb(0x3da3)) ||
+		ds_readb(0x3da3) != 0)
+	{
+		TRV_found_camp_place(1);
+		ds_writeb(0x3da3, 1);
+	}
+}
+#endif
 
 #if !defined(__BORLANDC__)
 }
