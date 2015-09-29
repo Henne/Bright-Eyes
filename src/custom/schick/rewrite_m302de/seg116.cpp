@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 6/17
+ *	Functions rewritten: 7/17
  */
 
 #include <stdio.h>
@@ -344,6 +344,65 @@ void tevent_135(void)
 
 	set_var_to_zero();
 	ds_writew(0x2846, 1);
+}
+
+/* Borlandified and identical */
+void tevent_137(void)
+{
+	register signed short i;
+	register signed short answer;
+	signed short item_pos;
+	Bit8u *hero;
+
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 5) > 0 && !ds_readb(0x3e09)) ||
+		ds_readb(0x3e09) != 0)
+	{
+		ds_writeb(0x3e09, 1);
+
+		do {
+			answer = GUI_radio(get_city(0xf0), 2,
+						get_city(0xf4),
+						get_city(0xf8));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			hero = get_hero(0);
+			for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+				if ((host_readbs(hero + 0x21) != 0) &&
+					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					!hero_dead(hero))
+				{
+					/* each hero gets five FOODPACKAGES */
+					give_hero_new_item(hero, 45, 1, 5);
+
+					/* search for the WATERSKIN */
+					if ((item_pos = get_item_pos(hero, 30)) != -1) {
+						and_ptr_bs(hero + 0x196 + 4 + 14 * item_pos, 0xfb);
+#if !defined(__BORLANDC__)
+						and_ptr_bs(hero + 14 * item_pos + 0x196 + 4, 0xfd);
+						or_ptr_bs(hero + 14 * item_pos + 0x196 + 4, 0 << 1);
+#else
+						asm {	mov al, 0
+							mov dx, item_pos
+							imul dx, dx, 14
+							les bx, hero
+							db 0x03, 0xda ; /* add bx, dx */
+							and byte ptr es:[bx + 0x19a], 0xfd
+							shl al, 1
+							or es:[bx + 0x19a], al
+						}
+#endif
+					}
+
+					host_writebs(hero + 0x7f, host_writebs(hero + 0x80, 0));
+
+					add_hero_le(hero, 2);
+				}
+			}
+		}
+	}
 }
 
 void TLK_old_woman(signed short state)
