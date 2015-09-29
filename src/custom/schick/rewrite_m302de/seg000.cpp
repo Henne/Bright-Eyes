@@ -328,13 +328,23 @@ signed short bc_findnext_dosbox(RealPt __ffblk)
 
 signed short bc_findnext(struct ffblk *__ffblk)
 {
+	/* allocate 0x50 bytes on the stack */
 	Bit32u reg_esp_bak = reg_esp;
 	reg_esp -= 0x50;
 
-	Bit16s retval = bc_findnext_dosbox(RealMake(SegValue(ss), reg_sp));
-	memcpy(__ffblk, Real2Host(RealMake(SegValue(ss), reg_sp)), 43);
+	/* make a pointer to the location on the stack */
+	RealPt ptr = RealMake(SegValue(ss), reg_sp);
 
+	/* copy the old __ffblk to the stack */
+	memcpy(Real2Host(ptr), __ffblk, 43);
+	/* call findnext() */
+	Bit16s retval = bc_findnext_dosbox(ptr);
+	/* copy the result to host memory */
+	memcpy(__ffblk, Real2Host(ptr), 43);
+
+	/* free memory on the stack */
 	reg_esp = reg_esp_bak;
+
 	return retval;
 }
 
