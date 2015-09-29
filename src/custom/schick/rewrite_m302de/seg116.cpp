@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 9/17
+ *	Functions rewritten: 10/17
  */
 
 #include <stdio.h>
@@ -472,6 +472,27 @@ void tevent_139(void)
 			do_location();
 			ds_writeb(LOCATION, 0);
 
+		}
+	}
+}
+#endif
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void tevent_140(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0c)) || ds_readb(0x3e0c) != 0) {
+
+		/* set this camp place as known */
+		ds_writeb(0x3e0c, 1);
+
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 && !ds_readb(0x3e0d)) || ds_readb(0x3e0d) != 0) {
+			ds_writeb(0x3e0d, 1);
+			ds_writebs(0x66d0, 130);
+			TRV_found_camp_place(2);
+			ds_writebs(0x66d0, -1);
+		} else {
+			TRV_found_camp_place(0);
 		}
 	}
 }
