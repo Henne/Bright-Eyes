@@ -45,9 +45,7 @@ void tevent_002(void);
 void tevent_003(void);
 
 /* 0x61 */
-#if defined(__BORLANDC__)
 void tevent_004(void);
-#endif
 
 /* 0x9d */
 void TRV_load_textfile(signed short);

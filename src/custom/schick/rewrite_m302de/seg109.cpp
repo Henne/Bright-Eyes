@@ -536,8 +536,6 @@ void tevent_003(void)
 	TRV_ferry(get_dtp(0x114), 5);
 }
 
-#if defined(__BORLANDC__)
-/* depends on: TRV_hunt_generic() */
 /* Borlandified and identical */
 void tevent_004(void)
 {
@@ -550,7 +548,6 @@ void tevent_004(void)
 		}
 	}
 }
-#endif
 
 /* Borlandified and identical */
 void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short mod1, signed short mod2,
