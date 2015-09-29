@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 19/30
+ *	Functions rewritten: 20/30
 */
 
 #include <stdio.h>
@@ -682,6 +682,12 @@ void tevent_005(void)
 	}
 }
 #endif
+
+/* Borlandified and identical */
+void tevent_006(void)
+{
+	TRV_ferry(get_dtp(0x114), 4);
+}
 
 #if !defined(__BORLANDC__)
 }
