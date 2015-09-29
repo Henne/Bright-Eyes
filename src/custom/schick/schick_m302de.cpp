@@ -3634,7 +3634,12 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x0a5a: {
+#if 0
+		tevent_004();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x0ab1: {
 		return 0;

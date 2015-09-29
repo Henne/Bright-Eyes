@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 16/30
+ *	Functions rewritten: 17/30
 */
 
 #include <stdio.h>
@@ -18,6 +18,7 @@
 #include "seg047.h"
 #include "seg051.h"
 #include "seg097.h"
+#include "seg103.h"
 #include "seg105.h"
 #include "seg109.h"
 
@@ -534,6 +535,30 @@ void tevent_003(void)
 {
 	TRV_ferry(get_dtp(0x114), 5);
 }
+
+#if defined(__BORLANDC__)
+/* depends on: TRV_hunt_generic() */
+/* Borlandified and identical */
+void tevent_004(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 2) > 0 && !ds_readb(0x3da2)) ||
+		ds_readb(0x3da2) != 0)
+	{
+		ds_writeb(0x3da2, 1);
+		if (!TRV_follow_trail_question()) {
+			TRV_hunt_generic(29, 6, -2, 4, 10, 8, 7, 5, 7, 80, 0);
+		}
+	}
+}
+
+void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short mod1, signed short mod2,
+			signed short mod3, signed short ap_all1, signed short ap_hero, signed short ap_all2,
+			signed short ap_all3, signed short foods1, signed short foods2)
+{
+
+}
+
+#endif
 
 #if !defined(__BORLANDC__)
 }
