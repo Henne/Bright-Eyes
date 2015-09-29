@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 17/30
+ *	Functions rewritten: 18/30
 */
 
 #include <stdio.h>
@@ -550,15 +550,129 @@ void tevent_004(void)
 		}
 	}
 }
+#endif
 
+/* Borlandified and identical */
 void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short mod1, signed short mod2,
 			signed short mod3, signed short ap_all1, signed short ap_hero, signed short ap_all2,
 			signed short ap_all3, signed short foods1, signed short foods2)
 {
+	signed short l_di;
+	signed short i;
+	signed short l4;
+	signed short answer;
+	Bit8u *hero;
 
+	ds_writeb(0xe5d2, 1);
+
+	load_ani(ani_id);
+	draw_main_screen();
+	init_ani(0);
+
+	GUI_output(get_city(4 * city_index));
+
+	hero = get_hero(0);
+	for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+
+		if ((host_readbs(hero + 0x21) != 0) &&
+			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			!hero_dead(hero) &&
+			test_skill(hero, 13, mod1) <= 0)
+		{
+			l_di++;
+		}
+	}
+
+	if (l_di) {
+
+		do {
+			answer = GUI_radio(get_city(4 * (city_index + 1)), 2,
+						get_city(4 * (city_index + 7)),
+						get_city(4 * (city_index + 8)));
+		} while (answer == -1);
+
+	} else {
+
+		i = select_hero_ok_forced(get_city(4 * (city_index + 2)));
+
+		hero = get_hero(i);
+
+		if (test_skill(hero, 13, mod2) <= 0) {
+
+			do {
+				answer = GUI_radio(get_city(4 * (city_index + 1)), 2,
+							get_city(4 * (city_index + 7)),
+							get_city(4 * (city_index + 8)));
+			} while (answer == -1);
+		} else {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(4 * (city_index + 3)),
+				(char*)hero + 0x10);
+
+			GUI_input(Real2Host(ds_readd(DTP2)), l_di = 0);
+
+			if ((i = test_skill(hero, 7, mod3)) > 0) {
+				l_di++;
+			}
+
+			if ((l4 = test_skill(hero, 7, mod3)) > 0) {
+				l_di++;
+			}
+
+			if (l_di == 2 || i == 99 || l4 == 99) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(4 * (city_index + 4)),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				add_hero_ap_all(ap_all1);
+				add_hero_ap(hero, ap_hero);
+
+				timewarp(HOURS(1));
+
+				get_item(45, 1, foods1);
+
+				answer = 0;
+			} else {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(4 * (l_di == 1 ? city_index + 5 : city_index + 6)),
+					(char*)hero + 0x10);
+
+				do {
+					answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+								get_city(4 * (city_index + 7)),
+								get_city(4 * (city_index + 8)));
+				} while (answer == -1);
+			}
+		}
+	}
+
+	if (answer == 2) {
+
+		add_hero_ap_all(ap_all2);
+
+		if (foods2 != 0) {
+			get_item(45, 1, foods2);
+		}
+
+	} else if (answer == 1) {
+
+		GUI_output(get_city(4 * (city_index + 9)));
+
+		timewarp(HOURS(2));
+
+		add_hero_ap_all(ap_all3);
+	}
+
+	set_var_to_zero();
+	ds_writeb(0xe5d2, 0);
+	ds_writew(0x2846, 1);
 }
 
-#endif
 
 #if !defined(__BORLANDC__)
 }

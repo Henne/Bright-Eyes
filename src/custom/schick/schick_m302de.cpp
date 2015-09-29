@@ -3642,7 +3642,39 @@ static int n_seg109(unsigned offs)
 #endif
 	}
 	case 0x0ab1: {
-		return 0;
+		Bit16s ani_id = CPU_Pop16();
+		Bit16s city_index = CPU_Pop16();
+		Bit16s mod1 = CPU_Pop16();
+		Bit16s mod2 = CPU_Pop16();
+		Bit16s mod3 = CPU_Pop16();
+		Bit16s ap_all1 = CPU_Pop16();
+		Bit16s ap_hero = CPU_Pop16();
+		Bit16s ap_all2 = CPU_Pop16();
+		Bit16s ap_all3 = CPU_Pop16();
+		Bit16s foods1 = CPU_Pop16();
+		Bit16s foods2 = CPU_Pop16();
+		CPU_Push16(foods2);
+		CPU_Push16(foods1);
+		CPU_Push16(ap_all3);
+		CPU_Push16(ap_all2);
+		CPU_Push16(ap_hero);
+		CPU_Push16(ap_all1);
+		CPU_Push16(mod3);
+		CPU_Push16(mod2);
+		CPU_Push16(mod1);
+		CPU_Push16(city_index);
+		CPU_Push16(ani_id);
+
+		D1_LOG("TRV_hunt_generic(%d,%d,%d,%d,%d,%d,%d, %d, %d, %d, %d)\n",
+					ani_id, city_index,
+					mod1, mod2, mod3,
+					ap_all1, ap_hero, ap_all2, ap_all3,
+					foods1, foods2);
+		TRV_hunt_generic(ani_id, city_index,
+					mod1, mod2, mod3,
+					ap_all1, ap_hero, ap_all2, ap_all3,
+					foods1, foods2);
+		return 1;
 	}
 	case 0x0e51: {
 		return 0;
@@ -10748,6 +10780,7 @@ static int seg109(unsigned short offs) {
 		case 0x34: return n_seg109(0x01ff);
 		case 0x39: return n_seg109(0x05a7);
 		case 0x3e: return n_seg109(0x067e);
+		case 0x4d: return n_seg109(0x0ab1);
 		case 0x57: return n_seg109(0x09a1);
 		case 0x5c: return n_seg109(0x0a3e);
 		case 0x9d: return n_seg109(0x0000);

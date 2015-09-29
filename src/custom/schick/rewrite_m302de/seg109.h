@@ -29,11 +29,9 @@ void TRV_ford_test(signed short, signed short);
 signed short TRV_ferry(Bit8u*, signed short);
 
 /* 0x4d */
-#if defined(__BORLANDC__)
 void TRV_hunt_generic(signed short, signed short, signed short, signed short,
 			signed short, signed short, signed short, signed short,
 			signed short, signed short, signed short);
-#endif
 
 /* 0x52 */
 #if defined(__BORLANDC__)
