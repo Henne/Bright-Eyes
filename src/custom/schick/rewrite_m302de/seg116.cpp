@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
  *	Functions rewritten: 17/17 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg116.cpp
  */
 
 #include <stdio.h>
@@ -35,7 +39,6 @@ void sub_light_timers(signed short);
 #endif
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void tevent_130(void)
 {
 	signed short answer;
@@ -84,7 +87,6 @@ void tevent_130(void)
 }
 #endif
 
-/* Borlandified and identical */
 void tevent_131(void)
 {
 	/* entrance to the pirate cave */
@@ -124,7 +126,6 @@ void tevent_131(void)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void tevent_132(void)
 {
 
@@ -145,7 +146,6 @@ void tevent_132(void)
 }
 #endif
 
-/* Borlandified and identical */
 void tevent_133(void)
 {
 	signed short i;
@@ -199,7 +199,6 @@ void tevent_133(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_134(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 6) > 0 && !ds_readb(0x3e08)) ||
@@ -212,7 +211,6 @@ void tevent_134(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_135(void)
 {
 	signed short l_si;
@@ -355,7 +353,6 @@ void tevent_135(void)
 	ds_writew(0x2846, 1);
 }
 
-/* Borlandified and identical */
 void tevent_137(void)
 {
 	register signed short i;
@@ -415,7 +412,6 @@ void tevent_137(void)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void tevent_138(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0a)) ||
@@ -429,7 +425,6 @@ void tevent_138(void)
 
 #if defined(__BORLANDC__)
 /* depends on: do_location() */
-/* Borlandified and identical */
 void tevent_139(void)
 {
 	signed short i;
@@ -487,7 +482,6 @@ void tevent_139(void)
 #endif
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void tevent_140(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0c)) || ds_readb(0x3e0c) != 0) {
@@ -507,7 +501,6 @@ void tevent_140(void)
 }
 #endif
 
-/* Borlandified and identical */
 void tevent_141(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 0) > 0 && !ds_readb(0x3e0e)) ||
@@ -523,7 +516,6 @@ void tevent_141(void)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void tevent_142(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0f)) ||
@@ -539,7 +531,6 @@ void tevent_142(void)
 
 #if defined(__BORLANDC__)
 /* depends on: do_location() */
-/* Borlandified and identical */
 void tevent_143(void)
 {
 	signed short i;
@@ -595,7 +586,6 @@ void tevent_143(void)
 }
 #endif
 
-/* Borlandified and identical */
 void tevent_144(void)
 {
 	signed short l_si;
@@ -701,14 +691,12 @@ void tevent_144(void)
 	}
 }
 
-/* Borlandified and identical */
 /* TODO: this function is unused */
 void tevent_144_unused(void)
 {
 	GUI_output(get_city(0x40));
 }
 
-/* Borlandified and identical */
 void TLK_old_woman(signed short state)
 {
 	signed short l_di;
@@ -766,7 +754,6 @@ void TLK_old_woman(signed short state)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_136(void)
 {
 	if (ds_readb(0x3ddb) != 0 &&
