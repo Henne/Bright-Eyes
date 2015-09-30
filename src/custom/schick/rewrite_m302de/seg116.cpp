@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 10/17
+ *	Functions rewritten: 11/17
  */
 
 #include <stdio.h>
@@ -497,6 +497,21 @@ void tevent_140(void)
 	}
 }
 #endif
+
+/* Borlandified and identical */
+void tevent_141(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 0) > 0 && !ds_readb(0x3e0e)) ||
+		ds_readb(0x3e0e) != 0)
+	{
+		/* set this camp place as known */
+		ds_writeb(0x3e0e, 1);
+
+		if (!TRV_follow_trail_question()) {
+			TRV_hunt_generic(21, 73, -1, 5, 10, 15, 5, 5, 10, 50, 0);
+		}
+	}
+}
 
 void TLK_old_woman(signed short state)
 {
