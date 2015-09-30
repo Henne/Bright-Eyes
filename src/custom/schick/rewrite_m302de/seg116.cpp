@@ -1,12 +1,14 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 13/17
+ *	Functions rewritten: 14/17
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
@@ -15,6 +17,8 @@
 #include "seg027.h"
 #include "seg029.h"
 #include "seg047.h"
+#include "seg048.h"
+#include "seg065.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -23,6 +27,10 @@
 
 #if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
+#if defined(__BORLANDC__)
+void sub_light_timers(signed short);
 #endif
 
 #if defined(__BORLANDC__)
@@ -585,6 +593,112 @@ void tevent_143(void)
 	}
 }
 #endif
+
+/* Borlandified and identical */
+void tevent_144(void)
+{
+	signed short l_si;
+	signed short l_di;
+	Bit8u *hero;
+
+	l_di = 0;
+
+	if ((l_si = get_first_hero_with_item(181)) != -1) {
+
+		if (ds_readbs(YEAR) == 17 && ds_readbs(MONTH) == 10 && ds_readbs(DAY_OF_MONTH) >= 10) {
+
+			/* the time is right */
+			l_di = 1;
+		} else {
+
+			if (ds_readb(0x333d) != 0 && GUI_bool(get_city(0xb8))) {
+			/* the time is not right, forward time  */
+
+				GUI_output(get_city(0xbc));
+
+				/* set date */
+				ds_writebs(YEAR, 17);
+				ds_writebs(MONTH, 10);
+				ds_writebs(DAY_OF_MONTH, 10);
+
+				sub_ingame_timers(MONTHS(1));
+				sub_mod_timers(MONTHS(1));
+				seg002_2f7a(0x21c0);
+				sub_light_timers(100);
+				l_di = 1;
+			}
+		}
+
+		if (l_di) {
+
+			load_in_head(44);
+			memmove(Real2Host(ds_readd(0xd2a9)), Real2Host(ds_readd(DTP2)), 0x400);
+
+			hero = get_hero(l_si);
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0x28),
+				(char*)hero + 0x10);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0x2c),
+				(char*)hero + 0x10);
+
+			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, Real2Host(ds_readd(DTP2)), 0);
+			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, get_city(0x30), 0);
+			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, get_city(0x34), 0);
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0x38),
+				(char*)hero + 0x10);
+
+			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, Real2Host(ds_readd(DTP2)), 0);
+			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, get_city(0x3c), 0);
+
+			do {
+				status_menu(l_si);
+
+				l_si = get_first_hero_with_item(181);
+
+				if (l_si == -1) {
+					l_si = 0;
+				}
+
+				if (l_si == 6) {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x98),
+						(char*)get_hero(6) + 0x10);
+
+					GUI_dialogbox((RealPt)ds_readd(HEROS) + 0x6da * 6 + 0x2da,
+							Real2Host(ds_readd(HEROS)) + 0x6da * 6  + 0x10,
+							Real2Host(ds_readd(DTP2)), 0);
+				}
+
+			} while (l_si == 6);
+
+			ds_writed(0x3e20, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * l_si));
+
+			final_intro();
+			if (!TRV_fight_event(192, 144)) {
+
+				GUI_output(get_city(0x44));
+
+				ds_writews(0xc3c1, 99);
+
+				add_hero_ap_all(500);
+
+				ds_writebs(LOCATION, 0);
+				ds_writews(NPC_MONTHS, 200);
+			} else {
+				GUI_output(get_city(0x48));
+				ds_writews(0xc3c1, 1);
+			}
+		}
+	}
+}
 
 void TLK_old_woman(signed short state)
 {
