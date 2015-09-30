@@ -45,7 +45,8 @@ void tevent_132(void);
 void tevent_133(void);
 /* 0x66 */
 void tevent_134(void);
-
+/* 0x6d */
+void tevent_144_unused(void);
 /* 0x70 */
 void TLK_old_woman(signed short);
 

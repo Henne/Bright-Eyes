@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 14/17
+ *	Functions rewritten: 15/17
  */
 
 #include <stdio.h>
@@ -698,6 +698,13 @@ void tevent_144(void)
 			}
 		}
 	}
+}
+
+/* Borlandified and identical */
+/* TODO: this function is unused */
+void tevent_144_unused(void)
+{
+	GUI_output(get_city(0x40));
 }
 
 void TLK_old_woman(signed short state)
