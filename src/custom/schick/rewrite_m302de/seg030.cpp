@@ -145,9 +145,6 @@ struct dummy3 {
 
 void do_talk(signed short talk_id, signed short tlk_informer)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short l_si;
 	signed short l_di;
 	signed short answer;
@@ -496,7 +493,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 				}
 			}
 
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), Real2Host(ds_readd(0xe308)), dst, options,
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), Real2Host(ds_readd(0xe308)), (Bit8u*)dst, options,
 					get_city(4 * (host_readb(ptr1 + 2) + l_di)),
 					get_city(4 * (host_readb(ptr1 + 3) + l_di)),
 					get_city(4 * (host_readb(ptr1 + 4) + l_di)));
@@ -536,7 +533,6 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 	ds_writews(0x26bd, -1);
 	ds_writews(CURRENT_ANI, -1);
-#endif
 }
 
 /* Borlandified and identical */

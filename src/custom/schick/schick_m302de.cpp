@@ -1316,7 +1316,13 @@ static int n_seg030(unsigned offs) {
 		return 1;
 	}
 	case 0x14f: {
-		return 0;
+		Bit16s talk_id = CPU_Pop16();
+		Bit16s tlk_informer = CPU_Pop16();
+		CPU_Push16(tlk_informer);
+		CPU_Push16(talk_id);
+		D1_LOG("do_talk(%d, %d)\n", talk_id, tlk_informer);
+		do_talk(talk_id, tlk_informer);
+		return 1;
 	}
 	case 0xfd5: {
 		D1_LOG("talk_switch();\n");
@@ -7054,13 +7060,9 @@ static int seg029(unsigned short offs) {
 	}
 }
 
-static int n_seg030(unsigned);
-
 static int seg030(unsigned short offs) {
 	switch (offs) {
-		case 0x20: {
-			return 0;
-		}
+		case 0x20: return n_seg030(0x279); break;
 		case 0x2a: {
 			D1_LOG("prepare_date_str();\n");
 			prepare_date_str();
