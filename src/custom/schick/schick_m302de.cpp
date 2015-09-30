@@ -11099,7 +11099,11 @@ static int seg116(unsigned short offs)
 		return 1;
 	}
 	case 0x70: {
-		return 0;
+		Bit16s state = CPU_Pop16();
+		CPU_Push16(state);
+		D1_LOG("TLK_old_woman(%d)\n", state);
+		TLK_old_woman(state);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

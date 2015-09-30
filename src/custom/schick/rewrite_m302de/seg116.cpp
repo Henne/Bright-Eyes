@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 15/17
+ *	Functions rewritten: 16/17
  */
 
 #include <stdio.h>
@@ -707,9 +707,62 @@ void tevent_144_unused(void)
 	GUI_output(get_city(0x40));
 }
 
+/* Borlandified and identical */
 void TLK_old_woman(signed short state)
 {
-	DUMMY_WARNING();
+	signed short l_di;
+	signed short counter;
+	Bit8u *hero;
+
+	if (state == 3) {
+
+		hero = get_hero(0);
+		for (l_di = counter = 0; l_di <= 6; l_di++, hero += 0x6da) {
+			/* Original-Bug: check if this is realy a hero in the current group and alive before test_skill() */
+			if (test_skill(hero, 17, -5) > 0) {
+				counter++;
+			}
+		}
+
+		ds_writew(0xe30e, count_heroes_in_group() == counter ? 4 : 5);
+
+	} else if (state == 4 || state == 14 || state == 21) {
+
+		timewarp(MINUTES(15));
+
+	} else if (state == 6 || state == 30) {
+
+		timewarp(MINUTES(30));
+
+	} else if (state == 23) {
+
+		hero = get_hero(0);
+		for (l_di = counter = 0; l_di <= 6; l_di++, hero += 0x6da) {
+			/* Original-Bug: check if this is realy a hero in the current group and alive before test_skill() */
+			if (test_skill(hero, 17, -5) > 0) {
+				counter++;
+			}
+		}
+
+		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * get_random_hero()));
+
+		ds_writew(0xe30e, count_heroes_in_group() == counter ? 24 : 25);
+
+	} else if (state == 33) {
+
+		/* Infinity-Loop */
+		do {
+		} while (1);
+
+	} else if (state == 34) {
+		ds_writew(0xe30e, ds_readb(CURRENT_TOWN) == 20 ? 35 : 39);
+	} else if (state == 37) {
+		ds_writeb(0x3dee, ds_writeb(0x3dec, 1));
+	} else if (state == 38) {
+		timewarp(HOURS(1));
+	} else if (state == 41) {
+		ds_writeb(0x3dee, ds_writeb(0x3ded, ds_writeb(INFORMER_ISLEIF, ds_writeb(0x344f, 1))));
+	}
 }
 
 #if !defined(__BORLANDC__)
