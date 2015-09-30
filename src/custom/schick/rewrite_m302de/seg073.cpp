@@ -577,7 +577,6 @@ signed short tavern_quest_infos(void)
 	return l_si ? 1 : 0;
 }
 
-#if defined(__BORLANDC__)
 /**
  * \brief	follow a informer from the tavern to his/her home
  */
@@ -621,7 +620,6 @@ void tavern_follow_informer(void)
 	}
 	}
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }

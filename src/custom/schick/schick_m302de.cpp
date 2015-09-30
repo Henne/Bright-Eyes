@@ -8790,13 +8790,9 @@ static int seg073(unsigned short offs) {
 			return 1;
 		}
 		case 0x2f: {
-#if 0
 			D1_LOG("tavern_follow_informer()\n");
 			tavern_follow_informer();
 			return 1;
-#else
-			return 0;
-#endif
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
