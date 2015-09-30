@@ -59,6 +59,10 @@
 namespace M302de {
 #endif
 
+#if defined(__BORLANDC__)
+void sub_light_timers(Bit32s);
+#endif
+
 /* static */
 void play_music_file(signed short index)
 {

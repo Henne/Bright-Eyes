@@ -107,7 +107,9 @@ void sub_mod_timers(Bit32s);
 signed short get_free_mod_slot(void);
 void set_mod_slot(signed short, Bit32s, Bit8u*, signed char, signed char);
 void seg002_2f7a(Bit32s);
+#if !defined(__BORLANDC__)
 void sub_light_timers(Bit32s);
+#endif
 //static
 void magical_chainmail_damage(void);
 void herokeeping(void);
