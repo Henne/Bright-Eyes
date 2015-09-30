@@ -11137,13 +11137,9 @@ static int seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x57: {
-#if 0
 		D1_LOG("search_ruin2()\n");
 		search_ruin2();
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x5c: {
 		Bit16s state = CPU_Pop16();

@@ -682,15 +682,11 @@ void search_ruin1(void)
 
 void search_ruin2(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	if (ds_readb(FIND_HYGGELIK) != 0) {
 		ds_writeb(0x3dfb, 1);
 		do_talk(17, 0);
 		set_var_to_zero();
 	}
-#endif
 }
 
 void TLK_way_to_ruin(signed short state)
