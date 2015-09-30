@@ -2433,7 +2433,9 @@ static int n_seg065(unsigned offs)
 {
 	switch (offs) {
 	case 0x0000: {
-		return 0;
+		D1_LOG("do_market()\n");
+		do_market();
+		return 1;
 	}
 	case 0x0115: {
 		return 0;
