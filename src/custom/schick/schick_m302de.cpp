@@ -11137,8 +11137,8 @@ static int seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x57: {
-		D1_LOG("search_ruin2()\n");
-		search_ruin2();
+		D1_LOG("tevent_115()\n");
+		tevent_115();
 		return 1;
 	}
 	case 0x5c: {

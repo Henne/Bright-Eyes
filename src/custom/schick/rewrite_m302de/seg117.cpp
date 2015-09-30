@@ -680,7 +680,7 @@ void search_ruin1(void)
 	set_var_to_zero();
 }
 
-void search_ruin2(void)
+void tevent_115(void)
 {
 	if (ds_readb(FIND_HYGGELIK) != 0) {
 		ds_writeb(0x3dfb, 1);

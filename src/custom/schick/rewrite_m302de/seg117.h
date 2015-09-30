@@ -42,7 +42,7 @@ void random_encounter(signed short);
 void search_ruin1(void);
 
 /* 0x57 */
-void search_ruin2(void);
+void tevent_115(void);
 
 /* 0x5c */
 void TLK_way_to_ruin(signed short);
