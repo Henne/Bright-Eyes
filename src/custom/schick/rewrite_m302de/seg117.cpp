@@ -676,13 +676,8 @@ void random_encounter(signed short arg)
 
 void search_ruin1(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	do_talk(17, 0);
 	set_var_to_zero();
-#endif
-
 }
 
 void search_ruin2(void)
