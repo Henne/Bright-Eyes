@@ -19,6 +19,8 @@
 
 #define MINUTES(n)	(n * 90L)
 #define HOURS(n)	(MINUTES(n) * 60L)
+#define DAYS(n)		(HOURS(n) * 24L)
+#define MONTHS(n)	(DAYS(n) * 30L)
 
 #if !defined(__BORLANDC__)
 
