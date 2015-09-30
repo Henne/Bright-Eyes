@@ -11149,8 +11149,8 @@ static int seg117(unsigned short offs)
 		return 1;
 	}
 	case 0x61: {
-		D1_LOG("unicorn_first_encounter()\n");
-		unicorn_first_encounter();
+		D1_LOG("tevent_087()\n");
+		tevent_087();
 		return 1;
 	}
 	default:

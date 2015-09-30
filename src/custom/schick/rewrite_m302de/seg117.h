@@ -48,7 +48,7 @@ void tevent_115(void);
 void TLK_way_to_ruin(signed short);
 
 /* 0x61 */
-void unicorn_first_encounter(void);
+void tevent_087(void);
 
 #if !defined(__BORLANDC__)
 }

@@ -814,7 +814,7 @@ void TLK_way_to_ruin(signed short state)
 	ds_writeb(0xe5d2, 0);
 }
 
-void unicorn_first_encounter(void)
+void tevent_087(void)
 {
 	if (!ds_readb(0x3ddb) && ds_readws(GOT_MAIN_QUEST) != 0) {
 		do_talk(11, 2);
