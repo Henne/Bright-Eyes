@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 12/17
+ *	Functions rewritten: 13/17
  */
 
 #include <stdio.h>
@@ -524,6 +524,64 @@ void tevent_142(void)
 		/* set this camp place as known */
 		ds_writeb(0x3e0f, 1);
 		TRV_found_camp_place(1);
+	}
+}
+#endif
+
+#if defined(__BORLANDC__)
+/* depends on: do_location() */
+/* Borlandified and identical */
+void tevent_143(void)
+{
+	signed short i;
+	signed short answer;
+	Bit8u *hero;
+
+	do {
+		answer = GUI_radio(get_city(0x00), 2,
+					get_city(0x04),
+					get_city(0x08));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+			if ((host_readbs(hero + 0x21) != 0) &&
+				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+			{
+				sub_hero_le(hero, random_schick(2) + 1);
+			}
+		}
+
+		timewarp(HOURS(4));
+
+		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), 28, 2)) > 0 ? get_city(0x0c) : get_city(0x14));
+	} else {
+		timewarp(HOURS(1));
+
+		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), 28, 4)) > 0 ? get_city(0x10) : get_city(0x18));
+	}
+
+	if (i <= 0) {
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 3) > 0) {
+
+			timewarp(HOURS(1));
+
+			GUI_output(get_city(0x1c));
+
+		} else {
+
+			timewarp(HOURS(3));
+
+			GUI_output(get_city(0x20));
+
+			ds_writeb(LOCATION, 6);
+			do_location();
+			ds_writeb(LOCATION, 0);
+		}
 	}
 }
 #endif
