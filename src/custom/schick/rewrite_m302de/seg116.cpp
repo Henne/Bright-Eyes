@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg116 (travel events 8 / 10)
- *	Functions rewritten: 16/17
+ *	Functions rewritten: 17/17 (complete)
  */
 
 #include <stdio.h>
@@ -16,6 +16,7 @@
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg030.h"
 #include "seg047.h"
 #include "seg048.h"
 #include "seg065.h"
@@ -762,6 +763,20 @@ void TLK_old_woman(signed short state)
 		timewarp(HOURS(1));
 	} else if (state == 41) {
 		ds_writeb(0x3dee, ds_writeb(0x3ded, ds_writeb(INFORMER_ISLEIF, ds_writeb(0x344f, 1))));
+	}
+}
+
+/* Borlandified and identical */
+void tevent_136(void)
+{
+	if (ds_readb(0x3ddb) != 0 &&
+		ds_readw(GOT_MAIN_QUEST) != 0 &&
+		ds_readb(UNICORN_GET_MAP) != 0 &&
+		!ds_readb(UNICORN_TIMER))
+	{
+		do_talk(12, 1);
+		ds_writeb(0x3ddb, 1);
+		ds_writeb(UNICORN_GET_MAP, 0);
 	}
 }
 
