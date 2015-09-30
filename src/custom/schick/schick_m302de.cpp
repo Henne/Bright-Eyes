@@ -1320,12 +1320,6 @@ static int n_seg030(unsigned offs) {
 	}
 	case 0xfd5: {
 		D1_LOG("talk_switch();\n");
-
-		/* TODO: all TLK_ID [0,19] */
-		Bit16s id = ds_readws(TLK_ID);
-
-		if (id == 0) return 0;
-
 		talk_switch();
 		return 1;
 	}

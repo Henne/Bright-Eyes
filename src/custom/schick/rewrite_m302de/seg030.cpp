@@ -784,7 +784,6 @@ void talk_switch(void)
 		TLK_herberg(state);
 
 	} else if (ds_readws(TLK_ID) == 0) {
-		/* TODO: actually disabled */
 		/* F092.TLK */
 		TLK_old_woman(state);
 
