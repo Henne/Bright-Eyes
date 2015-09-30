@@ -816,14 +816,10 @@ void TLK_way_to_ruin(signed short state)
 
 void unicorn_first_encounter(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	if (!ds_readb(0x3ddb) && ds_readws(GOT_MAIN_QUEST) != 0) {
 		do_talk(11, 2);
 		ds_writeb(0x3ddb, 1);
 	}
-#endif
 }
 
 #if !defined(__BORLANDC__)
