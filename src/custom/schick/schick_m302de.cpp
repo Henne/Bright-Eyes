@@ -6678,7 +6678,9 @@ static int seg025(unsigned short offs) {
 		return 1;
 	}
 	case 0x4d: {
-		return 0;
+		D1_LOG("do_informer();\n");
+		do_informer();
+		return 1;
 	}
 	case 0x52: {
 		D1_LOG("enter_map();\n");

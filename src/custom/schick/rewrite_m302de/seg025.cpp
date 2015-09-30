@@ -194,9 +194,6 @@ void do_house(void)
 
 void do_informer(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short nr = ds_readws(TYPEINDEX) - 1;
 
 	if (!nr) do_talk(6, 0);
@@ -216,8 +213,6 @@ void do_informer(void)
 	else if (nr == 14) do_talk(9, 1);
 
 	turnaround();
-
-#endif
 }
 
 void enter_map(void)
