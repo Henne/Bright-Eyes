@@ -2438,7 +2438,9 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x0115: {
-		return 0;
+		D1_LOG("final_intro()\n");
+		final_intro();
+		return 1;
 	}
 	case 0x036f: {
 		return 0;

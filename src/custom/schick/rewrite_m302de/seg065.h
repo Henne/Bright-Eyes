@@ -4,6 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void do_market(void);
+/* 0x25 */
+void final_intro(void);
 
 #if !defined(__BORLANDC__)
 }
