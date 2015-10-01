@@ -2362,14 +2362,14 @@ static int n_seg060(unsigned offs)
 {
 	switch (offs) {
 		case 0x0000: {
-			D1_LOG("Info-1()\n");
+			D1_LOG("talk_tavern()\n");
 			return 0;
 		}
 		case 0x72f: {
-			Bit16s a0 = CPU_Pop16();
-			CPU_Push16(a0);
+			Bit16s answer = CPU_Pop16();
+			CPU_Push16(answer);
 
-			D1_LOG("Info-2(%d)\n", a0);
+			D1_LOG("TLK_tavern(%d)\n", answer);
 			return 0;
 		}
 		default:
