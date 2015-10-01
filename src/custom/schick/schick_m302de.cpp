@@ -2358,6 +2358,26 @@ static int n_seg058(const unsigned short offs)
 	}
 }
 
+static int n_seg060(unsigned offs)
+{
+	switch (offs) {
+		case 0x0000: {
+			D1_LOG("Info-1()\n");
+			return 0;
+		}
+		case 0x72f: {
+			Bit16s a0 = CPU_Pop16();
+			CPU_Push16(a0);
+
+			D1_LOG("Info-2(%d)\n", a0);
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
+			exit(1);
+	}
+}
+
 static int n_seg061(unsigned offs) {
 	switch (offs) {
 		case 0x57b: {
@@ -8347,6 +8367,17 @@ static int seg058(const unsigned short offs)
 	}
 }
 
+static int seg060(unsigned short offs)
+{
+	switch (offs) {
+		case 0x25: return n_seg060(0x0000);
+		default: {
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+		}
+	}
+}
+
 static int seg061(unsigned short offs)
 {
 	switch (offs) {
@@ -11323,7 +11354,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		case 0x1370:	return seg057(offs);
 		case 0x1373:	return seg058(offs);
 		case 0x1377:	return 0;
-		case 0x137b:	return 0;
+		case 0x137b:	return seg060(offs);
 		case 0x137e:	return seg061(offs);
 		case 0x1383:	return seg062(offs);
 		case 0x1386:	return seg063(offs);
@@ -11432,6 +11463,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1365)) retval = n_seg054(offs);
 	else if (is_ovrseg(0x1369)) retval = n_seg055(offs);
 	else if (is_ovrseg(0x1373)) retval = n_seg058(offs);
+	else if (is_ovrseg(0x137b)) retval = n_seg060(offs);
 	else if (is_ovrseg(0x137e)) retval = n_seg061(offs);
 	else if (is_ovrseg(0x1386)) retval = n_seg063(offs);
 	else if (is_ovrseg(0x138a)) retval = n_seg064(offs);
