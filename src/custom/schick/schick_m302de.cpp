@@ -2370,7 +2370,8 @@ static int n_seg060(unsigned offs)
 			CPU_Push16(answer);
 
 			D1_LOG("TLK_tavern(%d)\n", answer);
-			return 0;
+			TLK_tavern(answer);
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
