@@ -205,7 +205,7 @@ Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
 }
 
 
-Bit32s bc_time(RealPt p)
+Bit32s bc_time_dosbox(RealPt p)
 {
 	CPU_Push32(p);
 	CALLBACK_RunRealFar(reloc_game + 0, 0x1123);

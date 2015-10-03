@@ -576,7 +576,7 @@ signed short save_game_state(void)
 		}
 
 #if !defined(__BORLANDC__)
-		bc_time((RealPt)RealMake(datseg, 0xe2d6));
+		bc_time_dosbox((RealPt)RealMake(datseg, 0xe2d6));
 #else
 		bc_time((Bit32s*)RealMake(datseg, 0xe2d6));
 #endif
