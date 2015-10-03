@@ -2363,7 +2363,8 @@ static int n_seg060(unsigned offs)
 	switch (offs) {
 		case 0x0000: {
 			D1_LOG("talk_tavern()\n");
-			return 0;
+			talk_tavern();
+			return 1;
 		}
 		case 0x72f: {
 			Bit16s answer = CPU_Pop16();

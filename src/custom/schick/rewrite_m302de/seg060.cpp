@@ -27,7 +27,6 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void talk_tavern(void)
 {
@@ -39,8 +38,8 @@ void talk_tavern(void)
 	Bit8u *ptr2;
 	char *ptr3;
 	char *ptr4;
-	Bit8u *ptr5;
-	Bit8u *ptr6;
+	char *ptr5;
+	char *ptr6;
 	char *format;
 	Bit8u *hero;
 	Bit8u *ptr9;
@@ -48,8 +47,8 @@ void talk_tavern(void)
 
 	answer = 0;
 
-	ptr3 = Real2Host(ds_readd(DTP2));
-	ptr4 = (char*)ptr3 + 1000;
+	ptr3 =(char*) Real2Host(ds_readd(DTP2));
+	ptr4 = ptr3 + 1000;
 	ptr5 = ptr4 + 60;
 	ptr6 = ptr5 + 60;
 	ds_writews(TEXTBOX_WIDTH, 9);
@@ -82,7 +81,7 @@ void talk_tavern(void)
 		if (host_readws(ptr1) != -1) {
 
 			l_si = host_readws(ptr1) & 0x7fff;
-			format = get_dtp(4 * l_si);
+			format = (char*)get_dtp(4 * l_si);
 			hero = Real2Host(get_first_hero_available_in_group());
 
 			if (l_si == 52 || l_si == 72 || l_si == 78 || l_si == 83 || l_si == 89) {
@@ -208,7 +207,7 @@ void talk_tavern(void)
 			strcpy(ptr6, (char*)get_dtp(4 * l_si));
 
 			do {
-				answer = GUI_radio(ptr3, options, ptr4, ptr5, ptr6);
+				answer = GUI_radio((Bit8u*)ptr3, options, ptr4, ptr5, ptr6);
 			} while (answer == -1);
 		}
 
@@ -248,7 +247,6 @@ void talk_tavern(void)
 	load_buffer_1(ds_readws(0x26bf));
 	set_var_to_zero();
 }
-#endif
 
 /* Borlandified and identical */
 void TLK_tavern(signed short answer)
