@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg060 (tavern talking)
  *	Functions rewritten: 2/2 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg060.cpp
  */
 
 #include <stdio.h>
@@ -27,7 +31,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void talk_tavern(void)
 {
 	signed short l_si;
@@ -248,7 +251,6 @@ void talk_tavern(void)
 	set_var_to_zero();
 }
 
-/* Borlandified and identical */
 void TLK_tavern(signed short answer)
 {
 	signed short l_si;
