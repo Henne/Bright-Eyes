@@ -8388,7 +8388,9 @@ static int seg059(unsigned short offs)
 			return 1;
 		}
 		case 0x2f: {
-			return 0;
+			D1_LOG("enter_ghostship()\n");
+			enter_ghostship();
+			return 1;
 		}
 		default: {
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

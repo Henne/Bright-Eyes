@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbour wrappers)
- *	Functions rewritten: 3/4
+ *	Functions rewritten: 4/4 (complete)
  */
 
 #include <stdio.h>
@@ -11,6 +11,7 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg025.h"
+#include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg047.h"
@@ -244,6 +245,47 @@ void pirates_attack_wrapper(void)
 {
 	pirates_attack();
 	ds_writew(0x2846, 1);
+}
+
+/* Borlandified and identical */
+void enter_ghostship(void)
+{
+	signed short answer;
+	signed short tw_bak;
+	signed short bak1;
+	signed short bak2;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	bak1 = ds_readws(0x2ca2);
+	bak2 = ds_readws(0x2ca4);
+	ds_writews(TEXTBOX_WIDTH, 7);
+	ds_writews(0x2ca2, ds_writews(0x2ca4, 0));
+
+	load_ani(17);
+	draw_main_screen();
+	init_ani(1);
+
+	load_buffer_1(272);
+
+	GUI_output(get_dtp(0x48));
+	GUI_output(get_dtp(0x4c));
+
+	do {
+		answer = GUI_radio(get_dtp(0x50), 2, get_dtp(0x54), get_dtp(0x58));
+
+	} while (answer == -1);
+
+	if (answer == 1) {
+		ds_writew(0x2846, 0);
+		ds_writeb(0x4333, 1);
+	} else {
+		ds_writew(0x2846, 1);
+	}
+
+	set_var_to_zero();
+	ds_writews(TEXTBOX_WIDTH, tw_bak);
+	ds_writews(0x2ca2, bak1);
+	ds_writews(0x2ca4, bak2);
 }
 
 #if !defined(__BORLANDC__)

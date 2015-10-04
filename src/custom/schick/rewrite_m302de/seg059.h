@@ -8,6 +8,8 @@ void do_tavern(void);
 void octopus_attack_wrapper(void);
 /* 0x2a */
 void pirates_attack_wrapper(void);
+/* 0x2f */
+void enter_ghostship(void);
 
 #if !defined(__BORLANDC__)
 }
