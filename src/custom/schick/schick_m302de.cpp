@@ -8383,7 +8383,9 @@ static int seg059(unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			D1_LOG("pirates_attack_wrapper()\n");
+			pirates_attack_wrapper();
+			return 1;
 		}
 		case 0x2f: {
 			return 0;

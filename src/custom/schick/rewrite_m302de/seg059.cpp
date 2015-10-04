@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbour wrappers)
- *	Functions rewritten: 2/4
+ *	Functions rewritten: 3/4
  */
 
 #include <stdio.h>
@@ -237,7 +237,13 @@ void octopus_attack_wrapper(void)
 {
 	octopus_attack();
 	ds_writew(0x2846, 1);
+}
 
+/* Borlandified and identical */
+void pirates_attack_wrapper(void)
+{
+	pirates_attack();
+	ds_writew(0x2846, 1);
 }
 
 #if !defined(__BORLANDC__)
