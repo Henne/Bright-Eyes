@@ -1,6 +1,6 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern)
- *	Functions rewritten: 1/4
+ *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbour wrappers)
+ *	Functions rewritten: 2/4
  */
 
 #include <stdio.h>
@@ -19,6 +19,7 @@
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg117.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -229,6 +230,14 @@ void do_tavern(void)
 
 	copy_palette();
 	turnaround();
+}
+
+/* Borlandified and identical */
+void octopus_attack_wrapper(void)
+{
+	octopus_attack();
+	ds_writew(0x2846, 1);
+
 }
 
 #if !defined(__BORLANDC__)

@@ -8378,7 +8378,9 @@ static int seg059(unsigned short offs)
 			return 1;
 		}
 		case 0x25: {
-			return 0;
+			D1_LOG("octopus_attack_wrapper()\n");
+			octopus_attack_wrapper();
+			return 1;
 		}
 		case 0x2a: {
 			return 0;
