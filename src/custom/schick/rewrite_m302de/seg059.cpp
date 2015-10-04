@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg059 (tavern: main / harbour wrappers)
  *	Functions rewritten: 4/4 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg059.cpp
  */
 
 #include <stdio.h>
@@ -26,7 +30,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void do_tavern(void)
 {
 	signed short i;
@@ -233,21 +236,18 @@ void do_tavern(void)
 	turnaround();
 }
 
-/* Borlandified and identical */
 void octopus_attack_wrapper(void)
 {
 	octopus_attack();
 	ds_writew(0x2846, 1);
 }
 
-/* Borlandified and identical */
 void pirates_attack_wrapper(void)
 {
 	pirates_attack();
 	ds_writew(0x2846, 1);
 }
 
-/* Borlandified and identical */
 void enter_ghostship(void)
 {
 	signed short answer;
