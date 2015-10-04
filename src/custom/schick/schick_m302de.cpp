@@ -276,6 +276,11 @@ static int n_seg001(unsigned offs)
 		seg001_00c1(track_nr);
 		return 1;
 	}
+	case 0x2c4: {
+		D1_LOG("seg001_02c4()\n");
+		seg001_02c4();
+		return 1;
+	}
 	/* Callers: 3 */
 	case 0x322: {
 		D1_LOG("CD_audio_stop_hsg()\n");
@@ -288,10 +293,16 @@ static int n_seg001(unsigned offs)
 		CD_audio_stop();
 		return 1;
 	}
+	case 0x037a: {
+		return 0;
+	}
 	case 0x0432: {
 		return 0;
 	}
 	case 0x056b: {
+		return 0;
+	}
+	case 0x0600: {
 		return 0;
 	}
 	case 0x0681: {
