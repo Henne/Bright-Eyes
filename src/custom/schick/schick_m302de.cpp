@@ -10508,7 +10508,7 @@ static int seg103(unsigned short offs) {
 			CPU_Push32(msg);
 			CPU_Push16(bonus);
 
-			reg_ax = GUI_use_talent2((Bit8s)bonus, Real2Host(msg));
+			reg_ax = GUI_use_talent2(bonus, Real2Host(msg));
 			D1_LOG("GUI_use_talent2(%d, %s) = %d\n", bonus, Real2Host(msg), reg_ax);
 			return 1;
 		}

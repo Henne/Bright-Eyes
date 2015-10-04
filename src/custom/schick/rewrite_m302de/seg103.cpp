@@ -700,7 +700,7 @@ signed short GUI_use_talent(signed short hero_pos, signed char bonus)
 	return use_talent(hero_pos, bonus, talent);
 }
 
-signed short GUI_use_talent2(signed char bonus, Bit8u *msg)
+signed short GUI_use_talent2(signed short bonus, Bit8u *msg)
 {
 	signed short hero_pos;
 	signed short talent;

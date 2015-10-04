@@ -27,7 +27,7 @@ RealPt get_proper_hero(signed short);
 signed short use_talent(signed short, signed char, signed short);
 
 /* 0x43 */
-signed short GUI_use_talent2(signed char, Bit8u*);
+signed short GUI_use_talent2(signed short, Bit8u*);
 
 #if !defined(__BORLANDC__)
 }
