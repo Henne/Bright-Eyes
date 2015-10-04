@@ -8373,7 +8373,9 @@ static int seg059(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			D1_LOG("do_tavern()\n");
+			do_tavern();
+			return 1;
 		}
 		case 0x25: {
 			return 0;
