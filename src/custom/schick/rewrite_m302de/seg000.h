@@ -27,7 +27,7 @@ Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 void bc_srand(Bit16u);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
 Bit32s bc_time_dosbox(RealPt);
-Bit32s bc_time(Bit8u*);
+Bit32s bc_time(time_t*);
 signed short bc_unlink(RealPt);
 signed short bc_bioskey(signed short);
 void bc_clrscr(void);

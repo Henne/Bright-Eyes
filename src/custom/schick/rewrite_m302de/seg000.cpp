@@ -214,6 +214,18 @@ Bit32s bc_time_dosbox(RealPt p)
 	return reg_ax;
 }
 
+Bit32s bc_time(time_t *p)
+{
+	Bit32u reg_esp_bak = reg_esp;
+	reg_esp -= 0x50;
+
+	Bit32s retval = bc_time_dosbox(RealMake(SegValue(ss), reg_sp));
+	host_writed((Bit8u*)p, host_readd(Real2Host(RealMake(SegValue(ss), reg_sp))));
+
+	reg_esp = reg_esp_bak;
+	return retval;
+}
+
 signed short bc_unlink(RealPt fname)
 {
 	CPU_Push32(fname);
