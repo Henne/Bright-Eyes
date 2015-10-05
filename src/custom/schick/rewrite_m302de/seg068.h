@@ -4,8 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void THO_eisenhof(void);
-//0x25
-void thorwal_imman();
+/* 0x25 */
+void THO_imman(void);
 //0x2a
 void thorwal_botschaft();
 /* 0x2f */

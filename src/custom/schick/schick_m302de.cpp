@@ -8630,8 +8630,8 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x25: {
-			D1_LOG("thorwal_imman();\n");
-			thorwal_imman();
+			D1_LOG("THO_imman();\n");
+			THO_imman();
 			return 1;
 		}
 		case 0x2a: {

@@ -61,7 +61,7 @@ void THO_eisenhof(void)
 }
 
 /* Borlandified and identical */
-void thorwal_imman(void)
+void THO_imman(void)
 {
 
 	unsigned short tmp;
