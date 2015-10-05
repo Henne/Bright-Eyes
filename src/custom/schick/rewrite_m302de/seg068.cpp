@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 5/13
+ *	Functions rewritten: 6/13
  *
 */
 
@@ -13,6 +13,7 @@
 #include "seg002.h"
 #include "seg007.h"
 #include "seg026.h"
+#include "seg055.h"
 #include "seg058.h"
 #include "seg097.h"
 
@@ -246,6 +247,80 @@ void THO_bank(void)
 		}
 
 	} while (!done);
+}
+
+/* Borlandified and identical */
+void THO_arsenal(void)
+{
+	/* ARSENAL / ZEUGHAUS */
+	signed short answer;
+	signed short options;
+	signed short tw_bak;
+	Bit32s p_money;
+
+	if (ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) {
+
+		GUI_output(get_ltx(0x788));
+
+	} else if (ds_readb(0x34d6 + ds_readws(TYPEINDEX)) != 0) {
+
+			talk_merchant();
+
+	} else if (ds_readws(ARSENAL_MONEY) != 0) {
+
+		load_in_head(13);
+
+		/* only show two options when the group has "LETTER FROM JADRA" or "LETTER OF INTRODUCTION" */
+		options = get_first_hero_with_item(187) != -1 || get_first_hero_with_item(235) != -1 ? 2 : 1;
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
+					get_city(0x000), options,
+					get_city(0x008), get_city(0x004));
+
+		} while (answer == -1);
+
+		if (answer == 2) {
+
+			if (ds_readws(ARSENAL_MONEY) == -1) {
+
+				/* calculate the maximal shopping price [10-60] D */
+				if (ds_writews(ARSENAL_MONEY, 15 * ds_readws(SUBVENTION)) < 10) {
+					/* at least 10D */
+					ds_writew(ARSENAL_MONEY, 10);
+				}
+			}
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+				(char*)get_city(0x00c),
+				ds_readws(ARSENAL_MONEY));
+
+			mul_ds_ws(ARSENAL_MONEY, 100);
+			GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+			p_money = get_party_money();
+			set_party_money(ds_readws(ARSENAL_MONEY));
+
+			ds_writew(TYPEINDEX, 92);
+			tw_bak = ds_readws(TEXTBOX_WIDTH);
+			ds_writew(TEXTBOX_WIDTH, 3);
+
+			do_merchant();
+
+			ds_writews(ARSENAL_MONEY, get_party_money());
+			div_ds_ws(ARSENAL_MONEY, 100);
+			ds_writew(TEXTBOX_WIDTH, tw_bak);
+			set_party_money(p_money);
+
+
+		} else {
+			GUI_dialog_na(0, get_city(0x010));
+			ds_writeb(NEED_LETTER, 1);
+		}
+
+	} else {
+
+		GUI_output(p_datseg + 0x7c7d);
+	}
 }
 
 /* Borlandified and identical */

@@ -8645,8 +8645,9 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x34: {
-			D1_LOG("thorwal_zeughaus();\n");
-			return 0;
+			D1_LOG("THO_arsenal();\n");
+			THO_arsenal();
+			return 1;
 		}
 		case 0x39: {
 			D1_LOG("thorwal_wache1();\n");

@@ -10,6 +10,8 @@ void THO_imman(void);
 void THO_botschaft(void);
 /* 0x2f */
 void THO_bank(void);
+/* 0x34 */
+void THO_arsenal(void);
 
 /* 0x3e */
 void THO_mueller(void);
