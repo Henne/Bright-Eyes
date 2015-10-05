@@ -42,6 +42,7 @@
 #define HEARD_ANNOUNCE	(0x334a)	/* signed short: 0 = not heard, 1 = heard, 3 = spoke with hetman */
 #define GOT_MAIN_QUEST	(0x334c)	/* signed short {0,1} */
 #define QUESTED_MONTHS	(0x334e)
+#define MONTHLY_CREDIT	(0x3350)	/* signed short */
 #define BANK_DEPOSIT	(0x335c)	/* signed short */
 #define DAYS_TO_CENS	(0x335e)	/* signed short */
 #define DEBT_DAYS	(0x3360)	/* signed short */

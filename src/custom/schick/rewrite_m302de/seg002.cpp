@@ -1902,7 +1902,7 @@ void timers_daily(void)
 		dec_ds_ws(DAYS_TO_CENS);
 
 		if (ds_readws(DAYS_TO_CENS) == 0) {
-			ds_writew(0x3350, 0);
+			ds_writew(MONTHLY_CREDIT, 0);
 		}
 	}
 
