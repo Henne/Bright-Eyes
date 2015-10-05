@@ -2654,7 +2654,12 @@ static int n_seg068(unsigned short offs)
 {
 	switch (offs) {
 	case 0x08e8: {
-		return 0;
+		RealPt msg = CPU_Pop32();
+		CPU_Push32(msg);
+
+		D1_LOG("dramosch_says(%s)\n", Real2Host(msg));
+		dramosch_says(Real2Host(msg));
+		return 1;
 	}
 	case 0x0b8f: {
 		return 0;

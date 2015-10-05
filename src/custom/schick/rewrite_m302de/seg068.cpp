@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 8/13
+ *	Functions rewritten: 9/13
  *
 */
 
@@ -386,6 +386,14 @@ void THO_black_finger(void)
 
 		GUI_output(get_city(0x58));
 	}
+}
+
+/* Borlandified and identical */
+/* static */
+void dramosch_says(Bit8u *msg)
+{
+	GUI_dialogbox((RealPt)ds_readd(DTP2),
+			Real2Host(host_readd(Real2Host(ds_readd(CITY_LTX)) + 0xc0)), msg, 0);
 }
 
 #if !defined(__BORLANDC__)
