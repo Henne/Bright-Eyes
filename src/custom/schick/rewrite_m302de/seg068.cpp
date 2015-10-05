@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 6/13
+ *	Functions rewritten: 7/13
  *
 */
 
@@ -16,6 +16,7 @@
 #include "seg055.h"
 #include "seg058.h"
 #include "seg097.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -321,6 +322,49 @@ void THO_arsenal(void)
 
 		GUI_output(p_datseg + 0x7c7d);
 	}
+}
+
+/* Borlandified and identical */
+void THO_magistracy(void)
+{
+	signed short answer;
+
+	if (ds_readw(GOT_MAIN_QUEST) == 0) {
+
+		GUI_output(get_city(0x014));
+		GUI_output(get_city(0x018));
+		GUI_output(get_city(0x01c));
+
+	} else {
+
+		do {
+			answer = GUI_radio(get_city(0x014), 3,
+						get_city(0x020),
+						get_city(0x024),
+						get_city(0x028));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			if (ds_readws(GOT_LETTER_JAD) == 0) {
+
+				ds_writews(GOT_LETTER_JAD, 1);
+				GUI_output(get_city(0x038));
+
+				/* get "LETTER FROM JADRA" */
+				get_item(187, 1, 1);
+
+			} else {
+				GUI_output(get_city(0x03c));
+			}
+		} else if (answer == 2) {
+
+			GUI_output(get_city(0x030));
+		} else {
+			GUI_output(get_city(0x034));
+		}
+	}
+
 }
 
 /* Borlandified and identical */

@@ -12,7 +12,8 @@ void THO_botschaft(void);
 void THO_bank(void);
 /* 0x34 */
 void THO_arsenal(void);
-
+/* 0x39 */
+void THO_magistracy(void);
 /* 0x3e */
 void THO_mueller(void);
 

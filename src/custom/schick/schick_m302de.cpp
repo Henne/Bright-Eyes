@@ -8650,8 +8650,9 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x39: {
-			D1_LOG("thorwal_wache1();\n");
-			return 0;
+			D1_LOG("THO_magistracy();\n");
+			THO_magistracy();
+			return 1;
 		}
 		case 0x3e: {
 			D1_LOG("THO_mueller();\n");
