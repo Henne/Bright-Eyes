@@ -371,11 +371,11 @@ void THO_mueller(void)
 {
 	if (GUI_bool(get_city(0x40))) {
 
-		GUI_output((ds_readw(0x3354) == 0) ? /* first visit ? */
+		GUI_output((ds_readw(VISITED_MILLER) == 0) ? /* first visit ? */
 			get_city(0x44) : get_city(0x48));
 
 		/* mark the miller as visited */
-		ds_writew(0x3354, 1);
+		ds_writew(VISITED_MILLER, 1);
 	}
 }
 
