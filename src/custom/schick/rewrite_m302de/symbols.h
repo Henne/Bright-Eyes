@@ -86,6 +86,7 @@
 #define FIND_HYGGELIK	(0x3ddc)	/* unsigned char {0, 1} you are now able to find Hyggelik */
 #define RANDOM_TLK_HERO	(0x3e18)	/* RealPt */
 #define RUIN_HERO	(0x3e1c)	/* RealPt */
+#define NEED_LETTER	(0x3f73)	/* unsigned char {0, 1} */
 #define GREMOB_INVITED	(0x3f74)	/* unsigned char {0, 1} */
 #define HARLOT_DATE	(0x3f75)	/* unsigned char {0, 1} */
 #define DRUG_TIMER	(0x3f76)	/* unsigned char {0, 1, ..., 10} */
