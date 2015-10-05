@@ -46,6 +46,7 @@
 #define MONTHLY_CREDIT	(0x3350)	/* signed short */
 #define GOT_LETTER_JAD	(0x3352)	/* signed short {0,1} */
 #define VISITED_MILLER	(0x3354)	/* signed short {0,1} */
+#define QUEST_UGDALF	(0x3356)	/* signed short {0, 1, 3, 4} */
 #define BANK_DEPOSIT	(0x335c)	/* signed short */
 #define DAYS_TO_CENS	(0x335e)	/* signed short */
 #define DEBT_DAYS	(0x3360)	/* signed short */
