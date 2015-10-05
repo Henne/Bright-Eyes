@@ -8653,8 +8653,8 @@ static int seg068(unsigned short offs)
 			return 0;
 		}
 		case 0x3e: {
-			D1_LOG("thorwal_mueller();\n");
-			thorwal_mueller();
+			D1_LOG("THO_mueller();\n");
+			THO_mueller();
 			return 1;
 		}
 		case 0x43: {

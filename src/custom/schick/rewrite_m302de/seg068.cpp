@@ -249,7 +249,7 @@ void THO_bank(void)
 }
 
 /* Borlandified and identical */
-void thorwal_mueller(void)
+void THO_mueller(void)
 {
 	if (GUI_bool(get_city(0x40))) {
 
