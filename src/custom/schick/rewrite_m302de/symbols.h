@@ -39,6 +39,7 @@
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
 #define TREASURE_MAPS	(0x3332)	/* signed char[9] */
+#define SUBVENTION	(0x3342)	/* unsigned char {0-4} */
 #define HEARD_ANNOUNCE	(0x334a)	/* signed short: 0 = not heard, 1 = heard, 3 = spoke with hetman */
 #define GOT_MAIN_QUEST	(0x334c)	/* signed short {0,1} */
 #define QUESTED_MONTHS	(0x334e)
