@@ -636,6 +636,9 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 				case 1:
 					D1_INFO("Auftrag angenommen\n");
 					break;
+				case 2:
+					D1_INFO("Vorschuss erhalten (einmalig)\n");
+					break;
 				case 3:
 					D1_INFO("Auftrag ausgefuehrt\n");
 					break;
