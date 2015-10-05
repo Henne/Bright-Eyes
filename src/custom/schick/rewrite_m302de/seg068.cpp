@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 7/13
+ *	Functions rewritten: 8/13
  *
 */
 
@@ -364,7 +364,6 @@ void THO_magistracy(void)
 			GUI_output(get_city(0x034));
 		}
 	}
-
 }
 
 /* Borlandified and identical */
@@ -377,6 +376,15 @@ void THO_mueller(void)
 
 		/* mark the miller as visited */
 		ds_writew(0x3354, 1);
+	}
+}
+
+/* Borlandified and identical */
+void THO_black_finger(void)
+{
+	if (GUI_radio(get_city(0x4c), 2, get_city(0x50), get_city(0x54)) == 1) {
+
+		GUI_output(get_city(0x58));
 	}
 }
 

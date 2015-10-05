@@ -8660,8 +8660,9 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x43: {
-			D1_LOG("thorwal_swafnir();\n");
-			return 0;
+			D1_LOG("THO_black_finger();\n");
+			THO_black_finger();
+			return 1;
 		}
 		case 0x4d: {
 			D1_LOG("thorwal_zwingfeste();\n");

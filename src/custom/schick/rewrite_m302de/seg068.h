@@ -16,6 +16,8 @@ void THO_arsenal(void);
 void THO_magistracy(void);
 /* 0x3e */
 void THO_mueller(void);
+/* 0x43 */
+void THO_black_finger(void);
 
 #if !defined(__BORLANDC__)
 }
