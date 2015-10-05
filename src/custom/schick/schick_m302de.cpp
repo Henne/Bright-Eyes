@@ -8635,8 +8635,8 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			D1_LOG("thorwal_botschaft();\n");
-			thorwal_botschaft();
+			D1_LOG("THO_botschaft();\n");
+			THO_botschaft();
 			return 1;
 		}
 		case 0x2f: {

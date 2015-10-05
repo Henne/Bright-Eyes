@@ -6,8 +6,8 @@ namespace M302de {
 void THO_eisenhof(void);
 /* 0x25 */
 void THO_imman(void);
-//0x2a
-void thorwal_botschaft();
+/* 0x2a */
+void THO_botschaft(void);
 /* 0x2f */
 void THO_bank(void);
 

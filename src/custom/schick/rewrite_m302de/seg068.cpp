@@ -96,7 +96,7 @@ void THO_imman(void)
 }
 
 /* Borlandified and identical */
-void thorwal_botschaft(void)
+void THO_botschaft(void)
 {
 	int closed = 0;
 
