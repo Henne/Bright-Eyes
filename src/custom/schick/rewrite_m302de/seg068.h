@@ -8,6 +8,8 @@ void THO_eisenhof(void);
 void thorwal_imman();
 //0x2a
 void thorwal_botschaft();
+/* 0x2f */
+void THO_bank(void);
 
 //0x3e
 void thorwal_mueller();

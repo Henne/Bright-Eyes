@@ -8640,8 +8640,9 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x2f: {
-			D1_LOG("thorwal_bank();\n");
-			return 0;
+			D1_LOG("THO_bank();\n");
+			THO_bank();
+			return 1;
 		}
 		case 0x34: {
 			D1_LOG("thorwal_zeughaus();\n");
