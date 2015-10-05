@@ -21,6 +21,8 @@ void THO_black_finger(void);
 /* 0x48 */
 /* should be static */
 void dramosch_says(Bit8u*);
+/* 0x4d */
+void THO_ugdalf(void);
 
 #if !defined(__BORLANDC__)
 }

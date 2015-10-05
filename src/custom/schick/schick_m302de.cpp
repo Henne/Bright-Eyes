@@ -8688,8 +8688,9 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x4d: {
-			D1_LOG("thorwal_zwingfeste();\n");
-			return 0;
+			D1_LOG("THO_ugdalf();\n");
+			THO_ugdalf();
+			return 1;
 		}
 		case 0x57: {
 			D1_LOG("thorwal_akademie();\n");

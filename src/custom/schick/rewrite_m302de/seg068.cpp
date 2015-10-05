@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 9/13
+ *	Functions rewritten: 10/13
  *
 */
 
@@ -15,6 +15,7 @@
 #include "seg026.h"
 #include "seg055.h"
 #include "seg058.h"
+#include "seg075.h"
 #include "seg097.h"
 #include "seg105.h"
 
@@ -394,6 +395,103 @@ void dramosch_says(Bit8u *msg)
 {
 	GUI_dialogbox((RealPt)ds_readd(DTP2),
 			Real2Host(host_readd(Real2Host(ds_readd(CITY_LTX)) + 0xc0)), msg, 0);
+}
+
+/* Borlandified and identical */
+void THO_ugdalf(void)
+{
+	signed short answer;
+	signed short randval;
+
+	load_in_head(ds_readw(QUEST_UGDALF) == 0 ? 0 : 14);
+
+	if (ds_readw(QUEST_UGDALF) == 0) {
+
+		/* talk to the guards */
+		randval = random_schick(10) - 1;
+
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
+					get_city(0x05c), 3,
+					get_city(4 * (randval + 38)),
+					get_city(0x060),
+					get_city(0x064));
+
+		if (answer == 1) {
+
+			GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
+					get_city(0x6c), 0);
+
+		} else if (answer == 2) {
+
+			/* talk to DRAMOSCH */
+			GUI_dialogbox((RealPt)ds_readd(DTP2), (RealPt)0,
+					get_city(0x70), 0);
+
+			load_in_head(14);
+
+			dramosch_says(get_city(0x074));
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
+							Real2Host(host_readd(Real2Host(ds_readd(CITY_LTX)) + 0xc0)),
+
+							get_city(0x078), 2,
+							get_city(0x07c),
+							get_city(0x080));
+			} while (answer == -1);
+
+			if (answer == 1) {
+				/* take the quest */
+				dramosch_says(get_city(0x084));
+				ds_writew(QUEST_UGDALF, 1);
+
+			} else {
+
+				dramosch_says(get_city(0x088));
+			}
+		}
+
+	} else if (ds_readw(QUEST_UGDALF) == 1 || !ds_readb(0x35ff)) {
+
+		dramosch_says(get_city(0x8c));
+
+		/* enter the dungeon */
+		DNG_enter_dungeon(14);
+
+		ds_writews(0x2d83, ds_readw(X_TARGET));
+		ds_writews(0x2d85, ds_readw(Y_TARGET));
+
+		if (ds_readw(QUEST_UGDALF) == 1) {
+			add_party_money(2000L);
+		}
+
+	} else if (ds_readw(QUEST_UGDALF) == 3) {
+
+		/* talk with DRAMOSCH for 8 h */
+		dramosch_says(get_city(0x90));
+		timewarp(HOURS(8));
+
+		/* mark this quest as done */
+		ds_writew(QUEST_UGDALF, 4);
+
+		/* get the reward */
+		add_hero_ap_all(25);
+		add_party_money(5000);
+	} else {
+
+		dramosch_says(get_city(0x94));
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_dtp(4 * (random_schick(26) + 55)));
+
+		dramosch_says(Real2Host(ds_readd(DTP2)) + 0x400);
+
+		/* enter the dungeon */
+		DNG_enter_dungeon(14);
+
+		ds_writews(0x2d83, ds_readw(X_TARGET));
+		ds_writews(0x2d85, ds_readw(Y_TARGET));
+	}
 }
 
 #if !defined(__BORLANDC__)
