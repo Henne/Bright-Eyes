@@ -8700,8 +8700,9 @@ static int seg068(unsigned short offs)
 			return 1;
 		}
 		case 0x57: {
-			D1_LOG("thorwal_akademie();\n");
-			return 0;
+			D1_LOG("THO_academy();\n");
+			THO_academy();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

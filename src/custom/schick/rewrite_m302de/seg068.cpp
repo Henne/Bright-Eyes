@@ -546,12 +546,11 @@ void academy_analues(void)
 	ds_writew(IN_ACADEMY, 0);
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void THO_academy(void)
 {
-	register signed short answer;
-	register signed short l_di;
+	signed short answer;
+	signed short item_id;
 	signed short item_pos;
 	signed short cursed_hero_pos;
 	Bit32s p_money;
@@ -603,13 +602,13 @@ void THO_academy(void)
 
 			if (answer == 1) {
 
-				l_di = academy_get_equal_item(2000);
+				item_id = academy_get_equal_item(2000);
 
-				if (l_di >= 0) {
+				if (item_id >= 0) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0xe0),
-						(char*)Real2Host(GUI_names_grammar((signed short)0x8002, l_di, 0)));
+						(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item_id, 0)));
 
 					do {
 						answer = GUI_radio(Real2Host(ds_readd(DTP2)), 4,
@@ -625,8 +624,8 @@ void THO_academy(void)
 
 					} else {
 
-						hero = get_hero(get_first_hero_with_item(l_di));
-						item_pos = get_item_pos(hero, l_di);
+						hero = get_hero(get_first_hero_with_item(item_id));
+						item_pos = get_item_pos(hero, item_id);
 
 						if (drop_item(hero, item_pos, 1)) {
 
@@ -642,7 +641,7 @@ void THO_academy(void)
 						}
 					}
 
-				} else if (l_di == -2) {
+				} else if (item_id == -2) {
 
 					p_money = get_party_money();
 					p_money -= 2000;
@@ -680,13 +679,13 @@ void THO_academy(void)
 
 			if (answer == 1) {
 
-				l_di = academy_get_equal_item(1000);
+				item_id = academy_get_equal_item(1000);
 
-				if (l_di >= 0) {
+				if (item_id >= 0) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0xe0),
-						(char*)Real2Host(GUI_names_grammar((signed short)0x8002, l_di, 0)));
+						(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item_id, 0)));
 
 					do {
 						answer = GUI_radio(Real2Host(ds_readd(DTP2)), 4,
@@ -702,8 +701,8 @@ void THO_academy(void)
 
 					} else {
 
-						hero = get_hero(get_first_hero_with_item(l_di));
-						item_pos = get_item_pos(hero, l_di);
+						hero = get_hero(get_first_hero_with_item(item_id));
+						item_pos = get_item_pos(hero, item_id);
 
 						if (drop_item(hero, item_pos, 1)) {
 
@@ -715,7 +714,7 @@ void THO_academy(void)
 						}
 					}
 
-				} else if (l_di == -2) {
+				} else if (item_id == -2) {
 
 					p_money = get_party_money();
 					p_money -= 1000;
@@ -736,7 +735,6 @@ void THO_academy(void)
 		GUI_input(get_city(0xdc), 0);
 	}
 }
-#endif
 
 /**
  * \brief	check if you can pay the price with an item

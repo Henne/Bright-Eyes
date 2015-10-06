@@ -26,10 +26,8 @@ void THO_ugdalf(void);
 /* 0x52 */
 /* should be static */
 void academy_analues(void);
-#if defined(__BORLANDC__)
 /* 0x57 */
 void THO_academy(void);
-#endif
 /* 0x5c */
 /* should be static */
 signed short academy_get_equal_item(signed short);
