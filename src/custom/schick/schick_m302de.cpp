@@ -2667,7 +2667,12 @@ static int n_seg068(unsigned short offs)
 		return 1;
 	}
 	case 0x1196: {
-		return 0;
+		Bit16s price = CPU_Pop16();
+		CPU_Push16(price);
+
+		reg_ax = academy_get_equal_item(price);
+		D1_LOG("academy_get_equal_item(%d) = %d\n", price, (Bit16s)reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

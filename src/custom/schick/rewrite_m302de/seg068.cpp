@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 12/13
+ *	Functions rewritten: 13/13 (complete)
  *
 */
 
@@ -736,13 +736,59 @@ void THO_academy(void)
 		GUI_input(get_city(0xdc), 0);
 	}
 }
+#endif
 
+/**
+ * \brief	check if you can pay the price with an item
+ * \param	price	price you want to pay
+ * \return	-2 = enough money, -1 no item found or the item_id
+*/
 /* should be static */
+/* Borlandified and identical */
 signed short academy_get_equal_item(signed short price)
 {
-	return -1;
+	signed short item_pos;
+	signed short retval;
+	signed short i;
+	Bit32s p_money;
+	Bit8u *hero;
+	Bit8u *p_item;
+
+	retval = -2;
+	p_money = get_party_money();
+
+	if (price > p_money) {
+
+		retval = -1;
+		hero = get_hero(0);
+		for (i = 0; i < 6; i++, hero += 0x6da) {
+
+			if (host_readbs(hero + 0x21) != 0 &&
+				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero))
+			{
+				for (item_pos = 0; item_pos < 23; item_pos++) {
+
+					if (host_readws(hero + 0x196 + 14 * item_pos) != 0 &&
+						!ks_broken(hero + 0x196 + 14 * item_pos))
+					{
+						p_item = get_itemsdat(host_readws(hero + 0x196 + 14 * item_pos));
+
+						if (host_readws(p_item + 8) * host_readbs(p_item + 7) >= price)
+						{
+							retval = host_readws(hero + 0x196 + 14 * item_pos);
+							break;
+						}
+					}
+				}
+			}
+
+			if (retval != -1) break;
+		}
+	}
+
+	return retval;
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }

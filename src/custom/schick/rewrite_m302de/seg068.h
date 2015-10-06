@@ -24,13 +24,15 @@ void dramosch_says(Bit8u*);
 /* 0x4d */
 void THO_ugdalf(void);
 /* 0x52 */
+/* should be static */
 void academy_analues(void);
 #if defined(__BORLANDC__)
 /* 0x57 */
 void THO_academy(void);
-/* 0x5c */
-signed short academy_get_equal_item(signed short);
 #endif
+/* 0x5c */
+/* should be static */
+signed short academy_get_equal_item(signed short);
 
 #if !defined(__BORLANDC__)
 }
