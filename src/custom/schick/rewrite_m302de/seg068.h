@@ -23,6 +23,8 @@ void THO_black_finger(void);
 void dramosch_says(Bit8u*);
 /* 0x4d */
 void THO_ugdalf(void);
+/* 0x52 */
+void academy_analues(void);
 
 #if !defined(__BORLANDC__)
 }

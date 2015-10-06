@@ -2662,7 +2662,9 @@ static int n_seg068(unsigned short offs)
 		return 1;
 	}
 	case 0x0b8f: {
-		return 0;
+		D1_LOG("academy_analues()\n");
+		academy_analues();
+		return 1;
 	}
 	case 0x1196: {
 		return 0;

@@ -1893,7 +1893,7 @@ void timers_daily(void)
 
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* Original-BUG: Reenable identifying item in the academy */
-	ds_writew(0x335a, 0);
+	ds_writew(ACADEMY_DAILY_FLAG, 0);
 #endif
 
 	/* Decrase monthly credit cens timer (bank) */

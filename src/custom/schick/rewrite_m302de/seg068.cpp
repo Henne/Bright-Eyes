@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 10/13
+ *	Functions rewritten: 11/13
  *
 */
 
@@ -13,10 +13,12 @@
 #include "seg002.h"
 #include "seg007.h"
 #include "seg026.h"
+#include "seg047.h"
 #include "seg055.h"
 #include "seg058.h"
 #include "seg075.h"
 #include "seg097.h"
+#include "seg099.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
@@ -499,6 +501,47 @@ void THO_ugdalf(void)
 		ds_writews(0x2d83, ds_readw(X_TARGET));
 		ds_writews(0x2d85, ds_readw(Y_TARGET));
 	}
+}
+
+/* Borlandified and identical */
+/* should be static */
+void academy_analues(void)
+{
+	signed short buffer1_bak;
+	signed short hero_pos;
+
+	GUI_input(get_city(0xf8), 0);
+
+	/* change behaviour of analues spell */
+	ds_writew(IN_ACADEMY, 99);
+
+	/* select a hero (does not need to be a magic user here) */
+	hero_pos = select_hero_ok(get_ltx(0xc68));
+
+	if (hero_pos != -1) {
+
+		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+
+		buffer1_bak = ds_readws(0x26bf);
+
+		load_buffer_1(222);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_city(0x100),
+			(char*)Real2Host(spell_analues()));
+
+		if (buffer1_bak != -1 && buffer1_bak != 222) {
+
+			load_buffer_1(buffer1_bak);
+		}
+
+		GUI_input(Real2Host(ds_readd(DTP2)), 0);
+
+		ds_writew(ACADEMY_DAILY_FLAG, 1);
+	}
+
+	/* change behaviour of analues spell */
+	ds_writew(IN_ACADEMY, 0);
 }
 
 #if !defined(__BORLANDC__)
