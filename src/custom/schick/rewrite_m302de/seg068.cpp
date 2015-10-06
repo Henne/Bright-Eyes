@@ -537,7 +537,7 @@ void academy_analues(void)
 
 		GUI_input(Real2Host(ds_readd(DTP2)), 0);
 
-		ds_writew(ACADEMY_DAILY_FLAG, 1);
+		ds_writew(ACADEMY_DAILY_IDENT, 1);
 	}
 
 	/* change behaviour of analues spell */
