@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
  *	Special City: Thorwal
- *	Functions rewritten: 11/13
+ *	Functions rewritten: 12/13
  *
 */
 
@@ -16,7 +16,9 @@
 #include "seg047.h"
 #include "seg055.h"
 #include "seg058.h"
+#include "seg068.h"
 #include "seg075.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg099.h"
 #include "seg105.h"
@@ -543,6 +545,204 @@ void academy_analues(void)
 	/* change behaviour of analues spell */
 	ds_writew(IN_ACADEMY, 0);
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void THO_academy(void)
+{
+	register signed short answer;
+	register signed short l_di;
+	signed short item_pos;
+	signed short cursed_hero_pos;
+	Bit32s p_money;
+	Bit8u *hero;
+
+	/* find the position of the first cursed hero */
+	hero = get_hero(0);
+	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += 0x6da) {
+
+		if (host_readbs(hero + 0x21) != 0 &&
+			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			hero_cursed(hero))
+		{
+			cursed_hero_pos = item_pos;
+			break;
+		}
+	}
+
+	do {
+		answer = GUI_radio(get_city(0xc4), 3,
+					get_city(0xc8),
+					get_city(0xcc),
+					get_city(0xd0));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		/* remove curse */
+
+		if (cursed_hero_pos == 0) {
+
+			GUI_input(get_city(0x10c), 0);
+
+		} else if (ds_readw(ACADEMY_DAILY_CURSE) != 0) {
+
+			GUI_input(get_city(0x104), 0);
+
+		} else {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0xd4),
+				(char*)hero + 0x10);
+
+			do {
+				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+							get_city(0x110),
+							get_city(0x114));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				l_di = academy_get_equal_item(2000);
+
+				if (l_di >= 0) {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0xe0),
+						(char*)Real2Host(GUI_names_grammar((signed short)0x8002, l_di, 0)));
+
+					do {
+						answer = GUI_radio(Real2Host(ds_readd(DTP2)), 4,
+									get_city(0xe4),
+									get_city(0xe8),
+									get_city(0xec),
+									get_city(0xf0));
+					} while (answer == -1);
+
+					if (answer == 1 || answer == 3) {
+
+						GUI_input(get_city(0xf4), 0);
+
+					} else {
+
+						hero = get_hero(get_first_hero_with_item(l_di));
+						item_pos = get_item_pos(hero, l_di);
+
+						if (drop_item(hero, item_pos, 1)) {
+
+							GUI_input(get_city(0xf8), 0);
+							GUI_input(get_city(0xfc), 0);
+
+							ds_writew(ACADEMY_DAILY_CURSE, 1);
+
+							and_ptr_bs(get_hero(cursed_hero_pos) + 0xaa, 0xdf);
+
+						} else {
+							GUI_input(get_city(0x118), 0);
+						}
+					}
+
+				} else if (l_di == -2) {
+
+					p_money = get_party_money();
+					p_money -= 2000;
+					set_party_money(p_money);
+
+					GUI_input(get_city(0xfc), 0);
+
+					ds_writew(ACADEMY_DAILY_CURSE, 1);
+
+					and_ptr_bs(get_hero(cursed_hero_pos) + 0xaa, 0xdf);
+
+				} else {
+					GUI_input(get_ltx(0x644), 0);
+				}
+			} else {
+				GUI_input(get_city(0x118), 0);
+			}
+		}
+
+	} else if (answer == 2) {
+
+		/* identify item */
+
+		if (ds_readw(ACADEMY_DAILY_IDENT) != 0) {
+
+			GUI_input(get_city(0x108), 0);
+
+		} else {
+
+			do {
+				answer = GUI_radio(get_city(0xd8), 2,
+							get_city(0x110),
+							get_city(0x114));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				l_di = academy_get_equal_item(1000);
+
+				if (l_di >= 0) {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0xe0),
+						(char*)Real2Host(GUI_names_grammar((signed short)0x8002, l_di, 0)));
+
+					do {
+						answer = GUI_radio(Real2Host(ds_readd(DTP2)), 4,
+									get_city(0xe4),
+									get_city(0xe8),
+									get_city(0xec),
+									get_city(0xf0));
+					} while (answer == -1);
+
+					if (answer == 1 || answer == 3) {
+
+						GUI_input(get_city(0xf4), 0);
+
+					} else {
+
+						hero = get_hero(get_first_hero_with_item(l_di));
+						item_pos = get_item_pos(hero, l_di);
+
+						if (drop_item(hero, item_pos, 1)) {
+
+							academy_analues();
+
+						} else {
+
+							GUI_input(get_city(0x118), 0);
+						}
+					}
+
+				} else if (l_di == -2) {
+
+					p_money = get_party_money();
+					p_money -= 1000;
+					set_party_money(p_money);
+
+					academy_analues();
+				} else {
+					GUI_input(get_ltx(0x644), 0);
+				}
+			} else {
+
+				GUI_input(get_city(0x118), 0);
+
+			}
+		}
+	} else {
+
+		GUI_input(get_city(0xdc), 0);
+	}
+}
+
+/* should be static */
+signed short academy_get_equal_item(signed short price)
+{
+	return -1;
+}
+#endif
 
 #if !defined(__BORLANDC__)
 }
