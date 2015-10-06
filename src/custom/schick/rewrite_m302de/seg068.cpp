@@ -1,8 +1,10 @@
 /*
- *	Rewrite of DSA1 v3.02_de functions of seg068 (Thorwal)
- *	Special City: Thorwal
+ *	Rewrite of DSA1 v3.02_de functions of seg068 (special buildings: Thorwal 1/2)
  *	Functions rewritten: 13/13 (complete)
  *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg058.cpp
 */
 
 #include <stdio.h>
@@ -27,7 +29,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void THO_eisenhof(void)
 {
 	signed short answer;
@@ -67,7 +68,6 @@ void THO_eisenhof(void)
 	}
 }
 
-/* Borlandified and identical */
 void THO_imman(void)
 {
 
@@ -102,7 +102,6 @@ void THO_imman(void)
 
 }
 
-/* Borlandified and identical */
 void THO_botschaft(void)
 {
 	int closed = 0;
@@ -117,7 +116,6 @@ void THO_botschaft(void)
 	GUI_input( (!closed) ? get_city(0x110): get_city(0x114), 0);
 }
 
-/* Borlandified and identical */
 void THO_bank(void)
 {
 	signed short answer;
@@ -255,7 +253,6 @@ void THO_bank(void)
 	} while (!done);
 }
 
-/* Borlandified and identical */
 void THO_arsenal(void)
 {
 	/* ARSENAL / ZEUGHAUS */
@@ -329,7 +326,6 @@ void THO_arsenal(void)
 	}
 }
 
-/* Borlandified and identical */
 void THO_magistracy(void)
 {
 	signed short answer;
@@ -371,7 +367,6 @@ void THO_magistracy(void)
 	}
 }
 
-/* Borlandified and identical */
 void THO_mueller(void)
 {
 	if (GUI_bool(get_city(0x40))) {
@@ -384,7 +379,6 @@ void THO_mueller(void)
 	}
 }
 
-/* Borlandified and identical */
 void THO_black_finger(void)
 {
 	if (GUI_radio(get_city(0x4c), 2, get_city(0x50), get_city(0x54)) == 1) {
@@ -393,7 +387,6 @@ void THO_black_finger(void)
 	}
 }
 
-/* Borlandified and identical */
 /* static */
 void dramosch_says(Bit8u *msg)
 {
@@ -401,7 +394,6 @@ void dramosch_says(Bit8u *msg)
 			Real2Host(host_readd(Real2Host(ds_readd(CITY_LTX)) + 0xc0)), msg, 0);
 }
 
-/* Borlandified and identical */
 void THO_ugdalf(void)
 {
 	signed short answer;
@@ -505,7 +497,6 @@ void THO_ugdalf(void)
 	}
 }
 
-/* Borlandified and identical */
 /* should be static */
 void academy_analues(void)
 {
@@ -546,7 +537,6 @@ void academy_analues(void)
 	ds_writew(IN_ACADEMY, 0);
 }
 
-/* Borlandified and identical */
 void THO_academy(void)
 {
 	signed short answer;
@@ -742,7 +732,6 @@ void THO_academy(void)
  * \return	-2 = enough money, -1 no item found or the item_id
 */
 /* should be static */
-/* Borlandified and identical */
 signed short academy_get_equal_item(signed short price)
 {
 	signed short item_pos;
