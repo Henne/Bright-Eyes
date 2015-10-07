@@ -8714,8 +8714,9 @@ static int seg069(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			D1_LOG("thorwal_hetmann();\n");
-			return 0;
+			D1_LOG("THO_hetmann();\n");
+			THO_hetmann();
+			return 1;
 		}
 		case 0x25: {
 			D1_LOG("thorwal_windzwinger();\n");
