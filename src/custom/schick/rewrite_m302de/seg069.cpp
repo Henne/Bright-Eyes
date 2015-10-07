@@ -1,11 +1,12 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg069 (special buildings: Thorwal 2/2)
- *	Functions rewritten: 1/5
+ *	Functions rewritten: 2/5
  */
 
 #include "v302de.h"
 
 #include "seg026.h"
+#include "seg032.h"
 #include "seg097.h"
 #include "seg105.h"
 
@@ -148,6 +149,44 @@ void THO_hetmann(void)
 				ds_writew(GOT_MAIN_QUEST, 1);
 				ds_writew(QUESTED_MONTHS, 0);
 			}
+		}
+	}
+}
+
+/* Borlandified and identical */
+void THO_windriders(void)
+{
+	signed short answer;
+
+	answer = GUI_radio(get_city(0x50), 3,
+				get_city(0x54),
+				get_city(0x58),
+				get_city(0x5c));
+	if (answer != -1) {
+
+		if (answer == 1) {
+
+			GUI_output(get_city(0x60));
+
+		} else if (answer == 2 || answer == 3) {
+
+			if (ds_readw(OTTA_WINDRIDERS) == 0) {
+
+				GUI_output(answer == 2 ? get_city(0x64): get_city(0x68));
+
+			} else if (ds_readw(OTTA_WINDRIDERS) == 1) {
+
+				GUI_output(get_city(0x6c));
+
+			} else {
+
+				GUI_output(get_city(0x70));
+
+				ds_writew(0x26c1, 1);
+				do_fight(213);
+			}
+
+			inc_ds_ws(OTTA_WINDRIDERS);
 		}
 	}
 }
