@@ -69,6 +69,7 @@
 #define INFORMER_UNICORN	(0x3370)	/* unsigned char {0,2} */
 #define INFORMER_ALGRID	(0x3371)	/* unsigned char {0,1,2} */
 #define INFORMER_TIOMAR	(0x3372)	/* unsigned char {0,1,2} */
+#define GOT_LETTER_HET	(0x344a)	/* unsigned char {0,1} */
 #define QUEST_GORAH	(0x344d)	/* unsigned char {0,1 } */
 #define QUEST_NAMELESS_GOT	(0x3455)	/* unsigned char {0, 1} */
 #define SWAFNILD_TP1	(0x345d)	/* unsigned char */
