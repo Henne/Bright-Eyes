@@ -8724,8 +8724,9 @@ static int seg069(unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			D1_LOG("thorwal_combi_tav_inn();\n");
-			return 0;
+			D1_LOG("THO_tav_inn_combi();\n");
+			THO_tav_inn_combi();
+			return 1;
 		}
 		case 0x2f: {
 			D1_LOG("thorwal_sturm();\n");

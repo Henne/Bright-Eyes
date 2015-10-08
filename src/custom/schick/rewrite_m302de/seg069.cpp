@@ -1,12 +1,17 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg069 (special buildings: Thorwal 2/2)
- *	Functions rewritten: 2/5
+ *	Functions rewritten: 3/5
  */
 
 #include "v302de.h"
 
+#include "seg004.h"
+#include "seg025.h"
 #include "seg026.h"
+#include "seg027.h"
 #include "seg032.h"
+#include "seg054.h"
+#include "seg059.h"
 #include "seg097.h"
 #include "seg105.h"
 
@@ -189,6 +194,88 @@ void THO_windriders(void)
 			inc_ds_ws(OTTA_WINDRIDERS);
 		}
 	}
+}
+
+/* Borlandified and identical */
+void THO_tav_inn_combi(void)
+{
+	signed short answer;
+	signed short type_bak;
+
+	set_var_to_zero();
+	load_ani(4);
+	init_ani(0);
+
+	answer = GUI_radio(get_ltx(0xa84), 3,
+				get_ltx(0xa88),
+				get_ltx(0xa8c),
+				get_ltx(0x56c));
+
+	/* save the combo typeindex */
+	type_bak = ds_readw(TYPEINDEX);
+
+	do {
+
+		/* restore the combo typeindex */
+		ds_writew(TYPEINDEX, type_bak);
+
+		if (answer == 1) {
+
+			/* enter TAVERN */
+
+			/* set combo_mode active */
+			ds_writew(COMBO_MODE, 1);
+
+			/* set the typeindex of the corresponding tavern */
+			answer = ds_readw(TYPEINDEX);
+			ds_writew(TYPEINDEX, answer == 11 ? 0 : (
+					answer == 14 ? 1 : (
+					answer == 17 ? 2 : 6)));
+
+			ds_writew(TEXTBOX_WIDTH, 3);
+
+			ds_writeb(LOCATION, 3);
+			do_tavern();
+
+			/* leave the loop or enter the inn in the next iteration */
+			answer = 0;
+			if (ds_readw(COMBO_MODE) == 2) {
+				answer = 2;
+			}
+
+		} else if (answer == 2) {
+
+			/* enter INN */
+
+			/* set combo_mode active */
+			ds_writew(COMBO_MODE, 1);
+
+			/* set the typeindex of the corresponding inn */
+			answer = ds_readw(TYPEINDEX);
+			ds_writew(TYPEINDEX, answer == 11 ? 70 : (
+					answer == 14 ? 71 : (
+					answer == 17 ? 72 : 73)));
+
+			ds_writew(TEXTBOX_WIDTH, 3);
+
+			ds_writeb(LOCATION, 7);
+			do_inn();
+
+			/* leave the loop or enter the tavern in the next iteration */
+			answer = 0;
+			if (ds_readw(COMBO_MODE) == 2) {
+				answer = 1;
+			}
+
+		} else {
+			set_var_to_zero();
+			return;
+		}
+
+	} while (answer != 0);
+
+	set_var_to_zero();
+	turnaround();
 }
 
 #if !defined(__BORLANDC__)
