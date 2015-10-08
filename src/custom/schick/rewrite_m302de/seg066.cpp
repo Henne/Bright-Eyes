@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 4/18
+ *	Functions rewritten: 5/18
  */
 
 #include <stdlib.h>
@@ -8,10 +8,76 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg003.h"
 #include "seg008.h"
+#include "seg066.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
+#if defined(__BORLANDC__)
+signed short enter_location_daspota(void);
+
+signed short enter_location(signed short town_id)
+{
+	signed short map_pos;
+	signed short b_index;
+	Bit8u *ptr;
+
+	if (town_id == 40) {
+		return enter_location_daspota();
+	}
+
+	map_pos = 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	ptr = p_datseg + 0xc025;
+	ds_writeb(0xe10c, 0);
+
+	do {
+		if (host_readws(ptr) == map_pos) {
+
+			/* found the location */
+			ds_writeb(0x2d9f, 0);
+			ds_writeb(LOCATION, host_readb(ptr + 2));
+			ds_writew(TYPEINDEX, host_readb(ptr + 3));
+			ds_writew(CITYINDEX, host_readw(ptr + 4));
+
+			if (ds_readb(LOCATION) == 9) {
+				ds_writeb(LOCATION, 0);
+				ds_writeb(0xe10c, 1);
+			}
+
+			return 1;
+		}
+
+		ptr += 6;
+
+	} while (host_readws(ptr) != -1);
+
+	move();
+
+	if ((b_index = get_border_index(ds_readb((0xbd6e + 1)))) >= 2 && b_index <= 5) {
+
+		ds_writeb(0x2d9f, 0);
+		ds_writew(CITYINDEX, ds_readb(0x71c9 + town_id));
+
+		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
+			ds_writeb(LOCATION, 10);
+		} else {
+			ds_writeb(LOCATION, 16);
+			inc_ds_ws(CITYINDEX);
+		}
+
+		return 1;
+	}
+
+	return 0;
+}
+
+signed short enter_location_daspota(void)
+{
+	return -1;
+}
 #endif
 
 void TLK_eremit(signed short state)

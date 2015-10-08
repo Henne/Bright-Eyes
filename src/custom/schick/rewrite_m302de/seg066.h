@@ -2,6 +2,13 @@
 namespace M302de {
 #endif
 
+#if defined(__BORLANDC__)
+/* 0x20 */
+signed short enter_location(signed short);
+/* 0x25 */
+signed short enter_location_daspota(void);
+#endif
+
 /* 0x2a */
 #if !defined(__BORLANDC__)
 signed short get_border_index(unsigned char);
