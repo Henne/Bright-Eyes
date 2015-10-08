@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg069 (special buildings: Thorwal 2/2)
  *	Functions rewritten: 5/5 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg069.cpp
  */
 
 #include "v302de.h"
@@ -19,7 +23,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void THO_hetmann(void)
 {
 	signed short answer;
@@ -158,7 +161,6 @@ void THO_hetmann(void)
 	}
 }
 
-/* Borlandified and identical */
 void THO_windriders(void)
 {
 	signed short answer;
@@ -196,7 +198,6 @@ void THO_windriders(void)
 	}
 }
 
-/* Borlandified and identical */
 void THO_tav_inn_combi(void)
 {
 	signed short answer;
@@ -279,7 +280,6 @@ void THO_tav_inn_combi(void)
 }
 
 
-/* Borlandified and identical */
 void THO_stormchildren(void)
 {
 	signed short answer;
@@ -317,7 +317,6 @@ void THO_stormchildren(void)
 	}
 }
 
-/* Borlandified and identical */
 void THO_garaldsson(void)
 {
 	signed short answer;
