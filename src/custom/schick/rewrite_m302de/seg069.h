@@ -8,6 +8,8 @@ void THO_hetmann(void);
 void THO_windriders(void);
 /* 0x2a */
 void THO_tav_inn_combi(void);
+/* 0x2f */
+void THO_stormchildren(void);
 
 #if !defined(__BORLANDC__)
 }

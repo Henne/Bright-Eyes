@@ -8729,8 +8729,9 @@ static int seg069(unsigned short offs)
 			return 1;
 		}
 		case 0x2f: {
-			D1_LOG("thorwal_sturm();\n");
-			return 0;
+			D1_LOG("THO_stormchildren();\n");
+			THO_stormchildren();
+			return 1;
 		}
 		case 0x34: {
 			D1_LOG("thorwal_garaldssons();\n");

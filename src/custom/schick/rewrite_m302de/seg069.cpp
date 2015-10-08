@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg069 (special buildings: Thorwal 2/2)
- *	Functions rewritten: 3/5
+ *	Functions rewritten: 4/5
  */
 
 #include "v302de.h"
@@ -278,6 +278,44 @@ void THO_tav_inn_combi(void)
 	turnaround();
 }
 
+
+/* Borlandified and identical */
+void THO_stormchildren(void)
+{
+	signed short answer;
+
+	answer = GUI_radio(get_city(0x74), 3,
+				get_city(0x78),
+				get_city(0x7c),
+				get_city(0x80));
+	if (answer != -1) {
+
+		if (answer == 1) {
+
+			GUI_output(get_city(0x84));
+
+		} else if (answer == 2 || answer == 3) {
+
+			if (ds_readw(OTTA_STORMCHILDREN) == 0) {
+
+				GUI_output(answer == 2 ? get_city(0x88): get_city(0x8c));
+
+			} else if (ds_readw(OTTA_STORMCHILDREN) == 1) {
+
+				GUI_output(get_city(0x90));
+
+			} else {
+
+				GUI_output(get_city(0x94));
+
+				ds_writew(0x26c1, 1);
+				do_fight(213);
+			}
+
+			inc_ds_ws(OTTA_STORMCHILDREN);
+		}
+	}
+}
 #if !defined(__BORLANDC__)
 }
 #endif
