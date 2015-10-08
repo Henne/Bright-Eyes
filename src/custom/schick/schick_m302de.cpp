@@ -8734,8 +8734,9 @@ static int seg069(unsigned short offs)
 			return 1;
 		}
 		case 0x34: {
-			D1_LOG("thorwal_garaldssons();\n");
-			return 0;
+			D1_LOG("THO_garaldsson();\n");
+			THO_garaldsson();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

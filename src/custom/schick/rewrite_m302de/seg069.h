@@ -10,6 +10,8 @@ void THO_windriders(void);
 void THO_tav_inn_combi(void);
 /* 0x2f */
 void THO_stormchildren(void);
+/* 0x34 */
+void THO_garaldsson(void);
 
 #if !defined(__BORLANDC__)
 }
