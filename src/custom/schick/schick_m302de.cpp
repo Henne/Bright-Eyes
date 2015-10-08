@@ -8608,10 +8608,7 @@ static int seg065(unsigned short offs)
 static int seg066(unsigned short offs)
 {
 	switch (offs) {
-	case 0x2a: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
-		return 0;
-	}
+	case 0x2a: return n_seg066(0xb73);
 	case 0x2f: {
 		D1_LOG("%s:0x%x()\n", __func__, offs);
 		return 0;
