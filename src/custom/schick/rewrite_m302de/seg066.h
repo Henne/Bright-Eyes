@@ -5,9 +5,9 @@ namespace M302de {
 #if defined(__BORLANDC__)
 /* 0x20 */
 signed short enter_location(signed short);
+#endif
 /* 0x25 */
 signed short enter_location_daspota(void);
-#endif
 
 /* 0x2a */
 #if !defined(__BORLANDC__)

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 5/18
+ *	Functions rewritten: 6/18
  */
 
 #include <stdlib.h>
@@ -9,8 +9,16 @@
 
 #include "seg002.h"
 #include "seg003.h"
+#include "seg004.h"
 #include "seg008.h"
+#include "seg025.h"
+#include "seg027.h"
+#include "seg029.h"
+#include "seg030.h"
+#include "seg032.h"
 #include "seg066.h"
+#include "seg092.h"
+#include "seg096.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -76,12 +84,99 @@ signed short enter_location(signed short town_id)
 
 	return 0;
 }
+#endif
 
+/* Borlandified and nearly identical */
 signed short enter_location_daspota(void)
 {
-	return -1;
+	signed short map_pos;
+	signed short b_index;
+	Bit8u *ptr;
+
+	if (ds_readws(0xc3c1) == 7) {
+		return 1;
+	}
+
+	map_pos = 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+	ptr = p_datseg + 0xc025;
+	ds_writeb(0xe10c, 0);
+
+	do {
+
+		if (host_readws(ptr) == map_pos) {
+
+			ds_writew(TYPEINDEX, host_readb(ptr + 3));
+
+			if (host_readb(ptr + 2) != 12) {
+
+				GUI_print_loc_line(get_dtp(4 * host_readw(ptr + 4)));
+
+				if (!ds_readb(0x331f + host_readw(ptr + 4))) {
+
+					do_talk(host_readbs(ptr + 2), host_readb(ptr + 3) - 1);
+
+					if (!ds_readb(0x331f + host_readw(ptr + 4))) {
+						turnaround();
+						return 1;
+					}
+				}
+
+				draw_main_screen();
+				set_var_to_zero();
+
+				load_ani(10);
+				GUI_print_loc_line(get_dtp(4 * host_readw(ptr + 4)));
+				init_ani(0);
+
+				if (ds_readd(0x71fa + 4 * host_readw(ptr + 4))) {
+
+					loot_multi_chest(Real2Host((RealPt)ds_readd(0x71fa + 4 * host_readw(ptr + 4))), get_dtp(0x54));
+
+				} else {
+
+					do {
+						handle_gui_input();
+					} while (ds_readws(ACTION) == 0 && ds_readws(0xc3d5) == 0);
+
+					ds_writew(0xc3d5, 0);
+				}
+
+				set_var_to_zero();
+
+				if (host_readw(ptr + 4) == 6) {
+					do_fight(200);
+				} else if (host_readw(ptr + 4 ) == 12) {
+					do_fight(207);
+				}
+
+				turnaround();
+
+			} else {
+				ds_writeb(0x2d9f, 0);
+				ds_writeb(LOCATION, host_readbs(ptr + 2));
+				ds_writew(CITYINDEX, host_readw(ptr + 4));
+			}
+
+			return 1;
+		}
+
+		ptr += 6;
+
+	} while (host_readws(ptr) != -1);
+
+	move();
+
+	/* TODO: this assignment differs */
+	if ((b_index = get_border_index(ds_readb((0xbd6e + 1)) & 0xff)) >= 2 && b_index <= 5) {
+
+		ds_writeb(0x2d9f, 0);
+		ds_writeb(LOCATION, 10);
+		ds_writew(CITYINDEX, 19);
+		return 1;
+	}
+
+	return 0;
 }
-#endif
 
 void TLK_eremit(signed short state)
 {

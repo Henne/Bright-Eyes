@@ -2509,7 +2509,9 @@ static int n_seg066(unsigned offs)
 		return 0;
 	}
 	case 0x0dd: {
-		return 0;
+		D1_LOG("enter_location_daspota()\n");
+		reg_ax = enter_location_daspota();
+		return 1;
 	}
 	case 0x5fc: {
 		return 0;
