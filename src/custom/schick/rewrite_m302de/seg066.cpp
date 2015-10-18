@@ -18,7 +18,9 @@ namespace M302de {
 
 #if defined(__BORLANDC__)
 signed short enter_location_daspota(void);
+signed short get_border_index(unsigned char);
 
+/* Borlandified and nearly identical */
 signed short enter_location(signed short town_id)
 {
 	signed short map_pos;
@@ -56,7 +58,8 @@ signed short enter_location(signed short town_id)
 
 	move();
 
-	if ((b_index = get_border_index(ds_readb((0xbd6e + 1)))) >= 2 && b_index <= 5) {
+	/* TODO: this assignment differs */
+	if ((b_index = get_border_index(ds_readb((0xbd6e + 1)) & 0xff)) >= 2 && b_index <= 5) {
 
 		ds_writeb(0x2d9f, 0);
 		ds_writew(CITYINDEX, ds_readb(0x71c9 + town_id));
@@ -115,7 +118,11 @@ void do_town(void)
 }
 
 /* 0xb73 */
+#if !defined(__BORLANDC__)
+signed short get_border_index(unsigned short val)
+#else
 signed short get_border_index(unsigned char val)
+#endif
 {
 	signed short i;
 

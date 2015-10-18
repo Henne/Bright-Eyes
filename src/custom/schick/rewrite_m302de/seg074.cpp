@@ -14,7 +14,12 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg029.h"
+#if !defined(__BORLANDC__)
 #include "seg066.h"
+#else
+/* BC: only the same code is produced, when this prototype is known */
+signed short get_border_index(unsigned short);
+#endif
 #include "seg074.h"
 #include "seg097.h"
 #include "seg103.h"

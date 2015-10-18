@@ -11,8 +11,6 @@ signed short enter_location_daspota(void);
 
 /* 0x2a */
 #if !defined(__BORLANDC__)
-signed short get_border_index(unsigned char);
-#else
 signed short get_border_index(unsigned short);
 #endif
 
