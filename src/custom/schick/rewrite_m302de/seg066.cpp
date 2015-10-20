@@ -284,6 +284,7 @@ void do_special_buildings(void)
 	turnaround();
 }
 
+/* Borlandified and identical */
 void TLK_eremit(signed short state)
 {
 	signed short i;
@@ -305,7 +306,7 @@ void TLK_eremit(signed short state)
 
 	} else if (state == 10) {
 		/* group learns about two places to rest */
-		ds_writeb(0xe309, ds_writeb(0x3e08, 1));
+		ds_writeb(0x3e09, ds_writeb(0x3e08, 1));
 	} else if (state == 13) {
 		ds_writeb(0x3615, 1);
 	} else if (state == 14) {
