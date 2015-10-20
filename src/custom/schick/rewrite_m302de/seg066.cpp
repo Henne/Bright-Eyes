@@ -155,7 +155,7 @@ void seg066_172b(void)
 
 	for (l_di = 0; ds_readb(0xbd94) * 16 > l_di; l_di++) {
 
-		l_si = get_border_index(host_readbs(ptr + l_di));
+		l_si = get_border_index(host_readb(ptr + l_di));
 
 		if (l_si == 2) {
 			inc_ds_bs_post(0xe400);
