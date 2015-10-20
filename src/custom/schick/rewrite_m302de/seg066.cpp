@@ -25,8 +25,8 @@ namespace M302de {
 #endif
 
 #if defined(__BORLANDC__)
-signed short enter_location_daspota(void);
 signed short get_border_index(unsigned char);
+#endif
 
 /* Borlandified and nearly identical */
 signed short enter_location(signed short town_id)
@@ -84,7 +84,6 @@ signed short enter_location(signed short town_id)
 
 	return 0;
 }
-#endif
 
 /* Borlandified and nearly identical */
 signed short enter_location_daspota(void)

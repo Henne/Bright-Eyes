@@ -2506,7 +2506,11 @@ static int n_seg066(unsigned offs)
 {
 	switch (offs) {
 	case 0x000: {
-		return 0;
+		Bit16s town_id = CPU_Pop16();
+		CPU_Push16(town_id);
+		reg_ax = enter_location(town_id);
+		D1_LOG("enter_location(%d) = %d\n", town_id, reg_ax);
+		return 1;
 	}
 	case 0x0dd: {
 		D1_LOG("enter_location_daspota()\n");
