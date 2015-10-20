@@ -12,6 +12,8 @@ signed short enter_location_daspota(void);
 signed short get_border_index(unsigned short);
 #endif
 
+/* 0x2f */
+void do_special_buildings(void);
 /* 0x34 */
 void TLK_eremit(signed short);
 

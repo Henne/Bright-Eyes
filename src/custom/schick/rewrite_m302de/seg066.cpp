@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 6/18
+ *	Functions rewritten: 7/18
  */
 
 #include <stdlib.h>
@@ -12,13 +12,19 @@
 #include "seg004.h"
 #include "seg008.h"
 #include "seg025.h"
+#include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg030.h"
 #include "seg032.h"
 #include "seg066.h"
+#include "seg068.h"
+#include "seg069.h"
+#include "seg070.h"
+#include "seg071.h"
 #include "seg092.h"
 #include "seg096.h"
+#include "seg097.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -175,6 +181,107 @@ signed short enter_location_daspota(void)
 	}
 
 	return 0;
+}
+
+/* Borlandified and identical */
+void do_special_buildings(void)
+{
+	signed short type;
+	signed short tw_bak;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	type = ds_readws(TYPEINDEX);
+
+	if (ds_readb(CURRENT_TOWN) == 1) {
+		/* THORWAL */
+
+		/* load THORWAL1.LTX or THORWAL2.LTX */
+		load_city_ltx(type < 41 ? 210 : 211);
+		ds_writew(TEXTBOX_WIDTH, 9);
+
+		if (type == 28) {
+			THO_hetmann();
+		} else if (type == 29) {
+			THO_windriders();
+		} else if (type == 30) {
+			THO_stormchildren();
+		} else if (type == 31) {
+			THO_garaldsson();
+		} else if (type == 32) {
+			THO_eisenhof();
+		} else if (type == 33) {
+			THO_imman();
+		} else if (type == 34) {
+			THO_botschaft();
+		} else if (type == 35) {
+			GUI_output(get_city(0x118));
+		} else if (type == 36) {
+			GUI_output(get_city(0x11c));
+		} else if (type == 37) {
+			THO_bank();
+		} else if (type == 38) {
+			GUI_output(get_city(0x148));
+		} else if (type == 39) {
+			GUI_output(get_city(0x14c));
+		} else if (type == 40) {
+			GUI_output(get_city(0x150));
+		} else if (type == 41) {
+			THO_arsenal();
+		} else if (type == 42) {
+			THO_magistracy();
+		} else if (type == 43) {
+			THO_mueller();
+		} else if (type == 44) {
+			THO_black_finger();
+		} else if (type == 45) {
+			THO_ugdalf();
+		} else if (type == 46) {
+			THO_academy();
+		} else if (type == 11 || type == 14 || type == 17 || type == 21) {
+			THO_tav_inn_combi();
+		}
+
+	} else if (ds_readb(CURRENT_TOWN) == 18) {
+		/* PHEXCAER */
+
+		/* load PHEX2.LTX or PHEX1.LTX */
+		load_city_ltx(type <= 3 ? 239 : 238);
+		ds_writew(TEXTBOX_WIDTH, 9);
+
+		if (type == 1) {
+			PHX_phextempel();
+		} else if (type == 3) {
+			PHX_drogentempel();
+		} else if (type == 18) {
+			PHX_apotheke();
+		} else if (type == 20) {
+			PHX_healer();
+		} else if (type == 23) {
+			PHX_bordell();
+		} else if (type == 24) {
+			PHX_villa_gremob();
+		} else if (type == 25) {
+			PHX_spielhaus();
+		} else if (type == 26) {
+			PHX_fuhrhaus();
+		} else if (type == 27) {
+			PHX_stadthaus();
+		}
+
+
+	} else if (ds_readb(CURRENT_TOWN) == 21) {
+		/*  HERMITS LAKE / EINSIEDLERSEE */
+
+		if (type == 1) {
+			load_ani(8);
+			init_ani(1);
+			do_talk(18, 0);
+			set_var_to_zero();
+		}
+	}
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+	turnaround();
 }
 
 void TLK_eremit(signed short state)

@@ -2517,6 +2517,11 @@ static int n_seg066(unsigned offs)
 		reg_ax = enter_location_daspota();
 		return 1;
 	}
+	case 0x2bd: {
+		D1_LOG("do_special_buildings()\n");
+		do_special_buildings();
+		return 1;
+	}
 	case 0x5fc: {
 		return 0;
 	}
@@ -8615,10 +8620,7 @@ static int seg066(unsigned short offs)
 {
 	switch (offs) {
 	case 0x2a: return n_seg066(0xb73);
-	case 0x2f: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
-		return 0;
-	}
+	case 0x2f: return n_seg066(0x2bd);
 	case 0x34: {
 		Bit16s state = CPU_Pop16();
 		CPU_Push16(state);
