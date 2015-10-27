@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 7/18
+ *	Functions rewritten: 8/18
  */
 
 #include <stdlib.h>
@@ -11,9 +11,11 @@
 #include "seg003.h"
 #include "seg004.h"
 #include "seg008.h"
+#include "seg024.h"
 #include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
+#include "seg028.h"
 #include "seg029.h"
 #include "seg030.h"
 #include "seg032.h"
@@ -314,9 +316,31 @@ void TLK_eremit(signed short state)
 	}
 }
 
+/* Borlandified and identical */
+/* depends on: city_step() */
 void do_town(void)
 {
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+	if (ds_readbs(0x2ca7) != ds_readbs(CURRENT_TOWN) ||
+		ds_readws(0x2ccb) != 1)
+	{
+		seg028_0555(1);
+
+		set_audio_track(142);
+
+		ds_writew(0x2846, 1);
+
+		diary_new_entry();
+	}
+
+	ds_writews(CURRENT_ANI, -1);
+
+	ds_writebs(0x2da6, ds_readbs(CURRENT_TOWN));
+
+	city_step();
+#endif
 }
 
 /* 0xb73 */
