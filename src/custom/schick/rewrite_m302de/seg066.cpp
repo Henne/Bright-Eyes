@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 8/18
+ *	Functions rewritten: 9/18
  */
 
 #include <stdlib.h>
@@ -341,6 +341,39 @@ void do_town(void)
 
 	city_step();
 #endif
+}
+
+/* Borlandified and identical */
+/* static */
+void refresh_floor_and_sky(void)
+{
+	signed short width;
+	signed short height;
+	struct nvf_desc nvf;
+
+	nvf.dst = Real2Host(ds_readd(0xd303));
+	nvf.src = Real2Host(ds_readd(TEX_SKY));
+	nvf.nr = 0;
+	nvf.type = 3;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+
+	process_nvf(&nvf);
+
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	width = host_readws((Bit8u*)&width);
+	height = host_readws((Bit8u*)&height);
+#endif
+
+	nvf.dst = Real2Host(ds_readd(0xd303)) + 208 * height;
+	nvf.src = Real2Host(ds_readd(TEX_FLOOR));
+	nvf.nr = 0;
+	nvf.type = 3;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+
+	process_nvf(&nvf);
 }
 
 /* 0xb73 */

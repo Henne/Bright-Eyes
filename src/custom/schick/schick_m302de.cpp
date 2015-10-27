@@ -2523,7 +2523,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0x5fc: {
-		return 0;
+		D1_LOG("refresh_floor_and_sky()\n");
+		refresh_floor_and_sky();
+		return 1;
 	}
 	case 0x692: {
 		return 0;

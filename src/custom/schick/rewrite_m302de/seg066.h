@@ -2,6 +2,11 @@
 namespace M302de {
 #endif
 
+#if !defined(__BORLANDC__)
+/* static */
+void refresh_floor_and_sky(void);
+#endif
+
 /* 0x20 */
 signed short enter_location(signed short);
 /* 0x25 */
