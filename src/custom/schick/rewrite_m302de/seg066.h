@@ -26,6 +26,11 @@ void load_city_texture(signed short, signed short, signed short, signed short);
 /* 0x61 */
 void seg066_172b(void);
 
+/* 0x70 */
+#if defined(__BORLANDC__)
+void city_step(void);
+#endif
+
 #if !defined(__BORLANDC__)
 }
 #endif

@@ -419,6 +419,13 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	}
 }
 
+#if defined(__BORLANDC__)
+void city_step(void)
+{
+
+}
+#endif
+
 /* 0x172b */
 void seg066_172b(void)
 {
