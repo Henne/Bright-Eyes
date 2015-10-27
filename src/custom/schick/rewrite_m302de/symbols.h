@@ -179,6 +179,8 @@
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
 #define BOOKED_INN_DAYS	(0xe3f0)	/* signed char */
 #define SLEEP_QUALITY	(0xe3f1)	/* signed char */
+#define TEX_FLOOR	(0xe414)	/* Bit8u* */
+#define TEX_SKY		(0xe418)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
 #define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */

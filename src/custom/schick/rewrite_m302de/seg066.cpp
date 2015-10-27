@@ -388,7 +388,7 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	v4 -= 184;
 
 	nvf.dst = src = Real2Host(ds_readd(0xd303)) + 0x7530;
-	nvf.src = Real2Host(ds_readd(0xe414 + v4 * 4));
+	nvf.src = Real2Host(ds_readd(TEX_FLOOR + v4 * 4));
 
 	if (v4 == 48 || v4 == 49) {
 		nvf.src = Real2Host(ds_readd(0xd2b5));

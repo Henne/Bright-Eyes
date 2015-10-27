@@ -172,14 +172,14 @@ void seg028_0224(void)
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
-			ds_writed(0xe418, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
+			ds_writed(TEX_SKY, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
 
 			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(0xe404)), 0xc0);
 		} else {
-			ds_writed(0xe418, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
+			ds_writed(TEX_SKY, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
 		}
 
-		ds_writed(0xe414, (Bit32u) seg028_0444(!ds_readbs(LARGE_BUF)? 184: 287, 0, 0x20, 0));
+		ds_writed(TEX_FLOOR, (Bit32u) seg028_0444(!ds_readbs(LARGE_BUF)? 184: 287, 0, 0x20, 0));
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
