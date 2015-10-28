@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 11/18
+ *	Functions rewritten: 12/18
  */
 
 #include <stdlib.h>
@@ -596,12 +596,34 @@ signed short get_border_index(unsigned char val)
 	return i;
 }
 
-#if defined(__BORLANDC__)
+/* Borlandified and identical */
 void seg066_0bad(void)
 {
+	signed short i;
+	signed short bi;
 
+	for (i = 28; i >= 0; i--) {
+
+		bi = get_border_index(ds_readb((0xbd6e + i)));
+
+		if (bi == -1) {
+			ds_writebs(0xbd50 + i, -1);
+		} else {
+			ds_writebs(0xbd50 + i,	bi == 2 ? ds_readbs(0x7252 + i) : (
+						bi == 3 ? ds_readbs(0x726f + i) : (
+						bi == 4 ? ds_readbs(0x728c + i) : (
+						bi == 5 ? ds_readbs(0x72a9 + i) : (
+						bi == 6 ? ds_readbs(0x72c6 + i) : (
+						bi == 7 ? ds_readbs(0x72c6 + i) : (
+						bi == 8 ? ds_readbs(0x72e3 + i) : (
+						bi == 9 ? ds_readbs(0x7300 + i) : (
+						bi == 10 ? ds_readbs(0x731d + i) : (
+						bi == 1 ? ds_readbs(0x728c + i) : -1))))))))));
+		}
+	}
 }
 
+#if defined(__BORLANDC__)
 void seg066_0c50(void)
 {
 

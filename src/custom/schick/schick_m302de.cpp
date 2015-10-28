@@ -2543,7 +2543,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0xbad: {
-		return 0;
+		D1_LOG("seg066_0bad()\n");
+		seg066_0bad();
+		return 1;
 	}
 	case 0xc50: {
 		return 0;
