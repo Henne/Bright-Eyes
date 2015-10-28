@@ -55,10 +55,8 @@ void seg066_172b(void);
 void seg066_0bad(void);
 #endif
 
-#if defined(__BORLANDC__)
 /* 0x6b */
 void seg066_06c1(void);
-#endif
 
 /* 0x70 */
 #if defined(__BORLANDC__)

@@ -2531,7 +2531,9 @@ static int n_seg066(unsigned offs)
 		return 0;
 	}
 	case 0x6c1: {
-		return 0;
+		D1_LOG("seg066_06c1()\n");
+		seg066_06c1();
+		return 1;
 	}
 	case 0xb73: {
 		Bit16s v1 = CPU_Pop16();

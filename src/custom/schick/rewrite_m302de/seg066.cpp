@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 10/18
+ *	Functions rewritten: 11/18
  */
 
 #include <stdlib.h>
@@ -392,12 +392,185 @@ void seg066_0692(void)
 	seg066_0d1d();
 	seg066_159b();
 }
+#endif
 
+/* Borlandified and identical */
 void seg066_06c1(void)
 {
+	signed short bi;
 
+	if ((bi = get_border_index(ds_readb((0xbd6e + 3)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 3), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 7)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 7), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 8)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 8), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 14)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 14), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 15)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 15), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 21)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 21), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 0)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 9), ds_writeb((0xbd6e + 15), ds_writeb((0xbd6e + 22), 0)));
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 4), ds_writeb((0xbd6e + 10), ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 23), 0))));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 2)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 13), ds_writeb((0xbd6e + 21), ds_writeb((0xbd6e + 28),0)));
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 6), ds_writeb((0xbd6e + 12), ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), 0))));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 4)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 9), ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 22), ds_writeb((0xbd6e + 23), 0))));
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 10), 0);
+		}
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 10), ds_writeb((0xbd6e + 17), ds_writeb((0xbd6e + 18), 0)));
+			ds_writeb((0xbd6e + 24), ds_writeb((0xbd6e + 25), 0));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 11), ds_writeb((0xbd6e + 17), ds_writeb((0xbd6e + 18), 0)));
+
+		ds_writeb((0xbd6e + 19), ds_writeb((0xbd6e + 24), ds_writeb((0xbd6e + 25), 0)));
+
+		ds_writeb((0xbd6e + 26), 0);
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 6)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 13), ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), ds_writeb((0xbd6e + 28), 0))));
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 5)))) >= 2 && bi <= 5) {
+
+			ds_writeb((0xbd6e + 11), ds_writeb((0xbd6e + 12), ds_writeb((0xbd6e + 17), 0)));
+
+			ds_writeb((0xbd6e + 18), ds_writeb((0xbd6e + 19), ds_writeb((0xbd6e + 24), 0)));
+
+			ds_writeb((0xbd6e + 25), ds_writeb((0xbd6e + 26), 0));
+		}
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
+
+			ds_writeb((0xbd6e + 12), ds_writeb((0xbd6e + 18), ds_writeb((0xbd6e + 19), 0)));
+
+			ds_writeb((0xbd6e + 25), ds_writeb((0xbd6e + 26), 0));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 9)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 22), 0);
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 17)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 23), 0));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 13)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 28), 0);
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 19)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), 0));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 10)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 9), ds_writeb((0xbd6e + 16), ds_writeb((0xbd6e + 22), ds_writeb((0xbd6e + 23), 0))));
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 18), 0);
+		}
+
+		if (((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) ||
+			((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5)) {
+
+			ds_writeb((0xbd6e + 17), ds_writeb((0xbd6e + 24), ds_writeb((0xbd6e + 25), 0)));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 12)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 13), ds_writeb((0xbd6e + 20), ds_writeb((0xbd6e + 27), ds_writeb((0xbd6e + 28), 0))));
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 18), 0);
+		}
+
+		if (((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) ||
+			((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5)) {
+
+			ds_writeb((0xbd6e + 19), ds_writeb((0xbd6e + 25), ds_writeb((0xbd6e + 26), 0)));
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 11)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 18), ds_writeb((0xbd6e + 25), 0));
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 16)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 22), 0);
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 24)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 23), 0);
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 20)))) >= 2 && bi <= 5) {
+
+		ds_writeb((0xbd6e + 28), 0);
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 26)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 27), 0);
+		}
+	}
+
+	if ((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5) {
+		ds_writeb((0xbd6e + 25), 0);
+	}
+
+	if (((bi = get_border_index(ds_readb((0xbd6e + 18)))) >= 2 && bi <= 5) ||
+		((bi = get_border_index(ds_readb((0xbd6e + 25)))) >= 2 && bi <= 5)) {
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 17)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 24), 0);
+		}
+
+		if ((bi = get_border_index(ds_readb((0xbd6e + 19)))) >= 2 && bi <= 5) {
+			ds_writeb((0xbd6e + 26), 0);
+		}
+	}
 }
-#endif
 
 
 
