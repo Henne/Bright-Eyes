@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 9/18
+ *	Functions rewritten: 10/18
  */
 
 #include <stdlib.h>
@@ -380,7 +380,17 @@ void refresh_floor_and_sky(void)
 /* Borlandified and identical */
 void seg066_0692(void)
 {
+	refresh_floor_and_sky();
+	move();
+	seg066_06c1();
+	seg066_0bad();
 
+	/* TODO: these are write only variables */
+	ds_writew(0xe410, ds_writew(0xe40e, 0));
+
+	seg066_0c50();
+	seg066_0d1d();
+	seg066_159b();
 }
 
 void seg066_06c1(void)
