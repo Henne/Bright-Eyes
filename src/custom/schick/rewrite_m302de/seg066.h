@@ -21,15 +21,44 @@ signed short get_border_index(unsigned short);
 void do_special_buildings(void);
 /* 0x34 */
 void TLK_eremit(signed short);
-
 /* 0x39 */
 void do_town(void);
+
+#if defined(__BORLANDC__)
+/* 0x3e */
+void seg066_0692(void);
+#endif
+
+#if defined(__BORLANDC__)
+/* 0x43 */
+void seg066_0d1d(void);
+#endif
 
 /* 0x4d */
 void load_city_texture(signed short, signed short, signed short, signed short);
 
+#if defined(__BORLANDC__)
+/* 0x52 */
+void seg066_0c50(void);
+#endif
+
+#if defined(__BORLANDC__)
+/* 0x5c */
+void seg066_159b(void);
+#endif
+
 /* 0x61 */
 void seg066_172b(void);
+
+#if defined(__BORLANDC__)
+/* 0x66 */
+void seg066_0bad(void);
+#endif
+
+#if defined(__BORLANDC__)
+/* 0x6b */
+void seg066_06c1(void);
+#endif
 
 /* 0x70 */
 #if defined(__BORLANDC__)

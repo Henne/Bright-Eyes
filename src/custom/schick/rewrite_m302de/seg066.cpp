@@ -376,6 +376,21 @@ void refresh_floor_and_sky(void)
 	process_nvf(&nvf);
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void seg066_0692(void)
+{
+
+}
+
+void seg066_06c1(void)
+{
+
+}
+#endif
+
+
+
 /* 0xb73 */
 #if !defined(__BORLANDC__)
 signed short get_border_index(unsigned short val)
@@ -400,6 +415,23 @@ signed short get_border_index(unsigned char val)
 	return i;
 
 }
+
+#if defined(__BORLANDC__)
+void seg066_0bad(void)
+{
+
+}
+
+void seg066_0c50(void)
+{
+
+}
+
+void seg066_0d1d(void)
+{
+
+}
+#endif
 
 /* 0xf62 */
 void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
@@ -478,6 +510,11 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 
 #if defined(__BORLANDC__)
 void city_step(void)
+{
+
+}
+
+void seg066_159b(void)
 {
 
 }
