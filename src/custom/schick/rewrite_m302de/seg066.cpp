@@ -779,26 +779,25 @@ void city_building_textures(void)
 	}
 }
 
-/* 0xf62 */
+/* Borlandified and identical */
 void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 		signed short v4)
 {
-
-	struct nvf_desc nvf;
-	Bit8u *dst;
-	Bit8u *src;
-	signed short direction;
-	signed short copy_height;
-	signed short copy_width;
-	signed short height;
 	signed short width;
+	signed short height;
+	signed short copy_width;
+	signed short copy_height;
+	signed short direction;
+	Bit8u *src;
+	Bit8u *dst;
+	struct nvf_desc nvf;
 
 	direction = (nvf_nr & 0x8000 ? 1: 0);
 	nvf_nr &= 0x3fff;
 
 	v4 -= 184;
 
-	nvf.dst = src = Real2Host(ds_readd(0xd303)) + 0x7530;
+	nvf.dst = src = Real2Host(ds_readd(0xd303)) + 30000;
 	nvf.src = Real2Host(ds_readd(TEX_FLOOR + v4 * 4));
 
 	if (v4 == 48 || v4 == 49) {
@@ -823,7 +822,7 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	if (v1 < 0) {
 		if (v1 + copy_width > 0) {
 			copy_width += v1;
-			src += abs(v1);
+			src += __abs__(v1);
 			v1 = 0;
 		}
 	}
@@ -831,7 +830,7 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	if (v2 < 0) {
 		if (v2 + copy_height > 0) {
 			copy_height -= v2;
-			src += abs(v2) * width;
+			src += __abs__(v2) * width;
 			v2 = 0;
 		}
 	}
@@ -839,11 +838,11 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 
 	if (v1 < 208 && v2 < 135 && v1 >= 0 && v2 >= 0) {
 
-		if (copy_width + v1 > 208) {
+		if (v1 + copy_width > 208) {
 			copy_width = 208 - v1;
 		}
 
-		if (copy_height + v2 > 135) {
+		if (v2 + copy_height > 135) {
 			copy_height = 135 - v2;
 		}
 
