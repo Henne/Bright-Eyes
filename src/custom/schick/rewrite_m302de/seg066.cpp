@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 13/18
+ *	Functions rewritten: 14/18
  */
 
 #include <stdlib.h>
@@ -389,7 +389,7 @@ void seg066_0692(void)
 	ds_writew(0xe410, ds_writew(0xe40e, 0));
 
 	city_water_and_grass();
-	seg066_0d1d();
+	city_building_textures();
 	seg066_159b();
 }
 #endif
@@ -675,12 +675,109 @@ void city_water_and_grass(void)
 	}
 }
 
-#if defined(__BORLANDC__)
-void seg066_0d1d(void)
+/**
+ *  \brief	draws building textures
+ */
+/* Borlandified and identical */
+void city_building_textures(void)
 {
+	signed short nvf_nr;
+	signed short i;
+	signed short x;
+	signed short y;
+	signed short l4;
+	signed char c1;
+	signed char bi;
+	unsigned char c2;
+	Bit8u *ptr;
 
+	for (i = 0; i < 29; i++) {
+
+		c1 = ds_readbs(0x7c24 + i);
+		c2 = ds_readb(0xbd6e + c1);
+
+		if (c2 != 0) {
+
+			bi = get_border_index(c2);
+
+			if (bi != 7 && bi != 6) {
+
+				ptr = p_datseg + 0x733a + 4 * c1;
+
+				if (bi == 8) {
+					ptr = p_datseg + 0x73ae + 4 * c1;
+				} else if (bi == 9 || bi == 10) {
+					ptr = p_datseg + 0x7422 + 4 * c1;
+				}
+
+				x = host_readws(ptr);
+				y = host_readws(ptr + 2);
+
+				c1 = ds_readbs(0xbd50 + c1);
+
+				if (c1 != -1) {
+
+					ptr = 18 * c1 + p_datseg + 0x74f8;
+
+					l4 =	bi == 2 ? 186 : (
+						bi == 3 ? 187 : (
+						bi == 4 ? 188 : (
+						bi == 5 ? 189 : (
+						bi == 1 ? 188 : (
+						bi == 9 ? 232 : (
+						bi == 10 ? 233 : 185))))));
+
+					if ((nvf_nr = host_readws(ptr + 4)) != -1) {
+
+						if (ds_readws(0xe412) == 2 && bi >= 1 && bi <= 5) {
+
+							if (bi == 1) {
+								nvf_nr -= 5;
+								l4 = 185;
+							} else {
+								nvf_nr -= 10;
+							}
+						}
+
+						if (bi == 9 || bi == 10) {
+							load_special_textures(bi);
+						}
+
+						load_city_texture(x + host_readws(ptr), y + host_readws(ptr + 2), nvf_nr, l4);
+
+						if (bi == 9 || bi == 10) {
+							call_load_buffer();
+						}
+					}
+
+					if ((nvf_nr = host_readws(ptr + 10)) != -1) {
+
+						if (bi == 1) {
+							l4 = 188;
+						}
+
+						if (ds_readws(0xe412) == 1 &&
+							!(nvf_nr & 0x8000) &&
+							bi >= 1 && bi <= 5)
+						{
+							nvf_nr -= 10;
+
+						} else if (ds_readws(0xe412) == 3 && (nvf_nr & 0x8000))
+						{
+							nvf_nr = ((unsigned short)(nvf_nr & 0x7fff) - 10) | 0x8000;
+						}
+
+						load_city_texture(x + host_readws(ptr + 6), y + host_readws(ptr + 8), nvf_nr, l4);
+					}
+
+					if ((nvf_nr = host_readws(ptr + 0x10)) != -1) {
+						load_city_texture(x + host_readws(ptr + 12), y + host_readws(ptr + 14), nvf_nr, l4);
+					}
+				}
+			}
+		}
+	}
 }
-#endif
 
 /* 0xf62 */
 void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,

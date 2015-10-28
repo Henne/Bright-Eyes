@@ -2553,7 +2553,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0xd1d: {
-		return 0;
+		D1_LOG("city_building_textures()\n");
+		city_building_textures();
+		return 1;
 	}
 	case 0xf62: {
 		Bit16s v1 = CPU_Pop16();
