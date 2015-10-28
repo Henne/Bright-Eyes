@@ -572,9 +572,7 @@ void seg066_06c1(void)
 	}
 }
 
-
-
-/* 0xb73 */
+/* Borlandified and identical */
 #if !defined(__BORLANDC__)
 signed short get_border_index(unsigned short val)
 #else
@@ -596,7 +594,6 @@ signed short get_border_index(unsigned char val)
 	i--;
 
 	return i;
-
 }
 
 #if defined(__BORLANDC__)
