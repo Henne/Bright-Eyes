@@ -2548,7 +2548,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0xc50: {
-		return 0;
+		D1_LOG("city_water_and_grass()\n");
+		city_water_and_grass();
+		return 1;
 	}
 	case 0xd1d: {
 		return 0;

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 12/18
+ *	Functions rewritten: 13/18
  */
 
 #include <stdlib.h>
@@ -388,7 +388,7 @@ void seg066_0692(void)
 	/* TODO: these are write only variables */
 	ds_writew(0xe410, ds_writew(0xe40e, 0));
 
-	seg066_0c50();
+	city_water_and_grass();
 	seg066_0d1d();
 	seg066_159b();
 }
@@ -623,12 +623,59 @@ void seg066_0bad(void)
 	}
 }
 
-#if defined(__BORLANDC__)
-void seg066_0c50(void)
+/**
+ *  \brief	draws water and grass textures
+ */
+/* Borlandified and identical */
+void city_water_and_grass(void)
 {
+	signed short i;
+	signed short nvf_nr;
+	signed short x;
+	signed short y;
+	signed char c1;
+	signed char bi;
+	unsigned char c2;
+	Bit8u *ptr;
 
+	for (i = 0; i < 29; i++) {
+
+		c1 = ds_readbs(0x7c24 + i);
+		c2 = ds_readb(0xbd6e + c1);
+
+		if (c2 != 0) {
+
+			bi = get_border_index(c2);
+
+			if (bi == 6 || bi == 7) {
+				/* water or grass */
+
+				ptr = 4 * c1 + p_datseg + 0x7496;
+
+				x = host_readws(ptr);
+				y = host_readws(ptr + 2);
+
+				c1 = ds_readbs(0xbd50 + c1);
+
+				if (c1 != -1) {
+
+					ptr = c1 * 18 + p_datseg + 0x74f8;
+
+					if ((nvf_nr = host_readws(ptr + 4)) != -1) {
+
+						if (bi == 7) {
+							nvf_nr += 15;
+						}
+
+						load_city_texture(x + host_readws(ptr), y + host_readws(ptr + 2), nvf_nr, 184);
+					}
+				}
+			}
+		}
+	}
 }
 
+#if defined(__BORLANDC__)
 void seg066_0d1d(void)
 {
 
