@@ -1191,7 +1191,7 @@ void city_fade_and_colors(void)
 	}
 }
 
-/* 0x172b */
+/* Borlandified and identical */
 void seg066_172b(void)
 {
 	signed short l_si;
