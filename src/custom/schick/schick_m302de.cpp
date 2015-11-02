@@ -2598,7 +2598,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0x159b: {
-		return 0;
+		D1_LOG("city_fade_and_colors()\n");
+		city_fade_and_colors();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

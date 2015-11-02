@@ -1,9 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 17/18
+ *	Functions rewritten: 18/18 (complete)
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -395,7 +396,7 @@ void seg066_0692(void)
 
 	city_water_and_grass();
 	city_building_textures();
-	seg066_159b();
+	city_fade_and_colors();
 }
 #endif
 
@@ -1120,12 +1121,75 @@ void seg066_14dd(signed short forward)
 	}
 }
 
-#if defined(__BORLANDC__)
-void seg066_159b(void)
+/* Borlandified and identical */
+void city_fade_and_colors(void)
 {
+	signed short i;
+	Bit8u *dst;
+	Bit8u *pal_ptr;
 
+	if (ds_readb(0x4475) == 2) {
+
+		fade_into();
+		ds_writeb(0x4475, 1);
+
+	}
+
+	if (ds_readb(0x4475) == 3) {
+
+		set_palette(p_datseg + 0x26c3, 0x00, 0x20);
+		set_palette(p_datseg + 0x26c3, 0x80, 0x20);
+		set_palette(p_datseg + 0x26c3, 0xa0, 0x20);
+
+		ds_writeb(0x4475, 1);
+	}
+
+	draw_compass();
+
+	ds_writew(0xc011, ds_readws(0xce41));
+	ds_writew(0xc013, ds_readws(0xce3f));
+	ds_writew(0xc015, ds_readws(0xce41) + 207);
+	ds_writew(0xc017, ds_readws(0xce3f) + 134);
+	ds_writed(0xc019, ds_readd(0xd303));
+
+	ds_writeb(0x45b8, 0);
+
+	update_mouse_cursor();
+	wait_for_vsync();
+
+	do_pic_copy(1);
+
+	refresh_screen_size();
+
+	if (ds_readb(0x4475) != 0) {
+
+		dst = Real2Host(ds_readd(0xd303)) + 500;
+		pal_ptr = Real2Host(ds_readd(0xd303));
+
+		memset(Real2Host(ds_readd(0xd303)), 0, 0x120);
+		memcpy(dst, p_datseg + 0x3e53, 0x120);
+
+		for (i = 0; i < 64; i += 2) {
+
+			pal_fade_in(pal_ptr, dst, i, 0x60);
+			pal_fade_in(pal_ptr, dst, i + 1, 0x60);
+
+			wait_for_vsync();
+
+			set_palette(pal_ptr, 0x00, 0x20);
+			set_palette(pal_ptr + 0x60, 0x80, 0x40);
+		}
+
+		ds_writeb(0x4475, 0);
+
+	} else {
+
+		wait_for_vsync();
+
+		set_palette(p_datseg + 0x3e53, 0x00, 0x20);
+		set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+	}
 }
-#endif
 
 /* 0x172b */
 void seg066_172b(void)
