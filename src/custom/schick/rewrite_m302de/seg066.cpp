@@ -869,6 +869,10 @@ void seg066_10c8(void)
 #if defined(__BORLANDC__)
 void city_step(void)
 {
+}
+
+void seg066_14dd(signed short a1)
+{
 
 }
 
