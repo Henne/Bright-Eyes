@@ -27,12 +27,8 @@ void do_town(void);
 void seg066_0692(void);
 /* 0x43 */
 void city_building_textures(void);
-
-#if defined(__BORLANDC__)
 /* 0x48 */
 void seg066_10c8(void);
-#endif
-
 /* 0x4d */
 void load_city_texture(signed short, signed short, signed short, signed short);
 /* 0x52 */

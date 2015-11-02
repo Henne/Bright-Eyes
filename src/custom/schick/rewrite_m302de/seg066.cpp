@@ -857,8 +857,6 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	}
 }
 
-#if defined(__BORLANDC__)
-
 /* Borlandified and identical */
 void seg066_10c8(void)
 {
@@ -868,7 +866,6 @@ void seg066_10c8(void)
 	ds_writews(0xe40a, ds_readws(Y_TARGET));
 	ds_writews(0xe408, ds_readbs(DIRECTION));
 }
-#endif
 
 #if defined(__BORLANDC__)
 /* Borlandified and identical */

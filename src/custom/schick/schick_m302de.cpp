@@ -2576,12 +2576,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0x10c8: {
-#if 0
+		D1_LOG("seg066_10c8()\n");
 		seg066_10c8();
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x10e9: {
 #if 0
