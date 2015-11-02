@@ -2582,7 +2582,12 @@ static int n_seg066(unsigned offs)
 #endif
 	}
 	case 0x10e9: {
+#if 0
+		reg_ax = city_step();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x14dd: {
 		return 0;

@@ -61,7 +61,7 @@ void seg066_06c1(void);
 
 /* 0x70 */
 #if defined(__BORLANDC__)
-void city_step(void);
+signed short city_step(void);
 #endif
 
 #if !defined(__BORLANDC__)

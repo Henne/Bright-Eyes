@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 15/18
+ *	Functions rewritten: 16/18
  */
 
 #include <stdlib.h>
@@ -10,6 +10,7 @@
 #include "seg002.h"
 #include "seg003.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg008.h"
 #include "seg024.h"
 #include "seg025.h"
@@ -19,14 +20,18 @@
 #include "seg029.h"
 #include "seg030.h"
 #include "seg032.h"
+#include "seg049.h"
 #include "seg066.h"
+#include "seg067.h"
 #include "seg068.h"
 #include "seg069.h"
 #include "seg070.h"
 #include "seg071.h"
+#include "seg074.h"
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg098.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -867,8 +872,193 @@ void seg066_10c8(void)
 #endif
 
 #if defined(__BORLANDC__)
-void city_step(void)
+/* Borlandified and identical */
+signed short city_step(void)
 {
+	signed short i;
+	signed short bi;
+	signed short options;
+	signed short l4;
+
+	ds_writebs((0xbd38 + 0), 12);
+	l4 = ds_readbs((0xbd38 + 1));
+	ds_writebs((0xbd38 + 1), ds_readbs(0x7c41) == -1 ? 45 : 15);
+
+	if (ds_readbs((0xbd38 + 1)) != l4) {
+		ds_writew(0xd013, 1);
+	}
+
+	ds_writebs((0xbd38 + 2), 29);
+	ds_writebs((0xbd38 + 3), 37);
+	ds_writebs((0xbd38 + 4), 39);
+	ds_writebs((0xbd38 + 5), 11);
+	ds_writebs((0xbd38 + 6), 54);
+
+	if (ds_readws(0x2846) != 0) {
+
+		draw_main_screen();
+		GUI_print_loc_line(get_dtp(0x0000));
+
+		ds_writew(0x2846, ds_writews(0xd013, 0));
+		ds_writews(0xe40c, -1);
+	}
+
+	if (ds_readw(0xd013) != 0 && ds_readbs(0x2845) == 0) {
+		draw_icons();
+		ds_writews(0xd013, 0);
+	}
+
+	/* check if position or direction has changed */
+	if (ds_readbs(DIRECTION) != ds_readws(0xe408) ||
+		ds_readws(X_TARGET) != ds_readws(0xe40c) ||
+		ds_readws(Y_TARGET) != ds_readws(0xe40a))
+	{
+		seg066_10c8();
+	}
+
+	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
+		ds_readws(Y_TARGET) != ds_readws(0x2d85))
+	{
+		ds_writebs(0x7c41, can_merge_group());
+		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
+	}
+
+	ds_writew(0x2d83, ds_readws(X_TARGET));
+	ds_writew(0x2d85, ds_readws(Y_TARGET));
+
+	handle_gui_input();
+
+	if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+
+		for (i = options = 0; i < 9; i++) {
+			if (ds_readbs(0xbd38 + i) != -1) {
+				options++;
+			}
+		}
+
+		i = GUI_radio(get_ltx(0x8e8), options,
+				get_ltx(0x85c), get_ltx(0x860), get_ltx(0x864),
+				get_ltx(0x868), get_ltx(0x86c), get_ltx(0x354),
+				get_ltx(0x4c8), get_ltx(0x8e4)) - 1;
+
+		if (i != -2) {
+			ds_writew(ACTION, i + 129);
+		}
+	}
+
+	i = 0;
+
+	if (ds_readws(ACTION) == 129) {
+
+		GRP_split();
+		ds_writebs(0x7c41, can_merge_group());
+
+	} else if (ds_readws(ACTION) == 130) {
+
+		GRP_merge();
+		ds_writebs(0x7c41, -1);
+
+	} else if (ds_readws(ACTION) == 131) {
+
+		GRP_switch_to_next(0);
+		i = 1;
+
+	} else if (ds_readws(ACTION) == 132) {
+
+		game_options();
+
+	} else if (ds_readws(ACTION) == 133) {
+
+		show_automap();
+
+	} else if (ds_readws(ACTION) == 134) {
+
+		select_magic_user();
+
+	} else if (ds_readws(ACTION) == 135) {
+
+		ds_writeb(LOCATION, 18);
+		ds_writeb(0xbd27, 1);
+		i = 1;
+
+	} else if (ds_readws(ACTION) == 136 && ds_readbs((0xbd38 + 7)) != -1) {
+
+		ds_writeb(LOCATION, 9);
+		i = 1;
+
+	} else if (ds_readws(ACTION) == 75) {
+
+		update_direction(3);
+
+	} else if (ds_readws(ACTION) == 77) {
+
+		update_direction(1);
+
+	} else if (ds_readws(ACTION) == 72) {
+
+		bi = get_border_index(ds_readb(0xbd4d));
+
+		if (!bi || bi == 7 || bi == 8) {
+			seg066_14dd(1);
+		} else if (bi >= 1 && bi <= 5 && ds_readw(0xe412) == 2) {
+			seg066_14dd(1);
+		} else {
+			no_way();
+		}
+
+	} else if (ds_readws(ACTION) == 80) {
+
+		bi = get_border_index(ds_readb(0xbd4e));
+
+		if (!bi || bi == 7 || bi == 8) {
+			seg066_14dd(-1);
+		} else {
+			no_way();
+		}
+	}
+
+	if (ds_readb(CURRENT_TOWN) != 0 && ds_readbs(0x2ca7) != -1) {
+
+		if (!i) {
+			options = enter_location(ds_readbs(CURRENT_TOWN));
+		}
+
+		/* check move and a big city */
+		if ((ds_readws(Y_TARGET) != ds_readws(0x2d85) ||
+			(ds_readws(X_TARGET) != ds_readws(0x2d83))) &&
+
+			(ds_readb(CURRENT_TOWN) == 1 || ds_readb(CURRENT_TOWN) == 39 ||
+			ds_readb(CURRENT_TOWN) == 18 || ds_readb(CURRENT_TOWN) == 17))
+		{
+
+			/* roll a dice */
+			if (random_schick(100) <= 1 &&
+				ds_readds(DAY_TIMER) > HOURS(8) &&
+				ds_readds(DAY_TIMER) < HOURS(20))
+			{
+				city_event_switch();
+			}
+		}
+
+		if (ds_readb(0xe10c) != 0 && ds_readb((0xbd38 + 7)) != 43) {
+
+			if (((i = ds_readws(0x70ac + 8 * ds_readws(TYPEINDEX))) == -1 ||
+				ds_readbs(DAY_OF_WEEK) == i) &&
+				ds_readds(DAY_TIMER) >= HOURS(6) &&
+				ds_readds(DAY_TIMER) <= HOURS(16))
+			{
+				ds_writebs((0xbd38 + 7), 43);
+				draw_icons();
+			}
+
+		} else if (!ds_readbs(0xe10c) && ds_readbs((0xbd38 + 7)) == 43) {
+
+			ds_writebs((0xbd38 + 7), -1);
+			draw_icons();
+		}
+	}
+
+	return 0;
 }
 
 void seg066_14dd(signed short a1)
