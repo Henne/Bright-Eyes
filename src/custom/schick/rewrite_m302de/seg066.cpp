@@ -323,12 +323,8 @@ void TLK_eremit(signed short state)
 }
 
 /* Borlandified and identical */
-/* depends on: city_step() */
 void do_town(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	if (ds_readbs(0x2ca7) != ds_readbs(CURRENT_TOWN) ||
 		ds_readws(0x2ccb) != 1)
 	{
@@ -346,7 +342,6 @@ void do_town(void)
 	ds_writebs(0x2da6, ds_readbs(CURRENT_TOWN));
 
 	city_step();
-#endif
 }
 
 /* Borlandified and identical */

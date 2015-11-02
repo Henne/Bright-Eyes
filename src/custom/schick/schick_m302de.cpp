@@ -2522,6 +2522,11 @@ static int n_seg066(unsigned offs)
 		do_special_buildings();
 		return 1;
 	}
+	case 0x5ba: {
+		D1_LOG("do_town()\n");
+		do_town();
+		return 1;
+	}
 	case 0x5fc: {
 		D1_LOG("refresh_floor_and_sky()\n");
 		refresh_floor_and_sky();
@@ -8651,10 +8656,7 @@ static int seg066(unsigned short offs)
 		TLK_eremit(state);
 		return 1;
 	}
-	case 0x39: {
-		D1_LOG("%s:0x%x()\n", __func__, offs);
-		return 0;
-	}
+	case 0x39: return n_seg066(0x5ba);
 	case 0x61: {
 		D1_LOG("seg066_172b()\n");
 		seg066_172b();
