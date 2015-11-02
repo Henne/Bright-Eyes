@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 16/18
+ *	Functions rewritten: 17/18
  */
 
 #include <stdlib.h>
@@ -1060,12 +1060,67 @@ signed short city_step(void)
 
 	return 0;
 }
+#endif
 
-void seg066_14dd(signed short a1)
+/* Borlandified and identical */
+void seg066_14dd(signed short forward)
 {
+	signed short dir;
 
+	timewarp(MINUTES(2));
+
+	dir = ds_readbs(DIRECTION);
+
+	if (forward == 1) {
+
+		if (!dir) {
+			dec_ds_ws(Y_TARGET);
+		} else if (dir == 1) {
+			inc_ds_ws(X_TARGET);
+		} else if (dir == 2) {
+			inc_ds_ws(Y_TARGET);
+		} else {
+			dec_ds_ws(X_TARGET);
+		}
+
+	} else {
+
+		if (!dir) {
+			inc_ds_ws(Y_TARGET);
+		} else if (dir == 1) {
+			dec_ds_ws(X_TARGET);
+		} else if (dir == 2) {
+			dec_ds_ws(Y_TARGET);
+		} else {
+			inc_ds_ws(X_TARGET);
+		}
+	}
+
+	if (ds_readws(X_TARGET) < 0) {
+
+		ds_writews(X_TARGET, 0);
+		no_way();
+
+	} else if (ds_readb(0xbd94) - 1 < ds_readws(X_TARGET)) {
+
+		ds_writews(X_TARGET, ds_readb(0xbd94) - 1);
+		no_way();
+
+	}
+
+	if (ds_readws(Y_TARGET) < 0) {
+
+		ds_writews(Y_TARGET, 0);
+		no_way();
+
+	} else if (ds_readws(Y_TARGET) > 15) {
+
+		ds_writews(Y_TARGET, 15);
+		no_way();
+	}
 }
 
+#if defined(__BORLANDC__)
 void seg066_159b(void)
 {
 

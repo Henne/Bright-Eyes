@@ -2590,7 +2590,12 @@ static int n_seg066(unsigned offs)
 #endif
 	}
 	case 0x14dd: {
-		return 0;
+		Bit16s forward = CPU_Pop16();
+		CPU_Push16(forward);
+
+		D1_LOG("seg066_14dd(%d)\n", forward);
+		seg066_14dd(forward);
+		return 1;
 	}
 	case 0x159b: {
 		return 0;

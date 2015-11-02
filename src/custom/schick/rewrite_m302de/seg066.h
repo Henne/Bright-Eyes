@@ -41,11 +41,8 @@ void seg066_10c8(void);
 void load_city_texture(signed short, signed short, signed short, signed short);
 /* 0x52 */
 void city_water_and_grass(void);
-
-#if defined(__BORLANDC__)
 /* 0x57 */
 void seg066_14dd(signed short);
-#endif
 
 #if defined(__BORLANDC__)
 /* 0x5c */
