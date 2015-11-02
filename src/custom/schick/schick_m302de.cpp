@@ -2581,12 +2581,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0x10e9: {
-#if 0
+		D1_LOG("city_step()\n");
 		reg_ax = city_step();
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x14dd: {
 		Bit16s forward = CPU_Pop16();

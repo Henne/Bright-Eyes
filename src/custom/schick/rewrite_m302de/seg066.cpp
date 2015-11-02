@@ -867,7 +867,6 @@ void seg066_10c8(void)
 	ds_writews(0xe408, ds_readbs(DIRECTION));
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 signed short city_step(void)
 {
@@ -1056,7 +1055,6 @@ signed short city_step(void)
 
 	return 0;
 }
-#endif
 
 /* Borlandified and identical */
 void seg066_14dd(signed short forward)
