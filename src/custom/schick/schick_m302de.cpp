@@ -2528,7 +2528,9 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0x692: {
-		return 0;
+		D1_LOG("seg066_0692()\n");
+		seg066_0692();
+		return 1;
 	}
 	case 0x6c1: {
 		D1_LOG("seg066_06c1()\n");

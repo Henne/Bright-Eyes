@@ -382,7 +382,6 @@ void refresh_floor_and_sky(void)
 	process_nvf(&nvf);
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void seg066_0692(void)
 {
@@ -398,7 +397,6 @@ void seg066_0692(void)
 	city_building_textures();
 	city_fade_and_colors();
 }
-#endif
 
 /* Borlandified and identical */
 void seg066_06c1(void)

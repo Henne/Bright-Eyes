@@ -23,12 +23,8 @@ void do_special_buildings(void);
 void TLK_eremit(signed short);
 /* 0x39 */
 void do_town(void);
-
-#if defined(__BORLANDC__)
 /* 0x3e */
 void seg066_0692(void);
-#endif
-
 /* 0x43 */
 void city_building_textures(void);
 
