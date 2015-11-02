@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
- *	Functions rewritten: 14/18
+ *	Functions rewritten: 15/18
  */
 
 #include <stdlib.h>
@@ -852,6 +852,19 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 			v4 == 0 ? 0 : 128);
 	}
 }
+
+#if defined(__BORLANDC__)
+
+/* Borlandified and identical */
+void seg066_10c8(void)
+{
+	set_var_to_zero();
+	seg066_0692();
+	ds_writews(0xe40c, ds_readws(X_TARGET));
+	ds_writews(0xe40a, ds_readws(Y_TARGET));
+	ds_writews(0xe408, ds_readbs(DIRECTION));
+}
+#endif
 
 #if defined(__BORLANDC__)
 void city_step(void)

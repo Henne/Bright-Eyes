@@ -2574,7 +2574,12 @@ static int n_seg066(unsigned offs)
 		return 1;
 	}
 	case 0x10c8: {
+#if 0
+		seg066_10c8();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x10e9: {
 		return 0;
