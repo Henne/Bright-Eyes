@@ -51,6 +51,20 @@ void passages_init(void)
 	}
 }
 
+#if defined(__BORLANDC__)
+void seg063_999(signed short town)
+{
+
+}
+#endif
+
+#if defined(__BORLANDC__)
+void sea_travel(signed short passage, signed short dir)
+{
+
+}
+#endif
+
 unsigned short get_srout_len(Bit8u *ptr)
 {
 	unsigned short i = 0;
