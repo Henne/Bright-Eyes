@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg063 (harbour)
-        Functions rewritten: 3/5
+        Functions rewritten: 4/5
 */
 
 #include <stdio.h>
@@ -344,7 +344,7 @@ void do_harbour(void)
 
 				set_palette(Real2Host(ds_readd(0x432e)) + 64002, 0, 0x20);
 
-				seg063_999(ds_readbs(CURRENT_TOWN));
+				mod_clock_pos(ds_readbs(CURRENT_TOWN));
 
 				set_audio_track(145);
 
@@ -397,12 +397,27 @@ void do_harbour(void)
 }
 #endif
 
-#if defined(__BORLANDC__)
-void seg063_999(signed short town)
+/**
+ * \brief
+ * \param town_id	ID of the town
+ */
+/* Borlandified and identical */
+void mod_clock_pos(signed short town_id)
 {
+	signed short val;
+	signed short map_x;
+	signed short map_y;
 
+	map_x = ds_readws(TOWN_POSITIONS + 4 * town_id);
+	map_y = ds_readws(TOWN_POSITIONS + 4 * town_id + 2);
+
+	val = map_x >= 0 && map_x <= 159 ?
+		(map_y >= 0 && map_y <= 99 ? 3 : 1) :
+		(map_y >= 0 && map_y <= 99 ? 2 : 0);
+
+	ds_writew(0x2ca2, !val || val == 2 ? -80 : 80);
+	ds_writew(0x2ca4, !val || val == 1 ? -40 : 40);
 }
-#endif
 
 #if defined(__BORLANDC__)
 void sea_travel(signed short passage, signed short dir)

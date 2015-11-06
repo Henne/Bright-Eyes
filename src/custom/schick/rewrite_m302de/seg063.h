@@ -15,11 +15,8 @@ void passages_init(void);
 void sea_travel(signed short, signed short);
 #endif
 
-#if defined(__BORLANDC__)
 /* 0x2f */
-void seg063_999(signed short);
-#endif
-
+void mod_clock_pos(signed short);
 /* 0x34 */
 unsigned short get_srout_len(Bit8u*);
 

@@ -2423,7 +2423,10 @@ static int n_seg061(unsigned offs) {
 static int n_seg063(unsigned offs) {
 	switch (offs) {
 	case 0x999: {
-		return 0;
+		Bit16s town_id = CPU_Pop16();
+		CPU_Push16(town_id);
+		mod_clock_pos(town_id);
+		return 1;
 	}
 	case 0xa0e: {
 		return 0;
