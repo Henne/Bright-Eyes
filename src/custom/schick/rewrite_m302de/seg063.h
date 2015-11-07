@@ -14,7 +14,7 @@ void sea_travel(signed short, signed short);
 /* 0x2f */
 void mod_clock_pos(signed short);
 /* 0x34 */
-unsigned short get_srout_len(Bit8u*);
+signed short get_srout_len(Bit8u*);
 
 #if !defined(__BORLANDC__)
 }

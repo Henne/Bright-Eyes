@@ -615,14 +615,16 @@ void sea_travel(signed short passage, signed short dir)
 	ds_writeb(0xa842, 0);
 }
 
-unsigned short get_srout_len(Bit8u *ptr)
+/* Borlandified and identical */
+signed short get_srout_len(Bit8u *ptr)
 {
-	unsigned short i = 0;
+	signed short i = 0;
 
-	while (host_readw(ptr) != 0xffff) {
+	while (host_readws(ptr) != -1) {
 		ptr += 4;
 		i++;
 	}
+
 	return i;
 }
 
