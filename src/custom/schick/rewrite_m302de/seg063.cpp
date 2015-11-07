@@ -75,7 +75,6 @@ struct dummy7 {
 	signed short a[7];
 };
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void do_harbour(void)
 {
@@ -395,7 +394,6 @@ void do_harbour(void)
 		ds_writeb(CURRENT_TOWN, 0);
 	}
 }
-#endif
 
 /**
  * \brief

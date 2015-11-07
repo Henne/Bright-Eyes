@@ -2422,6 +2422,11 @@ static int n_seg061(unsigned offs) {
 
 static int n_seg063(unsigned offs) {
 	switch (offs) {
+	case 0x0ad: {
+		D1_LOG("do_harbour()\n");
+		do_harbour();
+		return 1;
+	}
 	case 0x999: {
 		Bit16s town_id = CPU_Pop16();
 		CPU_Push16(town_id);
@@ -8576,10 +8581,7 @@ static int seg062(unsigned short offs)
 static int seg063(unsigned short offs)
 {
 	switch (offs) {
-		case 0x20: {
-			D1_LOG("do_harbour();\n");
-			return 0;
-		}
+		case 0x20: return n_seg063(0xad);
 		case 0x25: {
 			D1_LOG("passages_init();\n");
 			passages_init();
