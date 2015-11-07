@@ -1,6 +1,10 @@
 /*
-        Rewrite of DSA1 v3.02_de functions of seg063 (harbour)
-        Functions rewritten: 5/5 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of seg063 (harbour)
+ *	Functions rewritten: 5/5 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg063.cpp
 */
 
 #include <stdio.h>
@@ -31,7 +35,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void passages_init(void)
 {
 	signed short si;
@@ -75,7 +78,6 @@ struct dummy7 {
 	signed short a[7];
 };
 
-/* Borlandified and identical */
 void do_harbour(void)
 {
 	signed short l_si;
@@ -399,7 +401,6 @@ void do_harbour(void)
  * \brief
  * \param town_id	ID of the town
  */
-/* Borlandified and identical */
 void mod_clock_pos(signed short town_id)
 {
 	signed short val;
@@ -417,7 +418,6 @@ void mod_clock_pos(signed short town_id)
 	ds_writew(0x2ca4, !val || val == 1 ? -40 : 40);
 }
 
-/* Borlandified and identical */
 void sea_travel(signed short passage, signed short dir)
 {
 	signed short i;
@@ -613,7 +613,6 @@ void sea_travel(signed short passage, signed short dir)
 	ds_writeb(0xa842, 0);
 }
 
-/* Borlandified and identical */
 signed short get_srout_len(Bit8u *ptr)
 {
 	signed short i = 0;
