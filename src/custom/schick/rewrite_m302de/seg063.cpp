@@ -470,7 +470,7 @@ void sea_travel(signed short passage, signed short dir)
 	ds_writed(0x425e, ds_readd(0x425a));
 	ds_writew(0x423c, 18 * (ds_readws(0x424c) + ds_readws(0x424c) / 10));
 
-	if (passage <= 6 && ds_readb(QUEST_DEADSHIP) != 0 && !ds_readb(0x35f2)) {
+	if (passage <= 6 && ds_readb(QUEST_DEADSHIP) != 0 && !ds_readb(QUEST_DEADSHIP_DONE)) {
 
 		if (ds_writews(0x424e, random_schick(100) <= 20 ? 1 : 0)) {
 			ds_writews(0x4250, random_schick(ds_readws(0x423c)));
@@ -526,7 +526,7 @@ void sea_travel(signed short passage, signed short dir)
 		add_ds_ws(0x4238, ds_readws(0x423a));
 		add_ds_ws(0x423c, ds_readws(0x423a));
 
-		if (ds_readws(0x424e) != 0 && ds_readws(0x423c) >= ds_readws(0x4250) && !ds_readb(0x35f2)) {
+		if (ds_readws(0x424e) != 0 && ds_readws(0x423c) >= ds_readws(0x4250) && !ds_readb(QUEST_DEADSHIP_DONE)) {
 			enter_ghostship();
 			ds_writew(0x424e, 0);
 		} else if (ds_readws(0x4252) != 0 && ds_readws(0x423c) >= ds_readws(0x4254) && !ds_readd(INGAME_TIMERS + 8)) {

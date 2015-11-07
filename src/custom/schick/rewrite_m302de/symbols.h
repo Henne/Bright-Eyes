@@ -86,6 +86,7 @@
 #define UNICORN_HERO_PTR	(0x346a)	/* RealPt */
 #define NPC_MONTHS	(0x3470)
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
+#define QUEST_DEADSHIP_DONE (0x35f2)	/* unsigned char {0,1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
