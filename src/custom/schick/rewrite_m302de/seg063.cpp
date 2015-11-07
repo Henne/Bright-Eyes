@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of seg063 (harbour)
-        Functions rewritten: 4/5
+        Functions rewritten: 5/5 (complete)
 */
 
 #include <stdio.h>
@@ -20,6 +20,7 @@
 #include "seg029.h"
 #include "seg030.h"
 #include "seg049.h"
+#include "seg059.h"
 #include "seg063.h"
 #include "seg064.h"
 #include "seg075.h"
@@ -70,12 +71,11 @@ void passages_init(void)
 	}
 }
 
-#if defined(__BORLANDC__)
-
 struct dummy7 {
 	signed short a[7];
 };
 
+#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void do_harbour(void)
 {
@@ -419,12 +419,201 @@ void mod_clock_pos(signed short town_id)
 	ds_writew(0x2ca4, !val || val == 1 ? -40 : 40);
 }
 
-#if defined(__BORLANDC__)
+/* Borlandified and identical */
 void sea_travel(signed short passage, signed short dir)
 {
+	signed short i;
+	Bit8u *hero;
+	RealPt ptr;
+	Bit32s off;
+	struct dummy7 a;
 
-}
+#if !defined(__BORLANDC__)
+	a =  { -2, 0, 5, 4, 3, 1, 0 };
+#else
+	a = *(struct dummy7*)(p_datseg + 0x707f);
 #endif
+
+	ds_writeb(0xa842, 1);
+
+	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(0xc3db), 7600) : F_PADD(ds_readd(0xc3db), 11400)));
+	ds_writew(0x4236, passage < 7 ? 7 : 38);
+	ds_writew(0x423e, passage < 7 ? passage : passage - 7);
+
+	off = host_readd(Real2Host(ds_readd(0x4266)) + 4 * ds_readw(0x423e));
+	ds_writed(0x425a, (Bit32u)((RealPt)ds_readd(0x4266) + off + 4 * ds_readws(0x4236)));
+	ptr = (RealPt)ds_readd(0xd2ff);
+
+	add_ds_ws(0x425a, 4);
+
+	memset(Real2Host(ds_readd(0xd299)), 0xaa, 500);
+	ds_writew(0x424c, 10 * ds_readbs(0x42b0));
+	ds_writew(0x422e, get_srout_len(Real2Host(ds_readd(0x425a))));
+	ds_writew(0x4230, 100 * ds_readb(0x6f00 + 2 + 8 * passage));
+	ds_writew(0x4232, ds_readws(0x4230) / ds_readws(0x424c) * 60);
+	ds_writew(0x4234, ds_readws(0x4232) / ds_readws(0x422e));
+	ds_writew(0x423a, ds_readws(0x4230) / ds_readws(0x422e));
+
+	if (ds_readw(0x423a) == 0) {
+		ds_writew(0x423a, 1);
+	}
+
+	if (dir) {
+
+		while (host_readws(Real2Host(ds_readd(0x425a))) != -1) {
+			add_ds_ws(0x425a, 4);
+		}
+
+		sub_ds_ws(0x425a, 4);
+	}
+
+	ds_writed(0x425e, ds_readd(0x425a));
+	ds_writew(0x423c, 18 * (ds_readws(0x424c) + ds_readws(0x424c) / 10));
+
+	if (passage <= 6 && ds_readb(QUEST_DEADSHIP) != 0 && !ds_readb(0x35f2)) {
+
+		if (ds_writews(0x424e, random_schick(100) <= 20 ? 1 : 0)) {
+			ds_writews(0x4250, random_schick(ds_readws(0x423c)));
+		}
+	} else {
+		ds_writew(0x424e, 0);
+	}
+
+	if (ds_writews(0x4252, random_schick(100) <= 5 ? 1 : 0)) {
+
+		ds_writews(0x4254, random_schick(ds_readws(0x423c)));
+	}
+
+	if (ds_writews(0x4256, random_schick(100) <= 10 ? 1 : 0)) {
+
+		ds_writews(0x4258, random_schick(ds_readws(0x423c)));
+	}
+
+	ds_writew(0x422a, ds_writew(0x4238, ds_writew(0x423c, ds_writeb(0x4333, 0))));
+	ds_writeb(0x4497, 1);
+
+	while (host_readws(Real2Host(ds_readd(0x425a)) + 2 * ds_writew(0x4236, 0)) != -1 && !ds_readb(0x4333))
+	{
+
+		if (is_mouse_in_rect(host_readws(Real2Host(ds_readd(0x425a))) - 16,
+					host_readws(Real2Host(ds_readd(0x425a)) + 2) - 16,
+					host_readws(Real2Host(ds_readd(0x425a))) + 16,
+					host_readws(Real2Host(ds_readd(0x425a)) + 2) + 16))
+		{
+			update_mouse_cursor();
+			ds_writew(0x4236, 1);
+		}
+
+		host_writeb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a),
+			mem_readb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x425a)) + 2) + host_readws(Real2Host(ds_readd(0x425a)))));
+		inc_ds_ws(0x422a);
+
+		mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x425a)) + 2) + host_readws(Real2Host(ds_readd(0x425a))), 0x1f);
+
+		if (ds_readws(0x4236) != 0) {
+			refresh_screen_size();
+		}
+
+		for (ds_writew(0x4228, 0); ds_readws(0x4234) / 2 > ds_readws(0x4228); inc_ds_ws(0x4228)) {
+
+			handle_input();
+
+			wait_for_vsync();
+
+			timewarp(MINUTES(2));
+		}
+
+		add_ds_ws(0x4238, ds_readws(0x423a));
+		add_ds_ws(0x423c, ds_readws(0x423a));
+
+		if (ds_readws(0x424e) != 0 && ds_readws(0x423c) >= ds_readws(0x4250) && !ds_readb(0x35f2)) {
+			enter_ghostship();
+			ds_writew(0x424e, 0);
+		} else if (ds_readws(0x4252) != 0 && ds_readws(0x423c) >= ds_readws(0x4254) && !ds_readd(INGAME_TIMERS + 8)) {
+			octopus_attack_wrapper();
+			ds_writew(0x4252, 0);
+		} else if (ds_readws(0x4256) != 0 && ds_readws(0x423c) >= ds_readws(0x4258)) {
+			pirates_attack_wrapper();
+			ds_writew(0x4256, 0);
+		}
+
+		if (ds_readws(CHECK_DISEASE) != 0 && !ds_readbs(CHECK_PARTY)) {
+
+			disease_effect();
+
+			ds_writeb(TRAVEL_BY_SHIP, 1);
+
+			hero = get_hero(0);
+			for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+				if (host_readbs(hero + 0x21) != 0 &&
+					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+				{
+					GRP_hero_sleep(hero, a.a[ds_readbs(0xe3fa)]);
+					host_writeb(hero + 0x7f, host_writebs(hero + 0x80, 0));
+				}
+			}
+
+			ds_writeb(TRAVEL_BY_SHIP, 0);
+
+		}
+
+		if (ds_readws(0x2846) != 0 && !ds_readb(0x4333)) {
+
+			update_mouse_cursor();
+
+			load_map();
+
+			bc_memmove((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(0x432e), 64000);
+
+			wait_for_vsync();
+
+			set_palette(Real2Host(ds_readd(0x432e)) + 64002, 0, 0x20);
+
+			set_audio_track(145);
+
+			ds_writew(0x4228, 0);
+			for (ds_writed(0x4262, ds_readd(0x425e)); host_readb(Real2Host(ds_readd(0xd299)) + inc_ds_ws_post(0x4228)) != 0xaa; add_ds_ws(0x4262, 2 * (!dir ? 2 : -2)))
+			{
+				mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x4262)) + 2) + host_readws(Real2Host(ds_readd(0x4262))), 0x1f);
+			}
+
+			refresh_screen_size();
+
+			ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
+			ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
+			ds_writew(0xe113, 1);
+			ds_writew(0x2846, 0);
+		}
+
+		add_ds_ws(0x425a, 2 * (!dir ? 2 : -2));
+	}
+
+	ds_writeb(0x4497, 0);
+
+	if (!ds_readb(0x4333)) {
+
+		update_mouse_cursor();
+
+		do {
+			if (!dir) {
+				sub_ds_ws(0x425a, 4);
+			} else {
+				add_ds_ws(0x425a, 4);
+			}
+
+			dec_ds_ws(0x422a);
+
+			mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x425a)) + 2) + host_readws(Real2Host(ds_readd(0x425a))),
+				host_readb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a))
+ );
+		} while (host_readws(Real2Host(ds_readd(0x425a))) != -1);
+
+		refresh_screen_size();
+	}
+
+	ds_writeb(0xa842, 0);
+}
 
 unsigned short get_srout_len(Bit8u *ptr)
 {

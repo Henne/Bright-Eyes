@@ -2429,7 +2429,13 @@ static int n_seg063(unsigned offs) {
 		return 1;
 	}
 	case 0xa0e: {
-		return 0;
+		Bit16s passage = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		CPU_Push16(dir);
+		CPU_Push16(passage);
+		D1_LOG("sea_travel(%d, %d)\n", passage, dir);
+		sea_travel(passage, dir);
+		return 1;
 	}
 	case 0xf6f: {
 		RealPt ptr = CPU_Pop32();
