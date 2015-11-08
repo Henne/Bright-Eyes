@@ -261,8 +261,6 @@ void TRV_found_replenish_place(signed short a0)
 	}
 }
 
-#if defined(__BORLANDC__)
-/* depends on: do_location() */
 /* Borlandified and identical */
 void TRV_found_inn(signed short city, signed short type)
 {
@@ -285,7 +283,6 @@ void TRV_found_inn(signed short city, signed short type)
 	set_var_to_zero();
 	ds_writew(0x2846, 1);
 }
-#endif
 
 /**
  * \brief	question if you want to rest in a hut

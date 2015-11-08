@@ -65,9 +65,7 @@ void TRV_event(signed short);
 signed short TRV_fight_event(signed short, signed short);
 
 /* 0xac */
-#if defined(__BORLANDC__)
 void TRV_found_inn(signed short, signed short);
-#endif
 
 /* 0xb1 */
 signed short TRV_enter_hut_question(void);

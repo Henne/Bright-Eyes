@@ -3714,7 +3714,6 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x0493: {
-#if 0
 		Bit16s city = CPU_Pop16();
 		Bit16s type = CPU_Pop16();
 		CPU_Push16(type);
@@ -3722,9 +3721,6 @@ static int n_seg109(unsigned offs)
 		D1_LOG("TRV_found_inn(%d, %d)\n", city, type);
 		TRV_found_inn(city, type);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x04f2: {
 		reg_ax = TRV_enter_hut_question();
