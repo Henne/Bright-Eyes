@@ -30,8 +30,46 @@
 #include "seg097.h"
 #include "seg103.h"
 
+#include "seg051.h"
+#include "seg052.h"
+#include "seg053.h"
+#include "seg054.h"
+#include "seg055.h"
+#include "seg058.h"
+#include "seg059.h"
+#include "seg063.h"
+#include "seg065.h"
+#include "seg066.h"
+#include "seg122.h"
+
 #if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
+#if !defined(__BORLANDC__)
+
+
+static void (*locationhandler[])(void) = {
+	NULL,
+	do_location1,
+	do_temple,
+	do_tavern,
+	do_healer,
+	do_merchant,
+	do_wildcamp,
+	do_inn,
+	do_smith,
+	do_market,
+	show_citizen,
+	do_harbour,
+	enter_map,
+	do_informer,
+	show_entrance,
+	NULL,
+	do_house,
+	do_special_buildings,
+	do_citycamp,
+};
 #endif
 
 void show_entrance(void)
@@ -662,9 +700,6 @@ signed short show_storytext(void)
 
 void do_location(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short bak1;
 	signed short bak2;
 	signed short tw_bak;
@@ -681,7 +716,11 @@ void do_location(void)
 	ds_writeb(TRAVELING, 0);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
+#if !defined(__BORLANDC__)
+	func = locationhandler[ds_readbs(LOCATION)];
+#else
 	func = (void (*)(void))ds_readd(0x4c3b + 4 * ds_readbs(LOCATION));
+#endif
 
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
 
@@ -696,9 +735,8 @@ void do_location(void)
 	if (!ds_readb(TRAVELING)) {
 		ds_writeb(TRAVELING, tm_bak);
 	}
-	ds_writebs(0x2ca8, -1);
 
-#endif
+	ds_writebs(0x2ca8, -1);
 }
 
 /**

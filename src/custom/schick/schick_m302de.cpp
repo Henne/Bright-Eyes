@@ -6761,7 +6761,9 @@ static int seg024(unsigned short offs) {
 static int seg025(unsigned short offs) {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		D1_LOG("do_location()\n");
+		do_location();
+		return 1;
 	}
 	case 0x25: {
 		D1_LOG("turnaround();\n");
