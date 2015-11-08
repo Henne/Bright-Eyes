@@ -162,8 +162,6 @@ void TRV_inside_herb_place(void)
 }
 
 /* Borlandified and identical */
-#if defined(__BORLANDC__)
-/* depends on: do_location() */
 signed short TRV_found_camp_place(signed short a0)
 {
 	signed short answer;
@@ -207,7 +205,6 @@ signed short TRV_found_camp_place(signed short a0)
 
 	return 0;
 }
-#endif
 
 /* Borlandified and identical */
 void TRV_found_replenish_place(signed short a0)
