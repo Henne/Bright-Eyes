@@ -664,7 +664,6 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	ds_writew(0x2846, 1);
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void tevent_005(void)
 {
@@ -675,7 +674,6 @@ void tevent_005(void)
 		ds_writeb(0x3da3, 1);
 	}
 }
-#endif
 
 /* Borlandified and identical */
 void tevent_006(void)
