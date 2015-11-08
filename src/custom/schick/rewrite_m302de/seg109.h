@@ -32,9 +32,7 @@ void TRV_hunt_generic(signed short, signed short, signed short, signed short,
 			signed short, signed short, signed short);
 
 /* 0x52 */
-#if defined(__BORLANDC__)
 void tevent_001(void);
-#endif
 
 /* 0x57 */
 void tevent_002(void);

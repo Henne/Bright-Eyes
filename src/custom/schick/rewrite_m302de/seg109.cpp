@@ -487,12 +487,10 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 }
 
 /* Borlandified and identical */
-#if defined(__BORLANDC__)
 void tevent_001(void)
 {
 	TRV_found_inn(40, 65);
 }
-#endif
 
 /* The hunter Varnheim <-> Daspota */
 /* Borlandified and identical */
