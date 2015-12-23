@@ -6,6 +6,8 @@ namespace M302de {
 RealPt hyg_ani_1(signed short, Bit8u*);
 /* static */
 void hyg_ani_2(Bit8u*, signed short, signed short);
+/* static */
+void hyg_ani_3(void);
 
 /* 0x20 */
 void do_market(void);

@@ -2514,7 +2514,9 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x0451: {
-		return 0;
+		D1_LOG("hyg_ani_3()\n");
+		hyg_ani_3();
+		return 1;
 	}
 	case 0x049d: {
 		return 0;
