@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg065 (special animations)
- *	Functions rewritten: 2/9
+ *	Functions rewritten: 3/9
  */
 
 #include <string.h>
@@ -167,6 +167,27 @@ void final_intro(void)
 
 	refresh_colors();
 	refresh_screen_size();
+}
+
+/* Borlandified and identical */
+RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
+{
+	HugePt retval;
+	struct nvf_desc nvf;
+
+	nvf.dst = Real2Host(host_readd(ptr));
+	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.nr = nvf_nr;
+	nvf.type = 3;
+	nvf.width = ptr + 4;
+	nvf.height = ptr + 6;
+
+	process_nvf(&nvf);
+
+	retval = F_PADD((RealPt)host_readd(ptr),
+			host_readws(ptr + 4) * host_readws(ptr + 6));
+
+	return (RealPt)retval;
 }
 
 #if !defined(__BORLANDC__)

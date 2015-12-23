@@ -2490,7 +2490,16 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x036f: {
-		return 0;
+		Bit16s nvf_nr = CPU_Pop16();
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+		CPU_Push16(nvf_nr);
+
+		D1_LOG("hyg_ani_1(%d, %x)\n", nvf_nr, ptr);
+		RealPt retval = hyg_ani_1(nvf_nr, Real2Host(ptr));
+		reg_ax = RealOff(retval);
+		reg_dx = RealSeg(retval);
+		return 1;
 	}
 	case 0x03f9: {
 		return 0;
