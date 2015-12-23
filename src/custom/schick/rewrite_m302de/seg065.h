@@ -8,6 +8,8 @@ RealPt hyg_ani_1(signed short, Bit8u*);
 void hyg_ani_2(Bit8u*, signed short, signed short);
 /* static */
 void hyg_ani_3(void);
+/* static */
+void hyg_ani_4(void);
 
 /* 0x20 */
 void do_market(void);

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg065 (special animations)
- *	Functions rewritten: 5/9
+ *	Functions rewritten: 6/9
  */
 
 #include <string.h>
@@ -217,6 +217,18 @@ void hyg_ani_3(void)
 	do_pic_copy(0);
 }
 
+/* Borlandified and identical */
+void hyg_ani_4(void)
+{
+	ds_writew(0xc011, 0);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, 319);
+	ds_writew(0xc017, 199);
+	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(0xd2ff));
+
+	do_pic_copy(0);
+}
 #if !defined(__BORLANDC__)
 }
 #endif
