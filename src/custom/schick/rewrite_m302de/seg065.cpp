@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg065 (special animations)
- *	Functions rewritten: 3/9
+ *	Functions rewritten: 4/9
  */
 
 #include <string.h>
@@ -188,6 +188,20 @@ RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
 			host_readws(ptr + 4) * host_readws(ptr + 6));
 
 	return (RealPt)retval;
+}
+
+/* Borlandified and identical */
+void hyg_ani_2(Bit8u *ptr, signed short x, signed short y)
+{
+	ds_writew(0xc011, x);
+	ds_writew(0xc013, y);
+	ds_writew(0xc015, x + host_readws(ptr + 4) - 1);
+	ds_writew(0xc017, y + host_readws(ptr + 6) - 1);
+
+	ds_writed(0xc019, host_readd(ptr));
+	ds_writed(0xc00d, ds_readd(0xd303));
+
+	do_pic_copy(2);
 }
 
 #if !defined(__BORLANDC__)

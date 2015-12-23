@@ -2502,7 +2502,16 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x03f9: {
-		return 0;
+		RealPt ptr = CPU_Pop32();
+		Bit16s x = CPU_Pop16();
+		Bit16s y = CPU_Pop16();
+		CPU_Push16(y);
+		CPU_Push16(x);
+		CPU_Push32(ptr);
+
+		D1_LOG("hyg_ani_2(%x, %d, %d)\n", ptr, x, y);
+		hyg_ani_2(Real2Host(ptr), x, y);
+		return 1;
 	}
 	case 0x0451: {
 		return 0;
