@@ -1326,7 +1326,7 @@ static int n_seg030(unsigned offs) {
 		reg_dx = RealSeg(retval);
 		return 1;
 	}
-	case 0x14f: {
+	case 0x279: {
 		Bit16s talk_id = CPU_Pop16();
 		Bit16s tlk_informer = CPU_Pop16();
 		CPU_Push16(tlk_informer);
