@@ -15,6 +15,8 @@ void hyg_ani_4(void);
 void do_market(void);
 /* 0x25 */
 void final_intro(void);
+/* 0x2a */
+void show_hyggelik_ani(void);
 
 
 #if !defined(__BORLANDC__)

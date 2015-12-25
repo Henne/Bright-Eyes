@@ -2524,7 +2524,9 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x04de: {
-		return 0;
+		D1_LOG("show_hyggelik_ani()\n");
+		show_hyggelik_ani();
+		return 1;
 	}
 	case 0x09df: {
 		return 0;
