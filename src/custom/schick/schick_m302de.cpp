@@ -2529,7 +2529,9 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x09df: {
-		return 0;
+		D1_LOG("show_times_up()\ņ");
+		show_times_up();
+		return 1;
 	}
 	case 0x0abe: {
 		return 0;

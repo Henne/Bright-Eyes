@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg065 (special animations)
- *	Functions rewritten: 7/9
+ *	Functions rewritten: 8/9
  */
 
 #include <string.h>
@@ -12,6 +12,7 @@
 #include "seg004.h"
 #include "seg008.h"
 #include "seg025.h"
+#include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg055.h"
@@ -357,6 +358,44 @@ void show_hyggelik_ani(void)
 	refresh_colors();
 }
 
+/* Borlandified and identical */
+void show_times_up(void)
+{
+	signed short fi_bak;
+	signed short tw_bak;
+	signed short bak1;
+	signed short bak2;
+
+	fi_bak = ds_readws(0x26bd);
+	load_city_ltx(221);
+	set_audio_track(150);
+	set_var_to_zero();
+	draw_main_screen();
+	load_ani(35);
+	init_ani(0);
+
+	delay_or_keypress(200);
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	bak1 = ds_readws(0x2ca2);
+	bak2 = ds_readws(0x2ca4);
+
+	ds_writew(TEXTBOX_WIDTH, 7);
+	ds_writew(0x2ca2, 0);
+	ds_writew(0x2ca4, 55);
+
+	GUI_output(get_city(0xdc));
+	GUI_output(get_city(0xe0));
+	GUI_output(get_city(0xe4));
+
+	ds_writew(0x2ca2, bak1);
+	ds_writew(0x2ca4, bak2);
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+
+	if (fi_bak != -1 && fi_bak != 221 && fi_bak != 130 && !(fi_bak >= 156 && fi_bak <= 176)) {
+		load_city_ltx(fi_bak);
+	}
+}
 #if !defined(__BORLANDC__)
 }
 #endif

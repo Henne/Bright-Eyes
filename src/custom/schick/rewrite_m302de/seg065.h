@@ -17,6 +17,8 @@ void do_market(void);
 void final_intro(void);
 /* 0x2a */
 void show_hyggelik_ani(void);
+/* 0x2f */
+void show_times_up(void);
 
 
 #if !defined(__BORLANDC__)

@@ -43,6 +43,7 @@
 #include "seg048.h"
 #include "seg049.h"
 #include "seg050.h"
+#include "seg065.h"
 #include "seg066.h"
 #include "seg076.h"
 #include "seg095.h"
@@ -1825,8 +1826,7 @@ void game_loop(void)
 		}
 
 		if (ds_readws(0xc3c1) == 4) {
-			/* TODO: replace show_times_up() */
-			do_dungeon();
+			show_times_up();
 		}
 
 		if ((ds_readws(0xc3c1) == 1) ||
