@@ -65,7 +65,7 @@ void do_market(void)
 			/* set up parameters for this merchant */
 			ds_writeb(0x6870 + 90 * 9 + 0, ds_readb(0x70aa + 8 * ds_readws(TYPEINDEX)));
 			ds_writeb(0x6870 + 90 * 9 + 2, ds_readb(0x70ae + 8 * ds_readws(TYPEINDEX)));
-			ds_writeb(0x6870 + 90 * 9 + 1, answer);
+			ds_writeb(0x6870 + 90 * 9 + 1, (signed char)answer);
 			type_bak = ds_readws(TYPEINDEX);
 			ds_writew(TYPEINDEX, 90);
 
@@ -77,8 +77,8 @@ void do_market(void)
 
 			/* clean up */
 			ds_writew(TYPEINDEX, type_bak);
-			ds_writeb(0x2d7c, bak1);
-			ds_writeb(DIRECTION, dir_bak);
+			ds_writeb(0x2d7c, (signed char)bak1);
+			ds_writeb(DIRECTION, (signed char)dir_bak);
 			ds_writeb(0x6870 + 90 * 9 + 0, 0);
 			ds_writeb(0x6870 + 90 * 9 + 2, 0);
 			ds_writeb(0x6870 + 90 * 9 + 1, 0);
