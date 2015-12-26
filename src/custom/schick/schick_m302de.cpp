@@ -2534,7 +2534,9 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x0abe: {
-		return 0;
+		D1_LOG("show_outro()\n");
+		show_outro();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg065 (special animations)
- *	Functions rewritten: 8/9
+ *	Functions rewritten: 9/9 (complete)
  */
 
 #include <string.h>
@@ -21,6 +21,10 @@
 
 #if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
+#if defined(__BORLANDC__)
+void sub_light_timers(signed short);
 #endif
 
 /* Borlandified and identical */
@@ -396,6 +400,217 @@ void show_times_up(void)
 		load_city_ltx(fi_bak);
 	}
 }
+
+/* Borlandified and identical */
+void show_outro(void)
+{
+	signed short j;
+	signed short handle;
+	signed short width;
+	signed short height;
+	unsigned short len;
+	Bit8u *pal_ptr;
+	Bit8u *hero;
+	signed short i;
+	struct nvf_desc nvf;
+
+	ds_writew(TEXTBOX_WIDTH, 7);
+	ds_writew(0x2ca2, 0);
+	ds_writew(0x2ca4, 60);
+
+	load_city_ltx(221);
+	set_audio_track(150);
+	set_var_to_zero();
+
+	/* load OUTRO1.NVF */
+	handle = load_archive_file(138);
+	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
+	bc_close(handle);
+
+	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(0xc3db), len), - 0xc0));
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	wait_for_vsync();
+	set_palette(pal_ptr, 0, 0x40);
+
+	nvf.dst = Real2Host(ds_readd(0xd303));
+	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.nr = 0;
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	process_nvf(&nvf);
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	width = host_readws((Bit8u*)&width);
+	height = host_readws((Bit8u*)&height);
+#endif
+
+	ds_writew(0xc011, (320 - width) / 2);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, (320 - width) / 2 + width - 1);
+	ds_writew(0xc017, height - 1);
+	ds_writed(0xc019, ds_readd(0xd303));
+	do_pic_copy(0);
+
+	delay_or_keypress(200);
+
+	GUI_output(get_city(0xe8));
+
+	/* load OUTRO2.NVF */
+	handle = load_archive_file(139);
+	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
+	bc_close(handle);
+
+	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(0xc3db), len), - 0xc0));
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	wait_for_vsync();
+	set_palette(pal_ptr, 0, 0x40);
+
+	nvf.dst = Real2Host(ds_readd(0xd303));
+	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.nr = 0;
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	process_nvf(&nvf);
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	width = host_readws((Bit8u*)&width);
+	height = host_readws((Bit8u*)&height);
+#endif
+
+	ds_writew(0xc011, (320 - width) / 2);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, (320 - width) / 2 + width - 1);
+	ds_writew(0xc017, height - 1);
+	ds_writed(0xc019, ds_readd(0xd303));
+	do_pic_copy(0);
+
+	delay_or_keypress(200);
+
+	GUI_output(get_city(0xec));
+
+	/* load OUTRO3.NVF */
+	handle = load_archive_file(140);
+	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
+	bc_close(handle);
+
+	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(0xc3db), len), - 0xc0));
+	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	wait_for_vsync();
+	set_palette(pal_ptr, 0, 0x40);
+
+	nvf.dst = Real2Host(ds_readd(0xd303));
+	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.nr = 0;
+	nvf.type = 0;
+	nvf.width = (Bit8u*)&width;
+	nvf.height = (Bit8u*)&height;
+	process_nvf(&nvf);
+#if !defined(__BORLANDC__)
+	/* BE-fix */
+	width = host_readws((Bit8u*)&width);
+	height = host_readws((Bit8u*)&height);
+#endif
+
+	ds_writew(0xc011, (320 - width) / 2);
+	ds_writew(0xc013, 0);
+	ds_writew(0xc015, (320 - width) / 2 + width - 1);
+	ds_writew(0xc017, height - 1);
+	ds_writed(0xc019, ds_readd(0xd303));
+	do_pic_copy(0);
+
+	delay_or_keypress(200);
+
+	GUI_output(get_city(0xf0));
+	GUI_output(get_city(0xf4));
+	GUI_output(get_city(0xf8));
+	GUI_output(get_city(0xfc));
+	GUI_output(get_city(0x100));
+	GUI_output(get_city(0x104));
+
+	/* reset the timers */
+	sub_ingame_timers(DAYS(30));
+	sub_mod_timers(DAYS(30));
+	sub_light_timers(100);
+
+	/* give the heros the reward and restore them */
+	hero = get_hero(0);
+	for (i = 0; i < 6; i++, hero += 0x6da) {
+
+		if (host_readbs(hero + 0x21)) {
+
+			/* get 50D */
+			add_party_money(5000);
+
+			and_ptr_bs(hero + 0xaa, 0xfd);
+			and_ptr_bs(hero + 0xaa, 0xfb);
+			and_ptr_bs(hero + 0xaa, 0xf7);
+			and_ptr_bs(hero + 0xaa, 0xdf);
+
+			/* reset every disease */
+			for (j = 0; j < 8; j++) {
+
+				host_writeb(hero + (0xae + 0) + 5 * j, 0);
+				host_writeb(hero + (0xae + 1) + 5 * j, 0);
+				host_writeb(hero + (0xae + 2) + 5 * j, 0);
+				host_writeb(hero + (0xae + 3) + 5 * j, 0);
+				host_writeb(hero + (0xae + 4) + 5 * j, 0);
+			}
+
+			/* reset every poison */
+			for (j = 0; j < 10; j++) {
+
+				host_writeb(hero + (0xd6 + 0) + 5 * j, 0);
+				host_writeb(hero + (0xd6 + 1) + 5 * j, 0);
+				host_writeb(hero + (0xd6 + 2) + 5 * j, 0);
+				host_writeb(hero + (0xd6 + 3) + 5 * j, 0);
+				host_writeb(hero + (0xd6 + 4) + 5 * j, 0);
+			}
+
+			/* set LE to the max */
+			add_hero_le(hero, host_readws(hero + 0x5e));
+			/* set AE to the max */
+			add_hero_ae(hero, host_readws(hero + 0x62));
+
+			/* ??? */
+			host_writeb(hero + 0x7a, 0);
+			host_writeb(hero + 0x7f, 0);
+			host_writeb(hero + 0x80, 0);
+			host_writeb(hero + 0x88, 0);
+			host_writeb(hero + 0x93, 0);
+			host_writeb(hero + 0x94, 0);
+			host_writeb(hero + 0x9c, 0);
+			host_writeb(hero + 0x9f, 0);
+			host_writeb(hero + 0xa1, 0);
+			host_writeb(hero + 0x95, 0);
+
+			for (j = 0; j <= 13; j++) {
+
+				host_writeb(hero + 0x35 + 3 * j, host_readbs(hero + 0x34 + 3 * j));
+				host_writeb(hero + 0x36 + 3 * j, 0);
+			}
+
+			host_writed(hero + 0x8b, 0);
+			host_writed(hero + 0x8f, 0);
+
+			host_writeb(hero + 0x8a, i + 1);
+		}
+	}
+
+	/* share all money */
+	set_party_money(get_party_money());
+
+	/* mark the game as done */
+	ds_writeb(0x2d34, 99);
+
+	ds_writew(0x2ca2, 0);
+	ds_writew(0x2ca4, 0);
+
+	/* save the game */
+	save_game_state();
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif

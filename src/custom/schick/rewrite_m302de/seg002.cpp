@@ -1849,8 +1849,7 @@ void game_loop(void)
 		}
 
 		if (ds_readw(0xc3c1) == 99) {
-			/* TODO: replace with play_outro() */
-			do_dungeon();
+			show_outro();
 			cleanup_game();
 			bc_exit(0);
 		}

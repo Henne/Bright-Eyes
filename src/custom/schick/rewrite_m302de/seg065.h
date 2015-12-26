@@ -19,6 +19,8 @@ void final_intro(void);
 void show_hyggelik_ani(void);
 /* 0x2f */
 void show_times_up(void);
+/* 0x34 */
+void show_outro(void);
 
 
 #if !defined(__BORLANDC__)
