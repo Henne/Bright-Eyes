@@ -2529,7 +2529,7 @@ static int n_seg065(unsigned offs)
 		return 1;
 	}
 	case 0x09df: {
-		D1_LOG("show_times_up()\ņ");
+		D1_LOG("show_times_up()\n");
 		show_times_up();
 		return 1;
 	}

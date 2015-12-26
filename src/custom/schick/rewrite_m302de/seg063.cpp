@@ -88,13 +88,12 @@ void do_harbour(void)
 	Bit8u *hero;
 	signed char flag;
 	Bit32s money;
-	struct dummy7 a;
 
 	done = 0;
 #if !defined(__BORLANDC__)
-	a = { -2, 0, 5, 4, 3, 1, 0 };
+	struct dummy7 a = { { -2, 0, 5, 4, 3, 1, 0 } };
 #else
-	a = *(struct dummy7*)(p_datseg + 0x7071);
+	struct dummy7 a = *(struct dummy7*)(p_datseg + 0x7071);
 #endif
 	flag = 1;
 
@@ -424,12 +423,11 @@ void sea_travel(signed short passage, signed short dir)
 	Bit8u *hero;
 	RealPt ptr;
 	Bit32s off;
-	struct dummy7 a;
 
 #if !defined(__BORLANDC__)
-	a =  { -2, 0, 5, 4, 3, 1, 0 };
+	struct dummy7 a =  { { -2, 0, 5, 4, 3, 1, 0 } };
 #else
-	a = *(struct dummy7*)(p_datseg + 0x707f);
+	struct dummy7 a = *(struct dummy7*)(p_datseg + 0x707f);
 #endif
 
 	ds_writeb(0xa842, 1);
