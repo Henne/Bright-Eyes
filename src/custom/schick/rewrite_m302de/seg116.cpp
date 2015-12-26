@@ -473,7 +473,6 @@ void tevent_139(void)
 	}
 }
 
-#if defined(__BORLANDC__)
 void tevent_140(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0c)) || ds_readb(0x3e0c) != 0) {
@@ -491,7 +490,6 @@ void tevent_140(void)
 		}
 	}
 }
-#endif
 
 void tevent_141(void)
 {
