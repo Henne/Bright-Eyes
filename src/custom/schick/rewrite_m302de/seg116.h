@@ -17,9 +17,7 @@ void tevent_140(void);
 /* 0x3e */
 void tevent_141(void);
 /* 0x43 */
-#if defined(__BORLANDC__)
 void tevent_142(void);
-#endif
 /* 0x48 */
 #if defined(__BORLANDC__)
 void tevent_143(void);

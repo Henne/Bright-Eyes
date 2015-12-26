@@ -505,7 +505,6 @@ void tevent_141(void)
 	}
 }
 
-#if defined(__BORLANDC__)
 void tevent_142(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0f)) ||
@@ -517,7 +516,6 @@ void tevent_142(void)
 		TRV_found_camp_place(1);
 	}
 }
-#endif
 
 #if defined(__BORLANDC__)
 /* depends on: do_location() */
