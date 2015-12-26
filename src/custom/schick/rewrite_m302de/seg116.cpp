@@ -38,7 +38,6 @@ namespace M302de {
 void sub_light_timers(signed short);
 #endif
 
-#if defined(__BORLANDC__)
 void tevent_130(void)
 {
 	signed short answer;
@@ -57,7 +56,7 @@ void tevent_130(void)
 		load_in_head(10);
 
 		do {
-			answer = GUI_dialogbox(Real2Host(ds_readd(DTP2)), (RealPt)NULL,
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
 						get_city(0x4c), 2,
 						get_city(0x50),
 						get_city(0x54));
@@ -66,7 +65,7 @@ void tevent_130(void)
 		if (answer == 1) {
 
 			do {
-				answer = GUI_dialogbox(Real2Host(ds_readd(DTP2)), (RealPt)NULL,
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
 							get_city(0x58), 3,
 							get_city(0x5c),
 							get_city(0x60),
@@ -85,7 +84,6 @@ void tevent_130(void)
 		ds_writeb(LOCATION, 0);
 	}
 }
-#endif
 
 void tevent_131(void)
 {

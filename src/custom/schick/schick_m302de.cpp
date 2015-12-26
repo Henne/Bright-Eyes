@@ -11232,13 +11232,9 @@ static int seg116(unsigned short offs)
 		return 1;
 	}
 	case 0x52: {
-#if 0
 		D1_LOG("tevent_130()\n");
 		tevent_130();
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x57: {
 		D1_LOG("tevent_131()\n");
