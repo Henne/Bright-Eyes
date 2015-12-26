@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg065 (special animations)
  *	Functions rewritten: 9/9 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg065.cpp
  */
 
 #include <string.h>
@@ -27,7 +31,6 @@ namespace M302de {
 void sub_light_timers(signed short);
 #endif
 
-/* Borlandified and identical */
 void do_market(void)
 {
 	signed short done;
@@ -87,7 +90,6 @@ void do_market(void)
 	copy_palette();
 }
 
-/* Borlandified and identical */
 void final_intro(void)
 {
 	signed short i;
@@ -174,7 +176,6 @@ void final_intro(void)
 	refresh_screen_size();
 }
 
-/* Borlandified and identical */
 RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
 {
 	HugePt retval;
@@ -195,7 +196,6 @@ RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
 	return (RealPt)retval;
 }
 
-/* Borlandified and identical */
 void hyg_ani_2(Bit8u *ptr, signed short x, signed short y)
 {
 	ds_writew(0xc011, x);
@@ -209,7 +209,6 @@ void hyg_ani_2(Bit8u *ptr, signed short x, signed short y)
 	do_pic_copy(2);
 }
 
-/* Borlandified and identical */
 void hyg_ani_3(void)
 {
 	ds_writew(0xc011, 0);
@@ -222,7 +221,6 @@ void hyg_ani_3(void)
 	do_pic_copy(0);
 }
 
-/* Borlandified and identical */
 void hyg_ani_4(void)
 {
 	ds_writew(0xc011, 0);
@@ -235,7 +233,6 @@ void hyg_ani_4(void)
 	do_pic_copy(0);
 }
 
-/* Borlandified and identical */
 void show_hyggelik_ani(void)
 {
 	signed short i;
@@ -362,7 +359,6 @@ void show_hyggelik_ani(void)
 	refresh_colors();
 }
 
-/* Borlandified and identical */
 void show_times_up(void)
 {
 	signed short fi_bak;
@@ -401,7 +397,6 @@ void show_times_up(void)
 	}
 }
 
-/* Borlandified and identical */
 void show_outro(void)
 {
 	signed short j;
