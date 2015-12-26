@@ -517,8 +517,6 @@ void tevent_142(void)
 	}
 }
 
-#if defined(__BORLANDC__)
-/* depends on: do_location() */
 void tevent_143(void)
 {
 	signed short i;
@@ -572,7 +570,6 @@ void tevent_143(void)
 		}
 	}
 }
-#endif
 
 void tevent_144(void)
 {
