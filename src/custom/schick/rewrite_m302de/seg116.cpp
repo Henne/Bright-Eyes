@@ -123,11 +123,11 @@ void tevent_131(void)
 	}
 }
 
-#if defined(__BORLANDC__)
 void tevent_132(void)
 {
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 1) > 0 && !ds_readb(0x3e06)) || ds_readb(0x3e06) != 0) {
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 1) > 0 && !ds_readb(0x3e06)) || ds_readb(0x3e06) != 0)
+	{
 
 		/* set this camp place as known */
 		ds_writeb(0x3e06, 1);
@@ -142,7 +142,6 @@ void tevent_132(void)
 		}
 	}
 }
-#endif
 
 void tevent_133(void)
 {
