@@ -566,7 +566,7 @@ void random_encounter(signed short arg)
 
 		if ((ds_readb(0xb1b9 + 7 * i + arg) <= randval) && (ds_readb(0xb1b9 + 7 * i + arg) != 0)) {
 
-			ds_writeb(TRAVELING, ds_writew(0xe113, 0));
+			ds_writeb(TRAVELING, (signed char)ds_writew(0xe113, 0));
 			ds_writeb(0xb132, 1);
 			ds_writew(0x26c1, 1);
 

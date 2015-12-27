@@ -211,7 +211,7 @@ void loot_simple_chest(Bit8u *chest)
 		} else {
 
 			/* show radio menu with item names */
-			item_nr = GUI_radio(get_ltx(0x824), item_nr,
+			item_nr = GUI_radio(get_ltx(0x824), (signed char)item_nr,
 						names[0], names[1], names[2], names[3],
 						names[4], names[5], names[6], names[7],
 						names[8], names[9], names[10], names[11],
@@ -295,7 +295,7 @@ void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 		} else {
 
 			/* show radio menu with item names */
-			item_nr = GUI_radio(text_non_empty, item_nr,
+			item_nr = GUI_radio(text_non_empty, (signed char)item_nr,
 						names[0], names[1], names[2], names[3],
 						names[4], names[5], names[6], names[7],
 						names[8], names[9], names[10], names[11],
@@ -561,7 +561,7 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 
 		if (item_nr != 0) {
 
-			item_nr = GUI_radio(msg, item_nr,
+			item_nr = GUI_radio(msg, (signed char)item_nr,
 				names[0], names[1], names[2], names[3],
 				names[4], names[5], names[6], names[7],
 				names[8], names[9], names[10], names[11],
@@ -597,7 +597,7 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 					if (item_cnt == l_si) {
 
 						do {
-							chest[item_nr] = (item_cnt = chest[item_nr + 2]);
+							chest[item_nr] = (unsigned char)(item_cnt = chest[item_nr + 2]);
 							chest[item_nr + 1] = chest[item_nr + 3];
 							item_nr += 2;
 						} while (item_cnt != 255);

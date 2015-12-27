@@ -585,7 +585,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 			ds_writed(0xbf95 + 4 * l_di,
 				(Bit32u)((RealPt)ds_readd(DTP2) + 50 * (l_di + 1)));
 
-			ones.a[l_di] = can_use_spellclass(hero, l_di);
+			ones.a[l_di] = (signed char)can_use_spellclass(hero, l_di);
 
 			sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
 				(ones.a[l_di] != 0) ? str.a : col_str.a,

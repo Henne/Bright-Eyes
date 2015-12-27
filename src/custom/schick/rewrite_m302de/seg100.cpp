@@ -606,9 +606,11 @@ void spell_ignifaxius(void)
 			}
 
 			/* add rs_malus to the armour */
-			add_ptr_bs(p_armour + 7, rs_malus);
+			host_writebs(p_armour + 0x07,
+				host_readbs(p_armour + 7) + rs_malus);
 			/* subtract rs_malus from RS1 */
-			sub_ptr_bs(get_spelltarget() + 0x30, rs_malus);
+			host_writebs(get_spelltarget() + 0x30,
+				host_readbs(get_spelltarget() + 0x30) - rs_malus);
 		}
 
 		/* get an AT/PA-Malus of -level / 2 for the current weapon and one hour */
@@ -629,7 +631,8 @@ void spell_ignifaxius(void)
 		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
 
-		sub_ptr_bs(get_spelltarget_e() + 0x2, rs_malus);
+		host_writebs(get_spelltarget_e() + 0x2,
+			host_readbs(get_spelltarget_e() + 0x2) - rs_malus);
 		sub_ptr_bs(get_spelltarget_e() + 0x1c, level / 2);
 		sub_ptr_bs(get_spelltarget_e() + 0x1d, level / 2);
 

@@ -718,7 +718,7 @@ signed short GUI_use_talent2(signed short bonus, Bit8u *msg)
 			hero_pos = -1;
 		}
 		if (hero_pos != -1) {
-			return use_talent(hero_pos, bonus, talent);
+			return use_talent(hero_pos, (signed char)bonus, talent);
 		}
 	}
 

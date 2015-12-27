@@ -604,7 +604,8 @@ void mspell_ignifaxius(void)
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser_e() + 0x2d) * 62));
 
 		/* subtract RS malus */
-		sub_ptr_bs(get_spelltarget_e() + 0x02, rs_malus);
+		host_writeb(get_spelltarget_e() + 0x02,
+			host_readbs(get_spelltarget_e() + 0x02) - rs_malus);
 
 		/* AT - level / 2 */
 		host_writeb(get_spelltarget_e() + 0x1c,
@@ -700,7 +701,8 @@ void mspell_armatrutz(void)
 	ds_writew(0xaccc, rs_bonus * rs_bonus);
 
 	/* RS + rs_bonus */
-	add_ptr_bs(get_spelluser_e() + 2, rs_bonus);
+	host_writebs(get_spelluser_e() + 0x02,
+		host_readbs(get_spelluser_e() + 0x02) + (signed char)rs_bonus);
 }
 
 void mspell_paral(void)

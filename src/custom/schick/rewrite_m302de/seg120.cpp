@@ -547,11 +547,11 @@ void prepare_dirs(void)
 		/* open CHR-file and copy it into TEMP-dir */
 #if !defined(__BORLANDC__)
 		/* need a RealPt => create one on the stack */
-		char *str = (char*)Real2Host(RealMake(SegValue(ss), reg_esp - 100));
+		char *str = (char*)Real2Host(RealMake(SegValue(ss), reg_sp - 100));
 
 		strcpy(str, ((char*)(&blk)) + 30);
 
-		l_di = bc__open(RealMake(SegValue(ss), reg_esp - 100), 0x8004);
+		l_di = bc__open(RealMake(SegValue(ss), reg_esp - 100), (signed short)0x8004);
 
 #else
 		l_di = bc__open(((char*)&blk) + 30, 0x8004);

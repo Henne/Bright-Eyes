@@ -153,7 +153,7 @@ void TRV_inside_herb_place(void)
 
 			gather_herbs(get_hero(hero_pos), hours - 1, -3);
 
-			ds_writebs(0x45b8, bak);
+			ds_writebs(0x45b8, (signed char)bak);
 		}
 	}
 
@@ -444,7 +444,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 			price *= 5 * nr_heros;
 			p_money = get_party_money();
 
-			if (price > p_money) {
+			if ((Bit32u)price > p_money) {
 				GUI_output(get_ltx(0x644));
 			} else {
 				done = 1;
@@ -458,7 +458,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 			price *= nr_heros;
 			p_money = get_party_money();
 
-			if (price > p_money) {
+			if ((Bit32u)price > p_money) {
 				GUI_output(get_ltx(0x644));
 			} else {
 				p_money -= price;
@@ -566,7 +566,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 		if ((host_readbs(hero + 0x21) != 0) &&
 			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero) &&
-			test_skill(hero, 13, mod1) <= 0)
+			test_skill(hero, 13, (signed char)mod1) <= 0)
 		{
 			l_di++;
 		}
@@ -586,7 +586,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 		hero = get_hero(i);
 
-		if (test_skill(hero, 13, mod2) <= 0) {
+		if (test_skill(hero, 13, (signed char)mod2) <= 0) {
 
 			do {
 				answer = GUI_radio(get_city(4 * (city_index + 1)), 2,
@@ -601,11 +601,11 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 			GUI_input(Real2Host(ds_readd(DTP2)), l_di = 0);
 
-			if ((i = test_skill(hero, 7, mod3)) > 0) {
+			if ((i = test_skill(hero, 7, (signed char)mod3)) > 0) {
 				l_di++;
 			}
 
-			if ((l4 = test_skill(hero, 7, mod3)) > 0) {
+			if ((l4 = test_skill(hero, 7, (signed char)mod3)) > 0) {
 				l_di++;
 			}
 

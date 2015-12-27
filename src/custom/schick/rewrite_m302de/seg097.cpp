@@ -94,7 +94,7 @@ signed short GUI_unused2(signed short c, RealPt p)
 	signed short v1;
 	signed short v2;
 
-	v2 = GUI_lookup_char_height(c, &v1);
+	v2 = GUI_lookup_char_height((signed char)c, &v1);
 #if !defined(__BORLANDC__)
 	/* BE-fix */
 	v1 = host_readws((Bit8u*)&v1);
@@ -246,9 +246,9 @@ dummy:
 				pos--;
 			}
 
-			host_writeb(dst++, c);
+			host_writeb(dst++, (unsigned char)c);
 			GUI_print_char(0x20, di, y);
-			GUI_print_char(c, di, y);
+			GUI_print_char((unsigned char)c, di, y);
 			di += 6;
 			pos++;
 
@@ -384,7 +384,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 
 	if (num != 0) {
 		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), ds_readws(0xbfff) + ((signed short)(l_di - num * 6) >> 1), ds_readws(0xc001) + l_si * 8 -2, num, 0) != -1) {
-			retval = atol((char*)Real2Host(ds_readd(0xd2ef)));
+			retval = (signed short)atol((char*)Real2Host(ds_readd(0xd2ef)));
 		} else {
 			retval = -1;
 		}

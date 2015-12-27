@@ -482,7 +482,7 @@ void tevent_140(void)
 
 		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 && !ds_readb(0x3e0d)) || ds_readb(0x3e0d) != 0) {
 			ds_writeb(0x3e0d, 1);
-			ds_writebs(0x66d0, 130);
+			ds_writebs(0x66d0, -126);
 			TRV_found_camp_place(2);
 			ds_writebs(0x66d0, -1);
 		} else {
