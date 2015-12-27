@@ -286,7 +286,7 @@ void city_event_6(void)
 			ds_writeb(LOCATION, 5);
 			ds_writew(TYPEINDEX, 93);
 			do_merchant();
-			ds_writeb(LOCATION, bak);
+			ds_writeb(LOCATION, (unsigned char)bak);
 		}
 	}
 }

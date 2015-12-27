@@ -644,7 +644,7 @@ void city_water_and_grass(void)
 
 		if (c2 != 0) {
 
-			bi = get_border_index(c2);
+			bi = (signed char)get_border_index(c2);
 
 			if (bi == 6 || bi == 7) {
 				/* water or grass */
@@ -697,7 +697,7 @@ void city_building_textures(void)
 
 		if (c2 != 0) {
 
-			bi = get_border_index(c2);
+			bi = (signed char)get_border_index(c2);
 
 			if (bi != 7 && bi != 6) {
 
@@ -909,7 +909,7 @@ signed short city_step(void)
 	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
 		ds_readws(Y_TARGET) != ds_readws(0x2d85))
 	{
-		ds_writebs(0x7c41, can_merge_group());
+		ds_writebs(0x7c41, (signed char)can_merge_group());
 		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
 	}
 
@@ -926,7 +926,7 @@ signed short city_step(void)
 			}
 		}
 
-		i = GUI_radio(get_ltx(0x8e8), options,
+		i = GUI_radio(get_ltx(0x8e8), (signed char)options,
 				get_ltx(0x85c), get_ltx(0x860), get_ltx(0x864),
 				get_ltx(0x868), get_ltx(0x86c), get_ltx(0x354),
 				get_ltx(0x4c8), get_ltx(0x8e4)) - 1;
@@ -941,7 +941,7 @@ signed short city_step(void)
 	if (ds_readws(ACTION) == 129) {
 
 		GRP_split();
-		ds_writebs(0x7c41, can_merge_group());
+		ds_writebs(0x7c41, (signed char)can_merge_group());
 
 	} else if (ds_readws(ACTION) == 130) {
 

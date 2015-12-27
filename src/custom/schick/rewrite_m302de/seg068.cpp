@@ -309,7 +309,7 @@ void THO_arsenal(void)
 
 			do_merchant();
 
-			ds_writews(ARSENAL_MONEY, get_party_money());
+			ds_writews(ARSENAL_MONEY, (signed short)get_party_money());
 			div_ds_ws(ARSENAL_MONEY, 100);
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			set_party_money(p_money);
