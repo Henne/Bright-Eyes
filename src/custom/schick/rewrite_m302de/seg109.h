@@ -26,6 +26,11 @@ void TRV_ford_test(signed short, signed short);
 /* 0x43 */
 signed short TRV_ferry(Bit8u*, signed short);
 
+#if defined(__BORLANDC__)
+/* 0x48 */
+void TRV_barrier(signed short);
+#endif
+
 /* 0x4d */
 void TRV_hunt_generic(signed short, signed short, signed short, signed short,
 			signed short, signed short, signed short, signed short,
@@ -48,6 +53,11 @@ void tevent_005(void);
 
 /* 0x6b */
 void tevent_006(void);
+
+#if defined(__BORLANDC__)
+/* 0x70 */
+void tevent_007(void);
+#endif
 
 /* 0x9d */
 void TRV_load_textfile(signed short);

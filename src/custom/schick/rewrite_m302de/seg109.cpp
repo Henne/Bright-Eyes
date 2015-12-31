@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 20/30
+ *	Functions rewritten: 21/30
 */
 
 #include <stdio.h>
@@ -678,6 +678,23 @@ void tevent_006(void)
 {
 	TRV_ferry(get_dtp(0x114), 4);
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+void tevent_007(void)
+{
+	signed short season = get_current_season();
+
+	if (season == 3 || season == 1) {
+		TRV_barrier(16);
+	}
+}
+
+void TRV_barrier(signed short text_start)
+{
+
+}
+#endif
 
 #if !defined(__BORLANDC__)
 }
