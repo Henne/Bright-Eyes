@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
- *	Functions rewritten: 21/30
+ *	Functions rewritten: 22/30
 */
 
 #include <stdio.h>
@@ -17,6 +17,7 @@
 #include "seg032.h"
 #include "seg047.h"
 #include "seg051.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
@@ -689,12 +690,120 @@ void tevent_007(void)
 		TRV_barrier(16);
 	}
 }
+#endif
 
+/* Borlandified and identical */
 void TRV_barrier(signed short text_start)
 {
+	signed short i;
+	signed short l_di;
+	signed short answer;
+	signed short done;
+	Bit8u *hero;
 
+	done = 0;
+
+	load_in_head(54);
+
+	do {
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(4 * (text_start + 0)), 2,
+						get_city(4 * (text_start + 1)),
+						get_city(4 * (text_start + 2)));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			timewarp(HOURS(2));
+
+			GUI_dialog_na(0, get_city(4 * (text_start + 3)));
+
+			done = 1;
+		} else {
+
+			hero = get_hero(0);
+			for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+
+				if (host_readbs(hero + 0x21) != 0 &&
+					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+				{
+					l_di+=hero_count_item(hero, 121);
+					l_di+=hero_count_item(hero, 32);
+				}
+			}
+
+			if (l_di >= 2) {
+				/* enough */
+
+				i = 0;
+				l_di = 1;
+
+				do {
+					if (get_first_hero_with_item(ds_readb(0xb135 + i)) != -1)
+					{
+						l_di = 0;
+					}
+
+					i++;
+
+				} while (l_di && ds_readbs(0xb135 + i) != -1);
+
+				if (l_di || get_first_hero_with_item(27) == -1) {
+
+					GUI_dialog_na(0, get_city(4 * (text_start + 4)));
+
+				} else {
+					hero = get_hero(0);
+
+					for (i = l_di = 0; i <= 6; i++, hero += 0x6da)
+					{
+						if (test_skill(hero, 31, 0) > 0) l_di++;
+					}
+
+					add_hero_ap_all(10);
+
+					i = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+					if (i == -1) {
+						i = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+					}
+					drop_item(hero, i, 1);
+
+					i = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+					if (i == -1) {
+						i = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+					}
+					drop_item(hero, i, 1);
+
+					if (l_di >= 3) {
+
+						GUI_dialog_na(0, get_city(4 * (text_start + 6)));
+					} else {
+
+						hero = get_hero(select_hero_ok_forced(get_city(4 * (text_start + 5))));
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+								(char*)get_city(4 * (text_start + 7)),
+								(char*)hero + 0x10,
+								Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 3)),
+								Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)));
+						GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+						hero_disease_test(hero, 2, 30);
+
+						loose_random_item(hero, 30, get_ltx(0x7e8));
+					}
+					done = 1;
+				}
+			} else {
+				/* not enough */
+				GUI_dialog_na(0, get_city(4 * (text_start + 4)));
+			}
+		}
+
+	} while (done == 0);
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }

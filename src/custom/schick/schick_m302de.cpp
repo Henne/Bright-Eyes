@@ -3861,7 +3861,12 @@ static int n_seg109(unsigned offs)
 #endif
 	}
 	case 0x0ec5: {
-		return 0;
+		Bit16s text_start = CPU_Pop16();
+		CPU_Push16(text_start);
+
+		D1_LOG("TRV_barrier(%d)\n", text_start);
+		TRV_barrier(text_start);
+		return 1;
 	}
 	case 0x1281: {
 		return 0;
@@ -11005,6 +11010,7 @@ static int seg109(unsigned short offs) {
 		case 0x34: return n_seg109(0x01ff);
 		case 0x39: return n_seg109(0x05a7);
 		case 0x3e: return n_seg109(0x067e);
+		case 0x48: return n_seg109(0x0ec5);
 		case 0x4d: return n_seg109(0x0ab1);
 		case 0x57: return n_seg109(0x09a1);
 		case 0x5c: return n_seg109(0x0a3e);
