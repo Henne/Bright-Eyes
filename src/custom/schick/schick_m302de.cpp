@@ -3853,12 +3853,8 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x0ea5: {
-#if 0
 		tevent_007();
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x0ec5: {
 		Bit16s text_start = CPU_Pop16();

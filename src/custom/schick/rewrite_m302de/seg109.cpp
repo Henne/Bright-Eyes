@@ -680,7 +680,6 @@ void tevent_006(void)
 	TRV_ferry(get_dtp(0x114), 4);
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void tevent_007(void)
 {
@@ -690,7 +689,6 @@ void tevent_007(void)
 		TRV_barrier(16);
 	}
 }
-#endif
 
 /* Borlandified and identical */
 void TRV_barrier(signed short text_start)
