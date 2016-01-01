@@ -677,7 +677,7 @@ signed short get_item(signed short id, signed short unused, signed short nr)
  * @item:	the item
  */
 /* Borlandified and identical */
-unsigned short hero_count_item(Bit8u *hero, unsigned short item) {
+signed short hero_count_item(Bit8u *hero, unsigned short item) {
 
 	signed short i;
 	unsigned short ret = 0;
