@@ -61,6 +61,9 @@ void tevent_008(void);
 /* 0x7a */
 void tevent_009(void);
 
+/* 0x7f */
+void tevent_010(void);
+
 /* 0x9d */
 void TRV_load_textfile(signed short);
 
