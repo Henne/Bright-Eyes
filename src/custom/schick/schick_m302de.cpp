@@ -3885,7 +3885,8 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x1347: {
-		return 0;
+		tevent_019();
+		return 1;
 	}
 	case 0x1365: {
 		return 0;
@@ -11023,6 +11024,7 @@ static int seg109(unsigned short offs) {
 		case 0x7f: return n_seg109(0x12fb);
 		case 0x84: return n_seg109(0x130b);
 		case 0x89: return n_seg109(0x1329);
+		case 0x8e: return n_seg109(0x1347);
 		case 0x9d: return n_seg109(0x0000);
 		case 0xa2: return n_seg109(0x008f);
 		case 0xa7: return n_seg109(0x012b);
