@@ -3889,10 +3889,12 @@ static int n_seg109(unsigned offs)
 		return 1;
 	}
 	case 0x1365: {
-		return 0;
+		tevent_023();
+		return 1;
 	}
 	case 0x1381: {
-		return 0;
+		tevent_092();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
@@ -11025,6 +11027,8 @@ static int seg109(unsigned short offs) {
 		case 0x84: return n_seg109(0x130b);
 		case 0x89: return n_seg109(0x1329);
 		case 0x8e: return n_seg109(0x1347);
+		case 0x93: return n_seg109(0x1365);
+		case 0x98: return n_seg109(0x1381);
 		case 0x9d: return n_seg109(0x0000);
 		case 0xa2: return n_seg109(0x008f);
 		case 0xa7: return n_seg109(0x012b);
