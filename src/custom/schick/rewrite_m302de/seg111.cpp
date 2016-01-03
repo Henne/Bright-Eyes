@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 9/15
+ *	Functions rewritten: 10/15
 */
 
 #include <stdio.h>
@@ -9,6 +9,7 @@
 
 #include "seg002.h"
 #include "seg007.h"
+#include "seg025.h"
 #include "seg026.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -150,6 +151,67 @@ void tevent_058(void)
 		ds_writeb(0x3dc7, 1);
 	}
 
+}
+
+/* Borlandified and identical */
+void tevent_059(void)
+{
+	signed short answer;
+
+	if (TRV_enter_hut_question())
+	{
+		ds_writews(0x434f, 0);
+		ds_writeb(LOCATION, 6);
+		do_location();
+		ds_writeb(LOCATION, 0);
+		ds_writews(0x434f, -1);
+
+		TRV_load_textfile(-1);
+
+		load_in_head(10);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+						get_city(0x24), 2,
+						get_city(0x28),
+						get_city(0x2c));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			if (get_first_hero_with_item(92) != -1 || get_first_hero_with_item(91) != -1)
+			{
+				do {
+					answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+								get_city(0x30), 3,
+								get_city(0x34),
+								get_city(0x38),
+								get_city(0x3c));
+				} while (answer == -1);
+
+				if (answer == 1) {
+					GUI_dialog_na(0, get_city(0x40));
+				} else if (answer == 2) {
+					GUI_dialog_na(0, get_city(0x44));
+				} else if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0) {
+					GUI_dialog_na(0, get_city(0x44));
+				} else {
+					GUI_dialog_na(0, get_city(0x40));
+				}
+
+			} else {
+				GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+						get_city(0x30), 1,
+						get_city(0x48));
+
+				GUI_dialog_na(0, get_city(0x44));
+			}
+		}
+
+		ds_writeb(LOCATION, 6);
+		do_location();
+		ds_writeb(LOCATION, 0);
+	}
 }
 
 /* dummy Orvil<->Skjal */
