@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 8/15
+ *	Functions rewritten: 9/15
 */
 
 #include <stdio.h>
@@ -138,6 +138,18 @@ void tevent_057(void)
 
 		GUI_output(get_city(0x18));
 	}
+}
+
+/* Borlandified and identical */
+void tevent_058(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3dc7)) ||
+		ds_readbs(0x3dc7) != 0)
+	{
+		TRV_found_replenish_place(0);
+		ds_writeb(0x3dc7, 1);
+	}
+
 }
 
 /* dummy Orvil<->Skjal */
