@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 6/15
+ *	Functions rewritten: 7/15
 */
 
 #include <stdio.h>
@@ -52,6 +52,12 @@ void tevent_055(void)
 
 		timewarp(HOURS(3));
 	}
+}
+
+/* Borlandified and identical */
+void tevent_056(void)
+{
+	TRV_found_inn(48, 69);
 }
 
 /* dummy Orvil<->Skjal */
