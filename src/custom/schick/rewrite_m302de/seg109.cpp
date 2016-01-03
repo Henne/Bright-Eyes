@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg109 (travel events 1 / 10)
  *	Functions rewritten: 30/30 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg109.cpp
 */
 
 #include <stdio.h>
@@ -28,7 +32,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void TRV_load_textfile(signed short travel_event)
 {
 	load_buffer_1(190);
@@ -51,7 +54,6 @@ void TRV_load_textfile(signed short travel_event)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 void TRV_event(signed short travel_event)
 {
 	signed short tw_bak;
@@ -93,7 +95,6 @@ void TRV_event(signed short travel_event)
  * \param travel_event	ID of the travel event
  * \return return value of the fight
  */
-/* Borlandified and identical */
 signed short TRV_fight_event(signed short fight_nr, signed short travel_event)
 {
 	signed short retval;
@@ -104,7 +105,6 @@ signed short TRV_fight_event(signed short fight_nr, signed short travel_event)
 	return retval;
 }
 
-/* Borlandified and identical */
 void TRV_found_herb_place(signed short a0)
 {
 	signed short answer;
@@ -133,7 +133,6 @@ void TRV_found_herb_place(signed short a0)
 	}
 }
 
-/* Borlandified and identical */
 void TRV_inside_herb_place(void)
 {
 	signed short hero_pos;
@@ -163,7 +162,6 @@ void TRV_inside_herb_place(void)
 	ds_writew(0x2846, 1);
 }
 
-/* Borlandified and identical */
 signed short TRV_found_camp_place(signed short a0)
 {
 	signed short answer;
@@ -208,7 +206,6 @@ signed short TRV_found_camp_place(signed short a0)
 	return 0;
 }
 
-/* Borlandified and identical */
 void TRV_found_replenish_place(signed short a0)
 {
 	signed short hero_pos;
@@ -263,7 +260,6 @@ void TRV_found_replenish_place(signed short a0)
 	}
 }
 
-/* Borlandified and identical */
 void TRV_found_inn(signed short city, signed short type)
 {
 	load_ani(12);
@@ -290,7 +286,6 @@ void TRV_found_inn(signed short city, signed short type)
  * \brief	question if you want to rest in a hut
  * \return the answer 0 = no, 1 = yes
  */
-/* Borlandified and identical */
 signed short TRV_enter_hut_question(void)
 {
 	signed short answer;
@@ -307,7 +302,6 @@ signed short TRV_enter_hut_question(void)
 	return answer;
 }
 
-/* Borlandified and identical */
 signed short TRV_follow_trail_question(void)
 {
 	signed short answer;
@@ -329,7 +323,6 @@ signed short TRV_follow_trail_question(void)
 	return answer - 1;
 }
 
-/* Borlandified and identical */
 signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 {
 	signed short answer;
@@ -372,7 +365,6 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 	return 1;
 }
 
-/* Borlandified and identical */
 void TRV_ford_test(signed short mod, signed short time)
 {
 	signed short i;
@@ -416,7 +408,6 @@ void TRV_ford_test(signed short mod, signed short time)
 	}
 }
 
-/* Borlandified and identical */
 signed short TRV_ferry(Bit8u *msg, signed short price)
 {
 	signed short done;
@@ -488,14 +479,12 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 	return 1;
 }
 
-/* Borlandified and identical */
 void tevent_001(void)
 {
 	TRV_found_inn(40, 65);
 }
 
 /* The hunter Varnheim <-> Daspota */
-/* Borlandified and identical */
 void tevent_002(void)
 {
 	signed short answer;
@@ -524,13 +513,11 @@ void tevent_002(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_003(void)
 {
 	TRV_ferry(get_dtp(0x114), 5);
 }
 
-/* Borlandified and identical */
 void tevent_004(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 2) > 0 && !ds_readb(0x3da2)) ||
@@ -543,7 +530,6 @@ void tevent_004(void)
 	}
 }
 
-/* Borlandified and identical */
 void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short mod1, signed short mod2,
 			signed short mod3, signed short ap_all1, signed short ap_hero, signed short ap_all2,
 			signed short ap_all3, signed short foods1, signed short foods2)
@@ -664,7 +650,6 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	ds_writew(0x2846, 1);
 }
 
-/* Borlandified and identical */
 void tevent_005(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 0) > 0 && !ds_readb(0x3da3)) ||
@@ -675,13 +660,11 @@ void tevent_005(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_006(void)
 {
 	TRV_ferry(get_dtp(0x114), 4);
 }
 
-/* Borlandified and identical */
 void tevent_007(void)
 {
 	signed short season = get_current_season();
@@ -691,7 +674,6 @@ void tevent_007(void)
 	}
 }
 
-/* Borlandified and identical */
 void TRV_barrier(signed short text_start)
 {
 	signed short i;
@@ -804,7 +786,6 @@ void TRV_barrier(signed short text_start)
 	} while (done == 0);
 }
 
-/* Borlandified and identical */
 void tevent_008(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3da4)) ||
@@ -815,7 +796,6 @@ void tevent_008(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_009(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 && !ds_readb(0x3da5)) ||
@@ -828,37 +808,31 @@ void tevent_009(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_010(void)
 {
 	TRV_found_inn(43, 66);
 }
 
-/* Borlandified and identical */
 void tevent_012(void)
 {
 	TRV_cross_a_ford(get_dtp(0xd4), 30, 0);
 }
 
-/* Borlandified and identical */
 void tevent_018(void)
 {
 	TRV_cross_a_ford(get_dtp(0xd4), 20, 0);
 }
 
-/* Borlandified and identical */
 void tevent_019(void)
 {
 	TRV_cross_a_ford(get_dtp(0x118), 20, 0);
 }
 
-/* Borlandified and identical */
 void tevent_023(void)
 {
 	TRV_ferry(get_dtp(0x114), 3);
 }
 
-/* Borlandified and identical */
 void tevent_092(void)
 {
 	do_talk(0, 0);
