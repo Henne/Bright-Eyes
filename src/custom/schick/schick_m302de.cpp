@@ -11005,7 +11005,8 @@ static int seg108(unsigned short offs)
 	}
 }
 
-static int seg109(unsigned short offs) {
+static int seg109(unsigned short offs)
+{
 	switch (offs) {
 		case 0x20: return n_seg109(0x0297);
 		case 0x25: return n_seg109(0x03a5);
@@ -11014,10 +11015,13 @@ static int seg109(unsigned short offs) {
 		case 0x34: return n_seg109(0x01ff);
 		case 0x39: return n_seg109(0x05a7);
 		case 0x3e: return n_seg109(0x067e);
+		/* case 0x43: not called with a far call */
 		case 0x48: return n_seg109(0x0ec5);
 		case 0x4d: return n_seg109(0x0ab1);
+		case 0x52: return n_seg109(0x0991);
 		case 0x57: return n_seg109(0x09a1);
 		case 0x5c: return n_seg109(0x0a3e);
+		case 0x61: return n_seg109(0x0a5a);
 		case 0x66: return n_seg109(0x0e51);
 		case 0x6b: return n_seg109(0x0e89);
 		case 0x70: return n_seg109(0x0ea5);
@@ -11034,7 +11038,11 @@ static int seg109(unsigned short offs) {
 		case 0xa7: return n_seg109(0x012b);
 		case 0xac: return n_seg109(0x0493);
 		case 0xb1: return n_seg109(0x04f2);
-		default:   return 0;
+		default: {
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+			return 0;
+		}
 	}
 }
 
