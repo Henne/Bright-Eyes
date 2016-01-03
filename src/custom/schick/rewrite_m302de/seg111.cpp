@@ -36,6 +36,7 @@ void tevent_054(void)
 }
 
 /* Path ??? */
+/* Borlandified and identical */
 void tevent_055(void)
 {
 	signed short season;
@@ -45,12 +46,11 @@ void tevent_055(void)
 	/* only in autumn or spring */
 	if (season == 1 || season == 3) {
 
-		load_in_head(0x34);
+		load_in_head(52);
 
 		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_city(0), 0);
 
-		/* you got hold for 3 hours */
-		timewarp(0x3f48);
+		timewarp(HOURS(3));
 	}
 }
 
