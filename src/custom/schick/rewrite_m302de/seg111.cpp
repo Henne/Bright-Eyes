@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 7/15
+ *	Functions rewritten: 8/15
 */
 
 #include <stdio.h>
@@ -8,7 +8,9 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg026.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
 #include "seg109.h"
@@ -58,6 +60,84 @@ void tevent_055(void)
 void tevent_056(void)
 {
 	TRV_found_inn(48, 69);
+}
+
+/* Borlandified and identical */
+void tevent_057(void)
+{
+	signed short i;
+	signed short answer;
+	Bit8u *hero;
+
+	do {
+		answer = GUI_radio(get_city(0x04), 2, get_city(0x08), get_city(0x0c));
+
+	} while (answer == -1);
+
+	if (answer == 2) {
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 2) > 0) {
+
+			timewarp(HOURS(2));
+
+			GUI_output(get_city(0x10));
+
+		} else {
+
+			timewarp(HOURS(6));
+
+			GUI_output(get_city(0x14));
+
+			hero = get_hero(0);
+
+			for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+				if (host_readbs(hero + 0x21) != 0 &&
+					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+				{
+					sub_hero_le(hero, random_schick(3));
+				}
+			}
+		}
+	} else {
+
+		hero = get_hero(0);
+
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+			if (host_readbs(hero + 0x21) != 0 &&
+				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero) &&
+				test_skill(hero, 10, 3) <= 0)
+			{
+
+				/* Original-Bug: that condition does not make sense */
+				if (get_first_hero_with_item(121) == -1 || get_first_hero_with_item(32) != -1)
+				{
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x20),
+						(char*)hero + 0x10,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					sub_hero_le(hero, random_schick(9) + 3);
+
+				} else {
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x1c),
+						(char*)hero + 0x10);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					sub_hero_le(hero, random_schick(8));
+				}
+			}
+		}
+
+		GUI_output(get_city(0x18));
+	}
 }
 
 /* dummy Orvil<->Skjal */
