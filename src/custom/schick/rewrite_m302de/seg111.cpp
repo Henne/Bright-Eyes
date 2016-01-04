@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 11/15
+ *	Functions rewritten: 12/15
 */
 
 #include <stdio.h>
@@ -371,6 +371,57 @@ void tevent_060(void)
 		}
 
 	} while (done == 0);
+}
+
+/* Borlandified and identical */
+void tevent_061(void)
+{
+	signed short answer;
+
+	/* TODO: not needed here */
+	answer = 0;
+
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), 51, 6) > 0 &&
+		test_skill(Real2Host(get_first_hero_available_in_group()), 26, 3) > 0 &&
+		!ds_readb(0x3dc8))
+	{
+		ds_writeb(0x3dc8, 1);
+
+		/* TODO: is this correct ? */
+		if (!TRV_follow_trail_question()) {
+
+			GUI_output(get_city(0x88));
+			GUI_output(get_city(0x8c));
+
+			load_in_head(53);
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+							get_city(0x90), 2,
+							get_city(0x94),
+							get_city(0x98));
+			} while (answer == -1);
+
+			if (answer == 1) {
+				ds_writeb(0x4333, 4);
+			}
+		}
+
+	} else if (ds_readb(0x3dc8) != 0) {
+
+		load_in_head(53);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+						get_city(0x9c), 2,
+						get_city(0xa0),
+						get_city(0xa4));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			ds_writeb(0x4333, 4);
+		}
+	}
 }
 
 /* dummy Orvil<->Skjal */
