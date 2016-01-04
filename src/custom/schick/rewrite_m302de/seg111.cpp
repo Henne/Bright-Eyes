@@ -425,6 +425,7 @@ void tevent_061(void)
 }
 
 /* dummy Orvil<->Skjal */
+/* Borlandified and identical */
 void tevent_062(void)
 {
 
