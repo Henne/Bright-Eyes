@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 10/15
+ *	Functions rewritten: 11/15
 */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg105.h"
 #include "seg109.h"
 
 #if !defined(__BORLANDC__)
@@ -212,6 +213,164 @@ void tevent_059(void)
 		do_location();
 		ds_writeb(LOCATION, 0);
 	}
+}
+
+/* Borlandified and identical */
+void tevent_060(void)
+{
+	signed short answer;
+	signed short i;
+	signed short done;
+	signed short nr_items;
+	signed short has_magic_rope;
+	Bit8u *hero;
+
+	done = 0;
+	load_in_head(57);
+
+	do {
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+						get_city(0x4c), 2,
+						get_city(0x50),
+						get_city(0x54));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 4) > 0) {
+
+				sub_group_le(1);
+
+				timewarp(HOURS(3));
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL, get_city(0x58), 0);
+
+				done = 1;
+			} else {
+
+				sub_group_le(1);
+
+				timewarp(HOURS(4));
+
+				do {
+					answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+								get_city(0x60), 2,
+								get_city(0x68),
+								get_city(0x6c));
+				} while (answer == -1);
+
+				if (answer == 1) {
+
+					timewarp(HOURS(1));
+
+					hero = get_hero(0);
+
+					for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+						if (host_readbs(hero + 0x21) != 0 &&
+							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+							!hero_dead(hero) &&
+							test_skill(hero, 10, 0) <= 0)
+						{
+							sub_hero_le(hero, random_schick(10));
+						}
+					}
+
+					GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL, get_city(0x74), 0);
+
+					done = 1;
+				} else {
+					timewarp(HOURS(2));
+				}
+			}
+		} else {
+
+
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 2) > 0) {
+
+				timewarp(HOURS(3));
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL, get_city(0x5c), 0);
+
+				done = 1;
+			} else {
+
+				sub_group_le(1);
+
+				timewarp(HOURS(4));
+
+				do {
+					answer = GUI_dialogbox((RealPt)ds_readd(DTP2), (Bit8u*)NULL,
+								get_city(0x64), 2,
+								get_city(0x6c),
+								get_city(0x70));
+				} while (answer == -1);
+
+				if (answer == 2) {
+
+					hero = get_hero(0);
+
+					for (i = has_magic_rope = nr_items = 0; i <= 6 ; i++, hero += 0x6da){
+
+						if (host_readbs(hero + 0x21) != 0 &&
+							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+							!hero_dead(hero))
+						{
+							nr_items += hero_count_item(hero, 121);
+							nr_items += hero_count_item(hero, 32);
+
+							if (host_readbs(hero + 0x195) >= 3)
+							{
+								has_magic_rope = 1;
+							}
+						}
+					}
+
+					if (nr_items >= 3) {
+
+						sub_group_le(3);
+
+						for (i = 0; i < 3; i++) {
+
+							answer = get_item_pos(hero = get_hero(get_first_hero_with_item(121)), 121);
+							if (answer == -1) {
+								answer = get_item_pos(hero = get_hero(get_first_hero_with_item(32)), 32);
+							}
+
+							drop_item(hero, answer, 1);
+						}
+
+						timewarp(HOURS(1));
+
+						GUI_dialog_na(0, get_city(0x80));
+
+						done = 1;
+
+					} else if (nr_items == 2 && has_magic_rope != 0) {
+
+						sub_group_le(3);
+
+						timewarp(HOURS(1));
+
+						GUI_dialog_na(0, get_city(0x7c));
+
+						done = 1;
+					} else {
+
+						GUI_dialog_na(0, get_city(0x78));
+
+						timewarp(HOURS(2));
+
+						GUI_dialog_na(0, get_city(0x84));
+					}
+				} else {
+					timewarp(HOURS(2));
+				}
+			}
+		}
+
+	} while (done == 0);
 }
 
 /* dummy Orvil<->Skjal */
