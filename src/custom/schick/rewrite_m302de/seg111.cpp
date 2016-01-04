@@ -432,13 +432,14 @@ void tevent_062(void)
 }
 
 /* dead animal Orvil<->Skjal */
+/* Borlandified and identical */
 void tevent_063(void)
 {
-	Bit8u *hero;
-	signed short vomiter;
-	signed short proof;
 	signed short i;
 	signed short max;
+	signed short proof;
+	signed short vomiter;
+	Bit8u *hero;
 
 	max = 9999;
 
@@ -449,21 +450,16 @@ void tevent_063(void)
 
 	for (i = 0; i <= 6; i++, hero += 0x6da) {
 
-		if (host_readb(hero + 0x21) == 0)
-			continue;
+		if (host_readbs(hero + 0x21) != 0 &&
+			host_readbs(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
+			!hero_dead(hero))
+		{
 
-		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
-			continue;
-
-		if (hero_dead(hero))
-			continue;
-
-		/* MU+0 */
-		proof = test_attrib(hero, 0, 0);
-
-		if (proof < max) {
-			max = proof;
-			vomiter = i;
+			/* MU+0 */
+			if ((proof = test_attrib(hero, 0, 0)) < max) {
+				max = proof;
+				vomiter = i;
+			}
 		}
 	}
 
