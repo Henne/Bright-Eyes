@@ -9362,7 +9362,17 @@ static int seg088(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			Bit16u diver_pos = CPU_Pop16();
+			Bit16s mod = CPU_Pop16();
+			Bit16u dest_x = CPU_Pop16();
+			CPU_Push16(dest_x);
+			CPU_Push16(mod);
+			CPU_Push16(diver_pos);
+
+			D1_LOG("DNG14_dive(%d, %d, %d)\n",
+				diver_pos, mod, dest_x);
+			DNG14_dive(diver_pos, (signed char)mod, dest_x);
+			return 1;
 		}
 		case 0x25: {
 			Bit16s fight_id = CPU_Pop16();
