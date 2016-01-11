@@ -402,17 +402,17 @@ void DNG_clear_corridor(Bit8u *ptr)
 	}
 }
 
-void DNG_oberorken_chest(Bit8u *chest)
+void DNG_oberorken_chest(RealPt chest)
 {
 	RealPt ptr_bak;
 
-	ptr_bak = (RealPt)host_readd(chest + 0x0b);
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 0x0b);
 
-	host_writed(chest + 0x0b, (Bit32u)RealMake(datseg, 0x3faa));
+	host_writed(Real2Host(chest) + 0x0b, (Bit32u)RealMake(datseg, 0x3faa));
 
-	loot_simple_chest(chest);
+	loot_simple_chest(Real2Host(chest));
 
-	host_writed(chest + 0x0b, (Bit32u)ptr_bak);
+	host_writed(Real2Host(chest) + 0x0b, (Bit32u)ptr_bak);
 }
 
 /**

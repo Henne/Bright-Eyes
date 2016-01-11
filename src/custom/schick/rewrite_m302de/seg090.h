@@ -5,7 +5,7 @@ namespace M302de {
 /* 0x20 */
 void DNG_clear_corridor(Bit8u*);
 /* 0x25 */
-void DNG_oberorken_chest(Bit8u*);
+void DNG_oberorken_chest(RealPt);
 /* 0x2a */
 signed short DNG_handler_oberorken(void);
 /* 0x2f */

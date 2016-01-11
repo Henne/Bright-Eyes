@@ -9416,7 +9416,7 @@ static int seg090(unsigned short offs)
 			CPU_Push32(chest);
 
 			D1_LOG("DNG_oberorken_chest()\n");
-			DNG_oberorken_chest(Real2Host(chest));
+			DNG_oberorken_chest(chest);
 			return 1;
 		}
 		case 0x2a: {
