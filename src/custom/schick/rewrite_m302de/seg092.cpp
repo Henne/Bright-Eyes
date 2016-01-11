@@ -23,6 +23,10 @@
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
+#include "t_map.h"
+#endif
+
+#if !defined(__BORLANDC__)
 namespace M302de {
 #endif
 
@@ -444,14 +448,11 @@ void seg092_06b4(signed short a1)
 
 void use_lockpicks_on_chest(RealPt chest_ptr)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short l_si;
 	signed short l_di;
 	Bit8u *hero;
 
-	hero = get_first_hero_available_in_group();
+	hero = Real2Host(get_first_hero_available_in_group());
 
 	if ((l_si = hero_has_lockpicks(hero)) != -1) {
 
@@ -466,30 +467,55 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 				or_ptr_bs(hero + 0x19a + 14 * l_si, 1);
 
 				/* ... and you trigger the trap */
+#if !defined(__BORLANDC__)
+				if (t_map(chest_ptr, 7) != NULL) {
+					((treasure_trap)(t_map(chest_ptr, 7)))();
+				}
+#else
 				if ((RealPt)host_readd(Real2Host(chest_ptr) + 7)) {
 					((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
 				}
+#endif
 
 			} else if (l_di <= 0) {
 				/* trigger the trap */
+#if !defined(__BORLANDC__)
+				if (t_map(chest_ptr, 7) != NULL) {
+					((treasure_trap)(t_map(chest_ptr, 7)))();
+				}
+#else
 				if ((RealPt)host_readd(Real2Host(chest_ptr) + 7)) {
 					((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
 				}
+#endif
 
 			} else {
 				/* success */
 
 				add_hero_ap(hero, 1);
 
-				if ((RealPt)host_readd(Real2Host(chest_ptr) + 11)) {
 
-					((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+#if !defined(__BORLANDC__)
+				if (t_map(chest_ptr, 11) != NULL)
+				{
+					(t_map(chest_ptr, 11))(chest_ptr);
 
-					if ((RealPt)host_readd(Real2Host(chest_ptr) + 7) == (RealPt)&chest_protected_heavy) {
+					if (((treasure_trap)(t_map(chest_ptr, 7))) == chest_protected_heavy)
+					{
 						add_hero_ap(hero, 5);
 					}
-
 				}
+#else
+				if ((RealPt)host_readd(Real2Host(chest_ptr) + 11))
+				{
+					((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+
+					if ((RealPt)host_readd(Real2Host(chest_ptr) + 7) == (RealPt)&chest_protected_heavy)
+					{
+						add_hero_ap(hero, 5);
+					}
+				}
+#endif
 
 				ds_writew(0xe4a0, 1);
 			}
@@ -500,7 +526,6 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 	} else {
 		print_msg_with_first_hero(get_ltx(0x848));
 	}
-#endif
 }
 
 void use_key_on_chest(RealPt chest_ptr)

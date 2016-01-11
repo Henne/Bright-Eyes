@@ -9521,7 +9521,16 @@ static int seg092(unsigned short offs) {
 		return 0;
 	}
 	case 0x4d: {
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+
+		D1_LOG("use_lockpicks_on_chest()\n");
+#if 0
+		use_lockpicks_on_chest(ptr);
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x52: {
 		return 0;
