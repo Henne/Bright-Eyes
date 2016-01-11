@@ -1992,6 +1992,14 @@
 						RelativePath="..\src\custom\schick\rewrite_m302de\seg122.h"
 						>
 					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\t_map.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\custom\schick\rewrite_m302de\t_map.h"
+						>
+					</File>
 				</Filter>
 				</Filter>
 				<Filter
