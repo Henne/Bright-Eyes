@@ -7,9 +7,11 @@
  *	these functions.
  */
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "v302de.h"
 
+#include "seg090.h"
 #include "seg092.h"
 
 #include "t_map.h"
@@ -53,6 +55,15 @@ treasure_type t_map(RealPt ptr, const int off)
 	case 0x140b: {
 		/* TODO: seg088.cpp: Dungeon Thorwal */
 		D1_TREAS("WARNING: call to seg088:0x%x\n", f_off);
+		break;
+	}
+
+	case 0x1417: {
+		/* TODO: seg090.cpp: Dungeon Oberorken */
+		if (f_off == 0x25) return (treasure_type)DNG_oberorken_chest;
+
+		D1_ERR("ERROR: call to seg090:0x%x should not happen\n", f_off);
+		exit(-1);
 		break;
 	}
 
