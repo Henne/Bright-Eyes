@@ -66,6 +66,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
  *
  * \param fight_id	ID of the fight
  */
+/* Borlandified and identical */
 void DNG14_fight_intro(signed short fight_id)
 {
 	if ((fight_id == 172) || (fight_id == 174)) {
