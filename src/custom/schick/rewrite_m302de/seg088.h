@@ -10,6 +10,8 @@ void DNG14_fight_intro(signed short);
 void DNG14_chest_x1(RealPt);
 /* 0x2f */
 void DNG14_chest_x2(RealPt);
+/* 0x34 */
+void DNG14_chest_x3(RealPt);
 
 #if !defined(__BORLANDC__)
 }
