@@ -12,6 +12,8 @@ void DNG14_chest_x1(RealPt);
 void DNG14_chest_x2(RealPt);
 /* 0x34 */
 void DNG14_chest_x3(RealPt);
+/* 0x39 */
+void DNG14_chest_x4(RealPt);
 
 #if !defined(__BORLANDC__)
 }

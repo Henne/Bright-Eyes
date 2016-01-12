@@ -59,6 +59,7 @@ treasure_type t_map(RealPt ptr, const int off)
 		case 0x2a:	return (treasure_type)DNG14_chest_x1;
 		case 0x2f:	return (treasure_type)DNG14_chest_x2;
 		case 0x34:	return (treasure_type)DNG14_chest_x3;
+		case 0x39:	return (treasure_type)DNG14_chest_x4;
 		}
 		D1_TREAS("WARNING: call to seg088:0x%x\n", f_off);
 		break;
