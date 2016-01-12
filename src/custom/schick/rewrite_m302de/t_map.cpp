@@ -11,6 +11,7 @@
 
 #include "v302de.h"
 
+#include "seg088.h"
 #include "seg090.h"
 #include "seg092.h"
 
@@ -55,6 +56,7 @@ treasure_type t_map(RealPt ptr, const int off)
 	case 0x140b: {
 		/* TODO: seg088.cpp: Dungeon Thorwal */
 		D1_TREAS("WARNING: call to seg088:0x%x\n", f_off);
+		if (f_off == 0x2a) return (treasure_type)DNG14_chest_x1;
 		break;
 	}
 

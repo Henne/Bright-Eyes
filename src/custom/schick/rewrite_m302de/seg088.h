@@ -6,6 +6,8 @@ namespace M302de {
 void DNG14_dive(signed short, signed char, signed short);
 /* 0x25 */
 void DNG14_fight_intro(signed short);
+/* 0x2a */
+void DNG14_chest_x1(RealPt);
 
 #if !defined(__BORLANDC__)
 }

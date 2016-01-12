@@ -1,13 +1,15 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg088 (dungeon: thorwal 2 / 2)
- *	Functions rewritten: 2/12
+ *	Functions rewritten: 3/12
  */
 #include <stdio.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -72,6 +74,17 @@ void DNG14_fight_intro(signed short fight_id)
 	if ((fight_id == 172) || (fight_id == 174)) {
 		GUI_output(get_dtp(0xe0));
 	}
+}
+
+/* Borlandified and identical */
+void DNG14_chest_x1(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x3fe4));
+	loot_simple_chest(Real2Host(chest));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 #if !defined(__BORLANDC__)
