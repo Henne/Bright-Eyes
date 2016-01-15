@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg088 (dungeon: thorwal 2 / 2)
- *	Functions rewritten: 8/12
+ *	Functions rewritten: 9/12
  */
 #include <stdio.h>
 
@@ -150,6 +150,17 @@ void DNG14_chest_x6(RealPt chest)
 			}
 		}
 	}
+}
+
+/* Borlandified and identical */
+void DNG14_chest_x7(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4026));
+	loot_simple_chest(Real2Host(chest));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 #if !defined(__BORLANDC__)
