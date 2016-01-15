@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg088 (dungeon: thorwal 2 / 2)
  *	Functions rewritten: 12/12 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg088.cpp
  */
 #include <stdio.h>
 
@@ -20,7 +24,6 @@ namespace M302de {
 #endif
 
 
-/* Borlandified and identical */
 void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 {
 	signed short i;
@@ -69,7 +72,6 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
  *
  * \param fight_id	ID of the fight
  */
-/* Borlandified and identical */
 void DNG14_fight_intro(signed short fight_id)
 {
 	if ((fight_id == 172) || (fight_id == 174)) {
@@ -77,7 +79,6 @@ void DNG14_fight_intro(signed short fight_id)
 	}
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -88,7 +89,6 @@ void DNG14_chest_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x2(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -99,13 +99,11 @@ void DNG14_chest_x2(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x3(RealPt chest)
 {
 	loot_multi_chest(p_datseg + 0x3ffb, get_dtp(0xf8));
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x4(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -116,7 +114,6 @@ void DNG14_chest_x4(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x5(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -127,7 +124,6 @@ void DNG14_chest_x5(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x6(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -153,7 +149,6 @@ void DNG14_chest_x6(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x7(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -164,7 +159,6 @@ void DNG14_chest_x7(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x8(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -175,7 +169,6 @@ void DNG14_chest_x8(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG14_chest_x9(void)
 {
 	Bit8u *hero;
@@ -185,7 +178,6 @@ void DNG14_chest_x9(void)
 	sub_hero_le(hero, dice_roll(2, 6, 0));
 }
 
-/* Borlandified and identical */
 void DNG7_riddle(void)
 {
 	signed short i;
