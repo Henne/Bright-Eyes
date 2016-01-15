@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg088 (dungeon: thorwal 2 / 2)
- *	Functions rewritten: 10/12
+ *	Functions rewritten: 11/12
  */
 #include <stdio.h>
 
@@ -9,6 +9,7 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
+#include "seg076.h"
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -172,6 +173,16 @@ void DNG14_chest_x8(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x402d));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG14_chest_x9(void)
+{
+	Bit8u *hero;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+	print_msg_with_first_hero(get_dtp(0xf4));
+	sub_hero_le(hero, dice_roll(2, 6, 0));
 }
 
 #if !defined(__BORLANDC__)
