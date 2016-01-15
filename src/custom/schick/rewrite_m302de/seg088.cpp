@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg088 (dungeon: thorwal 2 / 2)
- *	Functions rewritten: 11/12
+ *	Functions rewritten: 12/12 (complete)
  */
 #include <stdio.h>
 
@@ -183,6 +183,76 @@ void DNG14_chest_x9(void)
 	hero = Real2Host(get_first_hero_available_in_group());
 	print_msg_with_first_hero(get_dtp(0xf4));
 	sub_hero_le(hero, dice_roll(2, 6, 0));
+}
+
+/* Borlandified and identical */
+void DNG7_riddle(void)
+{
+	signed short i;
+	signed short l_di;
+	signed short pos;
+	signed short tw_bak;
+	Bit8u *ptr;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 8);
+
+	ptr = p_datseg + 0xbd95;
+
+	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
+
+
+	for (i = l_di = 0; i < 6; i++) {
+
+		if (pos == 0x1801 && ds_readws(0x2d48 + 2 * i) == 8 &&
+			ds_readws(0x2d54 + 2 * i) == 5 && ds_readbs(CURRENT_GROUP) != i)
+		{
+			l_di = 1;
+		}
+
+		if (pos == 0x1805 && ds_readws(0x2d48 + 2 * i) == 8 &&
+			ds_readws(0x2d54 + 2 * i) == 1 && ds_readbs(CURRENT_GROUP) != i)
+		{
+			l_di = 1;
+		}
+	}
+
+	if (!l_di || !ds_readb(0x41c8)) {
+
+		GUI_output(get_dtp(0x70));
+
+	} else {
+
+		do {
+			i = GUI_radio(get_dtp(0x74), 2,
+					get_dtp(0x78),
+					get_dtp(0x7c));
+		} while (i == -1);
+
+		if (i == 2) {
+
+			if (ds_readws(Y_TARGET) == 1) {
+				ds_writeb(0x41c9, 1);
+			} else if (ds_readws(Y_TARGET) == 5) {
+				ds_writeb(0x41ca, 1);
+			}
+
+			if (ds_readb(0x41c9) != 0 && ds_readb(0x41ca) != 0) {
+
+				GUI_output(get_dtp(0x80));
+
+				host_writeb(ptr + 0x39, 0x20);
+
+				add_hero_ap_all(10);
+			} else {
+				GUI_output(get_dtp(0x70));
+			}
+		} else {
+			GUI_output(get_dtp(0x70));
+		}
+	}
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
 #if !defined(__BORLANDC__)
