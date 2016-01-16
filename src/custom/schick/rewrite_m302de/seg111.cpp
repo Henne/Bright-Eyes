@@ -488,7 +488,6 @@ void tevent_063(void)
 	GUI_output(get_city(0xc0));
 }
 
-#if defined(__BORLANDC__)
 /* Gorahs place */
 /* Borlandified and identical */
 void tevent_064(void)
@@ -670,7 +669,6 @@ void tevent_064(void)
 
 	}
 }
-#endif
 
 /* Borlandified and identical */
 void tevent_064_chest(void)
