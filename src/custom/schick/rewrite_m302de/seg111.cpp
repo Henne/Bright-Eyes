@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 13/15
+ *	Functions rewritten: 14/15
 */
 
 #include <stdio.h>
@@ -671,6 +671,12 @@ void tevent_064(void)
 	}
 }
 #endif
+
+/* Borlandified and identical */
+void tevent_064_chest(void)
+{
+	loot_multi_chest(p_datseg + 0x3e3e, get_city(0x128));
+}
 
 /* The rider Orvil <-> Ala */
 void tevent_065(void)

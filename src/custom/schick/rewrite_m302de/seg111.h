@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void tevent_064_chest(void);
 /* 0x25 */
 void tevent_060(void);
 /* 0x2a */

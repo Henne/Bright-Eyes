@@ -14,6 +14,7 @@
 #include "seg088.h"
 #include "seg090.h"
 #include "seg092.h"
+#include "seg111.h"
 
 #include "t_map.h"
 
@@ -105,6 +106,16 @@ treasure_type t_map(RealPt ptr, const int off)
 		break;
 	}
 
+	case 0x14b4: {
+		/* seg111.cpp: travel events 3 / 10 */
+
+		switch (f_off) {
+		case 0x20:	return (treasure_type)tevent_064_chest;
+		}
+
+		D1_TREAS("WARNING: call to seg111:0x%x\n", f_off);
+		break;
+	}
 	default: {
 		D1_TREAS("ERROR: Segment hat einen ungueltigen Wert 0x%x\n", (Bit16u)(f_seg - reloc_game));
 	}

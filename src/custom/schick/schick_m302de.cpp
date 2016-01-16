@@ -11113,7 +11113,8 @@ static int seg111(unsigned short offs)
 {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		tevent_064_chest();
+		return 1;
 	}
 	case 0x25: {
 		tevent_060();
