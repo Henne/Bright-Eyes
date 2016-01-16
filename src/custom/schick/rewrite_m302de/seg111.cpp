@@ -676,13 +676,14 @@ void tevent_064_chest(void)
 	loot_multi_chest(p_datseg + 0x3e3e, get_city(0x128));
 }
 
+/* Borlandified and identical */
 /* The rider Orvil <-> Ala */
 void tevent_065(void)
 {
 	signed short answer;
 
 	/* load dialog head */
-	load_in_head(0x38);
+	load_in_head(56);
 
 	/* show dialogbox */
 	do {
@@ -699,26 +700,17 @@ void tevent_065(void)
 	/* talk to the rider for 15 min */
 	if (answer == 1 || answer == 2) {
 
-		timewarp(0x546);
+		timewarp(MINUTES(15));
 
-		if (answer == 1)
-			GUI_dialog_na(0, get_city(0x13c));
-		else
-			GUI_dialog_na(0, get_city(0x140));
+		GUI_dialog_na(0, answer == 1 ? get_city(0x13c): get_city(0x140));
 
 		if (answer == 2) {
 			/* Make Umbrik Siebenstein known */
 
 			/* Original-Bug: if Umbrik is done the value 2
 					is overwritten with 1 */
-#ifdef M302de_ORIGINAL_BUGFIX
-			if (ds_readb(INFORMER_UMBRIK) == 0)
-				ds_writeb(INFORMER_UMBRIK, 1);
-#else
-			ds_writeb(INFORMER_UMBRIK, 1);
-#endif
+			ds_writeb_z(INFORMER_UMBRIK, 1);
 		}
-
 	}
 }
 
