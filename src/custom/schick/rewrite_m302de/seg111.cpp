@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 14/15
+ *	Functions rewritten: 15/15 (complete)
 */
 
 #include <stdio.h>
@@ -12,6 +12,7 @@
 #include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
+#include "seg032.h"
 #include "seg047.h"
 #include "seg092.h"
 #include "seg096.h"
@@ -710,6 +711,72 @@ void tevent_065(void)
 			/* Original-Bug: if Umbrik is done the value 2
 					is overwritten with 1 */
 			ds_writeb_z(INFORMER_UMBRIK, 1);
+		}
+	}
+}
+
+/* Borlandified and identical */
+void tevent_066(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short count;
+	Bit8u *hero;
+
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3dca)) ||
+		ds_readbs(0x3dca) != 0)
+	{
+		TRV_found_replenish_place(0);
+		ds_writeb(0x3dca, 1);
+
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 4) > 0 && !ds_readb(0x3dcb)))
+		{
+
+			do {
+				l_si = GUI_radio(get_city(0x144), 2,
+							get_city(0x148),
+							get_city(0x14c));
+			} while (l_si == -1);
+
+			if (l_si == 1) {
+
+				GUI_output(get_city(0x150));
+
+				hero = get_hero(0);
+				for (l_di = count = 0; l_di <= 6; l_di++, hero += 0x6da)
+				{
+					if (host_readbs(hero + 0x21) != 0 &&
+						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero) &&
+						test_skill(hero, 13, -2) <= 0)
+					{
+						count++;
+					}
+				}
+
+				if (count != 0) {
+
+					GUI_output(get_city(0x154));
+
+				} else {
+					do {
+						l_si = GUI_radio(get_city(0x158), 2,
+									get_city(0x15c),
+									get_city(0x160));
+					} while (l_si == -1);
+
+					if (l_si == 1) {
+
+						GUI_output(get_city(0x164));
+						return;
+					}
+				}
+
+				if (!do_fight(181)) {
+					ds_writeb(0x3dcb, 1);
+					add_hero_ap_all(50);
+				}
+			}
 		}
 	}
 }
