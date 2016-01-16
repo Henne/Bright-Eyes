@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
  *	Functions rewritten: 15/15 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler: Borland C++ 3.1
+ *	Call:	BCC.EXE -mlarge -O- -c -1 -Yo seg111.cpp
 */
 
 #include <stdio.h>
@@ -26,7 +30,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void tevent_053(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 1) > 0 && !ds_readb(0x3dc6)) ||
@@ -38,14 +41,12 @@ void tevent_053(void)
 
 }
 
-/* Borlandified and identical */
 void tevent_054(void)
 {
 	TRV_found_inn(47, 68);
 }
 
 /* Path ??? */
-/* Borlandified and identical */
 void tevent_055(void)
 {
 	signed short season;
@@ -63,13 +64,11 @@ void tevent_055(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_056(void)
 {
 	TRV_found_inn(48, 69);
 }
 
-/* Borlandified and identical */
 void tevent_057(void)
 {
 	signed short i;
@@ -147,7 +146,6 @@ void tevent_057(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_058(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3dc7)) ||
@@ -159,7 +157,6 @@ void tevent_058(void)
 
 }
 
-/* Borlandified and identical */
 void tevent_059(void)
 {
 	signed short answer;
@@ -220,7 +217,6 @@ void tevent_059(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_060(void)
 {
 	signed short answer;
@@ -378,7 +374,6 @@ void tevent_060(void)
 	} while (done == 0);
 }
 
-/* Borlandified and identical */
 void tevent_061(void)
 {
 	signed short answer;
@@ -430,14 +425,12 @@ void tevent_061(void)
 }
 
 /* dummy Orvil<->Skjal */
-/* Borlandified and identical */
 void tevent_062(void)
 {
 
 }
 
 /* dead animal Orvil<->Skjal */
-/* Borlandified and identical */
 void tevent_063(void)
 {
 	signed short i;
@@ -490,7 +483,6 @@ void tevent_063(void)
 }
 
 /* Gorahs place */
-/* Borlandified and identical */
 void tevent_064(void)
 {
 	signed short l_si;
@@ -671,13 +663,11 @@ void tevent_064(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_064_chest(void)
 {
 	loot_multi_chest(p_datseg + 0x3e3e, get_city(0x128));
 }
 
-/* Borlandified and identical */
 /* The rider Orvil <-> Ala */
 void tevent_065(void)
 {
@@ -715,7 +705,6 @@ void tevent_065(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_066(void)
 {
 	signed short l_si;
