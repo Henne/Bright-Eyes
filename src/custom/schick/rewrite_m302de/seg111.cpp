@@ -1,18 +1,22 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg111 (travel events 3 / 10)
- *	Functions rewritten: 12/15
+ *	Functions rewritten: 13/15
 */
 
 #include <stdio.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
+#include "seg047.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg098.h"
 #include "seg103.h"
 #include "seg105.h"
 #include "seg109.h"
@@ -483,6 +487,190 @@ void tevent_063(void)
 	/* outro message */
 	GUI_output(get_city(0xc0));
 }
+
+#if defined(__BORLANDC__)
+/* Gorahs place */
+/* Borlandified and identical */
+void tevent_064(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short i;
+	signed short l3;
+	signed short l4;
+	Bit8u *hero;
+
+	l3 = 0;
+	l4 = 0;
+
+	if (!ds_readb(0x3dc9) && ds_readb(QUEST_GORAH) != 0) {
+
+		do {
+
+			do {
+				l_si = GUI_radio(l4 != 0 ? get_city(0x198) : get_city(0xc4), 3,
+							get_city(0xc8),
+							get_city(0xcc),
+							get_city(0xd0));
+			} while (l_si == -1);
+
+			if (l_si == 1) {
+
+				hero = get_hero(select_hero_ok_forced(get_ltx(0x4f4)));
+
+				if (host_readbs(hero + 0x21) < 7) {
+					GUI_output(get_ltx(0x528));
+				} else {
+					l3 = 1;
+				}
+
+				if (l3 == 0) {
+					l3 = 1;
+				} else {
+					if (test_spell(hero, 84, 0) > 0) {
+
+						sub_ae_splash(hero, 2);
+
+						ds_writeb(0x3dd3, 1);
+
+						GUI_output(get_city(0xd4));
+					} else {
+						sub_ae_splash(hero, 1);
+
+						GUI_output(get_ltx(0x978));
+					}
+				}
+
+			} else if (l_si == 2) {
+
+				l3 = 1;
+
+				GUI_output(get_city(0xd8));
+
+				hero = get_hero(0);
+
+				for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+
+					if (host_readbs(hero + 0x21) != 0 &&
+						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero) &&
+						test_skill(hero, 13, 0) <= 0)
+					{
+						l_di++;
+					}
+				}
+
+				if (l_di > 1) {
+					ds_writeb(0x3dd3, 1);
+				}
+
+			} else {
+
+				l3 = 1;
+
+				do {
+					l_si = GUI_radio(get_city(0xdc), 2,
+							get_city(0xe0),
+							get_city(0xe4));
+				} while (l_si == -1);
+
+				if (l_si == 2)  return;
+			}
+
+		} while (l3 == 0);
+
+		do {
+			l_si = GUI_radio(get_city(0xe8), 2,
+					get_city(0xec),
+					get_city(0xf0));
+		} while (l_si == -1);
+
+		if (l_si == 1) {
+
+			if (!ds_readb(0x3dd3)) {
+				GUI_output(get_city(0xf4));
+			}
+
+			GUI_output(get_city(0xf8));
+
+			l_di = TRV_fight_event(180, 64);
+
+			ds_writeb(0x3dd3, 1);
+
+		} else {
+			GUI_output(ds_readb(0x3dd3) != 0 ? get_city(0xf8) : get_city(0xfc));
+			l_di = TRV_fight_event(180, 64);
+		}
+
+		if (!l_di) {
+			ds_writeb(0x3dc9, 1);
+
+			add_hero_ap_all(100);
+
+			do {
+				do {
+					l_si = GUI_radio(get_city(0x100), 2,
+							get_city(0x104),
+							get_city(0x108));
+				} while (l_si == -1);
+
+				if (l_si == 1) {
+
+					loot_multi_chest(p_datseg + 0x3e2b,
+							get_city(0x11c));
+
+					do {
+						l_si = GUI_radio(get_city(0x10c), 2,
+							get_city(0x110),
+							get_city(0x114));
+					} while (l_si == -1);
+
+					if (l_si == 1) {
+						use_lockpicks_on_chest((RealPt)RealMake(datseg, 0xb154));
+					}
+				}
+
+			} while (l_si != 2);
+
+			GUI_output(get_city(0x118));
+
+			ds_writews(0x4336, ds_readws(0x4336) == 0 ? 1 : -1);
+		}
+
+	} else if (ds_readb(0x3dc9) != 0) {
+
+		do {
+			do {
+				l_si = GUI_radio(get_city(0x100), 2,
+					get_city(0x104),
+					get_ltx(0xcb8));
+
+			} while (l_si == -1);
+
+			if (l_si == 1) {
+
+				loot_multi_chest(p_datseg + 0x3e2b, get_city(0x11c));
+
+				if (ds_readbs(0x3e3e) != -1) {
+
+					do {
+						l_si = GUI_radio(get_city(0x10c), 2,
+							get_city(0x110),
+							get_ltx(0xcb8));
+
+					} while (l_si == -1);
+
+					if (l_si == 1) {
+						use_lockpicks_on_chest((RealPt)RealMake(datseg, 0xb154));
+					}
+				}
+			}
+
+		} while (l_si != 2);
+
+	}
+}
+#endif
 
 /* The rider Orvil <-> Ala */
 void tevent_065(void)

@@ -11132,7 +11132,12 @@ static int seg111(unsigned short offs)
 		return 1;
 	}
 	case 0x39: {
+#if 0
+		tevent_064();
+		return 1;
+#else
 		return 0;
+#endif
 	}
 	case 0x3e: {
 		tevent_065();
