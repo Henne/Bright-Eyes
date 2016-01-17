@@ -5,6 +5,11 @@ namespace M302de {
 /* 0x20 */
 void hero_disappear(Bit8u*, unsigned short, signed char);
 
+/* 0x61 */
+void tevent_080(void);
+/* 0x66 */
+void tevent_081(void);
+
 #if !defined(__BORLANDC__)
 }
 #endif
