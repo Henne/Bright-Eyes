@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 4/22
+ *	Functions rewritten: 5/22
 */
 
 #include <stdio.h>
@@ -103,6 +103,19 @@ void tevent_081(void)
 void tevent_082(void)
 {
 	TRV_cross_a_ford(get_dtp(0xcc), 30, 1);
+}
+
+/* Borlandified and identical */
+void tevent_083(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 6) > 0 && !ds_readb(0x3de7)) ||
+		 ds_readb(0x3de7) != 0)
+	{
+		ds_writeb(0x66d0, 61);
+		TRV_found_herb_place(0);
+		ds_writeb(0x66d0, -1);
+		ds_writeb(0x3de7, 1);
+	}
 }
 
 /* 0x900 */
