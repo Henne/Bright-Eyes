@@ -9,6 +9,8 @@ void hero_disappear(Bit8u*, unsigned short, signed char);
 void tevent_080(void);
 /* 0x66 */
 void tevent_081(void);
+/* 0x6b */
+void tevent_082(void);
 
 #if !defined(__BORLANDC__)
 }
