@@ -95,6 +95,7 @@
 #define SPHERE_ACTIVE	(0x3c98)
 #define MAGE_POISON	(0x3cb6)
 #define FIND_HYGGELIK	(0x3ddc)	/* unsigned char {0, 1} you are now able to find Hyggelik */
+#define TATZELWURM	(0x3de5)	/* unsigned char {0, 1, 2} */
 #define RANDOM_TLK_HERO	(0x3e18)	/* RealPt */
 #define RUIN_HERO	(0x3e1c)	/* RealPt */
 #define NEED_LETTER	(0x3f73)	/* unsigned char {0, 1} */
