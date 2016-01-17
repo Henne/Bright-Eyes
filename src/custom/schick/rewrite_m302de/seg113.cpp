@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 5/22
+ *	Functions rewritten: 6/22
 */
 
 #include <stdio.h>
@@ -12,6 +12,7 @@
 #include "seg026.h"
 #include "seg028.h"
 #include "seg029.h"
+#include "seg032.h"
 #include "seg097.h"
 #include "seg103.h"
 #include "seg109.h"
@@ -115,6 +116,42 @@ void tevent_083(void)
 		TRV_found_herb_place(0);
 		ds_writeb(0x66d0, -1);
 		ds_writeb(0x3de7, 1);
+	}
+}
+
+/* Borlandified and identical */
+void tevent_084(void)
+{
+	signed short answer;
+
+	if (!ds_readb(0x3de8)) {
+
+		load_in_head(44);
+
+		do {
+
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x184), 2,
+						get_city(0x188),
+						get_city(0x18c));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			if (!do_fight(188)) {
+				ds_writeb(0x3de8, 1);
+			}
+		} else {
+
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 5) <= 0)
+			{
+				ds_writeb(0x26ac, 1);
+
+				if (!do_fight(188)) {
+					ds_writeb(0x3de8, 1);
+				}
+			}
+		}
 	}
 }
 

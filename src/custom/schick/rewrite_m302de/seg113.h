@@ -13,6 +13,8 @@ void tevent_081(void);
 void tevent_082(void);
 /* 0x70 */
 void tevent_083(void);
+/* 0x75 */
+void tevent_084(void);
 
 #if !defined(__BORLANDC__)
 }
