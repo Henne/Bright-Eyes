@@ -6,6 +6,8 @@ namespace M302de {
 void hero_disappear(Bit8u*, unsigned short, signed char);
 /* 0x25 */
 void tevent_097(void);
+/* 0x2a */
+void tevent_098(void);
 
 /* 0x61 */
 void tevent_080(void);

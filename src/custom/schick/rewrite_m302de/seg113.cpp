@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 11/22
+ *	Functions rewritten: 12/22
 */
 
 #include <stdio.h>
@@ -14,9 +14,12 @@
 #include "seg028.h"
 #include "seg029.h"
 #include "seg032.h"
+#include "seg047.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg105.h"
 #include "seg109.h"
+#include "seg113.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -251,6 +254,142 @@ void tevent_097(void)
 		do_location();
 		ds_writeb(LOCATION, 0);
 	}
+}
+
+/**
+ * \brief travelevent 98: a gap
+ *
+ * disappeared heros can be found in the efferd temple in liskor
+ */
+/* Borlandified and identical */
+void tevent_098(void)
+{
+	signed short answer;
+	signed short repeat;
+	signed short i;
+	signed short hero_pos;
+	Bit8u *hero;
+
+	i = get_first_hero_with_item(121) != -1 || get_first_hero_with_item(32) != -1 ? 3 : 2;
+
+	do {
+		answer = GUI_radio(get_city(0x6c), (signed char)i,
+				get_city(0x70),
+				get_city(0x74),
+				get_city(0x78));
+	} while (answer == -1);
+
+	do {
+		repeat = 0;
+
+		if (answer == 1) {
+
+			hero = get_hero(0);
+
+			for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+				if (host_readbs(hero + 0x21) != 0 &&
+					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+					!hero_dead(hero))
+				{
+
+					if (test_skill(hero, 9, 0) > 0) {
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_city(0x7c),
+							(char*)hero + 0x10);
+
+						GUI_output(Real2Host(ds_readd(DTP2)));
+
+					} else {
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_city(0x80),
+							(char*)hero + 0x10);
+
+						GUI_output(Real2Host(ds_readd(DTP2)));
+
+						hero_disappear(hero, i, 33);
+					}
+				}
+			}
+
+		} else if (answer == 2) {
+
+			GUI_output(get_city(0x84));
+
+			/* Original-Bug: hero not initialized */
+			hero_disease_test(hero, 2, 20 - (host_readbs(hero + 0x47) + host_readbs(hero + 0x48)));
+
+			loose_random_item(hero, 1, get_ltx(0x7e8));
+
+			ds_writeb(LOCATION, 6);
+			do_location();
+			ds_writeb(LOCATION, 0);
+
+			TRV_load_textfile(-1);
+		} else {
+
+			hero = get_hero(hero_pos = select_hero_ok_forced(get_city(0x88)));
+
+			if (test_skill(hero, 9, 0) > 0) {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0x8c),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				hero = get_hero(0);
+				for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+					if (i != hero_pos &&
+						host_readbs(hero + 0x21) != 0 &&
+						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero))
+					{
+						if (test_attrib(hero, 4, -4) > 0) {
+
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_city(0x90),
+								(char*)hero + 0x10);
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+
+						} else {
+
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_city(0x80),
+								(char*)hero + 0x10);
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+
+							hero_disappear(hero, i, 33);
+						}
+					}
+				}
+			} else {
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0x80),
+					(char*)hero + 0x10);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				hero_disappear(hero, i, 33);
+
+				do {
+					answer = GUI_radio(get_city(0x94), 3,
+								get_city(0x70),
+								get_city(0x74),
+								get_city(0x78));
+				} while (answer == -1);
+
+				repeat = 1;
+			}
+		}
+
+	} while (repeat);
 }
 
 /* 0x900 */
