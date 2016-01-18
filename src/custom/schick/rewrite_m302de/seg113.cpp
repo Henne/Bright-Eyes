@@ -396,34 +396,33 @@ void tevent_098(void)
 	} while (repeat);
 }
 
-/* 0x900 */
-
-void hero_disappear(Bit8u *hero, unsigned short pos, signed char type)
+/* Borlandified and identical */
+void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 {
 
 	/* decrement the number of heroes */
-	ds_writeb(0x2d3c, ds_readb(0x2d3c) - 1);
+	dec_ds_bs_post(0x2d3c);
 
 	/* load a new savegame if no hero is present */
-	if (ds_readb(0x2d3c) == 0)
+	if (!ds_readbs(0x2d3c)) {
 		ds_writew(0xc3c1, 1);
+	}
 
 	/* decrement group counter */
-	ds_writeb(0x2d36 + ds_readb(CURRENT_GROUP),
-		ds_readb(0x2d36 + ds_readb(CURRENT_GROUP)) - 1);
+	dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
 	/* write type to character sheet */
-	host_writeb(hero + 0x88, type);
+	host_writeb(hero + 0x88, (signed char)type);
 
 	/* reset position in group */
 	host_writeb(hero + 0x8a, 0);
 
 	if (pos == 6) {
 		/* NPC */
-		save_npc(0xe2 + host_readb(hero + 0x89));
+		save_npc(0xe2 + host_readbs(get_hero(6) + 0x89));
 
 		/* reset NPC timer */
-		ds_writeb(0x3602 + host_readb(hero + 0x89), 0xff);
+		ds_writebs(0x3602 + host_readbs(get_hero(6) + 0x89), -1);
 	} else {
 		/* Regular Hero */
 		write_chr_temp(pos);

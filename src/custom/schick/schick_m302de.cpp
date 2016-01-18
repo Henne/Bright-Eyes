@@ -3912,9 +3912,9 @@ static int n_seg113(unsigned offs) {
 		CPU_Push16(idx);
 		CPU_Push32(hero);
 		D1_LOG("hero_disappear(%s, %d, %d);\n",
-			Real2Host(hero) + 0x10, idx, (signed char)arg2);
+			Real2Host(hero) + 0x10, idx, arg2);
 
-		hero_disappear(Real2Host(hero), idx, (signed char)arg2);
+		hero_disappear(Real2Host(hero), idx, arg2);
 		return 1;
 	}
 	default:

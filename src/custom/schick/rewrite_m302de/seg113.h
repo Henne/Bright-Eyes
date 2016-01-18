@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 /* 0x20 */
-void hero_disappear(Bit8u*, unsigned short, signed char);
+void hero_disappear(Bit8u*, unsigned short, signed short);
 /* 0x25 */
 void tevent_097(void);
 /* 0x2a */
