@@ -11184,7 +11184,8 @@ static int seg113(unsigned short offs)
 	switch (offs) {
 	case 0x20: return n_seg113(0x900);
 	case 0x25: {
-		return 0;
+		tevent_097();
+		return 1;
 	}
 	case 0x2a: {
 		return 0;

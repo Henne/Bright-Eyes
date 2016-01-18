@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 10/22
+ *	Functions rewritten: 11/22
 */
 
 #include <stdio.h>
@@ -9,6 +9,7 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg025.h"
 #include "seg026.h"
 #include "seg028.h"
 #include "seg029.h"
@@ -239,6 +240,17 @@ void tevent_088(void)
 void tevent_089(void)
 {
 	TRV_cross_a_ford(get_dtp(0xcc), 40, 2);
+}
+
+/* Borlandified and identical */
+void tevent_097(void)
+{
+	if (TRV_enter_hut_question()) {
+
+		ds_writeb(LOCATION, 6);
+		do_location();
+		ds_writeb(LOCATION, 0);
+	}
 }
 
 /* 0x900 */
