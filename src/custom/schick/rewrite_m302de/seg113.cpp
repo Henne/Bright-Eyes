@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 7/22
+ *	Functions rewritten: 8/22
 */
 
 #include <stdio.h>
@@ -174,6 +174,52 @@ void tevent_085(void)
 			ds_writebs(0x66d0, -1);
 		} else {
 			TRV_found_camp_place(0);
+		}
+	}
+}
+
+/* Borlandified and identical */
+void tevent_086(void)
+{
+	signed short i;
+	signed short answer;
+	Bit8u *hero;
+
+	load_in_head(58);
+
+	do {
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+					get_city(0x190), 2,
+					get_city(0x194), get_city(0x198));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		hero = get_hero(0);
+
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+
+			if (host_readbs(hero + 0x21) != 0 &&
+				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+			{
+				sub_hero_le(hero, 2);
+			}
+		}
+
+		GUI_dialog_na(0, get_city(0x19c));
+
+		if (!ds_readb(0x3deb)) {
+
+			add_hero_ap_all(ds_writeb(0x3deb, 15));
+		}
+
+	} else {
+
+		GUI_dialog_na(0, get_city(0x1a0));
+
+		if (!ds_readb(0x3deb)) {
+
+			add_hero_ap_all(ds_writeb(0x3deb, 5));
 		}
 	}
 }
