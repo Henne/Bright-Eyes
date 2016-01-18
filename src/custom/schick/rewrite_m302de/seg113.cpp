@@ -319,6 +319,10 @@ void tevent_098(void)
 			GUI_output(get_city(0x84));
 
 			/* Original-Bug: hero not initialized */
+#ifdef M302de_ORIGINAL_BUGFIX
+			/* Original-Bugfix: take the leader of the group */
+			hero = Real2Host(get_first_hero_available_in_group());
+#endif
 			hero_disease_test(hero, 2, 20 - (host_readbs(hero + 0x47) + host_readbs(hero + 0x48)));
 
 			loose_random_item(hero, 1, get_ltx(0x7e8));
