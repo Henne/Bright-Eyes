@@ -8,6 +8,8 @@ void hero_disappear(Bit8u*, unsigned short, signed short);
 void tevent_097(void);
 /* 0x2a */
 void tevent_098(void);
+/* 0x2f */
+void tevent_099(void);
 
 /* 0x61 */
 void tevent_080(void);

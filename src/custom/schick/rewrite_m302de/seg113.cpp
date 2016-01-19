@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 12/22
+ *	Functions rewritten: 13/22
 */
 
 #include <stdio.h>
@@ -439,6 +439,39 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 
 	/* set flag to check all heros */
 	ds_writeb(CHECK_PARTY, 1);
+}
+
+/* Borlandified and identical */
+/* fight with 4 harpyes */
+void tevent_099(void)
+{
+	signed short answer;
+
+	if (!ds_readb(0x3df2)) {
+
+		do {
+			answer = GUI_radio(get_city(0x98), 2,
+						get_city(0x9c),
+						get_city(0xa0));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			if (!do_fight(189)) {
+				ds_writeb(0x3df2, 1);
+			} else {
+
+				if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 4) <= 0) {
+
+					ds_writeb(0x26ac, 1);
+
+					if (!do_fight(189)) {
+						ds_writeb(0x3df2, 1);
+					}
+				}
+			}
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
