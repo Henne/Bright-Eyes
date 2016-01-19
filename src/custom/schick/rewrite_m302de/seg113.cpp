@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 13/22
+ *	Functions rewritten: 14/22
 */
 
 #include <stdio.h>
@@ -9,6 +9,7 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
 #include "seg028.h"
@@ -481,6 +482,47 @@ void tevent_099(void)
 #ifndef M302de_ORIGINAL_BUGFIX
 			}
 #endif
+		}
+	}
+}
+
+/* Borlandified and identical */
+/* fight with 2-6 harpyes */
+void tevent_101(void)
+{
+	signed short answer;
+	signed short mod;
+
+	if (!ds_readb(0x3df4)) {
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_city(0xa4),
+			(mod = random_schick(4) + 2));
+
+
+		do {
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+						get_city(0xa8),
+						get_city(0xac));
+		} while (answer == -1);
+
+		ds_writew(MAX_ENEMIES, mod);
+
+		if (answer == 1) {
+
+			if (!do_fight(190)) {
+				ds_writeb(0x3df4, 1);
+			} else {
+
+				if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, mod) <= 0) {
+
+					ds_writeb(0x26ac, 1);
+
+					if (!do_fight(190)) {
+						ds_writeb(0x3df4, 1);
+					}
+				}
+			}
 		}
 	}
 }
