@@ -455,21 +455,32 @@ void tevent_099(void)
 						get_city(0xa0));
 		} while (answer == -1);
 
+		/* Original-Bug: The 2nd option "try to flee (or avoid the fight)" is not a try.
+		 *		 To trigger the code you have to flee from the fight mode,
+		 *		 then the skill test is done, and if this one fails you reenter this fight.
+		*/
+
+
 		if (answer == 1) {
 
 			if (!do_fight(189)) {
 				ds_writeb(0x3df2, 1);
-			} else {
+#ifdef M302de_ORIGINAL_BUGFIX
+			}
+#endif
+		} else {
 
-				if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 4) <= 0) {
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 4) <= 0) {
 
-					ds_writeb(0x26ac, 1);
+				ds_writeb(0x26ac, 1);
 
-					if (!do_fight(189)) {
-						ds_writeb(0x3df2, 1);
-					}
+				if (!do_fight(189)) {
+					ds_writeb(0x3df2, 1);
 				}
 			}
+#ifndef M302de_ORIGINAL_BUGFIX
+			}
+#endif
 		}
 	}
 }
