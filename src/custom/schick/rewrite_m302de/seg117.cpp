@@ -500,7 +500,7 @@ void pirates_attack(void)
 	GUI_output(get_city(0xb8));
 	GUI_output(get_city(0xbc));
 
-	ds_writew(0x5f16, random_interval(3, 8));
+	ds_writew(MAX_ENEMIES, random_interval(3, 8));
 	ds_writew(0x26c1, 1);
 
 	/* Fight: S001 */
@@ -525,7 +525,7 @@ void do_wild8_fight(void)
 	ds_writew(0x2ca4, 0);
 	ds_writeb(TRAVELING, 0);
 
-	ds_writew(0x5f16, random_interval(5, 10));
+	ds_writew(MAX_ENEMIES, random_interval(5, 10));
 	ds_writew(0x26c1, 1);
 
 	/* Fight: WILD8 */
@@ -573,7 +573,7 @@ void random_encounter(signed short arg)
 			switch (i) {
 				case 0: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(6) + 1);
+						ds_writew(MAX_ENEMIES, random_schick(6) + 1);
 						/* Fight: WILD1 */
 						do_fight(243);
 					}
@@ -581,7 +581,7 @@ void random_encounter(signed short arg)
 				}
 				case 1: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(3));
+						ds_writew(MAX_ENEMIES, random_schick(3));
 						/* Fight: WILD2 */
 						do_fight(244);
 					}
@@ -593,7 +593,7 @@ void random_encounter(signed short arg)
 				}
 				case 3: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(2));
+						ds_writew(MAX_ENEMIES, random_schick(2));
 						/* Fight: WILD3 */
 						do_fight(245);
 					}
@@ -605,7 +605,7 @@ void random_encounter(signed short arg)
 				}
 				case 5: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(6) + 1);
+						ds_writew(MAX_ENEMIES, random_schick(6) + 1);
 						/* Fight: WILD4 */
 						do_fight(246);
 					}
@@ -613,7 +613,7 @@ void random_encounter(signed short arg)
 				}
 				case 6: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(3) + 3);
+						ds_writew(MAX_ENEMIES, random_schick(3) + 3);
 						/* Fight: WILD4 */
 						do_fight(246);
 					}
@@ -621,7 +621,7 @@ void random_encounter(signed short arg)
 				}
 				case 7: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(2) + 1);
+						ds_writew(MAX_ENEMIES, random_schick(2) + 1);
 						/* Fight: WILD5 */
 						do_fight(247);
 					}
@@ -637,7 +637,7 @@ void random_encounter(signed short arg)
 				}
 				case 10: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(3));
+						ds_writew(MAX_ENEMIES, random_schick(3));
 						/* Fight: WILD6 */
 						do_fight(248);
 					}
@@ -649,7 +649,7 @@ void random_encounter(signed short arg)
 				}
 				case 12: {
 					if (!l_si) {
-						ds_writew(0x5f16, random_schick(3));
+						ds_writew(MAX_ENEMIES, random_schick(3));
 						/* Fight: WILD7 */
 						do_fight(249);
 					}

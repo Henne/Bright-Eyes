@@ -122,6 +122,7 @@
 #define TMAP_Y		(0x4c26)	/* signed short[10] */
 #define FNAMES		(0x4c8c)
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
+#define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
 #define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */

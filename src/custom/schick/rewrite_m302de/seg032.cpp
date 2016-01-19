@@ -879,10 +879,10 @@ signed short do_fight(signed short fight_nr)
 		host_writeb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x13, 1);
 	}
 
-	if (ds_readws(0x5f16) > 0) {
+	if (ds_readws(MAX_ENEMIES) > 0) {
 
-		memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * ds_readws(0x5f16) + 22, 0, 5 * (20 - ds_readws(0x5f16)));
-		ds_writew(0x5f16, 0);
+		memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * ds_readws(MAX_ENEMIES) + 22, 0, 5 * (20 - ds_readws(MAX_ENEMIES)));
+		ds_writew(MAX_ENEMIES, 0);
 	}
 
 	/* state that we are in a fight */
@@ -1063,7 +1063,7 @@ signed short do_fight(signed short fight_nr)
 			FIG_loot_monsters();
 			FIG_split_ap();
 
-			if ((ds_readws(0x5f16) != 0) && (ds_readws(0x26c1) == 0)) {
+			if ((ds_readws(MAX_ENEMIES) != 0) && (ds_readws(0x26c1) == 0)) {
 
 				for (l_di = 0; l_di < 20; l_di++) {
 					or_ds_bs(0xd37c + 62 * l_di, 1);
@@ -1168,7 +1168,7 @@ signed short do_fight(signed short fight_nr)
 
 	ds_writeb(0x26ac, ds_writeb(0x2cce, 0));
 	ds_writew(0x26c1, 0);
-	ds_writew(0x5f16, 0);
+	ds_writew(MAX_ENEMIES, 0);
 	ds_writew(IN_FIGHT, 0);
 	ds_writew(0x2846, 1);
 	ds_writew(CURRENT_ANI, -1);
