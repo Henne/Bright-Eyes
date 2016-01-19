@@ -508,21 +508,27 @@ void tevent_101(void)
 
 		ds_writew(MAX_ENEMIES, mod);
 
+		/* Original-Bugfix: see description in tevent_099() */
 		if (answer == 1) {
 
 			if (!do_fight(190)) {
 				ds_writeb(0x3df4, 1);
-			} else {
+#ifdef M302de_ORIGINAL_BUGFIX
+			}
+#endif
+		} else {
 
-				if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, mod) <= 0) {
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, mod) <= 0) {
 
-					ds_writeb(0x26ac, 1);
+				ds_writeb(0x26ac, 1);
 
-					if (!do_fight(190)) {
-						ds_writeb(0x3df4, 1);
-					}
+				if (!do_fight(190)) {
+					ds_writeb(0x3df4, 1);
 				}
 			}
+#ifndef M302de_ORIGINAL_BUGFIX
+			}
+#endif
 		}
 	}
 }
