@@ -11200,7 +11200,8 @@ static int seg113(unsigned short offs)
 		return 1;
 	}
 	case 0x39: {
-		return 0;
+		tevent_102();
+		return 1;
 	}
 	case 0x3e: {
 		return 0;
