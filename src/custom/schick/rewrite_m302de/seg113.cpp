@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 19/22
+ *	Functions rewritten: 20/22
 */
 
 #include <stdio.h>
@@ -12,6 +12,7 @@
 #include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
+#include "seg027.h"
 #include "seg028.h"
 #include "seg029.h"
 #include "seg032.h"
@@ -795,6 +796,76 @@ void tevent_106(void)
 		ds_writeb(0x3df5, 1);
 		TRV_found_camp_place(1);
 	}
+}
+
+/* Borlandified and identical */
+void tevent_107(void)
+{
+	signed short i;
+	signed short answer;
+	Bit8u *hero;
+
+	load_ani(1);
+	draw_main_screen();
+	init_ani(0);
+
+	do {
+		answer = GUI_radio(get_city(0x100), 2,
+					get_city(0x104), get_city(0x108));
+	} while (answer == -1);
+
+	if (answer == 1) {
+
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += 0x6da) {
+			if (host_readbs(hero + 0x21) != 0 &&
+				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero) &&
+				test_skill(hero, 10, 1) <= 0)
+			{
+
+				if (get_first_hero_with_item(121) != -1) {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x118),
+						(char*)hero + 0x10);
+
+					sub_hero_le(hero, random_schick(11) + 1);
+
+				} else {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x11c),
+						(char*)hero + 0x10);
+
+					sub_hero_le(hero, random_schick(11) + 4);
+				}
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			}
+		}
+
+		GUI_output(get_city(0x114));
+
+	} else {
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 1) > 0) {
+
+			timewarp(HOURS(3));
+
+			GUI_output(get_city(0x10c));
+
+		} else {
+
+			timewarp(HOURS(12));
+
+			GUI_output(get_city(0x110));
+
+		}
+	}
+
+	set_var_to_zero();
+	ds_writew(0x2846, 1);
 }
 
 #if !defined(__BORLANDC__)
