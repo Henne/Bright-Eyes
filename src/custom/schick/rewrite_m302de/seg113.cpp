@@ -1,6 +1,10 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
  *	Functions rewritten: 22/22 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg113.cpp
 */
 
 #include <stdio.h>
@@ -28,7 +32,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 /* The Tatzelwurm */
 void tevent_080(void)
 {
@@ -96,7 +99,6 @@ void tevent_080(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_081(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3de6)) ||
@@ -107,13 +109,11 @@ void tevent_081(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_082(void)
 {
 	TRV_cross_a_ford(get_dtp(0xcc), 30, 1);
 }
 
-/* Borlandified and identical */
 void tevent_083(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 6) > 0 && !ds_readb(0x3de7)) ||
@@ -126,7 +126,6 @@ void tevent_083(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_084(void)
 {
 	signed short answer;
@@ -162,7 +161,6 @@ void tevent_084(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_085(void)
 {
 	Bit8u *hero = Real2Host(get_first_hero_available_in_group());
@@ -185,7 +183,6 @@ void tevent_085(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_086(void)
 {
 	signed short i;
@@ -231,7 +228,6 @@ void tevent_086(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_088(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dec)) ||
@@ -242,13 +238,11 @@ void tevent_088(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_089(void)
 {
 	TRV_cross_a_ford(get_dtp(0xcc), 40, 2);
 }
 
-/* Borlandified and identical */
 void tevent_097(void)
 {
 	if (TRV_enter_hut_question()) {
@@ -264,7 +258,6 @@ void tevent_097(void)
  *
  * disappeared heros can be found in the efferd temple in liskor
  */
-/* Borlandified and identical */
 void tevent_098(void)
 {
 	signed short answer;
@@ -399,7 +392,6 @@ void tevent_098(void)
 	} while (repeat);
 }
 
-/* Borlandified and identical */
 void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 {
 
@@ -444,7 +436,6 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 	ds_writeb(CHECK_PARTY, 1);
 }
 
-/* Borlandified and identical */
 /* fight with 4 harpyes */
 void tevent_099(void)
 {
@@ -488,7 +479,6 @@ void tevent_099(void)
 	}
 }
 
-/* Borlandified and identical */
 /* fight with 2-6 harpyes */
 void tevent_101(void)
 {
@@ -535,7 +525,6 @@ void tevent_101(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_102(void)
 {
 	if (TRV_enter_hut_question())
@@ -546,7 +535,6 @@ void tevent_102(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_103(void)
 {
 	signed short answer;
@@ -621,7 +609,6 @@ void tevent_103(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_104(void)
 {
 	signed short l_si;
@@ -776,7 +763,6 @@ void tevent_104(void)
 	} while (!done);
 }
 
-/* Borlandified and identical */
 void tevent_105(void)
 {
 	if (TRV_enter_hut_question()) {
@@ -787,7 +773,6 @@ void tevent_105(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_106(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 4) > 0 && !ds_readb(0x3df5)) ||
@@ -798,7 +783,6 @@ void tevent_106(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_107(void)
 {
 	signed short i;
@@ -868,7 +852,6 @@ void tevent_107(void)
 	ds_writew(0x2846, 1);
 }
 
-/* Borlandified and identical */
 void tevent_108(void)
 {
 	signed short answer;
@@ -905,7 +888,6 @@ void tevent_108(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_109(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 6) > 0 && !ds_readb(0x3df7)) ||
