@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 20/22
+ *	Functions rewritten: 21/22
 */
 
 #include <stdio.h>
@@ -866,6 +866,43 @@ void tevent_107(void)
 
 	set_var_to_zero();
 	ds_writew(0x2846, 1);
+}
+
+/* Borlandified and identical */
+void tevent_108(void)
+{
+	signed short answer;
+
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 51, 3) > 0) && !ds_readb(0x3df6))
+	{
+		ds_writeb(0x3df6, 1);
+
+		GUI_dialog_na(53, get_city(0x120));
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x124), 2,
+						get_city(0x128), get_city(0x12c));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			ds_writeb(0x4333, 8);
+		}
+
+	} else if (ds_readb(0x3df6) != 0) {
+
+		load_in_head(53);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x130), 2,
+						get_city(0x134), get_city(0x138));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			ds_writeb(0x4333, 8);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
