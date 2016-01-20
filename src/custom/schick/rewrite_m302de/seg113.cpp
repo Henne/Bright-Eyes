@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 17/22
+ *	Functions rewritten: 18/22
 */
 
 #include <stdio.h>
@@ -775,6 +775,16 @@ void tevent_104(void)
 	} while (!done);
 }
 
+/* Borlandified and identical */
+void tevent_105(void)
+{
+	if (TRV_enter_hut_question()) {
+
+		ds_writeb(LOCATION, 6);
+		do_location();
+		ds_writeb(LOCATION, 0);
+	}
+}
 #if !defined(__BORLANDC__)
 }
 #endif
