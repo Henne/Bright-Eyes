@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg113 (travel events 5 / 10)
- *	Functions rewritten: 16/22
+ *	Functions rewritten: 17/22
 */
 
 #include <stdio.h>
@@ -17,6 +17,7 @@
 #include "seg032.h"
 #include "seg047.h"
 #include "seg097.h"
+#include "seg098.h"
 #include "seg103.h"
 #include "seg105.h"
 #include "seg109.h"
@@ -617,6 +618,157 @@ void tevent_103(void)
 			GUI_output(get_city(0xd4));
 		}
 	}
+}
+
+/* Borlandified and identical */
+void tevent_104(void)
+{
+	signed short l_si;
+	signed short done;
+	signed short i;
+	signed short nr_heros;
+	Bit8u *hero;
+	signed short spell_result;
+
+	done = 0;
+
+	load_in_head(57);
+
+	do {
+
+		GUI_dialog_na(0, get_city(0xd8));
+
+		hero = get_hero(0);
+
+		for (i = l_si = nr_heros = 0; i <= 6; i++, hero += 0x6da)
+		{
+			if (host_readbs(hero + 0x21) != 0 &&
+				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero))
+			{
+				nr_heros++;
+
+				/* test for HA+0 */
+
+				if (test_attrib(hero, 8, 0) > 0)
+				{
+
+					timewarp(MINUTES(30));
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+						(char*)get_city(0xdc),
+						(char*)hero + 0x10);
+
+					GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+					l_si++;
+				}
+			}
+		}
+
+		if (!l_si) {
+
+			/* everything is fine */
+
+			GUI_dialog_na(0, get_city(0xfc));
+			done = 1;
+
+		} else if (l_si == nr_heros) {
+
+			/* all heros have failed the test */
+
+			do {
+				l_si = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+							get_city(0xe0), 2,
+							get_city(0xe4), get_city(0xe8));
+			} while (l_si == -1);
+
+			if (l_si == 2) {
+				/* make a camp */
+
+				ds_writebs(LOCATION, 6);
+				do_location();
+				ds_writebs(LOCATION, 0);
+
+				TRV_load_textfile(-1);
+
+			} else {
+				/* turn around */
+
+				ds_writew(0x4336, done = 1);
+			}
+
+		} else {
+
+			/* some heros, but not all, have failed the test */
+
+			nr_heros = 0;
+
+			do {
+
+				do {
+					l_si = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+								(nr_heros == 0 ? get_city(0xec) : get_city(0x15c)), 3,
+								get_city(0xf0), get_city(0xf4), get_city(0xf8));
+				} while (l_si == -1);
+
+				if (l_si == 1) {
+
+					timewarp(HOURS(2));
+
+					GUI_dialog_na(0, get_city(0xfc));
+
+					done = 1;
+
+				} else if (l_si == 2) {
+
+					hero = get_hero(select_hero_ok_forced(get_ltx(0x4f4)));
+
+					if (host_readbs(hero + 0x21) < 7) {
+						/* hero is not a spell user */
+						GUI_output(get_ltx(0x528));
+					} else {
+
+						spell_result = test_spell(hero, 7, 0);
+
+						if (spell_result > 0) {
+
+							sub_ae_splash(hero, get_spell_cost(7, 0));
+
+							GUI_output(get_city(0x40));
+
+							done = 1;
+
+						} else if (spell_result != -99) {
+
+							sub_ae_splash(hero, get_spell_cost(7, 1));
+
+							nr_heros = 1;
+
+						} else {
+
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_ltx(0x97c),
+								(char*)hero + 0x10);
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+						}
+
+						timewarp(MINUTES(30));
+					}
+				} else {
+
+					timewarp(HOURS(4));
+
+					GUI_dialog_na(0, get_city(0xfc));
+
+					done = 1;
+				}
+
+			} while (!done);
+		}
+
+	} while (!done);
 }
 
 #if !defined(__BORLANDC__)
