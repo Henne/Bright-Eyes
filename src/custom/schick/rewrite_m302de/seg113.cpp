@@ -550,7 +550,8 @@ void tevent_103(void)
 	signed short answer;
 	Bit8u *hero;
 
-#if !defined(__BORLANDC__)
+	/* Original-Bug: save the address instead the return value of a function as a hero */
+#ifdef M302de_ORIGINAL_BUGFIX
 	hero = Real2Host(get_first_hero_available_in_group());
 #else
 	hero = Real2Host(get_first_hero_available_in_group);
