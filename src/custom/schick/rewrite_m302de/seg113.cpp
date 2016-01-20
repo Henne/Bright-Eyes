@@ -691,6 +691,10 @@ void tevent_104(void)
 				ds_writebs(LOCATION, 0);
 
 				TRV_load_textfile(-1);
+#ifdef M302de_ORIGINAL_BUGFIX
+				/* Original-Bug: The dialog picture is lost when a campfight occurs. */
+				load_in_head(57);
+#endif
 
 			} else {
 				/* turn around */
