@@ -109,6 +109,7 @@
 #define FOOD_MESSAGE	(0x4219)
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
+#define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
 #define ARSENAL_MONEY	(0x43a3)	/* signed short {-1, 0 - 60 } */
 #define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */
 #define CHECK_PARTY	(0x4495)

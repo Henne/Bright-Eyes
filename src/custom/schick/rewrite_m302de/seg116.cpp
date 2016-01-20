@@ -156,7 +156,7 @@ void tevent_133(void)
 	} while (answer == -1);
 
 	if (answer == 1) {
-		ds_writews(0x4336, 1);
+		ds_writews(TRV_RETURN, 1);
 	} else {
 
 		GUI_output(get_city(0x98));

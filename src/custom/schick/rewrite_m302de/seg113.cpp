@@ -699,7 +699,7 @@ void tevent_104(void)
 			} else {
 				/* turn around */
 
-				ds_writew(0x4336, done = 1);
+				ds_writew(TRV_RETURN, done = 1);
 			}
 
 		} else {

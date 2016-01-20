@@ -353,7 +353,7 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 			answer = GUI_bool(get_dtp(0x9c));
 
 			if (answer == 1) {
-				done = ds_writew(0x4336, 1);
+				done = ds_writew(TRV_RETURN, 1);
 			}
 		}
 
@@ -470,7 +470,7 @@ signed short TRV_ferry(Bit8u *msg, signed short price)
 		} else {
 
 			if (GUI_bool(get_dtp(0x84))) {
-				ds_writew(0x4336, done = 1);
+				ds_writew(TRV_RETURN, done = 1);
 			}
 		}
 

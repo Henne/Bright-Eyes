@@ -626,7 +626,7 @@ void tevent_064(void)
 
 			GUI_output(get_city(0x118));
 
-			ds_writews(0x4336, ds_readws(0x4336) == 0 ? 1 : -1);
+			ds_writews(TRV_RETURN, ds_readws(TRV_RETURN) == 0 ? 1 : -1);
 		}
 
 	} else if (ds_readb(0x3dc9) != 0) {
