@@ -3902,6 +3902,23 @@ static int n_seg109(unsigned offs)
 	}
 }
 
+static int n_seg112(unsigned offs)
+{
+	switch (offs) {
+	case 0x062d: {
+		Bit16s mod = CPU_Pop16();
+		Bit16s percent = CPU_Pop16();
+		CPU_Push16(percent);
+		CPU_Push16(mod);
+
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg113(unsigned offs) {
 	switch (offs) {
 	case 0x900: {
@@ -11179,6 +11196,51 @@ static int seg111(unsigned short offs)
 	}
 }
 
+static int seg112(unsigned short offs)
+{
+	switch (offs) {
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg113(unsigned short offs)
 {
 	switch (offs) {
@@ -11633,7 +11695,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		case 0x149b:	return seg109(offs);
 		case 0x14a7:	return 0;
 		case 0x14b4:	return seg111(offs);
-		case 0x14bb:	return 0;
+		case 0x14bb:	return seg112(offs);
 		case 0x14c2:	return seg113(offs);
 		case 0x14cb:	return 0;
 		case 0x14d1:	return 0;
@@ -11715,6 +11777,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1485)) retval = n_seg105(offs);
 	else if (is_ovrseg(0x148c)) retval = n_seg106(offs);
 	else if (is_ovrseg(0x149b)) retval = n_seg109(offs);
+	else if (is_ovrseg(0x14bb)) retval = n_seg112(offs);
 	else if (is_ovrseg(0x14c2)) retval = n_seg113(offs);
 	else if (is_ovrseg(0x14e0)) retval = n_seg117(offs);
 	else if (is_ovrseg(0x14f0)) retval = n_seg120(offs);
