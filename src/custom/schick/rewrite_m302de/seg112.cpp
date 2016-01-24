@@ -114,7 +114,9 @@ void tevent_067(void)
 /* Borlandified and identical */
 void tevent_068(void)
 {
-
+#if !defined(__BORLANDC__)
+	D1_INFO("Reiseevent %d ist nicht implementiert\n", 68);
+#endif
 }
 
 /* Borlandified and identical */
