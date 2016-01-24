@@ -427,7 +427,9 @@ void tevent_061(void)
 /* dummy Orvil<->Skjal */
 void tevent_062(void)
 {
-
+#if !defined(__BORLANDC__)
+	D1_INFO("Reiseevent %d ist nicht implementiert\n", 62);
+#endif
 }
 
 /* dead animal Orvil<->Skjal */
