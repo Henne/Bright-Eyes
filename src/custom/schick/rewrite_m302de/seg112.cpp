@@ -111,6 +111,12 @@ void tevent_067(void)
 	}
 }
 
+/* Borlandified and identical */
+void tevent_068(void)
+{
+
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
