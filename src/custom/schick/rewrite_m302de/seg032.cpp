@@ -1009,6 +1009,7 @@ signed short do_fight(signed short fight_nr)
 				and_ptr_bs(hero + 0xaa, 0x7f);
 				and_ptr_bs(hero + 0xaa, 0xfd);
 				and_ptr_bs(hero + 0xaa, 0xef);
+				/* reset duplicatus spell flag */
 				and_ptr_bs(hero + 0xab, 0xfb);
 				and_ptr_bs(hero + 0xab, 0xfe);
 				host_writebs(hero + 0x96, 0);
