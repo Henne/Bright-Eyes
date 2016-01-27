@@ -183,7 +183,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 	sub_ptr_ws(enemy + 0x13, damage);
 
 	/* are the enemies LE lower than 0 */
-	if ((signed short)host_readw(enemy + 0x13) <= 0) {
+	if (host_readws(enemy + 0x13) <= 0) {
 		/* set a flag, maybe dead */
 		or_ptr_bs(enemy + 0x31, 1);
 		/* set LE to 0 */
@@ -206,7 +206,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 			/* slaying Gorah make everything flee than Heshtot*/
 			for (i = 0; i < 20; i++) {
 #if !defined(__BORLANDC__)
-				if (ds_readb(ENEMY_SHEETS + 1 + i * 62) != 0x1a)
+				if (ds_readb(ENEMY_SHEETS + 1 + i * 62) != 26)
 					or_ds_bs((ENEMY_SHEETS + 0x32) + i * 62, 4);
 #else
 				if ( ((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].gfx_id != 0x1a)
@@ -222,6 +222,8 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 
 signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
 {
+	signed short damage;
+	signed short l_di;
 	Bit8u* item_p_rh;
 	Bit8u* p2;
 	Bit8u* p3;
@@ -237,9 +239,6 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	signed char enemy_gfx_id;
 	Bit8u* enemy_p;
 	signed short v11;
-
-	register signed short damage;
-	register signed short l_di;
 
 	l_di = 0;
 
@@ -264,7 +263,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		damage = dice_roll(host_readbs(p2), 6, host_readbs(p2 + 1));
 
 		if (host_readbs(p2 + 4) != -1) {
-			/* 0x391 - 0x4da */
+
 			v9 = get_hero_index(hero);
 
 			FIG_search_obj_on_cb(v9 + 1, &x_hero, &y_hero);
@@ -321,7 +320,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 
 		} else {
-			/* 0x4dc - 0x502 */
+
 			l_di = host_readbs(hero + 0x47) + host_readbs(hero + 0x48) - host_readbs(p2 + 2);
 			if (l_di > 0) {
 				damage += l_di;
@@ -332,7 +331,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	}
 
 	if (attack_hero == 0) {
-		/* 0x517 - 0x600 */
+
 		enemy_gfx_id = host_readbs(enemy_p + 1);
 
 		if ((right_hand == 0xac) && (enemy_gfx_id == 0x1c || enemy_gfx_id == 0x22)) {
@@ -371,7 +370,6 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	damage += host_readbs(hero + 0x98);
 
 	if (damage > 0) {
-		/* 0x612 - 0x6c4 */
 
 		if (ks_poison1(hero + 0x1c0)) {
 			damage += dice_roll(1, 6, 2);
