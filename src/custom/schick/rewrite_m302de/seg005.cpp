@@ -150,7 +150,7 @@ RealPt FIG_name_4th_case(unsigned short type, volatile unsigned short pos)
 */
 //static
 RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
- {
+{
 
 	if (type == 2)
 		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
@@ -515,7 +515,6 @@ void draw_fight_screen(Bit16u val)
 							add_ptr_bs(list_i + 2,
 								host_readbs(sheet + (ds_readw(0xe2a8 +  host_readbs(list_i + 0x0e) * 2) * 3) + 3));
 						} else {
-							/* DONE: 0xbfc - 0xc56 */
 
 							host_writews(list_i,
 
@@ -537,7 +536,7 @@ void draw_fight_screen(Bit16u val)
 									host_writeb(list_i + 9, ds_readb(0x6031));
 									host_writeb(list_i + 0xb, ds_readb(0x6035));
 								}
-								/* DONE: 0xc6c - 0xcba */
+
 							} else {
 								host_writeb(list_i + 5,
 										ds_readbs(0x1531 + host_readbs(list_i + 0x16) * 10 + host_readbs(list_i + 2) * 2));
@@ -548,7 +547,6 @@ void draw_fight_screen(Bit16u val)
 									host_writeb(list_i + 9, ds_readb(0x6030 + host_readbs(list_i + 2)));
 									host_writeb(list_i + 0xb, ds_readb(0x6034 + host_readbs(list_i + 2)));
 								}
-								/* DONE: 0xcbc - 0xd38 */
 							}
 
 						} else {
@@ -557,7 +555,7 @@ void draw_fight_screen(Bit16u val)
 										ds_readbs(0x1539 + host_readbs(list_i + 0x16) * 10));
 								host_writeb(list_i + 6,
 										ds_readbs(0x153a + host_readbs(list_i + 0x16) * 10));
-								/* DONE: 0xd57 - 0xd87 */
+
 							} else {
 								diff = host_readbs(list_i + 2) - ds_readws(0x11e4 + host_readbs(list_i + 0x16) * 2);
 
@@ -647,7 +645,6 @@ void draw_fight_screen(Bit16u val)
 
 							obj_y += host_readbs(list_i + 6);
 
-							/* DONE: 0xefc - 0x111d */
 						}
 					} else {
 
@@ -723,7 +720,6 @@ void draw_fight_screen(Bit16u val)
 											ds_writew(0xe2ac + host_readbs(list_i + 0xe) * 2, -1);
 										}
 
-									/* DONE: 0x1295 - 0x13fc */
 								} else {
 									if (!tmp) {
 										FIG_set_cb_field(host_readbs(list_i + 4), host_readbs(list_i + 3), height);
@@ -750,7 +746,6 @@ void draw_fight_screen(Bit16u val)
 							ds_writew(0xe2a8 + host_readbs(list_i + 0x0e) * 2, -1);
 							host_writeb(list_i + 0x0e, host_writebs(list_i + 0x0f, -1));
 
-							/* DONE: 0x14c6 - 0x14ff */
 						} else {
 							obj_x = 10 - (host_readbs(list_i + 8) / 2) +
 								(10 * (host_readbs(list_i + 3) + host_readbs(list_i + 4)));
@@ -988,12 +983,14 @@ to the DOSBox-CPU and may run the timer.
 }
 
 //static
-void set_delay_timer() {
+void set_delay_timer(void)
+{
 	/* set delay_timer to delay_factor */
 	ds_writew(DELAY_TIMER, ds_readw(DELAY_FACTOR));
 }
+
 //static
-void fight_delay()
+void fight_delay(void)
 {
 	seg001_02c4();
 
