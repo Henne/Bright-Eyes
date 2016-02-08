@@ -207,9 +207,9 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 			(!hero_dead(get_hero(cb_val - 1))) &&
 			(!hero_unc(get_hero(cb_val - 1)))
 			) || (
-			(cb_val >= 10) && (cb_val < 30)) &&
+			(cb_val >= 10) && (cb_val < 30) &&
 				(!enemy_dead(p_datseg + 0xd0df + cb_val * 62))  &&
-				(enemy_bb(p_datseg + 0xd0df + cb_val * 62))
+				(enemy_bb(p_datseg + 0xd0df + cb_val * 62)))
 			)
 		{
 			return 1;
