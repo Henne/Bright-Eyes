@@ -3,8 +3,8 @@
  *	Functions rewritten: 15/15 (complete)
  *
  *	Borlandified and identical
- *	Compiler: Borland C++ 3.1
- *	Call:	BCC.EXE -mlarge -O- -c -1 -Yo seg111.cpp
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg111.cpp
 */
 
 #include <stdio.h>
