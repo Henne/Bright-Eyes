@@ -337,7 +337,7 @@ void PHX_apotheke(void)
 
 
 		do {
-			answer = GUI_radio(get_city(0xe4), options,
+			answer = GUI_radio(get_city(0xe4), (signed char)options,
 						get_city(0xf8),
 						get_city(0xf4),
 						get_city(0xf0));
@@ -362,7 +362,7 @@ void PHX_apotheke(void)
 		answer = money >= 500 ? 3 : 2;
 
 		do {
-			answer = GUI_radio(get_city(0xe8), answer,
+			answer = GUI_radio(get_city(0xe8), (signed char)answer,
 						get_city(0xfc),
 						get_city(0x104),
 						get_city(0x100));
@@ -412,7 +412,7 @@ void PHX_apotheke(void)
 				answer = money >= 500 ? 3 : 2;
 
 				do {
-					answer = GUI_radio(get_city(0xe8), answer,
+					answer = GUI_radio(get_city(0xe8), (signed char)answer,
 								get_city(0xfc),
 								get_city(0x104),
 								get_city(0x100));
@@ -440,7 +440,7 @@ void PHX_apotheke(void)
 			answer = money >= 1000 ? 3 : 2;
 
 			do {
-				answer = GUI_radio(get_city(0xe4), answer,
+				answer = GUI_radio(get_city(0xe4), (signed char)answer,
 							get_city(0xf8),
 							get_city(0xf4),
 							get_city(0xf0));
@@ -550,7 +550,7 @@ void PHX_healer(void)
 				answer = money >= 500 ? 3 : (money >= 10 ? 2 : 1);
 
 				do {
-					answer = GUI_radio(get_city(0x174), answer,
+					answer = GUI_radio(get_city(0x174), (signed char)answer,
 								get_city(0x180),
 								get_city(0x178),
 								get_city(0x17c));
