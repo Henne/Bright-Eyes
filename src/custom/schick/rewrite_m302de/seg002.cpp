@@ -273,16 +273,16 @@ RealPt read_music_driver(RealPt fname)
 /* static */
 signed short prepare_midi_playback(signed short sequence)
 {
-	volatile signed short patch;
-	RealPt ptr;
 	unsigned short l_si;
-	unsigned short l_di;
+	signed short l_di;
+	signed short patch;
+	RealPt ptr;
 
 	if ((ds_writews(0xbd01, load_archive_file(0x97))) != -1) {
 
 		if ((ds_writews(0xbd21, AIL_register_sequence(ds_readw(0xbd23), (RealPt)ds_readd(0xbd0d), sequence, (RealPt)ds_readd(0xbd15), 0))) != -1) {
 
-			while ( (l_si = AIL_timbre_request(ds_readw(0xbd23), ds_readw(0xbd21))) != -1)
+			while ( (l_si = AIL_timbre_request(ds_readw(0xbd23), ds_readw(0xbd21))) != (unsigned short)-1)
 			{
 				l_di = l_si >> 8;
 				patch = l_si & 0xff;
