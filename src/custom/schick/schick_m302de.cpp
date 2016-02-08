@@ -1396,18 +1396,16 @@ static int n_seg032(unsigned offs)
 	switch (offs) {
 	/* Callers: 1 */
 	case 0x0000: {
-		signed short row = CPU_Pop16();
-		signed short col = CPU_Pop16();
-		signed short object = CPU_Pop16();
+		Bit16s row = CPU_Pop16();
+		Bit16s col = CPU_Pop16();
+		Bit16s object = CPU_Pop16();
 		CPU_Push16(object);
 		CPU_Push16(col);
 		CPU_Push16(row);
 
-		signed char obj = object & 0xff;
-
-		FIG_set_cb_field(row, col, obj);
+		FIG_set_cb_field(row, col, object);
 		D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
-			row, col, obj);
+			row, col, object);
 		return 1;
 	}
 	case 0x0032: {
@@ -7327,18 +7325,16 @@ static int seg032(unsigned short offs) {
 			return 1;
 		}
 		case 0x25: {
-			signed short row = CPU_Pop16();
-			signed short col = CPU_Pop16();
-			signed short object = CPU_Pop16();
+			Bit16s row = CPU_Pop16();
+			Bit16s col = CPU_Pop16();
+			Bit16s object = CPU_Pop16();
 			CPU_Push16(object);
 			CPU_Push16(col);
 			CPU_Push16(row);
 
-			signed char obj = object & 0xff;
-
-			FIG_set_cb_field(row, col, obj);
+			FIG_set_cb_field(row, col, object);
 			D1_LOG("FIG_set_cb_field(row=%d,col=%d,object=%d);\n",
-				row, col, obj);
+				row, col, object);
 			return 1;
 		}
 		case 0x2a: {
