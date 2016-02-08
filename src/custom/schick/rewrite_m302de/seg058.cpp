@@ -88,7 +88,7 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 		host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 4, 1);
 	}
 
-	host_writebs(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 6, item_pos);
+	host_writebs(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 6, (signed char)item_pos);
 }
 
 struct dummy3 {

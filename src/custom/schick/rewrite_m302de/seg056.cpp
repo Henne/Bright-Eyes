@@ -677,7 +677,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 			host_readbs(get_itemsdat(item_id) + 7));
 	}
 
-	host_writeb(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 6, item_pos);
+	host_writebs(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 6, (signed char)item_pos);
 }
 
 #if !defined(__BORLANDC__)

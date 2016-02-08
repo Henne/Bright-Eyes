@@ -284,13 +284,13 @@ void do_inn(void)
 				(char*)get_ltx(0x63c),
 				(signed short)l10);
 
-			ds_writebs(SLEEP_QUALITY, GUI_radio(get_ltx(0x630), 3,
+			ds_writebs(SLEEP_QUALITY, (signed char)GUI_radio(get_ltx(0x630), 3,
 							Real2Host(ds_readd(DTP2)),
 							Real2Host(ds_readd(DTP2)) + 50,
 							Real2Host(ds_readd(DTP2)) + 100));
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
-				ds_writebs(BOOKED_INN_DAYS, GUI_input(get_ltx(0xce8), 2));
+				ds_writebs(BOOKED_INN_DAYS, (signed char)GUI_input(get_ltx(0xce8), 2));
 			}
 
 			if (ds_readbs(BOOKED_INN_DAYS) <= 0) {
@@ -350,7 +350,7 @@ void do_inn(void)
 						if (magic_act[answer] != 0) {
 							GUI_output(get_ltx(0x538));
 						} else {
-							magic_act[answer] = use_magic(hero);
+							magic_act[answer] = (signed char)use_magic(hero);
 						}
 					} else {
 						GUI_output(get_ltx(0x528));

@@ -90,7 +90,7 @@ void do_wildcamp(void)
 
 			i = !ds_readb(0xe4c8) ? 6 : 7;
 
-			answer = GUI_radio(get_ltx(0x4cc), i,
+			answer = GUI_radio(get_ltx(0x4cc), (signed char)i,
 						get_ltx(0x4d0), get_ltx(0x4d4),
 						get_ltx(0x350), get_ltx(0x4d8),
 						get_ltx(0x4ec), get_ltx(0x4f0),
@@ -145,7 +145,7 @@ void do_wildcamp(void)
 					} while (answer == -1);
 
 					inc_ds_bs_post(0xe3d6 + answer);
-					ds_writebs(0xe3be + i, answer);
+					ds_writebs(0xe3be + i, (signed char)answer);
 				}
 			}
 
@@ -194,7 +194,7 @@ void do_wildcamp(void)
 						if (ds_readbs(0xe3cf + answer) != 0) {
 							GUI_output(get_ltx(0x538));
 						} else {
-							ds_writebs(0xe3cf + answer, use_magic(hero));
+							ds_writebs(0xe3cf + answer, (signed char)use_magic(hero));
 						}
 					}
 				} else {
@@ -237,11 +237,11 @@ void do_wildcamp(void)
 					{
 						hero = (RealPt)ds_readd(HEROS) + 0x6da * answer;
 
-						herb_hours = GUI_input(get_ltx(0x51c), 1);
+						herb_hours = (signed char)GUI_input(get_ltx(0x51c), 1);
 
 						if (herb_hours > 0)
 						{
-							ds_writebs(0xe3c1 + answer, herb_tries = l_di = 1);
+							ds_writebs(0xe3c1 + answer, (signed char)(herb_tries = l_di = 1));
 
 							if (ds_readbs(0xe4c8) == 99) {
 								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(0xd32f) + 99);
@@ -258,7 +258,7 @@ void do_wildcamp(void)
 
 			if (GUI_bool(get_ltx(0x4f8))) {
 
-				l3 = ds_readds(DAY_TIMER) / HOURS(1);
+				l3 = (signed short)(ds_readds(DAY_TIMER) / HOURS(1));
 
 				l3 = ds_readds(DAY_TIMER) < HOURS(8) ? 8 - l3 : 24 - l3 + 8;
 
@@ -399,7 +399,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 		if (random_schick(100) <= host_readb(ptr + 1) &&
 			test_skill(hero, 29, host_readb(ptr + 3) - hours + mod) > 0) {
 
-			herb_count[i] = give_hero_new_item(hero, host_readb(ptr), 0, random_schick(host_readb(ptr + 2)));
+			herb_count[i] = (signed char)give_hero_new_item(hero, host_readb(ptr), 0, random_schick(host_readb(ptr + 2)));
 
 			if (herb_count[i] != 0) {
 				herbs++;
@@ -511,7 +511,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					retval = 1;
 
 					/* search for water */
-					if (test_skill(Real2Host(hero), 31, mod) > 0 || ds_readd(INGAME_TIMERS + 4)) {
+					if (test_skill(Real2Host(hero), 31, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 4)) {
 
 						/* found water */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -546,7 +546,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					delay_or_keypress(200);
 
 					/* search for food */
-					if (test_skill(Real2Host(hero), 26, mod) > 0 || ds_readd(INGAME_TIMERS + 0xc)) {
+					if (test_skill(Real2Host(hero), 26, (signed char)mod) > 0 || ds_readd(INGAME_TIMERS + 0xc)) {
 
 						/* remove hunger of all living heros in the current group */
 						hero2 = get_hero(0);

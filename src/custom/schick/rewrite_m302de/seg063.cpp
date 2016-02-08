@@ -161,7 +161,7 @@ void do_harbour(void)
 			} else {
 
 				/* select a destination */
-				answer = GUI_radio(get_dtp(0x38), answer,
+				answer = GUI_radio(get_dtp(0x38), (signed char)answer,
 						get_ltx(4 * (ds_readb((0x42b2 + 12 * 0 + 10)) + 235)),
 						get_ltx(4 * (ds_readb((0x42b2 + 12 * 1 + 10)) + 235)),
 						get_ltx(4 * (ds_readb((0x42b2 + 12 * 2 + 10)) + 235)),
@@ -362,7 +362,7 @@ void do_harbour(void)
 
 				if (!ds_readb(0x4333)) {
 
-					ds_writebs(CURRENT_TOWN, ds_readws(0x4338));
+					ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
 					ds_writew(0x2d83, ds_readw(0x433a));
 					ds_writew(0x2d85, ds_readw(0x433c));
 					ds_writeb(DIRECTION, (ds_readws(0x433e) + 2) & 3);

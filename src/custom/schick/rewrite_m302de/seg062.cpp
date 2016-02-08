@@ -59,7 +59,7 @@ void ask_miracle(void)
 	/* check gods estimation */
 	if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) >= 100) {
 
-		bonus = (ga1.a[ds_readws(0xe3f8)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) / 100) / 10) - l3;
+		bonus = (signed short)((ga1.a[ds_readws(0xe3f8)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) / 100) / 10) - l3);
 
 		if (ds_readbs(CURRENT_TOWN) == 23) {
 			/* CLANEGH */
@@ -105,7 +105,7 @@ void ask_miracle(void)
 
 									slot = get_free_mod_slot();
 									set_mod_slot(slot, 3 * HOURS(24), get_hero(i) + 0x66,
-										99, i);
+										99, (signed char)i);
 
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_city(8),
@@ -295,7 +295,7 @@ void ask_miracle(void)
 
 								slot = get_free_mod_slot();
 								set_mod_slot(slot, 7 * HOURS(24), get_hero(i) + 0x7e,
-									1, i);
+									1, (signed char)i);
 
 								host_writebs(get_hero(i) + 0x7f, host_writebs(get_hero(i) + 0x80, 0));
 

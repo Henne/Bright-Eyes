@@ -210,7 +210,7 @@ void talk_tavern(void)
 			strcpy(ptr6, (char*)get_dtp(4 * l_si));
 
 			do {
-				answer = GUI_radio((Bit8u*)ptr3, options, ptr4, ptr5, ptr6);
+				answer = GUI_radio((Bit8u*)ptr3, (signed char)options, ptr4, ptr5, ptr6);
 			} while (answer == -1);
 		}
 
