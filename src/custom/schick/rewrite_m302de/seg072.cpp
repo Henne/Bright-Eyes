@@ -446,7 +446,7 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 		} else if (state == 20) {
 			/* drink with TIOMAR */
 			timewarp(HOURS(1));
-			ds_writew(0xe30e, test_skill(get_hero(ds_writeb(0x3468, get_random_hero())) , 18, 0) > 0 ? 21 : 22);
+			ds_writew(0xe30e, test_skill(get_hero(ds_writeb(0x3468, (unsigned char)get_random_hero())), 18, 0) > 0 ? 21 : 22);
 		} else if (state == 22) {
 			/* TIOMARS drinkmate gets drunken */
 			hero_get_drunken(get_hero(ds_readb(0x3468)));
@@ -661,7 +661,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			/* REMARK: what if the NPC is choosen ? */
 			/* REMARK: what if the positions are changed ? */
 			/* REMARK: what if the game is saved and the heros are at another mem location ? */
-			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * ds_writeb(UNICORN_HERO_POS, get_hero_CH_best())));
+			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * ds_writeb(UNICORN_HERO_POS, (unsigned char)get_hero_CH_best())));
 		} else if (state == 7) {
 			timewarp(HOURS(1));
 		} else if (state == 8) {
