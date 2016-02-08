@@ -349,8 +349,8 @@ signed short KI_search_spell_target(signed short x, signed short y,
 
 			} else if ( (obj_id != 0) && (((obj_id >= 10) && (obj_id < 30) &&
 					!enemy_dead(p_datseg + 0xd0df + obj_id * 62)
-					) || (obj_id >= 50) &&
-						!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46))
+					) || ((obj_id >= 50) &&
+						!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46)))
 					))
 				{
 					done = 1;
@@ -368,13 +368,13 @@ signed short KI_search_spell_target(signed short x, signed short y,
 #ifdef M302de_ORIGINAL_BUGFIX
 						(obj_id > 0) &&
 #endif
-						 ((obj_id < 10) &&
+						 (((obj_id < 10) &&
 						!hero_dead(get_hero(obj_id - 1)) &&
 						!hero_unc(get_hero(obj_id - 1))
 						) || (
 							(obj_id >= 50) &&
 							!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46))
-						)
+						))
 					)
 				)
 				{
