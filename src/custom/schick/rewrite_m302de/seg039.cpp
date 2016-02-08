@@ -231,30 +231,30 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 
 	/* check if the object is decoration */
 	if (object >= 50) {
-		if (((signed char)type == 57) || ((signed char)type == 56) || ((signed char)type == 62)) {
+		if (type == 57 || type == 56 || type == 62) {
 			FIG_set_cb_field(y + 1, x, object);
 			FIG_set_cb_field(y + 1, x - 1, object);
 			FIG_set_cb_field(y, x - 1, object);
-		} else if ((signed char)type == 9) {
+		} else if (type == 9) {
 				FIG_set_cb_field(y, x + 1, object);
 				FIG_set_cb_field(y - 1, x, object);
-		} else if ((signed char)type == 43 || (signed char)type == 44 || (signed char)type == 48 ||
-				(signed char)type == 49 || (signed char)type == 50 || (signed char)type == 51 ||
-				(signed char)type == 52 || (signed char)type == 53 || (signed char)type == 54 ||
-				(signed char)type == 55) {
+		} else if (type == 43 || type == 44 || type == 48 ||
+				type == 49 || type == 50 || type == 51 ||
+				type == 52 || type == 53 || type == 54 ||
+				type == 55) {
 
 				FIG_set_cb_field(y + 1, x, object);
-		} else if ((signed char)type == 60) {
+		} else if (type == 60) {
 			for (i = 0; i < 7; i++)
 				FIG_set_cb_field(y + i, x, object);
-		} else if ((signed char)type == 61) {
+		} else if (type == 61) {
 			for (i = 0; i < 7; i++)
 				FIG_set_cb_field(y, x + i, object);
 		}
 	} else {
 		/* if object is an enemy an needs 2 fields */
 		if (object >= 10 &&
-			is_in_byte_array((signed char)type, p_datseg + TWO_FIELDED_SPRITE_ID))
+			is_in_byte_array(type, p_datseg + TWO_FIELDED_SPRITE_ID))
 		{
 
 			/* check if field is empty */
