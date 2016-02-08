@@ -218,7 +218,7 @@ void init_AIL(Bit32u size)
 
 void exit_AIL(void)
 {
-	AIL_shutdown(NULL);
+	AIL_shutdown((RealPt)NULL);
 
 	if (ds_readd(0xbd11) != 0) {
 		bc_farfree((RealPt)ds_readd(0xbd11));

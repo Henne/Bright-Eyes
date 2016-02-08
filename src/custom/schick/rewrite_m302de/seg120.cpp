@@ -736,7 +736,7 @@ void call_gen(void)
 #endif
 			RealMake(datseg, 0xb4cd),
 			ds_readws(GAME_MODE) == 2 ? RealMake(datseg, 0xb4cf) : RealMake(datseg, 0xb4d1),
-			RealMake(datseg, 0xb4d3), NULL);
+			RealMake(datseg, 0xb4d3), (RealPt)NULL);
 
 	refresh_screen_size();
 
