@@ -1447,7 +1447,7 @@ static int n_seg032(unsigned offs)
 	case 0x242: {
 		reg_ax = FIG_get_first_active_hero();
 		D1_LOG("near FIG_get_first_active_hero() = %s\n",
-			reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+			(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
 		return 1;
 	}
 	/* Callers: 1 */
@@ -2220,7 +2220,7 @@ static int n_seg054(unsigned short offs)
 		case 0x0011: {
 			RealPt hero = get_first_busy_hero();
 			D1_LOG("get_first_busy_hero() = %s\n",
-				hero != NULL ? schick_getCharname(hero) : "NULL");
+				!hero ? "NULL" : schick_getCharname(hero));
 
 			reg_ax = RealOff(hero);
 			reg_dx = RealSeg(hero);
@@ -7353,7 +7353,7 @@ static int seg032(unsigned short offs) {
 			reg_ax = FIG_get_first_active_hero();
 
 			D1_LOG("FIG_get_first_active_hero(); = %s\n",
-				reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+				(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
 			return 1;
 		}
 		default:
