@@ -1835,7 +1835,7 @@ void game_loop(void)
 			ds_readws(0xc3c1) == 5 ||
 			ds_readws(0xc3c1) == 7)
 		{
-			ds_writeb(LOCATION, 0);
+			ds_writebs(LOCATION, 0);
 
 			do {
 				answer = load_game_state();
@@ -3904,7 +3904,7 @@ signed short can_merge_group(void)
 				/* check YTarget */
 				(ds_readw(i * 2 + 0x2d54) == ds_readw(Y_TARGET)) &&
 				/* check Location */
-				(ds_readb(0x2d61 + i) == ds_readb(LOCATION)) &&
+				(ds_readbs(0x2d61 + i) == ds_readbs(LOCATION)) &&
 				/* check currentTown */
 				(ds_readb(0x2d68 + i) == ds_readb(CURRENT_TOWN)) &&
 				/* check DungeonIndex */

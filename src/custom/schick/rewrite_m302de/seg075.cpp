@@ -1058,7 +1058,7 @@ mark2:			   goto mark1;
 	ds_writeb(DIRECTION, (signed char)dir);
 	ds_writeb(DUNGEON_LEVEL, (signed char)level);
 	ds_writeb(DUNGEON_INDEX, (signed char)dungeon_id);
-	ds_writeb(0x2d9f, ds_readb(LOCATION));
+	ds_writebs(0x2d9f, ds_readbs(LOCATION));
 	ds_writeb(0x2da6, ds_readb(CURRENT_TOWN));
 	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
 	ds_writeb(0x2ca6, ds_writeb(0x2ca7, -1));

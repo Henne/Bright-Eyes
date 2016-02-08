@@ -63,7 +63,7 @@ void do_merchant(void)
 
 	done = 0;
 
-	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readb(LOCATION) != 9) {
+	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != 9) {
 
 		GUI_output(get_ltx(0x788));
 		turnaround();

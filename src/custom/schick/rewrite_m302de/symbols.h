@@ -24,7 +24,7 @@
 #define DIRECTION	(0x2d3d)
 #define X_TARGET	(0x2d44)
 #define Y_TARGET	(0x2d46)
-#define LOCATION	(0x2d60)
+#define LOCATION	(0x2d60)	/* signed char */
 #define CURRENT_TOWN	(0x2d67)	/* signed char */
 #define DUNGEON_INDEX	(0x2d6e)	/* signed char */
 #define DUNGEON_LEVEL	(0x2d75)
