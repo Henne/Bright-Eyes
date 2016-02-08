@@ -504,7 +504,7 @@ signed short tavern_quest_infos(void)
 		GUI_output(get_dtp(0x344));
 
 		/* remember that */
-		ds_writeb(QUEST_DEADSHIP, l_si = 1);
+		ds_writeb(QUEST_DEADSHIP, (unsigned char)(l_si = 1));
 
 	} else if ((ds_readbs(CURRENT_TOWN) == 38) &&
 			(ds_readws(TYPEINDEX) == 69) &&
@@ -515,7 +515,7 @@ signed short tavern_quest_infos(void)
 		/* meet Informer Jurge */
 
 		if (random_schick(100) <= 30) {
-			ds_writeb(CURRENT_INFORMER, l_si = 1);
+			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 1));
 		}
 
 	} else if ((ds_readbs(CURRENT_TOWN) == 46) &&
@@ -526,7 +526,7 @@ signed short tavern_quest_infos(void)
 		/* meet Informer Ragna */
 
 		if (random_schick(100) <= 30) {
-			ds_writeb(CURRENT_INFORMER, l_si = 6);
+			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 6));
 		}
 
 	} else if ((ds_readbs(CURRENT_TOWN) == 13) &&
@@ -539,7 +539,7 @@ signed short tavern_quest_infos(void)
 		if (((ds_readws(TYPEINDEX) == 27) && (random_schick(100) <= 50)) ||
 			((ds_readws(TYPEINDEX) == 28) && (random_schick(100) <= 20)))
 		{
-			ds_writeb(CURRENT_INFORMER, l_si = 7);
+			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 7));
 		}
 
 
@@ -552,7 +552,7 @@ signed short tavern_quest_infos(void)
 		/* meet Informer Asgrimm */
 
 		if (random_schick(100) <= 50) {
-			ds_writeb(CURRENT_INFORMER, l_si = 8);
+			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 8));
 		}
 
 	} else if ((ds_readbs(CURRENT_TOWN) == 31) &&
@@ -565,7 +565,7 @@ signed short tavern_quest_infos(void)
 		if (((ds_readws(TYPEINDEX) == 61) && (random_schick(100) <= 50)) ||
 			((ds_readws(TYPEINDEX) == 62) && (random_schick(100) <= 20)))
 		{
-			ds_writeb(CURRENT_INFORMER, l_si = 14);
+			ds_writeb(CURRENT_INFORMER, (unsigned char)(l_si = 14));
 		}
 
 	} else if ((ds_readbs(CURRENT_TOWN) == 18) && (ds_readb(ALRIK_DERONDAN))) {
