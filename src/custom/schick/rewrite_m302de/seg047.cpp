@@ -394,6 +394,8 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
  */
 signed short select_hero_from_group(Bit8u *title)
 {
+	signed short i;
+	signed short answer;
 	/* Hack for
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
 	*/
@@ -407,8 +409,6 @@ signed short select_hero_from_group(Bit8u *title)
 	signed short bak_2;
 	signed short bak_3;
 	RealPt hero;
-	register signed short i;
-	register signed short answer;
 
 	bak_1 = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
@@ -471,6 +471,8 @@ signed short select_hero_from_group(Bit8u *title)
  */
 signed short select_hero_ok(Bit8u *title)
 {
+	signed short i;
+	signed short answer;
 	/* Hack for
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
 	*/
@@ -484,8 +486,6 @@ signed short select_hero_ok(Bit8u *title)
 	signed short bak_2;
 	signed short bak_3;
 	RealPt hero;
-	register signed short i;
-	register signed short answer;
 
 	bak_1 = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
@@ -549,6 +549,8 @@ signed short select_hero_ok(Bit8u *title)
  */
 signed short select_hero_ok_forced(Bit8u *title)
 {
+	signed short i;
+	signed short answer;
 	/* Hack for
 	signed short dst[7] = {0, 0, 0, 0, 0, 0, 0};
 	*/
@@ -562,8 +564,6 @@ signed short select_hero_ok_forced(Bit8u *title)
 	signed short bak_2;
 	signed short bak_3;
 	RealPt hero;
-	register signed short i;
-	register signed short answer;
 
 	bak_1 = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);

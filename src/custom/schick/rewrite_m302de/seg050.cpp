@@ -353,14 +353,14 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
  */
 void level_up(signed short hero_pos)
 {
-	register signed short l_si;
-	register signed short l_di;
+	signed short l_si;
+	signed short l_di;
 	signed char mr;
-	char v2;
-	char v3;
-	volatile signed short i;
+	signed char v2;
+	signed char v3;
+	signed short i;
 	Bit8u *hero;
-	volatile signed short city_bak;
+	signed short city_bak;
 
 	hero = get_hero(hero_pos);
 

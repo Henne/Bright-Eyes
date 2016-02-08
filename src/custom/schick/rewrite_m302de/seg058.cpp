@@ -110,7 +110,7 @@ struct dummy_c5 {
  */
 void repair_screen(Bit8u *smith_ptr, signed short a1)
 {
-	register signed short l_si;
+	signed short l_si;
 	signed short j;
 	signed short items_x;
 	signed short fg_bak;
@@ -123,7 +123,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	signed short l6;
 	signed short l7;
 	signed short done = 0;
-	register signed short item = 0;
+	signed short item = 0;
 	signed short l8;
 	signed short smith_pos;
 	signed short l10 = 1;
