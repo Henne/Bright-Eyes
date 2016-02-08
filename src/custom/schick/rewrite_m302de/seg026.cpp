@@ -282,9 +282,9 @@ signed short load_game_state(void)
 		p_status_start = (HugePt)RealMake(datseg, 0x2d34);
 		p_status_end = (HugePt)RealMake(datseg, 0x4474);
 #if !defined(__BORLANDC__)
-		status_length = F_PSUB(p_status_end, p_status_start);
+		status_length = (signed short)F_PSUB(p_status_end, p_status_start);
 #else
-		status_length = p_status_end - p_status_start;
+		status_length = (signed short)(p_status_end - p_status_start);
 #endif
 
 		bc__read(handle_gs, p_datseg + 0x2d34, status_length);
@@ -306,8 +306,8 @@ signed short load_game_state(void)
 
 				handle = bc__creat((RealPt)ds_readd(0xd2eb), 0);
 
-				bc__read(handle_gs, Real2Host(ds_readd(0xd303)), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
-				bc__write(handle, (RealPt)ds_readd(0xd303), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
+				bc__read(handle_gs, Real2Host(ds_readd(0xd303)), (unsigned short)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
+				bc__write(handle, (RealPt)ds_readd(0xd303), (unsigned short)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
 				bc_close(handle);
 			}
 		}
@@ -343,14 +343,14 @@ signed short load_game_state(void)
 #if !defined(__BORLANDC__)
 					{
 						/* create a char[20] on the stack */
-						Bit32u esp_bak = reg_esp;
-						reg_esp -= 20;
+						Bit16u sp_bak = reg_sp;
+						reg_sp -= 20;
 
-						RealPt r_name = RealMake(SegValue(ss), reg_esp);
+						RealPt r_name = RealMake(SegValue(ss), reg_sp);
 						strncpy((char*)Real2Host(r_name), name, 20);
 						host_writeb(Real2Host(r_name) + 20, 0);
 						read_chr_temp(r_name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
-						reg_esp = esp_bak;
+						reg_sp = sp_bak;
 					}
 #else
 					read_chr_temp(name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
@@ -373,13 +373,13 @@ signed short load_game_state(void)
 			if ((handle_gs = bc__open((RealPt)ds_readd(0xd2eb), 0x8004)) == -1) {
 #if !defined(__BORLANDC__)
 				{
-					Bit32u esp_bak = reg_esp;
-					reg_esp -= 128;
-					RealPt fname = RealMake(SegValue(ss), reg_esp);
+					Bit16u sp_bak = reg_sp;
+					reg_sp -= 128;
+					RealPt fname = RealMake(SegValue(ss), reg_sp);
 					strncpy((char*)Real2Host(fname), (char*)(&blk) + 30, 128);
 					host_writeb(Real2Host(fname) + 128, 0);
 					handle = bc__open(fname, 0x8004);
-					reg_esp = esp_bak;
+					reg_sp = sp_bak;
 				}
 #else
 				handle = bc__open((char*)(&blk) + 30, 0x8004);
@@ -562,9 +562,9 @@ signed short save_game_state(void)
 		p_status_start = (HugePt)RealMake(datseg, 0x2d34);
 		p_status_end = (HugePt)RealMake(datseg, 0x4474);
 #if !defined(__BORLANDC__)
-		status_len = F_PSUB(p_status_end, p_status_start);
+		status_len = (signed short)F_PSUB(p_status_end, p_status_start);
 #else
-		status_len = p_status_end - p_status_start;
+		status_len = (signed short)(p_status_end - p_status_start);
 #endif
 
 		prepare_sg_name((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0xe2da + 9 * slot);
@@ -598,14 +598,14 @@ signed short save_game_state(void)
 		 *	so some space on the stack is allocated.
 		 */
 		{
-			Bit32u esp_bak = reg_esp;
-			reg_esp -= 64;
-			RealPt fp_le = RealMake(SegValue(ss), reg_esp);
+			Bit16u sp_bak = reg_sp;
+			reg_sp -= 64;
+			RealPt fp_le = RealMake(SegValue(ss), reg_sp);
 
 			host_writed(Real2Host(fp_le), filepos);
 			filepos += bc__write(l_di, fp_le, 4);
 
-			reg_esp = esp_bak;
+			reg_sp = sp_bak;
 		}
 #else
 		filepos += bc__write(l_di, &filepos, 4);
@@ -645,10 +645,10 @@ signed short save_game_state(void)
 
 				handle = load_archive_file(tw_bak + 0x8000);
 				host_writed(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak, get_readlength2(handle));
-				bc__read(handle, Real2Host(ds_readd(0xd303)), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak));
+				bc__read(handle, Real2Host(ds_readd(0xd303)), (unsigned short)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak));
 				bc_close(handle);
 
-				len = (Bit16u)bc__write(l_di, (RealPt)ds_readd(0xd303), host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak));
+				len = (Bit16u)bc__write(l_di, (RealPt)ds_readd(0xd303), (unsigned short)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak));
 				filepos += len;
 
 				if ((Bit16u)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * tw_bak) != len) {
@@ -667,14 +667,14 @@ signed short save_game_state(void)
 		 *	so some space on the stack is allocated.
 		 */
 		{
-			Bit32u esp_bak = reg_esp;
-			reg_esp -= 64;
-			RealPt fp_le = RealMake(SegValue(ss), reg_esp);
+			Bit16u sp_bak = reg_sp;
+			reg_sp -= 64;
+			RealPt fp_le = RealMake(SegValue(ss), reg_sp);
 
 			host_writed(Real2Host(fp_le), filepos);
 			bc__write(l_di, fp_le, 4);
 
-			reg_esp = esp_bak;
+			reg_sp = sp_bak;
 		}
 #else
 		bc__write(l_di, &filepos, 4);
@@ -756,7 +756,7 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 		bc__read(handle, hero, hero_size);
 		bc_close(handle);
 
-		host_writeb(hero + 0x87, a2);
+		host_writeb(hero + 0x87, (signed char)a2);
 
 		if (host_readbs(hero + 0x22) == 1) {
 			host_writeb(hero + 0x9b, host_readbs(hero + 0x21) + 11);
