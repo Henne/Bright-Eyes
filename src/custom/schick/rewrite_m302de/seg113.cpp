@@ -510,7 +510,7 @@ void tevent_101(void)
 #endif
 		} else {
 
-			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, mod) <= 0) {
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, (signed char)mod) <= 0) {
 
 				ds_writeb(0x26ac, 1);
 
