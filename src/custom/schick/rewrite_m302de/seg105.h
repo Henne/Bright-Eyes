@@ -26,7 +26,7 @@ signed short select_item_to_drop(Bit8u*);
 /* 0x57 */
 signed short hero_count_item(Bit8u *, unsigned short);
 /* 0x5c */
-unsigned short group_count_item(unsigned short);
+signed short group_count_item(signed short);
 /* 0x61 */
 void loose_random_item(Bit8u *, signed short, Bit8u*);
 

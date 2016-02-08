@@ -690,14 +690,16 @@ signed short hero_count_item(Bit8u *hero, unsigned short item) {
 }
 
 /**
- * group_count_item -	returns how many items of one type the current group has
- * @item:	the item
+ * \brief	count the number of items of one type the current group has
+ * \param item	the item-ID
+ * \return	the number of items
  */
-unsigned short group_count_item(unsigned short item) {
+signed short group_count_item(signed short item)
+{
 
 	Bit8u *hero_i;
 	signed short i;
-	unsigned short ret = 0;
+	signed short ret = 0;
 
 	hero_i = get_hero(0);
 	for (i = 0; i <= 6; i++, hero_i += 0x6da) {

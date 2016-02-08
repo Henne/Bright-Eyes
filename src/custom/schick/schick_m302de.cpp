@@ -10940,12 +10940,12 @@ static int seg105(unsigned short offs) {
 			return 1;
 		}
 		case 0x5c: {
-			unsigned short item = CPU_Pop16();
+			Bit16s item = CPU_Pop16();
 			CPU_Push16(item);
 
 			reg_ax = group_count_item(item);
 			D1_LOG("group_count_item(%s) = %d\n",
-				get_itemname(item), reg_ax);
+				get_itemname(item), (Bit16s)reg_ax);
 
 			return 1;
 		}
