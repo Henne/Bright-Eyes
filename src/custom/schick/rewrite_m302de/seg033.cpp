@@ -952,7 +952,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		(host_readbs(hero + 0x84) == 4) || (host_readbs(hero + 0x84) == 5)))
 	{
 		for (slot_nr = 0; slot_nr < 20; slot_nr++) {
-			and_ds_bs((ENEMY_SHEETS + 0x31) + 62 * slot_nr, 0xdf);
+			and_ds_bs((ENEMY_SHEETS + 0x31) + 62 * slot_nr, (signed char)0xdf);
 		}
 
 		ds_writeb(0x5f30, 1);
