@@ -538,6 +538,7 @@ docs/Makefile
 src/custom/Makefile
 src/custom/schick/Makefile
 src/custom/schick/rewrite_m302de/Makefile
+src/custom/schick/rewrite_m302de/tools/Makefile
 src/custom/schick/rewrite_g105de/Makefile
 src/custom/schweif/Makefile
 src/custom/schweif/rewrite_c102de/Makefile

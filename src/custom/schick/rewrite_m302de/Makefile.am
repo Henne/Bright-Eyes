@@ -1,5 +1,7 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir)/.. -Wall -pedantic -Wno-variadic-macros -Wno-long-long
 
+SUBDIRS = tools
+
 noinst_LIBRARIES = libschick_rewrite_m302de.a
 
 libschick_rewrite_m302de_a_SOURCES = common.h v302de.h symbols.h\
