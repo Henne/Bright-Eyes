@@ -42,7 +42,13 @@ namespace M302de {
 signed short get_border_index(unsigned char);
 #endif
 
-/* Borlandified and nearly identical */
+/* HACK: this cast is not optimized by Borland C++ 3.1 */
+static inline unsigned short cast_u16(unsigned char v)
+{
+	return v;
+}
+
+/* Borlandified and identical */
 signed short enter_location(signed short town_id)
 {
 	signed short map_pos;
@@ -80,8 +86,7 @@ signed short enter_location(signed short town_id)
 
 	move();
 
-	/* TODO: this assignment differs */
-	if ((b_index = get_border_index(ds_readb((0xbd6e + 1)) & 0xff)) >= 2 && b_index <= 5) {
+	if ((b_index = get_border_index(cast_u16(ds_readbs((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(0x2d9f, 0);
 		ds_writew(CITYINDEX, ds_readb(0x71c9 + town_id));
@@ -99,7 +104,7 @@ signed short enter_location(signed short town_id)
 	return 0;
 }
 
-/* Borlandified and nearly identical */
+/* Borlandified and identical */
 signed short enter_location_daspota(void)
 {
 	signed short map_pos;
@@ -179,8 +184,7 @@ signed short enter_location_daspota(void)
 
 	move();
 
-	/* TODO: this assignment differs */
-	if ((b_index = get_border_index(ds_readb((0xbd6e + 1)) & 0xff)) >= 2 && b_index <= 5) {
+	if ((b_index = get_border_index(cast_u16(ds_readb((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(0x2d9f, 0);
 		ds_writebs(LOCATION, 10);
