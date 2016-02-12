@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg066 (city)
  *	Functions rewritten: 18/18 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg066.cpp
  */
 
 #include <stdlib.h>
@@ -48,7 +52,6 @@ static inline unsigned short cast_u16(unsigned char v)
 	return v;
 }
 
-/* Borlandified and identical */
 signed short enter_location(signed short town_id)
 {
 	signed short map_pos;
@@ -104,7 +107,6 @@ signed short enter_location(signed short town_id)
 	return 0;
 }
 
-/* Borlandified and identical */
 signed short enter_location_daspota(void)
 {
 	signed short map_pos;
@@ -195,7 +197,6 @@ signed short enter_location_daspota(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void do_special_buildings(void)
 {
 	signed short type;
@@ -296,7 +297,6 @@ void do_special_buildings(void)
 	turnaround();
 }
 
-/* Borlandified and identical */
 void TLK_eremit(signed short state)
 {
 	signed short i;
@@ -326,7 +326,6 @@ void TLK_eremit(signed short state)
 	}
 }
 
-/* Borlandified and identical */
 void do_town(void)
 {
 	if (ds_readbs(0x2ca7) != ds_readbs(CURRENT_TOWN) ||
@@ -348,7 +347,6 @@ void do_town(void)
 	city_step();
 }
 
-/* Borlandified and identical */
 /* static */
 void refresh_floor_and_sky(void)
 {
@@ -381,7 +379,6 @@ void refresh_floor_and_sky(void)
 	process_nvf(&nvf);
 }
 
-/* Borlandified and identical */
 void seg066_0692(void)
 {
 	refresh_floor_and_sky();
@@ -397,7 +394,6 @@ void seg066_0692(void)
 	city_fade_and_colors();
 }
 
-/* Borlandified and identical */
 void seg066_06c1(void)
 {
 	signed short bi;
@@ -575,7 +571,6 @@ void seg066_06c1(void)
 	}
 }
 
-/* Borlandified and identical */
 #if !defined(__BORLANDC__)
 signed short get_border_index(unsigned short val)
 #else
@@ -599,7 +594,6 @@ signed short get_border_index(unsigned char val)
 	return i;
 }
 
-/* Borlandified and identical */
 void seg066_0bad(void)
 {
 	signed short i;
@@ -629,7 +623,6 @@ void seg066_0bad(void)
 /**
  *  \brief	draws water and grass textures
  */
-/* Borlandified and identical */
 void city_water_and_grass(void)
 {
 	signed short i;
@@ -681,7 +674,6 @@ void city_water_and_grass(void)
 /**
  *  \brief	draws building textures
  */
-/* Borlandified and identical */
 void city_building_textures(void)
 {
 	signed short nvf_nr;
@@ -782,7 +774,6 @@ void city_building_textures(void)
 	}
 }
 
-/* Borlandified and identical */
 void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 		signed short v4)
 {
@@ -856,7 +847,6 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 	}
 }
 
-/* Borlandified and identical */
 void seg066_10c8(void)
 {
 	set_var_to_zero();
@@ -866,7 +856,6 @@ void seg066_10c8(void)
 	ds_writews(0xe408, ds_readbs(DIRECTION));
 }
 
-/* Borlandified and identical */
 signed short city_step(void)
 {
 	signed short i;
@@ -1055,7 +1044,6 @@ signed short city_step(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void seg066_14dd(signed short forward)
 {
 	signed short dir;
@@ -1113,7 +1101,6 @@ void seg066_14dd(signed short forward)
 	}
 }
 
-/* Borlandified and identical */
 void city_fade_and_colors(void)
 {
 	signed short i;
@@ -1183,7 +1170,6 @@ void city_fade_and_colors(void)
 	}
 }
 
-/* Borlandified and identical */
 void seg066_172b(void)
 {
 	signed short l_si;
