@@ -124,3 +124,6 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG114.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG115.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG118.CPP
+
+@REM examine the ouput and press anykey
+PAUSE

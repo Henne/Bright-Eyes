@@ -1,0 +1,6 @@
+# The purpose of this directory is invoking a compile run in a DOSBox
+
+BORLANDC	- here should YOUR OWN Borland C++ compiler be installed
+src		- here will be the sources of the program you want to compile
+compile.conf	- configuration file for DOSBox
+			(set environment, mount c, chdir to src, run compile.bat, exit)
