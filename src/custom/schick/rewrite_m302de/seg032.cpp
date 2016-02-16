@@ -872,8 +872,8 @@ signed short do_fight(signed short fight_nr)
 
 	/* set some pointers */
 	ds_writed(SCENARIO_BUF, (Bit32u)F_PADD(ds_readd(0xc3a9), 64100));
-	ds_writed(0xe125, (Bit32u)F_PADD(ds_readd(SCENARIO_BUF), 621));
-	ds_writed(PTR_FIGHT_LST, (Bit32u)F_PADD(ds_readd(0xe125), 3476));
+	ds_writed(MONSTER_DAT_BUF, (Bit32u)F_PADD(ds_readd(SCENARIO_BUF), 621));
+	ds_writed(PTR_FIGHT_LST, (Bit32u)F_PADD(ds_readd(MONSTER_DAT_BUF), 3476));
 
 	read_fight_lst(fight_nr);
 
@@ -909,7 +909,7 @@ signed short do_fight(signed short fight_nr)
 
 	/* open MONSTER.DAT */
 	fd = load_archive_file(218);
-	read_archive_file(fd, Real2Host(ds_readd(0xe125)), 3476);
+	read_archive_file(fd, Real2Host(ds_readd(MONSTER_DAT_BUF)), 3476);
 	bc_close(fd);
 
 	ds_writew(0x5f12, 0);
