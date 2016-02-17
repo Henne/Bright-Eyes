@@ -443,9 +443,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 
 			if ((a4 != 7) || (i != a1)) {
 
-				enemy_ptr = p_datseg + ENEMY_SHEETS + i * 62;
+				enemy_ptr = p_datseg + ENEMY_SHEETS + i * SIZEOF_ENEMY_SHEET;
 
-				if ((host_readbs(enemy_ptr) != 0) && !enemy_dead(enemy_ptr)) {
+				if ((host_readbs(enemy_ptr + ENEMY_SHEET_MON_ID) != 0) && !enemy_dead(enemy_ptr)) {
 
 					FIG_search_obj_on_cb(i + 10, &l_var6, &l_var7);
 

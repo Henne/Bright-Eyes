@@ -142,6 +142,7 @@
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
 #define SCENARIO_BUF	(0xbd2c)
+#define MONSTER_DAT_BUF	(0xe125)
 #define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
 #define HEROS		(0xbd34)
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */

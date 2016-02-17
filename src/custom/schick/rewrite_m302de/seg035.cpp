@@ -48,10 +48,10 @@ void FIG_tidy_monsters(void)
 	while (i < 20) {
 
 		/* if the monster is not able to fight anymore ... */
-		if ((ds_readbs(ENEMY_SHEETS + 62 * i) != 0) &&
-			(enemy_dead(Real2Host(RealMake(datseg, ENEMY_SHEETS + 62 * i))) ||
-			enemy_uncon(Real2Host(RealMake(datseg, ENEMY_SHEETS + 62 * i))) ||
-			enemy_stoned(Real2Host(RealMake(datseg, ENEMY_SHEETS + 62 * i))) ||
+		if ((ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i + ENEMY_SHEET_MON_ID) != 0) &&
+			(enemy_dead(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
+			enemy_uncon(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
+			enemy_stoned(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
 			((host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * i + 0x1a) != 0) && (monsters == 0))))
 		{
 
@@ -68,12 +68,14 @@ void FIG_tidy_monsters(void)
 
 					memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * (j + 1) + 0x16, 0, 5);
 
-					*(struct dummy62*)(p_datseg + ENEMY_SHEETS + 62 * j) =
-						*(struct dummy62*)(p_datseg + ENEMY_SHEETS + 62 * (j + 1));
+					*(struct dummy62*)(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * j) =
+						*(struct dummy62*)(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * (j + 1));
 
-					memset(p_datseg + ENEMY_SHEETS + 62 * (j + 1), 0, 62);
+					memset(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * (j + 1), 0, SIZEOF_ENEMY_SHEET);
 
-					or_ds_bs(0xd3ba + 62 * j, 1);
+                    // Sets the STATUS1 flag's last bit to 1.
+					// 0xd3ba = ENEMY_SHEETS + SIZEOF_ENEMY_SHEET + ENEMY_SHEET_STATUS1
+					or_ds_bs(0xd3ba + SIZEOF_ENEMY_SHEET * j, 1);
 				}
 			}
 		} else {
@@ -217,16 +219,16 @@ void FIG_split_ap(void)
 	/* calculate ap from all monsters in that fight */
 	for (l_si = 0; l_si < 20; l_si++) {
 
-		if (ds_readbs(ENEMY_SHEETS + 62 * l_si) != 0) {
+		if (ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si + ENEMY_SHEET_MON_ID) != 0) {
 
-			if (ds_readbs(0x4351 + ds_readbs(ENEMY_SHEETS + 62 * l_si)) != 0) {
+			if (ds_readbs(0x4351 + ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si)) != 0) {
 
 				/* monster is already known */
-				known_ap = ds_readbs((ENEMY_SHEETS + 26) + 62 * l_si) / 10;
+				known_ap = ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_FIRSTAP) + SIZEOF_ENEMY_SHEET * l_si) / 10;
 				ap += (known_ap == 0 ? 1 : known_ap);
 			} else {
 				/* first time bonus */
-				ap += ds_readbs((ENEMY_SHEETS + 26) + 62 * l_si);
+				ap += ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_FIRSTAP) + SIZEOF_ENEMY_SHEET * l_si);
 			}
 		}
 	}
@@ -234,9 +236,9 @@ void FIG_split_ap(void)
 	/* mark each monster type from that fight */
 	for (l_si = 0; l_si < 20; l_si++) {
 
-		if (ds_readbs(ENEMY_SHEETS + 62 * l_si) != 0) {
+		if (ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si + ENEMY_SHEET_MON_ID) != 0) {
 
-			ds_writeb(0x4351 + ds_readbs(ENEMY_SHEETS + 62 * l_si), 1);
+			ds_writeb(0x4351 + ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si), 1);
 		}
 	}
 

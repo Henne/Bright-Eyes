@@ -206,8 +206,8 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 			/* slaying Gorah make everything flee than Heshtot*/
 			for (i = 0; i < 20; i++) {
 #if !defined(__BORLANDC__)
-				if (ds_readb(ENEMY_SHEETS + 1 + i * 62) != 26)
-					or_ds_bs((ENEMY_SHEETS + 0x32) + i * 62, 4);
+				if (ds_readb(ENEMY_SHEETS + ENEMY_SHEET_GFX_ID + i * SIZEOF_ENEMY_SHEET) != 26)
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS2) + i * SIZEOF_ENEMY_SHEET, 4);
 #else
 				if ( ((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].gfx_id != 0x1a)
 					((struct enemy_sheets*)(Real2Host(RealMake(datseg, ENEMY_SHEETS))))[i].status2.bit10 = 1;

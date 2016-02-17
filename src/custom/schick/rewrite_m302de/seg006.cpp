@@ -190,9 +190,9 @@ RealPt seg006_033c(signed short v)
 	signed short i;
 
 	for (i = 0; i < 20; i++) {
-		if (v == ds_readbs(ENEMY_SHEETS + 38 + (i * 62)))
+		if (v == ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_LIST_POS + (i * SIZEOF_ENEMY_SHEET)))
 #if !defined(__BORLANDC__)
-			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * 62);
+			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * SIZEOF_ENEMY_SHEET);
 #else
 			return (RealPt)&(((struct enemy_sheets*)(p_datseg + ENEMY_SHEETS))[i]);
 #endif
