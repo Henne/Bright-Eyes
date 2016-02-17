@@ -87,21 +87,21 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round)
 {
 
-	Bit8u *temp;
+	Bit8u *monster;
 	Bit8u *sheet;
 	signed short i;
 
 	/* calculate the pointers */
-	temp = Real2Host(ds_readd(MONSTER_DAT_BUF)) + enemy_id * 44;
+	monster = Real2Host(ds_readd(MONSTER_DAT_BUF)) + enemy_id * 44;
 	sheet = p_datseg + ENEMY_SHEETS + sheet_nr * 62;
 
 	/* erease the sheet */
 	memset(sheet, 0, 62);
 
 	/* copy enemy id, gfx_id and RS to the sheet */
-	host_writeb(sheet + 0, host_readb(temp + 0));
-	host_writeb(sheet + 1, host_readb(temp + 1));
-	host_writeb(sheet + 2, host_readb(temp + 2));
+	host_writeb(sheet + 0, host_readb(monster + 0));
+	host_writeb(sheet + 1, host_readb(monster + 1));
+	host_writeb(sheet + 2, host_readb(monster + 2));
 
 	/* roll attributes  and save them to the sheet */
 	for (i = 0; i < 7; i++) {
@@ -109,22 +109,22 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		/* UGLY: a = b = dice_template() */
 		host_writebs(sheet + i * 2 + 3,
 			host_writebs(sheet + i * 2 + 4,
-				dice_template(host_readw(temp + i * 2 + 3))));
+				dice_template(host_readw(monster + i * 2 + 3))));
 	}
 
 	/* roll out LE and save it to the sheet */
-	host_writew(sheet + 0x11, dice_template(host_readw(temp + 0x11)));
+	host_writew(sheet + 0x11, dice_template(host_readw(monster + 0x11)));
 	/* recalculate LE = LE / 6 * 5; */
 	host_writew(sheet + 0x11, host_readws(sheet + 0x11) / 6 * 5);
 	/* copy LE*/
 	host_writew(sheet + 0x13, host_readw(sheet + 0x11));
 
 	/* roll out AE and save it to the sheet */
-	host_writews(sheet + 0x15, host_writews(sheet + 0x17, dice_template(host_readw(temp + 0x13))));
+	host_writews(sheet + 0x15, host_writews(sheet + 0x17, dice_template(host_readw(monster + 0x13))));
 
 	/* roll out MR  and save it */
 	host_writeb(sheet + 0x19,
-		(signed char)dice_template(host_readw(temp + 0x15)));
+		(signed char)dice_template(host_readw(monster + 0x15)));
 
 	/* Terrible hack:
 		if the current fight is 188, set MR to 5 (Travel-Event 84),
@@ -141,30 +141,30 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	}
 
 	/* copy the first encounter AP */
-	host_writeb(sheet + 0x1a, host_readb(temp + 0x17));
+	host_writeb(sheet + 0x1a, host_readb(monster + 0x17));
 	/* copy the number of attacks */
-	host_writeb(sheet + 0x1b, host_readb(temp + 0x18));
+	host_writeb(sheet + 0x1b, host_readb(monster + 0x18));
 	/* copy AT value */
-	host_writeb(sheet + 0x1c, host_readb(temp + 0x19));
+	host_writeb(sheet + 0x1c, host_readb(monster + 0x19));
 	/* copy PA value */
-	host_writeb(sheet + 0x1d, host_readb(temp + 0x1a));
+	host_writeb(sheet + 0x1d, host_readb(monster + 0x1a));
 
 	/* Damage first attack ? */
-	host_writew(sheet + 0x1e, host_readw(temp + 0x1b));
+	host_writew(sheet + 0x1e, host_readw(monster + 0x1b));
 	/* Damage second attack ? */
-	host_writew(sheet + 0x20, host_readw(temp + 0x1d));
+	host_writew(sheet + 0x20, host_readw(monster + 0x1d));
 
 	/* copy BP */
-	host_writeb(sheet + 0x22, host_readb(temp + 0x1f));
+	host_writeb(sheet + 0x22, host_readb(monster + 0x1f));
 
 	/* set BP to 10 if greater */
 	if (host_readbs(sheet + 0x22) > 10)
 		host_writeb(sheet + 0x22, 10);
 
 	/* copy imunnity against non-magicial weapons ? */
-	host_writeb(sheet + 0x24, host_readb(temp + 0x20));
+	host_writeb(sheet + 0x24, host_readb(monster + 0x20));
 	/* copy ID Magicuser class ? */
-	host_writeb(sheet + 0x25, host_readb(temp + 0x21));
+	host_writeb(sheet + 0x25, host_readb(monster + 0x21));
 
 	/* bogus this value is 0x00 or 0x20 */
 	and_ptr_bs(sheet + 0x31, 0xfe);
@@ -172,11 +172,11 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writeb(sheet + 0x26, 0xff);
 
 	/* copy Level */
-	host_writeb(sheet + 0x29, host_readb(temp + 0x22));
+	host_writeb(sheet + 0x29, host_readb(monster + 0x22));
 	/* copy size class */
-	host_writeb(sheet + 0x34, host_readb(temp + 0x23));
+	host_writeb(sheet + 0x34, host_readb(monster + 0x23));
 	/* copy flags */
-	host_writeb(sheet + 0x36, host_readb(temp + 0x24));
+	host_writeb(sheet + 0x36, host_readb(monster + 0x24));
 
 	/* set the fight round the enemy appears */
 	host_writeb(sheet + 0x35, round);
@@ -186,17 +186,17 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 		host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + sheet_nr * 5 + 0x19));
 
 	/* copy number of ammo */
-	host_writeb(sheet + 0x37, host_readb(temp + 0x25));
+	host_writeb(sheet + 0x37, host_readb(monster + 0x25));
 	/* copy damage of ammo */
-	host_writew(sheet + 0x38, host_readw(temp + 0x26));
+	host_writew(sheet + 0x38, host_readw(monster + 0x26));
 
 	/* copy number of thorowing weapons */
-	host_writeb(sheet + 0x3a, host_readb(temp + 0x28));
+	host_writeb(sheet + 0x3a, host_readb(monster + 0x28));
 	/* copy damage of thorowing weapons */
-	host_writew(sheet + 0x3b, host_readw(temp + 0x29));
+	host_writew(sheet + 0x3b, host_readw(monster + 0x29));
 
 	/* copy LE fleeing value */
-	host_writeb(sheet + 0x3d, host_readb(temp + 0x2b));
+	host_writeb(sheet + 0x3d, host_readb(monster + 0x2b));
 
 	/* Another hack:
 		If the current fight == 94 and the enemy is "Kultist",
