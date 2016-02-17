@@ -142,7 +142,6 @@
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
 #define SCENARIO_BUF	(0xbd2c)
-#define MONSTER_DAT_BUF	(0xe125)
 #define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
 #define HEROS		(0xbd34)
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
@@ -170,6 +169,7 @@
 #define MEM_SLOTS_MON	(0xe115)
 #define MEM_SLOTS_WFIG	(0xe119)
 #define MEM_SLOTS_MFIG	(0xe11d)
+#define MONSTER_DAT_BUF	(0xe125)	/* RealPt */
 #define MONNAMES	(0xe129)
 #define ITEMSDAT	(0xe22b)
 #define ITEMSNAME	(0xe22f)
