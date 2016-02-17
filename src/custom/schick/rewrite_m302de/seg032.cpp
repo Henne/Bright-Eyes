@@ -218,13 +218,13 @@ signed short FIG_choose_next_enemy(void)
 			 * interesting bits
 			 */
 			enemy = p_datseg + ENEMY_SHEETS;
-			for (i = 0; i < ds_readw(NR_OF_ENEMIES); i++, enemy += 62) {
+			for (i = 0; i < ds_readw(NR_OF_ENEMIES); i++, enemy += SIZEOF_ENEMY_SHEET) {
 				D1_ERR("Enemy %02d %x %x\n",
 					i, host_readb(enemy),
-					host_readb(enemy + 0x28));
+					host_readb(enemy + ENEMY_SHEET_DUMMY2));
 
 				if (host_readb(enemy) &&
-					host_readb(enemy + 0x28))
+					host_readb(enemy + ENEMY_SHEET_DUMMY2))
 						retval = i;
 			}
 
@@ -237,10 +237,11 @@ signed short FIG_choose_next_enemy(void)
 
 			return retval;
 		}
-		enemy = p_datseg + ENEMY_SHEETS + retval * 62;
+		enemy = p_datseg + ENEMY_SHEETS + retval * SIZEOF_ENEMY_SHEET;
 #endif
 
-	} while (ds_readbs(ENEMY_SHEETS + retval * 62) == 0 || ds_readbs(ENEMY_SHEETS + 0x28 + retval * 62) == 0);
+	} while (ds_readbs(ENEMY_SHEETS + retval * SIZEOF_ENEMY_SHEET + ENEMY_SHEET_MON_ID) == 0
+	    || ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_DUMMY2 + retval * SIZEOF_ENEMY_SHEET) == 0);
 
 	return retval;
 }
@@ -256,16 +257,15 @@ signed short FIG_count_active_enemies(void)
 
 	for (i = 0; i < 20; i++) {
 
-		enemy = p_datseg + ENEMY_SHEETS + i * 62;
+		enemy = p_datseg + ENEMY_SHEETS + i * SIZEOF_ENEMY_SHEET;
 
-		/* if enemy has no monster class */
-		if ((host_readb(enemy) != 0) &&
+		if ((host_readb(enemy + ENEMY_SHEET_MON_ID) != 0) &&
 			!enemy_dead(enemy) &&
 			!enemy_stoned(enemy) &&
 			!enemy_cursed(enemy) &&
 			!enemy_uncon(enemy) &&
 			!enemy_busy(enemy) &&
-			!host_readbs(enemy + 0x35))
+			!host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR))
 		{
 			retval++;
 		}
@@ -464,13 +464,14 @@ void FIG_do_round(void)
 	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
 		/* set #attacks */
-		ds_writeb(0xd373 + 62 * i, ds_readbs(0xd366 + 62 * i));
+		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_DUMMY2) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i));
 
-		monster_attacks += ds_readbs(0xd366 + 62 * i);
+		monster_attacks += ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_ATTACKS) + SIZEOF_ENEMY_SHEET * i);
 
 		/* set BP */
-		ds_writeb(0xd36e + 62 * i, ds_readbs(0xd36d + 62 * i));
+		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_BP) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_BP_ORIG) + SIZEOF_ENEMY_SHEET * i));
 
+		// 0xd837 = ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * 20 + 0x14
 		ds_writeb(0xd837 + i, 0);
 	}
 
@@ -630,9 +631,9 @@ void FIG_do_round(void)
 
 			pos = FIG_choose_next_enemy();
 
-			monster = (RealPt)RealMake(datseg, ENEMY_SHEETS + 62 * pos);
+			monster = (RealPt)RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * pos);
 
-			dec_ptr_bs(Real2Host(monster) + 0x28);
+			dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_DUMMY2);
 
 			if (FIG_search_obj_on_cb(pos + 10, &x_coord, &y_coord) &&
 				FIG_is_enemy_active(Real2Host(monster)))
@@ -642,36 +643,36 @@ void FIG_do_round(void)
 				x_coord = host_readws((Bit8u*)&x_coord);
 				y_coord = host_readws((Bit8u*)&y_coord);
 #endif
-				if (host_readbs(Real2Host(monster) + 0x2f) != 0) {
-					dec_ptr_bs(Real2Host(monster) + 0x2f);
+				if (host_readbs(Real2Host(monster) + ENEMY_SHEET_BLIND) != 0) {
+					dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_BLIND);
 				} else {
 
 					ds_writew(0x26b5, pos + 10);
 
-					host_writebs(Real2Host(monster) + 0x2b, 1);
+					host_writebs(Real2Host(monster) + ENEMY_SHEET_DUMMY4, 1);
 
 					enemy_turn(Real2Host(monster), pos, x_coord, y_coord);
 
-					if ((host_readbs(Real2Host(monster) + 0x2b) == 2) ||
-						(host_readbs(Real2Host(monster) + 0x2b) == 4) ||
-						(host_readbs(Real2Host(monster) + 0x2b) == 5) ||
-						(host_readbs(Real2Host(monster) + 0x2b) == 15))
+					if ((host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 2) ||
+						(host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 4) ||
+						(host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 5) ||
+						(host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 15))
 					{
 
 						FIG_do_monster_action(monster, pos);
 
-						if (host_readbs(Real2Host(monster) + 0x2d) >= 10) {
+						if (host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID) >= 10) {
 
-							if (host_readbs(Real2Host(monster) + 0x2d) >= 30) {
-								sub_ptr_bs(Real2Host(monster) + 0x2d, 20);
+							if (host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID) >= 30) {
+								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID, 20);
 							}
 
 							if (test_bit0(p_datseg + 0xd110 + 62 * host_readbs(Real2Host(monster) + 0x2d)))
 							{
-								if (is_in_byte_array(host_readbs(p_datseg + 0xd0e0 + 62 * host_readbs(Real2Host(monster) + 0x2d)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + 0xd0e0 + 62 * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 
-									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + 0x2d) + 20, &x, &y);
+									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID) + 20, &x, &y);
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -679,7 +680,7 @@ void FIG_do_round(void)
 									y = host_readws((Bit8u*)&y);
 #endif
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(monster) + 0x2d))));
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID))));
 									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
 
 									if (host_readbs(p1 + 0x14) >= 0) {
@@ -1074,7 +1075,8 @@ signed short do_fight(signed short fight_nr)
 			if ((ds_readws(MAX_ENEMIES) != 0) && (ds_readws(0x26c1) == 0)) {
 
 				for (l_di = 0; l_di < 20; l_di++) {
-					or_ds_bs(0xd37c + 62 * l_di, 1);
+					// set the STATUS1 byte's lsb to 1
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * l_di, 1);
 				}
 			}
 

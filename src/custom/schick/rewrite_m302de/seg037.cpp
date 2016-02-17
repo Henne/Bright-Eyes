@@ -457,7 +457,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 	retval = 0;
 
 	available_spells = l_si = 0;
-	while ((l_si < 5) && (ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + l_si++) != -1))
+	while ((l_si < 5) && (ds_readbs(0xf8b + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si++) != -1))
 	{
 		available_spells++;
 	}
@@ -469,7 +469,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 
 		for (l_si = 0; l_si < available_spells; l_si++) {
 
-			l2 = ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + l_si);
+			l2 = ds_readbs(0xf8b + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si);
 
 			if (ds_readbs(0xf15 + l2 * 8) == 1) {
 
@@ -481,7 +481,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 		}
 
 		if (l7 == 0) {
-			l2 = ds_readbs(0xf8b + host_readbs(enemy + 0x25) * 5 + random_interval(0, available_spells - 1));
+			l2 = ds_readbs(0xf8b + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + random_interval(0, available_spells - 1));
 		}
 
 		host_writeb(enemy + 0x2d, 0);
@@ -784,7 +784,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 			}
 
 			/* enemy can cast spells and has AE >= 5 left */
-			if ((host_readbs(enemy + 0x25) != -1) && (host_readws(enemy + 0x17) >= 5) &&
+			if ((host_readbs(enemy + ENEMY_SHEET_MAG_ID) != -1) && (host_readws(enemy + 0x17) >= 5) &&
 				(seg037_0791(enemy, enemy_nr, attack_foe, x, y)))
 			{
 #if !defined(__BORLANDC__)

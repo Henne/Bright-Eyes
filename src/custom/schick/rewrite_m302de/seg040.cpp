@@ -117,10 +117,9 @@ void FIG_preload_gfx(void)
 		host_writeb(get_hero(i) + 0x81, -1);
 	}
 
-	/* set something in the enemy charactersheet to -1 */
 	for (i = 0; i < 20; i++) {
-		ds_writeb(i * 0x3e + ENEMY_SHEETS, 0);
-		ds_writeb(i * 0x3e + 0xd371, -1);
+		ds_writeb(i * SIZEOF_ENEMY_SHEET + ENEMY_SHEETS + ENEMY_SHEET_MON_ID, 0);
+		ds_writeb(i * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS + ENEMY_SHEET_LIST_POS), -1);
 	}
 
 	for (i = 0; i < 90; i++) {

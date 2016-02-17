@@ -443,20 +443,20 @@ void FIG_latecomers(void)
 	/* for all enemies in this fight */
 	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
-		p_mon = p_datseg + ENEMY_SHEETS + 62 * i;
+		p_mon = p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i;
 
 		/* if monster has not appeared */
-		if (host_readbs(p_mon + 0x35) > 0) {
+		if (host_readbs(p_mon + ENEMY_SHEET_ROUND_APPEAR) > 0) {
 
 			/* decrement counter */
-			dec_ptr_bs(p_mon + 0x35);
+			dec_ptr_bs(p_mon + ENEMY_SHEET_ROUND_APPEAR);
 
-			if (!host_readbs(p_mon + 0x35)) {
+			if (!host_readbs(p_mon + ENEMY_SHEET_ROUND_APPEAR)) {
 				/* let monster enter the fight */
 
 				if (!enemy_bit10(p_mon)) {
 
-					if (is_in_byte_array(host_readbs(p_mon + 0x01), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+					if (is_in_byte_array(host_readbs(p_mon + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
 						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x17 + 5 * i),
 								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x18 + 5 * i),
@@ -464,7 +464,7 @@ void FIG_latecomers(void)
 								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i),
 								1);
 
-						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + 0x26)));
+						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + ENEMY_SHEET_LIST_POS)));
 
 						host_writebs(p2 + 3, (signed char)x);
 						host_writebs(p2 + 4, (signed char)y);
@@ -478,9 +478,9 @@ void FIG_latecomers(void)
 						host_writeb(p3 + 4,
 								y - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i)].y);
 
-						FIG_remove_from_list(host_readbs(p_mon + 0x26), 1);
+						FIG_remove_from_list(host_readbs(p_mon + ENEMY_SHEET_LIST_POS), 1);
 
-						FIG_add_to_list(host_readbs(p_mon + 0x26));
+						FIG_add_to_list(host_readbs(p_mon + ENEMY_SHEET_LIST_POS));
 
 						FIG_remove_from_list((signed char)l4, 1);
 
@@ -497,19 +497,19 @@ void FIG_latecomers(void)
 						host_writebs(p2 + 3, (signed char)x);
 						host_writebs(p2 + 4, (signed char)y);
 
-						FIG_remove_from_list(host_readbs(p_mon + 0x26), 1);
+						FIG_remove_from_list(host_readbs(p_mon + ENEMY_SHEET_LIST_POS), 1);
 
-						FIG_add_to_list(host_readbs(p_mon + 0x26));
+						FIG_add_to_list(host_readbs(p_mon + ENEMY_SHEET_LIST_POS));
 					}
 
-					place_obj_on_cb(x, y, i + 10, host_readbs(p_mon + 1),
+					place_obj_on_cb(x, y, i + 10, host_readbs(p_mon + ENEMY_SHEET_GFX_ID),
 						(signed short)host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i));
 
-					FIG_set_12_13(host_readbs(p_mon + 0x26));
+					FIG_set_12_13(host_readbs(p_mon + ENEMY_SHEET_LIST_POS));
 
 				} else {
 					/* set the enemy dead */
-					or_ptr_bs(p_mon + 0x31, 1);
+					or_ptr_bs(p_mon + ENEMY_SHEET_STATUS1, 1);
 				}
 			}
 		}
@@ -781,7 +781,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						l_si = 3;
 					} else if (l12 >= 10) {
 						/* l12 is a monster */
-						if (!test_bit0(p_datseg + 0xd37c + 62 * (l12 - 10 - (l12 >= 30 ? 20 : 0))))
+						if (!test_bit0(p_datseg + (ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * (l12 - 10 - (l12 >= 30 ? 20 : 0))))
 						{
 							l_si = 3;
 						}
