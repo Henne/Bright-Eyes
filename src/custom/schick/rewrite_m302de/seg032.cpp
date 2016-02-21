@@ -141,7 +141,7 @@ signed short FIG_choose_next_hero(void)
 			 * interesting bits
 			 */
 			Bit8u *hero = get_hero(0);
-			for (int i = 0; i < 7; i++, hero += 0x6da) {
+			for (int i = 0; i < 7; i++, hero += SIZEOF_HERO) {
 				D1_ERR("Hero %d typus = %x group=%x current_group=%x actions=%x\n",
 					i, host_readb(hero + 0x21),
 					host_readb(hero + 0x87),
@@ -310,7 +310,7 @@ signed short FIG_get_first_active_hero(void)
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* check class */
 		if ((host_readb(hero_i + 0x21) != 0) &&
 			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
@@ -343,7 +343,7 @@ unsigned short seg032_02db(void)
 
 	if (FIG_get_first_active_hero() == -1) {
 		hero_i = get_hero(0);
-		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 			if ((host_readb(hero_i + 0x21) != 0) &&
 				(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
 				!hero_dead(hero_i) &&
@@ -409,7 +409,7 @@ void FIG_do_round(void)
 	/* initialize heros #attacks and BP */
 	for (i = 0; i <= 6; ds_writeb((0xd84a + 1) + i, 0), i++) {
 
-		hero = (RealPt)ds_readd(HEROS) + 0x6da * i;
+		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
 
 		if ((host_readbs(Real2Host(hero) + 0x21) != 0) &&
 			(host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -525,7 +525,7 @@ void FIG_do_round(void)
 
 			pos = FIG_choose_next_hero();
 
-			hero = (RealPt)ds_readd(HEROS) + 0x6da * pos;
+			hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * pos;
 
 			dec_ptr_bs(Real2Host(hero) + 0x83);
 
@@ -1007,7 +1007,7 @@ signed short do_fight(signed short fight_nr)
 	if (ds_readws(0xc3c1) != 7) {
 
 		hero = get_hero(0);
-		for (l_di = 0; l_di <=6; l_di++, hero += 0x6da) {
+		for (l_di = 0; l_di <=6; l_di++, hero += SIZEOF_HERO) {
 
 			if ((host_readbs(hero + 0x21) != 0)
 				&& (host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
@@ -1035,7 +1035,7 @@ signed short do_fight(signed short fight_nr)
 
 					ds_writeb(0x4333, 99);
 					ptr = get_hero(0);
-					for (l1 = 0; l1 <=6; l1++, ptr += 0x6da) {
+					for (l1 = 0; l1 <=6; l1++, ptr += SIZEOF_HERO) {
 
 						if ((host_readbs(ptr + 0x21) != 0)
 							&& (host_readbs(ptr + 0x87) == ds_readbs(CURRENT_GROUP)))

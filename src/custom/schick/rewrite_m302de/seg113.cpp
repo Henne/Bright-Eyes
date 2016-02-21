@@ -201,7 +201,7 @@ void tevent_086(void)
 
 		hero = get_hero(0);
 
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
@@ -282,7 +282,7 @@ void tevent_098(void)
 
 			hero = get_hero(0);
 
-			for (i = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + 0x21) != 0 &&
 					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -341,7 +341,7 @@ void tevent_098(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
 				hero = get_hero(0);
-				for (i = 0; i <= 6; i++, hero += 0x6da) {
+				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 					if (i != hero_pos &&
 						host_readbs(hero + 0x21) != 0 &&
@@ -628,7 +628,7 @@ void tevent_104(void)
 
 		hero = get_hero(0);
 
-		for (i = l_si = nr_heros = 0; i <= 6; i++, hero += 0x6da)
+		for (i = l_si = nr_heros = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -801,7 +801,7 @@ void tevent_107(void)
 	if (answer == 1) {
 
 		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&

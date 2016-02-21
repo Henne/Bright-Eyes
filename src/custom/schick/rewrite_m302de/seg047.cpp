@@ -40,7 +40,7 @@ unsigned short get_hero_CH_best()
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		if ((host_readb(hero_i + 0x21) != 0) &&
 				/* check class */
@@ -73,7 +73,7 @@ unsigned short get_hero_KK_best() {
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		if ((host_readb(hero_i + 0x21) != 0) &&
 				/* check class */
 			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
@@ -416,7 +416,7 @@ signed short select_hero_from_group(Bit8u *title)
 
 	for (i = 0; i <= 6; i++) {
 
-		hero = (RealPt)ds_readd(HEROS) + i * 0x6da;
+		hero = (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
 
 		if (host_readb(Real2Host(hero) + 0x21) != 0 &&
 			host_readb(Real2Host(hero) + 0x87) == ds_readb(CURRENT_GROUP) &&
@@ -491,7 +491,7 @@ signed short select_hero_ok(Bit8u *title)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
-	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += 0x6da) {
+	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readb(Real2Host(hero) + 0x21) != 0 &&
 			host_readb(Real2Host(hero) + 0x87) == ds_readb(CURRENT_GROUP) &&
@@ -569,7 +569,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
-	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += 0x6da) {
+	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readb(Real2Host(hero) + 0x21) != 0 &&
 			host_readb(Real2Host(hero) + 0x87) == ds_readb(CURRENT_GROUP) &&
@@ -631,7 +631,7 @@ signed short count_heroes_in_group(void)
 
 	retval = 0;
 
-	for (hero_i = get_hero(0), i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (hero_i = get_hero(0), i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and dead */
 		if ((host_readb(hero_i + 0x21) != 0) &&
 			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&

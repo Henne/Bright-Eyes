@@ -98,7 +98,7 @@ signed short DNG_handler_oberorken(void)
 				if (ds_readds(0x3fa2) == 0) {
 					/* time is up, drown party */
 					hero = get_hero(0);
-					for (i = 0; i <= 6; i++, hero += 0x6da) {
+					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 						if (host_readbs(hero + 0x21) != 0 &&
 							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&

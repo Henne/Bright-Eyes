@@ -68,7 +68,7 @@ void city_event_1(void)
 	signed short answer;
 	RealPt hero;
 
-	hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
 
 	randval = random_schick(20);
 
@@ -132,7 +132,7 @@ void city_event_2(void)
 	signed short answer;
 	RealPt hero;
 
-	hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
 
 	if (test_skill(Real2Host(hero), 51, 2) <= 0) {
 
@@ -300,7 +300,7 @@ void city_event_7(void)
 	RealPt hero;
 
 	randval = random_schick(4) - 1;
-	hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
 
 	if (!randval) {
 
@@ -357,7 +357,7 @@ void city_event_8(void)
 	RealPt hero;
 
 	randval = random_schick(4) - 1;
-	hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
 
 	if (!randval) {
 

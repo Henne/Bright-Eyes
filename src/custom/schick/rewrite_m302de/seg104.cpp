@@ -267,7 +267,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 								if (ds_readbs(LOCATION) != 6) {
 									hero_p = get_hero(0);
-									for (i = 0; i <= 6; i++, hero_p += 0x6da) {
+									for (i = 0; i <= 6; i++, hero_p += SIZEOF_HERO) {
 										if ((host_readbs(hero_p + 0x21) != 0) &&
 											(host_readbs(hero_p + 0x87) == ds_readbs(CURRENT_GROUP)))
 										{
@@ -505,7 +505,7 @@ RealPt get_heaviest_hero(void)
 
 	w_max = 0;
 	hero = (RealPt)ds_readd(HEROS);
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if ((host_readbs(Real2Host(hero) + 0x21) != 0) &&
 			(host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP)))
@@ -540,7 +540,7 @@ signed short get_skilled_hero_pos(signed short skill)
 
 	hero = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if ((host_readbs(hero + 0x21) != 0) &&
 			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))

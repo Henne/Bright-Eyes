@@ -376,7 +376,7 @@ signed short DNG14_handler(void)
 			l_di += group_count_item(32);
 
 			hero = get_hero(0);
-			for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += 0x6da) {
+			for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + 0x21) != 0 &&
 					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -399,7 +399,7 @@ signed short DNG14_handler(void)
 			if (hero_pos == 3) {
 
 				hero = get_hero(0);
-				for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += 0x6da) {
+				for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
 					if (host_readbs(hero + 0x21) != 0 &&
 						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -425,7 +425,7 @@ signed short DNG14_handler(void)
 			} else if (hero_pos == 1) {
 
 				hero = get_hero(0);
-				for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += 0x6da) {
+				for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
 					if (host_readbs(hero + 0x21) != 0 &&
 						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -465,7 +465,7 @@ signed short DNG14_handler(void)
 		GUI_output(get_dtp(0x74));
 
 		hero = get_hero(0);
-		for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += 0x6da) {
+		for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&

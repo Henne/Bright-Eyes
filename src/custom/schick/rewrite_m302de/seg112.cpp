@@ -46,7 +46,7 @@ void tevent_067(void)
 		} else if (answer == 3) {
 
 			hero = get_hero(0);
-			for (i = count = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = count = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + 0x21) != 0 &&
 					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -75,7 +75,7 @@ void tevent_067(void)
 				GUI_output(get_city(0x17c));
 
 				hero = get_hero(0);
-				for (i = 0; i <= 6; i++, hero += 0x6da) {
+				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 					if (host_readbs(hero + 0x21) != 0 &&
 						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))

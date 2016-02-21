@@ -541,7 +541,7 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
 			signed short i;
 			/* ASGRIMM takes a meal with the heros */
 			hero = get_hero(0);
-			for (i = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if ((host_readbs(hero + 0x21) != 0) &&
 					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -661,7 +661,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			/* REMARK: what if the NPC is choosen ? */
 			/* REMARK: what if the positions are changed ? */
 			/* REMARK: what if the game is saved and the heros are at another mem location ? */
-			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * ds_writeb(UNICORN_HERO_POS, (unsigned char)get_hero_CH_best())));
+			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * ds_writeb(UNICORN_HERO_POS, (unsigned char)get_hero_CH_best())));
 		} else if (state == 7) {
 			timewarp(HOURS(1));
 		} else if (state == 8) {

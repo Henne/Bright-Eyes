@@ -244,7 +244,7 @@ static void schick_cmp_heros()
 
 	hero = get_hero(0);
 
-	for (i = 0; i < 7; i++, hero += 0x6da) {
+	for (i = 0; i < 7; i++, hero += SIZEOF_HERO) {
 
 		if (host_readb(hero + 0x21) == 0)
 			continue;
@@ -268,7 +268,7 @@ static void schick_cmp_heros()
 	}
 
 	hero = Real2Host(ds_readd(0xbd34));
-	for (i = 0; i < 7; i++, hero += 0x6da) {
+	for (i = 0; i < 7; i++, hero += SIZEOF_HERO) {
 		/* check for invalid skill_attempts */
 		if ((signed char)host_readb(hero + 0x13c) < 0) {
 			D1_ERR("Original-Bug: %s hat negative Talentsteigerungen\n", (char*)(hero + 0x10));

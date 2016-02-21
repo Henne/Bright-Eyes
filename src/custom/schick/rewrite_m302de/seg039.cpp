@@ -409,7 +409,7 @@ void FIG_init_heroes(void)
 	signed short cb_x;
 	signed short cb_y;
 	signed short l_si;
-	signed short l_di;
+	signed short l_di; /* player char nr */
 
 	for (l_si = 0; l_si <= 6; l_si++) {
 

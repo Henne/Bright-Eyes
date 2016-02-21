@@ -178,7 +178,7 @@ void do_wildcamp(void)
 
 			if (answer != -1) {
 
-				hero = (RealPt)ds_readd(HEROS) + 0x6da * answer;
+				hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
 
 
 				if (host_readbs(Real2Host(hero) + 0x21) >= 7) {
@@ -235,7 +235,7 @@ void do_wildcamp(void)
 
 					if (herb_tries < 1)
 					{
-						hero = (RealPt)ds_readd(HEROS) + 0x6da * answer;
+						hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
 
 						herb_hours = (signed char)GUI_input(get_ltx(0x51c), 1);
 
@@ -323,7 +323,7 @@ void do_wildcamp(void)
 
 					hero = (RealPt)ds_readd(HEROS);
 
-					for (i = 0; i <= 6; i++, hero += 0x6da) {
+					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 						if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
 							host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
 							ds_readbs(0xe3d6 + i) < 2 &&
@@ -506,7 +506,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 				if (tries < 2) {
 
 					timewarp(HOURS(1));
-					ds_writed(0x3e20, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+					ds_writed(0x3e20, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 					ds_writeb(0xe3c8 + hero_pos, 1);
 					retval = 1;
 
@@ -520,7 +520,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 
 						/* fill up all waterskins and remove thirst of all living heros in the current group */
 						hero2 = get_hero(0);
-						for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + 0x21) != 0 &&
 								host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero2))
@@ -550,7 +550,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 
 						/* remove hunger of all living heros in the current group */
 						hero2 = get_hero(0);
-						for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 							if (host_readbs(hero2 + 0x21) != 0 &&
 								host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero2))

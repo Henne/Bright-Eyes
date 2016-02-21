@@ -513,7 +513,7 @@ void academy_analues(void)
 
 	if (hero_pos != -1) {
 
-		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
 		buffer1_bak = ds_readws(0x26bf);
 
@@ -548,7 +548,7 @@ void THO_academy(void)
 
 	/* find the position of the first cursed hero */
 	hero = get_hero(0);
-	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += 0x6da) {
+	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + 0x21) != 0 &&
 			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -748,7 +748,7 @@ signed short academy_get_equal_item(signed short price)
 
 		retval = -1;
 		hero = get_hero(0);
-		for (i = 0; i < 6; i++, hero += 0x6da) {
+		for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&

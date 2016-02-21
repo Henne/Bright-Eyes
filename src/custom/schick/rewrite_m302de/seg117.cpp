@@ -99,7 +99,7 @@ void hunt_karen(void)
 
 			hero = get_hero(0);
 			/* make a STEALTH+2 test and count the heroes who passed it */
-			for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if ((host_readbs(hero + 0x21) != 0) &&
 					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -117,7 +117,7 @@ void hunt_karen(void)
 
 				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
 				hero = get_hero(0);
-				for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 					if ((host_readbs(hero + 0x21) != 0) &&
 						(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -181,7 +181,7 @@ void hunt_wildboar(void)
 
 			hero = get_hero(0);
 			/* make a STEALTH+0 test and count the heroes who passed it */
-			for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if ((host_readbs(hero + 0x21) != 0) &&
 					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -199,7 +199,7 @@ void hunt_wildboar(void)
 
 				/* make a MISSLE WEAPON+0 test and count the heroes who passed it */
 				hero = get_hero(0);
-				for (i = passed = 0; i <= 6; i++, hero += 0x6da) {
+				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 					if ((host_readbs(hero + 0x21) != 0) &&
 						(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -258,7 +258,7 @@ void hunt_cavebear(void)
 		GUI_output(get_city(0x58));
 
 		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if ((host_readbs(hero + 0x21) != 0) &&
 				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -310,7 +310,7 @@ void hunt_viper(void)
 
 	hero_i = get_hero(0);
 
-	for (i = l_di = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = l_di = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* hero is valid */
 		/* hero is in current group */
@@ -375,7 +375,7 @@ void octopus_attack(void)
 
 	do {
 		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -705,7 +705,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 4 || state == 7) {
 		timewarp(HOURS(1));
 	} else if (state == 6) {
-		hero = (RealPt)ds_readd(HEROS) + 0x6da * get_random_hero();
+		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
 		ds_writew(0xe30e, test_skill(Real2Host(hero), 31, 6) > 0 ? 8 : 7);
 	} else if (state == 8) {
 		timewarp(HOURS(1));
@@ -713,7 +713,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 9) {
 
 		do {
-			hero = (RealPt)ds_readds(HEROS) + 0x6da * ds_readws(0xb21b);
+			hero = (RealPt)ds_readds(HEROS) + SIZEOF_HERO * ds_readws(0xb21b);
 			inc_ds_ws(0xb21b);
 
 			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
@@ -748,7 +748,7 @@ void TLK_way_to_ruin(signed short state)
 		ds_writew(0xe30e, test_skill(hero2, 28, 5) > 0 ? 18 : 19);
 	} else if (state == 19) {
 		timewarp(MINUTES(20));
-		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * get_random_hero()));
+		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
 		ds_writew(0xe30e, test_skill(Real2Host(ds_readd(RUIN_HERO)), 4, 2) > 0 ? 20 : 21);
 	} else if (state == 20) {
 		loose_random_item(get_hero(get_random_hero()), 5, get_ltx(0x7e8));
@@ -768,7 +768,7 @@ void TLK_way_to_ruin(signed short state)
 
 		hero = (RealPt)ds_readds(HEROS);
 
-		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += 0x6da) {
+		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
 				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -797,7 +797,7 @@ void TLK_way_to_ruin(signed short state)
 
 		hero = (RealPt)ds_readds(HEROS);
 
-		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += 0x6da) {
+		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
 				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&

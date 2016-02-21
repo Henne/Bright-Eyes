@@ -511,7 +511,7 @@ void load_npc(signed short index)
 
 	/* load from temp directory */
 	fd = load_archive_file(index | 0x8000);
-	bc__read(fd, npc_dst, 0x6da);
+	bc__read(fd, npc_dst, SIZEOF_HERO);
 	bc_close(fd);
 
 	if (host_readb(npc_dst + 0x22) == 1) {
@@ -534,7 +534,7 @@ void save_npc(signed short index)
 
 	fd = load_archive_file(index | 0x8000);
 
-	bc__write(fd, (RealPt)ds_readd(HEROS) + 6 * 0x6da, 0x6da);
+	bc__write(fd, (RealPt)ds_readd(HEROS) + 6 * SIZEOF_HERO, SIZEOF_HERO);
 
 	bc_close(fd);
 }

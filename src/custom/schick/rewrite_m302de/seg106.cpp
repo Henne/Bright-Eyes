@@ -705,7 +705,7 @@ signed short get_max_light_time(void)
 	retval = -1;
 
 	hero = get_hero(0);
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 #ifdef M302de_ORIGINAL_BUGFIX
 		if (!host_readb(hero + 0x21))

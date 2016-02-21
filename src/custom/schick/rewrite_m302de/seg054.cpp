@@ -43,7 +43,7 @@ RealPt get_first_busy_hero(void)
 	signed short i;
 
 	hero = (RealPt)ds_readd(HEROS);
-	for (i = 0; i < 6; i++, hero += 0x6da) {
+	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 		if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
 			host_readbs(Real2Host(hero) + 0x87) != ds_readbs(CURRENT_GROUP) &&
 			hero_busy(Real2Host(hero)) &&
@@ -225,7 +225,7 @@ void do_inn(void)
 					GUI_output(host_readws(inn_ptr) < 5 ? get_ltx(0x76c) :
 							(host_readws(inn_ptr) < 15 ? get_ltx(0x770) : get_ltx(0x774)));
 
-					for (i = 0, hero2 = get_hero(0); i <= 6; i++, hero2 += 0x6da) {
+					for (i = 0, hero2 = get_hero(0); i <= 6; i++, hero2 += SIZEOF_HERO) {
 
 						if (host_readbs(hero2 + 0x21) != 0 &&
 							host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -343,7 +343,7 @@ void do_inn(void)
 
 				if (answer != -1) {
 
-					hero = (RealPt)ds_readd(HEROS) + 0x6da * answer;
+					hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
 
 					if (host_readbs(Real2Host(hero) + 0x21) >= 7) {
 
@@ -384,7 +384,7 @@ void do_inn(void)
 					ds_writeb(FOOD_MOD, 0);
 
 					hero = (RealPt)ds_readd(HEROS);
-					for (i = 0; i <= 6; i++, hero += 0x6da) {
+					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 						if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
 							host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP))

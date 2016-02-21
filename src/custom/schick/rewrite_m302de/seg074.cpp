@@ -192,7 +192,7 @@ signed short is_group_in_prison(signed short group_nr)
 	Bit8u *hero = get_hero(0);
 	signed short i;
 
-	for (i = 0; i < 6; i++, hero += 0x6da) {
+	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
 		if ((host_readbs(hero + 0x21) != 0) &&
 			(host_readbs(hero + 0x87) == group_nr))

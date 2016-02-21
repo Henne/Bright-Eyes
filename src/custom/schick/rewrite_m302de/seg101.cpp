@@ -43,7 +43,7 @@ void spell_arcano(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 
 	/* get a free mod_slot */
@@ -117,7 +117,7 @@ void spell_inc_ch(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
@@ -190,7 +190,7 @@ void spell_inc_ff(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
@@ -237,7 +237,7 @@ void spell_inc_ge(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
@@ -284,7 +284,7 @@ void spell_inc_in(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
@@ -331,7 +331,7 @@ void spell_inc_kk(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
@@ -378,7 +378,7 @@ void spell_inc_kl(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
@@ -425,7 +425,7 @@ void spell_inc_mu(void)
 	/* get the spell target */
 	target = host_readbs(get_spelluser() + 0x86) - 1;
 
-	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * 0x6da));
+	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
 	/* check if the target is the spelluser */
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
@@ -495,7 +495,7 @@ void spell_paral(void)
 
 			/* set the target  */
 			ds_writed(SPELLTARGET,
-				(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+				(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 			/* check again */
 			if (get_spelltarget() == get_spelluser()) {
@@ -790,7 +790,7 @@ void spell_silentium(void)
 
 	hero = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 		/* check class */
 		if ((host_readb(hero + 0x21) != 0) &&
 			/* check group */

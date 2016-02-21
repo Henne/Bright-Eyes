@@ -178,8 +178,8 @@ RealPt FIG_get_hero_ptr(signed short v1)
 	signed short i;
 
 	for (i = 0; i <= 6; i++) {
-		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * 0x6da + 0x81) == v1)
-			return (RealPt)ds_readd(HEROS) + i * 0x6da;
+		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * SIZEOF_HERO + 0x81) == v1)
+			return (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
 	}
 
 	return (RealPt)ds_readd(HEROS);
@@ -464,7 +464,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 	RealPt hero;
 	signed short fg_bak, bg_bak;
 
-	hero = (RealPt)ds_readd(HEROS) + (hero_pos - 1)  * 0x6da;
+	hero = (RealPt)ds_readd(HEROS) + (hero_pos - 1)  * SIZEOF_HERO;
 	ds_writed(0xc019, (Bit32u)(hero + 0x2da));
 
 	get_textcolor(&fg_bak, &bg_bak);

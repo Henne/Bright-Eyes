@@ -96,7 +96,7 @@ void tevent_057(void)
 
 			hero = get_hero(0);
 
-			for (i = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + 0x21) != 0 &&
 					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
@@ -109,7 +109,7 @@ void tevent_057(void)
 
 		hero = get_hero(0);
 
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -267,7 +267,7 @@ void tevent_060(void)
 
 					hero = get_hero(0);
 
-					for (i = 0; i <= 6; i++, hero += 0x6da) {
+					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 						if (host_readbs(hero + 0x21) != 0 &&
 							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -312,7 +312,7 @@ void tevent_060(void)
 
 					hero = get_hero(0);
 
-					for (i = has_magic_rope = nr_items = 0; i <= 6 ; i++, hero += 0x6da){
+					for (i = has_magic_rope = nr_items = 0; i <= 6 ; i++, hero += SIZEOF_HERO){
 
 						if (host_readbs(hero + 0x21) != 0 &&
 							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -448,7 +448,7 @@ void tevent_063(void)
 
 	hero = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + 0x21) != 0 &&
 			host_readbs(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
@@ -543,7 +543,7 @@ void tevent_064(void)
 
 				hero = get_hero(0);
 
-				for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+				for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 					if (host_readbs(hero + 0x21) != 0 &&
 						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -734,7 +734,7 @@ void tevent_066(void)
 				GUI_output(get_city(0x150));
 
 				hero = get_hero(0);
-				for (l_di = count = 0; l_di <= 6; l_di++, hero += 0x6da)
+				for (l_di = count = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO)
 				{
 					if (host_readbs(hero + 0x21) != 0 &&
 						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&

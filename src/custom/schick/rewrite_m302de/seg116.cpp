@@ -162,7 +162,7 @@ void tevent_133(void)
 		GUI_output(get_city(0x98));
 
 		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(hero + 0x21) != 0 &&
 				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -371,7 +371,7 @@ void tevent_137(void)
 		if (answer == 1) {
 
 			hero = get_hero(0);
-			for (i = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if ((host_readbs(hero + 0x21) != 0) &&
 					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -433,7 +433,7 @@ void tevent_139(void)
 	if (answer == 1) {
 
 		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if ((host_readbs(hero + 0x21) != 0) &&
 				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -532,7 +532,7 @@ void tevent_143(void)
 	if (answer == 1) {
 
 		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if ((host_readbs(hero + 0x21) != 0) &&
 				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
@@ -648,14 +648,14 @@ void tevent_144(void)
 						(char*)get_city(0x98),
 						(char*)get_hero(6) + 0x10);
 
-					GUI_dialogbox((RealPt)ds_readd(HEROS) + 0x6da * 6 + 0x2da,
-							Real2Host(ds_readd(HEROS)) + 0x6da * 6  + 0x10,
+					GUI_dialogbox((RealPt)ds_readd(HEROS) + SIZEOF_HERO * 6 + 0x2da,
+							Real2Host(ds_readd(HEROS)) + SIZEOF_HERO * 6  + 0x10,
 							Real2Host(ds_readd(DTP2)), 0);
 				}
 
 			} while (l_si == 6);
 
-			ds_writed(0x3e20, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * l_si));
+			ds_writed(0x3e20, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * l_si));
 
 			final_intro();
 			if (!TRV_fight_event(192, 144)) {
@@ -691,7 +691,7 @@ void TLK_old_woman(signed short state)
 	if (state == 3) {
 
 		hero = get_hero(0);
-		for (l_di = counter = 0; l_di <= 6; l_di++, hero += 0x6da) {
+		for (l_di = counter = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO) {
 			/* Original-Bug: check if this is realy a hero in the current group and alive before test_skill() */
 			if (test_skill(hero, 17, -5) > 0) {
 				counter++;
@@ -711,14 +711,14 @@ void TLK_old_woman(signed short state)
 	} else if (state == 23) {
 
 		hero = get_hero(0);
-		for (l_di = counter = 0; l_di <= 6; l_di++, hero += 0x6da) {
+		for (l_di = counter = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO) {
 			/* Original-Bug: check if this is realy a hero in the current group and alive before test_skill() */
 			if (test_skill(hero, 17, -5) > 0) {
 				counter++;
 			}
 		}
 
-		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * get_random_hero()));
+		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
 
 		ds_writew(0xe30e, count_heroes_in_group() == counter ? 24 : 25);
 

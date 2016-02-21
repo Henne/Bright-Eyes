@@ -1878,7 +1878,7 @@ void timers_daily(void)
 	}
 
 	hero_i = get_hero(0);
-	for (i = 0; i <=6; i++, hero_i += 0x6da) {
+	for (i = 0; i <=6; i++, hero_i += SIZEOF_HERO) {
 
 		if ((host_readb(get_hero(i) + 0x21) != 0) &&
 			(host_readbs(hero_i + 0x94) > 0))
@@ -2246,7 +2246,7 @@ void do_timers(void)
 
 		hero_i = get_hero(0);
 
-		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 			/* check typus */
 			if ((host_readb(hero_i + 0x21) != 0) &&
@@ -2273,7 +2273,7 @@ void do_timers(void)
 
 		hero_i = get_hero(0);
 
-		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 			/* check typus */
 			if ((host_readb(hero_i + 0x21) != 0) &&
 				/* check drunken */
@@ -2295,7 +2295,7 @@ void do_timers(void)
 
 			ptr = get_hero(0);
 
-			for (i = 0; i <= 6; i++, ptr += 0x6da) {
+			for (i = 0; i <= 6; i++, ptr += SIZEOF_HERO) {
 
 				/* check typus */
 				if (host_readb(ptr + 0x21) != 0) {
@@ -2697,7 +2697,7 @@ void seg002_2f7a(Bit32s fmin)
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* check class */
 		if (host_readb(hero_i + 0x21) != 0) {
 
@@ -2760,7 +2760,7 @@ void sub_light_timers(Bit32s quarter)
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* check class */
 		if (host_readb(hero_i + 0x21) != 0) {
 
@@ -2857,7 +2857,7 @@ void herokeeping(void)
 
 	/* for each hero ..*/
 	hero = get_hero(0);
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		/* consume food and set messages */
 		if (host_readb(hero + 0x21) != 0 &&		/* valid hero */
@@ -3085,7 +3085,7 @@ void check_level_up(void)
 	do {
 		done = 0;
 		hero = get_hero(0);
-		for (i = 0; i <= 6; i++, hero += 0x6da) {
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			if ((host_readbs(hero + 0x21) != 0) &&
 				!hero_dead(hero) &&
@@ -4333,7 +4333,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				ds_writeb(0x4333, 99);
 
 				hero_i = get_hero(0);
-				for (i = 0; i <=6; i++, hero_i += 0x6da) {
+				for (i = 0; i <=6; i++, hero_i += SIZEOF_HERO) {
 					/* no typus */
 					if ((host_readbs(hero_i + 0x21) != 0) &&
 						(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
@@ -4459,7 +4459,7 @@ void add_group_le(signed short le)
 	signed short i;
 
 	hero = get_hero(0);
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		/* check class and group */
 		if ((host_readb(hero + 0x21) != 0) &&
@@ -4663,7 +4663,7 @@ signed short get_random_hero(void)
 		signed short pos = 0;
 
 		Bit8u *hero = get_hero(0);
-		for (int i = 0; i <= 6; i++, hero += 0x6da) {
+		for (int i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			/* Check if hero has a class */
 			if (host_readbs(hero + 0x21) == 0)
@@ -4704,7 +4704,7 @@ Bit32s get_party_money(void)
 
 	hero = get_hero(0);
 
-	for (i=0; i < 6; i++, hero += 0x6da) {
+	for (i=0; i < 6; i++, hero += SIZEOF_HERO) {
 		/* Check if hero has a class and is in the current group */
 		if (host_readbs(hero + 0x21) &&
 			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
@@ -4759,7 +4759,7 @@ void set_party_money(Bit32s money)
 
 		hero = get_hero(0);
 
-		for (i = 0; i < 6; i++, hero += 0x6da) {
+		for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
 			if (host_readbs(hero + 0x21) &&
 				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -4814,7 +4814,7 @@ void add_group_ap(Bit32s ap)
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group and deadness */
 		if (host_readbs(hero_i + 0x21) &&
@@ -4840,7 +4840,7 @@ void add_hero_ap_all(signed short ap)
 		return;
 
 	hero_i = get_hero(0);
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group and deadness */
 		if (host_readbs(hero_i + 0x21) &&
@@ -4870,7 +4870,7 @@ void sub_hero_ap_all(signed short ap)
 		return;
 
 	hero_i = get_hero(0);
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group and deadness */
 		if (host_readbs(hero_i + 0x21) &&
@@ -4948,7 +4948,7 @@ signed short get_first_hero_with_item(signed short item)
 	signed short i;
 	Bit8u *hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class and group */
 		if (host_readbs(hero_i + 0x21) &&
@@ -4980,7 +4980,7 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
 	signed short i;
 	Bit8u *hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class and group */
 		if (host_readbs(hero_i + 0x21) &&
@@ -5031,7 +5031,7 @@ RealPt get_first_hero_available_in_group(void)
 	signed short i;
 	RealPt hero_i = (RealPt)ds_readd(HEROS);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group, deadness and check_hero() */
 		if (host_readbs(Real2Host(hero_i) + 0x21) &&
@@ -5059,7 +5059,7 @@ RealPt get_second_hero_available_in_group(void)
 
 	hero_i = (RealPt)ds_readd(HEROS);
 
-	for (i = tmp = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = tmp = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and check_hero() */
 		if (host_readbs(Real2Host(hero_i) + 0x21) &&
 			(host_readbs(Real2Host(hero_i) + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -5090,7 +5090,7 @@ signed short count_heros_available(void)
 	retval = 0;
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class */
 		/* Check if hero is available */
 		if (host_readbs(hero_i + 0x21) &&
@@ -5112,7 +5112,7 @@ signed short count_heroes_available_in_group(void)
 	signed short i;
 	Bit8u *hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and check_hero_no2() */
 		if (host_readbs(hero_i + 0x21) &&
 			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&

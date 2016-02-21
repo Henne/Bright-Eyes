@@ -30,7 +30,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 	Bit8u *hero;
 
 	hero = get_hero(0);
-	for (i = 0; i <= 6; i++, hero += 0x6da)
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 	{
 		if (i != diver_pos &&
 			host_readbs(hero + 0x21) != 0 &&

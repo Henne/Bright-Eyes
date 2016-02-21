@@ -185,7 +185,7 @@ void draw_status_line(void)
 
 				/* set the src pointer of the head */
 				ds_writed(0xc019, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
-					(Bit32u)((RealPt)ds_readd(HEROS) + i * 0x6da + 0x2da)));
+					(Bit32u)((RealPt)ds_readd(HEROS) + i * SIZEOF_HERO + 0x2da)));
 
 				do_pic_copy(0);
 

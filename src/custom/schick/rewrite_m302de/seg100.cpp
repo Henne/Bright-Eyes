@@ -334,7 +334,7 @@ void spell_blitz(void)
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 		if (get_spelltarget() == get_spelluser()) {
 
@@ -414,7 +414,7 @@ void spell_eisenrost(void)
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+	                (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 		if (get_spelltarget() == get_spelluser()) {
 
@@ -593,7 +593,7 @@ void spell_ignifaxius(void)
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * 0x6da));
+	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
 
 		/* get a pointer to the armour */
 		p_armour = get_spelltarget() + 0x1b2;
@@ -662,7 +662,7 @@ void spell_plumbumbarum(void)
 
 		/* set the spell target */
 		ds_writed(SPELLTARGET,
-	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * 0x6da));
+	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
 
 		if (get_spelltarget() == get_spelluser()) {
 
@@ -723,7 +723,7 @@ void spell_saft_kraft(void)
 
 	/* set a pointer to the target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * target));
+		(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * target));
 
 
 	/* +5 on AT of the current weapon */
@@ -776,7 +776,7 @@ void spell_scharfes_auge(void)
 
 	/* set a pointer to the target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * target));
+		(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * target));
 
 	/* all range talents are boosted + 3 */
 

@@ -35,7 +35,7 @@ namespace M302de {
 void spell_beherrschung(void)
 {
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	if (!hero_cursed(Real2Host(ds_readd(SPELLTARGET)))) {
 		ds_writew(0xac0e, -2);
@@ -149,7 +149,7 @@ void spell_verwandlung(void)
 
 	/* set spelltarget */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	if (hero_stoned(Real2Host(ds_readd(SPELLTARGET)))) {
 
@@ -220,7 +220,7 @@ void spell_band(void)
 
 		/* Set pointer to hero target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 		if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
 			/* don't cast yourself */
@@ -436,7 +436,7 @@ void spell_somnigravis(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
 		/* don't cast yourself */
@@ -629,7 +629,7 @@ void spell_axxeleratus(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
 
 	if (!host_readbs(get_spelltarget() + 0xa0)) {
 
@@ -757,7 +757,7 @@ void spell_balsam(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	ds_writew(0xac0e, 0);
 
@@ -809,7 +809,7 @@ void spell_hexenspeichel(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	/* set costs to 0 */
 	ds_writew(0xac0e, 0);
@@ -856,7 +856,7 @@ void spell_klarum_purum(void)
 
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	poison = hero_is_poisoned(get_spelltarget());
 
@@ -893,7 +893,7 @@ void spell_ruhe_koerper(void)
 {
 	/* Set pointer to hero target */
 	ds_writed(SPELLTARGET,
-		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	host_writeb(get_spelltarget() + 0x95, 1);

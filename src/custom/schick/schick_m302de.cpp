@@ -1419,7 +1419,7 @@ static int n_seg032(unsigned offs)
 	case 0xa8: {
 		reg_ax = FIG_choose_next_hero();
 		D1_LOG("FIG_choose_next_hero() = %s\n",
-		schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
+		schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO));
 		return 1;
 	}
 	/* Callers: 1 */
@@ -1447,7 +1447,7 @@ static int n_seg032(unsigned offs)
 	case 0x242: {
 		reg_ax = FIG_get_first_active_hero();
 		D1_LOG("near FIG_get_first_active_hero() = %s\n",
-			(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+			(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO) : "none");
 		return 1;
 	}
 	/* Callers: 1 */
@@ -5385,7 +5385,7 @@ static int seg002(unsigned short offs) {
 		reg_ax = get_random_hero();
 
 		D1_LOG("get_random_hero(); -> %s\n",
-			schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da));
+			schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO));
 		return 1;
 	}
 	case 0x51c2: {
@@ -7353,7 +7353,7 @@ static int seg032(unsigned short offs) {
 			reg_ax = FIG_get_first_active_hero();
 
 			D1_LOG("FIG_get_first_active_hero(); = %s\n",
-				(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(0xbd34) + reg_ax * 0x6da) : "none");
+				(Bit16s)reg_ax != -1 ? schick_getCharname(ds_readd(HEROS) + reg_ax * SIZEOF_HERO) : "none");
 			return 1;
 		}
 		default:

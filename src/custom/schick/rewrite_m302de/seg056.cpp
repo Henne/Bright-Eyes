@@ -133,7 +133,7 @@ void buy_screen(void)
 
 			free_slots = 0;
 			hero2 = get_hero(0);
-			for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+			for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 
 				if (host_readbs(hero2 + 0x21) &&
 					host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP))
@@ -301,7 +301,7 @@ void buy_screen(void)
 
 			hero1 = get_hero(0);
 
-			for (l_di = 0; l_di < 7; l_di++, hero1 += 0x6da) {
+			for (l_di = 0; l_di < 7; l_di++, hero1 += SIZEOF_HERO) {
 
 				do_fill_rect((RealPt)ds_readd(0xd2ff),
 						ds_readws(0x2d01 + 2 * l_di),

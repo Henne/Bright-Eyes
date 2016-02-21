@@ -259,7 +259,7 @@ void char_add(signed short temple_id)
 
 					hero = get_hero(0);
 
-					for (i = 0; i < 6; i++, hero += 0x6da) {
+					for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
 						if (!host_readbs(hero + 0x21)) {
 
@@ -323,7 +323,7 @@ void char_letgo(signed short temple_id)
 
 					write_chr_temp(hero_pos);
 
-					memset(hero, 0, 0x6da);
+					memset(hero, 0, SIZEOF_HERO);
 
 					draw_main_screen();
 					init_ani(2);
@@ -501,7 +501,7 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 	HugePt ptr;
 	RealPt hero = (RealPt)ds_readd(HEROS);
 
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
 			host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&

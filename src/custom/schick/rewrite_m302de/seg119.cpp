@@ -51,7 +51,7 @@ void disease_effect(void)
 
 		if ((host_readbs(get_hero(i) + 0x21) != 0) && !hero_dead(get_hero(i))) {
 
-			hero = (RealPt)ds_readd(HEROS) + 0x6da * i;
+			hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
 
 			disease_ptr = Real2Host(hero) + 0xb3;
 
@@ -141,7 +141,7 @@ void disease_effect(void)
 
 					hero2 = get_hero(0);
 
-					for (j = 0; j <= 6; j++, hero2 += 0x6da) {
+					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
 						if ((host_readbs(hero2 + 0x21) != 0) &&
 							(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
@@ -249,7 +249,7 @@ void disease_effect(void)
 
 					hero2 = get_hero(0);
 
-					for (j = 0; j <= 6; j++, hero2 += 0x6da) {
+					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
 						if ((host_readbs(hero2 + 0x21) != 0) &&
 							(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
@@ -518,7 +518,7 @@ void disease_effect(void)
 
 					hero2 = get_hero(0);
 
-					for (j = 0; j <= 6; j++, hero2 += 0x6da) {
+					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
 
 
 						if ((host_readbs(hero2 + 0x21) != 0) &&

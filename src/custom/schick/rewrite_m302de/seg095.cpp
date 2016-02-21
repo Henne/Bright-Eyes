@@ -133,7 +133,7 @@ void npc_farewell(void)
 						get_ltx(0xbc8), get_dtp(0x4c));
 
 					hero_i = get_hero(0);
-					for (i = 0; i < 6; i++, hero_i += 0x6da) {
+					for (i = 0; i < 6; i++, hero_i += SIZEOF_HERO) {
 						if (host_readb(hero_i + 0x21) &&
 							(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
 							(!hero_dead(hero_i)))
@@ -515,7 +515,7 @@ void remove_npc(signed short head_index, signed char days,
 	}
 
 	/* clear the NPC from memory */
-	memset(get_hero(6), 0, 0x6da);
+	memset(get_hero(6), 0, SIZEOF_HERO);
 
 	/* dec group counter */
 	dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));

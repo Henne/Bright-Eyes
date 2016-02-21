@@ -196,7 +196,7 @@ void status_show(Bit16u index)
 	bak3 = ds_readw(0xd317);
 	bak4 = ds_readw(0xd319);
 
-	hero = (RealPt)ds_readd(HEROS) + index * 0x6da;
+	hero = (RealPt)ds_readd(HEROS) + index * SIZEOF_HERO;
 
 	set_var_to_zero();
 	update_mouse_cursor();

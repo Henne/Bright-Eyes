@@ -63,7 +63,7 @@ void rabies(RealPt hero, signed short hero_pos)
 		hero_pos++;
 	}
 
-	hero = (RealPt)ds_readd(HEROS) + 0x6da * hero_pos;
+	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos;
 	host_writeb(Real2Host(hero) + 0x22, sex_bak);
 
 	if (ds_readbs(0x2845) == 0) {
@@ -213,7 +213,7 @@ void rabies(RealPt hero, signed short hero_pos)
 		if (done == 0) {
 			/* every other hero in the group looses 1W6+2 LE */
 			hero2 = get_hero(0);
-			for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+			for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 
 				if ((l_di != hero_pos) &&
 					(host_readbs(hero2 + 0x21) != 0) &&
@@ -300,7 +300,7 @@ signed short init_memory(void)
 	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
-	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * 0x6da));
+	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * SIZEOF_HERO));
 	ds_writed(0xe494,		(Bit32u)schick_alloc_emu(630));
 	ds_writed(0xe49c,		(Bit32u)schick_alloc_emu(225));
 	ds_writed(0xe498,		(Bit32u)schick_alloc_emu(80));
@@ -557,7 +557,7 @@ void prepare_dirs(void)
 		l_di = bc__open(((char*)&blk) + 30, 0x8004);
 #endif
 
-		bc__read(l_di, Real2Host(ds_readd(0xd303)), 0x6da);
+		bc__read(l_di, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
 
 		bc_close(l_di);
 
@@ -567,7 +567,7 @@ void prepare_dirs(void)
 
 		l_di = bc__creat((RealPt)ds_readd(0xd2eb), 0);
 
-		bc__write(l_di, (RealPt)ds_readd(0xd303), 0x6da);
+		bc__write(l_di, (RealPt)ds_readd(0xd303), SIZEOF_HERO);
 
 		bc_close(l_di);
 

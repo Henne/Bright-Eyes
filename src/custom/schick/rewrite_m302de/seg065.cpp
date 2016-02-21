@@ -531,7 +531,7 @@ void show_outro(void)
 
 	/* give the heros the reward and restore them */
 	hero = get_hero(0);
-	for (i = 0; i < 6; i++, hero += 0x6da) {
+	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + 0x21)) {
 

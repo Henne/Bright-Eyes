@@ -313,7 +313,7 @@ void do_harbour(void)
 					disease_effect();
 
 					hero = get_hero(0);
-					for (l_si = 0; l_si <= 6; l_si++, hero += 0x6da) {
+					for (l_si = 0; l_si <= 6; l_si++, hero += SIZEOF_HERO) {
 
 						if (host_readbs(hero + 0x21) != 0 &&
 							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
@@ -540,7 +540,7 @@ void sea_travel(signed short passage, signed short dir)
 			ds_writeb(TRAVEL_BY_SHIP, 1);
 
 			hero = get_hero(0);
-			for (i = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + 0x21) != 0 &&
 					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))

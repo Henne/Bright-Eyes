@@ -55,7 +55,7 @@ void MON_do_damage(signed short damage)
 
 			/* set the pointer to the target */
 			ds_writed(SPELLTARGET,
-				(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+				(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
 
 			/* do the damage */
 			sub_hero_le(get_spelltarget(), damage);
@@ -97,7 +97,7 @@ signed short MON_get_target_PA(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
 
 		/* calc and return PA-value */
 		return host_readbs(get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78))
@@ -123,7 +123,7 @@ signed short MON_get_target_RS(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
 
 		/* return RS-value */
 		return host_readbs(get_spelltarget() + 0x30);
@@ -334,7 +334,7 @@ void mspell_bannbaladin(void)
 {
 	/* set pointer to hero target */
 	ds_writed(SPELLTARGET,
-                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * 0x6da));
+                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	or_ptr_bs(get_spelltarget() + 0xab, 0x08);
@@ -349,7 +349,7 @@ void mspell_boeser_blick(void)
 {
 	/* set pointer to hero target */
 	ds_writed(SPELLTARGET,
-                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * 0x6da));
+                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	or_ptr_bs(get_spelltarget() + 0xaa, 0x20);
@@ -364,7 +364,7 @@ void mspell_horriphobus(void)
 {
 	/* set pointer to hero target */
 	ds_writed(SPELLTARGET,
-                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * 0x6da));
+                        (Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser_e() + 0x2d) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
 	or_ptr_bs(get_spelltarget() + 0xab, 0x01);
@@ -434,7 +434,7 @@ void mspell_blitz(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
 
 		/* set blitz timer to 3 rounds */
 		host_writeb(get_spelltarget() + 0x96, 3);
@@ -469,7 +469,7 @@ void mspell_eisenrost(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
 
 		id = host_readws(get_spelltarget() + 0x1c0);
 
@@ -570,7 +570,7 @@ void mspell_ignifaxius(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
 		/* pointer to the armour of the target hero */
 		p_armour = get_spelltarget() + 0x1b2;
@@ -634,7 +634,7 @@ void mspell_plumbumbarum(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
 		/* AT - 3 */
 		slot = get_free_mod_slot();
@@ -727,7 +727,7 @@ void mspell_paral(void)
 
 		/* set the pointer to the target */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
+			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + 0x2d) - 1)));
 
 		/* set the flag */
 		or_ptr_bs(get_spelltarget() + 0xaa, 0x04);

@@ -118,7 +118,7 @@ void GRP_sort_heros(void)
 {
 	signed short i;
 
-	qsort((void*)get_hero(0), 6, 0x6da, GRP_compare_heros);
+	qsort((void*)get_hero(0), 6, SIZEOF_HERO, GRP_compare_heros);
 
 	for (i = 0; i < 6; i++) {
 		host_writeb(get_hero(i) + 0x8a, i + 1);
@@ -383,7 +383,7 @@ void GRP_switch_to_next(signed short mode)
 }
 
 struct dummy {
-	char a[0x6da];
+	char a[SIZEOF_HERO];
 };
 
 void GRP_swap_heros(void)
@@ -395,7 +395,7 @@ void GRP_swap_heros(void)
 	signed char l4;
 	signed char l5;
 	signed char i;
-	signed char tmp[0x6da];
+	signed char tmp[SIZEOF_HERO];
 
 	if ((ds_readw(0x29b4) == 0) || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
 		return;
@@ -578,7 +578,7 @@ void GRP_move_hero(signed short src_pos)
 					}
 				}
 
-				memcpy(Real2Host(ds_readd(0xd303)), src, 0x6da);
+				memcpy(Real2Host(ds_readd(0xd303)), src, SIZEOF_HERO);
 
 				bak1 = ds_readbs(0xe3d6 + src_pos);
 				bak2 = ds_readbs(0xe3cf + src_pos);
@@ -592,7 +592,7 @@ void GRP_move_hero(signed short src_pos)
 				ds_writeb(0xe3c8 + src_pos, ds_readbs(0xe3c8 + dst_pos));
 				ds_writeb(0xe3c1 + src_pos, ds_readbs(0xe3c1 + dst_pos));
 
-				memcpy(dst, Real2Host(ds_readd(0xd303)), 0x6da);
+				memcpy(dst, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
 
 				ds_writeb(0xe3d6 + dst_pos, bak1);
 				ds_writeb(0xe3cf + dst_pos, bak2);

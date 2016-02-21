@@ -535,7 +535,7 @@ signed short is_staff_lvl2_in_group(void)
 	signed short i;
 
 	hero_i = get_hero(0);
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		if (host_readbs(hero_i + 0x21) &&
 			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -906,7 +906,7 @@ signed short DNG_check_climb_tools(void)
 	hero = get_hero(0);
 
 	/* check for a mage with staffspell > 2 */
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if ((host_readbs(hero + 0x21) != 0) &&
 			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&

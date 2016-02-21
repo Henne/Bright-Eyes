@@ -135,7 +135,7 @@ RealPt get_proper_hero(signed short skill)
 
 	hero_i = (RealPt)ds_readd(HEROS);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class */
 		if ((host_readbs(Real2Host(hero_i) + 0x21) != 0) &&
 			/* Check if in current group */

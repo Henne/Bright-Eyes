@@ -87,7 +87,7 @@ void FIG_tidy_monsters(void)
 void FIG_loot_monsters(void)
 {
 	signed short l_si;
-	signed short l_di;
+	signed short l_di; /* loot number */
 	signed short l1;
 	signed short l3;
 	signed short l4;

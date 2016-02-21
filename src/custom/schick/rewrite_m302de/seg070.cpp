@@ -164,7 +164,7 @@ void PHX_spielhaus(void)
 
 		hero = get_hero(0);
 
-		for (pos = counter = answer = 0; pos <= 6; pos++, hero += 0x6da) {
+		for (pos = counter = answer = 0; pos <= 6; pos++, hero += SIZEOF_HERO) {
 
 			if ((host_readbs(hero + 0x21) != 0) &&
 				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&

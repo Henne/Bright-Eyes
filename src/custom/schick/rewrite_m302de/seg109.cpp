@@ -371,7 +371,7 @@ void TRV_ford_test(signed short mod, signed short time)
 	Bit8u *hero;
 
 	hero = get_hero(0);
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if (host_readbs(hero + 0x21) != 0 &&
 			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
@@ -549,7 +549,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	GUI_output(get_city(4 * city_index));
 
 	hero = get_hero(0);
-	for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		if ((host_readbs(hero + 0x21) != 0) &&
 			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
@@ -705,7 +705,7 @@ void TRV_barrier(signed short text_start)
 		} else {
 
 			hero = get_hero(0);
-			for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 				if (host_readbs(hero + 0x21) != 0 &&
 					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
@@ -738,7 +738,7 @@ void TRV_barrier(signed short text_start)
 				} else {
 					hero = get_hero(0);
 
-					for (i = l_di = 0; i <= 6; i++, hero += 0x6da)
+					for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO)
 					{
 						if (test_skill(hero, 31, 0) > 0) l_di++;
 					}

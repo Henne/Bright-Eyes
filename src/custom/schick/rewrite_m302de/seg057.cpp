@@ -475,7 +475,7 @@ void sell_screen(Bit8u *shop_ptr)
 				if (l12 > 0) {
 
 					hero3 = get_hero(0);
-					for (items_x = 0; items_x <= 6; items_x++, hero3 += 0x6da) {
+					for (items_x = 0; items_x <= 6; items_x++, hero3 += SIZEOF_HERO) {
 						for (l_di = 0; l_di < 23; l_di++) {
 
 							if (tmp[items_x][l_di] != 0) {
