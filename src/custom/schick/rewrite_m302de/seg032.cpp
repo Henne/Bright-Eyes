@@ -878,18 +878,17 @@ signed short do_fight(signed short fight_nr)
 
 	read_fight_lst(fight_nr);
 
-	load_scenario(host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x14));
+	load_scenario(host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_SCENARIO));
 
-	if (!host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x13)) {
-		/* we have not seen the intro message yet: show and mark as seen */
+	if (!host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_INTRO_SEEN)) {
 		GUI_print_fight_intro_msg(fight_nr);
 
-		host_writeb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x13, 1);
+		host_writeb(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_INTRO_SEEN, 1);
 	}
 
 	if (ds_readws(MAX_ENEMIES) > 0) {
-
-		memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + 5 * ds_readws(MAX_ENEMIES) + 22, 0, 5 * (20 - ds_readws(MAX_ENEMIES)));
+		/* reduce number of enemies to MAX_ENEMIES */
+		memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * ds_readws(MAX_ENEMIES) + FIGHT_MONSTERS_ID, 0, SIZEOF_FIGHT_MONSTER * (20 - ds_readws(MAX_ENEMIES)));
 		ds_writew(MAX_ENEMIES, 0);
 	}
 

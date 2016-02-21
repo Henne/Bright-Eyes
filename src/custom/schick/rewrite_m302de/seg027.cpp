@@ -599,10 +599,10 @@ signed short count_fight_enemies(signed short nr)
 		nr = 0;
 
 	/* seek to file position */
-	bc_lseek(fd, 216L * nr + 2, SEEK_SET);
+	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
 
 	/* read the fight entry */
-	bc__read(fd, buf, 216);
+	bc__read(fd, buf, SIZEOF_FIGHT);
 
 	/* close FIGHT.LST */
 	bc_close(fd);
@@ -644,10 +644,10 @@ void read_fight_lst(signed short nr)
 	ds_writew(0x5eb2, nr);
 
 	/* seek to file position */
-	bc_lseek(fd, 216L * nr + 2, SEEK_SET);
+	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
 
 	/* read the fight entry */
-	bc__read(fd, Real2Host(ds_readd(PTR_FIGHT_LST)), 216);
+	bc__read(fd, Real2Host(ds_readd(PTR_FIGHT_LST)), SIZEOF_FIGHT);
 
 #if !defined(__BORLANDC__)
 	char fight_name[21];
@@ -673,10 +673,10 @@ void write_fight_lst(void)
 	fd = load_archive_file(0x8000 | 0xcd);
 
 	/* seek to the entry */
-	bc_lseek(fd, 216L * nr + 2, SEEK_SET);
+	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
 
 	/* write it */
-	bc__write(fd, (RealPt)ds_readd(PTR_FIGHT_LST), 216);
+	bc__write(fd, (RealPt)ds_readd(PTR_FIGHT_LST), SIZEOF_FIGHT);
 
 	/* close the file */
 	bc_close(fd);

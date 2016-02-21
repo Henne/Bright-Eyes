@@ -284,4 +284,29 @@ enum {	JURGE = 1, HJORE, YASMA, UMBRIK, ISLEIF,
 	RAGNA, BEORN, ASGRIMM, ELIANE, OLVIR,
 	SWAFNILD, KOLBERG, UNICORN, ALGRID, TIOMAR };
 
+/* FIGHT.LST */
+
+enum {
+    FIGHT_NAME                  = 0x00,
+    FIGHT_INTRO_SEEN            = 0x13,
+    FIGHT_SCENARIO              = 0x14,
+    FIGHT_MONSTERS_ID           = 0x16, /* List of 20 monsters */
+    FIGHT_MONSTERS_X            = 0x17 ,/*                     */
+    FIGHT_MONSTERS_Y            = 0x18, /*                     */
+    FIGHT_MONSTERS_VIEWDIR      = 0x19, /*                     */
+    FIGHT_MONSTERS_ROUND_APPEAR = 0x1A, /* 5 bytes each        */
+    FIGHT_PLAYERS_X             = 0x7A, /* List of 7 players  */
+    FIGHT_PLAYERS_Y             = 0x7B, /*                  */
+    FIGHT_PLAYERS_VIEWDIR       = 0x7C, /*                  */
+    FIGHT_PLAYERS_ROUND_APPEAR  = 0x7D, /* 4 bytes each     */
+    FIGHT_LOOT                  = 0x96, /* 2 bytes each: ID and 0x00 */
+    FIGHT_DUCATS                = 0xD2,
+    FIGHT_SILVER                = 0xD4,
+    FIGHT_HELLER                = 0xD6
+};
+
+#define SIZEOF_FIGHT (216)
+#define SIZEOF_FIGHT_MONSTER (5)
+#define SIZEOF_FIGHT_PLAYER (4)
+
 #endif
