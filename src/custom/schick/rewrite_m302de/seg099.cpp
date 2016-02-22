@@ -727,7 +727,7 @@ void spell_transversalis(void)
 				ds_writew(0xac0e, -2);
 			} else {
 				/* play sound */
-				play_voc(0x130);
+				play_voc(ARCHIVE_FILE_FX16_VOC);
 
 				/* set new coordinates */
 				ds_writew(X_TARGET, ds_readws(0x7de5));

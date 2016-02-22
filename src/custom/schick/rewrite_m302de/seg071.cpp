@@ -371,8 +371,7 @@ void PHX_alrik_derondan(void)
 	signed short l_di = 0;
 	Bit32s money;
 
-	/* load PHEX2.LTX */
-	load_city_ltx(239);
+	load_city_ltx(ARCHIVE_FILE_PHEX2_LTX);
 
 	/* load the picture of ALRIK DERONDAN */
 	load_in_head(3);
@@ -532,8 +531,7 @@ void PHX_alrik_derondan(void)
 	/* reset the flag */
 	ds_writeb(ALRIK_DERONDAN, 0);
 
-	/* load TAVERN.TLK */
-	load_tlk(130);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 }
 
 #if !defined(__BORLANDC__)

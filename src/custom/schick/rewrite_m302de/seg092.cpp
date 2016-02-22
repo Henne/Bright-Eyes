@@ -395,7 +395,7 @@ void seg092_06b4(signed short a1)
 	l4 = host_readb(ptr + 16 * y + x) & 2;
 	chest_id = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * x + y;
 
-	play_voc(301);
+	play_voc(ARCHIVE_FILE_FX13_VOC);
 
 	do {
 

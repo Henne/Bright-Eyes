@@ -517,7 +517,7 @@ void academy_analues(void)
 
 		buffer1_bak = ds_readws(0x26bf);
 
-		load_buffer_1(222);
+		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x100),

@@ -698,7 +698,7 @@ void load_objects_nvf(void)
 	struct nvf_desc nvf;
 	unsigned short fd;
 
-	fd = load_archive_file(0x07);
+	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 2000);
 	bc_close(fd);
 

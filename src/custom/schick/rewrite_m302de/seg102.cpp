@@ -253,7 +253,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 
 			bak = ds_readws(0x26bf);
 
-			load_buffer_1(222);
+			load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 #if !defined(__BORLANDC__)
 			func = mspell[l_si];

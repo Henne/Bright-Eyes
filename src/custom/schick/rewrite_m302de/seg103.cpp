@@ -331,7 +331,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 		bak = ds_readws(0x26bf);
 
-		load_buffer_1(222);
+		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 		switch(talent) {
 		case 44 : {

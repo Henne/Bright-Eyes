@@ -291,7 +291,7 @@ void show_treasure_map(void)
 		set_var_to_zero();
 
 		/* load SKARTE.NVF */
-		l_si = load_archive_file(206);
+		l_si = load_archive_file(ARCHIVE_FILE_SKARTE_NVF);
 
 		read_archive_file(l_si, Real2Host(ds_readd(0xc3db)), 30000);
 
@@ -439,8 +439,8 @@ signed short game_options(void)
 	ds_writew(0x2ccb, -1);
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
 
-	load_pp20(177);
-	ds_writeb(0x2845, 177);
+	load_pp20(ARCHIVE_FILE_BUCH_DAT);
+	ds_writeb(0x2845, ARCHIVE_FILE_BUCH_DAT);
 
 	get_textcolor(&fg_bak, &bg_bak);
 
@@ -471,11 +471,11 @@ signed short game_options(void)
 
 	if (ds_readbs(CURRENT_TOWN) != 0) {
 		/* if the party is in a town */
-		load_buffer_1(19);
+		load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
 
 		GUI_print_header(get_dtp(4 * (ds_readbs(CURRENT_TOWN) - 1)));
 
-		load_buffer_1(ds_readbs(CURRENT_TOWN) + 25);
+		load_buffer_1(ds_readbs(CURRENT_TOWN) + (ARCHIVE_FILE_CITY_DAT-1));
 
 		ds_writew(0xc011, 0);
 		ds_writew(0xc013, 0);
@@ -626,7 +626,7 @@ void draw_icon(signed short id, signed short x, signed short y)
 	signed short handle;
 	RealPt ptr_bak;
 
-	handle = load_archive_file(15);
+	handle = load_archive_file(ARCHIVE_FILE_ICONS);
 
 	seg002_0c72(handle, id * 576L, 0);
 
@@ -661,7 +661,7 @@ signed short show_storytext(void)
 	signed short person;
 	signed short icon;
 
-	load_buffer_1(288);
+	load_buffer_1(ARCHIVE_FILE_STORY_LTX);
 
 	person = random_schick(17) - 1;
 

@@ -676,10 +676,10 @@ void game_over_screen(void)
 
 	set_var_to_zero();
 
-	set_audio_track(150);
+	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
 
 	/* load SKULL.NVF */
-	handle = load_archive_file(137);
+	handle = load_archive_file(ARCHIVE_FILE_SKULL_NVF);
 
 	read_archive_file(handle, Real2Host(ds_readd(0xd303)), 64200);
 

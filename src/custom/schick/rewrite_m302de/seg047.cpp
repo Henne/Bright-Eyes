@@ -679,7 +679,7 @@ void hero_get_drunken(Bit8u *hero)
 			ds_writew(0x2846, 1);
 		}
 
-		play_voc_delay(0x122);
+		play_voc_delay(ARCHIVE_FILE_FX2_VOC);
 	}
 }
 

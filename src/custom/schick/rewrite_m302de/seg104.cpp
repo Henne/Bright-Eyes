@@ -387,7 +387,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 
 	if (flag) {
 		bak = ds_readws(0x26bf);
-		load_buffer_1(222);
+		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 	}
 
 	if (is_hero_healable(patient)) {

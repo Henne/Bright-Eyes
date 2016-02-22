@@ -55,9 +55,8 @@ void diary_show(void)
 	ds_writew(0x2ccb, 0xffff);
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
 
-	/* load BUCH.DAT */
-	load_pp20(0xb1);
-	ds_writeb(0x2845, 0xb1);
+	load_pp20(ARCHIVE_FILE_BUCH_DAT);
+	ds_writeb(0x2845, ARCHIVE_FILE_BUCH_DAT);
 
 	get_textcolor(&fg_bak, &bg_bak);
 

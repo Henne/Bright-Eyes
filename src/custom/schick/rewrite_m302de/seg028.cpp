@@ -54,7 +54,7 @@ void prepare_dungeon_area(void)
 		set_var_to_zero();
 		ds_writew(CURRENT_ANI, -1);
 
-		l_si = (ds_readbs(DUNGEON_INDEX) == 1) ? 0xb5 :
+		l_si = (ds_readbs(DUNGEON_INDEX) == 1) ? ARCHIVE_FILE_SHIPSL_NVF :
 			(((ds_readbs(DUNGEON_INDEX) == 2) ||
 				(ds_readbs(DUNGEON_INDEX) == 7) ||
 				(ds_readbs(DUNGEON_INDEX) == 9) ||
@@ -62,9 +62,9 @@ void prepare_dungeon_area(void)
 				(ds_readbs(DUNGEON_INDEX) == 12) ||
 				(ds_readbs(DUNGEON_INDEX) == 13) ||
 				(ds_readbs(DUNGEON_INDEX) == 14) ||
-				(ds_readbs(DUNGEON_INDEX) == 15)) ? 0xb7 : 0xb6);
+				(ds_readbs(DUNGEON_INDEX) == 15)) ? ARCHIVE_FILE_MARBLESL_NVF : ARCHIVE_FILE_STONESL_NVF);
 
-		ds_writeb(0x3616, (l_si == 0xb5) ? 0 : ((l_si == 0xb7) ? 1 : 2));
+		ds_writeb(0x3616, (l_si == ARCHIVE_FILE_SHIPSL_NVF) ? 0 : ((l_si == ARCHIVE_FILE_MARBLESL_NVF) ? 1 : 2));
 
 		handle = load_archive_file(l_si);
 		v1 = v2 = 0;
@@ -152,7 +152,10 @@ void seg028_0224(void)
 
 			if (ds_readb(0xe400 + l_si) != 0) {
 
-				arr[l_si] = seg028_0444(!l_si ? 186 : (l_si == 1 ? 187 : (l_si == 2 ? 188 : 189)), 0, 0, 0);
+				arr[l_si] = seg028_0444(!l_si ? ARCHIVE_FILE_HOUSE1_NVF :
+				    (l_si == 1 ? ARCHIVE_FILE_HOUSE2_NVF :
+				        (l_si == 2 ? ARCHIVE_FILE_HOUSE3_NVF :
+				            ARCHIVE_FILE_HOUSE4_NVF)), 0, 0, 0);
 
 
 			}
@@ -172,14 +175,14 @@ void seg028_0224(void)
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
-			ds_writed(TEX_SKY, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
+			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 
 			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(0xe404)), 0xc0);
 		} else {
-			ds_writed(TEX_SKY, (Bit32u) seg028_0444(185, 0x80, 0x40, 0));
+			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 		}
 
-		ds_writed(TEX_FLOOR, (Bit32u) seg028_0444(!ds_readbs(LARGE_BUF)? 184: 287, 0, 0x20, 0));
+		ds_writed(TEX_FLOOR, (Bit32u) seg028_0444(!ds_readbs(LARGE_BUF)? ARCHIVE_FILE_TFLOOR1_NVF : ARCHIVE_FILE_TFLOOR2_NVF, 0, 0x20, 0));
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
@@ -244,7 +247,7 @@ void load_special_textures(signed short arg)
 	signed short fd;
 
 	/* load 0xe8 LTURM.NVF else FINGER.NVF */
-	fd = load_archive_file(arg == 9 ? 0xe8 : 0xe9);
+	fd = load_archive_file(arg == 9 ? ARCHIVE_FILE_FINGER_NVF : ARCHIVE_FILE_LTURM_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
 	bc_close(fd);
 
@@ -304,7 +307,7 @@ void load_area_description(signed short type)
 		/* calc archive file index */
 		if (ds_readbs(DUNGEON_INDEX) != 0) {
 			/* dungeon */
-			ds_writew(0x5ebc, f_index = ds_readbs(DUNGEON_INDEX) + 0xf1);
+			ds_writew(0x5ebc, f_index = ds_readbs(DUNGEON_INDEX) + (ARCHIVE_FILE_DNGS-1));
 		} else {
 			/* city */
 			ds_writew(0x5ebc, f_index = ds_readbs(CURRENT_TOWN) + 0x19);
@@ -435,7 +438,7 @@ void load_map(void)
 	ds_writew(CURRENT_ANI, 0xffff);
 
 	/* open OBJECTS.NVF */
-	fd = load_archive_file(7);
+	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 2000);
 	bc_close(fd);
 
@@ -463,7 +466,7 @@ void load_map(void)
 		ds_writed(0x432e, ds_readd(0x4baa));
 	} else {
 		/* or read KARTE.DAT from file */
-		fd = load_archive_file(5);
+		fd = load_archive_file(ARCHIVE_FILE_KARTE_DAT);
 
 		read_archive_file(fd, Real2Host(ds_writed(0x432e, ds_readd(0xd303))), 64098);
 		bc_close(fd);
@@ -483,7 +486,7 @@ void load_map(void)
 	}
 
 	/* load LROUT.DAT */
-	fd = load_archive_file(8);
+	fd = load_archive_file(ARCHIVE_FILE_LROUT_DAT);
 	read_archive_file(fd, Real2Host(ds_readd(0xc3db)), 7600);
 	bc_close(fd);
 
@@ -493,11 +496,11 @@ void load_map(void)
 	bc_close(fd);
 
 	/* load SROUT.DAT */
-	fd = load_archive_file(9);
+	fd = load_archive_file(ARCHIVE_FILE_SROUT_DAT);
 	read_archive_file(fd, Real2Host(F_PADD(ds_readd(0xc3db), 11400)), 5900);
 	bc_close(fd);
 
-	load_buffer_1(0x13);
+	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
 
 	ds_writew(0xe113, bak);
 }
@@ -547,7 +550,7 @@ void load_splashes(void)
 	struct nvf_desc nvf;
 
 	/* read SPLASHES.DAT */
-	fd = load_archive_file(0xec);
+	fd = load_archive_file(ARCHIVE_FILE_SPLASHES_DAT);
 	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 3000);
 	bc_close(fd);
 

@@ -22,7 +22,7 @@ void prepare_map_marker(void)
 	struct nvf_desc nvf;
 
 	/* load OBJECTS.NVF */
-	fd = load_archive_file(7);
+	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
 
 	read_archive_file(fd, Real2Host(ds_readd(0xd2b1)), 2000);
 

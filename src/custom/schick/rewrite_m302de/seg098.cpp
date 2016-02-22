@@ -161,7 +161,7 @@ void magic_heal_ani(Bit8u *hero)
 #endif
 
 	/* load SPSTAR.NVF */
-	fd = load_archive_file(0x83);
+	fd = load_archive_file(ARCHIVE_FILE_SPSTAR_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 0x400);
 	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)) + 0x400, 0x400);
 	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)) + 0x800, 0x400);
@@ -925,7 +925,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				l4 = ds_readws(0x26bf);
 
-				load_buffer_1(222);
+				load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 #if !defined(__BORLANDC__)
 				func = spellhandler[l_di];
 #else
@@ -961,7 +961,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
 					if (retval > 0) {
-						play_voc(305);
+						play_voc(ARCHIVE_FILE_FX17_VOC);
 
 						if ((host_readbs(Real2Host(hero) + HERO_ENEMY_ID) < 10) &&
 							(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) &&

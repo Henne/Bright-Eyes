@@ -53,9 +53,9 @@ void draw_playmask(void)
 
 	/* load the desired playmask */
 	if (ds_readb(0xbc62) != 0)
-		load_pp20(0xd6);
+		load_pp20(ARCHIVE_FILE_PLAYM_US);
 	else
-		load_pp20(0);
+		load_pp20(ARCHIVE_FILE_PLAYM_UK);
 
 	ds_writeb(0x2845, 0);
 
@@ -297,10 +297,10 @@ void draw_icons(void)
 
 		if (ds_readbs(0xbd38 + i) != -1) {
 			if (ds_readbs(0x5ecc + i) != ds_readbs(0xbd38 + i))
-				load_icon(0x0f, ds_readbs(0xbd38 + i), i);
+				load_icon(ARCHIVE_FILE_ICONS, ds_readbs(0xbd38 + i), i);
 		} else {
 			if (ds_readbs(0x5ecc + i) != -1)
-				load_icon(0x06, i, i);
+				load_icon(ARCHIVE_FILE_BICONS, i, i);
 		}
 
 		do_pic_copy(0);

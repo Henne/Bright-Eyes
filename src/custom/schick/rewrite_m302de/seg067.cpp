@@ -31,7 +31,7 @@ namespace M302de {
 void city_event_switch(void)
 {
 	/* load STRASSE.LTX */
-	load_buffer_1(224);
+	load_buffer_1(ARCHIVE_FILE_STRASSE_LTX);
 
 	/* set city flag */
 	ds_writeb(C_EVENT_ACTIVE, 1);
@@ -409,8 +409,7 @@ RealPt waffinfo_weapons(void)
 	signed short randval;
 	Bit8u *ptr;
 
-	/* load WAFFINFO.LTX */
-	load_ltx(241);
+	load_ltx(ARCHIVE_FILE_WAFFINFO_LTX);
 
 	ptr = Real2Host(ds_readd(0xd019));
 
@@ -427,8 +426,7 @@ RealPt waffinfo_herbs(void)
 	signed short randval;
 	Bit8u *ptr;
 
-	/* load WAFFINFO.LTX */
-	load_ltx(241);
+	load_ltx(ARCHIVE_FILE_WAFFINFO_LTX);
 
 	ptr = Real2Host(ds_readd(0xd019)) + 0x4c;
 
@@ -445,8 +443,7 @@ RealPt waffinfo_general(void)
 	signed short randval;
 	Bit8u *ptr;
 
-	/* load WAFFINFO.LTX */
-	load_ltx(241);
+	load_ltx(ARCHIVE_FILE_WAFFINFO_LTX);
 
 	ptr = Real2Host(ds_readd(0xd019)) + 0xec;
 

@@ -908,7 +908,7 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(0xe113, 0);
 
 	/* open MONSTER.DAT */
-	fd = load_archive_file(218);
+	fd = load_archive_file(ARCHIVE_FILE_MONSTER_DAT);
 	read_archive_file(fd, Real2Host(ds_readd(MONSTER_DAT_BUF)), 3476);
 	bc_close(fd);
 
@@ -918,10 +918,10 @@ signed short do_fight(signed short fight_nr)
 		ds_writew(0xe31a + 2 * l_di, 0);
 	}
 
-	load_buffer_1(21);
+	load_buffer_1(ARCHIVE_FILE_FIGHTTXT_LTX);
 
 	/* open OBJECTS.NVF */
-	fd = load_archive_file(7);
+	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xd2e3)), 3000);
 	bc_close(fd);
 
@@ -930,7 +930,7 @@ signed short do_fight(signed short fight_nr)
 	FIG_preload_gfx();
 
 	/* open FIGHTOBJ.NVF */
-	fd = load_archive_file(199);
+	fd = load_archive_file(ARCHIVE_FILE_FIGHTOBJ_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xbd30)), 16919);
 	bc_close(fd);
 
@@ -952,19 +952,19 @@ signed short do_fight(signed short fight_nr)
 	FIG_draw_scenario();
 
 	/* open WEAPONS.NVF */
-	fd = load_archive_file(176);
+	fd = load_archive_file(ARCHIVE_FILE_WEAPONS_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xd86a)), 6483);
 	bc_close(fd);
 
 	/* open SPELLOBJ.NVF */
-	fd = load_archive_file(178);
+	fd = load_archive_file(ARCHIVE_FILE_SPELLOBJ_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(0xd866)), 3935);
 	bc_close(fd);
 
 	FIG_init_enemies();
 	FIG_init_heroes();
 
-	set_audio_track(213);
+	set_audio_track(ARCHIVE_FILE_COMBAT_XMI);
 
 	/* the fight happens in this loop */
 	while (ds_readws(IN_FIGHT) != 0) {

@@ -74,7 +74,7 @@ void do_healer(void)
 
 			GUI_print_loc_line(get_dtp(ds_readw(CITYINDEX) * 4));
 
-			set_audio_track(0x94);
+			set_audio_track(ARCHIVE_FILE_HEALER_XMI);
 
 			ds_writew(0x2846, v6 = 0);
 

@@ -76,7 +76,7 @@ void do_tavern(void)
 			load_ani(27);
 			init_ani(0);
 			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
-			set_audio_track(147);
+			set_audio_track(ARCHIVE_FILE_INN_XMI);
 			ds_writew(0x2846, 0);
 		}
 
@@ -265,7 +265,7 @@ void enter_ghostship(void)
 	draw_main_screen();
 	init_ani(1);
 
-	load_buffer_1(272);
+	load_buffer_1(ARCHIVE_FILE_SHIP_DTX);
 
 	GUI_output(get_dtp(0x48));
 	GUI_output(get_dtp(0x4c));

@@ -727,7 +727,7 @@ void DNG_open_door(void)
 		iters = 17;
 	}
 
-	play_voc(0x12f);
+	play_voc(ARCHIVE_FILE_FX15_VOC);
 
 	update_mouse_cursor();
 
@@ -773,7 +773,7 @@ void DNG_close_door(void)
 		iters = 16;
 	}
 
-	play_voc(0x12f);
+	play_voc(ARCHIVE_FILE_FX15_VOC);
 
 	update_mouse_cursor();
 
@@ -799,7 +799,7 @@ void DNG_stub6(void)
 	Bit8u *hero1;
 	Bit8u *hero2;
 
-	play_voc(0x132);
+	play_voc(ARCHIVE_FILE_FX18_VOC);
 
 	if (ds_readb(DUNGEON_LIGHT) != 0) {
 

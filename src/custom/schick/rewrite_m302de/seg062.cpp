@@ -51,8 +51,7 @@ void ask_miracle(void)
 	l3 = 0;
 	fi_bak = ds_readws(0x26bd);
 
-	/* load WONDERS.LTX */
-	load_city_ltx(223);
+	load_city_ltx(ARCHIVE_FILE_WONDER_LTX);
 
 	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0));
 
@@ -478,8 +477,10 @@ void ask_miracle(void)
 	/* print the output */
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
-	/* restore text file */
-	if (fi_bak != -1 && fi_bak != 223 && fi_bak != 130 && (fi_bak < 156 || fi_bak > 176)) {
+	/* restore text file except for WONDER.LTX, TAVERN.TLK and except for dialogs */
+	if (fi_bak != -1 && fi_bak != ARCHIVE_FILE_WONDER_LTX
+	    && fi_bak != ARCHIVE_FILE_TAVERN_TLK
+	    && (fi_bak < 156 || fi_bak > 176)) {
 		load_city_ltx(fi_bak);
 	}
 }

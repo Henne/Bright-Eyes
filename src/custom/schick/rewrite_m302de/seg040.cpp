@@ -144,14 +144,14 @@ void FIG_preload_gfx(void)
 	/* load ANI.DAT */
 	ds_writed(BUFFER_ANIDAT, ds_readd(0xd86e));
 	add_ds_ws(0xd86e, 9851);
-	handle = load_archive_file(0xd8);
+	handle = load_archive_file(ARCHIVE_FILE_ANI_DAT);
 	read_archive_file(handle, Real2Host(ds_readd(BUFFER_ANIDAT)), 9851);
 	bc_close(handle);
 
 	/* load WEAPANI.DAT */
 	ds_writed(BUFFER_WEAPANIDAT, ds_readd(0xd86e));
 	add_ds_ws(0xd86e, 1370);
-	handle = load_archive_file(0xd9);
+	handle = load_archive_file(ARCHIVE_FILE_WEAPANI_DAT);
 	read_archive_file(handle, Real2Host(ds_readd(BUFFER_WEAPANIDAT)), 1370);
 	bc_close(handle);
 
