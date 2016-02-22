@@ -396,8 +396,8 @@ signed short use_magic(RealPt hero)
 				}
 
 				/* adjust LE */
-				if (host_readws(Real2Host(hero) + HERO_AE) - host_readws(Real2Host(hero) + HERO_AE_ORIG)  < le) {
-					le = host_readws(Real2Host(hero) + HERO_AE) - host_readws(Real2Host(hero) + HERO_AE_ORIG);
+				if (host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE)  < le) {
+					le = host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE);
 				}
 
 				/* spend one AE point */
@@ -406,8 +406,8 @@ signed short use_magic(RealPt hero)
 				if (test_attrib3(Real2Host(hero), 0, 2, 6, 0) > 0) {
 					/* Success */
 
-					if (host_readws(Real2Host(hero) + HERO_LE_ORIG) <= le + 8) {
-						le = host_readws(Real2Host(hero) + HERO_LE_ORIG) - 8;
+					if (host_readws(Real2Host(hero) + HERO_LE) <= le + 8) {
+						le = host_readws(Real2Host(hero) + HERO_LE) - 8;
 					}
 
 					sub_hero_le(Real2Host(hero), le + 3);
@@ -436,7 +436,7 @@ signed short use_magic(RealPt hero)
 				GUI_output(get_ltx(0x53c));
 			} else {
 
-				if (ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) <= host_readws(Real2Host(hero) + HERO_AE_ORIG)) {
+				if (ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) <= host_readws(Real2Host(hero) + HERO_AE)) {
 					/* check AE */
 
 					retval = 1;
@@ -459,13 +459,13 @@ signed short use_magic(RealPt hero)
 
 						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
 
-						sub_ptr_ws(Real2Host(hero) + HERO_AE,	ds_readbs((0x972 + 6) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
+						sub_ptr_ws(Real2Host(hero) + HERO_AE_ORIG,	ds_readbs((0x972 + 6) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
 
 						/* Staffspell level +1 */
 						inc_ptr_bs(Real2Host(hero) + HERO_WAND);
 
 						/* set the timer */
-						host_writed(Real2Host(hero) + HERO_UNKNOWN4, 0xfd20);
+						host_writed(Real2Host(hero) + HERO_MAGIC_TIMER, 0xfd20);
 
 						/* let some time pass */
 						timewarp(0x6978);
@@ -736,7 +736,7 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 	if (host_readbs(hero + spell_nr + 0x13d) < -5)
 		return 0;
 	/* check if hero has enough AE */
-	if (get_spell_cost(spell_nr, 0) > host_readws(hero + HERO_AE_ORIG))
+	if (get_spell_cost(spell_nr, 0) > host_readws(hero + HERO_AE))
 		return -99;
 
 	spell_desc = p_datseg + spell_nr * 10 + 0x99d;

@@ -94,25 +94,25 @@ void do_inn(void)
 
 			draw_status_line();
 
-			if (host_readbs(Real2Host(hero) + HERO_UNKNOWN5) != 0) {
+			if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xb74),
 					(char*)Real2Host(hero) + HERO_NAME2,
-					host_readbs(Real2Host(hero) + HERO_UNKNOWN5),
-					(char*)(host_readbs(Real2Host(hero) + HERO_UNKNOWN5) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
+					host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
+					(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
 
 				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ltx(0xb78), get_ltx(0x864));
 
 				if (answer == 1) {
-					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 1);
+					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
 				} else {
 					done = 1;
 					ds_writew(COMBO_MODE, 0);
 					stay = 1;
 				}
 			} else {
-				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 0);
+				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 0);
 			}
 		}
 
@@ -120,13 +120,13 @@ void do_inn(void)
 
 		draw_status_line();
 
-		if (host_readbs(Real2Host(hero) + HERO_UNKNOWN5) != 0) {
+		if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xb74),
 				(char*)Real2Host(hero) + HERO_NAME2,
-				host_readbs(Real2Host(hero) + HERO_UNKNOWN5),
-				(char*)(host_readbs(Real2Host(hero) + HERO_UNKNOWN5) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
+				host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
+				(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
 
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writews(TEXTBOX_WIDTH, 4);
@@ -136,11 +136,11 @@ void do_inn(void)
 			ds_writews(TEXTBOX_WIDTH, tw_bak);
 
 			if (answer == 1) {
-				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 1);
+				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
 				GRP_merge();
 			}
 		} else {
-			do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 0);
+			do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 0);
 			GRP_merge();
 		}
 	}

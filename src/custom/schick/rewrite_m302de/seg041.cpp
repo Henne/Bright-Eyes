@@ -367,7 +367,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		}
 	}
 
-	damage += host_readbs(hero + HERO_UNKNOWN7);
+	damage += host_readbs(hero + HERO_SAFTKRAFT);
 
 	if (damage > 0) {
 

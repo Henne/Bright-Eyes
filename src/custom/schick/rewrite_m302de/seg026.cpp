@@ -759,16 +759,16 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 		host_writeb(hero + HERO_GROUP_NO, (signed char)a2);
 
 		if (host_readbs(hero + HERO_SEX) == 1) {
-			host_writeb(hero + HERO_UNKNOWN8, host_readbs(hero + HERO_TYPE) + 11);
+			host_writeb(hero + HERO_SPRITE_NO, host_readbs(hero + HERO_TYPE) + 11);
 
-			if (host_readbs(hero + HERO_UNKNOWN8) > 21) {
-				host_writeb(hero + HERO_UNKNOWN8, 21);
+			if (host_readbs(hero + HERO_SPRITE_NO) > 21) {
+				host_writeb(hero + HERO_SPRITE_NO, 21);
 			}
 		} else {
-			host_writeb(hero + HERO_UNKNOWN8, host_readbs(hero + HERO_TYPE));
+			host_writeb(hero + HERO_SPRITE_NO, host_readbs(hero + HERO_TYPE));
 
-			if (host_readbs(hero + HERO_UNKNOWN8) > 10) {
-				host_writeb(hero + HERO_UNKNOWN8, 10);
+			if (host_readbs(hero + HERO_SPRITE_NO) > 10) {
+				host_writeb(hero + HERO_SPRITE_NO, 10);
 			}
 		}
 

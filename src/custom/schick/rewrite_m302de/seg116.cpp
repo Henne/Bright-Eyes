@@ -320,7 +320,7 @@ void tevent_135(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
 				l_di = random_interval(ds_readb(0xb172 + 2 * l_si), host_readb((p_datseg + 0xb172 + 1) + (2 * l_si)));
-				l_si = host_readws(hero + HERO_LE_ORIG);
+				l_si = host_readws(hero + HERO_LE);
 				l_si -= l_di;
 
 				sub_hero_le(hero, l_di);

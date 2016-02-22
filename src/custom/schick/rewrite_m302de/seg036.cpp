@@ -99,10 +99,10 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	Bit8u *ptr2;
 
 	ds_writeb(0xd8ce, 0);
-	ds_writeb(0xd9c0, host_readbs(hero + HERO_UNKNOWN8));
+	ds_writeb(0xd9c0, host_readbs(hero + HERO_SPRITE_NO));
 
 	ptr1 = p_datseg + 0xd8cf;
-	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(hero + HERO_UNKNOWN8)));
+	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(hero + HERO_SPRITE_NO)));
 
 	i = 0;
 
@@ -820,7 +820,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == 2) {
 
-			if (host_readws(hero + HERO_LE_ORIG) <= 12) {
+			if (host_readws(hero + HERO_LE) <= 12) {
 
 				/* equip LONGBOW and ARROWS in the first round,
 				 * if the hero has them in the inventory */
@@ -842,15 +842,15 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == 3) {
 
-			if ((host_readws(hero + HERO_LE_ORIG) < 10) &&
-				(host_readws(hero + HERO_AE_ORIG) < 10))
+			if ((host_readws(hero + HERO_LE) < 10) &&
+				(host_readws(hero + HERO_AE) < 10))
 			{
 				host_writeb(hero + HERO_UNKNOWN2, 16);
 			}
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == 4) {
 
-			if (host_readws(hero + HERO_LE_ORIG) < 8)
+			if (host_readws(hero + HERO_LE) < 8)
 			{
 				host_writeb(hero + HERO_UNKNOWN2, 16);
 			}
@@ -863,7 +863,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == 6) {
 
-			if (host_readws(hero + HERO_LE_ORIG) < 15)
+			if (host_readws(hero + HERO_LE) < 15)
 			{
 				host_writeb(hero + HERO_UNKNOWN2, 16);
 			}
@@ -950,7 +950,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 		} else {
 
 			if ((host_readbs(hero + HERO_TYPE) >= 7) &&		/* magic user */
-				(host_readws(hero + HERO_AE_ORIG) > 10) &&	/* AE > 10 */
+				(host_readws(hero + HERO_AE) > 10) &&	/* AE > 10 */
 				(l5 != 0) &&
 				(ds_readws(CURRENT_FIG_NR) != 192) &&	/* not in the final fight */
 				(ds_readbs(AUTOFIGHT_MAGIC) != 0))		/* ??? a bool variable, maybe autofight magic */

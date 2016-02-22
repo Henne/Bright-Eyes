@@ -896,7 +896,7 @@ void spell_ruhe_koerper(void)
 		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 	/* set the flag */
-	host_writeb(get_spelltarget() + 0x95, 1);
+	host_writeb(get_spelltarget() + HERO_RUHE_KOERPER, 1);
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),

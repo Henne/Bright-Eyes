@@ -564,21 +564,21 @@ void show_outro(void)
 			}
 
 			/* set LE to the max */
-			add_hero_le(hero, host_readws(hero + HERO_LE));
+			add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 			/* set AE to the max */
-			add_hero_ae(hero, host_readws(hero + HERO_AE));
+			add_hero_ae(hero, host_readws(hero + HERO_AE_ORIG));
 
 			/* ??? */
 			host_writeb(hero + HERO_LE_MOD, 0);
 			host_writeb(hero + HERO_HUNGER, 0);
 			host_writeb(hero + HERO_THIRST, 0);
 			host_writeb(hero + HERO_TEMPLE_ID, 0);
-			host_writeb(hero + HERO_RECEIPT_ID, 0);
-			host_writeb(hero + HERO_UNKNOWN5, 0);
+			host_writeb(hero + HERO_RECIPE_ID, 0);
+			host_writeb(hero + HERO_RECIPE_TIMER, 0);
 			host_writeb(hero + HERO_HOSTEL_ID, 0);
 			host_writeb(hero + HERO_JAIL, 0);
 			host_writeb(hero + HERO_DRUNK, 0);
-			host_writeb(hero + HERO_UNKNOWN6, 0);
+			host_writeb(hero + HERO_RUHE_KOERPER, 0);
 
 			for (j = 0; j <= 13; j++) {
 
@@ -586,8 +586,8 @@ void show_outro(void)
 				host_writeb(hero + 0x36 + 3 * j, 0);
 			}
 
-			host_writed(hero + HERO_UNKNOWN3, 0);
-			host_writed(hero + HERO_UNKNOWN4, 0);
+			host_writed(hero + HERO_HEAL_TIMER, 0);
+			host_writed(hero + HERO_MAGIC_TIMER, 0);
 
 			host_writeb(hero + HERO_GROUP_POS, i + 1);
 		}

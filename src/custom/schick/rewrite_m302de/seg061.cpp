@@ -425,7 +425,7 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 			!hero_dead(hero) &&
 			!hero_dummy4(hero) &&
 			!hero_dead(hero) &&
-			((le_diff = host_readws(hero + HERO_LE) - host_readws(hero + HERO_LE_ORIG)) > le))
+			((le_diff = host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)) > le))
 		{
 			le = le_diff;
 			hero_pos = i;

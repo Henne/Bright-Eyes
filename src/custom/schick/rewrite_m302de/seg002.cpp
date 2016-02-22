@@ -1881,9 +1881,9 @@ void timers_daily(void)
 	for (i = 0; i <=6; i++, hero_i += SIZEOF_HERO) {
 
 		if ((host_readb(get_hero(i) + HERO_TYPE) != 0) &&
-			(host_readbs(hero_i + HERO_UNKNOWN5) > 0))
+			(host_readbs(hero_i + HERO_RECIPE_TIMER) > 0))
 		{
-			dec_ptr_bs(hero_i + HERO_UNKNOWN5);
+			dec_ptr_bs(hero_i + HERO_RECIPE_TIMER);
 		}
 	}
 
@@ -2702,34 +2702,34 @@ void seg002_2f7a(Bit32s fmin)
 		if (host_readb(hero_i + HERO_TYPE) != 0) {
 
 			/* Timer to the next healing attempt */
-			if (host_readds(hero_i + HERO_UNKNOWN3) > 0) {
+			if (host_readds(hero_i + HERO_HEAL_TIMER) > 0) {
 
-				sub_ptr_ds(hero_i + HERO_UNKNOWN3, fmin * 450);
+				sub_ptr_ds(hero_i + HERO_HEAL_TIMER, fmin * 450);
 #if !defined(__BORLANDC__)
-				if (host_readds(hero_i + HERO_UNKNOWN3) <= 0) {
+				if (host_readds(hero_i + HERO_HEAL_TIMER) <= 0) {
 					D1_INFO("%s kann wieder geheilt werden\n",
 						(char*)hero_i + HERO_NAME2);
 				}
 #endif
 
-				if (host_readds(hero_i + HERO_UNKNOWN3) < 0) {
-					host_writed(hero_i + HERO_UNKNOWN3, 0);
+				if (host_readds(hero_i + HERO_HEAL_TIMER) < 0) {
+					host_writed(hero_i + HERO_HEAL_TIMER, 0);
 				}
 			}
 
 			/* Timer set after Staffspell */
-			if (host_readds(hero_i + HERO_UNKNOWN4) > 0) {
-				sub_ptr_ds(hero_i + HERO_UNKNOWN4, fmin * 450);
+			if (host_readds(hero_i + HERO_MAGIC_TIMER) > 0) {
+				sub_ptr_ds(hero_i + HERO_MAGIC_TIMER, fmin * 450);
 #if !defined(__BORLANDC__)
-				if (host_readds(hero_i + HERO_UNKNOWN4) <= 0) {
+				if (host_readds(hero_i + HERO_MAGIC_TIMER) <= 0) {
 					D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
 						(char*)(hero_i + HERO_NAME2));
 				}
 
 #endif
-				if (host_readds(hero_i + HERO_UNKNOWN4) < 0) {
+				if (host_readds(hero_i + HERO_MAGIC_TIMER) < 0) {
 
-					host_writed(hero_i + HERO_UNKNOWN4, 0);
+					host_writed(hero_i + HERO_MAGIC_TIMER, 0);
 				}
 			}
 
@@ -2904,7 +2904,7 @@ void herokeeping(void)
 
 					if (host_readbs(hero + HERO_HUNGER) < 100) {
 						/* increase food counter food_mod is always 0 or 1 */
-						if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
+						if (host_readbs(hero + HERO_HUNGER_TIMER) <= 0) {
 							/* increase more (2 or 1) */
 							add_ptr_bs(hero + HERO_HUNGER, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
 						} else {
@@ -2919,7 +2919,7 @@ void herokeeping(void)
 					} else {
 
 						/* */
-						if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
+						if (host_readbs(hero + HERO_HUNGER_TIMER) <= 0) {
 							do_starve_damage(hero, i, 0);
 						}
 					}
@@ -2981,7 +2981,7 @@ void herokeeping(void)
 
 						if (host_readbs(hero + HERO_THIRST) < 100) {
 							/* increase thirst counter food_mod is always 0 or 1 */
-							if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
+							if (host_readbs(hero + HERO_HUNGER_TIMER) <= 0) {
 
 								add_ptr_bs(hero + HERO_THIRST, 4 / (ds_readbs(FOOD_MOD) * 2 + 1));
 							} else {
@@ -2995,7 +2995,7 @@ void herokeeping(void)
 							}
 
 						} else {
-							if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
+							if (host_readbs(hero + HERO_HUNGER_TIMER) <= 0) {
 								do_starve_damage(hero, i, 1);
 							}
 						}
@@ -4197,14 +4197,14 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 		}
 
 		/* Calc new AE */
-		sub_ptr_ws(hero + HERO_AE_ORIG, ae);
+		sub_ptr_ws(hero + HERO_AE, ae);
 
 		/* Draw the splash */
 		draw_splash(get_hero_index(hero), 1);
 
 		/* set AE to 0 if they have gotten lower than 0 */
-		if (host_readws(hero + HERO_AE_ORIG) < 0) {
-			host_writew(hero + HERO_AE_ORIG, 0);
+		if (host_readws(hero + HERO_AE) < 0) {
+			host_writew(hero + HERO_AE, 0);
 		}
 
 		ds_writew(0xc3cb, tmp);
@@ -4213,8 +4213,8 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 		/* AE Bar was not updated in Pseudo 3D mode */
 		if (ds_readw(IN_FIGHT) == 0 && ds_readw(0xc3cf) != 0) {
 			/* redraw AE Bar */
-			draw_bar(1, get_hero_index(hero), host_readw(hero + HERO_AE_ORIG),
-				host_readw(hero + HERO_AE), 0);
+			draw_bar(1, get_hero_index(hero), host_readw(hero + HERO_AE),
+				host_readw(hero + HERO_AE_ORIG), 0);
 		}
 #endif
 	}
@@ -4233,12 +4233,12 @@ void add_hero_ae(Bit8u* hero, signed short ae)
 		ds_writew(0xc3cb, 0);
 
 		/* add AE to heros current AE */
-		add_ptr_ws(hero + HERO_AE_ORIG, ae);
+		add_ptr_ws(hero + HERO_AE, ae);
 
 		/* if current AE is greater than AE maximum
 			set current AE to AE maximum */
-		if (host_readws(hero + HERO_AE_ORIG) > host_readws(hero + HERO_AE))
-			host_writew(hero + HERO_AE_ORIG, host_readws(hero + HERO_AE));
+		if (host_readws(hero + HERO_AE) > host_readws(hero + HERO_AE_ORIG))
+			host_writew(hero + HERO_AE, host_readws(hero + HERO_AE_ORIG));
 
 		ds_writew(0xc3cb, tmp);
 	}
@@ -4264,8 +4264,8 @@ void sub_hero_le(Bit8u *hero, signed short le)
 		ds_writew(0xc3cb, 0);
 
 		/* do the damage */
-		old_le = host_readw(hero + HERO_LE_ORIG);
-		sub_ptr_ws(hero + HERO_LE_ORIG, le);
+		old_le = host_readw(hero + HERO_LE);
+		sub_ptr_ws(hero + HERO_LE, le);
 
 		if (hero_sleeps(hero)) {
 
@@ -4286,10 +4286,10 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 		draw_splash(get_hero_index(hero), 0);
 
-		if (host_readws(hero + HERO_LE_ORIG) <= 0) {
+		if (host_readws(hero + HERO_LE) <= 0) {
 
 			/* set LE to 0 */
-			host_writew(hero + HERO_LE_ORIG, 0);
+			host_writew(hero + HERO_LE, 0);
 
 			/* mark hero as dead */
 			or_ptr_bs(hero + HERO_STATUS1, 1);
@@ -4344,7 +4344,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			}
 
 		} else {
-			if ((old_le >= 5) && (host_readws(hero + HERO_LE_ORIG) < 5)) {
+			if ((old_le >= 5) && (host_readws(hero + HERO_LE) < 5)) {
 
 				/* make hero unsonscious */
 				or_ptr_bs(hero + HERO_STATUS1, 0x40);
@@ -4361,15 +4361,15 @@ void sub_hero_le(Bit8u *hero, signed short le)
 					ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
 
 					host_writeb(ptr + 2,
-						ds_readb(0x11e4 + host_readbs(hero + HERO_UNKNOWN8) * 2) + host_readbs(hero + HERO_VIEWDIR));
+						ds_readb(0x11e4 + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
 
 					host_writeb(ptr + 0x0d, -1);
 
 					host_writeb(ptr + 5,
-						ds_readb(0x1210 + host_readbs(hero + HERO_UNKNOWN8) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
+						ds_readb(0x1210 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 					host_writeb(ptr + 6,
-						ds_readb(0x1211 + host_readbs(hero + HERO_UNKNOWN8) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
+						ds_readb(0x1211 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 
 					FIG_add_msg(7, 0);
@@ -4413,14 +4413,14 @@ void add_hero_le(Bit8u *hero, signed short le)
 		ds_writew(0xc3cb, 0);
 
 		/* add LE */
-		add_ptr_ws(hero + HERO_LE_ORIG, le);
+		add_ptr_ws(hero + HERO_LE, le);
 
 		/* set LE to maximum if greater than maximum */
-		if (host_readws(hero + HERO_LE_ORIG) > host_readws(hero + HERO_LE))
-			host_writew(hero + HERO_LE_ORIG, host_readws(hero + HERO_LE));
+		if (host_readws(hero + HERO_LE) > host_readws(hero + HERO_LE_ORIG))
+			host_writew(hero + HERO_LE, host_readws(hero + HERO_LE_ORIG));
 
 		/* if current LE is >= 5 and the hero is unconscissous */
-		if ((host_readws(hero + HERO_LE_ORIG) >= 5) && hero_unc(hero)) {
+		if ((host_readws(hero + HERO_LE) >= 5) && hero_unc(hero)) {
 
 			/* awake */
 			and_ptr_bs(hero + HERO_STATUS1, 0xbf);
@@ -4432,7 +4432,7 @@ void add_hero_le(Bit8u *hero, signed short le)
 
 				if (ret != -1) {
 					host_writeb(ptr + 2, ds_readb(0x10d0 +
-						host_readbs(hero + HERO_UNKNOWN8) * 12 + 4 * ret + host_readbs(hero + HERO_VIEWDIR)));
+						host_readbs(hero + HERO_SPRITE_NO) * 12 + 4 * ret + host_readbs(hero + HERO_VIEWDIR)));
 				} else {
 					host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
 				}
@@ -4487,19 +4487,19 @@ void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 		ds_writew(0xc3cb, 0);
 
 		/* decrement the heros LE */
-		dec_ptr_ws(hero + HERO_LE_ORIG);
+		dec_ptr_ws(hero + HERO_LE);
 
 		/* set the critical message type for the hero */
 		ds_writeb(FOOD_MESSAGE + index, type != 0 ? 1 : 2);
 
-		if (host_readws(hero + HERO_LE_ORIG) <= 0) {
+		if (host_readws(hero + HERO_LE) <= 0) {
 
 			/* don't let the hero die */
-			host_writew(hero + HERO_LE_ORIG, 1);
+			host_writew(hero + HERO_LE, 1);
 
 			/* decrement the max LE and save them at 0x7a */
-			if (host_readws(hero + HERO_LE) >= 2) {
-				dec_ptr_ws(hero + HERO_LE);
+			if (host_readws(hero + HERO_LE_ORIG) >= 2) {
+				dec_ptr_ws(hero + HERO_LE_ORIG);
 				inc_ptr_bs(hero + HERO_LE_MOD);
 			}
 		}

@@ -425,21 +425,21 @@ void update_status_bars(void)
 					hero = get_hero(i);
 
 					/* draw LE bars */
-					if ((ds_readws(0x2c1a + 8 * i) != host_readws(hero + HERO_LE_ORIG)) ||
-						(ds_readws(0x2c18 + 8 * i) != host_readws(hero + HERO_LE)))
+					if ((ds_readws(0x2c1a + 8 * i) != host_readws(hero + HERO_LE)) ||
+						(ds_readws(0x2c18 + 8 * i) != host_readws(hero + HERO_LE_ORIG)))
 					{
-						draw_bar(0, i, host_readws(hero + HERO_LE_ORIG), host_readws(hero + HERO_LE), 0);
-						ds_writew(0x2c18 + 8 * i, host_readws(hero + HERO_LE));
-						ds_writew(0x2c1a + 8 * i, host_readws(hero + HERO_LE_ORIG));
+						draw_bar(0, i, host_readws(hero + HERO_LE), host_readws(hero + HERO_LE_ORIG), 0);
+						ds_writew(0x2c18 + 8 * i, host_readws(hero + HERO_LE_ORIG));
+						ds_writew(0x2c1a + 8 * i, host_readws(hero + HERO_LE));
 					}
 
 					/* draw AE bars */
-					if ((ds_readws(0x2c1e + 8 * i) != host_readws(hero + HERO_AE_ORIG)) ||
-						(ds_readws(0x2c1c + 8 * i) != host_readws(hero + HERO_AE)))
+					if ((ds_readws(0x2c1e + 8 * i) != host_readws(hero + HERO_AE)) ||
+						(ds_readws(0x2c1c + 8 * i) != host_readws(hero + HERO_AE_ORIG)))
 					{
-						draw_bar(1, i, host_readws(hero + HERO_AE_ORIG), host_readws(hero + HERO_AE), 0);
-						ds_writew(0x2c1c + 8 * i, host_readws(hero + HERO_AE));
-						ds_writew(0x2c1e + 8 * i, host_readws(hero + HERO_AE_ORIG));
+						draw_bar(1, i, host_readws(hero + HERO_AE), host_readws(hero + HERO_AE_ORIG), 0);
+						ds_writew(0x2c1c + 8 * i, host_readws(hero + HERO_AE_ORIG));
+						ds_writew(0x2c1e + 8 * i, host_readws(hero + HERO_AE));
 					}
 				} else {
 					if (ds_readws(0x2c18 + 8 * i) != 0) {

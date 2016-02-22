@@ -471,12 +471,12 @@ void FIG_init_heroes(void)
 
 		if (l_di != -1) {
 			ds_writeb(0xe068,
-				ds_readb(0x10d0 + host_readbs(hero + HERO_UNKNOWN8) * 12 + l_di * 4 + host_readbs(hero + HERO_VIEWDIR)));
+				ds_readb(0x10d0 + host_readbs(hero + HERO_SPRITE_NO) * 12 + l_di * 4 + host_readbs(hero + HERO_VIEWDIR)));
 		} else {
 			ds_writeb(0xe068, host_readb(hero + HERO_VIEWDIR));
 		}
 
-		ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(hero + HERO_UNKNOWN8) * 5));
+		ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(hero + HERO_SPRITE_NO) * 5));
 		ds_writeb(0xe069, (signed char)cb_x);
 		ds_writeb(0xe06a, (signed char)cb_y);
 		ds_writeb(0xe06b, 0);
@@ -485,20 +485,20 @@ void FIG_init_heroes(void)
 		if (hero_dead(hero)) {
 			/* if hero is dead */
 			ds_writeb(0xe068,
-				ds_readb(0x1a13 + host_readbs(hero + HERO_UNKNOWN8) * 2));
+				ds_readb(0x1a13 + host_readbs(hero + HERO_SPRITE_NO) * 2));
 			ds_writeb(0xe06b,
-				ds_readb(0x1539 + host_readbs(hero + HERO_UNKNOWN8) * 10));
+				ds_readb(0x1539 + host_readbs(hero + HERO_SPRITE_NO) * 10));
 			ds_writeb(0xe06c,
-				ds_readb(0x1539 + 1 + host_readbs(hero + HERO_UNKNOWN8) * 10));
+				ds_readb(0x1539 + 1 + host_readbs(hero + HERO_SPRITE_NO) * 10));
 		} else if (hero_sleeps(hero) || hero_unc(hero)) {
 			/* sleeps or is unconscious */
 			ds_writeb(0xe068,
-				ds_readb(0x11e4 + host_readbs(hero + HERO_UNKNOWN8) * 2) + host_readbs(hero + HERO_VIEWDIR));
+				ds_readb(0x11e4 + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
 
 			ds_writeb(0xe06b,
-				ds_readbs(0x1210 + host_readbs(hero + HERO_UNKNOWN8) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
+				ds_readbs(0x1210 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 			ds_writeb(0xe06c,
-				ds_readbs(0x1210 + 1 + host_readbs(hero + HERO_UNKNOWN8) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
+				ds_readbs(0x1210 + 1 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 		}
 
 
@@ -509,7 +509,7 @@ void FIG_init_heroes(void)
 		ds_writeb(0xe071, 31);
 		ds_writeb(0xe072, 39);
 		ds_writeb(0xe07b, 2);
-		ds_writeb(0xe07c, host_readb(hero + HERO_UNKNOWN8));
+		ds_writeb(0xe07c, host_readb(hero + HERO_SPRITE_NO));
 		ds_writeb(0xe073, 0xff);
 		ds_writeb(0xe075, 0xff);
 		ds_writeb(0xe074, 0xff);

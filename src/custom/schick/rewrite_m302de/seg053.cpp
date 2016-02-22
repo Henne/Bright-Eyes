@@ -131,7 +131,7 @@ void do_healer(void)
 				if (is_hero_healable(hero)) {
 
 					/* LEmax >= LE and no permanent LEdamage */
-					if (host_readws(hero + HERO_LE_ORIG) >= host_readws(hero + HERO_LE)
+					if (host_readws(hero + HERO_LE) >= host_readws(hero + HERO_LE_ORIG)
 						&& !host_readbs(hero + HERO_LE_MOD)) {
 
 						/* Hero seems OK */
@@ -143,7 +143,7 @@ void do_healer(void)
 
 						/* calculate price */
 						price = host_readbs(hero + HERO_LE_MOD) * 50;
-						price += (host_readws(hero + HERO_LE) + host_readbs(hero + HERO_LE_MOD) - host_readws(hero + HERO_LE_ORIG)) * 5;
+						price += (host_readws(hero + HERO_LE_ORIG) + host_readbs(hero + HERO_LE_MOD) - host_readws(hero + HERO_LE)) * 5;
 						price += (host_readbs(info) * price) / 100;
 
 						if (motivation == 2)
@@ -166,14 +166,14 @@ void do_healer(void)
 								set_party_money(money);
 
 								/* heal permanent damage TODO:LE += */
-								add_ptr_ws(hero + HERO_LE, host_readbs(hero + HERO_LE_MOD));
+								add_ptr_ws(hero + HERO_LE_ORIG, host_readbs(hero + HERO_LE_MOD));
 								host_writeb(hero + HERO_LE_MOD, 0);
 
 								/* let pass some time */
-								timewarp(90 * (signed long)(host_readws(hero + HERO_LE) - host_readws(hero + HERO_LE_ORIG)));
+								timewarp(90 * (signed long)(host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)));
 
 								/* heal LE */
-								add_hero_le(hero, host_readws(hero + HERO_LE));
+								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 
 								/* prepare output */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),

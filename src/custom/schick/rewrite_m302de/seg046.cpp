@@ -437,19 +437,19 @@ void status_show(Bit16u index)
 
 				if (host_readb(Real2Host(hero) + HERO_LE_MOD)) {
 					/* print max LE in red if hero has permanent damage */
-					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + HERO_LE), 0xf0);
+					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + HERO_LE_ORIG), 0xf0);
 				} else {
 					/* print max LE in black if hero has no permanent damage */
-					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + HERO_LE));
+					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + HERO_LE_ORIG));
 				}
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x34),
-					host_readw(Real2Host(hero) + HERO_LE_ORIG), le_fix,			/* LE */
-					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
+					host_readw(Real2Host(hero) + HERO_LE), le_fix,			/* LE */
+					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
 					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2), /* RS */
-					host_readbs(Real2Host(hero) + HERO_KK) + host_readw(Real2Host(hero) + HERO_LE_ORIG) +
+					host_readbs(Real2Host(hero) + HERO_KK) + host_readw(Real2Host(hero) + HERO_LE) +
 						host_readbs(Real2Host(hero) + HERO_KK_MOD),		/* Ausdauer*/
 					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
@@ -460,11 +460,11 @@ void status_show(Bit16u index)
 				/* Original Behaviour: print max LE in black */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x34),
-					host_readw(Real2Host(hero) + HERO_LE_ORIG), host_readw(Real2Host(hero) + HERO_LE),	/* LE */
-					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
+					host_readw(Real2Host(hero) + HERO_LE), host_readw(Real2Host(hero) + HERO_LE_ORIG),	/* LE */
+					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
 					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2), /* RS */
-					host_readbs(Real2Host(hero) + HERO_KK_MOD) + (host_readws(Real2Host(hero) + HERO_LE_ORIG) +
+					host_readbs(Real2Host(hero) + HERO_KK_MOD) + (host_readws(Real2Host(hero) + HERO_LE) +
 						host_readbs(Real2Host(hero) + HERO_KK)),		/* Ausdauer*/
 					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
@@ -512,21 +512,21 @@ void status_show(Bit16u index)
 
 				if (host_readb(Real2Host(hero) + HERO_LE_MOD)) {
 					/* print max LE in red if hero has permanent damage */
-					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + HERO_LE), 0xf0);
+					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + HERO_LE_ORIG), 0xf0);
 				} else {
 					/* print max LE in black if hero has no permanent damage */
-					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + HERO_LE));
+					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + HERO_LE_ORIG));
 				}
 
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0xd0),
-					host_readw(Real2Host(hero) + HERO_LE_ORIG), le_fix,			/* LE */
-					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
+					host_readw(Real2Host(hero) + HERO_LE), le_fix,			/* LE */
+					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					at, pa,							/* AT PA */
 					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
 					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2),	/* RS */
-					host_readbs(Real2Host(hero) + HERO_KK) + host_readw(Real2Host(hero) + HERO_LE_ORIG) +
+					host_readbs(Real2Host(hero) + HERO_KK) + host_readw(Real2Host(hero) + HERO_LE) +
 						host_readbs(Real2Host(hero) + HERO_KK_MOD),		/* Ausdauer */
 					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
@@ -536,12 +536,12 @@ void status_show(Bit16u index)
 #else
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0xd0),
-					host_readw(Real2Host(hero) + HERO_LE_ORIG), host_readw(Real2Host(hero) + HERO_LE),	/* LE */
-					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
+					host_readw(Real2Host(hero) + HERO_LE), host_readw(Real2Host(hero) + HERO_LE_ORIG),	/* LE */
+					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					at, pa,							/* AT PA */
 					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
 					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2),	/* RS */
-					host_readws(Real2Host(hero) + HERO_LE_ORIG) + host_readbs(Real2Host(hero) + HERO_KK) +
+					host_readws(Real2Host(hero) + HERO_LE) + host_readbs(Real2Host(hero) + HERO_KK) +
 						host_readbs(Real2Host(hero) + HERO_KK_MOD),		/* Ausdauer */
 					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */

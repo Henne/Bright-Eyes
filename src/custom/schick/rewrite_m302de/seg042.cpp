@@ -660,7 +660,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				if (ds_readws(CURRENT_FIG_NR) == 192) {
 					/* no spells allowed in the final fight */
 
-					sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE_ORIG) + 1);
+					sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) + 1);
 
 					ds_writew(0xe3a8, 1);
 				}
@@ -744,8 +744,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							}
 						}
 
-						if ((host_readbs(Real2Host(hero) + HERO_UNKNOWN8) != 7) &&
-							(host_readbs(Real2Host(hero) + HERO_UNKNOWN8) != 18) &&
+						if ((host_readbs(Real2Host(hero) + HERO_SPRITE_NO) != 7) &&
+							(host_readbs(Real2Host(hero) + HERO_SPRITE_NO) != 18) &&
 							(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0 ))
 						{
 

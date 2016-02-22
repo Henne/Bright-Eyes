@@ -362,12 +362,12 @@ void poison_effect(void)
 
 				j = dice_roll(1, 6, 2);
 
-				if (host_readws(hero + HERO_AE_ORIG) >= j) {
+				if (host_readws(hero + HERO_AE) >= j) {
 
 					/* loose 1W6+2 AEmax */
 					host_writeb(poison_ptr + 2, host_readbs(poison_ptr + 2) + j);
 
-					sub_ptr_ws(hero + HERO_AE_ORIG, j);
+					sub_ptr_ws(hero + HERO_AE, j);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xac),
@@ -386,7 +386,7 @@ void poison_effect(void)
 					if (!host_readbs(poison_ptr +1) % 12) {
 						/* regenerate one point at a time */
 						dec_ptr_bs(poison_ptr + 2);
-						inc_ptr_ws(hero + HERO_AE_ORIG);
+						inc_ptr_ws(hero + HERO_AE);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xb0),

@@ -242,7 +242,7 @@ void disease_effect(void)
 
 						dec_ptr_bs(Real2Host(hero) + 0x46);
 						dec_ptr_bs(Real2Host(hero) + HERO_KK);
-						sub_ptr_ws(Real2Host(hero) + HERO_LE, host_readbs(disease_ptr + 1) / 3);
+						sub_ptr_ws(Real2Host(hero) + HERO_LE_ORIG, host_readbs(disease_ptr + 1) / 3);
 						sub_hero_le(Real2Host(hero), host_readbs(disease_ptr + 1) / 3);
 						host_writebs(disease_ptr, 1);
 				} else {

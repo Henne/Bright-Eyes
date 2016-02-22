@@ -744,7 +744,7 @@ void spell_saft_kraft(void)
 	slot = get_free_mod_slot();
 
 	set_mod_slot(slot, rounds * 9L,
-		get_spelltarget() + 0x98, 5, (signed char)target);
+		get_spelltarget() + HERO_SAFTKRAFT, 5, (signed char)target);
 
 	/* set ae costs */
 	ds_writew(0xac0e, rounds);

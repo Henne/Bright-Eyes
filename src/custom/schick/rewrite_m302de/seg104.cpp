@@ -104,9 +104,9 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 	sub_ae_splash(hero, host_readws(r_ptr + 0x18));
 
 	and_ptr_bs(hero + HERO_STATUS1, 0xf7);
-	host_writeb(hero + HERO_UNKNOWN5, 0);
+	host_writeb(hero + HERO_RECIPE_TIMER, 0);
 	/* set heros receipe to 0 */
-	host_writeb(hero + HERO_RECEIPT_ID, 0);
+	host_writeb(hero + HERO_RECIPE_ID, 0);
 	host_writeb(hero + HERO_HOSTEL_ID, 0);
 
 	if ((test_skill(hero, 0x20, host_readbs(r_ptr + 0x1a)) > 0) && (flag == 0))
@@ -206,7 +206,7 @@ signed short plan_alchemy(Bit8u *hero)
 				if (hero_has_ingrendients(hero, recipe_index)) {
 
 					/* check AE costs */
-					if (ds_readws(0xacf2 + recipe_index * 28) > host_readws(hero + HERO_AE_ORIG)) {
+					if (ds_readws(0xacf2 + recipe_index * 28) > host_readws(hero + HERO_AE)) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x97c),
@@ -275,7 +275,7 @@ signed short plan_alchemy(Bit8u *hero)
 										}
 									}
 								} else {
-									host_writed(hero + HERO_UNKNOWN4, 0x1fa40);
+									host_writed(hero + HERO_MAGIC_TIMER, 0x1fa40);
 								}
 
 								retval = do_alchemy(hero, recipe_index, 0);
@@ -291,10 +291,10 @@ signed short plan_alchemy(Bit8u *hero)
 								inc_ds_bs_post(0x2d36 + l5);
 								dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
-								host_writeb(hero + HERO_UNKNOWN5,
+								host_writeb(hero + HERO_RECIPE_TIMER,
 									ds_readbs(0xacf5 + recipe_index * 28) / 24);
 
-								host_writeb(hero + HERO_RECEIPT_ID, recipe_index);
+								host_writeb(hero + HERO_RECIPE_ID, recipe_index);
 								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(TYPEINDEX));
 								or_ptr_bs(hero + HERO_STATUS1, 8);
 
@@ -403,7 +403,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
-		} else if (host_readds(patient + 0x8b) > 0) {
+		} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 
 			/* recently tried to cure with talent */
 
@@ -425,7 +425,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 			timewarp(0x1c2);
 
 			/* set timer */
-			host_writed(patient + 0x8b, 0x5460);
+			host_writed(patient + HERO_HEAL_TIMER, 0x5460);
 
 			if ((flag != 0) || (test_skill(healer, 45, (signed char)handycap) > 0)) {
 

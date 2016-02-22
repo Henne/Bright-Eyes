@@ -294,7 +294,7 @@ void ask_miracle(void)
 							if (i != -1 && !hero_dummy4(get_hero(i))) {
 
 								slot = get_free_mod_slot();
-								set_mod_slot(slot, 7 * HOURS(24), get_hero(i) + HERO_UNKNOWN1,
+								set_mod_slot(slot, 7 * HOURS(24), get_hero(i) + HERO_HUNGER_TIMER,
 									1, (signed char)i);
 
 								host_writebs(get_hero(i) + HERO_HUNGER, host_writebs(get_hero(i) + HERO_THIRST, 0));
@@ -323,7 +323,7 @@ void ask_miracle(void)
 								!hero_dummy4(hero))
 							{
 								/* heal hero completely */
-								add_hero_le(hero, host_readws(hero + HERO_LE));
+								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 							}
 						}
 

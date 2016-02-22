@@ -150,7 +150,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	signed short weapon;
 	Bit8u *p3;
 
-	p3 = Real2Host(ds_readd(0x2555 + host_readbs(hero + HERO_UNKNOWN8) * 4));
+	p3 = Real2Host(ds_readd(0x2555 + host_readbs(hero + HERO_SPRITE_NO) * 4));
 	weapon = host_readws(hero + HERO_ITEM_RIGHT);
 
 	if ((signed char)fid_target != 0) {
@@ -203,7 +203,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	p2 = p_datseg + 0xdc9b + 0xf3 * a1;
 
 	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p3 + l1 * 2)));
-	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(hero + HERO_UNKNOWN8));
+	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(hero + HERO_SPRITE_NO));
 
 	if (check_hero(hero) && (host_readbs(hero + HERO_VIEWDIR) != dir) &&
 
@@ -281,7 +281,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 			p2 += copy_ani_seq(p2,
 				ds_readw(0x25fe +
-				((ds_readbs(0x268e + host_readbs(hero + HERO_UNKNOWN8)) * 48 + weapon_type * 16) +
+				((ds_readbs(0x268e + host_readbs(hero + HERO_SPRITE_NO)) * 48 + weapon_type * 16) +
 				((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
 		}
 	}
@@ -297,7 +297,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 			{
 				p2 += copy_ani_seq(p2,
 					ds_readw(0x25fe +
-					((ds_readbs(0x268e + host_readbs(hero + HERO_UNKNOWN8)) * 48 + weapon_type * 16) +
+					((ds_readbs(0x268e + host_readbs(hero + HERO_SPRITE_NO)) * 48 + weapon_type * 16) +
 					((f_action == 2) ? 0 : 1) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2)), 3);
 			}
 	}
@@ -599,7 +599,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 
 
 	/* get a pointer from an array where the Monster-ID serves as index */
-	lp2 = Real2Host(ds_readd(0x2555 + host_readbs(hero + HERO_UNKNOWN8) * 4));
+	lp2 = Real2Host(ds_readd(0x2555 + host_readbs(hero + HERO_SPRITE_NO) * 4));
 
 	FIG_search_obj_on_cb((signed char)obj2, &x_obj2, &y_obj2);
 	FIG_search_obj_on_cb((signed char)obj1, &x_obj1, &y_obj1);
@@ -637,7 +637,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 	ds_writeb(0xd8ce + v1 * 0xf3, get_seq_header(host_readws(lp2 + l_di * 2)));
 
 #if !defined(__BORLANDC__)
-	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(hero + HERO_UNKNOWN8));
+	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(hero + HERO_SPRITE_NO));
 #else
 	/* another ugly hack */
 	asm {

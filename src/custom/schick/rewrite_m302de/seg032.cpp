@@ -332,7 +332,7 @@ signed short FIG_get_first_active_hero(void)
  *
  *	Returns 1 if FIG_get_first_active_hero() returns -1
  *	and at least one hero in the group is not dead and has
- *	something at offset 0x84 set (maybe sleeping).
+ *	something at offset HERO_UNKNOWN2 set (maybe sleeping).
  *
  */
 //static

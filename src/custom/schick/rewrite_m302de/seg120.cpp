@@ -104,7 +104,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			if (answer == 1) {
 				/* knock the infected hero out */
 
-				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE_ORIG) / 2);
+				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) / 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xba4),
@@ -164,7 +164,7 @@ void rabies(RealPt hero, signed short hero_pos)
 					if (host_readbs(hero2 + HERO_TYPE) >= 7) {
 
 						/* need 15 AE */
-						if (host_readws(hero2 + HERO_AE_ORIG) >= 15) {
+						if (host_readws(hero2 + HERO_AE) >= 15) {
 
 							/* spell must succeed */
 							if (test_spell(hero2, 15, 0)) {

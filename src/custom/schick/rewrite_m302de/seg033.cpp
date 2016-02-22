@@ -430,7 +430,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						}
 
 						if ((host_readbs(hero + HERO_UNKNOWN2) == 4) &&
-							(get_spell_cost(host_readbs(hero + HERO_SPELL_ID), 1) > host_readws(hero + HERO_AE_ORIG)))
+							(get_spell_cost(host_readbs(hero + HERO_SPELL_ID), 1) > host_readws(hero + HERO_AE)))
 						{
 							/* not enough AE */
 							GUI_output(get_ltx(0x544));
@@ -650,7 +650,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 									if (rwt2 != -1) {
 										host_writeb(ptr + 2,
-										ds_readbs(0x10d0 + 12 * host_readbs(hero + HERO_UNKNOWN8) + 4 * rwt2 + host_readbs(hero + HERO_VIEWDIR)));
+										ds_readbs(0x10d0 + 12 * host_readbs(hero + HERO_SPRITE_NO) + 4 * rwt2 + host_readbs(hero + HERO_VIEWDIR)));
 									} else {
 										host_writeb(ptr + 2, host_readbs(hero + HERO_VIEWDIR));
 									}
@@ -774,9 +774,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					/* damage bounds */
 					damage_lo, damage_hi,
 					/* LE */
-					host_readws(hero + HERO_LE_ORIG), host_readws(hero + HERO_LE),
+					host_readws(hero + HERO_LE), host_readws(hero + HERO_LE_ORIG),
 					/* AE */
-					host_readws(hero + HERO_AE_ORIG), host_readws(hero + HERO_AE),
+					host_readws(hero + HERO_AE), host_readws(hero + HERO_AE_ORIG),
 					/* poison */
 					hero_is_poisoned(hero) ? get_dtp(0x90) : p_datseg + 0x5f43,
 					/* cursed */

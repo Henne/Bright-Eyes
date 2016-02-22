@@ -585,10 +585,10 @@ void level_up(signed short hero_pos)
 
 
 		/* add LE and fill them up */
-		add_ptr_ws(hero + HERO_LE, l_si);
+		add_ptr_ws(hero + HERO_LE_ORIG, l_si);
 		add_hero_le(hero, l_si);
 		/* add AE and fill them up */
-		add_ptr_ws(hero + HERO_AE, i - l_si);
+		add_ptr_ws(hero + HERO_AE_ORIG, i - l_si);
 		add_hero_ae(hero, i - l_si);
 
 		/* change skill increasements into AE */
@@ -598,8 +598,8 @@ void level_up(signed short hero_pos)
 				/* trade 10 skill increasements into 1W6+2 AE */
 				add_ptr_bs(hero + HERO_SP_RISE, -10);
 				i = random_interval(3, 8);
-				add_ptr_ws(hero + HERO_AE, i);
 				add_ptr_ws(hero + HERO_AE_ORIG, i);
+				add_ptr_ws(hero + HERO_AE, i);
 			}
 		}
 
@@ -614,7 +614,7 @@ void level_up(signed short hero_pos)
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		/* add LE and fill them up */
-		add_ptr_ws(hero + HERO_LE, i);
+		add_ptr_ws(hero + HERO_LE_ORIG, i);
 		add_hero_le(hero, i);
 	}
 

@@ -351,7 +351,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 							(char*)get_ltx(0x73c),
 							(char*)patient + 0x10);
 						GUI_output(Real2Host(ds_readd(DTP2)));
-					} else if (host_readds(patient + 0x8b) > 0) {
+					} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 						/* patient timer is not zero */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xae4),
@@ -359,7 +359,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* set patient timer */
-						host_writed(patient + 0x8b, 0x5460);
+						host_writed(patient + HERO_HEAL_TIMER, 0x5460);
 
 						if (test_skill(hero, 44, bonus) > 0) {
 
@@ -469,7 +469,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 							(char*)patient + 0x10);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
-					} else if (host_readds(patient + 0x8b) > 0) {
+					} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 						/* timer is still running */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xae4),
@@ -478,7 +478,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 					} else {
-						host_writed(patient + 0x8b, 0x1fa40L);
+						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L);
 
 						if (test_skill(hero, 46, bonus) > 0) {
 							if (test_skill(hero, 46, bonus) > 0) {
@@ -512,7 +512,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 								l_si = 0;
 
-								host_writed(patient + 0x8f, 0x1fa40L);
+								host_writed(patient + HERO_MAGIC_TIMER, 0x1fa40L);
 							}
 						} else {
 

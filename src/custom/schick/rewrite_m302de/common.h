@@ -127,10 +127,10 @@ enum {
     HERO_JZ_ORIG        = 0x05B,
     HERO_JZ             = 0x05C,
     HERO_JZ_MOD         = 0x05D,
-    HERO_LE             = 0x05E,
-    HERO_LE_ORIG        = 0x060,
-    HERO_AE             = 0x062,
-    HERO_AE_ORIG        = 0x064,
+    HERO_LE_ORIG        = 0x05E,
+    HERO_LE             = 0x060,
+    HERO_AE_ORIG        = 0x062,
+    HERO_AE             = 0x064,
     HERO_MR             = 0x066,
     HERO_ATPA_BASIS     = 0x067,
     HERO_AT             = 0x068,
@@ -143,7 +143,7 @@ enum {
     HERO_TIMER_ID       = 0x07B,
     HERO_START_GEAR     = 0x07C, /* has got initial gear set: 1 = true, 0 = false */
     HERO_HERBS          = 0x07D, /* keine = 0, Belmart = 1, Menchalkaktus = 2 */
-    HERO_UNKNOWN1       = 0x07E,
+    HERO_HUNGER_TIMER   = 0x07E, /* timer for no-hunger-miracle */
     HERO_HUNGER         = 0x07F, /* percentage */
     HERO_THIRST         = 0x080, /* percentage */
     HERO_FIGHT_ID       = 0x081,
@@ -156,26 +156,26 @@ enum {
     HERO_TEMPLE_ID      = 0x088,
     HERO_NPC_ID         = 0x089, /* Held = 0, NARIELL = 1, HARIKA = 2, CURIAN = 3, ARDORA = 4, GARSVIK = 5, ERWO = 6 */
     HERO_GROUP_POS      = 0x08A, /* 0x01 bis 0x06, 0x00 = not in group */
-    HERO_UNKNOWN3       = 0x08B,
-    HERO_UNKNOWN4       = 0x08F,
-    HERO_RECEIPT_ID     = 0x093, /* alchemy */
-    HERO_UNKNOWN5       = 0x094,
-    HERO_UNKNOWN6       = 0x095,
+    HERO_HEAL_TIMER     = 0x08B,
+    HERO_MAGIC_TIMER    = 0x08F, /* timer for wand levelups */
+    HERO_RECIPE_ID      = 0x093, /* alchemy */
+    HERO_RECIPE_TIMER   = 0x094, /* timer between failed alchemy attempts */
+    HERO_RUHE_KOERPER   = 0x095, /* 1 = Ruhe Koerper spell is active */
     HERO_BLIND          = 0x096, /* blind rounds remaining */
     HERO_ECLIPTIFACTUS  = 0x097, /* shadow rounds remaining */
-    HERO_UNKNOWN7       = 0x098,
+    HERO_SAFTKRAFT      = 0x098, /* stores extra damage of spell Saft, Kraft, Monstermacht */
     HERO_FIREBAN        = 0x099, /* 1 = active, 0 = inactive */
     HERO_INVISIBLE      = 0x09A, /* 1 = active, 0 = inactive */
-    HERO_UNKNOWN8       = 0x09B,
+    HERO_SPRITE_NO      = 0x09B, /* fight gfx of char, depending on type and sex */
     HERO_HOSTEL_ID      = 0x09C, /* alchemy */
     HERO_UNKNOWN9       = 0x09D,
     HERO_JAIL           = 0x09F, /* 1 = true, 0 = false */
     HERO_AXXELERATUS    = 0x0A0, /* 1 = active, 0 = inactive */
     HERO_DRUNK          = 0x0A1,
-    HERO_UNKNOWN10      = 0x0A2,
+    HERO_UNKNOWN10      = 0x0A2, /* never used? */
     HERO_STATUS1        = 0x0AA, /* Bit0 = tot, Bit1 = schläft, Bit2 = versteinert, Bit4 = Chamaelioni, Bit5 = verflucht, Bit6 = bewusstlos */
     HERO_STATUS2        = 0x0AB, /* Bit1 = Duplicatus */
-    HERO_UNKNOWN11      = 0x0AC,
+    HERO_UNKNOWN11      = 0x0AC, /* never used? */
     HERO_ILLNESS_EMPTY  = 0x0AE, /* empty */
     HERO_ILLNESS        = 0x0B3, /* 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
     HERO_POISON_EMPTY   = 0x0D6, /* empty */

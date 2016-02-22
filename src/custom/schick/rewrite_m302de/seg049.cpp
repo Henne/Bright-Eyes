@@ -625,8 +625,8 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 	signed short tmp;
 
 	if (!hero_dead(hero) &&
-		(host_readd(hero + HERO_UNKNOWN4) == 0) &&
-		(host_readbs(hero + HERO_UNKNOWN5) == 0))
+		(host_readd(hero + HERO_MAGIC_TIMER) == 0) &&
+		(host_readbs(hero + HERO_RECIPE_TIMER) == 0))
 	{
 
 		if ((ds_readbs(TRAVEL_BY_SHIP) != 0) && (random_schick(100) < 10)) {
@@ -642,8 +642,8 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 			if (!hero_is_diseased(hero) && !hero_is_poisoned(hero)) {
 
-				if (host_readbs(hero + HERO_UNKNOWN6) > 0) {
-					dec_ptr_bs(hero + HERO_UNKNOWN6);
+				if (host_readbs(hero + HERO_RUHE_KOERPER) > 0) {
+					dec_ptr_bs(hero + HERO_RUHE_KOERPER);
 				}
 
 				if (!hero_busy(hero)) {
@@ -668,14 +668,14 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 						le_regen = tmp;
 					}
 
-					if (host_readbs(hero + HERO_UNKNOWN6) > 0) {
+					if (host_readbs(hero + HERO_RUHE_KOERPER) > 0) {
 						le_regen += le_regen;
 						ae_regen += ae_regen;
 					}
 
 					/* Do LE */
 
-					diff = host_readws(hero + HERO_LE) - host_readws(hero + HERO_LE_ORIG);
+					diff = host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE);
 
 					if ((diff != 0) && le_regen) {
 
@@ -709,7 +709,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 					if (host_readbs(hero + HERO_TYPE) >= 7) {
 
-						diff = host_readws(hero + HERO_AE) - host_readws(hero + HERO_AE_ORIG);
+						diff = host_readws(hero + HERO_AE_ORIG) - host_readws(hero + HERO_AE);
 
 						if ((diff != 0) && ae_regen) {
 
@@ -742,7 +742,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 						}
 					}
 				} else {
-					do_alchemy(hero, host_readbs(hero + HERO_RECEIPT_ID), 0);
+					do_alchemy(hero, host_readbs(hero + HERO_RECIPE_ID), 0);
 				}
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
