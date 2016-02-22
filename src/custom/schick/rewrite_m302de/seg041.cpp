@@ -49,8 +49,8 @@ signed short seg041_0020(Bit8u *hero, signed short arg)
 	retval = 0;
 
 	/* read the item ids from the hands */
-	right_hand = host_readws(hero + 0x1c0);
-	left_hand = host_readws(hero + 0x1ce);
+	right_hand = host_readws(hero + HERO_ITEM_RIGHT);
+	left_hand = host_readws(hero + HERO_ITEM_LEFT);
 
 	switch (right_hand) {
 	case 0x5:	/* SPEER	/ spear */
@@ -87,7 +87,7 @@ signed short seg041_0020(Bit8u *hero, signed short arg)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x20),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -108,7 +108,7 @@ signed short seg041_0020(Bit8u *hero, signed short arg)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x24),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -127,7 +127,7 @@ signed short seg041_0020(Bit8u *hero, signed short arg)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x28),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -246,7 +246,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		enemy_p = target;
 	}
 
-	right_hand = host_readw(hero + 0x1c0);
+	right_hand = host_readw(hero + HERO_ITEM_RIGHT);
 
 	item_p_rh = get_itemsdat(right_hand);
 
@@ -267,7 +267,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			v9 = get_hero_index(hero);
 
 			FIG_search_obj_on_cb(v9 + 1, &x_hero, &y_hero);
-			FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x_target, &y_target);
+			FIG_search_obj_on_cb(host_readbs(hero + HERO_ENEMY_ID), &x_target, &y_target);
 
 #if !defined(__BORLANDC__)
 			/* BE-fix */
@@ -321,7 +321,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 		} else {
 
-			l_di = host_readbs(hero + 0x47) + host_readbs(hero + 0x48) - host_readbs(p2 + 2);
+			l_di = host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD) - host_readbs(p2 + 2);
 			if (l_di > 0) {
 				damage += l_di;
 			}
@@ -367,44 +367,44 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		}
 	}
 
-	damage += host_readbs(hero + 0x98);
+	damage += host_readbs(hero + HERO_UNKNOWN7);
 
 	if (damage > 0) {
 
-		if (ks_poison1(hero + 0x1c0)) {
+		if (ks_poison1(hero + HERO_ITEM_RIGHT)) {
 			damage += dice_roll(1, 6, 2);
 			and_ptr_bs(hero + 0x1c4, 0xdf);
 		}
 
-		if (ks_poison2(hero + 0x1c0)) {
+		if (ks_poison2(hero + HERO_ITEM_RIGHT)) {
 			damage += dice_roll(1, 20, 5);
 			and_ptr_bs(hero + 0x1c4, 0xbf);
 		}
 
-		if (host_readbs(hero + 0x1c0 + 9) != 0) {
+		if (host_readbs(hero + HERO_ITEM_RIGHT + 9) != 0) {
 
-			if (host_readbs(hero + 0x1c0 + 9) == 3) {
+			if (host_readbs(hero + HERO_ITEM_RIGHT + 9) == 3) {
 				or_ptr_bs(enemy_p + 0x32, 0x04);
 				and_ptr_bs(enemy_p + 0x32, 0xfd);
 			} else {
 
-				damage += 10 * ds_readws(0x2c70 + 2 * host_readbs(hero + 0x1c0 + 9));
+				damage += 10 * ds_readws(0x2c70 + 2 * host_readbs(hero + HERO_ITEM_RIGHT + 9));
 			}
 
-			dec_ptr_bs(hero + 0x1c0 + 10);
+			dec_ptr_bs(hero + HERO_ITEM_RIGHT + 10);
 
-			if (!host_readbs(hero + 0x1c0 + 10)) {
-				host_writebs(hero + 0x1c0 + 9, 0);
+			if (!host_readbs(hero + HERO_ITEM_RIGHT + 10)) {
+				host_writebs(hero + HERO_ITEM_RIGHT + 9, 0);
 			}
 		}
 	}
 
-	if (host_readbs(hero + 0x97) != 0) {
+	if (host_readbs(hero + HERO_ECLIPTIFACTUS) != 0) {
 		damage *= 2;
 	}
 
 	if ( (ds_readbs(0x3dda) != 0) &&
-		(host_readbs(hero + 0x21) == 6) &&
+		(host_readbs(hero + HERO_TYPE) == 6) &&
 		(attack_hero == 0) &&
 		(host_readbs(enemy_p + 1) == 0x18))
 	{
@@ -418,7 +418,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			damage = 0;
 		}
 
-		if ((host_readbs(enemy_p + 0x24) != 0) && !ks_magic_hidden(hero + 0x1c0)) {
+		if ((host_readbs(enemy_p + 0x24) != 0) && !ks_magic_hidden(hero + HERO_ITEM_RIGHT)) {
 			damage = 0;
 		}
 
@@ -468,10 +468,10 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		hero = attacked;
 
 		/* subtract RS */
-		damage -= host_readbs(hero + 0x30);
+		damage -= host_readbs(hero + HERO_RS_BONUS1);
 
 		/* armour bonus against skelettons an zombies */
-		if (host_readw(hero + 0x1b2) == 0xc5 && (
+		if (host_readw(hero + HERO_ITEM_BODY) == 0xc5 && (
 			host_readb(attacker + 1) == 0x22 ||
 			host_readb(attacker + 1) == 0x1c)) {
 				damage -= 3;
@@ -547,12 +547,12 @@ signed short weapon_check(Bit8u *hero)
 	signed short l_di;
 
 	/* get the ID of the equipped weapon */
-	item = host_readw(hero + 0x1c0);
+	item = host_readw(hero + HERO_ITEM_RIGHT);
 
 	item_p = get_itemsdat(item);
 
 	if (!item_weapon(item_p) ||	/* check if its a weapon */
-		ks_broken(hero + 0x1c0) ||
+		ks_broken(hero + HERO_ITEM_RIGHT) ||
 		(item_weapon(item_p) &&
 			((host_readbs(item_p + 3) == 7) ||
 			(host_readbs(item_p + 3) == 8) ||

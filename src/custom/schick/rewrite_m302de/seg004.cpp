@@ -327,13 +327,13 @@ void update_status_bars(void)
 			hero = get_hero(ds_readws(0x2c9d));
 
 			/* adjust hunger to 100% */
-			if (host_readbs(hero + 0x7f) >= 100) {
-				host_writeb(hero + 0x7f, ds_writeb(0x2c9f, 100));
+			if (host_readbs(hero + HERO_HUNGER) >= 100) {
+				host_writeb(hero + HERO_HUNGER, ds_writeb(0x2c9f, 100));
 			}
 
 			/* adjust thirst to 100% */
-			if (host_readbs(hero + 0x80) >= 100) {
-				host_writeb(hero + 0x80, ds_writeb(0x2ca0, 100));
+			if (host_readbs(hero + HERO_THIRST) >= 100) {
+				host_writeb(hero + HERO_THIRST, ds_writeb(0x2ca0, 100));
 			}
 
 			/* hunger and thirst are at 100% */
@@ -365,9 +365,9 @@ void update_status_bars(void)
 					ds_writeb(0x4a9a, 0);
 				}
 
-			} else if (host_readbs(hero + 0x7f) != ds_readbs(0x2c9f)) {
+			} else if (host_readbs(hero + HERO_HUNGER) != ds_readbs(0x2c9f)) {
 
-				ds_writeb(0x2c9f, host_readbs(hero + 0x7f));
+				ds_writeb(0x2c9f, host_readbs(hero + HERO_HUNGER));
 
 				update_mouse_cursor();
 
@@ -396,9 +396,9 @@ void update_status_bars(void)
 					ds_writeb(0x4a9c, 0);
 				}
 
-			} else if (host_readbs(hero + 0x80) != ds_readbs(0x2ca0)) {
+			} else if (host_readbs(hero + HERO_THIRST) != ds_readbs(0x2ca0)) {
 
-				ds_writeb(0x2ca0, host_readbs(hero + 0x80));
+				ds_writeb(0x2ca0, host_readbs(hero + HERO_THIRST));
 
 				update_mouse_cursor();
 
@@ -420,26 +420,26 @@ void update_status_bars(void)
 
 			for (i = 0; i <= 6; i++) {
 
-				if (host_readbs(get_hero(i) + 0x21) != 0) {
+				if (host_readbs(get_hero(i) + HERO_TYPE) != 0) {
 
 					hero = get_hero(i);
 
 					/* draw LE bars */
-					if ((ds_readws(0x2c1a + 8 * i) != host_readws(hero + 0x60)) ||
-						(ds_readws(0x2c18 + 8 * i) != host_readws(hero + 0x5e)))
+					if ((ds_readws(0x2c1a + 8 * i) != host_readws(hero + HERO_LE_ORIG)) ||
+						(ds_readws(0x2c18 + 8 * i) != host_readws(hero + HERO_LE)))
 					{
-						draw_bar(0, i, host_readws(hero + 0x60), host_readws(hero + 0x5e), 0);
-						ds_writew(0x2c18 + 8 * i, host_readws(hero + 0x5e));
-						ds_writew(0x2c1a + 8 * i, host_readws(hero + 0x60));
+						draw_bar(0, i, host_readws(hero + HERO_LE_ORIG), host_readws(hero + HERO_LE), 0);
+						ds_writew(0x2c18 + 8 * i, host_readws(hero + HERO_LE));
+						ds_writew(0x2c1a + 8 * i, host_readws(hero + HERO_LE_ORIG));
 					}
 
 					/* draw AE bars */
-					if ((ds_readws(0x2c1e + 8 * i) != host_readws(hero + 0x64)) ||
-						(ds_readws(0x2c1c + 8 * i) != host_readws(hero + 0x62)))
+					if ((ds_readws(0x2c1e + 8 * i) != host_readws(hero + HERO_AE_ORIG)) ||
+						(ds_readws(0x2c1c + 8 * i) != host_readws(hero + HERO_AE)))
 					{
-						draw_bar(1, i, host_readws(hero + 0x64), host_readws(hero + 0x62), 0);
-						ds_writew(0x2c1c + 8 * i, host_readws(hero + 0x62));
-						ds_writew(0x2c1e + 8 * i, host_readws(hero + 0x64));
+						draw_bar(1, i, host_readws(hero + HERO_AE_ORIG), host_readws(hero + HERO_AE), 0);
+						ds_writew(0x2c1c + 8 * i, host_readws(hero + HERO_AE));
+						ds_writew(0x2c1e + 8 * i, host_readws(hero + HERO_AE_ORIG));
 					}
 				} else {
 					if (ds_readws(0x2c18 + 8 * i) != 0) {

@@ -57,7 +57,7 @@ void tevent_080(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x15c),
-				(char*)hero + 0x10);
+				(char*)hero + HERO_NAME2);
 
 			do {
 				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
@@ -203,8 +203,8 @@ void tevent_086(void)
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + 0x21) != 0 &&
-				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 			{
 				sub_hero_le(hero, 2);
 			}
@@ -284,8 +284,8 @@ void tevent_098(void)
 
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + 0x21) != 0 &&
-					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
 
@@ -293,7 +293,7 @@ void tevent_098(void)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_city(0x7c),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -301,7 +301,7 @@ void tevent_098(void)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_city(0x80),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -319,7 +319,7 @@ void tevent_098(void)
 			/* Original-Bugfix: take the leader of the group */
 			hero = Real2Host(get_first_hero_available_in_group());
 #endif
-			hero_disease_test(hero, 2, 20 - (host_readbs(hero + 0x47) + host_readbs(hero + 0x48)));
+			hero_disease_test(hero, 2, 20 - (host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)));
 
 			loose_random_item(hero, 1, get_ltx(0x7e8));
 
@@ -336,7 +336,7 @@ void tevent_098(void)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x8c),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -344,15 +344,15 @@ void tevent_098(void)
 				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 					if (i != hero_pos &&
-						host_readbs(hero + 0x21) != 0 &&
-						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero))
 					{
 						if (test_attrib(hero, 4, -4) > 0) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_city(0x90),
-								(char*)hero + 0x10);
+								(char*)hero + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -360,7 +360,7 @@ void tevent_098(void)
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_city(0x80),
-								(char*)hero + 0x10);
+								(char*)hero + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -372,7 +372,7 @@ void tevent_098(void)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x80),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -407,24 +407,24 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 	dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
 	/* write type to character sheet */
-	host_writeb(hero + 0x88, (signed char)type);
+	host_writeb(hero + HERO_TEMPLE_ID, (signed char)type);
 
 	/* reset position in group */
-	host_writeb(hero + 0x8a, 0);
+	host_writeb(hero + HERO_GROUP_POS, 0);
 
 	if (pos == 6) {
 		/* NPC */
-		save_npc(0xe2 + host_readbs(get_hero(6) + 0x89));
+		save_npc(0xe2 + host_readbs(get_hero(6) + HERO_NPC_ID));
 
 		/* reset NPC timer */
-		ds_writebs(0x3602 + host_readbs(get_hero(6) + 0x89), -1);
+		ds_writebs(0x3602 + host_readbs(get_hero(6) + HERO_NPC_ID), -1);
 	} else {
 		/* Regular Hero */
 		write_chr_temp(pos);
 	}
 
 	/* set typus to 0 */
-	host_writeb(hero + 0x21, 0);
+	host_writeb(hero + HERO_TYPE, 0);
 
 	if (type != -2) {
 		draw_main_screen();
@@ -630,8 +630,8 @@ void tevent_104(void)
 
 		for (i = l_si = nr_heros = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + 0x21) != 0 &&
-				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
 				nr_heros++;
@@ -645,7 +645,7 @@ void tevent_104(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
 						(char*)get_city(0xdc),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
 
@@ -716,7 +716,7 @@ void tevent_104(void)
 
 					hero = get_hero(select_hero_ok_forced(get_ltx(0x4f4)));
 
-					if (host_readbs(hero + 0x21) < 7) {
+					if (host_readbs(hero + HERO_TYPE) < 7) {
 						/* hero is not a spell user */
 						GUI_output(get_ltx(0x528));
 					} else {
@@ -741,7 +741,7 @@ void tevent_104(void)
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x97c),
-								(char*)hero + 0x10);
+								(char*)hero + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						}
@@ -802,8 +802,8 @@ void tevent_107(void)
 
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
-			if (host_readbs(hero + 0x21) != 0 &&
-				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, 10, 1) <= 0)
 			{
@@ -812,7 +812,7 @@ void tevent_107(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0x118),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					sub_hero_le(hero, random_schick(11) + 1);
 
@@ -820,7 +820,7 @@ void tevent_107(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0x11c),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					sub_hero_le(hero, random_schick(11) + 4);
 				}

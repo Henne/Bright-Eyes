@@ -378,16 +378,16 @@ void drink_while_drinking(signed short amount)
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero)) {
 
 			/* sub fluid amount */
-			host_writeb(hero + 0x80, host_readb(hero + 0x80) - amount);
+			host_writeb(hero + HERO_THIRST, host_readb(hero + HERO_THIRST) - amount);
 
 			/* adjust food counter */
-			if (host_readbs(hero + 0x80) < 0) {
-				host_writeb(hero + 0x80, 0);
+			if (host_readbs(hero + HERO_THIRST) < 0) {
+				host_writeb(hero + HERO_THIRST, 0);
 			}
 		}
 	}
@@ -411,16 +411,16 @@ void eat_while_drinking(signed short amount)
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero)) {
 
 			/* sub food amount */
-			host_writeb(hero + 0x7f, host_readb(hero + 0x7f) - amount);
+			host_writeb(hero + HERO_HUNGER, host_readb(hero + HERO_HUNGER) - amount);
 
 			/* adjust food counter */
-			if (host_readbs(hero + 0x7f) < 0) {
-				host_writeb(hero + 0x7f, 0);
+			if (host_readbs(hero + HERO_HUNGER) < 0) {
+				host_writeb(hero + HERO_HUNGER, 0);
 			}
 		}
 	}

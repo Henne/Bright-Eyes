@@ -101,8 +101,8 @@ void hunt_karen(void)
 			/* make a STEALTH+2 test and count the heroes who passed it */
 			for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if ((host_readbs(hero + 0x21) != 0) &&
-					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				if ((host_readbs(hero + HERO_TYPE) != 0) &&
+					(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero) &&
 					(test_skill(hero, 13, 2) > 0))
 				{
@@ -119,8 +119,8 @@ void hunt_karen(void)
 				hero = get_hero(0);
 				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if ((host_readbs(hero + 0x21) != 0) &&
-						(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					if ((host_readbs(hero + HERO_TYPE) != 0) &&
+						(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 						!hero_dead(hero) &&
 						(test_skill(hero, 7, 0) > 0))
 					{
@@ -183,8 +183,8 @@ void hunt_wildboar(void)
 			/* make a STEALTH+0 test and count the heroes who passed it */
 			for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if ((host_readbs(hero + 0x21) != 0) &&
-					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				if ((host_readbs(hero + HERO_TYPE) != 0) &&
+					(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero) &&
 					(test_skill(hero, 13, 0) > 0))
 				{
@@ -201,8 +201,8 @@ void hunt_wildboar(void)
 				hero = get_hero(0);
 				for (i = passed = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if ((host_readbs(hero + 0x21) != 0) &&
-						(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					if ((host_readbs(hero + HERO_TYPE) != 0) &&
+						(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 						!hero_dead(hero) &&
 						(test_skill(hero, 7, 0) > 0))
 					{
@@ -260,27 +260,27 @@ void hunt_cavebear(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + 0x21) != 0) &&
-				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			if ((host_readbs(hero + HERO_TYPE) != 0) &&
+				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero))
 			{
 
 				/* AT of the current weapon - (RS-BE / 2) <= 1W20 */
-				if ((host_readbs(hero + 0x68 + host_readbs(hero + 0x78)) - (host_readbs(hero + 0x32) / 2)) <= random_schick(20))
+				if ((host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) - (host_readbs(hero + HERO_RS_BE) / 2)) <= random_schick(20))
 				{
 #if !defined(__BORLANDC__)
 					D1_INFO("%-16s erhaelt 5 AP fuer eine gelungene Attacke.\n",
-						(char*)(hero + 0x10));
+						(char*)(hero + HERO_NAME2));
 #endif
 					add_hero_ap(hero, 5);
 				}
 
 				/* PA of the current weapon - (RS-BE / 2) <= 1W20 */
-				if ((host_readbs(hero + 0x6f + host_readbs(hero + 0x78)) - (host_readbs(hero + 0x32) / 2)) > random_schick(20))
+				if ((host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - (host_readbs(hero + HERO_RS_BE) / 2)) > random_schick(20))
 				{
 #if !defined(__BORLANDC__)
 					D1_INFO("%-16s erhaelt 3 AP fuer eine misslungene Parade.\n",
-						(char*)(hero + 0x10));
+						(char*)(hero + HERO_NAME2));
 #endif
 
 					add_hero_ap(hero, 3);
@@ -317,8 +317,8 @@ void hunt_viper(void)
 		/* hero is not dead */
 		/* check GE+0 */
 		/* Original-Bug: something was forgotten */
-		if ((host_readb(hero_i + 0x21) != 0) &&
-			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
+			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			(!hero_dead(hero_i)) &&
 			(test_attrib(hero_i, 4, 0) < l_di))
 		{
@@ -335,7 +335,7 @@ void hunt_viper(void)
 		/* print a message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x68),
-			hero_i + 0x10);
+			hero_i + HERO_NAME2);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -377,8 +377,8 @@ void octopus_attack(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + 0x21) != 0 &&
-				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				!overboard[i])
 			{
@@ -393,7 +393,7 @@ void octopus_attack(void)
 					sub_hero_le(hero, random_schick(6));
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0x78),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
 				} else if (tmp == -1) {
@@ -403,7 +403,7 @@ void octopus_attack(void)
 					sub_hero_le(hero, random_schick(6));
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0x7c),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
 					if (test_skill(hero, 14, 0) <= 0) {
@@ -414,7 +414,7 @@ void octopus_attack(void)
 				} else {
 					/* chance to hit the beast */
 
-					if (host_readbs(hero + 0x68 + host_readbs(hero + 0x78)) <= random_schick(20)) {
+					if (host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) <= random_schick(20)) {
 						hits++;
 					}
 				}
@@ -453,7 +453,7 @@ void hunt_bison(void)
 		hero = get_hero(get_random_hero());
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x94),
-			(char*)hero + 0x10);
+			(char*)hero + HERO_NAME2);
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		sub_hero_le(hero, random_schick(6));
 		add_hero_ap(hero, 2);
@@ -483,7 +483,7 @@ void hunt_rhino(void)
 		hero = get_hero(get_random_hero());
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0xac),
-			(char*)hero + 0x10);
+			(char*)hero + HERO_NAME2);
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		sub_hero_le(hero, dice_roll(2, 6, 0));
 		add_hero_ap(hero, 6);
@@ -716,8 +716,8 @@ void TLK_way_to_ruin(signed short state)
 			hero = (RealPt)ds_readds(HEROS) + SIZEOF_HERO * ds_readws(0xb21b);
 			inc_ds_ws(0xb21b);
 
-			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
-				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+				host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(Real2Host(hero))) {
 
 				ds_writed(RUIN_HERO, (Bit32u)hero);
@@ -734,7 +734,7 @@ void TLK_way_to_ruin(signed short state)
 
 		/* Original-Bug: hero != RUIN_HERO */
 		hero_disease_test(Real2Host(ds_readd(RUIN_HERO)), 2,
-			25 - (host_readbs(Real2Host(hero) + 0x47) + host_readbs(Real2Host(hero + 0x48))));
+			25 - (host_readbs(Real2Host(hero) + HERO_KK) + host_readbs(Real2Host(hero + HERO_KK_MOD))));
 
 		loose_random_item(Real2Host(ds_readd(RUIN_HERO)), 10, get_ltx(0x7e8));
 
@@ -770,8 +770,8 @@ void TLK_way_to_ruin(signed short state)
 
 		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
-				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+				host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(Real2Host(hero)) &&
 				test_skill(Real2Host(hero), 28, 0) > 0) {
 
@@ -799,8 +799,8 @@ void TLK_way_to_ruin(signed short state)
 
 		for (i = ds_writews(0xb21b, 0); i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
-				host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+				host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(Real2Host(hero)) &&
 				test_skill(Real2Host(hero), 28, 0) > 0) {
 

@@ -274,8 +274,8 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 						hero = get_hero(ds_readb(0x3468));
 
 						sprintf(dst, fmt,
-							(char*)hero + 0x10,
-							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)));
+							(char*)hero + HERO_NAME2,
+							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 					} else {
 
@@ -321,7 +321,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 						if (!l_si || l_si == 18) {
 
-							sprintf(dst, fmt, (char*)hero + 0x10);
+							sprintf(dst, fmt, (char*)hero + HERO_NAME2);
 
 						} else if (l_si == 28) {
 
@@ -418,14 +418,14 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 					if (!l_si || l_si == 2 || l_si == 25 || l_si == 31 ||
 						l_si == 32 || l_si == 60 || l_si == 78 || l_si == 87)
 					{
-						sprintf(dst, fmt, (char*)hero + 0x10);
+						sprintf(dst, fmt, (char*)hero + HERO_NAME2);
 
 					} else if (l_si == 13 || l_si == 19 || l_si == 88 || l_si == 24) {
 
 						sprintf(dst, fmt,
-							(char*)hero + 0x10,
-							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)),
-							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)));
+							(char*)hero + HERO_NAME2,
+							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 					} else if (l_si == 14 || l_si == 15 || l_si == 76) {
 
@@ -436,10 +436,10 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 					} else if (l_si == 26 || l_si == 65) {
 
 						sprintf(dst, fmt,
-							(char*)hero + 0x10,
-							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)),
-							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)),
-							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 1)));
+							(char*)hero + HERO_NAME2,
+							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
+							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
 
 					} else {
 

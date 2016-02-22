@@ -93,16 +93,16 @@ void talk_tavern(void)
 
 			} else if (l_si == 16 || l_si == 70) {
 
-				sprintf(ptr3, format, (char*)hero + 0x10);
+				sprintf(ptr3, format, (char*)hero + HERO_NAME2);
 
 			} else if (l_si == 95) {
 
 				hero = get_hero(ds_readb(0x3611) - 1);
 
 				sprintf(ptr3, format,
-					(char*)hero + 0x10,
-					Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 3)),
-					Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 1)));
+					(char*)hero + HERO_NAME2,
+					Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)),
+					Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
 ;
 			} else if (l_si == 18 || l_si == 31) {
 
@@ -189,7 +189,7 @@ void talk_tavern(void)
 
 			if (l_si == 13) {
 
-				sprintf(ptr5, format, (char*)hero + 0x10);
+				sprintf(ptr5, format, (char*)hero + HERO_NAME2);
 
 			} else if (l_si == 61) {
 

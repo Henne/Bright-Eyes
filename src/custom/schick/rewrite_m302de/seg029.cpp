@@ -147,15 +147,15 @@ void draw_status_line(void)
 			ds_readw(0x2d01 + i * 2), 190,
 			ds_readw(0x2d01 + i * 2) + 41, 197, 0);
 
-		if (host_readb(get_hero(i) + 0x21) != 0) {
+		if (host_readb(get_hero(i) + HERO_TYPE) != 0) {
 
 			copy_forename(Real2Host(ds_readd(DTP2)),
-				get_hero(i) + 0x10);
+				get_hero(i) + HERO_NAME2);
 
 			set_textcolor(0xff, 0);
 
 			/* Gray the names of heros in another group */
-			if (host_readb(get_hero(i) + 0x87) != ds_readb(CURRENT_GROUP))
+			if (host_readb(get_hero(i) + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))
 				set_textcolor(0x6f, 0);
 
 			/* print the name */
@@ -166,10 +166,10 @@ void draw_status_line(void)
 		wait_for_vsync();
 		update_mouse_cursor();
 
-		if (!host_readbs(get_hero(i) + 0x21)) {
+		if (!host_readbs(get_hero(i) + HERO_TYPE)) {
 			clear_hero_icon(i);
 		} else {
-			if (host_readb(get_hero(i) + 0x87) == ds_readb(CURRENT_GROUP)) {
+			if (host_readb(get_hero(i) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) {
 				ds_writew(0xc011, ds_readw(0x2d01 + 2 * i));
 				ds_writew(0xc013, 157);
 				ds_writew(0xc015, ds_readw(0x2d01 + 2 * i) + 31);
@@ -185,7 +185,7 @@ void draw_status_line(void)
 
 				/* set the src pointer of the head */
 				ds_writed(0xc019, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
-					(Bit32u)((RealPt)ds_readd(HEROS) + i * SIZEOF_HERO + 0x2da)));
+					(Bit32u)((RealPt)ds_readd(HEROS) + i * SIZEOF_HERO + HERO_PORTRAIT)));
 
 				do_pic_copy(0);
 
@@ -204,7 +204,7 @@ void draw_status_line(void)
 
 				/* set the src pointer of the head */
 				/* TODO: expression to complicated ? */
-				src = (hero_dead(get_hero(i))) ? Real2Host(ds_readd(DTP2)) : (get_hero(i) + 0x2da);
+				src = (hero_dead(get_hero(i))) ? Real2Host(ds_readd(DTP2)) : (get_hero(i) + HERO_PORTRAIT);
 
 				/* Gray out picture */
 				for (j = 0; j < 1024; src++, dst++, j++)
@@ -246,7 +246,7 @@ void clear_hero_icon(unsigned short pos)
 		ds_readw(0x2d01 + pos * 2) + 31, 188, 0);
 
 	/* return if the hero has a class */
-	if (!host_readbs(get_hero(pos) + 0x21))
+	if (!host_readbs(get_hero(pos) + HERO_TYPE))
 		/* fill bars area black */
 		do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
 			ds_readw(0x2d01 + pos * 2) + 39, 188, 0);
@@ -367,7 +367,7 @@ void select_hero_icon(unsigned short pos) {
 	get_textcolor(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
-	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + 0x10);
+	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + HERO_NAME2);
 
 	/* set the textcolors */
 	set_textcolor(0xfc, 0);
@@ -407,7 +407,7 @@ void deselect_hero_icon(unsigned short pos) {
 	get_textcolor(&fg_bak, &bg_bak);
 
 	/* copy the heros forename */
-	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + 0x10);
+	copy_forename(Real2Host(ds_readd(DTP2)), get_hero(pos) + HERO_NAME2);
 
 	/* set the textcolors */
 	set_textcolor(0xff, 0);

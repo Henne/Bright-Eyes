@@ -97,7 +97,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 			ds_writew(0xe2bc, 2);
 			ds_writew(0xe2be, host_readbs(Real2Host(monster) + 0x2d) - 1);
 
-			if (hero_dead(hero) || !host_readbs(hero + 0x21)) {
+			if (hero_dead(hero) || !host_readbs(hero + HERO_TYPE)) {
 				return;
 			}
 
@@ -168,35 +168,35 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 				/* attack a hero */
 
-				p_weapon = hero + 0x1c0;
+				p_weapon = hero + HERO_ITEM_RIGHT;
 
 				weapon_type = weapon_check(hero);
 
 				if (weapon_type == -1) {
 					/* no valid weapon == bare hands */
-					at = host_readbs(hero + 0x68) + host_readbs(hero + 0x79);
-					pa = host_readbs(hero + 0x6f) - host_readbs(hero + 0x79);
+					at = host_readbs(hero + HERO_AT) + host_readbs(hero + HERO_ATTACK_TYPE);
+					pa = host_readbs(hero + HERO_PA) - host_readbs(hero + HERO_ATTACK_TYPE);
 				} else {
-					at = host_readbs(hero + 0x68 + host_readbs(hero + 0x78)) + host_readbs(hero + 0x79) + host_readbs(hero + 0x76);
-					pa = host_readbs(hero + 0x6f + host_readbs(hero + 0x78)) - host_readbs(hero + 0x79) + host_readbs(hero + 0x77);
+					at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) + host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_AT_MOD);
+					pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_PA_MOD);
 				}
 
 				/* guarding heros get a PA-bonus of 3 */
-				if (host_readbs(hero + 0x84) == 3) {
+				if (host_readbs(hero + HERO_UNKNOWN2) == 3) {
 					pa += 3;
 				}
 
 				/* after destroying the orc statuette between Oberorken and Felsteyn, dwarfs get a PA-bonus against orcs */
 				if ((ds_readbs(0x3dda) != 0) &&
-					(host_readbs(hero + 0x21) == 6) &&
+					(host_readbs(hero + HERO_TYPE) == 6) &&
 					(host_readbs(Real2Host(monster) + 1) == 24))
 				{
 					pa++;
 				}
 
 				/* subtract RS handycap */
-				at -= host_readbs(hero + 0x32) / 2;
-				pa -= host_readbs(hero + 0x32) / 2;
+				at -= host_readbs(hero + HERO_RS_BE) / 2;
+				pa -= host_readbs(hero + HERO_RS_BE) / 2;
 
 			} else {
 				/* attack a monster */
@@ -480,7 +480,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					damage = (damage * 8) / 10;
 
 					/* RS */
-					damage -= host_readbs(hero + 0x30);
+					damage -= host_readbs(hero + HERO_RS_BONUS1);
 
 					if (damage > 0) {
 
@@ -652,7 +652,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 							if (host_readbs(Real2Host(monster) + 0x2d) > 0) {
 
-								FIG_set_0e(host_readbs(hero + 0x81), 1);
+								FIG_set_0e(host_readbs(hero + HERO_FIGHT_ID), 1);
 							}
 						}
 
@@ -712,7 +712,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 								if (host_readbs(Real2Host(monster) + 0x2d) > 0) {
 
-									FIG_reset_12_13(host_readbs(hero + 0x81));
+									FIG_reset_12_13(host_readbs(hero + HERO_FIGHT_ID));
 								}
 							}
 						}
@@ -759,7 +759,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 	signed short l3;
 	signed short hylailic = 0;
 	signed short usecase;
-	signed short item_id = host_readws(hero + 0x1ce);
+	signed short item_id = host_readws(hero + HERO_ITEM_LEFT);
 	Bit8u *p_item = get_itemsdat(item_id);
 
 	if (item_herb_potion(p_item)) {
@@ -772,13 +772,13 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 	host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-	if (host_readws(hero + 0x1ce) == 238) {
+	if (host_readws(hero + HERO_ITEM_LEFT) == 238) {
 		/* MIASTHMATIC */
 
 		/* 1W6 + 4 */
 		damage = dice_roll(1, 6, 4);
 
-		if (host_readbs(hero + 0x86) >= 10) {
+		if (host_readbs(hero + HERO_ENEMY_ID) >= 10) {
 
 			strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x94));
 
@@ -808,11 +808,11 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		/* drop the item in the left hand */
 		drop_item(hero, 4, 1);
 
-	} else if (host_readws(hero + 0x1ce) == 239) {
+	} else if (host_readws(hero + HERO_ITEM_LEFT) == 239) {
 
 		/* HYLAILIC FIRE */
 
-		if (host_readbs(hero + 0x86) >= 10) {
+		if (host_readbs(hero + HERO_ENEMY_ID) >= 10) {
 
 			/* .. used on a monster */
 
@@ -854,7 +854,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 		seg041_8c8();
 
-		FIG_prepare_hero_fight_ani(0, hero, -1, usecase == 1 ? 102 : 103, hero_pos + 1, host_readbs(hero + 0x86), 0);
+		FIG_prepare_hero_fight_ani(0, hero, -1, usecase == 1 ? 102 : 103, hero_pos + 1, host_readbs(hero + HERO_ENEMY_ID), 0);
 
 		l3 = 0;
 
@@ -884,9 +884,9 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		if (ds_readws(0xe3a6) != 0) {
 
 			if (flag != 0) {
-				FIG_prepare_hero_fight_ani(1, target_hero, -1, 0, host_readbs(hero + 0x86), hero_pos + 1, 1);
+				FIG_prepare_hero_fight_ani(1, target_hero, -1, 0, host_readbs(hero + HERO_ENEMY_ID), hero_pos + 1, 1);
 			} else {
-				FIG_prepare_enemy_fight_ani(1, target_monster, 0, host_readbs(hero + 0x86), hero_pos + 1, 1);
+				FIG_prepare_enemy_fight_ani(1, target_monster, 0, host_readbs(hero + HERO_ENEMY_ID), hero_pos + 1, 1);
 			}
 
 		}

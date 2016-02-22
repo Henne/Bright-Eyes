@@ -32,10 +32,10 @@ void poison_effect(void)
 
 	for (i = 0; i <= 6; i++, hero+=SIZEOF_HERO) {
 
-		if ((host_readbs(hero + 0x21) != 0) && !hero_dead(hero)) {
+		if ((host_readbs(hero + HERO_TYPE) != 0) && !hero_dead(hero)) {
 
 			/* SHURINKNOLLENGIFT (used) */
-			poison_ptr = hero + 0xdb;
+			poison_ptr = hero + HERO_POISON;
 
 			/* SHURINKNOLLENGIFT: hero is poisoned */
 			if (host_readbs(poison_ptr) == -1) {
@@ -43,16 +43,16 @@ void poison_effect(void)
 				if (host_readbs(poison_ptr + 1) >= 6) {
 
 					/* KK */
-					if (host_readbs(hero + 0x47) != 0) {
+					if (host_readbs(hero + HERO_KK) != 0) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x8f0),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						inc_ptr_bs(poison_ptr + 2);
-						dec_ptr_bs(hero + 0x47);
+						dec_ptr_bs(hero + HERO_KK);
 					}
 
 					/* GE */
@@ -60,7 +60,7 @@ void poison_effect(void)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xb4),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -68,7 +68,7 @@ void poison_effect(void)
 						dec_ptr_bs(hero + 0x41);
 					}
 
-					if (host_readbs(hero + 0x47) < 0 || host_readbs(hero + 0x41) < 0) {
+					if (host_readbs(hero + HERO_KK) < 0 || host_readbs(hero + 0x41) < 0) {
 						sub_hero_le(hero, 1000);
 					}
 				}
@@ -90,19 +90,19 @@ void poison_effect(void)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x8f4),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						dec_ptr_bs(poison_ptr + 2);
-						inc_ptr_bs(hero + 0x47);
+						inc_ptr_bs(hero + HERO_KK);
 				}
 
 				if ((host_readbs(poison_ptr + 3) != 0) && (!host_readbs(poison_ptr + 1) % 12 )) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x908),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -124,19 +124,19 @@ void poison_effect(void)
 
 					for (j = 0; j < 7; j++) {
 						/* all AT - 2 */
-						sub_ptr_bs(hero + 0x68 + j, 2);
+						sub_ptr_bs(hero + HERO_AT + j, 2);
 						/* all PA - 2 */
-						sub_ptr_bs(hero + 0x6f + j, 2);
+						sub_ptr_bs(hero + HERO_PA + j, 2);
 					}
 
 					/* GE - 2 */
 					host_writebs(hero + 0x41, host_readbs(hero + 0x41) - 2);
 					/* KK - 2 */
-					host_writebs(hero + 0x47, host_readbs(hero + 0x47) - 2);
+					host_writebs(hero + HERO_KK, host_readbs(hero + HERO_KK) - 2);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x94),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -157,19 +157,19 @@ void poison_effect(void)
 
 				for (j = 0; j < 7; j++) {
 					/* all AT + 2 */
-					add_ptr_bs(hero + 0x68 + j, 2);
+					add_ptr_bs(hero + HERO_AT + j, 2);
 					/* all PA + 2 */
-					add_ptr_bs(hero + 0x6f + j, 2);
+					add_ptr_bs(hero + HERO_PA + j, 2);
 				}
 
 				/* GE + 2 */
 				host_writebs(hero + 0x41, host_readbs(hero + 0x41) + 2);
 				/* KK + 2 */
-				host_writebs(hero + 0x47, host_readbs(hero + 0x47) + 2);
+				host_writebs(hero + HERO_KK, host_readbs(hero + HERO_KK) + 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x98),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -184,7 +184,7 @@ void poison_effect(void)
 				if(!host_readbs(poison_ptr + 4)) {
 
 					host_writeb(poison_ptr + 4, 1);
-					host_writeb(hero + 0x35, host_readbs(hero + 0x35) - 2);
+					host_writeb(hero + HERO_MU, host_readbs(hero + HERO_MU) - 2);
 
 					host_writeb(hero + 0x4a, host_readbs(hero + 0x4a) + 2);
 					host_writeb(hero + 0x4d, host_readbs(hero + 0x4d) + 2);
@@ -193,11 +193,11 @@ void poison_effect(void)
 					host_writeb(hero + 0x56, host_readbs(hero + 0x56) + 2);
 					host_writeb(hero + 0x59, host_readbs(hero + 0x59) + 2);
 					host_writeb(hero + 0x5c, host_readbs(hero + 0x5c) + 2);
-					or_ptr_bs(hero + 0xab, 1);
+					or_ptr_bs(hero + HERO_STATUS2, 1);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x9c),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -215,7 +215,7 @@ void poison_effect(void)
 					host_writeb(poison_ptr + 1, 0);
 					host_writeb(poison_ptr + 4, 0);
 
-					host_writeb(hero + 0x35, host_readbs(hero + 0x35) + 2);
+					host_writeb(hero + HERO_MU, host_readbs(hero + HERO_MU) + 2);
 
 					host_writeb(hero + 0x4a, host_readbs(hero + 0x4a) - 2);
 					host_writeb(hero + 0x4d, host_readbs(hero + 0x4d) - 2);
@@ -224,11 +224,11 @@ void poison_effect(void)
 					host_writeb(hero + 0x56, host_readbs(hero + 0x56) - 2);
 					host_writeb(hero + 0x59, host_readbs(hero + 0x59) - 2);
 					host_writeb(hero + 0x5c, host_readbs(hero + 0x5c) - 2);
-					and_ptr_bs(hero + 0xab, 0xfe);
+					and_ptr_bs(hero + HERO_STATUS2, 0xfe);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xa0),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -243,11 +243,11 @@ void poison_effect(void)
 				if (!host_readbs(poison_ptr + 4)) {
 
 					host_writeb(poison_ptr + 4, 1);
-					or_ptr_bs(hero + 0xaa, 0x02);
+					or_ptr_bs(hero + HERO_STATUS1, 0x02);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xa4),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -264,11 +264,11 @@ void poison_effect(void)
 				host_writeb(poison_ptr, 0);
 				host_writeb(poison_ptr + 1, 0);
 				host_writeb(poison_ptr + 4, 0);
-				and_ptr_bs(hero + 0xaa, 0xfd);
+				and_ptr_bs(hero + HERO_STATUS1, 0xfd);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xa8),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -362,16 +362,16 @@ void poison_effect(void)
 
 				j = dice_roll(1, 6, 2);
 
-				if (host_readws(hero + 0x64) >= j) {
+				if (host_readws(hero + HERO_AE_ORIG) >= j) {
 
 					/* loose 1W6+2 AEmax */
 					host_writeb(poison_ptr + 2, host_readbs(poison_ptr + 2) + j);
 
-					sub_ptr_ws(hero + 0x64, j);
+					sub_ptr_ws(hero + HERO_AE_ORIG, j);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xac),
-						(char*)hero + 0x10, j);
+						(char*)hero + HERO_NAME2, j);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -386,11 +386,11 @@ void poison_effect(void)
 					if (!host_readbs(poison_ptr +1) % 12) {
 						/* regenerate one point at a time */
 						dec_ptr_bs(poison_ptr + 2);
-						inc_ptr_ws(hero + 0x64);
+						inc_ptr_ws(hero + HERO_AE_ORIG);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xb0),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
@@ -399,15 +399,15 @@ void poison_effect(void)
 
 
 			for (j = 1; j <= 9; j++) {
-				if (host_readbs(hero + 0xd6 + j * 5) != 0) {
+				if (host_readbs(hero + HERO_POISON_EMPTY + j * 5) != 0) {
 					inc_ptr_bs(hero + 0xd7 + j * 5);
 				}
 			}
 
 			/* KK <= 0 */
-			if (host_readbs(hero + 0x47) <= 0) {
+			if (host_readbs(hero + HERO_KK) <= 0) {
 				/* reset KK */
-				host_writeb(hero + 0x47, host_readbs(hero + 0x46));
+				host_writeb(hero + HERO_KK, host_readbs(hero + 0x46));
 				/* die */
 				sub_hero_le(hero, 5000);
 			}

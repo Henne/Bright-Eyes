@@ -284,7 +284,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 	retval = 1;
 
 	/* get position of the target */
-	FIG_search_obj_on_cb(host_readbs(hero + 0x86), &target_x, &target_y);
+	FIG_search_obj_on_cb(host_readbs(hero + HERO_ENEMY_ID), &target_x, &target_y);
 
 	/* get position of the hero */
 	FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
@@ -340,7 +340,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 		}
 	} else {
 
-		if (host_readbs(hero + 0x84) == 15) {
+		if (host_readbs(hero + HERO_UNKNOWN2) == 15) {
 			GUI_output(get_ltx(0x7f0));
 			retval = 0;
 		}

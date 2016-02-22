@@ -98,8 +98,8 @@ void tevent_057(void)
 
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + 0x21) != 0 &&
-					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					sub_hero_le(hero, random_schick(3));
 				}
@@ -111,8 +111,8 @@ void tevent_057(void)
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + 0x21) != 0 &&
-				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, 10, 3) <= 0)
 			{
@@ -123,8 +123,8 @@ void tevent_057(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0x20),
-						(char*)hero + 0x10,
-						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)));
+						(char*)hero + HERO_NAME2,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -133,7 +133,7 @@ void tevent_057(void)
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0x1c),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -269,8 +269,8 @@ void tevent_060(void)
 
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-						if (host_readbs(hero + 0x21) != 0 &&
-							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						if (host_readbs(hero + HERO_TYPE) != 0 &&
+							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero) &&
 							test_skill(hero, 10, 0) <= 0)
 						{
@@ -314,14 +314,14 @@ void tevent_060(void)
 
 					for (i = has_magic_rope = nr_items = 0; i <= 6 ; i++, hero += SIZEOF_HERO){
 
-						if (host_readbs(hero + 0x21) != 0 &&
-							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						if (host_readbs(hero + HERO_TYPE) != 0 &&
+							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero))
 						{
 							nr_items += hero_count_item(hero, 121);
 							nr_items += hero_count_item(hero, 32);
 
-							if (host_readbs(hero + 0x195) >= 3)
+							if (host_readbs(hero + HERO_WAND) >= 3)
 							{
 								has_magic_rope = 1;
 							}
@@ -450,8 +450,8 @@ void tevent_063(void)
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readb(CURRENT_GROUP) &&
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{
 
@@ -467,7 +467,7 @@ void tevent_063(void)
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_city(0xbc),
-		(char*)hero + 0x10);
+		(char*)hero + HERO_NAME2);
 
 	/* print who vomits */
 	GUI_output(Real2Host(ds_readd(DTP2)));
@@ -478,7 +478,7 @@ void tevent_063(void)
 	i = get_free_mod_slot();
 
 	/* MU -2 for 24 hours */
-	set_mod_slot(i, 0x1fa40, hero + 0x35, -2, (signed char)vomiter);
+	set_mod_slot(i, 0x1fa40, hero + HERO_MU, -2, (signed char)vomiter);
 
 	/* outro message */
 	GUI_output(get_city(0xc0));
@@ -512,7 +512,7 @@ void tevent_064(void)
 
 				hero = get_hero(select_hero_ok_forced(get_ltx(0x4f4)));
 
-				if (host_readbs(hero + 0x21) < 7) {
+				if (host_readbs(hero + HERO_TYPE) < 7) {
 					GUI_output(get_ltx(0x528));
 				} else {
 					l3 = 1;
@@ -545,8 +545,8 @@ void tevent_064(void)
 
 				for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + 0x21) != 0 &&
-						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 13, 0) <= 0)
 					{
@@ -736,8 +736,8 @@ void tevent_066(void)
 				hero = get_hero(0);
 				for (l_di = count = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO)
 				{
-					if (host_readbs(hero + 0x21) != 0 &&
-						host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 13, -2) <= 0)
 					{

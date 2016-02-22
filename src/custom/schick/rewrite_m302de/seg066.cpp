@@ -310,10 +310,10 @@ void TLK_eremit(signed short state)
 		for (i = 0 ; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			/* remove hunger and thirst */
-			host_writeb(hero + 0x7f, host_writebs(hero + 0x80, 0));
+			host_writeb(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
 
 			/* heal all wounds */
-			add_hero_le(hero, host_readws(hero + 0x5e));
+			add_hero_le(hero, host_readws(hero + HERO_LE));
 		}
 
 	} else if (state == 10) {

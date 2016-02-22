@@ -194,10 +194,10 @@ signed short is_group_in_prison(signed short group_nr)
 
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(hero + 0x21) != 0) &&
-			(host_readbs(hero + 0x87) == group_nr))
+		if ((host_readbs(hero + HERO_TYPE) != 0) &&
+			(host_readbs(hero + HERO_GROUP_NO) == group_nr))
 		{
-			return host_readbs(hero + 0x9f);
+			return host_readbs(hero + HERO_JAIL);
 		}
 	}
 

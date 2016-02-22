@@ -99,19 +99,19 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	Bit8u *ptr2;
 
 	ds_writeb(0xd8ce, 0);
-	ds_writeb(0xd9c0, host_readbs(hero + 0x9b));
+	ds_writeb(0xd9c0, host_readbs(hero + HERO_UNKNOWN8));
 
 	ptr1 = p_datseg + 0xd8cf;
-	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(hero + 0x9b)));
+	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(hero + HERO_UNKNOWN8)));
 
 	i = 0;
 
 	while (ds_readbs(0xd823 + i) != -1) {
 
-		if (host_readbs(hero + 0x82) != ds_readbs(0xd823 + i)) {
+		if (host_readbs(hero + HERO_VIEWDIR) != ds_readbs(0xd823 + i)) {
 
 			dir2 = dir1 = -1;
-			dir3 = host_readbs(hero + 0x82);
+			dir3 = host_readbs(hero + HERO_VIEWDIR);
 			dir2 = dir3;
 			dir3++;
 
@@ -130,13 +130,13 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 
 				if (ds_readbs(0xd823 + i) != dir3) {
 
-					dir2 = host_readbs(hero + 0x82) + 4;
+					dir2 = host_readbs(hero + HERO_VIEWDIR) + 4;
 					dir1 = -1;
 				}
 			}
 
 			/* set heros looking direction */
-			host_writeb(hero + 0x82, ds_readbs(0xd823 + i));
+			host_writeb(hero + HERO_VIEWDIR, ds_readbs(0xd823 + i));
 
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + dir2 * 2), 2);
 
@@ -149,12 +149,12 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(0xd823 + i) + 12) * 2), 2);
 			i += 2;
 			/* BP - 2 */
-			host_writeb(hero + 0x33, host_readbs(hero + 0x33) - 2);
+			host_writeb(hero + HERO_BP_LEFT, host_readbs(hero + HERO_BP_LEFT) - 2);
 		} else {
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(0xd823 + i) + 8) * 2), 2);
 			i++;
 			/* BP - 1 */
-			dec_ptr_bs(hero + 0x33);
+			dec_ptr_bs(hero + HERO_BP_LEFT);
 		}
 	}
 
@@ -162,7 +162,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	FIG_call_draw_pic();
 	FIG_remove_from_list(ds_readbs(0xe38e), 0);
 	ds_writeb(0xe38e, -1);
-	FIG_set_0e(host_readbs(hero + 0x81), 0);
+	FIG_set_0e(host_readbs(hero + HERO_FIGHT_ID), 0);
 	draw_fight_screen(0);
 	memset(p_datseg + 0xd8ce, -1, 0xf3);
 	FIG_init_list_elem(hero_pos + 1);
@@ -184,7 +184,7 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 
 	for (pos = 7; pos < 23; pos++) {
 
-		item_id = host_readws(hero + 0x196 + pos * 14);
+		item_id = host_readws(hero + HERO_ITEM_HEAD + pos * 14);
 		item_p = get_itemsdat(item_id);
 
 		/* grab the first melee weapon on top of the knapsack,
@@ -204,7 +204,7 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 
 		/* find a free slot, to get rid of the broken weapon */
 		for (pos = 7; pos < 23; pos++) {
-			if (host_readws(hero + 0x196 + pos * 14) == 0) {
+			if (host_readws(hero + HERO_ITEM_HEAD + pos * 14) == 0) {
 				move_item(3, pos, hero);
 				has_new_weapon = 2;
 				break;
@@ -219,11 +219,11 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 		has_new_weapon = 0;
 	}
 
-	ptr = Real2Host(FIG_get_ptr(host_readbs(hero + 0x81)));
-	host_writeb(ptr + 0x2, host_readbs(hero + 0x82));
+	ptr = Real2Host(FIG_get_ptr(host_readbs(hero + HERO_FIGHT_ID)));
+	host_writeb(ptr + 0x2, host_readbs(hero + HERO_VIEWDIR));
 	host_writeb(ptr + 0xd, -1);
 	draw_fight_screen_pal(0);
-	host_writeb(hero + 0x33, host_readbs(hero + 0x33) - 2);
+	host_writeb(hero + HERO_BP_LEFT, host_readbs(hero + HERO_BP_LEFT) - 2);
 
 	return has_new_weapon;
 }
@@ -414,21 +414,21 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 	retval = 0;
 	done = 0;
 
-	while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+	while ((done == 0) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 		/* reset target fight-id */
-		host_writeb(hero + 0x86, 0);
+		host_writeb(hero + HERO_ENEMY_ID, 0);
 
-		if (host_readbs(hero + 0x33) >= 3) {
+		if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
 
-			dir = host_readbs(hero + 0x82);
+			dir = host_readbs(hero + HERO_VIEWDIR);
 
 			count = 0;
 
 			/* try to find a target clockwise from current direction */
-			while (!host_readbs(hero + 0x86) && (count < 4)) {
+			while (!host_readbs(hero + HERO_ENEMY_ID) && (count < 4)) {
 
-				host_writebs(hero + 0x86, (signed char)KI_search_spell_target(x, y, dir, cursed));
+				host_writebs(hero + HERO_ENEMY_ID, (signed char)KI_search_spell_target(x, y, dir, cursed));
 
 				count++;
 
@@ -439,10 +439,10 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 		}
 
 		/* check if a target was found */
-		if (host_readbs(hero + 0x86) != 0) {
+		if (host_readbs(hero + HERO_ENEMY_ID) != 0) {
 			/* yes */
 
-			FIG_search_obj_on_cb(host_readbs(hero + 0x86), &target_x, &target_y);
+			FIG_search_obj_on_cb(host_readbs(hero + HERO_ENEMY_ID), &target_x, &target_y);
 
 #if !defined(__BORLANDC__)
 			/* BE-fix */
@@ -479,17 +479,17 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 					x = host_readws((Bit8u*)&x);
 					y = host_readws((Bit8u*)&y);
 #endif
-					if (host_readbs(hero + 0x33) < 3) {
+					if (host_readbs(hero + HERO_BP_LEFT) < 3) {
 						/* set BP to 0 */
-						host_writeb(hero + 0x33, 0);
+						host_writeb(hero + HERO_BP_LEFT, 0);
 					}
 				} else {
 					/* set BP to 0 */
-					host_writeb(hero + 0x33, 0);
+					host_writeb(hero + HERO_BP_LEFT, 0);
 				}
 			} else {
 				/* set BP to 0 */
-				host_writeb(hero + 0x33, 0);
+				host_writeb(hero + HERO_BP_LEFT, 0);
 			}
 		}
 	}
@@ -578,7 +578,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 	retval = 0;
 	done = 0;
 
-	while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+	while ((done == 0) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 		decided = 0;
 
@@ -604,31 +604,31 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 		}
 
 		/* reset the target of the hero */
-		host_writebs(hero + 0x86, 0);
+		host_writebs(hero + HERO_ENEMY_ID, 0);
 
 		if ((spell_mode = KI_get_spell(spell, cursed)) != -1) {
 
 			if (spell_mode == 2) {
 
 				/* set target to hero */
-				host_writebs(hero + 0x86, hero_pos + 1);
+				host_writebs(hero + HERO_ENEMY_ID, hero_pos + 1);
 				/* set spell */
-				host_writebs(hero + 0x85, (signed char)spell);
+				host_writebs(hero + HERO_SPELL_ID, (signed char)spell);
 				retval = 1;
 				done = 1;
 			} else {
 
 				if (!ds_readbs(0x9a5 + 10 * spell)) {
 
-					while ((host_readbs(hero + 0x33) != 0) && (done == 0)) {
+					while ((host_readbs(hero + HERO_BP_LEFT) != 0) && (done == 0)) {
 
-						l_si = host_readbs(hero + 0x82);
+						l_si = host_readbs(hero + HERO_VIEWDIR);
 
 						count = 0;
-						while ((!host_readbs(hero + 0x86)) && (count < 4)) {
+						while ((!host_readbs(hero + HERO_ENEMY_ID)) && (count < 4)) {
 
 							if (KI_can_attack_neighbour(x, y, a.a[l_si].x, a.a[l_si].y, spell_mode)) {
-								host_writebs(hero + 0x86, get_cb_val(x + a.a[l_si].x, y + a.a[l_si].y));
+								host_writebs(hero + HERO_ENEMY_ID, get_cb_val(x + a.a[l_si].x, y + a.a[l_si].y));
 							}
 
 							count++;
@@ -638,15 +638,15 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 							}
 						}
 
-						if (host_readbs(hero + 0x86) != 0) {
+						if (host_readbs(hero + HERO_ENEMY_ID) != 0) {
 
-							if (host_readbs(hero + 0x33) >= 5) {
+							if (host_readbs(hero + HERO_BP_LEFT) >= 5) {
 								/* enough BP */
-								host_writeb(hero + 0x85, (signed char)spell);
+								host_writeb(hero + HERO_SPELL_ID, (signed char)spell);
 								retval = 1;
 							} else {
 								/* set BP to 0 */
-								host_writeb(hero + 0x33, 0);
+								host_writeb(hero + HERO_BP_LEFT, 0);
 							}
 
 							done = 1;
@@ -668,24 +668,24 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 #endif
 							} else {
 								/* set BP to 0 */
-								host_writeb(hero + 0x33, 0);
+								host_writeb(hero + HERO_BP_LEFT, 0);
 							}
 
 						} else {
 							/* set BP to 0 */
-							host_writeb(hero + 0x33, 0);
+							host_writeb(hero + HERO_BP_LEFT, 0);
 						}
 					}
 				} else {
-					while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+					while ((done == 0) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
-						l_si = host_readbs(hero + 0x82);
+						l_si = host_readbs(hero + HERO_VIEWDIR);
 
 						count = 0;
 
-						while ((!host_readbs(hero + 0x86)) && (count < 4)) {
+						while ((!host_readbs(hero + HERO_ENEMY_ID)) && (count < 4)) {
 
-							host_writebs(hero + 0x86, (signed char)KI_search_spell_target(x, y, l_si, spell_mode));
+							host_writebs(hero + HERO_ENEMY_ID, (signed char)KI_search_spell_target(x, y, l_si, spell_mode));
 
 							count++;
 
@@ -694,15 +694,15 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 							}
 						}
 
-						if (host_readbs(hero + 0x86) != 0) {
+						if (host_readbs(hero + HERO_ENEMY_ID) != 0) {
 
-							if (host_readbs(hero + 0x33) >= 5) {
+							if (host_readbs(hero + HERO_BP_LEFT) >= 5) {
 								/* enough BP */
-								host_writeb(hero + 0x85, (signed char)spell);
+								host_writeb(hero + HERO_SPELL_ID, (signed char)spell);
 								retval = 1;
 							} else {
 								/* set BP to 0 */
-								host_writeb(hero + 0x33, 0);
+								host_writeb(hero + HERO_BP_LEFT, 0);
 							}
 
 							done = 1;
@@ -724,12 +724,12 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 #endif
 							} else {
 								/* set BP to 0 */
-								host_writeb(hero + 0x33, 0);
+								host_writeb(hero + HERO_BP_LEFT, 0);
 							}
 
 						} else {
 							/* set BP to 0 */
-							host_writeb(hero + 0x33, 0);
+							host_writeb(hero + HERO_BP_LEFT, 0);
 						}
 					}
 				}
@@ -800,81 +800,81 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 	done = 0;
 	l5 = 1;
-	host_writeb(hero + 0x84, 1);
-	if (host_readbs(hero + 0x89) > 0) {
+	host_writeb(hero + HERO_UNKNOWN2, 1);
+	if (host_readbs(hero + HERO_NPC_ID) > 0) {
 
-		if (host_readbs(hero + 0x89) == 1) {
+		if (host_readbs(hero + HERO_NPC_ID) == 1) {
 			/* equip LONGBOW and ARROWS in the first round,
 			 * if the hero has them in the inventory */
 			if ((ds_readws(FIGHT_ROUND) == 0) &&
-				(host_readws(hero + 0x1c0) != 19) &&
+				(host_readws(hero + HERO_ITEM_RIGHT) != 19) &&
 				(get_item_pos(hero, 10) != -1) &&
 				(get_item_pos(hero, 19) != -1))
 			{
 				move_item(3, get_item_pos(hero, 19), hero);
 
-				if (host_readws(hero + 0x1ce) != 10) {
+				if (host_readws(hero + HERO_ITEM_LEFT) != 10) {
 					move_item(4, get_item_pos(hero, 10), hero);
 				}
 			}
 
-		} else if (host_readbs(hero + 0x89) == 2) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == 2) {
 
-			if (host_readws(hero + 0x60) <= 12) {
+			if (host_readws(hero + HERO_LE_ORIG) <= 12) {
 
 				/* equip LONGBOW and ARROWS in the first round,
 				 * if the hero has them in the inventory */
 				if ((ds_readws(FIGHT_ROUND) == 0) &&
-					(host_readws(hero + 0x1c0) != 19) &&
+					(host_readws(hero + HERO_ITEM_RIGHT) != 19) &&
 					(get_item_pos(hero, 10) != -1) &&
 					(get_item_pos(hero, 19) != -1))
 				{
 					move_item(3, get_item_pos(hero, 19), hero);
 
-					if (host_readws(hero + 0x1ce) != 10) {
+					if (host_readws(hero + HERO_ITEM_LEFT) != 10) {
 						move_item(4, get_item_pos(hero, 10), hero);
 					}
 				} else if (FIG_get_range_weapon_type(hero) == -1)
 				{
-					host_writebs(hero + 0x84, 16);
+					host_writebs(hero + HERO_UNKNOWN2, 16);
 				}
 			}
 
-		} else if (host_readbs(hero + 0x89) == 3) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == 3) {
 
-			if ((host_readws(hero + 0x60) < 10) &&
-				(host_readws(hero + 0x64) < 10))
+			if ((host_readws(hero + HERO_LE_ORIG) < 10) &&
+				(host_readws(hero + HERO_AE_ORIG) < 10))
 			{
-				host_writeb(hero + 0x84, 16);
+				host_writeb(hero + HERO_UNKNOWN2, 16);
 			}
 
-		} else if (host_readbs(hero + 0x89) == 4) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == 4) {
 
-			if (host_readws(hero + 0x60) < 8)
+			if (host_readws(hero + HERO_LE_ORIG) < 8)
 			{
-				host_writeb(hero + 0x84, 16);
+				host_writeb(hero + HERO_UNKNOWN2, 16);
 			}
 
-		} else if (host_readbs(hero + 0x89) == 5) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == 5) {
 
 			if (!KI_count_heros(hero_pos)) {
-				host_writeb(hero + 0x84, 16);
+				host_writeb(hero + HERO_UNKNOWN2, 16);
 			}
 
-		} else if (host_readbs(hero + 0x89) == 6) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == 6) {
 
-			if (host_readws(hero + 0x60) < 15)
+			if (host_readws(hero + HERO_LE_ORIG) < 15)
 			{
-				host_writeb(hero + 0x84, 16);
+				host_writeb(hero + HERO_UNKNOWN2, 16);
 			}
 
 		}
 
 		if (FIG_get_first_active_hero() == 6) {
-			host_writeb(hero + 0x84, 16);
+			host_writeb(hero + HERO_UNKNOWN2, 16);
 		}
 
-		if (host_readbs(hero + 0x84) == 16) {
+		if (host_readbs(hero + HERO_UNKNOWN2) == 16) {
 
 			FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
 
@@ -890,21 +890,21 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				(get_cb_val(hero_x + 1, hero_y) != 0) &&
 				(get_cb_val(hero_x - 1, hero_y) != 0))
 			{
-				host_writeb(hero + 0x84, 1);
+				host_writeb(hero + HERO_UNKNOWN2, 1);
 			}
 		}
 	}
 
-	if (host_readbs(hero + 0x33) == 1) {
+	if (host_readbs(hero + HERO_BP_LEFT) == 1) {
 		/* set BP to 0 */
-		host_writebs(hero + 0x33, 0);
+		host_writebs(hero + HERO_BP_LEFT, 0);
 	}
 
-	while ((done == 0) && (host_readbs(hero + 0x33) > 0)) {
+	while ((done == 0) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 		seg001_02c4();
 
-		if ((host_readbs(hero + 0x84) == 16) && (host_readbs(hero + 0x33) > 0)) {
+		if ((host_readbs(hero + HERO_UNKNOWN2) == 16) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 			if (!hero_unkn2(hero)) {
 
@@ -917,7 +917,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 					seg036_00ae(hero, hero_pos);
 
-					host_writeb(hero + 0x86, 0);
+					host_writeb(hero + HERO_ENEMY_ID, 0);
 
 					if (FIG_search_obj_on_cb(hero_pos + 1, &x, &y)) {
 
@@ -926,46 +926,46 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 						x = host_readws((Bit8u*)&x);
 						y = host_readws((Bit8u*)&y);
 #endif
-						host_writeb(hero + 0x84, 1);
+						host_writeb(hero + HERO_UNKNOWN2, 1);
 
 						if ((x_bak == x) && (y_bak == y)) {
 
-							host_writeb(hero + 0x33, 0);
+							host_writeb(hero + HERO_BP_LEFT, 0);
 						}
 					} else {
-						host_writeb(hero + 0x33, 0);
+						host_writeb(hero + HERO_BP_LEFT, 0);
 					}
 
-					if (host_readbs(hero + 0x33) < 3) {
-						host_writeb(hero + 0x33, 0);
+					if (host_readbs(hero + HERO_BP_LEFT) < 3) {
+						host_writeb(hero + HERO_BP_LEFT, 0);
 					}
 
 				} else {
-					host_writeb(hero + 0x33, 0);
+					host_writeb(hero + HERO_BP_LEFT, 0);
 				}
 			} else {
-				host_writeb(hero + 0x33, 0);
+				host_writeb(hero + HERO_BP_LEFT, 0);
 			}
 
 		} else {
 
-			if ((host_readbs(hero + 0x21) >= 7) &&		/* magic user */
-				(host_readws(hero + 0x64) > 10) &&	/* AE > 10 */
+			if ((host_readbs(hero + HERO_TYPE) >= 7) &&		/* magic user */
+				(host_readws(hero + HERO_AE_ORIG) > 10) &&	/* AE > 10 */
 				(l5 != 0) &&
 				(ds_readws(CURRENT_FIG_NR) != 192) &&	/* not in the final fight */
 				(ds_readbs(AUTOFIGHT_MAGIC) != 0))		/* ??? a bool variable, maybe autofight magic */
 			{
 				if (seg036_8cf(hero, hero_pos, hero_cursed(hero), x, y)) {
 
-					host_writeb(hero + 0x84, 4);
-					host_writeb(hero + 0x33, 0);
+					host_writeb(hero + HERO_UNKNOWN2, 4);
+					host_writeb(hero + HERO_BP_LEFT, 0);
 
 				} else {
 					l5 = 0;
 				}
 			}
 
-			if ((host_readbs(hero + 0x84) == 1) && (host_readbs(hero + 0x33) > 0)) {
+			if ((host_readbs(hero + HERO_UNKNOWN2) == 1) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 				if (FIG_get_range_weapon_type(hero) != -1) {
 
@@ -979,30 +979,30 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 									done = 1;
 								}
 							} else {
-								host_writeb(hero + 0x84, 15);
+								host_writeb(hero + HERO_UNKNOWN2, 15);
 							}
 						}
 
 						/* set BP to 0 */
-						host_writeb(hero + 0x33, 0);
+						host_writeb(hero + HERO_BP_LEFT, 0);
 					} else {
 						if (!KI_change_hero_weapon(hero)) {
 							done = 1;
 						}
 					}
 				} else {
-					host_writeb(hero + 0x86, 0);
+					host_writeb(hero + HERO_ENEMY_ID, 0);
 
-					if (host_readbs(hero + 0x33) >= 3) {
+					if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
 
-						l_di = host_readbs(hero + 0x82);
+						l_di = host_readbs(hero + HERO_VIEWDIR);
 						l1 = 0;
 
-						while (!host_readbs(hero + 0x86) && (l1 < 4)) {
+						while (!host_readbs(hero + HERO_ENEMY_ID) && (l1 < 4)) {
 
 							if (KI_can_attack_neighbour(x, y, a.a[l_di].x, a.a[l_di].y, hero_cursed(hero)))
 							{
-								host_writeb(hero + 0x86, get_cb_val(x + a.a[l_di].x, y + a.a[l_di].y));
+								host_writeb(hero + HERO_ENEMY_ID, get_cb_val(x + a.a[l_di].x, y + a.a[l_di].y));
 							}
 
 							l1++;
@@ -1012,10 +1012,10 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 						}
 					}
 
-					if (host_readbs(hero + 0x86) != 0) {
+					if (host_readbs(hero + HERO_ENEMY_ID) != 0) {
 
-						host_writeb(hero + 0x84, 2);
-						host_writeb(hero + 0x33, 0);
+						host_writeb(hero + HERO_UNKNOWN2, 2);
+						host_writeb(hero + HERO_BP_LEFT, 0);
 
 					} else {
 
@@ -1033,8 +1033,8 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 								seg036_00ae(hero, hero_pos);
 
-								host_writeb(hero + 0x84, 1);
-								host_writeb(hero + 0x86, 0);
+								host_writeb(hero + HERO_UNKNOWN2, 1);
+								host_writeb(hero + HERO_ENEMY_ID, 0);
 
 								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);
 
@@ -1044,17 +1044,17 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 								y = host_readws((Bit8u*)&y);
 #endif
 								if ((x_bak == x) && (y_bak == y)) {
-									host_writeb(hero + 0x33, 0);
+									host_writeb(hero + HERO_BP_LEFT, 0);
 								}
 
-								if (host_readbs(hero + 0x33) < 3) {
-									host_writeb(hero + 0x33, 0);
+								if (host_readbs(hero + HERO_BP_LEFT) < 3) {
+									host_writeb(hero + HERO_BP_LEFT, 0);
 								}
 							} else {
-								host_writeb(hero + 0x33, 0);
+								host_writeb(hero + HERO_BP_LEFT, 0);
 							}
 						} else {
-							host_writeb(hero + 0x33, 0);
+							host_writeb(hero + HERO_BP_LEFT, 0);
 						}
 					}
 				}

@@ -1582,8 +1582,8 @@ void handle_gui_input(void)
 
 			if (ds_readws(0xc3cf) != 0) {
 
-				if ((host_readbs(get_hero(l_si - 241) + 0x21) != 0) &&
-						host_readbs(get_hero(l_si - 241) + 0x87) == ds_readbs(CURRENT_GROUP))
+				if ((host_readbs(get_hero(l_si - 241) + HERO_TYPE) != 0) &&
+						host_readbs(get_hero(l_si - 241) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					status_menu(l_si - 241);
 					l_si = 0;
@@ -1592,8 +1592,8 @@ void handle_gui_input(void)
 				}
 			} else {
 				if ((ds_readws(0x29b4) != 0) &&
-					(host_readbs(get_hero(l_si - 241) + 0x21) != 0) &&
-						host_readbs(get_hero(l_si - 241) + 0x87) == ds_readbs(CURRENT_GROUP))
+					(host_readbs(get_hero(l_si - 241) + HERO_TYPE) != 0) &&
+						host_readbs(get_hero(l_si - 241) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					GRP_move_hero(l_si - 241);
 					l_si = 0;
@@ -1792,7 +1792,7 @@ void game_loop(void)
 
 		}
 
-		if ((host_readbs(get_hero(6) + 0x21) != 0) &&
+		if ((host_readbs(get_hero(6) + HERO_TYPE) != 0) &&
 			((ds_readbs(CURRENT_TOWN) != 0) || (ds_readws(0xc3c1) == 99)) &&
 			(ds_readws(NPC_MONTHS) >= 1) &&
 			(ds_readbs(0x4494) != ds_readws(NPC_MONTHS)))
@@ -1880,10 +1880,10 @@ void timers_daily(void)
 	hero_i = get_hero(0);
 	for (i = 0; i <=6; i++, hero_i += SIZEOF_HERO) {
 
-		if ((host_readb(get_hero(i) + 0x21) != 0) &&
-			(host_readbs(hero_i + 0x94) > 0))
+		if ((host_readb(get_hero(i) + HERO_TYPE) != 0) &&
+			(host_readbs(hero_i + HERO_UNKNOWN5) > 0))
 		{
-			dec_ptr_bs(hero_i + 0x94);
+			dec_ptr_bs(hero_i + HERO_UNKNOWN5);
 		}
 	}
 
@@ -2249,21 +2249,21 @@ void do_timers(void)
 		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 			/* check typus */
-			if ((host_readb(hero_i + 0x21) != 0) &&
+			if ((host_readb(hero_i + HERO_TYPE) != 0) &&
 				/* unknown flag */
-				(host_readb(hero_i + 0x9f) != 0))
+				(host_readb(hero_i + HERO_JAIL) != 0))
 			{
 
 				/* reset flag */
-				host_writeb(hero_i + 0x9f, 0);
+				host_writeb(hero_i + HERO_JAIL, 0);
 
-				ds_writeb(0x2d61 + host_readbs(hero_i + 0x87),
-					ds_readb(0x2da0 + host_readbs(hero_i + 0x87)));
+				ds_writeb(0x2d61 + host_readbs(hero_i + HERO_GROUP_NO),
+					ds_readb(0x2da0 + host_readbs(hero_i + HERO_GROUP_NO)));
 
-				ds_writew(0x2d48 + host_readbs(hero_i + 0x87) * 2,
-					ds_readw(0x2d87 + host_readbs(hero_i + 0x87) * 2));
-				ds_writew(0x2d54 + host_readbs(hero_i + 0x87) * 2,
-					ds_readw(0x2d93 + host_readbs(hero_i + 0x87) * 2));
+				ds_writew(0x2d48 + host_readbs(hero_i + HERO_GROUP_NO) * 2,
+					ds_readw(0x2d87 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
+				ds_writew(0x2d54 + host_readbs(hero_i + HERO_GROUP_NO) * 2,
+					ds_readw(0x2d93 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
 			}
 		}
 	}
@@ -2275,9 +2275,9 @@ void do_timers(void)
 
 		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 			/* check typus */
-			if ((host_readb(hero_i + 0x21) != 0) &&
+			if ((host_readb(hero_i + HERO_TYPE) != 0) &&
 				/* check drunken */
-				(host_readb(hero_i + 0xa1) != 0))
+				(host_readb(hero_i + HERO_DRUNK) != 0))
 			{
 				hero_get_sober(hero_i);
 			}
@@ -2298,10 +2298,10 @@ void do_timers(void)
 			for (i = 0; i <= 6; i++, ptr += SIZEOF_HERO) {
 
 				/* check typus */
-				if (host_readb(ptr + 0x21) != 0) {
+				if (host_readb(ptr + HERO_TYPE) != 0) {
 
 					/* get group nr */
-					di = host_readbs(ptr + 0x87);
+					di = host_readbs(ptr + HERO_GROUP_NO);
 
 					/* hero is in group and in mage dungeon */
 					if ((ds_readbs(CURRENT_GROUP) == di) &&
@@ -2395,7 +2395,7 @@ void do_timers(void)
 			}
 
 			/* increment the months the NPC is in the group */
-			if (host_readb(get_hero(6) + 0x21) != 0) {
+			if (host_readb(get_hero(6) + HERO_TYPE) != 0) {
 				inc_ds_ws(NPC_MONTHS);
 			}
 
@@ -2528,7 +2528,7 @@ void sub_mod_timers(Bit32s val)
 				/* get the hero index from the target */
 				target = host_readb(sp + 6);
 				for (j = 0; j <= 6; j++) {
-					if (host_readbs(get_hero(j) + 0x7b) == target) {
+					if (host_readbs(get_hero(j) + HERO_TIMER_ID) == target) {
 						h_index = j;
 						break;
 					}
@@ -2560,7 +2560,7 @@ void sub_mod_timers(Bit32s val)
 					}
 
 					if (reset_target) {
-						host_writeb(get_hero(h_index) + 0x7b, 0);
+						host_writeb(get_hero(h_index) + HERO_TIMER_ID, 0);
 					}
 				} else {
 #if !defined(__BORLANDC__)
@@ -2645,9 +2645,9 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 		/* mod slot is on a hero/npc */
 		mod_ptr = get_hero(who);
 
-		if (host_readb(get_hero(who) + 0x7b) != 0) {
+		if (host_readb(get_hero(who) + HERO_TIMER_ID) != 0) {
 			/* hero/npc has a target number */
-			target = host_readbs(get_hero(who) + 0x7b);
+			target = host_readbs(get_hero(who) + HERO_TIMER_ID);
 		} else {
 			/* hero/npc has no target number */
 
@@ -2655,7 +2655,7 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 
 				new_target = 1;
 				for (j = 0; j <= 6; j++) {
-					if (host_readbs(get_hero(j) + 0x7b) == i) {
+					if (host_readbs(get_hero(j) + HERO_TIMER_ID) == i) {
 						new_target = 0;
 						break;
 					}
@@ -2667,7 +2667,7 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 				}
 			}
 
-			host_writeb(get_hero(who) + 0x7b, target);
+			host_writeb(get_hero(who) + HERO_TIMER_ID, target);
 		}
 
 		ds_writeb(0x2e2c + slot_nr * 8 + 6, target);
@@ -2699,37 +2699,37 @@ void seg002_2f7a(Bit32s fmin)
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* check class */
-		if (host_readb(hero_i + 0x21) != 0) {
+		if (host_readb(hero_i + HERO_TYPE) != 0) {
 
 			/* Timer to the next healing attempt */
-			if (host_readds(hero_i + 0x8b) > 0) {
+			if (host_readds(hero_i + HERO_UNKNOWN3) > 0) {
 
-				sub_ptr_ds(hero_i + 0x8b, fmin * 450);
+				sub_ptr_ds(hero_i + HERO_UNKNOWN3, fmin * 450);
 #if !defined(__BORLANDC__)
-				if (host_readds(hero_i + 0x8b) <= 0) {
+				if (host_readds(hero_i + HERO_UNKNOWN3) <= 0) {
 					D1_INFO("%s kann wieder geheilt werden\n",
-						(char*)hero_i + 0x10);
+						(char*)hero_i + HERO_NAME2);
 				}
 #endif
 
-				if (host_readds(hero_i + 0x8b) < 0) {
-					host_writed(hero_i + 0x8b, 0);
+				if (host_readds(hero_i + HERO_UNKNOWN3) < 0) {
+					host_writed(hero_i + HERO_UNKNOWN3, 0);
 				}
 			}
 
 			/* Timer set after Staffspell */
-			if (host_readds(hero_i + 0x8f) > 0) {
-				sub_ptr_ds(hero_i + 0x8f, fmin * 450);
+			if (host_readds(hero_i + HERO_UNKNOWN4) > 0) {
+				sub_ptr_ds(hero_i + HERO_UNKNOWN4, fmin * 450);
 #if !defined(__BORLANDC__)
-				if (host_readds(hero_i + 0x8f) <= 0) {
+				if (host_readds(hero_i + HERO_UNKNOWN4) <= 0) {
 					D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
-						(char*)(hero_i + 0x10));
+						(char*)(hero_i + HERO_NAME2));
 				}
 
 #endif
-				if (host_readds(hero_i + 0x8f) < 0) {
+				if (host_readds(hero_i + HERO_UNKNOWN4) < 0) {
 
-					host_writed(hero_i + 0x8f, 0);
+					host_writed(hero_i + HERO_UNKNOWN4, 0);
 				}
 			}
 
@@ -2762,7 +2762,7 @@ void sub_light_timers(Bit32s quarter)
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* check class */
-		if (host_readb(hero_i + 0x21) != 0) {
+		if (host_readb(hero_i + HERO_TYPE) != 0) {
 
 			if (quarter > 120) {
 				tmp = 120;
@@ -2772,35 +2772,35 @@ void sub_light_timers(Bit32s quarter)
 
 			for (j = 0; j < 23; j++) {
 
-				if (host_readw(hero_i + 0x196 + 14 * j) == 0x16) {
+				if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == 0x16) {
 
 					/* Torch, burning */
 
-					sub_ptr_bs(hero_i + 0x196 + 8 + 14 * j, tmp);
+					sub_ptr_bs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, tmp);
 
-					if (host_readbs(hero_i + 0x196 + 8 + 14 * j) <= 0)
+					if (host_readbs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j) <= 0)
 					{
 						/* decrement item counter */
-						dec_ptr_bs(hero_i + 0x20);
+						dec_ptr_bs(hero_i + HERO_KS_TAKEN);
 
 						/* subtract weight of a torch */
-						sub_ptr_ws(hero_i + 0x2d8,
+						sub_ptr_ws(hero_i + HERO_LOAD,
 							host_readws(Real2Host(ds_readd(ITEMSDAT)) + 0x10d));
 
 						/* Remove Torch from inventory */
-						memset(hero_i + 0x196 + 14 * j, 0, 14);
+						memset(hero_i + HERO_ITEM_HEAD + 14 * j, 0, 14);
 					}
 
-				} else if (host_readw(hero_i + 0x196 + 14 * j) == 0xf9) {
+				} else if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == 0xf9) {
 
 					/* Lantern, burning */
-					sub_ptr_bs(hero_i + 0x196 + 8 + 14 * j, tmp);
+					sub_ptr_bs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, tmp);
 
-					if (host_readbs(hero_i + 0x196 + 8 + 14 * j) <= 0) {
+					if (host_readbs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j) <= 0) {
 						/* Set timer to 0 */
-						host_writeb(hero_i + 0x196 + 8 + 14 * j, 0);
+						host_writeb(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, 0);
 						/* Set burning lantern to a not burning lantern */
-						host_writew(hero_i + 0x196 + 14 * j, 0x19);
+						host_writew(hero_i + HERO_ITEM_HEAD + 14 * j, 0x19);
 					}
 				}
 			}
@@ -2826,15 +2826,15 @@ void magical_chainmail_damage(void)
 	for (i = 0; i <= 6; i++) {
 
 		/* check typus */
-		if (host_readb(get_hero(i) + 0x21) != 0) {
+		if (host_readb(get_hero(i) + HERO_TYPE) != 0) {
 
 			hero_i = get_hero(i);
 
 			if (!hero_dead(hero_i) &&
 				/* unknown */
-				!host_readbs(hero_i + 0x9f) &&
+				!host_readbs(hero_i + HERO_JAIL) &&
 				/* check magical chainmail is equipped */
-				(host_readw(hero_i + 0x1b2) == 0xc5))
+				(host_readw(hero_i + HERO_ITEM_BODY) == 0xc5))
 			{
 				sub_hero_le(hero_i, 1);
 			}
@@ -2860,21 +2860,21 @@ void herokeeping(void)
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		/* consume food and set messages */
-		if (host_readb(hero + 0x21) != 0 &&		/* valid hero */
+		if (host_readb(hero + HERO_TYPE) != 0 &&		/* valid hero */
 			ds_readb(0x4649) != 0 &&
 			check_hero_no3(hero) &&			/* must be vital */
-			!host_readbs(hero + 0x9f) &&
+			!host_readbs(hero + HERO_JAIL) &&
 			!ds_readbs(0x4497))
 		{
 			/* Do the eating */
 
 			/* check for magic bread bag */
-			if (get_first_hero_with_item_in_group(0xb8, host_readbs(hero + 0x87)) == -1) {
+			if (get_first_hero_with_item_in_group(0xb8, host_readbs(hero + HERO_GROUP_NO)) == -1) {
 				/* check if the hero has the food amulet */
 				if (get_item_pos(hero, 0xaf) == -1) {
 
 					/* eat if hunger > 90 % */
-					if (host_readbs(hero + 0x7f) > 90) {
+					if (host_readbs(hero + HERO_HUNGER) > 90) {
 
 						/* search for Lunchpack */
 						pos = get_item_pos(hero, 0x2d);
@@ -2884,7 +2884,7 @@ void herokeeping(void)
 							ds_writeb(CONSUME_QUIET, 1);
 							consume(hero, hero, pos);
 #if !defined(__BORLANDC__)
-							D1_INFO("%s isst etwas\n", (char*)hero + 0x10);
+							D1_INFO("%s isst etwas\n", (char*)hero + HERO_NAME2);
 #endif
 							ds_writeb(CONSUME_QUIET, 0);
 
@@ -2895,31 +2895,31 @@ void herokeeping(void)
 							}
 						} else {
 							/* print ration warning */
-							if (host_readbs(hero + 0x7f) < 100) {
+							if (host_readbs(hero + HERO_HUNGER) < 100) {
 								ds_writeb(FOOD_MESSAGE + i, 4);
 							}
 						}
 
 					}
 
-					if (host_readbs(hero + 0x7f) < 100) {
+					if (host_readbs(hero + HERO_HUNGER) < 100) {
 						/* increase food counter food_mod is always 0 or 1 */
-						if (host_readbs(hero + 0x7e) <= 0) {
+						if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
 							/* increase more (2 or 1) */
-							add_ptr_bs(hero + 0x7f, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
+							add_ptr_bs(hero + HERO_HUNGER, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
 						} else {
 							/* increase less (1 or 0) */
-							add_ptr_bs(hero + 0x7f, 1 / (ds_readbs(FOOD_MOD) * 2 + 1));
+							add_ptr_bs(hero + HERO_HUNGER, 1 / (ds_readbs(FOOD_MOD) * 2 + 1));
 						}
 
 						/* adjust hunger */
-						if (host_readbs(hero + 0x7f) > 100) {
-							host_writeb(hero + 0x7f, 100);
+						if (host_readbs(hero + HERO_HUNGER) > 100) {
+							host_writeb(hero + HERO_HUNGER, 100);
 						}
 					} else {
 
 						/* */
-						if (host_readbs(hero + 0x7e) <= 0) {
+						if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
 							do_starve_damage(hero, i, 0);
 						}
 					}
@@ -2927,25 +2927,25 @@ void herokeeping(void)
 			} else {
 
 				/* set hunger to 20 % */
-				if (host_readbs(hero + 0x7f) > 20) {
-					host_writeb(hero + 0x7f, 20);
+				if (host_readbs(hero + HERO_HUNGER) > 20) {
+					host_writeb(hero + HERO_HUNGER, 20);
 				}
 			}
 
 			/* Do the drinking */
 
 			/* check for magic waterskin in group */
-			if ((get_first_hero_with_item_in_group(0xb9, host_readbs(hero + 0x87)) == -1) &&
-				((host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if ((get_first_hero_with_item_in_group(0xb9, host_readbs(hero + HERO_GROUP_NO)) == -1) &&
+				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(TRAVELING) != 0))) ||
-				((host_readbs(hero + 0x87) != ds_readbs(CURRENT_GROUP) &&
-				!ds_readbs(0x2d68 + host_readbs(hero + 0x87)))))) {
+				((host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
+				!ds_readbs(0x2d68 + host_readbs(hero + HERO_GROUP_NO)))))) {
 
 					/* check for food amulett */
 					if (get_item_pos(hero, 0xaf) == -1) {
 
 						/* hero should drink something */
-						if (host_readbs(hero + 0x80) > 90) {
+						if (host_readbs(hero + HERO_THIRST) > 90) {
 
 							ds_writeb(CONSUME_QUIET, 1);
 
@@ -2961,7 +2961,7 @@ void herokeeping(void)
 								/* drink it */
 								consume(hero, hero, pos);
 #if !defined(__BORLANDC__)
-								D1_INFO("%s trinkt etwas\n", (char*)hero + 0x10);
+								D1_INFO("%s trinkt etwas\n", (char*)hero + HERO_NAME2);
 #endif
 								/* nothing to drink message */
 								if ((get_item_pos(hero, 0x17) == -1)
@@ -2971,7 +2971,7 @@ void herokeeping(void)
 
 							} else {
 								/* hero has nothing to drink */
-								if (host_readbs(hero + 0x80) < 100) {
+								if (host_readbs(hero + HERO_THIRST) < 100) {
 									ds_writeb(FOOD_MESSAGE + i, 3);
 								}
 							}
@@ -2979,23 +2979,23 @@ void herokeeping(void)
 							ds_writeb(CONSUME_QUIET, 0);
 						}
 
-						if (host_readbs(hero + 0x80) < 100) {
+						if (host_readbs(hero + HERO_THIRST) < 100) {
 							/* increase thirst counter food_mod is always 0 or 1 */
-							if (host_readbs(hero + 0x7e) <= 0) {
+							if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
 
-								add_ptr_bs(hero + 0x80, 4 / (ds_readbs(FOOD_MOD) * 2 + 1));
+								add_ptr_bs(hero + HERO_THIRST, 4 / (ds_readbs(FOOD_MOD) * 2 + 1));
 							} else {
 
-								add_ptr_bs(hero + 0x80, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
+								add_ptr_bs(hero + HERO_THIRST, 2 / (ds_readbs(FOOD_MOD) * 2 + 1));
 							}
 
 							/* adjust thirst */
-							if (host_readbs(hero + 0x80) > 100) {
-								host_writeb(hero + 0x80, 100);
+							if (host_readbs(hero + HERO_THIRST) > 100) {
+								host_writeb(hero + HERO_THIRST, 100);
 							}
 
 						} else {
-							if (host_readbs(hero + 0x7e) <= 0) {
+							if (host_readbs(hero + HERO_UNKNOWN1) <= 0) {
 								do_starve_damage(hero, i, 1);
 							}
 						}
@@ -3004,8 +3004,8 @@ void herokeeping(void)
 			} else {
 
 				/* set thirst to 20 % */
-				if (host_readbs(hero + 0x80) > 20) {
-					host_writeb(hero + 0x80, 20);
+				if (host_readbs(hero + HERO_THIRST) > 20) {
+					host_writeb(hero + HERO_THIRST, 20);
 				}
 			}
 		}
@@ -3017,8 +3017,8 @@ void herokeeping(void)
 			!ds_readbs(0xbcda))
 		{
 
-			if ((host_readb(hero + 0x21) != 0) &&
-				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			if ((host_readb(hero + HERO_TYPE) != 0) &&
+				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
 				(!ds_readb(TRAVELING) || ds_readb(0x26a4 + i) != ds_readb(FOOD_MESSAGE + i))) {
 
@@ -3030,7 +3030,7 @@ void herokeeping(void)
 							((ds_readb(FOOD_MESSAGE + i) == 5) ? (char*)get_ltx(0xc7c) :
 							(char*)get_ltx(0xc80))))),
 
-						(char*)hero + 0x10, (char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 1)));
+						(char*)hero + HERO_NAME2, (char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
 
 					ds_writeb(0x26a4 + i, ds_readb(FOOD_MESSAGE + i));
 
@@ -3048,13 +3048,13 @@ void herokeeping(void)
 		/* print unconscious message */
 		if ((ds_readb(0x4212 + i) != 0) && !ds_readbs(0x2c98)) {
 
-			if (host_readb(hero + 0x21) != 0 &&
-				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			if (host_readb(hero + HERO_TYPE) != 0 &&
+				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero)) {
 
 					/* prepare output */
 					sprintf(buffer, (char*)get_ltx(0xc54),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					/* print output */
 					GUI_output((Bit8u*)buffer);
@@ -3087,10 +3087,10 @@ void check_level_up(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + 0x21) != 0) &&
+			if ((host_readbs(hero + HERO_TYPE) != 0) &&
 				!hero_dead(hero) &&
-				(host_readbs(hero + 0x27) < 20) &&
-				(ds_readds(LEVEL_AP_TAB + 4 * host_readbs(hero + 0x27)) < host_readds(hero + 0x28)))
+				(host_readbs(hero + HERO_LEVEL) < 20) &&
+				(ds_readds(LEVEL_AP_TAB + 4 * host_readbs(hero + HERO_LEVEL)) < host_readds(hero + HERO_AP)))
 			{
 				level_up(i);
 				done = 1;
@@ -3470,7 +3470,7 @@ void dec_splash(void)
 			/* check if hero is dead */
 			!hero_dead(get_hero(i)))
 		{
-			restore_rect((RealPt)ds_readd(0xd2ff), get_hero(i) + 0x2da, ds_readw(0x2d01 + i * 2), 157, 32, 32);
+			restore_rect((RealPt)ds_readd(0xd2ff), get_hero(i) + HERO_PORTRAIT, ds_readw(0x2d01 + i * 2), 157, 32, 32);
 		}
 	}
 }
@@ -4114,14 +4114,14 @@ void seg002_484f(void)
 /* should be static */
 signed short check_hero(Bit8u *hero)
 {
-	if (!host_readbs(hero + 0x21) ||
+	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_sleeps(hero) ||
 		hero_dead(hero) ||
 		hero_stoned(hero) ||
 		hero_unc(hero) ||
 		hero_cursed(hero) ||
 		/* Check if ??? */
-		(host_readb(hero + 0x84) == 0x10))
+		(host_readb(hero + HERO_UNKNOWN2) == 0x10))
 	{
 		return 0;
 	}
@@ -4136,7 +4136,7 @@ signed short check_hero(Bit8u *hero)
 signed short check_hero_no2(Bit8u *hero)
 {
 
-	if (!host_readbs(hero + 0x21) ||
+	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
 		hero_stoned(hero) ||
 		hero_unc(hero) ||
@@ -4156,7 +4156,7 @@ signed short check_hero_no2(Bit8u *hero)
 /* should be static */
 signed short check_hero_no3(Bit8u *hero)
 {
-	if (!host_readbs(hero + 0x21) ||
+	if (!host_readbs(hero + HERO_TYPE) ||
 		hero_dead(hero) ||
 		hero_stoned(hero) ||
 		hero_unc(hero))
@@ -4170,7 +4170,7 @@ signed short check_hero_no3(Bit8u *hero)
 signed short is_hero_available_in_group(Bit8u *hero)
 {
 
-	if (check_hero(hero) && (host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))) {
+	if (check_hero(hero) && (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))) {
 		return 1;
 	}
 
@@ -4190,21 +4190,21 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 		ds_writew(0xc3cb, 0);
 
 		/* If Mage has 4th Staffspell */
-		if ((host_readb(hero + 0x21) == 9) && (host_readbs(hero + 0x195) >= 4)) {
+		if ((host_readb(hero + HERO_TYPE) == 9) && (host_readbs(hero + HERO_WAND) >= 4)) {
 			ae -= 2;
 			if (ae < 0)
 				ae = 0;
 		}
 
 		/* Calc new AE */
-		sub_ptr_ws(hero + 0x64, ae);
+		sub_ptr_ws(hero + HERO_AE_ORIG, ae);
 
 		/* Draw the splash */
 		draw_splash(get_hero_index(hero), 1);
 
 		/* set AE to 0 if they have gotten lower than 0 */
-		if (host_readws(hero + 0x64) < 0) {
-			host_writew(hero + 0x64, 0);
+		if (host_readws(hero + HERO_AE_ORIG) < 0) {
+			host_writew(hero + HERO_AE_ORIG, 0);
 		}
 
 		ds_writew(0xc3cb, tmp);
@@ -4213,8 +4213,8 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 		/* AE Bar was not updated in Pseudo 3D mode */
 		if (ds_readw(IN_FIGHT) == 0 && ds_readw(0xc3cf) != 0) {
 			/* redraw AE Bar */
-			draw_bar(1, get_hero_index(hero), host_readw(hero + 0x64),
-				host_readw(hero + 0x62), 0);
+			draw_bar(1, get_hero_index(hero), host_readw(hero + HERO_AE_ORIG),
+				host_readw(hero + HERO_AE), 0);
 		}
 #endif
 	}
@@ -4233,12 +4233,12 @@ void add_hero_ae(Bit8u* hero, signed short ae)
 		ds_writew(0xc3cb, 0);
 
 		/* add AE to heros current AE */
-		add_ptr_ws(hero + 0x64, ae);
+		add_ptr_ws(hero + HERO_AE_ORIG, ae);
 
 		/* if current AE is greater than AE maximum
 			set current AE to AE maximum */
-		if (host_readws(hero + 0x64) > host_readws(hero + 0x62))
-			host_writew(hero + 0x64, host_readws(hero + 0x62));
+		if (host_readws(hero + HERO_AE_ORIG) > host_readws(hero + HERO_AE))
+			host_writew(hero + HERO_AE_ORIG, host_readws(hero + HERO_AE));
 
 		ds_writew(0xc3cb, tmp);
 	}
@@ -4264,20 +4264,20 @@ void sub_hero_le(Bit8u *hero, signed short le)
 		ds_writew(0xc3cb, 0);
 
 		/* do the damage */
-		old_le = host_readw(hero + 0x60);
-		sub_ptr_ws(hero + 0x60, le);
+		old_le = host_readw(hero + HERO_LE_ORIG);
+		sub_ptr_ws(hero + HERO_LE_ORIG, le);
 
 		if (hero_sleeps(hero)) {
 
 			/* awake him/her */
-			and_ptr_bs(hero + 0xaa, 0xfd);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfd);
 
 			/* in fight mode */
 			if (ds_readw(IN_FIGHT) != 0) {
-				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
 
 				/* update looking dir and other  */
-				host_writeb(ptr + 2, host_readb(hero + 0x82));
+				host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
 				host_writeb(ptr + 0xd, -1);
 				host_writeb(ptr + 5, 0);
 				host_writeb(ptr + 6, 0);
@@ -4286,19 +4286,19 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 		draw_splash(get_hero_index(hero), 0);
 
-		if (host_readws(hero + 0x60) <= 0) {
+		if (host_readws(hero + HERO_LE_ORIG) <= 0) {
 
 			/* set LE to 0 */
-			host_writew(hero + 0x60, 0);
+			host_writew(hero + HERO_LE_ORIG, 0);
 
 			/* mark hero as dead */
-			or_ptr_bs(hero + 0xaa, 1);
+			or_ptr_bs(hero + HERO_STATUS1, 1);
 
 			/* unknown */
 			ds_writeb(0x4212 + get_hero_index(hero), 0);
 
 			/* unknown */
-			host_writeb(hero + 0x84, 100);
+			host_writeb(hero + HERO_UNKNOWN2, 100);
 
 			if (ds_readb(0x2845) == 0) {
 				ds_writeb(0x46df, 1);
@@ -4306,13 +4306,13 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			/* reset sickness */
 			for (i = 1; i <= 7; i++) {
-				host_writeb(hero + 0xae + i * 5, 0);
+				host_writeb(hero + HERO_ILLNESS_EMPTY + i * 5, 0);
 				host_writeb(hero + 0xaf + i * 5, 0);
 			}
 
 			/* reset poison */
 			for (i = 1; i <= 9; i++) {
-				host_writeb(hero + 0xd6 + i * 5, 0);
+				host_writeb(hero + HERO_POISON_EMPTY + i * 5, 0);
 				host_writeb(hero + 0xd7 + i * 5, 0);
 			}
 
@@ -4335,8 +4335,8 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				hero_i = get_hero(0);
 				for (i = 0; i <=6; i++, hero_i += SIZEOF_HERO) {
 					/* no typus */
-					if ((host_readbs(hero_i + 0x21) != 0) &&
-						(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
+					if ((host_readbs(hero_i + HERO_TYPE) != 0) &&
+						(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 					{
 						hero_disappear(hero_i, i, -1);
 					}
@@ -4344,13 +4344,13 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			}
 
 		} else {
-			if ((old_le >= 5) && (host_readws(hero + 0x60) < 5)) {
+			if ((old_le >= 5) && (host_readws(hero + HERO_LE_ORIG) < 5)) {
 
 				/* make hero unsonscious */
-				or_ptr_bs(hero + 0xaa, 0x40);
+				or_ptr_bs(hero + HERO_STATUS1, 0x40);
 
 				/* unknown yet */
-				host_writeb(hero + 0x84, 10);
+				host_writeb(hero + HERO_UNKNOWN2, 10);
 
 				/* unknown yet */
 				ds_writeb(0x4212 + get_hero_index(hero), 1);
@@ -4358,18 +4358,18 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				/* in fight mode */
 				if (ds_readw(IN_FIGHT) != 0) {
 
-					ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+					ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
 
 					host_writeb(ptr + 2,
-						ds_readb(0x11e4 + host_readbs(hero + 0x9b) * 2) + host_readbs(hero + 0x82));
+						ds_readb(0x11e4 + host_readbs(hero + HERO_UNKNOWN8) * 2) + host_readbs(hero + HERO_VIEWDIR));
 
 					host_writeb(ptr + 0x0d, -1);
 
 					host_writeb(ptr + 5,
-						ds_readb(0x1210 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
+						ds_readb(0x1210 + host_readbs(hero + HERO_UNKNOWN8) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 					host_writeb(ptr + 6,
-						ds_readb(0x1211 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
+						ds_readb(0x1211 + host_readbs(hero + HERO_UNKNOWN8) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 
 					FIG_add_msg(7, 0);
@@ -4413,28 +4413,28 @@ void add_hero_le(Bit8u *hero, signed short le)
 		ds_writew(0xc3cb, 0);
 
 		/* add LE */
-		add_ptr_ws(hero + 0x60, le);
+		add_ptr_ws(hero + HERO_LE_ORIG, le);
 
 		/* set LE to maximum if greater than maximum */
-		if (host_readws(hero + 0x60) > host_readws(hero + 0x5e))
-			host_writew(hero + 0x60, host_readws(hero + 0x5e));
+		if (host_readws(hero + HERO_LE_ORIG) > host_readws(hero + HERO_LE))
+			host_writew(hero + HERO_LE_ORIG, host_readws(hero + HERO_LE));
 
 		/* if current LE is >= 5 and the hero is unconscissous */
-		if ((host_readws(hero + 0x60) >= 5) && hero_unc(hero)) {
+		if ((host_readws(hero + HERO_LE_ORIG) >= 5) && hero_unc(hero)) {
 
 			/* awake */
-			and_ptr_bs(hero + 0xaa, 0xbf);
+			and_ptr_bs(hero + HERO_STATUS1, 0xbf);
 
 			/* maybe if we are in a fight */
 			if (ds_readw(IN_FIGHT)) {
-				ptr = Real2Host(FIG_get_ptr(host_readb(hero + 0x81)));
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
 				ret = FIG_get_range_weapon_type(hero);
 
 				if (ret != -1) {
 					host_writeb(ptr + 2, ds_readb(0x10d0 +
-						host_readbs(hero + 0x9b) * 12 + 4 * ret + host_readbs(hero + 0x82)));
+						host_readbs(hero + HERO_UNKNOWN8) * 12 + 4 * ret + host_readbs(hero + HERO_VIEWDIR)));
 				} else {
-					host_writeb(ptr + 2, host_readb(hero + 0x82));
+					host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
 				}
 
 				host_writeb(ptr + 0x0d, -1);
@@ -4462,8 +4462,8 @@ void add_group_le(signed short le)
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 		/* check class and group */
-		if ((host_readb(hero + 0x21) != 0) &&
-			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+		if ((host_readb(hero + HERO_TYPE) != 0) &&
+			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 			add_hero_le(hero, le);
 		}
@@ -4487,20 +4487,20 @@ void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 		ds_writew(0xc3cb, 0);
 
 		/* decrement the heros LE */
-		dec_ptr_ws(hero + 0x60);
+		dec_ptr_ws(hero + HERO_LE_ORIG);
 
 		/* set the critical message type for the hero */
 		ds_writeb(FOOD_MESSAGE + index, type != 0 ? 1 : 2);
 
-		if (host_readws(hero + 0x60) <= 0) {
+		if (host_readws(hero + HERO_LE_ORIG) <= 0) {
 
 			/* don't let the hero die */
-			host_writew(hero + 0x60, 1);
+			host_writew(hero + HERO_LE_ORIG, 1);
 
 			/* decrement the max LE and save them at 0x7a */
-			if (host_readws(hero + 0x5e) >= 2) {
-				dec_ptr_ws(hero + 0x5e);
-				inc_ptr_bs(hero + 0x7a);
+			if (host_readws(hero + HERO_LE) >= 2) {
+				dec_ptr_ws(hero + HERO_LE);
+				inc_ptr_bs(hero + HERO_LE_MOD);
 			}
 		}
 
@@ -4516,7 +4516,7 @@ signed short compare_name(Bit8u *name)
 
 	for (i = 0; i < 6; i++) {
 
-		if (!strcmp((char*)(get_hero(i) + 0x10), (char*)name)) {
+		if (!strcmp((char*)(get_hero(i) + HERO_NAME2), (char*)name)) {
 			return 1;
 		}
 	}
@@ -4540,7 +4540,7 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 
 #if !defined(__BORLANDC__)
 	D1_INFO("Eigenschaftsprobe %s auf %s %+d: W20 = %d",
-		(char*)(hero+0x10), names_attrib[attrib], bonus, si);
+		(char*)(hero + HERO_NAME2), names_attrib[attrib], bonus, si);
 #endif
 
 	if (si == 20) {
@@ -4587,7 +4587,7 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 
 #if !defined(__BORLANDC__)
 	D1_INFO("%s -> (%s/%s/%s) %+d: ",
-		(char*)(hero+0x10), names_attrib[attrib1],
+		(char*)(hero + HERO_NAME2), names_attrib[attrib1],
 		names_attrib[attrib2], names_attrib[attrib3], bonus);
 #endif
 
@@ -4639,7 +4639,7 @@ signed short unused_cruft(void)
 	do {
 		l_si = random_schick(6) - 1;
 
-	} while (!(host_readbs(get_hero(l_si) + 0x21)) || (host_readbs(get_hero(l_si) + 0x87) != ds_readbs(CURRENT_GROUP)));
+	} while (!(host_readbs(get_hero(l_si) + HERO_TYPE)) || (host_readbs(get_hero(l_si) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)));
 
 	return l_si;
 }
@@ -4666,10 +4666,10 @@ signed short get_random_hero(void)
 		for (int i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 			/* Check if hero has a class */
-			if (host_readbs(hero + 0x21) == 0)
+			if (host_readbs(hero + HERO_TYPE) == 0)
 				continue;
 			/* Check if in current group */
-			if (host_readbs(hero + 0x87) != ds_readbs(CURRENT_GROUP))
+			if (host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP))
 				continue;
 
 			if (pos == cur_hero) {
@@ -4682,9 +4682,9 @@ signed short get_random_hero(void)
 		cur_hero = pos;
 #endif
 
-	} while (!host_readbs(get_hero(cur_hero) + 0x21) ||
+	} while (!host_readbs(get_hero(cur_hero) + HERO_TYPE) ||
 			/* Check if in current group */
-			(host_readbs(get_hero(cur_hero) + 0x87) != ds_readbs(CURRENT_GROUP)) ||
+			(host_readbs(get_hero(cur_hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
 			/* Check if dead */
 			hero_dead(get_hero(cur_hero)));
 
@@ -4706,10 +4706,10 @@ Bit32s get_party_money(void)
 
 	for (i=0; i < 6; i++, hero += SIZEOF_HERO) {
 		/* Check if hero has a class and is in the current group */
-		if (host_readbs(hero + 0x21) &&
-			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+		if (host_readbs(hero + HERO_TYPE) &&
+			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
-			sum += host_readds(hero + 0x2c);
+			sum += host_readds(hero + HERO_MONEY);
 		}
 	}
 
@@ -4740,15 +4740,15 @@ void set_party_money(Bit32s money)
 	hero = get_hero(6);
 
 	/* if we have an NPC in current group and alive */
-	if (host_readbs(hero + 0x21) &&
-		(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+	if (host_readbs(hero + HERO_TYPE) &&
+		(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 		!hero_dead(hero)) {
 
 		/* If only the NPC is in that group give him all the money */
 		if (heroes > 1) {
 			heroes--;
 		} else {
-			add_ptr_ds(hero + 0x2c, money);
+			add_ptr_ds(hero + HERO_MONEY, money);
 			heroes = 0;
 		}
 	}
@@ -4761,15 +4761,15 @@ void set_party_money(Bit32s money)
 
 		for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + 0x21) &&
-				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			if (host_readbs(hero + HERO_TYPE) &&
+				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero))
 			{
 				/* account the money to hero */
-				host_writed(hero + 0x2c, hero_money);
+				host_writed(hero + HERO_MONEY, hero_money);
 			} else {
-				if (host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) {
-					host_writed(hero + 0x2c, 0);
+				if (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) {
+					host_writed(hero + HERO_MONEY, 0);
 				}
 			}
 		}
@@ -4794,7 +4794,7 @@ void add_party_money(Bit32s money)
 */
 void add_hero_ap(Bit8u *hero, Bit32s ap)
 {
-	add_ptr_ds(hero + 0x28, ap);
+	add_ptr_ds(hero + HERO_AP, ap);
 }
 
 /**
@@ -4817,8 +4817,8 @@ void add_group_ap(Bit32s ap)
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group and deadness */
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero_i))
 		{
 			add_hero_ap(hero_i, ap);
@@ -4843,12 +4843,12 @@ void add_hero_ap_all(signed short ap)
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group and deadness */
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero_i))
 		{
 #if !defined(__BORLANDC__)
-			D1_INFO("%s erhaelt %d AP\n",(char*)(hero_i+0x10), ap);
+			D1_INFO("%s erhaelt %d AP\n",(char*)(hero_i + HERO_NAME2), ap);
 #endif
 
 			add_hero_ap(hero_i, ap);
@@ -4873,20 +4873,20 @@ void sub_hero_ap_all(signed short ap)
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group and deadness */
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero_i))
 		{
-			if ((Bit32u)ap <= host_readd(hero_i + 0x28)) {
+			if ((Bit32u)ap <= host_readd(hero_i + HERO_AP)) {
 #if !defined(__BORLANDC__)
-				D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i+0x10), -ap);
+				D1_INFO("%s erhaelt %+d AP\n",(char*)(hero_i + HERO_NAME2), -ap);
 #endif
 				add_hero_ap(hero_i, -((Bit32s)ap));
 			} else {
 #if !defined(__BORLANDC__)
-				D1_INFO("%s wird auf 0 AP gesetzt\n",(char*)(hero_i+0x10));
+				D1_INFO("%s wird auf 0 AP gesetzt\n",(char*)(hero_i + HERO_NAME2));
 #endif
-				host_writed(hero_i + 0x28, 0);
+				host_writed(hero_i + HERO_AP, 0);
 			}
 		}
 	}
@@ -4951,8 +4951,8 @@ signed short get_first_hero_with_item(signed short item)
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class and group */
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 			/* Search inventar */
 			for (j = 0; j < 23; j++) {
@@ -4983,8 +4983,8 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class and group */
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == (signed char)group))
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == (signed char)group))
 		{
 			/* Search inventar */
 			for (j = 0; j < 23; j++) {
@@ -5013,8 +5013,8 @@ void sub_group_le(signed short le)
 
 		hero_i = get_hero(i);
 
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)))
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 			sub_hero_le(hero_i, le);
 		}
@@ -5034,8 +5034,8 @@ RealPt get_first_hero_available_in_group(void)
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class, group, deadness and check_hero() */
-		if (host_readbs(Real2Host(hero_i) + 0x21) &&
-			(host_readbs(Real2Host(hero_i) + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if (host_readbs(Real2Host(hero_i) + HERO_TYPE) &&
+			(host_readbs(Real2Host(hero_i) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(Real2Host(hero_i)) &&
 			check_hero(Real2Host(hero_i)))
 		{
@@ -5061,8 +5061,8 @@ RealPt get_second_hero_available_in_group(void)
 
 	for (i = tmp = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and check_hero() */
-		if (host_readbs(Real2Host(hero_i) + 0x21) &&
-			(host_readbs(Real2Host(hero_i) + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if (host_readbs(Real2Host(hero_i) + HERO_TYPE) &&
+			(host_readbs(Real2Host(hero_i) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			check_hero(Real2Host(hero_i)))
 		{
 			if (tmp) {
@@ -5093,7 +5093,7 @@ signed short count_heros_available(void)
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class */
 		/* Check if hero is available */
-		if (host_readbs(hero_i + 0x21) &&
+		if (host_readbs(hero_i + HERO_TYPE) &&
 			(check_hero(hero_i) || check_hero_no2(hero_i)))
 		{
 			retval++;
@@ -5114,8 +5114,8 @@ signed short count_heroes_available_in_group(void)
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and check_hero_no2() */
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			check_hero_no2(hero_i))
 		{
 			heroes++;

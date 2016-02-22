@@ -103,11 +103,11 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 
 	sub_ae_splash(hero, host_readws(r_ptr + 0x18));
 
-	and_ptr_bs(hero + 0xaa, 0xf7);
-	host_writeb(hero + 0x94, 0);
+	and_ptr_bs(hero + HERO_STATUS1, 0xf7);
+	host_writeb(hero + HERO_UNKNOWN5, 0);
 	/* set heros receipe to 0 */
-	host_writeb(hero + 0x93, 0);
-	host_writeb(hero + 0x9c, 0);
+	host_writeb(hero + HERO_RECEIPT_ID, 0);
+	host_writeb(hero + HERO_HOSTEL_ID, 0);
 
 	if ((test_skill(hero, 0x20, host_readbs(r_ptr + 0x1a)) > 0) && (flag == 0))
 	{
@@ -117,7 +117,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xb6c),
-			hero + 0x10,
+			hero + HERO_NAME2,
 			Real2Host(GUI_names_grammar(1, host_readws(r_ptr + 0x16), 0)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -130,7 +130,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xb70),
-			hero + 0x10,
+			hero + HERO_NAME2,
 			Real2Host(GUI_names_grammar(2, host_readws(r_ptr + 0x16), 0)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -206,11 +206,11 @@ signed short plan_alchemy(Bit8u *hero)
 				if (hero_has_ingrendients(hero, recipe_index)) {
 
 					/* check AE costs */
-					if (ds_readws(0xacf2 + recipe_index * 28) > host_readws(hero + 0x64)) {
+					if (ds_readws(0xacf2 + recipe_index * 28) > host_readws(hero + HERO_AE_ORIG)) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x97c),
-							(char*)hero + 0x10);
+							(char*)hero + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -245,7 +245,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 								sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 									(char*)get_dtp(0xbc),
-									(char*)hero + 0x10);
+									(char*)hero + HERO_NAME2);
 
 								ds_writew(TEXTBOX_WIDTH, 7);
 
@@ -268,14 +268,14 @@ signed short plan_alchemy(Bit8u *hero)
 								if (ds_readbs(LOCATION) != 6) {
 									hero_p = get_hero(0);
 									for (i = 0; i <= 6; i++, hero_p += SIZEOF_HERO) {
-										if ((host_readbs(hero_p + 0x21) != 0) &&
-											(host_readbs(hero_p + 0x87) == ds_readbs(CURRENT_GROUP)))
+										if ((host_readbs(hero_p + HERO_TYPE) != 0) &&
+											(host_readbs(hero_p + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 										{
 											GRP_hero_sleep(hero_p, ds_readbs(SLEEP_QUALITY));
 										}
 									}
 								} else {
-									host_writed(hero + 0x8f, 0x1fa40);
+									host_writed(hero + HERO_UNKNOWN4, 0x1fa40);
 								}
 
 								retval = do_alchemy(hero, recipe_index, 0);
@@ -287,16 +287,16 @@ signed short plan_alchemy(Bit8u *hero)
 								/* find a empty group */
 								for (l5 = 0; ds_readbs(0x2d36 + l5) != 0; l5++);
 
-								host_writebs(hero + 0x87, (signed char)l5);
+								host_writebs(hero + HERO_GROUP_NO, (signed char)l5);
 								inc_ds_bs_post(0x2d36 + l5);
 								dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
-								host_writeb(hero + 0x94,
+								host_writeb(hero + HERO_UNKNOWN5,
 									ds_readbs(0xacf5 + recipe_index * 28) / 24);
 
-								host_writeb(hero + 0x93, recipe_index);
-								host_writeb(hero + 0x9c, ds_readbs(TYPEINDEX));
-								or_ptr_bs(hero + 0xaa, 8);
+								host_writeb(hero + HERO_RECEIPT_ID, recipe_index);
+								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(TYPEINDEX));
+								or_ptr_bs(hero + HERO_STATUS1, 8);
 
 								GRP_save_pos(l5);
 							} else {
@@ -317,7 +317,7 @@ signed short plan_alchemy(Bit8u *hero)
 			/* no recipes */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0xc8),
-				(char*)hero + 0x10);
+				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
@@ -507,10 +507,10 @@ RealPt get_heaviest_hero(void)
 	hero = (RealPt)ds_readd(HEROS);
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(Real2Host(hero) + 0x21) != 0) &&
-			(host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP)))
+		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != 0) &&
+			(host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
-			weight = host_readws(Real2Host(hero) + 0x24) + host_readws(Real2Host(hero) + 0x2d8);
+			weight = host_readws(Real2Host(hero) + HERO_WEIGHT) + host_readws(Real2Host(hero) + HERO_LOAD);
 
 			if (weight > w_max) {
 				w_max = weight;
@@ -524,7 +524,7 @@ RealPt get_heaviest_hero(void)
 
 signed short get_hero_weight(Bit8u *hero)
 {
-	return host_readws(hero + 0x24) + host_readws(hero + 0x2d8);
+	return host_readws(hero + HERO_WEIGHT) + host_readws(hero + HERO_LOAD);
 }
 
 signed short get_skilled_hero_pos(signed short skill)
@@ -542,17 +542,17 @@ signed short get_skilled_hero_pos(signed short skill)
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(hero + 0x21) != 0) &&
-			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)))
+		if ((host_readbs(hero + HERO_TYPE) != 0) &&
+			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 
-			cur =	host_readbs(hero + 0x35 + 3 * (ds_readbs(0xffe + 4 * skill))) +
+			cur =	host_readbs(hero + HERO_MU + 3 * (ds_readbs(0xffe + 4 * skill))) +
 				host_readbs(hero + 0x36 + 3 * (ds_readbs(0xffe + 4 * skill))) +
-				host_readbs(hero + 0x35 + 3 * (ds_readbs(0xfff + 4 * skill))) +
+				host_readbs(hero + HERO_MU + 3 * (ds_readbs(0xfff + 4 * skill))) +
 				host_readbs(hero + 0x36 + 3 * (ds_readbs(0xfff + 4 * skill))) +
-				host_readbs(hero + 0x35 + 3 * (ds_readbs(0x1000 + 4 * skill))) +
+				host_readbs(hero + HERO_MU + 3 * (ds_readbs(0x1000 + 4 * skill))) +
 				host_readbs(hero + 0x36 + 3 * (ds_readbs(0x1000 + 4 * skill))) +
-				host_readbs(hero + 0x108 + skill);
+				host_readbs(hero + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {
 				max = cur;

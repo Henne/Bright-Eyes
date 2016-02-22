@@ -514,17 +514,17 @@ void load_npc(signed short index)
 	bc__read(fd, npc_dst, SIZEOF_HERO);
 	bc_close(fd);
 
-	if (host_readb(npc_dst + 0x22) == 1) {
+	if (host_readb(npc_dst + HERO_SEX) == 1) {
 		/* female */
 		/* set an unknown variable to typus + 11 */
-		host_writeb(npc_dst + 0x9b, host_readb(npc_dst + 0x21) + 11);
-		if (host_readbs(npc_dst + 0x9b) > 21)
-			host_writeb(npc_dst + 0x9b, 21);
+		host_writeb(npc_dst + HERO_UNKNOWN8, host_readb(npc_dst + HERO_TYPE) + 11);
+		if (host_readbs(npc_dst + HERO_UNKNOWN8) > 21)
+			host_writeb(npc_dst + HERO_UNKNOWN8, 21);
 	} else {
 		/* male */
-		host_writeb(npc_dst + 0x9b, host_readb(npc_dst + 0x21));
-		if (host_readbs(npc_dst + 0x9b) > 10)
-			host_writeb(npc_dst + 0x9b, 10);
+		host_writeb(npc_dst + HERO_UNKNOWN8, host_readb(npc_dst + HERO_TYPE));
+		if (host_readbs(npc_dst + HERO_UNKNOWN8) > 10)
+			host_writeb(npc_dst + HERO_UNKNOWN8, 10);
 	}
 }
 

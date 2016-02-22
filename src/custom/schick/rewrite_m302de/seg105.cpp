@@ -46,20 +46,20 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 	/* if item is an armor ? */
 	if (item_armor(item_p)) {
 
-		sub_ptr_bs(hero + 0x30, ds_readbs(host_readbs(item_p + 4) * 2 + 0x877));
+		sub_ptr_bs(hero + HERO_RS_BONUS1, ds_readbs(host_readbs(item_p + 4) * 2 + 0x877));
 
-		add_ptr_bs(hero + 0x30, host_readbs(hero + 0x196 + 7 + pos * 14));
+		add_ptr_bs(hero + HERO_RS_BONUS1, host_readbs(hero + HERO_ITEM_HEAD + 7 + pos * 14));
 
-		sub_ptr_bs(hero + 0x32, ds_readbs(host_readbs(item_p + 4) * 2 + 0x878));
+		sub_ptr_bs(hero + HERO_RS_BE, ds_readbs(host_readbs(item_p + 4) * 2 + 0x878));
 	}
 	/* if item is a weapon and in the right hand ? */
 	if (item_weapon(item_p) && pos == 3) {
-		host_writebs(hero + 0x78, 0);
-		host_writebs(hero + 0x76, host_writebs(hero + 0x77, 0));
+		host_writebs(hero + HERO_WP_CLASS, 0);
+		host_writebs(hero + HERO_AT_MOD, host_writebs(hero + HERO_PA_MOD, 0));
 	}
 	/* unequip Kraftguertel KK - 5 */
 	if (item == 183)
-		host_writeb(hero + 0x47, host_readb(hero + 0x47) - 5);
+		host_writeb(hero + HERO_KK, host_readb(hero + HERO_KK) - 5);
 	/* unequip Helm CH + 1 (cursed) */
 	if (item == 196)
 		inc_ptr_bs(hero + 0x3b);
@@ -68,13 +68,13 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 		host_writeb(hero + 0x56, host_readb(hero + 0x56) + 2);
 	/* unequip Stirnreif or Ring MR - 2 */
 	if (item == 217 || item == 165)
-		host_writeb(hero + 0x66, host_readb(hero + 0x66) - 2);
+		host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) - 2);
 	/* unequip Totenkopfguertel TA + 4 */
 	if (item == 182)
 		host_writeb(hero + 0x56, host_readb(hero + 0x56) + 4);
 	/* unequip Kristallkugel Gefahrensinn - 2 */
 	if (item == 70)
-		host_writeb(hero + 0x13a, host_readb(hero + 0x13a) - 2);
+		host_writeb(hero + HERO_TA_INTUITION, host_readb(hero + HERO_TA_INTUITION) - 2);
 }
 
 
@@ -188,12 +188,12 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 
 #if !defined(__BORLANDC__)
 	/* some new error check */
-	if (!host_readbs(hero + 0x21))
+	if (!host_readbs(hero + HERO_TYPE))
 		D1_ERR("Warning: %s() typus == 0\n", __func__);
 #endif
 
 	/* calculate the address of the class forbidden items array */
-	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd(0x634 + host_readbs(hero + 0x21) * 4))))
+	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd(0x634 + host_readbs(hero + HERO_TYPE) * 4))))
 		return 0;
 	else
 		return 1;
@@ -267,7 +267,7 @@ signed short has_hero_equipped(Bit8u *hero, unsigned short item)
 	signed short i;
 
 	for (i = 0; i < 7; i++)
-		if (host_readw(hero + 0x196 + i * 14) == item)
+		if (host_readw(hero + HERO_ITEM_HEAD + i * 14) == item)
 			return i;
 
 	return -1;
@@ -290,8 +290,8 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item)
 	for (i = 0; i < 23; i++) {
 		/* has the hero the item */
 		/* is the number of items < 99 */
-		if ((host_readw(hero + 0x196 + i * 14) == item) &&
-			 (host_readws(hero + 0x196 + 2 + i * 14) < 99))
+		if ((host_readw(hero + HERO_ITEM_HEAD + i * 14) == item) &&
+			 (host_readws(hero + HERO_ITEM_HEAD + 2 + i * 14) < 99))
 			return i;
 	}
 
@@ -325,12 +325,12 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 	/* check if hero can carry that item */
 	if ((mode != 2) &&
-		(host_readbs(hero + 0x47) * 100 <= host_readws(hero + 0x2d8))) {
+		(host_readbs(hero + HERO_KK) * 100 <= host_readws(hero + HERO_LOAD))) {
 
 		if (mode != 0) {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xc2c),
-				(char*)(hero + 0x10));
+				(char*)(hero + HERO_NAME2));
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
 	} else {
@@ -342,45 +342,45 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 
 			/* check for space on existing stack */
-			if (host_readws(hero + 0x196 + 2 + l1 * 14) + si > 99) {
-				si = 99 - host_readw(hero + 0x196 + 2 + l1 * 14);
+			if (host_readws(hero + HERO_ITEM_HEAD + 2 + l1 * 14) + si > 99) {
+				si = 99 - host_readw(hero + HERO_ITEM_HEAD + 2 + l1 * 14);
 			}
 
 			/* add items to stack */
-			add_ptr_ws(hero + 0x196 + 2 + l1 * 14, si);
+			add_ptr_ws(hero + HERO_ITEM_HEAD + 2 + l1 * 14, si);
 
 			/* add weight */
-			add_ptr_ws(hero + 0x2d8, (host_readws(item_p + 5) * si));
+			add_ptr_ws(hero + HERO_LOAD, (host_readws(item_p + 5) * si));
 
 			retval = si;
 		} else {
 
 			/* Original-Bug: may lead to problems when the
 				item counter is broken */
-			if (host_readbs(hero + 0x20) < 23) {
+			if (host_readbs(hero + HERO_KS_TAKEN) < 23) {
 
 				done = 0;
 
 				do {
 				/* Original-Bug: may lead to problems when the
 					item counter is broken */
-					if (host_readbs(hero + 0x20) < 23) {
+					if (host_readbs(hero + HERO_KS_TAKEN) < 23) {
 						/* look for a free place : tricky */
 						di = 6;
-						while ((host_readw(hero + 0x196 + ++di * 14) != 0) && (di < 23));
+						while ((host_readw(hero + HERO_ITEM_HEAD + ++di * 14) != 0) && (di < 23));
 
 						if (di < 23) {
 							if (si > 99)
 								si = 99;
 							/* increment item counter */
-							inc_ptr_bs(hero + 0x20);
+							inc_ptr_bs(hero + HERO_KS_TAKEN);
 
 							/* write item id */
-							host_writew(hero + 0x196 + di * 14, item);
+							host_writew(hero + HERO_ITEM_HEAD + di * 14, item);
 
 
 #if 1
-							host_writew(hero + 0x196 + 2 + di * 14,
+							host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
 								(item_stackable(item_p)) ? si :
 									(item_useable(item_p)) ?
 										ds_readbs(0x8aa + host_readbs(item_p + 4) * 3): 0);
@@ -389,41 +389,41 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							/* write item counter */
 							if (item_stackable(item_p))
 								/* write stackable items */
-								host_writew(hero + 0x196 + 2 + di * 14, si);
+								host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14, si);
 							else if (item_useable(item_p))
 									/* unknown */
-									host_writew(hero + 0x196 + 2 + di * 14,
+									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
 										ds_readbs(0x8aa + host_readbs(item_p + 4) * 3));
 								 else
-									host_writew(hero + 0x196 + 2 + di * 14, 0);
+									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14, 0);
 #endif
 
 							/* set magical flag */
 							if (host_readb(item_p + 0xb) != 0) {
-								or_ptr_bs(hero + 0x196 + 4 + di * 14, 0x8);
+								or_ptr_bs(hero + HERO_ITEM_HEAD + 4 + di * 14, 0x8);
 
 #if !defined(__BORLANDC__)
 								D1_INFO("%s hat soeben einen magischen Gegenstand erhalten: %s\n",
-									(char*)hero + 0x10, get_itemname(item));
+									(char*)hero + HERO_NAME2, get_itemname(item));
 #endif
 							}
 
 							/* set breakfactor */
 							if (item_weapon(item_p)) {
-								host_writeb(hero + 0x196 + 6 + di * 14,
+								host_writeb(hero + HERO_ITEM_HEAD + 6 + di * 14,
 									ds_readb(0x6b0 + 3 + host_readbs(item_p + 4) * 7));
 							}
 
 							/* adjust weight */
 							if (item_stackable(item_p)) {
 								/* add stackable items weight */
-								add_ptr_ws(hero + 0x2d8,
+								add_ptr_ws(hero + HERO_LOAD,
 									(host_readws(item_p + 5) * si));
 								retval = si;
 								si = 0;
 							} else {
 								/* add single item weight */
-								add_ptr_ws(hero + 0x2d8,
+								add_ptr_ws(hero + HERO_LOAD,
 									host_readws(item_p + 5));
 								si--;
 								retval++;
@@ -438,7 +438,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 								host_writeb(hero + 0x125, host_readb(hero + 0x125) + 3);
 							}
 							if (item == 0xa3) {
-								host_writeb(hero + 0x66, host_readb(hero + 0x66) + 5);
+								host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) + 5);
 							}
 
 						} else {
@@ -497,7 +497,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 	unsigned short retval = 0;
 	signed short item;
 
-	item = host_readws(hero + 0x196 + pos * 14);
+	item = host_readws(hero + HERO_ITEM_HEAD + pos * 14);
 
 	/* check if that item is valid */
 	if (item != 0) {
@@ -528,24 +528,24 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 					nr = answer;
 				}
 
-				if (host_readws(hero + 0x196 + 2 + pos * 14) > nr) {
+				if (host_readws(hero + HERO_ITEM_HEAD + 2 + pos * 14) > nr) {
 					/* remove some stacked items */
 
 					/* adjust stack counter */
-					sub_ptr_ws(hero + 0x196 + 2 + pos * 14, nr);
+					sub_ptr_ws(hero + HERO_ITEM_HEAD + 2 + pos * 14, nr);
 					/* adjust weight */
-					sub_ptr_ws(hero + 0x2d8, host_readws(p_item + 5) * nr);
+					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + 5) * nr);
 				} else {
 					/* remove all stacked items */
 
 					/* adjust weight */
-					sub_ptr_ws(hero + 0x2d8,
-						host_readws(p_item + 5) * host_readws(hero + 0x196 + 2 + pos * 14));
+					sub_ptr_ws(hero + HERO_LOAD,
+						host_readws(p_item + 5) * host_readws(hero + HERO_ITEM_HEAD + 2 + pos * 14));
 					/* decrement item counter */
-					dec_ptr_bs(hero + 0x20);
+					dec_ptr_bs(hero + HERO_KS_TAKEN);
 
 					/* clear the inventory pos */
-					memset(hero + 0x196 + pos * 14, 0, 14);
+					memset(hero + HERO_ITEM_HEAD + pos * 14, 0, 14);
 				}
 
 				retval = 1;
@@ -558,10 +558,10 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 						unequip(hero, item, pos);
 
 					/* decrement item counter */
-					dec_ptr_bs(hero + 0x20);
+					dec_ptr_bs(hero + HERO_KS_TAKEN);
 
 					/* subtract item weight */
-					sub_ptr_ws(hero + 0x2d8, host_readws(p_item + 5));
+					sub_ptr_ws(hero + HERO_LOAD, host_readws(p_item + 5));
 
 					/* check special items */
 					/* item: SICHEL Pflanzenkunde -3 */
@@ -572,12 +572,12 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 
 					/* item:  AMULETT MR -5 */
 					if (item == 0xa3) {
-						host_writeb(hero + 0x66,
-							host_readbs(hero + 0x66) - 5);
+						host_writeb(hero + HERO_MR,
+							host_readbs(hero + HERO_MR) - 5);
 					}
 
 					/* clear the inventory pos */
-					memset(hero + 0x196 + pos * 14, 0, 14);
+					memset(hero + HERO_ITEM_HEAD + pos * 14, 0, 14);
 					retval = 1;
 				}
 			}
@@ -626,8 +626,8 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 	do {
 		hero_i = get_hero(0);
 		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
-			if (host_readb(hero_i + 0x21) &&
-				host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP))
+			if (host_readb(hero_i + HERO_TYPE) &&
+				host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP))
 			{
 
 				while ((nr > 0) && (v6 = give_hero_new_item(hero_i, id, 0, nr)) > 0) {
@@ -683,7 +683,7 @@ signed short hero_count_item(Bit8u *hero, unsigned short item) {
 	unsigned short ret = 0;
 
 	for (i = 0; i < 23; i++)
-		if (host_readw(hero + 0x196 + i * 14) == item)
+		if (host_readw(hero + HERO_ITEM_HEAD + i * 14) == item)
 			ret++;
 
 	return ret;
@@ -704,9 +704,9 @@ signed short group_count_item(signed short item)
 	hero_i = get_hero(0);
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* check class */
-		if (host_readb(hero_i + 0x21) &&
+		if (host_readb(hero_i + HERO_TYPE) &&
 			/* check group */
-			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP))) {
+			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP))) {
 
 			ret += hero_count_item(hero_i, item);
 		}
@@ -734,7 +734,7 @@ void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)
 	do {
 		pos = random_schick(23) - 1;
 
-		item = host_readw(hero + 0x196 + pos * 14);
+		item = host_readw(hero + HERO_ITEM_HEAD + pos * 14);
 
 		p_item = get_itemsdat(item);
 
@@ -745,7 +745,7 @@ void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)
 			drop_item(hero, pos, 1);
 
 			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
-				(char*)text, hero + 0x10,
+				(char*)text, hero + HERO_NAME2,
 				Real2Host(GUI_names_grammar(0, item, 0)));
 
 			GUI_output(Real2Host(ds_readd(0xd2eb)));
@@ -770,7 +770,7 @@ signed short select_item_to_drop(Bit8u *hero)
 	/* check if we drop equipped items or not */
 	i = (ds_readb(0xae46) != 0) ? 7 : 0;
 	for (; i < 23; i++) {
-		if ((item = host_readws(hero + 0x196 + i * 14))) {
+		if ((item = host_readws(hero + HERO_ITEM_HEAD + i * 14))) {
 			str[v6] = i;
 			ds_writed(0xbf95 + v6 * 4 , (Bit32u)((RealPt)ds_readd(DTP2) + v6 * 30));
 			strcpy((char*)Real2Host(ds_readd(0xbf95 + v6 * 4)),
@@ -782,7 +782,7 @@ signed short select_item_to_drop(Bit8u *hero)
 	if (v6 == 0) {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xbb8),
-			(char*)(hero + 0x10));
+			(char*)(hero + HERO_NAME2));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		return -1;
 	}

@@ -754,19 +754,19 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 						if (l15 == 1) {
 							x = -1;
-							if (host_readbs(hero + 0x33) > l13) {
+							if (host_readbs(hero + HERO_BP_LEFT) > l13) {
 								ds_writeb((0xd823 + 0) + l_di, 2);
 								ds_writeb((0xd823 + 1) + l_di, -1);
 							}
 						} else if (l15 == 2) {
 							y = -1;
-							if (l13 < (host_readbs(hero + 0x33) - 1)) {
+							if (l13 < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
 								ds_writeb((0xd823 + 0) + l_di, 1);
 								ds_writeb((0xd823 + 1) + l_di, -1);
 							}
 						} else {
 							y = 24;
-							if (l13 < (host_readbs(hero + 0x33) - 1)) {
+							if (l13 < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
 								ds_writeb((0xd823 + 0) + l_di, 3);
 								ds_writeb((0xd823 + 1) + l_di, -1);
 							}
@@ -795,7 +795,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						}
 					} else if (l4 == -1) {
 						l_si = 4;
-					} else if (host_readbs(hero + 0x33) < l13) {
+					} else if (host_readbs(hero + HERO_BP_LEFT) < l13) {
 						l_si = 2;
 					} else if ((x > 23) || (x < 0) || (y > 23) || (y < 0) || (get_cb_val(x, y) < 0)) {
 						if ((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) || (x >= 0))
@@ -844,7 +844,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			if (l_si == 1) {
 
 				if (GUI_bool(get_dtp(0x8c))) {
-					host_writeb(hero + 0x84, 16);
+					host_writeb(hero + HERO_UNKNOWN2, 16);
 					l_si = 0;
 				} else {
 					FIG_remove_from_list(ds_readbs(0xe38f), 0);
@@ -859,8 +859,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 				seg036_00ae(hero, hero_pos);
 
-				if (host_readbs(hero + 0x84) == 16) {
-					host_writeb(hero + 0x33, 0);
+				if (host_readbs(hero + HERO_UNKNOWN2) == 16) {
+					host_writeb(hero + HERO_BP_LEFT, 0);
 				} else {
 					FIG_search_obj_on_cb(hero_pos + 1, (signed short*)px, (signed short*)py);
 				}

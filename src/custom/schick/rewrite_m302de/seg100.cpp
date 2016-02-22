@@ -482,7 +482,7 @@ void spell_fulminictus(void)
 	signed short damage;
 
 	if ((host_readbs(get_spelluser() + 0x86) < 10) &&
-		get_hero(host_readbs(get_spelluser() + 0x86) - 1) == get_spelluser()) {
+		get_hero(host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) == get_spelluser()) {
 
 		/* do not attack yourself */
 
@@ -524,7 +524,7 @@ void spell_ignifaxius(void)
 
 	if (host_readbs(get_spelluser() + 0x86) < 10) {
 
-		if (get_hero(host_readbs(get_spelluser() + 0x86) - 1) == get_spelluser()) {
+		if (get_hero(host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) == get_spelluser()) {
 
 			/* don't attack yourself */
 			ds_writew(0xac0e, 0);

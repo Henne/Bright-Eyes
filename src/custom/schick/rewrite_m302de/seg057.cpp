@@ -145,7 +145,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 				hero_pos = select_hero_ok(get_ltx(0x700));
 
-				if (hero_pos == -1 || host_readbs(get_hero(hero_pos) + 0x20) == 0) {
+				if (hero_pos == -1 || host_readbs(get_hero(hero_pos) + HERO_KS_TAKEN) == 0) {
 					break;
 				}
 
@@ -163,7 +163,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 				l20 = 0;
 				for (l_di = 0; l_di < 23; l_di++) {
-					if (host_readws(hero1 + 0x196 + 14 * l_di) != 0) {
+					if (host_readws(hero1 + HERO_ITEM_HEAD + 14 * l_di) != 0) {
 						insert_sell_items(shop_ptr, hero1, l_di, l20++);
 					}
 				}
@@ -479,7 +479,7 @@ void sell_screen(Bit8u *shop_ptr)
 						for (l_di = 0; l_di < 23; l_di++) {
 
 							if (tmp[items_x][l_di] != 0) {
-								item_id = host_readws(hero3 + 0x196 + 14 * l_di);
+								item_id = host_readws(hero3 + HERO_ITEM_HEAD + 14 * l_di);
 								drop_item(hero3, l_di, tmp[items_x][l_di]);
 								ds_writeb(0xe12d + item_id, ds_readbs(0xe12d + item_id) - tmp[items_x][l_di]);
 
@@ -538,8 +538,8 @@ void sell_screen(Bit8u *shop_ptr)
 			hero_pos = ds_readws(ACTION) - 241;
 			hero3 = get_hero(hero_pos);
 
-			if ((host_readbs(hero3 + 0x21) != 0) &&
-				host_readbs(hero3 + 0x87) == ds_readbs(CURRENT_GROUP))
+			if ((host_readbs(hero3 + HERO_TYPE) != 0) &&
+				host_readbs(hero3 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 			{
 				hero1 = get_hero(hero_pos);
 				deselect_hero_icon(hero_pos_old);
@@ -557,7 +557,7 @@ void sell_screen(Bit8u *shop_ptr)
 			done = 1;
 		}
 
-		if (host_readbs(hero1 + 0x20) == 0) {
+		if (host_readbs(hero1 + HERO_KS_TAKEN) == 0) {
 			done = 1;
 		}
 	}

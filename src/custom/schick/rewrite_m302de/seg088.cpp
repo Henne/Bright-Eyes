@@ -33,8 +33,8 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 	{
 		if (i != diver_pos &&
-			host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{
 
@@ -42,9 +42,9 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 				/* swimming failed */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa8),
-					(char*)hero + 0x10,
-					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)),
-					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)));
+					(char*)hero + HERO_NAME2,
+					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -55,7 +55,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xac),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}

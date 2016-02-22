@@ -135,11 +135,11 @@ void buy_screen(void)
 			hero2 = get_hero(0);
 			for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 
-				if (host_readbs(hero2 + 0x21) &&
-					host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP))
+				if (host_readbs(hero2 + HERO_TYPE) &&
+					host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					for (j = 7; j < 23; j++) {
-						if (host_readws(hero2 + 0x196 + 14 * j) == 0) {
+						if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * j) == 0) {
 							free_slots++;
 						}
 					}
@@ -309,15 +309,15 @@ void buy_screen(void)
 						ds_readws(0x2d01 + 2 * l_di) + 41,
 						197, 0);
 
-				if (host_readbs(hero1 + 0x21) != 0) {
-					copy_forename(Real2Host(ds_readd(DTP2)), hero1 + 0x10);
+				if (host_readbs(hero1 + HERO_TYPE) != 0) {
+					copy_forename(Real2Host(ds_readd(DTP2)), hero1 + HERO_NAME2);
 					set_textcolor(255, 0);
 
-					if (host_readbs(hero1 + 0x87) != ds_readbs(CURRENT_GROUP)) {
+					if (host_readbs(hero1 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) {
 						set_textcolor(111, 0);
 					} else {
 
-						if (!is_in_word_array(item_id, (short*)Real2Host((ds_readds(0x634 + 4 * host_readbs(hero1 + 0x21)))))) {
+						if (!is_in_word_array(item_id, (short*)Real2Host((ds_readds(0x634 + 4 * host_readbs(hero1 + HERO_TYPE)))))) {
 							set_textcolor(201, 0);
 						}
 					}
@@ -632,7 +632,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 	signed short item_id;
 	signed short sellable = 0;
 
-	item_id = host_readws(hero + 0x196 + 14 * item_pos);
+	item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
 	host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
@@ -657,7 +657,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 0);
 		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4, 1);
 
-	} else if (ks_broken(hero + 0x196 + 14 * item_pos) ||
+	} else if (ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos) ||
 			 host_readbs(hero + 0x19d + 14 * item_pos) != 0)
 	{
 		/* this item is broken or empty */

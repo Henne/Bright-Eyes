@@ -163,8 +163,8 @@ void do_house(void)
 
 		for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + 0x21) != 0) &&
-				(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			if ((host_readbs(hero + HERO_TYPE) != 0) &&
+				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
 				(test_skill(hero, 17, -2) <= 0))
 			{
@@ -184,7 +184,7 @@ void do_house(void)
 
 						hero = get_hero(i);
 
-						if (check_hero(hero) && !host_readbs(hero + 0x9f)) {
+						if (check_hero(hero) && !host_readbs(hero + HERO_JAIL)) {
 							l_di = 1;
 						}
 					}
@@ -193,10 +193,10 @@ void do_house(void)
 					{
 						i = 0;
 
-						while (host_readbs(get_hero(i) + 0x87) == ds_readbs(CURRENT_GROUP))
+						while (host_readbs(get_hero(i) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 						{
 							/* imprison hero */
-							host_writeb(get_hero(i) + 0x9f, 1);
+							host_writeb(get_hero(i) + HERO_JAIL, 1);
 							i++;
 						}
 

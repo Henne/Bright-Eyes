@@ -114,7 +114,7 @@ void FIG_preload_gfx(void)
 
 	/* set something in the hero charactersheet to -1 */
 	for (i = 0; i <= 6; i++) {
-		host_writeb(get_hero(i) + 0x81, -1);
+		host_writeb(get_hero(i) + HERO_FIGHT_ID, -1);
 	}
 
 	for (i = 0; i < 20; i++) {

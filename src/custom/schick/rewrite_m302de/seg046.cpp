@@ -48,9 +48,9 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 
 	/* convert value to string */
 #if !defined(__BORLANDC__)
-	sprintf(str, "%d", host_readbs(hero + 0x13d + spell));
+	sprintf(str, "%d", host_readbs(hero + HERO_SPELLS + spell));
 #else
-	itoa(host_readbs(hero + 0x13d + spell) , str, 10);
+	itoa(host_readbs(hero + HERO_SPELLS + spell) , str, 10);
 #endif
 
 	/* print value */
@@ -79,9 +79,9 @@ void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
 
 	/* convert value to string */
 #if !defined(__BORLANDC__)
-	sprintf(str, "%d", host_readbs(hero + 0x108 + talent));
+	sprintf(str, "%d", host_readbs(hero + HERO_TA_FIGHT + talent));
 #else
-	itoa(host_readbs(hero + 0x108 + talent) , str, 10);
+	itoa(host_readbs(hero + HERO_TA_FIGHT + talent) , str, 10);
 #endif
 
 	/* print value */
@@ -224,7 +224,7 @@ void status_show(Bit16u index)
 	ds_writew(0xc017, 40);
 	ds_writed(0xc00d, ds_readd(0xd303));
 	/* the source must be passed here as RealPt */
-	ds_writed(0xc019, (Bit32u)(hero + 0x2da));
+	ds_writed(0xc019, (Bit32u)(hero + HERO_PORTRAIT));
 	do_pic_copy(0);
 
 	ds_writed(0xc00d, ds_readd(0xd2ff));
@@ -285,13 +285,13 @@ void status_show(Bit16u index)
 		/* print height */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x84),
-			host_readb(Real2Host(hero) + 0x23));
+			host_readb(Real2Host(hero) + HERO_HEIGHT));
 		GUI_print_string(Real2Host(ds_readd(DTP2)), 158, 116);
 
 		/* print weight */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x88),
-			host_readw(Real2Host(hero) + 0x24));
+			host_readw(Real2Host(hero) + HERO_WEIGHT));
 		GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 179);
 	} else {
 		do_fill_rect((RealPt)ds_readd(0xd303), 0, 50, 319, 191, 2);
@@ -301,30 +301,30 @@ void status_show(Bit16u index)
 
 	/* print name */
 	set_textcolor(0xff, 2);
-	GUI_print_string(Real2Host(hero) + 0x10, 59, 9);
+	GUI_print_string(Real2Host(hero) + HERO_NAME2, 59, 9);
 
 	/* print typus */
 	set_textcolor(0, 2);
 
 	GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (
-	((host_readb(Real2Host(hero) + 0x22)) ? 0x251 : 0x9) + host_readbs(Real2Host(hero) + 0x21)) * 4)), 59, 16);
+	((host_readb(Real2Host(hero) + HERO_SEX)) ? 0x251 : 0x9) + host_readbs(Real2Host(hero) + HERO_TYPE)) * 4)), 59, 16);
 
 
 	/* show AP */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x9ac)),
-		host_readd(Real2Host(hero) + 0x28));
+		host_readd(Real2Host(hero) + HERO_AP));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 26);
 
 	/* print level */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_city(0x1c),
-		host_readbs(Real2Host(hero) + 0x27));
+		host_readbs(Real2Host(hero) + HERO_LEVEL));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 33);
 
 	/* print money */
 	make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)),
-		host_readd(Real2Host(hero) + 0x2c));
+		host_readd(Real2Host(hero) + HERO_MONEY));
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x4b0)),
@@ -338,7 +338,7 @@ void status_show(Bit16u index)
 	else if (hero_unc(Real2Host(hero)))
 		/* print if uncounscious */
 		GUI_print_string(get_city(0x18), 155, 9);
-	else if (host_readb(Real2Host(hero) + 0xa1))
+	else if (host_readb(Real2Host(hero) + HERO_DRUNK))
 		/* print if drunk */
 		GUI_print_string(get_city(0xd8), 155, 9);
 
@@ -374,7 +374,7 @@ void status_show(Bit16u index)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x28),
-					(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (host_readbs(Real2Host(hero) + 0x26) + 0x15) * 4)));
+					(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (host_readbs(Real2Host(hero) + HERO_GOD) + 0x15) * 4)));
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 55);
 
 			/* show attributes */
@@ -420,11 +420,11 @@ void status_show(Bit16u index)
 
 			/* calculate BP */
 			bp = 8;
-			if (host_readbs(Real2Host(hero) + 0x47) * 50 <= host_readws(Real2Host(hero) + 0x2d8))
+			if (host_readbs(Real2Host(hero) + HERO_KK) * 50 <= host_readws(Real2Host(hero) + HERO_LOAD))
 				bp--;
-			if (host_readbs(Real2Host(hero) + 0x47) * 75 <= host_readws(Real2Host(hero) + 0x2d8))
+			if (host_readbs(Real2Host(hero) + HERO_KK) * 75 <= host_readws(Real2Host(hero) + HERO_LOAD))
 				bp -= 2;
-			if (host_readbs(Real2Host(hero) + 0x47) * 100 <= host_readws(Real2Host(hero) + 0x2d8))
+			if (host_readbs(Real2Host(hero) + HERO_KK) * 100 <= host_readws(Real2Host(hero) + HERO_LOAD))
 				bp -= 2;
 
 			if (ds_readw(GAME_MODE) == 2) {
@@ -435,23 +435,23 @@ void status_show(Bit16u index)
 				char le_fix[10];
 				set_status_string((char*)get_city(0x34));
 
-				if (host_readb(Real2Host(hero) + 0x7a)) {
+				if (host_readb(Real2Host(hero) + HERO_LE_MOD)) {
 					/* print max LE in red if hero has permanent damage */
-					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + 0x5e), 0xf0);
+					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + HERO_LE), 0xf0);
 				} else {
 					/* print max LE in black if hero has no permanent damage */
-					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + 0x5e));
+					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + HERO_LE));
 				}
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x34),
-					host_readw(Real2Host(hero) + 0x60), le_fix,			/* LE */
-					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
-					host_readbs(Real2Host(hero) + 0x66),			/* MR */
-					host_readbs(Real2Host(hero) + 0x30) + host_readbs(Real2Host(hero) + 0x31), /* RS */
-					host_readbs(Real2Host(hero) + 0x47) + host_readw(Real2Host(hero) + 0x60) +
-						host_readbs(Real2Host(hero) + 0x48),		/* Ausdauer*/
-					host_readw(Real2Host(hero) + 0x2d8),				/* Last */
+					host_readw(Real2Host(hero) + HERO_LE_ORIG), le_fix,			/* LE */
+					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
+					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
+					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2), /* RS */
+					host_readbs(Real2Host(hero) + HERO_KK) + host_readw(Real2Host(hero) + HERO_LE_ORIG) +
+						host_readbs(Real2Host(hero) + HERO_KK_MOD),		/* Ausdauer*/
+					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
 				reset_status_string((char*)get_city(0x34));
 				/* Original-Bugfix end */
@@ -460,13 +460,13 @@ void status_show(Bit16u index)
 				/* Original Behaviour: print max LE in black */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x34),
-					host_readw(Real2Host(hero) + 0x60), host_readw(Real2Host(hero) + 0x5e),	/* LE */
-					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
-					host_readbs(Real2Host(hero) + 0x66),			/* MR */
-					host_readbs(Real2Host(hero) + 0x30) + host_readbs(Real2Host(hero) + 0x31), /* RS */
-					host_readbs(Real2Host(hero) + 0x48) + (host_readws(Real2Host(hero) + 0x60) +
-						host_readbs(Real2Host(hero) + 0x47)),		/* Ausdauer*/
-					host_readw(Real2Host(hero) + 0x2d8),				/* Last */
+					host_readw(Real2Host(hero) + HERO_LE_ORIG), host_readw(Real2Host(hero) + HERO_LE),	/* LE */
+					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
+					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
+					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2), /* RS */
+					host_readbs(Real2Host(hero) + HERO_KK_MOD) + (host_readws(Real2Host(hero) + HERO_LE_ORIG) +
+						host_readbs(Real2Host(hero) + HERO_KK)),		/* Ausdauer*/
+					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
 #endif
 
@@ -476,31 +476,31 @@ void status_show(Bit16u index)
 				/* novice mode */
 
 				/* calculate AT base value */
-				if (host_readb(Real2Host(hero) + 0x32) & 1) {
+				if (host_readb(Real2Host(hero) + HERO_RS_BE) & 1) {
 					l1 = -1;
 				} else {
 					l1 = 0;
 				}
 
-				at = (host_readbs(Real2Host(hero) + 0x78) < 7) ?
+				at = (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
 					/* melee weapons */
-					(host_readbs(Real2Host(hero) + 0x68 + host_readbs(Real2Host(hero) + 0x78)) +
-						host_readbs(Real2Host(hero) + 0x76) -
-						(host_readbs(Real2Host(hero) + 0x32) / 2)) :
+					(host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+						host_readbs(Real2Host(hero) + HERO_AT_MOD) -
+						(host_readbs(Real2Host(hero) + HERO_RS_BE) / 2)) :
 					/* range weapons */
-					(host_readbs(Real2Host(hero) + 0x68) -
-						(host_readbs(Real2Host(hero) + 0x32) / 2));
+					(host_readbs(Real2Host(hero) + HERO_AT) -
+						(host_readbs(Real2Host(hero) + HERO_RS_BE) / 2));
 				at += l1;
 
 				/* calculate PA base value */
-				pa = (host_readbs(Real2Host(hero) + 0x78) < 7) ?
+				pa = (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
 					/* melee weapons */
-					(host_readbs(Real2Host(hero) + 0x6f + host_readbs(Real2Host(hero) + 0x78)) +
-						host_readbs(Real2Host(hero) + 0x77) -
-						(host_readbs(Real2Host(hero) + 0x32) / 2)) :
+					(host_readbs(Real2Host(hero) + HERO_PA + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+						host_readbs(Real2Host(hero) + HERO_PA_MOD) -
+						(host_readbs(Real2Host(hero) + HERO_RS_BE) / 2)) :
 					/* range weapons */
-					 (host_readbs(Real2Host(hero) + 0x6f) -
-						(host_readbs(Real2Host(hero) + 0x32) / 2));
+					 (host_readbs(Real2Host(hero) + HERO_PA) -
+						(host_readbs(Real2Host(hero) + HERO_RS_BE) / 2));
 
 				if (at < 0)
 					at = 0;
@@ -510,25 +510,25 @@ void status_show(Bit16u index)
 				/* Original-Bugfix: show permanent damage in red */
 				set_status_string((char*)get_city(0xd0));
 
-				if (host_readb(Real2Host(hero) + 0x7a)) {
+				if (host_readb(Real2Host(hero) + HERO_LE_MOD)) {
 					/* print max LE in red if hero has permanent damage */
-					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + 0x5e), 0xf0);
+					sprintf(le_fix, "%c%d%c", 0xf1, host_readw(Real2Host(hero) + HERO_LE), 0xf0);
 				} else {
 					/* print max LE in black if hero has no permanent damage */
-					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + 0x5e));
+					sprintf(le_fix, "%d", host_readw(Real2Host(hero) + HERO_LE));
 				}
 
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0xd0),
-					host_readw(Real2Host(hero) + 0x60), le_fix,			/* LE */
-					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
+					host_readw(Real2Host(hero) + HERO_LE_ORIG), le_fix,			/* LE */
+					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
 					at, pa,							/* AT PA */
-					host_readbs(Real2Host(hero) + 0x66),			/* MR */
-					host_readbs(Real2Host(hero) + 0x30) + host_readbs(Real2Host(hero) + 0x31),	/* RS */
-					host_readbs(Real2Host(hero) + 0x47) + host_readw(Real2Host(hero) + 0x60) +
-						host_readbs(Real2Host(hero) + 0x48),		/* Ausdauer */
-					host_readw(Real2Host(hero) + 0x2d8),				/* Last */
+					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
+					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2),	/* RS */
+					host_readbs(Real2Host(hero) + HERO_KK) + host_readw(Real2Host(hero) + HERO_LE_ORIG) +
+						host_readbs(Real2Host(hero) + HERO_KK_MOD),		/* Ausdauer */
+					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
 
 				reset_status_string((char*)get_city(0xd0));
@@ -536,14 +536,14 @@ void status_show(Bit16u index)
 #else
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0xd0),
-					host_readw(Real2Host(hero) + 0x60), host_readw(Real2Host(hero) + 0x5e),	/* LE */
-					host_readw(Real2Host(hero) + 0x64), host_readw(Real2Host(hero) + 0x62),	/* AE */
+					host_readw(Real2Host(hero) + HERO_LE_ORIG), host_readw(Real2Host(hero) + HERO_LE),	/* LE */
+					host_readw(Real2Host(hero) + HERO_AE_ORIG), host_readw(Real2Host(hero) + HERO_AE),	/* AE */
 					at, pa,							/* AT PA */
-					host_readbs(Real2Host(hero) + 0x66),			/* MR */
-					host_readbs(Real2Host(hero) + 0x30) + host_readbs(Real2Host(hero) + 0x31),	/* RS */
-					host_readws(Real2Host(hero) + 0x60) + host_readbs(Real2Host(hero) + 0x47) +
-						host_readbs(Real2Host(hero) + 0x48),		/* Ausdauer */
-					host_readw(Real2Host(hero) + 0x2d8),				/* Last */
+					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
+					host_readbs(Real2Host(hero) + HERO_RS_BONUS1) + host_readbs(Real2Host(hero) + HERO_RS_BONUS2),	/* RS */
+					host_readws(Real2Host(hero) + HERO_LE_ORIG) + host_readbs(Real2Host(hero) + HERO_KK) +
+						host_readbs(Real2Host(hero) + HERO_KK_MOD),		/* Ausdauer */
+					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
 #endif
 
@@ -561,27 +561,27 @@ void status_show(Bit16u index)
 				host_readbs(Real2Host(hero) + 0x39) +
 				host_readbs(Real2Host(hero) + 0x41) +
 				host_readbs(Real2Host(hero) + 0x42) +
-				host_readbs(Real2Host(hero) + 0x47) +
-				host_readbs(Real2Host(hero) + 0x48)) / 4;
+				host_readbs(Real2Host(hero) + HERO_KK) +
+				host_readbs(Real2Host(hero) + HERO_KK_MOD)) / 4;
 
-			if (host_readb(Real2Host(hero) + 0x32) & 1)
+			if (host_readb(Real2Host(hero) + HERO_RS_BE) & 1)
 				l1 = -1;
 			else
 				l1 = 0;
 
-			at = (host_readbs(Real2Host(hero) + 0x78) < 7) ?
-				(host_readbs(Real2Host(hero) + 0x68 + host_readbs(Real2Host(hero) + 0x78)) +
-					host_readbs(Real2Host(hero) + 0x76) -
-					host_readbs(Real2Host(hero) + 0x32) / 2) :
-				host_readbs(Real2Host(hero) + 0x68) - host_readbs(Real2Host(hero) + 0x32) / 2;
+			at = (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
+				(host_readbs(Real2Host(hero) + HERO_AT + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+					host_readbs(Real2Host(hero) + HERO_AT_MOD) -
+					host_readbs(Real2Host(hero) + HERO_RS_BE) / 2) :
+				host_readbs(Real2Host(hero) + HERO_AT) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 
 			at += l1;
 
-			pa =  (host_readbs(Real2Host(hero) + 0x78) < 7) ?
-				host_readbs(Real2Host(hero) + 0x6f + host_readbs(Real2Host(hero) + 0x78)) +
-					host_readbs(Real2Host(hero) + 0x77) -
-					host_readbs(Real2Host(hero) + 0x32) / 2 :
-				host_readbs(Real2Host(hero) + 0x6f) - host_readbs(Real2Host(hero) + 0x32) / 2;
+			pa =  (host_readbs(Real2Host(hero) + HERO_WP_CLASS) < 7) ?
+				host_readbs(Real2Host(hero) + HERO_PA + host_readbs(Real2Host(hero) + HERO_WP_CLASS)) +
+					host_readbs(Real2Host(hero) + HERO_PA_MOD) -
+					host_readbs(Real2Host(hero) + HERO_RS_BE) / 2 :
+				host_readbs(Real2Host(hero) + HERO_PA) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2;
 
 			if (at < 0)
 				at = 0;
@@ -591,35 +591,35 @@ void status_show(Bit16u index)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x14),
-				host_readbs(Real2Host(hero) + 0x67),
+				host_readbs(Real2Host(hero) + HERO_ATPA_BASIS),
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc0)),
 
-				host_readbs(Real2Host(hero) + 0x68) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				host_readbs(Real2Host(hero) + 0x6f) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + HERO_AT) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + HERO_PA) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc4)),
 
-				host_readbs(Real2Host(hero) + 0x69) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				host_readbs(Real2Host(hero) + 0x70) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x69) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + 0x70) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc8)),
 
-				host_readbs(Real2Host(hero) + 0x6a) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				host_readbs(Real2Host(hero) + 0x71) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x6a) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + 0x71) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xcc)),
 
-				host_readbs(Real2Host(hero) + 0x6b) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				host_readbs(Real2Host(hero) + 0x72) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x6b) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + 0x72) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd0)),
 
-				host_readbs(Real2Host(hero) + 0x6c) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				host_readbs(Real2Host(hero) + 0x73) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x6c) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + 0x73) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd4)),
 
-				host_readbs(Real2Host(hero) + 0x6d) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				host_readbs(Real2Host(hero) + 0x74) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x6d) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + 0x74) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd8)),
 
-				host_readbs(Real2Host(hero) + 0x6e) - host_readbs(Real2Host(hero) + 0x32) / 2,
-				host_readbs(Real2Host(hero) + 0x75) - host_readbs(Real2Host(hero) + 0x32) / 2,
+				host_readbs(Real2Host(hero) + 0x6e) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + 0x75) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				at,
 				pa,
 

@@ -156,8 +156,8 @@ void do_tavern(void)
 
 					ds_writeb(FOOD_MESSAGE + i, ds_writeb(0x26a4 + i, 0));
 
-					if (host_readbs(get_hero(i) + 0x21) != 0 &&
-						host_readbs(get_hero(i) + 0x87) == ds_readbs(CURRENT_GROUP))
+					if (host_readbs(get_hero(i) + HERO_TYPE) != 0 &&
+						host_readbs(get_hero(i) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 					{
 
 						l3 = (21 - host_readws(tav_ptr)) * 20;
@@ -165,10 +165,10 @@ void do_tavern(void)
 							l3 = 100;
 						}
 
-						sub_ptr_bs(get_hero(i) + 0x7f, l3);
+						sub_ptr_bs(get_hero(i) + HERO_HUNGER, l3);
 
-						if (host_readbs(get_hero(i) + 0x7f) < 0) {
-							host_writebs(get_hero(i) + 0x7f, 0);
+						if (host_readbs(get_hero(i) + HERO_HUNGER) < 0) {
+							host_writebs(get_hero(i) + HERO_HUNGER, 0);
 						}
 
 						l3 = (21 - host_readws(tav_ptr)) * 30;
@@ -176,10 +176,10 @@ void do_tavern(void)
 							l3 = 100;
 						}
 
-						sub_ptr_bs(get_hero(i) + 0x80, l3);
+						sub_ptr_bs(get_hero(i) + HERO_THIRST, l3);
 
-						if (host_readbs(get_hero(i) + 0x80) < 0) {
-							host_writebs(get_hero(i) + 0x80, 0);
+						if (host_readbs(get_hero(i) + HERO_THIRST) < 0) {
+							host_writebs(get_hero(i) + HERO_THIRST, 0);
 						}
 					}
 				}

@@ -35,12 +35,12 @@ int GRP_compare_heros(const void *p1, const void *p2)
 	hero1 = (Bit8u*)p1;
 	hero2 = (Bit8u*)p2;
 
-	if ((host_readbs(hero1 + 0x21) != 0) &&
-		(host_readbs(hero1 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + 0x21) != 0) &&
-		(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)))
+	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+		(host_readbs(hero1 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
+		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 	{
-		if (host_readbs(hero1 + 0x8a) < host_readbs(hero2 + 0x8a))
+		if (host_readbs(hero1 + HERO_GROUP_POS) < host_readbs(hero2 + HERO_GROUP_POS))
 		{
 			return -1;
 		} else {
@@ -48,28 +48,28 @@ int GRP_compare_heros(const void *p1, const void *p2)
 		}
 	}
 
-	if ((host_readbs(hero1 + 0x21) != 0) &&
-		(host_readbs(hero1 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + 0x21) != 0) &&
-		(host_readbs(hero2 + 0x87) != ds_readbs(CURRENT_GROUP)))
+	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+		(host_readbs(hero1 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
+		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 	{
 		return -1;
 	}
 
-	if ((host_readbs(hero1 + 0x21) != 0) &&
-		(host_readbs(hero1 + 0x87) != ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + 0x21) != 0) &&
-		(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)))
+	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+		(host_readbs(hero1 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) &&
+		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 	{
 		return 1;
 	}
 
-	if ((host_readbs(hero1 + 0x21) != 0) &&
-		(host_readbs(hero1 + 0x87) != ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + 0x21) != 0) &&
-		(host_readbs(hero2 + 0x87) != ds_readbs(CURRENT_GROUP)))
+	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+		(host_readbs(hero1 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) &&
+		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 	{
-		if (host_readbs(hero1 + 0x8a) < host_readbs(hero2 + 0x8a))
+		if (host_readbs(hero1 + HERO_GROUP_POS) < host_readbs(hero2 + HERO_GROUP_POS))
 		{
 			return -1;
 		} else {
@@ -77,36 +77,36 @@ int GRP_compare_heros(const void *p1, const void *p2)
 		}
 	}
 
-	if (!(host_readbs(hero1 + 0x21)) &&
-		(host_readbs(hero2 + 0x21) != 0) &&
-		(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)))
+	if (!(host_readbs(hero1 + HERO_TYPE)) &&
+		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 	{
 		return 1;
 	}
 
-	if (!(host_readbs(hero1 + 0x21)) &&
-		(host_readbs(hero2 + 0x21) != 0) &&
-		(host_readbs(hero2 + 0x87) != ds_readbs(CURRENT_GROUP)))
+	if (!(host_readbs(hero1 + HERO_TYPE)) &&
+		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 	{
 		return -1;
 	}
 
-	if (!(host_readbs(hero1 + 0x21)) &&
-		!(host_readbs(hero2 + 0x21)))
+	if (!(host_readbs(hero1 + HERO_TYPE)) &&
+		!(host_readbs(hero2 + HERO_TYPE)))
 	{
 		return 0;
 	}
 
-	if ((host_readbs(hero1 + 0x21) != 0) &&
-		(host_readbs(hero1 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
-		!(host_readbs(hero2 + 0x21)))
+	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+		(host_readbs(hero1 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
+		!(host_readbs(hero2 + HERO_TYPE)))
 	{
 		return -1;
 	}
 
-	if ((host_readbs(hero1 + 0x21) != 0) &&
-		(host_readbs(hero1 + 0x87) != ds_readbs(CURRENT_GROUP)) &&
-		!(host_readbs(hero2 + 0x21)))
+	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+		(host_readbs(hero1 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) &&
+		!(host_readbs(hero2 + HERO_TYPE)))
 	{
 		return 1;
 	}
@@ -121,7 +121,7 @@ void GRP_sort_heros(void)
 	qsort((void*)get_hero(0), 6, SIZEOF_HERO, GRP_compare_heros);
 
 	for (i = 0; i < 6; i++) {
-		host_writeb(get_hero(i) + 0x8a, i + 1);
+		host_writeb(get_hero(i) + HERO_GROUP_POS, i + 1);
 	}
 }
 
@@ -167,7 +167,7 @@ void GRP_split(void)
 	signed short not_empty;
 	signed short answer;
 
-	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + 0x21) != 0 ? 2 : 1)) {
+	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != 0 ? 2 : 1)) {
 
 		GUI_output(get_ltx(0x808));
 	} else {
@@ -188,12 +188,12 @@ void GRP_split(void)
 			} else {
 
 				not_empty = 1;
-				host_writeb(get_hero(answer) + 0x87, (signed char)new_group);
+				host_writeb(get_hero(answer) + HERO_GROUP_NO, (signed char)new_group);
 				inc_ds_bs_post(0x2d36 + new_group);
 				dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 			}
 
-		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + 0x21) != 0 ? 2 : 1));
+		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != 0 ? 2 : 1));
 
 		if (not_empty) {
 			GRP_save_pos(new_group);
@@ -233,10 +233,10 @@ void GRP_merge(void)
 
 			for (i = 0; i <= 6; i++) {
 
-				if ((host_readbs(get_hero(i) + 0x21) != 0) &&
-					host_readbs(get_hero(i) + 0x87) == answer)
+				if ((host_readbs(get_hero(i) + HERO_TYPE) != 0) &&
+					host_readbs(get_hero(i) + HERO_GROUP_NO) == answer)
 				{
-					host_writeb(get_hero(i) + 0x87, ds_readbs(CURRENT_GROUP));
+					host_writeb(get_hero(i) + HERO_GROUP_NO, ds_readbs(CURRENT_GROUP));
 					inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 				}
 			}
@@ -273,11 +273,11 @@ void GRP_switch_to_next(signed short mode)
 
 			for (i = 0; i < 6; i++) {
 
-				if ((host_readbs(get_hero(i) + 0x21) != 0) &&
-					(host_readbs(get_hero(i) + 0x87) == group) &&
+				if ((host_readbs(get_hero(i) + HERO_TYPE) != 0) &&
+					(host_readbs(get_hero(i) + HERO_GROUP_NO) == group) &&
 					check_hero(get_hero(i)))
 				{
-					if (host_readbs(get_hero(i) + 0x9f) != 0) {
+					if (host_readbs(get_hero(i) + HERO_JAIL) != 0) {
 						/* hero is in prison */
 						state = 2;
 					} else {
@@ -438,16 +438,16 @@ void GRP_swap_heros(void)
 			ds_writebs(0xe3c8 + hero2_nr, l4);
 			ds_writebs(0xe3c1 + hero2_nr, l5);
 
-			if (host_readbs(get_hero(hero1_nr) + 0x21)) {
-				host_writebs(get_hero(hero1_nr) + 0x84, 100);
+			if (host_readbs(get_hero(hero1_nr) + HERO_TYPE)) {
+				host_writebs(get_hero(hero1_nr) + HERO_UNKNOWN2, 100);
 			}
 
-			if (host_readbs(get_hero(hero2_nr) + 0x21)) {
-				host_writebs(get_hero(hero2_nr) + 0x84, 100);
+			if (host_readbs(get_hero(hero2_nr) + HERO_TYPE)) {
+				host_writebs(get_hero(hero2_nr) + HERO_UNKNOWN2, 100);
 			}
 
-			host_writeb(get_hero(hero1_nr) + 0x8a, hero1_nr + 1);
-			host_writeb(get_hero(hero2_nr) + 0x8a, hero2_nr + 1);
+			host_writeb(get_hero(hero1_nr) + HERO_GROUP_POS, hero1_nr + 1);
+			host_writeb(get_hero(hero2_nr) + HERO_GROUP_POS, hero2_nr + 1);
 		}
 	}
 
@@ -625,8 +625,8 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 	signed short tmp;
 
 	if (!hero_dead(hero) &&
-		(host_readd(hero + 0x8f) == 0) &&
-		(host_readbs(hero + 0x94) == 0))
+		(host_readd(hero + HERO_UNKNOWN4) == 0) &&
+		(host_readbs(hero + HERO_UNKNOWN5) == 0))
 	{
 
 		if ((ds_readbs(TRAVEL_BY_SHIP) != 0) && (random_schick(100) < 10)) {
@@ -634,7 +634,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xc70),
-				hero + 0x10);
+				hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -642,8 +642,8 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 			if (!hero_is_diseased(hero) && !hero_is_poisoned(hero)) {
 
-				if (host_readbs(hero + 0x95) > 0) {
-					dec_ptr_bs(hero + 0x95);
+				if (host_readbs(hero + HERO_UNKNOWN6) > 0) {
+					dec_ptr_bs(hero + HERO_UNKNOWN6);
 				}
 
 				if (!hero_busy(hero)) {
@@ -662,20 +662,20 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 					}
 
 					/* swap LE and AE */
-					if ((host_readbs(hero + 0x21) >= 7) && (le_regen < ae_regen)) {
+					if ((host_readbs(hero + HERO_TYPE) >= 7) && (le_regen < ae_regen)) {
 						tmp = ae_regen;
 						ae_regen = le_regen;
 						le_regen = tmp;
 					}
 
-					if (host_readbs(hero + 0x95) > 0) {
+					if (host_readbs(hero + HERO_UNKNOWN6) > 0) {
 						le_regen += le_regen;
 						ae_regen += ae_regen;
 					}
 
 					/* Do LE */
 
-					diff = host_readws(hero + 0x5e) - host_readws(hero + 0x60);
+					diff = host_readws(hero + HERO_LE) - host_readws(hero + HERO_LE_ORIG);
 
 					if ((diff != 0) && le_regen) {
 
@@ -693,7 +693,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x4fc),
-							hero + 0x10,
+							hero + HERO_NAME2,
 							le_regen,
 							(char*)Real2Host(ds_readd(0xd2eb)));
 						if (ds_readbs(0x2845) == 0) {
@@ -707,9 +707,9 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 					}
 
-					if (host_readbs(hero + 0x21) >= 7) {
+					if (host_readbs(hero + HERO_TYPE) >= 7) {
 
-						diff = host_readws(hero + 0x62) - host_readws(hero + 0x64);
+						diff = host_readws(hero + HERO_AE) - host_readws(hero + HERO_AE_ORIG);
 
 						if ((diff != 0) && ae_regen) {
 
@@ -727,7 +727,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x500),
-								hero + 0x10,
+								hero + HERO_NAME2,
 								ae_regen,
 								(char*)Real2Host(ds_readd(0xd2eb)));
 
@@ -742,12 +742,12 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 						}
 					}
 				} else {
-					do_alchemy(hero, host_readbs(hero + 0x93), 0);
+					do_alchemy(hero, host_readbs(hero + HERO_RECEIPT_ID), 0);
 				}
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x8b8),
-					hero + 0x10);
+					hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}

@@ -44,10 +44,10 @@ RealPt get_first_busy_hero(void)
 
 	hero = (RealPt)ds_readd(HEROS);
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
-		if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
-			host_readbs(Real2Host(hero) + 0x87) != ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+			host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 			hero_busy(Real2Host(hero)) &&
-			host_readbs(Real2Host(hero) + 0x9c) == ds_readws(TYPEINDEX))
+			host_readbs(Real2Host(hero) + HERO_HOSTEL_ID) == ds_readws(TYPEINDEX))
 		{
 			return hero;
 		}
@@ -94,25 +94,25 @@ void do_inn(void)
 
 			draw_status_line();
 
-			if (host_readbs(Real2Host(hero) + 0x94) != 0) {
+			if (host_readbs(Real2Host(hero) + HERO_UNKNOWN5) != 0) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xb74),
-					(char*)Real2Host(hero) + 0x10,
-					host_readbs(Real2Host(hero) + 0x94),
-					(char*)(host_readbs(Real2Host(hero) + 0x94) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
+					(char*)Real2Host(hero) + HERO_NAME2,
+					host_readbs(Real2Host(hero) + HERO_UNKNOWN5),
+					(char*)(host_readbs(Real2Host(hero) + HERO_UNKNOWN5) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
 
 				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ltx(0xb78), get_ltx(0x864));
 
 				if (answer == 1) {
-					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + 0x93), 1);
+					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 1);
 				} else {
 					done = 1;
 					ds_writew(COMBO_MODE, 0);
 					stay = 1;
 				}
 			} else {
-				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + 0x93), 0);
+				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 0);
 			}
 		}
 
@@ -120,13 +120,13 @@ void do_inn(void)
 
 		draw_status_line();
 
-		if (host_readbs(Real2Host(hero) + 0x94) != 0) {
+		if (host_readbs(Real2Host(hero) + HERO_UNKNOWN5) != 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xb74),
-				(char*)Real2Host(hero) + 0x10,
-				host_readbs(Real2Host(hero) + 0x94),
-				(char*)(host_readbs(Real2Host(hero) + 0x94) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
+				(char*)Real2Host(hero) + HERO_NAME2,
+				host_readbs(Real2Host(hero) + HERO_UNKNOWN5),
+				(char*)(host_readbs(Real2Host(hero) + HERO_UNKNOWN5) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
 
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writews(TEXTBOX_WIDTH, 4);
@@ -136,11 +136,11 @@ void do_inn(void)
 			ds_writews(TEXTBOX_WIDTH, tw_bak);
 
 			if (answer == 1) {
-				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + 0x93), 1);
+				do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 1);
 				GRP_merge();
 			}
 		} else {
-			do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + 0x93), 0);
+			do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECEIPT_ID), 0);
 			GRP_merge();
 		}
 	}
@@ -227,8 +227,8 @@ void do_inn(void)
 
 					for (i = 0, hero2 = get_hero(0); i <= 6; i++, hero2 += SIZEOF_HERO) {
 
-						if (host_readbs(hero2 + 0x21) != 0 &&
-							host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						if (host_readbs(hero2 + HERO_TYPE) != 0 &&
+							host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero2))
 						{
 							portion_size = (21 - host_readws(inn_ptr)) * 20;
@@ -236,10 +236,10 @@ void do_inn(void)
 								portion_size = 100;
 							}
 
-							sub_ptr_bs(hero2 + 0x7f, portion_size);
+							sub_ptr_bs(hero2 + HERO_HUNGER, portion_size);
 
-							if (host_readbs(hero2 + 0x7f) < 0) {
-								host_writebs(hero2 + 0x7f, 0);
+							if (host_readbs(hero2 + HERO_HUNGER) < 0) {
+								host_writebs(hero2 + HERO_HUNGER, 0);
 							}
 
 							portion_size = (21 - host_readws(inn_ptr)) * 30;
@@ -247,10 +247,10 @@ void do_inn(void)
 								portion_size = 100;
 							}
 
-							sub_ptr_bs(hero2 + 0x80, portion_size);
+							sub_ptr_bs(hero2 + HERO_THIRST, portion_size);
 
-							if (host_readbs(hero2 + 0x80) < 0) {
-								host_writebs(hero2 + 0x80, 0);
+							if (host_readbs(hero2 + HERO_THIRST) < 0) {
+								host_writebs(hero2 + HERO_THIRST, 0);
 							}
 						}
 					}
@@ -345,7 +345,7 @@ void do_inn(void)
 
 					hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
 
-					if (host_readbs(Real2Host(hero) + 0x21) >= 7) {
+					if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
 
 						if (magic_act[answer] != 0) {
 							GUI_output(get_ltx(0x538));
@@ -386,8 +386,8 @@ void do_inn(void)
 					hero = (RealPt)ds_readd(HEROS);
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-						if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
-							host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP))
+						if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+							host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 						{
 							if (booked_days > 1) {
 								magic_act[i] = 0;

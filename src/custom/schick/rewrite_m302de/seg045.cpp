@@ -224,7 +224,7 @@ void seg045_0394(signed short a1, Bit8u *hero, signed short spell_ani_id)
 	signed short y;
 
 	/* search the target on the chessboard */
-	FIG_search_obj_on_cb(host_readbs(hero + 0x86), &x, &y);
+	FIG_search_obj_on_cb(host_readbs(hero + HERO_ENEMY_ID), &x, &y);
 
 #if !defined(__BORLANDC__)
 	/* BE-fix */
