@@ -585,7 +585,7 @@ signed short count_fight_enemies(signed short nr)
 	buf = Real2Host(ds_readd(DTP2));
 
 	/* load FIGHT.LST from TEMP dir */
-	fd = load_archive_file(0x8000 | 0xcd);
+	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
 
 	/* read the first 2 bytes (max number of fights) */
 	bc__read(fd, (Bit8u*)&max, 2);
@@ -627,7 +627,7 @@ void read_fight_lst(signed short nr)
 	signed short max;
 
 	/* load FIGHT.LST from TEMP dir */
-	fd = load_archive_file(0x8000 | 0xcd);
+	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
 
 	/* read the first 2 bytes (max number of fights) */
 	bc__read(fd, (Bit8u*)&max, 2);
@@ -670,7 +670,7 @@ void write_fight_lst(void)
 	nr = ds_readw(0x5eb2);
 
 	/* load FIGHT.LST from TEMP dir */
-	fd = load_archive_file(0x8000 | 0xcd);
+	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
 
 	/* seek to the entry */
 	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);

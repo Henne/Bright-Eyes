@@ -253,7 +253,7 @@ void PHX_villa_gremob(void)
 	GUI_output(!ds_readb(GREMOB_INVITED)? get_city(0xa0) : get_city(0x9c));
 
 	if (ds_readb(GREMOB_INVITED) != 0) {
-		do_fight(239);
+		do_fight(FIGHTS_PHEX24);
 	}
 }
 

@@ -504,7 +504,7 @@ void pirates_attack(void)
 	ds_writew(0x26c1, 1);
 
 	/* Fight: S001 */
-	do_fight(251);
+	do_fight(FIGHTS_S001);
 
 	ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
@@ -529,7 +529,7 @@ void do_wild8_fight(void)
 	ds_writew(0x26c1, 1);
 
 	/* Fight: WILD8 */
-	do_fight(250);
+	do_fight(FIGHTS_WILD8);
 
 	ds_writew(0x4248, 0);
 	ds_writeb(TRAVELING, 1);
@@ -575,7 +575,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(6) + 1);
 						/* Fight: WILD1 */
-						do_fight(243);
+						do_fight(FIGHTS_WILD1);
 					}
 					break;
 				}
@@ -583,7 +583,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(3));
 						/* Fight: WILD2 */
-						do_fight(244);
+						do_fight(FIGHTS_WILD2);
 					}
 					break;
 				}
@@ -595,7 +595,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(2));
 						/* Fight: WILD3 */
-						do_fight(245);
+						do_fight(FIGHTS_WILD3);
 					}
 					break;
 				}
@@ -607,7 +607,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(6) + 1);
 						/* Fight: WILD4 */
-						do_fight(246);
+						do_fight(FIGHTS_WILD4);
 					}
 					break;
 				}
@@ -615,7 +615,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(3) + 3);
 						/* Fight: WILD4 */
-						do_fight(246);
+						do_fight(FIGHTS_WILD4);
 					}
 					break;
 				}
@@ -623,7 +623,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(2) + 1);
 						/* Fight: WILD5 */
-						do_fight(247);
+						do_fight(FIGHTS_WILD5);
 					}
 					break;
 				}
@@ -639,7 +639,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(3));
 						/* Fight: WILD6 */
-						do_fight(248);
+						do_fight(FIGHTS_WILD6);
 					}
 					break;
 				}
@@ -651,7 +651,7 @@ void random_encounter(signed short arg)
 					if (!l_si) {
 						ds_writew(MAX_ENEMIES, random_schick(3));
 						/* Fight: WILD7 */
-						do_fight(249);
+						do_fight(FIGHTS_WILD7);
 					}
 					break;
 				}

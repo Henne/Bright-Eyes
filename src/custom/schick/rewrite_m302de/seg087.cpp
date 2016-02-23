@@ -61,7 +61,7 @@ signed short DNG14_handler(void)
 		ds_writew(0xd325, ds_writew(0xd327, 0x318));
 		ds_writew(0xd329, ds_writew(0xd32b, 0x22e));
 
-		do_fight(147);
+		do_fight(FIGHTS_DTHO03);
 
 	} else if (pos == 0x204 && pos != ds_readws(0x330e) && !ds_readb(0x3fb6)) {
 
@@ -94,7 +94,7 @@ signed short DNG14_handler(void)
 
 		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x524))));
 
-		do_fight(149);
+		do_fight(FIGHTS_DTHO06);
 
 	} else if (pos == 0x706 && pos != ds_readws(0x330e) && ds_readb(DIRECTION) == 0) {
 
@@ -110,13 +110,13 @@ signed short DNG14_handler(void)
 		ds_writew(0xd327, 0xb1b);
 		ds_writew(0xd329, ds_writew(0xd32b, 0x92e));
 
-		do_fight(150);
+		do_fight(FIGHTS_DTHO09);
 
 	} else if (pos == 0xb0e && pos != ds_readws(0x330e) && random_schick(100) <= 10) {
 
 		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x83e))));
 
-		do_fight(151);
+		do_fight(FIGHTS_DTHO10);
 
 	} else if (pos == 0xb0e && pos != ds_readws(0x330e) && ds_readb(DIRECTION) == 1) {
 
@@ -140,7 +140,7 @@ signed short DNG14_handler(void)
 
 		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x93b))));
 
-		do_fight(152);
+		do_fight(FIGHTS_DTHO13);
 
 	} else if (pos == 0xa03 && pos != ds_readws(0x330e)) {
 
@@ -213,14 +213,14 @@ signed short DNG14_handler(void)
 
 		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x1106))));
 
-		do_fight(155);
+		do_fight(FIGHTS_DTHO18);
 
 	} else if (pos == 0x110b && pos != ds_readws(0x330e) && random_schick(100) <= 5) {
 
 		ds_writew(0xd325, ds_writew(0xd327, 0x1109));
 		ds_writew(0xd329, ds_writew(0xd32b, 0x112e));
 
-		do_fight(156);
+		do_fight(FIGHTS_DTHO19);
 
 	} else if (pos == 0x110e && pos != ds_readws(0x330e) && random_schick(100) <= 10) {
 
@@ -228,7 +228,7 @@ signed short DNG14_handler(void)
 		ds_writew(0xd327, ds_writew(0xd329, 0x151e));
 		ds_writew(0xd32b, 0x110e);
 
-		do_fight(157);
+		do_fight(FIGHTS_DTHO20);
 
 	} else if (pos == 0x1d0d && pos != ds_readws(0x330e)) {
 
@@ -252,7 +252,7 @@ signed short DNG14_handler(void)
 		ds_writew(0xd327, 0x1b1a);
 		ds_writew(0xd329, ds_writew(0xd32b, 0x192e));
 
-		if (!do_fight(random_schick(100) <= 50 ? 159 : 160)) {
+		if (!do_fight(random_schick(100) <= 50 ? FIGHTS_DTHO21A : FIGHTS_DTHO21B)) {
 			ds_writeb(0x3fbe, 1);
 		}
 
@@ -266,7 +266,7 @@ signed short DNG14_handler(void)
 		ds_writew(0xd327, 0x1c16);
 		ds_writew(0xd329, ds_writew(0xd32b, 0x1a29));
 
-		do_fight(161);
+		do_fight(FIGHTS_DTHO23);
 
 	} else if ((pos == 0x1802 || pos == 0x1805) && pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 3) {
 

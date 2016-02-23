@@ -550,12 +550,12 @@ void talk_switch(void)
 
 				ds_writew(0x26c1, 1);
 
-				if (!do_fight(193)) {
+				if (!do_fight(FIGHTS_DASP1A)) {
 					if (GUI_bool(get_dtp(0x58))) {
 
 						ds_writew(0x26c1, 0);
 
-						if (!do_fight(194)) {
+						if (!do_fight(FIGHTS_DASP1B)) {
 							ds_writeb(0x3320, 1);
 						}
 					}
@@ -569,7 +569,7 @@ void talk_switch(void)
 
 			if (state == 1 && !ds_readb(0x3321)) {
 
-				if (!do_fight(195)) {
+				if (!do_fight(FIGHTS_DASP2)) {
 					ds_writeb(0x3321, 1);
 				}
 			}
@@ -579,7 +579,7 @@ void talk_switch(void)
 
 			if ((state == 4 || state == 6) && !ds_readb(0x3322)) {
 
-				if (!do_fight(196)) {
+				if (!do_fight(FIGHTS_DASP3)) {
 					ds_writeb(0x3322, 1);
 				}
 			}
@@ -589,7 +589,7 @@ void talk_switch(void)
 
 			if (state == 4 && !ds_readb(0x3323)) {
 
-				if (!do_fight(197)) {
+				if (!do_fight(FIGHTS_DASP4)) {
 					ds_writeb(0x3323, 1);
 				}
 			}
@@ -599,7 +599,7 @@ void talk_switch(void)
 
 			if ((state == 1 || state == 4 || state == 7) && !ds_readb(0x3324)) {
 
-				if (!do_fight(198)) {
+				if (!do_fight(FIGHTS_DASP5)) {
 					ds_writeb(0x3324, 1);
 				}
 			}
@@ -609,7 +609,7 @@ void talk_switch(void)
 
 			if ((state == 4 || state == 5) && !ds_readb(0x3325)) {
 
-				if (!do_fight(199)) {
+				if (!do_fight(FIGHTS_DASP6A)) {
 					ds_writeb(0x3325, 1);
 				}
 			}
@@ -619,7 +619,7 @@ void talk_switch(void)
 
 			if ((state == 1 || state == 4 || state == 7) && !ds_readb(0x3326)) {
 
-				if (!do_fight(201)) {
+				if (!do_fight(FIGHTS_DASP7)) {
 					ds_writeb(0x3326, 1);
 				}
 			}
@@ -632,7 +632,7 @@ void talk_switch(void)
 
 			if (state == 4 && !ds_readb(0x3327)) {
 
-				if (!do_fight(202)) {
+				if (!do_fight(FIGHTS_DASP8)) {
 					ds_writeb(0x3327, 1);
 				}
 			}
@@ -642,7 +642,7 @@ void talk_switch(void)
 
 			if (state == 1 && !ds_readb(0x3328)) {
 
-				if (!do_fight(203)) {
+				if (!do_fight(FIGHTS_DASP9)) {
 					ds_writeb(0x3328, 1);
 				}
 			}
@@ -652,7 +652,7 @@ void talk_switch(void)
 
 			if (state == 1 && !ds_readb(0x3329)) {
 
-				if (!do_fight(204)) {
+				if (!do_fight(FIGHTS_DASP10)) {
 					ds_writeb(0x3329, 1);
 				}
 			}
@@ -662,7 +662,7 @@ void talk_switch(void)
 
 			if (state == 4 && !ds_readb(0x332a)) {
 
-				if (!do_fight(205)) {
+				if (!do_fight(FIGHTS_DASP11)) {
 					ds_writeb(0x332a, 1);
 				}
 			}
@@ -672,7 +672,7 @@ void talk_switch(void)
 
 			if (state == 1 && !ds_readb(0x332b)) {
 
-				if (!do_fight(206)) {
+				if (!do_fight(FIGHTS_DASP12A)) {
 					ds_writeb(0x332b, 1);
 				}
 			}
@@ -682,7 +682,7 @@ void talk_switch(void)
 
 			if (state == 5 && !ds_readb(0x332c)) {
 
-				if (!do_fight(208)) {
+				if (!do_fight(FIGHTS_DASP13)) {
 					ds_writeb(0x332c, 1);
 				}
 			}
@@ -692,7 +692,7 @@ void talk_switch(void)
 
 			if (state == 1 && !ds_readb(0x332d)) {
 
-				if (!do_fight(209)) {
+				if (!do_fight(FIGHTS_DASP14)) {
 					ds_writeb(0x332d, 1);
 				}
 			}
@@ -705,7 +705,7 @@ void talk_switch(void)
 
 			if ((state == 4 || state == 6) && !ds_readb(0x332f)) {
 
-				if (!do_fight(210)) {
+				if (!do_fight(FIGHTS_DASP16)) {
 					ds_writeb(0x332f, 1);
 				}
 			}
@@ -715,7 +715,7 @@ void talk_switch(void)
 
 			if ((state == 4 || state == 5 || state == 6) && !ds_readb(0x3330)) {
 
-				if (!do_fight(211)) {
+				if (!do_fight(FIGHTS_DASP17)) {
 					ds_writeb(0x3330, 1);
 				}
 			}
@@ -725,7 +725,7 @@ void talk_switch(void)
 
 			if ((state == 6 || state == 7) && !ds_readb(0x3331)) {
 
-				if (!do_fight(212)) {
+				if (!do_fight(FIGHTS_DASP18)) {
 					ds_writeb(0x3331, 1);
 				}
 			}
