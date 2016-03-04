@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 3/13
+ *	Functions rewritten: 4/13
  */
 
 #include "v302de.h"
@@ -127,6 +127,47 @@ void tevent_069(void)
 	{
 		TRV_found_camp_place(0);
 		ds_writeb(0x3dcd, 1);
+	}
+}
+
+/* Borlandified and identical */
+void tevent_070(void)
+{
+	signed short l_si;
+
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 ||
+		ds_readb(0x3dce) != 0)
+	{
+		ds_writeb(0x3dce, 1);
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 ||
+			ds_readb(0x3dcf) != 0)
+		{
+			ds_writeb(0x3dcf, 1);
+			ds_writeb(0x66d0, 130);
+			l_si = TRV_found_camp_place(2);
+			ds_writeb(0x66d0, -1);
+		} else {
+			l_si = TRV_found_camp_place(0);
+		}
+
+		if ((l_si && !ds_readb(0x3dd0) && test_skill(Real2Host(get_first_hero_available_in_group()), 26, 0) > 0) ||
+			ds_readb(0x3dd0) != 0) {
+
+			ds_writeb(0x3dd0, 1);
+
+			if (!TRV_follow_trail_question()) {
+
+				do {
+					l_si = GUI_radio(get_city(0x00), 2, get_city(0x04), get_city(0x08));
+
+				} while (l_si == -1);
+
+				if (l_si == 1) {
+					TRV_hunt_generic(25, 3, -1, 3, 8, 3, 7, 2, 4, 35, 0);
+				}
+			}
+		}
 	}
 }
 
