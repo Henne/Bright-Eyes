@@ -453,6 +453,113 @@ void tevent_073(void)
 	}
 }
 
+/* brigants */
+/* Borlandified and identical */
+void tevent_074(void)
+{
+	signed short answer;
+	signed short i;
+	Bit32s p_money;
+	Bit8u *hero;
+
+	if (!ds_readb(0x3ddf)) {
+
+		ds_writeb(0x3ddf, 1);
+
+		load_in_head(49);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4), get_city(0xb8), 3,
+						get_city(0xbc),
+						get_city(0xc0),
+						get_city(0xc4));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			/* fight */
+			ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+
+		} else if (answer == 2) {
+
+			/* try to flee */
+
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 2) <= 0)
+			{
+				/* failed, so fight */
+				ds_writeb(0x26ac, 1);
+				ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+
+			} else {
+
+				/* remember the position of the last hero in the group */
+				hero = get_hero(0);
+				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero))
+					{
+						answer = i;
+					}
+				}
+
+				hero = get_hero(answer);
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+					(char*)get_city(0xd8),
+					(char*)hero + HERO_NAME2);
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4),
+						Real2Host(ds_readd(DTP2)) + 0x400, 0);
+
+				/* this hero gets a damage of 2W6+4 */
+				sub_hero_le(hero, dice_roll(2, 6, 4));
+			}
+		} else {
+
+			/* try to make a deal */
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4), get_city(0xc8), 3,
+							get_city(0xcc),
+							get_city(0xd0),
+							get_city(0xd4));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				p_money = get_party_money();
+
+				if (p_money < 1500) {
+					/* not enough money, so fight */
+					ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+				} else {
+					/* pay 1500 */
+					p_money -= 1500;
+					set_party_money(p_money);
+				}
+
+			} else if (answer == 2) {
+
+				/* fight */
+				ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+
+			} else {
+
+				/* try to be Charismatic */
+				answer = count_heroes_in_group();
+
+				if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 14 - answer) <= 0)
+				{
+					/* fight */
+					ds_writeb(0x26ac, 1);
+					ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+				}
+			}
+		}
+	}
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
