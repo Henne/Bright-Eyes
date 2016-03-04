@@ -176,17 +176,16 @@ void tevent_070(void)
 	}
 }
 
-#if defined(__BORLANDC__)
+/* Orc-Monolith */
 /* Borlandified and identical */
-/* Orc-Statuette */
 void tevent_071(void)
 {
 	signed short l_si;
-	signed short l_di;
+	signed short have_raft;
 	signed short i;
 	Bit8u *hero;
 
-	l_di = 0;
+	have_raft = 0;
 
 	/* Perception + 8, Sinnesschaerfe + 8 */
 	if (test_skill(hero = Real2Host(get_first_hero_available_in_group()), 51, 8) > 0 &&
@@ -211,6 +210,7 @@ void tevent_071(void)
 			} while (l_si == -1);
 
 			if (l_si == 2) {
+				/* investigate */
 
 				do {
 					l_si = GUI_radio(get_city(0x40), 3,
@@ -220,9 +220,14 @@ void tevent_071(void)
 				} while (l_si == -1);
 
 				if (l_si == 1) {
+
+					/* just swim */
 					TRV_swimm(2, 5);
+
 				} else if (l_si == 2) {
-					l_di = 1;
+
+					/* build a raft before swimming */
+					have_raft = 1;
 					timewarp(HOURS(1));
 					TRV_swimm(-1, 0);
 				}
@@ -239,6 +244,7 @@ void tevent_071(void)
 					} while (l_si == -1);
 
 					if (l_si == 1) {
+						/* destroy monolith */
 
 						GUI_output(get_city(0x64));
 
@@ -253,6 +259,7 @@ void tevent_071(void)
 						add_hero_ap_all(10);
 
 					} else {
+						/* leave monolith */
 
 						/* PUNISHMENT: set gods estimation to 0 for each god */
 						for (i = 1; i <= 14; i++) {
@@ -260,7 +267,7 @@ void tevent_071(void)
 						}
 					}
 
-					i = (!l_di ? 1 : 2);
+					i = (!have_raft ? 1 : 2);
 
 					do {
 						l_si = GUI_radio(get_city(0x68), (signed char)i,
@@ -279,7 +286,6 @@ void tevent_071(void)
 		}
 	}
 }
-#endif
 
 /**
  * \brief	all members of the current try to swim

@@ -5,10 +5,8 @@ namespace M302de {
 /* 0x20 */
 /* static */
 void TRV_swimm(signed short, signed short);
-#if defined(__BORLANDC__)
 /* 0x25 */
 void tevent_071(void);
-#endif
 
 /* 0x48 */
 void tevent_067(void);
