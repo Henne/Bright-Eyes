@@ -7,6 +7,8 @@ namespace M302de {
 void TRV_swimm(signed short, signed short);
 /* 0x25 */
 void tevent_071(void);
+/* 0x2a */
+void tevent_072(void);
 
 /* 0x48 */
 void tevent_067(void);
