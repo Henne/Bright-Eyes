@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 7/13
+ *	Functions rewritten: 8/13
  */
 #include <stdio.h>
 
@@ -332,6 +332,87 @@ void TRV_swimm(signed short mod, signed short percent)
 
 }
 
+/* a herb place you need to swim to */
+/* Borlandified and identical */
+void tevent_unused01(void)
+{
+	signed short answer;
+	signed short has_raft;
+	signed short options;
+	Bit8u *hero;
+
+	has_raft = 0;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	if ((test_skill(hero, 51, 8) > 0 && !ds_readb(0x3dd2)) ||
+		ds_readb(0x3dd2) != 0)
+	{
+
+		ds_writeb(0x3dd2, 1);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_city(0x74),
+			(char*)hero + HERO_NAME2,
+			(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+			(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
+
+
+		do {
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+					get_city(0x78),
+					get_city(0x7c));
+		} while (answer == -1);
+
+		if (answer == 2) {
+
+			do {
+				answer = GUI_radio(get_city(0x80), 3,
+						get_city(0x84),
+						get_city(0x88),
+						get_city(0x8c));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				TRV_swimm(2, 5);
+
+			} else if (answer == 2) {
+
+				has_raft = 1;
+				timewarp(HOURS(1));
+				TRV_swimm(-1, 0);
+			}
+
+			if (answer == 1 || answer == 2) {
+
+				GUI_output(get_city(0x98));
+
+				ds_writeb(0x66d0, 63);
+				TRV_inside_herb_place();
+				ds_writeb(0x66d0, -1);
+
+				options = (!has_raft ? 1 : 2);
+
+				do {
+					answer = GUI_radio(get_city(0x9c), (signed char)options,
+								get_city(0xa0),
+								get_city(0xa4));
+				} while (answer == -1);
+
+				if (answer == 1) {
+
+					TRV_swimm(2, 5);
+
+				} else {
+
+					timewarp(HOURS(1));
+					TRV_swimm(-1, 0);
+				}
+			}
+		}
+	}
+}
 
 #if !defined(__BORLANDC__)
 }
