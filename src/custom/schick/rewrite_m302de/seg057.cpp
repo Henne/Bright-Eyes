@@ -84,8 +84,6 @@ void sell_screen(Bit8u *shop_ptr)
 	Bit8u *hero1;
 	Bit8u *hero2;
 	Bit8u *hero3;
-	signed short free_slots;
-	signed short given_items;
 	signed short width;
 	signed short height;
 	signed short l15;
