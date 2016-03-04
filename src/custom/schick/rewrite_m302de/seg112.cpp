@@ -1,7 +1,8 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 4/13
+ *	Functions rewritten: 6/13
  */
+#include <stdio.h>
 
 #include "v302de.h"
 
@@ -9,9 +10,11 @@
 #include "seg007.h"
 #include "seg025.h"
 #include "seg092.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
 #include "seg109.h"
+#include "seg112.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -170,6 +173,117 @@ void tevent_070(void)
 		}
 	}
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+/* Orc-Statuette */
+void tevent_071(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short i;
+	Bit8u *hero;
+
+	l_di = 0;
+
+	/* Perception + 8, Sinnesschaerfe + 8 */
+	if (test_skill(hero = Real2Host(get_first_hero_available_in_group()), 51, 8) > 0 &&
+		!ds_readb(0x3dd1))
+	{
+		ds_writeb(0x3dd1, 1);
+
+		/* Track + 4, Faehrtensuche + 4 */
+		if (test_skill(hero, 26, 4) > 0) {
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0x34),
+				(char*)hero + HERO_NAME2,
+				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
+
+
+			do {
+				l_si = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+						get_city(0x38),
+						get_city(0x3c));
+			} while (l_si == -1);
+
+			if (l_si == 2) {
+
+				do {
+					l_si = GUI_radio(get_city(0x40), 3,
+							get_city(0x44),
+							get_city(0x48),
+							get_city(0x4c));
+				} while (l_si == -1);
+
+				if (l_si == 1) {
+					TRV_swamp(2, 5);
+				} else if (l_si == 2) {
+					l_di = 1;
+					timewarp(HOURS(1));
+					TRV_swamp(-1, 0);
+				}
+
+				if (l_si == 1 || l_si == 2) {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x58),
+						(char*)hero + HERO_NAME2);
+					do {
+						l_si = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+								get_city(0x5c),
+								get_city(0x60));
+					} while (l_si == -1);
+
+					if (l_si == 1) {
+
+						GUI_output(get_city(0x64));
+
+						/* REWARD: get gods estimation + 500 for each god */
+						for (i = 1; i <= 14; i++) {
+							add_ds_ds(GODS_ESTIMATION + 4 * i, 500L);
+						}
+
+						/* mark the statuette as destroyed => has effects in fights */
+						ds_writeb(0x3dda, 1);
+
+						add_hero_ap_all(10);
+
+					} else {
+
+						/* PUNISHMENT: set gods estimation to 0 for each god */
+						for (i = 1; i <= 14; i++) {
+							ds_writed(GODS_ESTIMATION + 4 * i, 0L);
+						}
+					}
+
+					i = (!l_di ? 1 : 2);
+
+					do {
+						l_si = GUI_radio(get_city(0x68), (signed char)i,
+								get_city(0x6c),
+								get_city(0x70));
+					} while (l_si == -1);
+
+					if (l_si == 1) {
+						TRV_swamp(2, 5);
+					} else {
+						timewarp(HOURS(1));
+						TRV_swamp(-1, 0);
+					}
+				}
+			}
+		}
+	}
+}
+
+void TRV_swamp(signed short mod, signed short percent)
+{
+
+}
+#endif
+
 
 #if !defined(__BORLANDC__)
 }
