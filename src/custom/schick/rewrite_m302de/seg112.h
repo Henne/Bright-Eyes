@@ -2,10 +2,10 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /* 0x20 */
 /* static */
-void TRV_swamp(signed short, signed short);
+void TRV_swimm(signed short, signed short);
+#if defined(__BORLANDC__)
 /* 0x25 */
 void tevent_071(void);
 #endif

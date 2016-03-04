@@ -3909,7 +3909,9 @@ static int n_seg112(unsigned offs)
 		CPU_Push16(percent);
 		CPU_Push16(mod);
 
-		return 0;
+		TRV_swimm(mod, percent);
+
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

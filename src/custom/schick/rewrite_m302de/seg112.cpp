@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 6/13
+ *	Functions rewritten: 7/13
  */
 #include <stdio.h>
 
@@ -9,10 +9,12 @@
 #include "seg002.h"
 #include "seg007.h"
 #include "seg025.h"
+#include "seg047.h"
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg105.h"
 #include "seg109.h"
 #include "seg112.h"
 
@@ -218,11 +220,11 @@ void tevent_071(void)
 				} while (l_si == -1);
 
 				if (l_si == 1) {
-					TRV_swamp(2, 5);
+					TRV_swimm(2, 5);
 				} else if (l_si == 2) {
 					l_di = 1;
 					timewarp(HOURS(1));
-					TRV_swamp(-1, 0);
+					TRV_swimm(-1, 0);
 				}
 
 				if (l_si == 1 || l_si == 2) {
@@ -267,22 +269,62 @@ void tevent_071(void)
 					} while (l_si == -1);
 
 					if (l_si == 1) {
-						TRV_swamp(2, 5);
+						TRV_swimm(2, 5);
 					} else {
 						timewarp(HOURS(1));
-						TRV_swamp(-1, 0);
+						TRV_swimm(-1, 0);
 					}
 				}
 			}
 		}
 	}
 }
+#endif
 
-void TRV_swamp(signed short mod, signed short percent)
+/**
+ * \brief	all members of the current try to swim
+ * \param	mod	modificator for the swim test
+ * \param	percent	to get infectect with NUMBSKULL
+ */
+/* Borlandified and identical */
+void TRV_swimm(signed short mod, signed short percent)
 {
+	signed short i;
+	Bit8u *hero;
+
+	hero = get_hero(0);
+
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero))
+		{
+
+			if (test_skill(hero, 14, (signed char)mod) <= 0) {
+				/* test failed */
+
+				hero_disease_test(hero, 2, 20 - (host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)));
+
+				loose_random_item(hero, percent, get_ltx(0x7e8));
+
+				sub_hero_le(hero, random_schick(5));
+
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0x54),
+					(char*)hero + HERO_NAME2);
+			} else {
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0x50),
+					(char*)hero + HERO_NAME2);
+			}
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+		}
+	}
 
 }
-#endif
 
 
 #if !defined(__BORLANDC__)
