@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 9/13
+ *	Functions rewritten: 10/13
  */
 #include <stdio.h>
 
@@ -9,6 +9,7 @@
 #include "seg002.h"
 #include "seg007.h"
 #include "seg025.h"
+#include "seg026.h"
 #include "seg047.h"
 #include "seg092.h"
 #include "seg096.h"
@@ -422,6 +423,33 @@ void tevent_072(void)
 	{
 		TRV_found_camp_place(1);
 		ds_writeb(0x3ddd, 1);
+	}
+}
+
+/* a corpse with the unicorn letter */
+/* Borlandified and identical */
+void tevent_073(void)
+{
+	signed short answer;
+
+	if (!ds_readb(0x3dde)) {
+
+		load_in_head(55);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+							get_city(0xa8), 2,
+							get_city(0xac), get_city(0xb0));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			GUI_dialog_na(0, get_city(0xb4));
+
+			loot_multi_chest(p_datseg + 0x3e24, get_city(0x1a4));
+
+			ds_writeb(0x3dde, 1);
+		}
 	}
 }
 
