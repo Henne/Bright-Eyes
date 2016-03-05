@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 11/13
+ *	Functions rewritten: 12/13
  */
 #include <stdio.h>
 
@@ -651,6 +651,48 @@ void tevent_075(void)
 
 		if (ret == 0) {
 			ds_writeb(0x3de0, 1);
+		}
+	}
+}
+
+/* Borlandified and identical */
+void tevent_076(void)
+{
+	signed short answer;
+
+	if (!ds_readb(0x3de1)) {
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 51, 5) > 0)
+		{
+			ds_writeb(0x3de1, 1);
+
+			GUI_dialog_na(53, get_city(0xfc));
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+								get_city(0x100), 2,
+								get_city(0x104),
+								get_city(0x108));
+			} while (answer == -1);
+
+			if (answer == 1) {
+				ds_writeb(0x4333, 5);
+			}
+		}
+
+	} else {
+
+		load_in_head(53);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+							get_city(0x10c), 2,
+							get_city(0x110),
+							get_city(0x114));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			ds_writeb(0x4333, 5);
 		}
 	}
 }
