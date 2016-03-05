@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 10/13
+ *	Functions rewritten: 11/13
  */
 #include <stdio.h>
 
@@ -556,6 +556,101 @@ void tevent_074(void)
 					ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
 				}
 			}
+		}
+	}
+}
+
+/* Borlandified and identical */
+void tevent_075(void)
+{
+	signed short i;
+	signed short answer;
+	signed short ret;
+	Bit8u *hero;
+
+	ret = -1;
+
+	if (!ds_readb(0x3de0)) {
+
+		do {
+			answer = GUI_radio(get_city(0xdc), 2,
+						get_city(0xe0),
+						get_city(0xe4));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			do {
+				answer = GUI_radio(get_city(0xe8), 3,
+							get_city(0xec),
+							get_city(0xf0),
+							get_city(0xf4));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				ds_writeb(0x26ac, 2);
+
+				ret = TRV_fight_event(183, 75);
+
+			} else if (answer == 2) {
+
+				i = 184;
+
+				if (!ds_readb(0x3e16) && !ds_readb(0x3e17)) {
+
+					i = 183;
+
+				} else if (ds_readb(0x3e16) != 0 && ds_readb(0x3e17) != 0) {
+
+					i = 185;
+				}
+
+				ret = TRV_fight_event(i, 75);
+
+			} else {
+
+				hero = get_hero(0);
+				for (i = answer = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero) &&
+						test_skill(hero, 13, 0) <= 0)
+					{
+						answer++;
+					}
+				}
+
+				if (answer > 1) {
+
+					GUI_output(get_city(0xf8));
+
+					ds_writeb(0x26ac, 1);
+
+					i = 184;
+
+					if (!ds_readb(0x3e16) && !ds_readb(0x3e17)) {
+
+						i = 183;
+
+					} else if (ds_readb(0x3e16) != 0 && ds_readb(0x3e17) != 0) {
+
+						i = 185;
+					}
+
+					ret = TRV_fight_event(i, 75);
+
+				} else {
+					return;
+				}
+			}
+		} else {
+			return;
+		}
+
+		if (ret == 0) {
+			ds_writeb(0x3de0, 1);
 		}
 	}
 }
