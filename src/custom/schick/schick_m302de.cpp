@@ -11505,6 +11505,48 @@ static int seg117(unsigned short offs)
 	}
 }
 
+static int seg118(unsigned short offs)
+{
+	switch (offs) {
+	case 0x20: {
+		return 0;
+	}
+	case 0x25: {
+		return 0;
+	}
+	case 0x2a: {
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int seg119(unsigned short offs)
 {
 	switch (offs) {
@@ -11725,7 +11767,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		case 0x14d1:	return 0;
 		case 0x14d8:	return seg116(offs);
 		case 0x14e0:	return seg117(offs);
-		case 0x14e7:	return 0;
+		case 0x14e7:	return seg118(offs);
 		case 0x14ed:	return seg119(offs);
 		case 0x14f0:	return seg120(offs);
 		case 0x14f6:	return seg121(offs);
