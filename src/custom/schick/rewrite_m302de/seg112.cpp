@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
  *	Functions rewritten: 13/13 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg112.cpp
  */
 #include <stdio.h>
 
@@ -23,7 +27,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void tevent_067(void)
 {
 	signed short i;
@@ -117,7 +120,6 @@ void tevent_067(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_068(void)
 {
 #if !defined(__BORLANDC__)
@@ -125,7 +127,6 @@ void tevent_068(void)
 #endif
 }
 
-/* Borlandified and identical */
 void tevent_069(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 5) > 0 && !ds_readb(0x3dcd)) ||
@@ -136,7 +137,6 @@ void tevent_069(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_070(void)
 {
 	signed short l_si;
@@ -178,7 +178,6 @@ void tevent_070(void)
 }
 
 /* Orc-Monolith */
-/* Borlandified and identical */
 void tevent_071(void)
 {
 	signed short l_si;
@@ -293,7 +292,6 @@ void tevent_071(void)
  * \param	mod	modificator for the swim test
  * \param	percent	to get infectect with NUMBSKULL
  */
-/* Borlandified and identical */
 void TRV_swimm(signed short mod, signed short percent)
 {
 	signed short i;
@@ -334,7 +332,6 @@ void TRV_swimm(signed short mod, signed short percent)
 }
 
 /* a herb place you need to swim to */
-/* Borlandified and identical */
 void tevent_unused01(void)
 {
 	signed short answer;
@@ -415,7 +412,6 @@ void tevent_unused01(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_072(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3ddd)) ||
@@ -427,7 +423,6 @@ void tevent_072(void)
 }
 
 /* a corpse with the unicorn letter */
-/* Borlandified and identical */
 void tevent_073(void)
 {
 	signed short answer;
@@ -454,7 +449,6 @@ void tevent_073(void)
 }
 
 /* brigants */
-/* Borlandified and identical */
 void tevent_074(void)
 {
 	signed short answer;
@@ -560,7 +554,6 @@ void tevent_074(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_075(void)
 {
 	signed short i;
@@ -655,7 +648,6 @@ void tevent_075(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_076(void)
 {
 	signed short answer;
@@ -698,7 +690,6 @@ void tevent_076(void)
 }
 
 /* brigants */
-/* Borlandified and identical */
 void tevent_077(void)
 {
 	signed short answer;
