@@ -45,14 +45,14 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 	signed short randval;
 	struct dummy a = *(struct dummy*)(p_datseg + 0x6682);
 
-	if ((host_readbs(hero + 0x21) == 7) &&
+	if ((host_readbs(hero + HERO_TYPE) == 7) &&
 		(ds_readbs((0x099d + 0) + 10 * spell) == 2))
 	{
 		/* spell is a warlock spell */
 		l_di = 2;
 	}
 
-	if ((host_readbs(hero + 0x21) >= 10) &&
+	if ((host_readbs(hero + HERO_TYPE) >= 10) &&
 		((ds_readbs((0x099d + 0) + 10 * spell) == 3) ||
 			(ds_readbs((0x099d + 0) + 10 * spell) == 5) ||
 			(ds_readbs((0x099d + 0) + 10 * spell) == 4)))
@@ -61,14 +61,14 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 		l_di = 2;
 	}
 
-	if ((host_readbs(hero + 0x21) == 8) &&
+	if ((host_readbs(hero + HERO_TYPE) == 8) &&
 		(ds_readbs((0x099d + 0) + 10 * spell) == 0))
 	{
 		/* spell is a druid spell */
 		l_di = 2;
 	}
 
-	if (host_readbs(hero + 0x21) == 9) {
+	if (host_readbs(hero + HERO_TYPE) == 9) {
 
 		/* mages */
 		if (ds_readbs((0x099d + 0) + 10 * spell) == 1) {
@@ -76,12 +76,12 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 			l_di = 2;
 		}
 
-		if ((a.a[host_readbs(hero + 0x194)].first <= spell) &&
-			(a.a[host_readbs(hero + 0x194)].last >= spell)) {
+		if ((a.a[host_readbs(hero + HERO_MAGIC_SCHOOL)].first <= spell) &&
+			(a.a[host_readbs(hero + HERO_MAGIC_SCHOOL)].last >= spell)) {
 			l_di = 2;
 		}
 
-		if (is_in_word_array(spell, (signed short*)Real2Host(ds_readd(0x0d97 + 4 * host_readbs(hero + 0x194)))))
+		if (is_in_word_array(spell, (signed short*)Real2Host(ds_readd(0x0d97 + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))))
 		{
 			l_di = 3;
 		}
@@ -101,15 +101,15 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 	} else {
 		/* try to increase */
 
-		dec_ptr_bs(hero + 0x193);
+		dec_ptr_bs(hero + HERO_SP_RISE);
 
-		if (host_readbs(hero + 0x13d + spell) >= 11) {
+		if (host_readbs(hero + HERO_SPELLS + spell) >= 11) {
 			randval = random_interval(3, 18);
 		} else {
 			randval = random_interval(2, 12);
 		}
 
-		if (host_readbs(hero + 0x13d + spell) < randval) {
+		if (host_readbs(hero + HERO_SPELLS + spell) < randval) {
 
 			/* success */
 
@@ -159,15 +159,15 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 	} else {
 		/* try to increase */
 
-		dec_ptr_bs(hero + 0x13c);
+		dec_ptr_bs(hero + HERO_TA_RISE);
 
-		if (host_readbs(hero + 0x108 + skill) >= 11) {
+		if (host_readbs(hero + HERO_TA_FIGHT + skill) >= 11) {
 			randval = random_interval(3, 18);
 		} else {
 			randval = random_interval(2, 12);
 		}
 
-		if (host_readbs(hero + 0x108 + skill) < randval) {
+		if (host_readbs(hero + HERO_TA_FIGHT + skill) < randval) {
 
 			/* success */
 
@@ -204,9 +204,9 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 				} while (randval == -1);
 
 				if (randval == 1) {
-					inc_ptr_bs(hero + 0x68 + skill);
+					inc_ptr_bs(hero + HERO_AT + skill);
 				} else {
-					inc_ptr_bs(hero + 0x6f + skill);
+					inc_ptr_bs(hero + HERO_PA + skill);
 				}
 			}
 
@@ -240,32 +240,32 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 
 		/* leave the loop if 3 incs failes or the skill value is 18 */
 		if ((host_readbs(Real2Host(ds_readd(0xe3b6)) + skill * 2) == 3) ||
-			(host_readbs(hero + 0x108 + skill) == 18)) {
+			(host_readbs(hero + HERO_TA_FIGHT + skill) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
-			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + 0x10);
+			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + HERO_NAME2);
 #endif
 		} else {
 
 			/* dec available skill incs */
-			dec_ptr_bs(hero + 0x13c);
+			dec_ptr_bs(hero + HERO_TA_RISE);
 
 			/* check if available skill incs are 0 */
-			if (!host_readbs(hero + 0x13c))
+			if (!host_readbs(hero + HERO_TA_RISE))
 				done = 1;
 
 			/* on a  skill value < 11 use 2W6 else 3W6 */
-			if (host_readbs(hero + 0x108 + skill) >= 11) {
+			if (host_readbs(hero + HERO_TA_FIGHT + skill) >= 11) {
 				randval = random_interval(3, 18);
 			} else {
 				randval = random_interval(2, 12);
 			}
 
 			/* check if increase success */
-			if (host_readbs(hero + 0x108 + skill) < randval) {
+			if (host_readbs(hero + HERO_TA_FIGHT + skill) < randval) {
 
 				/* inc skill value */
-				inc_ptr_bs(hero + 0x108 + skill);
+				inc_ptr_bs(hero + HERO_TA_FIGHT + skill);
 
 				/* reset failed counter */
 				host_writeb(Real2Host(ds_readd(0xe3b6)) + 2 * skill, 0);
@@ -274,10 +274,10 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 
 				/* adjust AT PA values */
 				if (skill <= 6) {
-					if (host_readbs(hero + 0x68 + skill) > host_readbs(hero + 0x6f + skill)) {
-						inc_ptr_bs(hero + 0x6f + skill);
+					if (host_readbs(hero + HERO_AT + skill) > host_readbs(hero + HERO_PA + skill)) {
+						inc_ptr_bs(hero + HERO_PA + skill);
 					} else {
-						inc_ptr_bs(hero + 0x68 + skill);
+						inc_ptr_bs(hero + HERO_AT + skill);
 					}
 				}
 
@@ -308,31 +308,31 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 	while (!done) {
 		/* leave the loop if 3 incs failes or the spell value is 18 */
 		if ((host_readb(Real2Host(ds_readd(0xe3b2)) + 2 * spell) == 3) ||
-			(host_readbs(hero + 0x13d + spell) == 18)) {
+			(host_readbs(hero + HERO_SPELLS + spell) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
-			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + 0x10);
+			D1_INFO("%s hat alle Versuche aufgebraucht\n", hero + HERO_NAME2);
 #endif
 		} else {
 
 			/* dec available spell incs */
-			dec_ptr_bs(hero + 0x193);
+			dec_ptr_bs(hero + HERO_SP_RISE);
 
 			/* check if available spell incs are 0 */
-			if (!host_readbs(hero + 0x193))
+			if (!host_readbs(hero + HERO_SP_RISE))
 				done = 1;
 
 			/* on a  spell value < 11 use 2W6 else 3W6 */
-			if (host_readbs(hero + 0x13d + spell) >= 11)
+			if (host_readbs(hero + HERO_SPELLS + spell) >= 11)
 				randval = random_interval(3, 18);
 			else
 				randval = random_interval(2, 12);
 
 			/* check if increase success */
-			if (host_readbs(hero + 0x13d + spell) < randval) {
+			if (host_readbs(hero + HERO_SPELLS + spell) < randval) {
 
 				/* inc spell value */
-				inc_ptr_bs(hero + 0x13d + spell);
+				inc_ptr_bs(hero + HERO_SPELLS + spell);
 
 				/* reset failed counter */
 				host_writeb(Real2Host(ds_readd(0xe3b2)) + 2 * spell, 0);
@@ -387,7 +387,7 @@ void level_up(signed short hero_pos)
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_ltx(0x66c),
-		(char*)hero + 0x10);
+		(char*)hero + HERO_NAME2);
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -407,7 +407,7 @@ void level_up(signed short hero_pos)
 	load_ggsts_nvf();
 
 	/* increment level */
-	inc_ptr_bs(hero + 0x27);
+	inc_ptr_bs(hero + HERO_LEVEL);
 
 	ds_writew(0x2c9d, hero_pos);
 
@@ -420,7 +420,7 @@ void level_up(signed short hero_pos)
 	l_si = -1;
 
 	for (i = 0; i <= 6; i++) {
-		if (host_readbs(hero + 0x34 + 3 * i) < 20) {
+		if (host_readbs(hero + HERO_MU_ORIG + 3 * i) < 20) {
 			l_si = 0;
 		}
 	}
@@ -443,15 +443,15 @@ void level_up(signed short hero_pos)
 						get_ltx(0x684),
 						get_ltx(0x688)) - 1;
 
-			if (host_readbs(hero + 0x34 + 3 * l_si) >= 20) {
+			if (host_readbs(hero + HERO_MU_ORIG + 3 * l_si) >= 20) {
 				l_si = -2;
 				GUI_output(get_city(0xac));
 			}
 
 		} while (l_si == -2);
 
-		inc_ptr_bs(hero + 0x34 + 0 + 3 * l_si);
-		inc_ptr_bs(hero + 0x34 + 1 + 3 * l_si);
+		inc_ptr_bs(hero + HERO_MU_ORIG + 0 + 3 * l_si);
+		inc_ptr_bs(hero + HERO_MU_ORIG + 1 + 3 * l_si);
 
 		status_show(hero_pos);
 
@@ -463,7 +463,7 @@ void level_up(signed short hero_pos)
 	l_si = -1;
 
 	for (i = 7; i <= 13; i++) {
-		if (host_readbs(hero + 0x34 + 3 * i) > 2) {
+		if (host_readbs(hero + HERO_MU_ORIG + 3 * i) > 2) {
 			l_si = 0;
 		}
 	}
@@ -483,7 +483,7 @@ void level_up(signed short hero_pos)
 						get_ltx(0x6a0),
 						get_ltx(0x6a4)) - 1;
 
-			if (host_readbs(hero + 0x34 + 3 * (l_si + 7)) <= 2) {
+			if (host_readbs(hero + HERO_MU_ORIG + 3 * (l_si + 7)) <= 2) {
 				l_si = -2;
 				GUI_output(get_city(0xc0));
 			}
@@ -494,15 +494,15 @@ void level_up(signed short hero_pos)
 
 		for (i = 0; i < 3; i++) {
 
-			if (random_schick(20) <= host_readbs(hero + 0x34 + 3 * (l_si + 7))) {
+			if (random_schick(20) <= host_readbs(hero + HERO_MU_ORIG + 3 * (l_si + 7))) {
 				v3 = 1;
 			}
 		}
 
 		if (v3 != 0) {
 
-			dec_ptr_bs(hero + 0x34 + 0 + 3 * (l_si + 7));
-			dec_ptr_bs(hero + 0x34 + 1 + 3 * (l_si + 7));
+			dec_ptr_bs(hero + HERO_MU_ORIG + 0 + 3 * (l_si + 7));
+			dec_ptr_bs(hero + HERO_MU_ORIG + 1 + 3 * (l_si + 7));
 
 			GUI_output(get_city(0x94));
 
@@ -519,30 +519,30 @@ void level_up(signed short hero_pos)
 
 	/* check changes in MR */
 
-	mr = (host_readbs(hero + 0x37) + host_readbs(hero + 0x34) + host_readbs(hero + 0x27)) / 3 - 2 * host_readbs(hero + 0x49);
-	mr += ds_readbs(MR_MODIFICATORS + host_readbs(hero + 0x21));
+	mr = (host_readbs(hero + 0x37) + host_readbs(hero + HERO_MU_ORIG) + host_readbs(hero + HERO_LEVEL)) / 3 - 2 * host_readbs(hero + 0x49);
+	mr += ds_readbs(MR_MODIFICATORS + host_readbs(hero + HERO_TYPE));
 
-	if (host_readbs(hero + 0x66) != mr) {
+	if (host_readbs(hero + HERO_MR) != mr) {
 		/* set new basic MR */
-		host_writebs(hero + 0x66, mr);
+		host_writebs(hero + HERO_MR, mr);
 
 		/* check for STIRNREIF / CORONET equipped => MR+2 */
-		if (host_readws(hero + 0x196) == 217) {
-			add_ptr_bs(hero + 0x66, 2);
+		if (host_readws(hero + HERO_ITEM_HEAD) == 217) {
+			add_ptr_bs(hero + HERO_MR, 2);
 		}
 		/* check for RING / RING equipped => MR+2 */
-		if (host_readws(hero + 0x196 + 4 * SIZEOF_KS_ITEM) == 165) {
-			add_ptr_bs(hero + 0x66, 2);
+		if (host_readws(hero + HERO_ITEM_HEAD + 4 * SIZEOF_KS_ITEM) == 165) {
+			add_ptr_bs(hero + HERO_MR, 2);
 		}
 		/* check for AMULETT / in inventory => MR+5 */
 		if (get_item_pos(hero, 163) != -1) {
-			add_ptr_bs(hero + 0x66, 5);
+			add_ptr_bs(hero + HERO_MR, 5);
 		}
 
 		/* show the user the new MR value */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0xa4),
-			host_readbs(hero + 0x66));
+			host_readbs(hero + HERO_MR));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -557,16 +557,16 @@ void level_up(signed short hero_pos)
 
 
 	/* add skill increasements */
-	add_ptr_bs(hero + 0x13c, ds_readbs(0x2d0d + 1 + host_readbs(hero + 0x21)));
+	add_ptr_bs(hero + HERO_TA_RISE, ds_readbs(0x2d0d + 1 + host_readbs(hero + HERO_TYPE)));
 
 	/* roll how many LE points the hero may get */
 	i = random_schick(6);
 
-	if (host_readbs(hero + 0x21) >= 7) {
+	if (host_readbs(hero + HERO_TYPE) >= 7) {
 		/* a magic user */
 
 		/* add spell increasements */
-		add_ptr_bs(hero + 0x193, ds_readbs(0x2d14 + host_readbs(hero + 0x21)));
+		add_ptr_bs(hero + HERO_SP_RISE, ds_readbs(0x2d14 + host_readbs(hero + HERO_TYPE)));
 
 		i += 2;
 
@@ -585,21 +585,21 @@ void level_up(signed short hero_pos)
 
 
 		/* add LE and fill them up */
-		add_ptr_ws(hero + 0x5e, l_si);
+		add_ptr_ws(hero + HERO_LE_ORIG, l_si);
 		add_hero_le(hero, l_si);
 		/* add AE and fill them up */
-		add_ptr_ws(hero + 0x62, i - l_si);
+		add_ptr_ws(hero + HERO_AE_ORIG, i - l_si);
 		add_hero_ae(hero, i - l_si);
 
 		/* change skill increasements into AE */
-		if (host_readbs(hero + 0x21) == 9 && ds_readws(GAME_MODE) == 2) {
+		if (host_readbs(hero + HERO_TYPE) == 9 && ds_readws(GAME_MODE) == 2) {
 
 			if (GUI_bool(get_city(0xa0))) {
 				/* trade 10 skill increasements into 1W6+2 AE */
-				add_ptr_bs(hero + 0x193, -10);
+				add_ptr_bs(hero + HERO_SP_RISE, -10);
 				i = random_interval(3, 8);
-				add_ptr_ws(hero + 0x62, i);
-				add_ptr_ws(hero + 0x64, i);
+				add_ptr_ws(hero + HERO_AE_ORIG, i);
+				add_ptr_ws(hero + HERO_AE, i);
 			}
 		}
 
@@ -614,7 +614,7 @@ void level_up(signed short hero_pos)
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		/* add LE and fill them up */
-		add_ptr_ws(hero + 0x5e, i);
+		add_ptr_ws(hero + HERO_LE_ORIG, i);
 		add_hero_le(hero, i);
 	}
 
@@ -631,11 +631,11 @@ void level_up(signed short hero_pos)
 
 		i = v2 = 0;
 
-		while (host_readbs(hero + 0x13c) > 0) {
+		while (host_readbs(hero + HERO_TA_RISE) > 0) {
 
-			l_si = host_readws(Real2Host(ds_readd(0xe3ba)) + 100 * host_readbs(hero + 0x21) + 4 * i);
+			l_si = host_readws(Real2Host(ds_readd(0xe3ba)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i);
 
-			if (host_readbs(hero + 0x108 + l_si) < host_readws(Real2Host(ds_readd(0xe3ba)) + 100 * host_readbs(hero + 0x21) + 4 * i + 2))
+			if (host_readbs(hero + HERO_TA_FIGHT + l_si) < host_readws(Real2Host(ds_readd(0xe3ba)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i + 2))
 			{
 				inc_skill_novice(hero, l_si);
 			}
@@ -649,28 +649,28 @@ void level_up(signed short hero_pos)
 				v2++;
 
 				if (v2 > 5) {
-					host_writeb(hero + 0x13c, 0);
+					host_writeb(hero + HERO_TA_RISE, 0);
 				}
 
 			}
 		}
 
-		if (host_readbs(hero + 0x21) >= 7) {
+		if (host_readbs(hero + HERO_TYPE) >= 7) {
 
 			i = 1;
 			v2 = 0;
 
-			while (host_readbs(hero + 0x193) != 0 && v2 < 3) {
+			while (host_readbs(hero + HERO_SP_RISE) != 0 && v2 < 3) {
 
 				v2++;
 
-				switch (host_readbs(hero + 0x21)) {
+				switch (host_readbs(hero + HERO_TYPE)) {
 
 					case 7: {
 
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 2 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 2 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -678,7 +678,7 @@ void level_up(signed short hero_pos)
 
 						i = 0;
 
-						while (host_readbs(hero + 0x193) != 0 && ds_readws(0x6544 + 2 * i) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && ds_readws(0x6544 + 2 * i) != -1) {
 							inc_spell_novice(hero, ds_readws(0x6544 + 2 * i));
 							i++;
 						}
@@ -687,9 +687,9 @@ void level_up(signed short hero_pos)
 					}
 					case 8: {
 
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 0 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 0 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -697,7 +697,7 @@ void level_up(signed short hero_pos)
 
 						i = 0;
 
-						while (host_readbs(hero + 0x193) != 0 && ds_readws(0x654a + 2 * i) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && ds_readws(0x654a + 2 * i) != -1) {
 							inc_spell_novice(hero, ds_readws(0x654a + 2 * i));
 							i++;
 						}
@@ -708,40 +708,40 @@ void level_up(signed short hero_pos)
 
 						i = 0;
 
-						while (host_readbs(hero + 0x193) != 0 &&
-							(host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + 0x194)))) + 2 * i)) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 &&
+							(host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i)) != -1) {
 
-							if (host_readbs(hero + 0x13d +
-									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + 0x194)))) + 2 * i)) < 11)
+							if (host_readbs(hero + HERO_SPELLS +
+									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i)) < 11)
 							{
 								inc_spell_novice(hero,
-									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + 0x194)))) + 2 * i));
+									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i));
 							}
 							i++;
 						}
 
 						i = 0;
-						while (host_readbs(hero + 0x193) != 0 &&
-							(host_readws(Real2Host((ds_readd(0x662a + 4 * host_readbs(hero + 0x194)))) + 2 * i)) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 &&
+							(host_readws(Real2Host((ds_readd(0x662a + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i)) != -1) {
 
-							if (host_readbs(hero + 0x13d +
-									host_readws(Real2Host((ds_readd(0x662a + 4 * host_readbs(hero + 0x194)))) + 2 * i)) < 11)
+							if (host_readbs(hero + HERO_SPELLS +
+									host_readws(Real2Host((ds_readd(0x662a + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i)) < 11)
 							{
 								inc_spell_novice(hero,
-									host_readws(Real2Host((ds_readd(0x662a + 4 * host_readbs(hero + 0x194)))) + 2 * i));
+									host_readws(Real2Host((ds_readd(0x662a + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i));
 							}
 							i++;
 						}
 
 						i = 0;
-						while (host_readbs(hero + 0x193) != 0 &&
-							(host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + 0x194)))) + 2 * i)) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 &&
+							(host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i)) != -1) {
 
-							if (host_readbs(hero + 0x13d +
-									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + 0x194)))) + 2 * i)) < 11)
+							if (host_readbs(hero + HERO_SPELLS +
+									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i)) < 11)
 							{
 								inc_spell_novice(hero,
-									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + 0x194)))) + 2 * i));
+									host_readws(Real2Host((ds_readd(0x0d97 + 4 * host_readbs(hero + HERO_MAGIC_SCHOOL)))) + 2 * i));
 							}
 							i++;
 						}
@@ -750,9 +750,9 @@ void level_up(signed short hero_pos)
 					}
 					case 10: {
 
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 3 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -760,15 +760,15 @@ void level_up(signed short hero_pos)
 
 						i = 0;
 
-						while (host_readbs(hero + 0x193) != 0 && ds_readws(0x664e + 2 * i) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && ds_readws(0x664e + 2 * i) != -1) {
 							inc_spell_novice(hero, ds_readws(0x664e + 2 * i));
 							i++;
 						}
 
 						i = 1;
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 3 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -778,9 +778,9 @@ void level_up(signed short hero_pos)
 					}
 					case 11: {
 
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 4 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 4 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -788,15 +788,15 @@ void level_up(signed short hero_pos)
 
 						i = 0;
 
-						while (host_readbs(hero + 0x193) != 0 && ds_readws(0x666a + 2 * i) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && ds_readws(0x666a + 2 * i) != -1) {
 							inc_spell_novice(hero, ds_readws(0x666a + 2 * i));
 							i++;
 						}
 
 						i = 1;
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 4 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 4 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -805,9 +805,9 @@ void level_up(signed short hero_pos)
 					}
 					case 12: {
 
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 5 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 5 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -815,15 +815,15 @@ void level_up(signed short hero_pos)
 
 						i = 0;
 
-						while (host_readbs(hero + 0x193) != 0 && ds_readws(0x665c + 2 * i) != -1) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && ds_readws(0x665c + 2 * i) != -1) {
 							inc_spell_novice(hero, ds_readws(0x665c + 2 * i));
 							i++;
 						}
 
 						i = 1;
-						while (host_readbs(hero + 0x193) != 0 && i < 86) {
+						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 5 && host_readbs(hero + 0x13d + i) < 11) {
+							if (ds_readbs(0x99d + 0 + 10 * i) == 5 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -833,15 +833,15 @@ void level_up(signed short hero_pos)
 				}
 			}
 
-			while (host_readbs(hero + 0x193) != 0) {
+			while (host_readbs(hero + HERO_SP_RISE) != 0) {
 				inc_spell_novice(hero, random_schick(86));
 			}
 		}
 
 	} else {
 
-		if ((host_readbs(hero + 0x21) >= 7) &&
-			(l_di = ds_readbs(0x2d1a + host_readbs(hero + 0x21))) &&
+		if ((host_readbs(hero + HERO_TYPE) >= 7) &&
+			(l_di = ds_readbs(0x2d1a + host_readbs(hero + HERO_TYPE))) &&
 			GUI_bool(get_city(0xb4)))
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -856,8 +856,8 @@ void level_up(signed short hero_pos)
 				}
 				l_di -= i;
 
-				sub_ptr_bs(hero + 0x193, i);
-				add_ptr_bs(hero + 0x13c, i);
+				sub_ptr_bs(hero + HERO_SP_RISE, i);
+				add_ptr_bs(hero + HERO_TA_RISE, i);
 
 			} else {
 
@@ -872,13 +872,13 @@ void level_up(signed short hero_pos)
 						i = l_di;
 					}
 
-					add_ptr_bs(hero + 0x193, i);
-					sub_ptr_bs(hero + 0x13c, i);
+					add_ptr_bs(hero + HERO_SP_RISE, i);
+					sub_ptr_bs(hero + HERO_TA_RISE, i);
 				}
 			}
 		}
 
-		while (host_readbs(hero + 0x13c) != 0) {
+		while (host_readbs(hero + HERO_TA_RISE) != 0) {
 
 			l_si = LVL_select_talent(hero, 1);
 
@@ -894,7 +894,7 @@ void level_up(signed short hero_pos)
 			}
 		}
 
-		while (host_readbs(hero + 0x193) != 0) {
+		while (host_readbs(hero + HERO_SP_RISE) != 0) {
 
 			l_si = select_spell(hero, 1);
 

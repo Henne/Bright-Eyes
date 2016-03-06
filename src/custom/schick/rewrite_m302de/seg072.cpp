@@ -282,15 +282,15 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 			} else if (state == 2) {
 				/* is ERWO in the group ? */
 				ds_writew(0xe30e,
-					host_readbs(get_hero(6) + 0x89) == 6 && is_hero_available_in_group(get_hero(6)) ? 3 : 15);
+					host_readbs(get_hero(6) + HERO_NPC_ID) == 6 && is_hero_available_in_group(get_hero(6)) ? 3 : 15);
 			} else if (state == 6) {
 
 				/* copy the name */
-				strcpy((char*)(p_datseg + 0xe42e), (char*)(get_hero(6) + 0x10));
+				strcpy((char*)(p_datseg + 0xe42e), (char*)(get_hero(6) + HERO_NAME2));
 				/* set a pointer */
 				ds_writed(0xe308, (Bit32u)RealMake(datseg, 0xe42e));
 				/* copy the picture of the NPC */
-				memcpy(Real2Host(ds_readd(DTP2)), get_hero(6) + 0x2da, 0x400);
+				memcpy(Real2Host(ds_readd(DTP2)), get_hero(6) + HERO_PORTRAIT, 0x400);
 				/* remove the NPC from the group */
 				remove_npc(24, 31, 231, get_ltx(0xbd8), (Bit8u*)0);
 
@@ -541,14 +541,14 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
 			signed short i;
 			/* ASGRIMM takes a meal with the heros */
 			hero = get_hero(0);
-			for (i = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if ((host_readbs(hero + 0x21) != 0) &&
-					(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				if ((host_readbs(hero + HERO_TYPE) != 0) &&
+					(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero))
 				{
 					/* set hunger and thirst to 0 */
-					host_writebs(hero + 0x7f, host_writebs(hero + 0x80, 0));
+					host_writebs(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
 				}
 			}
 		} else if (state == 16) {
@@ -661,7 +661,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			/* REMARK: what if the NPC is choosen ? */
 			/* REMARK: what if the positions are changed ? */
 			/* REMARK: what if the game is saved and the heros are at another mem location ? */
-			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * ds_writeb(UNICORN_HERO_POS, (unsigned char)get_hero_CH_best())));
+			ds_writed(UNICORN_HERO_PTR, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * ds_writeb(UNICORN_HERO_POS, (unsigned char)get_hero_CH_best())));
 		} else if (state == 7) {
 			timewarp(HOURS(1));
 		} else if (state == 8) {

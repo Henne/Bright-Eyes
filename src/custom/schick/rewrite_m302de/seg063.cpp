@@ -313,15 +313,15 @@ void do_harbour(void)
 					disease_effect();
 
 					hero = get_hero(0);
-					for (l_si = 0; l_si <= 6; l_si++, hero += 0x6da) {
+					for (l_si = 0; l_si <= 6; l_si++, hero += SIZEOF_HERO) {
 
-						if (host_readbs(hero + 0x21) != 0 &&
-							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+						if (host_readbs(hero + HERO_TYPE) != 0 &&
+							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 						{
 							GRP_hero_sleep(hero, a.a[ds_readbs(0xe3fa)]);
 
-							host_writebs(hero + 0x7f,
-								host_writebs(hero + 0x80, 0));
+							host_writebs(hero + HERO_HUNGER,
+								host_writebs(hero + HERO_THIRST, 0));
 						}
 					}
 				}
@@ -540,13 +540,13 @@ void sea_travel(signed short passage, signed short dir)
 			ds_writeb(TRAVEL_BY_SHIP, 1);
 
 			hero = get_hero(0);
-			for (i = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + 0x21) != 0 &&
-					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					GRP_hero_sleep(hero, a.a[ds_readbs(0xe3fa)]);
-					host_writeb(hero + 0x7f, host_writebs(hero + 0x80, 0));
+					host_writeb(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
 				}
 			}
 

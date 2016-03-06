@@ -47,11 +47,11 @@ void rabies(RealPt hero, signed short hero_pos)
 	done = 0;
 
 	group_bak = ds_readbs(CURRENT_GROUP);
-	sex_bak = host_readbs(Real2Host(hero) + 0x22);
-	group_nr = host_readbs(Real2Host(hero) + 0x87);
+	sex_bak = host_readbs(Real2Host(hero) + HERO_SEX);
+	group_nr = host_readbs(Real2Host(hero) + HERO_GROUP_NO);
 
 	/* TODO : Sex = 50, what means 50 ? */
-	host_writeb(Real2Host(hero) + 0x22, 50);
+	host_writeb(Real2Host(hero) + HERO_SEX, 50);
 
 	/* switch to the group of the hero */
 	while (ds_readbs(CURRENT_GROUP) != group_nr) {
@@ -59,12 +59,12 @@ void rabies(RealPt hero, signed short hero_pos)
 	}
 
 	hero_pos = 0;
-	while (host_readbs(get_hero(hero_pos) + 0x22) != 50) {
+	while (host_readbs(get_hero(hero_pos) + HERO_SEX) != 50) {
 		hero_pos++;
 	}
 
-	hero = (RealPt)ds_readd(HEROS) + 0x6da * hero_pos;
-	host_writeb(Real2Host(hero) + 0x22, sex_bak);
+	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos;
+	host_writeb(Real2Host(hero) + HERO_SEX, sex_bak);
 
 	if (ds_readbs(0x2845) == 0) {
 		draw_status_line();
@@ -76,23 +76,23 @@ void rabies(RealPt hero, signed short hero_pos)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xb94),
-				(char*)Real2Host(hero) + 0x10,
-				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + 0x22), 2)),
-				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + 0x22), 2)));
+				(char*)Real2Host(hero) + HERO_NAME2,
+				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)),
+				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)));
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 500,
 				(char*)get_ltx(0xb98),
-				(char*)Real2Host(hero) + 0x10);
+				(char*)Real2Host(hero) + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 600,
 				(char*)get_ltx(0xb9c),
-				(char*)Real2Host(hero) + 0x10);
+				(char*)Real2Host(hero) + HERO_NAME2);
 
 			bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 6);
 
-			answer = GUI_dialogbox(hero + 0x2da,
-						Real2Host(hero) + 0x10,
+			answer = GUI_dialogbox(hero + HERO_PORTRAIT,
+						Real2Host(hero) + HERO_NAME2,
 						Real2Host(ds_readd(DTP2)),
 						3,
 						Real2Host(ds_readd(DTP2)) + 500,
@@ -104,11 +104,11 @@ void rabies(RealPt hero, signed short hero_pos)
 			if (answer == 1) {
 				/* knock the infected hero out */
 
-				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + 0x60) / 2);
+				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) / 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xba4),
-					(char*)Real2Host(hero) + 0x10);
+					(char*)Real2Host(hero) + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -135,7 +135,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						done = 1;
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xba8),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -161,10 +161,10 @@ void rabies(RealPt hero, signed short hero_pos)
 					hero2 = get_hero(answer);
 
 					/* check that hero2 is a magic user */
-					if (host_readbs(hero2 + 0x21) >= 7) {
+					if (host_readbs(hero2 + HERO_TYPE) >= 7) {
 
 						/* need 15 AE */
-						if (host_readws(hero2 + 0x64) >= 15) {
+						if (host_readws(hero2 + HERO_AE) >= 15) {
 
 							/* spell must succeed */
 							if (test_spell(hero2, 15, 0)) {
@@ -175,7 +175,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xba8),
-									(char*)Real2Host(hero) + 0x10);
+									(char*)Real2Host(hero) + HERO_NAME2);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -190,7 +190,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						} else {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x97c),
-								(char*)hero2 + 0x10);
+								(char*)hero2 + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						}
@@ -203,7 +203,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xbac),
-				(char*)Real2Host(hero) + 0x10);
+				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -213,11 +213,11 @@ void rabies(RealPt hero, signed short hero_pos)
 		if (done == 0) {
 			/* every other hero in the group looses 1W6+2 LE */
 			hero2 = get_hero(0);
-			for (l_di = 0; l_di <= 6; l_di++, hero2 += 0x6da) {
+			for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 
 				if ((l_di != hero_pos) &&
-					(host_readbs(hero2 + 0x21) != 0) &&
-					(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					(host_readbs(hero2 + HERO_TYPE) != 0) &&
+					(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero2))
 				{
 					sub_hero_le(hero2, dice_roll(1, 6, 2));
@@ -228,7 +228,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xc5c),
-				(char*)Real2Host(hero) + 0x10);
+				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -300,7 +300,7 @@ signed short init_memory(void)
 	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
-	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * 0x6da));
+	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * SIZEOF_HERO));
 	ds_writed(0xe494,		(Bit32u)schick_alloc_emu(630));
 	ds_writed(0xe49c,		(Bit32u)schick_alloc_emu(225));
 	ds_writed(0xe498,		(Bit32u)schick_alloc_emu(80));
@@ -557,7 +557,7 @@ void prepare_dirs(void)
 		l_di = bc__open(((char*)&blk) + 30, 0x8004);
 #endif
 
-		bc__read(l_di, Real2Host(ds_readd(0xd303)), 0x6da);
+		bc__read(l_di, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
 
 		bc_close(l_di);
 
@@ -567,7 +567,7 @@ void prepare_dirs(void)
 
 		l_di = bc__creat((RealPt)ds_readd(0xd2eb), 0);
 
-		bc__write(l_di, (RealPt)ds_readd(0xd303), 0x6da);
+		bc__write(l_di, (RealPt)ds_readd(0xd303), SIZEOF_HERO);
 
 		bc_close(l_di);
 

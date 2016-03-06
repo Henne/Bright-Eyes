@@ -531,17 +531,17 @@ void show_outro(void)
 
 	/* give the heros the reward and restore them */
 	hero = get_hero(0);
-	for (i = 0; i < 6; i++, hero += 0x6da) {
+	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + 0x21)) {
+		if (host_readbs(hero + HERO_TYPE)) {
 
 			/* get 50D */
 			add_party_money(5000);
 
-			and_ptr_bs(hero + 0xaa, 0xfd);
-			and_ptr_bs(hero + 0xaa, 0xfb);
-			and_ptr_bs(hero + 0xaa, 0xf7);
-			and_ptr_bs(hero + 0xaa, 0xdf);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfd);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
+			and_ptr_bs(hero + HERO_STATUS1, 0xf7);
+			and_ptr_bs(hero + HERO_STATUS1, 0xdf);
 
 			/* reset every disease */
 			for (j = 0; j < 8; j++) {
@@ -564,32 +564,32 @@ void show_outro(void)
 			}
 
 			/* set LE to the max */
-			add_hero_le(hero, host_readws(hero + 0x5e));
+			add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 			/* set AE to the max */
-			add_hero_ae(hero, host_readws(hero + 0x62));
+			add_hero_ae(hero, host_readws(hero + HERO_AE_ORIG));
 
 			/* ??? */
-			host_writeb(hero + 0x7a, 0);
-			host_writeb(hero + 0x7f, 0);
-			host_writeb(hero + 0x80, 0);
-			host_writeb(hero + 0x88, 0);
-			host_writeb(hero + 0x93, 0);
-			host_writeb(hero + 0x94, 0);
-			host_writeb(hero + 0x9c, 0);
-			host_writeb(hero + 0x9f, 0);
-			host_writeb(hero + 0xa1, 0);
-			host_writeb(hero + 0x95, 0);
+			host_writeb(hero + HERO_LE_MOD, 0);
+			host_writeb(hero + HERO_HUNGER, 0);
+			host_writeb(hero + HERO_THIRST, 0);
+			host_writeb(hero + HERO_TEMPLE_ID, 0);
+			host_writeb(hero + HERO_RECIPE_ID, 0);
+			host_writeb(hero + HERO_RECIPE_TIMER, 0);
+			host_writeb(hero + HERO_HOSTEL_ID, 0);
+			host_writeb(hero + HERO_JAIL, 0);
+			host_writeb(hero + HERO_DRUNK, 0);
+			host_writeb(hero + HERO_RUHE_KOERPER, 0);
 
 			for (j = 0; j <= 13; j++) {
 
-				host_writeb(hero + 0x35 + 3 * j, host_readbs(hero + 0x34 + 3 * j));
+				host_writeb(hero + HERO_MU + 3 * j, host_readbs(hero + HERO_MU_ORIG + 3 * j));
 				host_writeb(hero + 0x36 + 3 * j, 0);
 			}
 
-			host_writed(hero + 0x8b, 0);
-			host_writed(hero + 0x8f, 0);
+			host_writed(hero + HERO_HEAL_TIMER, 0);
+			host_writed(hero + HERO_MAGIC_TIMER, 0);
 
-			host_writeb(hero + 0x8a, i + 1);
+			host_writeb(hero + HERO_GROUP_POS, i + 1);
 		}
 	}
 

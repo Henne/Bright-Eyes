@@ -118,7 +118,7 @@ void TRV_found_herb_place(signed short a0)
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x0000),
 		(char*)get_dtp(4 * randval),
-		(char*)hero + 0x10,
+		(char*)hero + HERO_NAME2,
 		(char*)(a0 != 0 ? get_dtp(0x00a8) : p_datseg + 0xb13b));
 
 	do {
@@ -311,7 +311,7 @@ signed short TRV_follow_trail_question(void)
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x64),
-		(char*)hero + 0x10);
+		(char*)hero + HERO_NAME2);
 
 	do {
 		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
@@ -371,10 +371,10 @@ void TRV_ford_test(signed short mod, signed short time)
 	Bit8u *hero;
 
 	hero = get_hero(0);
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{
 			/* Original-Bugfix: tests fail if their result is lower or equal than zero */
@@ -389,9 +389,9 @@ void TRV_ford_test(signed short mod, signed short time)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x94),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
-				hero_disease_test(hero, 2, 20 - (host_readbs(hero + 0x47) + host_readbs(hero + 0x48)));
+				hero_disease_test(hero, 2, 20 - (host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)));
 
 				loose_random_item(hero, 1, get_ltx(0x7e8));
 			} else {
@@ -400,7 +400,7 @@ void TRV_ford_test(signed short mod, signed short time)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x98),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 			}
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -549,10 +549,10 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	GUI_output(get_city(4 * city_index));
 
 	hero = get_hero(0);
-	for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(hero + 0x21) != 0) &&
-			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if ((host_readbs(hero + HERO_TYPE) != 0) &&
+			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero) &&
 			test_skill(hero, 13, (signed char)mod1) <= 0)
 		{
@@ -585,7 +585,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(4 * (city_index + 3)),
-				(char*)hero + 0x10);
+				(char*)hero + HERO_NAME2);
 
 			GUI_input(Real2Host(ds_readd(DTP2)), l_di = 0);
 
@@ -601,7 +601,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(4 * (city_index + 4)),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -617,7 +617,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(4 * (l_di == 1 ? city_index + 5 : city_index + 6)),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				do {
 					answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
@@ -705,10 +705,10 @@ void TRV_barrier(signed short text_start)
 		} else {
 
 			hero = get_hero(0);
-			for (i = l_di = 0; i <= 6; i++, hero += 0x6da) {
+			for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + 0x21) != 0 &&
-					host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP))
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					l_di+=hero_count_item(hero, 121);
 					l_di+=hero_count_item(hero, 32);
@@ -738,7 +738,7 @@ void TRV_barrier(signed short text_start)
 				} else {
 					hero = get_hero(0);
 
-					for (i = l_di = 0; i <= 6; i++, hero += 0x6da)
+					for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO)
 					{
 						if (test_skill(hero, 31, 0) > 0) l_di++;
 					}
@@ -766,9 +766,9 @@ void TRV_barrier(signed short text_start)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
 								(char*)get_city(4 * (text_start + 7)),
-								(char*)hero + 0x10,
-								Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 3)),
-								Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)));
+								(char*)hero + HERO_NAME2,
+								Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)),
+								Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 						GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
 
 						hero_disease_test(hero, 2, 30);

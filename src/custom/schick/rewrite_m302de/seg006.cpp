@@ -178,8 +178,8 @@ RealPt FIG_get_hero_ptr(signed short v1)
 	signed short i;
 
 	for (i = 0; i <= 6; i++) {
-		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * 0x6da + 0x81) == v1)
-			return (RealPt)ds_readd(HEROS) + i * 0x6da;
+		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * SIZEOF_HERO + HERO_FIGHT_ID) == v1)
+			return (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
 	}
 
 	return (RealPt)ds_readd(HEROS);
@@ -464,8 +464,8 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 	RealPt hero;
 	signed short fg_bak, bg_bak;
 
-	hero = (RealPt)ds_readd(HEROS) + (hero_pos - 1)  * 0x6da;
-	ds_writed(0xc019, (Bit32u)(hero + 0x2da));
+	hero = (RealPt)ds_readd(HEROS) + (hero_pos - 1)  * SIZEOF_HERO;
+	ds_writed(0xc019, (Bit32u)(hero + HERO_PORTRAIT));
 
 	get_textcolor(&fg_bak, &bg_bak);
 	set_textcolor(0xff, 0);
@@ -480,20 +480,20 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 41);
-		GUI_print_string(Real2Host(hero) + 0x10, 1, 1);
+		GUI_print_string(Real2Host(hero) + HERO_NAME2, 1, 1);
 
-		draw_bar(0, 0, host_readw(Real2Host(hero) + 0x60),
-			host_readw(Real2Host(hero) + 0x5e), 1);
+		draw_bar(0, 0, host_readw(Real2Host(hero) + HERO_LE),
+			host_readw(Real2Host(hero) + HERO_LE_ORIG), 1);
 
-		draw_bar(1, 0, host_readw(Real2Host(hero) + 0x64),
-			host_readw(Real2Host(hero) + 0x62), 1);
+		draw_bar(1, 0, host_readw(Real2Host(hero) + HERO_AE),
+			host_readw(Real2Host(hero) + HERO_AE_ORIG), 1);
 	} else {
 		do_border((RealPt)ds_readd(0xd303), 1, 157, 34, 190, 29);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 158);
 		ds_writew(0xc015, 33);
 		ds_writew(0xc017, 189);
-		GUI_print_string(Real2Host(hero) + 0x10, 1, 193);
+		GUI_print_string(Real2Host(hero) + HERO_NAME2, 1, 193);
 	}
 
 	do_pic_copy(0);

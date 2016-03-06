@@ -84,7 +84,7 @@ void status_menu(signed short hero_pos)
 
 	hero1 = hero2 = get_hero(hero_pos);
 
-	if (!host_readbs(hero2 + 0x21) || ds_readw(0x29b2) == 0) {
+	if (!host_readbs(hero2 + HERO_TYPE) || ds_readw(0x29b2) == 0) {
 		return;
 	}
 
@@ -133,17 +133,17 @@ void status_menu(signed short hero_pos)
 						9);
 				}
 
-				if (host_readws(hero1 + 0x196 + 14 * ds_readbs(0x6370)) != 0) {
+				if (host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)) != 0) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
 						(char*)(p_datseg + 0x6534),
-						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero1 + 0x196 + 14 * ds_readbs(0x6370))))),
-						!is_in_word_array(host_readws(hero1 + 0x196 + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + 0x21)))) ? p_datseg + 0x653b : get_city(0x108));
+						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
+						!is_in_word_array(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + 0x653b : get_city(0x108));
 
-					if (item_weapon(get_itemsdat(host_readws(hero1 + 0x196 + 14 * ds_readbs(0x6370))))) {
+					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(4 * (48 + host_readbs(get_itemsdat(host_readws(hero1 + 0x196 + 14 * ds_readbs(0x6370))) + 3))));
+							(char*)get_ltx(4 * (48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) + 3))));
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
@@ -176,9 +176,9 @@ void status_menu(signed short hero_pos)
 				hero_pos++;
 
 				if (hero_pos > 6) hero_pos = 0;
-			} while (!host_readbs(get_hero(hero_pos) + 0x21) ||
-					host_readbs(get_hero(hero_pos) + 0x87) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + 0x21) < 7 && ds_readws(0x2c9b) > 3));
+			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
+					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(0x2c9b) > 3));
 
 
 			if (ds_readbs(0x6371) != -1) {
@@ -209,9 +209,9 @@ void status_menu(signed short hero_pos)
 				hero_pos--;
 
 				if (hero_pos < 0) hero_pos = 6;
-			} while (!host_readbs(get_hero(hero_pos) + 0x21) ||
-					host_readbs(get_hero(hero_pos) + 0x87) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + 0x21) < 7 && ds_readws(0x2c9b) > 3));
+			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
+					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(0x2c9b) > 3));
 
 
 			if (ds_readbs(0x6371) != -1) {
@@ -316,16 +316,16 @@ void status_menu(signed short hero_pos)
 				host_writeb(Real2Host(ds_readd(DTP2)) + 60, 0);
 				GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
 
-				if (host_readws(hero2 + 0x196 + 14 * ds_readbs(0x6370))) {
+				if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
 						(char*)(p_datseg + 0x653c),
-						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero2 + 0x196 + 14 * ds_readbs(0x6370))))),
-						!is_in_word_array(host_readws(hero2 + 0x196 + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + 0x21)))) ? p_datseg + 0x6543 : get_city(0x108));
+						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
+						!is_in_word_array(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + 0x6543 : get_city(0x108));
 
-					if (item_weapon(get_itemsdat(host_readws(hero1 + 0x196 + 14 * ds_readbs(0x6370))))) {
+					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(4 * (48 + host_readbs(get_itemsdat(host_readws(hero1 + 0x196 + 14 * ds_readbs(0x6370))) + 3))));
+							(char*)get_ltx(4 * (48 + host_readbs(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) + 3))));
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)), 16, 192);
@@ -423,14 +423,14 @@ void status_menu(signed short hero_pos)
 						ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6371)) + 17,
 						8);
 
-					if (host_readws(hero2 + 0x196 + 14 * ds_readbs(0x6370))) {
+					if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) {
 
 						nvf.dst = Real2Host(ds_readd(ICON));
 						nvf.src = Real2Host(ds_readd(0xd2a9));
 						nvf.type = 0;
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;
-						nvf.nr = host_readws(get_itemsdat(host_readws(hero2 + 0x196 + 14 * ds_readbs(0x6370))));
+						nvf.nr = host_readws(get_itemsdat(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))));
 						process_nvf(&nvf);
 
 						make_ggst_cursor(Real2Host(ds_readd(ICON)));
@@ -448,8 +448,8 @@ void status_menu(signed short hero_pos)
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(4 * (25 + hero_is_diseased(hero2))),
-				(char*)(hero2 + 0x10),
-				Real2Host(GUI_get_ptr(host_readbs(hero2 + 0x22), 1)));
+				(char*)(hero2 + HERO_NAME2),
+				Real2Host(GUI_get_ptr(host_readbs(hero2 + HERO_SEX), 1)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -507,11 +507,11 @@ void status_menu(signed short hero_pos)
 					switch(l_di) {
 					case 1: {
 						/* change name */
-						if (host_readbs(hero2 + 0x89) != 0) {
+						if (host_readbs(hero2 + HERO_NPC_ID) != 0) {
 							GUI_output(get_city(0x11c));
 						} else {
 							GUI_input(get_city(0x118), 15);
-							strcpy((char*)hero2 + 0x10, (char*)Real2Host(ds_readd(0xd2ef)));
+							strcpy((char*)hero2 + HERO_NAME2, (char*)Real2Host(ds_readd(0xd2ef)));
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -566,8 +566,8 @@ void status_menu(signed short hero_pos)
 						} else if (l1 == 7) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_city(4 * (25 + flag3)),
-								(char*)(hero2 + 0x10),
-								Real2Host(GUI_get_ptr(host_readbs(hero2 + 0x22), 1)));
+								(char*)(hero2 + HERO_NAME2),
+								Real2Host(GUI_get_ptr(host_readbs(hero2 + HERO_SEX), 1)));
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
@@ -590,7 +590,7 @@ void status_menu(signed short hero_pos)
 					}
 					case 8: {
 						/* show spells */
-						if (host_readbs(hero2 + 0x21) < 7) {
+						if (host_readbs(hero2 + HERO_TYPE) < 7) {
 							GUI_output(get_ltx(0x35c));
 						} else {
 							reset_item_selector();
@@ -603,8 +603,8 @@ void status_menu(signed short hero_pos)
 						if (flag3 != 0) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_city(4 * (25 + flag3)),
-								(char*)(hero2 + 0x10),
-								Real2Host(GUI_get_ptr(host_readbs(hero2 + 0x22), 1)));
+								(char*)(hero2 + HERO_NAME2),
+								Real2Host(GUI_get_ptr(host_readbs(hero2 + HERO_SEX), 1)));
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 								break;
@@ -689,7 +689,7 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 7: {
-						if (host_readbs(hero2 + 0x21) < 7) {
+						if (host_readbs(hero2 + HERO_TYPE) < 7) {
 							GUI_output(get_ltx(0x35c));
 						} else {
 							reset_item_selector();
@@ -741,7 +741,7 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 4: {
-						if (host_readbs(hero2 + 0x21) < 7) {
+						if (host_readbs(hero2 + HERO_TYPE) < 7) {
 							GUI_output(get_ltx(0x35c));
 						} else {
 							ds_writew(0x2c9b, 4);

@@ -78,11 +78,11 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 		if ((pos2 > 6) && (pos1 > 6)) {
 			/* Both items are in knapsacks */
 			v3 = 1;
-			item1 = host_readws(hero + 0x196 + pos1  * SIZEOF_KS_ITEM);
-			item2 = host_readws(hero + 0x196 + pos2  * SIZEOF_KS_ITEM);
+			item1 = host_readws(hero + HERO_ITEM_HEAD + pos1  * SIZEOF_KS_ITEM);
+			item2 = host_readws(hero + HERO_ITEM_HEAD + pos2  * SIZEOF_KS_ITEM);
 		} else {
-			item1 = host_readws(hero + 0x196 + pos1  * SIZEOF_KS_ITEM);
-			item2 = host_readws(hero + 0x196 + pos2  * SIZEOF_KS_ITEM);
+			item1 = host_readws(hero + HERO_ITEM_HEAD + pos1  * SIZEOF_KS_ITEM);
+			item2 = host_readws(hero + HERO_ITEM_HEAD + pos2  * SIZEOF_KS_ITEM);
 
 			if ((pos2 < pos1) || ((pos1 < 7) && (pos2 < 7))) {
 				if (pos1 < 7) {
@@ -119,18 +119,18 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 						add_ks_counter(pos1, pos2, hero);
 
 						/* delete item at pos2 */
-						memset(hero + 0x196 + pos2 * SIZEOF_KS_ITEM,
+						memset(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
 							0, SIZEOF_KS_ITEM);
 #ifdef M302de_ORIGINAL_BUGFIX
 						/* Decrement the item counter */
-						dec_ptr_bs(hero + 0x20);
+						dec_ptr_bs(hero + HERO_KS_TAKEN);
 #endif
 					} else {
 						if (!can_hero_use_item(hero, item2)) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x374),
-								(char*)hero + 0x10,
-								(char*)get_ltx( ((host_readbs(hero + 0x22) != 0 ? 0x251 : 0x9) + host_readbs(hero + 0x21)) * 4),
+								(char*)hero + HERO_NAME2,
+								(char*)get_ltx( ((host_readbs(hero + HERO_SEX) != 0 ? 0x251 : 0x9) + host_readbs(hero + HERO_TYPE)) * 4),
 								(char*)Real2Host(GUI_names_grammar(2, item2, 0)));
 
 
@@ -153,7 +153,7 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_ltx(0xcf4),
-										(char*)hero + 0x10);
+										(char*)hero + HERO_NAME2);
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -184,26 +184,26 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 				add_ks_counter(pos1, pos2, hero);
 
 				/* delete item at pos2 */
-				memset(hero + 0x196 + pos2 * SIZEOF_KS_ITEM,
+				memset(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
 							0, SIZEOF_KS_ITEM);
 #ifdef M302de_ORIGINAL_BUGFIX
 				/* Decrement the item counter */
-				dec_ptr_bs(hero + 0x20);
+				dec_ptr_bs(hero + HERO_KS_TAKEN);
 #endif
 			} else {
 
 #if !defined(__BORLANDC__)
-				struct_copy((Bit8u*)&tmp, hero + 0x196 + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
-				struct_copy(hero + 0x196 + pos1 * SIZEOF_KS_ITEM,
-					hero + 0x196 + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
-				struct_copy(hero + 0x196 + pos2 * SIZEOF_KS_ITEM, (Bit8u*)&tmp, SIZEOF_KS_ITEM);
+				struct_copy((Bit8u*)&tmp, hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+				struct_copy(hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM,
+					hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+				struct_copy(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM, (Bit8u*)&tmp, SIZEOF_KS_ITEM);
 #else
 				/* exchange the items */
-				tmp = *(struct knapsack_item*)(hero + 0x196 + pos1 * SIZEOF_KS_ITEM);
+				tmp = *(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
 
-				*(struct knapsack_item*)(hero + 0x196 + pos1 * SIZEOF_KS_ITEM) =
-					*(struct knapsack_item*)(hero + 0x196 + pos2 * SIZEOF_KS_ITEM);
-				*(struct knapsack_item*)(hero + 0x196 + pos2 * SIZEOF_KS_ITEM) = tmp;
+				*(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM) =
+					*(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM);
+				*(struct knapsack_item*)(hero + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) = tmp;
 #endif
 			}
 		}
@@ -216,7 +216,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	Bit8u *item_p;
 
 	/* create pointer to the item in the inventory */
-	item_p = hero + 0x196 + pos * 14;
+	item_p = hero + HERO_ITEM_HEAD + pos * 14;
 
 	if (host_readw(item_p) != 0) {
 		/* normal item */
@@ -261,7 +261,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	/* poisoned */
 	if (host_readw(item_p) == 0xc1 || host_readw(item_p) == 0xc8 ||
 		ks_poison1(item_p) || ks_poison2(item_p) ||
-		host_readb(hero + 0x196 + 9 + pos * 14) != 0) {
+		host_readb(hero + HERO_ITEM_HEAD + 9 + pos * 14) != 0) {
 		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x890));
 	}
 
@@ -269,7 +269,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	if (host_readw(item_p) == 0x85) {
 		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 			(char*)get_city(0xd4),
-			host_readbs(hero + 0x195));
+			host_readbs(hero + HERO_WAND));
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(0xd2eb)));
 	}
@@ -293,7 +293,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 	struct knapsack_item tmp;
 
 
-	item1 = host_readws(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+	item1 = host_readws(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
 
 	/* check if item1 is an item */
 	if (item1 == 0) {
@@ -301,7 +301,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		return;
 	}
 
-	item2 = host_readws(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM);
+	item2 = host_readws(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM);
 
 	item1_desc = get_itemsdat(item1);
 	item2_desc = get_itemsdat(item2);
@@ -333,8 +333,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x374),
-				(char*)(hero2 + 0x10),
-				(char*)get_ltx(((host_readbs(hero2 + 0x22) ? 593 : 9) + host_readbs(hero2 + 0x21)) * 4),
+				(char*)(hero2 + HERO_NAME2),
+				(char*)get_ltx(((host_readbs(hero2 + HERO_SEX) ? 593 : 9) + host_readbs(hero2 + HERO_TYPE)) * 4),
 				(char*)Real2Host(GUI_names_grammar(2, item1, 0)));
 
 
@@ -363,7 +363,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x10c),
-				(char*)(hero2 + 0x10));
+				(char*)(hero2 + HERO_NAME2));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 			return;
@@ -382,8 +382,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		if (!can_hero_use_item(hero1, item2)) {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x374),
-				(char*)(hero1 + 0x10),
-				(char*)get_ltx(((host_readbs(hero1 + 0x22) ? 593 : 9) + host_readbs(hero1 + 0x21)) * 4),
+				(char*)(hero1 + HERO_NAME2),
+				(char*)get_ltx(((host_readbs(hero1 + HERO_SEX) ? 593 : 9) + host_readbs(hero1 + HERO_TYPE)) * 4),
 				(char*)Real2Host(GUI_names_grammar(2, item2, 0)));
 
 #if defined(__BORLANDC__)
@@ -430,7 +430,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					(char*)get_ltx(0x348),
 					host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM),
 					(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
-					(char*)hero2 + 0x10);
+					(char*)hero2 + HERO_NAME2);
 
 
 				l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
@@ -446,18 +446,18 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					l_di = 99 - host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM);
 				}
 
-				while ((host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+				while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
 					l_di--;
 				}
 
 				if (l_di > 0) {
-					add_ptr_ws(hero2 + 0x2d8, host_readws(item1_desc + 5) * l_di);
+					add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5) * l_di);
 					add_ptr_ws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM, l_di);
 					drop_item(hero1, pos1, l_di);
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xc2c),
-						(char*)hero2 + 0x10);
+						(char*)hero2 + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
 			}
@@ -473,11 +473,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM) * host_readw(item2_desc + 5) :
 				host_readws(item2_desc + 5);
 
-			if (host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + desc1_5 - desc2_5) {
+			if (host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xc2c),
-					(char*)hero2 + 0x10);
+					(char*)hero2 + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			} else {
@@ -493,38 +493,38 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 				/* exchange two items */
 #if !defined(__BORLANDC__)
-				struct_copy((Bit8u*)&tmp, hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+				struct_copy((Bit8u*)&tmp, hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
 #else
-				tmp = *(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM);
+				tmp = *(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM);
 #endif
 
-				sub_ptr_ws(hero2 + 0x2d8, desc2_5);
+				sub_ptr_ws(hero2 + HERO_LOAD, desc2_5);
 
 #if !defined(__BORLANDC__)
-				struct_copy(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM,
-						hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM,
+				struct_copy(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
+						hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM,
 						SIZEOF_KS_ITEM);
 #else
-				*(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM) =
-					*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+				*(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) =
+					*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
 #endif
 
-				add_ptr_ws(hero2 + 0x2d8, desc1_5);
-				sub_ptr_ws(hero1 + 0x2d8, desc1_5);
+				add_ptr_ws(hero2 + HERO_LOAD, desc1_5);
+				sub_ptr_ws(hero1 + HERO_LOAD, desc1_5);
 
 #if !defined(__BORLANDC__)
-				struct_copy(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM,
+				struct_copy(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM,
 						(Bit8u*)&tmp,
 						SIZEOF_KS_ITEM);
 #else
-				*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM) = tmp;
+				*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM) = tmp;
 #endif
 
-				add_ptr_ws(hero1 + 0x2d8, desc2_5);
+				add_ptr_ws(hero1 + HERO_LOAD, desc2_5);
 
 				/* item counter */
-				dec_ptr_bs(hero1 + 0x20);
-				inc_ptr_bs(hero2 + 0x20);
+				dec_ptr_bs(hero1 + HERO_KS_TAKEN);
+				inc_ptr_bs(hero2 + HERO_KS_TAKEN);
 
 				/* special items */
 				if (item2 == 0xa1) {
@@ -532,16 +532,16 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + -3);
 				}
 				if (item2 == 0xa3) {
-					host_writeb(hero1 + 0x66, host_readbs(hero1 + 0x66) + 5);
-					host_writeb(hero2 + 0x66, host_readbs(hero2 + 0x66) + -5);
+					host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + 5);
+					host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + -5);
 				}
 				if (item1 == 0xa1) {
 					host_writeb(hero1 + 0x125, host_readbs(hero1 + 0x125) + -3);
 					host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + 3);
 				}
 				if (item1 == 0xa3) {
-					host_writeb(hero1 + 0x66, host_readbs(hero1 + 0x66) + -5);
-					host_writeb(hero2 + 0x66, host_readbs(hero2 + 0x66) + 5);
+					host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + -5);
+					host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + 5);
 				}
 			}
 		}
@@ -555,7 +555,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				(char*)get_ltx(0x348),
 				host_readws(hero1+ 0x198 + pos1 * SIZEOF_KS_ITEM),
 				(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
-				(char*)hero2 + 0x10);
+				(char*)hero2 + HERO_NAME2);
 
 
 			l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
@@ -565,32 +565,32 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			l_di = host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM);
 		}
 
-		while ((host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+		while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
 			l_di--;
 		}
 
 		if (l_di > 0) {
 #if !defined(__BORLANDC__)
-			struct_copy(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM,
-				hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+			struct_copy(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
+				hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
 #else
-			*(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM) =
-					*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+			*(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) =
+					*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
 #endif
-			add_ptr_ws(hero2 + 0x2d8, host_readws(item1_desc + 5) * l_di);
+			add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5) * l_di);
 			host_writews(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM, l_di);
 			drop_item(hero1, pos1, l_di);
 
 		} else {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xc2c),
-				(char*)hero2 + 0x10);
+				(char*)hero2 + HERO_NAME2);
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
-	} else if (host_readbs(hero2 + 0x47) * 100 <= host_readws(hero2 + 0x2d8) + host_readws(item1_desc + 5)) {
+	} else if (host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5)) {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xc2c),
-			(char*)hero2 + 0x10);
+			(char*)hero2 + HERO_NAME2);
 		GUI_output(Real2Host(ds_readd(DTP2)));
 	} else {
 
@@ -605,22 +605,22 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		}
 
 #if !defined(__BORLANDC__)
-		struct_copy(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM,
-			hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
+		struct_copy(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM,
+			hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, SIZEOF_KS_ITEM);
 #else
-		*(struct knapsack_item*)(hero2 + 0x196 + pos2 * SIZEOF_KS_ITEM) =
-			*(struct knapsack_item*)(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM);
+		*(struct knapsack_item*)(hero2 + HERO_ITEM_HEAD + pos2 * SIZEOF_KS_ITEM) =
+			*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
 #endif
 		/* adjust weight */
-		add_ptr_ws(hero2 + 0x2d8, host_readws(item1_desc + 5));
-		sub_ptr_ws(hero1 + 0x2d8, host_readws(item1_desc + 5));
+		add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5));
+		sub_ptr_ws(hero1 + HERO_LOAD, host_readws(item1_desc + 5));
 
 		/* adjust item counter */
-		dec_ptr_bs(hero1 + 0x20);
-		inc_ptr_bs(hero2 + 0x20);
+		dec_ptr_bs(hero1 + HERO_KS_TAKEN);
+		inc_ptr_bs(hero2 + HERO_KS_TAKEN);
 
 		/* clear slot */
-		memset(hero1 + 0x196 + pos1 * SIZEOF_KS_ITEM, 0, SIZEOF_KS_ITEM);
+		memset(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM, 0, SIZEOF_KS_ITEM);
 
 		/* special items */
 		if (item1 == 0xa1) {
@@ -628,8 +628,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + 3);
 		}
 		if (item1 == 0xa3) {
-			host_writeb(hero1 + 0x66, host_readbs(hero1 + 0x66) + -5);
-			host_writeb(hero2 + 0x66, host_readbs(hero2 + 0x66) + 5);
+			host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + -5);
+			host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + 5);
 		}
 	}
 }
@@ -658,32 +658,32 @@ void startup_equipment(Bit8u *hero)
 
 	move_item(5, 9, hero);
 
-	if (host_readbs(hero + 0x22) != 0 && host_readbs(hero + 0x21) != 3 && host_readbs(hero + 0x21) != 9) {
+	if (host_readbs(hero + HERO_SEX) != 0 && host_readbs(hero + HERO_TYPE) != 3 && host_readbs(hero + HERO_TYPE) != 9) {
 		give_hero_new_item(hero, 48, 1, 1);
 		move_item(2, 9, hero);
 	}
 
 	i = 0;
-	while (ds_readws(0xae40 + 8 * host_readbs(hero + 0x21) + 2 * i) != -1 && (i < 4)) {
+	while (ds_readws(0xae40 + 8 * host_readbs(hero + HERO_TYPE) + 2 * i) != -1 && (i < 4)) {
 
-		give_hero_new_item(hero, ds_readws(0xae40 + 8 * host_readbs(hero + 0x21) + 2 * i++), 1, 1);
+		give_hero_new_item(hero, ds_readws(0xae40 + 8 * host_readbs(hero + HERO_TYPE) + 2 * i++), 1, 1);
 
 		if (i == 1) {
 			move_item(3, 9, hero);
 		}
 	}
 
-	if (host_readbs(hero + 0x21) == 3) {
+	if (host_readbs(hero + HERO_TYPE) == 3) {
 		move_item(2, get_item_pos(hero, 53), hero);
 	}
 
-	if (host_readbs(hero + 0x21) == 9) {
+	if (host_readbs(hero + HERO_TYPE) == 9) {
 		move_item(2, get_item_pos(hero, 75), hero);
 	}
 
-	if (host_readbs(hero + 0x21) == 2 ||
-		host_readbs(hero + 0x21) == 10 ||
-		host_readbs(hero + 0x21) == 12)
+	if (host_readbs(hero + HERO_TYPE) == 2 ||
+		host_readbs(hero + HERO_TYPE) == 10 ||
+		host_readbs(hero + HERO_TYPE) == 12)
 	{
 		give_hero_new_item(hero, 10, 1, 20);
 		move_item(4, get_item_pos(hero, 10), hero);
@@ -705,22 +705,22 @@ signed short get_max_light_time(void)
 	retval = -1;
 
 	hero = get_hero(0);
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 #ifdef M302de_ORIGINAL_BUGFIX
-		if (!host_readb(hero + 0x21))
+		if (!host_readb(hero + HERO_TYPE))
 			continue;
 #endif
 
 		for (j = 0; j < 23; j++) {
 
 			/* search for a burning torch */
-			if (host_readw(hero + 0x196 + j * 14) == 0x16) {
+			if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0x16) {
 
 				if (host_readbs(hero + j * 14 + 0x196 + 8) > retval) {
 					retval = host_readbs(hero + j * 14 + 0x196 + 8);
 				}
-			} else if (host_readw(hero + 0x196 + j * 14) == 0xf9) {
+			} else if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0xf9) {
 				/* search for a burning lantern */
 
 				if (host_readbs(hero + j * 14 + 0x196 + 8) / 10 > retval) {
@@ -855,8 +855,8 @@ signed short get_full_waterskin_pos(Bit8u *hero)
 	for (i = 7; i < 23; i++) {
 
 		/* look for a non-empty waterskin */
-		if ((host_readw(hero + 0x196 + i * 14) == 30) &&
-			!ks_empty(hero + 0x196 + i * 14))
+		if ((host_readw(hero + HERO_ITEM_HEAD + i * 14) == 30) &&
+			!ks_empty(hero + HERO_ITEM_HEAD + i * 14))
 		{
 			pos = i;
 			break;

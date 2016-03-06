@@ -535,12 +535,12 @@ signed short is_staff_lvl2_in_group(void)
 	signed short i;
 
 	hero_i = get_hero(0);
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
-		if (host_readbs(hero_i + 0x21) &&
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if (host_readbs(hero_i + HERO_TYPE) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			check_hero(hero_i) &&
-			(host_readbs(hero_i + 0x195) >= 2))
+			(host_readbs(hero_i + HERO_WAND) >= 2))
 		{
 			return 1;
 		}
@@ -820,7 +820,7 @@ void DNG_stub6(void)
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xc00),
-					get_hero(l_si - 1) + 0x10);
+					get_hero(l_si - 1) + HERO_NAME2);
 			}
 
 			if (l_di == 2) {
@@ -831,8 +831,8 @@ void DNG_stub6(void)
 
 				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 					(char*)get_ltx(0xc04),
-					hero1 + 0x10,
-					hero2 + 0x10);
+					hero1 + HERO_NAME2,
+					hero2 + HERO_NAME2);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
 					(char*)Real2Host(ds_readd(0xd2eb)));
@@ -841,8 +841,8 @@ void DNG_stub6(void)
 
 					sprintf((char*)Real2Host(ds_readd(0xd2eb)),
 						(char*)get_ltx(0xc08),
-						hero1 + 0x10,
-						hero2 + 0x10,
+						hero1 + HERO_NAME2,
+						hero2 + HERO_NAME2,
 						l_si = random_schick(3) + 1);
 
 					strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -865,7 +865,7 @@ void DNG_stub6(void)
 					}
 
 					strcat((char*)Real2Host(ds_readd(DTP2)),
-						(char*)(get_hero(l_si++) + 0x10));
+						(char*)(get_hero(l_si++) + HERO_NAME2));
 
 					if (--l_di) {
 
@@ -906,13 +906,13 @@ signed short DNG_check_climb_tools(void)
 	hero = get_hero(0);
 
 	/* check for a mage with staffspell > 2 */
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(hero + 0x21) != 0) &&
-			(host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+		if ((host_readbs(hero + HERO_TYPE) != 0) &&
+			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero) &&
-			(host_readbs(hero + 0x21) == 9) &&
-			(host_readbs(hero + 0x195) > 2))
+			(host_readbs(hero + HERO_TYPE) == 9) &&
+			(host_readbs(hero + HERO_WAND) > 2))
 		{
 			return i + 1;
 		}
@@ -953,11 +953,11 @@ signed short DNG_fallpit(signed short a1)
 			do {
 				l_si = random_schick(7) - 1;
 
-			} while ( (!host_readbs(get_hero(l_si) + 0x21)) ||
-					(host_readbs(get_hero(l_si) + 0x87) != ds_readbs(CURRENT_GROUP)) ||
+			} while ( (!host_readbs(get_hero(l_si) + HERO_TYPE)) ||
+					(host_readbs(get_hero(l_si) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) ||
 					((l1 == 1) && (l_si == 6)));
 
-			host_writeb(get_hero(l_si) + 0x87, (unsigned char)l2);
+			host_writeb(get_hero(l_si) + HERO_GROUP_NO, (unsigned char)l2);
 			inc_ds_bs_post(0x2d36 + l2);
 			dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 			sub_hero_le(get_hero(l_si), random_schick(a1));
@@ -975,8 +975,8 @@ signed short DNG_fallpit(signed short a1)
 
 		for (l_di = 0; l_di < l1; l_di++) {
 
-			while (!host_readbs(get_hero(l_si) + 0x21) ||
-				(host_readbs(get_hero(l_si) + 0x87) != ds_readbs(CURRENT_GROUP)))
+			while (!host_readbs(get_hero(l_si) + HERO_TYPE) ||
+				(host_readbs(get_hero(l_si) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 			{
 				l_si++;
 			}

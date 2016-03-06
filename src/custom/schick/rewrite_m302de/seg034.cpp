@@ -458,10 +458,10 @@ void FIG_latecomers(void)
 
 					if (is_in_byte_array(host_readbs(p_mon + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x17 + 5 * i),
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x18 + 5 * i),
+						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
 								(Bit8u*)&x, (Bit8u*)&y,
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i),
+								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
 								1);
 
 						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + ENEMY_SHEET_LIST_POS)));
@@ -474,9 +474,9 @@ void FIG_latecomers(void)
 						p3 = Real2Host(FIG_get_ptr((signed char)l4));
 
 						host_writeb(p3 + 3,
-								x - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i)].x);
+								x - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].x);
 						host_writeb(p3 + 4,
-								y - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i)].y);
+								y - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].y);
 
 						FIG_remove_from_list(host_readbs(p_mon + ENEMY_SHEET_LIST_POS), 1);
 
@@ -486,10 +486,10 @@ void FIG_latecomers(void)
 
 						FIG_add_to_list((signed char)l4);
 					} else {
-						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x17 + 5 * i),
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x18 + 5 * i),
+						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
 								(Bit8u*)&x, (Bit8u*)&y,
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i),
+								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
 								0);
 
 						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + 0x26)));
@@ -503,7 +503,7 @@ void FIG_latecomers(void)
 					}
 
 					place_obj_on_cb(x, y, i + 10, host_readbs(p_mon + ENEMY_SHEET_GFX_ID),
-						(signed short)host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x19 + 5 * i));
+						(signed short)host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i));
 
 					FIG_set_12_13(host_readbs(p_mon + ENEMY_SHEET_LIST_POS));
 
@@ -754,19 +754,19 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 						if (l15 == 1) {
 							x = -1;
-							if (host_readbs(hero + 0x33) > l13) {
+							if (host_readbs(hero + HERO_BP_LEFT) > l13) {
 								ds_writeb((0xd823 + 0) + l_di, 2);
 								ds_writeb((0xd823 + 1) + l_di, -1);
 							}
 						} else if (l15 == 2) {
 							y = -1;
-							if (l13 < (host_readbs(hero + 0x33) - 1)) {
+							if (l13 < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
 								ds_writeb((0xd823 + 0) + l_di, 1);
 								ds_writeb((0xd823 + 1) + l_di, -1);
 							}
 						} else {
 							y = 24;
-							if (l13 < (host_readbs(hero + 0x33) - 1)) {
+							if (l13 < (host_readbs(hero + HERO_BP_LEFT) - 1)) {
 								ds_writeb((0xd823 + 0) + l_di, 3);
 								ds_writeb((0xd823 + 1) + l_di, -1);
 							}
@@ -795,7 +795,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 						}
 					} else if (l4 == -1) {
 						l_si = 4;
-					} else if (host_readbs(hero + 0x33) < l13) {
+					} else if (host_readbs(hero + HERO_BP_LEFT) < l13) {
 						l_si = 2;
 					} else if ((x > 23) || (x < 0) || (y > 23) || (y < 0) || (get_cb_val(x, y) < 0)) {
 						if ((host_readbs(Real2Host(ds_readd(SCENARIO_BUF)) + 0x14) > 3) || (x >= 0))
@@ -844,7 +844,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			if (l_si == 1) {
 
 				if (GUI_bool(get_dtp(0x8c))) {
-					host_writeb(hero + 0x84, 16);
+					host_writeb(hero + HERO_UNKNOWN2, 16);
 					l_si = 0;
 				} else {
 					FIG_remove_from_list(ds_readbs(0xe38f), 0);
@@ -859,8 +859,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 				seg036_00ae(hero, hero_pos);
 
-				if (host_readbs(hero + 0x84) == 16) {
-					host_writeb(hero + 0x33, 0);
+				if (host_readbs(hero + HERO_UNKNOWN2) == 16) {
+					host_writeb(hero + HERO_BP_LEFT, 0);
 				} else {
 					FIG_search_obj_on_cb(hero_pos + 1, (signed short*)px, (signed short*)py);
 				}

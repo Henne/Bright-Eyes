@@ -241,7 +241,7 @@ void char_add(signed short temple_id)
 	l_di = copy_chr_names(Real2Host(ptr), temple_id);
 
 	if (ds_readbs(0x2d3c) == 7 ||
-		(ds_readbs(0x2d3c) == 6 && !host_readbs(get_hero(6) + 0x21)))
+		(ds_readbs(0x2d3c) == 6 && !host_readbs(get_hero(6) + HERO_TYPE)))
 	{
 		GUI_output(get_ltx(0x480));
 	} else {
@@ -259,9 +259,9 @@ void char_add(signed short temple_id)
 
 					hero = get_hero(0);
 
-					for (i = 0; i < 6; i++, hero += 0x6da) {
+					for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-						if (!host_readbs(hero + 0x21)) {
+						if (!host_readbs(hero + HERO_TYPE)) {
 
 							prepare_chr_name((char*)Real2Host(ds_readd(DTP2)),
 										(char*)(Real2Host(ptr) + 32 * l_si));
@@ -269,7 +269,7 @@ void char_add(signed short temple_id)
 							if (read_chr_temp((RealPt)ds_readd(DTP2), i, ds_readbs(CURRENT_GROUP))) {
 								inc_ds_bs_post(0x2d3c);
 								inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
-								host_writebs(hero + 0x8a, i + 1);
+								host_writebs(hero + HERO_GROUP_POS, i + 1);
 								write_chr_temp(i);
 							}
 							break;
@@ -289,7 +289,7 @@ void char_add(signed short temple_id)
 
 				l_di = copy_chr_names(Real2Host(ptr), temple_id);
 			}
-		} while (l_si != -1 && ds_readbs(0x2d3c) < (host_readbs(get_hero(6) + 0x21) ? 7 : 6));
+		} while (l_si != -1 && ds_readbs(0x2d3c) < (host_readbs(get_hero(6) + HERO_TYPE) ? 7 : 6));
 	}
 }
 
@@ -318,12 +318,12 @@ void char_letgo(signed short temple_id)
 					dec_ds_bs_post(0x2d3c);
 					dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
 
-					host_writeb(hero + 0x88, (signed char)temple_id);
-					host_writeb(hero + 0x8a, 0);
+					host_writeb(hero + HERO_TEMPLE_ID, (signed char)temple_id);
+					host_writeb(hero + HERO_GROUP_POS, 0);
 
 					write_chr_temp(hero_pos);
 
-					memset(hero, 0, 0x6da);
+					memset(hero, 0, SIZEOF_HERO);
 
 					draw_main_screen();
 					init_ani(2);
@@ -337,7 +337,7 @@ void char_letgo(signed short temple_id)
 				}
 			}
 
-		} while (hero_pos != -1 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > (host_readbs(get_hero(6) + 0x21) ? 1 : 0));
+		} while (hero_pos != -1 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > (host_readbs(get_hero(6) + HERO_TYPE) ? 1 : 0));
 	}
 }
 
@@ -420,12 +420,12 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 	for (i = 0; i <= 6; i++) {
 		hero = get_hero(i);
 
-		if (host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			!hero_dummy4(hero) &&
 			!hero_dead(hero) &&
-			((le_diff = host_readws(hero + 0x5e) - host_readws(hero + 0x60)) > le))
+			((le_diff = host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)) > le))
 		{
 			le = le_diff;
 			hero_pos = i;
@@ -450,7 +450,7 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)str,
-				(char*)get_hero(hero_pos) + 0x10,
+				(char*)get_hero(hero_pos) + HERO_NAME2,
 				le_in,
 				(char*)Real2Host(ds_readd(0xd2eb)));
 	}
@@ -465,12 +465,12 @@ void miracle_resurrect(Bit8u *str)
 		hero = get_hero(i);
 
 		if (hero_dead(hero) &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dummy4(hero))
 		{
 
 			/* resurrect from the dead */
-			and_ptr_bs(hero + 0xaa, 0xfe);
+			and_ptr_bs(hero + HERO_STATUS1, 0xfe);
 
 			/* add 7 LE */
 			add_hero_le(hero, 7);
@@ -481,7 +481,7 @@ void miracle_resurrect(Bit8u *str)
 			/* prepare a message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)str,
-				(char*)hero + 0x10);
+				(char*)hero + HERO_NAME2);
 
 			break;
 		}
@@ -501,10 +501,10 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 	HugePt ptr;
 	RealPt hero = (RealPt)ds_readd(HEROS);
 
-	for (i = 0; i <= 6; i++, hero += 0x6da) {
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
-			host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+			host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(Real2Host(hero)) &&
 			!hero_dummy4(Real2Host(hero)))
 		{
@@ -536,46 +536,46 @@ void miracle_weapon(Bit8u *str, signed short mode)
 
 		hero = get_hero(j);
 
-		if (host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			!hero_dummy4(hero))
 		{
 			for (i = 0; i < 23; i++)
 			{
 
-				if ((item_id = host_readws(hero + 0x196 + 14 * i)) &&
+				if ((item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * i)) &&
 					item_weapon(get_itemsdat(item_id)))
 				{
 
 					if (mode == 0) {
 						/* make a non-broken, non-magic weapon magic */
 
-						if (!ks_broken(hero + 0x196 + 14 * i) &&
-							!ks_magic_hidden(hero + 0x196 + 14 * i))
+						if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * i) &&
+							!ks_magic_hidden(hero + HERO_ITEM_HEAD + 14 * i))
 						{
 							/* weapon is magic and known */
-							or_ptr_bs(hero + 0x196 + 4 + 14 * i, 0x08);
-							or_ptr_bs(hero + 0x196 + 4 + 14 * i, 0x80);
+							or_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * i, 0x08);
+							or_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * i, 0x80);
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,
 								(char*)Real2Host(GUI_names_grammar((signed short)0x8000, item_id, 0)),
-								(char*)hero + 0x10);
+								(char*)hero + HERO_NAME2);
 
 							done = 1;
 							break;
 						}
 					} else {
 						/* repair a broken weapon */
-						if (ks_broken(hero + 0x196 + 14 * i))
+						if (ks_broken(hero + HERO_ITEM_HEAD + 14 * i))
 						{
-							and_ptr_bs(hero + 0x196 + 4 + 14 * i, 0xfe);
+							and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * i, 0xfe);
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)str,
 								(char*)Real2Host(GUI_names_grammar((signed short)0x8000, item_id, 0)),
-								(char*)hero + 0x10);
+								(char*)hero + HERO_NAME2);
 
 							done = 1;
 							break;

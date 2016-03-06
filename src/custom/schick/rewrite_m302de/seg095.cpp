@@ -29,7 +29,7 @@ unsigned short npc_meetings(unsigned short type_index)
 
 	/* check if an NPC is in the party and if we
 		already had an NPC conversation here */
-	if (!host_readbs(get_hero(6) + 0x21) &&
+	if (!host_readbs(get_hero(6) + HERO_TYPE) &&
 		(type_index != ds_readw(0x346e))) {
 
 		ds_writew(0x346e, type_index);
@@ -98,11 +98,11 @@ void npc_farewell(void)
 	signed short tmp;
 
 	/* no NPC there */
-	if (host_readb(get_hero(6) + 0x21) == 0)
+	if (host_readb(get_hero(6) + HERO_TYPE) == 0)
 		return;
 
 	/* no NPC in that group */
-	if (host_readb(get_hero(6) + 0x87) != ds_readb(CURRENT_GROUP))
+	if (host_readb(get_hero(6) + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))
 		return;
 
 	/* The NPC will be removed after 99 Months ingame time. Weird! */
@@ -112,7 +112,7 @@ void npc_farewell(void)
 	tmp = ds_readw(0x26bf);
 	load_buffer_1(0xe1);
 
-	switch (host_readbs(get_hero(6) + 0x89)) {
+	switch (host_readbs(get_hero(6) + HERO_NPC_ID)) {
 		/* Nariell */
 		case 1: {
 			if (ds_readws(NPC_MONTHS) >= 2)
@@ -133,9 +133,9 @@ void npc_farewell(void)
 						get_ltx(0xbc8), get_dtp(0x4c));
 
 					hero_i = get_hero(0);
-					for (i = 0; i < 6; i++, hero_i += 0x6da) {
-						if (host_readb(hero_i + 0x21) &&
-							(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+					for (i = 0; i < 6; i++, hero_i += SIZEOF_HERO) {
+						if (host_readb(hero_i + HERO_TYPE) &&
+							(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 							(!hero_dead(hero_i)))
 						{
 
@@ -500,7 +500,7 @@ void remove_npc(signed short head_index, signed char days,
 
 	/* reset NPCs groups position */
 	/* TODO: this is bogus, since memset() will come */
-	host_writeb(get_hero(6) + 0x8a, 0);
+	host_writeb(get_hero(6) + HERO_GROUP_POS, 0);
 
 	/* save the NPC */
 	save_npc(index);
@@ -515,7 +515,7 @@ void remove_npc(signed short head_index, signed char days,
 	}
 
 	/* clear the NPC from memory */
-	memset(get_hero(6), 0, 0x6da);
+	memset(get_hero(6), 0, SIZEOF_HERO);
 
 	/* dec group counter */
 	dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
@@ -540,7 +540,7 @@ void add_npc(signed short index)
 	load_npc(index);
 
 	/* overwrite the picture of the NPC with one from IN_HEAD.NVF */
-	memcpy(get_hero(6) + 0x2da, Real2Host(ds_readd(DTP2)), 0x400);
+	memcpy(get_hero(6) + HERO_PORTRAIT, Real2Host(ds_readd(DTP2)), 0x400);
 
 	/* increment heros in that group */
 	inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
@@ -552,10 +552,10 @@ void add_npc(signed short index)
 	ds_writew(NPC_MONTHS, 0);
 
 	/* set a number to deciede between the NPCs (1-6) */
-	host_writeb(get_hero(6) + 0x89, index - 0xe1);
+	host_writeb(get_hero(6) + HERO_NPC_ID, index - 0xe1);
 
 	/* set the group the NPC contains in */
-	host_writeb(get_hero(6) + 0x87, ds_readb(CURRENT_GROUP));
+	host_writeb(get_hero(6) + HERO_GROUP_NO, ds_readb(CURRENT_GROUP));
 
 	draw_status_line();
 }

@@ -394,8 +394,8 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 
 				hero_ptr = get_hero(i);
 
-				if ((host_readbs(hero_ptr + 0x21) != 0) &&
-					(host_readbs(hero_ptr + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+				if ((host_readbs(hero_ptr + HERO_TYPE) != 0) &&
+					(host_readbs(hero_ptr + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero_ptr))
 				{
 					FIG_search_obj_on_cb(i + 1, &l_var6, &l_var7);

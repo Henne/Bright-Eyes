@@ -81,7 +81,7 @@ void ask_miracle(void)
 					l5 = 1;
 
 					for (i = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > i; i++) {
-						if (host_readbs(get_hero(i) + 0x21) >= 7) {
+						if (host_readbs(get_hero(i) + HERO_TYPE) >= 7) {
 							l5 = 1;
 						}
 					}
@@ -91,7 +91,7 @@ void ask_miracle(void)
 						if (l_si <= 5) {
 							/* MU+1 for 1 day */
 							if (!ds_readd(INGAME_TIMERS + 0x28)) {
-								miracle_modify(get_hero(0) + 0x35 - get_hero(0), HOURS(24), 1);
+								miracle_modify(get_hero(0) + HERO_MU - get_hero(0), HOURS(24), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(4));
 								ds_writed(INGAME_TIMERS + 0x28, HOURS(24));
 							}
@@ -104,12 +104,12 @@ void ask_miracle(void)
 								if (i != -1 && !hero_dummy4(get_hero(i))) {
 
 									slot = get_free_mod_slot();
-									set_mod_slot(slot, 3 * HOURS(24), get_hero(i) + 0x66,
+									set_mod_slot(slot, 3 * HOURS(24), get_hero(i) + HERO_MR,
 										99, (signed char)i);
 
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_city(8),
-										(char*)get_hero(i) + 0x10);
+										(char*)get_hero(i) + HERO_NAME2);
 									ds_writed(INGAME_TIMERS + 0x2c, 3 * HOURS(24));
 								}
 							}
@@ -121,27 +121,27 @@ void ask_miracle(void)
 								if (hero_transformed(hero)) {
 
 									/* unset transformation */
-									and_ptr_bs(hero + 0xab, 0xbf);
+									and_ptr_bs(hero + HERO_STATUS2, 0xbf);
 
 									for (i = 0; i <= 6; i++) {
-										inc_ptr_bs(hero + 0x35 + 3 * i);
+										inc_ptr_bs(hero + HERO_MU + 3 * i);
 									}
 
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_ltx(0x8d4),
-										(char*)hero + 0x10);
+										(char*)hero + HERO_NAME2);
 									break;
 								} else {
 									if (hero_cursed(hero) &&
-										host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+										host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 										!hero_dummy4(hero))
 									{
 										/* unset curse */
-										and_ptr_bs(hero + 0xaa, 0xdf);
+										and_ptr_bs(hero + HERO_STATUS1, 0xdf);
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_city(0x0c),
-											(char*)hero + 0x10);
+											(char*)hero + HERO_NAME2);
 										break;
 									}
 								}
@@ -194,11 +194,11 @@ void ask_miracle(void)
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
 
-							if (host_readbs(hero + 0x21) != 0 &&
-								host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+							if (host_readbs(hero + HERO_TYPE) != 0 &&
+								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dummy4(hero))
 							{
-								host_writebs(hero + 0x7f, host_writebs(hero + 0x80, 0));
+								host_writebs(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
 							}
 						}
 
@@ -243,34 +243,34 @@ void ask_miracle(void)
 							if (hero_transformed(hero)) {
 
 								/* unset transformation */
-								and_ptr_bs(hero + 0xab, 0xbf);
+								and_ptr_bs(hero + HERO_STATUS2, 0xbf);
 
 								for (i = 0; i <= 6; i++) {
-									inc_ptr_bs(hero + 0x35 + 3 * i);
+									inc_ptr_bs(hero + HERO_MU + 3 * i);
 								}
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0x8d4),
-									(char*)hero + 0x10);
+									(char*)hero + HERO_NAME2);
 								break;
 							} else {
 								if (hero_cursed(hero) &&
-									host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+									host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 									!hero_dummy4(hero))
 								{
 									/* unset curse */
-									and_ptr_bs(hero + 0xaa, 0xdf);
+									and_ptr_bs(hero + HERO_STATUS1, 0xdf);
 
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_city(0x44),
-										(char*)hero + 0x10);
+										(char*)hero + HERO_NAME2);
 									break;
 								}
 							}
 						}
 					} else if (l_si <= 7) {
 						if (!ds_readd(INGAME_TIMERS + 0x44)) {
-							miracle_modify(get_hero(0) + 0x66 - get_hero(0), 3 * HOURS(24), 5);
+							miracle_modify(get_hero(0) + HERO_MR - get_hero(0), 3 * HOURS(24), 5);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x48));
 							ds_writed(INGAME_TIMERS + 0x44, 3 * HOURS(24));
 						}
@@ -294,14 +294,14 @@ void ask_miracle(void)
 							if (i != -1 && !hero_dummy4(get_hero(i))) {
 
 								slot = get_free_mod_slot();
-								set_mod_slot(slot, 7 * HOURS(24), get_hero(i) + 0x7e,
+								set_mod_slot(slot, 7 * HOURS(24), get_hero(i) + HERO_HUNGER_TIMER,
 									1, (signed char)i);
 
-								host_writebs(get_hero(i) + 0x7f, host_writebs(get_hero(i) + 0x80, 0));
+								host_writebs(get_hero(i) + HERO_HUNGER, host_writebs(get_hero(i) + HERO_THIRST, 0));
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_city(0x50),
-									(char*)get_hero(i) + 0x10);
+									(char*)get_hero(i) + HERO_NAME2);
 								ds_writed(INGAME_TIMERS + 0x48, 7 * HOURS(24));
 							}
 						}
@@ -315,15 +315,15 @@ void ask_miracle(void)
 					} else if (l_si <= 15) {
 
 						hero = get_hero(0);
-						for (i = 0; i <= 6; i++, hero += 0x6da) {
+						for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-							if (host_readbs(hero + 0x21) != 0 &&
-								host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+							if (host_readbs(hero + HERO_TYPE) != 0 &&
+								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero) &&
 								!hero_dummy4(hero))
 							{
 								/* heal hero completely */
-								add_hero_le(hero, host_readws(hero + 0x5e));
+								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 							}
 						}
 
@@ -374,15 +374,15 @@ void ask_miracle(void)
 							disease = hero_is_diseased(hero);
 
 							if (disease != 0 &&
-								host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dummy4(hero))
 							{
-								host_writeb(hero + 0xae + 5 * disease, 1);
+								host_writeb(hero + HERO_ILLNESS_EMPTY + 5 * disease, 1);
 								host_writeb(hero + 0xaf + 5 * disease, 0);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_city(0x70),
-									(char*)hero + 0x10);
+									(char*)hero + HERO_NAME2);
 								break;
 							}
 						}
@@ -396,14 +396,14 @@ void ask_miracle(void)
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
 
-							if (host_readbs(hero + 0x21) != 0 &&
-								host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+							if (host_readbs(hero + HERO_TYPE) != 0 &&
+								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero) &&
 								!hero_dummy4(hero))
 							{
 
 								for (j = 0; j < 23; j++) {
-									if ((item_id = host_readws(hero + 0x196 + 14 * j)) &&
+									if ((item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * j)) &&
 										item_weapon(get_itemsdat(item_id)))
 									{
 										if (host_readbs(hero + 0x19c + 14 * j) > 0) {
@@ -450,10 +450,10 @@ void ask_miracle(void)
 						if (!ds_readds(INGAME_TIMERS + 0x64)) {
 
 							hero = get_hero(0);
-							for (i = 0; i <= 6; i++, hero += 0x6da) {
+							for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-								if (host_readbs(hero + 0x21) != 0 &&
-									host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+								if (host_readbs(hero + HERO_TYPE) != 0 &&
+									host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 									!hero_dead(hero) &&
 									!hero_dummy4(hero))
 								{

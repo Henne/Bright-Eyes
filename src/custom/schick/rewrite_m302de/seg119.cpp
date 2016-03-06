@@ -49,11 +49,11 @@ void disease_effect(void)
 
 	for (i = 0; i <= 6; i++) {
 
-		if ((host_readbs(get_hero(i) + 0x21) != 0) && !hero_dead(get_hero(i))) {
+		if ((host_readbs(get_hero(i) + HERO_TYPE) != 0) && !hero_dead(get_hero(i))) {
 
-			hero = (RealPt)ds_readd(HEROS) + 0x6da * i;
+			hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
 
-			disease_ptr = Real2Host(hero) + 0xb3;
+			disease_ptr = Real2Host(hero) + HERO_ILLNESS;
 
 			/* TETANUS / WUNDFIEBER: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -67,7 +67,7 @@ void disease_effect(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x8c4),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -75,15 +75,15 @@ void disease_effect(void)
 					/* Strength is fading, but only to 1 */
 					sub_hero_le(Real2Host(hero), dice_roll(2, 6, -(host_readbs(disease_ptr + 1) - 1)));
 
-					if (host_readbs(Real2Host(hero) + 0x47) != 0) {
+					if (host_readbs(Real2Host(hero) + HERO_KK) != 0) {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x8f0),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						inc_ptr_bs(disease_ptr + 2);
-						dec_ptr_bs(Real2Host(hero) + 0x47);
+						dec_ptr_bs(Real2Host(hero) + HERO_KK);
 					}
 				}
 			}
@@ -99,12 +99,12 @@ void disease_effect(void)
 					/* hero regains the lost strength */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x8f4),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
 					dec_ptr_bs(disease_ptr + 2);
-					inc_ptr_bs(Real2Host(hero) + 0x47);
+					inc_ptr_bs(Real2Host(hero) + HERO_KK);
 				}
 			}
 
@@ -124,12 +124,12 @@ void disease_effect(void)
 					}
 
 					sub_ptr_bs(Real2Host(hero) + 0x41, 2);
-					sub_ptr_bs(Real2Host(hero) + 0x47, 5);
+					sub_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x8f8),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -141,9 +141,9 @@ void disease_effect(void)
 
 					hero2 = get_hero(0);
 
-					for (j = 0; j <= 6; j++, hero2 += 0x6da) {
-						if ((host_readbs(hero2 + 0x21) != 0) &&
-							(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
+						if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+							(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
 							(hero2 != Real2Host(hero)) &&
 							(random_schick(100) <= 20))
@@ -169,7 +169,7 @@ void disease_effect(void)
 						}
 
 						add_ptr_bs(Real2Host(hero) + 0x41, 2);
-						add_ptr_bs(Real2Host(hero) + 0x47, 5);
+						add_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 					}
 
 					hero_gets_diseased(Real2Host(hero), 3);
@@ -198,13 +198,13 @@ void disease_effect(void)
 					}
 
 					add_ptr_bs(Real2Host(hero) + 0x41, 2);
-					add_ptr_bs(Real2Host(hero) + 0x47, 5);
+					add_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 				}
 
 				/* regeneration complete */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x8fc),
-					(char*)Real2Host(hero) + 0x10);
+					(char*)Real2Host(hero) + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -223,16 +223,16 @@ void disease_effect(void)
 						sub_ptr_bs(Real2Host(hero) + j + 0x6f, 4);
 					}
 
-					host_writebs(disease_ptr + 2, host_readbs(Real2Host(hero) + 0x47) / 2);
+					host_writebs(disease_ptr + 2, host_readbs(Real2Host(hero) + HERO_KK) / 2);
 					host_writebs(disease_ptr + 3, host_readbs(Real2Host(hero) + 0x41) / 2);
 
 
 					sub_ptr_bs(Real2Host(hero) + 0x41, host_readbs(disease_ptr + 3));
-					sub_ptr_bs(Real2Host(hero) + 0x47, host_readbs(disease_ptr + 2));
+					sub_ptr_bs(Real2Host(hero) + HERO_KK, host_readbs(disease_ptr + 2));
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x904),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -241,17 +241,17 @@ void disease_effect(void)
 				if ((host_readbs(disease_ptr + 1) > 3) && (random_schick(100) <= 25)) {
 
 						dec_ptr_bs(Real2Host(hero) + 0x46);
-						dec_ptr_bs(Real2Host(hero) + 0x47);
-						sub_ptr_ws(Real2Host(hero) + 0x5e, host_readbs(disease_ptr + 1) / 3);
+						dec_ptr_bs(Real2Host(hero) + HERO_KK);
+						sub_ptr_ws(Real2Host(hero) + HERO_LE_ORIG, host_readbs(disease_ptr + 1) / 3);
 						sub_hero_le(Real2Host(hero), host_readbs(disease_ptr + 1) / 3);
 						host_writebs(disease_ptr, 1);
 				} else {
 
 					hero2 = get_hero(0);
 
-					for (j = 0; j <= 6; j++, hero2 += 0x6da) {
-						if ((host_readbs(hero2 + 0x21) != 0) &&
-							(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
+						if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+							(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
 							(hero2 != Real2Host(hero)) &&
 							(random_schick(100) <= 20))
@@ -270,7 +270,7 @@ void disease_effect(void)
 				/* regeneration complete */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x900),
-					(char*)Real2Host(hero) + 0x10);
+					(char*)Real2Host(hero) + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -287,7 +287,7 @@ void disease_effect(void)
 					}
 
 					add_ptr_bs(Real2Host(hero) + 0x41, host_readbs(disease_ptr + 3));
-					add_ptr_bs(Real2Host(hero) + 0x47, host_readbs(disease_ptr + 2));
+					add_ptr_bs(Real2Host(hero) + HERO_KK, host_readbs(disease_ptr + 2));
 					host_writebs(disease_ptr + 2, host_writebs(disease_ptr + 3, 0));
 				}
 			}
@@ -308,11 +308,11 @@ void disease_effect(void)
 
 					j = random_schick(6);
 					add_ptr_bs(disease_ptr + 2, j);
-					sub_ptr_bs(Real2Host(hero) + 0x47, j);
+					sub_ptr_bs(Real2Host(hero) + HERO_KK, j);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x90c),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -329,18 +329,18 @@ void disease_effect(void)
 					if (!host_readbs(disease_ptr + 2)) {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x8f4),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						dec_ptr_bs(disease_ptr + 2);
-						inc_ptr_bs(Real2Host(hero) + 0x47);
+						inc_ptr_bs(Real2Host(hero) + HERO_KK);
 					}
 
 					if (!host_readbs(disease_ptr + 3)) {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x908),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -359,11 +359,11 @@ void disease_effect(void)
 				if (host_readbs(disease_ptr + 1) > 7) {
 
 					/* 30 % for elfes, 20% for the all other types */
-					if (random_schick(100) <= (host_readbs(Real2Host(hero) + 0x21) >= 10 ? 30 : 20)) {
+					if (random_schick(100) <= (host_readbs(Real2Host(hero) + HERO_TYPE) >= 10 ? 30 : 20)) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x910),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -381,12 +381,12 @@ void disease_effect(void)
 						if (!host_readbs(disease_ptr + 4)) {
 
 							host_writeb(disease_ptr + 4, 1);
-							sub_ptr_bs(Real2Host(hero) + 0x47, 5);
+							sub_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x914),
-								(char*)Real2Host(hero) + 0x10,
-								(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + 0x22), 0)));
+								(char*)Real2Host(hero) + HERO_NAME2,
+								(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 0)));
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						}
@@ -395,8 +395,8 @@ void disease_effect(void)
 
 							hero2 = get_hero(j);
 
-							if ((host_readbs(hero2 + 0x21) != 0) &&
-								(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+							if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+								(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 								!hero_dead(hero2) &&
 								(hero2 != Real2Host(hero)) &&
 								(random_schick(100) <= 5))
@@ -405,7 +405,7 @@ void disease_effect(void)
 							}
 						}
 
-						sub_hero_le(Real2Host(hero), dice_roll((host_readbs(Real2Host(hero) + 0x21) >= 10 ? 2 : 1),
+						sub_hero_le(Real2Host(hero), dice_roll((host_readbs(Real2Host(hero) + HERO_TYPE) >= 10 ? 2 : 1),
 										6, host_readbs(disease_ptr + 1) - 1));
 					}
 				}
@@ -418,12 +418,12 @@ void disease_effect(void)
 
 					host_writeb(disease_ptr + 4, 0);
 					host_writeb(disease_ptr + 1, 0);
-					add_ptr_bs(Real2Host(hero) + 0x47, 5);
+					add_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 				}
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x918),
-					(char*)Real2Host(hero) + 0x10);
+					(char*)Real2Host(hero) + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -444,17 +444,17 @@ void disease_effect(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x91c),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
 
 				sub_hero_le(Real2Host(hero), dice_roll(1, 6, 0));
 
-				if (host_readbs(Real2Host(hero) + 0x47) != 0) {
+				if (host_readbs(Real2Host(hero) + HERO_KK) != 0) {
 
 					inc_ptr_bs(disease_ptr + 2);
-					dec_ptr_bs(Real2Host(hero) + 0x47);
+					dec_ptr_bs(Real2Host(hero) + HERO_KK);
 				}
 
 				if (host_readbs(Real2Host(hero) + 0x41) != 0) {
@@ -467,7 +467,7 @@ void disease_effect(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xb90),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -483,18 +483,18 @@ void disease_effect(void)
 					if (!host_readbs(disease_ptr + 2)) {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x8f4),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						dec_ptr_bs(disease_ptr + 2);
-						inc_ptr_bs(Real2Host(hero) + 0x47);
+						inc_ptr_bs(Real2Host(hero) + HERO_KK);
 					}
 
 					if (!host_readbs(disease_ptr + 3)) {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x908),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -518,11 +518,11 @@ void disease_effect(void)
 
 					hero2 = get_hero(0);
 
-					for (j = 0; j <= 6; j++, hero2 += 0x6da) {
+					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
 
 
-						if ((host_readbs(hero2 + 0x21) != 0) &&
-							(host_readbs(hero2 + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+						if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+							(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
 							(hero2 != Real2Host(hero)) &&
 							(random_schick(100) <= 10))
@@ -535,7 +535,7 @@ void disease_effect(void)
 									6, 0));
 
 					add_ptr_bs(disease_ptr + 2, 2);
-					sub_ptr_bs(Real2Host(hero) + 0x47, 2);
+					sub_ptr_bs(Real2Host(hero) + HERO_KK, 2);
 
 					if (host_readbs(disease_ptr + 1) > 2) {
 
@@ -545,7 +545,7 @@ void disease_effect(void)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x8f0),
-							(char*)Real2Host(hero) + 0x10);
+							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
@@ -563,12 +563,12 @@ void disease_effect(void)
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x8f4),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
 					dec_ptr_bs(disease_ptr + 2);
-					inc_ptr_bs(Real2Host(hero) + 0x47);
+					inc_ptr_bs(Real2Host(hero) + HERO_KK);
 				}
 			}
 
@@ -581,9 +581,9 @@ void disease_effect(void)
 			}
 
 			/* kill hero if KK <= 0 */
-			if (host_readbs(Real2Host(hero) + 0x47) <= 0) {
+			if (host_readbs(Real2Host(hero) + HERO_KK) <= 0) {
 
-				host_writebs(Real2Host(hero) + 0x47, host_readbs(Real2Host(hero) + 0x46));
+				host_writebs(Real2Host(hero) + HERO_KK, host_readbs(Real2Host(hero) + 0x46));
 
 				sub_hero_le(Real2Host(hero), 5000);
 			}

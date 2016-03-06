@@ -158,11 +158,11 @@ void chest_cursed(void)
 	if (!hero_transformed(hero)) {
 
 		/* set transformed flag */
-		or_ptr_bs(hero + 0xab, 0x40);
+		or_ptr_bs(hero + HERO_STATUS2, 0x40);
 
 		/* decrement each good attribute */
 		for (i = 0; i <= 6; i++) {
-			dec_ptr_bs(hero + 0x35 + 3 * i);
+			dec_ptr_bs(hero + HERO_MU + 3 * i);
 		}
 
 		/* print a message */
@@ -338,10 +338,10 @@ signed short hero_has_lockpicks(Bit8u *hero)
 	for (i = 0; i < 23; i++) {
 
 		/* ... check for lockpicks ... */
-		if (host_readws(hero + 0x196 + 14 * i) == 35) {
+		if (host_readws(hero + HERO_ITEM_HEAD + 14 * i) == 35) {
 
 			/* ... which are not broken */
-			if (!ks_broken(hero + 0x196 + 14 * i)) {
+			if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * i)) {
 				return i;
 			} else {
 				retval = -2;
@@ -540,7 +540,7 @@ void use_key_on_chest(RealPt chest_ptr)
 
 	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1) {
 
-		if (!ks_broken(hero + 0x196 + 14 * key_pos)) {
+		if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * key_pos)) {
 
 			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
 

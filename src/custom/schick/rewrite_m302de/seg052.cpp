@@ -153,9 +153,9 @@ void do_citycamp(void)
 
 			if (answer != -1) {
 
-				hero = (RealPt)ds_readd(HEROS) + 0x6da * answer;
+				hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
 
-				if (host_readbs(Real2Host(hero) + 0x21) >= 7) {
+				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
 
 					if (ds_readb(0xe3e8 + answer) != 0) {
 						GUI_output(get_ltx(0x52c));
@@ -267,10 +267,10 @@ void do_citycamp(void)
 					if (done == 0) {
 
 						hero = (RealPt)ds_readd(HEROS);
-						for (l_si = 0; l_si <= 6; l_si++, hero += 0x6da) {
+						for (l_si = 0; l_si <= 6; l_si++, hero += SIZEOF_HERO) {
 
-							if (host_readbs(Real2Host(hero) + 0x21) != 0 &&
-								host_readbs(Real2Host(hero) + 0x87) == ds_readbs(CURRENT_GROUP) &&
+							if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+								host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								ds_readbs(0xe3e8 + l_si) < 2 &&
 								ds_readbs(0xe3e1 + l_si) != 1)
 							{

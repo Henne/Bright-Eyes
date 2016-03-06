@@ -118,7 +118,7 @@ void FIG_set_star_color(Bit8u *ptr, unsigned short count, unsigned char color)
 RealPt FIG_name_3rd_case(unsigned short type, volatile unsigned short pos)
 {
 	if (type == 2) {
-		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * SIZEOF_HERO + HERO_NAME2;
 	} else {
 		return GUI_names_grammar(3, pos, 1);
 	}
@@ -136,7 +136,7 @@ RealPt FIG_name_4th_case(unsigned short type, volatile unsigned short pos)
 {
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * SIZEOF_HERO + HERO_NAME2;
 	else
 		return GUI_names_grammar(2, pos, 1);
 }
@@ -153,7 +153,7 @@ RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
 {
 
 	if (type == 2)
-		return (RealPt)ds_readd(HEROS) + pos * 0x6da + 0x10;
+		return (RealPt)ds_readd(HEROS) + pos * SIZEOF_HERO + HERO_NAME2;
 	else
 		return GUI_names_grammar(0, pos, 1);
 }
@@ -702,12 +702,12 @@ void draw_fight_screen(Bit16u val)
 										} else {
 											hero = Real2Host(FIG_get_hero_ptr(host_readbs(list_i + 0x10)));
 											if (NOT_NULL(hero)) {
-												host_writeb(hero + 0x84, 16);
-												or_ptr_bs(hero + 0xab, 1);
+												host_writeb(hero + HERO_UNKNOWN2, 16);
+												or_ptr_bs(hero + HERO_STATUS2, 1);
 
-												host_writew(hero + 0x9d,
-													ds_readws(0xd325 + 2 * ((host_readbs(hero + 0x82) == 3) ? 0 : (host_readbs(hero + 0x82) + 1))));
-												w_arr[host_readbs(list_i + 0xe)] = host_readbs(hero + 0x81);
+												host_writew(hero + HERO_UNKNOWN9,
+													ds_readws(0xd325 + 2 * ((host_readbs(hero + HERO_VIEWDIR) == 3) ? 0 : (host_readbs(hero + HERO_VIEWDIR) + 1))));
+												w_arr[host_readbs(list_i + 0xe)] = host_readbs(hero + HERO_FIGHT_ID);
 
 											}
 										}

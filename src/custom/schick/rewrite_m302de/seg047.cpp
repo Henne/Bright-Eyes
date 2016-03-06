@@ -40,11 +40,11 @@ unsigned short get_hero_CH_best()
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
-		if ((host_readb(hero_i + 0x21) != 0) &&
+		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
 				/* check class */
-			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
 				/* check if not dead */
@@ -73,17 +73,17 @@ unsigned short get_hero_KK_best() {
 
 	hero_i = get_hero(0);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-		if ((host_readb(hero_i + 0x21) != 0) &&
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
+		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
 				/* check class */
-			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
 				/* check if not dead */
-			(host_readbs(hero_i + 0x47) > kk_val)) {
+			(host_readbs(hero_i + HERO_KK) > kk_val)) {
 				/* check if KK is the highest */
 
-				kk_val = host_readbs(hero_i + 0x47);
+				kk_val = host_readbs(hero_i + HERO_KK);
 				retval = i;
 			}
 	}
@@ -102,7 +102,7 @@ unsigned short hero_is_diseased(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 7; i++)
-		if (host_readbs(hero + 0xae + i * 5) == -1)
+		if (host_readbs(hero + HERO_ILLNESS_EMPTY + i * 5) == -1)
 			return i;
 
 	return 0;
@@ -120,7 +120,7 @@ unsigned short hero_is_poisoned(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 9; i++)
-		if (host_readbs(hero + 0xd6 + i * 5) == -1)
+		if (host_readbs(hero + HERO_POISON_EMPTY + i * 5) == -1)
 			return i;
 
 	return 0;
@@ -152,14 +152,14 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 {
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* not a real BUG, but very useless */
-	if (host_readb(hero + 0x21) == 0)
+	if (host_readb(hero + HERO_TYPE) == 0)
 		return;
 #endif
 
 	if (!hero_dead(hero)) {
 #if !defined(__BORLANDC__)
 		D1_INFO("%s erkrankt an %s\n",
-			(char*)hero + 0x10,
+			(char*)hero + HERO_NAME2,
 			(char*)get_ltx((disease + 0x193) * 4));
 #endif
 
@@ -181,7 +181,7 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
 
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* not a real BUG, but very useless */
-	if (host_readb(hero + 0x21) == 0)
+	if (host_readb(hero + HERO_TYPE) == 0)
 		return;
 #endif
 
@@ -201,7 +201,7 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
 short check_hero_KK_unused(short val)
 {
 
-	return (host_readbs(get_hero(0) + 0x47) + host_readbs(get_hero(0) + 0x48) >= val) ? 1 : 0;
+	return (host_readbs(get_hero(0) + HERO_KK) + host_readbs(get_hero(0) + HERO_KK_MOD) >= val) ? 1 : 0;
 }
 
 /**
@@ -219,13 +219,13 @@ short check_heros_KK(short val) {
 	hero = get_hero(0);
 
 	/* Orig-BUG: not checked if hero is valid */
-	sum = host_readbs(hero + 0x47) + host_readbs(hero + 0x48);
+	sum = host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD);
 
 	hero = get_hero(1);
 
 	/* check class, group and dead status of hero in slot 2*/
-	if (host_readb(hero + 0x21) && host_readb(hero + 0x87) == ds_readb(CURRENT_GROUP) && (!hero_dead(hero))) {
-		sum += host_readbs(hero + 0x47) + host_readbs(hero + 0x48);
+	if (host_readb(hero + HERO_TYPE) && host_readb(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) && (!hero_dead(hero))) {
+		sum += host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD);
 	}
 
 #if !defined(__BORLANDC__)
@@ -291,27 +291,27 @@ void update_atpa(Bit8u *hero)
 		erg.quot++;
 
 	/* calculate difference */
-	diff = erg.quot - host_readbs(hero + 0x67);
+	diff = erg.quot - host_readbs(hero + HERO_ATPA_BASIS);
 
 	if (diff != 0) {
 
 		/* update atpa base value */
-		host_writeb(hero + 0x67, erg.quot);
+		host_writeb(hero + HERO_ATPA_BASIS, erg.quot);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x20), host_readbs(hero + 0x67));
+			(char*)get_ltx(0x20), host_readbs(hero + HERO_ATPA_BASIS));
 
 		/* print message */
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		for (i = 0; i < 7; i++) {
 			/* add diff to AT value */
-			host_writeb(hero + 0x68 + i,
-				host_readbs(hero + 0x68 + i) + diff);
+			host_writeb(hero + HERO_AT + i,
+				host_readbs(hero + HERO_AT + i) + diff);
 			/* add diff to PA value */
-			host_writeb(hero + 0x6f + i,
-				host_readbs(hero + 0x6f + i) + diff);
+			host_writeb(hero + HERO_PA + i,
+				host_readbs(hero + HERO_PA + i) + diff);
 		}
 	}
 }
@@ -416,15 +416,15 @@ signed short select_hero_from_group(Bit8u *title)
 
 	for (i = 0; i <= 6; i++) {
 
-		hero = (RealPt)ds_readd(HEROS) + i * 0x6da;
+		hero = (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
 
-		if (host_readb(Real2Host(hero) + 0x21) != 0 &&
-			host_readb(Real2Host(hero) + 0x87) == ds_readb(CURRENT_GROUP) &&
+		if (host_readb(Real2Host(hero) + HERO_TYPE) != 0 &&
+			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 				/* TODO: find out what that means */
 				ds_readbs(0x64a2) != i) {
 
 			/* save pointer to the name of the hero */
-			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + 0x10));
+			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + HERO_NAME2));
 			dst.v[cnt] = i;
 			cnt++;
 		}
@@ -491,16 +491,16 @@ signed short select_hero_ok(Bit8u *title)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
-	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += 0x6da) {
+	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readb(Real2Host(hero) + 0x21) != 0 &&
-			host_readb(Real2Host(hero) + 0x87) == ds_readb(CURRENT_GROUP) &&
+		if (host_readb(Real2Host(hero) + HERO_TYPE) != 0 &&
+			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			check_hero(Real2Host(hero)) &&
 				/* TODO: find out what that means */
 				ds_readbs(0x64a2) != i) {
 
 			/* save pointer to the name of the hero */
-			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + 0x10));
+			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + HERO_NAME2));
 			dst.v[cnt] = i;
 			cnt++;
 		}
@@ -569,16 +569,16 @@ signed short select_hero_ok_forced(Bit8u *title)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
-	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += 0x6da) {
+	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readb(Real2Host(hero) + 0x21) != 0 &&
-			host_readb(Real2Host(hero) + 0x87) == ds_readb(CURRENT_GROUP) &&
+		if (host_readb(Real2Host(hero) + HERO_TYPE) != 0 &&
+			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			check_hero(Real2Host(hero)) &&
 				/* TODO: find out what that means */
 				ds_readbs(0x64a2) != i) {
 
 			/* save pointer to the name of the hero */
-			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + 0x10));
+			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + HERO_NAME2));
 			dst.v[cnt] = i;
 			cnt++;
 		}
@@ -631,10 +631,10 @@ signed short count_heroes_in_group(void)
 
 	retval = 0;
 
-	for (hero_i = get_hero(0), i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (hero_i = get_hero(0), i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and dead */
-		if ((host_readb(hero_i + 0x21) != 0) &&
-			(host_readb(hero_i + 0x87) == ds_readb(CURRENT_GROUP)) &&
+		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
+			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			(!hero_dead(hero_i))) {
 
 			retval++;
@@ -651,19 +651,19 @@ signed short count_heroes_in_group(void)
 void hero_get_drunken(Bit8u *hero)
 {
 
-	if (!host_readbs(hero + 0xa1)) {
+	if (!host_readbs(hero + HERO_DRUNK)) {
 
 		/* set the hero drunken */
-		host_writeb(hero + 0xa1, 1);
+		host_writeb(hero + HERO_DRUNK, 1);
 
 		/* change good attributes */
-		add_ptr_bs(hero + 0x35, 1);
+		add_ptr_bs(hero + HERO_MU, 1);
 		sub_ptr_bs(hero + 0x38, 1);
 		sub_ptr_bs(hero + 0x3b, 1);
 		sub_ptr_bs(hero + 0x3e, 1);
 		sub_ptr_bs(hero + 0x41, 1);
 		add_ptr_bs(hero + 0x44, 1);
-		add_ptr_bs(hero + 0x47, 1);
+		add_ptr_bs(hero + HERO_KK, 1);
 
 		/* Reset bad attributes */
 		add_ptr_bs(hero + 0x4a, 1);
@@ -691,24 +691,24 @@ void hero_get_drunken(Bit8u *hero)
 void hero_get_sober(Bit8u *hero) {
 	/* This is checked twice */
 	/* Is hero drunken ? */
-	if (host_readb(hero + 0xa1) == 0)
+	if (host_readb(hero + HERO_DRUNK) == 0)
 		return;
 
 #if !defined(__BORLANDC__)
-	D1_INFO("%s ist wieder nuechtern\n", (char*)hero + 0x10);
+	D1_INFO("%s ist wieder nuechtern\n", (char*)hero + HERO_NAME2);
 #endif
 
 	/* set hero sober */
-	host_writeb(hero + 0xa1, 0);
+	host_writeb(hero + HERO_DRUNK, 0);
 
 	/* Reset good attributes */
-	sub_ptr_bs(hero + 0x35, 1);
+	sub_ptr_bs(hero + HERO_MU, 1);
 	add_ptr_bs(hero + 0x38, 1);
 	add_ptr_bs(hero + 0x3b, 1);
 	add_ptr_bs(hero + 0x3e, 1);
 	add_ptr_bs(hero + 0x41, 1);
 	sub_ptr_bs(hero + 0x44, 1);
-	sub_ptr_bs(hero + 0x47, 1);
+	sub_ptr_bs(hero + HERO_KK, 1);
 
 	/* Reset bad attributes */
 	sub_ptr_bs(hero + 0x4a, 1);

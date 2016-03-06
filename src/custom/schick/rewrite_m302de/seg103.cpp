@@ -43,16 +43,16 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 
 		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x334));
 
-		if (host_readbs(hero + 0x13c) > 1) {
+		if (host_readbs(hero + HERO_TA_RISE) > 1) {
 			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x330),
 			/* sind / ist */
-			(host_readbs(hero + 0x13c) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
+			(host_readbs(hero + HERO_TA_RISE) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
 			/* # of tries left */
-			host_readbs(hero + 0x13c),
+			host_readbs(hero + HERO_TA_RISE),
 			Real2Host(ds_readd(0xd2eb)));
 	} else {
 
@@ -135,22 +135,22 @@ RealPt get_proper_hero(signed short skill)
 
 	hero_i = (RealPt)ds_readd(HEROS);
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class */
-		if ((host_readbs(Real2Host(hero_i) + 0x21) != 0) &&
+		if ((host_readbs(Real2Host(hero_i) + HERO_TYPE) != 0) &&
 			/* Check if in current group */
-			(host_readb(Real2Host(hero_i) + 0x87) == ds_readb(CURRENT_GROUP)) &&
+			(host_readb(Real2Host(hero_i) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			/* Check hero is not dead */
 			!hero_dead(Real2Host(hero_i))) {
 
 			/* add current and maximum attibute values */
-			cur =	host_readbs(Real2Host(hero_i) + 0x35 + 3 * ds_readbs(0xffe + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + 0x36 + 3 * ds_readbs(0xffe + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + 0x35 + 3 * ds_readbs(0xfff + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + 0x36 + 3 * ds_readbs(0xfff + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + 0x35 + 3 * ds_readbs(0x1000 + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + 0x36 + 3 * ds_readbs(0x1000 + 4 * skill)) + +
-				host_readbs(Real2Host(hero_i) + 0x108 + skill);
+			cur =	host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(0xffe + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(0xffe + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(0xfff + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(0xfff + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(0x1000 + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(0x1000 + 4 * skill)) + +
+				host_readbs(Real2Host(hero_i) + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {
 
@@ -195,10 +195,10 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 			/* calculate range weapon base value */
 			e_skillval = (host_readbs(hero + 0x38) + host_readbs(hero + 0x39) +
 				host_readbs(hero + 0x41) + host_readbs(hero + 0x42) +
-				host_readbs(hero + 0x47) + host_readbs(hero + 0x48)) / 4;
+				host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)) / 4;
 
 			/* add skill value */
-			e_skillval += host_readbs(hero + 0x108 + skill);
+			e_skillval += host_readbs(hero + HERO_TA_FIGHT + skill);
 			/* sub handycap */
 			e_skillval -= bonus;
 
@@ -244,7 +244,7 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		}
 
 		/* do the test */
-		bonus -= host_readbs(hero + 0x108 + skill);
+		bonus -= host_readbs(hero + HERO_TA_FIGHT + skill);
 
 		return test_attrib3(hero, ds_readbs(0xffe + skill * 4), ds_readbs(0xfff + skill * 4), ds_readbs(0x1000 + skill * 4), bonus);
 
@@ -351,7 +351,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 							(char*)get_ltx(0x73c),
 							(char*)patient + 0x10);
 						GUI_output(Real2Host(ds_readd(DTP2)));
-					} else if (host_readds(patient + 0x8b) > 0) {
+					} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 						/* patient timer is not zero */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xae4),
@@ -359,7 +359,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* set patient timer */
-						host_writed(patient + 0x8b, 0x5460);
+						host_writed(patient + HERO_HEAL_TIMER, 0x5460);
 
 						if (test_skill(hero, 44, bonus) > 0) {
 
@@ -369,7 +369,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 								/* success */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xac8),
-									(char*)hero + 0x10,
+									(char*)hero + HERO_NAME2,
 									(char*)patient + 0x10);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
@@ -379,7 +379,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xad0),
-									(char*)hero + 0x10,
+									(char*)hero + HERO_NAME2,
 									(char*)patient + 0x10);
 
 								if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
@@ -392,7 +392,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ltx(0xacc),
-											(char*)hero + 0x10,
+											(char*)hero + HERO_NAME2,
 											(char*)patient + 0x10,
 											le);
 
@@ -422,7 +422,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 								/* healing failed */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xac4),
-									(char*)hero + 0x10,
+									(char*)hero + HERO_NAME2,
 									(char*)patient + 0x10);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
@@ -431,7 +431,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 							/* recognizing the poison failed */
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0xac0),
-								(char*)hero + 0x10,
+								(char*)hero + HERO_NAME2,
 								(char*)patient + 0x10);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
@@ -469,7 +469,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 							(char*)patient + 0x10);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
-					} else if (host_readds(patient + 0x8b) > 0) {
+					} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 						/* timer is still running */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xae4),
@@ -478,7 +478,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 					} else {
-						host_writed(patient + 0x8b, 0x1fa40L);
+						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L);
 
 						if (test_skill(hero, 46, bonus) > 0) {
 							if (test_skill(hero, 46, bonus) > 0) {
@@ -489,7 +489,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xacc),
-									(char*)hero + 0x10,
+									(char*)hero + HERO_NAME2,
 									(char*)patient + 0x10,
 									l_si);
 
@@ -512,7 +512,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 								l_si = 0;
 
-								host_writed(patient + 0x8f, 0x1fa40L);
+								host_writed(patient + HERO_MAGIC_TIMER, 0x1fa40L);
 							}
 						} else {
 
@@ -520,7 +520,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 								/* infected */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xaec),
-									(char*)hero + 0x10,
+									(char*)hero + HERO_NAME2,
 									(char*)patient + 0x10);
 
 								host_writeb(patient + 0xb3, -1);
@@ -529,7 +529,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 								/* just failed */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xae8),
-									(char*)hero + 0x10,
+									(char*)hero + HERO_NAME2,
 									(char*)patient + 0x10);
 							}
 
@@ -556,7 +556,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x8c),
-						(char*)hero + 0x10,
+						(char*)hero + HERO_NAME2,
 						Real2Host(ds_readd(0xd2eb)));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -590,7 +590,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x8c),
-						(char*)hero + 0x10,
+						(char*)hero + HERO_NAME2,
 						Real2Host(ds_readd(0xd2eb)));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -619,7 +619,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x98),
 					Real2Host(ds_readd(0xd2eb)),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -647,7 +647,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa0),
 					Real2Host(ds_readd(0xd2eb)),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -657,7 +657,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa4),
-					(char*)hero + 0x10);
+					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -743,7 +743,7 @@ signed short bargain(Bit8u *hero, signed short items, Bit32s price,
 	signed char mod = mod_init;
 
 	/* maybe a special NPC ? */
-	if (host_readb(get_hero(6) + 0x89) == 2) {
+	if (host_readb(get_hero(6) + HERO_NPC_ID) == 2) {
 		mod -= 2;
 	}
 

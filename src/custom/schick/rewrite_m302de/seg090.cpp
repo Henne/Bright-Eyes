@@ -98,10 +98,10 @@ signed short DNG_handler_oberorken(void)
 				if (ds_readds(0x3fa2) == 0) {
 					/* time is up, drown party */
 					hero = get_hero(0);
-					for (i = 0; i <= 6; i++, hero += 0x6da) {
+					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-						if (host_readbs(hero + 0x21) != 0 &&
-							host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+						if (host_readbs(hero + HERO_TYPE) != 0 &&
+							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero))
 						{
 							hero_disappear(hero, i, -1);
@@ -115,7 +115,7 @@ signed short DNG_handler_oberorken(void)
 						/* prepare a message with the name of the NPC */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_dtp(0x58),
-								(char*)get_hero(6) + 0x10);
+								(char*)get_hero(6) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -301,19 +301,19 @@ signed short DNG_handler_oberorken(void)
 					/* fall into pit */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x64),
-						(char*)hero + 0x10,
-						Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)),
-						Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)));
+						(char*)hero + HERO_NAME2,
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 				} else {
 					/* detect obstacle */
 					/* TODO: buggy output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x7c),
-						(char*)hero + 0x10,
-						Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)),
-						Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)),
-						Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 0)),
-						Real2Host(GUI_get_ptr(host_readbs(hero + 0x22), 2)));
+						(char*)hero + HERO_NAME2,
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 				}
 
 				/* try to break through */
@@ -326,7 +326,7 @@ signed short DNG_handler_oberorken(void)
 					/* TODO: buggy output*/
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x80),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 				}
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -352,14 +352,14 @@ signed short DNG_handler_oberorken(void)
 					/* defusing trap failed */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x74),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 					sub_hero_le(hero , dice_roll(3, 6, 0));
 				} else {
 					/* trap defused */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x78),
-						(char*)hero + 0x10,
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2,
+						(char*)hero + HERO_NAME2);
 					ds_writeb(0x3fa9, 0);
 					add_hero_ap(hero, 10);
 				}

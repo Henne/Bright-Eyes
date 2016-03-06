@@ -98,7 +98,7 @@ void FIG_preload_gfx(void)
 		ds_writeb(0xe089 + i, 0);
 	}
 
-	ds_writed(0xd86a, (Bit32u)F_PADD(ds_readd(PTR_FIGHT_LST), 0xd8));
+	ds_writed(0xd86a, (Bit32u)F_PADD(ds_readd(PTR_FIGHT_LST), SIZEOF_FIGHT));
 
 	ds_writed(0xd866, (Bit32u)((RealPt)ds_readd(0xd86a) + 0x1953));
 
@@ -114,7 +114,7 @@ void FIG_preload_gfx(void)
 
 	/* set something in the hero charactersheet to -1 */
 	for (i = 0; i <= 6; i++) {
-		host_writeb(get_hero(i) + 0x81, -1);
+		host_writeb(get_hero(i) + HERO_FIGHT_ID, -1);
 	}
 
 	for (i = 0; i < 20; i++) {

@@ -314,14 +314,14 @@ signed short load_game_state(void)
 
 		/* clear the heros */
 		hero_i = (RealPt)ds_readd(HEROS);
-		for (i = 0; i <= 6; i++, hero_i += 0x6da) {
-			memset(Real2Host(hero_i), 0, 0x6da);
+		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
+			memset(Real2Host(hero_i), 0, SIZEOF_HERO);
 		}
 
 		hero_i = (RealPt)ds_readd(0xd303);
 
 		do {
-			l3 = bc__read(handle_gs, Real2Host(hero_i), 0x6da);
+			l3 = bc__read(handle_gs, Real2Host(hero_i), SIZEOF_HERO);
 
 			if (l3 != 0) {
 
@@ -334,10 +334,10 @@ signed short load_game_state(void)
 
 				handle = bc__creat((RealPt)ds_readd(0xd2eb), 0);
 
-				bc__write(handle, hero_i, 0x6da);
+				bc__write(handle, hero_i, SIZEOF_HERO);
 				bc_close(handle);
 
-				if (host_readbs(Real2Host(hero_i) + 0x8a) != 0) {
+				if (host_readbs(Real2Host(hero_i) + HERO_GROUP_POS) != 0) {
 
 					prepare_chr_name(name, (char*)Real2Host(hero_i));
 #if !defined(__BORLANDC__)
@@ -349,11 +349,11 @@ signed short load_game_state(void)
 						RealPt r_name = RealMake(SegValue(ss), reg_sp);
 						strncpy((char*)Real2Host(r_name), name, 20);
 						host_writeb(Real2Host(r_name) + 20, 0);
-						read_chr_temp(r_name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
+						read_chr_temp(r_name, host_readbs(Real2Host(hero_i) + HERO_GROUP_POS) - 1, host_readbs(Real2Host(hero_i) + HERO_GROUP_NO));
 						reg_sp = sp_bak;
 					}
 #else
-					read_chr_temp(name, host_readbs(Real2Host(hero_i) + 0x8a) - 1, host_readbs(Real2Host(hero_i) + 0x87));
+					read_chr_temp(name, host_readbs(Real2Host(hero_i) + HERO_GROUP_POS) - 1, host_readbs(Real2Host(hero_i) + HERO_GROUP_NO));
 #endif
 				}
 			}
@@ -384,11 +384,11 @@ signed short load_game_state(void)
 #else
 				handle = bc__open((char*)(&blk) + 30, 0x8004);
 #endif
-				bc__read(handle, Real2Host(ds_readd(0xd303)), 0x6da);
+				bc__read(handle, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
 				bc_close(handle);
 
 				handle_gs = bc__creat((RealPt)ds_readd(0xd2eb), 0);
-				bc__write(handle_gs, (RealPt)ds_readd(0xd303), 0x6da);
+				bc__write(handle_gs, (RealPt)ds_readd(0xd303), SIZEOF_HERO);
 			} else {
 				/* Yes, indeed! */
 			}
@@ -401,8 +401,8 @@ signed short load_game_state(void)
 		for (i = 226; i <= 231; i++) {
 			load_npc(i);
 
-			if (host_readbs(get_hero(6) + 0x8a) != 7) {
-				memset(get_hero(6), 0, 0x6da);
+			if (host_readbs(get_hero(6) + HERO_GROUP_POS) != 7) {
+				memset(get_hero(6), 0, SIZEOF_HERO);
 			} else {
 				break;
 			}
@@ -534,14 +534,14 @@ signed short save_game_state(void)
 		/* create a CHR-file for each hero in TEMP */
 		for (tw_bak = 0; tw_bak < 6; tw_bak++) {
 
-			if (host_readbs(get_hero(tw_bak) + 0x21) != 0) {
+			if (host_readbs(get_hero(tw_bak) + HERO_TYPE) != 0) {
 
 				/* save position on the playmask */
-				host_writebs(get_hero(tw_bak) + 0x8a, tw_bak + 1);
+				host_writebs(get_hero(tw_bak) + HERO_GROUP_POS, tw_bak + 1);
 
 				if (ds_readws(0xc3c1) != 99 &&
 					ds_readbs(LOCATION) != 2 &&
-					host_readds(get_hero(tw_bak) + 0x28) > 0)
+					host_readds(get_hero(tw_bak) + HERO_AP) > 0)
 				{
 					add_hero_ap(get_hero(tw_bak), -1L);
 				}
@@ -551,10 +551,10 @@ signed short save_game_state(void)
 		}
 
 		/* save the current NPC in TEMP */
-		if (host_readbs(get_hero(6) + 0x21) != 0) {
+		if (host_readbs(get_hero(6) + HERO_TYPE) != 0) {
 
-			host_writeb(get_hero(6) + 0x8a, 7);
-			save_npc(host_readbs(get_hero(6) + 0x89) + 225);
+			host_writeb(get_hero(6) + HERO_GROUP_POS, 7);
+			save_npc(host_readbs(get_hero(6) + HERO_NPC_ID) + 225);
 		}
 
 		load_area_description(1);
@@ -699,13 +699,13 @@ signed short save_game_state(void)
 
 			/* read the CHR file from temp */
 			handle = bc__open((RealPt)ds_readd(0xd2eb), 0x8004);
-			bc__read(handle, Real2Host(ds_readd(0xd303)), 0x6da);
+			bc__read(handle, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
 			bc_close(handle);
 
 			/* append it */
-			len = bc__write(l_di, (RealPt)ds_readd(0xd303), 0x6da);
+			len = bc__write(l_di, (RealPt)ds_readd(0xd303), SIZEOF_HERO);
 
-			if (len != 0x6da) {
+			if (len != SIZEOF_HERO) {
 				GUI_output(get_ltx(0x570));
 				bc_close(l_di);
 				return 0;
@@ -738,7 +738,7 @@ signed short save_game_state(void)
 signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 {
 	signed short handle;
-	signed short hero_size = 0x6da;
+	signed short hero_size = SIZEOF_HERO;
 	Bit8u *hero;
 
 	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
@@ -756,26 +756,26 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 		bc__read(handle, hero, hero_size);
 		bc_close(handle);
 
-		host_writeb(hero + 0x87, (signed char)a2);
+		host_writeb(hero + HERO_GROUP_NO, (signed char)a2);
 
-		if (host_readbs(hero + 0x22) == 1) {
-			host_writeb(hero + 0x9b, host_readbs(hero + 0x21) + 11);
+		if (host_readbs(hero + HERO_SEX) == 1) {
+			host_writeb(hero + HERO_SPRITE_NO, host_readbs(hero + HERO_TYPE) + 11);
 
-			if (host_readbs(hero + 0x9b) > 21) {
-				host_writeb(hero + 0x9b, 21);
+			if (host_readbs(hero + HERO_SPRITE_NO) > 21) {
+				host_writeb(hero + HERO_SPRITE_NO, 21);
 			}
 		} else {
-			host_writeb(hero + 0x9b, host_readbs(hero + 0x21));
+			host_writeb(hero + HERO_SPRITE_NO, host_readbs(hero + HERO_TYPE));
 
-			if (host_readbs(hero + 0x9b) > 10) {
-				host_writeb(hero + 0x9b, 10);
+			if (host_readbs(hero + HERO_SPRITE_NO) > 10) {
+				host_writeb(hero + HERO_SPRITE_NO, 10);
 			}
 		}
 
-		if (!host_readbs(hero + 0x7c)) {
+		if (!host_readbs(hero + HERO_START_GEAR)) {
 
 			startup_equipment(hero);
-			host_writeb(get_hero(hero_pos) + 0x7c, 1);
+			host_writeb(get_hero(hero_pos) + HERO_START_GEAR, 1);
 
 			write_chr_temp(hero_pos);
 		}
@@ -805,7 +805,7 @@ void write_chr_temp(unsigned short hero_pos)
 		fname);
 
 	fd = bc__creat((RealPt)ds_readd(0xd2eb), 0);
-	bc__write(fd, (RealPt)ds_readd(HEROS) + 0x6da * hero_pos, 0x6da);
+	bc__write(fd, (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos, SIZEOF_HERO);
 	bc_close(fd);
 }
 
@@ -840,7 +840,7 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 
 			/* read the CHR file from temp */
 			handle = bc__open((RealPt)ds_readd(0xd2eb), 0x8004);
-			bc__read(handle, buf, 0x6da);
+			bc__read(handle, buf, SIZEOF_HERO);
 			bc_close(handle);
 
 			if ((host_readbs(buf + 0x88) == temple_id && !host_readbs(buf + 0x8a)) ||

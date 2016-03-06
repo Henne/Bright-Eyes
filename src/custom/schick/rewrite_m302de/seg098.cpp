@@ -167,8 +167,8 @@ void magic_heal_ani(Bit8u *hero)
 	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)) + 0x800, 0x400);
 	bc_close(fd);
 
-	target_nr = host_readbs(hero + 0x86) - 1;
-	target = (RealPt)ds_readd(HEROS) + 0x6da * target_nr;
+	target_nr = host_readbs(hero + HERO_ENEMY_ID) - 1;
+	target = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * target_nr;
 
 	ds_writew(0xc01d, 0);
 	ds_writew(0xc01f, 0);
@@ -220,7 +220,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set pointer */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 
 		/* ensure the spelluser does not attack himself */
@@ -271,7 +271,7 @@ signed short get_attackee_parade(void)
 		/* attacked a hero */
 
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 		/* calculate PA  */
 
@@ -305,7 +305,7 @@ signed short get_attackee_rs(void)
 		/* attacked a hero */
 
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * 0x6da));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
 
 		return host_readbs(get_spelltarget() + 0x30);
 
@@ -371,7 +371,7 @@ signed short use_magic(RealPt hero)
 		case 1: {
 			/* Meditation */
 
-			if (host_readbs(Real2Host(hero) + 0x21) != 9) {
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != 9) {
 				/* not a mage, need thonnys */
 
 
@@ -396,8 +396,8 @@ signed short use_magic(RealPt hero)
 				}
 
 				/* adjust LE */
-				if (host_readws(Real2Host(hero) + 0x62) - host_readws(Real2Host(hero) + 0x64)  < le) {
-					le = host_readws(Real2Host(hero) + 0x62) - host_readws(Real2Host(hero) + 0x64);
+				if (host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE)  < le) {
+					le = host_readws(Real2Host(hero) + HERO_AE_ORIG) - host_readws(Real2Host(hero) + HERO_AE);
 				}
 
 				/* spend one AE point */
@@ -406,8 +406,8 @@ signed short use_magic(RealPt hero)
 				if (test_attrib3(Real2Host(hero), 0, 2, 6, 0) > 0) {
 					/* Success */
 
-					if (host_readws(Real2Host(hero) + 0x60) <= le + 8) {
-						le = host_readws(Real2Host(hero) + 0x60) - 8;
+					if (host_readws(Real2Host(hero) + HERO_LE) <= le + 8) {
+						le = host_readws(Real2Host(hero) + HERO_LE) - 8;
 					}
 
 					sub_hero_le(Real2Host(hero), le + 3);
@@ -416,7 +416,7 @@ signed short use_magic(RealPt hero)
 					/* Failed, print only a message */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xc6c),
-						(char*)Real2Host(hero) + 0x10);
+						(char*)Real2Host(hero) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -426,46 +426,46 @@ signed short use_magic(RealPt hero)
 		case 2: {
 			/* Staffspell */
 
-			if (host_readbs(Real2Host(hero) + 0x21) != 9) {
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != 9) {
 				/* only for mages */
 				GUI_output(get_ltx(0x64c));
 				return 0;
 			}
 
-			if (host_readbs(Real2Host(hero) + 0x195) == 7) {
+			if (host_readbs(Real2Host(hero) + HERO_WAND) == 7) {
 				GUI_output(get_ltx(0x53c));
 			} else {
 
-				if (ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + 0x195)) <= host_readws(Real2Host(hero) + 0x64)) {
+				if (ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) <= host_readws(Real2Host(hero) + HERO_AE)) {
 					/* check AE */
 
 					retval = 1;
 
 					/* Original-Bug: the second attribute is used twice here */
 					if (test_attrib3(Real2Host(hero),
-						ds_readbs((0x972 + 1) + 6 * host_readbs(Real2Host(hero) + 0x195)),
-						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + 0x195)),
-						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + 0x195)),
-						ds_readbs((0x972 + 4) + 6 * host_readbs(Real2Host(hero) + 0x195))) > 0)
+						ds_readbs((0x972 + 1) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
+						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
+						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
+						ds_readbs((0x972 + 4) + 6 * host_readbs(Real2Host(hero) + HERO_WAND))) > 0)
 					{
 						/* Success */
 
 						/* print a message */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x54c),
-							host_readbs(Real2Host(hero) + 0x195) + 1);
+							host_readbs(Real2Host(hero) + HERO_WAND) + 1);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
-						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + 0x195)));
+						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
 
-						sub_ptr_ws(Real2Host(hero) + 0x62,	ds_readbs((0x972 + 6) + 6 * host_readbs(Real2Host(hero) + 0x195)));
+						sub_ptr_ws(Real2Host(hero) + HERO_AE_ORIG,	ds_readbs((0x972 + 6) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
 
 						/* Staffspell level +1 */
-						inc_ptr_bs(Real2Host(hero) + 0x195);
+						inc_ptr_bs(Real2Host(hero) + HERO_WAND);
 
 						/* set the timer */
-						host_writed(Real2Host(hero) + 0x8f, 0xfd20);
+						host_writed(Real2Host(hero) + HERO_MAGIC_TIMER, 0xfd20);
 
 						/* let some time pass */
 						timewarp(0x6978);
@@ -474,7 +474,7 @@ signed short use_magic(RealPt hero)
 						GUI_output(get_ltx(0x548));
 
 						/* only half of the AE costs */
-						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + 0x195)) / 2);
+						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) / 2);
 
 						/* let some time pass */
 						timewarp(0x2a30);
@@ -515,7 +515,7 @@ signed short can_use_spellclass(Bit8u *hero, signed short spellclass_nr)
 	first_spell = ds_readbs(0xd03 + 2 * spellclass_nr);
 	for (i = 0; ds_readbs(0xd04 + 2 * spellclass_nr) > i; i++) {
 
-		if ((host_readbs(hero + 0x13d + first_spell + i) >= -5) &&
+		if ((host_readbs(hero + HERO_SPELLS + first_spell + i) >= -5) &&
 			(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + i)) == 1)) ||
 			((ds_readw(IN_FIGHT) == 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + i)) != 1))))
 		{
@@ -550,7 +550,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 	}
 
 	/* only for magic users */
-	if (host_readbs(hero + 0x21) < 7) {
+	if (host_readbs(hero + HERO_TYPE) < 7) {
 		GUI_output(get_ltx(0x528));
 		return -2;
 	}
@@ -559,14 +559,14 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 
 		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x334));
 
-		if (host_readbs(hero + 0x193) > 1) {
+		if (host_readbs(hero + HERO_SP_RISE) > 1) {
 			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x330),
-			(host_readbs(hero + 0x193) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
-			host_readbs(hero + 0x193),
+			(host_readbs(hero + HERO_SP_RISE) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
+			host_readbs(hero + HERO_SP_RISE),
 			Real2Host(ds_readd(0xd2eb)));
 
 		answer1 = GUI_radio(Real2Host(ds_readd(DTP2)), 12,
@@ -614,7 +614,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x8bc),
-				(char*)hero + 0x10);
+				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -634,18 +634,18 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
 						(char*)str_val.a,
 						(char*)get_ltx(4 * (first_spell + l_di + 106)),
-						host_readbs(hero + 0x13d + first_spell + l_di));
+						host_readbs(hero + HERO_SPELLS + first_spell + l_di));
 				} else if (
 					(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + l_di)) == 1)) ||
 					((ds_readw(IN_FIGHT) == 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + l_di)) != 1))) &&
-					(host_readbs(hero + 0x13d + first_spell + l_di) >= -5))
+					(host_readbs(hero + HERO_SPELLS + first_spell + l_di) >= -5))
 				{
 
 					if (show_vals == 2) {
 						sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
 							(char*)str_val.a,
 							(char*)get_ltx(4 * (first_spell + l_di + 106)),
-							host_readbs(hero + 0x13d + first_spell + l_di));
+							host_readbs(hero + HERO_SPELLS + first_spell + l_di));
 					} else {
 						sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
 							(char*)str.a,
@@ -655,7 +655,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
 						(char*)col_str_val.a,
 						(char*)get_ltx(4 * (first_spell + l_di + 106)),
-						host_readbs(hero + 0x13d + first_spell + l_di));
+						host_readbs(hero + HERO_SPELLS + first_spell + l_di));
 				} else {
 					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
 						(char*)col_str.a,
@@ -682,12 +682,12 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 					Real2Host(ds_readd((0xbf95 + 0x3c))));
 
 			if (retval != -1) {
-				if ((host_readbs((retval + first_spell) + hero + 0x13c) < -5) &&
+				if ((host_readbs((retval + first_spell) + hero + HERO_TA_RISE) < -5) &&
 					(show_vals == 0))
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x8c0),
-						(char*)hero + 0x10);
+						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 					retval = -1;
@@ -729,29 +729,29 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 	Bit8u *spell_desc;
 
 	/* check if class is magic user */
-	if ((host_readbs(hero + 0x21) < 7) || (check_hero(hero) == 0)) {
+	if ((host_readbs(hero + HERO_TYPE) < 7) || (check_hero(hero) == 0)) {
 		return 0;
 	}
 	/* check if spell skill >= -5 */
 	if (host_readbs(hero + spell_nr + 0x13d) < -5)
 		return 0;
 	/* check if hero has enough AE */
-	if (get_spell_cost(spell_nr, 0) > host_readws(hero + 0x64))
+	if (get_spell_cost(spell_nr, 0) > host_readws(hero + HERO_AE))
 		return -99;
 
 	spell_desc = p_datseg + spell_nr * 10 + 0x99d;
 
 	if (host_readb(spell_desc + 0x9) != 0) {
 
-		if (host_readbs(hero + 0x86) >= 10) {
+		if (host_readbs(hero + HERO_ENEMY_ID) >= 10) {
 
-			bonus += ds_readbs(host_readbs(hero + 0x86) * 62 + 0xd0f8);
+			bonus += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * 62 + 0xd0f8);
 
-			if (test_bit6(p_datseg + host_readbs(hero + 0x86) * 62 + 0xd110)) {
+			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * 62 + 0xd110)) {
 				return 0;
 			}
 		} else {
-			bonus += host_readbs(get_hero(host_readbs(hero + 0x86) - 1) + 0x66);
+			bonus += host_readbs(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1) + 0x66);
 		}
 	}
 
@@ -785,14 +785,14 @@ signed short test_spell_group(signed short spell, signed char bonus)
 	Bit8u *hero_i = get_hero(0);
 	signed short i;
 
-	for (i = 0; i <= 6; i++, hero_i += 0x6da) {
+	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
 		/* Check class is magicuser */
-		if ((host_readbs(hero_i + 0x21) >= 7) &&
+		if ((host_readbs(hero_i + HERO_TYPE) >= 7) &&
 			/* Check class  BOGUS */
-			(host_readbs(hero_i + 0x21) != 0) &&
+			(host_readbs(hero_i + HERO_TYPE) != 0) &&
 			/* Check in group */
-			(host_readbs(hero_i + 0x87) == ds_readbs(CURRENT_GROUP)) &&
+			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			/* Check if dead */
 			!hero_dead(hero_i))
 		{
@@ -816,7 +816,7 @@ signed short select_magic_user(void)
 	if (answer != -1) {
 		/* valid answer => cast spell */
 /*		return use_spell(get_hero(answer), 1, 0); */
-		return use_spell((RealPt)ds_readd(HEROS) + 0x6da * answer, 1, 0);
+		return use_spell((RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer, 1, 0);
 	}
 
 	/* abort with error message */
@@ -848,7 +848,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 			/* pointer to the spell description */
 			ptr = p_datseg + 0x99d + 10 * l_di;
 			/* reset the spelltarget of the hero */
-			host_writeb(Real2Host(hero) + 0x86, 0);
+			host_writeb(Real2Host(hero) + HERO_ENEMY_ID, 0);
 
 			if ((host_readbs(ptr + 0x7) != 0) && (host_readbs(ptr + 7) != 4)) {
 
@@ -858,9 +858,9 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				} else {
 
-					host_writeb(Real2Host(hero) + 0x86, select_hero_from_group(get_ltx(0xbc)) + 1);
+					host_writeb(Real2Host(hero) + HERO_ENEMY_ID, select_hero_from_group(get_ltx(0xbc)) + 1);
 
-					if (host_readbs(Real2Host(hero) + 0x86) <= 0) {
+					if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) <= 0) {
 						l_di = -1;
 					}
 				}
@@ -868,7 +868,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 		}
 
 	} else {
-		l_di = host_readbs(Real2Host(hero) + 0x85);
+		l_di = host_readbs(Real2Host(hero) + HERO_SPELL_ID);
 	}
 
 	if (l_di > 0) {
@@ -894,7 +894,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 				/* prepare output */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x97c),
-					(char*)Real2Host(hero) + 0x10);
+					(char*)Real2Host(hero) + HERO_NAME2);
 
 				if (ds_readws(IN_FIGHT) == 0) {
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -963,8 +963,8 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 					if (retval > 0) {
 						play_voc(305);
 
-						if ((host_readbs(Real2Host(hero) + 0x86) < 10) &&
-							(host_readbs(Real2Host(hero) + 0x86) > 0) &&
+						if ((host_readbs(Real2Host(hero) + HERO_ENEMY_ID) < 10) &&
+							(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) &&
 							(ds_readbs(0x2845) == 0))
 						{
 							magic_heal_ani(Real2Host(hero));

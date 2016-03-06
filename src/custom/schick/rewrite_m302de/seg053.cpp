@@ -131,19 +131,19 @@ void do_healer(void)
 				if (is_hero_healable(hero)) {
 
 					/* LEmax >= LE and no permanent LEdamage */
-					if (host_readws(hero + 0x60) >= host_readws(hero + 0x5e)
-						&& !host_readbs(hero + 0x7a)) {
+					if (host_readws(hero + HERO_LE) >= host_readws(hero + HERO_LE_ORIG)
+						&& !host_readbs(hero + HERO_LE_MOD)) {
 
 						/* Hero seems OK */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x734),
-							(char*)(hero + 0x10));
+							(char*)(hero + HERO_NAME2));
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 
 						/* calculate price */
-						price = host_readbs(hero + 0x7a) * 50;
-						price += (host_readws(hero + 0x5e) + host_readbs(hero + 0x7a) - host_readws(hero + 0x60)) * 5;
+						price = host_readbs(hero + HERO_LE_MOD) * 50;
+						price += (host_readws(hero + HERO_LE_ORIG) + host_readbs(hero + HERO_LE_MOD) - host_readws(hero + HERO_LE)) * 5;
 						price += (host_readbs(info) * price) / 100;
 
 						if (motivation == 2)
@@ -152,7 +152,7 @@ void do_healer(void)
 						/* ask */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x740),
-							(char*)(hero + 0x10),
+							(char*)(hero + HERO_NAME2),
 							price);
 
 						if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
@@ -166,19 +166,19 @@ void do_healer(void)
 								set_party_money(money);
 
 								/* heal permanent damage TODO:LE += */
-								add_ptr_ws(hero + 0x5e, host_readbs(hero + 0x7a));
-								host_writeb(hero + 0x7a, 0);
+								add_ptr_ws(hero + HERO_LE_ORIG, host_readbs(hero + HERO_LE_MOD));
+								host_writeb(hero + HERO_LE_MOD, 0);
 
 								/* let pass some time */
-								timewarp(90 * (signed long)(host_readws(hero + 0x5e) - host_readws(hero + 0x60)));
+								timewarp(90 * (signed long)(host_readws(hero + HERO_LE_ORIG) - host_readws(hero + HERO_LE)));
 
 								/* heal LE */
-								add_hero_le(hero, host_readws(hero + 0x5e));
+								add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 
 								/* prepare output */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0x74c),
-									(char*)(hero + 0x10));
+									(char*)(hero + HERO_NAME2));
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 							}
@@ -201,7 +201,7 @@ void do_healer(void)
 						/* Hero is not diseased */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x738),
-							(char*)(hero + 0x10));
+							(char*)(hero + HERO_NAME2));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
@@ -216,7 +216,7 @@ void do_healer(void)
 						/* prepare output */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x744),
-							(char*)(hero + 0x10),
+							(char*)(hero + HERO_NAME2),
 							(char*)get_ltx((disease + 0x193) * 4),
 							price);
 
@@ -231,13 +231,13 @@ void do_healer(void)
 
 								if (random_schick(100) <= (120 - host_readbs(info + 1) * 10) + ds_readws(0x2c60 + disease * 2)) {
 									/* heal the disease */
-									host_writeb(hero + 0xae + disease * 5, 1);
+									host_writeb(hero + HERO_ILLNESS_EMPTY + disease * 5, 1);
 									host_writeb(hero + 0xaf + disease * 5, 0);
 
 									/* prepare output */
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_ltx(0x74c),
-										(char*)(hero + 0x10));
+										(char*)(hero + HERO_NAME2));
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
 								} else {
@@ -267,7 +267,7 @@ void do_healer(void)
 						/* Hero is not poisoned */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x73c),
-							(char*)(hero + 0x10));
+							(char*)(hero + HERO_NAME2));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
@@ -281,7 +281,7 @@ void do_healer(void)
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x748),
 							price,
-							(char*)(hero + 0x10));
+							(char*)(hero + HERO_NAME2));
 
 						if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 							price *= 10;
@@ -294,12 +294,12 @@ void do_healer(void)
 								if (random_schick(100) <= (120 - host_readbs(info + 1) * 5) + ds_readws(0x2c84 + poison * 2)) {
 									/* cure the poison */
 									host_writeb(hero + 0xd7 + poison * 5, 0);
-									host_writeb(hero + 0xd6 + poison * 5, 1);
+									host_writeb(hero + HERO_POISON_EMPTY + poison * 5, 1);
 
 									/* prepare output */
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_ltx(0x74c),
-										(char*)(hero + 0x10));
+										(char*)(hero + HERO_NAME2));
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
 								} else {

@@ -54,7 +54,7 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 	signed short weapon;
 
 	/* get equipped weapon of the hero and make a pointer to the entry of ITEMS.DAT */
-	ptr = get_itemsdat((weapon = host_readw(hero + 0x1c0)));
+	ptr = get_itemsdat((weapon = host_readw(hero + HERO_ITEM_RIGHT)));
 
 
 	/* not a weapon */
@@ -166,7 +166,7 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	host_writeb(sheet + ENEMY_SHEET_ROUND_APPEAR, round);
 
 	host_writeb(sheet + ENEMY_SHEET_VIEWDIR,
-		host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + sheet_nr * 5 + 0x19));
+		host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + sheet_nr * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_VIEWDIR));
 
 	host_writeb(sheet + ENEMY_SHEET_SHOTS, host_readb(monster + MONSTER_SHOTS));
 	host_writew(sheet + ENEMY_SHEET_SHOT_DAM, host_readw(monster + MONSTER_SHOT_DAM));
@@ -369,11 +369,11 @@ void FIG_init_enemies(void)
 	/* Fill the tables with new values */
 	for (i = 0; i < 20; i++) {
 
-		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x16) != 0) {
+		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_ID) != 0) {
 
 			fill_enemy_sheet(i,
-				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x16),
-				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x1a));
+				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_ID),
+				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_ROUND_APPEAR));
 
 			inc_ds_ws(NR_OF_ENEMIES);
 		}
@@ -382,16 +382,16 @@ void FIG_init_enemies(void)
 	/* place the enemies on the chessboard */
 	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
-		x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x17);
-		y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x18);
+		x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_X);
+		y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_Y);
 
 
 		/* place only the enemies from round 0 */
-		if (!host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x1a)) {
+		if (!host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_ROUND_APPEAR)) {
 
 			place_obj_on_cb(x, y, i + 10,
 				ds_readbs(i * SIZEOF_ENEMY_SHEET + (ENEMY_SHEETS + ENEMY_SHEET_GFX_ID)),
-				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * 5 + 0x19));
+				host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + i * SIZEOF_FIGHT_MONSTER + FIGHT_MONSTERS_VIEWDIR));
 		}
 
 		/* load the sprites */
@@ -409,14 +409,14 @@ void FIG_init_heroes(void)
 	signed short cb_x;
 	signed short cb_y;
 	signed short l_si;
-	signed short l_di;
+	signed short l_di; /* player char nr */
 
 	for (l_si = 0; l_si <= 6; l_si++) {
 
-		if (host_readbs(get_hero(l_si) + 0x81) != -1) {
+		if (host_readbs(get_hero(l_si) + HERO_FIGHT_ID) != -1) {
 
-			FIG_remove_from_list(host_readb(get_hero(l_si) + 0x81), 0);
-			host_writeb(get_hero(l_si) + 0x81, 0xff);
+			FIG_remove_from_list(host_readb(get_hero(l_si) + HERO_FIGHT_ID), 0);
+			host_writeb(get_hero(l_si) + HERO_FIGHT_ID, 0xff);
 		}
 	}
 
@@ -424,59 +424,59 @@ void FIG_init_heroes(void)
 		hero = get_hero(l_si);
 
 		/* check typus */
-		if (host_readb(hero + 0x21) == 0)
+		if (host_readb(hero + HERO_TYPE) == 0)
 			continue;
 		/* check group */
-		if (host_readb(hero + 0x87) != ds_readb(CURRENT_GROUP))
+		if (host_readb(hero + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))
 			continue;
 
 		/* these two are unknown */
-		host_writeb(hero + 0x84, 10);
-		host_writeb(hero + 0x86, 0);
+		host_writeb(hero + HERO_UNKNOWN2, 10);
+		host_writeb(hero + HERO_ENEMY_ID, 0);
 
 		/* FINAL FIGHT */
 		if (ds_readw(CURRENT_FIG_NR) == 192) {
 			if (hero == Real2Host(ds_readd(0x3e20))) {
-				cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a);
-				cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b);
-				host_writeb(hero + 0x82,
-					host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7c));
+				cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_PLAYERS_X);
+				cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_PLAYERS_Y);
+				host_writeb(hero + HERO_VIEWDIR,
+					host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_PLAYERS_VIEWDIR));
 			} else {
 				do {
 					l_di = random_schick(6);
 
-					cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7a);
-					cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7b);
-					host_writeb(hero + 0x82,
-						host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * 4 + 0x7c));
+					cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_X);
+					cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_Y);
+					host_writeb(hero + HERO_VIEWDIR,
+						host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_di * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_VIEWDIR));
 				} while (get_cb_val(cb_x, cb_y) != 0);
 			}
 		} else {
-			cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7a + 4 * l_si);
-			cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7b + 4 * l_si);
+			cb_x = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_PLAYERS_X + SIZEOF_FIGHT_PLAYER * l_si);
+			cb_y = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_PLAYERS_Y + SIZEOF_FIGHT_PLAYER * l_si);
 			/* Direction */
-			host_writeb(hero + 0x82, host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + 0x7c + 4 * l_si));
+			host_writeb(hero + HERO_VIEWDIR, host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_PLAYERS_VIEWDIR + SIZEOF_FIGHT_PLAYER * l_si));
 		}
 
 		/* heros sleep until they appear */
-		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_si * 4 + 0x7d) != 0) {
+		if (host_readb(Real2Host(ds_readd(PTR_FIGHT_LST)) + l_si * SIZEOF_FIGHT_PLAYER + FIGHT_PLAYERS_ROUND_APPEAR) != 0) {
 			if (!hero_dead(hero))
-				or_ptr_bs(hero + 0xaa, 2);
+				or_ptr_bs(hero + HERO_STATUS1, 2);
 		}
 
 		place_obj_on_cb(cb_x, cb_y, l_si + 1,
-			host_readb(hero + 0x21), host_readb(hero + 0x82));
+			host_readb(hero + HERO_TYPE), host_readb(hero + HERO_VIEWDIR));
 
 		l_di = FIG_get_range_weapon_type(hero);
 
 		if (l_di != -1) {
 			ds_writeb(0xe068,
-				ds_readb(0x10d0 + host_readbs(hero + 0x9b) * 12 + l_di * 4 + host_readbs(hero + 0x82)));
+				ds_readb(0x10d0 + host_readbs(hero + HERO_SPRITE_NO) * 12 + l_di * 4 + host_readbs(hero + HERO_VIEWDIR)));
 		} else {
-			ds_writeb(0xe068, host_readb(hero + 0x82));
+			ds_writeb(0xe068, host_readb(hero + HERO_VIEWDIR));
 		}
 
-		ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(hero + 0x9b) * 5));
+		ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(hero + HERO_SPRITE_NO) * 5));
 		ds_writeb(0xe069, (signed char)cb_x);
 		ds_writeb(0xe06a, (signed char)cb_y);
 		ds_writeb(0xe06b, 0);
@@ -485,20 +485,20 @@ void FIG_init_heroes(void)
 		if (hero_dead(hero)) {
 			/* if hero is dead */
 			ds_writeb(0xe068,
-				ds_readb(0x1a13 + host_readbs(hero + 0x9b) * 2));
+				ds_readb(0x1a13 + host_readbs(hero + HERO_SPRITE_NO) * 2));
 			ds_writeb(0xe06b,
-				ds_readb(0x1539 + host_readbs(hero + 0x9b) * 10));
+				ds_readb(0x1539 + host_readbs(hero + HERO_SPRITE_NO) * 10));
 			ds_writeb(0xe06c,
-				ds_readb(0x1539 + 1 + host_readbs(hero + 0x9b) * 10));
+				ds_readb(0x1539 + 1 + host_readbs(hero + HERO_SPRITE_NO) * 10));
 		} else if (hero_sleeps(hero) || hero_unc(hero)) {
 			/* sleeps or is unconscious */
 			ds_writeb(0xe068,
-				ds_readb(0x11e4 + host_readbs(hero + 0x9b) * 2) + host_readbs(hero + 0x82));
+				ds_readb(0x11e4 + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
 
 			ds_writeb(0xe06b,
-				ds_readbs(0x1210 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
+				ds_readbs(0x1210 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 			ds_writeb(0xe06c,
-				ds_readbs(0x1210 + 1 + host_readbs(hero + 0x9b) * 8 + host_readbs(hero + 0x82) * 2));
+				ds_readbs(0x1210 + 1 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 		}
 
 
@@ -509,7 +509,7 @@ void FIG_init_heroes(void)
 		ds_writeb(0xe071, 31);
 		ds_writeb(0xe072, 39);
 		ds_writeb(0xe07b, 2);
-		ds_writeb(0xe07c, host_readb(hero + 0x9b));
+		ds_writeb(0xe07c, host_readb(hero + HERO_SPRITE_NO));
 		ds_writeb(0xe073, 0xff);
 		ds_writeb(0xe075, 0xff);
 		ds_writeb(0xe074, 0xff);
@@ -522,7 +522,7 @@ void FIG_init_heroes(void)
 		ds_writeb(0xe079, 0xff);
 
 
-		host_writeb(get_hero(l_si) + 0x81, FIG_add_to_list(-1));
+		host_writeb(get_hero(l_si) + HERO_FIGHT_ID, FIG_add_to_list(-1));
 	}
 }
 

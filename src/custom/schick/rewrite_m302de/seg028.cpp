@@ -511,20 +511,20 @@ void load_npc(signed short index)
 
 	/* load from temp directory */
 	fd = load_archive_file(index | 0x8000);
-	bc__read(fd, npc_dst, 0x6da);
+	bc__read(fd, npc_dst, SIZEOF_HERO);
 	bc_close(fd);
 
-	if (host_readb(npc_dst + 0x22) == 1) {
+	if (host_readb(npc_dst + HERO_SEX) == 1) {
 		/* female */
 		/* set an unknown variable to typus + 11 */
-		host_writeb(npc_dst + 0x9b, host_readb(npc_dst + 0x21) + 11);
-		if (host_readbs(npc_dst + 0x9b) > 21)
-			host_writeb(npc_dst + 0x9b, 21);
+		host_writeb(npc_dst + HERO_SPRITE_NO, host_readb(npc_dst + HERO_TYPE) + 11);
+		if (host_readbs(npc_dst + HERO_SPRITE_NO) > 21)
+			host_writeb(npc_dst + HERO_SPRITE_NO, 21);
 	} else {
 		/* male */
-		host_writeb(npc_dst + 0x9b, host_readb(npc_dst + 0x21));
-		if (host_readbs(npc_dst + 0x9b) > 10)
-			host_writeb(npc_dst + 0x9b, 10);
+		host_writeb(npc_dst + HERO_SPRITE_NO, host_readb(npc_dst + HERO_TYPE));
+		if (host_readbs(npc_dst + HERO_SPRITE_NO) > 10)
+			host_writeb(npc_dst + HERO_SPRITE_NO, 10);
 	}
 }
 
@@ -534,7 +534,7 @@ void save_npc(signed short index)
 
 	fd = load_archive_file(index | 0x8000);
 
-	bc__write(fd, (RealPt)ds_readd(HEROS) + 6 * 0x6da, 0x6da);
+	bc__write(fd, (RealPt)ds_readd(HEROS) + 6 * SIZEOF_HERO, SIZEOF_HERO);
 
 	bc_close(fd);
 }

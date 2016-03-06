@@ -513,7 +513,7 @@ void academy_analues(void)
 
 	if (hero_pos != -1) {
 
-		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + 0x6da * hero_pos));
+		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
 		buffer1_bak = ds_readws(0x26bf);
 
@@ -548,10 +548,10 @@ void THO_academy(void)
 
 	/* find the position of the first cursed hero */
 	hero = get_hero(0);
-	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += 0x6da) {
+	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + 0x21) != 0 &&
-			host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			hero_cursed(hero))
 		{
 			cursed_hero_pos = item_pos;
@@ -582,7 +582,7 @@ void THO_academy(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0xd4),
-				(char*)hero + 0x10);
+				(char*)hero + HERO_NAME2);
 
 			do {
 				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
@@ -624,7 +624,7 @@ void THO_academy(void)
 
 							ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-							and_ptr_bs(get_hero(cursed_hero_pos) + 0xaa, 0xdf);
+							and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
 
 						} else {
 							GUI_input(get_city(0x118), 0);
@@ -641,7 +641,7 @@ void THO_academy(void)
 
 					ds_writew(ACADEMY_DAILY_CURSE, 1);
 
-					and_ptr_bs(get_hero(cursed_hero_pos) + 0xaa, 0xdf);
+					and_ptr_bs(get_hero(cursed_hero_pos) + HERO_STATUS1, 0xdf);
 
 				} else {
 					GUI_input(get_ltx(0x644), 0);
@@ -748,22 +748,22 @@ signed short academy_get_equal_item(signed short price)
 
 		retval = -1;
 		hero = get_hero(0);
-		for (i = 0; i < 6; i++, hero += 0x6da) {
+		for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + 0x21) != 0 &&
-				host_readbs(hero + 0x87) == ds_readbs(CURRENT_GROUP) &&
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
 				for (item_pos = 0; item_pos < 23; item_pos++) {
 
-					if (host_readws(hero + 0x196 + 14 * item_pos) != 0 &&
-						!ks_broken(hero + 0x196 + 14 * item_pos))
+					if (host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos) != 0 &&
+						!ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos))
 					{
-						p_item = get_itemsdat(host_readws(hero + 0x196 + 14 * item_pos));
+						p_item = get_itemsdat(host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos));
 
 						if (host_readws(p_item + 8) * host_readbs(p_item + 7) >= price)
 						{
-							retval = host_readws(hero + 0x196 + 14 * item_pos);
+							retval = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
 							break;
 						}
 					}
