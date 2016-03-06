@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg112 (travel events 4 / 10)
- *	Functions rewritten: 12/13
+ *	Functions rewritten: 13/13 (complete)
  */
 #include <stdio.h>
 
@@ -693,6 +693,113 @@ void tevent_076(void)
 
 		if (answer == 1) {
 			ds_writeb(0x4333, 5);
+		}
+	}
+}
+
+/* brigants */
+/* Borlandified and identical */
+void tevent_077(void)
+{
+	signed short answer;
+	signed short i;
+	Bit32s p_money;
+	Bit8u *hero;
+
+	if (!ds_readb(0x3de2)) {
+
+		ds_writeb(0x3de2, 1);
+
+		load_in_head(4);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8),
+						get_city(0x118), 3,
+						get_city(0x11c),
+						get_city(0x120),
+						get_city(0x124));
+		} while (answer == -1);
+
+		if (answer == 1) {
+
+			/* fight */
+			ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+
+		} else if (answer == 2) {
+
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 6) <= 0) {
+
+				/* test failed, so fight */
+				ds_writeb(0x26ac, 1);
+				ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+
+			} else {
+
+				/* remember the last hero */
+				hero = get_hero(0);
+				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero))
+					{
+						answer = i;
+					}
+				}
+
+				hero = get_hero(answer);
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+					(char*)get_city(0xd8),
+					(char*)hero + HERO_NAME2);
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8),
+						Real2Host(ds_readd(DTP2)) + 0x400, 0);
+
+				/* the last hero looses between 6 and 16 LE */
+				sub_hero_le(hero, random_schick(11) + 5);
+			}
+
+		} else {
+
+			/* try to make a deal */
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8), get_city(0x128), 3,
+							get_city(0x12c),
+							get_city(0x130),
+							get_city(0x134));
+			} while (answer == -1);
+
+			if (answer == 1) {
+
+				p_money = get_party_money();
+
+				if (p_money < 1500) {
+					/* not enough money, so fight */
+					ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+				} else {
+					/* pay 1500 */
+					p_money -= 1500;
+					set_party_money(p_money);
+				}
+
+			} else if (answer == 2) {
+
+				/* fight */
+				ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+
+			} else {
+
+				/* try to be Charismatic */
+				answer = count_heroes_in_group();
+
+				if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 14 - answer) <= 0)
+				{
+					/* fight */
+					ds_writeb(0x26ac, 1);
+					ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+				}
+			}
 		}
 	}
 }
