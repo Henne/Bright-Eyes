@@ -69,29 +69,29 @@ void FIG_init_list_elem(signed short obj)
 	y = host_readws((Bit8u*)&y);
 #endif
 
-	/* This initializes a 35 byte structure at DS:0xe066 */
-	ds_writew(0xe066, 0);
-	ds_writeb((0xe066 + 2), 0);
-	ds_writeb((0xe066 + 3), (signed char)x);
-	ds_writeb((0xe066 + 4), (signed char)y);
-	ds_writeb((0xe066 + 5), 0);
-	ds_writeb((0xe066 + 6), 4);
-	ds_writeb((0xe066 + 7), 11);
-	ds_writeb((0xe066 + 8), 22);
-	ds_writeb((0xe066 + 9), 0);
-	ds_writeb((0xe066 + 10), 0);
-	ds_writeb((0xe066 + 11), 21);
-	ds_writeb((0xe066 + 12), 10);
+	/* This initializes a 35 byte structure at DS:FIG_LIST_ELEM */
+	ds_writew(FIG_LIST_ELEM, 0);
+	ds_writeb((FIG_LIST_ELEM + 2), 0);
+	ds_writeb((FIG_LIST_ELEM + 3), (signed char)x);
+	ds_writeb((FIG_LIST_ELEM + 4), (signed char)y);
+	ds_writeb((FIG_LIST_ELEM + 5), 0);
+	ds_writeb((FIG_LIST_ELEM + 6), 4);
+	ds_writeb((FIG_LIST_ELEM + 7), 11);
+	ds_writeb((FIG_LIST_ELEM + 8), 22);
+	ds_writeb((FIG_LIST_ELEM + 9), 0);
+	ds_writeb((FIG_LIST_ELEM + 10), 0);
+	ds_writeb((FIG_LIST_ELEM + 11), 21);
+	ds_writeb((FIG_LIST_ELEM + 12), 10);
 
-	ds_writeb((0xe066 + 21), 0);
-	ds_writeb((0xe066 + 13), 0);
-	ds_writeb((0xe066 + 15), -1);
-	ds_writeb((0xe066 + 14), -1);
+	ds_writeb((FIG_LIST_ELEM + 21), 0);
+	ds_writeb((FIG_LIST_ELEM + 13), 0);
+	ds_writeb((FIG_LIST_ELEM + 15), -1);
+	ds_writeb((FIG_LIST_ELEM + 14), -1);
 
-	ds_writed((0xe066 + 23), ds_readd(0xd862));
-	ds_writeb((0xe066 + 17), 0);
-	ds_writeb((0xe066 + 18), 1);
-	ds_writeb((0xe066 + 19), -1);
+	ds_writed((FIG_LIST_ELEM + 23), ds_readd(0xd862));
+	ds_writeb((FIG_LIST_ELEM + 17), 0);
+	ds_writeb((FIG_LIST_ELEM + 18), 1);
+	ds_writeb((FIG_LIST_ELEM + 19), -1);
 
 	ds_writeb(0xe38e, FIG_add_to_list(-1));
 }

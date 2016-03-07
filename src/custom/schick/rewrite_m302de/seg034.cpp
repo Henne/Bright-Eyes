@@ -182,7 +182,7 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 		ds_writebs(0xe38f, -1);
 	}
 
-	ds_writew(0xe066, 0);
+	ds_writew(FIG_LIST_ELEM, 0);
 	ds_writeb(0xe068, 0);
 	ds_writeb(0xe069, host_readbs(px));
 	ds_writeb(0xe06a, host_readbs(py));
@@ -584,7 +584,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 		ds_writebs(0xe38f, -1);
 	}
 
-	ds_writew(0xe066, 0);
+	ds_writew(FIG_LIST_ELEM, 0);
 	ds_writeb(0xe068, 0);
 	ds_writeb(0xe069, (signed char)x);
 	ds_writeb(0xe06a, (signed char)y);

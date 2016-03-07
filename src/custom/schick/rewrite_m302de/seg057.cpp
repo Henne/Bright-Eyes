@@ -95,7 +95,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 	ds_writew(0x29b4, 0);
 	l8 = ds_writews(0x2846, 1);
-	ds_writed(0xc005, (Bit32u)((RealPt)ds_readd(BUFFER12_PTR) + 2100));
+	ds_writed(0xc005, (Bit32u)((RealPt)ds_readd(FIG_FIGURE1_BUF) + 2100));
 
 	while (done == 0) {
 

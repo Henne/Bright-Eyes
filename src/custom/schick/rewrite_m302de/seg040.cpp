@@ -87,7 +87,7 @@ void FIG_preload_gfx(void)
 
 	ds_writed(FIG_LIST_HEAD, 0);
 
-	ds_writed(FIG_LIST_BUFFER, (Bit32u)F_PADD(ds_readd(BUFFER11_PTR), -0x115d));
+	ds_writed(FIG_LIST_BUFFER, (Bit32u)F_PADD(ds_readd(FIG_FIGURE2_BUF), -0x115d));
 
 	memset(Real2Host(ds_readd(FIG_LIST_BUFFER)), 0, 0x115d);
 	p1 = Real2Host(ds_readd(FIG_LIST_BUFFER));
@@ -95,7 +95,7 @@ void FIG_preload_gfx(void)
 	for (i = 0; i < 127; i++) {
 		host_writeb(p1 + 0x10, -1);
 		p1+=0x23;
-		ds_writeb(0xe089 + i, 0);
+		ds_writeb(FIG_LIST_ARRAY + i, 0);
 	}
 
 	ds_writed(WEAPONS_NVF_BUF, (Bit32u)F_PADD(ds_readd(CURRENT_FIGHT), SIZEOF_FIGHT));
@@ -193,7 +193,7 @@ void FIG_preload_gfx(void)
 
 	ds_writed(0xe370, F_PSUB(ds_readd(FIGHTOBJ_BUF), ds_readd(0xd86e)));
 
-	ds_writew(0x605e, 0);
+	ds_writew(FIG_LIST_LENGTH, 0);
 	ds_writeb(0xe36f, 0);
 }
 
@@ -248,7 +248,7 @@ void FIG_draw_scenario(void)
 						sub_ds_ds(0xe370, (width * height + 8L));
 					}
 
-					ds_writew(0xe066, 0);
+					ds_writew(FIG_LIST_ELEM, 0);
 					ds_writeb(0xe068, (signed char)obj_id);
 					ds_writeb(0xe069, (signed char)cb_x);
 					ds_writeb(0xe06a, (signed char)cb_y);
@@ -270,8 +270,8 @@ void FIG_draw_scenario(void)
 					ds_writeb(0xe077, obj_id >= 58 && obj_id <= 61 ? -1 : 50);
 					ds_writeb(0xe078, 1);
 					ds_writeb(0xe079, -1);
-					ds_writeb(0xd874 + ds_readw(0x605e), FIG_add_to_list(-1));
-					inc_ds_ws(0x605e);
+					ds_writeb(0xd874 + ds_readw(FIG_LIST_LENGTH), FIG_add_to_list(-1));
+					inc_ds_ws(FIG_LIST_LENGTH);
 					place_obj_on_cb(cb_x, cb_y, obj_id + 50, obj_id, 0);
 				}
 			}

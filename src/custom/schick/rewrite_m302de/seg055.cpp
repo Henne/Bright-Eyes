@@ -85,7 +85,7 @@ void do_merchant(void)
 	load_ggsts_nvf();
 	refresh = ds_writews(0x2846, 1);
 
-	ds_writed(0xc009, ds_readd(BUFFER12_PTR));
+	ds_writed(0xc009, ds_readd(FIG_FIGURE1_BUF));
 	memset(Real2Host(ds_readd(0xc009)), 0, 3500);
 	ds_writew(0xe3f6, 4);
 	shop_p = p_datseg + 0x6870 + 9 * ds_readws(TYPEINDEX);

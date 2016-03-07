@@ -198,7 +198,7 @@ unsigned short fight_printer(void)
 			get_textcolor(&fg_bak, &bg_bak);
 
 			FIG_set_star_color(Real2Host(ds_readd(0xd29d)),
-				3724, ds_readb(0x4b6b + f_action));
+				3724, ds_readb(FIG_STAR_COLORS + f_action));
 
 			ds_writew(0xc011, 0);
 			ds_writew(0xc013, 150);
@@ -213,7 +213,7 @@ unsigned short fight_printer(void)
 
 			/* print number into the star */
 			if (ds_readw(0xd335 + ds_readbs(0x4b78) * 4) != 0) {
-				set_textcolor(0xff, ds_readbs(0x4b6b + f_action) + 0x80);
+				set_textcolor(0xff, ds_readbs(FIG_STAR_COLORS + f_action) + 0x80);
 #if !defined(__BORLANDC__)
 				sprintf(str, "%d", ds_readws(0xd335 + ds_readbs(0x4b78) * 4));
 #else
@@ -240,7 +240,7 @@ unsigned short fight_printer(void)
 
 					sprintf(getString(ds_readd(BUFFER4_PTR)),
 						(char*)get_dtp(idx * 4),
-					getString(FIG_name_3rd_case(ds_readw(0xe2b8), ds_readw(0xe2ba))));
+					getString(FIG_name_3rd_case(ds_readw(FIG_ACTOR_GRAMMAR_TYPE), ds_readw(FIG_ACTOR_GRAMMAR_ID))));
 				} else if (f_action == 2 || f_action == 4 || f_action == 7) {
 //					case 2: /* hero parade fails */
 //					case 4: /* enemy parade fails */
@@ -248,7 +248,7 @@ unsigned short fight_printer(void)
 
 					sprintf(getString(ds_readd(BUFFER4_PTR)),
 						(char*)get_dtp(idx * 4),
-					getString(FIG_name_3rd_case(ds_readw(0xe2bc), ds_readw(0xe2be))));
+					getString(FIG_name_3rd_case(ds_readw(FIG_TARGET_GRAMMAR_TYPE), ds_readw(FIG_TARGET_GRAMMAR_ID))));
 
 
 				} else if (f_action == 8 || f_action == 11) {
@@ -257,8 +257,8 @@ unsigned short fight_printer(void)
 
 					sprintf(getString(ds_readd(BUFFER4_PTR)),
 						(char*)get_dtp(idx * 4),
-					getString(FIG_name_1st_case(ds_readw(0xe2b8), ds_readw(0xe2ba))),
-					getString(FIG_name_4th_case(ds_readw(0xe2bc), ds_readw(0xe2be))));
+					getString(FIG_name_1st_case(ds_readw(FIG_ACTOR_GRAMMAR_TYPE), ds_readw(FIG_ACTOR_GRAMMAR_ID))),
+					getString(FIG_name_4th_case(ds_readw(FIG_TARGET_GRAMMAR_TYPE), ds_readw(FIG_TARGET_GRAMMAR_ID))));
 				} else {
 					/* case 5: hero successful parade */
 					/* case 6: weapon broke */

@@ -150,22 +150,22 @@ RealPt load_fight_figs(signed short fig)
 	RealPt src;
 
 	/* check if fig is at a known place */
-	if (fig == ds_readws(0x2cd1)) {
-		return (RealPt)ds_readd(BUFFER12_PTR);
-	} else if (fig == ds_readws(0x2cd3)) {
-			return (RealPt)ds_readd(BUFFER11_PTR);
-	} else if (ds_readws(0x2cd3) != -1) {
-		ds_writew(0x2cd1, ds_readw(0x2cd3));
-		memcpy(Real2Host(ds_readd(BUFFER12_PTR)),
-			Real2Host(ds_readd(BUFFER11_PTR)), 20000);
-		src = (RealPt)ds_readd(BUFFER11_PTR);
-		ds_writew(0x2cd3, fig);
-	} else if (ds_readws(0x2cd1) != -1) {
-		src = (RealPt)ds_readd(BUFFER11_PTR);
-		ds_writew(0x2cd3, fig);
+	if (fig == ds_readws(FIG_FIGURE1)) {
+		return (RealPt)ds_readd(FIG_FIGURE1_BUF);
+	} else if (fig == ds_readws(FIG_FIGURE2)) {
+			return (RealPt)ds_readd(FIG_FIGURE2_BUF);
+	} else if (ds_readws(FIG_FIGURE2) != -1) {
+		ds_writew(FIG_FIGURE1, ds_readw(FIG_FIGURE2));
+		memcpy(Real2Host(ds_readd(FIG_FIGURE1_BUF)),
+			Real2Host(ds_readd(FIG_FIGURE2_BUF)), 20000);
+		src = (RealPt)ds_readd(FIG_FIGURE2_BUF);
+		ds_writew(FIG_FIGURE2, fig);
+	} else if (ds_readws(FIG_FIGURE1) != -1) {
+		src = (RealPt)ds_readd(FIG_FIGURE2_BUF);
+		ds_writew(FIG_FIGURE2, fig);
 	} else {
-		src = (RealPt)ds_readd(BUFFER12_PTR);
-		ds_writew(0x2cd1, fig);
+		src = (RealPt)ds_readd(FIG_FIGURE1_BUF);
+		ds_writew(FIG_FIGURE1, fig);
 	}
 
 	/* prepare archive access... */
@@ -641,7 +641,7 @@ void read_fight_lst(signed short nr)
 		nr = 0;
 
 	/* write the fight number to a global var */
-	ds_writew(0x5eb2, nr);
+	ds_writew(CURRENT_FIGHT_NR, nr);
 
 	/* seek to file position */
 	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
@@ -667,7 +667,7 @@ void write_fight_lst(void)
 	signed short nr;
 	unsigned short fd;
 
-	nr = ds_readw(0x5eb2);
+	nr = ds_readw(CURRENT_FIGHT_NR);
 
 	/* load FIGHT.LST from TEMP dir */
 	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);

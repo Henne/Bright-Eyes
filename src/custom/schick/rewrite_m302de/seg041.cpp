@@ -29,7 +29,7 @@ namespace M302de {
 #endif
 
 #if 0
-/* DS:0x26ad */
+/* DS:FIG_MSG_COUNTER */
 static unsigned short msg_counter;
 #endif
 
@@ -63,9 +63,9 @@ signed short seg041_0020(Bit8u *hero, signed short arg)
 	{
 		if (!arg) {
 
-			if (ds_readws(0x5f12) < 30) {
-				ds_writew(0xe31a + ds_readw(0x5f12) * 2, right_hand);
-				inc_ds_ws(0x5f12);
+			if (ds_readws(FIG_DROPPED_COUNTER) < 30) {
+				ds_writew(FIG_DROPPED_WEAPONS + ds_readw(FIG_DROPPED_COUNTER) * 2, right_hand);
+				inc_ds_ws(FIG_DROPPED_COUNTER);
 			}
 
 			drop_item(hero, 3, 1);
@@ -156,15 +156,15 @@ void FIG_output(Bit8u *str)
 void FIG_clear_msgs(void)
 {
 	memset(p_datseg + 0xd333, 0 , 20);
-	ds_writew(0x26ad, 0);
+	ds_writew(FIG_MSG_COUNTER, 0);
 }
 
 void FIG_add_msg(unsigned short f_action, unsigned short damage)
 {
-	ds_writew(0xd333 + 4 * ds_readws(0x26ad), f_action);
-	ds_writew(0xd333 + 2 + 4 * ds_readws(0x26ad) , damage);
-	if (ds_readws(0x26ad) < 4)
-		inc_ds_ws(0x26ad);
+	ds_writew(0xd333 + 4 * ds_readws(FIG_MSG_COUNTER), f_action);
+	ds_writew(0xd333 + 2 + 4 * ds_readws(FIG_MSG_COUNTER) , damage);
+	if (ds_readws(FIG_MSG_COUNTER) < 4)
+		inc_ds_ws(FIG_MSG_COUNTER);
 }
 
 /**

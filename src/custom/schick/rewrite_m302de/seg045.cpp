@@ -32,7 +32,7 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 	obj_y = host_readws((Bit8u*)&obj_y);
 #endif
 
-	ds_writew(0xe066, 0);
+	ds_writew(FIG_LIST_ELEM, 0);
 
 	ds_writeb(0xe068, ds_readb(type * 2 + 0x61f8));
 
@@ -186,7 +186,7 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	width = host_readws((Bit8u*)&width);
 #endif
 
-	ds_writew(0xe066, 0);
+	ds_writew(FIG_LIST_ELEM, 0);
 	ds_writeb(0xe068, a.a[spell_ani_id - 1]);
 	ds_writeb(0xe069, (signed char)x);
 	ds_writeb(0xe06a, (signed char)y);

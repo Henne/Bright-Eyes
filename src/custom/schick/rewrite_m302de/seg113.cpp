@@ -151,7 +151,7 @@ void tevent_084(void)
 
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 5) <= 0)
 			{
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 
 				if (!do_fight(FIGHTS_F084)) {
 					ds_writeb(0x3de8, 1);
@@ -466,7 +466,7 @@ void tevent_099(void)
 
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 4) <= 0) {
 
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 
 				if (!do_fight(FIGHTS_F099)) {
 					ds_writeb(0x3df2, 1);
@@ -512,7 +512,7 @@ void tevent_101(void)
 
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, (signed char)mod) <= 0) {
 
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 
 				if (!do_fight(FIGHTS_F101)) {
 					ds_writeb(0x3df4, 1);

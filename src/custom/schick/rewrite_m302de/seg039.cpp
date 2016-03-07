@@ -267,7 +267,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	struct nvf_desc nvf;
 	signed short l1;
 
-	ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(ptr + 1) * 5));
+	ds_writew(FIG_LIST_ELEM, ds_readbs(0x12c0 + host_readbs(ptr + 1) * 5));
 	ds_writeb(0xe068, host_readbs(ptr + 0x27));
 	ds_writeb(0xe069, (signed char)x);
 	ds_writeb(0xe06a, (signed char)y);
@@ -314,7 +314,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 
 	if (is_in_byte_array(host_readb(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-		nvf.src = Real2Host(load_fight_figs(ds_readw(0xe066)));
+		nvf.src = Real2Host(load_fight_figs(ds_readw(FIG_LIST_ELEM)));
 		nvf.dst = Real2Host(ds_readd(0xe07d));
 		nvf.nr = ds_readbs(0xe068);
 		nvf.type = 0;
@@ -476,7 +476,7 @@ void FIG_init_heroes(void)
 			ds_writeb(0xe068, host_readb(hero + HERO_VIEWDIR));
 		}
 
-		ds_writew(0xe066, ds_readbs(0x12c0 + host_readbs(hero + HERO_SPRITE_NO) * 5));
+		ds_writew(FIG_LIST_ELEM, ds_readbs(0x12c0 + host_readbs(hero + HERO_SPRITE_NO) * 5));
 		ds_writeb(0xe069, (signed char)cb_x);
 		ds_writeb(0xe06a, (signed char)cb_y);
 		ds_writeb(0xe06b, 0);

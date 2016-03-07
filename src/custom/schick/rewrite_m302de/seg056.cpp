@@ -122,7 +122,7 @@ void buy_screen(void)
 	signed short l17;
 	struct nvf_desc nvf;
 
-	ds_writed(BUY_SHOPPING_CART, (Bit32u)((RealPt)ds_readd(BUFFER12_PTR) + 2800));
+	ds_writed(BUY_SHOPPING_CART, (Bit32u)((RealPt)ds_readd(FIG_FIGURE1_BUF) + 2800));
 	memset(Real2Host(ds_readd(BUY_SHOPPING_CART)), 0, 250);
 
 	ds_writew(0x2846, 1);

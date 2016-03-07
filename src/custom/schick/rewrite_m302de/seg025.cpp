@@ -608,7 +608,7 @@ signed short game_options(void)
 
 	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 
-	ds_writews(0x2cd1, ds_writews(0x2cd3, ds_writews(CURRENT_ANI, ds_writebs(0x2845, -1))));
+	ds_writews(FIG_FIGURE1, ds_writews(FIG_FIGURE2, ds_writews(CURRENT_ANI, ds_writebs(0x2845, -1))));
 	ds_writew(0x2846, 1);
 	ds_writeb(0x45b8, 0);
 

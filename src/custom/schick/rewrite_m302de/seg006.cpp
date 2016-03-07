@@ -54,13 +54,13 @@ signed char FIG_set_array(void)
 	signed char i = 0;
 
 	/* find first element that is zero */
-	while (ds_readb(0xe089 + i) != 0) {
+	while (ds_readb(FIG_LIST_ARRAY + i) != 0) {
 
 		i++;
 	}
 
 	/* make it 1 */
-	ds_writeb(0xe089 + i, 1);
+	ds_writeb(FIG_LIST_ARRAY + i, 1);
 
 	/* return the number of the index */
 	return i;
@@ -166,10 +166,10 @@ void FIG_draw_pic(void)
 
 	ds_writew(0x26af, 1);
 
-	if (ds_readw(0x26b3)) {
-		FIG_draw_char_pic(0, ds_readw(0x26b3));
-	} else if (ds_readw(0x26b5)) {
-		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
+	if (ds_readw(FIG_CHAR_PIC)) {
+		FIG_draw_char_pic(0, ds_readw(FIG_CHAR_PIC));
+	} else if (ds_readw(FIG_ENEMY_PIC)) {
+		FIG_draw_enemy_pic(0, ds_readw(FIG_ENEMY_PIC));
 	}
 }
 
@@ -322,10 +322,10 @@ void FIG_remove_from_list(signed char fight_id, signed char v2)
 	}
 
 	if (!v2) {
-		ds_writeb(0xe089 + fight_id, 0);
+		ds_writeb(FIG_LIST_ARRAY + fight_id, 0);
 	} else {
-//		struct_copy(p_datseg + 0xe066, p, 35);
-		*((struct dummy*)(p_datseg + 0xe066)) = *((struct dummy*)(p));
+//		struct_copy(p_datseg + FIG_LIST_ELEM, p, 35);
+		*((struct dummy*)(p_datseg + FIG_LIST_ELEM)) = *((struct dummy*)(p));
 	}
 
 	/* check if p == HEAD */
@@ -369,8 +369,8 @@ signed char FIG_add_to_list(signed char v)
 
 		ds_writed(FIG_LIST_HEAD, ds_readd(FIG_LIST_BUFFER));
 
-//		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + 0xe066, 35);
-		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + 0xe066));
+//		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + FIG_LIST_ELEM, 35);
+		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
 		if (v == -1) {
 			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10,
@@ -391,8 +391,8 @@ signed char FIG_add_to_list(signed char v)
 		p1 += 35;
 	}
 
-//	struct_copy(Real2Host(p1), p_datseg + 0xe066, 35);
-	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + 0xe066));
+//	struct_copy(Real2Host(p1), p_datseg + FIG_LIST_ELEM, 35);
+	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
 	if (v == -1) {
 		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
@@ -520,7 +520,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 	p_enemy = p_datseg + 0xd0df + id * 62;
 
-	if (ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5) != ds_readws(0x4b9e)) {
+	if (ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
 
 		nvf.src = Real2Host(load_fight_figs(ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5)));
 		nvf.dst = Real2Host(p1);
@@ -531,7 +531,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 		process_nvf(&nvf);
 
-		ds_writew(0x4b9e,
+		ds_writew(FIGHT_FIGS_INDEX,
 			ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5));
 	}
 

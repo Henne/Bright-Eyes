@@ -86,16 +86,16 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 		l4 = ds_writews(0xe3ac, ds_writews(0xe3aa, ds_writews(0xe3a8, ds_writews(0xe3a6, 0))));
 
-		ds_writew(0xe2b8, 1);
-		ds_writew(0xe2ba, host_readbs(Real2Host(monster)));
+		ds_writew(FIG_ACTOR_GRAMMAR_TYPE, 1);
+		ds_writew(FIG_ACTOR_GRAMMAR_ID, host_readbs(Real2Host(monster)));
 
 		if (host_readbs(Real2Host(monster) + 0x2d) < 10) {
 
 			/* monster attacks hero */
 			hero = get_hero(host_readbs(Real2Host(monster) + 0x2d) - 1);
 
-			ds_writew(0xe2bc, 2);
-			ds_writew(0xe2be, host_readbs(Real2Host(monster) + 0x2d) - 1);
+			ds_writew(FIG_TARGET_GRAMMAR_TYPE, 2);
+			ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(Real2Host(monster) + 0x2d) - 1);
 
 			if (hero_dead(hero) || !host_readbs(hero + HERO_TYPE)) {
 				return;
@@ -106,8 +106,8 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 			mon = p_datseg + 0xd0df + 0x3e * host_readbs(Real2Host(monster) + 0x2d);
 
-			ds_writew(0xe2bc, 1);
-			ds_writew(0xe2be, host_readbs(mon));
+			ds_writew(FIG_TARGET_GRAMMAR_TYPE, 1);
+			ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(mon));
 
 			if (enemy_dead(mon) || !host_readbs(mon)) {
 				return;
@@ -267,9 +267,9 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 								FIG_add_msg(11, damage);
 
 								/* swap msg struct */
-								tmp = *(struct msg*)(p_datseg + 0xe2bc);
-								*(struct msg*)(p_datseg + 0xe2bc) = *(struct msg*)(p_datseg + 0xe2b8);
-								*(struct msg*)(p_datseg + 0xe2b8) = tmp;
+								tmp = *(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE);
+								*(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE) = *(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE);
+								*(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE) = tmp;
 
 								if (enemy_dead(Real2Host(monster))) {
 									ds_writew(0xe3a8, 1);
@@ -284,7 +284,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 						FIG_add_msg(11, damage);
 
-						*(struct msg*)(p_datseg + 0xe2bc) = *(struct msg*)(p_datseg + 0xe2b8);
+						*(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE) = *(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE);
 
 						if (enemy_dead(Real2Host(monster))) {
 							ds_writew(0xe3a8, 1);
@@ -670,28 +670,28 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 							FIG_remove_from_list(host_readbs(mon + 0x26), 1);
 
-							ds_writew((0xe066 + 0x00), ds_readbs(0x12c0 + 5 * host_readbs(mon + 0x01)));
-							ds_writeb((0xe066 + 0x02), host_readbs(mon + 0x27));
-							ds_writeb((0xe066 + 0x05), ds_readbs(0x1531 + 10 * host_readbs(mon + 0x01) + 2 * host_readbs(mon + 0x27)));
-							ds_writeb((0xe066 + 0x06), ds_readbs(0x1532 + 10 * host_readbs(mon + 0x01) + 2 * host_readbs(mon + 0x27)));
+							ds_writew((FIG_LIST_ELEM + 0x00), ds_readbs(0x12c0 + 5 * host_readbs(mon + 0x01)));
+							ds_writeb((FIG_LIST_ELEM + 0x02), host_readbs(mon + 0x27));
+							ds_writeb((FIG_LIST_ELEM + 0x05), ds_readbs(0x1531 + 10 * host_readbs(mon + 0x01) + 2 * host_readbs(mon + 0x27)));
+							ds_writeb((FIG_LIST_ELEM + 0x06), ds_readbs(0x1532 + 10 * host_readbs(mon + 0x01) + 2 * host_readbs(mon + 0x27)));
 
 							if (is_in_byte_array(host_readbs(mon + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
-								ds_writeb((0xe066 + 0x09), ds_readbs(0x6030 + host_readbs(mon + 0x27)));
-								ds_writeb((0xe066 + 0x0b), ds_readbs(0x6034 + host_readbs(mon + 0x27)));
+								ds_writeb((FIG_LIST_ELEM + 0x09), ds_readbs(0x6030 + host_readbs(mon + 0x27)));
+								ds_writeb((FIG_LIST_ELEM + 0x0b), ds_readbs(0x6034 + host_readbs(mon + 0x27)));
 							} else {
-								ds_writeb((0xe066 + 0x09), 0);
-								ds_writeb((0xe066 + 0x0b), 31);
-								ds_writeb((0xe066 + 0x13), -1);
+								ds_writeb((FIG_LIST_ELEM + 0x09), 0);
+								ds_writeb((FIG_LIST_ELEM + 0x0b), 31);
+								ds_writeb((FIG_LIST_ELEM + 0x13), -1);
 							}
 
-							ds_writeb((0xe066 + 0x0a), 0);
-							ds_writeb((0xe066 + 0x0c), 39);
-							ds_writeb((0xe066 + 0x07), 40);
-							ds_writeb((0xe066 + 0x08), 32);
-							ds_writeb((0xe066 + 0x15), 1);
-							ds_writeb((0xe066 + 0x0d), -1);
-							ds_writeb((0xe066 + 0x0f), -1);
-							ds_writeb((0xe066 + 0x0e), -1);
+							ds_writeb((FIG_LIST_ELEM + 0x0a), 0);
+							ds_writeb((FIG_LIST_ELEM + 0x0c), 39);
+							ds_writeb((FIG_LIST_ELEM + 0x07), 40);
+							ds_writeb((FIG_LIST_ELEM + 0x08), 32);
+							ds_writeb((FIG_LIST_ELEM + 0x15), 1);
+							ds_writeb((FIG_LIST_ELEM + 0x0d), -1);
+							ds_writeb((FIG_LIST_ELEM + 0x0f), -1);
+							ds_writeb((FIG_LIST_ELEM + 0x0e), -1);
 
 							FIG_add_to_list(host_readbs(mon + 0x26));
 						}

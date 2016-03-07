@@ -12,10 +12,17 @@
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
 #define TWO_FIELDED_SPRITE_ID (0x25f9)	/* char[5] array */
 #define EMS_ENABLED	(0x26ab)
+#define FIG_INITIATIVE	(0x26ac)	/* signed char, 0 = random, 1 = enemies, 2 = heroes (attack first) */
+#define FIG_MSG_COUNTER	(0x26ad)	/* signed short */
+#define FIG_CHAR_PIC (0x26b3)	/* unsigned short */
+#define FIG_ENEMY_PIC (0x26b5)	/* unsigned short */
 #define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
 #define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
+#define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define TIMERS_DISABLED	(0x2c99)
 #define CURRENT_ANI	(0x2ccf)
+#define FIG_FIGURE1	(0x2cd1)	/* signed short */
+#define FIG_FIGURE2	(0x2cd3)	/* signed short */
 #define IN_FIGHT	(0x2cd5)
 #define FIGHT_ROUND	(0x2cd7)
 #define SKILLED_HERO_POS (0x2cdb)	/* s16 {-1, 0..6} */
@@ -118,16 +125,21 @@
 #define CONSUME_QUIET	(0x4648)
 #define LEVEL_AP_TAB	(0x464e)	/* Bit32s[21] */
 #define DELAY_FACTOR	(0x4b66)
+#define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
+#define FIGHT_FIGS_INDEX	(0x4b9e)	/* signed short */
 #define EMM_SIG		(0x4ba2)	/* char[8] */
 #define TMAP_X		(0x4c12)	/* signed short[10] */
 #define TMAP_Y		(0x4c26)	/* signed short[10] */
 #define FNAMES		(0x4c8c)
 #define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
 #define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
+#define CURRENT_FIGHT_NR	(0x5eb2)	/* unsigned short */
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
+#define FIG_DROPPED_COUNTER	(0x5f12)	/* signed short */
 #define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
+#define FIG_LIST_LENGTH	(0x605e)	/* unsigned short */
 #define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */
 #define KNIVE_WEAPONS	(0x616e)	/* signed short[5] terminated with -1 */
 #define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
@@ -160,7 +172,7 @@
 #define AIL_MUSIC_DRIVER_DESCR	(0xbd1d)	/* RealPt */
 #define AIL_SEQUENCE	(0xbd21)	/* signed short */
 #define AIL_MUSIC_DRIVER_ID	(0xbd23)	/* signed short */
-#define CURRENT_FIGHT  (0xbd28)        /* RealPt */
+#define CURRENT_FIGHT	(0xbd28)	/* RealPt */
 #define SCENARIO_BUF	(0xbd2c)
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
 #define HEROS		(0xbd34)
@@ -189,8 +201,8 @@
 #define TEXTCOLOR	(0xd2c5)
 #define TEXTCOLOR_BG	(0xd2c7)
 #define TEXTCOLOR_FG	(0xd2c9)
-#define BUFFER11_PTR	(0xd2db)	/* RealPt to buffer of size 20000 */
-#define BUFFER12_PTR	(0xd2df)	/* RealPt */
+#define FIG_FIGURE2_BUF	(0xd2db)	/* RealPt to buffer of size 20000 */
+#define FIG_FIGURE1_BUF	(0xd2df)	/* RealPt */
 #define BUFFER3_PTR	(0xd2e3)	/* RealPt to buffer of size 3400, used for NVF */
 #define BUF_ICON	(0xd2e7)	/* RealPt */
 #define BUFFER4_PTR	(0xd2eb)	/* RealPt to buffer of size 300, used for text */
@@ -204,6 +216,8 @@
 #define SPELLOBJ_NVF_BUF	(0xd866)	/* RealPt to buffer of size 0xf5f */
 #define WEAPONS_NVF_BUF	(0xd86a)	/* RealPt to buffer of size 0x1953 */
 #define NR_OF_ENEMIES	(0xd872)	/* ? short */
+#define FIG_LIST_ELEM	(0xe066)	/* struct of size 35 */
+#define FIG_LIST_ARRAY	(0xe089)	/* unsigned char[127] */
 #define FIG_LIST_HEAD	(0xe108)	/* RealPtr to a list */
 #define WALLCLOCK_Y	(0xe10f)
 #define WALLCLOCK_X	(0xe111)
@@ -214,6 +228,10 @@
 #define MONNAMES	(0xe129)
 #define ITEMSDAT	(0xe22b)
 #define ITEMSNAME	(0xe22f)
+#define FIG_ACTOR_GRAMMAR_TYPE	(0xe2b8)	/* unsigned short, 2 = hero, 1 = monster */
+#define FIG_ACTOR_GRAMMAR_ID	(0xe2ba)	/* unsigned short */
+#define FIG_TARGET_GRAMMAR_TYPE	(0xe2bc)	/* unsigned short, 2 = hero, 1 = monster */
+#define FIG_TARGET_GRAMMAR_ID	(0xe2be)	/* unsigned short */
 #define DELAY_TIMER	(0xe2d0)
 #define DIALOG_INFORMER	(0xe30c)	/* ?16 */
 #define DIALOG_DONE	(0xe310)	/* ?16 {0, 1} */
@@ -221,6 +239,7 @@
 #define TLK_ID		(0xe314)	/* ?16 */
 #define CURRENT_FIG_NR	(0xe316)
 #define AUTOFIGHT	(0xe318)	/* ?16 */
+#define FIG_DROPPED_WEAPONS	(0xe31a)	/* signed short[30] */
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
 #define FIG_LIST_BUFFER	(0xe37c)	/* RealPt to buffer of size 4445, initial value of FIG_LIST_HEAD */

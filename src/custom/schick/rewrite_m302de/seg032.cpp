@@ -479,7 +479,7 @@ void FIG_do_round(void)
 
 
 	/* turn == 0 means monsters attack first, turn == 1 means heros attack fisrt */
-	turn = (ds_readbs(0x26ac) == 2 ? 1 : (ds_readbs(0x26ac) == 1 ? 0 : random_interval(0, 1)));
+	turn = (ds_readbs(FIG_INITIATIVE) == 2 ? 1 : (ds_readbs(0x26ac) == 1 ? 0 : random_interval(0, 1)));
 
 
 	while ((ds_readws(IN_FIGHT) != 0) && (hero_attacks + monster_attacks > 0)) {
@@ -566,7 +566,7 @@ void FIG_do_round(void)
 					}
 
 					/* save the fight_id of this hero */
-					ds_writew(0x26b3, pos + 1);
+					ds_writew(FIG_CHAR_PIC, pos + 1);
 
 					/* select a fight action */
 					FIG_menu(Real2Host(hero), pos, x_coord, y_coord);
@@ -615,7 +615,7 @@ void FIG_do_round(void)
 					}
 
 					/* set fight_id of the hero to 0 */
-					ds_writew(0x26b3, 0);
+					ds_writew(FIG_CHAR_PIC, 0);
 				}
 			}
 
@@ -647,7 +647,7 @@ void FIG_do_round(void)
 					dec_ptr_bs(Real2Host(monster) + ENEMY_SHEET_BLIND);
 				} else {
 
-					ds_writew(0x26b5, pos + 10);
+					ds_writew(FIG_ENEMY_PIC, pos + 10);
 
 					host_writebs(Real2Host(monster) + ENEMY_SHEET_DUMMY4, 1);
 
@@ -695,7 +695,7 @@ void FIG_do_round(void)
 						herokeeping();
 					}
 
-					ds_writew(0x26b5, 0);
+					ds_writew(FIG_ENEMY_PIC, 0);
 				}
 			}
 
@@ -898,8 +898,8 @@ signed short do_fight(signed short fight_nr)
 	/* set some vars to 0 */
 	ds_writew(AUTOFIGHT, ds_writew(FIGHT_ROUND, ds_writew(0x5f14, 0)));
 	/* set some vars to -1 */
-	ds_writew(0x2cd1, ds_writew(0x2cd3, -1));
-	ds_writew(0x4b9e, -1);
+	ds_writew(FIG_FIGURE1, ds_writew(FIG_FIGURE2, -1));
+	ds_writew(FIGHT_FIGS_INDEX, -1);
 
 	ds_writew(0x2846, 1);
 
@@ -912,10 +912,10 @@ signed short do_fight(signed short fight_nr)
 	read_archive_file(fd, Real2Host(ds_readd(MONSTER_DAT_BUF)), 3476);
 	bc_close(fd);
 
-	ds_writew(0x5f12, 0);
+	ds_writew(FIG_DROPPED_COUNTER, 0);
 
 	for (l_di = 0; l_di < 30; l_di++) {
-		ds_writew(0xe31a + 2 * l_di, 0);
+		ds_writew(FIG_DROPPED_WEAPONS + 2 * l_di, 0);
 	}
 
 	load_buffer_1(ARCHIVE_FILE_FIGHTTXT_LTX);
@@ -1063,15 +1063,15 @@ signed short do_fight(signed short fight_nr)
 			/* the heros won the fight => loot */
 
 			l_di = 0;
-			while (ds_readws(0xe31a + 2 * l_di) != 0) {
+			while (ds_readws(FIG_DROPPED_WEAPONS + 2 * l_di) != 0) {
 				/* give automatic items to the heros. dropped broken weapons ?*/
-				get_item(ds_readws(0xe31a + 2 * l_di++), 0, 1);
+				get_item(ds_readws(FIG_DROPPED_WEAPONS + 2 * l_di++), 0, 1);
 			}
 
 			FIG_loot_monsters();
 			FIG_split_ap();
 
-			if ((ds_readws(MAX_ENEMIES) != 0) && (ds_readws(0x26c1) == 0)) {
+			if ((ds_readws(MAX_ENEMIES) != 0) && (ds_readws(FIG_DISCARD) == 0)) {
 
 				for (l_di = 0; l_di < 20; l_di++) {
 					// set the STATUS1 byte's lsb to 1
@@ -1081,7 +1081,7 @@ signed short do_fight(signed short fight_nr)
 
 		}
 
-		if ((retval != 2) && (ds_readws(0x26c1) == 0)) {
+		if ((retval != 2) && (ds_readws(FIG_DISCARD) == 0)) {
 
 			FIG_tidy_monsters();
 			write_fight_lst();
@@ -1175,8 +1175,8 @@ signed short do_fight(signed short fight_nr)
 		retval = 4;
 	}
 
-	ds_writeb(0x26ac, ds_writeb(0x2cce, 0));
-	ds_writew(0x26c1, 0);
+	ds_writeb(FIG_INITIATIVE, ds_writeb(0x2cce, 0));
+	ds_writew(FIG_DISCARD, 0);
 	ds_writew(MAX_ENEMIES, 0);
 	ds_writew(IN_FIGHT, 0);
 	ds_writew(0x2846, 1);

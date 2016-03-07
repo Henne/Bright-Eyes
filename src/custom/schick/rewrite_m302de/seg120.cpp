@@ -339,13 +339,13 @@ signed short init_memory(void)
 
 		init_text();
 
-		ds_writed(BUFFER12_PTR, (Bit32u)F_PADD(ds_readd(BUFFER9_PTR3), 180000));
+		ds_writed(FIG_FIGURE1_BUF, (Bit32u)F_PADD(ds_readd(BUFFER9_PTR3), 180000));
 		if (ds_readb(LARGE_BUF) == 1) {
-			add_ds_ws(BUFFER12_PTR, 23000);
+			add_ds_ws(FIG_FIGURE1_BUF, 23000);
 		}
 
-		ds_writed(BUFFER11_PTR, (Bit32u)F_PADD(ds_readd(BUFFER12_PTR), -20000));
-		ds_writed(BUFFER10_PTR, (Bit32u)F_PADD(ds_readd(BUFFER11_PTR), -16771));
+		ds_writed(FIG_FIGURE2_BUF, (Bit32u)F_PADD(ds_readd(FIG_FIGURE1_BUF), -20000));
+		ds_writed(BUFFER10_PTR, (Bit32u)F_PADD(ds_readd(FIG_FIGURE2_BUF), -16771));
 	}
 
 	return error;
@@ -779,13 +779,13 @@ void call_gen(void)
 			exit_AIL();
 		}
 
-		ds_writed(BUFFER12_PTR, (Bit32u)F_PADD(ds_readd(BUFFER9_PTR3), 180000));
+		ds_writed(FIG_FIGURE1_BUF, (Bit32u)F_PADD(ds_readd(BUFFER9_PTR3), 180000));
 		if (ds_readb(LARGE_BUF) == 1) {
-			add_ds_ws(BUFFER12_PTR, 23000);
+			add_ds_ws(FIG_FIGURE1_BUF, 23000);
 		}
 
-		ds_writed(BUFFER11_PTR, (Bit32u)F_PADD(ds_readd(BUFFER12_PTR), -20000));
-		ds_writed(BUFFER10_PTR, (Bit32u)F_PADD(ds_readd(BUFFER11_PTR), -16771));
+		ds_writed(FIG_FIGURE2_BUF, (Bit32u)F_PADD(ds_readd(FIG_FIGURE1_BUF), -20000));
+		ds_writed(BUFFER10_PTR, (Bit32u)F_PADD(ds_readd(FIG_FIGURE2_BUF), -16771));
 
 		ds_writed(DAY_TIMER, HOURS(24) - 1);
 		timewarp_until(1);

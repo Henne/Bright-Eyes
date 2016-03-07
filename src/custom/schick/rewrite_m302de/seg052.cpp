@@ -236,8 +236,8 @@ void do_citycamp(void)
 						if (ds_readb(0xbd27) == 0) {
 							/* in a dungeon */
 
-							ds_writeb(0x26ac, 1);
-							ds_writew(0x26c1, 1);
+							ds_writeb(FIG_INITIATIVE, 1);
+							ds_writew(FIG_DISCARD, 1);
 
 							do_fight(ds_readws((DCAMPFIGHTS-2) + 2 * random_schick(4)));
 

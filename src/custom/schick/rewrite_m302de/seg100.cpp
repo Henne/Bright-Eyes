@@ -298,7 +298,7 @@ void spell_hexenknoten(void)
 		sub_ds_ds(0xe370, width * height + 8L);
 	}
 
-	ds_writew(0xe066, 0);
+	ds_writew(FIG_LIST_ELEM, 0);
 	ds_writeb(0xe068, 127);
 	ds_writeb(0xe069, (signed char)x);
 	ds_writeb(0xe06a, (signed char)y);

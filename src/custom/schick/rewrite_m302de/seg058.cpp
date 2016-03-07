@@ -192,7 +192,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 		ds_writed(0xc019, ds_readd(ICON));
 		do_pic_copy(0);
 
-		ds_writed(0xc005, ds_readd(BUFFER12_PTR));
+		ds_writed(0xc005, ds_readd(FIG_FIGURE1_BUF));
 		memset(Real2Host(ds_readd(0xc005)), 0, 350);
 
 		get_textcolor(&fg_bak, &bg_bak);

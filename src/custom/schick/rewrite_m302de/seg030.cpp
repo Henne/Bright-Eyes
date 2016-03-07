@@ -548,12 +548,12 @@ void talk_switch(void)
 		if (ds_readws(DIALOG_INFORMER) == 0) {
 			if ((state == 1 || state == 2 || state == 3) && !ds_readb(0x3320)) {
 
-				ds_writew(0x26c1, 1);
+				ds_writew(FIG_DISCARD, 1);
 
 				if (!do_fight(FIGHTS_DASP1A)) {
 					if (GUI_bool(get_dtp(0x58))) {
 
-						ds_writew(0x26c1, 0);
+						ds_writew(FIG_DISCARD, 0);
 
 						if (!do_fight(FIGHTS_DASP1B)) {
 							ds_writeb(0x3320, 1);
@@ -561,7 +561,7 @@ void talk_switch(void)
 					}
 				}
 
-				ds_writew(0x26c1, 0);
+				ds_writew(FIG_DISCARD, 0);
 			}
 		}
 

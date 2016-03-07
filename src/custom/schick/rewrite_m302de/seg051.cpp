@@ -336,8 +336,8 @@ void do_wildcamp(void)
 				} else if (!have_guards) {
 
 					ds_writews(0x434f, -1);
-					ds_writeb(0x26ac, 1);
-					ds_writew(0x26c1, 1);
+					ds_writeb(FIG_INITIATIVE, 1);
+					ds_writew(FIG_DISCARD, 1);
 
 					do_fight(ds_readws((CAMPFIGHTS-2) + 2 * random_schick(4)));
 

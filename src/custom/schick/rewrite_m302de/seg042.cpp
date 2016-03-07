@@ -97,8 +97,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 		weapon_type = weapon_type_target = -1;
 
-		ds_writew(0xe2b8, 2);
-		ds_writew(0xe2ba, hero_pos);
+		ds_writew(FIG_ACTOR_GRAMMAR_TYPE, 2);
+		ds_writew(FIG_ACTOR_GRAMMAR_ID, hero_pos);
 
 		if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 10) {
 
@@ -113,8 +113,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 			and_ptr_bs(target_monster + 0x31, 0xfd);
 
-			ds_writew(0xe2bc, 1);
-			ds_writew(0xe2be, host_readbs(target_monster));
+			ds_writew(FIG_TARGET_GRAMMAR_TYPE, 1);
+			ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(target_monster));
 
 			if (!host_readbs(target_monster) ||
 				(enemy_dead(target_monster) && ((host_readbs(Real2Host(hero) + HERO_UNKNOWN2) != 4) || (host_readbs(Real2Host(hero) + HERO_SPELL_ID) != 23))))
@@ -173,8 +173,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				/* hero attacks another hero */
 				target_hero = get_hero(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) - 1);
 
-				ds_writew(0xe2bc, 2);
-				ds_writew(0xe2be, host_readbs(Real2Host(hero) + HERO_ENEMY_ID) - 1);
+				ds_writew(FIG_TARGET_GRAMMAR_TYPE, 2);
+				ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(Real2Host(hero) + HERO_ENEMY_ID) - 1);
 
 				if (hero_sleeps(target_hero)) {
 
@@ -303,9 +303,9 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						FIG_add_msg(8, damage);
 
 						/* swap msg struct */
-						tmp = *(struct msg*)(p_datseg + 0xe2bc);
-						*(struct msg*)(p_datseg + 0xe2bc) = *(struct msg*)(p_datseg + 0xe2b8);
-						*(struct msg*)(p_datseg + 0xe2b8) = tmp;
+						tmp = *(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE);
+						*(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE) = *(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE);
+						*(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE) = tmp;
 
 					}
 
@@ -321,7 +321,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					FIG_add_msg(8, damage);
 
-					*(struct msg*)(p_datseg + 0xe2bc) = *(struct msg*)(p_datseg + 0xe2b8);
+					*(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE) = *(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE);
 
 					if (hero_dead(Real2Host(hero))) {
 						ds_writew(0xe3a8, 1);
@@ -783,7 +783,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								FIG_remove_from_list(host_readbs(target_monster + 0x26), 1);
 
 
-								nvf.dst = Real2Host(ds_readd((0xe066 + 0x17)));
+								nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM + 0x17)));
 								nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 								nvf.nr = 26;
 								nvf.type = 0;
@@ -797,15 +797,15 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								height = host_readws((Bit8u*)&height);
 #endif
 
-								ds_writeb((0xe066 + 5), 0);
-								ds_writeb((0xe066 + 6), 0);
-								ds_writeb((0xe066 + 7), (signed char)height);
-								ds_writeb((0xe066 + 8), (signed char)width);
-								ds_writeb((0xe066 + 9), 0);
-								ds_writeb((0xe066 + 10), 0);
-								ds_writeb((0xe066 + 11), (signed char)(width - 1));
-								ds_writeb((0xe066 + 12), (signed char)(height - 1));
-								ds_writeb((0xe066 + 13), 0);
+								ds_writeb((FIG_LIST_ELEM + 5), 0);
+								ds_writeb((FIG_LIST_ELEM + 6), 0);
+								ds_writeb((FIG_LIST_ELEM + 7), (signed char)height);
+								ds_writeb((FIG_LIST_ELEM + 8), (signed char)width);
+								ds_writeb((FIG_LIST_ELEM + 9), 0);
+								ds_writeb((FIG_LIST_ELEM + 10), 0);
+								ds_writeb((FIG_LIST_ELEM + 11), (signed char)(width - 1));
+								ds_writeb((FIG_LIST_ELEM + 12), (signed char)(height - 1));
+								ds_writeb((FIG_LIST_ELEM + 13), 0);
 
 								FIG_add_to_list(host_readbs(target_monster + 0x26));
 
