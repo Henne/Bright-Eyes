@@ -329,7 +329,7 @@ signed short init_memory(void)
 
 	} else {
 
-		printf((char*)p_datseg + 0xb317, 329000 - freemem);
+		printf((char*)p_datseg + STR_NOT_ENOUGH_MEM, 329000 - freemem);
 
 		wait_for_keypress();
 		error = 1;
@@ -475,7 +475,7 @@ void prepare_dirs(void)
 		bc_setdisk(drive);
 
 		/* copy "X:\\" */
-		strcpy(gamepath, (char*)p_datseg + 0xb393);
+		strcpy(gamepath, (char*)p_datseg + STR_DRIVE_X);
 
 		/* set drive name in path */
 		gamepath[0] = drive + 'A';
@@ -488,7 +488,7 @@ void prepare_dirs(void)
 
 		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), gamepath);
 		/* "\\TEMP" */
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0xb311);
+		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + STR_BACKSLASH_TEMP);
 
 		if (!bc_chdir((char*)Real2Host(ds_readd(BUFFER4_PTR)))) {
 			/*	check if it's possible to change to TEMP-dir: OK
@@ -510,7 +510,7 @@ void prepare_dirs(void)
 
 			/* ERROR, cant write => exit */
 
-			GUI_output(p_datseg + 0xb397);
+			GUI_output(p_datseg + STR_TEMP_DIR_FAIL);
 
 			cleanup_game();
 
@@ -521,7 +521,7 @@ void prepare_dirs(void)
 	/* delete *.* in TEMP-dir */
 	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		(char*)Real2Host(ds_readd(0x4c88)),
-		(char*)p_datseg + 0xb4af);
+		(char*)p_datseg + ALL_FILES_WILDCARD2);
 
 	l_si = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
 
@@ -540,7 +540,7 @@ void prepare_dirs(void)
 	}
 
 	/* search for "*.CHR" in the gamepath */
-	l_si = bc_findfirst((RealPt)RealMake(datseg, 0xb4b3), &blk, 0);
+	l_si = bc_findfirst((RealPt)RealMake(datseg, ALL_CHR_WILDCARD4), &blk, 0);
 
 	while (!l_si) {
 
@@ -641,7 +641,7 @@ void cleanup_game(void)
 
 	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		(char*)Real2Host(ds_readd(0x4c88)),	/* contains "TEMP\\%s" */
-		(char*)p_datseg + 0xb4b9);		/* contains "*.*" */
+		(char*)p_datseg + ALL_FILES_WILDCARD3);		/* contains "*.*" */
 
 	l_di = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
 
@@ -730,13 +730,13 @@ void call_gen(void)
 	/* ret = spawnl(0, "gen.exe", "gen.exe", "b", gamemode == 2 ? "a" : "b", "1", NULL); */
 	ret = bc_spawnl(0,
 #if !defined(__BORLANDC__)
-			RealMake(datseg, 0xb4bd), RealMake(datseg, 0xb4c5),
+			RealMake(datseg, STR_GEN_EXE), RealMake(datseg, STR_GEN_EXE2),
 #else
-			(char*)RealMake(datseg, 0xb4bd), (char*)RealMake(datseg, 0xb4c5),
+			(char*)RealMake(datseg, STR_GEN_EXE), (char*)RealMake(datseg, STR_GEN_EXE2),
 #endif
-			RealMake(datseg, 0xb4cd),
-			ds_readws(GAME_MODE) == 2 ? RealMake(datseg, 0xb4cf) : RealMake(datseg, 0xb4d1),
-			RealMake(datseg, 0xb4d3), (RealPt)NULL);
+			RealMake(datseg, STR_GEN_B),
+			ds_readws(GAME_MODE) == 2 ? RealMake(datseg, STR_GEN_A) : RealMake(datseg, STR_GEN_N),
+			RealMake(datseg, STR_GEN_1), (RealPt)NULL);
 
 	refresh_screen_size();
 
@@ -744,9 +744,9 @@ void call_gen(void)
 
 		/* perror("Generation") */
 #if !defined(__BORLANDC__)
-		bc_perror(RealMake(datseg, 0xb4d5));
+		bc_perror(RealMake(datseg, STR_GEN_GENERATION));
 #else
-		bc_perror((char*)RealMake(datseg, 0xb4d5));
+		bc_perror((char*)RealMake(datseg, STR_GEN_GENERATION));
 #endif
 
 		wait_for_keypress();

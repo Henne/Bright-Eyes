@@ -27,7 +27,7 @@ namespace M302de {
 #if 0
 /* That comes in a later phase of development */
 
-/* DS:0x4900 - DS:0x496f */
+/* DS:DIARY_STRING1 - DS:0x496f */
 static const char diary_fmt[][30] = {
 	/* V3.02de */
 	"%2d.~%-8s~%s.",
@@ -166,19 +166,19 @@ Bit16u diary_print_entry(Bit16u line)
 		if (di == 0) {
 			if ((signed short)strlen(city_name) > 24) {
 				sprintf(getString(ds_readd(DTP2)),
-					(char*)(p_datseg + 0x4900),
+					(char*)(p_datseg + DIARY_STRING1),
 					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			} else if ((signed short)strlen(city_name) > 15 ) {
 				sprintf(getString(ds_readd(DTP2)),
-					(char*)(p_datseg + 0x490e),
+					(char*)(p_datseg + DIARY_STRING2),
 					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			} else {
 				sprintf(getString(ds_readd(DTP2)),
-					(char*)(p_datseg + 0x491f),
+					(char*)(p_datseg + DIARY_STRING3),
 					host_readw(ptr),
 					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
@@ -186,19 +186,19 @@ Bit16u diary_print_entry(Bit16u line)
 		} else {
 			if ((signed short)strlen(city_name) > 24) {
 				sprintf(getString(ds_readd(DTP2)),
-					(char*)(p_datseg + 0x493a),
+					(char*)(p_datseg + DIARY_STRING4),
 					city_name);
 			} else if ((signed short)strlen(city_name) > 15) {
 				sprintf(getString(ds_readd(DTP2)),
-					(char*)(p_datseg + 0x4940),
+					(char*)(p_datseg + DIARY_STRING5),
 					city_name);
 			} else if ((signed short)strlen(city_name) > 6) {
 				sprintf(getString(ds_readd(DTP2)),
-					(char*)(p_datseg + 0x4949),
+					(char*)(p_datseg + DIARY_STRING6),
 					city_name);
 			} else {
 				sprintf(getString(ds_readd(DTP2)),
-					(char*)(p_datseg + 0x495c),
+					(char*)(p_datseg + DIARY_STRING7),
 					city_name);
 			}
 		}

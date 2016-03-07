@@ -686,7 +686,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					set_textcolor(0xff, 0x00);
 
 					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
-						(char*)p_datseg + 0x6180,		/* "%s ZAUBERT %s" */
+						(char*)p_datseg + STRING_CASTS_SPELL,		/* "%s ZAUBERT %s" */
 						(char*)Real2Host(hero) + HERO_NAME2,
 						(char*)get_ltx(4 * (host_readbs(Real2Host(hero) + HERO_SPELL_ID) + 0x6a)));
 

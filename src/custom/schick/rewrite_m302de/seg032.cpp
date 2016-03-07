@@ -794,7 +794,7 @@ void FIG_load_ship_sprites(void)
 				/* check for error */
 				if (ds_readds(0xe370) < 0L) {
 					/* "ERROR ON OBJECT MALLOC" */
-					GUI_input(p_datseg + 0x5f18, 0);
+					GUI_input(p_datseg + STR_ERROR_ON_OBJ_MALLOC, 0);
 				}
 			}
 

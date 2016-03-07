@@ -37,7 +37,7 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 	signed short l1;
 	signed short retval = -1;
 	/* string on stack "%s~%d" */
-	struct dummy format_str = *(struct dummy*)(p_datseg + 0xacce);
+	struct dummy format_str = *(struct dummy*)(p_datseg + SELECT_TALENT_LVLUP);
 
 	if (show_values != 0) {
 

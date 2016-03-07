@@ -870,7 +870,7 @@ void DNG_stub6(void)
 					if (--l_di) {
 
 						strcat((char*)Real2Host(ds_readd(DTP2)),
-							(char*)((l_di >= 2) ? p_datseg + 0x92cc : p_datseg+ 0x92cf));
+							(char*)((l_di >= 2) ? p_datseg + DNG_STUB6_STR_COMMA : p_datseg+ DNG_STUB6_STR_AND));
 					}
 
 				} while (l_di);

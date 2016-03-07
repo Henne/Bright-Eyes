@@ -209,7 +209,7 @@ void THO_bank(void)
 			if (ds_readws(BANK_DEPOSIT) >= 30000) {
 
 				/* prevent overflow  at 32767 */
-				GUI_output(p_datseg + 0x7c44);
+				GUI_output(p_datseg + STR_BANK_DEPOSIT_TO_BIG);
 
 			} else {
 
@@ -322,7 +322,7 @@ void THO_arsenal(void)
 
 	} else {
 
-		GUI_output(p_datseg + 0x7c7d);
+		GUI_output(p_datseg + STR_OBVIOUSLY_CLOSED);
 	}
 }
 

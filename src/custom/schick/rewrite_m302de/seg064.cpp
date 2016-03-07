@@ -129,11 +129,11 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 
 		/* generate a price string "%d^HELLER" */
 		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
-			(char*)p_datseg + 0x7096, price);
+			(char*)p_datseg + SEA_TRAVEL_STR_HELLER, price);
 	} else {
 		/* "NICHTS" */
 		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
-			(char*)p_datseg + 0x70a0);
+			(char*)p_datseg + SEA_TRAVEL_STR_NOTHING);
 	}
 	ds_writew(0x432a, price);
 

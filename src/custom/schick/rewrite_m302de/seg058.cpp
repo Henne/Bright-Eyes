@@ -137,9 +137,9 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	struct dummy3 array3 = { { 30, 95, 160 } };
 	struct dummy5 array5 = { { 35, 55, 75, 95, 115 } };
 #else
-	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + 0x6c64);
-	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + 0x6c69);
-	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + 0x6c6e);
+	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_H);
+	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_S);
+	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_D);
 	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6c73);
 	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6c79);
 #endif

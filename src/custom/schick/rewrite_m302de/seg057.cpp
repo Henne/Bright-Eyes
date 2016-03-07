@@ -72,9 +72,9 @@ void sell_screen(Bit8u *shop_ptr)
 	struct dummy3 array3 = { { 30, 95, 160 } };
 	struct dummy5 array5 = { { 35, 55, 75, 95, 115 } };
 #else
-	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + 0x6bf0);
-	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + 0x6bf5);
-	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + 0x6bfa);
+	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_H);
+	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_S);
+	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_D);
 	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6bff);
 	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6c05);
 #endif

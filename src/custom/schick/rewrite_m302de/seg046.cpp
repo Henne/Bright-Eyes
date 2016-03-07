@@ -391,11 +391,11 @@ void status_show(Bit16u index)
 					(char*)get_city(0xcc),
 					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
 						(char*)get_city(0xc4) :
-						(char*)p_datseg + 0x64a0,
+						(char*)p_datseg + EMPTY_STRING6,
 					val,
 					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
 						(char*)get_city(0xc8) :
-						(char*)p_datseg + 0x64a1,
+						(char*)p_datseg + EMPTY_STRING7,
 					host_readbs(Real2Host(hero) + i * 3 + 0x34));
 
 			}

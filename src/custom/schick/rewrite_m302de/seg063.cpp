@@ -259,7 +259,7 @@ void do_harbour(void)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)(l_si == 1 ? get_dtp(0x70) : get_dtp(0x58)),
-							(char*)(answer == 1 ? p_datseg + 0x708d : p_datseg + 0x708f),
+							(char*)(answer == 1 ? p_datseg + SEA_TRAVEL_STR_T : p_datseg + SEA_TRAVEL_STR_EN),
 							(char*)(answer == 1 ? get_dtp(0x5c) : get_dtp(0x60)));
 
 						l_si = 0;
@@ -271,7 +271,7 @@ void do_harbour(void)
 							if (--answer) {
 
 								strcat((char*)Real2Host(ds_readd(DTP2)),
-									(char*)(answer >= 2 ? p_datseg + 0x7092 : get_dtp(0x1c)));
+									(char*)(answer >= 2 ? p_datseg + SEA_TRAVEL_STR_COMMA : get_dtp(0x1c)));
 							}
 
 						} while (answer != 0);

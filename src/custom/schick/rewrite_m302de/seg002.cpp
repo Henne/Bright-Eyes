@@ -97,11 +97,11 @@ void sound_menu(void)
 {
 	signed short answer;
 
-	answer = GUI_radio(p_datseg + 0x47d8, 4,
-				p_datseg + 0x47e9,
-				p_datseg + 0x47f5,
-				p_datseg + 0x47ff,
-				p_datseg + 0x480b);
+	answer = GUI_radio(p_datseg + SND_MENU_QUESTION, 4,
+				p_datseg + SND_MENU_RADIO1,
+				p_datseg + SND_MENU_RADIO2,
+				p_datseg + SND_MENU_RADIO3,
+				p_datseg + SND_MENU_RADIO4);
 
 	switch (answer - 1) {
 		case 0: {
@@ -154,7 +154,7 @@ void read_sound_cfg(void)
 	signed short handle;
 
 	/* try to open SOUND.CFG */
-	if ( (handle = bc__open((RealPt)RealMake(datseg, 0x481d), 0x8001)) != -1) {
+	if ( (handle = bc__open((RealPt)RealMake(datseg, FNAME_SOUND_CFG), 0x8001)) != -1) {
 
 		bc__read(handle, (Bit8u*)&port, 2);
 		bc__read(handle, (Bit8u*)&l2, 2);
@@ -177,7 +177,7 @@ void read_sound_cfg(void)
 		if (0) {
 
 			if (port != 0) {
-				load_music_driver((RealPt)RealMake(datseg, 0x4827), 3, port);
+				load_music_driver((RealPt)RealMake(datseg, FNAME_SOUND_ADV2), 3, port);
 			} else {
 
 				/* music was disabled in SOUND.CFG */
@@ -193,12 +193,12 @@ void read_sound_cfg(void)
 
 			if (ds_readw(0x447c) != 0) {
 
-				if (!load_digi_driver((RealPt)RealMake(datseg, 0x4831), 2, l3, l4)) {
+				if (!load_digi_driver((RealPt)RealMake(datseg, FNAME_DIGI_ADV), 2, l3, l4)) {
 					ds_writew(0x447c, 0);
 				}
 			} else {
 				/* print that sound effects are disabled */
-				GUI_output(p_datseg + 0x483a);
+				GUI_output(p_datseg + SND_TXT_DISABLED_MEM);
 				ds_writew(0x447c, 0);
 			}
 		} else {
@@ -406,7 +406,7 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 			} else {
 
 				/* no sound hardware found */
-				GUI_output(Real2Host(RealMake(datseg, 0x486d)));
+				GUI_output(Real2Host(RealMake(datseg, SND_TXT_HW_NOT_FOUND)));
 				exit_AIL();
 			}
 		}
@@ -481,7 +481,7 @@ signed short have_mem_for_sound(void)
 	signed short retval;
 	struct ffblk blk;
 
-	if (!bc_findfirst((RealPt)RealMake(datseg, 0x488c), &blk, 0)) {
+	if (!bc_findfirst((RealPt)RealMake(datseg, FNAME_SOUND_ADV), &blk, 0)) {
 		/* SOUND.ADV was found */
 		size = host_readd((Bit8u*)(&blk) + 26);
 		size += 4000L;
@@ -641,7 +641,7 @@ signed short load_digi_driver(RealPt fname, signed short type, signed short io, 
 				return 1;
 			} else {
 				/* no sound hardware found */
-				GUI_output(Real2Host(RealMake(datseg, 0x4896)));
+				GUI_output(Real2Host(RealMake(datseg, SND_TXT_HW_NOT_FOUND2)));
 				free_voc_buffer();
 			}
 		}
@@ -686,7 +686,7 @@ signed short open_and_seek_dat(unsigned short fileindex)
 	signed short fd;
 
 	/* open SCHICK.DAT */
-	if ( (fd =  bc__open((RealPt)RealMake(datseg, 0x48ca), 0x8001)) != -1) {
+	if ( (fd =  bc__open((RealPt)RealMake(datseg, FNAME_SCHICK_DAT), 0x8001)) != -1) {
 
 		/* seek to the fileindex position in the offset table */
 		bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
@@ -1543,7 +1543,7 @@ void handle_gui_input(void)
 			ds_writew(0xd2d1, 1);
 			l_di = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 2);
-			GUI_output(p_datseg + 0x448a);		/* P A U S E */
+			GUI_output(p_datseg + PAUSE_STRING);		/* P A U S E */
 			ds_writew(TEXTBOX_WIDTH, l_di);
 			ds_writew(0xd2d1, 0);
 			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
@@ -1691,7 +1691,7 @@ void handle_input(void)
 			ds_writew(0xc3c5, 1);
 			ds_writew(0xd2d1, 1);
 			ds_writew(TEXTBOX_WIDTH, 2);
-			GUI_output(p_datseg + 0x448a);		/* P A U S E */
+			GUI_output(p_datseg + PAUSE_STRING);		/* P A U S E */
 			ds_writew(TEXTBOX_WIDTH, 3);
 			ds_writew(0xd2d1, 0);
 			dec_ds_ws(TIMERS_DISABLED);
@@ -5208,7 +5208,7 @@ int schick_main(int argc, char** argv)
 		} else {
 			/* disable sound */
 			exit_AIL();
-			GUI_output(p_datseg + 0x48d5);
+			GUI_output(p_datseg + SND_TXT_DISABLED_MEM2);
 		}
 
 		CD_init();
@@ -5316,7 +5316,7 @@ signed short copy_protection(void)
 				ds_readbs((QUESTIONS_HANDBOOK + 0) + 19 * l_di));
 
 			/* print version number */
-			GUI_print_string(p_datseg + 0x46ec, 290, 190);
+			GUI_print_string(p_datseg + GAME_VERSION, 290, 190);
 
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
@@ -5345,7 +5345,7 @@ signed short copy_protection(void)
 				get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 1) + 3 * l_di))));
 
 			/* print version number */
-			GUI_print_string(p_datseg + 0x46ec, 290, 190);
+			GUI_print_string(p_datseg + GAME_VERSION, 290, 190);
 
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);

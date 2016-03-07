@@ -93,9 +93,9 @@ void buy_screen(void)
 	struct dummy3 array3 = { { 30, 95, 160 } };
 	struct dummy5 array5 = { { 35, 55, 75, 95, 115 } };
 #else
-	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + 0x6bc8);
-	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + 0x6bcd);
-	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + 0x6bd2);
+	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_H);
+	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_S);
+	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_D);
 	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6bd7);
 	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6bdd);
 #endif
@@ -291,7 +291,7 @@ void buy_screen(void)
 			if (item_weapon(get_itemsdat(item_id))) {
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)p_datseg + 0x6bed);
+					(char*)p_datseg + BUY_SCREEN_STR_COMMA_SPACE);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(4 * (48 + host_readbs(get_itemsdat(item_id) + 3))));

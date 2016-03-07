@@ -152,7 +152,7 @@ void prepare_chr_name(char *dst, char *src)
 
 	strncpy(dst, tmp_str, 8);
 	dst[8] = '\0';
-	strcat(dst, (char*)p_datseg + 0x5e3e);
+	strcat(dst, (char*)p_datseg + CHR_FILE_SUFFIX);
 }
 
 void prepare_sg_name(char *dst, char *src)
@@ -220,7 +220,7 @@ signed short load_game_state(void)
 
 		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * answer);
 		/* concat with ".gam" */
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0x5e43);
+		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_SUFFIX);
 
 		/* open the game state file */
 		if ((handle_gs = bc__open((RealPt)ds_readd(BUFFER4_PTR), 0x8001)) == -1) {
@@ -243,7 +243,7 @@ signed short load_game_state(void)
 			/* "TEMP\\%s" */
 			(char*)Real2Host(ds_readd(0x4c88)),
 			/* "*.*" */
-			(char*)p_datseg + 0x5e48);
+			(char*)p_datseg + ALL_FILES_WILDCARD);
 
 		l2 = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
 
@@ -358,7 +358,7 @@ signed short load_game_state(void)
 		bc_close(handle_gs);
 
 		/* search for "*.CHR" */
-		l2 = bc_findfirst((RealPt)RealMake(datseg, 0x5e4c), &blk, 0);
+		l2 = bc_findfirst((RealPt)RealMake(datseg, ALL_CHR_WILDCARD), &blk, 0);
 
 		while (l2 == 0) {
 
@@ -464,7 +464,7 @@ signed short save_game_state(void)
 				(char*)get_ltx(0xcb4),
 				1,
 				get_ltx(0x620),
-				p_datseg + 0x5e52);
+				p_datseg + EMPTY_STRING1);
 
 			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)get_ltx(4),
@@ -474,7 +474,7 @@ signed short save_game_state(void)
 			/* save inside a temple */
 			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)get_ltx(4),
-				(char*)p_datseg + 0x5e53);
+				(char*)p_datseg + EMPTY_STRING2);
 		}
 	}
 
@@ -523,7 +523,7 @@ signed short save_game_state(void)
 
 		/* delete the previous file of that slot */
 		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0x5e54);
+		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_SUFFIX2);
 		bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
 		strcpy((char*)p_datseg + SAVEGAME_NAMES + 9 * slot, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 
@@ -564,7 +564,7 @@ signed short save_game_state(void)
 #endif
 
 		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0x5e59);
+		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_SUFFIX3);
 
 		while ((l_di = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0)) == -1) {
 			GUI_output(get_ltx(0x570));
@@ -580,11 +580,11 @@ signed short save_game_state(void)
 		filepos = 0;
 
 		/* write version identifier 16 bytes */
-		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46e0), 12);
-		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46fb), 1);
-		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46fa), 1);
-		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46f8), 1);
-		filepos += bc__write(l_di, (RealPt)RealMake(datseg, 0x46f9), 1);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, DSA_VERSION_STRING), 12);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, VERSION_TOKEN4), 1);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, VERSION_TOKEN3), 1);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, VERSION_TOKEN1), 1);
+		filepos += bc__write(l_di, (RealPt)RealMake(datseg, VERSION_TOKEN2), 1);
 
 		/* write fileposition 4 bytes */
 		/* this will be updated later to find the data of the CHR files */
@@ -684,7 +684,7 @@ signed short save_game_state(void)
 		bc_lseek(l_di, filepos, 0);
 		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)Real2Host(ds_readd(0x4c88)),
-			(char*)p_datseg + 0x5e5e);
+			(char*)p_datseg + ALL_CHR_WILDCARD2);
 
 		l1 = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
 		do {
@@ -822,7 +822,7 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 	buf = Real2Host(ds_readd(BUFFER1_PTR)) + 60000;
 	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		(char*)Real2Host(ds_readd(0x4c88)),
-		(char*)p_datseg + 0x5e64);
+		(char*)p_datseg + ALL_CHR_WILDCARD3);
 
 	l_di = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
 

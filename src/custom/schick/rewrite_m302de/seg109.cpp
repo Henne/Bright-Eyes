@@ -119,7 +119,7 @@ void TRV_found_herb_place(signed short a0)
 		(char*)get_dtp(0x0000),
 		(char*)get_dtp(4 * randval),
 		(char*)hero + HERO_NAME2,
-		(char*)(a0 != 0 ? get_dtp(0x00a8) : p_datseg + 0xb13b));
+		(char*)(a0 != 0 ? get_dtp(0x00a8) : p_datseg + EMPTY_STRING10));
 
 	do {
 		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
@@ -171,7 +171,7 @@ signed short TRV_found_camp_place(signed short a0)
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x020),
 		(char*)get_dtp(4 * randval),
-		(char*)(a0 == 1 ? get_dtp(0xa8) : (a0 == 2 ? get_dtp(0xb4) : p_datseg + 0xb13c)));
+		(char*)(a0 == 1 ? get_dtp(0xa8) : (a0 == 2 ? get_dtp(0xb4) : p_datseg + EMPTY_STRING11)));
 	do {
 		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
 					get_dtp(0x24),
@@ -214,7 +214,7 @@ void TRV_found_replenish_place(signed short a0)
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(0x040),
 		(char*)get_dtp(4 * (random_schick(5) + 11)),
-		(char*)(a0 != 0 ? get_dtp(0xb4) : p_datseg + 0xb13d));
+		(char*)(a0 != 0 ? get_dtp(0xb4) : p_datseg + EMPTY_STRING12));
 	do {
 		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
 					get_dtp(0x54),

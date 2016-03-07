@@ -161,7 +161,7 @@ void do_temple(void)
 					save_game_state();
 				}
 			} else {
-				GUI_output(p_datseg + 0x6e7a);
+				GUI_output(p_datseg + STR_NO_SAVE_IN_TEMPLE);
 			}
 		}
 
@@ -383,7 +383,7 @@ signed short char_erase(void)
 					}
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)p_datseg + 0x6e72,
+						(char*)p_datseg + STR_TEMP_FILE_WILDCARD,
 						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 					bc_unlink((RealPt)ds_readd(DTP2));
 				}

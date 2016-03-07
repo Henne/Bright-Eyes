@@ -424,7 +424,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 			if (herb_count[i] != 0) {
 
 				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
-					(char*)p_datseg + 0x66d1, /* "%d %s" */
+					(char*)p_datseg + GATHER_HERBS_STR_FOUND, /* "%d %s" */
 					herb_count[i],
 					Real2Host(GUI_names_grammar((herb_count[i] > 1 ? 4 : 0) + 0x4002, ds_readb(0x669c + 4 * i), 0)));
 
@@ -432,16 +432,16 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 
 				if (--herbs > 1) {
 					/* add a comma ", " */
-					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + 0x66d7);
+					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + GATHER_HERBS_STR_COMMA);
 				} else if (herbs == 1) {
 					/* add an and " UND " */
-					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + 0x66da);
+					strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + GATHER_HERBS_STR_AND);
 				}
 			}
 		}
 
 		/* add a dot "." */
-		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + 0x66e0);
+		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)p_datseg + GATHER_HERBS_STR_DOT);
 
 	} else {
 

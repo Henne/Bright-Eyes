@@ -121,7 +121,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + 0x1c4))) {
 					/* no weapon or weapon broken, use red color for "change weapon" */
 					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
-						(char*)p_datseg + 0x5f32,
+						(char*)p_datseg + RED_STRING1,
 						get_dtp(0x60));
 				} else {
 					/* good weapon, no special color */
@@ -131,7 +131,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				if (host_readbs(hero + HERO_KK) * 110 <= host_readws(hero + HERO_LOAD)) {
 					/* too much weight, use red color for "drop item" */
 					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50,
-						(char*)p_datseg + 0x5f37,
+						(char*)p_datseg + RED_STRING2,
 						get_dtp(0xb8));
 				} else {
 					/* weight ok, no special color */
@@ -588,9 +588,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 									(Bit32u)((RealPt)(ds_readd(DTP2)) + 40 * l100));
 
 								sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * l100)),
-									(char*)p_datseg + 0x5f3c, /* "%s %s" */
+									(char*)p_datseg + SPACE_SEPARATED_STRINGS, /* "%s %s" */
 									(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(weapon_id))),
-									ks_broken(hero + HERO_ITEM_HEAD + 14 * slot_nr) ? get_ltx(0x778) : p_datseg + 0x5f42);
+									ks_broken(hero + HERO_ITEM_HEAD + 14 * slot_nr) ? get_ltx(0x778) : p_datseg + EMPTY_STRING3);
 
 								l100++;
 							}
@@ -778,9 +778,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					/* AE */
 					host_readws(hero + HERO_AE), host_readws(hero + HERO_AE_ORIG),
 					/* poison */
-					hero_is_poisoned(hero) ? get_dtp(0x90) : p_datseg + 0x5f43,
+					hero_is_poisoned(hero) ? get_dtp(0x90) : p_datseg + EMPTY_STRING4,
 					/* cursed */
-					hero_cursed(hero) == 1 ? get_dtp(0x98) : p_datseg + 0x5f44);
+					hero_cursed(hero) == 1 ? get_dtp(0x98) : p_datseg + EMPTY_STRING5);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 

@@ -19,7 +19,7 @@ namespace M302de {
 #endif
 
 #if 0
-/* DS:0x4a68 - DS:0x4a7f */
+/* DS:NOWAY_STRING - DS:0x4a7f */
 static const char no_way_msg[][41] = {
 	"IN DIESE RICHTUNG GEHT ES NICHT WEITER.",
 	"YOU CAN GO NO FURTHER IN THIS DIRECTION."
@@ -228,7 +228,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 /* Borlandified and identical */
 void no_way()
 {
-	GUI_output(p_datseg + 0x4a68);
+	GUI_output(p_datseg + NOWAY_STRING);
 }
 
 #if !defined(__BORLANDC__)

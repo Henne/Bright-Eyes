@@ -144,6 +144,7 @@
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
 #define ARSENAL_MONEY	(0x43a3)	/* signed short {-1, 0 - 60 } */
 #define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */
+#define PAUSE_STRING	(0x448a)	/* char[10] = "P A U S E" */
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
 #define SPECIAL_DAYS	(0x45b9)	/* (struct { char month, day, id; })[32] */
@@ -153,8 +154,36 @@
 #define BANK_HELLER	(0x4646)	/* signed short */
 #define CONSUME_QUIET	(0x4648)
 #define LEVEL_AP_TAB	(0x464e)	/* Bit32s[21] */
+#define DSA_VERSION_STRING	(0x46e0)	/* char[12] = "DSA VERSION" */
+#define GAME_VERSION	(0x46ec)	/* char[6] = "V3.02" */
+#define VERSION_TOKEN1	(0x46f8)	/* unsigned char = 3 */
+#define VERSION_TOKEN2	(0x46f9)	/* unsigned char = 1 */
+#define VERSION_TOKEN3	(0x46fa)	/* unsigned char = 1 */
+#define VERSION_TOKEN4	(0x46fb)	/* unsigned char = 1 */
 #define QUESTIONS_HANDBOOK	(0x46fc)	/* (struct of size 19)[10] */
 #define QUESTIONS_MAP	(0x47ba)	/* (struct of size 3)[10] */
+#define SND_MENU_QUESTION	(0x47d8)	/* char[17] = "BITTE AUSW\x8eHLEN:" */
+#define SND_MENU_RADIO1	(0x47e9)	/* char[12] = "KEINE MUSIK" */
+#define SND_MENU_RADIO2	(0x47f5)	/* char[10] = "NUR MUSIK" */
+#define SND_MENU_RADIO3	(0x47ff)	/* char[12] = "NUR EFFEKTE" */
+#define SND_MENU_RADIO4	(0x480b)	/* char[18] = "MUSIK UND EFFEKTE" */
+#define FNAME_SOUND_CFG	(0x481d)	/* char[10] = "SOUND.CFG" */
+#define FNAME_SOUND_ADV2	(0x4827)	/* char[10] = "SOUND.ADV" */
+#define FNAME_DIGI_ADV	(0x4831)	/* char[9] = "DIGI.ADV" */
+#define SND_TXT_DISABLED_MEM	(0x483a)	/* char[51] = "SOUND EFFEKTE ABGESCHALTET - NICHT GENUG SPEICHER!" */
+#define SND_TXT_HW_NOT_FOUND	(0x486d)	/* char[31] = "SOUND HARDWARE NICHT GEFUNDEN!" */
+#define FNAME_SOUND_ADV	(0x488c)	/* char[10] = "SOUND.ADV" */
+#define SND_TXT_HW_NOT_FOUND2	(0x4896)	/* char[31] == SND_TXT_HW_NOT_FOUND */
+#define FNAME_SCHICK_DAT	(0x48ca)	/* char[11] = "SCHICK.DAT" */
+#define SND_TXT_DISABLED_MEM2	(0x48d5)	/* char[43] = "MUSIK ABGESCHALTET - NICHT GENUG SPEICHER!" */
+#define DIARY_STRING1	(0x4900)	/* char[14] = "%2d-~%-8s~%s." */
+#define DIARY_STRING2	(0x490e)	/* char[17] = "%2d.~%-8s~IN %s." */
+#define DIARY_STRING3	(0x491f)	/* char[27] = "%2d.~%-8s~BESUCHEN VON %s." */
+#define DIARY_STRING4	(0x493a)	/* char[6] = "~~%s." */
+#define DIARY_STRING5	(0x4940)	/* char[9] = "~~IN %s." */
+#define DIARY_STRING6	(0x4949)	/* char[19] = "~~ABENTEUER IN %s." */
+#define DIARY_STRING7	(0x495c)	/* char[22] = "~~RUMH\x8eNGEN IN %s." */
+#define NOWAY_STRING	(0x4a68)	/* char[41] = "IN DIESE RICHTUNG GEHT ES NICHT WEITER." */
 #define STATUS_PAGE_HUNGER_MAX_COUNTER	(0x4a9a)	/* signed char */
 #define STATUS_PAGE_HUNGER_MAX_COLOR	(0x4a9b)	/* signed char */
 #define STATUS_PAGE_THIRST_MAX_COUNTER	(0x4a9c)	/* signed char */
@@ -171,32 +200,106 @@
 #define TMAP_X	(0x4c12)	/* signed short[10] */
 #define TMAP_Y	(0x4c26)	/* signed short[10] */
 #define FNAMES	(0x4c8c)
+#define CHR_FILE_SUFFIX	(0x5e3e)	/* char[5] = ".CHR" */
+#define SAVEGAME_SUFFIX	(0x5e43)	/* char[5] = ".GAM" */
+#define ALL_FILES_WILDCARD	(0x5e48)	/* char[4] = "*.*" */
+#define ALL_CHR_WILDCARD	(0x5e4c)	/* char[6] = "*.CHR" */
+#define EMPTY_STRING1	(0x5e52)	/* char[1] = "" */
+#define EMPTY_STRING2	(0x5e53)	/* char[1] = "" */
+#define SAVEGAME_SUFFIX2	(0x5e54)	/* char[5] = ".gam" */
+#define SAVEGAME_SUFFIX3	(0x5e59)	/* char[5] = ".gam" */
+#define ALL_CHR_WILDCARD2	(0x5e5e)	/* char[6] = "*.CHR" */
+#define ALL_CHR_WILDCARD3	(0x5e64)	/* char[6] = "*.CHR" */
 #define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
 #define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
 #define CURRENT_FIGHT_NR	(0x5eb2)	/* unsigned short */
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
 #define FIG_DROPPED_COUNTER	(0x5f12)	/* signed short */
 #define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */
+#define STR_ERROR_ON_OBJ_MALLOC	(0x5f18)	/* char[23] = "ERROR ON OBJECT MALLOC" */
 #define AUTOFIGHT_MAGIC	(0x5f31)	/* ?8 */
+#define RED_STRING1	(0x5f32)	/* char[5] = "\xf1%s\xf0" */
+#define RED_STRING2	(0x5f37)	/* char[5] = "\xf1%s\xf0" */
+#define SPACE_SEPARATED_STRINGS	(0x5f3c)	/* char[6] = "%s %s" */
+#define EMPTY_STRING3	(0x5f42)	/* char[1] = "" */
+#define EMPTY_STRING4	(0x5f43)	/* char[1] = "" */
+#define EMPTY_STRING5	(0x5f44)	/* char[1] = "" */
+#define STRING_14SPACES	(0x5f9c)	/* char[15] = "              " */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
 #define FIG_LIST_LENGTH	(0x605e)	/* unsigned short */
 #define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */
 #define KNIVE_WEAPONS	(0x616e)	/* signed short[5] terminated with -1 */
+#define STRING_CASTS_SPELL	(0x6180)	/* char[14] = "%s ZAUBERT %s" */
+#define EMPTY_STRING6	(0x64a0)	/* char[1] = "" */
+#define EMPTY_STRING7	(0x64a1)	/* char[1] = "" */
 #define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT2	(0x64b1)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT3	(0x64bf)	/* signed short[7] filled with zeroes */
+#define EXTRASPACE_SEPARATED_STRINGS	(0x6534)	/* char[7] = "%s %s " */
+#define EMPTY_STRING8	(0x653b)	/* char[1] = "" */
+#define EXTRASPACE_SEPARATED_STRINGS2	(0x653c)	/* char[7] = "%s %s " */
+#define EMPTY_STRING9	(0x6543)	/* char[1] = "" */
 #define CAMPFIGHTS	(0x6694)	/* signed short[4] */
+#define GATHER_HERBS_STR_FOUND	(0x66d1)	/* char[6] = "%d %s" */
+#define GATHER_HERBS_STR_COMMA	(0x66d7)	/* char[3] = ", " */
+#define GATHER_HERBS_STR_AND	(0x66da)	/* char[6] = " UND " */
+#define GATHER_HERBS_STR_DOT	(0x66e0)	/* char[2] = "." */
 #define DCAMPFIGHTS	(0x66e2)	/* signed short[4] */
+#define BUY_SCREEN_STR_MONEY_H	(0x6bc8)	/* char[5] = "H %d" */
+#define BUY_SCREEN_STR_MONEY_S	(0x6bcd)	/* char[5] = "S %d" */
+#define BUY_SCREEN_STR_MONEY_D	(0x6bd2)	/* char[5] = "D %d" */
+#define BUY_SCREEN_STR_COMMA_SPACE	(0x6bed)	/* char[3] = ", " */
+#define SELL_SCREEN_STR_MONEY_H	(0x6bf0)	/* char[5] = "H %d" */
+#define SELL_SCREEN_STR_MONEY_S	(0x6bf5)	/* char[5] = "S %d" */
+#define SELL_SCREEN_STR_MONEY_D	(0x6bfa)	/* char[5] = "D %d" */
+#define SMITH_STR_MONEY_H	(0x6c64)	/* char[5] = "H %d" */
+#define SMITH_STR_MONEY_S	(0x6c69)	/* char[5] = "S %d" */
+#define SMITH_STR_MONEY_D	(0x6c6e)	/* char[5] = "D %d" */
+#define STR_TEMP_FILE_WILDCARD	(0x6e72)	/* char[8] = "TEMP\%s" */
+#define STR_NO_SAVE_IN_TEMPLE	(0x6e7a)	/* char[42] = "IN DIESEM TEMPEL KEIN SPEICHERN M\x99GLICH!" */
 #define TEMPLE_MIRACLE_BONUS	(0x6ea4)	/* signed char[15] = {0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0} */
 #define TEMPLE_MIRACLE_DICE	(0x6eb3)	/* signed char[15] = {0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10} */
 #define TRAVEL_BY_SHIP	(0x7070)	/* ?8 0 = on land, 1 = at the ship */
+#define SEA_TRAVEL_STR_T	(0x708d)	/* char[2] = "T" */
+#define SEA_TRAVEL_STR_EN	(0x708f)	/* char[3] = "EN" */
+#define SEA_TRAVEL_STR_COMMA	(0x7092)	/* char[3] = ", " */
+#define SEA_TRAVEL_STR_HELLER	(0x7096)	/* char[10] = "%d^HELLER" */
+#define SEA_TRAVEL_STR_NOTHING	(0x70a0)	/* char[7] = "NICHTS" */
 #define CAN_MERGE_GROUP	(0x7c41)	/* signed char {-1,1} */
 #define C_EVENT_ACTIVE	(0x7c42)	/* ?8 0 = default, 1 = city event active */
+#define STR_BANK_DEPOSIT_TO_BIG	(0x7c44)	/* char[57] = "TUT MIR LEID, ICH AKZEPTIERE MAXIMAL 30000 SILBERM\x9aNZEN!" */
+#define STR_OBVIOUSLY_CLOSED	(0x7c7d)	/* char[28] = "OFFENSICHTLICH GESCHLOSSEN!" */
 #define TMAP_DOUBLE1	(0x7c9a)	/* ?8 1 = unicorn brought a piece you already have */
 #define TMAP_DOUBLE2	(0x7c9b)	/* ?8 1 = you got a piece you already have from the unicorn */
 #define MAX_GOSSIP	(0x7c9d)	/* s8[52], maximum of different gossips per town */
+#define GOSSIP_STR_TRIPLE_WILDCARD	(0x7d06)	/* char[8] = "%s %s%s" */
+#define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
+#define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
 #define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
+#define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
+#define SPELL_SELECT_STR_KEY	(0xac20)	/* char[5] = "\xf2%s\xf0" */
+#define SPELL_SELECT_STR_KEY_COLOR	(0xac25)	/* char[3] = "%s" */
+#define SPELL_SELECT_STR_KEYVAL_COLOR	(0xac28)	/* char[8] = "\xf2%s~%d\xf0 */
+#define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
+#define SELECT_TALENT_LVLUP	(0xacce)	/* char[6] = "%s~%d" */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
+#define EMPTY_STRING10	(0xb13b)	/* char[1] = "" */
+#define EMPTY_STRING11	(0xb13c)	/* char[1] = "" */
+#define EMPTY_STRING12	(0xb13d)	/* char[1] = "" */
+#define STR_BACKSLASH_TEMP	(0xb311)	/* char[6] = "\\TEMP" */
+#define STR_NOT_ENOUGH_MEM	(0xb317)	/* char[124] = "Not enough memory!\x0a\"Realms of Arkania - Blade of Destiny\" needs %ld Byte more memory!\x0aPlease uninstall resident programs!" */
+#define STR_DRIVE_X	(0xb393)	/* char[4] = "X:\" */
+#define STR_TEMP_DIR_FAIL	(0xb397)	/* char[280] = "\xf2!!!!! ACHTUNG !!!!!\xf0\x40\x40DAS SCHWARZE AUGE\x40KANN KEIN TEMPOR\x8eRES VERZEICHNIS ANLEGEN UND IST DAHER NICHT LAUFF\x8eHIG. WAHRSCHEINLICH VERSUCHEN SIE, DAS SPIEL AUF EINEM\xf2 SCHREIBGESCH\x9aTZTEN LAUFWERK\xf0\x40ZU STARTEN. BITTE INSTALLIEREN SIE DAS SPIEL AUF EINE FESTPLATTE.\x40\x40-TASTE ZUM BEENDEN-" */
+#define ALL_FILES_WILDCARD2	(0xb4af)	/* char[4] = "*.*" */
+#define ALL_CHR_WILDCARD4	(0xb4b3)	/* char[6] = "*.CHR" */
+#define ALL_FILES_WILDCARD3	(0xb4b9)	/* char[4] = "*.*" */
+#define STR_GEN_EXE	(0xb4bd)	/* char[8] = "gen.exe" */
+#define STR_GEN_EXE2	(0xb4c5)	/* char[8] = "gen.exe" */
+#define STR_GEN_B	(0xb4cd)	/* char[2] = "b" */
+#define STR_GEN_A	(0xb4cf)	/* char[2] = "a" */
+#define STR_GEN_N	(0xb4d1)	/* char[2] = "n" */
+#define STR_GEN_1	(0xb4d3)	/* char[2] = "1" */
+#define STR_GEN_GENERATION	(0xb4d5)	/* char[11] = "Generation" */
 #define CD_AUDIO_POS_BAK	(0xbc38)	/* unsigned long */
 #define CD_AUDIO_TOD_BAK	(0xbc3c)	/* unsigned long */
 #define CD_AUDIO_TOD	(0xbc4a)	/* unsigned long */

@@ -137,9 +137,9 @@ void status_menu(signed short hero_pos)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
-						(char*)(p_datseg + 0x6534),
+						(char*)(p_datseg + EXTRASPACE_SEPARATED_STRINGS),
 						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
-						!is_in_word_array(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + 0x653b : get_city(0x108));
+						!is_in_word_array(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + EMPTY_STRING8 : get_city(0x108));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -319,9 +319,9 @@ void status_menu(signed short hero_pos)
 				if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
-						(char*)(p_datseg + 0x653c),
+						(char*)(p_datseg + EXTRASPACE_SEPARATED_STRINGS2),
 						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
-						!is_in_word_array(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + 0x6543 : get_city(0x108));
+						!is_in_word_array(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + EMPTY_STRING9 : get_city(0x108));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),

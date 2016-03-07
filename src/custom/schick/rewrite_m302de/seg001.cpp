@@ -222,7 +222,7 @@ void CD_audio_play() {
 	/* reset CD pause */
 	ds_writew(0xa1, 0);
 	ds_writed(CD_AUDIO_POS, ds_readd(CD_AUDIO_POS_BAK));
-	ds_writed(CD_AUDIO_TOD, CD_get_tod() - ds_readd(CD_AUDIO_TOD_BAK) + ds_readd(0xbc4a));
+	ds_writed(CD_AUDIO_TOD, CD_get_tod() - ds_readd(CD_AUDIO_TOD_BAK) + ds_readd(CD_AUDIO_TOD));
 
 	real_writew(reloc_game + CDA_DATASEG, 0xc7, 0);
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0xc4));
