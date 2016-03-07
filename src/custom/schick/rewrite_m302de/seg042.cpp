@@ -111,7 +111,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 			target_monster = p_datseg + 0xd0df + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID);
 
-			and_ptr_bs(target_monster + 0x31, 0xfd);
+			and_ptr_bs(target_monster + ENEMY_SHEET_STATUS1, 0xfd);
 
 			ds_writew(FIG_TARGET_GRAMMAR_TYPE, 1);
 			ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(target_monster));
@@ -151,7 +151,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					}
 				}
 
-				if (host_readbs(target_monster + 0x27) != dir) {
+				if (host_readbs(target_monster + ENEMY_SHEET_VIEWDIR) != dir) {
 
 					fight_id = get_cb_val(hero_x + dst.a[dir].x, hero_y + dst.a[dir].y);
 
@@ -290,7 +290,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					} else {
 
-						if (random_schick(20) <= host_readbs(target_monster + 0x1c)) {
+						if (random_schick(20) <= host_readbs(target_monster + ENEMY_SHEET_AT)) {
 
 							damage = FIG_get_enemy_attack_damage(target_monster, Real2Host(hero), 0);
 						}
@@ -347,23 +347,23 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						}
 					} else {
 
-						l10 = host_readbs(target_monster + 0x1d);
+						l10 = host_readbs(target_monster + ENEMY_SHEET_PA);
 
-						if (host_readbs(target_monster + 0x2f) != 0) {
+						if (host_readbs(target_monster + ENEMY_SHEET_BLIND) != 0) {
 							l10 -= 5;
 						}
 
-						if (test_bit5(target_monster + 0x31)) {
+						if (test_bit5(target_monster + ENEMY_SHEET_STATUS1)) {
 							l10 -= 2;
-						} else if (test_bit3(target_monster + 0x32)) {
+						} else if (test_bit3(target_monster + ENEMY_SHEET_STATUS2)) {
 							l10 -= 3;
 						}
 
-						if (test_bit2(target_monster + 0x31) ||
-							test_bit3(target_monster + 0x31) ||
-							test_bit6(target_monster + 0x31) ||
-							test_bit0(target_monster + 0x32) ||
-							test_bit1(target_monster + 0x32))
+						if (test_bit2(target_monster + ENEMY_SHEET_STATUS1) ||
+							test_bit3(target_monster + ENEMY_SHEET_STATUS1) ||
+							test_bit6(target_monster + ENEMY_SHEET_STATUS1) ||
+							test_bit0(target_monster + ENEMY_SHEET_STATUS2) ||
+							test_bit1(target_monster + ENEMY_SHEET_STATUS2))
 						{
 							l10 = 0;
 						}
@@ -780,7 +780,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 								FIG_call_draw_pic();
 
-								FIG_remove_from_list(host_readbs(target_monster + 0x26), 1);
+								FIG_remove_from_list(host_readbs(target_monster + ENEMY_SHEET_LIST_POS), 1);
 
 
 								nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM + 0x17)));
@@ -807,18 +807,18 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								ds_writeb((FIG_LIST_ELEM + 12), (signed char)(height - 1));
 								ds_writeb((FIG_LIST_ELEM + 13), 0);
 
-								FIG_add_to_list(host_readbs(target_monster + 0x26));
+								FIG_add_to_list(host_readbs(target_monster + ENEMY_SHEET_LIST_POS));
 
 							}
 						} else {
 
 							if (attack_hero == 0) {
 
-								FIG_set_0e(host_readbs(target_monster + 0x26), 1);
+								FIG_set_0e(host_readbs(target_monster + ENEMY_SHEET_LIST_POS), 1);
 
 								if (is_in_byte_array(host_readbs(target_monster + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
-									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + 0x26)));
+									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_LIST_POS)));
 
 									FIG_set_0e(ds_readbs(0xe35a + host_readbs(p3 + 0x13)), 3);
 								}
@@ -844,11 +844,11 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 							if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 10) {
 
-								FIG_reset_12_13(host_readbs(target_monster + 0x26));
+								FIG_reset_12_13(host_readbs(target_monster + ENEMY_SHEET_LIST_POS));
 
 								if (is_in_byte_array(host_readbs(target_monster + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
-									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + 0x26)));
+									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_LIST_POS)));
 
 									FIG_reset_12_13(ds_readbs(0xe35a + host_readbs(p3 + 0x13)));
 								}

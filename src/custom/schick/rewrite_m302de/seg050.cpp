@@ -519,7 +519,7 @@ void level_up(signed short hero_pos)
 
 	/* check changes in MR */
 
-	mr = (host_readbs(hero + 0x37) + host_readbs(hero + HERO_MU_ORIG) + host_readbs(hero + HERO_LEVEL)) / 3 - 2 * host_readbs(hero + 0x49);
+	mr = (host_readbs(hero + HERO_KL_ORIG) + host_readbs(hero + HERO_MU_ORIG) + host_readbs(hero + HERO_LEVEL)) / 3 - 2 * host_readbs(hero + HERO_AG_ORIG);
 	mr += ds_readbs(MR_MODIFICATORS + host_readbs(hero + HERO_TYPE));
 
 	if (host_readbs(hero + HERO_MR) != mr) {

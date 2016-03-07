@@ -220,7 +220,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 						if (item_stackable(get_itemsdat(j))) {
 
-							if ((nice = host_readws(hero1 + 0x198 + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
+							if ((nice = host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 							{
 #if !defined(__BORLANDC__)
 								sprintf((char*)Real2Host(ds_readd(DTP2)), "%d", nice);
@@ -361,7 +361,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 					if (tmp[hero_pos][l15] != 0) {
 
-						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + 0x198 + 14 * l15) > 1) {
+						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x6fc),
@@ -373,8 +373,8 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = 0;
 							}
 
-							if (host_readws(hero1 + 0x198 + 14 * l15) < nice) {
-								nice = host_readws(hero1 + 0x198 + 14 * l15);
+							if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) < nice) {
+								nice = host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15);
 							}
 
 							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
@@ -394,7 +394,7 @@ void sell_screen(Bit8u *shop_ptr)
 									nice * ds_readws(PRICE_MODIFICATOR)) / 4L;
 						}
 					} else {
-						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + 0x198 + 14 * l15) > 1) {
+						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x6fc),
@@ -406,8 +406,8 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = 0;
 							}
 
-							if (host_readws(hero1 + 0x198 + 14 * l15) < nice) {
-								nice = host_readws(hero1 + 0x198 + 14 * l15);
+							if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15) < nice) {
+								nice = host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * l15);
 							}
 
 							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *

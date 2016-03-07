@@ -801,7 +801,7 @@ void spell_silentium(void)
 			/* get a free mod_slot */
 			slot = get_free_mod_slot();
 			/* skill stealth + 10 for 12 minutes */
-			set_mod_slot(slot, 0x1c2, hero + 0x115,
+			set_mod_slot(slot, 0x1c2, hero + (HERO_TA_BODY+4),
 				10, (signed char)i);
 		}
 	}

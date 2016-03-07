@@ -143,7 +143,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					}
 				}
 
-				if (host_readbs(mon + 0x27) != dir) {
+				if (host_readbs(mon + ENEMY_SHEET_VIEWDIR) != dir) {
 
 					fight_id = get_cb_val(hero_x + dst.a[dir].x, hero_y + dst.a[dir].y);
 
@@ -200,8 +200,8 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 			} else {
 				/* attack a monster */
-				at = host_readbs(mon + 0x1c);
-				pa = host_readbs(mon + 0x1d);
+				at = host_readbs(mon + ENEMY_SHEET_AT);
+				pa = host_readbs(mon + ENEMY_SHEET_PA);
 			}
 
 			/* spell_dunkelheit() is active => AT-4, PA-4*/
@@ -498,7 +498,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					/* attack monster */
 
 					damage = dice_template(l15 == 3 ? host_readws(Real2Host(monster) + 0x38) : host_readws(Real2Host(monster) + 0x3b))
-							- host_readbs(mon + 0x02);
+							- host_readbs(mon + ENEMY_SHEET_RS);
 
 					if (damage > 0) {
 
@@ -639,12 +639,12 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 						if (!attack_hero) {
 
-							FIG_set_0e(host_readbs(mon + 0x26), 1);
+							FIG_set_0e(host_readbs(mon + ENEMY_SHEET_LIST_POS), 1);
 
 
 							if (is_in_byte_array(host_readbs(mon + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-								l16 = Real2Host(FIG_get_ptr(host_readbs(mon + 0x26)));
+								l16 = Real2Host(FIG_get_ptr(host_readbs(mon + ENEMY_SHEET_LIST_POS)));
 
 								FIG_set_0e(ds_readbs(0xe35a + host_readbs(l16 + 0x13)), 3);
 							}
@@ -668,16 +668,16 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 							ds_writew(0x618e, 0);
 
-							FIG_remove_from_list(host_readbs(mon + 0x26), 1);
+							FIG_remove_from_list(host_readbs(mon + ENEMY_SHEET_LIST_POS), 1);
 
-							ds_writew((FIG_LIST_ELEM + 0x00), ds_readbs(0x12c0 + 5 * host_readbs(mon + 0x01)));
-							ds_writeb((FIG_LIST_ELEM + 0x02), host_readbs(mon + 0x27));
-							ds_writeb((FIG_LIST_ELEM + 0x05), ds_readbs(0x1531 + 10 * host_readbs(mon + 0x01) + 2 * host_readbs(mon + 0x27)));
-							ds_writeb((FIG_LIST_ELEM + 0x06), ds_readbs(0x1532 + 10 * host_readbs(mon + 0x01) + 2 * host_readbs(mon + 0x27)));
+							ds_writew((FIG_LIST_ELEM + 0x00), ds_readbs(0x12c0 + 5 * host_readbs(mon + ENEMY_SHEET_GFX_ID)));
+							ds_writeb((FIG_LIST_ELEM + 0x02), host_readbs(mon + ENEMY_SHEET_VIEWDIR));
+							ds_writeb((FIG_LIST_ELEM + 0x05), ds_readbs(0x1531 + 10 * host_readbs(mon + ENEMY_SHEET_GFX_ID) + 2 * host_readbs(mon + ENEMY_SHEET_VIEWDIR)));
+							ds_writeb((FIG_LIST_ELEM + 0x06), ds_readbs(0x1532 + 10 * host_readbs(mon + ENEMY_SHEET_GFX_ID) + 2 * host_readbs(mon + ENEMY_SHEET_VIEWDIR)));
 
 							if (is_in_byte_array(host_readbs(mon + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
-								ds_writeb((FIG_LIST_ELEM + 0x09), ds_readbs(0x6030 + host_readbs(mon + 0x27)));
-								ds_writeb((FIG_LIST_ELEM + 0x0b), ds_readbs(0x6034 + host_readbs(mon + 0x27)));
+								ds_writeb((FIG_LIST_ELEM + 0x09), ds_readbs(0x6030 + host_readbs(mon + ENEMY_SHEET_VIEWDIR)));
+								ds_writeb((FIG_LIST_ELEM + 0x0b), ds_readbs(0x6034 + host_readbs(mon + ENEMY_SHEET_VIEWDIR)));
 							} else {
 								ds_writeb((FIG_LIST_ELEM + 0x09), 0);
 								ds_writeb((FIG_LIST_ELEM + 0x0b), 31);
@@ -693,18 +693,18 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 							ds_writeb((FIG_LIST_ELEM + 0x0f), -1);
 							ds_writeb((FIG_LIST_ELEM + 0x0e), -1);
 
-							FIG_add_to_list(host_readbs(mon + 0x26));
+							FIG_add_to_list(host_readbs(mon + ENEMY_SHEET_LIST_POS));
 						}
 
 						if (ds_readws(0xe3a4) != 0) {
 
 							if (host_readbs(Real2Host(monster) + 0x2d) >= 10) {
 
-								FIG_reset_12_13(host_readbs(mon + 0x26));
+								FIG_reset_12_13(host_readbs(mon + ENEMY_SHEET_LIST_POS));
 
 								if (is_in_byte_array(host_readbs(mon + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-									l16 = Real2Host(FIG_get_ptr(host_readbs(mon + 0x26)));
+									l16 = Real2Host(FIG_get_ptr(host_readbs(mon + ENEMY_SHEET_LIST_POS)));
 
 									FIG_reset_12_13(ds_readbs(0xe35a + host_readbs(l16 + 0x13)));
 								}
@@ -764,7 +764,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 	if (item_herb_potion(p_item)) {
 		usecase = 1;
-	} else if (!item_useable(p_item) || (host_readws(hero + 0x1d0) == 0)) {
+	} else if (!item_useable(p_item) || (host_readws(hero + (HERO_ITEM_LEFT+2)) == 0)) {
 		usecase = 0;
 	} else {
 		usecase = 2;

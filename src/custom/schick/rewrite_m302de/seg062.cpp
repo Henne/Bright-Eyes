@@ -376,8 +376,8 @@ void ask_miracle(void)
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dummy4(hero))
 							{
-								host_writeb(hero + HERO_ILLNESS_EMPTY + 5 * disease, 1);
-								host_writeb(hero + 0xaf + 5 * disease, 0);
+								host_writeb(hero + (HERO_ILLNESS-5) + 5 * disease, 1);
+								host_writeb(hero + (HERO_ILLNESS-4) + 5 * disease, 0);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_city(0x70),
@@ -405,12 +405,12 @@ void ask_miracle(void)
 									if ((item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * j)) &&
 										item_weapon(get_itemsdat(item_id)))
 									{
-										if (host_readbs(hero + 0x19c + 14 * j) > 0) {
-											dec_ptr_bs(hero + 0x19c + 14 * j);
+										if (host_readbs(hero + (HERO_ITEM_HEAD+6) + 14 * j) > 0) {
+											dec_ptr_bs(hero + (HERO_ITEM_HEAD+6) + 14 * j);
 										}
 
-										if (host_readbs(hero + 0x19c + 14 * j) > 0) {
-											dec_ptr_bs(hero + 0x19c + 14 * j);
+										if (host_readbs(hero + (HERO_ITEM_HEAD+6) + 14 * j) > 0) {
+											dec_ptr_bs(hero + (HERO_ITEM_HEAD+6) + 14 * j);
 										}
 									}
 								}
@@ -456,8 +456,8 @@ void ask_miracle(void)
 									!hero_dead(hero) &&
 									!hero_dummy4(hero))
 								{
-									inc_ptr_bs(hero + 0x11c);
-									inc_ptr_bs(hero + 0x118);
+									inc_ptr_bs(hero + (HERO_TA_SOCIAL+1));
+									inc_ptr_bs(hero + (HERO_TA_BODY+7));
 								}
 							}
 

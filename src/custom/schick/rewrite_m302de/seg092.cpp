@@ -464,7 +464,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 				/* unlucky, your lockpicks break... */
 
 				print_msg_with_first_hero(get_ltx(0x854));
-				or_ptr_bs(hero + 0x19a + 14 * l_si, 1);
+				or_ptr_bs(hero + (HERO_ITEM_HEAD+4) + 14 * l_si, 1);
 
 				/* ... and you trigger the trap */
 #if !defined(__BORLANDC__)

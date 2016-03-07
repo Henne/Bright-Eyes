@@ -576,8 +576,8 @@ void spell_skelettarius(void)
 		x = host_readbs(enemy + 3);
 		y = host_readbs(enemy + 4);
 
-		if (host_readbs(enemy + 0x13) != -1) {
-			FIG_remove_from_list(ds_readbs(0xe35a + host_readbs(enemy + 0x13)), 0);
+		if (host_readbs(enemy + ENEMY_SHEET_LE) != -1) {
+			FIG_remove_from_list(ds_readbs(0xe35a + host_readbs(enemy + ENEMY_SHEET_LE)), 0);
 		}
 
 		FIG_remove_from_list(host_readbs(get_spelltarget_e() + 0x26), 0);

@@ -294,8 +294,8 @@ void tevent_135(void)
 
 								if (!(host_readbs(hero + HERO_START_GEAR) & 0x2)) {
 									or_ptr_bs(hero + HERO_START_GEAR, 2);
-									inc_ptr_bs(hero + 0x43);
-									inc_ptr_bs(hero + 0x44);
+									inc_ptr_bs(hero + HERO_IN_ORIG);
+									inc_ptr_bs(hero + HERO_IN);
 								}
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,

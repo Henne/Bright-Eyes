@@ -290,7 +290,7 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
 		enemy_uncon(enemy) ||
 		enemy_busy(enemy) ||
 		enemy_bit8(enemy) ||
-		(host_readbs(enemy + 0x35) > 0))
+		(host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR) > 0))
 	{
 		return 0;
 	}

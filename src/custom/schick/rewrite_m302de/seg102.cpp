@@ -171,9 +171,9 @@ signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, 
 
 	randval = dice_roll(3, 20, bonus);
 
-	attr_sum = host_readbs(monster + 0x04 + 2 * t1)
-		+ host_readbs(monster + 0x04 + 2 * t2)
-		+ host_readbs(monster + 0x04 + 2 * t3);
+	attr_sum = host_readbs(monster + ENEMY_SHEET_MU + 2 * t1)
+		+ host_readbs(monster + ENEMY_SHEET_MU + 2 * t2)
+		+ host_readbs(monster + ENEMY_SHEET_MU + 2 * t3);
 
 	return attr_sum - randval + 1;
 }
@@ -188,9 +188,9 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char 
 	if (host_readbs(desc + 6) != 0) {
 
 		/* add MR */
-		bonus += (host_readbs(monster + 0x2d) >= 10) ?
-			ds_readbs((0xd0df + 25) + SIZEOF_ENEMY_SHEET * host_readbs(monster + 0x2d)) :
-			host_readbs(get_hero(host_readbs(monster + 0x2d) - 1) + 0x66);
+		bonus += (host_readbs(monster + ENEMY_SHEET_FIGHT_ID) >= 10) ?
+			ds_readbs((0xd0df + 25) + SIZEOF_ENEMY_SHEET * host_readbs(monster + ENEMY_SHEET_FIGHT_ID)) :
+			host_readbs(get_hero(host_readbs(monster + ENEMY_SHEET_FIGHT_ID) - 1) + 0x66);
 	}
 
 	/* check if the monster spell has a valid ID */
@@ -206,10 +206,10 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char 
 void MON_sub_ae(Bit8u *monster, signed short ae)
 {
 	if (!enemy_dead(monster)) {
-		sub_ptr_ws(monster + 0x17, ae);
+		sub_ptr_ws(monster + ENEMY_SHEET_AE, ae);
 
-		if (host_readws(monster + 0x17) < 0) {
-			host_writew(monster + 0x17, 0);
+		if (host_readws(monster + ENEMY_SHEET_AE) < 0) {
+			host_writew(monster + ENEMY_SHEET_AE, 0);
 		}
 	}
 }

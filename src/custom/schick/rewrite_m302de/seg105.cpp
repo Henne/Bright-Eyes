@@ -62,16 +62,16 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 		host_writeb(hero + HERO_KK, host_readb(hero + HERO_KK) - 5);
 	/* unequip Helm CH + 1 (cursed) */
 	if (item == 196)
-		inc_ptr_bs(hero + 0x3b);
+		inc_ptr_bs(hero + HERO_CH);
 	/* unequip Silberschmuck TA + 1 */
 	if (item == 215)
-		host_writeb(hero + 0x56, host_readb(hero + 0x56) + 2);
+		host_writeb(hero + HERO_TA, host_readb(hero + HERO_TA) + 2);
 	/* unequip Stirnreif or Ring MR - 2 */
 	if (item == 217 || item == 165)
 		host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) - 2);
 	/* unequip Totenkopfguertel TA + 4 */
 	if (item == 182)
-		host_writeb(hero + 0x56, host_readb(hero + 0x56) + 4);
+		host_writeb(hero + HERO_TA, host_readb(hero + HERO_TA) + 4);
 	/* unequip Kristallkugel Gefahrensinn - 2 */
 	if (item == 70)
 		host_writeb(hero + HERO_TA_INTUITION, host_readb(hero + HERO_TA_INTUITION) - 2);
@@ -435,7 +435,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 							/* special items */
 							if (item == 0xa1) {
-								host_writeb(hero + 0x125, host_readb(hero + 0x125) + 3);
+								host_writeb(hero + (HERO_TA_NATURE+3), host_readb(hero + (HERO_TA_NATURE+3)) + 3);
 							}
 							if (item == 0xa3) {
 								host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) + 5);
@@ -566,8 +566,8 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 					/* check special items */
 					/* item: SICHEL Pflanzenkunde -3 */
 					if (item == 0xa1) {
-						host_writeb(hero + 0x125,
-							host_readbs(hero + 0x125) - 3);
+						host_writeb(hero + (HERO_TA_NATURE+3),
+							host_readbs(hero + (HERO_TA_NATURE+3)) - 3);
 					}
 
 					/* item:  AMULETT MR -5 */

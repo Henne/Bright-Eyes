@@ -176,10 +176,10 @@ enum {
     HERO_STATUS1        = 0x0AA, /* Bit0 = tot, Bit1 = schläft, Bit2 = versteinert, Bit4 = Chamaelioni, Bit5 = verflucht, Bit6 = bewusstlos */
     HERO_STATUS2        = 0x0AB, /* Bit1 = Duplicatus */
     HERO_UNKNOWN11      = 0x0AC, /* never used? */
-    HERO_ILLNESS_EMPTY  = 0x0AE, /* empty */
-    HERO_ILLNESS        = 0x0B3, /* 1-Wundfieber, 2-Dumpfschädel, 3-Blaue Keuche, 4-Paralyse, 5-Schlachtenfieber, 6-Frostschäden, 7-Tollwut */
-    HERO_POISON_EMPTY   = 0x0D6, /* empty */
-    HERO_POISON         = 0x0DB, /* 1-Shurinknollengift, 2-Arax, 3-Angstgift, 4-Schlafgift, 5-Goldleim, 6-Krötenschemel, 7-Lotusgift, 8-Kukris, 9-Bannstaubvergiftung */
+    HERO_ILLNESS_EMPTY  = 0x0AE,
+    HERO_ILLNESS        = 0x0B3,
+    HERO_POISON_EMPTY   = 0x0D6,
+    HERO_POISON         = 0x0DB,
     HERO_TA_FIGHT       = 0x108, /* 9 x 1 Byte */
     HERO_TA_BODY        = 0x111, /* 10 x 1 Byte */
     HERO_TA_SOCIAL      = 0x11B, /* 7 x 1 Byte */
@@ -232,6 +232,18 @@ enum {
 };
 
 #define SIZEOF_HERO (0x6da)
+
+enum {
+    ILLNESS_WUNDFIEBER = 0, ILLNESS_DUMPFSCHAEDEL, ILLNESS_BLAUE_KEUCHE,
+    ILLNESS_PARALYSE, ILLNESS_SCHLACHTENFIEBER, ILLNESS_FROSTSCHAEDEN,
+    ILLNESS_TOLLWUT
+};
+
+enum {
+    POISON_SHURINKNOLLENGIFT = 0, POISON_ARAX, POISON_ANGSTGIFT,
+    POISON_SCHLAFGIFT, POISON_GOLDLEIM, POISON_KROETENSCHEMEL, POISON_LOTUSGIFT,
+    POISON_KUKRIS, POISON_BANNSTAUB
+};
 
 struct enemy_status1 {
 	/* enemy + 0x31 */

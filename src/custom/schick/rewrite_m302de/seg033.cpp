@@ -118,7 +118,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				weapon_id = host_readws(hero + HERO_ITEM_RIGHT);
 
-				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + 0x1c4))) {
+				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + (HERO_ITEM_RIGHT+4)))) {
 					/* no weapon or weapon broken, use red color for "change weapon" */
 					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 						(char*)p_datseg + RED_STRING1,
