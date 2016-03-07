@@ -168,7 +168,7 @@ void status_menu(signed short hero_pos)
 		handle_input();
 
 		/* RIGHT_KEY */
-		if (ds_readws(ACTION) == 77 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > 1)
+		if (ds_readws(ACTION) == 77 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
 		{
 
 			/* set hero_pos to the next possible hero */
@@ -201,7 +201,7 @@ void status_menu(signed short hero_pos)
 		}
 
 		/* LEFT_KEY */
-		if (ds_readws(ACTION) == 75 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > 1)
+		if (ds_readws(ACTION) == 75 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
 		{
 
 			/* set hero_pos to the next possible hero */
@@ -465,28 +465,28 @@ void status_menu(signed short hero_pos)
 				/* from start-page */
 
 				if (ds_readws(GAME_MODE) == 2) {
-					ds_writed(0xbf95 + 0x0, host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x4c));
-					ds_writed((0xbf95 + 0x4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x50));
-					ds_writed((0xbf95 + 0x8), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x54));
+					ds_writed(RADIO_NAME_LIST + 0x0, host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x4c));
+					ds_writed((RADIO_NAME_LIST + 0x4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x50));
+					ds_writed((RADIO_NAME_LIST + 0x8), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x54));
 
 					flag3 = hero_is_diseased(hero2);
 
 					if (flag3 != 0) {
-						ds_writed((0xbf95 + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
-						ds_writed((0xbf95 + 0x10), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
+						ds_writed((RADIO_NAME_LIST + 0x10), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 10;
 					} else {
-						ds_writed((0xbf95 + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 9;
 					}
 				} else {
 
 					if ((flag3 = hero_is_diseased(hero2))) {
-						ds_writed((0xbf95 + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
-						ds_writed((0xbf95 + 4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
+						ds_writed((RADIO_NAME_LIST + 4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 7;
 					} else {
-						ds_writed((0xbf95 + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 6;
 					}
 				}
@@ -497,11 +497,11 @@ void status_menu(signed short hero_pos)
 						get_city(0x44),
 						get_ltx(0x350),
 						get_ltx(0x354),
-						Real2Host(ds_readd((0xbf95 + 0x00))),
-						Real2Host(ds_readd((0xbf95 + 0x04))),
-						Real2Host(ds_readd((0xbf95 + 0x08))),
-						Real2Host(ds_readd((0xbf95 + 0x0c))),
-						Real2Host(ds_readd((0xbf95 + 0x10))));
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x0c))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x10))));
 
 				if (l_di != -1) {
 					switch(l_di) {
@@ -845,7 +845,7 @@ void status_menu(signed short hero_pos)
 void status_select_hero(void)
 {
 
-	if (ds_readws(0x29b2) == 0 || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+	if (ds_readws(0x29b2) == 0 || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 		/* Yes, it was written that way! */
 	} else {
 		signed short hero_pos = select_hero_from_group(get_ltx(0x4b4));

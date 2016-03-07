@@ -341,20 +341,20 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 
 		/* fill a pointer array with the pointer to the names */
 		for (i = 0; i < a; i++) {
-			ds_writed(0xbf95 + 4 * i,
+			ds_writed(RADIO_NAME_LIST + 4 * i,
 				(Bit32u)((i + l_di) * 32 + ptr + 0x10));
 		}
 
 		i = a;
 		if (entries > 10) {
-			ds_writed(0xbf95 + 4 * i,
+			ds_writed(RADIO_NAME_LIST + 4 * i,
 				host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX) + 0x48c)));
 			i++;
 		}
 
 		answer = GUI_radio( (mode == -1) ? get_ltx(0x8dc) : get_ltx(0x490),
 				(signed char)i,
-				Real2Host(ds_readd(0xbf95)),
+				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
 				Real2Host(ds_readd(0xbfa1)),
@@ -424,7 +424,7 @@ signed short select_hero_from_group(Bit8u *title)
 				ds_readbs(0x64a2) != i) {
 
 			/* save pointer to the name of the hero */
-			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + HERO_NAME2));
+			ds_writed(RADIO_NAME_LIST + cnt * 4, (Bit32u)(hero + HERO_NAME2));
 			dst.v[cnt] = i;
 			cnt++;
 		}
@@ -440,7 +440,7 @@ signed short select_hero_from_group(Bit8u *title)
 		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
 		answer = GUI_radio(title, (signed char)cnt,
-				Real2Host(ds_readd(0xbf95)),
+				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
 				Real2Host(ds_readd(0xbfa1)),
@@ -500,7 +500,7 @@ signed short select_hero_ok(Bit8u *title)
 				ds_readbs(0x64a2) != i) {
 
 			/* save pointer to the name of the hero */
-			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + HERO_NAME2));
+			ds_writed(RADIO_NAME_LIST + cnt * 4, (Bit32u)(hero + HERO_NAME2));
 			dst.v[cnt] = i;
 			cnt++;
 		}
@@ -515,7 +515,7 @@ signed short select_hero_ok(Bit8u *title)
 		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
 		answer = GUI_radio(title, (signed char)cnt,
-				Real2Host(ds_readd(0xbf95)),
+				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
 				Real2Host(ds_readd(0xbfa1)),
@@ -578,7 +578,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 				ds_readbs(0x64a2) != i) {
 
 			/* save pointer to the name of the hero */
-			ds_writed(0xbf95 + cnt * 4, (Bit32u)(hero + HERO_NAME2));
+			ds_writed(RADIO_NAME_LIST + cnt * 4, (Bit32u)(hero + HERO_NAME2));
 			dst.v[cnt] = i;
 			cnt++;
 		}
@@ -594,7 +594,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 			ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 
 			answer = GUI_radio(title, (signed char)cnt,
-				Real2Host(ds_readd(0xbf95)),
+				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
 				Real2Host(ds_readd(0xbfa1)),

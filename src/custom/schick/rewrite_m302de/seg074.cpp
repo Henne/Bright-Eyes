@@ -282,18 +282,18 @@ void seg074_305(signed short x_off)
 	for (l_di = 0; l_di < 6; l_di++) {
 
 		if ((ds_readbs(CURRENT_GROUP) != l_di) &&
-			(ds_readbs(0x2d36 + l_di) > 0) &&
-			(ds_readb(0x2d76 + l_di) == ds_readbs(DUNGEON_LEVEL)) &&
-			(ds_readb(0x2d68 + l_di) == ds_readbs(CURRENT_TOWN)) &&
-			(ds_readb(0x2d6f + l_di) == ds_readbs(DUNGEON_INDEX)) &&
+			(ds_readbs(GROUP_MEMBER_COUNTS + l_di) > 0) &&
+			(ds_readb(GROUPS_DNG_LEVEL + l_di) == ds_readbs(DUNGEON_LEVEL)) &&
+			(ds_readb(GROUPS_TOWN + l_di) == ds_readbs(CURRENT_TOWN)) &&
+			(ds_readb(GROUPS_DNG_INDEX + l_di) == ds_readbs(DUNGEON_INDEX)) &&
 			!is_group_in_prison(l_di) &&
-			(ds_readws(0x2d48 + 2 * l_di) - x_off >= 0) &&
-			(ds_readws(0x2d48 + 2 * l_di) - x_off <= 16))
+			(ds_readws(GROUPS_X_TARGET + 2 * l_di) - x_off >= 0) &&
+			(ds_readws(GROUPS_X_TARGET + 2 * l_di) - x_off <= 16))
 		{
-			draw_automap_square(ds_readws(0x2d48 + 2 * l_di) - x_off,
-					ds_readws(0x2d54 + 2 * l_di),
+			draw_automap_square(ds_readws(GROUPS_X_TARGET + 2 * l_di) - x_off,
+					ds_readws(GROUPS_Y_TARGET + 2 * l_di),
 					16,
-					ds_readbs(0x2d3e + l_di));
+					ds_readbs(GROUPS_DIRECTION + l_di));
 		}
 	}
 

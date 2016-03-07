@@ -34,13 +34,22 @@
 #define SKILLED_HERO_POS	(0x2cdb)	/* s16 {-1, 0..6} */
 #define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
 #define CURRENT_GROUP	(0x2d35)
+#define GROUP_MEMBER_COUNTS	(0x2d36)	/* signed char[6], members per group */
+#define TOTAL_HERO_COUNTER	(0x2d3c)	/* signed char */
 #define DIRECTION	(0x2d3d)
+#define GROUPS_DIRECTION	(0x2d3e)	/* unsigned char[6] */
 #define X_TARGET	(0x2d44)
 #define Y_TARGET	(0x2d46)
+#define GROUPS_X_TARGET	(0x2d48)	/* unsigned short[6] */
+#define GROUPS_Y_TARGET	(0x2d54)	/* unsigned short[6] */
 #define LOCATION	(0x2d60)	/* signed char */
+#define GROUPS_LOCATION	(0x2d61)	/* signed char[6] */
 #define CURRENT_TOWN	(0x2d67)	/* signed char */
+#define GROUPS_TOWN	(0x2d68)	/* signed char[6] */
 #define DUNGEON_INDEX	(0x2d6e)	/* signed char */
+#define GROUPS_DNG_INDEX	(0x2d6f)	/* signed char[6] */
 #define DUNGEON_LEVEL	(0x2d75)
+#define GROUPS_DNG_LEVEL	(0x2d76)	/* signed char[6] */
 #define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)
 #define DAY_OF_MONTH	(0x2dc0)
@@ -158,6 +167,7 @@
 #define CAMPFIGHTS	(0x6694)	/* signed short[4] */
 #define DCAMPFIGHTS	(0x66e2)	/* signed short[4] */
 #define TRAVEL_BY_SHIP	(0x7070)	/* ?8 0 = on land, 1 = at the ship */
+#define CAN_MERGE_GROUP	(0x7c41)	/* signed char {-1,1} */
 #define C_EVENT_ACTIVE	(0x7c42)	/* ?8 0 = default, 1 = city event active */
 #define TMAP_DOUBLE1	(0x7c9a)	/* ?8 1 = unicorn brought a piece you already have */
 #define TMAP_DOUBLE2	(0x7c9b)	/* ?8 1 = you got a piece you already have from the unicorn */
@@ -192,6 +202,7 @@
 #define SCENARIO_BUF	(0xbd2c)
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
 #define HEROS	(0xbd34)
+#define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, talents, recipes */
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
@@ -261,6 +272,14 @@
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
 #define FIG_LIST_BUFFER	(0xe37c)	/* RealPt to buffer of size 4445, initial value of FIG_LIST_HEAD */
 #define SKILLS_BUFFER	(0xe3ba)	/* RealPt */
+#define WILDCAMP_GUARDS	(0xe3be)	/* signed char[3] */
+#define WILDCAMP_HERBSTATUS	(0xe3c1)	/* signed char[7] */
+#define WILDCAMP_REPLSTATUS	(0xe3c8)	/* signed char[7] */
+#define WILDCAMP_MAGICSTATUS	(0xe3cf)	/* signed char[7] */
+#define WILDCAMP_GUARDSTATUS	(0xe3d6)	/* signed char[7] */
+#define CITYCAMP_GUARDS	(0xe3de)	/* signed char[3] */
+#define CITYCAMP_MAGICSTATUS	(0xe3e1)	/* signed char[7] */
+#define CITYCAMP_GUARDSTATUS	(0xe3e8)	/* signed char[7] */
 #define BOOKED_INN_DAYS	(0xe3f0)	/* signed char */
 #define SLEEP_QUALITY	(0xe3f1)	/* signed char */
 #define BUY_SHOPPING_CART	(0xe3f2)	/* RealPt to buffer of size 250, each item has 4 bytes */

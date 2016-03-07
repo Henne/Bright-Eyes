@@ -863,7 +863,7 @@ signed short city_step(void)
 
 	ds_writebs((0xbd38 + 0), 12);
 	l4 = ds_readbs((0xbd38 + 1));
-	ds_writebs((0xbd38 + 1), ds_readbs(0x7c41) == -1 ? 45 : 15);
+	ds_writebs((0xbd38 + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? 45 : 15);
 
 	if (ds_readbs((0xbd38 + 1)) != l4) {
 		ds_writew(0xd013, 1);
@@ -900,7 +900,7 @@ signed short city_step(void)
 	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
 		ds_readws(Y_TARGET) != ds_readws(0x2d85))
 	{
-		ds_writebs(0x7c41, (signed char)can_merge_group());
+		ds_writebs(CAN_MERGE_GROUP, (signed char)can_merge_group());
 		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
 	}
 
@@ -932,12 +932,12 @@ signed short city_step(void)
 	if (ds_readws(ACTION) == 129) {
 
 		GRP_split();
-		ds_writebs(0x7c41, (signed char)can_merge_group());
+		ds_writebs(CAN_MERGE_GROUP, (signed char)can_merge_group());
 
 	} else if (ds_readws(ACTION) == 130) {
 
 		GRP_merge();
-		ds_writebs(0x7c41, -1);
+		ds_writebs(CAN_MERGE_GROUP, -1);
 
 	} else if (ds_readws(ACTION) == 131) {
 

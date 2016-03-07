@@ -79,17 +79,17 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 					get_ltx((l1 + i + 48) * 4),
 					host_readbs(hero + l1 + i + 0x108));
 
-				ds_writed(0xbf95 + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
+				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
 			}
 		} else {
 
 			for (i = 0; ds_readbs(0x10cf + 2 * answer) > i; i++) {
-				ds_writed(0xbf95 + 4 * i, (Bit32u)(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (l1 + i + 48) * 4)));
+				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (l1 + i + 48) * 4)));
 			}
 		}
 
 		retval = GUI_radio(get_ltx(0x368), ds_readbs(0x10cf + 2 * answer),
-				Real2Host(ds_readd(0xbf95)),
+				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd(0xbf99)),
 				Real2Host(ds_readd(0xbf9d)),
 				Real2Host(ds_readd(0xbfa1)),

@@ -189,7 +189,7 @@ void do_house(void)
 						}
 					}
 
-					if ((ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) < ds_readbs(0x2d3c)) && l_di)
+					if ((ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) < ds_readbs(TOTAL_HERO_COUNTER)) && l_di)
 					{
 						i = 0;
 

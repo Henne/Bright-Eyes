@@ -753,7 +753,7 @@ signed short KI_count_heros(signed short hero_pos)
 	signed short i;
 
 	/* for each hero in this group */
-	for (i = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > i; i++) {
+	for (i = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > i; i++) {
 
 		if ((i != hero_pos) && check_hero(get_hero(i))) {
 			cnt++;

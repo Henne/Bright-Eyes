@@ -233,15 +233,15 @@ void TRV_found_replenish_place(signed short a0)
 		*/
 #ifdef M302de_ORIGINAL_BUGFIX
 		for (hero_pos = 0; hero_pos <= 7; hero_pos++) {
-			ds_writeb(0xe3c8 + hero_pos,
-				ds_writeb(0xe3c1 + hero_pos,
-				ds_writeb(0xe3cf + hero_pos,
-				ds_writeb(0xe3d6 + hero_pos, 0))));
+			ds_writeb(WILDCAMP_REPLSTATUS + hero_pos,
+				ds_writeb(WILDCAMP_HERBSTATUS + hero_pos,
+				ds_writeb(WILDCAMP_MAGICSTATUS + hero_pos,
+				ds_writeb(WILDCAMP_GUARDSTATUS + hero_pos, 0))));
 		}
 #else
 		hero_pos = get_hero_index(Real2Host(get_first_hero_available_in_group()));
 
-		ds_writeb(0xe3c8 + hero_pos, ds_writeb(0xe3c1 + hero_pos, ds_writeb(0xe3cf + hero_pos, ds_writeb(0xe3d6 + hero_pos, 0))));
+		ds_writeb(WILDCAMP_REPLSTATUS + hero_pos, ds_writeb(WILDCAMP_HERBSTATUS + hero_pos, ds_writeb(WILDCAMP_MAGICSTATUS + hero_pos, ds_writeb(WILDCAMP_GUARDSTATUS + hero_pos, 0))));
 #endif
 
 		/* Original-Bug: the second argument is is the counter of replenish tries, not the position of the leader.

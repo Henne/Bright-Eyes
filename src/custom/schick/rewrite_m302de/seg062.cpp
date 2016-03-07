@@ -79,7 +79,7 @@ void ask_miracle(void)
 					/* PRAIOS */
 					l5 = 1;
 
-					for (i = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > i; i++) {
+					for (i = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > i; i++) {
 						if (host_readbs(get_hero(i) + HERO_TYPE) >= 7) {
 							l5 = 1;
 						}

@@ -113,7 +113,7 @@ void do_temple(void)
 
 		if (ds_readws(ACTION) == 137) {
 			/* leave temple */
-			if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 				GUI_output(get_ltx(0x3a0));
 			} else {
 				done = 1;
@@ -155,7 +155,7 @@ void do_temple(void)
 		} else if (ds_readws(ACTION) == 133) {
 			/* save game */
 			if (ds_readws(TYPEINDEX) != 58) {
-				if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+				if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 					GUI_output(get_ltx(0x3a0));
 				} else {
 					save_game_state();
@@ -175,7 +175,7 @@ void do_temple(void)
 
 		if (ds_readws(ACTION) == 135) {
 			/* ask for a miracle */
-			if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 				GUI_output(get_ltx(0x3a0));
 			} else {
 				ask_miracle();
@@ -184,7 +184,7 @@ void do_temple(void)
 
 		if (ds_readws(ACTION) == 136) {
 			/* make a donation */
-			if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 				GUI_output(get_ltx(0x3a0));
 			} else {
 
@@ -240,8 +240,8 @@ void char_add(signed short temple_id)
 	ptr = (RealPt)ds_readd(BUFFER1_PTR) + 50000;
 	l_di = copy_chr_names(Real2Host(ptr), temple_id);
 
-	if (ds_readbs(0x2d3c) == 7 ||
-		(ds_readbs(0x2d3c) == 6 && !host_readbs(get_hero(6) + HERO_TYPE)))
+	if (ds_readbs(TOTAL_HERO_COUNTER) == 7 ||
+		(ds_readbs(TOTAL_HERO_COUNTER) == 6 && !host_readbs(get_hero(6) + HERO_TYPE)))
 	{
 		GUI_output(get_ltx(0x480));
 	} else {
@@ -267,8 +267,8 @@ void char_add(signed short temple_id)
 										(char*)(Real2Host(ptr) + 32 * l_si));
 
 							if (read_chr_temp((RealPt)ds_readd(DTP2), i, ds_readbs(CURRENT_GROUP))) {
-								inc_ds_bs_post(0x2d3c);
-								inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+								inc_ds_bs_post(TOTAL_HERO_COUNTER);
+								inc_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 								host_writebs(hero + HERO_GROUP_POS, i + 1);
 								write_chr_temp(i);
 							}
@@ -289,7 +289,7 @@ void char_add(signed short temple_id)
 
 				l_di = copy_chr_names(Real2Host(ptr), temple_id);
 			}
-		} while (l_si != -1 && ds_readbs(0x2d3c) < (host_readbs(get_hero(6) + HERO_TYPE) ? 7 : 6));
+		} while (l_si != -1 && ds_readbs(TOTAL_HERO_COUNTER) < (host_readbs(get_hero(6) + HERO_TYPE) ? 7 : 6));
 	}
 }
 
@@ -298,7 +298,7 @@ void char_letgo(signed short temple_id)
 	signed short hero_pos;
 	Bit8u *hero;
 
-	if (!ds_readbs(0x2d3c) || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+	if (!ds_readbs(TOTAL_HERO_COUNTER) || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 		GUI_output(get_ltx(0x3a0));
 	} else {
 
@@ -315,8 +315,8 @@ void char_letgo(signed short temple_id)
 				} else {
 					/* let go a hero */
 					hero = get_hero(hero_pos);
-					dec_ds_bs_post(0x2d3c);
-					dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+					dec_ds_bs_post(TOTAL_HERO_COUNTER);
+					dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 					host_writeb(hero + HERO_TEMPLE_ID, (signed char)temple_id);
 					host_writeb(hero + HERO_GROUP_POS, 0);
@@ -337,7 +337,7 @@ void char_letgo(signed short temple_id)
 				}
 			}
 
-		} while (hero_pos != -1 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > (host_readbs(get_hero(6) + HERO_TYPE) ? 1 : 0));
+		} while (hero_pos != -1 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > (host_readbs(get_hero(6) + HERO_TYPE) ? 1 : 0));
 	}
 }
 

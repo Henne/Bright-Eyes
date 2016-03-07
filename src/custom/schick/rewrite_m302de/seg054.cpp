@@ -86,7 +86,7 @@ void do_inn(void)
 	stay = 0;
 	ds_writebs(SLEEP_QUALITY, -1);
 
-	if (ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) == 1) {
+	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) == 1) {
 
 		hero = get_first_hero_available_in_group();
 

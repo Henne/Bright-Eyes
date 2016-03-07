@@ -170,7 +170,7 @@ signed short plan_alchemy(Bit8u *hero)
 				strcpy((char*)Real2Host(ds_readd(DTP2)) + recipes * 50,
 					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(0xacf0 + i * 28)))));
 
-				ds_writed(0xbf95 + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
+				ds_writed(RADIO_NAME_LIST + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
 				array[recipes] = (signed char)i;
 				recipes++;
 			}
@@ -182,7 +182,7 @@ signed short plan_alchemy(Bit8u *hero)
 			ds_writew(TEXTBOX_WIDTH, 7);
 
 			answer = GUI_radio(get_dtp(0xac), (signed char)recipes,
-						Real2Host(ds_readd(0xbf95)),
+						Real2Host(ds_readd(RADIO_NAME_LIST)),
 						Real2Host(ds_readd(0xbf99)),
 						Real2Host(ds_readd(0xbf9d)),
 						Real2Host(ds_readd(0xbfa1)),
@@ -234,7 +234,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 									retval = 0;
 						} else {
-							if ((ds_readbs(0x2d3c) > 1) &&
+							if ((ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
 								(ds_readbs(LOCATION) != 6) &&
 								(ds_readbs(0xacf5 + recipe_index * 28) > 8))
 							{
@@ -285,11 +285,11 @@ signed short plan_alchemy(Bit8u *hero)
 							} else if (l4 == 2) {
 
 								/* find a empty group */
-								for (l5 = 0; ds_readbs(0x2d36 + l5) != 0; l5++);
+								for (l5 = 0; ds_readbs(GROUP_MEMBER_COUNTS + l5) != 0; l5++);
 
 								host_writebs(hero + HERO_GROUP_NO, (signed char)l5);
-								inc_ds_bs_post(0x2d36 + l5);
-								dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+								inc_ds_bs_post(GROUP_MEMBER_COUNTS + l5);
+								dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 								host_writeb(hero + HERO_RECIPE_TIMER,
 									ds_readbs(0xacf5 + recipe_index * 28) / 24);

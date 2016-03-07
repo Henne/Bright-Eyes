@@ -2257,12 +2257,12 @@ void do_timers(void)
 				/* reset flag */
 				host_writeb(hero_i + HERO_JAIL, 0);
 
-				ds_writeb(0x2d61 + host_readbs(hero_i + HERO_GROUP_NO),
+				ds_writeb(GROUPS_LOCATION + host_readbs(hero_i + HERO_GROUP_NO),
 					ds_readb(0x2da0 + host_readbs(hero_i + HERO_GROUP_NO)));
 
-				ds_writew(0x2d48 + host_readbs(hero_i + HERO_GROUP_NO) * 2,
+				ds_writew(GROUPS_X_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
 					ds_readw(0x2d87 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
-				ds_writew(0x2d54 + host_readbs(hero_i + HERO_GROUP_NO) * 2,
+				ds_writew(GROUPS_Y_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
 					ds_readw(0x2d93 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
 			}
 		}
@@ -2319,13 +2319,13 @@ void do_timers(void)
 						}
 
 					} else {
-						if (ds_readb(0x2d6f + di) == 7) {
+						if (ds_readb(GROUPS_DNG_INDEX + di) == 7) {
 
-							if (ds_readbs(0x2d76 + di) == 1) {
+							if (ds_readbs(GROUPS_DNG_LEVEL + di) == 1) {
 								/* 1W6-1 */
 								sub_hero_le(ptr,
 									dice_roll(1, 6, -1));
-							} else if (ds_readbs(0x2d76 + di) == 2) {
+							} else if (ds_readbs(GROUPS_DNG_LEVEL + di) == 2) {
 								/* 1W6+1 */
 								sub_hero_le(ptr,
 									dice_roll(1, 6, 1));
@@ -2939,7 +2939,7 @@ void herokeeping(void)
 				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(TRAVELING) != 0))) ||
 				((host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
-				!ds_readbs(0x2d68 + host_readbs(hero + HERO_GROUP_NO)))))) {
+				!ds_readbs(GROUPS_TOWN + host_readbs(hero + HERO_GROUP_NO)))))) {
 
 					/* check for food amulett */
 					if (get_item_pos(hero, 0xaf) == -1) {
@@ -3889,7 +3889,7 @@ signed short can_merge_group(void)
 	signed short i;
 	signed short retval = -1;
 
-	if (ds_readbs(ds_readbs(CURRENT_GROUP) + 0x2d36) == ds_readbs(0x2d3c)) {
+	if (ds_readbs(ds_readbs(CURRENT_GROUP) + GROUP_MEMBER_COUNTS) == ds_readbs(TOTAL_HERO_COUNTER)) {
 
 		retval = -1;
 
@@ -3898,19 +3898,19 @@ signed short can_merge_group(void)
 		for (i = 0; i < 6; i++)	{
 
 			if ((i != ds_readbs(CURRENT_GROUP)) &&
-				(0 != ds_readb(i + 0x2d36)) &&
+				(0 != ds_readb(i + GROUP_MEMBER_COUNTS)) &&
 				/* check XTarget */
-				(ds_readw(i * 2 + 0x2d48) == ds_readw(X_TARGET)) &&
+				(ds_readw(i * 2 + GROUPS_X_TARGET) == ds_readw(X_TARGET)) &&
 				/* check YTarget */
-				(ds_readw(i * 2 + 0x2d54) == ds_readw(Y_TARGET)) &&
+				(ds_readw(i * 2 + GROUPS_Y_TARGET) == ds_readw(Y_TARGET)) &&
 				/* check Location */
-				(ds_readbs(0x2d61 + i) == ds_readbs(LOCATION)) &&
+				(ds_readbs(GROUPS_LOCATION + i) == ds_readbs(LOCATION)) &&
 				/* check currentTown */
-				(ds_readb(0x2d68 + i) == ds_readb(CURRENT_TOWN)) &&
+				(ds_readb(GROUPS_TOWN + i) == ds_readb(CURRENT_TOWN)) &&
 				/* check DungeonIndex */
-				(ds_readb(0x2d6f + i) == ds_readb(DUNGEON_INDEX)) &&
+				(ds_readb(GROUPS_DNG_INDEX + i) == ds_readb(DUNGEON_INDEX)) &&
 				/* check DungeonLevel */
-				(ds_readb(0x2d76 + i) == ds_readb(DUNGEON_LEVEL)))
+				(ds_readb(GROUPS_DNG_LEVEL + i) == ds_readb(DUNGEON_LEVEL)))
 			{
 				retval = i;
 			}
@@ -4632,7 +4632,7 @@ signed short unused_cruft(void)
 
 	signed short l_si;
 
-	if (!ds_readbs(0x2d3c)) {
+	if (!ds_readbs(TOTAL_HERO_COUNTER)) {
 		return -1;
 	}
 
@@ -4657,7 +4657,7 @@ signed short get_random_hero(void)
 
 	do {
 		/* get number of current group */
-		cur_hero = random_schick(ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) - 1;
+		cur_hero = random_schick(ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) - 1;
 
 #ifdef M302de_ORIGINAL_BUGFIX
 		signed short pos = 0;

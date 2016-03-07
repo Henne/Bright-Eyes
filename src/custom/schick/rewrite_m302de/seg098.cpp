@@ -582,29 +582,29 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 
 		for (l_di = 0; l_di < 12; l_di++) {
 
-			ds_writed(0xbf95 + 4 * l_di,
+			ds_writed(RADIO_NAME_LIST + 4 * l_di,
 				(Bit32u)((RealPt)ds_readd(DTP2) + 50 * (l_di + 1)));
 
 			ones.a[l_di] = (signed char)can_use_spellclass(hero, l_di);
 
-			sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+			sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * l_di)),
 				(ones.a[l_di] != 0) ? str.a : col_str.a,
 				get_ltx(4 * (l_di + 192)));
 		}
 
 		answer1 = GUI_radio(Real2Host(ds_readd(DTP2)), 12,
-					Real2Host(ds_readd((0xbf95 + 0x00))),
-					Real2Host(ds_readd((0xbf95 + 0x04))),
-					Real2Host(ds_readd((0xbf95 + 0x08))),
-					Real2Host(ds_readd((0xbf95 + 0x0c))),
-					Real2Host(ds_readd((0xbf95 + 0x10))),
-					Real2Host(ds_readd((0xbf95 + 0x14))),
-					Real2Host(ds_readd((0xbf95 + 0x18))),
-					Real2Host(ds_readd((0xbf95 + 0x1c))),
-					Real2Host(ds_readd((0xbf95 + 0x20))),
-					Real2Host(ds_readd((0xbf95 + 0x24))),
-					Real2Host(ds_readd((0xbf95 + 0x28))),
-					Real2Host(ds_readd((0xbf95 + 0x2c)))) - 1;
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x0c))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x10))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x14))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x18))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x1c))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x20))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x24))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x28))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x2c)))) - 1;
 	}
 
 	if (answer1 != -2) {
@@ -625,13 +625,13 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 
 			for (l_di = 0; l_di < ds_readbs(0xd04 + 2 * answer1); l_di++) {
 
-				ds_writed(0xbf95 + 4 * l_di,
+				ds_writed(RADIO_NAME_LIST + 4 * l_di,
 					(Bit32u)((RealPt)ds_readd(DTP2) + 50 * (l_di)));
 
 
 				if (show_vals == 1) {
 
-					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+					sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * l_di)),
 						(char*)str_val.a,
 						(char*)get_ltx(4 * (first_spell + l_di + 106)),
 						host_readbs(hero + HERO_SPELLS + first_spell + l_di));
@@ -642,44 +642,44 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 				{
 
 					if (show_vals == 2) {
-						sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+						sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * l_di)),
 							(char*)str_val.a,
 							(char*)get_ltx(4 * (first_spell + l_di + 106)),
 							host_readbs(hero + HERO_SPELLS + first_spell + l_di));
 					} else {
-						sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+						sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * l_di)),
 							(char*)str.a,
 							(char*)get_ltx(4 * (first_spell + l_di + 106)));
 					}
 				} else if (show_vals == 2) {
-					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+					sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * l_di)),
 						(char*)col_str_val.a,
 						(char*)get_ltx(4 * (first_spell + l_di + 106)),
 						host_readbs(hero + HERO_SPELLS + first_spell + l_di));
 				} else {
-					sprintf((char*)Real2Host(ds_readd(0xbf95 + 4 * l_di)),
+					sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * l_di)),
 						(char*)col_str.a,
 						(char*)get_ltx(4 * (first_spell + l_di + 106)));
 				}
 			}
 
 			retval = GUI_radio(get_ltx(0x364), ds_readbs(0xd04 + 2 * answer1),
-					Real2Host(ds_readd((0xbf95 + 0x00))),
-					Real2Host(ds_readd((0xbf95 + 0x04))),
-					Real2Host(ds_readd((0xbf95 + 0x08))),
-					Real2Host(ds_readd((0xbf95 + 0x0c))),
-					Real2Host(ds_readd((0xbf95 + 0x10))),
-					Real2Host(ds_readd((0xbf95 + 0x14))),
-					Real2Host(ds_readd((0xbf95 + 0x18))),
-					Real2Host(ds_readd((0xbf95 + 0x1c))),
-					Real2Host(ds_readd((0xbf95 + 0x20))),
-					Real2Host(ds_readd((0xbf95 + 0x24))),
-					Real2Host(ds_readd((0xbf95 + 0x28))),
-					Real2Host(ds_readd((0xbf95 + 0x2c))),
-					Real2Host(ds_readd((0xbf95 + 0x30))),
-					Real2Host(ds_readd((0xbf95 + 0x34))),
-					Real2Host(ds_readd((0xbf95 + 0x38))),
-					Real2Host(ds_readd((0xbf95 + 0x3c))));
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x0c))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x10))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x14))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x18))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x1c))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x20))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x24))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x28))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x2c))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x30))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x34))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x38))),
+					Real2Host(ds_readd((RADIO_NAME_LIST + 0x3c))));
 
 			if (retval != -1) {
 				if ((host_readbs((retval + first_spell) + hero + HERO_TA_RISE) < -5) &&

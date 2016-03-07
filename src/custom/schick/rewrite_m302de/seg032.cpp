@@ -850,7 +850,7 @@ signed short do_fight(signed short fight_nr)
 	signed short bak5;
 	signed short tmp[6];
 
-	if ((ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) == 1)
+	if ((ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) == 1)
 		&& (host_readbs(get_hero(0) + HERO_INVISIBLE) != 0))
 	{
 		/* only one hero in the group with spell_visibili active */
@@ -1091,7 +1091,7 @@ signed short do_fight(signed short fight_nr)
 
 			l7 = 0;
 
-			for (l_di = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > l_di; l_di++) {
+			for (l_di = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > l_di; l_di++) {
 
 				hero = get_hero(l_di);
 
@@ -1116,11 +1116,11 @@ signed short do_fight(signed short fight_nr)
 				for (l_di = 0; l7 - 1 > l_di; l_di++) {
 
 					l4 = 0;
-					while (ds_readb(0x2d36 + l4) != 0) {
+					while (ds_readb(GROUP_MEMBER_COUNTS + l4) != 0) {
 						l4++;
 					}
 
-					l5 = ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP));
+					l5 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 					bak1 = ds_readws(X_TARGET);
 					bak2 = ds_readws(Y_TARGET);
 					bak4 = ds_readbs(DIRECTION);
@@ -1139,8 +1139,8 @@ signed short do_fight(signed short fight_nr)
 
 							host_writeb(hero + HERO_GROUP_NO, (signed char)l4);
 							host_writew(hero + HERO_UNKNOWN9, 0);
-							inc_ds_bs_post(0x2d36 + l4);
-							dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+							inc_ds_bs_post(GROUP_MEMBER_COUNTS + l4);
+							dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 						}
 					}
 
@@ -1151,7 +1151,7 @@ signed short do_fight(signed short fight_nr)
 					ds_writebs(DUNGEON_LEVEL, (signed char)bak3);
 				}
 
-				l5 = ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP));
+				l5 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 				for (l1 = 0; l1 < l5; l1++) {
 					host_writews(get_hero(l1) + HERO_UNKNOWN9, 0);

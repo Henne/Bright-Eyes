@@ -936,15 +936,15 @@ signed short DNG_fallpit(signed short a1)
 	retval = 0;
 
 	ds_writew(0x9312, 1);
-	l1 = random_schick(ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)));
+	l1 = random_schick(ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)));
 
-	if (ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) - 1 == l1) {
-		l1 = ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP));
+	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) - 1 == l1) {
+		l1 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 	}
 
-	if (ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) != l1) {
+	if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) != l1) {
 
-		while (ds_readbs(0x2d36 + l2)) {
+		while (ds_readbs(GROUP_MEMBER_COUNTS + l2)) {
 			l2++;
 		}
 
@@ -958,14 +958,14 @@ signed short DNG_fallpit(signed short a1)
 					((l1 == 1) && (l_si == 6)));
 
 			host_writeb(get_hero(l_si) + HERO_GROUP_NO, (unsigned char)l2);
-			inc_ds_bs_post(0x2d36 + l2);
-			dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+			inc_ds_bs_post(GROUP_MEMBER_COUNTS + l2);
+			dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 			sub_hero_le(get_hero(l_si), random_schick(a1));
 
 		}
 
 		GRP_save_pos(l2);
-		ds_writeb(0x2d76 + l2, ds_readbs(DUNGEON_LEVEL) + 1);
+		ds_writeb(GROUPS_DNG_LEVEL + l2, ds_readbs(DUNGEON_LEVEL) + 1);
 
 		retval = 1;
 
