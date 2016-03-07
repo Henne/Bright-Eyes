@@ -53,7 +53,7 @@ RealPt read_digi_driver(RealPt);
 signed short open_and_seek_dat(unsigned short);
 Bit32u get_readlength2(signed short);
 unsigned short read_archive_file(Bit16u, Bit8u *, Bit16u);
-void seg002_0c72(Bit16u, Bit32s, ...);
+void seek_archive_file(Bit16u, Bit32s, ...);
 signed short load_regular_file(Bit16u);
 signed short load_archive_file(Bit16u);
 signed short open_temp_file(unsigned short);

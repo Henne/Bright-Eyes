@@ -115,7 +115,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 			/* ICONS */
 			l_di = load_archive_file(ARCHIVE_FILE_ICONS);
-			seg002_0c72(l_di, 24 * 576L);
+			seek_archive_file(l_di, 24 * 576L);
 			read_archive_file(l_di, Real2Host(ds_readd(ICON)), 576L);
 			bc_close(l_di);
 

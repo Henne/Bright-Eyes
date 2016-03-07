@@ -228,7 +228,7 @@ RealPt load_fight_figs(signed short fig)
 
 		fd = load_archive_file(index);
 
-		seg002_0c72(fd, offset, 0);
+		seek_archive_file(fd, offset, 0);
 
 		read_archive_file(fd, Real2Host(src), (unsigned short)len);
 
@@ -356,7 +356,7 @@ void load_ani(const signed short nr)
 		/* load ANIS */
 		fd = load_archive_file(ARCHIVE_FILE_ANIS);
 		/* seek to ordered ani */
-		seg002_0c72(fd, ani_off, 0);
+		seek_archive_file(fd, ani_off, 0);
 		read_archive_file(fd, Real2Host(ds_readd(BUFFER9_PTR)),
 			(unsigned short)ani_len);
 
@@ -563,7 +563,7 @@ void load_scenario(signed short nr)
 		nr = 1;
 
 	/* seek to the scenario */
-	seg002_0c72(fd, 621L * (nr - 1) + 2, 0);
+	seek_archive_file(fd, 621L * (nr - 1) + 2, 0);
 
 	/* read scenario */
 	read_archive_file(fd, Real2Host(ds_readd(SCENARIO_BUF)), 621);

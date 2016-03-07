@@ -265,7 +265,7 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 
 	fd = load_archive_file(fileindex);
 
-	seg002_0c72(fd, icon * 576L, 0);
+	seek_archive_file(fd, icon * 576L, 0);
 
 	read_archive_file(fd, Real2Host(ds_readd(BUF_ICON)) + pos * 576, 576);
 

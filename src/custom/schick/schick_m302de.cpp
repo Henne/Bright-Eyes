@@ -501,8 +501,8 @@ static int n_seg002(unsigned short offs)
 		CPU_Push32(off);
 		CPU_Push16(handle);
 
-		D1_LOG("near seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
-		seg002_0c72(handle, off, dummy);
+		D1_LOG("near seek_archive_file(%d, %d, %d)\n", handle, off, dummy);
+		seek_archive_file(handle, off, dummy);
 
 		return 1;
 	}
@@ -4838,8 +4838,8 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(off);
 		CPU_Push16(handle);
 
-		D1_LOG("seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
-		seg002_0c72(handle, off, dummy);
+		D1_LOG("seek_archive_file(%d, %d, %d)\n", handle, off, dummy);
+		seek_archive_file(handle, off, dummy);
 
 		return 1;
 	}

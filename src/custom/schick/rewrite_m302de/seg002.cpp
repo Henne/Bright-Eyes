@@ -319,7 +319,7 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 {
 	RealPt buf;
 
-	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), 0, 0);
+	seek_archive_file(ds_readws(SAMPLE_AD_HANDLE), 0, 0);
 
 	do {
 		read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_IDX_ENTRY, 6);
@@ -329,7 +329,7 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 		}
 	} while ((ds_readbs((SAMPLE_AD_IDX_ENTRY+1)) != a1) || (ds_readbs(SAMPLE_AD_IDX_ENTRY) != patch));
 
-	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), ds_readd((SAMPLE_AD_IDX_ENTRY+2)), 0);
+	seek_archive_file(ds_readws(SAMPLE_AD_HANDLE), ds_readd((SAMPLE_AD_IDX_ENTRY+2)), 0);
 
 	read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_LENGTH, 2);
 
@@ -738,7 +738,13 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 	}
 }
 
-void seg002_0c72(Bit16u handle, Bit32s off, ...)
+/**
+ * \brief	seeks to a position in a file in SCHICK.DAT
+ *
+ * \param handle	handle returned by load_archive_file
+ * \param off	position to seek for
+ */
+void seek_archive_file(Bit16u handle, Bit32s off, ...)
 {
 
 	Bit32u file_off;

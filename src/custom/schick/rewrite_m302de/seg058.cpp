@@ -181,7 +181,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 		/* ICONS */
 		l_si = load_archive_file(ARCHIVE_FILE_ICONS);
-		seg002_0c72(l_si, 18 * 576L);
+		seek_archive_file(l_si, 18 * 576L);
 		read_archive_file(l_si, Real2Host(ds_readd(ICON)), 576L);
 		bc_close(l_si);
 

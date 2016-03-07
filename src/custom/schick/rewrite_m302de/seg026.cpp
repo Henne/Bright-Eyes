@@ -869,7 +869,7 @@ void load_in_head(signed short head)
 
 		handle = load_archive_file(ARCHIVE_FILE_IN_HEADS_NVF);
 
-		seg002_0c72(handle, 1024L * head, 0);
+		seek_archive_file(handle, 1024L * head, 0);
 
 		read_archive_file(handle, Real2Host(ds_readd(DTP2)), 1024);
 

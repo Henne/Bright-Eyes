@@ -628,7 +628,7 @@ void draw_icon(signed short id, signed short x, signed short y)
 
 	handle = load_archive_file(ARCHIVE_FILE_ICONS);
 
-	seg002_0c72(handle, id * 576L, 0);
+	seek_archive_file(handle, id * 576L, 0);
 
 	read_archive_file(handle, Real2Host(ds_readd(ICON)), 576);
 
