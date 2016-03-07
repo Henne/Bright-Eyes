@@ -93,9 +93,9 @@ void use_item(signed short item_pos, signed short hero_pos)
 			} else {
 				/* special item */
 #if !defined(__BORLANDC__)
-				func = handler[ds_readbs(0x8ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
+				func = handler[ds_readbs(0x08ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
 #else
-				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs(0x8ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
+				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs(0x08ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
 #endif
 				func();
 			}

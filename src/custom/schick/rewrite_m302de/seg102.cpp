@@ -258,7 +258,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 #if !defined(__BORLANDC__)
 			func = mspell[l_si];
 #else
-			func = (void (*)(void))ds_readd(0xfc2 + 4 * l_si);
+			func = (void (*)(void))ds_readd(0x0fc2 + 4 * l_si);
 #endif
 
 			func();

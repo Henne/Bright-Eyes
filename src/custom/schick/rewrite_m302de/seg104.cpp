@@ -168,7 +168,7 @@ signed short plan_alchemy(Bit8u *hero)
 			if (get_item_pos(hero, ds_readws(ALCHEMY_RECIPES + i * 28)) != -1) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)) + recipes * 50,
-					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(0xacf0 + i * 28)))));
+					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws((ALCHEMY_RECIPES+22) + i * 28)))));
 
 				ds_writed(RADIO_NAME_LIST + recipes * 4, (Bit32u)((RealPt)ds_readd(DTP2) + recipes * 50));
 				array[recipes] = (signed char)i;
@@ -183,19 +183,19 @@ signed short plan_alchemy(Bit8u *hero)
 
 			answer = GUI_radio(get_dtp(0xac), (signed char)recipes,
 						Real2Host(ds_readd(RADIO_NAME_LIST)),
-						Real2Host(ds_readd(0xbf99)),
-						Real2Host(ds_readd(0xbf9d)),
-						Real2Host(ds_readd(0xbfa1)),
-						Real2Host(ds_readd(0xbfa5)),
-						Real2Host(ds_readd(0xbfa9)),
-						Real2Host(ds_readd(0xbfad)),
-						Real2Host(ds_readd(0xbfb1)),
-						Real2Host(ds_readd(0xbfb5)),
-						Real2Host(ds_readd(0xbfb9)),
-						Real2Host(ds_readd(0xbfbd)),
-						Real2Host(ds_readd(0xbfc1)),
-						Real2Host(ds_readd(0xbfc5)),
-						Real2Host(ds_readd(0xbfc9)));
+						Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 3 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 4 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 7 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 8 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 9 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 10 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 11 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 12 * 4))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 13 * 4))));
 
 			ds_writew(TEXTBOX_WIDTH, l7);
 
@@ -206,7 +206,7 @@ signed short plan_alchemy(Bit8u *hero)
 				if (hero_has_ingrendients(hero, recipe_index)) {
 
 					/* check AE costs */
-					if (ds_readws(0xacf2 + recipe_index * 28) > host_readws(hero + HERO_AE)) {
+					if (ds_readws((ALCHEMY_RECIPES+24) + recipe_index * 28) > host_readws(hero + HERO_AE)) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x97c),
@@ -225,10 +225,10 @@ signed short plan_alchemy(Bit8u *hero)
 						}
 
 						/* check if the alchemic process takes more than 8h */
-						if ((ds_readbs(0xacf5 + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != 7)) {
+						if ((ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != 7)) {
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_dtp(0xb0),
-									ds_readbs(0xacf5 + recipe_index * 28));
+									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -236,12 +236,12 @@ signed short plan_alchemy(Bit8u *hero)
 						} else {
 							if ((ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
 								(ds_readbs(LOCATION) != 6) &&
-								(ds_readbs(0xacf5 + recipe_index * 28) > 8))
+								(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8))
 							{
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_dtp(0xb4),
-									ds_readbs(0xacf5 + recipe_index * 28));
+									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
 
 								sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 									(char*)get_dtp(0xbc),
@@ -263,7 +263,7 @@ signed short plan_alchemy(Bit8u *hero)
 							}
 
 							if (l4 == 1) {
-								timewarp(ds_readbs(0xacf5 + recipe_index *28) * 0x1518L);
+								timewarp(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index *28) * 0x1518L);
 
 								if (ds_readbs(LOCATION) != 6) {
 									hero_p = get_hero(0);
@@ -292,7 +292,7 @@ signed short plan_alchemy(Bit8u *hero)
 								dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 								host_writeb(hero + HERO_RECIPE_TIMER,
-									ds_readbs(0xacf5 + recipe_index * 28) / 24);
+									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) / 24);
 
 								host_writeb(hero + HERO_RECIPE_ID, recipe_index);
 								host_writeb(hero + HERO_HOSTEL_ID, ds_readbs(TYPEINDEX));
