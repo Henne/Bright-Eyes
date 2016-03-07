@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 1/11
+ *	Functions rewritten: 2/11
  */
 
 #include <stdio.h>
@@ -12,6 +12,7 @@
 #include "seg004.h"
 #include "seg027.h"
 #include "seg029.h"
+#include "seg030.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg113.h"
@@ -235,6 +236,18 @@ void tevent_037(void)
 		ds_writew(0x2846, 1);
 	}
 }
+
+/* unicorn 1st time */
+/* Borlandified and identical */
+void tevent_038(void)
+{
+	if (!ds_readb(0x3ddb) && ds_readws(GOT_MAIN_QUEST) != 0)
+	{
+		do_talk(11, 2);
+		ds_writeb(0x3ddb, 1);
+	}
+}
+
 
 #if !defined(__BORLANDC__)
 }
