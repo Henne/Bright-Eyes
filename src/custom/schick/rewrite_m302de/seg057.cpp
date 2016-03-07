@@ -95,7 +95,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 	ds_writew(0x29b4, 0);
 	l8 = ds_writews(0x2846, 1);
-	ds_writed(0xc005, (Bit32u)((RealPt)ds_readd(0xd2df) + 2100));
+	ds_writed(0xc005, (Bit32u)((RealPt)ds_readd(BUFFER12_PTR) + 2100));
 
 	while (done == 0) {
 
@@ -192,8 +192,8 @@ void sell_screen(Bit8u *shop_ptr)
 			do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
 			do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
 
-			nvf.dst = Real2Host(ds_readd(0xd303));
-			nvf.src = Real2Host(ds_readd(0xd2a9));
+			nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+			nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 			nvf.type = 0;
 			nvf.width =  (Bit8u*)&width;
 			nvf.height = (Bit8u*)&height;
@@ -210,7 +210,7 @@ void sell_screen(Bit8u *shop_ptr)
 						ds_writew(0xc013, array5.a[l_di]);
 						ds_writew(0xc015, array3.a[items_x] + 15);
 						ds_writew(0xc017, array5.a[l_di] + 15);
-						ds_writed(0xc019, ds_readd(0xd303));
+						ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 						nvf.nr = host_readws(get_itemsdat(j));
 
@@ -444,10 +444,10 @@ void sell_screen(Bit8u *shop_ptr)
 			/* 0xe83 - 11ba */
 			while (l12 == 0 && j < 3) {
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x704),
-					(char*)Real2Host(ds_readd(0xd2eb)));
+					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 
 				do {
@@ -500,11 +500,11 @@ void sell_screen(Bit8u *shop_ptr)
 					if (l12 != 2) {
 						GUI_output(get_ltx(0x70c));
 
-						make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xccc),
-							(char*)Real2Host(ds_readd(0xd2eb)));
+							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}

@@ -109,10 +109,10 @@ void final_intro(void)
 
 	/* load FACE.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_FACE_NVF);
-	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
+	len = read_archive_file(handle, Real2Host(ds_readd(BUFFER9_PTR)), 64000);
 	bc_close(handle);
 
-	ptr1 = Real2Host(F_PADD(F_PADD(ds_readd(0xc3db), len), -(96 * 3)));
+	ptr1 = Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), len), -(96 * 3)));
 
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 
@@ -120,20 +120,20 @@ void final_intro(void)
 
 	set_palette(ptr1, 0, 0x60);
 
-	ptr2 = (RealPt)F_PADD(ds_readd(0xc3db), 80000);
+	ptr2 = (RealPt)F_PADD(ds_readd(BUFFER9_PTR), 80000);
 
-	nvf.dst = Real2Host(ds_readd(0xd303));
-	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 	nvf.nr = 0;
 	nvf.type = 3;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
 	process_nvf(&nvf);
 
-	map_effect(Real2Host(ds_readd(0xd303)));
+	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 
 	nvf.dst = Real2Host(ptr2);
-	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 	nvf.nr = 1;
 	nvf.type = 3;
 	nvf.width = (Bit8u*)&width;
@@ -145,25 +145,25 @@ void final_intro(void)
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 39);
 	ds_writed(0xc019, (Bit32u)ptr2);
-	ds_writed(0xc00d, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(2);
 
 	delay_or_keypress(100);
 
-	map_effect(Real2Host(ds_readd(0xd303)));
+	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 
 	delay_or_keypress(250);
 
-	memset(Real2Host(ds_readd(0xd303)), 0, 96 * 3);
+	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 96 * 3);
 
 	for (i = 0; i < 0x40; i++) {
 
-		pal_fade(ptr1, Real2Host(ds_readd(0xd303)));
-		pal_fade(ptr1 + 0x60, Real2Host(ds_readd(0xd303)) + 0x60);
-		pal_fade(ptr1 + 0xc0, Real2Host(ds_readd(0xd303)) + 0xc0);
+		pal_fade(ptr1, Real2Host(ds_readd(BUFFER1_PTR)));
+		pal_fade(ptr1 + 0x60, Real2Host(ds_readd(BUFFER1_PTR)) + 0x60);
+		pal_fade(ptr1 + 0xc0, Real2Host(ds_readd(BUFFER1_PTR)) + 0xc0);
 
 		wait_for_vsync();
 
@@ -182,7 +182,7 @@ RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
 	struct nvf_desc nvf;
 
 	nvf.dst = Real2Host(host_readd(ptr));
-	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.src = Real2Host(ds_readd(BUFFER1_PTR));
 	nvf.nr = nvf_nr;
 	nvf.type = 3;
 	nvf.width = ptr + 4;
@@ -204,7 +204,7 @@ void hyg_ani_2(Bit8u *ptr, signed short x, signed short y)
 	ds_writew(0xc017, y + host_readws(ptr + 6) - 1);
 
 	ds_writed(0xc019, host_readd(ptr));
-	ds_writed(0xc00d, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(2);
 }
@@ -215,8 +215,8 @@ void hyg_ani_3(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 199);
-	ds_writed(0xc019, (Bit32u)F_PADD((HugePt)ds_readd(0xc3db), 0x1fbd0));
-	ds_writed(0xc00d, ds_readd(0xd303));
+	ds_writed(0xc019, (Bit32u)F_PADD((HugePt)ds_readd(BUFFER9_PTR), 0x1fbd0));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(0);
 }
@@ -227,7 +227,7 @@ void hyg_ani_4(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 
 	do_pic_copy(0);
@@ -244,13 +244,13 @@ void show_hyggelik_ani(void)
 	Bit8u array[30*8];
 
 	ds_writew(0xe113, 0);
-	ptr1 = (RealPt)ds_readd(0xc3db);
-	ptr2 = (RealPt)F_PADD((HugePt)ds_readd(0xc3db), 0x1fbd0);
+	ptr1 = (RealPt)ds_readd(BUFFER9_PTR);
+	ptr2 = (RealPt)F_PADD((HugePt)ds_readd(BUFFER9_PTR), 0x1fbd0);
 
 	handle = load_archive_file(ARCHIVE_FILE_HYGBACK_NVF);
-	filelen = read_archive_file(handle, Real2Host(ds_readd(0xd303)), 64000);
+	filelen = read_archive_file(handle, Real2Host(ds_readd(BUFFER1_PTR)), 64000);
 	bc_close(handle);
-	src = &(Real2Host(ds_readd(0xd303))[filelen - 0xc0]);
+	src = &(Real2Host(ds_readd(BUFFER1_PTR))[filelen - 0xc0]);
 
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 	memcpy((void*)Real2Host(ds_readd(DTP2)), src, 192);
@@ -263,7 +263,7 @@ void show_hyggelik_ani(void)
 	hyg_ani_1(0, array);
 
 	handle = load_archive_file(ARCHIVE_FILE_HYGGELIK_NVF);
-	filelen = read_archive_file(handle, Real2Host(ds_readd(0xd303)), 64000);
+	filelen = read_archive_file(handle, Real2Host(ds_readd(BUFFER1_PTR)), 64000);
 	bc_close(handle);
 	host_writed(array + 0, (Bit32u)ptr1);
 
@@ -279,7 +279,7 @@ void show_hyggelik_ani(void)
 	hyg_ani_2(array + 10 * 8, 82, 67);
 	hyg_ani_2(array + 20 * 8, 186, 67);
 
-	map_effect(Real2Host(ds_readd(0xd303)));
+	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 
 	for (i = 0; i < 7; i++) {
 		hyg_ani_3();
@@ -338,18 +338,18 @@ void show_hyggelik_ani(void)
 	delay_or_keypress(100);
 
 	/* clear the screen */
-	do_fill_rect((RealPt)ds_readd(0xd303), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
 
 	hyg_ani_2(array + 25 * 8, 100, 0);
 	ds_writed(0xc00d, ds_readd(0xd2ff));
-	map_effect(Real2Host(ds_readd(0xd303)));
+	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 	delay_or_keypress(500);
 
-	memset((void*)Real2Host(ds_readd(0xd303)), 0, 0xc0);
+	memset((void*)Real2Host(ds_readd(BUFFER1_PTR)), 0, 0xc0);
 
 	for (i = 0; i < 64; i++) {
-		pal_fade(src, Real2Host(ds_readd(0xd303)));
-		pal_fade(src + 0x60, Real2Host(ds_readd(0xd303)) + 0x60);
+		pal_fade(src, Real2Host(ds_readd(BUFFER1_PTR)));
+		pal_fade(src + 0x60, Real2Host(ds_readd(BUFFER1_PTR)) + 0x60);
 		wait_for_vsync();
 		set_palette(src, 0, 0x40);
 	}
@@ -422,16 +422,16 @@ void show_outro(void)
 
 	/* load OUTRO1.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_OUTRO1_NVF);
-	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
+	len = read_archive_file(handle, Real2Host(ds_readd(BUFFER9_PTR)), 64000);
 	bc_close(handle);
 
-	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(0xc3db), len), - 0xc0));
+	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR), len), - 0xc0));
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 	set_palette(pal_ptr, 0, 0x40);
 
-	nvf.dst = Real2Host(ds_readd(0xd303));
-	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 	nvf.nr = 0;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
@@ -447,7 +447,7 @@ void show_outro(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, (320 - width) / 2 + width - 1);
 	ds_writew(0xc017, height - 1);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	delay_or_keypress(200);
@@ -456,16 +456,16 @@ void show_outro(void)
 
 	/* load OUTRO2.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_OUTRO2_NVF);
-	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
+	len = read_archive_file(handle, Real2Host(ds_readd(BUFFER9_PTR)), 64000);
 	bc_close(handle);
 
-	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(0xc3db), len), - 0xc0));
+	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR), len), - 0xc0));
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 	set_palette(pal_ptr, 0, 0x40);
 
-	nvf.dst = Real2Host(ds_readd(0xd303));
-	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 	nvf.nr = 0;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
@@ -481,7 +481,7 @@ void show_outro(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, (320 - width) / 2 + width - 1);
 	ds_writew(0xc017, height - 1);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	delay_or_keypress(200);
@@ -490,16 +490,16 @@ void show_outro(void)
 
 	/* load OUTRO3.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_OUTRO3_NVF);
-	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
+	len = read_archive_file(handle, Real2Host(ds_readd(BUFFER9_PTR)), 64000);
 	bc_close(handle);
 
-	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(0xc3db), len), - 0xc0));
+	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR), len), - 0xc0));
 	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 	set_palette(pal_ptr, 0, 0x40);
 
-	nvf.dst = Real2Host(ds_readd(0xd303));
-	nvf.src = Real2Host(ds_readd(0xc3db));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 	nvf.nr = 0;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
@@ -515,7 +515,7 @@ void show_outro(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, (320 - width) / 2 + width - 1);
 	ds_writew(0xc017, height - 1);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	delay_or_keypress(200);

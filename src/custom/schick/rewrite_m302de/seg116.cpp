@@ -608,7 +608,7 @@ void tevent_144(void)
 		if (l_di) {
 
 			load_in_head(44);
-			memmove(Real2Host(ds_readd(0xd2a9)), Real2Host(ds_readd(DTP2)), 0x400);
+			memmove(Real2Host(ds_readd(BUFFER10_PTR)), Real2Host(ds_readd(DTP2)), 0x400);
 
 			hero = get_hero(l_si);
 
@@ -622,16 +622,16 @@ void tevent_144(void)
 				(char*)get_city(0x2c),
 				(char*)hero + HERO_NAME2);
 
-			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, Real2Host(ds_readd(DTP2)), 0);
-			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, get_city(0x30), 0);
-			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, get_city(0x34), 0);
+			GUI_dialogbox((RealPt)ds_readd(BUFFER10_PTR), (RealPt)0, Real2Host(ds_readd(DTP2)), 0);
+			GUI_dialogbox((RealPt)ds_readd(BUFFER10_PTR), (RealPt)0, get_city(0x30), 0);
+			GUI_dialogbox((RealPt)ds_readd(BUFFER10_PTR), (RealPt)0, get_city(0x34), 0);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x38),
 				(char*)hero + HERO_NAME2);
 
-			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, Real2Host(ds_readd(DTP2)), 0);
-			GUI_dialogbox((RealPt)ds_readd(0xd2a9), (RealPt)0, get_city(0x3c), 0);
+			GUI_dialogbox((RealPt)ds_readd(BUFFER10_PTR), (RealPt)0, Real2Host(ds_readd(DTP2)), 0);
+			GUI_dialogbox((RealPt)ds_readd(BUFFER10_PTR), (RealPt)0, get_city(0x3c), 0);
 
 			do {
 				status_menu(l_si);

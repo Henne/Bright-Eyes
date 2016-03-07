@@ -192,7 +192,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 		ds_writed(0xc019, ds_readd(ICON));
 		do_pic_copy(0);
 
-		ds_writed(0xc005, ds_readd(0xd2df));
+		ds_writed(0xc005, ds_readd(BUFFER12_PTR));
 		memset(Real2Host(ds_readd(0xc005)), 0, 350);
 
 		get_textcolor(&fg_bak, &bg_bak);
@@ -251,8 +251,8 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 				do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
 				do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
 
-				nvf.dst = Real2Host(ds_readd(0xd303));
-				nvf.src = Real2Host(ds_readd(0xd2a9));
+				nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+				nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 				nvf.type = 0;
 				nvf.width =  (Bit8u*)&width;
 				nvf.height = (Bit8u*)&height;
@@ -269,7 +269,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 							ds_writew(0xc013, array5.a[l_si]);
 							ds_writew(0xc015, array3.a[items_x] + 15);
 							ds_writew(0xc017, array5.a[l_si] + 15);
-							ds_writed(0xc019, ds_readd(0xd303));
+							ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 							nvf.nr = host_readws(get_itemsdat(j));
 
@@ -386,12 +386,12 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						price = (host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l7 + item) + 2)
 							* host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l7 + item) + 4)) * ds_readws(0xe3f6) / 4;
 
-						make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x7a0),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item_id, 0)),
-							(char*)Real2Host(ds_readd(0xd2eb)));
+							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 
 						do {

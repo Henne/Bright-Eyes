@@ -250,25 +250,25 @@ void rabies(RealPt hero, signed short hero_pos)
 void init_global_buffer(void)
 {
 
-	ds_writed(0xe5e0, (Bit32u)schick_alloc_emu(ds_readd(BUFFERSIZE)));
-	ds_writed(0xd303, (Bit32u)F_PADD(ds_readd(0xe5e0), 8));
-	ds_writed(0xd2b9, (Bit32u)F_PADD(ds_readd(0xd303), 65000));
+	ds_writed(GLOBAL_BUFFER_PTR, (Bit32u)schick_alloc_emu(ds_readd(BUFFERSIZE)));
+	ds_writed(BUFFER1_PTR, (Bit32u)F_PADD(ds_readd(GLOBAL_BUFFER_PTR), 8));
+	ds_writed(BUFFER2_PTR, (Bit32u)F_PADD(ds_readd(BUFFER1_PTR), 65000));
 
-	ds_writed(TEXT_LTX, (Bit32u)F_PADD(ds_readd(0xd2b9), 30500));
+	ds_writed(TEXT_LTX, (Bit32u)F_PADD(ds_readd(BUFFER2_PTR), 30500));
 	ds_writed(DIALOG_TEXT, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3360));
 	ds_writed(CITY_LTX, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3960));
 
-	ds_writed(0xd2e3, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
-	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(0xd2e3), 3400)));
-	ds_writed(0xd2ef, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
-	ds_writed(0xd2eb, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
-	ds_writed(0xd2a5, (Bit32u)(F_PADD(ds_readd(0xd2eb), 300)));
-	ds_writed(0xd2b1, (Bit32u)(F_PADD(ds_readd(0xd2a5), 3880)));
-	ds_writed(0xd2b5, (Bit32u)(F_PADD(ds_readd(0xd2b1), 2200)));
-	ds_writed(0xc3a9, (Bit32u)(F_PADD(ds_readd(0xd2b5), 10000)));
-	ds_writed(0xc3db, (Bit32u)(F_PADD(ds_readd(0xd2b5), 22008)));
+	ds_writed(BUFFER3_PTR, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
+	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(BUFFER3_PTR), 3400)));
+	ds_writed(TEXT_INPUT_BUFFER, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
+	ds_writed(BUFFER4_PTR, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
+	ds_writed(BUFFER5_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER4_PTR), 300)));
+	ds_writed(BUFFER6_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER5_PTR), 3880)));
+	ds_writed(BUFFER7_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER6_PTR), 2200)));
+	ds_writed(BUFFER8_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER7_PTR), 10000)));
+	ds_writed(BUFFER9_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER7_PTR), 22008)));
 
-	ds_writed(0xd019, ds_writed(0xd015, ds_readd(0xc3db)));
+	ds_writed(BUFFER9_PTR3, ds_writed(BUFFER9_PTR2, ds_readd(BUFFER9_PTR)));
 	ds_writed(0xce43, 0);
 
 }
@@ -305,7 +305,7 @@ signed short init_memory(void)
 	ds_writed(0xe49c,		(Bit32u)schick_alloc_emu(225));
 	ds_writed(0xe498,		(Bit32u)schick_alloc_emu(80));
 	ds_writed(BUF_FONT6,		(Bit32u)schick_alloc_emu(592));
-	ds_writed(0xd2bd,		(Bit32u)schick_alloc_emu(1000));
+	ds_writed(SPLASH_BUFFER,		(Bit32u)schick_alloc_emu(1000));
 	ds_writed(0xd299,		(Bit32u)schick_alloc_emu(500));
 	ds_writed(CHESSBOARD,		(Bit32u)schick_alloc_emu(625));
 	ds_writed(POPUP,		(Bit32u)(schick_alloc_emu(1673) + 8));
@@ -339,13 +339,13 @@ signed short init_memory(void)
 
 		init_text();
 
-		ds_writed(0xd2df, (Bit32u)F_PADD(ds_readd(0xd019), 180000));
+		ds_writed(BUFFER12_PTR, (Bit32u)F_PADD(ds_readd(BUFFER9_PTR3), 180000));
 		if (ds_readb(LARGE_BUF) == 1) {
-			add_ds_ws(0xd2df, 23000);
+			add_ds_ws(BUFFER12_PTR, 23000);
 		}
 
-		ds_writed(0xd2db, (Bit32u)F_PADD(ds_readd(0xd2df), -20000));
-		ds_writed(0xd2a9, (Bit32u)F_PADD(ds_readd(0xd2db), -16771));
+		ds_writed(BUFFER11_PTR, (Bit32u)F_PADD(ds_readd(BUFFER12_PTR), -20000));
+		ds_writed(BUFFER10_PTR, (Bit32u)F_PADD(ds_readd(BUFFER11_PTR), -16771));
 	}
 
 	return error;
@@ -438,7 +438,7 @@ void init_game_state(void)
 	ds_writew(CURRENT_ANI, -1);
 	ds_writew(0xe113, 1);
 
-	ds_writed(0xbff9, ds_readd(0xd303));
+	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 	load_splashes();
 }
 
@@ -486,11 +486,11 @@ void prepare_dirs(void)
 			gamepath[2] = '\0';
 		}
 
-		strcpy((char*)Real2Host(ds_readd(0xd2eb)), gamepath);
+		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), gamepath);
 		/* "\\TEMP" */
-		strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)p_datseg + 0xb311);
+		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0xb311);
 
-		if (!bc_chdir((char*)Real2Host(ds_readd(0xd2eb)))) {
+		if (!bc_chdir((char*)Real2Host(ds_readd(BUFFER4_PTR)))) {
 			/*	check if it's possible to change to TEMP-dir: OK
 				change to gamepath */
 
@@ -499,7 +499,7 @@ void prepare_dirs(void)
 
 		} else {
 
-			if (bc_mkdir((char*)Real2Host(ds_readd(0xd2eb)))) {
+			if (bc_mkdir((char*)Real2Host(ds_readd(BUFFER4_PTR)))) {
 				errorval = 1;
 			} else {
 				errorval = 2;
@@ -519,20 +519,20 @@ void prepare_dirs(void)
 	}
 
 	/* delete *.* in TEMP-dir */
-	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		(char*)Real2Host(ds_readd(0x4c88)),
 		(char*)p_datseg + 0xb4af);
 
-	l_si = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+	l_si = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
 
 	if (!l_si) {
 
 		do {
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)Real2Host(ds_readd(0x4c88)),
 				((char*)(&blk)) + 30);			/* contains a filename */
 
-			bc_unlink((RealPt)ds_readd(0xd2eb));
+			bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
 
 			l_si = bc_findnext(&blk);
 
@@ -557,17 +557,17 @@ void prepare_dirs(void)
 		l_di = bc__open(((char*)&blk) + 30, 0x8004);
 #endif
 
-		bc__read(l_di, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
+		bc__read(l_di, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
 
 		bc_close(l_di);
 
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)Real2Host(ds_readd(0x4c88)),
 			((char*)(&blk)) + 30);			/* contains a filename */
 
-		l_di = bc__creat((RealPt)ds_readd(0xd2eb), 0);
+		l_di = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0);
 
-		bc__write(l_di, (RealPt)ds_readd(0xd303), SIZEOF_HERO);
+		bc__write(l_di, (RealPt)ds_readd(BUFFER1_PTR), SIZEOF_HERO);
 
 		bc_close(l_di);
 
@@ -639,20 +639,20 @@ void cleanup_game(void)
 
 	/* delete all files in TEMP */
 
-	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		(char*)Real2Host(ds_readd(0x4c88)),	/* contains "TEMP\\%s" */
 		(char*)p_datseg + 0xb4b9);		/* contains "*.*" */
 
-	l_di = bc_findfirst((RealPt)ds_readd(0xd2eb), &blk, 0);
+	l_di = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
 
 	if (l_di == 0) {
 		do {
 			/* delete each found file */
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)Real2Host(ds_readd(0x4c88)),	/* contains "TEMP\\%s" */
 				((char*)(&blk)) + 30);			/* contains a filename */
 
-			bc_unlink((RealPt)ds_readd(0xd2eb));
+			bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
 
 			l_di = bc_findnext(&blk);
 		} while (!l_di);
@@ -681,7 +681,7 @@ void game_over_screen(void)
 	/* load SKULL.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_SKULL_NVF);
 
-	read_archive_file(handle, Real2Host(ds_readd(0xd303)), 64200);
+	read_archive_file(handle, Real2Host(ds_readd(BUFFER1_PTR)), 64200);
 
 	bc_close(handle);
 
@@ -694,9 +694,9 @@ void game_over_screen(void)
 	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
 
-	bc_memcpy((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(0xd303), 64000);
+	bc_memcpy((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(BUFFER1_PTR), 64000);
 
-	set_palette(Real2Host(ds_readd(0xd303)) + 64002, 0x00, 0x40);
+	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64002, 0x00, 0x40);
 
 	wait_for_keypress();
 
@@ -723,7 +723,7 @@ void call_gen(void)
 	exit_AIL();
 
 	/* free the global buffer */
-	bc_farfree((RealPt)ds_readd(0xe5e0));
+	bc_farfree((RealPt)ds_readd(GLOBAL_BUFFER_PTR));
 
 	freemem = bc_farcoreleft();
 
@@ -779,13 +779,13 @@ void call_gen(void)
 			exit_AIL();
 		}
 
-		ds_writed(0xd2df, (Bit32u)F_PADD(ds_readd(0xd019), 180000));
+		ds_writed(BUFFER12_PTR, (Bit32u)F_PADD(ds_readd(BUFFER9_PTR3), 180000));
 		if (ds_readb(LARGE_BUF) == 1) {
-			add_ds_ws(0xd2df, 23000);
+			add_ds_ws(BUFFER12_PTR, 23000);
 		}
 
-		ds_writed(0xd2db, (Bit32u)F_PADD(ds_readd(0xd2df), -20000));
-		ds_writed(0xd2a9, (Bit32u)F_PADD(ds_readd(0xd2db), -16771));
+		ds_writed(BUFFER11_PTR, (Bit32u)F_PADD(ds_readd(BUFFER12_PTR), -20000));
+		ds_writed(BUFFER10_PTR, (Bit32u)F_PADD(ds_readd(BUFFER11_PTR), -16771));
 
 		ds_writed(DAY_TIMER, HOURS(24) - 1);
 		timewarp_until(1);

@@ -426,7 +426,7 @@ void status_menu(signed short hero_pos)
 					if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) {
 
 						nvf.dst = Real2Host(ds_readd(ICON));
-						nvf.src = Real2Host(ds_readd(0xd2a9));
+						nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 						nvf.type = 0;
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;
@@ -511,7 +511,7 @@ void status_menu(signed short hero_pos)
 							GUI_output(get_city(0x11c));
 						} else {
 							GUI_input(get_city(0x118), 15);
-							strcpy((char*)hero2 + HERO_NAME2, (char*)Real2Host(ds_readd(0xd2ef)));
+							strcpy((char*)hero2 + HERO_NAME2, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 							ds_writew(0x2846, 1);
 						}
 						break;

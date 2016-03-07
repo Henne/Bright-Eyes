@@ -678,19 +678,19 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					ds_writew(0xc013, ds_writew(0xc01f, 194));
 					ds_writew(0xc015, 318);
 					ds_writew(0xc017, 199);
-					ds_writed(0xc019, ds_readd(0xc3a9));
+					ds_writed(0xc019, ds_readd(BUFFER8_PTR));
 
 					do_pic_copy(3);
 
 					get_textcolor(&fg_bak, &bg_bak);
 					set_textcolor(0xff, 0x00);
 
-					sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 						(char*)p_datseg + 0x6180,		/* "%s ZAUBERT %s" */
 						(char*)Real2Host(hero) + HERO_NAME2,
 						(char*)get_ltx(4 * (host_readbs(Real2Host(hero) + HERO_SPELL_ID) + 0x6a)));
 
-					GUI_print_string(Real2Host(ds_readd(0xd2eb)), 1, 194);
+					GUI_print_string(Real2Host(ds_readd(BUFFER4_PTR)), 1, 194);
 
 					set_textcolor(fg_bak, bg_bak);
 
@@ -784,7 +784,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 
 								nvf.dst = Real2Host(ds_readd((0xe066 + 0x17)));
-								nvf.src = Real2Host(ds_readd(0xd866));
+								nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 								nvf.nr = 26;
 								nvf.type = 0;
 								nvf.width =(Bit8u*) &width;

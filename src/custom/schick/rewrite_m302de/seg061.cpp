@@ -72,7 +72,7 @@ void do_temple(void)
 			ds_writew(0xc015, 40);
 			ds_writew(0xc017, 22);
 			ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd2ff) + 28259));
-			ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xc3a9) + 7000));
+			ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 7000));
 
 			update_mouse_cursor();
 			do_pic_copy(0);
@@ -194,11 +194,11 @@ void do_temple(void)
 					GUI_output(get_ltx(0x644));
 				} else {
 
-					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+					make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x4a4),
-						(char*)Real2Host(ds_readd(0xd2eb)));
+						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 					input = GUI_input(Real2Host(ds_readd(DTP2)), 3);
 
@@ -237,7 +237,7 @@ void char_add(signed short temple_id)
 	RealPt ptr;
 	Bit8u *hero;
 
-	ptr = (RealPt)ds_readd(0xd303) + 50000;
+	ptr = (RealPt)ds_readd(BUFFER1_PTR) + 50000;
 	l_di = copy_chr_names(Real2Host(ptr), temple_id);
 
 	if (ds_readbs(0x2d3c) == 7 ||
@@ -349,9 +349,9 @@ signed short char_erase(void)
 	RealPt ptr;
 
 	if (ds_readbs(0x4c3a) != 0) {
-		ptr = F_PADD((HugePt)ds_readd(0xc3db), 30000);
+		ptr = F_PADD((HugePt)ds_readd(BUFFER9_PTR), 30000);
 	} else {
-		ptr = (RealPt)ds_readd(0xd303) + 50000;
+		ptr = (RealPt)ds_readd(BUFFER1_PTR) + 50000;
 	}
 
 	l_di = copy_chr_names(Real2Host(ptr), -1);
@@ -366,16 +366,16 @@ signed short char_erase(void)
 				strcpy((char*)Real2Host(ds_readd(DTP2)),
 					(char*)Real2Host(ptr) + 32 * l_si);
 
-				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)get_ltx(0x49c),
 					(char*)Real2Host(ds_readd(DTP2)));
 
-				if (GUI_bool(Real2Host(ds_readd(0xd2eb)))) {
+				if (GUI_bool(Real2Host(ds_readd(BUFFER4_PTR)))) {
 
-					prepare_chr_name((char*)Real2Host(ds_readd(0xd2eb)),
+					prepare_chr_name((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 								(char*)Real2Host(ds_readd(DTP2)));
 
-					unlink_ret = bc_unlink((RealPt)ds_readd(0xd2eb));
+					unlink_ret = bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
 
 					if (unlink_ret != 0) {
 						GUI_output(get_ltx(0x498));
@@ -384,7 +384,7 @@ signed short char_erase(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)p_datseg + 0x6e72,
-						(char*)Real2Host(ds_readd(0xd2eb)));
+						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 					bc_unlink((RealPt)ds_readd(DTP2));
 				}
 
@@ -442,17 +442,17 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 		add_hero_le(get_hero(hero_pos), le_in);
 
 		/* prepare a message */
-		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
 
 		if (le_in > 1) {
-			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+			strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)str,
 				(char*)get_hero(hero_pos) + HERO_NAME2,
 				le_in,
-				(char*)Real2Host(ds_readd(0xd2eb)));
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 	}
 }
 

@@ -41,10 +41,10 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 
 	if (show_values != 0) {
 
-		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x334));
+		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x334));
 
 		if (host_readbs(hero + HERO_TA_RISE) > 1) {
-			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+			strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -53,7 +53,7 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 			(host_readbs(hero + HERO_TA_RISE) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
 			/* # of tries left */
 			host_readbs(hero + HERO_TA_RISE),
-			Real2Host(ds_readd(0xd2eb)));
+			Real2Host(ds_readd(BUFFER4_PTR)));
 	} else {
 
 		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x360));
@@ -552,12 +552,12 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					money = random_interval(10, 200);
 
-					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+					make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x8c),
 						(char*)hero + HERO_NAME2,
-						Real2Host(ds_readd(0xd2eb)));
+						Real2Host(ds_readd(BUFFER4_PTR)));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -586,12 +586,12 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					money = random_interval(100, 300);
 
-					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+					make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x8c),
 						(char*)hero + HERO_NAME2,
-						Real2Host(ds_readd(0xd2eb)));
+						Real2Host(ds_readd(BUFFER4_PTR)));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -614,11 +614,11 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 				money = random_interval(500, 1000);
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x98),
-					Real2Host(ds_readd(0xd2eb)),
+					Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -642,11 +642,11 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 				money = random_interval(500, 1000);
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa0),
-					Real2Host(ds_readd(0xd2eb)),
+					Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));

@@ -190,17 +190,17 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 				randval = -1;
 
 				/* AT - value */
-				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)get_ltx(0x6ac), host_readbs(hero + skill + 0x68));
 
 				/* PA - value */
-				sprintf((char*)Real2Host(ds_readd(0xd2eb)) + 50,
+				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50,
 					(char*)get_ltx(0x6b0), host_readbs(hero + skill + 0x6f));
 
 				do {
 					randval = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-								Real2Host(ds_readd(0xd2eb)),
-								Real2Host(ds_readd(0xd2eb)) + 50);
+								Real2Host(ds_readd(BUFFER4_PTR)),
+								Real2Host(ds_readd(BUFFER4_PTR)) + 50);
 				} while (randval == -1);
 
 				if (randval == 1) {
@@ -374,13 +374,13 @@ void level_up(signed short hero_pos)
 
 	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 
-	ds_writed(0xe3b6, (Bit32u)((RealPt)ds_readd(0xc3a9) + 4500));
+	ds_writed(0xe3b6, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 4500));
 	ds_writed(0xe3b2, (Bit32u)((RealPt)ds_readd(0xe3b6) + 208));
-	ds_writed(0xe3ba, ds_readd(0xc3db));
+	ds_writed(SKILLS_BUFFER, ds_readd(BUFFER9_PTR));
 
 	l_si = load_archive_file(ARCHIVE_FILE_BSKILLS_DAT);
 
-	read_archive_file(l_si, Real2Host(ds_readd(0xe3ba)), 1300);
+	read_archive_file(l_si, Real2Host(ds_readd(SKILLS_BUFFER)), 1300);
 
 	bc_close(l_si);
 
@@ -633,9 +633,9 @@ void level_up(signed short hero_pos)
 
 		while (host_readbs(hero + HERO_TA_RISE) > 0) {
 
-			l_si = host_readws(Real2Host(ds_readd(0xe3ba)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i);
+			l_si = host_readws(Real2Host(ds_readd(SKILLS_BUFFER)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i);
 
-			if (host_readbs(hero + HERO_TA_FIGHT + l_si) < host_readws(Real2Host(ds_readd(0xe3ba)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i + 2))
+			if (host_readbs(hero + HERO_TA_FIGHT + l_si) < host_readws(Real2Host(ds_readd(SKILLS_BUFFER)) + 100 * host_readbs(hero + HERO_TYPE) + 4 * i + 2))
 			{
 				inc_skill_novice(hero, l_si);
 			}

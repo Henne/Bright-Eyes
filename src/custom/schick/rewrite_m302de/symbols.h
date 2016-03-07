@@ -126,6 +126,8 @@
 #define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
+#define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
+#define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
 #define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */
 #define KNIVE_WEAPONS	(0x616e)	/* signed short[5] terminated with -1 */
 #define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
@@ -145,25 +147,47 @@
 #define SPLASH_LE	(0xbccb)
 #define SCENARIO_BUF	(0xbd2c)
 #define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
+#define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
 #define HEROS		(0xbd34)
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
 #define DIALOG_TEXT	(0xc3b1)
+#define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
 #define CITY_LTX	(0xc3ad)
 #define TEXT_LTX	(0xc3b5)
 #define ACTION		(0xc3d9)	/* ? short */
+#define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
 #define ANI_MAIN_PTR	(0xce35)
+#define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
+#define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */
+#define BUFFER_MONSTER_TAB	(0xd01d)	/* RealPt */
+#define BUFFER_WFIGS_TAB	(0xd0ad)	/* RealPt */
+#define BUFFER_MFIGS_TAB	(0xd159)	/* RealPt */
+#define BUFFER5_PTR	(0xd2a5)	/* RealPt to buffer of size 3880 */
+#define BUFFER10_PTR	(0xd2a9)	/* RealPt to buffer of size 16771, used for NVF and text */
 #define POPUP		(0xd2ad)	/* RealPt */
+#define BUFFER6_PTR	(0xd2b1)	/* RealPt to buffer of size 2200, used for NVF */
+#define BUFFER7_PTR	(0xd2b5)	/* RealPt to buffer of size 10000, used for NVF and text */
+#define BUFFER2_PTR	(0xd2b9)	/* RealPt to buffer of size 30500 */
+#define SPLASH_BUFFER	(0xd2bd)	/* RealPt to buffer of size 1000, used for Splashes */
 #define BUF_FONT6	(0xd2c1)	/* RealPt */
 #define TEXTCOLOR	(0xd2c5)
 #define TEXTCOLOR_BG	(0xd2c7)
 #define TEXTCOLOR_FG	(0xd2c9)
+#define BUFFER11_PTR	(0xd2db)	/* RealPt to buffer of size 20000 */
+#define BUFFER12_PTR	(0xd2df)	/* RealPt */
+#define BUFFER3_PTR	(0xd2e3)	/* RealPt to buffer of size 3400, used for NVF */
 #define BUF_ICON	(0xd2e7)	/* RealPt */
+#define BUFFER4_PTR	(0xd2eb)	/* RealPt to buffer of size 300, used for text */
+#define TEXT_INPUT_BUFFER	(0xd2ef)	/* RealPt, size 24 */
 #define DTP2		(0xd2f3)
 #define ICON		(0xd2f7)	/* RealPt */
+#define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
 #define TOWNPAL_BUF	(0xd321)	/* RealPt */
 #define ENEMY_SHEETS	(0xd34b)	/* struct enemy[20] */
 #define CHESSBOARD	(0xd852)	/* RealPt */
+#define SPELLOBJ_NVF_BUF	(0xd866)	/* RealPt to buffer of size 0xf5f */
+#define WEAPONS_NVF_BUF	(0xd86a)	/* RealPt to buffer of size 0x1953 */
 #define NR_OF_ENEMIES	(0xd872)	/* ? short */
 #define FIG_LIST_HEAD	(0xe108)	/* RealPtr to a list */
 #define WALLCLOCK_Y	(0xe10f)
@@ -184,8 +208,11 @@
 #define AUTOFIGHT	(0xe318)	/* ?16 */
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
+#define FIG_LIST_BUFFER	(0xe37c)	/* RealPt to buffer of size 4445, initial value of FIG_LIST_HEAD */
+#define SKILLS_BUFFER	(0xe3ba)	/* RealPt */
 #define BOOKED_INN_DAYS	(0xe3f0)	/* signed char */
 #define SLEEP_QUALITY	(0xe3f1)	/* signed char */
+#define BUY_SHOPPING_CART	(0xe3f2)	/* RealPt to buffer of size 250, each item has 4 bytes */
 #define TEX_FLOOR	(0xe414)	/* Bit8u* */
 #define TEX_SKY		(0xe418)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */
@@ -199,6 +226,7 @@
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
 #define ITEMUSER	(0xe5ce)	/* pointer to hero */
 #define BUFFERSIZE	(0xe5dc)	/* ?32 size of the global buffer */
+#define GLOBAL_BUFFER_PTR	(0xe5e0)	/* RealPt, points to the start of the global buffer */
 #define LARGE_BUF	(0xe5e4)	/* s8 {0,1} */
 
 #endif

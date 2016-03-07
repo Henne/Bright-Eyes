@@ -106,7 +106,7 @@ void FIG_loot_monsters(void)
 
 	for (l_di = 0; l_di < 30; l_di++) {
 
-			a[l_di] = (char*)Real2Host(F_PADD(ds_readd(0xc3db), 40 * l_di));
+			a[l_di] = (char*)Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 40 * l_di));
 	}
 
 	do {
@@ -189,11 +189,11 @@ void FIG_loot_monsters(void)
 
 	if (money > 0) {
 
-		make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+		make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 		sprintf((char*)(Real2Host(ds_readd(DTP2))),
 			(char*)get_dtp(0x3c),
-			Real2Host(ds_readd(0xd2eb)));
+			Real2Host(ds_readd(BUFFER4_PTR)));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		set_party_money(get_party_money() + money);

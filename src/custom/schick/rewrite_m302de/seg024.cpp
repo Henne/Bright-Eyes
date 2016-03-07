@@ -60,7 +60,7 @@ void diary_show(void)
 
 	get_textcolor(&fg_bak, &bg_bak);
 
-	ds_writed(0xd2fb, ds_readd(0xc3db));
+	ds_writed(0xd2fb, ds_readd(BUFFER9_PTR));
 	bak1 = ds_readw(0xd2d5);
 	bak2 = ds_readw(0xd2d9);
 	bak3 = ds_readw(0xd313);
@@ -82,12 +82,12 @@ void diary_show(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 
 	update_mouse_cursor();
 
-	set_palette(Real2Host(ds_readd(0xd303)) + 0xfa02, 0, 0x20);
+	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 0xfa02, 0, 0x20);
 
 	do_pic_copy(0);
 
@@ -152,7 +152,7 @@ Bit16u diary_print_entry(Bit16u line)
 	char *city_name;
 	signed short di = 0;
 
-	memset(Real2Host(ds_readd(0xc3db)), 0, 64000);
+	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 64000);
 
 	ptr = p_datseg + 0x43bc + line * 8;
 
@@ -214,16 +214,16 @@ Bit16u diary_print_entry(Bit16u line)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, line * 7);
-	ds_writed(0xc019, ds_readd(0xc3db));
+	ds_writed(0xc019, ds_readd(BUFFER9_PTR));
 #if !defined(__BORLANDC__)
 	ds_writed(0xc00d,
-		(Bit32u)(((RealPt)ds_readd(0xd303) + startline * 2240) + 9600));
+		(Bit32u)(((RealPt)ds_readd(BUFFER1_PTR) + startline * 2240) + 9600));
 #else
 	/* TODO: ugly hack */
 	/*	this calculation of the address of
 		a twodimiensional array is done
 		here with inline assembly */
-	calc_twodim_array_ptr(0xd303, 0x8c0, startline, 9600, 0xc00d);
+	calc_twodim_array_ptr(BUFFER1_PTR, 0x8c0, startline, 9600, 0xc00d);
 #endif
 	do_pic_copy(2);
 

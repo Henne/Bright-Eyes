@@ -968,7 +968,7 @@ RealPt spell_analues(void)
 	item_pos = select_item_to_drop(get_spelluser());
 	item_id = host_readws(get_spelluser() + 14 * item_pos + 0x196);
 
-	strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_dtp(0xd0));
+	strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_dtp(0xd0));
 
 	if (item_id) {
 
@@ -980,7 +980,7 @@ RealPt spell_analues(void)
 				if (ds_readws(0xac3e + i * 5) <= ds_readws(0xe5b2)) {
 
 					/* copy the matching result string */
-					strcpy((char*)Real2Host(ds_readd(0xd2eb)),
+					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 						(char*)get_dtp(ds_readbs(0xac40 + i * 5) * 4));
 
 					/* set the magic flag */
@@ -988,7 +988,7 @@ RealPt spell_analues(void)
 					break;
 				} else {
 					/* nothing found string */
-					strcpy((char*)Real2Host(ds_readd(0xd2eb)),
+					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 						(char*)get_dtp(0xdc));
 					break;
 				}
@@ -1002,10 +1002,10 @@ RealPt spell_analues(void)
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xd4),
 			(char*)get_spelluser() + 0x10,
-			(char*)Real2Host(ds_readd(0xd2eb)));
+			(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 	}
 
-	return (RealPt)ds_readd(0xd2eb);
+	return (RealPt)ds_readd(BUFFER4_PTR);
 }
 
 #if !defined(__BORLANDC__)

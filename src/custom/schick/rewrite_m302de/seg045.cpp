@@ -65,7 +65,7 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 	ds_writeb(0xe079, -1);
 
 	nvf.dst = Real2Host(ds_readd(0xd85a));
-	nvf.src = Real2Host(ds_readd(0xd866));
+	nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 	nvf.nr = ds_readbs(0xe068);
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&obj_x;
@@ -172,7 +172,7 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	struct nvf_desc nvf;
 
 	nvf.dst = Real2Host(ds_readd(0xd856));
-	nvf.src = Real2Host(ds_readd(0xd866));
+	nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 
 	nvf.nr = a.a[spell_ani_id - 1];
 	nvf.type = 0;

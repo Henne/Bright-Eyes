@@ -128,16 +128,16 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 		price = (di + 49) / 100;
 
 		/* generate a price string "%d^HELLER" */
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)p_datseg + 0x7096, price);
 	} else {
 		/* "NICHTS" */
-		strcpy((char*)Real2Host(ds_readd(0xd2eb)),
+		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)p_datseg + 0x70a0);
 	}
 	ds_writew(0x432a, price);
 
-	return (RealPt)ds_readd(0xd2eb);
+	return (RealPt)ds_readd(BUFFER4_PTR);
 
 }
 

@@ -233,13 +233,13 @@ RealPt get_informer_forename(void)
 				i++;
 			} while (tmp != ' ');
 
-			strncpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(4 * host_readws(p_info)), i);
+			strncpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(4 * host_readws(p_info)), i);
 #ifdef M302de_ORIGINAL_BUGFIX
 			break;
 #endif
 		}
 	}
-	return (RealPt)ds_readd(0xd2eb);
+	return (RealPt)ds_readd(BUFFER4_PTR);
 }
 
 /**
@@ -321,7 +321,7 @@ RealPt load_current_town_gossip(void)
 	ds_writews(0x2ccb, ds_writews(CURRENT_ANI, -1));
 
 	/* get the pointer to the ltx buffer */
-	ptr = Real2Host(ds_readd(0xd019));
+	ptr = Real2Host(ds_readd(BUFFER9_PTR3));
 
 	/* get some gossip */
 	gossip_id = get_tavern_gossip();
@@ -341,19 +341,19 @@ RealPt get_random_tavern_message(void)
 
 	if (!randval || randval == 19) {
 
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)Real2Host(ptr),
 			(char*)Real2Host(load_current_town_gossip()));
 
-		return (RealPt)ds_readd(0xd2eb);
+		return (RealPt)ds_readd(BUFFER4_PTR);
 
 	} else if (randval == 3) {
 
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)Real2Host(ptr),
 			(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 
-		return (RealPt)ds_readd(0xd2eb);
+		return (RealPt)ds_readd(BUFFER4_PTR);
 	} else {
 		return ptr;
 	}

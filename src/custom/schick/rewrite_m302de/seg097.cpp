@@ -134,7 +134,7 @@ void GUI_1c2(signed short v1, signed short v2, RealPt v3)
 {
 
 	GUI_blank_char();
-	GUI_font_to_buf(Real2Host(ds_readd(0xd2bd)) + v1 * 8);
+	GUI_font_to_buf(Real2Host(ds_readd(SPLASH_BUFFER)) + v1 * 8);
 	GUI_write_char_to_screen(v3, 8, v2);
 }
 
@@ -383,8 +383,8 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	refresh_screen_size();
 
 	if (num != 0) {
-		if (GUI_enter_text(Real2Host(ds_readd(0xd2ef)), ds_readws(0xbfff) + ((signed short)(l_di - num * 6) >> 1), ds_readws(0xc001) + l_si * 8 -2, num, 0) != -1) {
-			retval = (signed short)atol((char*)Real2Host(ds_readd(0xd2ef)));
+		if (GUI_enter_text(Real2Host(ds_readd(TEXT_INPUT_BUFFER)), ds_readws(0xbfff) + ((signed short)(l_di - num * 6) >> 1), ds_readws(0xc001) + l_si * 8 -2, num, 0) != -1) {
+			retval = (signed short)atol((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 		} else {
 			retval = -1;
 		}

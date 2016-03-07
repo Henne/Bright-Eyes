@@ -24,14 +24,14 @@ void prepare_map_marker(void)
 	/* load OBJECTS.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
 
-	read_archive_file(fd, Real2Host(ds_readd(0xd2b1)), 2000);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER6_PTR)), 2000);
 
 	bc_close(fd);
 
 
 	for (i = 0; i < 10; i++) {
-		nvf.dst = Real2Host(ds_readd(0xd2b1)) + 100 * i + 1000;
-		nvf.src = Real2Host(ds_readd(0xd2b1));
+		nvf.dst = Real2Host(ds_readd(BUFFER6_PTR)) + 100 * i + 1000;
+		nvf.src = Real2Host(ds_readd(BUFFER6_PTR));
 		nvf.nr = i;
 		nvf.type = 0;
 		nvf.width = (Bit8u*)&dummy;

@@ -824,9 +824,9 @@ void copy_from_archive_to_temp(unsigned short index, RealPt fname)
 		handle2 = bc__creat(fname, 0);
 
 		/* copy it */
-		while ( (len = read_archive_file(handle1, Real2Host(ds_readd(0xd303)), 60000)) && (len != -1))
+		while ( (len = read_archive_file(handle1, Real2Host(ds_readd(BUFFER1_PTR)), 60000)) && (len != -1))
 		{
-			bc__write(handle2, (RealPt)ds_readd(0xd303), len);
+			bc__write(handle2, (RealPt)ds_readd(BUFFER1_PTR), len);
 		}
 
 		bc_close(handle1);
@@ -846,9 +846,9 @@ void copy_file_to_temp(RealPt src_file, RealPt fname)
 		handle2 = bc__creat(fname, 0);
 
 		/* copy it */
-		while ( (len = bc__read(handle1, Real2Host(ds_readd(0xd303)), 60000)) && (len != -1))
+		while ( (len = bc__read(handle1, Real2Host(ds_readd(BUFFER1_PTR)), 60000)) && (len != -1))
 		{
-			bc__write(handle2, (RealPt)ds_readd(0xd303), len);
+			bc__write(handle2, (RealPt)ds_readd(BUFFER1_PTR), len);
 		}
 
 		bc_close(handle1);
@@ -974,7 +974,7 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
-			Real2Host(ds_readd(0xd2eb)), nvf->type);
+			Real2Host(ds_readd(BUFFER4_PTR)), nvf->type);
 #ifdef M302de_ORIGINAL_BUGFIX
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
@@ -3112,9 +3112,9 @@ void seg002_37c4(void)
 	RealPt p3;
 	struct dummy a = *(struct dummy*)(p_datseg + 0xc00d);
 
-	p1 = (RealPt)ds_readd(0xd2b1) + 2000;
-	p2 = (RealPt)ds_readd(0xd2b1) + 2100;
-	p3 = (RealPt)ds_readd(0xd2b1) + 1000;
+	p1 = (RealPt)ds_readd(BUFFER6_PTR) + 2000;
+	p2 = (RealPt)ds_readd(BUFFER6_PTR) + 2100;
+	p3 = (RealPt)ds_readd(BUFFER6_PTR) + 1000;
 
 	if ((ds_readws(0xe4a3) != 0) && (ds_readb(TRAVELING))) {
 
@@ -3857,7 +3857,7 @@ void draw_compass(void)
 		/* set src */
 		n.dst = Real2Host(ds_readd(ICON));
 		/* set dst */
-		n.src = Real2Host(ds_readd(0xd2b1));
+		n.src = Real2Host(ds_readd(BUFFER6_PTR));
 		/* set nr */
 		n.nr = ds_readbs(DIRECTION);
 		/* set type*/
@@ -5321,15 +5321,15 @@ signed short copy_protection(void)
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(0xd2ef)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 
 			/* transform the input string in uppercase letters and bitwise invert them */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(0xd2ef)) + i,
-					~toupper(host_readbs(Real2Host(ds_readd(0xd2ef)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
+					~toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
 			}
 
-			if (!strcmp((char*)(p_datseg + (0x46fc + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(0xd2ef)))) {
+			if (!strcmp((char*)(p_datseg + (0x46fc + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
 				return 1;
 			}
 		} else {
@@ -5350,15 +5350,15 @@ signed short copy_protection(void)
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(0xd2ef)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 
 			/* transform the input string in uppercase letters */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(0xd2ef)) + i,
-					toupper(host_readbs(Real2Host(ds_readd(0xd2ef)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
+					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
 			}
 
-			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((0x047ba + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(0xd2ef)))) {
+			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((0x047ba + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
 				return 1;
 			}
 		}

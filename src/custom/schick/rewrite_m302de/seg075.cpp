@@ -39,8 +39,8 @@ void DNG_floor_ceil(void)
 	signed short width, height;
 
 	/* Load ceiling */
-	nvf.dst = Real2Host(ds_readd(0xd303));
-	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
 	nvf.nr = 0;
 	nvf.type = (!ds_readbs(0xe48c)) ? 3 : 5;
 	nvf.width = (unsigned char*)&width;
@@ -49,8 +49,8 @@ void DNG_floor_ceil(void)
 
 
 	/* Load ceiling */
-	nvf.dst = Real2Host(ds_readd(0xd303)) + 0x4030;
-	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR)) + 0x4030;
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
 	nvf.nr = (!(ds_readbs(DIRECTION)&1)) ? 1 : 2;
 	nvf.type = (!ds_readbs(0xe48c)) ? 3 : 5;
 	nvf.width = (unsigned char*)&width;
@@ -377,8 +377,8 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 		}
 	}
 
-	nvf.dst = dst_ptr = Real2Host(ds_readd(0xd303)) + 0x7530;
-	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.dst = dst_ptr = Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530;
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
 	nvf.nr = a3;
 	nvf.width = (Bit8u*)&width;
 	nvf.height = (Bit8u*)&height;
@@ -416,7 +416,7 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 			height2 = 135 - a2;
 		}
 
-		ptr2 = Real2Host(ds_readd(0xd303)) + 208 * a2 + a1;
+		ptr2 = Real2Host(ds_readd(BUFFER1_PTR)) + 208 * a2 + a1;
 
 		if (!flag) {
 			copy_solid(ptr2, dst_ptr, width2, height2, 208, width, 128);
@@ -506,7 +506,7 @@ void DNG_stub5(void)
 	ds_writew(0xc013, ds_readw(0xce3f));
 	ds_writew(0xc015, ds_readw(0xce41) + 207);
 	ds_writew(0xc017, ds_readw(0xce3f) + 134);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 	update_mouse_cursor();
 
@@ -561,7 +561,7 @@ void DNG_lights(void)
 	if (div16(ds_readb((0xbd6e + 1))) != 11) {
 
 		/* copy palette */
-		memcpy(Real2Host(ds_readd(0xd2eb)), Real2Host(ds_readd(0xe404)), 0xc0);
+		memcpy(Real2Host(ds_readd(BUFFER4_PTR)), Real2Host(ds_readd(0xe404)), 0xc0);
 
 		if (!(ds_readb((0xbd6e + 1)) & 1)) {
 
@@ -589,17 +589,17 @@ void DNG_lights(void)
 
 		for (i = 0; i < 0xc0; i++) {
 
-			l2 = host_readbs(Real2Host(ds_readd(0xd2eb)) + i) - l1;
+			l2 = host_readbs(Real2Host(ds_readd(BUFFER4_PTR)) + i) - l1;
 
 			if (l2 < 0) {
 				l2 = 0;
 			}
 
-			host_writeb(Real2Host(ds_readd(0xd2eb)) + i, l2);
+			host_writeb(Real2Host(ds_readd(BUFFER4_PTR)) + i, l2);
 		}
 
 		wait_for_vsync();
-		set_palette(Real2Host(ds_readd(0xd2eb)), 0x80, 0x40);
+		set_palette(Real2Host(ds_readd(BUFFER4_PTR)), 0x80, 0x40);
 	}
 }
 
@@ -711,7 +711,7 @@ void DNG_open_door(void)
 	DNG_stub3();
 	DNG_stub4();
 
-	memmove(Real2Host(ds_readd(0xd303)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
+	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
 
 	if (!ds_readb(0x3616)) {
 		x = 45;
@@ -737,7 +737,7 @@ void DNG_open_door(void)
 
 		DNG_stub5();
 
-		memmove(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
+		memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
 	}
 
 	refresh_screen_size();
@@ -757,7 +757,7 @@ void DNG_close_door(void)
 	DNG_stub3();
 	DNG_stub4();
 
-	memmove(Real2Host(ds_readd(0xd303)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
+	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
 
 	if (!ds_readb(0x3616)) {
 		x = 45;
@@ -783,7 +783,7 @@ void DNG_close_door(void)
 
 		DNG_stub5();
 
-		memmove(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
+		memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
 	}
 
 	refresh_screen_size();
@@ -829,24 +829,24 @@ void DNG_stub6(void)
 
 				hero2 = Real2Host(get_second_hero_available_in_group());
 
-				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)get_ltx(0xc04),
 					hero1 + HERO_NAME2,
 					hero2 + HERO_NAME2);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)Real2Host(ds_readd(0xd2eb)));
+					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 				if (test_attrib(hero1, 4, 2) <= 0) {
 
-					sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 						(char*)get_ltx(0xc08),
 						hero1 + HERO_NAME2,
 						hero2 + HERO_NAME2,
 						l_si = random_schick(3) + 1);
 
 					strcat((char*)Real2Host(ds_readd(DTP2)),
-						(char*)Real2Host(ds_readd(0xd2eb)));
+						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 					sub_hero_le(hero2, l_si);
 				}
@@ -875,14 +875,14 @@ void DNG_stub6(void)
 
 				} while (l_di);
 
-				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)get_ltx(0xc0c),
 					hero_auto + 0x10,
 					Real2Host(GUI_get_ptr(host_readbs(hero_auto + 0x22), 0)),
 					Real2Host(GUI_get_ptr(host_readbs(hero_auto + 0x22), 2)));
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)Real2Host(ds_readd(0xd2eb)));
+					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 			}
 
@@ -1065,15 +1065,15 @@ mark2:			   goto mark1;
 
 	if (dungeon_id == 14) {
 
-		ptr = Real2Host(ds_readd(0xd303)) + 0x1f4;
-		memset(Real2Host(ds_readd(0xd303)), 0, 0x120);
-		memcpy(Real2Host(ds_readd(0xd303)) + 0x1f4, p_datseg + 0x3e53, 0x120);
+		ptr = Real2Host(ds_readd(BUFFER1_PTR)) + 0x1f4;
+		memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0x120);
+		memcpy(Real2Host(ds_readd(BUFFER1_PTR)) + 0x1f4, p_datseg + 0x3e53, 0x120);
 
 		for (i = 0; i < 0x40; i++) {
 
-			pal_fade(ptr, Real2Host(ds_readd(0xd303)));
-			pal_fade(ptr + 0x60, Real2Host(ds_readd(0xd303)) + 0x60);
-			pal_fade(ptr + 0xc0, Real2Host(ds_readd(0xd303)) + 0xc0);
+			pal_fade(ptr, Real2Host(ds_readd(BUFFER1_PTR)));
+			pal_fade(ptr + 0x60, Real2Host(ds_readd(BUFFER1_PTR)) + 0x60);
+			pal_fade(ptr + 0xc0, Real2Host(ds_readd(BUFFER1_PTR)) + 0xc0);
 
 			wait_for_vsync();
 
@@ -1081,12 +1081,12 @@ mark2:			   goto mark1;
 			set_palette(ptr + 0x60, 0x80, 0x40);
 		}
 
-		do_fill_rect((RealPt)ds_readd(0xd303), 0, 0, 319, 199, 0);
+		do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
 		ds_writew(0xc011, 0);
 		ds_writew(0xc013, 0);
 		ds_writew(0xc015, 240);
 		ds_writew(0xc017, 136);
-		ds_writed(0xc019, ds_readd(0xd303));
+		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 		update_mouse_cursor();
 		do_pic_copy(1);
 		refresh_screen_size();

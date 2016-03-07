@@ -218,7 +218,7 @@ void seg074_305(signed short x_off)
 	ds_writew(0xc017, 6);
 
 	/* set buffer to 0 */
-	memset(Real2Host(ds_readd(0xd303)), 0, 64000);
+	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 64000);
 
 	for (y = 0; y < 16; y++) {
 		for (x = 0; x < 16; x++) {
@@ -322,7 +322,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 	l_di <<= 3;
 	l_di *= 320;
 
-	dst = (RealPt)ds_readd(0xd303) + l_di + 8 * x + 0xca8;
+	dst = (RealPt)ds_readd(BUFFER1_PTR) + l_di + 8 * x + 0xca8;
 
 	for (i = 0; i < 49; i++) {
 		array[i] = (signed char)color;
@@ -332,27 +332,27 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 
 		if (dir == 0) {
 
-			memcpy(Real2Host(ds_readd(0xd2eb)), p_datseg + 0x7d52, 49);
+			memcpy(Real2Host(ds_readd(BUFFER4_PTR)), p_datseg + 0x7d52, 49);
 
 		} else if (dir == 2) {
 
 			for (i = 0; i < 49; i++) {
-				host_writeb(Real2Host(ds_readd(0xd2eb)) + i, ds_readb(0x7d52 + (48 - i)));
+				host_writeb(Real2Host(ds_readd(BUFFER4_PTR)) + i, ds_readb(0x7d52 + (48 - i)));
 			}
 
 		} else if (dir == 1) {
 
-			memcpy(Real2Host(ds_readd(0xd2eb)), p_datseg + 0x7d83, 49);
+			memcpy(Real2Host(ds_readd(BUFFER4_PTR)), p_datseg + 0x7d83, 49);
 
 		} else {
 
 			for (i = 0; i < 49; i++) {
-				host_writeb(Real2Host(ds_readd(0xd2eb)) + i, ds_readb(0x7d83 + (48 - i)));
+				host_writeb(Real2Host(ds_readd(BUFFER4_PTR)) + i, ds_readb(0x7d83 + (48 - i)));
 			}
 		}
 
 		for (i = 0; i < 49; i++) {
-			if (!host_readbs(Real2Host(ds_readd(0xd2eb)) + i)) {
+			if (!host_readbs(Real2Host(ds_readd(BUFFER4_PTR)) + i)) {
 				array[i] = 0;
 			}
 		}
@@ -413,7 +413,7 @@ void draw_automap_entrance(signed short x, signed short y, signed short dir)
 	l_si <<= 3;
 	l_si *= 320;
 
-	dst = Real2Host(ds_readd(0xd303)) + l_si + 8 * x + 0xca8;
+	dst = Real2Host(ds_readd(BUFFER1_PTR)) + l_si + 8 * x + 0xca8;
 
 	if (!d) {
 		dst += 2;
@@ -455,7 +455,7 @@ void draw_automap_to_screen(void)
 	ds_writew(0x2996, ds_readw(0xce41) + 208);
 	ds_writew(0x2994, ds_readw(0xce3f) + 135);
 
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 	ds_writew(0xc011, 0);
 	ds_writew(0xc013, 0);

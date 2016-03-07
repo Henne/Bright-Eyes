@@ -94,7 +94,7 @@ void draw_fight_screen_pal(signed short mode)
 		/* set palettes */
 		set_palette(p_datseg + 0x2783, 0x00, 0x20);
 		set_palette(p_datseg + 0x7d0e, 0x80, 0x14);
-		set_palette(Real2Host((RealPt)ds_readd(0xc3a9) + 0xfa02), 0x60, 0x20);
+		set_palette(Real2Host((RealPt)ds_readd(BUFFER8_PTR) + 0xfa02), 0x60, 0x20);
 
 		ds_writeb(0x2845, -1);
 
@@ -767,7 +767,7 @@ void FIG_load_ship_sprites(void)
 				ptr = Real2Host(ds_readd(0xd86e));
 
 				nvf.dst = ptr;
-				nvf.src = Real2Host(ds_readd(0xbd30));
+				nvf.src = Real2Host(ds_readd(FIGHTOBJ_BUF));
 				nvf.nr = l_si;
 				nvf.type = 0;
 				nvf.width = (Bit8u*)&width;
@@ -812,7 +812,7 @@ void FIG_load_ship_sprites(void)
 			ds_writew(0xc015, l3 + host_readws(Real2Host(ds_readd(0xe384)) + 2 * l_si) - 1);
 			ds_writew(0xc017, l4 + host_readws(Real2Host(ds_readd(0xe380)) + 2 * l_si) - 1);
 			ds_writed(0xc019, host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si));
-			ds_writed(0xc00d, ds_readd(0xc3a9));
+			ds_writed(0xc00d, ds_readd(BUFFER8_PTR));
 
 			do_pic_copy(2);
 
@@ -872,7 +872,7 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	/* set some pointers */
-	ds_writed(SCENARIO_BUF, (Bit32u)F_PADD(ds_readd(0xc3a9), 64100));
+	ds_writed(SCENARIO_BUF, (Bit32u)F_PADD(ds_readd(BUFFER8_PTR), 64100));
 	ds_writed(MONSTER_DAT_BUF, (Bit32u)F_PADD(ds_readd(SCENARIO_BUF), 621));
 	ds_writed(PTR_FIGHT_LST, (Bit32u)F_PADD(ds_readd(MONSTER_DAT_BUF), 3476));
 
@@ -922,7 +922,7 @@ signed short do_fight(signed short fight_nr)
 
 	/* open OBJECTS.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(0xd2e3)), 3000);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER3_PTR)), 3000);
 	bc_close(fd);
 
 	FIG_chessboard_init();
@@ -931,7 +931,7 @@ signed short do_fight(signed short fight_nr)
 
 	/* open FIGHTOBJ.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_FIGHTOBJ_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(0xbd30)), 16919);
+	read_archive_file(fd, Real2Host(ds_readd(FIGHTOBJ_BUF)), 16919);
 	bc_close(fd);
 
 	set_var_to_zero();
@@ -953,12 +953,12 @@ signed short do_fight(signed short fight_nr)
 
 	/* open WEAPONS.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_WEAPONS_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(0xd86a)), 6483);
+	read_archive_file(fd, Real2Host(ds_readd(WEAPONS_NVF_BUF)), 6483);
 	bc_close(fd);
 
 	/* open SPELLOBJ.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_SPELLOBJ_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(0xd866)), 3935);
+	read_archive_file(fd, Real2Host(ds_readd(SPELLOBJ_NVF_BUF)), 3935);
 	bc_close(fd);
 
 	FIG_init_enemies();
@@ -1195,7 +1195,7 @@ signed short do_fight(signed short fight_nr)
 
 	refresh_colors();
 
-	ds_writed(0xbff9, ds_readd(0xd303));
+	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 
 	if (!ds_readb(TRAVELING)) {
 		seg028_0555(ds_readbs(DUNGEON_INDEX) != 0 ? 0 : 1);

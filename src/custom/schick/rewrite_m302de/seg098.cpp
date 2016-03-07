@@ -162,9 +162,9 @@ void magic_heal_ani(Bit8u *hero)
 
 	/* load SPSTAR.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_SPSTAR_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 0x400);
-	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)) + 0x400, 0x400);
-	read_archive_file(fd, Real2Host(ds_readd(0xc3a9)) + 0x800, 0x400);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)), 0x400);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)) + 0x400, 0x400);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)) + 0x800, 0x400);
 	bc_close(fd);
 
 	target_nr = host_readbs(hero + HERO_ENEMY_ID) - 1;
@@ -182,12 +182,12 @@ void magic_heal_ani(Bit8u *hero)
 		ds_writew(0xc013, 0);
 		ds_writew(0xc015, 31);
 		ds_writew(0xc017, 31);
-		ds_writed(0xc00d, ds_readd(0xd303));
+		ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 		ds_writed(0xc019, (Bit32u)(target + 0x2da));
 		do_pic_copy(0);
 
 		/* copy stars over it */
-		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xc3a9) + (a.a[i] * 1024)));
+		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + (a.a[i] * 1024)));
 		do_pic_copy(2);
 
 		/* copy buffer content to screen */
@@ -195,7 +195,7 @@ void magic_heal_ani(Bit8u *hero)
 		ds_writew(0xc013, 157);
 		ds_writew(0xc015, ds_readw(0x2d01 + 2 * target_nr) + 31);
 		ds_writew(0xc017, 188);
-		ds_writed(0xc019, ds_readd(0xd303));
+		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 		ds_writed(0xc00d, ds_readd(0xd2ff));
 		do_pic_copy(3);
 
@@ -557,17 +557,17 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 
 	if (show_vals == 1) {
 
-		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x334));
+		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x334));
 
 		if (host_readbs(hero + HERO_SP_RISE) > 1) {
-			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+			strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x330),
 			(host_readbs(hero + HERO_SP_RISE) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
 			host_readbs(hero + HERO_SP_RISE),
-			Real2Host(ds_readd(0xd2eb)));
+			Real2Host(ds_readd(BUFFER4_PTR)));
 
 		answer1 = GUI_radio(Real2Host(ds_readd(DTP2)), 12,
 					get_ltx(0x300), get_ltx(0x304),

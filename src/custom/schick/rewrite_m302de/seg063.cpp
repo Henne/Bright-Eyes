@@ -337,8 +337,8 @@ void do_harbour(void)
 				ds_writews(CURRENT_ANI, -1);
 				ds_writew(0xe113, 0);
 
-				memmove(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0x432e)), 64000);
-				map_effect(Real2Host(ds_readd(0xd303)));
+				memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(0x432e)), 64000);
+				map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 
 				wait_for_vsync();
 
@@ -380,7 +380,7 @@ void do_harbour(void)
 	} while (!done);
 
 	l_si = load_archive_file(ARCHIVE_FILE_COMPASS);
-	read_archive_file(l_si, Real2Host(ds_readd(0xd2b1)), 5000);
+	read_archive_file(l_si, Real2Host(ds_readd(BUFFER6_PTR)), 5000);
 	bc_close(l_si);
 
 	set_var_to_zero();
@@ -432,7 +432,7 @@ void sea_travel(signed short passage, signed short dir)
 
 	ds_writeb(0xa842, 1);
 
-	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(0xc3db), 7600) : F_PADD(ds_readd(0xc3db), 11400)));
+	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(0xc3db), 11400)));
 	ds_writew(0x4236, passage < 7 ? 7 : 38);
 	ds_writew(0x423e, passage < 7 ? passage : passage - 7);
 

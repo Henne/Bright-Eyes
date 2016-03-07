@@ -498,7 +498,7 @@ void GRP_move_hero(signed short src_pos)
 		ds_writew(0xc013, 157);
 		ds_writew(0xc015, ds_readw(0x2d01 + 2 * src_pos) + 31);
 		ds_writew(0xc017, 188);
-		ds_writed(0xc019, ds_readd(0xd303));
+		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 		do_save_rect();
 
@@ -536,7 +536,7 @@ void GRP_move_hero(signed short src_pos)
 
 				do_save_rect();
 
-				ds_writed(0xc019, ds_readd(0xd303));
+				ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 				do_pic_copy(0);
 
@@ -578,7 +578,7 @@ void GRP_move_hero(signed short src_pos)
 					}
 				}
 
-				memcpy(Real2Host(ds_readd(0xd303)), src, SIZEOF_HERO);
+				memcpy(Real2Host(ds_readd(BUFFER1_PTR)), src, SIZEOF_HERO);
 
 				bak1 = ds_readbs(0xe3d6 + src_pos);
 				bak2 = ds_readbs(0xe3cf + src_pos);
@@ -592,7 +592,7 @@ void GRP_move_hero(signed short src_pos)
 				ds_writeb(0xe3c8 + src_pos, ds_readbs(0xe3c8 + dst_pos));
 				ds_writeb(0xe3c1 + src_pos, ds_readbs(0xe3c1 + dst_pos));
 
-				memcpy(dst, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
+				memcpy(dst, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
 
 				ds_writeb(0xe3d6 + dst_pos, bak1);
 				ds_writeb(0xe3cf + dst_pos, bak2);
@@ -685,17 +685,17 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 						add_hero_le(hero, le_regen);
 
-						strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+						strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
 
 						if (le_regen > 1) {
-							strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+							strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 						}
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x4fc),
 							hero + HERO_NAME2,
 							le_regen,
-							(char*)Real2Host(ds_readd(0xd2eb)));
+							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 						if (ds_readbs(0x2845) == 0) {
 							GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 							delay_or_keypress(200);
@@ -719,17 +719,17 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 							add_hero_ae(hero, ae_regen);
 
-							strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+							strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
 
 							if (ae_regen > 1) {
-								strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+								strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 							}
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x500),
 								hero + HERO_NAME2,
 								ae_regen,
-								(char*)Real2Host(ds_readd(0xd2eb)));
+								(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 							if (ds_readbs(0x2845) == 0) {
 								GUI_print_loc_line(Real2Host(ds_readd(DTP2)));

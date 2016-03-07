@@ -744,11 +744,11 @@ void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)
 			/* drop 1 item */
 			drop_item(hero, pos, 1);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)text, hero + HERO_NAME2,
 				Real2Host(GUI_names_grammar(0, item, 0)));
 
-			GUI_output(Real2Host(ds_readd(0xd2eb)));
+			GUI_output(Real2Host(ds_readd(BUFFER4_PTR)));
 
 			return;
 		}

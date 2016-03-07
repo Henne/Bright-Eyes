@@ -109,13 +109,13 @@ void spell_exposami(void)
 			(char*)get_dtp(0x7c));
 
 		for (i = 0; count - 1 > i; i++) {
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)get_dtp(0x84),		/* "%d %s" */
 				arr[i][1],
 				(char*)Real2Host(GUI_names_grammar(((arr[i][1] > 1)? 4 : 0) + 0x4000,
 									arr[i][0], 1)));
 			strcat((char*)Real2Host(ds_readd(DTP2)),
-				(char*)Real2Host(ds_readd(0xd2eb)));
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 			if (count - 2 > i) {
 				strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -128,14 +128,14 @@ void spell_exposami(void)
 				(char*)get_dtp(0x74));		/* "AND" */
 		}
 
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)get_dtp(0x84),
 			arr[count - 1][1],	/* TODO: this field access produces other code */
 			(char*)Real2Host(GUI_names_grammar((arr[count - 1][1] > 1 ? 4 : 0) + 0x4000,
 								arr[count - 1][0], 1)));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			(char*)Real2Host(ds_readd(0xd2eb)));
+			(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x78));			/* "." */
@@ -277,7 +277,7 @@ void spell_hexenknoten(void)
 	} else {
 		rp = (RealPt)ds_readd(0xd86e);
 		nvf.dst = Real2Host(rp);
-		nvf.src = Real2Host(ds_readd(0xd866));
+		nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 		nvf.nr = nr;
 		nvf.type = 0;
 		nvf.width = (Bit8u*)&width;

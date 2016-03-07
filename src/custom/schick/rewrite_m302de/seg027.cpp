@@ -41,18 +41,18 @@ void load_pp20(signed short index)
 		if (index == ARCHIVE_FILE_ZUSTA_US)
 			bi = 8;
 
-		if (ds_readd(0x5e6a + bi * 4)) {
+		if (ds_readd(PP20_BUFFERS + bi * 4)) {
 
 			/* already buffered, just decomp */
-			decomp_pp20(Real2Host(ds_readd(0x5e6a + bi * 4)),
-				Real2Host(ds_readd(0xd303)),
+			decomp_pp20(Real2Host(ds_readd(PP20_BUFFERS + bi * 4)),
+				Real2Host(ds_readd(BUFFER1_PTR)),
 #if !defined(__BORLANDC__)
-				Real2Host(ds_readd(0x5e6a) + 4 + bi) + 4,
+				Real2Host(ds_readd(PP20_BUFFERS) + 4 + bi) + 4,
 #else
-				ds_readw(0x5e6a + 4 * bi) + 4,
+				ds_readw(PP20_BUFFERS + 4 * bi) + 4,
 				ds_readw(0x5e6c + 4 * bi),
 #endif
-				ds_readd(0x5e8e + bi * 4));
+				ds_readd(PP20_BUFFER_LENGTHS + bi * 4));
 
 		} else {
 			fd = load_archive_file(index);
@@ -61,25 +61,25 @@ void load_pp20(signed short index)
 				/* successful allocation */
 
 				/* save pointer */
-				ds_writed(0x5e6a + bi * 4, (Bit32u)buffer_ptr);
+				ds_writed(PP20_BUFFERS + bi * 4, (Bit32u)buffer_ptr);
 				/* save length */
-				ds_writed(0x5e8e + bi * 4, get_readlength2(fd));
+				ds_writed(PP20_BUFFER_LENGTHS + bi * 4, get_readlength2(fd));
 
 				/* read pic */
 				read_archive_file(fd,
-					Real2Host(ds_readd(0x5e6a + bi * 4)),
-					ds_readw(0x5e8e + bi * 4));
+					Real2Host(ds_readd(PP20_BUFFERS + bi * 4)),
+					ds_readw(PP20_BUFFER_LENGTHS + bi * 4));
 
 				/* decompress */
-				decomp_pp20(Real2Host(ds_readd(0x5e6a + bi * 4)),
-					Real2Host(ds_readd(0xd303)),
+				decomp_pp20(Real2Host(ds_readd(PP20_BUFFERS + bi * 4)),
+					Real2Host(ds_readd(BUFFER1_PTR)),
 #if !defined(__BORLANDC__)
-					Real2Host(ds_readd(0x5e6a + 4 + bi)) + 4,
+					Real2Host(ds_readd(PP20_BUFFERS + 4 + bi)) + 4,
 #else
-					ds_readw((0x5e6a + 0) + bi * 4) + 4,
-					ds_readw((0x5e6a + 2) + bi * 4),
+					ds_readw((PP20_BUFFERS + 0) + bi * 4) + 4,
+					ds_readw((PP20_BUFFERS + 2) + bi * 4),
 #endif
-					ds_readd(0x5e8e + bi * 4));
+					ds_readd(PP20_BUFFER_LENGTHS + bi * 4));
 
 				bc_close(fd);
 			} else {
@@ -87,17 +87,17 @@ void load_pp20(signed short index)
 
 				/* read it directly */
 				read_archive_file(fd,
-					Real2Host(ds_readd(0xd303)) -8,
+					Real2Host(ds_readd(BUFFER1_PTR)) -8,
 					64000);
 
 				/* decompress it */
-				decomp_pp20(Real2Host(ds_readd(0xd303)) -8,
-					Real2Host(ds_readd(0xd303)),
+				decomp_pp20(Real2Host(ds_readd(BUFFER1_PTR)) -8,
+					Real2Host(ds_readd(BUFFER1_PTR)),
 #if !defined(__BORLANDC__)
-					Real2Host(ds_readd(0xd303)) -8 +4,
+					Real2Host(ds_readd(BUFFER1_PTR)) -8 +4,
 #else
-					FP_OFF((RealPt)ds_readd(0xd303) -8) +4,
-					FP_SEG((RealPt)ds_readd(0xd303) -8),
+					FP_OFF((RealPt)ds_readd(BUFFER1_PTR) -8) +4,
+					FP_SEG((RealPt)ds_readd(BUFFER1_PTR) -8),
 #endif
 					get_readlength2(fd));
 
@@ -109,16 +109,16 @@ void load_pp20(signed short index)
 
 		fd = load_archive_file(index);
 
-		read_archive_file(fd, Real2Host(ds_readd(0xd303)) - 8, 64000);
+		read_archive_file(fd, Real2Host(ds_readd(BUFFER1_PTR)) - 8, 64000);
 
 		/* decompress it */
-		decomp_pp20(Real2Host(ds_readd(0xd303)) -8,
-			Real2Host(ds_readd(0xd303)),
+		decomp_pp20(Real2Host(ds_readd(BUFFER1_PTR)) -8,
+			Real2Host(ds_readd(BUFFER1_PTR)),
 #if !defined(__BORLANDC__)
-			Real2Host(ds_readd(0xd303) - 8 + 4),
+			Real2Host(ds_readd(BUFFER1_PTR) - 8 + 4),
 #else
-			FP_OFF((RealPt)ds_readd(0xd303) - 8) + 4,
-			FP_SEG((RealPt)ds_readd(0xd303) - 8),
+			FP_OFF((RealPt)ds_readd(BUFFER1_PTR) - 8) + 4,
+			FP_SEG((RealPt)ds_readd(BUFFER1_PTR) - 8),
 #endif
 			get_readlength2(fd));
 
@@ -151,20 +151,20 @@ RealPt load_fight_figs(signed short fig)
 
 	/* check if fig is at a known place */
 	if (fig == ds_readws(0x2cd1)) {
-		return (RealPt)ds_readd(0xd2df);
+		return (RealPt)ds_readd(BUFFER12_PTR);
 	} else if (fig == ds_readws(0x2cd3)) {
-			return (RealPt)ds_readd(0xd2db);
+			return (RealPt)ds_readd(BUFFER11_PTR);
 	} else if (ds_readws(0x2cd3) != -1) {
 		ds_writew(0x2cd1, ds_readw(0x2cd3));
-		memcpy(Real2Host(ds_readd(0xd2df)),
-			Real2Host(ds_readd(0xd2db)), 20000);
-		src = (RealPt)ds_readd(0xd2db);
+		memcpy(Real2Host(ds_readd(BUFFER12_PTR)),
+			Real2Host(ds_readd(BUFFER11_PTR)), 20000);
+		src = (RealPt)ds_readd(BUFFER11_PTR);
 		ds_writew(0x2cd3, fig);
 	} else if (ds_readws(0x2cd1) != -1) {
-		src = (RealPt)ds_readd(0xd2db);
+		src = (RealPt)ds_readd(BUFFER11_PTR);
 		ds_writew(0x2cd3, fig);
 	} else {
-		src = (RealPt)ds_readd(0xd2df);
+		src = (RealPt)ds_readd(BUFFER12_PTR);
 		ds_writew(0x2cd1, fig);
 	}
 
@@ -174,7 +174,7 @@ RealPt load_fight_figs(signed short fig)
 		/* ...for foes */
 		max_entries = 36;
 		mem_slots = Real2Host(ds_readd(MEM_SLOTS_MON));
-		p_tab = p_datseg + 0xd01d;
+		p_tab = p_datseg + BUFFER_MONSTER_TAB;
 		index = 16;
 		fig -= 88;
 	} else {
@@ -183,13 +183,13 @@ RealPt load_fight_figs(signed short fig)
 
 		if (fig >= 44) {
 			/* female */
-			p_tab = p_datseg + 0xd0ad;
+			p_tab = p_datseg + BUFFER_WFIGS_TAB;
 			index = ARCHIVE_FILE_WFIGS;
 			mem_slots = Real2Host(ds_readd(MEM_SLOTS_WFIG));
 			fig -= 44;
 		} else {
 			/* male */
-			p_tab = p_datseg + 0xd159;
+			p_tab = p_datseg + BUFFER_MFIGS_TAB;
 			index = ARCHIVE_FILE_MFIGS;
 			mem_slots = Real2Host(ds_readd(MEM_SLOTS_MFIG));
 		}
@@ -346,7 +346,7 @@ void load_ani(const signed short nr)
 	if (i != 37) {
 		/* already buffered in EMS, get from there */
 		ems_handle = host_readw(Real2Host(ds_readd(0xe121)) + i * 8 + 2);
-		from_EMS((RealPt)ds_readd(0xc3db), ems_handle,
+		from_EMS((RealPt)ds_readd(BUFFER9_PTR), ems_handle,
 			host_readd(Real2Host(ds_readd(0xe121)) + i * 8 + 4));
 	} else {
 		/* load it from file */
@@ -357,7 +357,7 @@ void load_ani(const signed short nr)
 		fd = load_archive_file(ARCHIVE_FILE_ANIS);
 		/* seek to ordered ani */
 		seg002_0c72(fd, ani_off, 0);
-		read_archive_file(fd, Real2Host(ds_readd(0xc3db)),
+		read_archive_file(fd, Real2Host(ds_readd(BUFFER9_PTR)),
 			(unsigned short)ani_len);
 
 		/* if EMS is enabled buffer it */
@@ -379,21 +379,21 @@ void load_ani(const signed short nr)
 				ani_len);
 
 			/* copy data to EMS */
-			to_EMS(ems_handle, (RealPt)ds_readd(0xc3db), ani_len);
+			to_EMS(ems_handle, (RealPt)ds_readd(BUFFER9_PTR), ani_len);
 		}
 
 		bc_close(fd);
 	}
 
-	ani_buffer = (RealPt)ds_readd(0xc3db);
+	ani_buffer = (RealPt)ds_readd(BUFFER9_PTR);
 
 	/* set start of picture data */
 	ds_writed(ANI_MAIN_PTR,
-		(Bit32u)(F_PADD(ani_buffer, host_readd(Real2Host(ds_readd(0xc3db))))));
+		(Bit32u)(F_PADD(ani_buffer, host_readd(Real2Host(ds_readd(BUFFER9_PTR))))));
 	/* set start of palette */
 	ds_writed(0xce3b,
-		(Bit32u)(F_PADD(F_PADD(ani_buffer, host_readd(Real2Host(F_PADD(ds_readd(0xc3db), 4L)))), 6L)));
-	//	(Bit32u)(host_readd(Real2Host(ds_readd(0xc3db)) + 4) + ani_buffer + 6));
+		(Bit32u)(F_PADD(F_PADD(ani_buffer, host_readd(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 4L)))), 6L)));
+	//	(Bit32u)(host_readd(Real2Host(ds_readd(BUFFER9_PTR)) + 4) + ani_buffer + 6));
 
 	/* read some bytes between data and palette */
 	ds_writew(0xc3e9,
@@ -409,10 +409,10 @@ void load_ani(const signed short nr)
 	p6 = Real2Host(F_PADD(ds_readd(0xce3b), 3 * ds_readb(0xce3a)));
 
 	/* set picture size */
-	ds_writew(0xc3e7, host_readw(Real2Host(F_PADD(ds_readd(0xc3db), 8))));
-	ds_writeb(0xc3ed, host_readb(Real2Host(F_PADD(ds_readd(0xc3db), 10))));
+	ds_writew(0xc3e7, host_readw(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 8))));
+	ds_writeb(0xc3ed, host_readb(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 10))));
 	/* set number of areas */
-	ds_writeb(0xc3ee, host_readb(Real2Host(F_PADD(ds_readd(0xc3db), 11))));
+	ds_writeb(0xc3ee, host_readb(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 11))));
 
 	/* Process Main Picture */
 	if (ds_readb(0xce39) != 0) {
@@ -425,7 +425,7 @@ void load_ani(const signed short nr)
 		len_3 = swap_u32(len_3) >> 8;
 
 		decomp_pp20(Real2Host(ds_readd(ANI_MAIN_PTR)),
-			Real2Host(ds_readd(0xd303)),
+			Real2Host(ds_readd(BUFFER1_PTR)),
 #if !defined(__BORLANDC__)
 			Real2Host(ds_readd(ANI_MAIN_PTR) + 4),
 #else
@@ -441,7 +441,7 @@ void load_ani(const signed short nr)
 		memcpy(p6 + offset, dst, len);
 
 		memcpy(Real2Host(ds_readd(ANI_MAIN_PTR)),
-			Real2Host(ds_readd(0xd303)), len_3);
+			Real2Host(ds_readd(BUFFER1_PTR)), len_3);
 		dst += offset;
 		memcpy(dst, p6 + offset, len);
 
@@ -457,8 +457,8 @@ void load_ani(const signed short nr)
 	/* Process the Areas */
 	for (i_area = 0; ds_readbs(0xc3ee) > i_area; i_area++) {
 		p5 = Real2Host(RealMake(datseg, 0xc3ef + i_area * 0x107));
-		p3 = host_readd(Real2Host(F_PADD(F_PADD(ds_readd(0xc3db), 4 * i_area), 0xc)));
-		p_area = Real2Host(F_PADD(ds_readd(0xc3db), p3));
+		p3 = host_readd(Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), 4 * i_area), 0xc)));
+		p_area = Real2Host(F_PADD(ds_readd(BUFFER9_PTR), p3));
 		strncpy((char*)p5, (char*)p_area, 4);
 
 		host_writew(p5 + 5, host_readw(p_area + 4));
@@ -473,34 +473,34 @@ void load_ani(const signed short nr)
 
 			p4 = host_readd(p_area + 0xc);
 			p4 += offset;
-			p1 = Real2Host(F_PADD(ds_readd(0xc3db), p4));
+			p1 = Real2Host(F_PADD(ds_readd(BUFFER9_PTR), p4));
 
 			len_4 = host_readd(p1);
 			p1 += (len_4 - 4);
 			area_size = host_readd(p1);
 			area_size = swap_u32(area_size) >> 8;
 
-			decomp_pp20(Real2Host(F_PADD(ds_readd(0xc3db), p4)),
-				Real2Host(ds_readd(0xd303)),
+			decomp_pp20(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), p4)),
+				Real2Host(ds_readd(BUFFER1_PTR)),
 #if !defined(__BORLANDC__)
-				Real2Host(ds_readd(0xc3db)) + p4 + 4,
+				Real2Host(ds_readd(BUFFER9_PTR)) + p4 + 4,
 #else
-				FP_OFF(F_PADD(ds_readd(0xc3db), p4)) + 4,
-				FP_SEG(F_PADD(ds_readd(0xc3db), p4)),
+				FP_OFF(F_PADD(ds_readd(BUFFER9_PTR), p4)) + 4,
+				FP_SEG(F_PADD(ds_readd(BUFFER9_PTR), p4)),
 #endif
 				len_4);
 
 			offset_2 = area_size - len_4;
 			offset += offset_2;
 
-			dst = Real2Host(ds_readd(0xc3db));
+			dst = Real2Host(ds_readd(BUFFER9_PTR));
 			dst += p4;
 			dst += len_4;
 			len = p6 - dst;
 			memcpy(p6 + offset_2, dst, (unsigned short)len);
 
-			memcpy(Real2Host(F_PADD(ds_readd(0xc3db), p4)),
-				Real2Host(ds_readd(0xd303)), (unsigned short)area_size);
+			memcpy(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), p4)),
+				Real2Host(ds_readd(BUFFER1_PTR)), (unsigned short)area_size);
 			dst += offset_2;
 			memcpy(dst, p6 + offset_2, (unsigned short)len);
 #if !defined(__BORLANDC__)
@@ -514,13 +514,13 @@ void load_ani(const signed short nr)
 
 			for (di = 0; di < area_pics; di++) {
 				host_writed(p5 + di * 4 + 0xd,
-					(Bit32u)(F_PADD(F_PADD(ds_readd(0xc3db), p4), di * area_size)));
+					(Bit32u)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), p4), di * area_size)));
 			}
 		} else {
 			for (di = 0; di < area_pics; di++) {
 				p4 = host_readd(p_area + di * 4 + 0xc);
 				host_writed(p5 + di * 4 + 0x0d,
-					(Bit32u)(F_PADD(ds_readd(0xc3db), p4)));
+					(Bit32u)(F_PADD(ds_readd(BUFFER9_PTR), p4)));
 			}
 		}
 
@@ -535,7 +535,7 @@ void load_ani(const signed short nr)
 		}
 	}
 
-	ani_len = p6 - Real2Host(ds_readd(0xc3db));
+	ani_len = p6 - Real2Host(ds_readd(BUFFER9_PTR));
 	/* this is always true */
 	if (ani_len > (Bit32s)ds_readd(0xce43)) {
 		ds_writew(0x2ccb, 0xffff);
@@ -703,7 +703,7 @@ void init_common_buffers(void)
 		bytes);
 
 	fd = load_archive_file(ARCHIVE_FILE_COMPASS);
-	bytes = read_archive_file(fd, Real2Host(ds_readd(0xd2b1)), 5000);
+	bytes = read_archive_file(fd, Real2Host(ds_readd(BUFFER6_PTR)), 5000);
 	bc_close(fd);
 
 	fd = load_archive_file(ARCHIVE_FILE_ITEMS_DAT);
@@ -715,15 +715,15 @@ void init_common_buffers(void)
 	bc_close(fd);
 
 	fd = load_archive_file(ARCHIVE_FILE_MFIGS_TAB);
-	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd159)), 172);
+	read_archive_file(fd, Real2Host(RealMake(datseg, BUFFER_MFIGS_TAB)), 172);
 	bc_close(fd);
 
 	fd = load_archive_file(ARCHIVE_FILE_WFIGS_TAB);
-	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd0ad)), 172);
+	read_archive_file(fd, Real2Host(RealMake(datseg, BUFFER_WFIGS_TAB)), 172);
 	bc_close(fd);
 
 	fd = load_archive_file(ARCHIVE_FILE_MONSTER_TAB);
-	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd01d)), 144);
+	read_archive_file(fd, Real2Host(RealMake(datseg, BUFFER_MONSTER_TAB)), 144);
 	bc_close(fd);
 
 	fd = load_regular_file(ARCHIVE_FILE_GAMES_NAM);

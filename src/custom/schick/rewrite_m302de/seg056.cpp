@@ -122,8 +122,8 @@ void buy_screen(void)
 	signed short l17;
 	struct nvf_desc nvf;
 
-	ds_writed(0xe3f2, (Bit32u)((RealPt)ds_readd(0xd2df) + 2800));
-	memset(Real2Host(ds_readd(0xe3f2)), 0, 250);
+	ds_writed(BUY_SHOPPING_CART, (Bit32u)((RealPt)ds_readd(BUFFER12_PTR) + 2800));
+	memset(Real2Host(ds_readd(BUY_SHOPPING_CART)), 0, 250);
 
 	ds_writew(0x2846, 1);
 
@@ -194,8 +194,8 @@ void buy_screen(void)
 			do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
 			do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
 
-			nvf.dst = Real2Host(ds_readd(0xd303));
-			nvf.src = Real2Host(ds_readd(0xd2a9));
+			nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+			nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 			nvf.type = 0;
 			nvf.width =  (Bit8u*)&width;
 			nvf.height = (Bit8u*)&height;
@@ -212,7 +212,7 @@ void buy_screen(void)
 						ds_writew(0xc013, array5.a[l_di]);
 						ds_writew(0xc015, array3.a[items_x] + 15);
 						ds_writew(0xc017, array5.a[l_di] + 15);
-						ds_writed(0xc019, ds_readd(0xd303));
+						ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 						nvf.nr = host_readws(get_itemsdat(j));
 
@@ -277,8 +277,8 @@ void buy_screen(void)
 
 			for (l_di = 0; l_di < nice; l_di++) {
 
-				if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di) == item_id) {
-					l4 = host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2);
+				if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di) == item_id) {
+					l4 = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2);
 					break;
 				}
 			}
@@ -372,13 +372,13 @@ void buy_screen(void)
 
 			for (l_di = 0; l_di < nice; l_di++) {
 
-				if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di) == item_id) {
+				if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di) == item_id) {
 					l16 = l_di;
 				}
 
-				l17 += (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di) != 0) && item_stackable(get_itemsdat(item_id)) ?
-						host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2) / 100 + 1 :
-						host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2);
+				l17 += (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di) != 0) && item_stackable(get_itemsdat(item_id)) ?
+						host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2) / 100 + 1 :
+						host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2);
 			}
 
 			if (l16 != -1) {
@@ -389,7 +389,7 @@ void buy_screen(void)
 
 					if (l3 == 2) {
 
-						if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2) > 1) {
+						if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0xcc8),
@@ -408,8 +408,8 @@ void buy_screen(void)
 
 				if (l4 > 0) {
 
-					if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2) < l4 && l3 == 2) {
-						l4 = host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2);
+					if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2) < l4 && l3 == 2) {
+						l4 = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2);
 					}
 
 					l9 = (Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 *(l7 + item) + 2) *
@@ -423,15 +423,15 @@ void buy_screen(void)
 
 						if (l3 == 1) {
 							price += l9;
-							add_ptr_ws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2, l4);
+							add_ptr_ws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2, l4);
 						} else {
 							price -= l9;
-							sub_ptr_ws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2, l4);
+							sub_ptr_ws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2, l4);
 
-							if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2) == 0) {
+							if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2) == 0) {
 
-								memmove(Real2Host(ds_readd(0xe3f2)) + 4 * l16,
-									Real2Host(ds_readd(0xe3f2)) + 4 * (l16 + 1),
+								memmove(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16,
+									Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * (l16 + 1),
 									248 - 2 * l16);
 
 								nice--;
@@ -474,10 +474,10 @@ void buy_screen(void)
 						} else {
 							price += l9;
 
-							host_writews(Real2Host(ds_readd(0xe3f2)) + 4 * nice,
+							host_writews(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * nice,
 								host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item)));
 
-							host_writews(Real2Host(ds_readd(0xe3f2)) + 4 * nice + 2, l4);
+							host_writews(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * nice + 2, l4);
 
 							nice++;
 
@@ -509,10 +509,10 @@ void buy_screen(void)
 
 			while (offended == 0 && j < 3) {
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x6dc),
-					(char*)Real2Host(ds_readd(0xd2eb)));
+					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 
 				do {
@@ -551,8 +551,8 @@ void buy_screen(void)
 
 					for (l_di = 0; l_di < nice; l_di++) {
 
-						item_id = host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di);
-						given_items = get_item(item_id, 1, host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2));
+						item_id = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di);
+						given_items = get_item(item_id, 1, host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2));
 
 						ds_writeb(0xe12d + item_id, ds_readbs(0xe12d + item_id) + given_items);
 
@@ -567,7 +567,7 @@ void buy_screen(void)
 							l12 = 1;
 						}
 
-						if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2) > given_items) {
+						if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2) > given_items) {
 							l13 = 1;
 							break;
 						}
@@ -580,11 +580,11 @@ void buy_screen(void)
 
 						set_party_money(p_money);
 
-						make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xccc),
-							(char*)Real2Host(ds_readd(0xd2eb)));
+							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}

@@ -211,7 +211,7 @@ void status_show(Bit16u index)
 
 	ds_writed(0x29e0, (Bit32u)RealMake(datseg, 0x2ad8));
 	ds_writed(0x29e4, 0);
-	ds_writed(0xd2fb, ds_readd(0xd303));
+	ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
 	set_textcolor(0, 2);
 
 	/* load and draw the background */
@@ -222,7 +222,7 @@ void status_show(Bit16u index)
 	ds_writew(0xc013, 9);
 	ds_writew(0xc015, 47);
 	ds_writew(0xc017, 40);
-	ds_writed(0xc00d, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 	/* the source must be passed here as RealPt */
 	ds_writed(0xc019, (Bit32u)(hero + HERO_PORTRAIT));
 	do_pic_copy(0);
@@ -232,7 +232,7 @@ void status_show(Bit16u index)
 	/* print invetory and silouette values */
 	if (ds_readws(0x2c9b) < 3) {
 
-		nvf.src = Real2Host(ds_readd(0xd2a9));
+		nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 		nvf.type = 0;
 
 		nvf.width = (Bit8u*)&width;
@@ -254,7 +254,7 @@ void status_show(Bit16u index)
 			ds_writew(0xc013, ds_readw(0x63d2 + i * 4 + 2));
 			ds_writew(0xc015, ds_readw(0x63d2 + i * 4) + 15);
 			ds_writew(0xc017, ds_readw(0x63d2 + i * 4 + 2) + 15);
-			ds_writed(0xc00d, ds_readd(0xd303));
+			ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 			ds_writed(0xc019, ds_readd(ICON));
 			do_pic_copy(0);
 
@@ -294,7 +294,7 @@ void status_show(Bit16u index)
 			host_readw(Real2Host(hero) + HERO_WEIGHT));
 		GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 179);
 	} else {
-		do_fill_rect((RealPt)ds_readd(0xd303), 0, 50, 319, 191, 2);
+		do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 50, 319, 191, 2);
 	}
 
 	ds_writew(0xd313, 0x5f);
@@ -323,12 +323,12 @@ void status_show(Bit16u index)
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 33);
 
 	/* print money */
-	make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)),
+	make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		host_readd(Real2Host(hero) + HERO_MONEY));
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x4b0)),
-		(char*)Real2Host(ds_readd(0xd2eb)));
+		(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 43);
 
 	/* dead, unconscious or drunk */
@@ -387,7 +387,7 @@ void status_show(Bit16u index)
 				val = host_readbs(Real2Host(hero) + i * 3 + 0x35)
 					+ host_readbs(Real2Host(hero) + i * 3 + 0x36);
 
-				sprintf((char*)Real2Host(ds_readd(0xd2eb)) + i * 10,
+				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)) + i * 10,
 					(char*)get_city(0xcc),
 					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
 						(char*)get_city(0xc4) :
@@ -401,20 +401,20 @@ void status_show(Bit16u index)
 			}
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x30),
-				(char*)Real2Host(ds_readd(0xd2eb)),
-				(char*)Real2Host(ds_readd(0xd2eb)) + 70,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 10,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 80,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 20,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 90,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 30,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 100,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 40,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 110,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 50,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 120,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 60,
-				(char*)Real2Host(ds_readd(0xd2eb)) + 130);
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 70,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 10,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 80,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 20,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 90,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 30,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 100,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 40,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 110,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 120,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 60,
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 130);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 70);
 
@@ -754,7 +754,7 @@ void status_show(Bit16u index)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	ds_writew(0xc3cb, 1);

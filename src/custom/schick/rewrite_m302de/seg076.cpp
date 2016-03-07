@@ -20,10 +20,10 @@ void print_msg_with_first_hero(Bit8u *msg)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		(char*)msg, (char*)hero + HERO_NAME2);
 
-	GUI_input(Real2Host(ds_readd(0xd2eb)), 0);
+	GUI_input(Real2Host(ds_readd(BUFFER4_PTR)), 0);
 	return;
 }
 
