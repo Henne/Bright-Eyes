@@ -76,7 +76,7 @@ void diary_show(void)
 	i = 0;
 	do {
 		i = diary_print_entry(i);
-	} while (i < ds_readws(0x43ba));
+	} while (i < ds_readws(DIARY_ENTRY_COUNTER));
 
 	ds_writew(0xc011, 0);
 	ds_writew(0xc013, 0);
@@ -111,22 +111,22 @@ void diary_new_entry(void)
 	Bit8u *ptr;
 
 	/* move all entries if the list is full */
-	if (ds_readw(0x43ba) == 23) {
+	if (ds_readw(DIARY_ENTRY_COUNTER) == 23) {
 		memcpy(p_datseg + 0x43bc, p_datseg + 0x43c4, 176);
-		dec_ds_ws(0x43ba);
+		dec_ds_ws(DIARY_ENTRY_COUNTER);
 	}
 
 	/* make a pointer to the last entry */
-	ptr = p_datseg + 0x43b4 + ds_readw(0x43ba) * 8;
+	ptr = p_datseg + DIARY_ENTRIES + ds_readw(DIARY_ENTRY_COUNTER) * 8;
 
 	/* avoid double entries for the same town */
 	if (ds_readbs(CURRENT_TOWN) != host_readw(ptr + 6)) {
 
 		/* make a pointer to the current entry */
-		ptr = p_datseg + 0x43bc + ds_readw(0x43ba) * 8;
+		ptr = p_datseg + 0x43bc + ds_readw(DIARY_ENTRY_COUNTER) * 8;
 
 		/* deccrement entry counter */
-		inc_ds_ws(0x43ba);
+		inc_ds_ws(DIARY_ENTRY_COUNTER);
 
 		/* Write day of month */
 		host_writew(ptr, ds_readbs(DAY_OF_MONTH));

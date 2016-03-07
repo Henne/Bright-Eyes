@@ -73,12 +73,12 @@ void TRV_event(signed short travel_event)
 	ds_writeb(TRAVELING, 0);
 	ds_writews(TEXTBOX_WIDTH, 9);
 	ds_writeb(0x2c98, 1);
-	ds_writeb(0xb132, 1);
+	ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
 
-	event_handler = (void (*)(void))ds_readd(0xaeea + 4 * travel_event);
+	event_handler = (void (*)(void))ds_readd(TRAVEL_EVENT_HANDLERS + 4 * travel_event);
 	if (event_handler) event_handler();
 
-	ds_writeb(0xb132, 0);
+	ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
 	ds_writeb(TRAVELING, traveling_bak);
 	ds_writews(0x2ca2, bak1);
 	ds_writews(0x2ca4, bak2);
@@ -180,12 +180,12 @@ signed short TRV_found_camp_place(signed short a0)
 
 	if (answer == 1) {
 
-		ds_writew(0xd32d, ds_writews(0xd331, ds_writews(0xd32f, 0)));
+		ds_writew(HERO_SLEEP_MOD, ds_writews(REPLENISH_STOCKS_MOD, ds_writews(GATHER_HERBS_MOD, 0)));
 
 		if (a0 == 1) {
-			ds_writews(0xd331, -3);
+			ds_writews(REPLENISH_STOCKS_MOD, -3);
 		} else if (a0 == 2) {
-			ds_writews(0xd32f, -3);
+			ds_writews(GATHER_HERBS_MOD, -3);
 		}
 
 		ds_writeb(0xe4c8, 1);
@@ -197,7 +197,7 @@ signed short TRV_found_camp_place(signed short a0)
 
 		TRV_load_textfile(-1);
 
-		ds_writew(0xd32d, ds_writews(0xd331, ds_writews(0xd32f, 0)));
+		ds_writew(HERO_SLEEP_MOD, ds_writews(REPLENISH_STOCKS_MOD, ds_writews(GATHER_HERBS_MOD, 0)));
 		ds_writew(0x2846, 2);
 
 		return 1;

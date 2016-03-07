@@ -64,10 +64,13 @@
 #define YEAR	(0x2dc2)
 #define SPECIAL_DAY	(0x2dc3)
 #define INGAME_TIMERS	(0x2dc4)	/* signed long[26] */
+#define MODIFICATION_TIMERS	(0x2e2c)	/* (struct { long, short, char, char })[?] */
 #define GODS_ESTIMATION	(0x314e)	/* signed long[15] */
 #define SMITH_REPAIRITEMS	(0x31e2)	/* (struct { short, long })[50] */
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
+#define WEATHER1	(0x331b)	/* signed short, random(6) */
+#define WEATHER2	(0x331d)	/* signed short, random(7) */
 #define TREASURE_MAPS	(0x3332)	/* signed char[9] */
 #define MIN_MAP_PARTS	(0x3340)	/* signed short {0} */
 #define SUBVENTION	(0x3342)	/* unsigned char {0-4} */
@@ -114,7 +117,7 @@
 #define UNICORN_GET_MAP	(0x3465)
 #define UNICORN_TIMER	(0x3466)
 #define UNICORN_HERO_PTR	(0x346a)	/* RealPt */
-#define NPC_MONTHS	(0x3470)
+#define NPC_MONTHS	(0x3470)	/* signed short */
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
@@ -138,12 +141,20 @@
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
-#define FOOD_MESSAGE	(0x4219)
+#define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
+#define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
+#define KNOWN_MONSTERS	(0x4351)	/* signed short[82] */
 #define ARSENAL_MONEY	(0x43a3)	/* signed short {-1, 0 - 60 } */
 #define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */
+#define KNOWN_PERSONS	(0x43a6)	/* signed short[14] */
+#define DIARY_ENTRIES	(0x43b4)	/* (struct { short day, month, year, town; })[23] */
+#define DIARY_ENTRY_COUNTER	(0x43ba)	/* signed short */
+#define MUSIC_ENABLED	(0x4476)	/* unsigned char {0,1} */
+#define SND_EFFECTS_ENABLED	(0x4477)	/* unsigned char {0,1} */
+#define MUSIC_CURRENT_TRACK	(0x447a)	/* signed short */
 #define PAUSE_STRING	(0x448a)	/* char[10] = "P A U S E" */
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
@@ -184,6 +195,8 @@
 #define DIARY_STRING6	(0x4949)	/* char[19] = "~~ABENTEUER IN %s." */
 #define DIARY_STRING7	(0x495c)	/* char[22] = "~~RUMH\x8eNGEN IN %s." */
 #define NOWAY_STRING	(0x4a68)	/* char[41] = "IN DIESE RICHTUNG GEHT ES NICHT WEITER." */
+#define ANI_BUSY	(0x4a90)	/* unsigned short {0,1} */
+#define STATUS_BAR_COLORS	(0x4a94)	/* 4 chars: le_color, 0, ae_color, 0 */
 #define STATUS_PAGE_HUNGER_MAX_COUNTER	(0x4a9a)	/* signed char */
 #define STATUS_PAGE_HUNGER_MAX_COLOR	(0x4a9b)	/* signed char */
 #define STATUS_PAGE_THIRST_MAX_COUNTER	(0x4a9c)	/* signed char */
@@ -196,9 +209,11 @@
 #define DELAY_FACTOR	(0x4b66)
 #define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
 #define FIGHT_FIGS_INDEX	(0x4b9e)	/* signed short */
+#define RANDOM_SCHICK_SEED	(0x4ba0)	/* unsigned short */
 #define EMM_SIG	(0x4ba2)	/* char[8] */
 #define TMAP_X	(0x4c12)	/* signed short[10] */
 #define TMAP_Y	(0x4c26)	/* signed short[10] */
+#define LOCATION_HANDLERS	(0x4c3b)	/* (void (*)(void))[19] */
 #define FNAMES	(0x4c8c)
 #define CHR_FILE_SUFFIX	(0x5e3e)	/* char[5] = ".CHR" */
 #define SAVEGAME_SUFFIX	(0x5e43)	/* char[5] = ".GAM" */
@@ -276,13 +291,24 @@
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
 #define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
+#define SEA_TRAVEL	(0xa842)	/* unsigned char {0,1} */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
 #define SPELL_SELECT_STR_KEY	(0xac20)	/* char[5] = "\xf2%s\xf0" */
 #define SPELL_SELECT_STR_KEY_COLOR	(0xac25)	/* char[3] = "%s" */
 #define SPELL_SELECT_STR_KEYVAL_COLOR	(0xac28)	/* char[8] = "\xf2%s~%d\xf0 */
-#define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
+#define SPELL_SELECT_ONES	(0xac30)	/* signed char[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } */
+#define ANALUES_ITEMS	(0xac3c)	/* (struct { signed short item_id, barrier; signed char dtp; })[28] */
+#define MONSTER_SPELL_COST	(0xaccc)	/* signed short */
 #define SELECT_TALENT_LVLUP	(0xacce)	/* char[6] = "%s~%d" */
+#define SELECT_TALENT_DEFAULTS	(0xacd4)	/* signed char[6] = {44, 45, 46, -1, -1, -1} */
+#define ALCHEMY_RECIPES	(0xacda)	/* (struct of size 28)[12?] */
+#define HERO_STARTUP_ITEMS	(0xae40)	/* (struct of size 8)[13] */
+#define PREVENT_DROP_EQUIPPED_ITEMS	(0xae46)	/* unsigned char {0, 1} */
+#define HERO_STARTUP_ITEMS_ALL	(0xaea8)	/* signed short[4] */
+#define USE_SPECIAL_ITEM_HANDLERS	(0xaeb0)	/* signed short[4] */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
+#define TRAVEL_EVENT_HANDLERS	(0xaeea)	/* function pointers, long[146] */
+#define TRAVEL_EVENT_ACTIVE	(0xb132)	/* signed char {0,1} */
 #define EMPTY_STRING10	(0xb13b)	/* char[1] = "" */
 #define EMPTY_STRING11	(0xb13c)	/* char[1] = "" */
 #define EMPTY_STRING12	(0xb13d)	/* char[1] = "" */
@@ -374,7 +400,11 @@
 #define ICON	(0xd2f7)	/* RealPt */
 #define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
 #define TOWNPAL_BUF	(0xd321)	/* RealPt */
+#define HERO_SLEEP_MOD	(0xd32d)	/* signed short */
+#define GATHER_HERBS_MOD	(0xd32f)	/* signed short */
+#define REPLENISH_STOCKS_MOD	(0xd331)	/* signed short */
 #define ENEMY_SHEETS	(0xd34b)	/* struct enemy[20] */
+#define HERO_IS_TARGET	(0xd84b)	/* signed char[7] */
 #define CHESSBOARD	(0xd852)	/* RealPt */
 #define SPELLOBJ_NVF_BUF	(0xd866)	/* RealPt to buffer of size 0xf5f */
 #define WEAPONS_NVF_BUF	(0xd86a)	/* RealPt to buffer of size 0x1953 */
@@ -407,6 +437,8 @@
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
 #define FIG_LIST_BUFFER	(0xe37c)	/* RealPt to buffer of size 4445, initial value of FIG_LIST_HEAD */
+#define INC_SPELLS_COUNTER	(0xe3b2)	/* RealPt */
+#define INC_SKILLS_COUNTER	(0xe3b6)	/* RealPt */
 #define SKILLS_BUFFER	(0xe3ba)	/* RealPt */
 #define WILDCAMP_GUARDS	(0xe3be)	/* signed char[3] */
 #define WILDCAMP_HERBSTATUS	(0xe3c1)	/* signed char[7] */
@@ -431,6 +463,7 @@
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
 #define SPELLUSER_E	(0xe5c0)
+#define ALCHEMY_MISSING_ITEM	(0xe5c4)	/* unsigned char */
 #define USED_ITEM_DESC	(0xe5c6)	/* pointer to the item description */
 #define USED_ITEM_ID	(0xe5ca)	/* s16 used_item ID */
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */

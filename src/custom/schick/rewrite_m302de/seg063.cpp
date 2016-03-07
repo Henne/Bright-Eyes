@@ -430,7 +430,7 @@ void sea_travel(signed short passage, signed short dir)
 	struct dummy7 a = *(struct dummy7*)(p_datseg + 0x707f);
 #endif
 
-	ds_writeb(0xa842, 1);
+	ds_writeb(SEA_TRAVEL, 1);
 
 	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(BUFFER9_PTR), 11400)));
 	ds_writew(0x4236, passage < 7 ? 7 : 38);
@@ -608,7 +608,7 @@ void sea_travel(signed short passage, signed short dir)
 		refresh_screen_size();
 	}
 
-	ds_writeb(0xa842, 0);
+	ds_writeb(SEA_TRAVEL, 0);
 }
 
 signed short get_srout_len(Bit8u *ptr)

@@ -972,9 +972,9 @@ RealPt spell_analues(void)
 
 	if (item_id) {
 
-		for (i = 0; ds_readws(0xac3c + i * 5) != -1; i++) {
+		for (i = 0; ds_readws(ANALUES_ITEMS + i * 5) != -1; i++) {
 
-			if (ds_readws(0xac3c + i * 5) == item_id) {
+			if (ds_readws(ANALUES_ITEMS + i * 5) == item_id) {
 
 				/* check if the spellcaster is able to analyze this item */
 				if (ds_readws(0xac3e + i * 5) <= ds_readws(0xe5b2)) {

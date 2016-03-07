@@ -147,10 +147,10 @@ unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 
 	arg2 = (arg2 * 10 + 11) / 24;
 
-	/*	ds:0x331b = random(6)
-	 *	ds:0x331d = random(7) */
+	/*	ds:WEATHER1 = random(6)
+	 *	ds:WEATHER2 = random(7) */
 	ds_writew(0x432c,
-		(arg2 * (ds_readw(0x331d) + 6) * (ds_readw(0x331b) * 15 + 100) + 499L) / 1000L);
+		(arg2 * (ds_readw(WEATHER2) + 6) * (ds_readw(WEATHER1) * 15 + 100) + 499L) / 1000L);
 
 	hours = (ds_readws(0x432c) + 4) / 10;
 

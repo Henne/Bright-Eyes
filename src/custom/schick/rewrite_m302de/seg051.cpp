@@ -152,9 +152,9 @@ void do_wildcamp(void)
 		} else if (ds_readws(ACTION) == 130) {
 
 			if (ds_readb(0xe4c8) == 99) {
-				l_di = replenish_stocks(ds_readws(0xd331) + 99, stock_tries);
+				l_di = replenish_stocks(ds_readws(REPLENISH_STOCKS_MOD) + 99, stock_tries);
 			} else {
-				l_di = replenish_stocks(ds_readws(0xd331), stock_tries);
+				l_di = replenish_stocks(ds_readws(REPLENISH_STOCKS_MOD), stock_tries);
 			}
 
 			if (l_di) {
@@ -244,9 +244,9 @@ void do_wildcamp(void)
 							ds_writebs(WILDCAMP_HERBSTATUS + answer, (signed char)(herb_tries = l_di = 1));
 
 							if (ds_readbs(0xe4c8) == 99) {
-								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(0xd32f) + 99);
+								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(GATHER_HERBS_MOD) + 99);
 							} else {
-								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(0xd32f));
+								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(GATHER_HERBS_MOD));
 							}
 						}
 					} else {
@@ -329,7 +329,7 @@ void do_wildcamp(void)
 							ds_readbs(WILDCAMP_GUARDSTATUS + i) < 2 &&
 							ds_readbs(WILDCAMP_MAGICSTATUS + i) != 1)
 						{
-							GRP_hero_sleep(Real2Host(hero), ds_readws(0xd32d));
+							GRP_hero_sleep(Real2Host(hero), ds_readws(HERO_SLEEP_MOD));
 						}
 					}
 

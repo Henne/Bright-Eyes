@@ -29,7 +29,7 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
 	signed short retval = 1;
-	Bit8u* r_ptr = p_datseg + 0xacda + recipe_index * 28;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * 28;
 	signed short item_pos;
 
 	/* loop over ingrendients */
@@ -40,7 +40,7 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 		if (item_pos == -1) {
 			/* needed item missing */
 			retval = 0;
-			ds_writew(0xe5c4, host_readws(r_ptr + i * 2 + 2));
+			ds_writew(ALCHEMY_MISSING_ITEM, host_readws(r_ptr + i * 2 + 2));
 		} else {
 			/* drop all needed items */
 			drop_item(hero, item_pos, 1);
@@ -67,7 +67,7 @@ signed short hero_has_ingrendients(Bit8u *hero, signed short recipe_index)
 void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 {
 	signed short i = 0;
-	Bit8u* r_ptr = p_datseg + 0xacda + recipe_index * 28;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * 28;
 	signed short item_pos;
 
 	/* loop over ingrendients */
@@ -97,7 +97,7 @@ void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 
 signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short flag)
 {
-	Bit8u* r_ptr = p_datseg + 0xacda + recipe_index * 28;
+	Bit8u* r_ptr = p_datseg + ALCHEMY_RECIPES + recipe_index * 28;
 
 	hero_use_ingrendients(hero, recipe_index);
 
@@ -165,7 +165,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 		/* count all recipes an prepare the menu */
 		for (i = 0; i <= 12; i++) {
-			if (get_item_pos(hero, ds_readws(0xacda + i * 28)) != -1) {
+			if (get_item_pos(hero, ds_readws(ALCHEMY_RECIPES + i * 28)) != -1) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)) + recipes * 50,
 					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(0xacf0 + i * 28)))));
@@ -308,7 +308,7 @@ signed short plan_alchemy(Bit8u *hero)
 					/* not all ingrendients */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0xc4),
-						(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(0xe5c4)))));
+						(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(ALCHEMY_MISSING_ITEM)))));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}

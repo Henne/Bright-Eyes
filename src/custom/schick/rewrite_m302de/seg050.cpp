@@ -87,13 +87,13 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 		}
 	}
 
-	if (host_readbs(Real2Host(ds_readd(0xe3b2)) + 2 * spell + 1) >= l_di) {
+	if (host_readbs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell + 1) >= l_di) {
 
 		/* no increase is possible */
 
 		GUI_output(get_city(0xac));
 
-	} else if (host_readbs(Real2Host(ds_readd(0xe3b2)) + 2 * spell) == 3) {
+	} else if (host_readbs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell) == 3) {
 
 		/* used up legal increase */
 
@@ -119,15 +119,15 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 			inc_ptr_bs(hero + spell + 0x13d);
 
 			/* set the try counter to 0 */
-			host_writebs(Real2Host(ds_readd(0xe3b2)) + 2 * spell, 0);
+			host_writebs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell, 0);
 			/* increment the increase counter */
-			inc_ptr_bs(Real2Host(ds_readd(0xe3b2)) + 2 * spell + 1);
+			inc_ptr_bs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell + 1);
 		} else {
 			/* fail */
 			GUI_output(get_ltx(0x548));
 
 			/* increment the try counter */
-			inc_ptr_bs(Real2Host(ds_readd(0xe3b2)) + 2 * spell);
+			inc_ptr_bs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell);
 		}
 	}
 }
@@ -145,13 +145,13 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 	max_incs = ds_readbs(0x0ffe + 4 * skill + 3);
 
 
-	if (host_readbs(Real2Host(ds_readd(0xe3b6)) + 2 * skill + 1) >= max_incs) {
+	if (host_readbs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill + 1) >= max_incs) {
 
 		/* no increase is possible */
 
 		GUI_output(get_city(0xac));
 
-	} else if (host_readbs(Real2Host(ds_readd(0xe3b6)) + 2 * skill) == 3) {
+	} else if (host_readbs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill) == 3) {
 
 		/* used up legal increase */
 
@@ -177,9 +177,9 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 			inc_ptr_bs(hero + skill + 0x108);
 
 			/* set the try counter to 0 */
-			host_writebs(Real2Host(ds_readd(0xe3b6)) + 2 * skill, 0);
+			host_writebs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill, 0);
 			/* increment the increase counter */
-			inc_ptr_bs(Real2Host(ds_readd(0xe3b6)) + 2 * skill + 1);
+			inc_ptr_bs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill + 1);
 
 			if (skill <= 6) {
 				/* increment a melee weapon skill */
@@ -215,7 +215,7 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 			GUI_output(get_ltx(0x548));
 
 			/* increment the try counter */
-			inc_ptr_bs(Real2Host(ds_readd(0xe3b6)) + 2 * skill);
+			inc_ptr_bs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill);
 		}
 	}
 }
@@ -239,7 +239,7 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 	while (!done) {
 
 		/* leave the loop if 3 incs failes or the skill value is 18 */
-		if ((host_readbs(Real2Host(ds_readd(0xe3b6)) + skill * 2) == 3) ||
+		if ((host_readbs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + skill * 2) == 3) ||
 			(host_readbs(hero + HERO_TA_FIGHT + skill) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
@@ -268,7 +268,7 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 				inc_ptr_bs(hero + HERO_TA_FIGHT + skill);
 
 				/* reset failed counter */
-				host_writeb(Real2Host(ds_readd(0xe3b6)) + 2 * skill, 0);
+				host_writeb(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill, 0);
 
 				done = 1;
 
@@ -283,7 +283,7 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 
 			} else {
 				/* inc failed counter */
-				inc_ptr_bs(Real2Host(ds_readd(0xe3b6)) + 2 * skill);
+				inc_ptr_bs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill);
 			}
 		}
 	}
@@ -307,7 +307,7 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 
 	while (!done) {
 		/* leave the loop if 3 incs failes or the spell value is 18 */
-		if ((host_readb(Real2Host(ds_readd(0xe3b2)) + 2 * spell) == 3) ||
+		if ((host_readb(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell) == 3) ||
 			(host_readbs(hero + HERO_SPELLS + spell) == 18)) {
 			done = 1;
 #if !defined(__BORLANDC__)
@@ -335,13 +335,13 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 				inc_ptr_bs(hero + HERO_SPELLS + spell);
 
 				/* reset failed counter */
-				host_writeb(Real2Host(ds_readd(0xe3b2)) + 2 * spell, 0);
+				host_writeb(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell, 0);
 
 				done = 1;
 
 			} else {
 				/* inc failed oounter */
-				inc_ptr_bs(Real2Host(ds_readd(0xe3b2)) + 2 * spell);
+				inc_ptr_bs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell);
 			}
 		}
 	}
@@ -374,8 +374,8 @@ void level_up(signed short hero_pos)
 
 	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 
-	ds_writed(0xe3b6, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 4500));
-	ds_writed(0xe3b2, (Bit32u)((RealPt)ds_readd(0xe3b6) + 208));
+	ds_writed(INC_SKILLS_COUNTER, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 4500));
+	ds_writed(INC_SPELLS_COUNTER, (Bit32u)((RealPt)ds_readd(INC_SKILLS_COUNTER) + 208));
 	ds_writed(SKILLS_BUFFER, ds_readd(BUFFER9_PTR));
 
 	l_si = load_archive_file(ARCHIVE_FILE_BSKILLS_DAT);
@@ -395,13 +395,13 @@ void level_up(signed short hero_pos)
 	ds_writew(STATUS_PAGE_MODE, 1);
 
 	for (i = 0; i < 86; i++) {
-		host_writeb(Real2Host(ds_readd(0xe3b2)) + 2 * i,
-			host_writebs(Real2Host(ds_readd(0xe3b2)) + 2 * i + 1, 0));
+		host_writeb(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * i,
+			host_writebs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * i + 1, 0));
 	}
 
 	for (i = 0; i < 52; i++) {
-		host_writeb(Real2Host(ds_readd(0xe3b6)) + 2 * i,
-			host_writebs(Real2Host(ds_readd(0xe3b6)) + 2 * i + 1, 0));
+		host_writeb(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * i,
+			host_writebs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * i + 1, 0));
 	}
 
 	load_ggsts_nvf();

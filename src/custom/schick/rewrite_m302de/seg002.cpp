@@ -67,7 +67,7 @@ void sub_light_timers(Bit32s);
 /* static */
 void play_music_file(signed short index)
 {
-	if (ds_readbs(0x4476) != 0) {
+	if (ds_readbs(MUSIC_ENABLED) != 0) {
 		do_play_music_file(index);
 	}
 }
@@ -79,9 +79,9 @@ void set_audio_track(Bit16u index)
 #endif
 
 	/* only do something when index is not the current track */
-	if (ds_readw(0x447a) != index) {
+	if (ds_readw(MUSIC_CURRENT_TRACK) != index) {
 
-		ds_writew(0x447a, index);
+		ds_writew(MUSIC_CURRENT_TRACK, index);
 
 		if (ds_readw(0xbcfd) != 0) {
 			/* we use CD */
@@ -105,28 +105,28 @@ void sound_menu(void)
 
 	switch (answer - 1) {
 		case 0: {
-			ds_writeb(0x4476, 0);
-			ds_writeb(0x4477, 0);
+			ds_writeb(MUSIC_ENABLED, 0);
+			ds_writeb(SND_EFFECTS_ENABLED, 0);
 			break;
 		}
 		case 1: {
-			ds_writeb(0x4476, 1);
-			ds_writeb(0x4477, 0);
+			ds_writeb(MUSIC_ENABLED, 1);
+			ds_writeb(SND_EFFECTS_ENABLED, 0);
 			break;
 		}
 		case 2: {
-			ds_writeb(0x4476, 0);
-			ds_writeb(0x4477, 1);
+			ds_writeb(MUSIC_ENABLED, 0);
+			ds_writeb(SND_EFFECTS_ENABLED, 1);
 			break;
 		}
 		case 3: {
-			ds_writeb(0x4476, 1);
-			ds_writeb(0x4477, 1);
+			ds_writeb(MUSIC_ENABLED, 1);
+			ds_writeb(SND_EFFECTS_ENABLED, 1);
 			break;
 		}
 	}
 
-	if (ds_readb(0x4476) == 0) {
+	if (ds_readb(MUSIC_ENABLED) == 0) {
 		/* music disabled */
 		if (ds_readw(0xbcfd) != 0) {
 			CD_audio_pause();
@@ -134,12 +134,12 @@ void sound_menu(void)
 			stop_midi_playback();
 		}
 	} else {
-		if (ds_readws(0x447a) != -1) {
+		if (ds_readws(MUSIC_CURRENT_TRACK) != -1) {
 			/* music enabled */
 			if (ds_readw(0xbcfd) != 0) {
 				CD_audio_play();
 			} else {
-				play_music_file(ds_readws(0x447a));
+				play_music_file(ds_readws(MUSIC_CURRENT_TRACK));
 			}
 		}
 	}
@@ -440,7 +440,7 @@ void stop_midi_playback(void)
 void start_midi_playback_IRQ(void)
 {
 	if ((ds_readw(0xbcff) == 0) &&
-		(ds_readb(0x4476) != 0) &&
+		(ds_readb(MUSIC_ENABLED) != 0) &&
 		(host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
 	{
 		if (AIL_sequence_status(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE)) == 2) {
@@ -510,7 +510,7 @@ signed short have_mem_for_sound(void)
 
 void play_voc(signed short index)
 {
-	if (ds_readw(0x447c) && ds_readb(0x4477)) {
+	if (ds_readw(0x447c) && ds_readb(SND_EFFECTS_ENABLED)) {
 		SND_set_volume(90);
 		SND_play_voc(index);
 	}
@@ -518,7 +518,7 @@ void play_voc(signed short index)
 
 void play_voc_delay(signed short index)
 {
-	if (ds_readw(0x447c) && ds_readb(0x4477)) {
+	if (ds_readw(0x447c) && ds_readb(SND_EFFECTS_ENABLED)) {
 		SND_set_volume(90);
 		SND_play_voc(index);
 
@@ -637,7 +637,7 @@ signed short load_digi_driver(RealPt fname, signed short type, signed short io, 
 					host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0x10),
 					host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0x12));
 
-				ds_writeb(0x4477, 1);
+				ds_writeb(SND_EFFECTS_ENABLED, 1);
 				return 1;
 			} else {
 				/* no sound hardware found */
@@ -2430,8 +2430,8 @@ void do_timers(void)
 		passages_recalc();
 
 		/* roll out the weather, used for passages */
-		ds_writew(0x331b, random_schick(6));
-		ds_writew(0x331d, random_schick(7));
+		ds_writew(WEATHER1, random_schick(6));
+		ds_writew(WEATHER2, random_schick(7));
 
 		/* check if times up */
 		if ((ds_readbs(YEAR) == 17) &&
@@ -2501,15 +2501,15 @@ void sub_mod_timers(Bit32s val)
 	for (i = 0; i < 100; i++) {
 
 		/* if timer is 0 continue */
-		if (ds_readd(0x2e2c + 8 * i) == 0)
+		if (ds_readd(MODIFICATION_TIMERS + 8 * i) == 0)
 			continue;
 
 		/* subtract diff from timer */
-		sub_ds_ds(0x2e2c + 8 * i, val);
+		sub_ds_ds(MODIFICATION_TIMERS + 8 * i, val);
 
 
 		/* if timer > 0 continue */
-		if (ds_readds(0x2e2c + 8 * i) <= 0) {
+		if (ds_readds(MODIFICATION_TIMERS + 8 * i) <= 0) {
 
 
 #if !defined(__BORLANDC__)
@@ -2517,10 +2517,10 @@ void sub_mod_timers(Bit32s val)
 #endif
 
 			/* set timer to 0 */
-			ds_writed(0x2e2c + 8 * i, 0);
+			ds_writed(MODIFICATION_TIMERS + 8 * i, 0);
 
 			/* make a pointer to the slot */
-			sp = p_datseg + 0x2e2c + i * 8;
+			sp = p_datseg + MODIFICATION_TIMERS + i * 8;
 
 			if (host_readb(sp + 6) != 0) {
 				/* target is a hero/npc */
@@ -2605,7 +2605,7 @@ signed short get_free_mod_slot(void)
 
 	for (i = 0; i < 100; i++) {
 
-		if (ds_readw(0x2e2c + i * 8 + 4) == 0) {
+		if (ds_readw(MODIFICATION_TIMERS + i * 8 + 4) == 0) {
 			break;
 		}
 	}
@@ -2613,7 +2613,7 @@ signed short get_free_mod_slot(void)
 	if (i == 100) {
 
 		/* set timer of slot 0 to 1 */
-		host_writed(p_datseg + 0x2e2c, 1);
+		host_writed(p_datseg + MODIFICATION_TIMERS, 1);
 		/* subtract one */
 		sub_mod_timers(1);
 
@@ -2670,16 +2670,16 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 			host_writeb(get_hero(who) + HERO_TIMER_ID, target);
 		}
 
-		ds_writeb(0x2e2c + slot_nr * 8 + 6, target);
+		ds_writeb(MODIFICATION_TIMERS + slot_nr * 8 + 6, target);
 	}
 
-	ds_writeb(0x2e2c + slot_nr * 8 + 7, mod);
+	ds_writeb(MODIFICATION_TIMERS + slot_nr * 8 + 7, mod);
 #if !defined (__BORLANDC__)
-	ds_writew(0x2e2c + slot_nr * 8 + 4, ptr - mod_ptr);
+	ds_writew(MODIFICATION_TIMERS + slot_nr * 8 + 4, ptr - mod_ptr);
 #else
-	ds_writew(0x2e2c + slot_nr * 8 + 4, (Bit8u huge*)ptr - mod_ptr);
+	ds_writew(MODIFICATION_TIMERS + slot_nr * 8 + 4, (Bit8u huge*)ptr - mod_ptr);
 #endif
-	ds_writed(0x2e2c + slot_nr * 8, timer_value);
+	ds_writed(MODIFICATION_TIMERS + slot_nr * 8, timer_value);
 	add_ptr_bs(ptr, mod);
 }
 
@@ -3046,7 +3046,7 @@ void herokeeping(void)
 
 
 		/* print unconscious message */
-		if ((ds_readb(0x4212 + i) != 0) && !ds_readbs(0x2c98)) {
+		if ((ds_readb(UNCONSCIOUS_MESSAGE + i) != 0) && !ds_readbs(0x2c98)) {
 
 			if (host_readb(hero + HERO_TYPE) != 0 &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
@@ -3065,7 +3065,7 @@ void herokeeping(void)
 			}
 
 			/* reset condition */
-			ds_writeb(0x4212 + i, 0);
+			ds_writeb(UNCONSCIOUS_MESSAGE + i, 0);
 		}
 	}
 
@@ -3847,7 +3847,7 @@ void draw_compass(void)
 	/* No compass in a location */
 	if (!ds_readbs(LOCATION) &&
 		/* Has something to do with traveling */
-		!ds_readbs(0xb132) &&
+		!ds_readbs(TRAVEL_EVENT_ACTIVE) &&
 		/* Not in town or dungeon */
 		((ds_readbs(DUNGEON_INDEX) != 0) || (ds_readbs(CURRENT_TOWN) != 0)) &&
 		/* I have no clue */
@@ -4295,7 +4295,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			or_ptr_bs(hero + HERO_STATUS1, 1);
 
 			/* unknown */
-			ds_writeb(0x4212 + get_hero_index(hero), 0);
+			ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 0);
 
 			/* unknown */
 			host_writeb(hero + HERO_UNKNOWN2, 100);
@@ -4324,7 +4324,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				}
 			}
 
-			if ((ds_readb(0xa842) != 0)
+			if ((ds_readb(SEA_TRAVEL) != 0)
 				&& (ds_readw(IN_FIGHT) == 0) &&
 				(!count_heroes_available_in_group() ||
 				((count_heroes_available_in_group() == 1) && (is_hero_available_in_group(get_hero(6))))))
@@ -4353,7 +4353,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				host_writeb(hero + HERO_UNKNOWN2, 10);
 
 				/* unknown yet */
-				ds_writeb(0x4212 + get_hero_index(hero), 1);
+				ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 1);
 
 				/* in fight mode */
 				if (ds_readw(IN_FIGHT) != 0) {

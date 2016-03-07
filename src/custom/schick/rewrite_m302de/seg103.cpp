@@ -262,7 +262,7 @@ signed short select_talent(void)
 	signed short l_si = -1;
 	signed short nr_talents = 3;
 	/* available skills {44, 45, 46, -1, -1, -1} */
-	struct dummy2 a = *(struct dummy2*)(p_datseg + 0xacd4);
+	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_TALENT_DEFAULTS);
 
 	/* add skills for special location */
 	/* 9 = ACROBATICS, 32 = ALCHEMY, 43 = CHEAT, 47 = INSTRUMENT, 49 = PICKPOCKET, */

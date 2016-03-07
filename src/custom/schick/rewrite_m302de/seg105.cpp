@@ -651,9 +651,9 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 
 				if (dropper != -1) {
 					hero_i = get_hero(dropper);
-					ds_writeb(0xae46, 1);
+					ds_writeb(PREVENT_DROP_EQUIPPED_ITEMS, 1);
 					vc = select_item_to_drop(hero_i);
-					ds_writeb(0xae46, 0);
+					ds_writeb(PREVENT_DROP_EQUIPPED_ITEMS, 0);
 
 					if (vc != -1) {
 						drop_item(hero_i, vc, -1);
@@ -768,7 +768,7 @@ signed short select_item_to_drop(Bit8u *hero)
 	signed short di;
 
 	/* check if we drop equipped items or not */
-	i = (ds_readb(0xae46) != 0) ? 7 : 0;
+	i = (ds_readb(PREVENT_DROP_EQUIPPED_ITEMS) != 0) ? 7 : 0;
 	for (; i < 23; i++) {
 		if ((item = host_readws(hero + HERO_ITEM_HEAD + i * 14))) {
 			str[v6] = i;

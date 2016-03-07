@@ -543,7 +543,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 	struct dummy5 col_str = *(struct dummy5*)(p_datseg + SPELL_SELECT_STR_KEY);
 	struct dummy3 str = *(struct dummy3*)(p_datseg + SPELL_SELECT_STR_KEY_COLOR);
 	struct dummy8 col_str_val = *(struct dummy8*)(p_datseg + SPELL_SELECT_STR_KEYVAL_COLOR);
-	struct dummy12 ones = *(struct dummy12*)(p_datseg + 0xac30);
+	struct dummy12 ones = *(struct dummy12*)(p_datseg + SPELL_SELECT_ONES);
 
 	if ((show_vals == 0) && (ds_readws(GAME_MODE) == 2)) {
 		show_vals = 2;

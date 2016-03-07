@@ -107,11 +107,11 @@ void set_var_to_zero(void)
 void init_ani_busy_loop(unsigned short v1)
 {
 	/* set lock */
-	ds_writew(0x4a90, 1);
+	ds_writew(ANI_BUSY, 1);
 
 	init_ani(v1);
 
-	 while (ds_readw(0x4a90) != 0) {
+	 while (ds_readw(ANI_BUSY) != 0) {
 #ifdef M302de_SPEEDFIX
 		/*	enter emulation mode frequently,
 			that the timer can reset this variable */
@@ -216,10 +216,10 @@ void interrupt timer_isr(void)
 
 		l_di = ds_readbs(0xc3ee);
 
-		if (!l_di && (ds_readw(0x4a90))) {
+		if (!l_di && (ds_readw(ANI_BUSY))) {
 
 			ds_writew(0x29ae, 0);
-			ds_writew(0x4a90, 0);
+			ds_writew(ANI_BUSY, 0);
 		}
 
 		for (i = 0; i < l_di; i++) {
@@ -242,9 +242,9 @@ void interrupt timer_isr(void)
 							ds_writew(0xe24c + 2 * i, 0);
 						}
 
-						if (ds_readws(0x4a90) != 0) {
+						if (ds_readws(ANI_BUSY) != 0) {
 							ds_writew(0x29ae, 0);
-							ds_writew(0x4a90, 0);
+							ds_writew(ANI_BUSY, 0);
 							break;
 						}
 					}
@@ -501,7 +501,7 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 			/* draw 4 full lines in the color of the type */
 			for (i = 0; i < 3; i++) {
 				do_v_line(dst, x + i, y_min - 30, y_min,
-					ds_readb(0x4a94 + type * 2));
+					ds_readb(STATUS_BAR_COLORS + type * 2));
 			}
 		} else {
 			lost = 30;
@@ -515,7 +515,7 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 			/* draw visible part */
 			for (i = 0; i < 3; i++) {
 				do_v_line(dst, x + i, y_min - lost, y_min,
-					ds_readb(0x4a94 + type * 2));
+					ds_readb(STATUS_BAR_COLORS + type * 2));
 			}
 
 			/* draw black part */

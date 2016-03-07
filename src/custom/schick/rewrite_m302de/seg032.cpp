@@ -1031,7 +1031,7 @@ signed short do_fight(signed short fight_nr)
 
 				ds_writew(0xc3c1, 0);
 
-				if (ds_readbs(0xa842) != 0) {
+				if (ds_readbs(SEA_TRAVEL) != 0) {
 
 					ds_writeb(0x4333, 99);
 					ptr = get_hero(0);

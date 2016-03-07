@@ -689,9 +689,9 @@ signed short show_storytext(void)
 
 	}
 
-	if (!ds_readbs(0x43a6 + person)) {
+	if (!ds_readbs(KNOWN_PERSONS + person)) {
 		GUI_dialog_na(icon, ptr);
-		ds_writeb(0x43a6 + person, 1);
+		ds_writeb(KNOWN_PERSONS + person, 1);
 		return 1;
 	} else {
 		return 0;
@@ -719,7 +719,7 @@ void do_location(void)
 #if !defined(__BORLANDC__)
 	func = locationhandler[ds_readbs(LOCATION)];
 #else
-	func = (void (*)(void))ds_readd(0x4c3b + 4 * ds_readbs(LOCATION));
+	func = (void (*)(void))ds_readd(LOCATION_HANDLERS + 4 * ds_readbs(LOCATION));
 #endif
 
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
