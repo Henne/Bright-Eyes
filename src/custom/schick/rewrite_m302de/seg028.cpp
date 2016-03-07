@@ -246,7 +246,6 @@ void load_special_textures(signed short arg)
 {
 	signed short fd;
 
-	/* load 0xe8 LTURM.NVF else FINGER.NVF */
 	fd = load_archive_file(arg == 9 ? ARCHIVE_FILE_FINGER_NVF : ARCHIVE_FILE_LTURM_NVF);
 	read_archive_file(fd, Real2Host(ds_readd(BUFFER7_PTR)), 64000);
 	bc_close(fd);

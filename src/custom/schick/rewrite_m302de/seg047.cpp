@@ -355,17 +355,17 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 		answer = GUI_radio( (mode == -1) ? get_ltx(0x8dc) : get_ltx(0x490),
 				(signed char)i,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
-				Real2Host(ds_readd(0xbf99)),
-				Real2Host(ds_readd(0xbf9d)),
-				Real2Host(ds_readd(0xbfa1)),
-				Real2Host(ds_readd(0xbfa5)),
-				Real2Host(ds_readd(0xbfa9)),
-				Real2Host(ds_readd(0xbfad)),
-				Real2Host(ds_readd(0xbfb1)),
-				Real2Host(ds_readd(0xbfb5)),
-				Real2Host(ds_readd(0xbfb9)),
-				Real2Host(ds_readd(0xbfbd)),
-				Real2Host(ds_readd(0xbfc1)));
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 3 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 7 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 8 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 9 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 10 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 11 * 4))));
 
 		if ((entries > 10) && (answer == i)) {
 			l_di += 10;
@@ -441,12 +441,12 @@ signed short select_hero_from_group(Bit8u *title)
 
 		answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
-				Real2Host(ds_readd(0xbf99)),
-				Real2Host(ds_readd(0xbf9d)),
-				Real2Host(ds_readd(0xbfa1)),
-				Real2Host(ds_readd(0xbfa5)),
-				Real2Host(ds_readd(0xbfa9)),
-				Real2Host(ds_readd(0xbfad))) - 1;
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 3 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4)))) - 1;
 
 		ds_writew(0x2ca2, bak_2);
 		ds_writew(0x2ca4, bak_3);
@@ -516,12 +516,12 @@ signed short select_hero_ok(Bit8u *title)
 
 		answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
-				Real2Host(ds_readd(0xbf99)),
-				Real2Host(ds_readd(0xbf9d)),
-				Real2Host(ds_readd(0xbfa1)),
-				Real2Host(ds_readd(0xbfa5)),
-				Real2Host(ds_readd(0xbfa9)),
-				Real2Host(ds_readd(0xbfad))) - 1;
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 3 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4)))) - 1;
 
 		ds_writew(0x2ca2, bak_2);
 		ds_writew(0x2ca4, bak_3);
@@ -595,12 +595,12 @@ signed short select_hero_ok_forced(Bit8u *title)
 
 			answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
-				Real2Host(ds_readd(0xbf99)),
-				Real2Host(ds_readd(0xbf9d)),
-				Real2Host(ds_readd(0xbfa1)),
-				Real2Host(ds_readd(0xbfa5)),
-				Real2Host(ds_readd(0xbfa9)),
-				Real2Host(ds_readd(0xbfad))) - 1;
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 3 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4)))) - 1;
 
 			ds_writew(0x2ca2, bak_2);
 			ds_writew(0x2ca4, bak_3);

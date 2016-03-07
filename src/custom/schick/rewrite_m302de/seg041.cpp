@@ -29,7 +29,7 @@ namespace M302de {
 #endif
 
 #if 0
-/* DS:FIG_MSG_COUNTER */
+/* FIG_MSG_COUNTER */
 static unsigned short msg_counter;
 #endif
 

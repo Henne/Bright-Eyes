@@ -73,9 +73,8 @@ void FIG_tidy_monsters(void)
 
 					memset(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * (j + 1), 0, SIZEOF_ENEMY_SHEET);
 
-                    // Sets the STATUS1 flag's last bit to 1.
-					// 0xd3ba = ENEMY_SHEETS + SIZEOF_ENEMY_SHEET + ENEMY_SHEET_STATUS1
-					or_ds_bs(0xd3ba + SIZEOF_ENEMY_SHEET * j, 1);
+                    // set the STATUS1 flag's last bit to 1
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1 + SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * j, 1);
 				}
 			}
 		} else {

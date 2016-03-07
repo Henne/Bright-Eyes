@@ -72,7 +72,7 @@ void FIG_chessboard_init(void)
 
 		while (ds_readbs(0x6040 + i * 2) != -1) {
 
-			FIG_set_cb_field(ds_readbs(0x6041 + i * 2), ds_readbs(0x6040 + i * 2), 50);
+			FIG_set_cb_field(ds_readbs((0x6040 + 1) + i * 2), ds_readbs(0x6040 + i * 2), 50);
 			i++;
 		}
 	}
@@ -249,27 +249,27 @@ void FIG_draw_scenario(void)
 					}
 
 					ds_writew(FIG_LIST_ELEM, 0);
-					ds_writeb(0xe068, (signed char)obj_id);
-					ds_writeb(0xe069, (signed char)cb_x);
-					ds_writeb(0xe06a, (signed char)cb_y);
-					ds_writeb(0xe06b, ds_readb(0x6060 + obj_id * 2));
-					ds_writeb(0xe06c, ds_readb(0x60de + obj_id * 2));
-					ds_writeb(0xe06d, host_readb(Real2Host(ds_readd(0xe380)) + obj_id * 2));
-					ds_writeb(0xe06e, host_readb(Real2Host(ds_readd(0xe384)) + obj_id * 2));
-					ds_writeb(0xe06f, 0);
-					ds_writeb(0xe070, 0);
-					ds_writebs(0xe071,
+					ds_writeb((FIG_LIST_ELEM+2), (signed char)obj_id);
+					ds_writeb((FIG_LIST_ELEM+3), (signed char)cb_x);
+					ds_writeb((FIG_LIST_ELEM+4), (signed char)cb_y);
+					ds_writeb((FIG_LIST_ELEM+5), ds_readb(0x6060 + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+6), ds_readb(0x60de + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+7), host_readb(Real2Host(ds_readd(0xe380)) + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+8), host_readb(Real2Host(ds_readd(0xe384)) + obj_id * 2));
+					ds_writeb((FIG_LIST_ELEM+9), 0);
+					ds_writeb((FIG_LIST_ELEM+10), 0);
+					ds_writebs((FIG_LIST_ELEM+11),
 						host_readbs(Real2Host(ds_readd(0xe384)) + obj_id * 2) - 1);
-					ds_writebs(0xe072,
+					ds_writebs((FIG_LIST_ELEM+12),
 						host_readbs(Real2Host(ds_readd(0xe380)) + obj_id * 2) - 1);
-					ds_writeb(0xe07b, 0);
-					ds_writeb(0xe073, 0);
-					ds_writeb(0xe075, -1);
-					ds_writeb(0xe074, -1);
-					ds_writed(0xe07d, (Bit32u)ptr);
-					ds_writeb(0xe077, obj_id >= 58 && obj_id <= 61 ? -1 : 50);
-					ds_writeb(0xe078, 1);
-					ds_writeb(0xe079, -1);
+					ds_writeb((FIG_LIST_ELEM+21), 0);
+					ds_writeb((FIG_LIST_ELEM+13), 0);
+					ds_writeb((FIG_LIST_ELEM+15), -1);
+					ds_writeb((FIG_LIST_ELEM+14), -1);
+					ds_writed((FIG_LIST_ELEM+23), (Bit32u)ptr);
+					ds_writeb((FIG_LIST_ELEM+17), obj_id >= 58 && obj_id <= 61 ? -1 : 50);
+					ds_writeb((FIG_LIST_ELEM+18), 1);
+					ds_writeb((FIG_LIST_ELEM+19), -1);
 					ds_writeb(0xd874 + ds_readw(FIG_LIST_LENGTH), FIG_add_to_list(-1));
 					inc_ds_ws(FIG_LIST_LENGTH);
 					place_obj_on_cb(cb_x, cb_y, obj_id + 50, obj_id, 0);

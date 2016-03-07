@@ -379,7 +379,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 				if ((obj_id < 10) && (hero_dead(get_hero(obj_id - 1)) || hero_unc(get_hero(obj_id - 1))))
 				{
 					host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
-				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + 0xd110 + obj_id * 62)))
+				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + (0xd0df + 49) + obj_id * SIZEOF_ENEMY_SHEET)))
 				{
 						host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
 				}

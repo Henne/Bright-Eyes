@@ -218,7 +218,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 			if (attack_hero != 0) {
 
 				/* TODO */
-				if (ds_readbs(0xd84a + host_readbs(Real2Host(monster) + 0x2d)) == 1) {
+				if (ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + 0x2d)) == 1) {
 					l7 += 2;
 				}
 
@@ -296,7 +296,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 				if (randval <= l7) {
 
-					if (((attack_hero != 0) && !ds_readbs(0xd84a + host_readbs(Real2Host(monster) + 0x2d)) && check_hero(hero)) ||
+					if (((attack_hero != 0) && !ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + 0x2d)) && check_hero(hero)) ||
 						(!attack_hero && (!ds_readbs(0xd82d + host_readbs(Real2Host(monster) + 0x2d)))))
 					{
 

@@ -50,7 +50,7 @@ void load_pp20(signed short index)
 				Real2Host(ds_readd(PP20_BUFFERS) + 4 + bi) + 4,
 #else
 				ds_readw(PP20_BUFFERS + 4 * bi) + 4,
-				ds_readw(0x5e6c + 4 * bi),
+				ds_readw((PP20_BUFFERS + 2) + 4 * bi),
 #endif
 				ds_readd(PP20_BUFFER_LENGTHS + bi * 4));
 

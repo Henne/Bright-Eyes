@@ -407,7 +407,7 @@ void FIG_do_round(void)
 	hero_attacks = 0;
 
 	/* initialize heros #attacks and BP */
-	for (i = 0; i <= 6; ds_writeb((0xd84a + 1) + i, 0), i++) {
+	for (i = 0; i <= 6; ds_writeb(((HERO_IS_TARGET-1) + 1) + i, 0), i++) {
 
 		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
 
@@ -471,7 +471,6 @@ void FIG_do_round(void)
 		/* set BP */
 		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_BP) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_BP_ORIG) + SIZEOF_ENEMY_SHEET * i));
 
-		// 0xd837 = ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * 20 + 0x14
 		ds_writeb(0xd837 + i, 0);
 	}
 
@@ -599,7 +598,7 @@ void FIG_do_round(void)
 #endif
 
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + (0xd0df + 38) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
 									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
 
 									if (host_readbs(p1 + 0x14) >= 0) {
@@ -667,9 +666,9 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + 0xd110 + 62 * host_readbs(Real2Host(monster) + 0x2d)))
+							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + 0x2d)))
 							{
-								if (is_in_byte_array(host_readbs(p_datseg + 0xd0e0 + 62 * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + (0xd0df + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID) + 20, &x, &y);
@@ -680,7 +679,7 @@ void FIG_do_round(void)
 									y = host_readws((Bit8u*)&y);
 #endif
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + 0xd105 + 62 * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID))));
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + (0xd0df + 38) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID))));
 									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
 
 									if (host_readbs(p1 + 0x14) >= 0) {
@@ -793,7 +792,6 @@ void FIG_load_ship_sprites(void)
 
 				/* check for error */
 				if (ds_readds(0xe370) < 0L) {
-					/* "ERROR ON OBJECT MALLOC" */
 					GUI_input(p_datseg + STR_ERROR_ON_OBJ_MALLOC, 0);
 				}
 			}

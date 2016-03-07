@@ -266,11 +266,11 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							GUI_output(get_dtp(0x0c));
 						} else if (((l8 < 10) && hero_dead(get_hero(l8 - 1))) ||
 								((l8 >= 10) && (l8 < 30) &&
-										(test_bit0(p_datseg + 0xd110 + 62 * l8) ||
-										test_bit6(p_datseg + 0xd110 + 62 * l8))) ||
+										(test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * l8) ||
+										test_bit6(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * l8))) ||
 								((l8 >= 30) &&
-										(test_bit0(p_datseg + 0xcc38 + 62 * l8) ||
-										test_bit6(p_datseg + 0xcc38 + 62 * l8))))
+										(test_bit0(p_datseg + (0xcc07 + 49) + SIZEOF_ENEMY_SHEET * l8) ||
+										test_bit6(p_datseg + (0xcc07 + 49) + SIZEOF_ENEMY_SHEET * l8))))
 						{
 							GUI_output(get_dtp(0x74));
 
@@ -911,7 +911,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fight_id upper bound */
 					if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit0(p_datseg + 0xd110 + 62 * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_dead(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{

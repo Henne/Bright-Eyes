@@ -129,8 +129,8 @@ void status_show_talents(Bit8u *hero) {
 			status_show_talent(hero, j,
 				ds_readbs(0x10ce + i * 2),
 				ds_readw(0x6476 + i * 6),
-				ds_readw(0x6478 + i * 6),
-				ds_readw(0x647a + i * 6));
+				ds_readw((0x6476 + 2) + i * 6),
+				ds_readw((0x6476 + 4) + i * 6));
 			j++;
 		}
 	}

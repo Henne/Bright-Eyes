@@ -92,9 +92,9 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 
 	signed short i;
 
-	ds_writeb(0xd9c1, 0);
-	ds_writeb(0xdab3, host_readbs(enemy+1));
-	p1 = p_datseg + 0xd9c2;
+	ds_writeb((0xd8ce + 0xf3), 0);
+	ds_writeb((0xd8ce + 242 + 0xf3), host_readbs(enemy+1));
+	p1 = p_datseg + (0xd8ce + 1 + 0xf3);
 
 	i = 0;
 	p3 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + 1) * 4));
@@ -139,7 +139,7 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 			}
 		}
 
-		if (ds_readbs(0xd823 + i) == ds_readbs(0xd824 + i)) {
+		if (ds_readbs(0xd823 + i) == ds_readbs((0xd823+1) + i)) {
 
 			p1 += copy_ani_stuff(p1, host_readws(p3 + (ds_readbs(0xd823 + i) + 0x0c) * 2), 1);
 			i += 2;
@@ -167,7 +167,7 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 
 	if (is_in_byte_array(host_readbs(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-		memcpy(p_datseg + 0xdba7, p_datseg + 0xd9c1, 0xf3);
+		memcpy(p_datseg + (0xd8ce + 3*0xf3), p_datseg + (0xd8ce + 0xf3), 0xf3);
 
 		p2 = Real2Host(FIG_get_ptr(host_readbs(enemy + 0x26)));
 
@@ -177,8 +177,8 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 	/* draw_fight_screen */
 	draw_fight_screen(0);
 
-	memset(p_datseg + 0xd9c1, -1, 0xf3);
-	memset(p_datseg + 0xdba7, -1, 0xf3);
+	memset(p_datseg + (0xd8ce + 0xf3), -1, 0xf3);
+	memset(p_datseg + (0xd8ce + 3*0xf3), -1, 0xf3);
 
 	FIG_init_list_elem(enemy_nr + 10);
 }

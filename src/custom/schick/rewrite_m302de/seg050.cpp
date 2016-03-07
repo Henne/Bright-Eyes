@@ -752,7 +752,7 @@ void level_up(signed short hero_pos)
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(0x099d + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;
@@ -768,7 +768,7 @@ void level_up(signed short hero_pos)
 						i = 1;
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
-							if (ds_readbs(0x99d + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
+							if (ds_readbs(0x099d + 0 + 10 * i) == 3 && host_readbs(hero + HERO_SPELLS + i) < 11) {
 								inc_spell_novice(hero, i);
 							}
 							i++;

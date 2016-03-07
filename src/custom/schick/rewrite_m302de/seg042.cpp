@@ -253,7 +253,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					l11 -= 4;
 				}
 
-				if (ds_readbs(0xd84a + host_readbs(Real2Host(hero) + HERO_ENEMY_ID)) == 1) {
+				if (ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(hero) + HERO_ENEMY_ID)) == 1) {
 					atpa += 2;
 				}
 
@@ -331,7 +331,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			} else if (randval1 <= atpa) {
 
 				if (((attack_hero == 0) && !ds_readbs(0xd82d + host_readbs(Real2Host(hero) + HERO_ENEMY_ID)) && (l16 == 0)) ||
-					((attack_hero != 0) && !ds_readbs(0xd84a + host_readbs(Real2Host(hero) + HERO_ENEMY_ID))))
+					((attack_hero != 0) && !ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(hero) + HERO_ENEMY_ID))))
 				{
 
 					if (attack_hero != 0) {
