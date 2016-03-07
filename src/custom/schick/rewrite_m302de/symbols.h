@@ -20,6 +20,10 @@
 #define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define TIMERS_DISABLED	(0x2c99)
+#define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
+#define STATUS_PAGE_HERO	(0x2c9d)	/* signed short */
+#define STATUS_PAGE_HUNGER	(0x2c9f)	/* signed char */
+#define STATUS_PAGE_THIRST	(0x2ca0)	/* signed char */
 #define CURRENT_ANI	(0x2ccf)
 #define FIG_FIGURE1	(0x2cd1)	/* signed short */
 #define FIG_FIGURE2	(0x2cd3)	/* signed short */
@@ -124,6 +128,10 @@
 #define BANK_HELLER	(0x4646)	/* signed short */
 #define CONSUME_QUIET	(0x4648)
 #define LEVEL_AP_TAB	(0x464e)	/* Bit32s[21] */
+#define STATUS_PAGE_HUNGER_MAX_COUNTER	(0x4a9a)	/* signed char */
+#define STATUS_PAGE_HUNGER_MAX_COLOR	(0x4a9b)	/* signed char */
+#define STATUS_PAGE_THIRST_MAX_COUNTER	(0x4a9c)	/* signed char */
+#define STATUS_PAGE_THIRST_MAX_COLOR	(0x4a9d)	/* signed char */
 #define DELAY_FACTOR	(0x4b66)
 #define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
 #define FIGHT_FIGS_INDEX	(0x4b9e)	/* signed short */

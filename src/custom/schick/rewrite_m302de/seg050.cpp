@@ -392,7 +392,7 @@ void level_up(signed short hero_pos)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
 	ds_writew(ACTION, 0);
-	ds_writew(0x2c9b, 1);
+	ds_writew(STATUS_PAGE_MODE, 1);
 
 	for (i = 0; i < 86; i++) {
 		host_writeb(Real2Host(ds_readd(0xe3b2)) + 2 * i,
@@ -409,11 +409,11 @@ void level_up(signed short hero_pos)
 	/* increment level */
 	inc_ptr_bs(hero + HERO_LEVEL);
 
-	ds_writew(0x2c9d, hero_pos);
+	ds_writew(STATUS_PAGE_HERO, hero_pos);
 
 	status_show(hero_pos);
 
-	ds_writebs(0x2c9f, ds_writebs(0x2ca0, -1));
+	ds_writebs(STATUS_PAGE_HUNGER, ds_writebs(STATUS_PAGE_THIRST, -1));
 
 	update_status_bars();
 
@@ -455,7 +455,7 @@ void level_up(signed short hero_pos)
 
 		status_show(hero_pos);
 
-		ds_writebs(0x2c9f, ds_writebs(0x2ca0, -1));
+		ds_writebs(STATUS_PAGE_HUNGER, ds_writebs(STATUS_PAGE_THIRST, -1));
 
 		update_status_bars();
 	}
@@ -508,7 +508,7 @@ void level_up(signed short hero_pos)
 
 			status_show(hero_pos);
 
-			ds_writebs(0x2c9f, ds_writebs(0x2ca0, -1));
+			ds_writebs(STATUS_PAGE_HUNGER, ds_writebs(STATUS_PAGE_THIRST, -1));
 
 			update_status_bars();
 		} else {
@@ -550,7 +550,7 @@ void level_up(signed short hero_pos)
 		status_show(hero_pos);
 
 		/* update_the bars of the hero */
-		ds_writebs(0x2c9f, ds_writebs(0x2ca0, -1));
+		ds_writebs(STATUS_PAGE_HUNGER, ds_writebs(STATUS_PAGE_THIRST, -1));
 
 		update_status_bars();
 	}
@@ -621,7 +621,7 @@ void level_up(signed short hero_pos)
 	status_show(hero_pos);
 
 	/* update_the bars of the hero */
-	ds_writebs(0x2c9f, ds_writebs(0x2ca0, -1));
+	ds_writebs(STATUS_PAGE_HUNGER, ds_writebs(STATUS_PAGE_THIRST, -1));
 
 	update_status_bars();
 

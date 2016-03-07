@@ -479,7 +479,7 @@ void FIG_do_round(void)
 
 
 	/* turn == 0 means monsters attack first, turn == 1 means heros attack fisrt */
-	turn = (ds_readbs(FIG_INITIATIVE) == 2 ? 1 : (ds_readbs(0x26ac) == 1 ? 0 : random_interval(0, 1)));
+	turn = (ds_readbs(FIG_INITIATIVE) == 2 ? 1 : (ds_readbs(FIG_INITIATIVE) == 1 ? 0 : random_interval(0, 1)));
 
 
 	while ((ds_readws(IN_FIGHT) != 0) && (hero_attacks + monster_attacks > 0)) {

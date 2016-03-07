@@ -230,7 +230,7 @@ void status_show(Bit16u index)
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 
 	/* print invetory and silouette values */
-	if (ds_readws(0x2c9b) < 3) {
+	if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 		nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 		nvf.type = 0;
@@ -365,7 +365,7 @@ void status_show(Bit16u index)
 
 
 	/* print page content */
-	switch (ds_readw(0x2c9b)) {
+	switch (ds_readw(STATUS_PAGE_MODE)) {
 		/* base values */
 		case 1: {
 
@@ -759,7 +759,7 @@ void status_show(Bit16u index)
 
 	ds_writew(0xc3cb, 1);
 
-	if (ds_readws(0x2c9b) >= 3) {
+	if (ds_readws(STATUS_PAGE_MODE) >= 3) {
 		do_v_line((RealPt)ds_readd(0xd2ff), 107, 54, 195, 0);
 		do_v_line((RealPt)ds_readd(0xd2ff), 212, 54, 195, 0);
 	}

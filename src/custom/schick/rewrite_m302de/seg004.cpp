@@ -324,22 +324,22 @@ void update_status_bars(void)
 		if (ds_readbs(0x2845) == 20) {
 			/* in the status menu */
 
-			hero = get_hero(ds_readws(0x2c9d));
+			hero = get_hero(ds_readws(STATUS_PAGE_HERO));
 
 			/* adjust hunger to 100% */
 			if (host_readbs(hero + HERO_HUNGER) >= 100) {
-				host_writeb(hero + HERO_HUNGER, ds_writeb(0x2c9f, 100));
+				host_writeb(hero + HERO_HUNGER, ds_writeb(STATUS_PAGE_HUNGER, 100));
 			}
 
 			/* adjust thirst to 100% */
 			if (host_readbs(hero + HERO_THIRST) >= 100) {
-				host_writeb(hero + HERO_THIRST, ds_writeb(0x2ca0, 100));
+				host_writeb(hero + HERO_THIRST, ds_writeb(STATUS_PAGE_THIRST, 100));
 			}
 
 			/* hunger and thirst are at 100% */
-			if ((ds_readbs(0x2c9f) == 100) && (ds_readbs(0x2ca0) == 100)) {
-				ds_writeb(0x4a9a, ds_readbs(0x4a9c));
-				ds_writeb(0x4a9b, ds_readbs(0x4a9d));
+			if ((ds_readbs(STATUS_PAGE_HUNGER) == 100) && (ds_readbs(STATUS_PAGE_THIRST) == 100)) {
+				ds_writeb(STATUS_PAGE_HUNGER_MAX_COUNTER, ds_readbs(STATUS_PAGE_THIRST_MAX_COUNTER));
+				ds_writeb(STATUS_PAGE_HUNGER_MAX_COLOR, ds_readbs(STATUS_PAGE_THIRST_MAX_COLOR));
 			}
 
 #if !defined(__BORLANDC__)
@@ -348,63 +348,63 @@ void update_status_bars(void)
 			asm { cli };
 #endif
 
-			if (ds_readbs(0x2c9f) == 100) {
+			if (ds_readbs(STATUS_PAGE_HUNGER) == 100) {
 
-				if (inc_ds_bs_post(0x4a9a) == 25) {
+				if (inc_ds_bs_post(STATUS_PAGE_HUNGER_MAX_COUNTER) == 25) {
 
-					xor_ds_bs(0x4a9b, 1);
+					xor_ds_bs(STATUS_PAGE_HUNGER_MAX_COLOR, 1);
 
 					update_mouse_cursor();
 
 					for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 36, ds_readb(0x4a9b) ? 9 : 10);
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 36, ds_readb(STATUS_PAGE_HUNGER_MAX_COLOR) ? 9 : 10);
 					}
 
 					refresh_screen_size();
 
-					ds_writeb(0x4a9a, 0);
+					ds_writeb(STATUS_PAGE_HUNGER_MAX_COUNTER, 0);
 				}
 
-			} else if (host_readbs(hero + HERO_HUNGER) != ds_readbs(0x2c9f)) {
+			} else if (host_readbs(hero + HERO_HUNGER) != ds_readbs(STATUS_PAGE_HUNGER)) {
 
-				ds_writeb(0x2c9f, host_readbs(hero + HERO_HUNGER));
+				ds_writeb(STATUS_PAGE_HUNGER, host_readbs(hero + HERO_HUNGER));
 
 				update_mouse_cursor();
 
 				for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(0x2c9f) / 2 + 260, i + 36, 9);
-						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(0x2c9f) / 2 + 260, 310, i + 36, 10);
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(STATUS_PAGE_HUNGER) / 2 + 260, i + 36, 9);
+						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(STATUS_PAGE_HUNGER) / 2 + 260, 310, i + 36, 10);
 				}
 
 				refresh_screen_size();
 			}
 
-			if (ds_readbs(0x2ca0) == 100) {
+			if (ds_readbs(STATUS_PAGE_THIRST) == 100) {
 
-				if (inc_ds_bs_post(0x4a9c) == 25) {
+				if (inc_ds_bs_post(STATUS_PAGE_THIRST_MAX_COUNTER) == 25) {
 
-					xor_ds_bs(0x4a9d, 1);
+					xor_ds_bs(STATUS_PAGE_THIRST_MAX_COLOR, 1);
 
 					update_mouse_cursor();
 
 					for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 43, ds_readb(0x4a9d) ? 11 : 12);
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 43, ds_readb(STATUS_PAGE_THIRST_MAX_COLOR) ? 11 : 12);
 					}
 
 					refresh_screen_size();
 
-					ds_writeb(0x4a9c, 0);
+					ds_writeb(STATUS_PAGE_THIRST_MAX_COUNTER, 0);
 				}
 
-			} else if (host_readbs(hero + HERO_THIRST) != ds_readbs(0x2ca0)) {
+			} else if (host_readbs(hero + HERO_THIRST) != ds_readbs(STATUS_PAGE_THIRST)) {
 
-				ds_writeb(0x2ca0, host_readbs(hero + HERO_THIRST));
+				ds_writeb(STATUS_PAGE_THIRST, host_readbs(hero + HERO_THIRST));
 
 				update_mouse_cursor();
 
 				for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(0x2ca0) / 2 + 260, i + 43, 11);
-						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(0x2ca0) / 2 + 260, 310, i + 43, 12);
+						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(STATUS_PAGE_THIRST) / 2 + 260, i + 43, 11);
+						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(STATUS_PAGE_THIRST) / 2 + 260, 310, i + 43, 12);
 				}
 
 				refresh_screen_size();

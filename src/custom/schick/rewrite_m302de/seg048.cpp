@@ -31,7 +31,7 @@ namespace M302de {
 /* Borlandified and identical */
 void reset_item_selector(void)
 {
-	if (ds_readws(0x2c9b) < 3) {
+	if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 		/* remove the previous border */
 		do_border((RealPt)ds_readd(0xd2ff),
@@ -105,23 +105,23 @@ void status_menu(signed short hero_pos)
 
 	ds_writew(0x2846, 1);
 	ds_writew(ACTION, 0);
-	ds_writew(0x2c9b, 1);
+	ds_writew(STATUS_PAGE_MODE, 1);
 
 	while (flag1 == 0) {
 
 		if (ds_readw(0x2846) != 0 || flag2 != 0) {
 
-			ds_writew(0x2c9d, hero_pos);
+			ds_writew(STATUS_PAGE_HERO, hero_pos);
 
 			update_mouse_cursor();
 
 			status_show(hero_pos);
 
-			ds_writebs(0x2c9f, ds_writebs(0x2ca0, -1));
+			ds_writebs(STATUS_PAGE_HUNGER, ds_writebs(STATUS_PAGE_THIRST, -1));
 
 			update_status_bars();
 
-			if (ds_readws(0x2c9b) < 3) {
+			if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 				if (hero1 == hero2) {
 					/* set the new red border */
@@ -178,7 +178,7 @@ void status_menu(signed short hero_pos)
 				if (hero_pos > 6) hero_pos = 0;
 			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
 					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(0x2c9b) > 3));
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(STATUS_PAGE_MODE) > 3));
 
 
 			if (ds_readbs(0x6371) != -1) {
@@ -211,7 +211,7 @@ void status_menu(signed short hero_pos)
 				if (hero_pos < 0) hero_pos = 6;
 			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
 					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(0x2c9b) > 3));
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(STATUS_PAGE_MODE) > 3));
 
 
 			if (ds_readbs(0x6371) != -1) {
@@ -233,7 +233,7 @@ void status_menu(signed short hero_pos)
 			ds_writew(0x2846, 1);
 		}
 
-		if (ds_readws(0x2c9b) < 3) {
+		if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 			/* UP_KEY */
 			if (ds_readws(ACTION) == 72) {
@@ -442,7 +442,7 @@ void status_menu(signed short hero_pos)
 		}
 
 		/* check if the hero is diseased and print a message */
-		if (ds_readws(0x2c9b) == 1 &&
+		if (ds_readws(STATUS_PAGE_MODE) == 1 &&
 			ds_readws(ACTION) == 240 &&
 			hero_is_diseased(hero2))
 		{
@@ -460,7 +460,7 @@ void status_menu(signed short hero_pos)
 			ds_writed(0xe3ae, ds_readd(0xcecb));
 			ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
 
-			switch (ds_readws(0x2c9b)) {
+			switch (ds_readws(STATUS_PAGE_MODE)) {
 			case 1: {
 				/* from start-page */
 
@@ -571,7 +571,7 @@ void status_menu(signed short hero_pos)
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
-							ds_writew(0x2c9b, 2);
+							ds_writew(STATUS_PAGE_MODE, 2);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -583,7 +583,7 @@ void status_menu(signed short hero_pos)
 							reset_item_selector();
 						} else {
 							reset_item_selector();
-							ds_writew(0x2c9b, 3);
+							ds_writew(STATUS_PAGE_MODE, 3);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -594,7 +594,7 @@ void status_menu(signed short hero_pos)
 							GUI_output(get_ltx(0x35c));
 						} else {
 							reset_item_selector();
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -678,13 +678,13 @@ void status_menu(signed short hero_pos)
 					}
 					case 5: {
 						/* TODO: different code is generated here */
-						ds_writew(0x2c9b, 1);
+						ds_writew(STATUS_PAGE_MODE, 1);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 6: {
 						reset_item_selector();
-						ds_writew(0x2c9b, 3);
+						ds_writew(STATUS_PAGE_MODE, 3);
 						ds_writew(0x2846, 1);
 						break;
 					}
@@ -693,7 +693,7 @@ void status_menu(signed short hero_pos)
 							GUI_output(get_ltx(0x35c));
 						} else {
 							reset_item_selector();
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -731,12 +731,12 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 2: {
-						ds_writew(0x2c9b, 1);
+						ds_writew(STATUS_PAGE_MODE, 1);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 3: {
-						ds_writew(0x2c9b, 2);
+						ds_writew(STATUS_PAGE_MODE, 2);
 						ds_writew(0x2846, 1);
 						break;
 					}
@@ -744,7 +744,7 @@ void status_menu(signed short hero_pos)
 						if (host_readbs(hero2 + HERO_TYPE) < 7) {
 							GUI_output(get_ltx(0x35c));
 						} else {
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -787,25 +787,25 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 2: {
-						ds_writew(0x2c9b, 1);
+						ds_writew(STATUS_PAGE_MODE, 1);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 3: {
-						ds_writew(0x2c9b, 2);
+						ds_writew(STATUS_PAGE_MODE, 2);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 4: {
-						ds_writew(0x2c9b, 3);
+						ds_writew(STATUS_PAGE_MODE, 3);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 5: {
-						if (ds_readws(0x2c9b) == 4)
-							ds_writew(0x2c9b, 5);
+						if (ds_readws(STATUS_PAGE_MODE) == 4)
+							ds_writew(STATUS_PAGE_MODE, 5);
 						else
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 						ds_writew(0x2846, 1);
 						break;
 					}
