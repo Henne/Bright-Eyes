@@ -122,12 +122,12 @@
 #define TMAP_X		(0x4c12)	/* signed short[10] */
 #define TMAP_Y		(0x4c26)	/* signed short[10] */
 #define FNAMES		(0x4c8c)
+#define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
+#define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
 #define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */
 #define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
-#define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
-#define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
 #define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */
 #define KNIVE_WEAPONS	(0x616e)	/* signed short[5] terminated with -1 */
 #define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
@@ -160,15 +160,15 @@
 #define AIL_MUSIC_DRIVER_DESCR	(0xbd1d)	/* RealPt */
 #define AIL_SEQUENCE	(0xbd21)	/* signed short */
 #define AIL_MUSIC_DRIVER_ID	(0xbd23)	/* signed short */
+#define CURRENT_FIGHT  (0xbd28)        /* RealPt */
 #define SCENARIO_BUF	(0xbd2c)
-#define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
 #define HEROS		(0xbd34)
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
-#define DIALOG_TEXT	(0xc3b1)
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
 #define CITY_LTX	(0xc3ad)
+#define DIALOG_TEXT	(0xc3b1)
 #define TEXT_LTX	(0xc3b5)
 #define ACTION		(0xc3d9)	/* ? short */
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */

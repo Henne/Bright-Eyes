@@ -874,21 +874,21 @@ signed short do_fight(signed short fight_nr)
 	/* set some pointers */
 	ds_writed(SCENARIO_BUF, (Bit32u)F_PADD(ds_readd(BUFFER8_PTR), 64100));
 	ds_writed(MONSTER_DAT_BUF, (Bit32u)F_PADD(ds_readd(SCENARIO_BUF), 621));
-	ds_writed(PTR_FIGHT_LST, (Bit32u)F_PADD(ds_readd(MONSTER_DAT_BUF), 3476));
+	ds_writed(CURRENT_FIGHT, (Bit32u)F_PADD(ds_readd(MONSTER_DAT_BUF), 3476));
 
 	read_fight_lst(fight_nr);
 
-	load_scenario(host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_SCENARIO));
+	load_scenario(host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_SCENARIO));
 
-	if (!host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_INTRO_SEEN)) {
+	if (!host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_INTRO_SEEN)) {
 		GUI_print_fight_intro_msg(fight_nr);
 
-		host_writeb(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_INTRO_SEEN, 1);
+		host_writeb(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_INTRO_SEEN, 1);
 	}
 
 	if (ds_readws(MAX_ENEMIES) > 0) {
 		/* reduce number of enemies to MAX_ENEMIES */
-		memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * ds_readws(MAX_ENEMIES) + FIGHT_MONSTERS_ID, 0, SIZEOF_FIGHT_MONSTER * (20 - ds_readws(MAX_ENEMIES)));
+		memset(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * ds_readws(MAX_ENEMIES) + FIGHT_MONSTERS_ID, 0, SIZEOF_FIGHT_MONSTER * (20 - ds_readws(MAX_ENEMIES)));
 		ds_writew(MAX_ENEMIES, 0);
 	}
 

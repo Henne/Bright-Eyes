@@ -78,9 +78,9 @@ void spell_exposami(void)
 
 	for (i = 0; i < ds_readws(NR_OF_ENEMIES); i++) {
 
-		if (host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ROUND_APPEAR) != 0) {
+		if (host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ROUND_APPEAR) != 0) {
 
-			id = host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ID);
+			id = host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ID);
 
 			changed = 0;
 

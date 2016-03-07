@@ -98,7 +98,7 @@ void FIG_preload_gfx(void)
 		ds_writeb(0xe089 + i, 0);
 	}
 
-	ds_writed(WEAPONS_NVF_BUF, (Bit32u)F_PADD(ds_readd(PTR_FIGHT_LST), SIZEOF_FIGHT));
+	ds_writed(WEAPONS_NVF_BUF, (Bit32u)F_PADD(ds_readd(CURRENT_FIGHT), SIZEOF_FIGHT));
 
 	ds_writed(SPELLOBJ_NVF_BUF, (Bit32u)((RealPt)ds_readd(WEAPONS_NVF_BUF) + 0x1953));
 

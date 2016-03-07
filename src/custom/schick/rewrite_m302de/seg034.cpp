@@ -458,10 +458,10 @@ void FIG_latecomers(void)
 
 					if (is_in_byte_array(host_readbs(p_mon + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
+						seg034_718(	host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
 								(Bit8u*)&x, (Bit8u*)&y,
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
 								1);
 
 						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + ENEMY_SHEET_LIST_POS)));
@@ -474,9 +474,9 @@ void FIG_latecomers(void)
 						p3 = Real2Host(FIG_get_ptr((signed char)l4));
 
 						host_writeb(p3 + 3,
-								x - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].x);
+								x - a.a[host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].x);
 						host_writeb(p3 + 4,
-								y - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].y);
+								y - a.a[host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].y);
 
 						FIG_remove_from_list(host_readbs(p_mon + ENEMY_SHEET_LIST_POS), 1);
 
@@ -486,10 +486,10 @@ void FIG_latecomers(void)
 
 						FIG_add_to_list((signed char)l4);
 					} else {
-						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
+						seg034_718(	host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
 								(Bit8u*)&x, (Bit8u*)&y,
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
 								0);
 
 						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + 0x26)));
@@ -503,7 +503,7 @@ void FIG_latecomers(void)
 					}
 
 					place_obj_on_cb(x, y, i + 10, host_readbs(p_mon + ENEMY_SHEET_GFX_ID),
-						(signed short)host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i));
+						(signed short)host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i));
 
 					FIG_set_12_13(host_readbs(p_mon + ENEMY_SHEET_LIST_POS));
 

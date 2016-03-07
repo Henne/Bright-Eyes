@@ -647,12 +647,12 @@ void read_fight_lst(signed short nr)
 	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
 
 	/* read the fight entry */
-	bc__read(fd, Real2Host(ds_readd(PTR_FIGHT_LST)), SIZEOF_FIGHT);
+	bc__read(fd, Real2Host(ds_readd(CURRENT_FIGHT)), SIZEOF_FIGHT);
 
 #if !defined(__BORLANDC__)
 	char fight_name[21];
 	/* Improvement */
-	strncpy(fight_name, (char*)Real2Host(ds_readd(PTR_FIGHT_LST)), 20);
+	strncpy(fight_name, (char*)Real2Host(ds_readd(CURRENT_FIGHT)), 20);
 	fight_name[20] = '\0';
 	D1_INFO("Lade Kampf Nr %3d\t Name \"%s\"\n", nr, fight_name);
 	/* Improvement end */
@@ -676,7 +676,7 @@ void write_fight_lst(void)
 	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
 
 	/* write it */
-	bc__write(fd, (RealPt)ds_readd(PTR_FIGHT_LST), SIZEOF_FIGHT);
+	bc__write(fd, (RealPt)ds_readd(CURRENT_FIGHT), SIZEOF_FIGHT);
 
 	/* close the file */
 	bc_close(fd);
