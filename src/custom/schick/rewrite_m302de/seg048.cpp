@@ -56,7 +56,7 @@ void reset_item_selector(void)
 		ds_writebs(0x636f, 23);
 	}
 
-	ds_writed(0xcecb, ds_writed(0xe3ae, (Bit32u)RealMake(datseg, 0x2848)));
+	ds_writed(0xcecb, ds_writed(0xe3ae, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR)));
 }
 
 /* nearly identical, same length */
@@ -458,7 +458,7 @@ void status_menu(signed short hero_pos)
 		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
 
 			ds_writed(0xe3ae, ds_readd(0xcecb));
-			ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+			ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 			switch (ds_readws(STATUS_PAGE_MODE)) {
 			case 1: {

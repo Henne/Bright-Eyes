@@ -599,10 +599,10 @@ void load_informer_tlk(signed short index)
 #endif
 
 	/* read the partner structures */
-	read_archive_file(fd, ptr = (p_datseg + 0x3618), partners * 0x26);
+	read_archive_file(fd, ptr = (p_datseg + INFORMER_ARRAY), partners * 0x26);
 
 	/* read the dialog layouts */
-	read_archive_file(fd, p_datseg + 0x3794, (Bit16u)(off - partners * 0x26));
+	read_archive_file(fd, p_datseg + DIALOG_STATES, (Bit16u)(off - partners * 0x26));
 
 	/* read the text */
 	text_len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)), 10000);
@@ -614,7 +614,7 @@ void load_informer_tlk(signed short index)
 
 	/* adjust the pointers to the layouts */
 	for (i = 0; i < partners; i++, ptr += 0x26) {
-		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + 0x3794));
+		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + DIALOG_STATES));
 	}
 }
 
@@ -642,11 +642,11 @@ void load_tlk(signed short index)
 #endif
 
 	/* read the partner structures */
-	read_archive_file(fd, ptr = p_datseg + 0x3618, partners * 0x26);
+	read_archive_file(fd, ptr = p_datseg + INFORMER_ARRAY, partners * 0x26);
 
 	/* read the dialog layouts */
 	read_archive_file(fd,
-		Real2Host(RealMake(datseg, 0x3794)), off - partners * 0x26);
+		Real2Host(RealMake(datseg, DIALOG_STATES)), off - partners * 0x26);
 
 	/* read the text */
 	text_len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER7_PTR)), 64000);
@@ -658,7 +658,7 @@ void load_tlk(signed short index)
 
 	/* adjust the pointers to the layouts */
 	for (i = 0; i < partners; i++, ptr += 0x26) {
-		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + 0x3794));
+		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + DIALOG_STATES));
 	}
 }
 

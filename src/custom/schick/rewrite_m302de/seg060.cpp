@@ -63,7 +63,7 @@ void talk_tavern(void)
 	init_ani(0);
 	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 	ds_writews(DIALOG_STATE, ds_writews(DIALOG_DONE, 0));
-	ptr2 = p_datseg + 0x3794;
+	ptr2 = p_datseg + DIALOG_STATES;
 
 	do {
 		answer = options = 0;

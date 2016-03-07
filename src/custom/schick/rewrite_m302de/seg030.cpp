@@ -173,7 +173,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 	ds_writews(DIALOG_STATE, ds_writews(DIALOG_DONE, 0));
 
-	ptr3 = (RealPt)RealMake(datseg, 0x3618);
+	ptr3 = (RealPt)RealMake(datseg, INFORMER_ARRAY);
 	ptr2 = Real2Host(host_readd(Real2Host(ptr3) + 38 * tlk_informer));
 	l_di = host_readws(Real2Host(ptr3) + 38 * tlk_informer + 4);
 	ds_writed(0xe308, (Bit32u)(tlk_informer * 38 + ptr3 + 6));

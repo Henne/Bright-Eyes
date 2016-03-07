@@ -426,10 +426,10 @@ void update_status_bars(void)
 
 					/* draw LE bars */
 					if ((ds_readws(0x2c1a + 8 * i) != host_readws(hero + HERO_LE)) ||
-						(ds_readws(0x2c18 + 8 * i) != host_readws(hero + HERO_LE_ORIG)))
+						(ds_readws(CHAR_STATUS_BARS + 8 * i) != host_readws(hero + HERO_LE_ORIG)))
 					{
 						draw_bar(0, i, host_readws(hero + HERO_LE), host_readws(hero + HERO_LE_ORIG), 0);
-						ds_writew(0x2c18 + 8 * i, host_readws(hero + HERO_LE_ORIG));
+						ds_writew(CHAR_STATUS_BARS + 8 * i, host_readws(hero + HERO_LE_ORIG));
 						ds_writew(0x2c1a + 8 * i, host_readws(hero + HERO_LE));
 					}
 
@@ -442,9 +442,9 @@ void update_status_bars(void)
 						ds_writew(0x2c1e + 8 * i, host_readws(hero + HERO_AE));
 					}
 				} else {
-					if (ds_readws(0x2c18 + 8 * i) != 0) {
+					if (ds_readws(CHAR_STATUS_BARS + 8 * i) != 0) {
 						draw_bar(0, i, 0, 0, 0);
-						ds_writew(0x2c18 + 8 * i, ds_writew(0x2c1a + 8 * i, 0));
+						ds_writew(CHAR_STATUS_BARS + 8 * i, ds_writew(0x2c1a + 8 * i, 0));
 					}
 
 					if (ds_readws(0x2c1c + 8 * i) != 0) {
@@ -749,12 +749,12 @@ void update_wallclock(void)
 			}
 		}
 
-		if (((d % 771) != ds_readws(0x4a9e)) || (ds_readw(0xe10d) != 0)) {
+		if (((d % 771) != ds_readws(WALLCLOCK_POS)) || (ds_readw(0xe10d) != 0)) {
 
 			ds_writew(0xe10d, 0);
 			night = ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(19))) ? 0 : 1;
 			draw_wallclock((signed short)(d / 771), night);
-			ds_writew(0x4a9e, (signed short)(d / 771));
+			ds_writew(WALLCLOCK_POS, (signed short)(d / 771));
 		}
 	}
 }
@@ -789,7 +789,7 @@ void draw_wallclock(signed short pos, signed short night)
 
 	/* calculate y value */
 	/* Original-Bug: off-by-one with pos > 80 */
-	y = ds_readws(WALLCLOCK_Y) + ds_readbs(0x4aa0 + pos);
+	y = ds_readws(WALLCLOCK_Y) + ds_readbs(WALLCLOCK_POS_Y + pos);
 
 	/* calculate x value */
 	pos += ds_readws(WALLCLOCK_X) - 2;
@@ -801,7 +801,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0x2996, ds_readws(WALLCLOCK_X) + 78);
 
 	/* set palette (night/day) */
-	set_palette((!night ? (p_datseg + 0x4af1) : (p_datseg + 0x4afa)), 0xfa, 3);
+	set_palette((!night ? (p_datseg + WALLCLOCK_PALETTE_DAY) : (p_datseg + WALLCLOCK_PALETTE_NIGHT)), 0xfa, 3);
 
 	/* check if mouse is in that window */
 	if (is_mouse_in_rect(ds_readws(WALLCLOCK_X) - 6,
@@ -900,7 +900,7 @@ struct dummy3 {
 
 void schick_set_video(void)
 {
-	struct dummy3 pal_black = *(struct dummy3*)(p_datseg + 0x4b03);;
+	struct dummy3 pal_black = *(struct dummy3*)(p_datseg + COLOR_PAL_BLACK);;
 
 	set_video_mode(0x13);
 	set_color((Bit8u*)&pal_black, 0xff);

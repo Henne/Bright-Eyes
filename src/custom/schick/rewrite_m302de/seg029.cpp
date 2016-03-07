@@ -52,7 +52,7 @@ void draw_playmask(void)
 	ds_writew(0xc3cb, 0);
 
 	/* load the desired playmask */
-	if (ds_readb(0xbc62) != 0)
+	if (ds_readb(PLAYMASK_US) != 0)
 		load_pp20(ARCHIVE_FILE_PLAYM_US);
 	else
 		load_pp20(ARCHIVE_FILE_PLAYM_UK);
@@ -223,7 +223,7 @@ void draw_status_line(void)
 			}
 
 			for (j = 0; j < 6; j++)
-				ds_writew(0x2c18 + i * 8 + j * 2, 0xffff);
+				ds_writew(CHAR_STATUS_BARS + i * 8 + j * 2, 0xffff);
 		}
 
 		refresh_screen_size();

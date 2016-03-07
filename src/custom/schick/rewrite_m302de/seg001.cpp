@@ -134,8 +134,8 @@ void seg001_00c1(unsigned short track_nr) {
 	real_writed(reloc_game + CDA_DATASEG, 0x9e, track_len - 150);
 
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0x8c));
-	ds_writed(0xbc4e, ((track_len - 150) * 0x1234e) / 0x4b000);
-	ds_writed(0xbc4a, CD_get_tod());
+	ds_writed(CD_AUDIO_POS, ((track_len - 150) * 0x1234e) / 0x4b000);
+	ds_writed(CD_AUDIO_TOD, CD_get_tod());
 }
 
 void seg001_02c4(void) {
@@ -146,9 +146,9 @@ void seg001_02c4(void) {
 		return;
 
 	val = CD_get_tod();
-	val -= ds_readd(0xbc4a);
+	val -= ds_readd(CD_AUDIO_TOD);
 
-	if (val < (signed int)ds_readd(0xbc4e))
+	if (val < (signed int)ds_readd(CD_AUDIO_POS))
 		return;
 
 	if (ds_readw(0x9b) != 1)
@@ -198,11 +198,11 @@ void CD_audio_pause() {
 
 	/* set CD pause */
 	ds_writew(0xa1, 1);
-	ds_writed(0xbc3c, CD_get_tod());
+	ds_writed(CD_AUDIO_TOD_BAK, CD_get_tod());
 	/* save current position */
-	ds_writed(0xbc38, ds_readd(0xbc4e));
+	ds_writed(CD_AUDIO_POS_BAK, ds_readd(CD_AUDIO_POS));
 	/* set current position to maximum singned int */
-	ds_writed(0xbc4e, 0x7fffffff);
+	ds_writed(CD_AUDIO_POS, 0x7fffffff);
 
 	real_writew(reloc_game + CDA_DATASEG, 0xab, 0);
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0xa8));
@@ -221,8 +221,8 @@ void CD_audio_play() {
 
 	/* reset CD pause */
 	ds_writew(0xa1, 0);
-	ds_writed(0xbc4e, ds_readd(0xbc38));
-	ds_writed(0xbc4a, CD_get_tod() - ds_readd(0xbc3c) + ds_readd(0xbc4a));
+	ds_writed(CD_AUDIO_POS, ds_readd(CD_AUDIO_POS_BAK));
+	ds_writed(CD_AUDIO_TOD, CD_get_tod() - ds_readd(CD_AUDIO_TOD_BAK) + ds_readd(0xbc4a));
 
 	real_writew(reloc_game + CDA_DATASEG, 0xc7, 0);
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0xc4));

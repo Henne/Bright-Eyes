@@ -210,7 +210,7 @@ void GUI_write_char_to_screen(RealPt dst, signed short char_width, signed short 
 	signed short y;
 	signed short x;
 
-	ptr = p_datseg + 0xce87;
+	ptr = p_datseg + GUI_TEXT_BUFFER;
 
 	for (y = 0; y < char_width; ptr += 8 - char_height, dst += 320, y++) {
 		for (x = 0; x < char_height; x++)
@@ -248,8 +248,8 @@ unsigned short GUI_count_lines(Bit8u *str)
 	si = di = v6 = 0;
 	max_line_width = ds_readw(0xd2d5);
 
-	if (ds_readw(0xe4db) != 0)
-		sub_ds_ws(0xd2d5, ds_readws(0xe4db));
+	if (ds_readw(DIALOGBOX_INDENT_WIDTH) != 0)
+		sub_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
 
 	width_line = 0;
 
@@ -273,8 +273,8 @@ unsigned short GUI_count_lines(Bit8u *str)
 				str_loc = &str_loc[si + 1];
 			}
 
-			if (++lines == ds_readw(0xe4d9))
-				add_ds_ws(0xd2d5, ds_readws(0xe4db));
+			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
+				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
 
 			v6 = si = di = width_line = 0;
 		}
@@ -286,8 +286,8 @@ unsigned short GUI_count_lines(Bit8u *str)
 			str_loc = &str_loc[si + 1];
 			si = -1;
 			v6 = di = width_line = 0;
-			if (++lines == ds_readw(0xe4d9))
-				add_ds_ws(0xd2d5, ds_readws(0xe4db));
+			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
+				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
 		}
 	}
 
@@ -297,8 +297,8 @@ unsigned short GUI_count_lines(Bit8u *str)
 			str_loc[si - 1] = 0;
 		else {
 			str_loc[di] = 0x0d;
-			if (++lines == ds_readw(0xe4d9))
-				add_ds_ws(0xd2d5, ds_readws(0xe4db));
+			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
+				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
 		}
 	}
 
@@ -365,8 +365,8 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 	if (ds_readws(0xd2d1) == 1) {
 		x = GUI_get_first_pos_centered(str, x, ds_readws(0xd2d5), 0);
 	} else
-		if (ds_readws(0xe4db))
-			x += ds_readws(0xe4db);
+		if (ds_readws(DIALOGBOX_INDENT_WIDTH))
+			x += ds_readws(DIALOGBOX_INDENT_WIDTH);
 	l3 = x;
 
 	while ((l4 = str[l2++])) {
@@ -374,9 +374,9 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 		/* handle line breaks */
 		if ((l4 == 0x0d) || (l4 == 0x40)) {
 
-			if (++l1 == ds_readws(0xe4d9)) {
-				add_ds_ws(0xd2d5, ds_readws(0xe4db));
-				l3 -= ds_readws(0xe4db);
+			if (++l1 == ds_readws(DIALOGBOX_INDENT_HEIGHT)) {
+				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
+				l3 -= ds_readws(DIALOGBOX_INDENT_WIDTH);
 			}
 
 			y += 7;
@@ -483,7 +483,7 @@ void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_wi
 */
 void GUI_blank_char(void)
 {
-	PhysPt ptr = (PhysPt)PhysMake(datseg, 0xce87);
+	PhysPt ptr = (PhysPt)PhysMake(datseg, GUI_TEXT_BUFFER);
 	signed short i;
 	signed short j;
 
@@ -502,7 +502,7 @@ void GUI_font_to_buf(Bit8u *fc)
 	short j;
 
 	/* current text position */
-	p = p_datseg + 0xce87;
+	p = p_datseg + GUI_TEXT_BUFFER;
 
 	if (ds_readb(0xe4d8) == 0x3a)
 		fc++;
@@ -645,8 +645,8 @@ void GUI_draw_popup_line(signed short line, signed short type)
 			break;
 	}
 
-	x = ds_readws(0xbfff);
-	y = ds_readws(0xc001) + (line * 8);
+	x = ds_readws(TEXTBOX_POS_X);
+	y = ds_readws(TEXTBOX_POS_Y) + (line * 8);
 	ds_writew(0xc011, x);
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, x + 15);

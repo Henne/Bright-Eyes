@@ -1156,11 +1156,11 @@ void interrupt mouse_isr(void)
 							(is_mouse_in_rect(68, 89, 171, 136) ? RealMake(datseg, 0x28c8) :
 							(is_mouse_in_rect(16, 36, 67, 96) ? RealMake(datseg, 0x2908) :
 							(is_mouse_in_rect(172, 36, 223, 96) ? RealMake(datseg, 0x2948) :
-							(!is_mouse_in_rect(16, 4, 223, 138) ? RealMake(datseg, 0x2848) :
+							(!is_mouse_in_rect(16, 4, 223, 138) ? RealMake(datseg, DEFAULT_MOUSE_CURSOR) :
 								(void*)ds_readd(0xcecb)))))));
 		} else {
 			if (ds_readbs(0x2c98) != 0) {
-				ds_writed(0xcecb, (Bit32u) RealMake(datseg, 0x2848));
+				ds_writed(0xcecb, (Bit32u) RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 			}
 		}
 
@@ -1240,8 +1240,8 @@ void mouse_init(void)
 			ds_writew(0xc3c7, 0);
 		}
 
-		ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
-		ds_writed(0xcec7, (Bit32u)RealMake(datseg, 0x2848));
+		ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+		ds_writed(0xcec7, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 		if (ds_readw(0xc3c7) == 2) {
 
@@ -1472,7 +1472,7 @@ void mouse_19dc(void)
 		ds_writed(0xcec7, ds_readd(0xcecb));
 
 		/* check if the new cursor is the default cursor */
-		if (Real2Host(ds_readd(0xcecb)) == p_datseg + 0x2848) {
+		if (Real2Host(ds_readd(0xcecb)) == p_datseg + DEFAULT_MOUSE_CURSOR) {
 			/* set cursor size 0x0 */
 			ds_writew(0x29a6, ds_writew(0x29a8, 0));
 		} else {
@@ -2098,13 +2098,13 @@ void nightfall(void)
 signed short get_current_season(void)
 {
 	/* Check Winter */
-	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463e)) {
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_WINTER)) {
 		return 0;
 	/* Check Summer */
-	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x4642)) {
+	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SUMMER)) {
 		return 2;
 	/* Check Spring */
-	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463a)) {
+	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SPRING)) {
 		return 1;
 	} else {
 		return 3;
@@ -2417,12 +2417,12 @@ void do_timers(void)
 		/* check if we have a special day */
 		ds_writeb(SPECIAL_DAY, 0);
 
-		for (i = 0; ds_readbs(0x45b9 + 3 * i) != -1; i++) {
+		for (i = 0; ds_readbs(SPECIAL_DAYS + 3 * i) != -1; i++) {
 
-			if ((ds_readbs(0x45b9 + 3 * i) == ds_readbs(MONTH)) &&
-				(ds_readbs((0x45b9 + 1) + 3 * i) == ds_readbs(DAY_OF_MONTH)))
+			if ((ds_readbs(SPECIAL_DAYS + 3 * i) == ds_readbs(MONTH)) &&
+				(ds_readbs((SPECIAL_DAYS + 1) + 3 * i) == ds_readbs(DAY_OF_MONTH)))
 			{
-				ds_writeb(SPECIAL_DAY, ds_readb((0x45b9 + 2) + 3 * i));
+				ds_writeb(SPECIAL_DAY, ds_readb((SPECIAL_DAYS + 2) + 3 * i));
 				break;
 			}
 		}
@@ -5148,7 +5148,7 @@ int schick_main(int argc, char** argv)
 	signed short len;
 
 	ds_writew(0xbd25, 1);
-	ds_writeb(0xbc62, 1);
+	ds_writeb(PLAYMASK_US, 1);
 
 	init_AIL(16000);
 
@@ -5310,10 +5310,10 @@ signed short copy_protection(void)
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x9c),
-				ds_readbs((0x46fc + 3) + 19 * l_di),
-				ds_readbs((0x46fc + 2) + 19 * l_di),
-				ds_readbs((0x46fc + 1) + 19 * l_di),
-				ds_readbs((0x46fc + 0) + 19 * l_di));
+				ds_readbs((QUESTIONS_HANDBOOK + 3) + 19 * l_di),
+				ds_readbs((QUESTIONS_HANDBOOK + 2) + 19 * l_di),
+				ds_readbs((QUESTIONS_HANDBOOK + 1) + 19 * l_di),
+				ds_readbs((QUESTIONS_HANDBOOK + 0) + 19 * l_di));
 
 			/* print version number */
 			GUI_print_string(p_datseg + 0x46ec, 290, 190);
@@ -5329,7 +5329,7 @@ signed short copy_protection(void)
 					~toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
 			}
 
-			if (!strcmp((char*)(p_datseg + (0x46fc + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
+			if (!strcmp((char*)(p_datseg + (QUESTIONS_HANDBOOK + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
 				return 1;
 			}
 		} else {
@@ -5341,8 +5341,8 @@ signed short copy_protection(void)
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0xa0),
-				get_dtp(4 * (0x29 + ds_readbs((0x47ba + 0) + 3 * l_di))),
-				get_ltx(4 * (0xeb + ds_readbs((0x47ba + 1) + 3 * l_di))));
+				get_dtp(4 * (0x29 + ds_readbs((QUESTIONS_MAP + 0) + 3 * l_di))),
+				get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 1) + 3 * l_di))));
 
 			/* print version number */
 			GUI_print_string(p_datseg + 0x46ec, 290, 190);

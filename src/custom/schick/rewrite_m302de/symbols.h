@@ -16,15 +16,18 @@
 #define FIG_MSG_COUNTER	(0x26ad)	/* signed short */
 #define FIG_CHAR_PIC	(0x26b3)	/* unsigned short */
 #define FIG_ENEMY_PIC	(0x26b5)	/* unsigned short */
+#define GUI_ENTERING_SAVEGAME	(0x26b7)	/* ?16 {0, 1} */
 #define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
 #define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
 #define TEXT_FILE_INDEX	(0x26bd)	/* unsigned short */
 #define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
+#define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
+#define CHAR_STATUS_BARS	(0x2c18)	/* (struct { signed short LE_ORIG, LE, AE_ORIG, AE; })[7] */
 #define DISEASE_PRICES	(0x2c50)	/* signed short[8] */
 #define DISEASE_DELAYS	(0x2c60)	/* signed short[8] */
-#define POISON_PRICES 	(0x2c70)	/* signed short[8] */
-#define POISON_DELAYS 	(0x2c80)	/* signed short[8] */
+#define POISON_PRICES	(0x2c70)	/* signed short[8] */
+#define POISON_DELAYS	(0x2c80)	/* signed short[8] */
 #define TIMERS_DISABLED	(0x2c99)
 #define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
 #define STATUS_PAGE_HERO	(0x2c9d)	/* signed short */
@@ -118,6 +121,8 @@
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
 #define TRAVELING	(0x3614)
+#define INFORMER_ARRAY	(0x3618)	/* (struct of size 38)[10] */
+#define DIALOG_STATES	(0x3794)	/* (struct of size 8)[160?] */
 #define SPHERE_TIMER	(0x3c97)
 #define SPHERE_ACTIVE	(0x3c98)
 #define MAGE_POISON	(0x3cb6)
@@ -141,13 +146,24 @@
 #define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
+#define SPECIAL_DAYS	(0x45b9)	/* (struct { char month, day, id; })[32] */
+#define MONTHS_SPRING	(0x463a)	/* unsigned short[4] */
+#define MONTHS_WINTER	(0x463e)	/* unsigned short[4] */
+#define MONTHS_SUMMER	(0x4642)	/* unsigned short[4] */
 #define BANK_HELLER	(0x4646)	/* signed short */
 #define CONSUME_QUIET	(0x4648)
 #define LEVEL_AP_TAB	(0x464e)	/* Bit32s[21] */
+#define QUESTIONS_HANDBOOK	(0x46fc)	/* (struct of size 19)[10] */
+#define QUESTIONS_MAP	(0x47ba)	/* (struct of size 3)[10] */
 #define STATUS_PAGE_HUNGER_MAX_COUNTER	(0x4a9a)	/* signed char */
 #define STATUS_PAGE_HUNGER_MAX_COLOR	(0x4a9b)	/* signed char */
 #define STATUS_PAGE_THIRST_MAX_COUNTER	(0x4a9c)	/* signed char */
 #define STATUS_PAGE_THIRST_MAX_COLOR	(0x4a9d)	/* signed char */
+#define WALLCLOCK_POS	(0x4a9e)	/* signed short, position of sun/moon */
+#define WALLCLOCK_POS_Y	(0x4aa0)	/* signed char[81] */
+#define WALLCLOCK_PALETTE_DAY	(0x4af1)	/* (struct { unsigned char r,g,b; })[3] */
+#define WALLCLOCK_PALETTE_NIGHT	(0x4afa)	/* (struct { unsigned char r,g,b; })[3] */
+#define COLOR_PAL_BLACK	(0x4b03)	/* char[3] = {0x3f,0x3f,0x3f} */
 #define DELAY_FACTOR	(0x4b66)
 #define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
 #define FIGHT_FIGS_INDEX	(0x4b9e)	/* signed short */
@@ -181,9 +197,14 @@
 #define MAX_GOSSIP	(0x7c9d)	/* s8[52], maximum of different gossips per town */
 #define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
+#define CD_AUDIO_POS_BAK	(0xbc38)	/* unsigned long */
+#define CD_AUDIO_TOD_BAK	(0xbc3c)	/* unsigned long */
+#define CD_AUDIO_TOD	(0xbc4a)	/* unsigned long */
+#define CD_AUDIO_POS	(0xbc4e)	/* unsigned long */
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
 #define SAMPLE_AD_LENGTH	(0xbc5a)	/* unsigned short */
 #define SAMPLE_AD_IDX_ENTRY	(0xbc5c)	/* struct { signed char; signed char; unsigned long; } */
+#define PLAYMASK_US	(0xbc62)	/* unsigned char, 1 = PLAYM_US, 0 = PLAYM_UK */
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
 #define ARCHIVE_FILE_OFFSET	(0xbcdf)	/* unsigned long, start offset in SCHICK.DAT */
@@ -211,6 +232,8 @@
 #define HEROS	(0xbd34)
 #define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, talents, recipes */
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
+#define TEXTBOX_POS_X	(0xbfff)	/* signed short, coordinate of upper left corner */
+#define TEXTBOX_POS_Y	(0xc001)	/* signed short, coordinate of upper left corner */
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
 #define SELLITEMS	(0xc005)	/* RealPt, also used for repair items */
 #define BUYITEMS	(0xc009)	/* RealPt, merchant's assortment */
@@ -221,6 +244,7 @@
 #define ACTION	(0xc3d9)	/* ? short */
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
 #define ANI_MAIN_PTR	(0xce35)
+#define GUI_TEXT_BUFFER	(0xce87)	/* unsigned char[64] */
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER_MONSTER_TAB	(0xd01d)	/* RealPt */
@@ -297,6 +321,8 @@
 #define TEX_FLOOR	(0xe414)	/* Bit8u* */
 #define TEX_SKY	(0xe418)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */
+#define DIALOGBOX_INDENT_HEIGHT	(0xe4d9)	/* unsigned short */
+#define DIALOGBOX_INDENT_WIDTH	(0xe4db)	/* signed short */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
 #define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */
 #define SPELLTARGET	(0xe5b8)

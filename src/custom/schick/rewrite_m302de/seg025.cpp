@@ -437,7 +437,7 @@ signed short game_options(void)
 	ds_writeb(0x45b8, 1);
 	ds_writew(0xe113, 0);
 	ds_writew(0x2ccb, -1);
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	load_pp20(ARCHIVE_FILE_BUCH_DAT);
 	ds_writeb(0x2845, ARCHIVE_FILE_BUCH_DAT);
@@ -722,7 +722,7 @@ void do_location(void)
 	func = (void (*)(void))ds_readd(0x4c3b + 4 * ds_readbs(LOCATION));
 #endif
 
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	if (func) {
 		func();

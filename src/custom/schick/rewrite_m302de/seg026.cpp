@@ -496,10 +496,10 @@ signed short save_game_state(void)
 
 		do {
 			/* ask for filename */
-			ds_writew(0x26b7, 1);
+			ds_writew(GUI_ENTERING_SAVEGAME, 1);
 			strcpy((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
 			GUI_input(get_ltx(0x9e8), 8);
-			ds_writew(0x26b7, 0);
+			ds_writew(GUI_ENTERING_SAVEGAME, 0);
 
 			if (host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER))) == 0) {
 				return 0;

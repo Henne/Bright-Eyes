@@ -156,7 +156,7 @@ signed short GUI_enter_text(Bit8u* dst, signed short x, signed short y, signed s
 
 	if (zero == 0) {
 		for (si = 0; si < num; si++) {
-			if ((ds_readws(0x26b7) != 0) && (length >= si)) {
+			if ((ds_readws(GUI_ENTERING_SAVEGAME) != 0) && (length >= si)) {
 				GUI_print_char(0x20, di, y);
 				GUI_print_char(*dst, di, y);
 				pos++;
@@ -280,11 +280,11 @@ void GUI_draw_radio_bg(signed short header, signed short options, signed short w
 	signed short i;
 
 	/* set upper left coordinates */
-	ds_writew(0xc011, ds_readw(0xbfff));
-	ds_writew(0xc013, ds_readw(0xc001));
+	ds_writew(0xc011, ds_readw(TEXTBOX_POS_X));
+	ds_writew(0xc013, ds_readw(TEXTBOX_POS_Y));
 	/* set lower righti coordinates */
-	ds_writew(0xc015, ds_readw(0xbfff) + width - 1);
-	ds_writew(0xc017, ds_readw(0xc001) + height - 1);
+	ds_writew(0xc015, ds_readw(TEXTBOX_POS_X) + width - 1);
+	ds_writew(0xc017, ds_readw(TEXTBOX_POS_Y) + height - 1);
 	/* set pointer */
 	ds_writed(0xc019, ds_readd(0xbff9));
 	do_save_rect();
@@ -310,10 +310,10 @@ void GUI_draw_radio_bg(signed short header, signed short options, signed short w
 
 void GUI_copy_smth(unsigned short width, unsigned short height)
 {
-	ds_writew(0xc011, ds_readw(0xbfff));
-	ds_writew(0xc013, ds_readw(0xc001));
-	ds_writew(0xc015, ds_readw(0xbfff) + width - 1);
-	ds_writew(0xc017, ds_readw(0xc001) + height - 1);
+	ds_writew(0xc011, ds_readw(TEXTBOX_POS_X));
+	ds_writew(0xc013, ds_readw(TEXTBOX_POS_Y));
+	ds_writew(0xc015, ds_readw(TEXTBOX_POS_X) + width - 1);
+	ds_writew(0xc017, ds_readw(TEXTBOX_POS_Y) + height - 1);
 	ds_writed(0xc019, ds_readd(0xbff9));
 	do_pic_copy(0);
 }
@@ -355,9 +355,9 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	l5 = ds_readw(0xd2d5);
 
 	l_di = (ds_readw(TEXTBOX_WIDTH) * 32) + 32;
-	ds_writew(0xbfff, ((signed short)(320u - l_di) >> 1) + ds_readws(0x2ca2));
+	ds_writew(TEXTBOX_POS_X, ((signed short)(320u - l_di) >> 1) + ds_readws(0x2ca2));
 
-	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
+	ds_writew(0xd2d9, ds_readw(TEXTBOX_POS_X) + 5);
 	ds_writew(0xd2d5, l_di - 8);
 
 	l_si = GUI_count_lines(str);
@@ -367,8 +367,8 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 
 	l2 = (l_si + 2) * 8;
 
-	ds_writew(0xc001, ((signed short)(200u - l2) >> 1) + ds_readw(0x2ca4));
-	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
+	ds_writew(TEXTBOX_POS_Y, ((signed short)(200u - l2) >> 1) + ds_readw(0x2ca4));
+	ds_writew(0xd2d7, ds_readw(TEXTBOX_POS_Y) + 7);
 
 	get_textcolor(&fg_bak, &bg_bak);
 
@@ -383,7 +383,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	refresh_screen_size();
 
 	if (num != 0) {
-		if (GUI_enter_text(Real2Host(ds_readd(TEXT_INPUT_BUFFER)), ds_readws(0xbfff) + ((signed short)(l_di - num * 6) >> 1), ds_readws(0xc001) + l_si * 8 -2, num, 0) != -1) {
+		if (GUI_enter_text(Real2Host(ds_readd(TEXT_INPUT_BUFFER)), ds_readws(TEXTBOX_POS_X) + ((signed short)(l_di - num * 6) >> 1), ds_readws(TEXTBOX_POS_Y) + l_si * 8 -2, num, 0) != -1) {
 			retval = (signed short)atol((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 		} else {
 			retval = -1;
@@ -447,11 +447,11 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 
 	update_mouse_cursor();
 
-	y = ds_readw(0xbfff) + 6;
+	y = ds_readw(TEXTBOX_POS_X) + 6;
 
 	if (old_pos != -1) {
 
-		x = ds_readws(0xc001) + (offset + old_pos) * 8 + 2;
+		x = ds_readws(TEXTBOX_POS_Y) + (offset + old_pos) * 8 + 2;
 
 		/* clear the old button */
 		for (i = 0; i < 4; i++)
@@ -459,7 +459,7 @@ void GUI_fill_radio_button(signed short old_pos, unsigned short new_pos,
 				(signed char)0xd8);
 	}
 
-	x = ds_readws(0xc001) + (offset + new_pos) * 8 + 2;
+	x = ds_readws(TEXTBOX_POS_Y) + (offset + new_pos) * 8 + 2;
 
 	/* fill the new button */
 	for (i = 0; i < 4; i++)
@@ -497,26 +497,26 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	ds_writew(TEXTBOX_WIDTH, 9);
 
 	l_di = ds_readw(TEXTBOX_WIDTH) * 32 + 32;
-	ds_writew(0xbfff, ((signed short)(320 - l_di) >> 1) + ds_readw(0x2ca2));
-	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
+	ds_writew(TEXTBOX_POS_X, ((signed short)(320 - l_di) >> 1) + ds_readw(0x2ca2));
+	ds_writew(0xd2d9, ds_readw(TEXTBOX_POS_X) + 5);
 	ds_writew(0xd2d5, l_di - 8);
 	l10 = ds_readw(0xd313);
 	ds_writew(0xd313, ds_readws(0xd2d9) + ds_readws(0xd2d5) - 24);
-	ds_writew(0xe4db, 40);
-	ds_writew(0xe4d9, 5);
+	ds_writew(DIALOGBOX_INDENT_WIDTH, 40);
+	ds_writew(DIALOGBOX_INDENT_HEIGHT, 5);
 
 	l_si = GUI_count_lines(text) - 1;
 
 	if (NOT_NULL(name))
 		l_si += 2;
 
-	if (l_si < ds_readws(0xe4d9))
-		l_si = ds_readw(0xe4d9) - 1;
+	if (l_si < ds_readws(DIALOGBOX_INDENT_HEIGHT))
+		l_si = ds_readw(DIALOGBOX_INDENT_HEIGHT) - 1;
 
 	l4 = l_si + (signed char)options;
 	l5 = (l4 + 2) * 8;
-	ds_writew(0xc001, (200 - (l5 + 2)) >> 1);
-	ds_writew(0xd2d7, ds_readw(0xc001) + 5);
+	ds_writew(TEXTBOX_POS_Y, (200 - (l5 + 2)) >> 1);
+	ds_writew(0xd2d7, ds_readw(TEXTBOX_POS_Y) + 5);
 
 	update_mouse_cursor();
 	get_textcolor(&fg_bak, &bg_bak);
@@ -526,15 +526,15 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	if (picture != 0) {
 		/* draw a frame */
 		do_border((RealPt)ds_readd(0xd2ff),
-			ds_readw(0xbfff) + 5, ds_readw(0xc001) + 6,
-			ds_readw(0xbfff) + 38, ds_readw(0xc001) + 39,
+			ds_readw(TEXTBOX_POS_X) + 5, ds_readw(TEXTBOX_POS_Y) + 6,
+			ds_readw(TEXTBOX_POS_X) + 38, ds_readw(TEXTBOX_POS_Y) + 39,
 				(signed char)0xff);
 
 		/* set the coordinates */
-		ds_writew(0xc011, ds_readw(0xbfff) + 6);
-		ds_writew(0xc013, ds_readw(0xc001) + 7);
-		ds_writew(0xc015, ds_readw(0xbfff) + 37);
-		ds_writew(0xc017, ds_readw(0xc001) + 38);
+		ds_writew(0xc011, ds_readw(TEXTBOX_POS_X) + 6);
+		ds_writew(0xc013, ds_readw(TEXTBOX_POS_Y) + 7);
+		ds_writew(0xc015, ds_readw(TEXTBOX_POS_X) + 37);
+		ds_writew(0xc017, ds_readw(TEXTBOX_POS_Y) + 38);
 		ds_writed(0xc019, (Bit32u)picture);
 
 		do_pic_copy(0);
@@ -550,18 +550,18 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 		ds_writew(TEXTCOLOR, 0);
 
 		add_ds_ws(0xd2d7, 14);
-		sub_ds_ws(0xe4d9, 2);
+		sub_ds_ws(DIALOGBOX_INDENT_HEIGHT, 2);
 	}
 
 	if (l_si != 0) {
 		GUI_print_header(text);
 	}
 
-	ds_writew(0xe4db, ds_writew(0xe4d9, 0));
+	ds_writew(DIALOGBOX_INDENT_WIDTH, ds_writew(DIALOGBOX_INDENT_HEIGHT, 0));
 
 	if ((signed char)options != 0) {
 		l2 = ds_readw(0xd2d9) + 8;
-		l3 = ds_readws(0xc001) + (l_si + 1) * 8;
+		l3 = ds_readws(TEXTBOX_POS_Y) + (l_si + 1) * 8;
 
 		va_start(arguments, options);
 		for (i = 0; i < (signed char)options; l3 += 8, i++) {
@@ -616,18 +616,18 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 		l6 = h_lines * 8;
 		l3 = ds_readw(0x299c);
 		l4 = ds_readw(0x299e);
-		ds_writew(0x29a0, ds_writew(0x299c, ds_readw(0xbfff) + 90));
-		l1 = ds_readws(0xc001) + l6;
+		ds_writew(0x29a0, ds_writew(0x299c, ds_readw(TEXTBOX_POS_X) + 90));
+		l1 = ds_readws(TEXTBOX_POS_Y) + l6;
 
 		ds_writew(0x29a2, ds_writew(0x299e, (l2 = l1 + ds_readws(0xe5ac) * 8)));
 
 		mouse_move_cursor(ds_readw(0x299c), ds_readw(0x299e));
 
-		ds_writew(0x298e, ds_readws(0xbfff) + width - 16);
-		ds_writew(0x298a, ds_readws(0xbfff));
-		ds_writew(0x2988, ds_readws(0xc001) + l6);
+		ds_writew(0x298e, ds_readws(TEXTBOX_POS_X) + width - 16);
+		ds_writew(0x298a, ds_readws(TEXTBOX_POS_X));
+		ds_writew(0x2988, ds_readws(TEXTBOX_POS_Y) + l6);
 
-		ds_writew(0x298c, l6 + ds_readws(0xc001) - 1 + positions * 8);
+		ds_writew(0x298c, l6 + ds_readws(TEXTBOX_POS_Y) - 1 + positions * 8);
 		refresh_screen_size();
 
 		ds_writew(0xc3d5, ds_writew(0xc3d1, ds_writew(0xc3d3, 0)));
@@ -734,8 +734,8 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	l9 = ds_readw(0xd2d5);
 
 	l11 = ds_readw(TEXTBOX_WIDTH) * 32 + 32;
-	ds_writew(0xbfff, ((320 - l11) >> 1) + ds_readw(0x2ca2));
-	ds_writew(0xd2d9, ds_readw(0xbfff) + 5);
+	ds_writew(TEXTBOX_POS_X, ((320 - l11) >> 1) + ds_readw(0x2ca2));
+	ds_writew(0xd2d9, ds_readw(TEXTBOX_POS_X) + 5);
 	ds_writew(0xd2d5, l11 - 8);
 
 	l10 = ds_readw(0xd313);
@@ -744,8 +744,8 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	l_di = GUI_count_lines(text);
 	l5 = l_di + options;
 	l6 = (l5 + 2) * 8;
-	ds_writew(0xc001, ((200 - l6 + 2) >> 1) + ds_readw(0x2ca4));
-	ds_writew(0xd2d7, ds_readw(0xc001) + 7);
+	ds_writew(TEXTBOX_POS_Y, ((200 - l6 + 2) >> 1) + ds_readw(0x2ca4));
+	ds_writew(0xd2d7, ds_readw(TEXTBOX_POS_Y) + 7);
 
 	update_mouse_cursor();
 	get_textcolor(&fg_bak, &bg_bak);
@@ -756,7 +756,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 		GUI_print_header(text);
 
 	l3 = ds_readw(0xd2d9) + 8;
-	l4 = ds_readws(0xc001) + (l_di + 1) * 8;
+	l4 = ds_readws(TEXTBOX_POS_Y) + (l_di + 1) * 8;
 
 	va_start(arguments, options);
 	for (i = 0; i < options; l4 += 8, i++) {

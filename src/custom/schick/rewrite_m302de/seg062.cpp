@@ -58,7 +58,7 @@ void ask_miracle(void)
 	/* check gods estimation */
 	if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) >= 100) {
 
-		bonus = (signed short)((ga1.a[ds_readws(TEMPLE_GOD)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) / 100) / 10) - l3);
+		bonus = (signed short)((ga1.a[ds_readws(TEMPLE_GOD)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) / 100) / 10) - l3);
 
 		if (ds_readbs(CURRENT_TOWN) == 23) {
 			/* CLANEGH */
