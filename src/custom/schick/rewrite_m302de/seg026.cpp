@@ -513,7 +513,7 @@ signed short save_game_state(void)
 
 				prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50, (char*)p_datseg + 0xe2da + 9 * tw_bak);
 
-				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)Real2Host(ds_readd(0xd2eb)) + 50)) {
+				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50)) {
 
 					GUI_output(get_ltx(0xc98));
 					flag = 1;

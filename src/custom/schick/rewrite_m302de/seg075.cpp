@@ -711,7 +711,7 @@ void DNG_open_door(void)
 	DNG_stub3();
 	DNG_stub4();
 
-	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
+	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(BUFFER1_PTR)), 0x6db0);
 
 	if (!ds_readb(0x3616)) {
 		x = 45;
@@ -737,7 +737,7 @@ void DNG_open_door(void)
 
 		DNG_stub5();
 
-		memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
+		memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, 0x6db0);
 	}
 
 	refresh_screen_size();
@@ -757,7 +757,7 @@ void DNG_close_door(void)
 	DNG_stub3();
 	DNG_stub4();
 
-	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(0xd303)), 0x6db0);
+	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(BUFFER1_PTR)), 0x6db0);
 
 	if (!ds_readb(0x3616)) {
 		x = 45;
@@ -783,7 +783,7 @@ void DNG_close_door(void)
 
 		DNG_stub5();
 
-		memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(0xd303)) + 0x7530, 0x6db0);
+		memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, 0x6db0);
 	}
 
 	refresh_screen_size();

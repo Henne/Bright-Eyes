@@ -829,7 +829,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, pos + 7);
 	ds_writew(0xc017, y + 6);
-	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(BUFFER3_PTR) + 0xcaf: (RealPt)ds_readd(0xd2e3) + 0xcef));
+	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(BUFFER3_PTR) + 0xcaf: (RealPt)ds_readd(BUFFER3_PTR) + 0xcef));
 
 	/* draw sun/moon */
 	do_pic_copy(2);

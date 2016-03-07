@@ -145,6 +145,21 @@
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
+#define AIL_DIGI_DRIVER_BUF2	(0xbceb)	/* RealPt to buffer of size 5016 */
+#define AIL_VOC_BUFFER	(0xbcef)	/* RealPt */
+#define AIL_DIGI_DRIVER_BUF	(0xbcf3)	/* RealPt */
+#define AIL_DIGI_DRIVER_DESCR	(0xbcf7)	/* RealPt */
+#define AIL_DIGI_DRIVER_ID	(0xbcfb)	/* signed short */
+#define AIL_TIMBRE_CACHE_SIZE	(0xbd03)	/* unsigned short */
+#define AIL_STATE_TABLE_SIZE	(0xbd05)	/* unsigned long */
+#define AIL_MUSIC_DRIVER_BUF2	(0xbd09)	/* RealPt */
+#define AIL_MIDI_BUFFER	(0xbd0d)	/* RealPt */
+#define AIL_TIMBRE_CACHE	(0xbd11)	/* RealPt */
+#define AIL_STATE_TABLE	(0xbd15)	/* RealPt */
+#define AIL_MUSIC_DRIVER_BUF	(0xbd19)	/* RealPt */
+#define AIL_MUSIC_DRIVER_DESCR	(0xbd1d)	/* RealPt */
+#define AIL_SEQUENCE	(0xbd21)	/* signed short */
+#define AIL_MUSIC_DRIVER_ID	(0xbd23)	/* signed short */
 #define SCENARIO_BUF	(0xbd2c)
 #define PTR_FIGHT_LST	(0xbd28)	/* pointer to FIGHT.LST */
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */

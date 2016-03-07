@@ -432,7 +432,7 @@ void sea_travel(signed short passage, signed short dir)
 
 	ds_writeb(0xa842, 1);
 
-	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(0xc3db), 11400)));
+	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(BUFFER9_PTR), 11400)));
 	ds_writew(0x4236, passage < 7 ? 7 : 38);
 	ds_writew(0x423e, passage < 7 ? passage : passage - 7);
 
