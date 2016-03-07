@@ -302,7 +302,12 @@ struct dummy {
 	char a[35];
 };
 
-void FIG_remove_from_list(signed char fight_id, signed char v2)
+/**
+ * \brief		removes an element from the FIG_LIST
+ * \param fight_id		identificates the element to remove
+ * \param keep_in_memory	whether to save the removed element in FIG_LIST_ELEM, useful for moving element to end of list
+ */
+void FIG_remove_from_list(signed char fight_id, signed char keep_in_memory)
 {
 	Bit8u* p = Real2Host(ds_readd(FIG_LIST_HEAD));
 
@@ -321,7 +326,7 @@ void FIG_remove_from_list(signed char fight_id, signed char v2)
 		p = Real2Host(host_readd(p + 0x1b));
 	}
 
-	if (!v2) {
+	if (!keep_in_memory) {
 		ds_writeb(FIG_LIST_ARRAY + fight_id, 0);
 	} else {
 //		struct_copy(p_datseg + FIG_LIST_ELEM, p, 35);
