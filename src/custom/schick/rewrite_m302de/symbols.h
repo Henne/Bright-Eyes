@@ -21,6 +21,10 @@
 #define TEXT_FILE_INDEX	(0x26bd)	/* unsigned short */
 #define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
+#define DISEASE_PRICES	(0x2c50)	/* signed short[8] */
+#define DISEASE_DELAYS	(0x2c60)	/* signed short[8] */
+#define POISON_PRICES 	(0x2c70)	/* signed short[8] */
+#define POISON_DELAYS 	(0x2c80)	/* signed short[8] */
 #define TIMERS_DISABLED	(0x2c99)
 #define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
 #define STATUS_PAGE_HERO	(0x2c9d)	/* signed short */
@@ -58,6 +62,7 @@
 #define SPECIAL_DAY	(0x2dc3)
 #define INGAME_TIMERS	(0x2dc4)	/* signed long[26] */
 #define GODS_ESTIMATION	(0x314e)	/* signed long[15] */
+#define SMITH_REPAIRITEMS	(0x31e2)	/* (struct { short, long })[50] */
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
 #define TREASURE_MAPS	(0x3332)	/* signed char[9] */
@@ -166,6 +171,8 @@
 #define SEG047_INIT3	(0x64bf)	/* signed short[7] filled with zeroes */
 #define CAMPFIGHTS	(0x6694)	/* signed short[4] */
 #define DCAMPFIGHTS	(0x66e2)	/* signed short[4] */
+#define TEMPLE_MIRACLE_BONUS	(0x6ea4)	/* signed char[15] = {0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0} */
+#define TEMPLE_MIRACLE_DICE	(0x6eb3)	/* signed char[15] = {0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10} */
 #define TRAVEL_BY_SHIP	(0x7070)	/* ?8 0 = on land, 1 = at the ship */
 #define CAN_MERGE_GROUP	(0x7c41)	/* signed char {-1,1} */
 #define C_EVENT_ACTIVE	(0x7c42)	/* ?8 0 = default, 1 = city event active */
@@ -205,6 +212,8 @@
 #define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, talents, recipes */
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
+#define SELLITEMS	(0xc005)	/* RealPt, also used for repair items */
+#define BUYITEMS	(0xc009)	/* RealPt, merchant's assortment */
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
 #define CITY_LTX	(0xc3ad)
 #define DIALOG_TEXT	(0xc3b1)
@@ -283,6 +292,8 @@
 #define BOOKED_INN_DAYS	(0xe3f0)	/* signed char */
 #define SLEEP_QUALITY	(0xe3f1)	/* signed char */
 #define BUY_SHOPPING_CART	(0xe3f2)	/* RealPt to buffer of size 250, each item has 4 bytes */
+#define PRICE_MODIFICATOR	(0xe3f6)	/* signed short, price modificator for smith and sell */
+#define TEMPLE_GOD	(0xe3f8)	/* signed short, id of current temple's god */
 #define TEX_FLOOR	(0xe414)	/* Bit8u* */
 #define TEX_SKY	(0xe418)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */

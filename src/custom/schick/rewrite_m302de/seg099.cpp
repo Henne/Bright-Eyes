@@ -872,7 +872,7 @@ void spell_klarum_purum(void)
 	}
 
 	/* AE-cost = poison cost */
-	ds_writew(0xac0e, ds_readws(0x2c70 + poison * 2));
+	ds_writew(0xac0e, ds_readws(POISON_PRICES + poison * 2));
 
 	if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
 		/* not enough AE */

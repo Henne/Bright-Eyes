@@ -206,7 +206,7 @@ void buy_screen(void)
 
 					l3 = 5 * items_x + l_di + item;
 
-					if ((j = host_readws(Real2Host(ds_readd(0xc009)) + 7 * l3))) {
+					if ((j = host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * l3))) {
 
 						ds_writew(0xc011, array3.a[items_x]);
 						ds_writew(0xc013, array5.a[l_di]);
@@ -221,9 +221,9 @@ void buy_screen(void)
 						do_pic_copy(0);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							host_readws(Real2Host(ds_readd(0xc009)) + 4 + 7 * l3) == 1 ? fmt_h.a :
-								(host_readws(Real2Host(ds_readd(0xc009)) + 4 + 7 * l3) == 10 ? fmt_s.a : fmt_d.a),
-							host_readws(Real2Host(ds_readd(0xc009)) + 2 + 7 * l3));
+							host_readws(Real2Host(ds_readd(BUYITEMS)) + 4 + 7 * l3) == 1 ? fmt_h.a :
+								(host_readws(Real2Host(ds_readd(BUYITEMS)) + 4 + 7 * l3) == 10 ? fmt_s.a : fmt_d.a),
+							host_readws(Real2Host(ds_readd(BUYITEMS)) + 2 + 7 * l3));
 
 						GUI_print_string(Real2Host(ds_readd(DTP2)), array3.a[items_x] + 20, array5.a[l_di] + 5);
 					}
@@ -237,9 +237,9 @@ void buy_screen(void)
 		}
 
 		if (ds_readws(0xc3c7) == 2) {
-			select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(0xc009)) + 7 * item);
+			select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(BUYITEMS)) + 7 * item);
 		} else {
-			select_with_keyboard((Bit8u*)&l7, Real2Host(ds_readd(0xc009)) + 7 * item);
+			select_with_keyboard((Bit8u*)&l7, Real2Host(ds_readd(BUYITEMS)) + 7 * item);
 		}
 
 #if !defined(__BORLANDC__)
@@ -271,7 +271,7 @@ void buy_screen(void)
 
 			clear_loc_line();
 
-			item_id = host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item));
+			item_id = host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item));
 
 			l4 = 0;
 
@@ -366,7 +366,7 @@ void buy_screen(void)
 				}
 			}
 
-			item_id = host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item));
+			item_id = host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item));
 			l16 = -1;
 			l17 = 0;
 
@@ -412,8 +412,8 @@ void buy_screen(void)
 						l4 = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2);
 					}
 
-					l9 = (Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 *(l7 + item) + 2) *
-						(Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 *(l7 + item) + 4) * l4;
+					l9 = (Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 *(l7 + item) + 2) *
+						(Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 *(l7 + item) + 4) * l4;
 
 					if (l3 == 1 && price + l9 > p_money) {
 						GUI_output(get_ltx(0x644));
@@ -453,19 +453,19 @@ void buy_screen(void)
 
 					l4 = 1;
 
-					if (item_stackable(get_itemsdat(host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item))))) {
+					if (item_stackable(get_itemsdat(host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item))))) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x6e4),
-							(char*)Real2Host(GUI_names_grammar(4, host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item)), 0)));
+							(char*)Real2Host(GUI_names_grammar(4, host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item)), 0)));
 
 						l4 = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 					}
 
 					if (l4 > 0) {
 
-						l9 = (Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item) + 2) *
-							(Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item) + 4) * l4;
+						l9 = (Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item) + 2) *
+							(Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item) + 4) * l4;
 
 						if (price + l9 > p_money) {
 							GUI_output(get_ltx(0x644));
@@ -475,7 +475,7 @@ void buy_screen(void)
 							price += l9;
 
 							host_writews(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * nice,
-								host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item)));
+								host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item)));
 
 							host_writews(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * nice + 2, l4);
 
@@ -497,7 +497,7 @@ void buy_screen(void)
 		if (ds_readws(ACTION) == 131 && item != 0) {
 			l8 = 1;
 			item -= 15;
-		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(0xc009)) + 7 * (item + 15))) {
+		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (item + 15))) {
 			l8 = 1;
 			item += 15;
 		}
@@ -633,7 +633,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 	signed short sellable = 0;
 
 	item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
-	host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos, item_id);
+	host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
 		/* WEAPON SHOP */
@@ -654,30 +654,30 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 
 	if (!sellable) {
 		/* this item cannot be sold here */
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 0);
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4, 1);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 0);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
 	} else if (ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos) ||
 			 host_readbs(hero + 0x19d + 14 * item_pos) != 0)
 	{
 		/* this item is broken or empty */
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 1);
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4, 1);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
 	} else {
 		/* calculate the price */
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2,
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2,
 			(host_readws(get_itemsdat(item_id) + 8) + (host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100) ) / 2);
 		/* adjust price to 1 if zero */
-		if (host_readws(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2) == 0) {
-			host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 1);
+		if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2) == 0) {
+			host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
 		}
 
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4,
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4,
 			host_readbs(get_itemsdat(item_id) + 7));
 	}
 
-	host_writebs(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 6, (signed char)item_pos);
+	host_writebs(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 6, (signed char)item_pos);
 }
 
 #if !defined(__BORLANDC__)

@@ -1866,7 +1866,7 @@ void timers_daily(void)
 	/* Smith / items to repair */
 	for (i = 0; i < 50; i++) {
 
-		if (ds_readw(0x31e2 + i * 6) != 0) {
+		if (ds_readw(SMITH_REPAIRITEMS + i * 6) != 0) {
 			/* set time to 6:00 am */
 			ds_writed(0x31e4 + i * 6, 32400L);
 		}

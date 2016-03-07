@@ -388,7 +388,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 				and_ptr_bs(enemy_p + 0x32, 0xfd);
 			} else {
 
-				damage += 10 * ds_readws(0x2c70 + 2 * host_readbs(hero + HERO_ITEM_RIGHT + 9));
+				damage += 10 * ds_readws(POISON_PRICES + 2 * host_readbs(hero + HERO_ITEM_RIGHT + 9));
 			}
 
 			dec_ptr_bs(hero + HERO_ITEM_RIGHT + 10);

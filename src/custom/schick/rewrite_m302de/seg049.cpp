@@ -321,13 +321,13 @@ void GRP_switch_to_next(signed short mode)
 			set_palette(p_datseg + 0x26c3, 0xa0, 0x20);
 		}
 
-		if ((ds_readbs(GROUPS_DNG_INDEX + group)) && (ds_readbs(0x2d6f + group) != ds_readbs(DUNGEON_INDEX)))
+		if ((ds_readbs(GROUPS_DNG_INDEX + group)) && (ds_readbs(GROUPS_DNG_INDEX + group) != ds_readbs(DUNGEON_INDEX)))
 		{
 			ds_writeb(0x2ca6, -1);
 			ds_writew(0x2ccb, -1);
 		}
 
-		if ((ds_readbs(GROUPS_TOWN + group)) && (ds_readbs(0x2d68 + group) != ds_readbs(CURRENT_TOWN)))
+		if ((ds_readbs(GROUPS_TOWN + group)) && (ds_readbs(GROUPS_TOWN + group) != ds_readbs(CURRENT_TOWN)))
 		{
 			ds_writeb(0x2ca7, -1);
 			ds_writew(0x2ccb, -1);
@@ -426,10 +426,10 @@ void GRP_swap_heros(void)
 
 			*((struct dummy*)get_hero(hero1_nr)) = *((struct dummy*)get_hero(hero2_nr));
 
-			ds_writebs(WILDCAMP_GUARDSTATUS + hero1_nr, ds_readbs(0xe3d6 + hero2_nr));
-			ds_writebs(WILDCAMP_MAGICSTATUS + hero1_nr, ds_readbs(0xe3cf + hero2_nr));
-			ds_writebs(WILDCAMP_REPLSTATUS + hero1_nr, ds_readbs(0xe3c8 + hero2_nr));
-			ds_writebs(WILDCAMP_HERBSTATUS + hero1_nr, ds_readbs(0xe3c1 + hero2_nr));
+			ds_writebs(WILDCAMP_GUARDSTATUS + hero1_nr, ds_readbs(WILDCAMP_GUARDSTATUS + hero2_nr));
+			ds_writebs(WILDCAMP_MAGICSTATUS + hero1_nr, ds_readbs(WILDCAMP_MAGICSTATUS + hero2_nr));
+			ds_writebs(WILDCAMP_REPLSTATUS + hero1_nr, ds_readbs(WILDCAMP_REPLSTATUS + hero2_nr));
+			ds_writebs(WILDCAMP_HERBSTATUS + hero1_nr, ds_readbs(WILDCAMP_HERBSTATUS + hero2_nr));
 
 			*((struct dummy*)get_hero(hero2_nr)) = *((struct dummy*)&tmp);
 
@@ -587,10 +587,10 @@ void GRP_move_hero(signed short src_pos)
 
 				*((struct dummy*)src) = *((struct dummy*)dst);
 
-				ds_writeb(WILDCAMP_GUARDSTATUS + src_pos, ds_readbs(0xe3d6 + dst_pos));
-				ds_writeb(WILDCAMP_MAGICSTATUS + src_pos, ds_readbs(0xe3cf + dst_pos));
-				ds_writeb(WILDCAMP_REPLSTATUS + src_pos, ds_readbs(0xe3c8 + dst_pos));
-				ds_writeb(WILDCAMP_HERBSTATUS + src_pos, ds_readbs(0xe3c1 + dst_pos));
+				ds_writeb(WILDCAMP_GUARDSTATUS + src_pos, ds_readbs(WILDCAMP_GUARDSTATUS + dst_pos));
+				ds_writeb(WILDCAMP_MAGICSTATUS + src_pos, ds_readbs(WILDCAMP_MAGICSTATUS + dst_pos));
+				ds_writeb(WILDCAMP_REPLSTATUS + src_pos, ds_readbs(WILDCAMP_REPLSTATUS + dst_pos));
+				ds_writeb(WILDCAMP_HERBSTATUS + src_pos, ds_readbs(WILDCAMP_HERBSTATUS + dst_pos));
 
 				memcpy(dst, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
 

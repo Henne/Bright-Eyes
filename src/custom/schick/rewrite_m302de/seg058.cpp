@@ -47,48 +47,48 @@ void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, sig
 
 	item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
 
-	host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos, item_id);
+	host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
 
 		if (ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos)) {
 
-			host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2,
+			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
 				(host_readws(get_itemsdat(item_id) + 8) +
 					(host_readws(get_itemsdat(item_id) + 8) * host_readbs(smith_ptr) / 100)) / 2);
 
-			if (host_readws(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2) == 0) {
-				host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2, 1);
+			if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
+				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
 			}
 
-			host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 4,
+			host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4,
 				host_readbs(get_itemsdat(item_id) + 7));
 
 		} else {
 
 			if (host_readbs(hero + HERO_ITEM_HEAD + 7 + 14 * item_pos) != 0) {
 
-				host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2,
+				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2,
 					(host_readws(get_itemsdat(item_id) + 8) +
 						(host_readws(get_itemsdat(item_id) + 8) * host_readbs(smith_ptr) / 100)) / 4);
 
-				if (host_readws(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2) == 0) {
-					host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2, 1);
+				if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2) == 0) {
+					host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 1);
 				}
 
-				host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 4,
+				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4,
 					host_readbs(get_itemsdat(item_id) + 7));
 			} else {
-				host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2, 0);
-				host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 4, 1);
+				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 0);
+				host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4, 1);
 			}
 		}
 	} else {
-		host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 2, 0);
-		host_writews(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 4, 1);
+		host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 2, 0);
+		host_writews(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 4, 1);
 	}
 
-	host_writebs(Real2Host(ds_readd(0xc005)) + 7 * smith_pos + 6, (signed char)item_pos);
+	host_writebs(Real2Host(ds_readd(SELLITEMS)) + 7 * smith_pos + 6, (signed char)item_pos);
 }
 
 struct dummy3 {
@@ -154,22 +154,22 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	struct nvf_desc nvf;
 
 	/* check if this smith has an item in repair */
-	if (ds_readws(0x31e2 + 6 * a1) != 0) {
+	if (ds_readws(SMITH_REPAIRITEMS + 6 * a1) != 0) {
 
-		if (ds_readds(0x31e2 + 2 + 6 * a1) > ds_readds(DAY_TIMER)) {
+		if (ds_readds(SMITH_REPAIRITEMS + 2 + 6 * a1) > ds_readds(DAY_TIMER)) {
 			/* not ready yet */
 			GUI_output(get_ltx(0x794));
 
-		} else if (get_item(ds_readws(0x31e2 + 6 * a1), 1, 1)) {
+		} else if (get_item(ds_readws(SMITH_REPAIRITEMS + 6 * a1), 1, 1)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x798),
-				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, ds_readws(0x31e2 + 6 * a1), 0)));
+				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, ds_readws(SMITH_REPAIRITEMS + 6 * a1), 0)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
-			ds_writed(0x31e2 + 2 + 6 * a1, 0);
-			ds_writew(0x31e2 + 6 * a1, 0);
+			ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, 0);
+			ds_writew(SMITH_REPAIRITEMS + 6 * a1, 0);
 		}
 	} else {
 
@@ -192,8 +192,8 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 		ds_writed(0xc019, ds_readd(ICON));
 		do_pic_copy(0);
 
-		ds_writed(0xc005, ds_readd(FIG_FIGURE1_BUF));
-		memset(Real2Host(ds_readd(0xc005)), 0, 350);
+		ds_writed(SELLITEMS, ds_readd(FIG_FIGURE1_BUF));
+		memset(Real2Host(ds_readd(SELLITEMS)), 0, 350);
 
 		get_textcolor(&fg_bak, &bg_bak);
 		set_textcolor(255, 0);
@@ -229,7 +229,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 					}
 
 					for (l_si = smith_pos; l_si < 23; l_si++) {
-						host_writew(Real2Host(ds_readd(0xc005)) + 7 * l_si, 0);
+						host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * l_si, 0);
 					}
 
 					l11 = 0;
@@ -263,7 +263,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 						answer = 5 * items_x + l_si + item;
 
-						if ((j = host_readws(Real2Host(ds_readd(0xc005)) + 7 * answer))) {
+						if ((j = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * answer))) {
 
 							ds_writew(0xc011, array3.a[items_x]);
 							ds_writew(0xc013, array5.a[l_si]);
@@ -279,7 +279,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 							if (item_stackable(get_itemsdat(j))) {
 
-								if ((val = host_readws(hero2 + 0x198 + 14 * host_readbs(Real2Host(ds_readd(0xc005)) + 7 * answer + 6))) > 1)
+								if ((val = host_readws(hero2 + 0x198 + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 								{
 #if !defined(__BORLANDC__)
 									sprintf((char*)Real2Host(ds_readd(DTP2)), "%d", val);
@@ -295,9 +295,9 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 							}
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								host_readws(Real2Host(ds_readd(0xc005)) + 4 + 7 * answer) == 1 ? fmt_h.a :
-									(host_readws(Real2Host(ds_readd(0xc005)) + 4 + 7 * answer) == 10 ? fmt_s.a : fmt_d.a),
-								host_readws(Real2Host(ds_readd(0xc005)) + 2 + 7 * answer));
+								host_readws(Real2Host(ds_readd(SELLITEMS)) + 4 + 7 * answer) == 1 ? fmt_h.a :
+									(host_readws(Real2Host(ds_readd(SELLITEMS)) + 4 + 7 * answer) == 10 ? fmt_s.a : fmt_d.a),
+								host_readws(Real2Host(ds_readd(SELLITEMS)) + 2 + 7 * answer));
 
 
 							GUI_print_string(Real2Host(ds_readd(DTP2)), array3.a[items_x] + 20, array5.a[l_si] + 5);
@@ -317,9 +317,9 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 			ds_writed(0x29e4, (Bit32u)0L);
 
 			if (ds_readws(0xc3c7) == 2) {
-				select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(0xc005)) + 7 * item);
+				select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(SELLITEMS)) + 7 * item);
 			} else {
-				select_with_keyboard((Bit8u*)&l7, Real2Host(ds_readd(0xc005)) + 7 * item);
+				select_with_keyboard((Bit8u*)&l7, Real2Host(ds_readd(SELLITEMS)) + 7 * item);
 			}
 
 			if (l6 != l7) {
@@ -342,7 +342,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 				clear_loc_line();
 
-				GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l7 + item))))));
+				GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item))))));
 			}
 
 			if (ds_readws(0xc3d3) != 0  || ds_readws(ACTION) == 73) {
@@ -362,18 +362,18 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 			if (ds_readws(ACTION) == 131 && item != 0) {
 				l8 = 1;
 				item -= 15;
-			} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(0xc005)) + 7 * (item + 15))) {
+			} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
 				l8 = 1;
 				item += 15;
 			}
 
 			if (ds_readws(ACTION) == 144 || ds_readws(ACTION) == 129 || ds_readws(ACTION) == 28) {
 
-				item_id = host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l7 + item));
+				item_id = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item));
 
 				p_money = get_party_money();
 
-				if (host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l7 + item) + 2) == 0) {
+				if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 2) == 0) {
 					GUI_output(get_ltx(0x79c));
 				} else {
 
@@ -383,8 +383,8 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 					while (l12 == 0 && j < 3) {
 
 
-						price = (host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l7 + item) + 2)
-							* host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l7 + item) + 4)) * ds_readws(0xe3f6) / 4;
+						price = (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 2)
+							* host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 4)) * ds_readws(PRICE_MODIFICATOR) / 4;
 
 						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 
@@ -426,17 +426,17 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 									GUI_output(get_ltx(0x7b0));
 								}
 
-								ds_writew(0x31e2 + 6 * a1, item_id);
+								ds_writew(SMITH_REPAIRITEMS + 6 * a1, item_id);
 
 								if (ds_readds(DAY_TIMER) > HOURS(14)) {
-									ds_writed(0x31e2 + 2 + 6 * a1, HOURS(23));
+									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, HOURS(23));
 									GUI_output(get_ltx(0x7a8));
 								} else {
-									ds_writed(0x31e2 + 2 + 6 * a1, ds_readd(DAY_TIMER) + HOURS(6));
+									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, ds_readd(DAY_TIMER) + HOURS(6));
 									GUI_output(get_ltx(0x7ac));
 								}
 
-								drop_item(hero2, host_readbs(Real2Host(ds_readd(0xc005)) + 6 + 7 * (l7 + item)), 1);
+								drop_item(hero2, host_readbs(Real2Host(ds_readd(SELLITEMS)) + 6 + 7 * (l7 + item)), 1);
 								p_money -= price;
 								set_party_money(p_money);
 
@@ -512,7 +512,7 @@ void do_smith(void)
 	load_ggsts_nvf();
 	ds_writew(0x2846, 1);
 	smith_ptr = p_datseg + 0x6c10 + 2 * ds_readws(TYPEINDEX);
-	ds_writew(0xe3f6, 4);
+	ds_writew(PRICE_MODIFICATOR, 4);
 
 	while (!done) {
 
@@ -590,7 +590,7 @@ void TLK_schmied(signed short state)
 	} else if (state == 11 || state == 14 || state == 16 || state == 23) {
 		ds_writeb(0x3472 + ds_readws(TYPEINDEX), 1);
 	} else if (state == 19 || state == 31) {
-		ds_writew(0xe3f6, 3);
+		ds_writew(PRICE_MODIFICATOR, 3);
 	} else if (state == 30) {
 
 		DNG_enter_dungeon(14);

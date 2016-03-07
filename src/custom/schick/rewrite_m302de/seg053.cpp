@@ -206,7 +206,7 @@ void do_healer(void)
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* calculate price */
-						price = ds_readws(0x2c50 + disease * 2) * 10;
+						price = ds_readws(DISEASE_PRICES + disease * 2) * 10;
 
 						price += (host_readbs(info) * price) / 100;
 
@@ -229,7 +229,7 @@ void do_healer(void)
 								/* let pass some time */
 								timewarp(5400);
 
-								if (random_schick(100) <= (120 - host_readbs(info + 1) * 10) + ds_readws(0x2c60 + disease * 2)) {
+								if (random_schick(100) <= (120 - host_readbs(info + 1) * 10) + ds_readws(DISEASE_DELAYS + disease * 2)) {
 									/* heal the disease */
 									host_writeb(hero + HERO_ILLNESS_EMPTY + disease * 5, 1);
 									host_writeb(hero + 0xaf + disease * 5, 0);
@@ -272,7 +272,7 @@ void do_healer(void)
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* calculate price */
-						price = ds_readws(0x2c70 + poison * 2) * 20;
+						price = ds_readws(POISON_PRICES + poison * 2) * 20;
 						price += (host_readbs(info) * price) / 100;
 						if (motivation == 2)
 							price *= 2;

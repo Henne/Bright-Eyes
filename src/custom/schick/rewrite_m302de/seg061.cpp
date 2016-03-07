@@ -52,18 +52,18 @@ void do_temple(void)
 		if (ds_readws(0x2846) != 0) {
 
 			/* search which god owns this temple */
-			ds_writew(0xe3f8, 1);
+			ds_writew(TEMPLE_GOD, 1);
 			for (l_si = 1; l_si < 15; l_si++) {
 				if (is_in_byte_array((signed char)ds_readws(TYPEINDEX), Real2Host(ds_readd(0x6e36 + 4 * l_si))))
 				{
-					ds_writew(0xe3f8, l_si);
+					ds_writew(TEMPLE_GOD, l_si);
 					break;
 				}
 			}
 
 			draw_main_screen();
 			load_ani(3);
-			load_tempicon(ds_readws(0xe3f8) - 1);
+			load_tempicon(ds_readws(TEMPLE_GOD) - 1);
 			init_ani(0);
 			set_audio_track(ARCHIVE_FILE_TEMPLE_XMI);
 
@@ -82,7 +82,7 @@ void do_temple(void)
 			/* location string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x3ac),
-				(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+				(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 				(char*)(ds_readws(TYPEINDEX) != 58 ? get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)): get_ltx(0x9b8)));
 
 			GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -140,7 +140,7 @@ void do_temple(void)
 				/* location string */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x3ac),
-					(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+					(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 					(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 				GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 
@@ -208,10 +208,10 @@ void do_temple(void)
 
 						if (10 * donation >= money) {
 							/* donate all money */
-							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), money / 10);
+							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD), money / 10);
 							money = 0;
 						} else {
-							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), donation);
+							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD), donation);
 							money -= 10 * donation;
 						}
 
@@ -282,7 +282,7 @@ void char_add(signed short temple_id)
 					/* location string */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x3ac),
-						(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+						(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 						(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 				}
@@ -331,7 +331,7 @@ void char_letgo(signed short temple_id)
 					/* location string */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x3ac),
-						(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+						(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 						(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 				}

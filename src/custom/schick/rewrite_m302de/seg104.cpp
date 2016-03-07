@@ -429,7 +429,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 
 			if ((flag != 0) || (test_skill(healer, 45, (signed char)handycap) > 0)) {
 
-				if (((retval = test_skill(healer, 45, ds_readbs(0x2c50 + 2 * disease) + handycap)) > 0) &&
+				if (((retval = test_skill(healer, 45, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
 					(disease != 1) && (disease != 3))
 				{
 

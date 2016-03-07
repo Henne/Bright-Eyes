@@ -365,7 +365,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 							timewarp(0x708);
 
-							if (test_skill(hero, 44, ds_readbs(0x2c70 + 2 * poison) + bonus) > 0) {
+							if (test_skill(hero, 44, ds_readbs(POISON_PRICES + 2 * poison) + bonus) > 0) {
 								/* success */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xac8),
