@@ -299,24 +299,24 @@ void spell_hexenknoten(void)
 	}
 
 	ds_writew(FIG_LIST_ELEM, 0);
-	ds_writeb(0xe068, 127);
-	ds_writeb(0xe069, (signed char)x);
-	ds_writeb(0xe06a, (signed char)y);
-	ds_writeb(0xe06b, 0);
-	ds_writeb(0xe06c, 0);
-	ds_writeb(0xe06d, (signed char)height);
-	ds_writeb(0xe06e, (signed char)width);
-	ds_writeb(0xe06f, 0);
-	ds_writeb(0xe070, 0);
-	ds_writebs(0xe071, (signed char)(width) - 1);
-	ds_writebs(0xe072, (signed char)(height) - 1);
-	ds_writeb(0xe073, 0);
-	ds_writeb(0xe075, -1);
-	ds_writeb(0xe074, -1);
-	ds_writed(0xe07d, (Bit32u)rp);
-	ds_writeb(0xe077, 50);
-	ds_writeb(0xe078, 1);
-	ds_writeb(0xe079, -1);
+	ds_writeb((FIG_LIST_ELEM+2), 127);
+	ds_writeb((FIG_LIST_ELEM+3), (signed char)x);
+	ds_writeb((FIG_LIST_ELEM+4), (signed char)y);
+	ds_writeb((FIG_LIST_ELEM+5), 0);
+	ds_writeb((FIG_LIST_ELEM+6), 0);
+	ds_writeb((FIG_LIST_ELEM+7), (signed char)height);
+	ds_writeb((FIG_LIST_ELEM+8), (signed char)width);
+	ds_writeb((FIG_LIST_ELEM+9), 0);
+	ds_writeb((FIG_LIST_ELEM+10), 0);
+	ds_writebs((FIG_LIST_ELEM+11), (signed char)(width) - 1);
+	ds_writebs((FIG_LIST_ELEM+12), (signed char)(height) - 1);
+	ds_writeb((FIG_LIST_ELEM+13), 0);
+	ds_writeb((FIG_LIST_ELEM+15), -1);
+	ds_writeb((FIG_LIST_ELEM+14), -1);
+	ds_writed((FIG_LIST_ELEM+23), (Bit32u)rp);
+	ds_writeb((FIG_LIST_ELEM+17), 50);
+	ds_writeb((FIG_LIST_ELEM+18), 1);
+	ds_writeb((FIG_LIST_ELEM+19), -1);
 
 	FIG_add_to_list(-1);
 

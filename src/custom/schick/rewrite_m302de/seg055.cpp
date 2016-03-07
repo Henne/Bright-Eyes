@@ -71,7 +71,7 @@ void do_merchant(void)
 	}
 
 	if (ds_readb(0x34d6 + ds_readws(TYPEINDEX)) != 0) {
-		if (ds_readbs(0x6871 + 9 * ds_readws(TYPEINDEX)) != 3) {
+		if (ds_readbs((0x6870 + 1) + 9 * ds_readws(TYPEINDEX)) != 3) {
 			talk_merchant();
 			turnaround();
 			return;

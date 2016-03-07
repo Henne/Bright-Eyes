@@ -69,14 +69,14 @@ unsigned short prepare_passages(void)
 			(host_readb(Real2Host(ent) + 1) == ds_readb(CURRENT_TOWN)))) {
 
 			/* prepare an entry of 12 byte for a passage today */
-			ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
-			ds_writed(0x42b6 + prepared * 12, (Bit32u)ent);
-			ds_writeb(0x42ba + prepared * 12, 0);
+			ds_writeb((0x42b2 + 11) + prepared * 12, (unsigned char)i);
+			ds_writed((0x42b2 + 4) + prepared * 12, (Bit32u)ent);
+			ds_writeb((0x42b2 + 8) + prepared * 12, 0);
 			ds_writeb(0x42bb + prepared * 12, host_readb(Real2Host(ent) + 6));
 			ds_writed(0x42b2 + prepared * 12,
 				(Bit32u)get_ship_name(host_readb(Real2Host(ent) + 6), prepared));
 
-			ds_writeb(0x42bc + prepared * 12,
+			ds_writeb((0x42b2 + 10) + prepared * 12,
 				host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN) ?
 					host_readb(Real2Host(ent) + 1) :
 					host_readb(Real2Host(ent)));
@@ -91,13 +91,13 @@ unsigned short prepare_passages(void)
 				|| (host_readb(Real2Host(ent) + 1) == ds_readb(CURRENT_TOWN))))
 			{
 				/* prepare an entry of 12 byte for a passage tomorrow */
-				ds_writeb(0x42bd + prepared * 12, (unsigned char)i);
-				ds_writed(0x42b6 + prepared * 12, (Bit32u)ent);
-				ds_writeb(0x42ba + prepared * 12, 1);
+				ds_writeb((0x42b2 + 11) + prepared * 12, (unsigned char)i);
+				ds_writed((0x42b2 + 4) + prepared * 12, (Bit32u)ent);
+				ds_writeb((0x42b2 + 8) + prepared * 12, 1);
 				ds_writeb(0x42bb + prepared * 12, host_readb(Real2Host(ent) + 6));
 				ds_writed(0x42b2 + prepared * 12,
 					(Bit32u)get_ship_name(host_readb(Real2Host(ent) + 6), prepared));
-				ds_writeb(0x42bc + prepared * 12 ,
+				ds_writeb((0x42b2 + 10) + prepared * 12 ,
 					host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN) ?
 						host_readb(Real2Host(ent) + 1) :
 						host_readb(Real2Host(ent)));
@@ -147,8 +147,8 @@ unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 
 	arg2 = (arg2 * 10 + 11) / 24;
 
-	/*	ds:WEATHER1 = random(6)
-	 *	ds:WEATHER2 = random(7) */
+	/*	WEATHER1 = random(6)
+	 *	WEATHER2 = random(7) */
 	ds_writew(0x432c,
 		(arg2 * (ds_readw(WEATHER2) + 6) * (ds_readw(WEATHER1) * 15 + 100) + 499L) / 1000L);
 

@@ -977,11 +977,11 @@ RealPt spell_analues(void)
 			if (ds_readws(ANALUES_ITEMS + i * 5) == item_id) {
 
 				/* check if the spellcaster is able to analyze this item */
-				if (ds_readws(0xac3e + i * 5) <= ds_readws(0xe5b2)) {
+				if (ds_readws((ANALUES_ITEMS + 2) + i * 5) <= ds_readws(0xe5b2)) {
 
 					/* copy the matching result string */
 					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
-						(char*)get_dtp(ds_readbs(0xac40 + i * 5) * 4));
+						(char*)get_dtp(ds_readbs((ANALUES_ITEMS + 4) + i * 5) * 4));
 
 					/* set the magic flag */
 					or_ptr_bs(get_spelluser() + item_pos * 14 + 0x19a, 0x80);

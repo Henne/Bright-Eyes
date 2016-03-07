@@ -111,8 +111,8 @@ signed short GUI_lookup_char_height(signed char c, signed short *p)
 	for (i = 0; i != 201; i += 3) {
 		if (c == ds_readbs(0xab42 + i)) {
 
-			host_writew((Bit8u*)p, ((signed short)ds_readbs(0xab44 + i)) & 0xff);
-			return ds_readbs(0xab43 + i) & 0xff;
+			host_writew((Bit8u*)p, ((signed short)ds_readbs((0xab42 + 2) + i)) & 0xff);
+			return ds_readbs((0xab42 + 1) + i) & 0xff;
 		}
 	}
 

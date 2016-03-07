@@ -1023,7 +1023,7 @@ signed short city_step(void)
 
 		if (ds_readb(0xe10c) != 0 && ds_readb((0xbd38 + 7)) != 43) {
 
-			if (((i = ds_readws(0x70ac + 8 * ds_readws(TYPEINDEX))) == -1 ||
+			if (((i = ds_readws((0x70a8 + 4) + 8 * ds_readws(TYPEINDEX))) == -1 ||
 				ds_readbs(DAY_OF_WEEK) == i) &&
 				ds_readds(DAY_TIMER) >= HOURS(6) &&
 				ds_readds(DAY_TIMER) <= HOURS(16))

@@ -745,9 +745,9 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 
 		if (host_readbs(hero + HERO_ENEMY_ID) >= 10) {
 
-			bonus += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * 62 + 0xd0f8);
+			bonus += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (0xd0df + 25));
 
-			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * 62 + 0xd110)) {
+			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (0xd0df + 49))) {
 				return 0;
 			}
 		} else {

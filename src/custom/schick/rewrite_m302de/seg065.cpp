@@ -63,8 +63,8 @@ void do_market(void)
 		} else {
 
 			/* set up parameters for this merchant */
-			ds_writeb(0x6870 + 90 * 9 + 0, ds_readb(0x70aa + 8 * ds_readws(TYPEINDEX)));
-			ds_writeb(0x6870 + 90 * 9 + 2, ds_readb(0x70ae + 8 * ds_readws(TYPEINDEX)));
+			ds_writeb(0x6870 + 90 * 9 + 0, ds_readb((0x70a8 + 2) + 8 * ds_readws(TYPEINDEX)));
+			ds_writeb(0x6870 + 90 * 9 + 2, ds_readb((0x70a8 + 6) + 8 * ds_readws(TYPEINDEX)));
 			ds_writeb(0x6870 + 90 * 9 + 1, (signed char)answer);
 			type_bak = ds_readws(TYPEINDEX);
 			ds_writew(TYPEINDEX, 90);

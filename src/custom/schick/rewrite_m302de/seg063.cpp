@@ -267,7 +267,7 @@ void do_harbour(void)
 						do {
 
 							strcat((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(4 * (ds_readb(0x42bc + 12 * l_si++) + 235)));
+								(char*)get_ltx(4 * (ds_readb((0x42b2 + 10) + 12 * l_si++) + 235)));
 							if (--answer) {
 
 								strcat((char*)Real2Host(ds_readd(DTP2)),
