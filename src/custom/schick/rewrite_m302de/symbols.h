@@ -10,16 +10,16 @@
 #define SYMBOLS_H
 
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
-#define TWO_FIELDED_SPRITE_ID (0x25f9)	/* char[5] array */
+#define TWO_FIELDED_SPRITE_ID	(0x25f9)	/* char[5] array */
 #define EMS_ENABLED	(0x26ab)
 #define FIG_INITIATIVE	(0x26ac)	/* signed char, 0 = random, 1 = enemies, 2 = heroes (attack first) */
 #define FIG_MSG_COUNTER	(0x26ad)	/* signed short */
-#define FIG_CHAR_PIC (0x26b3)	/* unsigned short */
-#define FIG_ENEMY_PIC (0x26b5)	/* unsigned short */
+#define FIG_CHAR_PIC	(0x26b3)	/* unsigned short */
+#define FIG_ENEMY_PIC	(0x26b5)	/* unsigned short */
 #define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
 #define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
-#define TEXT_FILE_INDEX (0x26bd)       /* unsigned short */
-#define BUF1_FILE_INDEX (0x26bf)       /* signed short, index of file currently stored in buffer1 */
+#define TEXT_FILE_INDEX	(0x26bd)	/* unsigned short */
+#define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define TIMERS_DISABLED	(0x2c99)
 #define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
@@ -31,7 +31,7 @@
 #define FIG_FIGURE2	(0x2cd3)	/* signed short */
 #define IN_FIGHT	(0x2cd5)
 #define FIGHT_ROUND	(0x2cd7)
-#define SKILLED_HERO_POS (0x2cdb)	/* s16 {-1, 0..6} */
+#define SKILLED_HERO_POS	(0x2cdb)	/* s16 {-1, 0..6} */
 #define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
 #define CURRENT_GROUP	(0x2d35)
 #define DIRECTION	(0x2d3d)
@@ -44,11 +44,11 @@
 #define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)
 #define DAY_OF_MONTH	(0x2dc0)
-#define MONTH		(0x2dc1)
-#define YEAR		(0x2dc2)
+#define MONTH	(0x2dc1)
+#define YEAR	(0x2dc2)
 #define SPECIAL_DAY	(0x2dc3)
 #define INGAME_TIMERS	(0x2dc4)	/* signed long[26] */
-#define GODS_ESTIMATION (0x314e)	/* signed long[15] */
+#define GODS_ESTIMATION	(0x314e)	/* signed long[15] */
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
 #define TREASURE_MAPS	(0x3332)	/* signed char[9] */
@@ -93,13 +93,13 @@
 #define SWAFNILD_TP3	(0x345f)	/* unsigned char */
 #define SWAFNILD_TP4	(0x3460)	/* unsigned char */
 #define TREBORN_DATE	(0x3463)	/* unsigned char {0,1} */
-#define UNICORN_HERO_POS	(0x3464) /* unsigned char {0-6} */
+#define UNICORN_HERO_POS	(0x3464)	/* unsigned char {0-6} */
 #define UNICORN_GET_MAP	(0x3465)
 #define UNICORN_TIMER	(0x3466)
 #define UNICORN_HERO_PTR	(0x346a)	/* RealPt */
 #define NPC_MONTHS	(0x3470)
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
-#define QUEST_DEADSHIP_DONE (0x35f2)	/* unsigned char {0,1} */
+#define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
@@ -137,17 +137,17 @@
 #define DELAY_FACTOR	(0x4b66)
 #define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
 #define FIGHT_FIGS_INDEX	(0x4b9e)	/* signed short */
-#define EMM_SIG		(0x4ba2)	/* char[8] */
-#define TMAP_X		(0x4c12)	/* signed short[10] */
-#define TMAP_Y		(0x4c26)	/* signed short[10] */
-#define FNAMES		(0x4c8c)
+#define EMM_SIG	(0x4ba2)	/* char[8] */
+#define TMAP_X	(0x4c12)	/* signed short[10] */
+#define TMAP_Y	(0x4c26)	/* signed short[10] */
+#define FNAMES	(0x4c8c)
 #define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
 #define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
 #define CURRENT_FIGHT_NR	(0x5eb2)	/* unsigned short */
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
 #define FIG_DROPPED_COUNTER	(0x5f12)	/* signed short */
 #define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */
-#define AUTOFIGHT_MAGIC (0x5f31)	/* ?8 */
+#define AUTOFIGHT_MAGIC	(0x5f31)	/* ?8 */
 #define AF_SPELL_LIST	(0x5fac)	/* char[11] */
 #define FIG_LIST_LENGTH	(0x605e)	/* unsigned short */
 #define FORCE_WEAPONS	(0x615c)	/* signed short[9] terminated with -1 */
@@ -165,19 +165,19 @@
 #define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
-#define SAMPLE_AD_LENGTH       (0xbc5a)        /* unsigned short */
-#define SAMPLE_AD_IDX_ENTRY    (0xbc5c)        /* struct { signed char; signed char; unsigned long; } */
+#define SAMPLE_AD_LENGTH	(0xbc5a)	/* unsigned short */
+#define SAMPLE_AD_IDX_ENTRY	(0xbc5c)	/* struct { signed char; signed char; unsigned long; } */
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
-#define ARCHIVE_FILE_OFFSET    (0xbcdf)        /* unsigned long, start offset in SCHICK.DAT */
-#define ARCHIVE_FILE_REMAINING (0xbce3)        /* unsigned long, flen - off */
-#define ARCHIVE_FILE_LENGTH    (0xbce7)        /* unsigned long */
+#define ARCHIVE_FILE_OFFSET	(0xbcdf)	/* unsigned long, start offset in SCHICK.DAT */
+#define ARCHIVE_FILE_REMAINING	(0xbce3)	/* unsigned long, flen - off */
+#define ARCHIVE_FILE_LENGTH	(0xbce7)	/* unsigned long */
 #define AIL_DIGI_DRIVER_BUF2	(0xbceb)	/* RealPt to buffer of size 5016 */
 #define AIL_VOC_BUFFER	(0xbcef)	/* RealPt */
 #define AIL_DIGI_DRIVER_BUF	(0xbcf3)	/* RealPt */
 #define AIL_DIGI_DRIVER_DESCR	(0xbcf7)	/* RealPt */
 #define AIL_DIGI_DRIVER_ID	(0xbcfb)	/* signed short */
-#define SAMPLE_AD_HANDLE       (0xbd01)        /* signed short */
+#define SAMPLE_AD_HANDLE	(0xbd01)	/* signed short */
 #define AIL_TIMBRE_CACHE_SIZE	(0xbd03)	/* unsigned short */
 #define AIL_STATE_TABLE_SIZE	(0xbd05)	/* unsigned long */
 #define AIL_MUSIC_DRIVER_BUF2	(0xbd09)	/* RealPt */
@@ -191,14 +191,14 @@
 #define CURRENT_FIGHT	(0xbd28)	/* RealPt */
 #define SCENARIO_BUF	(0xbd2c)
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
-#define HEROS		(0xbd34)
+#define HEROS	(0xbd34)
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
 #define CITY_LTX	(0xc3ad)
 #define DIALOG_TEXT	(0xc3b1)
 #define TEXT_LTX	(0xc3b5)
-#define ACTION		(0xc3d9)	/* ? short */
+#define ACTION	(0xc3d9)	/* ? short */
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
 #define ANI_MAIN_PTR	(0xce35)
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
@@ -208,7 +208,7 @@
 #define BUFFER_MFIGS_TAB	(0xd159)	/* RealPt */
 #define BUFFER5_PTR	(0xd2a5)	/* RealPt to buffer of size 3880 */
 #define BUFFER10_PTR	(0xd2a9)	/* RealPt to buffer of size 16771, used for NVF and text */
-#define POPUP		(0xd2ad)	/* RealPt */
+#define POPUP	(0xd2ad)	/* RealPt */
 #define BUFFER6_PTR	(0xd2b1)	/* RealPt to buffer of size 2200, used for NVF */
 #define BUFFER7_PTR	(0xd2b5)	/* RealPt to buffer of size 10000, used for NVF and text */
 #define BUFFER2_PTR	(0xd2b9)	/* RealPt to buffer of size 30500 */
@@ -223,8 +223,8 @@
 #define BUF_ICON	(0xd2e7)	/* RealPt */
 #define BUFFER4_PTR	(0xd2eb)	/* RealPt to buffer of size 300, used for text */
 #define TEXT_INPUT_BUFFER	(0xd2ef)	/* RealPt, size 24 */
-#define DTP2		(0xd2f3)
-#define ICON		(0xd2f7)	/* RealPt */
+#define DTP2	(0xd2f3)
+#define ICON	(0xd2f7)	/* RealPt */
 #define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
 #define TOWNPAL_BUF	(0xd321)	/* RealPt */
 #define ENEMY_SHEETS	(0xd34b)	/* struct enemy[20] */
@@ -249,11 +249,11 @@
 #define FIG_TARGET_GRAMMAR_TYPE	(0xe2bc)	/* unsigned short, 2 = hero, 1 = monster */
 #define FIG_TARGET_GRAMMAR_ID	(0xe2be)	/* unsigned short */
 #define DELAY_TIMER	(0xe2d0)
-#define SAVEGAME_NAMES (0xe2da)        /* (char[9])[5] */
+#define SAVEGAME_NAMES	(0xe2da)	/* (char[9])[5] */
 #define DIALOG_INFORMER	(0xe30c)	/* ?16 */
 #define DIALOG_DONE	(0xe310)	/* ?16 {0, 1} */
 #define DIALOG_STATE	(0xe312)	/* ?16 */
-#define TLK_ID		(0xe314)	/* ?16 */
+#define TLK_ID	(0xe314)	/* ?16 */
 #define CURRENT_FIG_NR	(0xe316)
 #define AUTOFIGHT	(0xe318)	/* ?16 */
 #define FIG_DROPPED_WEAPONS	(0xe31a)	/* signed short[30] */
@@ -265,7 +265,7 @@
 #define SLEEP_QUALITY	(0xe3f1)	/* signed char */
 #define BUY_SHOPPING_CART	(0xe3f2)	/* RealPt to buffer of size 250, each item has 4 bytes */
 #define TEX_FLOOR	(0xe414)	/* Bit8u* */
-#define TEX_SKY		(0xe418)	/* Bit8u* */
+#define TEX_SKY	(0xe418)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
 #define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */
