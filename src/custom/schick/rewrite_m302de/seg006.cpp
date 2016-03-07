@@ -361,8 +361,8 @@ signed char FIG_add_to_list(signed char v)
 	signed short x, y;
 
 	p1 = (RealPt)ds_readd(FIG_LIST_BUFFER);
-	x = ds_readbs(0xe069);
-	y = ds_readbs(0xe06a);
+	x = ds_readbs((FIG_LIST_ELEM+3));
+	y = ds_readbs((FIG_LIST_ELEM+4));
 
 	/* FIG_list_start == NULL */
 	if (ds_readd(FIG_LIST_HEAD) == 0) {
@@ -402,13 +402,13 @@ signed char FIG_add_to_list(signed char v)
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	if (ds_readbs(0xe077) != -1) {
+	if (ds_readbs((FIG_LIST_ELEM+17)) != -1) {
 		while ((host_readbs(Real2Host(p2) + 3) <= x) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) >= y) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) != y ||
-		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs(0xe077)))
+		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs((FIG_LIST_ELEM+17))))
 		{
 
 			/* p2->next != NULL */

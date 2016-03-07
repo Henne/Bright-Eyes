@@ -19,7 +19,7 @@ namespace M302de {
 #endif
 
 #if 0
-/* DS:NOWAY_STRING - DS:0x4a7f */
+/* DS:0x4a68 - DS:0x4a7f */
 static const char no_way_msg[][41] = {
 	"IN DIESE RICHTUNG GEHT ES NICHT WEITER.",
 	"YOU CAN GO NO FURTHER IN THIS DIRECTION."

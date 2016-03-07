@@ -324,12 +324,12 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 	do {
 		read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_IDX_ENTRY, 6);
 
-		if (ds_readbs(0xbc5d) == -1) {
+		if (ds_readbs((SAMPLE_AD_IDX_ENTRY+1)) == -1) {
 			return (RealPt)0;
 		}
-	} while ((ds_readbs(0xbc5d) != a1) || (ds_readbs(SAMPLE_AD_IDX_ENTRY) != patch));
+	} while ((ds_readbs((SAMPLE_AD_IDX_ENTRY+1)) != a1) || (ds_readbs(SAMPLE_AD_IDX_ENTRY) != patch));
 
-	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), ds_readd(0xbc5e), 0);
+	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), ds_readd((SAMPLE_AD_IDX_ENTRY+2)), 0);
 
 	read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_LENGTH, 2);
 
@@ -1924,7 +1924,7 @@ void seg002_2177(void)
 
 	for (i = 0; ds_readws(0x70a8 + i * 8) != -1; i++) {
 
-		ds_writew(0x70ae + i * 8,
+		ds_writew((0x70a8 + 6) + i * 8,
 			random_interval(ds_readws(0x70a8 + i * 8), 20));
 	}
 }
@@ -2097,13 +2097,10 @@ void nightfall(void)
  */
 signed short get_current_season(void)
 {
-	/* Check Winter */
 	if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_WINTER)) {
 		return 0;
-	/* Check Summer */
 	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SUMMER)) {
 		return 2;
-	/* Check Spring */
 	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SPRING)) {
 		return 1;
 	} else {
@@ -2553,7 +2550,7 @@ void sub_mod_timers(Bit32s val)
 					/* reset target if no other slots of target */
 					reset_target = 1;
 					for (j = 0; j < 100; j++) {
-						if (ds_readb(0x2e32 + j * 8) == target) {
+						if (ds_readb((MODIFICATION_TIMERS+6) + j * 8) == target) {
 							reset_target = 0;
 							break;
 						}
@@ -2569,7 +2566,7 @@ void sub_mod_timers(Bit32s val)
 
 					/* reset all slots of invalid target */
 					for (j = 0; j < 100; j++) {
-						if (ds_readb(0x2e32 + j * 8) == target) {
+						if (ds_readb((MODIFICATION_TIMERS+6) + j * 8) == target) {
 							host_writeb(sp + 6,
 									host_writebs(sp + 7, 0));
 
@@ -4294,7 +4291,6 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			/* mark hero as dead */
 			or_ptr_bs(hero + HERO_STATUS1, 1);
 
-			/* unknown */
 			ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 0);
 
 			/* unknown */
@@ -5358,7 +5354,7 @@ signed short copy_protection(void)
 					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
 			}
 
-			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((0x047ba + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
+			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
 				return 1;
 			}
 		}

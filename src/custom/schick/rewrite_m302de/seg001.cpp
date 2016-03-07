@@ -151,13 +151,13 @@ void seg001_02c4(void) {
 	if (val < (signed int)ds_readd(CD_AUDIO_POS))
 		return;
 
-	if (ds_readw(0x9b) != 1)
+	if (ds_readw(0x009b) != 1)
 		return;
 
 	CD_audio_stop_hsg();
 	CD_audio_stop_hsg();
 	seg001_00c1(ds_readw(0xbc40));
-	ds_writew(0x9b, 1);
+	ds_writew(0x009b, 1);
 }
 
 signed short CD_bioskey(signed short cmd) {
@@ -174,7 +174,7 @@ void CD_audio_stop_hsg(void) {
 
 	real_writew(reloc_game + CDA_DATASEG, 3, 0);
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0));
-	ds_writew(0x9b, 0);
+	ds_writew(0x009b, 0);
 }
 
 /* CD_audio_stop() - stop audio playback in HSG and redbook format */
@@ -197,7 +197,7 @@ void CD_audio_pause() {
 		return;
 
 	/* set CD pause */
-	ds_writew(0xa1, 1);
+	ds_writew(0x00a1, 1);
 	ds_writed(CD_AUDIO_TOD_BAK, CD_get_tod());
 	/* save current position */
 	ds_writed(CD_AUDIO_POS_BAK, ds_readd(CD_AUDIO_POS));
@@ -220,7 +220,7 @@ void CD_audio_play() {
 	CD_check();
 
 	/* reset CD pause */
-	ds_writew(0xa1, 0);
+	ds_writew(0x00a1, 0);
 	ds_writed(CD_AUDIO_POS, ds_readd(CD_AUDIO_POS_BAK));
 	ds_writed(CD_AUDIO_TOD, CD_get_tod() - ds_readd(CD_AUDIO_TOD_BAK) + ds_readd(CD_AUDIO_TOD));
 
@@ -368,7 +368,7 @@ void CD_audio_stop_hsg(void)
 	req[0].status = 0;
 	CD_driver_request(&req[0]);
 
-	ds_writew(0x9b, 0);
+	ds_writew(0x009b, 0);
 }
 
 /* Borlandified and identical */
