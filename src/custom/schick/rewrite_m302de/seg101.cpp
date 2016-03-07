@@ -41,7 +41,7 @@ void spell_arcano(void)
 	unsigned short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -70,7 +70,7 @@ void spell_armatrutz(void)
 
 	/* calc the maximal RS boni */
 	/* Original-Bug: you can get one RS point more that you have AE for */
-	while (max_boni * max_boni < host_readws(get_spelluser() + 0x64)) {
+	while (max_boni * max_boni < host_readws(get_spelluser() + HERO_AE)) {
 		max_boni++;
 	}
 
@@ -92,12 +92,12 @@ void spell_armatrutz(void)
 		pos = get_hero_index(get_spelluser());
 		ds_writew(0xac0e, boni * boni);
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 450, get_spelluser() + 0x30,
+		set_mod_slot(slot, 450, get_spelluser() + HERO_RS_BONUS1,
 			(signed char)boni, (signed char)pos);
 
 		/* prepare output message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(0x190), (char*)get_spelluser() + 0x10, boni);
+			(char*)get_dtp(0x190), (char*)get_spelluser() + HERO_NAME2, boni);
 
 	} else {
 		/* spell canceled */
@@ -115,7 +115,7 @@ void spell_inc_ch(void)
 	signed short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -161,20 +161,20 @@ void spell_feuerbann(void)
 	signed short slot;
 
 	/* check if spell is already activated */
-	if (!host_readbs(get_spelluser() + 0x99)) {
+	if (!host_readbs(get_spelluser() + HERO_FIREBAN)) {
 
 		target = get_hero_index(get_spelluser());
 
 		slot = get_free_mod_slot();
 
 		/* Duration = Level * 12 min */
-		set_mod_slot(slot, host_readbs(get_spelluser() + 0x27) * 450L,
-			get_spelluser() + 0x99, 1, (signed char)target);
+		set_mod_slot(slot, host_readbs(get_spelluser() + HERO_LEVEL) * 450L,
+			get_spelluser() + HERO_FIREBAN, 1, (signed char)target);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x198),
-			(char*)get_spelluser() + 0x10);
+			(char*)get_spelluser() + HERO_NAME2);
 	} else {
 		/* set AP costs to 0 */
 		ds_writew(0xac0e, 0);
@@ -188,7 +188,7 @@ void spell_inc_ff(void)
 	signed short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -235,7 +235,7 @@ void spell_inc_ge(void)
 	signed short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -282,7 +282,7 @@ void spell_inc_in(void)
 	signed short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -329,7 +329,7 @@ void spell_inc_kk(void)
 	signed short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -376,7 +376,7 @@ void spell_inc_kl(void)
 	signed short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -423,7 +423,7 @@ void spell_inc_mu(void)
 	signed short slot;
 
 	/* get the spell target */
-	target = host_readbs(get_spelluser() + 0x86) - 1;
+	target = host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1;
 
 	ds_writed(SPELLTARGET, (Bit32u)((RealPt)ds_readd(HEROS) + target * SIZEOF_HERO));
 
@@ -475,12 +475,12 @@ void spell_mutabili(void)
 void spell_paral(void)
 {
 
-	if (host_readbs(get_spelluser() + 0x86) >= 10) {
+	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) >= 10) {
 		/* cast an enemy */
 
 		/* BC-TODO: calculation of ptr could be better */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* set the enemy to stoned */
 		or_ptr_bs(get_spelltarget_e() + 0x31, 0x04);
@@ -495,7 +495,7 @@ void spell_paral(void)
 
 			/* set the target  */
 			ds_writed(SPELLTARGET,
-				(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
+				(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 			/* check again */
 			if (get_spelltarget() == get_spelluser()) {
@@ -527,7 +527,7 @@ void spell_salander(void)
 
 	/* BC-TODO: calculation of ptr could be better */
 	/* set a pointer */
-	ds_writed(SPELLTARGET_E, (Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+	ds_writed(SPELLTARGET_E, (Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 	/* read a value from that struct */
 	ae_cost = host_readbs(get_spelltarget_e() + 0x19) * 3;
@@ -536,7 +536,7 @@ void spell_salander(void)
 	if (ae_cost < 25)
 		ae_cost = 25;
 
-	if (host_readws(get_spelluser() + 0x64) >= ae_cost) {
+	if (host_readws(get_spelluser() + HERO_AE) >= ae_cost) {
 
 		or_ptr_bs(get_spelltarget_e() + 0x31, 0x40);
 
@@ -573,11 +573,11 @@ void spell_visibili(void)
 
 	/* ask the user how many rounds he wants to be invisible */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_dtp(0x1a4), (char*)get_spelluser() + 0x10);
+		(char*)get_dtp(0x1a4), (char*)get_spelluser() + HERO_NAME2);
 	rounds = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 
 	/* the spell has also no effect if it is already active */
-	if ((rounds <= 0) || (host_readb(get_spelluser() + 0x9a) != 0)) {
+	if ((rounds <= 0) || (host_readb(get_spelluser() + HERO_INVISIBLE) != 0)) {
 
 		/* set AE to 0 */
 		ds_writew(0xac0e, 0);
@@ -588,22 +588,22 @@ void spell_visibili(void)
 	}
 
 	/* check if the hero has enough AE */
-	if (rounds * 5 <= host_readws(get_spelluser() + 0x64)) {
+	if (rounds * 5 <= host_readws(get_spelluser() + HERO_AE)) {
 
 		ds_writew(0xac0e, rounds * 5);
 		pos = (signed short)get_hero_index(get_spelluser());
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, (Bit32s)rounds * 450L, get_spelluser() + 0x9a,
+		set_mod_slot(slot, (Bit32s)rounds * 450L, get_spelluser() + HERO_INVISIBLE,
 				1, (signed char)pos);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x1a8),
-			(char*)get_spelluser() + 0x10,
-			(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + 0x22), 0)));
+			(char*)get_spelluser() + HERO_NAME2,
+			(char*)Real2Host(GUI_get_ptr(host_readbs(get_spelluser() + HERO_SEX), 0)));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x97c),
-			(char*)get_spelluser() + 0x10);
+			(char*)get_spelluser() + HERO_NAME2);
 
 		ds_writew(0xac0e, 0);
 	}
@@ -656,7 +656,7 @@ void spell_brenne(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(107 * 4),
-				(char*)get_spelluser() + 0x10);
+				(char*)get_spelluser() + HERO_NAME2);
 
 			answer = GUI_radio(Real2Host(ds_readd(DTP2)),
 					2,
@@ -677,10 +677,10 @@ void spell_brenne(void)
 	if (torch_pos != -1) {
 
 		/* change torch to burning torch */
-		host_writew(get_spelluser() + 0x196 + torch_pos * 14, 0x16);
+		host_writew(get_spelluser() + HERO_ITEM_HEAD + torch_pos * 14, 0x16);
 
 		/* set counter to 10 */
-		host_writeb(get_spelluser() + 0x196  + 8 + torch_pos * 14, 10);
+		host_writeb(get_spelluser() + HERO_ITEM_HEAD  + 8 + torch_pos * 14, 10);
 
 		/* set AP cost */
 		ds_writew(0xac0e, random_schick(20));
@@ -688,7 +688,7 @@ void spell_brenne(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(108 * 4),
-			get_spelluser() + 0x10);
+			get_spelluser() + HERO_NAME2);
 
 	} else if (lantern_pos != -1) {
 
@@ -698,10 +698,10 @@ void spell_brenne(void)
 		if (oil_pos != -1) {
 
 			/* change torch to burning lantern */
-			host_writew(get_spelluser() + 0x196 + lantern_pos * 14, 0xf9);
+			host_writew(get_spelluser() + HERO_ITEM_HEAD + lantern_pos * 14, 0xf9);
 
 			/* set counter to 100 */
-			host_writeb(get_spelluser() + 0x196  + 8 + lantern_pos * 14, 100);
+			host_writeb(get_spelluser() + HERO_ITEM_HEAD  + 8 + lantern_pos * 14, 100);
 
 			/* drop one oil flask */
 			drop_item(get_spelluser(), oil_pos, 1);
@@ -715,12 +715,12 @@ void spell_brenne(void)
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(119 * 4),
-				get_spelluser() + 0x10);
+				get_spelluser() + HERO_NAME2);
 		} else {
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(120 * 4),
-				get_spelluser() + 0x10);
+				get_spelluser() + HERO_NAME2);
 		}
 	} else {
 		/* neither torch nor lantern */
@@ -728,7 +728,7 @@ void spell_brenne(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(121 * 4),
-			get_spelluser() + 0x10);
+			get_spelluser() + HERO_NAME2);
 	}
 }
 
@@ -745,7 +745,7 @@ void spell_dunkelheit(void)
 
 	/* set dunkelheit duration (level + 3) hours */
 	ds_writed(INGAME_TIMERS + 0x24,
-		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
+		(Bit32s)(host_readbs(get_spelluser() + HERO_LEVEL) + 3) * 0x1518);
 
 	/* copy message text */
 	strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -766,7 +766,7 @@ void spell_flimflam(void)
 
 	/* set flim flam duration (level + 3) hours */
 	ds_writed(INGAME_TIMERS + 0x20,
-		(Bit32s)(host_readbs(get_spelluser() + 0x27) + 3) * 0x1518);
+		(Bit32s)(host_readbs(get_spelluser() + HERO_LEVEL) + 3) * 0x1518);
 
 	/* copy message text */
 	strcpy((char*)Real2Host(ds_readd(DTP2)),

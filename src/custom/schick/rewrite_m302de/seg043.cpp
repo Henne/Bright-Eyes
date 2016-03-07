@@ -104,7 +104,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 			attack_hero = 1;
 		} else {
 
-			mon = p_datseg + 0xd0df + 0x3e * host_readbs(Real2Host(monster) + 0x2d);
+			mon = p_datseg + 0xd0df + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + 0x2d);
 
 			ds_writew(FIG_TARGET_GRAMMAR_TYPE, 1);
 			ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(mon));
@@ -151,8 +151,8 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 						if ((fight_id >= 50) ||
 							((fight_id < 10) && !hero_dead(get_hero(fight_id - 1))) ||
-							((fight_id >= 10) && (fight_id < 30) && !enemy_dead((p_datseg + 0xd0df) + (0x3e * fight_id))) ||
-							((fight_id >= 30) && (fight_id < 50) && !enemy_dead((p_datseg + 0xcc07) + (0x3e * fight_id))))
+							((fight_id >= 10) && (fight_id < 30) && !enemy_dead((p_datseg + 0xd0df) + (SIZEOF_ENEMY_SHEET * fight_id))) ||
+							((fight_id >= 30) && (fight_id < 50) && !enemy_dead((p_datseg + 0xcc07) + (SIZEOF_ENEMY_SHEET * fight_id))))
 						{
 							l17 = 1;
 						}

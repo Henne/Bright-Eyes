@@ -100,13 +100,13 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item_armor(item_p)) {
 
 			/* add RS boni */
-			add_ptr_bs(equipper + 0x30, ds_readbs(0x877 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(0x877 + host_readbs(item_p + 4) * 2));
 
 			/* subtract used item value */
-			sub_ptr_bs(equipper + 0x30, host_readbs(owner + 0x196 + 7 + pos_i * 14));
+			sub_ptr_bs(equipper + HERO_RS_BONUS1, host_readbs(owner + HERO_ITEM_HEAD + 7 + pos_i * 14));
 
 			/* add RS-BE */
-			add_ptr_bs(equipper + 0x32, ds_readbs(0x877  + 1 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(0x877  + 1 + host_readbs(item_p + 4) * 2));
 
 		}
 
@@ -114,14 +114,14 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item_weapon(item_p) && (pos_b == 3)) {
 
 			/* set weapon type */
-			host_writeb(equipper + 0x78, host_readb(item_p + 3));
+			host_writeb(equipper + HERO_WP_CLASS, host_readb(item_p + 3));
 
 			/* set AT */
-			host_writeb(equipper + 0x76,
+			host_writeb(equipper + HERO_AT_MOD,
 				ds_readb(0x6b0 + 5 + host_readbs(item_p + 4) * 7));
 
 			/* set PA */
-			host_writeb(equipper + 0x77,
+			host_writeb(equipper + HERO_PA_MOD,
 				ds_readb(0x6b0 + 6 + host_readbs(item_p + 4) * 7));
 
 		}
@@ -129,36 +129,36 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		/* Girdle of might / Kraftguertel */
 		if (item == 0xb7) {
 			/* KK + 5 */
-			host_writeb(equipper + 0x47,
-				host_readb(equipper + 0x47) + 5);
+			host_writeb(equipper + HERO_KK,
+				host_readb(equipper + HERO_KK) + 5);
 		}
 
 		/* Helmet / Helm */
 		if (item == 0xc4) {
 			/* dec CH */
-			dec_ptr_bs(equipper + 0x3b);
+			dec_ptr_bs(equipper + HERO_CH);
 		}
 
 		/* Silver Jewelry / Silberschmuckstueck (magisch) */
 		if (item == 0xd7) {
 			/* TA - 2 */
-			host_writeb(equipper + 0x56,
-				host_readbs(equipper + 0x56) - 2);
+			host_writeb(equipper + HERO_TA,
+				host_readbs(equipper + HERO_TA) - 2);
 		}
 
 		/* Coronet or Ring / Stirnreif oder Ring */
 		if (item == 0xd9 || item == 0xa5) {
 			/* MR + 2 */
-			host_writeb(equipper + 0x66,
-				host_readb(equipper + 0x66) + 2);
+			host_writeb(equipper + HERO_MR,
+				host_readb(equipper + HERO_MR) + 2);
 		}
 
 		/* Death-Head belt / Totenkopfguertel */
 		if (item == 0xb6) {
 
 			/* TA - 4 */
-			host_writeb(equipper + 0x56,
-				host_readbs(equipper + 0x56) - 4);
+			host_writeb(equipper + HERO_TA,
+				host_readbs(equipper + HERO_TA) - 4);
 
 			if (ds_readb(0x2845) == 20) {
 				equip_belt_ani();
@@ -169,8 +169,8 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item == 0x46) {
 
 			/* Sinnesschaerfe + 2 */
-			host_writeb(equipper + 0x13a,
-				host_readb(equipper + 0x13a) + 2);
+			host_writeb(equipper + HERO_TA_INTUITION,
+				host_readb(equipper + HERO_TA_INTUITION) + 2);
 		}
 	}
 }

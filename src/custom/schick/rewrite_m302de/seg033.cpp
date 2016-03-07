@@ -923,7 +923,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fight_id upper bound */
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit2(p_datseg + 0xd0df + 0x32 + 62 * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit2(p_datseg + 0xd0df + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_unkn3(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{

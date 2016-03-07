@@ -109,7 +109,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				l17 = 1;
 			}
 
-			target_monster = p_datseg + 0xd0df + 62 * host_readbs(Real2Host(hero) + HERO_ENEMY_ID);
+			target_monster = p_datseg + 0xd0df + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID);
 
 			and_ptr_bs(target_monster + 0x31, 0xfd);
 
@@ -159,8 +159,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						if ((fight_id >= 50) ||
 							((fight_id < 10) && !hero_dead(get_hero(fight_id - 1))) ||
-							((fight_id >= 10) && (fight_id < 30) && !enemy_dead((p_datseg + 0xd0df) + (0x3e * fight_id))) ||
-							((fight_id >= 30) && (fight_id < 50) && !enemy_dead((p_datseg + 0xcc07) + (0x3e * fight_id))))
+							((fight_id >= 10) && (fight_id < 30) && !enemy_dead((p_datseg + 0xd0df) + (SIZEOF_ENEMY_SHEET * fight_id))) ||
+							((fight_id >= 30) && (fight_id < 50) && !enemy_dead((p_datseg + 0xcc07) + (SIZEOF_ENEMY_SHEET * fight_id))))
 						{
 							l16 = 1;
 						}

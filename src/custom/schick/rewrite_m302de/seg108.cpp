@@ -52,7 +52,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 	consumer_idx = get_hero_index(consumer);
 
 	/* get item id */
-	item = host_readw(owner + 0x196 + pos * 14);
+	item = host_readw(owner + HERO_ITEM_HEAD + pos * 14);
 
 	/* get pointer to ITEMS.DAT */
 	item_p = get_itemsdat(item);
@@ -64,21 +64,21 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			/* eating */
 
 #if !defined(__BORLANDC__)
-				int diff = host_readbs(consumer + 0x7f) - host_readbs(item_p + 4);
+				int diff = host_readbs(consumer + HERO_HUNGER) - host_readbs(item_p + 4);
 				D1_INFO("%s isst %s mit Naehrwert %d. Der Hunger sinkt von %d auf %d\n",
-					(consumer + 0x10),
+					(consumer + HERO_NAME2),
 					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(item))),
 					host_readbs(item_p + 4),
-					host_readbs(consumer + 0x7f),
+					host_readbs(consumer + HERO_HUNGER),
 					(diff >= 0) ? diff : 0);
 #endif
 
 			/* subtract from hunger value */
-			sub_ptr_bs(consumer + 0x7f, host_readbs(item_p + 4));
+			sub_ptr_bs(consumer + HERO_HUNGER, host_readbs(item_p + 4));
 
 			/* adjust hunger value */
-			if (host_readbs(consumer + 0x7f) < 0) {
-				host_writeb(consumer + 0x7f, 0);
+			if (host_readbs(consumer + HERO_HUNGER) < 0) {
+				host_writeb(consumer + HERO_HUNGER, 0);
 			}
 
 			/* consume quietly */
@@ -92,24 +92,24 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			/* drinking */
 
 			/* check if item is not empty */
-			if (!ks_empty(owner + 0x196 + pos * 14)) {
+			if (!ks_empty(owner + HERO_ITEM_HEAD + pos * 14)) {
 
 #if !defined(__BORLANDC__)
-				int diff = host_readbs(consumer + 0x80) - host_readbs(item_p + 4);
+				int diff = host_readbs(consumer + HERO_THIRST) - host_readbs(item_p + 4);
 				D1_INFO("%s trinkt aus %s mit Naehrwert %d. Der Durst sinkt von %d auf %d\n",
-					(consumer + 0x10),
+					(consumer + HERO_NAME2),
 					(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(item))),
 					host_readbs(item_p + 4),
-					host_readbs(consumer + 0x80),
+					host_readbs(consumer + HERO_THIRST),
 					(diff >= 0) ? diff : 0);
 #endif
 
 				/* subtract from thirst value */
-				sub_ptr_bs(consumer + 0x80, host_readbs(item_p + 4));
+				sub_ptr_bs(consumer + HERO_THIRST, host_readbs(item_p + 4));
 
 				/* adjust thirst value */
-				if (host_readbs(consumer + 0x80) < 0) {
-					host_writeb(consumer + 0x80, 0);
+				if (host_readbs(consumer + HERO_THIRST) < 0) {
+					host_writeb(consumer + HERO_THIRST, 0);
 				}
 
 				/* consume quietly */
@@ -121,12 +121,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				if (item == 0x1e) {
 					/* water */
 
-					if (ks_half_empty(owner + 0x196 + pos * 14)) {
+					if (ks_half_empty(owner + HERO_ITEM_HEAD + pos * 14)) {
 						/* empty */
-						or_ptr_bs(owner + 0x196 + 4 + pos * 14, 4);
+						or_ptr_bs(owner + HERO_ITEM_HEAD + 4 + pos * 14, 4);
 					} else {
 						/* half empty */
-						or_ptr_bs(owner + 0x196 + 4 + pos * 14, 2);
+						or_ptr_bs(owner + HERO_ITEM_HEAD + 4 + pos * 14, 2);
 					}
 
 				} else if (item == 0x5c || item == 0x5b) {
@@ -176,7 +176,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* KK+2 for 12h */
 					l_di = get_free_mod_slot();
-					set_mod_slot(l_di, 0xfd20, consumer + 0x47, 2, (signed char)consumer_idx);
+					set_mod_slot(l_di, 0xfd20, consumer + HERO_KK, 2, (signed char)consumer_idx);
 
 					/* LE + 2 */
 					add_hero_le(consumer, 2);
@@ -189,7 +189,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* Vierblaettrige Einbeere */
 
 					l_di = random_schick(6);
-					le_diff = host_readw(consumer + 0x5e) - host_readw(consumer + 0x60);
+					le_diff = host_readw(consumer + HERO_LE_ORIG) - host_readw(consumer + HERO_LE);
 					if (l_di > le_diff)
 						l_di = le_diff;
 
@@ -212,12 +212,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* TODO: unknown for 24h */
 					l_di = get_free_mod_slot();
-					set_mod_slot(l_di, 0x1fa40, consumer + 0x7d, 1, (signed char)consumer_idx);
+					set_mod_slot(l_di, 0x1fa40, consumer + HERO_HERBS, 1, (signed char)consumer_idx);
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x7dc),
-						(char*)consumer + 0x10);
+						(char*)consumer + HERO_NAME2);
 					break;
 				}
 				case 0x7d: {
@@ -232,12 +232,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* TODO: unknown for 24h */
 					l_di = get_free_mod_slot();
-					set_mod_slot(l_di, 0x1fa40, consumer + 0x7d, 2, (signed char)consumer_idx);
+					set_mod_slot(l_di, 0x1fa40, consumer + HERO_HERBS, 2, (signed char)consumer_idx);
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x7dc),
-						(char*)consumer + 0x10);
+						(char*)consumer + HERO_NAME2);
 					break;
 				}
 				case 0x7f: {
@@ -245,19 +245,19 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					for (l_si = 9; l_si < 19; l_si++) {
 						/* All body skills + 2 for 5h */
 						l_di = get_free_mod_slot();
-						set_mod_slot(l_di, 0x6978, consumer + 0x108 + l_si, 2, (signed char)consumer_idx);
+						set_mod_slot(l_di, 0x6978, consumer + HERO_TA_FIGHT + l_si, 2, (signed char)consumer_idx);
 					}
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x7e0),
-						(char*)consumer + 0x10);
+						(char*)consumer + HERO_NAME2);
 					break;
 				}
 				case 0x3d: {
 					/* Wirselkraut */
 					l_di = 10;
-					le_diff = host_readw(consumer + 0x5e) - host_readw(consumer + 0x60);
+					le_diff = host_readw(consumer + HERO_LE_ORIG) - host_readw(consumer + HERO_LE);
 					if (le_diff < l_di)
 						l_di = le_diff;
 
@@ -269,7 +269,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				}
 				case 0x40: {
 					/* Tarnelle */
-					host_writeb(consumer + 0x95, 1);
+					host_writeb(consumer + HERO_RUHE_KOERPER, 1);
 					break;
 				}
 				}
@@ -296,12 +296,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				/* Attribute +5 for 1h */
 				l_di = get_free_mod_slot();
 				set_mod_slot(l_di, 0x1518,
-					consumer + 0x35 + (l_si - 1) * 3,
+					consumer + HERO_MU + (l_si - 1) * 3,
 					5, (signed char)consumer_idx);
 
 				/* prepare output */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0x7f4), (char*)consumer + 0x10,
+					(char*)get_ltx(0x7f4), (char*)consumer + HERO_NAME2,
 					(char*)get_ltx((0x19b + l_si) * 4), 5);
 
 				/* print output */
@@ -319,12 +319,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				/* Attribute -7 for 1h */
 				l_di = get_free_mod_slot();
 				set_mod_slot(l_di, 0x1518,
-					consumer + 0x35 + (id_bad_elex - 1) * 3,
+					consumer + HERO_MU + (id_bad_elex - 1) * 3,
 					-7, (signed char)consumer_idx);
 
 				/* prepare output */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0xa40), (char*)consumer + 0x10,
+					(char*)get_ltx(0xa40), (char*)consumer + HERO_NAME2,
 					(char*)get_ltx((0x19b + id_bad_elex) * 4), 7);
 
 				/* print output */
@@ -340,7 +340,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				case 0x91 : {
 					/* Heiltrank */
 
-					l_si = host_readw(consumer + 0x5e) - host_readw(consumer + 0x60);
+					l_si = host_readw(consumer + HERO_LE_ORIG) - host_readw(consumer + HERO_LE);
 					if (l_si > 10)
 						l_si = 10;
 
@@ -363,7 +363,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x7f8),
-						(char*)consumer + 0x10,
+						(char*)consumer + HERO_NAME2,
 						l_si,
 						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 					break;
@@ -373,8 +373,8 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* 1W20+10 */
 					l_si = dice_roll(1, 20, 10);
-					if (host_readws(consumer + 0x5e) - host_readws(consumer + 0x60) < l_si)
-						l_si = host_readw(consumer + 0x5e) - host_readw(consumer + 0x60);
+					if (host_readws(consumer + HERO_LE_ORIG) - host_readws(consumer + HERO_LE) < l_si)
+						l_si = host_readw(consumer + HERO_LE_ORIG) - host_readw(consumer + HERO_LE);
 
 					/* add LE */
 					add_hero_le(consumer, l_si);
@@ -395,7 +395,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x7f8),
-						(char*)consumer + 0x10,
+						(char*)consumer + HERO_NAME2,
 						l_si,
 						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 					break;
@@ -404,13 +404,13 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* Wunderkur */
 
 					/* undo starvation damage */
-					add_ptr_ws(consumer + 0x5e, host_readbs(consumer + 0x7a));
-					host_writeb(consumer + 0x7a, 0);
+					add_ptr_ws(consumer + HERO_LE_ORIG, host_readbs(consumer + HERO_LE_MOD));
+					host_writeb(consumer + HERO_LE_MOD, 0);
 
 
 					/* fill up LE */
-					if (host_readws(consumer + 0x60) < host_readws(consumer + 0x5e)) {
-						add_hero_le(consumer, host_readw(consumer + 0x5e));
+					if (host_readws(consumer + HERO_LE) < host_readws(consumer + HERO_LE_ORIG)) {
+						add_hero_le(consumer, host_readw(consumer + HERO_LE_ORIG));
 					}
 
 					/* diseases, not all */
@@ -435,8 +435,8 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x7fc),
-						(char*)consumer + 0x10,
-						(char*)Real2Host(GUI_get_ptr(host_readbs(consumer + 0x22), 0)));
+						(char*)consumer + HERO_NAME2,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(consumer + HERO_SEX), 0)));
 
 					break;
 				}
@@ -444,7 +444,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* Schlaftrunk */
 
 					/* 3 Rounds of sleep */
-					host_writeb(consumer + 0x95, 3);
+					host_writeb(consumer + HERO_RUHE_KOERPER, 3);
 
 					/* give owner a glasbottle */
 					give_hero_new_item(owner, 0x1f, 2, 1);
@@ -452,16 +452,16 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xb88),
-						(char*)consumer + 0x10);
+						(char*)consumer + HERO_NAME2);
 					break;
 				}
 				case 0x9a: {
 					/* Zaubertrank */
 
-					if (host_readbs(consumer + 0x21) >= 7) {
+					if (host_readbs(consumer + HERO_TYPE) >= 7) {
 						/* Magicuser */
 
-						l_si = host_readw(consumer + 0x62) - host_readw(consumer + 0x64);
+						l_si = host_readw(consumer + HERO_AE_ORIG) - host_readw(consumer + HERO_AE);
 
 						if (l_si > 10)
 							l_si = 10;
@@ -485,7 +485,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 							(char*)get_ltx(0x800),
 							l_si,
 							(char*)Real2Host(ds_readd(BUFFER4_PTR)),
-							(char*)consumer + 0x10);
+							(char*)consumer + HERO_NAME2);
 					} else {
 						/* Not a magicuser */
 
@@ -502,10 +502,10 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				case 0x9b: {
 					/* Zaubertrank (stark) */
 
-					if (host_readbs(consumer + 0x21) >= 7) {
+					if (host_readbs(consumer + HERO_TYPE) >= 7) {
 						/* Magicuser */
 
-						l_si = host_readw(consumer + 0x62) - host_readw(consumer + 0x64);
+						l_si = host_readw(consumer + HERO_AE_ORIG) - host_readw(consumer + HERO_AE);
 
 						if (l_si > 30)
 							l_si = 30;
@@ -518,10 +518,10 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 
 						/* prepare output */
-						if (host_readws(consumer + 0x64) >= host_readws(consumer + 0x62)) {
+						if (host_readws(consumer + HERO_AE) >= host_readws(consumer + HERO_AE_ORIG)) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x804),
-								(char*)consumer + 0x10);
+								(char*)consumer + HERO_NAME2);
 						} else {
 							strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 								(char*)get_ltx(0x620));
@@ -535,7 +535,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 								(char*)get_ltx(0x800),
 								l_si,
 								(char*)Real2Host(ds_readd(BUFFER4_PTR)),
-								(char*)consumer + 0x10);
+								(char*)consumer + HERO_NAME2);
 						}
 					} else {
 						/* Not a magicuser */
@@ -565,7 +565,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x74c),
-						(char*)consumer + 0x10);
+						(char*)consumer + HERO_NAME2);
 					break;
 				}
 				case 0xdf: {
@@ -581,7 +581,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x74c),
-						(char*)consumer + 0x10);
+						(char*)consumer + HERO_NAME2);
 					break;
 
 				}

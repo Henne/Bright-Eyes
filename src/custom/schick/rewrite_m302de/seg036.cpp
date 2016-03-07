@@ -252,8 +252,8 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 			) || (
 
 			((target >= 10) && (target < 30) &&
-				!enemy_dead(p_datseg + 0xd0df + target * 0x3e) &&
-				enemy_bb(p_datseg + 0xd0df + target * 0x3e))))
+				!enemy_dead(p_datseg + 0xd0df + target * SIZEOF_ENEMY_SHEET) &&
+				enemy_bb(p_datseg + 0xd0df + target * SIZEOF_ENEMY_SHEET))))
 		{
 			return 1;
 		} else {
@@ -263,7 +263,7 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 	} else if (!mode) {
 		/* target is an enemy */
 		if ((target >= 10) && (target < 30) &&
-			!enemy_dead(p_datseg + 0xd0df + target * 0x3e))
+			!enemy_dead(p_datseg + 0xd0df + target * SIZEOF_ENEMY_SHEET))
 		{
 			return 1;
 		} else {
@@ -340,15 +340,15 @@ signed short KI_search_spell_target(signed short x, signed short y,
 				!hero_unc(get_hero(obj_id - 1))
 				) || (
 				(obj_id >= 10) && (obj_id < 30) &&
-					!enemy_dead(p_datseg + 0xd0df + obj_id * 62) &&
-					enemy_bb(p_datseg + 0xd0df + obj_id * 62))
+					!enemy_dead(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET) &&
+					enemy_bb(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET))
 				)
 			{
 				will_attack = 1;
 				done = 1;
 
 			} else if ( (obj_id != 0) && (((obj_id >= 10) && (obj_id < 30) &&
-					!enemy_dead(p_datseg + 0xd0df + obj_id * 62)
+					!enemy_dead(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET)
 					) || ((obj_id >= 50) &&
 						!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46)))
 					))
@@ -359,7 +359,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 		} else if (cursed == 0) {
 
 			/* attack only enemies */
-			if ((obj_id >= 10) && (obj_id < 30) && !enemy_dead(p_datseg + 0xd0df + obj_id * 62))
+			if ((obj_id >= 10) && (obj_id < 30) && !enemy_dead(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET))
 			{
 				will_attack = 1;
 				done = 1;
