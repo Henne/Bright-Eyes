@@ -515,7 +515,7 @@ void academy_analues(void)
 
 		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
-		buffer1_bak = ds_readws(0x26bf);
+		buffer1_bak = ds_readws(BUF1_FILE_INDEX);
 
 		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 

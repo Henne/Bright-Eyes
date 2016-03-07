@@ -67,7 +67,7 @@ void load_buffer_1(signed short index)
 
 	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)), (RealPt)ds_readd(BUFFER7_PTR), len);
 
-	ds_writew(0x26bf, index);
+	ds_writew(BUF1_FILE_INDEX, index);
 }
 
 void load_city_ltx(signed short index)
@@ -78,7 +78,7 @@ void load_city_ltx(signed short index)
 	if (index == -1)
 		return;
 
-	ds_writew(0x26bd, index);
+	ds_writew(TEXT_FILE_INDEX, index);
 	fd = load_archive_file(index);
 	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)), 12000);
 	bc_close(fd);
@@ -208,17 +208,17 @@ signed short load_game_state(void)
 
 	/* select a game state */
 	answer = GUI_radio(get_ltx(0), 6,
-			p_datseg + (0xe2da + 0),
-			p_datseg + (0xe2da + 9),
-			p_datseg + (0xe2da + 18),
-			p_datseg + (0xe2da + 27),
-			p_datseg + (0xe2da + 36),
+			p_datseg + (SAVEGAME_NAMES + 0),
+			p_datseg + (SAVEGAME_NAMES + 9),
+			p_datseg + (SAVEGAME_NAMES + 18),
+			p_datseg + (SAVEGAME_NAMES + 27),
+			p_datseg + (SAVEGAME_NAMES + 36),
 			get_ltx(0xb84)) -1;
 
 	/* sanity check if answer is in range */
 	if (answer != -2 && answer != 5) {
 
-		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0xe2da + 9 * answer);
+		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * answer);
 		/* concat with ".gam" */
 		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0x5e43);
 
@@ -480,11 +480,11 @@ signed short save_game_state(void)
 
 	/* get the slot number */
 	slot = GUI_radio(Real2Host(ds_readd(BUFFER4_PTR)), 6,
-			p_datseg + (0xe2da + 9 * 0),
-			p_datseg + (0xe2da + 9 * 1),
-			p_datseg + (0xe2da + 9 * 2),
-			p_datseg + (0xe2da + 9 * 3),
-			p_datseg + (0xe2da + 9 * 4),
+			p_datseg + (SAVEGAME_NAMES + 9 * 0),
+			p_datseg + (SAVEGAME_NAMES + 9 * 1),
+			p_datseg + (SAVEGAME_NAMES + 9 * 2),
+			p_datseg + (SAVEGAME_NAMES + 9 * 3),
+			p_datseg + (SAVEGAME_NAMES + 9 * 4),
 			get_ltx(0xb84)) - 1;
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
@@ -497,7 +497,7 @@ signed short save_game_state(void)
 		do {
 			/* ask for filename */
 			ds_writew(0x26b7, 1);
-			strcpy((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)), (char*)p_datseg + 0xe2da + 9 * slot);
+			strcpy((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
 			GUI_input(get_ltx(0x9e8), 8);
 			ds_writew(0x26b7, 0);
 
@@ -511,7 +511,7 @@ signed short save_game_state(void)
 
 			for (tw_bak = 0; tw_bak < 5; tw_bak++) {
 
-				prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50, (char*)p_datseg + 0xe2da + 9 * tw_bak);
+				prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50, (char*)p_datseg + SAVEGAME_NAMES + 9 * tw_bak);
 
 				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50)) {
 
@@ -522,10 +522,10 @@ signed short save_game_state(void)
 		} while (flag != 0);
 
 		/* delete the previous file of that slot */
-		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0xe2da + 9 * slot);
+		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
 		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0x5e54);
 		bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
-		strcpy((char*)p_datseg + 0xe2da + 9 * slot, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+		strcpy((char*)p_datseg + SAVEGAME_NAMES + 9 * slot, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 
 		/* create a CHR-file for each hero in TEMP */
 		for (tw_bak = 0; tw_bak < 6; tw_bak++) {
@@ -563,7 +563,7 @@ signed short save_game_state(void)
 		status_len = (signed short)(p_status_end - p_status_start);
 #endif
 
-		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0xe2da + 9 * slot);
+		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
 		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + 0x5e59);
 
 		while ((l_di = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0)) == -1) {
@@ -715,7 +715,7 @@ signed short save_game_state(void)
 
 		/* rewrite GAMES.NAM */
 		l_di = bc__creat((RealPt)ds_readd(FNAMES + 0x33c), 0);
-		bc__write(l_di, RealMake(datseg, 0xe2da), 45);
+		bc__write(l_di, RealMake(datseg, SAVEGAME_NAMES), 45);
 		bc_close(l_di);
 
 		return 1;

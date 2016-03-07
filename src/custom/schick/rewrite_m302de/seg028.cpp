@@ -255,7 +255,7 @@ void load_special_textures(signed short arg)
 
 void call_load_buffer(void)
 {
-	load_buffer_1(ds_readws(0x26bf));
+	load_buffer_1(ds_readws(BUF1_FILE_INDEX));
 }
 
 void seg028_0555(signed short town)
@@ -584,7 +584,7 @@ void load_informer_tlk(signed short index)
 	Bit8u *ptr;
 
 
-	ds_writew(0x26bd, index);
+	ds_writew(TEXT_FILE_INDEX, index);
 
 	fd = load_archive_file(index);
 
@@ -627,7 +627,7 @@ void load_tlk(signed short index)
 	signed short partners;
 	Bit8u *ptr;
 
-	ds_writew(0x26bd, index);
+	ds_writew(TEXT_FILE_INDEX, index);
 
 	fd = load_archive_file(index);
 

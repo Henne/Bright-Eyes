@@ -49,7 +49,7 @@ void ask_miracle(void)
 #endif
 
 	l3 = 0;
-	fi_bak = ds_readws(0x26bd);
+	fi_bak = ds_readws(TEXT_FILE_INDEX);
 
 	load_city_ltx(ARCHIVE_FILE_WONDER_LTX);
 

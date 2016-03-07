@@ -97,7 +97,7 @@ void status_menu(signed short hero_pos)
 
 	set_audio_track(ARCHIVE_FILE_SUMMARY_XMI);
 
-	file_bak = ds_readws(0x26bd);
+	file_bak = ds_readws(TEXT_FILE_INDEX);
 
 	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 
@@ -544,7 +544,7 @@ void status_menu(signed short hero_pos)
 						GUI_use_talent(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
-						if (ds_readws(0x26bf) == 19) {
+						if (ds_readws(BUF1_FILE_INDEX) == 19) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
@@ -662,7 +662,7 @@ void status_menu(signed short hero_pos)
 						GUI_use_talent(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
-						if (ds_readws(0x26bf) == 19) {
+						if (ds_readws(BUF1_FILE_INDEX) == 19) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
@@ -725,7 +725,7 @@ void status_menu(signed short hero_pos)
 						GUI_use_talent(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
-						if (ds_readws(0x26bf) == 19) {
+						if (ds_readws(BUF1_FILE_INDEX) == 19) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;

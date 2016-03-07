@@ -727,7 +727,7 @@ void init_common_buffers(void)
 	bc_close(fd);
 
 	fd = load_regular_file(ARCHIVE_FILE_GAMES_NAM);
-	bc__read(fd, Real2Host(RealMake(datseg, 0xe2da)), 45);
+	bc__read(fd, Real2Host(RealMake(datseg, SAVEGAME_NAMES)), 45);
 	bc_close(fd);
 
 	fd = load_archive_file(ARCHIVE_FILE_TOWNPAL_DAT);

@@ -18,6 +18,8 @@
 #define FIG_ENEMY_PIC (0x26b5)	/* unsigned short */
 #define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
 #define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
+#define TEXT_FILE_INDEX (0x26bd)       /* unsigned short */
+#define BUF1_FILE_INDEX (0x26bf)       /* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define TIMERS_DISABLED	(0x2c99)
 #define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
@@ -163,13 +165,19 @@
 #define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define CD_DRIVE_NR	(0xbc52)	/* ?16 */
+#define SAMPLE_AD_LENGTH       (0xbc5a)        /* unsigned short */
+#define SAMPLE_AD_IDX_ENTRY    (0xbc5c)        /* struct { signed char; signed char; unsigned long; } */
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
+#define ARCHIVE_FILE_OFFSET    (0xbcdf)        /* unsigned long, start offset in SCHICK.DAT */
+#define ARCHIVE_FILE_REMAINING (0xbce3)        /* unsigned long, flen - off */
+#define ARCHIVE_FILE_LENGTH    (0xbce7)        /* unsigned long */
 #define AIL_DIGI_DRIVER_BUF2	(0xbceb)	/* RealPt to buffer of size 5016 */
 #define AIL_VOC_BUFFER	(0xbcef)	/* RealPt */
 #define AIL_DIGI_DRIVER_BUF	(0xbcf3)	/* RealPt */
 #define AIL_DIGI_DRIVER_DESCR	(0xbcf7)	/* RealPt */
 #define AIL_DIGI_DRIVER_ID	(0xbcfb)	/* signed short */
+#define SAMPLE_AD_HANDLE       (0xbd01)        /* signed short */
 #define AIL_TIMBRE_CACHE_SIZE	(0xbd03)	/* unsigned short */
 #define AIL_STATE_TABLE_SIZE	(0xbd05)	/* unsigned long */
 #define AIL_MUSIC_DRIVER_BUF2	(0xbd09)	/* RealPt */
@@ -241,6 +249,7 @@
 #define FIG_TARGET_GRAMMAR_TYPE	(0xe2bc)	/* unsigned short, 2 = hero, 1 = monster */
 #define FIG_TARGET_GRAMMAR_ID	(0xe2be)	/* unsigned short */
 #define DELAY_TIMER	(0xe2d0)
+#define SAVEGAME_NAMES (0xe2da)        /* (char[9])[5] */
 #define DIALOG_INFORMER	(0xe30c)	/* ?16 */
 #define DIALOG_DONE	(0xe310)	/* ?16 {0, 1} */
 #define DIALOG_STATE	(0xe312)	/* ?16 */

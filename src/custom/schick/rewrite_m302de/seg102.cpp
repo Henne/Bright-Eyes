@@ -251,7 +251,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 			/* terminate output string */
 			host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-			bak = ds_readws(0x26bf);
+			bak = ds_readws(BUF1_FILE_INDEX);
 
 			load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 

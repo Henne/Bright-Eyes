@@ -278,7 +278,7 @@ signed short prepare_midi_playback(signed short sequence)
 	signed short patch;
 	RealPt ptr;
 
-	if ((ds_writews(0xbd01, load_archive_file(ARCHIVE_FILE_SAMPLE_AD))) != -1) {
+	if ((ds_writews(SAMPLE_AD_HANDLE, load_archive_file(ARCHIVE_FILE_SAMPLE_AD))) != -1) {
 
 		if ((ds_writews(AIL_SEQUENCE, AIL_register_sequence(ds_readw(AIL_MUSIC_DRIVER_ID), (RealPt)ds_readd(AIL_MIDI_BUFFER), sequence, (RealPt)ds_readd(AIL_STATE_TABLE), 0))) != -1) {
 
@@ -293,11 +293,11 @@ signed short prepare_midi_playback(signed short sequence)
 				}
 			}
 
-			bc_close(ds_readw(0xbd01));
+			bc_close(ds_readw(SAMPLE_AD_HANDLE));
 			return 1;
 		}
 
-		bc_close(ds_readw(0xbd01));
+		bc_close(ds_readw(SAMPLE_AD_HANDLE));
 	}
 	return 0;
 }
@@ -319,25 +319,25 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 {
 	RealPt buf;
 
-	seg002_0c72(ds_readws(0xbd01), 0, 0);
+	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), 0, 0);
 
 	do {
-		read_archive_file(ds_readws(0xbd01), p_datseg + 0xbc5c, 6);
+		read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_IDX_ENTRY, 6);
 
 		if (ds_readbs(0xbc5d) == -1) {
 			return (RealPt)0;
 		}
-	} while ((ds_readbs(0xbc5d) != a1) || (ds_readbs(0xbc5c) != patch));
+	} while ((ds_readbs(0xbc5d) != a1) || (ds_readbs(SAMPLE_AD_IDX_ENTRY) != patch));
 
-	seg002_0c72(ds_readws(0xbd01), ds_readd(0xbc5e), 0);
+	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), ds_readd(0xbc5e), 0);
 
-	read_archive_file(ds_readws(0xbd01), p_datseg + 0xbc5a, 2);
+	read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_LENGTH, 2);
 
-	buf = schick_alloc_emu(ds_readw(0xbc5a));
+	buf = schick_alloc_emu(ds_readw(SAMPLE_AD_LENGTH));
 
-	host_writew(Real2Host(buf), ds_readw(0xbc5a));
+	host_writew(Real2Host(buf), ds_readw(SAMPLE_AD_LENGTH));
 
-	read_archive_file(ds_readws(0xbd01), Real2Host(buf) + 2, ds_readw(0xbc5a) - 2);
+	read_archive_file(ds_readws(SAMPLE_AD_HANDLE), Real2Host(buf) + 2, ds_readw(SAMPLE_AD_LENGTH) - 2);
 
 	return buf;
 }
@@ -706,10 +706,10 @@ signed short open_and_seek_dat(unsigned short fileindex)
 		bc_lseek(fd, start, DOS_SEEK_SET);
 
 		/* save the offset of the desired file */
-		ds_writed(0xbcdf, start);
+		ds_writed(ARCHIVE_FILE_OFFSET, start);
 
 		/* save the length of the desired file in 2 variables */
-		ds_writed(0xbce7, ds_writed(0xbce3, end - start));
+		ds_writed(ARCHIVE_FILE_LENGTH, ds_writed(ARCHIVE_FILE_REMAINING, end - start));
 	}
 
 	return fd;
@@ -717,20 +717,20 @@ signed short open_and_seek_dat(unsigned short fileindex)
 
 Bit32u get_readlength2(signed short index)
 {
-	return index != -1 ? ds_readd(0xbce7) : 0;
+	return index != -1 ? ds_readd(ARCHIVE_FILE_LENGTH) : 0;
 }
 
 unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 {
 
 	/* no need to read */
-	if (ds_readd(0xbce3) != 0) {
+	if (ds_readd(ARCHIVE_FILE_REMAINING) != 0) {
 
 		/* adjust number of bytes to read */
-		if (len > ds_readds(0xbce3))
-			len = ds_readw(0xbce3);
+		if (len > ds_readds(ARCHIVE_FILE_REMAINING))
+			len = ds_readw(ARCHIVE_FILE_REMAINING);
 
-		sub_ds_ds(0xbce3, len);
+		sub_ds_ds(ARCHIVE_FILE_REMAINING, len);
 
 		return bc__read(handle, buffer, len);
 	} else {
@@ -743,9 +743,9 @@ void seg002_0c72(Bit16u handle, Bit32s off, ...)
 
 	Bit32u file_off;
 
-	ds_writed(0xbce3, ds_readd(0xbce7) - off);
+	ds_writed(ARCHIVE_FILE_REMAINING, ds_readd(ARCHIVE_FILE_LENGTH) - off);
 
-	file_off = ds_readd(0xbcdf) + off;
+	file_off = ds_readd(ARCHIVE_FILE_OFFSET) + off;
 
 	bc_lseek(handle, file_off, DOS_SEEK_SET);
 
@@ -799,11 +799,11 @@ signed short open_temp_file(unsigned short index)
 	}
 
 	/* get the length of the file */
-	ds_writed(0xbce7, ds_writed(0xbce3, bc_lseek(handle, 0, 2)));
+	ds_writed(ARCHIVE_FILE_LENGTH, ds_writed(ARCHIVE_FILE_REMAINING, bc_lseek(handle, 0, 2)));
 	/* seek to start */
 	bc_lseek(handle, 0, 0);
 
-	ds_writed(0xbcdf, 0);
+	ds_writed(ARCHIVE_FILE_OFFSET, 0);
 
 #if !defined(__BORLANDC__)
 	reg_esp += 40;

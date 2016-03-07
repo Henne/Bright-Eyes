@@ -245,8 +245,8 @@ void talk_tavern(void)
 
 	ds_writews(0x346e, 0);
 	ds_writews(TEXTBOX_WIDTH, 3);
-	ds_writews(0x26bd, -1);
-	load_buffer_1(ds_readws(0x26bf));
+	ds_writews(TEXT_FILE_INDEX, -1);
+	load_buffer_1(ds_readws(BUF1_FILE_INDEX));
 	set_var_to_zero();
 }
 

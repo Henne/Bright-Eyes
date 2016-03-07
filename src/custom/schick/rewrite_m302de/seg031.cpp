@@ -206,8 +206,8 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 
 	} while (ds_readws(DIALOG_DONE) == 0);
 
-	ds_writews(0x26bd, ds_writews(CURRENT_ANI, -1));
-	load_buffer_1(ds_readws(0x26bf));
+	ds_writews(TEXT_FILE_INDEX, ds_writews(CURRENT_ANI, -1));
+	load_buffer_1(ds_readws(BUF1_FILE_INDEX));
 }
 
 /* This function is dead code */

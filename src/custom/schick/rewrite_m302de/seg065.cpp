@@ -366,7 +366,7 @@ void show_times_up(void)
 	signed short bak1;
 	signed short bak2;
 
-	fi_bak = ds_readws(0x26bd);
+	fi_bak = ds_readws(TEXT_FILE_INDEX);
 	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
 	set_var_to_zero();

@@ -329,7 +329,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 	if (talent != -1) {
 
-		bak = ds_readws(0x26bf);
+		bak = ds_readws(BUF1_FILE_INDEX);
 
 		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 

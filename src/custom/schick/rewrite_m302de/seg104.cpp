@@ -386,7 +386,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 	retval = 0;
 
 	if (flag) {
-		bak = ds_readws(0x26bf);
+		bak = ds_readws(BUF1_FILE_INDEX);
 		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 	}
 
