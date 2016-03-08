@@ -299,6 +299,10 @@ void tevent_078(void)
 
 			TRV_load_textfile(-1);
 
+#ifdef M302de_ORIGINAL_BUGFIX
+			/* if a campfight occurs, the picture needs to be reloaded */
+			load_in_head(57);
+#endif
 			GUI_dialog_na(0, get_city(0x150));
 
 		} else {
@@ -335,6 +339,10 @@ void tevent_078(void)
 
 					answer = 1;
 				}
+#ifdef M302de_ORIGINAL_BUGFIX
+				/* if a campfight occurs, the picture needs to be reloaded */
+				load_in_head(57);
+#endif
 
 			} while (found_path == 0 && ++days < 6);
 
