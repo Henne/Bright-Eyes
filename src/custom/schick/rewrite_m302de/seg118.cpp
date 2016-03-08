@@ -537,7 +537,12 @@ void tevent_124(void)
 				/* the climb test failed */
 				counter++;
 
+				/* Original-Bug: a skilltest with a fatal result return -99, not -1 */
+#ifdef M302de_ORIGINAL_BUGFIX
+				if (skill_ret == -99 && have_climb_tools == 0)
+#else
 				if (skill_ret == -1 && have_climb_tools == 0)
+#endif
 				{
 					/* fatal */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
