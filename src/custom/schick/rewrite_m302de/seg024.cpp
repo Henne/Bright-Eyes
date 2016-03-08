@@ -51,7 +51,7 @@ void diary_show(void)
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	ds_writeb(0x45b8, 1);
-	ds_writew(0xe113, 0);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 	ds_writew(0x2ccb, 0xffff);
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 

@@ -429,8 +429,8 @@ void load_map(void)
 	signed short bak;
 	struct nvf_desc nvf;
 
-	bak = ds_readw(0xe113);
-	ds_writew(0xe113, 0);
+	bak = ds_readw(WALLCLOCK_UPDATE);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	ds_writew(0x2ccb, 0xffff);
 	/* set current_ani to -1 */
@@ -501,7 +501,7 @@ void load_map(void)
 
 	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
 
-	ds_writew(0xe113, bak);
+	ds_writew(WALLCLOCK_UPDATE, bak);
 }
 
 void load_npc(signed short index)

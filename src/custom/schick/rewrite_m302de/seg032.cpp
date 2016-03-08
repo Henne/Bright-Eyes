@@ -903,7 +903,7 @@ signed short do_fight(signed short fight_nr)
 
 	ds_writed(0x29e0, (Bit32u)RealMake(datseg, 0x29cc));
 
-	ds_writew(0xe113, 0);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	/* open MONSTER.DAT */
 	fd = load_archive_file(ARCHIVE_FILE_MONSTER_DAT);

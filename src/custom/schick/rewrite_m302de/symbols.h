@@ -414,6 +414,7 @@
 #define FIG_LIST_HEAD	(0xe108)	/* RealPtr to a list */
 #define WALLCLOCK_Y	(0xe10f)
 #define WALLCLOCK_X	(0xe111)
+#define WALLCLOCK_UPDATE	(0xe113)	/* unsigned short, 0 = don't update the wallclock */
 #define MEM_SLOTS_MON	(0xe115)
 #define MEM_SLOTS_WFIG	(0xe119)
 #define MEM_SLOTS_MFIG	(0xe11d)
@@ -468,6 +469,7 @@
 #define USED_ITEM_ID	(0xe5ca)	/* s16 used_item ID */
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
 #define ITEMUSER	(0xe5ce)	/* pointer to hero */
+#define WALLCLOCK_UPDATE_BAK	(0xe5d3)	/* unsigned short {0,1} */
 #define BUFFERSIZE	(0xe5dc)	/* ?32 size of the global buffer */
 #define GLOBAL_BUFFER_PTR	(0xe5e0)	/* RealPt, points to the start of the global buffer */
 #define LARGE_BUF	(0xe5e4)	/* s8 {0,1} */

@@ -345,8 +345,8 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	if (!NOT_NULL(str) || !host_readbs(str) || ds_readw(AUTOFIGHT) != 0)
 		return -1;
 
-	l6 = ds_readw(0xe113);
-	ds_writew(0xe113, 0);
+	l6 = ds_readw(WALLCLOCK_UPDATE);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 	ds_writeb(0x2c98, 1);
 	ds_writew(0xd2d1, 1);
 
@@ -417,7 +417,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	ds_writew(ACTION, 0);
 	ds_writeb(0x2c98, 0);
 
-	ds_writew(0xe113, l6);
+	ds_writew(WALLCLOCK_UPDATE, l6);
 	ds_writew(0xd2d1, 0);
 	ds_writew(0xc3cb, l7);
 
@@ -487,8 +487,8 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 
 	set_var_to_zero();
 
-	l11 = ds_readw(0xe113);
-	ds_writew(0xe113, 0);
+	l11 = ds_readw(WALLCLOCK_UPDATE);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 	ds_writeb(0x2c98, 1);
 	l7 = ds_readw(0xd2d9);
 	l8 = ds_readw(0xd2d7);
@@ -586,7 +586,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 
 	ds_writew(0xd313, l10);
 
-	ds_writew(0xe113, l11);
+	ds_writew(WALLCLOCK_UPDATE, l11);
 
 	ds_writew(ACTION, ds_writebs(0x2c98, 0));
 

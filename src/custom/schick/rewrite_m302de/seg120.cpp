@@ -436,7 +436,7 @@ void init_game_state(void)
 	passages_init();
 
 	ds_writew(CURRENT_ANI, -1);
-	ds_writew(0xe113, 1);
+	ds_writew(WALLCLOCK_UPDATE, 1);
 
 	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 	load_splashes();
@@ -687,7 +687,7 @@ void game_over_screen(void)
 
 	update_mouse_cursor();
 
-	ds_writew(0xe113, 0);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	wait_for_vsync();
 

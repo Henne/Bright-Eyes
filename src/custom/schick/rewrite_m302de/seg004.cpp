@@ -731,7 +731,7 @@ void update_wallclock(void)
 	signed short night;
 	Bit32s d;
 
-	if ((ds_readw(0xe113) != 0) &&
+	if ((ds_readw(WALLCLOCK_UPDATE) != 0) &&
 		((ds_readb(0x2845) == 0) || (ds_readb(0x2845) == 5)) &&
 		!ds_readbs(0x2c98))
 	{
@@ -1132,8 +1132,8 @@ void map_effect(Bit8u *src)
 
 	seed = 0;
 
-	bak = ds_readws(0xe113);
-	ds_writew(0xe113, 0);
+	bak = ds_readws(WALLCLOCK_UPDATE);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	wait_for_vsync();
 
@@ -1160,7 +1160,7 @@ void map_effect(Bit8u *src)
 
 	refresh_screen_size();
 
-	ds_writew(0xe113, bak);
+	ds_writew(WALLCLOCK_UPDATE, bak);
 }
 
 #if !defined(__BORLANDC__)

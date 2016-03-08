@@ -316,7 +316,7 @@ void draw_main_screen(void)
 {
 	ds_writew(WALLCLOCK_X, 0xf1);
 	ds_writew(WALLCLOCK_Y, 0x1f);
-	ds_writew(0xe113, 0);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	set_var_to_zero();
 
@@ -331,7 +331,7 @@ void draw_main_screen(void)
 
 	draw_compass();
 
-	ds_writew(0xe113, ds_writew(0xe10d, 1));
+	ds_writew(WALLCLOCK_UPDATE, ds_writew(0xe10d, 1));
 
 	set_textcolor(0x1f, 0x1b);
 }

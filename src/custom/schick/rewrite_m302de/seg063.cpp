@@ -335,7 +335,7 @@ void do_harbour(void)
 				load_map();
 
 				ds_writews(CURRENT_ANI, -1);
-				ds_writew(0xe113, 0);
+				ds_writew(WALLCLOCK_UPDATE, 0);
 
 				memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(0x432e)), 64000);
 				map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
@@ -350,12 +350,12 @@ void do_harbour(void)
 
 				ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
 				ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
-				ds_writew(0xe113, 1);
+				ds_writew(WALLCLOCK_UPDATE, 1);
 
 				sea_travel(ds_readb(0x42b1), ds_readbs(0x6f00 + 8 * ds_readb(0x42b1)) == ds_readbs(CURRENT_TOWN) ? 0 : 1);
 				passage_arrival();
 
-				ds_writew(0xe113, ds_writew(0x2ca2, ds_writew(0x2ca4, ds_writeb(0x42ae, 0))));
+				ds_writew(WALLCLOCK_UPDATE, ds_writew(0x2ca2, ds_writew(0x2ca4, ds_writeb(0x42ae, 0))));
 				ds_writews(CURRENT_ANI, ds_writebs(0x2ca7, ds_writebs(0x2845, -1)));
 				ds_writew(0x2846, 1);
 				ds_writeb(TRAVELING, 0);
@@ -578,7 +578,7 @@ void sea_travel(signed short passage, signed short dir)
 
 			ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
 			ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
-			ds_writew(0xe113, 1);
+			ds_writew(WALLCLOCK_UPDATE, 1);
 			ds_writew(0x2846, 0);
 		}
 
