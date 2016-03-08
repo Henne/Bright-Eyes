@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 6/11
+ *	Functions rewritten: 7/11
  */
 
 #include <stdio.h>
@@ -472,6 +472,17 @@ void tevent_052(void)
 		}
 
 	} while (!done);
+}
+
+/* Borlandified and identical */
+void tevent_120(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dff)) ||
+		ds_readb(0x3dff) != 0)
+	{
+		ds_writeb(0x3dff, 1);
+		TRV_found_camp_place(1);
+	}
 }
 
 #if !defined(__BORLANDC__)
