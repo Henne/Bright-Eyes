@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 2/13
+ *	Functions rewritten: 3/13
  */
 #include <stdio.h>
 
@@ -14,6 +14,7 @@
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg109.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -166,6 +167,19 @@ void tevent_090(void)
 	}
 
 	GUI_output(get_city(0x08));
+}
+
+/* Borlandified and identical */
+void tevent_091(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 5) > 0 && !ds_readb(0x3ded)) ||
+		ds_readb(0x3ded) != 0)
+	{
+		ds_writeb(0x66d0, 122);
+		TRV_found_herb_place(0);
+		ds_writeb(0x66d0, -1);
+		ds_writeb(0x3ded, 1);
+	}
 }
 
 #if !defined(__BORLANDC__)
