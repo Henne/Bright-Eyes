@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
  *	Functions rewritten: 11/11 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg118.cpp
  */
 
 #include <stdio.h>
@@ -29,7 +33,6 @@ namespace M302de {
 #endif
 
 /* The griffon */
-/* Borlandified and identical */
 void tevent_037(void)
 {
 	signed short answer;
@@ -245,7 +248,6 @@ void tevent_037(void)
 }
 
 /* unicorn 1st time */
-/* Borlandified and identical */
 void tevent_038(void)
 {
 	if (!ds_readb(0x3ddb) && ds_readws(GOT_MAIN_QUEST) != 0)
@@ -255,7 +257,6 @@ void tevent_038(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_078(void)
 {
 	signed short hours;
@@ -368,7 +369,6 @@ void tevent_078(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_079(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 4) > 0 && !ds_readb(0x3de3)) ||
@@ -379,7 +379,6 @@ void tevent_079(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_051(void)
 {
 	signed short answer;
@@ -425,7 +424,6 @@ void tevent_051(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_052(void)
 {
 	signed short done;
@@ -477,7 +475,6 @@ void tevent_052(void)
 	} while (!done);
 }
 
-/* Borlandified and identical */
 void tevent_120(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dff)) ||
@@ -488,13 +485,11 @@ void tevent_120(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_121(void)
 {
 	TRV_cross_a_ford(get_dtp(0xd4), 30, 0);
 }
 
-/* Borlandified and identical */
 void tevent_124(void)
 {
 	signed short i;
@@ -576,7 +571,6 @@ void tevent_124(void)
 
 }
 
-/* Borlandified and identical */
 void tevent_125(void)
 {
 	signed short answer;
@@ -603,7 +597,6 @@ static inline unsigned short cast_u16(unsigned char v)
 	return v;
 }
 
-/* Borlandified and identical */
 void tevent_145(void)
 {
 	signed short answer;
