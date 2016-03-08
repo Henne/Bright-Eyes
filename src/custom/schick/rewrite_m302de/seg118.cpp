@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 8/11
+ *	Functions rewritten: 9/11
  */
 
 #include <stdio.h>
@@ -10,11 +10,13 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg030.h"
+#include "seg075.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -489,6 +491,83 @@ void tevent_120(void)
 void tevent_121(void)
 {
 	TRV_cross_a_ford(get_dtp(0xd4), 30, 0);
+}
+
+/* Borlandified and identical */
+void tevent_124(void)
+{
+	signed short i;
+	signed short counter;
+	signed short answer;
+	signed short have_climb_tools;
+	signed short skill_ret;
+	Bit8u *hero;
+
+	have_climb_tools = 0;
+
+	GUI_output(get_city(0xc4));
+
+	if (DNG_check_climb_tools() != -1)
+	{
+		have_climb_tools = 1;
+
+		GUI_output(get_city(0xc8));
+	}
+
+	do {
+		answer = GUI_radio(get_city(0xcc), 2,
+					get_city(0xd0),
+					get_city(0xd4));
+	} while (answer == -1);
+
+	if (answer == 2)
+	{
+		ds_writew(0x4336, 1);
+
+	} else {
+
+		hero = get_hero(0);
+		for (i = counter = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		{
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero) &&
+				(skill_ret = test_skill(hero, 10, -2)) <= 0)
+			{
+				/* the climb test failed */
+				counter++;
+
+				if (skill_ret == -1 && have_climb_tools == 0)
+				{
+					/* fatal */
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0xe0),
+						(char*)hero + HERO_NAME2,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					hero_disappear(hero, i, -1);
+
+				} else {
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0xdc),
+						(char*)hero + HERO_NAME2);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					sub_hero_le(hero, random_schick(5));
+				}
+			}
+		}
+
+		if (!counter)
+		{
+			GUI_output(get_city(0xd8));
+		}
+	}
+
 }
 
 #if !defined(__BORLANDC__)
