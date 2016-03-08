@@ -392,7 +392,7 @@
 #define TEXTCOLOR_FG	(0xd2c9)
 #define FIG_FIGURE2_BUF	(0xd2db)	/* RealPt to buffer of size 20000 */
 #define FIG_FIGURE1_BUF	(0xd2df)	/* RealPt */
-#define BUFFER3_PTR	(0xd2e3)	/* RealPt to buffer of size 3400, used for NVF */
+#define OBJECTS_NVF_BUF	(0xd2e3)	/* RealPt to buffer of size 3400 */
 #define BUF_ICON	(0xd2e7)	/* RealPt */
 #define BUFFER4_PTR	(0xd2eb)	/* RealPt to buffer of size 300, used for text */
 #define TEXT_INPUT_BUFFER	(0xd2ef)	/* RealPt, size 24 */

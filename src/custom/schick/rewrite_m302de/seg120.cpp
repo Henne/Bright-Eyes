@@ -258,8 +258,8 @@ void init_global_buffer(void)
 	ds_writed(DIALOG_TEXT, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3360));
 	ds_writed(CITY_LTX, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3960));
 
-	ds_writed(BUFFER3_PTR, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
-	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(BUFFER3_PTR), 3400)));
+	ds_writed(OBJECTS_NVF_BUF, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
+	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(OBJECTS_NVF_BUF), 3400)));
 	ds_writed(TEXT_INPUT_BUFFER, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
 	ds_writed(BUFFER4_PTR, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
 	ds_writed(BUFFER5_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER4_PTR), 300)));

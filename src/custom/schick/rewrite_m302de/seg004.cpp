@@ -706,23 +706,23 @@ void load_objects_nvf(void)
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR));
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF));
 	nvf.nr = 12;
 	process_nvf(&nvf);
 
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR)) + 0x683;
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0x683;
 	nvf.nr = 13;
 	process_nvf(&nvf);
 
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR)) + 0xcaf;
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcaf;
 	nvf.nr = 14;
 	process_nvf(&nvf);
 
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR)) + 0xcef;
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcef;
 	nvf.nr = 15;
 	process_nvf(&nvf);
 
-	array_add(Real2Host(ds_readd(BUFFER3_PTR)), 0xd3f, 0xe0, 2);
+	array_add(Real2Host(ds_readd(OBJECTS_NVF_BUF)), 0xd3f, 0xe0, 2);
 
 }
 
@@ -818,7 +818,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, ds_readws(WALLCLOCK_Y));
 	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
 	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 20);
-	ds_writed(0xc019, ds_readd(BUFFER3_PTR));
+	ds_writed(0xc019, ds_readd(OBJECTS_NVF_BUF));
 
 	/* draw backgroud */
 	do_pic_copy(2);
@@ -829,7 +829,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, pos + 7);
 	ds_writew(0xc017, y + 6);
-	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(BUFFER3_PTR) + 0xcaf: (RealPt)ds_readd(BUFFER3_PTR) + 0xcef));
+	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcaf: (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcef));
 
 	/* draw sun/moon */
 	do_pic_copy(2);
@@ -840,7 +840,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, ds_readws(WALLCLOCK_Y) + 3);
 	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
 	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 22);
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUFFER3_PTR) + 0x683));
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(OBJECTS_NVF_BUF) + 0x683));
 
 	/* draw backgroud */
 	do_pic_copy(2);
