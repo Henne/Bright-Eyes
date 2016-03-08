@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 7/11
+ *	Functions rewritten: 8/11
  */
 
 #include <stdio.h>
@@ -483,6 +483,12 @@ void tevent_120(void)
 		ds_writeb(0x3dff, 1);
 		TRV_found_camp_place(1);
 	}
+}
+
+/* Borlandified and identical */
+void tevent_121(void)
+{
+	TRV_cross_a_ford(get_dtp(0xd4), 30, 0);
 }
 
 #if !defined(__BORLANDC__)
