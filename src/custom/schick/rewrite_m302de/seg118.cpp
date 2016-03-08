@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 4/11
+ *	Functions rewritten: 5/11
  */
 
 #include <stdio.h>
@@ -373,6 +373,52 @@ void tevent_079(void)
 	{
 		TRV_found_camp_place(0);
 		ds_writeb(0x3de3, 1);
+	}
+}
+
+/* Borlandified and identical */
+void tevent_051(void)
+{
+	signed short answer;
+
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), 26, 4) > 0 && !ds_readb(0x3dc5))
+	{
+		ds_writeb(0x3dc5, 1);
+
+		if (!TRV_follow_trail_question())
+		{
+
+			GUI_output(get_city(0x104));
+			GUI_output(get_city(0x108));
+
+			load_in_head(53);
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_city(0x10c), 2,
+							get_city(0x110),
+							get_city(0x114));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				ds_writeb(0x4333, 3);
+			}
+		}
+
+	} else if (ds_readb(0x3dc5) != 0) {
+
+		load_in_head(53);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_city(0x118), 2,
+						get_city(0x11c),
+						get_city(0x120));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			ds_writeb(0x4333, 3);
+		}
 	}
 }
 
