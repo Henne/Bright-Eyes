@@ -1,16 +1,18 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 1/13
+ *	Functions rewritten: 2/13
  */
 #include <stdio.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg026.h"
 #include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg103.h"
 #include "seg105.h"
 
 #if !defined(__BORLANDC__)
@@ -135,6 +137,35 @@ void tevent_016(void)
 
 		ds_writeb(0x3da9, 1);
 	}
+}
+
+/* falling rocks */
+/* Borlandified and identical */
+void tevent_090(void)
+{
+	signed short i;
+	Bit8u *hero;
+
+	GUI_output(get_city(0x00));
+	GUI_output(get_city(0x04));
+
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+	{
+		if (host_readbs(hero + HERO_TYPE) &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero) &&
+			test_skill(hero, 50, 0) <= 0)
+		{
+			/* failed */
+			sub_hero_le(hero, random_schick(10));
+
+			loose_random_item(hero, 10, get_ltx(0x7e8));
+			loose_random_item(hero, 10, get_ltx(0x7e8));
+		}
+	}
+
+	GUI_output(get_city(0x08));
 }
 
 #if !defined(__BORLANDC__)
