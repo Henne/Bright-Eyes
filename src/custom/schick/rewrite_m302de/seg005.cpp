@@ -391,7 +391,7 @@ void draw_fight_screen(Bit16u val)
 	} while (NOT_NULL(list_i = Real2Host(host_readd(list_i + 0x1b))));
 
 	/* write TEMP/XX */
-	handle = bc__creat((RealPt)ds_readd(0x4b68), 0);
+	handle = bc__creat((RealPt)ds_readd(STR_TEMP_XX_PTR), 0);
 	bc__write(handle, (RealPt)ds_readd(BUFFER8_PTR), 64000);
 	bc_close(handle);
 
@@ -975,7 +975,7 @@ to the DOSBox-CPU and may run the timer.
 	}
 
 	/* read TEMP/XX */
-	handle = bc__open((RealPt)ds_readd(0x4b68), 0);
+	handle = bc__open((RealPt)ds_readd(STR_TEMP_XX_PTR), 0);
 	bc__read(handle, Real2Host(ds_readd(BUFFER8_PTR)), 64000);
 	bc_close(handle);
 
