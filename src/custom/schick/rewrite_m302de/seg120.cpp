@@ -296,7 +296,7 @@ signed short init_memory(void)
 	ds_writed(ITEMSDAT,		(Bit32u)schick_alloc_emu(3060));
 	ds_writed(0xd2a1,		(Bit32u)schick_alloc_emu(950));
 	ds_writed(MONNAMES,		(Bit32u)schick_alloc_emu(308));
-	ds_writed(0xe121,		(Bit32u)schick_alloc_emu(296));
+	ds_writed(MEM_SLOTS_ANIS,		(Bit32u)schick_alloc_emu(296));
 	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
@@ -596,8 +596,8 @@ void cleanup_game(void)
 	if (ds_readb(EMS_ENABLED) != 0) {
 
 		for (l_si = 0; l_si < 37; l_si++) {
-			if (host_readw(Real2Host(ds_readd(0xe121)) + l_si * 8) != 0) {
-				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe121)) + 2 + l_si * 8));
+			if (host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + l_si * 8) != 0) {
+				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + 2 + l_si * 8));
 			}
 		}
 

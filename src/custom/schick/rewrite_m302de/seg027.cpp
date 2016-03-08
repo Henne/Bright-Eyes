@@ -339,19 +339,19 @@ void load_ani(const signed short nr)
 
 	/* count to the ordered ani in an array*/
 	for (i = 0; i < 37; i++) {
-		if (nr == host_readw(Real2Host(ds_readd(0xe121)) + i * 8))
+		if (nr == host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8))
 			break;
 	}
 
 	if (i != 37) {
 		/* already buffered in EMS, get from there */
-		ems_handle = host_readw(Real2Host(ds_readd(0xe121)) + i * 8 + 2);
+		ems_handle = host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8 + 2);
 		from_EMS((RealPt)ds_readd(BUFFER9_PTR), ems_handle,
-			host_readd(Real2Host(ds_readd(0xe121)) + i * 8 + 4));
+			host_readd(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8 + 4));
 	} else {
 		/* load it from file */
-		ani_off = ds_readd(0xd205 - 4 + nr * 4);
-		ani_len = ds_readd(0xd205 + nr * 4) - ani_off;
+		ani_off = ds_readd(BUFFER_ANIS_TAB - 4 + nr * 4);
+		ani_len = ds_readd(BUFFER_ANIS_TAB + nr * 4) - ani_off;
 
 		/* load ANIS */
 		fd = load_archive_file(ARCHIVE_FILE_ANIS);
@@ -367,15 +367,15 @@ void load_ani(const signed short nr)
 
 			/* find an empty EMS slot */
 			for (i = 0; i < 36; i++) {
-				if (host_readw(Real2Host(ds_readd(0xe121)) + i * 8) == 0)
+				if (host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8) == 0)
 					break;
 			}
 
 			/* fill the entry */
-			host_writew(Real2Host(ds_readd(0xe121)) + i * 8, nr);
-			host_writew(Real2Host(ds_readd(0xe121)) + i * 8 + 2,
+			host_writew(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8, nr);
+			host_writew(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8 + 2,
 				ems_handle);
-			host_writed(Real2Host(ds_readd(0xe121)) + i * 8 + 4,
+			host_writed(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + i * 8 + 4,
 				ani_len);
 
 			/* copy data to EMS */
@@ -711,7 +711,7 @@ void init_common_buffers(void)
 	bc_close(fd);
 
 	fd = load_archive_file(ARCHIVE_FILE_ANIS_TAB);
-	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd205)), 148);
+	read_archive_file(fd, Real2Host(RealMake(datseg, BUFFER_ANIS_TAB)), 148);
 	bc_close(fd);
 
 	fd = load_archive_file(ARCHIVE_FILE_MFIGS_TAB);

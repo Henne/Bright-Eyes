@@ -376,9 +376,10 @@
 #define GUI_TEXT_BUFFER	(0xce87)	/* unsigned char[64] */
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */
-#define BUFFER_MONSTER_TAB	(0xd01d)	/* RealPt */
-#define BUFFER_WFIGS_TAB	(0xd0ad)	/* RealPt */
-#define BUFFER_MFIGS_TAB	(0xd159)	/* RealPt */
+#define BUFFER_MONSTER_TAB	(0xd01d)	/* unsigned long[36] */
+#define BUFFER_WFIGS_TAB	(0xd0ad)	/* unsigned long[43] */
+#define BUFFER_MFIGS_TAB	(0xd159)	/* unsigned long[43] */
+#define BUFFER_ANIS_TAB	(0xd205)	/* unsigned long[37] */
 #define BUFFER5_PTR	(0xd2a5)	/* RealPt to buffer of size 3880 */
 #define BUFFER10_PTR	(0xd2a9)	/* RealPt to buffer of size 16771, used for NVF and text */
 #define POPUP	(0xd2ad)	/* RealPt */
@@ -418,6 +419,7 @@
 #define MEM_SLOTS_MON	(0xe115)
 #define MEM_SLOTS_WFIG	(0xe119)
 #define MEM_SLOTS_MFIG	(0xe11d)
+#define MEM_SLOTS_ANIS	(0xe121)	/* RealPt to (struct { unsigned short nr, ems_handle; long ani_len; })[36] */
 #define MONSTER_DAT_BUF	(0xe125)	/* RealPt */
 #define MONNAMES	(0xe129)
 #define ITEMSDAT	(0xe22b)
