@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 10/11
+ *	Functions rewritten: 11/11 (complete)
  */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
+#include "seg028.h"
 #include "seg029.h"
 #include "seg030.h"
 #include "seg075.h"
@@ -595,6 +596,61 @@ void tevent_125(void)
 
 		timewarp(MINUTES(30));
 	}
+}
+
+static inline unsigned short cast_u16(unsigned char v)
+{
+	return v;
+}
+
+/* Borlandified and identical */
+void tevent_145(void)
+{
+	signed short answer;
+
+	load_area_description(0);
+
+	if (!(cast_u16(ds_readb(0xe4a2)) & 1))
+	{
+		do {
+			answer = GUI_radio(get_city(0xa8), 2,
+						get_city(0xac),
+						get_city(0xb0));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			ds_writew(0x434a, 7);
+			ds_writeb(CURRENT_TOWN, 8);
+
+		} else {
+			ds_writew(0x434a, 8);
+			ds_writeb(CURRENT_TOWN, 7);
+		}
+
+	} else {
+		do {
+			answer = GUI_radio(get_city(0x9c), 2,
+						get_city(0xa0),
+						get_city(0xa4));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			ds_writew(0x434a, 4);
+			ds_writeb(CURRENT_TOWN, 5);
+
+		} else {
+			ds_writew(0x434a, 5);
+			ds_writeb(CURRENT_TOWN, 4);
+		}
+	}
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_city(0xb4),
+		(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+
+	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
 #if !defined(__BORLANDC__)
