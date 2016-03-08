@@ -108,7 +108,7 @@ void final_intro(void)
 	ds_writew(0xe113, 0);
 
 	/* load FACE.NVF */
-	handle = load_archive_file(134);
+	handle = load_archive_file(ARCHIVE_FILE_FACE_NVF);
 	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
 	bc_close(handle);
 
@@ -247,7 +247,7 @@ void show_hyggelik_ani(void)
 	ptr1 = (RealPt)ds_readd(0xc3db);
 	ptr2 = (RealPt)F_PADD((HugePt)ds_readd(0xc3db), 0x1fbd0);
 
-	handle = load_archive_file(135);
+	handle = load_archive_file(ARCHIVE_FILE_HYGBACK_NVF);
 	filelen = read_archive_file(handle, Real2Host(ds_readd(0xd303)), 64000);
 	bc_close(handle);
 	src = &(Real2Host(ds_readd(0xd303))[filelen - 0xc0]);
@@ -262,7 +262,7 @@ void show_hyggelik_ani(void)
 
 	hyg_ani_1(0, array);
 
-	handle = load_archive_file(136);
+	handle = load_archive_file(ARCHIVE_FILE_HYGGELIK_NVF);
 	filelen = read_archive_file(handle, Real2Host(ds_readd(0xd303)), 64000);
 	bc_close(handle);
 	host_writed(array + 0, (Bit32u)ptr1);
@@ -367,8 +367,8 @@ void show_times_up(void)
 	signed short bak2;
 
 	fi_bak = ds_readws(0x26bd);
-	load_city_ltx(221);
-	set_audio_track(150);
+	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
+	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
 	set_var_to_zero();
 	draw_main_screen();
 	load_ani(35);
@@ -392,7 +392,10 @@ void show_times_up(void)
 	ds_writew(0x2ca4, bak2);
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
-	if (fi_bak != -1 && fi_bak != 221 && fi_bak != 130 && !(fi_bak >= 156 && fi_bak <= 176)) {
+	/* restore text file except for CHARTEXT.LTX, TAVERN.TLK and except for dialogs */
+	if (fi_bak != -1 && fi_bak != ARCHIVE_FILE_CHARTEXT_LTX
+	    && fi_bak != ARCHIVE_FILE_TAVERN_TLK
+	    && !(fi_bak >= 156 && fi_bak <= 176)) {
 		load_city_ltx(fi_bak);
 	}
 }
@@ -413,12 +416,12 @@ void show_outro(void)
 	ds_writew(0x2ca2, 0);
 	ds_writew(0x2ca4, 60);
 
-	load_city_ltx(221);
-	set_audio_track(150);
+	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
+	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
 	set_var_to_zero();
 
 	/* load OUTRO1.NVF */
-	handle = load_archive_file(138);
+	handle = load_archive_file(ARCHIVE_FILE_OUTRO1_NVF);
 	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
 	bc_close(handle);
 
@@ -452,7 +455,7 @@ void show_outro(void)
 	GUI_output(get_city(0xe8));
 
 	/* load OUTRO2.NVF */
-	handle = load_archive_file(139);
+	handle = load_archive_file(ARCHIVE_FILE_OUTRO2_NVF);
 	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
 	bc_close(handle);
 
@@ -486,7 +489,7 @@ void show_outro(void)
 	GUI_output(get_city(0xec));
 
 	/* load OUTRO3.NVF */
-	handle = load_archive_file(140);
+	handle = load_archive_file(ARCHIVE_FILE_OUTRO3_NVF);
 	len = read_archive_file(handle, Real2Host(ds_readd(0xc3db)), 64000);
 	bc_close(handle);
 

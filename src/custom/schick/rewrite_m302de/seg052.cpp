@@ -68,7 +68,7 @@ void do_citycamp(void)
 			load_ani(36);
 			init_ani(0);
 			GUI_print_loc_line(get_ltx(0x4c8));
-			set_audio_track(149);
+			set_audio_track(ARCHIVE_FILE_CAMP_XMI);
 			ds_writew(0x2846, l3 = 0);
 		}
 
@@ -247,7 +247,7 @@ void do_citycamp(void)
 								load_ani(36);
 								init_ani(0);
 								GUI_print_loc_line(get_ltx(0x4c8));
-								set_audio_track(149);
+								set_audio_track(ARCHIVE_FILE_CAMP_XMI);
 								ds_writew(0x2846, l3 = 0);
 							}
 

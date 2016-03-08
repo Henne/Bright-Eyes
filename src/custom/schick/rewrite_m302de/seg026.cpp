@@ -27,27 +27,23 @@ void init_text(void)
 	Bit32s len;
 	signed short handle;
 
-	/* FONT6 */
-	handle = load_archive_file(0x0b);
+	handle = load_archive_file(ARCHIVE_FILE_FONT6);
 	read_archive_file(handle, Real2Host(ds_readd(BUF_FONT6)), 1000);
 	bc_close(handle);
 
-	/* TEXT.LTX */
-	handle = load_archive_file(0x0e);
+	handle = load_archive_file(ARCHIVE_FILE_TEXT_LTX);
 	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2b9)), 64000);
 	bc_close(handle);
 
 	split_textbuffer(Real2Host(ds_readd(TEXT_LTX)), (RealPt)ds_readd(0xd2b9), len);
 
-	/* ITEMNAME */
-	handle = load_archive_file(0xd0);
+	handle = load_archive_file(ARCHIVE_FILE_ITEMNAME);
 	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2a5)), 5000);
 	bc_close(handle);
 
 	split_textbuffer(Real2Host(ds_readd(ITEMSNAME)), (RealPt)ds_readd(0xd2a5), len);
 
-	/* MONNAMES */
-	handle = load_archive_file(0xd1);
+	handle = load_archive_file(ARCHIVE_FILE_MONNAMES);
 	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2a1)), 5000);
 	bc_close(handle);
 
@@ -127,7 +123,7 @@ void load_ggsts_nvf(void)
 	Bit16u fd;
 
 	/* seek to GGSTS.NVF */
-	fd = load_archive_file(0x0d);
+	fd = load_archive_file(ARCHIVE_FILE_GGSTS_NVF);
 	/* read it */
 	read_archive_file(fd, Real2Host(ds_readd(0xd2a9)), 16771);
 	/* close it */
@@ -398,7 +394,7 @@ signed short load_game_state(void)
 			l2 = bc_findnext(&blk);
 		}
 
-		for (i = 226; i <= 231; i++) {
+		for (i = ARCHIVE_FILE_NPCS; i <= (ARCHIVE_FILE_NPCS+5); i++) {
 			load_npc(i);
 
 			if (host_readbs(get_hero(6) + HERO_GROUP_POS) != 7) {
@@ -871,7 +867,7 @@ void load_in_head(signed short head)
 
 	if (head >= 0) {
 
-		handle = load_archive_file(0xb3);
+		handle = load_archive_file(ARCHIVE_FILE_IN_HEADS_NVF);
 
 		seg002_0c72(handle, 1024L * head, 0);
 

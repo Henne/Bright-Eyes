@@ -34,21 +34,21 @@ namespace M302de {
 
 void TRV_load_textfile(signed short travel_event)
 {
-	load_buffer_1(190);
+	load_buffer_1(ARCHIVE_FILE_FEATURE_LTX);
 
 	if (travel_event == -1) {
 		travel_event = ds_readws(0xb133);
 	}
 
-	load_city_ltx( (travel_event == 37 || travel_event == 47 || travel_event == 100) ? 237 :
-			( travel_event == 16 ? 198 :
-			( travel_event < 30 ? 191 :
-			( travel_event < 54 ? 192 :
-			( travel_event < 70 ? 193 :
-			( travel_event < 90 ? 194 :
-			( travel_event < 111 ? 195 :
-			( travel_event < 126 ? 196 :
-			( travel_event < 143 ? 197 : 198)))))))));
+	load_city_ltx( (travel_event == 37 || travel_event == 47 || travel_event == 100) ? ARCHIVE_FILE_FEATURE9_LTX :
+			( travel_event == 16 ? ARCHIVE_FILE_FEATURE8_LTX :
+			( travel_event < 30 ? ARCHIVE_FILE_FEATURE1_LTX :
+			( travel_event < 54 ? ARCHIVE_FILE_FEATURE2_LTX :
+			( travel_event < 70 ? ARCHIVE_FILE_FEATURE3_LTX :
+			( travel_event < 90 ? ARCHIVE_FILE_FEATURE4_LTX :
+			( travel_event < 111 ? ARCHIVE_FILE_FEATURE5_LTX :
+			( travel_event < 126 ? ARCHIVE_FILE_FEATURE6_LTX :
+			( travel_event < 143 ? ARCHIVE_FILE_FEATURE7_LTX : ARCHIVE_FILE_FEATURE8_LTX)))))))));
 
 	ds_writews(0xb133, travel_event);
 }
@@ -84,7 +84,7 @@ void TRV_event(signed short travel_event)
 	ds_writews(0x2ca4, bak2);
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
 	ds_writeb(0x2c98, 0);
-	load_buffer_1(19);
+	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
 	ds_writew(0xe113, 1);
 }
 #endif

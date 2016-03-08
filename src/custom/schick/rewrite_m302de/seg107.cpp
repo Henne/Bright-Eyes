@@ -112,7 +112,7 @@ void item_arcano(void)
 	b1_index = ds_readws(0x26bf);
 
 	/* load SPELLTXT*/
-	load_buffer_1(0xde);
+	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
@@ -197,7 +197,7 @@ void item_armatrutz(void)
 	b1_index = ds_readws(0x26bf);
 
 	/* load SPELLTXT*/
-	load_buffer_1(0xde);
+	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
@@ -230,7 +230,7 @@ void item_flimflam(void)
 	b1_index = ds_readws(0x26bf);
 
 	/* load SPELLTXT*/
-	load_buffer_1(0xde);
+	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
@@ -451,7 +451,7 @@ void item_brenne(void)
 	b1_index = ds_readws(0x26bf);
 
 	/* load SPELLTXT*/
-	load_buffer_1(0xde);
+	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	if (ds_readws(USED_ITEM_ID) == 249) {
 		/* refill burning lantern */

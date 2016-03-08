@@ -27,18 +27,18 @@ void load_pp20(signed short index)
 	RealPt buffer_ptr;
 	signed short bi;
 
-	if (index <= 5 || index == 0xd6 || index == 0x14 || index == 0xd7) {
+	if (index <= 5
+	    || index == ARCHIVE_FILE_PLAYM_US
+	    || index == ARCHIVE_FILE_ZUSTA_UK
+	    || index == ARCHIVE_FILE_ZUSTA_US) {
 		/* These pictures are buffered for faster access */
 		bi = index;
 
-		/* PLAYM_US */
-		if (index == 0xd6)
+		if (index == ARCHIVE_FILE_PLAYM_US)
 			bi = 6;
-		/* ZUSTA_UK */
-		if (index == 0x14)
+		if (index == ARCHIVE_FILE_ZUSTA_UK)
 			bi = 7;
-		/* ZUSTA_US */
-		if (index == 0xd7)
+		if (index == ARCHIVE_FILE_ZUSTA_US)
 			bi = 8;
 
 		if (ds_readd(0x5e6a + bi * 4)) {
@@ -184,13 +184,13 @@ RealPt load_fight_figs(signed short fig)
 		if (fig >= 44) {
 			/* female */
 			p_tab = p_datseg + 0xd0ad;
-			index = 234;
+			index = ARCHIVE_FILE_WFIGS;
 			mem_slots = Real2Host(ds_readd(MEM_SLOTS_WFIG));
 			fig -= 44;
 		} else {
 			/* male */
 			p_tab = p_datseg + 0xd159;
-			index = 24;
+			index = ARCHIVE_FILE_MFIGS;
 			mem_slots = Real2Host(ds_readd(MEM_SLOTS_MFIG));
 		}
 	}
@@ -354,7 +354,7 @@ void load_ani(const signed short nr)
 		ani_len = ds_readd(0xd205 + nr * 4) - ani_off;
 
 		/* load ANIS */
-		fd = load_archive_file(0x16);
+		fd = load_archive_file(ARCHIVE_FILE_ANIS);
 		/* seek to ordered ani */
 		seg002_0c72(fd, ani_off, 0);
 		read_archive_file(fd, Real2Host(ds_readd(0xc3db)),
@@ -548,7 +548,7 @@ void load_scenario(signed short nr)
 	signed short buf;
 
 	/* load SCENARIO.LST */
-	fd = load_archive_file(0xc8);
+	fd = load_archive_file(ARCHIVE_FILE_SCENARIO_LST);
 
 	/* read the first two bytes == nr of scenarios */
 	read_archive_file(fd, (Bit8u*)&buf, 2);
@@ -687,8 +687,7 @@ void init_common_buffers(void)
 	unsigned short fd;
 	signed short bytes;
 
-	/* load POPUP.DAT */
-	fd = load_archive_file(0x99);
+	fd = load_archive_file(ARCHIVE_FILE_POPUP_DAT);
 	bytes = read_archive_file(fd, Real2Host((RealPt)ds_readd(POPUP) - 8), 500);
 	bc_close(fd);
 
@@ -703,43 +702,35 @@ void init_common_buffers(void)
 #endif
 		bytes);
 
-	/* load COMPASS */
-	fd = load_archive_file(0x12);
+	fd = load_archive_file(ARCHIVE_FILE_COMPASS);
 	bytes = read_archive_file(fd, Real2Host(ds_readd(0xd2b1)), 5000);
 	bc_close(fd);
 
-	/* load ITEMS.DAT */
-	fd = load_archive_file(0xdc);
+	fd = load_archive_file(ARCHIVE_FILE_ITEMS_DAT);
 	bytes = read_archive_file(fd, Real2Host(ds_readd(ITEMSDAT)), 3060);
 	bc_close(fd);
 
-	/* load ANIS.TAB */
-	fd = load_archive_file(0x17);
+	fd = load_archive_file(ARCHIVE_FILE_ANIS_TAB);
 	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd205)), 148);
 	bc_close(fd);
 
-	/* load MFIGS.TAB */
-	fd = load_archive_file(0x19);
+	fd = load_archive_file(ARCHIVE_FILE_MFIGS_TAB);
 	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd159)), 172);
 	bc_close(fd);
 
-	/* load WFIGS.TAB */
-	fd = load_archive_file(0xeb);
+	fd = load_archive_file(ARCHIVE_FILE_WFIGS_TAB);
 	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd0ad)), 172);
 	bc_close(fd);
 
-	/* load MONSTER.TAB */
-	fd = load_archive_file(0x11);
+	fd = load_archive_file(ARCHIVE_FILE_MONSTER_TAB);
 	read_archive_file(fd, Real2Host(RealMake(datseg, 0xd01d)), 144);
 	bc_close(fd);
 
-	/* load GAMES.NAM */
-	fd = load_regular_file(0xcf);
+	fd = load_regular_file(ARCHIVE_FILE_GAMES_NAM);
 	bc__read(fd, Real2Host(RealMake(datseg, 0xe2da)), 45);
 	bc_close(fd);
 
-	/* load TOWNPAL.DAT */
-	fd = load_archive_file(0x8d);
+	fd = load_archive_file(ARCHIVE_FILE_TOWNPAL_DAT);
 	read_archive_file(fd, Real2Host(ds_readd(TOWNPAL_BUF)), 288);
 	bc_close(fd);
 

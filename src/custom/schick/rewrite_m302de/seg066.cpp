@@ -208,8 +208,7 @@ void do_special_buildings(void)
 	if (ds_readb(CURRENT_TOWN) == 1) {
 		/* THORWAL */
 
-		/* load THORWAL1.LTX or THORWAL2.LTX */
-		load_city_ltx(type < 41 ? 210 : 211);
+		load_city_ltx(type < 41 ? ARCHIVE_FILE_THORWAL1_LTX : ARCHIVE_FILE_THORWAL2_LTX);
 		ds_writew(TEXTBOX_WIDTH, 9);
 
 		if (type == 28) {
@@ -257,8 +256,7 @@ void do_special_buildings(void)
 	} else if (ds_readb(CURRENT_TOWN) == 18) {
 		/* PHEXCAER */
 
-		/* load PHEX2.LTX or PHEX1.LTX */
-		load_city_ltx(type <= 3 ? 239 : 238);
+		load_city_ltx(type <= 3 ? ARCHIVE_FILE_PHEX2_LTX : ARCHIVE_FILE_PHEX1_LTX);
 		ds_writew(TEXTBOX_WIDTH, 9);
 
 		if (type == 1) {
@@ -333,7 +331,7 @@ void do_town(void)
 	{
 		seg028_0555(1);
 
-		set_audio_track(142);
+		set_audio_track(ARCHIVE_FILE_THORWAL_XMI);
 
 		ds_writew(0x2846, 1);
 

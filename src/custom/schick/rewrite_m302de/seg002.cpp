@@ -278,7 +278,7 @@ signed short prepare_midi_playback(signed short sequence)
 	signed short patch;
 	RealPt ptr;
 
-	if ((ds_writews(0xbd01, load_archive_file(0x97))) != -1) {
+	if ((ds_writews(0xbd01, load_archive_file(ARCHIVE_FILE_SAMPLE_AD))) != -1) {
 
 		if ((ds_writews(0xbd21, AIL_register_sequence(ds_readw(0xbd23), (RealPt)ds_readd(0xbd0d), sequence, (RealPt)ds_readd(0xbd15), 0))) != -1) {
 
@@ -1550,7 +1550,7 @@ void handle_gui_input(void)
 			dec_ds_ws(TIMERS_DISABLED);
 		}
 	} else {
-		play_voc(0x121);
+		play_voc(ARCHIVE_FILE_FX1_VOC);
 		ds_writew(0xc3d5, 0);
 		l_si = 0;
 
@@ -1699,7 +1699,7 @@ void handle_input(void)
 			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
 		}
 	} else {
-		play_voc(0x121);
+		play_voc(ARCHIVE_FILE_FX1_VOC);
 		ds_writew(0xc3d5, 0);
 		l_si = 0;
 
@@ -5291,7 +5291,7 @@ signed short copy_protection(void)
 	signed short tries;
 	signed short l1;
 
-	load_buffer_1(21);
+	load_buffer_1(ARCHIVE_FILE_FIGHTTXT_LTX);
 
 	ds_writew(TEXTBOX_WIDTH, 4);
 

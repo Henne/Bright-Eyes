@@ -372,13 +372,13 @@ void level_up(signed short hero_pos)
 
 	city_bak = ds_readws(0x26bd);
 
-	load_city_ltx(221);
+	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 
 	ds_writed(0xe3b6, (Bit32u)((RealPt)ds_readd(0xc3a9) + 4500));
 	ds_writed(0xe3b2, (Bit32u)((RealPt)ds_readd(0xe3b6) + 208));
 	ds_writed(0xe3ba, ds_readd(0xc3db));
 
-	l_si = load_archive_file(219);
+	l_si = load_archive_file(ARCHIVE_FILE_BSKILLS_DAT);
 
 	read_archive_file(l_si, Real2Host(ds_readd(0xe3ba)), 1300);
 
@@ -917,7 +917,10 @@ void level_up(signed short hero_pos)
 
 	ds_writews(CURRENT_ANI, -1);
 
-	if (city_bak != -1 && city_bak != 221 && city_bak != 130 && (city_bak < 156 || city_bak > 176)) {
+	/* restore text file except for CHARTEXT.LTX, TAVERN.TLK and except for dialogs */
+	if (city_bak != -1 && city_bak != ARCHIVE_FILE_CHARTEXT_LTX
+	    && city_bak != ARCHIVE_FILE_TAVERN_TLK
+	    && (city_bak < 156 || city_bak > 176)) {
 		load_city_ltx(city_bak);
 	}
 }

@@ -110,7 +110,7 @@ void npc_farewell(void)
 		return;
 
 	tmp = ds_readw(0x26bf);
-	load_buffer_1(0xe1);
+	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	switch (host_readbs(get_hero(6) + HERO_NPC_ID)) {
 		/* Nariell */
@@ -187,7 +187,7 @@ void npc_nariell(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(0xe1);
+	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x14);
@@ -219,8 +219,7 @@ void npc_nariell(void)
 			add_npc(0xe2);
 	}
 
-	/* load TAVERN.TLK */
-	load_tlk(0x82);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 }
 
 //static
@@ -230,7 +229,7 @@ void npc_harika(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(0xe1);
+	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x16);
@@ -291,9 +290,7 @@ void npc_harika(void)
 		}
 	}
 
-
-	/* load TAVERN.TLK */
-	load_tlk(0x82);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 }
 
 void npc_curian(void)
@@ -301,7 +298,7 @@ void npc_curian(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(0xe1);
+	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x19);
@@ -333,8 +330,7 @@ void npc_curian(void)
 
 	}
 
-	/* load TAVERN.TLK */
-	load_tlk(0x82);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 }
 
 //static
@@ -343,7 +339,7 @@ void npc_ardora(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(0xe1);
+	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x15);
@@ -403,8 +399,7 @@ void npc_ardora(void)
 		}
 	}
 
-	/* load TAVERN.TLK */
-	load_tlk(0x82);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 }
 
 //static
@@ -413,7 +408,7 @@ void npc_garsvik(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(0xe1);
+	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x17);
@@ -445,8 +440,7 @@ void npc_garsvik(void)
 
 	}
 
-	/* load TAVERN.TLK */
-	load_tlk(0x82);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 }
 
 //static
@@ -455,7 +449,7 @@ void npc_erwo(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(0xe1);
+	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x18);
@@ -487,8 +481,7 @@ void npc_erwo(void)
 
 		}
 
-	/* load TAVERN.TLK */
-	load_tlk(0x82);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 }
 
 void remove_npc(signed short head_index, signed char days,

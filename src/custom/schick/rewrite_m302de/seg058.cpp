@@ -180,7 +180,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 		draw_main_screen();
 
 		/* ICONS */
-		l_si = load_archive_file(15);
+		l_si = load_archive_file(ARCHIVE_FILE_ICONS);
 		seg002_0c72(l_si, 18 * 576L);
 		read_archive_file(l_si, Real2Host(ds_readd(ICON)), 576L);
 		bc_close(l_si);
@@ -524,7 +524,7 @@ void do_smith(void)
 			load_ani(5);
 			init_ani(0);
 			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
-			set_audio_track(146);
+			set_audio_track(ARCHIVE_FILE_SMITH_XMI);
 			ds_writew(0x2846, 0);
 		}
 

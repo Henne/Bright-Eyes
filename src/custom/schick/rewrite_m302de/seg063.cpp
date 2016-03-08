@@ -113,7 +113,7 @@ void do_harbour(void)
 			init_ani(0);
 			ds_writew(0x2846, 0);
 
-			load_buffer_1(133);
+			load_buffer_1(ARCHIVE_FILE_HAFEN_LTX);
 
 			if (flag != 0) {
 
@@ -346,7 +346,7 @@ void do_harbour(void)
 
 				mod_clock_pos(ds_readbs(CURRENT_TOWN));
 
-				set_audio_track(145);
+				set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
 				ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
 				ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
@@ -379,7 +379,7 @@ void do_harbour(void)
 
 	} while (!done);
 
-	l_si = load_archive_file(18);
+	l_si = load_archive_file(ARCHIVE_FILE_COMPASS);
 	read_archive_file(l_si, Real2Host(ds_readd(0xd2b1)), 5000);
 	bc_close(l_si);
 
@@ -566,7 +566,7 @@ void sea_travel(signed short passage, signed short dir)
 
 			set_palette(Real2Host(ds_readd(0x432e)) + 64002, 0, 0x20);
 
-			set_audio_track(145);
+			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
 			ds_writew(0x4228, 0);
 			for (ds_writed(0x4262, ds_readd(0x425e)); host_readb(Real2Host(ds_readd(0xd299)) + inc_ds_ws_post(0x4228)) != 0xaa; add_ds_ws(0x4262, 2 * (!dir ? 2 : -2)))

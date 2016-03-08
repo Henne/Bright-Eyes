@@ -291,7 +291,7 @@ void GUI_draw_radio_bg(signed short header, signed short options, signed short w
 
 	/* play FX3.VOC */
 	if (ds_readw(0xbd25) == 0)
-		play_voc(291);
+		play_voc(ARCHIVE_FILE_FX3_VOC);
 
 	GUI_draw_popup_line(0, 0);
 

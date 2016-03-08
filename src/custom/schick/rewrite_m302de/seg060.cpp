@@ -61,8 +61,7 @@ void talk_tavern(void)
 	set_var_to_zero();
 	load_ani(13);
 	init_ani(0);
-	/* load TAVERN.TLK */
-	load_tlk(130);
+	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 	ds_writews(DIALOG_STATE, ds_writews(DIALOG_DONE, 0));
 	ptr2 = p_datseg + 0x3794;
 

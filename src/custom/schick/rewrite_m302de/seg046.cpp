@@ -215,7 +215,7 @@ void status_show(Bit16u index)
 	set_textcolor(0, 2);
 
 	/* load and draw the background */
-	load_pp20(20);
+	load_pp20(ARCHIVE_FILE_ZUSTA_UK);
 
 	/* draw the picture of the hero */
 	ds_writew(0xc011, 16);

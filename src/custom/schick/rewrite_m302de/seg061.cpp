@@ -65,7 +65,7 @@ void do_temple(void)
 			load_ani(3);
 			load_tempicon(ds_readws(0xe3f8) - 1);
 			init_ani(0);
-			set_audio_track(144);
+			set_audio_track(ARCHIVE_FILE_TEMPLE_XMI);
 
 			/* draw temple icon */
 			ds_writew(0xc011, ds_writew(0xc013, 0));

@@ -44,7 +44,7 @@ void pause_traveling(signed short ani_nr)
 
 	init_ani(0);
 
-	load_city_ltx(0xf0);
+	load_city_ltx(ARCHIVE_FILE_WILD_LTX);
 
 	ds_writew(0xe5d9, ds_readw(0x2ca2));
 	ds_writew(0xe5d7, ds_readw(0x2ca4));
@@ -671,7 +671,7 @@ void random_encounter(signed short arg)
 	ds_writew(0x2ca2, bak1);
 	ds_writew(0x2ca4, bak2);
 	ds_writew(0xe113, bak3);
-	load_buffer_1(19);
+	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
 }
 
 void search_ruin1(void)

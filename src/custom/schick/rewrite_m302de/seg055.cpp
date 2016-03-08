@@ -169,7 +169,7 @@ void do_merchant(void)
 
 			init_ani(0);
 
-			set_audio_track(145);
+			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
 			GUI_print_loc_line(ds_readbs(LOCATION) == 9 ? get_ltx(0xa9c) : (ds_readws(TYPEINDEX) == 93 ?  get_ltx(0xb8) : get_dtp(4 * ds_readws(CITYINDEX))));
 

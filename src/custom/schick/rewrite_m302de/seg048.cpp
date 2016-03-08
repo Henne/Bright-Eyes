@@ -95,11 +95,11 @@ void status_menu(signed short hero_pos)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writews(TEXTBOX_WIDTH, 3);
 
-	set_audio_track(143);
+	set_audio_track(ARCHIVE_FILE_SUMMARY_XMI);
 
 	file_bak = ds_readws(0x26bd);
 
-	load_city_ltx(221);
+	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 
 	load_ggsts_nvf();
 
@@ -545,14 +545,14 @@ void status_menu(signed short hero_pos)
 						ds_writew(0x6532, 0);
 
 						if (ds_readws(0x26bf) == 19) {
-							load_city_ltx(221);
+							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
 					}
 					case 5: {
 						/* cast spell */
 						if (select_magic_user() != -2) {
-							load_city_ltx(221);
+							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 							reset_item_selector();
 						}
 						ds_writew(0x2846, 1);
@@ -663,14 +663,14 @@ void status_menu(signed short hero_pos)
 						ds_writew(0x6532, 0);
 
 						if (ds_readws(0x26bf) == 19) {
-							load_city_ltx(221);
+							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
 					}
 					case 4: {
 						/* cast spell */
 						if (select_magic_user() != -2) {
-							load_city_ltx(221);
+							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 							reset_item_selector();
 							ds_writew(0x2846, 1);
 						}
@@ -726,7 +726,7 @@ void status_menu(signed short hero_pos)
 						ds_writew(0x6532, 0);
 
 						if (ds_readws(0x26bf) == 19) {
-							load_city_ltx(221);
+							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
 					}
@@ -752,7 +752,7 @@ void status_menu(signed short hero_pos)
 					case 5: {
 						/* cast spell */
 						if (select_magic_user() != -2) {
-							load_city_ltx(221);
+							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -781,7 +781,7 @@ void status_menu(signed short hero_pos)
 					case 1: {
 						/* cast spell */
 						if (select_magic_user() != -2) {
-							load_city_ltx(221);
+							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -823,10 +823,10 @@ void status_menu(signed short hero_pos)
 		}
 	}
 
-	/* restore text file */
+	/* restore text file except for CHARTEXT.LTX, TAVERN.TLK and except for dialogs */
 	if (file_bak != -1 &&
-		file_bak != 221 &&
-		file_bak != 130 &&
+		file_bak != ARCHIVE_FILE_CHARTEXT_LTX &&
+		file_bak != ARCHIVE_FILE_TAVERN_TLK &&
 		(file_bak < 156 || file_bak > 176))
 	{
 		load_city_ltx(file_bak);

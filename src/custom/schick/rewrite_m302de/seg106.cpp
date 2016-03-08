@@ -751,7 +751,7 @@ void equip_belt_ani(void)
 	struct nvf_desc nvf;
 
 	/* open GUERTEL.NVF */
-	handle = load_archive_file(0x84);
+	handle = load_archive_file(ARCHIVE_FILE_GUERTEL_NVF);
 
 	/* read NVF part 1 */
 	nvf_length = read_archive_file(handle,
