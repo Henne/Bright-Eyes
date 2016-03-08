@@ -239,7 +239,7 @@ void do_citycamp(void)
 							ds_writeb(0x26ac, 1);
 							ds_writew(0x26c1, 1);
 
-							do_fight(ds_readws(0x66e2 - 2 + 2 * random_schick(4)));
+							do_fight(ds_readws((DCAMPFIGHTS-2) + 2 * random_schick(4)));
 
 							if (ds_readws(0xc3c1) == 0) {
 								draw_main_screen();

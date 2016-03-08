@@ -190,7 +190,7 @@ void THO_windriders(void)
 				GUI_output(get_city(0x70));
 
 				ds_writew(0x26c1, 1);
-				do_fight(213);
+				do_fight(FIGHTS_THOR8);
 			}
 
 			inc_ds_ws(OTTA_WINDRIDERS);
@@ -309,7 +309,7 @@ void THO_stormchildren(void)
 				GUI_output(get_city(0x94));
 
 				ds_writew(0x26c1, 1);
-				do_fight(213);
+				do_fight(FIGHTS_THOR8);
 			}
 
 			inc_ds_ws(OTTA_STORMCHILDREN);
@@ -346,7 +346,7 @@ void THO_garaldsson(void)
 				GUI_output(get_city(0xb8));
 
 				ds_writew(0x26c1, 1);
-				do_fight(213);
+				do_fight(FIGHTS_THOR8);
 			}
 
 			inc_ds_ws(OTTA_GARALDSSON);

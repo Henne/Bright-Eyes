@@ -131,6 +131,8 @@
 #define SEG047_INIT1	(0x64a3)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT2	(0x64b1)	/* signed short[7] filled with zeroes */
 #define SEG047_INIT3	(0x64bf)	/* signed short[7] filled with zeroes */
+#define CAMPFIGHTS	(0x6694)	/* signed short[4] */
+#define DCAMPFIGHTS	(0x66e2)	/* signed short[4] */
 #define TRAVEL_BY_SHIP	(0x7070)	/* ?8 0 = on land, 1 = at the ship */
 #define C_EVENT_ACTIVE	(0x7c42)	/* ?8 0 = default, 1 = city event active */
 #define TMAP_DOUBLE1	(0x7c9a)	/* ?8 1 = unicorn brought a piece you already have */

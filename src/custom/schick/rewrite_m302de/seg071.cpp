@@ -122,7 +122,7 @@ void PHX_drogentempel(void)
 			GUI_dialogbox((RealPt)ds_readd(DTP2),
 					get_city(0x40), get_city(0x74), 0);
 
-			do_fight(236);
+			do_fight(FIGHTS_PHEX3);
 		} else {
 
 			if (ds_readb(DRUG_TIMER) && (nr_heros * 2500 <= money)) {

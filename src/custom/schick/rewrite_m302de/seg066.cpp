@@ -164,9 +164,9 @@ signed short enter_location_daspota(void)
 				set_var_to_zero();
 
 				if (host_readw(ptr + 4) == 6) {
-					do_fight(200);
+					do_fight(FIGHTS_DASP6B);
 				} else if (host_readw(ptr + 4 ) == 12) {
-					do_fight(207);
+					do_fight(FIGHTS_DASP12B);
 				}
 
 				turnaround();

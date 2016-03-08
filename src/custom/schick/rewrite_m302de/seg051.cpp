@@ -339,7 +339,7 @@ void do_wildcamp(void)
 					ds_writeb(0x26ac, 1);
 					ds_writew(0x26c1, 1);
 
-					do_fight(ds_readws(0x6692 + 2 * random_schick(4)));
+					do_fight(ds_readws((CAMPFIGHTS-2) + 2 * random_schick(4)));
 
 					if (ds_readb(0x4333) != 99 && ds_readw(0xc3c1) == 0) {
 

@@ -587,13 +587,13 @@ void tevent_064(void)
 
 			GUI_output(get_city(0xf8));
 
-			l_di = TRV_fight_event(180, 64);
+			l_di = TRV_fight_event(FIGHTS_F064, 64);
 
 			ds_writeb(0x3dd3, 1);
 
 		} else {
 			GUI_output(ds_readb(0x3dd3) != 0 ? get_city(0xf8) : get_city(0xfc));
-			l_di = TRV_fight_event(180, 64);
+			l_di = TRV_fight_event(FIGHTS_F064, 64);
 		}
 
 		if (!l_di) {
@@ -763,7 +763,7 @@ void tevent_066(void)
 					}
 				}
 
-				if (!do_fight(181)) {
+				if (!do_fight(FIGHTS_F066)) {
 					ds_writeb(0x3dcb, 1);
 					add_hero_ap_all(50);
 				}

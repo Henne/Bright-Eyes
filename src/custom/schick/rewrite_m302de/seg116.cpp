@@ -658,7 +658,7 @@ void tevent_144(void)
 			ds_writed(0x3e20, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * l_si));
 
 			final_intro();
-			if (!TRV_fight_event(192, 144)) {
+			if (!TRV_fight_event(FIGHTS_F144, 144)) {
 
 				GUI_output(get_city(0x44));
 
