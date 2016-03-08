@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 4/13
+ *	Functions rewritten: 5/13
  */
 #include <stdio.h>
 
@@ -190,6 +190,31 @@ void tevent_093(void)
 	{
 		TRV_found_camp_place(0);
 		ds_writeb(0x3dee, 1);
+	}
+}
+
+/* entrance daspota-dungeon */
+/* Borlandified and identical */
+void tevent_094(void)
+{
+	if (ds_readb(0x3def) != 0)
+	{
+		signed short answer;
+
+		GUI_output(get_city(0x0c));
+
+		load_in_head(53);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_city(0x10), 2,
+						get_city(0x14),
+						get_city(0x18));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			/* enter daspota dungeon */
+			ds_writeb(0x4333, 6);
+		}
 	}
 }
 
