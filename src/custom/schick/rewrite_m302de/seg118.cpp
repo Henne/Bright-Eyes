@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 9/11
+ *	Functions rewritten: 10/11
  */
 
 #include <stdio.h>
@@ -573,6 +573,28 @@ void tevent_124(void)
 		}
 	}
 
+}
+
+/* Borlandified and identical */
+void tevent_125(void)
+{
+	signed short answer;
+
+	load_in_head(17);
+
+	do {
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_city(0xe4), 3,
+					get_city(0xe8),
+					get_city(0xec),
+					get_city(0xf0));
+	} while (answer == -1);
+
+	if (answer == 1 || answer == 2)
+	{
+		GUI_dialog_na(0, answer == 1 ? get_city(0xf4) : get_city(0xf8));
+
+		timewarp(MINUTES(30));
+	}
 }
 
 #if !defined(__BORLANDC__)
