@@ -586,7 +586,7 @@ void show_outro(void)
 			for (j = 0; j <= 13; j++) {
 
 				host_writeb(hero + HERO_MU + 3 * j, host_readbs(hero + HERO_MU_ORIG + 3 * j));
-				host_writeb(hero + 0x36 + 3 * j, 0);
+				host_writeb(hero + HERO_MU_MOD + 3 * j, 0);
 			}
 
 			host_writed(hero + HERO_HEAL_TIMER, 0);

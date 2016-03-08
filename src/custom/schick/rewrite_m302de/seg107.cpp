@@ -117,10 +117,10 @@ void item_arcano(void)
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
 	/* ask who should be affected */
-	host_writeb(get_spelluser() + 0x86,
+	host_writeb(get_spelluser() + HERO_ENEMY_ID,
 		select_hero_from_group(get_ltx(0x9f4)) + 1);
 
-	if (host_readbs(get_spelluser() + 0x86) > 0) {
+	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) > 0) {
 		/* use it */
 		spell_arcano();
 		/* decrement usage counter */
@@ -202,10 +202,10 @@ void item_armatrutz(void)
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
 	/* ask who should be affected */
-	host_writeb(get_spelluser() + 0x86,
+	host_writeb(get_spelluser() + HERO_ENEMY_ID,
 		select_hero_from_group(get_ltx(0x9f4)) + 1);
 
-	if (host_readbs(get_spelluser() + 0x86) > 0) {
+	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) > 0) {
 		/* use it */
 		spell_armatrutz();
 		/* decrement usage counter */

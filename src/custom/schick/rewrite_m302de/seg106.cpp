@@ -424,11 +424,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			flag = 0;
 			l_di = 1;
 
-			if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) > 1) {
+			if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) > 1) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x348),
-					host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM),
+					host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM),
 					(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
 					(char*)hero2 + HERO_NAME2);
 
@@ -436,14 +436,14 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 			}
 
-			if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) < l_di) {
-				l_di = host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM);
+			if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) < l_di) {
+				l_di = host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM);
 			}
 
-			if ((l_di > 0) && (host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM) < 99)) {
+			if ((l_di > 0) && (host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) < 99)) {
 
-				if (host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM) + l_di > 99) {
-					l_di = 99 - host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM);
+				if (host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) + l_di > 99) {
+					l_di = 99 - host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM);
 				}
 
 				while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
@@ -452,7 +452,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 				if (l_di > 0) {
 					add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5) * l_di);
-					add_ptr_ws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM, l_di);
+					add_ptr_ws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM, l_di);
 					drop_item(hero1, pos1, l_di);
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -466,11 +466,11 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		if (flag != 0) {
 
 			desc1_5 = (item_stackable(item1_desc)) ?
-				host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) * host_readw(item1_desc + 5) :
+				host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) * host_readw(item1_desc + 5) :
 				host_readws(item1_desc + 5);
 
 			desc2_5 = (item_stackable(item2_desc)) ?
-				host_readws(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM) * host_readw(item2_desc + 5) :
+				host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) * host_readw(item2_desc + 5) :
 				host_readws(item2_desc + 5);
 
 			if (host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
@@ -528,16 +528,16 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 				/* special items */
 				if (item2 == 0xa1) {
-					host_writeb(hero1 + 0x125, host_readbs(hero1 + 0x125) + 3);
-					host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + -3);
+					host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + 3);
+					host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + -3);
 				}
 				if (item2 == 0xa3) {
 					host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + 5);
 					host_writeb(hero2 + HERO_MR, host_readbs(hero2 + HERO_MR) + -5);
 				}
 				if (item1 == 0xa1) {
-					host_writeb(hero1 + 0x125, host_readbs(hero1 + 0x125) + -3);
-					host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + 3);
+					host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + -3);
+					host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + 3);
 				}
 				if (item1 == 0xa3) {
 					host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + -5);
@@ -549,7 +549,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		l_di = 1;
 
-		if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) > 1) {
+		if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) > 1) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x348),
@@ -561,8 +561,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			l_di = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 		}
 
-		if (host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM) < l_di) {
-			l_di = host_readws(hero1 + 0x198 + pos1 * SIZEOF_KS_ITEM);
+		if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) < l_di) {
+			l_di = host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM);
 		}
 
 		while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
@@ -578,7 +578,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					*(struct knapsack_item*)(hero1 + HERO_ITEM_HEAD + pos1 * SIZEOF_KS_ITEM);
 #endif
 			add_ptr_ws(hero2 + HERO_LOAD, host_readws(item1_desc + 5) * l_di);
-			host_writews(hero2 + 0x198 + pos2 * SIZEOF_KS_ITEM, l_di);
+			host_writews(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM, l_di);
 			drop_item(hero1, pos1, l_di);
 
 		} else {
@@ -624,8 +624,8 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		/* special items */
 		if (item1 == 0xa1) {
-			host_writeb(hero1 + 0x125, host_readbs(hero1 + 0x125) + -3);
-			host_writeb(hero2 + 0x125, host_readbs(hero2 + 0x125) + 3);
+			host_writeb(hero1 + (HERO_TA_NATURE+3), host_readbs(hero1 + (HERO_TA_NATURE+3)) + -3);
+			host_writeb(hero2 + (HERO_TA_NATURE+3), host_readbs(hero2 + (HERO_TA_NATURE+3)) + 3);
 		}
 		if (item1 == 0xa3) {
 			host_writeb(hero1 + HERO_MR, host_readbs(hero1 + HERO_MR) + -5);

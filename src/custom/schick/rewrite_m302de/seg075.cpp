@@ -877,9 +877,9 @@ void DNG_stub6(void)
 
 				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)get_ltx(0xc0c),
-					hero_auto + 0x10,
-					Real2Host(GUI_get_ptr(host_readbs(hero_auto + 0x22), 0)),
-					Real2Host(GUI_get_ptr(host_readbs(hero_auto + 0x22), 2)));
+					hero_auto + HERO_NAME2,
+					Real2Host(GUI_get_ptr(host_readbs(hero_auto + HERO_SEX), 0)),
+					Real2Host(GUI_get_ptr(host_readbs(hero_auto + HERO_SEX), 2)));
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
 					(char*)Real2Host(ds_readd(BUFFER4_PTR)));

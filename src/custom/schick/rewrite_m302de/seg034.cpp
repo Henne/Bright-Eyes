@@ -492,7 +492,7 @@ void FIG_latecomers(void)
 								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
 								0);
 
-						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + 0x26)));
+						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + ENEMY_SHEET_LIST_POS)));
 
 						host_writebs(p2 + 3, (signed char)x);
 						host_writebs(p2 + 4, (signed char)y);

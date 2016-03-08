@@ -290,7 +290,7 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
 		enemy_uncon(enemy) ||
 		enemy_busy(enemy) ||
 		enemy_bit8(enemy) ||
-		(host_readbs(enemy + 0x35) > 0))
+		(host_readbs(enemy + ENEMY_SHEET_ROUND_APPEAR) > 0))
 	{
 		return 0;
 	}
@@ -584,9 +584,9 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(hero) + HERO_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + 0xd110 + 62 * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)))
+							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)))
 							{
-								if (is_in_byte_array(host_readbs(p_datseg + 0xd0e0 + 62 * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + (0xd0df + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) + 20, &x, &y);

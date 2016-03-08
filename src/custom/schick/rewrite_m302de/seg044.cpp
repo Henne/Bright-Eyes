@@ -366,7 +366,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	/* This byte is unknown atm */
-	if (host_readbs(enemy + 0x30) != 0) {
+	if (host_readbs(enemy + ENEMY_SHEET_BROKEN) != 0) {
 		weapon_type = -1;
 	}
 
@@ -428,7 +428,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	ds_writeb((0xd8ce + 242) + 0xf3 * a1, host_readbs(enemy + 1));
 
 	/* first the enemy may turn */
-	if ((host_readbs(enemy + 0x27) != dir) &&
+	if ((host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != dir) &&
 		(	((f_action == 2) || (f_action == 15) ||
 			((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker))) ||
 			((ds_readw(0xe3ac) != 0) && (a7 == 0)) ||
@@ -441,7 +441,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		l8 = l7 = -1;
 
 		/* try to turn right 90 degrees */
-		l9 = host_readbs(enemy + 0x27);
+		l9 = host_readbs(enemy + ENEMY_SHEET_VIEWDIR);
 		l8 = l9;
 		l9++;
 
@@ -457,14 +457,14 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 			}
 
 			if (l9 != dir) {
-				l8 = host_readbs(enemy + 0x27) + 4;
+				l8 = host_readbs(enemy + ENEMY_SHEET_VIEWDIR) + 4;
 				l7 = -1;
 			}
 		}
 
 
 		/* set the new direction in enemy sheet */
-		host_writebs(enemy + 0x27, (signed char)dir);
+		host_writebs(enemy + ENEMY_SHEET_VIEWDIR, (signed char)dir);
 
 		/* only if the turn is 90 degree */
 		if (l7 == -1) {
@@ -514,7 +514,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 					(	ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 +
 						weapon_type * 16 +
 						((f_action == 2) ? 0 : 1) * 8 +
-						host_readbs(enemy + 0x27) * 2
+						host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2
 					)
 				), 3);
 		}
@@ -531,7 +531,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 				p2 += copy_ani_seq(p2,
 					ds_readws(0x25fe +
 					((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
-					((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + 0x27) * 2)), 3);
+					((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2)), 3);
 			}
 	}
 
@@ -545,7 +545,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		p1 += copy_ani_seq(p1, host_readws(p4 + 0x28), 1);
 	}
 
-	FIG_set_0e(host_readbs(enemy + 0x26), (signed char)a1);
+	FIG_set_0e(host_readbs(enemy + ENEMY_SHEET_LIST_POS), (signed char)a1);
 	/* terminate figure animation array */
 	host_writebs(p1, -1);
 
@@ -554,13 +554,13 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 		memcpy(p_datseg + (0xd8ce + 2*0xf3) + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
 
-		p3 = Real2Host(FIG_get_ptr(host_readbs(enemy + 0x26)));
+		p3 = Real2Host(FIG_get_ptr(host_readbs(enemy + ENEMY_SHEET_LIST_POS)));
 
 		FIG_set_0e(ds_readbs(0xe35a + host_readbs(p3 + 0x13)), a1 + 2);
 	}
 
 	if (weapon_type != -1) {
-		FIG_set_0f(host_readbs(enemy + 0x26), a1 + 4);
+		FIG_set_0f(host_readbs(enemy + ENEMY_SHEET_LIST_POS), a1 + 4);
 		/* terminate weapon animation array */
 		host_writeb(p2, 0xff);
 	}

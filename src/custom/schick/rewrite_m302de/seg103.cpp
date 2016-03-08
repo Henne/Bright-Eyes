@@ -193,8 +193,8 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		if ((skill == 7) || (skill == 8)) {
 
 			/* calculate range weapon base value */
-			e_skillval = (host_readbs(hero + 0x38) + host_readbs(hero + 0x39) +
-				host_readbs(hero + 0x41) + host_readbs(hero + 0x42) +
+			e_skillval = (host_readbs(hero + HERO_KL) + host_readbs(hero + HERO_KL_MOD) +
+				host_readbs(hero + HERO_GE) + host_readbs(hero + HERO_GE_MOD) +
 				host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)) / 4;
 
 			/* add skill value */
@@ -483,7 +483,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 						if (test_skill(hero, 46, bonus) > 0) {
 							if (test_skill(hero, 46, bonus) > 0) {
 
-								l_si = (host_readbs(hero + 0x136) > 1) ? host_readbs(hero + 0x136) : 1;
+								l_si = (host_readbs(hero + (HERO_TA_CRAFT+5)) > 1) ? host_readbs(hero + (HERO_TA_CRAFT+5)) : 1;
 
 								add_hero_le(patient, l_si);
 

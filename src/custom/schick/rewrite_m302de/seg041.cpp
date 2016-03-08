@@ -180,14 +180,14 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 	signed short i;
 
 	/* subtract the damage from the enemies LE */
-	sub_ptr_ws(enemy + 0x13, damage);
+	sub_ptr_ws(enemy + ENEMY_SHEET_LE, damage);
 
 	/* are the enemies LE lower than 0 */
-	if (host_readws(enemy + 0x13) <= 0) {
+	if (host_readws(enemy + ENEMY_SHEET_LE) <= 0) {
 		/* set a flag, maybe dead */
-		or_ptr_bs(enemy + 0x31, 1);
+		or_ptr_bs(enemy + ENEMY_SHEET_STATUS1, 1);
 		/* set LE to 0 */
-		host_writew(enemy + 0x13, 0);
+		host_writew(enemy + ENEMY_SHEET_LE, 0);
 
 		if ((ds_readw(CURRENT_FIG_NR) == 94) && (host_readb(enemy) == 0x38)) {
 			/* slaying a special cultist */
@@ -217,7 +217,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 	}
 
 	if (!flag)
-		and_ptr_bs(enemy + 0x32, 0xfd);
+		and_ptr_bs(enemy + ENEMY_SHEET_STATUS2, 0xfd);
 }
 
 signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
@@ -373,19 +373,19 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 		if (ks_poison1(hero + HERO_ITEM_RIGHT)) {
 			damage += dice_roll(1, 6, 2);
-			and_ptr_bs(hero + 0x1c4, 0xdf);
+			and_ptr_bs(hero + (HERO_ITEM_RIGHT+4), 0xdf);
 		}
 
 		if (ks_poison2(hero + HERO_ITEM_RIGHT)) {
 			damage += dice_roll(1, 20, 5);
-			and_ptr_bs(hero + 0x1c4, 0xbf);
+			and_ptr_bs(hero + (HERO_ITEM_RIGHT+4), 0xbf);
 		}
 
 		if (host_readbs(hero + HERO_ITEM_RIGHT + 9) != 0) {
 
 			if (host_readbs(hero + HERO_ITEM_RIGHT + 9) == 3) {
-				or_ptr_bs(enemy_p + 0x32, 0x04);
-				and_ptr_bs(enemy_p + 0x32, 0xfd);
+				or_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0x04);
+				and_ptr_bs(enemy_p + ENEMY_SHEET_STATUS2, 0xfd);
 			} else {
 
 				damage += 10 * ds_readws(POISON_PRICES + 2 * host_readbs(hero + HERO_ITEM_RIGHT + 9));
@@ -418,12 +418,12 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			damage = 0;
 		}
 
-		if ((host_readbs(enemy_p + 0x24) != 0) && !ks_magic_hidden(hero + HERO_ITEM_RIGHT)) {
+		if ((host_readbs(enemy_p + ENEMY_SHEET_MAGIC) != 0) && !ks_magic_hidden(hero + HERO_ITEM_RIGHT)) {
 			damage = 0;
 		}
 
-		if (host_readws(enemy_p + 0x13) < damage) {
-			damage = host_readws(enemy_p + 0x13) + 1;
+		if (host_readws(enemy_p + ENEMY_SHEET_LE) < damage) {
+			damage = host_readws(enemy_p + ENEMY_SHEET_LE) + 1;
 		}
 	} else {
 		damage -= host_readbs(target + 0x30);

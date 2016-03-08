@@ -215,12 +215,12 @@ void FIG_do_spell_damage(signed short le)
 	if (le <= 0)
 		return;
 
-	if (host_readbs(get_spelluser() + 0x86) < 10) {
+	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) < 10) {
 		/* attack hero */
 
 		/* set pointer */
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 
 		/* ensure the spelluser does not attack himself */
@@ -243,7 +243,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set a pointer to the enemy */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* do the damage */
 		FIG_damage_enemy(get_spelltarget_e(), le, 0);
@@ -266,12 +266,12 @@ signed short get_attackee_parade(void)
 {
 
 	/* check if enemy or hero is attacked */
-	if (host_readbs(get_spelluser() + 0x86) < 10) {
+	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) < 10) {
 
 		/* attacked a hero */
 
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 		/* calculate PA  */
 
@@ -286,7 +286,7 @@ signed short get_attackee_parade(void)
 
 		/* set a global pointer to the target */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		return host_readbs(get_spelltarget_e() + 0x1d);
 	}
@@ -300,12 +300,12 @@ signed short get_attackee_parade(void)
 signed short get_attackee_rs(void)
 {
 	/* check if enemy or hero is attacked */
-	if (host_readbs(get_spelluser() + 0x86) < 10) {
+	if (host_readbs(get_spelluser() + HERO_ENEMY_ID) < 10) {
 
 		/* attacked a hero */
 
 		ds_writed(SPELLTARGET,
-			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + 0x86) - 1) * SIZEOF_HERO));
+			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
 		return host_readbs(get_spelltarget() + 0x30);
 
@@ -315,7 +315,7 @@ signed short get_attackee_rs(void)
 
 		/* set a global pointer to the target */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + 0x86) * 62));
+			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		return host_readbs(get_spelltarget_e() + 0x02);
 	}

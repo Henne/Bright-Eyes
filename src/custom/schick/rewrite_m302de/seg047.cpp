@@ -48,10 +48,10 @@ unsigned short get_hero_CH_best()
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
 				/* check if not dead */
-			(host_readbs(hero_i + 0x3b) > ch_val)) {
+			(host_readbs(hero_i + HERO_CH) > ch_val)) {
 				/* check if CH is the highest */
 
-				ch_val = host_readbs(hero_i + 0x3b);
+				ch_val = host_readbs(hero_i + HERO_CH);
 				retval = i;
 		}
 	}
@@ -102,7 +102,7 @@ unsigned short hero_is_diseased(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 7; i++)
-		if (host_readbs(hero + HERO_ILLNESS_EMPTY + i * 5) == -1)
+		if (host_readbs(hero + (HERO_ILLNESS-5) + i * 5) == -1)
 			return i;
 
 	return 0;
@@ -120,7 +120,7 @@ unsigned short hero_is_poisoned(Bit8u *hero)
 	signed short i;
 
 	for (i = 1; i <= 9; i++)
-		if (host_readbs(hero + HERO_POISON_EMPTY + i * 5) == -1)
+		if (host_readbs(hero + (HERO_POISON-5) + i * 5) == -1)
 			return i;
 
 	return 0;
@@ -284,7 +284,7 @@ void update_atpa(Bit8u *hero)
 	signed short i;
 
 	/* ATPA base = (IN + KK + GE) / 5 rounded */
-	erg = div(host_readbs(hero + 0x43) + host_readbs(hero + 0x46) + host_readbs(hero + 0x40), 5);
+	erg = div(host_readbs(hero + HERO_IN_ORIG) + host_readbs(hero + HERO_KK_ORIG) + host_readbs(hero + HERO_GE_ORIG), 5);
 
 	/* round up */
 	if (erg.rem >= 3)
@@ -658,21 +658,21 @@ void hero_get_drunken(Bit8u *hero)
 
 		/* change good attributes */
 		add_ptr_bs(hero + HERO_MU, 1);
-		sub_ptr_bs(hero + 0x38, 1);
-		sub_ptr_bs(hero + 0x3b, 1);
-		sub_ptr_bs(hero + 0x3e, 1);
-		sub_ptr_bs(hero + 0x41, 1);
-		add_ptr_bs(hero + 0x44, 1);
+		sub_ptr_bs(hero + HERO_KL, 1);
+		sub_ptr_bs(hero + HERO_CH, 1);
+		sub_ptr_bs(hero + HERO_FF, 1);
+		sub_ptr_bs(hero + HERO_GE, 1);
+		add_ptr_bs(hero + HERO_IN, 1);
 		add_ptr_bs(hero + HERO_KK, 1);
 
 		/* Reset bad attributes */
-		add_ptr_bs(hero + 0x4a, 1);
-		sub_ptr_bs(hero + 0x4d, 1);
-		sub_ptr_bs(hero + 0x50, 1);
-		add_ptr_bs(hero + 0x53, 1);
-		sub_ptr_bs(hero + 0x56, 1);
-		add_ptr_bs(hero + 0x59, 1);
-		add_ptr_bs(hero + 0x5c, 1);
+		add_ptr_bs(hero + HERO_AG, 1);
+		sub_ptr_bs(hero + HERO_HA, 1);
+		sub_ptr_bs(hero + HERO_RA, 1);
+		add_ptr_bs(hero + HERO_GG, 1);
+		sub_ptr_bs(hero + HERO_TA, 1);
+		add_ptr_bs(hero + HERO_NG, 1);
+		add_ptr_bs(hero + HERO_JZ, 1);
 
 		/* do a burp FX2.VOC */
 		if (ds_readb(0x2845) == 20) {
@@ -703,21 +703,21 @@ void hero_get_sober(Bit8u *hero) {
 
 	/* Reset good attributes */
 	sub_ptr_bs(hero + HERO_MU, 1);
-	add_ptr_bs(hero + 0x38, 1);
-	add_ptr_bs(hero + 0x3b, 1);
-	add_ptr_bs(hero + 0x3e, 1);
-	add_ptr_bs(hero + 0x41, 1);
-	sub_ptr_bs(hero + 0x44, 1);
+	add_ptr_bs(hero + HERO_KL, 1);
+	add_ptr_bs(hero + HERO_CH, 1);
+	add_ptr_bs(hero + HERO_FF, 1);
+	add_ptr_bs(hero + HERO_GE, 1);
+	sub_ptr_bs(hero + HERO_IN, 1);
 	sub_ptr_bs(hero + HERO_KK, 1);
 
 	/* Reset bad attributes */
-	sub_ptr_bs(hero + 0x4a, 1);
-	add_ptr_bs(hero + 0x4d, 1);
-	add_ptr_bs(hero + 0x50, 1);
-	sub_ptr_bs(hero + 0x53, 1);
-	add_ptr_bs(hero + 0x56, 1);
-	sub_ptr_bs(hero + 0x59, 1);
-	sub_ptr_bs(hero + 0x5c, 1);
+	sub_ptr_bs(hero + HERO_AG, 1);
+	add_ptr_bs(hero + HERO_HA, 1);
+	add_ptr_bs(hero + HERO_RA, 1);
+	sub_ptr_bs(hero + HERO_GG, 1);
+	add_ptr_bs(hero + HERO_TA, 1);
+	sub_ptr_bs(hero + HERO_NG, 1);
+	sub_ptr_bs(hero + HERO_JZ, 1);
 
 	if (ds_readb(0x2845) == 20)
 		ds_writew(0x2846, 1);

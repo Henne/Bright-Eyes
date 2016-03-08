@@ -118,7 +118,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				weapon_id = host_readws(hero + HERO_ITEM_RIGHT);
 
-				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + 0x1c4))) {
+				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + (HERO_ITEM_RIGHT+4)))) {
 					/* no weapon or weapon broken, use red color for "change weapon" */
 					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 						(char*)p_datseg + RED_STRING1,
@@ -923,7 +923,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fight_id upper bound */
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit2(p_datseg + 0xd0df + 0x32 + 62 * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit2(p_datseg + 0xd0df + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_unkn3(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{

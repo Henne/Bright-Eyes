@@ -257,7 +257,7 @@ void seg045_041b(signed short a1, Bit8u *enemy, signed short spell_ani_id)
 #endif
 
 	/* search the target on the chessboard */
-	FIG_search_obj_on_cb(host_readbs(enemy + 0x2d), &x, &y);
+	FIG_search_obj_on_cb(host_readbs(enemy + ENEMY_SHEET_FIGHT_ID), &x, &y);
 
 	ptr = p_datseg + a1 * 0xf3 + (0xd8ce + 1);
 
