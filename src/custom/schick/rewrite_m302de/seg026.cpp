@@ -218,12 +218,12 @@ signed short load_game_state(void)
 	/* sanity check if answer is in range */
 	if (answer != -2 && answer != 5) {
 
-		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * answer);
+		prepare_sg_name((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_NAMES + 9 * answer);
 		/* concat with ".gam" */
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_SUFFIX);
+		strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_SUFFIX);
 
 		/* open the game state file */
-		if ((handle_gs = bc__open((RealPt)ds_readd(BUFFER4_PTR), 0x8001)) == -1) {
+		if ((handle_gs = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8001)) == -1) {
 			GUI_output(get_ltx(0x9ec));
 			retval = -1;
 			return retval;
@@ -239,22 +239,22 @@ signed short load_game_state(void)
 		ds_writew(0x29ae, 0);
 
 		/* delete every file in TEMP */
-		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			/* "TEMP\\%s" */
 			(char*)Real2Host(ds_readd(0x4c88)),
 			/* "*.*" */
 			(char*)p_datseg + ALL_FILES_WILDCARD);
 
-		l2 = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
+		l2 = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
 
 		if (l2 == 0) {
 
 			do {
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)Real2Host(ds_readd(0x4c88)),
 					((char*)(&blk))+ 30);
 
-				bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
+				bc_unlink((RealPt)ds_readd(TEXT_OUTPUT_BUF));
 
 				l2 = bc_findnext(&blk);
 
@@ -266,7 +266,7 @@ signed short load_game_state(void)
 		memset(Real2Host(ds_readd(0xe2d2)), 0, 286 * 4);
 
 		/* read version info */
-		bc__read(handle_gs, Real2Host(ds_readd(BUFFER4_PTR)), 12);
+		bc__read(handle_gs, Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 12);
 		bc__read(handle_gs, (Bit8u*)&version[3], 1);
 		bc__read(handle_gs, (Bit8u*)&version[2], 1);
 		bc__read(handle_gs, (Bit8u*)&version[0], 1);
@@ -296,11 +296,11 @@ signed short load_game_state(void)
 			if (host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i)) {
 
 				/* write file content to TEMP */
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)Real2Host(ds_readd(0x4c88)),
 					(char*)Real2Host(ds_readd(FNAMES + 4 * i)));
 
-				handle = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0);
+				handle = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 
 				bc__read(handle_gs, Real2Host(ds_readd(BUFFER1_PTR)), (unsigned short)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
 				bc__write(handle, (RealPt)ds_readd(BUFFER1_PTR), (unsigned short)host_readd(Real2Host(ds_readd(0xe2d2)) + 4 * i));
@@ -324,11 +324,11 @@ signed short load_game_state(void)
 				prepare_chr_name(name, (char*)Real2Host(hero_i));
 
 				/* write file content to TEMP */
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)Real2Host(ds_readd(0x4c88)),
 					name);
 
-				handle = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0);
+				handle = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 
 				bc__write(handle, hero_i, SIZEOF_HERO);
 				bc_close(handle);
@@ -362,11 +362,11 @@ signed short load_game_state(void)
 
 		while (l2 == 0) {
 
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)Real2Host(ds_readd(0x4c88)),
 				((char*)(&blk)) + 30);
 
-			if ((handle_gs = bc__open((RealPt)ds_readd(BUFFER4_PTR), 0x8004)) == -1) {
+			if ((handle_gs = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
 #if !defined(__BORLANDC__)
 				{
 					Bit16u sp_bak = reg_sp;
@@ -383,7 +383,7 @@ signed short load_game_state(void)
 				bc__read(handle, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
 				bc_close(handle);
 
-				handle_gs = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0);
+				handle_gs = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 				bc__write(handle_gs, (RealPt)ds_readd(BUFFER1_PTR), SIZEOF_HERO);
 			} else {
 				/* Yes, indeed! */
@@ -452,7 +452,7 @@ signed short save_game_state(void)
 	if (ds_readws(0xc3c1) == 99) {
 
 		/* game done */
-		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0xca8));
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0xca8));
 
 	} else {
 
@@ -466,20 +466,20 @@ signed short save_game_state(void)
 				get_ltx(0x620),
 				p_datseg + EMPTY_STRING1);
 
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_ltx(4),
 				(char*)Real2Host(ds_readd(DTP2)));
 		} else {
 
 			/* save inside a temple */
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_ltx(4),
 				(char*)p_datseg + EMPTY_STRING2);
 		}
 	}
 
 	/* get the slot number */
-	slot = GUI_radio(Real2Host(ds_readd(BUFFER4_PTR)), 6,
+	slot = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 6,
 			p_datseg + (SAVEGAME_NAMES + 9 * 0),
 			p_datseg + (SAVEGAME_NAMES + 9 * 1),
 			p_datseg + (SAVEGAME_NAMES + 9 * 2),
@@ -497,23 +497,23 @@ signed short save_game_state(void)
 		do {
 			/* ask for filename */
 			ds_writew(GUI_ENTERING_SAVEGAME, 1);
-			strcpy((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
+			strcpy((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
 			GUI_input(get_ltx(0x9e8), 8);
 			ds_writew(GUI_ENTERING_SAVEGAME, 0);
 
-			if (host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER))) == 0) {
+			if (host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF))) == 0) {
 				return 0;
 			}
 
 			flag = 0;
 
-			prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+			prepare_sg_name((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 
 			for (tw_bak = 0; tw_bak < 5; tw_bak++) {
 
-				prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50, (char*)p_datseg + SAVEGAME_NAMES + 9 * tw_bak);
+				prepare_sg_name((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50, (char*)p_datseg + SAVEGAME_NAMES + 9 * tw_bak);
 
-				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50)) {
+				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50)) {
 
 					GUI_output(get_ltx(0xc98));
 					flag = 1;
@@ -522,10 +522,10 @@ signed short save_game_state(void)
 		} while (flag != 0);
 
 		/* delete the previous file of that slot */
-		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_SUFFIX2);
-		bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
-		strcpy((char*)p_datseg + SAVEGAME_NAMES + 9 * slot, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+		prepare_sg_name((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
+		strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_SUFFIX2);
+		bc_unlink((RealPt)ds_readd(TEXT_OUTPUT_BUF));
+		strcpy((char*)p_datseg + SAVEGAME_NAMES + 9 * slot, (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 
 		/* create a CHR-file for each hero in TEMP */
 		for (tw_bak = 0; tw_bak < 6; tw_bak++) {
@@ -563,10 +563,10 @@ signed short save_game_state(void)
 		status_len = (signed short)(p_status_end - p_status_start);
 #endif
 
-		prepare_sg_name((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + SAVEGAME_SUFFIX3);
+		prepare_sg_name((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
+		strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_SUFFIX3);
 
-		while ((l_di = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0)) == -1) {
+		while ((l_di = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0)) == -1) {
 			GUI_output(get_ltx(0x570));
 			return 0;
 		}
@@ -630,11 +630,11 @@ signed short save_game_state(void)
 		/* save all changed files from SCHICK.DAT */
 		for (tw_bak = 0; tw_bak < 286; tw_bak++) {
 
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)Real2Host(ds_readd(0x4c88)),
 				(char*)Real2Host(ds_readd(FNAMES + 4 * tw_bak)));
 
-			l1 = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
+			l1 = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
 
 
 			if (l1 == 0) {
@@ -682,19 +682,19 @@ signed short save_game_state(void)
 
 		/* append all CHR files */
 		bc_lseek(l_di, filepos, 0);
-		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)Real2Host(ds_readd(0x4c88)),
 			(char*)p_datseg + ALL_CHR_WILDCARD2);
 
-		l1 = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
+		l1 = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
 		do {
 			/* create the CHR filename */
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)Real2Host(ds_readd(0x4c88)),
 				((char*)(&blk)) + 30);
 
 			/* read the CHR file from temp */
-			handle = bc__open((RealPt)ds_readd(BUFFER4_PTR), 0x8004);
+			handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
 			bc__read(handle, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
 			bc_close(handle);
 
@@ -737,13 +737,13 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 	signed short hero_size = SIZEOF_HERO;
 	Bit8u *hero;
 
-	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(char*)Real2Host(ds_readd(0x4c88)),
 		(char*)Real2Host(fname));
 
-	if ((handle = bc__open((RealPt)ds_readd(BUFFER4_PTR), 0x8004)) == -1) {
-		copy_file_to_temp(fname, (RealPt)ds_readd(BUFFER4_PTR));
-		handle = bc__open((RealPt)ds_readd(BUFFER4_PTR), 0x8004);
+	if ((handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
+		copy_file_to_temp(fname, (RealPt)ds_readd(TEXT_OUTPUT_BUF));
+		handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
 	}
 
 	if (handle != -1) {
@@ -796,11 +796,11 @@ void write_chr_temp(unsigned short hero_pos)
 
 	prepare_chr_name(fname, (char*)get_hero(hero_pos));
 
-	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(char*)Real2Host(ds_readd(0x4c88)),		/* "TEMP\\%s" */
 		fname);
 
-	fd = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0);
+	fd = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 	bc__write(fd, (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos, SIZEOF_HERO);
 	bc_close(fd);
 }
@@ -820,22 +820,22 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 	struct ffblk blk;
 
 	buf = Real2Host(ds_readd(BUFFER1_PTR)) + 60000;
-	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(char*)Real2Host(ds_readd(0x4c88)),
 		(char*)p_datseg + ALL_CHR_WILDCARD3);
 
-	l_di = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
+	l_di = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
 
 	if (!l_di) {
 
 		do {
 			/* create the CHR filename */
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)Real2Host(ds_readd(0x4c88)),
 				((char*)(&blk)) + 30);
 
 			/* read the CHR file from temp */
-			handle = bc__open((RealPt)ds_readd(BUFFER4_PTR), 0x8004);
+			handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
 			bc__read(handle, buf, SIZEOF_HERO);
 			bc_close(handle);
 

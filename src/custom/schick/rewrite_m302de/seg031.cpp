@@ -233,13 +233,13 @@ RealPt get_informer_forename(void)
 				i++;
 			} while (tmp != ' ');
 
-			strncpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(4 * host_readws(p_info)), i);
+			strncpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(4 * host_readws(p_info)), i);
 #ifdef M302de_ORIGINAL_BUGFIX
 			break;
 #endif
 		}
 	}
-	return (RealPt)ds_readd(BUFFER4_PTR);
+	return (RealPt)ds_readd(TEXT_OUTPUT_BUF);
 }
 
 /**
@@ -341,19 +341,19 @@ RealPt get_random_tavern_message(void)
 
 	if (!randval || randval == 19) {
 
-		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)Real2Host(ptr),
 			(char*)Real2Host(load_current_town_gossip()));
 
-		return (RealPt)ds_readd(BUFFER4_PTR);
+		return (RealPt)ds_readd(TEXT_OUTPUT_BUF);
 
 	} else if (randval == 3) {
 
-		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)Real2Host(ptr),
 			(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 
-		return (RealPt)ds_readd(BUFFER4_PTR);
+		return (RealPt)ds_readd(TEXT_OUTPUT_BUF);
 	} else {
 		return ptr;
 	}

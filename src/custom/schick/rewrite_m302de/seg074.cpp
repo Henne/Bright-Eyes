@@ -332,27 +332,27 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 
 		if (dir == 0) {
 
-			memcpy(Real2Host(ds_readd(BUFFER4_PTR)), p_datseg + 0x7d52, 49);
+			memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_datseg + 0x7d52, 49);
 
 		} else if (dir == 2) {
 
 			for (i = 0; i < 49; i++) {
-				host_writeb(Real2Host(ds_readd(BUFFER4_PTR)) + i, ds_readb(0x7d52 + (48 - i)));
+				host_writeb(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i, ds_readb(0x7d52 + (48 - i)));
 			}
 
 		} else if (dir == 1) {
 
-			memcpy(Real2Host(ds_readd(BUFFER4_PTR)), p_datseg + 0x7d83, 49);
+			memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_datseg + 0x7d83, 49);
 
 		} else {
 
 			for (i = 0; i < 49; i++) {
-				host_writeb(Real2Host(ds_readd(BUFFER4_PTR)) + i, ds_readb(0x7d83 + (48 - i)));
+				host_writeb(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i, ds_readb(0x7d83 + (48 - i)));
 			}
 		}
 
 		for (i = 0; i < 49; i++) {
-			if (!host_readbs(Real2Host(ds_readd(BUFFER4_PTR)) + i)) {
+			if (!host_readbs(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i)) {
 				array[i] = 0;
 			}
 		}

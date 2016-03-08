@@ -238,7 +238,7 @@ unsigned short fight_printer(void)
 //					case 1:	/* heros attack fails */
 //					case 3: /* enemy attack fails */
 
-					sprintf(getString(ds_readd(BUFFER4_PTR)),
+					sprintf(getString(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_dtp(idx * 4),
 					getString(FIG_name_3rd_case(ds_readw(FIG_ACTOR_GRAMMAR_TYPE), ds_readw(FIG_ACTOR_GRAMMAR_ID))));
 				} else if (f_action == 2 || f_action == 4 || f_action == 7) {
@@ -246,7 +246,7 @@ unsigned short fight_printer(void)
 //					case 4: /* enemy parade fails */
 //					case 7:	/* hero get unconscious */
 
-					sprintf(getString(ds_readd(BUFFER4_PTR)),
+					sprintf(getString(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_dtp(idx * 4),
 					getString(FIG_name_3rd_case(ds_readw(FIG_TARGET_GRAMMAR_TYPE), ds_readw(FIG_TARGET_GRAMMAR_ID))));
 
@@ -255,17 +255,17 @@ unsigned short fight_printer(void)
 //					case 8:		/* enemy hits hero */
 //					case 11:	/* hero hits enemy */
 
-					sprintf(getString(ds_readd(BUFFER4_PTR)),
+					sprintf(getString(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_dtp(idx * 4),
 					getString(FIG_name_1st_case(ds_readw(FIG_ACTOR_GRAMMAR_TYPE), ds_readw(FIG_ACTOR_GRAMMAR_ID))),
 					getString(FIG_name_4th_case(ds_readw(FIG_TARGET_GRAMMAR_TYPE), ds_readw(FIG_TARGET_GRAMMAR_ID))));
 				} else {
 					/* case 5: hero successful parade */
 					/* case 6: weapon broke */
-					strcpy(getString(ds_readd(BUFFER4_PTR)), (char*)get_dtp(idx * 4));
+					strcpy(getString(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_dtp(idx * 4));
 				}
 
-				GUI_print_string(Real2Host(ds_readd(BUFFER4_PTR)),
+				GUI_print_string(Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					1, 194);
 			}
 			ds_writed(0xd2fb, (Bit32u)gfx_pos_bak);

@@ -120,22 +120,22 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				if (!item_weapon(get_itemsdat(weapon_id)) || (item_weapon(get_itemsdat(weapon_id)) && test_bit0(hero + (HERO_ITEM_RIGHT+4)))) {
 					/* no weapon or weapon broken, use red color for "change weapon" */
-					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)p_datseg + RED_STRING1,
 						get_dtp(0x60));
 				} else {
 					/* good weapon, no special color */
-					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_dtp(0x60));
+					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_dtp(0x60));
 				}
 
 				if (host_readbs(hero + HERO_KK) * 110 <= host_readws(hero + HERO_LOAD)) {
 					/* too much weight, use red color for "drop item" */
-					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50,
+					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
 						(char*)p_datseg + RED_STRING2,
 						get_dtp(0xb8));
 				} else {
 					/* weight ok, no special color */
-					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50, (char*)get_dtp(0xb8));
+					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50, (char*)get_dtp(0xb8));
 				}
 
 				/* show radion menu */
@@ -145,8 +145,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							get_dtp(0x54),
 							get_dtp(0x58),
 							get_dtp(0x5c),
-							Real2Host(ds_readd(BUFFER4_PTR)) + 50,
-							Real2Host(ds_readd(BUFFER4_PTR)),
+							Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
+							Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 							get_dtp(0x40),
 							get_dtp(0x68),
 							get_dtp(0x64),
@@ -520,11 +520,11 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
 							if (host_readws(hero + HERO_ITEM_LEFT) == 0) {
-								sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_dtp(0xf0),
 									(char*)hero + HERO_NAME2);
 							} else {
-								sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_dtp(0x7c),
 									(char*)hero + HERO_NAME2,
 									(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_ITEM_LEFT), 0)));
@@ -534,7 +534,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							bak = ds_readws(TEXTBOX_WIDTH);
 							ds_writews(TEXTBOX_WIDTH, 6);
 
-							l_di = GUI_radio(Real2Host(ds_readd(BUFFER4_PTR)), l100,
+							l_di = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), l100,
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
@@ -602,7 +602,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								(char*)hero + HERO_NAME2);
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
-							sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+							sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 								(char*)get_dtp(0x8),
 								(char*)hero + HERO_NAME2,
 								(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_ITEM_RIGHT), 0)));
@@ -611,7 +611,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							bak = ds_readws(TEXTBOX_WIDTH);
 							ds_writews(TEXTBOX_WIDTH, 6);
 
-							l_di = GUI_radio(Real2Host(ds_readd(BUFFER4_PTR)), l100,
+							l_di = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), l100,
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
@@ -839,7 +839,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
-						sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+						sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 							(char*)get_dtp(0xbc),
 							(char*)hero + HERO_NAME2);
 
@@ -847,7 +847,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						bak = ds_readws(TEXTBOX_WIDTH);
 						ds_writews(TEXTBOX_WIDTH, 6);
 
-						l_di = GUI_radio(Real2Host(ds_readd(BUFFER4_PTR)), l100,
+						l_di = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), l100,
 								Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
 								Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
 								Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),

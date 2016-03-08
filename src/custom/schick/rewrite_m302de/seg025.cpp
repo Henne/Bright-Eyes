@@ -106,18 +106,18 @@ void show_citizen(void)
 			load_ani(20);
 			init_ani(ds_writew(0x2846, 0));
 
-			strcpy((char*)Real2Host((RealPt)ds_readd(BUFFER4_PTR)),
+			strcpy((char*)Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_dtp(ds_readw(CITYINDEX) * 4));
 
 			if (ds_readbs(YEAR) == 15 && ds_readbs(MONTH) == 1 && random_schick(100) <= 20) {
 
 				if (!show_storytext()) {
-					GUI_print_loc_line(Real2Host((RealPt)ds_readd(BUFFER4_PTR)));
+					GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
 				} else {
 					ds_writew(ACTION, 1);
 				}
 			} else {
-				GUI_print_loc_line(Real2Host((RealPt)ds_readd(BUFFER4_PTR)));
+				GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
 #ifdef M302de_SPEEDFIX
 				delay_or_keypress(200);
 #endif
@@ -375,11 +375,11 @@ void show_treasure_map(void)
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			/* */
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_ltx(0xb5c),
 				(char*)get_hero(get_random_hero()) + 0x10);
 
-			GUI_output(Real2Host(ds_readd(BUFFER4_PTR)));
+			GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			ds_writeb(FIND_HYGGELIK, 1);
@@ -767,7 +767,7 @@ void leave_dungeon(void)
 	Bit8u *ptr;
 
 	DNG_lights();
-	ptr = Real2Host(ds_readd(BUFFER4_PTR));
+	ptr = Real2Host(ds_readd(TEXT_OUTPUT_BUF));
 
 	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0xc0);
 

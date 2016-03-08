@@ -509,10 +509,10 @@ void buy_screen(void)
 
 			while (offended == 0 && j < 3) {
 
-				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
+				make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x6dc),
-					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 
 				do {
@@ -580,11 +580,11 @@ void buy_screen(void)
 
 						set_party_money(p_money);
 
-						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xccc),
-							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}

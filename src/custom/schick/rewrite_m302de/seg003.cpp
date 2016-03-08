@@ -181,7 +181,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 {
 	signed short answer;
 
-	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(!host_readbs(p3)) ? (char*)get_ltx(0x82c) : (char*)get_ltx(0x83c),
 		p2);
 
@@ -189,7 +189,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 
 		ds_writew(TEXTBOX_WIDTH, 7);
 
-		answer = GUI_radio(Real2Host(ds_readd(BUFFER4_PTR)), 3,
+		answer = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 3,
 					get_ltx(0x830),
 					get_ltx(0x834),
 					get_ltx(0x838)) - 1;
@@ -219,7 +219,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 			}
 		}
 	} else {
-		GUI_output(Real2Host(ds_readd(BUFFER4_PTR)));
+		GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 	}
 
 }

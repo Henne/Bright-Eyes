@@ -980,7 +980,7 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
-			Real2Host(ds_readd(BUFFER4_PTR)), nvf->type);
+			Real2Host(ds_readd(TEXT_OUTPUT_BUF)), nvf->type);
 #ifdef M302de_ORIGINAL_BUGFIX
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
@@ -5323,15 +5323,15 @@ signed short copy_protection(void)
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 
 			/* transform the input string in uppercase letters and bitwise invert them */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
-					~toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i,
+					~toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i)));
 			}
 
-			if (!strcmp((char*)(p_datseg + (QUESTIONS_HANDBOOK + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
+			if (!strcmp((char*)(p_datseg + (QUESTIONS_HANDBOOK + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
 				return 1;
 			}
 		} else {
@@ -5352,15 +5352,15 @@ signed short copy_protection(void)
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 
 			/* transform the input string in uppercase letters */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
-					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i,
+					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i)));
 			}
 
-			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
+			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
 				return 1;
 			}
 		}

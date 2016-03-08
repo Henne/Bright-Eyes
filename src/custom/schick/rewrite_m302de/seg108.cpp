@@ -345,12 +345,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						l_si = 10;
 
 					/* singular POINT/ PUNKT */
-					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_ltx(0x620));
 
 					if (l_si > 1) {
 						/* make plural POINTS/PUNKTE */
-						strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+						strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_ltx(0x624));
 					}
 
@@ -365,7 +365,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						(char*)get_ltx(0x7f8),
 						(char*)consumer + HERO_NAME2,
 						l_si,
-						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+						(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 					break;
 				}
 				case 0x92 : {
@@ -383,12 +383,12 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					give_hero_new_item(owner, 0x2a, 2, 1);
 
 					/* singular POINT/ PUNKT */
-					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_ltx(0x620));
 
 					if (l_si > 1) {
 						/* make plural POINTS/PUNKTE */
-						strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+						strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_ltx(0x624));
 					}
 
@@ -397,7 +397,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						(char*)get_ltx(0x7f8),
 						(char*)consumer + HERO_NAME2,
 						l_si,
-						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+						(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 					break;
 				}
 				case 0xec: {
@@ -473,18 +473,18 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						give_hero_new_item(owner, 0x1f, 2, 1);
 
 						/* prepare output */
-						strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+						strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 							(char*)get_ltx(0x620));
 
 						if (l_si > 1) {
-							strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+							strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 								(char*)get_ltx(0x624));
 						}
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x800),
 							l_si,
-							(char*)Real2Host(ds_readd(BUFFER4_PTR)),
+							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 							(char*)consumer + HERO_NAME2);
 					} else {
 						/* Not a magicuser */
@@ -523,18 +523,18 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 								(char*)get_ltx(0x804),
 								(char*)consumer + HERO_NAME2);
 						} else {
-							strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+							strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 								(char*)get_ltx(0x620));
 
 							if (l_si > 1) {
-								strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+								strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_ltx(0x624));
 							}
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x800),
 								l_si,
-								(char*)Real2Host(ds_readd(BUFFER4_PTR)),
+								(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 								(char*)consumer + HERO_NAME2);
 						}
 					} else {

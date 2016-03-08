@@ -386,12 +386,12 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						price = (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 2)
 							* host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 4)) * ds_readws(PRICE_MODIFICATOR) / 4;
 
-						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x7a0),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item_id, 0)),
-							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 
 						do {

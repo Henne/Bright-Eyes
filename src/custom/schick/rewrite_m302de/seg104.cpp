@@ -243,7 +243,7 @@ signed short plan_alchemy(Bit8u *hero)
 									(char*)get_dtp(0xb4),
 									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
 
-								sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 									(char*)get_dtp(0xbc),
 									(char*)hero + HERO_NAME2);
 
@@ -252,7 +252,7 @@ signed short plan_alchemy(Bit8u *hero)
 								do {
 									l4 = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
 											get_dtp(0xb8),
-											Real2Host(ds_readd(BUFFER4_PTR)),
+											Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 											get_dtp(0xc0));
 								} while (l4 == -1);
 

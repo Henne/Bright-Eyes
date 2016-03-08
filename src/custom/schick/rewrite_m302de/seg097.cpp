@@ -383,8 +383,8 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	refresh_screen_size();
 
 	if (num != 0) {
-		if (GUI_enter_text(Real2Host(ds_readd(TEXT_INPUT_BUFFER)), ds_readws(TEXTBOX_POS_X) + ((signed short)(l_di - num * 6) >> 1), ds_readws(TEXTBOX_POS_Y) + l_si * 8 -2, num, 0) != -1) {
-			retval = (signed short)atol((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+		if (GUI_enter_text(Real2Host(ds_readd(TEXT_INPUT_BUF)), ds_readws(TEXTBOX_POS_X) + ((signed short)(l_di - num * 6) >> 1), ds_readws(TEXTBOX_POS_Y) + l_si * 8 -2, num, 0) != -1) {
+			retval = (signed short)atol((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 		} else {
 			retval = -1;
 		}

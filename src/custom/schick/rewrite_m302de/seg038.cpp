@@ -152,11 +152,11 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 	found = 0;
 	min = 99;
 
-	memset(Real2Host(ds_readd(BUFFER4_PTR)), 0, 80);
-	ptr[0] = Real2Host((RealPt)ds_readd(BUFFER4_PTR));
-	ptr[1] = Real2Host((RealPt)ds_readd(BUFFER4_PTR)) + 20;
-	ptr[2] = Real2Host((RealPt)ds_readd(BUFFER4_PTR)) + 40;
-	ptr[3] = Real2Host((RealPt)ds_readd(BUFFER4_PTR)) + 60;
+	memset(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 0, 80);
+	ptr[0] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF));
+	ptr[1] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 20;
+	ptr[2] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 40;
+	ptr[3] = Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)) + 60;
 
 	obj_id = get_cb_val(target_x, target_y);
 

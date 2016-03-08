@@ -188,11 +188,11 @@ void FIG_loot_monsters(void)
 
 	if (money > 0) {
 
-		make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
+		make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), money);
 
 		sprintf((char*)(Real2Host(ds_readd(DTP2))),
 			(char*)get_dtp(0x3c),
-			Real2Host(ds_readd(BUFFER4_PTR)));
+			Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		set_party_money(get_party_money() + money);
