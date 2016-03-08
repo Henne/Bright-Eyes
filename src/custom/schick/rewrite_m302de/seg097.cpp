@@ -390,7 +390,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 		}
 	} else {
 		/* set action table */
-		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x29cc));
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MENU));
 
 		if (ds_readw(0xc3c5) != 0) {
 			wait_for_keypress();
@@ -399,7 +399,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 		}
 
 		/* delete action table */
-		ds_writed(0x29e4, 0);
+		ds_writed(ACTION_TABLE_SECONDARY, 0);
 	}
 
 	set_textcolor(fg_bak, bg_bak);
@@ -633,9 +633,9 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 		ds_writew(0xc3d5, ds_writew(0xc3d1, ds_writew(0xc3d3, 0)));
 
 		while (!done) {
-			ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x29cc));
+			ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MENU));
 			handle_input();
-			ds_writed(0x29e4, 0);
+			ds_writed(ACTION_TABLE_SECONDARY, 0);
 
 			if (l5 != ds_readw(0xe5b0)) {
 				GUI_fill_radio_button(l5, ds_readw(0xe5b0),

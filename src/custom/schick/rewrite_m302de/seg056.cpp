@@ -247,9 +247,9 @@ void buy_screen(void)
 		l7 = host_readws((Bit8u*)&l7);
 #endif
 
-		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x2c04));
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MERCHANT));
 		handle_gui_input();
-		ds_writed(0x29e4, (Bit32u)0L);
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0L);
 
 		if (l6 != l7 || l15 != 0) {
 
@@ -333,7 +333,7 @@ void buy_screen(void)
 			l15 = 0;
 		}
 
-		if ((ds_readws(0xc3d3) != 0) && get_mouse_action(ds_readws(0x299c), ds_readws(0x299e), p_datseg + 0x2c04)) {
+		if ((ds_readws(0xc3d3) != 0) && get_mouse_action(ds_readws(0x299c), ds_readws(0x299e), p_datseg + ACTION_TABLE_MERCHANT)) {
 			ds_writew(ACTION, 144);
 		}
 

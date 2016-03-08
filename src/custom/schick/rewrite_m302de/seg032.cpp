@@ -901,7 +901,7 @@ signed short do_fight(signed short fight_nr)
 
 	ds_writew(0x2846, 1);
 
-	ds_writed(0x29e0, (Bit32u)RealMake(datseg, 0x29cc));
+	ds_writed(ACTION_TABLE_PRIMARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MENU));
 
 	ds_writew(WALLCLOCK_UPDATE, 0);
 

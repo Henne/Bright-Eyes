@@ -286,9 +286,9 @@ void sell_screen(Bit8u *shop_ptr)
 		l6 = host_readws((Bit8u*)&l6);
 #endif
 
-		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x2c04));
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MERCHANT));
 		handle_gui_input();
-		ds_writed(0x29e4, (Bit32u)0L);
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0L);
 
 		if (l5 != l6) {
 

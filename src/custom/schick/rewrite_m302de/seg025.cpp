@@ -521,9 +521,9 @@ signed short game_options(void)
 	ds_writed(0xbff9, ds_readd(BUFFER9_PTR));
 
 	do {
-		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x4bae));
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_OPTIONS));
 		handle_input();
-		ds_writed(0x29e4, (Bit32u)0);
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0);
 
 		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
 

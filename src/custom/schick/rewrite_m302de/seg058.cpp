@@ -312,9 +312,9 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 			}
 
-			ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x2c04));
+			ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MERCHANT));
 			handle_input();
-			ds_writed(0x29e4, (Bit32u)0L);
+			ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0L);
 
 			if (ds_readws(0xc3c7) == 2) {
 				select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(SELLITEMS)) + 7 * item);

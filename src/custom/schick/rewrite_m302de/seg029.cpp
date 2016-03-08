@@ -91,11 +91,11 @@ void draw_playmask(void)
 
 	ds_writew(0xd313, 205);
 #if !defined(__BORLANDC__)
-	ds_writed(0x29e0, (long)RealMake(datseg, 0x29e8));
+	ds_writed(ACTION_TABLE_PRIMARY, (long)RealMake(datseg, ACTION_TABLE_PLAYMASK));
 #else
-	ds_writed(0x29e0, (long)MK_FP(datseg, 0x29e8));
+	ds_writed(ACTION_TABLE_PRIMARY, (long)MK_FP(datseg, ACTION_TABLE_PLAYMASK));
 #endif
-	ds_writed(0x29e4, 0);
+	ds_writed(ACTION_TABLE_SECONDARY, 0);
 
 	ds_writew(0xc3cb, 1);
 

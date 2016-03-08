@@ -1560,16 +1560,16 @@ void handle_gui_input(void)
 		ds_writew(0xc3d5, 0);
 		l_si = 0;
 
-		if (NOT_NULL(Real2Host(ds_readd(0x29e4)))) {
+		if (NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_SECONDARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e4)));
+					Real2Host(ds_readd(ACTION_TABLE_SECONDARY)));
 		}
 
-		if (!l_si && NOT_NULL(Real2Host(ds_readd(0x29e0)))) {
+		if (!l_si && NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_PRIMARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e0)));
+					Real2Host(ds_readd(ACTION_TABLE_PRIMARY)));
 		}
 
 		if (ds_readw(0xc3c7) == 2) {
@@ -1709,16 +1709,16 @@ void handle_input(void)
 		ds_writew(0xc3d5, 0);
 		l_si = 0;
 
-		if (NOT_NULL(Real2Host(ds_readd(0x29e4)))) {
+		if (NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_SECONDARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e4)));
+					Real2Host(ds_readd(ACTION_TABLE_SECONDARY)));
 		}
 
-		if (!l_si && NOT_NULL(Real2Host(ds_readd(0x29e0)))) {
+		if (!l_si && NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_PRIMARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e0)));
+					Real2Host(ds_readd(ACTION_TABLE_PRIMARY)));
 		}
 
 		if (ds_readw(0xc3c7) == 2) {

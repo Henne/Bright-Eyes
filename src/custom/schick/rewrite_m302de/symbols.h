@@ -23,6 +23,12 @@
 #define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
+#define ACTION_TABLE_MENU	(0x29cc)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
+#define ACTION_TABLE_PRIMARY	(0x29e0) /* RealPt */
+#define ACTION_TABLE_SECONDARY	(0x29e4) /* RealPt */
+#define ACTION_TABLE_PLAYMASK	(0x29e8)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[24] */
+#define ACTION_TABLE_STATUS	(0x2ad8)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[30] */
+#define ACTION_TABLE_MERCHANT	(0x2c04)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
 #define CHAR_STATUS_BARS	(0x2c18)	/* (struct { signed short LE_ORIG, LE, AE_ORIG, AE; })[7] */
 #define DISEASE_PRICES	(0x2c50)	/* signed short[8] */
 #define DISEASE_DELAYS	(0x2c60)	/* signed short[8] */
@@ -218,6 +224,7 @@
 #define FIGHT_FIGS_INDEX	(0x4b9e)	/* signed short */
 #define RANDOM_SCHICK_SEED	(0x4ba0)	/* unsigned short */
 #define EMM_SIG	(0x4ba2)	/* char[8] */
+#define ACTION_TABLE_OPTIONS	(0x4bae)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[10] */
 #define TMAP_X	(0x4c12)	/* signed short[10] */
 #define TMAP_Y	(0x4c26)	/* signed short[10] */
 #define LOCATION_HANDLERS	(0x4c3b)	/* (void (*)(void))[19] */
