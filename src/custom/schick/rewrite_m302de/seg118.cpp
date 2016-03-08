@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 5/11
+ *	Functions rewritten: 6/11
  */
 
 #include <stdio.h>
@@ -420,6 +420,58 @@ void tevent_051(void)
 			ds_writeb(0x4333, 3);
 		}
 	}
+}
+
+/* Borlandified and identical */
+void tevent_052(void)
+{
+	signed short done;
+	signed short i;
+	signed short answer;
+
+	done = 0;
+
+	load_in_head(52);
+
+	do {
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_city(0x124), 2,
+						get_city(0x128),
+						get_city(0x12c));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			timewarp(HOURS(1));
+
+			GUI_dialog_na(0, get_city(0x130));
+
+			done = 1;
+		} else {
+
+			i = 0;
+
+			do {
+				/* check for a chopping tool */
+				if (get_first_hero_with_item(ds_readb(0xb135 + i)) != -1)
+				{
+					done = 1;
+				}
+
+			} while(!done && ds_readb(0xb135 + ++i) != 255);
+
+			if (done)
+			{
+				timewarp(HOURS(3));
+
+				GUI_dialog_na(0, get_city(0x134));
+			} else {
+				GUI_dialog_na(0, get_city(0x138));
+			}
+		}
+
+	} while (!done);
 }
 
 #if !defined(__BORLANDC__)
