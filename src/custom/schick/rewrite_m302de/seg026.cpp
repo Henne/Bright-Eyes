@@ -893,7 +893,7 @@ void load_tempicon(signed short nr)
 	}
 
 	/* load TEMPICON */
-	handle = load_archive_file(0xb4);
+	handle = load_archive_file(ARCHIVE_FILE_TEMPICON);
 	read_archive_file(handle, Real2Host(ds_readd(BUFFER8_PTR)), 7000);
 	bc_close(handle);
 

@@ -490,7 +490,7 @@ void load_map(void)
 	bc_close(fd);
 
 	/* load HSROUT.DAT */
-	fd = load_archive_file(0xa);
+	fd = load_archive_file(ARCHIVE_FILE_HSROUT_DAT);
 	read_archive_file(fd, Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 7600)), 3800);
 	bc_close(fd);
 
