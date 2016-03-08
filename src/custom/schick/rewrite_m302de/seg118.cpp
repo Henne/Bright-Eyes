@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg118 (travel events 10 / 10)
- *	Functions rewritten: 2/11
+ *	Functions rewritten: 3/11
  */
 
 #include <stdio.h>
@@ -10,11 +10,15 @@
 
 #include "seg002.h"
 #include "seg004.h"
+#include "seg025.h"
+#include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg030.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg103.h"
+#include "seg109.h"
 #include "seg113.h"
 
 #if !defined(__BORLANDC__)
@@ -248,6 +252,110 @@ void tevent_038(void)
 	}
 }
 
+/* Borlandified and identical */
+void tevent_078(void)
+{
+	signed short hours;
+	signed short answer;
+	signed short found_path;
+	signed short days;
+	Bit8u *hero;
+
+	/* This event happens only in winter */
+	if (!get_current_season())
+	{
+
+		do {
+			answer = GUI_radio(get_city(0x138), 2,
+						get_city(0x13c),
+						get_city(0x140));
+		} while (answer == -1);
+
+		load_in_head(57);
+
+		if (answer == 1)
+		{
+			/* try to clean the path */
+
+			/* with SHOVEL/SCHAUFEL 5 Hours, without 8 Hours */
+			if (get_first_hero_with_item(73) != -1) {
+				hours = 5;
+			} else {
+				hours = 8;
+			}
+
+			timewarp(HOURS(hours));
+
+			GUI_dialog_na(0, get_city(0x144));
+
+			/* each hero in the group looses hours / 2 LE */
+			sub_group_le(hours >> 1);
+
+			ds_writews(0xd32d, -6);
+
+			ds_writeb(LOCATION, 6);
+			do_location();
+			ds_writeb(LOCATION, 0);
+
+			TRV_load_textfile(-1);
+
+			GUI_dialog_na(0, get_city(0x150));
+
+		} else {
+			/* try to find another path */
+			found_path = days = 0;
+
+			do {
+				/* ORIENTATION + 8 */
+				if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 8) > 0)
+				{
+					/* success, you found a way */
+					timewarp(HOURS(5));
+
+					sub_group_le(2);
+
+					GUI_dialog_na(0, !answer ? get_city(0x148) : get_city(0x154));
+
+					found_path = 1;
+				} else {
+					/* fail */
+					timewarp(HOURS(8));
+
+					GUI_dialog_na(0, get_city(0x14c));
+
+					sub_group_le(4);
+
+					ds_writews(0xd32d, -6);
+					/* make a camp */
+					ds_writeb(LOCATION, 6);
+					do_location();
+					ds_writeb(LOCATION, 0);
+
+					TRV_load_textfile(-1);
+
+					answer = 1;
+				}
+
+			} while (found_path == 0 && ++days < 6);
+
+			if (found_path == 0)
+			{
+				GUI_dialog_na(0, get_city(0x158));
+
+				timewarp(HOURS(8));
+
+				/* Original-Bug: all heros die, even if they are not in the current group */
+				hero = get_hero(0);
+				for (hours = 0; hours <= 6; hours++, hero += SIZEOF_HERO)
+				{
+					hero_disappear(hero, hours, -1);
+				}
+			}
+		}
+
+		ds_writews(0xd32d, 0);
+	}
+}
 
 #if !defined(__BORLANDC__)
 }
