@@ -158,7 +158,7 @@ RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
 		return GUI_names_grammar(0, pos, 1);
 }
 
-#define idx (ds_readw(0x4b7a + ds_readw(0xd333 + ds_readbs(0x4b78) * 4) * 2))
+#define idx (ds_readw(FIG_MSG_DTPS + ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4) * 2))
 
 unsigned short fight_printer(void)
 {
@@ -171,25 +171,25 @@ unsigned short fight_printer(void)
 
 	Bit16s f_action;
 
-	if (ds_readw(0xd333) == 0)
+	if (ds_readw(FIG_MSG_DATA) == 0)
 		ds_writew(0x26b1, 0);
 
-	if (ds_readw(0x4b79) == 0 && ds_readb(0x4b94) != 0) {
-		inc_ds_bs_post(0x4b78);
-		ds_writeb(0x4b94, 0);
+	if (ds_readw(FIG_STAR_TIMER) == 0 && ds_readb(FIG_STAR_PRINTED) != 0) {
+		inc_ds_bs_post(FIG_STAR_COUNTER);
+		ds_writeb(FIG_STAR_PRINTED, 0);
 
-		ds_writew(0x4b79, ds_readw(AUTOFIGHT) ? 10: ds_readws(DELAY_FACTOR) * 6);
+		ds_writew(FIG_STAR_TIMER, ds_readw(AUTOFIGHT) ? 10: ds_readws(DELAY_FACTOR) * 6);
 
-		if (ds_readw(0xd333 + ds_readbs(0x4b78) * 4) == 0)
+		if (ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4) == 0)
 			ds_writew(0x26b1, 0);
 	}
 
 	if (ds_readw(0x26b1) != 0) {
-		if (ds_readb(0x4b78) != ds_readb(0x4b7b)) {
+		if (ds_readb(FIG_STAR_COUNTER) != ds_readb(FIG_STAR_LAST_COUNT)) {
 
-		ds_writeb(0x4b94, 1);
+		ds_writeb(FIG_STAR_PRINTED, 1);
 
-		f_action = ds_readw(0xd333 + ds_readbs(0x4b78) * 4);
+		f_action = ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4);
 		if (f_action != 0) {
 
 			gfx_pos_bak = (RealPt)ds_readd(0xd2fb);
@@ -212,19 +212,19 @@ unsigned short fight_printer(void)
 			ds_writed(0xc00d, (Bit32u)gfx_dst_bak);
 
 			/* print number into the star */
-			if (ds_readw((0xd333 + 2) + ds_readbs(0x4b78) * 4) != 0) {
+			if (ds_readw((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4) != 0) {
 				set_textcolor(0xff, ds_readbs(FIG_STAR_COLORS + f_action) + 0x80);
 #if !defined(__BORLANDC__)
-				sprintf(str, "%d", ds_readws((0xd333 + 2) + ds_readbs(0x4b78) * 4));
+				sprintf(str, "%d", ds_readws((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4));
 #else
-				itoa(ds_readws((0xd333 + 2) + ds_readbs(0x4b78) * 4), str, 10);
+				itoa(ds_readws((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4), str, 10);
 #endif
 				x = GUI_get_first_pos_centered((Bit8u*)str, 30, 20, 0);
 				GUI_print_string((Bit8u*)str, x, 170);
 			}
 
 			/* Generate textmessage */
-			if (ds_readw(0x4b7a + f_action * 2) != 0) {
+			if (ds_readw(FIG_MSG_DTPS + f_action * 2) != 0) {
 				ds_writew(0xc011, ds_writew(0xc01d, 0));
 				ds_writew(0xc013, ds_writew(0xc01f, 194));
 				ds_writew(0xc015, 318);
@@ -271,17 +271,17 @@ unsigned short fight_printer(void)
 			ds_writed(0xd2fb, (Bit32u)gfx_pos_bak);
 			set_textcolor(fg_bak, bg_bak);
 		}
-		ds_writeb(0x4b7b, ds_readbs(0x4b78));
+		ds_writeb(FIG_STAR_LAST_COUNT, ds_readbs(FIG_STAR_COUNTER));
 		return 1;
 		} else {
 			return 0;
 		}
 	} else {
-		ds_writeb(0x4b78, 0);
+		ds_writeb(FIG_STAR_COUNTER, 0);
 
-		ds_writew(0x4b79, ds_readw(AUTOFIGHT) ? 10 : ds_readw(DELAY_FACTOR) * 6);
+		ds_writew(FIG_STAR_TIMER, ds_readw(AUTOFIGHT) ? 10 : ds_readw(DELAY_FACTOR) * 6);
 
-		ds_writeb(0x4b7b, 0xff);
+		ds_writeb(FIG_STAR_LAST_COUNT, 0xff);
 
 		return 0;
 	}
@@ -906,7 +906,7 @@ void draw_fight_screen(Bit16u val)
 			}
 		}
 
-		ds_writeb(0x4b7b, -1);
+		ds_writeb(FIG_STAR_LAST_COUNT, -1);
 
 		fight_printer();
 

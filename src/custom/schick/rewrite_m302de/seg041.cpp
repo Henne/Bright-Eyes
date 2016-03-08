@@ -155,14 +155,14 @@ void FIG_output(Bit8u *str)
 */
 void FIG_clear_msgs(void)
 {
-	memset(p_datseg + 0xd333, 0 , 20);
+	memset(p_datseg + FIG_MSG_DATA, 0 , 20);
 	ds_writew(FIG_MSG_COUNTER, 0);
 }
 
 void FIG_add_msg(unsigned short f_action, unsigned short damage)
 {
-	ds_writew(0xd333 + 4 * ds_readws(FIG_MSG_COUNTER), f_action);
-	ds_writew(0xd333 + 2 + 4 * ds_readws(FIG_MSG_COUNTER) , damage);
+	ds_writew(FIG_MSG_DATA + 4 * ds_readws(FIG_MSG_COUNTER), f_action);
+	ds_writew(FIG_MSG_DATA + 2 + 4 * ds_readws(FIG_MSG_COUNTER) , damage);
 	if (ds_readws(FIG_MSG_COUNTER) < 4)
 		inc_ds_ws(FIG_MSG_COUNTER);
 }

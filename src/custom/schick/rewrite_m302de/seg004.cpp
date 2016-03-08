@@ -187,11 +187,11 @@ void interrupt timer_isr(void)
 	}
 
 	/* another timer used in fights */
-	if ((ds_readws(0x4b79) > 0) &&
+	if ((ds_readws(FIG_STAR_TIMER) > 0) &&
 		(ds_readws(0x26b1) != 0) &&
-		(ds_readbs(0x4b94) != 0))
+		(ds_readbs(FIG_STAR_PRINTED) != 0))
 	{
-		dec_ds_ws(0x4b79);
+		dec_ds_ws(FIG_STAR_TIMER);
 	}
 
 	if (!ds_readbs(0xbcda)) {
