@@ -37,12 +37,12 @@ namespace M302de {
  */
 void add_item_to_shop(Bit8u *shop_ptr, signed short item_id, signed short pos)
 {
-	host_writews(Real2Host(ds_readd(0xc009)) + 7 * pos, item_id);
+	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos, item_id);
 
-	host_writews(Real2Host(ds_readd(0xc009)) + 7 * pos + 2,
+	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos + 2,
 		host_readws(get_itemsdat(item_id) + 8) + host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100);
 
-	host_writews(Real2Host(ds_readd(0xc009)) + 7 * pos + 4,
+	host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * pos + 4,
 			host_readbs(get_itemsdat(item_id) + 7));
 }
 
@@ -71,7 +71,7 @@ void do_merchant(void)
 	}
 
 	if (ds_readb(0x34d6 + ds_readws(TYPEINDEX)) != 0) {
-		if (ds_readbs(0x6871 + 9 * ds_readws(TYPEINDEX)) != 3) {
+		if (ds_readbs((0x6870 + 1) + 9 * ds_readws(TYPEINDEX)) != 3) {
 			talk_merchant();
 			turnaround();
 			return;
@@ -85,13 +85,13 @@ void do_merchant(void)
 	load_ggsts_nvf();
 	refresh = ds_writews(0x2846, 1);
 
-	ds_writed(0xc009, ds_readd(0xd2df));
-	memset(Real2Host(ds_readd(0xc009)), 0, 3500);
-	ds_writew(0xe3f6, 4);
+	ds_writed(BUYITEMS, ds_readd(FIG_FIGURE1_BUF));
+	memset(Real2Host(ds_readd(BUYITEMS)), 0, 3500);
+	ds_writew(PRICE_MODIFICATOR, 4);
 	shop_p = p_datseg + 0x6870 + 9 * ds_readws(TYPEINDEX);
 
 	for (l_si = 0; l_si < 100; l_si++) {
-		host_writews(Real2Host(ds_readd(0xc009)) + 7 * l_si, 0);
+		host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * l_si, 0);
 	}
 
 	l_si = 1;
@@ -137,22 +137,22 @@ void do_merchant(void)
 
 	if (host_readbs(shop_p + 1) == 1) {
 
-		qsort(Real2Host(ds_readd(0xc009)), item_pos, 7, shop_compar);
-		qsort(Real2Host(ds_readd(0xc009)) + 7 * 70, armor_pos - 70, 7, shop_compar);
+		qsort(Real2Host(ds_readd(BUYITEMS)), item_pos, 7, shop_compar);
+		qsort(Real2Host(ds_readd(BUYITEMS)) + 7 * 70, armor_pos - 70, 7, shop_compar);
 
 		/* copy the rest */
 		for (l_si = 0; armor_pos - 70 > l_si; l_si++) {
 
-			*(struct dummy7*)(Real2Host(ds_readd(0xc009)) + 7 * (item_pos + l_si)) =
-				*(struct dummy7*)(Real2Host(ds_readd(0xc009)) + 7 * (l_si + 70));
+			*(struct dummy7*)(Real2Host(ds_readd(BUYITEMS)) + 7 * (item_pos + l_si)) =
+				*(struct dummy7*)(Real2Host(ds_readd(BUYITEMS)) + 7 * (l_si + 70));
 		}
 		/* cleanup */
 		for (l_si = item_pos + armor_pos - 70; l_si < 100; l_si++) {
-			host_writews(Real2Host(ds_readd(0xc009)) + 7 * l_si, 0);
+			host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * l_si, 0);
 		}
 
 	} else {
-		qsort(Real2Host(ds_readd(0xc009)), item_pos, 7, shop_compar);
+		qsort(Real2Host(ds_readd(BUYITEMS)), item_pos, 7, shop_compar);
 	}
 
 	while (done == 0 && !ds_readb(0x3592 + ds_readws(TYPEINDEX))) {
@@ -309,7 +309,7 @@ void TLK_khandel(signed short state)
 	} else if (state == 8) {
 		ds_writew(0xe30e, random_schick(20) <= 3 ? 9 : -1);
 	} else if (state == 11) {
-		ds_writew(0xe3f6, 3);
+		ds_writew(PRICE_MODIFICATOR, 3);
 	} else if (state == 12) {
 		/* test CH+4 */
 		ds_writew(0xe30e, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 4) > 0 ? 13 : 10);
@@ -335,7 +335,7 @@ void TLK_whandel(signed short state)
 
 		if (test_skill(Real2Host(get_first_hero_available_in_group()), 21, 0) > 0) {
 			ds_writew(0xe30e, 23);
-			ds_writew(0xe3f6, 3);
+			ds_writew(PRICE_MODIFICATOR, 3);
 		} else {
 			ds_writew(0xe30e, 24);
 		}

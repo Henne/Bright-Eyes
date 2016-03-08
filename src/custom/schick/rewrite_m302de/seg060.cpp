@@ -63,7 +63,7 @@ void talk_tavern(void)
 	init_ani(0);
 	load_tlk(ARCHIVE_FILE_TAVERN_TLK);
 	ds_writews(DIALOG_STATE, ds_writews(DIALOG_DONE, 0));
-	ptr2 = p_datseg + 0x3794;
+	ptr2 = p_datseg + DIALOG_STATES;
 
 	do {
 		answer = options = 0;
@@ -245,8 +245,8 @@ void talk_tavern(void)
 
 	ds_writews(0x346e, 0);
 	ds_writews(TEXTBOX_WIDTH, 3);
-	ds_writews(0x26bd, -1);
-	load_buffer_1(ds_readws(0x26bf));
+	ds_writews(TEXT_FILE_INDEX, -1);
+	load_buffer_1(ds_readws(BUF1_FILE_INDEX));
 	set_var_to_zero();
 }
 

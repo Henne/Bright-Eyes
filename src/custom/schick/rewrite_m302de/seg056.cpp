@@ -93,9 +93,9 @@ void buy_screen(void)
 	struct dummy3 array3 = { { 30, 95, 160 } };
 	struct dummy5 array5 = { { 35, 55, 75, 95, 115 } };
 #else
-	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + 0x6bc8);
-	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + 0x6bcd);
-	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + 0x6bd2);
+	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_H);
+	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_S);
+	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_D);
 	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6bd7);
 	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6bdd);
 #endif
@@ -122,8 +122,8 @@ void buy_screen(void)
 	signed short l17;
 	struct nvf_desc nvf;
 
-	ds_writed(0xe3f2, (Bit32u)((RealPt)ds_readd(0xd2df) + 2800));
-	memset(Real2Host(ds_readd(0xe3f2)), 0, 250);
+	ds_writed(BUY_SHOPPING_CART, (Bit32u)((RealPt)ds_readd(FIG_FIGURE1_BUF) + 2800));
+	memset(Real2Host(ds_readd(BUY_SHOPPING_CART)), 0, 250);
 
 	ds_writew(0x2846, 1);
 
@@ -194,8 +194,8 @@ void buy_screen(void)
 			do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
 			do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
 
-			nvf.dst = Real2Host(ds_readd(0xd303));
-			nvf.src = Real2Host(ds_readd(0xd2a9));
+			nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+			nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 			nvf.type = 0;
 			nvf.width =  (Bit8u*)&width;
 			nvf.height = (Bit8u*)&height;
@@ -206,13 +206,13 @@ void buy_screen(void)
 
 					l3 = 5 * items_x + l_di + item;
 
-					if ((j = host_readws(Real2Host(ds_readd(0xc009)) + 7 * l3))) {
+					if ((j = host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * l3))) {
 
 						ds_writew(0xc011, array3.a[items_x]);
 						ds_writew(0xc013, array5.a[l_di]);
 						ds_writew(0xc015, array3.a[items_x] + 15);
 						ds_writew(0xc017, array5.a[l_di] + 15);
-						ds_writed(0xc019, ds_readd(0xd303));
+						ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 						nvf.nr = host_readws(get_itemsdat(j));
 
@@ -221,9 +221,9 @@ void buy_screen(void)
 						do_pic_copy(0);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							host_readws(Real2Host(ds_readd(0xc009)) + 4 + 7 * l3) == 1 ? fmt_h.a :
-								(host_readws(Real2Host(ds_readd(0xc009)) + 4 + 7 * l3) == 10 ? fmt_s.a : fmt_d.a),
-							host_readws(Real2Host(ds_readd(0xc009)) + 2 + 7 * l3));
+							host_readws(Real2Host(ds_readd(BUYITEMS)) + 4 + 7 * l3) == 1 ? fmt_h.a :
+								(host_readws(Real2Host(ds_readd(BUYITEMS)) + 4 + 7 * l3) == 10 ? fmt_s.a : fmt_d.a),
+							host_readws(Real2Host(ds_readd(BUYITEMS)) + 2 + 7 * l3));
 
 						GUI_print_string(Real2Host(ds_readd(DTP2)), array3.a[items_x] + 20, array5.a[l_di] + 5);
 					}
@@ -237,9 +237,9 @@ void buy_screen(void)
 		}
 
 		if (ds_readws(0xc3c7) == 2) {
-			select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(0xc009)) + 7 * item);
+			select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(BUYITEMS)) + 7 * item);
 		} else {
-			select_with_keyboard((Bit8u*)&l7, Real2Host(ds_readd(0xc009)) + 7 * item);
+			select_with_keyboard((Bit8u*)&l7, Real2Host(ds_readd(BUYITEMS)) + 7 * item);
 		}
 
 #if !defined(__BORLANDC__)
@@ -271,14 +271,14 @@ void buy_screen(void)
 
 			clear_loc_line();
 
-			item_id = host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item));
+			item_id = host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item));
 
 			l4 = 0;
 
 			for (l_di = 0; l_di < nice; l_di++) {
 
-				if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di) == item_id) {
-					l4 = host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2);
+				if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di) == item_id) {
+					l4 = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2);
 					break;
 				}
 			}
@@ -291,7 +291,7 @@ void buy_screen(void)
 			if (item_weapon(get_itemsdat(item_id))) {
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)p_datseg + 0x6bed);
+					(char*)p_datseg + BUY_SCREEN_STR_COMMA_SPACE);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(4 * (48 + host_readbs(get_itemsdat(item_id) + 3))));
@@ -366,19 +366,19 @@ void buy_screen(void)
 				}
 			}
 
-			item_id = host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item));
+			item_id = host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item));
 			l16 = -1;
 			l17 = 0;
 
 			for (l_di = 0; l_di < nice; l_di++) {
 
-				if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di) == item_id) {
+				if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di) == item_id) {
 					l16 = l_di;
 				}
 
-				l17 += (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di) != 0) && item_stackable(get_itemsdat(item_id)) ?
-						host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2) / 100 + 1 :
-						host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2);
+				l17 += (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di) != 0) && item_stackable(get_itemsdat(item_id)) ?
+						host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2) / 100 + 1 :
+						host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2);
 			}
 
 			if (l16 != -1) {
@@ -389,7 +389,7 @@ void buy_screen(void)
 
 					if (l3 == 2) {
 
-						if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2) > 1) {
+						if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2) > 1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0xcc8),
@@ -408,12 +408,12 @@ void buy_screen(void)
 
 				if (l4 > 0) {
 
-					if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2) < l4 && l3 == 2) {
-						l4 = host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2);
+					if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2) < l4 && l3 == 2) {
+						l4 = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2);
 					}
 
-					l9 = (Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 *(l7 + item) + 2) *
-						(Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 *(l7 + item) + 4) * l4;
+					l9 = (Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 *(l7 + item) + 2) *
+						(Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 *(l7 + item) + 4) * l4;
 
 					if (l3 == 1 && price + l9 > p_money) {
 						GUI_output(get_ltx(0x644));
@@ -423,15 +423,15 @@ void buy_screen(void)
 
 						if (l3 == 1) {
 							price += l9;
-							add_ptr_ws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2, l4);
+							add_ptr_ws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2, l4);
 						} else {
 							price -= l9;
-							sub_ptr_ws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2, l4);
+							sub_ptr_ws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2, l4);
 
-							if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l16 + 2) == 0) {
+							if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16 + 2) == 0) {
 
-								memmove(Real2Host(ds_readd(0xe3f2)) + 4 * l16,
-									Real2Host(ds_readd(0xe3f2)) + 4 * (l16 + 1),
+								memmove(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l16,
+									Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * (l16 + 1),
 									248 - 2 * l16);
 
 								nice--;
@@ -453,19 +453,19 @@ void buy_screen(void)
 
 					l4 = 1;
 
-					if (item_stackable(get_itemsdat(host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item))))) {
+					if (item_stackable(get_itemsdat(host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item))))) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x6e4),
-							(char*)Real2Host(GUI_names_grammar(4, host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item)), 0)));
+							(char*)Real2Host(GUI_names_grammar(4, host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item)), 0)));
 
 						l4 = GUI_input(Real2Host(ds_readd(DTP2)), 2);
 					}
 
 					if (l4 > 0) {
 
-						l9 = (Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item) + 2) *
-							(Bit32s)host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item) + 4) * l4;
+						l9 = (Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item) + 2) *
+							(Bit32s)host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item) + 4) * l4;
 
 						if (price + l9 > p_money) {
 							GUI_output(get_ltx(0x644));
@@ -474,10 +474,10 @@ void buy_screen(void)
 						} else {
 							price += l9;
 
-							host_writews(Real2Host(ds_readd(0xe3f2)) + 4 * nice,
-								host_readws(Real2Host(ds_readd(0xc009)) + 7 * (l7 + item)));
+							host_writews(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * nice,
+								host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (l7 + item)));
 
-							host_writews(Real2Host(ds_readd(0xe3f2)) + 4 * nice + 2, l4);
+							host_writews(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * nice + 2, l4);
 
 							nice++;
 
@@ -497,7 +497,7 @@ void buy_screen(void)
 		if (ds_readws(ACTION) == 131 && item != 0) {
 			l8 = 1;
 			item -= 15;
-		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(0xc009)) + 7 * (item + 15))) {
+		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * (item + 15))) {
 			l8 = 1;
 			item += 15;
 		}
@@ -509,10 +509,10 @@ void buy_screen(void)
 
 			while (offended == 0 && j < 3) {
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x6dc),
-					(char*)Real2Host(ds_readd(0xd2eb)));
+					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 
 				do {
@@ -551,8 +551,8 @@ void buy_screen(void)
 
 					for (l_di = 0; l_di < nice; l_di++) {
 
-						item_id = host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di);
-						given_items = get_item(item_id, 1, host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2));
+						item_id = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di);
+						given_items = get_item(item_id, 1, host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2));
 
 						ds_writeb(0xe12d + item_id, ds_readbs(0xe12d + item_id) + given_items);
 
@@ -567,7 +567,7 @@ void buy_screen(void)
 							l12 = 1;
 						}
 
-						if (host_readws(Real2Host(ds_readd(0xe3f2)) + 4 * l_di + 2) > given_items) {
+						if (host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2) > given_items) {
 							l13 = 1;
 							break;
 						}
@@ -580,11 +580,11 @@ void buy_screen(void)
 
 						set_party_money(p_money);
 
-						make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xccc),
-							(char*)Real2Host(ds_readd(0xd2eb)));
+							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
@@ -633,7 +633,7 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 	signed short sellable = 0;
 
 	item_id = host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos);
-	host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos, item_id);
+	host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos, item_id);
 
 	if (item_armor(get_itemsdat(item_id)) || item_weapon(get_itemsdat(item_id))) {
 		/* WEAPON SHOP */
@@ -654,30 +654,30 @@ void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, sign
 
 	if (!sellable) {
 		/* this item cannot be sold here */
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 0);
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4, 1);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 0);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
 	} else if (ks_broken(hero + HERO_ITEM_HEAD + 14 * item_pos) ||
 			 host_readbs(hero + 0x19d + 14 * item_pos) != 0)
 	{
 		/* this item is broken or empty */
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 1);
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4, 1);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4, 1);
 
 	} else {
 		/* calculate the price */
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2,
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2,
 			(host_readws(get_itemsdat(item_id) + 8) + (host_readws(get_itemsdat(item_id) + 8) * host_readbs(shop_ptr) / 100) ) / 2);
 		/* adjust price to 1 if zero */
-		if (host_readws(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2) == 0) {
-			host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 2, 1);
+		if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2) == 0) {
+			host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 2, 1);
 		}
 
-		host_writew(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 4,
+		host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 4,
 			host_readbs(get_itemsdat(item_id) + 7));
 	}
 
-	host_writebs(Real2Host(ds_readd(0xc005)) + 7 * shop_pos + 6, (signed char)item_pos);
+	host_writebs(Real2Host(ds_readd(SELLITEMS)) + 7 * shop_pos + 6, (signed char)item_pos);
 }
 
 #if !defined(__BORLANDC__)

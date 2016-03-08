@@ -651,9 +651,9 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 
 				if (dropper != -1) {
 					hero_i = get_hero(dropper);
-					ds_writeb(0xae46, 1);
+					ds_writeb(PREVENT_DROP_EQUIPPED_ITEMS, 1);
 					vc = select_item_to_drop(hero_i);
-					ds_writeb(0xae46, 0);
+					ds_writeb(PREVENT_DROP_EQUIPPED_ITEMS, 0);
 
 					if (vc != -1) {
 						drop_item(hero_i, vc, -1);
@@ -744,11 +744,11 @@ void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)
 			/* drop 1 item */
 			drop_item(hero, pos, 1);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)text, hero + HERO_NAME2,
 				Real2Host(GUI_names_grammar(0, item, 0)));
 
-			GUI_output(Real2Host(ds_readd(0xd2eb)));
+			GUI_output(Real2Host(ds_readd(BUFFER4_PTR)));
 
 			return;
 		}
@@ -768,12 +768,12 @@ signed short select_item_to_drop(Bit8u *hero)
 	signed short di;
 
 	/* check if we drop equipped items or not */
-	i = (ds_readb(0xae46) != 0) ? 7 : 0;
+	i = (ds_readb(PREVENT_DROP_EQUIPPED_ITEMS) != 0) ? 7 : 0;
 	for (; i < 23; i++) {
 		if ((item = host_readws(hero + HERO_ITEM_HEAD + i * 14))) {
 			str[v6] = i;
-			ds_writed(0xbf95 + v6 * 4 , (Bit32u)((RealPt)ds_readd(DTP2) + v6 * 30));
-			strcpy((char*)Real2Host(ds_readd(0xbf95 + v6 * 4)),
+			ds_writed(RADIO_NAME_LIST + v6 * 4 , (Bit32u)((RealPt)ds_readd(DTP2) + v6 * 30));
+			strcpy((char*)Real2Host(ds_readd(RADIO_NAME_LIST + v6 * 4)),
 				(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(item))));
 			v6++;
 		}
@@ -793,14 +793,14 @@ signed short select_item_to_drop(Bit8u *hero)
 			if (!di) {
 				i = 13;
 				va = i - 1;
-				ptr = (RealPt)ds_readd(0xbf95 + 4 * va);
-				ds_writed(0xbf95 + 4 * va,
+				ptr = (RealPt)ds_readd(RADIO_NAME_LIST + 4 * va);
+				ds_writed(RADIO_NAME_LIST + 4 * va,
 					host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xbbc));
 			} else {
 				i = v6 + 1;
 				va = i - 1;
-				ptr = (RealPt)ds_readd(0xbf95 + 4 * va);
-				ds_writed(0xbf95 + 4 * va,
+				ptr = (RealPt)ds_readd(RADIO_NAME_LIST + 4 * va);
+				ds_writed(RADIO_NAME_LIST + 4 * va,
 					host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xbbc));
 				i -= di;
 			}
@@ -813,25 +813,25 @@ signed short select_item_to_drop(Bit8u *hero)
 		ds_writew(TEXTBOX_WIDTH, 6);
 		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
 		v4 = GUI_radio((Bit8u*)get_ltx(0xbc0), (signed char)i,
-			Real2Host(ds_readd(0xbf95 + 0x00 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x04 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x08 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x0c + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x10 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x14 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x18 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x1c + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x20 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x24 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x28 + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x2c + di * 4)),
-			Real2Host(ds_readd(0xbf95 + 0x30 + di * 4)));
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x00 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x04 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x08 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x0c + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x10 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x14 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x18 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x1c + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x20 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x24 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x28 + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x2c + di * 4)),
+			Real2Host(ds_readd(RADIO_NAME_LIST + 0x30 + di * 4)));
 		ds_writew(TEXTBOX_WIDTH, bak1);
 		ds_writew(0x2ca2, bak2);
 		ds_writew(0x2ca4, bak3);
 
 		if (va != -1) {
-			ds_writed(0xbf95 + 0x00 + va * 4, (Bit32u)ptr);
+			ds_writed(RADIO_NAME_LIST + 0x00 + va * 4, (Bit32u)ptr);
 		}
 		if ((v6 > 12) && (v4 == i)) {
 			di += 12;

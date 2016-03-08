@@ -37,14 +37,14 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 	signed short l1;
 	signed short retval = -1;
 	/* string on stack "%s~%d" */
-	struct dummy format_str = *(struct dummy*)(p_datseg + 0xacce);
+	struct dummy format_str = *(struct dummy*)(p_datseg + SELECT_TALENT_LVLUP);
 
 	if (show_values != 0) {
 
-		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x334));
+		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x334));
 
 		if (host_readbs(hero + HERO_TA_RISE) > 1) {
-			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+			strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -53,7 +53,7 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 			(host_readbs(hero + HERO_TA_RISE) > 1) ? get_ltx(0x4c4) : get_ltx(0x4c0),
 			/* # of tries left */
 			host_readbs(hero + HERO_TA_RISE),
-			Real2Host(ds_readd(0xd2eb)));
+			Real2Host(ds_readd(BUFFER4_PTR)));
 	} else {
 
 		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x360));
@@ -79,32 +79,32 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 					get_ltx((l1 + i + 48) * 4),
 					host_readbs(hero + l1 + i + 0x108));
 
-				ds_writed(0xbf95 + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
+				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
 			}
 		} else {
 
 			for (i = 0; ds_readbs(0x10cf + 2 * answer) > i; i++) {
-				ds_writed(0xbf95 + 4 * i, (Bit32u)(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (l1 + i + 48) * 4)));
+				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (l1 + i + 48) * 4)));
 			}
 		}
 
 		retval = GUI_radio(get_ltx(0x368), ds_readbs(0x10cf + 2 * answer),
-				Real2Host(ds_readd(0xbf95)),
-				Real2Host(ds_readd(0xbf99)),
-				Real2Host(ds_readd(0xbf9d)),
-				Real2Host(ds_readd(0xbfa1)),
-				Real2Host(ds_readd(0xbfa5)),
-				Real2Host(ds_readd(0xbfa9)),
-				Real2Host(ds_readd(0xbfad)),
-				Real2Host(ds_readd(0xbfb1)),
-				Real2Host(ds_readd(0xbfb5)),
-				Real2Host(ds_readd(0xbfb9)),
-				Real2Host(ds_readd(0xbfbd)),
-				Real2Host(ds_readd(0xbfc1)),
-				Real2Host(ds_readd(0xbfc5)),
-				Real2Host(ds_readd(0xbfc9)),
-				Real2Host(ds_readd(0xbfcd)),
-				Real2Host(ds_readd(0xbfd1)));
+				Real2Host(ds_readd(RADIO_NAME_LIST)),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 3 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 4 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 7 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 8 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 9 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 10 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 11 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 12 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 13 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 14 * 4))),
+				Real2Host(ds_readd((RADIO_NAME_LIST + 15 * 4))));
 
 		if (retval != -1) {
 			retval += l1 - 1;
@@ -262,7 +262,7 @@ signed short select_talent(void)
 	signed short l_si = -1;
 	signed short nr_talents = 3;
 	/* available skills {44, 45, 46, -1, -1, -1} */
-	struct dummy2 a = *(struct dummy2*)(p_datseg + 0xacd4);
+	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_TALENT_DEFAULTS);
 
 	/* add skills for special location */
 	/* 9 = ACROBATICS, 32 = ALCHEMY, 43 = CHEAT, 47 = INSTRUMENT, 49 = PICKPOCKET, */
@@ -329,7 +329,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 	if (talent != -1) {
 
-		bak = ds_readws(0x26bf);
+		bak = ds_readws(BUF1_FILE_INDEX);
 
 		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
@@ -365,7 +365,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 							timewarp(0x708);
 
-							if (test_skill(hero, 44, ds_readbs(0x2c70 + 2 * poison) + bonus) > 0) {
+							if (test_skill(hero, 44, ds_readbs(POISON_PRICES + 2 * poison) + bonus) > 0) {
 								/* success */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xac8),
@@ -552,12 +552,12 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					money = random_interval(10, 200);
 
-					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+					make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x8c),
 						(char*)hero + HERO_NAME2,
-						Real2Host(ds_readd(0xd2eb)));
+						Real2Host(ds_readd(BUFFER4_PTR)));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -586,12 +586,12 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 					money = random_interval(100, 300);
 
-					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+					make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x8c),
 						(char*)hero + HERO_NAME2,
-						Real2Host(ds_readd(0xd2eb)));
+						Real2Host(ds_readd(BUFFER4_PTR)));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -614,11 +614,11 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 				money = random_interval(500, 1000);
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x98),
-					Real2Host(ds_readd(0xd2eb)),
+					Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -642,11 +642,11 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 				money = random_interval(500, 1000);
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa0),
-					Real2Host(ds_readd(0xd2eb)),
+					Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));

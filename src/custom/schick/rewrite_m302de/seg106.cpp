@@ -267,11 +267,11 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 	/* staff */
 	if (host_readw(item_p) == 0x85) {
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)get_city(0xd4),
 			host_readbs(hero + HERO_WAND));
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			(char*)Real2Host(ds_readd(0xd2eb)));
+			(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
@@ -649,7 +649,7 @@ void startup_equipment(Bit8u *hero)
 	all.a[2] = 45;
 	all.a[3] = 49;
 #else
-	*(struct items_all*)&all = *(struct items_all*)(p_datseg + 0xaea8);
+	*(struct items_all*)&all = *(struct items_all*)(p_datseg + HERO_STARTUP_ITEMS_ALL);
 #endif
 
 	for (i = 0; i < 4; i++) {
@@ -664,9 +664,9 @@ void startup_equipment(Bit8u *hero)
 	}
 
 	i = 0;
-	while (ds_readws(0xae40 + 8 * host_readbs(hero + HERO_TYPE) + 2 * i) != -1 && (i < 4)) {
+	while (ds_readws(HERO_STARTUP_ITEMS + 8 * host_readbs(hero + HERO_TYPE) + 2 * i) != -1 && (i < 4)) {
 
-		give_hero_new_item(hero, ds_readws(0xae40 + 8 * host_readbs(hero + HERO_TYPE) + 2 * i++), 1, 1);
+		give_hero_new_item(hero, ds_readws(HERO_STARTUP_ITEMS + 8 * host_readbs(hero + HERO_TYPE) + 2 * i++), 1, 1);
 
 		if (i == 1) {
 			move_item(3, 9, hero);
@@ -755,14 +755,14 @@ void equip_belt_ani(void)
 
 	/* read NVF part 1 */
 	nvf_length = read_archive_file(handle,
-			Real2Host(ds_readd(0xc3db)), 64000);
+			Real2Host(ds_readd(BUFFER9_PTR)), 64000);
 	/* read NVF part 2 */
-	nvf_length += read_archive_file(handle, Real2Host(F_PADD(ds_readd(0xc3db), 64000)), 64000);
+	nvf_length += read_archive_file(handle, Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 64000)), 64000);
 
 	bc_close(handle);
 
 	/* calculate palette pointer */
-	p_pal = Real2Host(F_PADD(F_PADD(ds_readd(0xc3db), nvf_length), -0x60));
+	p_pal = Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), nvf_length), -0x60));
 
 	wait_for_vsync();
 
@@ -806,8 +806,8 @@ void equip_belt_ani(void)
 
 	for (i = 0; i < 12; i++) {
 
-		nvf.dst = Real2Host(ds_readd(0xd303));
-		nvf.src = Real2Host(ds_readd(0xc3db));
+		nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+		nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 		nvf.nr = i;
 		nvf.type = 3;
 		nvf.width = (Bit8u*)&width;
@@ -824,7 +824,7 @@ void equip_belt_ani(void)
 		ds_writew(0xc013, 50);
 		ds_writew(0xc015, width + 159);
 		ds_writew(0xc017, height + 49);
-		ds_writed(0xc019, ds_readd(0xd303));
+		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 		wait_for_vsync();
 		wait_for_vsync();

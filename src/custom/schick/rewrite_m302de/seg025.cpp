@@ -106,18 +106,18 @@ void show_citizen(void)
 			load_ani(20);
 			init_ani(ds_writew(0x2846, 0));
 
-			strcpy((char*)Real2Host((RealPt)ds_readd(0xd2eb)),
+			strcpy((char*)Real2Host((RealPt)ds_readd(BUFFER4_PTR)),
 				(char*)get_dtp(ds_readw(CITYINDEX) * 4));
 
 			if (ds_readbs(YEAR) == 15 && ds_readbs(MONTH) == 1 && random_schick(100) <= 20) {
 
 				if (!show_storytext()) {
-					GUI_print_loc_line(Real2Host((RealPt)ds_readd(0xd2eb)));
+					GUI_print_loc_line(Real2Host((RealPt)ds_readd(BUFFER4_PTR)));
 				} else {
 					ds_writew(ACTION, 1);
 				}
 			} else {
-				GUI_print_loc_line(Real2Host((RealPt)ds_readd(0xd2eb)));
+				GUI_print_loc_line(Real2Host((RealPt)ds_readd(BUFFER4_PTR)));
 #ifdef M302de_SPEEDFIX
 				delay_or_keypress(200);
 #endif
@@ -189,7 +189,7 @@ void do_house(void)
 						}
 					}
 
-					if ((ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) < ds_readbs(0x2d3c)) && l_di)
+					if ((ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) < ds_readbs(TOTAL_HERO_COUNTER)) && l_di)
 					{
 						i = 0;
 
@@ -293,7 +293,7 @@ void show_treasure_map(void)
 		/* load SKARTE.NVF */
 		l_si = load_archive_file(ARCHIVE_FILE_SKARTE_NVF);
 
-		read_archive_file(l_si, Real2Host(ds_readd(0xc3db)), 30000);
+		read_archive_file(l_si, Real2Host(ds_readd(BUFFER9_PTR)), 30000);
 
 		length = get_readlength2(l_si);
 
@@ -314,8 +314,8 @@ void show_treasure_map(void)
 				(l_si != 9 || (l_si == 9 && !ds_readbs(TREASURE_MAPS + 6))))
 			{
 				/* decompress picture */
-				nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(0xc3db), 30000));
-				nvf.src = Real2Host(ds_readd(0xc3db));
+				nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(BUFFER9_PTR), 30000));
+				nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 				nvf.nr = l_si;
 				nvf.type = 0;
 				nvf.width = (Bit8u*)&width;
@@ -334,7 +334,7 @@ void show_treasure_map(void)
 				ds_writew(0xc013, ds_readws(TMAP_Y + 2 * l_si));
 				ds_writew(0xc015, ds_readws(TMAP_X + 2 * l_si) + width - 1);
 				ds_writew(0xc017, ds_readws(TMAP_Y + 2 * l_si) + height - 1);
-				ds_writed(0xc019, (Bit32u)F_PADD((RealPt)ds_readd(0xc3db), 30000));
+				ds_writed(0xc019, (Bit32u)F_PADD((RealPt)ds_readd(BUFFER9_PTR), 30000));
 				ds_writed(0xc00d, ds_readd(0xd2ff));
 				do_pic_copy(0);
 			}
@@ -342,7 +342,7 @@ void show_treasure_map(void)
 
 		wait_for_vsync();
 
-		set_palette(Real2Host(F_PADD(F_PADD((RealPt)ds_readd(0xc3db), length), -0x60)), 0, 0x20);
+		set_palette(Real2Host(F_PADD(F_PADD((RealPt)ds_readd(BUFFER9_PTR), length), -0x60)), 0, 0x20);
 
 		refresh_screen_size();
 
@@ -375,11 +375,11 @@ void show_treasure_map(void)
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			/* */
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)get_ltx(0xb5c),
 				(char*)get_hero(get_random_hero()) + 0x10);
 
-			GUI_output(Real2Host(ds_readd(0xd2eb)));
+			GUI_output(Real2Host(ds_readd(BUFFER4_PTR)));
 
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			ds_writeb(FIND_HYGGELIK, 1);
@@ -393,13 +393,13 @@ void show_treasure_map(void)
 			ds_writew(0xc013, 0);
 			ds_writew(0xc015, 319);
 			ds_writew(0xc017, 199);
-			ds_writed(0xc019, ds_readd(0xd303));
+			ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 			ds_writed(0xc00d, ds_readd(0xd2ff));
 
 			update_mouse_cursor();
 			wait_for_vsync();
 
-			set_palette(Real2Host(ds_readd(0xd303)) + 64000 + 2, 0, 0x20);
+			set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64000 + 2, 0, 0x20);
 
 			do_pic_copy(0);
 
@@ -437,14 +437,14 @@ signed short game_options(void)
 	ds_writeb(0x45b8, 1);
 	ds_writew(0xe113, 0);
 	ds_writew(0x2ccb, -1);
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	load_pp20(ARCHIVE_FILE_BUCH_DAT);
 	ds_writeb(0x2845, ARCHIVE_FILE_BUCH_DAT);
 
 	get_textcolor(&fg_bak, &bg_bak);
 
-	ds_writed(0xd2fb, ds_readd(0xc3db));
+	ds_writed(0xd2fb, ds_readd(BUFFER9_PTR));
 
 	bak1 = ds_readws(0xd2d5);
 	bak2 = ds_readws(0xd2d9);
@@ -453,7 +453,7 @@ signed short game_options(void)
 
 	set_textcolor(4, 0);
 
-	memset(Real2Host(ds_readd(0xc3db)), 0, 20000);
+	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 20000);
 
 	prepare_date_str();
 
@@ -463,11 +463,11 @@ signed short game_options(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 61);
-	ds_writed(0xc019, ds_readd(0xc3db));
-	ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd303) + 9600));
+	ds_writed(0xc019, ds_readd(BUFFER9_PTR));
+	ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 9600));
 	do_pic_copy(2);
 
-	memset(Real2Host(ds_readd(0xc3db)), 0, 28000);
+	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 28000);
 
 	if (ds_readbs(CURRENT_TOWN) != 0) {
 		/* if the party is in a town */
@@ -481,8 +481,8 @@ signed short game_options(void)
 		ds_writew(0xc013, 0);
 		ds_writew(0xc015, 319);
 		ds_writew(0xc017, 86);
-		ds_writed(0xc019, ds_readd(0xc3db));
-		ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd303) + 22400));
+		ds_writed(0xc019, ds_readd(BUFFER9_PTR));
+		ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 22400));
 		do_pic_copy(2);
 	}
 
@@ -501,13 +501,13 @@ signed short game_options(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 
 	update_mouse_cursor();
 	wait_for_vsync();
 
-	set_palette(Real2Host(ds_readd(0xd303)) + 64002, 0, 32);
+	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64002, 0, 32);
 
 	do_pic_copy(0);
 	refresh_screen_size();
@@ -518,7 +518,7 @@ signed short game_options(void)
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
-	ds_writed(0xbff9, ds_readd(0xc3db));
+	ds_writed(0xbff9, ds_readd(BUFFER9_PTR));
 
 	do {
 		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x4bae));
@@ -606,9 +606,9 @@ signed short game_options(void)
 
 	} while (!done);
 
-	ds_writed(0xbff9, ds_readd(0xd303));
+	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 
-	ds_writews(0x2cd1, ds_writews(0x2cd3, ds_writews(CURRENT_ANI, ds_writebs(0x2845, -1))));
+	ds_writews(FIG_FIGURE1, ds_writews(FIG_FIGURE2, ds_writews(CURRENT_ANI, ds_writebs(0x2845, -1))));
 	ds_writew(0x2846, 1);
 	ds_writeb(0x45b8, 0);
 
@@ -641,7 +641,7 @@ void draw_icon(signed short id, signed short x, signed short y)
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, x + 23);
 	ds_writew(0xc017, y + 23);
-	ds_writed(0xc00d, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 	do_pic_copy(2);
 
 	ds_writed(0xc00d, (Bit32u)ptr_bak);
@@ -689,9 +689,9 @@ signed short show_storytext(void)
 
 	}
 
-	if (!ds_readbs(0x43a6 + person)) {
+	if (!ds_readbs(KNOWN_PERSONS + person)) {
 		GUI_dialog_na(icon, ptr);
-		ds_writeb(0x43a6 + person, 1);
+		ds_writeb(KNOWN_PERSONS + person, 1);
 		return 1;
 	} else {
 		return 0;
@@ -719,10 +719,10 @@ void do_location(void)
 #if !defined(__BORLANDC__)
 	func = locationhandler[ds_readbs(LOCATION)];
 #else
-	func = (void (*)(void))ds_readd(0x4c3b + 4 * ds_readbs(LOCATION));
+	func = (void (*)(void))ds_readd(LOCATION_HANDLERS + 4 * ds_readbs(LOCATION));
 #endif
 
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	if (func) {
 		func();
@@ -767,14 +767,14 @@ void leave_dungeon(void)
 	Bit8u *ptr;
 
 	DNG_lights();
-	ptr = Real2Host(ds_readd(0xd2eb));
+	ptr = Real2Host(ds_readd(BUFFER4_PTR));
 
-	memset(Real2Host(ds_readd(0xd303)), 0, 0xc0);
+	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0xc0);
 
 	for (i = 0; i < 64; i++) {
 
-		pal_fade(ptr, Real2Host(ds_readd(0xd303)));
-		pal_fade(ptr + 0x60, Real2Host(ds_readd(0xd303)) + 0x60);
+		pal_fade(ptr, Real2Host(ds_readd(BUFFER1_PTR)));
+		pal_fade(ptr + 0x60, Real2Host(ds_readd(BUFFER1_PTR)) + 0x60);
 		wait_for_vsync();
 		set_palette(ptr, 0x80, 0x40);
 	}
@@ -786,20 +786,20 @@ void leave_dungeon(void)
 	ds_writebs(0x2ca7, -1);
 	ds_writeb(0x4475, ds_writew(0x2846, 1));
 
-	do_fill_rect((RealPt)ds_readd(0xd303), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
 
 	ds_writew(0xc011, 0);
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 240);
 	ds_writew(0xc017, 136);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 	update_mouse_cursor();
 
 	do_pic_copy(1);
 	refresh_screen_size();
 	wait_for_vsync();
-	set_palette(Real2Host(ds_readd(0xd303)), 0 , 0x20);
+	set_palette(Real2Host(ds_readd(BUFFER1_PTR)), 0 , 0x20);
 
 	/* disable the deathtrap */
 	ds_writew(DEATHTRAP, 0);
@@ -844,19 +844,19 @@ void fade_into(void)
 	Bit8u *ptr;
 	signed short i;
 
-	ptr = Real2Host(ds_readd(0xd303)) + 0xfa00;
+	ptr = Real2Host(ds_readd(BUFFER1_PTR)) + 0xfa00;
 
-	memset(Real2Host(ds_readd(0xd303)), 0, 0xc0);
+	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0xc0);
 
 	wait_for_vsync();
 
-	set_palette(Real2Host(ds_readd(0xd303)), 0x80, 0x40);
+	set_palette(Real2Host(ds_readd(BUFFER1_PTR)), 0x80, 0x40);
 
 	for (i = 0; i < 0x20; i++) {
 
-		pal_fade(ptr, Real2Host(ds_readd(0xd303)));
+		pal_fade(ptr, Real2Host(ds_readd(BUFFER1_PTR)));
 
-		pal_fade(ptr, Real2Host(ds_readd(0xd303)));
+		pal_fade(ptr, Real2Host(ds_readd(BUFFER1_PTR)));
 
 		wait_for_vsync();
 
@@ -868,7 +868,7 @@ void fade_into(void)
 
 void copy_palette(void)
 {
-	memcpy(Real2Host(ds_readd(0xd303)) + 0xfa00, Real2Host(ds_readd(0xce3b)), 0x60);
+	memcpy(Real2Host(ds_readd(BUFFER1_PTR)) + 0xfa00, Real2Host(ds_readd(0xce3b)), 0x60);
 	ds_writeb(0x4475, 2);
 }
 

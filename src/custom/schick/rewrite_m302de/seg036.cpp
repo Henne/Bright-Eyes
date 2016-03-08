@@ -99,9 +99,9 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	Bit8u *ptr2;
 
 	ds_writeb(0xd8ce, 0);
-	ds_writeb(0xd9c0, host_readbs(hero + HERO_SPRITE_NO));
+	ds_writeb((0xd8ce + 242), host_readbs(hero + HERO_SPRITE_NO));
 
-	ptr1 = p_datseg + 0xd8cf;
+	ptr1 = p_datseg + (0xd8ce + 1);
 	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(hero + HERO_SPRITE_NO)));
 
 	i = 0;
@@ -145,7 +145,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 			}
 		}
 
-		if (ds_readbs(0xd823 + i) == ds_readbs(0xd824 + i)) {
+		if (ds_readbs(0xd823 + i) == ds_readbs((0xd823+1) + i)) {
 			ptr1 += KI_copy_ani_sequence(ptr1, host_readws(ptr2 + (ds_readbs(0xd823 + i) + 12) * 2), 2);
 			i += 2;
 			/* BP - 2 */
@@ -753,7 +753,7 @@ signed short KI_count_heros(signed short hero_pos)
 	signed short i;
 
 	/* for each hero in this group */
-	for (i = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > i; i++) {
+	for (i = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > i; i++) {
 
 		if ((i != hero_pos) && check_hero(get_hero(i))) {
 			cnt++;

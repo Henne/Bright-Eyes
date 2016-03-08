@@ -52,30 +52,29 @@ void FIG_tidy_monsters(void)
 			(enemy_dead(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
 			enemy_uncon(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
 			enemy_stoned(Real2Host(RealMake(datseg, ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * i))) ||
-			((host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ROUND_APPEAR) != 0) && (monsters == 0))))
+			((host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ROUND_APPEAR) != 0) && (monsters == 0))))
 		{
 
 			if (i == 19) {
 				/* just clear the last one */
-				memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ID, 0, 5);
+				memset(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * i + FIGHT_MONSTERS_ID, 0, 5);
 				break;
 			} else {
 				/* move the next monsters one position to the front */
 				for (j = i; j < 19; j++) {
 
-					*(struct dummy5*)(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * j + FIGHT_MONSTERS_ID) =
-						*(struct dummy5*)(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * (j + 1) + FIGHT_MONSTERS_ID);
+					*(struct dummy5*)(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * j + FIGHT_MONSTERS_ID) =
+						*(struct dummy5*)(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * (j + 1) + FIGHT_MONSTERS_ID);
 
-					memset(Real2Host(ds_readd(PTR_FIGHT_LST)) + SIZEOF_FIGHT_MONSTER * (j + 1) + FIGHT_MONSTERS_ID, 0, SIZEOF_FIGHT_MONSTER);
+					memset(Real2Host(ds_readd(CURRENT_FIGHT)) + SIZEOF_FIGHT_MONSTER * (j + 1) + FIGHT_MONSTERS_ID, 0, SIZEOF_FIGHT_MONSTER);
 
 					*(struct dummy62*)(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * j) =
 						*(struct dummy62*)(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * (j + 1));
 
 					memset(p_datseg + ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * (j + 1), 0, SIZEOF_ENEMY_SHEET);
 
-                    // Sets the STATUS1 flag's last bit to 1.
-					// 0xd3ba = ENEMY_SHEETS + SIZEOF_ENEMY_SHEET + ENEMY_SHEET_STATUS1
-					or_ds_bs(0xd3ba + SIZEOF_ENEMY_SHEET * j, 1);
+                    // set the STATUS1 flag's last bit to 1
+					or_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1 + SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * j, 1);
 				}
 			}
 		} else {
@@ -106,14 +105,14 @@ void FIG_loot_monsters(void)
 
 	for (l_di = 0; l_di < 30; l_di++) {
 
-			a[l_di] = (char*)Real2Host(F_PADD(ds_readd(0xc3db), 40 * l_di));
+			a[l_di] = (char*)Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 40 * l_di));
 	}
 
 	do {
 
 		l_di = l3 = 0;
 
-		while (((l1 = host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * l_di + FIGHT_LOOT)) != 0) &&
+		while (((l1 = host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + 2 * l_di + FIGHT_LOOT)) != 0) &&
 			/* ITEM 164 is "BONE WITH RUNES" */
 			(l_di < 30) && (l1 != 164))
 		{
@@ -162,18 +161,18 @@ void FIG_loot_monsters(void)
 
 			if ((l4 != -2) && ((l5 == 0) || ((l5 != 0) && (l6 - 1 != l4)))) {
 
-				if (!get_item(host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l4 + l_si) + FIGHT_LOOT), 1, 1))
+				if (!get_item(host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + 2 * (l4 + l_si) + FIGHT_LOOT), 1, 1))
 				{
 					l4 = -2;
 				} else {
-					host_writew(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l4 + l_si) + FIGHT_LOOT, 0);
+					host_writew(Real2Host(ds_readd(CURRENT_FIGHT)) + 2 * (l4 + l_si) + FIGHT_LOOT, 0);
 
 					for (l_di = l4 + l_si; l_di < 29; l_di++) {
 
-						host_writew(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l_di) + FIGHT_LOOT,
-							host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l_di + 1) + FIGHT_LOOT));
+						host_writew(Real2Host(ds_readd(CURRENT_FIGHT)) + 2 * (l_di) + FIGHT_LOOT,
+							host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + 2 * (l_di + 1) + FIGHT_LOOT));
 
-						host_writew(Real2Host(ds_readd(PTR_FIGHT_LST)) + 2 * (l_di + 1) + FIGHT_LOOT, 0);
+						host_writew(Real2Host(ds_readd(CURRENT_FIGHT)) + 2 * (l_di + 1) + FIGHT_LOOT, 0);
 					}
 				}
 			}
@@ -183,17 +182,17 @@ void FIG_loot_monsters(void)
 		}
 	} while (l4 != -2);
 
-	money = host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_DUCATS) * 100;
-	money += host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_SILVER) * 10;
-	money += host_readws(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_HELLER);
+	money = host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_DUCATS) * 100;
+	money += host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_SILVER) * 10;
+	money += host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_HELLER);
 
 	if (money > 0) {
 
-		make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+		make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 		sprintf((char*)(Real2Host(ds_readd(DTP2))),
 			(char*)get_dtp(0x3c),
-			Real2Host(ds_readd(0xd2eb)));
+			Real2Host(ds_readd(BUFFER4_PTR)));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		set_party_money(get_party_money() + money);
@@ -221,7 +220,7 @@ void FIG_split_ap(void)
 
 		if (ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si + ENEMY_SHEET_MON_ID) != 0) {
 
-			if (ds_readbs(0x4351 + ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si)) != 0) {
+			if (ds_readbs(KNOWN_MONSTERS + ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si)) != 0) {
 
 				/* monster is already known */
 				known_ap = ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_FIRSTAP) + SIZEOF_ENEMY_SHEET * l_si) / 10;
@@ -238,7 +237,7 @@ void FIG_split_ap(void)
 
 		if (ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si + ENEMY_SHEET_MON_ID) != 0) {
 
-			ds_writeb(0x4351 + ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si), 1);
+			ds_writeb(KNOWN_MONSTERS + ds_readbs(ENEMY_SHEETS + SIZEOF_ENEMY_SHEET * l_si), 1);
 		}
 	}
 

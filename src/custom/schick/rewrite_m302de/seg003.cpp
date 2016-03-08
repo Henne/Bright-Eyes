@@ -130,8 +130,8 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
 	Bit8u *p2;
 	struct nvf_desc nvf;
 
-	nvf.dst = Real2Host(F_PADD(ds_readd(0xd019), 0x2e248));
-	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.dst = Real2Host(F_PADD(ds_readd(BUFFER9_PTR3), 0x2e248));
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
 	nvf.nr = nr;
 	nvf.type = 3;
 	nvf.width = (Bit8u*)&width;
@@ -147,7 +147,7 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
 	height -= frame;
 	l1 = width;
 
-	p1 = Real2Host(F_PADD(F_PADD(ds_readd(0xd019), frame * width), 0x2e248));
+	p1 = Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR3), frame * width), 0x2e248));
 
 	if ((x < 0) && ((x + width) > 0)) {
 		width += x;
@@ -171,7 +171,7 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
 			height = 135 - y;
 		}
 
-		p2 = Real2Host(ds_readd(0xd303)) + 208 * y + x;
+		p2 = Real2Host(ds_readd(BUFFER1_PTR)) + 208 * y + x;
 
 		copy_solid(p2, p1, width, height, 208, l1, 0);
 	}
@@ -181,7 +181,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 {
 	signed short answer;
 
-	sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 		(!host_readbs(p3)) ? (char*)get_ltx(0x82c) : (char*)get_ltx(0x83c),
 		p2);
 
@@ -189,7 +189,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 
 		ds_writew(TEXTBOX_WIDTH, 7);
 
-		answer = GUI_radio(Real2Host(ds_readd(0xd2eb)), 3,
+		answer = GUI_radio(Real2Host(ds_readd(BUFFER4_PTR)), 3,
 					get_ltx(0x830),
 					get_ltx(0x834),
 					get_ltx(0x838)) - 1;
@@ -219,7 +219,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 			}
 		}
 	} else {
-		GUI_output(Real2Host(ds_readd(0xd2eb)));
+		GUI_output(Real2Host(ds_readd(BUFFER4_PTR)));
 	}
 
 }
@@ -228,7 +228,7 @@ void loot_corpse(Bit8u *p1, Bit8u *p2, Bit8u *p3)
 /* Borlandified and identical */
 void no_way()
 {
-	GUI_output(p_datseg + 0x4a68);
+	GUI_output(p_datseg + NOWAY_STRING);
 }
 
 #if !defined(__BORLANDC__)

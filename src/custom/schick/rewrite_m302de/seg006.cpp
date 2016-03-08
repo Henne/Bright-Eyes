@@ -54,13 +54,13 @@ signed char FIG_set_array(void)
 	signed char i = 0;
 
 	/* find first element that is zero */
-	while (ds_readb(0xe089 + i) != 0) {
+	while (ds_readb(FIG_LIST_ARRAY + i) != 0) {
 
 		i++;
 	}
 
 	/* make it 1 */
-	ds_writeb(0xe089 + i, 1);
+	ds_writeb(FIG_LIST_ARRAY + i, 1);
 
 	/* return the number of the index */
 	return i;
@@ -78,7 +78,7 @@ void FIG_draw_figures(void)
 	l2 = 118;
 
 	gfx_dst_bak = (RealPt)ds_readd(0xc00d);
-	ds_writed(0xc00d, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
 
 	/* backup a structure */
 	screen_mode = *((struct screen_rect*)(p_datseg + 0x2990));
@@ -145,7 +145,7 @@ void FIG_set_gfx(void)
 	ds_writew(0xc013, 0);
 	ds_writew(0xc015, 319);
 	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 	ds_writed(0xc00d, ds_readd(0xd2ff));
 	update_mouse_cursor();
 	do_pic_copy(0);
@@ -161,15 +161,15 @@ void FIG_call_draw_pic(void)
 
 void FIG_draw_pic(void)
 {
-	mem_memcpy(Real2Phys(ds_readd(0xd303)),
-		Real2Phys(ds_readd(0xc3a9)), 64000);
+	mem_memcpy(Real2Phys(ds_readd(BUFFER1_PTR)),
+		Real2Phys(ds_readd(BUFFER8_PTR)), 64000);
 
 	ds_writew(0x26af, 1);
 
-	if (ds_readw(0x26b3)) {
-		FIG_draw_char_pic(0, ds_readw(0x26b3));
-	} else if (ds_readw(0x26b5)) {
-		FIG_draw_enemy_pic(0, ds_readw(0x26b5));
+	if (ds_readw(FIG_CHAR_PIC)) {
+		FIG_draw_char_pic(0, ds_readw(FIG_CHAR_PIC));
+	} else if (ds_readw(FIG_ENEMY_PIC)) {
+		FIG_draw_enemy_pic(0, ds_readw(FIG_ENEMY_PIC));
 	}
 }
 
@@ -322,10 +322,10 @@ void FIG_remove_from_list(signed char fight_id, signed char v2)
 	}
 
 	if (!v2) {
-		ds_writeb(0xe089 + fight_id, 0);
+		ds_writeb(FIG_LIST_ARRAY + fight_id, 0);
 	} else {
-//		struct_copy(p_datseg + 0xe066, p, 35);
-		*((struct dummy*)(p_datseg + 0xe066)) = *((struct dummy*)(p));
+//		struct_copy(p_datseg + FIG_LIST_ELEM, p, 35);
+		*((struct dummy*)(p_datseg + FIG_LIST_ELEM)) = *((struct dummy*)(p));
 	}
 
 	/* check if p == HEAD */
@@ -360,17 +360,17 @@ signed char FIG_add_to_list(signed char v)
 	RealPt p2;
 	signed short x, y;
 
-	p1 = (RealPt)ds_readd(0xe37c);
-	x = ds_readbs(0xe069);
-	y = ds_readbs(0xe06a);
+	p1 = (RealPt)ds_readd(FIG_LIST_BUFFER);
+	x = ds_readbs((FIG_LIST_ELEM+3));
+	y = ds_readbs((FIG_LIST_ELEM+4));
 
 	/* FIG_list_start == NULL */
 	if (ds_readd(FIG_LIST_HEAD) == 0) {
 
-		ds_writed(FIG_LIST_HEAD, ds_readd(0xe37c));
+		ds_writed(FIG_LIST_HEAD, ds_readd(FIG_LIST_BUFFER));
 
-//		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + 0xe066, 35);
-		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + 0xe066));
+//		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + FIG_LIST_ELEM, 35);
+		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
 		if (v == -1) {
 			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10,
@@ -391,8 +391,8 @@ signed char FIG_add_to_list(signed char v)
 		p1 += 35;
 	}
 
-//	struct_copy(Real2Host(p1), p_datseg + 0xe066, 35);
-	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + 0xe066));
+//	struct_copy(Real2Host(p1), p_datseg + FIG_LIST_ELEM, 35);
+	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
 	if (v == -1) {
 		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
@@ -402,13 +402,13 @@ signed char FIG_add_to_list(signed char v)
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	if (ds_readbs(0xe077) != -1) {
+	if (ds_readbs((FIG_LIST_ELEM+17)) != -1) {
 		while ((host_readbs(Real2Host(p2) + 3) <= x) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) >= y) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) != y ||
-		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs(0xe077)))
+		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs((FIG_LIST_ELEM+17))))
 		{
 
 			/* p2->next != NULL */
@@ -470,12 +470,12 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 	get_textcolor(&fg_bak, &bg_bak);
 	set_textcolor(0xff, 0);
 
-	ds_writed(0xc00d, ds_readd(0xd303));
-	ds_writed(0xd2fb, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+	ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
 
 	if (loc == 0) {
 
-		do_border((RealPt)ds_readd(0xd303), 1, 9, 34, 42, 29);
+		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 9, 34, 42, 29);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
@@ -488,7 +488,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 		draw_bar(1, 0, host_readw(Real2Host(hero) + HERO_AE),
 			host_readw(Real2Host(hero) + HERO_AE_ORIG), 1);
 	} else {
-		do_border((RealPt)ds_readd(0xd303), 1, 157, 34, 190, 29);
+		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 157, 34, 190, 29);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 158);
 		ds_writew(0xc015, 33);
@@ -516,11 +516,11 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 	RealPt p1;
 	struct nvf_desc nvf;
 
-	p1 = F_PADD((RealPt)(ds_readd(0xc3a9)), -1288);
+	p1 = F_PADD((RealPt)(ds_readd(BUFFER8_PTR)), -1288);
 
 	p_enemy = p_datseg + 0xd0df + id * 62;
 
-	if (ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5) != ds_readws(0x4b9e)) {
+	if (ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
 
 		nvf.src = Real2Host(load_fight_figs(ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5)));
 		nvf.dst = Real2Host(p1);
@@ -531,7 +531,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 		process_nvf(&nvf);
 
-		ds_writew(0x4b9e,
+		ds_writew(FIGHT_FIGS_INDEX,
 			ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5));
 	}
 
@@ -540,11 +540,11 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 	set_textcolor(0xff, 0);
 
 	/* set gfx address */
-	ds_writed(0xc00d, ds_readd(0xd303));
-	ds_writed(0xd2fb, ds_readd(0xd303));
+	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+	ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
 
 	if (loc == 0) {
-		do_border((RealPt)ds_readd(0xd303), 1, 9, 34, 50, 0x1d);
+		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 9, 34, 50, 0x1d);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 10);
 		ds_writew(0xc015, 33);
@@ -553,7 +553,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 		do_pic_copy(0);
 		GUI_print_string(Real2Host(GUI_name_singular(get_monname(host_readbs(p_enemy)))), 1, 1);
 	} else {
-		do_border((RealPt)ds_readd(0xd303), 1, 149, 34, 190, 0x1d);
+		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 149, 34, 190, 0x1d);
 		ds_writew(0xc011, 2);
 		ds_writew(0xc013, 150);
 		ds_writew(0xc015, 33);

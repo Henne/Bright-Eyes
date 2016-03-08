@@ -31,7 +31,7 @@ namespace M302de {
 /* Borlandified and identical */
 void reset_item_selector(void)
 {
-	if (ds_readws(0x2c9b) < 3) {
+	if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 		/* remove the previous border */
 		do_border((RealPt)ds_readd(0xd2ff),
@@ -56,7 +56,7 @@ void reset_item_selector(void)
 		ds_writebs(0x636f, 23);
 	}
 
-	ds_writed(0xcecb, ds_writed(0xe3ae, (Bit32u)RealMake(datseg, 0x2848)));
+	ds_writed(0xcecb, ds_writed(0xe3ae, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR)));
 }
 
 /* nearly identical, same length */
@@ -97,7 +97,7 @@ void status_menu(signed short hero_pos)
 
 	set_audio_track(ARCHIVE_FILE_SUMMARY_XMI);
 
-	file_bak = ds_readws(0x26bd);
+	file_bak = ds_readws(TEXT_FILE_INDEX);
 
 	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 
@@ -105,23 +105,23 @@ void status_menu(signed short hero_pos)
 
 	ds_writew(0x2846, 1);
 	ds_writew(ACTION, 0);
-	ds_writew(0x2c9b, 1);
+	ds_writew(STATUS_PAGE_MODE, 1);
 
 	while (flag1 == 0) {
 
 		if (ds_readw(0x2846) != 0 || flag2 != 0) {
 
-			ds_writew(0x2c9d, hero_pos);
+			ds_writew(STATUS_PAGE_HERO, hero_pos);
 
 			update_mouse_cursor();
 
 			status_show(hero_pos);
 
-			ds_writebs(0x2c9f, ds_writebs(0x2ca0, -1));
+			ds_writebs(STATUS_PAGE_HUNGER, ds_writebs(STATUS_PAGE_THIRST, -1));
 
 			update_status_bars();
 
-			if (ds_readws(0x2c9b) < 3) {
+			if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 				if (hero1 == hero2) {
 					/* set the new red border */
@@ -137,9 +137,12 @@ void status_menu(signed short hero_pos)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
-						(char*)(p_datseg + 0x6534),
+						(char*)(p_datseg + EXTRASPACE_SEPARATED_STRINGS),
 						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
-						!is_in_word_array(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + 0x653b : get_city(0x108));
+						!is_in_word_array(
+						    host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)),
+						    (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))
+                        ) ? p_datseg + EMPTY_STRING8 : get_city(0x108));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -168,7 +171,7 @@ void status_menu(signed short hero_pos)
 		handle_input();
 
 		/* RIGHT_KEY */
-		if (ds_readws(ACTION) == 77 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > 1)
+		if (ds_readws(ACTION) == 77 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
 		{
 
 			/* set hero_pos to the next possible hero */
@@ -178,7 +181,7 @@ void status_menu(signed short hero_pos)
 				if (hero_pos > 6) hero_pos = 0;
 			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
 					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(0x2c9b) > 3));
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(STATUS_PAGE_MODE) > 3));
 
 
 			if (ds_readbs(0x6371) != -1) {
@@ -201,7 +204,7 @@ void status_menu(signed short hero_pos)
 		}
 
 		/* LEFT_KEY */
-		if (ds_readws(ACTION) == 75 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > 1)
+		if (ds_readws(ACTION) == 75 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > 1)
 		{
 
 			/* set hero_pos to the next possible hero */
@@ -211,7 +214,7 @@ void status_menu(signed short hero_pos)
 				if (hero_pos < 0) hero_pos = 6;
 			} while (!host_readbs(get_hero(hero_pos) + HERO_TYPE) ||
 					host_readbs(get_hero(hero_pos) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) ||
-					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(0x2c9b) > 3));
+					(host_readbs(get_hero(hero_pos) + HERO_TYPE) < 7 && ds_readws(STATUS_PAGE_MODE) > 3));
 
 
 			if (ds_readbs(0x6371) != -1) {
@@ -233,7 +236,7 @@ void status_menu(signed short hero_pos)
 			ds_writew(0x2846, 1);
 		}
 
-		if (ds_readws(0x2c9b) < 3) {
+		if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 			/* UP_KEY */
 			if (ds_readws(ACTION) == 72) {
@@ -319,9 +322,12 @@ void status_menu(signed short hero_pos)
 				if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						/* "%s %s " */
-						(char*)(p_datseg + 0x653c),
+						(char*)(p_datseg + EXTRASPACE_SEPARATED_STRINGS2),
 						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
-						!is_in_word_array(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)), (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))) ? p_datseg + 0x6543 : get_city(0x108));
+						!is_in_word_array(
+						    host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)),
+						    (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))
+                        ) ? p_datseg + EMPTY_STRING9 : get_city(0x108));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {
 						strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -426,7 +432,7 @@ void status_menu(signed short hero_pos)
 					if (host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))) {
 
 						nvf.dst = Real2Host(ds_readd(ICON));
-						nvf.src = Real2Host(ds_readd(0xd2a9));
+						nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 						nvf.type = 0;
 						nvf.width = (Bit8u*)&width;
 						nvf.height = (Bit8u*)&height;
@@ -442,7 +448,7 @@ void status_menu(signed short hero_pos)
 		}
 
 		/* check if the hero is diseased and print a message */
-		if (ds_readws(0x2c9b) == 1 &&
+		if (ds_readws(STATUS_PAGE_MODE) == 1 &&
 			ds_readws(ACTION) == 240 &&
 			hero_is_diseased(hero2))
 		{
@@ -458,35 +464,35 @@ void status_menu(signed short hero_pos)
 		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
 
 			ds_writed(0xe3ae, ds_readd(0xcecb));
-			ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
+			ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
-			switch (ds_readws(0x2c9b)) {
+			switch (ds_readws(STATUS_PAGE_MODE)) {
 			case 1: {
 				/* from start-page */
 
 				if (ds_readws(GAME_MODE) == 2) {
-					ds_writed(0xbf95 + 0x0, host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x4c));
-					ds_writed((0xbf95 + 0x4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x50));
-					ds_writed((0xbf95 + 0x8), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x54));
+					ds_writed(RADIO_NAME_LIST + 0x0, host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x4c));
+					ds_writed((RADIO_NAME_LIST + 0x4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x50));
+					ds_writed((RADIO_NAME_LIST + 0x8), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x54));
 
 					flag3 = hero_is_diseased(hero2);
 
 					if (flag3 != 0) {
-						ds_writed((0xbf95 + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
-						ds_writed((0xbf95 + 0x10), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
+						ds_writed((RADIO_NAME_LIST + 0x10), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 10;
 					} else {
-						ds_writed((0xbf95 + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0x0c), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 9;
 					}
 				} else {
 
 					if ((flag3 = hero_is_diseased(hero2))) {
-						ds_writed((0xbf95 + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
-						ds_writed((0xbf95 + 4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x64));
+						ds_writed((RADIO_NAME_LIST + 4), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 7;
 					} else {
-						ds_writed((0xbf95 + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
+						ds_writed((RADIO_NAME_LIST + 0), host_readd(Real2Host(ds_readd(CITY_LTX)) + 0x3c));
 						l1 = 6;
 					}
 				}
@@ -497,11 +503,11 @@ void status_menu(signed short hero_pos)
 						get_city(0x44),
 						get_ltx(0x350),
 						get_ltx(0x354),
-						Real2Host(ds_readd((0xbf95 + 0x00))),
-						Real2Host(ds_readd((0xbf95 + 0x04))),
-						Real2Host(ds_readd((0xbf95 + 0x08))),
-						Real2Host(ds_readd((0xbf95 + 0x0c))),
-						Real2Host(ds_readd((0xbf95 + 0x10))));
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x0c))),
+						Real2Host(ds_readd((RADIO_NAME_LIST + 0x10))));
 
 				if (l_di != -1) {
 					switch(l_di) {
@@ -511,7 +517,7 @@ void status_menu(signed short hero_pos)
 							GUI_output(get_city(0x11c));
 						} else {
 							GUI_input(get_city(0x118), 15);
-							strcpy((char*)hero2 + HERO_NAME2, (char*)Real2Host(ds_readd(0xd2ef)));
+							strcpy((char*)hero2 + HERO_NAME2, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -544,7 +550,7 @@ void status_menu(signed short hero_pos)
 						GUI_use_talent(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
-						if (ds_readws(0x26bf) == 19) {
+						if (ds_readws(BUF1_FILE_INDEX) == 19) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
@@ -571,7 +577,7 @@ void status_menu(signed short hero_pos)
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
-							ds_writew(0x2c9b, 2);
+							ds_writew(STATUS_PAGE_MODE, 2);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -583,7 +589,7 @@ void status_menu(signed short hero_pos)
 							reset_item_selector();
 						} else {
 							reset_item_selector();
-							ds_writew(0x2c9b, 3);
+							ds_writew(STATUS_PAGE_MODE, 3);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -594,7 +600,7 @@ void status_menu(signed short hero_pos)
 							GUI_output(get_ltx(0x35c));
 						} else {
 							reset_item_selector();
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -662,7 +668,7 @@ void status_menu(signed short hero_pos)
 						GUI_use_talent(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
-						if (ds_readws(0x26bf) == 19) {
+						if (ds_readws(BUF1_FILE_INDEX) == 19) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
@@ -678,13 +684,13 @@ void status_menu(signed short hero_pos)
 					}
 					case 5: {
 						/* TODO: different code is generated here */
-						ds_writew(0x2c9b, 1);
+						ds_writew(STATUS_PAGE_MODE, 1);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 6: {
 						reset_item_selector();
-						ds_writew(0x2c9b, 3);
+						ds_writew(STATUS_PAGE_MODE, 3);
 						ds_writew(0x2846, 1);
 						break;
 					}
@@ -693,7 +699,7 @@ void status_menu(signed short hero_pos)
 							GUI_output(get_ltx(0x35c));
 						} else {
 							reset_item_selector();
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -725,18 +731,18 @@ void status_menu(signed short hero_pos)
 						GUI_use_talent(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
-						if (ds_readws(0x26bf) == 19) {
+						if (ds_readws(BUF1_FILE_INDEX) == 19) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 						}
 						break;
 					}
 					case 2: {
-						ds_writew(0x2c9b, 1);
+						ds_writew(STATUS_PAGE_MODE, 1);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 3: {
-						ds_writew(0x2c9b, 2);
+						ds_writew(STATUS_PAGE_MODE, 2);
 						ds_writew(0x2846, 1);
 						break;
 					}
@@ -744,7 +750,7 @@ void status_menu(signed short hero_pos)
 						if (host_readbs(hero2 + HERO_TYPE) < 7) {
 							GUI_output(get_ltx(0x35c));
 						} else {
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 							ds_writew(0x2846, 1);
 						}
 						break;
@@ -787,25 +793,25 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 2: {
-						ds_writew(0x2c9b, 1);
+						ds_writew(STATUS_PAGE_MODE, 1);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 3: {
-						ds_writew(0x2c9b, 2);
+						ds_writew(STATUS_PAGE_MODE, 2);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 4: {
-						ds_writew(0x2c9b, 3);
+						ds_writew(STATUS_PAGE_MODE, 3);
 						ds_writew(0x2846, 1);
 						break;
 					}
 					case 5: {
-						if (ds_readws(0x2c9b) == 4)
-							ds_writew(0x2c9b, 5);
+						if (ds_readws(STATUS_PAGE_MODE) == 4)
+							ds_writew(STATUS_PAGE_MODE, 5);
 						else
-							ds_writew(0x2c9b, 4);
+							ds_writew(STATUS_PAGE_MODE, 4);
 						ds_writew(0x2846, 1);
 						break;
 					}
@@ -845,7 +851,7 @@ void status_menu(signed short hero_pos)
 void status_select_hero(void)
 {
 
-	if (ds_readws(0x29b2) == 0 || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+	if (ds_readws(0x29b2) == 0 || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 		/* Yes, it was written that way! */
 	} else {
 		signed short hero_pos = select_hero_from_group(get_ltx(0x4b4));

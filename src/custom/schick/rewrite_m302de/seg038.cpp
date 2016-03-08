@@ -69,29 +69,29 @@ void FIG_init_list_elem(signed short obj)
 	y = host_readws((Bit8u*)&y);
 #endif
 
-	/* This initializes a 35 byte structure at DS:0xe066 */
-	ds_writew(0xe066, 0);
-	ds_writeb((0xe066 + 2), 0);
-	ds_writeb((0xe066 + 3), (signed char)x);
-	ds_writeb((0xe066 + 4), (signed char)y);
-	ds_writeb((0xe066 + 5), 0);
-	ds_writeb((0xe066 + 6), 4);
-	ds_writeb((0xe066 + 7), 11);
-	ds_writeb((0xe066 + 8), 22);
-	ds_writeb((0xe066 + 9), 0);
-	ds_writeb((0xe066 + 10), 0);
-	ds_writeb((0xe066 + 11), 21);
-	ds_writeb((0xe066 + 12), 10);
+	/* This initializes a 35 byte structure at DS:FIG_LIST_ELEM */
+	ds_writew(FIG_LIST_ELEM, 0);
+	ds_writeb((FIG_LIST_ELEM + 2), 0);
+	ds_writeb((FIG_LIST_ELEM + 3), (signed char)x);
+	ds_writeb((FIG_LIST_ELEM + 4), (signed char)y);
+	ds_writeb((FIG_LIST_ELEM + 5), 0);
+	ds_writeb((FIG_LIST_ELEM + 6), 4);
+	ds_writeb((FIG_LIST_ELEM + 7), 11);
+	ds_writeb((FIG_LIST_ELEM + 8), 22);
+	ds_writeb((FIG_LIST_ELEM + 9), 0);
+	ds_writeb((FIG_LIST_ELEM + 10), 0);
+	ds_writeb((FIG_LIST_ELEM + 11), 21);
+	ds_writeb((FIG_LIST_ELEM + 12), 10);
 
-	ds_writeb((0xe066 + 21), 0);
-	ds_writeb((0xe066 + 13), 0);
-	ds_writeb((0xe066 + 15), -1);
-	ds_writeb((0xe066 + 14), -1);
+	ds_writeb((FIG_LIST_ELEM + 21), 0);
+	ds_writeb((FIG_LIST_ELEM + 13), 0);
+	ds_writeb((FIG_LIST_ELEM + 15), -1);
+	ds_writeb((FIG_LIST_ELEM + 14), -1);
 
-	ds_writed((0xe066 + 23), ds_readd(0xd862));
-	ds_writeb((0xe066 + 17), 0);
-	ds_writeb((0xe066 + 18), 1);
-	ds_writeb((0xe066 + 19), -1);
+	ds_writed((FIG_LIST_ELEM + 23), ds_readd(0xd862));
+	ds_writeb((FIG_LIST_ELEM + 17), 0);
+	ds_writeb((FIG_LIST_ELEM + 18), 1);
+	ds_writeb((FIG_LIST_ELEM + 19), -1);
 
 	ds_writeb(0xe38e, FIG_add_to_list(-1));
 }
@@ -152,11 +152,11 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 	found = 0;
 	min = 99;
 
-	memset(Real2Host(ds_readd(0xd2eb)), 0, 80);
-	ptr[0] = Real2Host((RealPt)ds_readd(0xd2eb));
-	ptr[1] = Real2Host((RealPt)ds_readd(0xd2eb)) + 20;
-	ptr[2] = Real2Host((RealPt)ds_readd(0xd2eb)) + 40;
-	ptr[3] = Real2Host((RealPt)ds_readd(0xd2eb)) + 60;
+	memset(Real2Host(ds_readd(BUFFER4_PTR)), 0, 80);
+	ptr[0] = Real2Host((RealPt)ds_readd(BUFFER4_PTR));
+	ptr[1] = Real2Host((RealPt)ds_readd(BUFFER4_PTR)) + 20;
+	ptr[2] = Real2Host((RealPt)ds_readd(BUFFER4_PTR)) + 40;
+	ptr[3] = Real2Host((RealPt)ds_readd(BUFFER4_PTR)) + 60;
 
 	obj_id = get_cb_val(target_x, target_y);
 
@@ -379,7 +379,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 				if ((obj_id < 10) && (hero_dead(get_hero(obj_id - 1)) || hero_unc(get_hero(obj_id - 1))))
 				{
 					host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
-				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + 0xd110 + obj_id * 62)))
+				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + (0xd0df + 49) + obj_id * SIZEOF_ENEMY_SHEET)))
 				{
 						host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
 				}

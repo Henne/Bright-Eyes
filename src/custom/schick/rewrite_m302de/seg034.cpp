@@ -63,8 +63,8 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 			}
 
 		} else if (((fight_id >= 50) ||
-				((fight_id >= 10) && (fight_id < 30) && test_bit0(p_datseg + 0xd110 + 62 * fight_id)) ||
-				((fight_id >= 30) && (fight_id < 50) && test_bit0(p_datseg + 0xcc38 + 62 * fight_id)) ||
+				((fight_id >= 10) && (fight_id < 30) && test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * fight_id)) ||
+				((fight_id >= 30) && (fight_id < 50) && test_bit0(p_datseg + (0xcc07 + 49) + SIZEOF_ENEMY_SHEET * fight_id)) ||
 				((fight_id < 10) && hero_dead(get_hero(fight_id - 1))))
 				&&
 				((fight_id_target >= 0) &&
@@ -182,26 +182,26 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 		ds_writebs(0xe38f, -1);
 	}
 
-	ds_writew(0xe066, 0);
-	ds_writeb(0xe068, 0);
-	ds_writeb(0xe069, host_readbs(px));
-	ds_writeb(0xe06a, host_readbs(py));
-	ds_writeb(0xe06b, 0);
-	ds_writeb(0xe06c, 4);
-	ds_writeb(0xe06d, 11);
-	ds_writeb(0xe06e, 22);
-	ds_writeb(0xe06f, 0);
-	ds_writeb(0xe070, 0);
-	ds_writeb(0xe071, 21);
-	ds_writeb(0xe072, 10);
-	ds_writeb(0xe07b, 0);
-	ds_writeb(0xe073, 0);
-	ds_writeb(0xe075, -1);
-	ds_writeb(0xe074, -1);
-	ds_writed(0xe07d, ds_readd(0xd85e));
-	ds_writeb(0xe077, 1);
-	ds_writeb(0xe078, 1);
-	ds_writeb(0xe079, -1);
+	ds_writew(FIG_LIST_ELEM, 0);
+	ds_writeb((FIG_LIST_ELEM+2), 0);
+	ds_writeb((FIG_LIST_ELEM+3), host_readbs(px));
+	ds_writeb((FIG_LIST_ELEM+4), host_readbs(py));
+	ds_writeb((FIG_LIST_ELEM+5), 0);
+	ds_writeb((FIG_LIST_ELEM+6), 4);
+	ds_writeb((FIG_LIST_ELEM+7), 11);
+	ds_writeb((FIG_LIST_ELEM+8), 22);
+	ds_writeb((FIG_LIST_ELEM+9), 0);
+	ds_writeb((FIG_LIST_ELEM+10), 0);
+	ds_writeb((FIG_LIST_ELEM+11), 21);
+	ds_writeb((FIG_LIST_ELEM+12), 10);
+	ds_writeb((FIG_LIST_ELEM+21), 0);
+	ds_writeb((FIG_LIST_ELEM+13), 0);
+	ds_writeb((FIG_LIST_ELEM+15), -1);
+	ds_writeb((FIG_LIST_ELEM+14), -1);
+	ds_writed((FIG_LIST_ELEM+23), ds_readd(0xd85e));
+	ds_writeb((FIG_LIST_ELEM+17), 1);
+	ds_writeb((FIG_LIST_ELEM+18), 1);
+	ds_writeb((FIG_LIST_ELEM+19), -1);
 
 	ds_writeb(0xe38f, FIG_add_to_list(-1));
 
@@ -284,7 +284,7 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 			}
 		}
 
-		if ((ds_readbs(0xe069) != host_readws(px)) || (ds_readbs(0xe06a) != host_readws(py))) {
+		if ((ds_readbs((FIG_LIST_ELEM+3)) != host_readws(px)) || (ds_readbs((FIG_LIST_ELEM+4)) != host_readws(py))) {
 
 			update_mouse_cursor();
 
@@ -318,8 +318,8 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 
 			FIG_remove_from_list(ds_readbs(0xe38f), 1);
 
-			ds_writeb(0xe069, (signed char)host_readws(px));
-			ds_writeb(0xe06a, (signed char)host_readws(py));
+			ds_writeb((FIG_LIST_ELEM+3), (signed char)host_readws(px));
+			ds_writeb((FIG_LIST_ELEM+4), (signed char)host_readws(py));
 
 			FIG_add_to_list(ds_readbs(0xe38f));
 			FIG_draw_figures();
@@ -458,10 +458,10 @@ void FIG_latecomers(void)
 
 					if (is_in_byte_array(host_readbs(p_mon + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
+						seg034_718(	host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
 								(Bit8u*)&x, (Bit8u*)&y,
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
 								1);
 
 						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + ENEMY_SHEET_LIST_POS)));
@@ -474,9 +474,9 @@ void FIG_latecomers(void)
 						p3 = Real2Host(FIG_get_ptr((signed char)l4));
 
 						host_writeb(p3 + 3,
-								x - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].x);
+								x - a.a[host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].x);
 						host_writeb(p3 + 4,
-								y - a.a[host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].y);
+								y - a.a[host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i)].y);
 
 						FIG_remove_from_list(host_readbs(p_mon + ENEMY_SHEET_LIST_POS), 1);
 
@@ -486,10 +486,10 @@ void FIG_latecomers(void)
 
 						FIG_add_to_list((signed char)l4);
 					} else {
-						seg034_718(	host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
+						seg034_718(	host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_X + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_Y + SIZEOF_FIGHT_MONSTER * i),
 								(Bit8u*)&x, (Bit8u*)&y,
-								host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
+								host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i),
 								0);
 
 						p2 = Real2Host(FIG_get_ptr(host_readbs(p_mon + 0x26)));
@@ -503,7 +503,7 @@ void FIG_latecomers(void)
 					}
 
 					place_obj_on_cb(x, y, i + 10, host_readbs(p_mon + ENEMY_SHEET_GFX_ID),
-						(signed short)host_readbs(Real2Host(ds_readd(PTR_FIGHT_LST)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i));
+						(signed short)host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_MONSTERS_VIEWDIR + SIZEOF_FIGHT_MONSTER * i));
 
 					FIG_set_12_13(host_readbs(p_mon + ENEMY_SHEET_LIST_POS));
 
@@ -584,26 +584,26 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 		ds_writebs(0xe38f, -1);
 	}
 
-	ds_writew(0xe066, 0);
-	ds_writeb(0xe068, 0);
-	ds_writeb(0xe069, (signed char)x);
-	ds_writeb(0xe06a, (signed char)y);
-	ds_writeb(0xe06b, 0);
-	ds_writeb(0xe06c, 4);
-	ds_writeb(0xe06f, 0);
-	ds_writeb(0xe070, 0);
-	ds_writeb(0xe071, 21);
-	ds_writeb(0xe072, 10);
-	ds_writeb(0xe06d, 11);
-	ds_writeb(0xe06e, 22);
-	ds_writeb(0xe07b, 0);
-	ds_writeb(0xe073, 0);
-	ds_writeb(0xe075, -1);
-	ds_writeb(0xe074, -1);
-	ds_writed(0xe07d, ds_readd(0xd85e));
-	ds_writeb(0xe077, 1);
-	ds_writeb(0xe078, 1);
-	ds_writeb(0xe079, -1);
+	ds_writew(FIG_LIST_ELEM, 0);
+	ds_writeb((FIG_LIST_ELEM+2), 0);
+	ds_writeb((FIG_LIST_ELEM+3), (signed char)x);
+	ds_writeb((FIG_LIST_ELEM+4), (signed char)y);
+	ds_writeb((FIG_LIST_ELEM+5), 0);
+	ds_writeb((FIG_LIST_ELEM+6), 4);
+	ds_writeb((FIG_LIST_ELEM+9), 0);
+	ds_writeb((FIG_LIST_ELEM+10), 0);
+	ds_writeb((FIG_LIST_ELEM+11), 21);
+	ds_writeb((FIG_LIST_ELEM+12), 10);
+	ds_writeb((FIG_LIST_ELEM+7), 11);
+	ds_writeb((FIG_LIST_ELEM+8), 22);
+	ds_writeb((FIG_LIST_ELEM+21), 0);
+	ds_writeb((FIG_LIST_ELEM+13), 0);
+	ds_writeb((FIG_LIST_ELEM+15), -1);
+	ds_writeb((FIG_LIST_ELEM+14), -1);
+	ds_writed((FIG_LIST_ELEM+23), ds_readd(0xd85e));
+	ds_writeb((FIG_LIST_ELEM+17), 1);
+	ds_writeb((FIG_LIST_ELEM+18), 1);
+	ds_writeb((FIG_LIST_ELEM+19), -1);
 
 	ds_writeb(0xe38f, FIG_add_to_list(-1));
 
@@ -681,10 +681,10 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 			FIG_remove_from_list(ds_readbs(0xe38f), 0);
 
-			ds_writeb(0xe069, (signed char)x);
-			ds_writeb(0xe06a, (signed char)y);
-			ds_writed(0xe07d, ds_readd(0xd85e));
-			ds_writeb(0xe079, -1);
+			ds_writeb((FIG_LIST_ELEM+3), (signed char)x);
+			ds_writeb((FIG_LIST_ELEM+4), (signed char)y);
+			ds_writed((FIG_LIST_ELEM+23), ds_readd(0xd85e));
+			ds_writeb((FIG_LIST_ELEM+19), -1);
 			ds_writeb(0xe38f, FIG_add_to_list(-1));
 
 			FIG_draw_figures();
@@ -834,7 +834,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 	get_textcolor(&fg_bak, &bg_bak);
 	set_textcolor(255, 0);
-	GUI_print_string(p_datseg + 0x5f9c, 5, 190);
+	GUI_print_string(p_datseg + STRING_14SPACES, 5, 190);
 	set_textcolor(fg_bak, bg_bak);
 
 	if ((host_readws(px) != x) || (host_readws(py) != y)) {

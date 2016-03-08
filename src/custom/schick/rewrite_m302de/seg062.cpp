@@ -44,42 +44,42 @@ void ask_miracle(void)
 	struct dummy15 ga1 = {{0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0}};
 	struct dummy15 god_dice = {{0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10}};
 #else
-	struct dummy15 ga1 = *(struct dummy15*)(p_datseg + 0x6ea4);
-	struct dummy15 god_dice = *(struct dummy15*)(p_datseg + 0x6eb3);
+	struct dummy15 ga1 = *(struct dummy15*)(p_datseg + TEMPLE_MIRACLE_BONUS);
+	struct dummy15 god_dice = *(struct dummy15*)(p_datseg + TEMPLE_MIRACLE_DICE);
 #endif
 
 	l3 = 0;
-	fi_bak = ds_readws(0x26bd);
+	fi_bak = ds_readws(TEXT_FILE_INDEX);
 
 	load_city_ltx(ARCHIVE_FILE_WONDER_LTX);
 
 	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0));
 
 	/* check gods estimation */
-	if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) >= 100) {
+	if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) >= 100) {
 
-		bonus = (signed short)((ga1.a[ds_readws(0xe3f8)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) / 100) / 10) - l3);
+		bonus = (signed short)((ga1.a[ds_readws(TEMPLE_GOD)] * (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) / 100) / 10) - l3);
 
 		if (ds_readbs(CURRENT_TOWN) == 23) {
 			/* CLANEGH */
 			bonus += 2;
 		}
 
-		sub_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), 10);
+		sub_ds_ds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD), 10);
 
-		if (random_schick(100) <= god_dice.a[ds_readws(0xe3f8)] + bonus) {
+		if (random_schick(100) <= god_dice.a[ds_readws(TEMPLE_GOD)] + bonus) {
 
-			l_si = random_schick(god_dice.a[ds_readws(0xe3f8)]);
+			l_si = random_schick(god_dice.a[ds_readws(TEMPLE_GOD)]);
 
-			if (god_dice.a[ds_readws(0xe3f8)] == l_si) {
+			if (god_dice.a[ds_readws(TEMPLE_GOD)] == l_si) {
 				miracle_resurrect(get_city(0x8c));
 			} else {
-				switch (ds_readws(0xe3f8)) {
+				switch (ds_readws(TEMPLE_GOD)) {
 				case 1: {
 					/* PRAIOS */
 					l5 = 1;
 
-					for (i = 0; ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > i; i++) {
+					for (i = 0; ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > i; i++) {
 						if (host_readbs(get_hero(i) + HERO_TYPE) >= 7) {
 							l5 = 1;
 						}
@@ -335,7 +335,7 @@ void ask_miracle(void)
 				}
 				case 9: {
 					/* PHEX wants a bit more estimation */
-					if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8)) > 500) {
+					if (ds_readds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD)) > 500) {
 
 						if (l_si <= 5) {
 							if (!ds_readd(INGAME_TIMERS + 0x4c)) {

@@ -151,7 +151,7 @@ void tevent_084(void)
 
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 5) <= 0)
 			{
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 
 				if (!do_fight(FIGHTS_F084)) {
 					ds_writeb(0x3de8, 1);
@@ -396,15 +396,15 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 {
 
 	/* decrement the number of heroes */
-	dec_ds_bs_post(0x2d3c);
+	dec_ds_bs_post(TOTAL_HERO_COUNTER);
 
 	/* load a new savegame if no hero is present */
-	if (!ds_readbs(0x2d3c)) {
+	if (!ds_readbs(TOTAL_HERO_COUNTER)) {
 		ds_writew(0xc3c1, 1);
 	}
 
 	/* decrement group counter */
-	dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+	dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 	/* write type to character sheet */
 	host_writeb(hero + HERO_TEMPLE_ID, (signed char)type);
@@ -466,7 +466,7 @@ void tevent_099(void)
 
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 4) <= 0) {
 
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 
 				if (!do_fight(FIGHTS_F099)) {
 					ds_writeb(0x3df2, 1);
@@ -512,7 +512,7 @@ void tevent_101(void)
 
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, (signed char)mod) <= 0) {
 
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 
 				if (!do_fight(FIGHTS_F101)) {
 					ds_writeb(0x3df4, 1);

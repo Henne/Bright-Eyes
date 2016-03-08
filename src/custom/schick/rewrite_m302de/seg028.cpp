@@ -70,7 +70,7 @@ void prepare_dungeon_area(void)
 		v1 = v2 = 0;
 
 		/* clear palette */
-		buf = (HugePt)(ds_readd(0xd019));
+		buf = (HugePt)(ds_readd(BUFFER9_PTR3));
 		memset(Real2Host(buf), 0, 0xc0);
 		wait_for_vsync();
 		set_palette(Real2Host(buf), 0x80, 0x40);
@@ -87,7 +87,7 @@ void prepare_dungeon_area(void)
 
 		bc_close(handle);
 
-		ds_writed(0xe404, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(0xd019), v2), -0xc0));
+		ds_writed(0xe404, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR3), v2), -0xc0));
 
 		ds_writew(0x2ccb, !ds_readbs(DUNGEON_INDEX));
 	}
@@ -146,7 +146,7 @@ void seg028_0224(void)
 
 		seg066_172b();
 
-		ds_writed(0xe3fc, ds_readd(0xd019));
+		ds_writed(0xe3fc, ds_readd(BUFFER9_PTR3));
 
 		for (l_si = 0; l_si < 4; l_si++) {
 
@@ -246,16 +246,15 @@ void load_special_textures(signed short arg)
 {
 	signed short fd;
 
-	/* load 0xe8 LTURM.NVF else FINGER.NVF */
 	fd = load_archive_file(arg == 9 ? ARCHIVE_FILE_FINGER_NVF : ARCHIVE_FILE_LTURM_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER7_PTR)), 64000);
 	bc_close(fd);
 
 }
 
 void call_load_buffer(void)
 {
-	load_buffer_1(ds_readws(0x26bf));
+	load_buffer_1(ds_readws(BUF1_FILE_INDEX));
 }
 
 void seg028_0555(signed short town)
@@ -374,8 +373,8 @@ void unused_store(signed short nr)
 	struct nvf_desc nvf;
 	signed short size;
 
-	nvf.dst = Real2Host(ds_readd(0xd303)) + 30000;
-	nvf.src = Real2Host(ds_readd(0xd019));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR)) + 30000;
+	nvf.src = Real2Host(ds_readd(BUFFER9_PTR3));
 	nvf.nr = nr;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&width;
@@ -395,7 +394,7 @@ void unused_store(signed short nr)
 
 	size = width * height;
 	memmove(Real2Host((RealPt)ds_readd(0x4baa) + ds_readws(0x5ec2)),
-			Real2Host((RealPt)ds_readd(0xd303) + 0x7530),
+			Real2Host((RealPt)ds_readd(BUFFER1_PTR) + 0x7530),
 			size);
 
 	ptr = nr * 5 + Real2Host(ds_readd(0xbd8c));
@@ -439,19 +438,19 @@ void load_map(void)
 
 	/* open OBJECTS.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 2000);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER1_PTR)), 2000);
 	bc_close(fd);
 
-	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.src = Real2Host(ds_readd(BUFFER1_PTR));
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;
-	nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(0xc3db), 18000));
+	nvf.dst = Real2Host(F_PADD((RealPt)ds_readd(BUFFER9_PTR), 18000));
 	nvf.nr = 16;
 
 	process_nvf(&nvf);
 
-	array_add(Real2Host(F_PADD((RealPt)ds_readd(0xc3db), 18000)), 3003, 0xe0, 2);
+	array_add(Real2Host(F_PADD((RealPt)ds_readd(BUFFER9_PTR), 18000)), 3003, 0xe0, 2);
 
 	ds_writeb(0x2845, 5);
 
@@ -468,7 +467,7 @@ void load_map(void)
 		/* or read KARTE.DAT from file */
 		fd = load_archive_file(ARCHIVE_FILE_KARTE_DAT);
 
-		read_archive_file(fd, Real2Host(ds_writed(0x432e, ds_readd(0xd303))), 64098);
+		read_archive_file(fd, Real2Host(ds_writed(0x432e, ds_readd(BUFFER1_PTR))), 64098);
 		bc_close(fd);
 
 		if (ds_readb(EMS_ENABLED) != 0) {
@@ -480,24 +479,24 @@ void load_map(void)
 				EMS_map_memory(ds_readw(0xbd90), 2, 2);
 				EMS_map_memory(ds_readw(0xbd90), 3, 3);
 				bc_memmove((RealPt)ds_readd(0x4baa),
-					(RealPt)ds_readd(0xd303), 64098);
+					(RealPt)ds_readd(BUFFER1_PTR), 64098);
 			}
 		}
 	}
 
 	/* load LROUT.DAT */
 	fd = load_archive_file(ARCHIVE_FILE_LROUT_DAT);
-	read_archive_file(fd, Real2Host(ds_readd(0xc3db)), 7600);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER9_PTR)), 7600);
 	bc_close(fd);
 
 	/* load HSROUT.DAT */
 	fd = load_archive_file(0xa);
-	read_archive_file(fd, Real2Host(F_PADD(ds_readd(0xc3db), 7600)), 3800);
+	read_archive_file(fd, Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 7600)), 3800);
 	bc_close(fd);
 
 	/* load SROUT.DAT */
 	fd = load_archive_file(ARCHIVE_FILE_SROUT_DAT);
-	read_archive_file(fd, Real2Host(F_PADD(ds_readd(0xc3db), 11400)), 5900);
+	read_archive_file(fd, Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 11400)), 5900);
 	bc_close(fd);
 
 	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
@@ -551,12 +550,12 @@ void load_splashes(void)
 
 	/* read SPLASHES.DAT */
 	fd = load_archive_file(ARCHIVE_FILE_SPLASHES_DAT);
-	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 3000);
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER1_PTR)), 3000);
 	bc_close(fd);
 
 	/* nvf.dst = splash_le = ds_readd() */
-	nvf.dst = Real2Host(ds_writed(SPLASH_LE, ds_readd(0xd2bd)));
-	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.dst = Real2Host(ds_writed(SPLASH_LE, ds_readd(SPLASH_BUFFER)));
+	nvf.src = Real2Host(ds_readd(BUFFER1_PTR));
 	nvf.nr = 0;
 	nvf.type = 1;
 	nvf.width = (Bit8u*)&width;
@@ -564,8 +563,8 @@ void load_splashes(void)
 	fd = (signed short)process_nvf(&nvf);
 
 	/* nvf.dst = splash_ae = ds_readd() */
-	nvf.dst = Real2Host(ds_writed(SPLASH_AE, (Bit32u)((RealPt)ds_readd(0xd2bd) + fd)));
-	nvf.src = Real2Host(ds_readd(0xd303));
+	nvf.dst = Real2Host(ds_writed(SPLASH_AE, (Bit32u)((RealPt)ds_readd(SPLASH_BUFFER) + fd)));
+	nvf.src = Real2Host(ds_readd(BUFFER1_PTR));
 	nvf.nr = 1;
 	nvf.type = 1;
 	nvf.width = (Bit8u*)&width;
@@ -584,7 +583,7 @@ void load_informer_tlk(signed short index)
 	Bit8u *ptr;
 
 
-	ds_writew(0x26bd, index);
+	ds_writew(TEXT_FILE_INDEX, index);
 
 	fd = load_archive_file(index);
 
@@ -599,22 +598,22 @@ void load_informer_tlk(signed short index)
 #endif
 
 	/* read the partner structures */
-	read_archive_file(fd, ptr = (p_datseg + 0x3618), partners * 0x26);
+	read_archive_file(fd, ptr = (p_datseg + INFORMER_ARRAY), partners * 0x26);
 
 	/* read the dialog layouts */
-	read_archive_file(fd, p_datseg + 0x3794, (Bit16u)(off - partners * 0x26));
+	read_archive_file(fd, p_datseg + DIALOG_STATES, (Bit16u)(off - partners * 0x26));
 
 	/* read the text */
-	text_len = (signed short)read_archive_file(fd, Real2Host(ds_readd(0xc3a9)), 10000);
+	text_len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)), 10000);
 
 	bc_close(fd);
 
 	split_textbuffer(Real2Host(ds_readd(CITY_LTX)),
-		(RealPt)ds_readd(0xc3a9), text_len);
+		(RealPt)ds_readd(BUFFER8_PTR), text_len);
 
 	/* adjust the pointers to the layouts */
 	for (i = 0; i < partners; i++, ptr += 0x26) {
-		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + 0x3794));
+		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + DIALOG_STATES));
 	}
 }
 
@@ -627,7 +626,7 @@ void load_tlk(signed short index)
 	signed short partners;
 	Bit8u *ptr;
 
-	ds_writew(0x26bd, index);
+	ds_writew(TEXT_FILE_INDEX, index);
 
 	fd = load_archive_file(index);
 
@@ -642,23 +641,23 @@ void load_tlk(signed short index)
 #endif
 
 	/* read the partner structures */
-	read_archive_file(fd, ptr = p_datseg + 0x3618, partners * 0x26);
+	read_archive_file(fd, ptr = p_datseg + INFORMER_ARRAY, partners * 0x26);
 
 	/* read the dialog layouts */
 	read_archive_file(fd,
-		Real2Host(RealMake(datseg, 0x3794)), off - partners * 0x26);
+		Real2Host(RealMake(datseg, DIALOG_STATES)), off - partners * 0x26);
 
 	/* read the text */
-	text_len = (signed short)read_archive_file(fd, Real2Host(ds_readd(0xd2b5)), 64000);
+	text_len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER7_PTR)), 64000);
 
 	bc_close(fd);
 
 	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)),
-		(RealPt)ds_readd(0xd2b5), text_len);
+		(RealPt)ds_readd(BUFFER7_PTR), text_len);
 
 	/* adjust the pointers to the layouts */
 	for (i = 0; i < partners; i++, ptr += 0x26) {
-		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + 0x3794));
+		host_writed(ptr, (Bit32u)RealMake(datseg, host_readw(ptr) + DIALOG_STATES));
 	}
 }
 
@@ -677,14 +676,14 @@ void load_fightbg(signed short index)
 	signed short fd;
 
 	fd = load_archive_file(index);
-	read_archive_file(fd, Real2Host(ds_readd(0xd303)), 30000);
-	decomp_pp20(Real2Host(ds_readd(0xd303)),
-			Real2Host(ds_readd(0xc3a9)),
+	read_archive_file(fd, Real2Host(ds_readd(BUFFER1_PTR)), 30000);
+	decomp_pp20(Real2Host(ds_readd(BUFFER1_PTR)),
+			Real2Host(ds_readd(BUFFER8_PTR)),
 #if !defined(__BORLANDC__)
-			Real2Host(ds_readd(0xd303)) + 4,
+			Real2Host(ds_readd(BUFFER1_PTR)) + 4,
 #else
-			FP_OFF(ds_readd(0xd303)) + 4,
-			FP_SEG(ds_readd(0xd303)),
+			FP_OFF(ds_readd(BUFFER1_PTR)) + 4,
+			FP_SEG(ds_readd(BUFFER1_PTR)),
 #endif
 			get_readlength2(fd));
 	bc_close(fd);

@@ -259,7 +259,7 @@ void do_harbour(void)
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)(l_si == 1 ? get_dtp(0x70) : get_dtp(0x58)),
-							(char*)(answer == 1 ? p_datseg + 0x708d : p_datseg + 0x708f),
+							(char*)(answer == 1 ? p_datseg + SEA_TRAVEL_STR_T : p_datseg + SEA_TRAVEL_STR_EN),
 							(char*)(answer == 1 ? get_dtp(0x5c) : get_dtp(0x60)));
 
 						l_si = 0;
@@ -267,11 +267,11 @@ void do_harbour(void)
 						do {
 
 							strcat((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(4 * (ds_readb(0x42bc + 12 * l_si++) + 235)));
+								(char*)get_ltx(4 * (ds_readb((0x42b2 + 10) + 12 * l_si++) + 235)));
 							if (--answer) {
 
 								strcat((char*)Real2Host(ds_readd(DTP2)),
-									(char*)(answer >= 2 ? p_datseg + 0x7092 : get_dtp(0x1c)));
+									(char*)(answer >= 2 ? p_datseg + SEA_TRAVEL_STR_COMMA : get_dtp(0x1c)));
 							}
 
 						} while (answer != 0);
@@ -337,8 +337,8 @@ void do_harbour(void)
 				ds_writews(CURRENT_ANI, -1);
 				ds_writew(0xe113, 0);
 
-				memmove(Real2Host(ds_readd(0xd303)), Real2Host(ds_readd(0x432e)), 64000);
-				map_effect(Real2Host(ds_readd(0xd303)));
+				memmove(Real2Host(ds_readd(BUFFER1_PTR)), Real2Host(ds_readd(0x432e)), 64000);
+				map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 
 				wait_for_vsync();
 
@@ -380,7 +380,7 @@ void do_harbour(void)
 	} while (!done);
 
 	l_si = load_archive_file(ARCHIVE_FILE_COMPASS);
-	read_archive_file(l_si, Real2Host(ds_readd(0xd2b1)), 5000);
+	read_archive_file(l_si, Real2Host(ds_readd(BUFFER6_PTR)), 5000);
 	bc_close(l_si);
 
 	set_var_to_zero();
@@ -430,9 +430,9 @@ void sea_travel(signed short passage, signed short dir)
 	struct dummy7 a = *(struct dummy7*)(p_datseg + 0x707f);
 #endif
 
-	ds_writeb(0xa842, 1);
+	ds_writeb(SEA_TRAVEL, 1);
 
-	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(0xc3db), 7600) : F_PADD(ds_readd(0xc3db), 11400)));
+	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(BUFFER9_PTR), 11400)));
 	ds_writew(0x4236, passage < 7 ? 7 : 38);
 	ds_writew(0x423e, passage < 7 ? passage : passage - 7);
 
@@ -608,7 +608,7 @@ void sea_travel(signed short passage, signed short dir)
 		refresh_screen_size();
 	}
 
-	ds_writeb(0xa842, 0);
+	ds_writeb(SEA_TRAVEL, 0);
 }
 
 signed short get_srout_len(Bit8u *ptr)

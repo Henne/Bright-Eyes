@@ -872,7 +872,7 @@ void spell_klarum_purum(void)
 	}
 
 	/* AE-cost = poison cost */
-	ds_writew(0xac0e, ds_readws(0x2c70 + poison * 2));
+	ds_writew(0xac0e, ds_readws(POISON_PRICES + poison * 2));
 
 	if (host_readws(get_spelluser() + 0x64) < ds_readws(0xac0e)) {
 		/* not enough AE */
@@ -968,27 +968,27 @@ RealPt spell_analues(void)
 	item_pos = select_item_to_drop(get_spelluser());
 	item_id = host_readws(get_spelluser() + 14 * item_pos + 0x196);
 
-	strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_dtp(0xd0));
+	strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_dtp(0xd0));
 
 	if (item_id) {
 
-		for (i = 0; ds_readws(0xac3c + i * 5) != -1; i++) {
+		for (i = 0; ds_readws(ANALUES_ITEMS + i * 5) != -1; i++) {
 
-			if (ds_readws(0xac3c + i * 5) == item_id) {
+			if (ds_readws(ANALUES_ITEMS + i * 5) == item_id) {
 
 				/* check if the spellcaster is able to analyze this item */
-				if (ds_readws(0xac3e + i * 5) <= ds_readws(0xe5b2)) {
+				if (ds_readws((ANALUES_ITEMS + 2) + i * 5) <= ds_readws(0xe5b2)) {
 
 					/* copy the matching result string */
-					strcpy((char*)Real2Host(ds_readd(0xd2eb)),
-						(char*)get_dtp(ds_readbs(0xac40 + i * 5) * 4));
+					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+						(char*)get_dtp(ds_readbs((ANALUES_ITEMS + 4) + i * 5) * 4));
 
 					/* set the magic flag */
 					or_ptr_bs(get_spelluser() + item_pos * 14 + 0x19a, 0x80);
 					break;
 				} else {
 					/* nothing found string */
-					strcpy((char*)Real2Host(ds_readd(0xd2eb)),
+					strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 						(char*)get_dtp(0xdc));
 					break;
 				}
@@ -1002,10 +1002,10 @@ RealPt spell_analues(void)
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xd4),
 			(char*)get_spelluser() + 0x10,
-			(char*)Real2Host(ds_readd(0xd2eb)));
+			(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 	}
 
-	return (RealPt)ds_readd(0xd2eb);
+	return (RealPt)ds_readd(BUFFER4_PTR);
 }
 
 #if !defined(__BORLANDC__)

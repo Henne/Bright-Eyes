@@ -32,41 +32,41 @@ void seg045_0000(signed short fight_id, signed short type, signed short a3)
 	obj_y = host_readws((Bit8u*)&obj_y);
 #endif
 
-	ds_writew(0xe066, 0);
+	ds_writew(FIG_LIST_ELEM, 0);
 
-	ds_writeb(0xe068, ds_readb(type * 2 + 0x61f8));
+	ds_writeb((FIG_LIST_ELEM+2), ds_readb(type * 2 + 0x61f8));
 
 	if (type != 2) {
-		ds_writeb(0xe068, ds_readbs(0xe068) + a3);
+		ds_writeb((FIG_LIST_ELEM+2), ds_readbs((FIG_LIST_ELEM+2)) + a3);
 	}
 
 	if (a3 == 0) {
 		obj_x += 2;
 	}
 
-	ds_writebs(0xe069, (signed char)obj_x);
-	ds_writebs(0xe06a, (signed char)obj_y);
-	ds_writeb(0xe06b, ds_readb(0x6198 + type * 8 + a3 * 2));
-	ds_writeb(0xe06c, ds_readb(0x61c8 + type * 8 + a3 * 2));
-	ds_writeb(0xe06d, ds_readb(0x6204 + type * 2));
-	ds_writeb(0xe06e, ds_readb(0x6210 + type * 2));
-	ds_writeb(0xe06f, 0);
-	ds_writeb(0xe070, 0);
+	ds_writebs((FIG_LIST_ELEM+3), (signed char)obj_x);
+	ds_writebs((FIG_LIST_ELEM+4), (signed char)obj_y);
+	ds_writeb((FIG_LIST_ELEM+5), ds_readb(0x6198 + type * 8 + a3 * 2));
+	ds_writeb((FIG_LIST_ELEM+6), ds_readb(0x61c8 + type * 8 + a3 * 2));
+	ds_writeb((FIG_LIST_ELEM+7), ds_readb(0x6204 + type * 2));
+	ds_writeb((FIG_LIST_ELEM+8), ds_readb(0x6210 + type * 2));
+	ds_writeb((FIG_LIST_ELEM+9), 0);
+	ds_writeb((FIG_LIST_ELEM+10), 0);
 
-	ds_writebs(0xe071, ds_readbs(0x6210 + type * 2) - 1);
-	ds_writebs(0xe072, ds_readbs(0x6204 + type * 2) - 1);
-	ds_writeb(0xe07b, 0);
-	ds_writeb(0xe073, 0);
-	ds_writeb(0xe075, -1);
-	ds_writeb(0xe074, -1);
-	ds_writed(0xe07d, ds_readd(0xd85a));
-	ds_writeb(0xe077, 100);
-	ds_writeb(0xe078, 0);
-	ds_writeb(0xe079, -1);
+	ds_writebs((FIG_LIST_ELEM+11), ds_readbs(0x6210 + type * 2) - 1);
+	ds_writebs((FIG_LIST_ELEM+12), ds_readbs(0x6204 + type * 2) - 1);
+	ds_writeb((FIG_LIST_ELEM+21), 0);
+	ds_writeb((FIG_LIST_ELEM+13), 0);
+	ds_writeb((FIG_LIST_ELEM+15), -1);
+	ds_writeb((FIG_LIST_ELEM+14), -1);
+	ds_writed((FIG_LIST_ELEM+23), ds_readd(0xd85a));
+	ds_writeb((FIG_LIST_ELEM+17), 100);
+	ds_writeb((FIG_LIST_ELEM+18), 0);
+	ds_writeb((FIG_LIST_ELEM+19), -1);
 
 	nvf.dst = Real2Host(ds_readd(0xd85a));
-	nvf.src = Real2Host(ds_readd(0xd866));
-	nvf.nr = ds_readbs(0xe068);
+	nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
+	nvf.nr = ds_readbs((FIG_LIST_ELEM+2));
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&obj_x;
 	nvf.height = (Bit8u*)&obj_x;
@@ -137,9 +137,9 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id
 		return 0;
 	}
 
-	ptr = p_datseg + 0xd8cf + a1 * 0xf3;
+	ptr = p_datseg + (0xd8ce + 1) + a1 * 0xf3;
 	ds_writeb(0xd8ce + a1 * 0xf3, 0);
-	ds_writeb(0xd9c0 + a1 * 0xf3, 0);
+	ds_writeb((0xd8ce + 242) + a1 * 0xf3, 0);
 
 	for (i = 0; beeline - 1 > i; i++) {
 		ptr += FIG_copy_it(ptr, Real2Host(host_readd(Real2Host(ds_readd(0x6324 + a2 * 4)) + a5 * 4)), -1);
@@ -172,7 +172,7 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	struct nvf_desc nvf;
 
 	nvf.dst = Real2Host(ds_readd(0xd856));
-	nvf.src = Real2Host(ds_readd(0xd866));
+	nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
 
 	nvf.nr = a.a[spell_ani_id - 1];
 	nvf.type = 0;
@@ -186,28 +186,28 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	width = host_readws((Bit8u*)&width);
 #endif
 
-	ds_writew(0xe066, 0);
-	ds_writeb(0xe068, a.a[spell_ani_id - 1]);
-	ds_writeb(0xe069, (signed char)x);
-	ds_writeb(0xe06a, (signed char)y);
+	ds_writew(FIG_LIST_ELEM, 0);
+	ds_writeb((FIG_LIST_ELEM+2), a.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+3), (signed char)x);
+	ds_writeb((FIG_LIST_ELEM+4), (signed char)y);
 
-	ds_writeb(0xe06b, b.a[spell_ani_id - 1]);
-	ds_writeb(0xe06c, c.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+5), b.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+6), c.a[spell_ani_id - 1]);
 
-	ds_writeb(0xe06d, (unsigned char)height);
-	ds_writeb(0xe06e, (unsigned char)width);
-	ds_writeb(0xe06f, 0);
-	ds_writeb(0xe070, 0);
-	ds_writeb(0xe071, (unsigned char)(width - 1));
-	ds_writeb(0xe072, (unsigned char)(height - 1));
-	ds_writeb(0xe07b, 0);
-	ds_writeb(0xe073, 0);
-	ds_writeb(0xe075, -1);
-	ds_writeb(0xe074, -1);
-	ds_writed(0xe07d, ds_readd(0xd856));
-	ds_writeb(0xe077, 99);
-	ds_writeb(0xe078, 0);
-	ds_writeb(0xe079, -1);
+	ds_writeb((FIG_LIST_ELEM+7), (unsigned char)height);
+	ds_writeb((FIG_LIST_ELEM+8), (unsigned char)width);
+	ds_writeb((FIG_LIST_ELEM+9), 0);
+	ds_writeb((FIG_LIST_ELEM+10), 0);
+	ds_writeb((FIG_LIST_ELEM+11), (unsigned char)(width - 1));
+	ds_writeb((FIG_LIST_ELEM+12), (unsigned char)(height - 1));
+	ds_writeb((FIG_LIST_ELEM+21), 0);
+	ds_writeb((FIG_LIST_ELEM+13), 0);
+	ds_writeb((FIG_LIST_ELEM+15), -1);
+	ds_writeb((FIG_LIST_ELEM+14), -1);
+	ds_writed((FIG_LIST_ELEM+23), ds_readd(0xd856));
+	ds_writeb((FIG_LIST_ELEM+17), 99);
+	ds_writeb((FIG_LIST_ELEM+18), 0);
+	ds_writeb((FIG_LIST_ELEM+19), -1);
 	ds_writeb(0xe38c, FIG_add_to_list(-1));
 }
 
@@ -232,10 +232,10 @@ void seg045_0394(signed short a1, Bit8u *hero, signed short spell_ani_id)
 	y = host_readws((Bit8u*)&y);
 #endif
 
-	ptr = p_datseg + a1 * 0xf3 + 0xd8cf;
+	ptr = p_datseg + a1 * 0xf3 + (0xd8ce + 1);
 
 	ds_writeb(0xd8ce + a1 * 0xf3, 0);
-	ds_writeb(0xd9c0 + a1 * 0xf3, -1);
+	ds_writeb((0xd8ce + 242) + a1 * 0xf3, -1);
 
 	/* copy the ani sequence and terminate it */
 	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + spell_ani_id * 4)), -1);
@@ -259,10 +259,10 @@ void seg045_041b(signed short a1, Bit8u *enemy, signed short spell_ani_id)
 	/* search the target on the chessboard */
 	FIG_search_obj_on_cb(host_readbs(enemy + 0x2d), &x, &y);
 
-	ptr = p_datseg + a1 * 0xf3 + 0xd8cf;
+	ptr = p_datseg + a1 * 0xf3 + (0xd8ce + 1);
 
 	ds_writeb(0xd8ce + a1 * 0xf3, 0);
-	ds_writeb(0xd9c0 + a1 * 0xf3, -1);
+	ds_writeb((0xd8ce + 242) + a1 * 0xf3, -1);
 
 	/* copy the ani sequence and terminate it */
 	ptr += FIG_copy_it(ptr, Real2Host(ds_readd(0x6362 + spell_ani_id * 4)), -1);

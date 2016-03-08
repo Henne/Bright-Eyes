@@ -138,13 +138,13 @@ void THO_bank(void)
 
 	do {
 
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)get_city(0x120),
 			ds_readws(BANK_DEPOSIT));
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_city(0x144),
-						Real2Host(ds_readd(0xd2eb)), 3,
+						Real2Host(ds_readd(BUFFER4_PTR)), 3,
 						get_city(0x124), get_city(0x128), get_city(0x140));
 		} while (answer == -1);
 
@@ -209,7 +209,7 @@ void THO_bank(void)
 			if (ds_readws(BANK_DEPOSIT) >= 30000) {
 
 				/* prevent overflow  at 32767 */
-				GUI_output(p_datseg + 0x7c44);
+				GUI_output(p_datseg + STR_BANK_DEPOSIT_TO_BIG);
 
 			} else {
 
@@ -322,7 +322,7 @@ void THO_arsenal(void)
 
 	} else {
 
-		GUI_output(p_datseg + 0x7c7d);
+		GUI_output(p_datseg + STR_OBVIOUSLY_CLOSED);
 	}
 }
 
@@ -515,7 +515,7 @@ void academy_analues(void)
 
 		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
-		buffer1_bak = ds_readws(0x26bf);
+		buffer1_bak = ds_readws(BUF1_FILE_INDEX);
 
 		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 

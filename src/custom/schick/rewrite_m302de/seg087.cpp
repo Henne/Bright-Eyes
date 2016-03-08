@@ -58,8 +58,8 @@ signed short DNG14_handler(void)
 	}
 	if (pos == 0x20b && pos != ds_readws(0x330e) && random_schick(100) <= 10) {
 
-		ds_writew(0xd325, ds_writew(0xd327, 0x318));
-		ds_writew(0xd329, ds_writew(0xd32b, 0x22e));
+		ds_writew(0xd325, ds_writew((0xd325 + 2), 0x318));
+		ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x22e));
 
 		do_fight(FIGHTS_DTHO03);
 
@@ -92,7 +92,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x602 && pos != ds_readws(0x330e) && ds_readb(0x3fb7) != 0) {
 
-		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x524))));
+		ds_writew(0xd325, ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x524))));
 
 		do_fight(FIGHTS_DTHO06);
 
@@ -107,14 +107,14 @@ signed short DNG14_handler(void)
 	} else if ((pos == 0x90d || pos == 0x909) && pos != ds_readws(0x330e) && random_schick(100) <= 20) {
 
 		ds_writew(0xd325, 0x908);
-		ds_writew(0xd327, 0xb1b);
-		ds_writew(0xd329, ds_writew(0xd32b, 0x92e));
+		ds_writew((0xd325 + 2), 0xb1b);
+		ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x92e));
 
 		do_fight(FIGHTS_DTHO09);
 
 	} else if (pos == 0xb0e && pos != ds_readws(0x330e) && random_schick(100) <= 10) {
 
-		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x83e))));
+		ds_writew(0xd325, ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x83e))));
 
 		do_fight(FIGHTS_DTHO10);
 
@@ -138,7 +138,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0xb0a && pos != ds_readws(0x330e) && random_schick(100) <= 10) {
 
-		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x93b))));
+		ds_writew(0xd325, ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x93b))));
 
 		do_fight(FIGHTS_DTHO13);
 
@@ -159,11 +159,11 @@ signed short DNG14_handler(void)
 				(char*)get_dtp(0x1c),
 				(char*)hero + HERO_NAME2);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)((l_di = test_skill(hero, 48, -6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
-			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(0xd2eb)));
+			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -190,11 +190,11 @@ signed short DNG14_handler(void)
 				(char*)get_dtp(0x1c),
 				(char*)hero + HERO_NAME2);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)((l_di = test_skill(hero, 48, 6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
-			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(0xd2eb)));
+			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -211,22 +211,22 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x1108 && pos != ds_readws(0x330e) && random_schick(100) <= 30) {
 
-		ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x1106))));
+		ds_writew(0xd325, ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1106))));
 
 		do_fight(FIGHTS_DTHO18);
 
 	} else if (pos == 0x110b && pos != ds_readws(0x330e) && random_schick(100) <= 5) {
 
-		ds_writew(0xd325, ds_writew(0xd327, 0x1109));
-		ds_writew(0xd329, ds_writew(0xd32b, 0x112e));
+		ds_writew(0xd325, ds_writew((0xd325 + 2), 0x1109));
+		ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x112e));
 
 		do_fight(FIGHTS_DTHO19);
 
 	} else if (pos == 0x110e && pos != ds_readws(0x330e) && random_schick(100) <= 10) {
 
 		ds_writew(0xd325, 0x110c);
-		ds_writew(0xd327, ds_writew(0xd329, 0x151e));
-		ds_writew(0xd32b, 0x110e);
+		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x151e));
+		ds_writew((0xd325 + 6), 0x110e);
 
 		do_fight(FIGHTS_DTHO20);
 
@@ -249,8 +249,8 @@ signed short DNG14_handler(void)
 		/* the main fight in Level 2 */
 
 		ds_writew(0xd325, 0x1a06);
-		ds_writew(0xd327, 0x1b1a);
-		ds_writew(0xd329, ds_writew(0xd32b, 0x192e));
+		ds_writew((0xd325 + 2), 0x1b1a);
+		ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x192e));
 
 		if (!do_fight(random_schick(100) <= 50 ? FIGHTS_DTHO21A : FIGHTS_DTHO21B)) {
 			ds_writeb(0x3fbe, 1);
@@ -263,8 +263,8 @@ signed short DNG14_handler(void)
 	} else if (pos == 0x1a06 && pos != ds_readws(0x330e) && random_schick(100) <= 50) {
 
 		ds_writew(0xd325, 0x1a01);
-		ds_writew(0xd327, 0x1c16);
-		ds_writew(0xd329, ds_writew(0xd32b, 0x1a29));
+		ds_writew((0xd325 + 2), 0x1c16);
+		ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1a29));
 
 		do_fight(FIGHTS_DTHO23);
 
@@ -313,11 +313,11 @@ signed short DNG14_handler(void)
 				(char*)get_dtp(0x1c),
 				(char*)hero + HERO_NAME2);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)((l_di = test_skill(hero, 48, -6)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
-			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(0xd2eb)));
+			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -345,11 +345,11 @@ signed short DNG14_handler(void)
 				(char*)get_dtp(0x1c),
 				(char*)hero + HERO_NAME2);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)((l_di = test_skill(hero, 48, 7)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
-			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(0xd2eb)));
+			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -531,11 +531,11 @@ signed short DNG14_handler(void)
 				(char*)get_dtp(0x1c),
 				(char*)hero + HERO_NAME2);
 
-			sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 				(char*)((l_di = test_skill(hero, 48, 4)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
-			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(0xd2eb)));
+			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 

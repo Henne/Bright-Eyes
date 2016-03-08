@@ -52,18 +52,18 @@ void do_temple(void)
 		if (ds_readws(0x2846) != 0) {
 
 			/* search which god owns this temple */
-			ds_writew(0xe3f8, 1);
+			ds_writew(TEMPLE_GOD, 1);
 			for (l_si = 1; l_si < 15; l_si++) {
 				if (is_in_byte_array((signed char)ds_readws(TYPEINDEX), Real2Host(ds_readd(0x6e36 + 4 * l_si))))
 				{
-					ds_writew(0xe3f8, l_si);
+					ds_writew(TEMPLE_GOD, l_si);
 					break;
 				}
 			}
 
 			draw_main_screen();
 			load_ani(3);
-			load_tempicon(ds_readws(0xe3f8) - 1);
+			load_tempicon(ds_readws(TEMPLE_GOD) - 1);
 			init_ani(0);
 			set_audio_track(ARCHIVE_FILE_TEMPLE_XMI);
 
@@ -72,7 +72,7 @@ void do_temple(void)
 			ds_writew(0xc015, 40);
 			ds_writew(0xc017, 22);
 			ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd2ff) + 28259));
-			ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(0xc3a9) + 7000));
+			ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 7000));
 
 			update_mouse_cursor();
 			do_pic_copy(0);
@@ -82,7 +82,7 @@ void do_temple(void)
 			/* location string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x3ac),
-				(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+				(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 				(char*)(ds_readws(TYPEINDEX) != 58 ? get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)): get_ltx(0x9b8)));
 
 			GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -113,7 +113,7 @@ void do_temple(void)
 
 		if (ds_readws(ACTION) == 137) {
 			/* leave temple */
-			if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 				GUI_output(get_ltx(0x3a0));
 			} else {
 				done = 1;
@@ -140,7 +140,7 @@ void do_temple(void)
 				/* location string */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x3ac),
-					(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+					(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 					(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 				GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 
@@ -155,13 +155,13 @@ void do_temple(void)
 		} else if (ds_readws(ACTION) == 133) {
 			/* save game */
 			if (ds_readws(TYPEINDEX) != 58) {
-				if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+				if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 					GUI_output(get_ltx(0x3a0));
 				} else {
 					save_game_state();
 				}
 			} else {
-				GUI_output(p_datseg + 0x6e7a);
+				GUI_output(p_datseg + STR_NO_SAVE_IN_TEMPLE);
 			}
 		}
 
@@ -175,7 +175,7 @@ void do_temple(void)
 
 		if (ds_readws(ACTION) == 135) {
 			/* ask for a miracle */
-			if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 				GUI_output(get_ltx(0x3a0));
 			} else {
 				ask_miracle();
@@ -184,7 +184,7 @@ void do_temple(void)
 
 		if (ds_readws(ACTION) == 136) {
 			/* make a donation */
-			if (!ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+			if (!ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 				GUI_output(get_ltx(0x3a0));
 			} else {
 
@@ -194,11 +194,11 @@ void do_temple(void)
 					GUI_output(get_ltx(0x644));
 				} else {
 
-					make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), money);
+					make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x4a4),
-						(char*)Real2Host(ds_readd(0xd2eb)));
+						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 					input = GUI_input(Real2Host(ds_readd(DTP2)), 3);
 
@@ -208,10 +208,10 @@ void do_temple(void)
 
 						if (10 * donation >= money) {
 							/* donate all money */
-							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), money / 10);
+							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD), money / 10);
 							money = 0;
 						} else {
-							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(0xe3f8), donation);
+							add_ds_ds(GODS_ESTIMATION + 4 * ds_readws(TEMPLE_GOD), donation);
 							money -= 10 * donation;
 						}
 
@@ -237,11 +237,11 @@ void char_add(signed short temple_id)
 	RealPt ptr;
 	Bit8u *hero;
 
-	ptr = (RealPt)ds_readd(0xd303) + 50000;
+	ptr = (RealPt)ds_readd(BUFFER1_PTR) + 50000;
 	l_di = copy_chr_names(Real2Host(ptr), temple_id);
 
-	if (ds_readbs(0x2d3c) == 7 ||
-		(ds_readbs(0x2d3c) == 6 && !host_readbs(get_hero(6) + HERO_TYPE)))
+	if (ds_readbs(TOTAL_HERO_COUNTER) == 7 ||
+		(ds_readbs(TOTAL_HERO_COUNTER) == 6 && !host_readbs(get_hero(6) + HERO_TYPE)))
 	{
 		GUI_output(get_ltx(0x480));
 	} else {
@@ -267,8 +267,8 @@ void char_add(signed short temple_id)
 										(char*)(Real2Host(ptr) + 32 * l_si));
 
 							if (read_chr_temp((RealPt)ds_readd(DTP2), i, ds_readbs(CURRENT_GROUP))) {
-								inc_ds_bs_post(0x2d3c);
-								inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+								inc_ds_bs_post(TOTAL_HERO_COUNTER);
+								inc_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 								host_writebs(hero + HERO_GROUP_POS, i + 1);
 								write_chr_temp(i);
 							}
@@ -282,14 +282,14 @@ void char_add(signed short temple_id)
 					/* location string */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x3ac),
-						(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+						(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 						(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 				}
 
 				l_di = copy_chr_names(Real2Host(ptr), temple_id);
 			}
-		} while (l_si != -1 && ds_readbs(0x2d3c) < (host_readbs(get_hero(6) + HERO_TYPE) ? 7 : 6));
+		} while (l_si != -1 && ds_readbs(TOTAL_HERO_COUNTER) < (host_readbs(get_hero(6) + HERO_TYPE) ? 7 : 6));
 	}
 }
 
@@ -298,7 +298,7 @@ void char_letgo(signed short temple_id)
 	signed short hero_pos;
 	Bit8u *hero;
 
-	if (!ds_readbs(0x2d3c) || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+	if (!ds_readbs(TOTAL_HERO_COUNTER) || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 		GUI_output(get_ltx(0x3a0));
 	} else {
 
@@ -315,8 +315,8 @@ void char_letgo(signed short temple_id)
 				} else {
 					/* let go a hero */
 					hero = get_hero(hero_pos);
-					dec_ds_bs_post(0x2d3c);
-					dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+					dec_ds_bs_post(TOTAL_HERO_COUNTER);
+					dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 					host_writeb(hero + HERO_TEMPLE_ID, (signed char)temple_id);
 					host_writeb(hero + HERO_GROUP_POS, 0);
@@ -331,13 +331,13 @@ void char_letgo(signed short temple_id)
 					/* location string */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x3ac),
-						(char*)get_ltx(4 * (ds_readws(0xe3f8) + 21)),	/* name of the god */
+						(char*)get_ltx(4 * (ds_readws(TEMPLE_GOD) + 21)),	/* name of the god */
 						(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 				}
 			}
 
-		} while (hero_pos != -1 && ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP)) > (host_readbs(get_hero(6) + HERO_TYPE) ? 1 : 0));
+		} while (hero_pos != -1 && ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) > (host_readbs(get_hero(6) + HERO_TYPE) ? 1 : 0));
 	}
 }
 
@@ -349,9 +349,9 @@ signed short char_erase(void)
 	RealPt ptr;
 
 	if (ds_readbs(0x4c3a) != 0) {
-		ptr = F_PADD((HugePt)ds_readd(0xc3db), 30000);
+		ptr = F_PADD((HugePt)ds_readd(BUFFER9_PTR), 30000);
 	} else {
-		ptr = (RealPt)ds_readd(0xd303) + 50000;
+		ptr = (RealPt)ds_readd(BUFFER1_PTR) + 50000;
 	}
 
 	l_di = copy_chr_names(Real2Host(ptr), -1);
@@ -366,16 +366,16 @@ signed short char_erase(void)
 				strcpy((char*)Real2Host(ds_readd(DTP2)),
 					(char*)Real2Host(ptr) + 32 * l_si);
 
-				sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 					(char*)get_ltx(0x49c),
 					(char*)Real2Host(ds_readd(DTP2)));
 
-				if (GUI_bool(Real2Host(ds_readd(0xd2eb)))) {
+				if (GUI_bool(Real2Host(ds_readd(BUFFER4_PTR)))) {
 
-					prepare_chr_name((char*)Real2Host(ds_readd(0xd2eb)),
+					prepare_chr_name((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 								(char*)Real2Host(ds_readd(DTP2)));
 
-					unlink_ret = bc_unlink((RealPt)ds_readd(0xd2eb));
+					unlink_ret = bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
 
 					if (unlink_ret != 0) {
 						GUI_output(get_ltx(0x498));
@@ -383,8 +383,8 @@ signed short char_erase(void)
 					}
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)p_datseg + 0x6e72,
-						(char*)Real2Host(ds_readd(0xd2eb)));
+						(char*)p_datseg + STR_TEMP_FILE_WILDCARD,
+						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 					bc_unlink((RealPt)ds_readd(DTP2));
 				}
 
@@ -442,17 +442,17 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 		add_hero_le(get_hero(hero_pos), le_in);
 
 		/* prepare a message */
-		strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
 
 		if (le_in > 1) {
-			strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+			strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)str,
 				(char*)get_hero(hero_pos) + HERO_NAME2,
 				le_in,
-				(char*)Real2Host(ds_readd(0xd2eb)));
+				(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 	}
 }
 

@@ -72,9 +72,9 @@ void sell_screen(Bit8u *shop_ptr)
 	struct dummy3 array3 = { { 30, 95, 160 } };
 	struct dummy5 array5 = { { 35, 55, 75, 95, 115 } };
 #else
-	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + 0x6bf0);
-	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + 0x6bf5);
-	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + 0x6bfa);
+	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_H);
+	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_S);
+	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_D);
 	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6bff);
 	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6c05);
 #endif
@@ -95,7 +95,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 	ds_writew(0x29b4, 0);
 	l8 = ds_writews(0x2846, 1);
-	ds_writed(0xc005, (Bit32u)((RealPt)ds_readd(0xd2df) + 2100));
+	ds_writed(SELLITEMS, (Bit32u)((RealPt)ds_readd(FIG_FIGURE1_BUF) + 2100));
 
 	while (done == 0) {
 
@@ -103,7 +103,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 			set_var_to_zero();
 			ds_writeb(0x2845, -1);
-			memset(Real2Host(ds_readd(0xc005)), 0, 2100);
+			memset(Real2Host(ds_readd(SELLITEMS)), 0, 2100);
 
 			for (items_x = 0; items_x <= 6; items_x++) {
 				for (l_di = 0; l_di < 23; l_di++) {
@@ -169,7 +169,7 @@ void sell_screen(Bit8u *shop_ptr)
 				}
 
 				for (l_di = l20; l_di < 23; l_di++) {
-					host_writew(Real2Host(ds_readd(0xc005)) + 7 * l_di, 0);
+					host_writew(Real2Host(ds_readd(SELLITEMS)) + 7 * l_di, 0);
 				}
 
 				l11 = 0;
@@ -192,8 +192,8 @@ void sell_screen(Bit8u *shop_ptr)
 			do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
 			do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
 
-			nvf.dst = Real2Host(ds_readd(0xd303));
-			nvf.src = Real2Host(ds_readd(0xd2a9));
+			nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+			nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 			nvf.type = 0;
 			nvf.width =  (Bit8u*)&width;
 			nvf.height = (Bit8u*)&height;
@@ -204,13 +204,13 @@ void sell_screen(Bit8u *shop_ptr)
 
 					answer = 5 * items_x + l_di + item;
 
-					if ((j = host_readws(Real2Host(ds_readd(0xc005)) + 7 * answer))) {
+					if ((j = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * answer))) {
 
 						ds_writew(0xc011, array3.a[items_x]);
 						ds_writew(0xc013, array5.a[l_di]);
 						ds_writew(0xc015, array3.a[items_x] + 15);
 						ds_writew(0xc017, array5.a[l_di] + 15);
-						ds_writed(0xc019, ds_readd(0xd303));
+						ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 						nvf.nr = host_readws(get_itemsdat(j));
 
@@ -220,7 +220,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 						if (item_stackable(get_itemsdat(j))) {
 
-							if ((nice = host_readws(hero1 + 0x198 + 14 * host_readbs(Real2Host(ds_readd(0xc005)) + 7 * answer + 6))) > 1)
+							if ((nice = host_readws(hero1 + 0x198 + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 							{
 #if !defined(__BORLANDC__)
 								sprintf((char*)Real2Host(ds_readd(DTP2)), "%d", nice);
@@ -232,14 +232,14 @@ void sell_screen(Bit8u *shop_ptr)
 									array3.a[items_x] + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),
 									array5.a[l_di] + 9);
 
-								if (tmp[hero_pos][host_readbs(Real2Host(ds_readd(0xc005)) + 7 * answer + 6)] != 0)
+								if (tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)] != 0)
 								{
 									set_textcolor(201, 0);
 #if !defined(__BORLANDC__)
 									sprintf((char*)Real2Host(ds_readd(DTP2)), "%d",
-										tmp[hero_pos][host_readbs(Real2Host(ds_readd(0xc005)) + 7 * answer + 6)]);
+										tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)]);
 #else
-									itoa(tmp[hero_pos][host_readbs(Real2Host(ds_readd(0xc005)) + 7 * answer + 6)], Real2Host(ds_readd(DTP2)), 10);
+									itoa(tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)], Real2Host(ds_readd(DTP2)), 10);
 #endif
 
 									GUI_print_string(Real2Host(ds_readd(DTP2)),
@@ -252,11 +252,11 @@ void sell_screen(Bit8u *shop_ptr)
 						}
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							host_readws(Real2Host(ds_readd(0xc005)) + 4 + 7 * answer) == 1 ? fmt_h.a :
-								(host_readws(Real2Host(ds_readd(0xc005)) + 4 + 7 * answer) == 10 ? fmt_s.a : fmt_d.a),
-							host_readws(Real2Host(ds_readd(0xc005)) + 2 + 7 * answer));
+							host_readws(Real2Host(ds_readd(SELLITEMS)) + 4 + 7 * answer) == 1 ? fmt_h.a :
+								(host_readws(Real2Host(ds_readd(SELLITEMS)) + 4 + 7 * answer) == 10 ? fmt_s.a : fmt_d.a),
+							host_readws(Real2Host(ds_readd(SELLITEMS)) + 2 + 7 * answer));
 
-						if (tmp[hero_pos][host_readbs(Real2Host(ds_readd(0xc005)) + 7 * answer + 6)]) {
+						if (tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)]) {
 							set_textcolor(201, 0);
 						}
 
@@ -278,9 +278,9 @@ void sell_screen(Bit8u *shop_ptr)
 		}
 
 		if (ds_readws(0xc3c7) == 2) {
-			select_with_mouse((Bit8u*)&l6, Real2Host(ds_readd(0xc005)) + 7 * item);
+			select_with_mouse((Bit8u*)&l6, Real2Host(ds_readd(SELLITEMS)) + 7 * item);
 		} else {
-			select_with_keyboard((Bit8u*)&l6, Real2Host(ds_readd(0xc005)) + 7 * item);
+			select_with_keyboard((Bit8u*)&l6, Real2Host(ds_readd(SELLITEMS)) + 7 * item);
 		}
 
 #if !defined(__BORLANDC__)
@@ -315,7 +315,7 @@ void sell_screen(Bit8u *shop_ptr)
 			clear_loc_line();
 
 
-			GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item))))));
+			GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item))))));
 		}
 
 		if (ds_readws(0xc3d3) != 0  || ds_readws(ACTION) == 73) {
@@ -335,7 +335,7 @@ void sell_screen(Bit8u *shop_ptr)
 		if (ds_readws(ACTION) == 131 && item != 0) {
 			l8 = 1;
 			item -= 15;
-		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(0xc005)) + 7 * (item + 15))) {
+		} else if (ds_readws(ACTION) == 130 && host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (item + 15))) {
 			l8 = 1;
 			item += 15;
 		}
@@ -343,9 +343,9 @@ void sell_screen(Bit8u *shop_ptr)
 		if (ds_readws(ACTION) == 144 || ds_readws(ACTION) == 28) {
 
 
-			item_id = host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item));
+			item_id = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item));
 
-			if (host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 2) == 0) {
+			if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 2) == 0) {
 				GUI_output(get_ltx(0x710));
 			} else {
 
@@ -357,7 +357,7 @@ void sell_screen(Bit8u *shop_ptr)
 				} else {
 
 					nice = 1;
-					l15 = host_readbs(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 6);
+					l15 = host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 6);
 
 					if (tmp[hero_pos][l15] != 0) {
 
@@ -377,21 +377,21 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = host_readws(hero1 + 0x198 + 14 * l15);
 							}
 
-							price -= ((Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 *(l6 + item) + 2) *
-									(Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 4) *
-									tmp[hero_pos][l15] * ds_readws(0xe3f6)) / 4L;
+							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
+									(Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 4) *
+									tmp[hero_pos][l15] * ds_readws(PRICE_MODIFICATOR)) / 4L;
 
 							tmp[hero_pos][l15] = nice;
 
-							price += ((Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 *(l6 + item) + 2) *
-									(Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 4) *
-									tmp[hero_pos][l15] * ds_readws(0xe3f6)) / 4L;
+							price += ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
+									(Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 4) *
+									tmp[hero_pos][l15] * ds_readws(PRICE_MODIFICATOR)) / 4L;
 						} else {
 							tmp[hero_pos][l15] = 0;
 
-							price -= ((Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 *(l6 + item) + 2) *
-									(Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 4) *
-									nice * ds_readws(0xe3f6)) / 4L;
+							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
+									(Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 4) *
+									nice * ds_readws(PRICE_MODIFICATOR)) / 4L;
 						}
 					} else {
 						if (item_stackable(get_itemsdat(item_id)) && host_readws(hero1 + 0x198 + 14 * l15) > 1) {
@@ -410,20 +410,20 @@ void sell_screen(Bit8u *shop_ptr)
 								nice = host_readws(hero1 + 0x198 + 14 * l15);
 							}
 
-							price -= ((Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 *(l6 + item) + 2) *
-									(Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 4) *
-									tmp[hero_pos][l15] * ds_readws(0xe3f6)) / 4L;
+							price -= ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
+									(Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 4) *
+									tmp[hero_pos][l15] * ds_readws(PRICE_MODIFICATOR)) / 4L;
 
 							tmp[hero_pos][l15] = nice;
 
-							price += ((Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 *(l6 + item) + 2) *
-									(Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 4) *
-									tmp[hero_pos][l15] * ds_readws(0xe3f6)) / 4L;
+							price += ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
+									(Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 4) *
+									tmp[hero_pos][l15] * ds_readws(PRICE_MODIFICATOR)) / 4L;
 						} else {
 							tmp[hero_pos][l15] = 1;
-							price += ((Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 *(l6 + item) + 2) *
-									(Bit32s)host_readws(Real2Host(ds_readd(0xc005)) + 7 * (l6 + item) + 4) *
-									nice * ds_readws(0xe3f6)) / 4L;
+							price += ((Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 *(l6 + item) + 2) *
+									(Bit32s)host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item) + 4) *
+									nice * ds_readws(PRICE_MODIFICATOR)) / 4L;
 						}
 					}
 				}
@@ -444,10 +444,10 @@ void sell_screen(Bit8u *shop_ptr)
 			/* 0xe83 - 11ba */
 			while (l12 == 0 && j < 3) {
 
-				make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x704),
-					(char*)Real2Host(ds_readd(0xd2eb)));
+					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 
 				do {
@@ -500,11 +500,11 @@ void sell_screen(Bit8u *shop_ptr)
 					if (l12 != 2) {
 						GUI_output(get_ltx(0x70c));
 
-						make_valuta_str((char*)Real2Host(ds_readd(0xd2eb)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xccc),
-							(char*)Real2Host(ds_readd(0xd2eb)));
+							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}

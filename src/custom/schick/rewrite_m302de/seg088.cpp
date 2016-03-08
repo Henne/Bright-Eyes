@@ -196,14 +196,14 @@ void DNG7_riddle(void)
 
 	for (i = l_di = 0; i < 6; i++) {
 
-		if (pos == 0x1801 && ds_readws(0x2d48 + 2 * i) == 8 &&
-			ds_readws(0x2d54 + 2 * i) == 5 && ds_readbs(CURRENT_GROUP) != i)
+		if (pos == 0x1801 && ds_readws(GROUPS_X_TARGET + 2 * i) == 8 &&
+			ds_readws(GROUPS_Y_TARGET + 2 * i) == 5 && ds_readbs(CURRENT_GROUP) != i)
 		{
 			l_di = 1;
 		}
 
-		if (pos == 0x1805 && ds_readws(0x2d48 + 2 * i) == 8 &&
-			ds_readws(0x2d54 + 2 * i) == 1 && ds_readbs(CURRENT_GROUP) != i)
+		if (pos == 0x1805 && ds_readws(GROUPS_X_TARGET + 2 * i) == 8 &&
+			ds_readws(GROUPS_Y_TARGET + 2 * i) == 1 && ds_readbs(CURRENT_GROUP) != i)
 		{
 			l_di = 1;
 		}

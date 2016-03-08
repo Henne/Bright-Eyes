@@ -93,9 +93,9 @@ void use_item(signed short item_pos, signed short hero_pos)
 			} else {
 				/* special item */
 #if !defined(__BORLANDC__)
-				func = handler[ds_readbs(0x8ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
+				func = handler[ds_readbs(0x08ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
 #else
-				func = (void (*)(void))ds_readd(0xaeb0 + 4 * ds_readbs(0x8ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
+				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs(0x08ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
 #endif
 				func();
 			}
@@ -109,7 +109,7 @@ void item_arcano(void)
 	signed short b1_index;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(0x26bf);
+	b1_index = ds_readws(BUF1_FILE_INDEX);
 
 	/* load SPELLTXT*/
 	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
@@ -194,7 +194,7 @@ void item_armatrutz(void)
 	signed short b1_index;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(0x26bf);
+	b1_index = ds_readws(BUF1_FILE_INDEX);
 
 	/* load SPELLTXT*/
 	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
@@ -227,7 +227,7 @@ void item_flimflam(void)
 	signed short b1_index;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(0x26bf);
+	b1_index = ds_readws(BUF1_FILE_INDEX);
 
 	/* load SPELLTXT*/
 	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
@@ -448,7 +448,7 @@ void item_brenne(void)
 	signed short refill_pos;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(0x26bf);
+	b1_index = ds_readws(BUF1_FILE_INDEX);
 
 	/* load SPELLTXT*/
 	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);

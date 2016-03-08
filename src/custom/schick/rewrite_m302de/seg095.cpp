@@ -109,7 +109,7 @@ void npc_farewell(void)
 	if (check_hero(get_hero(6)) == 0 && ds_readws(NPC_MONTHS) < 99)
 		return;
 
-	tmp = ds_readw(0x26bf);
+	tmp = ds_readw(BUF1_FILE_INDEX);
 	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
 
 	switch (host_readbs(get_hero(6) + HERO_NPC_ID)) {
@@ -511,10 +511,10 @@ void remove_npc(signed short head_index, signed char days,
 	memset(get_hero(6), 0, SIZEOF_HERO);
 
 	/* dec group counter */
-	dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+	dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 	/* dec global hero counter */
-	dec_ds_bs_post(0x2d3c);
+	dec_ds_bs_post(TOTAL_HERO_COUNTER);
 
 	ds_writeb(0x46df, 1);
 
@@ -536,10 +536,10 @@ void add_npc(signed short index)
 	memcpy(get_hero(6) + HERO_PORTRAIT, Real2Host(ds_readd(DTP2)), 0x400);
 
 	/* increment heros in that group */
-	inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+	inc_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
 	/* increment heros */
-	inc_ds_bs_post(0x2d3c);
+	inc_ds_bs_post(TOTAL_HERO_COUNTER);
 
 	/* reset the months the NPC is in the group */
 	ds_writew(NPC_MONTHS, 0);

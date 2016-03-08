@@ -352,7 +352,7 @@ void refresh_floor_and_sky(void)
 	signed short height;
 	struct nvf_desc nvf;
 
-	nvf.dst = Real2Host(ds_readd(0xd303));
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
 	nvf.src = Real2Host(ds_readd(TEX_SKY));
 	nvf.nr = 0;
 	nvf.type = 3;
@@ -367,7 +367,7 @@ void refresh_floor_and_sky(void)
 	height = host_readws((Bit8u*)&height);
 #endif
 
-	nvf.dst = Real2Host(ds_readd(0xd303)) + 208 * height;
+	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR)) + 208 * height;
 	nvf.src = Real2Host(ds_readd(TEX_FLOOR));
 	nvf.nr = 0;
 	nvf.type = 3;
@@ -789,11 +789,11 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 
 	v4 -= 184;
 
-	nvf.dst = src = Real2Host(ds_readd(0xd303)) + 30000;
+	nvf.dst = src = Real2Host(ds_readd(BUFFER1_PTR)) + 30000;
 	nvf.src = Real2Host(ds_readd(TEX_FLOOR + v4 * 4));
 
 	if (v4 == 48 || v4 == 49) {
-		nvf.src = Real2Host(ds_readd(0xd2b5));
+		nvf.src = Real2Host(ds_readd(BUFFER7_PTR));
 	}
 
 	nvf.nr = nvf_nr;
@@ -838,7 +838,7 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 			copy_height = 135 - v2;
 		}
 
-		dst = Real2Host(ds_readd(0xd303)) + v2 * 208 + v1;
+		dst = Real2Host(ds_readd(BUFFER1_PTR)) + v2 * 208 + v1;
 
 		copy_solid(dst, src, copy_width, copy_height, 208, width,
 			v4 == 0 ? 0 : 128);
@@ -863,7 +863,7 @@ signed short city_step(void)
 
 	ds_writebs((0xbd38 + 0), 12);
 	l4 = ds_readbs((0xbd38 + 1));
-	ds_writebs((0xbd38 + 1), ds_readbs(0x7c41) == -1 ? 45 : 15);
+	ds_writebs((0xbd38 + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? 45 : 15);
 
 	if (ds_readbs((0xbd38 + 1)) != l4) {
 		ds_writew(0xd013, 1);
@@ -900,7 +900,7 @@ signed short city_step(void)
 	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
 		ds_readws(Y_TARGET) != ds_readws(0x2d85))
 	{
-		ds_writebs(0x7c41, (signed char)can_merge_group());
+		ds_writebs(CAN_MERGE_GROUP, (signed char)can_merge_group());
 		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
 	}
 
@@ -932,12 +932,12 @@ signed short city_step(void)
 	if (ds_readws(ACTION) == 129) {
 
 		GRP_split();
-		ds_writebs(0x7c41, (signed char)can_merge_group());
+		ds_writebs(CAN_MERGE_GROUP, (signed char)can_merge_group());
 
 	} else if (ds_readws(ACTION) == 130) {
 
 		GRP_merge();
-		ds_writebs(0x7c41, -1);
+		ds_writebs(CAN_MERGE_GROUP, -1);
 
 	} else if (ds_readws(ACTION) == 131) {
 
@@ -1023,7 +1023,7 @@ signed short city_step(void)
 
 		if (ds_readb(0xe10c) != 0 && ds_readb((0xbd38 + 7)) != 43) {
 
-			if (((i = ds_readws(0x70ac + 8 * ds_readws(TYPEINDEX))) == -1 ||
+			if (((i = ds_readws((0x70a8 + 4) + 8 * ds_readws(TYPEINDEX))) == -1 ||
 				ds_readbs(DAY_OF_WEEK) == i) &&
 				ds_readds(DAY_TIMER) >= HOURS(6) &&
 				ds_readds(DAY_TIMER) <= HOURS(16))
@@ -1127,7 +1127,7 @@ void city_fade_and_colors(void)
 	ds_writew(0xc013, ds_readws(0xce3f));
 	ds_writew(0xc015, ds_readws(0xce41) + 207);
 	ds_writew(0xc017, ds_readws(0xce3f) + 134);
-	ds_writed(0xc019, ds_readd(0xd303));
+	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 	ds_writeb(0x45b8, 0);
 
@@ -1140,10 +1140,10 @@ void city_fade_and_colors(void)
 
 	if (ds_readb(0x4475) != 0) {
 
-		dst = Real2Host(ds_readd(0xd303)) + 500;
-		pal_ptr = Real2Host(ds_readd(0xd303));
+		dst = Real2Host(ds_readd(BUFFER1_PTR)) + 500;
+		pal_ptr = Real2Host(ds_readd(BUFFER1_PTR));
 
-		memset(Real2Host(ds_readd(0xd303)), 0, 0x120);
+		memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0x120);
 		memcpy(dst, p_datseg + 0x3e53, 0x120);
 
 		for (i = 0; i < 64; i += 2) {

@@ -246,19 +246,19 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 
 			ds_writed(SPELLUSER_E, (Bit32u)monster);
 
-			ds_writew(0xaccc, -1);
+			ds_writew(MONSTER_SPELL_COST, -1);
 
 			/* terminate output string */
 			host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-			bak = ds_readws(0x26bf);
+			bak = ds_readws(BUF1_FILE_INDEX);
 
 			load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
 #if !defined(__BORLANDC__)
 			func = mspell[l_si];
 #else
-			func = (void (*)(void))ds_readd(0xfc2 + 4 * l_si);
+			func = (void (*)(void))ds_readd(0x0fc2 + 4 * l_si);
 #endif
 
 			func();
@@ -269,13 +269,13 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 
 			l_di = 1;
 
-			if (ds_readws(0xaccc) == 0) {
+			if (ds_readws(MONSTER_SPELL_COST) == 0) {
 				l_di = -1;
-			} else if (ds_readws(0xaccc) == -2) {
+			} else if (ds_readws(MONSTER_SPELL_COST) == -2) {
 				MON_sub_ae(Real2Host(monster), MON_get_spell_cost(l_si, 1));
 				l_di = 0;
-			} else if (ds_readws(0xaccc) != -1) {
-				MON_sub_ae(Real2Host(monster), ds_readws(0xaccc));
+			} else if (ds_readws(MONSTER_SPELL_COST) != -1) {
+				MON_sub_ae(Real2Host(monster), ds_readws(MONSTER_SPELL_COST));
 			} else {
 				MON_sub_ae(Real2Host(monster), cost);
 			}
@@ -297,10 +297,10 @@ void mspell_verwandlung(void)
 	if (enemy_stoned(get_spelltarget_e())) {
 
 		/* set the spellcosts */
-		ds_writew(0xaccc, 5 * random_schick(10));
+		ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
 
-		if (host_readws(get_spelluser_e() + 0x17) < ds_readws(0xaccc)) {
-			ds_writew(0xaccc, host_readws(get_spelluser_e() + 0x17));
+		if (host_readws(get_spelluser_e() + 0x17) < ds_readws(MONSTER_SPELL_COST)) {
+			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + 0x17));
 		} else {
 			/* unset stoned flag */
 			and_ptr_bs(get_spelltarget_e() + 0x31, 0xfb);
@@ -314,10 +314,10 @@ void mspell_verwandlung(void)
 		if (enemy_uncon(get_spelltarget_e())) {
 
 			/* set the spellcosts */
-			ds_writew(0xaccc, 5 * random_schick(10));
+			ds_writew(MONSTER_SPELL_COST, 5 * random_schick(10));
 
-			if (host_readws(get_spelluser_e() + 0x17) < ds_readws(0xaccc)) {
-				ds_writew(0xaccc, host_readws(get_spelluser_e() + 0x17));
+			if (host_readws(get_spelluser_e() + 0x17) < ds_readws(MONSTER_SPELL_COST)) {
+				ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + 0x17));
 			} else {
 				/* unset uncon flag */
 				and_ptr_bs(get_spelltarget_e() + 0x31, 0xbf);
@@ -325,7 +325,7 @@ void mspell_verwandlung(void)
 				ds_writew(0x618e, 1);
 			}
 		} else {
-			ds_writew(0xaccc, 2);
+			ds_writew(MONSTER_SPELL_COST, 2);
 		}
 	}
 }
@@ -405,7 +405,7 @@ void mspell_balsam(void)
 	ds_writed(SPELLTARGET_E,
 		(Bit32u)RealMake(datseg, host_readbs(get_spelluser_e() + 0x2d) * 0x3e + 0xd0df));
 
-	ds_writew(0xaccc, 0);
+	ds_writew(MONSTER_SPELL_COST, 0);
 
 	le = (host_readws(get_spelltarget_e() + 0x11) - host_readws(get_spelltarget_e() + 0x13)) / 2;
 
@@ -413,16 +413,16 @@ void mspell_balsam(void)
 
 		if (le < 7) {
 			/* AE costs are at least 7 */
-			ds_writew(0xaccc, 7);
+			ds_writew(MONSTER_SPELL_COST, 7);
 		}
 
 		/* adjust costs with */
-		if (host_readws(get_spelluser_e() + 0x17) < ds_readws(0xaccc)) {
+		if (host_readws(get_spelluser_e() + 0x17) < ds_readws(MONSTER_SPELL_COST)) {
 
-			ds_writew(0xaccc, host_readws(get_spelluser_e() + 0x17));
+			ds_writew(MONSTER_SPELL_COST, host_readws(get_spelluser_e() + 0x17));
 		}
 
-		add_ptr_ws(get_spelltarget_e() + 0x13, ds_readws(0xaccc));
+		add_ptr_ws(get_spelltarget_e() + 0x13, ds_readws(MONSTER_SPELL_COST));
 	}
 }
 
@@ -475,7 +475,7 @@ void mspell_eisenrost(void)
 
 		if (!id) {
 			/* target hero has no weapon */
-			ds_writew(0xaccc, 2);
+			ds_writew(MONSTER_SPELL_COST, 2);
 		} else if (!ks_broken(get_spelltarget() + 0x1c0)) {
 
 			if (host_readbs(get_spelltarget() + 0x1c6) > 0) {
@@ -489,7 +489,7 @@ void mspell_eisenrost(void)
 					Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)),
 					get_spelltarget() + 0x10);
 			} else {
-				ds_writew(0xaccc, -2);
+				ds_writew(MONSTER_SPELL_COST, -2);
 			}
 		}
 
@@ -533,7 +533,7 @@ void mspell_fulminictus(void)
 	MON_do_damage(damage);
 
 	/* set the cost */
-	ds_writew(0xaccc, damage);
+	ds_writew(MONSTER_SPELL_COST, damage);
 }
 
 void mspell_ignifaxius(void)
@@ -618,7 +618,7 @@ void mspell_ignifaxius(void)
 
 	/* terminate output string */
 	host_writebs(Real2Host(ds_readd(DTP2)), 0);
-	ds_writew(0xaccc, damage);
+	ds_writew(MONSTER_SPELL_COST, damage);
 }
 
 void mspell_plumbumbarum(void)
@@ -682,7 +682,7 @@ void mspell_saft_kraft(void)
 		host_readbs(get_spelltarget_e() + 0x2e) + 5);
 
 	/* set spellcost */
-	ds_writew(0xaccc, random_schick(20));
+	ds_writew(MONSTER_SPELL_COST, random_schick(20));
 }
 
 void mspell_armatrutz(void)
@@ -698,7 +698,7 @@ void mspell_armatrutz(void)
 	rs_bonus = random_interval(1, i);
 
 	/* set spellcost */
-	ds_writew(0xaccc, rs_bonus * rs_bonus);
+	ds_writew(MONSTER_SPELL_COST, rs_bonus * rs_bonus);
 
 	/* RS + rs_bonus */
 	host_writebs(get_spelluser_e() + 0x02,

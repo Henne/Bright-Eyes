@@ -199,16 +199,16 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	}
 
 	l1 += dir;
-	p1 = p_datseg + 0xd8cf + 0xf3 * a1;
-	p2 = p_datseg + 0xdc9b + 0xf3 * a1;
+	p1 = p_datseg + (0xd8ce + 1) + 0xf3 * a1;
+	p2 = p_datseg + (0xd8ce + 1 + 4*0xf3) + 0xf3 * a1;
 
 	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p3 + l1 * 2)));
-	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(hero + HERO_SPRITE_NO));
+	ds_writeb((0xd8ce + 242) + 0xf3 * a1, host_readbs(hero + HERO_SPRITE_NO));
 
 	if (check_hero(hero) && (host_readbs(hero + HERO_VIEWDIR) != dir) &&
 
 		((f_action == 2) || (f_action == 15) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs(0xd84a + (signed char)fid_attacker)) ||
+			((f_action == 100) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker)) ||
 			((ds_readws(0xe3ac) != 0) && (a7 == 0)) ||
 			((ds_readws(0xe3aa) != 0) && (a7 == 1))))
 	{
@@ -265,7 +265,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	if ((check_hero(hero) && (f_action == 2)) ||
 		((f_action == 15) || (f_action == 102) || (f_action == 103) ||
-			((f_action == 100) && !ds_readbs(0xd84a + (signed char)fid_attacker))))
+			((f_action == 100) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker))))
 	{
 		p1 += copy_ani_seq(p1, host_readws(p3 + l1 *2), 2);
 
@@ -330,7 +330,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 	host_writeb(p1, 0xff);
 	if (f_action == 100) {
-		ds_writeb(0xd84a + (signed char)fid_attacker, 1);
+		ds_writeb((HERO_IS_TARGET-1) + (signed char)fid_attacker, 1);
 	}
 }
 
@@ -420,12 +420,12 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 	l1 += dir;
 
-	p1 = p_datseg + 0xd8cf + a1 * 0xf3;
-	p2 = p_datseg + 0xdc9b + a1 * 0xf3;
+	p1 = p_datseg + (0xd8ce + 1) + a1 * 0xf3;
+	p2 = p_datseg + (0xd8ce + 1 + 4*0xf3) + a1 * 0xf3;
 
 
 	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p4 + l1 * 2)));
-	ds_writeb(0xd9c0 + 0xf3 * a1, host_readbs(enemy + 1));
+	ds_writeb((0xd8ce + 242) + 0xf3 * a1, host_readbs(enemy + 1));
 
 	/* first the enemy may turn */
 	if ((host_readbs(enemy + 0x27) != dir) &&
@@ -552,7 +552,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	/* does this sprite need two fields */
 	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID))	{
 
-		memcpy(p_datseg + 0xdab4 + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
+		memcpy(p_datseg + (0xd8ce + 2*0xf3) + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
 
 		p3 = Real2Host(FIG_get_ptr(host_readbs(enemy + 0x26)));
 
@@ -632,12 +632,12 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 
 	l_di += (v2 == 4) ? dir : host_readbs(hero + HERO_VIEWDIR);
 
-	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
+	lp1 = p_datseg + (0xd8ce + 1) + v1 * 0xf3;
 
 	ds_writeb(0xd8ce + v1 * 0xf3, get_seq_header(host_readws(lp2 + l_di * 2)));
 
 #if !defined(__BORLANDC__)
-	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(hero + HERO_SPRITE_NO));
+	ds_writeb((0xd8ce + 242) + v1 * 0xf3, host_readbs(hero + HERO_SPRITE_NO));
 #else
 	/* another ugly hack */
 	asm {
@@ -645,7 +645,7 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 		mov al, [es:bx+0x9b]
 		mov bx, v1
 		db 0x69, 0xdb, 0xf3, 0x00
-		mov [bx + 0xd9c0], al
+		mov [bx + (0xd8ce + 242)], al
 	}
 #endif
 
@@ -772,14 +772,14 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 	/* this is true if a monster attacks a hero */
 	l1 = (v2 == 4) ? 29 : 16;
 
-	lp1 = p_datseg + 0xd8cf + v1 * 0xf3;
+	lp1 = p_datseg + (0xd8ce + 1) + v1 * 0xf3;
 
 	/* this is true if a monster attacks a hero */
 	l1 += (v2 == 4) ? dir : host_readbs(p + 0x27);
 
 	ds_writeb(0xd8ce + v1 * 0xf3, get_seq_header(host_readws(lp2 + l1 * 2)));
 
-	ds_writeb(0xd9c0 + v1 * 0xf3, host_readbs(p + 1));
+	ds_writeb((0xd8ce + 242) + v1 * 0xf3, host_readbs(p + 1));
 
 	if ((host_readbs(p + 0x27) != dir) && (v2 == 4)) {
 
@@ -842,7 +842,7 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 
 	/* check if the moster sprite ID needs two fields */
 	if (is_in_byte_array(host_readb(p + 1),	p_datseg + TWO_FIELDED_SPRITE_ID)) {
-		memcpy(p_datseg + 0xdab4 + v1 * 0xf3, p_datseg + 0xd8ce + v1 * 0xf3, 0xf3);
+		memcpy(p_datseg + (0xd8ce + 2*0xf3) + v1 * 0xf3, p_datseg + 0xd8ce + v1 * 0xf3, 0xf3);
 	}
 
 }

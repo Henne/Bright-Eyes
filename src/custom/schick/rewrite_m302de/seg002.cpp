@@ -67,7 +67,7 @@ void sub_light_timers(Bit32s);
 /* static */
 void play_music_file(signed short index)
 {
-	if (ds_readbs(0x4476) != 0) {
+	if (ds_readbs(MUSIC_ENABLED) != 0) {
 		do_play_music_file(index);
 	}
 }
@@ -79,9 +79,9 @@ void set_audio_track(Bit16u index)
 #endif
 
 	/* only do something when index is not the current track */
-	if (ds_readw(0x447a) != index) {
+	if (ds_readw(MUSIC_CURRENT_TRACK) != index) {
 
-		ds_writew(0x447a, index);
+		ds_writew(MUSIC_CURRENT_TRACK, index);
 
 		if (ds_readw(0xbcfd) != 0) {
 			/* we use CD */
@@ -97,36 +97,36 @@ void sound_menu(void)
 {
 	signed short answer;
 
-	answer = GUI_radio(p_datseg + 0x47d8, 4,
-				p_datseg + 0x47e9,
-				p_datseg + 0x47f5,
-				p_datseg + 0x47ff,
-				p_datseg + 0x480b);
+	answer = GUI_radio(p_datseg + SND_MENU_QUESTION, 4,
+				p_datseg + SND_MENU_RADIO1,
+				p_datseg + SND_MENU_RADIO2,
+				p_datseg + SND_MENU_RADIO3,
+				p_datseg + SND_MENU_RADIO4);
 
 	switch (answer - 1) {
 		case 0: {
-			ds_writeb(0x4476, 0);
-			ds_writeb(0x4477, 0);
+			ds_writeb(MUSIC_ENABLED, 0);
+			ds_writeb(SND_EFFECTS_ENABLED, 0);
 			break;
 		}
 		case 1: {
-			ds_writeb(0x4476, 1);
-			ds_writeb(0x4477, 0);
+			ds_writeb(MUSIC_ENABLED, 1);
+			ds_writeb(SND_EFFECTS_ENABLED, 0);
 			break;
 		}
 		case 2: {
-			ds_writeb(0x4476, 0);
-			ds_writeb(0x4477, 1);
+			ds_writeb(MUSIC_ENABLED, 0);
+			ds_writeb(SND_EFFECTS_ENABLED, 1);
 			break;
 		}
 		case 3: {
-			ds_writeb(0x4476, 1);
-			ds_writeb(0x4477, 1);
+			ds_writeb(MUSIC_ENABLED, 1);
+			ds_writeb(SND_EFFECTS_ENABLED, 1);
 			break;
 		}
 	}
 
-	if (ds_readb(0x4476) == 0) {
+	if (ds_readb(MUSIC_ENABLED) == 0) {
 		/* music disabled */
 		if (ds_readw(0xbcfd) != 0) {
 			CD_audio_pause();
@@ -134,12 +134,12 @@ void sound_menu(void)
 			stop_midi_playback();
 		}
 	} else {
-		if (ds_readws(0x447a) != -1) {
+		if (ds_readws(MUSIC_CURRENT_TRACK) != -1) {
 			/* music enabled */
 			if (ds_readw(0xbcfd) != 0) {
 				CD_audio_play();
 			} else {
-				play_music_file(ds_readws(0x447a));
+				play_music_file(ds_readws(MUSIC_CURRENT_TRACK));
 			}
 		}
 	}
@@ -154,7 +154,7 @@ void read_sound_cfg(void)
 	signed short handle;
 
 	/* try to open SOUND.CFG */
-	if ( (handle = bc__open((RealPt)RealMake(datseg, 0x481d), 0x8001)) != -1) {
+	if ( (handle = bc__open((RealPt)RealMake(datseg, FNAME_SOUND_CFG), 0x8001)) != -1) {
 
 		bc__read(handle, (Bit8u*)&port, 2);
 		bc__read(handle, (Bit8u*)&l2, 2);
@@ -177,15 +177,15 @@ void read_sound_cfg(void)
 		if (0) {
 
 			if (port != 0) {
-				load_music_driver((RealPt)RealMake(datseg, 0x4827), 3, port);
+				load_music_driver((RealPt)RealMake(datseg, FNAME_SOUND_ADV2), 3, port);
 			} else {
 
 				/* music was disabled in SOUND.CFG */
-				if (NOT_NULL(Real2Host(ds_readd(0xbd0d)))) {
-					bc_farfree((RealPt)ds_readd(0xbd0d));
+				if (NOT_NULL(Real2Host(ds_readd(AIL_MIDI_BUFFER)))) {
+					bc_farfree((RealPt)ds_readd(AIL_MIDI_BUFFER));
 				}
 
-				ds_writed(0xbd0d, 0);
+				ds_writed(AIL_MIDI_BUFFER, 0);
 			}
 		}
 
@@ -193,12 +193,12 @@ void read_sound_cfg(void)
 
 			if (ds_readw(0x447c) != 0) {
 
-				if (!load_digi_driver((RealPt)RealMake(datseg, 0x4831), 2, l3, l4)) {
+				if (!load_digi_driver((RealPt)RealMake(datseg, FNAME_DIGI_ADV), 2, l3, l4)) {
 					ds_writew(0x447c, 0);
 				}
 			} else {
 				/* print that sound effects are disabled */
-				GUI_output(p_datseg + 0x483a);
+				GUI_output(p_datseg + SND_TXT_DISABLED_MEM);
 				ds_writew(0x447c, 0);
 			}
 		} else {
@@ -210,7 +210,7 @@ void read_sound_cfg(void)
 
 void init_AIL(Bit32u size)
 {
-	if (NOT_NULL(Real2Host((RealPt)ds_writed(0xbd0d, (Bit32u)schick_alloc_emu(size))))) {
+	if (NOT_NULL(Real2Host((RealPt)ds_writed(AIL_MIDI_BUFFER, (Bit32u)schick_alloc_emu(size))))) {
 		AIL_startup();
 		ds_writew(0xbcff, 1);
 	}
@@ -220,24 +220,24 @@ void exit_AIL(void)
 {
 	AIL_shutdown((RealPt)NULL);
 
-	if (ds_readd(0xbd11) != 0) {
-		bc_farfree((RealPt)ds_readd(0xbd11));
+	if (ds_readd(AIL_TIMBRE_CACHE) != 0) {
+		bc_farfree((RealPt)ds_readd(AIL_TIMBRE_CACHE));
 	}
 
-	if (ds_readd(0xbd15) != 0) {
-		bc_farfree((RealPt)ds_readd(0xbd15));
+	if (ds_readd(AIL_STATE_TABLE) != 0) {
+		bc_farfree((RealPt)ds_readd(AIL_STATE_TABLE));
 	}
 
-	if (ds_readd(0xbd0d) != 0) {
-		bc_farfree((RealPt)ds_readd(0xbd0d));
+	if (ds_readd(AIL_MIDI_BUFFER) != 0) {
+		bc_farfree((RealPt)ds_readd(AIL_MIDI_BUFFER));
 	}
 
-	if (ds_readd(0xbd09) != 0) {
-		bc_farfree((RealPt)ds_readd(0xbd09));
+	if (ds_readd(AIL_MUSIC_DRIVER_BUF2) != 0) {
+		bc_farfree((RealPt)ds_readd(AIL_MUSIC_DRIVER_BUF2));
 	}
 
 	/* set all pointers to NULL */
-	ds_writed(0xbd11, ds_writed(0xbd15, ds_writed(0xbd0d, ds_writed(0xbd09, 0))));
+	ds_writed(AIL_TIMBRE_CACHE, ds_writed(AIL_STATE_TABLE, ds_writed(AIL_MIDI_BUFFER, ds_writed(AIL_MUSIC_DRIVER_BUF2, 0))));
 
 	if (ds_readw(0x447c) != 0) {
 		free_voc_buffer();
@@ -257,9 +257,9 @@ RealPt read_music_driver(RealPt fname)
 
 		len = 16500L;
 
-		ds_writed(0xbd09, (Bit32u)schick_alloc_emu(len + 16L));
+		ds_writed(AIL_MUSIC_DRIVER_BUF2, (Bit32u)schick_alloc_emu(len + 16L));
 		/* insane pointer casting */
-		ptr = (ds_readd(0xbd09) + 15L);
+		ptr = (ds_readd(AIL_MUSIC_DRIVER_BUF2) + 15L);
 		ptr &= 0xfffffff0;
 		buf = EMS_norm_ptr((RealPt)ptr);
 		/* and_ptr_ds((Bit8u*)&ptr, 0xfffffff0); */
@@ -278,26 +278,26 @@ signed short prepare_midi_playback(signed short sequence)
 	signed short patch;
 	RealPt ptr;
 
-	if ((ds_writews(0xbd01, load_archive_file(ARCHIVE_FILE_SAMPLE_AD))) != -1) {
+	if ((ds_writews(SAMPLE_AD_HANDLE, load_archive_file(ARCHIVE_FILE_SAMPLE_AD))) != -1) {
 
-		if ((ds_writews(0xbd21, AIL_register_sequence(ds_readw(0xbd23), (RealPt)ds_readd(0xbd0d), sequence, (RealPt)ds_readd(0xbd15), 0))) != -1) {
+		if ((ds_writews(AIL_SEQUENCE, AIL_register_sequence(ds_readw(AIL_MUSIC_DRIVER_ID), (RealPt)ds_readd(AIL_MIDI_BUFFER), sequence, (RealPt)ds_readd(AIL_STATE_TABLE), 0))) != -1) {
 
-			while ( (l_si = AIL_timbre_request(ds_readw(0xbd23), ds_readw(0xbd21))) != (unsigned short)-1)
+			while ( (l_si = AIL_timbre_request(ds_readw(AIL_MUSIC_DRIVER_ID), ds_readw(AIL_SEQUENCE))) != (unsigned short)-1)
 			{
 				l_di = l_si >> 8;
 				patch = l_si & 0xff;
 
 				if ( (ptr = prepare_timbre(l_di, patch))) {
-					AIL_install_timbre(ds_readw(0xbd23), l_di, patch, ptr);
+					AIL_install_timbre(ds_readw(AIL_MUSIC_DRIVER_ID), l_di, patch, ptr);
 					bc_farfree(ptr);
 				}
 			}
 
-			bc_close(ds_readw(0xbd01));
+			bc_close(ds_readw(SAMPLE_AD_HANDLE));
 			return 1;
 		}
 
-		bc_close(ds_readw(0xbd01));
+		bc_close(ds_readw(SAMPLE_AD_HANDLE));
 	}
 	return 0;
 }
@@ -306,7 +306,7 @@ signed short prepare_midi_playback(signed short sequence)
 signed short start_midi_playback(signed short seq)
 {
 	if (prepare_midi_playback(seq)) {
-		AIL_start_sequence(ds_readw(0xbd23), seq);
+		AIL_start_sequence(ds_readw(AIL_MUSIC_DRIVER_ID), seq);
 		return 1;
 	}
 
@@ -319,25 +319,25 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 {
 	RealPt buf;
 
-	seg002_0c72(ds_readws(0xbd01), 0, 0);
+	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), 0, 0);
 
 	do {
-		read_archive_file(ds_readws(0xbd01), p_datseg + 0xbc5c, 6);
+		read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_IDX_ENTRY, 6);
 
-		if (ds_readbs(0xbc5d) == -1) {
+		if (ds_readbs((SAMPLE_AD_IDX_ENTRY+1)) == -1) {
 			return (RealPt)0;
 		}
-	} while ((ds_readbs(0xbc5d) != a1) || (ds_readbs(0xbc5c) != patch));
+	} while ((ds_readbs((SAMPLE_AD_IDX_ENTRY+1)) != a1) || (ds_readbs(SAMPLE_AD_IDX_ENTRY) != patch));
 
-	seg002_0c72(ds_readws(0xbd01), ds_readd(0xbc5e), 0);
+	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), ds_readd((SAMPLE_AD_IDX_ENTRY+2)), 0);
 
-	read_archive_file(ds_readws(0xbd01), p_datseg + 0xbc5a, 2);
+	read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_LENGTH, 2);
 
-	buf = schick_alloc_emu(ds_readw(0xbc5a));
+	buf = schick_alloc_emu(ds_readw(SAMPLE_AD_LENGTH));
 
-	host_writew(Real2Host(buf), ds_readw(0xbc5a));
+	host_writew(Real2Host(buf), ds_readw(SAMPLE_AD_LENGTH));
 
-	read_archive_file(ds_readws(0xbd01), Real2Host(buf) + 2, ds_readw(0xbc5a) - 2);
+	read_archive_file(ds_readws(SAMPLE_AD_HANDLE), Real2Host(buf) + 2, ds_readw(SAMPLE_AD_LENGTH) - 2);
 
 	return buf;
 }
@@ -354,7 +354,7 @@ signed short do_load_midi_file(signed short index)
 	signed short handle;
 
 	if ((handle = load_archive_file(index)) != -1) {
-		read_archive_file(handle, Real2Host(ds_readd(0xbd0d)), 0x7fff);
+		read_archive_file(handle, Real2Host(ds_readd(AIL_MIDI_BUFFER)), 0x7fff);
 		bc_close(handle);
 		return 1;
 	}
@@ -366,38 +366,38 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 {
 
 	if (port &&
-		NOT_NULL(Real2Host((RealPt)ds_writed(0xbd19, (Bit32u)read_music_driver(fname)))) &&
-		((ds_writew(0xbd23, AIL_register_driver((RealPt)ds_readd(0xbd19)))) != 0xffff))
+		NOT_NULL(Real2Host((RealPt)ds_writed(AIL_MUSIC_DRIVER_BUF, (Bit32u)read_music_driver(fname)))) &&
+		((ds_writew(AIL_MUSIC_DRIVER_ID, AIL_register_driver((RealPt)ds_readd(AIL_MUSIC_DRIVER_BUF)))) != 0xffff))
 	{
 
-		ds_writed(0xbd1d, (Bit32u)AIL_describe_driver(ds_readw(0xbd23)));
+		ds_writed(AIL_MUSIC_DRIVER_DESCR, (Bit32u)AIL_describe_driver(ds_readw(AIL_MUSIC_DRIVER_ID)));
 
-		if (host_readws(Real2Host((RealPt)ds_readd(0xbd1d)) + 2) == type)
+		if (host_readws(Real2Host((RealPt)ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == type)
 		{
 			if (port == -1) {
-				port = host_readws(Real2Host(ds_readd(0xbd1d)) + 0xc);
+				port = host_readws(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 0xc);
 			}
 
-			if (AIL_detect_device(ds_readw(0xbd23), port,
-				host_readws(Real2Host(ds_readd(0xbd1d)) + 0x0e),
-				host_readws(Real2Host(ds_readd(0xbd1d)) + 0x10),
-				host_readws(Real2Host(ds_readd(0xbd1d)) + 0x12)))
+			if (AIL_detect_device(ds_readw(AIL_MUSIC_DRIVER_ID), port,
+				host_readws(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 0x0e),
+				host_readws(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 0x10),
+				host_readws(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 0x12)))
 			{
-				AIL_init_driver(ds_readw(0xbd23), port,
-					host_readws(Real2Host(ds_readd(0xbd1d)) + 0x0e),
-					host_readws(Real2Host(ds_readd(0xbd1d)) + 0x10),
-					host_readws(Real2Host(ds_readd(0xbd1d)) + 0x12));
+				AIL_init_driver(ds_readw(AIL_MUSIC_DRIVER_ID), port,
+					host_readws(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 0x0e),
+					host_readws(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 0x10),
+					host_readws(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 0x12));
 
 				if (type == 3) {
-					ds_writed(0xbd05, AIL_state_table_size(ds_readw(0xbd23)));
-					ds_writed(0xbd15, (Bit32u)schick_alloc_emu(ds_readd(0xbd05)));
-					ds_writew(0xbd03, AIL_default_timbre_cache_size(ds_readw(0xbd23)));
+					ds_writed(AIL_STATE_TABLE_SIZE, AIL_state_table_size(ds_readw(AIL_MUSIC_DRIVER_ID)));
+					ds_writed(AIL_STATE_TABLE, (Bit32u)schick_alloc_emu(ds_readd(AIL_STATE_TABLE_SIZE)));
+					ds_writew(AIL_TIMBRE_CACHE_SIZE, AIL_default_timbre_cache_size(ds_readw(AIL_MUSIC_DRIVER_ID)));
 
-					if (ds_readw(0xbd03) != 0) {
-						ds_writed(0xbd11, (Bit32u)schick_alloc_emu(ds_readw(0xbd03)));
-						AIL_define_timbre_cache(ds_readw(0xbd23),
-								(RealPt)ds_readd(0xbd11),
-								ds_readw(0xbd03));
+					if (ds_readw(AIL_TIMBRE_CACHE_SIZE) != 0) {
+						ds_writed(AIL_TIMBRE_CACHE, (Bit32u)schick_alloc_emu(ds_readw(AIL_TIMBRE_CACHE_SIZE)));
+						AIL_define_timbre_cache(ds_readw(AIL_MUSIC_DRIVER_ID),
+								(RealPt)ds_readd(AIL_TIMBRE_CACHE),
+								ds_readw(AIL_TIMBRE_CACHE_SIZE));
 					}
 				}
 
@@ -406,7 +406,7 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 			} else {
 
 				/* no sound hardware found */
-				GUI_output(Real2Host(RealMake(datseg, 0x486d)));
+				GUI_output(Real2Host(RealMake(datseg, SND_TXT_HW_NOT_FOUND)));
 				exit_AIL();
 			}
 		}
@@ -419,7 +419,7 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 /* static */
 void do_play_music_file(signed short index)
 {
-	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3)) {
+	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3)) {
 
 		stop_midi_playback();
 		load_midi_file(index);
@@ -430,21 +430,21 @@ void do_play_music_file(signed short index)
 /* static */
 void stop_midi_playback(void)
 {
-	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3))
+	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
 	{
-		AIL_stop_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
-		AIL_release_sequence_handle(ds_readws(0xbd23), ds_readws(0xbd21));
+		AIL_stop_sequence(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE));
+		AIL_release_sequence_handle(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE));
 	}
 }
 
 void start_midi_playback_IRQ(void)
 {
 	if ((ds_readw(0xbcff) == 0) &&
-		(ds_readb(0x4476) != 0) &&
-		(host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3))
+		(ds_readb(MUSIC_ENABLED) != 0) &&
+		(host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
 	{
-		if (AIL_sequence_status(ds_readws(0xbd23), ds_readws(0xbd21)) == 2) {
-			AIL_start_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
+		if (AIL_sequence_status(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE)) == 2) {
+			AIL_start_sequence(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE));
 		}
 	}
 }
@@ -453,9 +453,9 @@ void start_midi_playback_IRQ(void)
 void cruft_1(void)
 {
 	if ((ds_readw(0xbcff) == 0) &&
-		(host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3))
+		(host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
 	{
-		AIL_start_sequence(ds_readws(0xbd23), ds_readws(0xbd21));
+		AIL_start_sequence(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE));
 	}
 }
 
@@ -464,8 +464,8 @@ void cruft_2(signed short volume)
 {
 	if (ds_readw(0xbcff) == 0) {
 
-		if (host_readw(Real2Host(ds_readd(0xbd1d)) + 2) == 3) {
-			AIL_set_relative_volume(ds_readws(0xbd23), ds_readws(0xbd21), volume, 0);
+		if (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3) {
+			AIL_set_relative_volume(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE), volume, 0);
 		}
 
 		if (!volume) {
@@ -481,7 +481,7 @@ signed short have_mem_for_sound(void)
 	signed short retval;
 	struct ffblk blk;
 
-	if (!bc_findfirst((RealPt)RealMake(datseg, 0x488c), &blk, 0)) {
+	if (!bc_findfirst((RealPt)RealMake(datseg, FNAME_SOUND_ADV), &blk, 0)) {
 		/* SOUND.ADV was found */
 		size = host_readd((Bit8u*)(&blk) + 26);
 		size += 4000L;
@@ -510,7 +510,7 @@ signed short have_mem_for_sound(void)
 
 void play_voc(signed short index)
 {
-	if (ds_readw(0x447c) && ds_readb(0x4477)) {
+	if (ds_readw(0x447c) && ds_readb(SND_EFFECTS_ENABLED)) {
 		SND_set_volume(90);
 		SND_play_voc(index);
 	}
@@ -518,11 +518,11 @@ void play_voc(signed short index)
 
 void play_voc_delay(signed short index)
 {
-	if (ds_readw(0x447c) && ds_readb(0x4477)) {
+	if (ds_readw(0x447c) && ds_readb(SND_EFFECTS_ENABLED)) {
 		SND_set_volume(90);
 		SND_play_voc(index);
 
-		while (AIL_VOC_playback_status(ds_readw(0xbcfb)) == 2) {
+		while (AIL_VOC_playback_status(ds_readw(AIL_DIGI_DRIVER_ID)) == 2) {
 			wait_for_vsync();
 		}
 	}
@@ -531,7 +531,7 @@ void play_voc_delay(signed short index)
 void alloc_voc_buffer(Bit32u size)
 {
 	if (ds_readw(0x447c)) {
-		if (NOT_NULL(Real2Host(ds_writed(0xbcef, (Bit32u)schick_alloc_emu(size))))) ;
+		if (NOT_NULL(Real2Host(ds_writed(AIL_VOC_BUFFER, (Bit32u)schick_alloc_emu(size))))) ;
 	}
 }
 
@@ -540,28 +540,28 @@ void free_voc_buffer(void)
 {
 	if (ds_readw(0x447c) != 0) {
 
-		if (ds_readd(0xbcef) != 0) {
-			bc_farfree((RealPt)ds_readd(0xbcef));
+		if (ds_readd(AIL_VOC_BUFFER) != 0) {
+			bc_farfree((RealPt)ds_readd(AIL_VOC_BUFFER));
 		}
 
-		if (ds_readd(0xbceb) != 0) {
-			bc_farfree((RealPt)ds_readd(0xbceb));
+		if (ds_readd(AIL_DIGI_DRIVER_BUF2) != 0) {
+			bc_farfree((RealPt)ds_readd(AIL_DIGI_DRIVER_BUF2));
 		}
 
-		ds_writed(0xbcef, ds_writed(0xbceb, 0));
+		ds_writed(AIL_VOC_BUFFER, ds_writed(AIL_DIGI_DRIVER_BUF2, 0));
 
 	}
 }
 
 signed short read_new_voc_file(signed short index)
 {
-	if (AIL_VOC_playback_status(ds_readw(0xbcfb)) == 2) {
+	if (AIL_VOC_playback_status(ds_readw(AIL_DIGI_DRIVER_ID)) == 2) {
 		SND_stop_digi();
 	}
 
 	if (read_voc_file(index)) {
 
-		AIL_format_VOC_file(ds_readw(0xbcfb), (RealPt)ds_readd(0xbcef), -1);
+		AIL_format_VOC_file(ds_readw(AIL_DIGI_DRIVER_ID), (RealPt)ds_readd(AIL_VOC_BUFFER), -1);
 		return 1;
 	}
 
@@ -573,7 +573,7 @@ signed short read_voc_file(signed short index)
 	signed short handle;
 
 	if ( (handle = load_archive_file(index)) != -1) {
-		read_archive_file(handle, Real2Host(ds_readd(0xbcef)), 0x7fff);
+		read_archive_file(handle, Real2Host(ds_readd(AIL_VOC_BUFFER)), 0x7fff);
 		bc_close(handle);
 		return 1;
 	}
@@ -585,17 +585,17 @@ void SND_play_voc(signed short index)
 {
 	if (ds_readw(0x447c)) {
 
-		AIL_stop_digital_playback(ds_readw(0xbcfb));
+		AIL_stop_digital_playback(ds_readw(AIL_DIGI_DRIVER_ID));
 		read_new_voc_file(index);
-		AIL_play_VOC_file(ds_readw(0xbcfb), (RealPt)ds_readd(0xbcef), -1);
-		AIL_start_digital_playback(ds_readw(0xbcfb));
+		AIL_play_VOC_file(ds_readw(AIL_DIGI_DRIVER_ID), (RealPt)ds_readd(AIL_VOC_BUFFER), -1);
+		AIL_start_digital_playback(ds_readw(AIL_DIGI_DRIVER_ID));
 	}
 }
 
 void SND_stop_digi(void)
 {
 	if (ds_readw(0x447c)) {
-		AIL_stop_digital_playback(ds_readw(0xbcfb));
+		AIL_stop_digital_playback(ds_readw(AIL_DIGI_DRIVER_ID));
 	}
 }
 
@@ -603,7 +603,7 @@ void SND_set_volume(unsigned short volume)
 {
 	if (ds_readw(0x447c)) {
 
-		AIL_set_digital_playback_volume(ds_readw(0xbcfb), volume);
+		AIL_set_digital_playback_volume(ds_readw(AIL_DIGI_DRIVER_ID), volume);
 
 		if (!volume) {
 			SND_stop_digi();
@@ -616,32 +616,32 @@ signed short load_digi_driver(RealPt fname, signed short type, signed short io, 
 {
 
 	if (io &&
-		NOT_NULL(Real2Host((RealPt)ds_writed(0xbcf3, (Bit32u)read_digi_driver(fname)))) &&
-		((ds_writew(0xbcfb, AIL_register_driver((RealPt)ds_readd(0xbcf3)))) != 0xffff))
+		NOT_NULL(Real2Host((RealPt)ds_writed(AIL_DIGI_DRIVER_BUF, (Bit32u)read_digi_driver(fname)))) &&
+		((ds_writew(AIL_DIGI_DRIVER_ID, AIL_register_driver((RealPt)ds_readd(AIL_DIGI_DRIVER_BUF)))) != 0xffff))
 	{
 
-		ds_writed(0xbcf7, (Bit32u)AIL_describe_driver(ds_readw(0xbcfb)));
+		ds_writed(AIL_DIGI_DRIVER_DESCR, (Bit32u)AIL_describe_driver(ds_readw(AIL_DIGI_DRIVER_ID)));
 
-		if (host_readws(Real2Host((RealPt)ds_readd(0xbcf7)) + 2) == type) {
+		if (host_readws(Real2Host((RealPt)ds_readd(AIL_DIGI_DRIVER_DESCR)) + 2) == type) {
 
 			if (io == -1) {
-				io = host_readws(Real2Host(ds_readd(0xbcf7)) + 0xc);
-				irq = host_readws(Real2Host(ds_readd(0xbcf7)) + 0xe);
+				io = host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0xc);
+				irq = host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0xe);
 			}
 
-			if (AIL_detect_device(ds_readw(0xbcfb), io, irq,
-				host_readws(Real2Host(ds_readd(0xbcf7)) + 0x10),
-				host_readws(Real2Host(ds_readd(0xbcf7)) + 0x12)))
+			if (AIL_detect_device(ds_readw(AIL_DIGI_DRIVER_ID), io, irq,
+				host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0x10),
+				host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0x12)))
 			{
-				AIL_init_driver(ds_readw(0xbcfb), io, irq,
-					host_readws(Real2Host(ds_readd(0xbcf7)) + 0x10),
-					host_readws(Real2Host(ds_readd(0xbcf7)) + 0x12));
+				AIL_init_driver(ds_readw(AIL_DIGI_DRIVER_ID), io, irq,
+					host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0x10),
+					host_readws(Real2Host(ds_readd(AIL_DIGI_DRIVER_DESCR)) + 0x12));
 
-				ds_writeb(0x4477, 1);
+				ds_writeb(SND_EFFECTS_ENABLED, 1);
 				return 1;
 			} else {
 				/* no sound hardware found */
-				GUI_output(Real2Host(RealMake(datseg, 0x4896)));
+				GUI_output(Real2Host(RealMake(datseg, SND_TXT_HW_NOT_FOUND2)));
 				free_voc_buffer();
 			}
 		}
@@ -662,8 +662,8 @@ RealPt read_digi_driver(RealPt fname)
 
 		len = 5000L;
 
-		ds_writed(0xbceb, (Bit32u)schick_alloc_emu(len + 16L));
-		ptr = ds_readd(0xbceb) + 15L;
+		ds_writed(AIL_DIGI_DRIVER_BUF2, (Bit32u)schick_alloc_emu(len + 16L));
+		ptr = ds_readd(AIL_DIGI_DRIVER_BUF2) + 15L;
 		ptr &= 0xfffffff0;
 		buf = EMS_norm_ptr((RealPt)ptr);
 		bc__read(handle, Real2Host(buf), (unsigned short)len);
@@ -686,7 +686,7 @@ signed short open_and_seek_dat(unsigned short fileindex)
 	signed short fd;
 
 	/* open SCHICK.DAT */
-	if ( (fd =  bc__open((RealPt)RealMake(datseg, 0x48ca), 0x8001)) != -1) {
+	if ( (fd =  bc__open((RealPt)RealMake(datseg, FNAME_SCHICK_DAT), 0x8001)) != -1) {
 
 		/* seek to the fileindex position in the offset table */
 		bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
@@ -706,10 +706,10 @@ signed short open_and_seek_dat(unsigned short fileindex)
 		bc_lseek(fd, start, DOS_SEEK_SET);
 
 		/* save the offset of the desired file */
-		ds_writed(0xbcdf, start);
+		ds_writed(ARCHIVE_FILE_OFFSET, start);
 
 		/* save the length of the desired file in 2 variables */
-		ds_writed(0xbce7, ds_writed(0xbce3, end - start));
+		ds_writed(ARCHIVE_FILE_LENGTH, ds_writed(ARCHIVE_FILE_REMAINING, end - start));
 	}
 
 	return fd;
@@ -717,20 +717,20 @@ signed short open_and_seek_dat(unsigned short fileindex)
 
 Bit32u get_readlength2(signed short index)
 {
-	return index != -1 ? ds_readd(0xbce7) : 0;
+	return index != -1 ? ds_readd(ARCHIVE_FILE_LENGTH) : 0;
 }
 
 unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 {
 
 	/* no need to read */
-	if (ds_readd(0xbce3) != 0) {
+	if (ds_readd(ARCHIVE_FILE_REMAINING) != 0) {
 
 		/* adjust number of bytes to read */
-		if (len > ds_readds(0xbce3))
-			len = ds_readw(0xbce3);
+		if (len > ds_readds(ARCHIVE_FILE_REMAINING))
+			len = ds_readw(ARCHIVE_FILE_REMAINING);
 
-		sub_ds_ds(0xbce3, len);
+		sub_ds_ds(ARCHIVE_FILE_REMAINING, len);
 
 		return bc__read(handle, buffer, len);
 	} else {
@@ -743,9 +743,9 @@ void seg002_0c72(Bit16u handle, Bit32s off, ...)
 
 	Bit32u file_off;
 
-	ds_writed(0xbce3, ds_readd(0xbce7) - off);
+	ds_writed(ARCHIVE_FILE_REMAINING, ds_readd(ARCHIVE_FILE_LENGTH) - off);
 
-	file_off = ds_readd(0xbcdf) + off;
+	file_off = ds_readd(ARCHIVE_FILE_OFFSET) + off;
 
 	bc_lseek(handle, file_off, DOS_SEEK_SET);
 
@@ -799,11 +799,11 @@ signed short open_temp_file(unsigned short index)
 	}
 
 	/* get the length of the file */
-	ds_writed(0xbce7, ds_writed(0xbce3, bc_lseek(handle, 0, 2)));
+	ds_writed(ARCHIVE_FILE_LENGTH, ds_writed(ARCHIVE_FILE_REMAINING, bc_lseek(handle, 0, 2)));
 	/* seek to start */
 	bc_lseek(handle, 0, 0);
 
-	ds_writed(0xbcdf, 0);
+	ds_writed(ARCHIVE_FILE_OFFSET, 0);
 
 #if !defined(__BORLANDC__)
 	reg_esp += 40;
@@ -824,9 +824,9 @@ void copy_from_archive_to_temp(unsigned short index, RealPt fname)
 		handle2 = bc__creat(fname, 0);
 
 		/* copy it */
-		while ( (len = read_archive_file(handle1, Real2Host(ds_readd(0xd303)), 60000)) && (len != -1))
+		while ( (len = read_archive_file(handle1, Real2Host(ds_readd(BUFFER1_PTR)), 60000)) && (len != -1))
 		{
-			bc__write(handle2, (RealPt)ds_readd(0xd303), len);
+			bc__write(handle2, (RealPt)ds_readd(BUFFER1_PTR), len);
 		}
 
 		bc_close(handle1);
@@ -846,9 +846,9 @@ void copy_file_to_temp(RealPt src_file, RealPt fname)
 		handle2 = bc__creat(fname, 0);
 
 		/* copy it */
-		while ( (len = bc__read(handle1, Real2Host(ds_readd(0xd303)), 60000)) && (len != -1))
+		while ( (len = bc__read(handle1, Real2Host(ds_readd(BUFFER1_PTR)), 60000)) && (len != -1))
 		{
-			bc__write(handle2, (RealPt)ds_readd(0xd303), len);
+			bc__write(handle2, (RealPt)ds_readd(BUFFER1_PTR), len);
 		}
 
 		bc_close(handle1);
@@ -974,7 +974,7 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
-			Real2Host(ds_readd(0xd2eb)), nvf->type);
+			Real2Host(ds_readd(BUFFER4_PTR)), nvf->type);
 #ifdef M302de_ORIGINAL_BUGFIX
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
@@ -1156,11 +1156,11 @@ void interrupt mouse_isr(void)
 							(is_mouse_in_rect(68, 89, 171, 136) ? RealMake(datseg, 0x28c8) :
 							(is_mouse_in_rect(16, 36, 67, 96) ? RealMake(datseg, 0x2908) :
 							(is_mouse_in_rect(172, 36, 223, 96) ? RealMake(datseg, 0x2948) :
-							(!is_mouse_in_rect(16, 4, 223, 138) ? RealMake(datseg, 0x2848) :
+							(!is_mouse_in_rect(16, 4, 223, 138) ? RealMake(datseg, DEFAULT_MOUSE_CURSOR) :
 								(void*)ds_readd(0xcecb)))))));
 		} else {
 			if (ds_readbs(0x2c98) != 0) {
-				ds_writed(0xcecb, (Bit32u) RealMake(datseg, 0x2848));
+				ds_writed(0xcecb, (Bit32u) RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 			}
 		}
 
@@ -1240,8 +1240,8 @@ void mouse_init(void)
 			ds_writew(0xc3c7, 0);
 		}
 
-		ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0x2848));
-		ds_writed(0xcec7, (Bit32u)RealMake(datseg, 0x2848));
+		ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+		ds_writed(0xcec7, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 		if (ds_readw(0xc3c7) == 2) {
 
@@ -1472,7 +1472,7 @@ void mouse_19dc(void)
 		ds_writed(0xcec7, ds_readd(0xcecb));
 
 		/* check if the new cursor is the default cursor */
-		if (Real2Host(ds_readd(0xcecb)) == p_datseg + 0x2848) {
+		if (Real2Host(ds_readd(0xcecb)) == p_datseg + DEFAULT_MOUSE_CURSOR) {
 			/* set cursor size 0x0 */
 			ds_writew(0x29a6, ds_writew(0x29a8, 0));
 		} else {
@@ -1543,7 +1543,7 @@ void handle_gui_input(void)
 			ds_writew(0xd2d1, 1);
 			l_di = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 2);
-			GUI_output(p_datseg + 0x448a);		/* P A U S E */
+			GUI_output(p_datseg + PAUSE_STRING);		/* P A U S E */
 			ds_writew(TEXTBOX_WIDTH, l_di);
 			ds_writew(0xd2d1, 0);
 			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
@@ -1691,7 +1691,7 @@ void handle_input(void)
 			ds_writew(0xc3c5, 1);
 			ds_writew(0xd2d1, 1);
 			ds_writew(TEXTBOX_WIDTH, 2);
-			GUI_output(p_datseg + 0x448a);		/* P A U S E */
+			GUI_output(p_datseg + PAUSE_STRING);		/* P A U S E */
 			ds_writew(TEXTBOX_WIDTH, 3);
 			ds_writew(0xd2d1, 0);
 			dec_ds_ws(TIMERS_DISABLED);
@@ -1866,7 +1866,7 @@ void timers_daily(void)
 	/* Smith / items to repair */
 	for (i = 0; i < 50; i++) {
 
-		if (ds_readw(0x31e2 + i * 6) != 0) {
+		if (ds_readw(SMITH_REPAIRITEMS + i * 6) != 0) {
 			/* set time to 6:00 am */
 			ds_writed(0x31e4 + i * 6, 32400L);
 		}
@@ -1924,7 +1924,7 @@ void seg002_2177(void)
 
 	for (i = 0; ds_readws(0x70a8 + i * 8) != -1; i++) {
 
-		ds_writew(0x70ae + i * 8,
+		ds_writew((0x70a8 + 6) + i * 8,
 			random_interval(ds_readws(0x70a8 + i * 8), 20));
 	}
 }
@@ -2097,14 +2097,11 @@ void nightfall(void)
  */
 signed short get_current_season(void)
 {
-	/* Check Winter */
-	if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463e)) {
+	if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_WINTER)) {
 		return 0;
-	/* Check Summer */
-	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x4642)) {
+	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SUMMER)) {
 		return 2;
-	/* Check Spring */
-	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + 0x463a)) {
+	} else if (is_in_byte_array(ds_readb(MONTH), p_datseg + MONTHS_SPRING)) {
 		return 1;
 	} else {
 		return 3;
@@ -2257,12 +2254,12 @@ void do_timers(void)
 				/* reset flag */
 				host_writeb(hero_i + HERO_JAIL, 0);
 
-				ds_writeb(0x2d61 + host_readbs(hero_i + HERO_GROUP_NO),
+				ds_writeb(GROUPS_LOCATION + host_readbs(hero_i + HERO_GROUP_NO),
 					ds_readb(0x2da0 + host_readbs(hero_i + HERO_GROUP_NO)));
 
-				ds_writew(0x2d48 + host_readbs(hero_i + HERO_GROUP_NO) * 2,
+				ds_writew(GROUPS_X_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
 					ds_readw(0x2d87 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
-				ds_writew(0x2d54 + host_readbs(hero_i + HERO_GROUP_NO) * 2,
+				ds_writew(GROUPS_Y_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
 					ds_readw(0x2d93 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
 			}
 		}
@@ -2319,13 +2316,13 @@ void do_timers(void)
 						}
 
 					} else {
-						if (ds_readb(0x2d6f + di) == 7) {
+						if (ds_readb(GROUPS_DNG_INDEX + di) == 7) {
 
-							if (ds_readbs(0x2d76 + di) == 1) {
+							if (ds_readbs(GROUPS_DNG_LEVEL + di) == 1) {
 								/* 1W6-1 */
 								sub_hero_le(ptr,
 									dice_roll(1, 6, -1));
-							} else if (ds_readbs(0x2d76 + di) == 2) {
+							} else if (ds_readbs(GROUPS_DNG_LEVEL + di) == 2) {
 								/* 1W6+1 */
 								sub_hero_le(ptr,
 									dice_roll(1, 6, 1));
@@ -2417,12 +2414,12 @@ void do_timers(void)
 		/* check if we have a special day */
 		ds_writeb(SPECIAL_DAY, 0);
 
-		for (i = 0; ds_readbs(0x45b9 + 3 * i) != -1; i++) {
+		for (i = 0; ds_readbs(SPECIAL_DAYS + 3 * i) != -1; i++) {
 
-			if ((ds_readbs(0x45b9 + 3 * i) == ds_readbs(MONTH)) &&
-				(ds_readbs((0x45b9 + 1) + 3 * i) == ds_readbs(DAY_OF_MONTH)))
+			if ((ds_readbs(SPECIAL_DAYS + 3 * i) == ds_readbs(MONTH)) &&
+				(ds_readbs((SPECIAL_DAYS + 1) + 3 * i) == ds_readbs(DAY_OF_MONTH)))
 			{
-				ds_writeb(SPECIAL_DAY, ds_readb((0x45b9 + 2) + 3 * i));
+				ds_writeb(SPECIAL_DAY, ds_readb((SPECIAL_DAYS + 2) + 3 * i));
 				break;
 			}
 		}
@@ -2430,8 +2427,8 @@ void do_timers(void)
 		passages_recalc();
 
 		/* roll out the weather, used for passages */
-		ds_writew(0x331b, random_schick(6));
-		ds_writew(0x331d, random_schick(7));
+		ds_writew(WEATHER1, random_schick(6));
+		ds_writew(WEATHER2, random_schick(7));
 
 		/* check if times up */
 		if ((ds_readbs(YEAR) == 17) &&
@@ -2501,15 +2498,15 @@ void sub_mod_timers(Bit32s val)
 	for (i = 0; i < 100; i++) {
 
 		/* if timer is 0 continue */
-		if (ds_readd(0x2e2c + 8 * i) == 0)
+		if (ds_readd(MODIFICATION_TIMERS + 8 * i) == 0)
 			continue;
 
 		/* subtract diff from timer */
-		sub_ds_ds(0x2e2c + 8 * i, val);
+		sub_ds_ds(MODIFICATION_TIMERS + 8 * i, val);
 
 
 		/* if timer > 0 continue */
-		if (ds_readds(0x2e2c + 8 * i) <= 0) {
+		if (ds_readds(MODIFICATION_TIMERS + 8 * i) <= 0) {
 
 
 #if !defined(__BORLANDC__)
@@ -2517,10 +2514,10 @@ void sub_mod_timers(Bit32s val)
 #endif
 
 			/* set timer to 0 */
-			ds_writed(0x2e2c + 8 * i, 0);
+			ds_writed(MODIFICATION_TIMERS + 8 * i, 0);
 
 			/* make a pointer to the slot */
-			sp = p_datseg + 0x2e2c + i * 8;
+			sp = p_datseg + MODIFICATION_TIMERS + i * 8;
 
 			if (host_readb(sp + 6) != 0) {
 				/* target is a hero/npc */
@@ -2553,7 +2550,7 @@ void sub_mod_timers(Bit32s val)
 					/* reset target if no other slots of target */
 					reset_target = 1;
 					for (j = 0; j < 100; j++) {
-						if (ds_readb(0x2e32 + j * 8) == target) {
+						if (ds_readb((MODIFICATION_TIMERS+6) + j * 8) == target) {
 							reset_target = 0;
 							break;
 						}
@@ -2569,7 +2566,7 @@ void sub_mod_timers(Bit32s val)
 
 					/* reset all slots of invalid target */
 					for (j = 0; j < 100; j++) {
-						if (ds_readb(0x2e32 + j * 8) == target) {
+						if (ds_readb((MODIFICATION_TIMERS+6) + j * 8) == target) {
 							host_writeb(sp + 6,
 									host_writebs(sp + 7, 0));
 
@@ -2605,7 +2602,7 @@ signed short get_free_mod_slot(void)
 
 	for (i = 0; i < 100; i++) {
 
-		if (ds_readw(0x2e2c + i * 8 + 4) == 0) {
+		if (ds_readw(MODIFICATION_TIMERS + i * 8 + 4) == 0) {
 			break;
 		}
 	}
@@ -2613,7 +2610,7 @@ signed short get_free_mod_slot(void)
 	if (i == 100) {
 
 		/* set timer of slot 0 to 1 */
-		host_writed(p_datseg + 0x2e2c, 1);
+		host_writed(p_datseg + MODIFICATION_TIMERS, 1);
 		/* subtract one */
 		sub_mod_timers(1);
 
@@ -2670,16 +2667,16 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 			host_writeb(get_hero(who) + HERO_TIMER_ID, target);
 		}
 
-		ds_writeb(0x2e2c + slot_nr * 8 + 6, target);
+		ds_writeb(MODIFICATION_TIMERS + slot_nr * 8 + 6, target);
 	}
 
-	ds_writeb(0x2e2c + slot_nr * 8 + 7, mod);
+	ds_writeb(MODIFICATION_TIMERS + slot_nr * 8 + 7, mod);
 #if !defined (__BORLANDC__)
-	ds_writew(0x2e2c + slot_nr * 8 + 4, ptr - mod_ptr);
+	ds_writew(MODIFICATION_TIMERS + slot_nr * 8 + 4, ptr - mod_ptr);
 #else
-	ds_writew(0x2e2c + slot_nr * 8 + 4, (Bit8u huge*)ptr - mod_ptr);
+	ds_writew(MODIFICATION_TIMERS + slot_nr * 8 + 4, (Bit8u huge*)ptr - mod_ptr);
 #endif
-	ds_writed(0x2e2c + slot_nr * 8, timer_value);
+	ds_writed(MODIFICATION_TIMERS + slot_nr * 8, timer_value);
 	add_ptr_bs(ptr, mod);
 }
 
@@ -2939,7 +2936,7 @@ void herokeeping(void)
 				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(TRAVELING) != 0))) ||
 				((host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
-				!ds_readbs(0x2d68 + host_readbs(hero + HERO_GROUP_NO)))))) {
+				!ds_readbs(GROUPS_TOWN + host_readbs(hero + HERO_GROUP_NO)))))) {
 
 					/* check for food amulett */
 					if (get_item_pos(hero, 0xaf) == -1) {
@@ -3046,7 +3043,7 @@ void herokeeping(void)
 
 
 		/* print unconscious message */
-		if ((ds_readb(0x4212 + i) != 0) && !ds_readbs(0x2c98)) {
+		if ((ds_readb(UNCONSCIOUS_MESSAGE + i) != 0) && !ds_readbs(0x2c98)) {
 
 			if (host_readb(hero + HERO_TYPE) != 0 &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
@@ -3065,7 +3062,7 @@ void herokeeping(void)
 			}
 
 			/* reset condition */
-			ds_writeb(0x4212 + i, 0);
+			ds_writeb(UNCONSCIOUS_MESSAGE + i, 0);
 		}
 	}
 
@@ -3112,9 +3109,9 @@ void seg002_37c4(void)
 	RealPt p3;
 	struct dummy a = *(struct dummy*)(p_datseg + 0xc00d);
 
-	p1 = (RealPt)ds_readd(0xd2b1) + 2000;
-	p2 = (RealPt)ds_readd(0xd2b1) + 2100;
-	p3 = (RealPt)ds_readd(0xd2b1) + 1000;
+	p1 = (RealPt)ds_readd(BUFFER6_PTR) + 2000;
+	p2 = (RealPt)ds_readd(BUFFER6_PTR) + 2100;
+	p3 = (RealPt)ds_readd(BUFFER6_PTR) + 1000;
 
 	if ((ds_readws(0xe4a3) != 0) && (ds_readb(TRAVELING))) {
 
@@ -3847,7 +3844,7 @@ void draw_compass(void)
 	/* No compass in a location */
 	if (!ds_readbs(LOCATION) &&
 		/* Has something to do with traveling */
-		!ds_readbs(0xb132) &&
+		!ds_readbs(TRAVEL_EVENT_ACTIVE) &&
 		/* Not in town or dungeon */
 		((ds_readbs(DUNGEON_INDEX) != 0) || (ds_readbs(CURRENT_TOWN) != 0)) &&
 		/* I have no clue */
@@ -3857,7 +3854,7 @@ void draw_compass(void)
 		/* set src */
 		n.dst = Real2Host(ds_readd(ICON));
 		/* set dst */
-		n.src = Real2Host(ds_readd(0xd2b1));
+		n.src = Real2Host(ds_readd(BUFFER6_PTR));
 		/* set nr */
 		n.nr = ds_readbs(DIRECTION);
 		/* set type*/
@@ -3889,7 +3886,7 @@ signed short can_merge_group(void)
 	signed short i;
 	signed short retval = -1;
 
-	if (ds_readbs(ds_readbs(CURRENT_GROUP) + 0x2d36) == ds_readbs(0x2d3c)) {
+	if (ds_readbs(ds_readbs(CURRENT_GROUP) + GROUP_MEMBER_COUNTS) == ds_readbs(TOTAL_HERO_COUNTER)) {
 
 		retval = -1;
 
@@ -3898,19 +3895,19 @@ signed short can_merge_group(void)
 		for (i = 0; i < 6; i++)	{
 
 			if ((i != ds_readbs(CURRENT_GROUP)) &&
-				(0 != ds_readb(i + 0x2d36)) &&
+				(0 != ds_readb(i + GROUP_MEMBER_COUNTS)) &&
 				/* check XTarget */
-				(ds_readw(i * 2 + 0x2d48) == ds_readw(X_TARGET)) &&
+				(ds_readw(i * 2 + GROUPS_X_TARGET) == ds_readw(X_TARGET)) &&
 				/* check YTarget */
-				(ds_readw(i * 2 + 0x2d54) == ds_readw(Y_TARGET)) &&
+				(ds_readw(i * 2 + GROUPS_Y_TARGET) == ds_readw(Y_TARGET)) &&
 				/* check Location */
-				(ds_readbs(0x2d61 + i) == ds_readbs(LOCATION)) &&
+				(ds_readbs(GROUPS_LOCATION + i) == ds_readbs(LOCATION)) &&
 				/* check currentTown */
-				(ds_readb(0x2d68 + i) == ds_readb(CURRENT_TOWN)) &&
+				(ds_readb(GROUPS_TOWN + i) == ds_readb(CURRENT_TOWN)) &&
 				/* check DungeonIndex */
-				(ds_readb(0x2d6f + i) == ds_readb(DUNGEON_INDEX)) &&
+				(ds_readb(GROUPS_DNG_INDEX + i) == ds_readb(DUNGEON_INDEX)) &&
 				/* check DungeonLevel */
-				(ds_readb(0x2d76 + i) == ds_readb(DUNGEON_LEVEL)))
+				(ds_readb(GROUPS_DNG_LEVEL + i) == ds_readb(DUNGEON_LEVEL)))
 			{
 				retval = i;
 			}
@@ -4294,8 +4291,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			/* mark hero as dead */
 			or_ptr_bs(hero + HERO_STATUS1, 1);
 
-			/* unknown */
-			ds_writeb(0x4212 + get_hero_index(hero), 0);
+			ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 0);
 
 			/* unknown */
 			host_writeb(hero + HERO_UNKNOWN2, 100);
@@ -4324,7 +4320,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				}
 			}
 
-			if ((ds_readb(0xa842) != 0)
+			if ((ds_readb(SEA_TRAVEL) != 0)
 				&& (ds_readw(IN_FIGHT) == 0) &&
 				(!count_heroes_available_in_group() ||
 				((count_heroes_available_in_group() == 1) && (is_hero_available_in_group(get_hero(6))))))
@@ -4353,7 +4349,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				host_writeb(hero + HERO_UNKNOWN2, 10);
 
 				/* unknown yet */
-				ds_writeb(0x4212 + get_hero_index(hero), 1);
+				ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 1);
 
 				/* in fight mode */
 				if (ds_readw(IN_FIGHT) != 0) {
@@ -4632,7 +4628,7 @@ signed short unused_cruft(void)
 
 	signed short l_si;
 
-	if (!ds_readbs(0x2d3c)) {
+	if (!ds_readbs(TOTAL_HERO_COUNTER)) {
 		return -1;
 	}
 
@@ -4657,7 +4653,7 @@ signed short get_random_hero(void)
 
 	do {
 		/* get number of current group */
-		cur_hero = random_schick(ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) - 1;
+		cur_hero = random_schick(ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) - 1;
 
 #ifdef M302de_ORIGINAL_BUGFIX
 		signed short pos = 0;
@@ -5148,7 +5144,7 @@ int schick_main(int argc, char** argv)
 	signed short len;
 
 	ds_writew(0xbd25, 1);
-	ds_writeb(0xbc62, 1);
+	ds_writeb(PLAYMASK_US, 1);
 
 	init_AIL(16000);
 
@@ -5208,7 +5204,7 @@ int schick_main(int argc, char** argv)
 		} else {
 			/* disable sound */
 			exit_AIL();
-			GUI_output(p_datseg + 0x48d5);
+			GUI_output(p_datseg + SND_TXT_DISABLED_MEM2);
 		}
 
 		CD_init();
@@ -5310,26 +5306,26 @@ signed short copy_protection(void)
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x9c),
-				ds_readbs((0x46fc + 3) + 19 * l_di),
-				ds_readbs((0x46fc + 2) + 19 * l_di),
-				ds_readbs((0x46fc + 1) + 19 * l_di),
-				ds_readbs((0x46fc + 0) + 19 * l_di));
+				ds_readbs((QUESTIONS_HANDBOOK + 3) + 19 * l_di),
+				ds_readbs((QUESTIONS_HANDBOOK + 2) + 19 * l_di),
+				ds_readbs((QUESTIONS_HANDBOOK + 1) + 19 * l_di),
+				ds_readbs((QUESTIONS_HANDBOOK + 0) + 19 * l_di));
 
 			/* print version number */
-			GUI_print_string(p_datseg + 0x46ec, 290, 190);
+			GUI_print_string(p_datseg + GAME_VERSION, 290, 190);
 
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(0xd2ef)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 
 			/* transform the input string in uppercase letters and bitwise invert them */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(0xd2ef)) + i,
-					~toupper(host_readbs(Real2Host(ds_readd(0xd2ef)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
+					~toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
 			}
 
-			if (!strcmp((char*)(p_datseg + (0x46fc + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(0xd2ef)))) {
+			if (!strcmp((char*)(p_datseg + (QUESTIONS_HANDBOOK + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
 				return 1;
 			}
 		} else {
@@ -5341,24 +5337,24 @@ signed short copy_protection(void)
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0xa0),
-				get_dtp(4 * (0x29 + ds_readbs((0x47ba + 0) + 3 * l_di))),
-				get_ltx(4 * (0xeb + ds_readbs((0x47ba + 1) + 3 * l_di))));
+				get_dtp(4 * (0x29 + ds_readbs((QUESTIONS_MAP + 0) + 3 * l_di))),
+				get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 1) + 3 * l_di))));
 
 			/* print version number */
-			GUI_print_string(p_datseg + 0x46ec, 290, 190);
+			GUI_print_string(p_datseg + GAME_VERSION, 290, 190);
 
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(0xd2ef)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
 
 			/* transform the input string in uppercase letters */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(0xd2ef)) + i,
-					toupper(host_readbs(Real2Host(ds_readd(0xd2ef)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
+					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
 			}
 
-			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((0x047ba + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(0xd2ef)))) {
+			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
 				return 1;
 			}
 		}

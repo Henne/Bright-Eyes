@@ -130,12 +130,12 @@ void prepare_date_str(void)
 	}
 
 	if (ds_readbs(SPECIAL_DAY) != 0) {
-		sprintf((char*)Real2Host(ds_readd(0xd2eb)),
+		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
 			(char*)get_ltx(0x594),
 			get_ltx((0x165 + ds_readbs(SPECIAL_DAY)) * 4));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			(char*)Real2Host(ds_readd(0xd2eb)));
+			(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 	}
 }
 
@@ -173,7 +173,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 	ds_writews(DIALOG_STATE, ds_writews(DIALOG_DONE, 0));
 
-	ptr3 = (RealPt)RealMake(datseg, 0x3618);
+	ptr3 = (RealPt)RealMake(datseg, INFORMER_ARRAY);
 	ptr2 = Real2Host(host_readd(Real2Host(ptr3) + 38 * tlk_informer));
 	l_di = host_readws(Real2Host(ptr3) + 38 * tlk_informer + 4);
 	ds_writed(0xe308, (Bit32u)(tlk_informer * 38 + ptr3 + 6));
@@ -531,7 +531,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 	} while (ds_readws(DIALOG_DONE) == 0);
 
-	ds_writews(0x26bd, -1);
+	ds_writews(TEXT_FILE_INDEX, -1);
 	ds_writews(CURRENT_ANI, -1);
 }
 
@@ -548,12 +548,12 @@ void talk_switch(void)
 		if (ds_readws(DIALOG_INFORMER) == 0) {
 			if ((state == 1 || state == 2 || state == 3) && !ds_readb(0x3320)) {
 
-				ds_writew(0x26c1, 1);
+				ds_writew(FIG_DISCARD, 1);
 
 				if (!do_fight(FIGHTS_DASP1A)) {
 					if (GUI_bool(get_dtp(0x58))) {
 
-						ds_writew(0x26c1, 0);
+						ds_writew(FIG_DISCARD, 0);
 
 						if (!do_fight(FIGHTS_DASP1B)) {
 							ds_writeb(0x3320, 1);
@@ -561,7 +561,7 @@ void talk_switch(void)
 					}
 				}
 
-				ds_writew(0x26c1, 0);
+				ds_writew(FIG_DISCARD, 0);
 			}
 		}
 

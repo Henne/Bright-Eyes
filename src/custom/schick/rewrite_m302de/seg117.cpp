@@ -51,7 +51,7 @@ void pause_traveling(signed short ani_nr)
 	ds_writew(0xe5d5, ds_readw(TEXTBOX_WIDTH));
 	ds_writew(0xe5d3, ds_readw(0xe113));
 
-	ds_writeb(0xb132, 1);
+	ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
 
 	/* c = b = a = 0 */
 	ds_writeb(TRAVELING, (unsigned char)ds_writew(0x2ca2, ds_writew(0xe113, 0)));
@@ -73,7 +73,7 @@ void resume_traveling(void)
 	ds_writew(0x2846, ds_writeb(TRAVELING, 1));
 
 	ds_writeb(0xe5d2, 0);
-	ds_writeb(0xb132, 0);
+	ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
 }
 
 void hunt_karen(void)
@@ -501,7 +501,7 @@ void pirates_attack(void)
 	GUI_output(get_city(0xbc));
 
 	ds_writew(MAX_ENEMIES, random_interval(3, 8));
-	ds_writew(0x26c1, 1);
+	ds_writew(FIG_DISCARD, 1);
 
 	do_fight(FIGHTS_S001);
 
@@ -525,7 +525,7 @@ void do_wild8_fight(void)
 	ds_writeb(TRAVELING, 0);
 
 	ds_writew(MAX_ENEMIES, random_interval(5, 10));
-	ds_writew(0x26c1, 1);
+	ds_writew(FIG_DISCARD, 1);
 
 	do_fight(FIGHTS_WILD8);
 
@@ -565,8 +565,8 @@ void random_encounter(signed short arg)
 		if ((ds_readb(0xb1b9 + 7 * i + arg) <= randval) && (ds_readb(0xb1b9 + 7 * i + arg) != 0)) {
 
 			ds_writeb(TRAVELING, (signed char)ds_writew(0xe113, 0));
-			ds_writeb(0xb132, 1);
-			ds_writew(0x26c1, 1);
+			ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
+			ds_writew(FIG_DISCARD, 1);
 
 			switch (i) {
 				case 0: {
@@ -651,9 +651,9 @@ void random_encounter(signed short arg)
 				}
 			}
 
-			ds_writew(0x26c1, 0);
+			ds_writew(FIG_DISCARD, 0);
 			ds_writeb(TRAVELING, 1);
-			ds_writeb(0xb132, 0);
+			ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
 			break;
 		}
 	}

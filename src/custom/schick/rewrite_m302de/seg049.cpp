@@ -137,15 +137,15 @@ void GRP_save_pos(signed short group)
 
 	GRP_sort_heros();
 
-	ds_writeb(0x2d3e + group, ds_readbs(DIRECTION));
+	ds_writeb(GROUPS_DIRECTION + group, ds_readbs(DIRECTION));
 
-	ds_writew(0x2d48 + group * 2, ds_readws(X_TARGET));
-	ds_writew(0x2d54 + group * 2, ds_readws(Y_TARGET));
+	ds_writew(GROUPS_X_TARGET + group * 2, ds_readws(X_TARGET));
+	ds_writew(GROUPS_Y_TARGET + group * 2, ds_readws(Y_TARGET));
 
-	ds_writeb(0x2d61 + group, ds_readbs(LOCATION));
-	ds_writeb(0x2d68 + group, ds_readbs(CURRENT_TOWN));
-	ds_writeb(0x2d6f + group, ds_readbs(DUNGEON_INDEX));
-	ds_writeb(0x2d76 + group, ds_readbs(DUNGEON_LEVEL));
+	ds_writeb(GROUPS_LOCATION + group, ds_readbs(LOCATION));
+	ds_writeb(GROUPS_TOWN + group, ds_readbs(CURRENT_TOWN));
+	ds_writeb(GROUPS_DNG_INDEX + group, ds_readbs(DUNGEON_INDEX));
+	ds_writeb(GROUPS_DNG_LEVEL + group, ds_readbs(DUNGEON_LEVEL));
 	ds_writeb(0x2d7d + group, ds_readbs(0x2d7c));
 
 	ds_writew(0x2d87 + group * 2, ds_readws(0x2d83));
@@ -175,7 +175,7 @@ void GRP_split(void)
 		not_empty = 0;
 		new_group = 0;
 
-		while (ds_readbs(0x2d36 + new_group) != 0) {
+		while (ds_readbs(GROUP_MEMBER_COUNTS + new_group) != 0) {
 			new_group++;
 		}
 
@@ -189,8 +189,8 @@ void GRP_split(void)
 
 				not_empty = 1;
 				host_writeb(get_hero(answer) + HERO_GROUP_NO, (signed char)new_group);
-				inc_ds_bs_post(0x2d36 + new_group);
-				dec_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+				inc_ds_bs_post(GROUP_MEMBER_COUNTS + new_group);
+				dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 			}
 
 		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != 0 ? 2 : 1));
@@ -215,12 +215,12 @@ void GRP_merge(void)
 
 		do {
 
-			ds_writeb(0x2d3e + answer, (signed char)
-				(ds_writew(0x2d48 + answer * 2,
-				ds_writew(0x2d54 + answer * 2,
-				ds_writebs(0x2d68 + answer,
-				ds_writeb(0x2d6f + answer,
-				ds_writeb(0x2d76 + answer,
+			ds_writeb(GROUPS_DIRECTION + answer, (signed char)
+				(ds_writew(GROUPS_X_TARGET + answer * 2,
+				ds_writew(GROUPS_Y_TARGET + answer * 2,
+				ds_writebs(GROUPS_TOWN + answer,
+				ds_writeb(GROUPS_DNG_INDEX + answer,
+				ds_writeb(GROUPS_DNG_LEVEL + answer,
 				ds_writeb(0x2d7d + answer, (signed char)
 				(ds_writew(0x2d87 + answer * 2,
 				ds_writew(0x2d93 + answer * 2,
@@ -229,7 +229,7 @@ void GRP_merge(void)
 				ds_writeb(0x2dae + answer,
 				ds_writeb(0x2db5 + answer, 0)))))))))))))));
 
-			ds_writeb(0x2d36 + answer, 0);
+			ds_writeb(GROUP_MEMBER_COUNTS + answer, 0);
 
 			for (i = 0; i <= 6; i++) {
 
@@ -237,7 +237,7 @@ void GRP_merge(void)
 					host_readbs(get_hero(i) + HERO_GROUP_NO) == answer)
 				{
 					host_writeb(get_hero(i) + HERO_GROUP_NO, ds_readbs(CURRENT_GROUP));
-					inc_ds_bs_post(0x2d36 + ds_readbs(CURRENT_GROUP));
+					inc_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 				}
 			}
 			GRP_sort_heros();
@@ -267,7 +267,7 @@ void GRP_switch_to_next(signed short mode)
 			group = 0;
 		}
 
-		if (ds_readbs(0x2d36 + group) != 0) {
+		if (ds_readbs(GROUP_MEMBER_COUNTS + group) != 0) {
 
 			state = 0;
 
@@ -313,34 +313,34 @@ void GRP_switch_to_next(signed short mode)
 
 	if (ds_readbs(CURRENT_GROUP) != group) {
 
-		if ( ( (ds_readbs(CURRENT_TOWN) != 0) && !ds_readbs(0x2d68 + group)) ||
-			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(0x2d68 + group) != 0)))
+		if ( ( (ds_readbs(CURRENT_TOWN) != 0) && !ds_readbs(GROUPS_TOWN + group)) ||
+			(!ds_readbs(CURRENT_TOWN) && (ds_readbs(GROUPS_TOWN + group) != 0)))
 		{
 			set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 			set_palette(p_datseg + 0x26c3, 0x80, 0x20);
 			set_palette(p_datseg + 0x26c3, 0xa0, 0x20);
 		}
 
-		if ((ds_readbs(0x2d6f + group)) && (ds_readbs(0x2d6f + group) != ds_readbs(DUNGEON_INDEX)))
+		if ((ds_readbs(GROUPS_DNG_INDEX + group)) && (ds_readbs(GROUPS_DNG_INDEX + group) != ds_readbs(DUNGEON_INDEX)))
 		{
 			ds_writeb(0x2ca6, -1);
 			ds_writew(0x2ccb, -1);
 		}
 
-		if ((ds_readbs(0x2d68 + group)) && (ds_readbs(0x2d68 + group) != ds_readbs(CURRENT_TOWN)))
+		if ((ds_readbs(GROUPS_TOWN + group)) && (ds_readbs(GROUPS_TOWN + group) != ds_readbs(CURRENT_TOWN)))
 		{
 			ds_writeb(0x2ca7, -1);
 			ds_writew(0x2ccb, -1);
 		}
 
 		/* save positions from the old group */
-		ds_writeb(0x2d3e + ds_readbs(CURRENT_GROUP), ds_readbs(DIRECTION));
-		ds_writew(0x2d48 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(X_TARGET));
-		ds_writew(0x2d54 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(Y_TARGET));
-		ds_writeb(0x2d61 + ds_readbs(CURRENT_GROUP), ds_readbs(LOCATION));
-		ds_writeb(0x2d68 + ds_readbs(CURRENT_GROUP), ds_readbs(CURRENT_TOWN));
-		ds_writeb(0x2d6f + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_INDEX));
-		ds_writeb(0x2d76 + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_LEVEL));
+		ds_writeb(GROUPS_DIRECTION + ds_readbs(CURRENT_GROUP), ds_readbs(DIRECTION));
+		ds_writew(GROUPS_X_TARGET + ds_readbs(CURRENT_GROUP) * 2, ds_readw(X_TARGET));
+		ds_writew(GROUPS_Y_TARGET + ds_readbs(CURRENT_GROUP) * 2, ds_readw(Y_TARGET));
+		ds_writeb(GROUPS_LOCATION + ds_readbs(CURRENT_GROUP), ds_readbs(LOCATION));
+		ds_writeb(GROUPS_TOWN + ds_readbs(CURRENT_GROUP), ds_readbs(CURRENT_TOWN));
+		ds_writeb(GROUPS_DNG_INDEX + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_INDEX));
+		ds_writeb(GROUPS_DNG_LEVEL + ds_readbs(CURRENT_GROUP), ds_readbs(DUNGEON_LEVEL));
 		ds_writeb(0x2d7d + ds_readbs(CURRENT_GROUP), ds_readbs(0x2d7c));
 		ds_writew(0x2d87 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(0x2d83));
 		ds_writew(0x2d93 + ds_readbs(CURRENT_GROUP) * 2, ds_readw(0x2d85));
@@ -351,14 +351,14 @@ void GRP_switch_to_next(signed short mode)
 
 		/* set positions for the new group */
 		ds_writeb(CURRENT_GROUP, (signed char)group);
-		ds_writeb(DIRECTION, ds_readb(0x2d3e + group));
-		ds_writew(X_TARGET, ds_readw(0x2d48 + group * 2));
-		ds_writew(Y_TARGET, ds_readw(0x2d54 + group * 2));
-		ds_writeb(LOCATION, ds_readb(0x2d61 + group));
-		ds_writeb(CURRENT_TOWN, ds_readb(0x2d68 + group));
-		ds_writeb(DUNGEON_INDEX, ds_readb(0x2d6f + group));
+		ds_writeb(DIRECTION, ds_readb(GROUPS_DIRECTION + group));
+		ds_writew(X_TARGET, ds_readw(GROUPS_X_TARGET + group * 2));
+		ds_writew(Y_TARGET, ds_readw(GROUPS_Y_TARGET + group * 2));
+		ds_writeb(LOCATION, ds_readb(GROUPS_LOCATION + group));
+		ds_writeb(CURRENT_TOWN, ds_readb(GROUPS_TOWN + group));
+		ds_writeb(DUNGEON_INDEX, ds_readb(GROUPS_DNG_INDEX + group));
 		dng_level = ds_readbs(DUNGEON_LEVEL);
-		ds_writeb(DUNGEON_LEVEL, ds_readbs(0x2d76 + group));
+		ds_writeb(DUNGEON_LEVEL, ds_readbs(GROUPS_DNG_LEVEL + group));
 
 		if (dng_level != ds_readbs(DUNGEON_LEVEL)) {
 			load_area_description(1);
@@ -375,7 +375,7 @@ void GRP_switch_to_next(signed short mode)
 		GRP_sort_heros();
 
 		for (group = 0; group <= 6; group++) {
-			ds_writeb(FOOD_MESSAGE + group, ds_writeb(0x4212 + group, 0));
+			ds_writeb(FOOD_MESSAGE + group, ds_writeb(UNCONSCIOUS_MESSAGE + group, 0));
 		}
 
 		ds_writew(0x2846, 1);
@@ -397,7 +397,7 @@ void GRP_swap_heros(void)
 	signed char i;
 	signed char tmp[SIZEOF_HERO];
 
-	if ((ds_readw(0x29b4) == 0) || !ds_readbs(0x2d36 + ds_readbs(CURRENT_GROUP))) {
+	if ((ds_readw(0x29b4) == 0) || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 		return;
 	}
 
@@ -411,32 +411,32 @@ void GRP_swap_heros(void)
 
 			for (i = 0; i < 3; i++) {
 
-				if (ds_readbs(0xe3be + i) == hero1_nr) {
-					ds_writebs(0xe3be + i, (signed char)hero2_nr);
+				if (ds_readbs(WILDCAMP_GUARDS + i) == hero1_nr) {
+					ds_writebs(WILDCAMP_GUARDS + i, (signed char)hero2_nr);
 				}
 			}
 
 			/* save hero1 in tmp */
 			*((struct dummy*)&tmp) = *((struct dummy*)get_hero(hero1_nr));
 
-			l2 = ds_readbs(0xe3d6 + hero1_nr);
-			l3 = ds_readbs(0xe3cf + hero1_nr);
-			l4 = ds_readbs(0xe3c8 + hero1_nr);
-			l5 = ds_readbs(0xe3c1 + hero1_nr);
+			l2 = ds_readbs(WILDCAMP_GUARDSTATUS + hero1_nr);
+			l3 = ds_readbs(WILDCAMP_MAGICSTATUS + hero1_nr);
+			l4 = ds_readbs(WILDCAMP_REPLSTATUS + hero1_nr);
+			l5 = ds_readbs(WILDCAMP_HERBSTATUS + hero1_nr);
 
 			*((struct dummy*)get_hero(hero1_nr)) = *((struct dummy*)get_hero(hero2_nr));
 
-			ds_writebs(0xe3d6 + hero1_nr, ds_readbs(0xe3d6 + hero2_nr));
-			ds_writebs(0xe3cf + hero1_nr, ds_readbs(0xe3cf + hero2_nr));
-			ds_writebs(0xe3c8 + hero1_nr, ds_readbs(0xe3c8 + hero2_nr));
-			ds_writebs(0xe3c1 + hero1_nr, ds_readbs(0xe3c1 + hero2_nr));
+			ds_writebs(WILDCAMP_GUARDSTATUS + hero1_nr, ds_readbs(WILDCAMP_GUARDSTATUS + hero2_nr));
+			ds_writebs(WILDCAMP_MAGICSTATUS + hero1_nr, ds_readbs(WILDCAMP_MAGICSTATUS + hero2_nr));
+			ds_writebs(WILDCAMP_REPLSTATUS + hero1_nr, ds_readbs(WILDCAMP_REPLSTATUS + hero2_nr));
+			ds_writebs(WILDCAMP_HERBSTATUS + hero1_nr, ds_readbs(WILDCAMP_HERBSTATUS + hero2_nr));
 
 			*((struct dummy*)get_hero(hero2_nr)) = *((struct dummy*)&tmp);
 
-			ds_writebs(0xe3d6 + hero2_nr, l2);
-			ds_writebs(0xe3cf + hero2_nr, l3);
-			ds_writebs(0xe3c8 + hero2_nr, l4);
-			ds_writebs(0xe3c1 + hero2_nr, l5);
+			ds_writebs(WILDCAMP_GUARDSTATUS + hero2_nr, l2);
+			ds_writebs(WILDCAMP_MAGICSTATUS + hero2_nr, l3);
+			ds_writebs(WILDCAMP_REPLSTATUS + hero2_nr, l4);
+			ds_writebs(WILDCAMP_HERBSTATUS + hero2_nr, l5);
 
 			if (host_readbs(get_hero(hero1_nr) + HERO_TYPE)) {
 				host_writebs(get_hero(hero1_nr) + HERO_UNKNOWN2, 100);
@@ -498,7 +498,7 @@ void GRP_move_hero(signed short src_pos)
 		ds_writew(0xc013, 157);
 		ds_writew(0xc015, ds_readw(0x2d01 + 2 * src_pos) + 31);
 		ds_writew(0xc017, 188);
-		ds_writed(0xc019, ds_readd(0xd303));
+		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 		do_save_rect();
 
@@ -536,7 +536,7 @@ void GRP_move_hero(signed short src_pos)
 
 				do_save_rect();
 
-				ds_writed(0xc019, ds_readd(0xd303));
+				ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
 				do_pic_copy(0);
 
@@ -573,31 +573,31 @@ void GRP_move_hero(signed short src_pos)
 			if (!host_readbs(dst + 0x21) || (host_readbs(dst + 0x87) == ds_readbs(CURRENT_GROUP))) {
 
 				for (i = 0; i < 3; i++) {
-					if (ds_readbs(0xe3be + i) == src_pos) {
-						ds_writebs(0xe3be + i, (signed char)dst_pos);
+					if (ds_readbs(WILDCAMP_GUARDS + i) == src_pos) {
+						ds_writebs(WILDCAMP_GUARDS + i, (signed char)dst_pos);
 					}
 				}
 
-				memcpy(Real2Host(ds_readd(0xd303)), src, SIZEOF_HERO);
+				memcpy(Real2Host(ds_readd(BUFFER1_PTR)), src, SIZEOF_HERO);
 
-				bak1 = ds_readbs(0xe3d6 + src_pos);
-				bak2 = ds_readbs(0xe3cf + src_pos);
-				bak3 = ds_readbs(0xe3c8 + src_pos);
-				bak4 = ds_readbs(0xe3c1 + src_pos);
+				bak1 = ds_readbs(WILDCAMP_GUARDSTATUS + src_pos);
+				bak2 = ds_readbs(WILDCAMP_MAGICSTATUS + src_pos);
+				bak3 = ds_readbs(WILDCAMP_REPLSTATUS + src_pos);
+				bak4 = ds_readbs(WILDCAMP_HERBSTATUS + src_pos);
 
 				*((struct dummy*)src) = *((struct dummy*)dst);
 
-				ds_writeb(0xe3d6 + src_pos, ds_readbs(0xe3d6 + dst_pos));
-				ds_writeb(0xe3cf + src_pos, ds_readbs(0xe3cf + dst_pos));
-				ds_writeb(0xe3c8 + src_pos, ds_readbs(0xe3c8 + dst_pos));
-				ds_writeb(0xe3c1 + src_pos, ds_readbs(0xe3c1 + dst_pos));
+				ds_writeb(WILDCAMP_GUARDSTATUS + src_pos, ds_readbs(WILDCAMP_GUARDSTATUS + dst_pos));
+				ds_writeb(WILDCAMP_MAGICSTATUS + src_pos, ds_readbs(WILDCAMP_MAGICSTATUS + dst_pos));
+				ds_writeb(WILDCAMP_REPLSTATUS + src_pos, ds_readbs(WILDCAMP_REPLSTATUS + dst_pos));
+				ds_writeb(WILDCAMP_HERBSTATUS + src_pos, ds_readbs(WILDCAMP_HERBSTATUS + dst_pos));
 
-				memcpy(dst, Real2Host(ds_readd(0xd303)), SIZEOF_HERO);
+				memcpy(dst, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
 
-				ds_writeb(0xe3d6 + dst_pos, bak1);
-				ds_writeb(0xe3cf + dst_pos, bak2);
-				ds_writeb(0xe3c8 + dst_pos, bak3);
-				ds_writeb(0xe3c1 + dst_pos, bak4);
+				ds_writeb(WILDCAMP_GUARDSTATUS + dst_pos, bak1);
+				ds_writeb(WILDCAMP_MAGICSTATUS + dst_pos, bak2);
+				ds_writeb(WILDCAMP_REPLSTATUS + dst_pos, bak3);
+				ds_writeb(WILDCAMP_HERBSTATUS + dst_pos, bak4);
 
 				host_writeb(src + 0x84, 100);
 				host_writeb(dst + 0x84, 100);
@@ -685,17 +685,17 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 						add_hero_le(hero, le_regen);
 
-						strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+						strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
 
 						if (le_regen > 1) {
-							strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+							strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 						}
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x4fc),
 							hero + HERO_NAME2,
 							le_regen,
-							(char*)Real2Host(ds_readd(0xd2eb)));
+							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 						if (ds_readbs(0x2845) == 0) {
 							GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 							delay_or_keypress(200);
@@ -719,17 +719,17 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 							add_hero_ae(hero, ae_regen);
 
-							strcpy((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x620));
+							strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
 
 							if (ae_regen > 1) {
-								strcat((char*)Real2Host(ds_readd(0xd2eb)), (char*)get_ltx(0x624));
+								strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
 							}
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x500),
 								hero + HERO_NAME2,
 								ae_regen,
-								(char*)Real2Host(ds_readd(0xd2eb)));
+								(char*)Real2Host(ds_readd(BUFFER4_PTR)));
 
 							if (ds_readbs(0x2845) == 0) {
 								GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
