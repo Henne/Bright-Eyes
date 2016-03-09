@@ -10,6 +10,7 @@
 #define SYMBOLS_H
 
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
+#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC FIRE (0xef), -1 } */
 #define TWO_FIELDED_SPRITE_ID	(0x25f9)	/* char[5] array */
 #define EMS_ENABLED	(0x26ab)
 #define FIG_INITIATIVE	(0x26ac)	/* signed char, 0 = random, 1 = enemies, 2 = heroes (attack first) */

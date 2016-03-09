@@ -450,7 +450,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
 
-						if (is_in_word_array(host_readws(hero + HERO_ITEM_LEFT), (signed short*)(p_datseg + 0x091f)))
+						if (is_in_word_array(host_readws(hero + HERO_ITEM_LEFT), (signed short*)(p_datseg + ATTACK_ITEMS)))
 						{
 							l5 = x;
 							l6 = y;
