@@ -34,13 +34,14 @@ static unsigned short msg_counter;
 #endif
 
 /**
- * range_attack_ammo()	- check if a range attack can be done
- * @hero:	the hero who attacks
- * @arg:	0 = drop one unit, 1 = just check, 2 = check with output
+ * \brief	check if a range attack can be done
  *
- * Returns: 0 = no ammo / 1 = have ammo
-*/
-signed short seg041_0020(Bit8u *hero, signed short arg)
+ * \param hero	the hero who attacks
+ * \param arg	0 = drop one unit, 1 = just check, 2 = check with output
+ *
+ * \return	0 = no ammo / 1 = have ammo
+ */
+signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 {
 	signed short right_hand;
 	signed short left_hand;

@@ -240,7 +240,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 #endif
 						update_mouse_cursor();
 					} else {
-						if (seg041_0020(hero, 1)) {
+						if (range_attack_check_ammo(hero, 1)) {
 							/* a range weapon */
 							refresh_screen_size();
 #if !defined(__BORLANDC__)

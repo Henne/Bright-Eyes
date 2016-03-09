@@ -7729,8 +7729,8 @@ static int seg041(unsigned short offs) {
 	case 0x20: {
 		RealPt hero = CPU_Pop32();
 		Bit16u arg = CPU_Pop16();
-		reg_ax = seg041_0020(Real2Host(hero), (signed short)arg);
-		D1_LOG("seg041_0020(%s, %d); = %d\n",
+		reg_ax = range_attack_check_ammo(Real2Host(hero), (signed short)arg);
+		D1_LOG("range_attack_check_ammo(%s, %d); = %d\n",
 			(char*)Real2Host(hero) + 0x10, arg, reg_ax);
 		CPU_Push16(arg);
 		CPU_Push32(hero);

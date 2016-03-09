@@ -562,7 +562,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 				if (weapon_type != -1) {
 
-					if (!seg041_0020(Real2Host(hero), 0)) {
+					if (!range_attack_check_ammo(Real2Host(hero), 0)) {
 						return;
 					}
 

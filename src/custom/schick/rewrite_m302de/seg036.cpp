@@ -969,7 +969,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 				if (FIG_get_range_weapon_type(hero) != -1) {
 
-					if (seg041_0020(hero, 2)) {
+					if (range_attack_check_ammo(hero, 2)) {
 
 						l8 = KI_select_spell_target(hero, hero_pos, hero_cursed(hero), x, y);
 
