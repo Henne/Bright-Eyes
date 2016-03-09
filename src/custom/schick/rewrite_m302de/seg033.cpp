@@ -232,7 +232,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						l5 = host_readws((Bit8u*)&l5);
 						l6 = host_readws((Bit8u*)&l6);
 #endif
-						l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, 1);
+						l8 = FIG_cb_select_target((Bit8u*)&l5, (Bit8u*)&l6, 1);
 #if !defined(__BORLANDC__)
 						/* BE-fix */
 						l5 = host_readws((Bit8u*)&l5);
@@ -248,7 +248,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							l5 = host_readws((Bit8u*)&l5);
 							l6 = host_readws((Bit8u*)&l6);
 #endif
-							l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, 99);
+							l8 = FIG_cb_select_target((Bit8u*)&l5, (Bit8u*)&l6, 99);
 #if !defined(__BORLANDC__)
 							/* BE-fix */
 							l5 = host_readws((Bit8u*)&l5);
@@ -384,7 +384,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 									l5 = host_readws((Bit8u*)&l5);
 									l6 = host_readws((Bit8u*)&l6);
 #endif
-									l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, weapon_id);
+									l8 = FIG_cb_select_target((Bit8u*)&l5, (Bit8u*)&l6, weapon_id);
 #if !defined(__BORLANDC__)
 									/* BE-fix */
 									l5 = host_readws((Bit8u*)&l5);
@@ -460,7 +460,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							l5 = host_readws((Bit8u*)&l5);
 							l6 = host_readws((Bit8u*)&l6);
 #endif
-							l8 = seg034_2e3((Bit8u*)&l5, (Bit8u*)&l6, 99);
+							l8 = FIG_cb_select_target((Bit8u*)&l5, (Bit8u*)&l6, 99);
 #if !defined(__BORLANDC__)
 							/* BE-fix */
 							l5 = host_readws((Bit8u*)&l5);

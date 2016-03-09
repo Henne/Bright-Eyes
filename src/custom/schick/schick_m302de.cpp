@@ -7434,9 +7434,9 @@ static int seg034(unsigned short offs)
 		CPU_Push32(a2);
 		CPU_Push32(a1);
 
-		reg_ax = (Bit16s)seg034_2e3(Real2Host(a1), Real2Host(a2), a3);
+		reg_ax = (Bit16s)FIG_cb_select_target(Real2Host(a1), Real2Host(a2), a3);
 
-		D1_LOG("seg034_2e3(*a1 = %d, *a2 = %d, a3 = %d) = %d\n",
+		D1_LOG("FIG_cb_select_target(*a1 = %d, *a2 = %d, a3 = %d) = %d\n",
 			host_readws(Real2Host(a1)),
 			host_readws(Real2Host(a2)),
 			a3, (Bit16s)reg_ax);
