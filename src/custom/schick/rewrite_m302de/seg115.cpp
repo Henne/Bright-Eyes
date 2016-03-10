@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 8/13
+ *	Functions rewritten: 9/13
  */
 #include <stdio.h>
 
@@ -468,6 +468,29 @@ void tevent_126(void)
 		{
 			ds_writeb(0x4333, 9);
 		}
+	}
+}
+
+/* Borlandified and identical */
+void tevent_127(void)
+{
+	signed short answer;
+
+	load_in_head(14);
+
+	do {
+		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+					get_city(0x18), 3,
+					get_city(0x1c),
+					get_city(0x20),
+					get_city(0x24));
+	} while (answer == -1);
+
+	if (answer == 1 || answer == 2)
+	{
+		GUI_dialog_na(0, (answer == 1 ? get_city(0x28) : get_city(0x2c)));
+
+		timewarp(MINUTES(30));
 	}
 }
 
