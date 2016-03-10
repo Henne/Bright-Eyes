@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 10/13
+ *	Functions rewritten: 11/13
  */
 #include <stdio.h>
 
@@ -512,6 +512,49 @@ void tevent_128(void)
 		}
 	}
 }
+
+/* entrance dungeon: dragon cave */
+/* Borlandified and identical */
+void tevent_129(void)
+{
+	signed short answer;
+
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), 51, 4) > 0 && !ds_readb(0x3e04))
+	{
+		ds_writeb(0x3e04, 1);
+
+		GUI_output(get_city(0x30));
+
+		load_in_head(53);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x34), 2,
+						get_city(0x38),
+						get_city(0x3c));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			ds_writeb(0x4333, 10);
+		}
+
+	} else if (ds_readb(0x3e04) != 0) {
+
+		load_in_head(53);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x40), 2,
+						get_city(0x44),
+						get_city(0x48));
+		} while (answer == -1);
+
+		if (answer == 1) {
+			ds_writeb(0x4333, 10);
+		}
+	}
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
