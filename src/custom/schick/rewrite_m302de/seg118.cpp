@@ -592,11 +592,6 @@ void tevent_125(void)
 	}
 }
 
-static inline unsigned short cast_u16(unsigned char v)
-{
-	return v;
-}
-
 void tevent_145(void)
 {
 	signed short answer;

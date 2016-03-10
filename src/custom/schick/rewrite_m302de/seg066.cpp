@@ -46,12 +46,6 @@ namespace M302de {
 signed short get_border_index(unsigned char);
 #endif
 
-/* HACK: this cast is not optimized by Borland C++ 3.1 */
-static inline unsigned short cast_u16(unsigned char v)
-{
-	return v;
-}
-
 signed short enter_location(signed short town_id)
 {
 	signed short map_pos;

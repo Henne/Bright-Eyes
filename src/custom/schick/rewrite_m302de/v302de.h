@@ -22,6 +22,12 @@
 #define DAYS(n)		(HOURS(n) * 24L)
 #define MONTHS(n)	(DAYS(n) * 30L)
 
+/* HACK: this cast is not optimized by Borland C++ 3.1 */
+static inline unsigned short cast_u16(unsigned char v)
+{
+	return (unsigned short)v;
+}
+
 #if !defined(__BORLANDC__)
 
 #define INTCAST RealPt
