@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 11/13
+ *	Functions rewritten: 12/13
  */
 #include <stdio.h>
 
@@ -551,6 +551,134 @@ void tevent_129(void)
 
 		if (answer == 1) {
 			ds_writeb(0x4333, 10);
+		}
+	}
+}
+
+/* a cutter */
+/* Borlandified and identical */
+void tevent_047(void)
+{
+	signed short answer;
+	signed short l_di;
+
+	l_di = 0;
+
+	do {
+		answer = GUI_radio(get_city(0x00), 2,
+					get_city(0x04),
+					get_city(0x08));
+	} while (answer == -1);
+
+	if (answer == 1)
+	{
+		/* ignore */
+		GUI_output(get_city(0x0c));
+
+	} else {
+		/* wave */
+		do {
+			answer = GUI_radio(get_city(0x10), 2,
+						get_city(0x14),
+						get_city(0x18));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			/* run away */
+			do {
+				answer = GUI_radio(get_city(0x1c), 2,
+							get_city(0x24),
+							get_city(0x20));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				/* run */
+				GUI_output(get_city(0x28));
+			} else {
+				/* wait */
+				l_di = 1;
+			}
+		}
+
+		if (answer == 2)
+		{
+			/* wait */
+			load_in_head(42);
+
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+							(!l_di ? get_city(0x3c) : get_city(0x2c)), 2,
+							get_city(0x30),
+							get_city(0x34));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				/* deny */
+				GUI_dialog_na(0, get_city(0x38));
+			} else {
+				/* accept */
+
+				l_di = random_schick(2) - 1;
+
+				if (!l_di)
+				{
+					do {
+						answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+									get_city(0x40), 3,
+									get_city(0x44),
+									get_city(0x48),
+									get_city(0x4c));
+					} while (answer == -1);
+
+					if (answer == 3)
+					{
+						/* no thanks */
+						GUI_dialog_na(0, get_city(0x50));
+					} else {
+						/* 1 = LJASDAHL, 2 = OTTARJE */
+						GUI_dialog_na(0, answer == 1 ? get_city(0x5c) : get_city(0x60));
+						GUI_dialog_na(0, get_city(0x64));
+
+						if (answer == 1)
+						{
+							ds_writeb(CURRENT_TOWN, 42);
+							ds_writew(X_TARGET, 7);
+							ds_writew(Y_TARGET, 3);
+						} else {
+							ds_writeb(CURRENT_TOWN, 37);
+							ds_writew(X_TARGET, 9);
+							ds_writew(Y_TARGET, 10);
+						}
+
+						ds_writeb(0x4333, 99);
+					}
+				} else {
+					do {
+						answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+									get_city(0x54), 2,
+									get_city(0x58),
+									get_city(0x4c));
+					} while (answer == -1);
+
+					if (answer == 2)
+					{
+						/* deny */
+						GUI_dialog_na(0, get_city(0x50));
+					} else {
+						/* travel to VARNHEIM */
+						GUI_dialog_na(0, get_city(0x5c));
+						GUI_dialog_na(0, get_city(0x64));
+
+						ds_writeb(CURRENT_TOWN, 43);
+						ds_writew(X_TARGET, 4);
+						ds_writew(Y_TARGET, 10);
+						ds_writeb(0x4333, 99);
+					}
+				}
+			}
 		}
 	}
 }
