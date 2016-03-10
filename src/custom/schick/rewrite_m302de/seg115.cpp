@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 9/13
+ *	Functions rewritten: 10/13
  */
 #include <stdio.h>
 
@@ -494,6 +494,24 @@ void tevent_127(void)
 	}
 }
 
+/* Borlandified and identical */
+void tevent_128(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e02)) ||
+		ds_readb(0x3e02) != 0)
+	{
+		ds_writeb(0x3e02, 1);
+
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 && !ds_readb(0x3e03)) ||
+			ds_readb(0x3e03) != 0)
+		{
+			ds_writeb(0x3e03, 1);
+			TRV_found_replenish_place(1);
+		} else {
+			TRV_found_replenish_place(0);
+		}
+	}
+}
 #if !defined(__BORLANDC__)
 }
 #endif
