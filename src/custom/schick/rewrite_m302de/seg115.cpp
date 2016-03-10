@@ -1,15 +1,18 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 12/13
+ *	Functions rewritten: 13/13 (complete)
  */
 #include <stdio.h>
 
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg004.h"
 #include "seg007.h"
 #include "seg025.h"
 #include "seg026.h"
+#include "seg027.h"
+#include "seg029.h"
 #include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -681,6 +684,87 @@ void tevent_047(void)
 			}
 		}
 	}
+}
+
+/* entrance dungeon: a ruin */
+/* Borlandified and identical */
+void tevent_100(void)
+{
+	signed short answer;
+
+	if (ds_readb(0x3df3) != 0)
+	{
+		do {
+			answer = GUI_radio(get_city(0xd0), 3,
+						get_city(0xd4),
+						get_city(0xd8),
+						get_city(0xdc));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			GUI_output(get_city(0xe0));
+
+			ds_writeb(0xe5d2, 1);
+
+			load_ani(11);
+			draw_main_screen();
+			init_ani(0);
+
+			GUI_output(get_city(0xe4));
+
+			do {
+				answer = GUI_radio(get_city(0xe8), 2,
+							get_city(0xec),
+							get_city(0xf0));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				ds_writeb(0x4333, 7);
+			} else {
+
+				GUI_output(get_city(0x10c));
+
+				/* FF+4 */
+				if (test_attrib(Real2Host(get_first_hero_available_in_group()), 4, 4) > 0)
+				{
+					/* success */
+					GUI_output(get_city(0x110));
+				} else {
+					/* fail */
+					Bit8u *hero;
+					hero = Real2Host(get_first_hero_available_in_group());
+
+					answer = get_free_mod_slot();
+
+					set_mod_slot(answer, DAYS(1), hero + HERO_GE, -2, 0);
+
+					timewarp(MINUTES(15));
+
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x114),
+						(char*)hero + HERO_NAME2,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+
+				GUI_output(get_city(0x118));
+			}
+
+			ds_writew(0x2846, 1);
+
+		} else if (answer == 3)
+		{
+			ds_writew(0x4336, 1);
+		}
+	}
+
+	set_var_to_zero();
+	ds_writeb(0xe5d2, 0);
 }
 
 #if !defined(__BORLANDC__)
