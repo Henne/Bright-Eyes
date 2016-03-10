@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 5/13
+ *	Functions rewritten: 6/13
  */
 #include <stdio.h>
 
@@ -8,10 +8,12 @@
 
 #include "seg002.h"
 #include "seg007.h"
+#include "seg025.h"
 #include "seg026.h"
 #include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg098.h"
 #include "seg103.h"
 #include "seg105.h"
 #include "seg109.h"
@@ -216,6 +218,159 @@ void tevent_094(void)
 			ds_writeb(0x4333, 6);
 		}
 	}
+}
+
+/* Arete */
+/* Borlandified and identical */
+void tevent_095(void)
+{
+	signed short counter_failed;
+	signed short done;
+	signed short i;
+	signed short counter_heros;
+	Bit8u *hero;
+	signed short ret_spell_test;
+
+	done = 0;
+
+	do {
+
+		GUI_output(get_city(0x1c));
+
+		hero = get_hero(0);
+
+		for (i = counter_failed = counter_heros = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		{
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero))
+			{
+				counter_heros++;
+
+				if (test_attrib(hero, 8, -1) > 0)
+				{
+					timewarp(MINUTES(30));
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_city(0x20),
+						(char*)hero + HERO_NAME2);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					counter_failed++;
+				}
+			}
+		}
+
+		if (!counter_failed)
+		{
+			/* no hero failed HA-test */
+			GUI_output(get_city(0x40));
+			done = 1;
+
+		} else if (counter_failed == counter_heros)
+		{
+			/* all heros failed HA-test */
+			do {
+				counter_failed = GUI_radio(get_city(0x24), 2,
+								get_city(0x28),
+								get_city(0x2c));
+			} while (counter_failed == -1);
+
+			if (counter_failed == 2)
+			{
+				/* make a rest */
+				ds_writeb(LOCATION, 6);
+				do_location();
+				ds_writeb(LOCATION, 0);
+
+				TRV_load_textfile(-1);
+			} else {
+				ds_writew(0x4336, done = 1);
+			}
+		} else {
+			/* at least one hero failed HA-test */
+			counter_heros = 0;
+
+			do {
+				do {
+					counter_failed = GUI_radio((counter_heros == 0 ? get_city(0x30) : get_city(0x15c)), 3,
+									get_city(0x34),
+									get_city(0x38),
+									get_city(0x3c));
+				} while (counter_failed == -1);
+
+				if (counter_failed == 1)
+				{
+					/* "on hands and knees" */
+
+					timewarp(HOURS(2));
+
+					GUI_output(get_city(0x40));
+
+					done = 1;
+
+				} else if (counter_failed == 2)
+				{
+					/* try a spell */
+					hero = get_hero(select_hero_ok_forced(get_ltx(0x4f4)));
+
+					if (host_readbs(hero + HERO_TYPE) < 7)
+					{
+						/* this hero is no magic-user */
+						GUI_output(get_ltx(0x528));
+					} else {
+
+						ret_spell_test = test_spell(hero, 7, 0);
+
+						if (ret_spell_test > 0)
+						{
+							/* spell succeeded */
+
+							/* TODO: magicians with 4th staff spell may pay less */
+							sub_ae_splash(hero, get_spell_cost(7, 0));
+
+							GUI_output(get_city(0x40));
+
+							done = 1;
+
+						} else if (ret_spell_test != -99) {
+
+							/* spell failed */
+
+							/* hero pays the half spell costs */
+							sub_ae_splash(hero, get_spell_cost(7, 1));
+
+							/* TODO: some output for the player */
+
+							counter_heros = 1;
+						} else {
+							/* spell failed unluckily */
+
+							/* TODO: this gets output, but no spell costst ??? */
+							sprintf((char*)Real2Host(ds_readd(DTP2)),
+								(char*)get_ltx(0x97c),
+								(char*)hero + HERO_NAME2);
+
+							GUI_output(Real2Host(ds_readd(DTP2)));
+						}
+
+						timewarp(MINUTES(30));
+					}
+				} else
+				{
+					/* talk to the heros */
+
+					/* wait for 4 hours */
+					timewarp(HOURS(4));
+
+					GUI_output(get_city(0x40));
+
+					done = 1;
+				}
+			} while (!done);
+		}
+	} while (!done);
 }
 
 #if !defined(__BORLANDC__)
