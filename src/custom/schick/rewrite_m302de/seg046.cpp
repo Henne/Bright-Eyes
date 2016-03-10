@@ -191,10 +191,10 @@ void status_show(Bit16u index)
 
 	struct nvf_desc nvf;
 
-	bak1 = ds_readw(0xd313);
-	bak2 = ds_readw(0xd315);
-	bak3 = ds_readw(0xd317);
-	bak4 = ds_readw(0xd319);
+	bak1 = ds_readw(TXT_TABPOS1);
+	bak2 = ds_readw(TXT_TABPOS2);
+	bak3 = ds_readw(TXT_TABPOS3);
+	bak4 = ds_readw(TXT_TABPOS4);
 
 	hero = (RealPt)ds_readd(HEROS) + index * SIZEOF_HERO;
 
@@ -297,7 +297,7 @@ void status_show(Bit16u index)
 		do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 50, 319, 191, 2);
 	}
 
-	ds_writew(0xd313, 0x5f);
+	ds_writew(TXT_TABPOS1, 0x5f);
 
 	/* print name */
 	set_textcolor(0xff, 2);
@@ -370,7 +370,7 @@ void status_show(Bit16u index)
 		case 1: {
 
 			/* print god */
-			ds_writew(0xd313, 265);
+			ds_writew(TXT_TABPOS1, 265);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x28),
@@ -378,9 +378,9 @@ void status_show(Bit16u index)
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 55);
 
 			/* show attributes */
-			ds_writew(0xd313, 220);
-			ds_writew(0xd315, 265);
-			ds_writew(0xd317, 285);
+			ds_writew(TXT_TABPOS1, 220);
+			ds_writew(TXT_TABPOS2, 265);
+			ds_writew(TXT_TABPOS3, 285);
 
 			for (i = 0; i <= 13; i++) {
 
@@ -554,8 +554,8 @@ void status_show(Bit16u index)
 		}
 		/* AT PA values */
 		case 2: {
-			ds_writew(0xd313, 275);
-			ds_writew(0xd315, 295);
+			ds_writew(TXT_TABPOS1, 275);
+			ds_writew(TXT_TABPOS2, 295);
 
 			j = (host_readbs(Real2Host(hero) + 0x38) +
 				host_readbs(Real2Host(hero) + 0x39) +
@@ -764,10 +764,10 @@ void status_show(Bit16u index)
 		do_v_line((RealPt)ds_readd(0xd2ff), 212, 54, 195, 0);
 	}
 
-	ds_writew(0xd313, bak1);
-	ds_writew(0xd315, bak2);
-	ds_writew(0xd317, bak3);
-	ds_writew(0xd319, bak4);
+	ds_writew(TXT_TABPOS1, bak1);
+	ds_writew(TXT_TABPOS2, bak2);
+	ds_writew(TXT_TABPOS3, bak3);
+	ds_writew(TXT_TABPOS4, bak4);
 
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
 

@@ -63,12 +63,12 @@ void diary_show(void)
 	ds_writed(0xd2fb, ds_readd(BUFFER9_PTR));
 	bak1 = ds_readw(0xd2d5);
 	bak2 = ds_readw(0xd2d9);
-	bak3 = ds_readw(0xd313);
-	bak4 = ds_readw(0xd315);
+	bak3 = ds_readw(TXT_TABPOS1);
+	bak4 = ds_readw(TXT_TABPOS2);
 	ds_writew(0xd2d5, 200);
 	ds_writew(0xd2d9, 65);
-	ds_writew(0xd313, 83);
-	ds_writew(0xd315, 130);
+	ds_writew(TXT_TABPOS1, 83);
+	ds_writew(TXT_TABPOS2, 130);
 
 	set_textcolor(4, 0);
 
@@ -99,8 +99,8 @@ void diary_show(void)
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
-	ds_writew(0xd313, bak3);
-	ds_writew(0xd315, bak4);
+	ds_writew(TXT_TABPOS1, bak3);
+	ds_writew(TXT_TABPOS2, bak4);
 	ds_writew(TEXTBOX_WIDTH, bak5);
 
 	delay_or_keypress(5000);

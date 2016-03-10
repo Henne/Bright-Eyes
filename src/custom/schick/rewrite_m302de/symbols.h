@@ -415,6 +415,13 @@
 #define DTP2	(0xd2f3)
 #define ICON	(0xd2f7)	/* RealPt */
 #define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
+#define TXT_TABPOS1	(0xd313)	/* signed short */
+#define TXT_TABPOS2	(0xd315)	/* signed short */
+#define TXT_TABPOS3	(0xd317)	/* signed short */
+#define TXT_TABPOS4	(0xd319)	/* signed short */
+#define TXT_TABPOS5	(0xd31b)	/* signed short */
+#define TXT_TABPOS6	(0xd31d)	/* signed short */
+#define TXT_TABPOS7	(0xd31f)	/* signed short */
 #define TOWNPAL_BUF	(0xd321)	/* RealPt */
 #define HERO_SLEEP_MOD	(0xd32d)	/* signed short */
 #define GATHER_HERBS_MOD	(0xd32f)	/* signed short */

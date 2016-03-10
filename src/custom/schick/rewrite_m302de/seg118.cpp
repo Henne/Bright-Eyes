@@ -162,17 +162,17 @@ void tevent_037(void)
 					GUI_input(get_city(0xbc), 10);
 
 					/* check if the answer is "RAD" 1st */
-					if (strcmp((char*)Real2Host(ds_readd(0xd2ef)), (char*)p_datseg + 0xb21e))
+					if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + 0xb21e))
 					{
 						GUI_input(get_city(0xc0), 10);
 
 						/* check if the answer is "RAD" 2nd */
-						if (strcmp((char*)Real2Host(ds_readd(0xd2ef)), (char*)p_datseg + 0xb222))
+						if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + 0xb222))
 						{
 							GUI_input(get_city(0xc4), 10);
 
 							/* check if the answer is "RAD" 3rd */
-							if (strcmp((char*)Real2Host(ds_readd(0xd2ef)), (char*)p_datseg + 0xb226))
+							if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + 0xb226))
 							{
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_city(0xc8),
@@ -295,7 +295,7 @@ void tevent_078(void)
 			/* each hero in the group looses hours / 2 LE */
 			sub_group_le(hours >> 1);
 
-			ds_writews(0xd32d, -6);
+			ds_writews(HERO_SLEEP_MOD, -6);
 
 			ds_writeb(LOCATION, 6);
 			do_location();
@@ -333,7 +333,7 @@ void tevent_078(void)
 
 					sub_group_le(4);
 
-					ds_writews(0xd32d, -6);
+					ds_writews(HERO_SLEEP_MOD, -6);
 					/* make a camp */
 					ds_writeb(LOCATION, 6);
 					do_location();
@@ -365,7 +365,7 @@ void tevent_078(void)
 			}
 		}
 
-		ds_writews(0xd32d, 0);
+		ds_writews(HERO_SLEEP_MOD, 0);
 	}
 }
 
@@ -518,7 +518,7 @@ void tevent_124(void)
 
 	if (answer == 2)
 	{
-		ds_writew(0x4336, 1);
+		ds_writew(TRV_RETURN, 1);
 
 	} else {
 

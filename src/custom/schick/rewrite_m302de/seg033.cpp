@@ -111,8 +111,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					(char*)get_dtp(0x48),
 					host_readbs(hero + HERO_BP_LEFT));
 
-				txt_tabpos_bak = ds_readws(0xd313);
-				ds_writews(0xd313, ds_readws(0x2ca2) + 204);
+				txt_tabpos_bak = ds_readws(TXT_TABPOS1);
+				ds_writews(TXT_TABPOS1, ds_readws(0x2ca2) + 204);
 
 				refresh_screen_size();
 
@@ -155,7 +155,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							get_dtp(0x6c));
 
 				update_mouse_cursor();
-				ds_writew(0xd313, txt_tabpos_bak);
+				ds_writew(TXT_TABPOS1, txt_tabpos_bak);
 				ds_writew(0x2ca2, 0);
 				ds_writew(0x2ca4, 0);
 
