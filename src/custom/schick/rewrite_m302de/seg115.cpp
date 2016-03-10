@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 6/13
+ *	Functions rewritten: 7/13
  */
 #include <stdio.h>
 
@@ -371,6 +371,77 @@ void tevent_095(void)
 			} while (!done);
 		}
 	} while (!done);
+}
+
+/* Borlandified and identical */
+void tevent_096(void)
+{
+	signed short answer;
+
+	do {
+		answer = GUI_radio(get_city(0x44), 2,
+					get_city(0x48),
+					get_city(0x4c));
+	} while (answer == -1);
+
+	if (answer == 1)
+	{
+		/* try to keep on track */
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 2) > 0)
+		{
+			timewarp(HOURS(3));
+
+			GUI_output(get_city(0x50));
+		} else {
+			timewarp(HOURS(4));
+
+			GUI_output(get_city(0x58));
+
+			answer = -1;
+		}
+	} else {
+		/* try to go arround */
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 4) > 0)
+		{
+			timewarp(HOURS(4));
+
+			GUI_output(get_city(0x54));
+		} else {
+			timewarp(HOURS(5));
+
+			GUI_output(get_city(0x5c));
+
+			answer = -1;
+		}
+	}
+
+	if (answer == -1)
+	{
+		/* lost the way */
+
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 3) > 0)
+		{
+			/* find the way again */
+			timewarp(HOURS(3));
+
+			GUI_output(get_city(0x60));
+		} else {
+			/* lost the way completely */
+			timewarp(HOURS(4));
+
+			GUI_output(get_city(0x64));
+
+			ds_writeb(LOCATION, 6);
+			do_location();
+			ds_writeb(LOCATION, 0);
+
+			TRV_load_textfile(-1);
+
+			GUI_output(get_city(0x68));
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
