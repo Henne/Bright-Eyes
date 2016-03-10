@@ -844,7 +844,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			if (l_si == 1) {
 
 				if (GUI_bool(get_dtp(0x8c))) {
-					host_writeb(hero + HERO_UNKNOWN2, 16);
+					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 					l_si = 0;
 				} else {
 					FIG_remove_from_list(ds_readbs(0xe38f), 0);
@@ -859,7 +859,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 				seg036_00ae(hero, hero_pos);
 
-				if (host_readbs(hero + HERO_UNKNOWN2) == 16) {
+				if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1) {
 					host_writeb(hero + HERO_BP_LEFT, 0);
 				} else {
 					FIG_search_obj_on_cb(hero_pos + 1, (signed short*)px, (signed short*)py);

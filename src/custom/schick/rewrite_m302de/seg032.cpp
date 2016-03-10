@@ -332,7 +332,7 @@ signed short FIG_get_first_active_hero(void)
  *
  *	Returns 1 if FIG_get_first_active_hero() returns -1
  *	and at least one hero in the group is not dead and has
- *	something at offset HERO_UNKNOWN2 set (maybe sleeping).
+ *	something at offset HERO_ACTION_ID set (maybe sleeping).
  *
  */
 //static
@@ -347,7 +347,7 @@ unsigned short seg032_02db(void)
 			if ((host_readb(hero_i + HERO_TYPE) != 0) &&
 				(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 				!hero_dead(hero_i) &&
-				(host_readb(hero_i + HERO_UNKNOWN2) == 0x10))
+				(host_readb(hero_i + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1))
 			{
 				return 1;
 			}
@@ -413,7 +413,7 @@ void FIG_do_round(void)
 
 		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != 0) &&
 			(host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-			(host_readbs(Real2Host(hero) + HERO_UNKNOWN2) != 16))
+			(host_readbs(Real2Host(hero) + HERO_ACTION_ID) != FIG_ACTION_UNKNOWN1))
 		{
 			/* set #attacks to 1 */
 			host_writeb(Real2Host(hero) + HERO_ACTIONS, 1);
@@ -570,10 +570,10 @@ void FIG_do_round(void)
 					/* select a fight action */
 					FIG_menu(Real2Host(hero), pos, x_coord, y_coord);
 
-					if ((host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 2) ||
-						(host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 4) ||
-						(host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 5) ||
-						(host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 15))
+					if ((host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_ATTACK) ||
+						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_SPELL) ||
+						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM) ||
+						(host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK))
 					{
 
 						FIG_do_hero_action(hero, pos);
@@ -1019,7 +1019,7 @@ signed short do_fight(signed short fight_nr)
 				and_ptr_bs(hero + HERO_STATUS2, 0xfe);
 				host_writebs(hero + HERO_BLIND, 0);
 				host_writebs(hero + HERO_ECLIPTIFACTUS, 0);
-				host_writebs(hero + HERO_UNKNOWN2, 1);
+				host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 			}
 		}
 

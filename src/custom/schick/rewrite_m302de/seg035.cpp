@@ -339,7 +339,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 		}
 	} else {
 
-		if (host_readbs(hero + HERO_UNKNOWN2) == 15) {
+		if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) {
 			GUI_output(get_ltx(0x7f0));
 			retval = 0;
 		}

@@ -800,7 +800,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 	done = 0;
 	l5 = 1;
-	host_writeb(hero + HERO_UNKNOWN2, 1);
+	host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 	if (host_readbs(hero + HERO_NPC_ID) > 0) {
 
 		if (host_readbs(hero + HERO_NPC_ID) == 1) {
@@ -836,7 +836,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 					}
 				} else if (FIG_get_range_weapon_type(hero) == -1)
 				{
-					host_writebs(hero + HERO_UNKNOWN2, 16);
+					host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 				}
 			}
 
@@ -845,36 +845,36 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			if ((host_readws(hero + HERO_LE) < 10) &&
 				(host_readws(hero + HERO_AE) < 10))
 			{
-				host_writeb(hero + HERO_UNKNOWN2, 16);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 			}
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == 4) {
 
 			if (host_readws(hero + HERO_LE) < 8)
 			{
-				host_writeb(hero + HERO_UNKNOWN2, 16);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 			}
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == 5) {
 
 			if (!KI_count_heros(hero_pos)) {
-				host_writeb(hero + HERO_UNKNOWN2, 16);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 			}
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == 6) {
 
 			if (host_readws(hero + HERO_LE) < 15)
 			{
-				host_writeb(hero + HERO_UNKNOWN2, 16);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 			}
 
 		}
 
 		if (FIG_get_first_active_hero() == 6) {
-			host_writeb(hero + HERO_UNKNOWN2, 16);
+			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 		}
 
-		if (host_readbs(hero + HERO_UNKNOWN2) == 16) {
+		if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1) {
 
 			FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
 
@@ -890,7 +890,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				(get_cb_val(hero_x + 1, hero_y) != 0) &&
 				(get_cb_val(hero_x - 1, hero_y) != 0))
 			{
-				host_writeb(hero + HERO_UNKNOWN2, 1);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 			}
 		}
 	}
@@ -904,7 +904,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		seg001_02c4();
 
-		if ((host_readbs(hero + HERO_UNKNOWN2) == 16) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
+		if ((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 			if (!hero_unkn2(hero)) {
 
@@ -926,7 +926,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 						x = host_readws((Bit8u*)&x);
 						y = host_readws((Bit8u*)&y);
 #endif
-						host_writeb(hero + HERO_UNKNOWN2, 1);
+						host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
 						if ((x_bak == x) && (y_bak == y)) {
 
@@ -957,7 +957,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			{
 				if (seg036_8cf(hero, hero_pos, hero_cursed(hero), x, y)) {
 
-					host_writeb(hero + HERO_UNKNOWN2, 4);
+					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_SPELL);
 					host_writeb(hero + HERO_BP_LEFT, 0);
 
 				} else {
@@ -965,7 +965,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				}
 			}
 
-			if ((host_readbs(hero + HERO_UNKNOWN2) == 1) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
+			if ((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_MOVE) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 				if (FIG_get_range_weapon_type(hero) != -1) {
 
@@ -979,7 +979,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 									done = 1;
 								}
 							} else {
-								host_writeb(hero + HERO_UNKNOWN2, 15);
+								host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_RANGE_ATTACK);
 							}
 						}
 
@@ -1014,7 +1014,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 					if (host_readbs(hero + HERO_ENEMY_ID) != 0) {
 
-						host_writeb(hero + HERO_UNKNOWN2, 2);
+						host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_ATTACK);
 						host_writeb(hero + HERO_BP_LEFT, 0);
 
 					} else {
@@ -1033,7 +1033,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 								seg036_00ae(hero, hero_pos);
 
-								host_writeb(hero + HERO_UNKNOWN2, 1);
+								host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 								host_writeb(hero + HERO_ENEMY_ID, 0);
 
 								FIG_search_obj_on_cb(hero_pos + 1, &x, &y);

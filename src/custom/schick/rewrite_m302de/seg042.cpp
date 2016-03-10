@@ -117,7 +117,9 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			ds_writew(FIG_TARGET_GRAMMAR_ID, host_readbs(target_monster));
 
 			if (!host_readbs(target_monster) ||
-				(enemy_dead(target_monster) && ((host_readbs(Real2Host(hero) + HERO_UNKNOWN2) != 4) || (host_readbs(Real2Host(hero) + HERO_SPELL_ID) != 23))))
+				(enemy_dead(target_monster)
+				    && ((host_readbs(Real2Host(hero) + HERO_ACTION_ID) != FIG_ACTION_SPELL)
+				        || (host_readbs(Real2Host(hero) + HERO_SPELL_ID) != 23))))
 			{
 				refresh_screen_size();
 				return;
@@ -199,7 +201,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			}
 		}
 
-		if (host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 2) {
+		if (host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_ATTACK) {
 
 			/* attack a hero */
 
@@ -342,7 +344,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							l10 = host_readbs(target_hero + HERO_PA + host_readbs(target_hero + HERO_WP_CLASS)) -host_readbs(target_hero + HERO_ATTACK_TYPE) - host_readbs(target_hero + HERO_RS_BE) / 2 + host_readbs(target_hero + HERO_AT_MOD);
 						}
 
-						if (host_readbs(target_hero + HERO_UNKNOWN2) == 3) {
+						if (host_readbs(target_hero + HERO_ACTION_ID) == FIG_ACTION_GUARD) {
 							l10 += 3;
 						}
 					} else {
@@ -556,7 +558,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 		} else {
 
-			if (host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 15) {
+			if (host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) {
 
 				weapon_type = FIG_get_range_weapon_type(Real2Host(hero));
 
@@ -653,7 +655,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					seg041_8c8();
 				}
 
-			} else if (host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 4) {
+			} else if (host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_SPELL) {
 
 				/* cast a spell */
 
@@ -879,7 +881,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					FIG_output(Real2Host(ds_readd(DTP2)));
 				}
 
-			} else if (host_readbs(Real2Host(hero) + HERO_UNKNOWN2) == 5) {
+			} else if (host_readbs(Real2Host(hero) + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM) {
 
 				FIG_use_item(Real2Host(hero), target_monster, target_hero, attack_hero, hero_pos);
 

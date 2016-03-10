@@ -4124,7 +4124,7 @@ signed short check_hero(Bit8u *hero)
 		hero_unc(hero) ||
 		hero_cursed(hero) ||
 		/* Check if ??? */
-		(host_readb(hero + HERO_UNKNOWN2) == 0x10))
+		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1))
 	{
 		return 0;
 	}
@@ -4300,7 +4300,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 0);
 
 			/* unknown */
-			host_writeb(hero + HERO_UNKNOWN2, 100);
+			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 
 			if (ds_readb(0x2845) == 0) {
 				ds_writeb(0x46df, 1);
@@ -4352,7 +4352,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				or_ptr_bs(hero + HERO_STATUS1, 0x40);
 
 				/* unknown yet */
-				host_writeb(hero + HERO_UNKNOWN2, 10);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
 				/* unknown yet */
 				ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 1);

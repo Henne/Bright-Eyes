@@ -182,7 +182,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 				}
 
 				/* guarding heros get a PA-bonus of 3 */
-				if (host_readbs(hero + HERO_UNKNOWN2) == 3) {
+				if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_GUARD) {
 					pa += 3;
 				}
 

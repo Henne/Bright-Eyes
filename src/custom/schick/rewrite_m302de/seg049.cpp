@@ -439,11 +439,11 @@ void GRP_swap_heros(void)
 			ds_writebs(WILDCAMP_HERBSTATUS + hero2_nr, l5);
 
 			if (host_readbs(get_hero(hero1_nr) + HERO_TYPE)) {
-				host_writebs(get_hero(hero1_nr) + HERO_UNKNOWN2, 100);
+				host_writebs(get_hero(hero1_nr) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 			}
 
 			if (host_readbs(get_hero(hero2_nr) + HERO_TYPE)) {
-				host_writebs(get_hero(hero2_nr) + HERO_UNKNOWN2, 100);
+				host_writebs(get_hero(hero2_nr) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 			}
 
 			host_writeb(get_hero(hero1_nr) + HERO_GROUP_POS, hero1_nr + 1);

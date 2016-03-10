@@ -148,9 +148,9 @@ enum {
     HERO_THIRST         = 0x080, /* percentage */
     HERO_FIGHT_ID       = 0x081,
     HERO_VIEWDIR        = 0x082,
-    HERO_ACTIONS        = 0x083, /* corresponds to MONSTER_SHEET_ATTACKS */
-    HERO_UNKNOWN2       = 0x084,
-    HERO_SPELL_ID       = 0x085,
+    HERO_ACTIONS        = 0x083, /* corresponds to ENEMY_SHEET_ATTACKS */
+    HERO_ACTION_ID      = 0x084, /* last fight action */
+    HERO_SPELL_ID       = 0x085, /* last spell in fight */
     HERO_ENEMY_ID       = 0x086, /* last enemy in fight */
     HERO_GROUP_NO       = 0x087,
     HERO_TEMPLE_ID      = 0x088,
@@ -232,6 +232,25 @@ enum {
 };
 
 #define SIZEOF_HERO (0x6da)
+
+enum {
+    FIG_ACTION_MOVE = 1,
+    FIG_ACTION_ATTACK = 2,
+    FIG_ACTION_GUARD = 3,
+    FIG_ACTION_SPELL = 4,
+    FIG_ACTION_USE_ITEM = 5,
+    FIG_ACTION_DROP_ITEM = 6,
+    FIG_ACTION_EXCHANGE_WEAPON = 7,
+    FIG_ACTION_EXCHANGE_ITEM = 8,
+    FIG_ACTION_CHECK_VALUES = 9,
+    FIG_ACTION_WAIT = 10,
+    FIG_ACTION_COMPUTER_FIGHT = 11,
+    FIG_ACTION_QUIT_AND_LOAD = 12,
+    FIG_ACTION_REPEAT_OPTION = 13,
+    FIG_ACTION_RANGE_ATTACK = 15,
+    FIG_ACTION_UNKNOWN1 = 16,
+    FIG_ACTION_UNKNOWN2 = 100
+};
 
 enum {
     ILLNESS_WUNDFIEBER = 0, ILLNESS_DUMPFSCHAEDEL, ILLNESS_BLAUE_KEUCHE,

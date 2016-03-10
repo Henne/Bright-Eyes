@@ -702,7 +702,7 @@ void draw_fight_screen(Bit16u val)
 										} else {
 											hero = Real2Host(FIG_get_hero_ptr(host_readbs(list_i + 0x10)));
 											if (NOT_NULL(hero)) {
-												host_writeb(hero + HERO_UNKNOWN2, 16);
+												host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 												or_ptr_bs(hero + HERO_STATUS2, 1);
 
 												host_writew(hero + HERO_UNKNOWN9,

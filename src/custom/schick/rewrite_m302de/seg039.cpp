@@ -430,8 +430,7 @@ void FIG_init_heroes(void)
 		if (host_readb(hero + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))
 			continue;
 
-		/* these two are unknown */
-		host_writeb(hero + HERO_UNKNOWN2, 10);
+		host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 		host_writeb(hero + HERO_ENEMY_ID, 0);
 
 		/* FINAL FIGHT */

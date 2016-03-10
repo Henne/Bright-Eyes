@@ -79,7 +79,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 		FIG_init_list_elem(hero_pos + 1);
 		draw_fight_screen_pal(0);
 
-		if ((hero_unkn3(hero)) || (host_readbs(hero + HERO_UNKNOWN2) == 16)) {
+		if ((hero_unkn3(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1)) {
 
 			and_ptr_bs(hero + HERO_STATUS1, 0x7f);
 			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
@@ -91,7 +91,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 		} else if (hero_cursed(hero) || (host_readbs(hero + HERO_NPC_ID) > 0)|| (ds_readws(AUTOFIGHT) != 0)) {
 
-			host_writeb(hero + HERO_UNKNOWN2, 10);
+			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
 			if (((ds_readws(CURRENT_FIG_NR) != 192) || (ds_readbs(0x5f30) != 0)) &&
 				(host_readbs(hero + HERO_BP_LEFT) >= 3))
@@ -163,7 +163,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 			l1 = 0;
 
-			if (selected == 1) {
+			if (selected == FIG_ACTION_MOVE) {
 				/* MOVE / BEWEGEN */
 
 				if (hero_unkn2(hero)) {
@@ -181,7 +181,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				if (!hero_unkn2(hero)) {
 
-					host_writeb(hero + HERO_UNKNOWN2, 1);
+					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
 					if (host_readbs(hero + HERO_BP_LEFT) > 0) {
 						/* let the player select a move destination */
@@ -216,7 +216,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
-			} else if (selected == 2) {
+			} else if (selected == FIG_ACTION_ATTACK) {
 				/* ATTACK / ANGRIFF */
 
 				if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
@@ -276,7 +276,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						{
 							GUI_output(get_dtp(0x74));
 
-							host_writeb(hero + HERO_UNKNOWN2, 1);
+							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
 							/* set target id to 0 */
 							host_writeb(hero + HERO_ENEMY_ID, 0);
@@ -285,7 +285,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 							GUI_output(get_ltx(0x7f0));
 
-							host_writeb(hero + HERO_UNKNOWN2, 1);
+							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
 							/* set target id to 0 */
 							host_writeb(hero + HERO_ENEMY_ID, 0);
@@ -314,7 +314,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							host_writeb(hero + HERO_ENEMY_ID, target_id);
 							/* set BP to 0 */
 							host_writeb(hero + HERO_BP_LEFT, 0);
-							host_writeb(hero + HERO_UNKNOWN2, (range_weapon > 0 ? 15 : 2));
+							host_writeb(hero + HERO_ACTION_ID, (range_weapon > 0 ? FIG_ACTION_RANGE_ATTACK : FIG_ACTION_ATTACK));
 							done = 1;
 						}
 					}
@@ -325,7 +325,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
-			} else if (selected == 3) {
+			} else if (selected == FIG_ACTION_GUARD) {
 				/* GUARD / SICHERN */
 
 				if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
@@ -333,7 +333,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					/* set BP to 0 */
 					host_writeb(hero + HERO_BP_LEFT, 0);
 
-					host_writeb(hero + HERO_UNKNOWN2, 3);
+					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_GUARD);
 
 					done = 1;
 				} else {
@@ -344,7 +344,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
 
-			} else if (selected == 4) {
+			} else if (selected == FIG_ACTION_SPELL) {
 				/* CAST SPELL / ZAUBERN */
 
 				if (host_readbs(hero + HERO_TYPE) < 7) {
@@ -360,7 +360,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						if (host_readbs(hero + HERO_SPELL_ID) > 0) {
 
-							host_writeb(hero + HERO_UNKNOWN2, 1);
+							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 							host_writeb(hero + HERO_ENEMY_ID, 0);
 
 							spell = p_datseg + 0x099d + 10 * host_readbs(hero + HERO_SPELL_ID);
@@ -417,13 +417,13 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 											GUI_output(get_dtp(0x18));
 
 										} else {
-											host_writeb(hero + HERO_UNKNOWN2, 4);
+											host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_SPELL);
 											host_writeb(hero + HERO_ENEMY_ID, target_id);
 											done = 1;
 										}
 									}
 								} else {
-									host_writeb(hero + HERO_UNKNOWN2, 4);
+									host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_SPELL);
 									host_writeb(hero + HERO_ENEMY_ID, 0);
 									done = 1;
 								}
@@ -431,12 +431,12 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						}
 
-						if ((host_readbs(hero + HERO_UNKNOWN2) == 4) &&
+						if ((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) &&
 							(get_spell_cost(host_readbs(hero + HERO_SPELL_ID), 1) > host_readws(hero + HERO_AE)))
 						{
 							/* not enough AE */
 							GUI_output(get_ltx(0x544));
-							host_writeb(hero + HERO_UNKNOWN2, 1);
+							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 							done = 0;
 						}
 					} else {
@@ -447,7 +447,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
 				}
-			} else if (selected == 5) {
+			} else if (selected == FIG_ACTION_USE_ITEM) {
 				/* USE ITEM / GGST. BENUTZEN */
 
 					if (host_readbs(hero + HERO_BP_LEFT) >= 3) {
@@ -481,7 +481,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							/* set BP to 0 */
 							host_writeb(hero + HERO_BP_LEFT, 0);
 
-							host_writeb(hero + HERO_UNKNOWN2, 5);
+							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_USE_ITEM);
 							done = 1;
 						}
 					} else {
@@ -491,7 +491,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
-			} else if (selected == 8) {
+			} else if (selected == FIG_ACTION_EXCHANGE_ITEM) {
 				/* EXCHANGE ITEM / GGST. WECHSELN */
 					if (host_readbs(hero + HERO_BP_LEFT) >= 2) {
 
@@ -572,7 +572,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
-			} else if (selected == 7) {
+			} else if (selected == FIG_ACTION_EXCHANGE_WEAPON) {
 				/* CHANGE WEAPON / WAFFE WECHSELN */
 					if (host_readbs(hero + HERO_BP_LEFT) >= 2) {
 
@@ -670,7 +670,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
-			} else if (selected == 9) {
+			} else if (selected == FIG_ACTION_CHECK_VALUES) {
 				/* CHECK VALUES / WERTE PRUEFEN */
 
 				rwt1 = weapon_check(hero);
@@ -786,17 +786,17 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-			} else if (selected == 10) {
+			} else if (selected == FIG_ACTION_WAIT) {
 				/* WAIT / ABWARTEN */
 
 				done = 1;
-				host_writeb(hero + HERO_UNKNOWN2, 10);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 				/* set BP to 0 */
 				host_writeb(hero + HERO_BP_LEFT, 0);
 				/* set target id to 0 */
 				host_writeb(hero + HERO_ENEMY_ID, 0);
 
-			} else if (selected == 11) {
+			} else if (selected == FIG_ACTION_COMPUTER_FIGHT) {
 				/* COMPUTER FIGHT / COMPUTERKAMPF */
 
 				if (ds_readws(CURRENT_FIG_NR) != 192) {
@@ -811,7 +811,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					ds_writew(AUTOFIGHT, 1);
 				}
 
-			} else if (selected == 6) {
+			} else if (selected == FIG_ACTION_DROP_ITEM) {
 				/* DROP ITEM / GGST. WEGWERFEN */
 				if (host_readbs(hero + HERO_BP_LEFT) >= 1) {
 
@@ -887,7 +887,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
 
-			} else if (selected == 12) {
+			} else if (selected == FIG_ACTION_QUIT_AND_LOAD) {
 				/* QUIT AND RELOAD / VERLASSEN / LADEN */
 
 				refresh_screen_size();
@@ -900,15 +900,15 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				update_mouse_cursor();
 
-			} else if (selected == 13) {
+			} else if (selected == FIG_ACTION_REPEAT_OPTION) {
 				/* REPEAT OPTIONS / ALTE OPTION */
 
 				done = 1;
 
 				/* check last action and target_id */
-				if (((host_readbs(hero + HERO_UNKNOWN2) == 4) ||
-					(host_readbs(hero + HERO_UNKNOWN2) == 2) ||
-					(host_readbs(hero + HERO_UNKNOWN2) == 15)) && (host_readbs(hero + HERO_ENEMY_ID) > 0))
+				if (((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) ||
+					(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) ||
+					(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK)) && (host_readbs(hero + HERO_ENEMY_ID) > 0))
 				{
 
 					/* TODO: check fight_id upper bound */
@@ -919,7 +919,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					{
 
 						GUI_output(get_dtp(0x74));
-						host_writebs(hero + HERO_UNKNOWN2, 10);
+						host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 						host_writebs(hero + HERO_ENEMY_ID, 0);
 						done = 0;
 
@@ -931,15 +931,15 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					{
 
 						/* GUI_output(get_dtp(0x74)); */
-						host_writebs(hero + HERO_UNKNOWN2, 10);
+						host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 						host_writebs(hero + HERO_ENEMY_ID, 0);
 						done = 0;
-					} else if (((host_readbs(hero + HERO_UNKNOWN2) == 4) ||
-							(host_readbs(hero + HERO_UNKNOWN2) == 15)) &&
+					} else if (((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) ||
+							(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK)) &&
 							!check_hero_range_attack(hero, hero_pos))
 					{
 						/* GUI_output(get_dtp(0x74)); */
-						host_writebs(hero + HERO_UNKNOWN2, 10);
+						host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 						host_writebs(hero + HERO_ENEMY_ID, 0);
 						done = 0;
 					}
@@ -950,8 +950,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 	if ((ds_readws(CURRENT_FIG_NR) == 192) &&
 		(get_hero_index(Real2Host(ds_readd(0x3e20))) != hero_pos) &&
-		((host_readbs(hero + HERO_UNKNOWN2) == 2) || (host_readbs(hero + HERO_UNKNOWN2) == 15) ||
-		(host_readbs(hero + HERO_UNKNOWN2) == 4) || (host_readbs(hero + HERO_UNKNOWN2) == 5)))
+		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
+		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))
 	{
 		for (slot_nr = 0; slot_nr < 20; slot_nr++) {
 			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_nr, (signed char)0xdf);
