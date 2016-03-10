@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
- *	Functions rewritten: 7/13
+ *	Functions rewritten: 8/13
  */
 #include <stdio.h>
 
@@ -440,6 +440,33 @@ void tevent_096(void)
 			TRV_load_textfile(-1);
 
 			GUI_output(get_city(0x68));
+		}
+	}
+}
+
+/* entrance dungeon: temple of the nameless */
+/* Borlandified and identical */
+void tevent_126(void)
+{
+	signed short answer;
+
+	do {
+		answer = GUI_radio(get_city(0x00), 2,
+					get_city(0x04),
+					get_city(0x08));
+	} while (answer == -1);
+
+	if (answer == 1)
+	{
+		do {
+			answer = GUI_radio(get_city(0x0c), 2,
+						get_city(0x10),
+						get_city(0x14));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			ds_writeb(0x4333, 9);
 		}
 	}
 }
