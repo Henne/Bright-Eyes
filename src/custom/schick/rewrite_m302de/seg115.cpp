@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg115 (travel events 7 / 10)
  *	Functions rewritten: 13/13 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg115.cpp
  */
 #include <stdio.h>
 
@@ -26,7 +30,6 @@ namespace M302de {
 #endif
 
 /* the raft */
-/* Borlandified and identical */
 void tevent_016(void)
 {
 	signed short answer;
@@ -146,7 +149,6 @@ void tevent_016(void)
 }
 
 /* falling rocks */
-/* Borlandified and identical */
 void tevent_090(void)
 {
 	signed short i;
@@ -174,7 +176,6 @@ void tevent_090(void)
 	GUI_output(get_city(0x08));
 }
 
-/* Borlandified and identical */
 void tevent_091(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 5) > 0 && !ds_readb(0x3ded)) ||
@@ -187,7 +188,6 @@ void tevent_091(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_093(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 4) > 0 && !ds_readb(0x3dee)) ||
@@ -199,7 +199,6 @@ void tevent_093(void)
 }
 
 /* entrance daspota-dungeon */
-/* Borlandified and identical */
 void tevent_094(void)
 {
 	if (ds_readb(0x3def) != 0)
@@ -224,7 +223,6 @@ void tevent_094(void)
 }
 
 /* Arete */
-/* Borlandified and identical */
 void tevent_095(void)
 {
 	signed short counter_failed;
@@ -376,7 +374,6 @@ void tevent_095(void)
 	} while (!done);
 }
 
-/* Borlandified and identical */
 void tevent_096(void)
 {
 	signed short answer;
@@ -448,7 +445,6 @@ void tevent_096(void)
 }
 
 /* entrance dungeon: temple of the nameless */
-/* Borlandified and identical */
 void tevent_126(void)
 {
 	signed short answer;
@@ -474,7 +470,6 @@ void tevent_126(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_127(void)
 {
 	signed short answer;
@@ -497,7 +492,6 @@ void tevent_127(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_128(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e02)) ||
@@ -517,7 +511,6 @@ void tevent_128(void)
 }
 
 /* entrance dungeon: dragon cave */
-/* Borlandified and identical */
 void tevent_129(void)
 {
 	signed short answer;
@@ -559,7 +552,6 @@ void tevent_129(void)
 }
 
 /* a cutter */
-/* Borlandified and identical */
 void tevent_047(void)
 {
 	signed short answer;
@@ -687,7 +679,6 @@ void tevent_047(void)
 }
 
 /* entrance dungeon: a ruin */
-/* Borlandified and identical */
 void tevent_100(void)
 {
 	signed short answer;
