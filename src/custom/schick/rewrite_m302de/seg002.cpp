@@ -5157,7 +5157,7 @@ int schick_main(int argc, char** argv)
 	/* randomize() */
 	srand(time((RealPt)0));
 
-	save_display_stat((RealPt)RealMake(datseg, 0xd30b));
+	save_display_stat((RealPt)RealMake(datseg, VIDEO_PAGE_BAK));
 
 	if (!init_memory()) {
 

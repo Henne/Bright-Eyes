@@ -415,6 +415,8 @@
 #define DTP2	(0xd2f3)
 #define ICON	(0xd2f7)	/* RealPt */
 #define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
+#define VIDEO_PAGE_BAK	(0xd30b)	/* signed short */
+#define VIDEO_MODE_BAK	(0xd30d)	/* signed short */
 #define TXT_TABPOS1	(0xd313)	/* signed short */
 #define TXT_TABPOS2	(0xd315)	/* signed short */
 #define TXT_TABPOS3	(0xd317)	/* signed short */

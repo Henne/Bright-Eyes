@@ -908,8 +908,8 @@ void schick_set_video(void)
 
 void schick_reset_video(void)
 {
-	set_video_mode(ds_readws(0xd30d));
-	set_video_page(ds_readws(0xd30b));
+	set_video_mode(ds_readws(VIDEO_MODE_BAK));
+	set_video_page(ds_readws(VIDEO_PAGE_BAK));
 }
 
 struct dummy4 {
