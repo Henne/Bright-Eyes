@@ -635,19 +635,19 @@ void spell_axxeleratus(void)
 
 		/* AT-bonus for the current weapon */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 90,
+		set_mod_slot(slot, MINUTES(1),
 			get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
 			2, (signed char)hero_pos);
 
 		/* PA-bonus for the current weapon */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 90,
+		set_mod_slot(slot, MINUTES(1),
 			get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
 			2, (signed char)hero_pos);
 
 		/* axxeleratus active flag */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 90,
+		set_mod_slot(slot, MINUTES(1),
 			get_spelltarget() + 0xa0,
 			1, (signed char)hero_pos);
 
@@ -946,7 +946,7 @@ void spell_adleraug(void)
 	slot = get_free_mod_slot();
 
 	/* Perception / Sinnesschaerfe + 7 */
-	set_mod_slot(slot, 0x21c, get_spelluser() + (HERO_TA_INTUITION + 1), 7, (signed char)hero_pos);
+	set_mod_slot(slot, MINUTES(6), get_spelluser() + (HERO_TA_INTUITION + 1), 7, (signed char)hero_pos);
 
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),

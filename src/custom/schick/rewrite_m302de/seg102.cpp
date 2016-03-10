@@ -590,11 +590,11 @@ void mspell_ignifaxius(void)
 
 		/* AT - level / 2 */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 0x1518, get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78), -level / 2, (signed char)hero_pos);
+		set_mod_slot(slot, HOURS(1), get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78), -level / 2, (signed char)hero_pos);
 
 		/* PA - level / 2 */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 0x1518, get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78), -level / 2, (signed char)hero_pos);
+		set_mod_slot(slot, HOURS(1), get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78), -level / 2, (signed char)hero_pos);
 
 	} else {
 		/* target is a monster */
@@ -638,7 +638,7 @@ void mspell_plumbumbarum(void)
 
 		/* AT - 3 */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 0x1518, get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78), -3, (signed char)hero_pos);
+		set_mod_slot(slot, HOURS(1), get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78), -3, (signed char)hero_pos);
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),

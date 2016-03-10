@@ -50,7 +50,7 @@ void spell_arcano(void)
 	slot = get_free_mod_slot();
 
 	/* MR + 2 for 1 h */
-	set_mod_slot(slot, 0x1518, Real2Host(ds_readd(SPELLTARGET)) + 0x66, 2,
+	set_mod_slot(slot, HOURS(1), Real2Host(ds_readd(SPELLTARGET)) + 0x66, 2,
 			(signed char)target);
 
 	/* "Die Magieresistenz von %s steigt um 2 Punkte." */
@@ -92,7 +92,7 @@ void spell_armatrutz(void)
 		pos = get_hero_index(get_spelluser());
 		ds_writew(0xac0e, boni * boni);
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 450, get_spelluser() + HERO_RS_BONUS1,
+		set_mod_slot(slot, MINUTES(5), get_spelluser() + HERO_RS_BONUS1,
 			(signed char)boni, (signed char)pos);
 
 		/* prepare output message */
@@ -144,8 +144,7 @@ void spell_inc_ch(void)
 		slot = get_free_mod_slot();
 
 		/* CH + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(SPELLTARGET)) + 0x3b,
-				2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x3b, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -168,7 +167,7 @@ void spell_feuerbann(void)
 		slot = get_free_mod_slot();
 
 		/* Duration = Level * 12 min */
-		set_mod_slot(slot, host_readbs(get_spelluser() + HERO_LEVEL) * 450L,
+		set_mod_slot(slot, host_readbs(get_spelluser() + HERO_LEVEL) * MINUTES(5),
 			get_spelluser() + HERO_FIREBAN, 1, (signed char)target);
 
 		/* prepare message */
@@ -206,7 +205,7 @@ void spell_inc_ff(void)
 	}
 
 	/* check if FF was already increased */
-	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x3e) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x3d)) {
+	if (host_readbs(get_spelltarget() + 0x3e) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x3d)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -217,8 +216,7 @@ void spell_inc_ff(void)
 		slot = get_free_mod_slot();
 
 		/* FF + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(SPELLTARGET)) + 0x3e,
-				2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), get_spelltarget() + 0x3e, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -264,8 +262,7 @@ void spell_inc_ge(void)
 		slot = get_free_mod_slot();
 
 		/* GE + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(SPELLTARGET)) + 0x41,
-				2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x41, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -311,8 +308,7 @@ void spell_inc_in(void)
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(SPELLTARGET)) + 0x44,
-				 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x44, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -358,8 +354,7 @@ void spell_inc_kk(void)
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(SPELLTARGET)) + 0x47,
-				2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x47, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -405,8 +400,7 @@ void spell_inc_kl(void)
 		slot = get_free_mod_slot();
 
 		/* KL + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(SPELLTARGET)) + 0x38,
-				2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x38, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -452,8 +446,7 @@ void spell_inc_mu(void)
 		slot = get_free_mod_slot();
 
 		/* MU + 2 for 2 hours */
-		set_mod_slot(slot, 0x2a30, Real2Host(ds_readd(SPELLTARGET)) + 0x35,
-				2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x35, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -593,8 +586,7 @@ void spell_visibili(void)
 		ds_writew(0xac0e, rounds * 5);
 		pos = (signed short)get_hero_index(get_spelluser());
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, (Bit32s)rounds * 450L, get_spelluser() + HERO_INVISIBLE,
-				1, (signed char)pos);
+		set_mod_slot(slot, (Bit32s)rounds * MINUTES(5), get_spelluser() + HERO_INVISIBLE, 1, (signed char)pos);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x1a8),
@@ -800,9 +792,8 @@ void spell_silentium(void)
 
 			/* get a free mod_slot */
 			slot = get_free_mod_slot();
-			/* skill stealth + 10 for 12 minutes */
-			set_mod_slot(slot, 0x1c2, hero + (HERO_TA_BODY+4),
-				10, (signed char)i);
+			/* skill stealth + 10 for 5 minutes */
+			set_mod_slot(slot, MINUTES(5), hero + (HERO_TA_BODY+4), 10, (signed char)i);
 		}
 	}
 

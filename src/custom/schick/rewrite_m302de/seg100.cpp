@@ -615,12 +615,12 @@ void spell_ignifaxius(void)
 
 		/* get an AT/PA-Malus of -level / 2 for the current weapon and one hour */
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 0x1518,
+		set_mod_slot(slot, HOURS(1),
 			get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
 			-level / 2, (signed char)hero_pos);
 
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, 0x1518,
+		set_mod_slot(slot, HOURS(1),
 			get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
 			-level / 2, (signed char)hero_pos);
 
@@ -782,11 +782,11 @@ void spell_scharfes_auge(void)
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 27, Real2Host(ds_readd(SPELLTARGET)) + 0x110, 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + 0x110, 3, (signed char)target);
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 27, Real2Host(ds_readd(SPELLTARGET)) + 0x10f, 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + 0x10f, 3, (signed char)target);
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(97 * 4),

@@ -103,7 +103,7 @@ void ask_miracle(void)
 								if (i != -1 && !hero_dummy4(get_hero(i))) {
 
 									slot = get_free_mod_slot();
-									set_mod_slot(slot, 3 * HOURS(24), get_hero(i) + HERO_MR,
+									set_mod_slot(slot, DAYS(3), get_hero(i) + HERO_MR,
 										99, (signed char)i);
 
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -293,7 +293,7 @@ void ask_miracle(void)
 							if (i != -1 && !hero_dummy4(get_hero(i))) {
 
 								slot = get_free_mod_slot();
-								set_mod_slot(slot, 7 * HOURS(24), get_hero(i) + HERO_HUNGER_TIMER,
+								set_mod_slot(slot, DAYS(7), get_hero(i) + HERO_HUNGER_TIMER,
 									1, (signed char)i);
 
 								host_writebs(get_hero(i) + HERO_HUNGER, host_writebs(get_hero(i) + HERO_THIRST, 0));

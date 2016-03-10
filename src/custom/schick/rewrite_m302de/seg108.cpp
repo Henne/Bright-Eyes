@@ -176,7 +176,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* KK+2 for 12h */
 					l_di = get_free_mod_slot();
-					set_mod_slot(l_di, 0xfd20, consumer + HERO_KK, 2, (signed char)consumer_idx);
+					set_mod_slot(l_di, HOURS(12), consumer + HERO_KK, 2, (signed char)consumer_idx);
 
 					/* LE + 2 */
 					add_hero_le(consumer, 2);
@@ -212,7 +212,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* TODO: unknown for 24h */
 					l_di = get_free_mod_slot();
-					set_mod_slot(l_di, 0x1fa40, consumer + HERO_HERBS, 1, (signed char)consumer_idx);
+					set_mod_slot(l_di, DAYS(1), consumer + HERO_HERBS, 1, (signed char)consumer_idx);
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -230,9 +230,8 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 						host_writeb(consumer + poison * 5 + 0xd6, 1);
 					}
 
-					/* TODO: unknown for 24h */
 					l_di = get_free_mod_slot();
-					set_mod_slot(l_di, 0x1fa40, consumer + HERO_HERBS, 2, (signed char)consumer_idx);
+					set_mod_slot(l_di, DAYS(1), consumer + HERO_HERBS, 2, (signed char)consumer_idx);
 
 					/* prepare output */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -245,7 +244,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					for (l_si = 9; l_si < 19; l_si++) {
 						/* All body skills + 2 for 5h */
 						l_di = get_free_mod_slot();
-						set_mod_slot(l_di, 0x6978, consumer + HERO_TA_FIGHT + l_si, 2, (signed char)consumer_idx);
+						set_mod_slot(l_di, HOURS(5), consumer + HERO_TA_FIGHT + l_si, 2, (signed char)consumer_idx);
 					}
 
 					/* prepare output */
@@ -295,7 +294,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 				/* Attribute +5 for 1h */
 				l_di = get_free_mod_slot();
-				set_mod_slot(l_di, 0x1518,
+				set_mod_slot(l_di, HOURS(1),
 					consumer + HERO_MU + (l_si - 1) * 3,
 					5, (signed char)consumer_idx);
 
@@ -318,7 +317,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 				/* Attribute -7 for 1h */
 				l_di = get_free_mod_slot();
-				set_mod_slot(l_di, 0x1518,
+				set_mod_slot(l_di, HOURS(1),
 					consumer + HERO_MU + (id_bad_elex - 1) * 3,
 					-7, (signed char)consumer_idx);
 
