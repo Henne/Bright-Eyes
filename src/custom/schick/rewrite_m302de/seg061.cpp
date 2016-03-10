@@ -194,11 +194,11 @@ void do_temple(void)
 					GUI_output(get_ltx(0x644));
 				} else {
 
-					make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
+					make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), money);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0x4a4),
-						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+						(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 					input = GUI_input(Real2Host(ds_readd(DTP2)), 3);
 
@@ -366,16 +366,16 @@ signed short char_erase(void)
 				strcpy((char*)Real2Host(ds_readd(DTP2)),
 					(char*)Real2Host(ptr) + 32 * l_si);
 
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)get_ltx(0x49c),
 					(char*)Real2Host(ds_readd(DTP2)));
 
-				if (GUI_bool(Real2Host(ds_readd(BUFFER4_PTR)))) {
+				if (GUI_bool(Real2Host(ds_readd(TEXT_OUTPUT_BUF)))) {
 
-					prepare_chr_name((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+					prepare_chr_name((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 								(char*)Real2Host(ds_readd(DTP2)));
 
-					unlink_ret = bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
+					unlink_ret = bc_unlink((RealPt)ds_readd(TEXT_OUTPUT_BUF));
 
 					if (unlink_ret != 0) {
 						GUI_output(get_ltx(0x498));
@@ -384,7 +384,7 @@ signed short char_erase(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)p_datseg + STR_TEMP_FILE_WILDCARD,
-						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+						(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 					bc_unlink((RealPt)ds_readd(DTP2));
 				}
 
@@ -442,17 +442,17 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 		add_hero_le(get_hero(hero_pos), le_in);
 
 		/* prepare a message */
-		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0x620));
 
 		if (le_in > 1) {
-			strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
+			strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0x624));
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)str,
 				(char*)get_hero(hero_pos) + HERO_NAME2,
 				le_in,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 	}
 }
 

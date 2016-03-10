@@ -140,15 +140,15 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 }
 
 /**
- * \brief	TODO
+ * \brief	select a target for the fight action of the current actor
  *
- * \param	px
- * \param	py
+ * \param px	x-coordinate of actor
+ * \param py	y-coordinate of actor
  * \param max_range	maximal range for the weapon
  *
  * \return	fight-id of the target
  */
-signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
+signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_range)
 {
 	signed short x_diff;
 	signed short y_diff;
@@ -159,16 +159,16 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 	signed short y_screen;
 	signed short from_kbd;
 	/* TODO: the next two variables are constants */
-	signed short l8 = 9;
-	signed short l9 = 116;
+	signed short cb_base_x = 9;
+	signed short cb_base_y = 116;
 
 	ds_writew(0xc3d1, ds_writew(0xc3d3, 0));
 
 	update_mouse_cursor();
 
-	ds_writew(0x29a0, ds_writew(0x299c, x_screen = l8 + 10 * (host_readws(px) + host_readws(py))));
+	ds_writew(0x29a0, ds_writew(0x299c, x_screen = cb_base_x + 10 * (host_readws(px) + host_readws(py))));
 
-	ds_writew(0x29a2, ds_writew(0x299e, y_screen = l9 + 5 * (host_readws(px) - host_readws(py))));
+	ds_writew(0x29a2, ds_writew(0x299e, y_screen = cb_base_y + 5 * (host_readws(px) - host_readws(py))));
 
 	mouse_move_cursor(ds_readws(0x299c), ds_readws(0x299e));
 
@@ -288,8 +288,8 @@ signed char seg034_2e3(Bit8u *px, Bit8u *py, const signed short max_range)
 
 			update_mouse_cursor();
 
-			x_screen = l8 + 10 * (host_readws(px) + host_readws(py));
-			y_screen = l9 + 5 * (host_readws(px) - host_readws(py));
+			x_screen = cb_base_x + 10 * (host_readws(px) + host_readws(py));
+			y_screen = cb_base_y + 5 * (host_readws(px) - host_readws(py));
 
 			if (from_kbd != 0) {
 				ds_writew(0x29a0, ds_writew(0x299c, x_screen));
@@ -844,7 +844,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			if (l_si == 1) {
 
 				if (GUI_bool(get_dtp(0x8c))) {
-					host_writeb(hero + HERO_UNKNOWN2, 16);
+					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 					l_si = 0;
 				} else {
 					FIG_remove_from_list(ds_readbs(0xe38f), 0);
@@ -859,7 +859,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 				seg036_00ae(hero, hero_pos);
 
-				if (host_readbs(hero + HERO_UNKNOWN2) == 16) {
+				if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1) {
 					host_writeb(hero + HERO_BP_LEFT, 0);
 				} else {
 					FIG_search_obj_on_cb(hero_pos + 1, (signed short*)px, (signed short*)py);

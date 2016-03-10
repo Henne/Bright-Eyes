@@ -85,7 +85,7 @@ void TRV_event(signed short travel_event)
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
 	ds_writeb(0x2c98, 0);
 	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
-	ds_writew(0xe113, 1);
+	ds_writew(WALLCLOCK_UPDATE, 1);
 }
 #endif
 

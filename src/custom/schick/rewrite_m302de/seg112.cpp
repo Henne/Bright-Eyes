@@ -481,7 +481,7 @@ void tevent_074(void)
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 2) <= 0)
 			{
 				/* failed, so fight */
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 				ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
 
 			} else {
@@ -546,7 +546,7 @@ void tevent_074(void)
 				if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 14 - answer) <= 0)
 				{
 					/* fight */
-					ds_writeb(0x26ac, 1);
+					ds_writeb(FIG_INITIATIVE, 1);
 					ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
 				}
 			}
@@ -582,7 +582,7 @@ void tevent_075(void)
 
 			if (answer == 1) {
 
-				ds_writeb(0x26ac, 2);
+				ds_writeb(FIG_INITIATIVE, 2);
 
 				ret = TRV_fight_event(183, 75);
 
@@ -619,7 +619,7 @@ void tevent_075(void)
 
 					GUI_output(get_city(0xf8));
 
-					ds_writeb(0x26ac, 1);
+					ds_writeb(FIG_INITIATIVE, 1);
 
 					i = 184;
 
@@ -721,7 +721,7 @@ void tevent_077(void)
 			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 6) <= 0) {
 
 				/* test failed, so fight */
-				ds_writeb(0x26ac, 1);
+				ds_writeb(FIG_INITIATIVE, 1);
 				ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
 
 			} else {
@@ -787,7 +787,7 @@ void tevent_077(void)
 				if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 14 - answer) <= 0)
 				{
 					/* fight */
-					ds_writeb(0x26ac, 1);
+					ds_writeb(FIG_INITIATIVE, 1);
 					ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
 				}
 			}

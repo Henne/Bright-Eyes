@@ -258,11 +258,11 @@ void init_global_buffer(void)
 	ds_writed(DIALOG_TEXT, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3360));
 	ds_writed(CITY_LTX, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3960));
 
-	ds_writed(BUFFER3_PTR, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
-	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(BUFFER3_PTR), 3400)));
-	ds_writed(TEXT_INPUT_BUFFER, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
-	ds_writed(BUFFER4_PTR, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
-	ds_writed(BUFFER5_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER4_PTR), 300)));
+	ds_writed(OBJECTS_NVF_BUF, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
+	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(OBJECTS_NVF_BUF), 3400)));
+	ds_writed(TEXT_INPUT_BUF, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
+	ds_writed(TEXT_OUTPUT_BUF, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
+	ds_writed(BUFFER5_PTR, (Bit32u)(F_PADD(ds_readd(TEXT_OUTPUT_BUF), 300)));
 	ds_writed(BUFFER6_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER5_PTR), 3880)));
 	ds_writed(BUFFER7_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER6_PTR), 2200)));
 	ds_writed(BUFFER8_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER7_PTR), 10000)));
@@ -296,7 +296,7 @@ signed short init_memory(void)
 	ds_writed(ITEMSDAT,		(Bit32u)schick_alloc_emu(3060));
 	ds_writed(0xd2a1,		(Bit32u)schick_alloc_emu(950));
 	ds_writed(MONNAMES,		(Bit32u)schick_alloc_emu(308));
-	ds_writed(0xe121,		(Bit32u)schick_alloc_emu(296));
+	ds_writed(MEM_SLOTS_ANIS,		(Bit32u)schick_alloc_emu(296));
 	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
@@ -436,7 +436,7 @@ void init_game_state(void)
 	passages_init();
 
 	ds_writew(CURRENT_ANI, -1);
-	ds_writew(0xe113, 1);
+	ds_writew(WALLCLOCK_UPDATE, 1);
 
 	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 	load_splashes();
@@ -486,11 +486,11 @@ void prepare_dirs(void)
 			gamepath[2] = '\0';
 		}
 
-		strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), gamepath);
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), gamepath);
 		/* "\\TEMP" */
-		strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)p_datseg + STR_BACKSLASH_TEMP);
+		strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + STR_BACKSLASH_TEMP);
 
-		if (!bc_chdir((char*)Real2Host(ds_readd(BUFFER4_PTR)))) {
+		if (!bc_chdir((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)))) {
 			/*	check if it's possible to change to TEMP-dir: OK
 				change to gamepath */
 
@@ -499,7 +499,7 @@ void prepare_dirs(void)
 
 		} else {
 
-			if (bc_mkdir((char*)Real2Host(ds_readd(BUFFER4_PTR)))) {
+			if (bc_mkdir((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)))) {
 				errorval = 1;
 			} else {
 				errorval = 2;
@@ -519,20 +519,20 @@ void prepare_dirs(void)
 	}
 
 	/* delete *.* in TEMP-dir */
-	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(char*)Real2Host(ds_readd(0x4c88)),
 		(char*)p_datseg + ALL_FILES_WILDCARD2);
 
-	l_si = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
+	l_si = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
 
 	if (!l_si) {
 
 		do {
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)Real2Host(ds_readd(0x4c88)),
 				((char*)(&blk)) + 30);			/* contains a filename */
 
-			bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
+			bc_unlink((RealPt)ds_readd(TEXT_OUTPUT_BUF));
 
 			l_si = bc_findnext(&blk);
 
@@ -561,11 +561,11 @@ void prepare_dirs(void)
 
 		bc_close(l_di);
 
-		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)Real2Host(ds_readd(0x4c88)),
 			((char*)(&blk)) + 30);			/* contains a filename */
 
-		l_di = bc__creat((RealPt)ds_readd(BUFFER4_PTR), 0);
+		l_di = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 
 		bc__write(l_di, (RealPt)ds_readd(BUFFER1_PTR), SIZEOF_HERO);
 
@@ -596,8 +596,8 @@ void cleanup_game(void)
 	if (ds_readb(EMS_ENABLED) != 0) {
 
 		for (l_si = 0; l_si < 37; l_si++) {
-			if (host_readw(Real2Host(ds_readd(0xe121)) + l_si * 8) != 0) {
-				EMS_free_pages(host_readw(Real2Host(ds_readd(0xe121)) + 2 + l_si * 8));
+			if (host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + l_si * 8) != 0) {
+				EMS_free_pages(host_readw(Real2Host(ds_readd(MEM_SLOTS_ANIS)) + 2 + l_si * 8));
 			}
 		}
 
@@ -639,20 +639,20 @@ void cleanup_game(void)
 
 	/* delete all files in TEMP */
 
-	sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(char*)Real2Host(ds_readd(0x4c88)),	/* contains "TEMP\\%s" */
 		(char*)p_datseg + ALL_FILES_WILDCARD3);		/* contains "*.*" */
 
-	l_di = bc_findfirst((RealPt)ds_readd(BUFFER4_PTR), &blk, 0);
+	l_di = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
 
 	if (l_di == 0) {
 		do {
 			/* delete each found file */
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)Real2Host(ds_readd(0x4c88)),	/* contains "TEMP\\%s" */
 				((char*)(&blk)) + 30);			/* contains a filename */
 
-			bc_unlink((RealPt)ds_readd(BUFFER4_PTR));
+			bc_unlink((RealPt)ds_readd(TEXT_OUTPUT_BUF));
 
 			l_di = bc_findnext(&blk);
 		} while (!l_di);
@@ -687,7 +687,7 @@ void game_over_screen(void)
 
 	update_mouse_cursor();
 
-	ds_writew(0xe113, 0);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	wait_for_vsync();
 

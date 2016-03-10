@@ -34,13 +34,14 @@ static unsigned short msg_counter;
 #endif
 
 /**
- * range_attack_ammo()	- check if a range attack can be done
- * @hero:	the hero who attacks
- * @arg:	0 = drop one unit, 1 = just check, 2 = check with output
+ * \brief	check if a range attack can be done
  *
- * Returns: 0 = no ammo / 1 = have ammo
-*/
-signed short seg041_0020(Bit8u *hero, signed short arg)
+ * \param hero	the hero who attacks
+ * \param arg	0 = drop one unit, 1 = just check, 2 = check with output
+ *
+ * \return	0 = no ammo / 1 = have ammo
+ */
+signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 {
 	signed short right_hand;
 	signed short left_hand;
@@ -155,14 +156,14 @@ void FIG_output(Bit8u *str)
 */
 void FIG_clear_msgs(void)
 {
-	memset(p_datseg + 0xd333, 0 , 20);
+	memset(p_datseg + FIG_MSG_DATA, 0 , 20);
 	ds_writew(FIG_MSG_COUNTER, 0);
 }
 
 void FIG_add_msg(unsigned short f_action, unsigned short damage)
 {
-	ds_writew(0xd333 + 4 * ds_readws(FIG_MSG_COUNTER), f_action);
-	ds_writew(0xd333 + 2 + 4 * ds_readws(FIG_MSG_COUNTER) , damage);
+	ds_writew(FIG_MSG_DATA + 4 * ds_readws(FIG_MSG_COUNTER), f_action);
+	ds_writew(FIG_MSG_DATA + 2 + 4 * ds_readws(FIG_MSG_COUNTER) , damage);
 	if (ds_readws(FIG_MSG_COUNTER) < 4)
 		inc_ds_ws(FIG_MSG_COUNTER);
 }

@@ -561,7 +561,7 @@ void DNG_lights(void)
 	if (div16(ds_readb((0xbd6e + 1))) != 11) {
 
 		/* copy palette */
-		memcpy(Real2Host(ds_readd(BUFFER4_PTR)), Real2Host(ds_readd(0xe404)), 0xc0);
+		memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), Real2Host(ds_readd(0xe404)), 0xc0);
 
 		if (!(ds_readb((0xbd6e + 1)) & 1)) {
 
@@ -589,17 +589,17 @@ void DNG_lights(void)
 
 		for (i = 0; i < 0xc0; i++) {
 
-			l2 = host_readbs(Real2Host(ds_readd(BUFFER4_PTR)) + i) - l1;
+			l2 = host_readbs(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i) - l1;
 
 			if (l2 < 0) {
 				l2 = 0;
 			}
 
-			host_writeb(Real2Host(ds_readd(BUFFER4_PTR)) + i, l2);
+			host_writeb(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i, l2);
 		}
 
 		wait_for_vsync();
-		set_palette(Real2Host(ds_readd(BUFFER4_PTR)), 0x80, 0x40);
+		set_palette(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 0x80, 0x40);
 	}
 }
 
@@ -829,24 +829,24 @@ void DNG_stub6(void)
 
 				hero2 = Real2Host(get_second_hero_available_in_group());
 
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)get_ltx(0xc04),
 					hero1 + HERO_NAME2,
 					hero2 + HERO_NAME2);
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 				if (test_attrib(hero1, 4, 2) <= 0) {
 
-					sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_ltx(0xc08),
 						hero1 + HERO_NAME2,
 						hero2 + HERO_NAME2,
 						l_si = random_schick(3) + 1);
 
 					strcat((char*)Real2Host(ds_readd(DTP2)),
-						(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+						(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 					sub_hero_le(hero2, l_si);
 				}
@@ -875,14 +875,14 @@ void DNG_stub6(void)
 
 				} while (l_di);
 
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)get_ltx(0xc0c),
 					hero_auto + HERO_NAME2,
 					Real2Host(GUI_get_ptr(host_readbs(hero_auto + HERO_SEX), 0)),
 					Real2Host(GUI_get_ptr(host_readbs(hero_auto + HERO_SEX), 2)));
 
 				strcat((char*)Real2Host(ds_readd(DTP2)),
-					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 			}
 

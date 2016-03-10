@@ -302,7 +302,12 @@ struct dummy {
 	char a[35];
 };
 
-void FIG_remove_from_list(signed char fight_id, signed char v2)
+/**
+ * \brief		removes an element from the FIG_LIST
+ * \param fight_id		identificates the element to remove
+ * \param keep_in_memory	whether to save the removed element in FIG_LIST_ELEM, useful for moving element to end of list
+ */
+void FIG_remove_from_list(signed char fight_id, signed char keep_in_memory)
 {
 	Bit8u* p = Real2Host(ds_readd(FIG_LIST_HEAD));
 
@@ -321,7 +326,7 @@ void FIG_remove_from_list(signed char fight_id, signed char v2)
 		p = Real2Host(host_readd(p + 0x1b));
 	}
 
-	if (!v2) {
+	if (!keep_in_memory) {
 		ds_writeb(FIG_LIST_ARRAY + fight_id, 0);
 	} else {
 //		struct_copy(p_datseg + FIG_LIST_ELEM, p, 35);
@@ -354,7 +359,12 @@ void FIG_remove_from_list(signed char fight_id, signed char v2)
 	host_writeb(p + 0x10, -1);
 }
 
-signed char FIG_add_to_list(signed char v)
+/**
+ * \brief		adds FIG_LIST_ELEM to FIG_LIST
+ * \param fight_id		id to assign to the new element (-1 = assign a new id)
+ * \return  the new element's fight_id (position in FIG_LIST_ARRAY)
+ */
+signed char FIG_add_to_list(signed char fight_id)
 {
 	RealPt p1;
 	RealPt p2;
@@ -372,7 +382,7 @@ signed char FIG_add_to_list(signed char v)
 //		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + FIG_LIST_ELEM, 35);
 		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
-		if (v == -1) {
+		if (fight_id == -1) {
 			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10,
 				FIG_set_array());
 		}
@@ -394,10 +404,10 @@ signed char FIG_add_to_list(signed char v)
 //	struct_copy(Real2Host(p1), p_datseg + FIG_LIST_ELEM, 35);
 	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
-	if (v == -1) {
+	if (fight_id == -1) {
 		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
 	} else {
-		host_writeb(Real2Host(p1) + 0x10, v);
+		host_writeb(Real2Host(p1) + 0x10, fight_id);
 	}
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);

@@ -115,7 +115,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 			/* ICONS */
 			l_di = load_archive_file(ARCHIVE_FILE_ICONS);
-			seg002_0c72(l_di, 24 * 576L);
+			seek_archive_file(l_di, 24 * 576L);
 			read_archive_file(l_di, Real2Host(ds_readd(ICON)), 576L);
 			bc_close(l_di);
 
@@ -286,9 +286,9 @@ void sell_screen(Bit8u *shop_ptr)
 		l6 = host_readws((Bit8u*)&l6);
 #endif
 
-		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x2c04));
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MERCHANT));
 		handle_gui_input();
-		ds_writed(0x29e4, (Bit32u)0L);
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0L);
 
 		if (l5 != l6) {
 
@@ -442,10 +442,10 @@ void sell_screen(Bit8u *shop_ptr)
 			/* 0xe83 - 11ba */
 			while (l12 == 0 && j < 3) {
 
-				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
+				make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x704),
-					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 
 				do {
@@ -498,11 +498,11 @@ void sell_screen(Bit8u *shop_ptr)
 					if (l12 != 2) {
 						GUI_output(get_ltx(0x70c));
 
-						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xccc),
-							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}

@@ -439,11 +439,11 @@ void GRP_swap_heros(void)
 			ds_writebs(WILDCAMP_HERBSTATUS + hero2_nr, l5);
 
 			if (host_readbs(get_hero(hero1_nr) + HERO_TYPE)) {
-				host_writebs(get_hero(hero1_nr) + HERO_UNKNOWN2, 100);
+				host_writebs(get_hero(hero1_nr) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 			}
 
 			if (host_readbs(get_hero(hero2_nr) + HERO_TYPE)) {
-				host_writebs(get_hero(hero2_nr) + HERO_UNKNOWN2, 100);
+				host_writebs(get_hero(hero2_nr) + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 			}
 
 			host_writeb(get_hero(hero1_nr) + HERO_GROUP_POS, hero1_nr + 1);
@@ -685,17 +685,17 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 						add_hero_le(hero, le_regen);
 
-						strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
+						strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0x620));
 
 						if (le_regen > 1) {
-							strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
+							strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0x624));
 						}
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x4fc),
 							hero + HERO_NAME2,
 							le_regen,
-							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 						if (ds_readbs(0x2845) == 0) {
 							GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 							delay_or_keypress(200);
@@ -719,17 +719,17 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 
 							add_hero_ae(hero, ae_regen);
 
-							strcpy((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x620));
+							strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0x620));
 
 							if (ae_regen > 1) {
-								strcat((char*)Real2Host(ds_readd(BUFFER4_PTR)), (char*)get_ltx(0x624));
+								strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0x624));
 							}
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0x500),
 								hero + HERO_NAME2,
 								ae_regen,
-								(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+								(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 							if (ds_readbs(0x2845) == 0) {
 								GUI_print_loc_line(Real2Host(ds_readd(DTP2)));

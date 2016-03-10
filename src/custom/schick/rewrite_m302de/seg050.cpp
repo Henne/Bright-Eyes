@@ -190,17 +190,17 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 				randval = -1;
 
 				/* AT - value */
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)get_ltx(0x6ac), host_readbs(hero + skill + 0x68));
 
 				/* PA - value */
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50,
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
 					(char*)get_ltx(0x6b0), host_readbs(hero + skill + 0x6f));
 
 				do {
 					randval = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-								Real2Host(ds_readd(BUFFER4_PTR)),
-								Real2Host(ds_readd(BUFFER4_PTR)) + 50);
+								Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
+								Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50);
 				} while (randval == -1);
 
 				if (randval == 1) {

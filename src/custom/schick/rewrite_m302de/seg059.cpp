@@ -119,10 +119,10 @@ void do_tavern(void)
 
 			if (p_money_before != p_money_after) {
 
-				make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), p_money_before - p_money_after);
+				make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_money_before - p_money_after);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0xce4),
-					(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}

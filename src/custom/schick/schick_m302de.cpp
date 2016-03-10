@@ -501,8 +501,8 @@ static int n_seg002(unsigned short offs)
 		CPU_Push32(off);
 		CPU_Push16(handle);
 
-		D1_LOG("near seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
-		seg002_0c72(handle, off, dummy);
+		D1_LOG("near seek_archive_file(%d, %d, %d)\n", handle, off, dummy);
+		seek_archive_file(handle, off, dummy);
 
 		return 1;
 	}
@@ -4838,8 +4838,8 @@ static int seg002(unsigned short offs) {
 		CPU_Push32(off);
 		CPU_Push16(handle);
 
-		D1_LOG("seg002_0c72(%d, %d, %d)\n", handle, off, dummy);
-		seg002_0c72(handle, off, dummy);
+		D1_LOG("seek_archive_file(%d, %d, %d)\n", handle, off, dummy);
+		seek_archive_file(handle, off, dummy);
 
 		return 1;
 	}
@@ -7434,9 +7434,9 @@ static int seg034(unsigned short offs)
 		CPU_Push32(a2);
 		CPU_Push32(a1);
 
-		reg_ax = (Bit16s)seg034_2e3(Real2Host(a1), Real2Host(a2), a3);
+		reg_ax = (Bit16s)FIG_cb_select_target(Real2Host(a1), Real2Host(a2), a3);
 
-		D1_LOG("seg034_2e3(*a1 = %d, *a2 = %d, a3 = %d) = %d\n",
+		D1_LOG("FIG_cb_select_target(*a1 = %d, *a2 = %d, a3 = %d) = %d\n",
 			host_readws(Real2Host(a1)),
 			host_readws(Real2Host(a2)),
 			a3, (Bit16s)reg_ax);
@@ -7729,8 +7729,8 @@ static int seg041(unsigned short offs) {
 	case 0x20: {
 		RealPt hero = CPU_Pop32();
 		Bit16u arg = CPU_Pop16();
-		reg_ax = seg041_0020(Real2Host(hero), (signed short)arg);
-		D1_LOG("seg041_0020(%s, %d); = %d\n",
+		reg_ax = range_attack_check_ammo(Real2Host(hero), (signed short)arg);
+		D1_LOG("range_attack_check_ammo(%s, %d); = %d\n",
 			(char*)Real2Host(hero) + 0x10, arg, reg_ax);
 		CPU_Push16(arg);
 		CPU_Push32(hero);

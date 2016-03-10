@@ -191,10 +191,10 @@ void status_show(Bit16u index)
 
 	struct nvf_desc nvf;
 
-	bak1 = ds_readw(0xd313);
-	bak2 = ds_readw(0xd315);
-	bak3 = ds_readw(0xd317);
-	bak4 = ds_readw(0xd319);
+	bak1 = ds_readw(TXT_TABPOS1);
+	bak2 = ds_readw(TXT_TABPOS2);
+	bak3 = ds_readw(TXT_TABPOS3);
+	bak4 = ds_readw(TXT_TABPOS4);
 
 	hero = (RealPt)ds_readd(HEROS) + index * SIZEOF_HERO;
 
@@ -209,8 +209,8 @@ void status_show(Bit16u index)
 		set_palette(p_datseg + 0x6372, 0, 0x20);
 	}
 
-	ds_writed(0x29e0, (Bit32u)RealMake(datseg, 0x2ad8));
-	ds_writed(0x29e4, 0);
+	ds_writed(ACTION_TABLE_PRIMARY, (Bit32u)RealMake(datseg, ACTION_TABLE_STATUS));
+	ds_writed(ACTION_TABLE_SECONDARY, 0);
 	ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
 	set_textcolor(0, 2);
 
@@ -297,7 +297,7 @@ void status_show(Bit16u index)
 		do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 50, 319, 191, 2);
 	}
 
-	ds_writew(0xd313, 0x5f);
+	ds_writew(TXT_TABPOS1, 0x5f);
 
 	/* print name */
 	set_textcolor(0xff, 2);
@@ -323,12 +323,12 @@ void status_show(Bit16u index)
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 33);
 
 	/* print money */
-	make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+	make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		host_readd(Real2Host(hero) + HERO_MONEY));
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x4b0)),
-		(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+		(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 43);
 
 	/* dead, unconscious or drunk */
@@ -370,7 +370,7 @@ void status_show(Bit16u index)
 		case 1: {
 
 			/* print god */
-			ds_writew(0xd313, 265);
+			ds_writew(TXT_TABPOS1, 265);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_city(0x28),
@@ -378,16 +378,16 @@ void status_show(Bit16u index)
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 55);
 
 			/* show attributes */
-			ds_writew(0xd313, 220);
-			ds_writew(0xd315, 265);
-			ds_writew(0xd317, 285);
+			ds_writew(TXT_TABPOS1, 220);
+			ds_writew(TXT_TABPOS2, 265);
+			ds_writew(TXT_TABPOS3, 285);
 
 			for (i = 0; i <= 13; i++) {
 
 				val = host_readbs(Real2Host(hero) + i * 3 + 0x35)
 					+ host_readbs(Real2Host(hero) + i * 3 + 0x36);
 
-				sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)) + i * 10,
+				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i * 10,
 					(char*)get_city(0xcc),
 					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
 						(char*)get_city(0xc4) :
@@ -401,20 +401,20 @@ void status_show(Bit16u index)
 			}
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x30),
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)),
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 70,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 10,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 80,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 20,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 90,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 30,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 100,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 40,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 110,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 50,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 120,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 60,
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)) + 130);
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 70,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 10,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 80,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 20,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 90,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 30,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 100,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 40,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 110,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 120,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 60,
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 130);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 70);
 
@@ -554,8 +554,8 @@ void status_show(Bit16u index)
 		}
 		/* AT PA values */
 		case 2: {
-			ds_writew(0xd313, 275);
-			ds_writew(0xd315, 295);
+			ds_writew(TXT_TABPOS1, 275);
+			ds_writew(TXT_TABPOS2, 295);
 
 			j = (host_readbs(Real2Host(hero) + 0x38) +
 				host_readbs(Real2Host(hero) + 0x39) +
@@ -764,10 +764,10 @@ void status_show(Bit16u index)
 		do_v_line((RealPt)ds_readd(0xd2ff), 212, 54, 195, 0);
 	}
 
-	ds_writew(0xd313, bak1);
-	ds_writew(0xd315, bak2);
-	ds_writew(0xd317, bak3);
-	ds_writew(0xd319, bak4);
+	ds_writew(TXT_TABPOS1, bak1);
+	ds_writew(TXT_TABPOS2, bak2);
+	ds_writew(TXT_TABPOS3, bak3);
+	ds_writew(TXT_TABPOS4, bak4);
 
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
 

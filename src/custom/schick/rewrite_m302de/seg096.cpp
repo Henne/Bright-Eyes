@@ -383,22 +383,22 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 			x = (ds_readw(0xd2d1) == 1) ?
 				GUI_get_first_pos_centered(str + l2, ds_readws(0xd2d9), ds_readws(0xd2d5), 0) : l3;
 
-		} else	if (l4 == 0x7e) {
+		} else	if (l4 == '~') {
 
-			if (x < ds_readws(0xd313))
-				x = ds_readws(0xd313);
-			else if (x < ds_readws(0xd315))
-				x = ds_readws(0xd315);
-			else if (x < ds_readws(0xd317))
-				x = ds_readws(0xd317);
-			else if (x < ds_readws(0xd319))
-				x = ds_readws(0xd319);
-			else if (x < ds_readws(0xd31b))
-				x = ds_readws(0xd31b);
-			else if (x < ds_readws(0xd31d))
-				x = ds_readws(0xd31d);
-			else if (x < ds_readws(0xd31f))
-				x = ds_readws(0xd31f);
+			if (x < ds_readws(TXT_TABPOS1))
+				x = ds_readws(TXT_TABPOS1);
+			else if (x < ds_readws(TXT_TABPOS2))
+				x = ds_readws(TXT_TABPOS2);
+			else if (x < ds_readws(TXT_TABPOS3))
+				x = ds_readws(TXT_TABPOS3);
+			else if (x < ds_readws(TXT_TABPOS4))
+				x = ds_readws(TXT_TABPOS4);
+			else if (x < ds_readws(TXT_TABPOS5))
+				x = ds_readws(TXT_TABPOS5);
+			else if (x < ds_readws(TXT_TABPOS6))
+				x = ds_readws(TXT_TABPOS6);
+			else if (x < ds_readws(TXT_TABPOS7))
+				x = ds_readws(TXT_TABPOS7);
 
 		} else if (l4 == (unsigned char)0xf0 ||
 				l4 == (unsigned char)0xf1 ||
@@ -457,7 +457,7 @@ signed short GUI_lookup_char_width(signed char c, signed short *p)
 		}
 	}
 
-	if ((c == (signed char)0x7e)
+	if ((c == (signed char)'~')
 		|| (c == (signed char)0xf0)
 		|| (c == (signed char)0xf1)
 		|| (c == (signed char)0xf2)

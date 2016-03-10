@@ -10,6 +10,7 @@
 #define SYMBOLS_H
 
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
+#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC FIRE (0xef), -1 } */
 #define TWO_FIELDED_SPRITE_ID	(0x25f9)	/* char[5] array */
 #define EMS_ENABLED	(0x26ab)
 #define FIG_INITIATIVE	(0x26ac)	/* signed char, 0 = random, 1 = enemies, 2 = heroes (attack first) */
@@ -23,6 +24,12 @@
 #define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
+#define ACTION_TABLE_MENU	(0x29cc)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
+#define ACTION_TABLE_PRIMARY	(0x29e0) /* RealPt */
+#define ACTION_TABLE_SECONDARY	(0x29e4) /* RealPt */
+#define ACTION_TABLE_PLAYMASK	(0x29e8)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[24] */
+#define ACTION_TABLE_STATUS	(0x2ad8)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[30] */
+#define ACTION_TABLE_MERCHANT	(0x2c04)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
 #define CHAR_STATUS_BARS	(0x2c18)	/* (struct { signed short LE_ORIG, LE, AE_ORIG, AE; })[7] */
 #define DISEASE_PRICES	(0x2c50)	/* signed short[8] */
 #define DISEASE_DELAYS	(0x2c60)	/* signed short[8] */
@@ -207,10 +214,18 @@
 #define WALLCLOCK_PALETTE_NIGHT	(0x4afa)	/* (struct { unsigned char r,g,b; })[3] */
 #define COLOR_PAL_BLACK	(0x4b03)	/* char[3] = {0x3f,0x3f,0x3f} */
 #define DELAY_FACTOR	(0x4b66)
+#define STR_TEMP_XX_PTR	(0x4b68)	/* unsigned long == RealMake(datseg, 0x4b95) */
 #define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
+#define FIG_STAR_COUNTER	(0x4b78)	/* signed char */
+#define FIG_STAR_TIMER	(0x4b79)	/* signed short */
+#define FIG_MSG_DTPS	(0x4b7a)	/* signed short[13] */
+#define FIG_STAR_LAST_COUNT	(0x4b7b)	/* unsigned char */
+#define FIG_STAR_PRINTED	(0x4b94)	/* signed char {0,1} */
+#define STR_TEMP_XX	(0x4b95)	/* char[8] = "TEMP\XX" */
 #define FIGHT_FIGS_INDEX	(0x4b9e)	/* signed short */
 #define RANDOM_SCHICK_SEED	(0x4ba0)	/* unsigned short */
 #define EMM_SIG	(0x4ba2)	/* char[8] */
+#define ACTION_TABLE_OPTIONS	(0x4bae)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[10] */
 #define TMAP_X	(0x4c12)	/* signed short[10] */
 #define TMAP_Y	(0x4c26)	/* signed short[10] */
 #define LOCATION_HANDLERS	(0x4c3b)	/* (void (*)(void))[19] */
@@ -376,9 +391,10 @@
 #define GUI_TEXT_BUFFER	(0xce87)	/* unsigned char[64] */
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */
-#define BUFFER_MONSTER_TAB	(0xd01d)	/* RealPt */
-#define BUFFER_WFIGS_TAB	(0xd0ad)	/* RealPt */
-#define BUFFER_MFIGS_TAB	(0xd159)	/* RealPt */
+#define BUFFER_MONSTER_TAB	(0xd01d)	/* unsigned long[36] */
+#define BUFFER_WFIGS_TAB	(0xd0ad)	/* unsigned long[43] */
+#define BUFFER_MFIGS_TAB	(0xd159)	/* unsigned long[43] */
+#define BUFFER_ANIS_TAB	(0xd205)	/* unsigned long[37] */
 #define BUFFER5_PTR	(0xd2a5)	/* RealPt to buffer of size 3880 */
 #define BUFFER10_PTR	(0xd2a9)	/* RealPt to buffer of size 16771, used for NVF and text */
 #define POPUP	(0xd2ad)	/* RealPt */
@@ -392,17 +408,27 @@
 #define TEXTCOLOR_FG	(0xd2c9)
 #define FIG_FIGURE2_BUF	(0xd2db)	/* RealPt to buffer of size 20000 */
 #define FIG_FIGURE1_BUF	(0xd2df)	/* RealPt */
-#define BUFFER3_PTR	(0xd2e3)	/* RealPt to buffer of size 3400, used for NVF */
+#define OBJECTS_NVF_BUF	(0xd2e3)	/* RealPt to buffer of size 3400 */
 #define BUF_ICON	(0xd2e7)	/* RealPt */
-#define BUFFER4_PTR	(0xd2eb)	/* RealPt to buffer of size 300, used for text */
-#define TEXT_INPUT_BUFFER	(0xd2ef)	/* RealPt, size 24 */
+#define TEXT_OUTPUT_BUF (0xd2eb)	/* RealPt to buffer of size 300 */
+#define TEXT_INPUT_BUF	(0xd2ef)	/* RealPt to buffer of size 24 */
 #define DTP2	(0xd2f3)
 #define ICON	(0xd2f7)	/* RealPt */
 #define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
+#define VIDEO_PAGE_BAK	(0xd30b)	/* signed short */
+#define VIDEO_MODE_BAK	(0xd30d)	/* signed short */
+#define TXT_TABPOS1	(0xd313)	/* signed short */
+#define TXT_TABPOS2	(0xd315)	/* signed short */
+#define TXT_TABPOS3	(0xd317)	/* signed short */
+#define TXT_TABPOS4	(0xd319)	/* signed short */
+#define TXT_TABPOS5	(0xd31b)	/* signed short */
+#define TXT_TABPOS6	(0xd31d)	/* signed short */
+#define TXT_TABPOS7	(0xd31f)	/* signed short */
 #define TOWNPAL_BUF	(0xd321)	/* RealPt */
 #define HERO_SLEEP_MOD	(0xd32d)	/* signed short */
 #define GATHER_HERBS_MOD	(0xd32f)	/* signed short */
 #define REPLENISH_STOCKS_MOD	(0xd331)	/* signed short */
+#define FIG_MSG_DATA	(0xd333)	/* (struct { signed short type, damage; })[5] */
 #define ENEMY_SHEETS	(0xd34b)	/* struct enemy[20] */
 #define HERO_IS_TARGET	(0xd84b)	/* signed char[7] */
 #define CHESSBOARD	(0xd852)	/* RealPt */
@@ -414,9 +440,11 @@
 #define FIG_LIST_HEAD	(0xe108)	/* RealPtr to a list */
 #define WALLCLOCK_Y	(0xe10f)
 #define WALLCLOCK_X	(0xe111)
+#define WALLCLOCK_UPDATE	(0xe113)	/* unsigned short, 0 = don't update the wallclock */
 #define MEM_SLOTS_MON	(0xe115)
 #define MEM_SLOTS_WFIG	(0xe119)
 #define MEM_SLOTS_MFIG	(0xe11d)
+#define MEM_SLOTS_ANIS	(0xe121)	/* RealPt to (struct { unsigned short nr, ems_handle; long ani_len; })[36] */
 #define MONSTER_DAT_BUF	(0xe125)	/* RealPt */
 #define MONNAMES	(0xe129)
 #define ITEMSDAT	(0xe22b)
@@ -468,6 +496,7 @@
 #define USED_ITEM_ID	(0xe5ca)	/* s16 used_item ID */
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
 #define ITEMUSER	(0xe5ce)	/* pointer to hero */
+#define WALLCLOCK_UPDATE_BAK	(0xe5d3)	/* unsigned short {0,1} */
 #define BUFFERSIZE	(0xe5dc)	/* ?32 size of the global buffer */
 #define GLOBAL_BUFFER_PTR	(0xe5e0)	/* RealPt, points to the start of the global buffer */
 #define LARGE_BUF	(0xe5e4)	/* s8 {0,1} */

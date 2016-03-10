@@ -138,13 +138,13 @@ void THO_bank(void)
 
 	do {
 
-		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)get_city(0x120),
 			ds_readws(BANK_DEPOSIT));
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_city(0x144),
-						Real2Host(ds_readd(BUFFER4_PTR)), 3,
+						Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 3,
 						get_city(0x124), get_city(0x128), get_city(0x140));
 		} while (answer == -1);
 

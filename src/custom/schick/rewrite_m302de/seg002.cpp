@@ -319,7 +319,7 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 {
 	RealPt buf;
 
-	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), 0, 0);
+	seek_archive_file(ds_readws(SAMPLE_AD_HANDLE), 0, 0);
 
 	do {
 		read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_IDX_ENTRY, 6);
@@ -329,7 +329,7 @@ RealPt prepare_timbre(signed short a1, signed short patch)
 		}
 	} while ((ds_readbs((SAMPLE_AD_IDX_ENTRY+1)) != a1) || (ds_readbs(SAMPLE_AD_IDX_ENTRY) != patch));
 
-	seg002_0c72(ds_readws(SAMPLE_AD_HANDLE), ds_readd((SAMPLE_AD_IDX_ENTRY+2)), 0);
+	seek_archive_file(ds_readws(SAMPLE_AD_HANDLE), ds_readd((SAMPLE_AD_IDX_ENTRY+2)), 0);
 
 	read_archive_file(ds_readws(SAMPLE_AD_HANDLE), p_datseg + SAMPLE_AD_LENGTH, 2);
 
@@ -738,7 +738,13 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 	}
 }
 
-void seg002_0c72(Bit16u handle, Bit32s off, ...)
+/**
+ * \brief	seeks to a position in a file in SCHICK.DAT
+ *
+ * \param handle	handle returned by load_archive_file
+ * \param off	position to seek for
+ */
+void seek_archive_file(Bit16u handle, Bit32s off, ...)
 {
 
 	Bit32u file_off;
@@ -974,7 +980,7 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 
 		/* RLE decompression */
 		decomp_rle(width, height, dst, src,
-			Real2Host(ds_readd(BUFFER4_PTR)), nvf->type);
+			Real2Host(ds_readd(TEXT_OUTPUT_BUF)), nvf->type);
 #ifdef M302de_ORIGINAL_BUGFIX
 		/* retval was originally neither set nor used here.
 			VC++2008 complains about an uninitialized variable
@@ -1554,16 +1560,16 @@ void handle_gui_input(void)
 		ds_writew(0xc3d5, 0);
 		l_si = 0;
 
-		if (NOT_NULL(Real2Host(ds_readd(0x29e4)))) {
+		if (NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_SECONDARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e4)));
+					Real2Host(ds_readd(ACTION_TABLE_SECONDARY)));
 		}
 
-		if (!l_si && NOT_NULL(Real2Host(ds_readd(0x29e0)))) {
+		if (!l_si && NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_PRIMARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e0)));
+					Real2Host(ds_readd(ACTION_TABLE_PRIMARY)));
 		}
 
 		if (ds_readw(0xc3c7) == 2) {
@@ -1703,16 +1709,16 @@ void handle_input(void)
 		ds_writew(0xc3d5, 0);
 		l_si = 0;
 
-		if (NOT_NULL(Real2Host(ds_readd(0x29e4)))) {
+		if (NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_SECONDARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e4)));
+					Real2Host(ds_readd(ACTION_TABLE_SECONDARY)));
 		}
 
-		if (!l_si && NOT_NULL(Real2Host(ds_readd(0x29e0)))) {
+		if (!l_si && NOT_NULL(Real2Host(ds_readd(ACTION_TABLE_PRIMARY)))) {
 			l_si = get_mouse_action(ds_readw(0x299c),
 					ds_readw(0x299e),
-					Real2Host(ds_readd(0x29e0)));
+					Real2Host(ds_readd(ACTION_TABLE_PRIMARY)));
 		}
 
 		if (ds_readw(0xc3c7) == 2) {
@@ -4118,7 +4124,7 @@ signed short check_hero(Bit8u *hero)
 		hero_unc(hero) ||
 		hero_cursed(hero) ||
 		/* Check if ??? */
-		(host_readb(hero + HERO_UNKNOWN2) == 0x10))
+		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1))
 	{
 		return 0;
 	}
@@ -4294,7 +4300,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 0);
 
 			/* unknown */
-			host_writeb(hero + HERO_UNKNOWN2, 100);
+			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 
 			if (ds_readb(0x2845) == 0) {
 				ds_writeb(0x46df, 1);
@@ -4346,7 +4352,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				or_ptr_bs(hero + HERO_STATUS1, 0x40);
 
 				/* unknown yet */
-				host_writeb(hero + HERO_UNKNOWN2, 10);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
 				/* unknown yet */
 				ds_writeb(UNCONSCIOUS_MESSAGE + get_hero_index(hero), 1);
@@ -5151,7 +5157,7 @@ int schick_main(int argc, char** argv)
 	/* randomize() */
 	srand(time((RealPt)0));
 
-	save_display_stat((RealPt)RealMake(datseg, 0xd30b));
+	save_display_stat((RealPt)RealMake(datseg, VIDEO_PAGE_BAK));
 
 	if (!init_memory()) {
 
@@ -5317,15 +5323,15 @@ signed short copy_protection(void)
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 
 			/* transform the input string in uppercase letters and bitwise invert them */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
-					~toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i,
+					~toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i)));
 			}
 
-			if (!strcmp((char*)(p_datseg + (QUESTIONS_HANDBOOK + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
+			if (!strcmp((char*)(p_datseg + (QUESTIONS_HANDBOOK + 4)) + 19 * l_di, (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
 				return 1;
 			}
 		} else {
@@ -5346,15 +5352,15 @@ signed short copy_protection(void)
 			/* ask the question */
 			GUI_input(Real2Host(ds_readd(DTP2)), 20);
 
-			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)));
+			l1 = strlen((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
 
 			/* transform the input string in uppercase letters */
 			for (i = 0; i < l1; i++) {
-				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i,
-					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUFFER)) + i)));
+				host_writeb(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i,
+					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i)));
 			}
 
-			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUFFER)))) {
+			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
 				return 1;
 			}
 		}

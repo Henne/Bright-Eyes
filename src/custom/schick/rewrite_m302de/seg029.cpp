@@ -89,13 +89,13 @@ void draw_playmask(void)
 	ds_writew(0xd2d3, 103);
 	ds_writew(0xd2d5, 113);
 
-	ds_writew(0xd313, 205);
+	ds_writew(TXT_TABPOS1, 205);
 #if !defined(__BORLANDC__)
-	ds_writed(0x29e0, (long)RealMake(datseg, 0x29e8));
+	ds_writed(ACTION_TABLE_PRIMARY, (long)RealMake(datseg, ACTION_TABLE_PLAYMASK));
 #else
-	ds_writed(0x29e0, (long)MK_FP(datseg, 0x29e8));
+	ds_writed(ACTION_TABLE_PRIMARY, (long)MK_FP(datseg, ACTION_TABLE_PLAYMASK));
 #endif
-	ds_writed(0x29e4, 0);
+	ds_writed(ACTION_TABLE_SECONDARY, 0);
 
 	ds_writew(0xc3cb, 1);
 
@@ -265,7 +265,7 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 
 	fd = load_archive_file(fileindex);
 
-	seg002_0c72(fd, icon * 576L, 0);
+	seek_archive_file(fd, icon * 576L, 0);
 
 	read_archive_file(fd, Real2Host(ds_readd(BUF_ICON)) + pos * 576, 576);
 
@@ -316,7 +316,7 @@ void draw_main_screen(void)
 {
 	ds_writew(WALLCLOCK_X, 0xf1);
 	ds_writew(WALLCLOCK_Y, 0x1f);
-	ds_writew(0xe113, 0);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	set_var_to_zero();
 
@@ -331,7 +331,7 @@ void draw_main_screen(void)
 
 	draw_compass();
 
-	ds_writew(0xe113, ds_writew(0xe10d, 1));
+	ds_writew(WALLCLOCK_UPDATE, ds_writew(0xe10d, 1));
 
 	set_textcolor(0x1f, 0x1b);
 }

@@ -188,11 +188,11 @@ void FIG_loot_monsters(void)
 
 	if (money > 0) {
 
-		make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), money);
+		make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), money);
 
 		sprintf((char*)(Real2Host(ds_readd(DTP2))),
 			(char*)get_dtp(0x3c),
-			Real2Host(ds_readd(BUFFER4_PTR)));
+			Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
 		set_party_money(get_party_money() + money);
@@ -339,7 +339,7 @@ signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 		}
 	} else {
 
-		if (host_readbs(hero + HERO_UNKNOWN2) == 15) {
+		if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) {
 			GUI_output(get_ltx(0x7f0));
 			retval = 0;
 		}

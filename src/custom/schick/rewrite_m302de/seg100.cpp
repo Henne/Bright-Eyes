@@ -109,13 +109,13 @@ void spell_exposami(void)
 			(char*)get_dtp(0x7c));
 
 		for (i = 0; count - 1 > i; i++) {
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_dtp(0x84),		/* "%d %s" */
 				arr[i][1],
 				(char*)Real2Host(GUI_names_grammar(((arr[i][1] > 1)? 4 : 0) + 0x4000,
 									arr[i][0], 1)));
 			strcat((char*)Real2Host(ds_readd(DTP2)),
-				(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 			if (count - 2 > i) {
 				strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -128,14 +128,14 @@ void spell_exposami(void)
 				(char*)get_dtp(0x74));		/* "AND" */
 		}
 
-		sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)get_dtp(0x84),
 			arr[count - 1][1],	/* TODO: this field access produces other code */
 			(char*)Real2Host(GUI_names_grammar((arr[count - 1][1] > 1 ? 4 : 0) + 0x4000,
 								arr[count - 1][0], 1)));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
-			(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+			(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x78));			/* "." */

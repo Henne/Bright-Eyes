@@ -106,18 +106,18 @@ void show_citizen(void)
 			load_ani(20);
 			init_ani(ds_writew(0x2846, 0));
 
-			strcpy((char*)Real2Host((RealPt)ds_readd(BUFFER4_PTR)),
+			strcpy((char*)Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_dtp(ds_readw(CITYINDEX) * 4));
 
 			if (ds_readbs(YEAR) == 15 && ds_readbs(MONTH) == 1 && random_schick(100) <= 20) {
 
 				if (!show_storytext()) {
-					GUI_print_loc_line(Real2Host((RealPt)ds_readd(BUFFER4_PTR)));
+					GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
 				} else {
 					ds_writew(ACTION, 1);
 				}
 			} else {
-				GUI_print_loc_line(Real2Host((RealPt)ds_readd(BUFFER4_PTR)));
+				GUI_print_loc_line(Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)));
 #ifdef M302de_SPEEDFIX
 				delay_or_keypress(200);
 #endif
@@ -375,11 +375,11 @@ void show_treasure_map(void)
 			ds_writew(TEXTBOX_WIDTH, 3);
 
 			/* */
-			sprintf((char*)Real2Host(ds_readd(BUFFER4_PTR)),
+			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_ltx(0xb5c),
 				(char*)get_hero(get_random_hero()) + 0x10);
 
-			GUI_output(Real2Host(ds_readd(BUFFER4_PTR)));
+			GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			ds_writeb(FIND_HYGGELIK, 1);
@@ -435,7 +435,7 @@ signed short game_options(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 	ds_writeb(0x45b8, 1);
-	ds_writew(0xe113, 0);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 	ds_writew(0x2ccb, -1);
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
@@ -521,9 +521,9 @@ signed short game_options(void)
 	ds_writed(0xbff9, ds_readd(BUFFER9_PTR));
 
 	do {
-		ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x4bae));
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_OPTIONS));
 		handle_input();
-		ds_writed(0x29e4, (Bit32u)0);
+		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0);
 
 		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
 
@@ -628,7 +628,7 @@ void draw_icon(signed short id, signed short x, signed short y)
 
 	handle = load_archive_file(ARCHIVE_FILE_ICONS);
 
-	seg002_0c72(handle, id * 576L, 0);
+	seek_archive_file(handle, id * 576L, 0);
 
 	read_archive_file(handle, Real2Host(ds_readd(ICON)), 576);
 
@@ -767,7 +767,7 @@ void leave_dungeon(void)
 	Bit8u *ptr;
 
 	DNG_lights();
-	ptr = Real2Host(ds_readd(BUFFER4_PTR));
+	ptr = Real2Host(ds_readd(TEXT_OUTPUT_BUF));
 
 	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0xc0);
 

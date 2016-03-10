@@ -187,11 +187,11 @@ void interrupt timer_isr(void)
 	}
 
 	/* another timer used in fights */
-	if ((ds_readws(0x4b79) > 0) &&
+	if ((ds_readws(FIG_STAR_TIMER) > 0) &&
 		(ds_readws(0x26b1) != 0) &&
-		(ds_readbs(0x4b94) != 0))
+		(ds_readbs(FIG_STAR_PRINTED) != 0))
 	{
-		dec_ds_ws(0x4b79);
+		dec_ds_ws(FIG_STAR_TIMER);
 	}
 
 	if (!ds_readbs(0xbcda)) {
@@ -706,23 +706,23 @@ void load_objects_nvf(void)
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR));
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF));
 	nvf.nr = 12;
 	process_nvf(&nvf);
 
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR)) + 0x683;
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0x683;
 	nvf.nr = 13;
 	process_nvf(&nvf);
 
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR)) + 0xcaf;
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcaf;
 	nvf.nr = 14;
 	process_nvf(&nvf);
 
-	nvf.dst = Real2Host(ds_readd(BUFFER3_PTR)) + 0xcef;
+	nvf.dst = Real2Host(ds_readd(OBJECTS_NVF_BUF)) + 0xcef;
 	nvf.nr = 15;
 	process_nvf(&nvf);
 
-	array_add(Real2Host(ds_readd(BUFFER3_PTR)), 0xd3f, 0xe0, 2);
+	array_add(Real2Host(ds_readd(OBJECTS_NVF_BUF)), 0xd3f, 0xe0, 2);
 
 }
 
@@ -731,7 +731,7 @@ void update_wallclock(void)
 	signed short night;
 	Bit32s d;
 
-	if ((ds_readw(0xe113) != 0) &&
+	if ((ds_readw(WALLCLOCK_UPDATE) != 0) &&
 		((ds_readb(0x2845) == 0) || (ds_readb(0x2845) == 5)) &&
 		!ds_readbs(0x2c98))
 	{
@@ -818,7 +818,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, ds_readws(WALLCLOCK_Y));
 	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
 	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 20);
-	ds_writed(0xc019, ds_readd(BUFFER3_PTR));
+	ds_writed(0xc019, ds_readd(OBJECTS_NVF_BUF));
 
 	/* draw backgroud */
 	do_pic_copy(2);
@@ -829,7 +829,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, y);
 	ds_writew(0xc015, pos + 7);
 	ds_writew(0xc017, y + 6);
-	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(BUFFER3_PTR) + 0xcaf: (RealPt)ds_readd(BUFFER3_PTR) + 0xcef));
+	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcaf: (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcef));
 
 	/* draw sun/moon */
 	do_pic_copy(2);
@@ -840,7 +840,7 @@ void draw_wallclock(signed short pos, signed short night)
 	ds_writew(0xc013, ds_readws(WALLCLOCK_Y) + 3);
 	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
 	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 22);
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUFFER3_PTR) + 0x683));
+	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(OBJECTS_NVF_BUF) + 0x683));
 
 	/* draw backgroud */
 	do_pic_copy(2);
@@ -908,8 +908,8 @@ void schick_set_video(void)
 
 void schick_reset_video(void)
 {
-	set_video_mode(ds_readws(0xd30d));
-	set_video_page(ds_readws(0xd30b));
+	set_video_mode(ds_readws(VIDEO_MODE_BAK));
+	set_video_page(ds_readws(VIDEO_PAGE_BAK));
 }
 
 struct dummy4 {
@@ -1132,8 +1132,8 @@ void map_effect(Bit8u *src)
 
 	seed = 0;
 
-	bak = ds_readws(0xe113);
-	ds_writew(0xe113, 0);
+	bak = ds_readws(WALLCLOCK_UPDATE);
+	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	wait_for_vsync();
 
@@ -1160,7 +1160,7 @@ void map_effect(Bit8u *src)
 
 	refresh_screen_size();
 
-	ds_writew(0xe113, bak);
+	ds_writew(WALLCLOCK_UPDATE, bak);
 }
 
 #if !defined(__BORLANDC__)

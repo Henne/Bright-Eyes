@@ -181,7 +181,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 		/* ICONS */
 		l_si = load_archive_file(ARCHIVE_FILE_ICONS);
-		seg002_0c72(l_si, 18 * 576L);
+		seek_archive_file(l_si, 18 * 576L);
 		read_archive_file(l_si, Real2Host(ds_readd(ICON)), 576L);
 		bc_close(l_si);
 
@@ -312,9 +312,9 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 			}
 
-			ds_writed(0x29e4, (Bit32u)RealMake(datseg, 0x2c04));
+			ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MERCHANT));
 			handle_input();
-			ds_writed(0x29e4, (Bit32u)0L);
+			ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0L);
 
 			if (ds_readws(0xc3c7) == 2) {
 				select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(SELLITEMS)) + 7 * item);
@@ -386,12 +386,12 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						price = (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 2)
 							* host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 4)) * ds_readws(PRICE_MODIFICATOR) / 4;
 
-						make_valuta_str((char*)Real2Host(ds_readd(BUFFER4_PTR)), price);
+						make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x7a0),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item_id, 0)),
-							(char*)Real2Host(ds_readd(BUFFER4_PTR)));
+							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 
 						do {

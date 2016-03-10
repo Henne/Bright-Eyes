@@ -161,7 +161,7 @@ void FIG_preload_gfx(void)
 	add_ds_ws(0xd86e, 300);
 
 	nvf.dst = Real2Host(ds_readd(0xd862));
-	nvf.src = Real2Host(ds_readd(BUFFER3_PTR));
+	nvf.src = Real2Host(ds_readd(OBJECTS_NVF_BUF));
 	nvf.nr = 10;
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&i;
@@ -172,7 +172,7 @@ void FIG_preload_gfx(void)
 	add_ds_ws(0xd86e, 300);
 
 	nvf.dst = Real2Host(ds_readd(0xd85e));
-	nvf.src = Real2Host(ds_readd(BUFFER3_PTR));
+	nvf.src = Real2Host(ds_readd(OBJECTS_NVF_BUF));
 	nvf.nr = 11;
 	nvf.type = 0;
 	process_nvf(&nvf);
@@ -181,7 +181,7 @@ void FIG_preload_gfx(void)
 	add_ds_ws(0xd86e, 0xe8c);
 
 	nvf.dst = Real2Host(ds_readd(0xd29d));
-	nvf.src = Real2Host(ds_readd(BUFFER3_PTR));
+	nvf.src = Real2Host(ds_readd(OBJECTS_NVF_BUF));
 	nvf.nr = 17;
 	nvf.type = 0;
 	process_nvf(&nvf);
