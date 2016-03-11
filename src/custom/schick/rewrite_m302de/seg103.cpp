@@ -186,7 +186,7 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 	if ((skill >= 7) && (skill <= 51)) {
 
 #if !defined(__BORLANDC__)
-		D1_INFO("Skill test %s %+d: ", names_skill[skill], bonus);
+		D1_INFO("Talentprobe %s %+d: ", names_skill[skill], bonus);
 #endif
 
 		/* special test if skill is a range weapon skill */

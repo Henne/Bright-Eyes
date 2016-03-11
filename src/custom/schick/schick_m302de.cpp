@@ -3462,7 +3462,7 @@ static int n_seg103(unsigned short offs)
 		CPU_Push16(skill);
 		CPU_Push32(hero);
 
-		D1_LOG("Skill test: %s %+d\n ",
+		D1_LOG("Talentprobe: %s %+d\n ",
 			names_skill[skill], (signed char)bonus);
 
 		reg_ax = test_skill(Real2Host(hero), skill, (signed char)bonus);
@@ -10673,7 +10673,7 @@ static int seg103(unsigned short offs) {
 			CPU_Push16(skill);
 			CPU_Push32(hero);
 
-			D1_LOG("Skill test: %s %+d ",
+			D1_LOG("Talentprobe: %s %+d ",
 				names_skill[skill], (signed char)bonus);
 
 			reg_ax = test_skill(Real2Host(hero), skill,
