@@ -3023,7 +3023,7 @@ void herokeeping(void)
 			if ((host_readb(hero + HERO_TYPE) != 0) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
-				(!ds_readb(TRAVELING) || ds_readb(0x26a4 + i) != ds_readb(FOOD_MESSAGE + i))) {
+				(!ds_readb(TRAVELING) || ds_readb(FOOD_MESSAGE_SHOWN + i) != ds_readb(FOOD_MESSAGE + i))) {
 
 					sprintf(buffer,
 						(ds_readb(FOOD_MESSAGE + i) == 1) ? (char*)get_ltx(0x380):
@@ -3035,7 +3035,7 @@ void herokeeping(void)
 
 						(char*)hero + HERO_NAME2, (char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
 
-					ds_writeb(0x26a4 + i, ds_readb(FOOD_MESSAGE + i));
+					ds_writeb(FOOD_MESSAGE_SHOWN + i, ds_readb(FOOD_MESSAGE + i));
 
 					GUI_output((Bit8u*)buffer);
 

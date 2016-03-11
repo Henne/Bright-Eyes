@@ -329,7 +329,7 @@ void do_harbour(void)
 				ds_writeb(0x4497, 0);
 
 				for (l_si = 0; l_si < 6; l_si++) {
-					ds_writeb(0x26a4 + l_si, 0);
+					ds_writeb(FOOD_MESSAGE_SHOWN + l_si, 0);
 				}
 
 				load_map();
