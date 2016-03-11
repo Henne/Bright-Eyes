@@ -61,7 +61,7 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 
 		flag += lp5.a[ds_readbs(0x02ac + index)];
 
-		lp1 = (signed short*)(p_datseg + 0x270);
+		lp1 = (signed short*)(p_datseg + 0x0270);
 
 		while (((l4 = host_readws((Bit8u*)(lp1++))) != -1) && (l4 != index));
 
@@ -159,7 +159,7 @@ RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
 {
 	signed short l;
 
-	l = (v3 == 0) ? ds_readbs(0x2ac + v2) : ds_readbs(v2 + 0x925);
+	l = (v3 == 0) ? ds_readbs(0x02ac + v2) : ds_readbs(v2 + 0x0925);
 
 	return (RealPt)ds_readd(0xaa14 + 4 * ds_readbs(0xaa30 + v1 * 3 + l));
 }

@@ -317,7 +317,7 @@ void buy_screen(void)
 						set_textcolor(111, 0);
 					} else {
 
-						if (!is_in_word_array(item_id, (short*)Real2Host((ds_readds(0x634 + 4 * host_readbs(hero1 + HERO_TYPE)))))) {
+						if (!is_in_word_array(item_id, (short*)Real2Host((ds_readds(0x0634 + 4 * host_readbs(hero1 + HERO_TYPE)))))) {
 							set_textcolor(201, 0);
 						}
 					}

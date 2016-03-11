@@ -101,7 +101,7 @@ void seg001_00c1(unsigned short track_nr) {
 	unsigned int track_start, track_end;
 	unsigned int track_len, tmp;
 
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	real_writew(reloc_game + CDA_DATASEG, 0x8f, 0);
@@ -142,7 +142,7 @@ void seg001_02c4(void) {
 
 	signed int val;
 
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	val = CD_get_tod();
@@ -169,7 +169,7 @@ signed short CD_bioskey(signed short cmd) {
 /* static */
 void CD_audio_stop_hsg(void) {
 
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	real_writew(reloc_game + CDA_DATASEG, 3, 0);
@@ -179,7 +179,7 @@ void CD_audio_stop_hsg(void) {
 
 /* CD_audio_stop() - stop audio playback in HSG and redbook format */
 void CD_audio_stop() {
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	CD_audio_stop_hsg();
@@ -189,11 +189,11 @@ void CD_audio_stop() {
 
 void CD_audio_pause() {
 	/* Is CD initialized ? */
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	/* Is CD already paused ? */
-	if (ds_readw(0xa1) != 0)
+	if (ds_readw(0x00a1) != 0)
 		return;
 
 	/* set CD pause */
@@ -210,11 +210,11 @@ void CD_audio_pause() {
 
 void CD_audio_play() {
 	/* Is CD initialized ? */
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	/* Is CD paused ? */
-	if (ds_readw(0xa1) == 0)
+	if (ds_readw(0x00a1) == 0)
 		return;
 
 	CD_check();
@@ -329,7 +329,7 @@ static void CD_driver_request(void * request)
 /* TODO: check adresses of seg013 */
 static void CD_unused1(void)
 {
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	req[3].status = 0;
@@ -362,7 +362,7 @@ leave_tod:
 /* Borlandified and identical */
 void CD_audio_stop_hsg(void)
 {
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	req[0].status = 0;
@@ -374,7 +374,7 @@ void CD_audio_stop_hsg(void)
 /* Borlandified and identical */
 void CD_audio_stop(void)
 {
-	if (ds_readw(0x95) == 0)
+	if (ds_readw(0x0095) == 0)
 		return;
 
 	CD_audio_stop_hsg();

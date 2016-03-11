@@ -141,7 +141,7 @@ void status_menu(signed short hero_pos)
 						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
 						!is_in_word_array(
 						    host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)),
-						    (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))
+						    (signed short*)Real2Host(ds_readd(0x0634 + 4 * host_readbs(hero2 + HERO_TYPE)))
                         ) ? p_datseg + EMPTY_STRING8 : get_city(0x108));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {
@@ -326,7 +326,7 @@ void status_menu(signed short hero_pos)
 						Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))),
 						!is_in_word_array(
 						    host_readws(hero2 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370)),
-						    (signed short*)Real2Host(ds_readd(0x634 + 4 * host_readbs(hero2 + HERO_TYPE)))
+						    (signed short*)Real2Host(ds_readd(0x0634 + 4 * host_readbs(hero2 + HERO_TYPE)))
                         ) ? p_datseg + EMPTY_STRING9 : get_city(0x108));
 
 					if (item_weapon(get_itemsdat(host_readws(hero1 + HERO_ITEM_HEAD + 14 * ds_readbs(0x6370))))) {

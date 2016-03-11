@@ -67,7 +67,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 			if (!item_useable(Real2Host(ds_readd(USED_ITEM_DESC)))) {
 				/* item is not usable */
 
-				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + 0x29e)))
+				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + 0x029e)))
 				{
 					/* german grammar, singular and plural are the same */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),

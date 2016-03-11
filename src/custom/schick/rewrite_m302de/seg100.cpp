@@ -601,8 +601,8 @@ void spell_ignifaxius(void)
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
 			/* adjust rs_malus */
-			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2)) {
-				rs_malus = ds_readbs(0x877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2) - host_readbs(p_armour + 7);
+			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x0877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2)) {
+				rs_malus = ds_readbs(0x0877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2) - host_readbs(p_armour + 7);
 			}
 
 			/* add rs_malus to the armour */
