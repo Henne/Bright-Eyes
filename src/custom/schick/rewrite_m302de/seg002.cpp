@@ -4615,12 +4615,12 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 
 	si += bonus;
 
-	tmp = host_readbs(hero + 3 * attrib1 + 0x35) +
-		host_readbs(hero + 3 * attrib1 + 0x36) +
-		host_readbs(hero + 3 * attrib2 + 0x35) +
-		host_readbs(hero + 3 * attrib2 + 0x36) +
-		host_readbs(hero + 3 * attrib3 + 0x35) +
-		host_readbs(hero + 3 * attrib3 + 0x36);
+	tmp = host_readbs(hero + 3 * attrib1 + HERO_MU) +
+		host_readbs(hero + 3 * attrib1 + HERO_MU_MOD) +
+		host_readbs(hero + 3 * attrib2 + HERO_MU) +
+		host_readbs(hero + 3 * attrib2 + HERO_MU_MOD) +
+		host_readbs(hero + 3 * attrib3 + HERO_MU) +
+		host_readbs(hero + 3 * attrib3 + HERO_MU_MOD);
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",

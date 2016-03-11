@@ -90,12 +90,12 @@ void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
 
 /**
  *	status_show_talents -	shows all talents and their values
- *	@hero:	the hero which talents should be shown
+ *	@hero:	the hero whose talents should be shown
  */
 /* Borlandified and identical */
 void status_show_talents(Bit8u *hero) {
 
-	signed short i, j;
+	signed short skill_category, skill_nr;
 
 	set_textcolor(0xff, 2);
 
@@ -123,15 +123,15 @@ void status_show_talents(Bit8u *hero) {
 
 	set_textcolor(0, 2);
 
-	for (i = 0; i < 7; i++) {
-		j = ds_readbs(0x10ce + i * 2);
-		while (ds_readbs(0x10ce + i * 2) + ds_readbs(0x10cf + i * 2) > j) {
-			status_show_talent(hero, j,
-				ds_readbs(0x10ce + i * 2),
-				ds_readw(0x6476 + i * 6),
-				ds_readw((0x6476 + 2) + i * 6),
-				ds_readw((0x6476 + 4) + i * 6));
-			j++;
+	for (skill_category = 0; skill_category < 7; skill_category++) {
+		skill_nr = ds_readbs(SKILLS_INDEX + skill_category * 2);
+		while (ds_readbs(SKILLS_INDEX + skill_category * 2) + ds_readbs((SKILLS_INDEX + 1) + skill_category * 2) > skill_nr) {
+			status_show_talent(hero, skill_nr,
+				ds_readbs(SKILLS_INDEX + skill_category * 2),
+				ds_readw(0x6476 + skill_category * 6),
+				ds_readw((0x6476 + 2) + skill_category * 6),
+				ds_readw((0x6476 + 4) + skill_category * 6));
+			skill_nr++;
 		}
 	}
 }

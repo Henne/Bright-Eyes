@@ -142,7 +142,7 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 	signed short randval;
 	signed short max_incs;
 
-	max_incs = ds_readbs(0x0ffe + 4 * skill + 3);
+	max_incs = ds_readbs(SKILLS_EXTRA + 4 * skill + 3);
 
 
 	if (host_readbs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill + 1) >= max_incs) {

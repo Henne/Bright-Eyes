@@ -546,12 +546,12 @@ signed short get_skilled_hero_pos(signed short skill)
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 
-			cur =	host_readbs(hero + HERO_MU + 3 * (ds_readbs(0xffe + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(0xffe + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs(0xfff + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(0xfff + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs(0x1000 + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(0x1000 + 4 * skill))) +
+			cur =	host_readbs(hero + HERO_MU + 3 * (ds_readbs(SKILLS_EXTRA + 4 * skill))) +
+				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(SKILLS_EXTRA + 4 * skill))) +
+				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILLS_EXTRA + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILLS_EXTRA + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILLS_EXTRA + 2) + 4 * skill))) +
+				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILLS_EXTRA + 2) + 4 * skill))) +
 				host_readbs(hero + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {

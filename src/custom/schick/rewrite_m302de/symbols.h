@@ -10,7 +10,9 @@
 #define SYMBOLS_H
 
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
-#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC FIRE (0xef), -1 } */
+#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
+#define SKILLS_EXTRA	(0x0ffe)	/* (struct { signed char attrib1, attrib2, attrib3, max_inc; })[52] */
+#define SKILLS_INDEX	(0x10ce)	/* (struct { signed char first, length; })[7] = { {0,9}, {9,10}, {19,7}, {26,6}, {32,9}, {41,9}, {50,2}, } */
 #define TWO_FIELDED_SPRITE_ID	(0x25f9)	/* char[5] array */
 #define FOOD_MESSAGE_SHOWN	(0x26a4)	/* signed char[6] */
 #define EMS_ENABLED	(0x26ab)
