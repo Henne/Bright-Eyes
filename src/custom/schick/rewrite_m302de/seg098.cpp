@@ -330,7 +330,7 @@ signed short get_spell_cost(signed short spell, signed short half_cost)
 {
 	signed char ret;
 
-	ret = ds_readbs(0x99d + 4 + spell * 10);
+	ret = ds_readbs(SPELL_DESCRIPTIONS + 4 + spell * 10);
 
 	if (half_cost != 0) {
 		if (ret == -1) {
@@ -512,12 +512,12 @@ signed short can_use_spellclass(Bit8u *hero, signed short spellclass_nr)
 	signed short first_spell;
 
 
-	first_spell = ds_readbs(0xd03 + 2 * spellclass_nr);
-	for (i = 0; ds_readbs(0xd04 + 2 * spellclass_nr) > i; i++) {
+	first_spell = ds_readbs(SPELLS_INDEX + 2 * spellclass_nr);
+	for (i = 0; ds_readbs((SPELLS_INDEX + 1) + 2 * spellclass_nr) > i; i++) {
 
 		if ((host_readbs(hero + HERO_SPELLS + first_spell + i) >= -5) &&
-			(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + i)) == 1)) ||
-			((ds_readw(IN_FIGHT) == 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + i)) != 1))))
+			(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((SPELL_DESCRIPTIONS + 5) + 10 * (first_spell + i)) == 1)) ||
+			((ds_readw(IN_FIGHT) == 0) && (ds_readbs((SPELL_DESCRIPTIONS + 5) + 10 * (first_spell + i)) != 1))))
 		{
 			return 1;
 		}
@@ -621,9 +621,9 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 			retval = -2;
 		} else {
 
-			first_spell = ds_readbs(0xd03 + 2 * answer1);
+			first_spell = ds_readbs(SPELLS_INDEX + 2 * answer1);
 
-			for (l_di = 0; l_di < ds_readbs(0xd04 + 2 * answer1); l_di++) {
+			for (l_di = 0; l_di < ds_readbs((SPELLS_INDEX + 1) + 2 * answer1); l_di++) {
 
 				ds_writed(RADIO_NAME_LIST + 4 * l_di,
 					(Bit32u)((RealPt)ds_readd(DTP2) + 50 * (l_di)));
@@ -636,8 +636,8 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 						(char*)get_ltx(4 * (first_spell + l_di + 106)),
 						host_readbs(hero + HERO_SPELLS + first_spell + l_di));
 				} else if (
-					(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + l_di)) == 1)) ||
-					((ds_readw(IN_FIGHT) == 0) && (ds_readbs((0x99d + 5) + 10 * (first_spell + l_di)) != 1))) &&
+					(((ds_readw(IN_FIGHT) != 0) && (ds_readbs((SPELL_DESCRIPTIONS + 5) + 10 * (first_spell + l_di)) == 1)) ||
+					((ds_readw(IN_FIGHT) == 0) && (ds_readbs((SPELL_DESCRIPTIONS + 5) + 10 * (first_spell + l_di)) != 1))) &&
 					(host_readbs(hero + HERO_SPELLS + first_spell + l_di) >= -5))
 				{
 
@@ -663,7 +663,7 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 				}
 			}
 
-			retval = GUI_radio(get_ltx(0x364), ds_readbs(0xd04 + 2 * answer1),
+			retval = GUI_radio(get_ltx(0x364), ds_readbs((SPELLS_INDEX + 1) + 2 * answer1),
 					Real2Host(ds_readd((RADIO_NAME_LIST + 0x00))),
 					Real2Host(ds_readd((RADIO_NAME_LIST + 0x04))),
 					Real2Host(ds_readd((RADIO_NAME_LIST + 0x08))),
@@ -699,14 +699,14 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 
 		if (retval > 0) {
 			if ((ds_readw(IN_FIGHT) == 0) &&
-				(ds_readbs((0x99d + 5) + 10 * retval) == 1) &&
+				(ds_readbs((SPELL_DESCRIPTIONS + 5) + 10 * retval) == 1) &&
 				(show_vals == 0))
 			{
 				GUI_output(get_ltx(0x93c));
 				retval = -2;
 			} else {
 				if ((ds_readw(IN_FIGHT) != 0) &&
-					(ds_readbs((0x99d + 5) + 10 * retval) == -1))
+					(ds_readbs((SPELL_DESCRIPTIONS + 5) + 10 * retval) == -1))
 				{
 					GUI_output(get_ltx(0x940));
 					retval = -2;
@@ -739,7 +739,7 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 	if (get_spell_cost(spell_nr, 0) > host_readws(hero + HERO_AE))
 		return -99;
 
-	spell_desc = p_datseg + spell_nr * 10 + 0x99d;
+	spell_desc = p_datseg + spell_nr * 10 + SPELL_DESCRIPTIONS;
 
 	if (host_readb(spell_desc + 0x9) != 0) {
 
@@ -846,7 +846,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 		if (l_di > 0) {
 			/* pointer to the spell description */
-			ptr = p_datseg + 0x99d + 10 * l_di;
+			ptr = p_datseg + SPELL_DESCRIPTIONS + 10 * l_di;
 			/* reset the spelltarget of the hero */
 			host_writeb(Real2Host(hero) + HERO_ENEMY_ID, 0);
 
@@ -874,7 +874,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 	if (l_di > 0) {
 
 		/* pointer to the spell description */
-		ptr = p_datseg + 0x99d + 10 * l_di;
+		ptr = p_datseg + SPELL_DESCRIPTIONS + 10 * l_di;
 
 		if ((ds_readws(IN_FIGHT) == 0) && (host_readbs(ptr + 5) == 1)) {
 			GUI_output(get_ltx(0x93c));
@@ -929,7 +929,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 #if !defined(__BORLANDC__)
 				func = spellhandler[l_di];
 #else
-				func = (void (*)(void))ds_readd(0xdbb + 4 * l_di);
+				func = (void (*)(void))ds_readd(SPELL_HANDLERS + 4 * l_di);
 #endif
 				func();
 

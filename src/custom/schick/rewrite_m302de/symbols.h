@@ -11,8 +11,16 @@
 
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
 #define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
-#define SKILLS_EXTRA	(0x0ffe)	/* (struct { signed char attrib1, attrib2, attrib3, max_inc; })[52] */
-#define SKILLS_INDEX	(0x10ce)	/* (struct { signed char first, length; })[7] = { {0,9}, {9,10}, {19,7}, {26,6}, {32,9}, {41,9}, {50,2}, } */
+#define SPELL_DESCRIPTIONS	(0x099d)	/* (struct { char unkn0, unkn1, unkn2, unkn3, cost, unkn5, unkn6, unkn7, unkn8, unkn9; })[87] */
+#define SPELLS_INDEX	(0x0d03)	/* (struct { signed char first, length; })[8] = { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
+#define SPELLS_INDEX2	(0x0d13)	/* (struct { signed char first, length; })[4] = { {49,9}, {58,2}, {60,16}, {76,10} } */
+#define MAGIC_SCHOOL_DESCRIPTIONS	(0x0d97)	/* RealPt[9] */
+#define SPELL_HANDLERS	(0x0dbb)	/* function pointer[86] */
+#define MON_SPELL_DESCRIPTIONS	(0x0f13)	/* (struct { char cost, mode, unknown1, attrib1, attrib2, attrib3, unknown2, ani_id, unknown3; })[15] */
+#define MON_SPELL_REPERTOIRE	(0x0f8b)	/* (struct { char spells[5]; })[11] */
+#define MON_SPELL_HANDLERS	(0x0fc2)	/* function pointer[15] */
+#define SKILL_DESCRIPTIONS	(0x0ffe)	/* (struct { signed char attrib1, attrib2, attrib3, max_inc; })[52] */
+#define SKILLS_INDEX	(0x10ce)	/* (struct { signed char first, length; })[7] = { {0,9}, {9,10}, {19,7}, {26,6}, {32,9}, {41,9}, {50,2} } */
 #define TWO_FIELDED_SPRITE_ID	(0x25f9)	/* char[5] array */
 #define FOOD_MESSAGE_SHOWN	(0x26a4)	/* signed char[6] */
 #define EMS_ENABLED	(0x26ab)

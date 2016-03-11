@@ -363,7 +363,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 							host_writeb(hero + HERO_ENEMY_ID, 0);
 
-							spell = p_datseg + 0x099d + 10 * host_readbs(hero + HERO_SPELL_ID);
+							spell = p_datseg + SPELL_DESCRIPTIONS + 10 * host_readbs(hero + HERO_SPELL_ID);
 
 							if (host_readbs(spell + 5) == -1) {
 

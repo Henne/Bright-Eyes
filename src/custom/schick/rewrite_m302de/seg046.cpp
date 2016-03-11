@@ -687,13 +687,13 @@ void status_show(Bit16u index)
 
 			for (j = 0; j < 8; j++) {
 
-				i = ds_readbs(0xd03 + j * 2);
+				i = ds_readbs(SPELLS_INDEX + j * 2);
 
-				while (ds_readbs(0xd03 + j * 2) + ds_readbs(0xd03 + 1 + j * 2) > i) {
+				while (ds_readbs(SPELLS_INDEX + j * 2) + ds_readbs(SPELLS_INDEX + 1 + j * 2) > i) {
 
 					status_show_spell(Real2Host(hero),
 						i,
-						ds_readbs(0xd03 + j * 2),
+						ds_readbs(SPELLS_INDEX + j * 2),
 						ds_readws(0x642e + 0 + j * 6),
 						ds_readws(0x642e + 2 + j * 6),
 						ds_readws(0x642e + 4 + j * 6));
@@ -733,13 +733,13 @@ void status_show(Bit16u index)
 
 			for (j = 0; j < 4; j++) {
 
-				i = ds_readbs(0xd13 + j * 2);
+				i = ds_readbs(SPELLS_INDEX2 + j * 2);
 
-				while (ds_readbs(0xd13 + j * 2) + ds_readbs(0xd13 + 1 + j * 2) > i) {
+				while (ds_readbs(SPELLS_INDEX2 + j * 2) + ds_readbs(SPELLS_INDEX2 + 1 + j * 2) > i) {
 
 					status_show_spell(Real2Host(hero),
 						i,
-						ds_readbs(0xd13 + j * 2),
+						ds_readbs(SPELLS_INDEX2 + j * 2),
 						ds_readws(0x645e + 0 + j * 6),
 						ds_readws(0x645e + 2 + j * 6),
 						ds_readws(0x645e + 4 + j * 6));

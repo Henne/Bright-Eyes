@@ -144,12 +144,12 @@ RealPt get_proper_hero(signed short skill)
 			!hero_dead(Real2Host(hero_i))) {
 
 			/* add current and maximum attibute values */
-			cur =	host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(SKILLS_EXTRA + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(SKILLS_EXTRA + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILLS_EXTRA + 1) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILLS_EXTRA + 1) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILLS_EXTRA + 2) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILLS_EXTRA + 2) + 4 * skill)) +
+			cur =	host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
 				host_readbs(Real2Host(hero_i) + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {
@@ -246,7 +246,7 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		/* do the test */
 		bonus -= host_readbs(hero + HERO_TA_FIGHT + skill);
 
-		return test_attrib3(hero, ds_readbs(SKILLS_EXTRA + skill * 4), ds_readbs((SKILLS_EXTRA + 1) + skill * 4), ds_readbs((SKILLS_EXTRA + 2) + skill * 4), bonus);
+		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), bonus);
 
 	}
 

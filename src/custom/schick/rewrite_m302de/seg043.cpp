@@ -557,7 +557,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 				/* spellcast */
 
-				l14 = ds_readbs((0x0f13 + 0x7) + 8 * host_readbs(Real2Host(monster) + 0x2c));
+				l14 = ds_readbs((MON_SPELL_DESCRIPTIONS + 0x7) + 8 * host_readbs(Real2Host(monster) + 0x2c));
 
 				host_writebs(Real2Host(ds_readd(DTP2)), 0);
 

@@ -144,7 +144,7 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
 {
 	signed char cost;
 
-	cost = ds_readbs(0xf13 + 8 * mspell_nr);
+	cost = ds_readbs(MON_SPELL_DESCRIPTIONS + 8 * mspell_nr);
 
 	if (flag != 0) {
 
@@ -182,7 +182,7 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char 
 {
 	Bit8u *desc;
 
-	desc = p_datseg + 0xf13 + 8 * mspell_nr;
+	desc = p_datseg + MON_SPELL_DESCRIPTIONS + 8 * mspell_nr;
 
 	/* depends on MR */
 	if (host_readbs(desc + 6) != 0) {
@@ -258,7 +258,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 #if !defined(__BORLANDC__)
 			func = mspell[l_si];
 #else
-			func = (void (*)(void))ds_readd(0x0fc2 + 4 * l_si);
+			func = (void (*)(void))ds_readd(MON_SPELL_HANDLERS + 4 * l_si);
 #endif
 
 			func();

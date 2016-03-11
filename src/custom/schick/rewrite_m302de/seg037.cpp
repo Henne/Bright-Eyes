@@ -395,7 +395,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 signed short get_foe_attack_mode(signed short a1, signed short a2)
 {
 	signed short retval = 0;
-	Bit8u *ptr = p_datseg + 0xf13 + a1 * 8;
+	Bit8u *ptr = p_datseg + MON_SPELL_DESCRIPTIONS + a1 * 8;
 
 	if (a2 == 0) {
 
@@ -457,7 +457,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 	retval = 0;
 
 	available_spells = l_si = 0;
-	while ((l_si < 5) && (ds_readbs(0xf8b + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si++) != -1))
+	while ((l_si < 5) && (ds_readbs(MON_SPELL_REPERTOIRE + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si++) != -1))
 	{
 		available_spells++;
 	}
@@ -469,9 +469,9 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 
 		for (l_si = 0; l_si < available_spells; l_si++) {
 
-			l2 = ds_readbs(0xf8b + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si);
+			l2 = ds_readbs(MON_SPELL_REPERTOIRE + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + l_si);
 
-			if (ds_readbs(0xf15 + l2 * 8) == 1) {
+			if (ds_readbs((MON_SPELL_DESCRIPTIONS + 2) + l2 * 8) == 1) {
 
 				if (random_schick(100) < 75) {
 					l7 = 1;
@@ -481,7 +481,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 		}
 
 		if (l7 == 0) {
-			l2 = ds_readbs(0xf8b + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + random_interval(0, available_spells - 1));
+			l2 = ds_readbs(MON_SPELL_REPERTOIRE + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + random_interval(0, available_spells - 1));
 		}
 
 		host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, 0);
@@ -495,7 +495,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 				done = 1;
 			} else {
 
-				if (!ds_readbs(0xf15 + l2 * 8)) {
+				if (!ds_readbs((MON_SPELL_DESCRIPTIONS + 2) + l2 * 8)) {
 
 					while ((host_readbs(enemy + ENEMY_SHEET_BP) != 0) && (done == 0)) {
 
