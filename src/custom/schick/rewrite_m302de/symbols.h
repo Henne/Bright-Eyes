@@ -9,8 +9,12 @@
 #if !defined SYMBOLS_H
 #define SYMBOLS_H
 
-#define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
-#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
+#define POISON_POTIONS	(0x08d3)	/* signed short[10] = { SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), 0xff } */
+#define HERBS_TOXIC	(0x08e7)	/* signed short[5] = { SHURINKNOLLE (0x7a), ALRAUNE (0x7e), LOTUSBLUTE (0x84), EITRIGER KROTENSCHEMEL (0x3e), 0xff } */
+#define HERBS_UNEATABLE	(0x08f1)	/* signed short[7] = { ILMENBLATT (0x80), FINAGEBÄUMCHEN (0x81), JORUGAWURZEL (0x82), KAIRANHALM (0x9d), OLGINWURZEL (0x9c), DONFSTENGEL (0x7c), 0xff } */
+#define ELIXIR_POTIONS	(0x08ff)	/* signed short[8] = { MU ELIXIER (0x93), KL ELIXIER (0x94), CH ELIXIER (0x95), FF ELIXIER (0x96), GE ELIXIER (0x97), IN ELIXIER (0x98), KK ELIXIER (0x99), 0xff } */
+#define BAD_ELIXIRS	(0x090f)	/* signed short[8] = { MU ELIXIER (0xe2), KL ELIXIER (0xe3), CH ELIXIER (0xe4), FF ELIXIER (0xe5), GE ELIXIER (0xe6), IN ELIXIER (0xe7), KK ELIXIER (0xe8), 0xff } */
+#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATICUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
 #define STAFFSPELL_DESCRIPTIONS	(0x0973)	/* (struct { char attrib1, attrib2, attrib3, bonus, cost, ae_mod;  })[7] */
 #define SPELL_DESCRIPTIONS	(0x099d)	/* (struct { char unkn0, unkn1, unkn2, unkn3, cost, unkn5, unkn6, unkn7, unkn8, unkn9; })[87] */
 #define SPELLS_INDEX	(0x0d03)	/* (struct { signed char first, length; })[8] = { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
