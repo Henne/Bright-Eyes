@@ -880,7 +880,7 @@ void level_up(signed short hero_pos)
 
 		while (host_readbs(hero + HERO_TA_RISE) != 0) {
 
-			l_si = LVL_select_talent(hero, 1);
+			l_si = LVL_select_skill(hero, 1);
 
 			if (l_si >= 0) {
 

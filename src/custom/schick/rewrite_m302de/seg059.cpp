@@ -204,13 +204,13 @@ void do_tavern(void)
 			}
 
 		} else if (ds_readws(ACTION) == 131) {
-			/* USE TALENT */
+			/* USE SKILL */
 
 			bc_time(&timeval);
 
 			bonus = (timeval - ds_readds(0xe2d6)) > 120 ? 0 : 50;
 
-			if (GUI_use_talent2(bonus, get_ltx(0x62c)) == -1) {
+			if (GUI_use_skill2(bonus, get_ltx(0x62c)) == -1) {
 				done = 1;
 				ds_writew(COMBO_MODE, 0);
 			}

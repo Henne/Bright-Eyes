@@ -151,6 +151,7 @@
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
+
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
@@ -317,8 +318,8 @@
 #define SPELL_SELECT_ONES	(0xac30)	/* signed char[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } */
 #define ANALUES_ITEMS	(0xac3c)	/* (struct { signed short item_id, barrier; signed char dtp; })[28] */
 #define MONSTER_SPELL_COST	(0xaccc)	/* signed short */
-#define SELECT_TALENT_LVLUP	(0xacce)	/* char[6] = "%s~%d" */
-#define SELECT_TALENT_DEFAULTS	(0xacd4)	/* signed char[6] = {44, 45, 46, -1, -1, -1} */
+#define SELECT_SKILL_LVLUP	(0xacce)	/* char[6] = "%s~%d" */
+#define SELECT_SKILL_DEFAULTS	(0xacd4)	/* signed char[6] = {44, 45, 46, -1, -1, -1} */
 #define ALCHEMY_RECIPES	(0xacda)	/* (struct of size 28)[12?] */
 #define HERO_STARTUP_ITEMS	(0xae40)	/* (struct of size 8)[13] */
 #define PREVENT_DROP_EQUIPPED_ITEMS	(0xae46)	/* unsigned char {0, 1} */
@@ -377,7 +378,7 @@
 #define SCENARIO_BUF	(0xbd2c)
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
 #define HEROS	(0xbd34)
-#define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, talents, recipes */
+#define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, skills, recipes */
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define TEXTBOX_POS_X	(0xbfff)	/* signed short, coordinate of upper left corner */
 #define TEXTBOX_POS_Y	(0xc001)	/* signed short, coordinate of upper left corner */
@@ -390,7 +391,7 @@
 #define TEXT_LTX	(0xc3b5)
 #define ACTION	(0xc3d9)	/* ? short */
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
-#define ANI_MAIN_PTR	(0xce35)
+#define ANI_MAIN_PTR	(0xce35)	/* RealPt */
 #define GUI_TEXT_BUFFER	(0xce87)	/* unsigned char[64] */
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */

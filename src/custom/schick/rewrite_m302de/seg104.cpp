@@ -374,7 +374,7 @@ signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 	return retval;
 }
 
-signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short handycap, signed short flag)
+signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short handycap, signed short flag)
 {
 	signed short disease;
 	signed short retval;
@@ -405,7 +405,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 
 		} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 
-			/* recently tried to cure with talent */
+			/* recently tried to cure with skill */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xae4),

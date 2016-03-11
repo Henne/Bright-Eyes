@@ -58,30 +58,30 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 }
 
 /**
- *	status_show_talent -	prints talentname and value
- *	@hero:	the hero the talent is from
- *	@talen:	talentnumber
- *	@ftig:	the first talent in the talentgroup
+ *	status_show_skill -	prints skillname and value
+ *	@hero:	the hero the skill is from
+ *	@talen:	skillnumber
+ *	@ftig:	the first skill in the skillgroup
  *	@x1:	the leftmost x coordinate
  *	@x2:	the rightmost x coordinate
- *	@gy:	the upper y coordinate of this talentgroup
+ *	@gy:	the upper y coordinate of this skillgroup
  */
 /* Borlandified and identical */
-void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
+void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
 			unsigned short x1, unsigned short x2, unsigned short gy) {
 	unsigned short group;
 	char str[10];
 
-	group = talent - ftig;
+	group = skill - ftig;
 
-	/* print talentname */
-	GUI_print_string(get_ltx((talent + 0x30) * 4), x1, gy + group * 7);
+	/* print skillname */
+	GUI_print_string(get_ltx((skill + 0x30) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
 #if !defined(__BORLANDC__)
-	sprintf(str, "%d", host_readbs(hero + HERO_TA_FIGHT + talent));
+	sprintf(str, "%d", host_readbs(hero + HERO_TA_FIGHT + skill));
 #else
-	itoa(host_readbs(hero + HERO_TA_FIGHT + talent) , str, 10);
+	itoa(host_readbs(hero + HERO_TA_FIGHT + skill) , str, 10);
 #endif
 
 	/* print value */
@@ -89,17 +89,17 @@ void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
 }
 
 /**
- *	status_show_talents -	shows all talents and their values
- *	@hero:	the hero whose talents should be shown
+ *	status_show_skills -	shows all skills and their values
+ *	@hero:	the hero whose skills should be shown
  */
 /* Borlandified and identical */
-void status_show_talents(Bit8u *hero) {
+void status_show_skills(Bit8u *hero) {
 
 	signed short skill_category, skill_nr;
 
 	set_textcolor(0xff, 2);
 
-	/* print talent category names */
+	/* print skill category names */
 	GUI_print_string(get_ltx(0x190),
 		GUI_get_first_pos_centered(get_ltx(0x190), 5, 100, 0), 55);
 
@@ -126,7 +126,7 @@ void status_show_talents(Bit8u *hero) {
 	for (skill_category = 0; skill_category < 7; skill_category++) {
 		skill_nr = ds_readbs(SKILLS_INDEX + skill_category * 2);
 		while (ds_readbs(SKILLS_INDEX + skill_category * 2) + ds_readbs((SKILLS_INDEX + 1) + skill_category * 2) > skill_nr) {
-			status_show_talent(hero, skill_nr,
+			status_show_skill(hero, skill_nr,
 				ds_readbs(SKILLS_INDEX + skill_category * 2),
 				ds_readw(0x6476 + skill_category * 6),
 				ds_readw((0x6476 + 2) + skill_category * 6),
@@ -634,7 +634,7 @@ void status_show(Bit16u index)
 		}
 		/* skills */
 		case 3: {
-			status_show_talents(Real2Host(hero));
+			status_show_skills(Real2Host(hero));
 			break;
 		}
 		/* spells */

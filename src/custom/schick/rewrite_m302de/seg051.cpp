@@ -163,7 +163,7 @@ void do_wildcamp(void)
 
 		} else if (ds_readws(ACTION) == 131) {
 
-			GUI_use_talent2(0, get_ltx(0x62c));
+			GUI_use_skill2(0, get_ltx(0x62c));
 
 		} else if (ds_readws(ACTION) == 132) {
 

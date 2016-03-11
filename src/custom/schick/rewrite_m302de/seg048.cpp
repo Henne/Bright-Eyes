@@ -545,9 +545,9 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 4: {
-						/* use talent */
+						/* use skill */
 						ds_writew(0x6532, 1);
-						GUI_use_talent(hero_pos, 0);
+						GUI_use_skill(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
 						if (ds_readws(BUF1_FILE_INDEX) == 19) {
@@ -583,7 +583,7 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 7: {
-						/* show talents */
+						/* show skills */
 						if (l1 == 7) {
 							flag1 = 1;
 							reset_item_selector();
@@ -663,9 +663,9 @@ void status_menu(signed short hero_pos)
 						break;
 					}
 					case 3: {
-						/* use talent */
+						/* use skill */
 						ds_writew(0x6532, 1);
-						GUI_use_talent(hero_pos, 0);
+						GUI_use_skill(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
 						if (ds_readws(BUF1_FILE_INDEX) == 19) {
@@ -714,7 +714,7 @@ void status_menu(signed short hero_pos)
 				break;
 			}
 			case 3: {
-				/* from talents-page */
+				/* from skills-page */
 				l_di = GUI_radio((Bit8u*)0, 6,
 						get_ltx(0x350),
 						get_city(0x60),
@@ -726,9 +726,9 @@ void status_menu(signed short hero_pos)
 				if (l_di != -1) {
 					switch (l_di) {
 					case 1: {
-						/* use talent */
+						/* use skill */
 						ds_writew(0x6532, 1);
-						GUI_use_talent(hero_pos, 0);
+						GUI_use_skill(hero_pos, 0);
 						ds_writew(0x6532, 0);
 
 						if (ds_readws(BUF1_FILE_INDEX) == 19) {

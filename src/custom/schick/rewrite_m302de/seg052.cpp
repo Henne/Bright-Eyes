@@ -140,7 +140,7 @@ void do_citycamp(void)
 
 		} else if (ds_readws(ACTION) == 130) {
 
-			GUI_use_talent2(0, get_ltx(0x62c));
+			GUI_use_skill2(0, get_ltx(0x62c));
 
 		} else if (ds_readws(ACTION) == 131) {
 

@@ -329,7 +329,7 @@ void do_inn(void)
 		} else if (ds_readws(ACTION) == 132) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
-				GUI_use_talent2(0, get_ltx(0x62c));
+				GUI_use_skill2(0, get_ltx(0x62c));
 				refresh = 1;
 			} else {
 				GUI_output(get_ltx(0x568));

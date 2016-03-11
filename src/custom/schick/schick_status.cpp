@@ -271,7 +271,7 @@ static void schick_cmp_heros()
 	for (i = 0; i < 7; i++, hero += SIZEOF_HERO) {
 		/* check for invalid skill_attempts */
 		if ((signed char)host_readb(hero + 0x13c) < 0) {
-			D1_ERR("Original-Bug: %s hat negative Talentsteigerungen\n", (char*)(hero + 0x10));
+			D1_ERR("Original bug: %s has negative skill increasements\n", (char*)(hero + 0x10));
 			host_writeb(hero + 0x13c, 0);
 		}
 

@@ -156,7 +156,7 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
 
 
 /**
- * MON_test_skill() -	talent test for monsters
+ * MON_test_skill() -	skill test for monsters
  * @monster:		pointer to monster
  * @t1:			nr of 1st attribute
  * @t2:			nr of 2nd attribute

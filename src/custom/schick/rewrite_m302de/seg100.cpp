@@ -778,7 +778,7 @@ void spell_scharfes_auge(void)
 	ds_writed(SPELLTARGET,
 		(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * target));
 
-	/* all range talents are boosted + 3 */
+	/* all range skills are boosted + 3 */
 
 	slot = get_free_mod_slot();
 

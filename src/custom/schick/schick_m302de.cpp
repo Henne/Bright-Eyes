@@ -2018,7 +2018,7 @@ static int n_seg046(unsigned short offs)
 	}
 	case 0x08d: {
 		RealPt hero = CPU_Pop32();
-		unsigned short talent = CPU_Pop16();
+		unsigned short skill = CPU_Pop16();
 		unsigned short ftig = CPU_Pop16();
 		unsigned short x1 = CPU_Pop16();
 		unsigned short x2 = CPU_Pop16();
@@ -2027,12 +2027,12 @@ static int n_seg046(unsigned short offs)
 		CPU_Push16(x2);
 		CPU_Push16(x1);
 		CPU_Push16(ftig);
-		CPU_Push16(talent);
+		CPU_Push16(skill);
 		CPU_Push32(hero);
 
 		D1_LOG("status_show_spell(%s, %d,%d,%d,%d,%d);\n",
-			schick_getCharname(hero), talent, ftig, x1, x2, yg);
-		status_show_talent(Real2Host(hero), talent,
+			schick_getCharname(hero), skill, ftig, x1, x2, yg);
+		status_show_skill(Real2Host(hero), skill,
 			ftig, x1, x2, yg);
 
 		return 1;
@@ -2041,10 +2041,10 @@ static int n_seg046(unsigned short offs)
 		RealPt hero = CPU_Pop32();
 		CPU_Push32(hero);
 
-		D1_LOG("status_show_talents(%s);\n",
+		D1_LOG("status_show_skills(%s);\n",
 			schick_getCharname(hero));
 
-		status_show_talents(Real2Host(hero));
+		status_show_skills(Real2Host(hero));
 
 		return 1;
 	}
@@ -3454,7 +3454,7 @@ static int n_seg103(unsigned short offs)
 {
 	switch (offs) {
 	case 0x040f: {
-		// Talentprobe
+		// Skill test
 		RealPt hero = CPU_Pop32();
 		Bit16s skill = CPU_Pop16();
 		Bit16s bonus = CPU_Pop16();
@@ -3462,7 +3462,7 @@ static int n_seg103(unsigned short offs)
 		CPU_Push16(skill);
 		CPU_Push32(hero);
 
-		D1_LOG("Talentprobe: %s %+d\n ",
+		D1_LOG("Skill test: %s %+d\n ",
 			names_skill[skill], (signed char)bonus);
 
 		reg_ax = test_skill(Real2Host(hero), skill, (signed char)bonus);
@@ -3470,8 +3470,8 @@ static int n_seg103(unsigned short offs)
 		return 1;
 	}
 	case 0x0537: {
-		reg_ax = select_talent();
-		D1_LOG("select_talent() = %s\n", names_skill[reg_ax]);
+		reg_ax = select_skill();
+		D1_LOG("select_skill() = %s\n", names_skill[reg_ax]);
 		return 1;
 	}
 	case 0x06bf: {
@@ -3482,9 +3482,9 @@ static int n_seg103(unsigned short offs)
 		CPU_Push16(bonus);
 		CPU_Push16(hero);
 
-		reg_ax = use_talent(hero, (signed char)bonus, skill);
+		reg_ax = use_skill(hero, (signed char)bonus, skill);
 
-		D1_LOG("use_talent(): %s %+d\n",
+		D1_LOG("use_skill(): %s %+d\n",
 			names_skill[skill], (signed char)bonus);
 
 		return 1;
@@ -5367,7 +5367,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x504e: {
-		/* Talent-/Zauber-Probe */
+		/* Skill/spell test */
 		unsigned hero = CPU_Pop32();
 		unsigned short attrib1 = CPU_Pop16();
 		unsigned short attrib2 = CPU_Pop16();
@@ -10665,7 +10665,7 @@ static int seg102(unsigned short offs)
 
 static int seg103(unsigned short offs) {
 	switch (offs) {
-		case 0x20: { // Talentprobe
+		case 0x20: { // Skill test
 			RealPt hero = CPU_Pop32();
 			Bit16s skill = CPU_Pop16();
 			Bit16s bonus = CPU_Pop16();
@@ -10673,7 +10673,7 @@ static int seg103(unsigned short offs) {
 			CPU_Push16(skill);
 			CPU_Push32(hero);
 
-			D1_LOG("Talentprobe : %s %+d ",
+			D1_LOG("Skill test: %s %+d ",
 				names_skill[skill], (signed char)bonus);
 
 			reg_ax = test_skill(Real2Host(hero), skill,
@@ -10707,8 +10707,8 @@ static int seg103(unsigned short offs) {
 			CPU_Push16(bonus);
 			CPU_Push16(hero_pos);
 
-			reg_ax = GUI_use_talent(hero_pos, (Bit8s)bonus);
-			D1_LOG("GUI_use_talent(%d, %d) = %d\n",
+			reg_ax = GUI_use_skill(hero_pos, (Bit8s)bonus);
+			D1_LOG("GUI_use_skill(%d, %d) = %d\n",
 				hero_pos, (Bit8s)bonus, (Bit16s)reg_ax);
 			return 1;
 		}
@@ -10718,9 +10718,9 @@ static int seg103(unsigned short offs) {
 			CPU_Push16(flag);
 			CPU_Push32(hero);
 
-			reg_ax = LVL_select_talent(Real2Host(hero), flag);
+			reg_ax = LVL_select_skill(Real2Host(hero), flag);
 
-			D1_LOG("LVL_select_talent(%s, %d) = %d\n",
+			D1_LOG("LVL_select_skill(%s, %d) = %d\n",
 					schick_getCharname(hero), flag, reg_ax);
 			return 1;
 		}
@@ -10730,8 +10730,8 @@ static int seg103(unsigned short offs) {
 			CPU_Push32(msg);
 			CPU_Push16(bonus);
 
-			reg_ax = GUI_use_talent2(bonus, Real2Host(msg));
-			D1_LOG("GUI_use_talent2(%d, %s) = %d\n", bonus, Real2Host(msg), reg_ax);
+			reg_ax = GUI_use_skill2(bonus, Real2Host(msg));
+			D1_LOG("GUI_use_skill2(%d, %s) = %d\n", bonus, Real2Host(msg), reg_ax);
 			return 1;
 		}
 		default:
@@ -10774,11 +10774,11 @@ static int seg104(unsigned short offs)
 			CPU_Push32(patient);
 			CPU_Push32(healer);
 
-			reg_ax = talent_cure_disease(Real2Host(healer),
+			reg_ax = skill_cure_disease(Real2Host(healer),
 							Real2Host(patient),
 							handycap, flag);
 
-			D1_LOG("talent_cure_disease(%s, %s, %d, %d) = %d\n",
+			D1_LOG("skill_cure_disease(%s, %s, %d, %d) = %d\n",
 				schick_getCharname(healer),
 				schick_getCharname(patient),
 				handycap, flag, reg_ax);
