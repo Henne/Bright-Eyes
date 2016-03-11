@@ -436,17 +436,17 @@ signed short use_magic(RealPt hero)
 				GUI_output(get_ltx(0x53c));
 			} else {
 
-				if (ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) <= host_readws(Real2Host(hero) + HERO_AE)) {
+				if (ds_readbs((STAFFSPELL_DESCRIPTIONS + 4) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) <= host_readws(Real2Host(hero) + HERO_AE)) {
 					/* check AE */
 
 					retval = 1;
 
 					/* Original-Bug: the second attribute is used twice here */
 					if (test_attrib3(Real2Host(hero),
-						ds_readbs((0x972 + 1) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
-						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
-						ds_readbs((0x972 + 2) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
-						ds_readbs((0x972 + 4) + 6 * host_readbs(Real2Host(hero) + HERO_WAND))) > 0)
+						ds_readbs((STAFFSPELL_DESCRIPTIONS + 0) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
+						ds_readbs((STAFFSPELL_DESCRIPTIONS + 1) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
+						ds_readbs((STAFFSPELL_DESCRIPTIONS + 1) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)),
+						ds_readbs((STAFFSPELL_DESCRIPTIONS + 3) + 6 * host_readbs(Real2Host(hero) + HERO_WAND))) > 0)
 					{
 						/* Success */
 
@@ -457,9 +457,9 @@ signed short use_magic(RealPt hero)
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
-						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
+						sub_ae_splash(Real2Host(hero), ds_readbs((STAFFSPELL_DESCRIPTIONS + 4) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
 
-						sub_ptr_ws(Real2Host(hero) + HERO_AE_ORIG,	ds_readbs((0x972 + 6) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
+						sub_ptr_ws(Real2Host(hero) + HERO_AE_ORIG,	ds_readbs((STAFFSPELL_DESCRIPTIONS + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)));
 
 						/* Staffspell level +1 */
 						inc_ptr_bs(Real2Host(hero) + HERO_WAND);
@@ -474,7 +474,7 @@ signed short use_magic(RealPt hero)
 						GUI_output(get_ltx(0x548));
 
 						/* only half of the AE costs */
-						sub_ae_splash(Real2Host(hero), ds_readbs((0x972 + 5) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) / 2);
+						sub_ae_splash(Real2Host(hero), ds_readbs((STAFFSPELL_DESCRIPTIONS + 4) + 6 * host_readbs(Real2Host(hero) + HERO_WAND)) / 2);
 
 						/* let some time pass */
 						timewarp(0x2a30);

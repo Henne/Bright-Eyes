@@ -11,6 +11,7 @@
 
 #define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
 #define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
+#define STAFFSPELL_DESCRIPTIONS	(0x0973)	/* (struct { char attrib1, attrib2, attrib3, bonus, cost, ae_mod;  })[7] */
 #define SPELL_DESCRIPTIONS	(0x099d)	/* (struct { char unkn0, unkn1, unkn2, unkn3, cost, unkn5, unkn6, unkn7, unkn8, unkn9; })[87] */
 #define SPELLS_INDEX	(0x0d03)	/* (struct { signed char first, length; })[8] = { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
 #define SPELLS_INDEX2	(0x0d13)	/* (struct { signed char first, length; })[4] = { {49,9}, {58,2}, {60,16}, {76,10} } */
