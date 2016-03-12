@@ -287,7 +287,7 @@ void tevent_095(void)
 
 				TRV_load_textfile(-1);
 			} else {
-				ds_writew(0x4336, done = 1);
+				ds_writew(TRV_RETURN, done = 1);
 			}
 		} else {
 			/* at least one hero failed HA-test */
@@ -750,7 +750,7 @@ void tevent_100(void)
 
 		} else if (answer == 3)
 		{
-			ds_writew(0x4336, 1);
+			ds_writew(TRV_RETURN, 1);
 		}
 	}
 
