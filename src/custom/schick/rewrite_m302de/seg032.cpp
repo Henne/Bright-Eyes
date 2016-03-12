@@ -666,7 +666,7 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + 0x2d)))
+							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID)))
 							{
 								if (is_in_byte_array(host_readbs(p_datseg + (0xd0df + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{

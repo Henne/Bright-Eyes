@@ -222,14 +222,14 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 	void (*func)(void);
 	volatile signed short bak;
 
-	l_si = host_readbs(Real2Host(monster) + 0x2c);
+	l_si = host_readbs(Real2Host(monster) + ENEMY_SHEET_CUR_SPELL);
 
 	if (l_si > 0) {
 
 		cost = MON_get_spell_cost(l_si, 0);
 
 		/* check AE */
-		if (host_readws(Real2Host(monster) + 0x17) < cost) {
+		if (host_readws(Real2Host(monster) + ENEMY_SHEET_AE) < cost) {
 			return -1;
 		}
 
