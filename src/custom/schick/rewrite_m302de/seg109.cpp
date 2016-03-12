@@ -180,7 +180,7 @@ signed short TRV_found_camp_place(signed short a0)
 
 	if (answer == 1) {
 
-		ds_writew(HERO_SLEEP_MOD, ds_writews(REPLENISH_STOCKS_MOD, ds_writews(GATHER_HERBS_MOD, 0)));
+		ds_writew(WILDCAMP_SLEEP_QUALITY, ds_writews(REPLENISH_STOCKS_MOD, ds_writews(GATHER_HERBS_MOD, 0)));
 
 		if (a0 == 1) {
 			ds_writews(REPLENISH_STOCKS_MOD, -3);
@@ -197,7 +197,7 @@ signed short TRV_found_camp_place(signed short a0)
 
 		TRV_load_textfile(-1);
 
-		ds_writew(HERO_SLEEP_MOD, ds_writews(REPLENISH_STOCKS_MOD, ds_writews(GATHER_HERBS_MOD, 0)));
+		ds_writew(WILDCAMP_SLEEP_QUALITY, ds_writews(REPLENISH_STOCKS_MOD, ds_writews(GATHER_HERBS_MOD, 0)));
 		ds_writew(REQUEST_REFRESH, 2);
 
 		return 1;

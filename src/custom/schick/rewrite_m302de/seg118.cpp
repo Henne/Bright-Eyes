@@ -295,7 +295,7 @@ void tevent_078(void)
 			/* each hero in the group looses hours / 2 LE */
 			sub_group_le(hours >> 1);
 
-			ds_writews(HERO_SLEEP_MOD, -6);
+			ds_writews(WILDCAMP_SLEEP_QUALITY, -6);
 
 			ds_writeb(LOCATION, 6);
 			do_location();
@@ -333,7 +333,7 @@ void tevent_078(void)
 
 					sub_group_le(4);
 
-					ds_writews(HERO_SLEEP_MOD, -6);
+					ds_writews(WILDCAMP_SLEEP_QUALITY, -6);
 					/* make a camp */
 					ds_writeb(LOCATION, 6);
 					do_location();
@@ -365,7 +365,7 @@ void tevent_078(void)
 			}
 		}
 
-		ds_writews(HERO_SLEEP_MOD, 0);
+		ds_writews(WILDCAMP_SLEEP_QUALITY, 0);
 	}
 }
 

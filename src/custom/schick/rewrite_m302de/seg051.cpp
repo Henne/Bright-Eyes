@@ -329,7 +329,7 @@ void do_wildcamp(void)
 							ds_readbs(WILDCAMP_GUARDSTATUS + i) < 2 &&
 							ds_readbs(WILDCAMP_MAGICSTATUS + i) != 1)
 						{
-							GRP_hero_sleep(Real2Host(hero), ds_readws(HERO_SLEEP_MOD));
+							GRP_hero_sleep(Real2Host(hero), ds_readws(WILDCAMP_SLEEP_QUALITY));
 						}
 					}
 

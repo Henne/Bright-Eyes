@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
- *	Functions rewritten: 3/11
+ *	Functions rewritten: 4/11
  */
 #include <stdio.h>
 
@@ -9,6 +9,7 @@
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
+#include "seg025.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg047.h"
@@ -299,6 +300,52 @@ void tevent_112(void)
 		} else {
 			TRV_found_camp_place(0);
 		}
+	}
+}
+
+/* FIRUN-temple in the wilderness */
+/* Borlandified and identical */
+void tevent_113(void)
+{
+	signed short answer;
+	Bit32s est_old;
+	Bit32s est_diff;
+
+	do {
+		answer = GUI_radio(get_city(0x38), 2,
+					get_city(0x3c),
+					get_city(0x40));
+	} while (answer == -1);
+
+	if (answer == 1)
+	{
+		GUI_output(get_city(0x44));
+
+		/* enter the temple */
+		ds_writew(TYPEINDEX, 58);
+		est_old = ds_readds(GODS_ESTIMATION + 4 * 7);
+		ds_writeb(LOCATION, 2);
+		do_location();
+		TRV_load_textfile(-1);
+
+		GUI_output(get_city(0x48));
+
+		/* calculate the difference of the estimation */
+		est_diff = ds_readds(GODS_ESTIMATION + 4 * 7) - est_old;
+
+		ds_writew(TEXTBOX_WIDTH, 3);
+
+		/* the more money you spend, the better the group will sleep */
+		ds_writew(WILDCAMP_SLEEP_QUALITY, (est_diff <= 10 ? 1 :
+					(est_diff <= 50 ? 2 :
+					(est_diff <= 100 ? 3 : 4))));
+
+		ds_writeb(LOCATION, 6);
+		do_location();
+		ds_writeb(LOCATION, 0);
+
+		ds_writew(TEXTBOX_WIDTH, 9);
+		ds_writew(REQUEST_REFRESH, 2);
 	}
 }
 
