@@ -37,10 +37,10 @@ void spell_beherrschung(void)
 	ds_writed(SPELLTARGET,
 		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
-	if (!hero_cursed(Real2Host(ds_readd(SPELLTARGET)))) {
+	if (!hero_cursed(get_spelltarget())) {
 		ds_writew(0xac0e, -2);
 	} else {
-		if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
+		if (get_spelltarget() == get_spelluser()) {
 			strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0));
 			ds_writew(0xac0e, 0);
 		} else {
@@ -49,10 +49,10 @@ void spell_beherrschung(void)
 			if (host_readws(get_spelluser() + HERO_AE) < ds_readws(0xac0e)) {
 				ds_writew(0xac0e, -2);
 			} else {
-				and_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + HERO_STATUS1, 0xdf);
+				and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xdf);
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x4),
-					(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
+					(char*)get_spelltarget() + HERO_NAME2);
 			}
 		}
 	}
@@ -151,7 +151,7 @@ void spell_verwandlung(void)
 	ds_writed(SPELLTARGET,
 		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
-	if (hero_stoned(Real2Host(ds_readd(SPELLTARGET)))) {
+	if (hero_stoned(get_spelltarget())) {
 
 		/* set AEcosts */
 		ds_writew(0xac0e, random_schick(10) * 5);
@@ -163,22 +163,22 @@ void spell_verwandlung(void)
 		} else {
 			/* YES: spell has effect */
 			/* unset stoned bit */
-			and_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + HERO_STATUS1, 0xfb);
+			and_ptr_bs(get_spelltarget() + HERO_STATUS1, 0xfb);
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x10),
-				(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
+				(char*)get_spelltarget() + HERO_NAME2);
 		}
 	} else {
-		if (hero_transformed(Real2Host(ds_readd(SPELLTARGET)))) {
+		if (hero_transformed(get_spelltarget())) {
 
-			and_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + HERO_STATUS2, 0xbf);
+			and_ptr_bs(get_spelltarget() + HERO_STATUS2, 0xbf);
 
 			/* increase attributes */
 			for (i = 0; i <= 6; i++)
-				inc_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + HERO_MU + i * 3);
+				inc_ptr_bs(get_spelltarget() + HERO_MU + i * 3);
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x8d4),
-				(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
+				(char*)get_spelltarget() + HERO_NAME2);
 		} else {
 
 #ifdef M302de_ORIGINAL_BUGFIX
@@ -188,7 +188,7 @@ void spell_verwandlung(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x14),
-				(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
+				(char*)get_spelltarget() + HERO_NAME2);
 			ds_writew(0xac0e, 0);
 		}
 	}
@@ -222,7 +222,7 @@ void spell_band(void)
 		ds_writed(SPELLTARGET,
 			(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
-		if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
+		if (get_spelltarget() == get_spelluser()) {
 			/* don't cast yourself */
 
 			/* set AE costs */
@@ -233,12 +233,12 @@ void spell_band(void)
 				(char*)get_dtp(0x1c0));
 		} else {
 			/* set status bit */
-			or_ptr_bs(Real2Host(ds_readd(SPELLTARGET)) + HERO_STATUS1, 0x80);
+			or_ptr_bs(get_spelltarget() + HERO_STATUS1, 0x80);
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x18),
-					(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
+					(char*)get_spelltarget() + HERO_NAME2);
 		}
 	}
 }
@@ -438,7 +438,7 @@ void spell_somnigravis(void)
 	ds_writed(SPELLTARGET,
 		(Bit32u)((RealPt)ds_readd(HEROS) + (host_readbs(get_spelluser() + HERO_ENEMY_ID) - 1) * SIZEOF_HERO));
 
-	if (Real2Host(ds_readd(SPELLTARGET)) == get_spelluser()) {
+	if (get_spelltarget() == get_spelluser()) {
 		/* don't cast yourself */
 
 		/* set AE costs */

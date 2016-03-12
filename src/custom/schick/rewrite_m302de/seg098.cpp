@@ -224,16 +224,16 @@ void FIG_do_spell_damage(signed short le)
 
 
 		/* ensure the spelluser does not attack himself */
-		if (Real2Host(ds_readd(SPELLTARGET)) != get_spelluser()) {
+		if (get_spelltarget() != get_spelluser()) {
 
 			/* do the damage */
-			sub_hero_le(Real2Host(ds_readd(SPELLTARGET)), le);
+			sub_hero_le(get_spelltarget(), le);
 
 			/* add a message (ired star with le) */
 			FIG_add_msg(0x08, le);
 
 			/* set a variable if the hoer died */
-			if (hero_dead(Real2Host(ds_readd(SPELLTARGET)))) {
+			if (hero_dead(get_spelltarget())) {
 				ds_writew(0xe3a6, 1);
 			}
 		}

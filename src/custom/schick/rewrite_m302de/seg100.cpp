@@ -782,15 +782,15 @@ void spell_scharfes_auge(void)
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + (HERO_TA_FIGHT + 8), 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 8), 3, (signed char)target);
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + (HERO_TA_FIGHT + 7), 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, get_spelltarget() + (HERO_TA_FIGHT + 7), 3, (signed char)target);
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(97 * 4),
-		(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
+		(char*)get_spelltarget() + HERO_NAME2);
 
 }
 
