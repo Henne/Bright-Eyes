@@ -625,7 +625,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 	signed short tmp;
 
 	if (!hero_dead(hero) &&
-		(host_readd(hero + HERO_MAGIC_TIMER) == 0) &&
+		(host_readd(hero + HERO_STAFFSPELL_TIMER) == 0) &&
 		(host_readbs(hero + HERO_RECIPE_TIMER) == 0))
 	{
 

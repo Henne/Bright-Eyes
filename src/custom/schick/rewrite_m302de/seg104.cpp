@@ -275,7 +275,7 @@ signed short plan_alchemy(Bit8u *hero)
 										}
 									}
 								} else {
-									host_writed(hero + HERO_MAGIC_TIMER, 0x1fa40);
+									host_writed(hero + HERO_STAFFSPELL_TIMER, 0x1fa40);
 								}
 
 								retval = do_alchemy(hero, recipe_index, 0);

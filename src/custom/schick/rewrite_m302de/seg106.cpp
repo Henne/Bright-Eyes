@@ -269,7 +269,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	if (host_readw(item_p) == 0x85) {
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)get_city(0xd4),
-			host_readbs(hero + HERO_WAND));
+			host_readbs(hero + HERO_STAFFSPELL_LVL));
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 	}

@@ -321,7 +321,7 @@ void tevent_060(void)
 							nr_items += hero_count_item(hero, 121);
 							nr_items += hero_count_item(hero, 32);
 
-							if (host_readbs(hero + HERO_WAND) >= 3)
+							if (host_readbs(hero + HERO_STAFFSPELL_LVL) >= 3)
 							{
 								has_magic_rope = 1;
 							}

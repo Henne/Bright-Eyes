@@ -382,7 +382,7 @@ signed short DNG14_handler(void)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
 					host_readbs(hero + HERO_TYPE) == 9 &&
-					host_readbs(hero + HERO_WAND) > 2)
+					host_readbs(hero + HERO_STAFFSPELL_LVL) > 2)
 				{
 					/* mage with staffspell-level > 2 => can transform staff to rope */
 					l_di++;

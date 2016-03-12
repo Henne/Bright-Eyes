@@ -512,7 +512,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 								l_si = 0;
 
-								host_writed(patient + HERO_MAGIC_TIMER, 0x1fa40L);
+								host_writed(patient + HERO_STAFFSPELL_TIMER, 0x1fa40L);
 							}
 						} else {
 

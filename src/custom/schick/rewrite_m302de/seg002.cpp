@@ -2721,18 +2721,18 @@ void seg002_2f7a(Bit32s fmin)
 			}
 
 			/* Timer set after Staffspell */
-			if (host_readds(hero_i + HERO_MAGIC_TIMER) > 0) {
-				sub_ptr_ds(hero_i + HERO_MAGIC_TIMER, fmin * 450);
+			if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) > 0) {
+				sub_ptr_ds(hero_i + HERO_STAFFSPELL_TIMER, fmin * 450);
 #if !defined(__BORLANDC__)
-				if (host_readds(hero_i + HERO_MAGIC_TIMER) <= 0) {
+				if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) <= 0) {
 					D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
 						(char*)(hero_i + HERO_NAME2));
 				}
 
 #endif
-				if (host_readds(hero_i + HERO_MAGIC_TIMER) < 0) {
+				if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) < 0) {
 
-					host_writed(hero_i + HERO_MAGIC_TIMER, 0);
+					host_writed(hero_i + HERO_STAFFSPELL_TIMER, 0);
 				}
 			}
 
@@ -4193,7 +4193,7 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 		ds_writew(0xc3cb, 0);
 
 		/* If Mage has 4th Staffspell */
-		if ((host_readb(hero + HERO_TYPE) == 9) && (host_readbs(hero + HERO_WAND) >= 4)) {
+		if ((host_readb(hero + HERO_TYPE) == 9) && (host_readbs(hero + HERO_STAFFSPELL_LVL) >= 4)) {
 			ae -= 2;
 			if (ae < 0)
 				ae = 0;

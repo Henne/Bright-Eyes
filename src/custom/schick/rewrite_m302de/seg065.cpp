@@ -590,7 +590,7 @@ void show_outro(void)
 			}
 
 			host_writed(hero + HERO_HEAL_TIMER, 0);
-			host_writed(hero + HERO_MAGIC_TIMER, 0);
+			host_writed(hero + HERO_STAFFSPELL_TIMER, 0);
 
 			host_writeb(hero + HERO_GROUP_POS, i + 1);
 		}
