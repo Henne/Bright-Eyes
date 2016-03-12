@@ -5215,7 +5215,7 @@ int schick_main(int argc, char** argv)
 
 		CD_init();
 
-		if (ds_readw(0x0095) == 0) {
+		if (ds_readw(CD_INIT_SUCCESSFUL) == 0) {
 			/* CD init failed */
 			cleanup_game();
 			exit(0);

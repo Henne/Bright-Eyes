@@ -9,6 +9,9 @@
 #if !defined SYMBOLS_H
 #define SYMBOLS_H
 
+#define CD_INIT_SUCCESSFUL	(0x0095)	/* unsigned short {0,1} */
+#define CD_AUDIO_PAUSED	(0x00a1)	/* unsigned short {0,1} */
+#define WEARABLE_ITEMS	(0x0634)	/* RealPt[13], items wearable depending on hero type */
 #define POISON_POTIONS	(0x08d3)	/* signed short[10] = { SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), 0xff } */
 #define HERBS_TOXIC	(0x08e7)	/* signed short[5] = { SHURINKNOLLE (0x7a), ALRAUNE (0x7e), LOTUSBLUTE (0x84), EITRIGER KROTENSCHEMEL (0x3e), 0xff } */
 #define HERBS_UNEATABLE	(0x08f1)	/* signed short[7] = { ILMENBLATT (0x80), FINAGEBÄUMCHEN (0x81), JORUGAWURZEL (0x82), KAIRANHALM (0x9d), OLGINWURZEL (0x9c), DONFSTENGEL (0x7c), 0xff } */
