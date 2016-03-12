@@ -204,48 +204,48 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 						l_si == 27 || l_si == 28)
 					{
 						sprintf(dst, fmt,
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 0)),
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 1)));
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)),
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)));
 
 					} else if (l_si == 19) {
 
 						sprintf(dst, fmt,
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10);
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
 					} else if (l_si == 23) {
 
 						sprintf(dst, fmt,
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 2)))
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)))
 ;
 					} else if (l_si == 29) {
 
 						sprintf(dst, fmt,
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 0)),
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 1)),
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 2)));
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)),
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)),
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)));
 
 					} else if (l_si == 30) {
 
 						sprintf(dst, fmt,
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 1)),
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 2)));
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)),
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)));
 
 					} else if (l_si == 31) {
 
 						sprintf(dst, fmt,
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 3)));
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 3)));
 
 					} else if (l_si == 32) {
 
 						sprintf(dst, fmt,
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 0)),
-							Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10);
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)),
+							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
 					} else {
 						strcpy(dst, fmt);
@@ -368,27 +368,27 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 						if (!l_si || l_si == 3 || l_si == 4) {
 
 							sprintf(dst, fmt,
-								Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 0)));
+								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)));
 
 						} else if (l_si == 5) {
 
 							sprintf(dst, fmt,
-								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 0)),
-								Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10);
+								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)),
+								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
 						} else if (l_si == 6) {
 
 							sprintf(dst, fmt,
-								Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x22), 1)),
-								Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10);
+								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)),
+								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
 						} else if (l_si == 8) {
 
 							sprintf(dst, fmt,
-								Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10,
-								Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x10);
+								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
+								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
 						} else {
 							strcpy(dst, fmt);

@@ -684,7 +684,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			hero_disappear(Real2Host(ds_readd(UNICORN_HERO_PTR)), ds_readb(UNICORN_HERO_POS), -1);
 		} else if (state == 17) {
 			/* the hero gets heavily wounded, 1 LE left */
-			sub_hero_le(Real2Host(ds_readd(UNICORN_HERO_PTR)), host_readws(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x60) - 1);
+			sub_hero_le(Real2Host(ds_readd(UNICORN_HERO_PTR)), host_readws(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_LE) - 1);
 			/* the party opens a camp */
 			ds_writeb(LOCATION, 6);
 			do_location();

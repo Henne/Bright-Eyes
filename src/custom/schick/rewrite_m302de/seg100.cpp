@@ -153,18 +153,18 @@ void spell_odem_arcanum(void)
 
 	pos = select_item_to_drop(get_spelluser());
 
-	id = host_readws(get_spelluser() + pos * 14 + 0x196);
+	id = host_readws(get_spelluser() + pos * 14 + HERO_ITEM_HEAD);
 
 	if (id) {
 
-		if (ks_magic_hidden(get_spelluser() + pos * 14 + 0x196)) {
+		if (ks_magic_hidden(get_spelluser() + pos * 14 + HERO_ITEM_HEAD)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x144),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)));
 
 			/* set known flag */
-			or_ptr_bs(get_spelluser() + pos * 14 + 0x19a, 0x80);
+			or_ptr_bs(get_spelluser() + pos * 14 + (HERO_ITEM_HEAD + 4), 0x80);
 
 		} else {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -424,23 +424,23 @@ void spell_eisenrost(void)
 				(char*)get_dtp(0x1c0));
 		} else {
 			/* get weapon id of the target */
-			id = host_readws(get_spelltarget() + 0x1c0);
+			id = host_readws(get_spelltarget() + HERO_ITEM_RIGHT);
 
 			if (!id) {
 				/* no weapon in hand */
 				ds_writew(0xac0e, -2);
 			} else {
 				/* check if weapon is already broken */
-				if (ks_broken(get_spelltarget() + 0x1c0)) {
+				if (ks_broken(get_spelltarget() + HERO_ITEM_RIGHT)) {
 
 					strcpy((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x168));
 
 				} else {
 
-					if (host_readbs(get_spelltarget() + 0x1c6) > 0) {
+					if (host_readbs(get_spelltarget() + (HERO_ITEM_RIGHT + 6)) > 0) {
 						/* set broken flag */
-						or_ptr_bs(get_spelltarget() + 0x1c4, 0x01);
+						or_ptr_bs(get_spelltarget() + (HERO_ITEM_RIGHT + 4), 0x01);
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_dtp(0x170),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)),
@@ -596,7 +596,7 @@ void spell_ignifaxius(void)
 	                (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
 
 		/* get a pointer to the armour */
-		p_armour = get_spelltarget() + 0x1b2;
+		p_armour = get_spelltarget() + HERO_ITEM_BODY;
 
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
@@ -782,15 +782,15 @@ void spell_scharfes_auge(void)
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + 0x110, 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + (HERO_TA_FIGHT + 8), 3, (signed char)target);
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + 0x10f, 3, (signed char)target);
+	set_mod_slot(slot, 3 * 9L, Real2Host(ds_readd(SPELLTARGET)) + (HERO_TA_FIGHT + 7), 3, (signed char)target);
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(97 * 4),
-		(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10);
+		(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
 
 }
 

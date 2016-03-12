@@ -77,7 +77,7 @@ signed short LVL_select_skill(Bit8u *hero, signed short show_values)
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 50 * i,
 					format_str.a,
 					get_ltx((l1 + i + 48) * 4),
-					host_readbs(hero + l1 + i + 0x108));
+					host_readbs(hero + l1 + i + HERO_TA_FIGHT));
 
 				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
 			}

@@ -471,17 +471,17 @@ void mspell_eisenrost(void)
 		ds_writed(SPELLTARGET,
 			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_FIGHT_ID) - 1)));
 
-		id = host_readws(get_spelltarget() + 0x1c0);
+		id = host_readws(get_spelltarget() + HERO_ITEM_RIGHT);
 
 		if (!id) {
 			/* target hero has no weapon */
 			ds_writew(MONSTER_SPELL_COST, 2);
-		} else if (!ks_broken(get_spelltarget() + 0x1c0)) {
+		} else if (!ks_broken(get_spelltarget() + HERO_ITEM_RIGHT)) {
 
-			if (host_readbs(get_spelltarget() + 0x1c6) > 0) {
+			if (host_readbs(get_spelltarget() + (HERO_ITEM_RIGHT + 6)) > 0) {
 
 				/* set the broken flag */
-				or_ptr_bs(get_spelltarget() + 0x1c4, 1);
+				or_ptr_bs(get_spelltarget() + (HERO_ITEM_RIGHT + 4), 1);
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -573,7 +573,7 @@ void mspell_ignifaxius(void)
 			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
 		/* pointer to the armour of the target hero */
-		p_armour = get_spelltarget() + 0x1b2;
+		p_armour = get_spelltarget() + HERO_ITEM_BODY;
 
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 

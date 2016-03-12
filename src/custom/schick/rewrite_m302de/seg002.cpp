@@ -4555,7 +4555,7 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 		si += bonus;
 	}
 
-	tmp = host_readbs(hero + 3 * attrib + 0x35) + host_readbs(hero + 3 * attrib + 0x36);
+	tmp = host_readbs(hero + 3 * attrib + HERO_MU) + host_readbs(hero + 3 * attrib + 0x36);
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
@@ -4929,7 +4929,7 @@ signed short get_item_pos(Bit8u *hero, signed short item)
 	signed short i;
 
 	for (i = 0; i < 23; i++) {
-		if (item == host_readws(hero + i * 14 + 0x196)) {
+		if (item == host_readws(hero + i * 14 + HERO_ITEM_HEAD)) {
 			return i;
 		}
 	}
@@ -4958,7 +4958,7 @@ signed short get_first_hero_with_item(signed short item)
 		{
 			/* Search inventar */
 			for (j = 0; j < 23; j++) {
-				if (host_readw(hero_i + j * 14 + 0x196) == item) {
+				if (host_readw(hero_i + j * 14 + HERO_ITEM_HEAD) == item) {
 					return i;
 				}
 			}
@@ -4990,7 +4990,7 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
 		{
 			/* Search inventar */
 			for (j = 0; j < 23; j++) {
-				if (host_readws(hero_i + j * 14 + 0x196) == item) {
+				if (host_readws(hero_i + j * 14 + HERO_ITEM_HEAD) == item) {
 					return i;
 				}
 			}

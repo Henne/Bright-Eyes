@@ -50,7 +50,7 @@ void spell_arcano(void)
 	slot = get_free_mod_slot();
 
 	/* MR + 2 for 1 h */
-	set_mod_slot(slot, HOURS(1), Real2Host(ds_readd(SPELLTARGET)) + 0x66, 2,
+	set_mod_slot(slot, HOURS(1), Real2Host(ds_readd(SPELLTARGET)) + HERO_MR, 2,
 			(signed char)target);
 
 	/* "Die Magieresistenz von %s steigt um 2 Punkte." */
@@ -133,23 +133,23 @@ void spell_inc_ch(void)
 	}
 
 	/* check if CH was already increased */
-	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x3b) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x3a)) {
+	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_CH) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_CH_ORIG)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(414 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* CH + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x3b, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + HERO_CH, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(414 * 4));
 	}
 }
@@ -205,11 +205,11 @@ void spell_inc_ff(void)
 	}
 
 	/* check if FF was already increased */
-	if (host_readbs(get_spelltarget() + 0x3e) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x3d)) {
+	if (host_readbs(get_spelltarget() + 0x3e) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_FF_ORIG)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(415 * 4));
 	} else {
 		/* get a free mod_slot */
@@ -221,7 +221,7 @@ void spell_inc_ff(void)
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(415 * 4));
 	}
 }
@@ -251,23 +251,23 @@ void spell_inc_ge(void)
 	}
 
 	/* check if GE was already increased */
-	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x41) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x40)) {
+	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_GE) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_GE_ORIG)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(416 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* GE + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x41, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + HERO_GE, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(416 * 4));
 	}
 }
@@ -297,23 +297,23 @@ void spell_inc_in(void)
 	}
 
 	/* check if IN was already increased */
-	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x44) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x43)) {
+	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_IN) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_IN_ORIG)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(417 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x44, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + HERO_IN, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(417 * 4));
 	}
 }
@@ -343,23 +343,23 @@ void spell_inc_kk(void)
 	}
 
 	/* check if KK was already increased */
-	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x47) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x46)) {
+	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_KK) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_KK_ORIG)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(418 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x47, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + HERO_KK, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(418 * 4));
 	}
 }
@@ -389,23 +389,23 @@ void spell_inc_kl(void)
 	}
 
 	/* check if KL was already increased */
-	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x38) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x37)) {
+	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_KL) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_KL_ORIG)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(413 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* KL + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x38, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + HERO_KL, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(413 * 4));
 	}
 }
@@ -435,23 +435,23 @@ void spell_inc_mu(void)
 	}
 
 	/* check if MU was already increased */
-	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x35) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + 0x34)) {
+	if (host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_MU) > host_readbs(Real2Host(ds_readd(SPELLTARGET)) + HERO_MU_ORIG)) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(412 * 4));
 	} else {
 		/* get a free mod_slot */
 		slot = get_free_mod_slot();
 
 		/* MU + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + 0x35, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), Real2Host(ds_readd(SPELLTARGET)) + HERO_MU, 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(101 * 4),
-			(char*)Real2Host(ds_readd(SPELLTARGET)) + 0x10,
+			(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2,
 			(char*)get_ltx(412 * 4));
 	}
 }

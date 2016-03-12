@@ -377,7 +377,7 @@ void show_treasure_map(void)
 			/* */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_ltx(0xb5c),
-				(char*)get_hero(get_random_hero()) + 0x10);
+				(char*)get_hero(get_random_hero()) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 

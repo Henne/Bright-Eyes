@@ -528,9 +528,9 @@ signed short replenish_stocks(signed short mod, signed short tries)
 								host_writebs(hero2 + HERO_THIRST, 0);
 
 								for (j = 0; j < 23; j++) {
-									if (host_readws(hero2 + 14 * j + 0x196) == 30) {
-										and_ptr_bs(hero2 + 14 * j + 0x196 + 4, 0xfb);
-										and_ptr_bs(hero2 + 14 * j + 0x196 + 4, 0xfd);
+									if (host_readws(hero2 + 14 * j + HERO_ITEM_HEAD) == 30) {
+										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfb);
+										and_ptr_bs(hero2 + 14 * j + HERO_ITEM_HEAD + 4, 0xfd);
 									}
 								}
 							}

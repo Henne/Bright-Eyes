@@ -116,7 +116,7 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 			GUI_output(get_city(0x94));
 
 			/* increment spell value */
-			inc_ptr_bs(hero + spell + 0x13d);
+			inc_ptr_bs(hero + spell + HERO_SPELLS);
 
 			/* set the try counter to 0 */
 			host_writebs(Real2Host(ds_readd(INC_SPELLS_COUNTER)) + 2 * spell, 0);
@@ -174,7 +174,7 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 			GUI_output(get_city(0x94));
 
 			/* increment spell value */
-			inc_ptr_bs(hero + skill + 0x108);
+			inc_ptr_bs(hero + skill + HERO_TA_FIGHT);
 
 			/* set the try counter to 0 */
 			host_writebs(Real2Host(ds_readd(INC_SKILLS_COUNTER)) + 2 * skill, 0);

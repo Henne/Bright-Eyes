@@ -183,7 +183,7 @@ void magic_heal_ani(Bit8u *hero)
 		ds_writew(0xc015, 31);
 		ds_writew(0xc017, 31);
 		ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
-		ds_writed(0xc019, (Bit32u)(target + 0x2da));
+		ds_writed(0xc019, (Bit32u)(target + HERO_PORTRAIT));
 		do_pic_copy(0);
 
 		/* copy stars over it */
@@ -733,7 +733,7 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 		return 0;
 	}
 	/* check if spell skill >= -5 */
-	if (host_readbs(hero + spell_nr + 0x13d) < -5)
+	if (host_readbs(hero + spell_nr + HERO_SPELLS) < -5)
 		return 0;
 	/* check if hero has enough AE */
 	if (get_spell_cost(spell_nr, 0) > host_readws(hero + HERO_AE))
@@ -761,7 +761,7 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 		D1_INFO("Zauberprobe : %s %+d ", names_spell[spell_nr], bonus);
 #endif
 
-		bonus -= host_readbs(hero + spell_nr + 0x13d);
+		bonus -= host_readbs(hero + spell_nr + HERO_SPELLS);
 
 		retval = test_attrib3(hero, host_readbs(spell_desc+1),
 			host_readbs(spell_desc+2), host_readbs(spell_desc+3), bonus);

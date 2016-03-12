@@ -49,7 +49,7 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 		}
 
 		/* get the item in the other hand */
-		in_hand = host_readw(hero + other_pos * 0x0e + 0x196);
+		in_hand = host_readw(hero + other_pos * 0x0e + HERO_ITEM_HEAD);
 		if (in_hand) {
 
 			/* check if one hand has a two-handed weapon */
@@ -553,7 +553,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x348),
-				host_readws(hero1+ 0x198 + pos1 * SIZEOF_KS_ITEM),
+				host_readws(hero1+ (HERO_ITEM_HEAD + 2) + pos1 * SIZEOF_KS_ITEM),
 				(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
 				(char*)hero2 + HERO_NAME2);
 
@@ -717,14 +717,14 @@ signed short get_max_light_time(void)
 			/* search for a burning torch */
 			if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0x16) {
 
-				if (host_readbs(hero + j * 14 + 0x196 + 8) > retval) {
-					retval = host_readbs(hero + j * 14 + 0x196 + 8);
+				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) > retval) {
+					retval = host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8);
 				}
 			} else if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0xf9) {
 				/* search for a burning lantern */
 
-				if (host_readbs(hero + j * 14 + 0x196 + 8) / 10 > retval) {
-					retval = host_readbs(hero + j * 14 + 0x196 + 8) / 10;
+				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) / 10 > retval) {
+					retval = host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) / 10;
 				}
 			}
 		}

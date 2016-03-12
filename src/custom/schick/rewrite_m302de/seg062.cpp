@@ -153,8 +153,8 @@ void ask_miracle(void)
 					/* RONDRA */
 					if (l_si <= 5) {
 						if (!ds_readd(INGAME_TIMERS + 0x30)) {
-							miracle_modify(get_hero(0) + 0x10b - get_hero(0), 3 * HOURS(24), 1);
-							miracle_modify(get_hero(0) + 0x6b - get_hero(0), 3 * HOURS(24), 1);
+							miracle_modify(get_hero(0) + (HERO_TA_FIGHT + 3) - get_hero(0), 3 * HOURS(24), 1);
+							miracle_modify(get_hero(0) + (HERO_AT + 3) - get_hero(0), 3 * HOURS(24), 1);
 							ds_writed(INGAME_TIMERS + 0x30, 3 * HOURS(24));
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x10));
 						}
@@ -179,7 +179,7 @@ void ask_miracle(void)
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x20));
 					} else if (l_si <= 9) {
 						if (!ds_readd(INGAME_TIMERS + 0x38)) {
-							miracle_modify(get_hero(0) + 0x116 - get_hero(0), 4 * HOURS(24), 2);
+							miracle_modify(get_hero(0) + (HERO_TA_BODY + 5) - get_hero(0), 4 * HOURS(24), 2);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x24));
 							ds_writed(INGAME_TIMERS + 0x38, 4 * HOURS(24));
 						}
@@ -219,7 +219,7 @@ void ask_miracle(void)
 						miracle_resurrect(get_city(0x38));
 					} else if (l_si <= 5) {
 						if (!ds_readd(INGAME_TIMERS + 0x3c)) {
-							miracle_modify(get_hero(0) + 0x56 - get_hero(0), 4 * HOURS(24), -1);
+							miracle_modify(get_hero(0) + HERO_TA - get_hero(0), 4 * HOURS(24), -1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x3c));
 							ds_writed(INGAME_TIMERS + 0x3c, 4 * HOURS(24));
 						}
@@ -230,7 +230,7 @@ void ask_miracle(void)
 					/* HESINDE */
 					if (l_si <= 3) {
 						if (!ds_readd(INGAME_TIMERS + 0x40)) {
-							miracle_modify(get_hero(0) + 0x164 - get_hero(0), 4 * HOURS(24), 1);
+							miracle_modify(get_hero(0) + (HERO_SP_VISION + 1) - get_hero(0), 4 * HOURS(24), 1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x40));
 							ds_writed(INGAME_TIMERS + 0x40, 4 * HOURS(24));
 						}
@@ -339,20 +339,20 @@ void ask_miracle(void)
 
 						if (l_si <= 5) {
 							if (!ds_readd(INGAME_TIMERS + 0x4c)) {
-								miracle_modify(get_hero(0) + 0x139 - get_hero(0), 3 * HOURS(24), 1);
-								miracle_modify(get_hero(0) + 0x138 - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + (HERO_TA_CRAFT + 8) - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + (HERO_TA_CRAFT + 7) - get_hero(0), 3 * HOURS(24), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x60));
 								ds_writed(INGAME_TIMERS + 0x4c, 3 * HOURS(24));
 							}
 						} else if (l_si <= 8) {
 							if (!ds_readd(INGAME_TIMERS + 0x50)) {
-								miracle_modify(get_hero(0) + 0x11d - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + (HERO_TA_SOCIAL + 2) - get_hero(0), 3 * HOURS(24), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x64));
 								ds_writed(INGAME_TIMERS + 0x50, 3 * HOURS(24));
 							}
 						} else if (l_si <= 9) {
 							if (!ds_readd(INGAME_TIMERS + 0x54)) {
-								miracle_modify(get_hero(0) + 0x3e - get_hero(0), 3 * HOURS(24), 1);
+								miracle_modify(get_hero(0) + HERO_FF - get_hero(0), 3 * HOURS(24), 1);
 								strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x68));
 								ds_writed(INGAME_TIMERS + 0x54, 3 * HOURS(24));
 							}
@@ -433,14 +433,14 @@ void ask_miracle(void)
 					/* RAHJA */
 					if (l_si <= 8) {
 						if (!ds_readd(INGAME_TIMERS + 0x5c)) {
-							miracle_modify(get_hero(0) + 0x11c - get_hero(0), 7 * HOURS(24), 2);
-							miracle_modify(get_hero(0) + 0x118 - get_hero(0), 7 * HOURS(24), 2);
+							miracle_modify(get_hero(0) + (HERO_TA_SOCIAL + 1) - get_hero(0), 7 * HOURS(24), 2);
+							miracle_modify(get_hero(0) + (HERO_TA_BODY + 7) - get_hero(0), 7 * HOURS(24), 2);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x80));
 							ds_writed(INGAME_TIMERS + 0x5c, 7 * HOURS(24));
 						}
 					} else if (l_si <= 13) {
 						if (!ds_readd(INGAME_TIMERS + 0x60)) {
-							miracle_modify(get_hero(0) + 0x3b - get_hero(0), 3 * HOURS(24), 1);
+							miracle_modify(get_hero(0) + HERO_CH - get_hero(0), 3 * HOURS(24), 1);
 							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_city(0x84));
 							ds_writed(INGAME_TIMERS + 0x60, 3 * HOURS(24));
 						}
