@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
- *	Functions rewritten: 2/11
+ *	Functions rewritten: 3/11
  */
 #include <stdio.h>
 
@@ -15,6 +15,7 @@
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg109.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -276,6 +277,29 @@ void tevent_111(void)
 	}
 
 	ds_writeb(0xe5d2, 0);
+}
+
+/* a camp place */
+/* Borlandified and identical */
+void tevent_112(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3df9)) ||
+		ds_readb(0x3df9) != 0)
+	{
+		ds_writeb(0x3df9, 1);
+
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 2) > 0 && !ds_readb(0x3dfa)) ||
+			ds_readb(0x3dfa) != 0)
+		{
+			ds_writeb(0x3dfa, 1);
+
+			ds_writeb(0x66d0, 131);
+			TRV_found_camp_place(2);
+			ds_writeb(0x66d0, -1);
+		} else {
+			TRV_found_camp_place(0);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
