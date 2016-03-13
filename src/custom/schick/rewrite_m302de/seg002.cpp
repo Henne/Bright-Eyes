@@ -1766,7 +1766,7 @@ void game_loop(void)
 			do_dungeon();
 		}
 
-		if (ds_readb(0x2d34) == 99) {
+		if (ds_readb(DATSEG_STATUS_START) == 99) {
 			ds_writew(0xc3c1, 5);
 		}
 
@@ -2582,7 +2582,7 @@ void sub_mod_timers(Bit32s val)
 
 			} else {
 				/* target affects the savegame */
-				mp = p_datseg + 0x2d34;
+				mp = p_datseg + DATSEG_STATUS_START;
 				mp += host_readw(sp + 4);
 				sub_ptr_bs(mp, host_readbs(sp + 7));
 			}
@@ -2642,7 +2642,7 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 
 	if (who == -1) {
 		/* mod slot is on savegame */
-		mod_ptr = p_datseg + 0x2d34;
+		mod_ptr = p_datseg + DATSEG_STATUS_START;
 	} else {
 		/* mod slot is on a hero/npc */
 		mod_ptr = get_hero(who);

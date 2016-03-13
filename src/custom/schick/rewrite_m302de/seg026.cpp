@@ -272,18 +272,18 @@ signed short load_game_state(void)
 		bc__read(handle_gs, (Bit8u*)&version[0], 1);
 		bc__read(handle_gs, (Bit8u*)&version[1], 1);
 
-		bc__read(handle_gs, p_datseg + 0x2d34, 4);
+		bc__read(handle_gs, p_datseg + DATSEG_STATUS_START, 4);
 
 		/* read game status */
-		p_status_start = (HugePt)RealMake(datseg, 0x2d34);
-		p_status_end = (HugePt)RealMake(datseg, 0x4474);
+		p_status_start = (HugePt)RealMake(datseg, DATSEG_STATUS_START);
+		p_status_end = (HugePt)RealMake(datseg, DATSEG_STATUS_END);
 #if !defined(__BORLANDC__)
 		status_length = (signed short)F_PSUB(p_status_end, p_status_start);
 #else
 		status_length = (signed short)(p_status_end - p_status_start);
 #endif
 
-		bc__read(handle_gs, p_datseg + 0x2d34, status_length);
+		bc__read(handle_gs, p_datseg + DATSEG_STATUS_START, status_length);
 
 		ds_writeb(0x45b8, 1);
 
@@ -555,8 +555,8 @@ signed short save_game_state(void)
 
 		load_area_description(1);
 
-		p_status_start = (HugePt)RealMake(datseg, 0x2d34);
-		p_status_end = (HugePt)RealMake(datseg, 0x4474);
+		p_status_start = (HugePt)RealMake(datseg, DATSEG_STATUS_START);
+		p_status_end = (HugePt)RealMake(datseg, DATSEG_STATUS_END);
 #if !defined(__BORLANDC__)
 		status_len = (signed short)F_PSUB(p_status_end, p_status_start);
 #else

@@ -68,7 +68,13 @@
 #define FIGHT_ROUND	(0x2cd7)
 #define SKILLED_HERO_POS	(0x2cdb)	/* s16 {-1, 0..6} */
 #define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
-#define CURRENT_GROUP	(0x2d35)
+
+/*
+ * Here starts the status area of the datseg,
+ * which is stored one to one in savegame files
+ */
+#define DATSEG_STATUS_START	(0x2d34)	/* unsigned char, 99 = game finished */
+#define CURRENT_GROUP	(0x2d35)	/* signed char */
 #define GROUP_MEMBER_COUNTS	(0x2d36)	/* signed char[6], members per group */
 #define TOTAL_HERO_COUNTER	(0x2d3c)	/* signed char */
 #define DIRECTION	(0x2d3d)
@@ -169,7 +175,6 @@
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
-
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
@@ -181,6 +186,8 @@
 #define KNOWN_PERSONS	(0x43a6)	/* signed short[14] */
 #define DIARY_ENTRIES	(0x43b4)	/* (struct { short day, month, year, town; })[23] */
 #define DIARY_ENTRY_COUNTER	(0x43ba)	/* signed short */
+#define DATSEG_STATUS_END	(0x4474)
+
 #define MUSIC_ENABLED	(0x4476)	/* unsigned char {0,1} */
 #define SND_EFFECTS_ENABLED	(0x4477)	/* unsigned char {0,1} */
 #define MUSIC_CURRENT_TRACK	(0x447a)	/* signed short */
