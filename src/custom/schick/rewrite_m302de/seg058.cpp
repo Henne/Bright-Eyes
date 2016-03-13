@@ -577,11 +577,11 @@ void talk_smith(void)
 void TLK_schmied(signed short state)
 {
 	if (!state) {
-		ds_writew(0xe30e, ds_readb(0x3472 + ds_readws(TYPEINDEX)) != 0 ? 1 :
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x3472 + ds_readws(TYPEINDEX)) != 0 ? 1 :
 					(ds_readws(TYPEINDEX) == 17 ? 27 :
 					(ds_readws(TYPEINDEX) == 1 && ds_readb(0x3fc6) != 0 ? 28 : 4)));
 	} else if (state == 1) {
-		ds_writew(0xe30e, ds_readb(0x34a4 + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x34a4 + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
 	} else if (state == 3) {
 		ds_writeb(0x34a4 + ds_readws(TYPEINDEX), 1);
 	} else if (state == 6 || state == 26) {

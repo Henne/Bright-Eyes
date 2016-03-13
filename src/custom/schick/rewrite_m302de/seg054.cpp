@@ -456,7 +456,7 @@ void TLK_herberg(signed short state)
 	Bit8u *hero = Real2Host(get_first_hero_available_in_group());
 
 	if (!state) {
-		ds_writews(0xe30e, ds_readb(0x3400 + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
+		ds_writews(DIALOG_NEXT_STATE, ds_readb(0x3400 + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
 	} else if (state == 1 || state == 14) {
 		ds_writeb(0x3400 + ds_readws(TYPEINDEX), 1);
 	} else if (state == 11) {
@@ -465,13 +465,13 @@ void TLK_herberg(signed short state)
 		ds_writeb(0x3400 + ds_readws(TYPEINDEX), 1);
 	} else if (state == 12) {
 		/* CH + 5 */
-		ds_writews(0xe30e, test_attrib(hero, 2, 5) > 0 ? 14 : 11);
+		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, 2, 5) > 0 ? 14 : 11);
 	} else if (state == 13) {
 		/* CH + 0 */
-		ds_writews(0xe30e, test_attrib(hero, 2, 0) > 0 ? 14 : 7);
+		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, 2, 0) > 0 ? 14 : 7);
 	} else if (state == 15) {
 		/* CH - 3 */
-		ds_writews(0xe30e, test_attrib(hero, 2, -3) > 0 ? 16 : 17);
+		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, 2, -3) > 0 ? 16 : 17);
 	} else if (state == 17) {
 		ds_writew(ACTION, 130);
 	}

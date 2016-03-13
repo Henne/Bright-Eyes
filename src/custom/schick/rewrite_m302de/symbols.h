@@ -481,12 +481,14 @@
 #define FIG_TARGET_GRAMMAR_ID	(0xe2be)	/* unsigned short */
 #define DELAY_TIMER	(0xe2d0)
 #define SAVEGAME_NAMES	(0xe2da)	/* (char[9])[5] */
-#define DIALOG_INFORMER	(0xe30c)	/* ?16 */
-#define DIALOG_DONE	(0xe310)	/* ?16 {0, 1} */
-#define DIALOG_STATE	(0xe312)	/* ?16 */
-#define TLK_ID	(0xe314)	/* ?16 */
-#define CURRENT_FIG_NR	(0xe316)
-#define AUTOFIGHT	(0xe318)	/* ?16 */
+#define DIALOG_TITLE	(0xe308)	/* RealPt */
+#define DIALOG_INFORMER	(0xe30c)	/* signed short */
+#define DIALOG_NEXT_STATE	(0xe30e)	/* signed short */
+#define DIALOG_DONE	(0xe310)	/* signed short {0, 1} */
+#define DIALOG_STATE	(0xe312)	/* signed short */
+#define TLK_ID	(0xe314)	/* signed short */
+#define CURRENT_FIG_NR	(0xe316)	/* unsigned short */
+#define AUTOFIGHT	(0xe318)	/* signed short */
 #define FIG_DROPPED_WEAPONS	(0xe31a)	/* signed short[30] */
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */

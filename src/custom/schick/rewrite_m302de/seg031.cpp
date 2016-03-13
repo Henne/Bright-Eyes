@@ -177,12 +177,12 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 			arr[0].b = host_readb(p1 + 5);
 		}
 
-		ds_writews(0xe30e, -1);
+		ds_writews(DIALOG_NEXT_STATE, -1);
 		if ((host_readw(p1) & 0x8000) || host_readws(p1) == -1) {
 			talk_switch();
 		}
 
-		ds_writew(DIALOG_STATE, ds_readws(0xe30e) == -1 ? arr[0].b : ds_readws(0xe30e));
+		ds_writew(DIALOG_STATE, ds_readws(DIALOG_NEXT_STATE) == -1 ? arr[0].b : ds_readws(DIALOG_NEXT_STATE));
 
 		if (ds_readws(DIALOG_DONE) == 0) {
 

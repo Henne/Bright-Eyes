@@ -688,7 +688,7 @@ void TLK_way_to_ruin(signed short state)
 	hero2 = Real2Host(get_first_hero_available_in_group());
 
 	if (!state) {
-		ds_writew(0xe30e, ds_readb(0x3dfb) != 0 ? 45 : 66);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x3dfb) != 0 ? 45 : 66);
 		ds_writew(0xb21b, 0);
 	} else if (state == 66 || state == 45) {
 		show_treasure_map();
@@ -696,7 +696,7 @@ void TLK_way_to_ruin(signed short state)
 		timewarp(HOURS(1));
 	} else if (state == 6) {
 		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
-		ds_writew(0xe30e, test_skill(Real2Host(hero), 31, 6) > 0 ? 8 : 7);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(hero), 31, 6) > 0 ? 8 : 7);
 	} else if (state == 8) {
 		timewarp(HOURS(1));
 		TRV_ford_test(0, 30);
@@ -716,9 +716,9 @@ void TLK_way_to_ruin(signed short state)
 
 		} while (ds_readws(0xb21b) != 7);
 
-		ds_writew(0xe30e, ds_readws(0xb21b) == 7 ? 13 : 10);
+		ds_writew(DIALOG_NEXT_STATE, ds_readws(0xb21b) == 7 ? 13 : 10);
 	} else if (state == 10) {
-		ds_writew(0xe30e, test_skill(Real2Host(ds_readd(RUIN_HERO)), 14, 5) > 0 ? 11 : 12);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), 14, 5) > 0 ? 11 : 12);
 	} else if (state == 12) {
 		sub_hero_le(Real2Host(ds_readd(RUIN_HERO)), random_schick(4) + 1);
 
@@ -735,11 +735,11 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 15 || state == 16) {
 		timewarp(MINUTES(20));
 	} else if (state == 17) {
-		ds_writew(0xe30e, test_skill(hero2, 28, 5) > 0 ? 18 : 19);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(hero2, 28, 5) > 0 ? 18 : 19);
 	} else if (state == 19) {
 		timewarp(MINUTES(20));
 		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
-		ds_writew(0xe30e, test_skill(Real2Host(ds_readd(RUIN_HERO)), 4, 2) > 0 ? 20 : 21);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), 4, 2) > 0 ? 20 : 21);
 	} else if (state == 20) {
 		loose_random_item(get_hero(get_random_hero()), 5, get_ltx(0x7e8));
 	} else if (state == 21) {
@@ -769,7 +769,7 @@ void TLK_way_to_ruin(signed short state)
 			}
 		}
 
-		ds_writew(0xe30e, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 29 : 30);
+		ds_writew(DIALOG_NEXT_STATE, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 29 : 30);
 
 	} else if (state == 41) {
 		ds_writeb(0xe5d2, 1);
@@ -798,7 +798,7 @@ void TLK_way_to_ruin(signed short state)
 			}
 		}
 
-		ds_writew(0xe30e, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 49 : 50);
+		ds_writew(DIALOG_NEXT_STATE, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 49 : 50);
 	}
 
 	ds_writeb(0xe5d2, 0);
