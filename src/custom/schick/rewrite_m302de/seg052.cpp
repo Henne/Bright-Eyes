@@ -48,7 +48,7 @@ void do_citycamp(void)
 
 	done = 0;
 
-	l3 = ds_writew(0x2846, 1);
+	l3 = ds_writew(REQUEST_REFRESH, 1);
 
 	for (l_si = 0; l_si <= 6; l_si++) {
 		ds_writeb(CITYCAMP_MAGICSTATUS + l_si, ds_writeb(CITYCAMP_GUARDSTATUS + l_si, 0));
@@ -62,14 +62,14 @@ void do_citycamp(void)
 
 	while (done == 0) {
 
-		if (ds_readw(0x2846) != 0) {
+		if (ds_readw(REQUEST_REFRESH) != 0) {
 			draw_main_screen();
 			set_var_to_zero();
 			load_ani(36);
 			init_ani(0);
 			GUI_print_loc_line(get_ltx(0x4c8));
 			set_audio_track(ARCHIVE_FILE_CAMP_XMI);
-			ds_writew(0x2846, l3 = 0);
+			ds_writew(REQUEST_REFRESH, l3 = 0);
 		}
 
 		if (l3 != 0) {
@@ -248,7 +248,7 @@ void do_citycamp(void)
 								init_ani(0);
 								GUI_print_loc_line(get_ltx(0x4c8));
 								set_audio_track(ARCHIVE_FILE_CAMP_XMI);
-								ds_writew(0x2846, l3 = 0);
+								ds_writew(REQUEST_REFRESH, l3 = 0);
 							}
 
 						} else {

@@ -327,7 +327,7 @@ void do_town(void)
 
 		set_audio_track(ARCHIVE_FILE_THORWAL_XMI);
 
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 
 		diary_new_entry();
 	}
@@ -869,16 +869,16 @@ signed short city_step(void)
 	ds_writebs((0xbd38 + 5), 11);
 	ds_writebs((0xbd38 + 6), 54);
 
-	if (ds_readws(0x2846) != 0) {
+	if (ds_readws(REQUEST_REFRESH) != 0) {
 
 		draw_main_screen();
 		GUI_print_loc_line(get_dtp(0x0000));
 
-		ds_writew(0x2846, ds_writews(0xd013, 0));
+		ds_writew(REQUEST_REFRESH, ds_writews(0xd013, 0));
 		ds_writews(0xe40c, -1);
 	}
 
-	if (ds_readw(0xd013) != 0 && ds_readbs(0x2845) == 0) {
+	if (ds_readw(0xd013) != 0 && ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 		draw_icons();
 		ds_writews(0xd013, 0);
 	}

@@ -103,13 +103,13 @@ void status_menu(signed short hero_pos)
 
 	load_ggsts_nvf();
 
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	ds_writew(ACTION, 0);
 	ds_writew(STATUS_PAGE_MODE, 1);
 
 	while (flag1 == 0) {
 
-		if (ds_readw(0x2846) != 0 || flag2 != 0) {
+		if (ds_readw(REQUEST_REFRESH) != 0 || flag2 != 0) {
 
 			ds_writew(STATUS_PAGE_HERO, hero_pos);
 
@@ -165,7 +165,7 @@ void status_menu(signed short hero_pos)
 
 			refresh_screen_size();
 
-			ds_writew(0x2846, flag2 = 0);
+			ds_writew(REQUEST_REFRESH, flag2 = 0);
 		}
 
 		handle_input();
@@ -200,7 +200,7 @@ void status_menu(signed short hero_pos)
 				reset_item_selector();
 			}
 
-			ds_writew(0x2846, 1);
+			ds_writew(REQUEST_REFRESH, 1);
 		}
 
 		/* LEFT_KEY */
@@ -233,7 +233,7 @@ void status_menu(signed short hero_pos)
 				reset_item_selector();
 			}
 
-			ds_writew(0x2846, 1);
+			ds_writew(REQUEST_REFRESH, 1);
 		}
 
 		if (ds_readws(STATUS_PAGE_MODE) < 3) {
@@ -378,7 +378,7 @@ void status_menu(signed short hero_pos)
 
 						if (ds_readbs(0x6371) < 23) {
 							pass_item(hero1, ds_readbs(0x6370), hero2, ds_readbs(0x6371));
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						} else if (ds_readbs(0x6371) == 23) {
 							print_item_description(hero1, ds_readbs(0x6370));
 						} else if (ds_readbs(0x6371) == 24) {
@@ -399,7 +399,7 @@ void status_menu(signed short hero_pos)
 					} else {
 						if (ds_readbs(0x6371) < 23) {
 							move_item(ds_readbs(0x6370), ds_readbs(0x6371), hero2);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						} else if (ds_readbs(0x6371) == 23) {
 							print_item_description(hero2, ds_readbs(0x6370));
 						} else if (ds_readbs(0x6371) == 24) {
@@ -518,7 +518,7 @@ void status_menu(signed short hero_pos)
 						} else {
 							GUI_input(get_city(0x118), 15);
 							strcpy((char*)hero2 + HERO_NAME2, (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)));
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -529,7 +529,7 @@ void status_menu(signed short hero_pos)
 						} else {
 							use_item(ds_readbs(0x6370), hero_pos);
 							reset_item_selector();
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -540,7 +540,7 @@ void status_menu(signed short hero_pos)
 						} else {
 							drop_item(hero2, ds_readbs(0x6370), -1);
 							reset_item_selector();
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -561,7 +561,7 @@ void status_menu(signed short hero_pos)
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 							reset_item_selector();
 						}
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 6: {
@@ -578,7 +578,7 @@ void status_menu(signed short hero_pos)
 								GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
 							ds_writew(STATUS_PAGE_MODE, 2);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -590,7 +590,7 @@ void status_menu(signed short hero_pos)
 						} else {
 							reset_item_selector();
 							ds_writew(STATUS_PAGE_MODE, 3);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -601,7 +601,7 @@ void status_menu(signed short hero_pos)
 						} else {
 							reset_item_selector();
 							ds_writew(STATUS_PAGE_MODE, 4);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -658,7 +658,7 @@ void status_menu(signed short hero_pos)
 						} else {
 							drop_item(hero2, ds_readbs(0x6370), -1);
 							reset_item_selector();
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -678,20 +678,20 @@ void status_menu(signed short hero_pos)
 						if (select_magic_user() != -2) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 							reset_item_selector();
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
 					case 5: {
 						/* TODO: different code is generated here */
 						ds_writew(STATUS_PAGE_MODE, 1);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 6: {
 						reset_item_selector();
 						ds_writew(STATUS_PAGE_MODE, 3);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 7: {
@@ -700,7 +700,7 @@ void status_menu(signed short hero_pos)
 						} else {
 							reset_item_selector();
 							ds_writew(STATUS_PAGE_MODE, 4);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -738,12 +738,12 @@ void status_menu(signed short hero_pos)
 					}
 					case 2: {
 						ds_writew(STATUS_PAGE_MODE, 1);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 3: {
 						ds_writew(STATUS_PAGE_MODE, 2);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 4: {
@@ -751,7 +751,7 @@ void status_menu(signed short hero_pos)
 							GUI_output(get_ltx(0x35c));
 						} else {
 							ds_writew(STATUS_PAGE_MODE, 4);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -759,7 +759,7 @@ void status_menu(signed short hero_pos)
 						/* cast spell */
 						if (select_magic_user() != -2) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
@@ -788,23 +788,23 @@ void status_menu(signed short hero_pos)
 						/* cast spell */
 						if (select_magic_user() != -2) {
 							load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
-							ds_writew(0x2846, 1);
+							ds_writew(REQUEST_REFRESH, 1);
 						}
 						break;
 					}
 					case 2: {
 						ds_writew(STATUS_PAGE_MODE, 1);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 3: {
 						ds_writew(STATUS_PAGE_MODE, 2);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 4: {
 						ds_writew(STATUS_PAGE_MODE, 3);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 5: {
@@ -812,7 +812,7 @@ void status_menu(signed short hero_pos)
 							ds_writew(STATUS_PAGE_MODE, 5);
 						else
 							ds_writew(STATUS_PAGE_MODE, 4);
-						ds_writew(0x2846, 1);
+						ds_writew(REQUEST_REFRESH, 1);
 						break;
 					}
 					case 6: {
@@ -838,7 +838,7 @@ void status_menu(signed short hero_pos)
 		load_city_ltx(file_bak);
 	}
 
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 	dec_ds_ws(TIMERS_DISABLED);
 

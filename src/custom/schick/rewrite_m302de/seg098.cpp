@@ -965,7 +965,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 						if ((host_readbs(Real2Host(hero) + HERO_ENEMY_ID) < 10) &&
 							(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) &&
-							(ds_readbs(0x2845) == 0))
+							(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
 						{
 							magic_heal_ani(Real2Host(hero));
 						}

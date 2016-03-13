@@ -405,7 +405,7 @@ signed short load_game_state(void)
 		}
 
 		ds_writew(0x2ccb, -1);
-		ds_writew(0x2846, retval = 1);
+		ds_writew(REQUEST_REFRESH, retval = 1);
 		ds_writew(CHECK_DISEASE, 0);
 		ds_writew(CHECK_POISON, 0);
 		ds_writeb(0x4475, 3);

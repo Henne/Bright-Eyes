@@ -41,7 +41,7 @@ void do_temple(void)
 	signed short game_state;
 
 	ds_writew(0x29b6, ds_writew(0x29b8, 0));
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 
 	draw_loc_icons(9,	0, 1, 2,
 				3, 4, 5,
@@ -49,7 +49,7 @@ void do_temple(void)
 
 	while (!done) {
 
-		if (ds_readws(0x2846) != 0) {
+		if (ds_readws(REQUEST_REFRESH) != 0) {
 
 			/* search which god owns this temple */
 			ds_writew(TEMPLE_GOD, 1);
@@ -87,7 +87,7 @@ void do_temple(void)
 
 			GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		handle_gui_input();

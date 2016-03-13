@@ -56,7 +56,7 @@ void diary_show(void)
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	load_pp20(ARCHIVE_FILE_BUCH_DAT);
-	ds_writeb(0x2845, ARCHIVE_FILE_BUCH_DAT);
+	ds_writeb(PP20_INDEX, ARCHIVE_FILE_BUCH_DAT);
 
 	get_textcolor(&fg_bak, &bg_bak);
 

@@ -125,11 +125,11 @@ void buy_screen(void)
 	ds_writed(BUY_SHOPPING_CART, (Bit32u)((RealPt)ds_readd(FIG_FIGURE1_BUF) + 2800));
 	memset(Real2Host(ds_readd(BUY_SHOPPING_CART)), 0, 250);
 
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 
 	while (done == 0) {
 
-		if (ds_readws(0x2846) != 0) {
+		if (ds_readws(REQUEST_REFRESH) != 0) {
 
 			free_slots = 0;
 			hero2 = get_hero(0);
@@ -148,7 +148,7 @@ void buy_screen(void)
 
 			set_var_to_zero();
 
-			ds_writeb(0x2845, -1);
+			ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 			draw_loc_icons(4, 23, 26, 27, 8);
 			draw_main_screen();
 
@@ -177,7 +177,7 @@ void buy_screen(void)
 				26);
 
 			l8 = 1;
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		if (l8 != 0) {
@@ -616,8 +616,8 @@ void buy_screen(void)
 	}
 
 	set_textcolor(fg_bak, bg_bak);
-	ds_writew(0x2846, 1);
-	ds_writeb(0x2845, -1);
+	ds_writew(REQUEST_REFRESH, 1);
+	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 }
 
 /**

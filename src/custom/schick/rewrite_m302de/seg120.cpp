@@ -66,7 +66,7 @@ void rabies(RealPt hero, signed short hero_pos)
 	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos;
 	host_writeb(Real2Host(hero) + HERO_SEX, sex_bak);
 
-	if (ds_readbs(0x2845) == 0) {
+	if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 		draw_status_line();
 	}
 
@@ -241,7 +241,7 @@ void rabies(RealPt hero, signed short hero_pos)
 		GRP_switch_to_next(1);
 	}
 
-	if (ds_readbs(0x2845) == 0) {
+	if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 		draw_status_line();
 	}
 }
@@ -709,7 +709,7 @@ void game_over_screen(void)
 
 	refresh_screen_size();
 
-	ds_writeb(0x2845, -1);
+	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 }
 
 /* Borlandified and identical */

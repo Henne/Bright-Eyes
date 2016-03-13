@@ -321,7 +321,7 @@ void update_status_bars(void)
 
 	if (ds_readw(0xc3cb) != 0) {
 
-		if (ds_readbs(0x2845) == 20) {
+		if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
 			/* in the status menu */
 
 			hero = get_hero(ds_readws(STATUS_PAGE_HERO));
@@ -415,7 +415,7 @@ void update_status_bars(void)
 #else
 			asm { sti };
 #endif
-		} else if (ds_readbs(0x2845) == 0) {
+		} else if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 			/* in the screen with the playmask */
 
 			for (i = 0; i <= 6; i++) {
@@ -732,7 +732,7 @@ void update_wallclock(void)
 	Bit32s d;
 
 	if ((ds_readw(WALLCLOCK_UPDATE) != 0) &&
-		((ds_readb(0x2845) == 0) || (ds_readb(0x2845) == 5)) &&
+		((ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) || (ds_readb(PP20_INDEX) == ARCHIVE_FILE_KARTE_DAT)) &&
 		!ds_readbs(0x2c98))
 	{
 
@@ -849,7 +849,7 @@ void draw_wallclock(signed short pos, signed short night)
 	*(struct dummy2*)(p_datseg + 0x2990) = fullscreen_bak;
 
 	/* happens in travel mode */
-	if (ds_readb(0x2845) == 5) {
+	if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_KARTE_DAT) {
 
 		/* set coordinates */
 		ds_writew(0xc011, ds_readws(WALLCLOCK_X) - 5);

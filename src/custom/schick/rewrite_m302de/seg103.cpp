@@ -564,7 +564,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 					add_party_money(money);
 
 					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
-					ds_writew(0x2846, 1);
+					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_dtp(0x90));
 
@@ -598,7 +598,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 					add_party_money(money);
 
 					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
-					ds_writew(0x2846, 1);
+					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_dtp(0x90));
 
@@ -625,7 +625,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 				add_party_money(money);
 
-				ds_writew(0x2846, 1);
+				ds_writew(REQUEST_REFRESH, 1);
 			} else {
 				GUI_output(get_dtp(0x9c));
 
@@ -653,7 +653,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 				add_party_money(money);
 
-				ds_writew(0x2846, 1);
+				ds_writew(REQUEST_REFRESH, 1);
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa4),
@@ -663,7 +663,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 				set_party_money(0);
 
-				ds_writew(0x2846, 1);
+				ds_writew(REQUEST_REFRESH, 1);
 
 				l_si = -1;
 			}

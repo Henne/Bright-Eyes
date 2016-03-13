@@ -347,7 +347,7 @@ void tevent_135(void)
 	}
 
 	set_var_to_zero();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 void tevent_137(void)

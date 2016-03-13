@@ -174,7 +174,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	} else {
 
 		set_var_to_zero();
-		ds_writeb(0x2845, -1);
+		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 
 		draw_loc_icons(5, 23, 26, 27, 28, 8);
 		draw_main_screen();
@@ -479,8 +479,8 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 		}
 
 		set_textcolor(fg_bak, bg_bak);
-		ds_writew(0x2846, 1);
-		ds_writeb(0x2845, -1);
+		ds_writew(REQUEST_REFRESH, 1);
+		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 	}
 }
 
@@ -510,13 +510,13 @@ void do_smith(void)
 	}
 
 	load_ggsts_nvf();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	smith_ptr = p_datseg + 0x6c10 + 2 * ds_readws(TYPEINDEX);
 	ds_writew(PRICE_MODIFICATOR, 4);
 
 	while (!done) {
 
-		if (ds_readws(0x2846) != 0) {
+		if (ds_readws(REQUEST_REFRESH) != 0) {
 
 			draw_loc_icons(3, 21, 18, 8);
 			draw_main_screen();
@@ -525,7 +525,7 @@ void do_smith(void)
 			init_ani(0);
 			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
 			set_audio_track(ARCHIVE_FILE_SMITH_XMI);
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		handle_gui_input();
@@ -552,7 +552,7 @@ void do_smith(void)
 		} else if (ds_readws(ACTION) == 129) {
 
 			talk_smith();
-			ds_writew(0x2846, 1);
+			ds_writew(REQUEST_REFRESH, 1);
 
 			if (ds_readbs(0x3472 + ds_readws(TYPEINDEX)) != 0 ||
 				ds_readbs(0x34a4 + ds_readws(TYPEINDEX)) != 0 ||

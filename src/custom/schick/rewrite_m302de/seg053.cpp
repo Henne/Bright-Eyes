@@ -60,13 +60,13 @@ void do_healer(void)
 	motivation = 0;
 	leave_healer = 0;
 
-	v6 = ds_writew(0x2846, 1);
+	v6 = ds_writew(REQUEST_REFRESH, 1);
 	info = p_datseg + 0x66ea + ds_readw(TYPEINDEX) * 2;
 	draw_loc_icons(4, 0x1e, 0x1f, 0x20, 8);
 
 	while (leave_healer == 0) {
 
-		if (ds_readw(0x2846) != 0) {
+		if (ds_readw(REQUEST_REFRESH) != 0) {
 			draw_main_screen();
 			set_var_to_zero();
 			load_ani(23);
@@ -76,7 +76,7 @@ void do_healer(void)
 
 			set_audio_track(ARCHIVE_FILE_HEALER_XMI);
 
-			ds_writew(0x2846, v6 = 0);
+			ds_writew(REQUEST_REFRESH, v6 = 0);
 
 			if (!motivation) {
 

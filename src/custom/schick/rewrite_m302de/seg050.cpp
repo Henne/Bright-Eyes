@@ -912,7 +912,7 @@ void level_up(signed short hero_pos)
 	}
 
 	ds_writew(0x2ca2, 0);
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	ds_writew(TIMERS_DISABLED, 0);
 
 	ds_writews(CURRENT_ANI, -1);

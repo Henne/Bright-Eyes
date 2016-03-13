@@ -42,6 +42,8 @@
 #define TEXT_FILE_INDEX	(0x26bd)	/* unsigned short */
 #define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
+#define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
+#define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */
 #define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
 #define ACTION_TABLE_MENU	(0x29cc)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
 #define ACTION_TABLE_PRIMARY	(0x29e0) /* RealPt */
@@ -340,7 +342,7 @@
 #define HERO_STARTUP_ITEMS	(0xae40)	/* (struct of size 8)[13] */
 #define PREVENT_DROP_EQUIPPED_ITEMS	(0xae46)	/* unsigned char {0, 1} */
 #define HERO_STARTUP_ITEMS_ALL	(0xaea8)	/* signed short[4] */
-#define USE_SPECIAL_ITEM_HANDLERS	(0xaeb0)	/* signed short[4] */
+#define USE_SPECIAL_ITEM_HANDLERS	(0xaeb0)	/* signed short[14] */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define TRAVEL_EVENT_HANDLERS	(0xaeea)	/* function pointers, long[146] */
 #define TRAVEL_EVENT_ACTIVE	(0xb132)	/* signed char {0,1} */

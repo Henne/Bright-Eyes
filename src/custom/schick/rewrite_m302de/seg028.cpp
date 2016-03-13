@@ -452,7 +452,7 @@ void load_map(void)
 
 	array_add(Real2Host(F_PADD((RealPt)ds_readd(BUFFER9_PTR), 18000)), 3003, 0xe0, 2);
 
-	ds_writeb(0x2845, 5);
+	ds_writeb(PP20_INDEX, ARCHIVE_FILE_KARTE_DAT);
 
 	/* if the ems_map_hanlder exists */
 	if (ds_readw(0xbd90) != 0) {

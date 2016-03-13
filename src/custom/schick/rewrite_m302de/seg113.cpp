@@ -429,7 +429,7 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 	if (type != -2) {
 		draw_main_screen();
 		init_ani(2);
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 	}
 
 	/* set flag to check all heros */
@@ -849,7 +849,7 @@ void tevent_107(void)
 	}
 
 	set_var_to_zero();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 void tevent_108(void)
