@@ -764,10 +764,9 @@ signed short load_regular_file(Bit16u index)
 	signed short handle;
 
 	if ( (handle = bc__open((RealPt)ds_readd(FNAMES + index * 4), 0x8004)) == -1) {
-
-		/* prepare string which file is missing */
+		/* "FILE %s IS MISSING!" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)Real2Host(ds_readd(0x4480)),
+			(char*)Real2Host(ds_readd(STR_FILE_MISSING_PTR)),
 			(char*)Real2Host(ds_readd(FNAMES + index * 4)));
 		ds_writeb(0x2ca1, 1);
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -796,7 +795,7 @@ signed short open_temp_file(unsigned short index)
 	signed short handle;
 
 	sprintf((char*)Real2Host(tmppath),
-		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 		(char*)Real2Host(ds_readd(FNAMES + index * 4)));
 
 	while ( (handle = bc__open(tmppath, 0x8004)) == -1) {

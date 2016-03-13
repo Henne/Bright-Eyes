@@ -241,7 +241,7 @@ signed short load_game_state(void)
 		/* delete every file in TEMP */
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			/* "TEMP\\%s" */
-			(char*)Real2Host(ds_readd(0x4c88)),
+			(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 			/* "*.*" */
 			(char*)p_datseg + ALL_FILES_WILDCARD);
 
@@ -251,7 +251,7 @@ signed short load_game_state(void)
 
 			do {
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-					(char*)Real2Host(ds_readd(0x4c88)),
+					(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 					((char*)(&blk))+ 30);
 
 				bc_unlink((RealPt)ds_readd(TEXT_OUTPUT_BUF));
@@ -297,7 +297,7 @@ signed short load_game_state(void)
 
 				/* write file content to TEMP */
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-					(char*)Real2Host(ds_readd(0x4c88)),
+					(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 					(char*)Real2Host(ds_readd(FNAMES + 4 * i)));
 
 				handle = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
@@ -325,7 +325,7 @@ signed short load_game_state(void)
 
 				/* write file content to TEMP */
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-					(char*)Real2Host(ds_readd(0x4c88)),
+					(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 					name);
 
 				handle = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
@@ -363,7 +363,7 @@ signed short load_game_state(void)
 		while (l2 == 0) {
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)Real2Host(ds_readd(0x4c88)),
+				(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 				((char*)(&blk)) + 30);
 
 			if ((handle_gs = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
@@ -631,7 +631,7 @@ signed short save_game_state(void)
 		for (tw_bak = 0; tw_bak < 286; tw_bak++) {
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)Real2Host(ds_readd(0x4c88)),
+				(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 				(char*)Real2Host(ds_readd(FNAMES + 4 * tw_bak)));
 
 			l1 = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
@@ -683,14 +683,14 @@ signed short save_game_state(void)
 		/* append all CHR files */
 		bc_lseek(l_di, filepos, 0);
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-			(char*)Real2Host(ds_readd(0x4c88)),
+			(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 			(char*)p_datseg + ALL_CHR_WILDCARD2);
 
 		l1 = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
 		do {
 			/* create the CHR filename */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)Real2Host(ds_readd(0x4c88)),
+				(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 				((char*)(&blk)) + 30);
 
 			/* read the CHR file from temp */
@@ -738,7 +738,7 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 	Bit8u *hero;
 
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 		(char*)Real2Host(fname));
 
 	if ((handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
@@ -797,7 +797,7 @@ void write_chr_temp(unsigned short hero_pos)
 	prepare_chr_name(fname, (char*)get_hero(hero_pos));
 
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-		(char*)Real2Host(ds_readd(0x4c88)),		/* "TEMP\\%s" */
+		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),		/* "TEMP\\%s" */
 		fname);
 
 	fd = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
@@ -821,7 +821,7 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 
 	buf = Real2Host(ds_readd(BUFFER1_PTR)) + 60000;
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 		(char*)p_datseg + ALL_CHR_WILDCARD3);
 
 	l_di = bc_findfirst((RealPt)ds_readd(TEXT_OUTPUT_BUF), &blk, 0);
@@ -831,7 +831,7 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 		do {
 			/* create the CHR filename */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)Real2Host(ds_readd(0x4c88)),
+				(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 				((char*)(&blk)) + 30);
 
 			/* read the CHR file from temp */

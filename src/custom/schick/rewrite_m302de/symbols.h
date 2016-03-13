@@ -184,6 +184,7 @@
 #define MUSIC_ENABLED	(0x4476)	/* unsigned char {0,1} */
 #define SND_EFFECTS_ENABLED	(0x4477)	/* unsigned char {0,1} */
 #define MUSIC_CURRENT_TRACK	(0x447a)	/* signed short */
+#define STR_FILE_MISSING_PTR	(0x4480)	/* unsigned long == RealMake(datseg, 0x48b5) == 0x14fc'48b5 */
 #define PAUSE_STRING	(0x448a)	/* char[10] = "P A U S E" */
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
@@ -214,6 +215,7 @@
 #define SND_TXT_HW_NOT_FOUND	(0x486d)	/* char[31] = "SOUND HARDWARE NICHT GEFUNDEN!" */
 #define FNAME_SOUND_ADV	(0x488c)	/* char[10] = "SOUND.ADV" */
 #define SND_TXT_HW_NOT_FOUND2	(0x4896)	/* char[31] == SND_TXT_HW_NOT_FOUND */
+#define STR_FILE_MISSING	(0x48b5)	/* char[20] = "FILE %s IS MISSING!" */
 #define FNAME_SCHICK_DAT	(0x48ca)	/* char[11] = "SCHICK.DAT" */
 #define SND_TXT_DISABLED_MEM2	(0x48d5)	/* char[43] = "MUSIK ABGESCHALTET - NICHT GENUG SPEICHER!" */
 #define DIARY_STRING1	(0x4900)	/* char[14] = "%2d-~%-8s~%s." */
@@ -236,7 +238,7 @@
 #define WALLCLOCK_PALETTE_NIGHT	(0x4afa)	/* (struct { unsigned char r,g,b; })[3] */
 #define COLOR_PAL_BLACK	(0x4b03)	/* char[3] = {0x3f,0x3f,0x3f} */
 #define DELAY_FACTOR	(0x4b66)
-#define STR_TEMP_XX_PTR	(0x4b68)	/* unsigned long == RealMake(datseg, 0x4b95) */
+#define STR_TEMP_XX_PTR	(0x4b68)	/* unsigned long == RealMake(datseg, 0x4b95) == 0x14fc'4b95 */
 #define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
 #define FIG_STAR_COUNTER	(0x4b78)	/* signed char */
 #define FIG_STAR_TIMER	(0x4b79)	/* signed short */
@@ -251,7 +253,9 @@
 #define TMAP_X	(0x4c12)	/* signed short[10] */
 #define TMAP_Y	(0x4c26)	/* signed short[10] */
 #define LOCATION_HANDLERS	(0x4c3b)	/* (void (*)(void))[19] */
+#define STR_TEMP_XX_PTR2	(0x4c88)	/* unsigned long == RealMake(datseg, 0x515e) == 0x14fc'515e */
 #define FNAMES	(0x4c8c)
+#define STR_TEMP_XX2	(0x515e)	/* char[8] = "TEMP\XX" */
 #define CHR_FILE_SUFFIX	(0x5e3e)	/* char[5] = ".CHR" */
 #define SAVEGAME_SUFFIX	(0x5e43)	/* char[5] = ".GAM" */
 #define ALL_FILES_WILDCARD	(0x5e48)	/* char[4] = "*.*" */
