@@ -180,6 +180,7 @@
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
+#define CAMP_INCIDENT	(0x434f)	/* signed short, -1 = not determined or will not happen, 0,1,2 = guard that will be affected */
 #define KNOWN_MONSTERS	(0x4351)	/* signed short[82] */
 #define ARSENAL_MONEY	(0x43a3)	/* signed short {-1, 0 - 60 } */
 #define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */

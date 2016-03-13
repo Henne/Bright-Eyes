@@ -267,11 +267,11 @@ void do_wildcamp(void)
 				l_si = 0;
 				have_guards = 0;
 
-				if (ds_readws(0x434f) == -1) {
+				if (ds_readws(CAMP_INCIDENT) == -1) {
 
 					if ((ds_readbs(WILDCAMP_GUARDS) == -1 ? 60 : 10) > random_schick(100) && !ds_readds(INGAME_TIMERS + 0x10))
 					{
-						ds_writews(0x434f, random_schick(3) - 1);
+						ds_writews(CAMP_INCIDENT, random_schick(3) - 1);
 					}
 				} else {
 					have_guards = 1;
@@ -298,7 +298,7 @@ void do_wildcamp(void)
 					l8++;
 					l6--;
 
-					if (l_si == ds_readws(0x434f) && l4 / 2 >= l5) {
+					if (l_si == ds_readws(CAMP_INCIDENT) && l4 / 2 >= l5) {
 						done = 1;
 					}
 
@@ -335,7 +335,7 @@ void do_wildcamp(void)
 
 				} else if (!have_guards) {
 
-					ds_writews(0x434f, -1);
+					ds_writews(CAMP_INCIDENT, -1);
 					ds_writeb(FIG_INITIATIVE, 1);
 					ds_writew(FIG_DISCARD, 1);
 
@@ -359,7 +359,7 @@ void do_wildcamp(void)
 						}
 					}
 				} else {
-					ds_writews(0x434f, ds_readbs(WILDCAMP_GUARDS + ds_readws(0x434f)));
+					ds_writews(CAMP_INCIDENT, ds_readbs(WILDCAMP_GUARDS + ds_readws(CAMP_INCIDENT)));
 				}
 
 				done = 1;
