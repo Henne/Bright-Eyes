@@ -479,7 +479,9 @@
 #define FIG_ACTOR_GRAMMAR_ID	(0xe2ba)	/* unsigned short */
 #define FIG_TARGET_GRAMMAR_TYPE	(0xe2bc)	/* unsigned short, 2 = hero, 1 = monster */
 #define FIG_TARGET_GRAMMAR_ID	(0xe2be)	/* unsigned short */
-#define DELAY_TIMER	(0xe2d0)
+#define DELAY_TIMER	(0xe2d0)	/* unsigned short */
+#define SAVED_FILES_BUF	(0xe2d2)	/* RealPt */
+#define LAST_SAVE_TIME	(0xe2d6)	/* signed long */
 #define SAVEGAME_NAMES	(0xe2da)	/* (char[9])[5] */
 #define DIALOG_TITLE	(0xe308)	/* RealPt */
 #define DIALOG_INFORMER	(0xe30c)	/* signed short */

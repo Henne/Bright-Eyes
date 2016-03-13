@@ -208,7 +208,7 @@ void do_tavern(void)
 
 			bc_time(&timeval);
 
-			bonus = (timeval - ds_readds(0xe2d6)) > 120 ? 0 : 50;
+			bonus = (timeval - ds_readds(LAST_SAVE_TIME)) > 120 ? 0 : 50;
 
 			if (GUI_use_skill2(bonus, get_ltx(0x62c)) == -1) {
 				done = 1;
