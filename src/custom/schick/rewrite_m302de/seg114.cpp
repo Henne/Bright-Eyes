@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
- *	Functions rewritten: 7/11
+ *	Functions rewritten: 8/11
  */
 #include <stdio.h>
 
@@ -523,6 +523,20 @@ void tevent_117(void)
 	}
 
 	GUI_output(get_city(0x84));
+}
+
+/* a herb place */
+/* Borlandified and identical */
+void tevent_118(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 3) > 0 && !ds_readb(0x3dfd)) ||
+		ds_readb(0x3dfd) != 0)
+	{
+		ds_writeb(0x66d0, 60);
+		TRV_found_herb_place(0);
+		ds_writeb(0x66d0, -1);
+		ds_writeb(0x3dfd, 1);
+	}
 }
 
 #if !defined(__BORLANDC__)
