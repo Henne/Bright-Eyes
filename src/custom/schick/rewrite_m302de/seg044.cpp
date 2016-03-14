@@ -316,14 +316,14 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
 		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
 	{
-		FIG_set_0e(host_readb(hero + HERO_FIGHT_ID), (signed char)a1);
+		FIG_set_0e(host_readb(hero + HERO_FIGHTER_ID), (signed char)a1);
 		host_writebs(p1, -1);
 
 		if ( (weapon_type != -1) && (weapon_type < 3) &&
 			(host_readb(hero + HERO_TYPE) != 9) &&
 			(host_readb(hero + HERO_TYPE) != 8))
 		{
-			FIG_set_0f(host_readb(hero + HERO_FIGHT_ID), a1 + 4);
+			FIG_set_0f(host_readb(hero + HERO_FIGHTER_ID), a1 + 4);
 			host_writeb(p2, 0xff);
 		}
 	}

@@ -25,27 +25,27 @@ namespace M302de {
 #endif
 
 /**
- * \brief	search in a DL-list for an element
- * \param	fight_id	fight_id
- * \return	a pointer to the list elemtent or to the list head in error case
+ * \brief	get the pointer to the fighter with id fighter_id
+ * \param	fighter_id	id of the fighter
+ * \return	a pointer to the fighter with id fighter_id
  */
-RealPt FIG_get_ptr(signed char fight_id)
+RealPt FIG_get_ptr(signed char fighter_id)
 {
-	RealPt ptr = (RealPt)ds_readd(FIG_LIST_HEAD);
+	RealPt fighter_ptr = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	while (host_readbs(Real2Host(ptr) + 0x10) != fight_id) {
+	while (host_readbs(Real2Host(fighter_ptr) + 0x10) != fighter_id) {
 
 		/* check if its the last element */
-		if (host_readd(Real2Host(ptr) + 0x1b) == 0) {
+		if (host_readd(Real2Host(fighter_ptr) + 0x1b) == 0) {
 			/* return list head */
 			return (RealPt)ds_readd(FIG_LIST_HEAD);
 		}
 
-		/* set ptr to the next element */
-		ptr = (RealPt)host_readd(Real2Host(ptr) + 0x1b);
+		/* set fighter_ptr to the next element */
+		fighter_ptr = (RealPt)host_readd(Real2Host(fighter_ptr) + 0x1b);
 	}
 
-	return ptr;
+	return fighter_ptr;
 }
 
 /* static */
@@ -178,7 +178,7 @@ RealPt FIG_get_hero_ptr(signed short v1)
 	signed short i;
 
 	for (i = 0; i <= 6; i++) {
-		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * SIZEOF_HERO + HERO_FIGHT_ID) == v1)
+		if (host_readbs(Real2Host(ds_readd(HEROS)) + i * SIZEOF_HERO + HERO_FIGHTER_ID) == v1)
 			return (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
 	}
 
@@ -201,11 +201,11 @@ RealPt seg006_033c(signed short v)
 	return 0;
 }
 
-void FIG_set_0e(signed char fight_id, signed char val)
+void FIG_set_0e(signed char fighter_id, signed char val)
 {
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readbs(ptr + 0x10) != fight_id) {
+	while (host_readbs(ptr + 0x10) != fighter_id) {
 
 		/* check for end of list */
 		if (host_readd(ptr + 0x1b) == 0) {
@@ -223,13 +223,13 @@ void FIG_set_0e(signed char fight_id, signed char val)
 }
 
 /* Used by range attack and spells with more than 1 field distance */
-void FIG_reset_12_13(signed char fight_id)
+void FIG_reset_12_13(signed char fighter_id)
 {
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr1 + 0x10) != fight_id) {
+	while (host_readb(ptr1 + 0x10) != fighter_id) {
 
 		if (host_readd(ptr1 + 0x1b) == 0) {
 			return;
@@ -251,13 +251,13 @@ void FIG_reset_12_13(signed char fight_id)
 	}
 }
 
-void FIG_set_12_13(signed short fight_id)
+void FIG_set_12_13(signed short fighter_id)
 {
 	Bit8u *ptr1, *ptr2;
 
 	ptr1 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr1 + 0x10) != (signed char)fight_id) {
+	while (host_readb(ptr1 + 0x10) != (signed char)fighter_id) {
 
 		if (host_readd(ptr1 + 0x1b) == 0){
 			return;
@@ -282,11 +282,11 @@ void FIG_set_12_13(signed short fight_id)
 	}
 }
 
-void FIG_set_0f(signed char fight_id, signed char val)
+void FIG_set_0f(signed char fighter_id, signed char val)
 {
 	Bit8u *ptr = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-	while (host_readb(ptr + 0x10) != fight_id) {
+	while (host_readb(ptr + 0x10) != fighter_id) {
 
 		if (host_readd(ptr + 0x1b) == 0) {
 			return;
@@ -304,10 +304,10 @@ struct dummy {
 
 /**
  * \brief		removes an element from the FIG_LIST
- * \param fight_id		identificates the element to remove
+ * \param fighter_id		identificates the element to remove
  * \param keep_in_memory	whether to save the removed element in FIG_LIST_ELEM, useful for moving element to end of list
  */
-void FIG_remove_from_list(signed char fight_id, signed char keep_in_memory)
+void FIG_remove_from_list(signed char fighter_id, signed char keep_in_memory)
 {
 	Bit8u* p = Real2Host(ds_readd(FIG_LIST_HEAD));
 
@@ -315,7 +315,7 @@ void FIG_remove_from_list(signed char fight_id, signed char keep_in_memory)
 	if (!NOT_NULL(p))
 		return;
 
-	while (host_readb(p + 0x10) != fight_id) {
+	while (host_readb(p + 0x10) != fighter_id) {
 
 		/* if (ptr->next == NULL); */
 		if (host_readd(p + 0x1b) == 0) {
@@ -327,7 +327,7 @@ void FIG_remove_from_list(signed char fight_id, signed char keep_in_memory)
 	}
 
 	if (!keep_in_memory) {
-		ds_writeb(FIG_LIST_ARRAY + fight_id, 0);
+		ds_writeb(FIG_LIST_ARRAY + fighter_id, 0);
 	} else {
 //		struct_copy(p_datseg + FIG_LIST_ELEM, p, 35);
 		*((struct dummy*)(p_datseg + FIG_LIST_ELEM)) = *((struct dummy*)(p));
@@ -361,10 +361,10 @@ void FIG_remove_from_list(signed char fight_id, signed char keep_in_memory)
 
 /**
  * \brief		adds FIG_LIST_ELEM to FIG_LIST
- * \param fight_id		id to assign to the new element (-1 = assign a new id)
- * \return  the new element's fight_id (position in FIG_LIST_ARRAY)
+ * \param fighter_id		id to assign to the new element (-1 = assign a new id)
+ * \return  the new element's fighter_id (position in FIG_LIST_ARRAY)
  */
-signed char FIG_add_to_list(signed char fight_id)
+signed char FIG_add_to_list(signed char fighter_id)
 {
 	RealPt p1;
 	RealPt p2;
@@ -382,7 +382,7 @@ signed char FIG_add_to_list(signed char fight_id)
 //		struct_copy(Real2Host(ds_readd(FIG_LIST_HEAD)), p_datseg + FIG_LIST_ELEM, 35);
 		*((struct dummy*)(Real2Host(ds_readd(FIG_LIST_HEAD)))) = *((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
-		if (fight_id == -1) {
+		if (fighter_id == -1) {
 			host_writeb(Real2Host(ds_readd(FIG_LIST_HEAD)) + 0x10,
 				FIG_set_array());
 		}
@@ -404,10 +404,10 @@ signed char FIG_add_to_list(signed char fight_id)
 //	struct_copy(Real2Host(p1), p_datseg + FIG_LIST_ELEM, 35);
 	*((struct dummy*)(Real2Host(p1))) =	*((struct dummy*)(p_datseg + FIG_LIST_ELEM));
 
-	if (fight_id == -1) {
+	if (fighter_id == -1) {
 		host_writeb(Real2Host(p1) + 0x10, FIG_set_array());
 	} else {
-		host_writeb(Real2Host(p1) + 0x10, fight_id);
+		host_writeb(Real2Host(p1) + 0x10, fighter_id);
 	}
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);

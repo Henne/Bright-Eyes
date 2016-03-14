@@ -707,7 +707,7 @@ void draw_fight_screen(Bit16u val)
 
 												host_writew(hero + HERO_UNKNOWN9,
 													ds_readws(0xd325 + 2 * ((host_readbs(hero + HERO_VIEWDIR) == 3) ? 0 : (host_readbs(hero + HERO_VIEWDIR) + 1))));
-												w_arr[host_readbs(list_i + 0xe)] = host_readbs(hero + HERO_FIGHT_ID);
+												w_arr[host_readbs(list_i + 0xe)] = host_readbs(hero + HERO_FIGHTER_ID);
 
 											}
 										}

@@ -648,7 +648,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 								if (rwt1 != rwt2) {
 
-									ptr = Real2Host(FIG_get_ptr(host_readbs(hero + HERO_FIGHT_ID)));
+									ptr = Real2Host(FIG_get_ptr(host_readbs(hero + HERO_FIGHTER_ID)));
 
 									if (rwt2 != -1) {
 										host_writeb(ptr + 2,
@@ -911,7 +911,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK)) && (host_readbs(hero + HERO_ENEMY_ID) > 0))
 				{
 
-					/* TODO: check fight_id upper bound */
+					/* TODO: check fighter_id upper bound */
 					if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
 						&& (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
@@ -923,7 +923,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						host_writebs(hero + HERO_ENEMY_ID, 0);
 						done = 0;
 
-					/* TODO: check fight_id upper bound */
+					/* TODO: check fighter_id upper bound */
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
 						&& (test_bit2(p_datseg + 0xd0df + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)

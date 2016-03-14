@@ -484,12 +484,12 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 			l2 = ds_readbs(MON_SPELL_REPERTOIRE + host_readbs(enemy + ENEMY_SHEET_MAG_ID) * 5 + random_interval(0, available_spells - 1));
 		}
 
-		host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, 0);
+		host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, 0);
 
 		if ( (mode = get_foe_attack_mode(l2, attack_foe)) > 0) {
 
 			if (mode == 3) {
-				host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, enemy_nr + 10);
+				host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, enemy_nr + 10);
 				host_writeb(enemy + ENEMY_SHEET_CUR_SPELL, (signed char)l2);
 				retval = 1;
 				done = 1;
@@ -502,10 +502,10 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 						l_si = host_readbs(enemy + ENEMY_SHEET_VIEWDIR);
 						l_di = 0;
 
-						while (!host_readbs(enemy + ENEMY_SHEET_FIGHT_ID) && (l_di < 4)) {
+						while (!host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID) && (l_di < 4)) {
 
 							if (test_foe_melee_attack(x, y, diff.d[l_si].x, diff.d[l_si].y, mode)) {
-								host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, get_cb_val(x + diff.d[l_si].x, y + diff.d[l_si].y));
+								host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, get_cb_val(x + diff.d[l_si].x, y + diff.d[l_si].y));
 							}
 
 							l_di++;
@@ -514,7 +514,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 							}
 						}
 
-						if (host_readbs(enemy + ENEMY_SHEET_FIGHT_ID)) {
+						if (host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID)) {
 							host_writeb(enemy + ENEMY_SHEET_CUR_SPELL, (signed char)l2);
 							retval = 1;
 							done = 1;
@@ -553,9 +553,9 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 						l_si = host_readbs(enemy + ENEMY_SHEET_VIEWDIR);
 						l_di = 0;
 
-						while (!host_readbs(enemy + ENEMY_SHEET_FIGHT_ID) && (l_di < 4)) {
+						while (!host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID) && (l_di < 4)) {
 
-							host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, (signed char)test_foe_range_attack(x, y, l_si, mode));
+							host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, (signed char)test_foe_range_attack(x, y, l_si, mode));
 
 							l_di++;
 							if (++l_si == 4) {
@@ -563,7 +563,7 @@ signed short seg037_0791(Bit8u* enemy, signed short enemy_nr, signed short attac
 							}
 						}
 
-						if (host_readbs(enemy + ENEMY_SHEET_FIGHT_ID)) {
+						if (host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID)) {
 							host_writeb(enemy + ENEMY_SHEET_CUR_SPELL, (signed char)l2);
 							retval = 1;
 							done = 1;
@@ -627,7 +627,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 	while ((done == 0) && (host_readbs(enemy + ENEMY_SHEET_BP) > 0)) {
 
 		/* reset the attackee ID */
-		host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, 0);
+		host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, 0);
 
 		while ( (done == 0) && (host_readbs(enemy + ENEMY_SHEET_BP) > 0)) {
 
@@ -635,9 +635,9 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 			cnt = 0;
 
 			/* check clockwise for someone to attack */
-			while ( !host_readbs(enemy + ENEMY_SHEET_FIGHT_ID) && (cnt < 4)) {
+			while ( !host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID) && (cnt < 4)) {
 
-				host_writeb(enemy + ENEMY_SHEET_FIGHT_ID,
+				host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID,
 					(signed char)test_foe_range_attack(x, y, dir, attack_foe));
 				cnt++;
 				if (++dir == 4) {
@@ -645,7 +645,7 @@ signed short seg037_0b3e(Bit8u* enemy, signed short enemy_nr, signed short attac
 				}
 			}
 
-			if (host_readbs(enemy + ENEMY_SHEET_FIGHT_ID) != 0) {
+			if (host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID) != 0) {
 				/* found someone to attack */
 				retval = 1;
 				done = 1;
@@ -754,7 +754,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 
 		draw_fight_screen_pal(0);
 
-		host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, 0);
+		host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, 0);
 		host_writeb(enemy + ENEMY_SHEET_DUMMY4, 1);
 
 		/* should I flee */
@@ -819,10 +819,10 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 				return;
 			}
 
-			host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, 0);
+			host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, 0);
 			dir = host_readbs(enemy + ENEMY_SHEET_VIEWDIR);
 			l3 = 0;
-			while (!(host_readbs(enemy + ENEMY_SHEET_FIGHT_ID)) && (l3 < 4)) {
+			while (!(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID)) && (l3 < 4)) {
 
 				if (test_foe_melee_attack(x, y, diff.d[dir].x, diff.d[dir].y, attack_foe)) {
 
@@ -845,7 +845,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 					}
 
 					if (l5 != 0) {
-						host_writeb(enemy + ENEMY_SHEET_FIGHT_ID, get_cb_val(x + diff.d[dir].x, y + diff.d[dir].y));
+						host_writeb(enemy + ENEMY_SHEET_FIGHTER_ID, get_cb_val(x + diff.d[dir].x, y + diff.d[dir].y));
 					}
 				}
 
@@ -856,7 +856,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 			}
 		}
 
-		if (host_readbs(enemy + ENEMY_SHEET_FIGHT_ID) != 0) {
+		if (host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID) != 0) {
 			host_writeb(enemy + ENEMY_SHEET_DUMMY4, 2);
 			host_writeb(enemy + ENEMY_SHEET_BP, host_readbs(enemy + ENEMY_SHEET_BP) -3);
 			done = 1;

@@ -4292,7 +4292,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			/* in fight mode */
 			if (ds_readw(IN_FIGHT) != 0) {
-				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 
 				/* update looking dir and other  */
 				host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
@@ -4375,7 +4375,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				/* in fight mode */
 				if (ds_readw(IN_FIGHT) != 0) {
 
-					ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
+					ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 
 					host_writeb(ptr + 2,
 						ds_readb(0x11e4 + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
@@ -4444,7 +4444,7 @@ void add_hero_le(Bit8u *hero, signed short le)
 
 			/* maybe if we are in a fight */
 			if (ds_readw(IN_FIGHT)) {
-				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 				ret = FIG_get_range_weapon_type(hero);
 
 				if (ret != -1) {

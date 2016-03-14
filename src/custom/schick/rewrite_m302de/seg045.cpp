@@ -18,13 +18,13 @@
 namespace M302de {
 #endif
 
-void seg045_0000(signed short fight_id, signed short type, signed short a3)
+void seg045_0000(signed short fighter_id, signed short type, signed short a3)
 {
 	signed short obj_x;
 	signed short obj_y;
 	struct nvf_desc nvf;
 
-	FIG_search_obj_on_cb(fight_id, &obj_x, &obj_y);
+	FIG_search_obj_on_cb(fighter_id, &obj_x, &obj_y);
 
 #if !defined(__BORLANDC__)
 	/* BE-fix */
@@ -110,7 +110,7 @@ signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 	return i;
 }
 
-signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id1, signed short fight_id2, signed short a5)
+signed short seg045_01a0(signed short a1, signed short a2, signed short fighter_id1, signed short fighter_id2, signed short a5)
 {
 	signed short i;
 	Bit8u *ptr;
@@ -120,8 +120,8 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id
 	signed short id2_y;
 	signed short beeline;
 
-	FIG_search_obj_on_cb(fight_id2, &id2_x, &id2_y);
-	FIG_search_obj_on_cb(fight_id1, &id1_x, &id1_y);
+	FIG_search_obj_on_cb(fighter_id2, &id2_x, &id2_y);
+	FIG_search_obj_on_cb(fighter_id1, &id1_x, &id1_y);
 
 #if !defined(__BORLANDC__)
 	/* BE-fix */
@@ -146,7 +146,7 @@ signed short seg045_01a0(signed short a1, signed short a2, signed short fight_id
 	}
 	host_writeb(ptr, -1);
 
-	seg045_0000(fight_id1, a2, a5);
+	seg045_0000(fighter_id1, a2, a5);
 
 	return 1;
 }
@@ -257,7 +257,7 @@ void seg045_041b(signed short a1, Bit8u *enemy, signed short spell_ani_id)
 #endif
 
 	/* search the target on the chessboard */
-	FIG_search_obj_on_cb(host_readbs(enemy + ENEMY_SHEET_FIGHT_ID), &x, &y);
+	FIG_search_obj_on_cb(host_readbs(enemy + ENEMY_SHEET_FIGHTER_ID), &x, &y);
 
 	ptr = p_datseg + a1 * 0xf3 + (0xd8ce + 1);
 

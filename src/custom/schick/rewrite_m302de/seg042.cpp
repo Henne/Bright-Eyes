@@ -46,7 +46,7 @@ struct msg {
  * \brief	executes the fight action of hero
  *
  * \param hero		pointer to the hero
- * \param hero_pos	position in the group (fight_id = hero_pos + 1)
+ * \param hero_pos	position in the group (fighter_id = hero_pos + 1)
  */
 void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 {
@@ -74,7 +74,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 	signed short height;
 	signed short l16 = 0;
 	signed short l17 = 0;
-	signed short fight_id;
+	signed short fighter_id;
 	struct dummy dst = *(struct dummy*)(p_datseg + 0x6178);
 	signed short hero_x;
 	signed short hero_y;
@@ -155,14 +155,14 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 				if (host_readbs(target_monster + ENEMY_SHEET_VIEWDIR) != dir) {
 
-					fight_id = get_cb_val(hero_x + dst.a[dir].x, hero_y + dst.a[dir].y);
+					fighter_id = get_cb_val(hero_x + dst.a[dir].x, hero_y + dst.a[dir].y);
 
-					if (fight_id != 0) {
+					if (fighter_id != 0) {
 
-						if ((fight_id >= 50) ||
-							((fight_id < 10) && !hero_dead(get_hero(fight_id - 1))) ||
-							((fight_id >= 10) && (fight_id < 30) && !enemy_dead((p_datseg + 0xd0df) + (SIZEOF_ENEMY_SHEET * fight_id))) ||
-							((fight_id >= 30) && (fight_id < 50) && !enemy_dead((p_datseg + 0xcc07) + (SIZEOF_ENEMY_SHEET * fight_id))))
+						if ((fighter_id >= 50) ||
+							((fighter_id < 10) && !hero_dead(get_hero(fighter_id - 1))) ||
+							((fighter_id >= 10) && (fighter_id < 30) && !enemy_dead((p_datseg + 0xd0df) + (SIZEOF_ENEMY_SHEET * fighter_id))) ||
+							((fighter_id >= 30) && (fighter_id < 50) && !enemy_dead((p_datseg + 0xcc07) + (SIZEOF_ENEMY_SHEET * fighter_id))))
 						{
 							l16 = 1;
 						}
@@ -184,7 +184,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					and_ptr_bs(target_hero + HERO_STATUS1, 0xfd);
 
-					p4 = Real2Host(FIG_get_ptr(host_readbs(target_hero + HERO_FIGHT_ID)));
+					p4 = Real2Host(FIG_get_ptr(host_readbs(target_hero + HERO_FIGHTER_ID)));
 
 					host_writeb(p4 + 0x02, host_readbs(target_hero + HERO_VIEWDIR));
 					host_writeb(p4 + 0x0d, -1);
@@ -614,13 +614,13 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						l17 == 0 ? host_readbs(Real2Host(hero) + HERO_ENEMY_ID) : host_readbs(Real2Host(hero) + HERO_ENEMY_ID) + 20,
 						host_readbs(Real2Host(hero) + HERO_VIEWDIR));
 
-					FIG_set_0e(host_readbs(Real2Host(hero) + HERO_FIGHT_ID), 0);
+					FIG_set_0e(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID), 0);
 
 					draw_fight_screen_pal(0);
 
 					if (FIG_get_range_weapon_type(Real2Host(hero)) == -1) {
 
-						p4 = Real2Host(FIG_get_ptr(host_readbs(Real2Host(hero) + HERO_FIGHT_ID)));
+						p4 = Real2Host(FIG_get_ptr(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID)));
 
 						host_writeb(p4 + 0x02, host_readbs(Real2Host(hero) + HERO_VIEWDIR));
 						host_writeb(p4 + 0x0d, -1);
@@ -759,7 +759,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					if (l15 != -1) {
 
-						FIG_set_0e(host_readbs(Real2Host(hero) + HERO_FIGHT_ID), 0);
+						FIG_set_0e(host_readbs(Real2Host(hero) + HERO_FIGHTER_ID), 0);
 						draw_fight_screen_pal(1);
 					}
 
@@ -829,7 +829,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 								if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) {
 
-									FIG_set_0e(host_readbs(target_hero + HERO_FIGHT_ID), 1);
+									FIG_set_0e(host_readbs(target_hero + HERO_FIGHTER_ID), 1);
 								}
 							}
 						}
@@ -857,7 +857,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							} else {
 								if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) {
 
-									FIG_reset_12_13(host_readbs(target_hero + HERO_FIGHT_ID));
+									FIG_reset_12_13(host_readbs(target_hero + HERO_FIGHTER_ID));
 								}
 							}
 						}
