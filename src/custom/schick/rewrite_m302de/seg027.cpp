@@ -577,53 +577,61 @@ void load_scenario(signed short scenario_id)
 	bc_close(scenario_lst_handle);
 }
 
-signed short count_fight_enemies(signed short nr)
+/**
+ * \brief	counts the number of enemies that are present in the first round
+ *          according to the information stored in FIGHT.LST
+ *
+ * \param fight_id  number of the fight in FIGHT.LST
+ *
+ * \return  number of enemies present in first round
+ */
+signed short count_fight_enemies(signed short fight_id)
 {
-	signed short i;
-	signed short retval;
-	Bit8u *buf;
-	unsigned short fd;
-	signed short max;
+	signed short enemy_i;
+	signed short enemy_count;
+	Bit8u *fight_lst_buf;
+	unsigned short fight_lst_handle;
+	signed short fight_count;
 
-	retval = 0;
+	enemy_count = 0;
 
-	buf = Real2Host(ds_readd(DTP2));
+	fight_lst_buf = Real2Host(ds_readd(DTP2));
 
 	/* load FIGHT.LST from TEMP dir */
-	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
+	fight_lst_handle = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
 
-	/* read the first 2 bytes (max number of fights) */
-	bc__read(fd, (Bit8u*)&max, 2);
+	/* read the first 2 bytes (fight_count number of fights) */
+	bc__read(fight_lst_handle, (Bit8u*)&fight_count, 2);
 
 #if !defined(__BORLANDC__)
 	/* BE-fix: */
-	max = host_readw((Bit8u*)&max);
+	fight_count = host_readw((Bit8u*)&fight_count);
 #endif
-	/* sanity check for parameter nr */
-	if ((nr > (max - 1)) || (nr < 0))
-		nr = 0;
+	/* sanity check for parameter fight_id */
+	if ((fight_id > (fight_count - 1)) || (fight_id < 0))
+		fight_id = 0;
 
 	/* seek to file position */
-	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
+	bc_lseek(fight_lst_handle, (long)SIZEOF_FIGHT * fight_id + 2, SEEK_SET);
 
 	/* read the fight entry */
-	bc__read(fd, buf, SIZEOF_FIGHT);
+	bc__read(fight_lst_handle, fight_lst_buf, SIZEOF_FIGHT);
 
 	/* close FIGHT.LST */
-	bc_close(fd);
+	bc_close(fight_lst_handle);
 
 	/* check all enemies */
-	for (i = 0; i < 20; i++) {
+	for (enemy_i = 0; enemy_i < 20; enemy_i++) {
 		/* no enemy and enemy does not appear in the first round */
-		if ((host_readb(buf + 0x16 + i * 5) != 0)
-			&& (!host_readbs(buf + 0x1a + i * 5)))
+		if ((host_readb(fight_lst_buf + FIGHT_MONSTERS_ID + enemy_i * 5) != 0)
+			&& (!host_readbs(fight_lst_buf + FIGHT_MONSTERS_ROUND_APPEAR + enemy_i * 5)))
 		{
 			/* increment counter */
-			retval++;
+			enemy_count++;
 		}
 	}
 
-	return retval;
+	return enemy_count;
 }
 
 void read_fight_lst(signed short fight_id)
