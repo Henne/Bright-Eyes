@@ -720,6 +720,15 @@ Bit32u get_readlength2(signed short index)
 	return index != -1 ? ds_readd(ARCHIVE_FILE_LENGTH) : 0;
 }
 
+/**
+ * \brief	reads len bytes from the current position in SCHICK.DAT
+ *
+ * \param handle	handle returned by load_archive_file
+ * \param buffer	target buffer for the data
+ * \param len	number of bytes to read
+ *
+ * \return number of bytes read
+ */
 unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 {
 
@@ -776,6 +785,13 @@ signed short load_regular_file(Bit16u index)
 	return handle;
 }
 
+/**
+ * \brief	opens a file stored in temp or in SCHICK.DAT
+ *
+ * \param	index	index of the file in SCHICK.DAT or in temp (bitwise or 0x8000)
+ *
+ * \return a file handle that can be used with read_archive_file etc.
+ */
 signed short load_archive_file(Bit16u index)
 {
 	bc_flushall();
