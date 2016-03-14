@@ -634,33 +634,38 @@ signed short count_fight_enemies(signed short fight_id)
 	return enemy_count;
 }
 
+/**
+ * \brief	reads an entry in FIGHT.LST and stores it in CURRENT_FIGHT
+ *
+ * \param fight_id  number of the fight in FIGHT.LST
+ */
 void read_fight_lst(signed short fight_id)
 {
-	unsigned short fd;
-	signed short max;
+	unsigned short fight_lst_handle;
+	signed short fight_count;
 
 	/* load FIGHT.LST from TEMP dir */
-	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
+	fight_lst_handle = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
 
-	/* read the first 2 bytes (max number of fights) */
-	bc__read(fd, (Bit8u*)&max, 2);
+	/* read the first 2 bytes (fight_count number of fights) */
+	bc__read(fight_lst_handle, (Bit8u*)&fight_count, 2);
 
 #if !defined(__BORLANDC__)
 	/* BE-fix: */
-	max = host_readw((Bit8u*)&max);
+	fight_count = host_readw((Bit8u*)&fight_count);
 #endif
 	/* sanity check for parameter fight_id */
-	if ((max - 1) < fight_id || fight_id < 0)
+	if ((fight_count - 1) < fight_id || fight_id < 0)
 		fight_id = 0;
 
 	/* write the fight number to a global var */
 	ds_writew(CURRENT_FIGHT_ID, fight_id);
 
 	/* seek to file position */
-	bc_lseek(fd, (long)SIZEOF_FIGHT * fight_id + 2, SEEK_SET);
+	bc_lseek(fight_lst_handle, (long)SIZEOF_FIGHT * fight_id + 2, SEEK_SET);
 
 	/* read the fight entry */
-	bc__read(fd, Real2Host(ds_readd(CURRENT_FIGHT)), SIZEOF_FIGHT);
+	bc__read(fight_lst_handle, Real2Host(ds_readd(CURRENT_FIGHT)), SIZEOF_FIGHT);
 
 #if !defined(__BORLANDC__)
 	char fight_name[21];
@@ -672,7 +677,7 @@ void read_fight_lst(signed short fight_id)
 #endif
 
 	/* close FIGHT.LST */
-	bc_close(fd);
+	bc_close(fight_lst_handle);
 }
 
 void write_fight_lst(void)
