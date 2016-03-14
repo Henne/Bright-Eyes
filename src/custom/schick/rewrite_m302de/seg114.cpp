@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
- *	Functions rewritten: 4/11
+ *	Functions rewritten: 5/11
  */
 #include <stdio.h>
 
@@ -10,9 +10,11 @@
 #include "seg004.h"
 #include "seg007.h"
 #include "seg025.h"
+#include "seg026.h"
 #include "seg027.h"
 #include "seg029.h"
 #include "seg047.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
@@ -347,6 +349,139 @@ void tevent_113(void)
 		ds_writew(TEXTBOX_WIDTH, 9);
 		ds_writew(REQUEST_REFRESH, 2);
 	}
+}
+
+/* a swamp */
+/* Borlandified and identical */
+void tevent_114(void)
+{
+	signed short i;
+	signed short answer;
+	signed short done;
+	signed short j;
+	Bit8u *hero;
+
+	done = 0;
+
+	do {
+
+		do {
+			answer = GUI_radio(get_city(0x4c), 2,
+						get_city(0x50),
+						get_city(0x54));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			do {
+				answer = GUI_radio(get_city(0x70), 2,
+							get_city(0x74),
+							get_city(0x78));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				/* turn around */
+				ds_writew(TRV_RETURN, done = 1);
+			}
+
+			if (answer == 2)
+			{
+				/* go on careful */
+				GUI_output(get_city(0x58));
+			}
+
+		} else {
+			GUI_output(get_city(0x58));
+		}
+
+		if (done == 0)
+		{
+			/* walk through the swamp */
+			for (j = 0; j < 2; j++)
+			{
+				for (i = 0, hero = get_hero(0); i <= 6; i++, hero += SIZEOF_HERO)
+				{
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero) &&
+						test_attrib(hero, 4, 4) <= 0)
+					{
+						/* attrib test failed */
+						timewarp(MINUTES(30));
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)get_city(0x5c),
+							(char*)hero + HERO_NAME2,
+							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
+
+						GUI_output(Real2Host(ds_readd(DTP2)));
+
+						sub_hero_le(hero, random_schick(8));
+
+						loose_random_item(hero, 50, get_ltx(0x7e8));
+						loose_random_item(hero, 50, get_ltx(0x7e8));
+						loose_random_item(hero, 50, get_ltx(0x7e8));
+					}
+				}
+			}
+
+			if (!ds_readb(0x3e15))
+			{
+				/* meet OLIMONE */
+				GUI_output(get_city(0x60));
+
+				load_in_head(12);
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xd0), get_city(0x64), 0);
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xd0), get_city(0x68), 0);
+
+				/* get RECIPE FOR POTENT HEALING POTION */
+				get_item(240, 1, 1);
+
+				/* ORIGINAL-BUG: this item could have been not taken => get_hero(-1) => SEGFAULT */
+				hero = get_hero(get_first_hero_with_item(240));
+
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0x6c),
+					(char*)hero + HERO_NAME2);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				timewarp(HOURS(8));
+
+				for (i = 0, hero = get_hero(0); i <= 6; i++, hero += SIZEOF_HERO)
+				{
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero))
+					{
+						add_hero_le(hero, 7);
+					}
+				}
+
+				ds_writeb(0x3e15, (signed char)(done = 1));
+
+			} else {
+				GUI_output(get_city(0x100));
+
+				timewarp(HOURS(8));
+
+				for (i = 0, hero = get_hero(0); i <= 6; i++, hero += SIZEOF_HERO)
+				{
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero))
+					{
+						add_hero_le(hero, 4);
+					}
+				}
+
+				done = 1;
+			}
+		}
+
+	} while (done == 0);
 }
 
 #if !defined(__BORLANDC__)
