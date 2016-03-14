@@ -680,24 +680,27 @@ void read_fight_lst(signed short fight_id)
 	bc_close(fight_lst_handle);
 }
 
+/**
+ * \brief	writes the data in CURRENT_FIGHT to FIGHT.LST
+ */
 void write_fight_lst(void)
 {
 	signed short fight_id;
-	unsigned short fd;
+	unsigned short fight_lst_handle;
 
 	fight_id = ds_readw(CURRENT_FIGHT_ID);
 
 	/* load FIGHT.LST from TEMP dir */
-	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
+	fight_lst_handle = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
 
 	/* seek to the entry */
-	bc_lseek(fd, (long)SIZEOF_FIGHT * fight_id + 2, SEEK_SET);
+	bc_lseek(fight_lst_handle, (long)SIZEOF_FIGHT * fight_id + 2, SEEK_SET);
 
 	/* write it */
-	bc__write(fd, (RealPt)ds_readd(CURRENT_FIGHT), SIZEOF_FIGHT);
+	bc__write(fight_lst_handle, (RealPt)ds_readd(CURRENT_FIGHT), SIZEOF_FIGHT);
 
 	/* close the file */
-	bc_close(fd);
+	bc_close(fight_lst_handle);
 }
 
 void init_common_buffers(void)
