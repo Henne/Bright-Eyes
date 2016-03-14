@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
- *	Functions rewritten: 6/11
+ *	Functions rewritten: 7/11
  */
 #include <stdio.h>
 
@@ -494,6 +494,35 @@ void tevent_116(void)
 		ds_writeb(0x3dfc, 1);
 		TRV_found_camp_place(1);
 	}
+}
+
+/* an avalance */
+/* Borlandified and identical */
+void tevent_117(void)
+{
+	signed short i;
+	Bit8u *hero;
+
+	GUI_output(get_city(0x7c));
+	GUI_output(get_city(0x80));
+
+	for (hero = get_hero(0), i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+	{
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero) &&
+			test_attrib(hero, 4, 0) <= 0)
+		{
+			/* attrib test failed */
+			sub_hero_le(hero, random_schick(11) + 1);
+
+			loose_random_item(hero, 15, get_ltx(0x7e8));
+			loose_random_item(hero, 15, get_ltx(0x7e8));
+			loose_random_item(hero, 15, get_ltx(0x7e8));
+		}
+	}
+
+	GUI_output(get_city(0x84));
 }
 
 #if !defined(__BORLANDC__)

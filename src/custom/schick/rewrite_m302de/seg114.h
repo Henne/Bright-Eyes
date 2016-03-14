@@ -6,6 +6,8 @@ namespace M302de {
 void tevent_114(void);
 /* 0x25 */
 void tevent_116(void);
+/* 0x2a */
+void tevent_117(void);
 
 /* 0x43 */
 void tevent_110(void);
