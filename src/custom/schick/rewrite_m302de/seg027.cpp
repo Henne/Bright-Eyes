@@ -542,34 +542,39 @@ void load_ani(const signed short nr)
 	}
 }
 
-void load_scenario(signed short nr)
+/**
+ * \brief	reads an entry in SCENARIO.LST and stores it in SCENARIO_BUF
+ *
+ * \param scenario_id  number of the scenario in SCENARIO.LST
+ */
+void load_scenario(signed short scenario_id)
 {
-	unsigned short fd;
-	signed short buf;
+	unsigned short scenario_lst_handle;
+	signed short scenario_lst_buf;
 
 	/* load SCENARIO.LST */
-	fd = load_archive_file(ARCHIVE_FILE_SCENARIO_LST);
+	scenario_lst_handle = load_archive_file(ARCHIVE_FILE_SCENARIO_LST);
 
-	/* read the first two bytes == nr of scenarios */
-	read_archive_file(fd, (Bit8u*)&buf, 2);
+	/* read the first two bytes == scenario_id of scenarios */
+	read_archive_file(scenario_lst_handle, (Bit8u*)&scenario_lst_buf, 2);
 
 #if !defined(__BORLANDC__)
 	/* BE-fix: */
-	buf = host_readw((Bit8u*)&buf);
+	scenario_lst_buf = host_readw((Bit8u*)&scenario_lst_buf);
 #endif
 
-	/* check if scenario nr is valid */
-	if ((nr > buf) || (nr < 1))
-		nr = 1;
+	/* check if scenario_id is valid */
+	if ((scenario_id > scenario_lst_buf) || (scenario_id < 1))
+		scenario_id = 1;
 
 	/* seek to the scenario */
-	seek_archive_file(fd, 621L * (nr - 1) + 2, 0);
+	seek_archive_file(scenario_lst_handle, 621L * (scenario_id - 1) + 2, 0);
 
 	/* read scenario */
-	read_archive_file(fd, Real2Host(ds_readd(SCENARIO_BUF)), 621);
+	read_archive_file(scenario_lst_handle, Real2Host(ds_readd(SCENARIO_BUF)), 621);
 
 	/* close archive */
-	bc_close(fd);
+	bc_close(scenario_lst_handle);
 }
 
 signed short count_fight_enemies(signed short nr)
