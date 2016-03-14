@@ -166,7 +166,7 @@ void item_read_recipe(void)
 void item_read_document(void)
 {
 	Bit8u *str;
-	signed short bak;
+	signed short textbox_width_bak;
 
 	switch (ds_readws(USED_ITEM_ID)) {
 	case 0xaa: str = get_ltx(0xa04); break;
@@ -180,10 +180,10 @@ void item_read_document(void)
 	case 0xf7: str = get_ltx(0xbdc); break;
 	}
 
-	bak = ds_readws(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 	GUI_output(str);
-	ds_writew(TEXTBOX_WIDTH, bak);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 }
 
 /* Borlandified and identical */

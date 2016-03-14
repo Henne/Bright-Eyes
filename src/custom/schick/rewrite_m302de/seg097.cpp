@@ -794,7 +794,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
  */
 void GUI_print_fight_intro_msg(signed short fight_id)
 {
-	signed short bak = ds_readws(TEXTBOX_WIDTH);
+	signed short textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
 	if (ds_readbs(DUNGEON_INDEX) == 2) {
@@ -822,7 +822,7 @@ void GUI_print_fight_intro_msg(signed short fight_id)
 		DNG14_fight_intro(fight_id);
 	}
 
-	ds_writew(TEXTBOX_WIDTH, bak);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 }
 
 /**

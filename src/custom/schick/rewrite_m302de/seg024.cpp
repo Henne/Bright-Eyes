@@ -44,10 +44,10 @@ void diary_show(void)
 {
 	signed short fg_bak;
 	signed short bg_bak;
-	Bit16u bak1, bak2, bak3, bak4, bak5;
+	Bit16u bak1, bak2, txt_tabpos1_bak, txt_tabpos2_bak, textbox_width_bak;
 	signed short i;
 
-	bak5 = ds_readw(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	ds_writeb(0x45b8, 1);
@@ -63,8 +63,8 @@ void diary_show(void)
 	ds_writed(0xd2fb, ds_readd(BUFFER9_PTR));
 	bak1 = ds_readw(0xd2d5);
 	bak2 = ds_readw(0xd2d9);
-	bak3 = ds_readw(TXT_TABPOS1);
-	bak4 = ds_readw(TXT_TABPOS2);
+	txt_tabpos1_bak = ds_readw(TXT_TABPOS1);
+	txt_tabpos2_bak = ds_readw(TXT_TABPOS2);
 	ds_writew(0xd2d5, 200);
 	ds_writew(0xd2d9, 65);
 	ds_writew(TXT_TABPOS1, 83);
@@ -99,9 +99,9 @@ void diary_show(void)
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
-	ds_writew(TXT_TABPOS1, bak3);
-	ds_writew(TXT_TABPOS2, bak4);
-	ds_writew(TEXTBOX_WIDTH, bak5);
+	ds_writew(TXT_TABPOS1, txt_tabpos1_bak);
+	ds_writew(TXT_TABPOS2, txt_tabpos2_bak);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
 	delay_or_keypress(5000);
 }

@@ -841,11 +841,11 @@ signed short do_fight(signed short fight_id)
 	Bit8u *hero;
 	Bit8u *ptr;
 	signed short l7;
-	signed short bak1;
-	signed short bak2;
-	signed short bak3;
-	signed short bak4;
-	signed short bak5;
+	signed short x_target_bak;
+	signed short y_target_bak;
+	signed short dungeon_level_bak;
+	signed short direction_bak;
+	signed short textbox_width_bak;
 	signed short tmp[6];
 
 	if ((ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) == 1)
@@ -866,7 +866,7 @@ signed short do_fight(signed short fight_id)
 	ds_writew(TIMERS_DISABLED, 1);
 	ds_writew(CURRENT_FIG_NR, fight_id);
 
-	bak5 = ds_readws(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	/* set some pointers */
@@ -1119,10 +1119,10 @@ signed short do_fight(signed short fight_id)
 					}
 
 					l5 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
-					bak1 = ds_readws(X_TARGET);
-					bak2 = ds_readws(Y_TARGET);
-					bak4 = ds_readbs(DIRECTION);
-					bak3 = ds_readbs(DUNGEON_LEVEL);
+					x_target_bak = ds_readws(X_TARGET);
+					y_target_bak = ds_readws(Y_TARGET);
+					direction_bak = ds_readbs(DIRECTION);
+					dungeon_level_bak = ds_readbs(DUNGEON_LEVEL);
 
 					ds_writew(X_TARGET, (tmp[l_di] >> 8) & 0x0f);
 					ds_writew(Y_TARGET, tmp[l_di] & 0x0f);
@@ -1143,10 +1143,10 @@ signed short do_fight(signed short fight_id)
 					}
 
 					GRP_save_pos(l4 | 0x8000);
-					ds_writews(X_TARGET, bak1);
-					ds_writews(Y_TARGET, bak2);
-					ds_writebs(DIRECTION, (signed char)bak4);
-					ds_writebs(DUNGEON_LEVEL, (signed char)bak3);
+					ds_writews(X_TARGET, x_target_bak);
+					ds_writews(Y_TARGET, y_target_bak);
+					ds_writebs(DIRECTION, (signed char)direction_bak);
+					ds_writebs(DUNGEON_LEVEL, (signed char)dungeon_level_bak);
 				}
 
 				l5 = ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
@@ -1183,7 +1183,7 @@ signed short do_fight(signed short fight_id)
 	ds_writew(TIMERS_DISABLED, 0);
 	ds_writew(AUTOFIGHT, 0);
 	ds_writeb(CHECK_PARTY, 1);
-	ds_writew(TEXTBOX_WIDTH, bak5);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 12));
 
 	update_mouse_cursor();

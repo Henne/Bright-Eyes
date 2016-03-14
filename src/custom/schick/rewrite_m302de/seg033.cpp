@@ -63,7 +63,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 	signed short radio_i;
 	signed short slot_nr;
 	Bit8u *ptr;
-	signed short bak;
+	signed short textbox_width_bak;
 	signed short slots[16];
 
 	l1 = 1;
@@ -533,7 +533,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							}
 
 							refresh_screen_size();
-							bak = ds_readws(TEXTBOX_WIDTH);
+							textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 							ds_writews(TEXTBOX_WIDTH, 6);
 
 							selected = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), radio_i,
@@ -554,7 +554,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x38))),
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x3c))));
 
-							ds_writews(TEXTBOX_WIDTH, bak);
+							ds_writews(TEXTBOX_WIDTH, textbox_width_bak);
 
 							update_mouse_cursor();
 
@@ -610,7 +610,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_ITEM_RIGHT), 0)));
 
 							refresh_screen_size();
-							bak = ds_readws(TEXTBOX_WIDTH);
+							textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 							ds_writews(TEXTBOX_WIDTH, 6);
 
 							selected = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), radio_i,
@@ -631,7 +631,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x38))),
 									Real2Host(ds_readd((RADIO_NAME_LIST + 0x3c))));
 
-							ds_writews(TEXTBOX_WIDTH, bak);
+							ds_writews(TEXTBOX_WIDTH, textbox_width_bak);
 
 							update_mouse_cursor();
 
@@ -846,7 +846,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(char*)hero + HERO_NAME2);
 
 						refresh_screen_size();
-						bak = ds_readws(TEXTBOX_WIDTH);
+						textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 						ds_writews(TEXTBOX_WIDTH, 6);
 
 						selected = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), radio_i,
@@ -867,7 +867,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								Real2Host(ds_readd((RADIO_NAME_LIST + 0x38))),
 								Real2Host(ds_readd((RADIO_NAME_LIST + 0x3c))));
 
-						ds_writews(TEXTBOX_WIDTH, bak);
+						ds_writews(TEXTBOX_WIDTH, textbox_width_bak);
 
 						update_mouse_cursor();
 

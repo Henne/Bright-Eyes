@@ -321,7 +321,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 	Bit8u *patient;
 	Bit32s money;
 	signed short poison;
-	signed short bak;
+	signed short tx_file_bak;
 
 	l_si = 1;
 
@@ -329,7 +329,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 	if (skill != -1) {
 
-		bak = ds_readws(TX_FILE_INDEX);
+		tx_file_bak = ds_readws(TX_FILE_INDEX);
 
 		load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
@@ -677,8 +677,8 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 		}
 		}
 
-		if ((bak != -1) && (bak != 222)) {
-			load_tx(bak);
+		if ((tx_file_bak != -1) && (tx_file_bak != ARCHIVE_FILE_SPELLTXT_LTX)) {
+			load_tx(tx_file_bak);
 		}
 	}
 

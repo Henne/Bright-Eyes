@@ -93,14 +93,14 @@ void FIG_loot_monsters(void)
 	signed short l5;
 	signed short l6;
 	Bit32s money;
-	signed short bak1;
-	signed short bak2;
+	signed short autofight_bak;
+	signed short textbox_width_bak;
 
 	char *a[31];
 
 	l_si = 0;
 
-	bak1 = ds_readws(AUTOFIGHT);
+	autofight_bak = ds_readws(AUTOFIGHT);
 	ds_writew(AUTOFIGHT, 0);
 
 	for (l_di = 0; l_di < 30; l_di++) {
@@ -139,7 +139,7 @@ void FIG_loot_monsters(void)
 				l6 = l3;
 			}
 
-			bak2 = ds_readws(TEXTBOX_WIDTH);
+			textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 6);
 
 			l4 = GUI_radio(get_dtp(0x38), l6,
@@ -148,7 +148,7 @@ void FIG_loot_monsters(void)
 						a[8 + l_si], a[9 + l_si], a[10 + l_si], a[11 + l_si],
 						a[12 + l_si], a[13 + l_si], a[14 + l_si], a[15 + l_si]) - 1;
 
-			ds_writew(TEXTBOX_WIDTH, bak2);
+			ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
 
 			if ((l5 != 0) && (l6 - 1 == l4)) {
@@ -198,7 +198,7 @@ void FIG_loot_monsters(void)
 		set_party_money(get_party_money() + money);
 	}
 
-	ds_writew(AUTOFIGHT, bak1);
+	ds_writew(AUTOFIGHT, autofight_bak);
 }
 
 /**
@@ -209,10 +209,10 @@ void FIG_split_ap(void)
 	signed short l_si;
 	signed short ap;
 	signed short known_ap;
-	signed short bak;
+	signed short autofight_bak;
 
 	ap = 0;
-	bak = ds_readws(AUTOFIGHT);
+	autofight_bak = ds_readws(AUTOFIGHT);
 	ds_writew(AUTOFIGHT, 0);
 
 	/* calculate ap from all monsters in that fight */
@@ -260,7 +260,7 @@ void FIG_split_ap(void)
 	/* give AP to the group */
 	add_group_ap(ap);
 
-	ds_writew(AUTOFIGHT, bak);
+	ds_writew(AUTOFIGHT, autofight_bak);
 }
 
 /**

@@ -405,12 +405,12 @@ signed short select_hero_from_group(Bit8u *title)
 	struct helper dst = *(((struct helper*)(p_datseg + SEG047_INIT1)));
 #endif
 	signed short cnt;
-	signed short bak_1;
+	signed short textbox_width_bak;
 	signed short bak_2;
 	signed short bak_3;
 	RealPt hero;
 
-	bak_1 = ds_readw(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
@@ -450,7 +450,7 @@ signed short select_hero_from_group(Bit8u *title)
 
 		ds_writew(0x2ca2, bak_2);
 		ds_writew(0x2ca4, bak_3);
-		ds_writew(TEXTBOX_WIDTH, bak_1);
+		ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
 		if (answer != -2)
 			return dst.v[answer];
@@ -458,7 +458,7 @@ signed short select_hero_from_group(Bit8u *title)
 			return -1;
 	}
 
-	ds_writew(TEXTBOX_WIDTH, bak_1);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 	return -1;
 }
 
@@ -482,12 +482,12 @@ signed short select_hero_ok(Bit8u *title)
 	struct helper dst = *(((struct helper*)(p_datseg + SEG047_INIT2)));
 #endif
 	signed short cnt;
-	signed short bak_1;
+	signed short textbox_width_bak;
 	signed short bak_2;
 	signed short bak_3;
 	RealPt hero;
 
-	bak_1 = ds_readw(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
@@ -525,7 +525,7 @@ signed short select_hero_ok(Bit8u *title)
 
 		ds_writew(0x2ca2, bak_2);
 		ds_writew(0x2ca4, bak_3);
-		ds_writew(TEXTBOX_WIDTH, bak_1);
+		ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 		ds_writew(SKILLED_HERO_POS, -1);
 
 		if (answer != -2)
@@ -534,7 +534,7 @@ signed short select_hero_ok(Bit8u *title)
 			return -1;
 	}
 
-	ds_writew(TEXTBOX_WIDTH, bak_1);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 	ds_writew(SKILLED_HERO_POS, -1);
 	return -1;
 }
@@ -560,12 +560,12 @@ signed short select_hero_ok_forced(Bit8u *title)
 	struct helper dst = *(((struct helper*)(p_datseg + SEG047_INIT3)));
 #endif
 	signed short cnt;
-	signed short bak_1;
+	signed short textbox_width_bak;
 	signed short bak_2;
 	signed short bak_3;
 	RealPt hero;
 
-	bak_1 = ds_readw(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 	cnt = 0;
 
@@ -608,7 +608,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 		} while (answer == -2);
 
 		ds_writew(SKILLED_HERO_POS, -1);
-		ds_writew(TEXTBOX_WIDTH, bak_1);
+		ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
 		return dst.v[answer];
 	} else {

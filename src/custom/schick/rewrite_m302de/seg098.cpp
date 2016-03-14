@@ -828,7 +828,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 	signed short retval = 1;
 	signed short l_di;
 	signed short ae_cost;
-	signed short bak;
+	signed short textbox_width_bak;
 	Bit8u *ptr;
 	void (*func)(void);
 	signed short l4;
@@ -838,7 +838,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 		return 0;
 	}
 
-	bak = ds_readws(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	if (a2 == 1) {
@@ -979,7 +979,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 		retval = -1;
 	}
 
-	ds_writew(TEXTBOX_WIDTH, bak);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
 	return retval;
 }
