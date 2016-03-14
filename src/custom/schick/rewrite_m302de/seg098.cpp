@@ -923,9 +923,9 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-				l4 = ds_readws(BUF1_FILE_INDEX);
+				l4 = ds_readws(TX_FILE_INDEX);
 
-				load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+				load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 #if !defined(__BORLANDC__)
 				func = spellhandler[l_di];
 #else
@@ -934,7 +934,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 				func();
 
 				if ((l4 != -1) && (l4 != 222)) {
-					load_buffer_1(l4);
+					load_tx(l4);
 				}
 
 				retval = 1;

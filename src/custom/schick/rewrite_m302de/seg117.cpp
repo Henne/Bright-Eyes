@@ -661,7 +661,7 @@ void random_encounter(signed short arg)
 	ds_writew(0x2ca2, bak1);
 	ds_writew(0x2ca4, bak2);
 	ds_writew(WALLCLOCK_UPDATE, bak3);
-	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
+	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 }
 
 void search_ruin1(void)

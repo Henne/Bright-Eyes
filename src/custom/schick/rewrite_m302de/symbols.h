@@ -40,7 +40,7 @@
 #define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
 #define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
 #define TEXT_FILE_INDEX	(0x26bd)	/* unsigned short */
-#define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
+#define TX_FILE_INDEX	(0x26bf)	/* signed short, index of file stored with load_tx */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
 #define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */

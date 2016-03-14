@@ -51,23 +51,23 @@ void init_text(void)
 
 }
 
-void load_buffer_1(signed short index)
+void load_tx(signed short index)
 {
-	Bit32s len;
-	signed short fd;
+	Bit32s archive_file_len;
+	signed short archive_file_handle;
 
 	if (index == -1)
 		return;
 
-	fd = load_archive_file(index);
+	archive_file_handle = load_archive_file(index);
 
-	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER7_PTR)), 64000);
+	archive_file_len = (signed short)read_archive_file(archive_file_handle, Real2Host(ds_readd(BUFFER7_PTR)), 64000);
 
-	bc_close(fd);
+	bc_close(archive_file_handle);
 
-	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)), (RealPt)ds_readd(BUFFER7_PTR), len);
+	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)), (RealPt)ds_readd(BUFFER7_PTR), archive_file_len);
 
-	ds_writew(BUF1_FILE_INDEX, index);
+	ds_writew(TX_FILE_INDEX, index);
 }
 
 void load_city_ltx(signed short index)

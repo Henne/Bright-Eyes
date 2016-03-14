@@ -113,7 +113,7 @@ void do_harbour(void)
 			init_ani(0);
 			ds_writew(REQUEST_REFRESH, 0);
 
-			load_buffer_1(ARCHIVE_FILE_HAFEN_LTX);
+			load_tx(ARCHIVE_FILE_HAFEN_LTX);
 
 			if (flag != 0) {
 

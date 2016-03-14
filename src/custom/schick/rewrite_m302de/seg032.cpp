@@ -916,7 +916,7 @@ signed short do_fight(signed short fight_id)
 		ds_writew(FIG_DROPPED_WEAPONS + 2 * l_di, 0);
 	}
 
-	load_buffer_1(ARCHIVE_FILE_FIGHTTXT_LTX);
+	load_tx(ARCHIVE_FILE_FIGHTTXT_LTX);
 
 	/* open OBJECTS.NVF */
 	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);

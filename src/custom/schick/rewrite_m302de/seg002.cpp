@@ -5308,7 +5308,7 @@ signed short copy_protection(void)
 	signed short tries;
 	signed short l1;
 
-	load_buffer_1(ARCHIVE_FILE_FIGHTTXT_LTX);
+	load_tx(ARCHIVE_FILE_FIGHTTXT_LTX);
 
 	ds_writew(TEXTBOX_WIDTH, 4);
 

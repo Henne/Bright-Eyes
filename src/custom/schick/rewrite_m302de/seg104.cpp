@@ -386,8 +386,8 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 	retval = 0;
 
 	if (flag) {
-		bak = ds_readws(BUF1_FILE_INDEX);
-		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+		bak = ds_readws(TX_FILE_INDEX);
+		load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 	}
 
 	if (is_hero_healable(patient)) {
@@ -487,7 +487,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 
 		if ((flag != 0) && (bak != -1) && (bak != 222)) {
-			load_buffer_1(bak);
+			load_tx(bak);
 		}
 	}
 

@@ -251,9 +251,9 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 			/* terminate output string */
 			host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-			bak = ds_readws(BUF1_FILE_INDEX);
+			bak = ds_readws(TX_FILE_INDEX);
 
-			load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+			load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 #if !defined(__BORLANDC__)
 			func = mspell[l_si];
@@ -264,7 +264,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 			func();
 
 			if ((bak != -1) && (bak != 222)) {
-				load_buffer_1(bak);
+				load_tx(bak);
 			}
 
 			l_di = 1;

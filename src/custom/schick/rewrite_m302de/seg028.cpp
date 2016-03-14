@@ -47,7 +47,7 @@ void prepare_dungeon_area(void)
 		load_dungeon_ddt();
 	}
 
-	load_buffer_1(index);
+	load_tx(index);
 
 	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 1)) {
 
@@ -136,7 +136,7 @@ void seg028_0224(void)
 		ds_writeb(0x2ca6, -1);
 	}
 
-	load_buffer_1(l1);
+	load_tx(l1);
 
 	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 0)) {
 
@@ -254,7 +254,7 @@ void load_special_textures(signed short arg)
 
 void call_load_buffer(void)
 {
-	load_buffer_1(ds_readws(BUF1_FILE_INDEX));
+	load_tx(ds_readws(TX_FILE_INDEX));
 }
 
 void seg028_0555(signed short town)
@@ -499,7 +499,7 @@ void load_map(void)
 	read_archive_file(fd, Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 11400)), 5900);
 	bc_close(fd);
 
-	load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
+	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 
 	ds_writew(WALLCLOCK_UPDATE, bak);
 }

@@ -109,10 +109,10 @@ void item_arcano(void)
 	signed short b1_index;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(BUF1_FILE_INDEX);
+	b1_index = ds_readws(TX_FILE_INDEX);
 
 	/* load SPELLTXT*/
-	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+	load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
@@ -129,7 +129,7 @@ void item_arcano(void)
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
 		/* need to reload buffer1 */
-		load_buffer_1(b1_index);
+		load_tx(b1_index);
 	}
 }
 
@@ -194,10 +194,10 @@ void item_armatrutz(void)
 	signed short b1_index;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(BUF1_FILE_INDEX);
+	b1_index = ds_readws(TX_FILE_INDEX);
 
 	/* load SPELLTXT*/
-	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+	load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
@@ -216,7 +216,7 @@ void item_armatrutz(void)
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
 		/* need to reload buffer1 */
-		load_buffer_1(b1_index);
+		load_tx(b1_index);
 	}
 }
 
@@ -227,10 +227,10 @@ void item_flimflam(void)
 	signed short b1_index;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(BUF1_FILE_INDEX);
+	b1_index = ds_readws(TX_FILE_INDEX);
 
 	/* load SPELLTXT*/
-	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+	load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	ds_writed(SPELLUSER, ds_readd(ITEMUSER));
 
@@ -241,7 +241,7 @@ void item_flimflam(void)
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
 		/* need to reload buffer1 */
-		load_buffer_1(b1_index);
+		load_tx(b1_index);
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
@@ -448,10 +448,10 @@ void item_brenne(void)
 	signed short refill_pos;
 
 	/* save index off buffer1 */
-	b1_index = ds_readws(BUF1_FILE_INDEX);
+	b1_index = ds_readws(TX_FILE_INDEX);
 
 	/* load SPELLTXT*/
-	load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+	load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 	if (ds_readws(USED_ITEM_ID) == 249) {
 		/* refill burning lantern */
@@ -516,7 +516,7 @@ void item_brenne(void)
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
 		/* need to reload buffer1 */
-		load_buffer_1(b1_index);
+		load_tx(b1_index);
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));

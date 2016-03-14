@@ -6957,8 +6957,8 @@ static int seg026(unsigned short offs) {
 	}
 	case 0x52: {
 		Bit16s index = CPU_Pop16();
-		D1_LOG("load_buffer_1(%s)\n", get_fname(index));
-		load_buffer_1(index);
+		D1_LOG("load_tx(%s)\n", get_fname(index));
+		load_tx(index);
 		CPU_Push16(index);
 		return 1;
 	}

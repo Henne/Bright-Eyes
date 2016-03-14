@@ -265,7 +265,7 @@ void enter_ghostship(void)
 	draw_main_screen();
 	init_ani(1);
 
-	load_buffer_1(ARCHIVE_FILE_SHIP_DTX);
+	load_tx(ARCHIVE_FILE_SHIP_DTX);
 
 	GUI_output(get_dtp(0x48));
 	GUI_output(get_dtp(0x4c));
