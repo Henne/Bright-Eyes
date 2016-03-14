@@ -824,11 +824,11 @@ void FIG_load_ship_sprites(void)
 /**
  * \brief	the heros encounter a fight
  *
- * \param	fight_nr	number of the fight
+ * \param	fight_id	number of the fight
  *
  * \return 0 = ???, 1 = no monsters in the fight, 2 = , 3 = sneaked arround
  */
-signed short do_fight(signed short fight_nr)
+signed short do_fight(signed short fight_id)
 {
 	signed short l_di;
 
@@ -859,12 +859,12 @@ signed short do_fight(signed short fight_nr)
 		return 0;
 	}
 
-	if (!count_fight_enemies(fight_nr)) {
+	if (!count_fight_enemies(fight_id)) {
 		return 1;
 	}
 
 	ds_writew(TIMERS_DISABLED, 1);
-	ds_writew(CURRENT_FIG_NR, fight_nr);
+	ds_writew(CURRENT_FIG_NR, fight_id);
 
 	bak5 = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
@@ -874,12 +874,12 @@ signed short do_fight(signed short fight_nr)
 	ds_writed(MONSTER_DAT_BUF, (Bit32u)F_PADD(ds_readd(SCENARIO_BUF), 621));
 	ds_writed(CURRENT_FIGHT, (Bit32u)F_PADD(ds_readd(MONSTER_DAT_BUF), 3476));
 
-	read_fight_lst(fight_nr);
+	read_fight_lst(fight_id);
 
 	load_scenario(host_readws(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_SCENARIO));
 
 	if (!host_readbs(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_INTRO_SEEN)) {
-		GUI_print_fight_intro_msg(fight_nr);
+		GUI_print_fight_intro_msg(fight_id);
 
 		host_writeb(Real2Host(ds_readd(CURRENT_FIGHT)) + FIGHT_INTRO_SEEN, 1);
 	}
@@ -986,7 +986,7 @@ signed short do_fight(signed short fight_nr)
 				FIG_latecomers();
 			}
 
-			if ((fight_nr == 138) && (ds_readws(FIGHT_ROUND) >= 10)) {
+			if ((fight_id == 138) && (ds_readws(FIGHT_ROUND) >= 10)) {
 				/* This fight ends after 9 rounds */
 				ds_writew(IN_FIGHT, 0);
 			}
@@ -1025,7 +1025,7 @@ signed short do_fight(signed short fight_nr)
 
 		if (ds_readws(0xc3c1) != 0) {
 
-			if ((fight_nr != 192) && count_heros_available()) {
+			if ((fight_id != 192) && count_heros_available()) {
 
 				ds_writew(0xc3c1, 0);
 

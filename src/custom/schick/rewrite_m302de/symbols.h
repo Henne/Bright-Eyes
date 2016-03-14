@@ -276,7 +276,7 @@
 #define ALL_CHR_WILDCARD3	(0x5e64)	/* char[6] = "*.CHR" */
 #define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
 #define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
-#define CURRENT_FIGHT_NR	(0x5eb2)	/* unsigned short */
+#define CURRENT_FIGHT_ID	(0x5eb2)	/* unsigned short */
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
 #define FIG_DROPPED_COUNTER	(0x5f12)	/* signed short */
 #define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */

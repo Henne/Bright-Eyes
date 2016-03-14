@@ -91,15 +91,15 @@ void TRV_event(signed short travel_event)
 
 /**
  * \brief	executes a fight and load a textfile
- * \param fight_nr	ID of the fight
+ * \param fight_id	ID of the fight
  * \param travel_event	ID of the travel event
  * \return return value of the fight
  */
-signed short TRV_fight_event(signed short fight_nr, signed short travel_event)
+signed short TRV_fight_event(signed short fight_id, signed short travel_event)
 {
 	signed short retval;
 
-	retval = do_fight(fight_nr);
+	retval = do_fight(fight_id);
 	TRV_load_textfile(travel_event);
 
 	return retval;

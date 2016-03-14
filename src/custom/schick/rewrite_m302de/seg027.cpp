@@ -626,7 +626,7 @@ signed short count_fight_enemies(signed short nr)
 	return retval;
 }
 
-void read_fight_lst(signed short nr)
+void read_fight_lst(signed short fight_id)
 {
 	unsigned short fd;
 	signed short max;
@@ -641,15 +641,15 @@ void read_fight_lst(signed short nr)
 	/* BE-fix: */
 	max = host_readw((Bit8u*)&max);
 #endif
-	/* sanity check for parameter nr */
-	if ((max - 1) < nr || nr < 0)
-		nr = 0;
+	/* sanity check for parameter fight_id */
+	if ((max - 1) < fight_id || fight_id < 0)
+		fight_id = 0;
 
 	/* write the fight number to a global var */
-	ds_writew(CURRENT_FIGHT_NR, nr);
+	ds_writew(CURRENT_FIGHT_ID, fight_id);
 
 	/* seek to file position */
-	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
+	bc_lseek(fd, (long)SIZEOF_FIGHT * fight_id + 2, SEEK_SET);
 
 	/* read the fight entry */
 	bc__read(fd, Real2Host(ds_readd(CURRENT_FIGHT)), SIZEOF_FIGHT);
@@ -659,7 +659,7 @@ void read_fight_lst(signed short nr)
 	/* Improvement */
 	strncpy(fight_name, (char*)Real2Host(ds_readd(CURRENT_FIGHT)), 20);
 	fight_name[20] = '\0';
-	D1_INFO("Lade Kampf Nr %3d\t Name \"%s\"\n", nr, fight_name);
+	D1_INFO("Lade Kampf fight_id %3d\t Name \"%s\"\n", fight_id, fight_name);
 	/* Improvement end */
 #endif
 
@@ -669,16 +669,16 @@ void read_fight_lst(signed short nr)
 
 void write_fight_lst(void)
 {
-	signed short nr;
+	signed short fight_id;
 	unsigned short fd;
 
-	nr = ds_readw(CURRENT_FIGHT_NR);
+	fight_id = ds_readw(CURRENT_FIGHT_ID);
 
 	/* load FIGHT.LST from TEMP dir */
 	fd = load_archive_file(0x8000 | ARCHIVE_FILE_FIGHT_LST);
 
 	/* seek to the entry */
-	bc_lseek(fd, (long)SIZEOF_FIGHT * nr + 2, SEEK_SET);
+	bc_lseek(fd, (long)SIZEOF_FIGHT * fight_id + 2, SEEK_SET);
 
 	/* write it */
 	bc__write(fd, (RealPt)ds_readd(CURRENT_FIGHT), SIZEOF_FIGHT);
