@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
- *	Functions rewritten: 9/11
+ *	Functions rewritten: 10/11
  */
 #include <stdio.h>
 
@@ -548,6 +548,38 @@ void tevent_119(void)
 	{
 		ds_writeb(0x3dfe, 1);
 		TRV_found_camp_place(0);
+	}
+}
+
+/* wolves attack */
+/* Borlandified and identical */
+void tevent_122(void)
+{
+	signed short answer;
+
+	if (!ds_readb(0x3e00))
+	{
+		do {
+			answer = GUI_radio(get_city(0x88), 2,
+						get_city(0x8c),
+						get_city(0x90));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			if (!TRV_fight_event(FIGHTS_F122, 122))
+			{
+				ds_writeb(0x3e00, 1);
+				add_hero_ap_all(10);
+
+				load_in_head(4);
+
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x110), get_city(0x94), 0);
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x110), get_city(0xfc), 0);
+			}
+		} else {
+			sub_hero_ap_all(20);
+		}
 	}
 }
 
