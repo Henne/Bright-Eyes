@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
- *	Functions rewritten: 10/11
+ *	Functions rewritten: 11/11 (complete)
  */
 #include <stdio.h>
 
@@ -16,9 +16,11 @@
 #include "seg047.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg098.h"
 #include "seg103.h"
 #include "seg105.h"
 #include "seg109.h"
+#include "seg113.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -581,6 +583,197 @@ void tevent_122(void)
 			sub_hero_ap_all(20);
 		}
 	}
+}
+
+/* a bridge */
+/* Borlandified and identical */
+void tevent_123(void)
+{
+	signed short i;
+	signed short counter;
+	signed short answer;
+	signed short done;
+	signed short attrib_result;
+	signed short skill_result;
+	Bit8u *hero;
+
+	load_in_head(54);
+
+	do {
+		done = 0;
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x98), 3,
+						get_city(0x9c),
+						get_city(0xa0),
+						get_city(0xa4));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			/* go over the bridge */
+			hero = get_hero(0);
+			for (i = counter = 0; i <= 6; i++, hero += SIZEOF_HERO)
+			{
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+					!hero_dead(hero) &&
+					test_attrib(hero, 8, 0) > 0)
+				{
+					/* attrib test failed */
+					counter++;
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+						(char*)get_city(0xa8),
+						(char*)hero + HERO_NAME2);
+
+					GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+				}
+			}
+
+			if (!counter)
+			{
+				GUI_dialog_na(0, get_city(0xac));
+				done = 1;
+			}
+
+		} else if (answer == 2)
+		{
+			/* turn arround */
+			ds_writew(TRV_RETURN, done = 1);
+		} else {
+			/* fight acrophobia */
+			do {
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+							get_city(0xb0), 3,
+							get_city(0xb4),
+							get_city(0xb8),
+							get_city(0xbc));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				hero = get_hero(0);
+				for (i = counter = 0; i <= 6; i++, hero += SIZEOF_HERO)
+				{
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero))
+					{
+						attrib_result = test_attrib(hero, 8, 4);
+						skill_result = test_skill(hero, 10, 0);
+
+						if (attrib_result == 99 && skill_result == -1)
+						{
+							sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+								(char*)get_city(0xc0),
+								(char*)hero + HERO_NAME2);
+
+							GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+							hero_disappear(hero, i, -1);
+
+							counter++;
+
+						} else if (attrib_result > 0 || skill_result <= 0)
+						{
+							sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+								(char*)get_city(0xa8),
+								(char*)hero + HERO_NAME2);
+
+							GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+							counter++;
+						}
+					}
+				}
+
+				if (!counter)
+				{
+					GUI_dialog_na(0, get_city(0xac));
+					done = 1;
+				}
+
+			} else if (answer == 2)
+			{
+				/* cast a spell */
+				hero = get_hero(select_hero_ok_forced(get_ltx(0x4f4)));
+
+				if (test_spell(hero, 70, 0) > 0)
+				{
+					/* success */
+					sub_ae_splash(hero, get_spell_cost(70, 0));
+
+					GUI_dialog_na(0, get_city(0xac));
+
+					done = 1;
+				} else {
+					/* failed */
+					sub_ae_splash(hero, get_spell_cost(70, 1));
+
+					hero = get_hero(0);
+					for (i = counter = 0; i <= 6; i++, hero += SIZEOF_HERO)
+					{
+						if (host_readbs(hero + HERO_TYPE) != 0 &&
+							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+							!hero_dead(hero))
+						{
+							sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+								(char*)get_city(0xa8),
+								(char*)hero + HERO_NAME2);
+
+							GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+						}
+					}
+				}
+			} else {
+				hero = get_hero(0);
+				for (i = counter = 0; i <= 6; i++, hero += SIZEOF_HERO)
+				{
+					if (host_readbs(hero + HERO_TYPE) != 0 &&
+						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+						!hero_dead(hero))
+					{
+						attrib_result = test_attrib(hero, 8, 2);
+
+						if (attrib_result == 99)
+						{
+							/* unlucky */
+							sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+								(char*)get_city(0xc0),
+								(char*)hero + HERO_NAME2);
+
+							GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+							hero_disappear(hero, i, -1);
+
+							counter++;
+
+						} else if (attrib_result > 0)
+						{
+							/* succeeded */
+							sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+								(char*)get_city(0xa8),
+								(char*)hero + HERO_NAME2);
+
+							GUI_dialog_na(0, Real2Host(ds_readd(DTP2)) + 0x400);
+
+							counter++;
+						}
+					}
+				}
+
+				if (!counter)
+				{
+					GUI_dialog_na(0, get_city(0xac));
+					done = 1;
+				}
+			}
+		}
+
+
+	} while (done == 0);
 }
 
 #if !defined(__BORLANDC__)
