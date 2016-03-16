@@ -3905,7 +3905,13 @@ static int n_seg110(unsigned offs)
 {
 	switch (offs) {
 	case 0x0121: {
-		return 0;
+		Bit16s mod = CPU_Pop16();
+		Bit16s percent = CPU_Pop16();
+		CPU_Push16(percent);
+		CPU_Push16(mod);
+
+		TRV_swim2(mod, percent);
+		return 1;
 	}
 	case 0x0280: {
 		return 0;

@@ -2,10 +2,10 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /* 0x20 */
-void func1(signed char, signed short);
+void TRV_swim2(signed char, signed short);
 
+#if defined(__BORLANDC__)
 /* 0x2a */
 void func2(void);
 

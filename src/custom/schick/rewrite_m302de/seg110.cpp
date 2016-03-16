@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 1/35
+ *	Functions rewritten: 2/35
  */
 
 #include <stdio.h>
@@ -8,8 +8,12 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
+#include "seg047.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg105.h"
 #include "seg110.h"
 
 #if !defined(__BORLANDC__)
@@ -50,23 +54,74 @@ void tevent_011(void)
 
 			if (answer == 1)
 			{
-				func1(0, 5);
+				TRV_swim2(0, 5);
 				func2();
+
 			} else if (answer == 2) {
+
 				timewarp(HOURS(1));
-				func1(0, 0);
+				TRV_swim2(0, 0);
 				func2();
 			}
 		}
 	}
 }
+#endif
 
+/**
+ * \brief	all members of the current group try to swim
+ * \param	mod	modificator for the swim test
+ * \param	percent probability to loose an item
+ *
+ * In seg112.cpp exists a similiar function called TRV_swim() for that purpose.
+ */
 /* should be static */
-void func1(signed char mod, signed short percent)
+/* Borlandified and identical */
+void TRV_swim2(signed char mod, signed short percent)
 {
+	signed short i;
+	Bit8u *hero;
+
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+	{
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero))
+		{
+			/* a swim test */
+			if (test_skill(hero, 14, (signed char)mod) > 0)
+			{
+				/* skill test succeeded */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0x7c),
+					(char*)hero + HERO_NAME2);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+			} else {
+				/* skill test failed */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_city(0x80),
+					(char*)hero + HERO_NAME2,
+					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				hero_disease_test(hero, 2, 20 - (host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)));
+
+				if (percent)
+				{
+					loose_random_item(hero, percent, get_ltx(0x7e8));
+				}
+
+				sub_hero_le(hero, random_schick(5));
+			}
+		}
+	}
 
 }
 
+#if defined(__BORLANDC__)
 /* should be static */
 void func2(void)
 {
