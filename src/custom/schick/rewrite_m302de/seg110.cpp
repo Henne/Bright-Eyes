@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 16/35
+ *	Functions rewritten: 17/35
  */
 
 #include <stdio.h>
@@ -359,6 +359,66 @@ void tevent_028(void)
 		ds_writeb(0x3db1, 1);
 	}
 }
+
+/* Borlandified and identical */
+void tevent_029(void)
+{
+	signed short i;
+	signed short item_pos;
+	Bit8u *hero;
+
+	load_in_head(51);
+
+	GUI_dialog_na(0, get_city(0x128));
+	GUI_dialog_na(0, get_city(0x12c));
+
+	hero = get_hero(0);
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+	{
+		hero_disease_test(hero, 2, 20 - (host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)));
+	}
+
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 3) > 0)
+	{
+		/* skill test succeeded */
+		timewarp(HOURS(3));
+
+		GUI_dialog_na(0, get_city(0x130));
+	} else {
+		/* skill test failed */
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		{
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero))
+			{
+				sub_hero_le(hero, 2);
+
+				item_pos = get_item_pos(hero, 45);
+
+				if (item_pos != -1)
+				{
+					/* hero looses the first set of FOOD PACKAGES */
+					drop_item(hero, item_pos, host_readws(hero + HERO_ITEM_HEAD + 2 + 14 * item_pos));
+				}
+
+				item_pos = hero_count_item(hero, 30);
+
+				if (item_pos)
+				{
+					/* hero looses the first WATERSKIN */
+					drop_item(hero, get_item_pos(hero, 30), item_pos - 1);
+				}
+			}
+		}
+
+		timewarp(HOURS(5));
+
+		GUI_dialog_na(0, get_city(0x134));
+	}
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
