@@ -235,8 +235,8 @@ signed short load_game_state(void)
 		l1 = ds_readws(0xc3cb);
 		ds_writew(0xc3cb, 0);
 
-		l4 = ds_readws(0x29ae);
-		ds_writew(0x29ae, 0);
+		l4 = ds_readws(ANI_ENABLED);
+		ds_writew(ANI_ENABLED, 0);
 
 		/* delete every file in TEMP */
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
@@ -417,7 +417,7 @@ signed short load_game_state(void)
 		load_area_description(2);
 
 		ds_writews(0xc3cb, l1);
-		ds_writews(0x29ae, l4);
+		ds_writews(ANI_ENABLED, l4);
 
 		refresh_screen_size();
 	}

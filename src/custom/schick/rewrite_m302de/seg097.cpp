@@ -481,7 +481,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	signed short l11, l12, l13;
 	signed short l_si, l_di;
 
-	l13 = ds_readw(0x29ae);
+	l13 = ds_readw(ANI_ENABLED);
 	l12 = ds_readw(0xc3cb);
 	ds_writew(0xc3cb, 0);
 

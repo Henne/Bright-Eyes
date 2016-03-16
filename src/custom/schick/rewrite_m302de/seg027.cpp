@@ -331,7 +331,7 @@ void load_ani(const signed short nr)
 	if (nr == (signed short)ds_readw(CURRENT_ANI))
 		return;
 
-	ds_writew(0x29ae, 0);
+	ds_writew(ANI_ENABLED, 0);
 	/* set the new ani nr*/
 	ds_writew(CURRENT_ANI, nr);
 	/* clear the old ani */
