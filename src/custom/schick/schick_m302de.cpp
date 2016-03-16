@@ -3901,6 +3901,21 @@ static int n_seg109(unsigned offs)
 	}
 }
 
+static int n_seg110(unsigned offs)
+{
+	switch (offs) {
+	case 0x0121: {
+		return 0;
+	}
+	case 0x0280: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+	}
+}
+
 static int n_seg112(unsigned offs)
 {
 	switch (offs) {
@@ -11139,6 +11154,116 @@ static int seg109(unsigned short offs)
 	}
 }
 
+static int seg110(unsigned short offs)
+{
+	switch (offs) {
+	case 0x25: {
+		/* chest function */
+		return 0;
+	}
+	case 0x2f: {
+		return 0;
+	}
+	case 0x34: {
+		return 0;
+	}
+	case 0x39: {
+		return 0;
+	}
+	case 0x3e: {
+		return 0;
+	}
+	case 0x43: {
+		return 0;
+	}
+	case 0x48: {
+		return 0;
+	}
+	case 0x4d: {
+		return 0;
+	}
+	case 0x52: {
+		return 0;
+	}
+	case 0x57: {
+		return 0;
+	}
+	case 0x5c: {
+		return 0;
+	}
+	case 0x61: {
+		return 0;
+	}
+	case 0x66: {
+		return 0;
+	}
+	case 0x6b: {
+		return 0;
+	}
+	case 0x70: {
+		return 0;
+	}
+	case 0x75: {
+		return 0;
+	}
+	case 0x7a: {
+		return 0;
+	}
+	case 0x7f: {
+		return 0;
+	}
+	case 0x84: {
+		return 0;
+	}
+	case 0x89: {
+		return 0;
+	}
+	case 0x8e: {
+		return 0;
+	}
+	case 0x93: {
+		return 0;
+	}
+	case 0x98: {
+		return 0;
+	}
+	case 0x9d: {
+		return 0;
+	}
+	case 0xa2: {
+		return 0;
+	}
+	case 0xa7: {
+		return 0;
+	}
+	case 0xac: {
+		return 0;
+	}
+	case 0xb1: {
+		return 0;
+	}
+	case 0xb6: {
+		return 0;
+	}
+	case 0xbb: {
+		return 0;
+	}
+	case 0xc0: {
+		return 0;
+	}
+	case 0xc5: {
+		return 0;
+	}
+	case 0xca: {
+		return 0;
+	}
+	default:
+		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+		exit(1);
+		return 0;
+	}
+}
+
 static int seg111(unsigned short offs)
 {
 	switch (offs) {
@@ -11883,7 +12008,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		case 0x1491:	return seg107(offs);
 		case 0x1498:	return seg108(offs);
 		case 0x149b:	return seg109(offs);
-		case 0x14a7:	return 0;
+		case 0x14a7:	return seg110(offs);
 		case 0x14b4:	return seg111(offs);
 		case 0x14bb:	return seg112(offs);
 		case 0x14c2:	return seg113(offs);
@@ -11967,6 +12092,7 @@ int schick_nearcall_v302de(unsigned offs)
 	else if (is_ovrseg(0x1485)) retval = n_seg105(offs);
 	else if (is_ovrseg(0x148c)) retval = n_seg106(offs);
 	else if (is_ovrseg(0x149b)) retval = n_seg109(offs);
+	else if (is_ovrseg(0x14a7)) retval = n_seg110(offs);
 	else if (is_ovrseg(0x14bb)) retval = n_seg112(offs);
 	else if (is_ovrseg(0x14c2)) retval = n_seg113(offs);
 	else if (is_ovrseg(0x14e0)) retval = n_seg117(offs);
