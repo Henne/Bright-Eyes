@@ -11273,7 +11273,8 @@ static int seg110(unsigned short offs)
 		return 1;
 	}
 	case 0xca: {
-		return 0;
+		tevent_025();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
