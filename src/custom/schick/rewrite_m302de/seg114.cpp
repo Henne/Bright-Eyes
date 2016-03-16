@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg114 (travel events 6 / 10)
  *	Functions rewritten: 11/11 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg114.cpp
  */
 #include <stdio.h>
 
@@ -27,7 +31,6 @@ namespace M302de {
 #endif
 
 /* wall of rock */
-/* Borlandified and identical */
 void tevent_110(void)
 {
 	signed short i;
@@ -96,7 +99,6 @@ void tevent_110(void)
 }
 
 /* hunt a rhino */
-/* Borlandified and identical */
 void tevent_111(void)
 {
 	signed short counter;
@@ -285,7 +287,6 @@ void tevent_111(void)
 }
 
 /* a camp place */
-/* Borlandified and identical */
 void tevent_112(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3df9)) ||
@@ -308,7 +309,6 @@ void tevent_112(void)
 }
 
 /* FIRUN-temple in the wilderness */
-/* Borlandified and identical */
 void tevent_113(void)
 {
 	signed short answer;
@@ -354,7 +354,6 @@ void tevent_113(void)
 }
 
 /* a swamp */
-/* Borlandified and identical */
 void tevent_114(void)
 {
 	signed short i;
@@ -487,7 +486,6 @@ void tevent_114(void)
 }
 
 /* a camp place */
-/* Borlandified and identical */
 void tevent_116(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 6) > 0 && !ds_readb(0x3dfc)) ||
@@ -499,7 +497,6 @@ void tevent_116(void)
 }
 
 /* an avalance */
-/* Borlandified and identical */
 void tevent_117(void)
 {
 	signed short i;
@@ -528,7 +525,6 @@ void tevent_117(void)
 }
 
 /* a herb place */
-/* Borlandified and identical */
 void tevent_118(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 3) > 0 && !ds_readb(0x3dfd)) ||
@@ -542,7 +538,6 @@ void tevent_118(void)
 }
 
 /* a camp place */
-/* Borlandified and identical */
 void tevent_119(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3dfe)) ||
@@ -554,7 +549,6 @@ void tevent_119(void)
 }
 
 /* wolves attack */
-/* Borlandified and identical */
 void tevent_122(void)
 {
 	signed short answer;
@@ -586,7 +580,6 @@ void tevent_122(void)
 }
 
 /* a bridge */
-/* Borlandified and identical */
 void tevent_123(void)
 {
 	signed short i;
