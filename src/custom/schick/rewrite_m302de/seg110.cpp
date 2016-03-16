@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 18/35
+ *	Functions rewritten: 19/35
  */
 
 #include <stdio.h>
@@ -12,6 +12,7 @@
 #include "seg003.h"
 #include "seg007.h"
 #include "seg026.h"
+#include "seg032.h"
 #include "seg047.h"
 #include "seg092.h"
 #include "seg096.h"
@@ -20,6 +21,7 @@
 #include "seg105.h"
 #include "seg109.h"
 #include "seg110.h"
+#include "seg117.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -427,6 +429,42 @@ void tevent_030(void)
 	{
 		TRV_found_camp_place(0);
 		ds_writeb(0x3db2, 1);
+	}
+}
+
+/* Borlandified and identical */
+void tevent_031(void)
+{
+	signed short answer;
+
+	if (ds_readb(FIND_HYGGELIK))
+	{
+		search_ruin1();
+
+	} else if (!ds_readb(0x3db3))
+	{
+		load_in_head(49);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x00), 2,
+						get_city(0x04),
+						get_city(0x08));
+		} while (answer == -1);
+
+		if (answer == 2)
+		{
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 7) <= 0)
+			{
+				/* skill test failed */
+				ds_writeb(FIG_INITIATIVE, 1);
+				do_fight(FIGHTS_F031);
+			}
+		} else {
+			do_fight(FIGHTS_F031);
+		}
+
+		ds_writeb(0x3db3, 1);
 	}
 }
 
