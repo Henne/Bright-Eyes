@@ -28,6 +28,8 @@ void tevent_033(void);
 void tevent_034(void);
 /* 0x5c */
 void tevent_035(void);
+/* 0x61 */
+void tevent_036(void);
 
 /* 0x9d */
 void tevent_011(void);
