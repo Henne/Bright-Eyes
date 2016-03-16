@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 7/35
+ *	Functions rewritten: 8/35
  */
 
 #include <stdio.h>
@@ -219,6 +219,17 @@ void tevent_014_chest(RealPt chest)
 void tevent_015(void)
 {
 	TRV_found_inn(44, 67);
+}
+
+/* Borlandified and identical */
+void tevent_017(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3daa)) ||
+		ds_readb(0x3daa) != 0)
+	{
+		TRV_found_replenish_place(0);
+		ds_writeb(0x3daa, 1);
+	}
 }
 
 #if !defined(__BORLANDC__)
