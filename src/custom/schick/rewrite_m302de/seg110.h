@@ -8,6 +8,8 @@ void TRV_swim2(signed char, signed short);
 void tevent_014_chest(RealPt);
 /* 0x2a */
 void TRV_a_path(void);
+/* 0x2f */
+void tevent_026(void);
 
 /* 0x9d */
 void tevent_011(void);
