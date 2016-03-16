@@ -10,6 +10,8 @@ void TRV_a_path(void);
 
 /* 0x9d */
 void tevent_011(void);
+/* 0xa2 */
+void tevent_013(void);
 
 #if !defined(__BORLANDC__)
 }

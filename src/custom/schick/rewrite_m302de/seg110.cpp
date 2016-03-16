@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 3/35
+ *	Functions rewritten: 4/35
  */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
+#include "seg109.h"
 #include "seg110.h"
 
 #if !defined(__BORLANDC__)
@@ -162,6 +163,19 @@ void TRV_a_path(void)
 		}
 
 		GUI_output(get_city(0x94));
+	}
+}
+
+/* Borlandified and identical */
+void tevent_013(void)
+{
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 3) > 0 && !ds_readb(0x3da7)) ||
+		ds_readb(0x3da7) != 0)
+	{
+		ds_writeb(0x66d0, 123);
+		TRV_found_herb_place(0);
+		ds_writeb(0x66d0, -1);
+		ds_writeb(0x3da7, 1);
 	}
 }
 
