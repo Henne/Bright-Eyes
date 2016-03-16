@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 14/35
+ *	Functions rewritten: 15/35
  */
 
 #include <stdio.h>
@@ -341,6 +341,12 @@ void tevent_025(void)
 void tevent_026(void)
 {
 	TRV_cross_a_ford(get_city(0x120), 60, 0);
+}
+
+/* Borlandified and identical */
+void tevent_027(void)
+{
+	TRV_cross_a_ford(get_city(0x124), 30, 0);
 }
 
 #if !defined(__BORLANDC__)

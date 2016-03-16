@@ -10,6 +10,8 @@ void tevent_014_chest(RealPt);
 void TRV_a_path(void);
 /* 0x2f */
 void tevent_026(void);
+/* 0x34 */
+void tevent_027(void);
 
 /* 0x9d */
 void tevent_011(void);
