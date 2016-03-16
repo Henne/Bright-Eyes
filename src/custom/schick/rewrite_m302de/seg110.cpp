@@ -20,7 +20,6 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 void tevent_011(void)
 {
@@ -54,6 +53,7 @@ void tevent_011(void)
 
 			if (answer == 1)
 			{
+				/* just swim */
 				TRV_swim2(0, 5);
 				TRV_a_path();
 
@@ -67,7 +67,6 @@ void tevent_011(void)
 		}
 	}
 }
-#endif
 
 /**
  * \brief	all members of the current group try to swim
