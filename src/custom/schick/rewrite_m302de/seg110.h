@@ -12,6 +12,8 @@ void TRV_a_path(void);
 void tevent_026(void);
 /* 0x34 */
 void tevent_027(void);
+/* 0x39 */
+void tevent_028(void);
 
 /* 0x9d */
 void tevent_011(void);
