@@ -14,6 +14,7 @@
 #include "seg088.h"
 #include "seg090.h"
 #include "seg092.h"
+#include "seg110.h"
 #include "seg111.h"
 
 #include "t_map.h"
@@ -103,6 +104,17 @@ treasure_type t_map(RealPt ptr, const int off)
 		}
 
 		D1_TREAS("WARNING: call to seg092:0x%x\n", f_off);
+		break;
+	}
+
+	case 0x14a7: {
+		/* seg111.cpp: travel events 3 / 10 */
+
+		switch (f_off) {
+		case 0x25:	return (treasure_type)tevent_014_chest;
+		}
+
+		D1_TREAS("WARNING: call to seg111:0x%x\n", f_off);
 		break;
 	}
 

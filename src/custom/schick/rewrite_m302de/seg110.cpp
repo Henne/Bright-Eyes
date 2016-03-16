@@ -1,15 +1,19 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 4/35
+ *	Functions rewritten: 6/35
  */
 
 #include <stdio.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
+#include "seg003.h"
 #include "seg007.h"
+#include "seg026.h"
 #include "seg047.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -177,6 +181,38 @@ void tevent_013(void)
 		ds_writeb(0x66d0, -1);
 		ds_writeb(0x3da7, 1);
 	}
+}
+
+/* Borlandified and identical */
+void tevent_014(void)
+{
+	signed short answer;
+
+	if (!ds_readb(0x3da8))
+	{
+		load_in_head(55);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0xac), 2,
+						get_city(0xb0),
+						get_city(0xb4));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			/* examine the corpse */
+			loot_corpse((RealPt)RealMake(datseg, 0xb13e), get_city(0xb8), p_datseg + 0x3da8);
+		}
+	}
+}
+
+/* Borlandified and identical */
+void tevent_014_chest(RealPt chest)
+{
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x3e27));
+
+	loot_chest(Real2Host(chest), get_city(0xbc), get_city(0xc0));
 }
 
 #if !defined(__BORLANDC__)

@@ -4,7 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void TRV_swim2(signed char, signed short);
-
+/* 0x20 */
+void tevent_014_chest(RealPt);
 /* 0x2a */
 void TRV_a_path(void);
 
@@ -12,6 +13,8 @@ void TRV_a_path(void);
 void tevent_011(void);
 /* 0xa2 */
 void tevent_013(void);
+/* 0xa7 */
+void tevent_014(void);
 
 #if !defined(__BORLANDC__)
 }

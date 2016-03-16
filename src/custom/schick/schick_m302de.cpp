@@ -11165,8 +11165,10 @@ static int seg110(unsigned short offs)
 {
 	switch (offs) {
 	case 0x25: {
-		/* chest function */
-		return 0;
+		RealPt chest_ptr  = CPU_Pop32();
+		CPU_Push32(chest_ptr);
+		tevent_014_chest(chest_ptr);
+		return 1;
 	}
 	case 0x2f: {
 		return 0;
@@ -11243,7 +11245,8 @@ static int seg110(unsigned short offs)
 		return 1;
 	}
 	case 0xa7: {
-		return 0;
+		tevent_014();
+		return 1;
 	}
 	case 0xac: {
 		return 0;
