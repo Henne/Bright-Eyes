@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 10/35
+ *	Functions rewritten: 11/35
  */
 
 #include <stdio.h>
@@ -282,6 +282,36 @@ void tevent_021(void)
 		TRV_found_herb_place(1);
 		ds_writeb(0x66d0, -1);
 		ds_writeb(0x3dac, 1);
+	}
+}
+
+/* Borlandified and identical */
+void tevent_022(void)
+{
+	signed short answer;
+
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 0) > 0 && !ds_readb(0x3dad)) ||
+		ds_readb(0x3dad) != 0)
+	{
+		ds_writeb(0x3dad, 1);
+		if (TRV_found_camp_place(0))
+		{
+			if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 5) > 0 && !ds_readb(0x3dae)) ||
+				ds_readb(0x3dae) != 0)
+			{
+				do {
+					answer = GUI_radio(get_city(0xec), 2,
+								get_city(0xf0),
+								get_city(0xf4));
+				} while (answer == -1);
+
+				if (answer == 1)
+				{
+					TRV_hunt_generic(25, 62, -2, 2, 8, 3, 7, 2, 4, 30, 6);
+					ds_writeb(0x3dae, 1);
+				}
+			}
+		}
 	}
 }
 
