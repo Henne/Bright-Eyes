@@ -288,9 +288,9 @@ void tevent_071(void)
 }
 
 /**
- * \brief	all members of the current try to swim
+ * \brief	all members of the current group try to swim
  * \param	mod	modificator for the swim test
- * \param	percent	to get infectect with NUMBSKULL
+ * \param	percent	probability to loose an item
  */
 void TRV_swimm(signed short mod, signed short percent)
 {
@@ -328,7 +328,6 @@ void TRV_swimm(signed short mod, signed short percent)
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
 	}
-
 }
 
 /* a herb place you need to swim to */
