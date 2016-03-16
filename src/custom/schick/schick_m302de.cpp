@@ -3914,7 +3914,8 @@ static int n_seg110(unsigned offs)
 		return 1;
 	}
 	case 0x0280: {
-		return 0;
+		TRV_a_path();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

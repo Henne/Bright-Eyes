@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 2/35
+ *	Functions rewritten: 3/35
  */
 
 #include <stdio.h>
@@ -55,13 +55,14 @@ void tevent_011(void)
 			if (answer == 1)
 			{
 				TRV_swim2(0, 5);
-				func2();
+				TRV_a_path();
 
-			} else if (answer == 2) {
-
+			} else if (answer == 2)
+			{
+				/* build a raft */
 				timewarp(HOURS(1));
 				TRV_swim2(0, 0);
-				func2();
+				TRV_a_path();
 			}
 		}
 	}
@@ -121,13 +122,49 @@ void TRV_swim2(signed char mod, signed short percent)
 
 }
 
-#if defined(__BORLANDC__)
+/* a path between SERSKE and PEILINEN */
+/* Borlandified and identical */
 /* should be static */
-void func2(void)
+void TRV_a_path(void)
 {
+	signed short answer;
 
+	do {
+		answer = GUI_radio(get_city(0x84), 2,
+					get_city(0x88),
+					get_city(0x8c));
+	} while (answer == -1);
+
+	if (answer == 1)
+	{
+		/* follow the path */
+		ds_writeb(0xe4a2, (ds_readb(CURRENT_TOWN) == 4 ? 2 : 4));
+		ds_writeb(0x4333, 1);
+	} else {
+		/* swim back */
+
+		do {
+			answer = GUI_radio(get_city(0x90), 2,
+						get_city(0x70),
+						get_city(0x74));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			/* just swim */
+			TRV_swim2(0, 5);
+
+		/* TODO: this test is bogus, just an else case */
+		} else if (answer == 2)
+		{
+			/* build a raft */
+			timewarp(HOURS(1));
+			TRV_swim2(0, 0);
+		}
+
+		GUI_output(get_city(0x94));
+	}
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }
