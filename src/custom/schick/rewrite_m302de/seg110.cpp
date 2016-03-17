@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 30/35
+ *	Functions rewritten: 31/35
  */
 
 #include <stdio.h>
@@ -677,6 +677,33 @@ void tevent_044(void)
 			timewarp(HOURS(1));
 
 			add_hero_ap_all(10);
+		}
+	}
+}
+
+/* a farmer */
+/* Borlandified and identical */
+void tevent_045(void)
+{
+	signed short answer;
+
+	if (ds_readw(0x434a) == 40)
+	{
+		load_in_head(11);
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						get_city(0x90), 3,
+						get_city(0x94),
+						get_city(0x98),
+						get_city(0x9c));
+		} while (answer == -1);
+
+		if (answer == 1 || answer == 2)
+		{
+			timewarp(MINUTES(15));
+
+			GUI_dialog_na(0, (Bit8u*)(answer == 1 ? get_city(0xa0) : get_city(0xa4)));
 		}
 	}
 }
