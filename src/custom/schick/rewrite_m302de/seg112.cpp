@@ -471,7 +471,7 @@ void tevent_074(void)
 		if (answer == 1) {
 
 			/* fight */
-			ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+			ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 
 		} else if (answer == 2) {
 
@@ -481,7 +481,7 @@ void tevent_074(void)
 			{
 				/* failed, so fight */
 				ds_writeb(FIG_INITIATIVE, 1);
-				ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+				ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 
 			} else {
 
@@ -525,7 +525,7 @@ void tevent_074(void)
 
 				if (p_money < 1500) {
 					/* not enough money, so fight */
-					ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+					ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 				} else {
 					/* pay 1500 */
 					p_money -= 1500;
@@ -535,7 +535,7 @@ void tevent_074(void)
 			} else if (answer == 2) {
 
 				/* fight */
-				ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+				ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 
 			} else {
 
@@ -546,7 +546,7 @@ void tevent_074(void)
 				{
 					/* fight */
 					ds_writeb(FIG_INITIATIVE, 1);
-					ds_writeb(0x3e16, (signed char)TRV_fight_event(182, 74));
+					ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 				}
 			}
 		}
@@ -583,19 +583,19 @@ void tevent_075(void)
 
 				ds_writeb(FIG_INITIATIVE, 2);
 
-				ret = TRV_fight_event(183, 75);
+				ret = TRV_fight_event(FIGHTS_F075_A, 75);
 
 			} else if (answer == 2) {
 
-				i = 184;
+				i = FIGHTS_F075_B;
 
 				if (!ds_readb(0x3e16) && !ds_readb(0x3e17)) {
 
-					i = 183;
+					i = FIGHTS_F075_A;
 
 				} else if (ds_readb(0x3e16) != 0 && ds_readb(0x3e17) != 0) {
 
-					i = 185;
+					i = FIGHTS_F075_C;
 				}
 
 				ret = TRV_fight_event(i, 75);
@@ -620,15 +620,15 @@ void tevent_075(void)
 
 					ds_writeb(FIG_INITIATIVE, 1);
 
-					i = 184;
+					i = FIGHTS_F075_B;
 
 					if (!ds_readb(0x3e16) && !ds_readb(0x3e17)) {
 
-						i = 183;
+						i = FIGHTS_F075_A;
 
 					} else if (ds_readb(0x3e16) != 0 && ds_readb(0x3e17) != 0) {
 
-						i = 185;
+						i = FIGHTS_F075_C;
 					}
 
 					ret = TRV_fight_event(i, 75);
@@ -721,7 +721,7 @@ void tevent_077(void)
 
 				/* test failed, so fight */
 				ds_writeb(FIG_INITIATIVE, 1);
-				ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+				ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 
 			} else {
 
@@ -766,7 +766,7 @@ void tevent_077(void)
 
 				if (p_money < 1500) {
 					/* not enough money, so fight */
-					ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+					ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 				} else {
 					/* pay 1500 */
 					p_money -= 1500;
@@ -776,7 +776,7 @@ void tevent_077(void)
 			} else if (answer == 2) {
 
 				/* fight */
-				ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+				ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 
 			} else {
 
@@ -787,7 +787,7 @@ void tevent_077(void)
 				{
 					/* fight */
 					ds_writeb(FIG_INITIATIVE, 1);
-					ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+					ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 				}
 			}
 		}
