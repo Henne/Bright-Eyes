@@ -34,6 +34,8 @@ void tevent_036(void);
 void tevent_039(void);
 /* 0x6b */
 void tevent_040(void);
+/* 0x70 */
+void tevent_041(void);
 
 /* 0x9d */
 void tevent_011(void);
