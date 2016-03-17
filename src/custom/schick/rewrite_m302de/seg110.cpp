@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 31/35
+ *	Functions rewritten: 32/35
  */
 
 #include <stdio.h>
@@ -10,8 +10,12 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg003.h"
+#include "seg004.h"
 #include "seg007.h"
+#include "seg025.h"
 #include "seg026.h"
+#include "seg027.h"
+#include "seg029.h"
 #include "seg032.h"
 #include "seg047.h"
 #include "seg092.h"
@@ -706,6 +710,92 @@ void tevent_045(void)
 			GUI_dialog_na(0, (Bit8u*)(answer == 1 ? get_city(0xa0) : get_city(0xa4)));
 		}
 	}
+}
+
+/* abandoned inn */
+/* Borlandified and identical */
+void tevent_046(void)
+{
+	signed short answer;
+	signed short enter_inn;
+	Bit8u *hero;
+
+	enter_inn = 0;
+
+	/* pause traveling */
+	ds_writeb(0xe5d2, 1);
+
+	load_ani(12);
+	draw_main_screen();
+	init_ani(0);
+
+	do {
+		answer = GUI_radio(get_city(0xa8), 2,
+					get_city(0xac),
+					get_city(0xb0));
+	} while (answer == -1);
+
+	if (answer == 1)
+	{
+		/* make a camp */
+		ds_writew(CAMP_INCIDENT, 1);
+		ds_writeb(LOCATION, 6);
+		do_location();
+		ds_writeb(LOCATION, 0);
+		TRV_load_textfile(-1);
+
+		hero = (ds_readws(CAMP_INCIDENT) != -1 ? get_hero(ds_readw(CAMP_INCIDENT)) : Real2Host(get_first_hero_available_in_group()));
+		ds_writew(CAMP_INCIDENT, -1);
+
+		if (test_skill(hero, 51, 0) > 0)
+		{
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0xb4),
+				(char*)hero + HERO_NAME2,
+				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
+
+			do {
+				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
+							get_city(0xb8),
+							get_city(0xbc));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				ds_writeb(0x4333, 2);
+				enter_inn = 1;
+			}
+		}
+
+		if (!enter_inn)
+		{
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_city(0xc0),
+				(char*)hero + HERO_NAME2);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			ds_writew(FIG_DISCARD, 1);
+
+			TRV_fight_event(FIGHTS_F046, 46);
+
+			do {
+				answer = GUI_radio(get_city(0xc4), 2,
+							get_city(0xc8),
+							get_city(0xcc));
+			} while (answer == -1);
+
+			if (answer == 1)
+			{
+				ds_writeb(0x4333, 2);
+			}
+		}
+	}
+
+	set_var_to_zero();
+	/* resume traveling */
+	ds_writeb(0xe5d2, 0);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 #if !defined(__BORLANDC__)
