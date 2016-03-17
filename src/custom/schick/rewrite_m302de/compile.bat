@@ -96,6 +96,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG107.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG108.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG109.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG110.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG111.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG112.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG113.CPP
@@ -123,7 +124,6 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG091.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG093.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG094.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG110.CPP
 
 @REM examine the ouput and press anykey
 PAUSE

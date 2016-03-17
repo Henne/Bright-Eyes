@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
  *	Functions rewritten: 35/35 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg110.cpp
  */
 
 #include <stdio.h>
@@ -31,7 +35,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void tevent_011(void)
 {
 	signed short answer;
@@ -87,7 +90,6 @@ void tevent_011(void)
  * In seg112.cpp exists a similiar function called TRV_swim() for that purpose.
  */
 /* should be static */
-/* Borlandified and identical */
 void TRV_swim2(signed char mod, signed short percent)
 {
 	signed short i;
@@ -133,7 +135,6 @@ void TRV_swim2(signed char mod, signed short percent)
 }
 
 /* a path between SERSKE and PEILINEN */
-/* Borlandified and identical */
 /* should be static */
 void TRV_a_path(void)
 {
@@ -176,7 +177,6 @@ void TRV_a_path(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_013(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 3) > 0 && !ds_readb(0x3da7)) ||
@@ -189,7 +189,6 @@ void tevent_013(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_014(void)
 {
 	signed short answer;
@@ -213,7 +212,6 @@ void tevent_014(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_014_chest(RealPt chest)
 {
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x3e27));
@@ -221,13 +219,11 @@ void tevent_014_chest(RealPt chest)
 	loot_chest(Real2Host(chest), get_city(0xbc), get_city(0xc0));
 }
 
-/* Borlandified and identical */
 void tevent_015(void)
 {
 	TRV_found_inn(44, 67);
 }
 
-/* Borlandified and identical */
 void tevent_017(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3daa)) ||
@@ -238,7 +234,6 @@ void tevent_017(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_020(void)
 {
 	signed short answer;
@@ -278,7 +273,6 @@ void tevent_020(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_021(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 8) > 0 && !ds_readb(0x3dac)) ||
@@ -291,7 +285,6 @@ void tevent_021(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_022(void)
 {
 	signed short answer;
@@ -321,7 +314,6 @@ void tevent_022(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_024(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3daf)) ||
@@ -332,7 +324,6 @@ void tevent_024(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_025(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 1) > 0 && !ds_readb(0x3db0)) ||
@@ -343,19 +334,16 @@ void tevent_025(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_026(void)
 {
 	TRV_cross_a_ford(get_city(0x120), 60, 0);
 }
 
-/* Borlandified and identical */
 void tevent_027(void)
 {
 	TRV_cross_a_ford(get_city(0x124), 30, 0);
 }
 
-/* Borlandified and identical */
 void tevent_028(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3db1)) ||
@@ -366,7 +354,6 @@ void tevent_028(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_029(void)
 {
 	signed short i;
@@ -425,7 +412,6 @@ void tevent_029(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_030(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 0) > 0 && !ds_readb(0x3db2)) ||
@@ -436,7 +422,6 @@ void tevent_030(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_031(void)
 {
 	signed short answer;
@@ -472,7 +457,6 @@ void tevent_031(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_032(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3db4)) ||
@@ -493,7 +477,6 @@ void tevent_032(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_033(void)
 {
 	signed short answer;
@@ -516,7 +499,6 @@ void tevent_033(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_034(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3db6)) ||
@@ -527,7 +509,6 @@ void tevent_034(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_035(void)
 {
 	signed short answer;
@@ -556,7 +537,6 @@ void tevent_035(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_036(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3db8)) ||
@@ -578,7 +558,6 @@ void tevent_036(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_039(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 4) > 0 && !ds_readb(0x3dbb)) ||
@@ -589,7 +568,6 @@ void tevent_039(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_040(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 4) > 0 && !ds_readb(0x3dbc)) ||
@@ -600,7 +578,6 @@ void tevent_040(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_041(void)
 {
 	signed short answer;
@@ -624,7 +601,6 @@ void tevent_041(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_042(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3dbe)) ||
@@ -635,7 +611,6 @@ void tevent_042(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_043(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dbf)) ||
@@ -647,7 +622,6 @@ void tevent_043(void)
 }
 
 /* dying adventuress */
-/* Borlandified and identical */
 void tevent_044(void)
 {
 	signed short answer;
@@ -686,7 +660,6 @@ void tevent_044(void)
 }
 
 /* a farmer */
-/* Borlandified and identical */
 void tevent_045(void)
 {
 	signed short answer;
@@ -713,7 +686,6 @@ void tevent_045(void)
 }
 
 /* abandoned inn */
-/* Borlandified and identical */
 void tevent_046(void)
 {
 	signed short answer;
@@ -798,7 +770,6 @@ void tevent_046(void)
 	ds_writew(REQUEST_REFRESH, 1);
 }
 
-/* Borlandified and identical */
 void tevent_048(void)
 {
 	signed short answer;
@@ -829,7 +800,6 @@ void tevent_048(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_049(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3dc2)) ||
@@ -840,7 +810,6 @@ void tevent_049(void)
 	}
 }
 
-/* Borlandified and identical */
 void tevent_050(void)
 {
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dc3)) ||
