@@ -244,7 +244,7 @@ void TRV_event(signed short travel_event)
 	if (event_handler) event_handler();
 
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
-	ds_writeb(TRAVELING, traveling_bak);
+	ds_writeb(TRAVELING, (signed char)traveling_bak);
 	ds_writews(0x2ca2, bak1);
 	ds_writews(0x2ca4, bak2);
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
