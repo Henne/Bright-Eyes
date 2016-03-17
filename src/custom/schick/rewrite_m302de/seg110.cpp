@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 32/35
+ *	Functions rewritten: 33/35
  */
 
 #include <stdio.h>
@@ -796,6 +796,37 @@ void tevent_046(void)
 	/* resume traveling */
 	ds_writeb(0xe5d2, 0);
 	ds_writew(REQUEST_REFRESH, 1);
+}
+
+/* Borlandified and identical */
+void tevent_048(void)
+{
+	signed short answer;
+
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dc0)) ||
+		ds_readb(0x3dc0) != 0)
+	{
+		ds_writeb(0x3dc0, 1);
+
+		if (TRV_found_camp_place(0))
+		{
+			if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 3) > 0 && !ds_readb(0x3dc1)) ||
+				ds_readb(0x3dc1) != 0)
+			{
+				do {
+					answer = GUI_radio(get_city(0xd0), 2,
+								get_city(0xd4),
+								get_city(0xd8));
+				} while (answer == -1);
+
+				if (answer == 1)
+				{
+					TRV_hunt_generic(21, 55, -2, 2, 8, 3, 5, 2, 4, 25, 12);
+					ds_writeb(0x3dc1, 1);
+				}
+			}
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)
