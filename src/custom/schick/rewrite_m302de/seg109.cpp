@@ -27,9 +27,170 @@
 #include "seg103.h"
 #include "seg105.h"
 #include "seg109.h"
+#include "seg110.h"
+#include "seg111.h"
+#include "seg112.h"
+#include "seg113.h"
+#include "seg114.h"
+#include "seg115.h"
+#include "seg116.h"
+#include "seg117.h"
+#include "seg118.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
+#endif
+
+#if !defined(__BORLANDC__)
+
+static void (*handler[])(void) = {
+	NULL,
+	tevent_001,
+	tevent_002,
+	tevent_003,
+	tevent_004,
+	tevent_005,
+	tevent_006,
+	tevent_007,
+	tevent_008,
+	tevent_009,
+	tevent_010,
+	tevent_011,
+	tevent_012,
+	tevent_013,
+	tevent_014,
+	tevent_015,
+	tevent_016,
+	tevent_017,
+	tevent_018,
+	tevent_019,
+	tevent_020,
+	tevent_021,
+	tevent_022,
+	tevent_023,
+	tevent_024,
+	tevent_025,
+	tevent_026,
+	tevent_027,
+	tevent_028,
+	tevent_029,
+	tevent_030,
+	tevent_031,
+	tevent_032,
+	tevent_033,
+	tevent_034,
+	tevent_035,
+	tevent_036,
+	tevent_037,
+	tevent_038,
+	tevent_039,
+	tevent_040,
+	tevent_041,
+	tevent_042,
+	tevent_043,
+	tevent_044,
+	tevent_045,
+	tevent_046,
+	tevent_047,
+	tevent_048,
+	tevent_049,
+	tevent_050,
+	tevent_051,
+	tevent_052,
+	tevent_053,
+	tevent_054,
+	tevent_055,
+	tevent_056,
+	tevent_057,
+	tevent_058,
+	tevent_059,
+	tevent_060,
+	tevent_061,
+	tevent_062,
+	tevent_063,
+	tevent_064,
+	tevent_065,
+	tevent_066,
+	tevent_067,
+	tevent_068,
+	tevent_069,
+	tevent_070,
+	tevent_071,
+	tevent_072,
+	tevent_073,
+	tevent_074,
+	tevent_075,
+	tevent_076,
+	tevent_077,
+	tevent_078,
+	tevent_079,
+	tevent_080,
+	tevent_081,
+	tevent_082,
+	tevent_083,
+	tevent_084,
+	tevent_085,
+	tevent_086,
+	tevent_087,
+	tevent_088,
+	tevent_089,
+	tevent_090,
+	tevent_091,
+	tevent_092,
+	tevent_093,
+	tevent_094,
+	tevent_095,
+	tevent_096,
+	tevent_097,
+	tevent_098,
+	tevent_099,
+	tevent_100,
+	tevent_101,
+	tevent_102,
+	tevent_103,
+	tevent_104,
+	tevent_105,
+	tevent_106,
+	tevent_107,
+	tevent_108,
+	tevent_109,
+	tevent_110,
+	tevent_111,
+	tevent_112,
+	tevent_113,
+	tevent_114,
+	tevent_115,
+	tevent_116,
+	tevent_117,
+	tevent_118,
+	tevent_119,
+	tevent_120,
+	tevent_121,
+	tevent_122,
+	tevent_123,
+	tevent_124,
+	tevent_125,
+	tevent_126,
+	tevent_127,
+	tevent_128,
+	tevent_129,
+	tevent_130,
+	tevent_131,
+	tevent_132,
+	tevent_133,
+	tevent_134,
+	tevent_135,
+	tevent_136,
+	tevent_137,
+	tevent_138,
+	tevent_139,
+	tevent_140,
+	tevent_141,
+	tevent_142,
+	tevent_143,
+	tevent_144,
+	tevent_145,
+};
 #endif
 
 void TRV_load_textfile(signed short travel_event)
@@ -53,7 +214,6 @@ void TRV_load_textfile(signed short travel_event)
 	ds_writews(0xb133, travel_event);
 }
 
-#if defined(__BORLANDC__)
 void TRV_event(signed short travel_event)
 {
 	signed short tw_bak;
@@ -75,7 +235,11 @@ void TRV_event(signed short travel_event)
 	ds_writeb(0x2c98, 1);
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
 
+	#if defined(__BORLANDC__)
 	event_handler = (void (*)(void))ds_readd(TRAVEL_EVENT_HANDLERS + 4 * travel_event);
+	#else
+	event_handler = handler[travel_event];
+	#endif
 	if (event_handler) event_handler();
 
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
@@ -87,7 +251,6 @@ void TRV_event(signed short travel_event)
 	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 	ds_writew(WALLCLOCK_UPDATE, 1);
 }
-#endif
 
 /**
  * \brief	executes a fight and load a textfile

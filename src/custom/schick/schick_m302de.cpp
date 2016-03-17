@@ -3698,12 +3698,8 @@ static int n_seg109(unsigned offs)
 		CPU_Push16(t_event);
 
 		D1_INFO("Reisebegegnung %d\n", t_event);
-#if 0
 		TRV_event(t_event);
 		return 1;
-#else
-		return 0;
-#endif
 	}
 	case 0x012b: {
 		Bit16s fight_nr = CPU_Pop16();

@@ -57,9 +57,7 @@ void tevent_092(void);
 /* 0x9d */
 void TRV_load_textfile(signed short);
 /* 0xa2 */
-#if defined(__BORLANDC__)
 void TRV_event(signed short);
-#endif
 /* 0xa7 */
 signed short TRV_fight_event(signed short, signed short);
 /* 0xac */
