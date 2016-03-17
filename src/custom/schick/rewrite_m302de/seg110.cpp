@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg110 (travel events 2 / 10)
- *	Functions rewritten: 29/35
+ *	Functions rewritten: 30/35
  */
 
 #include <stdio.h>
@@ -639,6 +639,45 @@ void tevent_043(void)
 	{
 		TRV_found_replenish_place(0);
 		ds_writeb(0x3dbf, 1);
+	}
+}
+
+/* dying adventuress */
+/* Borlandified and identical */
+void tevent_044(void)
+{
+	signed short answer;
+	Bit8u *hero;
+
+	if (!ds_readb(0x3def))
+	{
+		ds_writeb(0x3def, 1);
+
+		load_in_head(1);
+
+		hero = Real2Host(get_first_hero_available_in_group());
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
+			(char*)get_city(0x84),
+			(char*)hero + HERO_NAME2,
+			(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
+
+		do {
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
+						Real2Host(ds_readd(DTP2)) + 0x400, 2,
+						get_city(0x88),
+						get_city(0x8c));
+		} while (answer == -1);
+
+		if (answer == 2)
+		{
+			/* bury her */
+			add_ds_ds(GODS_ESTIMATION + 4 * 5, 50L);
+
+			timewarp(HOURS(1));
+
+			add_hero_ap_all(10);
+		}
 	}
 }
 
