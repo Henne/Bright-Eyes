@@ -181,8 +181,10 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
 
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* not a real BUG, but very useless */
-	if (host_readb(hero + HERO_TYPE) == 0)
+	if (host_readb(hero + HERO_TYPE) == 0) {
+		D1_ERR("WARNING: called %s with an invalid hero\n", __func__);
 		return;
+	}
 #endif
 
 	/* check the probability and if hero is diseased*/
