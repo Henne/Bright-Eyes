@@ -3060,6 +3060,11 @@ static int n_seg092(unsigned short offs)
 static int n_seg094(unsigned short offs)
 {
 	switch (offs) {
+	case 0x0000: {
+		D1_LOG("prepare_map_marker()\n");
+		prepare_map_marker();
+		return 1;
+	}
 	case 0x0092: {
 		Bit16s town_id = CPU_Pop16();
 		CPU_Push16(town_id);
@@ -3070,7 +3075,14 @@ static int n_seg094(unsigned short offs)
 	case 0x0125: {
 		return 0;
 	}
+	case 0x0c29: {
+		// Never called
+		return 0;
+	}
 	case 0x0de2: {
+		return 0;
+	}
+	case 0x0dfd: {
 		return 0;
 	}
 	case 0x0f0e: {
@@ -3079,7 +3091,14 @@ static int n_seg094(unsigned short offs)
 	case 0x0f58: {
 		return 0;
 	}
+	case 0x1058: {
+		//Never called
+		return 0;
+	}
 	case 0x105d: {
+		return 0;
+	}
+	case 0x10ab: {
 		return 0;
 	}
 	default:
@@ -9707,22 +9726,13 @@ static int seg092(unsigned short offs) {
 	}
 }
 
-static int seg094(unsigned short offs) {
+static int seg094(unsigned short offs)
+{
 	switch (offs) {
-	case 0x25: {
-		return 0;
-	}
-	case 0x2a: {
-		return 0;
-	}
-	case 0x2f: {
-		D1_LOG("prepare_map_marker()\n");
-		prepare_map_marker();
-		return 1;
-	}
-	case 0x48: {
-		return 0;
-	}
+	case 0x25:	return n_seg094(0x10ab);
+	case 0x2a:	return n_seg094(0x0125);
+	case 0x2f:	return n_seg094(0x0000);
+	case 0x48:	return n_seg094(0x0dfd);
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
 		exit(1);
