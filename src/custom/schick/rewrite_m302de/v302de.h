@@ -268,6 +268,11 @@ static inline void sub_ptr_ws(Bit8u *p, Bit16s val)
 	host_writews(p, host_readws(p) - val);
 }
 
+static inline void mul_ptr_ws(Bit8u *p, Bit16s val)
+{
+	host_writews(p, host_readws(p) * val);
+}
+
 static inline Bit32s add_ptr_ds(Bit8u *p, Bit32s val)
 {
 	return host_writeds(p, host_readds(p) + val);
@@ -953,6 +958,7 @@ extern char ds[0xf7af];
 
 #define add_ptr_ws(p, v)	(*(Bit16s*)(p)+=v)
 #define sub_ptr_ws(p, v)	(*(Bit16s*)(p)-=v)
+#define mul_ptr_ws(p, v)	(*(Bit16s*)(p)*=v)
 
 #define add_ptr_ds(p, v)	(*(Bit32s*)(p)+=v)
 #define sub_ptr_ds(p, v)	(*(Bit32s*)(p)-=v)
