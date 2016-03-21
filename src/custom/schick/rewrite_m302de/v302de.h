@@ -125,6 +125,11 @@ static inline void and_ds_ws(Bit16u off, Bit16s val)
 	ds_writew(off, ds_readws(off) & val);
 }
 
+static inline void shr_ds_ws(Bit16u off, Bit16s val)
+{
+	ds_writew(off, ds_readw(off) >> val);
+}
+
 static inline Bit32s add_ds_ds(Bit16u off, Bit32s val)
 {
 	return ds_writed(off, ds_readds(off) + val);
@@ -940,6 +945,7 @@ extern char ds[0xf7af];
 #define div_ds_ws(o, v)		(*(Bit16s*)(ds + o) /= v)
 #define mod_ds_ws(o, v)		(*(Bit16s*)(ds + o) %= v)
 #define and_ds_ws(o, v)		(*(Bit16s*)(ds + o) &= v)
+#define shr_ds_ws(o, v)		(*(Bit16s*)(ds + o) >>= v)
 
 #define add_ds_ds(o, v)		(*(Bit32s*)(ds + o) += v)
 #define sub_ds_ds(o, v)		(*(Bit32s*)(ds + o) -= v)
