@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 3/11
+ *	Functions rewritten: 4/11
  */
 
 #include <string.h>
@@ -465,6 +465,76 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 	ds_writeb(SEA_TRAVEL, 0);
 }
+#endif
+
+/* Borlandified and identical */
+signed short TM_unused1(RealPt ptr, signed short off)
+{
+	signed short l_di;
+	signed short l4;
+	signed short answer;
+	signed short l5;
+	signed short l6;
+	signed short l7;
+	signed short l8;
+	Bit8u *array[7];
+
+	l8 = host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + off) - 1;
+	ds_writeb(CURRENT_TOWN, (signed char)(l7 = ds_readws(0x434a)));
+	ptr = (RealPt)RealMake(datseg, 0xa0b4);
+
+	do {
+		if (host_readb(Real2Host(ptr)) == l7)
+		{
+			l_di = 0;
+			while (host_readbs(Real2Host(host_readd(Real2Host(ptr) + 2)) + l_di) != -1)
+			{
+				if (host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + l_di) - 1 == l8 &&
+					(l_di || host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + (l_di + 1)) != 255))
+				{
+					l5 = l6 = 0;
+					while ((l4 = host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + l6)) != 255)
+					{
+						if (l6 != l_di)
+						{
+							array[l5++] = get_ltx(4 * (0xeb + ds_writebs(0x4344 + l5, ((answer = ds_readb(0x9dbd + 9 * l4)) != ds_readbs(CURRENT_TOWN) ? (unsigned char)answer : ds_readb(0x9dbe + 9 * l4)))));
+						}
+						l6++;
+					}
+
+					ds_writeb(0x4344 + l5, (signed char)l7);
+					array[l5] = get_ltx(0x88c);
+					l5++;
+					ds_writed(0x4340, (Bit32u)ptr);
+
+					set_textbox_positions(l7);
+					answer = GUI_radio(get_ltx(0x888), (signed char)l5,
+								array[0],
+								array[1],
+								array[2],
+								array[3],
+								array[4],
+								array[5]);
+
+					if (answer == -1)
+					{
+						answer = l5;
+					}
+
+					ds_writew(0x434a, ds_readbs(0x4343 + answer));
+					return answer;
+				}
+
+				l_di++;
+			}
+		}
+
+		ptr += 6;
+
+	} while (host_readbs(Real2Host(ptr)) != -1);
+
+	return -1;
+}
 
 signed short TM_get_track_length(Bit8u *track)
 {
@@ -480,6 +550,7 @@ signed short TM_get_track_length(Bit8u *track)
 	return length;
 }
 
+#if defined(__BORLANDC__)
 void TM_func8(signed short a1)
 {
 }

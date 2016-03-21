@@ -15,6 +15,8 @@ void prepare_map_marker(void);
 /* 0x34 */
 /* static */
 void set_textbox_positions(signed short);
+/* 0x39 */
+signed short TM_unused1(RealPt, signed short);
 
 #if defined(__BORLANDC__)
 /* 0x43 */
