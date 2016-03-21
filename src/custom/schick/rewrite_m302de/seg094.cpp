@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 4/11
+ *	Functions rewritten: 5/11
  */
 
 #include <string.h>
@@ -536,6 +536,7 @@ signed short TM_unused1(RealPt ptr, signed short off)
 	return -1;
 }
 
+/* Borlandified and identical */
 signed short TM_get_track_length(Bit8u *track)
 {
 	signed short length;

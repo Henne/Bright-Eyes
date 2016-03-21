@@ -18,10 +18,8 @@ void set_textbox_positions(signed short);
 /* 0x39 */
 signed short TM_unused1(RealPt, signed short);
 
-#if defined(__BORLANDC__)
 /* 0x43 */
 signed short TM_get_track_length(Bit8u*);
-#endif
 
 
 #if !defined(__BORLANDC__)

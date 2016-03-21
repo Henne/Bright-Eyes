@@ -3080,7 +3080,11 @@ static int n_seg094(unsigned short offs)
 		return 0;
 	}
 	case 0x0de2: {
-		return 0;
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+		reg_ax = TM_get_track_length(Real2Host(ptr));
+		D1_LOG("TM_get_track_length() = %d\n", reg_ax);
+		return 1;
 	}
 	case 0x0dfd: {
 		return 0;
