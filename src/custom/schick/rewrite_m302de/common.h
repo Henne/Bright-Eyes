@@ -29,6 +29,13 @@ struct screen_rect {
 	short y1, x1, y2, x2;
 };
 
+enum {
+	NORTH = 0,
+	EAST = 1,
+	SOUTH = 2,
+	WEST = 3
+};
+
 /**
  *	struct hero_status - status of the hero
  *	@dead:		1 = dead		/ 0 = not dead
