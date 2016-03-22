@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
  *	Functions rewritten: 11/11 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1- Yo seg094.cpp
  */
 
 #include <string.h>
@@ -24,7 +28,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 void prepare_map_marker(void)
 {
 	signed short i;
@@ -54,7 +57,6 @@ void prepare_map_marker(void)
 	set_textbox_positions(ds_readbs(CURRENT_TOWN));
 }
 
-/* Borlandified and identical */
 void set_textbox_positions(signed short town_id)
 {
 	signed short x;
@@ -81,7 +83,6 @@ void set_textbox_positions(signed short town_id)
  * \param route_nr	number of the route
  * \param backwards	0 = travel the route forwards, 1 = travel backwards
  */
-/* Borlandified and identical */
 void TM_func1(signed short route_nr, signed short backwards)
 {
 	RealPt fb_start;
@@ -465,7 +466,6 @@ void TM_func1(signed short route_nr, signed short backwards)
 	ds_writeb(SEA_TRAVEL, 0);
 }
 
-/* Borlandified and identical */
 signed short TM_unused1(RealPt ptr, signed short off)
 {
 	signed short l_di;
@@ -534,7 +534,6 @@ signed short TM_unused1(RealPt ptr, signed short off)
 	return -1;
 }
 
-/* Borlandified and identical */
 signed short TM_get_track_length(Bit8u *track)
 {
 	signed short length;
@@ -549,7 +548,6 @@ signed short TM_get_track_length(Bit8u *track)
 	return length;
 }
 
-/* Borlandified and identical */
 signed short TM_enter_target_town(void)
 {
 	signed short l_si;
@@ -619,7 +617,6 @@ signed short TM_enter_target_town(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 signed short TM_get_looking_direction(signed short coordinates)
 {
 	signed short x;
@@ -636,7 +633,6 @@ signed short TM_get_looking_direction(signed short coordinates)
 	return retval;
 }
 
-/* Borlandified and identical */
 void TM_draw_track(signed short a1, signed short a2, signed short a3, signed short a4)
 {
 	signed short i;
@@ -682,13 +678,11 @@ void TM_draw_track(signed short a1, signed short a2, signed short a3, signed sho
 	}
 }
 
-/* Borlandified and identical */
 void TM_unused2(void)
 {
 
 }
 
-/* Borlandified and identical */
 void TM_func8(signed short a1)
 {
 	if (!(ds_readb(0xe4a2) & 1))
@@ -709,7 +703,6 @@ void TM_func8(signed short a1)
 	}
 }
 
-/* Borlandified and identical */
 void TM_func9(void)
 {
 	TM_func1(59, ds_readb(0xe4a2) & 1);
