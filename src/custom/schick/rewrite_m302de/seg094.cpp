@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 5/11
+ *	Functions rewritten: 6/11
  */
 
 #include <string.h>
@@ -550,6 +550,84 @@ signed short TM_get_track_length(Bit8u *track)
 	}
 	return length;
 }
+
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+signed short TM_func2(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short l3;
+	Bit8u *ptr1;
+	Bit8u *ptr2;
+
+	l_di = 0;
+	ds_writew(0x4338, ds_readw(0x434a));
+	l_di = 1;
+
+	if (l_di)
+	{
+		ptr1 = p_datseg + 0xa0b4;
+		l_di = 0;
+		do {
+			if (host_readb(ptr1) == ds_readw(0x4338))
+			{
+				l_si = 0;
+
+				do {
+					l3 = host_readb(Real2Host(host_readd(ptr1 + 2)) + l_si) - 1;
+
+					if (ds_readbs(0x9dc6 + 9 * l3) == ds_readbs(CURRENT_TOWN) || ds_readbs(0x9dc7 + 9 * l3) == ds_readbs(CURRENT_TOWN))
+					{
+						l_di = host_readb(ptr1 + 1);
+						break;
+					}
+
+					l_si++;
+
+				} while (host_readb(Real2Host(host_readd(ptr1 + 2)) + l_si) != 255);
+			}
+
+			ptr1 += 6;
+
+		} while (!l_di && host_readb(ptr1) != 255);
+
+		if (l_di)
+		{
+			/* set the target town as current town */
+			l3 = ds_readbs(CURRENT_TOWN);
+			ds_writeb(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+
+			/* load the map */
+			call_load_area(1);
+
+			ptr2 = p_datseg + 0xc025;
+			while (host_readb(ptr2 + 2) != 12 || host_readb(ptr2 + 3) != l_di)
+			{
+				ptr2 += 6;
+			}
+
+			l_si = host_readws(ptr2 + 4);
+			ds_writew(0x433a, (l_si >> 8) & 0xff);
+			ds_writew(0x433c, l_si & 0xf);
+			ds_writew(0x433e, TM_func3(host_readws(ptr2)));
+
+			ds_writeb(CURRENT_TOWN, l3);
+
+			/* load the map */
+			call_load_area(1);
+		}
+	}
+
+	return 0;
+}
+#endif
+
+#if defined(__BORLANDC__)
+signed short TM_func3(signed short a1)
+{
+}
+#endif
 
 #if defined(__BORLANDC__)
 void TM_func8(signed short a1)
