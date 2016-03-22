@@ -147,7 +147,7 @@ void do_inn(void)
 
 	if (done == 0) {
 
-		refresh = ds_writews(0x2846, 1);
+		refresh = ds_writews(REQUEST_REFRESH, 1);
 
 		draw_loc_icons(ds_readws(COMBO_MODE) == 0 ? 7 : 8, 21, 13, 19, 25, 11, 17, 8, 50);
 
@@ -158,7 +158,7 @@ void do_inn(void)
 
 	while (done == 0) {
 
-		if (ds_readws(0x2846) != 0) {
+		if (ds_readws(REQUEST_REFRESH) != 0) {
 
 			draw_main_screen();
 
@@ -170,7 +170,7 @@ void do_inn(void)
 
 			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
 
-			ds_writews(0x2846, refresh = 0);
+			ds_writews(REQUEST_REFRESH, refresh = 0);
 		}
 
 		if (refresh != 0) {
@@ -199,7 +199,7 @@ void do_inn(void)
 
 		if (ds_readws(ACTION) == 129) {
 			talk_inn();
-			ds_writews(0x2846, 1);
+			ds_writews(REQUEST_REFRESH, 1);
 		} else if (ds_readws(ACTION) == 130) {
 
 			price = count_heroes_in_group() * (6L - host_readws(inn_ptr) / 4L);
@@ -329,7 +329,7 @@ void do_inn(void)
 		} else if (ds_readws(ACTION) == 132) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
-				GUI_use_talent2(0, get_ltx(0x62c));
+				GUI_use_skill2(0, get_ltx(0x62c));
 				refresh = 1;
 			} else {
 				GUI_output(get_ltx(0x568));

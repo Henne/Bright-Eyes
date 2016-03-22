@@ -58,30 +58,30 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 }
 
 /**
- *	status_show_talent -	prints talentname and value
- *	@hero:	the hero the talent is from
- *	@talen:	talentnumber
- *	@ftig:	the first talent in the talentgroup
+ *	status_show_skill -	prints skillname and value
+ *	@hero:	the hero the skill is from
+ *	@talen:	skillnumber
+ *	@ftig:	the first skill in the skillgroup
  *	@x1:	the leftmost x coordinate
  *	@x2:	the rightmost x coordinate
- *	@gy:	the upper y coordinate of this talentgroup
+ *	@gy:	the upper y coordinate of this skillgroup
  */
 /* Borlandified and identical */
-void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
+void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
 			unsigned short x1, unsigned short x2, unsigned short gy) {
 	unsigned short group;
 	char str[10];
 
-	group = talent - ftig;
+	group = skill - ftig;
 
-	/* print talentname */
-	GUI_print_string(get_ltx((talent + 0x30) * 4), x1, gy + group * 7);
+	/* print skillname */
+	GUI_print_string(get_ltx((skill + 0x30) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
 #if !defined(__BORLANDC__)
-	sprintf(str, "%d", host_readbs(hero + HERO_TA_FIGHT + talent));
+	sprintf(str, "%d", host_readbs(hero + HERO_TA_FIGHT + skill));
 #else
-	itoa(host_readbs(hero + HERO_TA_FIGHT + talent) , str, 10);
+	itoa(host_readbs(hero + HERO_TA_FIGHT + skill) , str, 10);
 #endif
 
 	/* print value */
@@ -89,17 +89,17 @@ void status_show_talent(Bit8u *hero, unsigned short talent, unsigned short ftig,
 }
 
 /**
- *	status_show_talents -	shows all talents and their values
- *	@hero:	the hero which talents should be shown
+ *	status_show_skills -	shows all skills and their values
+ *	@hero:	the hero whose skills should be shown
  */
 /* Borlandified and identical */
-void status_show_talents(Bit8u *hero) {
+void status_show_skills(Bit8u *hero) {
 
-	signed short i, j;
+	signed short skill_category, skill_nr;
 
 	set_textcolor(0xff, 2);
 
-	/* print talent category names */
+	/* print skill category names */
 	GUI_print_string(get_ltx(0x190),
 		GUI_get_first_pos_centered(get_ltx(0x190), 5, 100, 0), 55);
 
@@ -123,15 +123,15 @@ void status_show_talents(Bit8u *hero) {
 
 	set_textcolor(0, 2);
 
-	for (i = 0; i < 7; i++) {
-		j = ds_readbs(0x10ce + i * 2);
-		while (ds_readbs(0x10ce + i * 2) + ds_readbs(0x10cf + i * 2) > j) {
-			status_show_talent(hero, j,
-				ds_readbs(0x10ce + i * 2),
-				ds_readw(0x6476 + i * 6),
-				ds_readw((0x6476 + 2) + i * 6),
-				ds_readw((0x6476 + 4) + i * 6));
-			j++;
+	for (skill_category = 0; skill_category < 7; skill_category++) {
+		skill_nr = ds_readbs(SKILLS_INDEX + skill_category * 2);
+		while (ds_readbs(SKILLS_INDEX + skill_category * 2) + ds_readbs((SKILLS_INDEX + 1) + skill_category * 2) > skill_nr) {
+			status_show_skill(hero, skill_nr,
+				ds_readbs(SKILLS_INDEX + skill_category * 2),
+				ds_readw(0x6476 + skill_category * 6),
+				ds_readw((0x6476 + 2) + skill_category * 6),
+				ds_readw((0x6476 + 4) + skill_category * 6));
+			skill_nr++;
 		}
 	}
 }
@@ -201,9 +201,9 @@ void status_show(Bit16u index)
 	set_var_to_zero();
 	update_mouse_cursor();
 
-	if (ds_readb(0x2845) != 20) {
+	if (ds_readb(PP20_INDEX) != ARCHIVE_FILE_ZUSTA_UK) {
 		ds_writew(0xc3cb, 0);
-		ds_writeb(0x2845, 20);
+		ds_writeb(PP20_INDEX, ARCHIVE_FILE_ZUSTA_UK);
 		do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
 		wait_for_vsync();
 		set_palette(p_datseg + 0x6372, 0, 0x20);
@@ -240,12 +240,12 @@ void status_show(Bit16u index)
 
 		for (i = 0; i < 23; i++) {
 
-			if (host_readw(Real2Host(hero) + i * 14 + 0x196) == 0)
+			if (host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD) == 0)
 				continue;
 
 			nvf.dst = Real2Host(ds_readd(ICON));
 			/* set nr */
-			nvf.nr = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + 0x196)));
+			nvf.nr = host_readw(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD)));
 
 			process_nvf(&nvf);
 
@@ -262,15 +262,15 @@ void status_show(Bit16u index)
 
 			/* check if stackable */
 			/* TODO: bit flags operation */
-			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + 0x196)))) {
+			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD)))) {
 
 				set_textcolor(0xff, 0);
 				/* originally itoa() */
 #if !defined(__BORLANDC__)
 				sprintf((char*)Real2Host(ds_readd(DTP2)), "%d",
-					host_readw(Real2Host(hero) + i * 14 + 0x196 + 2));
+					host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD + 2));
 #else
-				itoa(host_readw(Real2Host(hero) + i * 14 + 0x196 + 2),
+				itoa(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD + 2),
 					(char*)Real2Host(ds_readd(DTP2)), 10);
 #endif
 
@@ -384,7 +384,7 @@ void status_show(Bit16u index)
 
 			for (i = 0; i <= 13; i++) {
 
-				val = host_readbs(Real2Host(hero) + i * 3 + 0x35)
+				val = host_readbs(Real2Host(hero) + i * 3 + HERO_MU)
 					+ host_readbs(Real2Host(hero) + i * 3 + 0x36);
 
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i * 10,
@@ -557,10 +557,10 @@ void status_show(Bit16u index)
 			ds_writew(TXT_TABPOS1, 275);
 			ds_writew(TXT_TABPOS2, 295);
 
-			j = (host_readbs(Real2Host(hero) + 0x38) +
-				host_readbs(Real2Host(hero) + 0x39) +
-				host_readbs(Real2Host(hero) + 0x41) +
-				host_readbs(Real2Host(hero) + 0x42) +
+			j = (host_readbs(Real2Host(hero) + HERO_KL) +
+				host_readbs(Real2Host(hero) + HERO_KL_MOD) +
+				host_readbs(Real2Host(hero) + HERO_GE) +
+				host_readbs(Real2Host(hero) + HERO_GE_MOD) +
 				host_readbs(Real2Host(hero) + HERO_KK) +
 				host_readbs(Real2Host(hero) + HERO_KK_MOD)) / 4;
 
@@ -598,43 +598,43 @@ void status_show(Bit16u index)
 				host_readbs(Real2Host(hero) + HERO_PA) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc4)),
 
-				host_readbs(Real2Host(hero) + 0x69) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				host_readbs(Real2Host(hero) + 0x70) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_AT + 1)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_PA + 1)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc8)),
 
-				host_readbs(Real2Host(hero) + 0x6a) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				host_readbs(Real2Host(hero) + 0x71) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_AT + 2)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_PA + 2)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xcc)),
 
-				host_readbs(Real2Host(hero) + 0x6b) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				host_readbs(Real2Host(hero) + 0x72) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_AT + 3)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_PA + 3)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd0)),
 
-				host_readbs(Real2Host(hero) + 0x6c) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				host_readbs(Real2Host(hero) + 0x73) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_AT + 4)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_PA + 4)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd4)),
 
-				host_readbs(Real2Host(hero) + 0x6d) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				host_readbs(Real2Host(hero) + 0x74) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_AT + 5)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_PA + 5)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd8)),
 
-				host_readbs(Real2Host(hero) + 0x6e) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				host_readbs(Real2Host(hero) + 0x75) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_AT + 6)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
+				host_readbs(Real2Host(hero) + (HERO_PA + 6)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				at,
 				pa,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xdc)),
-				host_readbs(Real2Host(hero) + 0x10f) + j,
+				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + 7)) + j,
 
 				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xe0)),
-				host_readbs(Real2Host(hero) + 0x110) + j);
+				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + 8)) + j);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 60);
 			break;
 		}
 		/* skills */
 		case 3: {
-			status_show_talents(Real2Host(hero));
+			status_show_skills(Real2Host(hero));
 			break;
 		}
 		/* spells */
@@ -687,13 +687,13 @@ void status_show(Bit16u index)
 
 			for (j = 0; j < 8; j++) {
 
-				i = ds_readbs(0xd03 + j * 2);
+				i = ds_readbs(SPELLS_INDEX + j * 2);
 
-				while (ds_readbs(0xd03 + j * 2) + ds_readbs(0xd03 + 1 + j * 2) > i) {
+				while (ds_readbs(SPELLS_INDEX + j * 2) + ds_readbs(SPELLS_INDEX + 1 + j * 2) > i) {
 
 					status_show_spell(Real2Host(hero),
 						i,
-						ds_readbs(0xd03 + j * 2),
+						ds_readbs(SPELLS_INDEX + j * 2),
 						ds_readws(0x642e + 0 + j * 6),
 						ds_readws(0x642e + 2 + j * 6),
 						ds_readws(0x642e + 4 + j * 6));
@@ -733,13 +733,13 @@ void status_show(Bit16u index)
 
 			for (j = 0; j < 4; j++) {
 
-				i = ds_readbs(0xd13 + j * 2);
+				i = ds_readbs(SPELLS_INDEX2 + j * 2);
 
-				while (ds_readbs(0xd13 + j * 2) + ds_readbs(0xd13 + 1 + j * 2) > i) {
+				while (ds_readbs(SPELLS_INDEX2 + j * 2) + ds_readbs(SPELLS_INDEX2 + 1 + j * 2) > i) {
 
 					status_show_spell(Real2Host(hero),
 						i,
-						ds_readbs(0xd13 + j * 2),
+						ds_readbs(SPELLS_INDEX2 + j * 2),
 						ds_readws(0x645e + 0 + j * 6),
 						ds_readws(0x645e + 2 + j * 6),
 						ds_readws(0x645e + 4 + j * 6));

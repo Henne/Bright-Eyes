@@ -83,7 +83,7 @@ void do_merchant(void)
 	}
 
 	load_ggsts_nvf();
-	refresh = ds_writews(0x2846, 1);
+	refresh = ds_writews(REQUEST_REFRESH, 1);
 
 	ds_writed(BUYITEMS, ds_readd(FIG_FIGURE1_BUF));
 	memset(Real2Host(ds_readd(BUYITEMS)), 0, 3500);
@@ -157,7 +157,7 @@ void do_merchant(void)
 
 	while (done == 0 && !ds_readb(0x3592 + ds_readws(TYPEINDEX))) {
 
-		if (ds_readws(0x2846) != 0) {
+		if (ds_readws(REQUEST_REFRESH) != 0) {
 
 			draw_loc_icons(4, 22, 24, 21, 8);
 
@@ -173,7 +173,7 @@ void do_merchant(void)
 
 			GUI_print_loc_line(ds_readbs(LOCATION) == 9 ? get_ltx(0xa9c) : (ds_readws(TYPEINDEX) == 93 ?  get_ltx(0xb8) : get_dtp(4 * ds_readws(CITYINDEX))));
 
-			ds_writew(0x2846, refresh = 0);
+			ds_writew(REQUEST_REFRESH, refresh = 0);
 
 		}
 

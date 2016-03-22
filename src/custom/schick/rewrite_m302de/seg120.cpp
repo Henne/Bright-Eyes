@@ -66,7 +66,7 @@ void rabies(RealPt hero, signed short hero_pos)
 	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos;
 	host_writeb(Real2Host(hero) + HERO_SEX, sex_bak);
 
-	if (ds_readbs(0x2845) == 0) {
+	if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 		draw_status_line();
 	}
 
@@ -118,7 +118,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 				if (answer != -1) {
 
-					talent_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
+					skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
 				}
 
 				done = 1;
@@ -144,7 +144,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						answer = select_hero_ok(get_ltx(0x62c));
 
 						if (answer != -1) {
-							talent_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
+							skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
 						}
 						break;
 					}
@@ -184,7 +184,7 @@ void rabies(RealPt hero, signed short hero_pos)
 								answer = select_hero_ok(get_ltx(0x62c));
 
 								if ((answer != -1) && (answer != hero_pos)) {
-									talent_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
+									skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
 								}
 							}
 						} else {
@@ -241,7 +241,7 @@ void rabies(RealPt hero, signed short hero_pos)
 		GRP_switch_to_next(1);
 	}
 
-	if (ds_readbs(0x2845) == 0) {
+	if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 		draw_status_line();
 	}
 }
@@ -588,7 +588,7 @@ void cleanup_game(void)
 	exit_AIL();
 
 	/* disable CD-Audio */
-	if (ds_readw(0x95) != 0) {
+	if (ds_readw(CD_INIT_SUCCESSFUL) != 0) {
 		CD_audio_stop();
 	}
 
@@ -709,7 +709,7 @@ void game_over_screen(void)
 
 	refresh_screen_size();
 
-	ds_writeb(0x2845, -1);
+	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 }
 
 /* Borlandified and identical */

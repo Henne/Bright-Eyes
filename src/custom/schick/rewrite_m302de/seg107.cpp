@@ -58,7 +58,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 
 	ds_writed(ITEMUSER, (Bit32u)((RealPt)ds_readd(HEROS) + hero_pos * SIZEOF_HERO));
 
-	ds_writew(USED_ITEM_ID, host_readws(get_itemuser() + ds_readws(USED_ITEM_POS) * 14 + 0x196));
+	ds_writew(USED_ITEM_ID, host_readws(get_itemuser() + ds_readws(USED_ITEM_POS) * 14 + HERO_ITEM_HEAD));
 
 	ds_writed(USED_ITEM_DESC, (Bit32u)((RealPt)ds_readd(ITEMSDAT) + ds_readws(USED_ITEM_ID) * 12));
 
@@ -67,7 +67,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 			if (!item_useable(Real2Host(ds_readd(USED_ITEM_DESC)))) {
 				/* item is not usable */
 
-				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + 0x29e)))
+				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + 0x029e)))
 				{
 					/* german grammar, singular and plural are the same */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -87,15 +87,15 @@ void use_item(signed short item_pos, signed short hero_pos)
 				/* don't consume poison */
 				consume(get_itemuser(), get_itemuser(), item_pos);
 
-			} else if ((host_readws(get_itemuser() + 14 * ds_readws(USED_ITEM_POS) + 0x198)) <= 0) {
+			} else if ((host_readws(get_itemuser() + 14 * ds_readws(USED_ITEM_POS) + (HERO_ITEM_HEAD + 2))) <= 0) {
 				/* magic item is used up */
 				GUI_output(get_ltx(0x9f8));
 			} else {
 				/* special item */
 #if !defined(__BORLANDC__)
-				func = handler[ds_readbs(0x08ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
+				func = handler[ds_readbs((0x08a9 + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
 #else
-				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs(0x08ab + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
+				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs((0x08a9 + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
 #endif
 				func();
 			}
@@ -124,7 +124,7 @@ void item_arcano(void)
 		/* use it */
 		spell_arcano();
 		/* decrement usage counter */
-		dec_ptr_ws(get_itemuser() + 0x198 + ds_readws(USED_ITEM_POS) * 14);
+		dec_ptr_ws(get_itemuser() + (HERO_ITEM_HEAD + 2) + ds_readws(USED_ITEM_POS) * 14);
 	}
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
@@ -209,7 +209,7 @@ void item_armatrutz(void)
 		/* use it */
 		spell_armatrutz();
 		/* decrement usage counter */
-		dec_ptr_ws(get_itemuser() + 0x198 + ds_readws(USED_ITEM_POS) * 14);
+		dec_ptr_ws(get_itemuser() + (HERO_ITEM_HEAD + 2) + ds_readws(USED_ITEM_POS) * 14);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 	}
@@ -237,7 +237,7 @@ void item_flimflam(void)
 	spell_flimflam();
 
 	/* decrement usage counter */
-	dec_ptr_ws(get_itemuser() + 0x198 + ds_readws(USED_ITEM_POS) * 14);
+	dec_ptr_ws(get_itemuser() + (HERO_ITEM_HEAD + 2) + ds_readws(USED_ITEM_POS) * 14);
 
 	if ((b1_index != -1) && (b1_index != 0xde)) {
 		/* need to reload buffer1 */
@@ -294,16 +294,16 @@ void item_weapon_poison(void)
 
 	signed short bottle;
 
-	if ((host_readws(get_itemuser() + 0x1c0) != 0) &&
-		(host_readws(get_itemuser() + 0x1c0) != 9) &&
-		(host_readws(get_itemuser() + 0x1c0) != 19) &&
-		(host_readws(get_itemuser() + 0x1c0) != 12))
+	if ((host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 0) &&
+		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 9) &&
+		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 19) &&
+		(host_readws(get_itemuser() + HERO_ITEM_RIGHT) != 12))
 	{
 
 		switch (ds_readws(USED_ITEM_ID)) {
 		case 168 : {
 			/* VOMICUM */
-			or_ptr_bs(get_itemuser() + 0x1c4, 0x40);
+			or_ptr_bs(get_itemuser() + (HERO_ITEM_RIGHT + 4), 0x40);
 
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 168), 1);
 
@@ -312,7 +312,7 @@ void item_weapon_poison(void)
 		}
 		case 166 : {
 			/* EXPURGICUM */
-			or_ptr_bs(get_itemuser() + 0x1c4, 0x20);
+			or_ptr_bs(get_itemuser() + (HERO_ITEM_RIGHT + 4), 0x20);
 
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 166), 1);
 
@@ -321,71 +321,71 @@ void item_weapon_poison(void)
 		}
 		case 55: {
 			/* SHURIN-BULB POISON / KROETENSCHEMELGIFT */
-			host_writeb(get_itemuser() + 0x1c9, 1);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 1);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 55), 1);
 			bottle = 31;
 			break;
 		}
 		case 56: {
 			/* ARAX POISON / ARAXGIFT */
-			host_writeb(get_itemuser() + 0x1c9, 2);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 2);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 56), 1);
 			bottle = 31;
 			break;
 		}
 		case 57: {
 			/* FEAR POISON / ANGSTGIFT */
-			host_writeb(get_itemuser() + 0x1c9, 3);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 3);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 57), 1);
 			bottle = 31;
 			break;
 		}
 		case 58: {
 			/* SLEPPING POISON / SCHALFGIFT */
-			host_writeb(get_itemuser() + 0x1c9, 4);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 4);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 58), 1);
 			bottle = 31;
 			break;
 		}
 		case 59: {
 			/* GOLDEN GLUE / GOLDLEIM */
-			host_writeb(get_itemuser() + 0x1c9, 5);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 59), 1);
 			bottle = 31;
 			break;
 		}
 		case 141: {
 			/* LOTUS POISON / LOTUSGIFT */
-			host_writeb(get_itemuser() + 0x1c9, 7);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 7);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 141), 1);
 			bottle = 31;
 			break;
 		}
 		case 142: {
 			/* KUKRIS */
-			host_writeb(get_itemuser() + 0x1c9, 8);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 8);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 142), 1);
 			bottle = 31;
 			break;
 		}
 		case 143: {
 			/* BANE DUST / BANNSTAUB */
-			host_writeb(get_itemuser() + 0x1c9, 9);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 9);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 143), 1);
 			bottle = 31;
 			break;
 		}
 		case 144: {
-			host_writeb(get_itemuser() + 0x1c9, 6);
-			host_writeb(get_itemuser() + 0x1ca, 5);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 9), 6);
+			host_writeb(get_itemuser() + (HERO_ITEM_RIGHT + 10), 5);
 			drop_item(get_itemuser(), get_item_pos(get_itemuser(), 144), 1);
 			bottle = 31;
 			break;
@@ -396,11 +396,11 @@ void item_weapon_poison(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xb8c),
-			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readws(get_itemuser() + 0x1c0), 0)));
+			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readws(get_itemuser() + HERO_ITEM_RIGHT), 0)));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xc94),
-			(char*)get_itemuser() + 0x10);
+			(char*)get_itemuser() + HERO_NAME2);
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
@@ -432,7 +432,7 @@ void item_magic_book(void)
 	GUI_output(get_ltx(0xbb4));
 
 	/* Heptagon +2 */
-	add_ptr_bs(get_itemuser() + 0x152, 2);
+	add_ptr_bs(get_itemuser() + (HERO_SP_DEMON + 3), 2);
 
 	/* drop the book */
 	drop_item(get_itemuser(), get_item_pos(get_itemuser(), 246), 1);
@@ -470,7 +470,7 @@ void item_brenne(void)
 			refill_pos = get_item_pos(get_spelluser(), 249);
 
 			/* reset the burning time of the lantern */
-			host_writeb(get_itemuser() + 0x19e + refill_pos * 14, 100);
+			host_writeb(get_itemuser() + (HERO_ITEM_HEAD + 8) + refill_pos * 14, 100);
 
 			/* drop the oil */
 			drop_item(get_itemuser(), pos, 1);
@@ -481,12 +481,12 @@ void item_brenne(void)
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x1dc),
-				(char*)get_itemuser() + 0x10);
+				(char*)get_itemuser() + HERO_NAME2);
 		} else {
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x1e0),
-				(char*)get_itemuser() + 0x10);
+				(char*)get_itemuser() + HERO_NAME2);
 		}
 	} else {
 
@@ -495,7 +495,7 @@ void item_brenne(void)
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x1e8),
-				(char*)get_itemuser() + 0x10);
+				(char*)get_itemuser() + HERO_NAME2);
 		} else {
 
 			if (ds_readws(USED_ITEM_ID) == 65) {

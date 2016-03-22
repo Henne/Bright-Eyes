@@ -378,7 +378,7 @@ void GRP_switch_to_next(signed short mode)
 			ds_writeb(FOOD_MESSAGE + group, ds_writeb(UNCONSCIOUS_MESSAGE + group, 0));
 		}
 
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 	}
 }
 
@@ -625,7 +625,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 	signed short tmp;
 
 	if (!hero_dead(hero) &&
-		(host_readd(hero + HERO_MAGIC_TIMER) == 0) &&
+		(host_readd(hero + HERO_STAFFSPELL_TIMER) == 0) &&
 		(host_readbs(hero + HERO_RECIPE_TIMER) == 0))
 	{
 
@@ -696,7 +696,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 							hero + HERO_NAME2,
 							le_regen,
 							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
-						if (ds_readbs(0x2845) == 0) {
+						if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 							GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 							delay_or_keypress(200);
 						} else {
@@ -731,7 +731,7 @@ void GRP_hero_sleep(Bit8u *hero, signed short quality)
 								ae_regen,
 								(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
-							if (ds_readbs(0x2845) == 0) {
+							if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 								GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 								delay_or_keypress(200);
 							} else {

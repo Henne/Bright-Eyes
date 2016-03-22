@@ -540,7 +540,7 @@ signed short is_staff_lvl2_in_group(void)
 		if (host_readbs(hero_i + HERO_TYPE) &&
 			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			check_hero(hero_i) &&
-			(host_readbs(hero_i + HERO_WAND) >= 2))
+			(host_readbs(hero_i + HERO_STAFFSPELL_LVL) >= 2))
 		{
 			return 1;
 		}
@@ -912,7 +912,7 @@ signed short DNG_check_climb_tools(void)
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero) &&
 			(host_readbs(hero + HERO_TYPE) == 9) &&
-			(host_readbs(hero + HERO_WAND) > 2))
+			(host_readbs(hero + HERO_STAFFSPELL_LVL) > 2))
 		{
 			return i + 1;
 		}

@@ -100,18 +100,18 @@ void do_harbour(void)
 	ds_writew(0x4334, ds_readws(TYPEINDEX));
 
 	draw_loc_icons(4, 40, 42, 41, 8);
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	ds_writeb(0x4333, 0);
 
 	do {
 
-		if (ds_readw(0x2846) != 0) {
+		if (ds_readw(REQUEST_REFRESH) != 0) {
 
 			draw_main_screen();
 			set_var_to_zero();
 			load_ani(6);
 			init_ani(0);
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 
 			load_buffer_1(ARCHIVE_FILE_HAFEN_LTX);
 
@@ -329,7 +329,7 @@ void do_harbour(void)
 				ds_writeb(0x4497, 0);
 
 				for (l_si = 0; l_si < 6; l_si++) {
-					ds_writeb(0x26a4 + l_si, 0);
+					ds_writeb(FOOD_MESSAGE_SHOWN + l_si, 0);
 				}
 
 				load_map();
@@ -356,8 +356,8 @@ void do_harbour(void)
 				passage_arrival();
 
 				ds_writew(WALLCLOCK_UPDATE, ds_writew(0x2ca2, ds_writew(0x2ca4, ds_writeb(0x42ae, 0))));
-				ds_writews(CURRENT_ANI, ds_writebs(0x2ca7, ds_writebs(0x2845, -1)));
-				ds_writew(0x2846, 1);
+				ds_writews(CURRENT_ANI, ds_writebs(0x2ca7, ds_writebs(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13))));
+				ds_writew(REQUEST_REFRESH, 1);
 				ds_writeb(TRAVELING, 0);
 
 				if (!ds_readb(0x4333)) {
@@ -554,7 +554,7 @@ void sea_travel(signed short passage, signed short dir)
 
 		}
 
-		if (ds_readws(0x2846) != 0 && !ds_readb(0x4333)) {
+		if (ds_readws(REQUEST_REFRESH) != 0 && !ds_readb(0x4333)) {
 
 			update_mouse_cursor();
 
@@ -579,7 +579,7 @@ void sea_travel(signed short passage, signed short dir)
 			ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
 			ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
 			ds_writew(WALLCLOCK_UPDATE, 1);
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		add_ds_ws(0x425a, 2 * (!dir ? 2 : -2));

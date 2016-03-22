@@ -294,7 +294,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 				/* remove the NPC from the group */
 				remove_npc(24, 31, 231, get_ltx(0xbd8), (Bit8u*)0);
 
-				ds_writew(0x2846, 1);
+				ds_writew(REQUEST_REFRESH, 1);
 
 			} else if (state == 7 || state == 8 || state == 9 || state == 10) {
 				timewarp(MINUTES(30));
@@ -684,7 +684,7 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			hero_disappear(Real2Host(ds_readd(UNICORN_HERO_PTR)), ds_readb(UNICORN_HERO_POS), -1);
 		} else if (state == 17) {
 			/* the hero gets heavily wounded, 1 LE left */
-			sub_hero_le(Real2Host(ds_readd(UNICORN_HERO_PTR)), host_readws(Real2Host(ds_readd(UNICORN_HERO_PTR)) + 0x60) - 1);
+			sub_hero_le(Real2Host(ds_readd(UNICORN_HERO_PTR)), host_readws(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_LE) - 1);
 			/* the party opens a camp */
 			ds_writeb(LOCATION, 6);
 			do_location();

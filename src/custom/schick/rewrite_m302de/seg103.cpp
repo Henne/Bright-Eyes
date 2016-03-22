@@ -1,5 +1,5 @@
 /*
- *      Rewrite of DSA1 v3.02_de functions of seg103 (talents)
+ *      Rewrite of DSA1 v3.02_de functions of seg103 (skills)
  *      Functions rewritten: 8/8 (complete)
  *
  *	Borlandified and identical
@@ -29,7 +29,7 @@ struct dummy {
 	char a[6];
 };
 
-signed short LVL_select_talent(Bit8u *hero, signed short show_values)
+signed short LVL_select_skill(Bit8u *hero, signed short show_values)
 {
 	signed short i;
 
@@ -37,7 +37,7 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 	signed short l1;
 	signed short retval = -1;
 	/* string on stack "%s~%d" */
-	struct dummy format_str = *(struct dummy*)(p_datseg + SELECT_TALENT_LVLUP);
+	struct dummy format_str = *(struct dummy*)(p_datseg + SELECT_SKILL_LVLUP);
 
 	if (show_values != 0) {
 
@@ -59,7 +59,7 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x360));
 	}
 
-	/* ask for the talent category */
+	/* ask for the skill category */
 	answer = GUI_radio(Real2Host(ds_readd(DTP2)), 7,
 				get_ltx(0x190), get_ltx(0x194),
 				get_ltx(0x198), get_ltx(0x1a4),
@@ -68,27 +68,27 @@ signed short LVL_select_talent(Bit8u *hero, signed short show_values)
 
 	if (answer != -2) {
 
-		l1 = ds_readbs(0x10ce + 2 * answer);
+		l1 = ds_readbs(SKILLS_INDEX + 2 * answer);
 
 		if (show_values != 0) {
 
-			for (i = 0; ds_readbs(0x10cf + 2 * answer) > i; i++) {
+			for (i = 0; ds_readbs((SKILLS_INDEX + 1) + 2 * answer) > i; i++) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 50 * i,
 					format_str.a,
 					get_ltx((l1 + i + 48) * 4),
-					host_readbs(hero + l1 + i + 0x108));
+					host_readbs(hero + l1 + i + HERO_TA_FIGHT));
 
 				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)((RealPt)ds_readd(DTP2) + 50 * i));
 			}
 		} else {
 
-			for (i = 0; ds_readbs(0x10cf + 2 * answer) > i; i++) {
+			for (i = 0; ds_readbs((SKILLS_INDEX + 1) + 2 * answer) > i; i++) {
 				ds_writed(RADIO_NAME_LIST + 4 * i, (Bit32u)(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (l1 + i + 48) * 4)));
 			}
 		}
 
-		retval = GUI_radio(get_ltx(0x368), ds_readbs(0x10cf + 2 * answer),
+		retval = GUI_radio(get_ltx(0x368), ds_readbs((SKILLS_INDEX + 1) + 2 * answer),
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
 				Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
@@ -144,12 +144,12 @@ RealPt get_proper_hero(signed short skill)
 			!hero_dead(Real2Host(hero_i))) {
 
 			/* add current and maximum attibute values */
-			cur =	host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(0xffe + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(0xffe + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(0xfff + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(0xfff + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(0x1000 + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(0x1000 + 4 * skill)) + +
+			cur =	host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
 				host_readbs(Real2Host(hero_i) + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {
@@ -246,7 +246,7 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		/* do the test */
 		bonus -= host_readbs(hero + HERO_TA_FIGHT + skill);
 
-		return test_attrib3(hero, ds_readbs(0xffe + skill * 4), ds_readbs(0xfff + skill * 4), ds_readbs(0x1000 + skill * 4), bonus);
+		return test_attrib3(hero, ds_readbs(SKILL_DESCRIPTIONS + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 1) + skill * 4), ds_readbs((SKILL_DESCRIPTIONS + 2) + skill * 4), bonus);
 
 	}
 
@@ -257,44 +257,44 @@ struct dummy2 {
 	signed char a[6];
 };
 
-signed short select_talent(void)
+signed short select_skill(void)
 {
 	signed short l_si = -1;
-	signed short nr_talents = 3;
+	signed short nr_skills = 3;
 	/* available skills {44, 45, 46, -1, -1, -1} */
-	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_TALENT_DEFAULTS);
+	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_SKILL_DEFAULTS);
 
 	/* add skills for special location */
 	/* 9 = ACROBATICS, 32 = ALCHEMY, 43 = CHEAT, 47 = INSTRUMENT, 49 = PICKPOCKET, */
 	if (ds_readbs(LOCATION) == 3) {
 		/* TAVERN */
-		a.a[nr_talents] = 9;
-		nr_talents++;
+		a.a[nr_skills] = 9;
+		nr_skills++;
 
 		if (ds_readws(0x6532) == 0) {
-			a.a[nr_talents] = 43;
-			nr_talents++;
+			a.a[nr_skills] = 43;
+			nr_skills++;
 		}
 
-		a.a[nr_talents] = 47;
-		nr_talents++;
+		a.a[nr_skills] = 47;
+		nr_skills++;
 	} else if ((ds_readbs(LOCATION) == 6) || (ds_readbs(LOCATION) == 7)) {
 		/* CAMP (Wildernes) or INN */
-		a.a[nr_talents] = 32;
-		nr_talents++;
+		a.a[nr_skills] = 32;
+		nr_skills++;
 	} else if (ds_readbs(LOCATION) == 9) {
 		/* MARKET */
-		a.a[nr_talents] = 9;
-		nr_talents++;
-		a.a[nr_talents] = 49;
-		nr_talents++;
+		a.a[nr_skills] = 9;
+		nr_skills++;
+		a.a[nr_skills] = 49;
+		nr_skills++;
 	} else if (ds_readbs(LOCATION) == 5) {
 		/* MERCHANT */
-		a.a[nr_talents] = 49;
-		nr_talents++;
+		a.a[nr_skills] = 49;
+		nr_skills++;
 	}
 
-	l_si = GUI_radio(get_ltx(0x368), (signed char)nr_talents,
+	l_si = GUI_radio(get_ltx(0x368), (signed char)nr_skills,
 				get_ltx((a.a[0] + 48) * 4),
 				get_ltx((a.a[1] + 48) * 4),
 				get_ltx((a.a[2] + 48) * 4),
@@ -310,7 +310,7 @@ signed short select_talent(void)
 	return l_si;
 }
 
-signed short use_talent(signed short hero_pos, signed char bonus, signed short talent)
+signed short use_skill(signed short hero_pos, signed char bonus, signed short skill)
 {
 	register signed short l_si;
 	signed short l_di;
@@ -327,13 +327,13 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 	hero = get_hero(hero_pos);
 
-	if (talent != -1) {
+	if (skill != -1) {
 
 		bak = ds_readws(BUF1_FILE_INDEX);
 
 		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
 
-		switch(talent) {
+		switch(skill) {
 		case 44 : {
 			ds_writeb(0x64a2, (signed char)hero_pos);
 
@@ -449,7 +449,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 			if (patient_pos != -1) {
 				patient = get_hero(patient_pos);
 
-				talent_cure_disease(hero, patient, bonus, 0);
+				skill_cure_disease(hero, patient, bonus, 0);
 			}
 			break;
 		}
@@ -512,7 +512,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 								l_si = 0;
 
-								host_writed(patient + HERO_MAGIC_TIMER, 0x1fa40L);
+								host_writed(patient + HERO_STAFFSPELL_TIMER, 0x1fa40L);
 							}
 						} else {
 
@@ -564,7 +564,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 					add_party_money(money);
 
 					ds_writed((INGAME_TIMERS + 0x18), 0xa8c0);
-					ds_writew(0x2846, 1);
+					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_dtp(0x90));
 
@@ -598,7 +598,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 					add_party_money(money);
 
 					ds_writed((INGAME_TIMERS + 0x1c), 0xa8c0);
-					ds_writew(0x2846, 1);
+					ds_writew(REQUEST_REFRESH, 1);
 				} else {
 					GUI_output(get_dtp(0x90));
 
@@ -625,7 +625,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 				add_party_money(money);
 
-				ds_writew(0x2846, 1);
+				ds_writew(REQUEST_REFRESH, 1);
 			} else {
 				GUI_output(get_dtp(0x9c));
 
@@ -653,7 +653,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 				add_party_money(money);
 
-				ds_writew(0x2846, 1);
+				ds_writew(REQUEST_REFRESH, 1);
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa4),
@@ -663,7 +663,7 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 
 				set_party_money(0);
 
-				ds_writew(0x2846, 1);
+				ds_writew(REQUEST_REFRESH, 1);
 
 				l_si = -1;
 			}
@@ -685,9 +685,9 @@ signed short use_talent(signed short hero_pos, signed char bonus, signed short t
 	return l_si;
 }
 
-signed short GUI_use_talent(signed short hero_pos, signed char bonus)
+signed short GUI_use_skill(signed short hero_pos, signed char bonus)
 {
-	signed short talent;
+	signed short skill;
 	Bit8u *hero;
 
 	hero = get_hero(hero_pos);
@@ -696,20 +696,20 @@ signed short GUI_use_talent(signed short hero_pos, signed char bonus)
 		return -1;
 	}
 
-	talent = select_talent();
-	return use_talent(hero_pos, bonus, talent);
+	skill = select_skill();
+	return use_skill(hero_pos, bonus, skill);
 }
 
-signed short GUI_use_talent2(signed short bonus, Bit8u *msg)
+signed short GUI_use_skill2(signed short bonus, Bit8u *msg)
 {
 	signed short hero_pos;
-	signed short talent;
+	signed short skill;
 
-	talent = select_talent();
+	skill = select_skill();
 
-	if (talent != -1) {
+	if (skill != -1) {
 
-		ds_writew(SKILLED_HERO_POS, get_skilled_hero_pos(talent));
+		ds_writew(SKILLED_HERO_POS, get_skilled_hero_pos(skill));
 
 		hero_pos = select_hero_ok(msg);
 
@@ -718,7 +718,7 @@ signed short GUI_use_talent2(signed short bonus, Bit8u *msg)
 			hero_pos = -1;
 		}
 		if (hero_pos != -1) {
-			return use_talent(hero_pos, (signed char)bonus, talent);
+			return use_skill(hero_pos, (signed char)bonus, skill);
 		}
 	}
 

@@ -40,18 +40,18 @@ void do_market(void)
 	signed short bak1;
 
 	done = 0;
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	bak1 = ds_readbs(0x2d7c);
 	dir_bak = ds_readbs(DIRECTION);
 
 	do {
 
-		if (ds_readw(0x2846) != 0) {
+		if (ds_readw(REQUEST_REFRESH) != 0) {
 			draw_main_screen();
 			set_var_to_zero();
 			load_ani(16);
 			init_ani(0);
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		answer = GUI_radio(get_ltx(0xaa0), 4,
@@ -101,7 +101,7 @@ void final_intro(void)
 	RealPt ptr2;
 	struct nvf_desc nvf;
 
-	ds_writebs(0x2845, -2);
+	ds_writebs(PP20_INDEX, (ARCHIVE_FILE_DNGS + 12));
 
 	update_mouse_cursor();
 
@@ -590,7 +590,7 @@ void show_outro(void)
 			}
 
 			host_writed(hero + HERO_HEAL_TIMER, 0);
-			host_writed(hero + HERO_MAGIC_TIMER, 0);
+			host_writed(hero + HERO_STAFFSPELL_TIMER, 0);
 
 			host_writeb(hero + HERO_GROUP_POS, i + 1);
 		}

@@ -47,7 +47,7 @@ void do_tavern(void)
 
 	GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
 
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 
 	if (host_readws(tav_ptr) >= 6 && host_readws(tav_ptr) <= 13) {
 
@@ -69,7 +69,7 @@ void do_tavern(void)
 
 	while (!done) {
 
-		if (ds_readw(0x2846) != 0) {
+		if (ds_readw(REQUEST_REFRESH) != 0) {
 
 			draw_main_screen();
 			set_var_to_zero();
@@ -77,7 +77,7 @@ void do_tavern(void)
 			init_ani(0);
 			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
 			set_audio_track(ARCHIVE_FILE_INN_XMI);
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		handle_gui_input();
@@ -132,7 +132,7 @@ void do_tavern(void)
 				tavern_follow_informer();
 			}
 
-			ds_writew(0x2846, done = 1);
+			ds_writew(REQUEST_REFRESH, done = 1);
 			ds_writew(COMBO_MODE, 0);
 
 		} else if (ds_readws(ACTION) == 130) {
@@ -154,7 +154,7 @@ void do_tavern(void)
 
 				for (i = 0; i <= 6; i++) {
 
-					ds_writeb(FOOD_MESSAGE + i, ds_writeb(0x26a4 + i, 0));
+					ds_writeb(FOOD_MESSAGE + i, ds_writeb(FOOD_MESSAGE_SHOWN + i, 0));
 
 					if (host_readbs(get_hero(i) + HERO_TYPE) != 0 &&
 						host_readbs(get_hero(i) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
@@ -204,13 +204,13 @@ void do_tavern(void)
 			}
 
 		} else if (ds_readws(ACTION) == 131) {
-			/* USE TALENT */
+			/* USE SKILL */
 
 			bc_time(&timeval);
 
 			bonus = (timeval - ds_readds(0xe2d6)) > 120 ? 0 : 50;
 
-			if (GUI_use_talent2(bonus, get_ltx(0x62c)) == -1) {
+			if (GUI_use_skill2(bonus, get_ltx(0x62c)) == -1) {
 				done = 1;
 				ds_writew(COMBO_MODE, 0);
 			}
@@ -239,13 +239,13 @@ void do_tavern(void)
 void octopus_attack_wrapper(void)
 {
 	octopus_attack();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 void pirates_attack_wrapper(void)
 {
 	pirates_attack();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 void enter_ghostship(void)
@@ -276,10 +276,10 @@ void enter_ghostship(void)
 	} while (answer == -1);
 
 	if (answer == 1) {
-		ds_writew(0x2846, 0);
+		ds_writew(REQUEST_REFRESH, 0);
 		ds_writeb(0x4333, 1);
 	} else {
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 	}
 
 	set_var_to_zero();

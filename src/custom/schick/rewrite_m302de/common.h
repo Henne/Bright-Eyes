@@ -157,7 +157,7 @@ enum {
     HERO_NPC_ID         = 0x089, /* Held = 0, NARIELL = 1, HARIKA = 2, CURIAN = 3, ARDORA = 4, GARSVIK = 5, ERWO = 6 */
     HERO_GROUP_POS      = 0x08A, /* 0x01 bis 0x06, 0x00 = not in group */
     HERO_HEAL_TIMER     = 0x08B,
-    HERO_MAGIC_TIMER    = 0x08F, /* timer for wand levelups */
+    HERO_STAFFSPELL_TIMER   = 0x08F,
     HERO_RECIPE_ID      = 0x093, /* alchemy */
     HERO_RECIPE_TIMER   = 0x094, /* timer between failed alchemy attempts */
     HERO_RUHE_KOERPER   = 0x095, /* 1 = Ruhe Koerper spell is active */
@@ -203,7 +203,7 @@ enum {
     HERO_SP_CHANGE      = 0x189,
     HERO_SP_RISE        = 0x193, /* saved from last levelup */
     HERO_MAGIC_SCHOOL   = 0x194,
-    HERO_WAND           = 0x195,
+    HERO_STAFFSPELL_LVL = 0x195,
     HERO_ITEM_HEAD      = 0x196,
     HERO_ITEM_ARM       = 0x1A4,
     HERO_ITEM_BODY      = 0x1B2,

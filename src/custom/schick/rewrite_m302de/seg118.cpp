@@ -243,7 +243,7 @@ void tevent_037(void)
 		set_var_to_zero();
 
 		ds_writeb(0xe5d2, 0);
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 	}
 }
 

@@ -92,15 +92,15 @@ void sell_screen(Bit8u *shop_ptr)
 
 
 	ds_writew(0x29b4, 0);
-	l8 = ds_writews(0x2846, 1);
+	l8 = ds_writews(REQUEST_REFRESH, 1);
 	ds_writed(SELLITEMS, (Bit32u)((RealPt)ds_readd(FIG_FIGURE1_BUF) + 2100));
 
 	while (done == 0) {
 
-		if (ds_readws(0x2846) != 0) {
+		if (ds_readws(REQUEST_REFRESH) != 0) {
 
 			set_var_to_zero();
-			ds_writeb(0x2845, -1);
+			ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 			memset(Real2Host(ds_readd(SELLITEMS)), 0, 2100);
 
 			for (items_x = 0; items_x <= 6; items_x++) {
@@ -132,7 +132,7 @@ void sell_screen(Bit8u *shop_ptr)
 			l5 = -1;
 			l6 = 0;
 			l10 = 1;
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		if (l8 != 0 || l10 != 0 || l11 != 0) {
@@ -561,8 +561,8 @@ void sell_screen(Bit8u *shop_ptr)
 	}
 
 	set_textcolor(fg_bak, bg_bak);
-	ds_writew(0x2846, 1);
-	ds_writeb(0x2845, -1);
+	ds_writew(REQUEST_REFRESH, 1);
+	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 	ds_writew(0x29b4, 1);
 }
 

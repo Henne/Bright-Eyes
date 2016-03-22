@@ -275,7 +275,7 @@ signed short plan_alchemy(Bit8u *hero)
 										}
 									}
 								} else {
-									host_writed(hero + HERO_MAGIC_TIMER, 0x1fa40);
+									host_writed(hero + HERO_STAFFSPELL_TIMER, 0x1fa40);
 								}
 
 								retval = do_alchemy(hero, recipe_index, 0);
@@ -374,7 +374,7 @@ signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 	return retval;
 }
 
-signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short handycap, signed short flag)
+signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short handycap, signed short flag)
 {
 	signed short disease;
 	signed short retval;
@@ -405,7 +405,7 @@ signed short talent_cure_disease(Bit8u *healer, Bit8u *patient, signed short han
 
 		} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 
-			/* recently tried to cure with talent */
+			/* recently tried to cure with skill */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xae4),
@@ -546,12 +546,12 @@ signed short get_skilled_hero_pos(signed short skill)
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 
-			cur =	host_readbs(hero + HERO_MU + 3 * (ds_readbs(0xffe + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(0xffe + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs(0xfff + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(0xfff + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs(0x1000 + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(0x1000 + 4 * skill))) +
+			cur =	host_readbs(hero + HERO_MU + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
+				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
+				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
+				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
 				host_readbs(hero + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {

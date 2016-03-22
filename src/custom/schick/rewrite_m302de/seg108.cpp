@@ -149,16 +149,16 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			}
 		}
 
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 
 	} else if (item_herb_potion(item_p)) {
 
 		if (host_readb(item_p + 3) == 0) {
 
-			if (is_in_word_array(item, (signed short*)(p_datseg + 0x8f1))) {
+			if (is_in_word_array(item, (signed short*)(p_datseg + HERBS_UNEATABLE))) {
 				GUI_output(get_ltx(0x7cc));
-			} else if (is_in_word_array(item, (signed short*)(p_datseg + 0x8e7)) ||
-					is_in_word_array(item, (signed short*)(p_datseg + 0x8d3))) {
+			} else if (is_in_word_array(item, (signed short*)(p_datseg + HERBS_TOXIC)) ||
+					is_in_word_array(item, (signed short*)(p_datseg + POISON_POTIONS))) {
 				/* herbs and poisons */
 				GUI_output(get_ltx(0x7d0));
 			} else {
@@ -279,8 +279,8 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 		} else {
 
 			/* check if item is an elexire */
-			l_si = is_in_word_array(item, (signed short*)(p_datseg + 0x8ff));
-			id_bad_elex = is_in_word_array(item, (signed short*)(p_datseg + 0x90f));
+			l_si = is_in_word_array(item, (signed short*)(p_datseg + ELIXIR_POTIONS));
+			id_bad_elex = is_in_word_array(item, (signed short*)(p_datseg + BAD_ELIXIRS));
 
 
 			if (l_si != 0) {
@@ -594,7 +594,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 			}
 		}
 
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 	} else {
 		/* this item cannot be consumed */
 		GUI_output(get_ltx(0x338));

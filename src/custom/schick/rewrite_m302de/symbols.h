@@ -9,9 +9,28 @@
 #if !defined SYMBOLS_H
 #define SYMBOLS_H
 
-#define POISON_POTIONS	(0x08d3)	/* s16 array with item IDs of poisons */
-#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATIKUM (0xee), ITEM_HYLAILIC FIRE (0xef), -1 } */
+#define CD_INIT_SUCCESSFUL	(0x0095)	/* unsigned short {0,1} */
+#define CD_AUDIO_PAUSED	(0x00a1)	/* unsigned short {0,1} */
+#define WEARABLE_ITEMS	(0x0634)	/* RealPt[13], items wearable depending on hero type */
+#define POISON_POTIONS	(0x08d3)	/* signed short[10] = { SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), 0xff } */
+#define HERBS_TOXIC	(0x08e7)	/* signed short[5] = { SHURINKNOLLE (0x7a), ALRAUNE (0x7e), LOTUSBLUTE (0x84), EITRIGER KROTENSCHEMEL (0x3e), 0xff } */
+#define HERBS_UNEATABLE	(0x08f1)	/* signed short[7] = { ILMENBLATT (0x80), FINAGEBÄUMCHEN (0x81), JORUGAWURZEL (0x82), KAIRANHALM (0x9d), OLGINWURZEL (0x9c), DONFSTENGEL (0x7c), 0xff } */
+#define ELIXIR_POTIONS	(0x08ff)	/* signed short[8] = { MU ELIXIER (0x93), KL ELIXIER (0x94), CH ELIXIER (0x95), FF ELIXIER (0x96), GE ELIXIER (0x97), IN ELIXIER (0x98), KK ELIXIER (0x99), 0xff } */
+#define BAD_ELIXIRS	(0x090f)	/* signed short[8] = { MU ELIXIER (0xe2), KL ELIXIER (0xe3), CH ELIXIER (0xe4), FF ELIXIER (0xe5), GE ELIXIER (0xe6), IN ELIXIER (0xe7), KK ELIXIER (0xe8), 0xff } */
+#define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATICUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
+#define STAFFSPELL_DESCRIPTIONS	(0x0973)	/* (struct { char attrib1, attrib2, attrib3, bonus, cost, ae_mod;  })[7] */
+#define SPELL_DESCRIPTIONS	(0x099d)	/* (struct { char unkn0, unkn1, unkn2, unkn3, cost, unkn5, unkn6, unkn7, unkn8, unkn9; })[87] */
+#define SPELLS_INDEX	(0x0d03)	/* (struct { signed char first, length; })[8] = { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
+#define SPELLS_INDEX2	(0x0d13)	/* (struct { signed char first, length; })[4] = { {49,9}, {58,2}, {60,16}, {76,10} } */
+#define MAGIC_SCHOOL_DESCRIPTIONS	(0x0d97)	/* RealPt[9] */
+#define SPELL_HANDLERS	(0x0dbb)	/* function pointer[86] */
+#define MON_SPELL_DESCRIPTIONS	(0x0f13)	/* (struct { char cost, mode, unknown1, attrib1, attrib2, attrib3, unknown2, ani_id, unknown3; })[15] */
+#define MON_SPELL_REPERTOIRE	(0x0f8b)	/* (struct { char spells[5]; })[11] */
+#define MON_SPELL_HANDLERS	(0x0fc2)	/* function pointer[15] */
+#define SKILL_DESCRIPTIONS	(0x0ffe)	/* (struct { signed char attrib1, attrib2, attrib3, max_inc; })[52] */
+#define SKILLS_INDEX	(0x10ce)	/* (struct { signed char first, length; })[7] = { {0,9}, {9,10}, {19,7}, {26,6}, {32,9}, {41,9}, {50,2} } */
 #define TWO_FIELDED_SPRITE_ID	(0x25f9)	/* char[5] array */
+#define FOOD_MESSAGE_SHOWN	(0x26a4)	/* signed char[6] */
 #define EMS_ENABLED	(0x26ab)
 #define FIG_INITIATIVE	(0x26ac)	/* signed char, 0 = random, 1 = enemies, 2 = heroes (attack first) */
 #define FIG_MSG_COUNTER	(0x26ad)	/* signed short */
@@ -23,6 +42,8 @@
 #define TEXT_FILE_INDEX	(0x26bd)	/* unsigned short */
 #define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
+#define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
+#define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */
 #define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
 #define ACTION_TABLE_MENU	(0x29cc)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
 #define ACTION_TABLE_PRIMARY	(0x29e0) /* RealPt */
@@ -148,6 +169,7 @@
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
+
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
@@ -314,13 +336,13 @@
 #define SPELL_SELECT_ONES	(0xac30)	/* signed char[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } */
 #define ANALUES_ITEMS	(0xac3c)	/* (struct { signed short item_id, barrier; signed char dtp; })[28] */
 #define MONSTER_SPELL_COST	(0xaccc)	/* signed short */
-#define SELECT_TALENT_LVLUP	(0xacce)	/* char[6] = "%s~%d" */
-#define SELECT_TALENT_DEFAULTS	(0xacd4)	/* signed char[6] = {44, 45, 46, -1, -1, -1} */
+#define SELECT_SKILL_LVLUP	(0xacce)	/* char[6] = "%s~%d" */
+#define SELECT_SKILL_DEFAULTS	(0xacd4)	/* signed char[6] = {44, 45, 46, -1, -1, -1} */
 #define ALCHEMY_RECIPES	(0xacda)	/* (struct of size 28)[12?] */
 #define HERO_STARTUP_ITEMS	(0xae40)	/* (struct of size 8)[13] */
 #define PREVENT_DROP_EQUIPPED_ITEMS	(0xae46)	/* unsigned char {0, 1} */
 #define HERO_STARTUP_ITEMS_ALL	(0xaea8)	/* signed short[4] */
-#define USE_SPECIAL_ITEM_HANDLERS	(0xaeb0)	/* signed short[4] */
+#define USE_SPECIAL_ITEM_HANDLERS	(0xaeb0)	/* signed short[14] */
 #define LIGHT_TYPE	(0xaee8)	/* ?16 0 = none, 1 = torch, 2 = lantern */
 #define TRAVEL_EVENT_HANDLERS	(0xaeea)	/* function pointers, long[146] */
 #define TRAVEL_EVENT_ACTIVE	(0xb132)	/* signed char {0,1} */
@@ -374,7 +396,7 @@
 #define SCENARIO_BUF	(0xbd2c)
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
 #define HEROS	(0xbd34)
-#define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, talents, recipes */
+#define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, skills, recipes */
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define TEXTBOX_POS_X	(0xbfff)	/* signed short, coordinate of upper left corner */
 #define TEXTBOX_POS_Y	(0xc001)	/* signed short, coordinate of upper left corner */
@@ -387,7 +409,7 @@
 #define TEXT_LTX	(0xc3b5)
 #define ACTION	(0xc3d9)	/* ? short */
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
-#define ANI_MAIN_PTR	(0xce35)
+#define ANI_MAIN_PTR	(0xce35)	/* RealPt */
 #define GUI_TEXT_BUFFER	(0xce87)	/* unsigned char[64] */
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */

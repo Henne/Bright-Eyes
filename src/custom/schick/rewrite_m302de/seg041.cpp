@@ -259,7 +259,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 	if (v11 != -1) {
 
-		p2 = p_datseg + 0x6b0 + host_readbs(item_p_rh + 4) * 7;
+		p2 = p_datseg + 0x06b0+ host_readbs(item_p_rh + 4) * 7;
 
 		damage = dice_roll(host_readbs(p2), 6, host_readbs(p2 + 1));
 
@@ -295,7 +295,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 				v4 = 6;
 			}
 
-			p3 = p_datseg + 0x668 + host_readbs(p2 + 4) * 8;
+			p3 = p_datseg + 0x0668+ host_readbs(p2 + 4) * 8;
 
 			if (attack_hero != 0) {
 				if (host_readbs(target + 0x21) == 6) {
@@ -312,7 +312,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			l_di = (test_skill(hero,
 					(host_readbs(item_p_rh + 3) == 8 ? 8 : 7),
 					host_readbs(p3 + 7) + 2 * v4 - 2 * target_size) > 0)
-				? ds_readbs(0x668 + 8 * host_readbs(p2 + 4) + v4)
+				? ds_readbs(0x0668 + 8 * host_readbs(p2 + 4) + v4)
 				: -damage;
 
 			if (l_di != 0) {

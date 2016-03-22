@@ -49,7 +49,7 @@ signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos
 		}
 
 		/* get the item in the other hand */
-		in_hand = host_readw(hero + other_pos * 0x0e + 0x196);
+		in_hand = host_readw(hero + other_pos * 0x0e + HERO_ITEM_HEAD);
 		if (in_hand) {
 
 			/* check if one hand has a two-handed weapon */
@@ -137,7 +137,7 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
 							if (!can_item_at_pos(item2, pos1)) {
-								if (is_in_word_array(item2, (signed short*)(p_datseg + 0x29e)))
+								if (is_in_word_array(item2, (signed short*)(p_datseg + 0x029e)))
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_ltx(0x378),
 										(char*)Real2Host(GUI_names_grammar(0x4000, item2, 0)),
@@ -223,7 +223,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 		if ((((signed short)host_readw(item_p + 2) > 1) &&
 			item_stackable(get_itemsdat(host_readw(item_p)))) ||
-			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + 0x29e))) {
+			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + 0x029e))) {
 			/* more than one item or special */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x120),
@@ -269,7 +269,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	if (host_readw(item_p) == 0x85) {
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)get_city(0xd4),
-			host_readbs(hero + HERO_WAND));
+			host_readbs(hero + HERO_STAFFSPELL_LVL));
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 	}
@@ -343,7 +343,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		} else if (!can_item_at_pos(item1, pos2)) {
 
-			if (is_in_word_array(item1, (signed short*)(p_datseg + 0x29e))) {
+			if (is_in_word_array(item1, (signed short*)(p_datseg + 0x029e))) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x378),
@@ -395,7 +395,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		} else if (!can_item_at_pos(item2, pos1)) {
 
-			if (is_in_word_array(item2, (signed short*)(p_datseg + 0x29e))) {
+			if (is_in_word_array(item2, (signed short*)(p_datseg + 0x029e))) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x378),
@@ -553,7 +553,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x348),
-				host_readws(hero1+ 0x198 + pos1 * SIZEOF_KS_ITEM),
+				host_readws(hero1+ (HERO_ITEM_HEAD + 2) + pos1 * SIZEOF_KS_ITEM),
 				(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
 				(char*)hero2 + HERO_NAME2);
 
@@ -717,14 +717,14 @@ signed short get_max_light_time(void)
 			/* search for a burning torch */
 			if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0x16) {
 
-				if (host_readbs(hero + j * 14 + 0x196 + 8) > retval) {
-					retval = host_readbs(hero + j * 14 + 0x196 + 8);
+				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) > retval) {
+					retval = host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8);
 				}
 			} else if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0xf9) {
 				/* search for a burning lantern */
 
-				if (host_readbs(hero + j * 14 + 0x196 + 8) / 10 > retval) {
-					retval = host_readbs(hero + j * 14 + 0x196 + 8) / 10;
+				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) / 10 > retval) {
+					retval = host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) / 10;
 				}
 			}
 		}

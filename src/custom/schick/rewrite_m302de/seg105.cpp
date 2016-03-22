@@ -100,13 +100,13 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item_armor(item_p)) {
 
 			/* add RS boni */
-			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(0x877 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(0x0877 + host_readbs(item_p + 4) * 2));
 
 			/* subtract used item value */
 			sub_ptr_bs(equipper + HERO_RS_BONUS1, host_readbs(owner + HERO_ITEM_HEAD + 7 + pos_i * 14));
 
 			/* add RS-BE */
-			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(0x877  + 1 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(0x0877  + 1 + host_readbs(item_p + 4) * 2));
 
 		}
 
@@ -118,11 +118,11 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 
 			/* set AT */
 			host_writeb(equipper + HERO_AT_MOD,
-				ds_readb(0x6b0 + 5 + host_readbs(item_p + 4) * 7));
+				ds_readb(0x06b0 + 5 + host_readbs(item_p + 4) * 7));
 
 			/* set PA */
 			host_writeb(equipper + HERO_PA_MOD,
-				ds_readb(0x6b0 + 6 + host_readbs(item_p + 4) * 7));
+				ds_readb(0x06b0 + 6 + host_readbs(item_p + 4) * 7));
 
 		}
 
@@ -160,7 +160,7 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 			host_writeb(equipper + HERO_TA,
 				host_readbs(equipper + HERO_TA) - 4);
 
-			if (ds_readb(0x2845) == 20) {
+			if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
 				equip_belt_ani();
 			}
 		}
@@ -193,7 +193,7 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 #endif
 
 	/* calculate the address of the class forbidden items array */
-	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd(0x634 + host_readbs(hero + HERO_TYPE) * 4))))
+	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd(WEARABLE_ITEMS + host_readbs(hero + HERO_TYPE) * 4))))
 		return 0;
 	else
 		return 1;
@@ -383,7 +383,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
 								(item_stackable(item_p)) ? si :
 									(item_useable(item_p)) ?
-										ds_readbs(0x8aa + host_readbs(item_p + 4) * 3): 0);
+										ds_readbs((0x08a9 + 1) + host_readbs(item_p + 4) * 3): 0);
 #else
 
 							/* write item counter */
@@ -393,7 +393,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							else if (item_useable(item_p))
 									/* unknown */
 									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
-										ds_readbs(0x8aa + host_readbs(item_p + 4) * 3));
+										ds_readbs((0x08a9 + 1) + host_readbs(item_p + 4) * 3));
 								 else
 									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14, 0);
 #endif
@@ -411,7 +411,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							/* set breakfactor */
 							if (item_weapon(item_p)) {
 								host_writeb(hero + HERO_ITEM_HEAD + 6 + di * 14,
-									ds_readb(0x6b0 + 3 + host_readbs(item_p + 4) * 7));
+									ds_readb(0x06b0 + 3 + host_readbs(item_p + 4) * 7));
 							}
 
 							/* adjust weight */

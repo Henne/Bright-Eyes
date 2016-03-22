@@ -675,8 +675,8 @@ void hero_get_drunken(Bit8u *hero)
 		add_ptr_bs(hero + HERO_JZ, 1);
 
 		/* do a burp FX2.VOC */
-		if (ds_readb(0x2845) == 20) {
-			ds_writew(0x2846, 1);
+		if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
+			ds_writew(REQUEST_REFRESH, 1);
 		}
 
 		play_voc_delay(ARCHIVE_FILE_FX2_VOC);
@@ -719,8 +719,8 @@ void hero_get_sober(Bit8u *hero) {
 	sub_ptr_bs(hero + HERO_NG, 1);
 	sub_ptr_bs(hero + HERO_JZ, 1);
 
-	if (ds_readb(0x2845) == 20)
-		ds_writew(0x2846, 1);
+	if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK)
+		ds_writew(REQUEST_REFRESH, 1);
 }
 
 #if !defined(__BORLANDC__)

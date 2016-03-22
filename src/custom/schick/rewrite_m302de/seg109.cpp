@@ -159,7 +159,7 @@ void TRV_inside_herb_place(void)
 	}
 
 	set_var_to_zero();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 signed short TRV_found_camp_place(signed short a0)
@@ -198,7 +198,7 @@ signed short TRV_found_camp_place(signed short a0)
 		TRV_load_textfile(-1);
 
 		ds_writew(HERO_SLEEP_MOD, ds_writews(REPLENISH_STOCKS_MOD, ds_writews(GATHER_HERBS_MOD, 0)));
-		ds_writew(0x2846, 2);
+		ds_writew(REQUEST_REFRESH, 2);
 
 		return 1;
 	}
@@ -256,7 +256,7 @@ void TRV_found_replenish_place(signed short a0)
 
 		set_var_to_zero();
 
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 	}
 }
 
@@ -279,7 +279,7 @@ void TRV_found_inn(signed short city, signed short type)
 	}
 
 	set_var_to_zero();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 /**
@@ -297,7 +297,7 @@ signed short TRV_enter_hut_question(void)
 	answer = GUI_bool(get_dtp(0x60));
 
 	set_var_to_zero();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 
 	return answer;
 }
@@ -361,7 +361,7 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 
 	set_var_to_zero();
 	ds_writeb(0xe5d2, 0);
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	return 1;
 }
 
@@ -647,7 +647,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 	set_var_to_zero();
 	ds_writeb(0xe5d2, 0);
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 void tevent_005(void)

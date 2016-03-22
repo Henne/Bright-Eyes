@@ -109,7 +109,7 @@ void disease_effect(void)
 			}
 
 
-			disease_ptr = Real2Host(hero) + 0xb8;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 5);
 
 			/* NUMBSKULL / DUMPFSCHAEDEL: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -123,7 +123,7 @@ void disease_effect(void)
 						sub_ptr_bs(Real2Host(hero) + j + 0x6f, 2);
 					}
 
-					sub_ptr_bs(Real2Host(hero) + 0x41, 2);
+					sub_ptr_bs(Real2Host(hero) + HERO_GE, 2);
 					sub_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 
 
@@ -168,7 +168,7 @@ void disease_effect(void)
 							add_ptr_bs(Real2Host(hero) + j + 0x6f, 2);
 						}
 
-						add_ptr_bs(Real2Host(hero) + 0x41, 2);
+						add_ptr_bs(Real2Host(hero) + HERO_GE, 2);
 						add_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 					}
 
@@ -197,7 +197,7 @@ void disease_effect(void)
 						add_ptr_bs(Real2Host(hero) + j + 0x6f, 2);
 					}
 
-					add_ptr_bs(Real2Host(hero) + 0x41, 2);
+					add_ptr_bs(Real2Host(hero) + HERO_GE, 2);
 					add_ptr_bs(Real2Host(hero) + HERO_KK, 5);
 				}
 
@@ -209,7 +209,7 @@ void disease_effect(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			disease_ptr = Real2Host(hero) + 0xbd;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 10);
 
 			/* BLUE COUGH / BLAUE KEUCHE: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -224,10 +224,10 @@ void disease_effect(void)
 					}
 
 					host_writebs(disease_ptr + 2, host_readbs(Real2Host(hero) + HERO_KK) / 2);
-					host_writebs(disease_ptr + 3, host_readbs(Real2Host(hero) + 0x41) / 2);
+					host_writebs(disease_ptr + 3, host_readbs(Real2Host(hero) + HERO_GE) / 2);
 
 
-					sub_ptr_bs(Real2Host(hero) + 0x41, host_readbs(disease_ptr + 3));
+					sub_ptr_bs(Real2Host(hero) + HERO_GE, host_readbs(disease_ptr + 3));
 					sub_ptr_bs(Real2Host(hero) + HERO_KK, host_readbs(disease_ptr + 2));
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -240,7 +240,7 @@ void disease_effect(void)
 
 				if ((host_readbs(disease_ptr + 1) > 3) && (random_schick(100) <= 25)) {
 
-						dec_ptr_bs(Real2Host(hero) + 0x46);
+						dec_ptr_bs(Real2Host(hero) + HERO_KK_ORIG);
 						dec_ptr_bs(Real2Host(hero) + HERO_KK);
 						sub_ptr_ws(Real2Host(hero) + HERO_LE_ORIG, host_readbs(disease_ptr + 1) / 3);
 						sub_hero_le(Real2Host(hero), host_readbs(disease_ptr + 1) / 3);
@@ -286,14 +286,14 @@ void disease_effect(void)
 						add_ptr_bs(Real2Host(hero) + j + 0x6f, 4);
 					}
 
-					add_ptr_bs(Real2Host(hero) + 0x41, host_readbs(disease_ptr + 3));
+					add_ptr_bs(Real2Host(hero) + HERO_GE, host_readbs(disease_ptr + 3));
 					add_ptr_bs(Real2Host(hero) + HERO_KK, host_readbs(disease_ptr + 2));
 					host_writebs(disease_ptr + 2, host_writebs(disease_ptr + 3, 0));
 				}
 			}
 
 
-			disease_ptr = Real2Host(hero) + 0xc2;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 15);
 
 			/* PARALYSIS / PARALYSE: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -304,7 +304,7 @@ void disease_effect(void)
 				} else {
 					j = random_schick(6);
 					add_ptr_bs(disease_ptr + 3, j);
-					sub_ptr_bs(Real2Host(hero) + 0x41, j);
+					sub_ptr_bs(Real2Host(hero) + HERO_GE, j);
 
 					j = random_schick(6);
 					add_ptr_bs(disease_ptr + 2, j);
@@ -345,13 +345,13 @@ void disease_effect(void)
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						dec_ptr_bs(disease_ptr + 3);
-						inc_ptr_bs(Real2Host(hero) + 0x41);
+						inc_ptr_bs(Real2Host(hero) + HERO_GE);
 					}
 				}
 			}
 
 
-			disease_ptr = Real2Host(hero) + 0xc7;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 20);
 
 			/* BATTLEFIELD FEVER / SCHLACHTFELDFIEBER: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -428,7 +428,7 @@ void disease_effect(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			disease_ptr = Real2Host(hero) + 0xcc;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 25);
 
 			/* FROSTBITE / FROSTSCHAEDEN: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -437,8 +437,8 @@ void disease_effect(void)
 
 				if (random_schick(100) <= host_readbs(disease_ptr + 1) * 5) {
 
-					dec_ptr_bs(Real2Host(hero) + 0x41);
-					dec_ptr_bs(Real2Host(hero) + 0x40);
+					dec_ptr_bs(Real2Host(hero) + HERO_GE);
+					dec_ptr_bs(Real2Host(hero) + HERO_GE_ORIG);
 
 					j = 1;
 
@@ -457,10 +457,10 @@ void disease_effect(void)
 					dec_ptr_bs(Real2Host(hero) + HERO_KK);
 				}
 
-				if (host_readbs(Real2Host(hero) + 0x41) != 0) {
+				if (host_readbs(Real2Host(hero) + HERO_GE) != 0) {
 
 					inc_ptr_bs(disease_ptr + 3);
-					dec_ptr_bs(Real2Host(hero) + 0x41);
+					dec_ptr_bs(Real2Host(hero) + HERO_GE);
 				}
 
 				if (j == 0) {
@@ -499,12 +499,12 @@ void disease_effect(void)
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						dec_ptr_bs(disease_ptr + 3);
-						inc_ptr_bs(Real2Host(hero) + 0x41);
+						inc_ptr_bs(Real2Host(hero) + HERO_GE);
 					}
 				}
 			}
 
-			disease_ptr = Real2Host(hero) + 0xd1;
+			disease_ptr = Real2Host(hero) + (HERO_ILLNESS + 30);
 
 			/* RABIES / TOLLWUT: get worser */
 			if (host_readbs(disease_ptr) == -1) {
@@ -583,15 +583,15 @@ void disease_effect(void)
 			/* kill hero if KK <= 0 */
 			if (host_readbs(Real2Host(hero) + HERO_KK) <= 0) {
 
-				host_writebs(Real2Host(hero) + HERO_KK, host_readbs(Real2Host(hero) + 0x46));
+				host_writebs(Real2Host(hero) + HERO_KK, host_readbs(Real2Host(hero) + HERO_KK_ORIG));
 
 				sub_hero_le(Real2Host(hero), 5000);
 			}
 
 			/* kill hero if GE <= 0 */
-			if (host_readbs(Real2Host(hero) + 0x41) <= 0) {
+			if (host_readbs(Real2Host(hero) + HERO_GE) <= 0) {
 
-				host_writebs(Real2Host(hero) + 0x41, host_readbs(Real2Host(hero) + 0x40));
+				host_writebs(Real2Host(hero) + HERO_GE, host_readbs(Real2Host(hero) + HERO_GE_ORIG));
 
 				sub_hero_le(Real2Host(hero), 5000);
 			}

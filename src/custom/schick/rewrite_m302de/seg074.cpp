@@ -64,11 +64,11 @@ void show_automap(void)
 		ds_writeb(CURRENT_TOWN, (signed char)town);
 		ds_writeb(DUNGEON_INDEX, (signed char)dungeon);
 
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 
 		do {
 
-			if (ds_readw(0x2846) != 0) {
+			if (ds_readw(REQUEST_REFRESH) != 0) {
 				loc_bak = ds_readbs(LOCATION);
 				ds_writeb(LOCATION, 1);
 
@@ -85,7 +85,7 @@ void show_automap(void)
 				clear_ani_pal();
 				draw_automap_to_screen();
 				set_ani_pal(p_datseg + 0x7d0e);
-				ds_writew(0x2846, 0);
+				ds_writew(REQUEST_REFRESH, 0);
 			}
 
 			done = 0;
@@ -136,7 +136,7 @@ void show_automap(void)
 		} while (done == 0);
 
 		ds_writew(TEXTBOX_WIDTH, bak);
-		ds_writew(0x2846, 1);
+		ds_writew(REQUEST_REFRESH, 1);
 
 		clear_ani_pal();
 
@@ -632,7 +632,7 @@ signed short select_teleport_dest(void)
 	}
 
 	ds_writew(TEXTBOX_WIDTH, bak);
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 
 	return ae_costs;
 }

@@ -144,7 +144,7 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
 {
 	signed char cost;
 
-	cost = ds_readbs(0xf13 + 8 * mspell_nr);
+	cost = ds_readbs(MON_SPELL_DESCRIPTIONS + 8 * mspell_nr);
 
 	if (flag != 0) {
 
@@ -156,7 +156,7 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
 
 
 /**
- * MON_test_skill() -	talent test for monsters
+ * MON_test_skill() -	skill test for monsters
  * @monster:		pointer to monster
  * @t1:			nr of 1st attribute
  * @t2:			nr of 2nd attribute
@@ -182,7 +182,7 @@ signed short MON_test_skill(Bit8u *monster, signed short mspell_nr, signed char 
 {
 	Bit8u *desc;
 
-	desc = p_datseg + 0xf13 + 8 * mspell_nr;
+	desc = p_datseg + MON_SPELL_DESCRIPTIONS + 8 * mspell_nr;
 
 	/* depends on MR */
 	if (host_readbs(desc + 6) != 0) {
@@ -222,14 +222,14 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 	void (*func)(void);
 	volatile signed short bak;
 
-	l_si = host_readbs(Real2Host(monster) + 0x2c);
+	l_si = host_readbs(Real2Host(monster) + ENEMY_SHEET_CUR_SPELL);
 
 	if (l_si > 0) {
 
 		cost = MON_get_spell_cost(l_si, 0);
 
 		/* check AE */
-		if (host_readws(Real2Host(monster) + 0x17) < cost) {
+		if (host_readws(Real2Host(monster) + ENEMY_SHEET_AE) < cost) {
 			return -1;
 		}
 
@@ -258,7 +258,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 #if !defined(__BORLANDC__)
 			func = mspell[l_si];
 #else
-			func = (void (*)(void))ds_readd(0x0fc2 + 4 * l_si);
+			func = (void (*)(void))ds_readd(MON_SPELL_HANDLERS + 4 * l_si);
 #endif
 
 			func();
@@ -471,17 +471,17 @@ void mspell_eisenrost(void)
 		ds_writed(SPELLTARGET,
 			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * (host_readbs(get_spelluser_e() + ENEMY_SHEET_FIGHT_ID) - 1)));
 
-		id = host_readws(get_spelltarget() + 0x1c0);
+		id = host_readws(get_spelltarget() + HERO_ITEM_RIGHT);
 
 		if (!id) {
 			/* target hero has no weapon */
 			ds_writew(MONSTER_SPELL_COST, 2);
-		} else if (!ks_broken(get_spelltarget() + 0x1c0)) {
+		} else if (!ks_broken(get_spelltarget() + HERO_ITEM_RIGHT)) {
 
-			if (host_readbs(get_spelltarget() + 0x1c6) > 0) {
+			if (host_readbs(get_spelltarget() + (HERO_ITEM_RIGHT + 6)) > 0) {
 
 				/* set the broken flag */
-				or_ptr_bs(get_spelltarget() + 0x1c4, 1);
+				or_ptr_bs(get_spelltarget() + (HERO_ITEM_RIGHT + 4), 1);
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -573,14 +573,14 @@ void mspell_ignifaxius(void)
 			(Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
 		/* pointer to the armour of the target hero */
-		p_armour = get_spelltarget() + 0x1b2;
+		p_armour = get_spelltarget() + HERO_ITEM_BODY;
 
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
 			/* adjust rs_malus */
-			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
+			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x0877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
 			{
-				rs_malus = ds_readbs(0x877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
+				rs_malus = ds_readbs(0x0877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
 						- host_readbs(p_armour + 7);
 			}
 

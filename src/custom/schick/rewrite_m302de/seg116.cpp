@@ -347,7 +347,7 @@ void tevent_135(void)
 	}
 
 	set_var_to_zero();
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 }
 
 void tevent_137(void)
@@ -384,17 +384,17 @@ void tevent_137(void)
 					if ((item_pos = get_item_pos(hero, 30)) != -1) {
 						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfb);
 #if !defined(__BORLANDC__)
-						and_ptr_bs(hero + 14 * item_pos + 0x196 + 4, 0xfd);
-						or_ptr_bs(hero + 14 * item_pos + 0x196 + 4, 0 << 1);
+						and_ptr_bs(hero + 14 * item_pos + HERO_ITEM_HEAD + 4, 0xfd);
+						or_ptr_bs(hero + 14 * item_pos + HERO_ITEM_HEAD + 4, 0 << 1);
 #else
 						asm {	mov al, 0
 							mov dx, item_pos
 							imul dx, dx, 14
 							les bx, hero
 							db 0x03, 0xda ; /* add bx, dx */
-							and byte ptr es:[bx + 0x19a], 0xfd
+							and byte ptr es:[bx + (HERO_ITEM_HEAD + 4)], 0xfd
 							shl al, 1
-							or es:[bx + 0x19a], al
+							or es:[bx + (HERO_ITEM_HEAD + 4)], al
 						}
 #endif
 					}
@@ -648,7 +648,7 @@ void tevent_144(void)
 						(char*)get_city(0x98),
 						(char*)get_hero(6) + HERO_NAME2);
 
-					GUI_dialogbox((RealPt)ds_readd(HEROS) + SIZEOF_HERO * 6 + 0x2da,
+					GUI_dialogbox((RealPt)ds_readd(HEROS) + SIZEOF_HERO * 6 + HERO_PORTRAIT,
 							Real2Host(ds_readd(HEROS)) + SIZEOF_HERO * 6  + 0x10,
 							Real2Host(ds_readd(DTP2)), 0);
 				}

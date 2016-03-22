@@ -76,7 +76,7 @@ void draw_fight_screen_pal(signed short mode)
 	FIG_draw_pic();
 
 	/* check for palette update */
-	if (ds_readbs(0x2845) != -1) {
+	if (ds_readb(PP20_INDEX) != (ARCHIVE_FILE_DNGS + 13)) {
 
 		update_mouse_cursor();
 
@@ -96,7 +96,7 @@ void draw_fight_screen_pal(signed short mode)
 		set_palette(p_datseg + 0x7d0e, 0x80, 0x14);
 		set_palette(Real2Host((RealPt)ds_readd(BUFFER8_PTR) + 0xfa02), 0x60, 0x20);
 
-		ds_writeb(0x2845, -1);
+		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 
 		refresh_screen_size();
 	}
@@ -666,7 +666,7 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + 0x2d)))
+							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID)))
 							{
 								if (is_in_byte_array(host_readbs(p_datseg + (0xd0df + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHT_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
@@ -899,7 +899,7 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(FIG_FIGURE1, ds_writew(FIG_FIGURE2, -1));
 	ds_writew(FIGHT_FIGS_INDEX, -1);
 
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 
 	ds_writed(ACTION_TABLE_PRIMARY, (Bit32u)RealMake(datseg, ACTION_TABLE_MENU));
 
@@ -967,9 +967,9 @@ signed short do_fight(signed short fight_nr)
 	/* the fight happens in this loop */
 	while (ds_readws(IN_FIGHT) != 0) {
 
-		if (ds_readws(0x2846) != 0) {
+		if (ds_readws(REQUEST_REFRESH) != 0) {
 			draw_fight_screen_pal(0);
-			ds_writew(0x2846, 0);
+			ds_writew(REQUEST_REFRESH, 0);
 		}
 
 		/* TODO: isnt that bogus? */
@@ -1177,14 +1177,14 @@ signed short do_fight(signed short fight_nr)
 	ds_writew(FIG_DISCARD, 0);
 	ds_writew(MAX_ENEMIES, 0);
 	ds_writew(IN_FIGHT, 0);
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 	ds_writew(CURRENT_ANI, -1);
 	ds_writew(0x2ccb, -1);
 	ds_writew(TIMERS_DISABLED, 0);
 	ds_writew(AUTOFIGHT, 0);
 	ds_writeb(CHECK_PARTY, 1);
 	ds_writew(TEXTBOX_WIDTH, bak5);
-	ds_writeb(0x2845, -2);
+	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 12));
 
 	update_mouse_cursor();
 

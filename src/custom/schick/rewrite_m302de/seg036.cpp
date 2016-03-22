@@ -511,7 +511,7 @@ signed short KI_get_spell(signed short spell, signed short cursed)
 	signed short retval = -1;
 
 	/* make a pointer to the spell description */
-	p = p_datseg + spell * 10 + 0x99d;
+	p = p_datseg + spell * 10 + SPELL_DESCRIPTIONS;
 
 	if (cursed == 0) {
 		if (host_readb(p + 7) == 2)
@@ -587,7 +587,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 			/* get a spell from an array */
 			spell = ds_readbs(AF_SPELL_LIST + l_si);
 
-			if ((ds_readbs(0x9a5 + 10 * spell) == 1) && (random_schick(100) < 50))
+			if ((ds_readbs((SPELL_DESCRIPTIONS + 8) + 10 * spell) == 1) && (random_schick(100) < 50))
 			{
 				decided = 1;
 				break;
@@ -618,7 +618,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 				done = 1;
 			} else {
 
-				if (!ds_readbs(0x9a5 + 10 * spell)) {
+				if (!ds_readbs((SPELL_DESCRIPTIONS + 8) + 10 * spell)) {
 
 					while ((host_readbs(hero + HERO_BP_LEFT) != 0) && (done == 0)) {
 

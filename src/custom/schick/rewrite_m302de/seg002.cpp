@@ -1155,7 +1155,7 @@ void interrupt mouse_isr(void)
 		if (((ds_readb(DUNGEON_INDEX) != 0) || (ds_readb(CURRENT_TOWN) != 0)) &&
 				!ds_readbs(LOCATION) &&
 				!ds_readbs(0x2c98) &&
-				(ds_readbs(0x2845) == 0))
+				(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
 		{
 
 			ds_writed(0xcecb, (Bit32u) (is_mouse_in_rect(68, 4, 171, 51) ? RealMake(datseg, 0x2888):
@@ -1818,7 +1818,7 @@ void game_loop(void)
 
 			ds_writeb(0x46df, 0);
 
-			if (ds_readbs(0x2845) == 0) {
+			if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 				draw_status_line();
 			}
 		}
@@ -2045,7 +2045,7 @@ void dawning(void)
 			/* unknown */
 			!ds_readbs(0x45b8) &&
 			/* unknown */
-			(ds_readbs(0x2845) == 0))
+			(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
 		{
 			wait_for_vsync();
 
@@ -2087,7 +2087,7 @@ void nightfall(void)
 			/* unknown */
 			!ds_readbs(0x45b8) &&
 			/* unknown */
-			(ds_readbs(0x2845) == 0))
+			(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
 		{
 			wait_for_vsync();
 
@@ -2546,8 +2546,8 @@ void sub_mod_timers(Bit32s val)
 					/* subtract the mod */
 					sub_ptr_bs(mp, host_readbs(sp + 7));
 
-					if (ds_readb(0x2845) == 20) {
-						ds_writew(0x2846, 1);
+					if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
+						ds_writew(REQUEST_REFRESH, 1);
 					}
 
 					/* reset target */
@@ -2721,18 +2721,18 @@ void seg002_2f7a(Bit32s fmin)
 			}
 
 			/* Timer set after Staffspell */
-			if (host_readds(hero_i + HERO_MAGIC_TIMER) > 0) {
-				sub_ptr_ds(hero_i + HERO_MAGIC_TIMER, fmin * 450);
+			if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) > 0) {
+				sub_ptr_ds(hero_i + HERO_STAFFSPELL_TIMER, fmin * 450);
 #if !defined(__BORLANDC__)
-				if (host_readds(hero_i + HERO_MAGIC_TIMER) <= 0) {
+				if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) <= 0) {
 					D1_INFO("%s kann wieder einen Stabzauber versuchen\n",
 						(char*)(hero_i + HERO_NAME2));
 				}
 
 #endif
-				if (host_readds(hero_i + HERO_MAGIC_TIMER) < 0) {
+				if (host_readds(hero_i + HERO_STAFFSPELL_TIMER) < 0) {
 
-					host_writed(hero_i + HERO_MAGIC_TIMER, 0);
+					host_writed(hero_i + HERO_STAFFSPELL_TIMER, 0);
 				}
 			}
 
@@ -3023,7 +3023,7 @@ void herokeeping(void)
 			if ((host_readb(hero + HERO_TYPE) != 0) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
-				(!ds_readb(TRAVELING) || ds_readb(0x26a4 + i) != ds_readb(FOOD_MESSAGE + i))) {
+				(!ds_readb(TRAVELING) || ds_readb(FOOD_MESSAGE_SHOWN + i) != ds_readb(FOOD_MESSAGE + i))) {
 
 					sprintf(buffer,
 						(ds_readb(FOOD_MESSAGE + i) == 1) ? (char*)get_ltx(0x380):
@@ -3035,12 +3035,12 @@ void herokeeping(void)
 
 						(char*)hero + HERO_NAME2, (char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
 
-					ds_writeb(0x26a4 + i, ds_readb(FOOD_MESSAGE + i));
+					ds_writeb(FOOD_MESSAGE_SHOWN + i, ds_readb(FOOD_MESSAGE + i));
 
 					GUI_output((Bit8u*)buffer);
 
-					if (ds_readb(0x2845) == 20) {
-						ds_writew(0x2846, 1);
+					if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
+						ds_writew(REQUEST_REFRESH, 1);
 					}
 			}
 
@@ -3062,8 +3062,8 @@ void herokeeping(void)
 					/* print output */
 					GUI_output((Bit8u*)buffer);
 
-					if (ds_readb(0x2845) == 20) {
-						ds_writew(0x2846, 1);
+					if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
+						ds_writew(REQUEST_REFRESH, 1);
 					}
 			}
 
@@ -3469,7 +3469,7 @@ void dec_splash(void)
 			/* Check splash timer again if 0 */
 			/* I have no clue */
 			/* Could be in fight */
-			(ds_readb(0x2845) == 0) &&
+			(ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) &&
 			/* check if hero is dead */
 			!hero_dead(get_hero(i)))
 		{
@@ -3488,7 +3488,7 @@ void dec_splash(void)
 void draw_splash(signed short hero_pos, signed short type)
 {
 	/* Could be in fight */
-	if (ds_readb(0x2845) == 0) {
+	if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 
 		Bit8u *splash = (type == 0) ? Real2Host(ds_readd(SPLASH_LE)) : Real2Host(ds_readd(SPLASH_AE));
 
@@ -3831,7 +3831,7 @@ void draw_loc_icons(signed short icons, ...)
 	if (icons_bak[i] != -1)
 		changed = 1;
 
-	if (changed && ds_readb(0x2845) == 0) {
+	if (changed && ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 		draw_icons();
 	}
 }
@@ -4193,7 +4193,7 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 		ds_writew(0xc3cb, 0);
 
 		/* If Mage has 4th Staffspell */
-		if ((host_readb(hero + HERO_TYPE) == 9) && (host_readbs(hero + HERO_WAND) >= 4)) {
+		if ((host_readb(hero + HERO_TYPE) == 9) && (host_readbs(hero + HERO_STAFFSPELL_LVL) >= 4)) {
 			ae -= 2;
 			if (ae < 0)
 				ae = 0;
@@ -4302,7 +4302,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			/* unknown */
 			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 
-			if (ds_readb(0x2845) == 0) {
+			if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 				ds_writeb(0x46df, 1);
 			}
 
@@ -4555,7 +4555,7 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 		si += bonus;
 	}
 
-	tmp = host_readbs(hero + 3 * attrib + 0x35) + host_readbs(hero + 3 * attrib + 0x36);
+	tmp = host_readbs(hero + 3 * attrib + HERO_MU) + host_readbs(hero + 3 * attrib + 0x36);
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
@@ -4615,12 +4615,12 @@ signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib
 
 	si += bonus;
 
-	tmp = host_readbs(hero + 3 * attrib1 + 0x35) +
-		host_readbs(hero + 3 * attrib1 + 0x36) +
-		host_readbs(hero + 3 * attrib2 + 0x35) +
-		host_readbs(hero + 3 * attrib2 + 0x36) +
-		host_readbs(hero + 3 * attrib3 + 0x35) +
-		host_readbs(hero + 3 * attrib3 + 0x36);
+	tmp = host_readbs(hero + 3 * attrib1 + HERO_MU) +
+		host_readbs(hero + 3 * attrib1 + HERO_MU_MOD) +
+		host_readbs(hero + 3 * attrib2 + HERO_MU) +
+		host_readbs(hero + 3 * attrib2 + HERO_MU_MOD) +
+		host_readbs(hero + 3 * attrib3 + HERO_MU) +
+		host_readbs(hero + 3 * attrib3 + HERO_MU_MOD);
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
@@ -4929,7 +4929,7 @@ signed short get_item_pos(Bit8u *hero, signed short item)
 	signed short i;
 
 	for (i = 0; i < 23; i++) {
-		if (item == host_readws(hero + i * 14 + 0x196)) {
+		if (item == host_readws(hero + i * 14 + HERO_ITEM_HEAD)) {
 			return i;
 		}
 	}
@@ -4958,7 +4958,7 @@ signed short get_first_hero_with_item(signed short item)
 		{
 			/* Search inventar */
 			for (j = 0; j < 23; j++) {
-				if (host_readw(hero_i + j * 14 + 0x196) == item) {
+				if (host_readw(hero_i + j * 14 + HERO_ITEM_HEAD) == item) {
 					return i;
 				}
 			}
@@ -4990,7 +4990,7 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
 		{
 			/* Search inventar */
 			for (j = 0; j < 23; j++) {
-				if (host_readws(hero_i + j * 14 + 0x196) == item) {
+				if (host_readws(hero_i + j * 14 + HERO_ITEM_HEAD) == item) {
 					return i;
 				}
 			}
@@ -5215,7 +5215,7 @@ int schick_main(int argc, char** argv)
 
 		CD_init();
 
-		if (ds_readw(0x0095) == 0) {
+		if (ds_readw(CD_INIT_SUCCESSFUL) == 0) {
 			/* CD init failed */
 			cleanup_game();
 			exit(0);

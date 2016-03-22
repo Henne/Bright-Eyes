@@ -746,7 +746,7 @@ void tevent_100(void)
 				GUI_output(get_city(0x118));
 			}
 
-			ds_writew(0x2846, 1);
+			ds_writew(REQUEST_REFRESH, 1);
 
 		} else if (answer == 3)
 		{

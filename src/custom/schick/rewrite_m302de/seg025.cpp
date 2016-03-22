@@ -94,17 +94,17 @@ void show_entrance(void)
  */
 void show_citizen(void)
 {
-	ds_writew(0x2846, 1);
+	ds_writew(REQUEST_REFRESH, 1);
 
 	do {
 		handle_gui_input();
 
-		if (ds_readw(0x2846) != 0) {
+		if (ds_readw(REQUEST_REFRESH) != 0) {
 
 			draw_main_screen();
 			set_var_to_zero();
 			load_ani(20);
-			init_ani(ds_writew(0x2846, 0));
+			init_ani(ds_writew(REQUEST_REFRESH, 0));
 
 			strcpy((char*)Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_dtp(ds_readw(CITYINDEX) * 4));
@@ -286,8 +286,8 @@ void show_treasure_map(void)
 		GUI_output(get_ltx(0x984));
 	} else {
 		ds_writeb(0x45b8, 1);
-		bak = ds_readbs(0x2845);
-		ds_writeb(0x2845, -1);
+		bak = ds_readbs(PP20_INDEX);
+		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 		set_var_to_zero();
 
 		/* load SKARTE.NVF */
@@ -377,7 +377,7 @@ void show_treasure_map(void)
 			/* */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)get_ltx(0xb5c),
-				(char*)get_hero(get_random_hero()) + 0x10);
+				(char*)get_hero(get_random_hero()) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
@@ -407,10 +407,10 @@ void show_treasure_map(void)
 
 			ds_writeb(0x4c3a, 0);
 			ds_writeb(0x45b8, 0);
-			ds_writeb(0x2845, bak);
+			ds_writeb(PP20_INDEX, bak);
 		} else {
 			ds_writew(CURRENT_ANI, -1);
-			ds_writew(0x2846, 1);
+			ds_writew(REQUEST_REFRESH, 1);
 			ds_writew(0x2ccb, -1);
 			ds_writeb(0x45b8, 0);
 			draw_main_screen();
@@ -440,7 +440,7 @@ signed short game_options(void)
 	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	load_pp20(ARCHIVE_FILE_BUCH_DAT);
-	ds_writeb(0x2845, ARCHIVE_FILE_BUCH_DAT);
+	ds_writeb(PP20_INDEX, ARCHIVE_FILE_BUCH_DAT);
 
 	get_textcolor(&fg_bak, &bg_bak);
 
@@ -608,8 +608,8 @@ signed short game_options(void)
 
 	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 
-	ds_writews(FIG_FIGURE1, ds_writews(FIG_FIGURE2, ds_writews(CURRENT_ANI, ds_writebs(0x2845, -1))));
-	ds_writew(0x2846, 1);
+	ds_writews(FIG_FIGURE1, ds_writews(FIG_FIGURE2, ds_writews(CURRENT_ANI, ds_writebs(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13)))));
+	ds_writew(REQUEST_REFRESH, 1);
 	ds_writeb(0x45b8, 0);
 
 	if (ds_readbs(CURRENT_TOWN) != 0) {
@@ -758,7 +758,7 @@ void turnaround(void)
 
 	set_to_ff();
 
-	ds_writew(0x2846, ds_writebs(0x45b8, 1));
+	ds_writew(REQUEST_REFRESH, ds_writebs(0x45b8, 1));
 }
 
 void leave_dungeon(void)
@@ -784,7 +784,7 @@ void leave_dungeon(void)
 	ds_writeb(0x2dad, ds_readb(DUNGEON_INDEX));
 	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));
 	ds_writebs(0x2ca7, -1);
-	ds_writeb(0x4475, ds_writew(0x2846, 1));
+	ds_writeb(0x4475, ds_writew(REQUEST_REFRESH, 1));
 
 	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
 
