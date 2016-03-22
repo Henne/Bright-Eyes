@@ -3116,7 +3116,11 @@ static int n_seg094(unsigned short offs)
 		return 0;
 	}
 	case 0x105d: {
-		return 0;
+		Bit16s a1 = CPU_Pop16();
+		CPU_Push16(a1);
+		D1_LOG("TM_func8(%d)\n", a1);
+		TM_func8(a1);
+		return 1;
 	}
 	case 0x10ab: {
 		return 0;

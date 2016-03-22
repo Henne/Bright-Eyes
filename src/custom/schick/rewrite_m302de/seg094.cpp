@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 9/11
+ *	Functions rewritten: 10/11
  */
 
 #include <string.h>
@@ -690,11 +690,26 @@ void TM_unused2(void)
 
 }
 
-#if defined(__BORLANDC__)
+/* Borlandified and identical */
 void TM_func8(signed short a1)
 {
+	if (!(ds_readb(0xe4a2) & 1))
+	{
+		if (ds_readbs(CURRENT_TOWN) == 4)
+		{
+			TM_draw_track(11, 9, 0, a1);
+		} else {
+			TM_draw_track(11, 17, 1, a1);
+		}
+	} else {
+		if (ds_readbs(CURRENT_TOWN) == 7)
+		{
+			TM_draw_track(14, 8, 0, a1);
+		} else {
+			TM_draw_track(14, 17, 1, a1);
+		}
+	}
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }

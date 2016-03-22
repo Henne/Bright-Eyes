@@ -2,10 +2,10 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /* 0x20 */
 void TM_func8(signed short);
 
+#if defined(__BORLANDC__)
 /* 0x2a */
 void TM_func1(signed short, signed short);
 #endif
