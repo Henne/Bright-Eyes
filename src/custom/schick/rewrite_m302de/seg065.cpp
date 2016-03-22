@@ -600,7 +600,7 @@ void show_outro(void)
 	set_party_money(get_party_money());
 
 	/* mark the game as done */
-	ds_writeb(0x2d34, 99);
+	ds_writeb(DATSEG_STATUS_START, 99);
 
 	ds_writew(0x2ca2, 0);
 	ds_writew(0x2ca4, 0);

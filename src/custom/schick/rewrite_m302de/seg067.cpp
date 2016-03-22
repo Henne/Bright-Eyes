@@ -31,7 +31,7 @@ namespace M302de {
 void city_event_switch(void)
 {
 	/* load STRASSE.LTX */
-	load_buffer_1(ARCHIVE_FILE_STRASSE_LTX);
+	load_tx(ARCHIVE_FILE_STRASSE_LTX);
 
 	/* set city flag */
 	ds_writeb(C_EVENT_ACTIVE, 1);
@@ -52,7 +52,7 @@ void city_event_switch(void)
 	ds_writeb(C_EVENT_ACTIVE, 0);
 
 	/* load the LTX-file of the current town */
-	load_buffer_1(ds_readbs(CURRENT_TOWN) + 77);
+	load_tx(ds_readbs(CURRENT_TOWN) + 77);
 
 	/* update the current position / make the step */
 	ds_writews(X_TARGET, ds_readws(0x2d83));

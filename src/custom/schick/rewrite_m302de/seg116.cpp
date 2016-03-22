@@ -44,14 +44,14 @@ void tevent_130(void)
 
 	if (TRV_enter_hut_question()) {
 
-		ds_writews(0x434f, 0);
+		ds_writews(CAMP_INCIDENT, 0);
 
 		ds_writeb(LOCATION, 6);
 		do_location();
 		ds_writeb(LOCATION, 0);
 
 		TRV_load_textfile(-1);
-		ds_writews(0x434f, -1);
+		ds_writews(CAMP_INCIDENT, -1);
 
 		load_in_head(10);
 
@@ -698,7 +698,7 @@ void TLK_old_woman(signed short state)
 			}
 		}
 
-		ds_writew(0xe30e, count_heroes_in_group() == counter ? 4 : 5);
+		ds_writew(DIALOG_NEXT_STATE, count_heroes_in_group() == counter ? 4 : 5);
 
 	} else if (state == 4 || state == 14 || state == 21) {
 
@@ -720,7 +720,7 @@ void TLK_old_woman(signed short state)
 
 		ds_writed(RANDOM_TLK_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
 
-		ds_writew(0xe30e, count_heroes_in_group() == counter ? 24 : 25);
+		ds_writew(DIALOG_NEXT_STATE, count_heroes_in_group() == counter ? 24 : 25);
 
 	} else if (state == 33) {
 
@@ -729,7 +729,7 @@ void TLK_old_woman(signed short state)
 		} while (1);
 
 	} else if (state == 34) {
-		ds_writew(0xe30e, ds_readb(CURRENT_TOWN) == 20 ? 35 : 39);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(CURRENT_TOWN) == 20 ? 35 : 39);
 	} else if (state == 37) {
 		ds_writeb(0x3dee, ds_writeb(0x3dec, 1));
 	} else if (state == 38) {

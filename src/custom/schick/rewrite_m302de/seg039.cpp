@@ -413,10 +413,10 @@ void FIG_init_heroes(void)
 
 	for (l_si = 0; l_si <= 6; l_si++) {
 
-		if (host_readbs(get_hero(l_si) + HERO_FIGHT_ID) != -1) {
+		if (host_readbs(get_hero(l_si) + HERO_FIGHTER_ID) != -1) {
 
-			FIG_remove_from_list(host_readb(get_hero(l_si) + HERO_FIGHT_ID), 0);
-			host_writeb(get_hero(l_si) + HERO_FIGHT_ID, 0xff);
+			FIG_remove_from_list(host_readb(get_hero(l_si) + HERO_FIGHTER_ID), 0);
+			host_writeb(get_hero(l_si) + HERO_FIGHTER_ID, 0xff);
 		}
 	}
 
@@ -521,7 +521,7 @@ void FIG_init_heroes(void)
 		ds_writeb((FIG_LIST_ELEM+19), 0xff);
 
 
-		host_writeb(get_hero(l_si) + HERO_FIGHT_ID, FIG_add_to_list(-1));
+		host_writeb(get_hero(l_si) + HERO_FIGHTER_ID, FIG_add_to_list(-1));
 	}
 }
 

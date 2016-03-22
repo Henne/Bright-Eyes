@@ -176,7 +176,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 	ptr3 = (RealPt)RealMake(datseg, INFORMER_ARRAY);
 	ptr2 = Real2Host(host_readd(Real2Host(ptr3) + 38 * tlk_informer));
 	l_di = host_readws(Real2Host(ptr3) + 38 * tlk_informer + 4);
-	ds_writed(0xe308, (Bit32u)(tlk_informer * 38 + ptr3 + 6));
+	ds_writed(DIALOG_TITLE, (Bit32u)(tlk_informer * 38 + ptr3 + 6));
 
 	load_in_head(host_readws(Real2Host(ptr3) + 38 * tlk_informer + 0x24));
 	dst = (char*)Real2Host(ds_readd(DTP2)) + 0x400;
@@ -218,8 +218,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 						sprintf(dst, fmt,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
-							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)))
-;
+							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)));
 					} else if (l_si == 29) {
 
 						sprintf(dst, fmt,
@@ -493,20 +492,20 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 				}
 			}
 
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), Real2Host(ds_readd(0xe308)), (Bit8u*)dst, options,
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), Real2Host(ds_readd(DIALOG_TITLE)), (Bit8u*)dst, options,
 					get_city(4 * (host_readb(ptr1 + 2) + l_di)),
 					get_city(4 * (host_readb(ptr1 + 3) + l_di)),
 					get_city(4 * (host_readb(ptr1 + 4) + l_di)));
 		}
 
 
-		ds_writews(0xe30e, -1);
+		ds_writews(DIALOG_NEXT_STATE, -1);
 
 		if (host_readws(ptr1) & 0x8000 || host_readws(ptr1) == -1) {
 			talk_switch();
 		}
 
-		ds_writew(DIALOG_STATE, ds_readws(0xe30e) == -1 ? host_readb(ptr1 + 5) : ds_readws(0xe30e));
+		ds_writew(DIALOG_STATE, ds_readws(DIALOG_NEXT_STATE) == -1 ? host_readb(ptr1 + 5) : ds_readws(DIALOG_NEXT_STATE));
 
 		if (ds_readws(DIALOG_DONE) == 0) {
 

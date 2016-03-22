@@ -109,8 +109,8 @@ void npc_farewell(void)
 	if (check_hero(get_hero(6)) == 0 && ds_readws(NPC_MONTHS) < 99)
 		return;
 
-	tmp = ds_readw(BUF1_FILE_INDEX);
-	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
+	tmp = ds_readw(TX_FILE_INDEX);
+	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	switch (host_readbs(get_hero(6) + HERO_NPC_ID)) {
 		/* Nariell */
@@ -178,7 +178,7 @@ void npc_farewell(void)
 	}
 
 	if (tmp != -1 && tmp != 0xe1)
-		load_buffer_1(tmp);
+		load_tx(tmp);
 }
 
 //static
@@ -187,7 +187,7 @@ void npc_nariell(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
+	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x14);
@@ -229,7 +229,7 @@ void npc_harika(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
+	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x16);
@@ -298,7 +298,7 @@ void npc_curian(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
+	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x19);
@@ -339,7 +339,7 @@ void npc_ardora(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
+	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x15);
@@ -408,7 +408,7 @@ void npc_garsvik(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
+	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x17);
@@ -449,7 +449,7 @@ void npc_erwo(void)
 	signed short answer;
 
 	/* load NSC.LTX */
-	load_buffer_1(ARCHIVE_FILE_NSC_LTX);
+	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
 	load_in_head(0x18);

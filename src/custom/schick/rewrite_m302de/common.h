@@ -146,7 +146,7 @@ enum {
     HERO_HUNGER_TIMER   = 0x07E, /* timer for no-hunger-miracle */
     HERO_HUNGER         = 0x07F, /* percentage */
     HERO_THIRST         = 0x080, /* percentage */
-    HERO_FIGHT_ID       = 0x081,
+    HERO_FIGHTER_ID       = 0x081,
     HERO_VIEWDIR        = 0x082,
     HERO_ACTIONS        = 0x083, /* corresponds to ENEMY_SHEET_ATTACKS */
     HERO_ACTION_ID      = 0x084, /* last fight action */
@@ -420,7 +420,7 @@ enum {
     ENEMY_SHEET_DUMMY3          = 0x2a,
     ENEMY_SHEET_DUMMY4          = 0x2b,
     ENEMY_SHEET_CUR_SPELL       = 0x2c,
-    ENEMY_SHEET_FIGHT_ID        = 0x2d,
+    ENEMY_SHEET_FIGHTER_ID        = 0x2d,
     ENEMY_SHEET_DUMMY5          = 0x2e,
     ENEMY_SHEET_BLIND           = 0x2f,
     ENEMY_SHEET_BROKEN          = 0x30, /* 0 = no, 1 = yes */

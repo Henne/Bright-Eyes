@@ -208,7 +208,7 @@ void do_tavern(void)
 
 			bc_time(&timeval);
 
-			bonus = (timeval - ds_readds(0xe2d6)) > 120 ? 0 : 50;
+			bonus = (timeval - ds_readds(LAST_SAVE_TIME)) > 120 ? 0 : 50;
 
 			if (GUI_use_skill2(bonus, get_ltx(0x62c)) == -1) {
 				done = 1;
@@ -265,7 +265,7 @@ void enter_ghostship(void)
 	draw_main_screen();
 	init_ani(1);
 
-	load_buffer_1(ARCHIVE_FILE_SHIP_DTX);
+	load_tx(ARCHIVE_FILE_SHIP_DTX);
 
 	GUI_output(get_dtp(0x48));
 	GUI_output(get_dtp(0x4c));

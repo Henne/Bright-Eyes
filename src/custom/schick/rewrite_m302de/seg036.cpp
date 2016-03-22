@@ -162,7 +162,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	FIG_call_draw_pic();
 	FIG_remove_from_list(ds_readbs(0xe38e), 0);
 	ds_writeb(0xe38e, -1);
-	FIG_set_0e(host_readbs(hero + HERO_FIGHT_ID), 0);
+	FIG_set_0e(host_readbs(hero + HERO_FIGHTER_ID), 0);
 	draw_fight_screen(0);
 	memset(p_datseg + 0xd8ce, -1, 0xf3);
 	FIG_init_list_elem(hero_pos + 1);
@@ -219,7 +219,7 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 		has_new_weapon = 0;
 	}
 
-	ptr = Real2Host(FIG_get_ptr(host_readbs(hero + HERO_FIGHT_ID)));
+	ptr = Real2Host(FIG_get_ptr(host_readbs(hero + HERO_FIGHTER_ID)));
 	host_writeb(ptr + 0x2, host_readbs(hero + HERO_VIEWDIR));
 	host_writeb(ptr + 0xd, -1);
 	draw_fight_screen_pal(0);

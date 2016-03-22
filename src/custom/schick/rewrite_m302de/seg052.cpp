@@ -181,9 +181,9 @@ void do_citycamp(void)
 					l6 = l5;
 					l_di = 0;
 
-					if (ds_readws(0x434f) == -1) {
+					if (ds_readws(CAMP_INCIDENT) == -1) {
 						if ((ds_readbs(CITYCAMP_GUARDS) == -1 ? 4 * hours : hours) > random_schick(100)) {
-							ds_writews(0x434f, random_schick(3) - 1);
+							ds_writews(CAMP_INCIDENT, random_schick(3) - 1);
 						}
 					}
 
@@ -208,7 +208,7 @@ void do_citycamp(void)
 						l8++;
 						l7--;
 
-						if (l_di == ds_readws(0x434f) && (l5 / 2) >= l6) {
+						if (l_di == ds_readws(CAMP_INCIDENT) && (l5 / 2) >= l6) {
 							done = 1;
 						}
 
@@ -231,7 +231,7 @@ void do_citycamp(void)
 
 					if (done != 0) {
 
-						ds_writew(0x434f, -1);
+						ds_writew(CAMP_INCIDENT, -1);
 
 						if (ds_readb(0xbd27) == 0) {
 							/* in a dungeon */

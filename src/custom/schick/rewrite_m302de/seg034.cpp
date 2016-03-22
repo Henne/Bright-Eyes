@@ -42,33 +42,33 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 			signed short x_diff, signed short y_diff,
 			signed short max_range)
 {
-	signed short fight_id_target;
-	signed short fight_id;
+	signed short fighter_id_target;
+	signed short fighter_id;
 	signed short beeline;
 
-	fight_id = get_cb_val(x, y);
-	fight_id_target = get_cb_val(x + x_diff, y + y_diff);
+	fighter_id = get_cb_val(x, y);
+	fighter_id_target = get_cb_val(x + x_diff, y + y_diff);
 
 	beeline = calc_beeline(x + x_diff, y + y_diff, x_hero, y_hero);
 
-	if ((fight_id != 0) && (calc_beeline(x, y, x_hero, y_hero) < beeline) && (beeline <= max_range)) {
+	if ((fighter_id != 0) && (calc_beeline(x, y, x_hero, y_hero) < beeline) && (beeline <= max_range)) {
 
 		if ((x_hero == x) && (y_hero == y)) {
 
-			if ((fight_id_target < 50) || ((fight_id_target >= 50) && is_in_word_array(fight_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
+			if ((fighter_id_target < 50) || ((fighter_id_target >= 50) && is_in_word_array(fighter_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
 			{
 				return 1;
 			} else {
 				return 0;
 			}
 
-		} else if (((fight_id >= 50) ||
-				((fight_id >= 10) && (fight_id < 30) && test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * fight_id)) ||
-				((fight_id >= 30) && (fight_id < 50) && test_bit0(p_datseg + (0xcc07 + 49) + SIZEOF_ENEMY_SHEET * fight_id)) ||
-				((fight_id < 10) && hero_dead(get_hero(fight_id - 1))))
+		} else if (((fighter_id >= 50) ||
+				((fighter_id >= 10) && (fighter_id < 30) && test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * fighter_id)) ||
+				((fighter_id >= 30) && (fighter_id < 50) && test_bit0(p_datseg + (0xcc07 + 49) + SIZEOF_ENEMY_SHEET * fighter_id)) ||
+				((fighter_id < 10) && hero_dead(get_hero(fighter_id - 1))))
 				&&
-				((fight_id_target >= 0) &&
-				 ((fight_id_target < 50) || ((fight_id_target >= 50) && is_in_word_array(fight_id_target - 50, (signed short*)(p_datseg + 0x5f46))))))
+				((fighter_id_target >= 0) &&
+				 ((fighter_id_target < 50) || ((fighter_id_target >= 50) && is_in_word_array(fighter_id_target - 50, (signed short*)(p_datseg + 0x5f46))))))
 			{
 
 				if (((((x_diff == 1) || (x_diff == -1)) && (y_hero != y))) ||
@@ -85,8 +85,8 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 	}
 
 	if (x_diff == 1) {
-		if ((fight_id_target >= 0) &&
-			((fight_id_target < 50) || ((fight_id_target >= 50) && is_in_word_array(fight_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
+		if ((fighter_id_target >= 0) &&
+			((fighter_id_target < 50) || ((fighter_id_target >= 50) && is_in_word_array(fighter_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
 			&& ((x < 23) && (y == y_hero) && (calc_beeline(x_hero, y_hero, x + 1, y) <= max_range)))
 		{
 			return 1;
@@ -98,8 +98,8 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 	}
 
 	if (x_diff == -1) {
-		if ((fight_id_target >= 0) &&
-			((fight_id_target < 50) || ((fight_id_target >= 50) && is_in_word_array(fight_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
+		if ((fighter_id_target >= 0) &&
+			((fighter_id_target < 50) || ((fighter_id_target >= 50) && is_in_word_array(fighter_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
 			&& ((x > 0) && (y == y_hero) && (calc_beeline(x_hero, y_hero, x - 1, y) <= max_range)))
 		{
 			return 1;
@@ -112,8 +112,8 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 	}
 
 	if (y_diff == 1) {
-		if ((fight_id_target >= 0) &&
-			((fight_id_target < 50) || ((fight_id_target >= 50) && is_in_word_array(fight_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
+		if ((fighter_id_target >= 0) &&
+			((fighter_id_target < 50) || ((fighter_id_target >= 50) && is_in_word_array(fighter_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
 			&& ((y < 23) && (x == x_hero) && (calc_beeline(x_hero, y_hero, x, y + 1) <= max_range)))
 		{
 			return 1;
@@ -126,8 +126,8 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 	}
 
 	if (y_diff == -1) {
-		if ((fight_id_target >= 0) &&
-			((fight_id_target < 50) || ((fight_id_target >= 50) && is_in_word_array(fight_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
+		if ((fighter_id_target >= 0) &&
+			((fighter_id_target < 50) || ((fighter_id_target >= 50) && is_in_word_array(fighter_id_target - 50, (signed short*)(p_datseg + 0x5f46))))
 			&& ((y > 0) && (x == x_hero) && (calc_beeline(x_hero, y_hero, x, y - 1) <= max_range)))
 		{
 			return 1;
@@ -154,7 +154,7 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	signed short y_diff;
 	signed short x;
 	signed short y;
-	signed short fight_id;
+	signed short fighter_id;
 	signed short x_screen;
 	signed short y_screen;
 	signed short from_kbd;
@@ -300,18 +300,18 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 
 			refresh_screen_size();
 			FIG_call_draw_pic();
-			fight_id = get_cb_val(host_readws(px), host_readws(py));
+			fighter_id = get_cb_val(host_readws(px), host_readws(py));
 
-			if ((fight_id > 0) && (fight_id < 50)) {
+			if ((fighter_id > 0) && (fighter_id < 50)) {
 
-				if (fight_id < 10) {
-					FIG_draw_char_pic(1, fight_id);
+				if (fighter_id < 10) {
+					FIG_draw_char_pic(1, fighter_id);
 				} else {
 
-					if (fight_id >= 30) {
-						FIG_draw_enemy_pic(1, fight_id - 20);
+					if (fighter_id >= 30) {
+						FIG_draw_enemy_pic(1, fighter_id - 20);
 					} else {
-						FIG_draw_enemy_pic(1, fight_id);
+						FIG_draw_enemy_pic(1, fighter_id);
 					}
 				}
 			}

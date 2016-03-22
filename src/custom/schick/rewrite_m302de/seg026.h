@@ -23,7 +23,7 @@ void load_in_head(signed short);
 //0x4d
 void load_city_ltx(signed short);
 //0x57
-void load_buffer_1(signed short);
+void load_tx(signed short);
 //0x57
 void load_ltx(unsigned short);
 //0x61

@@ -720,6 +720,15 @@ Bit32u get_readlength2(signed short index)
 	return index != -1 ? ds_readd(ARCHIVE_FILE_LENGTH) : 0;
 }
 
+/**
+ * \brief	reads len bytes from the current position in SCHICK.DAT
+ *
+ * \param handle	handle returned by load_archive_file
+ * \param buffer	target buffer for the data
+ * \param len	number of bytes to read
+ *
+ * \return number of bytes read
+ */
 unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 {
 
@@ -764,10 +773,9 @@ signed short load_regular_file(Bit16u index)
 	signed short handle;
 
 	if ( (handle = bc__open((RealPt)ds_readd(FNAMES + index * 4), 0x8004)) == -1) {
-
-		/* prepare string which file is missing */
+		/* "FILE %s IS MISSING!" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)Real2Host(ds_readd(0x4480)),
+			(char*)Real2Host(ds_readd(STR_FILE_MISSING_PTR)),
 			(char*)Real2Host(ds_readd(FNAMES + index * 4)));
 		ds_writeb(0x2ca1, 1);
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -777,6 +785,13 @@ signed short load_regular_file(Bit16u index)
 	return handle;
 }
 
+/**
+ * \brief	opens a file stored in temp or in SCHICK.DAT
+ *
+ * \param	index	index of the file in SCHICK.DAT or in temp (bitwise or 0x8000)
+ *
+ * \return a file handle that can be used with read_archive_file etc.
+ */
 signed short load_archive_file(Bit16u index)
 {
 	bc_flushall();
@@ -796,7 +811,7 @@ signed short open_temp_file(unsigned short index)
 	signed short handle;
 
 	sprintf((char*)Real2Host(tmppath),
-		(char*)Real2Host(ds_readd(0x4c88)),
+		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 		(char*)Real2Host(ds_readd(FNAMES + index * 4)));
 
 	while ( (handle = bc__open(tmppath, 0x8004)) == -1) {
@@ -1767,7 +1782,7 @@ void game_loop(void)
 			do_dungeon();
 		}
 
-		if (ds_readb(0x2d34) == 99) {
+		if (ds_readb(DATSEG_STATUS_START) == 99) {
 			ds_writew(0xc3c1, 5);
 		}
 
@@ -2583,7 +2598,7 @@ void sub_mod_timers(Bit32s val)
 
 			} else {
 				/* target affects the savegame */
-				mp = p_datseg + 0x2d34;
+				mp = p_datseg + DATSEG_STATUS_START;
 				mp += host_readw(sp + 4);
 				sub_ptr_bs(mp, host_readbs(sp + 7));
 			}
@@ -2643,7 +2658,7 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 
 	if (who == -1) {
 		/* mod slot is on savegame */
-		mod_ptr = p_datseg + 0x2d34;
+		mod_ptr = p_datseg + DATSEG_STATUS_START;
 	} else {
 		/* mod slot is on a hero/npc */
 		mod_ptr = get_hero(who);
@@ -4277,7 +4292,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			/* in fight mode */
 			if (ds_readw(IN_FIGHT) != 0) {
-				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 
 				/* update looking dir and other  */
 				host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
@@ -4360,7 +4375,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				/* in fight mode */
 				if (ds_readw(IN_FIGHT) != 0) {
 
-					ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
+					ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 
 					host_writeb(ptr + 2,
 						ds_readb(0x11e4 + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
@@ -4429,7 +4444,7 @@ void add_hero_le(Bit8u *hero, signed short le)
 
 			/* maybe if we are in a fight */
 			if (ds_readw(IN_FIGHT)) {
-				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHT_ID)));
+				ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 				ret = FIG_get_range_weapon_type(hero);
 
 				if (ret != -1) {
@@ -5293,7 +5308,7 @@ signed short copy_protection(void)
 	signed short tries;
 	signed short l1;
 
-	load_buffer_1(ARCHIVE_FILE_FIGHTTXT_LTX);
+	load_tx(ARCHIVE_FILE_FIGHTTXT_LTX);
 
 	ds_writew(TEXTBOX_WIDTH, 4);
 

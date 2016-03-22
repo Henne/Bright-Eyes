@@ -471,11 +471,11 @@ signed short game_options(void)
 
 	if (ds_readbs(CURRENT_TOWN) != 0) {
 		/* if the party is in a town */
-		load_buffer_1(ARCHIVE_FILE_MAPTEXT_LTX);
+		load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 
 		GUI_print_header(get_dtp(4 * (ds_readbs(CURRENT_TOWN) - 1)));
 
-		load_buffer_1(ds_readbs(CURRENT_TOWN) + (ARCHIVE_FILE_CITY_DAT-1));
+		load_tx(ds_readbs(CURRENT_TOWN) + (ARCHIVE_FILE_CITY_DAT-1));
 
 		ds_writew(0xc011, 0);
 		ds_writew(0xc013, 0);
@@ -661,7 +661,7 @@ signed short show_storytext(void)
 	signed short person;
 	signed short icon;
 
-	load_buffer_1(ARCHIVE_FILE_STORY_LTX);
+	load_tx(ARCHIVE_FILE_STORY_LTX);
 
 	person = random_schick(17) - 1;
 

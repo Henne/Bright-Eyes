@@ -515,9 +515,9 @@ void academy_analues(void)
 
 		ds_writed(SPELLUSER, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 
-		buffer1_bak = ds_readws(BUF1_FILE_INDEX);
+		buffer1_bak = ds_readws(TX_FILE_INDEX);
 
-		load_buffer_1(ARCHIVE_FILE_SPELLTXT_LTX);
+		load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_city(0x100),
@@ -525,7 +525,7 @@ void academy_analues(void)
 
 		if (buffer1_bak != -1 && buffer1_bak != 222) {
 
-			load_buffer_1(buffer1_bak);
+			load_tx(buffer1_bak);
 		}
 
 		GUI_input(Real2Host(ds_readd(DTP2)), 0);

@@ -247,7 +247,7 @@ void spell_hexenknoten(void)
 		return;
 	}
 
-	ptr = Real2Host(FIG_get_ptr(host_readbs(get_spelluser() + HERO_FIGHT_ID)));
+	ptr = Real2Host(FIG_get_ptr(host_readbs(get_spelluser() + HERO_FIGHTER_ID)));
 	x = host_readbs(ptr + 3);
 	y = host_readbs(ptr + 4);
 

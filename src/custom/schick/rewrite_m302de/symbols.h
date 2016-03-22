@@ -40,7 +40,7 @@
 #define CHECK_DISEASE	(0x26b9)	/* ?16 {0, 1} */
 #define CHECK_POISON	(0x26bb)	/* ?16 {0, 1} */
 #define TEXT_FILE_INDEX	(0x26bd)	/* unsigned short */
-#define BUF1_FILE_INDEX	(0x26bf)	/* signed short, index of file currently stored in buffer1 */
+#define TX_FILE_INDEX	(0x26bf)	/* signed short, index of file stored with load_tx */
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
 #define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */
@@ -68,7 +68,13 @@
 #define FIGHT_ROUND	(0x2cd7)
 #define SKILLED_HERO_POS	(0x2cdb)	/* s16 {-1, 0..6} */
 #define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
-#define CURRENT_GROUP	(0x2d35)
+
+/*
+ * Here starts the status area of the datseg,
+ * which is stored one to one in savegame files
+ */
+#define DATSEG_STATUS_START	(0x2d34)	/* unsigned char, 99 = game finished */
+#define CURRENT_GROUP	(0x2d35)	/* signed char */
 #define GROUP_MEMBER_COUNTS	(0x2d36)	/* signed char[6], members per group */
 #define TOTAL_HERO_COUNTER	(0x2d3c)	/* signed char */
 #define DIRECTION	(0x2d3d)
@@ -169,21 +175,24 @@
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
-
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
+#define CAMP_INCIDENT	(0x434f)	/* signed short, -1 = not determined or will not happen, 0,1,2 = guard that will be affected */
 #define KNOWN_MONSTERS	(0x4351)	/* signed short[82] */
 #define ARSENAL_MONEY	(0x43a3)	/* signed short {-1, 0 - 60 } */
 #define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */
 #define KNOWN_PERSONS	(0x43a6)	/* signed short[14] */
 #define DIARY_ENTRIES	(0x43b4)	/* (struct { short day, month, year, town; })[23] */
 #define DIARY_ENTRY_COUNTER	(0x43ba)	/* signed short */
+#define DATSEG_STATUS_END	(0x4474)
+
 #define MUSIC_ENABLED	(0x4476)	/* unsigned char {0,1} */
 #define SND_EFFECTS_ENABLED	(0x4477)	/* unsigned char {0,1} */
 #define MUSIC_CURRENT_TRACK	(0x447a)	/* signed short */
+#define STR_FILE_MISSING_PTR	(0x4480)	/* unsigned long == RealMake(datseg, 0x48b5) == 0x14fc'48b5 */
 #define PAUSE_STRING	(0x448a)	/* char[10] = "P A U S E" */
 #define CHECK_PARTY	(0x4495)
 #define FOOD_MOD	(0x4496)
@@ -214,6 +223,7 @@
 #define SND_TXT_HW_NOT_FOUND	(0x486d)	/* char[31] = "SOUND HARDWARE NICHT GEFUNDEN!" */
 #define FNAME_SOUND_ADV	(0x488c)	/* char[10] = "SOUND.ADV" */
 #define SND_TXT_HW_NOT_FOUND2	(0x4896)	/* char[31] == SND_TXT_HW_NOT_FOUND */
+#define STR_FILE_MISSING	(0x48b5)	/* char[20] = "FILE %s IS MISSING!" */
 #define FNAME_SCHICK_DAT	(0x48ca)	/* char[11] = "SCHICK.DAT" */
 #define SND_TXT_DISABLED_MEM2	(0x48d5)	/* char[43] = "MUSIK ABGESCHALTET - NICHT GENUG SPEICHER!" */
 #define DIARY_STRING1	(0x4900)	/* char[14] = "%2d-~%-8s~%s." */
@@ -236,7 +246,7 @@
 #define WALLCLOCK_PALETTE_NIGHT	(0x4afa)	/* (struct { unsigned char r,g,b; })[3] */
 #define COLOR_PAL_BLACK	(0x4b03)	/* char[3] = {0x3f,0x3f,0x3f} */
 #define DELAY_FACTOR	(0x4b66)
-#define STR_TEMP_XX_PTR	(0x4b68)	/* unsigned long == RealMake(datseg, 0x4b95) */
+#define STR_TEMP_XX_PTR	(0x4b68)	/* unsigned long == RealMake(datseg, 0x4b95) == 0x14fc'4b95 */
 #define FIG_STAR_COLORS	(0x4b6b)	/* signed char[13] */
 #define FIG_STAR_COUNTER	(0x4b78)	/* signed char */
 #define FIG_STAR_TIMER	(0x4b79)	/* signed short */
@@ -251,7 +261,9 @@
 #define TMAP_X	(0x4c12)	/* signed short[10] */
 #define TMAP_Y	(0x4c26)	/* signed short[10] */
 #define LOCATION_HANDLERS	(0x4c3b)	/* (void (*)(void))[19] */
+#define STR_TEMP_XX_PTR2	(0x4c88)	/* unsigned long == RealMake(datseg, 0x515e) == 0x14fc'515e */
 #define FNAMES	(0x4c8c)
+#define STR_TEMP_XX2	(0x515e)	/* char[8] = "TEMP\XX" */
 #define CHR_FILE_SUFFIX	(0x5e3e)	/* char[5] = ".CHR" */
 #define SAVEGAME_SUFFIX	(0x5e43)	/* char[5] = ".GAM" */
 #define ALL_FILES_WILDCARD	(0x5e48)	/* char[4] = "*.*" */
@@ -264,7 +276,7 @@
 #define ALL_CHR_WILDCARD3	(0x5e64)	/* char[6] = "*.CHR" */
 #define PP20_BUFFERS	(0x5e6a)	/* RealPt[9] */
 #define PP20_BUFFER_LENGTHS	(0x5e8e)	/* unsigned long[9] */
-#define CURRENT_FIGHT_NR	(0x5eb2)	/* unsigned short */
+#define CURRENT_FIGHT_ID	(0x5eb2)	/* unsigned short */
 #define INFORMER_TAB	(0x5ed6)	/* struct informer[15] */
 #define FIG_DROPPED_COUNTER	(0x5f12)	/* signed short */
 #define MAX_ENEMIES	(0x5f16)	/* signed short: an upper bound for the number of enemies */
@@ -475,14 +487,18 @@
 #define FIG_ACTOR_GRAMMAR_ID	(0xe2ba)	/* unsigned short */
 #define FIG_TARGET_GRAMMAR_TYPE	(0xe2bc)	/* unsigned short, 2 = hero, 1 = monster */
 #define FIG_TARGET_GRAMMAR_ID	(0xe2be)	/* unsigned short */
-#define DELAY_TIMER	(0xe2d0)
+#define DELAY_TIMER	(0xe2d0)	/* unsigned short */
+#define SAVED_FILES_BUF	(0xe2d2)	/* RealPt */
+#define LAST_SAVE_TIME	(0xe2d6)	/* signed long */
 #define SAVEGAME_NAMES	(0xe2da)	/* (char[9])[5] */
-#define DIALOG_INFORMER	(0xe30c)	/* ?16 */
-#define DIALOG_DONE	(0xe310)	/* ?16 {0, 1} */
-#define DIALOG_STATE	(0xe312)	/* ?16 */
-#define TLK_ID	(0xe314)	/* ?16 */
-#define CURRENT_FIG_NR	(0xe316)
-#define AUTOFIGHT	(0xe318)	/* ?16 */
+#define DIALOG_TITLE	(0xe308)	/* RealPt */
+#define DIALOG_INFORMER	(0xe30c)	/* signed short */
+#define DIALOG_NEXT_STATE	(0xe30e)	/* signed short */
+#define DIALOG_DONE	(0xe310)	/* signed short {0, 1} */
+#define DIALOG_STATE	(0xe312)	/* signed short */
+#define TLK_ID	(0xe314)	/* signed short */
+#define CURRENT_FIG_NR	(0xe316)	/* unsigned short */
+#define AUTOFIGHT	(0xe318)	/* signed short */
 #define FIG_DROPPED_WEAPONS	(0xe31a)	/* signed short[30] */
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
