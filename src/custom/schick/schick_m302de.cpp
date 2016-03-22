@@ -3073,7 +3073,14 @@ static int n_seg094(unsigned short offs)
 		return 1;
 	}
 	case 0x0125: {
-		return 0;
+		Bit16s route_nr = CPU_Pop16();
+		Bit16s dir = CPU_Pop16();
+		CPU_Push16(dir);
+		CPU_Push16(route_nr);
+
+		D1_LOG("TM_func1(%d, %d)\n", route_nr, dir);
+		TM_func1(route_nr, dir);
+		return 1;
 	}
 	case 0x0c29: {
 		// Never called

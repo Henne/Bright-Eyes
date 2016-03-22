@@ -4,12 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void TM_func8(signed short);
-
-#if defined(__BORLANDC__)
 /* 0x2a */
 void TM_func1(signed short, signed short);
-#endif
-
 /* 0x2f */
 void prepare_map_marker(void);
 /* 0x34 */

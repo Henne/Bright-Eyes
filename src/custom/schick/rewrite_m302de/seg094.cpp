@@ -76,7 +76,6 @@ void set_textbox_positions(signed short town_id)
 	ds_writew(0x2ca4, !r_dx || r_dx == 1 ? -40 : 40);
 }
 
-#if defined(__BORLANDC__)
 /**
  * \brief - ???
  * \param route_nr	number of the route
@@ -465,7 +464,6 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 	ds_writeb(SEA_TRAVEL, 0);
 }
-#endif
 
 /* Borlandified and identical */
 signed short TM_unused1(RealPt ptr, signed short off)
