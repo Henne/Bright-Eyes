@@ -426,10 +426,10 @@ RealPt unused_load(signed short nr)
 void load_map(void)
 {
 	signed short fd;
-	signed short bak;
+	signed short wallclock_update_bak;
 	struct nvf_desc nvf;
 
-	bak = ds_readw(WALLCLOCK_UPDATE);
+	wallclock_update_bak = ds_readw(WALLCLOCK_UPDATE);
 	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	ds_writew(0x2ccb, 0xffff);
@@ -501,7 +501,7 @@ void load_map(void)
 
 	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 
-	ds_writew(WALLCLOCK_UPDATE, bak);
+	ds_writew(WALLCLOCK_UPDATE, wallclock_update_bak);
 }
 
 void load_npc(signed short index)

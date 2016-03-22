@@ -178,7 +178,7 @@ void status_show(Bit16u index)
 	char le_fix[10];
 #endif
 	RealPt hero;
-	Bit16u bak1, bak2, bak3, bak4;
+	Bit16u txt_tabpos1_bak, txt_tabpos2_bak, txt_tabpos3_bak, txt_tabpos4_bak;
 	Bit8s val;
 	signed short width;
 	signed short height;
@@ -191,10 +191,10 @@ void status_show(Bit16u index)
 
 	struct nvf_desc nvf;
 
-	bak1 = ds_readw(TXT_TABPOS1);
-	bak2 = ds_readw(TXT_TABPOS2);
-	bak3 = ds_readw(TXT_TABPOS3);
-	bak4 = ds_readw(TXT_TABPOS4);
+	txt_tabpos1_bak = ds_readw(TXT_TABPOS1);
+	txt_tabpos2_bak = ds_readw(TXT_TABPOS2);
+	txt_tabpos3_bak = ds_readw(TXT_TABPOS3);
+	txt_tabpos4_bak = ds_readw(TXT_TABPOS4);
 
 	hero = (RealPt)ds_readd(HEROS) + index * SIZEOF_HERO;
 
@@ -764,10 +764,10 @@ void status_show(Bit16u index)
 		do_v_line((RealPt)ds_readd(0xd2ff), 212, 54, 195, 0);
 	}
 
-	ds_writew(TXT_TABPOS1, bak1);
-	ds_writew(TXT_TABPOS2, bak2);
-	ds_writew(TXT_TABPOS3, bak3);
-	ds_writew(TXT_TABPOS4, bak4);
+	ds_writew(TXT_TABPOS1, txt_tabpos1_bak);
+	ds_writew(TXT_TABPOS2, txt_tabpos2_bak);
+	ds_writew(TXT_TABPOS3, txt_tabpos3_bak);
+	ds_writew(TXT_TABPOS4, txt_tabpos4_bak);
 
 	ds_writed(0xd2fb, ds_readd(0xd2ff));
 

@@ -220,7 +220,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 	signed short l_di;
 	signed short cost;
 	void (*func)(void);
-	volatile signed short bak;
+	volatile signed short tx_file_bak;
 
 	l_si = host_readbs(Real2Host(monster) + ENEMY_SHEET_CUR_SPELL);
 
@@ -251,7 +251,7 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 			/* terminate output string */
 			host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
-			bak = ds_readws(TX_FILE_INDEX);
+			tx_file_bak = ds_readws(TX_FILE_INDEX);
 
 			load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 
@@ -263,8 +263,8 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 
 			func();
 
-			if ((bak != -1) && (bak != 222)) {
-				load_tx(bak);
+			if ((tx_file_bak != -1) && (tx_file_bak != ARCHIVE_FILE_SPELLTXT_LTX)) {
+				load_tx(tx_file_bak);
 			}
 
 			l_di = 1;

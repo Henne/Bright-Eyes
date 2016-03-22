@@ -1128,11 +1128,11 @@ void map_effect(Bit8u *src)
 	unsigned short si;
 	unsigned short i;
 	signed short seed;
-	signed short bak;
+	signed short wallclock_update_bak;
 
 	seed = 0;
 
-	bak = ds_readws(WALLCLOCK_UPDATE);
+	wallclock_update_bak = ds_readws(WALLCLOCK_UPDATE);
 	ds_writew(WALLCLOCK_UPDATE, 0);
 
 	wait_for_vsync();
@@ -1160,7 +1160,7 @@ void map_effect(Bit8u *src)
 
 	refresh_screen_size();
 
-	ds_writew(WALLCLOCK_UPDATE, bak);
+	ds_writew(WALLCLOCK_UPDATE, wallclock_update_bak);
 }
 
 #if !defined(__BORLANDC__)

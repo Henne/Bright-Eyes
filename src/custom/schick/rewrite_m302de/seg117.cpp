@@ -542,7 +542,7 @@ void random_encounter(signed short arg)
 	signed short randval;
 	signed short bak1;
 	signed short bak2;
-	signed short bak3;
+	signed short wallclock_update_bak;
 
 	l_si = 0;
 
@@ -552,7 +552,7 @@ void random_encounter(signed short arg)
 
 	bak1 = ds_readws(0x2ca2);
 	bak2 = ds_readws(0x2ca4);
-	bak3 = ds_readws(WALLCLOCK_UPDATE);
+	wallclock_update_bak = ds_readws(WALLCLOCK_UPDATE);
 	ds_writew(0x2ca2, 0);
 	ds_writew(0x2ca4, 0);
 
@@ -660,7 +660,7 @@ void random_encounter(signed short arg)
 
 	ds_writew(0x2ca2, bak1);
 	ds_writew(0x2ca4, bak2);
-	ds_writew(WALLCLOCK_UPDATE, bak3);
+	ds_writew(WALLCLOCK_UPDATE, wallclock_update_bak);
 	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 }
 

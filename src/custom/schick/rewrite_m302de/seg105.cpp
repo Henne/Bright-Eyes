@@ -616,7 +616,7 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 	signed short dropper;
 	signed short vc;
 	Bit8u * hero_i;
-	signed short bak;
+	signed short autofight_bak;
 
 	/* Special stacked items */
 	if (id == 0xfb) { id = 0x0a; nr = 200;} else
@@ -638,7 +638,7 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 		}
 
 		if (nr > 0) {
-			bak = ds_readws(AUTOFIGHT);
+			autofight_bak = ds_readws(AUTOFIGHT);
 			ds_writew(AUTOFIGHT, 0);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -662,7 +662,7 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 			} else {
 				done = 1;
 			}
-			ds_writew(AUTOFIGHT, bak);
+			ds_writew(AUTOFIGHT, autofight_bak);
 		} else {
 			done = 1;
 		}
@@ -762,7 +762,7 @@ signed short select_item_to_drop(Bit8u *hero)
 	signed short v6 = 0;
 	signed short item;
 	signed short va;
-	signed short bak1, bak2, bak3;
+	signed short textbox_width_bak, bak2, bak3;
 	RealPt ptr;
 	signed short str[23];
 	signed short di;
@@ -807,7 +807,7 @@ signed short select_item_to_drop(Bit8u *hero)
 		} else {
 			i = v6;
 		}
-			bak1 = ds_readw(TEXTBOX_WIDTH);
+		textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 		bak2 = ds_readw(0x2ca2);
 		bak3 = ds_readw(0x2ca4);
 		ds_writew(TEXTBOX_WIDTH, 6);
@@ -826,7 +826,7 @@ signed short select_item_to_drop(Bit8u *hero)
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x28 + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x2c + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x30 + di * 4)));
-		ds_writew(TEXTBOX_WIDTH, bak1);
+		ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 		ds_writew(0x2ca2, bak2);
 		ds_writew(0x2ca4, bak3);
 

@@ -93,14 +93,14 @@ RealPt seg030_008d(signed short arg0)
 /* unused in the game */
 void print_date(void)
 {
-	unsigned short bak;
+	unsigned short textbox_width_bak;
 
 	prepare_date_str();
-	bak = ds_readw(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 	GUI_input(Real2Host(ds_readd(DTP2)), 0);
-	ds_writew(TEXTBOX_WIDTH, bak);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 }
 
 void prepare_date_str(void)

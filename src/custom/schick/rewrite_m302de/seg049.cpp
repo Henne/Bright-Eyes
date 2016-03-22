@@ -460,10 +460,10 @@ void GRP_move_hero(signed short src_pos)
 	signed short dst_pos;
 	Bit8u *src;
 	Bit8u *dst;
-	signed char bak1;
-	signed char bak2;
-	signed char bak3;
-	signed char bak4;
+	signed char src_guardstatus;
+	signed char src_magicstatus;
+	signed char src_replstatus;
+	signed char src_herbstatus;
 	signed char i;
 
 	/* dont move NPC */
@@ -580,10 +580,10 @@ void GRP_move_hero(signed short src_pos)
 
 				memcpy(Real2Host(ds_readd(BUFFER1_PTR)), src, SIZEOF_HERO);
 
-				bak1 = ds_readbs(WILDCAMP_GUARDSTATUS + src_pos);
-				bak2 = ds_readbs(WILDCAMP_MAGICSTATUS + src_pos);
-				bak3 = ds_readbs(WILDCAMP_REPLSTATUS + src_pos);
-				bak4 = ds_readbs(WILDCAMP_HERBSTATUS + src_pos);
+				src_guardstatus = ds_readbs(WILDCAMP_GUARDSTATUS + src_pos);
+				src_magicstatus = ds_readbs(WILDCAMP_MAGICSTATUS + src_pos);
+				src_replstatus = ds_readbs(WILDCAMP_REPLSTATUS + src_pos);
+				src_herbstatus = ds_readbs(WILDCAMP_HERBSTATUS + src_pos);
 
 				*((struct dummy*)src) = *((struct dummy*)dst);
 
@@ -594,10 +594,10 @@ void GRP_move_hero(signed short src_pos)
 
 				memcpy(dst, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
 
-				ds_writeb(WILDCAMP_GUARDSTATUS + dst_pos, bak1);
-				ds_writeb(WILDCAMP_MAGICSTATUS + dst_pos, bak2);
-				ds_writeb(WILDCAMP_REPLSTATUS + dst_pos, bak3);
-				ds_writeb(WILDCAMP_HERBSTATUS + dst_pos, bak4);
+				ds_writeb(WILDCAMP_GUARDSTATUS + dst_pos, src_guardstatus);
+				ds_writeb(WILDCAMP_MAGICSTATUS + dst_pos, src_magicstatus);
+				ds_writeb(WILDCAMP_REPLSTATUS + dst_pos, src_replstatus);
+				ds_writeb(WILDCAMP_HERBSTATUS + dst_pos, src_herbstatus);
 
 				host_writeb(src + 0x84, 100);
 				host_writeb(dst + 0x84, 100);

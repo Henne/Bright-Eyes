@@ -264,7 +264,7 @@ void city_event_5(void)
 void city_event_6(void)
 {
 	signed short answer;
-	signed short bak;
+	signed short location_bak;
 
 	if (ds_readds(DAY_TIMER) >= HOURS(8) && ds_readds(DAY_TIMER) <= HOURS(20)) {
 
@@ -282,11 +282,11 @@ void city_event_6(void)
 		if (answer == 1 || answer == 2) {
 			GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 118)), 0);
 		} else if (answer == 3) {
-			bak = ds_readbs(LOCATION);
+			location_bak = ds_readbs(LOCATION);
 			ds_writeb(LOCATION, 5);
 			ds_writew(TYPEINDEX, 93);
 			do_merchant();
-			ds_writeb(LOCATION, (unsigned char)bak);
+			ds_writeb(LOCATION, (unsigned char)location_bak);
 		}
 	}
 }

@@ -380,13 +380,13 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 	signed short retval;
 
 	signed short damage;
-	signed short bak;
+	signed short tx_file_bak;
 	signed short herb;
 
 	retval = 0;
 
 	if (flag) {
-		bak = ds_readws(TX_FILE_INDEX);
+		tx_file_bak = ds_readws(TX_FILE_INDEX);
 		load_tx(ARCHIVE_FILE_SPELLTXT_LTX);
 	}
 
@@ -486,8 +486,8 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 		}
 
 
-		if ((flag != 0) && (bak != -1) && (bak != 222)) {
-			load_tx(bak);
+		if ((flag != 0) && (tx_file_bak != -1) && (tx_file_bak != ARCHIVE_FILE_SPELLTXT_LTX)) {
+			load_tx(tx_file_bak);
 		}
 	}
 

@@ -270,7 +270,7 @@ void show_treasure_map(void)
 	signed short count;	/* #collected treasure map parts */
 	signed short width;
 	signed short height;
-	signed short bak;
+	signed short pp20_index_bak;
 	Bit32s length;
 	struct nvf_desc nvf;
 
@@ -286,7 +286,7 @@ void show_treasure_map(void)
 		GUI_output(get_ltx(0x984));
 	} else {
 		ds_writeb(0x45b8, 1);
-		bak = ds_readbs(PP20_INDEX);
+		pp20_index_bak = ds_readbs(PP20_INDEX);
 		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
 		set_var_to_zero();
 
@@ -407,7 +407,7 @@ void show_treasure_map(void)
 
 			ds_writeb(0x4c3a, 0);
 			ds_writeb(0x45b8, 0);
-			ds_writeb(PP20_INDEX, bak);
+			ds_writeb(PP20_INDEX, pp20_index_bak);
 		} else {
 			ds_writew(CURRENT_ANI, -1);
 			ds_writew(REQUEST_REFRESH, 1);
@@ -810,9 +810,9 @@ void leave_dungeon(void)
  */
 void tumult(void)
 {
-	signed short tw_bak;
+	signed short textbox_width_bak;
 
-	tw_bak = ds_readw(TEXTBOX_WIDTH);
+	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
 	/* print message */
@@ -833,7 +833,7 @@ void tumult(void)
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
-	ds_writew(TEXTBOX_WIDTH, tw_bak);
+	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 }
 
 /**
