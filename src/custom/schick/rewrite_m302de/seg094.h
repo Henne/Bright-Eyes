@@ -26,7 +26,8 @@ signed short TM_get_track_length(Bit8u*);
 signed short TM_enter_target_town(void);
 /* 0x4d */
 void TM_draw_track(signed short, signed short, signed short, signed short);
-
+/* 0x52 */
+void TM_unused2(void);
 
 #if !defined(__BORLANDC__)
 }

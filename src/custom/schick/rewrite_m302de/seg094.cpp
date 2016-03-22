@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 8/11
+ *	Functions rewritten: 9/11
  */
 
 #include <string.h>
@@ -682,6 +682,12 @@ void TM_draw_track(signed short a1, signed short a2, signed short a3, signed sho
 				ds_readb(0xe4b4 + i));
 		}
 	}
+}
+
+/* Borlandified and identical */
+void TM_unused2(void)
+{
+
 }
 
 #if defined(__BORLANDC__)
