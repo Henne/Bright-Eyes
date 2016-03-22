@@ -3099,7 +3099,17 @@ static int n_seg094(unsigned short offs)
 		return 1;
 	}
 	case 0x0f58: {
-		return 0;
+		Bit16s a1 = CPU_Pop16();
+		Bit16s a2 = CPU_Pop16();
+		Bit16s a3 = CPU_Pop16();
+		Bit16s a4 = CPU_Pop16();
+		CPU_Push16(a4);
+		CPU_Push16(a3);
+		CPU_Push16(a2);
+		CPU_Push16(a1);
+		D1_LOG("TM_draw_track(%d, %d, %d, %d)\n", a1, a2, a3, a4);
+		TM_draw_track(a1, a2, a3, a4);
+		return 1;
 	}
 	case 0x1058: {
 		//Never called

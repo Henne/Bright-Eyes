@@ -24,6 +24,8 @@ signed short TM_get_looking_direction(signed short);
 signed short TM_get_track_length(Bit8u*);
 /* 0x48 */
 signed short TM_enter_target_town(void);
+/* 0x4d */
+void TM_draw_track(signed short, signed short, signed short, signed short);
 
 
 #if !defined(__BORLANDC__)

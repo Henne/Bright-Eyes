@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 7/11
+ *	Functions rewritten: 8/11
  */
 
 #include <string.h>
@@ -636,6 +636,52 @@ signed short TM_get_looking_direction(signed short coordinates)
 			(ds_readws(0x433c) < y ? SOUTH : NORTH)));
 
 	return retval;
+}
+
+/* Borlandified and identical */
+void TM_draw_track(signed short a1, signed short a2, signed short a3, signed short a4)
+{
+	signed short i;
+	Bit8u *ptr;
+	RealPt fb_start;
+
+	fb_start = (RealPt)ds_readd(0xd2ff);
+	ptr = Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (a1 - 1))), 0xec));
+	ptr += 4;
+
+	if (a3)
+	{
+		/* move ptr to the last valid value */
+		while (host_readws(ptr) != -1)
+		{
+			ptr += 4;
+		}
+
+		ptr -= 4;
+	}
+
+	for (i = 0; i < a2; i++)
+	{
+		if (a4 == 0)
+		{
+			/* save the old pixel from the map */
+			ds_writeb(0xe4b4 + i,
+				mem_readb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr)));
+
+			/* write a new one */
+			mem_writeb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr), 0x1c);
+
+			/* move the pointer */
+			ptr += 2 * ((!a3 ? 2 : -2));
+		} else {
+			/* move the pointer */
+			ptr += 2 * ((!a3 ? 2 : -2));
+
+			/* restore the pixel from the map */
+			mem_writeb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr),
+				ds_readb(0xe4b4 + i));
+		}
+	}
 }
 
 #if defined(__BORLANDC__)
