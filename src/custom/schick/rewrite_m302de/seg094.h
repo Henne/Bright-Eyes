@@ -5,6 +5,8 @@ namespace M302de {
 /* 0x20 */
 void TM_func8(signed short);
 /* 0x2a */
+void TM_func9(void);
+/* 0x2a */
 void TM_func1(signed short, signed short);
 /* 0x2f */
 void prepare_map_marker(void);
