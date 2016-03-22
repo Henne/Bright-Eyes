@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg094 (travelmode)
- *	Functions rewritten: 6/11
+ *	Functions rewritten: 7/11
  */
 
 #include <string.h>
@@ -551,9 +551,8 @@ signed short TM_get_track_length(Bit8u *track)
 	return length;
 }
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
-signed short TM_func2(void)
+signed short TM_enter_target_town(void)
 {
 	signed short l_si;
 	signed short l_di;
@@ -610,9 +609,9 @@ signed short TM_func2(void)
 			l_si = host_readws(ptr2 + 4);
 			ds_writew(0x433a, (l_si >> 8) & 0xff);
 			ds_writew(0x433c, l_si & 0xf);
-			ds_writew(0x433e, TM_func3(host_readws(ptr2)));
+			ds_writew(0x433e, TM_get_looking_direction(host_readws(ptr2)));
 
-			ds_writeb(CURRENT_TOWN, l3);
+			ds_writeb(CURRENT_TOWN, (signed char)l3);
 
 			/* load the map */
 			call_load_area(1);
@@ -621,13 +620,23 @@ signed short TM_func2(void)
 
 	return 0;
 }
-#endif
 
-#if defined(__BORLANDC__)
-signed short TM_func3(signed short a1)
+/* Borlandified and identical */
+signed short TM_get_looking_direction(signed short coordinates)
 {
+	signed short x;
+	signed short y;
+	signed short retval;
+
+	x = (coordinates >> 8) & 0xff;
+	y = coordinates & 0xf;
+
+	retval = (ds_readws(0x433a) < x ? EAST :
+			(ds_readws(0x433a) > x ? WEST :
+			(ds_readws(0x433c) < y ? SOUTH : NORTH)));
+
+	return retval;
 }
-#endif
 
 #if defined(__BORLANDC__)
 void TM_func8(signed short a1)
