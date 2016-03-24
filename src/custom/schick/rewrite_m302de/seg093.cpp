@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg093 (travelmode)
  *	Functions rewritten: 1/1 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg093.cpp
  */
 
 #include <stdio.h>
@@ -22,7 +26,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short do_travel_mode(void)
 {
 	signed short l_di;
