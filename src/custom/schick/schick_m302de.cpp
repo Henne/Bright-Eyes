@@ -3957,7 +3957,7 @@ static int n_seg110(unsigned offs)
 		CPU_Push16(percent);
 		CPU_Push16(mod);
 
-		TRV_swim2(mod, percent);
+		TRV_swim2((Bit8s)mod, percent);
 		return 1;
 	}
 	case 0x0280: {
