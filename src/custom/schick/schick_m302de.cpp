@@ -9762,7 +9762,9 @@ static int seg093(unsigned short offs)
 {
 	switch (offs) {
 	case 0x20: {
-		return 0;
+		reg_ax = do_travel_mode();
+		D1_LOG("do_travel_mode() = %d\n", reg_ax);
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
