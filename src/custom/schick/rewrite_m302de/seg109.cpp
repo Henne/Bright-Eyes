@@ -238,6 +238,7 @@ void TRV_event(signed short travel_event)
 	#if defined(__BORLANDC__)
 	event_handler = (void (*)(void))ds_readd(TRAVEL_EVENT_HANDLERS + 4 * travel_event);
 	#else
+	D1_INFO("Reisebegegnung %d\n", travel_event);
 	event_handler = handler[travel_event];
 	#endif
 	if (event_handler) event_handler();
