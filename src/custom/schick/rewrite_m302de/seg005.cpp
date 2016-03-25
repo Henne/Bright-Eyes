@@ -528,9 +528,9 @@ void draw_fight_screen(Bit16u val)
 							if (host_readbs(list_i + 2) > 3) {
 
 								host_writeb(list_i + 5,
-										ds_readbs(0x1539 + host_readbs(list_i + 0x16) * 10));
+										ds_readbs((0x1531 + 8) + host_readbs(list_i + 0x16) * 10));
 								host_writeb(list_i + 6,
-										ds_readbs(0x153a + host_readbs(list_i + 0x16) * 10));
+										ds_readbs((0x1531 + 9) + host_readbs(list_i + 0x16) * 10));
 
 								if (host_readbs(list_i + 0x13) != -1) {
 									host_writeb(list_i + 9, ds_readb(0x6031));
@@ -541,7 +541,7 @@ void draw_fight_screen(Bit16u val)
 								host_writeb(list_i + 5,
 										ds_readbs(0x1531 + host_readbs(list_i + 0x16) * 10 + host_readbs(list_i + 2) * 2));
 								host_writeb(list_i + 6,
-										ds_readbs(0x1532 + host_readbs(list_i + 0x16) * 10 + host_readbs(list_i + 2) * 2));
+										ds_readbs((0x1531 + 1) + host_readbs(list_i + 0x16) * 10 + host_readbs(list_i + 2) * 2));
 
 								if (host_readbs(list_i + 0x13) != -1) {
 									host_writeb(list_i + 9, ds_readb(0x6030 + host_readbs(list_i + 2)));
@@ -552,9 +552,9 @@ void draw_fight_screen(Bit16u val)
 						} else {
 							if (host_readbs(list_i + 2) == ds_readws(0x1a13 + host_readbs(list_i + 0x16) * 2)) {
 								host_writeb(list_i + 5,
-										ds_readbs(0x1539 + host_readbs(list_i + 0x16) * 10));
+										ds_readbs((0x1531 + 8) + host_readbs(list_i + 0x16) * 10));
 								host_writeb(list_i + 6,
-										ds_readbs(0x153a + host_readbs(list_i + 0x16) * 10));
+										ds_readbs((0x1531 + 9) + host_readbs(list_i + 0x16) * 10));
 
 							} else {
 								diff = host_readbs(list_i + 2) - ds_readws(0x11e4 + host_readbs(list_i + 0x16) * 2);
@@ -564,7 +564,7 @@ void draw_fight_screen(Bit16u val)
 									host_writeb(list_i + 5,
 										ds_readbs(0x1210 + host_readbs(list_i + 0x16) * 8 + diff * 2));
 									host_writeb(list_i + 6,
-										ds_readbs(0x1211 + host_readbs(list_i + 0x16) * 8 + diff * 2));
+										ds_readbs((0x1210 + 1) + host_readbs(list_i + 0x16) * 8 + diff * 2));
 								}
 							}
 						}
@@ -836,19 +836,19 @@ void draw_fight_screen(Bit16u val)
 						ds_writew(0x2990, 0);
 
 					/* set X1 */
-					ds_writew(0x2992, obj_x + host_readbs(list_i + 9));
-					if (ds_readws(0x2992) < 0)
-						ds_writew(0x2992, 0);
+					ds_writew((0x2990 + 2), obj_x + host_readbs(list_i + 9));
+					if (ds_readws((0x2990 + 2)) < 0)
+						ds_writew((0x2990 + 2), 0);
 
 					/* set Y2 */
-					ds_writew(0x2994, obj_y + host_readbs(list_i + 0x0c));
-					if (ds_readws(0x2994) > 199)
-						ds_writew(0x2994, 199);
+					ds_writew((0x2990 + 4), obj_y + host_readbs(list_i + 0x0c));
+					if (ds_readws((0x2990 + 4)) > 199)
+						ds_writew((0x2990 + 4), 199);
 
 					/* set X2 */
-					ds_writew(0x2996, obj_x + host_readbs(list_i + 0x0b));
-					if (ds_readws(0x2996) > 318)
-						ds_writew(0x2996, 318);
+					ds_writew((0x2990 + 6), obj_x + host_readbs(list_i + 0x0b));
+					if (ds_readws((0x2990 + 6)) > 318)
+						ds_writew((0x2990 + 6), 318);
 
 					ds_writew(0xc011, obj_x);
 					ds_writew(0xc013, obj_y);

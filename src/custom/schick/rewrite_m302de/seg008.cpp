@@ -82,9 +82,9 @@ void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
 	lv4 = 0;
 
 	ds_1 = ds_readw(0x2990);
-	ds_2 = ds_readw(0x2992);
-	ds_3 = ds_readw(0x2994);
-	ds_4 = ds_readw(0x2996);
+	ds_2 = ds_readw((0x2990 + 2));
+	ds_3 = ds_readw((0x2990 + 4));
+	ds_4 = ds_readw((0x2990 + 6));
 
 	if (y1 < ds_1) {
 		lv3 = ds_1 - y1;

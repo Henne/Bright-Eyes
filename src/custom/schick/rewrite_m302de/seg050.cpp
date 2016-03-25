@@ -557,7 +557,7 @@ void level_up(signed short hero_pos)
 
 
 	/* add skill increasements */
-	add_ptr_bs(hero + HERO_TA_RISE, ds_readbs(0x2d0d + 1 + host_readbs(hero + HERO_TYPE)));
+	add_ptr_bs(hero + HERO_TA_RISE, ds_readbs(0x2d0e + host_readbs(hero + HERO_TYPE)));
 
 	/* roll how many LE points the hero may get */
 	i = random_schick(6);
@@ -566,7 +566,7 @@ void level_up(signed short hero_pos)
 		/* a magic user */
 
 		/* add spell increasements */
-		add_ptr_bs(hero + HERO_SP_RISE, ds_readbs(0x2d14 + host_readbs(hero + HERO_TYPE)));
+		add_ptr_bs(hero + HERO_SP_RISE, ds_readbs((0x2d1b - 7) + host_readbs(hero + HERO_TYPE)));
 
 		i += 2;
 
@@ -841,7 +841,7 @@ void level_up(signed short hero_pos)
 	} else {
 
 		if ((host_readbs(hero + HERO_TYPE) >= 7) &&
-			(l_di = ds_readbs(0x2d1a + host_readbs(hero + HERO_TYPE))) &&
+			(l_di = ds_readbs((0x2d21 - 7) + host_readbs(hero + HERO_TYPE))) &&
 			GUI_bool(get_city(0xb4)))
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),

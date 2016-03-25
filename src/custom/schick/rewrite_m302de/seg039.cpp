@@ -276,7 +276,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 		ds_readb(0x1531 + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
 
 	ds_writeb((FIG_LIST_ELEM+6),
-		ds_readb(0x1532 + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
+		ds_readb((0x1531 + 1) + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
 
 	if (is_in_byte_array(host_readbs(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 		/* sprite uses two fields */
@@ -470,7 +470,7 @@ void FIG_init_heroes(void)
 
 		if (l_di != -1) {
 			ds_writeb((FIG_LIST_ELEM+2),
-				ds_readb(0x10d0 + host_readbs(hero + HERO_SPRITE_NO) * 12 + l_di * 4 + host_readbs(hero + HERO_VIEWDIR)));
+				ds_readb((0x10dc - 12) + host_readbs(hero + HERO_SPRITE_NO) * 12 + l_di * 4 + host_readbs(hero + HERO_VIEWDIR)));
 		} else {
 			ds_writeb((FIG_LIST_ELEM+2), host_readb(hero + HERO_VIEWDIR));
 		}
@@ -486,9 +486,9 @@ void FIG_init_heroes(void)
 			ds_writeb((FIG_LIST_ELEM+2),
 				ds_readb(0x1a13 + host_readbs(hero + HERO_SPRITE_NO) * 2));
 			ds_writeb((FIG_LIST_ELEM+5),
-				ds_readb(0x1539 + host_readbs(hero + HERO_SPRITE_NO) * 10));
+				ds_readb((0x1531 + 8) + host_readbs(hero + HERO_SPRITE_NO) * 10));
 			ds_writeb((FIG_LIST_ELEM+6),
-				ds_readb(0x1539 + 1 + host_readbs(hero + HERO_SPRITE_NO) * 10));
+				ds_readb((0x1531 + 9) + host_readbs(hero + HERO_SPRITE_NO) * 10));
 		} else if (hero_sleeps(hero) || hero_unc(hero)) {
 			/* sleeps or is unconscious */
 			ds_writeb((FIG_LIST_ELEM+2),

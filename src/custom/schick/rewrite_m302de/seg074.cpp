@@ -451,9 +451,9 @@ void draw_automap_to_screen(void)
 	bak = *(struct dummy*)(p_datseg + 0x2990);
 
 	/* set the screen coordinates */
-	ds_writew(0x2992, ds_writew(0x2990, 0));
-	ds_writew(0x2996, ds_readw(0xce41) + 208);
-	ds_writew(0x2994, ds_readw(0xce3f) + 135);
+	ds_writew((0x2990 + 2), ds_writew(0x2990, 0));
+	ds_writew((0x2990 + 6), ds_readw(0xce41) + 208);
+	ds_writew((0x2990 + 4), ds_readw(0xce3f) + 135);
 
 	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 

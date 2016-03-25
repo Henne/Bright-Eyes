@@ -55,8 +55,8 @@
 #define CHAR_STATUS_BARS	(0x2c18)	/* (struct { signed short LE_ORIG, LE, AE_ORIG, AE; })[7] */
 #define DISEASE_PRICES	(0x2c50)	/* signed short[8] */
 #define DISEASE_DELAYS	(0x2c60)	/* signed short[8] */
-#define POISON_PRICES	(0x2c70)	/* signed short[8] */
-#define POISON_DELAYS	(0x2c80)	/* signed short[8] */
+#define POISON_PRICES	(0x2c70)	/* signed short[10] */
+#define POISON_DELAYS	(0x2c84)	/* signed short[10] */
 #define TIMERS_DISABLED	(0x2c99)
 #define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
 #define STATUS_PAGE_HERO	(0x2c9d)	/* signed short */
@@ -106,7 +106,7 @@
 #define DEATHTRAP	(0x3312)	/* signed short */
 #define WEATHER1	(0x331b)	/* signed short, random(6) */
 #define WEATHER2	(0x331d)	/* signed short, random(7) */
-#define TREASURE_MAPS	(0x3332)	/* signed char[9] */
+#define TREASURE_MAPS	(0x3332)	/* signed char[10] */
 #define MIN_MAP_PARTS	(0x3340)	/* signed short {0} */
 #define SUBVENTION	(0x3342)	/* unsigned char {0-4} */
 #define OTTA_WINDRIDERS	(0x3344)	/* unsigned short */
@@ -340,7 +340,7 @@
 #define GOSSIP_STR_TRIPLE_WILDCARD	(0x7d06)	/* char[8] = "%s %s%s" */
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
-#define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
+#define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
 #define SEA_TRAVEL	(0xa842)	/* unsigned char {0,1} */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
 #define SPELL_SELECT_STR_KEY	(0xac20)	/* char[5] = "\xf2%s\xf0" */

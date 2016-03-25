@@ -109,20 +109,20 @@ void FIG_draw_figures(void)
 			if (ds_readws(0x2990) < 0)
 				ds_writew(0x2990, 0);
 
-			ds_writew(0x2992,
+			ds_writew((0x2990 + 2),
 				l_si + host_readbs(list_i + 9));
-			if (ds_readws(0x2992) < 0)
-				ds_writew(0x2992, 0);
+			if (ds_readws((0x2990 + 2)) < 0)
+				ds_writew((0x2990 + 2), 0);
 
-			ds_writew(0x2994,
+			ds_writew((0x2990 + 4),
 				l_di + host_readbs(list_i + 0xc));
-			if (ds_readws(0x2994) > 199)
-				ds_writew(0x2994, 199);
+			if (ds_readws((0x2990 + 4)) > 199)
+				ds_writew((0x2990 + 4), 199);
 
-			ds_writew(0x2996,
+			ds_writew((0x2990 + 6),
 				l_si + host_readbs(list_i + 0xb));
-			if (ds_readws(0x2996) > 319)
-				ds_writew(0x2996, 319);
+			if (ds_readws((0x2990 + 6)) > 319)
+				ds_writew((0x2990 + 6), 319);
 
 			do_pic_copy(2);
 		}

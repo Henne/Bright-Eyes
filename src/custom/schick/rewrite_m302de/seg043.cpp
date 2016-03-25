@@ -673,7 +673,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 							ds_writew((FIG_LIST_ELEM + 0x00), ds_readbs(0x12c0 + 5 * host_readbs(mon + ENEMY_SHEET_GFX_ID)));
 							ds_writeb((FIG_LIST_ELEM + 0x02), host_readbs(mon + ENEMY_SHEET_VIEWDIR));
 							ds_writeb((FIG_LIST_ELEM + 0x05), ds_readbs(0x1531 + 10 * host_readbs(mon + ENEMY_SHEET_GFX_ID) + 2 * host_readbs(mon + ENEMY_SHEET_VIEWDIR)));
-							ds_writeb((FIG_LIST_ELEM + 0x06), ds_readbs(0x1532 + 10 * host_readbs(mon + ENEMY_SHEET_GFX_ID) + 2 * host_readbs(mon + ENEMY_SHEET_VIEWDIR)));
+							ds_writeb((FIG_LIST_ELEM + 0x06), ds_readbs((0x1531 + 1) + 10 * host_readbs(mon + ENEMY_SHEET_GFX_ID) + 2 * host_readbs(mon + ENEMY_SHEET_VIEWDIR)));
 
 							if (is_in_byte_array(host_readbs(mon + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 								ds_writeb((FIG_LIST_ELEM + 0x09), ds_readbs(0x6030 + host_readbs(mon + ENEMY_SHEET_VIEWDIR)));

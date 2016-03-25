@@ -134,7 +134,7 @@ void clear_ani(void)
 	for (i = 0; i < 10; i++) {
 		ds_writew((0xc3ef + 5) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 7) + i * 0x107, 0);
-		ds_writew(0xc3f8 + i * 0x107, 0);
+		ds_writew((0xc3ef + 9) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 8) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 11) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 12) + i * 0x107, 0);
@@ -796,9 +796,9 @@ void draw_wallclock(signed short pos, signed short night)
 
 	/* set window */
 	ds_writew(0x2990, ds_readws(WALLCLOCK_Y));
-	ds_writew(0x2992, ds_readws(WALLCLOCK_X));
-	ds_writew(0x2994, ds_readws(WALLCLOCK_Y) + 22);
-	ds_writew(0x2996, ds_readws(WALLCLOCK_X) + 78);
+	ds_writew((0x2990 + 2), ds_readws(WALLCLOCK_X));
+	ds_writew((0x2990 + 4), ds_readws(WALLCLOCK_Y) + 22);
+	ds_writew((0x2990 + 6), ds_readws(WALLCLOCK_X) + 78);
 
 	/* set palette (night/day) */
 	set_palette((!night ? (p_datseg + WALLCLOCK_PALETTE_DAY) : (p_datseg + WALLCLOCK_PALETTE_NIGHT)), 0xfa, 3);

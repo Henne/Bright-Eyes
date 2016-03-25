@@ -1889,7 +1889,7 @@ void timers_daily(void)
 
 		if (ds_readw(SMITH_REPAIRITEMS + i * 6) != 0) {
 			/* set time to 6:00 am */
-			ds_writed(0x31e4 + i * 6, 32400L);
+			ds_writed((SMITH_REPAIRITEMS + 2) + i * 6, 32400L);
 		}
 	}
 
@@ -2384,10 +2384,10 @@ void do_timers(void)
 		/* decrement NPC timers */
 		for (i = 1; i < 7; i++) {
 
-			if ((ds_readbs(0x3601 + i) != 0) &&
-				(ds_readbs(0x3601 + i) != -1))
+			if ((ds_readbs((0x3602 - 1) + i) != 0) &&
+				(ds_readbs((0x3602 - 1) + i) != -1))
 			{
-				dec_ds_bs_post(0x3601 + i);
+				dec_ds_bs_post((0x3602 - 1) + i);
 			}
 		}
 
@@ -3137,9 +3137,9 @@ void seg002_37c4(void)
 	if ((ds_readws(0xe4a3) != 0) && (ds_readb(TRAVELING))) {
 
 		ds_writew(0xe4ad,
-				ds_readws(TOWN_POSITIONS + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
+				ds_readws(TOWN_POSITIONS + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe4a3))));
 		ds_writew(0xe4ab,
-				ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs(0x4343 + ds_readws(0xe4a3))));
+				ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe4a3))));
 
 		ds_writew(0xc011, ds_readws(0xe4ad) - 4);
 		ds_writew(0xc013, ds_readws(0xe4ab) - 4);
@@ -3215,9 +3215,9 @@ void seg002_37c4(void)
 		if ((ds_readws(0xe5ae) != 0) && (ds_readb(TRAVELING))) {
 
 			ds_writew(0xe4ad,
-					ds_readws(TOWN_POSITIONS + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
+					ds_readws(TOWN_POSITIONS + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe5b0))));
 			ds_writew(0xe4ab,
-					ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs(0x4343 + ds_readws(0xe5b0))));
+					ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe5b0))));
 
 			ds_writew(0xc011, ds_readws(0xe4ad) - 4);
 			ds_writew(0xc013, ds_readws(0xe4ab) - 4);
@@ -4386,7 +4386,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 						ds_readb(0x1210 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 					host_writeb(ptr + 6,
-						ds_readb(0x1211 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
+						ds_readb((0x1210 + 1) + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 
 					FIG_add_msg(7, 0);
@@ -4448,7 +4448,7 @@ void add_hero_le(Bit8u *hero, signed short le)
 				ret = FIG_get_range_weapon_type(hero);
 
 				if (ret != -1) {
-					host_writeb(ptr + 2, ds_readb(0x10d0 +
+					host_writeb(ptr + 2, ds_readb((0x10dc - 12) +
 						host_readbs(hero + HERO_SPRITE_NO) * 12 + 4 * ret + host_readbs(hero + HERO_VIEWDIR)));
 				} else {
 					host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
