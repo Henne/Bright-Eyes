@@ -68,6 +68,11 @@
 #define IN_FIGHT	(0x2cd5)
 #define FIGHT_ROUND	(0x2cd7)
 #define SKILLED_HERO_POS	(0x2cdb)	/* s16 {-1, 0..6} */
+#define GUI_BUTTONS_POS	(0x2cdd)	/* (struct { unsigned short x,y; })[9] */
+#define HERO_PIC_POSX	(0x2d01)	/* unsigned short[7] */
+#define LEVELUP_TA_RISE	(0x2d0e)	/* signed char[13] */
+#define LEVELUP_SP_RISE	(0x2d1b)	/* signed char[6] */
+#define LEVELUP_SPTA_CONV	(0x2d21)	/* signed char[6] = { 5, 5, 5, 0, 0, 0 } */
 #define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
 
 /*
@@ -156,6 +161,7 @@
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
+#define NPC_TIMERS	(0x3602)	/* unsigned char[6] */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
 #define TRAVELING	(0x3614)

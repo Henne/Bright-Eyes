@@ -482,7 +482,7 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 		update_mouse_cursor();
 
 	if (mode == 0) {
-		x = ds_readw(0x2d01 + hero * 2) + type * 4 + 34;
+		x = ds_readw(HERO_PIC_POSX + hero * 2) + type * 4 + 34;
 		y_min = 188;
 		dst = (RealPt)ds_readd(0xd2ff);
 	} else {

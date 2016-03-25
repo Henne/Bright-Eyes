@@ -304,9 +304,9 @@ void buy_screen(void)
 			for (l_di = 0; l_di < 7; l_di++, hero1 += SIZEOF_HERO) {
 
 				do_fill_rect((RealPt)ds_readd(0xd2ff),
-						ds_readws(0x2d01 + 2 * l_di),
+						ds_readws(HERO_PIC_POSX + 2 * l_di),
 						190,
-						ds_readws(0x2d01 + 2 * l_di) + 41,
+						ds_readws(HERO_PIC_POSX + 2 * l_di) + 41,
 						197, 0);
 
 				if (host_readbs(hero1 + HERO_TYPE) != 0) {
@@ -323,7 +323,7 @@ void buy_screen(void)
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)),
-						GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)), ds_readws(0x2d01 + 2 *l_di), 43, 0),
+						GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)), ds_readws(HERO_PIC_POSX + 2 *l_di), 43, 0),
 						190);
 
 					set_textcolor(255, 0);

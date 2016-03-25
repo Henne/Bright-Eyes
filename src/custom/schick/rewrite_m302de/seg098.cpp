@@ -191,9 +191,9 @@ void magic_heal_ani(Bit8u *hero)
 		do_pic_copy(2);
 
 		/* copy buffer content to screen */
-		ds_writew(0xc011, ds_readw(0x2d01 + 2 * target_nr));
+		ds_writew(0xc011, ds_readw(HERO_PIC_POSX + 2 * target_nr));
 		ds_writew(0xc013, 157);
-		ds_writew(0xc015, ds_readw(0x2d01 + 2 * target_nr) + 31);
+		ds_writew(0xc015, ds_readw(HERO_PIC_POSX + 2 * target_nr) + 31);
 		ds_writew(0xc017, 188);
 		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 		ds_writed(0xc00d, ds_readd(0xd2ff));

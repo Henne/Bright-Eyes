@@ -479,7 +479,7 @@ void GRP_move_hero(signed short src_pos)
 		ds_writew(0x2998, 1);
 		ds_writew(0x299e, 157);
 
-		ds_writew(0x299c, ds_readw(0x2d01 + 2 * src_pos));
+		ds_writew(0x299c, ds_readw(HERO_PIC_POSX + 2 * src_pos));
 		ds_writew(0xc011, ds_readw(0x299c));
 		ds_writew(0xc013, ds_readw(0x299e));
 		ds_writew(0xc015, ds_readw(0x299c) + 31);
@@ -494,9 +494,9 @@ void GRP_move_hero(signed short src_pos)
 
 		ds_writew(0x2998, 1);
 
-		ds_writew(0xc011, ds_readw(0x2d01 + 2 * src_pos));
+		ds_writew(0xc011, ds_readw(HERO_PIC_POSX + 2 * src_pos));
 		ds_writew(0xc013, 157);
-		ds_writew(0xc015, ds_readw(0x2d01 + 2 * src_pos) + 31);
+		ds_writew(0xc015, ds_readw(HERO_PIC_POSX + 2 * src_pos) + 31);
 		ds_writew(0xc017, 188);
 		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
 
@@ -556,7 +556,7 @@ void GRP_move_hero(signed short src_pos)
 		do_pic_copy(0);
 
 		dst_pos = 6;
-		while (ds_readws(0x2d01 + --dst_pos * 2) > ds_readws(0x299c))
+		while (ds_readws(HERO_PIC_POSX + --dst_pos * 2) > ds_readws(0x299c))
 		{
 			;
 		}

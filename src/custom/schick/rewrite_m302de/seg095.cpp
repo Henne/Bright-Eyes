@@ -37,7 +37,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		/* Nariell */
 		if (ds_readb(CURRENT_TOWN) == 0x17 &&
 			ds_readw(TYPEINDEX) == 0x30 &&
-			!ds_readb((0x3602 - 1) + 1)) {
+			!ds_readb((NPC_TIMERS - 1) + 1)) {
 
 			npc_nariell();
 		} else
@@ -45,7 +45,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		/* Harika */
 		if (ds_readb(CURRENT_TOWN) == 0x12 &&
 			ds_readw(TYPEINDEX) == 0x28 &&
-			!ds_readb((0x3602 - 1) + 2)) {
+			!ds_readb((NPC_TIMERS - 1) + 2)) {
 
 			npc_harika();
 		} else
@@ -53,7 +53,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		/* Curian */
 		if (ds_readb(CURRENT_TOWN) == 0x1d &&
 			ds_readw(TYPEINDEX) == 0x3c &&
-			!ds_readb((0x3602 - 1) + 3)) {
+			!ds_readb((NPC_TIMERS - 1) + 3)) {
 
 			npc_curian();
 		} else
@@ -61,7 +61,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		/* Ardora */
 		if (ds_readb(CURRENT_TOWN) == 0x1 &&
 			ds_readw(TYPEINDEX) == 0x6 &&
-			!ds_readb((0x3602 - 1) + 4) &&
+			!ds_readb((NPC_TIMERS - 1) + 4) &&
 			ds_readb(0x3317) != 0) {
 
 			npc_ardora();
@@ -70,7 +70,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		/* Garsvik */
 		if (ds_readb(CURRENT_TOWN) == 0x27 &&
 			ds_readw(TYPEINDEX) == 0x4a &&
-			!ds_readb((0x3602 - 1) + 5)) {
+			!ds_readb((NPC_TIMERS - 1) + 5)) {
 
 			npc_garsvik();
 		} else
@@ -78,7 +78,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		/* Erwo */
 		if (ds_readb(CURRENT_TOWN) == 0x30 &&
 			ds_readw(TYPEINDEX) == 0x57 &&
-			!ds_readb((0x3602 - 1) + 6)) {
+			!ds_readb((NPC_TIMERS - 1) + 6)) {
 
 			npc_erwo();
 		} else {

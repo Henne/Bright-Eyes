@@ -2384,10 +2384,10 @@ void do_timers(void)
 		/* decrement NPC timers */
 		for (i = 1; i < 7; i++) {
 
-			if ((ds_readbs((0x3602 - 1) + i) != 0) &&
-				(ds_readbs((0x3602 - 1) + i) != -1))
+			if ((ds_readbs((NPC_TIMERS - 1) + i) != 0) &&
+				(ds_readbs((NPC_TIMERS - 1) + i) != -1))
 			{
-				dec_ds_bs_post((0x3602 - 1) + i);
+				dec_ds_bs_post((NPC_TIMERS - 1) + i);
 			}
 		}
 
@@ -3488,7 +3488,7 @@ void dec_splash(void)
 			/* check if hero is dead */
 			!hero_dead(get_hero(i)))
 		{
-			restore_rect((RealPt)ds_readd(0xd2ff), get_hero(i) + HERO_PORTRAIT, ds_readw(0x2d01 + i * 2), 157, 32, 32);
+			restore_rect((RealPt)ds_readd(0xd2ff), get_hero(i) + HERO_PORTRAIT, ds_readw(HERO_PIC_POSX + i * 2), 157, 32, 32);
 		}
 	}
 }
@@ -3507,7 +3507,7 @@ void draw_splash(signed short hero_pos, signed short type)
 
 		Bit8u *splash = (type == 0) ? Real2Host(ds_readd(SPLASH_LE)) : Real2Host(ds_readd(SPLASH_AE));
 
-		restore_rect_rle((RealPt)ds_readd(0xd2ff), splash, ds_readw(0x2d01 + 2 * hero_pos), 157, 32, 32, 2);
+		restore_rect_rle((RealPt)ds_readd(0xd2ff), splash, ds_readw(HERO_PIC_POSX + 2 * hero_pos), 157, 32, 32, 2);
 
 		/* how long the splash should be displayed */
 		ds_writeb(0xbccf + hero_pos, 10);
