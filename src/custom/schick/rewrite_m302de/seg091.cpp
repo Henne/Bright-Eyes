@@ -1,12 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg091 (dungeon: prem mine)
- *	Functions rewritten: 4/9
+ *	Functions rewritten: 5/9
  */
 
 #include <stdio.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg003.h"
 #include "seg007.h"
@@ -214,6 +215,19 @@ void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 void DNG13_corpse0(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x24), p_datseg + 0x3f7b);
+}
+
+/* Borlandified and identical */
+void DNG13_chest0(RealPt chest)
+{
+	RealPt bak;
+
+	bak = (RealPt)host_readd(Real2Host(chest) + 0xb);
+	host_writed(Real2Host(chest) + 0xb, (Bit32u)RealMake(datseg, 0x3f90));
+
+	loot_chest(Real2Host(chest), get_dtp(0x28), get_dtp(0x2c));
+
+	host_writed(Real2Host(chest) + 0xb, (Bit32u)bak);
 }
 
 #if defined(__BORLANDC__)

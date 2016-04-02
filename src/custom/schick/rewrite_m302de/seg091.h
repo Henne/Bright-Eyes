@@ -10,13 +10,17 @@ void DNG13_unblock_passage(Bit8u*, Bit8u*);
 void DNG13_func3(void);
 #endif
 
-/* 0x34 */
-void DNG13_corpse0(RealPt);
-
 #if defined(__BORLANDC__)
 /* 0x2a */
 void DNG13_func4(void);
 #endif
+
+/* 0x34 */
+void DNG13_corpse0(RealPt);
+
+
+/* 0x3e */
+void DNG13_chest0(RealPt);
 
 #if defined(__BORLANDC__)
 /* 0x43 */

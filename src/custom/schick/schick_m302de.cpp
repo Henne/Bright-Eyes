@@ -9619,7 +9619,13 @@ static int seg091(unsigned short offs)
 			return 0;
 		}
 		case 0x3e: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			D1_LOG("DNG13_chest0()\n");
+			DNG13_chest0(ptr);
+
+			return 1;
 		}
 		case 0x43: {
 			return 0;
