@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg091 (dungeon: prem mine)
  *	Functions rewritten: 9/9 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg091.cpp
  */
 
 #include <stdio.h>
@@ -23,7 +27,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG13_handler(void)
 {
 	signed short pos;
@@ -168,7 +171,6 @@ signed short DNG13_handler(void)
  * \param	text	text for the output
  * \param	flag	pointer to the flag (0 = blocked / 1 = free)
  */
-/* Borlandified and identical */
 void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 {
 	signed short has_items;
@@ -210,13 +212,11 @@ void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 	}
 }
 
-/* Borlandified and identical */
 void DNG13_corpse0(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x24), p_datseg + 0x3f7b);
 }
 
-/* Borlandified and identical */
 void DNG13_chest0(RealPt chest)
 {
 	RealPt bak;
@@ -229,13 +229,11 @@ void DNG13_chest0(RealPt chest)
 	host_writed(Real2Host(chest) + 0xb, (Bit32u)bak);
 }
 
-/* Borlandified and identical */
 void DNG13_corpse1(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x38), p_datseg + 0x3f7c);
 }
 
-/* Borlandified and identical */
 void DNG13_chest1(RealPt chest)
 {
 	RealPt bak;
@@ -253,7 +251,6 @@ void DNG13_chest1(RealPt chest)
  *
  * \param fight_id	ID of the fight
  */
-/* Borlandified and identical */
 void DNG13_fight_intro(signed short fight_id)
 {
 	if (fight_id == FIGHTS_DPRE10_1)
@@ -262,7 +259,6 @@ void DNG13_fight_intro(signed short fight_id)
 	}
 }
 
-/* Borlandified and identical */
 void DNG13_collapsing_ceiling(void)
 {
 	signed short i;
@@ -313,7 +309,6 @@ void DNG13_collapsing_ceiling(void)
 	}
 }
 
-/* Borlandified and identical */
 void DNG13_collapsing_ceiling_easy(void)
 {
 	signed short i;
