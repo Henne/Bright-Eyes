@@ -9604,7 +9604,13 @@ static int seg091(unsigned short offs)
 {
 	switch (offs) {
 		case 0x2f: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			D1_LOG("DNG13_corpse1()\n");
+			DNG13_corpse1(ptr);
+
+			return 1;
 		}
 		case 0x34: {
 			RealPt ptr = CPU_Pop32();

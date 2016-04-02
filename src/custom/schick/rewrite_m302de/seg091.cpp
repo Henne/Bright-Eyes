@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg091 (dungeon: prem mine)
- *	Functions rewritten: 5/9
+ *	Functions rewritten: 6/9
  */
 
 #include <stdio.h>
@@ -228,6 +228,12 @@ void DNG13_chest0(RealPt chest)
 	loot_chest(Real2Host(chest), get_dtp(0x28), get_dtp(0x2c));
 
 	host_writed(Real2Host(chest) + 0xb, (Bit32u)bak);
+}
+
+/* Borlandified and identical */
+void DNG13_corpse1(RealPt ptr)
+{
+	loot_corpse(ptr, get_dtp(0x38), p_datseg + 0x3f7c);
 }
 
 #if defined(__BORLANDC__)
