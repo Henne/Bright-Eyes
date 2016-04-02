@@ -3026,7 +3026,9 @@ static int n_seg091(unsigned short offs)
 		return 1;
 	}
 	case 0x613: {
-		return 0;
+		D1_LOG("DNG13_collapsing_ceiling()\n");
+		DNG13_collapsing_ceiling();
+		return 1;
 	}
 	case 0x721: {
 		return 0;

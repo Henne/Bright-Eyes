@@ -4,11 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void DNG13_unblock_passage(Bit8u*, Bit8u*);
-
-#if defined(__BORLANDC__)
 /* 0x25 */
-void DNG13_func3(void);
-#endif
+void DNG13_collapsing_ceiling(void);
 
 #if defined(__BORLANDC__)
 /* 0x2a */
