@@ -249,6 +249,19 @@ void DNG13_chest1(RealPt chest)
 	host_writed(Real2Host(chest) + 0xb, (Bit32u)bak);
 }
 
+/**
+ * \brief print introductions of dungeon #13 fights
+ *
+ * \param fight_id	ID of the fight
+ */
+void DNG13_fight_intro(signed short fight_id)
+{
+	if (fight_id == 140) {
+		GUI_output(get_dtp(0x34));
+	}
+}
+
+
 #if defined(__BORLANDC__)
 /* dummy */
 void DNG13_func3(void)
@@ -262,19 +275,6 @@ void DNG13_func4(void)
 {
 }
 #endif
-
-
-/**
- * \brief print introductions of dungeon #13 fights
- *
- * \param fight_id	ID of the fight
- */
-void DNG13_fight_intro(signed short fight_id)
-{
-	if (fight_id == 140) {
-		GUI_output(get_dtp(0x34));
-	}
-}
 
 #if !defined(__BORLANDC__)
 }
