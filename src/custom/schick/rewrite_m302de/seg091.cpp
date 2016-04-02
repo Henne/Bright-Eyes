@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg091 (dungeon: prem mine)
- *	Functions rewritten: 8/9
+ *	Functions rewritten: 9/9 (complete)
  */
 
 #include <stdio.h>
@@ -145,7 +145,7 @@ signed short DNG13_handler(void)
 
 	} else if ((pos == 0xe0c || pos == 0x701) && pos != ds_readws(0x330e))
 	{
-		DNG13_func4();
+		DNG13_collapsing_ceiling_easy();
 
 	} else if (pos == 0x70f && pos != ds_readws(0x330e))
 	{
@@ -264,7 +264,6 @@ void DNG13_fight_intro(signed short fight_id)
 	}
 }
 
-
 /* Borlandified and identical */
 void DNG13_collapsing_ceiling(void)
 {
@@ -316,12 +315,56 @@ void DNG13_collapsing_ceiling(void)
 	}
 }
 
-#if defined(__BORLANDC__)
-/* dummy */
-void DNG13_func4(void)
+/* Borlandified and identical */
+void DNG13_collapsing_ceiling_easy(void)
 {
+	signed short i;
+	signed short fails;
+	signed short has_items;
+	Bit8u *hero;
+
+	inc_ds_bs_post(0x434d);
+
+	hero = get_hero(0);
+	for (i = fails = 0; i <= 6; i++, hero += SIZEOF_HERO)
+	{
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero) &&
+			test_skill(hero, 13, -1) <= 0)
+		{
+			fails++;
+		}
+	}
+
+	if (fails > 1)
+	{
+		/* at least two heros failed in the skill test */
+		GUI_output(get_dtp(0x4c));
+
+		sub_group_le(dice_roll(1, 6, 5));
+
+		GUI_output(get_dtp(0x50));
+
+		/* check if the group has ALL of these items:
+			SHOVEL, HOE, CROWBAR, FRANCESCA
+			SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
+		*/
+
+		has_items = 0;
+
+		if (get_first_hero_with_item(73) != -1 &&
+			get_first_hero_with_item(93) != -1 &&
+			get_first_hero_with_item(26) != -1 &&
+			get_first_hero_with_item(16) != -1)
+		{
+			has_items = 1;
+		}
+
+		/* if all items are available, it takes 18 hours instead of 12 */
+		timewarp(has_items == 0 ? HOURS(18) : HOURS(12));
+	}
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }

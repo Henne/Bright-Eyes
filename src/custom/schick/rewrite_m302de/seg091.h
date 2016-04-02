@@ -6,12 +6,8 @@ namespace M302de {
 void DNG13_unblock_passage(Bit8u*, Bit8u*);
 /* 0x25 */
 void DNG13_collapsing_ceiling(void);
-
-#if defined(__BORLANDC__)
 /* 0x2a */
-void DNG13_func4(void);
-#endif
-
+void DNG13_collapsing_ceiling_easy(void);
 /* 0x2f */
 void DNG13_corpse1(RealPt);
 /* 0x34 */

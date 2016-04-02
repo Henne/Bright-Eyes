@@ -3031,7 +3031,9 @@ static int n_seg091(unsigned short offs)
 		return 1;
 	}
 	case 0x721: {
-		return 0;
+		D1_LOG("DNG13_collapsing_ceiling_easy()\n");
+		DNG13_collapsing_ceiling_easy();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n", __func__, offs);
