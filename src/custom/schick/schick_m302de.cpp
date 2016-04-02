@@ -9644,7 +9644,9 @@ static int seg091(unsigned short offs)
 			return 1;
 		}
 		case 0x43: {
-			return 0;
+			D1_LOG("DNG13_handler()\n");
+			reg_ax = DNG13_handler();
+			return 1;
 		}
 		case 0x48: {
 			Bit16s fight_id = CPU_Pop16();

@@ -23,7 +23,6 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /* Borlandified and identical */
 signed short DNG13_handler(void)
 {
@@ -163,7 +162,6 @@ signed short DNG13_handler(void)
 
 	return 0;
 }
-#endif
 
 /**
  * \brief		unblock a passage if its blocked

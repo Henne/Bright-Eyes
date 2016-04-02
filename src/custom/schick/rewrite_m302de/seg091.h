@@ -16,12 +16,8 @@ void DNG13_corpse0(RealPt);
 void DNG13_chest1(RealPt);
 /* 0x3e */
 void DNG13_chest0(RealPt);
-
-#if defined(__BORLANDC__)
 /* 0x43 */
 signed short DNG13_handler(void);
-#endif
-
 /* 0x48 */
 void DNG13_fight_intro(signed short);
 
