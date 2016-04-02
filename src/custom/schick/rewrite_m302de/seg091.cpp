@@ -254,9 +254,11 @@ void DNG13_chest1(RealPt chest)
  *
  * \param fight_id	ID of the fight
  */
+/* Borlandified and identical */
 void DNG13_fight_intro(signed short fight_id)
 {
-	if (fight_id == 140) {
+	if (fight_id == FIGHTS_DPRE10_1)
+	{
 		GUI_output(get_dtp(0x34));
 	}
 }
