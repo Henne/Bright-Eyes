@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg091 (dungeon: prem mine)
- *	Functions rewritten: 2/9
+ *	Functions rewritten: 3/9
  */
 
 #include <stdio.h>
@@ -71,7 +71,7 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0x30c && pos != ds_readws(0x330e))
 	{
-		DNG13_func2(get_dtp(0x10), p_datseg + 0x3f7d);
+		DNG13_unblock_passage(get_dtp(0x10), p_datseg + 0x3f7d);
 
 	} else if (pos == 0x409 &&
 			 (pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)) &&
@@ -89,7 +89,7 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0x509 && pos != ds_readws(0x330e))
 	{
-		DNG13_func2(get_dtp(0x1c), p_datseg + 0x3f7e);
+		DNG13_unblock_passage(get_dtp(0x1c), p_datseg + 0x3f7e);
 
 	} else if (pos == 0x209 && pos != ds_readws(0x330e))
 	{
@@ -97,7 +97,7 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0xa06 && pos != ds_readws(0x330e))
 	{
-		DNG13_func2(get_dtp(0x1c), p_datseg + 0x3f7f);
+		DNG13_unblock_passage(get_dtp(0x1c), p_datseg + 0x3f7f);
 
 	} else if (pos == 0xb05 && pos != ds_readws(0x330e))
 	{
@@ -109,11 +109,11 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0xe09 && pos != ds_readws(0x330e))
 	{
-		DNG13_func2(get_dtp(0x1c), p_datseg + 0x3f80);
+		DNG13_unblock_passage(get_dtp(0x1c), p_datseg + 0x3f80);
 
 	} else if (pos == 0x703 && pos != ds_readws(0x330e))
 	{
-		DNG13_func2(get_dtp(0x1c), p_datseg + 0x3f81);
+		DNG13_unblock_passage(get_dtp(0x1c), p_datseg + 0x3f81);
 
 	} else if (pos == 0x401 && pos != ds_readws(0x330e))
 	{
@@ -162,12 +162,52 @@ signed short DNG13_handler(void)
 }
 #endif
 
-#if defined(__BORLANDC__)
-/* dummy */
-void DNG13_func2(Bit8u* text, Bit8u* ptr)
+/**
+ * \brief		unblock a passage if its blocked
+ * \param	text	text for the output
+ * \param	flag	pointer to the flag (0 = blocked / 1 = free)
+ */
+/* Borlandified and identical */
+void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 {
+	signed short has_items;
+
+	/* check if passage is blocked */
+	if (!host_readb(flag))
+	{
+		/* ask if the heros want to try */
+		if (GUI_bool(text))
+		{
+			/* check if the group has ALL of these items:
+				SHOVEL, HOE, CROWBAR, FRANCESCA
+				SCHAUFEL, HACKE, BRECKEISEN, WURFBEIL
+			*/
+
+			has_items = 0;
+
+			if (get_first_hero_with_item(73) != -1 &&
+				get_first_hero_with_item(93) != -1 &&
+				get_first_hero_with_item(26) != -1 &&
+				get_first_hero_with_item(16) != -1)
+			{
+				has_items = 1;
+			}
+
+			/* if all items are available, it takes 2 hours instead of 6 */
+			timewarp(!has_items ? HOURS(6) : HOURS(2));
+
+			GUI_output(get_dtp(0x14));
+
+			/* mark this passage as free */
+			host_writeb(flag, 1);
+
+		} else {
+
+			ds_writew(X_TARGET, ds_readws(0x2d83));
+			ds_writew(Y_TARGET, ds_readws(0x2d85));
+		}
+	}
 }
-#endif
 
 #if defined(__BORLANDC__)
 /* dummy */

@@ -3014,7 +3014,16 @@ static int n_seg091(unsigned short offs)
 {
 	switch (offs) {
 	case 0x44f: {
-		return 0;
+		RealPt text = CPU_Pop32();
+		RealPt ptr = CPU_Pop32();
+		CPU_Push32(ptr);
+		CPU_Push32(text);
+
+		D1_LOG("DNG13_unblock_passage(%s, DS:0x%x)\n",
+			(char*)Real2Host(text), Real2Host(ptr) - p_datseg);
+
+		DNG13_unblock_passage(Real2Host(text), Real2Host(ptr));
+		return 1;
 	}
 	case 0x613: {
 		return 0;

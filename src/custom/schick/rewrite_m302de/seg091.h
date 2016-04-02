@@ -2,10 +2,8 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /* 0x20 */
-void DNG13_func2(Bit8u*, Bit8u*);
-#endif
+void DNG13_unblock_passage(Bit8u*, Bit8u*);
 
 #if defined(__BORLANDC__)
 /* 0x25 */
