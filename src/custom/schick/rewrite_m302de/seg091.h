@@ -19,8 +19,8 @@ void DNG13_func4(void);
 void DNG13_corpse1(RealPt);
 /* 0x34 */
 void DNG13_corpse0(RealPt);
-
-
+/* 0x39 */
+void DNG13_chest1(RealPt);
 /* 0x3e */
 void DNG13_chest0(RealPt);
 

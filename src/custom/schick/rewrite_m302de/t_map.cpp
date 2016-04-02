@@ -84,6 +84,7 @@ treasure_type t_map(RealPt ptr, const int off)
 
 	case 0x141b: {
 		/* TODO: seg091.cpp: Dungeon Prem */
+		if (f_off == 0x39) return (treasure_type)DNG13_chest1;
 		if (f_off == 0x3e) return (treasure_type)DNG13_chest0;
 
 		D1_ERR("ERROR: call to seg091:0x%x should not happen\n", f_off);
