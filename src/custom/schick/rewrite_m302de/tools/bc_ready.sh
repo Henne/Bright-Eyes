@@ -118,123 +118,82 @@ for i in ${OBJDIR}/*.OBJ; do
 	head -n $LINES ${DISDIR}/${PREFIX}.dis >${DISDIR}/${PREFIX}.tmp
 	mv ${DISDIR}/${PREFIX}.tmp ${DISDIR}/${PREFIX}.dis
 
+
+	RETVAL=0
 	# count the lines containing '|' => difference
 	case "${PREFIX}" in
 		"SEG002")
 			# exact 26 differing lines are allowed
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 26 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 26 ]; then RETVAL=1; fi
 			;;
 		"SEG004")
 			# exact 1 differing lines are allowed
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 1 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 1 ]; then RETVAL=1; fi
+			;;
+		"SEG008")
+			# exact 42 differing lines are allowed
+			# adresses in unalinged codesegment
+			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $LINES -ne 42 ]; then RETVAL=1; fi
 			;;
 		"SEG048")
 			# exact 27 differing lines are allowed
 			# other code in switch statements
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 27 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 27 ]; then RETVAL=1; fi
 			;;
 		"SEG049")
 			# exact two differing lines are allowed
 			# (function pointer argument)
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 2 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"SEG050")
 			# exact 1 differing lines are allowed
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 1 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 1 ]; then RETVAL=1; fi
 			;;
 		"SEG055")
 			# exact 6 differing lines are allowed
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 6 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 6 ]; then RETVAL=1; fi
 			;;
 		"SEG075")
 			# exact 3 differing lines are allowed
 			# (function pointer argument)
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 3 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 3 ]; then RETVAL=1; fi
 			;;
 		"SEG092")
 			# exact 2 differing lines are allowed
 			# (function pointer argument)
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 2 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"SEG113")
 			# exact 2 differing lines are allowed
 			# (function pointer argument)
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 2 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"SEG120")
 			# exact 3 differing lines are allowed
 			# (function pointer argument)
-
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			RETVAL=0;
-			if [ $LINES -ne 3 ]; then
-				RETVAL=1;
-				echo "Fehler: ${PREFIX} ist verschieden"
-			fi
+			if [ $LINES -ne 3 ]; then RETVAL=1; fi
 			;;
 		*)
 			diff -q -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis
 			RETVAL=$?
 			;;
 	esac
+
 	if [ $RETVAL -eq 0 ]; then
 		GOOD=$(($GOOD+1))
 	else
-		echo "${PREFIX} ist verschieden"
+		echo "Fehler: ${PREFIX} ist verschieden"
 		FAIL=$(($FAIL+1))
 	fi
 
