@@ -30,13 +30,13 @@ done
 
 ndisasm >/dev/null 2>/dev/null
 if [ $? -ne 0 ]; then
-	echo "Problems with $prog => install it"
+	echo "Problems with ndisasm => install it"
 	exit 1
 fi
 
 ./tools/dump_obj >/dev/null 2>/dev/null
 if [ $? -ne 255 ]; then
-	echo "Problems with $prog => Recompile Bright-Eyes"
+	echo "Problems with dump_obj => Recompile Bright-Eyes"
 	exit 1
 fi
 # all tools are available
