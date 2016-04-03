@@ -5,7 +5,6 @@
 @REM -j5 = #Errors
 @REM
 @REM --the hard cases
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -j5 SEG008.CPP
 @REM -Os, -Od, -k- geht auch
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG106.CPP
 @REM
@@ -25,6 +24,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG005.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG006.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG007.CPP
+@REM ..\BIN\TASM.EXE /os /z SEG008.asm SEG008.OBJ
 @REM ..\BIN\TASM.EXE /os /z SEG009.asm SEG009.OBJ
 @REM ..\BIN\TASM.EXE /os /z SEG010.asm SEG010.OBJ
 @REM ..\BIN\TASM.EXE /m /w+ /ml /iAIL AIL\AIL.ASM SEG011.OBJ
