@@ -367,9 +367,6 @@ struct chest {
 
 void seg092_06b4(signed short a1)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short x;
 	signed short y;
 	signed short chest_id;
@@ -377,6 +374,13 @@ void seg092_06b4(signed short a1)
 	RealPt chest_ptr;
 	Bit8u *ptr;
 
+#if !defined(__BORLANDC__)
+	if (ds_readbs(DUNGEON_INDEX) < 12 || ds_readbs(DUNGEON_INDEX) > 14)
+	{
+		DUMMY_WARNING();
+		return;
+	}
+#endif
 	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
 	ptr = p_datseg + 0xbd95;
 	ds_writew(0xe4a0, 0);
@@ -402,13 +406,29 @@ void seg092_06b4(signed short a1)
 		if (host_readws(Real2Host(chest_ptr)) == chest_id) {
 
 			if (l4 != 0 && host_readd(Real2Host(chest_ptr) + 11)) {
+#if defined(__BORLANDC__)
 				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+#else
+				(t_map(chest_ptr, 11)(chest_ptr));
+#endif
 			} else if (host_readbs(Real2Host(chest_ptr) + 2) != 0) {
+#if defined(__BORLANDC__)
 				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 3)))(chest_ptr);
+#else
+				(t_map(chest_ptr, 3)(chest_ptr));
+#endif
 			} else if ((RealPt)host_readd(Real2Host(chest_ptr) + 3)) {
+#if defined(__BORLANDC__)
 				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 3)))(chest_ptr);
+#else
+				(t_map(chest_ptr, 3)(chest_ptr));
+#endif
 			} else if ((RealPt)host_readd(Real2Host(chest_ptr) + 11)) {
+#if defined(__BORLANDC__)
 				((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+#else
+				(t_map(chest_ptr, 11)(chest_ptr));
+#endif
 				ds_writew(0xe4a0, 1);
 			} else if (host_readws(Real2Host(chest_ptr) + 17) != 0) {
 				ds_writew(0xe4a0, 1);
@@ -417,7 +437,12 @@ void seg092_06b4(signed short a1)
 			break;
 		}
 
+#if !defined(__BORLANDC__)
+		chest_ptr += 21;
+	} while (host_readws(Real2Host(chest_ptr)) != -1);
+#else
 	} while (host_readws(Real2Host(((struct chest*)chest_ptr)++)) != -1);
+#endif
 
 	if (l4 == 0 && ds_readws(0xe4a0) != 0) {
 
@@ -443,7 +468,6 @@ void seg092_06b4(signed short a1)
 			get_item(45, 1, host_readws(Real2Host(chest_ptr) + 19));
 		}
 	}
-#endif
 }
 
 void use_lockpicks_on_chest(RealPt chest_ptr)
