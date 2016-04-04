@@ -2,6 +2,10 @@
  *	Rewrite of DSA1 v3.02_de functions of seg003 (movement)
  *	Functions rewritten: 5/5 (complete)
  *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg003.cpp
+ *
 */
 
 #include <stdio.h>
@@ -30,7 +34,6 @@ static const char no_way_msg[][41] = {
 };
 #endif
 
-/* Borlandified and identical */
 signed short update_direction(unsigned char mod)
 {
 	/* save old direction */
@@ -43,7 +46,6 @@ signed short update_direction(unsigned char mod)
 	return -1;
 }
 
-/* Borlandified and identical */
 void move(void)
 {
 	volatile signed short v2;
@@ -124,7 +126,6 @@ void move(void)
 	}
 }
 
-/* Borlandified and identical */
 void door_frame(signed short nr, signed short x, signed short y, signed short frame)
 {
 	signed short width;
@@ -187,7 +188,6 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
  * \param	text		output text
  * \param	flag		to mark this chest as done
  */
-/* Borlandified and identical */
 void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 {
 	signed short answer;
@@ -240,8 +240,7 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 	}
 }
 
-/* Borlandified and identical */
-void no_way()
+void no_way(void)
 {
 	GUI_output(p_datseg + NOWAY_STRING);
 }
