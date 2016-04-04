@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg003 (movement)
- *	Functions rewritten: 4/5
+ *	Functions rewritten: 5/5 (complete)
  *
 */
 
@@ -187,6 +187,7 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
  * \param	text		output text
  * \param	flag		to mark this chest as done
  */
+/* Borlandified and identical */
 void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 {
 	signed short answer;

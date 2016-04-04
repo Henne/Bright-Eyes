@@ -5683,7 +5683,24 @@ static int seg003(unsigned short offs) {
 			return 1;
 		}
 		case  0x031e: {
+			RealPt chest_ptr = CPU_Pop32();
+			RealPt text = CPU_Pop32();
+			RealPt flag = CPU_Pop32();
+			CPU_Push32(flag);
+			CPU_Push32(text);
+			CPU_Push32(chest_ptr);
+
+			D1_LOG("loot_corpse(0x%x, %s)\n", chest_ptr, Real2Host(text));
+#if 0
+			// do not enable here until seg092_06b4() and all callers of loot_corpse()
+			// are implemented
+
+			loot_corpse(chest_ptr, Real2Host(text), Real2Host(flag));
+
+			return 1;
+#else
 			return 0;
+#endif
 		}
 		case  0x0424: {
 			D1_LOG("no_way()\n");
