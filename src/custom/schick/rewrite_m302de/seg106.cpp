@@ -277,7 +277,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
-/* Borlandified and identical */
+/* Borlandified and nearly identical */
 void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short pos2)
 {
 	signed short l_di;
