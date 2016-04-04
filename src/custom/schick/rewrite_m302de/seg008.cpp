@@ -1,6 +1,16 @@
 /*
-        Rewrite of DSA1 v3.02_de functions of segment 008 (Rasterlib)
-        Functions rewritten: 14/14 (complete)
+ *	Rewrite of DSA1 v3.02_de functions of segment 008 (Rasterlib)
+ *	Functions rewritten: 14/14 (complete)
+ *
+ *	Borlandified and identical
+ *	This is not that true, but since this segment is written in assembler,
+ *	and the stats are generated from cpp-files only this is the way to do it.
+ *
+ *	In the assembly, there is also code for OPL3-Programming, which is not used in the game,
+ *	so we do not need to rewrite them in C.
+ *
+ *	Take a look at seg008.asm
+ *
 */
 
 #if !defined(__BORLANDC__)
