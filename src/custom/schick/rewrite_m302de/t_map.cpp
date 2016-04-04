@@ -84,6 +84,8 @@ treasure_type t_map(RealPt ptr, const int off)
 
 	case 0x141b: {
 		/* TODO: seg091.cpp: Dungeon Prem */
+		if (f_off == 0x2f) return (treasure_type)DNG13_corpse1;
+		if (f_off == 0x34) return (treasure_type)DNG13_corpse0;
 		if (f_off == 0x39) return (treasure_type)DNG13_chest1;
 		if (f_off == 0x3e) return (treasure_type)DNG13_chest0;
 
