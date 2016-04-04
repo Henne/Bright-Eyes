@@ -1,6 +1,6 @@
 /*
         Rewrite of DSA1 v3.02_de functions of segment 008 (Rasterlib)
-        Functions rewritten: 13/14
+        Functions rewritten: 14/14 (complete)
 */
 
 #if !defined(__BORLANDC__)
@@ -29,11 +29,52 @@ void set_video_page(signed short page) {
 	INT10_SetActivePage(page);
 }
 
-void save_display_stat(RealPt p)
-{
-	CPU_Push32(p);
-	CALLBACK_RunRealFar(reloc_game + 0xf18, 0x40);
-	CPU_Pop32();
+void save_display_stat(RealPt p) {
+
+	/* save some registers that may change on the stack,
+		because we call an interrupt */
+	CPU_Push16(SegValue(ds));
+	CPU_Push16(SegValue(es));
+	CPU_Push16(reg_si);
+	CPU_Push16(reg_di);
+	CPU_Push16(reg_bp);
+
+	reg_ah = 0x0f;
+	CALLBACK_RunRealInt(0x10);
+
+	reg_dx = reg_ax;
+	reg_ax = 0;
+
+	/* write the current active display mode */
+	reg_al = reg_bh;
+	host_writew(Real2Host(p), reg_ax);
+	p += 2;
+
+	/* write the current video mode */
+	reg_al = reg_dl;
+	host_writew(Real2Host(p), reg_ax);
+	p += 2;
+
+	/* write the number of columns in text mode */
+	reg_al = reg_dh;
+	host_writew(Real2Host(p), reg_ax);
+	p += 2;
+
+	reg_ax = 0x1130;
+	reg_bh = 0x02;
+	CALLBACK_RunRealInt(0x10);
+
+	/* write the number of lines in text mode */
+	reg_dh = 0;
+	reg_dx++;
+	host_writew(Real2Host(p), reg_dx);
+
+	/* restore some registers from the stack */
+	reg_bp = CPU_Pop16();
+	reg_di = CPU_Pop16();
+	reg_si = CPU_Pop16();
+	SegSet16(es, CPU_Pop16());
+	SegSet16(ds, CPU_Pop16());
 }
 
 void set_color(Bit8u *ptr, unsigned char color){
