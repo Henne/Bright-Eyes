@@ -498,6 +498,7 @@ signed short DNG05_handler(void)
  *
  * \param fight_id	ID of the fight
  */
+/* Borlandified and identical */
 void DNG5_fight_intro(signed short fight_id)
 {
 	if (fight_id == 76) {
