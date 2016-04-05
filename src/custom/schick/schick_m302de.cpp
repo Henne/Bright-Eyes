@@ -9314,7 +9314,11 @@ static int seg080(unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG04_corpse1_chest(ptr);
+			return 1;
 		}
 		case 0x2f: {
 			RealPt ptr = CPU_Pop32();

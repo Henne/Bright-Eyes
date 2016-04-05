@@ -6,7 +6,8 @@ namespace M302de {
 void DNG04_corpse0_chest(RealPt);
 /* 0x25 */
 void DNG04_corpse0(RealPt);
-
+/* 0x2a */
+void DNG04_corpse1_chest(RealPt);
 /* 0x2f */
 void DNG04_corpse1(RealPt);
 
