@@ -10,7 +10,8 @@ void DNG04_corpse0(RealPt);
 void DNG04_corpse1_chest(RealPt);
 /* 0x2f */
 void DNG04_corpse1(RealPt);
-
+/* 0x34 */
+void DNG04_corpse2_chest(RealPt);
 /* 0x39 */
 void DNG04_corpse2(RealPt);
 
