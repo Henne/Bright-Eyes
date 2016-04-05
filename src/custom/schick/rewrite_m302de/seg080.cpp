@@ -1,12 +1,13 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg080 (dungeon: wolvcave, cave)
- *	Functions rewritten: 5/9
+ *	Functions rewritten: 6/9
  */
 
 #include <stdio.h>
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg003.h"
 #include "seg007.h"
@@ -312,6 +313,19 @@ void DNG04_corpse1(RealPt ptr)
 void DNG04_corpse2(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x50), p_datseg + 0x3ca2);
+}
+
+/* Borlandified and identical */
+void DNG04_corpse0_chest(RealPt chest)
+{
+	RealPt bak;
+
+	bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x40a5));
+
+	loot_chest(Real2Host(chest), get_dtp(0x58), get_dtp(0x18));
+
+	host_writed(Real2Host(chest) + 11, (Bit32u)bak);
 }
 
 /**

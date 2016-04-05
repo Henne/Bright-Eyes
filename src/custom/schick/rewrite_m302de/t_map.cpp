@@ -59,6 +59,7 @@ treasure_type t_map(RealPt ptr, const int off)
 
 	case 0x13e4: {
 		/* TODO: seg080.cpp: wolfcave, cave */
+		if (f_off == 0x20) return (treasure_type)DNG04_corpse0_chest;
 		if (f_off == 0x25) return (treasure_type)DNG04_corpse0;
 		if (f_off == 0x2f) return (treasure_type)DNG04_corpse1;
 		if (f_off == 0x39) return (treasure_type)DNG04_corpse2;

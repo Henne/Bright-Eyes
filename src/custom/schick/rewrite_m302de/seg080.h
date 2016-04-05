@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void DNG04_corpse0_chest(RealPt);
 /* 0x25 */
 void DNG04_corpse0(RealPt);
 
