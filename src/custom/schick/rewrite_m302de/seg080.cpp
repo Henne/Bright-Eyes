@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg080 (dungeon: wolvcave, cave)
  *	Functions rewritten: 9/9 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg080.cpp
  */
 
 #include <stdio.h>
@@ -30,7 +34,6 @@ namespace M302de {
 /**
  * \brief	dungeon handler of the wolfcave
  */
-/* Borlandified and identical */
 signed short DNG04_handler(void)
 {
 	signed short pos;
@@ -299,25 +302,21 @@ signed short DNG04_handler(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void DNG04_corpse0(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x04), p_datseg + 0x3ca0);
 }
 
-/* Borlandified and identical */
 void DNG04_corpse1(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x20), p_datseg + 0x3ca1);
 }
 
-/* Borlandified and identical */
 void DNG04_corpse2(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x50), p_datseg + 0x3ca2);
 }
 
-/* Borlandified and identical */
 void DNG04_corpse0_chest(RealPt chest)
 {
 	RealPt bak;
@@ -330,7 +329,6 @@ void DNG04_corpse0_chest(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)bak);
 }
 
-/* Borlandified and identical */
 void DNG04_corpse1_chest(RealPt chest)
 {
 	RealPt bak;
@@ -343,7 +341,6 @@ void DNG04_corpse1_chest(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)bak);
 }
 
-/* Borlandified and identical */
 void DNG04_corpse2_chest(RealPt chest)
 {
 	RealPt bak;
@@ -359,7 +356,6 @@ void DNG04_corpse2_chest(RealPt chest)
 /**
  * \brief	dungeon handler of a cave
  */
-/* Borlandified and identical */
 signed short DNG05_handler(void)
 {
 	signed short pos;
@@ -498,7 +494,6 @@ signed short DNG05_handler(void)
  *
  * \param fight_id	ID of the fight
  */
-/* Borlandified and identical */
 void DNG5_fight_intro(signed short fight_id)
 {
 	if (fight_id == 76) {

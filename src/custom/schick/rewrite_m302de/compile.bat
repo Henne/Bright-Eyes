@@ -78,6 +78,7 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG072.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG073.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG074.CPP
+@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG080.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG087.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG088.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG090.CPP
@@ -116,7 +117,6 @@
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG077.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG078.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG079.CPP
-@REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG080.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG081.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG082.CPP
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG083.CPP
