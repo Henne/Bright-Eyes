@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg080 (dungeon: wolvcave, cave)
- *	Functions rewritten: 8/9
+ *	Functions rewritten: 9/9 (complete)
  */
 
 #include <stdio.h>
@@ -10,8 +10,12 @@
 #include "seg000.h"
 #include "seg002.h"
 #include "seg003.h"
+#include "seg004.h"
 #include "seg007.h"
 #include "seg025.h"
+#include "seg027.h"
+#include "seg032.h"
+#include "seg047.h"
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -350,6 +354,143 @@ void DNG04_corpse2_chest(RealPt chest)
 	loot_chest(Real2Host(chest), get_dtp(0x60), get_dtp(0x18));
 
 	host_writed(Real2Host(chest) + 11, (Bit32u)bak);
+}
+
+/**
+ * \brief	dungeon handler of a cave
+ */
+/* Borlandified and identical */
+signed short DNG05_handler(void)
+{
+	signed short pos;
+	signed short tmp;
+	signed short tw_bak;
+	Bit8u *hero;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
+
+        pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
+
+	if (pos == 0x70e && pos != ds_readws(0x330e) && ds_readw(0x960e) == 0)
+	{
+		if (GUI_bool(get_dtp(0x04)) && GUI_bool(get_dtp(0x3c)))
+		{
+			ds_writew(0x960e, 1);
+
+			hero = Real2Host(get_first_hero_available_in_group());
+
+			GUI_output(get_dtp(0x40));
+
+			tmp = get_free_mod_slot();
+			set_mod_slot(tmp, DAYS(1), hero + HERO_CH, -5, 0);
+
+			add_party_money(20L);
+		}
+
+	} else if (pos == 0x50c && pos != ds_readws(0x330e) && !ds_readb(0x3caf))
+	{
+		if (GUI_bool(get_dtp(0x08)))
+		{
+			GUI_output(get_dtp(0x0c));
+
+			get_item(45, 1, 10);
+
+			ds_writeb(0x3caf, 1);
+		}
+
+	} else if (pos == 0x907 && pos != ds_readws(0x330e) && !ds_readb(0x3cb0))
+	{
+		if (GUI_bool(get_dtp(0x10)))
+		{
+			GUI_output(get_dtp(0x14));
+
+			ds_writeb(0x3cb0, 1);
+		}
+
+	} else if (pos == 0x309 && pos != ds_readws(0x330e) && !ds_readb(0x3cb1))
+	{
+		do {
+			tmp = GUI_radio(get_dtp(0x18), 2,
+						get_dtp(0x1c),
+						get_dtp(0x20));
+		} while (tmp == -1);
+
+		add_ds_ds((GODS_ESTIMATION + 4 * 4), tmp == 1 ? -15 : 15);
+
+		GUI_output(get_dtp(0x24));
+
+		ds_writeb(0x3cb1, 1);
+
+	} else if (pos == 0x805 && pos != ds_readws(0x330e))
+	{
+		if (random_schick(100) < 30)
+		{
+			ds_writew(MAX_ENEMIES, random_schick(100) < 10 ? 3 : 2);
+			ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x827))));
+
+			do_fight(FIGHTS_F061_4B);
+		}
+
+	} else if (pos == 0xb01 && pos != ds_readws(0x330e))
+	{
+		GUI_output(get_dtp(0x2c));
+
+	} else if (pos == 0x601 && pos != ds_readws(0x330e))
+	{
+		if (GUI_bool(get_dtp(0x30)))
+		{
+			hero = Real2Host(get_first_hero_available_in_group());
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x34),
+				(char*)hero + HERO_NAME2);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			sub_hero_le(hero, dice_roll(1, 3, 2));
+
+			hero_disease_test(hero, 1, 65);
+		}
+
+	} else if (pos == 0x30e && pos != ds_readws(0x330e))
+	{
+		load_ani(32);
+		init_ani(1);
+
+		GUI_output(get_dtp(0x38));
+
+		set_var_to_zero();
+
+		ds_writew(X_TARGET, 5);
+		ds_writew(0x2ccb, -1);
+
+	} else if (pos == 0x60f && pos != ds_readws(0x330e))
+	{
+		/* the exit of this dungeon */
+		leave_dungeon();
+
+		ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
+		ds_writew(X_TARGET, ds_readws(0x433a));
+		ds_writew(Y_TARGET, ds_readws(0x433c));
+		ds_writeb(LOCATION, 0);
+		ds_writeb(DIRECTION, (ds_readb(0x433e) + 2) & 0x03);
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x44),
+			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+
+		GUI_output(Real2Host(ds_readd(DTP2)));
+
+		timewarp(HOURS(2));
+
+		ds_writeb(0x4475, 3);
+	}
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+	ds_writew(0x330e, pos);
+
+	return 0;
 }
 
 /**

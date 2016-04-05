@@ -9346,7 +9346,8 @@ static int seg080(unsigned short offs)
 			return 1;
 		}
 		case 0x43: {
-			return 0;
+			reg_ax = DNG05_handler();
+			return 1;
 		}
 		case 0x48: {
 			Bit16s fight_id = CPU_Pop16();
