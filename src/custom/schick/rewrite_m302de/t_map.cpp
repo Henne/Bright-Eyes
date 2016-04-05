@@ -11,6 +11,7 @@
 
 #include "v302de.h"
 
+#include "seg080.h"
 #include "seg088.h"
 #include "seg090.h"
 #include "seg091.h"
@@ -55,6 +56,15 @@ treasure_type t_map(RealPt ptr, const int off)
 	Bit16u f_off = RealOff(func);
 
 	switch (f_seg - reloc_game) {
+
+	case 0x13e4: {
+		/* TODO: seg080.cpp: wolfcave, cave */
+		if (f_off == 0x25) return (treasure_type)DNG04_corpse0;
+
+		D1_ERR("ERROR: call to seg080:0x%x should not happen\n", f_off);
+		exit(-1);
+		break;
+	}
 
 	case 0x140b: {
 		/* TODO: seg088.cpp: Dungeon Thorwal */

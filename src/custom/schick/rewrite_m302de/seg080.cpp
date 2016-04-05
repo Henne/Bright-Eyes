@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg080 (dungeon: wolvcave, cave)
- *	Functions rewritten: 2/9
+ *	Functions rewritten: 3/9
  */
 
 #include <stdio.h>
@@ -8,6 +8,7 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg003.h"
 #include "seg007.h"
 #include "seg025.h"
 #include "seg092.h"
@@ -295,6 +296,11 @@ signed short DNG04_handler(void)
 }
 #endif
 
+/* Borlandified and identical */
+void DNG04_corpse0(RealPt ptr)
+{
+	loot_corpse(ptr, get_dtp(0x04), p_datseg + 0x3ca0);
+}
 
 /**
  * \brief print introductions of dungeon #5 fights

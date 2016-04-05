@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x25 */
+void DNG04_corpse0(RealPt);
+
 #if defined(__BORLANDC__)
 /* 0x3e */
 signed short DNG04_handler(void);
