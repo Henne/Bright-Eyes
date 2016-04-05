@@ -647,6 +647,7 @@ void tevent_075(void)
 	}
 }
 
+/* dungeon entrance: a cave */
 void tevent_076(void)
 {
 	signed short answer;
