@@ -60,6 +60,7 @@ treasure_type t_map(RealPt ptr, const int off)
 	case 0x13e4: {
 		/* TODO: seg080.cpp: wolfcave, cave */
 		if (f_off == 0x25) return (treasure_type)DNG04_corpse0;
+		if (f_off == 0x2f) return (treasure_type)DNG04_corpse1;
 
 		D1_ERR("ERROR: call to seg080:0x%x should not happen\n", f_off);
 		exit(-1);
