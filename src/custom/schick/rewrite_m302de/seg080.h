@@ -14,11 +14,8 @@ void DNG04_corpse1(RealPt);
 void DNG04_corpse2_chest(RealPt);
 /* 0x39 */
 void DNG04_corpse2(RealPt);
-
-#if defined(__BORLANDC__)
 /* 0x3e */
 signed short DNG04_handler(void);
-#endif
 
 /* 0x48 */
 void DNG5_fight_intro(signed short);

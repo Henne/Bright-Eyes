@@ -9342,7 +9342,8 @@ static int seg080(unsigned short offs)
 			return 1;
 		}
 		case 0x3e: {
-			return 0;
+			reg_ax = DNG04_handler();
+			return 1;
 		}
 		case 0x43: {
 			return 0;

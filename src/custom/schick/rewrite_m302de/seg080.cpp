@@ -23,7 +23,6 @@
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
 /**
  * \brief	dungeon handler of the wolfcave
  */
@@ -295,7 +294,6 @@ signed short DNG04_handler(void)
 
 	return 0;
 }
-#endif
 
 /* Borlandified and identical */
 void DNG04_corpse0(RealPt ptr)
