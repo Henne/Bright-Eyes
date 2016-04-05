@@ -374,6 +374,7 @@ void tevent_060(void)
 	} while (done == 0);
 }
 
+/* entrance dungeon wolfcave */
 void tevent_061(void)
 {
 	signed short answer;
