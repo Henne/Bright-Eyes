@@ -9629,8 +9629,8 @@ static int seg090(unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			D1_LOG("DNG_handler_oberorken()\n");
-			reg_ax = DNG_handler_oberorken();
+			D1_LOG("DNG12_handler()\n");
+			reg_ax = DNG12_handler();
 			return 1;
 		}
 		case 0x2f: {

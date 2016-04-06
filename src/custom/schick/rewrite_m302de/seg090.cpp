@@ -29,7 +29,7 @@
 namespace M302de {
 #endif
 
-signed short DNG_handler_oberorken(void)
+signed short DNG12_handler(void)
 {
 	signed short target_pos;
 	signed short i;
