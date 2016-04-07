@@ -67,6 +67,12 @@ void DNG_door(signed short action)
 
 		if (host_readws((Bit8u*)ptr + 0) == pos)
 		{
+#if !defined(__BORLANDC__)
+			D1_INFO("Tuer: KK notwendig %d, SCHLOESSER mod = %d, FORAMEN mod = %d\n",
+					host_readbs((Bit8u*)ptr + 2),
+					host_readbs((Bit8u*)ptr + 3),
+					host_readbs((Bit8u*)ptr + 4));
+#endif
 
 			if (action == 135)
 			{
