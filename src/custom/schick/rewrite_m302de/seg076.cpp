@@ -261,6 +261,7 @@ void DNG_door(signed short action)
 	} while (host_readws((Bit8u*)(ptr++)) != -1);
 }
 
+/* Borlandified and identical */
 void print_msg_with_first_hero(Bit8u *msg)
 {
 	Bit8u *hero;
