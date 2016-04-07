@@ -28,11 +28,6 @@ signed short get_border_index(unsigned short);
 namespace M302de {
 #endif
 
-#if defined(__BORLANDC__)
-/* this function is called with different argument types from different segments */
-signed short div16(signed short);
-#endif
-
 void show_automap(void)
 {
 	signed short l_si;

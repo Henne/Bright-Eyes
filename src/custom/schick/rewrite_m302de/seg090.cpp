@@ -244,7 +244,7 @@ signed short DNG12_handler(void)
 #if !defined(__BORLANDC__)
 		D1_INFO("In Wasserfalle gefangen\n");
 #endif
-		if (div16(host_readb(ptr + 0xb3)) == 2) {
+		if (div16(cast_u16(host_readb(ptr + 0xb3))) == 2) {
 			and_ptr_bs(ptr + 0xb3, 0xf);
 			or_ptr_bs(ptr + 0xb3, 0x10);
 		}
@@ -252,7 +252,7 @@ signed short DNG12_handler(void)
 #if !defined(__BORLANDC__)
 		D1_INFO("In Wasserfalle gefangen\n");
 #endif
-		if (div16(host_readb(ptr + 0x63)) == 2) {
+		if (div16(cast_u16(host_readb(ptr + 0x63))) == 2) {
 			and_ptr_bs(ptr + 0x63, 0xf);
 			or_ptr_bs(ptr + 0x63, 0x10);
 		}
