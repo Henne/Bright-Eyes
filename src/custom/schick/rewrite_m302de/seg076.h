@@ -5,6 +5,9 @@ namespace M302de {
 /* 0x20 */
 void do_dungeon(void);
 
+/* 0x2f */
+void DNG_door(signed short);
+
 /* 0x48 */
 void print_msg_with_first_hero(Bit8u*);
 

@@ -2960,7 +2960,13 @@ static int n_seg076(unsigned short offs)
 {
 	switch (offs) {
 	case 0x000: {
-		return 0;
+		Bit16s action = CPU_Pop16();
+		CPU_Push16(action);
+
+		D1_LOG("DNG_door(%d)\n", action);
+		DNG_door(action);
+
+		return 1;
 	}
 	case 0x576: {
 		RealPt msg = CPU_Pop32();
