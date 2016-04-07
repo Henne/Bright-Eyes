@@ -180,7 +180,7 @@ void draw_status_line(void)
 				/* load skull if hero is dead */
 				if (hero_dead(get_hero(i))) {
 					head_bak = ds_readw(0x515c);
-					load_in_head(0x29);
+					load_in_head(41);
 				}
 
 				/* set the src pointer of the head */
@@ -199,7 +199,7 @@ void draw_status_line(void)
 				/* load skull if hero is dead */
 				if (hero_dead(get_hero(i))) {
 					head_bak = ds_readw(0x515c);
-					load_in_head(0x29);
+					load_in_head(41);
 				}
 
 				/* set the src pointer of the head */

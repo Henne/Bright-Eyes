@@ -190,7 +190,7 @@ void npc_nariell(void)
 	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
-	load_in_head(0x14);
+	load_in_head(20);
 
 	/* show dialog window */
 	do {
@@ -232,7 +232,7 @@ void npc_harika(void)
 	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
-	load_in_head(0x16);
+	load_in_head(22);
 
 	/* show dialog window */
 	do {
@@ -301,7 +301,7 @@ void npc_curian(void)
 	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
-	load_in_head(0x19);
+	load_in_head(25);
 
 	/* show dialog window */
 	do {
@@ -342,7 +342,7 @@ void npc_ardora(void)
 	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
-	load_in_head(0x15);
+	load_in_head(21);
 
 	/* show dialog window */
 	do {
@@ -411,7 +411,7 @@ void npc_garsvik(void)
 	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
-	load_in_head(0x17);
+	load_in_head(23);
 
 	/* show dialog window */
 	do {
@@ -452,7 +452,7 @@ void npc_erwo(void)
 	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	/* load head */
-	load_in_head(0x18);
+	load_in_head(24);
 
 	/* show dialog window */
 	do {
