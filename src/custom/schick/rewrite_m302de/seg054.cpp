@@ -236,7 +236,7 @@ void do_inn(void)
 								portion_size = 100;
 							}
 
-							sub_ptr_bs(hero2 + HERO_HUNGER, portion_size);
+							sub_ptr_bs(hero2 + HERO_HUNGER, (unsigned char)portion_size);
 
 							if (host_readbs(hero2 + HERO_HUNGER) < 0) {
 								host_writebs(hero2 + HERO_HUNGER, 0);
@@ -247,7 +247,7 @@ void do_inn(void)
 								portion_size = 100;
 							}
 
-							sub_ptr_bs(hero2 + HERO_THIRST, portion_size);
+							sub_ptr_bs(hero2 + HERO_THIRST, (unsigned char)portion_size);
 
 							if (host_readbs(hero2 + HERO_THIRST) < 0) {
 								host_writebs(hero2 + HERO_THIRST, 0);
