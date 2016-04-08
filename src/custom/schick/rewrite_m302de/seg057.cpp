@@ -119,11 +119,11 @@ void sell_screen(Bit8u *shop_ptr)
 			read_archive_file(l_di, Real2Host(ds_readd(ICON)), 576L);
 			bc_close(l_di);
 
-			ds_writew(0xc011, 108);
-			ds_writew(0xc013, 5);
-			ds_writew(0xc015, 131);
-			ds_writew(0xc017, 28);
-			ds_writed(0xc019, ds_readd(ICON));
+			ds_writew(PIC_COPY_X1, 108);
+			ds_writew(PIC_COPY_Y1, 5);
+			ds_writew(PIC_COPY_X2, 131);
+			ds_writew(PIC_COPY_Y2, 28);
+			ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 			do_pic_copy(0);
 
 			get_textcolor(&fg_bak, &bg_bak);
@@ -204,11 +204,11 @@ void sell_screen(Bit8u *shop_ptr)
 
 					if ((j = host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * answer))) {
 
-						ds_writew(0xc011, array3.a[items_x]);
-						ds_writew(0xc013, array5.a[l_di]);
-						ds_writew(0xc015, array3.a[items_x] + 15);
-						ds_writew(0xc017, array5.a[l_di] + 15);
-						ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+						ds_writew(PIC_COPY_X1, array3.a[items_x]);
+						ds_writew(PIC_COPY_Y1, array5.a[l_di]);
+						ds_writew(PIC_COPY_X2, array3.a[items_x] + 15);
+						ds_writew(PIC_COPY_Y2, array5.a[l_di] + 15);
+						ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 						nvf.nr = host_readws(get_itemsdat(j));
 

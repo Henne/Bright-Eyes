@@ -502,11 +502,11 @@ void DNG_stub5(void)
 {
 	draw_compass();
 
-	ds_writew(0xc011, ds_readw(0xce41));
-	ds_writew(0xc013, ds_readw(0xce3f));
-	ds_writew(0xc015, ds_readw(0xce41) + 207);
-	ds_writew(0xc017, ds_readw(0xce3f) + 134);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, ds_readw(0xce41));
+	ds_writew(PIC_COPY_Y1, ds_readw(0xce3f));
+	ds_writew(PIC_COPY_X2, ds_readw(0xce41) + 207);
+	ds_writew(PIC_COPY_Y2, ds_readw(0xce3f) + 134);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 	update_mouse_cursor();
 
@@ -1082,11 +1082,11 @@ mark2:			   goto mark1;
 		}
 
 		do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
-		ds_writew(0xc011, 0);
-		ds_writew(0xc013, 0);
-		ds_writew(0xc015, 240);
-		ds_writew(0xc017, 136);
-		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+		ds_writew(PIC_COPY_X1, 0);
+		ds_writew(PIC_COPY_Y1, 0);
+		ds_writew(PIC_COPY_X2, 240);
+		ds_writew(PIC_COPY_Y2, 136);
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 		update_mouse_cursor();
 		do_pic_copy(1);
 		refresh_screen_size();

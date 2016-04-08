@@ -81,10 +81,10 @@ void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
 	lv3 = 0;
 	lv4 = 0;
 
-	ds_1 = ds_readw(0x2990);
-	ds_2 = ds_readw((0x2990 + 2));
-	ds_3 = ds_readw((0x2990 + 4));
-	ds_4 = ds_readw((0x2990 + 6));
+	ds_1 = ds_readw(PIC_COPY_DS_RECT);
+	ds_2 = ds_readw((PIC_COPY_DS_RECT + 2));
+	ds_3 = ds_readw((PIC_COPY_DS_RECT + 4));
+	ds_4 = ds_readw((PIC_COPY_DS_RECT + 6));
 
 	if (y1 < ds_1) {
 		lv3 = ds_1 - y1;
@@ -134,7 +134,7 @@ void pic_copy(RealPt dst, short x1, short y1, short x2, short y2,
 		bx = 320 - cur_width;
 		do {
 			cols = cur_width;
-			if (ds_readw(0x4a92)) {
+			if (ds_readw(PIC_COPY_FLAG)) {
 				do {
 					if (lines >= 40 || cols <= 75 || cols >= 150)
 						if (mem_readb(Real2Phys(dst)) >= 0xc8)

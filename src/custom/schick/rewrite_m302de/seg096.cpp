@@ -647,28 +647,28 @@ void GUI_draw_popup_line(signed short line, signed short type)
 
 	x = ds_readws(TEXTBOX_POS_X);
 	y = ds_readws(TEXTBOX_POS_Y) + (line * 8);
-	ds_writew(0xc011, x);
-	ds_writew(0xc013, y);
-	ds_writew(0xc015, x + 15);
-	ds_writew(0xc017, y + 7);
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(POPUP) + popup_left));
+	ds_writew(PIC_COPY_X1, x);
+	ds_writew(PIC_COPY_Y1, y);
+	ds_writew(PIC_COPY_X2, x + 15);
+	ds_writew(PIC_COPY_Y2, y + 7);
+	ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(POPUP) + popup_left));
 
 	do_pic_copy(0);
 
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(POPUP) + popup_middle));
+	ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(POPUP) + popup_middle));
 
 	x += 16;
 
 	for (i = 0; i < ds_readws(TEXTBOX_WIDTH); i++) {
-		ds_writew(0xc011, x);
-		ds_writew(0xc015, x + 31);
+		ds_writew(PIC_COPY_X1, x);
+		ds_writew(PIC_COPY_X2, x + 31);
 		do_pic_copy(0);
 		x += 32;
 	}
 
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(POPUP) + popup_right));
-	ds_writew(0xc011, x);
-	ds_writew(0xc015, x + 15);
+	ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(POPUP) + popup_right));
+	ds_writew(PIC_COPY_X1, x);
+	ds_writew(PIC_COPY_X2, x + 15);
 
 	do_pic_copy(0);
 }

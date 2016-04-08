@@ -45,6 +45,7 @@
 #define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
 #define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */
 #define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
+#define PIC_COPY_DS_RECT	(0x2990)	/* struct screen_rect */
 #define ANI_ENABLED	(0x29ae)	/* ?16 {0, 1} if the animation is enabled */
 #define ACTION_TABLE_MENU	(0x29cc)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
 #define ACTION_TABLE_PRIMARY	(0x29e0) /* RealPt */
@@ -242,6 +243,7 @@
 #define DIARY_STRING7	(0x495c)	/* char[22] = "~~RUMH\x8eNGEN IN %s." */
 #define NOWAY_STRING	(0x4a68)	/* char[41] = "IN DIESE RICHTUNG GEHT ES NICHT WEITER." */
 #define ANI_BUSY	(0x4a90)	/* unsigned short {0,1} */
+#define PIC_COPY_FLAG	(0x4a92)	/* unsigned short {0,1} */
 #define STATUS_BAR_COLORS	(0x4a94)	/* 4 chars: le_color, 0, ae_color, 0 */
 #define STATUS_PAGE_HUNGER_MAX_COUNTER	(0x4a9a)	/* signed char */
 #define STATUS_PAGE_HUNGER_MAX_COLOR	(0x4a9b)	/* signed char */
@@ -422,6 +424,16 @@
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
 #define SELLITEMS	(0xc005)	/* RealPt, also used for repair items */
 #define BUYITEMS	(0xc009)	/* RealPt, merchant's assortment */
+#define PIC_COPY_DST	(0xc00d)	/* RealPt */
+#define PIC_COPY_X1	(0xc011)	/* signed short */
+#define PIC_COPY_Y1	(0xc013)	/* signed short */
+#define PIC_COPY_X2	(0xc015)	/* signed short */
+#define PIC_COPY_Y2	(0xc017)	/* signed short */
+#define PIC_COPY_SRC	(0xc019)	/* RealPt */
+#define PIC_COPY_V1	(0xc01d)	/* unsigned short */
+#define PIC_COPY_V2	(0xc01f)	/* unsigned short */
+#define PIC_COPY_V3	(0xc021)	/* unsigned short */
+#define PIC_COPY_V4	(0xc023)	/* unsigned short */
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
 #define CITY_LTX	(0xc3ad)
 #define DIALOG_TEXT	(0xc3b1)

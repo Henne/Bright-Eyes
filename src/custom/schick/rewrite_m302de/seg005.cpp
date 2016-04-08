@@ -200,16 +200,16 @@ unsigned short fight_printer(void)
 			FIG_set_star_color(Real2Host(ds_readd(0xd29d)),
 				3724, ds_readb(FIG_STAR_COLORS + f_action));
 
-			ds_writew(0xc011, 0);
-			ds_writew(0xc013, 150);
-			ds_writew(0xc015, 75);
-			ds_writew(0xc017, 198);
-			ds_writed(0xc019, ds_readd(0xd29d));
-			ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
-			gfx_dst_bak = (RealPt)ds_readd(0xc00d);
+			ds_writew(PIC_COPY_X1, 0);
+			ds_writew(PIC_COPY_Y1, 150);
+			ds_writew(PIC_COPY_X2, 75);
+			ds_writew(PIC_COPY_Y2, 198);
+			ds_writed(PIC_COPY_SRC, ds_readd(0xd29d));
+			ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+			gfx_dst_bak = (RealPt)ds_readd(PIC_COPY_DST);
 			do_pic_copy(2);
 
-			ds_writed(0xc00d, (Bit32u)gfx_dst_bak);
+			ds_writed(PIC_COPY_DST, (Bit32u)gfx_dst_bak);
 
 			/* print number into the star */
 			if (ds_readw((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4) != 0) {
@@ -225,11 +225,11 @@ unsigned short fight_printer(void)
 
 			/* Generate textmessage */
 			if (ds_readw(FIG_MSG_DTPS + f_action * 2) != 0) {
-				ds_writew(0xc011, ds_writew(0xc01d, 0));
-				ds_writew(0xc013, ds_writew(0xc01f, 194));
-				ds_writew(0xc015, 318);
-				ds_writew(0xc017, 199);
-				ds_writed(0xc019, ds_readd(BUFFER8_PTR));
+				ds_writew(PIC_COPY_X1, ds_writew(PIC_COPY_V1, 0));
+				ds_writew(PIC_COPY_Y1, ds_writew(PIC_COPY_V2, 194));
+				ds_writew(PIC_COPY_X2, 318);
+				ds_writew(PIC_COPY_Y2, 199);
+				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER8_PTR));
 				do_pic_copy(3);
 
 				set_textcolor(0xff, 0);
@@ -409,7 +409,7 @@ void draw_fight_screen(Bit16u val)
 
 		set_delay_timer();
 
-		ds_writed(0xc00d, ds_writed(0xd2fb, ds_readd(BUFFER1_PTR)));
+		ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(BUFFER1_PTR)));
 
 
 		for (list_i = Real2Host(ds_readd(FIG_LIST_HEAD)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
@@ -422,19 +422,19 @@ void draw_fight_screen(Bit16u val)
 			w_arr[i] = -1;
 		}
 
-		coord_bak = *(struct dummy_w4*)(p_datseg + 0x2990);
-		ds_writew(0xc011, ds_writew(0xc01d, 0));
-		ds_writew(0xc013, ds_writew(0xc01f, 0));
-		ds_writew(0xc015, 318);
-		ds_writew(0xc017, 149);
-		ds_writed(0xc019, ds_readd(BUFFER8_PTR));
+		coord_bak = *(struct dummy_w4*)(p_datseg + PIC_COPY_DS_RECT);
+		ds_writew(PIC_COPY_X1, ds_writew(PIC_COPY_V1, 0));
+		ds_writew(PIC_COPY_Y1, ds_writew(PIC_COPY_V2, 0));
+		ds_writew(PIC_COPY_X2, 318);
+		ds_writew(PIC_COPY_Y2, 149);
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER8_PTR));
 		do_pic_copy(3);
 
-		ds_writew(0xc011, ds_writew(0xc01d, 80));
-		ds_writew(0xc013, ds_writew(0xc01f, 150));
-		ds_writew(0xc015, 318);
-		ds_writew(0xc017, 193);
-		ds_writed(0xc019, ds_readd(BUFFER8_PTR));
+		ds_writew(PIC_COPY_X1, ds_writew(PIC_COPY_V1, 80));
+		ds_writew(PIC_COPY_Y1, ds_writew(PIC_COPY_V2, 150));
+		ds_writew(PIC_COPY_X2, 318);
+		ds_writew(PIC_COPY_Y2, 193);
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER8_PTR));
 		do_pic_copy(3);
 
 		list_i = Real2Host(ds_readd(FIG_LIST_HEAD));
@@ -831,30 +831,30 @@ void draw_fight_screen(Bit16u val)
 					}
 
 					/* set Y1 */
-					ds_writew(0x2990, obj_y + host_readbs(list_i + 0x0a));
-					if (ds_readws(0x2990) < 0)
-						ds_writew(0x2990, 0);
+					ds_writew(PIC_COPY_DS_RECT, obj_y + host_readbs(list_i + 0x0a));
+					if (ds_readws(PIC_COPY_DS_RECT) < 0)
+						ds_writew(PIC_COPY_DS_RECT, 0);
 
 					/* set X1 */
-					ds_writew((0x2990 + 2), obj_x + host_readbs(list_i + 9));
-					if (ds_readws((0x2990 + 2)) < 0)
-						ds_writew((0x2990 + 2), 0);
+					ds_writew((PIC_COPY_DS_RECT + 2), obj_x + host_readbs(list_i + 9));
+					if (ds_readws((PIC_COPY_DS_RECT + 2)) < 0)
+						ds_writew((PIC_COPY_DS_RECT + 2), 0);
 
 					/* set Y2 */
-					ds_writew((0x2990 + 4), obj_y + host_readbs(list_i + 0x0c));
-					if (ds_readws((0x2990 + 4)) > 199)
-						ds_writew((0x2990 + 4), 199);
+					ds_writew((PIC_COPY_DS_RECT + 4), obj_y + host_readbs(list_i + 0x0c));
+					if (ds_readws((PIC_COPY_DS_RECT + 4)) > 199)
+						ds_writew((PIC_COPY_DS_RECT + 4), 199);
 
 					/* set X2 */
-					ds_writew((0x2990 + 6), obj_x + host_readbs(list_i + 0x0b));
-					if (ds_readws((0x2990 + 6)) > 318)
-						ds_writew((0x2990 + 6), 318);
+					ds_writew((PIC_COPY_DS_RECT + 6), obj_x + host_readbs(list_i + 0x0b));
+					if (ds_readws((PIC_COPY_DS_RECT + 6)) > 318)
+						ds_writew((PIC_COPY_DS_RECT + 6), 318);
 
-					ds_writew(0xc011, obj_x);
-					ds_writew(0xc013, obj_y);
-					ds_writew(0xc015, obj_x + host_readbs(list_i + 8) - 1);
-					ds_writew(0xc017, obj_y + host_readbs(list_i + 7) - 1);
-					ds_writed(0xc019, (Bit32u)ptr_2);
+					ds_writew(PIC_COPY_X1, obj_x);
+					ds_writew(PIC_COPY_Y1, obj_y);
+					ds_writew(PIC_COPY_X2, obj_x + host_readbs(list_i + 8) - 1);
+					ds_writew(PIC_COPY_Y2, obj_y + host_readbs(list_i + 7) - 1);
+					ds_writed(PIC_COPY_SRC, (Bit32u)ptr_2);
 
 					do_pic_copy(2);	/* Critical */
 				}
@@ -863,12 +863,12 @@ void draw_fight_screen(Bit16u val)
 				/* NULL check on RealPt */
 				if (ptr != 0)  {
 
-					ds_writew(0xc011, current_x1);
-					ds_writew(0xc013, current_y1);
-					ds_writew(0xc015, current_x1 + 13);
-					ds_writew(0xc017, current_y1 + 13);
+					ds_writew(PIC_COPY_X1, current_x1);
+					ds_writew(PIC_COPY_Y1, current_y1);
+					ds_writew(PIC_COPY_X2, current_x1 + 13);
+					ds_writew(PIC_COPY_Y2, current_y1 + 13);
 
-					ds_writed(0xc019, (Bit32u)ptr);
+					ds_writed(PIC_COPY_SRC, (Bit32u)ptr);
 
 					do_pic_copy(2);
 				}
@@ -876,7 +876,7 @@ void draw_fight_screen(Bit16u val)
 
 		} while (NOT_NULL(list_i = Real2Host(host_readd(list_i + 0x1b))));
 
-		*(struct dummy_w4*)(p_datseg + 0x2990) = coord_bak;
+		*(struct dummy_w4*)(p_datseg + PIC_COPY_DS_RECT) = coord_bak;
 		ds_writew(0xe2ce , ds_readw(0xe2cc));
 		ds_writew(0xe2cc, -1);
 		ds_writew(0xe2c6 , ds_readw(0xe2c4));
@@ -910,19 +910,19 @@ void draw_fight_screen(Bit16u val)
 
 		fight_printer();
 
-		ds_writew(0xc011, 0);
-		ds_writew(0xc013, 0);
-		ds_writew(0xc015, 319);
-		ds_writew(0xc017, 199);
+		ds_writew(PIC_COPY_X1, 0);
+		ds_writew(PIC_COPY_Y1, 0);
+		ds_writew(PIC_COPY_X2, 319);
+		ds_writew(PIC_COPY_Y2, 199);
 
-		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
-		ds_writed(0xc00d, ds_readd(0xd2ff));
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+		ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 		fight_delay();
 
 		do_pic_copy(0);
 
-		ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+		ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
 	}
 
 	for (list_i = Real2Host(ds_readd(FIG_LIST_HEAD)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
@@ -937,13 +937,13 @@ void draw_fight_screen(Bit16u val)
 		FIG_draw_pic();
 		FIG_draw_figures();
 
-		ds_writew(0xc011, 0);
-		ds_writew(0xc013, 0);
-		ds_writew(0xc015, 319);
-		ds_writew(0xc017, 199);
+		ds_writew(PIC_COPY_X1, 0);
+		ds_writew(PIC_COPY_Y1, 0);
+		ds_writew(PIC_COPY_X2, 319);
+		ds_writew(PIC_COPY_Y2, 199);
 
-		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
-		ds_writed(0xc00d, ds_readd(0xd2ff));
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+		ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 		do_pic_copy(0);
 
@@ -958,13 +958,13 @@ to the DOSBox-CPU and may run the timer.
 			wait_for_vsync();
 #endif
 			if (fight_printer()) {
-				ds_writew(0xc011, 0);
-				ds_writew(0xc013, 0);
-				ds_writew(0xc015, 319);
-				ds_writew(0xc017, 199);
+				ds_writew(PIC_COPY_X1, 0);
+				ds_writew(PIC_COPY_Y1, 0);
+				ds_writew(PIC_COPY_X2, 319);
+				ds_writew(PIC_COPY_Y2, 199);
 
-				ds_writed(0xc019, ds_readd(BUFFER1_PTR));
-				ds_writed(0xc00d, ds_readd(0xd2ff));
+				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+				ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 				do_pic_copy(0);
 			}
@@ -979,7 +979,7 @@ to the DOSBox-CPU and may run the timer.
 	bc__read(handle, Real2Host(ds_readd(BUFFER8_PTR)), 64000);
 	bc_close(handle);
 
-	ds_writed(0xc00d, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+	ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(0xd2ff)));
 }
 
 //static

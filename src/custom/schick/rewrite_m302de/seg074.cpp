@@ -212,10 +212,10 @@ void seg074_305(signed short x_off)
 	signed short y;
 	signed short loc1;
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 6);
-	ds_writew(0xc017, 6);
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 6);
+	ds_writew(PIC_COPY_Y2, 6);
 
 	/* set buffer to 0 */
 	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 64000);
@@ -369,7 +369,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 		}
 	}
 
-	ds_writed(0xc00d, (Bit32u)dst);
+	ds_writed(PIC_COPY_DST, (Bit32u)dst);
 
 #if !defined(__BORLANDC__)
 	/* need 50 bytes on the DOSBox-Stack */
@@ -384,12 +384,12 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 	}
 
 	/* save the pointer as the graphic source */
-	ds_writed(0xc019, (Bit32u)RealMake(SegValue(ss), reg_sp));
+	ds_writed(PIC_COPY_SRC, (Bit32u)RealMake(SegValue(ss), reg_sp));
 
 	/* free 50 bytes */
 	reg_esp += 50;
 #else
-	ds_writed(0xc019, (Bit32u)&array);
+	ds_writed(PIC_COPY_SRC, (Bit32u)&array);
 #endif
 	/* */
 	do_pic_copy(0);
@@ -448,34 +448,34 @@ void draw_automap_to_screen(void)
 	struct dummy bak;
 
 	/* save screen coordinates */
-	bak = *(struct dummy*)(p_datseg + 0x2990);
+	bak = *(struct dummy*)(p_datseg + PIC_COPY_DS_RECT);
 
 	/* set the screen coordinates */
-	ds_writew((0x2990 + 2), ds_writew(0x2990, 0));
-	ds_writew((0x2990 + 6), ds_readw(0xce41) + 208);
-	ds_writew((0x2990 + 4), ds_readw(0xce3f) + 135);
+	ds_writew((PIC_COPY_DS_RECT + 2), ds_writew(0x2990, 0));
+	ds_writew((PIC_COPY_DS_RECT + 6), ds_readw(0xce41) + 208);
+	ds_writew((PIC_COPY_DS_RECT + 4), ds_readw(0xce3f) + 135);
 
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 134);
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 134);
 
-	ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd2ff) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
+	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(0xd2ff) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
 
 	update_mouse_cursor();
 
-	ds_writew(0x4a92, 1);
+	ds_writew(PIC_COPY_FLAG, 1);
 	do_pic_copy(1);
-	ds_writew(0x4a92, 0);
+	ds_writew(PIC_COPY_FLAG, 0);
 
 	refresh_screen_size();
 
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 	/* restore screen coordinates */
-	*(struct dummy*)(p_datseg + 0x2990) = bak;
+	*(struct dummy*)(p_datseg + PIC_COPY_DS_RECT) = bak;
 }
 
 /**

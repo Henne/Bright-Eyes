@@ -805,16 +805,16 @@ void FIG_load_ship_sprites(void)
 			l4 += ds_readws(0x60de + 2 * l_si);
 
 			/* set screen coordinates */
-			ds_writew(0xc011, l3);
-			ds_writew(0xc013, l4);
-			ds_writew(0xc015, l3 + host_readws(Real2Host(ds_readd(0xe384)) + 2 * l_si) - 1);
-			ds_writew(0xc017, l4 + host_readws(Real2Host(ds_readd(0xe380)) + 2 * l_si) - 1);
-			ds_writed(0xc019, host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si));
-			ds_writed(0xc00d, ds_readd(BUFFER8_PTR));
+			ds_writew(PIC_COPY_X1, l3);
+			ds_writew(PIC_COPY_Y1, l4);
+			ds_writew(PIC_COPY_X2, l3 + host_readws(Real2Host(ds_readd(0xe384)) + 2 * l_si) - 1);
+			ds_writew(PIC_COPY_Y2, l4 + host_readws(Real2Host(ds_readd(0xe380)) + 2 * l_si) - 1);
+			ds_writed(PIC_COPY_SRC, host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si));
+			ds_writed(PIC_COPY_DST, ds_readd(BUFFER8_PTR));
 
 			do_pic_copy(2);
 
-			ds_writed(0xc00d, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 			}
 		}

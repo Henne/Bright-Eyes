@@ -65,11 +65,11 @@ void draw_playmask(void)
 
 	update_mouse_cursor();
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 199);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(0);
 
@@ -170,10 +170,10 @@ void draw_status_line(void)
 			clear_hero_icon(i);
 		} else {
 			if (host_readb(get_hero(i) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) {
-				ds_writew(0xc011, ds_readw(HERO_PIC_POSX + 2 * i));
-				ds_writew(0xc013, 157);
-				ds_writew(0xc015, ds_readw(HERO_PIC_POSX + 2 * i) + 31);
-				ds_writew(0xc017, 188);
+				ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * i));
+				ds_writew(PIC_COPY_Y1, 157);
+				ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * i) + 31);
+				ds_writew(PIC_COPY_Y2, 188);
 
 				head_bak = -1;
 
@@ -184,7 +184,7 @@ void draw_status_line(void)
 				}
 
 				/* set the src pointer of the head */
-				ds_writed(0xc019, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
+				ds_writed(PIC_COPY_SRC, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
 					(Bit32u)((RealPt)ds_readd(HEROS) + i * SIZEOF_HERO + HERO_PORTRAIT)));
 
 				do_pic_copy(0);
@@ -210,11 +210,11 @@ void draw_status_line(void)
 				for (j = 0; j < 1024; src++, dst++, j++)
 					*dst = *src + 0x40;
 
-				ds_writew(0xc011, ds_readw(HERO_PIC_POSX + 2 * i));
-				ds_writew(0xc013, 157);
-				ds_writew(0xc015, ds_readw(HERO_PIC_POSX + 2 * i) + 31);
-				ds_writew(0xc017, 188);
-				ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+				ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * i));
+				ds_writew(PIC_COPY_Y1, 157);
+				ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * i) + 31);
+				ds_writew(PIC_COPY_Y2, 188);
+				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 				do_pic_copy(0);
 
@@ -289,11 +289,11 @@ void draw_icons(void)
 
 	for (i = 0; i < 9; i++) {
 
-		ds_writew(0xc011, ds_readw(GUI_BUTTONS_POS + i * 4));
-		ds_writew(0xc013, ds_readw(GUI_BUTTONS_POS + i * 4 + 2));
-		ds_writew(0xc015, ds_readw(GUI_BUTTONS_POS + i * 4) + 23);
-		ds_writew(0xc017, ds_readw(GUI_BUTTONS_POS + i * 4 + 2) + 23);
-		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
+		ds_writew(PIC_COPY_X1, ds_readw(GUI_BUTTONS_POS + i * 4));
+		ds_writew(PIC_COPY_Y1, ds_readw(GUI_BUTTONS_POS + i * 4 + 2));
+		ds_writew(PIC_COPY_X2, ds_readw(GUI_BUTTONS_POS + i * 4) + 23);
+		ds_writew(PIC_COPY_Y2, ds_readw(GUI_BUTTONS_POS + i * 4 + 2) + 23);
+		ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
 
 		if (ds_readbs(0xbd38 + i) != -1) {
 			if (ds_readbs(0x5ecc + i) != ds_readbs(0xbd38 + i))
