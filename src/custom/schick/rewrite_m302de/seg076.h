@@ -6,11 +6,8 @@ namespace M302de {
 void do_dungeon(void);
 /* 0x25 */
 void DNG_fallpit_test(signed short);
-
-#if defined(__BORLANDC__)
 /* 0x2a */
-void DNG_func1(void);
-#endif
+void DNG_stairs(void);
 
 /* 0x2f */
 void DNG_door(signed short);

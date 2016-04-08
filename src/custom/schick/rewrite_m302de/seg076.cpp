@@ -1,7 +1,11 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 4/11
+ *	Functions rewritten: 5/11
  */
+
+#if !defined(__BORLANDC__)
+#include <stdlib.h>
+#endif
 
 #include <stdio.h>
 
@@ -579,7 +583,7 @@ signed short DNG_step(void)
 		ds_readbs(0x2ca6) != -1 &&
 		!l_di)
 	{
-		DNG_func1();
+		DNG_stairs();
 		DNG_func2();
 		DNG_func3();
 		DNG_func6();
@@ -592,11 +596,65 @@ signed short DNG_step(void)
 }
 #endif
 
-#if defined(__BORLANDC__)
-void DNG_func1(void)
+struct stair_struct {
+	signed short pos;
+	signed char target_x;
+	signed char target_y;
+};
+
+/* Borlandified and identical */
+void DNG_stairs(void)
 {
-}
+	signed short target_pos;
+	stair_struct *stair_ptr;
+	stair_ptr = (stair_struct*)Real2Host(ds_readd(0xe498));
+
+	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+
+#if !defined(__BORLANDC__)
+	if (sizeof(stair_struct) != 4)
+	{
+		D1_INFO("sizeof(stair_struct) = %d\n", sizeof(stair_struct));
+		exit(-1);
+	}
 #endif
+
+	do {
+		if (host_readws((Bit8u*)stair_ptr) == target_pos)
+		{
+			/* found the current stairs */
+			ds_writew(X_TARGET, host_readbs((Bit8u*)stair_ptr + 2) & 0x0f);
+			ds_writew(Y_TARGET, host_readbs((Bit8u*)stair_ptr + 3) & 0x0f);
+			ds_writeb(DIRECTION, host_readbs((Bit8u*)stair_ptr + 3) >> 4);
+
+			if (host_readbs((Bit8u*)stair_ptr + 2) & 0x80)
+			{
+				/* downstairs */
+				if (host_readbs((Bit8u*)stair_ptr + 2) & 0x40)
+				{
+					inc_ds_bs_post(DUNGEON_LEVEL);
+				}
+
+				DNG_inc_level();
+
+			} else {
+				/* upstairs */
+				if (host_readbs((Bit8u*)stair_ptr + 2) & 0x40)
+				{
+					dec_ds_bs_post(DUNGEON_LEVEL);
+				}
+
+				DNG_dec_level();
+
+			}
+
+			set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
+
+			break;
+		}
+
+	} while (host_readws((Bit8u*)stair_ptr++) != -1);
+}
 
 #if defined(__BORLANDC__)
 void DNG_func2(void)

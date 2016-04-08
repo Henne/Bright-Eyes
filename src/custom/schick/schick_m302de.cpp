@@ -2980,7 +2980,9 @@ static int n_seg076(unsigned short offs)
 		return 0;
 	}
 	case 0xc73: {
-		return 0;
+		D1_LOG("DNG_stairs()\n");
+		DNG_stairs();
+		return 1;
 	}
 	case 0xd28: {
 		return 0;
