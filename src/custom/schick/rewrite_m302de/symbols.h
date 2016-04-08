@@ -164,7 +164,7 @@
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
 #define NPC_TIMERS	(0x3602)	/* unsigned char[6] */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
-#define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
+#define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0 = light is on, 1, 2 = light is off) */
 #define TRAVELING	(0x3614)
 #define INFORMER_ARRAY	(0x3618)	/* (struct of size 38)[10] */
 #define DIALOG_STATES	(0x3794)	/* (struct of size 8)[160?] */
