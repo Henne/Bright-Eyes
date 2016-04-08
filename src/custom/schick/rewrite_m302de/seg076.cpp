@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 3/11
+ *	Functions rewritten: 4/11
  */
 
 #include <stdio.h>
@@ -11,12 +11,19 @@
 #define DONT_DEF_DIV16
 
 #include "seg002.h"
+#include "seg003.h"
 #include "seg007.h"
+#include "seg025.h"
 #include "seg028.h"
+#include "seg029.h"
 #include "seg047.h"
+#include "seg049.h"
+#include "seg074.h"
 #include "seg075.h"
 #include "seg076.h"
+#include "seg088.h"
 #include "seg092.h"
+#include "seg096.h"
 #include "seg097.h"
 #include "seg098.h"
 #include "seg103.h"
@@ -339,10 +346,292 @@ void DNG_fallpit_test(signed short max_damage)
 	}
 }
 
+#if defined(__BORLANDC__)
+/* Borlandified and identical */
+signed short DNG_step(void)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short (*dungeon_handler)(void);
+	signed short retval;
+	signed short tw_bak;
+	signed short old_value;
+	signed short x;
+	signed short y;
+	signed short pos;
+
+	ds_writeb((0xbd38 + 0), 0x0c);
+	old_value = ds_readbs((0xbd38 + 1));
+	ds_writeb((0xbd38 + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? 0x2d : 0x0f);
+
+	if (ds_readbs((0xbd38 + 1)) != old_value)
+	{
+		ds_writew(0xd013, 1);
+	}
+
+	ds_writeb((0xbd38 + 2), 0x1d);
+	ds_writeb((0xbd38 + 3), 0x25);
+	ds_writeb((0xbd38 + 4), 0x27);
+	ds_writeb((0xbd38 + 5), 0x0b);
+
+	if (ds_readw(0xd011) == 0 && ds_readb((0xbd38 + 6)) != 0x36)
+	{
+		ds_writeb((0xbd38 + 6), 0x36);
+		ds_writew(0xd013, 1);
+	}
+
+	if (ds_readw(REQUEST_REFRESH) != 0)
+	{
+		draw_main_screen();
+		GUI_print_loc_line(get_dtp(0x00));
+		ds_writew(REQUEST_REFRESH, ds_writew(0xd013, 0));
+		ds_writew(0xe486, -1);
+	}
+
+	if (ds_readw(0xd013) != 0 && ds_readb(PP20_INDEX) == 0)
+	{
+		draw_icons();
+		ds_writew(0xd013, 0);
+	}
+
+	if (ds_readbs(DIRECTION) != ds_readws(0xe482) ||
+		ds_readws(X_TARGET) != ds_readws(0xe486) ||
+		ds_readws(Y_TARGET) != ds_readws(0xe484))
+	{
+		DNG_update_pos();
+		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
+		DNG_func4();
+	}
+
+	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
+		ds_readws(Y_TARGET) != ds_readws(0x2d85) ||
+		ds_readbs(0x9312) != 0)
+	{
+		ds_writeb(CAN_MERGE_GROUP, can_merge_group());
+		ds_writew(LOCKPICK_TRY_COUNTER, 0);
+	}
+
+	ds_writew(0x2d83, ds_readws(X_TARGET));
+	ds_writew(0x2d85, ds_readws(Y_TARGET));
+	ds_writeb(0x2d7c, ds_readbs(DIRECTION));
+
+	handle_gui_input();
+
+	if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73)
+	{
+		tw_bak = ds_readws(TEXTBOX_WIDTH);
+		ds_writew(TEXTBOX_WIDTH, 3);
+
+		for (l_di = retval = 0; l_di < 9; l_di++)
+		{
+			if (ds_readbs(0xbd38 + l_di) != -1)
+			{
+				retval++;
+			}
+		}
+
+		l_di = GUI_radio(get_ltx(0x858), (signed char)retval,
+					get_ltx(0x85c),
+					get_ltx(0x860),
+					get_ltx(0x864),
+					get_ltx(0x868),
+					get_ltx(0x86c),
+					get_ltx(0x354),
+					ds_readws(0xd011) == 0 ? get_ltx(0x4c8) :(
+						ds_readws(0xd011) == 1 ? get_ltx(0x870) :(
+						ds_readws(0xd011) == 3 ? get_ltx(0xc4c) :(
+						ds_readws(0xd011) == 5 ? get_ltx(0x878) :(
+						ds_readws(0xd011) == 4 ? get_ltx(0x8ac) : get_ltx(0x874))))),
+					get_ltx(0x87c),
+					get_ltx(0x880)) - 1;
+
+		if (l_di != -2)
+		{
+			ds_writew(ACTION, l_di + 129);
+		}
+
+		ds_writew(TEXTBOX_WIDTH, tw_bak);
+	}
+
+	l_di = 0;
+
+	if (ds_readws(ACTION) == 129)
+	{
+		GRP_split();
+		ds_writeb(CAN_MERGE_GROUP, can_merge_group());
+
+	} else if (ds_readws(ACTION) == 130)
+	{
+		pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+
+		if ((ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1801) || pos == 0x1805)
+		{
+			GUI_output(get_dtp(0x84));
+
+			ds_writeb(0x41c8, 1);
+		} else {
+			GRP_merge();
+		}
+
+	} else if (ds_readws(ACTION) == 131)
+	{
+		GRP_switch_to_next(0);
+
+	} else if (ds_readws(ACTION) == 132)
+	{
+		game_options();
+
+	} else if (ds_readws(ACTION) == 133)
+	{
+		show_automap();
+
+	} else if (ds_readws(ACTION) == 134)
+	{
+		if (select_magic_user() > 0)
+		{
+			ds_writew(0xe482, -1);
+		}
+
+	} else if (ds_readws(ACTION) == 135 && ds_readw(0xd011) == 0)
+	{
+		ds_writeb(LOCATION, 18);
+		ds_writeb(0xbd27, 0);
+		l_di = 1;
+
+	} else if (ds_readws(ACTION) == 75)
+	{
+		update_direction(3);
+		ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+
+	} else if (ds_readws(ACTION) == 77)
+	{
+		update_direction(1);
+		ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+
+	} else if (ds_readws(ACTION) == 72)
+	{
+		if ((l_si = div16(ds_readb(0xbd4d))) == 11)
+		{
+			l_si = 1 << ds_readbs(DIRECTION);
+
+			if (ds_readb(0xbd4d) & l_si & 0x0f)
+			{
+				DNG_timestep(1);
+			}
+
+		} else if ((l_si = div16(ds_readb(0xbd4d))) != 15 &&
+				l_si != 1 &&
+				l_si != 10 &&
+				l_si != 8 &&
+				l_si != 7)
+		{
+			DNG_timestep(1);
+		} else {
+			no_way();
+		}
+
+	} else if (ds_readws(ACTION) == 80)
+	{
+		if ((l_si = div16(ds_readb(0xbd4e))) != 15 &&
+				l_si != 1 &&
+				l_si != 10 &&
+				l_si != 8 &&
+				l_si != 7)
+		{
+			DNG_timestep(-1);
+		} else {
+			no_way();
+		}
+
+	} else if (ds_readws(ACTION) >= 135 &&
+			ds_readws(ACTION) <= 137 &&
+			ds_readbs(0xbcb7 + ds_readws(ACTION)) != -1)
+	{
+		if (ds_readw(0xd011) == 1 || ds_readw(0xd011) == 3 || ds_readw(0xd011) == 5)
+		{
+			DNG_door(ds_readws(ACTION));
+		} else if (ds_readws(ACTION) == 135 && ds_readw(0xd011) == 2)
+		{
+			seg092_06b4(1);
+
+			if (ds_readw(0xe4a0) != 0)
+			{
+				x = ds_readws(X_TARGET);
+				y = ds_readws(Y_TARGET);
+
+				switch (ds_readbs(DIRECTION))
+				{
+					case 0:	y--; break;
+					case 1:	x++; break;
+					case 2:	y++; break;
+					case 3:	x--; break;
+				}
+
+				or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x02);
+			}
+		} else if (ds_readws(ACTION) == 135 && (!ds_readb(0x41c9) || !ds_readb(0x41ca)))
+		{
+			DNG7_riddle();
+		}
+	}
+
+	if (ds_readb(DUNGEON_INDEX) != 0 &&
+		ds_readbs(0x2ca6) != -1 &&
+		!l_di)
+	{
+		DNG_func1();
+		DNG_func2();
+		DNG_func3();
+		DNG_func6();
+
+		dungeon_handler = (signed short (*)(void))ds_readd(0x92d2 + 4 * ds_readbs(DUNGEON_INDEX));
+		retval = dungeon_handler();
+	}
+
+	return 0;
+}
+#endif
+
+#if defined(__BORLANDC__)
+void DNG_func1(void)
+{
+}
+#endif
+
+#if defined(__BORLANDC__)
+void DNG_func2(void)
+{
+}
+#endif
+
+#if defined(__BORLANDC__)
+void DNG_func3(void)
+{
+}
+#endif
+
 void do_dungeon(void)
 {
 	DUMMY_WARNING();
 }
+
+#if defined(__BORLANDC__)
+void DNG_func4(void)
+{
+}
+#endif
+
+#if defined(__BORLANDC__)
+void DNG_func5(Bit8u *ptr)
+{
+}
+#endif
+
+#if defined(__BORLANDC__)
+void DNG_func6(void)
+{
+}
+#endif
 
 #if !defined(__BORLANDC__)
 }
