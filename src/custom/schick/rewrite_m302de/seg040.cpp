@@ -272,7 +272,11 @@ void FIG_draw_scenario(void)
 					ds_writeb((FIG_LIST_ELEM+19), -1);
 					ds_writeb(0xd874 + ds_readw(FIG_LIST_LENGTH), FIG_add_to_list(-1));
 					inc_ds_ws(FIG_LIST_LENGTH);
+#if !defined(__BORLANDC__)
+					place_obj_on_cb(cb_x, cb_y, obj_id + 50, (signed char)obj_id, 0);
+#else
 					place_obj_on_cb(cb_x, cb_y, obj_id + 50, obj_id, 0);
+#endif
 				}
 			}
 		}

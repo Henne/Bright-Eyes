@@ -101,7 +101,7 @@ void final_intro(void)
 	RealPt ptr2;
 	struct nvf_desc nvf;
 
-	ds_writebs(PP20_INDEX, (ARCHIVE_FILE_DNGS + 12));
+	ds_writebs(PP20_INDEX, (signed char)(ARCHIVE_FILE_DNGS + 12));
 
 	update_mouse_cursor();
 

@@ -856,8 +856,8 @@ void level_up(signed short hero_pos)
 				}
 				l_di -= i;
 
-				sub_ptr_bs(hero + HERO_SP_RISE, i);
-				add_ptr_bs(hero + HERO_TA_RISE, i);
+				sub_ptr_bs(hero + HERO_SP_RISE, (unsigned char)i);
+				add_ptr_bs(hero + HERO_TA_RISE, (unsigned char)i);
 
 			} else {
 
@@ -872,8 +872,8 @@ void level_up(signed short hero_pos)
 						i = l_di;
 					}
 
-					add_ptr_bs(hero + HERO_SP_RISE, i);
-					sub_ptr_bs(hero + HERO_TA_RISE, i);
+					add_ptr_bs(hero + HERO_SP_RISE, (unsigned char)i);
+					sub_ptr_bs(hero + HERO_TA_RISE, (unsigned char)i);
 				}
 			}
 		}

@@ -241,7 +241,7 @@ void do_wildcamp(void)
 
 						if (herb_hours > 0)
 						{
-							ds_writebs(WILDCAMP_HERBSTATUS + answer, (signed char)(herb_tries = l_di = 1));
+							ds_writebs(WILDCAMP_HERBSTATUS + answer, herb_tries = (signed char)(l_di = 1));
 
 							if (ds_readbs(0xe4c8) == 99) {
 								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(GATHER_HERBS_MOD) + 99);
@@ -258,7 +258,7 @@ void do_wildcamp(void)
 
 			if (GUI_bool(get_ltx(0x4f8))) {
 
-				l3 = (signed short)(ds_readds(DAY_TIMER) / HOURS(1));
+				l3 = (signed char)(ds_readds(DAY_TIMER) / HOURS(1));
 
 				l3 = ds_readds(DAY_TIMER) < HOURS(8) ? 8 - l3 : 24 - l3 + 8;
 

@@ -165,7 +165,7 @@ void do_tavern(void)
 							l3 = 100;
 						}
 
-						sub_ptr_bs(get_hero(i) + HERO_HUNGER, l3);
+						sub_ptr_bs(get_hero(i) + HERO_HUNGER, (unsigned char)l3);
 
 						if (host_readbs(get_hero(i) + HERO_HUNGER) < 0) {
 							host_writebs(get_hero(i) + HERO_HUNGER, 0);
@@ -176,7 +176,7 @@ void do_tavern(void)
 							l3 = 100;
 						}
 
-						sub_ptr_bs(get_hero(i) + HERO_THIRST, l3);
+						sub_ptr_bs(get_hero(i) + HERO_THIRST, (unsigned char)l3);
 
 						if (host_readbs(get_hero(i) + HERO_THIRST) < 0) {
 							host_writebs(get_hero(i) + HERO_THIRST, 0);

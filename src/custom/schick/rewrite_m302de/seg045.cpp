@@ -191,8 +191,8 @@ void seg045_0273(signed short x, signed short y, signed short spell_ani_id)
 	ds_writeb((FIG_LIST_ELEM+3), (signed char)x);
 	ds_writeb((FIG_LIST_ELEM+4), (signed char)y);
 
-	ds_writeb((FIG_LIST_ELEM+5), b.a[spell_ani_id - 1]);
-	ds_writeb((FIG_LIST_ELEM+6), c.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+5), (unsigned char)b.a[spell_ani_id - 1]);
+	ds_writeb((FIG_LIST_ELEM+6), (unsigned char)c.a[spell_ani_id - 1]);
 
 	ds_writeb((FIG_LIST_ELEM+7), (unsigned char)height);
 	ds_writeb((FIG_LIST_ELEM+8), (unsigned char)width);
