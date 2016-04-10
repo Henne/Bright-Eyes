@@ -14,11 +14,8 @@ void DNG_door(signed short);
 void DNG_see_door(void);
 /* 0x39 */
 void DNG_see_chest(void);
-
-#if defined(__BORLANDC__)
 /* 0x3e */
-void DNG_func4(void);
-#endif
+void DNG_fight(void);
 
 #if defined(__BORLANDC__)
 /* 0x43 */

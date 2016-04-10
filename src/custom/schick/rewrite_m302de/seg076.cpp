@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 8/11
+ *	Functions rewritten: 9/11
  */
 
 #if !defined(__BORLANDC__)
@@ -20,6 +20,7 @@
 #include "seg007.h"
 #include "seg025.h"
 #include "seg028.h"
+#include "seg032.h"
 #include "seg029.h"
 #include "seg047.h"
 #include "seg049.h"
@@ -405,7 +406,7 @@ signed short DNG_step(void)
 	{
 		DNG_update_pos();
 		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
-		DNG_func4();
+		DNG_fight();
 	}
 
 	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
@@ -747,11 +748,54 @@ void do_dungeon(void)
 #endif
 }
 
-#if defined(__BORLANDC__)
-void DNG_func4(void)
+struct fight_struct {
+	signed short pos;
+	signed short fight_id;
+	signed short unkn1;
+	signed short unkn2;
+	signed short unkn3;
+	signed short unkn4;
+	signed short ap;
+};
+
+/* Borlandified and identical */
+void DNG_fight(void)
 {
-}
+	signed short target_pos;
+	struct fight_struct *fight_ptr;
+
+	fight_ptr = (struct fight_struct*)Real2Host(ds_readd(0xe494));
+
+	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+
+#if !defined(__BORLANDC__)
+	if (sizeof(fight_struct) != 14)
+	{
+		D1_INFO("sizeof(fight_struct) = %d\n", sizeof(fight_struct));
+		exit(-1);
+	}
 #endif
+	do {
+		if (host_readws((Bit8u*)fight_ptr + 0) == target_pos)
+		{
+			/* set positions of heros which escape from the fight */
+			ds_writew((0xd325 + 0), host_readws((Bit8u*)fight_ptr + 4));
+			ds_writew((0xd325 + 2), host_readws((Bit8u*)fight_ptr + 6));
+			ds_writew((0xd325 + 4), host_readws((Bit8u*)fight_ptr + 8));
+			ds_writew((0xd325 + 6), host_readws((Bit8u*)fight_ptr + 10));
+
+			/* execute the fight */
+			if (!do_fight(host_readws((Bit8u*)fight_ptr + 2)))
+			{
+				add_hero_ap_all(host_readws((Bit8u*)fight_ptr + 12));
+			}
+
+			/* play the music for the DUNGEON again */
+			set_audio_track(ARCHIVE_FILE_DUNGEON_XMI);
+		}
+
+	} while (host_readws((Bit8u*)++fight_ptr) != -1);
+}
 
 #if defined(__BORLANDC__)
 void DNG_func5(Bit8u *ptr)

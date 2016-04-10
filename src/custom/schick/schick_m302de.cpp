@@ -2995,7 +2995,9 @@ static int n_seg076(unsigned short offs)
 		return 1;
 	}
 	case 0xe89: {
-		return 0;
+		D1_LOG("DNG_fight()\n");
+		DNG_fight();
+		return 1;
 	}
 	case 0x11e7: {
 		return 0;
