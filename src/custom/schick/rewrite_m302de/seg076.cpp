@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 6/11
+ *	Functions rewritten: 7/11
  */
 
 #if !defined(__BORLANDC__)
@@ -585,7 +585,7 @@ signed short DNG_step(void)
 	{
 		DNG_stairs();
 		DNG_func2();
-		DNG_func3();
+		DNG_see_chest();
 		DNG_func6();
 
 		dungeon_handler = (signed short (*)(void))ds_readd(0x92d2 + 4 * ds_readbs(DUNGEON_INDEX));
@@ -687,11 +687,29 @@ void DNG_func2(void)
 	}
 }
 
-#if defined(__BORLANDC__)
-void DNG_func3(void)
+/* Borlandified and identical */
+void DNG_see_chest(void)
 {
+	if (div16(ds_readb(0xbd4d)) == 8)
+	{
+		/* standing direct in front of a treasure chest with view to it */
+		if (ds_readbs((0xbd38 + 6)) != 0x26)
+		{
+			ds_writebs((0xbd38 + 6), 0x26);
+			ds_writew(0xd013, 1);
+			ds_writew(0xd011, 2);
+		}
+
+	} else {
+		if (ds_readbs((0xbd38 + 6)) != -1 && ds_readws(0xd011) == 2)
+		{
+			/* standing two fields before a treasure chest with view to it */
+			ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+			ds_writew(0xd013, 1);
+			ds_writew(0xd011, 0);
+		}
+	}
 }
-#endif
 
 void do_dungeon(void)
 {

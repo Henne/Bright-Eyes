@@ -2990,7 +2990,9 @@ static int n_seg076(unsigned short offs)
 		return 1;
 	}
 	case 0xdaa: {
-		return 0;
+		D1_LOG("DNG_see_chest()\n");
+		DNG_see_chest();
+		return 1;
 	}
 	case 0xe89: {
 		return 0;
