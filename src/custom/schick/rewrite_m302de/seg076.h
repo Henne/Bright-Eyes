@@ -4,6 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void do_dungeon(void);
+/* 0x25 */
+void DNG_fallpit_test(signed short);
 
 /* 0x2f */
 void DNG_door(signed short);

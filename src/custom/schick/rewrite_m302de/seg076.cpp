@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 2/11
+ *	Functions rewritten: 3/11
  */
 
 #include <stdio.h>
@@ -11,6 +11,8 @@
 #define DONT_DEF_DIV16
 
 #include "seg002.h"
+#include "seg007.h"
+#include "seg028.h"
 #include "seg047.h"
 #include "seg075.h"
 #include "seg076.h"
@@ -270,6 +272,70 @@ void print_msg_with_first_hero(Bit8u *msg)
 
 	GUI_input(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 0);
 	return;
+}
+
+/**
+ * \brief		fallpit logic for the current group in dungeons
+ * \param max_damage	maximum damage if a hero drops in the fallpit
+ */
+/* Borlandified and identical */
+void DNG_fallpit_test(signed short max_damage)
+{
+	signed short i;
+	Bit8u *hero;
+
+	play_voc(ARCHIVE_FILE_FX18_VOC);
+
+	and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+	or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x60);
+
+	if (ds_readb(DUNGEON_LIGHT) != 0)
+	{
+		/* light is on */
+		GUI_output(get_ltx(0x814));
+
+		/* drop one level down */
+		DNG_inc_level();
+
+		and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+		or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
+
+		/* damage the heros */
+		hero = get_hero(0);
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		{
+			/* TODO: need to check if the hero is dead ? */
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
+			{
+				sub_hero_le(hero, random_schick(max_damage));
+			}
+		}
+	} else {
+		/* light is off */
+		if (DNG_fallpit(max_damage))
+		{
+			/* drop one level down */
+			inc_ds_bs_post(DUNGEON_LEVEL);
+			load_area_description(1);
+
+			and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+			or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
+
+			/* move one level up. Why? */
+			dec_ds_bs_post(DUNGEON_LEVEL);
+
+			ds_writews(X_TARGET, ds_readws(0x2d83));
+			ds_writews(Y_TARGET, ds_readws(0x2d85));
+
+			load_area_description(1);
+
+			DNG_update_pos();
+		} else {
+			and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+			or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
+		}
+	}
 }
 
 void do_dungeon(void)

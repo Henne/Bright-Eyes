@@ -9199,7 +9199,13 @@ static int seg076(unsigned short offs) {
 			return 0;
 		}
 		case 0x25: {
-			return 0;
+			Bit16s max_damage = CPU_Pop16();
+			CPU_Push16(max_damage);
+
+			D1_LOG("DNG_fallpit_test(%d)\n", max_damage);
+			DNG_fallpit_test(max_damage);
+
+			return 1;
 		}
 		case 0x48: {
 			RealPt msg = CPU_Pop32();
