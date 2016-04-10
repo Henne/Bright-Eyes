@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 7/11
+ *	Functions rewritten: 8/11
  */
 
 #if !defined(__BORLANDC__)
@@ -14,6 +14,7 @@
 /* we need an own prototype of div16 */
 #define DONT_DEF_DIV16
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg003.h"
 #include "seg007.h"
@@ -711,9 +712,39 @@ void DNG_see_chest(void)
 	}
 }
 
+/* Borlandified and identical */
 void do_dungeon(void)
 {
+#if !defined(__BORLANDC__)
 	DUMMY_WARNING();
+#else
+	signed short tw_bak;
+
+	if (ds_readbs(0x2ca6) != ds_readbs(DUNGEON_INDEX) || ds_readws(0x2ccb) != 0 || ds_readws(0xd00f) != 0)
+	{
+		ds_writed(0xe488, (Bit32u)RealMake(datseg, 0xbd95));
+
+		seg028_0555(0);
+
+		set_audio_track(ARCHIVE_FILE_DUNGEON_XMI);
+
+		ds_writed(0xe48d, (Bit32u)RealMake(datseg, (!ds_readb(0x3616) ? 0x7dea : (ds_readb(0x3616) == 1 ? 0x8a4a : 0x841a))));
+
+		ds_writew(0xd00f, 0);
+		ds_writew(REQUEST_REFRESH, 1);
+	}
+
+	ds_writew(CURRENT_ANI, -1);
+
+	ds_writeb(0x2dad, ds_readbs(DUNGEON_INDEX));
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
+
+	DNG_step();
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+#endif
 }
 
 #if defined(__BORLANDC__)
