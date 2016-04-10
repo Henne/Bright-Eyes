@@ -46,6 +46,7 @@
 #include "seg065.h"
 #include "seg066.h"
 #include "seg076.h"
+#include "seg093.h"
 #include "seg095.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -1776,9 +1777,7 @@ void game_loop(void)
 		} else if (ds_readbs(DUNGEON_INDEX) != 0) {
 			do_dungeon();
 		} else if (ds_readbs(TRAVELING) != 0) {
-			/* do_travel_mode();	seg093 */
-			/* TODO: replace with do_travel_mode() */
-			do_dungeon();
+			do_travel_mode();
 		}
 
 		if (ds_readb(DATSEG_STATUS_START) == 99) {
