@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 5/11
+ *	Functions rewritten: 6/11
  */
 
 #if !defined(__BORLANDC__)
@@ -656,11 +656,36 @@ void DNG_stairs(void)
 	} while (host_readws((Bit8u*)stair_ptr++) != -1);
 }
 
-#if defined(__BORLANDC__)
+/* Borlandified and identical */
 void DNG_func2(void)
 {
+	signed short l_si;
+
+	if ((l_si = div16(ds_readb(0xbd4d))) == 1 || l_si == 2)
+	{
+		/* standing direct in front of a door with view to it */
+		if (ds_readbs((0xbd38 + 6)) != 0x21 && ds_readbs((0xbd38 + 6)) != 0x22)
+		{
+			ds_writebs((0xbd38 + 6), 0x21);
+			ds_writew(0xd013, 1);
+		}
+
+		if (ds_readbs((0xbd38 + 6)) != 0x22)
+		{
+			ds_writew(0xd011, l_si == 1 ? 1 : 3);
+		}
+
+	} else {
+		if (ds_readbs((0xbd38 + 6)) != -1 &&
+			(ds_readws(0xd011) == 1 || ds_readws(0xd011) == 3 || ds_readws(0xd011) == 5))
+		{
+			/* standing two fields before a door with view to it */
+			ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+			ds_writew(0xd013, 1);
+			ds_writew(0xd011, 0);
+		}
+	}
 }
-#endif
 
 #if defined(__BORLANDC__)
 void DNG_func3(void)

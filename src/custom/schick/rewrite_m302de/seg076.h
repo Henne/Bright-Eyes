@@ -11,11 +11,8 @@ void DNG_stairs(void);
 
 /* 0x2f */
 void DNG_door(signed short);
-
-#if defined(__BORLANDC__)
 /* 0x34 */
 void DNG_func2(void);
-#endif
 
 #if defined(__BORLANDC__)
 /* 0x39 */

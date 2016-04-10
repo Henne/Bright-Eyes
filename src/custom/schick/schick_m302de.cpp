@@ -2985,7 +2985,9 @@ static int n_seg076(unsigned short offs)
 		return 1;
 	}
 	case 0xd28: {
-		return 0;
+		D1_LOG("DNG_func2()\n");
+		DNG_func2();
+		return 1;
 	}
 	case 0xdaa: {
 		return 0;
