@@ -583,7 +583,7 @@ signed short DNG_step(void)
 		ds_readbs(0x2ca6) != -1 &&
 		!l_di)
 	{
-		DNG_stairs();
+		DNG_see_stairs();
 		DNG_see_door();
 		DNG_see_chest();
 		DNG_func6();
@@ -603,7 +603,7 @@ struct stair_struct {
 };
 
 /* Borlandified and identical */
-void DNG_stairs(void)
+void DNG_see_stairs(void)
 {
 	signed short target_pos;
 	stair_struct *stair_ptr;

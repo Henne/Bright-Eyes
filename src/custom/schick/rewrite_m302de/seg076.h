@@ -7,8 +7,7 @@ void do_dungeon(void);
 /* 0x25 */
 void DNG_fallpit_test(signed short);
 /* 0x2a */
-void DNG_stairs(void);
-
+void DNG_see_stairs(void);
 /* 0x2f */
 void DNG_door(signed short);
 /* 0x34 */
