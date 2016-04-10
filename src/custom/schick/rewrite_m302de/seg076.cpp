@@ -584,7 +584,7 @@ signed short DNG_step(void)
 		!l_di)
 	{
 		DNG_stairs();
-		DNG_func2();
+		DNG_see_door();
 		DNG_see_chest();
 		DNG_func6();
 
@@ -657,7 +657,7 @@ void DNG_stairs(void)
 }
 
 /* Borlandified and identical */
-void DNG_func2(void)
+void DNG_see_door(void)
 {
 	signed short l_si;
 

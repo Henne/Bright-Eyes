@@ -2985,8 +2985,8 @@ static int n_seg076(unsigned short offs)
 		return 1;
 	}
 	case 0xd28: {
-		D1_LOG("DNG_func2()\n");
-		DNG_func2();
+		D1_LOG("DNG_see_door()\n");
+		DNG_see_door();
 		return 1;
 	}
 	case 0xdaa: {

@@ -12,7 +12,7 @@ void DNG_stairs(void);
 /* 0x2f */
 void DNG_door(signed short);
 /* 0x34 */
-void DNG_func2(void);
+void DNG_see_door(void);
 /* 0x39 */
 void DNG_see_chest(void);
 
