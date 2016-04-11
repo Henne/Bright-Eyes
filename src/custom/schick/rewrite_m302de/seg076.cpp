@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 9/11
+ *	Functions rewritten: 10/11
  */
 
 #if !defined(__BORLANDC__)
@@ -797,11 +797,147 @@ void DNG_fight(void)
 	} while (host_readws((Bit8u*)++fight_ptr) != -1);
 }
 
-#if defined(__BORLANDC__)
-void DNG_func5(Bit8u *ptr)
+/**
+ * \brief		the group finds a barrel of water
+ * \param unit_ptr	pointer to the number of water units
+ */
+/* Borlandified and identical */
+void DNG_waterbarrel(Bit8u *unit_ptr)
 {
-}
+	signed short item_pos;
+	signed short l_di;
+	signed short answer;
+	signed short units_needed;
+	signed short hero_refilled;
+	signed short hero_refilled_counter;
+	signed short done;
+	Bit8u *hero;
+
+	done = 0;
+
+	/* TODO: check the value of unit_ptr first and skip if *unit_ptr <= 0*/
+
+	do {
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_ltx(0xc34),
+			host_readb(unit_ptr));
+
+		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
+						get_ltx(0xc38),
+						get_ltx(0xc3c),
+						get_ltx(0xc40));
+
+		if (answer == 1)
+		{
+			/* drink */
+			hero = get_hero(0);
+			for (l_di = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO)
+			{
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+					!hero_dead(hero))
+				{
+					/* 1 unit of water <=> 10 Points of thirst */
+
+					units_needed = (host_readbs(hero + HERO_THIRST) + 9) / 10;
+
+					if (host_readb(unit_ptr) <= units_needed)
+					{
+						/* not enough units in the barrel for this hero */
+						sub_ptr_bs(hero + HERO_THIRST, host_readb(unit_ptr) * 10);
+
+						if (host_readbs(hero + HERO_THIRST) < 0)
+						{
+							host_writeb(hero + HERO_THIRST, 0);
+						}
+
+						host_writeb(unit_ptr, 0);
+
+						GUI_output(get_ltx(0xc44));
+
+						break;
+					} else {
+						/* this hero quenches his/her thirst completely */
+						sub_ptr_bs(unit_ptr, units_needed);
+						host_writeb(hero + HERO_THIRST, 0);
+					}
+				}
+			}
+
+		} else	if (answer == 2)
+		{
+			/* replenish WATERSKINS */
+			hero = get_hero(0);
+			for (hero_refilled_counter = l_di = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO)
+			{
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+					!hero_dead(hero))
+				{
+					for (item_pos = hero_refilled = 0; item_pos < 23; item_pos++)
+					{
+						if (host_readws(hero + HERO_ITEM_HEAD + 14 * item_pos) == 30)
+						{
+							units_needed = 0;
+
+							if (ks_half_empty(hero + HERO_ITEM_HEAD + 14 * item_pos))
+							{
+								units_needed = 1;
+
+							} else if (ks_empty(hero + HERO_ITEM_HEAD + 14 * item_pos))
+							{
+								units_needed = 2;
+							}
+
+							if (units_needed != 0)
+							{
+								hero_refilled = 1;
+
+								/* reset empty and half_empty bits of the knapsack item status */
+#if !defined(__BORLANDC__)
+								and_ptr_bs(hero + HERO_ITEM_HEAD + 0x04 + 14 * item_pos, 0xfb);
+								and_ptr_bs(hero + HERO_ITEM_HEAD + 0x04 + 14 * item_pos, 0xfd);
+#else
+								(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).half_empty =
+									(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).empty = 0;
 #endif
+
+								if (host_readb(unit_ptr) <= units_needed)
+								{
+									/* empty the barrel completely */
+									GUI_output(get_ltx(0xc44));
+									host_writeb(unit_ptr, 0);
+
+								} else {
+									/* remove units from the barrel */
+									sub_ptr_bs(unit_ptr, units_needed);
+								}
+							}
+						}
+					}
+
+					if (hero_refilled != 0)
+					{
+						hero_refilled_counter++;
+					}
+				}
+			}
+
+			/* print a message if no hero used the barrel */
+			if (hero_refilled_counter == 0)
+			{
+				GUI_output(get_ltx(0xc48));
+			}
+
+			done = 1;
+		} else {
+			/* stay away or pushed ESC */
+			done = 1;
+		}
+
+	} while (!done);
+
+}
 
 #if defined(__BORLANDC__)
 void DNG_func6(void)

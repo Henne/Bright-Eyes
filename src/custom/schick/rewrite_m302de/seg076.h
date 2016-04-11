@@ -30,10 +30,8 @@ void print_msg_with_first_hero(Bit8u*);
 signed short DNG_step(void);
 #endif
 
-#if defined(__BORLANDC__)
 /* 0x52 */
-void DNG_func5(Bit8u*);
-#endif
+void DNG_waterbarrel(Bit8u*);
 
 #if !defined(__BORLANDC__)
 }
