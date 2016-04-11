@@ -31,7 +31,6 @@ namespace M302de {
  *	@item:	the item which gets unequipped
  *	@pos:	the position of the item
  */
-/* Borlandified and identical */
 void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 {
 
@@ -87,7 +86,6 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
  * @pos_b:	the position in the inventory of the equipper
  *
  */
-/* Borlandified and identical */
 void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed short pos_i, signed short pos_b)
 {
 	Bit8u *item_p;
@@ -182,7 +180,6 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
  *
  * Returns 1 if the hero can use the item and 0 if not.
  */
-/* Borlandified and identical */
 unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 {
 
@@ -206,7 +203,6 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
  *
  * Returns 1 if equipping is possible or 0 if not.
  */
-/* Borlandified and identical */
 unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
 {
 
@@ -261,7 +257,6 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
  * Returns the position of item, if equipped, otherwise -1.
  * Is not used in the game.
  */
-/* Borlandified and identical */
 signed short has_hero_equipped(Bit8u *hero, unsigned short item)
 {
 	signed short i;
@@ -282,7 +277,6 @@ signed short has_hero_equipped(Bit8u *hero, unsigned short item)
  * the hero doesn't own this item or has only full stacks of them.
  */
 //static
-/* Borlandified and identical */
 signed short has_hero_stacked(Bit8u *hero, unsigned short item)
 {
 	signed short i;
@@ -310,7 +304,6 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item)
  * The difference is, that mode = 1 prints a warning, mode = 0 is quiet.
  * mode = 2 ignores the carry weight completely.
 */
-/* Borlandified and identical */
 signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short nr)
 {
 	signed short l1;
@@ -460,7 +453,6 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
  * @item:	the item
  *
  */
-/* Borlandified and identical */
 //static
 unsigned short item_pleasing_ingerimm(unsigned short item)
 {
@@ -488,7 +480,6 @@ unsigned short item_pleasing_ingerimm(unsigned short item)
  *
  *	TODO: This function can be tuned a bit
  */
-/* Borlandified and identical */
 unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 {
 
@@ -606,7 +597,6 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
  *
  * Returns the number of given items.
  */
-/* Borlandified and identical */
 signed short get_item(signed short id, signed short unused, signed short nr)
 {
 	signed short i;
@@ -676,7 +666,6 @@ signed short get_item(signed short id, signed short unused, signed short nr)
  * @hero:	the hero
  * @item:	the item
  */
-/* Borlandified and identical */
 signed short hero_count_item(Bit8u *hero, unsigned short item) {
 
 	signed short i;
