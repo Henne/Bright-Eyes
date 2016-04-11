@@ -352,8 +352,8 @@ void tevent_135(void)
 
 void tevent_137(void)
 {
-	register signed short i;
-	register signed short answer;
+	signed short i;
+	signed short answer;
 	signed short item_pos;
 	Bit8u *hero;
 
@@ -381,21 +381,15 @@ void tevent_137(void)
 					give_hero_new_item(hero, 45, 1, 5);
 
 					/* search for the WATERSKIN */
-					if ((item_pos = get_item_pos(hero, 30)) != -1) {
-						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfb);
+					if ((item_pos = get_item_pos(hero, 30)) != -1)
+					{
+						/* reset empty and half_empty bits of the knapsack item status */
 #if !defined(__BORLANDC__)
-						and_ptr_bs(hero + 14 * item_pos + HERO_ITEM_HEAD + 4, 0xfd);
-						or_ptr_bs(hero + 14 * item_pos + HERO_ITEM_HEAD + 4, 0 << 1);
+						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfb);
+						and_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos, 0xfd);
 #else
-						asm {	mov al, 0
-							mov dx, item_pos
-							imul dx, dx, 14
-							les bx, hero
-							db 0x03, 0xda ; /* add bx, dx */
-							and byte ptr es:[bx + (HERO_ITEM_HEAD + 4)], 0xfd
-							shl al, 1
-							or es:[bx + (HERO_ITEM_HEAD + 4)], al
-						}
+						(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).half_empty =
+							(*(struct knapsack_status*)(hero + HERO_ITEM_HEAD + 4 + 14 * item_pos)).empty = 0;
 #endif
 					}
 
