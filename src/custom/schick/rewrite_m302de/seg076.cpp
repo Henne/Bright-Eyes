@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
- *	Functions rewritten: 10/11
+ *	Functions rewritten: 11/11 (complete)
  */
 
 #if !defined(__BORLANDC__)
@@ -588,7 +588,7 @@ signed short DNG_step(void)
 		DNG_see_stairs();
 		DNG_see_door();
 		DNG_see_chest();
-		DNG_func6();
+		DNG_see_lever();
 
 		dungeon_handler = (signed short (*)(void))ds_readd(0x92d2 + 4 * ds_readbs(DUNGEON_INDEX));
 		retval = dungeon_handler();
@@ -939,11 +939,30 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 
 }
 
-#if defined(__BORLANDC__)
-void DNG_func6(void)
+void DNG_see_lever(void)
 {
+	signed short target_pos;
+
+	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
+
+	if (ds_readbs(DUNGEON_INDEX) == 15 &&
+		(target_pos == 0x1801 || target_pos == 0x1805) &&
+		(!ds_readb(0x41c9) || !ds_readb(0x41ca)))
+	{
+		if (ds_readbs((0xbd38 + 6)) == -1)
+		{
+			ds_writeb((0xbd38 + 6), 46);
+			ds_writew(0xd013, 1);
+			ds_writew(0xd011, 4);
+		}
+
+	} else if (ds_readbs((0xbd38 + 6)) != -1 && ds_readw(0xd011) == 4)
+	{
+			ds_writeb((0xbd38 + 6), -1);
+			ds_writew(0xd013, 1);
+			ds_writew(0xd011, 0);
+	}
 }
-#endif
 
 #if !defined(__BORLANDC__)
 }

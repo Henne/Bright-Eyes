@@ -16,12 +16,8 @@ void DNG_see_door(void);
 void DNG_see_chest(void);
 /* 0x3e */
 void DNG_fight(void);
-
-#if defined(__BORLANDC__)
 /* 0x43 */
-void DNG_func6(void);
-#endif
-
+void DNG_see_lever(void);
 /* 0x48 */
 void print_msg_with_first_hero(Bit8u*);
 
