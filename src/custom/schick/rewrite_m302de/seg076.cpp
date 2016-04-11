@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
  *	Functions rewritten: 11/11 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg076.cpp
  */
 
 #if !defined(__BORLANDC__)
@@ -50,7 +54,6 @@ struct dummy5 {
  * \brief	opening doors logic
  * \param	action	how to try to open the door (smash / lockpicks / magic)
  */
-/* Borlandified and identical */
 void DNG_door(signed short action)
 {
 	signed short x;
@@ -274,7 +277,6 @@ void DNG_door(signed short action)
 	} while (host_readws((Bit8u*)(ptr++)) != -1);
 }
 
-/* Borlandified and identical */
 void print_msg_with_first_hero(Bit8u *msg)
 {
 	Bit8u *hero;
@@ -292,7 +294,6 @@ void print_msg_with_first_hero(Bit8u *msg)
  * \brief		fallpit logic for the current group in dungeons
  * \param max_damage	maximum damage if a hero drops in the fallpit
  */
-/* Borlandified and identical */
 void DNG_fallpit_test(signed short max_damage)
 {
 	signed short i;
@@ -353,7 +354,6 @@ void DNG_fallpit_test(signed short max_damage)
 }
 
 #if defined(__BORLANDC__)
-/* Borlandified and identical */
 signed short DNG_step(void)
 {
 	signed short l_si;
@@ -604,7 +604,6 @@ struct stair_struct {
 	signed char target_y;
 };
 
-/* Borlandified and identical */
 void DNG_see_stairs(void)
 {
 	signed short target_pos;
@@ -658,7 +657,6 @@ void DNG_see_stairs(void)
 	} while (host_readws((Bit8u*)stair_ptr++) != -1);
 }
 
-/* Borlandified and identical */
 void DNG_see_door(void)
 {
 	signed short l_si;
@@ -689,7 +687,6 @@ void DNG_see_door(void)
 	}
 }
 
-/* Borlandified and identical */
 void DNG_see_chest(void)
 {
 	if (div16(ds_readb(0xbd4d)) == 8)
@@ -713,7 +710,6 @@ void DNG_see_chest(void)
 	}
 }
 
-/* Borlandified and identical */
 #if defined(__BORLANDC__)
 void do_dungeon(void)
 {
@@ -756,7 +752,6 @@ struct fight_struct {
 	signed short ap;
 };
 
-/* Borlandified and identical */
 void DNG_fight(void)
 {
 	signed short target_pos;
@@ -799,7 +794,6 @@ void DNG_fight(void)
  * \brief		the group finds a barrel of water
  * \param unit_ptr	pointer to the number of water units
  */
-/* Borlandified and identical */
 void DNG_waterbarrel(Bit8u *unit_ptr)
 {
 	signed short item_pos;
