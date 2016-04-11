@@ -714,11 +714,9 @@ void DNG_see_chest(void)
 }
 
 /* Borlandified and identical */
+#if defined(__BORLANDC__)
 void do_dungeon(void)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short tw_bak;
 
 	if (ds_readbs(0x2ca6) != ds_readbs(DUNGEON_INDEX) || ds_readws(0x2ccb) != 0 || ds_readws(0xd00f) != 0)
@@ -745,8 +743,8 @@ void do_dungeon(void)
 	DNG_step();
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
-#endif
 }
+#endif
 
 struct fight_struct {
 	signed short pos;

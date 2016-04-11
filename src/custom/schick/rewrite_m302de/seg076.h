@@ -2,8 +2,11 @@
 namespace M302de {
 #endif
 
+#if defined(__BORLANDC__)
 /* 0x20 */
 void do_dungeon(void);
+#endif
+
 /* 0x25 */
 void DNG_fallpit_test(signed short);
 /* 0x2a */
