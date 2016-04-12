@@ -183,6 +183,8 @@
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
+#define EFFERD_SACRIFICE	(0x415f)	/* unsigned char {0, 1} */
+#define EFFERD_HINT	(0x4160)	/* unsigned char {0, 1} */
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
