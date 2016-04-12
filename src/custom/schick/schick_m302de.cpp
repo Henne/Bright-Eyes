@@ -9509,7 +9509,9 @@ static int seg086(unsigned short offs)
 			return 0;
 		}
 		case 0x66: {
-			return 0;
+			reg_ax = DNG11_handler();
+			D1_LOG("DNG11_handler() = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x6b: {
 			Bit16s fight_id = CPU_Pop16();
