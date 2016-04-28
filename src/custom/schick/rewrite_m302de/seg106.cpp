@@ -820,11 +820,11 @@ void equip_belt_ani(void)
 		height = host_readws((Bit8u*)&height);
 #endif
 
-		ds_writew(0xc011, 160);
-		ds_writew(0xc013, 50);
-		ds_writew(0xc015, width + 159);
-		ds_writew(0xc017, height + 49);
-		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+		ds_writew(PIC_COPY_X1, 160);
+		ds_writew(PIC_COPY_Y1, 50);
+		ds_writew(PIC_COPY_X2, width + 159);
+		ds_writew(PIC_COPY_Y2, height + 49);
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 		wait_for_vsync();
 		wait_for_vsync();

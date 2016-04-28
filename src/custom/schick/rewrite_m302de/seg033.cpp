@@ -652,7 +652,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 									if (rwt2 != -1) {
 										host_writeb(ptr + 2,
-										ds_readbs(0x10d0 + 12 * host_readbs(hero + HERO_SPRITE_NO) + 4 * rwt2 + host_readbs(hero + HERO_VIEWDIR)));
+										ds_readbs((0x10dc - 12) + 12 * host_readbs(hero + HERO_SPRITE_NO) + 4 * rwt2 + host_readbs(hero + HERO_VIEWDIR)));
 									} else {
 										host_writeb(ptr + 2, host_readbs(hero + HERO_VIEWDIR));
 									}

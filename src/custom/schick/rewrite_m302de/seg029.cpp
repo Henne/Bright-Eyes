@@ -27,7 +27,7 @@ struct coord {
 	unsigned short x,y;
 };
 
-/* DS:0x2cdd - DS:0x2d01 */
+/* GUI_BUTTONS_POS */
 /* Positions of the icons */
 static const struct coord icon_pos[9] = {
 	{241, 57}, {268, 57}, {295, 57},
@@ -65,11 +65,11 @@ void draw_playmask(void)
 
 	update_mouse_cursor();
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 199);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(0);
 
@@ -144,8 +144,8 @@ void draw_status_line(void)
 	for (i = 0; i < 7; i++) {
 		/* Clear name field */
 		do_fill_rect((RealPt)ds_readd(0xd2ff),
-			ds_readw(0x2d01 + i * 2), 190,
-			ds_readw(0x2d01 + i * 2) + 41, 197, 0);
+			ds_readw(HERO_PIC_POSX + i * 2), 190,
+			ds_readw(HERO_PIC_POSX + i * 2) + 41, 197, 0);
 
 		if (host_readb(get_hero(i) + HERO_TYPE) != 0) {
 
@@ -160,7 +160,7 @@ void draw_status_line(void)
 
 			/* print the name */
 			GUI_print_string(Real2Host(ds_readd(DTP2)),
-				GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)),	ds_readw(0x2d01 + i * 2), 43, 0), 190);
+				GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)),	ds_readw(HERO_PIC_POSX + i * 2), 43, 0), 190);
 		}
 
 		wait_for_vsync();
@@ -170,10 +170,10 @@ void draw_status_line(void)
 			clear_hero_icon(i);
 		} else {
 			if (host_readb(get_hero(i) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) {
-				ds_writew(0xc011, ds_readw(0x2d01 + 2 * i));
-				ds_writew(0xc013, 157);
-				ds_writew(0xc015, ds_readw(0x2d01 + 2 * i) + 31);
-				ds_writew(0xc017, 188);
+				ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * i));
+				ds_writew(PIC_COPY_Y1, 157);
+				ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * i) + 31);
+				ds_writew(PIC_COPY_Y2, 188);
 
 				head_bak = -1;
 
@@ -184,7 +184,7 @@ void draw_status_line(void)
 				}
 
 				/* set the src pointer of the head */
-				ds_writed(0xc019, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
+				ds_writed(PIC_COPY_SRC, (hero_dead(get_hero(i)) ? ds_readd(DTP2) :
 					(Bit32u)((RealPt)ds_readd(HEROS) + i * SIZEOF_HERO + HERO_PORTRAIT)));
 
 				do_pic_copy(0);
@@ -210,11 +210,11 @@ void draw_status_line(void)
 				for (j = 0; j < 1024; src++, dst++, j++)
 					*dst = *src + 0x40;
 
-				ds_writew(0xc011, ds_readw(0x2d01 + 2 * i));
-				ds_writew(0xc013, 157);
-				ds_writew(0xc015, ds_readw(0x2d01 + 2 * i) + 31);
-				ds_writew(0xc017, 188);
-				ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+				ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * i));
+				ds_writew(PIC_COPY_Y1, 157);
+				ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * i) + 31);
+				ds_writew(PIC_COPY_Y2, 188);
+				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 				do_pic_copy(0);
 
@@ -242,14 +242,14 @@ void clear_hero_icon(unsigned short pos)
 {
 
 	/* fill icon area black */
-	do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2), 157,
-		ds_readw(0x2d01 + pos * 2) + 31, 188, 0);
+	do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(HERO_PIC_POSX + pos * 2), 157,
+		ds_readw(HERO_PIC_POSX + pos * 2) + 31, 188, 0);
 
 	/* return if the hero has a class */
 	if (!host_readbs(get_hero(pos) + HERO_TYPE))
 		/* fill bars area black */
-		do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(0x2d01 + pos * 2) + 33, 157,
-			ds_readw(0x2d01 + pos * 2) + 39, 188, 0);
+		do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(HERO_PIC_POSX + pos * 2) + 33, 157,
+			ds_readw(HERO_PIC_POSX + pos * 2) + 39, 188, 0);
 }
 
 /**
@@ -289,11 +289,11 @@ void draw_icons(void)
 
 	for (i = 0; i < 9; i++) {
 
-		ds_writew(0xc011, ds_readw(0x2cdd + i * 4));
-		ds_writew(0xc013, ds_readw(0x2cdd + i * 4 + 2));
-		ds_writew(0xc015, ds_readw(0x2cdd + i * 4) + 23);
-		ds_writew(0xc017, ds_readw(0x2cdd + i * 4 + 2) + 23);
-		ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
+		ds_writew(PIC_COPY_X1, ds_readw(GUI_BUTTONS_POS + i * 4));
+		ds_writew(PIC_COPY_Y1, ds_readw(GUI_BUTTONS_POS + i * 4 + 2));
+		ds_writew(PIC_COPY_X2, ds_readw(GUI_BUTTONS_POS + i * 4) + 23);
+		ds_writew(PIC_COPY_Y2, ds_readw(GUI_BUTTONS_POS + i * 4 + 2) + 23);
+		ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
 
 		if (ds_readbs(0xbd38 + i) != -1) {
 			if (ds_readbs(0x5ecc + i) != ds_readbs(0xbd38 + i))
@@ -355,13 +355,13 @@ void select_hero_icon(unsigned short pos) {
 
 	/* paint a blue border for the pic and bars */
 	do_border((RealPt)ds_readd(0xd2ff),
-		ds_readw(0x2d01 + pos * 2) - 1, 156,
-		ds_readw(0x2d01 + pos * 2) + 42, 189, (signed char)0xfc);
+		ds_readw(HERO_PIC_POSX + pos * 2) - 1, 156,
+		ds_readw(HERO_PIC_POSX + pos * 2) + 42, 189, (signed char)0xfc);
 
 	/* paint a blue border for the name */
 	do_border((RealPt)ds_readd(0xd2ff),
-		ds_readw(0x2d01 + pos * 2) - 1, 189,
-		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xfc);
+		ds_readw(HERO_PIC_POSX + pos * 2) - 1, 189,
+		ds_readw(HERO_PIC_POSX + pos * 2) + 42, 198, (signed char)0xfc);
 
 	/* save the textcolors */
 	get_textcolor(&fg_bak, &bg_bak);
@@ -375,7 +375,7 @@ void select_hero_icon(unsigned short pos) {
 	/* print forename */
 	GUI_print_string(Real2Host(ds_readd(DTP2)),
 		GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)),
-			ds_readw(0x2d01 + pos * 2), 43, 0), 190);
+			ds_readw(HERO_PIC_POSX + pos * 2), 43, 0), 190);
 
 
 	/* restore textcolors */
@@ -395,13 +395,13 @@ void deselect_hero_icon(unsigned short pos) {
 
 	/* paint a gray border for the pic and bars */
 	do_border((RealPt)ds_readd(0xd2ff),
-		ds_readw(0x2d01 + pos * 2) - 1, 156,
-		ds_readw(0x2d01 + pos * 2) + 42, 189, (signed char)0xe6);
+		ds_readw(HERO_PIC_POSX + pos * 2) - 1, 156,
+		ds_readw(HERO_PIC_POSX + pos * 2) + 42, 189, (signed char)0xe6);
 
 	/* paint a gray border for the name */
 	do_border((RealPt)ds_readd(0xd2ff),
-		ds_readw(0x2d01 + pos * 2) - 1, 189,
-		ds_readw(0x2d01 + pos * 2) + 42, 198, (signed char)0xe6);
+		ds_readw(HERO_PIC_POSX + pos * 2) - 1, 189,
+		ds_readw(HERO_PIC_POSX + pos * 2) + 42, 198, (signed char)0xe6);
 
 	/* save the textcolors */
 	get_textcolor(&fg_bak, &bg_bak);
@@ -415,7 +415,7 @@ void deselect_hero_icon(unsigned short pos) {
 	/* print forename */
 	GUI_print_string(Real2Host(ds_readd(DTP2)),
 		GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)),
-			ds_readw(0x2d01 + pos * 2), 43, 0), 190);
+			ds_readw(HERO_PIC_POSX + pos * 2), 43, 0), 190);
 
 
 	/* restore textcolors */

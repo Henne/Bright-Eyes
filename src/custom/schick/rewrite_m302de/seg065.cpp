@@ -140,12 +140,12 @@ void final_intro(void)
 	nvf.height = (Bit8u*)&height;
 	process_nvf(&nvf);
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 20);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 39);
-	ds_writed(0xc019, (Bit32u)ptr2);
-	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 20);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 39);
+	ds_writed(PIC_COPY_SRC, (Bit32u)ptr2);
+	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(2);
 
@@ -153,7 +153,7 @@ void final_intro(void)
 
 	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 	delay_or_keypress(250);
 
@@ -198,37 +198,37 @@ RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
 
 void hyg_ani_2(Bit8u *ptr, signed short x, signed short y)
 {
-	ds_writew(0xc011, x);
-	ds_writew(0xc013, y);
-	ds_writew(0xc015, x + host_readws(ptr + 4) - 1);
-	ds_writew(0xc017, y + host_readws(ptr + 6) - 1);
+	ds_writew(PIC_COPY_X1, x);
+	ds_writew(PIC_COPY_Y1, y);
+	ds_writew(PIC_COPY_X2, x + host_readws(ptr + 4) - 1);
+	ds_writew(PIC_COPY_Y2, y + host_readws(ptr + 6) - 1);
 
-	ds_writed(0xc019, host_readd(ptr));
-	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, host_readd(ptr));
+	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(2);
 }
 
 void hyg_ani_3(void)
 {
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 199);
-	ds_writed(0xc019, (Bit32u)F_PADD((HugePt)ds_readd(BUFFER9_PTR), 0x1fbd0));
-	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 199);
+	ds_writed(PIC_COPY_SRC, (Bit32u)F_PADD((HugePt)ds_readd(BUFFER9_PTR), 0x1fbd0));
+	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
 
 	do_pic_copy(0);
 }
 
 void hyg_ani_4(void)
 {
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 199);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 	do_pic_copy(0);
 }
@@ -341,7 +341,7 @@ void show_hyggelik_ani(void)
 	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
 
 	hyg_ani_2(array + 25 * 8, 100, 0);
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 	delay_or_keypress(500);
 
@@ -443,11 +443,11 @@ void show_outro(void)
 	height = host_readws((Bit8u*)&height);
 #endif
 
-	ds_writew(0xc011, (320 - width) / 2);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, (320 - width) / 2 + width - 1);
-	ds_writew(0xc017, height - 1);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, (320 - width) / 2);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, (320 - width) / 2 + width - 1);
+	ds_writew(PIC_COPY_Y2, height - 1);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	delay_or_keypress(200);
@@ -477,11 +477,11 @@ void show_outro(void)
 	height = host_readws((Bit8u*)&height);
 #endif
 
-	ds_writew(0xc011, (320 - width) / 2);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, (320 - width) / 2 + width - 1);
-	ds_writew(0xc017, height - 1);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, (320 - width) / 2);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, (320 - width) / 2 + width - 1);
+	ds_writew(PIC_COPY_Y2, height - 1);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	delay_or_keypress(200);
@@ -511,11 +511,11 @@ void show_outro(void)
 	height = host_readws((Bit8u*)&height);
 #endif
 
-	ds_writew(0xc011, (320 - width) / 2);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, (320 - width) / 2 + width - 1);
-	ds_writew(0xc017, height - 1);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, (320 - width) / 2);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, (320 - width) / 2 + width - 1);
+	ds_writew(PIC_COPY_Y2, height - 1);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	delay_or_keypress(200);

@@ -430,7 +430,7 @@ void init_game_state(void)
 	ds_writeb(MONTH, 1);
 	ds_writeb(YEAR, 15);
 
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 	load_objects_nvf();
 	passages_init();

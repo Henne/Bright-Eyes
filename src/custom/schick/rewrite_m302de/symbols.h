@@ -45,6 +45,7 @@
 #define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
 #define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */
 #define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
+#define PIC_COPY_DS_RECT	(0x2990)	/* struct screen_rect */
 #define ANI_ENABLED	(0x29ae)	/* ?16 {0, 1} if the animation is enabled */
 #define ACTION_TABLE_MENU	(0x29cc)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
 #define ACTION_TABLE_PRIMARY	(0x29e0) /* RealPt */
@@ -55,8 +56,8 @@
 #define CHAR_STATUS_BARS	(0x2c18)	/* (struct { signed short LE_ORIG, LE, AE_ORIG, AE; })[7] */
 #define DISEASE_PRICES	(0x2c50)	/* signed short[8] */
 #define DISEASE_DELAYS	(0x2c60)	/* signed short[8] */
-#define POISON_PRICES	(0x2c70)	/* signed short[8] */
-#define POISON_DELAYS	(0x2c80)	/* signed short[8] */
+#define POISON_PRICES	(0x2c70)	/* signed short[10] */
+#define POISON_DELAYS	(0x2c84)	/* signed short[10] */
 #define TIMERS_DISABLED	(0x2c99)
 #define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
 #define STATUS_PAGE_HERO	(0x2c9d)	/* signed short */
@@ -68,6 +69,11 @@
 #define IN_FIGHT	(0x2cd5)
 #define FIGHT_ROUND	(0x2cd7)
 #define SKILLED_HERO_POS	(0x2cdb)	/* s16 {-1, 0..6} */
+#define GUI_BUTTONS_POS	(0x2cdd)	/* (struct { unsigned short x,y; })[9] */
+#define HERO_PIC_POSX	(0x2d01)	/* unsigned short[7] */
+#define LEVELUP_TA_RISE	(0x2d0e)	/* signed char[13] */
+#define LEVELUP_SP_RISE	(0x2d1b)	/* signed char[6] */
+#define LEVELUP_SPTA_CONV	(0x2d21)	/* signed char[6] = { 5, 5, 5, 0, 0, 0 } */
 #define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
 
 /*
@@ -106,7 +112,7 @@
 #define DEATHTRAP	(0x3312)	/* signed short */
 #define WEATHER1	(0x331b)	/* signed short, random(6) */
 #define WEATHER2	(0x331d)	/* signed short, random(7) */
-#define TREASURE_MAPS	(0x3332)	/* signed char[9] */
+#define TREASURE_MAPS	(0x3332)	/* signed char[10] */
 #define MIN_MAP_PARTS	(0x3340)	/* signed short {0} */
 #define SUBVENTION	(0x3342)	/* unsigned char {0-4} */
 #define OTTA_WINDRIDERS	(0x3344)	/* unsigned short */
@@ -156,6 +162,7 @@
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
+#define NPC_TIMERS	(0x3602)	/* unsigned char[6] */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0,1,2) */
 #define TRAVELING	(0x3614)
@@ -236,6 +243,7 @@
 #define DIARY_STRING7	(0x495c)	/* char[22] = "~~RUMH\x8eNGEN IN %s." */
 #define NOWAY_STRING	(0x4a68)	/* char[41] = "IN DIESE RICHTUNG GEHT ES NICHT WEITER." */
 #define ANI_BUSY	(0x4a90)	/* unsigned short {0,1} */
+#define PIC_COPY_FLAG	(0x4a92)	/* unsigned short {0,1} */
 #define STATUS_BAR_COLORS	(0x4a94)	/* 4 chars: le_color, 0, ae_color, 0 */
 #define STATUS_PAGE_HUNGER_MAX_COUNTER	(0x4a9a)	/* signed char */
 #define STATUS_PAGE_HUNGER_MAX_COLOR	(0x4a9b)	/* signed char */
@@ -340,7 +348,7 @@
 #define GOSSIP_STR_TRIPLE_WILDCARD	(0x7d06)	/* char[8] = "%s %s%s" */
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
-#define TOWN_POSITIONS	(0xa43b)	/* signed short[53][2] */
+#define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
 #define SEA_TRAVEL	(0xa842)	/* unsigned char {0,1} */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
 #define SPELL_SELECT_STR_KEY	(0xac20)	/* char[5] = "\xf2%s\xf0" */
@@ -416,6 +424,16 @@
 #define GAME_MODE	(0xc003)	/* signed short {-1 = Input error, 1 = Beginner, 2 = Advanced } */
 #define SELLITEMS	(0xc005)	/* RealPt, also used for repair items */
 #define BUYITEMS	(0xc009)	/* RealPt, merchant's assortment */
+#define PIC_COPY_DST	(0xc00d)	/* RealPt */
+#define PIC_COPY_X1	(0xc011)	/* signed short */
+#define PIC_COPY_Y1	(0xc013)	/* signed short */
+#define PIC_COPY_X2	(0xc015)	/* signed short */
+#define PIC_COPY_Y2	(0xc017)	/* signed short */
+#define PIC_COPY_SRC	(0xc019)	/* RealPt */
+#define PIC_COPY_V1	(0xc01d)	/* unsigned short */
+#define PIC_COPY_V2	(0xc01f)	/* unsigned short */
+#define PIC_COPY_V3	(0xc021)	/* unsigned short */
+#define PIC_COPY_V4	(0xc023)	/* unsigned short */
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
 #define CITY_LTX	(0xc3ad)
 #define DIALOG_TEXT	(0xc3b1)

@@ -291,7 +291,7 @@ void do_healer(void)
 							} else {
 								timewarp(5400);
 
-								if (random_schick(100) <= (120 - host_readbs(info + 1) * 5) + ds_readws(0x2c84 + poison * 2)) {
+								if (random_schick(100) <= (120 - host_readbs(info + 1) * 5) + ds_readws(POISON_DELAYS + poison * 2)) {
 									/* cure the poison */
 									host_writeb(hero + (HERO_POISON-4) + poison * 5, 0);
 									host_writeb(hero + (HERO_POISON-5) + poison * 5, 1);

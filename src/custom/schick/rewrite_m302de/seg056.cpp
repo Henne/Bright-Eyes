@@ -158,11 +158,11 @@ void buy_screen(void)
 			read_archive_file(l_di, Real2Host(ds_readd(ICON)), 576L);
 			bc_close(l_di);
 
-			ds_writew(0xc011, 108);
-			ds_writew(0xc013, 5);
-			ds_writew(0xc015, 131);
-			ds_writew(0xc017, 28);
-			ds_writed(0xc019, ds_readd(ICON));
+			ds_writew(PIC_COPY_X1, 108);
+			ds_writew(PIC_COPY_Y1, 5);
+			ds_writew(PIC_COPY_X2, 131);
+			ds_writew(PIC_COPY_Y2, 28);
+			ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 			update_mouse_cursor();
 			do_pic_copy(0);
 			refresh_screen_size();
@@ -208,11 +208,11 @@ void buy_screen(void)
 
 					if ((j = host_readws(Real2Host(ds_readd(BUYITEMS)) + 7 * l3))) {
 
-						ds_writew(0xc011, array3.a[items_x]);
-						ds_writew(0xc013, array5.a[l_di]);
-						ds_writew(0xc015, array3.a[items_x] + 15);
-						ds_writew(0xc017, array5.a[l_di] + 15);
-						ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+						ds_writew(PIC_COPY_X1, array3.a[items_x]);
+						ds_writew(PIC_COPY_Y1, array5.a[l_di]);
+						ds_writew(PIC_COPY_X2, array3.a[items_x] + 15);
+						ds_writew(PIC_COPY_Y2, array5.a[l_di] + 15);
+						ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 						nvf.nr = host_readws(get_itemsdat(j));
 
@@ -304,9 +304,9 @@ void buy_screen(void)
 			for (l_di = 0; l_di < 7; l_di++, hero1 += SIZEOF_HERO) {
 
 				do_fill_rect((RealPt)ds_readd(0xd2ff),
-						ds_readws(0x2d01 + 2 * l_di),
+						ds_readws(HERO_PIC_POSX + 2 * l_di),
 						190,
-						ds_readws(0x2d01 + 2 * l_di) + 41,
+						ds_readws(HERO_PIC_POSX + 2 * l_di) + 41,
 						197, 0);
 
 				if (host_readbs(hero1 + HERO_TYPE) != 0) {
@@ -323,7 +323,7 @@ void buy_screen(void)
 					}
 
 					GUI_print_string(Real2Host(ds_readd(DTP2)),
-						GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)), ds_readws(0x2d01 + 2 *l_di), 43, 0),
+						GUI_get_first_pos_centered(Real2Host(ds_readd(DTP2)), ds_readws(HERO_PIC_POSX + 2 *l_di), 43, 0),
 						190);
 
 					set_textcolor(255, 0);

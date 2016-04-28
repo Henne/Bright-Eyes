@@ -1117,11 +1117,11 @@ void city_fade_and_colors(void)
 
 	draw_compass();
 
-	ds_writew(0xc011, ds_readws(0xce41));
-	ds_writew(0xc013, ds_readws(0xce3f));
-	ds_writew(0xc015, ds_readws(0xce41) + 207);
-	ds_writew(0xc017, ds_readws(0xce3f) + 134);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, ds_readws(0xce41));
+	ds_writew(PIC_COPY_Y1, ds_readws(0xce3f));
+	ds_writew(PIC_COPY_X2, ds_readws(0xce41) + 207);
+	ds_writew(PIC_COPY_Y2, ds_readws(0xce3f) + 134);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 	ds_writeb(0x45b8, 0);
 

@@ -280,13 +280,13 @@ void GUI_draw_radio_bg(signed short header, signed short options, signed short w
 	signed short i;
 
 	/* set upper left coordinates */
-	ds_writew(0xc011, ds_readw(TEXTBOX_POS_X));
-	ds_writew(0xc013, ds_readw(TEXTBOX_POS_Y));
+	ds_writew(PIC_COPY_X1, ds_readw(TEXTBOX_POS_X));
+	ds_writew(PIC_COPY_Y1, ds_readw(TEXTBOX_POS_Y));
 	/* set lower righti coordinates */
-	ds_writew(0xc015, ds_readw(TEXTBOX_POS_X) + width - 1);
-	ds_writew(0xc017, ds_readw(TEXTBOX_POS_Y) + height - 1);
+	ds_writew(PIC_COPY_X2, ds_readw(TEXTBOX_POS_X) + width - 1);
+	ds_writew(PIC_COPY_Y2, ds_readw(TEXTBOX_POS_Y) + height - 1);
 	/* set pointer */
-	ds_writed(0xc019, ds_readd(0xbff9));
+	ds_writed(PIC_COPY_SRC, ds_readd(0xbff9));
 	do_save_rect();
 
 	/* play FX3.VOC */
@@ -310,11 +310,11 @@ void GUI_draw_radio_bg(signed short header, signed short options, signed short w
 
 void GUI_copy_smth(unsigned short width, unsigned short height)
 {
-	ds_writew(0xc011, ds_readw(TEXTBOX_POS_X));
-	ds_writew(0xc013, ds_readw(TEXTBOX_POS_Y));
-	ds_writew(0xc015, ds_readw(TEXTBOX_POS_X) + width - 1);
-	ds_writew(0xc017, ds_readw(TEXTBOX_POS_Y) + height - 1);
-	ds_writed(0xc019, ds_readd(0xbff9));
+	ds_writew(PIC_COPY_X1, ds_readw(TEXTBOX_POS_X));
+	ds_writew(PIC_COPY_Y1, ds_readw(TEXTBOX_POS_Y));
+	ds_writew(PIC_COPY_X2, ds_readw(TEXTBOX_POS_X) + width - 1);
+	ds_writew(PIC_COPY_Y2, ds_readw(TEXTBOX_POS_Y) + height - 1);
+	ds_writed(PIC_COPY_SRC, ds_readd(0xbff9));
 	do_pic_copy(0);
 }
 
@@ -531,11 +531,11 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 				(signed char)0xff);
 
 		/* set the coordinates */
-		ds_writew(0xc011, ds_readw(TEXTBOX_POS_X) + 6);
-		ds_writew(0xc013, ds_readw(TEXTBOX_POS_Y) + 7);
-		ds_writew(0xc015, ds_readw(TEXTBOX_POS_X) + 37);
-		ds_writew(0xc017, ds_readw(TEXTBOX_POS_Y) + 38);
-		ds_writed(0xc019, (Bit32u)picture);
+		ds_writew(PIC_COPY_X1, ds_readw(TEXTBOX_POS_X) + 6);
+		ds_writew(PIC_COPY_Y1, ds_readw(TEXTBOX_POS_Y) + 7);
+		ds_writew(PIC_COPY_X2, ds_readw(TEXTBOX_POS_X) + 37);
+		ds_writew(PIC_COPY_Y2, ds_readw(TEXTBOX_POS_Y) + 38);
+		ds_writed(PIC_COPY_SRC, (Bit32u)picture);
 
 		do_pic_copy(0);
 	}

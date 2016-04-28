@@ -218,16 +218,16 @@ void status_show(Bit16u index)
 	load_pp20(ARCHIVE_FILE_ZUSTA_UK);
 
 	/* draw the picture of the hero */
-	ds_writew(0xc011, 16);
-	ds_writew(0xc013, 9);
-	ds_writew(0xc015, 47);
-	ds_writew(0xc017, 40);
-	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, 16);
+	ds_writew(PIC_COPY_Y1, 9);
+	ds_writew(PIC_COPY_X2, 47);
+	ds_writew(PIC_COPY_Y2, 40);
+	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
 	/* the source must be passed here as RealPt */
-	ds_writed(0xc019, (Bit32u)(hero + HERO_PORTRAIT));
+	ds_writed(PIC_COPY_SRC, (Bit32u)(hero + HERO_PORTRAIT));
 	do_pic_copy(0);
 
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 	/* print invetory and silouette values */
 	if (ds_readws(STATUS_PAGE_MODE) < 3) {
@@ -250,15 +250,15 @@ void status_show(Bit16u index)
 			process_nvf(&nvf);
 
 			/* draw the item icon */
-			ds_writew(0xc011, ds_readw(0x63d2 + i * 4));
-			ds_writew(0xc013, ds_readw(0x63d2 + i * 4 + 2));
-			ds_writew(0xc015, ds_readw(0x63d2 + i * 4) + 15);
-			ds_writew(0xc017, ds_readw(0x63d2 + i * 4 + 2) + 15);
-			ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
-			ds_writed(0xc019, ds_readd(ICON));
+			ds_writew(PIC_COPY_X1, ds_readw(0x63d2 + i * 4));
+			ds_writew(PIC_COPY_Y1, ds_readw(0x63d2 + i * 4 + 2));
+			ds_writew(PIC_COPY_X2, ds_readw(0x63d2 + i * 4) + 15);
+			ds_writew(PIC_COPY_Y2, ds_readw(0x63d2 + i * 4 + 2) + 15);
+			ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+			ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 			do_pic_copy(0);
 
-			ds_writed(0xc00d, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 			/* check if stackable */
 			/* TODO: bit flags operation */
@@ -750,11 +750,11 @@ void status_show(Bit16u index)
 		}
 	}
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 199);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
 	ds_writew(0xc3cb, 1);

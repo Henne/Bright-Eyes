@@ -676,11 +676,11 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				seg041_8c8();
 
 				if (ds_readw(AUTOFIGHT) != 0) {
-					ds_writew(0xc011, ds_writew(0xc01d, 0));
-					ds_writew(0xc013, ds_writew(0xc01f, 194));
-					ds_writew(0xc015, 318);
-					ds_writew(0xc017, 199);
-					ds_writed(0xc019, ds_readd(BUFFER8_PTR));
+					ds_writew(PIC_COPY_X1, ds_writew(PIC_COPY_V1, 0));
+					ds_writew(PIC_COPY_Y1, ds_writew(PIC_COPY_V2, 194));
+					ds_writew(PIC_COPY_X2, 318);
+					ds_writew(PIC_COPY_Y2, 199);
+					ds_writed(PIC_COPY_SRC, ds_readd(BUFFER8_PTR));
 
 					do_pic_copy(3);
 

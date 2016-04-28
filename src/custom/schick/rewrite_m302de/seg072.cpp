@@ -89,11 +89,11 @@ void INF_jurge_hjore(signed short informer, signed short state)
 			if (!ds_readb(INFORMER_BEORN)) ds_writeb(INFORMER_BEORN, 1);
 		} else if (state == 13) {
 			/* get the false map part ?*/
-			if (ds_readb(0x333b) == 2) {
+			if (ds_readb(TREASURE_MAPS + 9) == 2) {
 				ds_writeb(TMAP_DOUBLE2, 1);
 			}
 
-			ds_writeb(0x333b, 1);
+			ds_writeb(TREASURE_MAPS + 9, 1);
 
 			add_hero_ap_all(10);
 

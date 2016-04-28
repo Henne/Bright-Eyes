@@ -78,12 +78,12 @@ void diary_show(void)
 		i = diary_print_entry(i);
 	} while (i < ds_readws(DIARY_ENTRY_COUNTER));
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 199);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 	update_mouse_cursor();
 
@@ -95,7 +95,7 @@ void diary_show(void)
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(0xc00d, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+	ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(0xd2ff)));
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
@@ -210,20 +210,20 @@ Bit16u diary_print_entry(Bit16u line)
 
 	} while ((host_readws(ptr) == day) && (host_readws(ptr + 2) == month));
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, line * 7);
-	ds_writed(0xc019, ds_readd(BUFFER9_PTR));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, line * 7);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER9_PTR));
 #if !defined(__BORLANDC__)
-	ds_writed(0xc00d,
+	ds_writed(PIC_COPY_DST,
 		(Bit32u)(((RealPt)ds_readd(BUFFER1_PTR) + startline * 2240) + 9600));
 #else
 	/* TODO: ugly hack */
 	/*	this calculation of the address of
 		a twodimiensional array is done
 		here with inline assembly */
-	calc_twodim_array_ptr(BUFFER1_PTR, 0x8c0, startline, 9600, 0xc00d);
+	calc_twodim_array_ptr(BUFFER1_PTR, 0x8c0, startline, 9600, PIC_COPY_DST);
 #endif
 	do_pic_copy(2);
 

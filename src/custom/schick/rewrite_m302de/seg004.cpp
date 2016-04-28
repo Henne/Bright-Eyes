@@ -67,18 +67,18 @@ void init_ani(Bit16u v1)
 		clear_ani_pal();
 
 		/* set flag for pic_copy() */
-		ds_writew(0x4a92, 1);
+		ds_writew(PIC_COPY_FLAG, 1);
 
 		/* set uppter left coordinates */
-		ds_writew(0xc011, ds_readw(0xce41));
-		ds_writew(0xc013, ds_readw(0xce3f));
+		ds_writew(PIC_COPY_X1, ds_readw(0xce41));
+		ds_writew(PIC_COPY_Y1, ds_readw(0xce3f));
 
 		/* set lower right coordinates */
-		ds_writew(0xc015, ds_readw(0xce41) + ds_readw(0xc3e7) - 1);
-		ds_writew(0xc017, ds_readw(0xce3f) + ds_readb(0xc3ed) - 1);
+		ds_writew(PIC_COPY_X2, ds_readw(0xce41) + ds_readw(0xc3e7) - 1);
+		ds_writew(PIC_COPY_Y2, ds_readw(0xce3f) + ds_readb(0xc3ed) - 1);
 
 		/* copy pointer */
-		ds_writed(0xc019, ds_readd(ANI_MAIN_PTR));
+		ds_writed(PIC_COPY_SRC, ds_readd(ANI_MAIN_PTR));
 
 		/* copy the main ani picture */
 		do_pic_copy(1);
@@ -86,7 +86,7 @@ void init_ani(Bit16u v1)
 		set_ani_pal(Real2Host(ds_readd(0xce3b)));
 
 		/* reset flag for pic_copy() */
-		ds_writew(0x4a92, 0);
+		ds_writew(PIC_COPY_FLAG, 0);
 
 		refresh_screen_size();
 	}
@@ -134,7 +134,7 @@ void clear_ani(void)
 	for (i = 0; i < 10; i++) {
 		ds_writew((0xc3ef + 5) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 7) + i * 0x107, 0);
-		ds_writew(0xc3f8 + i * 0x107, 0);
+		ds_writew((0xc3ef + 9) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 8) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 11) + i * 0x107, 0);
 		ds_writeb((0xc3ef + 12) + i * 0x107, 0);
@@ -208,11 +208,11 @@ void interrupt timer_isr(void)
 		/* disable interrupts */
 		asm { cli; }
 
-		ds_writew((0x2990 + 0), ds_readw(0xce3f));
-		ds_writew((0x2990 + 2), ds_readw(0xce41));
-		ds_writew((0x2990 + 4), ds_readw(0xce3f) + 135);
-		ds_writew((0x2990 + 6), ds_readw(0xce41) + 208);
-		a = *(struct dummy*)(p_datseg + 0xc00d);
+		ds_writew((PIC_COPY_DS_RECT + 0), ds_readw(0xce3f));
+		ds_writew((PIC_COPY_DS_RECT + 2), ds_readw(0xce41));
+		ds_writew((PIC_COPY_DS_RECT + 4), ds_readw(0xce3f) + 135);
+		ds_writew((PIC_COPY_DS_RECT + 6), ds_readw(0xce41) + 208);
+		a = *(struct dummy*)(p_datseg + PIC_COPY_DST);
 
 		l_di = ds_readbs(0xc3ee);
 
@@ -269,15 +269,15 @@ void interrupt timer_isr(void)
 					}
 
 					/* set screen coordinates */
-					ds_writew(0xc011,
+					ds_writew(PIC_COPY_X1,
 						ds_readws(0xce41) + host_readw(ptr + 5));
-					ds_writew(0xc013,
+					ds_writew(PIC_COPY_Y1,
 						ds_readws(0xce3f) + host_readb(ptr + 7));
-					ds_writew(0xc015,
+					ds_writew(PIC_COPY_X2,
 						ds_readws(0xce41) + host_readw(ptr + 5) + host_readw(ptr + 9) - 1);
-					ds_writew(0xc017,
+					ds_writew(PIC_COPY_Y2,
 						ds_readws(0xce3f) + host_readb(ptr + 7) + host_readb(ptr + 8) - 1);
-					ds_writed(0xc019,
+					ds_writed(PIC_COPY_SRC,
 						host_readd(ptr + 0xd + 4 *(host_readws(ptr + 0x5f + 4 * ds_readw(0xe24c + 2 * i)) -1)));
 
 					do_pic_copy(1);
@@ -290,11 +290,11 @@ void interrupt timer_isr(void)
 			}
 		}
 
-		*(struct dummy*)(p_datseg + 0xc00d) = a;
-		ds_writew((0x2990 + 0), 0);
-		ds_writew((0x2990 + 2), 0);
-		ds_writew((0x2990 + 4), 199);
-		ds_writew((0x2990 + 6), 319);
+		*(struct dummy*)(p_datseg + PIC_COPY_DST) = a;
+		ds_writew((PIC_COPY_DS_RECT + 0), 0);
+		ds_writew((PIC_COPY_DS_RECT + 2), 0);
+		ds_writew((PIC_COPY_DS_RECT + 4), 199);
+		ds_writew((PIC_COPY_DS_RECT + 6), 319);
 
 		/* enable interrupts */
 		asm {sti; }
@@ -482,7 +482,7 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 		update_mouse_cursor();
 
 	if (mode == 0) {
-		x = ds_readw(0x2d01 + hero * 2) + type * 4 + 34;
+		x = ds_readw(HERO_PIC_POSX + hero * 2) + type * 4 + 34;
 		y_min = 188;
 		dst = (RealPt)ds_readd(0xd2ff);
 	} else {
@@ -780,11 +780,11 @@ void draw_wallclock(signed short pos, signed short night)
 	mouse_updated = 0;
 
 	/* make backups */
-	gfx_bak = *(struct dummy*)(p_datseg + 0xc00d);
-	fullscreen_bak = *(struct dummy2*)(p_datseg + 0x2990);
+	gfx_bak = *(struct dummy*)(p_datseg + PIC_COPY_DST);
+	fullscreen_bak = *(struct dummy2*)(p_datseg + PIC_COPY_DS_RECT);
 
 	/* set pointer */
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 
 	/* calculate y value */
@@ -795,10 +795,10 @@ void draw_wallclock(signed short pos, signed short night)
 	pos += ds_readws(WALLCLOCK_X) - 2;
 
 	/* set window */
-	ds_writew(0x2990, ds_readws(WALLCLOCK_Y));
-	ds_writew(0x2992, ds_readws(WALLCLOCK_X));
-	ds_writew(0x2994, ds_readws(WALLCLOCK_Y) + 22);
-	ds_writew(0x2996, ds_readws(WALLCLOCK_X) + 78);
+	ds_writew(PIC_COPY_DS_RECT, ds_readws(WALLCLOCK_Y));
+	ds_writew((PIC_COPY_DS_RECT + 2), ds_readws(WALLCLOCK_X));
+	ds_writew((PIC_COPY_DS_RECT + 4), ds_readws(WALLCLOCK_Y) + 22);
+	ds_writew((PIC_COPY_DS_RECT + 6), ds_readws(WALLCLOCK_X) + 78);
 
 	/* set palette (night/day) */
 	set_palette((!night ? (p_datseg + WALLCLOCK_PALETTE_DAY) : (p_datseg + WALLCLOCK_PALETTE_NIGHT)), 0xfa, 3);
@@ -814,49 +814,49 @@ void draw_wallclock(signed short pos, signed short night)
 	}
 
 	/* set coordinates */
-	ds_writew(0xc011, ds_readws(WALLCLOCK_X));
-	ds_writew(0xc013, ds_readws(WALLCLOCK_Y));
-	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
-	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 20);
-	ds_writed(0xc019, ds_readd(OBJECTS_NVF_BUF));
+	ds_writew(PIC_COPY_X1, ds_readws(WALLCLOCK_X));
+	ds_writew(PIC_COPY_Y1, ds_readws(WALLCLOCK_Y));
+	ds_writew(PIC_COPY_X2, ds_readws(WALLCLOCK_X) + 78);
+	ds_writew(PIC_COPY_Y2, ds_readws(WALLCLOCK_Y) + 20);
+	ds_writed(PIC_COPY_SRC, ds_readd(OBJECTS_NVF_BUF));
 
 	/* draw backgroud */
 	do_pic_copy(2);
 
 
 	/* set coordinates */
-	ds_writew(0xc011, pos);
-	ds_writew(0xc013, y);
-	ds_writew(0xc015, pos + 7);
-	ds_writew(0xc017, y + 6);
-	ds_writed(0xc019, (Bit32u)(!night ? (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcaf: (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcef));
+	ds_writew(PIC_COPY_X1, pos);
+	ds_writew(PIC_COPY_Y1, y);
+	ds_writew(PIC_COPY_X2, pos + 7);
+	ds_writew(PIC_COPY_Y2, y + 6);
+	ds_writed(PIC_COPY_SRC, (Bit32u)(!night ? (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcaf: (RealPt)ds_readd(OBJECTS_NVF_BUF) + 0xcef));
 
 	/* draw sun/moon */
 	do_pic_copy(2);
 
 
 	/* set coordinates */
-	ds_writew(0xc011, ds_readws(WALLCLOCK_X));
-	ds_writew(0xc013, ds_readws(WALLCLOCK_Y) + 3);
-	ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 78);
-	ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 22);
-	ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(OBJECTS_NVF_BUF) + 0x683));
+	ds_writew(PIC_COPY_X1, ds_readws(WALLCLOCK_X));
+	ds_writew(PIC_COPY_Y1, ds_readws(WALLCLOCK_Y) + 3);
+	ds_writew(PIC_COPY_X2, ds_readws(WALLCLOCK_X) + 78);
+	ds_writew(PIC_COPY_Y2, ds_readws(WALLCLOCK_Y) + 22);
+	ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(OBJECTS_NVF_BUF) + 0x683));
 
 	/* draw backgroud */
 	do_pic_copy(2);
 
 	/* restore fullscreen */
-	*(struct dummy2*)(p_datseg + 0x2990) = fullscreen_bak;
+	*(struct dummy2*)(p_datseg + PIC_COPY_DS_RECT) = fullscreen_bak;
 
 	/* happens in travel mode */
 	if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_KARTE_DAT) {
 
 		/* set coordinates */
-		ds_writew(0xc011, ds_readws(WALLCLOCK_X) - 5);
-		ds_writew(0xc013, ds_readws(WALLCLOCK_Y) - 4);
-		ds_writew(0xc015, ds_readws(WALLCLOCK_X) + 85);
-		ds_writew(0xc017, ds_readws(WALLCLOCK_Y) + 28);
-		ds_writed(0xc019, (Bit32u)(F_PADD(ds_readds(BUFFER9_PTR), 0x4650)));
+		ds_writew(PIC_COPY_X1, ds_readws(WALLCLOCK_X) - 5);
+		ds_writew(PIC_COPY_Y1, ds_readws(WALLCLOCK_Y) - 4);
+		ds_writew(PIC_COPY_X2, ds_readws(WALLCLOCK_X) + 85);
+		ds_writew(PIC_COPY_Y2, ds_readws(WALLCLOCK_Y) + 28);
+		ds_writed(PIC_COPY_SRC, (Bit32u)(F_PADD(ds_readds(BUFFER9_PTR), 0x4650)));
 
 		/* draw backgroud */
 		do_pic_copy(2);
@@ -867,7 +867,7 @@ void draw_wallclock(signed short pos, signed short night)
 	}
 
 	/* restore gfx */
-	*(struct dummy*)(p_datseg + 0xc00d) = gfx_bak;
+	*(struct dummy*)(p_datseg + PIC_COPY_DST) = gfx_bak;
 }
 
 /**
@@ -1033,21 +1033,21 @@ void do_pic_copy(unsigned short mode)
 	Bit8u *src;
 	RealPt dst;
 
-	x1 = ds_readw(0xc011);
-	y1 = ds_readw(0xc013);
-	x2 = ds_readw(0xc015);
-	y2 = ds_readw(0xc017);
+	x1 = ds_readw(PIC_COPY_X1);
+	y1 = ds_readw(PIC_COPY_Y1);
+	x2 = ds_readw(PIC_COPY_X2);
+	y2 = ds_readw(PIC_COPY_Y2);
 
-	v1 = ds_readw(0xc01d);
-	v2 = ds_readw(0xc01f);
-	v3 = ds_readw(0xc021);
-	v4 = ds_readw(0xc023);
+	v1 = ds_readw(PIC_COPY_V1);
+	v2 = ds_readw(PIC_COPY_V2);
+	v3 = ds_readw(PIC_COPY_V3);
+	v4 = ds_readw(PIC_COPY_V4);
 
 	width = x2 - x1 + 1;
 	height = y2 - y1 + 1;
 
-	src = Real2Host(ds_readd(0xc019));
-	dst = (RealPt)ds_readd(0xc00d);
+	src = Real2Host(ds_readd(PIC_COPY_SRC));
+	dst = (RealPt)ds_readd(PIC_COPY_DST);
 
 	pic_copy(dst, x1, y1, x2, y2, v1, v2, v3, v4, width, height, src, mode);
 }
@@ -1060,14 +1060,14 @@ void do_save_rect(void)
 	RealPt src;
 	RealPt dst;
 
-	x1 = ds_readw(0xc011);
-	y1 = ds_readw(0xc013);
+	x1 = ds_readw(PIC_COPY_X1);
+	y1 = ds_readw(PIC_COPY_Y1);
 
-	x2 = ds_readw(0xc015);
-	y2 = ds_readw(0xc017);
+	x2 = ds_readw(PIC_COPY_X2);
+	y2 = ds_readw(PIC_COPY_Y2);
 
-	src = (RealPt)ds_readd(0xc019);
-	dst = (RealPt)ds_readd(0xc00d);
+	src = (RealPt)ds_readd(PIC_COPY_SRC);
+	dst = (RealPt)ds_readd(PIC_COPY_DST);
 
 	dst += y1 * 320 + x1;
 	width = x2 - x1 + 1;

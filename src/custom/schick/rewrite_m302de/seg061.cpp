@@ -68,16 +68,16 @@ void do_temple(void)
 			set_audio_track(ARCHIVE_FILE_TEMPLE_XMI);
 
 			/* draw temple icon */
-			ds_writew(0xc011, ds_writew(0xc013, 0));
-			ds_writew(0xc015, 40);
-			ds_writew(0xc017, 22);
-			ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(0xd2ff) + 28259));
-			ds_writed(0xc019, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 7000));
+			ds_writew(PIC_COPY_X1, ds_writew(PIC_COPY_Y1, 0));
+			ds_writew(PIC_COPY_X2, 40);
+			ds_writew(PIC_COPY_Y2, 22);
+			ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(0xd2ff) + 28259));
+			ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 7000));
 
 			update_mouse_cursor();
 			do_pic_copy(0);
 			refresh_screen_size();
-			ds_writed(0xc00d, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 			/* location string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),

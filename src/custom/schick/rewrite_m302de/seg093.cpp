@@ -198,8 +198,8 @@ signed short do_travel_mode(void)
 					{
 						if (is_mouse_in_rect(l_di - 4,
 									l3 - 4,
-							    (l_di = ds_readws((0xa43f + 0) + 4 * handle)) + 4,
-							    (l3 = ds_readws((0xa43f + 2) + 4 * handle)) + 4))
+							    (l_di = ds_readws((TOWN_POSITIONS + 4) + 4 * handle)) + 4,
+							    (l3 = ds_readws((TOWN_POSITIONS + 6) + 4 * handle)) + 4))
 						{
 							l4 = handle;
 							break;

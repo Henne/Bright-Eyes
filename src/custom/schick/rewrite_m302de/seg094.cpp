@@ -311,11 +311,11 @@ void TM_func1(signed short route_nr, signed short backwards)
 					ds_readws(TRV_RETURN) == 2 &&
 					ds_readbs(0xe4c9 + ds_readws(0x4228)) == 2))
 				{
-					if (ds_readws(0x4274 + 4 * ds_readws(0x4228)) != 0)
+					if (ds_readws((0x4272 + 2) + 4 * ds_readws(0x4228)) != 0)
 					{
-						TRV_event(ds_readws(0x4274 + 4 * (l5 = ds_readws(0x4228))));
+						TRV_event(ds_readws((0x4272 + 2) + 4 * (l5 = ds_readws(0x4228))));
 
-						if (!ds_readbs(SEA_TRAVEL + ds_readws(0x4274 + 4 * ds_readws(0x4228))))
+						if (!ds_readbs(SEA_TRAVEL + ds_readws((0x4272 + 2) + 4 * ds_readws(0x4228))))
 						{
 							ds_writeb(0xe4c9 + ds_readws(0x4228), 1);
 						} else if (ds_readws(TRV_RETURN) == 0)
@@ -519,7 +519,7 @@ signed short TM_unused1(RealPt ptr, signed short off)
 						answer = l5;
 					}
 
-					ds_writew(0x434a, ds_readbs(0x4343 + answer));
+					ds_writew(0x434a, ds_readbs((0x4344 - 1) + answer));
 					return answer;
 				}
 

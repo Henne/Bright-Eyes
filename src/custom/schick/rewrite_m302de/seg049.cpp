@@ -479,12 +479,12 @@ void GRP_move_hero(signed short src_pos)
 		ds_writew(0x2998, 1);
 		ds_writew(0x299e, 157);
 
-		ds_writew(0x299c, ds_readw(0x2d01 + 2 * src_pos));
-		ds_writew(0xc011, ds_readw(0x299c));
-		ds_writew(0xc013, ds_readw(0x299e));
-		ds_writew(0xc015, ds_readw(0x299c) + 31);
-		ds_writew(0xc017, ds_readw(0x299e) + 31);
-		ds_writed(0xc019, ds_readd(ICON));
+		ds_writew(0x299c, ds_readw(HERO_PIC_POSX + 2 * src_pos));
+		ds_writew(PIC_COPY_X1, ds_readw(0x299c));
+		ds_writew(PIC_COPY_Y1, ds_readw(0x299e));
+		ds_writew(PIC_COPY_X2, ds_readw(0x299c) + 31);
+		ds_writew(PIC_COPY_Y2, ds_readw(0x299e) + 31);
+		ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 		do_save_rect();
 
@@ -494,11 +494,11 @@ void GRP_move_hero(signed short src_pos)
 
 		ds_writew(0x2998, 1);
 
-		ds_writew(0xc011, ds_readw(0x2d01 + 2 * src_pos));
-		ds_writew(0xc013, 157);
-		ds_writew(0xc015, ds_readw(0x2d01 + 2 * src_pos) + 31);
-		ds_writew(0xc017, 188);
-		ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+		ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * src_pos));
+		ds_writew(PIC_COPY_Y1, 157);
+		ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * src_pos) + 31);
+		ds_writew(PIC_COPY_Y2, 188);
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 		do_save_rect();
 
@@ -520,23 +520,23 @@ void GRP_move_hero(signed short src_pos)
 
 				wait_for_vsync();
 
-				ds_writew(0xc011, ds_readw(0x29a0));
-				ds_writew(0xc013, ds_readw(0x29a2));
-				ds_writew(0xc015, ds_readw(0x29a0) + 31);
-				ds_writew(0xc017, ds_readw(0x29a2) + 31);
-				ds_writed(0xc019, ds_readd(ICON));
+				ds_writew(PIC_COPY_X1, ds_readw(0x29a0));
+				ds_writew(PIC_COPY_Y1, ds_readw(0x29a2));
+				ds_writew(PIC_COPY_X2, ds_readw(0x29a0) + 31);
+				ds_writew(PIC_COPY_Y2, ds_readw(0x29a2) + 31);
+				ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 				do_pic_copy(0);
 
-				ds_writew(0xc011, ds_readw(0x299c));
-				ds_writew(0xc013, ds_readw(0x299e));
-				ds_writew(0xc015, ds_readw(0x299c) + 31);
-				ds_writew(0xc017, ds_readw(0x299e) + 31);
-				ds_writed(0xc019, ds_readd(ICON));
+				ds_writew(PIC_COPY_X1, ds_readw(0x299c));
+				ds_writew(PIC_COPY_Y1, ds_readw(0x299e));
+				ds_writew(PIC_COPY_X2, ds_readw(0x299c) + 31);
+				ds_writew(PIC_COPY_Y2, ds_readw(0x299e) + 31);
+				ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 				do_save_rect();
 
-				ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 				do_pic_copy(0);
 
@@ -547,16 +547,16 @@ void GRP_move_hero(signed short src_pos)
 			}
 		}
 
-		ds_writew(0xc011, ds_readw(0x29a0));
-		ds_writew(0xc013, ds_readw(0x29a2));
-		ds_writew(0xc015, ds_readw(0x29a0) + 31);
-		ds_writew(0xc017, ds_readw(0x29a2) + 31);
-		ds_writed(0xc019, ds_readd(ICON));
+		ds_writew(PIC_COPY_X1, ds_readw(0x29a0));
+		ds_writew(PIC_COPY_Y1, ds_readw(0x29a2));
+		ds_writew(PIC_COPY_X2, ds_readw(0x29a0) + 31);
+		ds_writew(PIC_COPY_Y2, ds_readw(0x29a2) + 31);
+		ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 		do_pic_copy(0);
 
 		dst_pos = 6;
-		while (ds_readws(0x2d01 + --dst_pos * 2) > ds_readws(0x299c))
+		while (ds_readws(HERO_PIC_POSX + --dst_pos * 2) > ds_readws(0x299c))
 		{
 			;
 		}

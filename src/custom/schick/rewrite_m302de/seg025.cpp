@@ -330,12 +330,12 @@ void show_treasure_map(void)
 				#endif
 
 				/* copy to screen */
-				ds_writew(0xc011, ds_readws(TMAP_X + 2 * l_si));
-				ds_writew(0xc013, ds_readws(TMAP_Y + 2 * l_si));
-				ds_writew(0xc015, ds_readws(TMAP_X + 2 * l_si) + width - 1);
-				ds_writew(0xc017, ds_readws(TMAP_Y + 2 * l_si) + height - 1);
-				ds_writed(0xc019, (Bit32u)F_PADD((RealPt)ds_readd(BUFFER9_PTR), 30000));
-				ds_writed(0xc00d, ds_readd(0xd2ff));
+				ds_writew(PIC_COPY_X1, ds_readws(TMAP_X + 2 * l_si));
+				ds_writew(PIC_COPY_Y1, ds_readws(TMAP_Y + 2 * l_si));
+				ds_writew(PIC_COPY_X2, ds_readws(TMAP_X + 2 * l_si) + width - 1);
+				ds_writew(PIC_COPY_Y2, ds_readws(TMAP_Y + 2 * l_si) + height - 1);
+				ds_writed(PIC_COPY_SRC, (Bit32u)F_PADD((RealPt)ds_readd(BUFFER9_PTR), 30000));
+				ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 				do_pic_copy(0);
 			}
 		}
@@ -389,12 +389,12 @@ void show_treasure_map(void)
 
 		if (ds_readb(0x4c3a) != 0) {
 			/* copy to screen */
-			ds_writew(0xc011, 0);
-			ds_writew(0xc013, 0);
-			ds_writew(0xc015, 319);
-			ds_writew(0xc017, 199);
-			ds_writed(0xc019, ds_readd(BUFFER1_PTR));
-			ds_writed(0xc00d, ds_readd(0xd2ff));
+			ds_writew(PIC_COPY_X1, 0);
+			ds_writew(PIC_COPY_Y1, 0);
+			ds_writew(PIC_COPY_X2, 319);
+			ds_writew(PIC_COPY_Y2, 199);
+			ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 			update_mouse_cursor();
 			wait_for_vsync();
@@ -459,12 +459,12 @@ signed short game_options(void)
 
 	GUI_print_header(Real2Host(ds_readd(DTP2)));
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 61);
-	ds_writed(0xc019, ds_readd(BUFFER9_PTR));
-	ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 9600));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 61);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER9_PTR));
+	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 9600));
 	do_pic_copy(2);
 
 	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 28000);
@@ -477,12 +477,12 @@ signed short game_options(void)
 
 		load_tx(ds_readbs(CURRENT_TOWN) + (ARCHIVE_FILE_CITY_DAT-1));
 
-		ds_writew(0xc011, 0);
-		ds_writew(0xc013, 0);
-		ds_writew(0xc015, 319);
-		ds_writew(0xc017, 86);
-		ds_writed(0xc019, ds_readd(BUFFER9_PTR));
-		ds_writed(0xc00d, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 22400));
+		ds_writew(PIC_COPY_X1, 0);
+		ds_writew(PIC_COPY_Y1, 0);
+		ds_writew(PIC_COPY_X2, 319);
+		ds_writew(PIC_COPY_Y2, 86);
+		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER9_PTR));
+		ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 22400));
 		do_pic_copy(2);
 	}
 
@@ -497,12 +497,12 @@ signed short game_options(void)
 	draw_icon(53, 190, 170);
 	draw_icon(5, 236, 170);
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 319);
-	ds_writew(0xc017, 199);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
-	ds_writed(0xc00d, ds_readd(0xd2ff));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 319);
+	ds_writew(PIC_COPY_Y2, 199);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
 
 	update_mouse_cursor();
 	wait_for_vsync();
@@ -514,7 +514,7 @@ signed short game_options(void)
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(0xc00d, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+	ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(0xd2ff)));
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
@@ -634,17 +634,17 @@ void draw_icon(signed short id, signed short x, signed short y)
 
 	bc_close(handle);
 
-	ptr_bak = (RealPt)ds_readd(0xc00d);
+	ptr_bak = (RealPt)ds_readd(PIC_COPY_DST);
 
-	ds_writed(0xc019, ds_readd(ICON));
-	ds_writew(0xc011, x);
-	ds_writew(0xc013, y);
-	ds_writew(0xc015, x + 23);
-	ds_writew(0xc017, y + 23);
-	ds_writed(0xc00d, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(ICON));
+	ds_writew(PIC_COPY_X1, x);
+	ds_writew(PIC_COPY_Y1, y);
+	ds_writew(PIC_COPY_X2, x + 23);
+	ds_writew(PIC_COPY_Y2, y + 23);
+	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
 	do_pic_copy(2);
 
-	ds_writed(0xc00d, (Bit32u)ptr_bak);
+	ds_writed(PIC_COPY_DST, (Bit32u)ptr_bak);
 }
 
 /* 0xd54 */
@@ -788,11 +788,11 @@ void leave_dungeon(void)
 
 	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
 
-	ds_writew(0xc011, 0);
-	ds_writew(0xc013, 0);
-	ds_writew(0xc015, 240);
-	ds_writew(0xc017, 136);
-	ds_writed(0xc019, ds_readd(BUFFER1_PTR));
+	ds_writew(PIC_COPY_X1, 0);
+	ds_writew(PIC_COPY_Y1, 0);
+	ds_writew(PIC_COPY_X2, 240);
+	ds_writew(PIC_COPY_Y2, 136);
+	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 
 	update_mouse_cursor();
 
