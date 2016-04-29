@@ -4,6 +4,8 @@ namespace M302de {
 
 /* 0x20 */
 void DNG11_chest1(void);
+/* 0x25 */
+void DNG11_chest2(void);
 
 /* 0x66 */
 signed short DNG11_handler(void);

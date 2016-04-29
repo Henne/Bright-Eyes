@@ -9472,7 +9472,9 @@ static int seg086(unsigned short offs)
 			return 1;
 		}
 		case 0x25: {
-			return 0;
+			D1_LOG("DNG11_chest2()\n");
+			DNG11_chest2();
+			return 1;
 		}
 		case 0x2a: {
 			return 0;

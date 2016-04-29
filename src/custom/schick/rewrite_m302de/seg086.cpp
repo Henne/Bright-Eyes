@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg086 (dungeon: piratecave)
- *	Functions rewritten: 3/16
+ *	Functions rewritten: 4/16
  */
 
 #include <stdio.h>
@@ -314,6 +314,23 @@ void DNG11_chest1(void)
 		GUI_output(get_dtp(0x60));
 
 		ds_writeb(0x4169, 1);
+
+	} else {
+
+		/* an empty chest */
+		GUI_output(get_ltx(0x828));
+	}
+}
+
+/* Borlandified and identical */
+void DNG11_chest2(void)
+{
+	if (!ds_readb(0x416a))
+	{
+		/* a chest with 21 food rations */
+		GUI_output(get_dtp(0x64));
+
+		ds_writeb(0x416a, 1);
 
 	} else {
 

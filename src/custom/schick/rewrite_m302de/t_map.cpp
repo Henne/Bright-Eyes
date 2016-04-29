@@ -76,6 +76,7 @@ treasure_type t_map(RealPt ptr, const int off)
 		/* TODO: seg086.cpp: Piratecave */
 		switch (f_off) {
 		case 0x20:	return (treasure_type)DNG11_chest1;
+		case 0x25:	return (treasure_type)DNG11_chest2;
 		}
 
 		D1_ERR("ERROR: call to seg086:0x%x should not happen\n", f_off);
