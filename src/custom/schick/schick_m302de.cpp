@@ -9477,40 +9477,100 @@ static int seg086(unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest3()\n");
+			DNG11_chest3(chest);
+			return 1;
 		}
 		case 0x2f: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest4()\n");
+			DNG11_chest4(chest);
+			return 1;
 		}
 		case 0x34: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest5()\n");
+			DNG11_chest5(chest);
+			return 1;
 		}
 		case 0x39: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest6()\n");
+			DNG11_chest6(chest);
+			return 1;
 		}
 		case 0x3e: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest7()\n");
+			DNG11_chest7(chest);
+			return 1;
 		}
 		case 0x43: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest8()\n");
+			DNG11_chest8(chest);
+			return 1;
 		}
 		case 0x48: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest9()\n");
+			DNG11_chest9(chest);
+			return 1;
 		}
 		case 0x4d: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest10()\n");
+			DNG11_chest10(chest);
+			return 1;
 		}
 		case 0x52: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest11()\n");
+			DNG11_chest11(chest);
+			return 1;
 		}
 		case 0x57: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest12()\n");
+			DNG11_chest12(chest);
+			return 1;
 		}
 		case 0x5c: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest13()\n");
+			DNG11_chest13(chest);
+			return 1;
 		}
 		case 0x61: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			D1_LOG("DNG11_chest14()\n");
+			DNG11_chest14(chest);
+			return 1;
 		}
 		case 0x66: {
 			reg_ax = DNG11_handler();

@@ -77,6 +77,18 @@ treasure_type t_map(RealPt ptr, const int off)
 		switch (f_off) {
 		case 0x20:	return (treasure_type)DNG11_chest1;
 		case 0x25:	return (treasure_type)DNG11_chest2;
+		case 0x2a:	return (treasure_type)DNG11_chest3;
+		case 0x2f:	return (treasure_type)DNG11_chest4;
+		case 0x34:	return (treasure_type)DNG11_chest5;
+		case 0x39:	return (treasure_type)DNG11_chest6;
+		case 0x3e:	return (treasure_type)DNG11_chest7;
+		case 0x43:	return (treasure_type)DNG11_chest8;
+		case 0x48:	return (treasure_type)DNG11_chest9;
+		case 0x4d:	return (treasure_type)DNG11_chest10;
+		case 0x52:	return (treasure_type)DNG11_chest11;
+		case 0x57:	return (treasure_type)DNG11_chest12;
+		case 0x5c:	return (treasure_type)DNG11_chest13;
+		case 0x61:	return (treasure_type)DNG11_chest14;
 		}
 
 		D1_ERR("ERROR: call to seg086:0x%x should not happen\n", f_off);

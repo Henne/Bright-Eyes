@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg086 (dungeon: piratecave)
- *	Functions rewritten: 4/16
+ *	Functions rewritten: 16/16 (complete)
  */
 
 #include <stdio.h>
@@ -8,6 +8,7 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
@@ -16,6 +17,7 @@
 #include "seg032.h"
 #include "seg075.h"
 #include "seg076.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -337,6 +339,138 @@ void DNG11_chest2(void)
 		/* an empty chest */
 		GUI_output(get_ltx(0x828));
 	}
+}
+
+/* Borlandified and identical */
+void DNG11_chest3(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x416b));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest4(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x417a));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest5(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4185));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest6(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x418a));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest7(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4191));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest8(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4192));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest9(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4198));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest10(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x419e));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest11(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x41a9));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest12(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x41ad));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest13(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x41ba));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG11_chest14(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x41c0));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 /**
