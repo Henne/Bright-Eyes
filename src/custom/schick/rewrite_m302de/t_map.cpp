@@ -12,6 +12,7 @@
 #include "v302de.h"
 
 #include "seg080.h"
+#include "seg086.h"
 #include "seg088.h"
 #include "seg090.h"
 #include "seg091.h"
@@ -67,6 +68,17 @@ treasure_type t_map(RealPt ptr, const int off)
 		if (f_off == 0x39) return (treasure_type)DNG04_corpse2;
 
 		D1_ERR("ERROR: call to seg080:0x%x should not happen\n", f_off);
+		exit(-1);
+		break;
+	}
+
+	case 0x1401: {
+		/* TODO: seg086.cpp: Piratecave */
+		switch (f_off) {
+		case 0x20:	return (treasure_type)DNG11_chest1;
+		}
+
+		D1_ERR("ERROR: call to seg086:0x%x should not happen\n", f_off);
 		exit(-1);
 		break;
 	}

@@ -9467,7 +9467,9 @@ static int seg086(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			D1_LOG("DNG11_chest1()\n");
+			DNG11_chest1();
+			return 1;
 		}
 		case 0x25: {
 			return 0;
