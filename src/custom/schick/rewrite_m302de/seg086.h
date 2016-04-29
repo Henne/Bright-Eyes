@@ -4,8 +4,7 @@ namespace M302de {
 
 /* 0x66 */
 signed short DNG11_handler(void);
-
-/* 0x8b */
+/* 0x6b */
 void DNG11_fight_intro(signed short);
 
 #if !defined(__BORLANDC__)
