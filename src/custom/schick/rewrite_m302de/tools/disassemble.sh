@@ -95,7 +95,7 @@ ndisasm -b16 -e 0x53c20 ${GAMEFILE} | head -n 1043 >${OUTDIR}/SEG071.dis
 ndisasm -b16 -e 0x54b80 ${GAMEFILE} | head -n 1855 >${OUTDIR}/SEG072.dis
 ndisasm -b16 -e 0x560c0 ${GAMEFILE} | head -n 807  >${OUTDIR}/SEG073.dis
 ndisasm -b16 -e 0x569f0 ${GAMEFILE} | head -n 1182 >${OUTDIR}/SEG074.dis
-ndisasm -b16 -e 0x57710 ${GAMEFILE} | head -n 2016 >${OUTDIR}/SEG075.dis
+ndisasm -b16 -e 0x57710 ${GAMEFILE} | head -n 2014 >${OUTDIR}/SEG075.dis
 ndisasm -b16 -e 0x58d60 ${GAMEFILE} | head -n 1520 >${OUTDIR}/SEG076.dis
 ndisasm -b16 -e 0x5a080 ${GAMEFILE} | head -n 654  >${OUTDIR}/SEG077.dis
 ndisasm -b16 -e 0x5a900 ${GAMEFILE} | head -n 1552 >${OUTDIR}/SEG078.dis
