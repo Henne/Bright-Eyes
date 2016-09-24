@@ -469,7 +469,7 @@ signed short DNG06_handler(void)
  *
  * \param fight_id	ID of the fight
  */
-void DNG6_fight_intro(signed short fight_id)
+void DNG06_fight_intro(signed short fight_id)
 {
 	if (fight_id == 86) {
 

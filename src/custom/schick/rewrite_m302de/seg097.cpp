@@ -804,7 +804,7 @@ void GUI_print_fight_intro_msg(signed short fight_id)
 		DNG5_fight_intro(fight_id);
 	}
 	if (ds_readbs(DUNGEON_INDEX) == 6) {
-		DNG6_fight_intro(fight_id);
+		DNG06_fight_intro(fight_id);
 	}
 	if (ds_readbs(DUNGEON_INDEX) == 9) {
 		DNG9_fight_intro(fight_id);

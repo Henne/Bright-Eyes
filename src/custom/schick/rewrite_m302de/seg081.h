@@ -5,7 +5,7 @@ namespace M302de {
 /* 0x2a */
 signed short DNG06_handler(void);
 /* 0x2f */
-void DNG6_fight_intro(signed short);
+void DNG06_fight_intro(signed short);
 
 #if !defined(__BORLANDC__)
 }

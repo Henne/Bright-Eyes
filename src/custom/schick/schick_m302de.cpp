@@ -9407,8 +9407,8 @@ static int seg081(unsigned short offs)
 			Bit16s fight_id = CPU_Pop16();
 			CPU_Push16(fight_id);
 
-			D1_LOG("DNG6_fight_intro(%d)\n", fight_id);
-			DNG6_fight_intro(fight_id);
+			D1_LOG("DNG06_fight_intro(%d)\n", fight_id);
+			DNG06_fight_intro(fight_id);
 			return 1;
 		}
 		case 0x34: {
