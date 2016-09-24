@@ -469,22 +469,15 @@ signed short DNG06_handler(void)
  *
  * \param fight_id	ID of the fight
  */
+/* Borlandified and identical */
 void DNG06_fight_intro(signed short fight_id)
 {
-	if (fight_id == 86) {
-
-		if (!ds_readb(0x3617)) {
-			/* this is true all the time */
-
-			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x78),
-				(char*)get_dtp(0x80));
-		} else {
-
-			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x78),
-				(char*)get_dtp(0x7c));
-		}
+	if (fight_id == FIGHTS_F094_22)
+	{
+		/* this is true all the time */
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x78),
+			(char*)(!ds_readb(0x3617) ? get_dtp(0x80) : get_dtp(0x7c)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 	}
