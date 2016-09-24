@@ -377,7 +377,7 @@ void seg092_06b4(signed short a1)
 #if !defined(__BORLANDC__)
 	if (ds_readbs(DUNGEON_INDEX) != 4 &&
 		ds_readbs(DUNGEON_INDEX) != 5 &&
-			(ds_readbs(DUNGEON_INDEX) < 12 || ds_readbs(DUNGEON_INDEX) > 14))
+			(ds_readbs(DUNGEON_INDEX) < 11 || ds_readbs(DUNGEON_INDEX) > 14))
 	{
 		DUMMY_WARNING();
 		return;

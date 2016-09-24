@@ -9846,7 +9846,22 @@ static int seg092(unsigned short offs) {
 		return 1;
 	}
 	case 0x48: {
-		return 0;
+		Bit16s a1 = CPU_Pop16();
+		CPU_Push16(a1);
+
+		Bit16s d = ds_readbs(DUNGEON_INDEX);
+
+		/* valid values of d are [1,2,..,15] */
+		/* enable only for dungeons where treasure code is finished */
+
+		if ((d >= 4 && d <= 6) || (11 <= d && d <= 14))
+		{
+			D1_LOG("seg092_06b4(%d)\n", a1);
+			seg092_06b4(a1);
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 	case 0x4d: {
 		RealPt ptr = CPU_Pop32();
