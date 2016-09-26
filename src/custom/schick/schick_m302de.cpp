@@ -9394,7 +9394,11 @@ static int seg081(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG06_chest1(ptr);
+			return 1;
 		}
 		case 0x25: {
 			return 0;

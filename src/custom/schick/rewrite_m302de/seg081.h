@@ -2,6 +2,9 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void DNG06_chest1(RealPt);
+
 /* 0x2a */
 signed short DNG06_handler(void);
 /* 0x2f */
