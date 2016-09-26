@@ -9401,7 +9401,11 @@ static int seg081(unsigned short offs)
 			return 1;
 		}
 		case 0x25: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG06_chest2(ptr);
+			return 1;
 		}
 		case 0x2a: {
 			reg_ax = DNG06_handler();

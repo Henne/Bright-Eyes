@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg081 (dungeon: cave2)
- *	Functions rewritten: 3/5
+ *	Functions rewritten: 4/5
  */
 
 #include <stdio.h>
@@ -495,6 +495,33 @@ void DNG06_chest1(RealPt chest)
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
+
+
+/* Borlandified and identical */
+void DNG06_chest2(RealPt chest)
+{
+	signed short i;
+	Bit8u *hero;
+
+	sprintf((char*)Real2Host(ds_readd(DTP2)),
+		(char*)get_dtp(0x84));
+
+	hero = get_hero(0);
+	for (i = 0; i <=6; i++, hero += SIZEOF_HERO)
+	{
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero) &&
+			test_skill(hero, 38, 0) > 0)
+		{
+			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x88));
+			break;
+		}
+	}
+
+	GUI_output(Real2Host(ds_readd(DTP2)));
+}
+
 
 #if !defined(__BORLANDC__)
 }
