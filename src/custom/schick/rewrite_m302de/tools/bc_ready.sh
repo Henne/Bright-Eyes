@@ -37,6 +37,7 @@ if [ "${USE_KVM}" = "true" ]; then
 	# assume device 0 can be used
 	sudo qemu-nbd --disconnect ${DEVICE}
 	sudo qemu-nbd --connect=${DEVICE} ~/qemu/BE-compile/hda.qcow2
+	sudo partprobe ${DEVICE}
 
 	#mounten
 	sudo mount ${DEVICE}p1 ${MOUNT} -t vfat -o rw,users
