@@ -10,6 +10,8 @@ void DNG06_chest2(RealPt);
 signed short DNG06_handler(void);
 /* 0x2f */
 void DNG06_fight_intro(signed short);
+/* 0x34 */
+void DNG09_pitfall(void);
 
 #if !defined(__BORLANDC__)
 }

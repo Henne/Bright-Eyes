@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg081 (dungeon: cave2)
- *	Functions rewritten: 4/5
+ *	Functions rewritten: 5/5 (complete)
  */
 
 #include <stdio.h>
@@ -13,6 +13,8 @@
 #include "seg007.h"
 #include "seg025.h"
 #include "seg032.h"
+#include "seg049.h"
+#include "seg075.h"
 #include "seg076.h"
 #include "seg092.h"
 #include "seg096.h"
@@ -520,6 +522,143 @@ void DNG06_chest2(RealPt chest)
 	}
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
+}
+
+/* Borlandified and identical */
+void DNG09_pitfall(void)
+{
+	signed short i;
+	signed short l3;
+	Bit8u *hero;
+	Bit8u *hero_first;
+	Bit8u *hero_second;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	if (!ds_readb(0x40fd))
+	{
+		for (i = l3 = 0; i <= 6; i++, hero += 0x6da)
+		{
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero) &&
+				test_skill(hero, 50, 4) > 0)
+			{
+				l3 = 1;
+			}
+		}
+
+		if (l3 != 0)
+		{
+			GUI_output(get_dtp(0x74));
+
+		} else {
+			hero_first = Real2Host(get_first_hero_available_in_group());
+			hero_second = Real2Host(get_second_hero_available_in_group());
+
+			if (ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP)) >= 2)
+			{
+				/* the current group has at least two heros */
+
+				/* print message */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x78),
+					(char*)hero_first + HERO_NAME2,
+					(char*)hero_second + HERO_NAME2);
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				/* each of these two heros looses 3W6+3 LE */
+				sub_hero_le(hero_first, dice_roll(3, 6, 3));
+				sub_hero_le(hero_second, dice_roll(3, 6, 3));
+
+				/* find an empty group */
+				l3 = 0;
+				while (ds_readb(GROUP_MEMBER_COUNTS + l3) != 0) l3++;
+
+				/* put these heros in empty group */
+				host_writeb(hero_first + HERO_GROUP_NO, l3);
+				host_writeb(hero_second + HERO_GROUP_NO, l3);
+				add_ds_bs(GROUP_MEMBER_COUNTS + l3, 2);
+				sub_ds_bs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP), 2);
+
+				GRP_save_pos(l3);
+
+				ds_writeb(GROUPS_DNG_LEVEL + l3, ds_readbs(DUNGEON_LEVEL) + 1);
+
+				ds_writeb(0x40fd, 2);
+			} else {
+				/* the current group has only one hero */
+
+				/* print message */
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x7c),
+					(char*)hero_first + HERO_NAME2,
+					(char*)Real2Host(GUI_get_ptr(host_readbs(hero_first + HERO_SEX), 0)));
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				/* this hero looses 3W6+3 LE */
+				sub_hero_le(hero_first, dice_roll(3, 6, 3));
+
+				/* find an empty group */
+				l3 = 0;
+				while (ds_readb(GROUP_MEMBER_COUNTS + l3) != 0) l3++;
+
+				/* put this hero in an empty group */
+				host_writeb(hero_first + HERO_GROUP_NO, l3);
+				inc_ds_bs_post(GROUP_MEMBER_COUNTS + l3);
+				dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
+
+				GRP_save_pos(l3);
+
+				ds_writeb(GROUPS_DNG_LEVEL + l3, ds_readbs(DUNGEON_LEVEL) + 1);
+
+				ds_writeb(0x40fd, 1);
+			}
+		}
+
+	} else if (GUI_bool(get_dtp(0x84))) {
+
+		if ((i = DNG_check_climb_tools()) != -1)
+		{
+			l3 = group_count_item(121);
+			l3 += group_count_item(32);
+
+			if (l3 >= 2 || (l3 == 1 && i))
+			{
+				host_writeb(Real2Host(ds_readd(DTP2)), 0);
+
+				if (i)
+				{
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_ltx(0xc00),
+						(char*)get_hero(i - 1) + HERO_NAME2);
+				}
+
+				strcat((char*)Real2Host(ds_readd(DTP2)),
+					(char*)(ds_readbs(0x40fd) == 2 ? get_dtp(0x90) : get_dtp(0x94)));
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				for (i = 0; i < 6; i++)
+				{
+					if (ds_readbs(GROUPS_DNG_INDEX + i) == 9 && ds_readbs(GROUPS_DNG_LEVEL + i) == 2)
+					{
+						ds_writeb(GROUPS_DNG_LEVEL + i, 1);
+					}
+				}
+
+				GRP_merge();
+
+				ds_writeb(0x40fd, 0);
+			} else {
+				GUI_output(get_dtp(0x8c));
+			}
+		} else {
+			GUI_output(get_dtp(0x88));
+		}
+	}
 }
 
 
