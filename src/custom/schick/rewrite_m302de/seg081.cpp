@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg081 (dungeon: cave2)
  *	Functions rewritten: 5/5 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg081.cpp
  */
 
 #include <stdio.h>
@@ -26,10 +30,9 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG06_handler(void)
 {
-	register signed short i;
+	signed short i;
 	signed short target_pos;
 	signed short l3;
 	signed short l4;
@@ -472,7 +475,6 @@ signed short DNG06_handler(void)
  *
  * \param fight_id	ID of the fight
  */
-/* Borlandified and identical */
 void DNG06_fight_intro(signed short fight_id)
 {
 	if (fight_id == FIGHTS_F094_22)
@@ -487,7 +489,6 @@ void DNG06_fight_intro(signed short fight_id)
 }
 
 
-/* Borlandified and identical */
 void DNG06_chest1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -499,7 +500,6 @@ void DNG06_chest1(RealPt chest)
 }
 
 
-/* Borlandified and identical */
 void DNG06_chest2(RealPt chest)
 {
 	signed short i;
@@ -524,7 +524,6 @@ void DNG06_chest2(RealPt chest)
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }
 
-/* Borlandified and identical */
 void DNG09_pitfall(void)
 {
 	signed short i;
