@@ -9429,6 +9429,22 @@ static int seg081(unsigned short offs)
 	}
 }
 
+static int seg082(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			reg_ax = DNG07_handler();
+			return 1;
+		}
+		case 0x25: {
+			return 0;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg084(unsigned short offs)
 {
 	switch (offs) {
@@ -12275,7 +12291,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		case 0x13dd:	retval = 0; break;
 		case 0x13e4:	retval = seg080(offs); break;
 		case 0x13e9:	retval = seg081(offs); break;
-		case 0x13ed:	retval = 0; break;
+		case 0x13ed:	retval = seg082(offs); break;
 		case 0x13f0:	retval = 0; break;
 		case 0x13f6:	retval = seg084(offs); break;
 		case 0x13fc:	retval = 0; break;

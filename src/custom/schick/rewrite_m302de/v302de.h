@@ -467,6 +467,14 @@ static inline unsigned short hero_dummy4(Bit8u *hero) {
 		return 1;
 }
 
+static inline unsigned short hero_dummy6(Bit8u *hero) {
+
+	if (((host_readb(hero + 0xab) >> 7) & 1) == 0)
+		return 0;
+	else
+		return 1;
+}
+
 static inline unsigned short hero_dummy1(Bit8u *hero) {
 
 	if (((host_readb(hero + 0xab) >> 2) & 1) == 0)
@@ -1049,6 +1057,7 @@ struct bittest {
 #define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
 
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
+#define hero_dummy6(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy6)
 
 #define enemy_dead(enemy)	(((struct enemy_sheets*)(enemy))->status1.dead)
 #define enemy_sleeps(enemy)	(((struct enemy_sheets*)(enemy))->status1.sleeps)
