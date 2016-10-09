@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg082 (dungeon: mageruin)
- *	Functions rewritten: 1/2
+ *	Functions rewritten: 2/2 (complete)
  */
 
 #include <stdio.h>
@@ -8,6 +8,7 @@
 #include "v302de.h"
 
 #include "seg002.h"
+#include "seg007.h"
 #include "seg025.h"
 #include "seg032.h"
 #include "seg047.h"
@@ -18,16 +19,6 @@
 #include "seg098.h"
 #include "seg103.h"
 #include "seg105.h"
-
-/*
-#include <string.h>
-
-
-#include "seg000.h"
-#include "seg007.h"
-#include "seg049.h"
-#include "seg096.h"
-*/
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -298,6 +289,94 @@ signed short DNG07_handler(void)
 	ds_writew(0x330e, target_pos);
 
 	return 0;
+}
+
+/* Borlandified and identical */
+void DNG09_statues(signed short prob, signed short bonus)
+{
+	signed short i;
+	signed short randval;
+	Bit8u *hero;
+	Bit8u *amap_ptr;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	amap_ptr = p_datseg + 0xbd95;
+
+	if (host_readbs(amap_ptr + 16 * ds_readws(Y_TARGET) + ds_readws(X_TARGET)) == 4)
+	{
+		/* TODO: no forced decision here ? */
+		i = GUI_radio(get_dtp(0x10), 3,
+				get_dtp(0x14),
+				get_dtp(0x18),
+				get_dtp(0x1c));
+
+		if (i == 1)
+		{
+			/* praise the nameless god */
+			if (random_schick(100) <= prob)
+			{
+				if (random_schick(100) < 50 &&
+					!hero_dummy4(hero) &&
+					!ds_readb(0x439f))
+				{
+					/* increase one attribute of the leader permanently */
+					randval = random_schick(7) - 1;
+
+					inc_ptr_bs(hero + HERO_MU_ORIG + 3 * randval);
+					inc_ptr_bs(hero + HERO_MU + 3 * randval);
+
+					/* ... but the twelfe won't grand miracles */
+					or_ptr_bs(hero + 0xab, 0x20);
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0x20),
+						(char*)hero + HERO_NAME2);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				} else {
+					/* loose 1W6 LE */
+					sub_hero_le(hero, random_schick(6));
+
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0x24),
+						(char*)hero + HERO_NAME2);
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+				}
+			}
+
+		} else if (i == 2) {
+
+			/* destroy the statue */
+
+			/* remove the statue from the map */
+			and_ptr_bs(amap_ptr + 16 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0xfb);
+
+			GUI_output(get_dtp(0x28));
+
+			/* increase estimation */
+			for (i = 0; i < 14; i++)
+			{
+				add_ds_ds((GODS_ESTIMATION + 4 * i), bonus);
+			}
+
+			hero = get_hero(0);
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+			{
+				if (host_readb(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+					!hero_dead(hero))
+				{
+					/* the twelfe will grant miracles again */
+					and_ptr_bs(hero + HERO_STATUS2, 0xdf);
+				}
+			}
+
+			/* all staues can't be used anymore */
+			ds_writeb(0x439f, 1);
+		}
+	}
 }
 
 #if !defined(__BORLANDC__)

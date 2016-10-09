@@ -9437,7 +9437,15 @@ static int seg082(unsigned short offs)
 			return 1;
 		}
 		case 0x25: {
-			return 0;
+			Bit16s prob = CPU_Pop16();
+			Bit16s bonus = CPU_Pop16();
+			CPU_Push16(bonus);
+			CPU_Push16(prob);
+
+			D1_LOG("DNG09_statues(%d, %d)\n", prob, bonus);
+			DNG09_statues(prob, bonus);
+
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
