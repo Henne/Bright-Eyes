@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg082 (dungeon: mageruin)
  *	Functions rewritten: 2/2 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg082.cpp
  */
 
 #include <stdio.h>
@@ -24,7 +28,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG07_handler(void)
 {
 	signed short target_pos;
@@ -291,7 +294,6 @@ signed short DNG07_handler(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void DNG09_statues(signed short prob, signed short bonus)
 {
 	signed short i;
