@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x48 */
+signed short DNG09_handler(void);
 /* 0x4d */
 void DNG9_fight_intro(signed short);
 
