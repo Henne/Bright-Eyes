@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg084 (dungeon: dungeon)
- *	Functions rewritten: 6/10
+ *	Functions rewritten: 7/10
  */
 
 #include "v302de.h"
@@ -22,6 +22,7 @@
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
+#include "seg098.h"
 #include "seg103.h"
 #include "seg105.h"
 
@@ -536,6 +537,85 @@ void DNG09_chest3_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4120));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG09_chest4_x1(RealPt chest)
+{
+	signed short answer;
+	Bit8u *hero;
+
+	if (!ds_readb(0x40fc))
+	{
+		if (GUI_bool(get_dtp(0x50)))
+		{
+			do {
+				answer = GUI_radio(get_dtp(0x54), 3,
+							get_dtp(0x58),
+							get_dtp(0x5c),
+							get_dtp(0x60));
+			} while (answer == -1);
+
+			hero = Real2Host(get_first_hero_available_in_group());
+
+			if (answer == 1)
+			{
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0x64),
+					(char*)hero + HERO_NAME2);
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				sub_hero_le(hero, dice_roll(2, 20, 0));
+			} else if (answer == 2)
+			{
+				hero = get_hero(0) + select_hero_ok_forced(get_ltx(0x4f4)) * SIZEOF_HERO;
+				if (test_spell(hero, 2, 0) > 0)
+				{
+					sub_ae_splash(hero, 20);
+
+					sub_ptr_ws(hero + HERO_AE_ORIG, 3);
+
+					GUI_output(get_dtp(0x6c));
+
+					add_hero_ap_all(50);
+
+					ds_writeb(0x40fc, 1);
+				} else {
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0x68),
+						(char*)hero + HERO_NAME2);
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					sub_ae_splash(hero, 10);
+				}
+
+			} else if (answer == 3)
+			{
+				hero = get_hero(0) + select_hero_ok_forced(get_ltx(0x4f4)) * SIZEOF_HERO;
+				if (test_spell(hero, 53, 0) > 0)
+				{
+					sub_ae_splash(hero, 35);
+
+					sub_ptr_ws(hero + HERO_AE_ORIG, 3);
+
+					GUI_output(get_dtp(0x6c));
+
+					add_hero_ap_all(50);
+
+					ds_writeb(0x40fc, 1);
+				} else {
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0x68),
+						(char*)hero + HERO_NAME2);
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					sub_ae_splash(hero, 20);
+				}
+			}
+		}
+	} else {
+		GUI_output(get_ltx(0x828));
+	}
 }
 
 #if !defined(__BORLANDC__)
