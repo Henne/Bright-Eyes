@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg084 (dungeon: dungeon)
- *	Functions rewritten: 7/10
+ *	Functions rewritten: 8/10
  */
 
 #include "v302de.h"
@@ -616,6 +616,17 @@ void DNG09_chest4_x1(RealPt chest)
 	} else {
 		GUI_output(get_ltx(0x828));
 	}
+}
+
+/* Borlandified and identical */
+void DNG09_chest5_x1(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4135));
+	loot_simple_chest(Real2Host(chest));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 #if !defined(__BORLANDC__)
