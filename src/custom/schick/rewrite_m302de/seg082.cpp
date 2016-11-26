@@ -145,7 +145,7 @@ signed short DNG07_handler(void)
 			DNG_inc_level();
 		}
 
-	} else if (target_pos == 0x1c03 && target_pos != ds_readws(0x330e) && ds_readb((0x3332 + 1)) != 1)
+	} else if (target_pos == 0x1c03 && target_pos != ds_readws(0x330e) && ds_readb((TREASURE_MAPS + 1)) != 1)
 	{
 		GUI_output(get_dtp(0x04));
 
@@ -210,12 +210,12 @@ signed short DNG07_handler(void)
 	{
 		if (!do_fight(91))
 		{
-			if (ds_readb((0x3332 + 1)) == 2)
+			if (ds_readb((TREASURE_MAPS + 1)) == 2)
 			{
 				ds_writeb(TMAP_DOUBLE2, 1);
 			}
 
-			ds_writeb((0x3332 + 1), 1);
+			ds_writeb((TREASURE_MAPS + 1), 1);
 
 			add_hero_ap_all(10L);
 
@@ -246,7 +246,7 @@ signed short DNG07_handler(void)
 
 			ds_writeb(0x3cb5, 1);
 
-			ds_writed(0x3cb6, DAYS(1));
+			ds_writed(MAGE_POISON, DAYS(1));
 		}
 	} else if (target_pos == 0x10e && target_pos != ds_readws(0x330e))
 	{
