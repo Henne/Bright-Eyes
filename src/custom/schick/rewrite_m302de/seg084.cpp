@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg084 (dungeon: dungeon)
  *	Functions rewritten: 10/10 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1- Yo seg084.cpp
  */
 
 #include "v302de.h"
@@ -31,7 +35,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG09_handler(void)
 {
 	signed short target_pos;
@@ -496,7 +499,6 @@ void DNG09_fight_intro(signed short fight_id)
 	}
 }
 
-/* Borlandified and identical */
 void DNG09_chest0_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -507,7 +509,6 @@ void DNG09_chest0_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG09_chest1_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -518,7 +519,6 @@ void DNG09_chest1_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG09_chest2_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -529,7 +529,6 @@ void DNG09_chest2_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG09_chest3_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -540,7 +539,6 @@ void DNG09_chest3_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG09_chest4_x1(RealPt chest)
 {
 	signed short answer;
@@ -619,7 +617,6 @@ void DNG09_chest4_x1(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG09_chest5_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -630,7 +627,6 @@ void DNG09_chest5_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG09_chest6_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -641,7 +637,6 @@ void DNG09_chest6_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG09_chest4_x2(RealPt chest)
 {
 	ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x1a2b))));
