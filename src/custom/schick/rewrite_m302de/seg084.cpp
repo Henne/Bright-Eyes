@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg084 (dungeon: dungeon)
- *	Functions rewritten: 2/10
+ *	Functions rewritten: 3/10
  */
 
 #include "v302de.h"
@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg004.h"
 #include "seg007.h"
@@ -18,6 +19,7 @@
 #include "seg075.h"
 #include "seg081.h"
 #include "seg082.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -490,6 +492,17 @@ void DNG09_fight_intro(signed short fight_id)
 	{
 		GUI_output(get_dtp(0x34));
 	}
+}
+
+/* Borlandified and identical */
+void DNG09_chest0_x1(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4102));
+	loot_simple_chest(Real2Host(chest));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 #if !defined(__BORLANDC__)
