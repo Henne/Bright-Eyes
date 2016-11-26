@@ -16,7 +16,8 @@ void DNG09_chest4_x1(RealPt);
 void DNG09_chest5_x1(RealPt);
 /* 0x3e */
 void DNG09_chest6_x1(RealPt);
-
+/* 0x43 */
+void DNG09_chest4_x2(RealPt);
 /* 0x48 */
 signed short DNG09_handler(void);
 /* 0x4d */
