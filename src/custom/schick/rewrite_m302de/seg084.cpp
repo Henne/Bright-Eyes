@@ -484,9 +484,10 @@ signed short DNG09_handler(void)
  *
  * \param fight_id	ID of the fight
  */
-void DNG9_fight_intro(signed short fight_id)
+void DNG09_fight_intro(signed short fight_id)
 {
-	if (fight_id == 94) {
+	if (fight_id == 94)
+	{
 		GUI_output(get_dtp(0x34));
 	}
 }
