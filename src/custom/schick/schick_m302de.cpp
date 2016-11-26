@@ -9457,31 +9457,65 @@ static int seg084(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest0_x1(ptr);
+			return 1;
 		}
 		case 0x25: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest1_x1(ptr);
+			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest2_x1(ptr);
+			return 1;
 		}
 		case 0x2f: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest3_x1(ptr);
+			return 1;
 		}
 		case 0x34: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest4_x1(ptr);
+			return 1;
 		}
 		case 0x39: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest5_x1(ptr);
+			return 1;
 		}
 		case 0x3e: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest6_x1(ptr);
+			return 1;
 		}
 		case 0x43: {
-			return 0;
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG09_chest4_x2(ptr);
+			return 1;
 		}
 		case 0x48: {
-			return 0;
+			reg_ax = DNG09_handler();
+			D1_LOG("DNG09_handler() = %d\n", reg_ax);
+			return 1;
 		}
 		case 0x4d: {
 			Bit16s fight_id = CPU_Pop16();
@@ -9888,7 +9922,7 @@ static int seg092(unsigned short offs) {
 		/* valid values of d are [1,2,..,15] */
 		/* enable only for dungeons where treasure code is finished */
 
-		if ((d >= 4 && d <= 6) || (11 <= d && d <= 14))
+		if ((d >= 4 && d <= 6) || d == 9 || (11 <= d && d <= 14))
 		{
 			D1_LOG("seg092_06b4(%d)\n", a1);
 			seg092_06b4(a1);
