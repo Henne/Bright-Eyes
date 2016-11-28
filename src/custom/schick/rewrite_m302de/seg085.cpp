@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg085 (dungeon: cave4)
- *	Functions rewritten: 1/7
+ *	Functions rewritten: 2/7
  */
 
 #include <stdio.h>
@@ -10,6 +10,7 @@
 
 #include "seg000.h"
 #include "seg002.h"
+#include "seg003.h"
 #include "seg004.h"
 #include "seg007.h"
 #include "seg025.h"
@@ -401,6 +402,13 @@ signed short DNG10_handler(void)
 
 	return 0;
 }
+
+/* Borlandified and identical */
+void DNG10_chest0_x1(RealPt ptr)
+{
+	loot_corpse(ptr, get_dtp(0x0c), p_datseg + 0x4140);
+}
+
 
 #if !defined(__BORLANDC__)
 }

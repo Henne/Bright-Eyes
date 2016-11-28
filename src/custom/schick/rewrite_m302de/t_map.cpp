@@ -14,6 +14,7 @@
 #include "seg080.h"
 #include "seg081.h"
 #include "seg084.h"
+#include "seg085.h"
 #include "seg086.h"
 #include "seg088.h"
 #include "seg090.h"
@@ -93,6 +94,14 @@ treasure_type t_map(RealPt ptr, const int off)
 		if (f_off == 0x39) return (treasure_type)DNG09_chest5_x1;
 		if (f_off == 0x3e) return (treasure_type)DNG09_chest6_x1;
 		if (f_off == 0x43) return (treasure_type)DNG09_chest4_x2;
+
+		D1_ERR("ERROR: call to seg084:0x%x should not happen\n", f_off);
+		exit(-1);
+		break;
+	}
+	case 0x13fc: {
+		/* TODO: seg085.cpp: cave4 */
+		if (f_off == 0x25) return (treasure_type)DNG10_chest0_x1;
 
 		D1_ERR("ERROR: call to seg084:0x%x should not happen\n", f_off);
 		exit(-1);
