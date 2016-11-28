@@ -1,6 +1,10 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg085 (dungeon: cave4)
  *	Functions rewritten: 7/7 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg085.cpp
  */
 
 #include <stdio.h>
@@ -30,7 +34,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG10_handler(void)
 {
 	signed short target_pos;
@@ -403,13 +406,11 @@ signed short DNG10_handler(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void DNG10_chest0_x1(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x0c), p_datseg + 0x4140);
 }
 
-/* Borlandified and identical */
 void DNG10_chest0_x2(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
@@ -418,7 +419,6 @@ void DNG10_chest0_x2(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG10_chest1_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
@@ -427,7 +427,6 @@ void DNG10_chest1_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG10_chest2_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
@@ -436,7 +435,6 @@ void DNG10_chest2_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG10_chest3_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
@@ -445,7 +443,6 @@ void DNG10_chest3_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG10_chest4_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
