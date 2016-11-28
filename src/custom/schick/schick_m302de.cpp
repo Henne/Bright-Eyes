@@ -9531,6 +9531,61 @@ static int seg084(unsigned short offs)
 	}
 }
 
+static int seg085(unsigned short offs)
+{
+	switch (offs) {
+		case 0x20: {
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG10_chest0_x2(ptr);
+			return 1;
+		}
+		case 0x25: {
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG10_chest0_x1(ptr);
+			return 1;
+		}
+		case 0x2a: {
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG10_chest1_x1(ptr);
+			return 1;
+		}
+		case 0x2f: {
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG10_chest2_x1(ptr);
+			return 1;
+		}
+		case 0x34: {
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG10_chest3_x1(ptr);
+			return 1;
+		}
+		case 0x39: {
+			RealPt ptr = CPU_Pop32();
+			CPU_Push32(ptr);
+
+			DNG10_chest4_x1(ptr);
+			return 1;
+		}
+		case 0x3e: {
+			reg_ax = DNG10_handler();
+			return 1;
+		}
+		default:
+			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
+			exit(1);
+	}
+}
+
 static int seg086(unsigned short offs)
 {
 	switch (offs) {
@@ -12336,7 +12391,7 @@ int schick_farcall_v302de(unsigned segm, unsigned offs)
 		case 0x13ed:	retval = seg082(offs); break;
 		case 0x13f0:	retval = 0; break;
 		case 0x13f6:	retval = seg084(offs); break;
-		case 0x13fc:	retval = 0; break;
+		case 0x13fc:	retval = seg085(offs); break;
 		case 0x1401:	retval = seg086(offs); break;
 		case 0x1408:	retval = seg087(offs); break;
 		case 0x140b:	retval = seg088(offs); break;
