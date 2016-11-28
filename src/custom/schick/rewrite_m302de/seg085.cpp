@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg085 (dungeon: cave4)
- *	Functions rewritten: 2/7
+ *	Functions rewritten: 3/7
  */
 
 #include <stdio.h>
@@ -407,6 +407,16 @@ signed short DNG10_handler(void)
 void DNG10_chest0_x1(RealPt ptr)
 {
 	loot_corpse(ptr, get_dtp(0x0c), p_datseg + 0x4140);
+}
+
+/* Borlandified and identical */
+void DNG10_chest0_x2(RealPt chest)
+{
+	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x414b));
+	loot_chest(Real2Host(chest), get_dtp(0x10), get_dtp(0x14));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+
 }
 
 
