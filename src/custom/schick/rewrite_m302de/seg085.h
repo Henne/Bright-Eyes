@@ -12,7 +12,8 @@ void DNG10_chest1_x1(RealPt);
 void DNG10_chest2_x1(RealPt);
 /* 0x34 */
 void DNG10_chest3_x1(RealPt);
-
+/* 0x39 */
+void DNG10_chest4_x1(RealPt);
 /* 0x3e */
 signed short DNG10_handler(void);
 

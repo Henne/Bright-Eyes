@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg085 (dungeon: cave4)
- *	Functions rewritten: 6/7
+ *	Functions rewritten: 7/7 (complete)
  */
 
 #include <stdio.h>
@@ -445,6 +445,14 @@ void DNG10_chest3_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
+/* Borlandified and identical */
+void DNG10_chest4_x1(RealPt chest)
+{
+	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x415b));
+	loot_simple_chest(Real2Host(chest));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
 
 #if !defined(__BORLANDC__)
 }
