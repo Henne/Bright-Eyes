@@ -54,6 +54,7 @@ signed short DNG10_handler(void)
 
 	if ((target_pos == 0x101 || target_pos == 0x302) && target_pos != ds_readws(0x330e))
 	{
+		/* TRAP: a hole in a wall; leader gets 2 LE damage */
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -67,6 +68,7 @@ signed short DNG10_handler(void)
 
 	} else if (target_pos == 0x502 && target_pos != ds_readws(0x330e))
 	{
+		/* a dead dwarf */
 		seg092_06b4(0);
 
 	} else if (target_pos == 0x801 && target_pos != ds_readws(0x330e))
@@ -91,6 +93,7 @@ signed short DNG10_handler(void)
 	} else if ((target_pos == 0x804 && target_pos != ds_readws(0x330e) && !ds_readb(DNG10_LEVER_STATE)) ||
 			(target_pos == 0x704 && target_pos != ds_readws(0x330e) && ds_readb(DNG10_LEVER_STATE) != 0))
 	{
+		/* TRAP: terrible pain; radom hero gets 3W6+4 LE damage */
 		hero = get_hero(get_random_hero());
 
 		answer = dice_roll(3, 6, 4);
@@ -99,6 +102,7 @@ signed short DNG10_handler(void)
 			(char*)get_dtp(0x24),
 			(char*)hero + HERO_NAME2);
 
+		/* check if the hero will survive */
 		if (host_readws(hero + HERO_LE) > answer)
 		{
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
@@ -147,6 +151,7 @@ signed short DNG10_handler(void)
 
 					if (ds_readb(DNG10_HOLE_DAMAGE) >= 7)
 					{
+						/* the secret wall can now be passed forward */
 						host_writebs(amap_ptr + 0x73, 0xbf);
 					}
 				}
@@ -188,12 +193,15 @@ signed short DNG10_handler(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 		}
+
 	} else if (target_pos == 0x10c && target_pos != ds_readws(0x330e))
 	{
+		/* INFO: you see three holes in the wall */
 		GUI_output(get_dtp(0x40));
 
 	} else if (target_pos == 0x30e && target_pos != ds_readws(0x330e))
 	{
+		/* INFO: collection bowl */
 		if (GUI_bool(get_dtp(0x44)))
 		{
 			answer = GUI_input(get_dtp(0x48), 6) * 10;
@@ -207,12 +215,15 @@ signed short DNG10_handler(void)
 				set_party_money( get_party_money() - answer);
 			}
 		}
+
 	} else if (target_pos == 0x60c && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
 	{
+		/* INFO: an empty room */
 		GUI_output(get_dtp(0x54));
 
 	} else if (target_pos == 0xa0d && target_pos != ds_readws(0x330e) && !ds_readb(DNG10_HESHTOT))
 	{
+		/* FIGHT: scared heshtot */
 		if (GUI_bool(get_dtp(0x58)))
 		{
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0xa0d))));
@@ -231,11 +242,13 @@ signed short DNG10_handler(void)
 			ds_writeb(DIRECTION, 3);
 			DNG_update_pos();
 		}
+
 	} else if ((target_pos == 0x1e08 || target_pos == 0x1e09 || target_pos == 0x1e0a || target_pos == 0x1e07 ||
 			target_pos == 0x1e06 || target_pos == 0x1e05) &&
 			target_pos != ds_readws(0x330e))
 	{
-		if(random_schick(100) <= 10)
+		/* TRAP: column of fire, probability 10%, damage 1W6 for each hero in the party */
+		if (random_schick(100) <= 10)
 		{
 			GUI_output(get_dtp(0x60));
 
@@ -252,6 +265,7 @@ signed short DNG10_handler(void)
 		}
 	} else if (target_pos == 0x1e02 && target_pos != ds_readws(0x330e))
 	{
+		/* LEVER: enables/disables fight 111, leader get 2 LE damage */
 		if (GUI_bool(get_dtp(0x64)))
 		{
 			xor_ds_bs(DNG10_MUMMY_LEVER, 1);
@@ -267,20 +281,23 @@ signed short DNG10_handler(void)
 
 	} else if ((target_pos == 0x1a03 || target_pos == 0x1703) && target_pos != ds_readws(0x330e) && ds_readb(DNG10_MUMMY_LEVER) != 0)
 	{
-			ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x1533));
-			ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x1c13));
-			ds_writew(FIG_DISCARD, 1);
-			do_fight(111);
+		/* FIGHT: four mummies again and again */
+		ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x1533));
+		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x1c13));
+		ds_writew(FIG_DISCARD, 1);
+		do_fight(111);
 
 	} else if (target_pos == 0x110c && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
 	{
+		/* INFO: glowing walls */
 		GUI_output(get_dtp(0x6c));
 
 	} else if (target_pos == 0x190c && target_pos != ds_readws(0x330e) && ds_readb(DNG10_DRAGON_QUEST) != 0)
 	{
-			ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x190a));
-			ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x190a));
-			do_fight(117);
+		/* FIGHT: get PLATINKEY for the dragon */
+		ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x190a));
+		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x190a));
+		do_fight(117);
 
 	} else if (target_pos == 0x2c0c && target_pos != ds_readws(0x330e))
 	{
@@ -312,6 +329,7 @@ signed short DNG10_handler(void)
 					sub_group_le(5000);
 				}
 			} else {
+				/* try to plunder the hoard */
 				hero = get_hero(0);
 
 				for (answer = result = 0; answer <= 6; answer++, hero += SIZEOF_HERO)
@@ -331,10 +349,12 @@ signed short DNG10_handler(void)
 
 					GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x70), get_dtp(0x8c), 0);
 
+					/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER and ...*/
 					get_item(145, 1, 2);
 					get_item(154, 1, 1);
 					get_item(218, 1, 1);
 
+					/* 200 Ducats */
 					p_money = get_party_money();
 					p_money += 20000L;
 					set_party_money(p_money);
@@ -368,15 +388,18 @@ signed short DNG10_handler(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x70), get_dtp(0x90), 0);
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x70), get_dtp(0x94), 0);
 
+				/* 2x HEALING POTION, MAGIC POTION, THROWING DAGGER, CRYSTAL BALL and ...*/
 				get_item(145, 1, 2);
 				get_item(154, 1, 1);
 				get_item(218, 1, 1);
 				get_item(70, 1, 1);
 
+				/* ... 200 Ducats and ... */
 				p_money = get_party_money();
 				p_money += 20000L;
 				set_party_money(p_money);
 
+				/* ... 50 AP */
 				add_hero_ap_all(50);
 
 				ds_writeb(DNG10_DRAGON_QUEST, 2);
@@ -387,6 +410,7 @@ signed short DNG10_handler(void)
 
 	} else if (target_pos == 0x2005 && target_pos != ds_readws(0x330e))
 	{
+		/* INFO: some fools you are */
 		GUI_output(get_dtp(0x9c));
 
 	} else if (target_pos == 0x03 && target_pos != ds_readws(0x330e))
