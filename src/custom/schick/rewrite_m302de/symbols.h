@@ -183,6 +183,22 @@
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
+#define DNG10_CORPSE_LOOTED	(0x4140)	/* unsgiend char {0, 1} */
+#define DNG10_LEVER_FOUND	(0x4141)	/* unsigned char {0, 1, 3} ; default = 0 */
+#define DNG10_HOLE_STATE	(0x4142)	/* unsigned char {0, 1, 2} ; default = 0 */
+#define DNG10_LEVER_STATE	(0x4143)	/* unsigned char {0, 1} ; default = 0 */
+#define DNG10_HOLE_DAMAGE	(0x4144)	/* unsigned char {0, 1, ..., 255} ; default = 0 */
+#define DNG10_FLOORPLATE_FOUND	(0x4145)	/* unsigned char {0, 1} */
+#define DNG10_FLOORPLATE_LOADS	(0x4146)	/* unsigned char {0,1,2,3} ; default = 3 */
+#define DNG10_MUMMY_LEVER	(0x4147)		/* unsigned char {0, 1}; default = 0 */
+#define DNG10_HESHTOT	(0x4148)		/* unsigned char {0, 1}; default = 0 */
+#define DNG10_DRAGON_QUEST	(0x4149)		/* unsigned char {0, 1, 2}; default = 0 */
+#define DNG10_HOARD_PLUNDERED	(0x414a)		/* unsigned char {0, 1}; default = 0 */
+#define DNG10_CHEST0_CONTENT	(0x414b)		/* signed char[5]; */
+#define DNG10_CHEST1_CONTENT	(0x4150)		/* signed char[4]; */
+#define DNG10_CHEST2_CONTENT	(0x4154)		/* signed char[4]; */
+#define DNG10_CHEST3_CONTENT	(0x4158)		/* signed char[3]; */
+#define DNG10_CHEST4_CONTENT	(0x415b)		/* signed char[2]; */
 #define EFFERD_SACRIFICE	(0x415f)	/* unsigned char {0, 1} */
 #define EFFERD_HINT	(0x4160)	/* unsigned char {0, 1} */
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */

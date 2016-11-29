@@ -71,23 +71,25 @@ signed short DNG10_handler(void)
 
 	} else if (target_pos == 0x801 && target_pos != ds_readws(0x330e))
 	{
-		if ((ds_readb(0x4141) != 0) || test_skill(hero, 51, 7) > 0)
+		/* another hole in a wall with a lever for a trap */
+		if ((ds_readb(DNG10_LEVER_FOUND) != 0) || test_skill(hero, 51, 7) > 0)
 		{
-			or_ds_bs(0x4141, 1);
+			or_ds_bs(DNG10_LEVER_FOUND, 1);
 
-			if (GUI_bool((!(ds_readb(0x4141) & 2) ? get_dtp(0x18) : get_dtp(0xa4))))
+			if (GUI_bool((!(ds_readb(DNG10_LEVER_FOUND) & 2) ? get_dtp(0x18) : get_dtp(0xa4))))
 			{
 				if (GUI_bool(get_dtp(0x1c)))
 				{
-					or_ds_bs(0x4141, 2);
-					xor_ds_bs(0x4143, 1);
+					or_ds_bs(DNG10_LEVER_FOUND, 2);
+					xor_ds_bs(DNG10_LEVER_STATE, 1);
 
 					GUI_output(get_dtp(0x20));
 				}
 			}
 		}
-	} else if ((target_pos == 0x804 && target_pos != ds_readws(0x330e) && !ds_readb(0x4143)) ||
-			(target_pos == 0x704 && target_pos != ds_readws(0x330e) && ds_readb(0x4143) != 0))
+
+	} else if ((target_pos == 0x804 && target_pos != ds_readws(0x330e) && !ds_readb(DNG10_LEVER_STATE)) ||
+			(target_pos == 0x704 && target_pos != ds_readws(0x330e) && ds_readb(DNG10_LEVER_STATE) != 0))
 	{
 		hero = get_hero(get_random_hero());
 
@@ -115,14 +117,15 @@ signed short DNG10_handler(void)
 			(target_pos != ds_readws(0x330e) || ds_readb(DIRECTION) != ds_readb(0x2d7c)) &&
 			ds_readbs(DIRECTION) == 3)
 	{
-		if (ds_readb(0x4142) != 0 || test_skill(hero, 51, 5) > 0)
+		/* TRAP: a loose stone in a wall */
+		if (ds_readb(DNG10_HOLE_STATE) != 0 || test_skill(hero, 51, 5) > 0)
 		{
 			/* Original-Bug: ??? */
-			ds_writeb(0x4142, 1);
+			ds_writeb(DNG10_HOLE_STATE, 1);
 
-			if (ds_readb(0x4142) == 2 || GUI_bool(get_dtp(0x18)))
+			if (ds_readb(DNG10_HOLE_STATE) == 2 || GUI_bool(get_dtp(0x18)))
 			{
-				ds_writeb(0x4142, 2);
+				ds_writeb(DNG10_HOLE_STATE, 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x2c),
@@ -138,11 +141,11 @@ signed short DNG10_handler(void)
 
 					result = random_schick(6);
 
-					add_ds_bs(0x4144, result);
+					add_ds_bs(DNG10_HOLE_DAMAGE, result);
 
 					sub_hero_le(hero, result);
 
-					if (ds_readb(0x4144) >= 7)
+					if (ds_readb(DNG10_HOLE_DAMAGE) >= 7)
 					{
 						host_writebs(amap_ptr + 0x73, 0xbf);
 					}
@@ -157,21 +160,24 @@ signed short DNG10_handler(void)
 		}
 	} else if (target_pos == 0x108 && target_pos != ds_readws(0x330e))
 	{
-		if (ds_readb(0x4145) != 0 || test_skill(hero, 51, 5) > 0)
+		/* TRAP: a floorplate */
+		if (ds_readb(DNG10_FLOORPLATE_FOUND) != 0 || test_skill(hero, 51, 5) > 0)
 		{
-			/* Original-Bug: ??? */
-			ds_writeb(0x4145, 1);
+			ds_writeb(DNG10_FLOORPLATE_FOUND, 1);
 
+			/* Original-Bug: ???*/
+			/* Damage only happens here when the leader of the group tries to disable this trap.
+			   If the trap is not found or left alone nobody gets damaged. Weird! */
 			if (GUI_bool(get_dtp(0x34)) && test_skill(hero, 48, 7) <= 0)
 			{
-				if (ds_readb(0x4146) != 0)
+				if (ds_readb(DNG10_FLOORPLATE_LOADS) != 0)
 				{
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x38),
 						(char*)hero + HERO_NAME2);
 
-					dec_ds_bs_post(0x4146);
+					dec_ds_bs_post(DNG10_FLOORPLATE_LOADS);
 
 					sub_hero_le(hero, dice_roll(3, 6, 0));
 				} else {
@@ -205,7 +211,7 @@ signed short DNG10_handler(void)
 	{
 		GUI_output(get_dtp(0x54));
 
-	} else if (target_pos == 0xa0d && target_pos != ds_readws(0x330e) && !ds_readb(0x4148))
+	} else if (target_pos == 0xa0d && target_pos != ds_readws(0x330e) && !ds_readb(DNG10_HESHTOT))
 	{
 		if (GUI_bool(get_dtp(0x58)))
 		{
@@ -214,7 +220,7 @@ signed short DNG10_handler(void)
 
 			if (!do_fight(253))
 			{
-				ds_writeb(0x4148, 1);
+				ds_writeb(DNG10_HESHTOT, 1);
 			}
 		} else {
 			GUI_output(get_dtp(0x5c));
@@ -248,7 +254,7 @@ signed short DNG10_handler(void)
 	{
 		if (GUI_bool(get_dtp(0x64)))
 		{
-			xor_ds_bs(0x4147, 1);
+			xor_ds_bs(DNG10_MUMMY_LEVER, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x68),
@@ -258,7 +264,8 @@ signed short DNG10_handler(void)
 
 			sub_hero_le(hero, 2);
 		}
-	} else if ((target_pos == 0x1a03 || target_pos == 0x1703) && target_pos != ds_readws(0x330e) && ds_readb(0x4147) != 0)
+
+	} else if ((target_pos == 0x1a03 || target_pos == 0x1703) && target_pos != ds_readws(0x330e) && ds_readb(DNG10_MUMMY_LEVER) != 0)
 	{
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x1533));
 			ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x1c13));
@@ -269,7 +276,7 @@ signed short DNG10_handler(void)
 	{
 		GUI_output(get_dtp(0x6c));
 
-	} else if (target_pos == 0x190c && target_pos != ds_readws(0x330e) && ds_readb(0x4149) != 0)
+	} else if (target_pos == 0x190c && target_pos != ds_readws(0x330e) && ds_readb(DNG10_DRAGON_QUEST) != 0)
 	{
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x190a));
 			ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x190a));
@@ -277,7 +284,9 @@ signed short DNG10_handler(void)
 
 	} else if (target_pos == 0x2c0c && target_pos != ds_readws(0x330e))
 	{
-		if (!ds_readb(0x4149))
+		/* QUEST: the dragon */
+		/* TIP: plunder sucessfully, do the quest and get the reward */
+		if (!ds_readb(DNG10_DRAGON_QUEST))
 		{
 			load_in_head(58);
 
@@ -289,7 +298,8 @@ signed short DNG10_handler(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(0x4149, 1);
+				/* try to fight the dragon */
+				ds_writeb(DNG10_DRAGON_QUEST, 1);
 
 				if (GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x70),
 						get_dtp(0x80), 2,
@@ -315,9 +325,9 @@ signed short DNG10_handler(void)
 					}
 				}
 
-				if (result == 0 && !ds_readb(0x414a))
+				if (result == 0 && !ds_readb(DNG10_HOARD_PLUNDERED))
 				{
-					ds_writeb(0x414a, 1);
+					ds_writeb(DNG10_HOARD_PLUNDERED, 1);
 
 					GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x70), get_dtp(0x8c), 0);
 
@@ -330,7 +340,7 @@ signed short DNG10_handler(void)
 					set_party_money(p_money);
 
 				} else {
-					ds_writeb(0x4149, 1);
+					ds_writeb(DNG10_DRAGON_QUEST, 1);
 
 					if (GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x70), get_dtp(0x80), 2,
 								get_ltx(0x08), get_ltx(0x0c)) == 1)
@@ -343,7 +353,7 @@ signed short DNG10_handler(void)
 				}
 			}
 
-		} else if (ds_readb(0x4149) == 1) {
+		} else if (ds_readb(DNG10_DRAGON_QUEST) == 1) {
 
 			load_in_head(58);
 
@@ -369,7 +379,7 @@ signed short DNG10_handler(void)
 
 				add_hero_ap_all(50);
 
-				ds_writeb(0x4149, 2);
+				ds_writeb(DNG10_DRAGON_QUEST, 2);
 			} else {
 				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0x70), get_dtp(0x98), 0);
 			}
@@ -408,13 +418,13 @@ signed short DNG10_handler(void)
 
 void DNG10_chest0_x1(RealPt ptr)
 {
-	loot_corpse(ptr, get_dtp(0x0c), p_datseg + 0x4140);
+	loot_corpse(ptr, get_dtp(0x0c), p_datseg + DNG10_CORPSE_LOOTED);
 }
 
 void DNG10_chest0_x2(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x414b));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG10_CHEST0_CONTENT));
 	loot_chest(Real2Host(chest), get_dtp(0x10), get_dtp(0x14));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -422,7 +432,7 @@ void DNG10_chest0_x2(RealPt chest)
 void DNG10_chest1_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4150));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG10_CHEST1_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -430,7 +440,7 @@ void DNG10_chest1_x1(RealPt chest)
 void DNG10_chest2_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4154));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG10_CHEST2_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -438,7 +448,7 @@ void DNG10_chest2_x1(RealPt chest)
 void DNG10_chest3_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4158));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG10_CHEST3_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -446,7 +456,7 @@ void DNG10_chest3_x1(RealPt chest)
 void DNG10_chest4_x1(RealPt chest)
 {
 	RealPt ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x415b));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG10_CHEST4_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
