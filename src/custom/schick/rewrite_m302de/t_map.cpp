@@ -17,6 +17,7 @@
 #include "seg085.h"
 #include "seg086.h"
 #include "seg088.h"
+#include "seg089.h"
 #include "seg090.h"
 #include "seg091.h"
 #include "seg092.h"
@@ -153,6 +154,14 @@ treasure_type t_map(RealPt ptr, const int off)
 		break;
 	}
 
+	case 0x1411: {
+		/* TODO: seg089.cpp: Dungeon ruined castle */
+		if (f_off == 0x43) return (treasure_type)DNG15_empty_chest;
+
+		D1_ERR("ERROR: call to seg090:0x%x should not happen\n", f_off);
+		exit(-1);
+		break;
+	}
 	case 0x1417: {
 		/* TODO: seg090.cpp: Dungeon Oberorken */
 		if (f_off == 0x25) return (treasure_type)DNG_oberorken_chest;

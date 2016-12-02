@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 3/12
+ *	Functions rewritten: 4/12
  */
 
 #include <stdio.h>
@@ -520,6 +520,12 @@ void DNG15_debris(signed short ladder)
 			}
 		}
 	}
+}
+
+/* Borlandified and identical */
+void DNG15_empty_chest(RealPt chest)
+{
+	GUI_output(get_ltx(0x828));
 }
 
 void DNG15_dummy2(Bit8u*)

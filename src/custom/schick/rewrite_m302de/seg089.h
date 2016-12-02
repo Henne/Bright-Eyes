@@ -15,6 +15,8 @@ void DNG15_dummy3(Bit8u*);
 void DNG15_dummy1(Bit8u*, signed short, signed short);
 /* 0x3e */
 signed short DNG15_handler(void);
+/* 0x 43 */
+void DNG15_empty_chest(RealPt);
 
 #if !defined(__BORLANDC__)
 }
