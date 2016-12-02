@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 1/12
+ *	Functions rewritten: 2/12
  */
 
 #include <stdio.h>
@@ -457,6 +457,42 @@ signed short DNG15_handler(void)
 	ds_writew(0x330e, target_pos);
 
 	return 0;
+}
+
+/**
+ * \brief	heros may get small wounds
+ *
+ * Each alive hero in the group makes a FF-3 test.
+ * If it fails he looses 1 LE.
+ */
+/* Borlandified and identical */
+void DNG15_small_wounds(void)
+{
+	signed short i;
+	signed short randval;
+	Bit8u *hero;
+
+	hero = get_hero(0);
+
+	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+	{
+		if (host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+			!hero_dead(hero) &&
+			test_attrib(hero, 4, -3) <= 0)
+		{
+			randval = random_schick(3);
+
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)(randval == 3 ? get_dtp(0x0c) :
+						(randval == 2 ? get_dtp(0x1c) : get_dtp(0x20))),
+				(char*)hero + HERO_NAME2);
+
+			GUI_output(Real2Host(ds_readd(DTP2)));
+
+			sub_hero_le(hero, 1);
+		}
+	}
 }
 
 void DNG15_dummy2(Bit8u*)

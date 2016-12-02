@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x25 */
+void DNG15_small_wounds(void);
 /* 0x2a */
 void DNG15_dummy2(Bit8u*);
 
