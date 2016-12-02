@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 6/12
+ *	Functions rewritten: 7/12
  */
 
 #include <stdio.h>
@@ -549,6 +549,17 @@ void DNG15_smelling_chest(RealPt chest)
 
 		sub_hero_le(hero, 4);
 	}
+}
+
+/* Borlandified and identical */
+void DNG15_figures_chest(RealPt chest)
+{
+	signed short tw_bak;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
+	GUI_output(get_dtp(0x94));
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
 void DNG15_dummy2(Bit8u*)

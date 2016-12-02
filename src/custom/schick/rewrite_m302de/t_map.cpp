@@ -159,6 +159,7 @@ treasure_type t_map(RealPt ptr, const int off)
 		if (f_off == 0x43) return (treasure_type)DNG15_empty_chest;
 		if (f_off == 0x48) return (treasure_type)DNG15_rotten_clothes_chest;
 		if (f_off == 0x4d) return (treasure_type)DNG15_smelling_chest;
+		if (f_off == 0x52) return (treasure_type)DNG15_figures_chest;
 
 		D1_ERR("ERROR: call to seg090:0x%x should not happen\n", f_off);
 		exit(-1);

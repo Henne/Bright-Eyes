@@ -21,6 +21,8 @@ void DNG15_empty_chest(RealPt);
 void DNG15_rotten_clothes_chest(RealPt);
 /* 0x4d */
 void DNG15_smelling_chest(RealPt);
+/* 0x52 */
+void DNG15_figures_chest(RealPt);
 
 
 #if !defined(__BORLANDC__)
