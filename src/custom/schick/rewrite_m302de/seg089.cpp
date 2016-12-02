@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 11/12
+ *	Functions rewritten: 12/12 (complete)
  */
 
 #include <stdio.h>
@@ -733,9 +733,17 @@ void DNG15_cursed_money(Bit8u* ptr)
 	}
 }
 
-void DNG15_dummy1(Bit8u*, signed short, signed short)
+/* Borlandified and identical */
+void DNG15_dummy1(Bit8u* text, signed short wounds, signed short ladder)
 {
+	GUI_output(text);
 
+	if (wounds != 0)
+	{
+		DNG15_small_wounds();
+	}
+
+	DNG15_debris(ladder);
 }
 
 #if !defined(__BORLANDC__)
