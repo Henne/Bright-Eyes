@@ -19,6 +19,8 @@ signed short DNG15_handler(void);
 void DNG15_empty_chest(RealPt);
 /* 0x48 */
 void DNG15_rotten_clothes_chest(RealPt);
+/* 0x4d */
+void DNG15_smelling_chest(RealPt);
 
 
 #if !defined(__BORLANDC__)

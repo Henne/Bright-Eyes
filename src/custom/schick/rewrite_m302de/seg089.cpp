@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 5/12
+ *	Functions rewritten: 6/12
  */
 
 #include <stdio.h>
@@ -532,6 +532,23 @@ void DNG15_empty_chest(RealPt chest)
 void DNG15_rotten_clothes_chest(RealPt chest)
 {
 	GUI_output(get_dtp(0x88));
+}
+
+/* Borlandified and identical */
+void DNG15_smelling_chest(RealPt chest)
+{
+	Bit8u *hero;
+	if (GUI_bool(get_dtp(0x8c)))
+	{
+		hero = get_hero(get_random_hero());
+
+		sprintf((char*)Real2Host(ds_readd(DTP2)),
+			(char*)get_dtp(0x90),
+			(char*)hero + HERO_NAME2);
+		GUI_output(Real2Host(ds_readd(DTP2)));
+
+		sub_hero_le(hero, 4);
+	}
 }
 
 void DNG15_dummy2(Bit8u*)
