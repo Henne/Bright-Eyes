@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 10/12
+ *	Functions rewritten: 11/12
  */
 
 #include <stdio.h>
@@ -275,19 +275,19 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x2703 && target_pos != ds_readws(0x330e) && !ds_readb(0x41de))
 	{
-		DNG15_dummy3(p_datseg + 0x41de);
+		DNG15_cursed_money(p_datseg + 0x41de);
 
 	} else if (target_pos == 0x2606 && target_pos != ds_readws(0x330e) && !ds_readb(0x41df))
 	{
-		DNG15_dummy3(p_datseg + 0x41df);
+		DNG15_cursed_money(p_datseg + 0x41df);
 
 	} else if (target_pos == 0x280b && target_pos != ds_readws(0x330e) && !ds_readb(0x41e0))
 	{
-		DNG15_dummy3(p_datseg + 0x41e0);
+		DNG15_cursed_money(p_datseg + 0x41e0);
 
 	} else if (target_pos == 0x2907 && target_pos != ds_readws(0x330e) && !ds_readb(0x41e3))
 	{
-		DNG15_dummy3(p_datseg + 0x41e3);
+		DNG15_cursed_money(p_datseg + 0x41e3);
 
 	} else if (target_pos == 0x2501 && target_pos != ds_readws(0x330e))
 	{
@@ -335,11 +335,11 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x3e02 && target_pos != ds_readws(0x330e) && !ds_readb(0x41e1))
 	{
-		DNG15_dummy3(p_datseg + 0x41e1);
+		DNG15_cursed_money(p_datseg + 0x41e1);
 
 	} else if (target_pos == 0x3b05 && target_pos != ds_readws(0x330e) && !ds_readb(0x41e2))
 	{
-		DNG15_dummy3(p_datseg + 0x41e2);
+		DNG15_cursed_money(p_datseg + 0x41e2);
 
 	} else if (target_pos == 0x3b02 && target_pos != ds_readws(0x330e))
 	{
@@ -718,9 +718,19 @@ void DNG15_dummy4(Bit8u* ptr)
 	}
 }
 
-void DNG15_dummy3(Bit8u*)
+/* Borlandified and identical */
+void DNG15_cursed_money(Bit8u* ptr)
 {
+	Bit32s p_money;
 
+	if (GUI_bool(get_dtp(0xd4)))
+	{
+		host_writebs(ptr, ds_writeb(0x41c6, 1));
+
+		p_money = get_party_money();
+		p_money += random_interval(10, 25) * 100;
+		set_party_money(p_money);
+	}
 }
 
 void DNG15_dummy1(Bit8u*, signed short, signed short)

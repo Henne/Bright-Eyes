@@ -11,7 +11,7 @@ void DNG15_dummy2(Bit8u*);
 /* 0x2f */
 void DNG15_dummy4(Bit8u*);
 /* 0x34 */
-void DNG15_dummy3(Bit8u*);
+void DNG15_cursed_money(Bit8u*);
 /* 0x39 */
 void DNG15_dummy1(Bit8u*, signed short, signed short);
 /* 0x3e */
