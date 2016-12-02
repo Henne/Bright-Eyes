@@ -8,7 +8,8 @@ void DNG15_debris(signed short);
 void DNG15_small_wounds(void);
 /* 0x2a */
 void DNG15_dummy2(Bit8u*);
-
+/* 0x2f */
+void DNG15_dummy4(Bit8u*);
 /* 0x34 */
 void DNG15_dummy3(Bit8u*);
 /* 0x39 */

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 8/12
+ *	Functions rewritten: 9/12
  */
 
 #include <stdio.h>
@@ -587,7 +587,89 @@ void DNG15_cursed_money_chest(RealPt chest)
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
-void DNG15_dummy2(Bit8u*)
+/* Borlandified and identical */
+void DNG15_dummy2(Bit8u* ptr)
+{
+	signed short i;
+	signed short cnt;
+	Bit8u *hero;
+
+	hero = get_hero(0);
+
+	switch (host_readb(ptr))
+	{
+		case 1:
+		{
+			GUI_output(get_dtp(0xa0));
+
+			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
+			{
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+					!hero_dead(hero) &&
+					test_attrib(hero, 4, -3) <= 0)
+				{
+					cnt++;
+				}
+			}
+
+			if (cnt >= 2)
+			{
+				inc_ptr_bs(ptr);
+
+				GUI_output(get_dtp(0xa4));
+			}
+			break;
+		}
+		case 2:
+		{
+			GUI_output(get_dtp(0xa8));
+			inc_ptr_bs(ptr);
+			GUI_output(get_dtp(0xac));
+
+			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
+			{
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+					!hero_dead(hero) &&
+					test_attrib(hero, 4, 0) <= 0)
+				{
+					sprintf((char*)Real2Host(ds_readd(DTP2)),
+						(char*)get_dtp(0xb0),
+						(char*)hero + HERO_NAME2,
+						(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
+
+					GUI_output(Real2Host(ds_readd(DTP2)));
+
+					sub_hero_le(hero, random_schick(6));
+				}
+			}
+
+			ds_writew(X_TARGET, ds_readws(0x2d83));
+			ds_writew(Y_TARGET, ds_readws(0x2d85));
+			break;
+		}
+		case 4:
+		{
+			if (random_schick(100) >= 65)
+			{
+				GUI_output(get_dtp(0xc0));
+			} else {
+				dec_ptr_bs(ptr);
+
+				if (GUI_bool(get_dtp(0xc4)))
+				{
+					DNG15_dummy4(ptr);
+				}
+			}
+				break;
+		}
+
+	}
+
+}
+
+void DNG15_dummy4(Bit8u*)
 {
 
 }
