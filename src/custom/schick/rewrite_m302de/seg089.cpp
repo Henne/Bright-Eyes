@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 7/12
+ *	Functions rewritten: 8/12
  */
 
 #include <stdio.h>
@@ -559,6 +559,31 @@ void DNG15_figures_chest(RealPt chest)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 	GUI_output(get_dtp(0x94));
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
+}
+
+/* Borlandified and identical */
+void DNG15_cursed_money_chest(RealPt chest)
+{
+	Bit32s p_money;
+	signed short tw_bak;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
+
+	if (GUI_bool(get_dtp(0xd8)))
+	{
+		/* You are cursed ... */
+		ds_writeb(0x41c6, 1);
+
+		/* ... but get much money and ... */
+		p_money = get_party_money();
+		p_money += 18928L;
+		set_party_money(p_money);
+
+		/* ... 50 GOLD JEWELRY. */
+		get_item(74, 1, 50);
+	}
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 

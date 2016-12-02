@@ -23,6 +23,8 @@ void DNG15_rotten_clothes_chest(RealPt);
 void DNG15_smelling_chest(RealPt);
 /* 0x52 */
 void DNG15_figures_chest(RealPt);
+/* 0x57 */
+void DNG15_cursed_money_chest(RealPt);
 
 
 #if !defined(__BORLANDC__)
