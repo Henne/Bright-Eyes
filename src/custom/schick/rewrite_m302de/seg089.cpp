@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 2/12
+ *	Functions rewritten: 3/12
  */
 
 #include <stdio.h>
@@ -491,6 +491,33 @@ void DNG15_small_wounds(void)
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
 			sub_hero_le(hero, 1);
+		}
+	}
+}
+
+/**
+ * \brief	group find debris
+ * \param	ladder	(0 = no ladder, 1 = ladder)
+ *
+ * The group may find a ladder to descent to the next dungeon level.
+ */
+/* Borlandified and identical */
+void DNG15_debris(signed short ladder)
+{
+	if (GUI_bool(get_dtp(0x28)))
+	{
+		if (ladder == 0)
+		{
+			GUI_output(get_dtp(0x2c));
+		} else {
+			GUI_output(get_dtp(0x30));
+
+			if (GUI_bool(get_dtp(0x34)))
+			{
+				ds_writeb(DIRECTION, 3);
+				dec_ds_ws(X_TARGET);
+				DNG_inc_level();
+			}
 		}
 	}
 }

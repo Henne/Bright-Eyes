@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void DNG15_debris(signed short);
 /* 0x25 */
 void DNG15_small_wounds(void);
 /* 0x2a */
