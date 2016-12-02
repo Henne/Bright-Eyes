@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
- *	Functions rewritten: 9/12
+ *	Functions rewritten: 10/12
  */
 
 #include <stdio.h>
@@ -669,9 +669,53 @@ void DNG15_dummy2(Bit8u* ptr)
 
 }
 
-void DNG15_dummy4(Bit8u*)
+/* Borlandified and identical */
+void DNG15_dummy4(Bit8u* ptr)
 {
+	signed short i;
+	Bit8u *hero;
 
+	hero = get_hero(0);
+	i = 0;
+
+	if ((get_first_hero_with_item(73) != -1) &&
+		(get_first_hero_with_item(93) != -1) &&
+		(get_first_hero_with_item(26) != -1) &&
+		(get_first_hero_with_item(16) != -1))
+	{
+		i = 1;
+	}
+
+	timewarp(!i ? MINUTES(30) : HOURS(1));
+
+	if (random_schick(100) <= 60)
+	{
+		GUI_output(get_dtp(0xb8));
+
+		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		{
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero) &&
+				test_attrib(hero, 4, 0) <= 0)
+			{
+				sprintf((char*)Real2Host(ds_readd(DTP2)),
+					(char*)get_dtp(0xb0),
+					(char*)hero + HERO_NAME2,
+					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
+
+				GUI_output(Real2Host(ds_readd(DTP2)));
+
+				sub_hero_le(hero, random_schick(6));
+			}
+		}
+
+		ds_writew(X_TARGET, ds_readws(0x2d83));
+		ds_writew(Y_TARGET, ds_readws(0x2d85));
+	} else {
+		inc_ptr_bs(ptr);
+		GUI_output(get_dtp(0xbc));
+	}
 }
 
 void DNG15_dummy3(Bit8u*)
