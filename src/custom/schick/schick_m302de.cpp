@@ -9855,7 +9855,8 @@ static int seg089(unsigned short offs)
 			return 0;
 		}
 		case 0x3e: {
-			return 0;
+			reg_ax = DNG15_handler();
+			return 1;
 		}
 		case 0x43: {
 			return 0;
@@ -10022,7 +10023,7 @@ static int seg092(unsigned short offs) {
 		/* valid values of d are [1,2,..,15] */
 		/* enable only for dungeons where treasure code is finished */
 
-		if ((d >= 4 && d <= 7) || (9 <= d && d <= 14))
+		if ((d >= 4 && d <= 7) || (9 <= d && d <= 15))
 		{
 			D1_LOG("seg092_06b4(%d)\n", a1);
 			seg092_06b4(a1);

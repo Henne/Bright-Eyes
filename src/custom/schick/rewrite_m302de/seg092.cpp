@@ -375,8 +375,8 @@ void seg092_06b4(signed short a1)
 	Bit8u *ptr;
 
 #if !defined(__BORLANDC__)
-	if ((ds_readbs(DUNGEON_INDEX) < 4 || ds_readbs(DUNGEON_INDEX) > 7) &&
-			(ds_readbs(DUNGEON_INDEX) < 9 || ds_readbs(DUNGEON_INDEX) > 14))
+	const int dng = ds_readbs(DUNGEON_INDEX);
+	if (dng == 1 || dng == 2 || dng == 3 || dng == 8)
 	{
 		DUMMY_WARNING();
 		return;
