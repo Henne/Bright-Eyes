@@ -659,7 +659,7 @@ void DNG15_dummy2(Bit8u* ptr)
 
 				if (GUI_bool(get_dtp(0xc4)))
 				{
-					DNG15_dummy4(ptr);
+					DNG15_clear_way(ptr);
 				}
 			}
 				break;
@@ -670,7 +670,7 @@ void DNG15_dummy2(Bit8u* ptr)
 }
 
 /* Borlandified and identical */
-void DNG15_dummy4(Bit8u* ptr)
+void DNG15_clear_way(Bit8u* ptr)
 {
 	signed short i;
 	Bit8u *hero;
