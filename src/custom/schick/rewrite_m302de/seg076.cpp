@@ -475,7 +475,7 @@ signed short DNG_step(void)
 		{
 			GUI_output(get_dtp(0x84));
 
-			ds_writeb(0x41c8, 1);
+			ds_writeb(DNG15_REACHED_HANDS, 1);
 		} else {
 			GRP_merge();
 		}
@@ -576,7 +576,7 @@ signed short DNG_step(void)
 
 				or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x02);
 			}
-		} else if (ds_readws(ACTION) == 135 && (!ds_readb(0x41c9) || !ds_readb(0x41ca)))
+		} else if (ds_readws(ACTION) == 135 && (!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 		{
 			DNG7_riddle();
 		}
@@ -940,7 +940,7 @@ void DNG_see_lever(void)
 
 	if (ds_readbs(DUNGEON_INDEX) == 15 &&
 		(target_pos == 0x1801 || target_pos == 0x1805) &&
-		(!ds_readb(0x41c9) || !ds_readb(0x41ca)))
+		(!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 	{
 		if (ds_readbs((0xbd38 + 6)) == -1)
 		{

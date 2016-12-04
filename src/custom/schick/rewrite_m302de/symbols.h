@@ -201,6 +201,14 @@
 #define DNG10_CHEST4_CONTENT	(0x415b)		/* signed char[2]; */
 #define EFFERD_SACRIFICE	(0x415f)	/* unsigned char {0, 1} */
 #define EFFERD_HINT	(0x4160)	/* unsigned char {0, 1} */
+#define DNG15_TOOK_CURSED_MONEY	(0x41c6)	/* unsigned char {0, 1} */
+#define DNG15_REACHED_HANDS	(0x41c8)	/* unsigned char {0, 1} */
+#define DNG15_LEVER_SOUTH	(0x41c9)	/* unsigned char {0, 1} */
+#define DNG15_LEVER_NORTH	(0x41ca)	/* unsigned char {0, 1} */
+#define DNG15_TOOK_HOE	(0x41cb)	/* unsigned char {0, 1} */
+#define DNG15_CEILINGS_A	(0x41cc)	/* unsigned char[18] {0, 1, 2, 3, 4} */
+#define DNG15_CURSED_MONEY_A	(0x41de)	/* unsigned char[6] {0, 1} */
+#define DNG15_UNDEAD_FIGHT	(0x41e4)	/* unsigned char {0, 1} */
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)

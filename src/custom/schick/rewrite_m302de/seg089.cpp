@@ -118,11 +118,11 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x901 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41cc);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 0));
 
 	} else if (target_pos == 0xe04 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41cd);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 1));
 
 	} else if (target_pos == 0x1e02 && target_pos != ds_readws(0x330e))
 	{
@@ -136,7 +136,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x1801 &&
 			(target_pos != ds_readws(0x330e) || ds_readbs(0x2d7c) != dir) &&
-			(!ds_readb(0x41c9) || !ds_readb(0x41ca)))
+			(!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 	{
 		tmp = dir;
 
@@ -165,7 +165,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x1805 &&
 			(target_pos != ds_readws(0x330e) || ds_readbs(0x2d7c) != dir) &&
-			(!ds_readb(0x41c9) || !ds_readb(0x41ca)))
+			(!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 	{
 		tmp = dir;
 
@@ -254,9 +254,9 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x130a && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41ce);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 2));
 
-	} else if (target_pos == 0x240a && target_pos != ds_readws(0x330e) && !ds_readb(0x41cb))
+	} else if (target_pos == 0x240a && target_pos != ds_readws(0x330e) && !ds_readb(DNG15_TOOK_HOE))
 	{
 		/* ITEM: a HOE */
 		if (GUI_bool(get_dtp(0xc8)))
@@ -265,7 +265,7 @@ signed short DNG15_handler(void)
 
 			if (get_item(93, 1, 1) != -1)
 			{
-				ds_writeb(0x41cb, 1);
+				ds_writeb(DNG15_TOOK_HOE, 1);
 			}
 		}
 
@@ -276,83 +276,83 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x230c && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41cf);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 3));
 
 	} else if (target_pos == 0x230b && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d0);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 4));
 
 	} else if (target_pos == 0x2209 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d1);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 5));
 
-	} else if (target_pos == 0x2703 && target_pos != ds_readws(0x330e) && !ds_readb(0x41de))
+	} else if (target_pos == 0x2703 && target_pos != ds_readws(0x330e) && !ds_readb((DNG15_CURSED_MONEY_A + 0)))
 	{
-		DNG15_cursed_money(p_datseg + 0x41de);
+		DNG15_cursed_money(p_datseg + (DNG15_CURSED_MONEY_A + 0));
 
-	} else if (target_pos == 0x2606 && target_pos != ds_readws(0x330e) && !ds_readb(0x41df))
+	} else if (target_pos == 0x2606 && target_pos != ds_readws(0x330e) && !ds_readb((DNG15_CURSED_MONEY_A + 1)))
 	{
-		DNG15_cursed_money(p_datseg + 0x41df);
+		DNG15_cursed_money(p_datseg + (DNG15_CURSED_MONEY_A + 1));
 
-	} else if (target_pos == 0x280b && target_pos != ds_readws(0x330e) && !ds_readb(0x41e0))
+	} else if (target_pos == 0x280b && target_pos != ds_readws(0x330e) && !ds_readb((DNG15_CURSED_MONEY_A + 2)))
 	{
-		DNG15_cursed_money(p_datseg + 0x41e0);
+		DNG15_cursed_money(p_datseg + (DNG15_CURSED_MONEY_A + 2));
 
-	} else if (target_pos == 0x2907 && target_pos != ds_readws(0x330e) && !ds_readb(0x41e3))
+	} else if (target_pos == 0x2907 && target_pos != ds_readws(0x330e) && !ds_readb((DNG15_CURSED_MONEY_A + 5)))
 	{
-		DNG15_cursed_money(p_datseg + 0x41e3);
+		DNG15_cursed_money(p_datseg + (DNG15_CURSED_MONEY_A + 5));
 
 	} else if (target_pos == 0x2501 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d7);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 11));
 
 	} else if (target_pos == 0x2903 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d8);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 12));
 
 	} else if (target_pos == 0x2902 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d9);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 13));
 
 	} else if (target_pos == 0x2302 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41db);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 15));
 
 	} else if (target_pos == 0x2303 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41dc);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 16));
 
 	} else if (target_pos == 0x2304 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41dd);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 17));
 
 	} else if (target_pos == 0x310c && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d2);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 6));
 
 	} else if (target_pos == 0x310d && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d3);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 7));
 
 	} else if (target_pos == 0x310e && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d4);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 8));
 
 	} else if (target_pos == 0x320d && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d5);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 9));
 
 	} else if (target_pos == 0x320e && target_pos != ds_readws(0x330e))
 	{
-		DNG15_collapsing_ceiling(p_datseg + 0x41d6);
+		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 10));
 
-	} else if (target_pos == 0x3e02 && target_pos != ds_readws(0x330e) && !ds_readb(0x41e1))
+	} else if (target_pos == 0x3e02 && target_pos != ds_readws(0x330e) && !ds_readb((DNG15_CURSED_MONEY_A + 3)))
 	{
-		DNG15_cursed_money(p_datseg + 0x41e1);
+		DNG15_cursed_money(p_datseg + (DNG15_CURSED_MONEY_A + 3));
 
-	} else if (target_pos == 0x3b05 && target_pos != ds_readws(0x330e) && !ds_readb(0x41e2))
+	} else if (target_pos == 0x3b05 && target_pos != ds_readws(0x330e) && !ds_readb((DNG15_CURSED_MONEY_A + 4)))
 	{
-		DNG15_cursed_money(p_datseg + 0x41e2);
+		DNG15_cursed_money(p_datseg + (DNG15_CURSED_MONEY_A + 4));
 
 	} else if (target_pos == 0x3b02 && target_pos != ds_readws(0x330e))
 	{
@@ -364,7 +364,7 @@ signed short DNG15_handler(void)
 
 			if (!do_fight(135))
 			{
-				ds_writeb(0x41e4, 1);
+				ds_writeb(DNG15_UNDEAD_FIGHT, 1);
 			}
 		}
 
@@ -377,7 +377,7 @@ signed short DNG15_handler(void)
 
 			if (!do_fight(135))
 			{
-				ds_writeb(0x41e4, 1);
+				ds_writeb(DNG15_UNDEAD_FIGHT, 1);
 			}
 		}
 
@@ -388,21 +388,21 @@ signed short DNG15_handler(void)
 		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x2c1b));
 		ds_writew((0xd325 + 6), 0x2639);
 
-		do_fight(!ds_readb(0x41e4) ? 134 : 133);
+		do_fight(!ds_readb(DNG15_UNDEAD_FIGHT) ? 134 : 133);
 
 	} else if ((target_pos == 0x3d05 || target_pos == 0x3905) && target_pos != ds_readws(0x330e))
 	{
 		/* FIGHT: */
-		if (ds_readb(0x41e4) != 2)
+		if (ds_readb(DNG15_UNDEAD_FIGHT) != 2)
 		{
 			ds_writew((0xd325 + 0), 0x3d03);
 			ds_writew((0xd325 + 2), 0x3e15);
 			ds_writew((0xd325 + 4), 0x3a2a);
 			ds_writew((0xd325 + 6), 0x3903);
 
-			if (!do_fight(!ds_readb(0x41e4) ? 137 : 136))
+			if (!do_fight(!ds_readb(DNG15_UNDEAD_FIGHT) ? 137 : 136))
 			{
-				ds_writeb(0x41e4, 2);
+				ds_writeb(DNG15_UNDEAD_FIGHT, 2);
 			}
 		}
 
@@ -410,7 +410,7 @@ signed short DNG15_handler(void)
 			target_pos != ds_readws(0x330e))
 	{
 		/* QUEST: hyggelik */
-		if (ds_readb(0x41c6) != 0)
+		if (ds_readb(DNG15_TOOK_CURSED_MONEY) != 0)
 		{
 			/* you are cursed */
 			do_talk(19, 1);
@@ -452,7 +452,7 @@ signed short DNG15_handler(void)
 	} else if (target_pos == 0x0b && target_pos != ds_readws(0x330e))
 	{
 		/* EXIT: may be blocked if cursed money has been taken */
-		if (ds_readb(0x41c6) != 0)
+		if (ds_readb(DNG15_TOOK_CURSED_MONEY) != 0)
 		{
 			GUI_output(get_dtp(0x18));
 
@@ -600,7 +600,7 @@ void DNG15_cursed_money_chest(RealPt chest)
 	if (GUI_bool(get_dtp(0xd8)))
 	{
 		/* You are cursed ... */
-		ds_writeb(0x41c6, 1);
+		ds_writeb(DNG15_TOOK_CURSED_MONEY, 1);
 
 		/* ... but get much money and ... */
 		p_money = get_party_money();
@@ -759,7 +759,7 @@ void DNG15_cursed_money(Bit8u* ptr)
 
 	if (GUI_bool(get_dtp(0xd4)))
 	{
-		host_writebs(ptr, ds_writeb(0x41c6, 1));
+		host_writebs(ptr, ds_writeb(DNG15_TOOK_CURSED_MONEY, 1));
 
 		p_money = get_party_money();
 		p_money += random_interval(10, 25) * 100;

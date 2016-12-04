@@ -209,7 +209,7 @@ void DNG7_riddle(void)
 		}
 	}
 
-	if (!l_di || !ds_readb(0x41c8)) {
+	if (!l_di || !ds_readb(DNG15_REACHED_HANDS)) {
 
 		/* INFO: you hear a soft cracking noise */
 		GUI_output(get_dtp(0x70));
@@ -228,12 +228,12 @@ void DNG7_riddle(void)
 
 			/* set the corresponding lever */
 			if (ds_readws(Y_TARGET) == 1) {
-				ds_writeb(0x41c9, 1);
+				ds_writeb(DNG15_LEVER_SOUTH, 1);
 			} else if (ds_readws(Y_TARGET) == 5) {
-				ds_writeb(0x41ca, 1);
+				ds_writeb(DNG15_LEVER_NORTH, 1);
 			}
 
-			if (ds_readb(0x41c9) != 0 && ds_readb(0x41ca) != 0)
+			if (ds_readb(DNG15_LEVER_SOUTH) != 0 && ds_readb(DNG15_LEVER_NORTH) != 0)
 			{
 				/* riddle solved: remove the door from the map */
 				GUI_output(get_dtp(0x80));

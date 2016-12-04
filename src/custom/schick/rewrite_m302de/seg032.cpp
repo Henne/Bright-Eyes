@@ -855,7 +855,7 @@ signed short do_fight(signed short fight_id)
 		return 3;
 	}
 
-	if (ds_readb(0x41c6) != 0) {
+	if (ds_readb(DNG15_TOOK_CURSED_MONEY) != 0) {
 		return 0;
 	}
 
