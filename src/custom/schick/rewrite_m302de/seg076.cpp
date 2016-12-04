@@ -468,6 +468,7 @@ signed short DNG_step(void)
 
 	} else if (ds_readws(ACTION) == 130)
 	{
+		/* merge groups or reach hands through the mirror */
 		pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 
 		if ((ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1801) || pos == 0x1805)

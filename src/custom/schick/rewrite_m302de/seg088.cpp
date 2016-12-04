@@ -193,7 +193,7 @@ void DNG7_riddle(void)
 
 	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 
-
+	/* check if the other group is in position */
 	for (i = l_di = 0; i < 6; i++) {
 
 		if (pos == 0x1801 && ds_readws(GROUPS_X_TARGET + 2 * i) == 8 &&
@@ -211,10 +211,12 @@ void DNG7_riddle(void)
 
 	if (!l_di || !ds_readb(0x41c8)) {
 
+		/* INFO: you hear a soft cracking noise */
 		GUI_output(get_dtp(0x70));
 
 	} else {
 
+		/* ask which lever should be pulled */
 		do {
 			i = GUI_radio(get_dtp(0x74), 2,
 					get_dtp(0x78),
@@ -222,24 +224,30 @@ void DNG7_riddle(void)
 		} while (i == -1);
 
 		if (i == 2) {
+			/* pull on the other side */
 
+			/* set the corresponding lever */
 			if (ds_readws(Y_TARGET) == 1) {
 				ds_writeb(0x41c9, 1);
 			} else if (ds_readws(Y_TARGET) == 5) {
 				ds_writeb(0x41ca, 1);
 			}
 
-			if (ds_readb(0x41c9) != 0 && ds_readb(0x41ca) != 0) {
-
+			if (ds_readb(0x41c9) != 0 && ds_readb(0x41ca) != 0)
+			{
+				/* riddle solved: remove the door from the map */
 				GUI_output(get_dtp(0x80));
 
 				host_writeb(ptr + 0x39, 0x20);
 
 				add_hero_ap_all(10);
 			} else {
+				/* INFO: you hear a soft cracking noise */
 				GUI_output(get_dtp(0x70));
 			}
 		} else {
+			/* pull on the this side */
+			/* INFO: you hear a soft cracking noise */
 			GUI_output(get_dtp(0x70));
 		}
 	}
