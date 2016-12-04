@@ -427,7 +427,7 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 }
 
 /* 0x82e */
-/* Borlandified and nearly identical */
+/* Borlandified and identical */
 void DNG_stub4(void)
 {
 	signed short l1;
@@ -448,8 +448,7 @@ void DNG_stub4(void)
 
 		l4 = (unsigned char)div16(l5);
 
-		/* BC-TODO: access to a data structure */
-		ptr = (l4 == 6) ? Real2Host(RealMake(datseg, l3 * 4 + 0x9206)) :
+		ptr = (l4 == 6) ? Real2Host(RealMake(datseg, 4 * l3)) + 0x9206 :
 			(l4 == 5) ? p_datseg + 0x925e + l3 * 4 :
 			(l4 == 4) ? p_datseg + 0x91ae + l3 * 4 :
 			(l4 == 3) ? p_datseg + 0x91ae + l3 * 4 : p_datseg + 0x9156 + l3 * 4;
