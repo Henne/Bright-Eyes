@@ -56,12 +56,12 @@ signed short DNG15_handler(void)
 	if ((((target_pos == 0x603 || target_pos == 0x606 || target_pos == 0x609) && dir == 1) ||
 		((target_pos == 0xc0a || target_pos == 0x80a) && dir == 0)) && target_pos != ds_readws(0x330e))
 	{
-		/* INFO: */
+		/* INFO: a large hall */
 		GUI_output(get_dtp(0x04));
 
 	} else if (((target_pos == 0x304 && dir == 0) || (target_pos == 0x403 && dir == 3)) && target_pos != ds_readws(0x330e))
 	{
-		/* INFO: */
+		/* INFO: entering the tower */
 		GUI_output(get_dtp(0x08));
 
 	} else if ((target_pos == 0x101 || target_pos == 0x201 || target_pos == 0x301 || target_pos == 0x401 ||
@@ -70,6 +70,7 @@ signed short DNG15_handler(void)
 			target_pos == 0x104 || target_pos == 0x204 || target_pos == 0x304 || target_pos == 0x404) &&
 			target_pos != ds_readws(0x330e))
 	{
+		/* TRAP: light wounds */
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
@@ -121,6 +122,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x1e02 && target_pos != ds_readws(0x330e))
 	{
+		/* LADDER: upwards */
 		if (GUI_bool(get_dtp(0x44)))
 		{
 			DNG_dec_level();
@@ -188,6 +190,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x1802 && target_pos != ds_readws(0x330e))
 	{
+		/* check if another group stands on the other side */
 		for (i = tmp = 0; i < 6; i++)
 		{
 			if (ds_readw(GROUPS_X_TARGET + 2 * i) == 8 &&
@@ -200,16 +203,20 @@ signed short DNG15_handler(void)
 
 		if (tmp == 0)
 		{
+			/* go through the mirror */
 			GUI_output(get_dtp(0x68));
 			ds_writew(Y_TARGET, 5);
 			DNG_update_pos();
 		} else {
+			/* stay here */
 			GUI_output(get_dtp(0x6c));
 			ds_writew(Y_TARGET, ds_readw(0x2d85));
 		}
 
 	} else if (target_pos == 0x1804 && target_pos != ds_readws(0x330e))
 	{
+
+		/* check if another group stands on the other side */
 		for (i = tmp = 0; i < 6; i++)
 		{
 			if (ds_readw(GROUPS_X_TARGET + 2 * i) == 8 &&
@@ -222,10 +229,12 @@ signed short DNG15_handler(void)
 
 		if (tmp == 0)
 		{
+			/* go through the mirror */
 			GUI_output(get_dtp(0x68));
 			ds_writew(Y_TARGET, 1);
 			DNG_update_pos();
 		} else {
+			/* stay here */
 			GUI_output(get_dtp(0x6c));
 			ds_writew(Y_TARGET, ds_readw(0x2d85));
 		}
@@ -236,7 +245,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x110b && target_pos != ds_readws(0x330e))
 	{
-		/* INFO: */
+		/* INFO: wooden beams */
 		GUI_output(get_dtp(0x9c));
 
 	} else if (target_pos == 0x130a && target_pos != ds_readws(0x330e))
@@ -258,7 +267,7 @@ signed short DNG15_handler(void)
 
 	} else if ((target_pos == 0x2109 || target_pos == 0x230d) && target_pos != ds_readws(0x330e))
 	{
-		/* INFO: */
+		/* INFO: end of the corridor */
 		GUI_output(get_dtp(0xd0));
 
 	} else if (target_pos == 0x230c && target_pos != ds_readws(0x330e))
@@ -343,6 +352,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x3b02 && target_pos != ds_readws(0x330e))
 	{
+		/* FIGHT: */
 		if (random_schick(100) < 10)
 		{
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 6), 0x3932)));
@@ -356,6 +366,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x3d03 && target_pos != ds_readws(0x330e))
 	{
+		/* FIGHT: */
 		if (random_schick(100) < 10)
 		{
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x3d25))));
@@ -368,14 +379,16 @@ signed short DNG15_handler(void)
 
 	} else if ((target_pos == 0x2809 || target_pos == 0x2909) && target_pos != ds_readws(0x330e))
 	{
-			ds_writew((0xd325 + 0), 0x2907);
-			ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x2c1b));
-			ds_writew((0xd325 + 6), 0x2639);
+		/* FIGHT: */
+		ds_writew((0xd325 + 0), 0x2907);
+		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x2c1b));
+		ds_writew((0xd325 + 6), 0x2639);
 
-			do_fight(!ds_readb(0x41e4) ? 134 : 133);
+		do_fight(!ds_readb(0x41e4) ? 134 : 133);
 
 	} else if ((target_pos == 0x3d05 || target_pos == 0x3905) && target_pos != ds_readws(0x330e))
 	{
+		/* FIGHT: */
 		if (ds_readb(0x41e4) != 2)
 		{
 			ds_writew((0xd325 + 0), 0x3d03);
@@ -392,40 +405,49 @@ signed short DNG15_handler(void)
 	} else if ((target_pos == 0x3a0a || target_pos == 0x3d0a || target_pos == 0x3c0e) &&
 			target_pos != ds_readws(0x330e))
 	{
+		/* QUEST: hyggelik */
 		if (ds_readb(0x41c6) != 0)
 		{
+			/* you are cursed */
 			do_talk(19, 1);
 
 		} else if (!ds_readb(0x3600)) {
-				ds_writew((0xd325 + 0),
-					ds_writew((0xd325 + 2),
-					ds_writew((0xd325 + 4),
-					ds_writew((0xd325 + 6), 0x3a0a))));
 
-				if (!do_fight(138))
-				{
-					draw_main_screen();
-					DNG_update_pos();
-					do_talk(19, 0);
-					update_mouse_cursor();
-					show_hyggelik_ani();
+			/* fight the zombies */
+			ds_writew((0xd325 + 0),
+				ds_writew((0xd325 + 2),
+				ds_writew((0xd325 + 4),
+				ds_writew((0xd325 + 6), 0x3a0a))));
 
-					if (1) { } else { }
+			if (!do_fight(138))
+			{
+				/* talk with hyggelik */
+				draw_main_screen();
+				DNG_update_pos();
+				do_talk(19, 0);
+				update_mouse_cursor();
+				show_hyggelik_ani();
 
-					do { ; } while (!get_item(181, 1, 1));
+				if (1) { } else { }
 
-					ds_writeb(0x3600, 1);
-					add_hero_ap_all(50);
+				/* group gets GRIMRING */
+				do { ; } while (!get_item(181, 1, 1));
 
-					ds_writeb(0x2ca6, ds_writews(0x2ccb, -1));
-					ds_writeb(PP20_INDEX, -2);
+				ds_writeb(0x3600, 1);
 
-					draw_main_screen();
-					refresh_screen_size();
-				}
+				add_hero_ap_all(50);
+
+				ds_writeb(0x2ca6, ds_writews(0x2ccb, -1));
+				ds_writeb(PP20_INDEX, -2);
+
+				draw_main_screen();
+				refresh_screen_size();
+			}
 		}
+
 	} else if (target_pos == 0x0b && target_pos != ds_readws(0x330e))
 	{
+		/* EXIT: may be blocked if cursed money has been taken */
 		if (ds_readb(0x41c6) != 0)
 		{
 			GUI_output(get_dtp(0x18));
@@ -600,8 +622,10 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 	{
 		case 1:
 		{
+			/* rotting beams */
 			GUI_output(get_dtp(0xa0));
 
+			/* count failed FF-3 test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (host_readbs(hero + HERO_TYPE) != 0 &&
@@ -615,6 +639,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 
 			if (cnt >= 2)
 			{
+				/* if more that one hero failed, the ceiling craks */
 				inc_ptr_bs(ptr);
 
 				GUI_output(get_dtp(0xa4));
@@ -623,10 +648,12 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 		}
 		case 2:
 		{
+			/* the beams crash imediately */
 			GUI_output(get_dtp(0xa8));
 			inc_ptr_bs(ptr);
 			GUI_output(get_dtp(0xac));
 
+			/* each hero gets 1W6 damage on a failed FF test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (host_readbs(hero + HERO_TYPE) != 0 &&
@@ -645,6 +672,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 				}
 			}
 
+			/* way is blocked */
 			ds_writew(X_TARGET, ds_readws(0x2d83));
 			ds_writew(Y_TARGET, ds_readws(0x2d85));
 			break;
@@ -653,6 +681,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 		{
 			if (random_schick(100) >= 65)
 			{
+				/* the way is already cleared */
 				GUI_output(get_dtp(0xc0));
 			} else {
 				dec_ptr_bs(ptr);
@@ -664,9 +693,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 			}
 				break;
 		}
-
 	}
-
 }
 
 /* Borlandified and identical */
@@ -678,6 +705,7 @@ void DNG15_clear_way(Bit8u* ptr)
 	hero = get_hero(0);
 	i = 0;
 
+	/* With all of the following items SHOVEL, HOE, CROWBAR, FRANCESCA ...*/
 	if ((get_first_hero_with_item(73) != -1) &&
 		(get_first_hero_with_item(93) != -1) &&
 		(get_first_hero_with_item(26) != -1) &&
@@ -686,8 +714,10 @@ void DNG15_clear_way(Bit8u* ptr)
 		i = 1;
 	}
 
+	/* ... the group saves 30 minutes ingame time. */
 	timewarp(!i ? MINUTES(30) : HOURS(1));
 
+	/* With aprobability of 60% the ceiling crashes down. */
 	if (random_schick(100) <= 60)
 	{
 		GUI_output(get_dtp(0xb8));
