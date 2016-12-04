@@ -257,11 +257,11 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 */
 signed short test_foe_range_attack(signed short x, signed short y, const signed short dir, signed short mode)
 {
+	signed short done;
+	signed short di;	/* run variables in dir */
 	signed char cb_val;
 	signed short dy;	/* run variables in dir */
 	signed short can_attack;
-	register signed short done;
-	register signed short di;	/* run variables in dir */
 
 	done = 0;
 	di = 0;

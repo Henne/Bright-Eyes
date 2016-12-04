@@ -38,7 +38,7 @@ int random_interval(const int lo, const int hi)
 */
 int random_schick(const int val)
 {
-	register short retval;
+	signed short retval;
 
 
 	if (val == 0) {

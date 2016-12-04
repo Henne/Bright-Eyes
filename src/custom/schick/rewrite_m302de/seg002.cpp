@@ -2864,7 +2864,8 @@ void magical_chainmail_damage(void)
  */
 void herokeeping(void)
 {
-	register signed short i, pos;
+	signed short i;
+	signed short pos;
 	Bit8u *hero;
 	char buffer[100];
 
@@ -3356,11 +3357,12 @@ void passages_reset(void)
  */
 void timewarp(Bit32s time)
 {
+	signed short hour_old;
+	signed short hour_new;
 	Bit32s i;
 	signed short td_bak;
 	signed short hour_diff;
 	Bit32s timer_bak;
-	register signed short hour_old, hour_new;
 
 	timer_bak = ds_readd(DAY_TIMER);
 	td_bak = ds_readw(TIMERS_DISABLED);
@@ -3412,12 +3414,13 @@ void timewarp(Bit32s time)
  */
 void timewarp_until(Bit32s time)
 {
+	signed short hour_old;
+	signed short hour_new;
 	Bit32s i;
 	signed short td_bak;
 	signed short j;
 	signed short hour_diff;
 	Bit32s timer_bak;
-	register signed short hour_old, hour_new;
 
 	i = 0;
 	timer_bak = ds_readd(DAY_TIMER);

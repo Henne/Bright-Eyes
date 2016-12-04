@@ -591,8 +591,8 @@ void restore_rect_rle(RealPt dst, Bit8u *src, unsigned short x, unsigned short y
 
 void draw_mouse_cursor(void)
 {
+	register signed short mask;
 	signed short x;
-	register unsigned short mask;
 	signed char i;
 	signed char j;
 	PhysPt dst;
@@ -1096,7 +1096,7 @@ void wait_for_vsync(void)
 	CALLBACK_RunRealFar(reloc_game + 0xb2a, 0x150d);
 #else
 
-	register unsigned short tmp;
+	signed short tmp;
 
 	outportb(0x3d4, 0x11);
 

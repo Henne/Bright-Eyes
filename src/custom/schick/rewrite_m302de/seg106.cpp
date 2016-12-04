@@ -698,9 +698,9 @@ void startup_equipment(Bit8u *hero)
 signed short get_max_light_time(void)
 {
 	Bit8u *hero;
-	register signed short i;	/* di */
-	register signed short j;	/* cx */
-	register signed short retval;	/* si */
+	signed short i;
+	signed short j;
+	signed short retval;
 
 	retval = -1;
 

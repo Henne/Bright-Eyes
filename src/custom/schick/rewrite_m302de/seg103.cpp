@@ -312,7 +312,7 @@ signed short select_skill(void)
 
 signed short use_skill(signed short hero_pos, signed char bonus, signed short skill)
 {
-	register signed short l_si;
+	signed short l_si;
 	signed short l_di;
 
 	signed short patient_pos;

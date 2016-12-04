@@ -454,8 +454,8 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 	signed short pos;
 	Bit8u *hero;
 
-	register signed short damage;
-	register signed short dice;
+	signed short damage;
+	signed short dice;
 
 	dice = host_readw(attacker + 0x1e);
 
