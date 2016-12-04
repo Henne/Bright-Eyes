@@ -315,7 +315,7 @@ signed short DNG09_handler(void)
 						l3++;
 					}
 
-					host_writeb(hero + 0x87, l3);
+					host_writeb(hero + 0x87, (signed char)l3);
 					inc_ds_bs_post(GROUP_MEMBER_COUNTS + l3);
 					dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 					GRP_save_pos(l3);
@@ -463,7 +463,7 @@ signed short DNG09_handler(void)
 	} else if (target_pos == 0x70f && target_pos != ds_readws(0x330e))
 	{
 		leave_dungeon();
-		ds_writebs(CURRENT_TOWN, ds_readws(0x4338));
+		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
 		ds_writews(X_TARGET, ds_readws(0x433a));
 		ds_writews(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);

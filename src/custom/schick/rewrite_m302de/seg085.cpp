@@ -152,7 +152,7 @@ signed short DNG10_handler(void)
 					if (ds_readb(DNG10_HOLE_DAMAGE) >= 7)
 					{
 						/* the secret wall can now be passed forward */
-						host_writebs(amap_ptr + 0x73, 0xbf);
+						host_writeb(amap_ptr + 0x73, 0xbf);
 					}
 				}
 

@@ -444,7 +444,7 @@ signed short DNG15_handler(void)
 
 				add_hero_ap_all(50);
 
-				ds_writeb(0x2ca6, ds_writews(0x2ccb, -1));
+				ds_writeb(0x2ca6, (signed char)ds_writews(0x2ccb, -1));
 				ds_writeb(PP20_INDEX, -2);
 
 				draw_main_screen();

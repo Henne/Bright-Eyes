@@ -576,8 +576,8 @@ void DNG09_pitfall(void)
 				while (ds_readb(GROUP_MEMBER_COUNTS + l3) != 0) l3++;
 
 				/* put these heros in empty group */
-				host_writeb(hero_first + HERO_GROUP_NO, l3);
-				host_writeb(hero_second + HERO_GROUP_NO, l3);
+				host_writeb(hero_first + HERO_GROUP_NO, (signed char)l3);
+				host_writeb(hero_second + HERO_GROUP_NO, (signed char)l3);
 				add_ds_bs(GROUP_MEMBER_COUNTS + l3, 2);
 				sub_ds_bs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP), 2);
 
@@ -605,7 +605,7 @@ void DNG09_pitfall(void)
 				while (ds_readb(GROUP_MEMBER_COUNTS + l3) != 0) l3++;
 
 				/* put this hero in an empty group */
-				host_writeb(hero_first + HERO_GROUP_NO, l3);
+				host_writeb(hero_first + HERO_GROUP_NO, (signed char)l3);
 				inc_ds_bs_post(GROUP_MEMBER_COUNTS + l3);
 				dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 
