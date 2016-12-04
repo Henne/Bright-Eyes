@@ -488,7 +488,7 @@ signed short DNG15_handler(void)
 /**
  * \brief	heros may get small wounds
  *
- * Each alive hero in the group makes a FF-3 test.
+ * Each alive hero in the group makes a GE-3 test.
  * If it fails he looses 1 LE.
  */
 /* Borlandified and identical */
@@ -629,7 +629,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 			/* rotting beams */
 			GUI_output(get_dtp(0xa0));
 
-			/* count failed FF-3 test */
+			/* count failed GE-3 test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (host_readbs(hero + HERO_TYPE) != 0 &&
@@ -657,7 +657,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 			inc_ptr_bs(ptr);
 			GUI_output(get_dtp(0xac));
 
-			/* each hero gets 1W6 damage on a failed FF test */
+			/* each hero gets 1W6 damage on a failed GE test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (host_readbs(hero + HERO_TYPE) != 0 &&
