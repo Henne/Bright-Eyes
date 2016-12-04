@@ -113,11 +113,11 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x901 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41cc);
+		DNG15_collapsing_ceiling(p_datseg + 0x41cc);
 
 	} else if (target_pos == 0xe04 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41cd);
+		DNG15_collapsing_ceiling(p_datseg + 0x41cd);
 
 	} else if (target_pos == 0x1e02 && target_pos != ds_readws(0x330e))
 	{
@@ -241,7 +241,7 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x130a && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41ce);
+		DNG15_collapsing_ceiling(p_datseg + 0x41ce);
 
 	} else if (target_pos == 0x240a && target_pos != ds_readws(0x330e) && !ds_readb(0x41cb))
 	{
@@ -263,15 +263,15 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x230c && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41cf);
+		DNG15_collapsing_ceiling(p_datseg + 0x41cf);
 
 	} else if (target_pos == 0x230b && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d0);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d0);
 
 	} else if (target_pos == 0x2209 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d1);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d1);
 
 	} else if (target_pos == 0x2703 && target_pos != ds_readws(0x330e) && !ds_readb(0x41de))
 	{
@@ -291,47 +291,47 @@ signed short DNG15_handler(void)
 
 	} else if (target_pos == 0x2501 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d7);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d7);
 
 	} else if (target_pos == 0x2903 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d8);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d8);
 
 	} else if (target_pos == 0x2902 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d9);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d9);
 
 	} else if (target_pos == 0x2302 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41db);
+		DNG15_collapsing_ceiling(p_datseg + 0x41db);
 
 	} else if (target_pos == 0x2303 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41dc);
+		DNG15_collapsing_ceiling(p_datseg + 0x41dc);
 
 	} else if (target_pos == 0x2304 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41dd);
+		DNG15_collapsing_ceiling(p_datseg + 0x41dd);
 
 	} else if (target_pos == 0x310c && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d2);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d2);
 
 	} else if (target_pos == 0x310d && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d3);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d3);
 
 	} else if (target_pos == 0x310e && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d4);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d4);
 
 	} else if (target_pos == 0x320d && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d5);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d5);
 
 	} else if (target_pos == 0x320e && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy2(p_datseg + 0x41d6);
+		DNG15_collapsing_ceiling(p_datseg + 0x41d6);
 
 	} else if (target_pos == 0x3e02 && target_pos != ds_readws(0x330e) && !ds_readb(0x41e1))
 	{
@@ -588,7 +588,7 @@ void DNG15_cursed_money_chest(RealPt chest)
 }
 
 /* Borlandified and identical */
-void DNG15_dummy2(Bit8u* ptr)
+void DNG15_collapsing_ceiling(Bit8u* ptr)
 {
 	signed short i;
 	signed short cnt;

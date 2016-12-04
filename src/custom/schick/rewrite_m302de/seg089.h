@@ -7,7 +7,7 @@ void DNG15_debris(signed short);
 /* 0x25 */
 void DNG15_small_wounds(void);
 /* 0x2a */
-void DNG15_dummy2(Bit8u*);
+void DNG15_collapsing_ceiling(Bit8u*);
 /* 0x2f */
 void DNG15_clear_way(Bit8u*);
 /* 0x34 */
