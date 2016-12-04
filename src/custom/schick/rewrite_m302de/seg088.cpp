@@ -178,7 +178,7 @@ void DNG14_chest_x9(void)
 	sub_hero_le(hero, dice_roll(2, 6, 0));
 }
 
-void DNG7_riddle(void)
+void DNG15_riddle(void)
 {
 	signed short i;
 	signed short l_di;

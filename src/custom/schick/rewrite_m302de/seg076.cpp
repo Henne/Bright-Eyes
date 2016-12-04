@@ -578,7 +578,7 @@ signed short DNG_step(void)
 			}
 		} else if (ds_readws(ACTION) == 135 && (!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 		{
-			DNG7_riddle();
+			DNG15_riddle();
 		}
 	}
 

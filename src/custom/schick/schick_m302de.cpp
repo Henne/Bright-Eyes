@@ -9823,8 +9823,8 @@ static int seg088(unsigned short offs)
 			return 1;
 		}
 		case 0x57: {
-			D1_LOG("DNG7_riddle()\n");
-			DNG7_riddle();
+			D1_LOG("DNG15_riddle()\n");
+			DNG15_riddle();
 			return 1;
 		}
 		default:

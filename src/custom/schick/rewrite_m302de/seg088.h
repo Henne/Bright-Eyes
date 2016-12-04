@@ -25,7 +25,7 @@ void DNG14_chest_x8(RealPt);
 /* 0x52 */
 void DNG14_chest_x9(void);
 /* 0x57 */
-void DNG7_riddle(void);
+void DNG15_riddle(void);
 
 #if !defined(__BORLANDC__)
 }
