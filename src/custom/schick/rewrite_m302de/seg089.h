@@ -13,7 +13,7 @@ void DNG15_clear_way(Bit8u*);
 /* 0x34 */
 void DNG15_cursed_money(Bit8u*);
 /* 0x39 */
-void DNG15_dummy1(Bit8u*, signed short, signed short);
+void DNG15_wounds_and_ladders(Bit8u*, signed short, signed short);
 /* 0x3e */
 signed short DNG15_handler(void);
 /* 0x43 */

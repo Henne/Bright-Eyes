@@ -95,22 +95,26 @@ signed short DNG15_handler(void)
 			target_pos == 0xc02 || target_pos == 0xd02 || target_pos == 0xe03) &&
 			target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy1(get_dtp(0x24), 1, 0);
+		/* debris, with wounds and no hidden ladder */
+		DNG15_wounds_and_ladders(get_dtp(0x24), 1, 0);
 
 	} else if ((target_pos == 0xb00 || target_pos == 0xc00 || target_pos == 0xd00 ||
 			target_pos == 0xf00 || target_pos == 0xf01 || target_pos == 0xe00) &&
 			target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy1(get_dtp(0x38), 0, 0);
+		/* debris, no wounds and no hidden ladder */
+		DNG15_wounds_and_ladders(get_dtp(0x38), 0, 0);
 
 	} else if (target_pos == 0xe02 && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy1(get_dtp(0x3c), 1, 1);
+		/* debris, with wounds and hidden ladder */
+		DNG15_wounds_and_ladders(get_dtp(0x3c), 1, 1);
 
 	} else if ((target_pos == 0xb01 || target_pos == 0xc01 || target_pos == 0xd01 ||
 			target_pos == 0xe01) && target_pos != ds_readws(0x330e))
 	{
-		DNG15_dummy1(get_dtp(0x40), 1, 0);
+		/* debris, with wounds and no hidden ladder */
+		DNG15_wounds_and_ladders(get_dtp(0x40), 1, 0);
 
 	} else if (target_pos == 0x901 && target_pos != ds_readws(0x330e))
 	{
@@ -763,8 +767,14 @@ void DNG15_cursed_money(Bit8u* ptr)
 	}
 }
 
+/**
+ * \brief
+ * \param text		pointer to the output text
+ * \param wounds	group may get wounds (0/1)
+ * \param ladder	here is a ladder to the next level
+ */
 /* Borlandified and identical */
-void DNG15_dummy1(Bit8u* text, signed short wounds, signed short ladder)
+void DNG15_wounds_and_ladders(Bit8u* text, signed short wounds, signed short ladder)
 {
 	GUI_output(text);
 
