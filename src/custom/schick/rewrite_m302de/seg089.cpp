@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: fortressruin)
+ *	Rewrite of DSA1 v3.02_de functions of seg089 (dungeon: ruined castle)
  *	Functions rewritten: 12/12 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -1 -c -Yo seg089.cpp
  */
 
 #include <stdio.h>
@@ -34,7 +38,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG15_handler(void)
 {
 	signed short target_pos;
@@ -491,7 +494,6 @@ signed short DNG15_handler(void)
  * Each alive hero in the group makes a GE-3 test.
  * If it fails he looses 1 LE.
  */
-/* Borlandified and identical */
 void DNG15_small_wounds(void)
 {
 	signed short i;
@@ -527,7 +529,6 @@ void DNG15_small_wounds(void)
  *
  * The group may find a ladder to descent to the next dungeon level.
  */
-/* Borlandified and identical */
 void DNG15_debris(signed short ladder)
 {
 	if (GUI_bool(get_dtp(0x28)))
@@ -548,19 +549,16 @@ void DNG15_debris(signed short ladder)
 	}
 }
 
-/* Borlandified and identical */
 void DNG15_empty_chest(RealPt chest)
 {
 	GUI_output(get_ltx(0x828));
 }
 
-/* Borlandified and identical */
 void DNG15_rotten_clothes_chest(RealPt chest)
 {
 	GUI_output(get_dtp(0x88));
 }
 
-/* Borlandified and identical */
 void DNG15_smelling_chest(RealPt chest)
 {
 	Bit8u *hero;
@@ -577,7 +575,6 @@ void DNG15_smelling_chest(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG15_figures_chest(RealPt chest)
 {
 	signed short tw_bak;
@@ -588,7 +585,6 @@ void DNG15_figures_chest(RealPt chest)
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
-/* Borlandified and identical */
 void DNG15_cursed_money_chest(RealPt chest)
 {
 	Bit32s p_money;
@@ -613,7 +609,6 @@ void DNG15_cursed_money_chest(RealPt chest)
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
-/* Borlandified and identical */
 void DNG15_collapsing_ceiling(Bit8u* ptr)
 {
 	signed short i;
@@ -700,7 +695,6 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 	}
 }
 
-/* Borlandified and identical */
 void DNG15_clear_way(Bit8u* ptr)
 {
 	signed short i;
@@ -752,7 +746,6 @@ void DNG15_clear_way(Bit8u* ptr)
 	}
 }
 
-/* Borlandified and identical */
 void DNG15_cursed_money(Bit8u* ptr)
 {
 	Bit32s p_money;
@@ -773,7 +766,6 @@ void DNG15_cursed_money(Bit8u* ptr)
  * \param wounds	group may get wounds (0/1)
  * \param ladder	here is a ladder to the next level
  */
-/* Borlandified and identical */
 void DNG15_wounds_and_ladders(Bit8u* text, signed short wounds, signed short ladder)
 {
 	GUI_output(text);
