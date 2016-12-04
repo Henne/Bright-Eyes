@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeons generic)
- *	Functions rewritten: 20/20
+ *	Rewrite of DSA1 v3.02_de functions of seg075 (dungeon: common 1/2)
+ *	Functions rewritten: 20/20 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg075.cpp
  */
 
 #include <string.h>
@@ -31,7 +35,6 @@ namespace M302de {
 signed short div16(unsigned char);
 #endif
 
-/* Borlandified and identical */
 /* static */
 void DNG_floor_ceil(void)
 {
@@ -59,7 +62,6 @@ void DNG_floor_ceil(void)
 
 }
 
-/* Borlandified and identical */
 /* static */
 void DNG_turn(void)
 {
@@ -295,8 +297,6 @@ void DNG_turn(void)
 	}
 }
 
-/* 0x56b */
-/* Borlandified and identical */
 void DNG_stub1(void)
 {
 	DNG_floor_ceil();
@@ -308,8 +308,6 @@ void DNG_stub1(void)
 	DNG_stub5();
 }
 
-/* 0x591 */
-/* Borlandified and identical */
 void DNG_stub2(void)
 {
 	signed short tmp;
@@ -326,8 +324,6 @@ void DNG_stub2(void)
 	}
 }
 
-/* 0x5e5 */
-/* Borlandified and identical */
 void DNG_stub3(void)
 {
 	signed short i;
@@ -353,8 +349,6 @@ void DNG_stub3(void)
 	}
 }
 
-/* 0x693 */
-/* Borlandified and identical */
 void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 {
 	signed short width;
@@ -426,8 +420,6 @@ void DNG_draw_walls(signed short a1, signed short a2, signed short a3)
 	}
 }
 
-/* 0x82e */
-/* Borlandified and identical */
 void DNG_stub4(void)
 {
 	signed short l1;
@@ -495,8 +487,6 @@ void DNG_stub4(void)
 	}
 }
 
-/* 0x9ef*/
-/* Borlandified and identical */
 void DNG_stub5(void)
 {
 	draw_compass();
@@ -520,14 +510,11 @@ void DNG_stub5(void)
 	refresh_screen_size();
 }
 
-/* 0xa46 */
-
 /**
  * is_staff_lvl2_in_group() - check for stafflevel >= in current group
  *
  * returns 0 = false, 1 = true
 */
-/* Borlandified and identical */
 signed short is_staff_lvl2_in_group(void)
 {
 	Bit8u *hero_i;
@@ -548,8 +535,6 @@ signed short is_staff_lvl2_in_group(void)
 	return 0;
 }
 
-/* 0xaaa*/
-/* Borlandified and identical */
 void DNG_lights(void)
 {
 	signed short l1;
@@ -602,7 +587,6 @@ void DNG_lights(void)
 	}
 }
 
-/* Borlandified and identical */
 void DNG_timestep(signed short a1)
 {
 	signed short dir;
@@ -662,7 +646,6 @@ void DNG_timestep(signed short a1)
 	}
 }
 
-/* Borlandified and identical */
 void DNG_update_pos(void)
 {
 	set_var_to_zero();
@@ -675,7 +658,6 @@ void DNG_update_pos(void)
 
 }
 
-/* Borlandified and identical */
 void DNG_inc_level(void)
 {
 	ds_writew(0x9312, 1);
@@ -685,7 +667,6 @@ void DNG_inc_level(void)
 
 }
 
-/* Borlandified and identical */
 void DNG_dec_level(void)
 {
 	ds_writew(0x9312, 1);
@@ -695,7 +676,6 @@ void DNG_dec_level(void)
 
 }
 
-/* Borlandified and identical */
 void DNG_open_door(void)
 {
 	signed short x;
@@ -742,7 +722,6 @@ void DNG_open_door(void)
 	refresh_screen_size();
 }
 
-/* Borlandified and identical */
 void DNG_close_door(void)
 {
 	signed short x;
@@ -788,7 +767,6 @@ void DNG_close_door(void)
 	refresh_screen_size();
 }
 
-/* Borlandified and identical */
 void DNG_stub6(void)
 {
 	signed short l_si;
@@ -896,7 +874,6 @@ void DNG_stub6(void)
 }
 
 
-/* Borlandified and identical */
 signed short DNG_check_climb_tools(void)
 {
 	signed short i;
@@ -922,7 +899,6 @@ signed short DNG_check_climb_tools(void)
 			(get_first_hero_with_item(0x20) != -1)) ? 0 : -1;
 }
 
-/* Borlandified and identical */
 signed short DNG_fallpit(signed short a1)
 {
 	signed short l_si;
@@ -989,7 +965,6 @@ signed short DNG_fallpit(signed short a1)
 	return retval;
 }
 
-/* Borlandified and identical */
 void DNG_enter_dungeon(signed short dungeon_id)
 {
 	signed short x_pos;

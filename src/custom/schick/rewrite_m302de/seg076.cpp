@@ -1,5 +1,5 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common)
+ *	Rewrite of DSA1 v3.02_de functions of seg076 (dungeon: common 2/2)
  *	Functions rewritten: 11/11 (complete)
  *
  *	Borlandified and identical
