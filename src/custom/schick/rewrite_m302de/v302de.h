@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 #if !defined(__BORLANDC__)
+#include <assert.h>
 #include "schick.h"
 #endif
 
@@ -35,6 +36,25 @@ static inline unsigned short cast_u16(unsigned char v)
 typedef RealPt HugePt;
 
 #include "common.h"
+
+static inline RealPt ds_readfp(unsigned short offs)
+{
+	return (RealPt)host_readd(p_datseg + offs);
+}
+static inline HugePt ds_readhp(unsigned short offs)
+{
+	return (HugePt)host_readd(p_datseg + offs);
+}
+static inline RealPt ds_writefp(unsigned short offs, RealPt ptr)
+{
+	host_writed(p_datseg + offs, (Bit32u)ptr);
+	return ptr;
+}
+static inline HugePt ds_writehp(unsigned short offs, HugePt ptr)
+{
+	host_writed(p_datseg + offs, (Bit32u)ptr);
+	return ptr;
+}
 
 static inline Bit8s host_readbs(Bit8u* p)
 {
@@ -138,6 +158,28 @@ static inline Bit32s add_ds_ds(Bit16u off, Bit32s val)
 static inline Bit32s sub_ds_ds(Bit16u off, Bit32s val)
 {
 	return ds_writed(off, ds_readds(off) - val);
+}
+
+static inline RealPt add_ds_fp(Bit16u off, Bit16s val)
+{
+	const RealPt p_old = ds_readfp(off);
+	const RealPt p_new = p_old + val;
+
+	assert(RealSeg(p_old) == RealSeg(p_new));
+
+	ds_writefp(off, p_new);
+	return p_new;
+}
+
+static inline RealPt sub_ds_fp(Bit16u off, Bit16s val)
+{
+	const RealPt p_old = ds_readfp(off);
+	const RealPt p_new = p_old - val;
+
+	assert(RealSeg(p_old) == RealSeg(p_new));
+
+	ds_writefp(off, p_new);
+	return p_new;
 }
 
 /* Increment and Decrement on Bit8s variables in the datasegment */
@@ -927,6 +969,8 @@ extern char ds[0xf7af];
 #define ds_readbs(p)		(*(Bit8s*)(ds + p))
 #define ds_readws(p)		(*(Bit16s*)(ds + p))
 #define ds_readds(p)		(*(Bit32s*)(ds + p))
+#define ds_readfp(p)		(*(RealPt*)(ds + (p)))
+#define ds_readhp(p)		(*(HugePt*)(ds + (p)))
 
 #define ds_writebs(p, d)	(*(Bit8s*)(ds + p) = d)
 #define ds_writews(p, d)	(*(Bit16s*)(ds + p) = d)
@@ -934,6 +978,8 @@ extern char ds[0xf7af];
 #define ds_writeb(p, d)		(*(Bit8u*)(ds + p) = d)
 #define ds_writew(p, d)		(*(Bit16u*)(ds + p) = d)
 #define ds_writed(p, d)		(*(Bit32u*)(ds + p) = d)
+#define ds_writefp(p, d)		(*(RealPt*)(ds + (p)) = (d))
+#define ds_writehp(p, d)		(*(HugePt*)(ds + (p)) = (d))
 
 #define inc_ds_bs(o)		(++(*(Bit8s*)(ds + o)))
 #define dec_ds_bs(o)		(--(*(Bit8s*)(ds + o)))
@@ -965,6 +1011,9 @@ extern char ds[0xf7af];
 
 #define add_ds_ds(o, v)		(*(Bit32s*)(ds + o) += v)
 #define sub_ds_ds(o, v)		(*(Bit32s*)(ds + o) -= v)
+
+#define add_ds_fp(o, v)	(*(RealPt*)(ds + (o)) += (v))
+#define sub_ds_fp(o, v)	(*(RealPt*)(ds + (o)) -= (v))
 
 #define inc_ptr_bs(p)		((*(Bit8s*)(p))++)
 #define dec_ptr_bs(p)		((*(Bit8s*)(p))--)
