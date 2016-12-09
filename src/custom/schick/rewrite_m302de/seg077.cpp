@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg077 (dungeon: deadship)
+ *	Rewrite of DSA1 v3.02_de functions of seg077 (dungeon: the ship of death)
  *	Functions rewritten: 11/11 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg077.cpp
  */
 #include <stdio.h>
 #include <string.h>
@@ -33,7 +37,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG01_handler(void)
 {
 	signed short target_pos;
@@ -221,7 +224,6 @@ signed short DNG01_handler(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void DNG01_chest1_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -232,7 +234,6 @@ void DNG01_chest1_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG01_chest2_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -243,7 +244,6 @@ void DNG01_chest2_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG01_chest3_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -254,7 +254,6 @@ void DNG01_chest3_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG01_chest5_x1(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -265,13 +264,11 @@ void DNG01_chest5_x1(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG01_chest7_x1(RealPt chest)
 {
 	loot_corpse(chest, get_dtp(0x10), p_datseg + 0x331a);
 }
 
-/* Borlandified and identical */
 void DNG01_chest7_x2(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -282,7 +279,6 @@ void DNG01_chest7_x2(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG01_chest6_x3(RealPt chest)
 {
 	get_item(219, 1, 1);
@@ -294,13 +290,11 @@ void DNG01_chest6_x3(RealPt chest)
 	ds_writeb(0x3319, 1);
 }
 
-/* Borlandified and identical */
 void DNG01_chest6_x2(RealPt chest)
 {
 	GUI_output(get_dtp(0x0c));
 }
 
-/* Borlandified and identical */
 void DNG01_chest6_x1(RealPt chest)
 {
 	if (!ds_readbs(0x3319))
@@ -329,7 +323,6 @@ void DNG01_chest6_x1(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG01_chest0_x1(RealPt chest)
 {
 	if (!ds_readb(0x43a0) && GUI_bool(get_dtp(0x04)))

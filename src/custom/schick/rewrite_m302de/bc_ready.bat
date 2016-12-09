@@ -65,6 +65,7 @@
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG074.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG075.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG076.CPP
+..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG077.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG080.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG081.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG082.CPP
