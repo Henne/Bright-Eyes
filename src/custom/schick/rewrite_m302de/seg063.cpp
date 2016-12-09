@@ -440,11 +440,7 @@ void sea_travel(signed short passage, signed short dir)
 	ds_writed(0x425a, (Bit32u)((RealPt)ds_readd(0x4266) + off + 4 * ds_readws(0x4236)));
 	ptr = (RealPt)ds_readd(0xd2ff);
 
-#if defined(__BORLANDC__)
 	add_ds_ws(0x425a, 4);
-#else
-	add_ds_ds(0x425a, 4);
-#endif
 
 	memset(Real2Host(ds_readd(0xd299)), 0xaa, 500);
 	ds_writew(0x424c, 10 * ds_readbs(0x42b0));
@@ -461,18 +457,10 @@ void sea_travel(signed short passage, signed short dir)
 	if (dir) {
 
 		while (host_readws(Real2Host(ds_readd(0x425a))) != -1) {
-#if defined(__BORLANDC__)
 			add_ds_ws(0x425a, 4);
-#else
-			add_ds_ds(0x425a, 4);
-#endif
 		}
 
-#if defined(__BORLANDC__)
 		sub_ds_ws(0x425a, 4);
-#else
-		sub_ds_ds(0x425a, 4);
-#endif
 	}
 
 	ds_writed(0x425e, ds_readd(0x425a));
@@ -593,11 +581,8 @@ void sea_travel(signed short passage, signed short dir)
 			ds_writew(WALLCLOCK_UPDATE, 1);
 			ds_writew(REQUEST_REFRESH, 0);
 		}
-#if defined(__BORLANDC__)
+
 		add_ds_ws(0x425a, 2 * (!dir ? 2 : -2));
-#else
-		add_ds_ds(0x425a, 2 * (!dir ? 2 : -2));
-#endif
 	}
 
 	ds_writeb(0x4497, 0);
@@ -608,17 +593,9 @@ void sea_travel(signed short passage, signed short dir)
 
 		do {
 			if (!dir) {
-#if defined(__BORLANDC__)
 				sub_ds_ws(0x425a, 4);
-#else
-				sub_ds_ds(0x425a, 4);
-#endif
 			} else {
-#if defined(__BORLANDC__)
 				add_ds_ws(0x425a, 4);
-#else
-				add_ds_ds(0x425a, 4);
-#endif
 			}
 
 			dec_ds_ws(0x422a);

@@ -97,12 +97,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 	l5 = -1;
 	ds_writed(0x425a, (Bit32u)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (route_nr - 1))), 0xec)));
 	fb_start = (RealPt)ds_readd(0xd2ff);
-
-#if defined(__BORLANDC__)
 	add_ds_ws(0x425a, 4);
-#else
-	add_ds_ds(0x425a, 4);
-#endif
 
 	memset((void*)Real2Host(ds_readd(0xd299)), 170, 500);
 	ds_writed(0x426e, (Bit32u)RealMake(datseg, 0x9dbd + 9 * route_nr));
@@ -122,17 +117,9 @@ void TM_func1(signed short route_nr, signed short backwards)
 	{
 		while (host_readws(Real2Host(ds_readd(0x425a))) != -1)
 		{
-#if defined(__BORLANDC__)
 			add_ds_ws(0x425a, 4);
-#else
-			add_ds_ds(0x425a, 4);
-#endif
 		}
-#if defined(__BORLANDC__)
 		sub_ds_ws(0x425a, 4);
-#else
-		sub_ds_ds(0x425a, 4);
-#endif
 	}
 
 	memset((void*)(p_datseg + 0x4272), ds_writews(0x422a, 0), 60);
@@ -141,12 +128,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 	ds_writed(0x426a, (Bit32u)RealMake(datseg, 0xa66d));
 	while (host_readb(Real2Host(ds_readd(0x426a))) != route_nr && host_readbs(Real2Host(ds_readd(0x426a))) != -1)
 	{
-/* Bugfix: Optimizing compilers may produce wrong code here */
-#if defined(__BORLANDC__)
 		add_ds_ws(0x426a, 3);
-#else
-		add_ds_ds(0x426a, 3);
-#endif
 	}
 
 	ds_writew(TRV_RETURN, 0);
@@ -190,11 +172,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 		mul_ptr_ws(ptr, 100);
 
-#if defined(__BORLANDC__)
 		add_ds_ws(0x426a, 3);
-#else
-		add_ds_ds(0x426a, 3);
-#endif
 		inc_ds_ws(0x422a);
 	}
 
@@ -459,18 +437,10 @@ void TM_func1(signed short route_nr, signed short backwards)
 		{
 			ds_writew(TRV_RETURN, ds_readws(TRV_RETURN) == 1 ? 2: 0);
 
-#if defined(__BORLANDC__)
 			add_ds_ws(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? -2 : 2));
-#else
-			add_ds_ds(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? -2 : 2));
-#endif
 		}
 
-#if defined(__BORLANDC__)
 		add_ds_ws(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? 2 : -2));
-#else
-		add_ds_ds(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? 2 : -2));
-#endif
 	}
 
 	if (ds_readw(0xc3c1) == 0 && !ds_readb(0x4333) && ds_readw(TRV_RETURN) != 2)
@@ -478,11 +448,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 		update_mouse_cursor();
 
 		do {
-#if defined(__BORLANDC__)
 			add_ds_ws(0x425a, 2 * (!backwards ? -2 : 2));
-#else
-			add_ds_ds(0x425a, 2 * (!backwards ? -2 : 2));
-#endif
 			dec_ds_ws(0x422a);
 			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readd(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readd(0x425a))),
 				host_readb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a)));
