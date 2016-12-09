@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg077 (dungeon: deadship)
- *	Functions rewritten: 8/11
+ *	Functions rewritten: 9/11
  */
 #include <stdio.h>
 
@@ -288,6 +288,11 @@ void DNG01_chest6_x3(RealPt chest)
 	ds_writeb(0x3319, 1);
 }
 
+/* Borlandified and identical */
+void DNG01_chest6_x2(RealPt chest)
+{
+	GUI_output(get_dtp(0x0c));
+}
 #if !defined(__BORLANDC__)
 }
 #endif
