@@ -10,6 +10,8 @@ void DNG01_chest1_x1(RealPt);
 void DNG01_chest2_x1(RealPt);
 /* 0x2f */
 void DNG01_chest3_x1(RealPt);
+/* 0x34 */
+void DNG01_chest5_x1(RealPt);
 
 #if !defined(__BORLANDC__)
 }
