@@ -302,10 +302,10 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	ds_writeb((FIG_LIST_ELEM+13), -1);
 	ds_writeb((FIG_LIST_ELEM+15), -1);
 	ds_writeb((FIG_LIST_ELEM+14), -1);
-	ds_writed((FIG_LIST_ELEM+23), ds_readd(0xd86e)); /* ->prev */
+	ds_writefp((FIG_LIST_ELEM+23), ds_readfp(0xd86e)); /* ->prev */
 	ds_writeb((FIG_LIST_ELEM+20), 0); /* ->next */
 
-	add_ds_ws(0xd86e, 0x508);
+	add_ds_fp(0xd86e, 0x508);
 	sub_ds_ds(0xe370, 0x508);
 	ds_writeb((FIG_LIST_ELEM+17), 0x63);
 
@@ -512,9 +512,9 @@ void FIG_init_heroes(void)
 		ds_writeb((FIG_LIST_ELEM+13), 0xff);
 		ds_writeb((FIG_LIST_ELEM+15), 0xff);
 		ds_writeb((FIG_LIST_ELEM+14), 0xff);
-		ds_writed((FIG_LIST_ELEM+23), ds_readd(0xd86e));
+		ds_writefp((FIG_LIST_ELEM+23), ds_readfp(0xd86e));
 		ds_writeb((FIG_LIST_ELEM+20), 0);
-		add_ds_ws(0xd86e, 0x508);
+		add_ds_fp(0xd86e, 0x508);
 		sub_ds_ds(0xe370, 0x508);
 		ds_writeb((FIG_LIST_ELEM+17), 0x63);
 		ds_writeb((FIG_LIST_ELEM+18), 1);
