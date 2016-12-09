@@ -1,8 +1,9 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg077 (dungeon: deadship)
- *	Functions rewritten: 9/11
+ *	Functions rewritten: 10/11
  */
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -22,6 +23,10 @@
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
+
+#if !defined(__BORLANDC__)
+#include "t_map.h"
+#endif
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -293,6 +298,36 @@ void DNG01_chest6_x2(RealPt chest)
 {
 	GUI_output(get_dtp(0x0c));
 }
+
+/* Borlandified and identical */
+void DNG01_chest6_x1(RealPt chest)
+{
+	if (!ds_readbs(0x3319))
+	{
+		GUI_input(get_dtp(0x08), 10);
+
+		/* compare if the user wrote MARBO */
+		if (!strcmp((char*)Real2Host(ds_readfp(TEXT_INPUT_BUF)),
+				(char*)p_datseg + 0x93d1))
+		{
+#if defined(__BORLANDC__)
+			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest) + 11)))(chest);
+#else
+			t_map(chest, 11)(chest);
+#endif
+		} else if ((RealPt)host_readd(Real2Host(chest) + 7) != 0){
+#if defined(__BORLANDC__)
+			((void (*)(void))((RealPt)host_readd(Real2Host(chest) + 7)))();
+#else
+			((treasure_trap)(t_map(chest, 7)))();
+#endif
+		}
+
+	} else {
+		GUI_output(get_ltx(0x828));
+	}
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
