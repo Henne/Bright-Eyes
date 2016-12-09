@@ -271,13 +271,13 @@ void spell_hexenknoten(void)
 
 	nr = 24;
 
-	if (NOT_NULL(Real2Host(ds_readd(0xacc8)))) {
-		rp = (RealPt)ds_readd(0xacc8);
+	if (NOT_NULL(Real2Host(ds_readfp(0xacc8)))) {
+		rp = ds_readfp(0xacc8);
 		/* TODO: graphic bug if cast more than once */
 	} else {
-		rp = (RealPt)ds_readd(0xd86e);
+		rp = ds_readfp(0xd86e);
 		nvf.dst = Real2Host(rp);
-		nvf.src = Real2Host(ds_readd(SPELLOBJ_NVF_BUF));
+		nvf.src = Real2Host(ds_readfp(SPELLOBJ_NVF_BUF));
 		nvf.nr = nr;
 		nvf.type = 0;
 		nvf.width = (Bit8u*)&width;
@@ -290,10 +290,10 @@ void spell_hexenknoten(void)
 		height = host_readws((Bit8u*)&height);
 #endif
 
-		ds_writed(0xacc8, ds_readd(0xd86e));
+		ds_writefp(0xacc8, ds_readfp(0xd86e));
 
 		/* move pointer further */
-		add_ds_ws(0xd86e, width * height + 8);
+		add_ds_fp(0xd86e, width * height + 8);
 
 		sub_ds_ds(0xe370, width * height + 8L);
 	}
