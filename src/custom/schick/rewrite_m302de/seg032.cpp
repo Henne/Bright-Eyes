@@ -763,7 +763,7 @@ void FIG_load_ship_sprites(void)
 			} else {
 				/* this sprite has not been used yet */
 
-				ptr = Real2Host(ds_readd(0xd86e));
+				ptr = Real2Host(ds_readfp(0xd86e));
 
 				nvf.dst = ptr;
 				nvf.src = Real2Host(ds_readd(FIGHTOBJ_BUF));
@@ -780,12 +780,12 @@ void FIG_load_ship_sprites(void)
 #endif
 
 				/* buffer this picture */
-				host_writed(Real2Host(ds_readd(0xe388)) + 4 * l_si, ds_readd(0xd86e));
+				host_writed(Real2Host(ds_readd(0xe388)) + 4 * l_si, (Bit32u)ds_readfp(0xd86e));
 				host_writew(Real2Host(ds_readd(0xe384)) + 2 * l_si, width);
 				host_writew(Real2Host(ds_readd(0xe380)) + 2 * l_si, height);
 
 				/* adjust the pointer */
-				add_ds_ws(0xd86e, width * height + 8);
+				add_ds_fp(0xd86e, width * height + 8);
 
 				/* adjust the counter */
 				sub_ds_ds(0xe370, width * height + 8L);
