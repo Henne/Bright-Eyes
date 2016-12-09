@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg077 (dungeon: deadship)
- *	Functions rewritten: 10/11
+ *	Functions rewritten: 11/11 (complete)
  */
 #include <stdio.h>
 #include <string.h>
@@ -15,6 +15,7 @@
 #include "seg025.h"
 #include "seg026.h"
 #include "seg027.h"
+#include "seg032.h"
 #include "seg075.h"
 #include "seg076.h"
 #include "seg092.h"
@@ -325,6 +326,30 @@ void DNG01_chest6_x1(RealPt chest)
 
 	} else {
 		GUI_output(get_ltx(0x828));
+	}
+}
+
+/* Borlandified and identical */
+void DNG01_chest0_x1(RealPt chest)
+{
+	if (!ds_readb(0x43a0) && GUI_bool(get_dtp(0x04)))
+	{
+		ds_writeb(0x43a0, 1);
+
+		/* enable deathtrap */
+		ds_writew(DEATHTRAP_STEPS, 30);
+		ds_writew(DEATHTRAP, 1);
+
+		/* fight the demon */
+		ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1d3a))));
+
+		if (!do_fight(220))
+		{
+			add_hero_ap_all(50);
+		}
+
+		/* this quest is done */
+		ds_writeb(QUEST_DEADSHIP_DONE, 1);
 	}
 }
 

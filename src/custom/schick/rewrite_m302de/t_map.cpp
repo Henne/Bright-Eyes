@@ -70,6 +70,7 @@ treasure_type t_map(RealPt ptr, const int off)
 		if (f_off == 0x34) return (treasure_type)DNG01_chest5_x1;
 		if (f_off == 0x39) return (treasure_type)DNG01_chest7_x2;
 		if (f_off == 0x3e) return (treasure_type)DNG01_chest7_x1;
+		if (f_off == 0x43) return (treasure_type)DNG01_chest0_x1;
 		if (f_off == 0x48) return (treasure_type)DNG01_chest6_x1;
 		if (f_off == 0x4d) return (treasure_type)DNG01_chest6_x2;
 		if (f_off == 0x52) return (treasure_type)DNG01_chest6_x3;

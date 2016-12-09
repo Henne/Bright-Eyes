@@ -16,7 +16,8 @@ void DNG01_chest5_x1(RealPt);
 void DNG01_chest7_x2(RealPt);
 /* 0x3e */
 void DNG01_chest7_x1(RealPt);
-
+/* 0x43 */
+void DNG01_chest0_x1(RealPt);
 /* 0x48 */
 void DNG01_chest6_x1(RealPt);
 /* 0x4d */
