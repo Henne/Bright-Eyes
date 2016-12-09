@@ -68,6 +68,7 @@ treasure_type t_map(RealPt ptr, const int off)
 		if (f_off == 0x2a) return (treasure_type)DNG01_chest2_x1;
 		if (f_off == 0x2f) return (treasure_type)DNG01_chest3_x1;
 		if (f_off == 0x34) return (treasure_type)DNG01_chest5_x1;
+		if (f_off == 0x39) return (treasure_type)DNG01_chest7_x2;
 		if (f_off == 0x3e) return (treasure_type)DNG01_chest7_x1;
 
 		D1_ERR("ERROR: call to seg077:0x%x should not happen\n", f_off);

@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg077 (dungeon: deadship)
- *	Functions rewritten: 6/11
+ *	Functions rewritten: 7/11
  */
 #include <stdio.h>
 
@@ -263,6 +263,17 @@ void DNG01_chest5_x1(RealPt chest)
 void DNG01_chest7_x1(RealPt chest)
 {
 	loot_corpse(chest, get_dtp(0x10), p_datseg + 0x331a);
+}
+
+/* Borlandified and identical */
+void DNG01_chest7_x2(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x420d));
+	loot_chest(Real2Host(chest), get_dtp(0x14), get_dtp(0x18));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 #if !defined(__BORLANDC__)
