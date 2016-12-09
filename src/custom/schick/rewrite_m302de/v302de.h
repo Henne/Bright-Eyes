@@ -1070,13 +1070,13 @@ extern Bit8u* city_ltx[];
 #define host_readws(p) (*(Bit16s*)(p))
 #define host_readds(p) (*(Bit32s*)(p))
 
-#define host_writeb(p, d)	(*(Bit8u*)(p) = d)
-#define host_writew(p, d)	(*(Bit16u*)(p) = d)
-#define host_writed(p, d)	(*(Bit32u*)(p) = d)
+#define host_writeb(p, d)	(*(Bit8u*)(p) = (d))
+#define host_writew(p, d)	(*(Bit16u*)(p) = (d))
+#define host_writed(p, d)	(*(Bit32u*)(p) = (d))
 
-#define host_writebs(p, d)	(*(Bit8s*)(p) = d)
-#define host_writews(p, d)	(*(Bit16s*)(p) = d)
-#define host_writeds(p, d)	(*(Bit32s*)(p) = d)
+#define host_writebs(p, d)	(*(Bit8s*)(p) = (d))
+#define host_writews(p, d)	(*(Bit16s*)(p) = (d))
+#define host_writeds(p, d)	(*(Bit32s*)(p) = (d))
 
 /* TODO: ugly hack, BASM does not like 16bit immediate values with imul */
 #define calc_twodim_array_ptr(start, width, disp, off, dst) \
@@ -1148,22 +1148,22 @@ struct bittest {
 #define item_herb_potion(item)	((*(struct item_status*)(item + 0x2)).herb_potion)
 #define item_undropable(item)	((*(struct item_status*)(item + 0x2)).undropable)
 
-#define get_spelltarget_e()	((Bit8u*)ds_readd(SPELLTARGET_E))
-#define get_spelltarget()	((Bit8u*)ds_readd(SPELLTARGET))
-#define get_spelluser()		((Bit8u*)ds_readd(SPELLUSER))
-#define get_spelluser_e()	((Bit8u*)ds_readd(SPELLUSER_E))
+#define get_spelltarget_e()	((Bit8u*)ds_readfp(SPELLTARGET_E))
+#define get_spelltarget()	((Bit8u*)ds_readfp(SPELLTARGET))
+#define get_spelluser()		((Bit8u*)ds_readfp(SPELLUSER))
+#define get_spelluser_e()	((Bit8u*)ds_readfp(SPELLUSER_E))
 
-#define get_itemuser() ((Bit8u*)ds_readd(ITEMUSER))
+#define get_itemuser() ((Bit8u*)ds_readfp(ITEMUSER))
 
 #define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
 #define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
 #define get_city(nr) (char*)(host_readd((RealPt)ds_readd(CITY_LTX) + nr))
-#define get_monname(nr) (char*)(host_readd((RealPt)ds_readd(MONNAMES) + nr * 4))
-#define get_itemsdat(nr) (char*)((RealPt)ds_readd(ITEMSDAT) + nr * 12)
-#define get_itemname(nr) (char*)((RealPt)(host_readd((RealPt)(ds_readd(ITEMSNAME)) + nr * 4)))
+#define get_monname(nr) ((char*)(host_readd(ds_readfp(MONNAMES) + 4 * (nr))))
+#define get_itemsdat(nr) ((char*)(ds_readfp(ITEMSDAT) + 12 * (nr)))
+#define get_itemname(nr) ((char*)(host_readd(ds_readfp(ITEMSNAME) + 4 * (nr))))
 
-#define get_cb_val(x, y) (host_readbs((RealPt)ds_readd(CHESSBOARD) + ((y) * 25) + (x)))
-#define set_cb_val(x, y, val) (host_writeb(((RealPt)ds_readd(CHESSBOARD)) + y * 25 + x, val))
+#define get_cb_val(x, y) (host_readbs(ds_readfp(CHESSBOARD) + ((y) * 25) + (x)))
+#define set_cb_val(x, y, val) (host_writeb((ds_readfp(CHESSBOARD)) + (y) * 25 + (x), (val)))
 
 #endif
 #endif
