@@ -6,6 +6,8 @@ namespace M302de {
 signed short DNG01_handler(void);
 /* 0x25 */
 void DNG01_chest1_x1(RealPt);
+/* 0x2a */
+void DNG01_chest2_x1(RealPt);
 
 #if !defined(__BORLANDC__)
 }
