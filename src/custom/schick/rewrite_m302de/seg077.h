@@ -8,6 +8,8 @@ signed short DNG01_handler(void);
 void DNG01_chest1_x1(RealPt);
 /* 0x2a */
 void DNG01_chest2_x1(RealPt);
+/* 0x2f */
+void DNG01_chest3_x1(RealPt);
 
 #if !defined(__BORLANDC__)
 }
