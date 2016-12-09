@@ -432,19 +432,19 @@ void sea_travel(signed short passage, signed short dir)
 
 	ds_writeb(SEA_TRAVEL, 1);
 
-	ds_writed(0x4266, (Bit32u)(passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(BUFFER9_PTR), 11400)));
+	ds_writehp(0x4266, (passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(BUFFER9_PTR), 11400)));
 	ds_writew(0x4236, passage < 7 ? 7 : 38);
 	ds_writew(0x423e, passage < 7 ? passage : passage - 7);
 
-	off = host_readd(Real2Host(ds_readd(0x4266)) + 4 * ds_readw(0x423e));
-	ds_writed(0x425a, (Bit32u)((RealPt)ds_readd(0x4266) + off + 4 * ds_readws(0x4236)));
-	ptr = (RealPt)ds_readd(0xd2ff);
+	off = host_readd(Real2Host(ds_readfp(0x4266)) + 4 * ds_readw(0x423e));
+	ds_writefp(0x425a, ds_readfp(0x4266) + off + 4 * ds_readws(0x4236));
+	ptr = ds_readfp(0xd2ff);
 
-	add_ds_ws(0x425a, 4);
+	add_ds_fp(0x425a, 4);
 
 	memset(Real2Host(ds_readd(0xd299)), 0xaa, 500);
 	ds_writew(0x424c, 10 * ds_readbs(0x42b0));
-	ds_writew(0x422e, get_srout_len(Real2Host(ds_readd(0x425a))));
+	ds_writew(0x422e, get_srout_len(Real2Host(ds_readfp(0x425a))));
 	ds_writew(0x4230, 100 * ds_readb(0x6f00 + 2 + 8 * passage));
 	ds_writew(0x4232, ds_readws(0x4230) / ds_readws(0x424c) * 60);
 	ds_writew(0x4234, ds_readws(0x4232) / ds_readws(0x422e));
@@ -456,14 +456,14 @@ void sea_travel(signed short passage, signed short dir)
 
 	if (dir) {
 
-		while (host_readws(Real2Host(ds_readd(0x425a))) != -1) {
-			add_ds_ws(0x425a, 4);
+		while (host_readws(Real2Host(ds_readfp(0x425a))) != -1) {
+			add_ds_fp(0x425a, 4);
 		}
 
-		sub_ds_ws(0x425a, 4);
+		sub_ds_fp(0x425a, 4);
 	}
 
-	ds_writed(0x425e, ds_readd(0x425a));
+	ds_writefp(0x425e, ds_readfp(0x425a));
 	ds_writew(0x423c, 18 * (ds_readws(0x424c) + ds_readws(0x424c) / 10));
 
 	if (passage <= 6 && ds_readb(QUEST_DEADSHIP) != 0 && !ds_readb(QUEST_DEADSHIP_DONE)) {
@@ -488,23 +488,23 @@ void sea_travel(signed short passage, signed short dir)
 	ds_writew(0x422a, ds_writew(0x4238, ds_writew(0x423c, ds_writeb(0x4333, 0))));
 	ds_writeb(0x4497, 1);
 
-	while (host_readws(Real2Host(ds_readd(0x425a)) + 2 * ds_writew(0x4236, 0)) != -1 && !ds_readb(0x4333))
+	while (host_readws(Real2Host(ds_readfp(0x425a)) + 2 * ds_writew(0x4236, 0)) != -1 && !ds_readb(0x4333))
 	{
 
-		if (is_mouse_in_rect(host_readws(Real2Host(ds_readd(0x425a))) - 16,
-					host_readws(Real2Host(ds_readd(0x425a)) + 2) - 16,
-					host_readws(Real2Host(ds_readd(0x425a))) + 16,
-					host_readws(Real2Host(ds_readd(0x425a)) + 2) + 16))
+		if (is_mouse_in_rect(host_readws(Real2Host(ds_readfp(0x425a))) - 16,
+					host_readws(Real2Host(ds_readfp(0x425a)) + 2) - 16,
+					host_readws(Real2Host(ds_readfp(0x425a))) + 16,
+					host_readws(Real2Host(ds_readfp(0x425a)) + 2) + 16))
 		{
 			update_mouse_cursor();
 			ds_writew(0x4236, 1);
 		}
 
 		host_writeb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a),
-			mem_readb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x425a)) + 2) + host_readws(Real2Host(ds_readd(0x425a)))));
+			mem_readb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readfp(0x425a)) + 2) + host_readws(Real2Host(ds_readfp(0x425a)))));
 		inc_ds_ws(0x422a);
 
-		mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x425a)) + 2) + host_readws(Real2Host(ds_readd(0x425a))), 0x1f);
+		mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readfp(0x425a)) + 2) + host_readws(Real2Host(ds_readfp(0x425a))), 0x1f);
 
 		if (ds_readws(0x4236) != 0) {
 			refresh_screen_size();
@@ -569,7 +569,7 @@ void sea_travel(signed short passage, signed short dir)
 			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
 			ds_writew(0x4228, 0);
-			for (ds_writed(0x4262, ds_readd(0x425e)); host_readb(Real2Host(ds_readd(0xd299)) + inc_ds_ws_post(0x4228)) != 0xaa; add_ds_ws(0x4262, 2 * (!dir ? 2 : -2)))
+			for (ds_writed(0x4262, ds_readd(0x425e)); host_readb(Real2Host(ds_readd(0xd299)) + inc_ds_ws_post(0x4228)) != 0xaa; add_ds_fp(0x4262, 2 * (!dir ? 2 : -2)))
 			{
 				mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x4262)) + 2) + host_readws(Real2Host(ds_readd(0x4262))), 0x1f);
 			}
@@ -582,7 +582,7 @@ void sea_travel(signed short passage, signed short dir)
 			ds_writew(REQUEST_REFRESH, 0);
 		}
 
-		add_ds_ws(0x425a, 2 * (!dir ? 2 : -2));
+		add_ds_fp(0x425a, 2 * (!dir ? 2 : -2));
 	}
 
 	ds_writeb(0x4497, 0);
@@ -593,17 +593,17 @@ void sea_travel(signed short passage, signed short dir)
 
 		do {
 			if (!dir) {
-				sub_ds_ws(0x425a, 4);
+				sub_ds_fp(0x425a, 4);
 			} else {
-				add_ds_ws(0x425a, 4);
+				add_ds_fp(0x425a, 4);
 			}
 
 			dec_ds_ws(0x422a);
 
-			mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readd(0x425a)) + 2) + host_readws(Real2Host(ds_readd(0x425a))),
+			mem_writeb(Real2Phys(ptr) + 320 * host_readws(Real2Host(ds_readfp(0x425a)) + 2) + host_readws(Real2Host(ds_readfp(0x425a))),
 				host_readb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a))
  );
-		} while (host_readws(Real2Host(ds_readd(0x425a))) != -1);
+		} while (host_readws(Real2Host(ds_readfp(0x425a))) != -1);
 
 		refresh_screen_size();
 	}
