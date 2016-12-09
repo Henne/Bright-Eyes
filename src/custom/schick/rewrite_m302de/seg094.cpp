@@ -95,14 +95,14 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 	ds_writeb(SEA_TRAVEL, 1);
 	l5 = -1;
-	ds_writed(0x425a, (Bit32u)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (route_nr - 1))), 0xec)));
-	fb_start = (RealPt)ds_readd(0xd2ff);
-	add_ds_ws(0x425a, 4);
+	ds_writefp(0x425a, (RealPt)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (route_nr - 1))), 0xec)));
+	fb_start = ds_readfp(0xd2ff);
+	add_ds_fp(0x425a, 4);
 
-	memset((void*)Real2Host(ds_readd(0xd299)), 170, 500);
-	ds_writed(0x426e, (Bit32u)RealMake(datseg, 0x9dbd + 9 * route_nr));
+	memset((void*)Real2Host(ds_readfp(0xd299)), 170, 500);
+	ds_writefp(0x426e, (RealPt)RealMake(datseg, 0x9dbd + 9 * route_nr));
 	ds_writew(0x424c, 166);
-	ds_writew(0x422e, TM_get_track_length(Real2Host(ds_readd(0x425a))));
+	ds_writew(0x422e, TM_get_track_length(Real2Host(ds_readfp(0x425a))));
 	ds_writew(0x4230, host_readb(Real2Host(ds_readd(0x426e)) + 2) * 100);
 	ds_writew(0x4232, ds_readws(0x4230) / (ds_readws(0x424c) + host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c) / 10) * 60);
 	ds_writew(0x4234, ds_readws(0x4232) / ds_readws(0x422e));
@@ -115,30 +115,30 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 	if (backwards)
 	{
-		while (host_readws(Real2Host(ds_readd(0x425a))) != -1)
+		while (host_readws(Real2Host(ds_readfp(0x425a))) != -1)
 		{
-			add_ds_ws(0x425a, 4);
+			add_ds_fp(0x425a, 4);
 		}
-		sub_ds_ws(0x425a, 4);
+		sub_ds_fp(0x425a, 4);
 	}
 
 	memset((void*)(p_datseg + 0x4272), ds_writews(0x422a, 0), 60);
 	memset((void*)(p_datseg + 0xe4c9), 0, 15);
 
-	ds_writed(0x426a, (Bit32u)RealMake(datseg, 0xa66d));
+	ds_writefp(0x426a, (RealPt)RealMake(datseg, 0xa66d));
 	while (host_readb(Real2Host(ds_readd(0x426a))) != route_nr && host_readbs(Real2Host(ds_readd(0x426a))) != -1)
 	{
-		add_ds_ws(0x426a, 3);
+		add_ds_fp(0x426a, 3);
 	}
 
 	ds_writew(TRV_RETURN, 0);
-	ds_writed(0x425e, ds_readd(0x425a));
+	ds_writefp(0x425e, ds_readfp(0x425a));
 	ds_writew(0x423c, (ds_readws(0x424c) + host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c) / 10) * 18);
 
 	/* random section starts */
 	if (ds_readws(QUESTED_MONTHS) > 3)
 	{
-		if (ds_writew(0x4244, (random_schick(100) <= 2 ? 1 : 0)))
+		if ((ds_writew(0x4244, (random_schick(100) <= 2 ? 1 : 0))) != 0)
 		{
 			ds_writew(0x4246, random_schick(ds_readws(0x423c)));
 		}
@@ -146,12 +146,12 @@ void TM_func1(signed short route_nr, signed short backwards)
 		ds_writew(0x4244, 0);
 	}
 
-	if (ds_writew(0x4240, (random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 4) ? 1: 0)))
+	if ((ds_writew(0x4240, (random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 4) ? 1: 0))) != 0)
 	{
 		ds_writew(0x4242, random_schick(ds_readws(0x423c)));
 	}
 
-	if (ds_writew(0x4248, (random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 7) / 3 ? 1: 0)))
+	if ((ds_writew(0x4248, (random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 7) / 3 ? 1: 0))) != 0)
 	{
 		ds_writew(0x424a, random_schick(ds_readws(0x423c)));
 	}
@@ -159,11 +159,11 @@ void TM_func1(signed short route_nr, signed short backwards)
 	ds_writew(0x423c, 0);
 	/* random section ends */
 
-	while (host_readbs(Real2Host(ds_readd(0x426a))) != -1 && host_readb(Real2Host(ds_readd(0x426a))) == route_nr)
+	while (host_readbs(Real2Host(ds_readfp(0x426a))) != -1 && host_readb(Real2Host(ds_readfp(0x426a))) == route_nr)
 	{
 		ptr = p_datseg + 0x4272 + 4 * ds_readws(0x422a);
-		host_writew(ptr, host_readb(Real2Host(ds_readd(0x426a)) + 1));
-		host_writew(ptr + 2, host_readb(Real2Host(ds_readd(0x426a)) + 2));
+		host_writew(ptr, host_readb(Real2Host(ds_readfp(0x426a)) + 1));
+		host_writew(ptr + 2, host_readb(Real2Host(ds_readfp(0x426a)) + 2));
 
 		if (backwards)
 		{
@@ -172,20 +172,20 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 		mul_ptr_ws(ptr, 100);
 
-		add_ds_ws(0x426a, 3);
+		add_ds_fp(0x426a, 3);
 		inc_ds_ws(0x422a);
 	}
 
 	ds_writew(0x422a, ds_writew(0x4238, ds_writeb(0x4333, 0)));
 
-	while (host_readws(Real2Host(ds_readd(0x425a)) + 2 * ds_writew(0x4236, 0)) != -1 &&
+	while (host_readws(Real2Host(ds_readfp(0x425a)) + 2 * ds_writew(0x4236, 0)) != -1 &&
 		!ds_readb(0x4333) &&
 		ds_readw(0xc3c1) == 0)
 	{
-		if (is_mouse_in_rect(host_readws(Real2Host(ds_readd(0x425a))) - 16,
-					host_readws(Real2Host(ds_readd(0x425a)) + 2) - 16,
-					host_readws(Real2Host(ds_readd(0x425a))) + 16,
-					host_readws(Real2Host(ds_readd(0x425a)) + 2) + 16))
+		if (is_mouse_in_rect(host_readws(Real2Host(ds_readfp(0x425a))) - 16,
+					host_readws(Real2Host(ds_readfp(0x425a)) + 2) - 16,
+					host_readws(Real2Host(ds_readfp(0x425a))) + 16,
+					host_readws(Real2Host(ds_readfp(0x425a)) + 2) + 16))
 		{
 			update_mouse_cursor();
 			ds_writew(0x4236, 1);
@@ -195,18 +195,18 @@ void TM_func1(signed short route_nr, signed short backwards)
 		{
 			dec_ds_ws(0x422a);
 
-			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readd(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readd(0x425a))),
+			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a))),
 				host_readb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a)));
 
 			mem_writeb(Real2Phys(ds_readd(0xd299)) + ds_readws(0x422a), 0xaa);
 		} else {
 
 			host_writeb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a),
-				mem_readb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readd(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readd(0x425a)))));
+				mem_readb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a)))));
 
 			inc_ds_ws(0x422a);
 
-			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readd(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readd(0x425a))), 0x1c);
+			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a))), 0x1c);
 		}
 
 		if (ds_readw(0x4236) != 0)
@@ -360,19 +360,19 @@ void TM_func1(signed short route_nr, signed short backwards)
 			{
 				ds_writew(0x423c, (ds_readws(0x424c) + (host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c) / 10)) * 18);
 
-				if (ds_writew(0x4240, random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 4) ? 1 : 0))
+				if ((ds_writew(0x4240, random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 4) ? 1 : 0)) != 0)
 				{
 					ds_writew(0x4242, random_schick(ds_readws(0x423c)));
 				}
 
-				if (ds_writew(0x4248, random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 7) / 3 ? 1 : 0))
+				if ((ds_writew(0x4248, random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 7) / 3 ? 1 : 0)) != 0)
 				{
 					ds_writew(0x424a, random_schick(ds_readws(0x423c)));
 				}
 
 				if (ds_readws(QUESTED_MONTHS) > 3)
 				{
-					if (ds_writew(0x4244, random_schick(100) <= 2 ? 1 : 0))
+					if ((ds_writew(0x4244, random_schick(100) <= 2 ? 1 : 0)) != 0)
 					{
 						ds_writew(0x4246, random_schick(ds_readws(0x423c)));
 					}
@@ -400,7 +400,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 			ds_writeb(PP20_INDEX, 5);
 			ds_writew(0x4228, 0);
-			ds_writed(0x4262, ds_readd(0x425e));
+			ds_writefp(0x4262, ds_readfp(0x425e));
 
 			if (route_nr == 59)
 			{
@@ -410,7 +410,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 			while (host_readb(Real2Host(ds_readd(0xd299)) + inc_ds_ws_post(0x4228)) != 0xaa)
 			{
 				mem_writeb(Real2Phys(fb_start) + 320 * host_readws(Real2Host(ds_readd(0x4262)) + 2) + host_readws(Real2Host(ds_readd(0x4262))), 0x1c);
-				add_ds_ws(0x4262, 2 * (!backwards ? 2 : -2));
+				add_ds_fp(0x4262, 2 * (!backwards ? 2 : -2));
 			}
 
 			refresh_screen_size();
@@ -437,10 +437,10 @@ void TM_func1(signed short route_nr, signed short backwards)
 		{
 			ds_writew(TRV_RETURN, ds_readws(TRV_RETURN) == 1 ? 2: 0);
 
-			add_ds_ws(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? -2 : 2));
+			add_ds_fp(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? -2 : 2));
 		}
 
-		add_ds_ws(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? 2 : -2));
+		add_ds_fp(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? 2 : -2));
 	}
 
 	if (ds_readw(0xc3c1) == 0 && !ds_readb(0x4333) && ds_readw(TRV_RETURN) != 2)
@@ -448,12 +448,12 @@ void TM_func1(signed short route_nr, signed short backwards)
 		update_mouse_cursor();
 
 		do {
-			add_ds_ws(0x425a, 2 * (!backwards ? -2 : 2));
+			add_ds_fp(0x425a, 2 * (!backwards ? -2 : 2));
 			dec_ds_ws(0x422a);
-			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readd(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readd(0x425a))),
+			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a))),
 				host_readb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a)));
 
-		} while (host_readws(Real2Host(ds_readd(0x425a))) != -1);
+		} while (host_readws(Real2Host(ds_readfp(0x425a))) != -1);
 
 		if (route_nr == 59)
 		{
@@ -503,7 +503,7 @@ signed short TM_unused1(RealPt ptr, signed short off)
 					ds_writeb(0x4344 + l5, (signed char)l7);
 					array[l5] = get_ltx(0x88c);
 					l5++;
-					ds_writed(0x4340, (Bit32u)ptr);
+					ds_writefp(0x4340, ptr);
 
 					set_textbox_positions(l7);
 					answer = GUI_radio(get_ltx(0x888), (signed char)l5,
