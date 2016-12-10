@@ -9244,7 +9244,8 @@ static int seg077(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			reg_ax = DNG01_handler();
+			return 1;
 		}
 		case 0x2a: {
 			return 0;
@@ -10023,7 +10024,7 @@ static int seg092(unsigned short offs) {
 		/* valid values of d are [1,2,..,15] */
 		/* enable only for dungeons where treasure code is finished */
 
-		if ((d >= 4 && d <= 7) || (9 <= d && d <= 15))
+		if ((d == 1) || (d >= 4 && d <= 7) || (9 <= d && d <= 15))
 		{
 			D1_LOG("seg092_06b4(%d)\n", a1);
 			seg092_06b4(a1);
