@@ -555,26 +555,33 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 
 void use_key_on_chest(RealPt chest_ptr)
 {
-#if !defined(__BORLANDC__)
-	DUMMY_WARNING();
-#else
 	signed short key_pos;
 	Bit8u *hero;
 
-	hero = get_first_hero_available_in_group();
+	hero = Real2Host(get_first_hero_available_in_group());
 
-	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1) {
+	/* the leader of the group must have the key */
+	if ((key_pos = get_item_pos(hero, host_readb(Real2Host(chest_ptr) + 2))) != -1)
+	{
 
-		if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * key_pos)) {
+		if (!ks_broken(hero + HERO_ITEM_HEAD + 14 * key_pos))
+		{
 
+#if defined(__BORLANDC__)
 			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest_ptr) + 11)))(chest_ptr);
+#else
+			t_map(chest_ptr, 11)(chest_ptr);
+#endif
 
 			ds_writew(0xe4a0, 1);
 		}
 	} else {
+#if defined(__BORLANDC__)
 		((void (*)(void))((RealPt)host_readd(Real2Host(chest_ptr) + 7)))();
-	}
+#else
+		((treasure_trap)(t_map(chest_ptr, 7)))();
 #endif
+	}
 }
 
 void loot_multi_chest(Bit8u *chest, Bit8u *msg)
