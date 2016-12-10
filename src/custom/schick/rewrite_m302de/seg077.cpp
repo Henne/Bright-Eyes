@@ -281,10 +281,19 @@ void DNG01_chest7_x2(RealPt chest)
 
 void DNG01_chest6_x3(RealPt chest)
 {
+	/* ITEM: the GOLDEN KEY */
 	get_item(219, 1, 1);
 
+/* Original-Bug: The string 14 from SHIP.DTX needs a pointer to the name of the hero, not an integer.
+*/
+#ifdef M302de_ORIGINAL_BUGFIX
+	sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
+		(char*)get_dtp(0x38),
+		(char*)Real2Host(get_first_hero_available_in_group()));
+#else
 	sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 		(char*)get_dtp(0x38), 10);
+#endif
 	print_msg_with_first_hero(Real2Host(ds_readfp(TEXT_OUTPUT_BUF)));
 
 	ds_writeb(0x3319, 1);
