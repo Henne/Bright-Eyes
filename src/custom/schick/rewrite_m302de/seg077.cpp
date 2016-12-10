@@ -73,7 +73,7 @@ signed short DNG01_handler(void)
 		DNG_fallpit_test(6);
 		inc_ds_ws_post(Y_TARGET);
 
-	} else if (target_pos == 0x1d05 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3315))
+	} else if (target_pos == 0x1d05 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG01_SABRE_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 			(char*)get_ltx(0x840),
@@ -83,10 +83,10 @@ signed short DNG01_handler(void)
 		/* ITEM: get a SABRE */
 		if (GUI_bool(Real2Host(ds_readfp(TEXT_OUTPUT_BUF))) && get_item(3, 1, 1))
 		{
-			ds_writeb(0x3315, 1);
+			ds_writeb(DNG01_SABRE_TAKEN, 1);
 		}
 
-	} else if (target_pos == 0x3209 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3316))
+	} else if (target_pos == 0x3209 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG01_CROSSBOW_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 			(char*)get_ltx(0x840),
@@ -96,15 +96,15 @@ signed short DNG01_handler(void)
 		/* ITEM: get a CROSSBOW */
 		if (GUI_bool(Real2Host(ds_readfp(TEXT_OUTPUT_BUF))) && get_item(12, 1, 1))
 		{
-			ds_writeb(0x3316, 1);
+			ds_writeb(DNG01_CROSSBOW_TAKEN, 1);
 		}
 
-	} else if (target_pos == 0x4209 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3314))
+	} else if (target_pos == 0x4209 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG01_AMULET_TAKEN))
 	{
 		/* ITEM: a magic AMULET */
 		if (GUI_bool(get_dtp(0x1c)) && get_item(174, 1, 1))
 		{
-			ds_writeb(0x3314, 1);
+			ds_writeb(DNG01_AMULET_TAKEN, 1);
 			sub_ds_ds(GODS_ESTIMATION + 4 * 5, 100L);
 		}
 
@@ -135,7 +135,7 @@ signed short DNG01_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x5108 && !ds_readbs(0x3317))
+	} else if (target_pos == 0x5108 && !ds_readbs(DNG01_ARDORA_FREED))
 	{
 		/* NPC: ARDORA */
 		ds_writew(TEXTBOX_WIDTH, 7);
@@ -164,7 +164,7 @@ signed short DNG01_handler(void)
 			GUI_dialogbox(ds_readfp(DTP2), get_ltx(0xbd0), get_dtp(0x28), 0);
 		}
 
-		ds_writeb(0x3317, 1);
+		ds_writeb(DNG01_ARDORA_FREED, 1);
 
 		add_hero_ap_all(20);
 
@@ -229,7 +229,7 @@ void DNG01_chest1_x1(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x41ec));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG01_CHEST1_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -239,7 +239,7 @@ void DNG01_chest2_x1(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x41f4));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG01_CHEST2_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -249,7 +249,7 @@ void DNG01_chest3_x1(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x41fe));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG01_CHEST3_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -259,14 +259,14 @@ void DNG01_chest5_x1(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4200));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG01_CHEST5_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 void DNG01_chest7_x1(RealPt chest)
 {
-	loot_corpse(chest, get_dtp(0x10), p_datseg + 0x331a);
+	loot_corpse(chest, get_dtp(0x10), p_datseg + DNG01_CORPSE_LOOTED);
 }
 
 void DNG01_chest7_x2(RealPt chest)
@@ -274,7 +274,7 @@ void DNG01_chest7_x2(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x420d));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG01_CHEST7_CONTENT));
 	loot_chest(Real2Host(chest), get_dtp(0x14), get_dtp(0x18));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -296,7 +296,7 @@ void DNG01_chest6_x3(RealPt chest)
 #endif
 	print_msg_with_first_hero(Real2Host(ds_readfp(TEXT_OUTPUT_BUF)));
 
-	ds_writeb(0x3319, 1);
+	ds_writeb(DNG01_KEY_TAKEN, 1);
 }
 
 void DNG01_chest6_x2(RealPt chest)
@@ -306,13 +306,13 @@ void DNG01_chest6_x2(RealPt chest)
 
 void DNG01_chest6_x1(RealPt chest)
 {
-	if (!ds_readbs(0x3319))
+	if (!ds_readbs(DNG01_KEY_TAKEN))
 	{
 		GUI_input(get_dtp(0x08), 10);
 
 		/* compare if the user wrote MARBO */
 		if (!strcmp((char*)Real2Host(ds_readfp(TEXT_INPUT_BUF)),
-				(char*)p_datseg + 0x93d1))
+				(char*)p_datseg + DNG01_STR_MARBO))
 		{
 #if defined(__BORLANDC__)
 			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest) + 11)))(chest);

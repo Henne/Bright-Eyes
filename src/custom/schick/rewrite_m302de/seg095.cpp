@@ -62,7 +62,7 @@ unsigned short npc_meetings(unsigned short type_index)
 		if (ds_readb(CURRENT_TOWN) == 0x1 &&
 			ds_readw(TYPEINDEX) == 0x6 &&
 			!ds_readb((NPC_TIMERS - 1) + 4) &&
-			ds_readb(0x3317) != 0) {
+			ds_readb(DNG01_ARDORA_FREED) != 0) {
 
 			npc_ardora();
 		} else

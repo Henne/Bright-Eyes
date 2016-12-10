@@ -110,6 +110,12 @@
 #define SMITH_REPAIRITEMS	(0x31e2)	/* (struct { short, long })[50] */
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
+#define DNG01_AMULET_TAKEN	(0x3314)	/* signed char {0,1} */
+#define DNG01_SABRE_TAKEN	(0x3315)	/* signed char {0,1} */
+#define DNG01_CROSSBOW_TAKEN	(0x3316)	/* signed char {0,1} */
+#define DNG01_ARDORA_FREED	(0x3317)	/* signed char {0,1} */
+#define DNG01_KEY_TAKEN	(0x3319)	/* signed char {0,1} */
+#define DNG01_CORPSE_LOOTED	(0x331a)	/* signed char {0,1} */
 #define WEATHER1	(0x331b)	/* signed short, random(6) */
 #define WEATHER2	(0x331d)	/* signed short, random(7) */
 #define TREASURE_MAPS	(0x3332)	/* signed char[10] */
@@ -210,6 +216,11 @@
 #define DNG15_CURSED_MONEY_A	(0x41de)	/* unsigned char[6] {0, 1} */
 #define DNG15_UNDEAD_FIGHT	(0x41e4)	/* unsigned char {0, 1} */
 #define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
+#define DNG01_CHEST1_CONTENT	(0x41ec)	/* unsigned char[8] */
+#define DNG01_CHEST2_CONTENT	(0x41f4)	/* unsigned char[10] */
+#define DNG01_CHEST3_CONTENT	(0x41fe)	/* unsigned char[2] */
+#define DNG01_CHEST5_CONTENT	(0x4200)	/* unsigned char[13] */
+#define DNG01_CHEST7_CONTENT	(0x420d)	/* unsigned char[5] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
@@ -374,6 +385,7 @@
 #define GOSSIP_STR_TRIPLE_WILDCARD	(0x7d06)	/* char[8] = "%s %s%s" */
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
+#define DNG01_STR_MARBO	(0x93d1)		/* char[6] = "MARBO" */
 #define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
 #define SEA_TRAVEL	(0xa842)	/* unsigned char {0,1} */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
