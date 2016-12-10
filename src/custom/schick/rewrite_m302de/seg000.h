@@ -1,4 +1,7 @@
 #if !defined(__BORLANDC__)
+
+#include <time.h>
+
 namespace M302de {
 
 struct ffblk {
