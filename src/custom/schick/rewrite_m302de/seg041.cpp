@@ -259,7 +259,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 	if (v11 != -1) {
 
-		p2 = p_datseg + 0x06b0+ host_readbs(item_p_rh + 4) * 7;
+		p2 = p_datseg + 0x06b0 + host_readbs(item_p_rh + 4) * 7;
 
 		damage = dice_roll(host_readbs(p2), 6, host_readbs(p2 + 1));
 
@@ -295,10 +295,10 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 				v4 = 6;
 			}
 
-			p3 = p_datseg + 0x0668+ host_readbs(p2 + 4) * 8;
+			p3 = p_datseg + 0x0668 + host_readbs(p2 + 4) * 8;
 
 			if (attack_hero != 0) {
-				if (host_readbs(target + 0x21) == 6) {
+				if (host_readbs(target + HERO_TYPE) == 6) {
 					/* ZWERG / DWARF */
 					target_size = 2;
 				} else {
@@ -306,7 +306,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 				}
 			} else {
 					/* size of the enemy */
-				target_size = host_readbs(target + 0x34);
+				target_size = host_readbs(target + ENEMY_SHEET_SIZE);
 			}
 
 			l_di = (test_skill(hero,
@@ -333,13 +333,14 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 	if (attack_hero == 0) {
 
-		enemy_gfx_id = host_readbs(enemy_p + 1);
+		enemy_gfx_id = host_readbs(enemy_p + ENEMY_SHEET_GFX_ID);
 
-		if ((right_hand == 0xac) && (enemy_gfx_id == 0x1c || enemy_gfx_id == 0x22)) {
+		/* magic SABRE gives Damage + 1 to SKELETONS and ZOMBIES */
+		if ((right_hand == 172) && (enemy_gfx_id == 0x1c || enemy_gfx_id == 0x22)) {
 			damage++;
 		} else {
-			if (right_hand == 0xc1) {
-				/* KUKRISDOLCH */
+			if (right_hand == 193) {
+				/* KUKRIS DAGGER / KUKRISDOLCH */
 
 				/* Interesting */
 				damage = 1000;
@@ -348,21 +349,23 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 				drop_item(hero, 3, 1);
 				give_hero_new_item(hero, 14, 1 ,1);
 				move_item(3, get_item_pos(hero, 14), hero);
-			} else if (right_hand == 0xc8) {
+
+			} else if (right_hand == 200) {
 				/* KUKRISMENGBILLAR */
 
 				/* Interesting */
 				damage = 1000;
 
-				/* drop the KUKRISDOLCH and equip a normal DOLCH / DAGGER */
+				/* drop the KUKRISMENGBILAR and equip a normal MENGBILAR  */
 				drop_item(hero, 3, 1);
 				give_hero_new_item(hero, 109, 1 ,1);
 				move_item(3, get_item_pos(hero, 109), hero);
-			} else if ((right_hand == 0xd6) && (enemy_gfx_id == 0x1c)) {
-				/* SILBERSTREITKOLBEN */
+
+			} else if ((right_hand == 214) && (enemy_gfx_id == 0x1c)) {
+				/* SILVER MACE/ SILBERSTREITKOLBEN gives Damage + 4 to SKELETONS */
 				damage += 4;
-			} else if ((right_hand == 0xb5) && (enemy_gfx_id == 0x18)) {
-				/* DAS SCHWERT GRIMRING */
+			} else if ((right_hand == 181) && (enemy_gfx_id == 0x18)) {
+				/* DAS SCHWERT GRIMRING gives Damage + 5 to ORCS */
 				damage += 5;
 			}
 		}
@@ -404,10 +407,10 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		damage *= 2;
 	}
 
-	if ( (ds_readbs(0x3dda) != 0) &&
+	if ((ds_readbs(0x3dda) != 0) &&
 		(host_readbs(hero + HERO_TYPE) == 6) &&
 		(attack_hero == 0) &&
-		(host_readbs(enemy_p + 1) == 0x18))
+		(host_readbs(enemy_p + ENEMY_SHEET_GFX_ID) == 0x18))
 	{
 		damage++;
 	}
@@ -427,14 +430,14 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			damage = host_readws(enemy_p + ENEMY_SHEET_LE) + 1;
 		}
 	} else {
-		damage -= host_readbs(target + 0x30);
+		damage -= host_readbs(target + HERO_RS_BONUS1);
 
 		if (hero_stoned(target)) {
 			damage = 0;
 		}
 
-		if (host_readws(target + 0x60) < damage) {
-			damage = host_readws(target + 0x60) + 1;
+		if (host_readws(target + HERO_LE) < damage) {
+			damage = host_readws(target + HERO_LE) + 1;
 		}
 	}
 
@@ -457,10 +460,10 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 	signed short damage;
 	signed short dice;
 
-	dice = host_readw(attacker + 0x1e);
+	dice = host_readw(attacker + ENEMY_SHEET_DAM1);
 
-	if (host_readw(attacker + 0x20) != 0 && random_schick(100) < 50)
-		dice = host_readw(attacker + 0x20);
+	if (host_readw(attacker + ENEMY_SHEET_DAM2) != 0 && random_schick(100) < 50)
+		dice = host_readw(attacker + ENEMY_SHEET_DAM2);
 
 	damage = dice_template(dice);
 
@@ -473,21 +476,21 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 
 		/* armour bonus against skelettons an zombies */
 		if (host_readw(hero + HERO_ITEM_BODY) == 0xc5 && (
-			host_readb(attacker + 1) == 0x22 ||
-			host_readb(attacker + 1) == 0x1c)) {
+			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
+			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 				damage -= 3;
 		}
 
 		/* get position of Totenkopfguertel/Skullbelt */
 
 		if ( (pos = get_item_pos(hero, 0xb6)) != -1 &&
-			(host_readb(attacker + 1) == 0x22 ||
-			host_readb(attacker + 1) == 0x1c)) {
+			(host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x22 ||
+			host_readb(attacker + ENEMY_SHEET_GFX_ID) == 0x1c)) {
 
-			/* no damage for the hero who wears it */
+			/* no damage for the hero who has it */
 			damage = 0;
 
-			/* 55 chance to loose this item on use */
+			/* 5% chance to loose this item */
 			if (random_schick(100) < 5) {
 				drop_item(hero, pos, 1);
 				GUI_output(get_dtp(0x2c));
@@ -501,7 +504,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 		/* the attacked is an enemy */
 
 		/* subtract RS */
-		damage -= host_readbs(attacked + 0x2);
+		damage -= host_readbs(attacked + ENEMY_SHEET_RS);
 
 		/* check unknown flag, maybe stoned */
 		if (enemy_stoned(attacked))
@@ -509,15 +512,15 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 
 		/* check if the attacked is immune
 		 * against non-magicial weapons */
-		if (host_readb(attacked + 0x24) != 0)
+		if (host_readb(attacked + ENEMY_SHEET_MAGIC) != 0)
 			damage = 0;
 	}
 
 	/* damage bonus */
-	damage += host_readbs(attacker + 0x2e);
+	damage += host_readbs(attacker + ENEMY_SHEET_DUMMY5);
 
 	/* half damage */
-	if (host_readb(attacker + 0x30) != 0)
+	if (host_readb(attacker + ENEMY_SHEET_BROKEN) != 0)
 		damage /= 2;
 
 	return damage;

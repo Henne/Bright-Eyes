@@ -93,11 +93,11 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 	signed short i;
 
 	ds_writeb((0xd8ce + 0xf3), 0);
-	ds_writeb((0xd8ce + 242 + 0xf3), host_readbs(enemy+1));
+	ds_writeb((0xd8ce + 242 + 0xf3), host_readbs(enemy + ENEMY_SHEET_GFX_ID));
 	p1 = p_datseg + (0xd8ce + 1 + 0xf3);
 
 	i = 0;
-	p3 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + 1) * 4));
+	p3 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + ENEMY_SHEET_GFX_ID) * 4));
 
 	while (ds_readbs(0xd823 + i) != -1) {
 
@@ -165,7 +165,7 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 
 	FIG_set_0e(host_readbs(enemy + ENEMY_SHEET_LIST_POS), 1);
 
-	if (is_in_byte_array(host_readbs(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+	if (is_in_byte_array(host_readbs(enemy + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
 		memcpy(p_datseg + (0xd8ce + 3*0xf3), p_datseg + (0xd8ce + 0xf3), 0xf3);
 
@@ -828,7 +828,7 @@ void enemy_turn(Bit8u *enemy, signed short enemy_nr, signed short x, signed shor
 
 					l5 = 1;
 
-					if (is_in_byte_array(host_readbs(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
+					if (is_in_byte_array(host_readbs(enemy + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID))
 					{
 
 						l_di = get_cb_val(x - diff.d[dir].x, y - diff.d[dir].y);

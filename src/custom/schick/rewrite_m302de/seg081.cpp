@@ -100,7 +100,7 @@ signed short DNG06_handler(void)
 	} else if (target_pos == 0x201 && target_pos != ds_readws(0x330e))
 	{
 		hero = get_hero(0);
-		for (i = l3 = 0; i < 2; i++, hero += 0x6da)
+		for (i = l3 = 0; i < 2; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != 0 &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
@@ -134,7 +134,7 @@ signed short DNG06_handler(void)
 	} else if (target_pos == 0x907 && target_pos != ds_readws(0x330e) && !ds_readb(0x3ca7))
 	{
 		hero = get_hero(0);
-		for (i = l3 = 0; i <= 6; i++, hero += 0x6da)
+		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != 0 &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
@@ -153,7 +153,7 @@ signed short DNG06_handler(void)
 				GUI_output(get_dtp(0x20));
 
 				hero = get_hero(0);
-				for (i = l3 = 0; i <= 6; i++, hero += 0x6da)
+				for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 				{
 					if (host_readbs(hero + HERO_TYPE) != 0 &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
@@ -192,7 +192,7 @@ signed short DNG06_handler(void)
 	} else if (target_pos == 0x807 && target_pos != ds_readws(0x330e) && ds_readb(0x3caa) != 2)
 	{
 		hero = get_hero(0);
-		for (i = l3 = 0; i <= 6; i++, hero += 0x6da)
+		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != 0 &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
@@ -268,7 +268,7 @@ signed short DNG06_handler(void)
 		} else {
 
 			hero = get_hero(0);
-			for (i = 0; i <= 6; i++, hero += 0x6da)
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (host_readbs(hero + HERO_TYPE) != 0 &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
@@ -299,7 +299,7 @@ signed short DNG06_handler(void)
 					ds_readbs(CURRENT_GROUP) != i)
 				{
 					hero = get_hero(0);
-					for (l4 = 0; l4 <= 6; l4++, hero += 0x6da)
+					for (l4 = 0; l4 <= 6; l4++, hero += SIZEOF_HERO)
 					{
 						if (host_readbs(hero + HERO_TYPE) != 0 &&
 							host_readbs(hero + HERO_GROUP_NO) == i)
@@ -341,7 +341,7 @@ signed short DNG06_handler(void)
 					ds_readbs(CURRENT_GROUP) != i)
 				{
 					hero = get_hero(0);
-					for (l4 = 0; l4 <= 6; l4++, hero += 0x6da)
+					for (l4 = 0; l4 <= 6; l4++, hero += SIZEOF_HERO)
 					{
 						if (host_readbs(hero + HERO_TYPE) != 0 &&
 							host_readbs(hero + HERO_GROUP_NO) == i)
@@ -536,7 +536,7 @@ void DNG09_pitfall(void)
 
 	if (!ds_readb(0x40fd))
 	{
-		for (i = l3 = 0; i <= 6; i++, hero += 0x6da)
+		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != 0 &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&

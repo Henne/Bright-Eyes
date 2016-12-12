@@ -267,22 +267,22 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	struct nvf_desc nvf;
 	signed short l1;
 
-	ds_writew(FIG_LIST_ELEM, ds_readbs(0x12c0 + host_readbs(ptr + 1) * 5));
-	ds_writeb((FIG_LIST_ELEM+2), host_readbs(ptr + 0x27));
+	ds_writew(FIG_LIST_ELEM, ds_readbs(0x12c0 + host_readbs(ptr + ENEMY_SHEET_GFX_ID) * 5));
+	ds_writeb((FIG_LIST_ELEM+2), host_readbs(ptr + ENEMY_SHEET_VIEWDIR));
 	ds_writeb((FIG_LIST_ELEM+3), (signed char)x);
 	ds_writeb((FIG_LIST_ELEM+4), (signed char)y);
 
 	ds_writeb((FIG_LIST_ELEM+5),
-		ds_readb(0x1531 + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
+		ds_readb(0x1531 + host_readbs(ptr + ENEMY_SHEET_GFX_ID) * 10 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 2));
 
 	ds_writeb((FIG_LIST_ELEM+6),
-		ds_readb((0x1531 + 1) + host_readbs(ptr + 1) * 10 + host_readbs(ptr + 0x27) * 2));
+		ds_readb((0x1531 + 1) + host_readbs(ptr + ENEMY_SHEET_GFX_ID) * 10 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 2));
 
-	if (is_in_byte_array(host_readbs(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+	if (is_in_byte_array(host_readbs(ptr + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 		/* sprite uses two fields */
 
-		ds_writeb((FIG_LIST_ELEM+9), ds_readbs(0x6030 + host_readbs(ptr + 0x27)));
-		ds_writeb((FIG_LIST_ELEM+11), ds_readbs(0x6034 + host_readbs(ptr + 0x27)));
+		ds_writeb((FIG_LIST_ELEM+9), ds_readbs(0x6030 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
+		ds_writeb((FIG_LIST_ELEM+11), ds_readbs(0x6034 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
 
 		/* TODO: b = ++a; */
 		ds_writeb((FIG_LIST_ELEM+19), ds_writeb(0xe36f, ds_readb(0xe36f) + 1));
@@ -298,7 +298,7 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	ds_writeb((FIG_LIST_ELEM+7), 0x28);
 	ds_writeb((FIG_LIST_ELEM+8), 0x20);
 	ds_writeb((FIG_LIST_ELEM+21), 1);
-	ds_writeb((FIG_LIST_ELEM+22), host_readbs(ptr + 1)); /* gfx_set_id */
+	ds_writeb((FIG_LIST_ELEM+22), host_readbs(ptr + ENEMY_SHEET_GFX_ID)); /* gfx_set_id */
 	ds_writeb((FIG_LIST_ELEM+13), -1);
 	ds_writeb((FIG_LIST_ELEM+15), -1);
 	ds_writeb((FIG_LIST_ELEM+14), -1);
@@ -310,9 +310,9 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 	ds_writeb((FIG_LIST_ELEM+17), 0x63);
 
 	/* check presence in the first round */
-	ds_writeb((FIG_LIST_ELEM+18), host_readb(ptr + 0x35) == 0 ? 1 : 0);
+	ds_writeb((FIG_LIST_ELEM+18), host_readb(ptr + ENEMY_SHEET_ROUND_APPEAR) == 0 ? 1 : 0);
 
-	if (is_in_byte_array(host_readb(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+	if (is_in_byte_array(host_readb(ptr + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
 		nvf.src = Real2Host(load_fight_figs(ds_readw(FIG_LIST_ELEM)));
 		nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM+23)));
@@ -326,15 +326,15 @@ void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 
 	host_writeb(ptr + ENEMY_SHEET_LIST_POS, FIG_add_to_list(-1));
 
-	if (is_in_byte_array(host_readb(ptr + 1), p_datseg + TWO_FIELDED_SPRITE_ID)) {
+	if (is_in_byte_array(host_readb(ptr + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID)) {
 
-		ds_writeb((FIG_LIST_ELEM+3), x + ds_readbs(0x6018 + host_readbs(ptr + 0x27) * 4));
-		ds_writeb((FIG_LIST_ELEM+4), y + ds_readbs((0x6018 + 2) + host_readbs(ptr + 0x27) * 4));
+		ds_writeb((FIG_LIST_ELEM+3), x + ds_readbs(0x6018 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 4));
+		ds_writeb((FIG_LIST_ELEM+4), y + ds_readbs((0x6018 + 2) + host_readbs(ptr + ENEMY_SHEET_VIEWDIR) * 4));
 
-		add_ds_bs((FIG_LIST_ELEM+5), ds_readbs(0x6028 + host_readbs(ptr + 0x27)));
-		add_ds_bs((FIG_LIST_ELEM+6), ds_readbs(0x602c + host_readbs(ptr + 0x27)));
-		ds_writeb((FIG_LIST_ELEM+9), ds_readb(0x6038 + host_readbs(ptr + 0x27)));
-		ds_writeb((FIG_LIST_ELEM+11), ds_readb(0x603c + host_readbs(ptr + 0x27)));
+		add_ds_bs((FIG_LIST_ELEM+5), ds_readbs(0x6028 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
+		add_ds_bs((FIG_LIST_ELEM+6), ds_readbs(0x602c + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
+		ds_writeb((FIG_LIST_ELEM+9), ds_readb(0x6038 + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
+		ds_writeb((FIG_LIST_ELEM+11), ds_readb(0x603c + host_readbs(ptr + ENEMY_SHEET_VIEWDIR)));
 		ds_writeb((FIG_LIST_ELEM+10), 0);
 		ds_writeb((FIG_LIST_ELEM+12), 0x27);
 		ds_writeb((FIG_LIST_ELEM+21), 1);

@@ -530,9 +530,9 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 	p_enemy = p_datseg + 0xd0df + id * SIZEOF_ENEMY_SHEET;
 
-	if (ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
+	if (ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
 
-		nvf.src = Real2Host(load_fight_figs(ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5)));
+		nvf.src = Real2Host(load_fight_figs(ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5)));
 		nvf.dst = Real2Host(p1);
 		nvf.nr = 1;
 		nvf.type = 0;
@@ -542,7 +542,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 		process_nvf(&nvf);
 
 		ds_writew(FIGHT_FIGS_INDEX,
-			ds_readbs(0x12c0 + host_readbs(p_enemy + 1) * 5));
+			ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5));
 	}
 
 	/* save and set text colors */

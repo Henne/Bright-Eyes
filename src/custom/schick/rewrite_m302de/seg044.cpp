@@ -361,7 +361,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	weapon_type = -1;
 
 	/* every enemy with the gfx_id < 22 has a sword type weapon */
-	if (host_readbs(enemy + 1) < 22) {
+	if (host_readbs(enemy + ENEMY_SHEET_GFX_ID) < 22) {
 		weapon_type = 2;
 	}
 
@@ -371,7 +371,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	}
 
 	/* read a pointer from the datseg with the gfx_id as offset, read only */
-	p4 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + 1) * 4));
+	p4 = Real2Host(ds_readd(0x2555 + host_readbs(enemy + ENEMY_SHEET_GFX_ID) * 4));
 
 	/* find both actors on the chessboard */
 	FIG_search_obj_on_cb((signed char)fid_target, &target_x, &target_y);
@@ -404,10 +404,10 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	l1 = (f_action == 2) ? 21 :			/* melee attack */
 		25;
 
-	if ((host_readbs(enemy + 1) == 8) ||
-		(host_readbs(enemy + 1) == 9) ||
-		(host_readbs(enemy + 1) == 19) ||
-		(host_readbs(enemy + 1) == 20))
+	if ((host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 8) ||
+		(host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 9) ||
+		(host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 19) ||
+		(host_readbs(enemy + ENEMY_SHEET_GFX_ID) == 20))
 	{
 		weapon_type = -1;
 		l1 = (f_action == 2) ? 45 : 49;
@@ -425,7 +425,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 
 	ds_writeb(0xd8ce + 0xf3 * a1, get_seq_header(host_readws(p4 + l1 * 2)));
-	ds_writeb((0xd8ce + 242) + 0xf3 * a1, host_readbs(enemy + 1));
+	ds_writeb((0xd8ce + 242) + 0xf3 * a1, host_readbs(enemy + ENEMY_SHEET_GFX_ID));
 
 	/* first the enemy may turn */
 	if ((host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != dir) &&
@@ -511,7 +511,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 			/* copy the weapon ani */
 			p2 += copy_ani_seq(p2,
 				ds_readws(0x25fe +
-					(	ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 +
+					(	ds_readbs(0x268e + host_readbs(enemy + ENEMY_SHEET_GFX_ID)) * 48 +
 						weapon_type * 16 +
 						((f_action == 2) ? 0 : 1) * 8 +
 						host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2
@@ -530,7 +530,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 				/* copy the weapon ani */
 				p2 += copy_ani_seq(p2,
 					ds_readws(0x25fe +
-					((ds_readbs(0x268e + host_readbs(enemy + 1)) * 48 + weapon_type * 16) +
+					((ds_readbs(0x268e + host_readbs(enemy + ENEMY_SHEET_GFX_ID)) * 48 + weapon_type * 16) +
 					((f_action == 2) ? 0 : 1) * 8 + host_readbs(enemy + ENEMY_SHEET_VIEWDIR) * 2)), 3);
 			}
 	}
@@ -550,7 +550,7 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	host_writebs(p1, -1);
 
 	/* does this sprite need two fields */
-	if (is_in_byte_array(host_readb(enemy + 1), p_datseg + TWO_FIELDED_SPRITE_ID))	{
+	if (is_in_byte_array(host_readb(enemy + ENEMY_SHEET_GFX_ID), p_datseg + TWO_FIELDED_SPRITE_ID))	{
 
 		memcpy(p_datseg + (0xd8ce + 2*0xf3) + a1 * 0xf3, p_datseg + 0xd8ce + a1 * 0xf3, 0xf3);
 

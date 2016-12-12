@@ -571,7 +571,7 @@ void spell_skelettarius(void)
 			Real2Host(GUI_names_grammar((signed short)0x8000,
 				host_readbs(get_spelltarget_e()), 1)));
 
-		enemy = Real2Host(FIG_get_ptr(host_readbs(get_spelltarget_e() + 0x26)));
+		enemy = Real2Host(FIG_get_ptr(host_readbs(get_spelltarget_e() + ENEMY_SHEET_LIST_POS)));
 
 		x = host_readbs(enemy + 3);
 		y = host_readbs(enemy + 4);
@@ -580,16 +580,16 @@ void spell_skelettarius(void)
 			FIG_remove_from_list(ds_readbs(0xe35a + host_readbs(enemy + ENEMY_SHEET_LE)), 0);
 		}
 
-		FIG_remove_from_list(host_readbs(get_spelltarget_e() + 0x26), 0);
+		FIG_remove_from_list(host_readbs(get_spelltarget_e() + ENEMY_SHEET_LIST_POS), 0);
 
-		unk = host_readbs(get_spelltarget_e() + 0x28);
+		unk = host_readbs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2);
 
 		fill_enemy_sheet(host_readbs(get_spelluser() + HERO_ENEMY_ID) - 10, 0x10, 0);
 
 		FIG_load_enemy_sprites(get_spelltarget_e(), x, y);
 
-		or_ptr_bs(get_spelltarget_e() + 0x32, 2);
-		host_writebs(get_spelltarget_e() + 0x28, unk);
+		or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS2, 2);
+		host_writebs(get_spelltarget_e() + ENEMY_SHEET_DUMMY2, unk);
 	}
 }
 

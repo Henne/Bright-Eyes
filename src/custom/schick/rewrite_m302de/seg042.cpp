@@ -230,11 +230,12 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			if ((ds_readbs(0x3dda) != 0) &&
 				(host_readbs(Real2Host(hero) + HERO_TYPE) == 6) &&
 				(attack_hero == 0) &&
-				(host_readbs(target_monster + 1) == 24))
+				(host_readbs(target_monster + ENEMY_SHEET_GFX_ID) == 24))
 			{
 				atpa++;
 			}
 
+			/* spell_dunkelheit is active */
 			if (ds_readd(INGAME_TIMERS + 0x24)) {
 				atpa -= 4;
 			}
@@ -251,6 +252,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					l11--;
 				}
 
+				/* spell_dunkelheit is active */
 				if (ds_readd(INGAME_TIMERS + 0x24)) {
 					l11 -= 4;
 				}
@@ -371,6 +373,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						}
 					}
 
+					/* spell_dunkelheit is active */
 					if (ds_readd(INGAME_TIMERS + 0x24)) {
 						l10 -= 4;
 					}
