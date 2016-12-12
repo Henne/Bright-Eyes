@@ -344,12 +344,12 @@ void spell_blitz(void)
 				(char*)get_dtp(0x1c0));
 		} else {
 			/* set the rounds counter */
-			host_writeb(get_spelltarget() + 0x96, 3);
+			host_writeb(get_spelltarget() + HERO_BLIND, 3);
 
 			/* prepare the message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x158),
-				(char*)get_spelltarget() + 0x10);
+				(char*)get_spelltarget() + HERO_NAME2);
 		}
 	} else {
 		/* cast an enemy */
@@ -359,7 +359,7 @@ void spell_blitz(void)
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* set the rounds counter */
-		host_writeb(get_spelltarget_e() + 0x2f, 3);
+		host_writeb(get_spelltarget_e() + ENEMY_SHEET_BLIND, 3);
 
 		/* prepare the message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -444,7 +444,7 @@ void spell_eisenrost(void)
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_dtp(0x170),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8000, id, 0)),
-							(char*)(get_spelltarget() + 0x10));
+							(char*)(get_spelltarget() + HERO_NAME2));
 					} else {
 						ds_writew(0xac0e, -2);
 					}
@@ -457,16 +457,18 @@ void spell_eisenrost(void)
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* check if target is an animal */
-		if (host_readbs(get_spelltarget_e() + 0x36) != 0) {
-			sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x164));
+		if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_FLAGS) != 0)
+		{
+			sprintf((char*)Real2Host(ds_readd(DTP2)),
+				(char*)get_dtp(0x164));
 		} else {
 			/* check if weapon is already broken */
-			if (host_readbs(get_spelltarget_e() + 0x30) != 0) {
+			if (host_readbs(get_spelltarget_e() + ENEMY_SHEET_BROKEN) != 0) {
 				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x168));
 			} else {
 
 				/* set weapon broken */
-				host_writeb(get_spelltarget_e() + 0x30, 1);
+				host_writeb(get_spelltarget_e() + ENEMY_SHEET_BROKEN, 1);
 
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -574,7 +576,7 @@ void spell_ignifaxius(void)
 
 	/* damage doubles if the target is a mummy */
 	if ((host_readbs(get_spelluser() + HERO_ENEMY_ID) >= 10) &&
-		(host_readbs(p_datseg + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + 0xd0df + 1) == 0x1e))
+		(host_readbs(p_datseg + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + 0xd0df + ENEMY_SHEET_GFX_ID) == 0x1e))
 	{
 		damage *= 2;
 		mummy = 1;
@@ -609,19 +611,19 @@ void spell_ignifaxius(void)
 			host_writebs(p_armour + 0x07,
 				host_readbs(p_armour + 7) + rs_malus);
 			/* subtract rs_malus from RS1 */
-			host_writebs(get_spelltarget() + 0x30,
-				host_readbs(get_spelltarget() + 0x30) - rs_malus);
+			host_writebs(get_spelltarget() + HERO_RS_BONUS1,
+				host_readbs(get_spelltarget() + HERO_RS_BONUS1) - rs_malus);
 		}
 
 		/* get an AT/PA-Malus of -level / 2 for the current weapon and one hour */
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, HOURS(1),
-			get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
+			get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 			-level / 2, (signed char)hero_pos);
 
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, HOURS(1),
-			get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
+			get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 			-level / 2, (signed char)hero_pos);
 
 	} else {
@@ -631,10 +633,10 @@ void spell_ignifaxius(void)
 		ds_writed(SPELLTARGET_E,
 			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
-		host_writebs(get_spelltarget_e() + 0x2,
-			host_readbs(get_spelltarget_e() + 0x2) - rs_malus);
-		sub_ptr_bs(get_spelltarget_e() + 0x1c, level / 2);
-		sub_ptr_bs(get_spelltarget_e() + 0x1d, level / 2);
+		host_writebs(get_spelltarget_e() + ENEMY_SHEET_RS,
+			host_readbs(get_spelltarget_e() + ENEMY_SHEET_RS) - rs_malus);
+		sub_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_AT, level / 2);
+		sub_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_PA, level / 2);
 
 	}
 
@@ -677,13 +679,13 @@ void spell_plumbumbarum(void)
 			/* give a short AT-malus of -3 to the targets current weapon */
 			slot = get_free_mod_slot();
 			set_mod_slot(slot, 0x2d,
-				get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
+				get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 				-3, (signed char)hero_pos);
 
 			/* prepare the message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x178),
-				(char*)get_spelltarget() + 0x10);
+				(char*)get_spelltarget() + HERO_NAME2);
 			}
 
 		return;
@@ -697,7 +699,7 @@ void spell_plumbumbarum(void)
 		(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 	/* AT-malus of -3 (permanent) */
-	sub_ptr_bs(get_spelltarget_e() + 0x1c, 3);
+	sub_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_AT, 3);
 
 	/* prepare the message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -730,14 +732,14 @@ void spell_saft_kraft(void)
 	slot = get_free_mod_slot();
 
 	set_mod_slot(slot, rounds * 9L,
-		get_spelltarget() + 0x68 + host_readbs(get_spelltarget() + 0x78),
+		get_spelltarget() + HERO_AT + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 		5, (signed char)target);
 
 	/* -5 on PA of the current weapon */
 	slot = get_free_mod_slot();
 
 	set_mod_slot(slot, rounds * 9L,
-		get_spelltarget() + 0x6f + host_readbs(get_spelltarget() + 0x78),
+		get_spelltarget() + HERO_PA + host_readbs(get_spelltarget() + HERO_WP_CLASS),
 		-5, (signed char)target);
 
 	/* TODO: this position is unknown */
@@ -762,7 +764,7 @@ void spell_saft_kraft(void)
 	/* prepare message */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(96 * 4),
-		(char*)get_spelltarget() + 0x10);
+		(char*)get_spelltarget() + HERO_NAME2);
 
 }
 
