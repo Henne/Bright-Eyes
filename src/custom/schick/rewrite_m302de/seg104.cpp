@@ -399,7 +399,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x738),
-				(char*)patient + 0x10);
+				(char*)patient + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -409,7 +409,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0xae4),
-				(char*)patient + 0x10);
+				(char*)patient + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -418,7 +418,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x1d8),
-				(char*)healer + 0x10);
+				(char*)healer + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		} else {
@@ -437,8 +437,8 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xadc),
-						(char*)healer + 0x10,
-						(char*)patient + 0x10,
+						(char*)healer + HERO_NAME2,
+						(char*)patient + HERO_NAME2,
 						(char*)Real2Host(GUI_get_ptr(host_readbs(patient + 0x22), 3)),
 						retval);
 
@@ -469,7 +469,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xad8),
-						(char*)patient + 0x10, damage);
+						(char*)patient + HERO_NAME2, damage);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -478,8 +478,8 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 				/* failed to heal */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xae0),
-					(char*)healer + 0x10,
-					(char*)patient + 0x10);
+					(char*)healer + HERO_NAME2,
+					(char*)patient + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}

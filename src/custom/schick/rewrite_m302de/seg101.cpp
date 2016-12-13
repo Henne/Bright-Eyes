@@ -56,7 +56,7 @@ void spell_arcano(void)
 	/* "Die Magieresistenz von %s steigt um 2 Punkte." */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_dtp(98 * 4),
-		(char*)Real2Host((RealPt)ds_readd(SPELLTARGET) + 0x10));
+		(char*)Real2Host(ds_readd(SPELLTARGET)) + HERO_NAME2);
 }
 
 void spell_armatrutz(void)
@@ -92,12 +92,15 @@ void spell_armatrutz(void)
 		pos = get_hero_index(get_spelluser());
 		ds_writew(0xac0e, boni * boni);
 		slot = get_free_mod_slot();
-		set_mod_slot(slot, MINUTES(5), get_spelluser() + HERO_RS_BONUS1,
+		set_mod_slot(slot, MINUTES(5),
+			get_spelluser() + HERO_RS_BONUS1,
 			(signed char)boni, (signed char)pos);
 
 		/* prepare output message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(0x190), (char*)get_spelluser() + HERO_NAME2, boni);
+			(char*)get_dtp(0x190),
+			(char*)get_spelluser() + HERO_NAME2,
+			boni);
 
 	} else {
 		/* spell canceled */
@@ -505,7 +508,7 @@ void spell_paral(void)
 				/* prepare message */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x19c),
-					(char*)get_spelltarget() + 0x10);
+					(char*)get_spelltarget() + HERO_NAME2);
 			}
 		} else {
 			/* set AE to 0 */
@@ -544,7 +547,7 @@ void spell_salander(void)
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0x97c),
-			(char*)Real2Host(ds_readd(SPELLUSER)) + 0x10);
+			(char*)Real2Host(ds_readd(SPELLUSER)) + HERO_NAME2);
 
 		/* no AE cost */
 		ds_writew(0xac0e, 0);

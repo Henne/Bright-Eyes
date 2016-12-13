@@ -349,13 +349,13 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						/* patient is not poisoned */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x73c),
-							(char*)patient + 0x10);
+							(char*)patient + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 						/* patient timer is not zero */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xae4),
-							(char*)patient + 0x10);
+							(char*)patient + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						/* set patient timer */
@@ -370,7 +370,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xac8),
 									(char*)hero + HERO_NAME2,
-									(char*)patient + 0x10);
+									(char*)patient + HERO_NAME2);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -380,7 +380,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xad0),
 									(char*)hero + HERO_NAME2,
-									(char*)patient + 0x10);
+									(char*)patient + HERO_NAME2);
 
 								if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 
@@ -393,7 +393,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ltx(0xacc),
 											(char*)hero + HERO_NAME2,
-											(char*)patient + 0x10,
+											(char*)patient + HERO_NAME2,
 											le);
 
 										add_hero_le(patient, le);
@@ -410,7 +410,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ltx(0xad8),
-											(char*)patient + 0x10,
+											(char*)patient + HERO_NAME2,
 											l_di);
 
 										GUI_output(Real2Host(ds_readd(DTP2)));
@@ -423,7 +423,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xac4),
 									(char*)hero + HERO_NAME2,
-									(char*)patient + 0x10);
+									(char*)patient + HERO_NAME2);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 							}
@@ -432,7 +432,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0xac0),
 								(char*)hero + HERO_NAME2,
-								(char*)patient + 0x10);
+								(char*)patient + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						}
@@ -466,14 +466,14 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						/* no need to heal */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x734),
-							(char*)patient + 0x10);
+							(char*)patient + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else if (host_readds(patient + HERO_HEAL_TIMER) > 0) {
 						/* timer is still running */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0xae4),
-							(char*)patient + 0x10);
+							(char*)patient + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -490,7 +490,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xacc),
 									(char*)hero + HERO_NAME2,
-									(char*)patient + 0x10,
+									(char*)patient + HERO_NAME2,
 									l_si);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
@@ -505,7 +505,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xad8),
-									(char*)patient + 0x10,
+									(char*)patient + HERO_NAME2,
 									l_di);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
@@ -521,7 +521,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xaec),
 									(char*)hero + HERO_NAME2,
-									(char*)patient + 0x10);
+									(char*)patient + HERO_NAME2);
 
 								host_writeb(patient + 0xb3, -1);
 								host_writeb(patient + 0xb4, 0);
@@ -530,7 +530,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xae8),
 									(char*)hero + HERO_NAME2,
-									(char*)patient + 0x10);
+									(char*)patient + HERO_NAME2);
 							}
 
 							GUI_output(Real2Host(ds_readd(DTP2)));

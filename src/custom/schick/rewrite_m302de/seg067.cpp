@@ -272,7 +272,7 @@ void city_event_6(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
 			(char*)get_dtp(4 * (random_schick(4) + 102)),
-			(char*)get_hero(get_random_hero()) + 0x10);
+			(char*)get_hero(get_random_hero()) + HERO_NAME2);
 
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 3,
 			get_dtp(4 * (random_schick(4) + 106)),

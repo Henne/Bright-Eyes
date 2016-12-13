@@ -284,7 +284,7 @@ void do_wildcamp(void)
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_ltx(0xc18),
-						(char*)get_hero(ds_readbs(WILDCAMP_GUARDS + l_si)) + 0x10);
+						(char*)get_hero(ds_readbs(WILDCAMP_GUARDS + l_si)) + HERO_NAME2);
 
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 				}
@@ -311,7 +311,7 @@ void do_wildcamp(void)
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
 								(char*)get_ltx(0xc18),
-								(char*)get_hero(ds_readbs(WILDCAMP_GUARDS + l_si)) + 0x10);
+								(char*)get_hero(ds_readbs(WILDCAMP_GUARDS + l_si)) + HERO_NAME2);
 
 							GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
 						}
