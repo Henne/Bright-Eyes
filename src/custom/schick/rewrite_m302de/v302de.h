@@ -18,7 +18,7 @@
 
 #include "symbols.h"
 
-#define MINUTES(n)	(n * 90L)
+#define MINUTES(n)	((n) * 90L)
 #define HOURS(n)	(MINUTES(n) * 60L)
 #define DAYS(n)		(HOURS(n) * 24L)
 #define MONTHS(n)	(DAYS(n) * 30L)
@@ -964,56 +964,56 @@ extern char ds[0xf7af];
 
 #define ds_readb(p)		(*(Bit8u*)(ds + p))
 #define ds_readw(p)		(*(Bit16u*)(ds + p))
-#define ds_readd(p)		(*(Bit32u*)(ds + p))
+#define ds_readd(p)		(*(Bit32u*)(ds + (p)))
 
 #define ds_readbs(p)		(*(Bit8s*)(ds + p))
 #define ds_readws(p)		(*(Bit16s*)(ds + p))
-#define ds_readds(p)		(*(Bit32s*)(ds + p))
+#define ds_readds(p)		(*(Bit32s*)(ds + (p)))
 #define ds_readfp(p)		(*(RealPt*)(ds + (p)))
 #define ds_readhp(p)		(*(HugePt*)(ds + (p)))
 
-#define ds_writebs(p, d)	(*(Bit8s*)(ds + p) = d)
-#define ds_writews(p, d)	(*(Bit16s*)(ds + p) = d)
+#define ds_writebs(p, d)	(*(Bit8s*)(ds + p) = (d))
+#define ds_writews(p, d)	(*(Bit16s*)(ds + p) = (d))
 
-#define ds_writeb(p, d)		(*(Bit8u*)(ds + p) = d)
-#define ds_writew(p, d)		(*(Bit16u*)(ds + p) = d)
-#define ds_writed(p, d)		(*(Bit32u*)(ds + p) = d)
+#define ds_writeb(p, d)		(*(Bit8u*)(ds + p) = (d))
+#define ds_writew(p, d)		(*(Bit16u*)(ds + p) = (d))
+#define ds_writed(p, d)		(*(Bit32u*)(ds + p) = (d))
 #define ds_writefp(p, d)		(*(RealPt*)(ds + (p)) = (d))
 #define ds_writehp(p, d)		(*(HugePt*)(ds + (p)) = (d))
 
-#define inc_ds_bs(o)		(++(*(Bit8s*)(ds + o)))
-#define dec_ds_bs(o)		(--(*(Bit8s*)(ds + o)))
-#define inc_ds_bs_post(o)	((*(Bit8s*)(ds + o))++)
-#define dec_ds_bs_post(o)	((*(Bit8s*)(ds + o))--)
+#define inc_ds_bs(o)		(++(*(Bit8s*)(ds + (o))))
+#define dec_ds_bs(o)		(--(*(Bit8s*)(ds + (o))))
+#define inc_ds_bs_post(o)	((*(Bit8s*)(ds + (o)))++)
+#define dec_ds_bs_post(o)	((*(Bit8s*)(ds + (o)))--)
 
-#define add_ds_bs(o, val)	((*(Bit8s*)(ds + o))+= (val))
-#define sub_ds_bs(o, val)	((*(Bit8s*)(ds + o))-= (val))
-#define add_ds_bu(o, val)	((*(Bit8u*)(ds + o))+= (val))
+#define add_ds_bs(o, val)	((*(Bit8s*)(ds + (o)))+= (val))
+#define sub_ds_bs(o, val)	((*(Bit8s*)(ds + (o)))-= (val))
+#define add_ds_bu(o, val)	((*(Bit8u*)(ds + (o)))+= (val))
 
-#define inc_ds_ws(o)		(++(*(Bit16s*)(ds + o)))
-#define dec_ds_ws(o)		(--(*(Bit16s*)(ds + o)))
+#define inc_ds_ws(o)		(++(*(Bit16s*)(ds + (o))))
+#define dec_ds_ws(o)		(--(*(Bit16s*)(ds + (o))))
 
 #define inc_ds_ws_post(o)	((*(Bit16s*)(ds + o))++)
 #define dec_ds_ws_post(o)	((*(Bit16s*)(ds + o))--)
 
-#define and_ds_bs(o, v)		(*(Bit8s*)(ds + o) &= v)
-#define or_ds_bs(o, v)		(*(Bit8s*)(ds + o) |= v)
-#define or_ds_ws(o, v)		(*(Bit16s*)(ds + o) |= v)
-#define xor_ds_bs(o, v)		(*(Bit8s*)(ds + o) ^= v)
+#define and_ds_bs(o, v)		(*(Bit8s*)(ds + o) &= (v))
+#define or_ds_bs(o, v)		(*(Bit8s*)(ds + o) |= (v))
+#define or_ds_ws(o, v)		(*(Bit16s*)(ds + o) |= (v))
+#define xor_ds_bs(o, v)		(*(Bit8s*)(ds + o) ^= (v))
 
-#define add_ds_ws(o, v)		(*(Bit16s*)(ds + o) += v)
-#define sub_ds_ws(o, v)		(*(Bit16s*)(ds + o) -= v)
-#define mul_ds_ws(o, v)		(*(Bit16s*)(ds + o) *= v)
-#define div_ds_ws(o, v)		(*(Bit16s*)(ds + o) /= v)
-#define mod_ds_ws(o, v)		(*(Bit16s*)(ds + o) %= v)
-#define and_ds_ws(o, v)		(*(Bit16s*)(ds + o) &= v)
-#define shr_ds_ws(o, v)		(*(Bit16s*)(ds + o) >>= v)
+#define add_ds_ws(o, v)		(*(Bit16s*)(ds + o) += (v))
+#define sub_ds_ws(o, v)		(*(Bit16s*)(ds + (o)) -= (v))
+#define mul_ds_ws(o, v)		(*(Bit16s*)(ds + (o)) *= (v))
+#define div_ds_ws(o, v)		(*(Bit16s*)(ds + (o)) /= (v))
+#define mod_ds_ws(o, v)		(*(Bit16s*)(ds + (o)) %= (v))
+#define and_ds_ws(o, v)		(*(Bit16s*)(ds + (o)) &= (v))
+#define shr_ds_ws(o, v)		(*(Bit16s*)(ds + (o)) >>= (v))
 
-#define add_ds_ds(o, v)		(*(Bit32s*)(ds + o) += v)
-#define sub_ds_ds(o, v)		(*(Bit32s*)(ds + o) -= v)
+#define add_ds_ds(o, v)		(*(Bit32s*)(ds + (o)) += (v))
+#define sub_ds_ds(o, v)		(*(Bit32s*)(ds + (o)) -= (v))
 
-#define add_ds_fp(o, v)	(*(RealPt*)(ds + (o)) += (v))
-#define sub_ds_fp(o, v)	(*(RealPt*)(ds + (o)) -= (v))
+#define add_ds_fp(o, v)		(*(RealPt*)(ds + (o)) += (v))
+#define sub_ds_fp(o, v)		(*(RealPt*)(ds + (o)) -= (v))
 
 #define inc_ptr_bs(p)		((*(Bit8s*)(p))++)
 #define dec_ptr_bs(p)		((*(Bit8s*)(p))--)
@@ -1021,18 +1021,18 @@ extern char ds[0xf7af];
 #define inc_ptr_ws(p)		((*(Bit16s*)(p))++)
 #define dec_ptr_ws(p)		((*(Bit16s*)(p))--)
 
-#define or_ptr_bs(p, v)		(*(Bit8s*)(p) |= v)
-#define and_ptr_bs(p, v)	(*(Bit8s*)(p) &= v)
-#define add_ptr_bs(p, v)	(*(Bit8s*)(p) += v)
-#define sub_ptr_bs(p, v)	(*(Bit8s*)(p) -= v)
+#define or_ptr_bs(p, v)		(*(Bit8s*)(p) |= (v))
+#define and_ptr_bs(p, v)	(*(Bit8s*)(p) &= (v))
+#define add_ptr_bs(p, v)	(*(Bit8s*)(p) += (v))
+#define sub_ptr_bs(p, v)	(*(Bit8s*)(p) -= (v))
 
 
-#define add_ptr_ws(p, v)	(*(Bit16s*)(p)+=v)
-#define sub_ptr_ws(p, v)	(*(Bit16s*)(p)-=v)
-#define mul_ptr_ws(p, v)	(*(Bit16s*)(p)*=v)
+#define add_ptr_ws(p, v)	(*(Bit16s*)(p) += (v))
+#define sub_ptr_ws(p, v)	(*(Bit16s*)(p) -= (v))
+#define mul_ptr_ws(p, v)	(*(Bit16s*)(p) *= (v))
 
-#define add_ptr_ds(p, v)	(*(Bit32s*)(p)+=v)
-#define sub_ptr_ds(p, v)	(*(Bit32s*)(p)-=v)
+#define add_ptr_ds(p, v)	(*(Bit32s*)(p) += (v))
+#define sub_ptr_ds(p, v)	(*(Bit32s*)(p) -= (v))
 
 #define mem_readb(p) (*(Bit8u*)(p))
 #define mem_readw(p) (*(Bit16u*)(p))
@@ -1042,11 +1042,11 @@ extern char ds[0xf7af];
 #define mem_readws(p) (*(Bit16s*)(p))
 #define mem_readds(p) (*(Bit32s*)(p))
 
-#define mem_writeb(p, d) (*(Bit8u*)(p) = d)
-#define mem_writew(p, d) (*(Bit16u*)(p) = d)
-#define mem_writed(p, d) (*(Bit32u*)(p) = d)
+#define mem_writeb(p, d) (*(Bit8u*)(p) = (d))
+#define mem_writew(p, d) (*(Bit16u*)(p) = (d))
+#define mem_writed(p, d) (*(Bit32u*)(p) = (d))
 
-#define get_hero(nr) ((Bit8u*)ds_readd(HEROS) + SIZEOF_HERO * (nr))
+#define get_hero(nr) ((Bit8u*)ds_readfp(HEROS) + SIZEOF_HERO * (nr))
 
 #ifdef M302de_ORIGINAL_BUGFIX
 #define ds_writeb_z(addr, val) (if (ds_readb(addr) == 0) ds_writeb(addr, val))
@@ -1155,9 +1155,9 @@ struct bittest {
 
 #define get_itemuser() ((Bit8u*)ds_readfp(ITEMUSER))
 
-#define get_ltx(nr) (char*)(host_readd((RealPt)ds_readd(TEXT_LTX) + nr))
-#define get_dtp(nr) (char*)(host_readd((RealPt)ds_readd(DIALOG_TEXT) + nr))
-#define get_city(nr) (char*)(host_readd((RealPt)ds_readd(CITY_LTX) + nr))
+#define get_ltx(nr) (char*)(host_readd(ds_readfp(TEXT_LTX) + (nr)))
+#define get_dtp(nr) (char*)(host_readd(ds_readfp(DIALOG_TEXT) + (nr)))
+#define get_city(nr) (char*)(host_readd(ds_readfp(CITY_LTX) + (nr)))
 #define get_monname(nr) ((char*)(host_readd(ds_readfp(MONNAMES) + 4 * (nr))))
 #define get_itemsdat(nr) ((char*)(ds_readfp(ITEMSDAT) + 12 * (nr)))
 #define get_itemname(nr) ((char*)(host_readd(ds_readfp(ITEMSNAME) + 4 * (nr))))
