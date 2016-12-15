@@ -314,15 +314,22 @@ void DNG01_chest6_x1(RealPt chest)
 		if (!strcmp((char*)Real2Host(ds_readfp(TEXT_INPUT_BUF)),
 				(char*)p_datseg + DNG01_STR_MARBO))
 		{
+			// correct answer
 #if defined(__BORLANDC__)
 			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest) + 11)))(chest);
 #else
 			t_map(chest, 11)(chest);
 #endif
+
+			// Original-Bug: enable the extra loot, here 10 AP
+#ifdef M302de_ORIGINAL_BUGFIX
+			ds_writew(0xe4a0, 1);
+#endif
 		} else if ((RealPt)host_readd(Real2Host(chest) + 7) != 0){
 #if defined(__BORLANDC__)
 			((void (*)(void))((RealPt)host_readd(Real2Host(chest) + 7)))();
 #else
+			// wrong answer
 			((treasure_trap)(t_map(chest, 7)))();
 #endif
 		}
