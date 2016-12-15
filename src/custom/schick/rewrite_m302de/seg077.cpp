@@ -323,7 +323,7 @@ void DNG01_chest6_x1(RealPt chest)
 
 			// Original-Bug: enable the extra loot, here 10 AP
 #ifdef M302de_ORIGINAL_BUGFIX
-			ds_writew(0xe4a0, 1);
+			ds_writew(GET_EXTRA_LOOT, 1);
 #endif
 		} else if ((RealPt)host_readd(Real2Host(chest) + 7) != 0){
 #if defined(__BORLANDC__)

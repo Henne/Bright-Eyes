@@ -580,6 +580,7 @@
 #define TEX_SKY	(0xe418)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */
 #define LOCKPICK_TRY_COUNTER	(0xe492)	/* signed short {0..4} */
+#define GET_EXTRA_LOOT	(0xe4a0)	/* signed short {0,1} */
 #define DIALOGBOX_INDENT_HEIGHT	(0xe4d9)	/* unsigned short */
 #define DIALOGBOX_INDENT_WIDTH	(0xe4db)	/* signed short */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */

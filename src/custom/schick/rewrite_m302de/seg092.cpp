@@ -384,7 +384,7 @@ void seg092_06b4(signed short a1)
 #endif
 	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
 	ptr = p_datseg + 0xbd95;
-	ds_writew(0xe4a0, 0);
+	ds_writew(GET_EXTRA_LOOT, 0);
 	x = ds_readws(X_TARGET);
 	y = ds_readws(Y_TARGET);
 
@@ -430,9 +430,9 @@ void seg092_06b4(signed short a1)
 #else
 				(t_map(chest_ptr, 11)(chest_ptr));
 #endif
-				ds_writew(0xe4a0, 1);
+				ds_writew(GET_EXTRA_LOOT, 1);
 			} else if (host_readws(Real2Host(chest_ptr) + 17) != 0) {
-				ds_writew(0xe4a0, 1);
+				ds_writew(GET_EXTRA_LOOT, 1);
 			}
 
 			break;
@@ -445,7 +445,7 @@ void seg092_06b4(signed short a1)
 	} while (host_readws(Real2Host(((struct chest*)chest_ptr)++)) != -1);
 #endif
 
-	if (l4 == 0 && ds_readws(0xe4a0) != 0) {
+	if (l4 == 0 && ds_readws(GET_EXTRA_LOOT) != 0) {
 
 		if (host_readws(Real2Host(chest_ptr) + 15) != 0) {
 			/* There are AP in the chest */
@@ -542,7 +542,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 				}
 #endif
 
-				ds_writew(0xe4a0, 1);
+				ds_writew(GET_EXTRA_LOOT, 1);
 			}
 
 		} else {
@@ -573,7 +573,7 @@ void use_key_on_chest(RealPt chest_ptr)
 			t_map(chest_ptr, 11)(chest_ptr);
 #endif
 
-			ds_writew(0xe4a0, 1);
+			ds_writew(GET_EXTRA_LOOT, 1);
 		}
 	} else {
 #if defined(__BORLANDC__)
