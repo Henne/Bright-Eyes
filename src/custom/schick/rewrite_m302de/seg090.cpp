@@ -294,19 +294,66 @@ signed short DNG12_handler(void)
 		D1_INFO("Illusionswand und Grube\n");
 #endif
 
-		if (GUI_bool(get_dtp(0x60))) {
-			if (ds_readb(0x3fa8) != 0) {
+		if (GUI_bool(get_dtp(0x60)))
+		{
+			if (ds_readb(0x3fa8) != 0)
+			{
 
-				if (inc_ds_ws(0x9d43) < 3) {
-					/* fall into pit */
+				/* TODO: Original-Bug: this counter is not in the savegame */
+				if (inc_ds_ws(0x9d43) < 3)
+				{
+					/* the hero must at least fall three times into pit */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x64),
 						(char*)hero + HERO_NAME2,
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 				} else {
-					/* detect obstacle */
-					/* TODO: buggy output */
+					/* the hero falls again into the pit */
+					/* Original-Bug: this text is not in OBER.DTX in SCHICK,
+							but it is in the english version.
+							It's a copy of get_dpt(0x64) plus an additional line.
+					*/
+					/* TODO: This fix works only for the german version and has to be
+							reworked, when BLADE.DAT should also be supported.
+					*/
+#ifdef M302de_ORIGINAL_BUGFIX
+					if (strlen((char*)get_dtp(0x64)) == 219)
+					{
+						/* generate a new format string */
+						const unsigned char add_line[110] = {	0x40, 0x3c,'I','C','H',' ',
+								'G','L','A','U','B','E',',',' ',
+								'I','C','H',' ',
+								'M','U','S','S',' ',
+								'E','S',' ' ,'N','U','R',' ',
+								'N','O','C','H',' ','E','I','N',' ',
+								'E','I','N','Z','I','G','E','S',' ',
+								'M','A','L',' ','V','E','R','S','U','C','H','E','N','!', 0x3e,' ',
+								'M','U','R','M','E','L','T',' ',
+								'%', 's',' ',
+								'A','L','S',' ',
+								'%', 's',' ',
+								'W','I','E','D','E','R',' ',
+								'A','U','F',' ',
+								'%','s','E',' ',
+								'F', 0x9a, 'S','S','E',' ',
+								'K','O','M','M','T','.',
+								'\0'
+								};
+
+					strcpy((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (char*)get_dtp(0x64));
+					strcat((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)), (const char*)add_line);
+
+					sprintf((char*)Real2Host(ds_readfp(DTP2)),
+						(char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
+						(char*)hero + HERO_NAME2,
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
+						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
+					}
+#else
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x7c),
 						(char*)hero + HERO_NAME2,
@@ -314,19 +361,53 @@ signed short DNG12_handler(void)
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 						Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
+#endif
 				}
 
 				/* try to break through */
 				sub_ds_bs(0x3fa7, dice_roll(4, 6, 2));
 
-				if (ds_readbs(0x3fa7) < 0) {
+				if (ds_readbs(0x3fa7) < 0)
+				{
 					/* obstacle broken */
 					ds_writebs(0x3fa8, 0);
 
-					/* TODO: buggy output*/
+					/* Original-Bug: this text is not in the german version of OBER.DTX,
+								but in the english version, so a translation
+								can be added.
+					*/
+#ifdef M302de_ORIGINAL_BUGFIX
+					{
+						unsigned char str[] = {	'A','L','S',' ','%','s',' ',
+									'M','I','T',' ','D','E','R',' ',
+									'B','A','R','R','I','E','R','E',' ',
+									'K','O','L','L','I','D','I','E','R','T',' ',
+									'B','R','I','C','H','T',' ',
+									'S','I','E',' ','I','N',' ',
+									'S','T', 0x9a,'C','K','E','.',0x40,
+
+									'D','A','S',' ',
+									'G','A','N','Z','E',' ',
+									'W','A','R',' ','N','U','R',' ',
+									'E','I','N',' ','B','I','L','D','!',0x40,
+
+									'S','C','H','A','D','E',',',' ',
+									'D','A','S','S',' ','I','H','R',' ',
+									'D','A','S',' ','N','I','C','H','T',' ',
+									'F','R', 0x9a,'H','E','R',' ',
+									'B','E','M','E','R','K','T',' ',
+									'H','A','B','T','.',
+									'\0'};
+
+						sprintf((char*)Real2Host(ds_readd(DTP2)),
+							(char*)str,
+							(char*)hero + HERO_NAME2);
+					}
+#else
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x80),
 						(char*)hero + HERO_NAME2);
+#endif
 				}
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
