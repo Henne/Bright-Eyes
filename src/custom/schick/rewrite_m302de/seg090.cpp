@@ -47,7 +47,7 @@ signed short DNG12_handler(void)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if (ds_readds(DAY_TIMER) % 450 == 0) {
+	if (ds_readds(DAY_TIMER) % MINUTES(5) == 0) {
 		/* TODO: buggy timer for cave in */
 
 		if (ds_readbs(0x3f9b) > 0) dec_ds_bs(0x3f9b);
@@ -87,15 +87,15 @@ signed short DNG12_handler(void)
 			/* water trap room, activate */
 			ds_writeb(0x3fa1, 1);
 
-			if (ds_readds(0x3fa2) / 450L != ds_readws(0x9d45)) {
+			if (ds_readds(0x3fa2) / MINUTES(5) != ds_readws(0x9d45)) {
 
-				ds_writews(0x9d45, (signed short)(ds_readds(0x3fa2) / 450L));
+				ds_writews(0x9d45, (signed short)(ds_readds(0x3fa2) / MINUTES(5)));
 
 				/* warning according to water level */
-				GUI_output(ds_readds(0x3fa2) == 0 ? get_dtp(0x50) :
-						(ds_readds(0x3fa2) <= 900 ? get_dtp(0x4c) : get_dtp(0x48)));
+				GUI_output(ds_readds(0x3fa2) == MINUTES(0) ? get_dtp(0x50) :
+						(ds_readds(0x3fa2) <= MINUTES(10) ? get_dtp(0x4c) : get_dtp(0x48)));
 
-				if (ds_readds(0x3fa2) == 0) {
+				if (ds_readds(0x3fa2) == MINUTES(0)) {
 					/* time is up, drown party */
 					hero = get_hero(0);
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -107,7 +107,7 @@ signed short DNG12_handler(void)
 							hero_disappear(hero, i, -1);
 						}
 					}
-				} else if (ds_readds(0x3fa2) <= 3600) {
+				} else if (ds_readds(0x3fa2) <= MINUTES(40)) {
 					/* NPC will find secret door */
 
 					if (is_hero_available_in_group(get_hero(6))) {
@@ -148,7 +148,7 @@ signed short DNG12_handler(void)
 			/* clear water */
 			ds_writeb(0x3fa1, 0);
 			/* reset countdown */
-			ds_writed(0x3fa2, 0x1199);
+			ds_writed(0x3fa2, MINUTES(50) + 5);
 		}
 	}
 
@@ -393,7 +393,7 @@ void DNG_clear_corridor(Bit8u *ptr)
 
 		GUI_output(get_dtp(0x8));
 
-		timewarp(0x1fa40L);
+		timewarp(DAYS(1));
 
 		host_writebs(ptr, -1);
 	} else {
