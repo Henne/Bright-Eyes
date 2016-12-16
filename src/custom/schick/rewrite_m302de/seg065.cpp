@@ -566,13 +566,25 @@ void show_outro(void)
 				host_writeb(hero + (0xd6 + 4) + 5 * j, 0);
 			}
 
+#ifdef M302de_ORIGINAL_BUGFIX
+			/* Original-Bug: restore permanent LE-damage at the end of game */
+			/*  Famous heros get healed for free */
+			if (host_readbs(hero + HERO_LE_MOD) > 0)
+			{
+				add_ptr_ws(hero + HERO_LE_ORIG, host_readbs(hero + HERO_LE_MOD));
+				host_writebs(hero + HERO_LE_MOD, 0);
+			}
+#endif
+
 			/* set LE to the max */
 			add_hero_le(hero, host_readws(hero + HERO_LE_ORIG));
 			/* set AE to the max */
 			add_hero_ae(hero, host_readws(hero + HERO_AE_ORIG));
 
 			/* ??? */
+#ifndef M302de_ORIGINAL_BUGFIX
 			host_writeb(hero + HERO_LE_MOD, 0);
+#endif
 			host_writeb(hero + HERO_HUNGER, 0);
 			host_writeb(hero + HERO_THIRST, 0);
 			host_writeb(hero + HERO_TEMPLE_ID, 0);
