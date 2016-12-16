@@ -50,10 +50,10 @@ signed short DNG12_handler(void)
 	if (ds_readds(DAY_TIMER) % MINUTES(5) == 0) {
 		/* TODO: buggy timer for cave in */
 
-		if (ds_readbs(DNG12_TUNNEL1) > 0) dec_ds_bs(0x3f9b);
-		if (ds_readbs(DNG12_TUNNEL2) > 0) dec_ds_bs(0x3f9c);
-		if (ds_readbs(DNG12_TUNNEL3) > 0) dec_ds_bs(0x3f9d);
-		if (ds_readbs(DNG12_TUNNEL4) > 0) dec_ds_bs(0x3f9e);
+		if (ds_readbs(DNG12_TUNNEL1) > 0) dec_ds_bs(DNG12_TUNNEL1);
+		if (ds_readbs(DNG12_TUNNEL2) > 0) dec_ds_bs(DNG12_TUNNEL2);
+		if (ds_readbs(DNG12_TUNNEL3) > 0) dec_ds_bs(DNG12_TUNNEL3);
+		if (ds_readbs(DNG12_TUNNEL4) > 0) dec_ds_bs(DNG12_TUNNEL4);
 	}
 
 	if (target_pos == 0x1608 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1 && ds_readbs(DNG12_WATERTRAP_WATER_RUNS) != 0) {
@@ -87,9 +87,10 @@ signed short DNG12_handler(void)
 			/* water trap room, activate */
 			ds_writeb(DNG12_WATERTRAP_WATER_RUNS, 1);
 
-			if (ds_readds(DNG12_WATERTRAP_TIMER) / MINUTES(5) != ds_readws(0x9d45)) {
+			if (ds_readds(DNG12_WATERTRAP_TIMER) / MINUTES(5) != ds_readws(DNG12_WATERTRAP_BAK))
+			{
 
-				ds_writews(0x9d45, (signed short)(ds_readds(DNG12_WATERTRAP_TIMER) / MINUTES(5)));
+				ds_writews(DNG12_WATERTRAP_BAK, (signed short)(ds_readds(DNG12_WATERTRAP_TIMER) / MINUTES(5)));
 
 				/* warning according to water level */
 				GUI_output(ds_readds(DNG12_WATERTRAP_TIMER) == MINUTES(0) ? get_dtp(0x50) :
@@ -190,10 +191,10 @@ signed short DNG12_handler(void)
 
 				GUI_output(get_dtp(0x24));
 
-				if (ds_readbs(DNG12_TUNNEL1) > 0) ds_writeb(0x3f9b, -1);
-				if (ds_readbs(DNG12_TUNNEL2) > 0) ds_writeb(0x3f9c, -1);
-				if (ds_readbs(DNG12_TUNNEL3) > 0) ds_writeb(0x3f9d, -1);
-				if (ds_readbs(DNG12_TUNNEL4) > 0) ds_writeb(0x3f9e, -1);
+				if (ds_readbs(DNG12_TUNNEL1) > 0) ds_writeb(DNG12_TUNNEL1, -1);
+				if (ds_readbs(DNG12_TUNNEL2) > 0) ds_writeb(DNG12_TUNNEL2, -1);
+				if (ds_readbs(DNG12_TUNNEL3) > 0) ds_writeb(DNG12_TUNNEL3, -1);
+				if (ds_readbs(DNG12_TUNNEL4) > 0) ds_writeb(DNG12_TUNNEL4, -1);
 			} else if (i == 3) {
 				/* sacrifice gold */
 
@@ -224,20 +225,23 @@ signed short DNG12_handler(void)
 		/* bolt trap */
 		print_msg_with_first_hero(get_dtp(0x34));
 		sub_hero_le(hero, random_schick(6));
-	} else if (target_pos == 0x120e && target_pos != ds_readws(0x330e) && !ds_readb(INGERIMM_HINT)) {
+	} else if (target_pos == 0x120e && target_pos != ds_readws(0x330e) && !ds_readb(DNG12_INGERIMM_HINT))
+	{
 		/* lower Ingerimm idol */
 #if !defined(__BORLANDC__)
 		D1_INFO("Untere Ingerimstatue\n");
 #endif
 		GUI_output(get_dtp(0x38));
+
 	} else if (target_pos == 0x120e) {
 #if !defined(__BORLANDC__)
 		D1_INFO("Test auf Ingerimm-Opfer\n");
 #endif
-		if (ds_readb(INGERIMM_SACRIFICE) != 0 && !ds_readb(INGERIMM_HINT)) {
+		if (ds_readb(DNG12_INGERIMM_SACRIFICE) != 0 && !ds_readb(DNG12_INGERIMM_HINT))
+		{
 			/* hint to secret door */
-			ds_writeb(INGERIMM_HINT, 1);
-			ds_writeb(INGERIMM_SACRIFICE, 0);
+			ds_writeb(DNG12_INGERIMM_HINT, 1);
+			ds_writeb(DNG12_INGERIMM_SACRIFICE, 0);
 			GUI_output(get_dtp(0x3c));
 		}
 	} else if (target_pos == 0x130a && target_pos != ds_readws(0x330e)) {
@@ -491,7 +495,7 @@ void DNG_oberorken_chest(RealPt chest)
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 0x0b);
 
-	host_writed(Real2Host(chest) + 0x0b, (Bit32u)RealMake(datseg, 0x3faa));
+	host_writed(Real2Host(chest) + 0x0b, (Bit32u)RealMake(datseg, DNG12_CHEST1_CONTENT));
 
 	loot_simple_chest(Real2Host(chest));
 
