@@ -104,7 +104,7 @@ void DNG_door(signed short action)
 
 					} else if (!(ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && ds_readb(0x4168) != 4) &&
 							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(0x3ca7)) &&
-							!(ds_readb(DUNGEON_INDEX) == 12 && ds_readb(0x3fa1)))
+							!(ds_readb(DUNGEON_INDEX) == 12 && ds_readb(DNG12_WATERTRAP_WATER_RUNS)))
 					{
 						/* for this door works an IRON KEY */
 						/* BEWARE: there are two of them */

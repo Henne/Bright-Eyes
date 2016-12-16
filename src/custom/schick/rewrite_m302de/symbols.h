@@ -187,8 +187,18 @@
 #define DRUG_TIMER	(0x3f76)	/* unsigned char {0, 1, ..., 10} */
 #define PTEMPLE_CLOSED	(0x3f77)	/* unsigned char {0, 1} */
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0, 1} */
+#define DNG12_TUNNEL1	(0x3f9b)	/* signed char {0, 1} */
+#define DNG12_TUNNEL2	(0x3f9c)	/* signed char {0, 1} */
+#define DNG12_TUNNEL3	(0x3f9d)	/* signed char {0, 1} */
+#define DNG12_TUNNEL4	(0x3f9e)	/* signed char {0, 1} */
 #define INGERIMM_SACRIFICE	(0x3f9f)	/* unsigned char {0, 1} */
 #define INGERIMM_HINT	(0x3fa0)	/* unsigned char {0, 1} */
+#define DNG12_WATERTRAP_WATER_RUNS	(0x3fa1)	/* signed char {0, 1} */
+#define DNG12_WATERTRAP_TIMER	(0x3fa2)	/* signed long */
+#define DNG12_WATERTRAP_ACTIVE	(0x3fa6)	/* signed char {0, 1} */
+#define DNG12_OBSTACLE_HP	(0x3fa7)	/* signed char {-25,...,40} */
+#define DNG12_OBSTACLE_ACTIVE	(0x3fa8)	/* signed char {0, 1} */
+#define DNG12_SPEARTRAP_ACTIVE	(0x3fa9)	/* signed char {0, 1} */
 #define DNG10_CORPSE_LOOTED	(0x4140)	/* unsgiend char {0, 1} */
 #define DNG10_LEVER_FOUND	(0x4141)	/* unsigned char {0, 1, 3} ; default = 0 */
 #define DNG10_HOLE_STATE	(0x4142)	/* unsigned char {0, 1, 2} ; default = 0 */
@@ -386,6 +396,7 @@
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
 #define DNG01_STR_MARBO	(0x93d1)		/* char[6] = "MARBO" */
+#define DNG12_OBSTACLE_TRIES	(0x9d43)	/* signed short */
 #define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
 #define SEA_TRAVEL	(0xa842)	/* unsigned char {0,1} */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */

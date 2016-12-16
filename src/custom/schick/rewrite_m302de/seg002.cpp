@@ -2353,12 +2353,9 @@ void do_timers(void)
 		}
 	}
 
-	/* unknown timer */
-	if (ds_readd(0x3fa2) != 0) {
-#if !defined(__BORLANDC__)
-		D1_LOG("Unknown Dungeon Timer\n");
-#endif
-		sub_ds_ds(0x3fa2, 1);
+	if (ds_readd(DNG12_WATERTRAP_TIMER) != 0)
+	{
+		sub_ds_ds(DNG12_WATERTRAP_TIMER, 1);
 	}
 
 	/* at 24 o'clock, daily stuff */

@@ -50,13 +50,13 @@ signed short DNG12_handler(void)
 	if (ds_readds(DAY_TIMER) % MINUTES(5) == 0) {
 		/* TODO: buggy timer for cave in */
 
-		if (ds_readbs(0x3f9b) > 0) dec_ds_bs(0x3f9b);
-		if (ds_readbs(0x3f9c) > 0) dec_ds_bs(0x3f9c);
-		if (ds_readbs(0x3f9d) > 0) dec_ds_bs(0x3f9d);
-		if (ds_readbs(0x3f9e) > 0) dec_ds_bs(0x3f9e);
+		if (ds_readbs(DNG12_TUNNEL1) > 0) dec_ds_bs(0x3f9b);
+		if (ds_readbs(DNG12_TUNNEL2) > 0) dec_ds_bs(0x3f9c);
+		if (ds_readbs(DNG12_TUNNEL3) > 0) dec_ds_bs(0x3f9d);
+		if (ds_readbs(DNG12_TUNNEL4) > 0) dec_ds_bs(0x3f9e);
 	}
 
-	if (target_pos == 0x1608 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1 && ds_readbs(0x3fa1) != 0) {
+	if (target_pos == 0x1608 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1 && ds_readbs(DNG12_WATERTRAP_WATER_RUNS) != 0) {
 		/* secret door from water trap */
 #if !defined(__BORLANDC__)
 		D1_INFO("Geheimtuere\n");
@@ -67,8 +67,8 @@ signed short DNG12_handler(void)
 
 			and_ptr_bs(ptr + 0x87, 0xf);
 			/* turn off water trap */
-			ds_writeb(0x3fa6, 0);
-			ds_writeb(0x3fa1, 0);
+			ds_writeb(DNG12_WATERTRAP_ACTIVE, 0);
+			ds_writeb(DNG12_WATERTRAP_WATER_RUNS, 0);
 
 		} else {
 			/* door not detected */
@@ -82,20 +82,20 @@ signed short DNG12_handler(void)
 			target_pos == 0x1408 || target_pos == 0x1508 || target_pos == 0x1608 ||
 			target_pos == 0x1109 || target_pos == 0x1209 || target_pos == 0x1309 ||
 			target_pos == 0x1409 || target_pos == 0x1509 || target_pos == 0x1609 )
-			&& ds_readbs(0x3fa6) != 0)
+			&& ds_readbs(DNG12_WATERTRAP_ACTIVE) != 0)
 		{
 			/* water trap room, activate */
-			ds_writeb(0x3fa1, 1);
+			ds_writeb(DNG12_WATERTRAP_WATER_RUNS, 1);
 
-			if (ds_readds(0x3fa2) / MINUTES(5) != ds_readws(0x9d45)) {
+			if (ds_readds(DNG12_WATERTRAP_TIMER) / MINUTES(5) != ds_readws(0x9d45)) {
 
-				ds_writews(0x9d45, (signed short)(ds_readds(0x3fa2) / MINUTES(5)));
+				ds_writews(0x9d45, (signed short)(ds_readds(DNG12_WATERTRAP_TIMER) / MINUTES(5)));
 
 				/* warning according to water level */
-				GUI_output(ds_readds(0x3fa2) == MINUTES(0) ? get_dtp(0x50) :
-						(ds_readds(0x3fa2) <= MINUTES(10) ? get_dtp(0x4c) : get_dtp(0x48)));
+				GUI_output(ds_readds(DNG12_WATERTRAP_TIMER) == MINUTES(0) ? get_dtp(0x50) :
+						(ds_readds(DNG12_WATERTRAP_TIMER) <= MINUTES(10) ? get_dtp(0x4c) : get_dtp(0x48)));
 
-				if (ds_readds(0x3fa2) == MINUTES(0)) {
+				if (ds_readds(DNG12_WATERTRAP_TIMER) == MINUTES(0)) {
 					/* time is up, drown party */
 					hero = get_hero(0);
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -107,7 +107,7 @@ signed short DNG12_handler(void)
 							hero_disappear(hero, i, -1);
 						}
 					}
-				} else if (ds_readds(0x3fa2) <= MINUTES(40)) {
+				} else if (ds_readds(DNG12_WATERTRAP_TIMER) <= MINUTES(40)) {
 					/* NPC will find secret door */
 
 					if (is_hero_available_in_group(get_hero(6))) {
@@ -138,32 +138,32 @@ signed short DNG12_handler(void)
 
 						and_ptr_bs(ptr + 0x87, 0xf);
 						/* turn off water trap */
-						ds_writeb(0x3fa6, 0);
-						ds_writeb(0x3fa1, 0);
+						ds_writeb(DNG12_WATERTRAP_ACTIVE, 0);
+						ds_writeb(DNG12_WATERTRAP_WATER_RUNS, 0);
 						DNG_update_pos();
 					}
 				}
 			}
 		} else {
 			/* clear water */
-			ds_writeb(0x3fa1, 0);
+			ds_writeb(DNG12_WATERTRAP_WATER_RUNS, 0);
 			/* reset countdown */
-			ds_writed(0x3fa2, MINUTES(50) + 5);
+			ds_writed(DNG12_WATERTRAP_TIMER, MINUTES(50) + 5);
 		}
 	}
 
-	if (target_pos == 0x0d09 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9b)) {
+	if (target_pos == 0x0d09 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG12_TUNNEL1)) {
 		/* 1. tunnel block */
-		DNG_clear_corridor(p_datseg + 0x3f9b);
-	} else if (target_pos == 0x0e08 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9c)) {
+		DNG_clear_corridor(p_datseg + DNG12_TUNNEL1);
+	} else if (target_pos == 0x0e08 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG12_TUNNEL2)) {
 		/* 2. tunnel block */
-		DNG_clear_corridor(p_datseg + 0x3f9c);
-	} else if (target_pos == 0x0d07 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9d)) {
+		DNG_clear_corridor(p_datseg + DNG12_TUNNEL2);
+	} else if (target_pos == 0x0d07 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG12_TUNNEL3)) {
 		/* 3. tunnel block */
-		DNG_clear_corridor(p_datseg + 0x3f9d);
-	} else if (target_pos == 0x0e05 && target_pos != ds_readws(0x330e) && !ds_readbs(0x3f9e)) {
+		DNG_clear_corridor(p_datseg + DNG12_TUNNEL3);
+	} else if (target_pos == 0x0e05 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG12_TUNNEL4)) {
 		/* 4. tunnel block */
-		DNG_clear_corridor(p_datseg + 0x3f9e);
+		DNG_clear_corridor(p_datseg + DNG12_TUNNEL4);
 	} else if (target_pos == 0x0804 && target_pos != ds_readws(0x330e)) {
 
 		/* upper Ingerimm idol */
@@ -190,10 +190,10 @@ signed short DNG12_handler(void)
 
 				GUI_output(get_dtp(0x24));
 
-				if (ds_readbs(0x3f9b) > 0) ds_writeb(0x3f9b, -1);
-				if (ds_readbs(0x3f9c) > 0) ds_writeb(0x3f9c, -1);
-				if (ds_readbs(0x3f9d) > 0) ds_writeb(0x3f9d, -1);
-				if (ds_readbs(0x3f9e) > 0) ds_writeb(0x3f9e, -1);
+				if (ds_readbs(DNG12_TUNNEL1) > 0) ds_writeb(0x3f9b, -1);
+				if (ds_readbs(DNG12_TUNNEL2) > 0) ds_writeb(0x3f9c, -1);
+				if (ds_readbs(DNG12_TUNNEL3) > 0) ds_writeb(0x3f9d, -1);
+				if (ds_readbs(DNG12_TUNNEL4) > 0) ds_writeb(0x3f9e, -1);
 			} else if (i == 3) {
 				/* sacrifice gold */
 
@@ -296,11 +296,11 @@ signed short DNG12_handler(void)
 
 		if (GUI_bool(get_dtp(0x60)))
 		{
-			if (ds_readb(0x3fa8) != 0)
+			if (ds_readb(DNG12_OBSTACLE_ACTIVE) != 0)
 			{
 
 				/* TODO: Original-Bug: this counter is not in the savegame */
-				if (inc_ds_ws(0x9d43) < 3)
+				if (inc_ds_ws(DNG12_OBSTACLE_TRIES) < 3)
 				{
 					/* the hero must at least fall three times into pit */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -365,12 +365,12 @@ signed short DNG12_handler(void)
 				}
 
 				/* try to break through */
-				sub_ds_bs(0x3fa7, dice_roll(4, 6, 2));
+				sub_ds_bs(DNG12_OBSTACLE_HP, dice_roll(4, 6, 2));
 
-				if (ds_readbs(0x3fa7) < 0)
+				if (ds_readbs(DNG12_OBSTACLE_HP) < 0)
 				{
 					/* obstacle broken */
-					ds_writebs(0x3fa8, 0);
+					ds_writebs(DNG12_OBSTACLE_ACTIVE, 0);
 
 					/* Original-Bug: this text is not in the german version of OBER.DTX,
 								but in the english version, so a translation
@@ -423,7 +423,7 @@ signed short DNG12_handler(void)
 			ds_writew(X_TARGET, ds_readw(0x2d83));
 			ds_writew(Y_TARGET, ds_readw(0x2d85));
 		}
-	} else if (target_pos == 0x1e03 && target_pos != ds_readws(0x330e) && ds_readb(0x3fa9) != 0) {
+	} else if (target_pos == 0x1e03 && target_pos != ds_readws(0x330e) && ds_readb(DNG12_SPEARTRAP_ACTIVE) != 0) {
 		/* spear trap */
 
 		if (test_skill(hero, 0x33, 2) > 0) {
@@ -441,7 +441,9 @@ signed short DNG12_handler(void)
 						(char*)get_dtp(0x78),
 						(char*)hero + HERO_NAME2,
 						(char*)hero + HERO_NAME2);
-					ds_writeb(0x3fa9, 0);
+
+					ds_writeb(DNG12_SPEARTRAP_ACTIVE, 0);
+
 					add_hero_ap(hero, 10);
 				}
 				GUI_output(Real2Host(ds_readd(DTP2)));
