@@ -14,6 +14,8 @@ void DNG08_chest1_func3(RealPt);
 void DNG08_chest2_func3(RealPt);
 /* 0x39 */
 void DNG08_chest2_func1(RealPt);
+/* 0x3e */
+void DNG08_chest4_func3(RealPt);
 
 /* 0x48 */
 void DNG08_chest3_func1(RealPt);
