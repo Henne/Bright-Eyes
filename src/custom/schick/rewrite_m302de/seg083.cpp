@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
- *	Functions rewritten: 4/12
+ *	Functions rewritten: 5/12
  */
 
 #include "v302de.h"
@@ -17,6 +17,7 @@
 #include "seg075.h"
 #include "seg076.h"
 #include "seg083.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -504,6 +505,11 @@ void DNG08_chest0_func3(RealPt)
 	}
 }
 
+/* Borlandified and identical */
+void DNG08_chest1_func3(RealPt)
+{
+	loot_multi_chest(p_datseg + 0x40e0, get_dtp(0x88));
+}
 #if !defined(__BORLANDC__)
 }
 #endif
