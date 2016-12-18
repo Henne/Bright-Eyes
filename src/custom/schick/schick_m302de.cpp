@@ -9488,7 +9488,8 @@ static int seg083(unsigned short offs)
 			return 0;
 		}
 		case 0x57: {
-			return 0;
+			reg_ax = DNG08_handler();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
