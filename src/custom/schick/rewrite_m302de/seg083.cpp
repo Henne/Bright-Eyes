@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
- *	Functions rewritten: 1/12
+ *	Functions rewritten: 2/12
  */
 
 #include "v302de.h"
@@ -20,6 +20,7 @@
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
+#include "seg105.h"
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -49,7 +50,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cba, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x109 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cbb))
@@ -57,7 +58,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cbb, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x108 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cbc))
@@ -65,7 +66,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cbc, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x107 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cbd))
@@ -73,7 +74,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cbd, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x106 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cbe))
@@ -81,7 +82,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cbe, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x606 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cbf))
@@ -89,7 +90,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cbf, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x60a && target_pos != ds_readws(0x330e) && !ds_readb(0x3cc0))
@@ -97,7 +98,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cc0, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x707 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cc1))
@@ -105,7 +106,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cc1, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x701 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cc2))
@@ -113,7 +114,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cc2, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0xb01 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cc3))
@@ -121,7 +122,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cc3, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x704 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cc4))
@@ -129,7 +130,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cc4, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0xa05 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cc5))
@@ -137,7 +138,7 @@ signed short DNG08_handler(void)
 		if (GUI_bool(get_dtp(0x04)))
 		{
 			ds_writeb(0x3cc5, 1);
-			DNG08_dummy1();
+			DNG08_search_bed();
 		}
 
 	} else 	if (target_pos == 0x805 && target_pos != ds_readws(0x330e) && ds_readb(0x434c))
@@ -398,9 +399,77 @@ signed short DNG08_handler(void)
 
 }
 
-void DNG08_dummy1(void)
+/* Borlandified and identical */
+/* static */
+void DNG08_search_bed(void)
 {
+	signed short counter;
+	signed short money;
+	signed short slot;
+	Bit8u *hero;
 
+	money = counter = 0;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	slot = get_free_mod_slot();
+
+	set_mod_slot(slot, HOURS(6), hero + HERO_CH, -2, get_hero_index(hero));
+
+	if (random_schick(100) <= 10)
+	{
+		sprintf((char*)Real2Host(ds_readfp(DTP2)),
+			(char*)get_dtp(0x0c),
+			(char*)hero + HERO_NAME2,
+			(char*)Real2Host(GUI_names_grammar(2, 92, 0)));
+
+		/* a BRANDY BOTTLE */
+		get_item(92, 1, 1);
+
+		GUI_output(Real2Host(ds_readfp(DTP2)));
+
+		counter++;
+	}
+
+	if (random_schick(100) <= 10)
+	{
+		sprintf((char*)Real2Host(ds_readfp(DTP2)),
+			(char*)get_dtp(0x0c),
+			(char*)hero + HERO_NAME2,
+			(char*)Real2Host(GUI_names_grammar(2, 14, 0)));
+
+		/* a DAGGER */
+		get_item(14, 1, 1);
+
+		GUI_output(Real2Host(ds_readfp(DTP2)));
+
+		counter++;
+	}
+
+	if (random_schick(100) <= 10)
+	{
+		money = random_schick(6);
+
+		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
+			(char*)get_dtp(0x10),
+			money);
+
+		sprintf((char*)Real2Host(ds_readfp(DTP2)),
+			(char*)get_dtp(0x0c),
+			(char*)hero + HERO_NAME2,
+			(char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)));
+
+		GUI_output(Real2Host(ds_readfp(DTP2)));
+
+		add_party_money(money);
+
+		counter++;
+	}
+
+	if (!counter)
+	{
+		GUI_output(get_dtp(0x08));
+	}
 }
 
 #if !defined(__BORLANDC__)

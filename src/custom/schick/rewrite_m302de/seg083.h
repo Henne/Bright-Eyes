@@ -3,7 +3,7 @@ namespace M302de {
 #endif
 
 /* 0x25 */
-void DNG08_dummy1(void);
+void DNG08_search_bed(void);
 
 /* 0x57 */
 signed short DNG08_handler(void);
