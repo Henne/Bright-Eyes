@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
- *	Functions rewritten: 3/12
+ *	Functions rewritten: 4/12
  */
 
 #include "v302de.h"
@@ -470,6 +470,24 @@ void DNG08_search_bed(void)
 	{
 		GUI_output(get_dtp(0x08));
 	}
+}
+
+/* Borlandified and identical */
+void DNG08_chest1_func2(RealPt)
+{
+	Bit8u *hero;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	sprintf((char*)Real2Host(ds_readfp(DTP2)),
+		(char*)get_dtp(0x2c),
+		(char*)hero + HERO_NAME2,
+		(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
+
+	GUI_output(Real2Host(ds_readfp(DTP2)));
+
+	/* 3W6 damage */
+	sub_hero_le(hero, dice_roll(3, 6, 0));
 }
 
 /* Borlandified and identical */

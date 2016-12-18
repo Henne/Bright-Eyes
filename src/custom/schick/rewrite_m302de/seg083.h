@@ -2,6 +2,8 @@
 namespace M302de {
 #endif
 
+/* 0x20 */
+void DNG08_chest1_func2(RealPt);
 /* 0x25 */
 void DNG08_search_bed(void);
 /* 0x2a */
