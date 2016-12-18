@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
+ *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: orc lair)
  *	Functions rewritten: 12/12 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg083.cpp
  */
 
 #include "v302de.h"
@@ -32,7 +36,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG08_handler(void)
 {
 	signed short target_pos;
@@ -405,7 +408,6 @@ signed short DNG08_handler(void)
 
 }
 
-/* Borlandified and identical */
 /* static */
 void DNG08_search_bed(void)
 {
@@ -478,7 +480,6 @@ void DNG08_search_bed(void)
 	}
 }
 
-/* Borlandified and identical */
 void DNG08_chest1_func2(RealPt)
 {
 	Bit8u *hero;
@@ -496,7 +497,6 @@ void DNG08_chest1_func2(RealPt)
 	sub_hero_le(hero, dice_roll(3, 6, 0));
 }
 
-/* Borlandified and identical */
 void DNG08_chest0_func3(RealPt)
 {
 	if (!ds_readb(0x3ccc))
@@ -510,13 +510,11 @@ void DNG08_chest0_func3(RealPt)
 	}
 }
 
-/* Borlandified and identical */
 void DNG08_chest1_func3(RealPt)
 {
 	loot_multi_chest(p_datseg + 0x40e0, get_dtp(0x88));
 }
 
-/* Borlandified and identical */
 void DNG08_chest2_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -527,7 +525,6 @@ void DNG08_chest2_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG08_chest2_func1(RealPt chest)
 {
 	if (!ds_readb(0x3cca))
@@ -561,7 +558,6 @@ void DNG08_chest2_func1(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG08_chest3_func1(RealPt chest)
 {
 	Bit8u *hero;
@@ -590,7 +586,6 @@ void DNG08_chest3_func1(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG08_chest4_func1(RealPt chest)
 {
 	Bit8u *hero;
@@ -614,7 +609,6 @@ void DNG08_chest4_func1(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG08_chest5_func1(RealPt chest)
 {
 	Bit8u *hero;
@@ -638,7 +632,6 @@ void DNG08_chest5_func1(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG08_chest4_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -649,7 +642,6 @@ void DNG08_chest4_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG08_chest5_func3(RealPt chest)
 {
 	RealPt ptr_bak;
