@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
- *	Functions rewritten: 11/12
+ *	Functions rewritten: 12/12 (complete)
  */
 
 #include "v302de.h"
@@ -647,6 +647,26 @@ void DNG08_chest4_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x40ed));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG08_chest5_func3(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x40ef));
+	loot_simple_chest(Real2Host(chest));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+
+	if (!(ds_readb(0x3ccd) & 2))
+	{
+		GUI_output(get_dtp(0x8c));
+
+		add_party_money(2890L);
+
+		or_ds_bs(0x3ccd, 2);
+	}
 }
 
 #if !defined(__BORLANDC__)
