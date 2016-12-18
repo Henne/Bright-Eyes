@@ -4,7 +4,7 @@
  *
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
- *	Call:		BCC.EXE -mlarge -O- -1 -c -Yo seg089.cpp
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg089.cpp
  */
 
 #include <stdio.h>
