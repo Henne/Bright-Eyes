@@ -376,7 +376,7 @@ void seg092_06b4(signed short a1)
 
 #if !defined(__BORLANDC__)
 	const int dng = ds_readbs(DUNGEON_INDEX);
-	if (dng == 2 || dng == 3 || dng == 8)
+	if (dng == 2 || dng == 3)
 	{
 		DUMMY_WARNING();
 		return;
