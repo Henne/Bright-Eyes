@@ -2243,11 +2243,11 @@ void do_timers(void)
 			}
 
 			/* two timers of a dungeon */
-			if (ds_readbs(0x3cc6) != 0) {
-				dec_ds_bs_post(0x3cc6);
+			if (ds_readbs(DNG08_TIMER1) != 0) {
+				dec_ds_bs_post(DNG08_TIMER1);
 			}
-			if (ds_readbs(0x3cc7) != 0) {
-				dec_ds_bs_post(0x3cc7);
+			if (ds_readbs(DNG08_TIMER2) != 0) {
+				dec_ds_bs_post(DNG08_TIMER2);
 			}
 		}
 

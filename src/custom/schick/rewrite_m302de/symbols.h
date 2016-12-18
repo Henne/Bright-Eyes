@@ -177,6 +177,26 @@
 #define SPHERE_TIMER	(0x3c97)
 #define SPHERE_ACTIVE	(0x3c98)
 #define MAGE_POISON	(0x3cb6)
+#define DNG08_BED_00	(0x3cba)	/* unsigned char {0, 1} */
+#define DNG08_BED_01	(0x3cbb)	/* unsigned char {0, 1} */
+#define DNG08_BED_02	(0x3cbc)	/* unsigned char {0, 1} */
+#define DNG08_BED_03	(0x3cbd)	/* unsigned char {0, 1} */
+#define DNG08_BED_04	(0x3cbe)	/* unsigned char {0, 1} */
+#define DNG08_BED_05	(0x3cbf)	/* unsigned char {0, 1} */
+#define DNG08_BED_06	(0x3cc0)	/* unsigned char {0, 1} */
+#define DNG08_BED_07	(0x3cc1)	/* unsigned char {0, 1} */
+#define DNG08_BED_08	(0x3cc2)	/* unsigned char {0, 1} */
+#define DNG08_BED_09	(0x3cc3)	/* unsigned char {0, 1} */
+#define DNG08_BED_10	(0x3cc4)	/* unsigned char {0, 1} */
+#define DNG08_BED_11	(0x3cc5)	/* unsigned char {0, 1} */
+#define DNG08_TIMER1	(0x3cc6)	/* unsigned char {0, 1, ..., 24} */
+#define DNG08_TIMER2	(0x3cc7)	/* unsigned char {0, 1, ..., 24} */
+#define DNG08_BUNDLES_DONE	(0x3cc8)	/* unsigned char {0, 1} */
+#define DNG08_BALLISTA_DONE	(0x3cc9)	/* unsigned char {0, 1} */
+#define DNG08_CHEST2_LOOTED	(0x3cca)	/* unsigned char {0,1} */
+#define DNG08_SECRET_DOOR	(0x3ccb)	/* signed char {0,1 = found,2 = opened} */
+#define DNG08_CHEST0_LOOTED	(0x3ccc)	/* unsigned char {0,1} */
+#define DNG08_CHEST35_LOOTED	(0x3ccd)	/* unsigned char {0,1,2,3} */
 #define FIND_HYGGELIK	(0x3ddc)	/* unsigned char {0, 1} you are now able to find Hyggelik */
 #define TATZELWURM	(0x3de5)	/* unsigned char {0, 1, 2} */
 #define RANDOM_TLK_HERO	(0x3e18)	/* RealPt */
@@ -200,6 +220,10 @@
 #define DNG12_OBSTACLE_ACTIVE	(0x3fa8)	/* signed char {0, 1} */
 #define DNG12_SPEARTRAP_ACTIVE	(0x3fa9)	/* signed char {0, 1} */
 #define DNG12_CHEST1_CONTENT	(0x3faa)	/* signed char[12] */
+#define DNG08_CHEST1_CONTENT	(0x40e0)	/* signed char[12] */
+#define DNG08_CHEST2_CONTENT	(0x40eb)	/* signed char[2] */
+#define DNG08_CHEST4_CONTENT	(0x40ed)	/* signed char[2] */
+#define DNG08_CHEST5_CONTENT	(0x40ef)	/* signed char[6] */
 #define DNG10_CORPSE_LOOTED	(0x4140)	/* unsgiend char {0, 1} */
 #define DNG10_LEVER_FOUND	(0x4141)	/* unsigned char {0, 1, 3} ; default = 0 */
 #define DNG10_HOLE_STATE	(0x4142)	/* unsigned char {0, 1, 2} ; default = 0 */
@@ -236,6 +260,7 @@
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
+#define DNG08_WATERBARREL	(0x434c)	/* signed char {0, 1} */
 #define CAMP_INCIDENT	(0x434f)	/* signed short, -1 = not determined or will not happen, 0,1,2 = guard that will be affected */
 #define KNOWN_MONSTERS	(0x4351)	/* signed short[82] */
 #define ARSENAL_MONEY	(0x43a3)	/* signed short {-1, 0 - 60 } */
@@ -397,6 +422,7 @@
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
 #define DNG01_STR_MARBO	(0x93d1)		/* char[6] = "MARBO" */
+#define DNG08_STR_TAIRACH	(0x9725)	/* char[8] = "TAIRACH" */
 #define DNG12_OBSTACLE_TRIES	(0x9d43)	/* signed short */
 #define DNG12_WATERTRAP_BAK	(0x9d45)	/* signed short */
 #define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
