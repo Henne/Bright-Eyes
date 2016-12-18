@@ -14,6 +14,7 @@
 #include "seg077.h"
 #include "seg080.h"
 #include "seg081.h"
+#include "seg083.h"
 #include "seg084.h"
 #include "seg085.h"
 #include "seg086.h"
@@ -99,6 +100,14 @@ treasure_type t_map(RealPt ptr, const int off)
 		if (f_off == 0x25) return (treasure_type)DNG06_chest2;
 
 		D1_ERR("ERROR: call to seg080:0x%x should not happen\n", f_off);
+		exit(-1);
+		break;
+	}
+	case 0x13f0: {
+		/* TODO: seg083.cpp: orccave */
+		if (f_off == 0x2a) return (treasure_type)DNG08_chest0_func3;
+
+		D1_ERR("ERROR: call to seg083:0x%x should not happen\n", f_off);
 		exit(-1);
 		break;
 	}

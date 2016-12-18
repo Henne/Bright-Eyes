@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
- *	Functions rewritten: 2/12
+ *	Functions rewritten: 3/12
  */
 
 #include "v302de.h"
@@ -469,6 +469,20 @@ void DNG08_search_bed(void)
 	if (!counter)
 	{
 		GUI_output(get_dtp(0x08));
+	}
+}
+
+/* Borlandified and identical */
+void DNG08_chest0_func3(RealPt)
+{
+	if (!ds_readb(0x3ccc))
+	{
+		ds_writeb(0x3ccc, 1);
+
+		GUI_output(get_dtp(0x80));
+
+		/* get 40 FOOD PACKAGES */
+		get_item(45, 1, 40);
 	}
 }
 
