@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
- *	Functions rewritten: 8/12
+ *	Functions rewritten: 9/12
  */
 
 #include "v302de.h"
@@ -586,6 +586,30 @@ void DNG08_chest3_func1(RealPt chest)
 			((void (*)(void))((RealPt)host_readd(Real2Host(chest) + 7)))();
 #else
 			((treasure_trap)(t_map(chest, 7)))();
+#endif
+	}
+}
+
+/* Borlandified and identical */
+void DNG08_chest4_func1(RealPt chest)
+{
+	Bit8u *hero;
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	if (get_first_hero_with_item(212) != -1 ||
+		test_skill(hero, 48, 5) > 0)
+	{
+#if defined(__BORLANDC__)
+		((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest) + 11)))(chest);
+#else
+		t_map(chest, 11)(chest);
+#endif
+
+	} else {
+#if defined(__BORLANDC__)
+		((void (*)(void))((RealPt)host_readd(Real2Host(chest) + 7)))();
+#else
+		((treasure_trap)(t_map(chest, 7)))();
 #endif
 	}
 }
