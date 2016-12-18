@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg083 (dungeon: cave3)
- *	Functions rewritten: 6/12
+ *	Functions rewritten: 7/12
  */
 
 #include "v302de.h"
@@ -23,6 +23,10 @@
 #include "seg097.h"
 #include "seg103.h"
 #include "seg105.h"
+
+#if !defined(__BORLANDC__)
+#include "t_map.h"
+#endif
 
 #if !defined(__BORLANDC__)
 namespace M302de {
@@ -522,6 +526,42 @@ void DNG08_chest2_func3(RealPt chest)
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
+
+/* Borlandified and identical */
+void DNG08_chest2_func1(RealPt chest)
+{
+	if (!ds_readb(0x3cca))
+	{
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), 40, 2) > 0)
+		{
+			GUI_input(get_dtp(0x6c), 10);
+
+			if (!strcmp((char*)Real2Host(ds_readfp(0xd2ef)),
+					(char*)p_datseg + 0x9725))
+			{
+#if defined(__BORLANDC__)
+			((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest) + 11)))(chest);
+#else
+			t_map(chest, 11)(chest);
+#endif
+
+			} else if ((RealPt)host_readd(Real2Host(chest) + 7) != 0)
+			{
+#if defined(__BORLANDC__)
+			((void (*)(void))((RealPt)host_readd(Real2Host(chest) + 7)))();
+#else
+			((treasure_trap)(t_map(chest, 7)))();
+#endif
+			}
+		} else {
+			GUI_output(get_dtp(0x68));
+		}
+	} else {
+		GUI_input(get_ltx(0x828), 0);
+	}
+
+}
+
 #if !defined(__BORLANDC__)
 }
 #endif
