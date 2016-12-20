@@ -9328,7 +9328,11 @@ static int seg079(unsigned short offs)
 {
 	switch (offs) {
 		case 0x20: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			DNG03_chest00_func3(chest);
+			return 1;
 		}
 		case 0x25: {
 			return 0;

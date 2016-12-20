@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg079 (dungeon: spidercave)
- *	Functions rewritten: 1/15
+ *	Functions rewritten: 2/15
  */
 
 #include <stdio.h>
@@ -8,11 +8,13 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
 #include "seg025.h"
 #include "seg032.h"
 #include "seg075.h"
+#include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
 #include "seg103.h"
@@ -410,6 +412,17 @@ signed short DNG03_handler(void)
 	ds_writew(0x330e, target_pos);
 
 	return 0;
+}
+
+/* Borlandified and identical */
+void DNG03_chest00_func3(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x405d));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 #if !defined(__BORLANDC__)
