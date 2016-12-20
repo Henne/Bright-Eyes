@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg079 (dungeon: spidercave)
- *	Functions rewritten: 10/15
+ *	Functions rewritten: 12/15
  */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "seg025.h"
 #include "seg032.h"
 #include "seg075.h"
+#include "seg079.h"
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -518,6 +519,61 @@ void DNG03_chest08_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x408f));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG03_chest09_func3(RealPt chest)
+{
+        RealPt ptr_bak;
+
+        ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4093));
+        loot_simple_chest(Real2Host(chest));
+        host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG03_chest12_func3(RealPt chest)
+{
+	RealPt ptr_bak;
+	signed char crystals;
+	signed char i;
+	Bit8u *hero;
+
+	crystals = 0;
+
+	hero = Real2Host(get_first_hero_available_in_group());
+
+	/* count the crystals in the inventory of the leader */
+	for (i = 7; i < 23; i++)
+	{
+		if (host_readws(hero + HERO_ITEM_HEAD + SIZEOF_KS_ITEM * i) == 225)
+		{
+			crystals++;
+		}
+	}
+
+	/* this chest can only be opened with a leader with 4 crystals */
+	if (crystals == 4)
+	{
+		ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+		host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x409e));
+		loot_simple_chest(Real2Host(chest));
+		host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+
+	} else {
+		DNG03_chest12_func2();
+	}
+}
+
+void DNG03_chest12_func2(void)
+{
+	if (ds_readb(0x4227) != 0)
+	{
+		dec_ds_bs(0x4227);
+
+		chest_poisoned2();
+	}
 }
 
 #if !defined(__BORLANDC__)

@@ -20,7 +20,13 @@ void DNG03_chest06_func3(RealPt);
 void DNG03_chest07_func3(RealPt);
 /* 0x48 */
 void DNG03_chest08_func3(RealPt);
+/* 0x4d */
+void DNG03_chest09_func3(RealPt);
 
+/* 0x5c */
+void DNG03_chest12_func3(RealPt);
+/* 0x61 */
+void DNG03_chest12_func2(void);
 /* 0x66 */
 signed short DNG03_handler(void);
 
