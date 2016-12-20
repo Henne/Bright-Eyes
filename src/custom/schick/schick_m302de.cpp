@@ -9370,7 +9370,8 @@ static int seg079(unsigned short offs)
 			return 0;
 		}
 		case 0x66: {
-			return 0;
+			reg_ax = DNG03_handler();
+			return 1;
 		}
 		default:
 			D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
