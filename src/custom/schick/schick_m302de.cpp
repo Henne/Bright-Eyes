@@ -9342,7 +9342,11 @@ static int seg079(unsigned short offs)
 			return 1;
 		}
 		case 0x2a: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			DNG03_chest02_func3(chest);
+			return 1;
 		}
 		case 0x2f: {
 			return 0;
