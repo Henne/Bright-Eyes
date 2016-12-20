@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg079 (dungeon: spidercave)
- *	Functions rewritten: 6/15
+ *	Functions rewritten: 7/15
  */
 
 #include <stdio.h>
@@ -467,6 +467,24 @@ void DNG03_chest04_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x407c));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG03_chest05_func3(RealPt)
+{
+	signed short answer;
+	do {
+		answer = GUI_radio(get_dtp(0x28), 2,
+					get_dtp(0x2c),
+					get_dtp(0x30));
+	} while (answer == -1);
+
+	if (answer == 1)
+	{
+		ds_writew(X_TARGET, 10);
+		ds_writew(Y_TARGET, 12);
+		DNG_inc_level();
+	}
 }
 
 #if !defined(__BORLANDC__)
