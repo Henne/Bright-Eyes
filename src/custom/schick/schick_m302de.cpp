@@ -10174,7 +10174,7 @@ static int seg092(unsigned short offs) {
 		/* valid values of d are [1,2,..,15] */
 		/* enable only for dungeons where treasure code is finished */
 
-		if ((d == 1) || (d >= 4 && d <= 15))
+		if ((d == 1) || (d >= 3 && d <= 15))
 		{
 			D1_LOG("seg092_06b4(%d)\n", a1);
 			seg092_06b4(a1);
