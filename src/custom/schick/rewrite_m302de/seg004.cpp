@@ -164,7 +164,7 @@ void interrupt timer_isr(void)
 	Bit8u *ptr;
 	struct dummy a;
 
-	add_ds_ds(0xe234, 1);
+	add_ds_ds(GFX_SPINLOCK, 1);
 
 	inc_ds_ws(0xc3bf);
 
@@ -306,9 +306,9 @@ void interrupt timer_isr(void)
 
 void unused_gfx_spinlock(void)
 {
-	Bit32s v = ds_readds(0xe234);
+	Bit32s v = ds_readds(GFX_SPINLOCK);
 
-	while (v == ds_readds(0xe234)) { ; }
+	while (v == ds_readds(GFX_SPINLOCK)) { ; }
 }
 #endif
 

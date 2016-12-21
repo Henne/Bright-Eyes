@@ -579,6 +579,7 @@
 #define MONNAMES	(0xe129)
 #define ITEMSDAT	(0xe22b)
 #define ITEMSNAME	(0xe22f)
+#define GFX_SPINLOCK	(0xe234)	/* Bit32s */
 #define FIG_ACTOR_GRAMMAR_TYPE	(0xe2b8)	/* unsigned short, 2 = hero, 1 = monster */
 #define FIG_ACTOR_GRAMMAR_ID	(0xe2ba)	/* unsigned short */
 #define FIG_TARGET_GRAMMAR_TYPE	(0xe2bc)	/* unsigned short, 2 = hero, 1 = monster */
