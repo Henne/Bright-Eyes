@@ -57,7 +57,7 @@ signed short DNG03_handler(void)
 		GUI_input(get_dtp(0x08), 15);
 
 		if (!strcmp((char*)Real2Host(ds_readfp(TEXT_INPUT_BUF)),
-				(char*)p_datseg + 0x95a6))
+				(char*)p_datseg + DNG03_STR_SPINNENNETZ))
 		{
 			GUI_output(get_dtp(0x10));
 
@@ -117,7 +117,7 @@ signed short DNG03_handler(void)
 		}
 
 	} else if ((target_pos == 0xa09 || target_pos == 0x90e) &&
-			ds_readb(0x3c9d) != 0 &&
+			ds_readb(DNG03_LEVER_TRAP) != 0 &&
 			target_pos != ds_readws(0x330e))
 	{
 		GUI_output(get_dtp(0x14));
@@ -148,7 +148,7 @@ signed short DNG03_handler(void)
 		GUI_input(get_dtp(0x1c), 15);
 
 		if (!strcmp((char*)Real2Host(ds_readfp(TEXT_INPUT_BUF)),
-				(char*)p_datseg + 0x95b2))
+				(char*)p_datseg + DNG03_STR_MACTANS))
 		{
 			GUI_output(get_dtp(0x10));
 
@@ -179,9 +179,10 @@ signed short DNG03_handler(void)
 			target_pos != ds_readws(0x330e) &&
 			ds_readbs(DIRECTION) != ds_readbs(0x2d7c))
 	{
+		/* LEVER: */
 		if (GUI_bool(get_dtp(0x20)))
 		{
-			xor_ds_bs(0x3c9e, 1);
+			xor_ds_bs(DNG03_LEVER_CHEST11, 1);
 			GUI_output(get_dtp(0x24));
 		}
 
@@ -192,7 +193,7 @@ signed short DNG03_handler(void)
 	{
 		if (GUI_bool(get_dtp(0x20)))
 		{
-			xor_ds_bs(0x3c9d, 1);
+			xor_ds_bs(DNG03_LEVER_TRAP, 1);
 			GUI_output(get_dtp(0x24));
 		}
 
@@ -279,12 +280,12 @@ signed short DNG03_handler(void)
 		ds_writews((0xd325 + 0), ds_writews((0xd325 + 6), 0x1208));
 		ds_writews((0xd325 + 2), ds_writews((0xd325 + 4), 0x150d));
 
-		if (!ds_readb(0x4226))
+		if (!ds_readb(DNG03_HIGHPRIEST_KILLED))
 		{
-			ds_writeb(0x4226, 14);
+			ds_writeb(DNG03_HIGHPRIEST_KILLED, 14);
 		}
 
-		do_fight(ds_readb(0x4226) == 14 ? 224 : 225);
+		do_fight(ds_readb(DNG03_HIGHPRIEST_KILLED) == 14 ? 224 : 225);
 
 	} else if ((target_pos == 0x1204 || target_pos == 0x1502) &&
 		target_pos != ds_readws(0x330e))
@@ -292,16 +293,16 @@ signed short DNG03_handler(void)
 		ds_writews((0xd325 + 0), ds_writews((0xd325 + 2), 0x1702));
 		ds_writews((0xd325 + 4), ds_writews((0xd325 + 6), 0x1206));
 
-		if (!ds_readb(0x4226))
+		if (!ds_readb(DNG03_HIGHPRIEST_KILLED))
 		{
-			ds_writeb(0x4226, 16);
+			ds_writeb(DNG03_HIGHPRIEST_KILLED, 16);
 		}
 
-		do_fight(ds_readb(0x4226) == 16 ? 222 : 223);
+		do_fight(ds_readb(DNG03_HIGHPRIEST_KILLED) == 16 ? 222 : 223);
 
 	} else if (target_pos == 0x110c &&
 			target_pos != ds_readws(0x330e) &&
-			!ds_readb(0x3c9f))
+			!ds_readb(DNG03_SANCTUM_SMASHED))
 	{
 
 		/* check if a hero in this group has crystals */
@@ -316,7 +317,7 @@ signed short DNG03_handler(void)
 		if (j == 1)
 		{
 			GUI_output(get_dtp(0x48));
-			ds_writeb(0x3c9f, 1);
+			ds_writeb(DNG03_SANCTUM_SMASHED, 1);
 
 		} else if (j == 2 && !i)
 		{
@@ -344,7 +345,7 @@ signed short DNG03_handler(void)
 
 	} else if (target_pos == 0x1101 &&
 			target_pos != ds_readws(0x330e) &&
-			!ds_readb(0x35f4))
+			!ds_readb(DNG03_SPIDEREGGS_BURNED))
 	{
 		do {
 			j = GUI_radio(get_dtp(0x4c), 2,
@@ -358,7 +359,7 @@ signed short DNG03_handler(void)
 
 			add_hero_ap_all(50);
 
-			ds_writeb(0x35f4, 1);
+			ds_writeb(DNG03_SPIDEREGGS_BURNED, 1);
 
 			/* activate DEATHTRAP #2 with 15 steps */
 			ds_writew(DEATHTRAP_STEPS, 15);
@@ -423,7 +424,7 @@ void DNG03_chest00_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x405d));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST00_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -433,7 +434,7 @@ void DNG03_chest01_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4064));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST01_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -443,7 +444,7 @@ void DNG03_chest02_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x406c));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST02_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -453,7 +454,7 @@ void DNG03_chest03_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4079));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST03_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -463,7 +464,7 @@ void DNG03_chest04_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x407c));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST04_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -490,7 +491,7 @@ void DNG03_chest06_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4085));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST06_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -500,7 +501,7 @@ void DNG03_chest07_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x408d));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST07_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -510,7 +511,7 @@ void DNG03_chest08_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x408f));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST08_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -520,7 +521,7 @@ void DNG03_chest09_func3(RealPt chest)
         RealPt ptr_bak;
 
         ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4093));
+        host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST09_CONTENT));
         loot_simple_chest(Real2Host(chest));
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -549,7 +550,7 @@ void DNG03_chest12_func3(RealPt chest)
 	if (crystals == 4)
 	{
 		ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-		host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x409e));
+		host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG03_CHEST12_CONTENT));
 		loot_simple_chest(Real2Host(chest));
 		host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 
@@ -571,7 +572,7 @@ void DNG03_chest11_func3(RealPt)
 	signed short mod;
 	Bit8u *hero;
 
-	if (!ds_readb(0x3c9e))
+	if (!ds_readb(DNG03_LEVER_CHEST11))
 	{
 		GUI_output(get_dtp(0x64));
 
@@ -604,6 +605,7 @@ void DNG03_chest11_func3(RealPt)
 
 		if (counter == l_si)
 		{
+			/* end of game */
 			GUI_output(get_dtp(0x68));
 
 			ds_writew(0xc3c1, 1);
@@ -617,9 +619,9 @@ void DNG03_chest11_func3(RealPt)
 
 void DNG03_chest12_func2(void)
 {
-	if (ds_readb(0x4227) != 0)
+	if (ds_readb(DNG03_CHEST12_LOADS) != 0)
 	{
-		dec_ds_bs_post(0x4227);
+		dec_ds_bs_post(DNG03_CHEST12_LOADS);
 
 		chest_poisoned2();
 	}

@@ -167,6 +167,7 @@
 #define NPC_MONTHS	(0x3470)	/* signed short */
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
+#define DNG03_SPIDEREGGS_BURNED	(0x35f4)	/* unsigned char {0, 1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
 #define NPC_TIMERS	(0x3602)	/* unsigned char[6] */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
@@ -176,6 +177,9 @@
 #define DIALOG_STATES	(0x3794)	/* (struct of size 8)[160?] */
 #define SPHERE_TIMER	(0x3c97)
 #define SPHERE_ACTIVE	(0x3c98)
+#define DNG03_LEVER_TRAP	(0x3c9d)	/* unsigned char {0,1} */
+#define DNG03_LEVER_CHEST11	(0x3c9e)	/* unsigned char {0,1} */
+#define DNG03_SANCTUM_SMASHED	(0x3c9f)	/* unsigned char {0,1} */
 #define MAGE_POISON	(0x3cb6)
 #define DNG08_BED_00	(0x3cba)	/* unsigned char {0, 1} */
 #define DNG08_BED_01	(0x3cbb)	/* unsigned char {0, 1} */
@@ -220,6 +224,16 @@
 #define DNG12_OBSTACLE_ACTIVE	(0x3fa8)	/* signed char {0, 1} */
 #define DNG12_SPEARTRAP_ACTIVE	(0x3fa9)	/* signed char {0, 1} */
 #define DNG12_CHEST1_CONTENT	(0x3faa)	/* signed char[12] */
+#define DNG03_CHEST00_CONTENT	(0x405d)	/* signed char[7] */
+#define DNG03_CHEST01_CONTENT	(0x4064)	/* signed char[8] */
+#define DNG03_CHEST02_CONTENT	(0x406c)	/* signed char[13] */
+#define DNG03_CHEST03_CONTENT	(0x4079)	/* signed char[3] */
+#define DNG03_CHEST04_CONTENT	(0x407c)	/* signed char[9] */
+#define DNG03_CHEST06_CONTENT	(0x4085)	/* signed char[8] */
+#define DNG03_CHEST07_CONTENT	(0x408d)	/* signed char[2] */
+#define DNG03_CHEST08_CONTENT	(0x408f)	/* signed char[4] */
+#define DNG03_CHEST09_CONTENT	(0x4093)	/* signed char[11] */
+#define DNG03_CHEST12_CONTENT	(0x409e)	/* signed char[7] */
 #define DNG08_CHEST1_CONTENT	(0x40e0)	/* signed char[12] */
 #define DNG08_CHEST2_CONTENT	(0x40eb)	/* signed char[2] */
 #define DNG08_CHEST4_CONTENT	(0x40ed)	/* signed char[2] */
@@ -259,6 +273,8 @@
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
+#define DNG03_HIGHPRIEST_KILLED	(0x4226)	/* unsigned char {0, 14 = in fight 224, 16 = in fight 222} */
+#define DNG03_CHEST12_LOADS	(0x4227)	/* unsigned char {0,1,...,6} */
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
 #define DNG08_WATERBARREL	(0x434c)	/* signed char {0, 1} */
 #define CAMP_INCIDENT	(0x434f)	/* signed short, -1 = not determined or will not happen, 0,1,2 = guard that will be affected */
@@ -422,6 +438,8 @@
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
 #define DNG01_STR_MARBO	(0x93d1)		/* char[6] = "MARBO" */
+#define DNG03_STR_SPINNENNETZ	(0x95a6)	/* char[12] = "SPINNENNETZ" */
+#define DNG03_STR_MACTANS	(0x95b2)	/* char[8] = "MACTANS" */
 #define DNG08_STR_TAIRACH	(0x9725)	/* char[8] = "TAIRACH" */
 #define DNG12_OBSTACLE_TRIES	(0x9d43)	/* signed short */
 #define DNG12_WATERTRAP_BAK	(0x9d45)	/* signed short */
