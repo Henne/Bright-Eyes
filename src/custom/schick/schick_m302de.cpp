@@ -9398,10 +9398,18 @@ static int seg079(unsigned short offs)
 			return 1;
 		}
 		case 0x52: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			DNG03_chest10_func3(chest);
+			return 1;
 		}
 		case 0x57: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			DNG03_chest11_func3(chest);
+			return 1;
 		}
 		case 0x5c: {
 			RealPt chest = CPU_Pop32();
@@ -9411,7 +9419,8 @@ static int seg079(unsigned short offs)
 			return 1;
 		}
 		case 0x61: {
-			return 0;
+			DNG03_chest12_func2();
+			return 1;
 		}
 		case 0x66: {
 			reg_ax = DNG03_handler();

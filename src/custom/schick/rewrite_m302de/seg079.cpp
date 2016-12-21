@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg079 (dungeon: spidercave)
- *	Functions rewritten: 12/15
+ *	Functions rewritten: 15/15 (complete)
  */
 
 #include <stdio.h>
@@ -566,11 +566,71 @@ void DNG03_chest12_func3(RealPt chest)
 	}
 }
 
+/* Borlandified and identical */
+void DNG03_chest10_func3(RealPt)
+{
+	GUI_output(get_ltx(0x828));
+}
+
+/* Borlandified and identical */
+void DNG03_chest11_func3(RealPt)
+{
+	signed short l_si;
+	signed short l_di;
+	signed short counter;
+	signed short mod;
+	Bit8u *hero;
+
+	if (!ds_readb(0x3c9e))
+	{
+		GUI_output(get_dtp(0x64));
+
+	} else {
+		hero = get_hero(0);
+		for (l_di = counter = l_si = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO)
+		{
+			if (host_readbs(hero + HERO_TYPE) != 0 &&
+				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
+				!hero_dead(hero))
+			{
+				l_si++;
+
+				mod = l_si < 2 ? 6 : (l_si < 4 ? 2 : -2);
+
+				if (test_attrib(hero, 4, mod) <= 0)
+				{
+					counter++;
+
+					sprintf((char*)Real2Host(ds_readfp(DTP2)),
+						(char*)get_dtp(0x6c),
+						(char*)hero + HERO_NAME2);
+
+					GUI_output(Real2Host(ds_readfp(DTP2)));
+
+					sub_hero_le(hero, dice_roll(2, 6, 4));
+				}
+			}
+		}
+
+		if (counter == l_si)
+		{
+			GUI_output(get_dtp(0x68));
+
+			ds_writew(0xc3c1, 1);
+		} else {
+			timewarp(HOURS(1));
+
+			GUI_output(get_dtp(0x70));
+		}
+	}
+}
+
+/* Borlandified and identical */
 void DNG03_chest12_func2(void)
 {
 	if (ds_readb(0x4227) != 0)
 	{
-		dec_ds_bs(0x4227);
+		dec_ds_bs_post(0x4227);
 
 		chest_poisoned2();
 	}

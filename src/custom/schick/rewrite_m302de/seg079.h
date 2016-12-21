@@ -22,7 +22,10 @@ void DNG03_chest07_func3(RealPt);
 void DNG03_chest08_func3(RealPt);
 /* 0x4d */
 void DNG03_chest09_func3(RealPt);
-
+/* 0x52 */
+void DNG03_chest10_func3(RealPt);
+/* 0x57 */
+void DNG03_chest11_func3(RealPt);
 /* 0x5c */
 void DNG03_chest12_func3(RealPt);
 /* 0x61 */
