@@ -423,7 +423,10 @@ signed short DNG05_handler(void)
 		if (random_schick(100) < 30)
 		{
 			ds_writew(MAX_ENEMIES, random_schick(100) < 10 ? 3 : 2);
-			ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x827))));
+			ds_writew((0xd325 + 0),
+				 ds_writew((0xd325 + 2),
+				 ds_writew((0xd325 + 4),
+				 ds_writew((0xd325 + 6), 0x827))));
 
 			do_fight(FIGHTS_F061_4B);
 		}

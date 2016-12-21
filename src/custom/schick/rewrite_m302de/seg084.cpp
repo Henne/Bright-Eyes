@@ -639,7 +639,10 @@ void DNG09_chest6_x1(RealPt chest)
 
 void DNG09_chest4_x2(RealPt chest)
 {
-	ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, 0x1a2b))));
+	ds_writew((0xd325 + 0),
+		ds_writew((0xd325 + 2),
+		ds_writew((0xd325 + 4),
+		ds_writew((0xd325 + 6), 0x1a2b))));
 
 	do_fight(102);
 }

@@ -70,14 +70,20 @@ signed short DNG07_handler(void)
 
 							print_msg_with_first_hero(get_ltx(0x854));
 							or_ptr_bs(hero + HERO_ITEM_HEAD + 4 + 14 * lockpick_pos, 0x01);
-							ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, target_pos))));
+							ds_writew((0xd325 + 0),
+								ds_writew((0xd325 + 2),
+								ds_writew((0xd325 + 4),
+								ds_writew((0xd325 + 6), target_pos))));
 
 							do_fight(88);
 
 						} else if (skill_result <= 0) {
 
 							print_msg_with_first_hero(get_ltx(0x850));
-							ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, target_pos))));
+							ds_writew((0xd325 + 0),
+								ds_writew((0xd325 + 2),
+								ds_writew((0xd325 + 4),
+								ds_writew((0xd325 + 6), target_pos))));
 
 							do_fight(88);
 
@@ -121,7 +127,10 @@ signed short DNG07_handler(void)
 
 						sub_ae_splash(hero, get_spell_cost(28, 1));
 
-						ds_writew(0xd325, ds_writew(0xd327, ds_writew(0xd329, ds_writew(0xd32b, target_pos))));
+						ds_writew((0xd325 + 0),
+							ds_writew((0xd325 + 2),
+							ds_writew((0xd325 + 4),
+							ds_writew((0xd325 + 6), target_pos))));
 
 						do_fight(88);
 					} else
