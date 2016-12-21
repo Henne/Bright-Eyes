@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg079 (dungeon: spidercave)
+ *	Rewrite of DSA1 v3.02_de functions of seg079 (dungeon: cave of the spiders)
  *	Functions rewritten: 15/15 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg079.cpp
  */
 
 #include <stdio.h>
@@ -25,7 +29,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG03_handler(void)
 {
 	signed short target_pos;
@@ -415,7 +418,6 @@ signed short DNG03_handler(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void DNG03_chest00_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -426,7 +428,6 @@ void DNG03_chest00_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest01_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -437,7 +438,6 @@ void DNG03_chest01_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest02_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -448,7 +448,6 @@ void DNG03_chest02_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest03_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -459,7 +458,6 @@ void DNG03_chest03_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest04_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -470,7 +468,6 @@ void DNG03_chest04_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest05_func3(RealPt)
 {
 	signed short answer;
@@ -488,7 +485,6 @@ void DNG03_chest05_func3(RealPt)
 	}
 }
 
-/* Borlandified and identical */
 void DNG03_chest06_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -499,7 +495,6 @@ void DNG03_chest06_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest07_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -510,7 +505,6 @@ void DNG03_chest07_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest08_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -521,7 +515,6 @@ void DNG03_chest08_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest09_func3(RealPt chest)
 {
         RealPt ptr_bak;
@@ -532,7 +525,6 @@ void DNG03_chest09_func3(RealPt chest)
         host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG03_chest12_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -566,13 +558,11 @@ void DNG03_chest12_func3(RealPt chest)
 	}
 }
 
-/* Borlandified and identical */
 void DNG03_chest10_func3(RealPt)
 {
 	GUI_output(get_ltx(0x828));
 }
 
-/* Borlandified and identical */
 void DNG03_chest11_func3(RealPt)
 {
 	signed short l_si;
@@ -625,7 +615,6 @@ void DNG03_chest11_func3(RealPt)
 	}
 }
 
-/* Borlandified and identical */
 void DNG03_chest12_func2(void)
 {
 	if (ds_readb(0x4227) != 0)
