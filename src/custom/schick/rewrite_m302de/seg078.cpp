@@ -1,6 +1,10 @@
 /**
- *	Rewrite of DSA1 v3.02_de functions of seg078 (dungeon: inn)
+ *	Rewrite of DSA1 v3.02_de functions of seg078 (dungeon: a tumbledown inn)
  *	Functions rewritten: 10/10 (complete)
+ *
+ *	Borlandified and identical
+ *	Compiler:	Borland C++ 3.1
+ *	Call:		BCC.EXE -mlarge -O- -c -1- Yo seg078.cpp
  */
 
 #include "v302de.h"
@@ -29,7 +33,6 @@
 namespace M302de {
 #endif
 
-/* Borlandified and identical */
 signed short DNG02_handler(void)
 {
 	signed short target_pos;
@@ -562,7 +565,6 @@ signed short DNG02_handler(void)
 	return 0;
 }
 
-/* Borlandified and identical */
 void DNG02_chest00_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -573,7 +575,6 @@ void DNG02_chest00_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG02_chest01_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -584,7 +585,6 @@ void DNG02_chest01_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG02_chest02_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -595,7 +595,6 @@ void DNG02_chest02_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG02_chest03_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -606,7 +605,6 @@ void DNG02_chest03_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG02_chest04_func3(RealPt)
 {
 	signed short i;
@@ -648,7 +646,6 @@ void DNG02_chest04_func3(RealPt)
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
-/* Borlandified and identical */
 void DNG02_chest05_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -659,13 +656,11 @@ void DNG02_chest05_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
-/* Borlandified and identical */
 void DNG02_chest06_func1(RealPt chest)
 {
 	loot_corpse(chest, get_dtp(0x4c), p_datseg + 0x3c95);
 }
 
-/* Borlandified and identical */
 void DNG02_chest06_func3(RealPt chest)
 {
 	RealPt ptr_bak;
@@ -681,7 +676,6 @@ void DNG02_chest06_func3(RealPt chest)
  *
  * \param fight_id	ID of the fight
  */
-/* Borlandified and identical */
 void DNG02_fight_intro(signed short fight_id)
 {
 	if (fight_id == 62) {
