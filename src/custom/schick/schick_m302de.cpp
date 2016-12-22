@@ -9208,7 +9208,8 @@ static int seg076(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
 			D1_LOG("do_Dungeon()\n");
-			return 0;
+			do_dungeon();
+			return 1;
 		}
 		case 0x25: {
 			Bit16s max_damage = CPU_Pop16();

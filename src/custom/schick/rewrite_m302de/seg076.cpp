@@ -748,7 +748,6 @@ void DNG_see_chest(void)
 	}
 }
 
-#if defined(__BORLANDC__)
 void do_dungeon(void)
 {
 	signed short tw_bak;
@@ -778,7 +777,6 @@ void do_dungeon(void)
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
-#endif
 
 struct fight_struct {
 	signed short pos;
