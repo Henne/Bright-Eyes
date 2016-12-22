@@ -533,6 +533,14 @@ static inline unsigned short hero_dummy1(Bit8u *hero) {
 		return 1;
 }
 
+static inline unsigned short hero_dummy3_set(Bit8u *hero, unsigned short val)
+{
+	/* unset this bit */
+	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) & 0xef);
+	host_writeb(hero + HERO_STATUS2, host_readb(hero + HERO_STATUS2) | ((val & 1) << 4));
+	return (val & 1);
+}
+
 /**
  * hero_transformed() -	check if hero is transformed
  * @hero:	ptr to hero
@@ -1113,6 +1121,8 @@ struct bittest {
 #define hero_dummy3(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy3)
 #define hero_dummy4(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy4)
 #define hero_dup(hero)		((*(struct hero_status*)(hero + 0xaa)).dup)
+
+#define hero_dummy3_set(hero, v) ((*(struct hero_status*)(hero + 0xaa)).dummy3 = v)
 
 #define hero_transformed(hero)  ((*(struct hero_status*)(hero + 0xaa)).transf)
 #define hero_dummy6(hero)	((*(struct hero_status*)(hero + 0xaa)).dummy6)
