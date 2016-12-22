@@ -374,14 +374,6 @@ void seg092_06b4(signed short a1)
 	RealPt chest_ptr;
 	Bit8u *ptr;
 
-#if !defined(__BORLANDC__)
-	const int dng = ds_readbs(DUNGEON_INDEX);
-	if (dng == 2)
-	{
-		DUMMY_WARNING();
-		return;
-	}
-#endif
 	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
 	ptr = p_datseg + 0xbd95;
 	ds_writew(GET_EXTRA_LOOT, 0);
