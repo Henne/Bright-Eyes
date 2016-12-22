@@ -31,7 +31,21 @@
 #include "seg074.h"
 #include "seg075.h"
 #include "seg076.h"
+#include "seg077.h"
+#include "seg078.h"
+#include "seg079.h"
+#include "seg080.h"
+#include "seg081.h"
+#include "seg082.h"
+#include "seg083.h"
+#include "seg084.h"
+#include "seg085.h"
+#include "seg086.h"
+#include "seg087.h"
 #include "seg088.h"
+#include "seg089.h"
+#include "seg090.h"
+#include "seg091.h"
 #include "seg092.h"
 #include "seg096.h"
 #include "seg097.h"
@@ -49,6 +63,27 @@ namespace M302de {
 struct dummy5 {
 	unsigned char a[5];
 };
+
+#if !defined(__BORLANDC__)
+static signed short (*DNG_handler[])(void) = {
+	NULL,
+	DNG01_handler,
+	DNG02_handler,
+	DNG03_handler,
+	DNG04_handler,
+	DNG05_handler,
+	DNG06_handler,
+	DNG07_handler,
+	DNG08_handler,
+	DNG09_handler,
+	DNG10_handler,
+	DNG11_handler,
+	DNG12_handler,
+	DNG13_handler,
+	DNG14_handler,
+	DNG15_handler,
+};
+#endif
 
 /**
  * \brief	opening doors logic
@@ -353,7 +388,6 @@ void DNG_fallpit_test(signed short max_damage)
 	}
 }
 
-#if defined(__BORLANDC__)
 signed short DNG_step(void)
 {
 	signed short l_si;
@@ -591,13 +625,16 @@ signed short DNG_step(void)
 		DNG_see_chest();
 		DNG_see_lever();
 
+#if defined(__BORLANDC__)
 		dungeon_handler = (signed short (*)(void))ds_readd(0x92d2 + 4 * ds_readbs(DUNGEON_INDEX));
+#else
+		dungeon_handler = DNG_handler[ds_readbs(DUNGEON_INDEX)];
+#endif
 		retval = dungeon_handler();
 	}
 
 	return 0;
 }
-#endif
 
 struct stair_struct {
 	signed short pos;

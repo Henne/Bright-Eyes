@@ -23,12 +23,8 @@ void DNG_fight(void);
 void DNG_see_lever(void);
 /* 0x48 */
 void print_msg_with_first_hero(Bit8u*);
-
-#if defined(__BORLANDC__)
 /* 0x4d */
 signed short DNG_step(void);
-#endif
-
 /* 0x52 */
 void DNG_waterbarrel(Bit8u*);
 

@@ -2977,7 +2977,9 @@ static int n_seg076(unsigned short offs)
 		return 1;
 	}
 	case 0x71d: {
-		return 0;
+		reg_ax = DNG_step();
+		D1_LOG("DNG_step() = %d\n", reg_ax);
+		return 1;
 	}
 	case 0xc73: {
 		D1_LOG("DNG_see_stairs()\n");
