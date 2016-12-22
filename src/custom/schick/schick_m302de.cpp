@@ -9340,7 +9340,8 @@ static int seg078(unsigned short offs)
 			return 1;
 		}
 		case 0x48: {
-			return 0;
+			reg_ax = DNG08_handler();
+			return 1;
 		}
 		case 0x4d: {
 			Bit16s fight_id = CPU_Pop16();
