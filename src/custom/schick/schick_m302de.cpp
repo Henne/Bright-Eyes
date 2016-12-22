@@ -600,8 +600,9 @@ static int n_seg002(unsigned short offs)
 		return 1;
 	}
 	case 0x1ee7: {
-		D1_LOG("main_loop();\n");
-		return 0;
+		D1_LOG("game_loop();\n");
+		game_loop();
+		return 1;
 	}
 	/* Callers: 1 */
 	case 0x20bd: {

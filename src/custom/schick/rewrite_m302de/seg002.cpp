@@ -1765,7 +1765,6 @@ void wait_for_keyboard1(void)
 
 void game_loop(void)
 {
-#if defined(__BORLANDC__)
 	signed short answer;
 
 	while (ds_readw(0xc3c1) == 0) {
@@ -1873,7 +1872,6 @@ void game_loop(void)
 			bc_exit(0);
 		}
 	}
-#endif
 }
 
 //static
