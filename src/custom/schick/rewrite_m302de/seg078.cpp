@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg078 (dungeon: inn)
- *	Functions rewritten: 6/10
+ *	Functions rewritten: 7/10
  */
 
 #include "v302de.h"
@@ -603,6 +603,48 @@ void DNG02_chest03_func3(RealPt chest)
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x404d));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
+}
+
+/* Borlandified and identical */
+void DNG02_chest04_func3(RealPt)
+{
+	signed short i;
+	signed short answer;
+	signed short tw_bak;
+	Bit8u *hero;
+
+	tw_bak = ds_readws(TEXTBOX_WIDTH);
+	ds_writew(TEXTBOX_WIDTH, 7);
+
+	if (!ds_readb(0x3c96))
+	{
+		do {
+			answer = GUI_radio(get_dtp(0x04), 2,
+						get_dtp(0x08),
+						get_dtp(0x0c));
+		} while (answer == -1);
+
+		if (answer == 1)
+		{
+			chest_stoned();
+		} else {
+			ds_writeb(0x3c96, 1);
+
+			hero = get_hero(0);
+			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
+			{
+				if (host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
+				{
+					sub_hero_le(hero, random_schick(6));
+				}
+			}
+		}
+	} else {
+		GUI_output(get_ltx(0x828));
+	}
+
+	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }
 
 /**
