@@ -9346,8 +9346,8 @@ static int seg078(unsigned short offs)
 			Bit16s fight_id = CPU_Pop16();
 			CPU_Push16(fight_id);
 
-			D1_LOG("DNG2_fight_intro(%d)\n", fight_id);
-			DNG2_fight_intro(fight_id);
+			D1_LOG("DNG02_fight_intro(%d)\n", fight_id);
+			DNG02_fight_intro(fight_id);
 			return 1;
 		}
 		default:

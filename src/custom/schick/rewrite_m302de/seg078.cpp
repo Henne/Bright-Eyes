@@ -681,7 +681,8 @@ void DNG02_chest06_func3(RealPt chest)
  *
  * \param fight_id	ID of the fight
  */
-void DNG2_fight_intro(signed short fight_id)
+/* Borlandified and identical */
+void DNG02_fight_intro(signed short fight_id)
 {
 	if (fight_id == 62) {
 		GUI_output(get_dtp(0x80));

@@ -21,7 +21,7 @@ void DNG02_chest06_func3(RealPt);
 /* 0x48 */
 signed short DNG02_handler(void);
 /* 0x4d */
-void DNG2_fight_intro(signed short);
+void DNG02_fight_intro(signed short);
 
 #if !defined(__BORLANDC__)
 }
