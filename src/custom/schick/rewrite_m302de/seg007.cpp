@@ -164,12 +164,7 @@ void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max)
 	x = (signed char)tmp;
 
 	/* set vars to 0 */
-#if !defined(__BORLANDC__)
-	host_writew(min, 0);
-	host_writew(max, 0);
-#else
-	host_writew(min, host_writew(max, 0));
-#endif
+	host_writew(min, host_writews(max, 0));
 
 	for (i = 0; i < n; i++) {
 		inc_ptr_ws(min);	/* *min++; */
