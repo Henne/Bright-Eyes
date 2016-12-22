@@ -182,7 +182,7 @@ signed short DNG02_handler(void)
 
 	} else if ((target_pos == 0x706 || target_pos == 0x806 || target_pos == 0x808))
 	{
-		if (ds_readb(SPHERE_ACTIVE) != 0)
+		if (ds_readb(DNG02_SPHERE_ACTIVE) != 0)
 		{
 			GUI_output(get_dtp(0xa4));
 
@@ -307,7 +307,7 @@ signed short DNG02_handler(void)
 
 		GUI_dialogbox(ds_readfp(DTP2), NULL, get_dtp(0x48), 0);
 
-		ds_writeb(SPHERE_TIMER, 7);
+		ds_writeb(DNG02_SPHERE_TIMER, 7);
 		ds_writeb(0x3c94, 1);
 
 	} else if ((target_pos == 0x110b || target_pos == 0x1108) && target_pos != ds_readws(0x330e))

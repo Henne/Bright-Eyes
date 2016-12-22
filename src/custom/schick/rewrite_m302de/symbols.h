@@ -175,8 +175,8 @@
 #define TRAVELING	(0x3614)
 #define INFORMER_ARRAY	(0x3618)	/* (struct of size 38)[10] */
 #define DIALOG_STATES	(0x3794)	/* (struct of size 8)[160?] */
-#define SPHERE_TIMER	(0x3c97)
-#define SPHERE_ACTIVE	(0x3c98)
+#define DNG02_SPHERE_TIMER	(0x3c97)	/* unsigned char {0,...,7} */
+#define DNG02_SPHERE_ACTIVE	(0x3c98)	/* unsigned char {0,1} */
 #define DNG03_LEVER_TRAP	(0x3c9d)	/* unsigned char {0,1} */
 #define DNG03_LEVER_CHEST11	(0x3c9e)	/* unsigned char {0,1} */
 #define DNG03_SANCTUM_SMASHED	(0x3c9f)	/* unsigned char {0,1} */

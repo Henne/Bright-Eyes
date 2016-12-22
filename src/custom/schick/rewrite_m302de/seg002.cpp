@@ -2235,10 +2235,10 @@ void do_timers(void)
 			}
 
 			/* handle sphere timer */
-			if (ds_readb(SPHERE_TIMER) != 0) {
+			if (ds_readb(DNG02_SPHERE_TIMER) != 0) {
 
-				if (!add_ds_bu(SPHERE_TIMER, -1)) {
-					ds_writeb(SPHERE_ACTIVE, 1);
+				if (!add_ds_bu(DNG02_SPHERE_TIMER, -1)) {
+					ds_writeb(DNG02_SPHERE_ACTIVE, 1);
 				}
 			}
 
