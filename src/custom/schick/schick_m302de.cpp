@@ -9326,7 +9326,11 @@ static int seg078(unsigned short offs)
 			return 1;
 		}
 		case 0x3e: {
-			return 0;
+			RealPt chest = CPU_Pop32();
+			CPU_Push32(chest);
+
+			DNG02_chest06_func1(chest);
+			return 1;
 		}
 		case 0x43: {
 			return 0;

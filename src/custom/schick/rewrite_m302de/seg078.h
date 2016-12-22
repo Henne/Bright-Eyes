@@ -14,6 +14,8 @@ void DNG02_chest03_func3(RealPt);
 void DNG02_chest04_func3(RealPt);
 /* 0x39 */
 void DNG02_chest05_func3(RealPt);
+/* 0x3e */
+void DNG02_chest06_func1(RealPt);
 
 /* 0x48 */
 signed short DNG02_handler(void);
