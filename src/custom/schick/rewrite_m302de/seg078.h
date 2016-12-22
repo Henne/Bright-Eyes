@@ -6,6 +6,8 @@ namespace M302de {
 void DNG02_chest00_func3(RealPt);
 /* 0x25 */
 void DNG02_chest01_func3(RealPt);
+/* 0x2a */
+void DNG02_chest02_func3(RealPt);
 
 /* 0x48 */
 signed short DNG02_handler(void);
