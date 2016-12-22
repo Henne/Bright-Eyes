@@ -175,8 +175,15 @@
 #define TRAVELING	(0x3614)
 #define INFORMER_ARRAY	(0x3618)	/* (struct of size 38)[10] */
 #define DIALOG_STATES	(0x3794)	/* (struct of size 8)[160?] */
+#define DNG02_SPHERE_KNOWN	(0x3c94)	/* unsigned char {0,1} */
+#define DNG02_CORPSE		(0x3c95)	/* unsigned char {0, 1} */
+#define DNG02_APPARATURE_DESTROYED	(0x3c96)	/* unsigned char {0,1} */
 #define DNG02_SPHERE_TIMER	(0x3c97)	/* unsigned char {0,...,7} */
 #define DNG02_SPHERE_ACTIVE	(0x3c98)	/* unsigned char {0,1} */
+#define DNG02_RAVEN_DESTROYED	(0x3c99)	/* unsigned char {0,1} */
+#define DNG02_SECRET_DOOR1	(0x3c9a)	/* unsigned char {0,1,2} */
+#define DNG02_SECRET_DOOR2	(0x3c9b)	/* unsigned char {0,1,2} */
+#define DNG02_SECRET_DOOR3	(0x3c9c)	/* unsigned char {0,1,2} */
 #define DNG03_LEVER_TRAP	(0x3c9d)	/* unsigned char {0,1} */
 #define DNG03_LEVER_CHEST11	(0x3c9e)	/* unsigned char {0,1} */
 #define DNG03_SANCTUM_SMASHED	(0x3c9f)	/* unsigned char {0,1} */
@@ -224,6 +231,12 @@
 #define DNG12_OBSTACLE_ACTIVE	(0x3fa8)	/* signed char {0, 1} */
 #define DNG12_SPEARTRAP_ACTIVE	(0x3fa9)	/* signed char {0, 1} */
 #define DNG12_CHEST1_CONTENT	(0x3faa)	/* signed char[12] */
+#define DNG02_CHEST00_CONTENT	(0x403b)	/* unsigned char[2] */
+#define DNG02_CHEST01_CONTENT	(0x403d)	/* unsigned char[4] */
+#define DNG02_CHEST06_CONTENT	(0x4041)	/* unsigned char[4] */
+#define DNG02_CHEST02_CONTENT	(0x4045)	/* unsigned char[8] */
+#define DNG02_CHEST03_CONTENT	(0x404d)	/* unsigned char[8] */
+#define DNG02_CHEST05_CONTENT	(0x4055)	/* unsigned char[8] */
 #define DNG03_CHEST00_CONTENT	(0x405d)	/* signed char[7] */
 #define DNG03_CHEST01_CONTENT	(0x4064)	/* signed char[8] */
 #define DNG03_CHEST02_CONTENT	(0x406c)	/* signed char[13] */
