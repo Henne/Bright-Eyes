@@ -12,6 +12,7 @@
 #include "v302de.h"
 
 #include "seg077.h"
+#include "seg078.h"
 #include "seg079.h"
 #include "seg080.h"
 #include "seg081.h"
@@ -78,6 +79,13 @@ treasure_type t_map(RealPt ptr, const int off)
 		if (f_off == 0x52) return (treasure_type)DNG01_chest6_x3;
 
 		D1_ERR("ERROR: call to seg077:0x%x should not happen\n", f_off);
+		exit(-1);
+		break;
+	}
+	case 0x13d7: {
+		if (f_off == 0x20) return (treasure_type)DNG02_chest00_func3;
+
+		D1_ERR("ERROR: call to seg078:0x%x should not happen\n", f_off);
 		exit(-1);
 		break;
 	}
