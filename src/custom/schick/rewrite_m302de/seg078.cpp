@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg078 (dungeon: inn)
- *	Functions rewritten: 9/10
+ *	Functions rewritten: 10/10 (complete)
  */
 
 #include "v302de.h"
@@ -663,6 +663,17 @@ void DNG02_chest05_func3(RealPt chest)
 void DNG02_chest06_func1(RealPt chest)
 {
 	loot_corpse(chest, get_dtp(0x4c), p_datseg + 0x3c95);
+}
+
+/* Borlandified and identical */
+void DNG02_chest06_func3(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4041));
+	loot_chest(Real2Host(chest), get_dtp(0x50), get_dtp(0x54));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 /**
