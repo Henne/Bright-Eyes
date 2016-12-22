@@ -1,6 +1,6 @@
 /**
  *	Rewrite of DSA1 v3.02_de functions of seg078 (dungeon: inn)
- *	Functions rewritten: 7/10
+ *	Functions rewritten: 8/10
  */
 
 #include "v302de.h"
@@ -645,6 +645,17 @@ void DNG02_chest04_func3(RealPt)
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
+}
+
+/* Borlandified and identical */
+void DNG02_chest05_func3(RealPt chest)
+{
+	RealPt ptr_bak;
+
+	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4055));
+	loot_simple_chest(Real2Host(chest));
+	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 /**
