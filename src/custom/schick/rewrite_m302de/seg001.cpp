@@ -202,22 +202,24 @@ leave_tod:
 
 void seg001_00c1(unsigned short track_nr)
 {
-	unsigned int track_start, track_end;
-	unsigned int track_len, tmp;
+	volatile unsigned int track_start, track_end;
+	volatile unsigned int track_len, tmp;
 
 	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
-	real_writew(reloc_game + CDA_DATASEG, 0x8f, 0);
+	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x8f)), 0);
 
-	tmp = real_readd(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8) & 0x00ffffff;
-	real_writed(reloc_game + CDA_DATASEG, 0x9a, tmp);
+	host_writed(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x9a + track_nr * 8)),
+		(((host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10b + track_nr * 8))) << 8) +
+		host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8)))) |
+		(host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10c + track_nr * 8))) << 16)));
 
 	/* calculate track_start */
-	tmp = real_readb(reloc_game + CDA_DATASEG, 0x10c + track_nr * 8) * 60;
-	tmp += real_readb(reloc_game + CDA_DATASEG, 0x10b + track_nr * 8);
+	tmp = host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10c + track_nr * 8))) * 60;
+	tmp += host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10b + track_nr * 8)));
 	tmp *= 75;
-	tmp += real_readb(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8);
+	tmp += host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8)));
 	track_start = tmp;
 
 	/* calculate track_end */
@@ -238,7 +240,7 @@ void seg001_00c1(unsigned short track_nr)
 	real_writed(reloc_game + CDA_DATASEG, 0x9e, track_len - 150);
 
 #if defined(__BORLANDC__)
-	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0x8c));
+	CD_driver_request(&req[10]);
 #else
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0x8c));
 #endif
