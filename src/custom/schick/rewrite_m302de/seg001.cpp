@@ -200,51 +200,116 @@ leave_tod:
 #endif
 }
 
-void seg001_00c1(unsigned short track_nr)
+/* Borlandified and nearly identical */
+void seg001_00c1(signed short track_nr)
 {
-	volatile unsigned int track_start, track_end;
-	volatile unsigned int track_len, tmp;
+	Bit32s track_start;
+	Bit32s track_end;
+
+#if defined(__BORLANDC__)
+	asm {
+		mov si, track_nr
+	}
 
 	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
 	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x8f)), 0);
 
-	host_writed(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x9a + track_nr * 8)),
-		(((host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10b + track_nr * 8))) << 8) +
-		host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8)))) |
-		(host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10c + track_nr * 8))) << 16)));
+	/* TODO: write this code in C */
+	asm {
 
+		mov bx, si
+		shl bx, 3
+		mov ax, CDA_DATASEG
+		mov es, ax
+		mov al, [es:bx+0x10b]
+		mov ah, 0
+		shl ax, 8
+
+		mov bx, si
+		shl bx, 3
+		mov dx, CDA_DATASEG
+		mov es, dx
+		mov dl, [es:bx+0x10a]
+		mov dh, 0
+
+		add ax,dx
+
+		mov bx, si
+		shl bx, 3
+		mov dx, CDA_DATASEG
+		mov es, dx
+		mov dl, [es:bx+0x10c]
+		mov dh, 0
+
+		mov bx, CDA_DATASEG
+		mov es, bx
+		mov [es:0x9c], dx
+		mov [es:0x9a], ax
+
+	}
 	/* calculate track_start */
-	tmp = host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10c + track_nr * 8))) * 60;
-	tmp += host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10b + track_nr * 8)));
-	tmp *= 75;
-	tmp += host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8)));
-	track_start = tmp;
+	track_start = (
+				((60UL * (Bit16u)host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10c + _SI * 8)))) +
+				((Bit16s)host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10b + _SI * 8))))) * 75UL +
+			((Bit16s)host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10a + _SI * 8))))
+			);
 
 	/* calculate track_end */
-	if (real_readb(reloc_game + CDA_DATASEG, 0x422) == track_nr) {
-		tmp = real_readb(reloc_game + CDA_DATASEG, 0x425) * 60;
-		tmp += real_readb(reloc_game + CDA_DATASEG, 0x424);
-		tmp *= 75;
-		tmp += real_readb(reloc_game + CDA_DATASEG, 0x423);
+	if (real_readb(reloc_game + CDA_DATASEG, 0x422) == _SI)
+	{
+		track_end = (((60UL * (Bit16u)real_readb(reloc_game + CDA_DATASEG, 0x425) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x424)) * 75UL) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x423));
 	} else {
-		tmp = real_readb(reloc_game + CDA_DATASEG, 0x114 + track_nr * 8) * 60;
-		tmp += real_readb(reloc_game + CDA_DATASEG, 0x113 + track_nr * 8);
-		tmp *= 75;
-		tmp += real_readb(reloc_game + CDA_DATASEG, 0x112 + track_nr * 8);
+		track_end = (((60UL * (Bit16u)real_readb(reloc_game + CDA_DATASEG, 0x114 + _SI * 8) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x113 + _SI * 8)) * 75UL) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x112 + _SI * 8));
 	}
-	track_end = tmp;
 
-	track_len = track_end - track_start;
-	real_writed(reloc_game + CDA_DATASEG, 0x9e, track_len - 150);
+#else
+
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
+		return;
+
+	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x8f)), 0);
+
+	host_writed(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x9a)),
+		((((Bit16u)host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10b + track_nr * 8))) << 8) +
+		(Bit16u)host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8)))) +
+		((Bit16u)host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10c + track_nr * 8))) << 16)));
+
+	/* calculate track_start */
+	track_start = ((host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10c + track_nr * 8))) * 60) +
+		host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10b + track_nr * 8)))) * 75 +
+		host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x10a + track_nr * 8)));
+
+	/* calculate track_end */
+	if (real_readb(reloc_game + CDA_DATASEG, 0x422) == track_nr)
+	{
+		track_end = (((60UL * (Bit16u)real_readb(reloc_game + CDA_DATASEG, 0x425) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x424)) * 75UL) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x423));
+	} else {
+		track_end = (((60UL * (Bit16u)real_readb(reloc_game + CDA_DATASEG, 0x114 + track_nr * 8) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x113 + track_nr * 8)) * 75UL) +
+			(Bit16s)real_readb(reloc_game + CDA_DATASEG, 0x112 + track_nr * 8));
+	}
+
+#endif
+
+	track_start = track_end - track_start;
+	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x9e)), ((Bit16u)track_start) - 150);
+	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0xa0)), (Bit32s)(track_start >> 16));
 
 #if defined(__BORLANDC__)
-	CD_driver_request(&req[10]);
+	CD_driver_request((driver_request*)RealMake(reloc_game + CDA_DATASEG, 0x8c));
 #else
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0x8c));
 #endif
-	ds_writed(CD_AUDIO_POS, ((track_len - 150) * 0x1234e) / 0x4b000);
+
+	ds_writed(CD_AUDIO_POS, (((Bit32u)track_start - 150) * 0x1234e) / 0x4b000);
 	ds_writed(CD_AUDIO_TOD, CD_get_tod());
 }
 
