@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 12/21
- *	Borlandified and identical: 12/21
+ *	Functions rewritten: 13/21
+ *	Borlandified and identical: 13/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -405,6 +405,7 @@ void CD_audio_pause(void)
 #endif
 }
 
+/* Borlandified and identical */
 void CD_audio_play(void)
 {
 	/* Is CD initialized ? */
@@ -420,11 +421,11 @@ void CD_audio_play(void)
 	/* reset CD pause */
 	ds_writew(CD_AUDIO_PAUSED, 0);
 	ds_writed(CD_AUDIO_POS, ds_readd(CD_AUDIO_POS_BAK));
-	ds_writed(CD_AUDIO_TOD, CD_get_tod() - ds_readd(CD_AUDIO_TOD_BAK) + ds_readd(CD_AUDIO_TOD));
+	add_ds_ds(CD_AUDIO_TOD, (CD_get_tod() - ds_readds(CD_AUDIO_TOD_BAK)));
+	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0xc7)), 0);
 #if defined(__BORLANDC__)
-	// DUMMY
+	CD_driver_request((driver_request*)RealMake(reloc_game + CDA_DATASEG, 0xc4));
 #else
-	real_writew(reloc_game + CDA_DATASEG, 0xc7, 0);
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0xc4));
 #endif
 }
