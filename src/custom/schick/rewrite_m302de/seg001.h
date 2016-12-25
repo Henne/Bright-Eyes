@@ -17,6 +17,7 @@ void CD_audio_stop_hsg(void);
 void CD_audio_stop(void);
 void CD_audio_pause(void);
 void CD_audio_play(void);
+void CD_0432(void);
 void CD_set_track(signed short);
 void CD_check(void);
 void CD_init(void);

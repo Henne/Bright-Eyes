@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 13/21
+ *	Functions rewritten: 14/21
  *	Borlandified and identical: 13/21
  *
  *	Remarks:
@@ -428,6 +428,45 @@ void CD_audio_play(void)
 #else
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0xc4));
 #endif
+}
+
+/* Borlandified and nearly identical */
+void CD_0432(void)
+{
+	signed short track_nr;
+
+	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
+		return;
+
+	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x3b)), 0);
+	host_writed(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x46)), (Bit32u)(RealMake(reloc_game + CDA_DATASEG, 0x420)));
+	host_writeb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x420)), 0x0a);
+#if defined(__BORLANDC__)
+	/* BC-TODO: this constant ist pushed as a byte instead of a word */
+	CD_driver_request((driver_request*)RealMake(reloc_game + CDA_DATASEG, 0x38));
+	asm {nop}
+#else
+	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0x38));
+#endif
+
+	track_nr = host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x421)));
+
+	while (host_readb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x422))) >= track_nr)
+	{
+		host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x3b)), 0);
+		host_writed(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0x46)), (Bit32u)(RealMake(reloc_game + CDA_DATASEG, 8 * track_nr + 0x108)));
+		host_writeb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 8 * track_nr + 0x108)), 0x0b);
+		host_writeb(Real2Host(RealMake(reloc_game + CDA_DATASEG, 8 * track_nr + 0x109)), track_nr);
+
+#if defined(__BORLANDC__)
+		/* BC-TODO: this constant ist pushed as a byte instead of a word */
+		CD_driver_request((driver_request*)RealMake(reloc_game + CDA_DATASEG, 0x38));
+		asm{nop}
+#else
+		CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0x38));
+#endif
+		track_nr++;
+	}
 }
 
 void CD_set_track(signed short index)

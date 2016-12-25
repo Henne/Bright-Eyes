@@ -297,7 +297,9 @@ static int n_seg001(unsigned offs)
 		return 0;
 	}
 	case 0x0432: {
-		return 0;
+		D1_LOG("CD_0432()\n");
+		CD_0432();
+		return 1;
 	}
 	case 0x056b: {
 		return 0;
