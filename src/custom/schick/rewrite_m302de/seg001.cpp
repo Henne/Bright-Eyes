@@ -179,7 +179,7 @@ static void CD_unused1(void)
  * TODO: produces a compiler warning and is a bit hacky
  */
 /* Borlandified and identical */
-unsigned int CD_get_tod(void)
+Bit32s CD_get_tod(void)
 {
 #if defined(__BORLANDC__)
 	asm {

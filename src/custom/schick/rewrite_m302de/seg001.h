@@ -7,7 +7,7 @@ unsigned short CD_set_drive_nr(void);
 //static
 void CD_driver_request(RealPt req);
 //static
-unsigned int CD_get_tod(void);
+Bit32s CD_get_tod(void);
 //static
 void seg001_00c1(unsigned short);
 void seg001_02c4(void);
