@@ -44,7 +44,7 @@ RealPt get_first_busy_hero(void)
 
 	hero = (RealPt)ds_readd(HEROS);
 	for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
-		if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 			hero_busy(Real2Host(hero)) &&
 			host_readbs(Real2Host(hero) + HERO_HOSTEL_ID) == ds_readws(TYPEINDEX))
@@ -227,7 +227,7 @@ void do_inn(void)
 
 					for (i = 0, hero2 = get_hero(0); i <= 6; i++, hero2 += SIZEOF_HERO) {
 
-						if (host_readbs(hero2 + HERO_TYPE) != 0 &&
+						if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero2))
 						{
@@ -386,7 +386,7 @@ void do_inn(void)
 					hero = (RealPt)ds_readd(HEROS);
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-						if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+						if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 						{
 							if (booked_days > 1) {

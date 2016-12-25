@@ -168,7 +168,7 @@ signed short FIG_choose_next_hero(void)
 
 	/* search for a hero who has a class, is in the current group and
 		something still unknown */
-	} while (host_readb(get_hero(retval) + HERO_TYPE) == 0 ||
+	} while (host_readb(get_hero(retval) + HERO_TYPE) == HERO_TYPE_NONE ||
 			host_readb(get_hero(retval) + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP) ||
 			host_readb(get_hero(retval) + HERO_ACTIONS) == 0);
 
@@ -311,8 +311,7 @@ signed short FIG_get_first_active_hero(void)
 	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
-		/* check class */
-		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
+		if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			!hero_dead(hero_i) &&
 			!hero_stoned(hero_i) &&
@@ -344,7 +343,7 @@ unsigned short seg032_02db(void)
 	if (FIG_get_first_active_hero() == -1) {
 		hero_i = get_hero(0);
 		for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
-			if ((host_readb(hero_i + HERO_TYPE) != 0) &&
+			if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 				!hero_dead(hero_i) &&
 				(host_readb(hero_i + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1))
@@ -411,7 +410,7 @@ void FIG_do_round(void)
 
 		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
 
-		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != 0) &&
+		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			(host_readbs(Real2Host(hero) + HERO_ACTION_ID) != FIG_ACTION_UNKNOWN1))
 		{
@@ -1007,7 +1006,7 @@ signed short do_fight(signed short fight_id)
 		hero = get_hero(0);
 		for (l_di = 0; l_di <=6; l_di++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + HERO_TYPE) != 0)
+			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE)
 				&& (host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 			{
 
@@ -1035,7 +1034,7 @@ signed short do_fight(signed short fight_id)
 					ptr = get_hero(0);
 					for (l1 = 0; l1 <=6; l1++, ptr += SIZEOF_HERO) {
 
-						if ((host_readbs(ptr + HERO_TYPE) != 0)
+						if ((host_readbs(ptr + HERO_TYPE) != HERO_TYPE_NONE)
 							&& (host_readbs(ptr + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 						{
 							hero_disappear(ptr, l1, -2);

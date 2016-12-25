@@ -42,8 +42,7 @@ unsigned short get_hero_CH_best()
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 
-		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
-				/* check class */
+		if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
@@ -74,8 +73,7 @@ unsigned short get_hero_KK_best() {
 	hero_i = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
-		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
-				/* check class */
+		if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
@@ -152,7 +150,7 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 {
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* not a real BUG, but very useless */
-	if (host_readb(hero + HERO_TYPE) == 0)
+	if (host_readb(hero + HERO_TYPE) == HERO_TYPE_NONE)
 		return;
 #endif
 
@@ -181,7 +179,7 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
 
 #ifdef M302de_ORIGINAL_BUGFIX
 	/* not a real BUG, but very useless */
-	if (host_readb(hero + HERO_TYPE) == 0) {
+	if (host_readb(hero + HERO_TYPE) == HERO_TYPE_NONE) {
 		D1_ERR("WARNING: called %s with an invalid hero\n", __func__);
 		return;
 	}
@@ -420,7 +418,7 @@ signed short select_hero_from_group(Bit8u *title)
 
 		hero = (RealPt)ds_readd(HEROS) + i * SIZEOF_HERO;
 
-		if (host_readb(Real2Host(hero) + HERO_TYPE) != 0 &&
+		if (host_readb(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 				/* TODO: find out what that means */
 				ds_readbs(0x64a2) != i) {
@@ -495,7 +493,7 @@ signed short select_hero_ok(Bit8u *title)
 
 	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readb(Real2Host(hero) + HERO_TYPE) != 0 &&
+		if (host_readb(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			check_hero(Real2Host(hero)) &&
 				/* TODO: find out what that means */
@@ -573,7 +571,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 
 	for (hero = (RealPt)ds_readd(HEROS), i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readb(Real2Host(hero) + HERO_TYPE) != 0 &&
+		if (host_readb(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			check_hero(Real2Host(hero)) &&
 				/* TODO: find out what that means */
@@ -635,7 +633,7 @@ signed short count_heroes_in_group(void)
 
 	for (hero_i = get_hero(0), i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
 		/* Check class, group and dead */
-		if ((host_readb(hero_i + HERO_TYPE) != 0) &&
+		if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			(!hero_dead(hero_i))) {
 

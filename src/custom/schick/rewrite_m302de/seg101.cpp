@@ -786,8 +786,7 @@ void spell_silentium(void)
 	hero = get_hero(0);
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
-		/* check class */
-		if ((host_readb(hero + HERO_TYPE) != 0) &&
+		if ((host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 			/* check group */
 			(host_readb(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			/* check dead */

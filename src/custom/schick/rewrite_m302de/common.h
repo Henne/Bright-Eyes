@@ -80,7 +80,7 @@ enum {
     HERO_NAME           = 0x000,
     HERO_NAME2          = 0x010,
     HERO_KS_TAKEN       = 0x020,
-    HERO_TYPE           = 0x021,
+    HERO_TYPE           = 0x021, /* See enum HERO_TYPE_* below. */
     HERO_SEX            = 0x022,
     HERO_HEIGHT         = 0x023,
     HERO_WEIGHT         = 0x024,
@@ -161,7 +161,7 @@ enum {
     HERO_ENEMY_ID       = 0x086, /* last enemy in fight */
     HERO_GROUP_NO       = 0x087,
     HERO_TEMPLE_ID      = 0x088,
-    HERO_NPC_ID         = 0x089, /* Held = 0, NARIELL = 1, HARIKA = 2, CURIAN = 3, ARDORA = 4, GARSVIK = 5, ERWO = 6 */
+    HERO_NPC_ID         = 0x089, /* See enum NPC_* below. */
     HERO_GROUP_POS      = 0x08A, /* 0x01 bis 0x06, 0x00 = not in group */
     HERO_HEAL_TIMER     = 0x08B,
     HERO_STAFFSPELL_TIMER   = 0x08F,
@@ -239,6 +239,33 @@ enum {
 };
 
 #define SIZEOF_HERO (0x6da)
+
+enum {
+    NPC_NONE = 0,
+    NPC_NARIELL = 1,
+    NPC_HARIKA = 2,
+    NPC_CURIAN = 3,
+    NPC_ARDORA = 4,
+    NPC_GARSVIK = 5,
+    NPC_ERWO = 6
+};
+
+enum {
+    HERO_TYPE_NONE = 0,
+    HERO_TYPE_JUGGLER = 1,
+    HERO_TYPE_HUNTER = 2,
+    HERO_TYPE_WARRIOR = 3,
+    HERO_TYPE_ESTRAY = 4,
+    HERO_TYPE_THORWALIAN = 5,
+    HERO_TYPE_DWARF = 6,
+    /* Magic users > 6 */
+    HERO_TYPE_WITCH = 7,
+    HERO_TYPE_DRUID = 8,
+    HERO_TYPE_MAGE = 9,
+    HERO_TYPE_GREEN_ELF = 10, /* Auelf */
+    HERO_TYPE_ICE_ELF = 11, /* Firnelf */
+    HERO_TYPE_SYLVAN_ELF = 12, /* Waldelf */
+};
 
 enum {
     FIG_ACTION_MOVE = 1,

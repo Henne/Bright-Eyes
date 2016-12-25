@@ -420,7 +420,7 @@ void miracle_heal_hero(signed short le_in, Bit8u *str)
 	for (i = 0; i <= 6; i++) {
 		hero = get_hero(i);
 
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			!hero_dummy4(hero) &&
@@ -503,7 +503,7 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+		if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(Real2Host(hero)) &&
 			!hero_dummy4(Real2Host(hero)))
@@ -536,7 +536,7 @@ void miracle_weapon(Bit8u *str, signed short mode)
 
 		hero = get_hero(j);
 
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			!hero_dummy4(hero))

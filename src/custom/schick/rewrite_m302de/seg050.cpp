@@ -45,14 +45,14 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 	signed short randval;
 	struct dummy a = *(struct dummy*)(p_datseg + 0x6682);
 
-	if ((host_readbs(hero + HERO_TYPE) == 7) &&
+	if ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_WITCH) &&
 		(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 2))
 	{
 		/* spell is a warlock spell */
 		l_di = 2;
 	}
 
-	if ((host_readbs(hero + HERO_TYPE) >= 10) &&
+	if ((host_readbs(hero + HERO_TYPE) >= HERO_TYPE_GREEN_ELF) &&
 		((ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 3) ||
 			(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 5) ||
 			(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 4)))
@@ -61,14 +61,14 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 		l_di = 2;
 	}
 
-	if ((host_readbs(hero + HERO_TYPE) == 8) &&
+	if ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_DRUID) &&
 		(ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 0))
 	{
 		/* spell is a druid spell */
 		l_di = 2;
 	}
 
-	if (host_readbs(hero + HERO_TYPE) == 9) {
+	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) {
 
 		/* mages */
 		if (ds_readbs((SPELL_DESCRIPTIONS + 0) + 10 * spell) == 1) {
@@ -592,7 +592,7 @@ void level_up(signed short hero_pos)
 		add_hero_ae(hero, i - l_si);
 
 		/* change skill increasements into AE */
-		if (host_readbs(hero + HERO_TYPE) == 9 && ds_readws(GAME_MODE) == 2) {
+		if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE && ds_readws(GAME_MODE) == 2) {
 
 			if (GUI_bool(get_city(0xa0))) {
 				/* trade 10 skill increasements into 1W6+2 AE */
@@ -666,7 +666,7 @@ void level_up(signed short hero_pos)
 
 				switch (host_readbs(hero + HERO_TYPE)) {
 
-					case 7: {
+					case HERO_TYPE_WITCH: {
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
@@ -685,7 +685,7 @@ void level_up(signed short hero_pos)
 
 						break;
 					}
-					case 8: {
+					case HERO_TYPE_DRUID: {
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
@@ -704,7 +704,7 @@ void level_up(signed short hero_pos)
 
 						break;
 					}
-					case 9: {
+					case HERO_TYPE_MAGE: {
 
 						i = 0;
 
@@ -748,7 +748,7 @@ void level_up(signed short hero_pos)
 
 						break;
 					}
-					case 10: {
+					case HERO_TYPE_GREEN_ELF: {
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
@@ -776,7 +776,7 @@ void level_up(signed short hero_pos)
 
 						break;
 					}
-					case 11: {
+					case HERO_TYPE_ICE_ELF: {
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 
@@ -803,7 +803,7 @@ void level_up(signed short hero_pos)
 						}
 						break;
 					}
-					case 12: {
+					case HERO_TYPE_SYLVAN_ELF: {
 
 						while (host_readbs(hero + HERO_SP_RISE) != 0 && i < 86) {
 

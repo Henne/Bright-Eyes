@@ -394,7 +394,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 
 				hero_ptr = get_hero(i);
 
-				if ((host_readbs(hero_ptr + HERO_TYPE) != 0) &&
+				if ((host_readbs(hero_ptr + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(hero_ptr + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero_ptr))
 				{

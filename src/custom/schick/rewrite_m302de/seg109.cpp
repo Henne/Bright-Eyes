@@ -537,7 +537,7 @@ void TRV_ford_test(signed short mod, signed short time)
 	hero = get_hero(0);
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{
@@ -715,7 +715,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	hero = get_hero(0);
 	for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(hero + HERO_TYPE) != 0) &&
+		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero) &&
 			test_skill(hero, 13, (signed char)mod1) <= 0)
@@ -871,7 +871,7 @@ void TRV_barrier(signed short text_start)
 			hero = get_hero(0);
 			for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					l_di+=hero_count_item(hero, 121);

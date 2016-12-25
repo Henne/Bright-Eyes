@@ -183,7 +183,7 @@ signed short DNG07_handler(void)
 			/* ORIGINAL-BUG: forgot to set hero */
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readb(hero + HERO_TYPE) != 0 &&
+				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
@@ -264,7 +264,7 @@ signed short DNG07_handler(void)
 			/* ORIGINAL-BUG: forgot to set hero */
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readb(hero + HERO_TYPE) != 0 &&
+				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					hero_dummy6(hero))
 				{
 					sub_ptr_bs(hero + HERO_MU, 3);
@@ -375,7 +375,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readb(hero + HERO_TYPE) != 0 &&
+				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{

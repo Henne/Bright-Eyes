@@ -298,7 +298,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			p3 = p_datseg + 0x0668 + host_readbs(p2 + 4) * 8;
 
 			if (attack_hero != 0) {
-				if (host_readbs(target + HERO_TYPE) == 6) {
+				if (host_readbs(target + HERO_TYPE) == HERO_TYPE_DWARF) {
 					/* ZWERG / DWARF */
 					target_size = 2;
 				} else {
@@ -408,7 +408,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 	}
 
 	if ((ds_readbs(0x3dda) != 0) &&
-		(host_readbs(hero + HERO_TYPE) == 6) &&
+		(host_readbs(hero + HERO_TYPE) == HERO_TYPE_DWARF) &&
 		(attack_hero == 0) &&
 		(host_readbs(enemy_p + ENEMY_SHEET_GFX_ID) == 0x18))
 	{

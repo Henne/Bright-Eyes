@@ -32,7 +32,7 @@ void poison_effect(void)
 
 	for (i = 0; i <= 6; i++, hero+=SIZEOF_HERO) {
 
-		if ((host_readbs(hero + HERO_TYPE) != 0) && !hero_dead(hero)) {
+		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) && !hero_dead(hero)) {
 
 			poison_ptr = hero + HERO_POISON + POISON_SHURINKNOLLENGIFT * 5;
 

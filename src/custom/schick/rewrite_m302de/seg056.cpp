@@ -309,7 +309,7 @@ void buy_screen(void)
 						ds_readws(HERO_PIC_POSX + 2 * l_di) + 41,
 						197, 0);
 
-				if (host_readbs(hero1 + HERO_TYPE) != 0) {
+				if (host_readbs(hero1 + HERO_TYPE) != HERO_TYPE_NONE) {
 					copy_forename(Real2Host(ds_readd(DTP2)), hero1 + HERO_NAME2);
 					set_textcolor(255, 0);
 

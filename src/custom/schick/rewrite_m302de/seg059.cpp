@@ -156,7 +156,7 @@ void do_tavern(void)
 
 					ds_writeb(FOOD_MESSAGE + i, ds_writeb(FOOD_MESSAGE_SHOWN + i, 0));
 
-					if (host_readbs(get_hero(i) + HERO_TYPE) != 0 &&
+					if (host_readbs(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(get_hero(i) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 					{
 

@@ -423,8 +423,7 @@ void FIG_init_heroes(void)
 	for (l_si = 0; l_si <= 6; l_si++) {
 		hero = get_hero(l_si);
 
-		/* check typus */
-		if (host_readb(hero + HERO_TYPE) == 0)
+		if (host_readb(hero + HERO_TYPE) == HERO_TYPE_NONE)
 			continue;
 		/* check group */
 		if (host_readb(hero + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))

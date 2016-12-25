@@ -518,7 +518,6 @@ void load_npc(signed short index)
 
 	if (host_readb(npc_dst + HERO_SEX) == 1) {
 		/* female */
-		/* set an unknown variable to typus + 11 */
 		host_writeb(npc_dst + HERO_SPRITE_NO, host_readb(npc_dst + HERO_TYPE) + 11);
 		if (host_readbs(npc_dst + HERO_SPRITE_NO) > 21)
 			host_writeb(npc_dst + HERO_SPRITE_NO, 21);

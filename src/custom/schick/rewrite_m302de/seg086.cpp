@@ -115,7 +115,7 @@ signed short DNG11_handler(void)
 			hero = get_hero(0);
 			for (answer = 0; answer <= 6; answer++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
@@ -135,7 +135,7 @@ signed short DNG11_handler(void)
 			hero = get_hero(0);
 			for (answer = 0; answer <= 6; answer++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
@@ -170,7 +170,7 @@ signed short DNG11_handler(void)
 			hero = get_hero(0);
 			for (answer = 0; answer <= 6; answer++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					hero_disappear(hero, answer, -1);

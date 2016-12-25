@@ -258,7 +258,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 				hero = get_hero(0);
 				for (ds_writew(0x4228, 0); ds_readws(0x4228) <= 6; inc_ds_ws(0x4228), hero += SIZEOF_HERO)
 				{
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero))
 					{

@@ -271,7 +271,7 @@ void DNG13_collapsing_ceiling(void)
 	hero = get_hero(0);
 	for (i = fails = 0; i <= 6; i++, hero += SIZEOF_HERO)
 	{
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			test_skill(hero, 13, -4) <= 0)
@@ -321,7 +321,7 @@ void DNG13_collapsing_ceiling_easy(void)
 	hero = get_hero(0);
 	for (i = fails = 0; i <= 6; i++, hero += SIZEOF_HERO)
 	{
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			test_skill(hero, 13, -1) <= 0)

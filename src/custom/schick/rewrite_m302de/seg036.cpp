@@ -803,7 +803,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 	host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 	if (host_readbs(hero + HERO_NPC_ID) > 0) {
 
-		if (host_readbs(hero + HERO_NPC_ID) == 1) {
+		if (host_readbs(hero + HERO_NPC_ID) == NPC_NARIELL) {
 			/* equip LONGBOW and ARROWS in the first round,
 			 * if the hero has them in the inventory */
 			if ((ds_readws(FIGHT_ROUND) == 0) &&
@@ -818,7 +818,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				}
 			}
 
-		} else if (host_readbs(hero + HERO_NPC_ID) == 2) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_HARIKA) {
 
 			if (host_readws(hero + HERO_LE) <= 12) {
 
@@ -840,7 +840,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				}
 			}
 
-		} else if (host_readbs(hero + HERO_NPC_ID) == 3) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_CURIAN) {
 
 			if ((host_readws(hero + HERO_LE) < 10) &&
 				(host_readws(hero + HERO_AE) < 10))
@@ -848,20 +848,20 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 			}
 
-		} else if (host_readbs(hero + HERO_NPC_ID) == 4) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_ARDORA) {
 
 			if (host_readws(hero + HERO_LE) < 8)
 			{
 				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 			}
 
-		} else if (host_readbs(hero + HERO_NPC_ID) == 5) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_GARSVIK) {
 
 			if (!KI_count_heros(hero_pos)) {
 				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 			}
 
-		} else if (host_readbs(hero + HERO_NPC_ID) == 6) {
+		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_ERWO) {
 
 			if (host_readws(hero + HERO_LE) < 15)
 			{

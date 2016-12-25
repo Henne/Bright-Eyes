@@ -550,7 +550,7 @@ void THO_academy(void)
 	hero = get_hero(0);
 	for (item_pos = cursed_hero_pos = 0; item_pos <= 6; item_pos++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			hero_cursed(hero))
 		{
@@ -750,7 +750,7 @@ signed short academy_get_equal_item(signed short price)
 		hero = get_hero(0);
 		for (i = 0; i < 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{

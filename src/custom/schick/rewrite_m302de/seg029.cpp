@@ -147,7 +147,7 @@ void draw_status_line(void)
 			ds_readw(HERO_PIC_POSX + i * 2), 190,
 			ds_readw(HERO_PIC_POSX + i * 2) + 41, 197, 0);
 
-		if (host_readb(get_hero(i) + HERO_TYPE) != 0) {
+		if (host_readb(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE) {
 
 			copy_forename(Real2Host(ds_readd(DTP2)),
 				get_hero(i) + HERO_NAME2);
@@ -245,7 +245,6 @@ void clear_hero_icon(unsigned short pos)
 	do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(HERO_PIC_POSX + pos * 2), 157,
 		ds_readw(HERO_PIC_POSX + pos * 2) + 31, 188, 0);
 
-	/* return if the hero has a class */
 	if (!host_readbs(get_hero(pos) + HERO_TYPE))
 		/* fill bars area black */
 		do_fill_rect((RealPt)ds_readd(0xd2ff), ds_readw(HERO_PIC_POSX + pos * 2) + 33, 157,

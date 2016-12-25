@@ -166,7 +166,7 @@ void PHX_spielhaus(void)
 
 		for (pos = counter = answer = 0; pos <= 6; pos++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + HERO_TYPE) != 0) &&
+			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
 				(test_skill(hero, 43, 3) > 0))

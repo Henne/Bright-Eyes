@@ -378,10 +378,10 @@ signed short DNG14_handler(void)
 			hero = get_hero(0);
 			for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					host_readbs(hero + HERO_TYPE) == 9 &&
+					host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE &&
 					host_readbs(hero + HERO_STAFFSPELL_LVL) > 2)
 				{
 					/* mage with staffspell-level > 2 => can transform staff to rope */
@@ -401,7 +401,7 @@ signed short DNG14_handler(void)
 				hero = get_hero(0);
 				for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 10, 0) <= 0)
@@ -427,7 +427,7 @@ signed short DNG14_handler(void)
 				hero = get_hero(0);
 				for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 10, 4) <= 0)
@@ -467,7 +467,7 @@ signed short DNG14_handler(void)
 		hero = get_hero(0);
 		for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_attrib(hero, 11, 0) <= 0)

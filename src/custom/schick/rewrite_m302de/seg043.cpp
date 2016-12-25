@@ -188,7 +188,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 				/* after destroying the orc statuette between Oberorken and Felsteyn, dwarfs get a PA-bonus against orcs */
 				if ((ds_readbs(0x3dda) != 0) &&
-					(host_readbs(hero + HERO_TYPE) == 6) &&
+					(host_readbs(hero + HERO_TYPE) == HERO_TYPE_DWARF) &&
 					(host_readbs(Real2Host(monster) + ENEMY_SHEET_GFX_ID) == 24))
 				{
 					pa++;

@@ -102,7 +102,7 @@ signed short DNG06_handler(void)
 		hero = get_hero(0);
 		for (i = l3 = 0; i < 2; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
@@ -136,7 +136,7 @@ signed short DNG06_handler(void)
 		hero = get_hero(0);
 		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, 50, 5) > 0)
@@ -155,7 +155,7 @@ signed short DNG06_handler(void)
 				hero = get_hero(0);
 				for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 				{
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 50, 5) > 0)
@@ -194,7 +194,7 @@ signed short DNG06_handler(void)
 		hero = get_hero(0);
 		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, 51, 10) > 0)
@@ -270,7 +270,7 @@ signed short DNG06_handler(void)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
 					test_skill(hero, 11, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
@@ -301,7 +301,7 @@ signed short DNG06_handler(void)
 					hero = get_hero(0);
 					for (l4 = 0; l4 <= 6; l4++, hero += SIZEOF_HERO)
 					{
-						if (host_readbs(hero + HERO_TYPE) != 0 &&
+						if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(hero + HERO_GROUP_NO) == i)
 						{
 							l3 = 1;
@@ -343,7 +343,7 @@ signed short DNG06_handler(void)
 					hero = get_hero(0);
 					for (l4 = 0; l4 <= 6; l4++, hero += SIZEOF_HERO)
 					{
-						if (host_readbs(hero + HERO_TYPE) != 0 &&
+						if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(hero + HERO_GROUP_NO) == i)
 						{
 							l3 = 1;
@@ -511,7 +511,7 @@ void DNG06_chest2(RealPt chest)
 	hero = get_hero(0);
 	for (i = 0; i <=6; i++, hero += SIZEOF_HERO)
 	{
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			test_skill(hero, 38, 0) > 0)
@@ -538,7 +538,7 @@ void DNG09_pitfall(void)
 	{
 		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, 50, 4) > 0)
