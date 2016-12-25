@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 9/21
- *	Borlandified and identical: 9/21
+ *	Functions rewritten: 10/21
+ *	Borlandified and identical: 10/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -313,26 +313,23 @@ void seg001_00c1(signed short track_nr)
 	ds_writed(CD_AUDIO_TOD, CD_get_tod());
 }
 
+/* Borlandified and identical */
 void seg001_02c4(void)
 {
-	signed int val;
-
 	if (ds_readw(CD_INIT_SUCCESSFUL) == 0)
 		return;
 
-	val = CD_get_tod();
-	val -= ds_readd(CD_AUDIO_TOD);
-
-	if (val < (signed int)ds_readd(CD_AUDIO_POS))
+	if (CD_get_tod() - (Bit32s)ds_readd(CD_AUDIO_TOD) < (Bit32s)ds_readd(CD_AUDIO_POS))
 		return;
 
-	if (ds_readw(0x009b) != 1)
-		return;
+	if (ds_readw(0x009b) == 1)
+	{
 
-	CD_audio_stop_hsg();
-	CD_audio_stop_hsg();
-	seg001_00c1(ds_readw(0xbc40));
-	ds_writew(0x009b, 1);
+		CD_audio_stop_hsg();
+		CD_audio_stop_hsg();
+		seg001_00c1(ds_readw(0xbc40));
+		ds_writew(0x009b, 1);
+	}
 }
 
 signed short CD_bioskey(signed short cmd)
