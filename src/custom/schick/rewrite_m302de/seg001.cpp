@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 14/21
+ *	Functions rewritten: 15/21
  *	Borlandified and identical: 13/21
  *
  *	Remarks:
@@ -469,15 +469,59 @@ void CD_0432(void)
 	}
 }
 
+struct dummy15 {
+	signed short a[15];
+};
+
+/* Borlandified and identical */
 void CD_set_track(signed short index)
 {
+	signed short i;
 #if defined(__BORLANDC__)
-	//DUMMY
+	struct dummy15 tracks = *(struct dummy15*)(p_datseg + 0x00a5);
 #else
-	CPU_Push16(index);
-	CALLBACK_RunRealFar(reloc_game + 0x4ac, 0x4f4);
-	CPU_Pop16();
+	struct dummy15 tracks;
+	tracks.a[0] = 0x7fff;
+	tracks.a[1] = 0x7fff;
+	tracks.a[2] = 0x7fff;
+	tracks.a[3] = 0x7fff;
+	tracks.a[4] = ARCHIVE_FILE_SUMMARY_XMI;
+	tracks.a[5] = ARCHIVE_FILE_THORWAL_XMI;
+	tracks.a[6] = ARCHIVE_FILE_TEMPLE_XMI;
+	tracks.a[7] = ARCHIVE_FILE_TERMS_XMI;
+	tracks.a[8] = ARCHIVE_FILE_SMITH_XMI;
+	tracks.a[9] = ARCHIVE_FILE_INN_XMI;
+	tracks.a[10] = ARCHIVE_FILE_HEALER_XMI;
+	tracks.a[11] = ARCHIVE_FILE_CAMP_XMI;
+	tracks.a[12] = ARCHIVE_FILE_VICTORY_XMI;
+	tracks.a[13] = ARCHIVE_FILE_COMBAT_XMI;
+	tracks.a[14] = ARCHIVE_FILE_DUNGEON_XMI;
 #endif
+
+	for (i = 0; i < 15; i++)
+	{
+		if (tracks.a[i] == index) break;
+	}
+
+	ds_writew(0xbc40, i + 1);
+
+	if (ds_readw(0x00a3) == ds_readw(0xbc40))
+	{
+	} else {
+		ds_writew(0x00a3, ds_readw(0xbc40));
+		CD_audio_stop_hsg();
+		CD_audio_stop_hsg();
+
+		seg001_00c1(ds_readw(0xbc40));
+
+		ds_writew(0x009b, 1);
+
+		if (ds_readw(CD_AUDIO_PAUSED) != 0)
+		{
+			ds_writew(CD_AUDIO_PAUSED, 0);
+			CD_audio_pause();
+		}
+	}
 }
 
 void CD_check(void)
