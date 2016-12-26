@@ -4833,6 +4833,11 @@ static int seg001(unsigned short offs) {
 		D1_LOG("%s:%x()\n", __func__, offs);
 		return 0;
 	}
+	case 0x65a: {
+		D1_LOG("CD_harderr_handler()\n");
+		reg_ax = CD_harderr_handler();
+		return 1;
+	}
 	case 0x681: {
 		/* check if DSA1 CD is in drive */
 		D1_LOG("%s:%x()\n", __func__, offs);

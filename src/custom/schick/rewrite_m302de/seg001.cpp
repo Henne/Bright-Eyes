@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 18/21
+ *	Functions rewritten: 19/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -585,6 +585,22 @@ void CD_insert_msg(void)
 		bc_exit(0);
 	}
 
+}
+
+/* Borlandified and identical */
+signed short CD_harderr_handler(void)
+{
+	if (ds_readw(0x00c7) == 0)
+	{
+		CD_insert_msg();
+		ds_writew(0x00c7, 5);
+	}
+
+	dec_ds_ws_post(0x00c7);
+
+	bc_hardresume(1);
+
+	return 1;
 }
 
 void CD_check(void)
