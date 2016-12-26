@@ -1,7 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 16/21
- *	Borlandified and identical: 13/21
+ *	Functions rewritten: 17/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
