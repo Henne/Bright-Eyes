@@ -38,7 +38,7 @@ signed short DNG12_handler(void)
 	Bit8u *hero;
 	Bit8u *ptr;
 
-	ptr = p_datseg + 0xbd95;
+	ptr = p_datseg + DNG_MAP;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writews(TEXTBOX_WIDTH, 7);
 	target_pos = (ds_readbs(DUNGEON_LEVEL) << 12)

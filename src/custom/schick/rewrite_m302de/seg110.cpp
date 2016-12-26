@@ -664,7 +664,7 @@ void tevent_045(void)
 {
 	signed short answer;
 
-	if (ds_readw(0x434a) == 40)
+	if (ds_readw(TRV_DESTINATION) == 40)
 	{
 		load_in_head(11);
 
@@ -695,7 +695,7 @@ void tevent_046(void)
 	enter_inn = 0;
 
 	/* pause traveling */
-	ds_writeb(0xe5d2, 1);
+	ds_writeb(EVENT_ANI_BUSY, 1);
 
 	load_ani(12);
 	draw_main_screen();
@@ -766,7 +766,7 @@ void tevent_046(void)
 
 	set_var_to_zero();
 	/* resume traveling */
-	ds_writeb(0xe5d2, 0);
+	ds_writeb(EVENT_ANI_BUSY, 0);
 	ds_writew(REQUEST_REFRESH, 1);
 }
 

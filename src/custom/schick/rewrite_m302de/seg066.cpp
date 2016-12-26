@@ -1074,9 +1074,9 @@ void seg066_14dd(signed short forward)
 		ds_writews(X_TARGET, 0);
 		no_way();
 
-	} else if (ds_readb(0xbd94) - 1 < ds_readws(X_TARGET)) {
+	} else if (ds_readb(DNG_MAP_SIZE) - 1 < ds_readws(X_TARGET)) {
 
-		ds_writews(X_TARGET, ds_readb(0xbd94) - 1);
+		ds_writews(X_TARGET, ds_readb(DNG_MAP_SIZE) - 1);
 		no_way();
 
 	}
@@ -1166,11 +1166,11 @@ void seg066_172b(void)
 {
 	signed short l_si;
 	signed short l_di;
-	Bit8u *ptr = p_datseg + 0xbd95;
+	Bit8u *ptr = p_datseg + DNG_MAP;
 
 	ds_writeb(0xe400, ds_writeb(0xe401, ds_writeb(0xe402, ds_writeb(0xe403, 0))));
 
-	for (l_di = 0; ds_readb(0xbd94) * 16 > l_di; l_di++) {
+	for (l_di = 0; ds_readb(DNG_MAP_SIZE) * 16 > l_di; l_di++) {
 
 		l_si = get_border_index(host_readb(ptr + l_di));
 

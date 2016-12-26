@@ -994,7 +994,7 @@ signed short do_fight(signed short fight_id)
 
 	refresh_screen_size();
 
-	if (ds_readws(0xc3c7) == 2) {
+	if (ds_readws(HAVE_MOUSE) == 2) {
 
 		while (ds_readws(0x299a) < 0) {
 			refresh_screen_size();

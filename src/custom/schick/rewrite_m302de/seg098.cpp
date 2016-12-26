@@ -887,9 +887,9 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 		if (retval) {
 
-			ds_writew(0xe5b2, test_spell(Real2Host(hero), l_di, bonus));
+			ds_writew(SPELLTEST_RESULT, test_spell(Real2Host(hero), l_di, bonus));
 
-			if (ds_readws(0xe5b2) == -99) {
+			if (ds_readws(SPELLTEST_RESULT) == -99) {
 
 				/* prepare output */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -902,7 +902,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				retval = -1;
 
-			} else if ((ds_readws(0xe5b2) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
+			} else if ((ds_readws(SPELLTEST_RESULT) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x978));
 

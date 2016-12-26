@@ -279,7 +279,7 @@ signed short DNG04_handler(void)
 		/* the exit of this dungeon */
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
 		ds_writew(X_TARGET, ds_readws(0x433a));
 		ds_writew(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -287,7 +287,7 @@ signed short DNG04_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x68),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -469,7 +469,7 @@ signed short DNG05_handler(void)
 		/* the exit of this dungeon */
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
 		ds_writew(X_TARGET, ds_readws(0x433a));
 		ds_writew(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -477,7 +477,7 @@ signed short DNG05_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x44),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 

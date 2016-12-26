@@ -48,7 +48,7 @@ signed short DNG02_handler(void)
 			+ (ds_readws(X_TARGET) << 8)
 			+ ds_readws(Y_TARGET);
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 
 	if ((target_pos == 0x102 || target_pos == 0x201))
 	{
@@ -542,7 +542,7 @@ signed short DNG02_handler(void)
 	} else if (target_pos == 0x100 && target_pos != ds_readws(0x330e))
 	{
 		leave_dungeon();
-		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 		ds_writews(X_TARGET, ds_readws(0x433a));
 		ds_writews(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -550,7 +550,7 @@ signed short DNG02_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xb0),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 

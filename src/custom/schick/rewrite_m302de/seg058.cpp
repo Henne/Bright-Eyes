@@ -316,7 +316,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 			handle_input();
 			ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0L);
 
-			if (ds_readws(0xc3c7) == 2) {
+			if (ds_readws(HAVE_MOUSE) == 2) {
 				select_with_mouse((Bit8u*)&l7, Real2Host(ds_readd(SELLITEMS)) + 7 * item);
 			} else {
 				select_with_keyboard((Bit8u*)&l7, Real2Host(ds_readd(SELLITEMS)) + 7 * item);

@@ -64,7 +64,7 @@ void do_wildcamp(void)
 		ds_writebs(WILDCAMP_GUARDS + i, -1);
 	}
 
-	i = !ds_readb(0xe4c8) ? 6 : 7;
+	i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
 	draw_loc_icons(i, 9, 16, 25, 11, 20, 17, 48);
 
 	while (done == 0) {
@@ -88,7 +88,7 @@ void do_wildcamp(void)
 
 		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
 
-			i = !ds_readb(0xe4c8) ? 6 : 7;
+			i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
 
 			answer = GUI_radio(get_ltx(0x4cc), (signed char)i,
 						get_ltx(0x4d0), get_ltx(0x4d4),
@@ -151,7 +151,7 @@ void do_wildcamp(void)
 
 		} else if (ds_readws(ACTION) == 130) {
 
-			if (ds_readb(0xe4c8) == 99) {
+			if (ds_readb(GOOD_CAMP_PLACE) == 99) {
 				l_di = replenish_stocks(ds_readws(REPLENISH_STOCKS_MOD) + 99, stock_tries);
 			} else {
 				l_di = replenish_stocks(ds_readws(REPLENISH_STOCKS_MOD), stock_tries);
@@ -243,7 +243,7 @@ void do_wildcamp(void)
 						{
 							ds_writebs(WILDCAMP_HERBSTATUS + answer, herb_tries = (signed char)(l_di = 1));
 
-							if (ds_readbs(0xe4c8) == 99) {
+							if (ds_readbs(GOOD_CAMP_PLACE) == 99) {
 								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(GATHER_HERBS_MOD) + 99);
 							} else {
 								gather_herbs(Real2Host(hero), herb_hours - 1, ds_readws(GATHER_HERBS_MOD));

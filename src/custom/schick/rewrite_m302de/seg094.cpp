@@ -64,18 +64,18 @@ void set_textbox_positions(signed short town_id)
 	signed short y;
 
 	/* zero some global variables */
-	ds_writew(0xe4a5, ds_writew(0xe4a3, ds_writew(0xe4ad, ds_writew(0xe4ab, 0))));
+	ds_writew(CURRENT_TOWN_OVER, ds_writew(TRV_MENU_SELECTION, ds_writew(SELECTED_TOWN_ANIX, ds_writew(SELECTED_TOWN_ANIY, 0))));
 
 
-	x = ds_writews(0xe4b1, ds_readws(TOWN_POSITIONS + 4 * town_id));
-	y = ds_writews(0xe4af, ds_readws(TOWN_POSITIONS + 4 * town_id + 2));
+	x = ds_writews(CURRENT_TOWN_ANIX, ds_readws(TOWN_POSITIONS + 4 * town_id));
+	y = ds_writews(CURRENT_TOWN_ANIY, ds_readws(TOWN_POSITIONS + 4 * town_id + 2));
 
 	r_dx = (x >= 0 && x <= 159) ?
 			(y >= 0 && y <= 99 ? 3 : 1) :
 			(y >= 0 && y <= 99 ? 2 : 0);
 
-	ds_writew(0x2ca2, !r_dx || r_dx == 2 ? -80 : 80);
-	ds_writew(0x2ca4, !r_dx || r_dx == 1 ? -40 : 40);
+	ds_writew(BASEPOS_X, !r_dx || r_dx == 2 ? -80 : 80);
+	ds_writew(BASEPOS_Y, !r_dx || r_dx == 1 ? -40 : 40);
 }
 
 /**
@@ -270,10 +270,10 @@ void TM_func1(signed short route_nr, signed short backwards)
 					(answer == 2 && !ds_readb(0x4332)))
 			{
 				ds_writew(WILDCAMP_SLEEP_QUALITY, -3);
-				ds_writeb(0xe4c8, 99);
+				ds_writeb(GOOD_CAMP_PLACE, 99);
 				ds_writeb(LOCATION, 6);
 				do_location();
-				ds_writeb(0xe4c8, ds_writeb(LOCATION, (unsigned char)ds_writew(WILDCAMP_SLEEP_QUALITY, 0)));
+				ds_writeb(GOOD_CAMP_PLACE, ds_writeb(LOCATION, (unsigned char)ds_writew(WILDCAMP_SLEEP_QUALITY, 0)));
 				ds_writew(WALLCLOCK_UPDATE, 0);
 				ds_writew(REQUEST_REFRESH, 2);
 			}
@@ -291,12 +291,12 @@ void TM_func1(signed short route_nr, signed short backwards)
 		} else if (ds_readw(0x4244) != 0 && ds_readws(0x423c) >= ds_readws(0x4246) && ds_readws(0xc3c1) == 0)
 		{
 			ds_writew(TYPEINDEX, random_schick(100) <= 50 ? 10 : 12);
-			bak1 = ds_readws(0x2ca2);
-			bak2 = ds_readws(0x2ca4);
-			ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+			bak1 = ds_readws(BASEPOS_X);
+			bak2 = ds_readws(BASEPOS_Y);
+			ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 			do_informer();
-			ds_writew(0x2ca2, bak1);
-			ds_writew(0x2ca4, bak2);
+			ds_writew(BASEPOS_X, bak1);
+			ds_writew(BASEPOS_Y, bak2);
 
 		}
 
@@ -427,8 +427,8 @@ void TM_func1(signed short route_nr, signed short backwards)
 					}
 				}
 			}
-			ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
-			ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
+			ds_writew(WALLCLOCK_X, ds_readws(BASEPOS_X) + 120);
+			ds_writew(WALLCLOCK_Y, ds_readws(BASEPOS_Y) + 87);
 			ds_writew(WALLCLOCK_UPDATE, 1);
 			ds_writew(REQUEST_REFRESH, 0);
 		}
@@ -478,7 +478,7 @@ signed short TM_unused1(RealPt ptr, signed short off)
 	Bit8u *array[7];
 
 	l8 = host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + off) - 1;
-	ds_writeb(CURRENT_TOWN, (signed char)(l7 = ds_readws(0x434a)));
+	ds_writeb(CURRENT_TOWN, (signed char)(l7 = ds_readws(TRV_DESTINATION)));
 	ptr = (RealPt)RealMake(datseg, 0xa0b4);
 
 	do {
@@ -495,12 +495,12 @@ signed short TM_unused1(RealPt ptr, signed short off)
 					{
 						if (l6 != l_di)
 						{
-							array[l5++] = get_ltx(4 * (0xeb + ds_writebs(0x4344 + l5, ((answer = ds_readb(0x9dbd + 9 * l4)) != ds_readbs(CURRENT_TOWN) ? (unsigned char)answer : ds_readb(0x9dbe + 9 * l4)))));
+							array[l5++] = get_ltx(4 * (0xeb + ds_writebs(TRV_MENU_TOWNS + l5, ((answer = ds_readb(0x9dbd + 9 * l4)) != ds_readbs(CURRENT_TOWN) ? (unsigned char)answer : ds_readb(0x9dbe + 9 * l4)))));
 						}
 						l6++;
 					}
 
-					ds_writeb(0x4344 + l5, (signed char)l7);
+					ds_writeb(TRV_MENU_TOWNS + l5, (signed char)l7);
 					array[l5] = get_ltx(0x88c);
 					l5++;
 					ds_writefp(0x4340, ptr);
@@ -519,7 +519,7 @@ signed short TM_unused1(RealPt ptr, signed short off)
 						answer = l5;
 					}
 
-					ds_writew(0x434a, ds_readbs((0x4344 - 1) + answer));
+					ds_writew(TRV_DESTINATION, ds_readbs((TRV_MENU_TOWNS - 1) + answer));
 					return answer;
 				}
 
@@ -557,7 +557,7 @@ signed short TM_enter_target_town(void)
 	Bit8u *ptr2;
 
 	l_di = 0;
-	ds_writew(0x4338, ds_readw(0x434a));
+	ds_writew(TRV_DEST_REACHED, ds_readw(TRV_DESTINATION));
 	l_di = 1;
 
 	if (l_di)
@@ -565,7 +565,7 @@ signed short TM_enter_target_town(void)
 		ptr1 = p_datseg + 0xa0b4;
 		l_di = 0;
 		do {
-			if (host_readb(ptr1) == ds_readw(0x4338))
+			if (host_readb(ptr1) == ds_readw(TRV_DEST_REACHED))
 			{
 				l_si = 0;
 
@@ -591,7 +591,7 @@ signed short TM_enter_target_town(void)
 		{
 			/* set the target town as current town */
 			l3 = ds_readbs(CURRENT_TOWN);
-			ds_writeb(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+			ds_writeb(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 
 			/* load the map */
 			call_load_area(1);
@@ -659,7 +659,7 @@ void TM_draw_track(signed short a1, signed short a2, signed short a3, signed sho
 		if (a4 == 0)
 		{
 			/* save the old pixel from the map */
-			ds_writeb(0xe4b4 + i,
+			ds_writeb(TRV_TRACK_PIXEL_BAK + i,
 				mem_readb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr)));
 
 			/* write a new one */
@@ -673,7 +673,7 @@ void TM_draw_track(signed short a1, signed short a2, signed short a3, signed sho
 
 			/* restore the pixel from the map */
 			mem_writeb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr),
-				ds_readb(0xe4b4 + i));
+				ds_readb(TRV_TRACK_PIXEL_BAK + i));
 		}
 	}
 }

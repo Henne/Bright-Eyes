@@ -464,7 +464,7 @@ signed short DNG15_handler(void)
 		} else {
 			leave_dungeon();
 
-			ds_writeb(CURRENT_TOWN, ds_readbs(0x4338));
+			ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 			ds_writew(X_TARGET, ds_readws(0x433a));
 			ds_writew(Y_TARGET, ds_readws(0x433c));
 			ds_writeb(LOCATION, 0);
@@ -472,7 +472,7 @@ signed short DNG15_handler(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0xdc),
-				(char*)get_ltx(4 * (ds_readw(0x434a) + 0xeb)));
+				(char*)get_ltx(4 * (ds_readw(TRV_DESTINATION) + 0xeb)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 

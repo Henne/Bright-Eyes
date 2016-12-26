@@ -236,11 +236,11 @@ unsigned short passage_arrival(void)
 	p_sched = p_datseg + 0x6f00 + ds_readb(0x42b1) * 8;
 
 	/* write the destination to a global variable (assignement in condition)*/
-	if ((ds_writew(0x4338, host_readb(p_sched))) == ds_readbs(CURRENT_TOWN))
-		ds_writew(0x4338, host_readb(p_sched + 1));
+	if ((ds_writew(TRV_DEST_REACHED, host_readb(p_sched))) == ds_readbs(CURRENT_TOWN))
+		ds_writew(TRV_DEST_REACHED, host_readb(p_sched + 1));
 
 	do {
-		if (host_readb(p1) == ds_readw(0x4338)) {
+		if (host_readb(p1) == ds_readw(TRV_DEST_REACHED)) {
 			si = 0;
 			do {
 				tmp = host_readb(Real2Host(host_readd(p1 + 2)) + si) - 1;
@@ -262,7 +262,7 @@ unsigned short passage_arrival(void)
 		/* save the old town in tmp */
 		tmp = (signed char)ds_readb(CURRENT_TOWN);
 		/* set the new current_town */
-		ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
 
 		/* load the area  of the new town */
 		call_load_area(1);

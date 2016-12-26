@@ -180,9 +180,9 @@ signed short DNG01_handler(void)
 				/* Original-Bug: better get_first_hero_available_in_group() */
 				if (test_skill(get_hero(0), 10, 0) > 0)
 				{
-					ds_writeb(0xbd95 + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0x50);
+					ds_writeb(DNG_MAP + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0x50);
 					DNG_dec_level();
-					ds_writeb(0xbd95 + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0x60);
+					ds_writeb(DNG_MAP + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0x60);
 					inc_ds_ws_post(Y_TARGET);
 				}
 			} else {
@@ -195,7 +195,7 @@ signed short DNG01_handler(void)
 		if (GUI_bool(get_dtp(0x60)))
 		{
 			leave_dungeon();
-			ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+			ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 			ds_writew(X_TARGET, ds_readws(0x433a));
 			ds_writew(Y_TARGET, ds_readws(0x433c));
 			ds_writeb(LOCATION, 0);

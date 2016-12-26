@@ -36,7 +36,7 @@ namespace M302de {
 void pause_traveling(signed short ani_nr)
 {
 
-	ds_writeb(0xe5d2, 1);
+	ds_writeb(EVENT_ANI_BUSY, 1);
 
 	load_ani(ani_nr);
 
@@ -46,33 +46,33 @@ void pause_traveling(signed short ani_nr)
 
 	load_city_ltx(ARCHIVE_FILE_WILD_LTX);
 
-	ds_writew(0xe5d9, ds_readw(0x2ca2));
-	ds_writew(0xe5d7, ds_readw(0x2ca4));
-	ds_writew(0xe5d5, ds_readw(TEXTBOX_WIDTH));
+	ds_writew(BASEPOS_X_BAK, ds_readw(BASEPOS_X));
+	ds_writew(BASEPOS_Y_BAK, ds_readw(BASEPOS_Y));
+	ds_writew(TEXTBOX_WIDTH_BAK, ds_readw(TEXTBOX_WIDTH));
 	ds_writew(WALLCLOCK_UPDATE_BAK, ds_readw(WALLCLOCK_UPDATE));
 
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
 
 	/* c = b = a = 0 */
-	ds_writeb(TRAVELING, (unsigned char)ds_writew(0x2ca2, ds_writew(WALLCLOCK_UPDATE, 0)));
+	ds_writeb(TRAVELING, (unsigned char)ds_writew(BASEPOS_X, ds_writew(WALLCLOCK_UPDATE, 0)));
 
-	ds_writew(0x2ca4, ani_nr == 21 ? 60: 70);
+	ds_writew(BASEPOS_Y, ani_nr == 21 ? 60: 70);
 	ds_writew(TEXTBOX_WIDTH, 9);
 }
 
 /* static */
 void resume_traveling(void)
 {
-	ds_writew(0x2ca2, ds_readw(0xe5d9));
-	ds_writew(0x2ca4, ds_readw(0xe5d7));
-	ds_writew(TEXTBOX_WIDTH, ds_readw(0xe5d5));
+	ds_writew(BASEPOS_X, ds_readw(BASEPOS_X_BAK));
+	ds_writew(BASEPOS_Y, ds_readw(BASEPOS_Y_BAK));
+	ds_writew(TEXTBOX_WIDTH, ds_readw(TEXTBOX_WIDTH_BAK));
 	ds_writew(WALLCLOCK_UPDATE, ds_readw(WALLCLOCK_UPDATE_BAK));
 
 	set_var_to_zero();
 
 	ds_writew(REQUEST_REFRESH, ds_writeb(TRAVELING, 1));
 
-	ds_writeb(0xe5d2, 0);
+	ds_writeb(EVENT_ANI_BUSY, 0);
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
 }
 
@@ -427,7 +427,7 @@ void octopus_attack(void)
 	add_hero_ap_all(5);
 	GUI_output(get_city(0x80));
 
-	ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+	ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 	status_menu(get_hero_index(Real2Host(get_first_hero_available_in_group())));
 	resume_traveling();
 }
@@ -505,7 +505,7 @@ void pirates_attack(void)
 
 	do_fight(FIGHTS_S001);
 
-	ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+	ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 
 	status_menu(get_hero_index(Real2Host(get_first_hero_available_in_group())));
 
@@ -517,11 +517,11 @@ void do_wild8_fight(void)
 	signed short bak1;
 	signed short bak2;
 
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 	ds_writew(WALLCLOCK_UPDATE_BAK, ds_readws(WALLCLOCK_UPDATE));
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 0);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 0);
 	ds_writeb(TRAVELING, 0);
 
 	ds_writew(MAX_ENEMIES, random_interval(5, 10));
@@ -531,8 +531,8 @@ void do_wild8_fight(void)
 
 	ds_writew(0x4248, 0);
 	ds_writeb(TRAVELING, 1);
-	ds_writew(0x2ca2, bak1);
-	ds_writew(0x2ca4, bak2);
+	ds_writew(BASEPOS_X, bak1);
+	ds_writew(BASEPOS_Y, bak2);
 }
 
 void random_encounter(signed short arg)
@@ -550,11 +550,11 @@ void random_encounter(signed short arg)
 		l_si = 1;
 	}
 
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 	wallclock_update_bak = ds_readws(WALLCLOCK_UPDATE);
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 0);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 0);
 
 	arg = ds_readb(0xb17d + arg);
 
@@ -658,8 +658,8 @@ void random_encounter(signed short arg)
 		}
 	}
 
-	ds_writew(0x2ca2, bak1);
-	ds_writew(0x2ca4, bak2);
+	ds_writew(BASEPOS_X, bak1);
+	ds_writew(BASEPOS_Y, bak2);
 	ds_writew(WALLCLOCK_UPDATE, wallclock_update_bak);
 	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 }
@@ -772,7 +772,7 @@ void TLK_way_to_ruin(signed short state)
 		ds_writew(DIALOG_NEXT_STATE, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 29 : 30);
 
 	} else if (state == 41) {
-		ds_writeb(0xe5d2, 1);
+		ds_writeb(EVENT_ANI_BUSY, 1);
 		load_ani(11);
 		draw_main_screen();
 		init_ani(0);
@@ -801,7 +801,7 @@ void TLK_way_to_ruin(signed short state)
 		ds_writew(DIALOG_NEXT_STATE, (count_heroes_in_group() >> 1) < ds_readws(0xb21b) ? 49 : 50);
 	}
 
-	ds_writeb(0xe5d2, 0);
+	ds_writeb(EVENT_ANI_BUSY, 0);
 }
 
 void tevent_087(void)

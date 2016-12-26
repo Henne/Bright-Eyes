@@ -532,7 +532,7 @@ void item_bag(void)
 
 	if ((ds_readbs(DUNGEON_INDEX) == 7) && (ds_readbs(DUNGEON_LEVEL) == 0)) {
 		/* set ptr to the map */
-		ptr = p_datseg + 0xbd95;
+		ptr = p_datseg + DNG_MAP;
 
 		/* remove the wall there */
 		host_writeb(ptr + 0x3a, 1);

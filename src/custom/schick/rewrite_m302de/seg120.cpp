@@ -301,9 +301,9 @@ signed short init_memory(void)
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
 	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * SIZEOF_HERO));
-	ds_writed(0xe494,		(Bit32u)schick_alloc_emu(630));
-	ds_writed(0xe49c,		(Bit32u)schick_alloc_emu(225));
-	ds_writed(0xe498,		(Bit32u)schick_alloc_emu(80));
+	ds_writed(DUNGEON_FIGHTS_BUF,		(Bit32u)schick_alloc_emu(630));
+	ds_writed(DUNGEON_DOORS_BUF,		(Bit32u)schick_alloc_emu(225));
+	ds_writed(DUNGEON_STAIRS_BUF,		(Bit32u)schick_alloc_emu(80));
 	ds_writed(BUF_FONT6,		(Bit32u)schick_alloc_emu(592));
 	ds_writed(SPLASH_BUFFER,		(Bit32u)schick_alloc_emu(1000));
 	ds_writed(0xd299,		(Bit32u)schick_alloc_emu(500));

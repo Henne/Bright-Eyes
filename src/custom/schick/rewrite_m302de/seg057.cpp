@@ -275,7 +275,7 @@ void sell_screen(Bit8u *shop_ptr)
 			l8 = 0;
 		}
 
-		if (ds_readws(0xc3c7) == 2) {
+		if (ds_readws(HAVE_MOUSE) == 2) {
 			select_with_mouse((Bit8u*)&l6, Real2Host(ds_readd(SELLITEMS)) + 7 * item);
 		} else {
 			select_with_keyboard((Bit8u*)&l6, Real2Host(ds_readd(SELLITEMS)) + 7 * item);

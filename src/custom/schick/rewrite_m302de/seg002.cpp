@@ -1251,20 +1251,20 @@ void mouse_init(void)
 	signed short l5;
 	signed short l6;
 
-	if (ds_readw(0xc3c7) == 2) {
+	if (ds_readw(HAVE_MOUSE) == 2) {
 
 		l1 = 0;
 
 		mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
 
 		if (l1 == 0) {
-			ds_writew(0xc3c7, 0);
+			ds_writew(HAVE_MOUSE, 0);
 		}
 
 		ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 		ds_writed(0xcec7, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
-		if (ds_readw(0xc3c7) == 2) {
+		if (ds_readw(HAVE_MOUSE) == 2) {
 
 			l1 = 4;
 			l4 = ds_readws(0x299c);
@@ -1284,7 +1284,7 @@ void mouse_init(void)
 
 void disable_mouse(void)
 {
-	if (ds_readw(0xc3c7) == 2) {
+	if (ds_readw(HAVE_MOUSE) == 2) {
 		mouse_reset_ehandler();
 	}
 }
@@ -1514,20 +1514,20 @@ void handle_gui_input(void)
 	signed short l_di;
 	signed short l1;
 
-	ds_writew(0xc3d7, ds_writew(ACTION, l_si = 0));
+	ds_writew(BIOSKEY_EVENT, ds_writew(ACTION, l_si = 0));
 
 	herokeeping();
 
 	if (CD_bioskey(1)) {
 
-		l_si = (ds_writews(0xc3d7, bc_bioskey(0))) >> 8;
-		and_ds_ws(0xc3d7, 0xff);
+		l_si = (ds_writews(BIOSKEY_EVENT, bc_bioskey(0))) >> 8;
+		and_ds_ws(BIOSKEY_EVENT, 0xff);
 
 		if (l_si == 0x24) {
 			l_si = 0x2c;
 		}
 
-		if ((ds_readw(0xc3d7) == 0x11) && (ds_readw(0xbd25) == 0)) {
+		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(0xbd25) == 0)) {
 			cleanup_game();
 			bc_exit(0);
 		}
@@ -1537,24 +1537,24 @@ void handle_gui_input(void)
 
 		ds_writew(0x29ba, 0);
 
-		if (ds_readw(0xc3c7) == 0) {
+		if (ds_readw(HAVE_MOUSE) == 0) {
 		}
 
-		if (ds_readw(0xc3d7) == 5) {
+		if (ds_readw(BIOSKEY_EVENT) == 5) {
 			status_select_hero();
 			l_si = 0;
 		}
 
-		if (ds_readw(0xc3d7) == 15) {
+		if (ds_readw(BIOSKEY_EVENT) == 15) {
 			GRP_swap_heros();
 			l_si = 0;
 		}
 
-		if ((ds_readw(0xc3d7) == 0x13) && !ds_readbs(0x2c98)) {
+		if ((ds_readw(BIOSKEY_EVENT) == 0x13) && !ds_readbs(0x2c98)) {
 			sound_menu();
 		}
 
-		if ((ds_readw(0xc3d7) == 0x10) &&
+		if ((ds_readw(BIOSKEY_EVENT) == 0x10) &&
 			(ds_readws(0xc3c5) == 0) &&
 			!ds_readbs(0x2c98) &&
 			(ds_readws(0xbd25) == 0))
@@ -1567,7 +1567,7 @@ void handle_gui_input(void)
 			GUI_output(p_datseg + PAUSE_STRING);		/* P A U S E */
 			ds_writew(TEXTBOX_WIDTH, l_di);
 			ds_writew(0xd2d1, 0);
-			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
+			ds_writew(0xc3c5, l_si = ds_writew(BIOSKEY_EVENT, 0));
 			dec_ds_ws(TIMERS_DISABLED);
 		}
 	} else {
@@ -1587,7 +1587,7 @@ void handle_gui_input(void)
 					Real2Host(ds_readd(ACTION_TABLE_PRIMARY)));
 		}
 
-		if (ds_readw(0xc3c7) == 2) {
+		if (ds_readw(HAVE_MOUSE) == 2) {
 
 			for (l1 = 0; l1 < 15; l1++) {
 				wait_for_vsync();
@@ -1675,20 +1675,20 @@ void handle_input(void)
 	signed short l_si;
 	signed short l_di;
 
-	ds_writew(0xc3d7, ds_writew(ACTION, l_si = 0));
+	ds_writew(BIOSKEY_EVENT, ds_writew(ACTION, l_si = 0));
 
 	herokeeping();
 
 	if (CD_bioskey(1)) {
 
-		l_si = (ds_writews(0xc3d7, bc_bioskey(0))) >> 8;
-		and_ds_ws(0xc3d7, 0xff);
+		l_si = (ds_writews(BIOSKEY_EVENT, bc_bioskey(0))) >> 8;
+		and_ds_ws(BIOSKEY_EVENT, 0xff);
 
 		if (l_si == 0x24) {
 			l_si = 0x2c;
 		}
 
-		if ((ds_readw(0xc3d7) == 0x11) && (ds_readw(0xbd25) == 0)) {
+		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(0xbd25) == 0)) {
 			cleanup_game();
 			bc_exit(0);
 		}
@@ -1696,14 +1696,14 @@ void handle_input(void)
 
 	if (ds_readw(0xc3d5) == 0) {
 
-		if (ds_readw(0xc3c7) == 0) {
+		if (ds_readw(HAVE_MOUSE) == 0) {
 		}
 
-		if ((ds_readw(0xc3d7) == 0x13) && !ds_readbs(0x2c98)) {
+		if ((ds_readw(BIOSKEY_EVENT) == 0x13) && !ds_readbs(0x2c98)) {
 			sound_menu();
 		}
 
-		if ((ds_readw(0xc3d7) == 0x10) &&
+		if ((ds_readw(BIOSKEY_EVENT) == 0x10) &&
 			(ds_readws(0xc3c5) == 0) &&
 			!ds_readbs(0x2c98) &&
 			(ds_readws(0xbd25) == 0))
@@ -1717,7 +1717,7 @@ void handle_input(void)
 			ds_writew(0xd2d1, 0);
 			dec_ds_ws(TIMERS_DISABLED);
 
-			ds_writew(0xc3c5, l_si = ds_writew(0xc3d7, 0));
+			ds_writew(0xc3c5, l_si = ds_writew(BIOSKEY_EVENT, 0));
 		}
 	} else {
 		play_voc(ARCHIVE_FILE_FX1_VOC);
@@ -1736,7 +1736,7 @@ void handle_input(void)
 					Real2Host(ds_readd(ACTION_TABLE_PRIMARY)));
 		}
 
-		if (ds_readw(0xc3c7) == 2) {
+		if (ds_readw(HAVE_MOUSE) == 2) {
 
 			for (l_di = 0; l_di < 25; l_di++) {
 
@@ -2051,8 +2051,8 @@ void dawning(void)
 			!ds_readbs(LOCATION) &&
 			/* not in a travel mode */
 			!ds_readb(TRAVELING) &&
-			/* unknown */
-			!ds_readb(0xe5d2) &&
+			/* no event animation */
+			!ds_readb(EVENT_ANI_BUSY) &&
 			/* unknown */
 			!ds_readbs(0x45b8) &&
 			/* unknown */
@@ -2093,8 +2093,8 @@ void nightfall(void)
 			!ds_readbs(LOCATION) &&
 			/* not in a travel mode */
 			!ds_readb(TRAVELING) &&
-			/* unknown */
-			!ds_readb(0xe5d2) &&
+			/* no event animation */
+			!ds_readb(EVENT_ANI_BUSY) &&
 			/* unknown */
 			!ds_readbs(0x45b8) &&
 			/* unknown */
@@ -3116,17 +3116,17 @@ void seg002_37c4(void)
 	p2 = (RealPt)ds_readd(BUFFER6_PTR) + 2100;
 	p3 = (RealPt)ds_readd(BUFFER6_PTR) + 1000;
 
-	if ((ds_readws(0xe4a3) != 0) && (ds_readb(TRAVELING))) {
+	if ((ds_readws(TRV_MENU_SELECTION) != 0) && (ds_readb(TRAVELING))) {
 
-		ds_writew(0xe4ad,
-				ds_readws(TOWN_POSITIONS + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe4a3))));
-		ds_writew(0xe4ab,
-				ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe4a3))));
+		ds_writew(SELECTED_TOWN_ANIX,
+				ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
+		ds_writew(SELECTED_TOWN_ANIY,
+				ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
 
-		ds_writew(PIC_COPY_X1, ds_readws(0xe4ad) - 4);
-		ds_writew(PIC_COPY_Y1, ds_readws(0xe4ab) - 4);
-		ds_writew(PIC_COPY_X2, ds_readws(0xe4ad) + 4);
-		ds_writew(PIC_COPY_Y2, ds_readws(0xe4ab) + 4);
+		ds_writew(PIC_COPY_X1, ds_readws(SELECTED_TOWN_ANIX) - 4);
+		ds_writew(PIC_COPY_Y1, ds_readws(SELECTED_TOWN_ANIY) - 4);
+		ds_writew(PIC_COPY_X2, ds_readws(SELECTED_TOWN_ANIX) + 4);
+		ds_writew(PIC_COPY_Y2, ds_readws(SELECTED_TOWN_ANIY) + 4);
 		ds_writed(PIC_COPY_SRC, (Bit32u)p1);
 
 		if (is_mouse_in_rect(ds_readws(PIC_COPY_X1) - 16, ds_readws(PIC_COPY_Y1) - 16, ds_readws(PIC_COPY_X2) + 16, ds_readws(PIC_COPY_Y2) + 16))
@@ -3141,15 +3141,15 @@ void seg002_37c4(void)
 			refresh_screen_size();
 		}
 
-		ds_writew(0xe4a3, l_si = 0);
+		ds_writew(TRV_MENU_SELECTION, l_si = 0);
 	}
 
-	if (ds_readws(0xe4a5) != 0) {
+	if (ds_readws(CURRENT_TOWN_OVER) != 0) {
 
-		ds_writew(PIC_COPY_X1, ds_readws(0xe4a9) - 4);
-		ds_writew(PIC_COPY_Y1, ds_readws(0xe4a7) - 4);
-		ds_writew(PIC_COPY_X2, ds_readws(0xe4a9) + 4);
-		ds_writew(PIC_COPY_Y2, ds_readws(0xe4a7) + 4);
+		ds_writew(PIC_COPY_X1, ds_readws(CURRENT_TOWN_OVERX) - 4);
+		ds_writew(PIC_COPY_Y1, ds_readws(CURRENT_TOWN_OVERY) - 4);
+		ds_writew(PIC_COPY_X2, ds_readws(CURRENT_TOWN_OVERX) + 4);
+		ds_writew(PIC_COPY_Y2, ds_readws(CURRENT_TOWN_OVERY) + 4);
 		ds_writed(PIC_COPY_SRC, (Bit32u)p2);
 
 		if (is_mouse_in_rect(ds_readws(PIC_COPY_X1) - 16, ds_readws(PIC_COPY_Y1) - 16, ds_readws(PIC_COPY_X2) + 16, ds_readws(PIC_COPY_Y2) + 16))
@@ -3158,7 +3158,7 @@ void seg002_37c4(void)
 			l_si = 1;
 		}
 
-		if (ds_readws(0xe4a5) != 0) {
+		if (ds_readws(CURRENT_TOWN_OVER) != 0) {
 			do_pic_copy(0);
 		}
 
@@ -3166,15 +3166,15 @@ void seg002_37c4(void)
 			refresh_screen_size();
 		}
 
-		l_si = ds_writew(0xe4a5, 0);
+		l_si = ds_writew(CURRENT_TOWN_OVER, 0);
 	}
 
-	if (ds_readws(0xe4b1) != 0) {
+	if (ds_readws(CURRENT_TOWN_ANIX) != 0) {
 
-		ds_writew(PIC_COPY_X1, ds_readws(0xe4b1) - 4);
-		ds_writew(PIC_COPY_Y1, ds_readws(0xe4af) - 4);
-		ds_writew(PIC_COPY_X2, ds_readws(0xe4b1) + 4);
-		ds_writew(PIC_COPY_Y2, ds_readws(0xe4af) + 4);
+		ds_writew(PIC_COPY_X1, ds_readws(CURRENT_TOWN_ANIX) - 4);
+		ds_writew(PIC_COPY_Y1, ds_readws(CURRENT_TOWN_ANIY) - 4);
+		ds_writew(PIC_COPY_X2, ds_readws(CURRENT_TOWN_ANIX) + 4);
+		ds_writew(PIC_COPY_Y2, ds_readws(CURRENT_TOWN_ANIY) + 4);
 		ds_writed(PIC_COPY_SRC, (Bit32u)p2);
 
 		if (is_mouse_in_rect(ds_readws(PIC_COPY_X1) - 16, ds_readws(PIC_COPY_Y1) - 16, ds_readws(PIC_COPY_X2) + 16, ds_readws(PIC_COPY_Y2) + 16))
@@ -3189,22 +3189,22 @@ void seg002_37c4(void)
 			refresh_screen_size();
 		}
 
-		ds_writew(0xe4a5, 1);
-		ds_writew(0xe4a9, ds_readw(0xe4b1));
-		ds_writew(0xe4a7, ds_readw(0xe4af));
+		ds_writew(CURRENT_TOWN_OVER, 1);
+		ds_writew(CURRENT_TOWN_OVERX, ds_readw(CURRENT_TOWN_ANIX));
+		ds_writew(CURRENT_TOWN_OVERY, ds_readw(CURRENT_TOWN_ANIY));
 		l_si = 0;
 
-		if ((ds_readws(0xe5ae) != 0) && (ds_readb(TRAVELING))) {
+		if ((ds_readws(MENU_INPUT_BUSY) != 0) && (ds_readb(TRAVELING))) {
 
-			ds_writew(0xe4ad,
-					ds_readws(TOWN_POSITIONS + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe5b0))));
-			ds_writew(0xe4ab,
-					ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((0x4344 - 1) + ds_readws(0xe5b0))));
+			ds_writew(SELECTED_TOWN_ANIX,
+					ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
+			ds_writew(SELECTED_TOWN_ANIY,
+					ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
 
-			ds_writew(PIC_COPY_X1, ds_readws(0xe4ad) - 4);
-			ds_writew(PIC_COPY_Y1, ds_readws(0xe4ab) - 4);
-			ds_writew(PIC_COPY_X2, ds_readws(0xe4ad) + 4);
-			ds_writew(PIC_COPY_Y2, ds_readws(0xe4ab) + 4);
+			ds_writew(PIC_COPY_X1, ds_readws(SELECTED_TOWN_ANIX) - 4);
+			ds_writew(PIC_COPY_Y1, ds_readws(SELECTED_TOWN_ANIY) - 4);
+			ds_writew(PIC_COPY_X2, ds_readws(SELECTED_TOWN_ANIX) + 4);
+			ds_writew(PIC_COPY_Y2, ds_readws(SELECTED_TOWN_ANIY) + 4);
 			ds_writed(PIC_COPY_SRC, (Bit32u)p1);
 
 			if (is_mouse_in_rect(ds_readws(PIC_COPY_X1) - 16, ds_readws(PIC_COPY_Y1) - 16, ds_readws(PIC_COPY_X2) + 16, ds_readws(PIC_COPY_Y2) + 16))
@@ -3214,22 +3214,22 @@ void seg002_37c4(void)
 			}
 
 			do_save_rect();
-			ds_writed(PIC_COPY_SRC, (Bit32u)(p3 + 100 * ds_readws(0xbcd8)));
+			ds_writed(PIC_COPY_SRC, (Bit32u)(p3 + 100 * ds_readws(MAP_TOWNMARK_STATE)));
 			do_pic_copy(2);
 
 			if (l_si) {
 				refresh_screen_size();
 			}
 
-			ds_writew(0xe4a3, ds_readws(0xe5b0));
+			ds_writew(TRV_MENU_SELECTION, ds_readws(MENU_SELECTED));
 			l_si = 0;
 		}
 
-		ds_writew(PIC_COPY_X1, ds_readws(0xe4b1) - 4);
-		ds_writew(PIC_COPY_Y1, ds_readws(0xe4af) - 4);
-		ds_writew(PIC_COPY_X2, ds_readws(0xe4b1) + 4);
-		ds_writew(PIC_COPY_Y2, ds_readws(0xe4af) + 4);
-		ds_writed(PIC_COPY_SRC, (Bit32u)(p3 + 100 * (ds_readws(0xbcd8) + 5)));
+		ds_writew(PIC_COPY_X1, ds_readws(CURRENT_TOWN_ANIX) - 4);
+		ds_writew(PIC_COPY_Y1, ds_readws(CURRENT_TOWN_ANIY) - 4);
+		ds_writew(PIC_COPY_X2, ds_readws(CURRENT_TOWN_ANIX) + 4);
+		ds_writew(PIC_COPY_Y2, ds_readws(CURRENT_TOWN_ANIY) + 4);
+		ds_writed(PIC_COPY_SRC, (Bit32u)(p3 + 100 * (ds_readws(MAP_TOWNMARK_STATE) + 5)));
 
 		if (is_mouse_in_rect(ds_readws(PIC_COPY_X1) - 16, ds_readws(PIC_COPY_Y1) - 16, ds_readws(PIC_COPY_X2) + 16, ds_readws(PIC_COPY_Y2) + 16))
 		{
@@ -3243,14 +3243,14 @@ void seg002_37c4(void)
 			refresh_screen_size();
 		}
 
-		ds_writew(0xe4a5, 1);
+		ds_writew(CURRENT_TOWN_OVER, 1);
 	}
 
 
 	ds_writew(0xbcd6, 0);
-	inc_ds_ws(0xbcd8);
+	inc_ds_ws(MAP_TOWNMARK_STATE);
 
-	mod_ds_ws(0xbcd8, 5);
+	mod_ds_ws(MAP_TOWNMARK_STATE, 5);
 
 	*(struct dummy*)(p_datseg + PIC_COPY_DST) = a;
 }
@@ -3933,7 +3933,7 @@ void select_with_mouse(Bit8u *p1, Bit8u *p2)
 	signed short i;
 
 	/* something mouse related */
-	if (ds_readw(0xc3c7) != 2) {
+	if (ds_readw(HAVE_MOUSE) != 2) {
 		return;
 	}
 
@@ -4025,7 +4025,7 @@ void set_automap_tiles(signed short x, signed short y)
 
 		set_automap_tile(x, y - 1);
 
-		if (ds_readb(0xbd94) - 1 > x) {
+		if (ds_readb(DNG_MAP_SIZE) - 1 > x) {
 			set_automap_tile(x + 1, y - 1);
 		}
 	}
@@ -4037,7 +4037,7 @@ void set_automap_tiles(signed short x, signed short y)
 
 	set_automap_tile(x, y);
 
-	if (ds_readb(0xbd94) - 1 > x) {
+	if (ds_readb(DNG_MAP_SIZE) - 1 > x) {
 		set_automap_tile(x + 1, y);
 	}
 
@@ -4049,7 +4049,7 @@ void set_automap_tiles(signed short x, signed short y)
 
 		set_automap_tile(x, y + 1);
 
-		if (ds_readb(0xbd94) - 1 > x) {
+		if (ds_readb(DNG_MAP_SIZE) - 1 > x) {
 			set_automap_tile(x + 1, y + 1);
 		}
 	}
@@ -5152,11 +5152,11 @@ int schick_main(int argc, char** argv)
 
 		schick_set_video();
 
-		ds_writew(0xc3c7, 2);
+		ds_writew(HAVE_MOUSE, 2);
 
 		mouse_init();
 
-		if (ds_readw(0xc3c7) == 0) {
+		if (ds_readw(HAVE_MOUSE) == 0) {
 			ds_writew(0x299a, -10);
 		}
 

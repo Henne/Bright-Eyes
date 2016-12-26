@@ -189,7 +189,7 @@ void DNG15_riddle(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 8);
 
-	ptr = p_datseg + 0xbd95;
+	ptr = p_datseg + DNG_MAP;
 
 	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 

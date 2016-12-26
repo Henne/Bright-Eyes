@@ -64,7 +64,7 @@ void prepare_dungeon_area(void)
 				(ds_readbs(DUNGEON_INDEX) == 14) ||
 				(ds_readbs(DUNGEON_INDEX) == 15)) ? ARCHIVE_FILE_MARBLESL_NVF : ARCHIVE_FILE_STONESL_NVF);
 
-		ds_writeb(0x3616, (l_si == ARCHIVE_FILE_SHIPSL_NVF) ? 0 : ((l_si == ARCHIVE_FILE_MARBLESL_NVF) ? 1 : 2));
+		ds_writeb(DUNGEON_TYPE, (l_si == ARCHIVE_FILE_SHIPSL_NVF) ? 0 : ((l_si == ARCHIVE_FILE_MARBLESL_NVF) ? 1 : 2));
 
 		handle = load_archive_file(l_si);
 		v1 = v2 = 0;
@@ -104,7 +104,7 @@ void load_dungeon_ddt(void)
 	signed short high;
 	signed short handle;
 
-	index = ds_readbs(DUNGEON_INDEX) + 0x100;
+	index = ds_readbs(DUNGEON_INDEX) + ARCHIVE_FILE_DNGS_DDT;
 	handle = load_archive_file(index);
 	read_archive_file(handle, (Bit8u*)&low, 2);
 	read_archive_file(handle, (Bit8u*)&high, 2);
@@ -115,9 +115,9 @@ void load_dungeon_ddt(void)
 	high = host_readws((Bit8u*)&high);
 #endif
 
-	read_archive_file(handle, Real2Host(ds_readd(0xe494)), low);
-	read_archive_file(handle, Real2Host(ds_readd(0xe49c)), high - low);
-	read_archive_file(handle, Real2Host(ds_readd(0xe498)), 0x7d0);
+	read_archive_file(handle, Real2Host(ds_readd(DUNGEON_FIGHTS_BUF)), low);
+	read_archive_file(handle, Real2Host(ds_readd(DUNGEON_DOORS_BUF)), high - low);
+	read_archive_file(handle, Real2Host(ds_readd(DUNGEON_STAIRS_BUF)), 0x7d0);
 
 	bc_close(handle);
 
@@ -283,11 +283,11 @@ void load_area_description(signed short type)
 		if (type != 2) {
 			fd = load_archive_file(ds_readw(0x5ebc) + 0x8000);
 
-			if ((ds_readw(0x5ebe) == 0) && (ds_readb(0xbd94) == 0x20)) {
-				bc__write(fd, RealMake(datseg, 0xbd95), 0x200);
+			if ((ds_readw(0x5ebe) == 0) && (ds_readb(DNG_MAP_SIZE) == 0x20)) {
+				bc__write(fd, RealMake(datseg, DNG_MAP), 0x200);
 			} else {
 				bc_lseek(fd, ds_readws(0x5eba) * 0x140, 0);
-				bc__write(fd, RealMake(datseg, 0xbd95), 0x100);
+				bc__write(fd, RealMake(datseg, DNG_MAP), 0x100);
 			}
 			/* write automap tiles */
 			bc__write(fd, RealMake(datseg, 0xe442), 64);
@@ -327,7 +327,7 @@ void load_area_description(signed short type)
 				|| ds_readb(CURRENT_TOWN) == 18))
 		{
 			/* path taken in THORWAL PREM and PHEXCAER */
-			bc__read(fd, p_datseg + 0xbd95, 0x200);
+			bc__read(fd, p_datseg + DNG_MAP, 0x200);
 			/* read automap tiles */
 			bc__read(fd, p_datseg + 0xe442, 0x40);
 
@@ -337,11 +337,11 @@ void load_area_description(signed short type)
 			ds_writew(0x5eb8,
 				bc__read(fd, p_datseg + 0xc025, 1000));
 
-			ds_writeb(0xbd94, 0x20);
+			ds_writeb(DNG_MAP_SIZE, 0x20);
 		} else {
 			/* Seek to Dungeon Level * 320 */
 			bc_lseek(fd, ds_readbs(DUNGEON_LEVEL) * 320, 0);
-			bc__read(fd, p_datseg + 0xbd95, 0x100);
+			bc__read(fd, p_datseg + DNG_MAP, 0x100);
 
 			/* read automap tiles */
 			bc__read(fd, p_datseg + 0xe442, 0x40);
@@ -354,7 +354,7 @@ void load_area_description(signed short type)
 					bc__read(fd, p_datseg + 0xc025, 1000));
 			}
 
-			ds_writeb(0xbd94, 0x10);
+			ds_writeb(DNG_MAP_SIZE, 0x10);
 		}
 		bc_close(fd);
 	}

@@ -39,7 +39,7 @@ signed short DNG07_handler(void)
 	signed short lockpick_pos;
 	signed short skill_result;
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
@@ -274,7 +274,7 @@ signed short DNG07_handler(void)
 
 			leave_dungeon();
 
-			ds_writeb(CURRENT_TOWN, ds_readbs(0x4338));
+			ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 			ds_writew(X_TARGET, ds_readws(0x433a));
 			ds_writew(Y_TARGET, ds_readws(0x433c));
 			ds_writeb(LOCATION, 0);
@@ -282,7 +282,7 @@ signed short DNG07_handler(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x38),
-				(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+				(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -312,7 +312,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 
 	if (host_readbs(amap_ptr + 16 * ds_readws(Y_TARGET) + ds_readws(X_TARGET)) == 4)
 	{

@@ -377,19 +377,19 @@ void show_times_up(void)
 	delay_or_keypress(200);
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 
 	ds_writew(TEXTBOX_WIDTH, 7);
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 55);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 55);
 
 	GUI_output(get_city(0xdc));
 	GUI_output(get_city(0xe0));
 	GUI_output(get_city(0xe4));
 
-	ds_writew(0x2ca2, bak1);
-	ds_writew(0x2ca4, bak2);
+	ds_writew(BASEPOS_X, bak1);
+	ds_writew(BASEPOS_Y, bak2);
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
 	/* restore text file except for CHARTEXT.LTX, TAVERN.TLK and except for dialogs */
@@ -413,8 +413,8 @@ void show_outro(void)
 	struct nvf_desc nvf;
 
 	ds_writew(TEXTBOX_WIDTH, 7);
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 60);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 60);
 
 	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
@@ -614,8 +614,8 @@ void show_outro(void)
 	/* mark the game as done */
 	ds_writeb(DATSEG_STATUS_START, 99);
 
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 0);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 0);
 
 	/* save the game */
 	save_game_state();

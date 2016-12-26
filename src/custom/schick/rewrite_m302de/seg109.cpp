@@ -225,11 +225,11 @@ void TRV_event(signed short travel_event)
 	TRV_load_textfile(travel_event);
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 	traveling_bak = ds_readb(TRAVELING);
-	ds_writews(0x2ca2, 0);
-	ds_writews(0x2ca4, 0);
+	ds_writews(BASEPOS_X, 0);
+	ds_writews(BASEPOS_Y, 0);
 	ds_writeb(TRAVELING, 0);
 	ds_writews(TEXTBOX_WIDTH, 9);
 	ds_writeb(0x2c98, 1);
@@ -245,8 +245,8 @@ void TRV_event(signed short travel_event)
 
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
 	ds_writeb(TRAVELING, (signed char)traveling_bak);
-	ds_writews(0x2ca2, bak1);
-	ds_writews(0x2ca4, bak2);
+	ds_writews(BASEPOS_X, bak1);
+	ds_writews(BASEPOS_Y, bak2);
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
 	ds_writeb(0x2c98, 0);
 	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
@@ -352,12 +352,12 @@ signed short TRV_found_camp_place(signed short a0)
 			ds_writews(GATHER_HERBS_MOD, -3);
 		}
 
-		ds_writeb(0xe4c8, 1);
+		ds_writeb(GOOD_CAMP_PLACE, 1);
 		ds_writeb(LOCATION, 6);
 
 		do_location();
 
-		ds_writeb(LOCATION, ds_writeb(0xe4c8, 0));
+		ds_writeb(LOCATION, ds_writeb(GOOD_CAMP_PLACE, 0));
 
 		TRV_load_textfile(-1);
 
@@ -493,7 +493,7 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 	signed short done;
 
 	done = 0;
-	ds_writeb(0xe5d2, 1);
+	ds_writeb(EVENT_ANI_BUSY, 1);
 
 	load_ani(7);
 	draw_main_screen();
@@ -524,7 +524,7 @@ signed short TRV_cross_a_ford(Bit8u *msg, signed short time, signed short mod)
 	} while (!done);
 
 	set_var_to_zero();
-	ds_writeb(0xe5d2, 0);
+	ds_writeb(EVENT_ANI_BUSY, 0);
 	ds_writew(REQUEST_REFRESH, 1);
 	return 1;
 }
@@ -704,7 +704,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	signed short answer;
 	Bit8u *hero;
 
-	ds_writeb(0xe5d2, 1);
+	ds_writeb(EVENT_ANI_BUSY, 1);
 
 	load_ani(ani_id);
 	draw_main_screen();
@@ -810,7 +810,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 	}
 
 	set_var_to_zero();
-	ds_writeb(0xe5d2, 0);
+	ds_writeb(EVENT_ANI_BUSY, 0);
 	ds_writew(REQUEST_REFRESH, 1);
 }
 

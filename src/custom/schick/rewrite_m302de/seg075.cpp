@@ -317,8 +317,8 @@ void DNG_stub2(void)
 	if ((tmp == 2) || (tmp == 9)) {
 
 		if (div16(ds_readb((0xbd6e + 5))) == 15) {
-			DNG_draw_walls( ((ds_readb(0x3616) == 1) ? 0x4e :
-						((ds_readb(0x3616) == 2) ? 0x28 : 0x3e)),
+			DNG_draw_walls( ((ds_readb(DUNGEON_TYPE) == 1) ? 0x4e :
+						((ds_readb(DUNGEON_TYPE) == 2) ? 0x28 : 0x3e)),
 					0, 0x36);
 		}
 	}
@@ -692,11 +692,11 @@ void DNG_open_door(void)
 
 	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(BUFFER1_PTR)), 0x6db0);
 
-	if (!ds_readb(0x3616)) {
+	if (!ds_readb(DUNGEON_TYPE)) {
 		x = 45;
 		y = 38;
 		iters = 19;
-	} else if (ds_readb(0x3616) == 1) {
+	} else if (ds_readb(DUNGEON_TYPE) == 1) {
 		x = 47;
 		y = 30;
 		iters = 20;
@@ -737,11 +737,11 @@ void DNG_close_door(void)
 
 	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(BUFFER1_PTR)), 0x6db0);
 
-	if (!ds_readb(0x3616)) {
+	if (!ds_readb(DUNGEON_TYPE)) {
 		x = 45;
 		y = 38;
 		iters = 18;
-	} else if (ds_readb(0x3616) == 1) {
+	} else if (ds_readb(DUNGEON_TYPE) == 1) {
 		x = 47;
 		y = 30;
 		iters = 19;

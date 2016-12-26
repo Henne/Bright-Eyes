@@ -59,7 +59,7 @@ void move(void)
 	signed short y;
 
 
-	p1 = p2 = p_datseg + 0xbd95;
+	p1 = p2 = p_datseg + DNG_MAP;
 
 	/* direction */
 
@@ -76,8 +76,8 @@ void move(void)
 			x = 0;
 			v2 = 1;
 		} else {
-			if (ds_readb(0xbd94) - 1 < x) {
-				x = ds_readb(0xbd94) - 1;
+			if (ds_readb(DNG_MAP_SIZE) - 1 < x) {
+				x = ds_readb(DNG_MAP_SIZE) - 1;
 				v2 = 1;
 			}
 		}
@@ -92,7 +92,7 @@ void move(void)
 			}
 		}
 
-		v3 = (ds_readb(0xbd94) == 0x10) ?
+		v3 = (ds_readb(DNG_MAP_SIZE) == 0x10) ?
 			/* dungeon */
 			host_readb(p1 + (y << 4) + x) :
 			/* city */
@@ -105,7 +105,7 @@ void move(void)
 		}
 	}
 
-	if (ds_readb(0xbd94) == 0x10) {
+	if (ds_readb(DNG_MAP_SIZE) == 0x10) {
 		/* dungeon mode */
 		ds_writeb(0xbd4d, host_readb(p1 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 4) +

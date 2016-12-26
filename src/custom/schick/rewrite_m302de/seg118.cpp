@@ -44,7 +44,7 @@ void tevent_037(void)
 
 	if (!ds_readb(0x3dba))
 	{
-		ds_writeb(0xe5d2, 1);
+		ds_writeb(EVENT_ANI_BUSY, 1);
 
 		load_ani(28);
 		draw_main_screen();
@@ -242,7 +242,7 @@ void tevent_037(void)
 
 		set_var_to_zero();
 
-		ds_writeb(0xe5d2, 0);
+		ds_writeb(EVENT_ANI_BUSY, 0);
 		ds_writew(REQUEST_REFRESH, 1);
 	}
 }
@@ -608,11 +608,11 @@ void tevent_145(void)
 
 		if (answer == 1)
 		{
-			ds_writew(0x434a, 7);
+			ds_writew(TRV_DESTINATION, 7);
 			ds_writeb(CURRENT_TOWN, 8);
 
 		} else {
-			ds_writew(0x434a, 8);
+			ds_writew(TRV_DESTINATION, 8);
 			ds_writeb(CURRENT_TOWN, 7);
 		}
 
@@ -625,18 +625,18 @@ void tevent_145(void)
 
 		if (answer == 1)
 		{
-			ds_writew(0x434a, 4);
+			ds_writew(TRV_DESTINATION, 4);
 			ds_writeb(CURRENT_TOWN, 5);
 
 		} else {
-			ds_writew(0x434a, 5);
+			ds_writew(TRV_DESTINATION, 5);
 			ds_writeb(CURRENT_TOWN, 4);
 		}
 	}
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_city(0xb4),
-		(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+		(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }

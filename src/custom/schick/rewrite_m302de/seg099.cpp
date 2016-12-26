@@ -681,9 +681,9 @@ void spell_foramen(void)
 		case 3: x--; break;
 	}
 
-	and_ptr_bs(Real2Host(ds_readd(0xe488)) + y * 16 + x, 0x0f);
-	or_ptr_bs(Real2Host(ds_readd(0xe488)) + y * 16 + x, 0x20);
-	ds_writeb(0xbd4d, host_readbs(Real2Host(ds_readd(0xe488)) + y * 16 + x));
+	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x, 0x0f);
+	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x, 0x20);
+	ds_writeb(0xbd4d, host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + y * 16 + x));
 
 	DNG_open_door();
 
@@ -961,7 +961,7 @@ RealPt spell_analues(void)
 
 	/* set analyzation capabilities */
 	if (ds_readw(IN_ACADEMY) == 99) {
-		ds_writew(0xe5b2, 99);
+		ds_writew(SPELLTEST_RESULT, 99);
 	}
 
 	item_pos = select_item_to_drop(get_spelluser());
@@ -976,7 +976,7 @@ RealPt spell_analues(void)
 			if (ds_readws(ANALUES_ITEMS + i * 5) == item_id) {
 
 				/* check if the spellcaster is able to analyze this item */
-				if (ds_readws((ANALUES_ITEMS + 2) + i * 5) <= ds_readws(0xe5b2)) {
+				if (ds_readws((ANALUES_ITEMS + 2) + i * 5) <= ds_readws(SPELLTEST_RESULT)) {
 
 					/* copy the matching result string */
 					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),

@@ -348,21 +348,21 @@ void do_harbour(void)
 
 				set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
-				ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
-				ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
+				ds_writew(WALLCLOCK_X, ds_readws(BASEPOS_X) + 120);
+				ds_writew(WALLCLOCK_Y, ds_readws(BASEPOS_Y) + 87);
 				ds_writew(WALLCLOCK_UPDATE, 1);
 
 				sea_travel(ds_readb(0x42b1), ds_readbs(0x6f00 + 8 * ds_readb(0x42b1)) == ds_readbs(CURRENT_TOWN) ? 0 : 1);
 				passage_arrival();
 
-				ds_writew(WALLCLOCK_UPDATE, ds_writew(0x2ca2, ds_writew(0x2ca4, ds_writeb(0x42ae, 0))));
+				ds_writew(WALLCLOCK_UPDATE, ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writeb(0x42ae, 0))));
 				ds_writews(CURRENT_ANI, ds_writebs(0x2ca7, ds_writebs(PP20_INDEX, (signed char)(ARCHIVE_FILE_DNGS + 13))));
 				ds_writew(REQUEST_REFRESH, 1);
 				ds_writeb(TRAVELING, 0);
 
 				if (!ds_readb(0x4333)) {
 
-					ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+					ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 					ds_writew(0x2d83, ds_readw(0x433a));
 					ds_writew(0x2d85, ds_readw(0x433c));
 					ds_writeb(DIRECTION, (ds_readws(0x433e) + 2) & 3);
@@ -413,8 +413,8 @@ void mod_clock_pos(signed short town_id)
 		(map_y >= 0 && map_y <= 99 ? 3 : 1) :
 		(map_y >= 0 && map_y <= 99 ? 2 : 0);
 
-	ds_writew(0x2ca2, !val || val == 2 ? -80 : 80);
-	ds_writew(0x2ca4, !val || val == 1 ? -40 : 40);
+	ds_writew(BASEPOS_X, !val || val == 2 ? -80 : 80);
+	ds_writew(BASEPOS_Y, !val || val == 1 ? -40 : 40);
 }
 
 void sea_travel(signed short passage, signed short dir)
@@ -576,8 +576,8 @@ void sea_travel(signed short passage, signed short dir)
 
 			refresh_screen_size();
 
-			ds_writew(WALLCLOCK_X, ds_readws(0x2ca2) + 120);
-			ds_writew(WALLCLOCK_Y, ds_readws(0x2ca4) + 87);
+			ds_writew(WALLCLOCK_X, ds_readws(BASEPOS_X) + 120);
+			ds_writew(WALLCLOCK_Y, ds_readws(BASEPOS_Y) + 87);
 			ds_writew(WALLCLOCK_UPDATE, 1);
 			ds_writew(REQUEST_REFRESH, 0);
 		}

@@ -146,7 +146,7 @@ void do_house(void)
 
 	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x9bc));
 
-	ds_writew(0xe5ac, 1);
+	ds_writew(MENU_DEFAULT_SELECT, 1);
 
 	if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 
@@ -708,11 +708,11 @@ void do_location(void)
 
 	tm_bak = ds_readb(TRAVELING);
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 0);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 0);
 	ds_writeb(TRAVELING, 0);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
@@ -728,8 +728,8 @@ void do_location(void)
 		func();
 	}
 
-	ds_writew(0x2ca2, bak1);
-	ds_writew(0x2ca4, bak2);
+	ds_writew(BASEPOS_X, bak1);
+	ds_writew(BASEPOS_Y, bak2);
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
 	if (!ds_readb(TRAVELING)) {

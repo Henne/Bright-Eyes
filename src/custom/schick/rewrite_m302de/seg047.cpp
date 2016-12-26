@@ -434,10 +434,10 @@ signed short select_hero_from_group(Bit8u *title)
 	ds_writeb(0x64a2, -1);
 
 	if (cnt != 0) {
-		bak_2 = ds_readw(0x2ca2);
-		bak_3 = ds_readw(0x2ca4);
+		bak_2 = ds_readw(BASEPOS_X);
+		bak_3 = ds_readw(BASEPOS_Y);
 
-		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+		ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 
 		answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
@@ -448,8 +448,8 @@ signed short select_hero_from_group(Bit8u *title)
 				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
 				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4)))) - 1;
 
-		ds_writew(0x2ca2, bak_2);
-		ds_writew(0x2ca4, bak_3);
+		ds_writew(BASEPOS_X, bak_2);
+		ds_writew(BASEPOS_Y, bak_3);
 		ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
 		if (answer != -2)
@@ -509,10 +509,10 @@ signed short select_hero_ok(Bit8u *title)
 	ds_writeb(0x64a2, -1);
 
 	if (cnt != 0) {
-		bak_2 = ds_readw(0x2ca2);
-		bak_3 = ds_readw(0x2ca4);
+		bak_2 = ds_readw(BASEPOS_X);
+		bak_3 = ds_readw(BASEPOS_Y);
 
-		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+		ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 
 		answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
@@ -523,8 +523,8 @@ signed short select_hero_ok(Bit8u *title)
 				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
 				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4)))) - 1;
 
-		ds_writew(0x2ca2, bak_2);
-		ds_writew(0x2ca4, bak_3);
+		ds_writew(BASEPOS_X, bak_2);
+		ds_writew(BASEPOS_Y, bak_3);
 		ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 		ds_writew(SKILLED_HERO_POS, -1);
 
@@ -588,10 +588,10 @@ signed short select_hero_ok_forced(Bit8u *title)
 
 	if (cnt != 0) {
 		do {
-			bak_2 = ds_readw(0x2ca2);
-			bak_3 = ds_readw(0x2ca4);
+			bak_2 = ds_readw(BASEPOS_X);
+			bak_3 = ds_readw(BASEPOS_Y);
 
-			ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+			ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 
 			answer = GUI_radio(title, (signed char)cnt,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
@@ -602,8 +602,8 @@ signed short select_hero_ok_forced(Bit8u *title)
 				Real2Host(ds_readd((RADIO_NAME_LIST + 5 * 4))),
 				Real2Host(ds_readd((RADIO_NAME_LIST + 6 * 4)))) - 1;
 
-			ds_writew(0x2ca2, bak_2);
-			ds_writew(0x2ca4, bak_3);
+			ds_writew(BASEPOS_X, bak_2);
+			ds_writew(BASEPOS_Y, bak_3);
 
 		} while (answer == -2);
 

@@ -43,7 +43,7 @@ signed short DNG06_handler(void)
 	Bit8u *hero_second;
 	Bit8u *amap_ptr;
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
@@ -446,7 +446,7 @@ signed short DNG06_handler(void)
 	{
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readbs(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 		ds_writew(X_TARGET, ds_readws(0x433a));
 		ds_writew(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -454,7 +454,7 @@ signed short DNG06_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x98),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 

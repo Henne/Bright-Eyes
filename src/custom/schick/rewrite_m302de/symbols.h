@@ -63,6 +63,8 @@
 #define STATUS_PAGE_HERO	(0x2c9d)	/* signed short */
 #define STATUS_PAGE_HUNGER	(0x2c9f)	/* signed char */
 #define STATUS_PAGE_THIRST	(0x2ca0)	/* signed char */
+#define BASEPOS_X	(0x2ca2)	/* signed short */
+#define BASEPOS_Y	(0x2ca4)	/* signed short */
 #define CURRENT_ANI	(0x2ccf)
 #define FIG_FIGURE1	(0x2cd1)	/* signed short */
 #define FIG_FIGURE2	(0x2cd3)	/* signed short */
@@ -173,6 +175,7 @@
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0 = light is on, 1, 2 = light is off) */
 #define TRAVELING	(0x3614)
+#define DUNGEON_TYPE	(0x3616)	/* unsigned char { 0 = SHIPS, 1 = MARBLES, 2 = STONES } */
 #define INFORMER_ARRAY	(0x3618)	/* (struct of size 38)[10] */
 #define DIALOG_STATES	(0x3794)	/* (struct of size 8)[160?] */
 #define DNG02_SPHERE_KNOWN	(0x3c94)	/* unsigned char {0,1} */
@@ -277,18 +280,21 @@
 #define DNG15_CEILINGS_A	(0x41cc)	/* unsigned char[18] {0, 1, 2, 3, 4} */
 #define DNG15_CURSED_MONEY_A	(0x41de)	/* unsigned char[6] {0, 1} */
 #define DNG15_UNDEAD_FIGHT	(0x41e4)	/* unsigned char {0, 1} */
-#define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define DNG01_CHEST1_CONTENT	(0x41ec)	/* unsigned char[8] */
 #define DNG01_CHEST2_CONTENT	(0x41f4)	/* unsigned char[10] */
 #define DNG01_CHEST3_CONTENT	(0x41fe)	/* unsigned char[2] */
 #define DNG01_CHEST5_CONTENT	(0x4200)	/* unsigned char[13] */
 #define DNG01_CHEST7_CONTENT	(0x420d)	/* unsigned char[5] */
+#define UNCONSCIOUS_MESSAGE	(0x4212)	/* unsigned char[7] */
 #define FOOD_MESSAGE	(0x4219)	/* unsigned char[7] */
 #define CITYINDEX	(0x4222)
 #define TYPEINDEX	(0x4224)
 #define DNG03_HIGHPRIEST_KILLED	(0x4226)	/* unsigned char {0, 14 = in fight 224, 16 = in fight 222} */
 #define DNG03_CHEST12_LOADS	(0x4227)	/* unsigned char {0,1,...,6} */
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
+#define TRV_DEST_REACHED	(0x4338)	/* unsigned short */
+#define TRV_MENU_TOWNS	(0x4344)	/* unsigned char[6] */
+#define TRV_DESTINATION	(0x434a)	/* unsigned short */
 #define DNG08_WATERBARREL	(0x434c)	/* signed char {0, 1} */
 #define CAMP_INCIDENT	(0x434f)	/* signed short, -1 = not determined or will not happen, 0,1,2 = guard that will be affected */
 #define KNOWN_MONSTERS	(0x4351)	/* signed short[82] */
@@ -458,6 +464,7 @@
 #define DNG12_WATERTRAP_BAK	(0x9d45)	/* signed short */
 #define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
 #define SEA_TRAVEL	(0xa842)	/* unsigned char {0,1} */
+#define GRAMMAR_BUF_NO	(0xa9eb)	/* unsigned short */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
 #define SPELL_SELECT_STR_KEY	(0xac20)	/* char[5] = "\xf2%s\xf0" */
 #define SPELL_SELECT_STR_KEY_COLOR	(0xac25)	/* char[3] = "%s" */
@@ -502,6 +509,7 @@
 #define PLAYMASK_US	(0xbc62)	/* unsigned char, 1 = PLAYM_US, 0 = PLAYM_UK */
 #define SPLASH_AE	(0xbcc7)
 #define SPLASH_LE	(0xbccb)
+#define MAP_TOWNMARK_STATE	(0xbcd8)	/* unsigned short {0, 1, 2, 3, 4} */
 #define ARCHIVE_FILE_OFFSET	(0xbcdf)	/* unsigned long, start offset in SCHICK.DAT */
 #define ARCHIVE_FILE_REMAINING	(0xbce3)	/* unsigned long, flen - off */
 #define ARCHIVE_FILE_LENGTH	(0xbce7)	/* unsigned long */
@@ -525,6 +533,8 @@
 #define SCENARIO_BUF	(0xbd2c)
 #define FIGHTOBJ_BUF	(0xbd30)	/* RealPt */
 #define HEROS	(0xbd34)
+#define DNG_MAP_SIZE	(0xbd94)	/* unsigned char {16, 32} */
+#define DNG_MAP	(0xbd95)	/* unsigned char[256] */
 #define RADIO_NAME_LIST	(0xbf95)	/* RealPt[15], used for items, heroes, spells, skills, recipes */
 #define TEXTBOX_WIDTH	(0xbffd)	/* signed short */
 #define TEXTBOX_POS_X	(0xbfff)	/* signed short, coordinate of upper left corner */
@@ -546,6 +556,8 @@
 #define CITY_LTX	(0xc3ad)
 #define DIALOG_TEXT	(0xc3b1)
 #define TEXT_LTX	(0xc3b5)
+#define HAVE_MOUSE	(0xc3c7)	/* unsigned short {0,2} */
+#define BIOSKEY_EVENT	(0xc3d7)	/* unsigned short */
 #define ACTION	(0xc3d9)	/* ? short */
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
 #define ANI_MAIN_PTR	(0xce35)	/* RealPt */
@@ -650,11 +662,31 @@
 #define TEX_FLOOR	(0xe414)	/* Bit8u* */
 #define TEX_SKY	(0xe418)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */
+#define DNG_MAP_PTR	(0xe488)	/* RealPt to DNG_MAP */
 #define LOCKPICK_TRY_COUNTER	(0xe492)	/* signed short {0..4} */
+#define DUNGEON_FIGHTS_BUF	(0xe494)	/* RealPt to buffer of size 630 */
+#define DUNGEON_STAIRS_BUF	(0xe498)	/* RealPt to buffer of size 80 */
+#define DUNGEON_DOORS_BUF	(0xe49c)	/* RealPt to buffer of size 225 */
 #define GET_EXTRA_LOOT	(0xe4a0)	/* signed short {0,1} */
+#define TRV_MENU_SELECTION	(0xe4a3)	/* unsigned short */
+#define CURRENT_TOWN_OVER	(0xe4a5)	/* unsigned short {0,1} */
+#define CURRENT_TOWN_OVERY	(0xe4a7)	/* unsigned short */
+#define CURRENT_TOWN_OVERX	(0xe4a9)	/* unsigned short */
+#define SELECTED_TOWN_ANIY	(0xe4ab)	/* unsigned short */
+#define SELECTED_TOWN_ANIX	(0xe4ad)	/* unsigned short */
+#define CURRENT_TOWN_ANIY	(0xe4af)	/* unsigned short */
+#define CURRENT_TOWN_ANIX	(0xe4b1)	/* unsigned short */
+#define TRV_TRACK_PIXEL_BAK    (0xe4b4)    /* unsigned char[20] */
+#define GOOD_CAMP_PLACE	(0xe4c8)	/* unsigned char */
+#define GUI_PRINT_CHAR	(0xe4d8)	/* unsigned char */
 #define DIALOGBOX_INDENT_HEIGHT	(0xe4d9)	/* unsigned short */
 #define DIALOGBOX_INDENT_WIDTH	(0xe4db)	/* signed short */
 #define GRAMMAR_STRING	(0xe4e3)	/* char grammar_string[201] */
+#define GRAMMAR_BUFS	(0xe50b)	/* (char[40])[4] */
+#define MENU_DEFAULT_SELECT	(0xe5ac)	/* unsigned short */
+#define MENU_INPUT_BUSY	(0xe5ae)	/* unsigned short */
+#define MENU_SELECTED	(0xe5b0)	/* unsigned short */
+#define SPELLTEST_RESULT	(0xe5b2)	/* signed short */
 #define SPELLTARGET_E	(0xe5b4)	/* Pointer to enemy */
 #define SPELLTARGET	(0xe5b8)
 #define SPELLUSER	(0xe5bc)
@@ -664,7 +696,11 @@
 #define USED_ITEM_ID	(0xe5ca)	/* s16 used_item ID */
 #define USED_ITEM_POS	(0xe5cc)	/* s16 used_item position */
 #define ITEMUSER	(0xe5ce)	/* pointer to hero */
+#define EVENT_ANI_BUSY	(0xe5d2)	/* unsigned char {0,1} */
 #define WALLCLOCK_UPDATE_BAK	(0xe5d3)	/* unsigned short {0,1} */
+#define TEXTBOX_WIDTH_BAK	(0xe5d5)	/* unsigned short */
+#define BASEPOS_Y_BAK	(0xe5d7)	/* unsigned short */
+#define BASEPOS_X_BAK	(0xe5d9)	/* unsigned short */
 #define BUFFERSIZE	(0xe5dc)	/* ?32 size of the global buffer */
 #define GLOBAL_BUFFER_PTR	(0xe5e0)	/* RealPt, points to the start of the global buffer */
 #define LARGE_BUF	(0xe5e4)	/* s8 {0,1} */

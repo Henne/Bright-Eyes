@@ -113,7 +113,7 @@ void tevent_111(void)
 		ds_readb(0x3df8) == 1)
 	{
 		ds_writeb(0x3df8, 1);
-		ds_writeb(0xe5d2, 1);
+		ds_writeb(EVENT_ANI_BUSY, 1);
 
 		load_ani(33);
 		draw_main_screen();
@@ -283,7 +283,7 @@ void tevent_111(void)
 		ds_writew(REQUEST_REFRESH, 1);
 	}
 
-	ds_writeb(0xe5d2, 0);
+	ds_writeb(EVENT_ANI_BUSY, 0);
 }
 
 /* a camp place */

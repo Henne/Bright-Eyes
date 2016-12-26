@@ -40,7 +40,7 @@ signed short DNG14_handler(void)
 	Bit8u *hero;
 	Bit8u *amap_ptr;
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);

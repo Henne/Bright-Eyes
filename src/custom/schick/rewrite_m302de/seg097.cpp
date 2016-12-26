@@ -188,16 +188,16 @@ dummy:
 			do {;} while ((CD_bioskey(1) == 0) && (ds_readws(0xc3d1) == 0));
 
 			if (ds_readws(0xc3d1) != 0) {
-				ds_writew(0xc3d7, 0x0d);
+				ds_writew(BIOSKEY_EVENT, 0x0d);
 				ds_writew(0xc3d1, ds_writew(0xc3d5, 0x00));
 			} else {
-				ds_writew(ACTION, (signed short)(ds_writew(0xc3d7, bc_bioskey(0))) >> 8);
-				and_ds_ws(0xc3d7, 0xff);
+				ds_writew(ACTION, (signed short)(ds_writew(BIOSKEY_EVENT, bc_bioskey(0))) >> 8);
+				and_ds_ws(BIOSKEY_EVENT, 0xff);
 			}
 
-		} while ((ds_readws(ACTION) == 0) && (ds_readws(0xc3d7) == 0));
+		} while ((ds_readws(ACTION) == 0) && (ds_readws(BIOSKEY_EVENT) == 0));
 
-		c = ds_readws(0xc3d7);
+		c = ds_readws(BIOSKEY_EVENT);
 
 		if (c == 0x0d) {
 
@@ -355,7 +355,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 	l5 = ds_readw(0xd2d5);
 
 	l_di = (ds_readw(TEXTBOX_WIDTH) * 32) + 32;
-	ds_writew(TEXTBOX_POS_X, ((signed short)(320u - l_di) >> 1) + ds_readws(0x2ca2));
+	ds_writew(TEXTBOX_POS_X, ((signed short)(320u - l_di) >> 1) + ds_readws(BASEPOS_X));
 
 	ds_writew(0xd2d9, ds_readw(TEXTBOX_POS_X) + 5);
 	ds_writew(0xd2d5, l_di - 8);
@@ -367,7 +367,7 @@ signed short GUI_input(Bit8u *str, unsigned short num)
 
 	l2 = (l_si + 2) * 8;
 
-	ds_writew(TEXTBOX_POS_Y, ((signed short)(200u - l2) >> 1) + ds_readw(0x2ca4));
+	ds_writew(TEXTBOX_POS_Y, ((signed short)(200u - l2) >> 1) + ds_readw(BASEPOS_Y));
 	ds_writew(0xd2d7, ds_readw(TEXTBOX_POS_Y) + 7);
 
 	get_textcolor(&fg_bak, &bg_bak);
@@ -497,7 +497,7 @@ signed short GUI_dialogbox(RealPt picture, Bit8u *name, Bit8u *text,
 	ds_writew(TEXTBOX_WIDTH, 9);
 
 	l_di = ds_readw(TEXTBOX_WIDTH) * 32 + 32;
-	ds_writew(TEXTBOX_POS_X, ((signed short)(320 - l_di) >> 1) + ds_readw(0x2ca2));
+	ds_writew(TEXTBOX_POS_X, ((signed short)(320 - l_di) >> 1) + ds_readw(BASEPOS_X));
 	ds_writew(0xd2d9, ds_readw(TEXTBOX_POS_X) + 5);
 	ds_writew(0xd2d5, l_di - 8);
 	l10 = ds_readw(TXT_TABPOS1);
@@ -609,8 +609,8 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 	l5 = -1;
 	done = 0;
 
-	ds_writew(0xe5b0, ds_writew(0xe5ae, 1));
-	add_ds_ws(0xe5b0, ds_readws(0xe5ac));
+	ds_writew(MENU_SELECTED, ds_writew(MENU_INPUT_BUSY, 1));
+	add_ds_ws(MENU_SELECTED, ds_readws(MENU_DEFAULT_SELECT));
 
 	if (positions != 0) {
 		l6 = h_lines * 8;
@@ -619,7 +619,7 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 		ds_writew(0x29a0, ds_writew(0x299c, ds_readw(TEXTBOX_POS_X) + 90));
 		l1 = ds_readws(TEXTBOX_POS_Y) + l6;
 
-		ds_writew(0x29a2, ds_writew(0x299e, (l2 = l1 + ds_readws(0xe5ac) * 8)));
+		ds_writew(0x29a2, ds_writew(0x299e, (l2 = l1 + ds_readws(MENU_DEFAULT_SELECT) * 8)));
 
 		mouse_move_cursor(ds_readw(0x299c), ds_readw(0x299e));
 
@@ -637,10 +637,10 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 			handle_input();
 			ds_writed(ACTION_TABLE_SECONDARY, 0);
 
-			if (l5 != ds_readw(0xe5b0)) {
-				GUI_fill_radio_button(l5, ds_readw(0xe5b0),
+			if (l5 != ds_readw(MENU_SELECTED)) {
+				GUI_fill_radio_button(l5, ds_readw(MENU_SELECTED),
 					h_lines - 1);
-				l5 = ds_readw(0xe5b0);
+				l5 = ds_readw(MENU_SELECTED);
 			}
 
 			if (ds_readw(0xc3d3) != 0 ||
@@ -653,24 +653,24 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 			}
 
 			if (ds_readw(ACTION) == 0x1c) {
-				retval = ds_readw(0xe5b0);
+				retval = ds_readw(MENU_SELECTED);
 				done = 1;
 			}
 
 			/* Key UP */
 			if (ds_readw(ACTION) == 0x48) {
-				if (dec_ds_ws_post(0xe5b0) == 1)
-					ds_writew(0xe5b0, positions);
+				if (dec_ds_ws_post(MENU_SELECTED) == 1)
+					ds_writew(MENU_SELECTED, positions);
 			}
 			/* Key DOWN */
 			if (ds_readw(ACTION) == 0x50) {
-				if (inc_ds_ws_post(0xe5b0) == positions)
-					ds_writew(0xe5b0, 1);
+				if (inc_ds_ws_post(MENU_SELECTED) == positions)
+					ds_writew(MENU_SELECTED, 1);
 			}
 
 			if (ds_readw(0x299e) != l2) {
 				l2 = ds_readw(0x299e);
-				ds_writew(0xe5b0, ((l2 - l1) >> 3) + 1);
+				ds_writew(MENU_SELECTED, ((l2 - l1) >> 3) + 1);
 			}
 
 			if (ds_readw(0xac0b) != 0) {
@@ -702,7 +702,7 @@ signed short GUI_menu_input(signed short positions, signed short h_lines,
 		retval = -1;
 	}
 
-	ds_writew(0xe5ac, ds_writew(0xe5ae, 0));
+	ds_writew(MENU_DEFAULT_SELECT, ds_writew(MENU_INPUT_BUSY, 0));
 
 	return retval;
 }
@@ -734,7 +734,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	l9 = ds_readw(0xd2d5);
 
 	l11 = ds_readw(TEXTBOX_WIDTH) * 32 + 32;
-	ds_writew(TEXTBOX_POS_X, ((320 - l11) >> 1) + ds_readw(0x2ca2));
+	ds_writew(TEXTBOX_POS_X, ((320 - l11) >> 1) + ds_readw(BASEPOS_X));
 	ds_writew(0xd2d9, ds_readw(TEXTBOX_POS_X) + 5);
 	ds_writew(0xd2d5, l11 - 8);
 
@@ -744,7 +744,7 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 	l_di = GUI_count_lines(text);
 	l5 = l_di + options;
 	l6 = (l5 + 2) * 8;
-	ds_writew(TEXTBOX_POS_Y, ((200 - l6 + 2) >> 1) + ds_readw(0x2ca4));
+	ds_writew(TEXTBOX_POS_Y, ((200 - l6 + 2) >> 1) + ds_readw(BASEPOS_Y));
 	ds_writew(0xd2d7, ds_readw(TEXTBOX_POS_Y) + 7);
 
 	update_mouse_cursor();

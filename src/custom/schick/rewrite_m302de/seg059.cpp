@@ -256,16 +256,16 @@ void enter_ghostship(void)
 	signed short bak2;
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 	ds_writews(TEXTBOX_WIDTH, 7);
-	ds_writews(0x2ca2, ds_writews(0x2ca4, 0));
+	ds_writews(BASEPOS_X, ds_writews(BASEPOS_Y, 0));
 
 	load_ani(17);
 	draw_main_screen();
 	init_ani(1);
 
-	load_tx(ARCHIVE_FILE_SHIP_DTX);
+	load_tx(ARCHIVE_FILE_DNGS_DTX + 1);
 
 	GUI_output(get_dtp(0x48));
 	GUI_output(get_dtp(0x4c));
@@ -284,8 +284,8 @@ void enter_ghostship(void)
 
 	set_var_to_zero();
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
-	ds_writews(0x2ca2, bak1);
-	ds_writews(0x2ca4, bak2);
+	ds_writews(BASEPOS_X, bak1);
+	ds_writews(BASEPOS_Y, bak2);
 }
 
 #if !defined(__BORLANDC__)
