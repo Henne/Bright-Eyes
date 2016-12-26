@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 17/21
+ *	Functions rewritten: 18/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -20,10 +20,14 @@
  *
  */
 
+#include <stdio.h>
+
 #include "v302de.h"
 
 #include "seg000.h"
 #include "seg001.h"
+#include "seg097.h"
+#include "seg120.h"
 
 #define CDA_DATASEG (0x1238)
 
@@ -557,6 +561,30 @@ signed short CD_read_exe(RealPt path)
 
 	bc__dos_close(fd);
 	return nread;
+}
+
+/* Borlandified and identical */
+void CD_insert_msg(void)
+{
+	signed short answer;
+	char str[160];
+
+	sprintf(str, (char*)p_datseg + 0x00c9, ds_readws(CD_DRIVE_NR) + 'A');
+
+	answer = -2;
+	while (answer == -2)
+	{
+		answer = GUI_radio((Bit8u*)str, 2,
+					(char*)p_datseg + 0x157,
+					(char*)p_datseg + 0x163);
+	}
+
+	if (answer == 2)
+	{
+		cleanup_game();
+		bc_exit(0);
+	}
+
 }
 
 void CD_check(void)

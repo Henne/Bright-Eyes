@@ -309,7 +309,9 @@ static int n_seg001(unsigned offs)
 		return 1;
 	}
 	case 0x0600: {
-		return 0;
+		D1_LOG("CD_insert_msg()\n");
+		CD_insert_msg();
+		return 1;
 	}
 	case 0x0681: {
 		return 0;
