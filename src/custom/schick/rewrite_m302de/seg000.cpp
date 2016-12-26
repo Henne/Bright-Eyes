@@ -36,6 +36,54 @@ Bit16s bc_chdir(char *path)
 	return reg_ax;
 }
 
+Bit16u bc__dos_close(Bit16s fd)
+{
+	CPU_Push16(fd);
+	CALLBACK_RunRealFar(reloc_game, 0x31b);
+	CPU_Pop16();
+	return reg_ax;
+}
+
+Bit16u bc__dos_open(RealPt path, Bit16u oflag, signed short *fd)
+{
+	CPU_Push16(0xffff);
+	RealPt p_fd = RealMake(SegValue(ss), reg_esp);
+	CPU_Push32(p_fd);
+	CPU_Push16(oflag);
+	CPU_Push32(path);
+	CALLBACK_RunRealFar(reloc_game, 0x61e);
+	CPU_Pop32();
+	CPU_Pop16();
+	CPU_Pop32();
+
+	host_writew((Bit8u*)fd, CPU_Pop16());
+
+	return reg_ax;
+}
+
+Bit16u bc__dos_read(Bit16s fd, signed short *buf, Bit16u len, unsigned short *nread)
+{
+	CPU_Push16(-1);
+	RealPt p_nread = RealMake(SegValue(ss), reg_esp);
+	CPU_Push16(-1);
+	RealPt p_buf = RealMake(SegValue(ss), reg_esp);
+
+	CPU_Push32(p_nread);
+	CPU_Push16(len);
+	CPU_Push32(p_buf);
+	CPU_Push16(fd);
+	CALLBACK_RunRealFar(reloc_game, 0x654);
+	CPU_Pop16();
+	CPU_Pop32();
+	CPU_Pop16();
+	CPU_Pop32();
+
+	host_writew((Bit8u*)buf, CPU_Pop16());
+	host_writew((Bit8u*)nread, CPU_Pop16());
+
+	return reg_ax;
+}
+
 Bit16s bc_mkdir(char *path)
 {
 	Bit32u esp_bak = reg_esp;
