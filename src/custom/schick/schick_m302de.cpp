@@ -314,7 +314,9 @@ static int n_seg001(unsigned offs)
 		return 1;
 	}
 	case 0x0681: {
-		return 0;
+		D1_LOG("CD_check()\n");
+		CD_check();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
@@ -4839,9 +4841,9 @@ static int seg001(unsigned short offs) {
 		return 1;
 	}
 	case 0x681: {
-		/* check if DSA1 CD is in drive */
-		D1_LOG("%s:%x()\n", __func__, offs);
-		return 0;
+		D1_LOG("CD_check()\n");
+		CD_check();
+		return 1;
 	}
 	case 0x6c6: {
 		/* init CD drive */

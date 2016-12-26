@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 19/21
+ *	Functions rewritten: 20/21
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -21,6 +21,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "v302de.h"
 
@@ -603,9 +604,40 @@ signed short CD_harderr_handler(void)
 	return 1;
 }
 
+/* Borlandified and identical */
 void CD_check(void)
 {
-	DUMMY_WARNING();
+#if defined(__BORLANDC__)
+	char text[80];
+
+	bc_harderr((int(*)(int, int, int, int))CD_harderr_handler);
+
+	strcpy(text, (char*)p_datseg + 0x16b);
+
+	text[0] = ds_readw(CD_DRIVE_NR) + 'A';
+
+	while (CD_read_exe(text) <= 0)
+	{
+		CD_insert_msg();
+	}
+#else
+	Bit32u esp_bak = reg_esp;
+	reg_esp -= 100;
+	RealPt text = RealMake(SegValue(ss), reg_esp);
+
+	bc_harderr(RealMake(reloc_game + 0x4ac, 0x65a));
+
+	strcpy((char*)Real2Host(text), (char*)p_datseg + 0x16b);
+
+	host_writeb(Real2Host(text), ds_readw(CD_DRIVE_NR) + 'A');
+
+	while (CD_read_exe(text) <= 0)
+	{
+		CD_insert_msg();
+	}
+
+	reg_esp = esp_bak;
+#endif
 }
 
 void CD_init(void)
