@@ -302,7 +302,11 @@ static int n_seg001(unsigned offs)
 		return 1;
 	}
 	case 0x056b: {
-		return 0;
+		RealPt path = CPU_Pop32();
+		CPU_Push32(path);
+		reg_ax = CD_read_exe(path);
+		D1_LOG("CD_read_exe(%s) = %d\n", (char*)Real2Host(path), reg_ax);
+		return 1;
 	}
 	case 0x0600: {
 		return 0;

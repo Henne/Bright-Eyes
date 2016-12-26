@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 15/21
+ *	Functions rewritten: 16/21
  *	Borlandified and identical: 13/21
  *
  *	Remarks:
@@ -522,6 +522,42 @@ void CD_set_track(signed short index)
 			CD_audio_pause();
 		}
 	}
+}
+
+/* Borlandified and identical */
+signed short CD_read_exe(RealPt path)
+{
+	signed short fd;
+	signed short buffer;
+	unsigned short nread;
+
+	/* skip read check */
+	if (ds_readd(0x00c3) == 0x682772e4) return 1;
+
+#if defined(__BORLANDC__)
+	if (bc__dos_open(path, 1, (int*)&fd)) return -1;
+
+	if (bc__dos_read(fd, &buffer, 1, (unsigned int*)&nread) != 0) return -1;
+
+	bc_lseek(fd, 2000L, 0);
+
+	if (bc__dos_read(fd, &buffer, 1, (unsigned int*)&nread) != 0) return -1;
+#else
+	if (bc__dos_open(path, 1, &fd)) return -1;
+	/* BE-fix */
+	fd = host_readws((Bit8u*)&fd);
+
+	if (bc__dos_read(fd, &buffer, 1, &nread) != 0) return -1;
+
+	bc_lseek(fd, 2000L, 0);
+
+	if (bc__dos_read(fd, &buffer, 1, &nread) != 0) return -1;
+	/* BE-fix */
+	nread = host_readw((Bit8u*)&nread);
+#endif
+
+	bc__dos_close(fd);
+	return nread;
 }
 
 void CD_check(void)
