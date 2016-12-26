@@ -4846,9 +4846,9 @@ static int seg001(unsigned short offs) {
 		return 1;
 	}
 	case 0x6c6: {
-		/* init CD drive */
-		D1_LOG("%s:%x()\n", __func__, offs);
-		return 0;
+		D1_LOG("CD_init()\n");
+		reg_ax = CD_init();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);

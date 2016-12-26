@@ -1,6 +1,6 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg001 (cdrom)
- *	Functions rewritten: 20/21
+ *	Functions rewritten: 21/21 (complete)
  *
  *	Remarks:
  *		The first part of this file is for inclusion in DOSBox.
@@ -640,9 +640,31 @@ void CD_check(void)
 #endif
 }
 
-void CD_init(void)
+/* Borlandified and identical */
+signed short CD_init(void)
 {
-	DUMMY_WARNING();
+	char str[80];
+
+	if (!CD_set_drive_nr())
+	{
+		GUI_output(p_datseg + 0x017e);
+
+		return 0;
+	}
+
+	sprintf(str, (char*)p_datseg + 0x024a, ds_readws(CD_DRIVE_NR) + 'A');
+
+	GUI_output((Bit8u*)str);
+
+	ds_writew(CD_INIT_SUCCESSFUL, 1);
+
+	CD_audio_stop();
+
+	CD_check();
+
+	CD_0432();
+
+	return 1;
 }
 
 #if !defined(__BORLANDC__)

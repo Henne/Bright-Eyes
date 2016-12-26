@@ -23,7 +23,7 @@ signed short CD_read_exe(RealPt);
 void CD_insert_msg(void);
 signed short CD_harderr_handler(void);
 void CD_check(void);
-void CD_init(void);
+signed short CD_init(void);
 
 #if !defined(__BORLANDC__)
 }
