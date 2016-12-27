@@ -5660,10 +5660,23 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x5816: {
-		unsigned short argc = CPU_Pop16();
+		Bit16s argc = CPU_Pop16();
+		RealPt argv = CPU_Pop32();
+		CPU_Push32(argv);
 		CPU_Push16(argc);
+
+		char *n_av[2];
+		char new_argv[2][1024];
+		n_av[0] = new_argv[0];
+		n_av[1] = new_argv[1];
+		strncpy(new_argv[0], (char*)Real2Host(host_readd(Real2Host(argv))), 1024);
+		strncpy(new_argv[1], (char*)Real2Host(host_readd(Real2Host(argv + 4))), 1024);
+
+		new_argv[0][1023] = new_argv[1][1023] = '\0';
+
 		D1_LOG("main(argc=0x%04x, ...)\n", argc);
-		return 0;
+		schick_main(argc <= 2 ? argc : 2, (char**)n_av);
+		return 1;
 	}
 	case 0x5a68: {
 		Bit32u size = CPU_Pop32();

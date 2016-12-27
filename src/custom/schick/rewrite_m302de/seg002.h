@@ -185,9 +185,7 @@ RealPt get_second_hero_available_in_group(void);
 signed short count_heros_available(void);
 signed short count_heroes_available_in_group(void);
 void seg002_57f1(void);
-#if defined(__BORLANDC__)
 int schick_main(int, char **);
-#endif
 RealPt schick_alloc_emu(Bit32u);
 signed short copy_protection(void);
 

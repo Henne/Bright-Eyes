@@ -5127,7 +5127,6 @@ void seg002_57f1(void)
 	}
 }
 
-#if defined(__BORLANDC__)
 int schick_main(int argc, char** argv)
 {
 	signed short l_si;
@@ -5266,7 +5265,6 @@ int schick_main(int argc, char** argv)
 		bc_clrscr();
 	}
 }
-#endif
 
 RealPt schick_alloc_emu(Bit32u size)
 {
