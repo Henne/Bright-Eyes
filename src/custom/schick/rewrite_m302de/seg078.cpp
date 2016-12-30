@@ -148,7 +148,7 @@ signed short DNG02_handler(void)
 	} else if ((target_pos == 0xa0c || target_pos == 0xa0a) && target_pos != ds_readws(0x330e))
 	{
 		hero = get_hero(0);
-		for (i = weight_sum = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		for (i = (signed short)(weight_sum = 0); i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
@@ -237,7 +237,7 @@ signed short DNG02_handler(void)
 	} else if (target_pos == 0xb06 && target_pos != ds_readws(0x330e))
 	{
 		hero = get_hero(0);
-		for (i = weight_sum = 0; i <= 6; i++, hero += SIZEOF_HERO)
+		for (i = (signed short)(weight_sum = 0); i <= 6; i++, hero += SIZEOF_HERO)
 		{
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))

@@ -238,8 +238,8 @@ signed short DNG03_handler(void)
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_ITEM_BODY + 7, l4);
-				sub_ptr_bs(hero + HERO_RS_BONUS1, l4);
+				add_ptr_bs(hero + HERO_ITEM_BODY + 7, (unsigned char)l4);
+				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
 
@@ -269,8 +269,8 @@ signed short DNG03_handler(void)
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
-				add_ptr_bs(hero + HERO_ITEM_BODY + 7, l4);
-				sub_ptr_bs(hero + HERO_RS_BONUS1, l4);
+				add_ptr_bs(hero + HERO_ITEM_BODY + 7, (unsigned char)l4);
+				sub_ptr_bs(hero + HERO_RS_BONUS1, (unsigned char)l4);
 			}
 		}
 
