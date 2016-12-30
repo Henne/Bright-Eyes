@@ -5278,6 +5278,11 @@ signed short copy_protection(void)
 	signed short tries;
 	signed short l1;
 
+#if !defined(__BORLANDC__)
+	/* disable copy protection for now */
+	return 1;
+#endif
+
 	load_tx(ARCHIVE_FILE_FIGHTTXT_LTX);
 
 	ds_writew(TEXTBOX_WIDTH, 4);
