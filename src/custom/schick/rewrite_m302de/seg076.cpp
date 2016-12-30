@@ -447,7 +447,7 @@ signed short DNG_step(void)
 		ds_readws(Y_TARGET) != ds_readws(0x2d85) ||
 		ds_readbs(0x9312) != 0)
 	{
-		ds_writeb(CAN_MERGE_GROUP, can_merge_group());
+		ds_writeb(CAN_MERGE_GROUP, (unsigned char)can_merge_group());
 		ds_writew(LOCKPICK_TRY_COUNTER, 0);
 	}
 
@@ -498,7 +498,7 @@ signed short DNG_step(void)
 	if (ds_readws(ACTION) == 129)
 	{
 		GRP_split();
-		ds_writeb(CAN_MERGE_GROUP, can_merge_group());
+		ds_writeb(CAN_MERGE_GROUP, (unsigned char)can_merge_group());
 
 	} else if (ds_readws(ACTION) == 130)
 	{
@@ -886,7 +886,7 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 						break;
 					} else {
 						/* this hero quenches his/her thirst completely */
-						sub_ptr_bs(unit_ptr, units_needed);
+						sub_ptr_bs(unit_ptr, (unsigned char)units_needed);
 						host_writeb(hero + HERO_THIRST, 0);
 					}
 				}
@@ -938,7 +938,7 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 
 								} else {
 									/* remove units from the barrel */
-									sub_ptr_bs(unit_ptr, units_needed);
+									sub_ptr_bs(unit_ptr, (unsigned char)units_needed);
 								}
 							}
 						}
