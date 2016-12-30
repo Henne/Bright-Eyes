@@ -529,7 +529,7 @@ void CD_set_track(signed short index)
 }
 
 /* Borlandified and identical */
-signed short CD_read_exe(RealPt path)
+signed short CD_read_exe(char *path)
 {
 	signed short fd;
 	signed short buffer;
@@ -607,10 +607,13 @@ signed short CD_harderr_handler(void)
 /* Borlandified and identical */
 void CD_check(void)
 {
-#if defined(__BORLANDC__)
 	char text[80];
 
+#if defined(__BORLANDC__)
 	bc_harderr((int(*)(int, int, int, int))CD_harderr_handler);
+#else
+	bc_harderr(RealMake(reloc_game + 0x4ac, 0x65a));
+#endif
 
 	strcpy(text, (char*)p_datseg + 0x16b);
 
@@ -620,24 +623,6 @@ void CD_check(void)
 	{
 		CD_insert_msg();
 	}
-#else
-	Bit32u esp_bak = reg_esp;
-	reg_esp -= 100;
-	RealPt text = RealMake(SegValue(ss), reg_esp);
-
-	bc_harderr(RealMake(reloc_game + 0x4ac, 0x65a));
-
-	strcpy((char*)Real2Host(text), (char*)p_datseg + 0x16b);
-
-	host_writeb(Real2Host(text), ds_readw(CD_DRIVE_NR) + 'A');
-
-	while (CD_read_exe(text) <= 0)
-	{
-		CD_insert_msg();
-	}
-
-	reg_esp = esp_bak;
-#endif
 }
 
 /* Borlandified and identical */

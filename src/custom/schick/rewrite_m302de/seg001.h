@@ -19,7 +19,7 @@ void CD_audio_pause(void);
 void CD_audio_play(void);
 void CD_0432(void);
 void CD_set_track(signed short);
-signed short CD_read_exe(RealPt);
+signed short CD_read_exe(char*);
 void CD_insert_msg(void);
 signed short CD_harderr_handler(void);
 void CD_check(void);

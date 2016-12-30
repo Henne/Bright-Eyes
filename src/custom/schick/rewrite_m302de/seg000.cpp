@@ -44,19 +44,29 @@ Bit16u bc__dos_close(Bit16s fd)
 	return reg_ax;
 }
 
-Bit16u bc__dos_open(RealPt path, Bit16u oflag, signed short *fd)
+Bit16u bc__dos_open(char *path, Bit16u oflag, signed short *fd)
 {
+	Bit32s esp_bak = reg_esp;
+
+	reg_esp -= 80;
+	RealPt p_path = RealMake(SegValue(ss), reg_esp);
+	strncpy((char*)Real2Host(p_path), path, 80 - 1);
+	host_writeb(Real2Host(p_path) + 80 - 1, 0);
+
 	CPU_Push16(0xffff);
 	RealPt p_fd = RealMake(SegValue(ss), reg_esp);
+
 	CPU_Push32(p_fd);
 	CPU_Push16(oflag);
-	CPU_Push32(path);
+	CPU_Push32(p_path);
 	CALLBACK_RunRealFar(reloc_game, 0x61e);
 	CPU_Pop32();
 	CPU_Pop16();
 	CPU_Pop32();
 
 	host_writew((Bit8u*)fd, CPU_Pop16());
+
+	reg_esp = esp_bak;
 
 	return reg_ax;
 }

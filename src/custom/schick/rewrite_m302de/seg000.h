@@ -27,7 +27,7 @@ void bc_exit(Bit16s);
 RealPt bc__dos_getvect(Bit8u);
 void bc__dos_setvect(Bit8u, RealPt);
 Bit16u bc__dos_close(Bit16s);
-Bit16u bc__dos_open(RealPt, Bit16u, signed short *);
+Bit16u bc__dos_open(char*, Bit16u, signed short *);
 Bit16u bc__dos_read(Bit16s, signed short*, Bit16u, unsigned short*);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 void bc_srand(Bit16u);
