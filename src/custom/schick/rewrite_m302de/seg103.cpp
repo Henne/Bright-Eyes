@@ -136,8 +136,7 @@ RealPt get_proper_hero(signed short skill)
 	hero_i = (RealPt)ds_readd(HEROS);
 
 	for (i = 0; i <= 6; i++, hero_i += SIZEOF_HERO) {
-		/* Check class */
-		if ((host_readbs(Real2Host(hero_i) + HERO_TYPE) != 0) &&
+		if ((host_readbs(Real2Host(hero_i) + HERO_TYPE) != HERO_TYPE_NONE) &&
 			/* Check if in current group */
 			(host_readb(Real2Host(hero_i) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			/* Check hero is not dead */
@@ -742,8 +741,8 @@ signed short bargain(Bit8u *hero, signed short items, Bit32s price,
 
 	signed char mod = mod_init;
 
-	/* maybe a special NPC ? */
-	if (host_readb(get_hero(6) + HERO_NPC_ID) == 2) {
+	/* NPC Harika gets a bonus on bargain */
+	if (host_readb(get_hero(6) + HERO_NPC_ID) == NPC_HARIKA) {
 		mod -= 2;
 	}
 

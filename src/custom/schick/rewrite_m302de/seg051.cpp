@@ -324,7 +324,7 @@ void do_wildcamp(void)
 					hero = (RealPt)ds_readd(HEROS);
 
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
-						if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+						if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							ds_readbs(WILDCAMP_GUARDSTATUS + i) < 2 &&
 							ds_readbs(WILDCAMP_MAGICSTATUS + i) != 1)
@@ -521,7 +521,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 						/* fill up all waterskins and remove thirst of all living heros in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
-							if (host_readbs(hero2 + HERO_TYPE) != 0 &&
+							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero2))
 							{
@@ -551,7 +551,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 						/* remove hunger of all living heros in the current group */
 						hero2 = get_hero(0);
 						for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
-							if (host_readbs(hero2 + HERO_TYPE) != 0 &&
+							if (host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero2))
 							{

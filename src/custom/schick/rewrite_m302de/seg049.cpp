@@ -35,9 +35,9 @@ int GRP_compare_heros(const void *p1, const void *p2)
 	hero1 = (Bit8u*)p1;
 	hero2 = (Bit8u*)p2;
 
-	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+	if ((host_readbs(hero1 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero1 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 	{
 		if (host_readbs(hero1 + HERO_GROUP_POS) < host_readbs(hero2 + HERO_GROUP_POS))
@@ -48,25 +48,25 @@ int GRP_compare_heros(const void *p1, const void *p2)
 		}
 	}
 
-	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+	if ((host_readbs(hero1 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero1 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero2 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 	{
 		return -1;
 	}
 
-	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+	if ((host_readbs(hero1 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero1 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 	{
 		return 1;
 	}
 
-	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+	if ((host_readbs(hero1 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero1 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) &&
-		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero2 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 	{
 		if (host_readbs(hero1 + HERO_GROUP_POS) < host_readbs(hero2 + HERO_GROUP_POS))
@@ -78,14 +78,14 @@ int GRP_compare_heros(const void *p1, const void *p2)
 	}
 
 	if (!(host_readbs(hero1 + HERO_TYPE)) &&
-		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 	{
 		return 1;
 	}
 
 	if (!(host_readbs(hero1 + HERO_TYPE)) &&
-		(host_readbs(hero2 + HERO_TYPE) != 0) &&
+		(host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero2 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)))
 	{
 		return -1;
@@ -97,14 +97,14 @@ int GRP_compare_heros(const void *p1, const void *p2)
 		return 0;
 	}
 
-	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+	if ((host_readbs(hero1 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero1 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 		!(host_readbs(hero2 + HERO_TYPE)))
 	{
 		return -1;
 	}
 
-	if ((host_readbs(hero1 + HERO_TYPE) != 0) &&
+	if ((host_readbs(hero1 + HERO_TYPE) != HERO_TYPE_NONE) &&
 		(host_readbs(hero1 + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP)) &&
 		!(host_readbs(hero2 + HERO_TYPE)))
 	{
@@ -167,7 +167,7 @@ void GRP_split(void)
 	signed short not_empty;
 	signed short answer;
 
-	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != 0 ? 2 : 1)) {
+	if (count_heroes_available_in_group() <= (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1)) {
 
 		GUI_output(get_ltx(0x808));
 	} else {
@@ -193,7 +193,7 @@ void GRP_split(void)
 				dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 			}
 
-		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != 0 ? 2 : 1));
+		} while	(count_heroes_available_in_group() > (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE ? 2 : 1));
 
 		if (not_empty) {
 			GRP_save_pos(new_group);
@@ -233,7 +233,7 @@ void GRP_merge(void)
 
 			for (i = 0; i <= 6; i++) {
 
-				if ((host_readbs(get_hero(i) + HERO_TYPE) != 0) &&
+				if ((host_readbs(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE) &&
 					host_readbs(get_hero(i) + HERO_GROUP_NO) == answer)
 				{
 					host_writeb(get_hero(i) + HERO_GROUP_NO, ds_readbs(CURRENT_GROUP));
@@ -273,7 +273,7 @@ void GRP_switch_to_next(signed short mode)
 
 			for (i = 0; i < 6; i++) {
 
-				if ((host_readbs(get_hero(i) + HERO_TYPE) != 0) &&
+				if ((host_readbs(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(get_hero(i) + HERO_GROUP_NO) == group) &&
 					check_hero(get_hero(i)))
 				{

@@ -216,7 +216,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			for (l_di = 0; l_di <= 6; l_di++, hero2 += SIZEOF_HERO) {
 
 				if ((l_di != hero_pos) &&
-					(host_readbs(hero2 + HERO_TYPE) != 0) &&
+					(host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero2))
 				{

@@ -193,7 +193,7 @@ void ask_miracle(void)
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
 
-							if (host_readbs(hero + HERO_TYPE) != 0 &&
+							if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dummy4(hero))
 							{
@@ -316,7 +316,7 @@ void ask_miracle(void)
 						hero = get_hero(0);
 						for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-							if (host_readbs(hero + HERO_TYPE) != 0 &&
+							if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero) &&
 								!hero_dummy4(hero))
@@ -395,7 +395,7 @@ void ask_miracle(void)
 						for (i = 0; i <= 6; i++) {
 							hero = get_hero(i);
 
-							if (host_readbs(hero + HERO_TYPE) != 0 &&
+							if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero) &&
 								!hero_dummy4(hero))
@@ -451,7 +451,7 @@ void ask_miracle(void)
 							hero = get_hero(0);
 							for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-								if (host_readbs(hero + HERO_TYPE) != 0 &&
+								if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 									host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 									!hero_dead(hero) &&
 									!hero_dummy4(hero))

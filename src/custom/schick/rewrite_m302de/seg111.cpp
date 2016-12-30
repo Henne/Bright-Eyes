@@ -98,7 +98,7 @@ void tevent_057(void)
 
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					sub_hero_le(hero, random_schick(3));
@@ -111,7 +111,7 @@ void tevent_057(void)
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, 10, 3) <= 0)
@@ -269,7 +269,7 @@ void tevent_060(void)
 
 					for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-						if (host_readbs(hero + HERO_TYPE) != 0 &&
+						if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero) &&
 							test_skill(hero, 10, 0) <= 0)
@@ -314,7 +314,7 @@ void tevent_060(void)
 
 					for (i = has_magic_rope = nr_items = 0; i <= 6 ; i++, hero += SIZEOF_HERO){
 
-						if (host_readbs(hero + HERO_TYPE) != 0 &&
+						if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 							!hero_dead(hero))
 						{
@@ -451,7 +451,7 @@ void tevent_063(void)
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{
@@ -546,7 +546,7 @@ void tevent_064(void)
 
 				for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 13, 0) <= 0)
@@ -737,7 +737,7 @@ void tevent_066(void)
 				hero = get_hero(0);
 				for (l_di = count = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO)
 				{
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 13, -2) <= 0)

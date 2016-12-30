@@ -420,7 +420,7 @@ void update_status_bars(void)
 
 			for (i = 0; i <= 6; i++) {
 
-				if (host_readbs(get_hero(i) + HERO_TYPE) != 0) {
+				if (host_readbs(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE) {
 
 					hero = get_hero(i);
 

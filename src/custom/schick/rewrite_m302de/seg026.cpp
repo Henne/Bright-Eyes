@@ -530,7 +530,7 @@ signed short save_game_state(void)
 		/* create a CHR-file for each hero in TEMP */
 		for (tw_bak = 0; tw_bak < 6; tw_bak++) {
 
-			if (host_readbs(get_hero(tw_bak) + HERO_TYPE) != 0) {
+			if (host_readbs(get_hero(tw_bak) + HERO_TYPE) != HERO_TYPE_NONE) {
 
 				/* save position on the playmask */
 				host_writebs(get_hero(tw_bak) + HERO_GROUP_POS, tw_bak + 1);
@@ -547,7 +547,7 @@ signed short save_game_state(void)
 		}
 
 		/* save the current NPC in TEMP */
-		if (host_readbs(get_hero(6) + HERO_TYPE) != 0) {
+		if (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) {
 
 			host_writeb(get_hero(6) + HERO_GROUP_POS, 7);
 			save_npc(host_readbs(get_hero(6) + HERO_NPC_ID) + 225);

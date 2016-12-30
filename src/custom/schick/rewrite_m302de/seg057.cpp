@@ -536,7 +536,7 @@ void sell_screen(Bit8u *shop_ptr)
 			hero_pos = ds_readws(ACTION) - 241;
 			hero3 = get_hero(hero_pos);
 
-			if ((host_readbs(hero3 + HERO_TYPE) != 0) &&
+			if ((host_readbs(hero3 + HERO_TYPE) != HERO_TYPE_NONE) &&
 				host_readbs(hero3 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 			{
 				hero1 = get_hero(hero_pos);

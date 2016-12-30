@@ -73,7 +73,7 @@ signed short DNG03_handler(void)
 				{
 					sub_ae_splash(hero, random_schick(6));
 
-				} else if (host_readbs(hero + HERO_TYPE) != 0)
+				} else if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE)
 				{
 					sub_hero_le(hero, random_schick(6));
 				}
@@ -98,7 +98,7 @@ signed short DNG03_handler(void)
 			{
 				sub_ae_splash(hero, random_schick(6));
 
-			} else if (host_readbs(hero + HERO_TYPE) != 0)
+			} else if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE)
 			{
 				sub_hero_le(hero, random_schick(6));
 			}
@@ -125,7 +125,7 @@ signed short DNG03_handler(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_skill(hero, 10, 2) <= 0)
@@ -165,7 +165,7 @@ signed short DNG03_handler(void)
 				{
 					sub_ae_splash(hero, random_schick(6));
 
-				} else if (host_readbs(hero + HERO_TYPE) != 0)
+				} else if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE)
 				{
 					sub_hero_le(hero, random_schick(6));
 				}
@@ -208,7 +208,7 @@ signed short DNG03_handler(void)
 		}
 
 		if ((hero = Real2Host(get_second_hero_available_in_group())) &&
-			host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			test_skill(hero, 50, 4) <= 0)
@@ -245,7 +245,7 @@ signed short DNG03_handler(void)
 
 		if ((hero = Real2Host(get_second_hero_available_in_group())) &&
 			(j == 2 ||
-			(host_readbs(hero + HERO_TYPE) != 0 &&
+			(host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			test_attrib(hero, 4, 2) <= 0)))
@@ -386,7 +386,7 @@ signed short DNG03_handler(void)
 			{
 				sub_ae_splash(hero, random_schick(6));
 
-			} else if (host_readbs(hero + HERO_TYPE) != 0)
+			} else if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE)
 			{
 				sub_hero_le(hero, random_schick(6));
 			}
@@ -580,7 +580,7 @@ void DNG03_chest11_func3(RealPt)
 		hero = get_hero(0);
 		for (l_di = counter = l_si = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{

@@ -164,7 +164,7 @@ void tevent_133(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero))
 			{
@@ -373,7 +373,7 @@ void tevent_137(void)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if ((host_readbs(hero + HERO_TYPE) != 0) &&
+				if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero))
 				{
@@ -429,7 +429,7 @@ void tevent_139(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + HERO_TYPE) != 0) &&
+			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero))
 			{
@@ -528,7 +528,7 @@ void tevent_143(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-			if ((host_readbs(hero + HERO_TYPE) != 0) &&
+			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 			{
 				sub_hero_le(hero, random_schick(2) + 1);

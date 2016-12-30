@@ -181,7 +181,7 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		dir = host_readbs(hero + HERO_VIEWDIR);
 	}
 
-	if ((weapon_type == -1) || ((host_readbs(hero + HERO_TYPE) == 9) && (weapon == 0x85))) {
+	if ((weapon_type == -1) || ((host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) && (weapon == 0x85))) {
 
 		l1 = (f_action == 2) ? 45 :			/* melee attack */
 			(f_action == 102) ? 41 :		/* drink potion */
@@ -270,8 +270,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		p1 += copy_ani_seq(p1, host_readws(p3 + l1 *2), 2);
 
 		if ((weapon_type != -1) && (weapon_type < 3) &&
-			(host_readb(hero + HERO_TYPE) != 9) &&
-			(host_readb(hero + HERO_TYPE) != 8))
+			(host_readb(hero + HERO_TYPE) != HERO_TYPE_MAGE) &&
+			(host_readb(hero + HERO_TYPE) != HERO_TYPE_DRUID))
 		{
 			for (l10 = 0; l10 < 5; l10++) {
 				host_writeb(p2++, 0xfb);
@@ -292,8 +292,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 			p1 += copy_ani_seq(p1, host_readws(p3 + l1 * 2), 2);
 
 			if ((weapon_type != -1) && (weapon_type < 3) &&
-				(host_readb(hero + HERO_TYPE) != 9) &&
-				(host_readb(hero + HERO_TYPE) != 8))
+				(host_readb(hero + HERO_TYPE) != HERO_TYPE_MAGE) &&
+				(host_readb(hero + HERO_TYPE) != HERO_TYPE_DRUID))
 			{
 				p2 += copy_ani_seq(p2,
 					ds_readw(0x25fe +
@@ -320,8 +320,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		host_writebs(p1, -1);
 
 		if ( (weapon_type != -1) && (weapon_type < 3) &&
-			(host_readb(hero + HERO_TYPE) != 9) &&
-			(host_readb(hero + HERO_TYPE) != 8))
+			(host_readb(hero + HERO_TYPE) != HERO_TYPE_MAGE) &&
+			(host_readb(hero + HERO_TYPE) != HERO_TYPE_DRUID))
 		{
 			FIG_set_0f(host_readb(hero + HERO_FIGHTER_ID), a1 + 4);
 			host_writeb(p2, 0xff);

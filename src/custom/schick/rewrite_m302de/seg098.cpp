@@ -371,7 +371,7 @@ signed short use_magic(RealPt hero)
 		case 1: {
 			/* Meditation */
 
-			if (host_readbs(Real2Host(hero) + HERO_TYPE) != 9) {
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_MAGE) {
 				/* not a mage, need thonnys */
 
 
@@ -426,7 +426,7 @@ signed short use_magic(RealPt hero)
 		case 2: {
 			/* Staffspell */
 
-			if (host_readbs(Real2Host(hero) + HERO_TYPE) != 9) {
+			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_MAGE) {
 				/* only for mages */
 				GUI_output(get_ltx(0x64c));
 				return 0;
@@ -790,7 +790,7 @@ signed short test_spell_group(signed short spell, signed char bonus)
 		/* Check class is magicuser */
 		if ((host_readbs(hero_i + HERO_TYPE) >= 7) &&
 			/* Check class  BOGUS */
-			(host_readbs(hero_i + HERO_TYPE) != 0) &&
+			(host_readbs(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			/* Check in group */
 			(host_readbs(hero_i + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			/* Check if dead */

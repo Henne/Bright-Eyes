@@ -57,7 +57,7 @@ void tevent_067(void)
 			hero = get_hero(0);
 			for (i = count = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
 					test_attrib(hero, 4, 0) > 0)
@@ -86,7 +86,7 @@ void tevent_067(void)
 				hero = get_hero(0);
 				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 					{
 						sub_hero_le(hero, random_schick(8));
@@ -301,7 +301,7 @@ void TRV_swimm(signed short mod, signed short percent)
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{
@@ -489,7 +489,7 @@ void tevent_074(void)
 				hero = get_hero(0);
 				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero))
 					{
@@ -605,7 +605,7 @@ void tevent_075(void)
 				hero = get_hero(0);
 				for (i = answer = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, 13, 0) <= 0)
@@ -730,7 +730,7 @@ void tevent_077(void)
 				hero = get_hero(0);
 				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero))
 					{

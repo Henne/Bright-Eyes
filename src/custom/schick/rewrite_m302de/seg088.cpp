@@ -33,7 +33,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 	{
 		if (i != diver_pos &&
-			host_readbs(hero + HERO_TYPE) != 0 &&
+			host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero))
 		{

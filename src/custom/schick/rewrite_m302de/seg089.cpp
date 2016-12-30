@@ -77,7 +77,7 @@ signed short DNG15_handler(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_attrib(hero, 4, -3) <= 0)
@@ -504,7 +504,7 @@ void DNG15_small_wounds(void)
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 	{
-		if (host_readbs(hero + HERO_TYPE) != 0 &&
+		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
 			test_attrib(hero, 4, -3) <= 0)
@@ -627,7 +627,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 			/* count failed GE-3 test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
 					test_attrib(hero, 4, -3) <= 0)
@@ -655,7 +655,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 			/* each hero gets 1W6 damage on a failed GE test */
 			for (i = cnt = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
 					test_attrib(hero, 4, 0) <= 0)
@@ -722,7 +722,7 @@ void DNG15_clear_way(Bit8u* ptr)
 
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				test_attrib(hero, 4, 0) <= 0)

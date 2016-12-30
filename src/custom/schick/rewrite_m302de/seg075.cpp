@@ -884,10 +884,10 @@ signed short DNG_check_climb_tools(void)
 	/* check for a mage with staffspell > 2 */
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(hero + HERO_TYPE) != 0) &&
+		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero) &&
-			(host_readbs(hero + HERO_TYPE) == 9) &&
+			(host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) &&
 			(host_readbs(hero + HERO_STAFFSPELL_LVL) > 2))
 		{
 			return i + 1;

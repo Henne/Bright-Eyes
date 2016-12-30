@@ -269,7 +269,7 @@ void do_citycamp(void)
 						hero = (RealPt)ds_readd(HEROS);
 						for (l_si = 0; l_si <= 6; l_si++, hero += SIZEOF_HERO) {
 
-							if (host_readbs(Real2Host(hero) + HERO_TYPE) != 0 &&
+							if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								ds_readbs(CITYCAMP_GUARDSTATUS + l_si) < 2 &&
 								ds_readbs(CITYCAMP_MAGICSTATUS + l_si) != 1)

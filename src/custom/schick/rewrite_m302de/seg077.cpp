@@ -121,7 +121,7 @@ signed short DNG01_handler(void)
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
 				if (random_schick(100) <= 10 &&
-					host_readbs(hero + HERO_TYPE) != 0 &&
+					host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					sub_hero_le(hero, 2);
@@ -149,7 +149,7 @@ signed short DNG01_handler(void)
 
 			GUI_dialogbox(ds_readfp(DTP2), get_ltx(0xbd0), get_dtp(0x24), 0);
 
-			if (host_readbs(get_hero(6) + HERO_TYPE) != 0)
+			if (host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE)
 			{
 				remove_npc(host_readbs(get_hero(6) + HERO_NPC_ID) + 19,
 						31,

@@ -282,7 +282,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 			} else if (state == 2) {
 				/* is ERWO in the group ? */
 				ds_writew(DIALOG_NEXT_STATE,
-					host_readbs(get_hero(6) + HERO_NPC_ID) == 6 && is_hero_available_in_group(get_hero(6)) ? 3 : 15);
+					host_readbs(get_hero(6) + HERO_NPC_ID) == NPC_ERWO && is_hero_available_in_group(get_hero(6)) ? 3 : 15);
 			} else if (state == 6) {
 
 				/* copy the name */
@@ -543,7 +543,7 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if ((host_readbs(hero + HERO_TYPE) != 0) &&
+				if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero))
 				{

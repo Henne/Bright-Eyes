@@ -658,7 +658,7 @@ void startup_equipment(Bit8u *hero)
 
 	move_item(5, 9, hero);
 
-	if (host_readbs(hero + HERO_SEX) != 0 && host_readbs(hero + HERO_TYPE) != 3 && host_readbs(hero + HERO_TYPE) != 9) {
+	if (host_readbs(hero + HERO_SEX) != 0 && host_readbs(hero + HERO_TYPE) != HERO_TYPE_WARRIOR && host_readbs(hero + HERO_TYPE) != HERO_TYPE_MAGE) {
 		give_hero_new_item(hero, 48, 1, 1);
 		move_item(2, 9, hero);
 	}
@@ -673,17 +673,17 @@ void startup_equipment(Bit8u *hero)
 		}
 	}
 
-	if (host_readbs(hero + HERO_TYPE) == 3) {
+	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_WARRIOR) {
 		move_item(2, get_item_pos(hero, 53), hero);
 	}
 
-	if (host_readbs(hero + HERO_TYPE) == 9) {
+	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) {
 		move_item(2, get_item_pos(hero, 75), hero);
 	}
 
-	if (host_readbs(hero + HERO_TYPE) == 2 ||
-		host_readbs(hero + HERO_TYPE) == 10 ||
-		host_readbs(hero + HERO_TYPE) == 12)
+	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_HUNTER ||
+		host_readbs(hero + HERO_TYPE) == HERO_TYPE_GREEN_ELF ||
+		host_readbs(hero + HERO_TYPE) == HERO_TYPE_SYLVAN_ELF)
 	{
 		give_hero_new_item(hero, 10, 1, 20);
 		move_item(4, get_item_pos(hero, 10), hero);

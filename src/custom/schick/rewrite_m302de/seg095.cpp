@@ -98,7 +98,7 @@ void npc_farewell(void)
 	signed short tmp;
 
 	/* no NPC there */
-	if (host_readb(get_hero(6) + HERO_TYPE) == 0)
+	if (host_readb(get_hero(6) + HERO_TYPE) == HERO_TYPE_NONE)
 		return;
 
 	/* no NPC in that group */
@@ -113,15 +113,13 @@ void npc_farewell(void)
 	load_tx(ARCHIVE_FILE_NSC_LTX);
 
 	switch (host_readbs(get_hero(6) + HERO_NPC_ID)) {
-		/* Nariell */
-		case 1: {
+		case NPC_NARIELL: {
 			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x14, 0x1f, 0xe2,
 					get_ltx(0xbc4), get_dtp(0x24));
 			break;
 		}
-		/* Harika */
-		case 2: {
+		case NPC_HARIKA: {
 			if (ds_readws(NPC_MONTHS) >= 2) {
 				if (ds_readws(NPC_MONTHS) >= 99 ||
 					ds_readb(CURRENT_TOWN) == 1 ||
@@ -147,29 +145,25 @@ void npc_farewell(void)
 			}
 			break;
 		}
-		/* Curian */
-		case 3: {
+		case NPC_CURIAN: {
 			if (ds_readws(NPC_MONTHS) >= 6)
 				remove_npc(0x19, 0x40, 0xe4,
 					get_ltx(0xbcc), get_dtp(0x74));
 			break;
 		}
-		/* Ardora */
-		case 4: {
+		case NPC_ARDORA: {
 			if (ds_readws(NPC_MONTHS) >= 1)
 				remove_npc(0x15, 0x1f, 0xe5,
 					get_ltx(0xbd0), get_dtp(0xac));
 			break;
 		}
-		/* Garsvik */
-		case 5: {
+		case NPC_GARSVIK: {
 			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x17, 0x1f, 0xe6,
 					get_ltx(0xbd4), get_dtp(0xd4));
 			break;
 		}
-		/* Erwo */
-		case 6: {
+		case NPC_ERWO: {
 			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x18, 0x1f, 0xe7,
 					get_ltx(0xbd8), get_dtp(0xfc));

@@ -315,7 +315,7 @@ void do_harbour(void)
 					hero = get_hero(0);
 					for (l_si = 0; l_si <= 6; l_si++, hero += SIZEOF_HERO) {
 
-						if (host_readbs(hero + HERO_TYPE) != 0 &&
+						if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 						{
 							GRP_hero_sleep(hero, a.a[ds_readbs(0xe3fa)]);
@@ -542,7 +542,7 @@ void sea_travel(signed short passage, signed short dir)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					GRP_hero_sleep(hero, a.a[ds_readbs(0xe3fa)]);

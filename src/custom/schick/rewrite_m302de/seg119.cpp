@@ -49,7 +49,7 @@ void disease_effect(void)
 
 	for (i = 0; i <= 6; i++) {
 
-		if ((host_readbs(get_hero(i) + HERO_TYPE) != 0) && !hero_dead(get_hero(i))) {
+		if ((host_readbs(get_hero(i) + HERO_TYPE) != HERO_TYPE_NONE) && !hero_dead(get_hero(i))) {
 
 			hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * i;
 
@@ -142,7 +142,7 @@ void disease_effect(void)
 					hero2 = get_hero(0);
 
 					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
-						if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+						if ((host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 							(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
 							(hero2 != Real2Host(hero)) &&
@@ -250,7 +250,7 @@ void disease_effect(void)
 					hero2 = get_hero(0);
 
 					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
-						if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+						if ((host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 							(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
 							(hero2 != Real2Host(hero)) &&
@@ -359,7 +359,7 @@ void disease_effect(void)
 				if (host_readbs(disease_ptr + 1) > 7) {
 
 					/* 30 % for elfes, 20% for the all other types */
-					if (random_schick(100) <= (host_readbs(Real2Host(hero) + HERO_TYPE) >= 10 ? 30 : 20)) {
+					if (random_schick(100) <= (host_readbs(Real2Host(hero) + HERO_TYPE) >= HERO_TYPE_GREEN_ELF ? 30 : 20)) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_ltx(0x910),
@@ -395,7 +395,7 @@ void disease_effect(void)
 
 							hero2 = get_hero(j);
 
-							if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+							if ((host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 								(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 								!hero_dead(hero2) &&
 								(hero2 != Real2Host(hero)) &&
@@ -405,7 +405,7 @@ void disease_effect(void)
 							}
 						}
 
-						sub_hero_le(Real2Host(hero), dice_roll((host_readbs(Real2Host(hero) + HERO_TYPE) >= 10 ? 2 : 1),
+						sub_hero_le(Real2Host(hero), dice_roll((host_readbs(Real2Host(hero) + HERO_TYPE) >= HERO_TYPE_GREEN_ELF ? 2 : 1),
 										6, host_readbs(disease_ptr + 1) - 1));
 					}
 				}
@@ -521,7 +521,7 @@ void disease_effect(void)
 					for (j = 0; j <= 6; j++, hero2 += SIZEOF_HERO) {
 
 
-						if ((host_readbs(hero2 + HERO_TYPE) != 0) &&
+						if ((host_readbs(hero2 + HERO_TYPE) != HERO_TYPE_NONE) &&
 							(host_readbs(hero2 + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 							!hero_dead(hero2) &&
 							(hero2 != Real2Host(hero)) &&

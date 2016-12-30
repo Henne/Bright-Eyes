@@ -150,7 +150,7 @@ signed short DNG02_handler(void)
 		hero = get_hero(0);
 		for (i = weight_sum = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 			{
 				weight_sum += get_hero_weight(hero);
@@ -189,7 +189,7 @@ signed short DNG02_handler(void)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
@@ -201,7 +201,7 @@ signed short DNG02_handler(void)
 			hero = get_hero(0);
 			for (i = mod_slot = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
 					!hero_dummy3(hero))
@@ -239,7 +239,7 @@ signed short DNG02_handler(void)
 		hero = get_hero(0);
 		for (i = weight_sum = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 			{
 				weight_sum += get_hero_weight(hero);
@@ -267,7 +267,7 @@ signed short DNG02_handler(void)
 				hero = get_hero(0);
 				for (mod_slot = 0; mod_slot <= 6; mod_slot++, hero += SIZEOF_HERO)
 				{
-					if (host_readbs(hero + HERO_TYPE) != 0 &&
+					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == i)
 					{
 						weight_sum += get_hero_weight(hero);
@@ -328,7 +328,7 @@ signed short DNG02_handler(void)
 		hero = get_hero(0);
 		for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 		{
-			if (host_readbs(hero + HERO_TYPE) != 0 &&
+			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
 				host_readbs(hero + HERO_MR) < 8)
@@ -632,7 +632,7 @@ void DNG02_chest04_func3(RealPt)
 			hero = get_hero(0);
 			for (i = 0; i <= 6; i++, hero += SIZEOF_HERO)
 			{
-				if (host_readbs(hero + HERO_TYPE) != 0 &&
+				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
 					sub_hero_le(hero, random_schick(6));

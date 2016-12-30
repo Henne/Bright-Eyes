@@ -268,7 +268,7 @@ signed short plan_alchemy(Bit8u *hero)
 								if (ds_readbs(LOCATION) != 6) {
 									hero_p = get_hero(0);
 									for (i = 0; i <= 6; i++, hero_p += SIZEOF_HERO) {
-										if ((host_readbs(hero_p + HERO_TYPE) != 0) &&
+										if ((host_readbs(hero_p + HERO_TYPE) != HERO_TYPE_NONE) &&
 											(host_readbs(hero_p + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 										{
 											GRP_hero_sleep(hero_p, ds_readbs(SLEEP_QUALITY));
@@ -507,7 +507,7 @@ RealPt get_heaviest_hero(void)
 	hero = (RealPt)ds_readd(HEROS);
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != 0) &&
+		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 			weight = host_readws(Real2Host(hero) + HERO_WEIGHT) + host_readws(Real2Host(hero) + HERO_LOAD);
@@ -542,7 +542,7 @@ signed short get_skilled_hero_pos(signed short skill)
 
 	for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
-		if ((host_readbs(hero + HERO_TYPE) != 0) &&
+		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 
