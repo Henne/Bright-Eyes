@@ -281,11 +281,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 								if ((val = host_readws(hero2 + (HERO_ITEM_HEAD+2) + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 								{
-#if !defined(__BORLANDC__)
-									sprintf((char*)Real2Host(ds_readd(DTP2)), "%d", val);
-#else
-									itoa(val, Real2Host(ds_readd(DTP2)), 10);
-#endif
+									my_itoa(val, (char*)Real2Host(ds_readd(DTP2)), 10);
 
 									GUI_print_string(Real2Host(ds_readd(DTP2)),
 										array3.a[items_x] + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),

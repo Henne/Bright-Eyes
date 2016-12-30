@@ -12,6 +12,7 @@
 
 #include "v302de.h"
 
+#include "seg000.h"
 #include "seg002.h"
 #include "seg007.h"
 #include "seg047.h"
@@ -596,12 +597,10 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 
 			names[item_nr][0] = '\0';
 
-			if ((l_si = chest[item_nr + item_nr + 1]) > 1) {
-#if defined(__BORLANDC__)
-				itoa(l_si, names[item_nr], 10);
-#else
-				sprintf(names[item_nr], "%d", l_si);
-#endif
+			if ((l_si = chest[item_nr + item_nr + 1]) > 1)
+			{
+				my_itoa(l_si, names[item_nr], 10);
+
 				strcat(names[item_nr], (char*)p_datseg + 0x9dc4);
 			}
 
@@ -619,11 +618,9 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 
 			if (item_nr != -2) {
 				item_nr += item_nr;
-#if defined(__BORLANDC__)
-				itoa(chest[item_nr + 1], temp_str, 10);
-#else
-				sprintf(temp_str, "%d", host_readb(chest + item_nr + 1));
-#endif
+
+				my_itoa(chest[item_nr + 1], temp_str, 10);
+
 				len = strlen(temp_str);
 
 				do {

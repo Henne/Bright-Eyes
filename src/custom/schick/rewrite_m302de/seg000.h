@@ -65,6 +65,12 @@ Bit16s bc__open(RealPt, Bit16u);
 
 void bc_qsort(RealPt, Bit16u, Bit16u, RealPt);
 
+static inline char* my_itoa(int value, char *string, int radix)
+{
+	sprintf(string, "%d", value);
+	return string;
+}
+
 Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
@@ -72,6 +78,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 }
 #else
 
+#include <STDLIB.H>
 #include <IO.H>
 #include <DOS.H>
 #include <BIOS.H>
@@ -148,6 +155,8 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc_memcpy memcpy
 #define bc_memset memset
 #define bc_memmove memmove
+
+#define my_itoa itoa
 
 #define bc_qsort qsort
 
