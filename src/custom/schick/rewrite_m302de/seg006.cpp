@@ -146,7 +146,7 @@ void FIG_set_gfx(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 	update_mouse_cursor();
 	do_pic_copy(0);
 	refresh_screen_size();
@@ -164,7 +164,7 @@ void FIG_draw_pic(void)
 	mem_memcpy(Real2Phys(ds_readd(BUFFER1_PTR)),
 		Real2Phys(ds_readd(BUFFER8_PTR)), 64000);
 
-	ds_writew(0x26af, 1);
+	ds_writew(ALWAYS_ONE, 1);
 
 	if (ds_readw(FIG_CHAR_PIC)) {
 		FIG_draw_char_pic(0, ds_readw(FIG_CHAR_PIC));
@@ -481,7 +481,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 	set_textcolor(0xff, 0);
 
 	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
-	ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
 
 	if (loc == 0) {
 
@@ -507,8 +507,8 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 	}
 
 	do_pic_copy(0);
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
-	ds_writed(0xd2fb, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR));
 	set_textcolor(fg_bak, bg_bak);
 }
 
@@ -551,7 +551,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 	/* set gfx address */
 	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
-	ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
 
 	if (loc == 0) {
 		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 9, 34, 50, 0x1d);
@@ -573,8 +573,8 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 		GUI_print_string(Real2Host(GUI_name_singular(get_monname(host_readbs(p_enemy)))), 1, 193);
 	}
 
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
-	ds_writed(0xd2fb, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR));
 
 	set_textcolor(fg_bak, bg_bak);
 }

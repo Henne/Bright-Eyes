@@ -98,13 +98,13 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item_armor(item_p)) {
 
 			/* add RS boni */
-			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(0x0877 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(ARMORS_TABLE + host_readbs(item_p + 4) * 2));
 
 			/* subtract used item value */
 			sub_ptr_bs(equipper + HERO_RS_BONUS1, host_readbs(owner + HERO_ITEM_HEAD + 7 + pos_i * 14));
 
 			/* add RS-BE */
-			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(0x0877  + 1 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(ARMORS_TABLE + 1 + host_readbs(item_p + 4) * 2));
 
 		}
 
@@ -116,11 +116,11 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 
 			/* set AT */
 			host_writeb(equipper + HERO_AT_MOD,
-				ds_readb(0x06b0 + 5 + host_readbs(item_p + 4) * 7));
+				ds_readb(WEAPONS_TABLE + 5 + host_readbs(item_p + 4) * 7));
 
 			/* set PA */
 			host_writeb(equipper + HERO_PA_MOD,
-				ds_readb(0x06b0 + 6 + host_readbs(item_p + 4) * 7));
+				ds_readb(WEAPONS_TABLE + 6 + host_readbs(item_p + 4) * 7));
 
 		}
 
@@ -376,7 +376,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
 								(item_stackable(item_p)) ? si :
 									(item_useable(item_p)) ?
-										ds_readbs((0x08a9 + 1) + host_readbs(item_p + 4) * 3): 0);
+										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + 4) * 3): 0);
 #else
 
 							/* write item counter */
@@ -386,7 +386,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							else if (item_useable(item_p))
 									/* unknown */
 									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
-										ds_readbs((0x08a9 + 1) + host_readbs(item_p + 4) * 3));
+										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + 4) * 3));
 								 else
 									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14, 0);
 #endif
@@ -404,7 +404,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							/* set breakfactor */
 							if (item_weapon(item_p)) {
 								host_writeb(hero + HERO_ITEM_HEAD + 6 + di * 14,
-									ds_readb(0x06b0 + 3 + host_readbs(item_p + 4) * 7));
+									ds_readb(WEAPONS_TABLE + 3 + host_readbs(item_p + 4) * 7));
 							}
 
 							/* adjust weight */

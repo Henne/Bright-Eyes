@@ -286,9 +286,9 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 			} else if (state == 6) {
 
 				/* copy the name */
-				strcpy((char*)(p_datseg + 0xe42e), (char*)(get_hero(6) + HERO_NAME2));
+				strcpy((char*)(p_datseg + STR_BEORN_HJALL), (char*)(get_hero(6) + HERO_NAME2));
 				/* set a pointer */
-				ds_writed(DIALOG_TITLE, (Bit32u)RealMake(datseg, 0xe42e));
+				ds_writed(DIALOG_TITLE, (Bit32u)RealMake(datseg, STR_BEORN_HJALL));
 				/* copy the picture of the NPC */
 				memcpy(Real2Host(ds_readd(DTP2)), get_hero(6) + HERO_PORTRAIT, 0x400);
 				/* remove the NPC from the group */

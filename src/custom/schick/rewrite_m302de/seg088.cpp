@@ -63,7 +63,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 	}
 
 	ds_writew(X_TARGET, dest_x);
-	ds_writews(0xe482, -1);
+	ds_writews(DNG_REFRESH_DIRECTION, -1);
 
 }
 

@@ -87,7 +87,7 @@ void prepare_dungeon_area(void)
 
 		bc_close(handle);
 
-		ds_writed(0xe404, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR3), v2), -0xc0));
+		ds_writed(BUFFER11_PTR, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR3), v2), -0xc0));
 
 		ds_writew(0x2ccb, !ds_readbs(DUNGEON_INDEX));
 	}
@@ -146,7 +146,7 @@ void seg028_0224(void)
 
 		seg066_172b();
 
-		ds_writed(0xe3fc, ds_readd(BUFFER9_PTR3));
+		ds_writed(BUFFER9_PTR4, ds_readd(BUFFER9_PTR3));
 
 		for (l_si = 0; l_si < 4; l_si++) {
 
@@ -168,16 +168,16 @@ void seg028_0224(void)
 			}
 		}
 
-		ds_writed(0xe41c, (Bit32u)arr[0]);
-		ds_writed(0xe420, (Bit32u)arr[1]);
-		ds_writed(0xe424, (Bit32u)arr[2]);
-		ds_writed(0xe428, (Bit32u)arr[3]);
+		ds_writed(TEX_HOUSE1, (Bit32u)arr[0]);
+		ds_writed(TEX_HOUSE2, (Bit32u)arr[1]);
+		ds_writed(TEX_HOUSE3, (Bit32u)arr[2]);
+		ds_writed(TEX_HOUSE4, (Bit32u)arr[3]);
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
 			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 
-			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(0xe404)), 0xc0);
+			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(BUFFER11_PTR)), 0xc0);
 		} else {
 			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 		}
@@ -186,7 +186,7 @@ void seg028_0224(void)
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
-			memcpy(p_datseg + 0x3e53, Real2Host(ds_readd(0xe404)), 0x60);
+			memcpy(p_datseg + 0x3e53, Real2Host(ds_readd(BUFFER11_PTR)), 0x60);
 		}
 
 		ds_writew(0x2ccb, 1);
@@ -205,19 +205,19 @@ RealPt seg028_0444(signed short index, signed short firstcol, signed short color
 	Bit32s v2;
 	RealPt ptr;
 
-	ptr = (RealPt)ds_readd(0xe3fc);
+	ptr = (RealPt)ds_readd(BUFFER9_PTR4);
 
 	fd = load_archive_file(index);
 
 	v1 = v2 = 0L;
 
 	do {
-		v1 = read_archive_file(fd, Real2Host(ds_readd(0xe3fc)), 65000);
+		v1 = read_archive_file(fd, Real2Host(ds_readd(BUFFER9_PTR4)), 65000);
 
 #if !defined(__BORLANDC__)
-		F_PADA(RealMake(datseg, 0xe3fc), v1);
+		F_PADA(RealMake(datseg, BUFFER9_PTR4), v1);
 #else
-		*(HugePt*)(p_datseg + 0xe3fc) += v1;
+		*(HugePt*)(p_datseg + BUFFER9_PTR4) += v1;
 #endif
 
 		v2 += v1;
@@ -228,13 +228,13 @@ RealPt seg028_0444(signed short index, signed short firstcol, signed short color
 
 	if (colors) {
 
-		ds_writed(0xe404, (Bit32u)(ptr + v2 - 3 * colors));
+		ds_writed(BUFFER11_PTR, (Bit32u)(ptr + v2 - 3 * colors));
 
 		if ((ref != 0) && (!ds_readb(0x4475))) {
 
 			wait_for_vsync();
 
-			set_palette(Real2Host(ds_readd(0xe404)), firstcol, colors);
+			set_palette(Real2Host(ds_readd(BUFFER11_PTR)), firstcol, colors);
 		}
 	}
 
@@ -290,7 +290,7 @@ void load_area_description(signed short type)
 				bc__write(fd, RealMake(datseg, DNG_MAP), 0x100);
 			}
 			/* write automap tiles */
-			bc__write(fd, RealMake(datseg, 0xe442), 64);
+			bc__write(fd, RealMake(datseg, AUTOMAP_BUF), 64);
 			/* write something unknown */
 			bc__write(fd, RealMake(datseg, 0xc025),
 				ds_readw(0x5eb8));
@@ -329,7 +329,7 @@ void load_area_description(signed short type)
 			/* path taken in THORWAL PREM and PHEXCAER */
 			bc__read(fd, p_datseg + DNG_MAP, 0x200);
 			/* read automap tiles */
-			bc__read(fd, p_datseg + 0xe442, 0x40);
+			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
 
 			/* TODO: is that neccessary ? */
 			memset(p_datseg + 0xc025, -1, 900);
@@ -344,7 +344,7 @@ void load_area_description(signed short type)
 			bc__read(fd, p_datseg + DNG_MAP, 0x100);
 
 			/* read automap tiles */
-			bc__read(fd, p_datseg + 0xe442, 0x40);
+			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
 			ds_writew(0x5eb8, 0);
 
 			if (!ds_readbs(DUNGEON_INDEX)) {

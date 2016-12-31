@@ -233,8 +233,8 @@ signed short DNG03_handler(void)
 
 			if (host_readws(hero + HERO_ITEM_BODY) != 0)
 			{
-				l3 = ds_readbs(0x0877 + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4)) -
- host_readbs(hero + HERO_ITEM_BODY + 7);
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
+				    - host_readbs(hero + HERO_ITEM_BODY + 7);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
@@ -264,8 +264,8 @@ signed short DNG03_handler(void)
 
 			if (host_readws(hero + HERO_ITEM_BODY) != 0)
 			{
-				l3 = ds_readbs(0x0877 + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4)) -
-					 host_readbs(hero + HERO_ITEM_BODY + 7);
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
+				    - host_readbs(hero + HERO_ITEM_BODY + 7);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 

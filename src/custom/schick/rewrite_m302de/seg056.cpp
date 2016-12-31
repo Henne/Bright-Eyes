@@ -184,15 +184,15 @@ void buy_screen(void)
 			/* refresh goods */
 			update_mouse_cursor();
 
-			do_fill_rect((RealPt)ds_readd(0xd2ff), 135, 26, 214, 33, 0);
+			do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 135, 26, 214, 33, 0);
 
 			make_valuta_str((char*)Real2Host(ds_readd(DTP2)), price);
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 135, 26);
 
-			do_fill_rect((RealPt)ds_readd(0xd2ff), 29, 34, 214, 133, 0);
+			do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 29, 34, 214, 133, 0);
 
-			do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
-			do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
+			do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 87, 35, 131, -1);
+			do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 152, 35, 131, -1);
 
 			nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
 			nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
@@ -253,14 +253,14 @@ void buy_screen(void)
 
 		if (l6 != l7 || l15 != 0) {
 
-			do_border((RealPt)ds_readd(0xd2ff),
+			do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 				array3.a[l6 / 5] - 1,
 				array5.a[l6 % 5] - 1,
 				array3.a[l6 / 5] + 16,
 				array5.a[l6 % 5] + 16,
 				0);
 
-			do_border((RealPt)ds_readd(0xd2ff),
+			do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 				array3.a[l7 / 5] - 1,
 				array5.a[l7 % 5] - 1,
 				array3.a[l7 / 5] + 16,
@@ -303,7 +303,7 @@ void buy_screen(void)
 
 			for (l_di = 0; l_di < 7; l_di++, hero1 += SIZEOF_HERO) {
 
-				do_fill_rect((RealPt)ds_readd(0xd2ff),
+				do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR),
 						ds_readws(HERO_PIC_POSX + 2 * l_di),
 						190,
 						ds_readws(HERO_PIC_POSX + 2 * l_di) + 41,
@@ -333,11 +333,11 @@ void buy_screen(void)
 			l15 = 0;
 		}
 
-		if ((ds_readws(0xc3d3) != 0) && get_mouse_action(ds_readws(0x299c), ds_readws(0x299e), p_datseg + ACTION_TABLE_MERCHANT)) {
+		if ((ds_readws(MOUSE2_EVENT) != 0) && get_mouse_action(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY), p_datseg + ACTION_TABLE_MERCHANT)) {
 			ds_writew(ACTION, 144);
 		}
 
-		if ((ds_readws(0xc3d3) != 0 && ds_readws(ACTION) != 144) || ds_readws(ACTION) == 73) {
+		if ((ds_readws(MOUSE2_EVENT) != 0 && ds_readws(ACTION) != 144) || ds_readws(ACTION) == 73) {
 
 			l3 = GUI_radio(NULL, 4,
 					get_ltx(0x6c4),
@@ -356,8 +356,8 @@ void buy_screen(void)
 
 			if (ds_readws(ACTION) == 144) {
 
-				if (ds_readws(0xc3d3) != 0) {
-					ds_writew(0xc3d3, 0);
+				if (ds_readws(MOUSE2_EVENT) != 0) {
+					ds_writew(MOUSE2_EVENT, 0);
 					l3 = 2;
 				}
 			} else {
@@ -438,7 +438,7 @@ void buy_screen(void)
 							}
 						}
 
-						do_fill_rect((RealPt)ds_readd(0xd2ff),
+						do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR),
 								135, 26, 214, 33, 0);
 
 						make_valuta_str((char*)Real2Host(ds_readd(DTP2)), price);
@@ -481,7 +481,7 @@ void buy_screen(void)
 
 							nice++;
 
-							do_fill_rect((RealPt)ds_readd(0xd2ff), 135, 26, 214, 33 ,0);
+							do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 135, 26, 214, 33 ,0);
 
 							make_valuta_str((char*)Real2Host(ds_readd(DTP2)), price);
 

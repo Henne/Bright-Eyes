@@ -36,7 +36,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 		name = ship_type * 10 + random_schick(10) + 0x29;
 		done = 1;
 		for (i = 0; i < arg2; i++) {
-			if (ds_readd(0x42b2 + i * 12)
+			if (ds_readd(SEA_TRAVEL_MENU_PASSAGES + i * 12)
 				== host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4)) {
 				done = 0;
 				break;
@@ -58,9 +58,9 @@ unsigned short prepare_passages(void)
 	RealPt ent;
 
 #if !defined(__BORLANDC__)
-	ent = RealMake(datseg, 0x6f00);
+	ent = RealMake(datseg, SEA_TRAVEL_PASSAGES);
 #else
-	ent = p_datseg + 0x6f00;
+	ent = p_datseg + SEA_TRAVEL_PASSAGES;
 #endif
 
 	for (i = prepared = 0; i < 45; ent += 8, i++) {
@@ -69,14 +69,14 @@ unsigned short prepare_passages(void)
 			(host_readb(Real2Host(ent) + 1) == ds_readb(CURRENT_TOWN)))) {
 
 			/* prepare an entry of 12 byte for a passage today */
-			ds_writeb((0x42b2 + 11) + prepared * 12, (unsigned char)i);
-			ds_writed((0x42b2 + 4) + prepared * 12, (Bit32u)ent);
-			ds_writeb((0x42b2 + 8) + prepared * 12, 0);
-			ds_writeb((0x42b2 + 9) + prepared * 12, host_readb(Real2Host(ent) + 6));
-			ds_writed(0x42b2 + prepared * 12,
+			ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 11) + prepared * 12, (unsigned char)i);
+			ds_writed((SEA_TRAVEL_MENU_PASSAGES + 4) + prepared * 12, (Bit32u)ent);
+			ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 8) + prepared * 12, 0);
+			ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 9) + prepared * 12, host_readb(Real2Host(ent) + 6));
+			ds_writed(SEA_TRAVEL_MENU_PASSAGES + prepared * 12,
 				(Bit32u)get_ship_name(host_readb(Real2Host(ent) + 6), prepared));
 
-			ds_writeb((0x42b2 + 10) + prepared * 12,
+			ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 10) + prepared * 12,
 				host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN) ?
 					host_readb(Real2Host(ent) + 1) :
 					host_readb(Real2Host(ent)));
@@ -91,13 +91,13 @@ unsigned short prepare_passages(void)
 				|| (host_readb(Real2Host(ent) + 1) == ds_readb(CURRENT_TOWN))))
 			{
 				/* prepare an entry of 12 byte for a passage tomorrow */
-				ds_writeb((0x42b2 + 11) + prepared * 12, (unsigned char)i);
-				ds_writed((0x42b2 + 4) + prepared * 12, (Bit32u)ent);
-				ds_writeb((0x42b2 + 8) + prepared * 12, 1);
-				ds_writeb((0x42b2 + 9) + prepared * 12, host_readb(Real2Host(ent) + 6));
-				ds_writed(0x42b2 + prepared * 12,
+				ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 11) + prepared * 12, (unsigned char)i);
+				ds_writed((SEA_TRAVEL_MENU_PASSAGES + 4) + prepared * 12, (Bit32u)ent);
+				ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 8) + prepared * 12, 1);
+				ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 9) + prepared * 12, host_readb(Real2Host(ent) + 6));
+				ds_writed(SEA_TRAVEL_MENU_PASSAGES + prepared * 12,
 					(Bit32u)get_ship_name(host_readb(Real2Host(ent) + 6), prepared));
-				ds_writeb((0x42b2 + 10) + prepared * 12 ,
+				ds_writeb((SEA_TRAVEL_MENU_PASSAGES + 10) + prepared * 12 ,
 					host_readb(Real2Host(ent)) == ds_readb(CURRENT_TOWN) ?
 						host_readb(Real2Host(ent) + 1) :
 						host_readb(Real2Host(ent)));
@@ -172,7 +172,7 @@ unsigned short get_next_passages(unsigned short type)
 	signed short destinations;
 	signed short i;
 
-	entry = p_datseg + 0x6f00;
+	entry = p_datseg + SEA_TRAVEL_PASSAGES;
 
 	for (i = destinations = 0; i < 45; entry += 8, i++) {
 
@@ -184,12 +184,12 @@ unsigned short get_next_passages(unsigned short type)
 					host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 				{
 #if !defined(__BORLANDC__)
-					ds_writeb(0x42b2 + 10 + destinations * 12,
+					ds_writeb(SEA_TRAVEL_MENU_PASSAGES + 10 + destinations * 12,
 						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 							host_readb(entry + 1):
 							host_readb(entry));
 #else
-					((struct passages*)(p_datseg + 0x42b2))[destinations].town =
+					((struct passages*)(p_datseg + SEA_TRAVEL_MENU_PASSAGES))[destinations].town =
 						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 							host_readb(entry + 1):
 							host_readb(entry);
@@ -203,12 +203,12 @@ unsigned short get_next_passages(unsigned short type)
 				host_readb(entry + 1) == ds_readb(CURRENT_TOWN))
 			{
 #if !defined(__BORLANDC__)
-				ds_writeb(0x42b2 + 10 + destinations * 12,
+				ds_writeb(SEA_TRAVEL_MENU_PASSAGES + 10 + destinations * 12,
 					host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 						host_readb(entry + 1):
 						host_readb(entry));
 #else
-					((struct passages*)(p_datseg + 0x42b2))[destinations].town =
+					((struct passages*)(p_datseg + SEA_TRAVEL_MENU_PASSAGES))[destinations].town =
 						host_readb(entry) == ds_readb(CURRENT_TOWN) ?
 							host_readb(entry + 1):
 							host_readb(entry);
@@ -233,7 +233,7 @@ unsigned short passage_arrival(void)
 	di = 0;
 	p1 = p_datseg + 0xa3a3;
 
-	p_sched = p_datseg + 0x6f00 + ds_readb(0x42b1) * 8;
+	p_sched = p_datseg + SEA_TRAVEL_PASSAGES + ds_readb(0x42b1) * 8;
 
 	/* write the destination to a global variable (assignement in condition)*/
 	if ((ds_writew(TRV_DEST_REACHED, host_readb(p_sched))) == ds_readbs(CURRENT_TOWN))
@@ -244,8 +244,8 @@ unsigned short passage_arrival(void)
 			si = 0;
 			do {
 				tmp = host_readb(Real2Host(host_readd(p1 + 2)) + si) - 1;
-				if (host_readb(p_datseg + 0x6f00 + tmp * 8) == ds_readb(CURRENT_TOWN) ||
-					host_readb(p_datseg + 0x6f00 + tmp * 8 + 1) == ds_readb(CURRENT_TOWN)) {
+				if (host_readb(p_datseg + SEA_TRAVEL_PASSAGES + tmp * 8) == ds_readb(CURRENT_TOWN) ||
+					host_readb(p_datseg + SEA_TRAVEL_PASSAGES + tmp * 8 + 1) == ds_readb(CURRENT_TOWN)) {
 					di = (unsigned char)host_readb(p1 + 1);
 					break;
 				}

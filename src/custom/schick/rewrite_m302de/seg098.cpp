@@ -196,7 +196,7 @@ void magic_heal_ani(Bit8u *hero)
 		ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * target_nr) + 31);
 		ds_writew(PIC_COPY_Y2, 188);
 		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-		ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+		ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 		do_pic_copy(3);
 
 		delay_or_keypress(10);

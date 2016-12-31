@@ -173,10 +173,10 @@ void interrupt timer_isr(void)
 	}
 
 	if ((ds_readw(AUTOFIGHT) != 0) &&
-		(bc_bioskey(1) || (ds_readw(0xc3d5) != 0)))
+		(bc_bioskey(1) || (ds_readw(MOUSE1_EVENT2) != 0)))
 	{
 		ds_writew(AUTOFIGHT, 2);
-		ds_writew(0xc3d5, 0);
+		ds_writew(MOUSE1_EVENT2, 0);
 	}
 
 	start_midi_playback_IRQ();
@@ -188,7 +188,7 @@ void interrupt timer_isr(void)
 
 	/* another timer used in fights */
 	if ((ds_readws(FIG_STAR_TIMER) > 0) &&
-		(ds_readws(0x26b1) != 0) &&
+		(ds_readws(FIG_CONTINUE_PRINT) != 0) &&
 		(ds_readbs(FIG_STAR_PRINTED) != 0))
 	{
 		dec_ds_ws(FIG_STAR_TIMER);
@@ -259,10 +259,10 @@ void interrupt timer_isr(void)
 
 					flag = 0;
 
-					if ((ds_readws(0x299c) >= ds_readws(0xce41)) &&
-						(ds_readws(0xce41) + ds_readws(0xc3e7) >= ds_readws(0x299c)) &&
-						(ds_readws(0x299e) >= ds_readws(0xce3f)) &&
-						(ds_readws(0xce3f) + ds_readb(0xc3ed) >= ds_readws(0x299e) ))
+					if ((ds_readws(MOUSE_POSX) >= ds_readws(0xce41)) &&
+						(ds_readws(0xce41) + ds_readws(0xc3e7) >= ds_readws(MOUSE_POSX)) &&
+						(ds_readws(MOUSE_POSY) >= ds_readws(0xce3f)) &&
+						(ds_readws(0xce3f) + ds_readb(0xc3ed) >= ds_readws(MOUSE_POSY) ))
 					{
 						flag = 1;
 						update_mouse_cursor();
@@ -319,7 +319,7 @@ void update_status_bars(void)
 
 	ds_writew(0xc3c9, 0);
 
-	if (ds_readw(0xc3cb) != 0) {
+	if (ds_readw(UPDATE_STATUSLINE) != 0) {
 
 		if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
 			/* in the status menu */
@@ -357,7 +357,7 @@ void update_status_bars(void)
 					update_mouse_cursor();
 
 					for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 36, ds_readb(STATUS_PAGE_HUNGER_MAX_COLOR) ? 9 : 10);
+						do_h_line((RealPt)ds_readd(FRAMEBUF_PTR), 260, 310, i + 36, ds_readb(STATUS_PAGE_HUNGER_MAX_COLOR) ? 9 : 10);
 					}
 
 					refresh_screen_size();
@@ -372,8 +372,8 @@ void update_status_bars(void)
 				update_mouse_cursor();
 
 				for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(STATUS_PAGE_HUNGER) / 2 + 260, i + 36, 9);
-						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(STATUS_PAGE_HUNGER) / 2 + 260, 310, i + 36, 10);
+						do_h_line((RealPt)ds_readd(FRAMEBUF_PTR), 260, ds_readbs(STATUS_PAGE_HUNGER) / 2 + 260, i + 36, 9);
+						do_h_line((RealPt)ds_readd(FRAMEBUF_PTR), ds_readbs(STATUS_PAGE_HUNGER) / 2 + 260, 310, i + 36, 10);
 				}
 
 				refresh_screen_size();
@@ -388,7 +388,7 @@ void update_status_bars(void)
 					update_mouse_cursor();
 
 					for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, 310, i + 43, ds_readb(STATUS_PAGE_THIRST_MAX_COLOR) ? 11 : 12);
+						do_h_line((RealPt)ds_readd(FRAMEBUF_PTR), 260, 310, i + 43, ds_readb(STATUS_PAGE_THIRST_MAX_COLOR) ? 11 : 12);
 					}
 
 					refresh_screen_size();
@@ -403,8 +403,8 @@ void update_status_bars(void)
 				update_mouse_cursor();
 
 				for (i = 0; i < 6; i++) {
-						do_h_line((RealPt)ds_readd(0xd2ff), 260, ds_readbs(STATUS_PAGE_THIRST) / 2 + 260, i + 43, 11);
-						do_h_line((RealPt)ds_readd(0xd2ff), ds_readbs(STATUS_PAGE_THIRST) / 2 + 260, 310, i + 43, 12);
+						do_h_line((RealPt)ds_readd(FRAMEBUF_PTR), 260, ds_readbs(STATUS_PAGE_THIRST) / 2 + 260, i + 43, 11);
+						do_h_line((RealPt)ds_readd(FRAMEBUF_PTR), ds_readbs(STATUS_PAGE_THIRST) / 2 + 260, 310, i + 43, 12);
 				}
 
 				refresh_screen_size();
@@ -484,7 +484,7 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 	if (mode == 0) {
 		x = ds_readw(HERO_PIC_POSX + hero * 2) + type * 4 + 34;
 		y_min = 188;
-		dst = (RealPt)ds_readd(0xd2ff);
+		dst = (RealPt)ds_readd(FRAMEBUF_PTR);
 	} else {
 		x = type * 4 + 36;
 		y_min = 42;
@@ -601,11 +601,11 @@ void draw_mouse_cursor(void)
 	signed short width;
 	signed short height;
 
-	dst = Real2Phys(ds_readd(0xd2ff));
+	dst = Real2Phys(ds_readd(FRAMEBUF_PTR));
 	mouse_cursor = (short*)(Real2Host(ds_readd(0xcecb)) + 32);
 
-	x = ds_readw(0x299c) - ds_readw(0x29a6);
-	y = ds_readw(0x299e) - ds_readw(0x29a8);
+	x = ds_readw(MOUSE_POSX) - ds_readw(MOUSE_POINTER_OFFSETX);
+	y = ds_readw(MOUSE_POSY) - ds_readw(MOUSE_POINTER_OFFSETY);
 
 	width = height = 16;
 
@@ -630,66 +630,66 @@ void draw_mouse_cursor(void)
 void save_mouse_bg(void)
 {
 	PhysPt src;
-	signed short di;
-	signed short v6;
-	signed short v8;
-	signed short va;
-	signed short si;
-	signed short j;
+	signed short realpos_x;
+	signed short realpos_y;
+	signed short realwidth;
+	signed short realheight;
+	signed short delta_y;
+	signed short delta_x;
 
-	src = Real2Phys(ds_readd(0xd2ff));
+	src = Real2Phys(ds_readd(FRAMEBUF_PTR));
 
-	di = ds_readw(0x299c) - ds_readw(0x29a6);
-	v6 = ds_readw(0x299e) - ds_readw(0x29a8);
+	realpos_x = ds_readw(MOUSE_POSX) - ds_readw(MOUSE_POINTER_OFFSETX);
+	realpos_y = ds_readw(MOUSE_POSY) - ds_readw(MOUSE_POINTER_OFFSETY);
 
-	v8 = va = 16;
+	realwidth = realheight = 16;
 
-	if (di > 304) {
-		v8 = 320 - di;
+	if (realpos_x > 304) {
+		realwidth = 320 - realpos_x;
 	}
 
-	if (v6 > 184) {
-		va = 200 - v6;
+	if (realpos_y > 184) {
+		realheight = 200 - realpos_y;
 	}
 
-	src += v6 * 320 + di;
+	src += realpos_y * 320 + realpos_x;
 
-	for (si = 0; si < va; src += 320, si++) {
-		for (j = 0; j < v8; j++) {
-			ds_writeb(0xcf0f + si * 16 + j , mem_readb(src + j));
+	for (delta_y = 0; delta_y < realheight; src += 320, delta_y++) {
+		for (delta_x = 0; delta_x < realwidth; delta_x++) {
+			ds_writeb(MOUSE_BG_BAK + delta_y * 16 + delta_x, mem_readb(src + delta_x));
 		}
 	}
 }
 
 void restore_mouse_bg(void)
 {
-	signed short si;
-	signed short di;
-	signed short j;
+	signed short delta_y;
+	signed short realpos_x;
+	signed short delta_x;
 
 	PhysPt dst;
-	signed short v2;
-	signed short v3;
-	signed short v4;
+	signed short realpos_y;
+	signed short realwidth;
+	signed short realheight;
 
 
 	/* gfx memory */
-	dst = Real2Phys(ds_readd(0xd2ff));
-	di = ds_readw(0x29a0) - ds_readw(0x29aa);
-	v2 = ds_readw(0x29a2) - ds_readw(0x29ac);
-	v3 = v4 = 16;
+	dst = Real2Phys(ds_readd(FRAMEBUF_PTR));
+	realpos_x = ds_readw(MOUSE_POSX_BAK) - ds_readw(MOUSE_POINTER_OFFSETX_BAK);
+	realpos_y = ds_readw(MOUSE_POSY_BAK) - ds_readw(MOUSE_POINTER_OFFSETY_BAK);
+	realwidth = realheight = 16;
 
-	if (di > 304)
-		v3 = 320 - di;
+	if (realpos_x > 304)
+		realwidth = 320 - realpos_x;
 
-	if (v2 > 184)
-		v4 = 200 - v2;
+	if (realpos_y > 184)
+		realheight = 200 - realpos_y;
 
-	dst += (v2 * 320) + di;
+	dst += (realpos_y * 320) + realpos_x;
 
-	for (si = 0; si < v4; dst += 320, si++)
-		for (j = 0; j < v3; j++)
-			mem_writeb(dst + j, ds_readb(0xcf0f + si*16 + j));
+	for (delta_y = 0; delta_y < realheight; dst += 320, delta_y++)
+		for (delta_x = 0; delta_x < realwidth; delta_x++)
+			mem_writeb(dst + delta_x, ds_readb(MOUSE_BG_BAK + delta_y*16 + delta_x));
 
 }
 
@@ -733,7 +733,7 @@ void update_wallclock(void)
 
 	if ((ds_readw(WALLCLOCK_UPDATE) != 0) &&
 		((ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) || (ds_readb(PP20_INDEX) == ARCHIVE_FILE_KARTE_DAT)) &&
-		!ds_readbs(0x2c98))
+		!ds_readbs(DIALOGBOX_LOCK))
 	{
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(19))) {
@@ -784,7 +784,7 @@ void draw_wallclock(signed short pos, signed short night)
 	fullscreen_bak = *(struct dummy2*)(p_datseg + PIC_COPY_DS_RECT);
 
 	/* set pointer */
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 
 	/* calculate y value */
@@ -1149,7 +1149,7 @@ void map_effect(Bit8u *src)
 		} while (si >= 64000);
 
 
-		mem_writeb(Real2Phys(ds_readd(0xd2ff)) + si, host_readb(src + si));
+		mem_writeb(Real2Phys(ds_readd(FRAMEBUF_PTR)) + si, host_readb(src + si));
 
 #ifdef M302de_SPEEDFIX
 		/* this too fast,  we slow it down a bit */

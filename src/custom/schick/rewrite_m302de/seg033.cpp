@@ -709,7 +709,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 
 						p_itemsdat = get_itemsdat(host_readws(hero + HERO_ITEM_RIGHT));
-						p_weapontab = p_datseg + 0x06b0 + 7 * host_readbs(p_itemsdat + 4);
+						p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
 
 						calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
 							(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
@@ -730,7 +730,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 
 					p_itemsdat = get_itemsdat(host_readws(hero + HERO_ITEM_RIGHT));
-					p_weapontab = p_datseg + 0x06b0 + 7 * host_readbs(p_itemsdat + 4);
+					p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
 
 					calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
 						(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);

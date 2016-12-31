@@ -176,7 +176,7 @@ void sell_screen(Bit8u *shop_ptr)
 				percent_old = 100;
 				p_money = get_party_money();
 
-				do_fill_rect((RealPt)ds_readd(0xd2ff), 26, 26, 105, 33, 0);
+				do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 26, 26, 105, 33, 0);
 
 				make_valuta_str((char*)Real2Host(ds_readd(DTP2)), p_money);
 				GUI_print_string(Real2Host(ds_readd(DTP2)),
@@ -185,10 +185,10 @@ void sell_screen(Bit8u *shop_ptr)
 
 			update_mouse_cursor();
 
-			do_fill_rect((RealPt)ds_readd(0xd2ff), 29, 34, 214, 133, 0);
+			do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 29, 34, 214, 133, 0);
 
-			do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
-			do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
+			do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 87, 35, 131, -1);
+			do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 152, 35, 131, -1);
 
 			nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
 			nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
@@ -264,7 +264,7 @@ void sell_screen(Bit8u *shop_ptr)
 				}
 			}
 
-			do_fill_rect((RealPt)ds_readd(0xd2ff), 135, 26, 214, 33, 0);
+			do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 135, 26, 214, 33, 0);
 
 			make_valuta_str((char*)Real2Host(ds_readd(DTP2)), price);
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 135, 26);
@@ -293,7 +293,7 @@ void sell_screen(Bit8u *shop_ptr)
 		if (l5 != l6) {
 
 			if (l5 != -1) {
-				do_border((RealPt)ds_readd(0xd2ff),
+				do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 					array3.a[l5 / 5] - 1,
 					array5.a[l5 % 5] - 1,
 					array3.a[l5 / 5] + 16,
@@ -301,7 +301,7 @@ void sell_screen(Bit8u *shop_ptr)
 					0);
 			 }
 
-			do_border((RealPt)ds_readd(0xd2ff),
+			do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 				array3.a[l6 / 5] - 1,
 				array5.a[l6 % 5] - 1,
 				array3.a[l6 / 5] + 16,
@@ -316,7 +316,7 @@ void sell_screen(Bit8u *shop_ptr)
 			GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l6 + item))))));
 		}
 
-		if (ds_readws(0xc3d3) != 0  || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
 
 			answer = GUI_radio(NULL, 5,
 					get_ltx(0x6c4),

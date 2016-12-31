@@ -202,16 +202,16 @@ void status_show(Bit16u index)
 	update_mouse_cursor();
 
 	if (ds_readb(PP20_INDEX) != ARCHIVE_FILE_ZUSTA_UK) {
-		ds_writew(0xc3cb, 0);
+		ds_writew(UPDATE_STATUSLINE, 0);
 		ds_writeb(PP20_INDEX, ARCHIVE_FILE_ZUSTA_UK);
-		do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 		wait_for_vsync();
 		set_palette(p_datseg + 0x6372, 0, 0x20);
 	}
 
 	ds_writed(ACTION_TABLE_PRIMARY, (Bit32u)RealMake(datseg, ACTION_TABLE_STATUS));
 	ds_writed(ACTION_TABLE_SECONDARY, 0);
-	ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
 	set_textcolor(0, 2);
 
 	/* load and draw the background */
@@ -227,7 +227,7 @@ void status_show(Bit16u index)
 	ds_writed(PIC_COPY_SRC, (Bit32u)(hero + HERO_PORTRAIT));
 	do_pic_copy(0);
 
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	/* print invetory and silouette values */
 	if (ds_readws(STATUS_PAGE_MODE) < 3) {
@@ -258,7 +258,7 @@ void status_show(Bit16u index)
 			ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 			do_pic_copy(0);
 
-			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			/* check if stackable */
 			/* TODO: bit flags operation */
@@ -757,11 +757,11 @@ void status_show(Bit16u index)
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
 	do_pic_copy(0);
 
-	ds_writew(0xc3cb, 1);
+	ds_writew(UPDATE_STATUSLINE, 1);
 
 	if (ds_readws(STATUS_PAGE_MODE) >= 3) {
-		do_v_line((RealPt)ds_readd(0xd2ff), 107, 54, 195, 0);
-		do_v_line((RealPt)ds_readd(0xd2ff), 212, 54, 195, 0);
+		do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 107, 54, 195, 0);
+		do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 212, 54, 195, 0);
 	}
 
 	ds_writew(TXT_TABPOS1, txt_tabpos1_bak);
@@ -769,7 +769,7 @@ void status_show(Bit16u index)
 	ds_writew(TXT_TABPOS3, txt_tabpos3_bak);
 	ds_writew(TXT_TABPOS4, txt_tabpos4_bak);
 
-	ds_writed(0xd2fb, ds_readd(0xd2ff));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR));
 
 	refresh_screen_size();
 }

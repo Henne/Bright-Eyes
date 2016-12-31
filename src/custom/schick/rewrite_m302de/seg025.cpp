@@ -124,9 +124,9 @@ void show_citizen(void)
 			}
 		}
 
-	} while ((ds_readw(ACTION) == 0) && (ds_readw(0xc3d5) == 0));
+	} while ((ds_readw(ACTION) == 0) && (ds_readw(MOUSE1_EVENT2) == 0));
 
-	ds_writew(0xc3d5, 0);
+	ds_writew(MOUSE1_EVENT2, 0);
 	set_var_to_zero();
 	copy_palette();
 	turnaround();
@@ -304,7 +304,7 @@ void show_treasure_map(void)
 
 		set_palette(p_datseg + 0x26c3, 0, 0x20);
 
-		do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 
 		update_mouse_cursor();
 
@@ -335,7 +335,7 @@ void show_treasure_map(void)
 				ds_writew(PIC_COPY_X2, ds_readws(TMAP_X + 2 * l_si) + width - 1);
 				ds_writew(PIC_COPY_Y2, ds_readws(TMAP_Y + 2 * l_si) + height - 1);
 				ds_writed(PIC_COPY_SRC, (Bit32u)F_PADD((RealPt)ds_readd(BUFFER9_PTR), 30000));
-				ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+				ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 				do_pic_copy(0);
 			}
 		}
@@ -394,7 +394,7 @@ void show_treasure_map(void)
 			ds_writew(PIC_COPY_X2, 319);
 			ds_writew(PIC_COPY_Y2, 199);
 			ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			update_mouse_cursor();
 			wait_for_vsync();
@@ -444,7 +444,7 @@ signed short game_options(void)
 
 	get_textcolor(&fg_bak, &bg_bak);
 
-	ds_writed(0xd2fb, ds_readd(BUFFER9_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER9_PTR));
 
 	bak1 = ds_readws(0xd2d5);
 	bak2 = ds_readws(0xd2d9);
@@ -502,7 +502,7 @@ signed short game_options(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	update_mouse_cursor();
 	wait_for_vsync();
@@ -514,7 +514,7 @@ signed short game_options(void)
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+	ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR)));
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
@@ -525,7 +525,7 @@ signed short game_options(void)
 		handle_input();
 		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0);
 
-		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			/* use the radio menu */
 			answer = GUI_radio(get_ltx(0x938), 9,

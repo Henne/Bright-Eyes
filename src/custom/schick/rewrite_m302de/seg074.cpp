@@ -87,7 +87,7 @@ void show_automap(void)
 
 			handle_gui_input();
 
-			if ((ds_readw(0xc3d3) != 0) || (ds_readw(ACTION) == 73)) {
+			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
 					l_di = GUI_radio(get_ltx(0x990), 1, get_ltx(0x994)) - 1;
@@ -142,7 +142,7 @@ void show_automap(void)
 
 unsigned short is_discovered(signed short x, signed short y)
 {
-	return ds_readb(0xe442 + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
+	return ds_readb(AUTOMAP_BUF + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
 }
 
 /**
@@ -457,7 +457,7 @@ void draw_automap_to_screen(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 134);
 
-	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(0xd2ff) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
+	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(FRAMEBUF_PTR) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
 
 	update_mouse_cursor();
 
@@ -467,7 +467,7 @@ void draw_automap_to_screen(void)
 
 	refresh_screen_size();
 
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	/* restore screen coordinates */
 	*(struct dummy*)(p_datseg + PIC_COPY_DS_RECT) = bak;
@@ -526,7 +526,7 @@ signed short select_teleport_dest(void)
 	do {
 		handle_input();
 
-		if ((ds_readw(0xc3d3) != 0) || (ds_readw(ACTION) == 73)) {
+		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
 			if (ds_readb(DNG_MAP_SIZE) == 16) {
 				answer = GUI_radio(get_ltx(0x9a0), 1, get_ltx(0x9a4)) - 1;

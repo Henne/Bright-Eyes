@@ -67,7 +67,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 			if (!item_useable(Real2Host(ds_readd(USED_ITEM_DESC)))) {
 				/* item is not usable */
 
-				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + 0x029e)))
+				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + ITEMS_PLURALWORDS)))
 				{
 					/* german grammar, singular and plural are the same */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -93,9 +93,9 @@ void use_item(signed short item_pos, signed short hero_pos)
 			} else {
 				/* special item */
 #if !defined(__BORLANDC__)
-				func = handler[ds_readbs((0x08a9 + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
+				func = handler[ds_readbs((SPECIALITEMS_TABLE + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
 #else
-				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs((0x08a9 + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
+				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs((SPECIALITEMS_TABLE + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
 #endif
 				func();
 			}

@@ -82,13 +82,13 @@ void draw_fight_screen_pal(signed short mode)
 
 		/* clear framebuffer */
 #if !defined(__BORLANDC__)
-		PhysPt p = Real2Phys((RealPt)ds_readd(0xd2ff));
+		PhysPt p = Real2Phys((RealPt)ds_readd(FRAMEBUF_PTR));
 
 		for (int i = 0; i < 64000; i+=4) {
 			mem_writed(p + i, 0);
 		}
 #else
-		memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+		memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 #endif
 
 		/* set palettes */
@@ -813,7 +813,7 @@ void FIG_load_ship_sprites(void)
 
 			do_pic_copy(2);
 
-			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			}
 		}
@@ -1188,7 +1188,7 @@ signed short do_fight(signed short fight_id)
 	update_mouse_cursor();
 
 	/* clear the screen */
-	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+	bc_memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 
 	refresh_colors();
 

@@ -59,9 +59,9 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		/* string_array_itemnames */
 		p_name = (Bit8u*)get_itemname(index);
 
-		flag += lp5.a[ds_readbs(0x02ac + index)];
+		flag += lp5.a[ds_readbs(ITEMS_GENDERS + index)];
 
-		lp1 = (signed short*)(p_datseg + 0x0270);
+		lp1 = (signed short*)(p_datseg + ITEMS_NOPLURAL);
 
 		while (((l4 = host_readws((Bit8u*)(lp1++))) != -1) && (l4 != index));
 
@@ -74,7 +74,7 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		}
 	} else {
 		p_name = get_monname(index);
-		flag += lp5.a[ds_readbs(0x0925 + index)];
+		flag += lp5.a[ds_readbs(MONNAME_GENDERS + index)];
 	}
 
 	lp1 = (flag & 0x8000) ? (signed short*)(p_datseg + 0xa953 + (flag & 0xf) * 6) :
@@ -159,7 +159,7 @@ RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
 {
 	signed short l;
 
-	l = (v3 == 0) ? ds_readbs(0x02ac + v2) : ds_readbs(v2 + 0x0925);
+	l = (v3 == 0) ? ds_readbs(ITEMS_GENDERS + v2) : ds_readbs(v2 + MONNAME_GENDERS);
 
 	return (RealPt)ds_readd(0xaa14 + 4 * ds_readbs(0xaa30 + v1 * 3 + l));
 }
@@ -519,7 +519,7 @@ void GUI_font_to_buf(Bit8u *fc)
 void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width)
 {
 	/* screen_start */
-	RealPt dst = ((RealPt)ds_readd(0xd2fb)) + y * 320 + x;
+	RealPt dst = ((RealPt)ds_readd(TMP_FRAMEBUF_PTR)) + y * 320 + x;
 
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }

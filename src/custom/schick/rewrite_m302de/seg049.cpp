@@ -469,30 +469,30 @@ void GRP_move_hero(signed short src_pos)
 	/* dont move NPC */
 	if (src_pos != 6) {
 
-		ds_writew(0x2988, 157);
-		ds_writew(0x298c, 157);
-		ds_writew(0x298a, 1);
-		ds_writew(0x298e, 260);
+		ds_writew(MOUSE_POSY_MIN, 157);
+		ds_writew(MOUSE_POSY_MAX, 157);
+		ds_writew(MOUSE_POSX_MIN, 1);
+		ds_writew(MOUSE_POSX_MAX, 260);
 
 		update_mouse_cursor();
 
-		ds_writew(0x2998, 1);
-		ds_writew(0x299e, 157);
+		ds_writew(MOUSE_LOCKED, 1);
+		ds_writew(MOUSE_POSY, 157);
 
-		ds_writew(0x299c, ds_readw(HERO_PIC_POSX + 2 * src_pos));
-		ds_writew(PIC_COPY_X1, ds_readw(0x299c));
-		ds_writew(PIC_COPY_Y1, ds_readw(0x299e));
-		ds_writew(PIC_COPY_X2, ds_readw(0x299c) + 31);
-		ds_writew(PIC_COPY_Y2, ds_readw(0x299e) + 31);
+		ds_writew(MOUSE_POSX, ds_readw(HERO_PIC_POSX + 2 * src_pos));
+		ds_writew(PIC_COPY_X1, ds_readw(MOUSE_POSX));
+		ds_writew(PIC_COPY_Y1, ds_readw(MOUSE_POSY));
+		ds_writew(PIC_COPY_X2, ds_readw(MOUSE_POSX) + 31);
+		ds_writew(PIC_COPY_Y2, ds_readw(MOUSE_POSY) + 31);
 		ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 		do_save_rect();
 
-		ds_writew(0x2998, 0);
+		ds_writew(MOUSE_LOCKED, 0);
 
 		refresh_screen_size();
 
-		ds_writew(0x2998, 1);
+		ds_writew(MOUSE_LOCKED, 1);
 
 		ds_writew(PIC_COPY_X1, ds_readw(HERO_PIC_POSX + 2 * src_pos));
 		ds_writew(PIC_COPY_Y1, 157);
@@ -502,36 +502,36 @@ void GRP_move_hero(signed short src_pos)
 
 		do_save_rect();
 
-		ds_writew(0x2998, 0);
+		ds_writew(MOUSE_LOCKED, 0);
 
 		update_mouse_cursor();
 
-		ds_writew(0x29a0, ds_readw(0x299c));
-		ds_writew(0x29a2, ds_readw(0x299e));
+		ds_writew(MOUSE_POSX_BAK, ds_readw(MOUSE_POSX));
+		ds_writew(MOUSE_POSY_BAK, ds_readw(MOUSE_POSY));
 
-		while (ds_readw(0xc3d5) == 0) {
+		while (ds_readw(MOUSE1_EVENT2) == 0) {
 #if !defined(__BORLANDC__)
 			/* call DOSBOX to handle mouse ISR */
 			wait_for_vsync();
 #endif
-			if (ds_readw(0x29a4) != 0) {
+			if (ds_readw(MOUSE_MOVED) != 0) {
 
-				ds_writew(0x2998, 1);
+				ds_writew(MOUSE_LOCKED, 1);
 
 				wait_for_vsync();
 
-				ds_writew(PIC_COPY_X1, ds_readw(0x29a0));
-				ds_writew(PIC_COPY_Y1, ds_readw(0x29a2));
-				ds_writew(PIC_COPY_X2, ds_readw(0x29a0) + 31);
-				ds_writew(PIC_COPY_Y2, ds_readw(0x29a2) + 31);
+				ds_writew(PIC_COPY_X1, ds_readw(MOUSE_POSX_BAK));
+				ds_writew(PIC_COPY_Y1, ds_readw(MOUSE_POSY_BAK));
+				ds_writew(PIC_COPY_X2, ds_readw(MOUSE_POSX_BAK) + 31);
+				ds_writew(PIC_COPY_Y2, ds_readw(MOUSE_POSY_BAK) + 31);
 				ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 				do_pic_copy(0);
 
-				ds_writew(PIC_COPY_X1, ds_readw(0x299c));
-				ds_writew(PIC_COPY_Y1, ds_readw(0x299e));
-				ds_writew(PIC_COPY_X2, ds_readw(0x299c) + 31);
-				ds_writew(PIC_COPY_Y2, ds_readw(0x299e) + 31);
+				ds_writew(PIC_COPY_X1, ds_readw(MOUSE_POSX));
+				ds_writew(PIC_COPY_Y1, ds_readw(MOUSE_POSY));
+				ds_writew(PIC_COPY_X2, ds_readw(MOUSE_POSX) + 31);
+				ds_writew(PIC_COPY_Y2, ds_readw(MOUSE_POSY) + 31);
 				ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 				do_save_rect();
@@ -540,23 +540,23 @@ void GRP_move_hero(signed short src_pos)
 
 				do_pic_copy(0);
 
-				ds_writew(0x29a0, ds_readw(0x299c));
-				ds_writew(0x29a2, ds_readw(0x299e));
-				ds_writew(0x29a4, 0);
-				ds_writew(0x2998, 0);
+				ds_writew(MOUSE_POSX_BAK, ds_readw(MOUSE_POSX));
+				ds_writew(MOUSE_POSY_BAK, ds_readw(MOUSE_POSY));
+				ds_writew(MOUSE_MOVED, 0);
+				ds_writew(MOUSE_LOCKED, 0);
 			}
 		}
 
-		ds_writew(PIC_COPY_X1, ds_readw(0x29a0));
-		ds_writew(PIC_COPY_Y1, ds_readw(0x29a2));
-		ds_writew(PIC_COPY_X2, ds_readw(0x29a0) + 31);
-		ds_writew(PIC_COPY_Y2, ds_readw(0x29a2) + 31);
+		ds_writew(PIC_COPY_X1, ds_readw(MOUSE_POSX_BAK));
+		ds_writew(PIC_COPY_Y1, ds_readw(MOUSE_POSY_BAK));
+		ds_writew(PIC_COPY_X2, ds_readw(MOUSE_POSX_BAK) + 31);
+		ds_writew(PIC_COPY_Y2, ds_readw(MOUSE_POSY_BAK) + 31);
 		ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 
 		do_pic_copy(0);
 
 		dst_pos = 6;
-		while (ds_readws(HERO_PIC_POSX + --dst_pos * 2) > ds_readws(0x299c))
+		while (ds_readws(HERO_PIC_POSX + --dst_pos * 2) > ds_readws(MOUSE_POSX))
 		{
 			;
 		}
@@ -606,11 +606,11 @@ void GRP_move_hero(signed short src_pos)
 			}
 		}
 
-		ds_writew(0xc3d5, 0);
-		ds_writew(0x2988, 0);
-		ds_writew(0x298c, 199);
-		ds_writew(0x298a, 0);
-		ds_writew(0x298e, 319);
+		ds_writew(MOUSE1_EVENT2, 0);
+		ds_writew(MOUSE_POSY_MIN, 0);
+		ds_writew(MOUSE_POSY_MAX, 199);
+		ds_writew(MOUSE_POSX_MIN, 0);
+		ds_writew(MOUSE_POSX_MAX, 319);
 
 		refresh_screen_size();
 		draw_status_line();

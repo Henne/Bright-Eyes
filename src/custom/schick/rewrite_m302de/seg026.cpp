@@ -232,8 +232,8 @@ signed short load_game_state(void)
 		update_mouse_cursor();
 
 		/* something ani related */
-		l1 = ds_readws(0xc3cb);
-		ds_writew(0xc3cb, 0);
+		l1 = ds_readws(UPDATE_STATUSLINE);
+		ds_writew(UPDATE_STATUSLINE, 0);
 
 		l4 = ds_readws(ANI_ENABLED);
 		ds_writew(ANI_ENABLED, 0);
@@ -416,7 +416,7 @@ signed short load_game_state(void)
 
 		load_area_description(2);
 
-		ds_writews(0xc3cb, l1);
+		ds_writews(UPDATE_STATUSLINE, l1);
 		ds_writews(ANI_ENABLED, l4);
 
 		refresh_screen_size();

@@ -184,7 +184,7 @@ void do_inn(void)
 
 		handle_gui_input();
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			answer = GUI_radio(get_ltx(0x564), ds_readws(COMBO_MODE) == 0 ? 7 : 8,
 						get_ltx(0x55c), get_ltx(0x758),

@@ -553,7 +553,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				}
 			}
 
-			ds_writew(0x26b1, 1);
+			ds_writew(FIG_CONTINUE_PRINT, 1);
 
 			draw_fight_screen_pal(0);
 
@@ -638,7 +638,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						FIG_reset_12_13(ds_readbs(0xe38d));
 					}
 
-					ds_writew(0x26b1, 1);
+					ds_writew(FIG_CONTINUE_PRINT, 1);
 
 					if (ds_readws(0xe3a6) != 0) {
 
@@ -837,7 +837,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							}
 						}
 
-						ds_writew(0x26b1, 1);
+						ds_writew(FIG_CONTINUE_PRINT, 1);
 
 						draw_fight_screen(1);
 

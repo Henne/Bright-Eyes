@@ -79,7 +79,7 @@ void do_citycamp(void)
 
 		handle_gui_input();
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			/* open citycamp radio menu */
 			answer = GUI_radio(get_ltx(0x4cc), 5,

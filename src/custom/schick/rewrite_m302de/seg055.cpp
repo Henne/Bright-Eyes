@@ -207,7 +207,7 @@ void do_merchant(void)
 					if (party_money < 5000) {
 
 						GUI_output(get_ltx(0xbec));
-						ds_writews(0xc3d3, ds_writews(ACTION, 0));
+						ds_writews(MOUSE2_EVENT, ds_writews(ACTION, 0));
 						done = 1;
 
 					} else {
@@ -222,13 +222,13 @@ void do_merchant(void)
 				} else {
 
 					GUI_output(get_ltx(0xbec));
-					ds_writews(0xc3d3, ds_writews(ACTION, 0));
+					ds_writews(MOUSE2_EVENT, ds_writews(ACTION, 0));
 					done = 1;
 				}
 			}
 		}
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			answer = GUI_radio(get_ltx(0x6b8), 4,
 						get_ltx(0x6bc), get_ltx(0x6c0),

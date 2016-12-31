@@ -86,17 +86,17 @@ void do_tavern(void)
 
 			GUI_output(get_ltx(0x760));
 			done = 1;
-			ds_writew(0xc3d3, ds_writew(ACTION, 0));
+			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
 		if (ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
 			GUI_output(get_ltx(0x24));
 			done = 1;
-			ds_writew(0xc3d3, ds_writew(ACTION, 0));
+			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
-		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			answer = GUI_radio(get_ltx(0x754), ds_readw(COMBO_MODE) == 0 ? 4 : 5,
 						get_ltx(0x55c),

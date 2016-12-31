@@ -224,24 +224,24 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed short attack_hero)
 {
 	signed short damage;
-	signed short l_di;
+	signed short damage_mod;
 	Bit8u* item_p_rh;
-	Bit8u* p2;
-	Bit8u* p3;
-	signed short target_size;
+	Bit8u* p_weapontab;
+	Bit8u* p_rangedtab;
+	signed short target_size_bonus;
 	signed short right_hand;
 	signed short beeline;
-	signed short v4;
+	signed short distance_malus;
 	signed short x_hero;
 	signed short y_hero;
 	signed short x_target;
 	signed short y_target;
-	signed short v9;
+	signed short hero_idx;
 	signed char enemy_gfx_id;
 	Bit8u* enemy_p;
-	signed short v11;
+	signed short weapon_type;
 
-	l_di = 0;
+	damage_mod = 0;
 
 	if (attack_hero == 0) {
 		enemy_p = target;
@@ -251,23 +251,23 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 	item_p_rh = get_itemsdat(right_hand);
 
-	v11 = weapon_check(hero);
+	weapon_type = weapon_check(hero);
 
-	if (v11 == -1) {
-		v11 = FIG_get_range_weapon_type(hero);
+	if (weapon_type == -1) {
+		weapon_type = FIG_get_range_weapon_type(hero);
 	}
 
-	if (v11 != -1) {
+	if (weapon_type != -1) {
 
-		p2 = p_datseg + 0x06b0 + host_readbs(item_p_rh + 4) * 7;
+		p_weapontab = p_datseg + WEAPONS_TABLE + host_readbs(item_p_rh + 4) * 7;
 
-		damage = dice_roll(host_readbs(p2), 6, host_readbs(p2 + 1));
+		damage = dice_roll(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1));
 
-		if (host_readbs(p2 + 4) != -1) {
+		if (host_readbs(p_weapontab + 4) != -1) {
 
-			v9 = get_hero_index(hero);
+			hero_idx = get_hero_index(hero);
 
-			FIG_search_obj_on_cb(v9 + 1, &x_hero, &y_hero);
+			FIG_search_obj_on_cb(hero_idx + 1, &x_hero, &y_hero);
 			FIG_search_obj_on_cb(host_readbs(hero + HERO_ENEMY_ID), &x_target, &y_target);
 
 #if !defined(__BORLANDC__)
@@ -280,51 +280,51 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 			beeline = calc_beeline(x_hero, y_hero, x_target, y_target);
 
 			if (beeline <= 2) {
-				v4 = 0;
+				distance_malus = 0;
 			} else if (beeline <= 4) {
-				v4 = 1;
+				distance_malus = 1;
 			} else if (beeline <= 6) {
-				v4 = 2;
+				distance_malus = 2;
 			} else if (beeline <= 9) {
-				v4 = 3;
+				distance_malus = 3;
 			} else if (beeline <= 15) {
-				v4 = 4;
+				distance_malus = 4;
 			} else if (beeline <= 20) {
-				v4 = 5;
+				distance_malus = 5;
 			} else {
-				v4 = 6;
+				distance_malus = 6;
 			}
 
-			p3 = p_datseg + 0x0668 + host_readbs(p2 + 4) * 8;
+			p_rangedtab = p_datseg + RANGED_WEAPONS_TABLE + host_readbs(p_weapontab + 4) * 8;
 
 			if (attack_hero != 0) {
 				if (host_readbs(target + HERO_TYPE) == HERO_TYPE_DWARF) {
 					/* ZWERG / DWARF */
-					target_size = 2;
+					target_size_bonus = 2;
 				} else {
-					target_size = 3;
+					target_size_bonus = 3;
 				}
 			} else {
 					/* size of the enemy */
-				target_size = host_readbs(target + ENEMY_SHEET_SIZE);
+				target_size_bonus = host_readbs(target + ENEMY_SHEET_SIZE);
 			}
 
-			l_di = (test_skill(hero,
+			damage_mod = (test_skill(hero,
 					(host_readbs(item_p_rh + 3) == 8 ? 8 : 7),
-					host_readbs(p3 + 7) + 2 * v4 - 2 * target_size) > 0)
-				? ds_readbs(0x0668 + 8 * host_readbs(p2 + 4) + v4)
+					host_readbs(p_rangedtab + 7) + 2 * distance_malus - 2 * target_size_bonus) > 0)
+				? ds_readbs(RANGED_WEAPONS_TABLE + 8 * host_readbs(p_weapontab + 4) + distance_malus)
 				: -damage;
 
-			if (l_di != 0) {
-				damage += l_di;
+			if (damage_mod != 0) {
+				damage += damage_mod;
 			}
 
 
 		} else {
 
-			l_di = host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD) - host_readbs(p2 + 2);
-			if (l_di > 0) {
-				damage += l_di;
+			damage_mod = host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD) - host_readbs(p_weapontab + 2);
+			if (damage_mod > 0) {
+				damage += damage_mod;
 			}
 		}
 	} else {

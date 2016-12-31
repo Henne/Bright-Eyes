@@ -545,7 +545,7 @@ void DNG_lights(void)
 	if (div16(ds_readb((0xbd6e + 1))) != 11) {
 
 		/* copy palette */
-		memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), Real2Host(ds_readd(0xe404)), 0xc0);
+		memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), Real2Host(ds_readd(BUFFER11_PTR)), 0xc0);
 
 		if (!(ds_readb((0xbd6e + 1)) & 1)) {
 
@@ -652,9 +652,9 @@ void DNG_update_pos(void)
 
 	DNG_stub1();
 
-	ds_writew(0xe486, ds_readw(X_TARGET));
-	ds_writew(0xe484, ds_readw(Y_TARGET));
-	ds_writew(0xe482, ds_readbs(DIRECTION));
+	ds_writew(DNG_REFRESH_X_TARGET, ds_readw(X_TARGET));
+	ds_writew(DNG_REFRESH_Y_TARGET, ds_readw(Y_TARGET));
+	ds_writew(DNG_REFRESH_DIRECTION, ds_readbs(DIRECTION));
 
 }
 

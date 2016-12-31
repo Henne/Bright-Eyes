@@ -193,7 +193,7 @@ void DNG_door(signed short action)
 						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x90);
 
 						ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
-						ds_writew(0xe482, -1);
+						ds_writew(DNG_REFRESH_DIRECTION, -1);
 					}
 
 					sub_hero_le(Real2Host(get_first_hero_available_in_group()), 1);
@@ -425,7 +425,7 @@ signed short DNG_step(void)
 		draw_main_screen();
 		GUI_print_loc_line(get_dtp(0x00));
 		ds_writew(REQUEST_REFRESH, ds_writew(0xd013, 0));
-		ds_writew(0xe486, -1);
+		ds_writew(DNG_REFRESH_X_TARGET, -1);
 	}
 
 	if (ds_readw(0xd013) != 0 && ds_readb(PP20_INDEX) == 0)
@@ -434,9 +434,9 @@ signed short DNG_step(void)
 		ds_writew(0xd013, 0);
 	}
 
-	if (ds_readbs(DIRECTION) != ds_readws(0xe482) ||
-		ds_readws(X_TARGET) != ds_readws(0xe486) ||
-		ds_readws(Y_TARGET) != ds_readws(0xe484))
+	if (ds_readbs(DIRECTION) != ds_readws(DNG_REFRESH_DIRECTION) ||
+		ds_readws(X_TARGET) != ds_readws(DNG_REFRESH_X_TARGET) ||
+		ds_readws(Y_TARGET) != ds_readws(DNG_REFRESH_Y_TARGET))
 	{
 		DNG_update_pos();
 		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
@@ -457,7 +457,7 @@ signed short DNG_step(void)
 
 	handle_gui_input();
 
-	if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73)
+	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
 	{
 		tw_bak = ds_readws(TEXTBOX_WIDTH);
 		ds_writew(TEXTBOX_WIDTH, 3);
@@ -530,7 +530,7 @@ signed short DNG_step(void)
 	{
 		if (select_magic_user() > 0)
 		{
-			ds_writew(0xe482, -1);
+			ds_writew(DNG_REFRESH_DIRECTION, -1);
 		}
 
 	} else if (ds_readws(ACTION) == 135 && ds_readw(0xd011) == 0)

@@ -68,7 +68,7 @@ signed short do_travel_mode(void)
 
 	prepare_map_marker();
 
-	ds_writew(0xc3d1, 0);
+	ds_writew(MOUSE1_EVENT1, 0);
 
 	ptr = p_datseg + 0xa0b4;
 
@@ -84,7 +84,7 @@ signed short do_travel_mode(void)
 
 			wait_for_vsync();
 
-			bc_memmove((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(0x432e), 64000);
+			bc_memmove((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(0x432e), 64000);
 
 			wait_for_vsync();
 
@@ -100,7 +100,7 @@ signed short do_travel_mode(void)
 			while (1) {
 				handle_input();
 
-				if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73)
+				if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
 				{
 					handle = 0;
 					while ((l_di = host_readb(Real2Host(host_readd(ptr + 2)) + handle)) != 255)
@@ -191,7 +191,7 @@ signed short do_travel_mode(void)
 
 					break;
 
-				} else if (ds_readw(0xc3d1) != 0 )
+				} else if (ds_readw(MOUSE1_EVENT1) != 0 )
 				{
 
 					for (handle = 0, l4 = -1; handle < 52; handle++)
@@ -206,7 +206,7 @@ signed short do_travel_mode(void)
 						}
 					}
 
-					if (l4 == -1 && (l_di = get_mouse_action(ds_readws(0x299c), ds_readws(0x299e), p_datseg + 0xa50f)))
+					if (l4 == -1 && (l_di = get_mouse_action(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY), p_datseg + 0xa50f)))
 					{
 						l4 = l_di + 51;
 					}
@@ -218,7 +218,7 @@ signed short do_travel_mode(void)
 						l6 = ds_readws(BASEPOS_X);
 						l7 = ds_readws(BASEPOS_Y);
 						ds_writew(BASEPOS_Y, 0);
-						ds_writew(BASEPOS_X, (ds_readws(0x299c) >= 0 && ds_readws(0x299c) <= 159 ? 80 : -80));
+						ds_writew(BASEPOS_X, (ds_readws(MOUSE_POSX) >= 0 && ds_readws(MOUSE_POSX) <= 159 ? 80 : -80));
 
 						set_and_spin_lock();
 
@@ -229,7 +229,7 @@ signed short do_travel_mode(void)
 						ds_writew(CURRENT_TOWN_ANIX, l3);
 					}
 
-					ds_writew(0xc3d1, 0);
+					ds_writew(MOUSE1_EVENT1, 0);
 				}
 			}
 			break;
@@ -280,7 +280,7 @@ signed short do_travel_mode(void)
 		set_palette(Real2Host(ds_readd(DTP2)), 0x80, 0x40);
 		set_palette(Real2Host(ds_readd(DTP2)), 0x00, 0x20);
 
-		do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 	}
 
 	ds_writew(CURRENT_ANI, ds_writebs(0x2ca7, ds_writebs(PP20_INDEX, -1)));

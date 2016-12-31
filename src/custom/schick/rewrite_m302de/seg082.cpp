@@ -146,7 +146,7 @@ signed short DNG07_handler(void)
 
 			ds_writew(X_TARGET, ds_readws(0x2d83));
 			ds_writew(Y_TARGET, ds_readws(0x2d85));
-			ds_writew(0xe482, -1);
+			ds_writew(DNG_REFRESH_DIRECTION, -1);
 
 		} else {
 

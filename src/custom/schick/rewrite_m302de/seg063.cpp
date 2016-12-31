@@ -39,7 +39,7 @@ void passages_init(void)
 {
 	signed short si;
 	signed short i;
-	Bit8u *p = p_datseg + 0x6f00;
+	Bit8u *p = p_datseg + SEA_TRAVEL_PASSAGES;
 
 
 	for (i = 0; i < 45; p += 8, i++) {
@@ -141,7 +141,7 @@ void do_harbour(void)
 
 		handle_gui_input();
 
-		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			answer = GUI_radio(get_dtp(0x24), 4,
 						get_dtp(0x28), get_dtp(0x2c),
@@ -162,20 +162,20 @@ void do_harbour(void)
 
 				/* select a destination */
 				answer = GUI_radio(get_dtp(0x38), (signed char)answer,
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 0 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 1 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 2 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 3 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 4 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 5 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 6 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 7 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 8 + 10)) + 235)),
-						get_ltx(4 * (ds_readb((0x42b2 + 12 * 9 + 10)) + 235))) - 1;
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 0 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 1 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 2 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 3 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 4 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 5 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 6 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 7 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 8 + 10)) + 235)),
+						get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 12 * 9 + 10)) + 235))) - 1;
 
 				if (answer != -2) {
 
-					ptr = p_datseg + 12 * answer + 0x42b2;
+					ptr = p_datseg + 12 * answer + SEA_TRAVEL_MENU_PASSAGES;
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x40),
@@ -267,7 +267,7 @@ void do_harbour(void)
 						do {
 
 							strcat((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(4 * (ds_readb((0x42b2 + 10) + 12 * l_si++) + 235)));
+								(char*)get_ltx(4 * (ds_readb((SEA_TRAVEL_MENU_PASSAGES + 10) + 12 * l_si++) + 235)));
 							if (--answer) {
 
 								strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -352,7 +352,7 @@ void do_harbour(void)
 				ds_writew(WALLCLOCK_Y, ds_readws(BASEPOS_Y) + 87);
 				ds_writew(WALLCLOCK_UPDATE, 1);
 
-				sea_travel(ds_readb(0x42b1), ds_readbs(0x6f00 + 8 * ds_readb(0x42b1)) == ds_readbs(CURRENT_TOWN) ? 0 : 1);
+				sea_travel(ds_readb(0x42b1), ds_readbs(SEA_TRAVEL_PASSAGES + 8 * ds_readb(0x42b1)) == ds_readbs(CURRENT_TOWN) ? 0 : 1);
 				passage_arrival();
 
 				ds_writew(WALLCLOCK_UPDATE, ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writeb(0x42ae, 0))));
@@ -438,14 +438,14 @@ void sea_travel(signed short passage, signed short dir)
 
 	off = host_readd(Real2Host(ds_readfp(0x4266)) + 4 * ds_readw(0x423e));
 	ds_writefp(0x425a, ds_readfp(0x4266) + off + 4 * ds_readws(0x4236));
-	ptr = ds_readfp(0xd2ff);
+	ptr = ds_readfp(FRAMEBUF_PTR);
 
 	add_ds_fp(0x425a, 4);
 
 	memset(Real2Host(ds_readd(0xd299)), 0xaa, 500);
 	ds_writew(0x424c, 10 * ds_readbs(0x42b0));
 	ds_writew(0x422e, get_srout_len(Real2Host(ds_readfp(0x425a))));
-	ds_writew(0x4230, 100 * ds_readb(0x6f00 + 2 + 8 * passage));
+	ds_writew(0x4230, 100 * ds_readb(SEA_TRAVEL_PASSAGES + 2 + 8 * passage));
 	ds_writew(0x4232, ds_readws(0x4230) / ds_readws(0x424c) * 60);
 	ds_writew(0x4234, ds_readws(0x4232) / ds_readws(0x422e));
 	ds_writew(0x423a, ds_readws(0x4230) / ds_readws(0x422e));
@@ -560,7 +560,7 @@ void sea_travel(signed short passage, signed short dir)
 
 			load_map();
 
-			bc_memmove((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(0x432e), 64000);
+			bc_memmove((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(0x432e), 64000);
 
 			wait_for_vsync();
 

@@ -96,7 +96,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 	ds_writeb(SEA_TRAVEL, 1);
 	l5 = -1;
 	ds_writefp(0x425a, (RealPt)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (route_nr - 1))), 0xec)));
-	fb_start = ds_readfp(0xd2ff);
+	fb_start = ds_readfp(FRAMEBUF_PTR);
 	add_ds_fp(0x425a, 4);
 
 	memset((void*)Real2Host(ds_readfp(0xd299)), 170, 500);
@@ -232,7 +232,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 		add_ds_ws(0x4238, (ds_readws(TRV_RETURN) == 2 ? -ds_readws(0x423a) : ds_readws(0x423a)));
 		add_ds_ws(0x423c, ds_readws(0x423a));
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73)
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
 		{
 			if (!ds_readb(0x4332))
 			{
@@ -393,7 +393,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 		{
 			update_mouse_cursor();
 			load_map();
-			bc_memmove((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(0x432e), 64000);
+			bc_memmove((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(0x432e), 64000);
 
 			wait_for_vsync();
 			set_palette(Real2Host(ds_readd(0x432e)) + 64000 + 2, 0, 0x20);
@@ -639,7 +639,7 @@ void TM_draw_track(signed short a1, signed short a2, signed short a3, signed sho
 	Bit8u *ptr;
 	RealPt fb_start;
 
-	fb_start = (RealPt)ds_readd(0xd2ff);
+	fb_start = (RealPt)ds_readd(FRAMEBUF_PTR);
 	ptr = Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (a1 - 1))), 0xec));
 	ptr += 4;
 

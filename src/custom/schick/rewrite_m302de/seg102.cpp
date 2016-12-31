@@ -578,9 +578,9 @@ void mspell_ignifaxius(void)
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
 			/* adjust rs_malus */
-			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x0877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
+			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
 			{
-				rs_malus = ds_readbs(0x0877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
+				rs_malus = ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
 						- host_readbs(p_armour + 7);
 			}
 

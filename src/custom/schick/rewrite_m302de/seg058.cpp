@@ -237,7 +237,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 					l7 = item = l12 = 0;
 					percent_old = 100;
 
-					do_fill_rect((RealPt)ds_readd(0xd2ff), 26, 26, 105, 33, 0);
+					do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 26, 26, 105, 33, 0);
 
 					make_valuta_str((char*)Real2Host(ds_readd(DTP2)), host_readds(hero2 + HERO_MONEY));
 					GUI_print_string(Real2Host(ds_readd(DTP2)),
@@ -246,10 +246,10 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 				update_mouse_cursor();
 
-				do_fill_rect((RealPt)ds_readd(0xd2ff), 29, 34, 214, 133, 0);
+				do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 29, 34, 214, 133, 0);
 
-				do_v_line((RealPt)ds_readd(0xd2ff), 87, 35, 131, -1);
-				do_v_line((RealPt)ds_readd(0xd2ff), 152, 35, 131, -1);
+				do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 87, 35, 131, -1);
+				do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 152, 35, 131, -1);
 
 				nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
 				nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
@@ -324,14 +324,14 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 			if (l6 != l7) {
 
-				do_border((RealPt)ds_readd(0xd2ff),
+				do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 					array3.a[l6 / 5] - 1,
 					array5.a[l6 % 5] - 1,
 					array3.a[l6 / 5] + 16,
 					array5.a[l6 % 5] + 16,
 					0);
 
-				do_border((RealPt)ds_readd(0xd2ff),
+				do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 					array3.a[l7 / 5] - 1,
 					array5.a[l7 % 5] - 1,
 					array3.a[l7 / 5] + 16,
@@ -345,7 +345,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 				GUI_print_loc_line(Real2Host(GUI_name_singular((Bit8u*)get_itemname(host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item))))));
 			}
 
-			if (ds_readws(0xc3d3) != 0  || ds_readws(ACTION) == 73) {
+			if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
 
 				answer = GUI_radio(NULL, 5,
 						get_ltx(0x6c4),
@@ -530,7 +530,7 @@ void do_smith(void)
 
 		handle_gui_input();
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 

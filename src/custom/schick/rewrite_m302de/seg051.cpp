@@ -86,7 +86,7 @@ void do_wildcamp(void)
 
 		handle_gui_input();
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
 

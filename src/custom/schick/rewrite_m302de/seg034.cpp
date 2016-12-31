@@ -162,15 +162,15 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	signed short cb_base_x = 9;
 	signed short cb_base_y = 116;
 
-	ds_writew(0xc3d1, ds_writew(0xc3d3, 0));
+	ds_writew(MOUSE1_EVENT1, ds_writew(MOUSE2_EVENT, 0));
 
 	update_mouse_cursor();
 
-	ds_writew(0x29a0, ds_writew(0x299c, x_screen = cb_base_x + 10 * (host_readws(px) + host_readws(py))));
+	ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen = cb_base_x + 10 * (host_readws(px) + host_readws(py))));
 
-	ds_writew(0x29a2, ds_writew(0x299e, y_screen = cb_base_y + 5 * (host_readws(px) - host_readws(py))));
+	ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, y_screen = cb_base_y + 5 * (host_readws(px) - host_readws(py))));
 
-	mouse_move_cursor(ds_readws(0x299c), ds_readws(0x299e));
+	mouse_move_cursor(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY));
 
 	refresh_screen_size();
 
@@ -210,11 +210,11 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 	do {
 		handle_input();
 
-		if ((ds_readws(ACTION) == 1) || (ds_readws(0xc3d3) != 0)) {
+		if ((ds_readws(ACTION) == 1) || (ds_readws(MOUSE2_EVENT) != 0)) {
 
 			/* cancel */
 
-			ds_writew(0xc3d3, 0);
+			ds_writew(MOUSE2_EVENT, 0);
 
 			FIG_remove_from_list(ds_readbs(0xe38f), 0);
 
@@ -235,8 +235,8 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 			from_kbd = 1;
 		} else {
 
-			x_diff = ds_readws(0x299c) - x_screen;
-			y_diff = ds_readws(0x299e) - y_screen;
+			x_diff = ds_readws(MOUSE_POSX) - x_screen;
+			y_diff = ds_readws(MOUSE_POSY) - y_screen;
 
 			if (((y_diff > 0) && (x_diff <= -10)) ||
 				((x_diff < 0) && (y_diff >= 5)))
@@ -260,9 +260,9 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 			}
 		}
 
-		if (ds_readws(0xc3d1) != 0) {
+		if (ds_readws(MOUSE1_EVENT1) != 0) {
 			ds_writew(ACTION, 28);
-			ds_writew(0xc3d1, 0);
+			ds_writew(MOUSE1_EVENT1, 0);
 		}
 
 		if (ds_readws(ACTION) == 77) {
@@ -292,10 +292,10 @@ signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_ra
 			y_screen = cb_base_y + 5 * (host_readws(px) - host_readws(py));
 
 			if (from_kbd != 0) {
-				ds_writew(0x29a0, ds_writew(0x299c, x_screen));
-				ds_writew(0x29a2, ds_writew(0x299e, y_screen));
+				ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen));
+				ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, y_screen));
 
-				mouse_move_cursor(ds_readws(0x299c), ds_readws(0x299e));
+				mouse_move_cursor(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY));
 			}
 
 			refresh_screen_size();
@@ -564,15 +564,15 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 	update_mouse_cursor();
 
-	ds_writew(0x29a0, ds_writew(0x299c, x_screen = l10 + 10 * (host_readws(px) + host_readws(py))));
+	ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen = l10 + 10 * (host_readws(px) + host_readws(py))));
 
-	ds_writew(0x29a2, ds_writew(0x299e, y_screen = l11 + 5 * (host_readws(px) - host_readws(py))));
+	ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, y_screen = l11 + 5 * (host_readws(px) - host_readws(py))));
 
-	mouse_move_cursor(ds_readws(0x299c), ds_readws(0x299e));
+	mouse_move_cursor(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY));
 
 	refresh_screen_size();
 
-	ds_writew(0xc3d1, ds_writew(0xc3d3, 0));
+	ds_writew(MOUSE1_EVENT1, ds_writew(MOUSE2_EVENT, 0));
 
 	x = host_readws(px);
 	y = host_readws(py);
@@ -624,8 +624,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			l9 = 1;
 		} else {
 
-			l16 = ((ds_readws(0x299c) - l10) / 10 + (ds_readws(0x299e) - l11) / 5) / 2;
-			l17 = -((ds_readws(0x299e) - l11) / 5 - l16);
+			l16 = ((ds_readws(MOUSE_POSX) - l10) / 10 + (ds_readws(MOUSE_POSY) - l11) / 5) / 2;
+			l17 = -((ds_readws(MOUSE_POSY) - l11) / 5 - l16);
 
 			if ((l16 != x) || (l17 != y)) {
 
@@ -635,8 +635,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			}
 		}
 
-		if (ds_readws(0xc3d1) != 0) {
-			ds_writew(0xc3d1, 0);
+		if (ds_readws(MOUSE1_EVENT1) != 0) {
+			ds_writew(MOUSE1_EVENT1, 0);
 			ds_writew(ACTION, 28);
 		}
 
@@ -668,11 +668,11 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			y_screen = l11 + 5 * (x - y);
 
 			if (l9 != 0) {
-				ds_writew(0x29a0, ds_writew(0x299c, x_screen));
+				ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen));
 
-				ds_writew(0x29a2, ds_writew(0x299e, y_screen));
+				ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, y_screen));
 
-				mouse_move_cursor(ds_readws(0x299c), ds_readws(0x299e));
+				mouse_move_cursor(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY));
 			}
 
 			refresh_screen_size();
@@ -824,8 +824,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			set_textcolor(fg_bak, bg_bak);
 		}
 
-		if ((ds_readws(0xc3d3) != 0) || (ds_readws(ACTION) == 1)) {
-			ds_writew(0xc3d3, 0);
+		if ((ds_readws(MOUSE2_EVENT) != 0) || (ds_readws(ACTION) == 1)) {
+			ds_writew(MOUSE2_EVENT, 0);
 			ds_writew(ACTION, 28);
 			l_si = 5;
 		}

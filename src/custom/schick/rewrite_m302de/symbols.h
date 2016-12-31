@@ -11,13 +11,21 @@
 
 #define CD_INIT_SUCCESSFUL	(0x0095)	/* unsigned short {0,1} */
 #define CD_AUDIO_PAUSED	(0x00a1)	/* unsigned short {0,1} */
+#define ITEMS_NOPLURAL	(0x0270)	/* signed short[23] = { LAKRITZE (0x59), BONBONS (0x5a), SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), ÖL (0x29), EXPURGICUM (0xa6), VOMICUM (0xa8), GEGENGIFT (0xb4), ERZKLUMPEN (0xb5), LOBPREISUNGEN (0xbd), PLATTENZEUG (0x52), LEDERZEUG (0x54), KETTENZEUG (0x53), MIASTHMATICUM (0xee), HYLAILIC_FIRE (0xef), -1 } */
+#define ITEMS_PLURALWORDS	(0x029e)	/* signed short[7] = { DIETRICHE (0x23), SCHUHE (0x32), STIEFEL (0x33), SCHNURSCHUHE (0x34), BONBONS (0x5a), LOBPREISUNGEN (0xbd), -1 } */
+#define ITEMS_GENDERS	(0x02ac)	/* signed char[254] */
 #define WEARABLE_ITEMS	(0x0634)	/* RealPt[13], items wearable depending on hero type */
+#define RANGED_WEAPONS_TABLE	(0x0668)	/* (struct { char[8]; })[9] */
+#define WEAPONS_TABLE	(0x06b0)	/* (struct { char[7]; })[65] */
+#define ARMORS_TABLE	(0x0877)	/* (struct { char rs, be; })[25] */
+#define SPECIALITEMS_TABLE	(0x08a9)	/* (struct { char unkn1, unkn2, handler_nr; })[14] */
 #define POISON_POTIONS	(0x08d3)	/* signed short[10] = { SHURINKNOLLENGIFT (0x37), ARAXGIFT (0x38), ANGSTGIFT (0x39), SCHLAFGIFT (0x3a), GOLDLEIM (0x3b), LOTUSGIFT (0x8d), KUKRIS (0x8e), BANNSTAUB (0x8f), KROETENSCHEMELGIFT (0x90), 0xff } */
 #define HERBS_TOXIC	(0x08e7)	/* signed short[5] = { SHURINKNOLLE (0x7a), ALRAUNE (0x7e), LOTUSBLUTE (0x84), EITRIGER KROTENSCHEMEL (0x3e), 0xff } */
 #define HERBS_UNEATABLE	(0x08f1)	/* signed short[7] = { ILMENBLATT (0x80), FINAGEBÄUMCHEN (0x81), JORUGAWURZEL (0x82), KAIRANHALM (0x9d), OLGINWURZEL (0x9c), DONFSTENGEL (0x7c), 0xff } */
 #define ELIXIR_POTIONS	(0x08ff)	/* signed short[8] = { MU ELIXIER (0x93), KL ELIXIER (0x94), CH ELIXIER (0x95), FF ELIXIER (0x96), GE ELIXIER (0x97), IN ELIXIER (0x98), KK ELIXIER (0x99), 0xff } */
 #define BAD_ELIXIRS	(0x090f)	/* signed short[8] = { MU ELIXIER (0xe2), KL ELIXIER (0xe3), CH ELIXIER (0xe4), FF ELIXIER (0xe5), GE ELIXIER (0xe6), IN ELIXIER (0xe7), KK ELIXIER (0xe8), 0xff } */
 #define ATTACK_ITEMS	(0x091f)	/* signed short[3] = { ITEM_MIASTHMATICUM (0xee), ITEM_HYLAILIC_FIRE (0xef), -1 } */
+#define MONNAME_GENDERS    (0x0925)    /* signed char[78] */
 #define STAFFSPELL_DESCRIPTIONS	(0x0973)	/* (struct { char attrib1, attrib2, attrib3, bonus, cost, ae_mod;  })[7] */
 #define SPELL_DESCRIPTIONS	(0x099d)	/* (struct { char unkn0, unkn1, unkn2, unkn3, cost, unkn5, unkn6, unkn7, unkn8, unkn9; })[87] */
 #define SPELLS_INDEX	(0x0d03)	/* (struct { signed char first, length; })[8] = { {1,5}, {6,12}, {18,6}, {24,3}, {27,6}, {33,5}, {38,7}, {45,4} } */
@@ -30,10 +38,14 @@
 #define SKILL_DESCRIPTIONS	(0x0ffe)	/* (struct { signed char attrib1, attrib2, attrib3, max_inc; })[52] */
 #define SKILLS_INDEX	(0x10ce)	/* (struct { signed char first, length; })[7] = { {0,9}, {9,10}, {19,7}, {26,6}, {32,9}, {41,9}, {50,2} } */
 #define TWO_FIELDED_SPRITE_ID	(0x25f9)	/* char[5] array */
+#define WEAPONANI_TABLE	(0x25fe)    /* unsigned short[3*(3*2*4)] */
+#define WEAPONANI_TYPES	(0x268e)    /* signed char[22] = { 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0 } */
 #define FOOD_MESSAGE_SHOWN	(0x26a4)	/* signed char[6] */
 #define EMS_ENABLED	(0x26ab)
 #define FIG_INITIATIVE	(0x26ac)	/* signed char, 0 = random, 1 = enemies, 2 = heroes (attack first) */
 #define FIG_MSG_COUNTER	(0x26ad)	/* signed short */
+#define ALWAYS_ONE	(0x26af)	/* unsigned short = 1, write only */
+#define FIG_CONTINUE_PRINT	(0x26b1)	/* unsigned short {0,1} */
 #define FIG_CHAR_PIC	(0x26b3)	/* unsigned short */
 #define FIG_ENEMY_PIC	(0x26b5)	/* unsigned short */
 #define GUI_ENTERING_SAVEGAME	(0x26b7)	/* ?16 {0, 1} */
@@ -45,8 +57,25 @@
 #define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
 #define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */
 #define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
+#define MOUSE_POSY_MIN	(0x2988)	/* unsigned short */
+#define MOUSE_POSX_MIN	(0x298a)	/* unsigned short */
+#define MOUSE_POSY_MAX	(0x298c)	/* unsigned short */
+#define MOUSE_POSX_MAX	(0x298e)	/* unsigned short */
 #define PIC_COPY_DS_RECT	(0x2990)	/* struct screen_rect */
+#define MOUSE_LOCKED	(0x2998)	/* unsigned short */
+#define MOUSE_POSX	(0x299c)	/* unsigned short */
+#define MOUSE_POSY	(0x299e)	/* unsigned short */
+#define MOUSE_POSX_BAK	(0x29a0)	/* unsigned short */
+#define MOUSE_POSY_BAK	(0x29a2)	/* unsigned short */
+#define MOUSE_MOVED	(0x29a4)	/* unsigned short {0,1} */
+#define MOUSE_POINTER_OFFSETX	(0x29a6)	/* unsigned short */
+#define MOUSE_POINTER_OFFSETY	(0x29a8)	/* unsigned short */
+#define MOUSE_POINTER_OFFSETX_BAK	(0x29aa)	/* unsigned short */
+#define MOUSE_POINTER_OFFSETY_BAK	(0x29ac)	/* unsigned short */
 #define ANI_ENABLED	(0x29ae)	/* ?16 {0, 1} if the animation is enabled */
+#define INTEMPLE	(0x29b6)	/* unsigned short {0,1}, 0 while in temple, writeonly */
+#define INTEMPLE2	(0x29b8)	/* unsigned short {0,1}, copy of INTEMPLE */
+#define ALWAYS_ZERO3	(0x29ba)	/* unsigned short, writeonly (0) */
 #define ACTION_TABLE_MENU	(0x29cc)	/* (struct { signed short x1, x2, y1, y2; unsigned short action; })[2] */
 #define ACTION_TABLE_PRIMARY	(0x29e0) /* RealPt */
 #define ACTION_TABLE_SECONDARY	(0x29e4) /* RealPt */
@@ -58,6 +87,7 @@
 #define DISEASE_DELAYS	(0x2c60)	/* signed short[8] */
 #define POISON_PRICES	(0x2c70)	/* signed short[10] */
 #define POISON_DELAYS	(0x2c84)	/* signed short[10] */
+#define DIALOGBOX_LOCK	(0x2c98)	/* unsigned char {0,1} */
 #define TIMERS_DISABLED	(0x2c99)
 #define STATUS_PAGE_MODE	(0x2c9b)	/* signed short, one of 1,2,3,4,5 */
 #define STATUS_PAGE_HERO	(0x2c9d)	/* signed short */
@@ -291,6 +321,7 @@
 #define TYPEINDEX	(0x4224)
 #define DNG03_HIGHPRIEST_KILLED	(0x4226)	/* unsigned char {0, 14 = in fight 224, 16 = in fight 222} */
 #define DNG03_CHEST12_LOADS	(0x4227)	/* unsigned char {0,1,...,6} */
+#define SEA_TRAVEL_MENU_PASSAGES	(0x42b2)	/* (struct of length 12)[10] */
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
 #define TRV_DEST_REACHED	(0x4338)	/* unsigned short */
 #define TRV_MENU_TOWNS	(0x4344)	/* unsigned char[6] */
@@ -440,6 +471,7 @@
 #define STR_NO_SAVE_IN_TEMPLE	(0x6e7a)	/* char[42] = "IN DIESEM TEMPEL KEIN SPEICHERN M\x99GLICH!" */
 #define TEMPLE_MIRACLE_BONUS	(0x6ea4)	/* signed char[15] = {0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0} */
 #define TEMPLE_MIRACLE_DICE	(0x6eb3)	/* signed char[15] = {0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10} */
+#define SEA_TRAVEL_PASSAGES	(0x6f00)	/* (struct of size 8)[45] */
 #define TRAVEL_BY_SHIP	(0x7070)	/* ?8 0 = on land, 1 = at the ship */
 #define SEA_TRAVEL_STR_T	(0x708d)	/* char[2] = "T" */
 #define SEA_TRAVEL_STR_EN	(0x708f)	/* char[3] = "EN" */
@@ -557,11 +589,17 @@
 #define DIALOG_TEXT	(0xc3b1)
 #define TEXT_LTX	(0xc3b5)
 #define HAVE_MOUSE	(0xc3c7)	/* unsigned short {0,2} */
+#define UPDATE_STATUSLINE	(0xc3cb)	/* unsigned short {0,1} */
+#define MOUSE1_DOUBLECLICK	(0xc3cf)	/* unsigned short {0,1} */
+#define MOUSE1_EVENT1	(0xc3d1)	/* unsigned short {0,1} */
+#define MOUSE2_EVENT	(0xc3d3)	/* unsigned short {0,1} */
+#define MOUSE1_EVENT2	(0xc3d5)	/* unsigned short {0,1} */
 #define BIOSKEY_EVENT	(0xc3d7)	/* unsigned short */
 #define ACTION	(0xc3d9)	/* ? short */
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
 #define ANI_MAIN_PTR	(0xce35)	/* RealPt */
 #define GUI_TEXT_BUFFER	(0xce87)	/* unsigned char[64] */
+#define MOUSE_BG_BAK	(0xcf0f)	/* unsigned char[256] */
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER_MONSTER_TAB	(0xd01d)	/* unsigned long[36] */
@@ -587,6 +625,8 @@
 #define TEXT_INPUT_BUF	(0xd2ef)	/* RealPt to buffer of size 24 */
 #define DTP2	(0xd2f3)
 #define ICON	(0xd2f7)	/* RealPt */
+#define TMP_FRAMEBUF_PTR	(0xd2fb)	/* RealPt */
+#define FRAMEBUF_PTR	(0xd2ff)	/* RealPt */
 #define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
 #define VIDEO_PAGE_BAK	(0xd30b)	/* signed short */
 #define VIDEO_MODE_BAK	(0xd30d)	/* signed short */
@@ -659,9 +699,25 @@
 #define BUY_SHOPPING_CART	(0xe3f2)	/* RealPt to buffer of size 250, each item has 4 bytes */
 #define PRICE_MODIFICATOR	(0xe3f6)	/* signed short, price modificator for smith and sell */
 #define TEMPLE_GOD	(0xe3f8)	/* signed short, id of current temple's god */
+#define BUFFER9_PTR4	(0xe3fc)	/* RealPt, copy of BUFFER9_PTR */
+#define BUFFER11_PTR	(0xe404)	/* RealPt to buffer of size 192, used for palettes */
+#define CITY_REFRESH_DIRECTION	(0xe408)	/* signed short */
+#define CITY_REFRESH_Y_TARGET	(0xe40a)	/* signed short */
+#define CITY_REFRESH_X_TARGET	(0xe40c)	/* signed short */
+#define ALWAYS_ZERO1	(0xe40e)	/* unsigned short, writeonly (0) */
+#define ALWAYS_ZERO2	(0xe410)	/* unsigned short, writeonly (0) */
 #define TEX_FLOOR	(0xe414)	/* Bit8u* */
 #define TEX_SKY	(0xe418)	/* Bit8u* */
+#define TEX_HOUSE1	(0xe41c)	/* Bit8u* */
+#define TEX_HOUSE2	(0xe420)	/* Bit8u* */
+#define TEX_HOUSE3	(0xe424)	/* Bit8u* */
+#define TEX_HOUSE4	(0xe428)	/* Bit8u* */
 #define COMBO_MODE	(0xe42c)	/* signed short {0,1,2} */
+#define STR_BEORN_HJALL	(0xe42e)	/* char[20] = "BEORN HJALLASSON" */
+#define AUTOMAP_BUF	(0xe442)	/* unsigned char[64] */
+#define DNG_REFRESH_DIRECTION	(0xe482)	/* unsigned short */
+#define DNG_REFRESH_Y_TARGET	(0xe484)	/* unsigned short */
+#define DNG_REFRESH_X_TARGET	(0xe486)	/* unsigned short */
 #define DNG_MAP_PTR	(0xe488)	/* RealPt to DNG_MAP */
 #define LOCKPICK_TRY_COUNTER	(0xe492)	/* signed short {0..4} */
 #define DUNGEON_FIGHTS_BUF	(0xe494)	/* RealPt to buffer of size 630 */

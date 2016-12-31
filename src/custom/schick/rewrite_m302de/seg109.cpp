@@ -232,7 +232,7 @@ void TRV_event(signed short travel_event)
 	ds_writews(BASEPOS_Y, 0);
 	ds_writeb(TRAVELING, 0);
 	ds_writews(TEXTBOX_WIDTH, 9);
-	ds_writeb(0x2c98, 1);
+	ds_writeb(DIALOGBOX_LOCK, 1);
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
 
 	#if defined(__BORLANDC__)
@@ -248,7 +248,7 @@ void TRV_event(signed short travel_event)
 	ds_writews(BASEPOS_X, bak1);
 	ds_writews(BASEPOS_Y, bak2);
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
-	ds_writeb(0x2c98, 0);
+	ds_writeb(DIALOGBOX_LOCK, 0);
 	load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 	ds_writew(WALLCLOCK_UPDATE, 1);
 }

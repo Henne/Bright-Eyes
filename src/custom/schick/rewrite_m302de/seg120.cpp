@@ -289,7 +289,7 @@ signed short init_memory(void)
 	}
 
 	/* set the pointer for the framebuffer */
-	ds_writed(0xd2fb, ds_writed(0xd2ff, (Bit32u)RealMake(0xa000, 0x0000)));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0xa000, 0x0000)));
 
 	/* allocate small chunks of memory */
 	ds_writed(ITEMSNAME,		(Bit32u)schick_alloc_emu(1016));
@@ -430,7 +430,7 @@ void init_game_state(void)
 	ds_writeb(MONTH, 1);
 	ds_writeb(YEAR, 15);
 
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	load_objects_nvf();
 	passages_init();
@@ -694,13 +694,13 @@ void game_over_screen(void)
 	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
 
-	bc_memcpy((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(BUFFER1_PTR), 64000);
+	bc_memcpy((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(BUFFER1_PTR), 64000);
 
 	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64002, 0x00, 0x40);
 
 	wait_for_keypress();
 
-	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+	bc_memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 
 	wait_for_vsync();
 
