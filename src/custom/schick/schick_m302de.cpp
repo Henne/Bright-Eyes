@@ -5660,6 +5660,7 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x5816: {
+#if 0
 		Bit16s argc = CPU_Pop16();
 		RealPt argv = CPU_Pop32();
 		CPU_Push32(argv);
@@ -5677,6 +5678,9 @@ static int seg002(unsigned short offs) {
 		D1_LOG("main(argc=0x%04x, ...)\n", argc);
 		schick_main(argc <= 2 ? argc : 2, (char**)n_av);
 		return 1;
+#else
+		return 0;
+#endif
 	}
 	case 0x5a68: {
 		Bit32u size = CPU_Pop32();
