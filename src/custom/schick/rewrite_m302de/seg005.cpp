@@ -214,11 +214,9 @@ unsigned short fight_printer(void)
 			/* print number into the star */
 			if (ds_readw((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4) != 0) {
 				set_textcolor(0xff, ds_readbs(FIG_STAR_COLORS + f_action) + 0x80);
-#if !defined(__BORLANDC__)
-				sprintf(str, "%d", ds_readws((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4));
-#else
-				itoa(ds_readws((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4), str, 10);
-#endif
+
+				my_itoa(ds_readws((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4), str, 10);
+
 				x = GUI_get_first_pos_centered((Bit8u*)str, 30, 20, 0);
 				GUI_print_string((Bit8u*)str, x, 170);
 			}

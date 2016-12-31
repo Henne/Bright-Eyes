@@ -3,6 +3,7 @@
 @REM They shall not change, so the are compared with every commit.
 @REM
 @REM -- here start the complete
+..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG001.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y -IAIL SEG002.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG003.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Y SEG004.CPP

@@ -1086,6 +1086,10 @@ extern Bit8u* city_ltx[];
 #define host_writews(p, d)	(*(Bit16s*)(p) = (d))
 #define host_writeds(p, d)	(*(Bit32s*)(p) = (d))
 
+#define real_readb(s,o)		host_readb(RealMake((s),(o)))
+#define real_readw(s,o)		host_readw(RealMake((s),(o)))
+#define real_writed(s,o,v)		host_writed(RealMake((s),(o)),(v))
+
 /* TODO: ugly hack, BASM does not like 16bit immediate values with imul */
 #define calc_twodim_array_ptr(start, width, disp, off, dst) \
 asm { mov ax,disp; db 0x69,0xc0,0xc0,0x08; mov dx, [start + 2]; add ax, [start]; add ax, off; mov[dst + 2],dx; mov [dst],ax }

@@ -5127,7 +5127,6 @@ void seg002_57f1(void)
 	}
 }
 
-#if defined(__BORLANDC__)
 int schick_main(int argc, char** argv)
 {
 	signed short l_si;
@@ -5266,7 +5265,6 @@ int schick_main(int argc, char** argv)
 		bc_clrscr();
 	}
 }
-#endif
 
 RealPt schick_alloc_emu(Bit32u size)
 {
@@ -5279,6 +5277,11 @@ signed short copy_protection(void)
 	signed short l_di;
 	signed short tries;
 	signed short l1;
+
+#if !defined(__BORLANDC__)
+	/* disable copy protection for now */
+	return 1;
+#endif
 
 	load_tx(ARCHIVE_FILE_FIGHTTXT_LTX);
 

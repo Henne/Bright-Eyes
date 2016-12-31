@@ -26,6 +26,9 @@ static inline Bit8u* H_PADD(Bit8u *p, Bit32s o) { return p + o; }
 void bc_exit(Bit16s);
 RealPt bc__dos_getvect(Bit8u);
 void bc__dos_setvect(Bit8u, RealPt);
+Bit16u bc__dos_close(Bit16s);
+Bit16u bc__dos_open(char*, Bit16u, signed short *);
+Bit16u bc__dos_read(Bit16s, signed short*, Bit16u, unsigned short*);
 Bit32s bc_lseek(Bit16u, Bit32u, Bit16s);
 void bc_srand(Bit16u);
 Bit16s bc__read(Bit16u, Bit8u*, Bit16u);
@@ -62,6 +65,12 @@ Bit16s bc__open(RealPt, Bit16u);
 
 void bc_qsort(RealPt, Bit16u, Bit16u, RealPt);
 
+static inline char* my_itoa(int value, char *string, int radix)
+{
+	sprintf(string, "%d", value);
+	return string;
+}
+
 Bit32s bc__write(Bit16u, RealPt, Bit16u);
 
 Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
@@ -69,6 +78,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 }
 #else
 
+#include <STDLIB.H>
 #include <IO.H>
 #include <DOS.H>
 #include <BIOS.H>
@@ -111,6 +121,10 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc_farcalloc farcalloc
 #define bc_spawnl spawnl
 
+#define bc__dos_close _dos_close
+#define bc__dos_open _dos_open
+#define bc__dos_read _dos_read
+
 #define bc_close close
 #define bc__creat _creat
 
@@ -141,6 +155,8 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc_memcpy memcpy
 #define bc_memset memset
 #define bc_memmove memmove
+
+#define my_itoa itoa
 
 #define bc_qsort qsort
 

@@ -47,11 +47,7 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 	GUI_print_string(get_ltx((spell + 0x6a) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
-#if !defined(__BORLANDC__)
-	sprintf(str, "%d", host_readbs(hero + HERO_SPELLS + spell));
-#else
-	itoa(host_readbs(hero + HERO_SPELLS + spell) , str, 10);
-#endif
+	my_itoa(host_readbs(hero + HERO_SPELLS + spell) , str, 10);
 
 	/* print value */
 	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), gy + group * 7);
@@ -78,11 +74,7 @@ void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
 	GUI_print_string(get_ltx((skill + 0x30) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
-#if !defined(__BORLANDC__)
-	sprintf(str, "%d", host_readbs(hero + HERO_TA_FIGHT + skill));
-#else
-	itoa(host_readbs(hero + HERO_TA_FIGHT + skill) , str, 10);
-#endif
+	my_itoa(host_readbs(hero + HERO_TA_FIGHT + skill) , str, 10);
 
 	/* print value */
 	GUI_print_string((Bit8u*)str, x2 - GUI_get_space_for_string((Bit8u*)str, 0), gy + group * 7);
@@ -261,18 +253,11 @@ void status_show(Bit16u index)
 			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			/* check if stackable */
-			/* TODO: bit flags operation */
 			if (item_stackable(get_itemsdat(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD)))) {
 
 				set_textcolor(0xff, 0);
-				/* originally itoa() */
-#if !defined(__BORLANDC__)
-				sprintf((char*)Real2Host(ds_readd(DTP2)), "%d",
-					host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD + 2));
-#else
-				itoa(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD + 2),
+				my_itoa(host_readw(Real2Host(hero) + i * 14 + HERO_ITEM_HEAD + 2),
 					(char*)Real2Host(ds_readd(DTP2)), 10);
-#endif
 
 				GUI_print_string(Real2Host(ds_readd(DTP2)),
 					ds_readw(0x63d2 + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),

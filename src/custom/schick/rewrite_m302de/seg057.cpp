@@ -220,11 +220,7 @@ void sell_screen(Bit8u *shop_ptr)
 
 							if ((nice = host_readws(hero1 + (HERO_ITEM_HEAD+2) + 14 * host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6))) > 1)
 							{
-#if !defined(__BORLANDC__)
-								sprintf((char*)Real2Host(ds_readd(DTP2)), "%d", nice);
-#else
-								itoa(nice, Real2Host(ds_readd(DTP2)), 10);
-#endif
+								my_itoa(nice, (char*)Real2Host(ds_readd(DTP2)), 10);
 
 								GUI_print_string(Real2Host(ds_readd(DTP2)),
 									array3.a[items_x] + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),
@@ -233,12 +229,7 @@ void sell_screen(Bit8u *shop_ptr)
 								if (tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)] != 0)
 								{
 									set_textcolor(201, 0);
-#if !defined(__BORLANDC__)
-									sprintf((char*)Real2Host(ds_readd(DTP2)), "%d",
-										tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)]);
-#else
-									itoa(tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)], Real2Host(ds_readd(DTP2)), 10);
-#endif
+									my_itoa(tmp[hero_pos][host_readbs(Real2Host(ds_readd(SELLITEMS)) + 7 * answer + 6)], (char*)Real2Host(ds_readd(DTP2)), 10);
 
 									GUI_print_string(Real2Host(ds_readd(DTP2)),
 										array3.a[items_x] + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),

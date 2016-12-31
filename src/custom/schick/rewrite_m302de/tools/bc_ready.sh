@@ -123,6 +123,12 @@ for i in ${OBJDIR}/*.OBJ; do
 	RETVAL=0
 	# count the lines containing '|' => difference
 	case "${PREFIX}" in
+		"SEG001")
+			# exact 24 differing lines are allowed
+			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+
+			if [ $LINES -ne 24 ]; then RETVAL=1; fi
+			;;
 		"SEG002")
 			# exact 26 differing lines are allowed
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)

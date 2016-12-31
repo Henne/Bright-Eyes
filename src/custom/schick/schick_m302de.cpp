@@ -297,16 +297,26 @@ static int n_seg001(unsigned offs)
 		return 0;
 	}
 	case 0x0432: {
-		return 0;
+		D1_LOG("CD_0432()\n");
+		CD_0432();
+		return 1;
 	}
 	case 0x056b: {
-		return 0;
+		RealPt path = CPU_Pop32();
+		CPU_Push32(path);
+		reg_ax = CD_read_exe((char*)Real2Host(path));
+		D1_LOG("CD_read_exe(%s) = %d\n", (char*)Real2Host(path), reg_ax);
+		return 1;
 	}
 	case 0x0600: {
-		return 0;
+		D1_LOG("CD_insert_msg()\n");
+		CD_insert_msg();
+		return 1;
 	}
 	case 0x0681: {
-		return 0;
+		D1_LOG("CD_check()\n");
+		CD_check();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
@@ -4825,15 +4835,20 @@ static int seg001(unsigned short offs) {
 		D1_LOG("%s:%x()\n", __func__, offs);
 		return 0;
 	}
+	case 0x65a: {
+		D1_LOG("CD_harderr_handler()\n");
+		reg_ax = CD_harderr_handler();
+		return 1;
+	}
 	case 0x681: {
-		/* check if DSA1 CD is in drive */
-		D1_LOG("%s:%x()\n", __func__, offs);
-		return 0;
+		D1_LOG("CD_check()\n");
+		CD_check();
+		return 1;
 	}
 	case 0x6c6: {
-		/* init CD drive */
-		D1_LOG("%s:%x()\n", __func__, offs);
-		return 0;
+		D1_LOG("CD_init()\n");
+		reg_ax = CD_init();
+		return 1;
 	}
 	default:
 		D1_ERR("Uncatched call to Segment %s:0x%04x\n",	__func__, offs);
@@ -5645,10 +5660,23 @@ static int seg002(unsigned short offs) {
 		return 1;
 	}
 	case 0x5816: {
-		unsigned short argc = CPU_Pop16();
+		Bit16s argc = CPU_Pop16();
+		RealPt argv = CPU_Pop32();
+		CPU_Push32(argv);
 		CPU_Push16(argc);
+
+		char *n_av[2];
+		char new_argv[2][1024];
+		n_av[0] = new_argv[0];
+		n_av[1] = new_argv[1];
+		strncpy(new_argv[0], (char*)Real2Host(host_readd(Real2Host(argv))), 1024);
+		strncpy(new_argv[1], (char*)Real2Host(host_readd(Real2Host(argv + 4))), 1024);
+
+		new_argv[0][1023] = new_argv[1][1023] = '\0';
+
 		D1_LOG("main(argc=0x%04x, ...)\n", argc);
-		return 0;
+		schick_main(argc <= 2 ? argc : 2, (char**)n_av);
+		return 1;
 	}
 	case 0x5a68: {
 		Bit32u size = CPU_Pop32();
