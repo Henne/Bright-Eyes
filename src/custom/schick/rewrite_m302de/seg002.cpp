@@ -148,37 +148,37 @@ void sound_menu(void)
 
 void read_sound_cfg(void)
 {
-	signed short port;
-	signed short l2;
-	signed short l3;
-	signed short l4;
+	signed short midi_port;
+	signed short dummy;
+	signed short digi_port;
+	signed short digi_irq;
 	signed short handle;
 
 	/* try to open SOUND.CFG */
 	if ( (handle = bc__open((RealPt)RealMake(datseg, FNAME_SOUND_CFG), 0x8001)) != -1) {
 
-		bc__read(handle, (Bit8u*)&port, 2);
-		bc__read(handle, (Bit8u*)&l2, 2);
-		bc__read(handle, (Bit8u*)&l3, 2);
-		bc__read(handle, (Bit8u*)&l4, 2);
+		bc__read(handle, (Bit8u*)&midi_port, 2);
+		bc__read(handle, (Bit8u*)&dummy, 2);
+		bc__read(handle, (Bit8u*)&digi_port, 2);
+		bc__read(handle, (Bit8u*)&digi_irq, 2);
 		bc_close(handle);
 
 #if !defined(__BORLANDC__)
 		/* be byte-ordering independent */
-		port = host_readws((Bit8u*)&port);
-		l2 = host_readws((Bit8u*)&l2);
-		l3 = host_readws((Bit8u*)&l3);
-		l4 = host_readws((Bit8u*)&l4);
+		midi_port = host_readws((Bit8u*)&midi_port);
+		dummy = host_readws((Bit8u*)&dummy);
+		digi_port = host_readws((Bit8u*)&digi_port);
+		digi_irq = host_readws((Bit8u*)&digi_irq);
 #endif
 
 		/* enable useage of audio-CD */
 		ds_writew(USE_CDAUDIO_FLAG, ds_writew(LOAD_SOUND_DRIVER, 1));
 
 		/* disable loading of the music driver */
-		if (0) {
-
-			if (port != 0) {
-				load_music_driver((RealPt)RealMake(datseg, FNAME_SOUND_ADV2), 3, port);
+		if (0)
+		{
+			if (midi_port != 0) {
+				load_music_driver((RealPt)RealMake(datseg, FNAME_SOUND_ADV2), 3, midi_port);
 			} else {
 
 				/* music was disabled in SOUND.CFG */
@@ -190,11 +190,12 @@ void read_sound_cfg(void)
 			}
 		}
 
-		if (l3 != 0) {
+		if (digi_port != 0) {
 
 			if (ds_readw(SND_VOC_ENABLED) != 0) {
 
-				if (!load_digi_driver((RealPt)RealMake(datseg, FNAME_DIGI_ADV), 2, l3, l4)) {
+				if (!load_digi_driver((RealPt)RealMake(datseg, FNAME_DIGI_ADV), 2, digi_port, digi_irq))
+				{
 					ds_writew(SND_VOC_ENABLED, 0);
 				}
 			} else {
