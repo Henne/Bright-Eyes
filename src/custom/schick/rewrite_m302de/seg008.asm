@@ -6,7 +6,7 @@
 
 
 .186
-.model tiny
+.model large
 
 Rasterlib	segment	byte public 'CODE'
 		assume cs:Rasterlib

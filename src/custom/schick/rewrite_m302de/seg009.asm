@@ -1,5 +1,5 @@
 .186
-.model tiny
+.model large
 
 pp20		segment	dword public 'CODE'
 		assume cs:pp20
