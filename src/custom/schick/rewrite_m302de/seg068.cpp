@@ -446,7 +446,7 @@ void THO_ugdalf(void)
 				dramosch_says(get_city(0x088));
 			}
 		}
-	} else if (ds_readw(QUEST_UGDALF) == 1 || !ds_readb(0x35ff)) {
+	} else if (ds_readw(QUEST_UGDALF) == 1 || !ds_readb(DNG14_UGDALF_DONE)) {
 
 		dramosch_says(get_city(0x8c));
 
@@ -461,7 +461,7 @@ void THO_ugdalf(void)
 
 		/* Original-Bug:	Everytime the heros enter the dungeon the get 20D.
 					Why this fix works is not seen that easy.
-					As long as ds_readb(0x35ff) is 0 this block is executed.
+					As long as ds_readb(DNG14_UGDALF_DONE) is 0 this block is executed.
 		 */
 #ifdef M302de_ORIGINAL_BUGFIX
 			ds_writew(QUEST_UGDALF, 2);

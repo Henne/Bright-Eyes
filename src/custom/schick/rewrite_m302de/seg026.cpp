@@ -92,7 +92,7 @@ void load_ltx(unsigned short index)
 	signed short fd;
 
 	fd = load_archive_file(index);
-	ds_writew(0x2ccb, 0xffff);
+	ds_writew(AREA_PREPARED, 0xffff);
 	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER9_PTR3)) + 1000, 64000);
 	bc_close(fd);
 
@@ -129,7 +129,7 @@ void load_ggsts_nvf(void)
 	/* close it */
 	bc_close(fd);
 
-	ds_writew(0x2ccb, 0xffff);
+	ds_writew(AREA_PREPARED, 0xffff);
 }
 
 void prepare_chr_name(char *dst, char *src)
@@ -404,7 +404,7 @@ signed short load_game_state(void)
 			}
 		}
 
-		ds_writew(0x2ccb, -1);
+		ds_writew(AREA_PREPARED, -1);
 		ds_writew(REQUEST_REFRESH, retval = 1);
 		ds_writew(CHECK_DISEASE, 0);
 		ds_writew(CHECK_POISON, 0);

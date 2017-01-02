@@ -315,10 +315,10 @@ RealPt load_current_town_gossip(void)
 	Bit8u *ptr;
 
 	/* load TOWN.LTX */
-	load_ltx(ds_readbs(CURRENT_TOWN) + 0x4d);
+	load_ltx(ds_readbs(CURRENT_TOWN) + ARCHIVE_FILE_CITY_LTX);
 
 	/* mark some buffers invalid */
-	ds_writews(0x2ccb, ds_writews(CURRENT_ANI, -1));
+	ds_writews(AREA_PREPARED, ds_writews(CURRENT_ANI, -1));
 
 	/* get the pointer to the ltx buffer */
 	ptr = Real2Host(ds_readd(BUFFER9_PTR3));

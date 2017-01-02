@@ -283,7 +283,7 @@ signed short do_travel_mode(void)
 		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 	}
 
-	ds_writew(CURRENT_ANI, ds_writebs(0x2ca7, ds_writebs(PP20_INDEX, -1)));
+	ds_writew(CURRENT_ANI, ds_writebs(CITY_AREA_LOADED, ds_writebs(PP20_INDEX, -1)));
 	ds_writew(REQUEST_REFRESH, (unsigned short)ds_writeb(0x4475, 1));
 	ds_writew(WALLCLOCK_UPDATE, bak1);
 

@@ -56,7 +56,7 @@ void reset_item_selector(void)
 		ds_writebs(0x636f, 23);
 	}
 
-	ds_writed(0xcecb, ds_writed(0xe3ae, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR)));
+	ds_writed(CURRENT_CURSOR, ds_writed(CURRENT_CURSOR_BAK, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR)));
 }
 
 /* nearly identical, same length */
@@ -441,7 +441,7 @@ void status_menu(signed short hero_pos)
 
 						make_ggst_cursor(Real2Host(ds_readd(ICON)));
 
-						ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0xcecf));
+						ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, GGST_CURSOR));
 					}
 				}
 			}
@@ -463,8 +463,8 @@ void status_menu(signed short hero_pos)
 
 		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			ds_writed(0xe3ae, ds_readd(0xcecb));
-			ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+			ds_writed(CURRENT_CURSOR_BAK, ds_readd(CURRENT_CURSOR));
+			ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 			switch (ds_readws(STATUS_PAGE_MODE)) {
 			case 1: {
@@ -825,7 +825,7 @@ void status_menu(signed short hero_pos)
 			}
 			}
 
-			ds_writed(0xcecb, ds_readd(0xe3ae));
+			ds_writed(CURRENT_CURSOR, ds_readd(CURRENT_CURSOR_BAK));
 		}
 	}
 

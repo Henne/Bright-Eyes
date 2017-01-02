@@ -209,8 +209,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 
 		((f_action == 2) || (f_action == 15) || (f_action == 103) ||
 			((f_action == 100) && !ds_readbs((HERO_IS_TARGET-1) + (signed char)fid_attacker)) ||
-			((ds_readws(0xe3ac) != 0) && (a7 == 0)) ||
-			((ds_readws(0xe3aa) != 0) && (a7 == 1))))
+			((ds_readws(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
+			((ds_readws(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 	{
 
 			ds_writeb(0xd8ce + a1 * 0xf3, 0);
@@ -286,8 +286,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 		}
 	}
 
-	if ((check_hero(hero) && ds_readw(0xe3ac) != 0 && a7 == 0) ||
-		((ds_readw(0xe3aa) != 0) && (a7 == 1))) {
+	if ((check_hero(hero) && ds_readw(ATTACKER_ATTACKS_AGAIN) != 0 && a7 == 0) ||
+		((ds_readw(DEFENDER_ATTACKS) != 0) && (a7 == 1))) {
 
 			p1 += copy_ani_seq(p1, host_readws(p3 + l1 * 2), 2);
 
@@ -302,8 +302,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 			}
 	}
 
-	if ( ((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
-		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
+	if ( ((ds_readw(ATTACKER_DEAD) != 0) && (a7 == 0)) ||
+		((ds_readw(DEFENDER_DEAD) != 0) && (a7 == 1)))
 	{
 		host_writeb(p1++, 0xfc);
 		host_writeb(p1++, get_seq_header(host_readws(p3 + 0x28)));
@@ -313,8 +313,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 	}
 
 	if (check_hero(hero) ||
-		((ds_readw(0xe3a8) != 0) && (a7 == 0)) ||
-		((ds_readw(0xe3a6) != 0) && (a7 == 1)))
+		((ds_readw(ATTACKER_DEAD) != 0) && (a7 == 0)) ||
+		((ds_readw(DEFENDER_DEAD) != 0) && (a7 == 1)))
 	{
 		FIG_set_0e(host_readb(hero + HERO_FIGHTER_ID), (signed char)a1);
 		host_writebs(p1, -1);
@@ -431,8 +431,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 	if ((host_readbs(enemy + ENEMY_SHEET_VIEWDIR) != dir) &&
 		(	((f_action == 2) || (f_action == 15) ||
 			((f_action == 100) && !ds_readbs(0xd82d + (signed char)fid_attacker))) ||
-			((ds_readw(0xe3ac) != 0) && (a7 == 0)) ||
-			((ds_readw(0xe3aa) != 0) && (a7 == 1))))
+			((ds_readw(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
+			((ds_readw(DEFENDER_ATTACKS) != 0) && (a7 == 1))))
 		{
 
 		ds_writeb(0xd8ce + a1 * 0xf3, 0);
@@ -520,8 +520,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 		}
 	}
 
-	if (((ds_readws(0xe3ac) != 0) && (a7 == 0)) ||
-		((ds_readws(0xe3aa) != 0) && (a7 == 1))) {
+	if (((ds_readws(ATTACKER_ATTACKS_AGAIN) != 0) && (a7 == 0)) ||
+		((ds_readws(DEFENDER_ATTACKS) != 0) && (a7 == 1))) {
 
 			p1 += copy_ani_seq(p1, host_readws(p4 + l1 * 2), 1);
 
@@ -535,8 +535,8 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 			}
 	}
 
-	if ( ((ds_readws(0xe3a8) != 0) && (a7 == 0)) ||
-		((ds_readws(0xe3a6) != 0) && (a7 == 1)))
+	if ( ((ds_readws(ATTACKER_DEAD) != 0) && (a7 == 0)) ||
+		((ds_readws(DEFENDER_DEAD) != 0) && (a7 == 1)))
 	{
 		host_writeb(p1++, 0xfc);
 		host_writeb(p1++, get_seq_header(host_readws(p4 + 0x28)));
@@ -688,14 +688,14 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 	}
 
 	if ((v2 == 4) || check_hero(hero) ||
-		((ds_readw(0xe3a8) != 0) && (v6 == 0)) ||
-		((ds_readw(0xe3a6) != 0) && (v6 == 1))) {
+		((ds_readw(ATTACKER_DEAD) != 0) && (v6 == 0)) ||
+		((ds_readw(DEFENDER_DEAD) != 0) && (v6 == 1))) {
 
 		lp1 += copy_ani_seq(lp1, host_readws(lp2 + l_di * 2), 2);
 	}
 
-	if (((ds_readw(0xe3a8) != 0) && (v6 == 0)) ||
-		((ds_readw(0xe3a6) != 0) && (v6 == 1))) {
+	if (((ds_readw(ATTACKER_DEAD) != 0) && (v6 == 0)) ||
+		((ds_readw(DEFENDER_DEAD) != 0) && (v6 == 1))) {
 
 		host_writeb(lp1, 0xfc);
 		lp1++;
@@ -823,8 +823,8 @@ void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target
 
 	lp1 += copy_ani_seq(lp1, host_readws(lp2 + l1 * 2), 1);
 
-	if (((ds_readw(0xe3a8) != 0) && (v5 == 0)) ||
-		((ds_readw(0xe3a6) != 0) && (v5 == 1))) {
+	if (((ds_readw(ATTACKER_DEAD) != 0) && (v5 == 0)) ||
+		((ds_readw(DEFENDER_DEAD) != 0) && (v5 == 1))) {
 
 		host_writeb(lp1, 0xfc);
 		lp1++;

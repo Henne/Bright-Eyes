@@ -61,7 +61,7 @@ signed short DNG02_handler(void)
 				ds_writew((0xd325 + 4),
 				ds_writew((0xd325 + 6), 0x206))));
 
-			do_fight(56);
+			do_fight(FIGHTS_F046_01);
 		}
 
 	} else if (target_pos == 0x306 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
@@ -408,7 +408,7 @@ signed short DNG02_handler(void)
 			ds_writew((0xd325 + 4),
 			ds_writew((0xd325 + 6), 0xc0b))));
 
-		if (!do_fight(73))
+		if (!do_fight(FIGHTS_F046_31))
 		{
 			ds_writeb(0x35f3, 1);
 

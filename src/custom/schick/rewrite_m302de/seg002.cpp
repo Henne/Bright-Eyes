@@ -1173,15 +1173,15 @@ void interrupt mouse_isr(void)
 				!ds_readbs(DIALOGBOX_LOCK) &&
 				(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
 		{
-			ds_writed(0xcecb, (Bit32u) (is_mouse_in_rect(68, 4, 171, 51) ? RealMake(datseg, 0x2888):
-							(is_mouse_in_rect(68, 89, 171, 136) ? RealMake(datseg, 0x28c8) :
-							(is_mouse_in_rect(16, 36, 67, 96) ? RealMake(datseg, 0x2908) :
-							(is_mouse_in_rect(172, 36, 223, 96) ? RealMake(datseg, 0x2948) :
+			ds_writed(CURRENT_CURSOR, (Bit32u) (is_mouse_in_rect(68, 4, 171, 51) ? RealMake(datseg, CURSOR_ARROW_UP):
+							(is_mouse_in_rect(68, 89, 171, 136) ? RealMake(datseg, CURSOR_ARROW_DOWN) :
+							(is_mouse_in_rect(16, 36, 67, 96) ? RealMake(datseg, CURSOR_ARROW_LEFT) :
+							(is_mouse_in_rect(172, 36, 223, 96) ? RealMake(datseg, CURSOR_ARROW_RIGHT) :
 							(!is_mouse_in_rect(16, 4, 223, 138) ? RealMake(datseg, DEFAULT_MOUSE_CURSOR) :
-								(void*)ds_readd(0xcecb)))))));
+								(void*)ds_readd(CURRENT_CURSOR)))))));
 		} else {
 			if (ds_readbs(DIALOGBOX_LOCK) != 0) {
-				ds_writed(0xcecb, (Bit32u) RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+				ds_writed(CURRENT_CURSOR, (Bit32u) RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 			}
 		}
 
@@ -1261,8 +1261,8 @@ void mouse_init(void)
 			ds_writew(HAVE_MOUSE, 0);
 		}
 
-		ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
-		ds_writed(0xcec7, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+		ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+		ds_writed(LAST_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 		if (ds_readw(HAVE_MOUSE) == 2) {
 
@@ -1404,7 +1404,7 @@ void make_ggst_cursor(Bit8u *icon)
 
 	/* clear the bitmask */
 	for (y = 0; y < 16; y++) {
-		ds_writew(0xceef + y * 2, 0);
+		ds_writew((GGST_CURSOR + 32) + y * 2, 0);
 	}
 
 	/* make a bitmask from the icon */
@@ -1412,14 +1412,14 @@ void make_ggst_cursor(Bit8u *icon)
 		for (x = 0; x < 16; x++) {
 			/* if pixelcolor of the icon is not black */
 			if (*icon++ != 0x40) {
-				or_ds_ws(0xceef + y * 2, (0x8000 >> x));
+				or_ds_ws((GGST_CURSOR + 32) + y * 2, (0x8000 >> x));
 			}
 		}
 	}
 
 	/* copy and negate the bitmask */
 	for (y = 0; y < 16; y++) {
-		ds_writew(0xcecf + y * 2, ~ds_readw(0xceef + y * 2));
+		ds_writew(GGST_CURSOR + y * 2, ~ds_readw((GGST_CURSOR + 32) + y * 2));
 	}
 }
 
@@ -1487,13 +1487,13 @@ void refresh_screen_size1(void)
 void mouse_19dc(void)
 {
 	/* return if mouse was not moved and the cursor remains */
-	if ((ds_readw(MOUSE_MOVED) != 0) || (ds_readd(0xcec7) != ds_readd(0xcecb))) {
+	if ((ds_readw(MOUSE_MOVED) != 0) || (ds_readd(LAST_CURSOR) != ds_readd(CURRENT_CURSOR))) {
 
 		/* set new cursor */
-		ds_writed(0xcec7, ds_readd(0xcecb));
+		ds_writed(LAST_CURSOR, ds_readd(CURRENT_CURSOR));
 
 		/* check if the new cursor is the default cursor */
-		if (Real2Host(ds_readd(0xcecb)) == p_datseg + DEFAULT_MOUSE_CURSOR) {
+		if (Real2Host(ds_readd(CURRENT_CURSOR)) == p_datseg + DEFAULT_MOUSE_CURSOR) {
 			/* set cursor size 0x0 */
 			ds_writew(MOUSE_POINTER_OFFSETX, ds_writew(MOUSE_POINTER_OFFSETY, 0));
 		} else {

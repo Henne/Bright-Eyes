@@ -314,8 +314,8 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 						(cb_val >= 10) && (cb_val < 30) &&
 							!enemy_dead(p_datseg + 0xd0df + SIZEOF_ENEMY_SHEET * cb_val)
 						) || (
-						(cb_val >= 0x32) &&
-							!is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46)))
+						(cb_val >= 50) &&
+							!is_in_word_array(cb_val - 50, (signed short*)(p_datseg + 0x5f46)))
 
 					)
 					{
@@ -343,7 +343,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 
 					/* handle heroes or walls */
 					if (((cb_val < 10) && !hero_dead(get_hero(cb_val - 1)) && !hero_unc(get_hero(cb_val - 1))) ||
-						((cb_val >= 50) && !is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))))
+						((cb_val >= 50) && !is_in_word_array(cb_val - 50, (signed short*)(p_datseg + 0x5f46))))
 					{
 						done = 1;
 					}
@@ -371,7 +371,7 @@ signed short test_foe_range_attack(signed short x, signed short y, const signed 
 						!hero_unc(get_hero(cb_val - 1))
 						) || (
 						(cb_val >= 50) &&
-							!is_in_word_array(cb_val + 0xffce, (signed short*)(p_datseg + 0x5f46))
+							!is_in_word_array(cb_val - 50, (signed short*)(p_datseg + 0x5f46))
 						) || (
 						(cb_val >= 10) && (cb_val < 30) &&
 							!enemy_dead(p_datseg + 0xd0df + SIZEOF_ENEMY_SHEET * cb_val))

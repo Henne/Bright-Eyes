@@ -388,7 +388,7 @@ signed short DNG09_handler(void)
 		}
 
 		set_var_to_zero();
-		ds_writews(0x2ccb, -1);
+		ds_writews(AREA_PREPARED, -1);
 
 	} else if (target_pos == 0x1402 &&
 			(target_pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)) &&
@@ -644,7 +644,7 @@ void DNG09_chest4_x2(RealPt chest)
 		ds_writew((0xd325 + 4),
 		ds_writew((0xd325 + 6), 0x1a2b))));
 
-	do_fight(102);
+	do_fight(FIGHTS_F126_22);
 }
 
 #if !defined(__BORLANDC__)

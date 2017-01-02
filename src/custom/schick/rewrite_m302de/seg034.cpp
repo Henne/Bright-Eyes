@@ -552,21 +552,21 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 	signed short bg_bak;
 	signed short x_screen;
 	signed short y_screen;
-	signed short l9;
-	signed short l10 = 9;
-	signed short l11 = 116;
+	signed short from_kbd;
+	signed short base_x = 9;
+	signed short base_y = 116;
 	signed char l12;
 	signed char l13;
 	signed char l14;
 	signed short l15;
-	signed short l16;
-	signed short l17;
+	signed short mouse_cb_x;
+	signed short mouse_cb_y;
 
 	update_mouse_cursor();
 
-	ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen = l10 + 10 * (host_readws(px) + host_readws(py))));
+	ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen = base_x + 10 * (host_readws(px) + host_readws(py))));
 
-	ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, y_screen = l11 + 5 * (host_readws(px) - host_readws(py))));
+	ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, y_screen = base_y + 5 * (host_readws(px) - host_readws(py))));
 
 	mouse_move_cursor(ds_readws(MOUSE_POSX), ds_readws(MOUSE_POSY));
 
@@ -614,22 +614,22 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 		x_bak = x;
 		y_bak = y;
-		l9 = 0;
+		from_kbd = 0;
 
 		if ((ds_readws(ACTION) == 72) ||
 			(ds_readws(ACTION) == 80) ||
 			(ds_readws(ACTION) == 77) ||
 			(ds_readws(ACTION) == 75))
 		{
-			l9 = 1;
+			from_kbd = 1;
 		} else {
 
-			l16 = ((ds_readws(MOUSE_POSX) - l10) / 10 + (ds_readws(MOUSE_POSY) - l11) / 5) / 2;
-			l17 = -((ds_readws(MOUSE_POSY) - l11) / 5 - l16);
+			mouse_cb_x = ((ds_readws(MOUSE_POSX) - base_x) / 10 + (ds_readws(MOUSE_POSY) - base_y) / 5) / 2;
+			mouse_cb_y = -((ds_readws(MOUSE_POSY) - base_y) / 5 - mouse_cb_x);
 
-			if ((l16 != x) || (l17 != y)) {
+			if ((mouse_cb_x != x) || (mouse_cb_y != y)) {
 
-				if ((l16 >= -1) && (l16 <= 24) && (l17 >= -1) && (l17 <= 24)) {
+				if ((mouse_cb_x >= -1) && (mouse_cb_x <= 24) && (mouse_cb_y >= -1) && (mouse_cb_y <= 24)) {
 					ds_writew(ACTION, 999);
 				}
 			}
@@ -649,8 +649,8 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 		} else if ((ds_readws(ACTION) == 80) && (y >= 0)) {
 			y--;
 		} else if (ds_readws(ACTION) == 999) {
-			x = l16;
-			y = l17;
+			x = mouse_cb_x;
+			y = mouse_cb_y;
 		}
 
 		if ((x < 0) && (y < 0)) {
@@ -664,10 +664,10 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 			update_mouse_cursor();
 
-			x_screen = l10 + 10 * (x + y);
-			y_screen = l11 + 5 * (x - y);
+			x_screen = base_x + 10 * (x + y);
+			y_screen = base_y + 5 * (x - y);
 
-			if (l9 != 0) {
+			if (from_kbd != 0) {
 				ds_writew(MOUSE_POSX_BAK, ds_writew(MOUSE_POSX, x_screen));
 
 				ds_writew(MOUSE_POSY_BAK, ds_writew(MOUSE_POSY, y_screen));

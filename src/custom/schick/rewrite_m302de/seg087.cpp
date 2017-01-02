@@ -291,11 +291,11 @@ signed short DNG14_handler(void)
 
 		GUI_output(get_dtp(0x48));
 
-	} else if (pos == 0x1d0a && pos != ds_readws(0x330e) && !ds_readb(0x35ff)) {
+	} else if (pos == 0x1d0a && pos != ds_readws(0x330e) && !ds_readb(DNG14_UGDALF_DONE)) {
 
 		GUI_output(get_dtp(0x4c));
 
-		ds_writeb(0x35ff, 1);
+		ds_writeb(DNG14_UGDALF_DONE, 1);
 
 		ds_writew(QUEST_UGDALF, 3);
 

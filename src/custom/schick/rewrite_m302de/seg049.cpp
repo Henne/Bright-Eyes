@@ -323,14 +323,14 @@ void GRP_switch_to_next(signed short mode)
 
 		if ((ds_readbs(GROUPS_DNG_INDEX + group)) && (ds_readbs(GROUPS_DNG_INDEX + group) != ds_readbs(DUNGEON_INDEX)))
 		{
-			ds_writeb(0x2ca6, -1);
-			ds_writew(0x2ccb, -1);
+			ds_writeb(DNG_AREA_LOADED, -1);
+			ds_writew(AREA_PREPARED, -1);
 		}
 
 		if ((ds_readbs(GROUPS_TOWN + group)) && (ds_readbs(GROUPS_TOWN + group) != ds_readbs(CURRENT_TOWN)))
 		{
-			ds_writeb(0x2ca7, -1);
-			ds_writew(0x2ccb, -1);
+			ds_writeb(CITY_AREA_LOADED, -1);
+			ds_writew(AREA_PREPARED, -1);
 		}
 
 		/* save positions from the old group */

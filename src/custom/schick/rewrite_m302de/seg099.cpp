@@ -128,7 +128,7 @@ void spell_illusionen(void)
 			ds_writew(0xac0e, -2);
 		} else {
 			/* YES: spell has effect */
-			ds_writew(0xe3a4, 1);
+			ds_writew(SPELL_ILLUSIONEN, 1);
 			/* kill enemy */
 			or_ptr_bs(get_spelltarget_e() + ENEMY_SHEET_STATUS1, 1);
 		}

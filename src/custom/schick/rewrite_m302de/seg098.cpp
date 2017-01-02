@@ -234,7 +234,7 @@ void FIG_do_spell_damage(signed short le)
 
 			/* set a variable if the hoer died */
 			if (hero_dead(get_spelltarget())) {
-				ds_writew(0xe3a6, 1);
+				ds_writew(DEFENDER_DEAD, 1);
 			}
 		}
 
@@ -252,7 +252,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set a variable if the enemy died */
 		if (enemy_dead(get_spelltarget_e())) {
-			ds_writew(0xe3a6, 1);
+			ds_writew(DEFENDER_DEAD, 1);
 		}
 	}
 }

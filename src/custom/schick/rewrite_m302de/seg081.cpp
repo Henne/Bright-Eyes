@@ -437,7 +437,7 @@ signed short DNG06_handler(void)
 		ds_writew(0xd325, ds_writew((0xd325 + 6), 0x163e));
 		ds_writew((0xd325 + 4), ds_writew((0xd325 + 2), 0x1d0d));
 
-		if (!do_fight(85))
+		if (!do_fight(FIGHTS_F094_19))
 		{
 			ds_writeb(0x3cae, 1);
 		}

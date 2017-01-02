@@ -56,7 +56,11 @@
 #define FIG_DISCARD	(0x26c1)	/* ?16 {0, 1}, whether to discard the fight data after the fight */
 #define PP20_INDEX (0x2845)	/* signed char, archive file index of current pp20 */
 #define REQUEST_REFRESH (0x2846)	/* signed short {0,1} */
-#define DEFAULT_MOUSE_CURSOR	(0x2848)	/* unsigned char[64] */
+#define DEFAULT_MOUSE_CURSOR	(0x2848)	/* struct { char[32]; unsigned short mask[16]; } */
+#define CURSOR_ARROW_UP	(0x2888)	/* struct { char[32]; unsigned short mask[16]; } */
+#define CURSOR_ARROW_DOWN	(0x28c8)	/* struct { char[32]; unsigned short mask[16]; } */
+#define CURSOR_ARROW_LEFT	(0x2908)	/* struct { char[32]; unsigned short mask[16]; } */
+#define CURSOR_ARROW_RIGHT	(0x2948)	/* struct { char[32]; unsigned short mask[16]; } */
 #define MOUSE_POSY_MIN	(0x2988)	/* unsigned short */
 #define MOUSE_POSX_MIN	(0x298a)	/* unsigned short */
 #define MOUSE_POSY_MAX	(0x298c)	/* unsigned short */
@@ -95,6 +99,10 @@
 #define STATUS_PAGE_THIRST	(0x2ca0)	/* signed char */
 #define BASEPOS_X	(0x2ca2)	/* signed short */
 #define BASEPOS_Y	(0x2ca4)	/* signed short */
+#define DNG_AREA_LOADED	(0x2ca6)	/* unsigned char */
+#define CITY_AREA_LOADED	(0x2ca7)	/* unsigned char */
+#define AREA_PREPARED	(0x2ccb)	/* signed short: -1 = unprepared, 0 = dungeon, 1 = town */
+#define ALWAYS_ZERO4	(0x2cce)	/* unsigned short, writeonly (0) */
 #define CURRENT_ANI	(0x2ccf)
 #define FIG_FIGURE1	(0x2cd1)	/* signed short */
 #define FIG_FIGURE2	(0x2cd3)	/* signed short */
@@ -199,8 +207,11 @@
 #define NPC_MONTHS	(0x3470)	/* signed short */
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
+#define ALWAYS_ONE2	(0x35f3)	/* unsigned char = 1, write only */
 #define DNG03_SPIDEREGGS_BURNED	(0x35f4)	/* unsigned char {0, 1} */
 #define QUEST_NAMELESS_DONE	(0x35fa)	/* unsigned char {0, 1} */
+#define DNG14_UGDALF_DONE	(0x35ff)	/* unsigned char {0,1} */
+#define GOT_GRIMRING	(0x3600)    /* unsigned char {0,1} */
 #define NPC_TIMERS	(0x3602)	/* unsigned char[6] */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0 = light is on, 1, 2 = light is off) */
@@ -599,6 +610,9 @@
 #define BUFFER9_PTR	(0xc3db)	/* RealPt to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
 #define ANI_MAIN_PTR	(0xce35)	/* RealPt */
 #define GUI_TEXT_BUFFER	(0xce87)	/* unsigned char[64] */
+#define LAST_CURSOR	(0xcec7)	/* RealPt */
+#define CURRENT_CURSOR	(0xcecb)	/* RealPt */
+#define GGST_CURSOR	(0xcecf)	/* struct { char[32]; unsigned short mask[16]; } */
 #define MOUSE_BG_BAK	(0xcf0f)	/* unsigned char[256] */
 #define BUFFER9_PTR2	(0xd015)	/* RealPt, copy of BUFFER9_PTR */
 #define BUFFER9_PTR3	(0xd019)	/* RealPt, copy of BUFFER9_PTR */
@@ -683,6 +697,12 @@
 #define BUFFER_WEAPANIDAT	(0xe374)	/* pointer to WEAPANI.DAT */
 #define BUFFER_ANIDAT	(0xe378)	/* pointer to ANI.DAT buffer */
 #define FIG_LIST_BUFFER	(0xe37c)	/* RealPt to buffer of size 4445, initial value of FIG_LIST_HEAD */
+#define SPELL_ILLUSIONEN	(0xe3a4)	/* signed short, 1 = spell has effect */
+#define DEFENDER_DEAD	(0xe3a6)	/* signed short {0,1} */
+#define ATTACKER_DEAD	(0xe3a8)	/* signed short {0,1} */
+#define DEFENDER_ATTACKS	(0xe3aa)	/* unsigned short {0,1} */
+#define ATTACKER_ATTACKS_AGAIN	(0xe3ac)	/* unsigned short {0,1} */
+#define CURRENT_CURSOR_BAK	(0xe3ae)	/* RealPt */
 #define INC_SPELLS_COUNTER	(0xe3b2)	/* RealPt */
 #define INC_SKILLS_COUNTER	(0xe3b6)	/* RealPt */
 #define SKILLS_BUFFER	(0xe3ba)	/* RealPt */

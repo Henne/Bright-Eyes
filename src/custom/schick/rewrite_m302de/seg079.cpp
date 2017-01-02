@@ -340,7 +340,7 @@ signed short DNG03_handler(void)
 
 			} while (i != -1);
 
-			do_fight(252);
+			do_fight(FIGHTS_F051_14C);
 		}
 
 	} else if (target_pos == 0x1101 &&

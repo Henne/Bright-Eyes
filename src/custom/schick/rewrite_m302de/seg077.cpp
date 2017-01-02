@@ -352,7 +352,7 @@ void DNG01_chest0_x1(RealPt chest)
 		/* fight the demon */
 		ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1d3a))));
 
-		if (!do_fight(220))
+		if (!do_fight(FIGHTS_SHIP10_1))
 		{
 			add_hero_ap_all(50);
 		}

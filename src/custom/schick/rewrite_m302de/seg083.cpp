@@ -219,7 +219,7 @@ signed short DNG08_handler(void)
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x227)));
 			ds_writew((0xd325 + 2), 0x613);
 
-			do_fight(32);
+			do_fight(FIGHTS_F108_3B);
 		}
 
 	} else if (target_pos == 0x104 && target_pos != ds_readws(0x330e) && !ds_readb(DNG08_BUNDLES_DONE))
@@ -235,7 +235,7 @@ signed short DNG08_handler(void)
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x227)));
 			ds_writew((0xd325 + 2), 0x613);
 
-			do_fight(32);
+			do_fight(FIGHTS_F108_3B);
 		}
 
 

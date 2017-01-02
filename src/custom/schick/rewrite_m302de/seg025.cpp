@@ -411,7 +411,7 @@ void show_treasure_map(void)
 		} else {
 			ds_writew(CURRENT_ANI, -1);
 			ds_writew(REQUEST_REFRESH, 1);
-			ds_writew(0x2ccb, -1);
+			ds_writew(AREA_PREPARED, -1);
 			ds_writeb(0x45b8, 0);
 			draw_main_screen();
 		}
@@ -436,8 +436,8 @@ signed short game_options(void)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	ds_writeb(0x45b8, 1);
 	ds_writew(WALLCLOCK_UPDATE, 0);
-	ds_writew(0x2ccb, -1);
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+	ds_writew(AREA_PREPARED, -1);
+	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	load_pp20(ARCHIVE_FILE_BUCH_DAT);
 	ds_writeb(PP20_INDEX, ARCHIVE_FILE_BUCH_DAT);
@@ -722,7 +722,7 @@ void do_location(void)
 	func = (void (*)(void))ds_readd(LOCATION_HANDLERS + 4 * ds_readbs(LOCATION));
 #endif
 
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	if (func) {
 		func();
@@ -783,7 +783,7 @@ void leave_dungeon(void)
 	ds_writeb(CURRENT_TOWN, ds_readb(0x2da6));
 	ds_writeb(0x2dad, ds_readb(DUNGEON_INDEX));
 	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));
-	ds_writebs(0x2ca7, -1);
+	ds_writebs(CITY_AREA_LOADED, -1);
 	ds_writeb(0x4475, ds_writew(REQUEST_REFRESH, 1));
 
 	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);

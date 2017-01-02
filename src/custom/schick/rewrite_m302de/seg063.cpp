@@ -356,7 +356,7 @@ void do_harbour(void)
 				passage_arrival();
 
 				ds_writew(WALLCLOCK_UPDATE, ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writeb(0x42ae, 0))));
-				ds_writews(CURRENT_ANI, ds_writebs(0x2ca7, ds_writebs(PP20_INDEX, (signed char)(ARCHIVE_FILE_DNGS + 13))));
+				ds_writews(CURRENT_ANI, ds_writebs(CITY_AREA_LOADED, ds_writebs(PP20_INDEX, (signed char)(ARCHIVE_FILE_DNGS + 13))));
 				ds_writew(REQUEST_REFRESH, 1);
 				ds_writeb(TRAVELING, 0);
 

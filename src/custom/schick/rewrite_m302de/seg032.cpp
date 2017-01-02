@@ -1178,7 +1178,7 @@ signed short do_fight(signed short fight_id)
 	ds_writew(IN_FIGHT, 0);
 	ds_writew(REQUEST_REFRESH, 1);
 	ds_writew(CURRENT_ANI, -1);
-	ds_writew(0x2ccb, -1);
+	ds_writew(AREA_PREPARED, -1);
 	ds_writew(TIMERS_DISABLED, 0);
 	ds_writew(AUTOFIGHT, 0);
 	ds_writeb(CHECK_PARTY, 1);

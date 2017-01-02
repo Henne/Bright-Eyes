@@ -38,18 +38,18 @@ void prepare_dungeon_area(void)
 	signed short l_si;
 	signed short handle;
 
-	index = ds_readbs(DUNGEON_INDEX) + 0x10f;
+	index = ds_readbs(DUNGEON_INDEX) + ARCHIVE_FILE_DNGS_DTX;
 
-	if (ds_readbs(0x2ca6) != ds_readbs(DUNGEON_INDEX)) {
+	if (ds_readbs(DNG_AREA_LOADED) != ds_readbs(DUNGEON_INDEX)) {
 
 		load_area_description(1);
-		ds_writeb(0x2ca7, -1);
+		ds_writeb(CITY_AREA_LOADED, -1);
 		load_dungeon_ddt();
 	}
 
 	load_tx(index);
 
-	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 1)) {
+	if ((ds_readws(AREA_PREPARED) == -1) || (ds_readws(AREA_PREPARED) == 1)) {
 
 		set_var_to_zero();
 		ds_writew(CURRENT_ANI, -1);
@@ -89,11 +89,11 @@ void prepare_dungeon_area(void)
 
 		ds_writed(BUFFER11_PTR, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR3), v2), -0xc0));
 
-		ds_writew(0x2ccb, !ds_readbs(DUNGEON_INDEX));
+		ds_writew(AREA_PREPARED, !ds_readbs(DUNGEON_INDEX));
 	}
 
-	ds_writeb(0x2ca6, ds_readbs(DUNGEON_INDEX));
-	ds_writeb(0x2ca7, -1);
+	ds_writeb(DNG_AREA_LOADED, ds_readbs(DUNGEON_INDEX));
+	ds_writeb(CITY_AREA_LOADED, -1);
 	set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
 }
 
@@ -131,14 +131,14 @@ void seg028_0224(void)
 
 	l1 = ds_readbs(CURRENT_TOWN) + 77;
 
-	if (ds_readbs(0x2ca7) != ds_readbs(CURRENT_TOWN)) {
+	if (ds_readbs(CITY_AREA_LOADED) != ds_readbs(CURRENT_TOWN)) {
 		load_area_description(1);
-		ds_writeb(0x2ca6, -1);
+		ds_writeb(DNG_AREA_LOADED, -1);
 	}
 
 	load_tx(l1);
 
-	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 0)) {
+	if ((ds_readws(AREA_PREPARED) == -1) || (ds_readws(AREA_PREPARED) == 0)) {
 
 		set_var_to_zero();
 
@@ -189,11 +189,11 @@ void seg028_0224(void)
 			memcpy(p_datseg + 0x3e53, Real2Host(ds_readd(BUFFER11_PTR)), 0x60);
 		}
 
-		ds_writew(0x2ccb, 1);
+		ds_writew(AREA_PREPARED, 1);
 	}
 
-	ds_writeb(0x2ca7, ds_readbs(CURRENT_TOWN));
-	ds_writeb(0x2ca6, -1);
+	ds_writeb(CITY_AREA_LOADED, ds_readbs(CURRENT_TOWN));
+	ds_writeb(DNG_AREA_LOADED, -1);
 
 	set_automap_tiles(ds_readw(X_TARGET), ds_readw(Y_TARGET));
 }
@@ -432,7 +432,7 @@ void load_map(void)
 	wallclock_update_bak = ds_readw(WALLCLOCK_UPDATE);
 	ds_writew(WALLCLOCK_UPDATE, 0);
 
-	ds_writew(0x2ccb, 0xffff);
+	ds_writew(AREA_PREPARED, 0xffff);
 	/* set current_ani to -1 */
 	ds_writew(CURRENT_ANI, 0xffff);
 

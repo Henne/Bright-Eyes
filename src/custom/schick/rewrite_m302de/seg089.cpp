@@ -365,7 +365,7 @@ signed short DNG15_handler(void)
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 6), 0x3932)));
 			ds_writew((0xd325 + 4), 0x3d25);
 
-			if (!do_fight(135))
+			if (!do_fight(FIGHTS_DFIN26))
 			{
 				ds_writeb(DNG15_UNDEAD_FIGHT, 1);
 			}
@@ -378,7 +378,7 @@ signed short DNG15_handler(void)
 		{
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x3d25))));
 
-			if (!do_fight(135))
+			if (!do_fight(FIGHTS_DFIN26))
 			{
 				ds_writeb(DNG15_UNDEAD_FIGHT, 1);
 			}
@@ -418,7 +418,7 @@ signed short DNG15_handler(void)
 			/* you are cursed */
 			do_talk(19, 1);
 
-		} else if (!ds_readb(0x3600)) {
+		} else if (!ds_readb(GOT_GRIMRING)) {
 
 			/* fight the zombies */
 			ds_writew((0xd325 + 0),
@@ -426,7 +426,7 @@ signed short DNG15_handler(void)
 				ds_writew((0xd325 + 4),
 				ds_writew((0xd325 + 6), 0x3a0a))));
 
-			if (!do_fight(138))
+			if (!do_fight(FIGHTS_DFIN28))
 			{
 				/* talk with hyggelik */
 				draw_main_screen();
@@ -440,11 +440,11 @@ signed short DNG15_handler(void)
 				/* group gets GRIMRING */
 				do { ; } while (!get_item(181, 1, 1));
 
-				ds_writeb(0x3600, 1);
+				ds_writeb(GOT_GRIMRING, 1);
 
 				add_hero_ap_all(50);
 
-				ds_writeb(0x2ca6, (signed char)ds_writews(0x2ccb, -1));
+				ds_writeb(DNG_AREA_LOADED, (signed char)ds_writews(AREA_PREPARED, -1));
 				ds_writeb(PP20_INDEX, -2);
 
 				draw_main_screen();

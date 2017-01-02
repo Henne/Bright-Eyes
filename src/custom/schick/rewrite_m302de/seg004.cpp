@@ -602,7 +602,7 @@ void draw_mouse_cursor(void)
 	signed short height;
 
 	dst = Real2Phys(ds_readd(FRAMEBUF_PTR));
-	mouse_cursor = (short*)(Real2Host(ds_readd(0xcecb)) + 32);
+	mouse_cursor = (short*)(Real2Host(ds_readd(CURRENT_CURSOR)) + 32);
 
 	x = ds_readw(MOUSE_POSX) - ds_readw(MOUSE_POINTER_OFFSETX);
 	y = ds_readw(MOUSE_POSY) - ds_readw(MOUSE_POINTER_OFFSETY);

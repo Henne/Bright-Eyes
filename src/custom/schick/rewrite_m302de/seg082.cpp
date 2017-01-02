@@ -75,7 +75,7 @@ signed short DNG07_handler(void)
 								ds_writew((0xd325 + 4),
 								ds_writew((0xd325 + 6), target_pos))));
 
-							do_fight(88);
+							do_fight(FIGHTS_F100_03);
 
 						} else if (skill_result <= 0) {
 
@@ -85,7 +85,7 @@ signed short DNG07_handler(void)
 								ds_writew((0xd325 + 4),
 								ds_writew((0xd325 + 6), target_pos))));
 
-							do_fight(88);
+							do_fight(FIGHTS_F100_03);
 
 						} else {
 
@@ -132,7 +132,7 @@ signed short DNG07_handler(void)
 							ds_writew((0xd325 + 4),
 							ds_writew((0xd325 + 6), target_pos))));
 
-						do_fight(88);
+						do_fight(FIGHTS_F100_03);
 					} else
 					{
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -217,7 +217,7 @@ signed short DNG07_handler(void)
 
 	} else if (target_pos == 0x2a01 && target_pos != ds_readws(0x330e))
 	{
-		if (!do_fight(91))
+		if (!do_fight(FIGHTS_F100_13))
 		{
 			if (ds_readb((TREASURE_MAPS + 1)) == 2)
 			{

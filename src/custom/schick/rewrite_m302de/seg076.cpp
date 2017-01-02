@@ -617,7 +617,7 @@ signed short DNG_step(void)
 	}
 
 	if (ds_readb(DUNGEON_INDEX) != 0 &&
-		ds_readbs(0x2ca6) != -1 &&
+		ds_readbs(DNG_AREA_LOADED) != -1 &&
 		!l_di)
 	{
 		DNG_see_stairs();
@@ -752,7 +752,7 @@ void do_dungeon(void)
 {
 	signed short tw_bak;
 
-	if (ds_readbs(0x2ca6) != ds_readbs(DUNGEON_INDEX) || ds_readws(0x2ccb) != 0 || ds_readws(0xd00f) != 0)
+	if (ds_readbs(DNG_AREA_LOADED) != ds_readbs(DUNGEON_INDEX) || ds_readws(AREA_PREPARED) != 0 || ds_readws(0xd00f) != 0)
 	{
 		ds_writed(DNG_MAP_PTR, (Bit32u)RealMake(datseg, DNG_MAP));
 

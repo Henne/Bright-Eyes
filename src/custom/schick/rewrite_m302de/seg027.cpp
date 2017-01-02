@@ -538,7 +538,7 @@ void load_ani(const signed short nr)
 	ani_len = p6 - Real2Host(ds_readd(BUFFER9_PTR));
 	/* this is always true */
 	if (ani_len > (Bit32s)ds_readd(0xce43)) {
-		ds_writew(0x2ccb, 0xffff);
+		ds_writew(AREA_PREPARED, 0xffff);
 	}
 }
 

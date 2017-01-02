@@ -229,7 +229,7 @@ signed short DNG10_handler(void)
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0xa0d))));
 			ds_writew(0x330e, 0);
 
-			if (!do_fight(253))
+			if (!do_fight(FIGHTS_F129_17))
 			{
 				ds_writeb(DNG10_HESHTOT, 1);
 			}
@@ -285,7 +285,7 @@ signed short DNG10_handler(void)
 		ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x1533));
 		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x1c13));
 		ds_writew(FIG_DISCARD, 1);
-		do_fight(111);
+		do_fight(FIGHTS_F129_21);
 
 	} else if (target_pos == 0x110c && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
 	{
@@ -297,7 +297,7 @@ signed short DNG10_handler(void)
 		/* FIGHT: get PLATINKEY for the dragon */
 		ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x190a));
 		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x190a));
-		do_fight(117);
+		do_fight(FIGHTS_F129_29);
 
 	} else if (target_pos == 0x2c0c && target_pos != ds_readws(0x330e))
 	{
