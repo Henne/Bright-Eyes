@@ -1,6 +1,8 @@
 .186
 .model large
 
+	public _decomp_pp20
+
 pp20		segment	dword public 'CODE'
 		assume cs:pp20
 		assume es:nothing, ss:nothing, ds:@DATA
@@ -21,7 +23,7 @@ ADJUST_SEG	MACRO	SEG
 		pop	ax
 		ENDM
 
-decomp_pp20	proc far
+_decomp_pp20	proc far
 
 arg_0		= word ptr  6
 arg_2		= word ptr  8
@@ -476,7 +478,7 @@ loc_20309:
 		leave
 		retf
 
-decomp_pp20	endp
+_decomp_pp20	endp
 
 pp20		ends
 
