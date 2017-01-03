@@ -173,6 +173,12 @@ for i in ${OBJDIR}/*.OBJ; do
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 			if [ $LINES -ne 2 ]; then RETVAL=1; fi
 			;;
+		"SEG106")
+			# exact 57 differing lines are allowed
+			# (function pointer argument)
+			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
+			if [ $LINES -ne 57 ]; then RETVAL=1; fi
+			;;
 		"SEG113")
 			# exact 2 differing lines are allowed
 			# (function pointer argument)
