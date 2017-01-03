@@ -1,5 +1,7 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
+#else
+extern "C" {
 #endif
 
 signed short EMS_get_num_pages_unalloced(void);
@@ -10,5 +12,7 @@ RealPt EMS_norm_ptr(RealPt);
 unsigned short EMS_init();
 
 #if !defined(__BORLANDC__)
+}
+#else
 }
 #endif

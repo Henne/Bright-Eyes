@@ -19,8 +19,12 @@ EMM_SIG	EQU 4BA2h
 EMS_OFF	EQU 4BAAh
 EMS_SEG EQU 4BACh
 
-PUBLIC EMS_get_num_pages_unalloced, EMS_alloc_pages, EMS_free_pages, EMS_map_memory
-PUBLIC EMS_norm_ptr, EMS_init
+	public _EMS_get_num_pages_unalloced
+	public _EMS_alloc_pages
+	public _EMS_free_pages
+	public _EMS_map_memory
+	public _EMS_norm_ptr
+	public _EMS_init
 
 .DATA
 
@@ -78,7 +82,7 @@ _done1:	mov dx,bx
 	ret
 EMS_get_frame_ptr ENDP
 
-EMS_get_num_pages_unalloced PROC FAR
+_EMS_get_num_pages_unalloced PROC FAR
 	push bp
 	mov bp,sp
 	push ds
@@ -98,9 +102,9 @@ _done2:	mov ax,bx
 	mov sp,bp
 	pop bp
 	retf
-EMS_get_num_pages_unalloced ENDP
+_EMS_get_num_pages_unalloced ENDP
 
-EMS_alloc_pages PROC FAR
+_EMS_alloc_pages PROC FAR
 	push bp
 	mov bp,sp
 	push ds
@@ -122,9 +126,9 @@ _done3:
 	mov sp,bp
 	pop bp
 	retf
-EMS_alloc_pages ENDP
+_EMS_alloc_pages ENDP
 
-EMS_free_pages PROC FAR
+_EMS_free_pages PROC FAR
 	push bp
 	mov bp,sp
 	push ds
@@ -142,9 +146,9 @@ EMS_free_pages PROC FAR
 	mov sp,bp
 	pop bp
 	retf
-EMS_free_pages ENDP
+_EMS_free_pages ENDP
 
-EMS_map_memory PROC FAR
+_EMS_map_memory PROC FAR
 	push bp
 	mov bp,sp
 	push ds
@@ -164,9 +168,9 @@ EMS_map_memory PROC FAR
 	mov sp,bp
 	pop bp
 	retf
-EMS_map_memory ENDP
+_EMS_map_memory ENDP
 
-EMS_norm_ptr PROC FAR
+_EMS_norm_ptr PROC FAR
 	push bp
 	mov bp,sp
 	push ds
@@ -197,9 +201,9 @@ EMS_norm_ptr PROC FAR
 	mov sp,bp
 	pop bp
 	retf
-EMS_norm_ptr ENDP
+_EMS_norm_ptr ENDP
 
-EMS_init PROC FAR
+_EMS_init PROC FAR
 	push bp
 	mov bp,sp
 	push ds
@@ -226,5 +230,5 @@ _done4:
 	mov sp,bp
 	pop bp
 	retf
-EMS_init ENDP
+_EMS_init ENDP
 	END
