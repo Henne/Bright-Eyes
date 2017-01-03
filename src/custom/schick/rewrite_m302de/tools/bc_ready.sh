@@ -150,6 +150,9 @@ for i in ${OBJDIR}/*.OBJ; do
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
 			if [ $LINES -ne 42 ]; then RETVAL=1; fi
 			;;
+		"SEG011")
+			# AIL: dump_obj produces uncomparable files due to BSS
+			;;
 		"SEG048")
 			# exact 27 differing lines are allowed
 			# other code in switch statements
