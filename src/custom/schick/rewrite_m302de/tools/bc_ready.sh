@@ -153,6 +153,9 @@ for i in ${OBJDIR}/*.OBJ; do
 		"SEG011")
 			# AIL: dump_obj produces uncomparable files due to BSS
 			;;
+		"SEG013")
+			# AIL: dump_obj produces uncomparable files due to BSS
+			;;
 		"SEG048")
 			# exact 27 differing lines are allowed
 			# other code in switch statements

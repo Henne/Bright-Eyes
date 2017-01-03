@@ -14,6 +14,7 @@
 ..\BIN\TASM.EXE /os /z SEG009.asm SEG009.OBJ
 ..\BIN\TASM.EXE /os /z SEG010.asm SEG010.OBJ
 ..\BIN\TASM.EXE /m /w+ /ml /iAIL AIL\AIL.ASM SEG011.OBJ
+..\BIN\TASM.EXE /os /z SEG013.asm SEG013.OBJ
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG024.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG025.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG026.CPP

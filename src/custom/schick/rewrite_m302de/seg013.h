@@ -1,3 +1,4 @@
+#if defined (__BORLANDC__)
 struct driver_request {
 	char dummy1;		/* */
 	char subunit;
@@ -11,6 +12,12 @@ struct driver_request {
 	char dummy7[6];
 };
 
+extern "C" {
+
 extern struct driver_request far req[9];
-extern unsigned char far cd_buf1[408];
+extern unsigned char far cd_buf1[804];
 extern unsigned char far cd_buf2[20];
+
+}
+
+#endif
