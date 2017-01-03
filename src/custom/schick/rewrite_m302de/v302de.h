@@ -964,6 +964,8 @@ struct hero_struct {
 	char typus;
 };
 
+#define schick_main main
+
 #define reloc_game (0)
 
 #define DS_SIZE (0xf7af - 0x936)
