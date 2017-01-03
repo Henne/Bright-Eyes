@@ -155,7 +155,7 @@ void read_sound_cfg(void)
 	signed short handle;
 
 	/* try to open SOUND.CFG */
-	if ( (handle = bc__open((RealPt)RealMake(datseg, FNAME_SOUND_CFG), 0x8001)) != -1) {
+	if ( (handle = bc_open((RealPt)RealMake(datseg, FNAME_SOUND_CFG), 0x8001)) != -1) {
 
 		bc__read(handle, (Bit8u*)&midi_port, 2);
 		bc__read(handle, (Bit8u*)&dummy, 2);
@@ -255,7 +255,7 @@ RealPt read_music_driver(RealPt fname)
 
 	signed short handle;
 
-	if ( (handle = bc__open(fname, 0x8001)) != -1) {
+	if ( (handle = bc_open(fname, 0x8001)) != -1) {
 
 		len = 16500L;
 
@@ -660,7 +660,7 @@ RealPt read_digi_driver(RealPt fname)
 
 	signed short handle;
 
-	if ( (handle = bc__open(fname, 0x8001)) != -1) {
+	if ( (handle = bc_open(fname, 0x8001)) != -1) {
 
 		len = 5000L;
 
@@ -688,7 +688,7 @@ signed short open_and_seek_dat(unsigned short fileindex)
 	signed short fd;
 
 	/* open SCHICK.DAT */
-	if ( (fd =  bc__open((RealPt)RealMake(datseg, FNAME_SCHICK_DAT), 0x8001)) != -1) {
+	if ( (fd =  bc_open((RealPt)RealMake(datseg, FNAME_SCHICK_DAT), 0x8001)) != -1) {
 
 		/* seek to the fileindex position in the offset table */
 		bc_lseek(fd, fileindex * 4, DOS_SEEK_SET);
@@ -773,7 +773,7 @@ signed short load_regular_file(Bit16u index)
 
 	signed short handle;
 
-	if ( (handle = bc__open((RealPt)ds_readd(FNAMES + index * 4), 0x8004)) == -1) {
+	if ( (handle = bc_open((RealPt)ds_readd(FNAMES + index * 4), 0x8004)) == -1) {
 		/* "FILE %s IS MISSING!" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(STR_FILE_MISSING_PTR)),
@@ -814,7 +814,7 @@ signed short open_temp_file(unsigned short index)
 		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 		(char*)Real2Host(ds_readd(FNAMES + index * 4)));
 
-	while ( (handle = bc__open(tmppath, 0x8004)) == -1) {
+	while ( (handle = bc_open(tmppath, 0x8004)) == -1) {
 
 		copy_from_archive_to_temp(index, tmppath);
 	}
@@ -861,7 +861,7 @@ void copy_file_to_temp(RealPt src_file, RealPt fname)
 	signed short handle2;
 	signed short len;
 
-	if ( (handle1 = bc__open(src_file, 0x8001)) != -1) {
+	if ( (handle1 = bc_open(src_file, 0x8001)) != -1) {
 
 		/* create new file in TEMP */
 		handle2 = bc__creat(fname, 0);

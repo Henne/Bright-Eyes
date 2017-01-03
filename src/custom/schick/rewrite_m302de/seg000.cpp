@@ -494,7 +494,7 @@ void bc_perror(RealPt __s)
 	CPU_Pop32();
 }
 
-Bit16s bc__open(RealPt fname, Bit16u attrib)
+Bit16s bc_open(RealPt fname, Bit16u attrib)
 {
 	CPU_Push16(attrib);
 	CPU_Push32(fname);

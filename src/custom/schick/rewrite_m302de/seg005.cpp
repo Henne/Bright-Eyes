@@ -974,7 +974,7 @@ to the DOSBox-CPU and may run the timer.
 	}
 
 	/* read TEMP/XX */
-	handle = bc__open((RealPt)ds_readd(STR_TEMP_XX_PTR), 0);
+	handle = bc_open((RealPt)ds_readd(STR_TEMP_XX_PTR), 0);
 	bc__read(handle, Real2Host(ds_readd(BUFFER8_PTR)), 64000);
 	bc_close(handle);
 

@@ -223,7 +223,8 @@ signed short load_game_state(void)
 		strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_SUFFIX);
 
 		/* open the game state file */
-		if ((handle_gs = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8001)) == -1) {
+		if ((handle_gs = bc_open(ds_readfp(TEXT_OUTPUT_BUF), 0x8001)) == -1)
+		{
 			GUI_output(get_ttx(0x9ec));
 			retval = -1;
 			return retval;
@@ -366,7 +367,7 @@ signed short load_game_state(void)
 				(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 				((char*)(&blk)) + 30);
 
-			if ((handle_gs = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
+			if ((handle_gs = bc_open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
 #if !defined(__BORLANDC__)
 				{
 					Bit16u sp_bak = reg_sp;
@@ -374,11 +375,11 @@ signed short load_game_state(void)
 					RealPt fname = RealMake(SegValue(ss), reg_sp);
 					strncpy((char*)Real2Host(fname), (char*)(&blk) + 30, 128);
 					host_writeb(Real2Host(fname) + 128, 0);
-					handle = bc__open(fname, 0x8004);
+					handle = bc_open(fname, 0x8004);
 					reg_sp = sp_bak;
 				}
 #else
-				handle = bc__open((char*)(&blk) + 30, 0x8004);
+				handle = bc_open((char*)(&blk) + 30, 0x8004);
 #endif
 				bc__read(handle, Real2Host(ds_readd(RENDERBUF_PTR)), SIZEOF_HERO);
 				bc_close(handle);
@@ -695,7 +696,7 @@ signed short save_game_state(void)
 				((char*)(&blk)) + 30);
 
 			/* read the CHR file from temp */
-			handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
+			handle = bc_open(ds_readfp(TEXT_OUTPUT_BUF), 0x8004);
 			bc__read(handle, Real2Host(ds_readd(RENDERBUF_PTR)), SIZEOF_HERO);
 			bc_close(handle);
 
@@ -743,9 +744,9 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 		(char*)Real2Host(fname));
 
-	if ((handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
+	if ((handle = bc_open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004)) == -1) {
 		copy_file_to_temp(fname, (RealPt)ds_readd(TEXT_OUTPUT_BUF));
-		handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
+		handle = bc_open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
 	}
 
 	if (handle != -1) {
@@ -839,7 +840,7 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 				((char*)(&blk)) + 30);
 
 			/* read the CHR file from temp */
-			handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
+			handle = bc_open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
 			bc__read(handle, buf, SIZEOF_HERO);
 			bc_close(handle);
 

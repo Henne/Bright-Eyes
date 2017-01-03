@@ -553,10 +553,10 @@ void prepare_dirs(void)
 
 		strcpy(str, ((char*)(&blk)) + 30);
 
-		l_di = bc__open(RealMake(SegValue(ss), reg_esp - 100), (signed short)0x8004);
+		l_di = bc_open(RealMake(SegValue(ss), reg_esp - 100), (signed short)0x8004);
 
 #else
-		l_di = bc__open(((char*)&blk) + 30, 0x8004);
+		l_di = bc_open(((char*)&blk) + 30, 0x8004);
 #endif
 
 		bc__read(l_di, Real2Host(ds_readd(RENDERBUF_PTR)), SIZEOF_HERO);

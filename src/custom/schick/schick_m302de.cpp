@@ -4622,8 +4622,8 @@ static int seg000(unsigned short offs) {
 			RealPt fname = CPU_Pop32();
 			Bit16u mode = CPU_Pop16();
 
-			reg_ax = bc__open(fname, mode);
-			D1_LOG("_open(\"%s\",\"%04x\") = %d\n",
+			reg_ax = bc_open(fname, mode);
+			D1_LOG("open(\"%s\",\"%04x\") = %d\n",
 					(char*)Real2Host(fname),
 					mode,
 					(Bit16s)reg_ax);

@@ -61,7 +61,7 @@ RealPt bc_memset(RealPt, Bit8s, Bit16u);
 RealPt bc_memmove(RealPt, RealPt, Bit16u);
 Bit16s bc__creat(RealPt, Bit16u);
 void bc_perror(RealPt);
-Bit16s bc__open(RealPt, Bit16u);
+Bit16s bc_open(RealPt, Bit16u);
 
 void bc_qsort(RealPt, Bit16u, Bit16u, RealPt);
 
@@ -149,7 +149,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc_findnext findnext
 #define bc_flushall flushall
 
-#define bc__open _open
+#define bc_open open
 
 #define mem_memcpy memcpy
 #define bc_memcpy memcpy
