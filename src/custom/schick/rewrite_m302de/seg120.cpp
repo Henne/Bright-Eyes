@@ -373,13 +373,13 @@ Bit32s get_diskspace(void)
 	Bit32s space;
 
 #if !defined(__BORLANDC__)
-	bc_dos_getdiskfree(bc_getdisk() + 1, (Bit8u*)&a);
+	bc_getdfree(bc_getdisk() + 1, (Bit8u*)&a);
 	space = (Bit32s)host_readws((Bit8u*)&a[0])
 			* (Bit32s)host_readws((Bit8u*)&a[2])
 			* (Bit32s)host_readws((Bit8u*)&a[3]);
 #else
 	/* BC-TODO: here the return value of get_disk() produces other code */
-	bc_dos_getdiskfree(((signed char)bc_getdisk()) + 1, (diskfree_t*)&a);
+	bc_getdfree(bc_getdisk() + 1, (struct dfree*)&a);
 	space = (Bit32s)a[0] * (Bit32s)a[2] * (Bit32s)a[3];
 #endif
 

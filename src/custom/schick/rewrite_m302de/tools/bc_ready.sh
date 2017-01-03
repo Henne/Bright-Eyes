@@ -180,10 +180,10 @@ for i in ${OBJDIR}/*.OBJ; do
 			if [ $LINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		"SEG120")
-			# exact 3 differing lines are allowed
+			# exact 2 differing lines are allowed
 			# (function pointer argument)
 			LINES=$(diff -y -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis | grep '|' |wc -l)
-			if [ $LINES -ne 3 ]; then RETVAL=1; fi
+			if [ $LINES -ne 2 ]; then RETVAL=1; fi
 			;;
 		*)
 			diff -q -a ${DISORIG}/${PREFIX}.dis ${DISDIR}/${PREFIX}.dis

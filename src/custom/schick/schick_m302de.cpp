@@ -4239,7 +4239,7 @@ static int seg000(unsigned short offs) {
 			CPU_Push32(p);
 			CPU_Push16(drive);
 
-			bc_dos_getdiskfree(drive, Real2Host(p));
+			bc_getdfree(drive, Real2Host(p));
 
 			D1_LOG("disk = %d, %d, %d, %d\n",
 				host_readw(Real2Host(p) + 0),

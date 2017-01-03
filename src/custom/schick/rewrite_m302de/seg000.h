@@ -15,7 +15,7 @@ Bit16s bc_getcurdir(Bit16s, char*);
 Bit16s bc_getdisk(void);
 Bit16s bc_setdisk(Bit16s);
 
-void bc_dos_getdiskfree(Bit16u, Bit8u*);
+void bc_getdfree(Bit16u, Bit8u*);
 
 void F_PADA(RealPt, Bit32s);
 RealPt F_PADD(RealPt, Bit32s);
@@ -103,7 +103,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc_getcurdir getcurdir
 #define bc_getdisk getdisk
 #define bc_setdisk setdisk
-#define bc_dos_getdiskfree _dos_getdiskfree
+#define bc_getdfree getdfree
 
 #define F_PADA(p, o) (*((HugePt*)p) += o)
 #define F_PADD(p, o) ((HugePt)(p) + o)

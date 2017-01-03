@@ -157,7 +157,7 @@ Bit16s bc_setdisk(Bit16s __drive)
 	return reg_ax;
 }
 
-void bc_dos_getdiskfree(Bit16u drive, Bit8u *p)
+void bc_getdfree(Bit16u drive, Bit8u *p)
 {
 	Bit32u esp_bak = reg_esp;
 
