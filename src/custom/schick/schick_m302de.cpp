@@ -8513,14 +8513,7 @@ static int seg052(const unsigned short offs)
 static int seg053(unsigned short offs) {
 	switch (offs) {
 		case 0x20: {
-			unsigned short typi = ds_readb(0x4224);
-			signed char price = ds_readb(typi * 2 + 0x66ea);
-			unsigned char qual = ds_readb(typi * 2 + 0x66ea + 1);
-			D1_INFO("Heiler: 0x%02x Preis: %d%% Qualitaet: %d\n",
-				typi, 100 + price, qual);
-
 			do_healer();
-
 			return 1;
 		}
 		case 0x25: {

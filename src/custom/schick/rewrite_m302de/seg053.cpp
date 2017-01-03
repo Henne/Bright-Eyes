@@ -60,6 +60,16 @@ void do_healer(void)
 	motivation = 0;
 	leave_healer = 0;
 
+#if !defined(__BORLANDC__)
+	const Bit8u typi = ds_readb(TYPEINDEX);
+	const Bit8s h_price = ds_readb(HEALER_DESCR_TABLE + 2 * typi);
+	const Bit8u h_qual = ds_readb(HEALER_DESCR_TABLE + 1 + 2 * typi);
+
+	D1_INFO("Heiler: %2d\n", typi);
+	D1_INFO("\tPreis: %d%% [50,150]\n", h_price + 100);
+	D1_INFO("\tQualitaet: %2d [1,15]\n", h_qual);
+#endif
+
 	v6 = ds_writew(REQUEST_REFRESH, 1);
 	info = p_datseg + HEALER_DESCR_TABLE + ds_readw(TYPEINDEX) * 2;
 	draw_loc_icons(4, 0x1e, 0x1f, 0x20, 8);
