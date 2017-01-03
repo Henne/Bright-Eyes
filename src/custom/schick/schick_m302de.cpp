@@ -2272,20 +2272,7 @@ static int n_seg055(unsigned short offs)
 			return 1;
 		}
 		case 0x007a: {
-			const Bit8u typi = ds_readb(0x4224);
-			const Bit8s price = ds_readbs(typi * 9 + 0x6870);
-			const Bit8s h_type = ds_readb(typi * 9 + 0x6870 + 1);
-			const Bit8s sortiment = ds_readb(typi * 9 + 0x6870 + 2);
-
-			const char h_types[][10] = { "UNGUELTIG", "Waffen", "Kraeuter", "Kraemer" };
-			const char *h_string = (h_type >= 1 && h_type <= 3) ? h_types[h_type] : h_types[0];
-
-			D1_INFO("Haendler-Nr: %d / Haendlertyp: %s\n", typi, h_string);
-			D1_INFO("\tPreise: %3d%% [70, 180]\n", 100 + price);
-			D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
-
 			do_merchant();
-
 			return 1;
 		}
 		case 0x0622: {

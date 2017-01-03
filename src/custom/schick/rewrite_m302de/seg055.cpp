@@ -64,7 +64,28 @@ void do_merchant(void)
 
 	done = 0;
 
-	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != LOCATION_MARKET) {
+#if !defined(__BORLANDC__)
+	/* Print merchant values */
+	const Bit8u typi = ds_readb(TYPEINDEX);
+	const Bit8s price = ds_readbs(0x6870 + 9 * typi);
+	const Bit8s h_type = ds_readbs(0x6870 + 1 + 9 * typi);
+	const Bit8s sortiment = ds_readbs(0x6870 + 2 + 9 * typi);
+	const char h_type0[] = "UNGUELTIG";
+	const char h_type1[] = "Waffen";
+	const char h_type2[] = "Kraeuter";
+	const char h_type3[] = "Kraemer";
+	const char *const h_str = (h_type == 1 ? h_type1 :
+					(h_type == 2 ? h_type2 :
+					(h_type == 3 ? h_type3 : h_type0)));
+
+	D1_INFO("Haendler-Nr: %2d / Haendlertyp: %s\n", typi, h_str);
+	D1_INFO("\tPreise: %3d%% [70, 180]\n", 100 + price);
+	D1_INFO("\tAuswahl: %2d [0, 18] (je kleiner der Wert, desto groesser die Auswahl)\n", sortiment);
+
+#endif
+
+	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != LOCATION_MARKET)
+	{
 
 		GUI_output(get_ttx(0x788));
 		turnaround();
