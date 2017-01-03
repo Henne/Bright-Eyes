@@ -11,7 +11,7 @@ DISORIG=${DIR}/disasm_orig
 
 DRIVE_C=${PWD}/../../drive_c
 
-rm -rf $OBJDIR $BINDIR $DISDIR
+rm -rf $OBJDIR/* $BINDIR/* $DISDIR/*
 
 mkdir -p $OBJDIR
 mkdir -p $BINDIR
