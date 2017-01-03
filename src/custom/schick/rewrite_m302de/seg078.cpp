@@ -410,7 +410,7 @@ signed short DNG02_handler(void)
 
 		if (!do_fight(FIGHTS_F046_31))
 		{
-			ds_writeb(0x35f3, 1);
+			ds_writeb(ALWAYS_ONE2, 1);
 
 			add_hero_ap_all(30);
 		}

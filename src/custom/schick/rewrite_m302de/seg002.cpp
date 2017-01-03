@@ -1767,7 +1767,7 @@ void game_loop(void)
 {
 	signed short answer;
 
-	while (ds_readw(0xc3c1) == 0) {
+	while (ds_readw(GAME_STATE) == GAME_STATE_MAIN) {
 
 		if (ds_readbs(LOCATION) != 0) {
 			do_location();
@@ -1780,7 +1780,7 @@ void game_loop(void)
 		}
 
 		if (ds_readb(DATSEG_STATUS_START) == 99) {
-			ds_writew(0xc3c1, 5);
+			ds_writew(GAME_STATE, GAME_STATE_OUTRO);
 		}
 
 		if (ds_readw(CHECK_DISEASE) != 0) {
@@ -1799,7 +1799,7 @@ void game_loop(void)
 				((count_heros_available() == 1) && check_hero(get_hero(6))))
 			{
 				/* no heros or only the NPC can act => GAME OVER */
-				ds_writew(0xc3c1, 1);
+				ds_writew(GAME_STATE, GAME_STATE_DEAD);
 
 			} else if (!count_heroes_available_in_group() ||
 				((count_heroes_available_in_group() == 1) && is_hero_available_in_group(get_hero(6))))
@@ -1811,7 +1811,7 @@ void game_loop(void)
 		}
 
 		if ((host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) &&
-			((ds_readbs(CURRENT_TOWN) != 0) || (ds_readws(0xc3c1) == 99)) &&
+			((ds_readbs(CURRENT_TOWN) != 0) || (ds_readws(GAME_STATE) == GAME_STATE_VICTORY)) &&
 			(ds_readws(NPC_MONTHS) >= 1) &&
 			(ds_readbs(0x4494) != ds_readws(NPC_MONTHS)))
 		{
@@ -1820,7 +1820,7 @@ void game_loop(void)
 		}
 
 		if ((ds_readws(IN_FIGHT) == 0) &&
-			((ds_readws(0xc3c1) == 0) || (ds_readws(0xc3c1) == 99)) &&
+			((ds_readws(GAME_STATE) == GAME_STATE_MAIN) || (ds_readws(GAME_STATE) == GAME_STATE_VICTORY)) &&
 			!ds_readbs(LOCATION))
 		{
 			check_level_up();
@@ -1835,23 +1835,23 @@ void game_loop(void)
 			}
 		}
 
-		if ((ds_readws(0xc3c1) != 0) && (ds_readbs(0x4475) != 0)) {
+		if ((ds_readws(GAME_STATE) != GAME_STATE_MAIN) && (ds_readbs(0x4475) != 0)) {
 			refresh_colors();
 		}
 
-		if (ds_readws(0xc3c1) == 1) {
+		if (ds_readws(GAME_STATE) == GAME_STATE_DEAD) {
 			game_over_screen();
 		}
 
-		if (ds_readws(0xc3c1) == 4) {
+		if (ds_readws(GAME_STATE) == GAME_STATE_TIMEUP) {
 			show_times_up();
 		}
 
-		if ((ds_readws(0xc3c1) == 1) ||
-			ds_readws(0xc3c1) == 2 ||
-			ds_readws(0xc3c1) == 4 ||
-			ds_readws(0xc3c1) == 5 ||
-			ds_readws(0xc3c1) == 7)
+		if ((ds_readws(GAME_STATE) == GAME_STATE_DEAD) ||
+			ds_readws(GAME_STATE) == GAME_STATE_UNKNOWN ||
+			ds_readws(GAME_STATE) == GAME_STATE_TIMEUP ||
+			ds_readws(GAME_STATE) == GAME_STATE_OUTRO ||
+			ds_readws(GAME_STATE) == GAME_STATE_FIGQUIT)
 		{
 			ds_writebs(LOCATION, 0);
 
@@ -1861,12 +1861,12 @@ void game_loop(void)
 			} while (answer == -1);
 
 			if (answer) {
-				ds_writew(0xc3c1, 0);
+				ds_writew(GAME_STATE, GAME_STATE_MAIN);
 				refresh_colors();
 			}
 		}
 
-		if (ds_readw(0xc3c1) == 99) {
+		if (ds_readw(GAME_STATE) == GAME_STATE_VICTORY) {
 			show_outro();
 			cleanup_game();
 			bc_exit(0);
@@ -2293,13 +2293,13 @@ void do_timers(void)
 	}
 
 	/* poison timer in the mage dungeon */
-	if (ds_readd(MAGE_POISON) != 0) {
+	if (ds_readd(DNG07_POISON_TIMER) != 0) {
 
 		/* decrement the timer */
-		sub_ds_ds(MAGE_POISON, 1);
+		sub_ds_ds(DNG07_POISON_TIMER, 1);
 
 		/* every 15 minutes  do damage */
-		if (ds_readd(MAGE_POISON) % 0x546 == 0) {
+		if (ds_readd(DNG07_POISON_TIMER) % 0x546 == 0) {
 
 			ptr = get_hero(0);
 
@@ -2368,10 +2368,10 @@ void do_timers(void)
 		/* decrement NPC timers */
 		for (i = 1; i < 7; i++) {
 
-			if ((ds_readbs((NPC_TIMERS - 1) + i) != 0) &&
-				(ds_readbs((NPC_TIMERS - 1) + i) != -1))
+			if ((ds_readbs(NPC_TIMERS + i) != 0) &&
+				(ds_readbs(NPC_TIMERS + i) != -1))
 			{
-				dec_ds_bs_post((NPC_TIMERS - 1) + i);
+				dec_ds_bs_post(NPC_TIMERS + i);
 			}
 		}
 
@@ -2440,7 +2440,7 @@ void do_timers(void)
 			(ds_readbs(MONTH) >= 10) &&
 			(ds_readbs(DAY_OF_MONTH) >= 17))
 		{
-			ds_writew(0xc3c1, 4);
+			ds_writew(GAME_STATE, GAME_STATE_TIMEUP);
 		}
 	}
 
@@ -2852,7 +2852,7 @@ void herokeeping(void)
 	Bit8u *hero;
 	char buffer[100];
 
-	if (ds_readw(0xc3c1) != 0)
+	if (ds_readw(GAME_STATE) != GAME_STATE_MAIN)
 		return;
 
 	/* for each hero ..*/
@@ -4320,7 +4320,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			/* FINAL FIGHT */
 			if (ds_readw(CURRENT_FIG_NR) == 192) {
 				if (hero == Real2Host(ds_readd(0x3e20))) {
-					ds_writew(0xc3c1, 1);
+					ds_writew(GAME_STATE, GAME_STATE_DEAD);
 					ds_writew(IN_FIGHT, 0);
 				}
 			}
@@ -4377,7 +4377,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 					/* FINAL FIGHT */
 					if (ds_readw(CURRENT_FIG_NR) == 192) {
 						if (hero == Real2Host(ds_readd(0x3e20))) {
-							ds_writew(0xc3c1, 1);
+							ds_writew(GAME_STATE, GAME_STATE_DEAD);
 							ds_writew(IN_FIGHT, 0);
 						}
 					}
@@ -4552,7 +4552,7 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 		si += bonus;
 	}
 
-	tmp = host_readbs(hero + 3 * attrib + HERO_MU) + host_readbs(hero + 3 * attrib + 0x36);
+	tmp = host_readbs(hero + 3 * attrib + HERO_MU) + host_readbs(hero + 3 * attrib + HERO_MU_MOD);
 
 #if !defined(__BORLANDC__)
 	D1_INFO(" -> %s mit %d\n",
@@ -5118,7 +5118,7 @@ void seg002_57f1(void)
 {
 	if (!count_heros_available()) {
 		/* game over */
-		ds_writew(0xc3c1, 1);
+		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 
 	} else if (!count_heroes_available_in_group()) {
 
@@ -5176,11 +5176,11 @@ int schick_main(int argc, char** argv)
 			len = strlen(argv[1]);
 
 			l_si = 0;
-			ds_writed(0x00c3, 1);
+			ds_writed(CD_CHECK_SKIPMAGIC, 1);
 
 			while (l_si < len) {
 
-				ds_writed(0x00c3, argv[1][0] * ds_readds(0x00c3));
+				ds_writed(CD_CHECK_SKIPMAGIC, argv[1][0] * ds_readds(CD_CHECK_SKIPMAGIC));
 				argv[1]++;
 				l_si++;
 			}

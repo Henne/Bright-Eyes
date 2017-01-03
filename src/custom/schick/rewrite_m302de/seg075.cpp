@@ -607,10 +607,10 @@ void DNG_timestep(signed short a1)
 		ds_writeb(DUNGEON_INDEX, 0);
 
 		/* exit game */
-		ds_writew(0xc3c1, 1);
+		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 	}
 
-	if (ds_readw(0xc3c1) == 0) {
+	if (ds_readw(GAME_STATE) == GAME_STATE_MAIN) {
 
 		dir = ds_readbs(DIRECTION);
 

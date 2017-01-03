@@ -449,14 +449,14 @@ signed short save_game_state(void)
 	ds_writew(TEXTBOX_WIDTH, 5);
 
 	/* prepare the header for the radio box */
-	if (ds_readws(0xc3c1) == 99) {
+	if (ds_readws(GAME_STATE) == GAME_STATE_VICTORY) {
 
 		/* game done */
 		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0xca8));
 
 	} else {
 
-		if (ds_readbs(LOCATION) != 2 && ds_readws(0xc3c1) != 99) {
+		if (ds_readbs(LOCATION) != 2 && ds_readws(GAME_STATE) != GAME_STATE_VICTORY) {
 
 			/* save outside the temple */
 
@@ -535,7 +535,7 @@ signed short save_game_state(void)
 				/* save position on the playmask */
 				host_writebs(get_hero(tw_bak) + HERO_GROUP_POS, tw_bak + 1);
 
-				if (ds_readws(0xc3c1) != 99 &&
+				if (ds_readws(GAME_STATE) != GAME_STATE_VICTORY &&
 					ds_readbs(LOCATION) != 2 &&
 					host_readds(get_hero(tw_bak) + HERO_AP) > 0)
 				{

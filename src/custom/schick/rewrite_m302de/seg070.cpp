@@ -293,8 +293,8 @@ void PHX_bordell(void)
 		}
 
 	} else if (answer == 2) {
-
-		add_ds_ds(0x317e, 30L);
+	    /* increase RAHJA's estimation */
+		add_ds_ds((GODS_ESTIMATION + 4 * 12), 30L);
 
 		timewarp_until(0x93a8);
 

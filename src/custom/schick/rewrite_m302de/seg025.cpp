@@ -597,7 +597,7 @@ signed short game_options(void)
 			if (GUI_bool(get_ltx(0x4ac))) {
 
 				done = -1;
-				ds_writew(0xc3c1, 3);
+				ds_writew(GAME_STATE, GAME_STATE_QUIT);
 			}
 
 		} else if (ds_readws(ACTION) == 137) {

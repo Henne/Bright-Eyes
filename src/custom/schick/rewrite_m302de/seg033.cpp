@@ -895,7 +895,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				if (GUI_bool(get_dtp(0xd0))) {
 					done = 1;
 					ds_writew(IN_FIGHT, 0);
-					ds_writew(0xc3c1, 7);
+					ds_writew(GAME_STATE, GAME_STATE_FIGQUIT);
 				}
 
 				update_mouse_cursor();

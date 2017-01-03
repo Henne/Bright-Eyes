@@ -280,15 +280,15 @@ void TRV_found_herb_place(signed short a0)
 	randval = random_schick(5) + 2;
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_dtp(0x0000),
+		(char*)get_dtp(0x00),
 		(char*)get_dtp(4 * randval),
 		(char*)hero + HERO_NAME2,
-		(char*)(a0 != 0 ? get_dtp(0x00a8) : p_datseg + EMPTY_STRING10));
+		(char*)(a0 != 0 ? get_dtp(0xa8) : p_datseg + EMPTY_STRING10));
 
 	do {
 		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-				get_dtp(0x0004),
-				get_dtp(0x0008));
+				get_dtp(0x04),
+				get_dtp(0x08));
 
 	} while (answer == -1);
 

@@ -169,7 +169,7 @@ void do_temple(void)
 			/* quit game */
 			if (GUI_bool(get_ltx(0x4ac))) {
 				done = 1;
-				ds_writews(0xc3c1, 3);
+				ds_writews(GAME_STATE, GAME_STATE_QUIT);
 			}
 		}
 

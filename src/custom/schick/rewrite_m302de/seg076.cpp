@@ -138,7 +138,7 @@ void DNG_door(signed short action)
 						GUI_output(get_dtp(0x48));
 
 					} else if (!(ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && ds_readb(0x4168) != 4) &&
-							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(0x3ca7)) &&
+							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(DNG06_PITDOOR_FLAG)) &&
 							!(ds_readb(DUNGEON_INDEX) == 12 && ds_readb(DNG12_WATERTRAP_WATER_RUNS)))
 					{
 						/* for this door works an IRON KEY */

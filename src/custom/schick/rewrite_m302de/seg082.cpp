@@ -165,11 +165,11 @@ signed short DNG07_handler(void)
 
 		DNG_dec_level();
 
-	} else if (target_pos == 0x1601 && target_pos != ds_readws(0x330e) && ds_readb(0x3cb2) != 2)
+	} else if (target_pos == 0x1601 && target_pos != ds_readws(0x330e) && ds_readb(DNG07_MUELIXIER_FLAG) != 2)
 	{
-		if (!ds_readb(0x3cb2))
+		if (!ds_readb(DNG07_MUELIXIER_FLAG))
 		{
-			ds_writeb(0x3cb2, 1);
+			ds_writeb(DNG07_MUELIXIER_FLAG, 1);
 
 			GUI_output(get_dtp(0x08));
 
@@ -177,7 +177,7 @@ signed short DNG07_handler(void)
 			{
 				get_item(147, 1, 1);
 
-				ds_writeb(0x3cb2, 2);
+				ds_writeb(DNG07_MUELIXIER_FLAG, 2);
 			}
 
 			/* ORIGINAL-BUG: forgot to set hero */
@@ -196,23 +196,23 @@ signed short DNG07_handler(void)
 			{
 				get_item(147, 1, 1);
 
-				ds_writeb(0x3cb2, 2);
+				ds_writeb(DNG07_MUELIXIER_FLAG, 2);
 			}
 		}
 
-	} else if ((target_pos == 0x230d || target_pos == 0x220d) && target_pos != ds_readws(0x330e) && !ds_readb(0x3cb4))
+	} else if ((target_pos == 0x230d || target_pos == 0x220d) && target_pos != ds_readws(0x330e) && !ds_readb(DNG07_FLICKER_FLAG))
 	{
-		ds_writeb(0x3cb4, 1);
+		ds_writeb(DNG07_FLICKER_FLAG, 1);
 
 		GUI_output(get_dtp(0x10));
 
-	} else if (target_pos == 0x210b && target_pos != ds_readws(0x330e) && !ds_readb(0x3cb3))
+	} else if (target_pos == 0x210b && target_pos != ds_readws(0x330e) && !ds_readb(DNG07_ANTIMUELIXIER_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x14)))
 		{
 			get_item(226, 1, 1);
 
-			ds_writeb(0x3cb3, 1);
+			ds_writeb(DNG07_ANTIMUELIXIER_FLAG, 1);
 		}
 
 	} else if (target_pos == 0x2a01 && target_pos != ds_readws(0x330e))
@@ -243,7 +243,7 @@ signed short DNG07_handler(void)
 
 		ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) & 3);
 
-	} else if (target_pos == 0x2102 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cb5))
+	} else if (target_pos == 0x2102 && target_pos != ds_readws(0x330e) && !ds_readb(DNG07_POISON_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x18)))
 		{
@@ -253,9 +253,9 @@ signed short DNG07_handler(void)
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
-			ds_writeb(0x3cb5, 1);
+			ds_writeb(DNG07_POISON_FLAG, 1);
 
-			ds_writed(MAGE_POISON, DAYS(1));
+			ds_writed(DNG07_POISON_TIMER, DAYS(1));
 		}
 	} else if (target_pos == 0x10e && target_pos != ds_readws(0x330e))
 	{

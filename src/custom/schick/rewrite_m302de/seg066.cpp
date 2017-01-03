@@ -107,7 +107,7 @@ signed short enter_location_daspota(void)
 	signed short b_index;
 	Bit8u *ptr;
 
-	if (ds_readws(0xc3c1) == 7) {
+	if (ds_readws(GAME_STATE) == GAME_STATE_FIGQUIT) {
 		return 1;
 	}
 
@@ -125,11 +125,11 @@ signed short enter_location_daspota(void)
 
 				GUI_print_loc_line(get_dtp(4 * host_readw(ptr + 4)));
 
-				if (!ds_readb(0x331f + host_readw(ptr + 4))) {
+				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
 
 					do_talk(host_readbs(ptr + 2), host_readb(ptr + 3) - 1);
 
-					if (!ds_readb(0x331f + host_readw(ptr + 4))) {
+					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
 						turnaround();
 						return 1;
 					}
@@ -295,7 +295,7 @@ void TLK_eremit(signed short state)
 	Bit8u *hero;
 
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x3615) != 0 ? 1 : 2);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(HERMIT_VISITED) != 0 ? 1 : 2);
 	} else if (state == 6) {
 
 		hero = get_hero(0);
@@ -310,9 +310,9 @@ void TLK_eremit(signed short state)
 
 	} else if (state == 10) {
 		/* group learns about two places to rest */
-		ds_writeb(0x3e09, ds_writeb(0x3e08, 1));
+		ds_writeb(0x3e09, ds_writeb(HERMIT_HERBPLACE_FLAG, 1));
 	} else if (state == 13) {
-		ds_writeb(0x3615, 1);
+		ds_writeb(HERMIT_VISITED, 1);
 	} else if (state == 14) {
 		timewarp(MINUTES(30));
 	}
@@ -872,7 +872,7 @@ signed short city_step(void)
 	if (ds_readws(REQUEST_REFRESH) != 0) {
 
 		draw_main_screen();
-		GUI_print_loc_line(get_dtp(0x0000));
+		GUI_print_loc_line(get_dtp(0x00));
 
 		ds_writew(REQUEST_REFRESH, ds_writews(0xd013, 0));
 		ds_writews(CITY_REFRESH_X_TARGET, -1);

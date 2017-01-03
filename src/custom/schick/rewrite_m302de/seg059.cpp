@@ -127,7 +127,7 @@ void do_tavern(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			if (ds_readb(0x360f) != 0) {
+			if (ds_readb(TLK_TAV_FOLLOWINFORMER) != 0) {
 
 				tavern_follow_informer();
 			}

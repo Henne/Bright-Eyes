@@ -412,7 +412,7 @@ void PHX_alrik_derondan(void)
 				GUI_dialogbox((RealPt)ds_readd(DTP2),
 					get_city(0xf4), get_city(0x144), 0);
 
-				ds_writeb(0x3f79, 1);
+				ds_writeb(ALRIK_DERONDAN_INSULTED, 1);
 
 			} else if (answer == 2) {
 				l_di = 1;
@@ -460,7 +460,7 @@ void PHX_alrik_derondan(void)
 			GUI_dialogbox((RealPt)ds_readd(DTP2),
 				get_city(0xf4), get_city(0x144), 0);
 
-			ds_writeb(0x3f79, 1);
+			ds_writeb(ALRIK_DERONDAN_INSULTED, 1);
 		} else if (answer == 2) {
 			l_di = 1;
 		} else {

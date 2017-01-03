@@ -166,10 +166,10 @@ void interrupt timer_isr(void)
 
 	add_ds_ds(GFX_SPINLOCK, 1);
 
-	inc_ds_ws(0xc3bf);
+	inc_ds_ws(RANDOM_SCHICK_SEED2);
 
-	if (ds_readws(0xc3bf) < 0) {
-		ds_writew(0xc3bf, 0);
+	if (ds_readws(RANDOM_SCHICK_SEED2) < 0) {
+		ds_writew(RANDOM_SCHICK_SEED2, 0);
 	}
 
 	if ((ds_readw(AUTOFIGHT) != 0) &&

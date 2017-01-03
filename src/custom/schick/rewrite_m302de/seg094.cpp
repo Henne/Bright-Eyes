@@ -180,7 +180,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 	while (host_readws(Real2Host(ds_readfp(0x425a)) + 2 * ds_writew(0x4236, 0)) != -1 &&
 		!ds_readb(0x4333) &&
-		ds_readw(0xc3c1) == 0)
+		ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 	{
 		if (is_mouse_in_rect(host_readws(Real2Host(ds_readfp(0x425a))) - 16,
 					host_readws(Real2Host(ds_readfp(0x425a)) + 2) - 16,
@@ -279,16 +279,16 @@ void TM_func1(signed short route_nr, signed short backwards)
 			}
 		}
 
-		if (ds_readw(0x4240) != 0 && ds_readws(0x423c) >= ds_readws(0x4242) && ds_readws(0xc3c1) == 0)
+		if (ds_readw(0x4240) != 0 && ds_readws(0x423c) >= ds_readws(0x4242) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			random_encounter(route_nr);
 			ds_writew(0x4240, 0);
 
-		} else if (ds_readw(0x4248) != 0 && ds_readws(0x423c) >= ds_readws(0x424a) && ds_readws(0xc3c1) == 0)
+		} else if (ds_readw(0x4248) != 0 && ds_readws(0x423c) >= ds_readws(0x424a) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			do_wild8_fight();
 
-		} else if (ds_readw(0x4244) != 0 && ds_readws(0x423c) >= ds_readws(0x4246) && ds_readws(0xc3c1) == 0)
+		} else if (ds_readw(0x4244) != 0 && ds_readws(0x423c) >= ds_readws(0x4246) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			ds_writew(TYPEINDEX, random_schick(100) <= 50 ? 10 : 12);
 			bak1 = ds_readws(BASEPOS_X);
@@ -300,7 +300,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 		}
 
-		if (ds_readws(0xc3c1) == 0)
+		if (ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			for (ds_writew(0x4228, 0); ds_readws(0x4228) < 15; inc_ds_ws(0x4228))
 			{
@@ -336,7 +336,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 		if (ds_readds(DAY_TIMER) >= HOURS(20) &&
 			!ds_readb(0x4333) &&
-			ds_readws(0xc3c1) == 0 &&
+			ds_readws(GAME_STATE) == GAME_STATE_MAIN &&
 			2 * ds_readws(0x423a) < ds_readws(0x4238) &&
 			ds_readws(0x4230) - 2 * ds_readws(0x423a) > ds_readws(0x4238))
 		{
@@ -356,7 +356,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 			ds_writew(REQUEST_REFRESH, 2);
 			ds_writew(WALLCLOCK_UPDATE, 0);
 
-			if (ds_readws(0xc3c1) == 0)
+			if (ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 			{
 				ds_writew(0x423c, (ds_readws(0x424c) + (host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c) / 10)) * 18);
 
@@ -384,12 +384,12 @@ void TM_func1(signed short route_nr, signed short backwards)
 			}
 		}
 
-		if (ds_readw(CHECK_DISEASE) != 0 && !ds_readb(0x4333) && ds_readw(0xc3c1) == 0)
+		if (ds_readw(CHECK_DISEASE) != 0 && !ds_readb(0x4333) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			disease_effect();
 		}
 
-		if (ds_readw(REQUEST_REFRESH) != 0 && !ds_readb(0x4333) && ds_readw(0xc3c1) == 0)
+		if (ds_readw(REQUEST_REFRESH) != 0 && !ds_readb(0x4333) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			update_mouse_cursor();
 			load_map();
@@ -443,7 +443,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 		add_ds_fp(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? 2 : -2));
 	}
 
-	if (ds_readw(0xc3c1) == 0 && !ds_readb(0x4333) && ds_readw(TRV_RETURN) != 2)
+	if (ds_readw(GAME_STATE) == GAME_STATE_MAIN && !ds_readb(0x4333) && ds_readw(TRV_RETURN) != 2)
 	{
 		update_mouse_cursor();
 

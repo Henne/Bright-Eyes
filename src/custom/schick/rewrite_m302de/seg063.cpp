@@ -121,7 +121,7 @@ void do_harbour(void)
 
 				if (ds_readws(QUESTED_MONTHS) > 2 &&
 					!ds_readbs((TREASURE_MAPS + 6)) &&
-					ds_readb(INFORMER_SWAFNILD) &&
+					ds_readb(INFORMER_FLAGS + INFORMER_SWAFNILD) &&
 					random_schick(100) <= ds_readws(QUESTED_MONTHS) + 4)
 				{
 					/* meet SWAFNILD */

@@ -63,7 +63,7 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 
 	load_tlk(talk_id + 156);
 	ds_writew(DIALOG_STATE, ds_writew(DIALOG_DONE, 0));
-	p3 = p_datseg + INFORMER_ARRAY;
+	p3 = p_datseg + DIALOG_PARTNERS;
 	p2 = Real2Host(host_readds(p3 + 38 * informer_id));
 	l4 = host_readws(p3 + 4 + 38 * informer_id);
 	p4 = 38 * informer_id + p3 + 6;

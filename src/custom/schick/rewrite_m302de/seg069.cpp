@@ -33,7 +33,7 @@ void THO_hetmann(void)
 
 	if (!ds_readb(GOT_LETTER_HET) &&
 		ds_readw(GOT_MAIN_QUEST) != 0 &&
-		(ds_readb(0x344c) != 0 || ds_readb(NEED_LETTER) != 0))
+		(ds_readb(JURGE_AWAITS_LETTER) != 0 || ds_readb(NEED_LETTER) != 0))
 	{
 
 		/* count already collected parts of the map */
@@ -123,7 +123,7 @@ void THO_hetmann(void)
 			GUI_dialogbox((RealPt)ds_readd(DTP2), get_city(0x154),
 					get_city(0x38), 0);
 
-			ds_writeb(INFORMER_ISLEIF, 1);
+			ds_writeb(INFORMER_FLAGS + INFORMER_ISLEIF, 1);
 			inc_ds_ws(SUBVENTION);
 			ds_writew(GOT_MAIN_QUEST, 1);
 			ds_writew(QUESTED_MONTHS, 0);
@@ -133,7 +133,7 @@ void THO_hetmann(void)
 			GUI_dialogbox((RealPt)ds_readd(DTP2), get_city(0x154),
 					get_city(0x3c), 0);
 
-			ds_writeb(INFORMER_ISLEIF, 1);
+			ds_writeb(INFORMER_FLAGS + INFORMER_ISLEIF, 1);
 			ds_writew(GOT_MAIN_QUEST, 1);
 			ds_writew(QUESTED_MONTHS, 0);
 			ds_writeb(GOT_LETTER_HET, 1);

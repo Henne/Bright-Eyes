@@ -508,10 +508,23 @@ enum {
 
 #define SIZEOF_MONSTER (44)
 
-/* Informer */
-enum {	JURGE = 1, HJORE, YASMA, UMBRIK, ISLEIF,
-	RAGNA, BEORN, ASGRIMM, ELIANE, OLVIR,
-	SWAFNILD, KOLBERG, UNICORN, ALGRID, TIOMAR };
+enum {
+    GAME_STATE_MAIN = 0,
+    GAME_STATE_DEAD = 1, /* all heroes dead */
+    GAME_STATE_UNKNOWN = 2,
+    GAME_STATE_QUIT = 3, /* ordinary quit */
+    GAME_STATE_TIMEUP = 4, /* max. game time is up */
+    GAME_STATE_OUTRO = 5, /* after (successfull) outro */
+    GAME_STATE_FIGQUIT = 7, /* quit game during fight */
+    GAME_STATE_VICTORY = 99 /* final fight won (before outro) */
+};
+
+enum {
+    INFORMER_JURGE = 0, INFORMER_HJORE, INFORMER_YASMA, INFORMER_UMBRIK,
+    INFORMER_ISLEIF, INFORMER_RAGNA, INFORMER_BEORN, INFORMER_ASGRIMM,
+    INFORMER_ELIANE, INFORMER_OLVIR, INFORMER_SWAFNILD, INFORMER_TREBORN,
+    INFORMER_UNICORN, INFORMER_ALGRID, INFORMER_TIOMAR
+};
 
 /* FIGHT.LST */
 

@@ -368,7 +368,7 @@ unsigned short FIG_fight_continues(void)
 	}
 
 	if (FIG_get_first_active_hero() == -1) {
-		ds_writew(0xc3c1, 1);
+		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 		return 0;
 	}
 
@@ -1001,7 +1001,7 @@ signed short do_fight(signed short fight_id)
 		}
 	}
 
-	if (ds_readws(0xc3c1) != 7) {
+	if (ds_readws(GAME_STATE) != GAME_STATE_FIGQUIT) {
 
 		hero = get_hero(0);
 		for (l_di = 0; l_di <=6; l_di++, hero += SIZEOF_HERO) {
@@ -1022,11 +1022,11 @@ signed short do_fight(signed short fight_id)
 			}
 		}
 
-		if (ds_readws(0xc3c1) != 0) {
+		if (ds_readws(GAME_STATE) != GAME_STATE_MAIN) {
 
 			if ((fight_id != 192) && count_heros_available()) {
 
-				ds_writew(0xc3c1, 0);
+				ds_writew(GAME_STATE, GAME_STATE_MAIN);
 
 				if (ds_readbs(SEA_TRAVEL) != 0) {
 
@@ -1172,7 +1172,7 @@ signed short do_fight(signed short fight_id)
 		retval = 4;
 	}
 
-	ds_writeb(FIG_INITIATIVE, ds_writeb(0x2cce, 0));
+	ds_writeb(FIG_INITIATIVE, ds_writeb(ALWAYS_ZERO4, 0));
 	ds_writew(FIG_DISCARD, 0);
 	ds_writew(MAX_ENEMIES, 0);
 	ds_writew(IN_FIGHT, 0);

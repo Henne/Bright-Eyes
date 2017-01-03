@@ -198,13 +198,13 @@ void tevent_133(void)
 
 void tevent_134(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 6) > 0 && !ds_readb(0x3e08)) ||
-		ds_readb(0x3e08) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 6) > 0 && !ds_readb(HERMIT_HERBPLACE_FLAG)) ||
+		ds_readb(HERMIT_HERBPLACE_FLAG) != 0)
 	{
 		ds_writeb(0x66d0, 157);
 		TRV_found_herb_place(0);
 		ds_writeb(0x66d0, -1);
-		ds_writeb(0x3e08, 1);
+		ds_writeb(HERMIT_HERBPLACE_FLAG, 1);
 	}
 }
 
@@ -653,18 +653,19 @@ void tevent_144(void)
 
 			final_intro();
 			if (!TRV_fight_event(FIGHTS_F144, 144)) {
-
+				/* you won the final fight */
 				GUI_output(get_city(0x44));
 
-				ds_writews(0xc3c1, 99);
+				ds_writews(GAME_STATE, GAME_STATE_VICTORY);
 
 				add_hero_ap_all(500);
 
 				ds_writebs(LOCATION, 0);
 				ds_writews(NPC_MONTHS, 200);
 			} else {
+				/* you lost the final fight */
 				GUI_output(get_city(0x48));
-				ds_writews(0xc3c1, 1);
+				ds_writews(GAME_STATE, GAME_STATE_DEAD);
 			}
 		}
 	}
@@ -729,7 +730,7 @@ void TLK_old_woman(signed short state)
 	} else if (state == 38) {
 		timewarp(HOURS(1));
 	} else if (state == 41) {
-		ds_writeb(0x3dee, ds_writeb(0x3ded, ds_writeb(INFORMER_ISLEIF, ds_writeb(0x344f, 1))));
+		ds_writeb(0x3dee, ds_writeb(0x3ded, ds_writeb(INFORMER_FLAGS + INFORMER_ISLEIF, ds_writeb(ISLEIF_JANDAS_REGARDS, 1))));
 	}
 }
 

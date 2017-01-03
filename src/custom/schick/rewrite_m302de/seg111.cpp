@@ -703,7 +703,7 @@ void tevent_065(void)
 
 			/* Original-Bug: if Umbrik is done the value 2
 					is overwritten with 1 */
-			ds_writeb_z(INFORMER_UMBRIK, 1);
+			ds_writeb_z(INFORMER_FLAGS + INFORMER_UMBRIK, 1);
 		}
 	}
 }

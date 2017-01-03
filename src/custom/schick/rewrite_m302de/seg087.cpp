@@ -76,7 +76,7 @@ signed short DNG14_handler(void)
 			set_party_money(p_money);
 
 			/* set gods estimation for PHEX to -100 */
-			ds_writed(GODS_ESTIMATION + 0x24, -100);
+			ds_writed(GODS_ESTIMATION + 4 * 9, -100);
 
 			GUI_output(get_dtp(0x08));
 		}

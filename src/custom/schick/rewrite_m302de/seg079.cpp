@@ -608,7 +608,7 @@ void DNG03_chest11_func3(RealPt)
 			/* end of game */
 			GUI_output(get_dtp(0x68));
 
-			ds_writew(0xc3c1, 1);
+			ds_writew(GAME_STATE, GAME_STATE_DEAD);
 		} else {
 			timewarp(HOURS(1));
 

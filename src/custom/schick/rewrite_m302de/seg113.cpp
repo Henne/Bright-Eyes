@@ -400,7 +400,7 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 
 	/* load a new savegame if no hero is present */
 	if (!ds_readbs(TOTAL_HERO_COUNTER)) {
-		ds_writew(0xc3c1, 1);
+		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 	}
 
 	/* decrement group counter */
@@ -417,7 +417,7 @@ void hero_disappear(Bit8u *hero, unsigned short pos, signed short type)
 		save_npc(ARCHIVE_FILE_NPCS + host_readbs(get_hero(6) + HERO_NPC_ID));
 
 		/* reset NPC timer */
-		ds_writebs(NPC_TIMERS + host_readbs(get_hero(6) + HERO_NPC_ID), -1);
+		ds_writebs((NPC_TIMERS + 1) + host_readbs(get_hero(6) + HERO_NPC_ID), -1);
 	} else {
 		/* Regular Hero */
 		write_chr_temp(pos);
