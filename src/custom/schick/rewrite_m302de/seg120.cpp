@@ -366,7 +366,7 @@ void refresh_colors(void)
 }
 
 
-/* Borlandified and nearly identical */
+/* Borlandified and identical */
 Bit32s get_diskspace(void)
 {
 	unsigned short a[4];
@@ -374,18 +374,20 @@ Bit32s get_diskspace(void)
 
 #if !defined(__BORLANDC__)
 	bc_getdfree(bc_getdisk() + 1, (Bit8u*)&a);
-	space = (Bit32s)host_readws((Bit8u*)&a[0])
-			* (Bit32s)host_readws((Bit8u*)&a[2])
-			* (Bit32s)host_readws((Bit8u*)&a[3]);
+
+	/* BE-fix */
+	a[0] = host_readws((Bit8u*)&a[0]);
+	a[2] = host_readws((Bit8u*)&a[2]);
+	a[3] = host_readws((Bit8u*)&a[3]);
+
+	D1_INFO("Free Diskspace = %d bytes\n", (Bit32s)a[0] * (Bit32s)a[2] * (Bit32s)a[3]);
 #else
-	/* BC-TODO: here the return value of get_disk() produces other code */
 	bc_getdfree(bc_getdisk() + 1, (struct dfree*)&a);
-	space = (Bit32s)a[0] * (Bit32s)a[2] * (Bit32s)a[3];
 #endif
 
+	space = (Bit32s)a[0] * (Bit32s)a[2] * (Bit32s)a[3];
 
 	return space - 204800;
-
 }
 
 /* Borlandified and identical */
