@@ -155,7 +155,7 @@ void schick_timer_disable()
 	memcpy(Real2Host(RealMake(reloc_game + 0xb2a, 0x261)),
 		irq_bak, 17 * sizeof(char));
 	memset(irq_bak, 0, 17 * sizeof(char));
-	D1_INFO("IRQ timer deaktiviert\n");
+	D1_LOG("IRQ timer deaktiviert\n");
 }
 
 void schick_timer_enable()
@@ -179,7 +179,7 @@ void schick_timer_enable()
 		return;
 	}
 
-	D1_INFO("IRQ timer aktiviert\n");
+	D1_LOG("IRQ timer aktiviert\n");
 }
 
 /**
@@ -1366,7 +1366,7 @@ static int n_seg031(unsigned offs) {
 		CPU_Push16(informer_id);
 		CPU_Push16(talk_id);
 
-		D1_INFO("do_random_talk(%d, %d)\n", talk_id, informer_id);
+		D1_LOG("do_random_talk(%d, %d)\n", talk_id, informer_id);
 		do_random_talk(talk_id, informer_id);
 		return 1;
 	}
@@ -3466,7 +3466,7 @@ static int n_seg102(unsigned short offs)
 		Bit16s damage = CPU_Pop16();
 		CPU_Push16(damage);
 
-		D1_INFO("MON_do_damage(%d)\n", damage);
+		D1_LOG("MON_do_damage(%d)\n", damage);
 		MON_do_damage(damage);
 
 		return 1;
@@ -3477,7 +3477,7 @@ static int n_seg102(unsigned short offs)
 		CPU_Push16(a2);
 		CPU_Push16(a1);
 
-		D1_INFO("MON_get_spell_cost(%d, %d) = %d\n", a1, a2, reg_ax);
+		D1_LOG("MON_get_spell_cost(%d, %d) = %d\n", a1, a2, reg_ax);
 		reg_ax = MON_get_spell_cost(a1, a2);
 
 		return 1;
@@ -3495,7 +3495,7 @@ static int n_seg102(unsigned short offs)
 		CPU_Push32(mon);
 
 		reg_ax = MON_test_attrib3(Real2Host(mon), t1, t2, t3, (Bit8s)bonus);
-		D1_INFO("MON_test_attrib3(%d, %d, %d, %d) = %d\n", t1, t2, t3, bonus, reg_ax);
+		D1_LOG("MON_test_attrib3(%d, %d, %d, %d) = %d\n", t1, t2, t3, bonus, reg_ax);
 
 		return 1;
 	}
@@ -3508,7 +3508,7 @@ static int n_seg102(unsigned short offs)
 		CPU_Push32(mon);
 
 		reg_ax = MON_test_skill(Real2Host(mon), mspell_nr, (Bit8s)bonus);
-		D1_INFO("MON_test_skill(%d, %d) = %d\n", mspell_nr, bonus, reg_ax);
+		D1_LOG("MON_test_skill(%d, %d) = %d\n", mspell_nr, bonus, reg_ax);
 
 		return 1;
 	}
@@ -3519,7 +3519,7 @@ static int n_seg102(unsigned short offs)
 		CPU_Push32(mon);
 
 		MON_sub_ae(Real2Host(mon), ae);
-		D1_INFO("MON_test_skill(%d)\n", ae);
+		D1_LOG("MON_test_skill(%d)\n", ae);
 
 		return 1;
 	}
@@ -3777,7 +3777,7 @@ static int n_seg109(unsigned offs)
 		Bit16s t_event = CPU_Pop16();
 		CPU_Push16(t_event);
 
-		D1_INFO("Reisebegegnung %d\n", t_event);
+		D1_LOG("Reisebegegnung %d\n", t_event);
 		TRV_event(t_event);
 		return 1;
 	}
@@ -6183,7 +6183,7 @@ static int seg007(unsigned short offs)
 
 		reg_ax = random_interval(lo, hi);
 
-		D1_INFO("randomInterval %d - %d : %d\n", lo, hi, (Bit16u)reg_ax);
+		D1_LOG("randomInterval %d - %d : %d\n", lo, hi, (Bit16u)reg_ax);
 
 		return 1;
 	}
@@ -6193,7 +6193,7 @@ static int seg007(unsigned short offs)
 
 		reg_ax = random_schick(p1);
 
-		D1_INFO("random(%d) = %d\n", p1, reg_ax);
+		D1_LOG("random(%d) = %d\n", p1, reg_ax);
 
 		return 1;
 	}
@@ -6207,7 +6207,7 @@ static int seg007(unsigned short offs)
 
 		reg_ax = dice_roll(n, m, x);
 
-		D1_INFO("wuerfel %dW%d%+d = %d\n", n, m, x, reg_ax);
+		D1_LOG("wuerfel %dW%d%+d = %d\n", n, m, x, reg_ax);
 
 		return 1;
 	}
@@ -6266,7 +6266,7 @@ static int seg007(unsigned short offs)
 
 		reg_ax = dice_template(val);
 
-	        D1_INFO("Wuerfel %dW%d%+d = %d\n",
+	        D1_LOG("Wuerfel %dW%d%+d = %d\n",
 			(val & 0xf000) >> 12, m,
 			(signed char)(val & 0xff), (short)reg_ax);
 

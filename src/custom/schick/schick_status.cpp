@@ -431,10 +431,10 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 		if (i == 0x2c) {
 			if (status_ingame[i])
-				D1_INFO("Location betreten: %s\n",
+				D1_LOG("Location betreten: %s\n",
 					location[status_ingame[i]]);
 			else
-				D1_INFO("Location verlassen: %s\n",
+				D1_LOG("Location verlassen: %s\n",
 					location[status_copy[i]]);
 
 			status_copy[i]=status_ingame[i];
@@ -443,23 +443,23 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 		}
 		if (i == 0x14ee || i == 0x14ef) {
 			unsigned short val=host_readw(status_ingame+0x14ee);
-			D1_INFO("Stadtindex: 0x%04x\n", val);
+			D1_LOG("Stadtindex: 0x%04x\n", val);
 			host_writew(status_copy+0x14ee, val);
 			i = 0x14f0;
 			continue;
 		}
 		if (i == 0x14f0 || i == 0x14f1) {
 			unsigned short val=host_readw(status_ingame+0x14f0);
-			D1_INFO("Typindex: 0x%04x\n", val);
+			D1_LOG("Typindex: 0x%04x\n", val);
 			host_writew(status_copy+0x14f0, val);
 			i = 0x14f2;
 			continue;
 		}
 		if (i == 0x3a) {
 			if (status_ingame[i] != 0)
-				D1_INFO("Dungeon \"%s\" betreten\n", dungeon[status_ingame[i]]);
+				D1_LOG("Dungeon \"%s\" betreten\n", dungeon[status_ingame[i]]);
 			else
-				D1_INFO("Dungeon \"%s\" verlassen\n", dungeon[status_copy[i]]);
+				D1_LOG("Dungeon \"%s\" verlassen\n", dungeon[status_copy[i]]);
 			status_copy[i]=status_ingame[i];
 			i++;
 			continue;
@@ -654,7 +654,7 @@ static Uint32 schick_cmp_status(Uint32 interval, void *param)
 			continue;
 		}
 		if (i >= 0x6cc && i <= 0x715) {
-			D1_INFO("Ihr habt Herberge (0x%02lx) beleidigt\n",
+			D1_INFO("Ihr habt Herberge (%2d) beleidigt\n",
 					i - 0x6cc);
 			status_copy[i]=status_ingame[i];
 			i++;
