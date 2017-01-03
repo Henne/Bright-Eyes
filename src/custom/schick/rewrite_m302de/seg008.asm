@@ -8,13 +8,27 @@
 .186
 .model large
 
+	public _swap_u16
+	public _set_video_mode
+	public _set_video_page
+	public _save_display_stat
+	public _set_color
+	public _set_palette
+	public _draw_h_line
+	public _draw_h_spaced_dots
+	public _pic_copy
+	public _save_rect
+	public _fill_rect
+	public _copy_solid_permuted
+	public _copy_solid
+	public _decomp_rle
+
 Rasterlib	segment	byte public 'CODE'
 		assume cs:Rasterlib
-		;org 8
 		assume es:nothing, ss:nothing, ds:@DATA
 
 
-swap_u16	proc far
+_swap_u16	proc far
 
 		push	bp
 		mov	bp, sp
@@ -26,10 +40,10 @@ swap_u16	proc far
 		pop	bp
 		retf
 
-swap_u16	endp
+_swap_u16	endp
 
 
-set_video_mode	proc far
+_set_video_mode	proc far
 
 		push	bp
 		mov	bp, sp
@@ -50,10 +64,10 @@ set_video_mode	proc far
 		pop	bp
 		retf
 
-set_video_mode	endp
+_set_video_mode	endp
 
 
-set_video_page	proc far
+_set_video_page	proc far
 
 		push	bp
 		mov	bp, sp
@@ -74,10 +88,10 @@ set_video_page	proc far
 		pop	bp
 		retf
 
-set_video_page	endp
+_set_video_page	endp
 
 
-save_display_stat proc far
+_save_display_stat proc far
 
 		push	bp
 		mov	bp, sp
@@ -116,7 +130,7 @@ save_display_stat proc far
 		pop	bp
 		retf
 
-save_display_stat endp
+_save_display_stat endp
 
 
 unused_func01	proc	far
@@ -239,7 +253,7 @@ u_f04_l1:
 		retf
 unused_func04 endp
 
-set_color	proc far
+_set_color	proc far
 
 ;ptr		= dword	ptr  6
 ;color		= byte ptr  0Ah
@@ -286,10 +300,10 @@ set_color_loop:
 		mov	sp, bp
 		pop	bp
 		retf
-set_color	endp
+_set_color	endp
 
 
-set_palette	proc far
+_set_palette	proc far
 
 ;ptr		= dword	ptr  6
 ;first_color	= byte ptr  0Ah
@@ -341,10 +355,10 @@ set_palette_loop2:
 		mov	sp, bp
 		pop	bp
 		retf
-set_palette	endp
+_set_palette	endp
 
 
-draw_h_line	proc far
+_draw_h_line	proc far
 
 ;ptr		= dword	ptr  6
 ;cnt		= word ptr  0Ah
@@ -379,7 +393,7 @@ draw_h_line_label1:
 		pop	bp
 		retf
 
-draw_h_line	endp
+_draw_h_line	endp
 
 
 unused_func05	proc far
@@ -439,7 +453,7 @@ unused_func06	proc far
 unused_func06	endp
 
 
-draw_h_spaced_dots proc	far
+_draw_h_spaced_dots proc	far
 
 ;ptr		= dword	ptr  6
 ;count		= word ptr  0Ah
@@ -470,7 +484,7 @@ draw_h_spaced_dots_loop1:
 		pop	bp
 		retf
 
-draw_h_spaced_dots endp
+_draw_h_spaced_dots endp
 
 
 unused_func07	proc far
@@ -540,7 +554,7 @@ u_f08_loop1:
 unused_func08	endp
 
 
-pic_copy	proc far
+_pic_copy	proc far
 
 lv5		= word ptr -1Ah
 lv4		= word ptr -18h
@@ -1464,10 +1478,10 @@ loc_1F7C3:				; CODE XREF: pic_copy+424j
 		mov	sp, bp
 		pop	bp
 		retf
-pic_copy	endp
+_pic_copy	endp
 
 
-save_rect	proc far
+_save_rect	proc far
 
 src_seg		= word ptr  6
 src_off		= word ptr  8
@@ -1514,10 +1528,10 @@ save_rect_label2:
 		pop	bp
 		retf
 
-save_rect	endp
+_save_rect	endp
 
 
-fill_rect	proc far
+_fill_rect	proc far
 
 segm		= word ptr  6
 off		= word ptr  8
@@ -1565,7 +1579,7 @@ loc_1F835:				; CODE XREF: fill_rect:loc_1F82Fj
 		mov	sp, bp
 		pop	bp
 		retf
-fill_rect	endp
+_fill_rect	endp
 
 
 csp_copy	macro off
@@ -1582,7 +1596,7 @@ csp_skip:
 
 		endm
 
-copy_solid_permuted proc far
+_copy_solid_permuted proc far
 
 dst		= dword	ptr  6
 src		= dword	ptr  0Ah
@@ -1813,10 +1827,10 @@ csp_loop_leave:
 		mov	sp, bp
 		pop	bp
 		retf
-copy_solid_permuted endp
+_copy_solid_permuted endp
 
 
-copy_solid	proc far
+_copy_solid	proc far
 
 dst		= dword	ptr  6
 src		= dword	ptr  0Ah
@@ -2049,14 +2063,14 @@ cs_leave:				; CODE XREF: copy_solid+144j
 		pop	bp
 		retf
 
-copy_solid	endp
+_copy_solid	endp
 
 
 ; ллллллллллллллл S U B	R O U T	I N E ллллллллллллллллллллллллллллллллллллллл
 
 ; Attributes: library function bp-based	frame
 
-decomp_rle	proc far		; CODE XREF: process_nvf+42FP
+_decomp_rle	proc far		; CODE XREF: process_nvf+42FP
 
 p_width		= word ptr  6
 height		= word ptr  8
@@ -2301,7 +2315,7 @@ rle_leave:				; CODE XREF: decomp_rle+145j
 		mov	sp, bp
 		pop	bp
 		retf
-decomp_rle	endp
+_decomp_rle	endp
 
 ; OPL3 - code
 

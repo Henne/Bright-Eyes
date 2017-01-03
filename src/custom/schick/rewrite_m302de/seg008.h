@@ -1,8 +1,10 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
+#else
+extern "C" {
 #endif
 
-unsigned short swap_u16(unsigned short val);
+unsigned short swap_u16(unsigned short);
 void set_video_mode(signed short);
 void set_video_page(signed short);
 void save_display_stat(RealPt);
@@ -29,5 +31,7 @@ void decomp_rle(unsigned short width, unsigned short height,
 	Bit8u *dst, Bit8u *src, Bit8u *tmp_buffer, unsigned short mode);
 
 #if !defined(__BORLANDC__)
+}
+#else
 }
 #endif
