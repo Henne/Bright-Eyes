@@ -131,7 +131,7 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 #define bc_perror perror
 #define bc_lseek lseek
 #define bc_srand srand
-#define bc__read read
+#define bc__read _read
 #define bc__write write
 
 #define bc_time time
