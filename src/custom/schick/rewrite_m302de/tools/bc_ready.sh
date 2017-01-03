@@ -70,7 +70,7 @@ if [ "${USE_KVM}" = "true" ]; then
 else
 
 	# copy all source files to DRIVE_C
-	cp *.cpp *.h *.asm ${DRIVE_C}/src
+	cp *.cpp *.h *.asm RESP ${DRIVE_C}/src
 	cp -r AIL ${DRIVE_C}/src
 
 	# copy c_ready.bat as compile.bat
@@ -85,11 +85,16 @@ else
 	rm -rf ${DRIVE_C}/src/*.cpp
 	rm -rf ${DRIVE_C}/src/*.h
 	rm -rf ${DRIVE_C}/src/*.asm
+	rm -rf ${DRIVE_C}/src/RESP
 	rm -rf ${DRIVE_C}/src/compile.bat
 	rm -rf ${DRIVE_C}/src/AIL
 
 	# move all OBJ-files to OBJDIR
 	mv ${DRIVE_C}/src/*.OBJ $OBJDIR 2>/dev/null
+
+	# move all OBJ-files to OBJDIR
+	mv ${DRIVE_C}/src/*.EXE $DIR 2>/dev/null
+	mv ${DRIVE_C}/src/*.MAP $DIR 2>/dev/null
 fi
 
 N=0

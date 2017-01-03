@@ -112,3 +112,4 @@
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG120.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG121.CPP
 ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG122.CPP
+TLINK @RESP
