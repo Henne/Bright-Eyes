@@ -176,11 +176,37 @@ void read_sound_cfg(void)
 		digi_irq = host_readws((Bit8u*)&digi_irq);
 #endif
 
+#if !defined(__BORLANDC__)
+
+		const Bit16s tw_bak = ds_readws(TEXTBOX_WIDTH);
+		ds_writews(TEXTBOX_WIDTH, 7);
+		do {
+			handle = GUI_radio((Bit8u*)"WELCHE MUSIKWIEDERGABE?", 2,
+						"AUDIO-CD",
+						"MIDI");
+
+		} while (handle == -1);
+		ds_writews(TEXTBOX_WIDTH, tw_bak);
+
+		if (handle == 1)
+		{
+			ds_writew(USE_CDAUDIO_FLAG, 1);
+			ds_writew(LOAD_SOUND_DRIVER, 1);
+
+		} else if (handle == 2) {
+
+			ds_writew(USE_CDAUDIO_FLAG, 0);
+			ds_writew(LOAD_SOUND_DRIVER, 0);
+		}
+
+		if (ds_readw(USE_CDAUDIO_FLAG) == 0)
+#else
 		/* enable useage of audio-CD */
 		ds_writew(USE_CDAUDIO_FLAG, ds_writew(LOAD_SOUND_DRIVER, 1));
 
 		/* disable loading of the music driver */
 		if (0)
+#endif
 		{
 			if (midi_port != 0) {
 				load_music_driver((RealPt)RealMake(datseg, FNAME_SOUND_ADV2), 3, midi_port);
