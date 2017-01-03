@@ -28,18 +28,18 @@ namespace M302de {
 
 void save_and_set_timer(void)
 {
-	ds_writed(0xe274, (Bit32u) bc__dos_getvect(8));
-	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a + reloc_game, 0x244));
+	ds_writefp(0xe274, (RealPt)bc_getvect(8));
+	bc_setvect(8, (INTCAST)RealMake(0xb2a + reloc_game, 0x244));
 }
 
 void set_timer(void)
 {
-	bc__dos_setvect(8, (INTCAST)RealMake(0xb2a + reloc_game, 0x244));
+	bc_setvect(8, (INTCAST)RealMake(0xb2a + reloc_game, 0x244));
 }
 
 void reset_timer(void)
 {
-	bc__dos_setvect(8, (INTCAST)ds_readd(0xe274));
+	bc_setvect(8, (INTCAST)ds_readd(0xe274));
 }
 
 void init_ani(Bit16u v1)

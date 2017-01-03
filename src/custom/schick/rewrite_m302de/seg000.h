@@ -24,8 +24,8 @@ Bit32s F_PSUB(RealPt, RealPt);
 static inline Bit8u* H_PADD(Bit8u *p, Bit32s o) { return p + o; }
 
 void bc_exit(Bit16s);
-RealPt bc__dos_getvect(Bit8u);
-void bc__dos_setvect(Bit8u, RealPt);
+RealPt bc_getvect(Bit8u);
+void bc_setvect(Bit8u, RealPt);
 Bit16u bc__dos_close(Bit16s);
 Bit16u bc__dos_open(char*, Bit16u, signed short *);
 Bit16u bc__dos_read(Bit16s, signed short*, Bit16u, unsigned short*);
@@ -113,8 +113,8 @@ Bit16s bc_OvrInitEms(Bit16u, Bit16u, Bit16u);
 
 #define bc_exit exit
 
-#define bc__dos_getvect _dos_getvect
-#define bc__dos_setvect _dos_setvect
+#define bc_getvect getvect
+#define bc_setvect setvect
 
 #define bc_harderr harderr
 #define bc_hardresume hardresume

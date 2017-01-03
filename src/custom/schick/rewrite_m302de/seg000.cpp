@@ -215,7 +215,7 @@ void bc_exit(Bit16s status)
 	CPU_Pop16();
 }
 
-RealPt bc__dos_getvect(Bit8u __interruptno)
+RealPt bc_getvect(Bit8u __interruptno)
 {
 	CPU_Push16(__interruptno);
 	CALLBACK_RunRealFar(reloc_game + 0, 0x816);
@@ -223,7 +223,7 @@ RealPt bc__dos_getvect(Bit8u __interruptno)
 	return RealMake(reg_dx, reg_ax);
 }
 
-void bc__dos_setvect(Bit8u __interruptno, RealPt handler)
+void bc_setvect(Bit8u __interruptno, RealPt handler)
 {
 	CPU_Push32(handler);
 	CPU_Push16(__interruptno);

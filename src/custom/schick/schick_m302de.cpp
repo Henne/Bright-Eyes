@@ -4252,8 +4252,8 @@ static int seg000(unsigned short offs) {
 		case 0x816: {
 			Bit16u interruptno = CPU_Pop16();
 
-			RealPt p = bc__dos_getvect((Bit8u)interruptno);
-			D1_LOG("_dos_getvect(int=0x%x) = %x\n",
+			RealPt p = bc_getvect((Bit8u)interruptno);
+			D1_LOG("getvect(int=0x%x) = %x\n",
 				interruptno, p);
 
 			CPU_Push16(interruptno);
@@ -4267,12 +4267,12 @@ static int seg000(unsigned short offs) {
 			Bit16u interruptno = CPU_Pop16();
 			RealPt isr = CPU_Pop32();
 
-			D1_LOG("_dos_setvect(int=0x%x, *isr=0x%x:0x%x)\n",
+			D1_LOG("setvect(int=0x%x, *isr=0x%x:0x%x)\n",
 				interruptno,
 				(unsigned short)(RealSeg(isr) - reloc_game),
 				RealOff(isr));
 
-			bc__dos_setvect((Bit8u)interruptno, isr);
+			bc_setvect((Bit8u)interruptno, isr);
 
 			CPU_Push32(isr);
 			CPU_Push16(interruptno);
