@@ -611,8 +611,7 @@ void tevent_064(void)
 
 				if (l_si == 1) {
 
-					loot_multi_chest(p_datseg + 0x3e2b,
-							get_city(0x11c));
+					loot_multi_chest(p_datseg + TEVENT64_HUT_CONTENT, get_city(0x11c));
 
 					do {
 						l_si = GUI_radio(get_city(0x10c), 2,
@@ -644,9 +643,9 @@ void tevent_064(void)
 
 			if (l_si == 1) {
 
-				loot_multi_chest(p_datseg + 0x3e2b, get_city(0x11c));
+				loot_multi_chest(p_datseg + TEVENT64_HUT_CONTENT, get_city(0x11c));
 
-				if (ds_readbs(0x3e3e) != -1) {
+				if (ds_readbs(TEVENT64_CHEST) != -1) {
 
 					do {
 						l_si = GUI_radio(get_city(0x10c), 2,
@@ -668,7 +667,7 @@ void tevent_064(void)
 
 void tevent_064_chest(void)
 {
-	loot_multi_chest(p_datseg + 0x3e3e, get_city(0x128));
+	loot_multi_chest(p_datseg + TEVENT64_CHEST, get_city(0x128));
 }
 
 /* The rider Orvil <-> Ala */

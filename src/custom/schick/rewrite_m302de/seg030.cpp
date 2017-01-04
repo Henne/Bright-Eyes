@@ -141,30 +141,30 @@ void prepare_date_str(void)
 	}
 }
 
-struct dummy3 {
-	signed short a, b;
+struct tlk_option {
+	signed short txt, goto_state;
 };
 
 void do_talk(signed short talk_id, signed short tlk_informer)
 {
-	signed short l_si;
-	signed short l_di;
+	signed short txt_id;
+	signed short txt_offset;
 	signed short answer;
-	signed short options;
-	Bit8u *ptr1;
-	Bit8u *ptr2;
-	RealPt ptr3;
+	signed short optioncount;
+	Bit8u *state_ptr;
+	Bit8u *states_tab;
+	RealPt partners_tab;
 	char *dst;
 	char *fmt;
 	Bit8u *hero;
-	signed short rand3_1;
-	signed short rand3_2;
-	signed short rand5;
-	signed short l5;
-	signed short l6;
-	signed short l7;
+	signed short shufflepair_1;
+	signed short shufflepair_2;
+	signed short shuffle_count;
+	signed short i;
+	signed short tmp1;
+	signed short tmp2;
 
-	struct dummy3 array[3];
+	struct tlk_option options[3];
 
 	answer = 0;
 
@@ -175,53 +175,53 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 	ds_writews(DIALOG_STATE, ds_writews(DIALOG_DONE, 0));
 
-	ptr3 = (RealPt)RealMake(datseg, DIALOG_PARTNERS);
-	ptr2 = Real2Host(host_readd(Real2Host(ptr3) + 38 * tlk_informer));
-	l_di = host_readws(Real2Host(ptr3) + 38 * tlk_informer + 4);
-	ds_writed(DIALOG_TITLE, (Bit32u)(tlk_informer * 38 + ptr3 + 6));
+	partners_tab = (RealPt)RealMake(datseg, DIALOG_PARTNERS);
+	states_tab = Real2Host(host_readd(Real2Host(partners_tab) + 38 * tlk_informer));
+	txt_offset = host_readws(Real2Host(partners_tab) + 38 * tlk_informer + 4);
+	ds_writed(DIALOG_TITLE, (Bit32u)(tlk_informer * 38 + partners_tab + 6));
 
-	load_in_head(host_readws(Real2Host(ptr3) + 38 * tlk_informer + 0x24));
+	load_in_head(host_readws(Real2Host(partners_tab) + 38 * tlk_informer + 0x24));
 	dst = (char*)Real2Host(ds_readd(DTP2)) + 0x400;
 
 	do {
-		answer = options = 0;
-		ptr1 = 8 * ds_readws(DIALOG_STATE) + ptr2;
+		answer = optioncount = 0;
+		state_ptr = 8 * ds_readws(DIALOG_STATE) + states_tab;
 
-		if (host_readbs(ptr1 + 2) != 0) options++;
-		if (host_readbs(ptr1 + 3) != 0) options++;
-		if (host_readbs(ptr1 + 4) != 0) options++;
+		if (host_readbs(state_ptr + 2) != 0) optioncount++;
+		if (host_readbs(state_ptr + 3) != 0) optioncount++;
+		if (host_readbs(state_ptr + 4) != 0) optioncount++;
 
-		if (host_readws(ptr1) != -1) {
+		if (host_readws(state_ptr) != -1) {
 
-			l_si = host_readws(ptr1) & 0x7fff;
+			txt_id = host_readws(state_ptr) & 0x7fff;
 
-			fmt = (char*)get_city(4 * (l_si + l_di));
+			fmt = (char*)get_city(4 * (txt_id + txt_offset));
 
 			if (ds_readws(TLK_ID) == 11) {
 				if (ds_readws(DIALOG_INFORMER) == 2) {
 
-					if (l_si == 12 || l_si == 16 || l_si == 17 ||
-						l_si == 18 || l_si == 20 || l_si == 21 ||
-						l_si == 22 || l_si == 25 || l_si == 26 ||
-						l_si == 27 || l_si == 28)
+					if (txt_id == 12 || txt_id == 16 || txt_id == 17 ||
+						txt_id == 18 || txt_id == 20 || txt_id == 21 ||
+						txt_id == 22 || txt_id == 25 || txt_id == 26 ||
+						txt_id == 27 || txt_id == 28)
 					{
 						sprintf(dst, fmt,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)),
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)));
 
-					} else if (l_si == 19) {
+					} else if (txt_id == 19) {
 
 						sprintf(dst, fmt,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
-					} else if (l_si == 23) {
+					} else if (txt_id == 23) {
 
 						sprintf(dst, fmt,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)));
-					} else if (l_si == 29) {
+					} else if (txt_id == 29) {
 
 						sprintf(dst, fmt,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
@@ -229,19 +229,19 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)),
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)));
 
-					} else if (l_si == 30) {
+					} else if (txt_id == 30) {
 
 						sprintf(dst, fmt,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)),
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 2)));
 
-					} else if (l_si == 31) {
+					} else if (txt_id == 31) {
 
 						sprintf(dst, fmt,
 							Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 3)));
 
-					} else if (l_si == 32) {
+					} else if (txt_id == 32) {
 
 						sprintf(dst, fmt,
 							Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
@@ -258,19 +258,19 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 				if (ds_readws(TLK_ID) == 9 && ds_readws(DIALOG_INFORMER) == 1) {
 
-					if (l_si == 21) {
+					if (txt_id == 21) {
 
 						sprintf(dst, fmt, (char*)get_ltx(0xa48));
 
-					} else if (l_si == 22) {
+					} else if (txt_id == 22) {
 
 						sprintf(dst, fmt, (char*)get_ltx(0xa58));
 
-					} else if (l_si == 23) {
+					} else if (txt_id == 23) {
 
 						sprintf(dst, fmt, (char*)get_ltx(0xa54));
 
-					} else if (l_si == 29) {
+					} else if (txt_id == 29) {
 
 						hero = get_hero(ds_readb(TIOMAR_DRINKMATE));
 
@@ -285,11 +285,11 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 					}
 				} else if (ds_readws(TLK_ID) == 7 && ds_readws(DIALOG_INFORMER) == 2) {
 
-					if (l_si == 19) {
+					if (txt_id == 19) {
 
 						sprintf(dst, fmt, Real2Host(seg030_0000(5)));
 
-					} else if (l_si == 20) {
+					} else if (txt_id == 20) {
 
 						sprintf(dst, fmt, Real2Host(seg030_008d(5)));
 
@@ -301,11 +301,11 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 				} else if (ds_readws(TLK_ID) == 6 && ds_readws(DIALOG_INFORMER) == 0) {
 
-					if (l_si == 35 || l_si == 36) {
+					if (txt_id == 35 || txt_id == 36) {
 
 						sprintf(dst, fmt, Real2Host(seg030_008d(1)));
 
-					} else if (l_si == 34) {
+					} else if (txt_id == 34) {
 
 						sprintf(dst, fmt, Real2Host(seg030_0000(1)));
 
@@ -320,43 +320,43 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 						hero = Real2Host(get_first_hero_available_in_group());
 
-						if (!l_si || l_si == 18) {
+						if (!txt_id || txt_id == 18) {
 
 							sprintf(dst, fmt, (char*)hero + HERO_NAME2);
 
-						} else if (l_si == 28) {
+						} else if (txt_id == 28) {
 
 							sprintf(dst, fmt, (char*)get_ltx(0xa5c));
 
-						} else if (l_si == 29) {
+						} else if (txt_id == 29) {
 
 							sprintf(dst, fmt, (char*)get_ltx(0xa60));
 
-						} else if (l_si == 30) {
+						} else if (txt_id == 30) {
 
 							sprintf(dst, fmt, (char*)get_ltx(0xa80));
 
-						} else if (l_si == 38) {
+						} else if (txt_id == 38) {
 
 							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP4))));
 
-						} else if (l_si == 49) {
+						} else if (txt_id == 49) {
 
 							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP4))));
 
 							ds_writebs(CURRENT_TOWN, ds_readbs(SWAFNILD_TP4));
 
-							ds_writews(0x2d83, ds_readbs(SWAFNILD_TP4) == 35 ? 10 : (ds_readbs(SWAFNILD_TP4) == 32 ? 2 : 7));
-							ds_writews(0x2d85, ds_readbs(SWAFNILD_TP4) == 35 ? 2 : (ds_readbs(SWAFNILD_TP4) == 32 ? 14 : 3));
+							ds_writews(X_TARGET_BAK, ds_readbs(SWAFNILD_TP4) == 35 ? 10 : (ds_readbs(SWAFNILD_TP4) == 32 ? 2 : 7));
+							ds_writews(Y_TARGET_BAK, ds_readbs(SWAFNILD_TP4) == 35 ? 2 : (ds_readbs(SWAFNILD_TP4) == 32 ? 14 : 3));
 
-						} else if (l_si == 52) {
+						} else if (txt_id == 52) {
 
 							sprintf(dst, fmt,
 								(char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP1))),
 								(char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP2))),
 								(char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP3))));
 
-						} else if (l_si == 59) {
+						} else if (txt_id == 59) {
 
 							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + (
 							    ds_readb(SWAFNILD_DESTINATION) == 1 ?
@@ -371,26 +371,26 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 					} else if (ds_readws(DIALOG_INFORMER) == 1) {
 
-						if (!l_si || l_si == 3 || l_si == 4) {
+						if (!txt_id || txt_id == 3 || txt_id == 4) {
 
 							sprintf(dst, fmt,
 								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
 								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)));
 
-						} else if (l_si == 5) {
+						} else if (txt_id == 5) {
 
 							sprintf(dst, fmt,
 								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 0)),
 								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
-						} else if (l_si == 6) {
+						} else if (txt_id == 6) {
 
 							sprintf(dst, fmt,
 								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
 								Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_SEX), 1)),
 								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2);
 
-						} else if (l_si == 8) {
+						} else if (txt_id == 8) {
 
 							sprintf(dst, fmt,
 								Real2Host(ds_readd(UNICORN_HERO_PTR)) + HERO_NAME2,
@@ -403,11 +403,11 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 					}
 				} else if (ds_readws(TLK_ID) == 10 && ds_readws(DIALOG_INFORMER) == 0) {
 
-					if (l_si == 18) {
+					if (txt_id == 18) {
 
 						sprintf(dst, fmt, Real2Host(seg030_008d(10)));
 
-					} else if (l_si == 29) {
+					} else if (txt_id == 29) {
 
 						sprintf(dst, fmt, Real2Host(seg030_0000(10)));
 
@@ -421,25 +421,25 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 					hero = Real2Host(get_first_hero_available_in_group());
 
-					if (!l_si || l_si == 2 || l_si == 25 || l_si == 31 ||
-						l_si == 32 || l_si == 60 || l_si == 78 || l_si == 87)
+					if (!txt_id || txt_id == 2 || txt_id == 25 || txt_id == 31 ||
+						txt_id == 32 || txt_id == 60 || txt_id == 78 || txt_id == 87)
 					{
 						sprintf(dst, fmt, (char*)hero + HERO_NAME2);
 
-					} else if (l_si == 13 || l_si == 19 || l_si == 88 || l_si == 24) {
+					} else if (txt_id == 13 || txt_id == 19 || txt_id == 88 || txt_id == 24) {
 
 						sprintf(dst, fmt,
 							(char*)hero + HERO_NAME2,
 							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
-					} else if (l_si == 14 || l_si == 15 || l_si == 76) {
+					} else if (txt_id == 14 || txt_id == 15 || txt_id == 76) {
 
 						sprintf(dst, fmt,
 							(char*)Real2Host(ds_readd(RUIN_HERO)) + HERO_NAME2,
 							(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(ds_readd(RUIN_HERO)) + 0x22), 0)));
 
-					} else if (l_si == 26 || l_si == 65) {
+					} else if (txt_id == 26 || txt_id == 65) {
 
 						sprintf(dst, fmt,
 							(char*)hero + HERO_NAME2,
@@ -455,7 +455,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 				} else if (ds_readws(TLK_ID) == 0) {
 
-					if (l_si == 40 || l_si == 41 || l_si == 43) {
+					if (txt_id == 40 || txt_id == 41 || txt_id == 43) {
 
 						sprintf(dst, fmt,
 							(char*)Real2Host(ds_readd(RANDOM_TLK_HERO)) + HERO_NAME2,
@@ -470,63 +470,60 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 				}
 			}
 
-			array[0].a = host_readb(ptr1 + 2) + l_di;
-			array[0].b = host_readb(ptr1 + 5);
-			array[1].a = host_readb(ptr1 + 3) + l_di;
-			array[1].b = host_readb(ptr1 + 6);
-			array[2].a = host_readb(ptr1 + 4) + l_di;
-			array[2].b = host_readb(ptr1 + 7);
-			rand5 = random_schick(5);
+			options[0].txt = host_readb(state_ptr + 2) + txt_offset;
+			options[0].goto_state = host_readb(state_ptr + 5);
+			options[1].txt = host_readb(state_ptr + 3) + txt_offset;
+			options[1].goto_state = host_readb(state_ptr + 6);
+			options[2].txt = host_readb(state_ptr + 4) + txt_offset;
+			options[2].goto_state = host_readb(state_ptr + 7);
+			shuffle_count = random_schick(5);
 
-			for (l5 = 0; l5 < rand5; l5++) {
+			/* shuffle options by pairwise interchanging */
+			for (i = 0; i < shuffle_count; i++) {
+				shufflepair_1 = random_schick(3) - 1;
+				shufflepair_2 = random_schick(3) - 1;
 
-				rand3_1 = random_schick(3) - 1;
-				rand3_2 = random_schick(3) - 1;
+				tmp1 = options[shufflepair_1].txt;
+				tmp2 = options[shufflepair_2].txt;
 
-				l6 = array[rand3_1].a;
-				l7 = array[rand3_2].a;
+				if (tmp1 != txt_offset && tmp2 != txt_offset) {
+					options[shufflepair_1].txt = tmp2;
+					options[shufflepair_2].txt = tmp1;
 
-				if (l6 != l_di && l7 != l_di) {
-
-					array[rand3_1].a = l7;
-					array[rand3_2].a = l6;
-
-					l6 = array[rand3_1].b;
-
-					array[rand3_1].b = array[rand3_2].b;
-
-					array[rand3_2].b = l6;
+					tmp1 = options[shufflepair_1].goto_state;
+					options[shufflepair_1].goto_state = options[shufflepair_2].goto_state;
+					options[shufflepair_2].goto_state = tmp1;
 				}
 			}
 
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), Real2Host(ds_readd(DIALOG_TITLE)), (Bit8u*)dst, options,
-					get_city(4 * (host_readb(ptr1 + 2) + l_di)),
-					get_city(4 * (host_readb(ptr1 + 3) + l_di)),
-					get_city(4 * (host_readb(ptr1 + 4) + l_di)));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), Real2Host(ds_readd(DIALOG_TITLE)), (Bit8u*)dst, optioncount,
+					get_city(4 * (host_readb(state_ptr + 2) + txt_offset)),
+					get_city(4 * (host_readb(state_ptr + 3) + txt_offset)),
+					get_city(4 * (host_readb(state_ptr + 4) + txt_offset)));
 		}
 
 
 		ds_writews(DIALOG_NEXT_STATE, -1);
 
-		if (host_readws(ptr1) & 0x8000 || host_readws(ptr1) == -1) {
+		if (host_readws(state_ptr) & 0x8000 || host_readws(state_ptr) == -1) {
 			talk_switch();
 		}
 
-		ds_writew(DIALOG_STATE, ds_readws(DIALOG_NEXT_STATE) == -1 ? host_readb(ptr1 + 5) : ds_readws(DIALOG_NEXT_STATE));
+		ds_writew(DIALOG_STATE, ds_readws(DIALOG_NEXT_STATE) == -1 ? host_readb(state_ptr + 5) : ds_readws(DIALOG_NEXT_STATE));
 
 		if (ds_readws(DIALOG_DONE) == 0) {
 
 			/* set the new dialog state */
 
-			if (options != 0 ) {
+			if (optioncount != 0 ) {
 				if (answer == -1) {
 					ds_writew(DIALOG_DONE, 1);
 				} else if (answer == 1) {
-					ds_writews(DIALOG_STATE, host_readb(ptr1 + 5));
+					ds_writews(DIALOG_STATE, host_readb(state_ptr + 5));
 				} else if (answer == 2) {
-					ds_writews(DIALOG_STATE, host_readb(ptr1 + 6));
+					ds_writews(DIALOG_STATE, host_readb(state_ptr + 6));
 				} else if (answer == 3) {
-					ds_writews(DIALOG_STATE, host_readb(ptr1 + 7));
+					ds_writews(DIALOG_STATE, host_readb(state_ptr + 7));
 				}
 			}
 

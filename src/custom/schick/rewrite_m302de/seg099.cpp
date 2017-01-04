@@ -86,7 +86,7 @@ void spell_gardanium(void)
 			/* enough AE */
 
 			/* TODO: this adds the AE to a variable no one reads */
-			add_ds_ws(0x333e, answer);
+			add_ds_ws(GARDANIUM_USED_AE, answer);
 			/* set AE costs */
 			ds_writew(0xac0e, answer);
 			/* prepare the message */

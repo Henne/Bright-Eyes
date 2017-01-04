@@ -578,7 +578,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 		if ((item == 0x66 || item == 0x61) && ds_readb(DUNGEON_INDEX) == 11 &&
 			ds_readw(X_TARGET) == 9 && ds_readw(Y_TARGET) == 9)
 		{
-			ds_writeb(EFFERD_SACRIFICE, 1);
+			ds_writeb(DNG11_EFFERD_SACRIFICE, 1);
 		}
 
 		/* check for the mine in oberorken to bring ingerimm a gift */

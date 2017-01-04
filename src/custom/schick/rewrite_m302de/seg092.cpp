@@ -61,10 +61,10 @@ void chest_poisoned1(void)
 	print_msg_with_first_hero(get_ltx(0x820));
 
 	/* the first hero gets wounded with 2W6 */
-	sub_hero_le(Real2Host((RealPt)(ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
+	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
 
 	/* and gets poisoned */
-	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 1);
+	hero_gets_poisoned(Real2Host(ds_readd(MAIN_ACTING_HERO)), 1);
 }
 
 void chest_poisoned2(void)
@@ -73,10 +73,10 @@ void chest_poisoned2(void)
 	print_msg_with_first_hero(get_ltx(0x820));
 
 	/* the first hero gets wounded with 2W6 */
-	sub_hero_le(Real2Host((RealPt)(ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
+	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
 
 	/* and gets poisoned */
-	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 2);
+	hero_gets_poisoned(Real2Host(ds_readd(MAIN_ACTING_HERO)), 2);
 }
 
 void chest_poisoned3(void)
@@ -85,10 +85,10 @@ void chest_poisoned3(void)
 	print_msg_with_first_hero(get_ltx(0x820));
 
 	/* the first hero gets wounded with 1W6 */
-	sub_hero_le(Real2Host((RealPt)(ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group()))), dice_roll(1, 6, 0));
+	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(1, 6, 0));
 
 	/* and gets poisoned */
-	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 8);
+	hero_gets_poisoned(Real2Host(ds_readd(MAIN_ACTING_HERO)), 8);
 }
 
 void chest_protected_brutal(void)
@@ -106,10 +106,10 @@ void chest_stoned(void)
 	print_msg_with_first_hero(get_ltx(0xc20));
 
 	/* save pointer of the first hero */
-	ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group());
+	ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group());
 
 	/* and make him stoned */
-	or_ptr_bs(Real2Host(ds_readd(0x3e20)) + 0xaa, 0x04);
+	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + 0xaa, 0x04);
 }
 
 void chest_ignifax_normal(void)

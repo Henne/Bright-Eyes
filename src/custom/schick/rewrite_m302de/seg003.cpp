@@ -37,7 +37,7 @@ static const char no_way_msg[][41] = {
 signed short update_direction(unsigned char mod)
 {
 	/* save old direction */
-	ds_writeb(0x2d7c, ds_readb(DIRECTION));
+	ds_writeb(DIRECTION_BAK, ds_readb(DIRECTION));
 	/* set new direction */
 	ds_writeb(DIRECTION, (ds_readb(DIRECTION) + mod) & 0x3);
 	/* set bogus variable to 1 */

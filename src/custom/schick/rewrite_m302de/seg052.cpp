@@ -287,7 +287,7 @@ void do_citycamp(void)
 		}
 	}
 
-	ds_writeb(0x2d9f, 0);
+	ds_writeb(LOCATION_BAK, 0);
 	turnaround();
 }
 

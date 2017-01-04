@@ -135,10 +135,10 @@
 #define CURRENT_GROUP	(0x2d35)	/* signed char */
 #define GROUP_MEMBER_COUNTS	(0x2d36)	/* signed char[6], members per group */
 #define TOTAL_HERO_COUNTER	(0x2d3c)	/* signed char */
-#define DIRECTION	(0x2d3d)
+#define DIRECTION	(0x2d3d)	/* unsigned char */
 #define GROUPS_DIRECTION	(0x2d3e)	/* unsigned char[6] */
-#define X_TARGET	(0x2d44)
-#define Y_TARGET	(0x2d46)
+#define X_TARGET	(0x2d44)	/* unsigned short */
+#define Y_TARGET	(0x2d46)	/* unsigned short */
 #define GROUPS_X_TARGET	(0x2d48)	/* unsigned short[6] */
 #define GROUPS_Y_TARGET	(0x2d54)	/* unsigned short[6] */
 #define LOCATION	(0x2d60)	/* signed char */
@@ -147,8 +147,22 @@
 #define GROUPS_TOWN	(0x2d68)	/* signed char[6] */
 #define DUNGEON_INDEX	(0x2d6e)	/* signed char */
 #define GROUPS_DNG_INDEX	(0x2d6f)	/* signed char[6] */
-#define DUNGEON_LEVEL	(0x2d75)
+#define DUNGEON_LEVEL	(0x2d75)	/* signed char */
 #define GROUPS_DNG_LEVEL	(0x2d76)	/* signed char[6] */
+#define DIRECTION_BAK	(0x2d7c)	/* unsigned char[6] */
+#define GROUPS_DIRECTION_BAK	(0x2d7d)	/* unsigned char[6] */
+#define X_TARGET_BAK	(0x2d83)	/* signed short */
+#define Y_TARGET_BAK	(0x2d85)	/* signed short */
+#define GROUPS_X_TARGET_BAK	(0x2d87)	/* signed short[6] */
+#define GROUPS_Y_TARGET_BAK	(0x2d93)	/* signed short[6] */
+#define LOCATION_BAK	(0x2d9f)	/* signed char */
+#define GROUPS_LOCATION_BAK	(0x2da0)	/* signed char[6] */
+#define CURRENT_TOWN_BAK	(0x2da6)	/* signed char */
+#define GROUPS_TOWN_BAK	(0x2da7)	/* signed char[6] */
+#define DUNGEON_INDEX_BAK	(0x2dad)	/* signed char */
+#define GROUPS_DNG_INDEX_BAK	(0x2dae)	/* signed char[6] */
+#define DUNGEON_LEVEL_BAK	(0x2db4)	/* signed char */
+#define GROUPS_DNG_LEVEL_BAK	(0x2db5)	/* signed char[6] */
 #define DAY_TIMER	(0x2dbb)
 #define DAY_OF_WEEK	(0x2dbf)
 #define DAY_OF_MONTH	(0x2dc0)
@@ -158,7 +172,9 @@
 #define INGAME_TIMERS	(0x2dc4)	/* signed long[26] */
 #define MODIFICATION_TIMERS	(0x2e2c)	/* (struct { long, short, char, char })[?] */
 #define GODS_ESTIMATION	(0x314e)	/* signed long[15] */
+#define TAV_CHEATED_FLAGS	(0x318a)	/* unsigned char[88] */
 #define SMITH_REPAIRITEMS	(0x31e2)	/* (struct { short, long })[50] */
+#define DNG_HANDLED_POS	(0x330e)	/* unsigned short */
 #define DEATHTRAP_STEPS	(0x3310)	/* signed short */
 #define DEATHTRAP	(0x3312)	/* signed short */
 #define DNG01_AMULET_TAKEN	(0x3314)	/* signed char {0,1} */
@@ -171,6 +187,9 @@
 #define WEATHER2	(0x331d)	/* signed short, random(7) */
 #define DASPOTA_FIGHTFLAGS	(0x331f)	/* signed char[19] */
 #define TREASURE_MAPS	(0x3332)	/* signed char[10] */
+#define DEBTBOOK_READ_FLAG	(0x333c)	/* unsigned char {0,1} */
+#define ORCDOCUMENT_READ_FLAG	(0x333d)	/* unsigned char {0,1} */
+#define GARDANIUM_USED_AE	(0x333e)	/* unsigned short */
 #define MIN_MAP_PARTS	(0x3340)	/* signed short {0} */
 #define SUBVENTION	(0x3342)	/* unsigned char {0-4} */
 #define OTTA_WINDRIDERS	(0x3344)	/* unsigned short */
@@ -190,6 +209,9 @@
 #define DEBT_DAYS	(0x3360)	/* signed short */
 #define IN_ACADEMY	(0x3362)	/* unsigned short {0,99} */
 #define INFORMER_FLAGS	(0x3364)	/* unsigned char[15], {0,1,2} */
+#define TAV_KICKED_FLAGS	(0x3374)	/* signed char[88], {0,1} */
+#define TOWN_OUTLAWED_FLAGS	(0x33cc)	/* signed char[52], {0,1} */
+#define HERBERG_KICKED_FLAGS	(0x3400)	/* signed char[74], {0,1} */
 #define GOT_LETTER_HET	(0x344a)	/* unsigned char {0,1} */
 #define JURGE_AWAITS_LETTER	(0x344c)	/* unsigned char {0,1} */
 #define UMBRIK_QUEST_GORAH	(0x344d)	/* unsigned char {0,1} */
@@ -223,6 +245,12 @@
 #define UNICORN_HERO_PTR	(0x346a)	/* RealPt */
 #define NPC_MEET_TAVERN	(0x346e)	/* signed short */
 #define NPC_MONTHS	(0x3470)	/* signed short */
+#define SMITH_KICKED_FLAGS	(0x3472)	/* signed char[50], {0,1} */
+#define SMITH_FLOGGED_FLAGS	(0x34a4)	/* signed char[50], {0,1} */
+#define MERCHANT_KICKED_FLAGS	(0x34d6)	/* signed char[74], {0,1} */
+#define NPC_UNKNOWN_FLAGS	(0x3520)	/* unsigned char[20] */
+#define MERCHANT_KICKED2_FLAGS	(0x3534)	/* unsigned char[94], {0,1} */
+#define MERCHANT_OFFENDED_FLAGS	(0x3592)	/* unsigned char[94], {0,1} */
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
 #define ALWAYS_ONE2	(0x35f3)	/* unsigned char = 1, write only */
@@ -274,7 +302,7 @@
 #define DNG06_GOLDKEY_FLAG	(0x3caa)	/* unsigned char {0,1,2} */
 #define DNG06_COUNTDOWN_FLAG	(0x3cab)	/* unsigned char {0,1,2,3,4,5} */
 #define DNG06_LEVER_FLAG	(0x3cac)	/* unsigned char {0,1} */
-#define DNG06_ASTHENILDOLCH_FLAG	(0x3cad)	/* unsigned char {0,1} */
+#define DNG06_BOOK_FLAG	(0x3cad)	/* unsigned char {0,1} */
 #define DNG06_FIGHT19_FLAG	(0x3cae)	/* unsigned char {0,1} */
 #define DNG05_PROVIANT_FLAG	(0x3caf)	/* unsigned char {0,1} */
 #define DNG05_BATS_FLAG	(0x3cb0)	/* unsigned char {0,1} */
@@ -310,6 +338,10 @@
 #define HERMIT_SMALLLAKE_FLAG	(0x3e09)	/* unsigned char {0,1} */
 #define RANDOM_TLK_HERO	(0x3e18)	/* RealPt */
 #define RUIN_HERO	(0x3e1c)	/* RealPt */
+#define MAIN_ACTING_HERO	(0x3e20)	/* RealPt */
+#define TEVENT73_CORPSE	(0x3e24)	/* unsigned char[7] */
+#define TEVENT64_HUT_CONTENT	(0x3e2b)	/* unsigned char[19] */
+#define TEVENT64_CHEST	(0x3e3e)	/* unsigned char[21] */
 #define NEED_LETTER	(0x3f73)	/* unsigned char {0,1} */
 #define GREMOB_INVITED	(0x3f74)	/* unsigned char {0,1} */
 #define HARLOT_DATE	(0x3f75)	/* unsigned char {0,1} */
@@ -317,6 +349,18 @@
 #define PTEMPLE_CLOSED	(0x3f77)	/* unsigned char {0,1} */
 #define ALRIK_DERONDAN	(0x3f78)	/* unsigned char {0,1} */
 #define ALRIK_DERONDAN_INSULTED	(0x3f79)	/* unsigned char {0,1} */
+#define DNG13_LANTERN_FLAG	(0x3f7a)	/* unsigned char {0,1} */
+#define DNG13_CORPSE0_FLAG	(0x3f7b)	/* unsigned char {0,1} */
+#define DNG13_CORPSE1_FLAG	(0x3f7c)	/* unsigned char {0,1} */
+#define DNG13_PASSAGE1_FLAG	(0x3f7d)	/* unsigned char {0,1} */
+#define DNG13_PASSAGE2_FLAG	(0x3f7e)	/* unsigned char {0,1} */
+#define DNG13_PASSAGE3_FLAG	(0x3f7f)	/* unsigned char {0,1} */
+#define DNG13_PASSAGE4_FLAG	(0x3f80)	/* unsigned char {0,1} */
+#define DNG13_PASSAGE5_FLAG	(0x3f81)	/* unsigned char {0,1} */
+#define DNG13_MONEY_FLAG	(0x3f82)	/* unsigned char {0,1} */
+#define DNG13_CHEST_EQUIPS	(0x3f83)	/* unsigned char[8] */
+#define DNG13_CHEST0_CONTENT	(0x3f90)	/* unsigned char[6] */
+#define DNG13_CHEST1_CONTENT	(0x3f96)	/* unsigned char[5] */
 #define DNG12_TUNNEL1	(0x3f9b)	/* signed char {0,1} */
 #define DNG12_TUNNEL2	(0x3f9c)	/* signed char {0,1} */
 #define DNG12_TUNNEL3	(0x3f9d)	/* signed char {0,1} */
@@ -330,6 +374,35 @@
 #define DNG12_OBSTACLE_ACTIVE	(0x3fa8)	/* signed char {0,1} */
 #define DNG12_SPEARTRAP_ACTIVE	(0x3fa9)	/* signed char {0,1} */
 #define DNG12_CHEST1_CONTENT	(0x3faa)	/* signed char[12] */
+#define DNG14_MONEY_FLAG	(0x3fb6)	/* unsigned char {0,1} */
+#define DNG14_ALARM_FLAG	(0x3fb7)	/* unsigned char {0,1} */
+#define DNG14_SECRETDOOR1	(0x3fb8)	/* unsigned char {0, 1 = found, 2 = unlocked} */
+#define DNG14_SECRETDOOR2	(0x3fb9)	/* unsigned char {0, 1 = found, 2 = unlocked} */
+#define DNG14_SECRETDOOR3	(0x3fba)	/* unsigned char {0, 1 = found, 2 = unlocked} */
+#define DNG14_SECRETDOOR4	(0x3fbb)	/* unsigned char {0, 1 = found, 2 = unlocked} */
+#define DNG14_SECRETDOOR5	(0x3fbc)	/* unsigned char {0, 1 = found, 2 = unlocked} */
+#define DNG14_POISONTRAP	(0x3fbd)	/* unsigned char {0, 1, 2} */
+#define DNG14_LVL2_FIGHT	(0x3fbe)	/* unsigned char {0,1} */
+#define DNG14_BOOTY_FLAG	(0x3fbf)	/* unsigned char {0,1} */
+#define DNG14_TORCHES_FLAG	(0x3fc0)	/* unsigned char {0,1} */
+#define DNG14_SPEAR_FLAG	(0x3fc1)	/* unsigned char {0,1} */
+#define DNG14_HATCHET_FLAG	(0x3fc2)	/* unsigned char {0,1} */
+#define DNG14_RING_FLAG	(0x3fc3)	/* unsigned char {0,1} */
+#define DNG14_ORKNASE_FLAG	(0x3fc4)	/* unsigned char {0,1} */
+#define DNG14_SPOOKY_FLAG	(0x3fc5)	/* unsigned char {0,1} */
+#define DNG14_CELLAREXIT_FLAG	(0x3fc6)	/* unsigned char {0,1} */
+#define DNG14_CHEST_PANTRY	(0x3fc7)	/* unsigned char[9] */
+#define DNG14_CHEST_GEAR	(0x3fd0)	/* unsigned char[13] */
+#define DNG14_CHEST_BARREL	(0x3fdd)	/* unsigned char[7] */
+#define DNG14_CHEST_X1	(0x3fe4)	/* unsigned char[7] */
+#define DNG14_CHEST_X2	(0x3feb)	/* unsigned char[16] */
+#define DNG14_CHEST_X3	(0x3ffb)	/* unsigned char[11] */
+#define DNG14_CHEST_X4	(0x4006)	/* unsigned char[14] */
+#define DNG14_CHEST_X5	(0x4014)	/* unsigned char[10] */
+#define DNG14_CHEST_X6	(0x401e)	/* unsigned char[8] */
+#define DNG14_CHEST_X7	(0x4026)	/* unsigned char[7] */
+#define DNG14_CHEST_X8	(0x402d)	/* unsigned char[13] */
+#define DNG14_FULLMAP_FLAG	(0x403a)	/* unsigned char {0,1} */
 #define DNG02_CHEST00_CONTENT	(0x403b)	/* unsigned char[2] */
 #define DNG02_CHEST01_CONTENT	(0x403d)	/* unsigned char[4] */
 #define DNG02_CHEST06_CONTENT	(0x4041)	/* unsigned char[4] */
@@ -355,6 +428,18 @@
 #define DNG08_CHEST2_CONTENT	(0x40eb)	/* signed char[2] */
 #define DNG08_CHEST4_CONTENT	(0x40ed)	/* signed char[2] */
 #define DNG08_CHEST5_CONTENT	(0x40ef)	/* signed char[6] */
+#define DNG09_LEVER1_FLAG	(0x40f5)	/* unsigned char {0,1} */
+#define DNG09_BOLTTRAP1_FLAG	(0x40f6)	/* unsigned char {0,1} */
+#define DNG09_BOLTTRAP2_FLAG	(0x40f7)	/* unsigned char {0,1} */
+#define DNG09_BOLTTRAP3_FLAG	(0x40f8)	/* unsigned char {0,1} */
+#define DNG09_CULTIST_FLAG	(0x40f9)	/* unsigned char {0,1} */
+#define DNG09_LEVER2_FLAG	(0x40fa)	/* unsigned char {0,1} */
+#define DNG09_BOLTTRAP4_FLAG	(0x40fb)	/* unsigned char {0,1} */
+#define DNG09_CRYSTAL_FLAG	(0x40fc)	/* unsigned char {0,1} */
+#define DNG09_PIT_FLAG	(0x40fd)	/* unsigned char {0,1,2}, number of heroes in pit */
+#define DNG09_ALTAR_FLAG	(0x40ff)	/* unsigned char {0,1} */
+#define DNG09_SECRETDOOR1	(0x4100)	/* unsigned char {0, 1 = found, 2 = unlocked} */
+#define DNG09_SECRETDOOR2	(0x4101)	/* unsigned char {0, 1 = found, 2 = unlocked} */
 #define DNG10_CORPSE_LOOTED	(0x4140)	/* unsgiend char {0,1} */
 #define DNG10_LEVER_FOUND	(0x4141)	/* unsigned char {0, 1, 3} ; default = 0 */
 #define DNG10_HOLE_STATE	(0x4142)	/* unsigned char {0, 1, 2} ; default = 0 */
@@ -371,9 +456,22 @@
 #define DNG10_CHEST2_CONTENT	(0x4154)		/* signed char[4]; */
 #define DNG10_CHEST3_CONTENT	(0x4158)		/* signed char[3]; */
 #define DNG10_CHEST4_CONTENT	(0x415b)		/* signed char[2]; */
-#define EFFERD_SACRIFICE	(0x415f)	/* unsigned char {0,1} */
-#define EFFERD_HINT	(0x4160)	/* unsigned char {0,1} */
+#define DNG11_WATERBARREL1	(0x415d)	/* unsigned char {0,1} */
+#define DNG11_WATERBARREL2	(0x415e)	/* unsigned char {0,1} */
+#define DNG11_EFFERD_SACRIFICE	(0x415f)	/* unsigned char {0,1} */
+#define DNG11_EFFERD_HINT	(0x4160)	/* unsigned char {0,1} */
+#define DNG11_UNKNOWN1_FLAG	(0x4161)	/* unsigned char {0,1} */
+#define DNG11_FIRETRAP1_FLAG	(0x4162)	/* unsigned char {0,1} */
+#define DNG11_UNKNOWN2_FLAG	(0x4163)	/* unsigned char {0,1} */
+#define DNG11_FIRETRAP2_FLAG	(0x4164)	/* unsigned char {0,1} */
+#define DNG11_SECRETDOOR1_FLAG	(0x4165)	/* unsigned char {0,1} */
+#define DNG11_SECRETDOOR2_FLAG	(0x4166)	/* unsigned char {0,1} */
+#define DNG11_SECRETDOOR3_FLAG	(0x4167)	/* unsigned char {0,1} */
+#define DNG11_LEVER_FLAG	(0x4168)	/* unsigned char {0-5} */
+#define DNG11_PROVIANT1_FLAG	(0x4169)	/* unsigned char {0,1} */
+#define DNG11_PROVIANT2_FLAG	(0x416a)	/* unsigned char {0,1} */
 #define DNG15_TOOK_CURSED_MONEY	(0x41c6)	/* unsigned char {0,1} */
+#define DNG15_UNKNOWN_FLAG	(0x41c7)	/* unsigned char {0,1} */
 #define DNG15_REACHED_HANDS	(0x41c8)	/* unsigned char {0,1} */
 #define DNG15_LEVER_SOUTH	(0x41c9)	/* unsigned char {0,1} */
 #define DNG15_LEVER_NORTH	(0x41ca)	/* unsigned char {0,1} */
@@ -381,6 +479,7 @@
 #define DNG15_CEILINGS_A	(0x41cc)	/* unsigned char[18] {0, 1, 2, 3, 4} */
 #define DNG15_CURSED_MONEY_A	(0x41de)	/* unsigned char[6] {0,1} */
 #define DNG15_UNDEAD_FIGHT	(0x41e4)	/* unsigned char {0,1} */
+#define DNG15_CHEST_EQUIPS	(0x41e5)	/* unsigned char[7] */
 #define DNG01_CHEST1_CONTENT	(0x41ec)	/* unsigned char[8] */
 #define DNG01_CHEST2_CONTENT	(0x41f4)	/* unsigned char[10] */
 #define DNG01_CHEST3_CONTENT	(0x41fe)	/* unsigned char[2] */

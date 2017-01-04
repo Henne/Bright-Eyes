@@ -25,84 +25,83 @@
 namespace M302de {
 #endif
 
-struct s2 {
-	signed short a;
-	signed short b;
+struct tlk_option {
+	signed short txt, goto_state;
 };
 
 void do_random_talk(signed short talk_id, signed short informer_id)
 {
-	signed short l_si;
-	signed short l_di = 0;
-	signed short l3;
-	signed short l4;
-	signed short l5;
-	signed short l6;
-	signed short l7;
-	signed short l8;
-	signed short l9;
-	signed short l10;
-	signed short l11;
-	signed short l12;
-	Bit8u *p1;
-	Bit8u *p2;
-	Bit8u *p3;
-	Bit8u *p4;
+	signed short optioncount;
+	signed short answer = 0;
+	signed short txt_id;
+	signed short txt_offset;
+	signed short opt0_txt;
+	signed short opt1_txt;
+	signed short opt2_txt;
+	signed short txt_id_raw;
+	signed short txt_id_rand;
+	signed short opt0_rand;
+	signed short opt1_rand;
+	signed short opt2_rand;
+	Bit8u *state_ptr;
+	Bit8u *states_tab;
+	Bit8u *partners_tab;
+	Bit8u *dialog_title;
 	char *dst;
 	char *fmt;
-	signed short l13;
-	signed short l14;
-	signed short l15;
-	signed short l16;
-	signed short l17;
-	signed short l18;
-	struct s2 arr[3];
+	signed short shufflepair_1;
+	signed short shufflepair_2;
+	signed short shufflecount;
+	signed short i;
+	signed short tmp1;
+	signed short tmp2;
+	struct tlk_option options[3];
 
 	ds_writew(DIALOG_INFORMER, informer_id);
 	ds_writew(TLK_ID, talk_id);
 
 	load_tlk(talk_id + ARCHIVE_FILE_DIALOGS_TLK);
 	ds_writew(DIALOG_STATE, ds_writew(DIALOG_DONE, 0));
-	p3 = p_datseg + DIALOG_PARTNERS;
-	p2 = Real2Host(host_readds(p3 + 38 * informer_id));
-	l4 = host_readws(p3 + 4 + 38 * informer_id);
-	p4 = 38 * informer_id + p3 + 6;
-	load_in_head(host_readws(p3 + 38 * informer_id + 36));
+	partners_tab = p_datseg + DIALOG_PARTNERS;
+	states_tab = Real2Host(host_readds(partners_tab + 38 * informer_id));
+	txt_offset = host_readws(partners_tab + 4 + 38 * informer_id);
+	dialog_title = 38 * informer_id + partners_tab + 6;
+	load_in_head(host_readws(partners_tab + 38 * informer_id + 36));
 	dst = (char*)Real2Host(ds_readd(DTP2)) + 0x400;
 
 	do {
-		l_di = l_si = 0;
-		p1 = 8 * ds_readws(DIALOG_STATE) + p2;
+		answer = optioncount = 0;
+		state_ptr = 8 * ds_readws(DIALOG_STATE) + states_tab;
 
 		if (ds_readws(TLK_ID) == 13 && ds_readws(DIALOG_STATE) >= 20) {
-			l9 = l10 = l11 = l12 = 0;
+			txt_id_rand = opt0_rand = opt1_rand = opt2_rand = 0;
 		} else {
-			l9 = random_schick(4) - 1;
-			l10 = random_schick(4) - 1;
-			l11 = random_schick(4) - 1;
-			l12 = random_schick(4) - 1;
+			txt_id_rand = random_schick(4) - 1;
+			opt0_rand = random_schick(4) - 1;
+			opt1_rand = random_schick(4) - 1;
+			opt2_rand = random_schick(4) - 1;
 		}
 
-		if ((l8 = host_readws(p1)) != -1) {
-			l8 = 4 * l8 + l9;
+		if ((txt_id_raw = host_readws(state_ptr)) != -1) {
+			txt_id_raw = 4 * txt_id_raw + txt_id_rand;
 		}
-		if (host_readb(p1 + 2) != 0) {
-			l5 = 4 * host_readb(p1 + 2) + l10;
-			l_si++;
+		if (host_readb(state_ptr + 2) != 0) {
+			opt0_txt = 4 * host_readb(state_ptr + 2) + opt0_rand;
+			optioncount++;
 		}
-		if (host_readb(p1 + 3) != 0) {
-			l6 = 4 * host_readb(p1 + 3) + l11;
-			l_si++;
+		if (host_readb(state_ptr + 3) != 0) {
+			opt1_txt = 4 * host_readb(state_ptr + 3) + opt1_rand;
+			optioncount++;
 		}
-		if (host_readb(p1 + 4) != 0) {
-			l7 = 4 * host_readb(p1 + 4) + l12;
-			l_si++;
+		if (host_readb(state_ptr + 4) != 0) {
+			opt2_txt = 4 * host_readb(state_ptr + 4) + opt2_rand;
+			optioncount++;
 		}
 
-		if (l8 != -1) {
+		if (txt_id_raw != -1) {
 
-			l3 = (4 * host_readw(p1) + l9) & 0x7fff;
-			fmt = (char*)get_dtp(4 * (l3 + l4));
+			txt_id = (4 * host_readw(state_ptr) + txt_id_rand) & 0x7fff;
+			fmt = (char*)get_dtp(4 * (txt_id + txt_offset));
 
 			if (ds_readws(TLK_ID) == 15) {
 
@@ -140,62 +139,62 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 				strcpy(dst, fmt);
 			}
 
-			arr[0].a = l5 + l4;
-			arr[0].b = host_readb(p1 + 5);
-			arr[1].a = l6 + l4;
-			arr[1].b = host_readb(p1 + 6);
-			arr[2].a = l7 + l4;
-			arr[2].b = host_readb(p1 + 7);
+			options[0].txt = opt0_txt + txt_offset;
+			options[0].goto_state = host_readb(state_ptr + 5);
+			options[1].txt = opt1_txt + txt_offset;
+			options[1].goto_state = host_readb(state_ptr + 6);
+			options[2].txt = opt2_txt + txt_offset;
+			options[2].goto_state = host_readb(state_ptr + 7);
 
-			if (l_si) {
+			if (optioncount) {
 
-				l15 = random_schick(5);
-				for (l16 = 0; l16 < l15; l16++) {
+				shufflecount = random_schick(5);
+				for (i = 0; i < shufflecount; i++) {
 
-					l13 = random_schick(3) - 1;
-					l14 = random_schick(3) - 1;
+					shufflepair_1 = random_schick(3) - 1;
+					shufflepair_2 = random_schick(3) - 1;
 
-					l17 = arr[l13].a;
-					l18 = arr[l14].a;
+					tmp1 = options[shufflepair_1].txt;
+					tmp2 = options[shufflepair_2].txt;
 
-					if (l17 != l4 && l18 != l4) {
-						arr[l13].a = l18;
-						arr[l14].a = l17;
-						l17 = arr[l13].b;
-						arr[l13].b = arr[l14].b;
-						arr[l14].b = l17;
+					if (tmp1 != txt_offset && tmp2 != txt_offset) {
+						options[shufflepair_1].txt = tmp2;
+						options[shufflepair_2].txt = tmp1;
+						tmp1 = options[shufflepair_1].goto_state;
+						options[shufflepair_1].goto_state = options[shufflepair_2].goto_state;
+						options[shufflepair_2].goto_state = tmp1;
 					}
 				}
 			}
 
-			l_di = GUI_dialogbox((RealPt)ds_readd(DTP2), p4, (Bit8u*)dst, l_si,
-					get_dtp(4 * arr[0].a),
-					get_dtp(4 * arr[1].a),
-					get_dtp(4 * arr[2].a));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), dialog_title, (Bit8u*)dst, optioncount,
+					get_dtp(4 * options[0].txt),
+					get_dtp(4 * options[1].txt),
+					get_dtp(4 * options[2].txt));
 
 		} else {
-			arr[0].b = host_readb(p1 + 5);
+			options[0].goto_state = host_readb(state_ptr + 5);
 		}
 
 		ds_writews(DIALOG_NEXT_STATE, -1);
-		if ((host_readw(p1) & 0x8000) || host_readws(p1) == -1) {
+		if ((host_readw(state_ptr) & 0x8000) || host_readws(state_ptr) == -1) {
 			talk_switch();
 		}
 
-		ds_writew(DIALOG_STATE, ds_readws(DIALOG_NEXT_STATE) == -1 ? arr[0].b : ds_readws(DIALOG_NEXT_STATE));
+		ds_writew(DIALOG_STATE, ds_readws(DIALOG_NEXT_STATE) == -1 ? options[0].goto_state : ds_readws(DIALOG_NEXT_STATE));
 
 		if (ds_readws(DIALOG_DONE) == 0) {
 
-			if (l_si) {
+			if (optioncount) {
 
-				if (l_di == -1) {
+				if (answer == -1) {
 					ds_writew(DIALOG_DONE, 1);
-				} else if (l_di == 1) {
-					ds_writew(DIALOG_STATE, arr[0].b);
-				} else if (l_di == 2) {
-					ds_writew(DIALOG_STATE, arr[1].b);
-				} else if (l_di == 3) {
-					ds_writew(DIALOG_STATE, arr[2].b);
+				} else if (answer == 1) {
+					ds_writew(DIALOG_STATE, options[0].goto_state);
+				} else if (answer == 2) {
+					ds_writew(DIALOG_STATE, options[1].goto_state);
+				} else if (answer == 3) {
+					ds_writew(DIALOG_STATE, options[2].goto_state);
 				}
 			}
 

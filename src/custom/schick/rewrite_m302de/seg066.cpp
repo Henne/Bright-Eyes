@@ -64,7 +64,7 @@ signed short enter_location(signed short town_id)
 		if (host_readws(ptr) == map_pos) {
 
 			/* found the location */
-			ds_writeb(0x2d9f, 0);
+			ds_writeb(LOCATION_BAK, 0);
 			ds_writebs(LOCATION, host_readbs(ptr + 2));
 			ds_writew(TYPEINDEX, host_readb(ptr + 3));
 			ds_writew(CITYINDEX, host_readw(ptr + 4));
@@ -85,7 +85,7 @@ signed short enter_location(signed short town_id)
 
 	if ((b_index = get_border_index(cast_u16(ds_readbs((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
-		ds_writeb(0x2d9f, 0);
+		ds_writeb(LOCATION_BAK, 0);
 		ds_writew(CITYINDEX, ds_readb(0x71c9 + town_id));
 
 		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
@@ -166,7 +166,7 @@ signed short enter_location_daspota(void)
 				turnaround();
 
 			} else {
-				ds_writeb(0x2d9f, 0);
+				ds_writeb(LOCATION_BAK, 0);
 				ds_writebs(LOCATION, host_readbs(ptr + 2));
 				ds_writew(CITYINDEX, host_readw(ptr + 4));
 			}
@@ -182,7 +182,7 @@ signed short enter_location_daspota(void)
 
 	if ((b_index = get_border_index(cast_u16(ds_readb((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
-		ds_writeb(0x2d9f, 0);
+		ds_writeb(LOCATION_BAK, 0);
 		ds_writebs(LOCATION, LOCATION_CITIZEN);
 		ds_writew(CITYINDEX, 19);
 		return 1;
@@ -310,7 +310,7 @@ void TLK_eremit(signed short state)
 
 	} else if (state == 10) {
 		/* group learns about two places to rest */
-		ds_writeb(0x3e09, ds_writeb(HERMIT_HERBPLACE_FLAG, 1));
+		ds_writeb(HERMIT_SMALLLAKE_FLAG, ds_writeb(HERMIT_HERBPLACE_FLAG, 1));
 	} else if (state == 13) {
 		ds_writeb(HERMIT_VISITED, 1);
 	} else if (state == 14) {
@@ -334,7 +334,7 @@ void do_town(void)
 
 	ds_writews(CURRENT_ANI, -1);
 
-	ds_writebs(0x2da6, ds_readbs(CURRENT_TOWN));
+	ds_writebs(CURRENT_TOWN_BAK, ds_readbs(CURRENT_TOWN));
 
 	city_step();
 }
@@ -891,15 +891,15 @@ signed short city_step(void)
 		seg066_10c8();
 	}
 
-	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
-		ds_readws(Y_TARGET) != ds_readws(0x2d85))
+	if (ds_readws(X_TARGET) != ds_readws(X_TARGET_BAK) ||
+		ds_readws(Y_TARGET) != ds_readws(Y_TARGET_BAK))
 	{
 		ds_writebs(CAN_MERGE_GROUP, (signed char)can_merge_group());
 		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
 	}
 
-	ds_writew(0x2d83, ds_readws(X_TARGET));
-	ds_writew(0x2d85, ds_readws(Y_TARGET));
+	ds_writew(X_TARGET_BAK, ds_readws(X_TARGET));
+	ds_writew(Y_TARGET_BAK, ds_readws(Y_TARGET));
 
 	handle_gui_input();
 
@@ -999,8 +999,8 @@ signed short city_step(void)
 		}
 
 		/* check move and a big city */
-		if ((ds_readws(Y_TARGET) != ds_readws(0x2d85) ||
-			(ds_readws(X_TARGET) != ds_readws(0x2d83))) &&
+		if ((ds_readws(Y_TARGET) != ds_readws(Y_TARGET_BAK) ||
+			(ds_readws(X_TARGET) != ds_readws(X_TARGET_BAK))) &&
 
 			(ds_readb(CURRENT_TOWN) == 1 || ds_readb(CURRENT_TOWN) == 39 ||
 			ds_readb(CURRENT_TOWN) == 18 || ds_readb(CURRENT_TOWN) == 17))

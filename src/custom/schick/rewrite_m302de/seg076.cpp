@@ -133,11 +133,11 @@ void DNG_door(signed short action)
 				if (ds_readws(0xd011) != 5)
 				{
 
-					if (ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1903 && ds_readb(0x41c7) != 0)
+					if (ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1903 && ds_readb(DNG15_UNKNOWN_FLAG) != 0)
 					{
 						GUI_output(get_dtp(0x48));
 
-					} else if (!(ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && ds_readb(0x4168) != 4) &&
+					} else if (!(ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && ds_readb(DNG11_LEVER_FLAG) != 4) &&
 							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(DNG06_PITDOOR_FLAG)) &&
 							!(ds_readb(DUNGEON_INDEX) == 12 && ds_readb(DNG12_WATERTRAP_WATER_RUNS)))
 					{
@@ -375,8 +375,8 @@ void DNG_fallpit_test(signed short max_damage)
 			/* move one level up. Why? */
 			dec_ds_bs_post(DUNGEON_LEVEL);
 
-			ds_writews(X_TARGET, ds_readws(0x2d83));
-			ds_writews(Y_TARGET, ds_readws(0x2d85));
+			ds_writews(X_TARGET, ds_readws(X_TARGET_BAK));
+			ds_writews(Y_TARGET, ds_readws(Y_TARGET_BAK));
 
 			load_area_description(1);
 
@@ -443,17 +443,17 @@ signed short DNG_step(void)
 		DNG_fight();
 	}
 
-	if (ds_readws(X_TARGET) != ds_readws(0x2d83) ||
-		ds_readws(Y_TARGET) != ds_readws(0x2d85) ||
+	if (ds_readws(X_TARGET) != ds_readws(X_TARGET_BAK) ||
+		ds_readws(Y_TARGET) != ds_readws(Y_TARGET_BAK) ||
 		ds_readbs(0x9312) != 0)
 	{
 		ds_writeb(CAN_MERGE_GROUP, (unsigned char)can_merge_group());
 		ds_writew(LOCKPICK_TRY_COUNTER, 0);
 	}
 
-	ds_writew(0x2d83, ds_readws(X_TARGET));
-	ds_writew(0x2d85, ds_readws(Y_TARGET));
-	ds_writeb(0x2d7c, ds_readbs(DIRECTION));
+	ds_writew(X_TARGET_BAK, ds_readws(X_TARGET));
+	ds_writew(Y_TARGET_BAK, ds_readws(Y_TARGET));
+	ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
 	handle_gui_input();
 
@@ -768,7 +768,7 @@ void do_dungeon(void)
 
 	ds_writew(CURRENT_ANI, -1);
 
-	ds_writeb(0x2dad, ds_readbs(DUNGEON_INDEX));
+	ds_writeb(DUNGEON_INDEX_BAK, ds_readbs(DUNGEON_INDEX));
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);

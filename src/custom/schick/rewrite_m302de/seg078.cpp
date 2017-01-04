@@ -64,7 +64,7 @@ signed short DNG02_handler(void)
 			do_fight(FIGHTS_F046_01);
 		}
 
-	} else if (target_pos == 0x306 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
+	} else if (target_pos == 0x306 && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2)
 	{
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x10));
@@ -74,11 +74,11 @@ signed short DNG02_handler(void)
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
-	} else if (target_pos == 0x40a && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
+	} else if (target_pos == 0x40a && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2)
 	{
 		GUI_output(get_dtp(0x1c));
 
-	} else if ((target_pos == 0x70d || target_pos == 0x1605 || target_pos == 0x140e) && target_pos != ds_readws(0x330e))
+	} else if ((target_pos == 0x70d || target_pos == 0x1605 || target_pos == 0x140e) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 6) > 0)
 		{
@@ -130,7 +130,7 @@ signed short DNG02_handler(void)
 	{
 		DNG_fallpit_test(2);
 
-	} else if (target_pos == 0xe0e && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0xe0e && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		hero = Real2Host(get_first_hero_available_in_group());
 		weight_sum = get_hero_weight(hero);
@@ -145,7 +145,7 @@ signed short DNG02_handler(void)
 			DNG_fallpit(6);
 		}
 
-	} else if ((target_pos == 0xa0c || target_pos == 0xa0a) && target_pos != ds_readws(0x330e))
+	} else if ((target_pos == 0xa0c || target_pos == 0xa0a) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		hero = get_hero(0);
 		for (i = (signed short)(weight_sum = 0); i <= 6; i++, hero += SIZEOF_HERO)
@@ -174,7 +174,7 @@ signed short DNG02_handler(void)
 
 		play_voc(305);
 
-	} else if ((target_pos == 0xa0d || target_pos == 0xa09) && target_pos != ds_readws(0x330e))
+	} else if ((target_pos == 0xa0d || target_pos == 0xa09) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		host_writeb(amap_ptr + 0xba, 0);
 
@@ -220,7 +220,7 @@ signed short DNG02_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x701 && !ds_readb(DNG02_RAVEN_DESTROYED) && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x701 && !ds_readb(DNG02_RAVEN_DESTROYED) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_dtp(0x34)))
 		{
@@ -234,7 +234,7 @@ signed short DNG02_handler(void)
 			host_writebs(amap_ptr + 0x25, 0);
 		}
 
-	} else if (target_pos == 0xb06 && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0xb06 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		hero = get_hero(0);
 		for (i = (signed short)(weight_sum = 0); i <= 6; i++, hero += SIZEOF_HERO)
@@ -253,7 +253,7 @@ signed short DNG02_handler(void)
 			host_writeb(amap_ptr + 0x8b, 0);
 		}
 
-	} else if ((target_pos == 0xa06 || target_pos == 0xb05) && target_pos != ds_readws(0x330e))
+	} else if ((target_pos == 0xa06 || target_pos == 0xb05) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		for (i = 0; i < 6; i++)
 		{
@@ -288,16 +288,16 @@ signed short DNG02_handler(void)
 		host_writeb(amap_ptr + 0x8b, (weight_sum >= 4000L ? 0x00 : 0xf0));
 
 	} else if (target_pos == 0x1c05 && ds_readbs(DIRECTION) == 0 &&
-			 (target_pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)))
+			 (target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)))
 	{
-		ds_writeb(0x2d7c, ds_readbs(DIRECTION));
+		ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
 		GUI_output(get_dtp(0x40));
 
 	} else if (target_pos == 0x1405 && ds_readbs(DIRECTION) == 2 &&
-			 (target_pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)))
+			 (target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)))
 	{
-		ds_writeb(0x2d7c, ds_readbs(DIRECTION));
+		ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 
 		GUI_output(get_dtp(0x44));
 
@@ -310,18 +310,18 @@ signed short DNG02_handler(void)
 		ds_writeb(DNG02_SPHERE_TIMER, 7);
 		ds_writeb(DNG02_SPHERE_KNOWN, 1);
 
-	} else if ((target_pos == 0x110b || target_pos == 0x1108) && target_pos != ds_readws(0x330e))
+	} else if ((target_pos == 0x110b || target_pos == 0x1108) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_dtp(0x58));
 
-	} else if (target_pos == 0x1307 && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x1307 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_dtp(0x5c)))
 		{
 			GUI_output(get_dtp(0x60));
 		}
 
-	} else if (target_pos == 0x1809 && target_pos != ds_readws(0x330e) && !ds_readb(DNG02_APPARATURE_DESTROYED))
+	} else if (target_pos == 0x1809 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG02_APPARATURE_DESTROYED))
 	{
 		GUI_output(get_dtp(0x64));
 
@@ -349,7 +349,7 @@ signed short DNG02_handler(void)
 
 		seg002_57f1();
 
-	} else if (target_pos == 0x1d0b && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x1d0b && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		do {
 			i = GUI_radio(get_dtp(0x68), 2,
@@ -375,7 +375,7 @@ signed short DNG02_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0xd0b && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0xd0b && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		do {
 			i = GUI_radio(get_dtp(0xac), 2,
@@ -401,7 +401,7 @@ signed short DNG02_handler(void)
 			}
 		}
 
-	} else if ((target_pos == 0xc0b || target_pos == 0xe0b || target_pos == 0xd0a || target_pos == 0xd0c) && target_pos != ds_readws(0x330e))
+	} else if ((target_pos == 0xc0b || target_pos == 0xe0b || target_pos == 0xd0a || target_pos == 0xd0c) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		ds_writew((0xd325 + 0),
 			ds_writew((0xd325 + 2),
@@ -415,16 +415,16 @@ signed short DNG02_handler(void)
 			add_hero_ap_all(30);
 		}
 
-	} else if (target_pos == 0x1101 && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x1101 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		seg092_06b4(0);
 
-	} else if (target_pos == 0x190e && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 1)
+	} else if (target_pos == 0x190e && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 1)
 	{
 		GUI_output(get_dtp(0x8c));
 
 	} else if (target_pos == 0x108 &&
-			(target_pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)) &&
+			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == 2 &&
 			ds_readb(DNG02_SECRET_DOOR1) != 2)
 	{
@@ -455,11 +455,11 @@ signed short DNG02_handler(void)
 				DNG_update_pos();
 			}
 
-			ds_writeb(0x2d7c, ds_readbs(DIRECTION));
+			ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 		}
 
 	} else if (target_pos == 0x408 &&
-			(target_pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)) &&
+			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readbs(DIRECTION) == 2 &&
 			ds_readb(DNG02_SECRET_DOOR2) != 2)
 	{
@@ -490,12 +490,12 @@ signed short DNG02_handler(void)
 				DNG_update_pos();
 			}
 
-			ds_writeb(0x2d7c, ds_readbs(DIRECTION));
+			ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 		}
 
 	} else if (((target_pos == 0x1409 && ds_readbs(DIRECTION) == 1) ||
 			(target_pos == 0x1609 && ds_readbs(DIRECTION) == 3)) &&
-			(target_pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)) &&
+			(target_pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
 			ds_readb(DNG02_SECRET_DOOR3) != 2)
 	{
 		hero = Real2Host(get_first_hero_available_in_group());
@@ -536,10 +536,10 @@ signed short DNG02_handler(void)
 
 			sub_hero_le(hero, i);
 
-			ds_writeb(0x2d7c, ds_readbs(DIRECTION));
+			ds_writeb(DIRECTION_BAK, ds_readbs(DIRECTION));
 		}
 
-	} else if (target_pos == 0x100 && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x100 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		leave_dungeon();
 		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
@@ -560,7 +560,7 @@ signed short DNG02_handler(void)
 
 	}
 
-	ds_writews(0x330e, target_pos);
+	ds_writews(DNG_HANDLED_POS, target_pos);
 
 	return 0;
 }

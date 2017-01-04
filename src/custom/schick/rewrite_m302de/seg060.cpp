@@ -263,13 +263,13 @@ void TLK_tavern(signed short answer)
 
 	if (!old_state) {
 
-		if (ds_readb(0x3374 + ds_readws(TYPEINDEX)) != 0) {
+		if (ds_readb(TAV_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 
 			hero_pos = get_hero_CH_best();
 
 			ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(hero_pos), ATTRIB_CH, 0) <= 0 ? 112 : 113);
 
-			ds_writeb(0x3374 + ds_readws(TYPEINDEX), 0);
+			ds_writeb(TAV_KICKED_FLAGS + ds_readws(TYPEINDEX), 0);
 
 		} else {
 			ds_writew(DIALOG_NEXT_STATE, 113);
@@ -365,20 +365,20 @@ void TLK_tavern(signed short answer)
 
 		sub_group_le(ds_readb(TLK_TAV_FULLNESS));
 
-		ds_writeb(0x3374 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(TAV_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 
 		if (ds_readb(TLK_TAV_FULLNESS) == 3) {
-			ds_writeb(0x33cc + ds_readws(TYPEINDEX), 1);
+			ds_writeb(TOWN_OUTLAWED_FLAGS + ds_readws(TYPEINDEX), 1);
 		}
 
 	} else if (old_state == 33) {
 
 		sub_group_le(2 * ds_readb(TLK_TAV_FULLNESS));
 
-		ds_writeb(0x3374 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(TAV_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 
 		if (ds_readb(TLK_TAV_FULLNESS) == 3) {
-			ds_writeb(0x33cc + ds_readws(TYPEINDEX), 1);
+			ds_writeb(TOWN_OUTLAWED_FLAGS + ds_readws(TYPEINDEX), 1);
 		}
 
 	} else if (old_state == 34) {
@@ -425,13 +425,13 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 54) {
 
-		ds_writeb(0x3374 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(TAV_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 
 	} else if (old_state == 55) {
 
 		sub_group_le(1);
 
-		ds_writeb(0x3374 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(TAV_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 
 	} else if (old_state == 56) {
 

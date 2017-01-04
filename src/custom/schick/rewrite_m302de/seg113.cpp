@@ -44,11 +44,11 @@ void tevent_080(void)
 			ds_readb(0x3de4) != 0)
 	{
 		ds_writeb(0x3de4, 1);
-		ds_writed(0x3e20, 0);
+		ds_writed(MAIN_ACTING_HERO, 0);
 
 		TRV_found_replenish_place(0);
 
-		hero = Real2Host(ds_readd(0x3e20));
+		hero = Real2Host(ds_readd(MAIN_ACTING_HERO));
 
 		if ((hero && !ds_readb(TATZELWURM) && test_skill(hero, TA_FAEHRTENSUCHEN, 5) > 0) ||
 			ds_readb(TATZELWURM) == 1)

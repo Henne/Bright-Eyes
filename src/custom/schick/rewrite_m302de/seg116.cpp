@@ -357,10 +357,10 @@ void tevent_137(void)
 	signed short item_pos;
 	Bit8u *hero;
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 5) > 0 && !ds_readb(0x3e09)) ||
-		ds_readb(0x3e09) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 5) > 0 && !ds_readb(HERMIT_SMALLLAKE_FLAG)) ||
+		ds_readb(HERMIT_SMALLLAKE_FLAG) != 0)
 	{
-		ds_writeb(0x3e09, 1);
+		ds_writeb(HERMIT_SMALLLAKE_FLAG, 1);
 
 		do {
 			answer = GUI_radio(get_city(0xf0), 2,
@@ -565,23 +565,21 @@ void tevent_143(void)
 	}
 }
 
+/* Orcs' military camp */
 void tevent_144(void)
 {
-	signed short l_si;
-	signed short l_di;
+	signed short grimring_hero_pos;
+	signed short right_time_flag;
 	Bit8u *hero;
 
-	l_di = 0;
+	right_time_flag = 0;
 
-	if ((l_si = get_first_hero_with_item(181)) != -1) {
+	if ((grimring_hero_pos = get_first_hero_with_item(181)) != -1) {
 
 		if (ds_readbs(YEAR) == 17 && ds_readbs(MONTH) == 10 && ds_readbs(DAY_OF_MONTH) >= 10) {
-
-			/* the time is right */
-			l_di = 1;
+			right_time_flag = 1;
 		} else {
-
-			if (ds_readb(0x333d) != 0 && GUI_bool(get_city(0xb8))) {
+			if (ds_readb(ORCDOCUMENT_READ_FLAG) != 0 && GUI_bool(get_city(0xb8))) {
 			/* the time is not right, forward time  */
 
 				GUI_output(get_city(0xbc));
@@ -595,16 +593,16 @@ void tevent_144(void)
 				sub_mod_timers(MONTHS(1));
 				seg002_2f7a(0x21c0);
 				sub_light_timers(100);
-				l_di = 1;
+				right_time_flag = 1;
 			}
 		}
 
-		if (l_di) {
+		if (right_time_flag) {
 
 			load_in_head(44);
 			memmove(Real2Host(ds_readd(BUFFER10_PTR)), Real2Host(ds_readd(DTP2)), 0x400);
 
-			hero = get_hero(l_si);
+			hero = get_hero(grimring_hero_pos);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x28),
@@ -628,15 +626,15 @@ void tevent_144(void)
 			GUI_dialogbox((RealPt)ds_readd(BUFFER10_PTR), (RealPt)0, get_city(0x3c), 0);
 
 			do {
-				status_menu(l_si);
+				status_menu(grimring_hero_pos);
 
-				l_si = get_first_hero_with_item(181);
+				grimring_hero_pos = get_first_hero_with_item(181);
 
-				if (l_si == -1) {
-					l_si = 0;
+				if (grimring_hero_pos == -1) {
+					grimring_hero_pos = 0;
 				}
 
-				if (l_si == 6) {
+				if (grimring_hero_pos == 6) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_city(0x98),
@@ -647,9 +645,9 @@ void tevent_144(void)
 							Real2Host(ds_readd(DTP2)), 0);
 				}
 
-			} while (l_si == 6);
+			} while (grimring_hero_pos == 6);
 
-			ds_writed(0x3e20, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * l_si));
+			ds_writed(MAIN_ACTING_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * grimring_hero_pos));
 
 			final_intro();
 			if (!TRV_fight_event(FIGHTS_F144, 144)) {

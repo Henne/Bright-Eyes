@@ -440,7 +440,7 @@ void tevent_073(void)
 
 			GUI_dialog_na(0, get_city(0xb4));
 
-			loot_multi_chest(p_datseg + 0x3e24, get_city(0x1a4));
+			loot_multi_chest(p_datseg + TEVENT73_CORPSE, get_city(0x1a4));
 
 			ds_writeb(0x3dde, 1);
 		}

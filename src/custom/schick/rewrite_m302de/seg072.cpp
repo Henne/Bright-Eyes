@@ -788,15 +788,15 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
                 : ds_readb(SWAFNILD_TP3));
 
 			switch (ds_readbs(CURRENT_TOWN)) {
-				case 39: ds_writew(0x2d83, 22); ds_writew(0x2d85,  8); break;
-				case 33: ds_writew(0x2d83,  4); ds_writew(0x2d85,  3); break;
-				case 37: ds_writew(0x2d83,  9); ds_writew(0x2d85, 10); break;
-				case 38: ds_writew(0x2d83, 11); ds_writew(0x2d85, 11); break;
-				case 34: ds_writew(0x2d83,  4); ds_writew(0x2d85, 12); break;
-				case 36: ds_writew(0x2d83,  6); ds_writew(0x2d85,  6); break;
+				case 39: ds_writew(X_TARGET_BAK, 22); ds_writew(Y_TARGET_BAK,  8); break;
+				case 33: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK,  3); break;
+				case 37: ds_writew(X_TARGET_BAK,  9); ds_writew(Y_TARGET_BAK, 10); break;
+				case 38: ds_writew(X_TARGET_BAK, 11); ds_writew(Y_TARGET_BAK, 11); break;
+				case 34: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK, 12); break;
+				case 36: ds_writew(X_TARGET_BAK,  6); ds_writew(Y_TARGET_BAK,  6); break;
 			}
 
-			ds_writeb(0x2d9f, 0);
+			ds_writeb(LOCATION_BAK, 0);
 			ds_writeb(0x7c9c, 1);
 
 			timewarp_until_midnight();

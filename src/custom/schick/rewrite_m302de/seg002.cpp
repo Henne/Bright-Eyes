@@ -1891,7 +1891,7 @@ void timers_daily(void)
 
 	/* reset insulted merchants */
 	for (i = 0; i < 94; i++) {
-		ds_writeb(0x3592 + i, 0);
+		ds_writeb(MERCHANT_OFFENDED_FLAGS + i, 0);
 	}
 
 	hero_i = get_hero(0);
@@ -2268,12 +2268,12 @@ void do_timers(void)
 				host_writeb(hero_i + HERO_JAIL, 0);
 
 				ds_writeb(GROUPS_LOCATION + host_readbs(hero_i + HERO_GROUP_NO),
-					ds_readb(0x2da0 + host_readbs(hero_i + HERO_GROUP_NO)));
+					ds_readb(GROUPS_LOCATION_BAK + host_readbs(hero_i + HERO_GROUP_NO)));
 
 				ds_writew(GROUPS_X_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
-					ds_readw(0x2d87 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
+					ds_readw(GROUPS_X_TARGET_BAK + host_readbs(hero_i + HERO_GROUP_NO) * 2));
 				ds_writew(GROUPS_Y_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
-					ds_readw(0x2d93 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
+					ds_readw(GROUPS_Y_TARGET_BAK + host_readbs(hero_i + HERO_GROUP_NO) * 2));
 			}
 		}
 	}
@@ -4319,7 +4319,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			/* FINAL FIGHT */
 			if (ds_readw(CURRENT_FIG_NR) == 192) {
-				if (hero == Real2Host(ds_readd(0x3e20))) {
+				if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 					ds_writew(GAME_STATE, GAME_STATE_DEAD);
 					ds_writew(IN_FIGHT, 0);
 				}
@@ -4376,7 +4376,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 					/* FINAL FIGHT */
 					if (ds_readw(CURRENT_FIG_NR) == 192) {
-						if (hero == Real2Host(ds_readd(0x3e20))) {
+						if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 							ds_writew(GAME_STATE, GAME_STATE_DEAD);
 							ds_writew(IN_FIGHT, 0);
 						}

@@ -456,13 +456,13 @@ void TLK_herberg(signed short state)
 	Bit8u *hero = Real2Host(get_first_hero_available_in_group());
 
 	if (!state) {
-		ds_writews(DIALOG_NEXT_STATE, ds_readb(0x3400 + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
+		ds_writews(DIALOG_NEXT_STATE, ds_readb(HERBERG_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
 	} else if (state == 1 || state == 14) {
-		ds_writeb(0x3400 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(HERBERG_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 	} else if (state == 11) {
 		tumult();
-		ds_writeb(0x33cc + ds_readbs(CURRENT_TOWN), 1);
-		ds_writeb(0x3400 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(TOWN_OUTLAWED_FLAGS + ds_readbs(CURRENT_TOWN), 1);
+		ds_writeb(HERBERG_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 	} else if (state == 12) {
 		/* CH + 5 */
 		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 5) > 0 ? 14 : 11);

@@ -223,9 +223,9 @@ void do_house(void)
 		turnaround();
 
 	} else {
-		ds_writeb(LOCATION, ds_readb(0x2d9f));
-		ds_writew(X_TARGET, ds_readw(0x2d83));
-		ds_writew(Y_TARGET, ds_readw(0x2d85));
+		ds_writeb(LOCATION, ds_readb(LOCATION_BAK));
+		ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
+		ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 	}
 
 }
@@ -747,11 +747,11 @@ void turnaround(void)
 	set_var_to_zero();
 
 	/* reset location */
-	ds_writeb(LOCATION, ds_readb(0x2d9f));
+	ds_writeb(LOCATION, ds_readb(LOCATION_BAK));
 
 	/* set target  coordinates*/
-	ds_writew(X_TARGET, ds_readw(0x2d83));
-	ds_writew(Y_TARGET, ds_readw(0x2d85));
+	ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
+	ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 
 	/* recalc direction */
 	ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) % 4);
@@ -779,9 +779,9 @@ void leave_dungeon(void)
 		set_palette(ptr, 0x80, 0x40);
 	}
 
-	ds_writeb(LOCATION, ds_writeb(0x2d9f, 0));
-	ds_writeb(CURRENT_TOWN, ds_readb(0x2da6));
-	ds_writeb(0x2dad, ds_readb(DUNGEON_INDEX));
+	ds_writeb(LOCATION, ds_writeb(LOCATION_BAK, 0));
+	ds_writeb(CURRENT_TOWN, ds_readb(CURRENT_TOWN_BAK));
+	ds_writeb(DUNGEON_INDEX_BAK, ds_readb(DUNGEON_INDEX));
 	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));
 	ds_writebs(CITY_AREA_LOADED, -1);
 	ds_writeb(0x4475, ds_writew(REQUEST_REFRESH, 1));

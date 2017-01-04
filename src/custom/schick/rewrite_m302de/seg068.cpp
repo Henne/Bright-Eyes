@@ -265,7 +265,7 @@ void THO_arsenal(void)
 
 		GUI_output(get_ltx(0x788));
 
-	} else if (ds_readb(0x34d6 + ds_readws(TYPEINDEX)) != 0) {
+	} else if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 
 			talk_merchant();
 
@@ -453,8 +453,8 @@ void THO_ugdalf(void)
 		/* enter the dungeon */
 		DNG_enter_dungeon(14);
 
-		ds_writews(0x2d83, ds_readw(X_TARGET));
-		ds_writews(0x2d85, ds_readw(Y_TARGET));
+		ds_writews(X_TARGET_BAK, ds_readw(X_TARGET));
+		ds_writews(Y_TARGET_BAK, ds_readw(Y_TARGET));
 
 		if (ds_readw(QUEST_UGDALF) == 1) {
 			add_party_money(2000L);
@@ -492,8 +492,8 @@ void THO_ugdalf(void)
 		/* enter the dungeon */
 		DNG_enter_dungeon(14);
 
-		ds_writews(0x2d83, ds_readw(X_TARGET));
-		ds_writews(0x2d85, ds_readw(Y_TARGET));
+		ds_writews(X_TARGET_BAK, ds_readw(X_TARGET));
+		ds_writews(Y_TARGET_BAK, ds_readw(Y_TARGET));
 	}
 }
 

@@ -41,7 +41,7 @@ void do_market(void)
 
 	done = 0;
 	ds_writew(REQUEST_REFRESH, 1);
-	bak1 = ds_readbs(0x2d7c);
+	bak1 = ds_readbs(DIRECTION_BAK);
 	dir_bak = ds_readbs(DIRECTION);
 
 	do {
@@ -77,7 +77,7 @@ void do_market(void)
 
 			/* clean up */
 			ds_writew(TYPEINDEX, type_bak);
-			ds_writeb(0x2d7c, (signed char)bak1);
+			ds_writeb(DIRECTION_BAK, (signed char)bak1);
 			ds_writeb(DIRECTION, (signed char)dir_bak);
 			ds_writeb(0x6870 + 90 * 9 + 0, 0);
 			ds_writeb(0x6870 + 90 * 9 + 2, 0);

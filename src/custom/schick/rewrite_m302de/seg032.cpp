@@ -1158,10 +1158,10 @@ signed short do_fight(signed short fight_id)
 				ds_writew(Y_TARGET, tmp[l_di] & 0x0f);
 				ds_writeb(DIRECTION, (tmp[l_di] & 0xf0) >> 4);
 
-				ds_writebs(0x2db4, ds_readbs(DUNGEON_LEVEL));
+				ds_writebs(DUNGEON_LEVEL_BAK, ds_readbs(DUNGEON_LEVEL));
 				ds_writeb(DUNGEON_LEVEL, tmp[l_di] >> 12);
 
-				if (ds_readbs(DUNGEON_LEVEL) != ds_readbs(0x2db4)) {
+				if (ds_readbs(DUNGEON_LEVEL) != ds_readbs(DUNGEON_LEVEL_BAK)) {
 					load_area_description(1);
 				}
 			}

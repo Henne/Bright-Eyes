@@ -82,7 +82,7 @@ void do_tavern(void)
 
 		handle_gui_input();
 
-		if (ds_readbs(0x318a + ds_readws(TYPEINDEX)) != 0) {
+		if (ds_readbs(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 
 			GUI_output(get_ltx(0x760));
 			done = 1;
@@ -192,7 +192,7 @@ void do_tavern(void)
 
 					GUI_output(get_ltx(0x768));
 
-					ds_writeb(0x318a + ds_readws(TYPEINDEX), 1);
+					ds_writeb(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX), 1);
 					done = 1;
 					ds_writew(COMBO_MODE, 0);
 

@@ -781,8 +781,8 @@ void DNG_stub6(void)
 	if (ds_readb(DUNGEON_LIGHT) != 0) {
 
 		if (DNG_fallpit(6)) {
-			ds_writew(X_TARGET, ds_readw(0x2d83));
-			ds_writew(Y_TARGET, ds_readw(0x2d85));
+			ds_writew(X_TARGET, ds_readw(X_TARGET_BAK));
+			ds_writew(Y_TARGET, ds_readw(Y_TARGET_BAK));
 		}
 	} else {
 
@@ -1032,8 +1032,8 @@ mark2:			   goto mark1;
 	ds_writeb(DIRECTION, (signed char)dir);
 	ds_writeb(DUNGEON_LEVEL, (signed char)level);
 	ds_writeb(DUNGEON_INDEX, (signed char)dungeon_id);
-	ds_writebs(0x2d9f, ds_readbs(LOCATION));
-	ds_writeb(0x2da6, ds_readb(CURRENT_TOWN));
+	ds_writebs(LOCATION_BAK, ds_readbs(LOCATION));
+	ds_writeb(CURRENT_TOWN_BAK, ds_readb(CURRENT_TOWN));
 	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
 	ds_writeb(DNG_AREA_LOADED, ds_writeb(CITY_AREA_LOADED, -1));
 

@@ -405,19 +405,19 @@ void init_game_state(void)
 		ds_writeb(0xe12d + i, 0);
 	}
 
-	ds_writeb(0x2d9f, 0);
+	ds_writeb(LOCATION_BAK, 0);
 	/* Travia Temple in Thorwal */
 	ds_writeb(LOCATION, LOCATION_TEMPLE);
 	ds_writew(TYPEINDEX, 1);
-	ds_writew(0x2d83, 9);
-	ds_writew(0x2d85, 9);
+	ds_writew(X_TARGET_BAK, 9);
+	ds_writew(Y_TARGET_BAK, 9);
 	ds_writew(X_TARGET, 9);
 	ds_writew(Y_TARGET, 8);
-	ds_writeb(0x2d7c, 0);
+	ds_writeb(DIRECTION_BAK, 0);
 	ds_writeb(DIRECTION, 0);
 	ds_writeb(DUNGEON_INDEX, 0);
 
-	ds_writeb(0x2da6, ds_writeb(CURRENT_TOWN, 1));
+	ds_writeb(CURRENT_TOWN_BAK, ds_writeb(CURRENT_TOWN, 1));
 
 	ds_writew(TEXTBOX_WIDTH, 3);
 

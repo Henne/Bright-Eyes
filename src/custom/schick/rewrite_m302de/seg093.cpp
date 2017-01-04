@@ -180,8 +180,8 @@ signed short do_travel_mode(void)
 					if (!ds_readb(0x4333) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 					{
 						ds_writeb(CURRENT_TOWN, (signed char)ds_readw(TRV_DEST_REACHED));
-						ds_writew(0x2d83, ds_readw(0x433a));
-						ds_writew(0x2d85, ds_readw(0x433c));
+						ds_writew(X_TARGET_BAK, ds_readw(0x433a));
+						ds_writew(Y_TARGET_BAK, ds_readw(0x433c));
 						ds_writeb(DIRECTION, (ds_readb(0x433e) + 2) & 3);
 
 					} else if (ds_readw(GAME_STATE) == GAME_STATE_MAIN && ds_readb(0x4333) != 99)

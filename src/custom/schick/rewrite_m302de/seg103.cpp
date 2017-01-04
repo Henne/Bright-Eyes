@@ -623,7 +623,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 			} else {
 				GUI_output(get_dtp(0x9c));
 
-				ds_writeb(0x318a + ds_readws(TYPEINDEX), 1);
+				ds_writeb(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX), 1);
 
 				l_si = -1;
 			}

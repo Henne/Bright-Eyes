@@ -506,7 +506,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 				if (tries < 2) {
 
 					timewarp(HOURS(1));
-					ds_writed(0x3e20, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 					ds_writeb(WILDCAMP_REPLSTATUS + hero_pos, 1);
 					retval = 1;
 

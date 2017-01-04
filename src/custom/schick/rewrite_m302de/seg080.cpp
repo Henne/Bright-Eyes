@@ -46,12 +46,12 @@ signed short DNG04_handler(void)
 
         pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 
-	if (pos == 0x607 && pos != ds_readws(0x330e) && !ds_readb(DNG04_CORPSE0_FLAG))
+	if (pos == 0x607 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG04_CORPSE0_FLAG))
 	{
 		/* DNG04_corpse0 */
 		seg092_06b4(0);
 
-	} else if (pos == 0x808 && pos != ds_readws(0x330e) && !ds_readb(DNG04_GAP_FLAG))
+	} else if (pos == 0x808 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG04_GAP_FLAG))
 	{
 		/* do you want to grab into the gap ? */
 		do {
@@ -78,7 +78,7 @@ signed short DNG04_handler(void)
 			ds_writeb(DNG04_GAP_FLAG, 1);
 		}
 
-	} else if (pos == 0x50b && pos != ds_readws(0x330e) && !ds_readb(DNG04_HELMET_FLAG))
+	} else if (pos == 0x50b && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG04_HELMET_FLAG))
 	{
 		/* do you want the SILVER HELMET? */
 		if (GUI_bool(get_dtp(0x1c)))
@@ -91,12 +91,12 @@ signed short DNG04_handler(void)
 			}
 		}
 
-	} else if (pos == 0x10c && pos != ds_readws(0x330e))
+	} else if (pos == 0x10c && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* DNG04_corpse1 */
 		seg092_06b4(0);
 
-	} else if (pos == 0x803 && pos != ds_readws(0x330e))
+	} else if (pos == 0x803 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* the ceiling may drop on your head */
 		GUI_output(get_dtp(0x24));
@@ -121,15 +121,15 @@ signed short DNG04_handler(void)
 			}
 		}
 
-	} else if (pos == 0x703 && pos != ds_readws(0x330e))
+	} else if (pos == 0x703 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_dtp(0x2c));
 
-	} else if (pos == 0x505 && pos != ds_readws(0x330e))
+	} else if (pos == 0x505 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_dtp(0x30));
 
-	} else if (pos == 0xa0d && pos != ds_readws(0x330e))
+	} else if (pos == 0xa0d && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* dig into a heap of dirt? */
 		if (GUI_bool(get_dtp(0x34)) && GUI_bool(get_dtp(0x38)))
@@ -143,7 +143,7 @@ signed short DNG04_handler(void)
 			set_mod_slot(i, DAYS(1), get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_CH), -5, 0);
 		}
 
-	} else if (pos == 0xe0e && pos != ds_readws(0x330e))
+	} else if (pos == 0xe0e && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* the ceiling may drop on your head */
 		GUI_output(get_dtp(0x24));
@@ -168,7 +168,7 @@ signed short DNG04_handler(void)
 			}
 		}
 
-	} else if (pos == 0xa06 && pos != ds_readws(0x330e) && !ds_readb(DNG04_LANTERN_FLAG))
+	} else if (pos == 0xa06 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG04_LANTERN_FLAG))
 	{
 		/* do you want a LANTERN? */
 		if (GUI_bool(get_dtp(0x40)))
@@ -181,7 +181,7 @@ signed short DNG04_handler(void)
 			}
 		}
 
-	} else if (pos == 0xa02 && pos != ds_readws(0x330e))
+	} else if (pos == 0xa02 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* a very deep gap */
 		i = 1;
@@ -221,12 +221,12 @@ signed short DNG04_handler(void)
 		}
 	}
 
-	if (pos == 0x601 && pos != ds_readws(0x330e) && !ds_readb(DNG04_CORPSE2_FLAG))
+	if (pos == 0x601 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG04_CORPSE2_FLAG))
 	{
 		/* DNG04_corpse2 */
 		seg092_06b4(0);
 
-	} else if ((pos == 0xd06 || pos == 0xe06 || pos == 0xe05) && pos != ds_readws(0x330e))
+	} else if ((pos == 0xd06 || pos == 0xe06 || pos == 0xe05) && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* Probability of 5% to get bitten by a rat */
 		if (mod_day_timer(MINUTES(10)))
@@ -274,7 +274,7 @@ signed short DNG04_handler(void)
 			}
 		}
 
-	} else if (pos == 0x70f && pos != ds_readws(0x330e))
+	} else if (pos == 0x70f && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* the exit of this dungeon */
 		leave_dungeon();
@@ -297,7 +297,7 @@ signed short DNG04_handler(void)
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
-	ds_writew(0x330e, pos);
+	ds_writew(DNG_HANDLED_POS, pos);
 
 	return 0;
 }
@@ -368,7 +368,7 @@ signed short DNG05_handler(void)
 
 	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 
-	if (pos == 0x70e && pos != ds_readws(0x330e) && ds_readw(0x960e) == 0)
+	if (pos == 0x70e && pos != ds_readws(DNG_HANDLED_POS) && ds_readw(0x960e) == 0)
 	{
 		if (GUI_bool(get_dtp(0x04)) && GUI_bool(get_dtp(0x3c)))
 		{
@@ -384,7 +384,7 @@ signed short DNG05_handler(void)
 			add_party_money(20L);
 		}
 
-	} else if (pos == 0x50c && pos != ds_readws(0x330e) && !ds_readb(DNG05_PROVIANT_FLAG))
+	} else if (pos == 0x50c && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG05_PROVIANT_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x08)))
 		{
@@ -395,7 +395,7 @@ signed short DNG05_handler(void)
 			ds_writeb(DNG05_PROVIANT_FLAG, 1);
 		}
 
-	} else if (pos == 0x907 && pos != ds_readws(0x330e) && !ds_readb(DNG05_BATS_FLAG))
+	} else if (pos == 0x907 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG05_BATS_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x10)))
 		{
@@ -404,7 +404,7 @@ signed short DNG05_handler(void)
 			ds_writeb(DNG05_BATS_FLAG, 1);
 		}
 
-	} else if (pos == 0x309 && pos != ds_readws(0x330e) && !ds_readb(DNG05_GOD_FLAG))
+	} else if (pos == 0x309 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG05_GOD_FLAG))
 	{
 		do {
 			tmp = GUI_radio(get_dtp(0x18), 2,
@@ -418,7 +418,7 @@ signed short DNG05_handler(void)
 
 		ds_writeb(DNG05_GOD_FLAG, 1);
 
-	} else if (pos == 0x805 && pos != ds_readws(0x330e))
+	} else if (pos == 0x805 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (random_schick(100) < 30)
 		{
@@ -431,11 +431,11 @@ signed short DNG05_handler(void)
 			do_fight(FIGHTS_F061_4B);
 		}
 
-	} else if (pos == 0xb01 && pos != ds_readws(0x330e))
+	} else if (pos == 0xb01 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		GUI_output(get_dtp(0x2c));
 
-	} else if (pos == 0x601 && pos != ds_readws(0x330e))
+	} else if (pos == 0x601 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_dtp(0x30)))
 		{
@@ -452,7 +452,7 @@ signed short DNG05_handler(void)
 			hero_disease_test(hero, 1, 65);
 		}
 
-	} else if (pos == 0x30e && pos != ds_readws(0x330e))
+	} else if (pos == 0x30e && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		load_ani(32);
 		init_ani(1);
@@ -464,7 +464,7 @@ signed short DNG05_handler(void)
 		ds_writew(X_TARGET, 5);
 		ds_writew(AREA_PREPARED, -1);
 
-	} else if (pos == 0x60f && pos != ds_readws(0x330e))
+	} else if (pos == 0x60f && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* the exit of this dungeon */
 		leave_dungeon();
@@ -487,7 +487,7 @@ signed short DNG05_handler(void)
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
-	ds_writew(0x330e, pos);
+	ds_writew(DNG_HANDLED_POS, pos);
 
 	return 0;
 }

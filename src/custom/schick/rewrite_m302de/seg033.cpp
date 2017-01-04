@@ -949,7 +949,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 	}
 
 	if ((ds_readws(CURRENT_FIG_NR) == 192) &&
-		(get_hero_index(Real2Host(ds_readd(0x3e20))) != hero_pos) &&
+		(get_hero_index(Real2Host(ds_readd(MAIN_ACTING_HERO))) != hero_pos) &&
 		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
 		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))
 	{

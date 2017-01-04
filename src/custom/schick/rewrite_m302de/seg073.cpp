@@ -586,35 +586,35 @@ void tavern_follow_informer(void)
 	switch (get_town_lookup_entry() + 1) {
 	case 1: {
 		do_talk(6, 0);
-		ds_writew(0x2d83, 8);
-		ds_writew(0x2d85, 6);
+		ds_writew(X_TARGET_BAK, 8);
+		ds_writew(Y_TARGET_BAK, 6);
 		ds_writeb(DIRECTION, 3);
 		break;
 	}
 	case 6: {
 		do_talk(8, 0);
-		ds_writew(0x2d83, 5);
-		ds_writew(0x2d85, 4);
+		ds_writew(X_TARGET_BAK, 5);
+		ds_writew(Y_TARGET_BAK, 4);
 		ds_writeb(DIRECTION, 3);
 		break;
 	}
 	case 7: {
 		do_talk(8, 1);
-		ds_writew(0x2d83, 12);
-		ds_writew(0x2d85, 10);
+		ds_writew(X_TARGET_BAK, 12);
+		ds_writew(Y_TARGET_BAK, 10);
 		ds_writeb(DIRECTION, 1);
 		break;
 	}
 	case 8: {
 		do_talk(10, 1);
-		ds_writew(0x2d83, ds_writew(0x2d85, 7));
+		ds_writew(X_TARGET_BAK, ds_writew(Y_TARGET_BAK, 7));
 		ds_writeb(DIRECTION, 1);
 		break;
 	}
 	case 14: {
 		do_talk(8, 2);
-		ds_writew(0x2d83, 5);
-		ds_writew(0x2d85, 8);
+		ds_writew(X_TARGET_BAK, 5);
+		ds_writew(Y_TARGET_BAK, 8);
 		ds_writeb(DIRECTION, 0);
 		break;
 	}

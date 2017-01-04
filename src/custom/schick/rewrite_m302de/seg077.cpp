@@ -73,7 +73,7 @@ signed short DNG01_handler(void)
 		DNG_fallpit_test(6);
 		inc_ds_ws_post(Y_TARGET);
 
-	} else if (target_pos == 0x1d05 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG01_SABRE_TAKEN))
+	} else if (target_pos == 0x1d05 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_SABRE_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 			(char*)get_ltx(0x840),
@@ -86,7 +86,7 @@ signed short DNG01_handler(void)
 			ds_writeb(DNG01_SABRE_TAKEN, 1);
 		}
 
-	} else if (target_pos == 0x3209 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG01_CROSSBOW_TAKEN))
+	} else if (target_pos == 0x3209 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_CROSSBOW_TAKEN))
 	{
 		sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 			(char*)get_ltx(0x840),
@@ -99,7 +99,7 @@ signed short DNG01_handler(void)
 			ds_writeb(DNG01_CROSSBOW_TAKEN, 1);
 		}
 
-	} else if (target_pos == 0x4209 && target_pos != ds_readws(0x330e) && !ds_readbs(DNG01_AMULET_TAKEN))
+	} else if (target_pos == 0x4209 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readbs(DNG01_AMULET_TAKEN))
 	{
 		/* ITEM: a magic AMULET */
 		if (GUI_bool(get_dtp(0x1c)) && get_item(174, 1, 1))
@@ -108,7 +108,7 @@ signed short DNG01_handler(void)
 			sub_ds_ds(GODS_ESTIMATION + 4 * 5, 100L);
 		}
 
-	} else if (target_pos == 0x4d06 && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x4d06 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		seg092_06b4(0);
 
@@ -168,7 +168,7 @@ signed short DNG01_handler(void)
 
 		add_hero_ap_all(20);
 
-	} else if (target_pos == 0x5e07 && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x5e07 && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_dtp(0x2c)))
 		{
@@ -190,7 +190,7 @@ signed short DNG01_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x280b && target_pos != ds_readws(0x330e))
+	} else if (target_pos == 0x280b && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_dtp(0x60)))
 		{
@@ -219,7 +219,7 @@ signed short DNG01_handler(void)
 		}
 	}
 
-	ds_writew(0x330e, target_pos);
+	ds_writew(DNG_HANDLED_POS, target_pos);
 
 	return 0;
 }
