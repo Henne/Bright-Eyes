@@ -271,7 +271,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 			{
 				ds_writew(WILDCAMP_SLEEP_QUALITY, -3);
 				ds_writeb(GOOD_CAMP_PLACE, 99);
-				ds_writeb(LOCATION, 6);
+				ds_writeb(LOCATION, LOCATION_WILDCAMP);
 				do_location();
 				ds_writeb(GOOD_CAMP_PLACE, ds_writeb(LOCATION, (unsigned char)ds_writew(WILDCAMP_SLEEP_QUALITY, 0)));
 				ds_writew(WALLCLOCK_UPDATE, 0);
@@ -349,7 +349,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 			GUI_input(get_dtp(0x118), 0);
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 

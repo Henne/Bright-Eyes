@@ -711,7 +711,7 @@ void tevent_046(void)
 	{
 		/* make a camp */
 		ds_writew(CAMP_INCIDENT, 1);
-		ds_writeb(LOCATION, 6);
+		ds_writeb(LOCATION, LOCATION_WILDCAMP);
 		do_location();
 		ds_writeb(LOCATION, 0);
 		TRV_load_textfile(-1);

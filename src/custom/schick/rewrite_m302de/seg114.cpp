@@ -328,7 +328,7 @@ void tevent_113(void)
 		/* enter the temple */
 		ds_writew(TYPEINDEX, 58);
 		est_old = ds_readds(GODS_ESTIMATION + 4 * 7);
-		ds_writeb(LOCATION, 2);
+		ds_writeb(LOCATION, LOCATION_TEMPLE);
 		do_location();
 		TRV_load_textfile(-1);
 
@@ -344,7 +344,7 @@ void tevent_113(void)
 					(est_diff <= 50 ? 2 :
 					(est_diff <= 100 ? 3 : 4))));
 
-		ds_writeb(LOCATION, 6);
+		ds_writeb(LOCATION, LOCATION_WILDCAMP);
 		do_location();
 		ds_writeb(LOCATION, 0);
 

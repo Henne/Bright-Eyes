@@ -46,7 +46,7 @@ void tevent_130(void)
 
 		ds_writews(CAMP_INCIDENT, 0);
 
-		ds_writeb(LOCATION, 6);
+		ds_writeb(LOCATION, LOCATION_WILDCAMP);
 		do_location();
 		ds_writeb(LOCATION, 0);
 
@@ -79,7 +79,7 @@ void tevent_130(void)
 			}
 		}
 
-		ds_writeb(LOCATION, 6);
+		ds_writeb(LOCATION, LOCATION_WILDCAMP);
 		do_location();
 		ds_writeb(LOCATION, 0);
 	}
@@ -459,7 +459,7 @@ void tevent_139(void)
 
 			GUI_output(get_city(0x11c));
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 
@@ -558,7 +558,7 @@ void tevent_143(void)
 
 			GUI_output(get_city(0x20));
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 		}

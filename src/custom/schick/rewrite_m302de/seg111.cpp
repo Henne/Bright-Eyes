@@ -164,7 +164,7 @@ void tevent_059(void)
 	if (TRV_enter_hut_question())
 	{
 		ds_writews(CAMP_INCIDENT, 0);
-		ds_writeb(LOCATION, 6);
+		ds_writeb(LOCATION, LOCATION_WILDCAMP);
 		do_location();
 		ds_writeb(LOCATION, 0);
 		ds_writews(CAMP_INCIDENT, -1);
@@ -211,7 +211,7 @@ void tevent_059(void)
 			}
 		}
 
-		ds_writeb(LOCATION, 6);
+		ds_writeb(LOCATION, LOCATION_WILDCAMP);
 		do_location();
 		ds_writeb(LOCATION, 0);
 	}

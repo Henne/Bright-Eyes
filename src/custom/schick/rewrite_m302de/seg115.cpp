@@ -281,7 +281,7 @@ void tevent_095(void)
 			if (counter_failed == 2)
 			{
 				/* make a rest */
-				ds_writeb(LOCATION, 6);
+				ds_writeb(LOCATION, LOCATION_WILDCAMP);
 				do_location();
 				ds_writeb(LOCATION, 0);
 
@@ -433,7 +433,7 @@ void tevent_096(void)
 
 			GUI_output(get_city(0x64));
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 

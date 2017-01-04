@@ -264,8 +264,7 @@ signed short select_skill(void)
 	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_SKILL_DEFAULTS);
 
 	/* add skills for special location */
-	if (ds_readbs(LOCATION) == 3) {
-		/* TAVERN */
+	if (ds_readbs(LOCATION) == LOCATION_TAVERN) {
 		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
 
@@ -276,18 +275,15 @@ signed short select_skill(void)
 
 		a.a[nr_skills] = TA_MUSIZIEREN;
 		nr_skills++;
-	} else if ((ds_readbs(LOCATION) == 6) || (ds_readbs(LOCATION) == 7)) {
-		/* CAMP (Wildernes) or INN */
+	} else if ((ds_readbs(LOCATION) == LOCATION_WILDCAMP) || (ds_readbs(LOCATION) == LOCATION_INN)) {
 		a.a[nr_skills] = TA_ALCHIMIE;
 		nr_skills++;
-	} else if (ds_readbs(LOCATION) == 9) {
-		/* MARKET */
+	} else if (ds_readbs(LOCATION) == LOCATION_MARKET) {
 		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
 		a.a[nr_skills] = TA_TASCHENDIEB;
 		nr_skills++;
-	} else if (ds_readbs(LOCATION) == 5) {
-		/* MERCHANT */
+	} else if (ds_readbs(LOCATION) == LOCATION_MERCHANT) {
 		a.a[nr_skills] = TA_TASCHENDIEB;
 		nr_skills++;
 	}

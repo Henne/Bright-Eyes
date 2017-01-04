@@ -253,7 +253,7 @@ void PHX_phextempel(void)
 
 				old_loc = ds_readbs(LOCATION);
 
-				ds_writebs(LOCATION, 2);
+				ds_writebs(LOCATION, LOCATION_TEMPLE);
 
 				do_temple();
 
@@ -308,7 +308,7 @@ void PHX_phextempel(void)
 
 				old_loc = ds_readbs(LOCATION);
 
-				ds_writebs(LOCATION, 2);
+				ds_writebs(LOCATION, LOCATION_TEMPLE);
 
 				do_temple();
 
@@ -350,7 +350,7 @@ void PHX_phextempel(void)
 
 			old_loc = ds_readbs(LOCATION);
 
-			ds_writebs(LOCATION, 2);
+			ds_writebs(LOCATION, LOCATION_TEMPLE);
 
 			do_temple();
 

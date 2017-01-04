@@ -48,7 +48,7 @@ void tevent_067(void)
 
 		if (answer == 2) {
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 
@@ -76,7 +76,7 @@ void tevent_067(void)
 
 				add_party_money(7L);
 
-				ds_writeb(LOCATION, 6);
+				ds_writeb(LOCATION, LOCATION_WILDCAMP);
 				do_location();
 				ds_writeb(LOCATION, 0);
 			} else {
@@ -93,7 +93,7 @@ void tevent_067(void)
 					}
 				}
 
-				ds_writeb(LOCATION, 6);
+				ds_writeb(LOCATION, LOCATION_WILDCAMP);
 				do_location();
 				ds_writeb(LOCATION, 0);
 
@@ -113,7 +113,7 @@ void tevent_067(void)
 		} while (answer == -1);
 
 		if (answer == 2) {
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 		}

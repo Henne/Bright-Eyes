@@ -73,7 +73,7 @@ void do_market(void)
 			do_merchant();
 
 			/* change back to market */
-			ds_writeb(LOCATION, 9);
+			ds_writeb(LOCATION, LOCATION_MARKET);
 
 			/* clean up */
 			ds_writew(TYPEINDEX, type_bak);

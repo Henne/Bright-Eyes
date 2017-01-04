@@ -63,7 +63,7 @@ void do_merchant(void)
 
 	done = 0;
 
-	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != 9) {
+	if ((ds_readds(DAY_TIMER) < HOURS(8) || ds_readds(DAY_TIMER) > HOURS(19)) && ds_readbs(LOCATION) != LOCATION_MARKET) {
 
 		GUI_output(get_ltx(0x788));
 		turnaround();
@@ -171,7 +171,7 @@ void do_merchant(void)
 
 			set_audio_track(ARCHIVE_FILE_TERMS_XMI);
 
-			GUI_print_loc_line(ds_readbs(LOCATION) == 9 ? get_ltx(0xa9c) : (ds_readws(TYPEINDEX) == 93 ?  get_ltx(0xb8) : get_dtp(4 * ds_readws(CITYINDEX))));
+			GUI_print_loc_line(ds_readbs(LOCATION) == LOCATION_MARKET ? get_ltx(0xa9c) : (ds_readws(TYPEINDEX) == 93 ?  get_ltx(0xb8) : get_dtp(4 * ds_readws(CITYINDEX))));
 
 			ds_writew(REQUEST_REFRESH, refresh = 0);
 

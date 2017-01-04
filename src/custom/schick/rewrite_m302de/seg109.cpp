@@ -353,7 +353,7 @@ signed short TRV_found_camp_place(signed short a0)
 		}
 
 		ds_writeb(GOOD_CAMP_PLACE, 1);
-		ds_writeb(LOCATION, 6);
+		ds_writeb(LOCATION, LOCATION_WILDCAMP);
 
 		do_location();
 
@@ -433,7 +433,7 @@ void TRV_found_inn(signed short city, signed short type)
 	if (GUI_bool(get_dtp(0x5c))) {
 		ds_writew(CITYINDEX, city);
 		ds_writew(TYPEINDEX, type);
-		ds_writeb(LOCATION, 7);
+		ds_writeb(LOCATION, LOCATION_INN);
 
 		do_location();
 

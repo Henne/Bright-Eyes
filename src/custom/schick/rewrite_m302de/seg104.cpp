@@ -217,7 +217,7 @@ signed short plan_alchemy(Bit8u *hero)
 							retval = 0;
 					} else {
 
-						if ((ds_readbs(LOCATION) == 7) && (ds_readbs(SLEEP_QUALITY) == -1)) {
+						if ((ds_readbs(LOCATION) == LOCATION_INN) && (ds_readbs(SLEEP_QUALITY) == -1)) {
 
 							GUI_output(get_ltx(0x568));
 
@@ -225,7 +225,7 @@ signed short plan_alchemy(Bit8u *hero)
 						}
 
 						/* check if the alchemic process takes more than 8h */
-						if ((ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != 7)) {
+						if ((ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_dtp(0xb0),
 									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
@@ -235,7 +235,7 @@ signed short plan_alchemy(Bit8u *hero)
 									retval = 0;
 						} else {
 							if ((ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
-								(ds_readbs(LOCATION) != 6) &&
+								(ds_readbs(LOCATION) != LOCATION_WILDCAMP) &&
 								(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8))
 							{
 
@@ -265,7 +265,7 @@ signed short plan_alchemy(Bit8u *hero)
 							if (l4 == 1) {
 								timewarp(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index *28) * 0x1518L);
 
-								if (ds_readbs(LOCATION) != 6) {
+								if (ds_readbs(LOCATION) != LOCATION_WILDCAMP) {
 									hero_p = get_hero(0);
 									for (i = 0; i <= 6; i++, hero_p += SIZEOF_HERO) {
 										if ((host_readbs(hero_p + HERO_TYPE) != HERO_TYPE_NONE) &&

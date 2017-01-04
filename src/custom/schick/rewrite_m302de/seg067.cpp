@@ -283,7 +283,7 @@ void city_event_6(void)
 			GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 118)), 0);
 		} else if (answer == 3) {
 			location_bak = ds_readbs(LOCATION);
-			ds_writeb(LOCATION, 5);
+			ds_writeb(LOCATION, LOCATION_MERCHANT);
 			ds_writew(TYPEINDEX, 93);
 			do_merchant();
 			ds_writeb(LOCATION, (unsigned char)location_bak);

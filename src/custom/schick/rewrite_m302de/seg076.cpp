@@ -535,7 +535,7 @@ signed short DNG_step(void)
 
 	} else if (ds_readws(ACTION) == 135 && ds_readw(0xd011) == 0)
 	{
-		ds_writeb(LOCATION, 18);
+		ds_writeb(LOCATION, LOCATION_CITYCAMP);
 		ds_writeb(0xbd27, 0);
 		l_di = 1;
 

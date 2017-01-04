@@ -297,7 +297,7 @@ void tevent_078(void)
 
 			ds_writews(WILDCAMP_SLEEP_QUALITY, -6);
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 
@@ -335,7 +335,7 @@ void tevent_078(void)
 
 					ds_writews(WILDCAMP_SLEEP_QUALITY, -6);
 					/* make a camp */
-					ds_writeb(LOCATION, 6);
+					ds_writeb(LOCATION, LOCATION_WILDCAMP);
 					do_location();
 					ds_writeb(LOCATION, 0);
 

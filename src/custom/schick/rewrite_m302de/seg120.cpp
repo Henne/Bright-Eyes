@@ -407,7 +407,7 @@ void init_game_state(void)
 
 	ds_writeb(0x2d9f, 0);
 	/* Travia Temple in Thorwal */
-	ds_writeb(LOCATION, 2);
+	ds_writeb(LOCATION, LOCATION_TEMPLE);
 	ds_writew(TYPEINDEX, 1);
 	ds_writew(0x2d83, 9);
 	ds_writew(0x2d85, 9);

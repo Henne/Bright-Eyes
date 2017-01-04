@@ -69,7 +69,7 @@ signed short enter_location(signed short town_id)
 			ds_writew(TYPEINDEX, host_readb(ptr + 3));
 			ds_writew(CITYINDEX, host_readw(ptr + 4));
 
-			if (ds_readbs(LOCATION) == 9) {
+			if (ds_readbs(LOCATION) == LOCATION_MARKET) {
 				ds_writebs(LOCATION, 0);
 				ds_writeb(0xe10c, 1);
 			}
@@ -89,9 +89,9 @@ signed short enter_location(signed short town_id)
 		ds_writew(CITYINDEX, ds_readb(0x71c9 + town_id));
 
 		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
-			ds_writebs(LOCATION, 10);
+			ds_writebs(LOCATION, LOCATION_CITIZEN);
 		} else {
-			ds_writebs(LOCATION, 16);
+			ds_writebs(LOCATION, LOCATION_HOUSE);
 			inc_ds_ws(CITYINDEX);
 		}
 
@@ -183,7 +183,7 @@ signed short enter_location_daspota(void)
 	if ((b_index = get_border_index(cast_u16(ds_readb((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(0x2d9f, 0);
-		ds_writebs(LOCATION, 10);
+		ds_writebs(LOCATION, LOCATION_CITIZEN);
 		ds_writew(CITYINDEX, 19);
 		return 1;
 	}
@@ -952,13 +952,13 @@ signed short city_step(void)
 
 	} else if (ds_readws(ACTION) == 135) {
 
-		ds_writebs(LOCATION, 18);
+		ds_writebs(LOCATION, LOCATION_CITYCAMP);
 		ds_writeb(0xbd27, 1);
 		i = 1;
 
 	} else if (ds_readws(ACTION) == 136 && ds_readbs((0xbd38 + 7)) != -1) {
 
-		ds_writebs(LOCATION, 9);
+		ds_writebs(LOCATION, LOCATION_MARKET);
 		i = 1;
 
 	} else if (ds_readws(ACTION) == 75) {

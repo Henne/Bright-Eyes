@@ -410,7 +410,7 @@ signed short load_game_state(void)
 		ds_writew(CHECK_POISON, 0);
 		ds_writeb(0x4475, 3);
 
-		if (ds_readbs(LOCATION) != 2) {
+		if (ds_readbs(LOCATION) != LOCATION_TEMPLE) {
 			ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
 		}
 
@@ -456,7 +456,7 @@ signed short save_game_state(void)
 
 	} else {
 
-		if (ds_readbs(LOCATION) != 2 && ds_readws(GAME_STATE) != GAME_STATE_VICTORY) {
+		if (ds_readbs(LOCATION) != LOCATION_TEMPLE && ds_readws(GAME_STATE) != GAME_STATE_VICTORY) {
 
 			/* save outside the temple */
 
@@ -536,7 +536,7 @@ signed short save_game_state(void)
 				host_writebs(get_hero(tw_bak) + HERO_GROUP_POS, tw_bak + 1);
 
 				if (ds_readws(GAME_STATE) != GAME_STATE_VICTORY &&
-					ds_readbs(LOCATION) != 2 &&
+					ds_readbs(LOCATION) != LOCATION_TEMPLE &&
 					host_readds(get_hero(tw_bak) + HERO_AP) > 0)
 				{
 					add_hero_ap(get_hero(tw_bak), -1L);

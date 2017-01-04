@@ -146,7 +146,7 @@ void do_temple(void)
 
 				draw_status_line();
 
-				if (ds_readbs(LOCATION) != 2) {
+				if (ds_readbs(LOCATION) != LOCATION_TEMPLE) {
 					done = 1;
 				}
 			} else {

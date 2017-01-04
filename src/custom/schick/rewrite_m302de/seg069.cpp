@@ -235,7 +235,7 @@ void THO_tav_inn_combi(void)
 
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			ds_writeb(LOCATION, 3);
+			ds_writeb(LOCATION, LOCATION_TAVERN);
 			do_tavern();
 
 			/* leave the loop or enter the inn in the next iteration */
@@ -259,7 +259,7 @@ void THO_tav_inn_combi(void)
 
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			ds_writeb(LOCATION, 7);
+			ds_writeb(LOCATION, LOCATION_INN);
 			do_inn();
 
 			/* leave the loop or enter the tavern in the next iteration */
