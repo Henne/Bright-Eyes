@@ -97,7 +97,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -133,7 +133,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -158,7 +158,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -186,7 +186,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 50, 2) > 0)
+				test_skill(hero, TA_GEFAHRENSINN, 2) > 0)
 			{
 				l3 = 1;
 			}
@@ -213,7 +213,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -244,7 +244,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -403,7 +403,7 @@ signed short DNG09_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)(((l3 = test_skill(hero, 48, 4)) > 0) ? get_dtp(0xd0) : get_dtp(0xd8)),
+				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 4)) > 0) ? get_dtp(0xd0) : get_dtp(0xd8)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
@@ -440,7 +440,7 @@ signed short DNG09_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)(((l3 = test_skill(hero, 48, 6)) > 0) ? get_dtp(0xd0) : get_dtp(0xd4)),
+				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 6)) > 0) ? get_dtp(0xd0) : get_dtp(0xd4)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)),

@@ -523,7 +523,7 @@ void PHX_alrik_derondan(void)
 
 			GUI_dialogbox((RealPt)ds_readd(DTP2),
 				get_city(0xf4),
-				(test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0) ? get_city(0x170) : get_city(0x138),
+				(test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 0) > 0) ? get_city(0x170) : get_city(0x138),
 				0);
 		}
 	}

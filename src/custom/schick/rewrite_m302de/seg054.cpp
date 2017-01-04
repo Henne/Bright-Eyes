@@ -465,13 +465,13 @@ void TLK_herberg(signed short state)
 		ds_writeb(0x3400 + ds_readws(TYPEINDEX), 1);
 	} else if (state == 12) {
 		/* CH + 5 */
-		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, 2, 5) > 0 ? 14 : 11);
+		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 5) > 0 ? 14 : 11);
 	} else if (state == 13) {
 		/* CH + 0 */
-		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, 2, 0) > 0 ? 14 : 7);
+		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 0) > 0 ? 14 : 7);
 	} else if (state == 15) {
 		/* CH - 3 */
-		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, 2, -3) > 0 ? 16 : 17);
+		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, -3) > 0 ? 16 : 17);
 	} else if (state == 17) {
 		ds_writew(ACTION, 130);
 	}

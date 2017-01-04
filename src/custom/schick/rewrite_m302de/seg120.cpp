@@ -130,7 +130,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 					/* one of the other heros must pass CH+0 */
 					if ((l_di != hero_pos) &&
-						(test_attrib(get_hero(l_di), 2, 0) != 0))
+						(test_attrib(get_hero(l_di), ATTRIB_CH, 0) != 0))
 					{
 						done = 1;
 						sprintf((char*)Real2Host(ds_readd(DTP2)),

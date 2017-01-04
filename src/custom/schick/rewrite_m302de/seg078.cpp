@@ -97,7 +97,7 @@ signed short DNG02_handler(void)
 			while (host_readws(hero + HERO_LE) > 10 && !flag)
 			{
 				/* KK+4 */
-				if (test_attrib(hero, 6, 4) <= 0)
+				if (test_attrib(hero, ATTRIB_KK, 4) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x28),
@@ -207,7 +207,7 @@ signed short DNG02_handler(void)
 					!hero_dummy3(hero))
 				{
 					mod_slot = get_free_mod_slot();
-					set_mod_slot(mod_slot, HOURS(5), hero + HERO_MU, -3, (signed char)i);
+					set_mod_slot(mod_slot, HOURS(5), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -3, (signed char)i);
 					{
 						hero_dummy3_set(hero, (mod_slot = 1));
 					}
@@ -431,7 +431,7 @@ signed short DNG02_handler(void)
 		/* Original-Bug: this should be the leader, not hero nr 0 */
 		hero = get_hero(0);
 
-		if (ds_readb(DNG02_SECRET_DOOR1) != 0 || test_skill(hero, 51, 6) > 0)
+		if (ds_readb(DNG02_SECRET_DOOR1) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 6) > 0)
 		{
 			ds_writeb(DNG02_SECRET_DOOR1, 1);
 
@@ -440,7 +440,7 @@ signed short DNG02_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-				(char*)((i = test_skill(hero, 48, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
+				(char*)((i = test_skill(hero, TA_SCHLOESSER, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readfp(DTP2)),
@@ -466,7 +466,7 @@ signed short DNG02_handler(void)
 		/* Original-Bug: this should be the leader, not hero nr 0 */
 		hero = get_hero(0);
 
-		if (ds_readb(DNG02_SECRET_DOOR2) != 0 || test_skill(hero, 51, 2) > 0)
+		if (ds_readb(DNG02_SECRET_DOOR2) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 2) > 0)
 		{
 			ds_writeb(DNG02_SECRET_DOOR2, 1);
 
@@ -475,7 +475,7 @@ signed short DNG02_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-				(char*)((i = test_skill(hero, 48, 2)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
+				(char*)((i = test_skill(hero, TA_SCHLOESSER, 2)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readfp(DTP2)),
@@ -500,7 +500,7 @@ signed short DNG02_handler(void)
 	{
 		hero = Real2Host(get_first_hero_available_in_group());
 
-		if (ds_readb(DNG02_SECRET_DOOR3) != 0 || test_skill(hero, 51, 5) > 0)
+		if (ds_readb(DNG02_SECRET_DOOR3) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
 		{
 			ds_writeb(DNG02_SECRET_DOOR3, 1);
 
@@ -509,7 +509,7 @@ signed short DNG02_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-				(char*)((i = test_skill(hero, 48, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
+				(char*)((i = test_skill(hero, TA_SCHLOESSER, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readfp(DTP2)),

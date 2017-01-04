@@ -83,7 +83,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x503 && pos != ds_readws(0x330e) && !ds_readb(0x3fb7)) {
 
-		if (test_skill(hero, 51, 6) <= 0) {
+		if (test_skill(hero, TA_SINNESSCHAERFE, 6) <= 0) {
 
 			GUI_output(get_dtp(0x0c));
 
@@ -151,7 +151,7 @@ signed short DNG14_handler(void)
 			ds_readb(DIRECTION) == 1 &&
 			ds_readb(0x3fb8) != 2) {
 
-		if (ds_readb(0x3fb8) != 0 || test_skill(hero, 51, 4) > 0) {
+		if (ds_readb(0x3fb8) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 4) > 0) {
 
 			ds_writeb(0x3fb8, 1);
 
@@ -160,7 +160,7 @@ signed short DNG14_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, 48, -6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, -6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -182,7 +182,7 @@ signed short DNG14_handler(void)
 			ds_readb(DIRECTION) == 1 &&
 			ds_readb(0x3fb9) != 2) {
 
-		if (ds_readb(0x3fb9) != 0 || test_skill(hero, 51, 4) > 0) {
+		if (ds_readb(0x3fb9) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 4) > 0) {
 
 			ds_writeb(0x3fb9, 1);
 
@@ -191,7 +191,7 @@ signed short DNG14_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, 48, 6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -304,7 +304,7 @@ signed short DNG14_handler(void)
 		ds_readbs(DIRECTION) == 2 &&
 		ds_readb(0x3fba) != 2) {
 
-		if (ds_readb(0x3fba) != 0 || test_skill(hero, 51, 4) > 0) {
+		if (ds_readb(0x3fba) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 4) > 0) {
 
 			/* acticate trap */
 			ds_writeb(0x3fba, 1);
@@ -314,7 +314,7 @@ signed short DNG14_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, 48, -6)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, -6)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -336,7 +336,7 @@ signed short DNG14_handler(void)
 		ds_readbs(DIRECTION) == 3 &&
 		ds_readb(0x3fbb) != 2) {
 
-		if (ds_readb(0x3fbb) != 0 || test_skill(hero, 51, 8) > 0) {
+		if (ds_readb(0x3fbb) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 8) > 0) {
 
 			/* acticate trap */
 			ds_writeb(0x3fbb, 1);
@@ -346,7 +346,7 @@ signed short DNG14_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, 48, 7)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 7)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -404,7 +404,7 @@ signed short DNG14_handler(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_skill(hero, 10, 0) <= 0)
+						test_skill(hero, TA_KLETTERN, 0) <= 0)
 					{
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_dtp(0x68),
@@ -430,7 +430,7 @@ signed short DNG14_handler(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_skill(hero, 10, 4) <= 0)
+						test_skill(hero, TA_KLETTERN, 4) <= 0)
 					{
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_dtp(0x6c),
@@ -470,11 +470,11 @@ signed short DNG14_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 11, 0) <= 0)
+				test_attrib(hero, ATTRIB_TA, 0) <= 0)
 			{
 				l_di = get_free_mod_slot();
 
-				set_mod_slot(l_di, HOURS(6), hero + HERO_MU, -2, (signed char)hero_pos);
+				set_mod_slot(l_di, HOURS(6), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -2, (signed char)hero_pos);
 			}
 		}
 
@@ -523,7 +523,7 @@ signed short DNG14_handler(void)
 			(pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)) &&
 			ds_readbs(DIRECTION) == 0 &&
 			ds_readb(0x3fbc) != 2 &&
-			(ds_readb(0x3fbc) != 0 || test_skill(hero, 51, 6) > 0))
+			(ds_readb(0x3fbc) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 6) > 0))
 	{
 			ds_writeb(0x3fbc, 1);
 
@@ -532,7 +532,7 @@ signed short DNG14_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, 48, 4)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 4)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -567,7 +567,7 @@ signed short DNG14_handler(void)
 
 					hero = get_hero(hero_pos);
 
-					if (test_skill(hero, 14, 8) <= 0) {
+					if (test_skill(hero, TA_SCHWIMMEN, 8) <= 0) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
 							(char*)get_dtp(0xa0),

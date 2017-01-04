@@ -107,9 +107,9 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 	for (i = 0; i < 7; i++) {
 
 		/* UGLY: a = b = dice_template() */
-		host_writebs(sheet + i * 2 + 3,
-			host_writebs(sheet + i * 2 + 4,
-				dice_template(host_readw(monster + i * 2 + 3))));
+		host_writebs(sheet + i * 2 + ENEMY_SHEET_ATTRIB_ORIG,
+			host_writebs(sheet + i * 2 + ENEMY_SHEET_ATTRIB,
+				dice_template(host_readw(monster + i * 2 + MONSTER_ATTRIB))));
 	}
 
 	/* roll out LE and save it to the sheet */

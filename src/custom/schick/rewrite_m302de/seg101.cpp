@@ -136,7 +136,7 @@ void spell_inc_ch(void)
 	}
 
 	/* check if CH was already increased */
-	if (host_readbs(get_spelltarget() + HERO_CH) > host_readbs(get_spelltarget() + HERO_CH_ORIG)) {
+	if (host_readbs(get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_CH)) > host_readbs(get_spelltarget() + (HERO_ATTRIB_ORIG + 3 * ATTRIB_CH))) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -147,7 +147,7 @@ void spell_inc_ch(void)
 		slot = get_free_mod_slot();
 
 		/* CH + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), get_spelltarget() + HERO_CH, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_CH), 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -208,7 +208,7 @@ void spell_inc_ff(void)
 	}
 
 	/* check if FF was already increased */
-	if (host_readbs(get_spelltarget() + 0x3e) > host_readbs(get_spelltarget() + HERO_FF_ORIG)) {
+	if (host_readbs(get_spelltarget() + 0x3e) > host_readbs(get_spelltarget() + (HERO_ATTRIB_ORIG + 3 * ATTRIB_FF))) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -254,7 +254,7 @@ void spell_inc_ge(void)
 	}
 
 	/* check if GE was already increased */
-	if (host_readbs(get_spelltarget() + HERO_GE) > host_readbs(get_spelltarget() + HERO_GE_ORIG)) {
+	if (host_readbs(get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_GE)) > host_readbs(get_spelltarget() + (HERO_ATTRIB_ORIG + 3 * ATTRIB_GE))) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -265,7 +265,7 @@ void spell_inc_ge(void)
 		slot = get_free_mod_slot();
 
 		/* GE + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), get_spelltarget() + HERO_GE, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_GE), 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -300,7 +300,7 @@ void spell_inc_in(void)
 	}
 
 	/* check if IN was already increased */
-	if (host_readbs(get_spelltarget() + HERO_IN) > host_readbs(get_spelltarget() + HERO_IN_ORIG)) {
+	if (host_readbs(get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_IN)) > host_readbs(get_spelltarget() + (HERO_ATTRIB_ORIG + 3 * ATTRIB_IN))) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -311,7 +311,7 @@ void spell_inc_in(void)
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), get_spelltarget() + HERO_IN, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_IN), 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -346,7 +346,7 @@ void spell_inc_kk(void)
 	}
 
 	/* check if KK was already increased */
-	if (host_readbs(get_spelltarget() + HERO_KK) > host_readbs(get_spelltarget() + HERO_KK_ORIG)) {
+	if (host_readbs(get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_KK)) > host_readbs(get_spelltarget() + (HERO_ATTRIB_ORIG + 3 * ATTRIB_KK))) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -357,7 +357,7 @@ void spell_inc_kk(void)
 		slot = get_free_mod_slot();
 
 		/* IN + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), get_spelltarget() + HERO_KK, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_KK), 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -392,7 +392,7 @@ void spell_inc_kl(void)
 	}
 
 	/* check if KL was already increased */
-	if (host_readbs(get_spelltarget() + HERO_KL) > host_readbs(get_spelltarget() + HERO_KL_ORIG)) {
+	if (host_readbs(get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_KL)) > host_readbs(get_spelltarget() + (HERO_ATTRIB_ORIG + 3 * ATTRIB_KL))) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -403,7 +403,7 @@ void spell_inc_kl(void)
 		slot = get_free_mod_slot();
 
 		/* KL + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), get_spelltarget() + HERO_KL, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_KL), 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -438,7 +438,7 @@ void spell_inc_mu(void)
 	}
 
 	/* check if MU was already increased */
-	if (host_readbs(get_spelltarget() + HERO_MU) > host_readbs(get_spelltarget() + HERO_MU_ORIG)) {
+	if (host_readbs(get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_MU)) > host_readbs(get_spelltarget() + (HERO_ATTRIB_ORIG + 3 * ATTRIB_MU))) {
 		/* "Bei %s ist %s schon magisch gesteigert" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(113 * 4),
@@ -449,7 +449,7 @@ void spell_inc_mu(void)
 		slot = get_free_mod_slot();
 
 		/* MU + 2 for 2 hours */
-		set_mod_slot(slot, HOURS(2), get_spelltarget() + HERO_MU, 2, (signed char)target);
+		set_mod_slot(slot, HOURS(2), get_spelltarget() + (HERO_ATTRIB + 3 * ATTRIB_MU), 2, (signed char)target);
 
 		/* "Bei %s steigt %s um 2 Punkte" */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),

@@ -175,7 +175,7 @@ signed short DNG08_handler(void)
 
 					tmp = get_free_mod_slot();
 
-					set_mod_slot(tmp, DAYS(1), get_hero(i) + HERO_CH, -1, (signed char)i);
+					set_mod_slot(tmp, DAYS(1), get_hero(i) + (HERO_ATTRIB + 3 * ATTRIB_CH), -1, (signed char)i);
 				}
 			}
 		}
@@ -201,7 +201,7 @@ signed short DNG08_handler(void)
 
 					tmp = get_free_mod_slot();
 
-					set_mod_slot(tmp, DAYS(1), get_hero(i) + HERO_CH, -1, (signed char)i);
+					set_mod_slot(tmp, DAYS(1), get_hero(i) + (HERO_ATTRIB + 3 * ATTRIB_CH), -1, (signed char)i);
 				}
 			}
 		}
@@ -315,7 +315,7 @@ signed short DNG08_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 10, 2) <= 0)
+				test_skill(hero, TA_KLETTERN, 2) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readfp(DTP2)),
 					(char*)get_dtp(0x54),
@@ -342,7 +342,7 @@ signed short DNG08_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-				(char*)((tmp = test_skill(hero, 48, 2)) > 0 ? get_dtp(0x78): get_dtp(0x7c)),
+				(char*)((tmp = test_skill(hero, TA_SCHLOESSER, 2)) > 0 ? get_dtp(0x78): get_dtp(0x7c)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readfp(DTP2)),
@@ -365,7 +365,7 @@ signed short DNG08_handler(void)
 	{
 		sprintf((char*)Real2Host(ds_readfp(DTP2)),
 			(char*)get_dtp(0x58),
-			(char*)(test_skill(hero, 36, 4) <= 0 ? get_dtp(0x5c) : get_dtp(0x60)));
+			(char*)(test_skill(hero, TA_GOETTER_KULTE, 4) <= 0 ? get_dtp(0x5c) : get_dtp(0x60)));
 
 		GUI_output(Real2Host(ds_readfp(DTP2)));
 
@@ -373,7 +373,7 @@ signed short DNG08_handler(void)
 	{
 		sprintf((char*)Real2Host(ds_readfp(DTP2)),
 			(char*)get_dtp(0x58),
-			(char*)(test_skill(hero, 36, 6) <= 0 ? get_dtp(0x5c) : get_dtp(0x64)));
+			(char*)(test_skill(hero, TA_GOETTER_KULTE, 6) <= 0 ? get_dtp(0x5c) : get_dtp(0x64)));
 
 		GUI_output(Real2Host(ds_readfp(DTP2)));
 
@@ -421,7 +421,7 @@ void DNG08_search_bed(void)
 
 	slot = get_free_mod_slot();
 
-	set_mod_slot(slot, HOURS(6), hero + HERO_CH, -2, (signed char)get_hero_index(hero));
+	set_mod_slot(slot, HOURS(6), hero + (HERO_ATTRIB + 3 * ATTRIB_CH), -2, (signed char)get_hero_index(hero));
 
 	if (random_schick(100) <= 10)
 	{
@@ -528,7 +528,7 @@ void DNG08_chest2_func1(RealPt chest)
 {
 	if (!ds_readb(DNG08_CHEST2_LOOTED))
 	{
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 40, 2) > 0)
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_SPRACHEN, 2) > 0)
 		{
 			GUI_input(get_dtp(0x6c), 10);
 
@@ -564,7 +564,7 @@ void DNG08_chest3_func1(RealPt chest)
 	hero = Real2Host(get_first_hero_available_in_group());
 
 	if (get_first_hero_with_item(212) != -1 ||
-		test_skill(hero, 48, 5) > 0)
+		test_skill(hero, TA_SCHLOESSER, 5) > 0)
 	{
 		if (!(ds_readb(DNG08_CHEST35_LOOTED) & 1))
 		{
@@ -591,7 +591,7 @@ void DNG08_chest4_func1(RealPt chest)
 	hero = Real2Host(get_first_hero_available_in_group());
 
 	if (get_first_hero_with_item(212) != -1 ||
-		test_skill(hero, 48, 5) > 0)
+		test_skill(hero, TA_SCHLOESSER, 5) > 0)
 	{
 #if defined(__BORLANDC__)
 		((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest) + 11)))(chest);
@@ -614,7 +614,7 @@ void DNG08_chest5_func1(RealPt chest)
 	hero = Real2Host(get_first_hero_available_in_group());
 
 	if (get_first_hero_with_item(212) != -1 ||
-		test_skill(hero, 48, 5) > 0)
+		test_skill(hero, TA_SCHLOESSER, 5) > 0)
 	{
 #if defined(__BORLANDC__)
 		((void (*)(RealPt))((RealPt)host_readd(Real2Host(chest) + 11)))(chest);

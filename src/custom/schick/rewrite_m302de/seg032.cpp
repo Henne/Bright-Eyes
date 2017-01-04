@@ -420,17 +420,17 @@ void FIG_do_round(void)
 			/* give this hero 8 BP */
 			host_writeb(Real2Host(hero) + HERO_BP_LEFT, 8);
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 50 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 50 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* give BP Malus -1 */
 				dec_ptr_bs(Real2Host(hero) + HERO_BP_LEFT);
 			}
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 75 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 75 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* give BP Malus -2 */
 				sub_ptr_bs(Real2Host(hero) + HERO_BP_LEFT, 2);
 			}
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 100 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* give BP Malus -2 */
 				sub_ptr_bs(Real2Host(hero) + HERO_BP_LEFT, 2);
 
@@ -451,7 +451,7 @@ void FIG_do_round(void)
 				hero_attacks++;
 			}
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 110 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 110 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* too much weight, set BP to 1 */
 				host_writeb(Real2Host(hero) + HERO_BP_LEFT, 1);
 			}

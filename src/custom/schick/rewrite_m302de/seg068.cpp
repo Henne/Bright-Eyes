@@ -55,7 +55,7 @@ void THO_eisenhof(void)
 		set_party_money(money);
 
 		/* test for CH+0 */
-		if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0) {
+		if (test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 0) > 0) {
 
 			GUI_input(get_city(0xd0), 0);
 

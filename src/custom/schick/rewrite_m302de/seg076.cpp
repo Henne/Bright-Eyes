@@ -215,7 +215,7 @@ void DNG_door(signed short action)
 				{
 					if (lockpick_pos != -2)
 					{
-						lockpick_result = test_skill(hero, 48, host_readbs((Bit8u*)ptr + 3));
+						lockpick_result = test_skill(hero, TA_SCHLOESSER, host_readbs((Bit8u*)ptr + 3));
 
 						play_voc(ARCHIVE_FILE_FX11_VOC);
 

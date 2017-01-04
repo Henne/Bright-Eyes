@@ -171,9 +171,9 @@ signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, 
 
 	randval = dice_roll(3, 20, bonus);
 
-	attr_sum = host_readbs(monster + ENEMY_SHEET_MU + 2 * t1)
-		+ host_readbs(monster + ENEMY_SHEET_MU + 2 * t2)
-		+ host_readbs(monster + ENEMY_SHEET_MU + 2 * t3);
+	attr_sum = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t1)
+		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t2)
+		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t3);
 
 	return attr_sum - randval + 1;
 }

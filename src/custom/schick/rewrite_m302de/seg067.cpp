@@ -72,7 +72,7 @@ void city_event_1(void)
 
 	randval = random_schick(20);
 
-	if (test_skill(Real2Host(hero), 51, 2) <= 0) {
+	if (test_skill(Real2Host(hero), TA_SINNESSCHAERFE, 2) <= 0) {
 
 		/* TODO:	check the format strings in the english version
 		 *		they may be broken.
@@ -134,7 +134,7 @@ void city_event_2(void)
 
 	hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
 
-	if (test_skill(Real2Host(hero), 51, 2) <= 0) {
+	if (test_skill(Real2Host(hero), TA_SINNESSCHAERFE, 2) <= 0) {
 
 		/* hero looses all money */
 		host_writeds(Real2Host(hero) + HERO_MONEY, 0);

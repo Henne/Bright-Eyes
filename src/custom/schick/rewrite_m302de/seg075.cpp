@@ -814,7 +814,7 @@ void DNG_stub6(void)
 				strcat((char*)Real2Host(ds_readd(DTP2)),
 					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
-				if (test_attrib(hero1, 4, 2) <= 0) {
+				if (test_attrib(hero1, ATTRIB_GE, 2) <= 0) {
 
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_ltx(0xc08),

@@ -403,7 +403,7 @@ signed short use_magic(RealPt hero)
 				/* spend one AE point */
 				sub_ae_splash(Real2Host(hero), 1);
 
-				if (test_attrib3(Real2Host(hero), 0, 2, 6, 0) > 0) {
+				if (test_attrib3(Real2Host(hero), ATTRIB_MU, ATTRIB_CH, ATTRIB_KK, 0) > 0) {
 					/* Success */
 
 					if (host_readws(Real2Host(hero) + HERO_LE) <= le + 8) {

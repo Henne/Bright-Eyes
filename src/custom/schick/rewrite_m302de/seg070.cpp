@@ -169,7 +169,7 @@ void PHX_spielhaus(void)
 			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
-				(test_skill(hero, 43, 3) > 0))
+				(test_skill(hero, TA_FALSCHSPIEL, 3) > 0))
 			{
 				/* Gambling +3 */
 				counter++;

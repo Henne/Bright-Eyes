@@ -267,7 +267,7 @@ void TLK_tavern(signed short answer)
 
 			hero_pos = get_hero_CH_best();
 
-			ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(hero_pos), 2, 0) <= 0 ? 112 : 113);
+			ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(hero_pos), ATTRIB_CH, 0) <= 0 ? 112 : 113);
 
 			ds_writeb(0x3374 + ds_readws(TYPEINDEX), 0);
 
@@ -287,7 +287,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 5) {
 
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, 2, 3) > 0 ? 81 : 3);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 3) > 0 ? 81 : 3);
 
 	} else if (old_state == 9) {
 
@@ -299,7 +299,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 14) {
 
-		if (test_attrib(hero, 2, 0) > 0) {
+		if (test_attrib(hero, ATTRIB_CH, 0) > 0) {
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(TLK_TAV_FULLNESS) == 1 ? 16 : 17);
 		} else {
 			ds_writew(DIALOG_NEXT_STATE, 15);
@@ -311,7 +311,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 18) {
 
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, 2, 2) > 0 ? 19 : 20);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 2) > 0 ? 19 : 20);
 
 	} else if (old_state == 24) {
 
@@ -405,7 +405,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 43) {
 
-		if (test_attrib(hero, 2, 4) > 0 && (ds_readb(TLK_TAV_FULLNESS) == 1 || ds_readb(TLK_TAV_FULLNESS) == 2)) {
+		if (test_attrib(hero, ATTRIB_CH, 4) > 0 && (ds_readb(TLK_TAV_FULLNESS) == 1 || ds_readb(TLK_TAV_FULLNESS) == 2)) {
 			ds_writew(DIALOG_NEXT_STATE, 56);
 		} else {
 			ds_writew(DIALOG_NEXT_STATE, 44);
@@ -421,7 +421,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 49) {
 
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, 2, 4) > 0 ? 19 : 20);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 4) > 0 ? 19 : 20);
 
 	} else if (old_state == 54) {
 
@@ -474,7 +474,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 80) {
 
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, 2, 0) <= 0 && ds_readb(TLK_TAV_ROUND) != 0 ? 20 : 19);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 0) <= 0 && ds_readb(TLK_TAV_ROUND) != 0 ? 20 : 19);
 
 	} else if (old_state == 85) {
 
@@ -482,7 +482,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 86) {
 
-		tmp = test_attrib(hero, 2, 0);
+		tmp = test_attrib(hero, ATTRIB_CH, 0);
 
 		ds_writew(DIALOG_NEXT_STATE, ds_readb(TLK_TAV_FIRSTINFO) != 0 || (!ds_readb(TLK_TAV_FIRSTINFO) && !ds_readb(TLK_TAV_ROUND) && tmp <= 0) ? 84 : 81);
 
@@ -504,7 +504,7 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 98) {
 
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, 2, 0) > 0 ? 99 : 102);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 0) > 0 ? 99 : 102);
 
 	} else if (old_state == 99) {
 
@@ -539,7 +539,7 @@ void TLK_tavern(signed short answer)
 			!hero_dead(get_hero(ds_readb(TLK_TAV_TESTDRUNK))) &&
 			ds_readb(TLK_TAV_DRINKCOUNT) != 0)
 		{
-			ds_writew(DIALOG_NEXT_STATE, test_skill(get_hero(ds_readb(TLK_TAV_TESTDRUNK)), 18, ds_readbs(TLK_TAV_DRINKCOUNT) - 8) > 0 ? 108 : 110);
+			ds_writew(DIALOG_NEXT_STATE, test_skill(get_hero(ds_readb(TLK_TAV_TESTDRUNK)), TA_ZECHEN, ds_readbs(TLK_TAV_DRINKCOUNT) - 8) > 0 ? 108 : 110);
 		}
 
 		inc_ds_bs_post(TLK_TAV_TESTDRUNK);	/* TODO: this variable is unsigned */

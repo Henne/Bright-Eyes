@@ -139,7 +139,7 @@ signed short DNG06_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 50, 5) > 0)
+				test_skill(hero, TA_GEFAHRENSINN, 5) > 0)
 			{
 				l3 = 1;
 				break;
@@ -158,7 +158,7 @@ signed short DNG06_handler(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_skill(hero, 50, 5) > 0)
+						test_skill(hero, TA_GEFAHRENSINN, 5) > 0)
 					{
 						l3 = 1;
 						break;
@@ -197,7 +197,7 @@ signed short DNG06_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 51, 10) > 0)
+				test_skill(hero, TA_SINNESSCHAERFE, 10) > 0)
 			{
 				l3++;
 			}
@@ -273,7 +273,7 @@ signed short DNG06_handler(void)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_skill(hero, 11, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
+					test_skill(hero, TA_KOERPERBEH, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x50),
@@ -387,7 +387,7 @@ signed short DNG06_handler(void)
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
-		if (test_skill(hero, 11, 0) > 0 && test_skill(hero, 50, 0) > 0)
+		if (test_skill(hero, TA_KOERPERBEH, 0) > 0 && test_skill(hero, TA_GEFAHRENSINN, 0) > 0)
 		{
 			/* evasion succeeds */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -521,7 +521,7 @@ void DNG06_chest2(RealPt chest)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_skill(hero, 38, 0) > 0)
+			test_skill(hero, TA_LESEN, 0) > 0)
 		{
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x88));
 			break;
@@ -548,7 +548,7 @@ void DNG09_pitfall(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 50, 4) > 0)
+				test_skill(hero, TA_GEFAHRENSINN, 4) > 0)
 			{
 				l3 = 1;
 			}

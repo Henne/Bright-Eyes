@@ -251,7 +251,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 			add_hero_ap_all(10);
 		} else if (state == 22) {
 			/* test the group leader on KL+5, to get the map */
-			if (test_attrib(get_hero(0), 1, 5) > 0) {
+			if (test_attrib(get_hero(0), ATTRIB_KL, 5) > 0) {
 				/* check if the party already has this map piece */
 				if (ds_readb(TREASURE_MAPS + 3) == 2) ds_writeb(TMAP_DOUBLE2, 1);
 				/* get the map piece */
@@ -355,7 +355,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 					beorn_ch_malus = 0;
 				}
 
-				ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(0), 2, beorn_ch_malus) > 0 ? 26 : 28);
+				ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(0), ATTRIB_CH, beorn_ch_malus) > 0 ? 26 : 28);
 			}
 	} else if (informer == 2) {
 		/* ALGRID TRONDESDOTTER */
@@ -682,10 +682,10 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 			ds_writeb(INFORMER_FLAGS + INFORMER_UNICORN, 2);
 		} else if (state == 10) {
 			/* test FF+2 */
-			ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(ds_readd(UNICORN_HERO_PTR)), 4, 2) > 0 ? 11 : 14);
+			ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(ds_readd(UNICORN_HERO_PTR)), ATTRIB_GE, 2) > 0 ? 11 : 14);
 		} else if (state == 11) {
 			/* test FF+5 */
-			ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(ds_readd(UNICORN_HERO_PTR)), 4, 5) > 0 ? 12 : 13);
+			ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(ds_readd(UNICORN_HERO_PTR)), ATTRIB_GE, 5) > 0 ? 12 : 13);
 		} else if (state == 15) {
 			ds_writew(DIALOG_NEXT_STATE, random_schick(100) <= 50 ? 16 : 17);
 		} else if (state == 16) {
@@ -755,14 +755,14 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 			if (!ds_readb(INFORMER_FLAGS + INFORMER_TIOMAR)) ds_writeb(INFORMER_FLAGS + INFORMER_TIOMAR, 1);
 		} else if (state == 18) {
 			/* test CH+5 */
-			ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(0), 2, 5) > 0 ? 19 : 20);
+			ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(0), ATTRIB_CH, 5) > 0 ? 19 : 20);
 		} else if (state == 21) {
 			/* mark SWAFNILD EGILSDOTTER as done */
 			ds_writeb(INFORMER_FLAGS + INFORMER_SWAFNILD, 2);
 			ds_writeb(0x3462, 1);
 		} else if (state == 22) {
 			/* test CH+3 */
-			ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(0), 2, 3) > 0 ? 24 : 23);
+			ds_writew(DIALOG_NEXT_STATE, test_attrib(get_hero(0), ATTRIB_CH, 3) > 0 ? 24 : 23);
 		} else if (state == 24 || state == 41) {
 			/* mark SWAFNILD EGILSDOTTER as done */
 			ds_writeb(INFORMER_FLAGS + INFORMER_SWAFNILD, 2);

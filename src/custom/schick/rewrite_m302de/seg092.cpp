@@ -163,7 +163,7 @@ void chest_cursed(void)
 
 		/* decrement each good attribute */
 		for (i = 0; i <= 6; i++) {
-			dec_ptr_bs(hero + HERO_MU + 3 * i);
+			dec_ptr_bs(hero + HERO_ATTRIB + 3 * i);
 		}
 
 		/* print a message */
@@ -476,7 +476,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 
 		if (l_si != -2) {
 
-			l_di = test_skill(hero, 48, host_readbs(Real2Host(chest_ptr) + 2));
+			l_di = test_skill(hero, TA_SCHLOESSER, host_readbs(Real2Host(chest_ptr) + 2));
 
 			if (l_di == -99) {
 				/* unlucky, your lockpicks break... */

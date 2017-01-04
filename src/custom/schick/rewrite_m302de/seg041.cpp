@@ -322,7 +322,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 
 		} else {
 
-			damage_mod = host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD) - host_readbs(p_weapontab + 2);
+			damage_mod = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK)) - host_readbs(p_weapontab + 2);
 			if (damage_mod > 0) {
 				damage += damage_mod;
 			}

@@ -104,7 +104,7 @@ void hunt_karen(void)
 				if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero) &&
-					(test_skill(hero, 13, 2) > 0))
+					(test_skill(hero, TA_SCHLEICHEN, 2) > 0))
 				{
 					passed++;
 				}
@@ -122,7 +122,7 @@ void hunt_karen(void)
 					if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 						(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 						!hero_dead(hero) &&
-						(test_skill(hero, 7, 0) > 0))
+						(test_skill(hero, TA_SCHUSSWAFFEN, 0) > 0))
 					{
 						passed++;
 					}
@@ -186,7 +186,7 @@ void hunt_wildboar(void)
 				if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 					(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 					!hero_dead(hero) &&
-					(test_skill(hero, 13, 0) > 0))
+					(test_skill(hero, TA_SCHLEICHEN, 0) > 0))
 				{
 					passed++;
 				}
@@ -204,7 +204,7 @@ void hunt_wildboar(void)
 					if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 						(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 						!hero_dead(hero) &&
-						(test_skill(hero, 7, 0) > 0))
+						(test_skill(hero, TA_SCHUSSWAFFEN, 0) > 0))
 					{
 						passed++;
 					}
@@ -320,7 +320,7 @@ void hunt_viper(void)
 		if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 			(!hero_dead(hero_i)) &&
-			(test_attrib(hero_i, 4, 0) < l_di))
+			(test_attrib(hero_i, ATTRIB_GE, 0) < l_di))
 		{
 			/* remember the hero */
 			choosen_hero = i;
@@ -386,7 +386,7 @@ void octopus_attack(void)
 				 * all other results are success.
 				*/
 				/* GE+0 */
-				if (!(tmp = test_attrib(hero, 4, 0))) {
+				if (!(tmp = test_attrib(hero, ATTRIB_GE, 0))) {
 					/* strangling attack */
 
 					add_hero_ap(hero, 5);
@@ -406,7 +406,7 @@ void octopus_attack(void)
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 
-					if (test_skill(hero, 14, 0) <= 0) {
+					if (test_skill(hero, TA_SCHWIMMEN, 0) <= 0) {
 						sub_hero_le(hero, random_schick(6));
 						overboard[i] = 1;
 					}
@@ -696,7 +696,7 @@ void TLK_way_to_ruin(signed short state)
 		timewarp(HOURS(1));
 	} else if (state == 6) {
 		hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero();
-		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(hero), 31, 6) > 0 ? 8 : 7);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(hero), TA_WILDNISLEBEN, 6) > 0 ? 8 : 7);
 	} else if (state == 8) {
 		timewarp(HOURS(1));
 		TRV_ford_test(0, 30);
@@ -718,13 +718,13 @@ void TLK_way_to_ruin(signed short state)
 
 		ds_writew(DIALOG_NEXT_STATE, ds_readws(0xb21b) == 7 ? 13 : 10);
 	} else if (state == 10) {
-		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), 14, 5) > 0 ? 11 : 12);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), TA_SCHWIMMEN, 5) > 0 ? 11 : 12);
 	} else if (state == 12) {
 		sub_hero_le(Real2Host(ds_readd(RUIN_HERO)), random_schick(4) + 1);
 
 		/* Original-Bug: hero != RUIN_HERO */
 		hero_disease_test(Real2Host(ds_readd(RUIN_HERO)), 2,
-			25 - (host_readbs(Real2Host(hero) + HERO_KK) + host_readbs(Real2Host(hero + HERO_KK_MOD))));
+			25 - (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(Real2Host(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK)))));
 
 		loose_random_item(Real2Host(ds_readd(RUIN_HERO)), 10, get_ltx(0x7e8));
 
@@ -735,11 +735,11 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 15 || state == 16) {
 		timewarp(MINUTES(20));
 	} else if (state == 17) {
-		ds_writew(DIALOG_NEXT_STATE, test_skill(hero2, 28, 5) > 0 ? 18 : 19);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(hero2, TA_ORIENTIERUNG, 5) > 0 ? 18 : 19);
 	} else if (state == 19) {
 		timewarp(MINUTES(20));
 		ds_writed(RUIN_HERO, (Bit32u)((RealPt)ds_readd(HEROS) + SIZEOF_HERO * get_random_hero()));
-		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), 4, 2) > 0 ? 20 : 21);
+		ds_writew(DIALOG_NEXT_STATE, test_skill(Real2Host(ds_readd(RUIN_HERO)), TA_AEXTE, 2) > 0 ? 20 : 21);
 	} else if (state == 20) {
 		loose_random_item(get_hero(get_random_hero()), 5, get_ltx(0x7e8));
 	} else if (state == 21) {
@@ -763,7 +763,7 @@ void TLK_way_to_ruin(signed short state)
 			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(Real2Host(hero)) &&
-				test_skill(Real2Host(hero), 28, 0) > 0) {
+				test_skill(Real2Host(hero), TA_ORIENTIERUNG, 0) > 0) {
 
 					inc_ds_ws(0xb21b);
 			}
@@ -792,7 +792,7 @@ void TLK_way_to_ruin(signed short state)
 			if (host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(Real2Host(hero)) &&
-				test_skill(Real2Host(hero), 28, 0) > 0) {
+				test_skill(Real2Host(hero), TA_ORIENTIERUNG, 0) > 0) {
 
 					inc_ds_ws(0xb21b);
 			}

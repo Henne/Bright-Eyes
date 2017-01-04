@@ -47,10 +47,10 @@ unsigned short get_hero_CH_best()
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
 				/* check if not dead */
-			(host_readbs(hero_i + HERO_CH) > ch_val)) {
+			(host_readbs(hero_i + (HERO_ATTRIB + 3 * ATTRIB_CH)) > ch_val)) {
 				/* check if CH is the highest */
 
-				ch_val = host_readbs(hero_i + HERO_CH);
+				ch_val = host_readbs(hero_i + (HERO_ATTRIB + 3 * ATTRIB_CH));
 				retval = i;
 		}
 	}
@@ -78,10 +78,10 @@ unsigned short get_hero_KK_best() {
 				/* check if in group */
 			(!hero_dead(hero_i)) &&
 				/* check if not dead */
-			(host_readbs(hero_i + HERO_KK) > kk_val)) {
+			(host_readbs(hero_i + (HERO_ATTRIB + 3 * ATTRIB_KK)) > kk_val)) {
 				/* check if KK is the highest */
 
-				kk_val = host_readbs(hero_i + HERO_KK);
+				kk_val = host_readbs(hero_i + (HERO_ATTRIB + 3 * ATTRIB_KK));
 				retval = i;
 			}
 	}
@@ -201,7 +201,7 @@ void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probabi
 short check_hero_KK_unused(short val)
 {
 
-	return (host_readbs(get_hero(0) + HERO_KK) + host_readbs(get_hero(0) + HERO_KK_MOD) >= val) ? 1 : 0;
+	return (host_readbs(get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(get_hero(0) + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK)) >= val) ? 1 : 0;
 }
 
 /**
@@ -219,13 +219,13 @@ short check_heros_KK(short val) {
 	hero = get_hero(0);
 
 	/* Orig-BUG: not checked if hero is valid */
-	sum = host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD);
+	sum = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK));
 
 	hero = get_hero(1);
 
 	/* check class, group and dead status of hero in slot 2*/
 	if (host_readb(hero + HERO_TYPE) && host_readb(hero + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) && (!hero_dead(hero))) {
-		sum += host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD);
+		sum += host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK));
 	}
 
 #if !defined(__BORLANDC__)
@@ -284,7 +284,7 @@ void update_atpa(Bit8u *hero)
 	signed short i;
 
 	/* ATPA base = (IN + KK + GE) / 5 rounded */
-	erg = div(host_readbs(hero + HERO_IN_ORIG) + host_readbs(hero + HERO_KK_ORIG) + host_readbs(hero + HERO_GE_ORIG), 5);
+	erg = div(host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_IN)) + host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_GE)), 5);
 
 	/* round up */
 	if (erg.rem >= 3)
@@ -657,22 +657,22 @@ void hero_get_drunken(Bit8u *hero)
 		host_writeb(hero + HERO_DRUNK, 1);
 
 		/* change good attributes */
-		add_ptr_bs(hero + HERO_MU, 1);
-		sub_ptr_bs(hero + HERO_KL, 1);
-		sub_ptr_bs(hero + HERO_CH, 1);
-		sub_ptr_bs(hero + HERO_FF, 1);
-		sub_ptr_bs(hero + HERO_GE, 1);
-		add_ptr_bs(hero + HERO_IN, 1);
-		add_ptr_bs(hero + HERO_KK, 1);
+		add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 1);
+		sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_KL), 1);
+		sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_CH), 1);
+		sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_FF), 1);
+		sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_GE), 1);
+		add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_IN), 1);
+		add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), 1);
 
 		/* Reset bad attributes */
-		add_ptr_bs(hero + HERO_AG, 1);
-		sub_ptr_bs(hero + HERO_HA, 1);
-		sub_ptr_bs(hero + HERO_RA, 1);
-		add_ptr_bs(hero + HERO_GG, 1);
-		sub_ptr_bs(hero + HERO_TA, 1);
-		add_ptr_bs(hero + HERO_NG, 1);
-		add_ptr_bs(hero + HERO_JZ, 1);
+		add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_AG), 1);
+		sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_HA), 1);
+		sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_RA), 1);
+		add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_GG), 1);
+		sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), 1);
+		add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_NG), 1);
+		add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_JZ), 1);
 
 		/* do a burp FX2.VOC */
 		if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
@@ -702,22 +702,22 @@ void hero_get_sober(Bit8u *hero) {
 	host_writeb(hero + HERO_DRUNK, 0);
 
 	/* Reset good attributes */
-	sub_ptr_bs(hero + HERO_MU, 1);
-	add_ptr_bs(hero + HERO_KL, 1);
-	add_ptr_bs(hero + HERO_CH, 1);
-	add_ptr_bs(hero + HERO_FF, 1);
-	add_ptr_bs(hero + HERO_GE, 1);
-	sub_ptr_bs(hero + HERO_IN, 1);
-	sub_ptr_bs(hero + HERO_KK, 1);
+	sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 1);
+	add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_KL), 1);
+	add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_CH), 1);
+	add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_FF), 1);
+	add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_GE), 1);
+	sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_IN), 1);
+	sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), 1);
 
 	/* Reset bad attributes */
-	sub_ptr_bs(hero + HERO_AG, 1);
-	add_ptr_bs(hero + HERO_HA, 1);
-	add_ptr_bs(hero + HERO_RA, 1);
-	sub_ptr_bs(hero + HERO_GG, 1);
-	add_ptr_bs(hero + HERO_TA, 1);
-	sub_ptr_bs(hero + HERO_NG, 1);
-	sub_ptr_bs(hero + HERO_JZ, 1);
+	sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_AG), 1);
+	add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_HA), 1);
+	add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_RA), 1);
+	sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_GG), 1);
+	add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), 1);
+	sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_NG), 1);
+	sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_JZ), 1);
 
 	if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK)
 		ds_writew(REQUEST_REFRESH, 1);

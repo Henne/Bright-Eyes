@@ -74,7 +74,7 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x801 && target_pos != ds_readws(0x330e))
 	{
 		/* another hole in a wall with a lever for a trap */
-		if ((ds_readb(DNG10_LEVER_FOUND) != 0) || test_skill(hero, 51, 7) > 0)
+		if ((ds_readb(DNG10_LEVER_FOUND) != 0) || test_skill(hero, TA_SINNESSCHAERFE, 7) > 0)
 		{
 			or_ds_bs(DNG10_LEVER_FOUND, 1);
 
@@ -122,7 +122,7 @@ signed short DNG10_handler(void)
 			ds_readbs(DIRECTION) == 3)
 	{
 		/* TRAP: a loose stone in a wall */
-		if (ds_readb(DNG10_HOLE_STATE) != 0 || test_skill(hero, 51, 5) > 0)
+		if (ds_readb(DNG10_HOLE_STATE) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
 		{
 			/* Original-Bug: ??? */
 			ds_writeb(DNG10_HOLE_STATE, 1);
@@ -166,14 +166,14 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x108 && target_pos != ds_readws(0x330e))
 	{
 		/* TRAP: a floorplate */
-		if (ds_readb(DNG10_FLOORPLATE_FOUND) != 0 || test_skill(hero, 51, 5) > 0)
+		if (ds_readb(DNG10_FLOORPLATE_FOUND) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
 		{
 			ds_writeb(DNG10_FLOORPLATE_FOUND, 1);
 
 			/* Original-Bug: ???*/
 			/* Damage only happens here when the leader of the group tries to disable this trap.
 			   If the trap is not found or left alone nobody gets damaged. Weird! */
-			if (GUI_bool(get_dtp(0x34)) && test_skill(hero, 48, 7) <= 0)
+			if (GUI_bool(get_dtp(0x34)) && test_skill(hero, TA_SCHLOESSER, 7) <= 0)
 			{
 				if (ds_readb(DNG10_FLOORPLATE_LOADS) != 0)
 				{
@@ -337,7 +337,7 @@ signed short DNG10_handler(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_skill(hero, 13, host_readbs(hero + HERO_RS_BONUS1) + 3) <= 0)
+						test_skill(hero, TA_SCHLEICHEN, host_readbs(hero + HERO_RS_BONUS1) + 3) <= 0)
 					{
 						result++;
 					}

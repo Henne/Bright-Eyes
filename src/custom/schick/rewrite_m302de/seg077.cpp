@@ -178,7 +178,7 @@ signed short DNG01_handler(void)
 				get_first_hero_with_item(32) != -1)
 			{
 				/* Original-Bug: better get_first_hero_available_in_group() */
-				if (test_skill(get_hero(0), 10, 0) > 0)
+				if (test_skill(get_hero(0), TA_KLETTERN, 0) > 0)
 				{
 					ds_writeb(DNG_MAP + 32 * ds_readws(Y_TARGET) + ds_readws(X_TARGET), 0x50);
 					DNG_dec_level();

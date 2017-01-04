@@ -80,7 +80,7 @@ signed short DNG15_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, -3) <= 0)
+				test_attrib(hero, ATTRIB_GE, -3) <= 0)
 			{
 				tmp = random_schick(3);
 
@@ -507,7 +507,7 @@ void DNG15_small_wounds(void)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_attrib(hero, 4, -3) <= 0)
+			test_attrib(hero, ATTRIB_GE, -3) <= 0)
 		{
 			randval = random_schick(3);
 
@@ -630,7 +630,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_attrib(hero, 4, -3) <= 0)
+					test_attrib(hero, ATTRIB_GE, -3) <= 0)
 				{
 					cnt++;
 				}
@@ -658,7 +658,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_attrib(hero, 4, 0) <= 0)
+					test_attrib(hero, ATTRIB_GE, 0) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0xb0),
@@ -725,7 +725,7 @@ void DNG15_clear_way(Bit8u* ptr)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 0) <= 0)
+				test_attrib(hero, ATTRIB_GE, 0) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xb0),

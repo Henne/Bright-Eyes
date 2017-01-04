@@ -58,19 +58,19 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 	}
 	/* unequip Kraftguertel KK - 5 */
 	if (item == 183)
-		host_writeb(hero + HERO_KK, host_readb(hero + HERO_KK) - 5);
+		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) - 5);
 	/* unequip Helm CH + 1 (cursed) */
 	if (item == 196)
-		inc_ptr_bs(hero + HERO_CH);
+		inc_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_CH));
 	/* unequip Silberschmuck TA + 1 */
 	if (item == 215)
-		host_writeb(hero + HERO_TA, host_readb(hero + HERO_TA) + 2);
+		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 2);
 	/* unequip Stirnreif or Ring MR - 2 */
 	if (item == 217 || item == 165)
 		host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) - 2);
 	/* unequip Totenkopfguertel TA + 4 */
 	if (item == 182)
-		host_writeb(hero + HERO_TA, host_readb(hero + HERO_TA) + 4);
+		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 4);
 	/* unequip Kristallkugel Gefahrensinn - 2 */
 	if (item == 70)
 		host_writeb(hero + HERO_TA_INTUITION, host_readb(hero + HERO_TA_INTUITION) - 2);
@@ -127,21 +127,21 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		/* Girdle of might / Kraftguertel */
 		if (item == 0xb7) {
 			/* KK + 5 */
-			host_writeb(equipper + HERO_KK,
-				host_readb(equipper + HERO_KK) + 5);
+			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_KK),
+				host_readb(equipper + (HERO_ATTRIB + 3 * ATTRIB_KK)) + 5);
 		}
 
 		/* Helmet / Helm */
 		if (item == 0xc4) {
 			/* dec CH */
-			dec_ptr_bs(equipper + HERO_CH);
+			dec_ptr_bs(equipper + (HERO_ATTRIB + 3 * ATTRIB_CH));
 		}
 
 		/* Silver Jewelry / Silberschmuckstueck (magisch) */
 		if (item == 0xd7) {
 			/* TA - 2 */
-			host_writeb(equipper + HERO_TA,
-				host_readbs(equipper + HERO_TA) - 2);
+			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
+				host_readbs(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 2);
 		}
 
 		/* Coronet or Ring / Stirnreif oder Ring */
@@ -155,8 +155,8 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item == 0xb6) {
 
 			/* TA - 4 */
-			host_writeb(equipper + HERO_TA,
-				host_readbs(equipper + HERO_TA) - 4);
+			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
+				host_readbs(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 4);
 
 			if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
 				equip_belt_ani();
@@ -318,7 +318,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 	/* check if hero can carry that item */
 	if ((mode != 2) &&
-		(host_readbs(hero + HERO_KK) * 100 <= host_readws(hero + HERO_LOAD))) {
+		(host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero + HERO_LOAD))) {
 
 		if (mode != 0) {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),

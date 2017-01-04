@@ -427,9 +427,9 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			/* set timer */
 			host_writed(patient + HERO_HEAL_TIMER, 0x5460);
 
-			if ((flag != 0) || (test_skill(healer, 45, (signed char)handycap) > 0)) {
+			if ((flag != 0) || (test_skill(healer, TA_HEILEN_KRANKH, (signed char)handycap) > 0)) {
 
-				if (((retval = test_skill(healer, 45, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
+				if (((retval = test_skill(healer, TA_HEILEN_KRANKH, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
 					(disease != 1) && (disease != 3))
 				{
 
@@ -546,12 +546,12 @@ signed short get_skilled_hero_pos(signed short skill)
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 
-			cur =	host_readbs(hero + HERO_MU + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
+			cur =	host_readbs(hero + HERO_ATTRIB + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
 				host_readbs(hero + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {

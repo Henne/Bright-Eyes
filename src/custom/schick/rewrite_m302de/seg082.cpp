@@ -64,7 +64,7 @@ signed short DNG07_handler(void)
 				{
 					if (lockpick_pos != -2)
 					{
-						skill_result = test_skill(hero, 48, 7);
+						skill_result = test_skill(hero, TA_SCHLOESSER, 7);
 
 						if (skill_result == -99) {
 
@@ -187,7 +187,7 @@ signed short DNG07_handler(void)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					add_ptr_bs(hero + HERO_MU, 3);
+					add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
 					or_ptr_bs(hero + HERO_STATUS2, 0x80);
 				}
 			}
@@ -267,7 +267,7 @@ signed short DNG07_handler(void)
 				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					hero_dummy6(hero))
 				{
-					sub_ptr_bs(hero + HERO_MU, 3);
+					sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
 					and_ptr_bs(hero + HERO_STATUS2, 0x7f);
 				}
 			}
@@ -334,8 +334,8 @@ void DNG09_statues(signed short prob, signed short bonus)
 					/* increase one attribute of the leader permanently */
 					randval = random_schick(7) - 1;
 
-					inc_ptr_bs(hero + HERO_MU_ORIG + 3 * randval);
-					inc_ptr_bs(hero + HERO_MU + 3 * randval);
+					inc_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * randval);
+					inc_ptr_bs(hero + HERO_ATTRIB + 3 * randval);
 
 					/* ... but the twelfe won't grand miracles */
 					or_ptr_bs(hero + 0xab, 0x20);

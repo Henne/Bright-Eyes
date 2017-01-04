@@ -39,7 +39,7 @@ void show_automap(void)
 	signed short textbox_width_bak;
 
 	if (!ds_readb(DUNGEON_LIGHT) ||
-		((ds_readbs(DUNGEON_LIGHT) == 1) && (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 6) > 0)))
+		((ds_readbs(DUNGEON_LIGHT) == 1) && (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 6) > 0)))
 	{
 
 		ds_writeb(0x45b8, 1);

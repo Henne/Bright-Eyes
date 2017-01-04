@@ -446,7 +446,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					l_di = 99 - host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM);
 				}
 
-				while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+				while ((host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
 					l_di--;
 				}
 
@@ -473,7 +473,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) * host_readw(item2_desc + 5) :
 				host_readws(item2_desc + 5);
 
-			if (host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
+			if (host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xc2c),
@@ -565,7 +565,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			l_di = host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM);
 		}
 
-		while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+		while ((host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
 			l_di--;
 		}
 
@@ -587,7 +587,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				(char*)hero2 + HERO_NAME2);
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
-	} else if (host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5)) {
+	} else if (host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5)) {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xc2c),
 			(char*)hero2 + HERO_NAME2);

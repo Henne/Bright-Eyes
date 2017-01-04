@@ -128,7 +128,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_dtp(0x60));
 				}
 
-				if (host_readbs(hero + HERO_KK) * 110 <= host_readws(hero + HERO_LOAD)) {
+				if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 110 <= host_readws(hero + HERO_LOAD)) {
 					/* too much weight, use red color for "drop item" */
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
 						(char*)p_datseg + RED_STRING2,
@@ -168,14 +168,14 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				if (hero_unkn2(hero)) {
 					/* MU + 2 */
-					if (test_attrib(hero, 0, 2) > 0) {
+					if (test_attrib(hero, ATTRIB_MU, 2) > 0) {
 
 						/* unset this bit */
 						and_ptr_bs(hero + HERO_STATUS1, 0x7f);
 
-					} else if (host_readbs(hero + HERO_MU) > 4) {
+					} else if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU)) > 4) {
 						slot_nr = get_free_mod_slot();
-						set_mod_slot(slot_nr, HOURS(7), hero + HERO_MU, -2, (signed char)hero_pos);
+						set_mod_slot(slot_nr, HOURS(7), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -2, (signed char)hero_pos);
 					}
 				}
 
@@ -741,8 +741,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						damage_hi += 5;
 					}
 
-					weapon_id = host_readbs(hero + HERO_KK)
-							+ host_readbs(hero + HERO_KK_MOD)
+					weapon_id = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK))
+							+ host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))
 							- host_readbs(p_weapontab + 2);
 
 					if (weapon_id > 0) {

@@ -128,7 +128,7 @@ signed short DNG03_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 10, 2) <= 0)
+				test_skill(hero, TA_KLETTERN, 2) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readfp(DTP2)),
 					(char*)get_dtp(0x18),
@@ -202,7 +202,7 @@ signed short DNG03_handler(void)
 	{
 		j = 0;
 
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 50, 4) <= 0)
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_GEFAHRENSINN, 4) <= 0)
 		{
 			j++;
 		}
@@ -211,14 +211,14 @@ signed short DNG03_handler(void)
 			host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_skill(hero, 50, 4) <= 0)
+			test_skill(hero, TA_GEFAHRENSINN, 4) <= 0)
 		{
 			j++;
 		}
 
 		hero = Real2Host(get_first_hero_available_in_group());
 
-		if (j != 0 || test_attrib(hero, 4, 2) <= 0)
+		if (j != 0 || test_attrib(hero, ATTRIB_GE, 2) <= 0)
 		{
 			sprintf((char*)Real2Host(ds_readfp(DTP2)),
 				(char*)get_dtp(0x34),
@@ -248,7 +248,7 @@ signed short DNG03_handler(void)
 			(host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_attrib(hero, 4, 2) <= 0)))
+			test_attrib(hero, ATTRIB_GE, 2) <= 0)))
 		{
 
 			sprintf((char*)Real2Host(ds_readfp(DTP2)),
@@ -588,7 +588,7 @@ void DNG03_chest11_func3(RealPt)
 
 				mod = l_si < 2 ? 6 : (l_si < 4 ? 2 : -2);
 
-				if (test_attrib(hero, 4, mod) <= 0)
+				if (test_attrib(hero, ATTRIB_GE, mod) <= 0)
 				{
 					counter++;
 

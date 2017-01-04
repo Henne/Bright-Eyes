@@ -290,7 +290,7 @@ void TLK_ghandel(signed short state)
 		ds_writeb(0x34d6 + ds_readws(TYPEINDEX), 1);
 	} else if (state == 10) {
 		/* test CH+0 */
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0 ? 11 : 12);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 0) > 0 ? 11 : 12);
 	}
 }
 
@@ -312,7 +312,7 @@ void TLK_khandel(signed short state)
 		ds_writew(PRICE_MODIFICATOR, 3);
 	} else if (state == 12) {
 		/* test CH+4 */
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 4) > 0 ? 13 : 10);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 4) > 0 ? 13 : 10);
 	}
 }
 
@@ -330,10 +330,10 @@ void TLK_whandel(signed short state)
 		ds_writeb(0x34d6 + ds_readws(TYPEINDEX), 1);
 	} else if (state == 18) {
 		/* test CH+0 */
-		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0 ? 19 : -1);
+		ds_writew(DIALOG_NEXT_STATE, test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 0) > 0 ? 19 : -1);
 	} else if (state == 25) {
 
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 21, 0) > 0) {
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_FEILSCHEN, 0) > 0) {
 			ds_writew(DIALOG_NEXT_STATE, 23);
 			ds_writew(PRICE_MODIFICATOR, 3);
 		} else {

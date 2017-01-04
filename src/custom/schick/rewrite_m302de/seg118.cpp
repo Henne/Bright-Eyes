@@ -315,7 +315,7 @@ void tevent_078(void)
 
 			do {
 				/* ORIENTATION + 8 */
-				if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 8) > 0)
+				if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 8) > 0)
 				{
 					/* success, you found a way */
 					timewarp(HOURS(5));
@@ -371,7 +371,7 @@ void tevent_078(void)
 
 void tevent_079(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 4) > 0 && !ds_readb(0x3de3)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 4) > 0 && !ds_readb(0x3de3)) ||
 		ds_readb(0x3de3) != 0)
 	{
 		TRV_found_camp_place(0);
@@ -383,7 +383,7 @@ void tevent_051(void)
 {
 	signed short answer;
 
-	if (test_skill(Real2Host(get_first_hero_available_in_group()), 26, 4) > 0 && !ds_readb(0x3dc5))
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 4) > 0 && !ds_readb(0x3dc5))
 	{
 		ds_writeb(0x3dc5, 1);
 
@@ -477,7 +477,7 @@ void tevent_052(void)
 
 void tevent_120(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dff)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(0x3dff)) ||
 		ds_readb(0x3dff) != 0)
 	{
 		ds_writeb(0x3dff, 1);
@@ -528,7 +528,7 @@ void tevent_124(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				(skill_ret = test_skill(hero, 10, -2)) <= 0)
+				(skill_ret = test_skill(hero, TA_KLETTERN, -2)) <= 0)
 			{
 				/* the climb test failed */
 				counter++;

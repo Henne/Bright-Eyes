@@ -543,9 +543,9 @@ void TRV_ford_test(signed short mod, signed short time)
 		{
 			/* Original-Bugfix: tests fail if their result is lower or equal than zero */
 #ifdef M302de_ORIGINAL_BUGFIX
-			if (test_attrib(hero, 4, mod) < 0)
+			if (test_attrib(hero, ATTRIB_GE, mod) < 0)
 #else
-			if (test_attrib(hero, 4, mod) == 0)
+			if (test_attrib(hero, ATTRIB_GE, mod) == 0)
 #endif
 			{
 				/* test failed */
@@ -555,7 +555,7 @@ void TRV_ford_test(signed short mod, signed short time)
 					(char*)get_dtp(0x94),
 					(char*)hero + HERO_NAME2);
 
-				hero_disease_test(hero, 2, 20 - (host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)));
+				hero_disease_test(hero, 2, 20 - (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))));
 
 				loose_random_item(hero, 1, get_ltx(0x7e8));
 			} else {
@@ -684,7 +684,7 @@ void tevent_003(void)
 
 void tevent_004(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 2) > 0 && !ds_readb(0x3da2)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 2) > 0 && !ds_readb(0x3da2)) ||
 		ds_readb(0x3da2) != 0)
 	{
 		ds_writeb(0x3da2, 1);
@@ -718,7 +718,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 		if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 			!hero_dead(hero) &&
-			test_skill(hero, 13, (signed char)mod1) <= 0)
+			test_skill(hero, TA_SCHLEICHEN, (signed char)mod1) <= 0)
 		{
 			l_di++;
 		}
@@ -738,7 +738,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 		hero = get_hero(i);
 
-		if (test_skill(hero, 13, (signed char)mod2) <= 0) {
+		if (test_skill(hero, TA_SCHLEICHEN, (signed char)mod2) <= 0) {
 
 			do {
 				answer = GUI_radio(get_city(4 * (city_index + 1)), 2,
@@ -753,11 +753,11 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 			GUI_input(Real2Host(ds_readd(DTP2)), l_di = 0);
 
-			if ((i = test_skill(hero, 7, (signed char)mod3)) > 0) {
+			if ((i = test_skill(hero, TA_SCHUSSWAFFEN, (signed char)mod3)) > 0) {
 				l_di++;
 			}
 
-			if ((l4 = test_skill(hero, 7, (signed char)mod3)) > 0) {
+			if ((l4 = test_skill(hero, TA_SCHUSSWAFFEN, (signed char)mod3)) > 0) {
 				l_di++;
 			}
 
@@ -816,7 +816,7 @@ void TRV_hunt_generic(signed short ani_id, signed short city_index, signed short
 
 void tevent_005(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 0) > 0 && !ds_readb(0x3da3)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 0) > 0 && !ds_readb(0x3da3)) ||
 		ds_readb(0x3da3) != 0)
 	{
 		TRV_found_camp_place(1);
@@ -904,7 +904,7 @@ void TRV_barrier(signed short text_start)
 
 					for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO)
 					{
-						if (test_skill(hero, 31, 0) > 0) l_di++;
+						if (test_skill(hero, TA_WILDNISLEBEN, 0) > 0) l_di++;
 					}
 
 					add_hero_ap_all(10);
@@ -952,7 +952,7 @@ void TRV_barrier(signed short text_start)
 
 void tevent_008(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3da4)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3da4)) ||
 		ds_readb(0x3da4) != 0)
 	{
 		TRV_found_replenish_place(0);
@@ -962,7 +962,7 @@ void tevent_008(void)
 
 void tevent_009(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 && !ds_readb(0x3da5)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 4) > 0 && !ds_readb(0x3da5)) ||
 		ds_readb(0x3da5) != 0)
 	{
 		ds_writeb(0x66d0, 60);

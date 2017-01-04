@@ -52,7 +52,7 @@ void tevent_110(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 10, 0) <= 0)
+				test_skill(hero, TA_KLETTERN, 0) <= 0)
 			{
 				/* skill test failed */
 
@@ -85,7 +85,7 @@ void tevent_110(void)
 
 		/* try to walk arround */
 
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 0) > 0)
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 0) > 0)
 		{
 			/* success */
 			timewarp(HOURS(4));
@@ -109,7 +109,7 @@ void tevent_111(void)
 	signed short unlucky_tests;
 	Bit8u *hero;
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 1) > 0 && !ds_readb(0x3df8)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 1) > 0 && !ds_readb(0x3df8)) ||
 		ds_readb(0x3df8) == 1)
 	{
 		ds_writeb(0x3df8, 1);
@@ -127,7 +127,7 @@ void tevent_111(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 13, -5) <= 0)
+				test_skill(hero, TA_SCHLEICHEN, -5) <= 0)
 			{
 				counter++;
 			}
@@ -156,7 +156,7 @@ void tevent_111(void)
 
 			hero = get_hero(select_hero_ok_forced(get_city(0x08)));
 
-			if (test_skill(hero, 13, 0) <= 0)
+			if (test_skill(hero, TA_SCHLEICHEN, 0) <= 0)
 			{
 				/* skill test failed */
 				do {
@@ -185,9 +185,9 @@ void tevent_111(void)
 
 				GUI_input(Real2Host(ds_readd(DTP2)), counter = unlucky_tests = 0);
 
-				if ((i = test_skill(hero, 7, 12)) > 0) counter++;
-				if ((ret_skill_test2 = test_skill(hero, 7, 12)) > 0) counter++;
-				if ((ret_skill_test3 = test_skill(hero, 7, 12)) > 0) counter++;
+				if ((i = test_skill(hero, TA_SCHUSSWAFFEN, 12)) > 0) counter++;
+				if ((ret_skill_test2 = test_skill(hero, TA_SCHUSSWAFFEN, 12)) > 0) counter++;
+				if ((ret_skill_test3 = test_skill(hero, TA_SCHUSSWAFFEN, 12)) > 0) counter++;
 
 				if (i == 99) unlucky_tests++;
 				if (ret_skill_test2 == 99) unlucky_tests++;
@@ -243,7 +243,7 @@ void tevent_111(void)
 							if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 								host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 								!hero_dead(hero) &&
-								test_attrib(hero, 4, 2) <= 0)
+								test_attrib(hero, ATTRIB_GE, 2) <= 0)
 							{
 								/* attribute test failed */
 								sub_hero_le(hero, random_schick(10));
@@ -289,12 +289,12 @@ void tevent_111(void)
 /* a camp place */
 void tevent_112(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3df9)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3df9)) ||
 		ds_readb(0x3df9) != 0)
 	{
 		ds_writeb(0x3df9, 1);
 
-		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 2) > 0 && !ds_readb(0x3dfa)) ||
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 2) > 0 && !ds_readb(0x3dfa)) ||
 			ds_readb(0x3dfa) != 0)
 		{
 			ds_writeb(0x3dfa, 1);
@@ -406,7 +406,7 @@ void tevent_114(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_attrib(hero, 4, 4) <= 0)
+						test_attrib(hero, ATTRIB_GE, 4) <= 0)
 					{
 						/* attrib test failed */
 						timewarp(MINUTES(30));
@@ -488,7 +488,7 @@ void tevent_114(void)
 /* a camp place */
 void tevent_116(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 6) > 0 && !ds_readb(0x3dfc)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 6) > 0 && !ds_readb(0x3dfc)) ||
 		ds_readb(0x3dfc) != 0)
 	{
 		ds_writeb(0x3dfc, 1);
@@ -510,7 +510,7 @@ void tevent_117(void)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_attrib(hero, 4, 0) <= 0)
+			test_attrib(hero, ATTRIB_GE, 0) <= 0)
 		{
 			/* attrib test failed */
 			sub_hero_le(hero, random_schick(11) + 1);
@@ -527,7 +527,7 @@ void tevent_117(void)
 /* a herb place */
 void tevent_118(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 3) > 0 && !ds_readb(0x3dfd)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 3) > 0 && !ds_readb(0x3dfd)) ||
 		ds_readb(0x3dfd) != 0)
 	{
 		ds_writeb(0x66d0, 60);
@@ -540,7 +540,7 @@ void tevent_118(void)
 /* a camp place */
 void tevent_119(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3dfe)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3dfe)) ||
 		ds_readb(0x3dfe) != 0)
 	{
 		ds_writeb(0x3dfe, 1);
@@ -612,7 +612,7 @@ void tevent_123(void)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_attrib(hero, 8, 0) > 0)
+					test_attrib(hero, ATTRIB_HA, 0) > 0)
 				{
 					/* attrib test failed */
 					counter++;
@@ -654,8 +654,8 @@ void tevent_123(void)
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero))
 					{
-						attrib_result = test_attrib(hero, 8, 4);
-						skill_result = test_skill(hero, 10, 0);
+						attrib_result = test_attrib(hero, ATTRIB_HA, 4);
+						skill_result = test_skill(hero, TA_KLETTERN, 0);
 
 						if (attrib_result == 99 && skill_result == -1)
 						{
@@ -728,7 +728,7 @@ void tevent_123(void)
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero))
 					{
-						attrib_result = test_attrib(hero, 8, 2);
+						attrib_result = test_attrib(hero, ATTRIB_HA, 2);
 
 						if (attrib_result == 99)
 						{

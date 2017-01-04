@@ -107,7 +107,7 @@ signed short DNG04_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 13, 2) <= 0)
+				test_skill(hero, TA_SCHLEICHEN, 2) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x28),
@@ -140,7 +140,7 @@ signed short DNG04_handler(void)
 
 			/* Original-BUG: assumption the leader is at pos 0 */
 			/* CH-5 for 1 day */
-			set_mod_slot(i, DAYS(1), get_hero(0) + HERO_CH, -5, 0);
+			set_mod_slot(i, DAYS(1), get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_CH), -5, 0);
 		}
 
 	} else if (pos == 0xe0e && pos != ds_readws(0x330e))
@@ -154,7 +154,7 @@ signed short DNG04_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 13, 4) <= 0)
+				test_skill(hero, TA_SCHLEICHEN, 4) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x28),
@@ -187,7 +187,7 @@ signed short DNG04_handler(void)
 		i = 1;
 		hero = Real2Host(get_first_hero_available_in_group());
 
-		if (!ds_readb(DNG04_DEEPGAP_FLAG) || test_attrib(hero, 4, 0) > 0)
+		if (!ds_readb(DNG04_DEEPGAP_FLAG) || test_attrib(hero, ATTRIB_GE, 0) > 0)
 		{
 			ds_writeb(DNG04_DEEPGAP_FLAG, 1);
 
@@ -196,7 +196,7 @@ signed short DNG04_handler(void)
 
 		if (i)
 		{
-			if (test_attrib(hero, 4, 0) > 0)
+			if (test_attrib(hero, ATTRIB_GE, 0) > 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x48),
@@ -379,7 +379,7 @@ signed short DNG05_handler(void)
 			GUI_output(get_dtp(0x40));
 
 			tmp = get_free_mod_slot();
-			set_mod_slot(tmp, DAYS(1), hero + HERO_CH, -5, 0);
+			set_mod_slot(tmp, DAYS(1), hero + (HERO_ATTRIB + 3 * ATTRIB_CH), -5, 0);
 
 			add_party_money(20L);
 		}

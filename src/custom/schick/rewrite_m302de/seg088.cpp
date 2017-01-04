@@ -38,7 +38,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 			!hero_dead(hero))
 		{
 
-			if (test_skill(hero, 14, mod) <= 0) {
+			if (test_skill(hero, TA_SCHWIMMEN, mod) <= 0) {
 				/* swimming failed */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa8),

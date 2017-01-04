@@ -175,7 +175,7 @@ void spell_verwandlung(void)
 
 			/* increase attributes */
 			for (i = 0; i <= 6; i++)
-				inc_ptr_bs(get_spelltarget() + HERO_MU + i * 3);
+				inc_ptr_bs(get_spelltarget() + HERO_ATTRIB + i * 3);
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ltx(0x8d4),
 				(char*)get_spelltarget() + HERO_NAME2);

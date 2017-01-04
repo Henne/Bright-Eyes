@@ -75,7 +75,7 @@ void tevent_130(void)
 			if (answer == 1 || answer == 2) {
 				GUI_dialog_na(0, answer == 1 ? get_city(0x68) : get_city(0x6c));
 			} else {
-					GUI_dialog_na(0, test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 0) > 0 ? get_city(0x6c) : get_city(0x68));
+					GUI_dialog_na(0, test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 0) > 0 ? get_city(0x6c) : get_city(0x68));
 			}
 		}
 
@@ -90,7 +90,7 @@ void tevent_131(void)
 	/* entrance to the pirate cave */
 	signed short answer;
 
-	if (test_skill(Real2Host(get_first_hero_available_in_group()), 51, 8) > 0 && !ds_readb(0x3e05)) {
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(0x3e05)) {
 
 		ds_writeb(0x3e05, 1);
 
@@ -126,13 +126,13 @@ void tevent_131(void)
 void tevent_132(void)
 {
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 1) > 0 && !ds_readb(0x3e06)) || ds_readb(0x3e06) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 1) > 0 && !ds_readb(0x3e06)) || ds_readb(0x3e06) != 0)
 	{
 
 		/* set this camp place as known */
 		ds_writeb(0x3e06, 1);
 
-		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 1) > 0 && !ds_readb(0x3e07)) || ds_readb(0x3e07) != 0) {
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 1) > 0 && !ds_readb(0x3e07)) || ds_readb(0x3e07) != 0) {
 			ds_writeb(0x3e07, 1);
 			ds_writebs(0x66d0, 61);
 			TRV_found_camp_place(2);
@@ -170,7 +170,7 @@ void tevent_133(void)
 			{
 				timewarp(HOURS(1));
 
-				if (test_attrib(hero, 4, 4) <= 0) {
+				if (test_attrib(hero, ATTRIB_GE, 4) <= 0) {
 					/* test failed */
 
 					timewarp(HOURS(1));
@@ -198,7 +198,7 @@ void tevent_133(void)
 
 void tevent_134(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 6) > 0 && !ds_readb(HERMIT_HERBPLACE_FLAG)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 6) > 0 && !ds_readb(HERMIT_HERBPLACE_FLAG)) ||
 		ds_readb(HERMIT_HERBPLACE_FLAG) != 0)
 	{
 		ds_writeb(0x66d0, 157);
@@ -237,23 +237,23 @@ void tevent_135(void)
 			hero = get_hero(select_hero_ok_forced(get_city(0xb4)));
 
 			l_si = 1;
-			if (test_skill(hero, 10, -1) > 0) {
+			if (test_skill(hero, TA_KLETTERN, -1) > 0) {
 				l_si = 2;
 				GUI_output(get_city(0xb8));
 
-				if (test_skill(hero, 10, 1) > 0) {
+				if (test_skill(hero, TA_KLETTERN, 1) > 0) {
 					l_si = 3;
 					GUI_output(get_city(0xbc));
 
-					if (test_skill(hero, 10, 0) > 0) {
+					if (test_skill(hero, TA_KLETTERN, 0) > 0) {
 						l_si = 4;
 						GUI_output(get_city(0xc0));
 
-						if (test_skill(hero, 10, 2) > 0) {
+						if (test_skill(hero, TA_KLETTERN, 2) > 0) {
 							l_si = 5;
 							GUI_output(get_city(0xc4));
 
-							if (test_skill(hero, 10, 1) > 0) {
+							if (test_skill(hero, TA_KLETTERN, 1) > 0) {
 
 								GUI_output(get_city(0xc8));
 
@@ -294,8 +294,8 @@ void tevent_135(void)
 
 								if (!(host_readbs(hero + HERO_START_GEAR) & 0x2)) {
 									or_ptr_bs(hero + HERO_START_GEAR, 2);
-									inc_ptr_bs(hero + HERO_IN_ORIG);
-									inc_ptr_bs(hero + HERO_IN);
+									inc_ptr_bs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_IN));
+									inc_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_IN));
 								}
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
@@ -357,7 +357,7 @@ void tevent_137(void)
 	signed short item_pos;
 	Bit8u *hero;
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 5) > 0 && !ds_readb(0x3e09)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 5) > 0 && !ds_readb(0x3e09)) ||
 		ds_readb(0x3e09) != 0)
 	{
 		ds_writeb(0x3e09, 1);
@@ -404,7 +404,7 @@ void tevent_137(void)
 
 void tevent_138(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0a)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3e0a)) ||
 		ds_readb(0x3e0a) != 0)
 	{
 		ds_writeb(0x3e0a, 1);
@@ -439,15 +439,15 @@ void tevent_139(void)
 
 		timewarp(HOURS(6));
 
-		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), 28, 3)) > 0 ? get_city(0x108) : get_city(0x110));
+		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 3)) > 0 ? get_city(0x108) : get_city(0x110));
 	} else {
 		timewarp(HOURS(2));
 
-		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), 28, 5)) > 0 ? get_city(0x10c) : get_city(0x114));
+		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 5)) > 0 ? get_city(0x10c) : get_city(0x114));
 	}
 
 	if (i <= 0) {
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 3) > 0) {
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 3) > 0) {
 
 			timewarp(HOURS(2));
 
@@ -469,12 +469,12 @@ void tevent_139(void)
 
 void tevent_140(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0c)) || ds_readb(0x3e0c) != 0) {
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3e0c)) || ds_readb(0x3e0c) != 0) {
 
 		/* set this camp place as known */
 		ds_writeb(0x3e0c, 1);
 
-		if ((test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 && !ds_readb(0x3e0d)) || ds_readb(0x3e0d) != 0) {
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 4) > 0 && !ds_readb(0x3e0d)) || ds_readb(0x3e0d) != 0) {
 			ds_writeb(0x3e0d, 1);
 			ds_writebs(0x66d0, -126);
 			TRV_found_camp_place(2);
@@ -487,7 +487,7 @@ void tevent_140(void)
 
 void tevent_141(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 26, 0) > 0 && !ds_readb(0x3e0e)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 0) > 0 && !ds_readb(0x3e0e)) ||
 		ds_readb(0x3e0e) != 0)
 	{
 		/* set this camp place as known */
@@ -501,7 +501,7 @@ void tevent_141(void)
 
 void tevent_142(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 2) > 0 && !ds_readb(0x3e0f)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3e0f)) ||
 		ds_readb(0x3e0f) != 0)
 	{
 
@@ -537,16 +537,16 @@ void tevent_143(void)
 
 		timewarp(HOURS(4));
 
-		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), 28, 2)) > 0 ? get_city(0x0c) : get_city(0x14));
+		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 2)) > 0 ? get_city(0x0c) : get_city(0x14));
 	} else {
 		timewarp(HOURS(1));
 
-		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), 28, 4)) > 0 ? get_city(0x10) : get_city(0x18));
+		GUI_output((i = test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 4)) > 0 ? get_city(0x10) : get_city(0x18));
 	}
 
 	if (i <= 0) {
 
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 3) > 0) {
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 3) > 0) {
 
 			timewarp(HOURS(1));
 
@@ -688,7 +688,7 @@ void TLK_old_woman(signed short state)
 		hero = get_hero(0);
 		for (l_di = counter = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO) {
 			/* Original-Bug: check if this is realy a hero in the current group and alive before test_skill() */
-			if (test_skill(hero, 17, -5) > 0) {
+			if (test_skill(hero, TA_VERSTECKEN, -5) > 0) {
 				counter++;
 			}
 		}
@@ -708,7 +708,7 @@ void TLK_old_woman(signed short state)
 		hero = get_hero(0);
 		for (l_di = counter = 0; l_di <= 6; l_di++, hero += SIZEOF_HERO) {
 			/* Original-Bug: check if this is realy a hero in the current group and alive before test_skill() */
-			if (test_skill(hero, 17, -5) > 0) {
+			if (test_skill(hero, TA_VERSTECKEN, -5) > 0) {
 				counter++;
 			}
 		}
