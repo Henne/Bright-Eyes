@@ -33,6 +33,7 @@
 namespace M302de {
 #endif
 
+/* get random known informer */
 RealPt seg030_0000(signed short arg0)
 {
 	signed short i;
@@ -61,6 +62,7 @@ RealPt seg030_0000(signed short arg0)
 	}
 }
 
+/* get random unknown informer */
 RealPt seg030_008d(signed short arg0)
 {
 	signed short i;
@@ -169,7 +171,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 	ds_writews(DIALOG_INFORMER, tlk_informer);
 	ds_writews(TLK_ID, talk_id);
 
-	load_informer_tlk(talk_id + 156);
+	load_informer_tlk(talk_id + ARCHIVE_FILE_DIALOGS_TLK);
 
 	ds_writews(DIALOG_STATE, ds_writews(DIALOG_DONE, 0));
 
@@ -270,7 +272,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 					} else if (l_si == 29) {
 
-						hero = get_hero(ds_readb(0x3468));
+						hero = get_hero(ds_readb(TIOMAR_DRINKMATE));
 
 						sprintf(dst, fmt,
 							(char*)hero + HERO_NAME2,
@@ -356,7 +358,12 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 						} else if (l_si == 59) {
 
-							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + (ds_readb(0x3461) == 1 ? ds_readb(SWAFNILD_TP1) : (ds_readb(0x3461) == 2 ? ds_readb(SWAFNILD_TP2) : ds_readb(SWAFNILD_TP3))))));
+							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + (
+							    ds_readb(SWAFNILD_DESTINATION) == 1 ?
+                                    ds_readb(SWAFNILD_TP1)
+                                : (ds_readb(SWAFNILD_DESTINATION) == 2 ?
+                                    ds_readb(SWAFNILD_TP2)
+                                : ds_readb(SWAFNILD_TP3))))));
 
 						} else {
 							strcpy(dst, fmt);

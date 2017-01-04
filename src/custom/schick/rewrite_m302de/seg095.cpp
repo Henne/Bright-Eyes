@@ -30,9 +30,9 @@ unsigned short npc_meetings(unsigned short type_index)
 	/* check if an NPC is in the party and if we
 		already had an NPC conversation here */
 	if (!host_readbs(get_hero(6) + HERO_TYPE) &&
-		(type_index != ds_readw(0x346e))) {
+		(type_index != ds_readw(NPC_MEET_TAVERN))) {
 
-		ds_writew(0x346e, type_index);
+		ds_writew(NPC_MEET_TAVERN, type_index);
 
 		/* Nariell */
 		if (ds_readb(CURRENT_TOWN) == 0x17 &&

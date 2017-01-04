@@ -498,7 +498,7 @@ void tevent_064(void)
 	l3 = 0;
 	l4 = 0;
 
-	if (!ds_readb(0x3dc9) && ds_readb(QUEST_GORAH) != 0) {
+	if (!ds_readb(0x3dc9) && ds_readb(UMBRIK_QUEST_GORAH) != 0) {
 
 		do {
 

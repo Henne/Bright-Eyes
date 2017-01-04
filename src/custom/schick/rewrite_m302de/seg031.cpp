@@ -61,7 +61,7 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 	ds_writew(DIALOG_INFORMER, informer_id);
 	ds_writew(TLK_ID, talk_id);
 
-	load_tlk(talk_id + 156);
+	load_tlk(talk_id + ARCHIVE_FILE_DIALOGS_TLK);
 	ds_writew(DIALOG_STATE, ds_writew(DIALOG_DONE, 0));
 	p3 = p_datseg + DIALOG_PARTNERS;
 	p2 = Real2Host(host_readds(p3 + 38 * informer_id));

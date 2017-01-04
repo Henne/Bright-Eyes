@@ -192,23 +192,36 @@
 #define INFORMER_FLAGS	(0x3364)	/* unsigned char[15], {0,1,2} */
 #define GOT_LETTER_HET	(0x344a)	/* unsigned char {0,1} */
 #define JURGE_AWAITS_LETTER	(0x344c)	/* unsigned char {0,1} */
-#define QUEST_GORAH	(0x344d)	/* unsigned char {0,1} */
+#define UMBRIK_QUEST_GORAH	(0x344d)	/* unsigned char {0,1} */
 #define ISLEIF_JANDAS_REGARDS	(0x344f)	/* unsigned char {0,1} */
 #define ISLEIF_MAP_GIVEN	(0x3450)	/* unsigned char {0,1} */
 #define RAGNA_ASKED_MAP	(0x3451)	/* unsigned char {0,1} */
 #define BEORN_LITT_BOLD	(0x3452)	/* unsigned char {0,1} */
 #define BEORN_MEDI_BOLD	(0x3453)	/* unsigned char {0,1} */
 #define BEORN_VERY_BOLD	(0x3454)	/* unsigned char {0,1} */
-#define QUEST_NAMELESS_GOT	(0x3455)	/* unsigned char {0,1} */
+#define ELIANE_QUEST_NAMELESS	(0x3455)	/* unsigned char {0,1} */
+#define OLVIR_START_HETMANN	(0x3456)	/* unsigned char {0,1} */
+#define OLVIR_START_HYGGELIK	(0x3457)	/* unsigned char {0,1} */
+#define OLVIR_START_HASGAR	(0x3458)	/* unsigned char {0,1} */
+#define OLVIR_INTERRUPTED	(0x3459)	/* unsigned char {0,1} */
+#define OLVIR_SINGING_HETMANN	(0x345a)	/* unsigned char {0,1} */
+#define OLVIR_SINGING_HYGGELIK	(0x345b)	/* unsigned char {0,1} */
+#define OLVIR_SINGING_HASGAR	(0x345c)	/* unsigned char {0,1} */
 #define SWAFNILD_TP1	(0x345d)	/* unsigned char */
 #define SWAFNILD_TP2	(0x345e)	/* unsigned char */
 #define SWAFNILD_TP3	(0x345f)	/* unsigned char */
 #define SWAFNILD_TP4	(0x3460)	/* unsigned char */
+#define SWAFNILD_DESTINATION	(0x3461)	/* unsigned char {1,2,3} */
+#define SWAFNILD_NOMAP	(0x3462)	/* unsigned char {0,1} */
 #define TREBORN_DATE	(0x3463)	/* unsigned char {0,1} */
 #define UNICORN_HERO_POS	(0x3464)	/* unsigned char {0-6} */
 #define UNICORN_GET_MAP	(0x3465)
 #define UNICORN_TIMER	(0x3466)
+#define ALGRID_TREBORNS_HINT	(0x3467)	/* unsigned char {0,1} */
+#define TIOMAR_DRINKMATE	(0x3468)	/* unsigned char {0-6} */
+#define TIOMAR_AWAITS_LETTER	(0x3469)	/* unsigned char {0,1} */
 #define UNICORN_HERO_PTR	(0x346a)	/* RealPt */
+#define NPC_MEET_TAVERN	(0x346e)	/* signed short */
 #define NPC_MONTHS	(0x3470)	/* signed short */
 #define QUEST_DEADSHIP	(0x35f0)	/* unsigned char {0,1} */
 #define QUEST_DEADSHIP_DONE	(0x35f2)	/* unsigned char {0,1} */
