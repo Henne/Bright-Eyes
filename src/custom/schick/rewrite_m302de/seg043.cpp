@@ -57,10 +57,10 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 	signed short weapon_type;
 	signed short l4;
 	signed short randval;
-	signed short l6;
-	signed short l7;
-	signed short at;
-	signed short pa;
+	signed short randval2;
+	signed short attacker_at;
+	signed short defender_at;
+	signed short defender_pa;
 	signed char attack_hero;
 	signed short l11;
 	signed short l12;
@@ -84,7 +84,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 		FIG_clear_msgs();
 
-		l4 = ds_writews(0xe3ac, ds_writews(0xe3aa, ds_writews(0xe3a8, ds_writews(0xe3a6, 0))));
+		l4 = ds_writews(ATTACKER_ATTACKS_AGAIN, ds_writews(DEFENDER_ATTACKS, ds_writews(ATTACKER_DEAD, ds_writews(DEFENDER_DEAD, 0))));
 
 		ds_writew(FIG_ACTOR_GRAMMAR_TYPE, 1);
 		ds_writew(FIG_ACTOR_GRAMMAR_ID, host_readbs(Real2Host(monster)));
@@ -174,16 +174,16 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 				if (weapon_type == -1) {
 					/* no valid weapon == bare hands */
-					at = host_readbs(hero + HERO_AT) + host_readbs(hero + HERO_ATTACK_TYPE);
-					pa = host_readbs(hero + HERO_PA) - host_readbs(hero + HERO_ATTACK_TYPE);
+					defender_at = host_readbs(hero + HERO_AT) + host_readbs(hero + HERO_ATTACK_TYPE);
+					defender_pa = host_readbs(hero + HERO_PA) - host_readbs(hero + HERO_ATTACK_TYPE);
 				} else {
-					at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) + host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_AT_MOD);
-					pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_PA_MOD);
+					defender_at = host_readbs(hero + HERO_AT + host_readbs(hero + HERO_WP_CLASS)) + host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_AT_MOD);
+					defender_pa = host_readbs(hero + HERO_PA + host_readbs(hero + HERO_WP_CLASS)) - host_readbs(hero + HERO_ATTACK_TYPE) + host_readbs(hero + HERO_PA_MOD);
 				}
 
 				/* guarding heros get a PA-bonus of 3 */
 				if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_GUARD) {
-					pa += 3;
+					defender_pa += 3;
 				}
 
 				/* after destroying the orc statuette between Oberorken and Felsteyn, dwarfs get a PA-bonus against orcs */
@@ -191,56 +191,56 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 					(host_readbs(hero + HERO_TYPE) == HERO_TYPE_DWARF) &&
 					(host_readbs(Real2Host(monster) + ENEMY_SHEET_GFX_ID) == 24))
 				{
-					pa++;
+					defender_pa++;
 				}
 
 				/* subtract RS handycap */
-				at -= host_readbs(hero + HERO_RS_BE) / 2;
-				pa -= host_readbs(hero + HERO_RS_BE) / 2;
+				defender_at -= host_readbs(hero + HERO_RS_BE) / 2;
+				defender_pa -= host_readbs(hero + HERO_RS_BE) / 2;
 
 			} else {
 				/* attack a monster */
-				at = host_readbs(mon + ENEMY_SHEET_AT);
-				pa = host_readbs(mon + ENEMY_SHEET_PA);
+				defender_at = host_readbs(mon + ENEMY_SHEET_AT);
+				defender_pa = host_readbs(mon + ENEMY_SHEET_PA);
 			}
 
 			/* spell_dunkelheit() is active => AT-4, PA-4*/
 			if (ds_readds(INGAME_TIMERS + 0x24)) {
-				at -= 4;
-				pa -= 4;
+				defender_at -= 4;
+				defender_pa -= 4;
 			}
 
-			l7 = host_readbs(Real2Host(monster) + ENEMY_SHEET_AT);
+			attacker_at = host_readbs(Real2Host(monster) + ENEMY_SHEET_AT);
 			if (ds_readds(INGAME_TIMERS + 0x24)) {
-				l7 -= 4;
+				attacker_at -= 4;
 			}
 
 			if (attack_hero != 0) {
 
 				/* TODO */
 				if (ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID)) == 1) {
-					l7 += 2;
+					attacker_at += 2;
 				}
 
 				/* spell_chamaelioni() is active on that hero => AT-5 */
 				if (hero_cham(hero) == 1) {
-					l7 -= 5;
+					attacker_at -= 5;
 				}
 
 				/* TODO */
 				if (hero_dummy1(hero) == 1) {
-					l7 /= 2;
+					attacker_at /= 2;
 				}
 			} else {
 				/* TODO */
 				if (ds_readbs(0xd82d + host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID)) == 1) {
-					l7 += 2;
+					attacker_at += 2;
 				}
 			}
 
 			randval = random_schick(20);
 
-			if ((randval == 20) && (random_schick(20) > l7 - 9)) {
+			if ((randval == 20) && (random_schick(20) > attacker_at - 9)) {
 
 				if (!attack_hero || check_hero(hero)) {
 
@@ -250,9 +250,9 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 					if ((two_w_6 >= 3) && (two_w_6 <= 8)) {
 
-						ds_writew(0xe3aa, 1);
+						ds_writew(DEFENDER_ATTACKS, 1);
 
-						if (random_schick(20) <= at) {
+						if (random_schick(20) <= defender_at) {
 
 							if (attack_hero != 0) {
 								damage = FIG_get_hero_melee_attack_damage(hero, Real2Host(monster), 0);
@@ -272,7 +272,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 								*(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE) = tmp;
 
 								if (enemy_dead(Real2Host(monster))) {
-									ds_writew(0xe3a8, 1);
+									ds_writew(ATTACKER_DEAD, 1);
 								}
 							}
 						}
@@ -287,22 +287,22 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 						*(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE) = *(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE);
 
 						if (enemy_dead(Real2Host(monster))) {
-							ds_writew(0xe3a8, 1);
+							ds_writew(ATTACKER_DEAD, 1);
 						}
 					} else if (two_w_6 == 12) {
 					}
 				}
 			} else {
 
-				if (randval <= l7) {
+				if (randval <= attacker_at) {
 
 					if (((attack_hero != 0) && !ds_readbs((HERO_IS_TARGET-1) + host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID)) && check_hero(hero)) ||
 						(!attack_hero && (!ds_readbs(0xd82d + host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID)))))
 					{
 
-						l6 = random_schick(20);
+						randval2 = random_schick(20);
 
-						if ((l6 == 20) && (random_schick(20) > pa - 7)) {
+						if ((randval2 == 20) && (random_schick(20) > defender_pa - 7)) {
 
 							FIG_add_msg(2, 0);
 
@@ -310,9 +310,9 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 							if ((two_w_6 >= 3) && (two_w_6 <= 8)) {
 
-								ds_writew(0xe3ac, 1);
+								ds_writew(ATTACKER_ATTACKS_AGAIN, 1);
 
-								if (random_schick(20) <= l7) {
+								if (random_schick(20) <= attacker_at) {
 
 									if (attack_hero != 0) {
 										damage = FIG_get_enemy_attack_damage(Real2Host(monster), hero, 0);
@@ -327,7 +327,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 											FIG_add_msg(8, damage);
 
 											if (hero_dead(hero)) {
-												ds_writew(0xe3a6, 1);
+												ds_writew(DEFENDER_DEAD, 1);
 											}
 										}
 									} else {
@@ -340,7 +340,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 											FIG_add_msg(11, damage);
 
 											if (enemy_dead(mon)) {
-												ds_writew(0xe3a6, 1);
+												ds_writew(DEFENDER_DEAD, 1);
 											}
 										}
 									}
@@ -357,7 +357,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 									FIG_add_msg(8, damage);
 
 									if (hero_dead(hero)) {
-										ds_writew(0xe3a6, 1);
+										ds_writew(DEFENDER_DEAD, 1);
 									}
 
 								} else {
@@ -367,20 +367,20 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 									FIG_add_msg(11, damage);
 
 									if (enemy_dead(mon)) {
-										ds_writew(0xe3a6, 1);
+										ds_writew(DEFENDER_DEAD, 1);
 									}
 								}
 
 							}
 						} else {
-							if (l6 > pa) {
+							if (randval2 > defender_pa) {
 								l4 = 1;
 							} else {
 
 								FIG_add_msg(5, 0);
 
 								/* TODO */
-								if ((l6 == randval) && (attack_hero != 0) && (host_readbs(p_weapon + 6) != (signed char)0x9d)) {
+								if ((randval2 == randval) && (attack_hero != 0) && (host_readbs(p_weapon + 6) != (signed char)0x9d)) {
 
 									if (host_readbs(p_weapon + 6) > 3) {
 
@@ -417,7 +417,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 								FIG_add_msg(8, damage);
 
 								if (hero_dead(hero)) {
-									ds_writew(0xe3a6, 1);
+									ds_writew(DEFENDER_DEAD, 1);
 								}
 							}
 						} else {
@@ -431,7 +431,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 								FIG_add_msg(11, damage);
 
 								if (enemy_dead(mon)) {
-									ds_writew(0xe3a6, 1);
+									ds_writew(DEFENDER_DEAD, 1);
 								}
 							}
 						}
@@ -443,19 +443,19 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 			if (attack_hero != 0) {
 
-				if (check_hero(hero) || (ds_readws(0xe3a6) != 0)) {
+				if (check_hero(hero) || (ds_readws(DEFENDER_DEAD) != 0)) {
 
 					FIG_prepare_hero_fight_ani(0, hero, weapon_type, 100, host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID), monster_pos + 10, 1);
 				}
 
 			} else if (l17 == 0) {
 					FIG_prepare_enemy_fight_ani(0, mon, 100, host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID), monster_pos + 10, 1);
-			} else if (ds_readws(0xe3a6) != 0) {
+			} else if (ds_readws(DEFENDER_DEAD) != 0) {
 					FIG_prepare_enemy_fight_ani(0, mon, 0, host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID), monster_pos + 10, 1);
 			}
 
 			FIG_prepare_enemy_fight_ani(1, Real2Host(monster), 2, monster_pos + 10, host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID), 0);
-			ds_writew(0x26b1, 1);
+			ds_writew(FIG_CONTINUE_PRINT, 1);
 			draw_fight_screen_pal(0);
 			seg041_8c8();
 
@@ -489,7 +489,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 						FIG_add_msg(8, damage);
 
 						if (hero_dead(hero)) {
-							ds_writew(0xe3a6, 1);
+							ds_writew(DEFENDER_DEAD, 1);
 						}
 					}
 
@@ -507,7 +507,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 						FIG_add_msg(11, damage);
 
 						if (enemy_dead(mon)) {
-							ds_writew(0xe3a6, 1);
+							ds_writew(DEFENDER_DEAD, 1);
 						}
 					}
 				}
@@ -531,14 +531,14 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 
 					FIG_set_0e(ds_readbs(0xe38d), 7);
 
-					draw_fight_screen((l12 == 0) && (ds_readws(0xe3a6) == 0) ? 0 : 1);
+					draw_fight_screen((l12 == 0) && (ds_readws(DEFENDER_DEAD) == 0) ? 0 : 1);
 
 					FIG_reset_12_13(ds_readbs(0xe38d));
 				}
 
-				ds_writew(0x26b1, 1);
+				ds_writew(FIG_CONTINUE_PRINT, 1);
 
-				if (ds_readws(0xe3a6) != 0) {
+				if (ds_readws(DEFENDER_DEAD) != 0) {
 
 					if (attack_hero != 0) {
 
@@ -599,7 +599,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 									seg044_002f(1, mon, 99, host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID), monster_pos + 10, 1);
 								} else {
 
-									if (check_hero(hero) || (ds_readws(0xe3a6) != 0)) {
+									if (check_hero(hero) || (ds_readws(DEFENDER_DEAD) != 0)) {
 
 										seg044_002a(1, hero, 99, host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID), 0, -1, 1);
 									}
@@ -656,7 +656,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 							}
 						}
 
-						ds_writew(0x26b1, 1);
+						ds_writew(FIG_CONTINUE_PRINT, 1);
 
 						draw_fight_screen(1);
 
@@ -696,7 +696,7 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 							FIG_add_to_list(host_readbs(mon + ENEMY_SHEET_LIST_POS));
 						}
 
-						if (ds_readws(0xe3a4) != 0) {
+						if (ds_readws(SPELL_ILLUSIONEN) != 0) {
 
 							if (host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID) >= 10) {
 
@@ -787,7 +787,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 			FIG_add_msg(11, damage);
 
 			if (enemy_dead(target_monster)) {
-				ds_writew(0xe3a6, 1);
+				ds_writew(DEFENDER_DEAD, 1);
 			}
 		} else {
 
@@ -800,7 +800,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 				FIG_add_msg(8, damage);
 
 				if (hero_dead(target_hero)) {
-					ds_writew(0xe3a6, 1);
+					ds_writew(DEFENDER_DEAD, 1);
 				}
 			}
 		}
@@ -821,7 +821,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 			FIG_add_msg(11, 20);
 
 			if (enemy_dead(target_monster)) {
-				ds_writew(0xe3a6, 1);
+				ds_writew(DEFENDER_DEAD, 1);
 			}
 		} else {
 			/* .. used on another hero */
@@ -832,7 +832,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 				FIG_add_msg(8, 20);
 
 				if (hero_dead(target_hero)) {
-					ds_writew(0xe3a6, 1);
+					ds_writew(DEFENDER_DEAD, 1);
 				}
 			}
 		}
@@ -860,7 +860,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 		if (hylailic != 0) {
 			seg045_0394(6, hero, 2);
 		} else {
-			ds_writew(0x26b1, 1);
+			ds_writew(FIG_CONTINUE_PRINT, 1);
 		}
 
 		draw_fight_screen_pal(0);
@@ -871,7 +871,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 			l3 = 1;
 
-			ds_writew(0x26b1, 1);
+			ds_writew(FIG_CONTINUE_PRINT, 1);
 
 			draw_fight_screen(1);
 		}
@@ -880,7 +880,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 			FIG_remove_smth2();
 		}
 
-		if (ds_readws(0xe3a6) != 0) {
+		if (ds_readws(DEFENDER_DEAD) != 0) {
 
 			if (flag != 0) {
 				FIG_prepare_hero_fight_ani(1, target_hero, -1, 0, host_readbs(hero + HERO_ENEMY_ID), hero_pos + 1, 1);
@@ -890,7 +890,7 @@ void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed
 
 		}
 
-		if ((l3 != 0) || (ds_readws(0xe3a6) != 0)) {
+		if ((l3 != 0) || (ds_readws(DEFENDER_DEAD) != 0)) {
 			draw_fight_screen(0);
 		}
 

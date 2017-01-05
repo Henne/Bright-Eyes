@@ -34,7 +34,7 @@ void tevent_067(void)
 	signed short count;
 	Bit8u *hero;
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 51, 6) > 0 && !ds_readb(0x3dcc)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 6) > 0 && !ds_readb(0x3dcc)) ||
 		ds_readb(0x3dcc) != 0)
 	{
 		GUI_output(get_city(0x168));
@@ -48,7 +48,7 @@ void tevent_067(void)
 
 		if (answer == 2) {
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 
@@ -60,7 +60,7 @@ void tevent_067(void)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_attrib(hero, 4, 0) > 0)
+					test_attrib(hero, ATTRIB_GE, 0) > 0)
 				{
 					count++;
 				}
@@ -76,7 +76,7 @@ void tevent_067(void)
 
 				add_party_money(7L);
 
-				ds_writeb(LOCATION, 6);
+				ds_writeb(LOCATION, LOCATION_WILDCAMP);
 				do_location();
 				ds_writeb(LOCATION, 0);
 			} else {
@@ -93,7 +93,7 @@ void tevent_067(void)
 					}
 				}
 
-				ds_writeb(LOCATION, 6);
+				ds_writeb(LOCATION, LOCATION_WILDCAMP);
 				do_location();
 				ds_writeb(LOCATION, 0);
 
@@ -113,7 +113,7 @@ void tevent_067(void)
 		} while (answer == -1);
 
 		if (answer == 2) {
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 		}
@@ -129,7 +129,7 @@ void tevent_068(void)
 
 void tevent_069(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 5) > 0 && !ds_readb(0x3dcd)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 5) > 0 && !ds_readb(0x3dcd)) ||
 		ds_readb(0x3dcd) != 0)
 	{
 		TRV_found_camp_place(0);
@@ -141,12 +141,12 @@ void tevent_070(void)
 {
 	signed short l_si;
 
-	if (test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 ||
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 ||
 		ds_readb(0x3dce) != 0)
 	{
 		ds_writeb(0x3dce, 1);
 
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 29, 4) > 0 ||
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 4) > 0 ||
 			ds_readb(0x3dcf) != 0)
 		{
 			ds_writeb(0x3dcf, 1);
@@ -157,7 +157,7 @@ void tevent_070(void)
 			l_si = TRV_found_camp_place(0);
 		}
 
-		if ((l_si && !ds_readb(0x3dd0) && test_skill(Real2Host(get_first_hero_available_in_group()), 26, 0) > 0) ||
+		if ((l_si && !ds_readb(0x3dd0) && test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 0) > 0) ||
 			ds_readb(0x3dd0) != 0) {
 
 			ds_writeb(0x3dd0, 1);
@@ -188,13 +188,13 @@ void tevent_071(void)
 	have_raft = 0;
 
 	/* Perception + 8, Sinnesschaerfe + 8 */
-	if (test_skill(hero = Real2Host(get_first_hero_available_in_group()), 51, 8) > 0 &&
+	if (test_skill(hero = Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 8) > 0 &&
 		!ds_readb(0x3dd1))
 	{
 		ds_writeb(0x3dd1, 1);
 
 		/* Track + 4, Faehrtensuche + 4 */
-		if (test_skill(hero, 26, 4) > 0) {
+		if (test_skill(hero, TA_FAEHRTENSUCHEN, 4) > 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x34),
@@ -306,10 +306,10 @@ void TRV_swimm(signed short mod, signed short percent)
 			!hero_dead(hero))
 		{
 
-			if (test_skill(hero, 14, (signed char)mod) <= 0) {
+			if (test_skill(hero, TA_SCHWIMMEN, (signed char)mod) <= 0) {
 				/* test failed */
 
-				hero_disease_test(hero, 2, 20 - (host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)));
+				hero_disease_test(hero, 2, 20 - (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))));
 
 				loose_random_item(hero, percent, get_ltx(0x7e8));
 
@@ -342,7 +342,7 @@ void tevent_unused01(void)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if ((test_skill(hero, 51, 8) > 0 && !ds_readb(0x3dd2)) ||
+	if ((test_skill(hero, TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(0x3dd2)) ||
 		ds_readb(0x3dd2) != 0)
 	{
 
@@ -413,7 +413,7 @@ void tevent_unused01(void)
 
 void tevent_072(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3ddd)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(0x3ddd)) ||
 		ds_readb(0x3ddd) != 0)
 	{
 		TRV_found_camp_place(1);
@@ -477,7 +477,7 @@ void tevent_074(void)
 
 			/* try to flee */
 
-			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 2) <= 0)
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_KRIEGSKUNST, 2) <= 0)
 			{
 				/* failed, so fight */
 				ds_writeb(FIG_INITIATIVE, 1);
@@ -542,7 +542,7 @@ void tevent_074(void)
 				/* try to be Charismatic */
 				answer = count_heroes_in_group();
 
-				if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 14 - answer) <= 0)
+				if (test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 14 - answer) <= 0)
 				{
 					/* fight */
 					ds_writeb(FIG_INITIATIVE, 1);
@@ -608,7 +608,7 @@ void tevent_075(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_skill(hero, 13, 0) <= 0)
+						test_skill(hero, TA_SCHLEICHEN, 0) <= 0)
 					{
 						answer++;
 					}
@@ -654,7 +654,7 @@ void tevent_076(void)
 
 	if (!ds_readb(0x3de1)) {
 
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 51, 5) > 0)
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 5) > 0)
 		{
 			ds_writeb(0x3de1, 1);
 
@@ -718,7 +718,7 @@ void tevent_077(void)
 
 		} else if (answer == 2) {
 
-			if (test_skill(Real2Host(get_first_hero_available_in_group()), 37, 6) <= 0) {
+			if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_KRIEGSKUNST, 6) <= 0) {
 
 				/* test failed, so fight */
 				ds_writeb(FIG_INITIATIVE, 1);
@@ -784,7 +784,7 @@ void tevent_077(void)
 				/* try to be Charismatic */
 				answer = count_heroes_in_group();
 
-				if (test_attrib(Real2Host(get_first_hero_available_in_group()), 2, 14 - answer) <= 0)
+				if (test_attrib(Real2Host(get_first_hero_available_in_group()), ATTRIB_CH, 14 - answer) <= 0)
 				{
 					/* fight */
 					ds_writeb(FIG_INITIATIVE, 1);

@@ -143,12 +143,12 @@ RealPt get_proper_hero(signed short skill)
 			!hero_dead(Real2Host(hero_i))) {
 
 			/* add current and maximum attibute values */
-			cur =	host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
-				host_readbs(Real2Host(hero_i) + HERO_MU_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
+			cur =	host_readbs(Real2Host(hero_i) + HERO_ATTRIB + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_ATTRIB_MOD + 3 * ds_readbs(SKILL_DESCRIPTIONS + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_ATTRIB + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_ATTRIB_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_ATTRIB + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
+				host_readbs(Real2Host(hero_i) + HERO_ATTRIB_MOD + 3 * ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill)) +
 				host_readbs(Real2Host(hero_i) + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {
@@ -192,9 +192,9 @@ signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 		if ((skill == 7) || (skill == 8)) {
 
 			/* calculate range weapon base value */
-			e_skillval = (host_readbs(hero + HERO_KL) + host_readbs(hero + HERO_KL_MOD) +
-				host_readbs(hero + HERO_GE) + host_readbs(hero + HERO_GE_MOD) +
-				host_readbs(hero + HERO_KK) + host_readbs(hero + HERO_KK_MOD)) / 4;
+			e_skillval = (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KL)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KL)) +
+				host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_GE)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_GE)) +
+				host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))) / 4;
 
 			/* add skill value */
 			e_skillval += host_readbs(hero + HERO_TA_FIGHT + skill);
@@ -264,32 +264,27 @@ signed short select_skill(void)
 	struct dummy2 a = *(struct dummy2*)(p_datseg + SELECT_SKILL_DEFAULTS);
 
 	/* add skills for special location */
-	/* 9 = ACROBATICS, 32 = ALCHEMY, 43 = CHEAT, 47 = INSTRUMENT, 49 = PICKPOCKET, */
-	if (ds_readbs(LOCATION) == 3) {
-		/* TAVERN */
-		a.a[nr_skills] = 9;
+	if (ds_readbs(LOCATION) == LOCATION_TAVERN) {
+		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
 
 		if (ds_readws(0x6532) == 0) {
-			a.a[nr_skills] = 43;
+			a.a[nr_skills] = TA_FALSCHSPIEL;
 			nr_skills++;
 		}
 
-		a.a[nr_skills] = 47;
+		a.a[nr_skills] = TA_MUSIZIEREN;
 		nr_skills++;
-	} else if ((ds_readbs(LOCATION) == 6) || (ds_readbs(LOCATION) == 7)) {
-		/* CAMP (Wildernes) or INN */
-		a.a[nr_skills] = 32;
+	} else if ((ds_readbs(LOCATION) == LOCATION_WILDCAMP) || (ds_readbs(LOCATION) == LOCATION_INN)) {
+		a.a[nr_skills] = TA_ALCHIMIE;
 		nr_skills++;
-	} else if (ds_readbs(LOCATION) == 9) {
-		/* MARKET */
-		a.a[nr_skills] = 9;
+	} else if (ds_readbs(LOCATION) == LOCATION_MARKET) {
+		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
-		a.a[nr_skills] = 49;
+		a.a[nr_skills] = TA_TASCHENDIEB;
 		nr_skills++;
-	} else if (ds_readbs(LOCATION) == 5) {
-		/* MERCHANT */
-		a.a[nr_skills] = 49;
+	} else if (ds_readbs(LOCATION) == LOCATION_MERCHANT) {
+		a.a[nr_skills] = TA_TASCHENDIEB;
 		nr_skills++;
 	}
 
@@ -360,11 +355,11 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 						/* set patient timer */
 						host_writed(patient + HERO_HEAL_TIMER, 0x5460);
 
-						if (test_skill(hero, 44, bonus) > 0) {
+						if (test_skill(hero, TA_HEILEN_GIFT, bonus) > 0) {
 
 							timewarp(0x708);
 
-							if (test_skill(hero, 44, ds_readbs(POISON_PRICES + 2 * poison) + bonus) > 0) {
+							if (test_skill(hero, TA_HEILEN_GIFT, ds_readbs(POISON_PRICES + 2 * poison) + bonus) > 0) {
 								/* success */
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_ltx(0xac8),
@@ -387,7 +382,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 										le = GUI_input(get_ltx(0xad4), 2);
 									} while (le <= 0);
 
-									if ((l_si = test_skill(hero, 44, le + bonus)) > 0) {
+									if ((l_si = test_skill(hero, TA_HEILEN_GIFT, le + bonus)) > 0) {
 
 										sprintf((char*)Real2Host(ds_readd(DTP2)),
 											(char*)get_ltx(0xacc),
@@ -479,8 +474,8 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 					} else {
 						host_writed(patient + HERO_HEAL_TIMER, 0x1fa40L);
 
-						if (test_skill(hero, 46, bonus) > 0) {
-							if (test_skill(hero, 46, bonus) > 0) {
+						if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
+							if (test_skill(hero, TA_HEILEN_WUNDEN, bonus) > 0) {
 
 								l_si = (host_readbs(hero + (HERO_TA_CRAFT+5)) > 1) ? host_readbs(hero + (HERO_TA_CRAFT+5)) : 1;
 
@@ -547,7 +542,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 			} else {
 
-				if (test_skill(hero, 9, bonus) > 0) {
+				if (test_skill(hero, TA_AKROBATIK, bonus) > 0) {
 
 					money = random_interval(10, 200);
 
@@ -581,7 +576,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 			} else {
 
-				if (test_skill(hero, 47, bonus) > 0) {
+				if (test_skill(hero, TA_MUSIZIEREN, bonus) > 0) {
 
 					money = random_interval(100, 300);
 
@@ -609,7 +604,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 		}
 		case 43 : {
 
-			if (test_skill(hero, 43, bonus) > 0) {
+			if (test_skill(hero, TA_FALSCHSPIEL, bonus) > 0) {
 
 				money = random_interval(500, 1000);
 
@@ -637,7 +632,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 		}
 		case 49 : {
 
-			if (test_skill(hero, 49, bonus) > 0) {
+			if (test_skill(hero, TA_TASCHENDIEB, bonus) > 0) {
 
 				money = random_interval(500, 1000);
 
@@ -761,7 +756,7 @@ signed short bargain(Bit8u *hero, signed short items, Bit32s price,
 	/* the lower the percent, the easier the bargain */
 	mod += percent / 5 + 1;
 
-	return test_skill(hero, 21, mod);
+	return test_skill(hero, TA_FEILSCHEN, mod);
 }
 
 #if !defined(__BORLANDC__)

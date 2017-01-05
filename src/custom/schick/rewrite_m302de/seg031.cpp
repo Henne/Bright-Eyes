@@ -61,9 +61,9 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 	ds_writew(DIALOG_INFORMER, informer_id);
 	ds_writew(TLK_ID, talk_id);
 
-	load_tlk(talk_id + 156);
+	load_tlk(talk_id + ARCHIVE_FILE_DIALOGS_TLK);
 	ds_writew(DIALOG_STATE, ds_writew(DIALOG_DONE, 0));
-	p3 = p_datseg + INFORMER_ARRAY;
+	p3 = p_datseg + DIALOG_PARTNERS;
 	p2 = Real2Host(host_readds(p3 + 38 * informer_id));
 	l4 = host_readws(p3 + 4 + 38 * informer_id);
 	p4 = 38 * informer_id + p3 + 6;
@@ -315,10 +315,10 @@ RealPt load_current_town_gossip(void)
 	Bit8u *ptr;
 
 	/* load TOWN.LTX */
-	load_ltx(ds_readbs(CURRENT_TOWN) + 0x4d);
+	load_ltx(ds_readbs(CURRENT_TOWN) + ARCHIVE_FILE_CITY_LTX);
 
 	/* mark some buffers invalid */
-	ds_writews(0x2ccb, ds_writews(CURRENT_ANI, -1));
+	ds_writews(AREA_PREPARED, ds_writews(CURRENT_ANI, -1));
 
 	/* get the pointer to the ltx buffer */
 	ptr = Real2Host(ds_readd(BUFFER9_PTR3));

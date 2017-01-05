@@ -92,7 +92,7 @@ void load_ltx(unsigned short index)
 	signed short fd;
 
 	fd = load_archive_file(index);
-	ds_writew(0x2ccb, 0xffff);
+	ds_writew(AREA_PREPARED, 0xffff);
 	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER9_PTR3)) + 1000, 64000);
 	bc_close(fd);
 
@@ -129,7 +129,7 @@ void load_ggsts_nvf(void)
 	/* close it */
 	bc_close(fd);
 
-	ds_writew(0x2ccb, 0xffff);
+	ds_writew(AREA_PREPARED, 0xffff);
 }
 
 void prepare_chr_name(char *dst, char *src)
@@ -232,8 +232,8 @@ signed short load_game_state(void)
 		update_mouse_cursor();
 
 		/* something ani related */
-		l1 = ds_readws(0xc3cb);
-		ds_writew(0xc3cb, 0);
+		l1 = ds_readws(UPDATE_STATUSLINE);
+		ds_writew(UPDATE_STATUSLINE, 0);
 
 		l4 = ds_readws(ANI_ENABLED);
 		ds_writew(ANI_ENABLED, 0);
@@ -404,19 +404,19 @@ signed short load_game_state(void)
 			}
 		}
 
-		ds_writew(0x2ccb, -1);
+		ds_writew(AREA_PREPARED, -1);
 		ds_writew(REQUEST_REFRESH, retval = 1);
 		ds_writew(CHECK_DISEASE, 0);
 		ds_writew(CHECK_POISON, 0);
 		ds_writeb(0x4475, 3);
 
-		if (ds_readbs(LOCATION) != 2) {
+		if (ds_readbs(LOCATION) != LOCATION_TEMPLE) {
 			ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
 		}
 
 		load_area_description(2);
 
-		ds_writews(0xc3cb, l1);
+		ds_writews(UPDATE_STATUSLINE, l1);
 		ds_writews(ANI_ENABLED, l4);
 
 		refresh_screen_size();
@@ -449,14 +449,14 @@ signed short save_game_state(void)
 	ds_writew(TEXTBOX_WIDTH, 5);
 
 	/* prepare the header for the radio box */
-	if (ds_readws(0xc3c1) == 99) {
+	if (ds_readws(GAME_STATE) == GAME_STATE_VICTORY) {
 
 		/* game done */
 		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0xca8));
 
 	} else {
 
-		if (ds_readbs(LOCATION) != 2 && ds_readws(0xc3c1) != 99) {
+		if (ds_readbs(LOCATION) != LOCATION_TEMPLE && ds_readws(GAME_STATE) != GAME_STATE_VICTORY) {
 
 			/* save outside the temple */
 
@@ -535,8 +535,8 @@ signed short save_game_state(void)
 				/* save position on the playmask */
 				host_writebs(get_hero(tw_bak) + HERO_GROUP_POS, tw_bak + 1);
 
-				if (ds_readws(0xc3c1) != 99 &&
-					ds_readbs(LOCATION) != 2 &&
+				if (ds_readws(GAME_STATE) != GAME_STATE_VICTORY &&
+					ds_readbs(LOCATION) != LOCATION_TEMPLE &&
 					host_readds(get_hero(tw_bak) + HERO_AP) > 0)
 				{
 					add_hero_ap(get_hero(tw_bak), -1L);

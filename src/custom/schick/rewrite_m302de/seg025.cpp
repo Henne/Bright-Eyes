@@ -124,9 +124,9 @@ void show_citizen(void)
 			}
 		}
 
-	} while ((ds_readw(ACTION) == 0) && (ds_readw(0xc3d5) == 0));
+	} while ((ds_readw(ACTION) == 0) && (ds_readw(MOUSE1_EVENT2) == 0));
 
-	ds_writew(0xc3d5, 0);
+	ds_writew(MOUSE1_EVENT2, 0);
 	set_var_to_zero();
 	copy_palette();
 	turnaround();
@@ -146,7 +146,7 @@ void do_house(void)
 
 	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x9bc));
 
-	ds_writew(0xe5ac, 1);
+	ds_writew(MENU_DEFAULT_SELECT, 1);
 
 	if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 
@@ -166,7 +166,7 @@ void do_house(void)
 			if ((host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
-				(test_skill(hero, 17, -2) <= 0))
+				(test_skill(hero, TA_VERSTECKEN, -2) <= 0))
 			{
 				/* every hero must pass a sneak -2 test */
 
@@ -304,7 +304,7 @@ void show_treasure_map(void)
 
 		set_palette(p_datseg + 0x26c3, 0, 0x20);
 
-		do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 
 		update_mouse_cursor();
 
@@ -335,7 +335,7 @@ void show_treasure_map(void)
 				ds_writew(PIC_COPY_X2, ds_readws(TMAP_X + 2 * l_si) + width - 1);
 				ds_writew(PIC_COPY_Y2, ds_readws(TMAP_Y + 2 * l_si) + height - 1);
 				ds_writed(PIC_COPY_SRC, (Bit32u)F_PADD((RealPt)ds_readd(BUFFER9_PTR), 30000));
-				ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+				ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 				do_pic_copy(0);
 			}
 		}
@@ -394,7 +394,7 @@ void show_treasure_map(void)
 			ds_writew(PIC_COPY_X2, 319);
 			ds_writew(PIC_COPY_Y2, 199);
 			ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			update_mouse_cursor();
 			wait_for_vsync();
@@ -411,7 +411,7 @@ void show_treasure_map(void)
 		} else {
 			ds_writew(CURRENT_ANI, -1);
 			ds_writew(REQUEST_REFRESH, 1);
-			ds_writew(0x2ccb, -1);
+			ds_writew(AREA_PREPARED, -1);
 			ds_writeb(0x45b8, 0);
 			draw_main_screen();
 		}
@@ -436,15 +436,15 @@ signed short game_options(void)
 	ds_writew(TEXTBOX_WIDTH, 3);
 	ds_writeb(0x45b8, 1);
 	ds_writew(WALLCLOCK_UPDATE, 0);
-	ds_writew(0x2ccb, -1);
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+	ds_writew(AREA_PREPARED, -1);
+	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	load_pp20(ARCHIVE_FILE_BUCH_DAT);
 	ds_writeb(PP20_INDEX, ARCHIVE_FILE_BUCH_DAT);
 
 	get_textcolor(&fg_bak, &bg_bak);
 
-	ds_writed(0xd2fb, ds_readd(BUFFER9_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER9_PTR));
 
 	bak1 = ds_readws(0xd2d5);
 	bak2 = ds_readws(0xd2d9);
@@ -502,7 +502,7 @@ signed short game_options(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	update_mouse_cursor();
 	wait_for_vsync();
@@ -514,7 +514,7 @@ signed short game_options(void)
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+	ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR)));
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
@@ -525,7 +525,7 @@ signed short game_options(void)
 		handle_input();
 		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)0);
 
-		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			/* use the radio menu */
 			answer = GUI_radio(get_ltx(0x938), 9,
@@ -597,7 +597,7 @@ signed short game_options(void)
 			if (GUI_bool(get_ltx(0x4ac))) {
 
 				done = -1;
-				ds_writew(0xc3c1, 3);
+				ds_writew(GAME_STATE, GAME_STATE_QUIT);
 			}
 
 		} else if (ds_readws(ACTION) == 137) {
@@ -708,11 +708,11 @@ void do_location(void)
 
 	tm_bak = ds_readb(TRAVELING);
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 0);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 0);
 	ds_writeb(TRAVELING, 0);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
@@ -722,14 +722,14 @@ void do_location(void)
 	func = (void (*)(void))ds_readd(LOCATION_HANDLERS + 4 * ds_readbs(LOCATION));
 #endif
 
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	if (func) {
 		func();
 	}
 
-	ds_writew(0x2ca2, bak1);
-	ds_writew(0x2ca4, bak2);
+	ds_writew(BASEPOS_X, bak1);
+	ds_writew(BASEPOS_Y, bak2);
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
 	if (!ds_readb(TRAVELING)) {
@@ -783,7 +783,7 @@ void leave_dungeon(void)
 	ds_writeb(CURRENT_TOWN, ds_readb(0x2da6));
 	ds_writeb(0x2dad, ds_readb(DUNGEON_INDEX));
 	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));
-	ds_writebs(0x2ca7, -1);
+	ds_writebs(CITY_AREA_LOADED, -1);
 	ds_writeb(0x4475, ds_writew(REQUEST_REFRESH, 1));
 
 	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);

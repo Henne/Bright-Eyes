@@ -172,7 +172,7 @@ unsigned short fight_printer(void)
 	Bit16s f_action;
 
 	if (ds_readw(FIG_MSG_DATA) == 0)
-		ds_writew(0x26b1, 0);
+		ds_writew(FIG_CONTINUE_PRINT, 0);
 
 	if (ds_readw(FIG_STAR_TIMER) == 0 && ds_readb(FIG_STAR_PRINTED) != 0) {
 		inc_ds_bs_post(FIG_STAR_COUNTER);
@@ -181,10 +181,10 @@ unsigned short fight_printer(void)
 		ds_writew(FIG_STAR_TIMER, ds_readw(AUTOFIGHT) ? 10: ds_readws(DELAY_FACTOR) * 6);
 
 		if (ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4) == 0)
-			ds_writew(0x26b1, 0);
+			ds_writew(FIG_CONTINUE_PRINT, 0);
 	}
 
-	if (ds_readw(0x26b1) != 0) {
+	if (ds_readw(FIG_CONTINUE_PRINT) != 0) {
 		if (ds_readb(FIG_STAR_COUNTER) != ds_readb(FIG_STAR_LAST_COUNT)) {
 
 		ds_writeb(FIG_STAR_PRINTED, 1);
@@ -192,9 +192,9 @@ unsigned short fight_printer(void)
 		f_action = ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4);
 		if (f_action != 0) {
 
-			gfx_pos_bak = (RealPt)ds_readd(0xd2fb);
+			gfx_pos_bak = (RealPt)ds_readd(TMP_FRAMEBUF_PTR);
 
-			ds_writed(0xd2fb, ds_readd(BUFFER1_PTR));
+			ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
 			get_textcolor(&fg_bak, &bg_bak);
 
 			FIG_set_star_color(Real2Host(ds_readd(0xd29d)),
@@ -266,7 +266,7 @@ unsigned short fight_printer(void)
 				GUI_print_string(Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					1, 194);
 			}
-			ds_writed(0xd2fb, (Bit32u)gfx_pos_bak);
+			ds_writed(TMP_FRAMEBUF_PTR, (Bit32u)gfx_pos_bak);
 			set_textcolor(fg_bak, bg_bak);
 		}
 		ds_writeb(FIG_STAR_LAST_COUNT, ds_readbs(FIG_STAR_COUNTER));
@@ -407,7 +407,7 @@ void draw_fight_screen(Bit16u val)
 
 		set_delay_timer();
 
-		ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(BUFFER1_PTR)));
+		ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR)));
 
 
 		for (list_i = Real2Host(ds_readd(FIG_LIST_HEAD)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
@@ -914,7 +914,7 @@ void draw_fight_screen(Bit16u val)
 		ds_writew(PIC_COPY_Y2, 199);
 
 		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-		ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+		ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 		fight_delay();
 
@@ -941,14 +941,14 @@ void draw_fight_screen(Bit16u val)
 		ds_writew(PIC_COPY_Y2, 199);
 
 		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-		ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+		ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 		do_pic_copy(0);
 
-		while (ds_readw(0x26b1) == 1) {
+		while (ds_readw(FIG_CONTINUE_PRINT) == 1) {
 
 /* We get in an endless loop hero,
-when the Timer IRQ cannot set ds:0x26b1 to 0.
+when the Timer IRQ cannot set ds:FIG_CONTINUE_PRINT to 0.
 So this call to wait_for_vsync() passes control
 to the DOSBox-CPU and may run the timer.
 */
@@ -962,14 +962,14 @@ to the DOSBox-CPU and may run the timer.
 				ds_writew(PIC_COPY_Y2, 199);
 
 				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-				ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+				ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 				do_pic_copy(0);
 			}
 		}
 
 	} else {
-		ds_writew(0x26b1, 0);
+		ds_writew(FIG_CONTINUE_PRINT, 0);
 	}
 
 	/* read TEMP/XX */
@@ -977,7 +977,7 @@ to the DOSBox-CPU and may run the timer.
 	bc__read(handle, Real2Host(ds_readd(BUFFER8_PTR)), 64000);
 	bc_close(handle);
 
-	ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+	ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR)));
 }
 
 //static

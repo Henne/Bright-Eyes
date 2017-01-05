@@ -59,9 +59,9 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		/* string_array_itemnames */
 		p_name = (Bit8u*)get_itemname(index);
 
-		flag += lp5.a[ds_readbs(0x02ac + index)];
+		flag += lp5.a[ds_readbs(ITEMS_GENDERS + index)];
 
-		lp1 = (signed short*)(p_datseg + 0x0270);
+		lp1 = (signed short*)(p_datseg + ITEMS_NOPLURAL);
 
 		while (((l4 = host_readws((Bit8u*)(lp1++))) != -1) && (l4 != index));
 
@@ -74,7 +74,7 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		}
 	} else {
 		p_name = get_monname(index);
-		flag += lp5.a[ds_readbs(0x0925 + index)];
+		flag += lp5.a[ds_readbs(MONNAME_GENDERS + index)];
 	}
 
 	lp1 = (flag & 0x8000) ? (signed short*)(p_datseg + 0xa953 + (flag & 0xf) * 6) :
@@ -82,12 +82,12 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 				(signed short*)(p_datseg + 0xa983 + (flag & 0xf) * 6));
 
 
-	sprintf((char*)p_datseg + 0xe50b + ds_readw(0xa9eb) * 40,
+	sprintf((char*)p_datseg + GRAMMAR_BUFS + ds_readw(GRAMMAR_BUF_NO) * 40,
 		(l2 == 0) ? (char*)Real2Host(ds_readd(0xa9e3)) : (char*)Real2Host(ds_readd(0xa9e7)),
 		(char*)Real2Host(ds_readd(0xa917 + 4 * host_readws((Bit8u*)lp1 + 2 * (((flag & 0x3000) - 1) >> 12)))),
 		(char*)Real2Host(GUI_name_plural(flag, p_name)));
 
-	p_name = p_datseg + ds_readw(0xa9eb) * 40 + 0xe50b;
+	p_name = p_datseg + ds_readw(GRAMMAR_BUF_NO) * 40 + GRAMMAR_BUFS;
 
 	if (host_readb(p_name) == 0x20) {
 		do {
@@ -96,16 +96,16 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		} while (l4 != 0);
 	}
 
-	l4 = ds_readw(0xa9eb);
+	l4 = ds_readw(GRAMMAR_BUF_NO);
 
-	if (inc_ds_ws(0xa9eb) == 4)
-		ds_writew(0xa9eb, 0);
+	if (inc_ds_ws(GRAMMAR_BUF_NO) == 4)
+		ds_writew(GRAMMAR_BUF_NO, 0);
 
 #if !defined(__BORLANDC__)
-	return (RealPt)RealMake(datseg, 0xe50b + (l4 * 40));
+	return (RealPt)RealMake(datseg, GRAMMAR_BUFS + (l4 * 40));
 #else
 	/* TODO: Sorry dear ! */
-	return (RealPt) (&((struct dummy2*)(p_datseg + 0xe50b))[l4]);
+	return (RealPt) (&((struct dummy2*)(p_datseg + GRAMMAR_BUFS))[l4]);
 #endif
 
 }
@@ -159,7 +159,7 @@ RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
 {
 	signed short l;
 
-	l = (v3 == 0) ? ds_readbs(0x02ac + v2) : ds_readbs(v2 + 0x0925);
+	l = (v3 == 0) ? ds_readbs(ITEMS_GENDERS + v2) : ds_readbs(v2 + MONNAME_GENDERS);
 
 	return (RealPt)ds_readd(0xaa14 + 4 * ds_readbs(0xaa30 + v1 * 3 + l));
 }
@@ -426,7 +426,7 @@ signed short GUI_print_char(unsigned char c, unsigned short x, unsigned short y)
 	signed short char_width;
 	signed short font_index;
 
-	ds_writeb(0xe4d8, c);
+	ds_writeb(GUI_PRINT_CHAR, c);
 	font_index = GUI_lookup_char_width(c, &char_width);
 
 #if !defined(__BORLANDC__)
@@ -504,7 +504,7 @@ void GUI_font_to_buf(Bit8u *fc)
 	/* current text position */
 	p = p_datseg + GUI_TEXT_BUFFER;
 
-	if (ds_readb(0xe4d8) == 0x3a)
+	if (ds_readb(GUI_PRINT_CHAR) == 0x3a)
 		fc++;
 
 	for (i = 0; i < 8; p += 8, i++) {
@@ -519,7 +519,7 @@ void GUI_font_to_buf(Bit8u *fc)
 void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width)
 {
 	/* screen_start */
-	RealPt dst = ((RealPt)ds_readd(0xd2fb)) + y * 320 + x;
+	RealPt dst = ((RealPt)ds_readd(TMP_FRAMEBUF_PTR)) + y * 320 + x;
 
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }

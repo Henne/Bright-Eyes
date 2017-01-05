@@ -317,8 +317,8 @@ void DNG_stub2(void)
 	if ((tmp == 2) || (tmp == 9)) {
 
 		if (div16(ds_readb((0xbd6e + 5))) == 15) {
-			DNG_draw_walls( ((ds_readb(0x3616) == 1) ? 0x4e :
-						((ds_readb(0x3616) == 2) ? 0x28 : 0x3e)),
+			DNG_draw_walls( ((ds_readb(DUNGEON_TYPE) == 1) ? 0x4e :
+						((ds_readb(DUNGEON_TYPE) == 2) ? 0x28 : 0x3e)),
 					0, 0x36);
 		}
 	}
@@ -545,7 +545,7 @@ void DNG_lights(void)
 	if (div16(ds_readb((0xbd6e + 1))) != 11) {
 
 		/* copy palette */
-		memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), Real2Host(ds_readd(0xe404)), 0xc0);
+		memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), Real2Host(ds_readd(BUFFER11_PTR)), 0xc0);
 
 		if (!(ds_readb((0xbd6e + 1)) & 1)) {
 
@@ -607,10 +607,10 @@ void DNG_timestep(signed short a1)
 		ds_writeb(DUNGEON_INDEX, 0);
 
 		/* exit game */
-		ds_writew(0xc3c1, 1);
+		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 	}
 
-	if (ds_readw(0xc3c1) == 0) {
+	if (ds_readw(GAME_STATE) == GAME_STATE_MAIN) {
 
 		dir = ds_readbs(DIRECTION);
 
@@ -652,9 +652,9 @@ void DNG_update_pos(void)
 
 	DNG_stub1();
 
-	ds_writew(0xe486, ds_readw(X_TARGET));
-	ds_writew(0xe484, ds_readw(Y_TARGET));
-	ds_writew(0xe482, ds_readbs(DIRECTION));
+	ds_writew(DNG_REFRESH_X_TARGET, ds_readw(X_TARGET));
+	ds_writew(DNG_REFRESH_Y_TARGET, ds_readw(Y_TARGET));
+	ds_writew(DNG_REFRESH_DIRECTION, ds_readbs(DIRECTION));
 
 }
 
@@ -692,11 +692,11 @@ void DNG_open_door(void)
 
 	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(BUFFER1_PTR)), 0x6db0);
 
-	if (!ds_readb(0x3616)) {
+	if (!ds_readb(DUNGEON_TYPE)) {
 		x = 45;
 		y = 38;
 		iters = 19;
-	} else if (ds_readb(0x3616) == 1) {
+	} else if (ds_readb(DUNGEON_TYPE) == 1) {
 		x = 47;
 		y = 30;
 		iters = 20;
@@ -737,11 +737,11 @@ void DNG_close_door(void)
 
 	memmove(Real2Host(ds_readd(BUFFER1_PTR)) + 0x7530, Real2Host(ds_readd(BUFFER1_PTR)), 0x6db0);
 
-	if (!ds_readb(0x3616)) {
+	if (!ds_readb(DUNGEON_TYPE)) {
 		x = 45;
 		y = 38;
 		iters = 18;
-	} else if (ds_readb(0x3616) == 1) {
+	} else if (ds_readb(DUNGEON_TYPE) == 1) {
 		x = 47;
 		y = 30;
 		iters = 19;
@@ -814,7 +814,7 @@ void DNG_stub6(void)
 				strcat((char*)Real2Host(ds_readd(DTP2)),
 					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
-				if (test_attrib(hero1, 4, 2) <= 0) {
+				if (test_attrib(hero1, ATTRIB_GE, 2) <= 0) {
 
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)get_ltx(0xc08),
@@ -1035,7 +1035,7 @@ mark2:			   goto mark1;
 	ds_writebs(0x2d9f, ds_readbs(LOCATION));
 	ds_writeb(0x2da6, ds_readb(CURRENT_TOWN));
 	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
-	ds_writeb(0x2ca6, ds_writeb(0x2ca7, -1));
+	ds_writeb(DNG_AREA_LOADED, ds_writeb(CITY_AREA_LOADED, -1));
 
 	if (dungeon_id == 14) {
 

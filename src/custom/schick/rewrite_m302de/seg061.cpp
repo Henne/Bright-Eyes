@@ -40,7 +40,7 @@ void do_temple(void)
 	Bit32s donation;
 	signed short game_state;
 
-	ds_writew(0x29b6, ds_writew(0x29b8, 0));
+	ds_writew(INTEMPLE, ds_writew(INTEMPLE2, 0));
 	ds_writew(REQUEST_REFRESH, 1);
 
 	draw_loc_icons(9,	0, 1, 2,
@@ -71,13 +71,13 @@ void do_temple(void)
 			ds_writew(PIC_COPY_X1, ds_writew(PIC_COPY_Y1, 0));
 			ds_writew(PIC_COPY_X2, 40);
 			ds_writew(PIC_COPY_Y2, 22);
-			ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(0xd2ff) + 28259));
+			ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(FRAMEBUF_PTR) + 28259));
 			ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(BUFFER8_PTR) + 7000));
 
 			update_mouse_cursor();
 			do_pic_copy(0);
 			refresh_screen_size();
-			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			/* location string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -93,7 +93,7 @@ void do_temple(void)
 		handle_gui_input();
 
 		/* input window */
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			l_di = GUI_radio(get_ltx(0x384), 9,
 						get_ltx(0x388),
@@ -146,7 +146,7 @@ void do_temple(void)
 
 				draw_status_line();
 
-				if (ds_readbs(LOCATION) != 2) {
+				if (ds_readbs(LOCATION) != LOCATION_TEMPLE) {
 					done = 1;
 				}
 			} else {
@@ -169,7 +169,7 @@ void do_temple(void)
 			/* quit game */
 			if (GUI_bool(get_ltx(0x4ac))) {
 				done = 1;
-				ds_writews(0xc3c1, 3);
+				ds_writews(GAME_STATE, GAME_STATE_QUIT);
 			}
 		}
 
@@ -226,7 +226,7 @@ void do_temple(void)
 	copy_palette();
 	turnaround();
 
-	ds_writew(0x29b6, ds_writew(0x29b8, 1));
+	ds_writew(INTEMPLE, ds_writew(INTEMPLE2, 1));
 }
 
 void char_add(signed short temple_id)

@@ -46,12 +46,12 @@ signed short DNG04_handler(void)
 
         pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 
-	if (pos == 0x607 && pos != ds_readws(0x330e) && !ds_readb(0x3ca0))
+	if (pos == 0x607 && pos != ds_readws(0x330e) && !ds_readb(DNG04_CORPSE0_FLAG))
 	{
 		/* DNG04_corpse0 */
 		seg092_06b4(0);
 
-	} else if (pos == 0x808 && pos != ds_readws(0x330e) && !ds_readb(0x3ca3))
+	} else if (pos == 0x808 && pos != ds_readws(0x330e) && !ds_readb(DNG04_GAP_FLAG))
 	{
 		/* do you want to grab into the gap ? */
 		do {
@@ -75,10 +75,10 @@ signed short DNG04_handler(void)
 			/* get a magic AMULET */
 			get_item(175, 1, 1);
 
-			ds_writeb(0x3ca3, 1);
+			ds_writeb(DNG04_GAP_FLAG, 1);
 		}
 
-	} else if (pos == 0x50b && pos != ds_readws(0x330e) && !ds_readb(0x3ca4))
+	} else if (pos == 0x50b && pos != ds_readws(0x330e) && !ds_readb(DNG04_HELMET_FLAG))
 	{
 		/* do you want the SILVER HELMET? */
 		if (GUI_bool(get_dtp(0x1c)))
@@ -87,7 +87,7 @@ signed short DNG04_handler(void)
 			if (get_item(213, 1, 1))
 			{
 				/* mark SILVER HELMET as taken */
-				ds_writeb(0x3ca4, 1);
+				ds_writeb(DNG04_HELMET_FLAG, 1);
 			}
 		}
 
@@ -107,7 +107,7 @@ signed short DNG04_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 13, 2) <= 0)
+				test_skill(hero, TA_SCHLEICHEN, 2) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x28),
@@ -140,7 +140,7 @@ signed short DNG04_handler(void)
 
 			/* Original-BUG: assumption the leader is at pos 0 */
 			/* CH-5 for 1 day */
-			set_mod_slot(i, DAYS(1), get_hero(0) + HERO_CH, -5, 0);
+			set_mod_slot(i, DAYS(1), get_hero(0) + (HERO_ATTRIB + 3 * ATTRIB_CH), -5, 0);
 		}
 
 	} else if (pos == 0xe0e && pos != ds_readws(0x330e))
@@ -154,7 +154,7 @@ signed short DNG04_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 13, 4) <= 0)
+				test_skill(hero, TA_SCHLEICHEN, 4) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x28),
@@ -168,7 +168,7 @@ signed short DNG04_handler(void)
 			}
 		}
 
-	} else if (pos == 0xa06 && pos != ds_readws(0x330e) && !ds_readb(0x3ca5))
+	} else if (pos == 0xa06 && pos != ds_readws(0x330e) && !ds_readb(DNG04_LANTERN_FLAG))
 	{
 		/* do you want a LANTERN? */
 		if (GUI_bool(get_dtp(0x40)))
@@ -177,7 +177,7 @@ signed short DNG04_handler(void)
 			if (get_item(25, 1, 1))
 			{
 				/* mark LANTERN as taken */
-				ds_writeb(0x3ca5, 1);
+				ds_writeb(DNG04_LANTERN_FLAG, 1);
 			}
 		}
 
@@ -187,16 +187,16 @@ signed short DNG04_handler(void)
 		i = 1;
 		hero = Real2Host(get_first_hero_available_in_group());
 
-		if (!ds_readb(0x3ca6) || test_attrib(hero, 4, 0) > 0)
+		if (!ds_readb(DNG04_DEEPGAP_FLAG) || test_attrib(hero, ATTRIB_GE, 0) > 0)
 		{
-			ds_writeb(0x3ca6, 1);
+			ds_writeb(DNG04_DEEPGAP_FLAG, 1);
 
 			i = GUI_bool(get_dtp(0x44));
 		}
 
 		if (i)
 		{
-			if (test_attrib(hero, 4, 0) > 0)
+			if (test_attrib(hero, ATTRIB_GE, 0) > 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0x48),
@@ -221,7 +221,7 @@ signed short DNG04_handler(void)
 		}
 	}
 
-	if (pos == 0x601 && pos != ds_readws(0x330e) && !ds_readb(0x3ca2))
+	if (pos == 0x601 && pos != ds_readws(0x330e) && !ds_readb(DNG04_CORPSE2_FLAG))
 	{
 		/* DNG04_corpse2 */
 		seg092_06b4(0);
@@ -279,7 +279,7 @@ signed short DNG04_handler(void)
 		/* the exit of this dungeon */
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
 		ds_writew(X_TARGET, ds_readws(0x433a));
 		ds_writew(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -287,7 +287,7 @@ signed short DNG04_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x68),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -304,17 +304,17 @@ signed short DNG04_handler(void)
 
 void DNG04_corpse0(RealPt ptr)
 {
-	loot_corpse(ptr, get_dtp(0x04), p_datseg + 0x3ca0);
+	loot_corpse(ptr, get_dtp(0x04), p_datseg + DNG04_CORPSE0_FLAG);
 }
 
 void DNG04_corpse1(RealPt ptr)
 {
-	loot_corpse(ptr, get_dtp(0x20), p_datseg + 0x3ca1);
+	loot_corpse(ptr, get_dtp(0x20), p_datseg + DNG04_CORPSE1_FLAG);
 }
 
 void DNG04_corpse2(RealPt ptr)
 {
-	loot_corpse(ptr, get_dtp(0x50), p_datseg + 0x3ca2);
+	loot_corpse(ptr, get_dtp(0x50), p_datseg + DNG04_CORPSE2_FLAG);
 }
 
 void DNG04_corpse0_chest(RealPt chest)
@@ -322,7 +322,7 @@ void DNG04_corpse0_chest(RealPt chest)
 	RealPt bak;
 
 	bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x40a5));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG04_CHEST_CORPSE0));
 
 	loot_chest(Real2Host(chest), get_dtp(0x58), get_dtp(0x18));
 
@@ -334,7 +334,7 @@ void DNG04_corpse1_chest(RealPt chest)
 	RealPt bak;
 
 	bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x40a9));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG04_CHEST_CORPSE1));
 
 	loot_chest(Real2Host(chest), get_dtp(0x5c), get_dtp(0x18));
 
@@ -346,7 +346,7 @@ void DNG04_corpse2_chest(RealPt chest)
 	RealPt bak;
 
 	bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x40b5));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG04_CHEST_CORPSE2));
 
 	loot_chest(Real2Host(chest), get_dtp(0x60), get_dtp(0x18));
 
@@ -366,7 +366,7 @@ signed short DNG05_handler(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
-        pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
+	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 
 	if (pos == 0x70e && pos != ds_readws(0x330e) && ds_readw(0x960e) == 0)
 	{
@@ -379,12 +379,12 @@ signed short DNG05_handler(void)
 			GUI_output(get_dtp(0x40));
 
 			tmp = get_free_mod_slot();
-			set_mod_slot(tmp, DAYS(1), hero + HERO_CH, -5, 0);
+			set_mod_slot(tmp, DAYS(1), hero + (HERO_ATTRIB + 3 * ATTRIB_CH), -5, 0);
 
 			add_party_money(20L);
 		}
 
-	} else if (pos == 0x50c && pos != ds_readws(0x330e) && !ds_readb(0x3caf))
+	} else if (pos == 0x50c && pos != ds_readws(0x330e) && !ds_readb(DNG05_PROVIANT_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x08)))
 		{
@@ -392,19 +392,19 @@ signed short DNG05_handler(void)
 
 			get_item(45, 1, 10);
 
-			ds_writeb(0x3caf, 1);
+			ds_writeb(DNG05_PROVIANT_FLAG, 1);
 		}
 
-	} else if (pos == 0x907 && pos != ds_readws(0x330e) && !ds_readb(0x3cb0))
+	} else if (pos == 0x907 && pos != ds_readws(0x330e) && !ds_readb(DNG05_BATS_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x10)))
 		{
 			GUI_output(get_dtp(0x14));
 
-			ds_writeb(0x3cb0, 1);
+			ds_writeb(DNG05_BATS_FLAG, 1);
 		}
 
-	} else if (pos == 0x309 && pos != ds_readws(0x330e) && !ds_readb(0x3cb1))
+	} else if (pos == 0x309 && pos != ds_readws(0x330e) && !ds_readb(DNG05_GOD_FLAG))
 	{
 		do {
 			tmp = GUI_radio(get_dtp(0x18), 2,
@@ -416,7 +416,7 @@ signed short DNG05_handler(void)
 
 		GUI_output(get_dtp(0x24));
 
-		ds_writeb(0x3cb1, 1);
+		ds_writeb(DNG05_GOD_FLAG, 1);
 
 	} else if (pos == 0x805 && pos != ds_readws(0x330e))
 	{
@@ -462,14 +462,14 @@ signed short DNG05_handler(void)
 		set_var_to_zero();
 
 		ds_writew(X_TARGET, 5);
-		ds_writew(0x2ccb, -1);
+		ds_writew(AREA_PREPARED, -1);
 
 	} else if (pos == 0x60f && pos != ds_readws(0x330e))
 	{
 		/* the exit of this dungeon */
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readb(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readb(TRV_DEST_REACHED));
 		ds_writew(X_TARGET, ds_readws(0x433a));
 		ds_writew(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -477,7 +477,7 @@ signed short DNG05_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x44),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 

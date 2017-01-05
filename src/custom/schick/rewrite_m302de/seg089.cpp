@@ -80,7 +80,7 @@ signed short DNG15_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, -3) <= 0)
+				test_attrib(hero, ATTRIB_GE, -3) <= 0)
 			{
 				tmp = random_schick(3);
 
@@ -365,7 +365,7 @@ signed short DNG15_handler(void)
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 6), 0x3932)));
 			ds_writew((0xd325 + 4), 0x3d25);
 
-			if (!do_fight(135))
+			if (!do_fight(FIGHTS_DFIN26))
 			{
 				ds_writeb(DNG15_UNDEAD_FIGHT, 1);
 			}
@@ -378,7 +378,7 @@ signed short DNG15_handler(void)
 		{
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x3d25))));
 
-			if (!do_fight(135))
+			if (!do_fight(FIGHTS_DFIN26))
 			{
 				ds_writeb(DNG15_UNDEAD_FIGHT, 1);
 			}
@@ -418,7 +418,7 @@ signed short DNG15_handler(void)
 			/* you are cursed */
 			do_talk(19, 1);
 
-		} else if (!ds_readb(0x3600)) {
+		} else if (!ds_readb(GOT_GRIMRING)) {
 
 			/* fight the zombies */
 			ds_writew((0xd325 + 0),
@@ -426,7 +426,7 @@ signed short DNG15_handler(void)
 				ds_writew((0xd325 + 4),
 				ds_writew((0xd325 + 6), 0x3a0a))));
 
-			if (!do_fight(138))
+			if (!do_fight(FIGHTS_DFIN28))
 			{
 				/* talk with hyggelik */
 				draw_main_screen();
@@ -440,11 +440,11 @@ signed short DNG15_handler(void)
 				/* group gets GRIMRING */
 				do { ; } while (!get_item(181, 1, 1));
 
-				ds_writeb(0x3600, 1);
+				ds_writeb(GOT_GRIMRING, 1);
 
 				add_hero_ap_all(50);
 
-				ds_writeb(0x2ca6, (signed char)ds_writews(0x2ccb, -1));
+				ds_writeb(DNG_AREA_LOADED, (signed char)ds_writews(AREA_PREPARED, -1));
 				ds_writeb(PP20_INDEX, -2);
 
 				draw_main_screen();
@@ -464,7 +464,7 @@ signed short DNG15_handler(void)
 		} else {
 			leave_dungeon();
 
-			ds_writeb(CURRENT_TOWN, ds_readbs(0x4338));
+			ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 			ds_writew(X_TARGET, ds_readws(0x433a));
 			ds_writew(Y_TARGET, ds_readws(0x433c));
 			ds_writeb(LOCATION, 0);
@@ -472,7 +472,7 @@ signed short DNG15_handler(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0xdc),
-				(char*)get_ltx(4 * (ds_readw(0x434a) + 0xeb)));
+				(char*)get_ltx(4 * (ds_readw(TRV_DESTINATION) + 0xeb)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -507,7 +507,7 @@ void DNG15_small_wounds(void)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_attrib(hero, 4, -3) <= 0)
+			test_attrib(hero, ATTRIB_GE, -3) <= 0)
 		{
 			randval = random_schick(3);
 
@@ -630,7 +630,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_attrib(hero, 4, -3) <= 0)
+					test_attrib(hero, ATTRIB_GE, -3) <= 0)
 				{
 					cnt++;
 				}
@@ -658,7 +658,7 @@ void DNG15_collapsing_ceiling(Bit8u* ptr)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_attrib(hero, 4, 0) <= 0)
+					test_attrib(hero, ATTRIB_GE, 0) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0xb0),
@@ -725,7 +725,7 @@ void DNG15_clear_way(Bit8u* ptr)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 0) <= 0)
+				test_attrib(hero, ATTRIB_GE, 0) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xb0),

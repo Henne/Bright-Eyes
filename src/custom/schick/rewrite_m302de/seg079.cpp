@@ -128,7 +128,7 @@ signed short DNG03_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 10, 2) <= 0)
+				test_skill(hero, TA_KLETTERN, 2) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readfp(DTP2)),
 					(char*)get_dtp(0x18),
@@ -202,7 +202,7 @@ signed short DNG03_handler(void)
 	{
 		j = 0;
 
-		if (test_skill(Real2Host(get_first_hero_available_in_group()), 50, 4) <= 0)
+		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_GEFAHRENSINN, 4) <= 0)
 		{
 			j++;
 		}
@@ -211,14 +211,14 @@ signed short DNG03_handler(void)
 			host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_skill(hero, 50, 4) <= 0)
+			test_skill(hero, TA_GEFAHRENSINN, 4) <= 0)
 		{
 			j++;
 		}
 
 		hero = Real2Host(get_first_hero_available_in_group());
 
-		if (j != 0 || test_attrib(hero, 4, 2) <= 0)
+		if (j != 0 || test_attrib(hero, ATTRIB_GE, 2) <= 0)
 		{
 			sprintf((char*)Real2Host(ds_readfp(DTP2)),
 				(char*)get_dtp(0x34),
@@ -233,8 +233,8 @@ signed short DNG03_handler(void)
 
 			if (host_readws(hero + HERO_ITEM_BODY) != 0)
 			{
-				l3 = ds_readbs(0x0877 + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4)) -
- host_readbs(hero + HERO_ITEM_BODY + 7);
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
+				    - host_readbs(hero + HERO_ITEM_BODY + 7);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
@@ -248,7 +248,7 @@ signed short DNG03_handler(void)
 			(host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_attrib(hero, 4, 2) <= 0)))
+			test_attrib(hero, ATTRIB_GE, 2) <= 0)))
 		{
 
 			sprintf((char*)Real2Host(ds_readfp(DTP2)),
@@ -264,8 +264,8 @@ signed short DNG03_handler(void)
 
 			if (host_readws(hero + HERO_ITEM_BODY) != 0)
 			{
-				l3 = ds_readbs(0x0877 + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4)) -
-					 host_readbs(hero + HERO_ITEM_BODY + 7);
+				l3 = ds_readbs(ARMORS_TABLE + 2 * host_readbs(get_itemsdat(host_readws(hero + HERO_ITEM_BODY)) + 4))
+				    - host_readbs(hero + HERO_ITEM_BODY + 7);
 
 				l4 = (l3 > 3 ? 3 : (l3 > 0 ? l3 : 0));
 
@@ -340,7 +340,7 @@ signed short DNG03_handler(void)
 
 			} while (i != -1);
 
-			do_fight(252);
+			do_fight(FIGHTS_F051_14C);
 		}
 
 	} else if (target_pos == 0x1101 &&
@@ -396,7 +396,7 @@ signed short DNG03_handler(void)
 			target_pos == 0x0008)
 	{
 		leave_dungeon();
-		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 		ds_writews(X_TARGET, ds_readws(0x433a));
 		ds_writews(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -404,7 +404,7 @@ signed short DNG03_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x78),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -588,7 +588,7 @@ void DNG03_chest11_func3(RealPt)
 
 				mod = l_si < 2 ? 6 : (l_si < 4 ? 2 : -2);
 
-				if (test_attrib(hero, 4, mod) <= 0)
+				if (test_attrib(hero, ATTRIB_GE, mod) <= 0)
 				{
 					counter++;
 
@@ -608,7 +608,7 @@ void DNG03_chest11_func3(RealPt)
 			/* end of game */
 			GUI_output(get_dtp(0x68));
 
-			ds_writew(0xc3c1, 1);
+			ds_writew(GAME_STATE, GAME_STATE_DEAD);
 		} else {
 			timewarp(HOURS(1));
 

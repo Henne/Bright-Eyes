@@ -196,7 +196,7 @@ void magic_heal_ani(Bit8u *hero)
 		ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * target_nr) + 31);
 		ds_writew(PIC_COPY_Y2, 188);
 		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-		ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+		ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 		do_pic_copy(3);
 
 		delay_or_keypress(10);
@@ -234,7 +234,7 @@ void FIG_do_spell_damage(signed short le)
 
 			/* set a variable if the hoer died */
 			if (hero_dead(get_spelltarget())) {
-				ds_writew(0xe3a6, 1);
+				ds_writew(DEFENDER_DEAD, 1);
 			}
 		}
 
@@ -252,7 +252,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set a variable if the enemy died */
 		if (enemy_dead(get_spelltarget_e())) {
-			ds_writew(0xe3a6, 1);
+			ds_writew(DEFENDER_DEAD, 1);
 		}
 	}
 }
@@ -403,7 +403,7 @@ signed short use_magic(RealPt hero)
 				/* spend one AE point */
 				sub_ae_splash(Real2Host(hero), 1);
 
-				if (test_attrib3(Real2Host(hero), 0, 2, 6, 0) > 0) {
+				if (test_attrib3(Real2Host(hero), ATTRIB_MU, ATTRIB_CH, ATTRIB_KK, 0) > 0) {
 					/* Success */
 
 					if (host_readws(Real2Host(hero) + HERO_LE) <= le + 8) {
@@ -887,9 +887,9 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 		if (retval) {
 
-			ds_writew(0xe5b2, test_spell(Real2Host(hero), l_di, bonus));
+			ds_writew(SPELLTEST_RESULT, test_spell(Real2Host(hero), l_di, bonus));
 
-			if (ds_readws(0xe5b2) == -99) {
+			if (ds_readws(SPELLTEST_RESULT) == -99) {
 
 				/* prepare output */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -902,7 +902,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				retval = -1;
 
-			} else if ((ds_readws(0xe5b2) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
+			} else if ((ds_readws(SPELLTEST_RESULT) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x978));
 

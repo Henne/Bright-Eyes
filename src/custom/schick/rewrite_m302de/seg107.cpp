@@ -67,7 +67,7 @@ void use_item(signed short item_pos, signed short hero_pos)
 			if (!item_useable(Real2Host(ds_readd(USED_ITEM_DESC)))) {
 				/* item is not usable */
 
-				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + 0x029e)))
+				if (is_in_word_array(ds_readws(USED_ITEM_ID), (signed short*)(p_datseg + ITEMS_PLURALWORDS)))
 				{
 					/* german grammar, singular and plural are the same */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -93,9 +93,9 @@ void use_item(signed short item_pos, signed short hero_pos)
 			} else {
 				/* special item */
 #if !defined(__BORLANDC__)
-				func = handler[ds_readbs((0x08a9 + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
+				func = handler[ds_readbs((SPECIALITEMS_TABLE + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4))];
 #else
-				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs((0x08a9 + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
+				func = (void (*)(void))ds_readd(USE_SPECIAL_ITEM_HANDLERS + 4 * ds_readbs((SPECIALITEMS_TABLE + 2) + 3 * host_readbs(Real2Host(ds_readd(USED_ITEM_DESC)) + 4)));
 #endif
 				func();
 			}
@@ -261,7 +261,7 @@ void item_debtbook(void)
 		add_hero_ap_all(15);
 
 		/* mark informer Hjore as known */
-		ds_writeb_z(INFORMER_HJORE, 1);
+		ds_writeb_z(INFORMER_FLAGS + INFORMER_HJORE, 1);
 	}
 
 	GUI_output(get_ltx(0xa08));
@@ -532,7 +532,7 @@ void item_bag(void)
 
 	if ((ds_readbs(DUNGEON_INDEX) == 7) && (ds_readbs(DUNGEON_LEVEL) == 0)) {
 		/* set ptr to the map */
-		ptr = p_datseg + 0xbd95;
+		ptr = p_datseg + DNG_MAP;
 
 		/* remove the wall there */
 		host_writeb(ptr + 0x3a, 1);

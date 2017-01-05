@@ -93,7 +93,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 		FIG_clear_msgs();
 
-		l5 = ds_writews(0xe3ac, ds_writews(0xe3aa, ds_writews(0xe3a4, ds_writews(0xe3a8, ds_writews(0xe3a6, 0)))));
+		l5 = ds_writews(ATTACKER_ATTACKS_AGAIN, ds_writews(DEFENDER_ATTACKS, ds_writews(SPELL_ILLUSIONEN, ds_writews(ATTACKER_DEAD, ds_writews(DEFENDER_DEAD, 0)))));
 
 		weapon_type = weapon_type_target = -1;
 
@@ -284,7 +284,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 				} else if ((two_w_6 >= 3) && (two_w_6 <= 8) && (l16 == 0)) {
 
-					ds_writew(0xe3aa, 1);
+					ds_writew(DEFENDER_ATTACKS, 1);
 
 					if (attack_hero != 0) {
 
@@ -314,7 +314,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					}
 
 					if (hero_dead(Real2Host(hero))) {
-						ds_writew(0xe3a8, 1);
+						ds_writew(ATTACKER_DEAD, 1);
 					}
 
 				} else if ((two_w_6 >= 9) && (two_w_6 <= 11)) {
@@ -328,7 +328,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					*(struct msg*)(p_datseg + FIG_TARGET_GRAMMAR_TYPE) = *(struct msg*)(p_datseg + FIG_ACTOR_GRAMMAR_TYPE);
 
 					if (hero_dead(Real2Host(hero))) {
-						ds_writew(0xe3a8, 1);
+						ds_writew(ATTACKER_DEAD, 1);
 					}
 				}
 
@@ -394,7 +394,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						if ((two_w_6 >= 3) && (two_w_6 <= 8)) {
 
-							ds_writew(0xe3aa, 1);
+							ds_writew(DEFENDER_ATTACKS, 1);
 
 							if (random_schick(20) <= atpa) {
 
@@ -409,7 +409,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 										FIG_add_msg(8, damage);
 
 										if (hero_dead(target_hero)) {
-											ds_writew(0xe3a6, 1);
+											ds_writew(DEFENDER_DEAD, 1);
 										}
 									}
 								} else {
@@ -423,7 +423,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 										FIG_add_msg(11, damage);
 
 										if (enemy_dead(target_monster)) {
-											ds_writew(0xe3a6, 1);
+											ds_writew(DEFENDER_DEAD, 1);
 										}
 									}
 								}
@@ -439,7 +439,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								FIG_add_msg(8, damage);
 
 								if (hero_dead(target_hero)) {
-									ds_writew(0xe3a6, 1);
+									ds_writew(DEFENDER_DEAD, 1);
 								}
 							} else {
 								FIG_damage_enemy(target_monster, damage, 1);
@@ -447,7 +447,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								FIG_add_msg(11, damage);
 
 								if (enemy_dead(target_monster)) {
-									ds_writew(0xe3a6, 1);
+									ds_writew(DEFENDER_DEAD, 1);
 								}
 							}
 						}
@@ -508,7 +508,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							FIG_add_msg(8, damage);
 
 							if (hero_dead(target_hero)) {
-								ds_writew(0xe3a6, 1);
+								ds_writew(DEFENDER_DEAD, 1);
 							}
 						}
 					} else {
@@ -522,7 +522,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							FIG_add_msg(11, damage);
 
 							if (enemy_dead(target_monster)) {
-								ds_writew(0xe3a6, 1);
+								ds_writew(DEFENDER_DEAD, 1);
 							}
 						}
 					}
@@ -537,7 +537,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 			if (attack_hero != 0) {
 
-				if (check_hero(target_hero) || (ds_readws(0xe3a6) != 0)) {
+				if (check_hero(target_hero) || (ds_readws(DEFENDER_DEAD) != 0)) {
 
 					FIG_prepare_hero_fight_ani(1, target_hero, weapon_type_target,
 								100, host_readbs(Real2Host(hero) + HERO_ENEMY_ID), hero_pos + 1, 1);
@@ -547,13 +547,13 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				if (l16 == 0) {
 					FIG_prepare_enemy_fight_ani(1, target_monster, 100, host_readbs(Real2Host(hero) + HERO_ENEMY_ID), hero_pos + 1, 1);
 				} else {
-					if (ds_readws(0xe3a6) != 0) {
+					if (ds_readws(DEFENDER_DEAD) != 0) {
 						FIG_prepare_enemy_fight_ani(1, target_monster, 0, host_readbs(Real2Host(hero) + HERO_ENEMY_ID), hero_pos + 1, 1);
 					}
 				}
 			}
 
-			ds_writew(0x26b1, 1);
+			ds_writew(FIG_CONTINUE_PRINT, 1);
 
 			draw_fight_screen_pal(0);
 
@@ -583,7 +583,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							FIG_add_msg(8, damage);
 
 							if (hero_dead(target_hero)) {
-								ds_writew(0xe3a6, 1);
+								ds_writew(DEFENDER_DEAD, 1);
 							}
 						}
 					} else {
@@ -597,7 +597,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							FIG_add_msg(11, damage);
 
 							if (enemy_dead(target_monster)) {
-								ds_writew(0xe3a6, 1);
+								ds_writew(DEFENDER_DEAD, 1);
 							}
 						}
 					}
@@ -633,14 +633,14 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						FIG_set_0e(ds_readbs(0xe38d), 7);
 
-						draw_fight_screen(l13 == 0 && ds_readws(0xe3a6) == 0 ? 0 : 1);
+						draw_fight_screen(l13 == 0 && ds_readws(DEFENDER_DEAD) == 0 ? 0 : 1);
 
 						FIG_reset_12_13(ds_readbs(0xe38d));
 					}
 
-					ds_writew(0x26b1, 1);
+					ds_writew(FIG_CONTINUE_PRINT, 1);
 
-					if (ds_readws(0xe3a6) != 0) {
+					if (ds_readws(DEFENDER_DEAD) != 0) {
 
 						if (attack_hero != 0) {
 							FIG_prepare_hero_fight_ani(1, target_hero, -1, 0,
@@ -667,7 +667,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) + 1);
 
-					ds_writew(0xe3a8, 1);
+					ds_writew(ATTACKER_DEAD, 1);
 				}
 
 				l6 = ds_readbs((SPELL_DESCRIPTIONS + 6) + 10 * host_readbs(Real2Host(hero) + HERO_SPELL_ID));
@@ -741,7 +741,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 											hero_pos + 1, 1);
 								} else {
 
-									if (check_hero(target_hero) || (ds_readws(0xe3a6) != 0)) {
+									if (check_hero(target_hero) || (ds_readws(DEFENDER_DEAD) != 0)) {
 
 										seg044_002a(1, target_hero, 99, host_readbs(Real2Host(hero) + HERO_ENEMY_ID), 0 , -1, 1);
 									}
@@ -837,7 +837,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							}
 						}
 
-						ds_writew(0x26b1, 1);
+						ds_writew(FIG_CONTINUE_PRINT, 1);
 
 						draw_fight_screen(1);
 
@@ -845,7 +845,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 							FIG_reset_12_13(ds_readbs(0xe38d));
 						}
 
-						if (ds_readws(0xe3a4) != 0) {
+						if (ds_readws(SPELL_ILLUSIONEN) != 0) {
 
 							if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 10) {
 

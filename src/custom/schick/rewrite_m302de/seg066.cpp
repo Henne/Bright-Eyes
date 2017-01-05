@@ -69,7 +69,7 @@ signed short enter_location(signed short town_id)
 			ds_writew(TYPEINDEX, host_readb(ptr + 3));
 			ds_writew(CITYINDEX, host_readw(ptr + 4));
 
-			if (ds_readbs(LOCATION) == 9) {
+			if (ds_readbs(LOCATION) == LOCATION_MARKET) {
 				ds_writebs(LOCATION, 0);
 				ds_writeb(0xe10c, 1);
 			}
@@ -89,9 +89,9 @@ signed short enter_location(signed short town_id)
 		ds_writew(CITYINDEX, ds_readb(0x71c9 + town_id));
 
 		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
-			ds_writebs(LOCATION, 10);
+			ds_writebs(LOCATION, LOCATION_CITIZEN);
 		} else {
-			ds_writebs(LOCATION, 16);
+			ds_writebs(LOCATION, LOCATION_HOUSE);
 			inc_ds_ws(CITYINDEX);
 		}
 
@@ -107,7 +107,7 @@ signed short enter_location_daspota(void)
 	signed short b_index;
 	Bit8u *ptr;
 
-	if (ds_readws(0xc3c1) == 7) {
+	if (ds_readws(GAME_STATE) == GAME_STATE_FIGQUIT) {
 		return 1;
 	}
 
@@ -125,11 +125,11 @@ signed short enter_location_daspota(void)
 
 				GUI_print_loc_line(get_dtp(4 * host_readw(ptr + 4)));
 
-				if (!ds_readb(0x331f + host_readw(ptr + 4))) {
+				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
 
 					do_talk(host_readbs(ptr + 2), host_readb(ptr + 3) - 1);
 
-					if (!ds_readb(0x331f + host_readw(ptr + 4))) {
+					if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
 						turnaround();
 						return 1;
 					}
@@ -150,9 +150,9 @@ signed short enter_location_daspota(void)
 
 					do {
 						handle_gui_input();
-					} while (ds_readws(ACTION) == 0 && ds_readws(0xc3d5) == 0);
+					} while (ds_readws(ACTION) == 0 && ds_readws(MOUSE1_EVENT2) == 0);
 
-					ds_writew(0xc3d5, 0);
+					ds_writew(MOUSE1_EVENT2, 0);
 				}
 
 				set_var_to_zero();
@@ -183,7 +183,7 @@ signed short enter_location_daspota(void)
 	if ((b_index = get_border_index(cast_u16(ds_readb((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(0x2d9f, 0);
-		ds_writebs(LOCATION, 10);
+		ds_writebs(LOCATION, LOCATION_CITIZEN);
 		ds_writew(CITYINDEX, 19);
 		return 1;
 	}
@@ -295,7 +295,7 @@ void TLK_eremit(signed short state)
 	Bit8u *hero;
 
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x3615) != 0 ? 1 : 2);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(HERMIT_VISITED) != 0 ? 1 : 2);
 	} else if (state == 6) {
 
 		hero = get_hero(0);
@@ -310,9 +310,9 @@ void TLK_eremit(signed short state)
 
 	} else if (state == 10) {
 		/* group learns about two places to rest */
-		ds_writeb(0x3e09, ds_writeb(0x3e08, 1));
+		ds_writeb(0x3e09, ds_writeb(HERMIT_HERBPLACE_FLAG, 1));
 	} else if (state == 13) {
-		ds_writeb(0x3615, 1);
+		ds_writeb(HERMIT_VISITED, 1);
 	} else if (state == 14) {
 		timewarp(MINUTES(30));
 	}
@@ -320,8 +320,8 @@ void TLK_eremit(signed short state)
 
 void do_town(void)
 {
-	if (ds_readbs(0x2ca7) != ds_readbs(CURRENT_TOWN) ||
-		ds_readws(0x2ccb) != 1)
+	if (ds_readbs(CITY_AREA_LOADED) != ds_readbs(CURRENT_TOWN) ||
+		ds_readws(AREA_PREPARED) != 1)
 	{
 		seg028_0555(1);
 
@@ -379,7 +379,7 @@ void seg066_0692(void)
 	seg066_0bad();
 
 	/* TODO: these are write only variables */
-	ds_writew(0xe410, ds_writew(0xe40e, 0));
+	ds_writew(ALWAYS_ZERO2, ds_writew(ALWAYS_ZERO1, 0));
 
 	city_water_and_grass();
 	city_building_textures();
@@ -843,9 +843,9 @@ void seg066_10c8(void)
 {
 	set_var_to_zero();
 	seg066_0692();
-	ds_writews(0xe40c, ds_readws(X_TARGET));
-	ds_writews(0xe40a, ds_readws(Y_TARGET));
-	ds_writews(0xe408, ds_readbs(DIRECTION));
+	ds_writews(CITY_REFRESH_X_TARGET, ds_readws(X_TARGET));
+	ds_writews(CITY_REFRESH_Y_TARGET, ds_readws(Y_TARGET));
+	ds_writews(CITY_REFRESH_DIRECTION, ds_readbs(DIRECTION));
 }
 
 signed short city_step(void)
@@ -872,10 +872,10 @@ signed short city_step(void)
 	if (ds_readws(REQUEST_REFRESH) != 0) {
 
 		draw_main_screen();
-		GUI_print_loc_line(get_dtp(0x0000));
+		GUI_print_loc_line(get_dtp(0x00));
 
 		ds_writew(REQUEST_REFRESH, ds_writews(0xd013, 0));
-		ds_writews(0xe40c, -1);
+		ds_writews(CITY_REFRESH_X_TARGET, -1);
 	}
 
 	if (ds_readw(0xd013) != 0 && ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
@@ -884,9 +884,9 @@ signed short city_step(void)
 	}
 
 	/* check if position or direction has changed */
-	if (ds_readbs(DIRECTION) != ds_readws(0xe408) ||
-		ds_readws(X_TARGET) != ds_readws(0xe40c) ||
-		ds_readws(Y_TARGET) != ds_readws(0xe40a))
+	if (ds_readbs(DIRECTION) != ds_readws(CITY_REFRESH_DIRECTION) ||
+		ds_readws(X_TARGET) != ds_readws(CITY_REFRESH_X_TARGET) ||
+		ds_readws(Y_TARGET) != ds_readws(CITY_REFRESH_Y_TARGET))
 	{
 		seg066_10c8();
 	}
@@ -903,7 +903,7 @@ signed short city_step(void)
 
 	handle_gui_input();
 
-	if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 		for (i = options = 0; i < 9; i++) {
 			if (ds_readbs(0xbd38 + i) != -1) {
@@ -952,13 +952,13 @@ signed short city_step(void)
 
 	} else if (ds_readws(ACTION) == 135) {
 
-		ds_writebs(LOCATION, 18);
+		ds_writebs(LOCATION, LOCATION_CITYCAMP);
 		ds_writeb(0xbd27, 1);
 		i = 1;
 
 	} else if (ds_readws(ACTION) == 136 && ds_readbs((0xbd38 + 7)) != -1) {
 
-		ds_writebs(LOCATION, 9);
+		ds_writebs(LOCATION, LOCATION_MARKET);
 		i = 1;
 
 	} else if (ds_readws(ACTION) == 75) {
@@ -992,7 +992,7 @@ signed short city_step(void)
 		}
 	}
 
-	if (ds_readb(CURRENT_TOWN) != 0 && ds_readbs(0x2ca7) != -1) {
+	if (ds_readb(CURRENT_TOWN) != 0 && ds_readbs(CITY_AREA_LOADED) != -1) {
 
 		if (!i) {
 			options = enter_location(ds_readbs(CURRENT_TOWN));
@@ -1074,9 +1074,9 @@ void seg066_14dd(signed short forward)
 		ds_writews(X_TARGET, 0);
 		no_way();
 
-	} else if (ds_readb(0xbd94) - 1 < ds_readws(X_TARGET)) {
+	} else if (ds_readb(DNG_MAP_SIZE) - 1 < ds_readws(X_TARGET)) {
 
-		ds_writews(X_TARGET, ds_readb(0xbd94) - 1);
+		ds_writews(X_TARGET, ds_readb(DNG_MAP_SIZE) - 1);
 		no_way();
 
 	}
@@ -1166,22 +1166,22 @@ void seg066_172b(void)
 {
 	signed short l_si;
 	signed short l_di;
-	Bit8u *ptr = p_datseg + 0xbd95;
+	Bit8u *ptr = p_datseg + DNG_MAP;
 
-	ds_writeb(0xe400, ds_writeb(0xe401, ds_writeb(0xe402, ds_writeb(0xe403, 0))));
+	ds_writeb(0xe400, ds_writeb((0xe400+1), ds_writeb((0xe400+2), ds_writeb((0xe400+3), 0))));
 
-	for (l_di = 0; ds_readb(0xbd94) * 16 > l_di; l_di++) {
+	for (l_di = 0; ds_readb(DNG_MAP_SIZE) * 16 > l_di; l_di++) {
 
 		l_si = get_border_index(host_readb(ptr + l_di));
 
 		if (l_si == 2) {
 			inc_ds_bs_post(0xe400);
 		} else if (l_si == 3) {
-			inc_ds_bs_post(0xe401);
+			inc_ds_bs_post((0xe400+1));
 		} else if ((l_si == 4) || (l_si == 1)) {
-			inc_ds_bs_post(0xe402);
+			inc_ds_bs_post((0xe400+2));
 		} else if (l_si == 5) {
-			inc_ds_bs_post(0xe403);
+			inc_ds_bs_post((0xe400+3));
 		}
 	}
 
@@ -1192,15 +1192,15 @@ void seg066_172b(void)
 		l_si = ds_readb(0xe400 + (l_di = 0));
 	}
 
-	if (ds_readb(0xe401) < l_si) {
+	if (ds_readb((0xe400+1)) < l_si) {
 		l_si = ds_readb(0xe400 + (l_di = 1));
 	}
 
-	if (ds_readb(0xe402) < l_si) {
+	if (ds_readb((0xe400+2)) < l_si) {
 		l_si = ds_readb(0xe400 + (l_di = 2));
 	}
 
-	if (ds_readb(0xe403) < l_si) {
+	if (ds_readb((0xe400+3)) < l_si) {
 		l_si = ds_readb(0xe400 + (l_di = 3));
 	}
 

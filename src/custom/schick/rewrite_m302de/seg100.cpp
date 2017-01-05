@@ -182,7 +182,7 @@ void spell_penetrizzel(void)
 	for (y = -2;  y <= 2; y++) {
 		for (x = -2;  x <= 2; x++) {
 			if ((ds_readws(Y_TARGET) + y >= 0) && (ds_readws(X_TARGET) + x >= 0)) {
-				if ((ds_readb(0xbd94) - 1 >= ds_readws(X_TARGET) + x) && (ds_readws(Y_TARGET) + y <= 15)) {
+				if ((ds_readb(DNG_MAP_SIZE) - 1 >= ds_readws(X_TARGET) + x) && (ds_readws(Y_TARGET) + y <= 15)) {
 					set_automap_tile(ds_readws(X_TARGET) + x, ds_readws(Y_TARGET) + y);
 				}
 			}
@@ -603,8 +603,8 @@ void spell_ignifaxius(void)
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
 			/* adjust rs_malus */
-			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x0877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2)) {
-				rs_malus = ds_readbs(0x0877 + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2) - host_readbs(p_armour + 7);
+			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2)) {
+				rs_malus = ds_readbs(ARMORS_TABLE + host_readbs(get_itemsdat(host_readws(p_armour)) + 4) * 2) - host_readbs(p_armour + 7);
 			}
 
 			/* add rs_malus to the armour */

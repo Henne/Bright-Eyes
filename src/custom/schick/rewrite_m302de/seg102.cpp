@@ -65,7 +65,7 @@ void MON_do_damage(signed short damage)
 
 			/* check if someone died */
 			if (hero_dead(get_spelltarget())) {
-				ds_writew(0xe3a6, 1);
+				ds_writew(DEFENDER_DEAD, 1);
 			}
 
 		} else {
@@ -83,7 +83,7 @@ void MON_do_damage(signed short damage)
 
 			/* check if someone died */
 			if (enemy_dead(get_spelltarget_e())) {
-				ds_writew(0xe3a6, 1);
+				ds_writew(DEFENDER_DEAD, 1);
 			}
 		}
 	}
@@ -171,9 +171,9 @@ signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, 
 
 	randval = dice_roll(3, 20, bonus);
 
-	attr_sum = host_readbs(monster + ENEMY_SHEET_MU + 2 * t1)
-		+ host_readbs(monster + ENEMY_SHEET_MU + 2 * t2)
-		+ host_readbs(monster + ENEMY_SHEET_MU + 2 * t3);
+	attr_sum = host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t1)
+		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t2)
+		+ host_readbs(monster + ENEMY_SHEET_ATTRIB + 2 * t3);
 
 	return attr_sum - randval + 1;
 }
@@ -233,9 +233,9 @@ signed short MON_cast_spell(RealPt monster, signed char bonus)
 			return -1;
 		}
 
-		ds_writew(0xe5b2, MON_test_skill(Real2Host(monster), l_si, bonus));
+		ds_writew(SPELLTEST_RESULT, MON_test_skill(Real2Host(monster), l_si, bonus));
 
-		if ((ds_readws(0xe5b2) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
+		if ((ds_readws(SPELLTEST_RESULT) <= 0) || (ds_readds(INGAME_TIMERS) > 0)) {
 
 			/* spell failed */
 			MON_sub_ae(Real2Host(monster), MON_get_spell_cost(l_si, 1));
@@ -578,9 +578,9 @@ void mspell_ignifaxius(void)
 		if ((host_readws(p_armour) != 0) && (rs_malus != 0)) {
 
 			/* adjust rs_malus */
-			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(0x0877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
+			if ((host_readbs(p_armour + 7) + rs_malus) > ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour)))))
 			{
-				rs_malus = ds_readbs(0x0877 + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
+				rs_malus = ds_readbs(ARMORS_TABLE + 2 * host_readbs(4 + get_itemsdat(host_readws(p_armour))))
 						- host_readbs(p_armour + 7);
 			}
 

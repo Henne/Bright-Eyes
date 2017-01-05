@@ -44,7 +44,7 @@ signed short DNG09_handler(void)
 	Bit8u *hero;
 	Bit8u *amap_ptr;
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
@@ -97,7 +97,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -133,7 +133,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -158,7 +158,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -186,7 +186,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 50, 2) > 0)
+				test_skill(hero, TA_GEFAHRENSINN, 2) > 0)
 			{
 				l3 = 1;
 			}
@@ -213,7 +213,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -244,7 +244,7 @@ signed short DNG09_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_attrib(hero, 4, 4) <= 0)
+				test_attrib(hero, ATTRIB_GE, 4) <= 0)
 			{
 				/* failed FF+4 test */
 				sub_hero_le(hero, dice_roll(2, 6, 4));
@@ -388,7 +388,7 @@ signed short DNG09_handler(void)
 		}
 
 		set_var_to_zero();
-		ds_writews(0x2ccb, -1);
+		ds_writews(AREA_PREPARED, -1);
 
 	} else if (target_pos == 0x1402 &&
 			(target_pos != ds_readws(0x330e) || ds_readbs(DIRECTION) != ds_readbs(0x2d7c)) &&
@@ -403,7 +403,7 @@ signed short DNG09_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)(((l3 = test_skill(hero, 48, 4)) > 0) ? get_dtp(0xd0) : get_dtp(0xd8)),
+				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 4)) > 0) ? get_dtp(0xd0) : get_dtp(0xd8)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
@@ -440,7 +440,7 @@ signed short DNG09_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)(((l3 = test_skill(hero, 48, 6)) > 0) ? get_dtp(0xd0) : get_dtp(0xd4)),
+				(char*)(((l3 = test_skill(hero, TA_SCHLOESSER, 6)) > 0) ? get_dtp(0xd0) : get_dtp(0xd4)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)),
@@ -463,7 +463,7 @@ signed short DNG09_handler(void)
 	} else if (target_pos == 0x70f && target_pos != ds_readws(0x330e))
 	{
 		leave_dungeon();
-		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 		ds_writews(X_TARGET, ds_readws(0x433a));
 		ds_writews(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -471,7 +471,7 @@ signed short DNG09_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xdc),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -644,7 +644,7 @@ void DNG09_chest4_x2(RealPt chest)
 		ds_writew((0xd325 + 4),
 		ds_writew((0xd325 + 6), 0x1a2b))));
 
-	do_fight(102);
+	do_fight(FIGHTS_F126_22);
 }
 
 #if !defined(__BORLANDC__)

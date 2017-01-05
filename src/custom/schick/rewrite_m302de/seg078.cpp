@@ -48,7 +48,7 @@ signed short DNG02_handler(void)
 			+ (ds_readws(X_TARGET) << 8)
 			+ ds_readws(Y_TARGET);
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 
 	if ((target_pos == 0x102 || target_pos == 0x201))
 	{
@@ -61,7 +61,7 @@ signed short DNG02_handler(void)
 				ds_writew((0xd325 + 4),
 				ds_writew((0xd325 + 6), 0x206))));
 
-			do_fight(56);
+			do_fight(FIGHTS_F046_01);
 		}
 
 	} else if (target_pos == 0x306 && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
@@ -97,7 +97,7 @@ signed short DNG02_handler(void)
 			while (host_readws(hero + HERO_LE) > 10 && !flag)
 			{
 				/* KK+4 */
-				if (test_attrib(hero, 6, 4) <= 0)
+				if (test_attrib(hero, ATTRIB_KK, 4) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x28),
@@ -207,7 +207,7 @@ signed short DNG02_handler(void)
 					!hero_dummy3(hero))
 				{
 					mod_slot = get_free_mod_slot();
-					set_mod_slot(mod_slot, HOURS(5), hero + HERO_MU, -3, (signed char)i);
+					set_mod_slot(mod_slot, HOURS(5), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -3, (signed char)i);
 					{
 						hero_dummy3_set(hero, (mod_slot = 1));
 					}
@@ -408,9 +408,9 @@ signed short DNG02_handler(void)
 			ds_writew((0xd325 + 4),
 			ds_writew((0xd325 + 6), 0xc0b))));
 
-		if (!do_fight(73))
+		if (!do_fight(FIGHTS_F046_31))
 		{
-			ds_writeb(0x35f3, 1);
+			ds_writeb(ALWAYS_ONE2, 1);
 
 			add_hero_ap_all(30);
 		}
@@ -431,7 +431,7 @@ signed short DNG02_handler(void)
 		/* Original-Bug: this should be the leader, not hero nr 0 */
 		hero = get_hero(0);
 
-		if (ds_readb(DNG02_SECRET_DOOR1) != 0 || test_skill(hero, 51, 6) > 0)
+		if (ds_readb(DNG02_SECRET_DOOR1) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 6) > 0)
 		{
 			ds_writeb(DNG02_SECRET_DOOR1, 1);
 
@@ -440,7 +440,7 @@ signed short DNG02_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-				(char*)((i = test_skill(hero, 48, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
+				(char*)((i = test_skill(hero, TA_SCHLOESSER, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readfp(DTP2)),
@@ -466,7 +466,7 @@ signed short DNG02_handler(void)
 		/* Original-Bug: this should be the leader, not hero nr 0 */
 		hero = get_hero(0);
 
-		if (ds_readb(DNG02_SECRET_DOOR2) != 0 || test_skill(hero, 51, 2) > 0)
+		if (ds_readb(DNG02_SECRET_DOOR2) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 2) > 0)
 		{
 			ds_writeb(DNG02_SECRET_DOOR2, 1);
 
@@ -475,7 +475,7 @@ signed short DNG02_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-				(char*)((i = test_skill(hero, 48, 2)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
+				(char*)((i = test_skill(hero, TA_SCHLOESSER, 2)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readfp(DTP2)),
@@ -500,7 +500,7 @@ signed short DNG02_handler(void)
 	{
 		hero = Real2Host(get_first_hero_available_in_group());
 
-		if (ds_readb(DNG02_SECRET_DOOR3) != 0 || test_skill(hero, 51, 5) > 0)
+		if (ds_readb(DNG02_SECRET_DOOR3) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
 		{
 			ds_writeb(DNG02_SECRET_DOOR3, 1);
 
@@ -509,7 +509,7 @@ signed short DNG02_handler(void)
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
-				(char*)((i = test_skill(hero, 48, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
+				(char*)((i = test_skill(hero, TA_SCHLOESSER, 4)) > 0 ? get_dtp(0x9c) : get_dtp(0x98)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readfp(DTP2)),
@@ -542,7 +542,7 @@ signed short DNG02_handler(void)
 	} else if (target_pos == 0x100 && target_pos != ds_readws(0x330e))
 	{
 		leave_dungeon();
-		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(0x4338));
+		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 		ds_writews(X_TARGET, ds_readws(0x433a));
 		ds_writews(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -550,7 +550,7 @@ signed short DNG02_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xb0),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 

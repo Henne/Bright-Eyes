@@ -137,7 +137,7 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
 							if (!can_item_at_pos(item2, pos1)) {
-								if (is_in_word_array(item2, (signed short*)(p_datseg + 0x029e)))
+								if (is_in_word_array(item2, (signed short*)(p_datseg + ITEMS_PLURALWORDS)))
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
 										(char*)get_ltx(0x378),
 										(char*)Real2Host(GUI_names_grammar(0x4000, item2, 0)),
@@ -223,7 +223,7 @@ void print_item_description(Bit8u *hero, signed short pos)
 
 		if ((((signed short)host_readw(item_p + 2) > 1) &&
 			item_stackable(get_itemsdat(host_readw(item_p)))) ||
-			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + 0x029e))) {
+			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
 			/* more than one item or special */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_city(0x120),
@@ -343,7 +343,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		} else if (!can_item_at_pos(item1, pos2)) {
 
-			if (is_in_word_array(item1, (signed short*)(p_datseg + 0x029e))) {
+			if (is_in_word_array(item1, (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x378),
@@ -395,7 +395,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		} else if (!can_item_at_pos(item2, pos1)) {
 
-			if (is_in_word_array(item2, (signed short*)(p_datseg + 0x029e))) {
+			if (is_in_word_array(item2, (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0x378),
@@ -446,7 +446,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					l_di = 99 - host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM);
 				}
 
-				while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+				while ((host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
 					l_di--;
 				}
 
@@ -473,7 +473,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				host_readws(hero2 + (HERO_ITEM_HEAD+2) + pos2 * SIZEOF_KS_ITEM) * host_readw(item2_desc + 5) :
 				host_readws(item2_desc + 5);
 
-			if (host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
+			if (host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_ltx(0xc2c),
@@ -565,7 +565,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			l_di = host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM);
 		}
 
-		while ((host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
+		while ((host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5) * l_di) && l_di > 0) {
 			l_di--;
 		}
 
@@ -587,7 +587,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 				(char*)hero2 + HERO_NAME2);
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
-	} else if (host_readbs(hero2 + HERO_KK) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5)) {
+	} else if (host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5)) {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_ltx(0xc2c),
 			(char*)hero2 + HERO_NAME2);
@@ -768,41 +768,41 @@ void equip_belt_ani(void)
 
 	set_palette(p_pal, 0x80, 0x20);
 
-	do_border((RealPt)ds_readd(0xd2ff), 209, 79, 215, 89, 9);
+	do_border((RealPt)ds_readd(FRAMEBUF_PTR), 209, 79, 215, 89, 9);
 
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 209, 79, 215, 89, 0);
-
-	wait_for_vsync();
-	wait_for_vsync();
-	wait_for_vsync();
-
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 189, 69, 235, 99, 0);
-
-	do_border((RealPt)ds_readd(0xd2ff), 189, 69, 235, 99, 9);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 209, 79, 215, 89, 0);
 
 	wait_for_vsync();
 	wait_for_vsync();
 	wait_for_vsync();
 
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 169, 59, 255, 109, 0);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 189, 69, 235, 99, 0);
 
-	do_border((RealPt)ds_readd(0xd2ff), 169, 59, 255, 109, 9);
-
-	wait_for_vsync();
-	wait_for_vsync();
-	wait_for_vsync();
-
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 164, 54, 260, 114, 0);
-
-	do_border((RealPt)ds_readd(0xd2ff), 164, 54, 260, 114, 9);
+	do_border((RealPt)ds_readd(FRAMEBUF_PTR), 189, 69, 235, 99, 9);
 
 	wait_for_vsync();
 	wait_for_vsync();
 	wait_for_vsync();
 
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 159, 49, 263, 117, 0);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 169, 59, 255, 109, 0);
 
-	do_border((RealPt)ds_readd(0xd2ff), 159, 49, 263, 117, 9);
+	do_border((RealPt)ds_readd(FRAMEBUF_PTR), 169, 59, 255, 109, 9);
+
+	wait_for_vsync();
+	wait_for_vsync();
+	wait_for_vsync();
+
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 164, 54, 260, 114, 0);
+
+	do_border((RealPt)ds_readd(FRAMEBUF_PTR), 164, 54, 260, 114, 9);
+
+	wait_for_vsync();
+	wait_for_vsync();
+	wait_for_vsync();
+
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 159, 49, 263, 117, 0);
+
+	do_border((RealPt)ds_readd(FRAMEBUF_PTR), 159, 49, 263, 117, 9);
 
 	for (i = 0; i < 12; i++) {
 
@@ -837,7 +837,7 @@ void equip_belt_ani(void)
 		refresh_screen_size();
 	}
 
-	ds_writew(CURRENT_ANI, ds_writebs(0x2ca6, ds_writebs(0x2ca7, -1)));
+	ds_writew(CURRENT_ANI, ds_writebs(DNG_AREA_LOADED, ds_writebs(CITY_AREA_LOADED, -1)));
 }
 
 /**

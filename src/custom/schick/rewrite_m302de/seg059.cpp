@@ -86,17 +86,17 @@ void do_tavern(void)
 
 			GUI_output(get_ltx(0x760));
 			done = 1;
-			ds_writew(0xc3d3, ds_writew(ACTION, 0));
+			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
 		if (ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
 			GUI_output(get_ltx(0x24));
 			done = 1;
-			ds_writew(0xc3d3, ds_writew(ACTION, 0));
+			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
-		if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			answer = GUI_radio(get_ltx(0x754), ds_readw(COMBO_MODE) == 0 ? 4 : 5,
 						get_ltx(0x55c),
@@ -127,7 +127,7 @@ void do_tavern(void)
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
 
-			if (ds_readb(0x360f) != 0) {
+			if (ds_readb(TLK_TAV_FOLLOWINFORMER) != 0) {
 
 				tavern_follow_informer();
 			}
@@ -256,16 +256,16 @@ void enter_ghostship(void)
 	signed short bak2;
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 	ds_writews(TEXTBOX_WIDTH, 7);
-	ds_writews(0x2ca2, ds_writews(0x2ca4, 0));
+	ds_writews(BASEPOS_X, ds_writews(BASEPOS_Y, 0));
 
 	load_ani(17);
 	draw_main_screen();
 	init_ani(1);
 
-	load_tx(ARCHIVE_FILE_SHIP_DTX);
+	load_tx(ARCHIVE_FILE_DNGS_DTX + 1);
 
 	GUI_output(get_dtp(0x48));
 	GUI_output(get_dtp(0x4c));
@@ -284,8 +284,8 @@ void enter_ghostship(void)
 
 	set_var_to_zero();
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
-	ds_writews(0x2ca2, bak1);
-	ds_writews(0x2ca4, bak2);
+	ds_writews(BASEPOS_X, bak1);
+	ds_writews(BASEPOS_Y, bak2);
 }
 
 #if !defined(__BORLANDC__)

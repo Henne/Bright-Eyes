@@ -38,18 +38,18 @@ void prepare_dungeon_area(void)
 	signed short l_si;
 	signed short handle;
 
-	index = ds_readbs(DUNGEON_INDEX) + 0x10f;
+	index = ds_readbs(DUNGEON_INDEX) + ARCHIVE_FILE_DNGS_DTX;
 
-	if (ds_readbs(0x2ca6) != ds_readbs(DUNGEON_INDEX)) {
+	if (ds_readbs(DNG_AREA_LOADED) != ds_readbs(DUNGEON_INDEX)) {
 
 		load_area_description(1);
-		ds_writeb(0x2ca7, -1);
+		ds_writeb(CITY_AREA_LOADED, -1);
 		load_dungeon_ddt();
 	}
 
 	load_tx(index);
 
-	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 1)) {
+	if ((ds_readws(AREA_PREPARED) == -1) || (ds_readws(AREA_PREPARED) == 1)) {
 
 		set_var_to_zero();
 		ds_writew(CURRENT_ANI, -1);
@@ -64,7 +64,7 @@ void prepare_dungeon_area(void)
 				(ds_readbs(DUNGEON_INDEX) == 14) ||
 				(ds_readbs(DUNGEON_INDEX) == 15)) ? ARCHIVE_FILE_MARBLESL_NVF : ARCHIVE_FILE_STONESL_NVF);
 
-		ds_writeb(0x3616, (l_si == ARCHIVE_FILE_SHIPSL_NVF) ? 0 : ((l_si == ARCHIVE_FILE_MARBLESL_NVF) ? 1 : 2));
+		ds_writeb(DUNGEON_TYPE, (l_si == ARCHIVE_FILE_SHIPSL_NVF) ? 0 : ((l_si == ARCHIVE_FILE_MARBLESL_NVF) ? 1 : 2));
 
 		handle = load_archive_file(l_si);
 		v1 = v2 = 0;
@@ -87,13 +87,13 @@ void prepare_dungeon_area(void)
 
 		bc_close(handle);
 
-		ds_writed(0xe404, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR3), v2), -0xc0));
+		ds_writed(BUFFER11_PTR, (Bit32u)F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR3), v2), -0xc0));
 
-		ds_writew(0x2ccb, !ds_readbs(DUNGEON_INDEX));
+		ds_writew(AREA_PREPARED, !ds_readbs(DUNGEON_INDEX));
 	}
 
-	ds_writeb(0x2ca6, ds_readbs(DUNGEON_INDEX));
-	ds_writeb(0x2ca7, -1);
+	ds_writeb(DNG_AREA_LOADED, ds_readbs(DUNGEON_INDEX));
+	ds_writeb(CITY_AREA_LOADED, -1);
 	set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
 }
 
@@ -104,7 +104,7 @@ void load_dungeon_ddt(void)
 	signed short high;
 	signed short handle;
 
-	index = ds_readbs(DUNGEON_INDEX) + 0x100;
+	index = ds_readbs(DUNGEON_INDEX) + ARCHIVE_FILE_DNGS_DDT;
 	handle = load_archive_file(index);
 	read_archive_file(handle, (Bit8u*)&low, 2);
 	read_archive_file(handle, (Bit8u*)&high, 2);
@@ -115,9 +115,9 @@ void load_dungeon_ddt(void)
 	high = host_readws((Bit8u*)&high);
 #endif
 
-	read_archive_file(handle, Real2Host(ds_readd(0xe494)), low);
-	read_archive_file(handle, Real2Host(ds_readd(0xe49c)), high - low);
-	read_archive_file(handle, Real2Host(ds_readd(0xe498)), 0x7d0);
+	read_archive_file(handle, Real2Host(ds_readd(DUNGEON_FIGHTS_BUF)), low);
+	read_archive_file(handle, Real2Host(ds_readd(DUNGEON_DOORS_BUF)), high - low);
+	read_archive_file(handle, Real2Host(ds_readd(DUNGEON_STAIRS_BUF)), 0x7d0);
 
 	bc_close(handle);
 
@@ -131,14 +131,14 @@ void seg028_0224(void)
 
 	l1 = ds_readbs(CURRENT_TOWN) + 77;
 
-	if (ds_readbs(0x2ca7) != ds_readbs(CURRENT_TOWN)) {
+	if (ds_readbs(CITY_AREA_LOADED) != ds_readbs(CURRENT_TOWN)) {
 		load_area_description(1);
-		ds_writeb(0x2ca6, -1);
+		ds_writeb(DNG_AREA_LOADED, -1);
 	}
 
 	load_tx(l1);
 
-	if ((ds_readws(0x2ccb) == -1) || (ds_readws(0x2ccb) == 0)) {
+	if ((ds_readws(AREA_PREPARED) == -1) || (ds_readws(AREA_PREPARED) == 0)) {
 
 		set_var_to_zero();
 
@@ -146,7 +146,7 @@ void seg028_0224(void)
 
 		seg066_172b();
 
-		ds_writed(0xe3fc, ds_readd(BUFFER9_PTR3));
+		ds_writed(BUFFER9_PTR4, ds_readd(BUFFER9_PTR3));
 
 		for (l_si = 0; l_si < 4; l_si++) {
 
@@ -168,16 +168,16 @@ void seg028_0224(void)
 			}
 		}
 
-		ds_writed(0xe41c, (Bit32u)arr[0]);
-		ds_writed(0xe420, (Bit32u)arr[1]);
-		ds_writed(0xe424, (Bit32u)arr[2]);
-		ds_writed(0xe428, (Bit32u)arr[3]);
+		ds_writed(TEX_HOUSE1, (Bit32u)arr[0]);
+		ds_writed(TEX_HOUSE2, (Bit32u)arr[1]);
+		ds_writed(TEX_HOUSE3, (Bit32u)arr[2]);
+		ds_writed(TEX_HOUSE4, (Bit32u)arr[3]);
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
 			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 
-			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(0xe404)), 0xc0);
+			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(BUFFER11_PTR)), 0xc0);
 		} else {
 			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 		}
@@ -186,14 +186,14 @@ void seg028_0224(void)
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
-			memcpy(p_datseg + 0x3e53, Real2Host(ds_readd(0xe404)), 0x60);
+			memcpy(p_datseg + 0x3e53, Real2Host(ds_readd(BUFFER11_PTR)), 0x60);
 		}
 
-		ds_writew(0x2ccb, 1);
+		ds_writew(AREA_PREPARED, 1);
 	}
 
-	ds_writeb(0x2ca7, ds_readbs(CURRENT_TOWN));
-	ds_writeb(0x2ca6, -1);
+	ds_writeb(CITY_AREA_LOADED, ds_readbs(CURRENT_TOWN));
+	ds_writeb(DNG_AREA_LOADED, -1);
 
 	set_automap_tiles(ds_readw(X_TARGET), ds_readw(Y_TARGET));
 }
@@ -205,19 +205,19 @@ RealPt seg028_0444(signed short index, signed short firstcol, signed short color
 	Bit32s v2;
 	RealPt ptr;
 
-	ptr = (RealPt)ds_readd(0xe3fc);
+	ptr = (RealPt)ds_readd(BUFFER9_PTR4);
 
 	fd = load_archive_file(index);
 
 	v1 = v2 = 0L;
 
 	do {
-		v1 = read_archive_file(fd, Real2Host(ds_readd(0xe3fc)), 65000);
+		v1 = read_archive_file(fd, Real2Host(ds_readd(BUFFER9_PTR4)), 65000);
 
 #if !defined(__BORLANDC__)
-		F_PADA(RealMake(datseg, 0xe3fc), v1);
+		F_PADA(RealMake(datseg, BUFFER9_PTR4), v1);
 #else
-		*(HugePt*)(p_datseg + 0xe3fc) += v1;
+		*(HugePt*)(p_datseg + BUFFER9_PTR4) += v1;
 #endif
 
 		v2 += v1;
@@ -228,13 +228,13 @@ RealPt seg028_0444(signed short index, signed short firstcol, signed short color
 
 	if (colors) {
 
-		ds_writed(0xe404, (Bit32u)(ptr + v2 - 3 * colors));
+		ds_writed(BUFFER11_PTR, (Bit32u)(ptr + v2 - 3 * colors));
 
 		if ((ref != 0) && (!ds_readb(0x4475))) {
 
 			wait_for_vsync();
 
-			set_palette(Real2Host(ds_readd(0xe404)), firstcol, colors);
+			set_palette(Real2Host(ds_readd(BUFFER11_PTR)), firstcol, colors);
 		}
 	}
 
@@ -283,14 +283,14 @@ void load_area_description(signed short type)
 		if (type != 2) {
 			fd = load_archive_file(ds_readw(0x5ebc) + 0x8000);
 
-			if ((ds_readw(0x5ebe) == 0) && (ds_readb(0xbd94) == 0x20)) {
-				bc__write(fd, RealMake(datseg, 0xbd95), 0x200);
+			if ((ds_readw(0x5ebe) == 0) && (ds_readb(DNG_MAP_SIZE) == 0x20)) {
+				bc__write(fd, RealMake(datseg, DNG_MAP), 0x200);
 			} else {
 				bc_lseek(fd, ds_readws(0x5eba) * 0x140, 0);
-				bc__write(fd, RealMake(datseg, 0xbd95), 0x100);
+				bc__write(fd, RealMake(datseg, DNG_MAP), 0x100);
 			}
 			/* write automap tiles */
-			bc__write(fd, RealMake(datseg, 0xe442), 64);
+			bc__write(fd, RealMake(datseg, AUTOMAP_BUF), 64);
 			/* write something unknown */
 			bc__write(fd, RealMake(datseg, 0xc025),
 				ds_readw(0x5eb8));
@@ -327,9 +327,9 @@ void load_area_description(signed short type)
 				|| ds_readb(CURRENT_TOWN) == 18))
 		{
 			/* path taken in THORWAL PREM and PHEXCAER */
-			bc__read(fd, p_datseg + 0xbd95, 0x200);
+			bc__read(fd, p_datseg + DNG_MAP, 0x200);
 			/* read automap tiles */
-			bc__read(fd, p_datseg + 0xe442, 0x40);
+			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
 
 			/* TODO: is that neccessary ? */
 			memset(p_datseg + 0xc025, -1, 900);
@@ -337,14 +337,14 @@ void load_area_description(signed short type)
 			ds_writew(0x5eb8,
 				bc__read(fd, p_datseg + 0xc025, 1000));
 
-			ds_writeb(0xbd94, 0x20);
+			ds_writeb(DNG_MAP_SIZE, 0x20);
 		} else {
 			/* Seek to Dungeon Level * 320 */
 			bc_lseek(fd, ds_readbs(DUNGEON_LEVEL) * 320, 0);
-			bc__read(fd, p_datseg + 0xbd95, 0x100);
+			bc__read(fd, p_datseg + DNG_MAP, 0x100);
 
 			/* read automap tiles */
-			bc__read(fd, p_datseg + 0xe442, 0x40);
+			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
 			ds_writew(0x5eb8, 0);
 
 			if (!ds_readbs(DUNGEON_INDEX)) {
@@ -354,7 +354,7 @@ void load_area_description(signed short type)
 					bc__read(fd, p_datseg + 0xc025, 1000));
 			}
 
-			ds_writeb(0xbd94, 0x10);
+			ds_writeb(DNG_MAP_SIZE, 0x10);
 		}
 		bc_close(fd);
 	}
@@ -432,7 +432,7 @@ void load_map(void)
 	wallclock_update_bak = ds_readw(WALLCLOCK_UPDATE);
 	ds_writew(WALLCLOCK_UPDATE, 0);
 
-	ds_writew(0x2ccb, 0xffff);
+	ds_writew(AREA_PREPARED, 0xffff);
 	/* set current_ani to -1 */
 	ds_writew(CURRENT_ANI, 0xffff);
 
@@ -597,7 +597,7 @@ void load_informer_tlk(signed short index)
 #endif
 
 	/* read the partner structures */
-	read_archive_file(fd, ptr = (p_datseg + INFORMER_ARRAY), partners * 0x26);
+	read_archive_file(fd, ptr = (p_datseg + DIALOG_PARTNERS), partners * 0x26);
 
 	/* read the dialog layouts */
 	read_archive_file(fd, p_datseg + DIALOG_STATES, (Bit16u)(off - partners * 0x26));
@@ -640,7 +640,7 @@ void load_tlk(signed short index)
 #endif
 
 	/* read the partner structures */
-	read_archive_file(fd, ptr = p_datseg + INFORMER_ARRAY, partners * 0x26);
+	read_archive_file(fd, ptr = p_datseg + DIALOG_PARTNERS, partners * 0x26);
 
 	/* read the dialog layouts */
 	read_archive_file(fd,

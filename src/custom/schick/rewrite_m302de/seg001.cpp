@@ -326,13 +326,13 @@ void seg001_02c4(void)
 	if (CD_get_tod() - (Bit32s)ds_readd(CD_AUDIO_TOD) < (Bit32s)ds_readd(CD_AUDIO_POS))
 		return;
 
-	if (ds_readw(0x009b) == 1)
+	if (ds_readw(CD_AUDIO_REPEAT) == 1)
 	{
 
 		CD_audio_stop_hsg();
 		CD_audio_stop_hsg();
-		seg001_00c1(ds_readw(0xbc40));
-		ds_writew(0x009b, 1);
+		seg001_00c1(ds_readw(CD_AUDIO_TRACK));
+		ds_writew(CD_AUDIO_REPEAT, 1);
 	}
 }
 
@@ -360,7 +360,7 @@ void CD_audio_stop_hsg(void)
 	CD_driver_request(RealMake(reloc_game + CDA_DATASEG, 0));
 #endif
 
-	ds_writew(0x009b, 0);
+	ds_writew(CD_AUDIO_REPEAT, 0);
 }
 
 /**
@@ -395,9 +395,9 @@ void CD_audio_pause(void)
 
 	/* set CD pause */
 	ds_writew(CD_AUDIO_PAUSED, 1);
-	ds_writed(CD_AUDIO_TOD_BAK, CD_get_tod());
+	ds_writed(CD_AUDIO_PAUSE_TOD, CD_get_tod());
 	/* save current position */
-	ds_writed(CD_AUDIO_POS_BAK, ds_readd(CD_AUDIO_POS));
+	ds_writed(CD_AUDIO_PAUSE_POS, ds_readd(CD_AUDIO_POS));
 	/* set current position to maximum singned int */
 	ds_writed(CD_AUDIO_POS, 0x7fffffff);
 
@@ -424,8 +424,8 @@ void CD_audio_play(void)
 
 	/* reset CD pause */
 	ds_writew(CD_AUDIO_PAUSED, 0);
-	ds_writed(CD_AUDIO_POS, ds_readd(CD_AUDIO_POS_BAK));
-	add_ds_ds(CD_AUDIO_TOD, (CD_get_tod() - ds_readds(CD_AUDIO_TOD_BAK)));
+	ds_writed(CD_AUDIO_POS, ds_readd(CD_AUDIO_PAUSE_POS));
+	add_ds_ds(CD_AUDIO_TOD, (CD_get_tod() - ds_readds(CD_AUDIO_PAUSE_TOD)));
 	host_writew(Real2Host(RealMake(reloc_game + CDA_DATASEG, 0xc7)), 0);
 #if defined(__BORLANDC__)
 	CD_driver_request((driver_request*)RealMake(reloc_game + CDA_DATASEG, 0xc4));
@@ -482,7 +482,7 @@ void CD_set_track(signed short index)
 {
 	signed short i;
 #if defined(__BORLANDC__)
-	struct dummy15 tracks = *(struct dummy15*)(p_datseg + 0x00a5);
+	struct dummy15 tracks = *(struct dummy15*)(p_datseg + CD_AUDIO_TRACKLIST);
 #else
 	struct dummy15 tracks;
 	tracks.a[0] = 0x7fff;
@@ -507,18 +507,18 @@ void CD_set_track(signed short index)
 		if (tracks.a[i] == index) break;
 	}
 
-	ds_writew(0xbc40, i + 1);
+	ds_writew(CD_AUDIO_TRACK, i + 1);
 
-	if (ds_readw(0x00a3) == ds_readw(0xbc40))
+	if (ds_readw(CD_AUDIO_TRACK_BAK) == ds_readw(CD_AUDIO_TRACK))
 	{
 	} else {
-		ds_writew(0x00a3, ds_readw(0xbc40));
+		ds_writew(CD_AUDIO_TRACK_BAK, ds_readw(CD_AUDIO_TRACK));
 		CD_audio_stop_hsg();
 		CD_audio_stop_hsg();
 
-		seg001_00c1(ds_readw(0xbc40));
+		seg001_00c1(ds_readw(CD_AUDIO_TRACK));
 
-		ds_writew(0x009b, 1);
+		ds_writew(CD_AUDIO_REPEAT, 1);
 
 		if (ds_readw(CD_AUDIO_PAUSED) != 0)
 		{
@@ -536,7 +536,7 @@ signed short CD_read_exe(char *path)
 	unsigned short nread;
 
 	/* skip read check */
-	if (ds_readd(0x00c3) == 0x682772e4) return 1;
+	if (ds_readd(CD_CHECK_SKIPMAGIC) == 0x682772e4) return 1;
 
 #if defined(__BORLANDC__)
 	if (bc__dos_open(path, 1, (int*)&fd)) return -1;
@@ -570,14 +570,14 @@ void CD_insert_msg(void)
 	signed short answer;
 	char str[160];
 
-	sprintf(str, (char*)p_datseg + 0x00c9, ds_readws(CD_DRIVE_NR) + 'A');
+	sprintf(str, (char*)p_datseg + STR_INSERT_CD, ds_readws(CD_DRIVE_NR) + 'A');
 
 	answer = -2;
 	while (answer == -2)
 	{
 		answer = GUI_radio((Bit8u*)str, 2,
-					(char*)p_datseg + 0x157,
-					(char*)p_datseg + 0x163);
+					(char*)p_datseg + STR_REPEAT,
+					(char*)p_datseg + STR_QUIT);
 	}
 
 	if (answer == 2)
@@ -591,13 +591,13 @@ void CD_insert_msg(void)
 /* Borlandified and identical */
 signed short CD_harderr_handler(void)
 {
-	if (ds_readw(0x00c7) == 0)
+	if (ds_readw(CD_CHECK_ERR_COUNTDOWN) == 0)
 	{
 		CD_insert_msg();
-		ds_writew(0x00c7, 5);
+		ds_writew(CD_CHECK_ERR_COUNTDOWN, 5);
 	}
 
-	dec_ds_ws_post(0x00c7);
+	dec_ds_ws_post(CD_CHECK_ERR_COUNTDOWN);
 
 	bc_hardresume(1);
 
@@ -615,7 +615,7 @@ void CD_check(void)
 	bc_harderr(RealMake(reloc_game + 0x4ac, 0x65a));
 #endif
 
-	strcpy(text, (char*)p_datseg + 0x16b);
+	strcpy(text, (char*)p_datseg + STR_CD_EXEPATH);
 
 	text[0] = ds_readw(CD_DRIVE_NR) + 'A';
 
@@ -632,12 +632,12 @@ signed short CD_init(void)
 
 	if (!CD_set_drive_nr())
 	{
-		GUI_output(p_datseg + 0x017e);
+		GUI_output(p_datseg + STR_CD_MISSING);
 
 		return 0;
 	}
 
-	sprintf(str, (char*)p_datseg + 0x024a, ds_readws(CD_DRIVE_NR) + 'A');
+	sprintf(str, (char*)p_datseg + STR_CD_INIT, ds_readws(CD_DRIVE_NR) + 'A');
 
 	GUI_output((Bit8u*)str);
 

@@ -44,7 +44,7 @@ void tevent_037(void)
 
 	if (!ds_readb(0x3dba))
 	{
-		ds_writeb(0xe5d2, 1);
+		ds_writeb(EVENT_ANI_BUSY, 1);
 
 		load_ani(28);
 		draw_main_screen();
@@ -242,7 +242,7 @@ void tevent_037(void)
 
 		set_var_to_zero();
 
-		ds_writeb(0xe5d2, 0);
+		ds_writeb(EVENT_ANI_BUSY, 0);
 		ds_writew(REQUEST_REFRESH, 1);
 	}
 }
@@ -297,7 +297,7 @@ void tevent_078(void)
 
 			ds_writews(WILDCAMP_SLEEP_QUALITY, -6);
 
-			ds_writeb(LOCATION, 6);
+			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
 			ds_writeb(LOCATION, 0);
 
@@ -315,7 +315,7 @@ void tevent_078(void)
 
 			do {
 				/* ORIENTATION + 8 */
-				if (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 8) > 0)
+				if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 8) > 0)
 				{
 					/* success, you found a way */
 					timewarp(HOURS(5));
@@ -335,7 +335,7 @@ void tevent_078(void)
 
 					ds_writews(WILDCAMP_SLEEP_QUALITY, -6);
 					/* make a camp */
-					ds_writeb(LOCATION, 6);
+					ds_writeb(LOCATION, LOCATION_WILDCAMP);
 					do_location();
 					ds_writeb(LOCATION, 0);
 
@@ -371,7 +371,7 @@ void tevent_078(void)
 
 void tevent_079(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 4) > 0 && !ds_readb(0x3de3)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 4) > 0 && !ds_readb(0x3de3)) ||
 		ds_readb(0x3de3) != 0)
 	{
 		TRV_found_camp_place(0);
@@ -383,7 +383,7 @@ void tevent_051(void)
 {
 	signed short answer;
 
-	if (test_skill(Real2Host(get_first_hero_available_in_group()), 26, 4) > 0 && !ds_readb(0x3dc5))
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 4) > 0 && !ds_readb(0x3dc5))
 	{
 		ds_writeb(0x3dc5, 1);
 
@@ -477,7 +477,7 @@ void tevent_052(void)
 
 void tevent_120(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), 31, 3) > 0 && !ds_readb(0x3dff)) ||
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(0x3dff)) ||
 		ds_readb(0x3dff) != 0)
 	{
 		ds_writeb(0x3dff, 1);
@@ -528,7 +528,7 @@ void tevent_124(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				(skill_ret = test_skill(hero, 10, -2)) <= 0)
+				(skill_ret = test_skill(hero, TA_KLETTERN, -2)) <= 0)
 			{
 				/* the climb test failed */
 				counter++;
@@ -608,11 +608,11 @@ void tevent_145(void)
 
 		if (answer == 1)
 		{
-			ds_writew(0x434a, 7);
+			ds_writew(TRV_DESTINATION, 7);
 			ds_writeb(CURRENT_TOWN, 8);
 
 		} else {
-			ds_writew(0x434a, 8);
+			ds_writew(TRV_DESTINATION, 8);
 			ds_writeb(CURRENT_TOWN, 7);
 		}
 
@@ -625,18 +625,18 @@ void tevent_145(void)
 
 		if (answer == 1)
 		{
-			ds_writew(0x434a, 4);
+			ds_writew(TRV_DESTINATION, 4);
 			ds_writeb(CURRENT_TOWN, 5);
 
 		} else {
-			ds_writew(0x434a, 5);
+			ds_writew(TRV_DESTINATION, 5);
 			ds_writeb(CURRENT_TOWN, 4);
 		}
 	}
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
 		(char*)get_city(0xb4),
-		(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+		(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 }

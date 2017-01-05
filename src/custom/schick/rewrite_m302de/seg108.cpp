@@ -176,7 +176,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 
 					/* KK+2 for 12h */
 					l_di = get_free_mod_slot();
-					set_mod_slot(l_di, HOURS(12), consumer + HERO_KK, 2, (signed char)consumer_idx);
+					set_mod_slot(l_di, HOURS(12), consumer + (HERO_ATTRIB + 3 * ATTRIB_KK), 2, (signed char)consumer_idx);
 
 					/* LE + 2 */
 					add_hero_le(consumer, 2);
@@ -295,7 +295,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				/* Attribute +5 for 1h */
 				l_di = get_free_mod_slot();
 				set_mod_slot(l_di, HOURS(1),
-					consumer + HERO_MU + (l_si - 1) * 3,
+					consumer + HERO_ATTRIB + (l_si - 1) * 3,
 					5, (signed char)consumer_idx);
 
 				/* prepare output */
@@ -318,7 +318,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 				/* Attribute -7 for 1h */
 				l_di = get_free_mod_slot();
 				set_mod_slot(l_di, HOURS(1),
-					consumer + HERO_MU + (id_bad_elex - 1) * 3,
+					consumer + HERO_ATTRIB + (id_bad_elex - 1) * 3,
 					-7, (signed char)consumer_idx);
 
 				/* prepare output */

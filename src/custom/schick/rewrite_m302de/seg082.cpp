@@ -39,7 +39,7 @@ signed short DNG07_handler(void)
 	signed short lockpick_pos;
 	signed short skill_result;
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
@@ -64,7 +64,7 @@ signed short DNG07_handler(void)
 				{
 					if (lockpick_pos != -2)
 					{
-						skill_result = test_skill(hero, 48, 7);
+						skill_result = test_skill(hero, TA_SCHLOESSER, 7);
 
 						if (skill_result == -99) {
 
@@ -75,7 +75,7 @@ signed short DNG07_handler(void)
 								ds_writew((0xd325 + 4),
 								ds_writew((0xd325 + 6), target_pos))));
 
-							do_fight(88);
+							do_fight(FIGHTS_F100_03);
 
 						} else if (skill_result <= 0) {
 
@@ -85,7 +85,7 @@ signed short DNG07_handler(void)
 								ds_writew((0xd325 + 4),
 								ds_writew((0xd325 + 6), target_pos))));
 
-							do_fight(88);
+							do_fight(FIGHTS_F100_03);
 
 						} else {
 
@@ -132,7 +132,7 @@ signed short DNG07_handler(void)
 							ds_writew((0xd325 + 4),
 							ds_writew((0xd325 + 6), target_pos))));
 
-						do_fight(88);
+						do_fight(FIGHTS_F100_03);
 					} else
 					{
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -146,7 +146,7 @@ signed short DNG07_handler(void)
 
 			ds_writew(X_TARGET, ds_readws(0x2d83));
 			ds_writew(Y_TARGET, ds_readws(0x2d85));
-			ds_writew(0xe482, -1);
+			ds_writew(DNG_REFRESH_DIRECTION, -1);
 
 		} else {
 
@@ -165,11 +165,11 @@ signed short DNG07_handler(void)
 
 		DNG_dec_level();
 
-	} else if (target_pos == 0x1601 && target_pos != ds_readws(0x330e) && ds_readb(0x3cb2) != 2)
+	} else if (target_pos == 0x1601 && target_pos != ds_readws(0x330e) && ds_readb(DNG07_MUELIXIER_FLAG) != 2)
 	{
-		if (!ds_readb(0x3cb2))
+		if (!ds_readb(DNG07_MUELIXIER_FLAG))
 		{
-			ds_writeb(0x3cb2, 1);
+			ds_writeb(DNG07_MUELIXIER_FLAG, 1);
 
 			GUI_output(get_dtp(0x08));
 
@@ -177,7 +177,7 @@ signed short DNG07_handler(void)
 			{
 				get_item(147, 1, 1);
 
-				ds_writeb(0x3cb2, 2);
+				ds_writeb(DNG07_MUELIXIER_FLAG, 2);
 			}
 
 			/* ORIGINAL-BUG: forgot to set hero */
@@ -187,7 +187,7 @@ signed short DNG07_handler(void)
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero))
 				{
-					add_ptr_bs(hero + HERO_MU, 3);
+					add_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
 					or_ptr_bs(hero + HERO_STATUS2, 0x80);
 				}
 			}
@@ -196,28 +196,28 @@ signed short DNG07_handler(void)
 			{
 				get_item(147, 1, 1);
 
-				ds_writeb(0x3cb2, 2);
+				ds_writeb(DNG07_MUELIXIER_FLAG, 2);
 			}
 		}
 
-	} else if ((target_pos == 0x230d || target_pos == 0x220d) && target_pos != ds_readws(0x330e) && !ds_readb(0x3cb4))
+	} else if ((target_pos == 0x230d || target_pos == 0x220d) && target_pos != ds_readws(0x330e) && !ds_readb(DNG07_FLICKER_FLAG))
 	{
-		ds_writeb(0x3cb4, 1);
+		ds_writeb(DNG07_FLICKER_FLAG, 1);
 
 		GUI_output(get_dtp(0x10));
 
-	} else if (target_pos == 0x210b && target_pos != ds_readws(0x330e) && !ds_readb(0x3cb3))
+	} else if (target_pos == 0x210b && target_pos != ds_readws(0x330e) && !ds_readb(DNG07_ANTIMUELIXIER_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x14)))
 		{
 			get_item(226, 1, 1);
 
-			ds_writeb(0x3cb3, 1);
+			ds_writeb(DNG07_ANTIMUELIXIER_FLAG, 1);
 		}
 
 	} else if (target_pos == 0x2a01 && target_pos != ds_readws(0x330e))
 	{
-		if (!do_fight(91))
+		if (!do_fight(FIGHTS_F100_13))
 		{
 			if (ds_readb((TREASURE_MAPS + 1)) == 2)
 			{
@@ -243,7 +243,7 @@ signed short DNG07_handler(void)
 
 		ds_writeb(DIRECTION, (ds_readbs(DIRECTION) + 2) & 3);
 
-	} else if (target_pos == 0x2102 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cb5))
+	} else if (target_pos == 0x2102 && target_pos != ds_readws(0x330e) && !ds_readb(DNG07_POISON_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x18)))
 		{
@@ -253,9 +253,9 @@ signed short DNG07_handler(void)
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
-			ds_writeb(0x3cb5, 1);
+			ds_writeb(DNG07_POISON_FLAG, 1);
 
-			ds_writed(MAGE_POISON, DAYS(1));
+			ds_writed(DNG07_POISON_TIMER, DAYS(1));
 		}
 	} else if (target_pos == 0x10e && target_pos != ds_readws(0x330e))
 	{
@@ -267,14 +267,14 @@ signed short DNG07_handler(void)
 				if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					hero_dummy6(hero))
 				{
-					sub_ptr_bs(hero + HERO_MU, 3);
+					sub_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU), 3);
 					and_ptr_bs(hero + HERO_STATUS2, 0x7f);
 				}
 			}
 
 			leave_dungeon();
 
-			ds_writeb(CURRENT_TOWN, ds_readbs(0x4338));
+			ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 			ds_writew(X_TARGET, ds_readws(0x433a));
 			ds_writew(Y_TARGET, ds_readws(0x433c));
 			ds_writeb(LOCATION, 0);
@@ -282,7 +282,7 @@ signed short DNG07_handler(void)
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x38),
-				(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+				(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -312,7 +312,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 
 	if (host_readbs(amap_ptr + 16 * ds_readws(Y_TARGET) + ds_readws(X_TARGET)) == 4)
 	{
@@ -334,8 +334,8 @@ void DNG09_statues(signed short prob, signed short bonus)
 					/* increase one attribute of the leader permanently */
 					randval = random_schick(7) - 1;
 
-					inc_ptr_bs(hero + HERO_MU_ORIG + 3 * randval);
-					inc_ptr_bs(hero + HERO_MU + 3 * randval);
+					inc_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * randval);
+					inc_ptr_bs(hero + HERO_ATTRIB + 3 * randval);
 
 					/* ... but the twelfe won't grand miracles */
 					or_ptr_bs(hero + 0xab, 0x20);

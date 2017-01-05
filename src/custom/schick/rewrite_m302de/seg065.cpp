@@ -73,7 +73,7 @@ void do_market(void)
 			do_merchant();
 
 			/* change back to market */
-			ds_writeb(LOCATION, 9);
+			ds_writeb(LOCATION, LOCATION_MARKET);
 
 			/* clean up */
 			ds_writew(TYPEINDEX, type_bak);
@@ -114,7 +114,7 @@ void final_intro(void)
 
 	ptr1 = Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), len), -(96 * 3)));
 
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 
 	wait_for_vsync();
 
@@ -153,7 +153,7 @@ void final_intro(void)
 
 	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	delay_or_keypress(250);
 
@@ -170,7 +170,7 @@ void final_intro(void)
 		set_palette(ptr1, 0, 0x60);
 	}
 
-	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+	bc_memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 
 	refresh_colors();
 	refresh_screen_size();
@@ -228,7 +228,7 @@ void hyg_ani_4(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	do_pic_copy(0);
 }
@@ -252,7 +252,7 @@ void show_hyggelik_ani(void)
 	bc_close(handle);
 	src = &(Real2Host(ds_readd(BUFFER1_PTR))[filelen - 0xc0]);
 
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 	memcpy((void*)Real2Host(ds_readd(DTP2)), src, 192);
 	src = Real2Host(ds_readd(DTP2));
 
@@ -341,7 +341,7 @@ void show_hyggelik_ani(void)
 	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
 
 	hyg_ani_2(array + 25 * 8, 100, 0);
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 	map_effect(Real2Host(ds_readd(BUFFER1_PTR)));
 	delay_or_keypress(500);
 
@@ -355,7 +355,7 @@ void show_hyggelik_ani(void)
 	}
 
 	refresh_screen_size();
-	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+	bc_memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 	refresh_colors();
 }
 
@@ -377,19 +377,19 @@ void show_times_up(void)
 	delay_or_keypress(200);
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
-	bak1 = ds_readws(0x2ca2);
-	bak2 = ds_readws(0x2ca4);
+	bak1 = ds_readws(BASEPOS_X);
+	bak2 = ds_readws(BASEPOS_Y);
 
 	ds_writew(TEXTBOX_WIDTH, 7);
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 55);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 55);
 
 	GUI_output(get_city(0xdc));
 	GUI_output(get_city(0xe0));
 	GUI_output(get_city(0xe4));
 
-	ds_writew(0x2ca2, bak1);
-	ds_writew(0x2ca4, bak2);
+	ds_writew(BASEPOS_X, bak1);
+	ds_writew(BASEPOS_Y, bak2);
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
 	/* restore text file except for CHARTEXT.LTX, TAVERN.TLK and except for dialogs */
@@ -413,8 +413,8 @@ void show_outro(void)
 	struct nvf_desc nvf;
 
 	ds_writew(TEXTBOX_WIDTH, 7);
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 60);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 60);
 
 	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
 	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
@@ -426,7 +426,7 @@ void show_outro(void)
 	bc_close(handle);
 
 	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR), len), - 0xc0));
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 	set_palette(pal_ptr, 0, 0x40);
 
@@ -460,7 +460,7 @@ void show_outro(void)
 	bc_close(handle);
 
 	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR), len), - 0xc0));
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 	set_palette(pal_ptr, 0, 0x40);
 
@@ -494,7 +494,7 @@ void show_outro(void)
 	bc_close(handle);
 
 	pal_ptr = Real2Host(F_PADD(F_PADD((HugePt)ds_readd(BUFFER9_PTR), len), - 0xc0));
-	do_fill_rect((RealPt)ds_readd(0xd2ff), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 	wait_for_vsync();
 	set_palette(pal_ptr, 0, 0x40);
 
@@ -597,8 +597,8 @@ void show_outro(void)
 
 			for (j = 0; j <= 13; j++) {
 
-				host_writeb(hero + HERO_MU + 3 * j, host_readbs(hero + HERO_MU_ORIG + 3 * j));
-				host_writeb(hero + HERO_MU_MOD + 3 * j, 0);
+				host_writeb(hero + HERO_ATTRIB + 3 * j, host_readbs(hero + HERO_ATTRIB_ORIG + 3 * j));
+				host_writeb(hero + HERO_ATTRIB_MOD + 3 * j, 0);
 			}
 
 			host_writed(hero + HERO_HEAL_TIMER, 0);
@@ -614,8 +614,8 @@ void show_outro(void)
 	/* mark the game as done */
 	ds_writeb(DATSEG_STATUS_START, 99);
 
-	ds_writew(0x2ca2, 0);
-	ds_writew(0x2ca4, 0);
+	ds_writew(BASEPOS_X, 0);
+	ds_writew(BASEPOS_Y, 0);
 
 	/* save the game */
 	save_game_state();

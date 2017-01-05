@@ -58,19 +58,19 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 	}
 	/* unequip Kraftguertel KK - 5 */
 	if (item == 183)
-		host_writeb(hero + HERO_KK, host_readb(hero + HERO_KK) - 5);
+		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) - 5);
 	/* unequip Helm CH + 1 (cursed) */
 	if (item == 196)
-		inc_ptr_bs(hero + HERO_CH);
+		inc_ptr_bs(hero + (HERO_ATTRIB + 3 * ATTRIB_CH));
 	/* unequip Silberschmuck TA + 1 */
 	if (item == 215)
-		host_writeb(hero + HERO_TA, host_readb(hero + HERO_TA) + 2);
+		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 2);
 	/* unequip Stirnreif or Ring MR - 2 */
 	if (item == 217 || item == 165)
 		host_writeb(hero + HERO_MR, host_readb(hero + HERO_MR) - 2);
 	/* unequip Totenkopfguertel TA + 4 */
 	if (item == 182)
-		host_writeb(hero + HERO_TA, host_readb(hero + HERO_TA) + 4);
+		host_writeb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA), host_readb(hero + (HERO_ATTRIB + 3 * ATTRIB_TA)) + 4);
 	/* unequip Kristallkugel Gefahrensinn - 2 */
 	if (item == 70)
 		host_writeb(hero + HERO_TA_INTUITION, host_readb(hero + HERO_TA_INTUITION) - 2);
@@ -98,13 +98,13 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item_armor(item_p)) {
 
 			/* add RS boni */
-			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(0x0877 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BONUS1, ds_readbs(ARMORS_TABLE + host_readbs(item_p + 4) * 2));
 
 			/* subtract used item value */
 			sub_ptr_bs(equipper + HERO_RS_BONUS1, host_readbs(owner + HERO_ITEM_HEAD + 7 + pos_i * 14));
 
 			/* add RS-BE */
-			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(0x0877  + 1 + host_readbs(item_p + 4) * 2));
+			add_ptr_bs(equipper + HERO_RS_BE, ds_readbs(ARMORS_TABLE + 1 + host_readbs(item_p + 4) * 2));
 
 		}
 
@@ -116,32 +116,32 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 
 			/* set AT */
 			host_writeb(equipper + HERO_AT_MOD,
-				ds_readb(0x06b0 + 5 + host_readbs(item_p + 4) * 7));
+				ds_readb(WEAPONS_TABLE + 5 + host_readbs(item_p + 4) * 7));
 
 			/* set PA */
 			host_writeb(equipper + HERO_PA_MOD,
-				ds_readb(0x06b0 + 6 + host_readbs(item_p + 4) * 7));
+				ds_readb(WEAPONS_TABLE + 6 + host_readbs(item_p + 4) * 7));
 
 		}
 
 		/* Girdle of might / Kraftguertel */
 		if (item == 0xb7) {
 			/* KK + 5 */
-			host_writeb(equipper + HERO_KK,
-				host_readb(equipper + HERO_KK) + 5);
+			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_KK),
+				host_readb(equipper + (HERO_ATTRIB + 3 * ATTRIB_KK)) + 5);
 		}
 
 		/* Helmet / Helm */
 		if (item == 0xc4) {
 			/* dec CH */
-			dec_ptr_bs(equipper + HERO_CH);
+			dec_ptr_bs(equipper + (HERO_ATTRIB + 3 * ATTRIB_CH));
 		}
 
 		/* Silver Jewelry / Silberschmuckstueck (magisch) */
 		if (item == 0xd7) {
 			/* TA - 2 */
-			host_writeb(equipper + HERO_TA,
-				host_readbs(equipper + HERO_TA) - 2);
+			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
+				host_readbs(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 2);
 		}
 
 		/* Coronet or Ring / Stirnreif oder Ring */
@@ -155,8 +155,8 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		if (item == 0xb6) {
 
 			/* TA - 4 */
-			host_writeb(equipper + HERO_TA,
-				host_readbs(equipper + HERO_TA) - 4);
+			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
+				host_readbs(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 4);
 
 			if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_ZUSTA_UK) {
 				equip_belt_ani();
@@ -318,7 +318,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 	/* check if hero can carry that item */
 	if ((mode != 2) &&
-		(host_readbs(hero + HERO_KK) * 100 <= host_readws(hero + HERO_LOAD))) {
+		(host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero + HERO_LOAD))) {
 
 		if (mode != 0) {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -376,7 +376,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
 								(item_stackable(item_p)) ? si :
 									(item_useable(item_p)) ?
-										ds_readbs((0x08a9 + 1) + host_readbs(item_p + 4) * 3): 0);
+										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + 4) * 3): 0);
 #else
 
 							/* write item counter */
@@ -386,7 +386,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							else if (item_useable(item_p))
 									/* unknown */
 									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14,
-										ds_readbs((0x08a9 + 1) + host_readbs(item_p + 4) * 3));
+										ds_readbs((SPECIALITEMS_TABLE + 1) + host_readbs(item_p + 4) * 3));
 								 else
 									host_writew(hero + HERO_ITEM_HEAD + 2 + di * 14, 0);
 #endif
@@ -404,7 +404,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 							/* set breakfactor */
 							if (item_weapon(item_p)) {
 								host_writeb(hero + HERO_ITEM_HEAD + 6 + di * 14,
-									ds_readb(0x06b0 + 3 + host_readbs(item_p + 4) * 7));
+									ds_readb(WEAPONS_TABLE + 3 + host_readbs(item_p + 4) * 7));
 							}
 
 							/* adjust weight */
@@ -801,10 +801,10 @@ signed short select_item_to_drop(Bit8u *hero)
 			i = v6;
 		}
 		textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
-		bak2 = ds_readw(0x2ca2);
-		bak3 = ds_readw(0x2ca4);
+		bak2 = ds_readw(BASEPOS_X);
+		bak3 = ds_readw(BASEPOS_Y);
 		ds_writew(TEXTBOX_WIDTH, 6);
-		ds_writew(0x2ca2, ds_writew(0x2ca4, 0));
+		ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
 		v4 = GUI_radio((Bit8u*)get_ltx(0xbc0), (signed char)i,
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x00 + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x04 + di * 4)),
@@ -820,8 +820,8 @@ signed short select_item_to_drop(Bit8u *hero)
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x2c + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x30 + di * 4)));
 		ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
-		ds_writew(0x2ca2, bak2);
-		ds_writew(0x2ca4, bak3);
+		ds_writew(BASEPOS_X, bak2);
+		ds_writew(BASEPOS_Y, bak3);
 
 		if (va != -1) {
 			ds_writed(RADIO_NAME_LIST + 0x00 + va * 4, (Bit32u)ptr);

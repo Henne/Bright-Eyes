@@ -79,7 +79,7 @@ void do_citycamp(void)
 
 		handle_gui_input();
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			/* open citycamp radio menu */
 			answer = GUI_radio(get_ltx(0x4cc), 5,
@@ -241,7 +241,7 @@ void do_citycamp(void)
 
 							do_fight(ds_readws((DCAMPFIGHTS-2) + 2 * random_schick(4)));
 
-							if (ds_readws(0xc3c1) == 0) {
+							if (ds_readws(GAME_STATE) == GAME_STATE_MAIN) {
 								draw_main_screen();
 								set_var_to_zero();
 								load_ani(36);

@@ -43,17 +43,17 @@ signed short DNG06_handler(void)
 	Bit8u *hero_second;
 	Bit8u *amap_ptr;
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
 	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 
-	if (target_pos == 0xe05 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cad))
+	if (target_pos == 0xe05 && target_pos != ds_readws(0x330e) && !ds_readb(DNG06_ASTHENILDOLCH_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x04)) && get_item(224, 1, 1))
 		{
-			ds_writeb(0x3cad, 1);
+			ds_writeb(DNG06_ASTHENILDOLCH_FLAG, 1);
 		}
 
 	}
@@ -68,9 +68,9 @@ signed short DNG06_handler(void)
 		{
 			strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x0c));
 
-			if (!ds_readb(0x3ca9))
+			if (!ds_readb(DNG06_MONEY_FLAG))
 			{
-				ds_writeb(0x3ca9, 1);
+				ds_writeb(DNG06_MONEY_FLAG, 1);
 
 				hero = Real2Host(get_first_hero_available_in_group());
 
@@ -89,12 +89,12 @@ signed short DNG06_handler(void)
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
 
-	} else if (target_pos == 0x503 && target_pos != ds_readws(0x330e) && !ds_readb(0x3ca8))
+	} else if (target_pos == 0x503 && target_pos != ds_readws(0x330e) && !ds_readb(DNG06_PROVIANT_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x14)))
 		{
 			get_item(45, 1, 40);
-			ds_writeb(0x3ca8, 1);
+			ds_writeb(DNG06_PROVIANT_FLAG, 1);
 		}
 
 	} else if (target_pos == 0x201 && target_pos != ds_readws(0x330e))
@@ -131,7 +131,7 @@ signed short DNG06_handler(void)
 			sub_hero_le(hero_second, random_schick(6));
 		}
 
-	} else if (target_pos == 0x907 && target_pos != ds_readws(0x330e) && !ds_readb(0x3ca7))
+	} else if (target_pos == 0x907 && target_pos != ds_readws(0x330e) && !ds_readb(DNG06_PITDOOR_FLAG))
 	{
 		hero = get_hero(0);
 		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
@@ -139,7 +139,7 @@ signed short DNG06_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 50, 5) > 0)
+				test_skill(hero, TA_GEFAHRENSINN, 5) > 0)
 			{
 				l3 = 1;
 				break;
@@ -158,7 +158,7 @@ signed short DNG06_handler(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_skill(hero, 50, 5) > 0)
+						test_skill(hero, TA_GEFAHRENSINN, 5) > 0)
 					{
 						l3 = 1;
 						break;
@@ -167,29 +167,29 @@ signed short DNG06_handler(void)
 
 				if (l3 != 0 && GUI_bool(get_dtp(0x24)))
 				{
-					ds_writeb(0x3ca7, 1);
+					ds_writeb(DNG06_PITDOOR_FLAG, 1);
 
 					GUI_output(get_dtp(0x28));
 				}
 
-				if (!ds_readb(0x3ca7))
+				if (!ds_readb(DNG06_PITDOOR_FLAG))
 				{
 					DNG_fallpit_test(6);
 				}
 			} else {
-				if (!ds_readb(0x3ca7))
+				if (!ds_readb(DNG06_PITDOOR_FLAG))
 				{
 					DNG_fallpit_test(6);
 				}
 			}
 		} else {
-			if (!ds_readb(0x3ca7))
+			if (!ds_readb(DNG06_PITDOOR_FLAG))
 			{
 				DNG_fallpit_test(6);
 			}
 		}
 
-	} else if (target_pos == 0x807 && target_pos != ds_readws(0x330e) && ds_readb(0x3caa) != 2)
+	} else if (target_pos == 0x807 && target_pos != ds_readws(0x330e) && ds_readb(DNG06_GOLDKEY_FLAG) != 2)
 	{
 		hero = get_hero(0);
 		for (i = l3 = 0; i <= 6; i++, hero += SIZEOF_HERO)
@@ -197,19 +197,19 @@ signed short DNG06_handler(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 51, 10) > 0)
+				test_skill(hero, TA_SINNESSCHAERFE, 10) > 0)
 			{
 				l3++;
 			}
 		}
 
-		if (ds_readb(0x3caa) != 0 || l3 != 0)
+		if (ds_readb(DNG06_GOLDKEY_FLAG) != 0 || l3 != 0)
 		{
-			ds_writeb(0x3caa, 1);
+			ds_writeb(DNG06_GOLDKEY_FLAG, 1);
 
 			if (GUI_bool(get_dtp(0x2c)))
 			{
-				ds_writeb(0x3caa, 2);
+				ds_writeb(DNG06_GOLDKEY_FLAG, 2);
 
 				get_item(195, 1, 1);
 
@@ -220,13 +220,13 @@ signed short DNG06_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0xb06 && target_pos != ds_readws(0x330e) && ds_readb(0x3cab) != 0)
+	} else if (target_pos == 0xb06 && target_pos != ds_readws(0x330e) && ds_readb(DNG06_COUNTDOWN_FLAG) != 0)
 	{
 		if (div16(host_readb(amap_ptr + 0x1b)) != 1 ||
 			div16(host_readb(amap_ptr + 0x62)) != 1 ||
 			div16(host_readb(amap_ptr + 0x4b)) != 1)
 		{
-			dec_ds_bs_post(0x3cab);
+			dec_ds_bs_post(DNG06_COUNTDOWN_FLAG);
 
 			l3 = random_schick(5);
 
@@ -273,7 +273,7 @@ signed short DNG06_handler(void)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 					!hero_dead(hero) &&
-					test_skill(hero, 11, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
+					test_skill(hero, TA_KOERPERBEH, host_readbs(hero + HERO_RS_BONUS1)) <= 0)
 				{
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_dtp(0x50),
@@ -290,6 +290,7 @@ signed short DNG06_handler(void)
 
 	} else if (target_pos == 0x1102 && target_pos != ds_readws(0x330e))
 	{
+		/* Hole in the wall: want to reach into it? want to move the lever? */
 		if (GUI_bool(get_dtp(0x54)) && GUI_bool(get_dtp(0x58)))
 		{
 			for (i = l3 = 0; i < 6; i++)
@@ -313,11 +314,12 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
+				/* some heros are in the right position: hear gentle click */
 				GUI_output(get_dtp(0x60));
 
-				ds_writeb(0x3cac, 1);
+				ds_writeb(DNG06_LEVER_FLAG, 1);
 			} else {
-
+				/* liquid from ceiling causes damage */
 				hero = Real2Host(get_first_hero_available_in_group());
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -332,6 +334,7 @@ signed short DNG06_handler(void)
 
 	} else if (target_pos == 0x1306 && target_pos != ds_readws(0x330e))
 	{
+		/* Hole in the wall: want to reach into it? want to move the lever? */
 		if (GUI_bool(get_dtp(0x54)) && GUI_bool(get_dtp(0x58)))
 		{
 			for (i = l3 = 0; i < 6; i++)
@@ -355,11 +358,12 @@ signed short DNG06_handler(void)
 
 			if (l3 != 0)
 			{
+				/* some heros are in the right position: hear gentle click */
 				GUI_output(get_dtp(0x60));
 
-				ds_writeb(0x3cac, 1);
+				ds_writeb(DNG06_LEVER_FLAG, 1);
 			} else {
-
+				/* liquid from ceiling causes damage */
 				hero = Real2Host(get_first_hero_available_in_group());
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -372,19 +376,20 @@ signed short DNG06_handler(void)
 			}
 		}
 
-	} else if (target_pos == 0x1508 && target_pos != ds_readws(0x330e) && !ds_readb(0x3cac))
+	} else if (target_pos == 0x1508 && target_pos != ds_readws(0x330e) && !ds_readb(DNG06_LEVER_FLAG))
 	{
 		hero = Real2Host(get_first_hero_available_in_group());
 
+		/* large disk comes down from ceiling */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x64),
 			(char*)hero + HERO_NAME2);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
-		if (test_skill(hero, 11, 0) > 0 && test_skill(hero, 50, 0) > 0)
+		if (test_skill(hero, TA_KOERPERBEH, 0) > 0 && test_skill(hero, TA_GEFAHRENSINN, 0) > 0)
 		{
-
+			/* evasion succeeds */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x68),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
@@ -392,6 +397,7 @@ signed short DNG06_handler(void)
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
 		} else {
+			/* disk causes heavy damage */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x6c),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
@@ -401,7 +407,7 @@ signed short DNG06_handler(void)
 			sub_hero_le(hero, dice_roll(3, 6, 0));
 		}
 
-	} else if (target_pos == 0x170d && target_pos != ds_readws(0x330e) && !ds_readb(0x3cae))
+	} else if (target_pos == 0x170d && target_pos != ds_readws(0x330e) && !ds_readb(DNG06_FIGHT19_FLAG))
 	{
 		if (GUI_bool(get_dtp(0x70)))
 		{
@@ -418,17 +424,18 @@ signed short DNG06_handler(void)
 			sub_hero_le(hero, 2);
 		}
 
-	} else if (target_pos == 0x160b && target_pos != ds_readws(0x330e) && !ds_readb(0x35f7))
+	} else if (target_pos == 0x160b && target_pos != ds_readws(0x330e) && !ds_readb(DNG06_DASPTREAS_FOUND))
 	{
+		/* treasure of Daspota found */
 		GUI_output(get_dtp(0x90));
 
 		p_money = get_party_money();
 		p_money += 50000L;
 		set_party_money(p_money);
 
-		loot_multi_chest(p_datseg + 0x40cf, get_dtp(0x94));
+		loot_multi_chest(p_datseg + DNG06_CHEST_DASPTREAS, get_dtp(0x94));
 
-		ds_writeb(0x35f7, 1);
+		ds_writeb(DNG06_DASPTREAS_FOUND, 1);
 
 		add_hero_ap_all(30);
 
@@ -437,16 +444,16 @@ signed short DNG06_handler(void)
 		ds_writew(0xd325, ds_writew((0xd325 + 6), 0x163e));
 		ds_writew((0xd325 + 4), ds_writew((0xd325 + 2), 0x1d0d));
 
-		if (!do_fight(85))
+		if (!do_fight(FIGHTS_F094_19))
 		{
-			ds_writeb(0x3cae, 1);
+			ds_writeb(DNG06_FIGHT19_FLAG, 1);
 		}
 
 	} else if (target_pos == 0xd0f && target_pos != ds_readws(0x330e))
 	{
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readbs(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 		ds_writew(X_TARGET, ds_readws(0x433a));
 		ds_writew(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -454,7 +461,7 @@ signed short DNG06_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x98),
-			(char*)get_ltx(4 * (ds_readws(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -482,7 +489,7 @@ void DNG06_fight_intro(signed short fight_id)
 		/* this is true all the time */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0x78),
-			(char*)(!ds_readb(0x3617) ? get_dtp(0x80) : get_dtp(0x7c)));
+			(char*)(!ds_readb(ESTORIK_KNOWN) ? get_dtp(0x80) : get_dtp(0x7c)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 	}
@@ -494,7 +501,7 @@ void DNG06_chest1(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x40bf));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG06_CHEST1_CONTENT));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -514,7 +521,7 @@ void DNG06_chest2(RealPt chest)
 		if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 			!hero_dead(hero) &&
-			test_skill(hero, 38, 0) > 0)
+			test_skill(hero, TA_LESEN, 0) > 0)
 		{
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(0x88));
 			break;
@@ -541,7 +548,7 @@ void DNG09_pitfall(void)
 			if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 				host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 				!hero_dead(hero) &&
-				test_skill(hero, 50, 4) > 0)
+				test_skill(hero, TA_GEFAHRENSINN, 4) > 0)
 			{
 				l3 = 1;
 			}

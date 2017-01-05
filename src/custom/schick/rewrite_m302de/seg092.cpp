@@ -163,7 +163,7 @@ void chest_cursed(void)
 
 		/* decrement each good attribute */
 		for (i = 0; i <= 6; i++) {
-			dec_ptr_bs(hero + HERO_MU + 3 * i);
+			dec_ptr_bs(hero + HERO_ATTRIB + 3 * i);
 		}
 
 		/* print a message */
@@ -376,7 +376,7 @@ void seg092_06b4(signed short a1)
 	Bit8u *ptr;
 
 	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
-	ptr = p_datseg + 0xbd95;
+	ptr = p_datseg + DNG_MAP;
 	ds_writew(GET_EXTRA_LOOT, 0);
 	x = ds_readws(X_TARGET);
 	y = ds_readws(Y_TARGET);
@@ -476,7 +476,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 
 		if (l_si != -2) {
 
-			l_di = test_skill(hero, 48, host_readbs(Real2Host(chest_ptr) + 2));
+			l_di = test_skill(hero, TA_SCHLOESSER, host_readbs(Real2Host(chest_ptr) + 2));
 
 			if (l_di == -99) {
 				/* unlucky, your lockpicks break... */

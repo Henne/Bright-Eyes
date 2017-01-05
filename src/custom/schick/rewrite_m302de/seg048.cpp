@@ -34,7 +34,7 @@ void reset_item_selector(void)
 	if (ds_readws(STATUS_PAGE_MODE) < 3) {
 
 		/* remove the previous border */
-		do_border((RealPt)ds_readd(0xd2ff),
+		do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 				ds_readws(0x64ce + 4 * ds_readbs(0x6370)),
 				ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6370)),
 				ds_readws(0x64ce + 4 * ds_readbs(0x6370)) + 17,
@@ -45,7 +45,7 @@ void reset_item_selector(void)
 		ds_writeb(0x636e, ds_writeb(0x6370, 7));
 
 		/* set the new red border */
-		do_border((RealPt)ds_readd(0xd2ff),
+		do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 				ds_readws(0x64ce + 4 * ds_readbs(0x6370)),
 				ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6370)),
 				ds_readws(0x64ce + 4 * ds_readbs(0x6370)) + 17,
@@ -56,7 +56,7 @@ void reset_item_selector(void)
 		ds_writebs(0x636f, 23);
 	}
 
-	ds_writed(0xcecb, ds_writed(0xe3ae, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR)));
+	ds_writed(CURRENT_CURSOR, ds_writed(CURRENT_CURSOR_BAK, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR)));
 }
 
 /* nearly identical, same length */
@@ -80,7 +80,7 @@ void status_menu(signed short hero_pos)
 	flag2 = 1;
 	flag3 = 0;
 	flag4 = 0;
-	ds_writew(0xc3cf, 0);
+	ds_writew(MOUSE1_DOUBLECLICK, 0);
 
 	hero1 = hero2 = get_hero(hero_pos);
 
@@ -125,7 +125,7 @@ void status_menu(signed short hero_pos)
 
 				if (hero1 == hero2) {
 					/* set the new red border */
-					do_border((RealPt)ds_readd(0xd2ff),
+					do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6370)),
 						ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6370)),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6370)) + 17,
@@ -154,7 +154,7 @@ void status_menu(signed short hero_pos)
 
 				if (ds_readbs(0x6371) != -1) {
 					/* set the new ??? border */
-					do_border((RealPt)ds_readd(0xd2ff),
+					do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6371)),
 						ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6371)),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6371)) + 17,
@@ -299,14 +299,14 @@ void status_menu(signed short hero_pos)
 			if (ds_readbs(0x636e) != ds_readbs(0x6370) && hero1 == hero2) {
 
 				/* set the new ??? border */
-				do_border((RealPt)ds_readd(0xd2ff),
+				do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 					ds_readws(0x64ce + 4 * ds_readbs(0x636e)),
 					ds_readws(0x64ce + 2 + 4 * ds_readbs(0x636e)),
 					ds_readws(0x64ce + 4 * ds_readbs(0x636e)) + 17,
 					ds_readws(0x64ce + 2 + 4 * ds_readbs(0x636e)) + 17,
 					30);
 				/* set the new ??? border */
-				do_border((RealPt)ds_readd(0xd2ff),
+				do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 					ds_readws(0x64ce + 4 * ds_readbs(0x6370)),
 					ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6370)),
 					ds_readws(0x64ce + 4 * ds_readbs(0x6370)) + 17,
@@ -341,7 +341,7 @@ void status_menu(signed short hero_pos)
 			if (ds_readbs(0x636f) != ds_readbs(0x6371) && ds_readbs(0x6371) != -1) {
 
 				/* set the new ??? border */
-				do_border((RealPt)ds_readd(0xd2ff),
+				do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 					ds_readws(0x64ce + 4 * ds_readbs(0x636f)),
 					ds_readws(0x64ce + 2 + 4 * ds_readbs(0x636f)),
 					ds_readws(0x64ce + 4 * ds_readbs(0x636f)) + 17,
@@ -351,7 +351,7 @@ void status_menu(signed short hero_pos)
 				if (hero1 == hero2) {
 
 					/* set the new ??? border */
-					do_border((RealPt)ds_readd(0xd2ff),
+					do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6370)),
 						ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6370)),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6370)) + 17,
@@ -361,7 +361,7 @@ void status_menu(signed short hero_pos)
 
 
 				/* set the new ??? border */
-				do_border((RealPt)ds_readd(0xd2ff),
+				do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 					ds_readws(0x64ce + 4 * ds_readbs(0x6371)),
 					ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6371)),
 					ds_readws(0x64ce + 4 * ds_readbs(0x6371)) + 17,
@@ -386,7 +386,7 @@ void status_menu(signed short hero_pos)
 						}
 
 						/* set the new ??? border */
-						do_border((RealPt)ds_readd(0xd2ff),
+						do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 							ds_readws(0x64ce + 4 * ds_readbs(0x6371)),
 							ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6371)),
 							ds_readws(0x64ce + 4 * ds_readbs(0x6371)) + 17,
@@ -407,7 +407,7 @@ void status_menu(signed short hero_pos)
 						}
 
 						/* set the new ??? border */
-						do_border((RealPt)ds_readd(0xd2ff),
+						do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 							ds_readws(0x64ce + 4 * ds_readbs(0x6371)),
 							ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6371)),
 							ds_readws(0x64ce + 4 * ds_readbs(0x6371)) + 17,
@@ -422,7 +422,7 @@ void status_menu(signed short hero_pos)
 					ds_writeb(0x6371, 23);
 
 					/* set the new ??? border */
-					do_border((RealPt)ds_readd(0xd2ff),
+					do_border((RealPt)ds_readd(FRAMEBUF_PTR),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6371)),
 						ds_readws(0x64ce + 2 + 4 * ds_readbs(0x6371)),
 						ds_readws(0x64ce + 4 * ds_readbs(0x6371)) + 17,
@@ -441,7 +441,7 @@ void status_menu(signed short hero_pos)
 
 						make_ggst_cursor(Real2Host(ds_readd(ICON)));
 
-						ds_writed(0xcecb, (Bit32u)RealMake(datseg, 0xcecf));
+						ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, GGST_CURSOR));
 					}
 				}
 			}
@@ -461,10 +461,10 @@ void status_menu(signed short hero_pos)
 
 		}
 
-		if (ds_readws(0xc3d3) != 0 || ds_readws(ACTION) == 73) {
+		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			ds_writed(0xe3ae, ds_readd(0xcecb));
-			ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+			ds_writed(CURRENT_CURSOR_BAK, ds_readd(CURRENT_CURSOR));
+			ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 			switch (ds_readws(STATUS_PAGE_MODE)) {
 			case 1: {
@@ -825,7 +825,7 @@ void status_menu(signed short hero_pos)
 			}
 			}
 
-			ds_writed(0xcecb, ds_readd(0xe3ae));
+			ds_writed(CURRENT_CURSOR, ds_readd(CURRENT_CURSOR_BAK));
 		}
 	}
 

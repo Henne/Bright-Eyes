@@ -420,7 +420,7 @@ void level_up(signed short hero_pos)
 	l_si = -1;
 
 	for (i = 0; i <= 6; i++) {
-		if (host_readbs(hero + HERO_MU_ORIG + 3 * i) < 20) {
+		if (host_readbs(hero + HERO_ATTRIB_ORIG + 3 * i) < 20) {
 			l_si = 0;
 		}
 	}
@@ -432,7 +432,7 @@ void level_up(signed short hero_pos)
 
 		do {
 
-			ds_writew(0x2ca2, -30);
+			ds_writew(BASEPOS_X, -30);
 
 			l_si = GUI_radio(get_city(0x8c), 7,
 						get_ltx(0x670),
@@ -443,15 +443,15 @@ void level_up(signed short hero_pos)
 						get_ltx(0x684),
 						get_ltx(0x688)) - 1;
 
-			if (host_readbs(hero + HERO_MU_ORIG + 3 * l_si) >= 20) {
+			if (host_readbs(hero + HERO_ATTRIB_ORIG + 3 * l_si) >= 20) {
 				l_si = -2;
 				GUI_output(get_city(0xac));
 			}
 
 		} while (l_si == -2);
 
-		inc_ptr_bs(hero + HERO_MU_ORIG + 0 + 3 * l_si);
-		inc_ptr_bs(hero + HERO_MU_ORIG + 1 + 3 * l_si);
+		inc_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * l_si);
+		inc_ptr_bs(hero + HERO_ATTRIB + 3 * l_si);
 
 		status_show(hero_pos);
 
@@ -463,7 +463,7 @@ void level_up(signed short hero_pos)
 	l_si = -1;
 
 	for (i = 7; i <= 13; i++) {
-		if (host_readbs(hero + HERO_MU_ORIG + 3 * i) > 2) {
+		if (host_readbs(hero + HERO_ATTRIB_ORIG + 3 * i) > 2) {
 			l_si = 0;
 		}
 	}
@@ -483,7 +483,7 @@ void level_up(signed short hero_pos)
 						get_ltx(0x6a0),
 						get_ltx(0x6a4)) - 1;
 
-			if (host_readbs(hero + HERO_MU_ORIG + 3 * (l_si + 7)) <= 2) {
+			if (host_readbs(hero + HERO_ATTRIB_ORIG + 3 * (l_si + 7)) <= 2) {
 				l_si = -2;
 				GUI_output(get_city(0xc0));
 			}
@@ -494,15 +494,15 @@ void level_up(signed short hero_pos)
 
 		for (i = 0; i < 3; i++) {
 
-			if (random_schick(20) <= host_readbs(hero + HERO_MU_ORIG + 3 * (l_si + 7))) {
+			if (random_schick(20) <= host_readbs(hero + HERO_ATTRIB_ORIG + 3 * (l_si + 7))) {
 				v3 = 1;
 			}
 		}
 
 		if (v3 != 0) {
 
-			dec_ptr_bs(hero + HERO_MU_ORIG + 0 + 3 * (l_si + 7));
-			dec_ptr_bs(hero + HERO_MU_ORIG + 1 + 3 * (l_si + 7));
+			dec_ptr_bs(hero + HERO_ATTRIB_ORIG + 3 * (l_si + 7));
+			dec_ptr_bs(hero + HERO_ATTRIB + 3 * (l_si + 7));
 
 			GUI_output(get_city(0x94));
 
@@ -519,7 +519,7 @@ void level_up(signed short hero_pos)
 
 	/* check changes in MR */
 
-	mr = (host_readbs(hero + HERO_KL_ORIG) + host_readbs(hero + HERO_MU_ORIG) + host_readbs(hero + HERO_LEVEL)) / 3 - 2 * host_readbs(hero + HERO_AG_ORIG);
+	mr = (host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_KL)) + host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_MU)) + host_readbs(hero + HERO_LEVEL)) / 3 - 2 * host_readbs(hero + (HERO_ATTRIB_ORIG + 3 * ATTRIB_AG));
 	mr += ds_readbs(MR_MODIFICATORS + host_readbs(hero + HERO_TYPE));
 
 	if (host_readbs(hero + HERO_MR) != mr) {
@@ -911,7 +911,7 @@ void level_up(signed short hero_pos)
 		}
 	}
 
-	ds_writew(0x2ca2, 0);
+	ds_writew(BASEPOS_X, 0);
 	ds_writew(REQUEST_REFRESH, 1);
 	ds_writew(TIMERS_DISABLED, 0);
 

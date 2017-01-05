@@ -82,13 +82,13 @@ void draw_fight_screen_pal(signed short mode)
 
 		/* clear framebuffer */
 #if !defined(__BORLANDC__)
-		PhysPt p = Real2Phys((RealPt)ds_readd(0xd2ff));
+		PhysPt p = Real2Phys((RealPt)ds_readd(FRAMEBUF_PTR));
 
 		for (int i = 0; i < 64000; i+=4) {
 			mem_writed(p + i, 0);
 		}
 #else
-		memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+		memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 #endif
 
 		/* set palettes */
@@ -368,7 +368,7 @@ unsigned short FIG_fight_continues(void)
 	}
 
 	if (FIG_get_first_active_hero() == -1) {
-		ds_writew(0xc3c1, 1);
+		ds_writew(GAME_STATE, GAME_STATE_DEAD);
 		return 0;
 	}
 
@@ -420,17 +420,17 @@ void FIG_do_round(void)
 			/* give this hero 8 BP */
 			host_writeb(Real2Host(hero) + HERO_BP_LEFT, 8);
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 50 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 50 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* give BP Malus -1 */
 				dec_ptr_bs(Real2Host(hero) + HERO_BP_LEFT);
 			}
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 75 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 75 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* give BP Malus -2 */
 				sub_ptr_bs(Real2Host(hero) + HERO_BP_LEFT, 2);
 			}
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 100 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* give BP Malus -2 */
 				sub_ptr_bs(Real2Host(hero) + HERO_BP_LEFT, 2);
 
@@ -451,7 +451,7 @@ void FIG_do_round(void)
 				hero_attacks++;
 			}
 
-			if (host_readbs(Real2Host(hero) + HERO_KK) * 110 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
+			if (host_readbs(Real2Host(hero) + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 110 <= host_readws(Real2Host(hero) + HERO_LOAD)) {
 				/* too much weight, set BP to 1 */
 				host_writeb(Real2Host(hero) + HERO_BP_LEFT, 1);
 			}
@@ -813,7 +813,7 @@ void FIG_load_ship_sprites(void)
 
 			do_pic_copy(2);
 
-			ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			}
 		}
@@ -994,14 +994,14 @@ signed short do_fight(signed short fight_id)
 
 	refresh_screen_size();
 
-	if (ds_readws(0xc3c7) == 2) {
+	if (ds_readws(HAVE_MOUSE) == 2) {
 
 		while (ds_readws(0x299a) < 0) {
 			refresh_screen_size();
 		}
 	}
 
-	if (ds_readws(0xc3c1) != 7) {
+	if (ds_readws(GAME_STATE) != GAME_STATE_FIGQUIT) {
 
 		hero = get_hero(0);
 		for (l_di = 0; l_di <=6; l_di++, hero += SIZEOF_HERO) {
@@ -1022,11 +1022,11 @@ signed short do_fight(signed short fight_id)
 			}
 		}
 
-		if (ds_readws(0xc3c1) != 0) {
+		if (ds_readws(GAME_STATE) != GAME_STATE_MAIN) {
 
 			if ((fight_id != 192) && count_heros_available()) {
 
-				ds_writew(0xc3c1, 0);
+				ds_writew(GAME_STATE, GAME_STATE_MAIN);
 
 				if (ds_readbs(SEA_TRAVEL) != 0) {
 
@@ -1172,13 +1172,13 @@ signed short do_fight(signed short fight_id)
 		retval = 4;
 	}
 
-	ds_writeb(FIG_INITIATIVE, ds_writeb(0x2cce, 0));
+	ds_writeb(FIG_INITIATIVE, ds_writeb(ALWAYS_ZERO4, 0));
 	ds_writew(FIG_DISCARD, 0);
 	ds_writew(MAX_ENEMIES, 0);
 	ds_writew(IN_FIGHT, 0);
 	ds_writew(REQUEST_REFRESH, 1);
 	ds_writew(CURRENT_ANI, -1);
-	ds_writew(0x2ccb, -1);
+	ds_writew(AREA_PREPARED, -1);
 	ds_writew(TIMERS_DISABLED, 0);
 	ds_writew(AUTOFIGHT, 0);
 	ds_writeb(CHECK_PARTY, 1);
@@ -1188,7 +1188,7 @@ signed short do_fight(signed short fight_id)
 	update_mouse_cursor();
 
 	/* clear the screen */
-	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+	bc_memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 
 	refresh_colors();
 

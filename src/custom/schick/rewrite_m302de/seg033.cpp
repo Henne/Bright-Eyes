@@ -103,8 +103,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 			selected = -1;
 			do {
-				ds_writew(0x2ca2, (x + y < 15) ? 90 : -90);
-				ds_writew(0x2ca4, (x + y < 15) ? -30 : 30);
+				ds_writew(BASEPOS_X, (x + y < 15) ? 90 : -90);
+				ds_writew(BASEPOS_Y, (x + y < 15) ? -30 : 30);
 
 				/* prepare question with BP */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -112,7 +112,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					host_readbs(hero + HERO_BP_LEFT));
 
 				txt_tabpos_bak = ds_readws(TXT_TABPOS1);
-				ds_writews(TXT_TABPOS1, ds_readws(0x2ca2) + 204);
+				ds_writews(TXT_TABPOS1, ds_readws(BASEPOS_X) + 204);
 
 				refresh_screen_size();
 
@@ -128,7 +128,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_dtp(0x60));
 				}
 
-				if (host_readbs(hero + HERO_KK) * 110 <= host_readws(hero + HERO_LOAD)) {
+				if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 110 <= host_readws(hero + HERO_LOAD)) {
 					/* too much weight, use red color for "drop item" */
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
 						(char*)p_datseg + RED_STRING2,
@@ -156,8 +156,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				update_mouse_cursor();
 				ds_writew(TXT_TABPOS1, txt_tabpos_bak);
-				ds_writew(0x2ca2, 0);
-				ds_writew(0x2ca4, 0);
+				ds_writew(BASEPOS_X, 0);
+				ds_writew(BASEPOS_Y, 0);
 
 			} while (selected == -1);
 
@@ -168,14 +168,14 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				if (hero_unkn2(hero)) {
 					/* MU + 2 */
-					if (test_attrib(hero, 0, 2) > 0) {
+					if (test_attrib(hero, ATTRIB_MU, 2) > 0) {
 
 						/* unset this bit */
 						and_ptr_bs(hero + HERO_STATUS1, 0x7f);
 
-					} else if (host_readbs(hero + HERO_MU) > 4) {
+					} else if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_MU)) > 4) {
 						slot_nr = get_free_mod_slot();
-						set_mod_slot(slot_nr, HOURS(7), hero + HERO_MU, -2, (signed char)hero_pos);
+						set_mod_slot(slot_nr, HOURS(7), hero + (HERO_ATTRIB + 3 * ATTRIB_MU), -2, (signed char)hero_pos);
 					}
 				}
 
@@ -709,7 +709,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 
 						p_itemsdat = get_itemsdat(host_readws(hero + HERO_ITEM_RIGHT));
-						p_weapontab = p_datseg + 0x06b0 + 7 * host_readbs(p_itemsdat + 4);
+						p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
 
 						calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
 							(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
@@ -730,7 +730,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 
 					p_itemsdat = get_itemsdat(host_readws(hero + HERO_ITEM_RIGHT));
-					p_weapontab = p_datseg + 0x06b0 + 7 * host_readbs(p_itemsdat + 4);
+					p_weapontab = p_datseg + WEAPONS_TABLE + 7 * host_readbs(p_itemsdat + 4);
 
 					calc_damage_range(host_readbs(p_weapontab), 6, host_readbs(p_weapontab + 1),
 						(Bit8u*)&damage_lo, (Bit8u*)&damage_hi);
@@ -741,8 +741,8 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 						damage_hi += 5;
 					}
 
-					weapon_id = host_readbs(hero + HERO_KK)
-							+ host_readbs(hero + HERO_KK_MOD)
+					weapon_id = host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK))
+							+ host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))
 							- host_readbs(p_weapontab + 2);
 
 					if (weapon_id > 0) {
@@ -895,7 +895,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				if (GUI_bool(get_dtp(0xd0))) {
 					done = 1;
 					ds_writew(IN_FIGHT, 0);
-					ds_writew(0xc3c1, 7);
+					ds_writew(GAME_STATE, GAME_STATE_FIGQUIT);
 				}
 
 				update_mouse_cursor();

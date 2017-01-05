@@ -102,7 +102,7 @@ void DNG_door(signed short action)
 	signed short lockpick_pos;
 	signed short lockpick_result;
 
-	ptr = (struct dummy5*)Real2Host(ds_readd(0xe49c));
+	ptr = (struct dummy5*)Real2Host(ds_readd(DUNGEON_DOORS_BUF));
 	x = ds_readws(X_TARGET);
 	y = ds_readws(Y_TARGET);
 
@@ -138,26 +138,26 @@ void DNG_door(signed short action)
 						GUI_output(get_dtp(0x48));
 
 					} else if (!(ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && ds_readb(0x4168) != 4) &&
-							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(0x3ca7)) &&
+							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(DNG06_PITDOOR_FLAG)) &&
 							!(ds_readb(DUNGEON_INDEX) == 12 && ds_readb(DNG12_WATERTRAP_WATER_RUNS)))
 					{
 						/* for this door works an IRON KEY */
 						/* BEWARE: there are two of them */
 						if (ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && get_first_hero_with_item(209) != -1)
 						{
-							or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x02);
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02);
 						}
 
-						if (div16(host_readb(Real2Host(ds_readd(0xe488)) + (y << 4) + x)) == 1)
+						if (div16(host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 1)
 						{
 							/* the door is closed -> open it */
-							l4 = host_readb(Real2Host(ds_readd(0xe488)) + (y << 4) + x) & 0x02;
+							l4 = host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x) & 0x02;
 
 							if (l4 != 0 || !host_readbs((Bit8u*)ptr + 2))
 							{
-								and_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x0f);
-								or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x20);
-								ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(0xe488)) + (y << 4) + x));
+								and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f);
+								or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20);
+								ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 								DNG_open_door();
 
 								ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
@@ -171,16 +171,16 @@ void DNG_door(signed short action)
 								ds_writew(0xd011, 5);
 							}
 
-						} else if (div16(host_readbs(Real2Host(ds_readd(0xe488)) + (y << 4) + x)) == 2)
+						} else if (div16(host_readbs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x)) == 2)
 						{
 
 							/* the door is open -> close it */
 							DNG_close_door();
 
-							and_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x0f);
-							or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x12);
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f);
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x12);
 
-							ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(0xe488)) + (y << 4) + x));
+							ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							ds_writew(0xd011, 1);
 						}
 					}
@@ -189,11 +189,11 @@ void DNG_door(signed short action)
 
 					if (check_heros_KK(host_readbs((Bit8u*)ptr + 2)))
 					{
-						and_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x0f);
-						or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x90);
+						and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f);
+						or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x90);
 
-						ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(0xe488)) + (y << 4) + x));
-						ds_writew(0xe482, -1);
+						ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
+						ds_writew(DNG_REFRESH_DIRECTION, -1);
 					}
 
 					sub_hero_le(Real2Host(get_first_hero_available_in_group()), 1);
@@ -215,7 +215,7 @@ void DNG_door(signed short action)
 				{
 					if (lockpick_pos != -2)
 					{
-						lockpick_result = test_skill(hero, 48, host_readbs((Bit8u*)ptr + 3));
+						lockpick_result = test_skill(hero, TA_SCHLOESSER, host_readbs((Bit8u*)ptr + 3));
 
 						play_voc(ARCHIVE_FILE_FX11_VOC);
 
@@ -238,9 +238,9 @@ void DNG_door(signed short action)
 
 						} else {
 							/* success => the door opens */
-							and_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x0f);
-							or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x20);
-							ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(0xe488)) + (y << 4) + x));
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f);
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20);
+							ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							DNG_open_door();
 
 							add_hero_ap(hero, 1L);
@@ -294,9 +294,9 @@ void DNG_door(signed short action)
 							sub_ae_splash(hero, get_spell_cost(28, 0));
 
 							/* success => the door opens */
-							and_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x0f);
-							or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x20);
-							ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(0xe488)) + (y << 4) + x));
+							and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x0f);
+							or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x20);
+							ds_writeb(0xbd4d, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 							DNG_open_door();
 
 							add_hero_ap(hero, 1L);
@@ -336,8 +336,8 @@ void DNG_fallpit_test(signed short max_damage)
 
 	play_voc(ARCHIVE_FILE_FX18_VOC);
 
-	and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
-	or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x60);
+	and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+	or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x60);
 
 	if (ds_readb(DUNGEON_LIGHT) != 0)
 	{
@@ -347,8 +347,8 @@ void DNG_fallpit_test(signed short max_damage)
 		/* drop one level down */
 		DNG_inc_level();
 
-		and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
-		or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
+		and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+		or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
 
 		/* damage the heros */
 		hero = get_hero(0);
@@ -369,8 +369,8 @@ void DNG_fallpit_test(signed short max_damage)
 			inc_ds_bs_post(DUNGEON_LEVEL);
 			load_area_description(1);
 
-			and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
-			or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
+			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
 
 			/* move one level up. Why? */
 			dec_ds_bs_post(DUNGEON_LEVEL);
@@ -382,8 +382,8 @@ void DNG_fallpit_test(signed short max_damage)
 
 			DNG_update_pos();
 		} else {
-			and_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
-			or_ptr_bs(Real2Host(ds_readd(0xe488)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
+			and_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x0f);
+			or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (ds_readws(Y_TARGET) << 4) + ds_readws(X_TARGET), 0x50);
 		}
 	}
 }
@@ -425,7 +425,7 @@ signed short DNG_step(void)
 		draw_main_screen();
 		GUI_print_loc_line(get_dtp(0x00));
 		ds_writew(REQUEST_REFRESH, ds_writew(0xd013, 0));
-		ds_writew(0xe486, -1);
+		ds_writew(DNG_REFRESH_X_TARGET, -1);
 	}
 
 	if (ds_readw(0xd013) != 0 && ds_readb(PP20_INDEX) == 0)
@@ -434,9 +434,9 @@ signed short DNG_step(void)
 		ds_writew(0xd013, 0);
 	}
 
-	if (ds_readbs(DIRECTION) != ds_readws(0xe482) ||
-		ds_readws(X_TARGET) != ds_readws(0xe486) ||
-		ds_readws(Y_TARGET) != ds_readws(0xe484))
+	if (ds_readbs(DIRECTION) != ds_readws(DNG_REFRESH_DIRECTION) ||
+		ds_readws(X_TARGET) != ds_readws(DNG_REFRESH_X_TARGET) ||
+		ds_readws(Y_TARGET) != ds_readws(DNG_REFRESH_Y_TARGET))
 	{
 		DNG_update_pos();
 		set_automap_tiles(ds_readws(X_TARGET), ds_readws(Y_TARGET));
@@ -457,7 +457,7 @@ signed short DNG_step(void)
 
 	handle_gui_input();
 
-	if (ds_readw(0xc3d3) != 0 || ds_readws(ACTION) == 73)
+	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
 	{
 		tw_bak = ds_readws(TEXTBOX_WIDTH);
 		ds_writew(TEXTBOX_WIDTH, 3);
@@ -530,12 +530,12 @@ signed short DNG_step(void)
 	{
 		if (select_magic_user() > 0)
 		{
-			ds_writew(0xe482, -1);
+			ds_writew(DNG_REFRESH_DIRECTION, -1);
 		}
 
 	} else if (ds_readws(ACTION) == 135 && ds_readw(0xd011) == 0)
 	{
-		ds_writeb(LOCATION, 18);
+		ds_writeb(LOCATION, LOCATION_CITYCAMP);
 		ds_writeb(0xbd27, 0);
 		l_di = 1;
 
@@ -608,7 +608,7 @@ signed short DNG_step(void)
 					case 3:	x--; break;
 				}
 
-				or_ptr_bs(Real2Host(ds_readd(0xe488)) + (y << 4) + x, 0x02);
+				or_ptr_bs(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x, 0x02);
 			}
 		} else if (ds_readws(ACTION) == 135 && (!ds_readb(DNG15_LEVER_SOUTH) || !ds_readb(DNG15_LEVER_NORTH)))
 		{
@@ -617,7 +617,7 @@ signed short DNG_step(void)
 	}
 
 	if (ds_readb(DUNGEON_INDEX) != 0 &&
-		ds_readbs(0x2ca6) != -1 &&
+		ds_readbs(DNG_AREA_LOADED) != -1 &&
 		!l_di)
 	{
 		DNG_see_stairs();
@@ -646,7 +646,7 @@ void DNG_see_stairs(void)
 {
 	signed short target_pos;
 	stair_struct *stair_ptr;
-	stair_ptr = (stair_struct*)Real2Host(ds_readd(0xe498));
+	stair_ptr = (stair_struct*)Real2Host(ds_readd(DUNGEON_STAIRS_BUF));
 
 	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 
@@ -752,15 +752,15 @@ void do_dungeon(void)
 {
 	signed short tw_bak;
 
-	if (ds_readbs(0x2ca6) != ds_readbs(DUNGEON_INDEX) || ds_readws(0x2ccb) != 0 || ds_readws(0xd00f) != 0)
+	if (ds_readbs(DNG_AREA_LOADED) != ds_readbs(DUNGEON_INDEX) || ds_readws(AREA_PREPARED) != 0 || ds_readws(0xd00f) != 0)
 	{
-		ds_writed(0xe488, (Bit32u)RealMake(datseg, 0xbd95));
+		ds_writed(DNG_MAP_PTR, (Bit32u)RealMake(datseg, DNG_MAP));
 
 		seg028_0555(0);
 
 		set_audio_track(ARCHIVE_FILE_DUNGEON_XMI);
 
-		ds_writed(0xe48d, (Bit32u)RealMake(datseg, (!ds_readb(0x3616) ? 0x7dea : (ds_readb(0x3616) == 1 ? 0x8a4a : 0x841a))));
+		ds_writed(0xe48d, (Bit32u)RealMake(datseg, (!ds_readb(DUNGEON_TYPE) ? 0x7dea : (ds_readb(DUNGEON_TYPE) == 1 ? 0x8a4a : 0x841a))));
 
 		ds_writew(0xd00f, 0);
 		ds_writew(REQUEST_REFRESH, 1);
@@ -793,7 +793,7 @@ void DNG_fight(void)
 	signed short target_pos;
 	struct fight_struct *fight_ptr;
 
-	fight_ptr = (struct fight_struct*)Real2Host(ds_readd(0xe494));
+	fight_ptr = (struct fight_struct*)Real2Host(ds_readd(DUNGEON_FIGHTS_BUF));
 
 	target_pos = 4096 * ds_readbs(DUNGEON_LEVEL) + 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 

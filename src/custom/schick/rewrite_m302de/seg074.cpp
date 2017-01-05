@@ -39,7 +39,7 @@ void show_automap(void)
 	signed short textbox_width_bak;
 
 	if (!ds_readb(DUNGEON_LIGHT) ||
-		((ds_readbs(DUNGEON_LIGHT) == 1) && (test_skill(Real2Host(get_first_hero_available_in_group()), 28, 6) > 0)))
+		((ds_readbs(DUNGEON_LIGHT) == 1) && (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 6) > 0)))
 	{
 
 		ds_writeb(0x45b8, 1);
@@ -52,7 +52,7 @@ void show_automap(void)
 		textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 		ds_writew(TEXTBOX_WIDTH, 3);
 
-		l_si = (ds_readb(0xbd94) == 16) ? 0 :
+		l_si = (ds_readb(DNG_MAP_SIZE) == 16) ? 0 :
 				((ds_readws(X_TARGET) - 8 < 0) ? 0 :
 				((ds_readws(X_TARGET) - 8 > 15) ? 16 : ds_readws(X_TARGET) - 8));
 
@@ -70,7 +70,7 @@ void show_automap(void)
 				draw_main_screen();
 				ds_writeb(LOCATION, (signed char)loc_bak);
 
-				if (ds_readb(0xbd94) == 16) {
+				if (ds_readb(DNG_MAP_SIZE) == 16) {
 					draw_loc_icons(1, 8);
 				} else {
 					draw_loc_icons(3, 27, 26, 8);
@@ -87,12 +87,12 @@ void show_automap(void)
 
 			handle_gui_input();
 
-			if ((ds_readw(0xc3d3) != 0) || (ds_readw(ACTION) == 73)) {
+			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
-				if (ds_readb(0xbd94) == 16) {
+				if (ds_readb(DNG_MAP_SIZE) == 16) {
 					l_di = GUI_radio(get_ltx(0x990), 1, get_ltx(0x994)) - 1;
 				} else {
-					ds_writew(0xe5ac, 2);
+					ds_writew(MENU_DEFAULT_SELECT, 2);
 					l_di = GUI_radio(get_ltx(0x990), 3,
 								 get_ltx(0x998),
 								 get_ltx(0x99c),
@@ -104,7 +104,7 @@ void show_automap(void)
 				}
 			}
 
-			if (ds_readb(0xbd94) != 16) {
+			if (ds_readb(DNG_MAP_SIZE) != 16) {
 
 				if ((ds_readws(ACTION) == 129) || (ds_readws(ACTION) == 75)) {
 
@@ -123,8 +123,8 @@ void show_automap(void)
 				}
 			}
 
-			if (((ds_readws(ACTION) == 129) && (ds_readb(0xbd94) == 16)) ||
-				((ds_readws(ACTION) == 131) && (ds_readb(0xbd94) != 16)))
+			if (((ds_readws(ACTION) == 129) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
+				((ds_readws(ACTION) == 131) && (ds_readb(DNG_MAP_SIZE) != 16)))
 			{
 				done = 1;
 			}
@@ -142,7 +142,7 @@ void show_automap(void)
 
 unsigned short is_discovered(signed short x, signed short y)
 {
-	return ds_readb(0xe442 + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
+	return ds_readb(AUTOMAP_BUF + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
 }
 
 /**
@@ -155,7 +155,7 @@ unsigned short is_discovered(signed short x, signed short y)
  */
 unsigned short get_mapval_small(signed short x, signed short y)
 {
-	Bit8u *map = p_datseg + 0xbd95;
+	Bit8u *map = p_datseg + DNG_MAP;
 
 	return host_readb(map + 16 * y + x);
 }
@@ -170,7 +170,7 @@ unsigned short get_mapval_small(signed short x, signed short y)
  */
 unsigned short get_mapval_large(signed short x, signed short y)
 {
-	Bit8u *map = p_datseg + 0xbd95;
+	Bit8u *map = p_datseg + DNG_MAP;
 
 	return host_readb(map + 32 * y + x);
 }
@@ -236,7 +236,7 @@ void seg074_305(signed short x_off)
 				} else {
 
 					if (!(l_si = seg074_bbb(x + x_off, y))) {
-						l_si = get_border_index((ds_readb(0xbd94) == 16) ?
+						l_si = get_border_index((ds_readb(DNG_MAP_SIZE) == 16) ?
 										get_mapval_small(x, y) :
 										get_mapval_large(x + x_off, y));
 					}
@@ -256,7 +256,7 @@ void seg074_305(signed short x_off)
 
 					if ((l_si != 0) && (l_si != 7) && (l_si != 6) && (l_si != 8)) {
 
-						loc1 = (ds_readb(0xbd94) == 16) ?
+						loc1 = (ds_readb(DNG_MAP_SIZE) == 16) ?
 										get_mapval_small(x, y) :
 										get_mapval_large(x + x_off, y);
 
@@ -457,7 +457,7 @@ void draw_automap_to_screen(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 134);
 
-	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(0xd2ff) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
+	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(FRAMEBUF_PTR) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
 
 	update_mouse_cursor();
 
@@ -467,7 +467,7 @@ void draw_automap_to_screen(void)
 
 	refresh_screen_size();
 
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	/* restore screen coordinates */
 	*(struct dummy*)(p_datseg + PIC_COPY_DS_RECT) = bak;
@@ -496,7 +496,7 @@ signed short select_teleport_dest(void)
 	town = ds_readbs(CURRENT_TOWN);
 	ds_writeb(CURRENT_TOWN, ds_writeb(DUNGEON_INDEX, 0));
 
-	l_si = ((ds_readb(0xbd94) == 16) ? 0 :
+	l_si = ((ds_readb(DNG_MAP_SIZE) == 16) ? 0 :
 			((ds_readws(X_TARGET) - 8 < 0) ? 0 :
 			((ds_readws(X_TARGET) - 8 > 15) ? 16 : ds_readws(X_TARGET) - 8)));
 
@@ -515,7 +515,7 @@ signed short select_teleport_dest(void)
 
 	set_ani_pal(p_datseg + 0x7d0e);
 
-	if (ds_readb(0xbd94) == 16) {
+	if (ds_readb(DNG_MAP_SIZE) == 16) {
 		draw_loc_icons(1, 11);
 	} else {
 		draw_loc_icons(3, 27, 26, 11);
@@ -526,9 +526,9 @@ signed short select_teleport_dest(void)
 	do {
 		handle_input();
 
-		if ((ds_readw(0xc3d3) != 0) || (ds_readw(ACTION) == 73)) {
+		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
-			if (ds_readb(0xbd94) == 16) {
+			if (ds_readb(DNG_MAP_SIZE) == 16) {
 				answer = GUI_radio(get_ltx(0x9a0), 1, get_ltx(0x9a4)) - 1;
 			} else {
 				answer = GUI_radio(get_ltx(0x9a0), 3,
@@ -559,7 +559,7 @@ signed short select_teleport_dest(void)
 			draw_automap_to_screen();
 
 		} else if ((ds_readw(ACTION) == 77) &&
-			(ds_readb(0xbd94) - 1 > ds_readws(0x7de5)) &&
+			(ds_readb(DNG_MAP_SIZE) - 1 > ds_readws(0x7de5)) &&
 			is_discovered(ds_readws(0x7de5) + 1, ds_readws(0x7de7)))
 		{
 			inc_ds_ws(0x7de5);
@@ -575,7 +575,7 @@ signed short select_teleport_dest(void)
 			draw_automap_to_screen();
 		}
 
-		if (ds_readb(0xbd94) != 16) {
+		if (ds_readb(DNG_MAP_SIZE) != 16) {
 
 			if ((ds_readw(ACTION) == 129) && (l_si > 0)) {
 				seg074_305(--l_si);
@@ -588,8 +588,8 @@ signed short select_teleport_dest(void)
 			}
 		}
 
-		if (((ds_readw(ACTION) == 129) && (ds_readb(0xbd94) == 16)) ||
-			((ds_readw(ACTION) == 131) && (ds_readb(0xbd94) != 16)))
+		if (((ds_readw(ACTION) == 129) && (ds_readb(DNG_MAP_SIZE) == 16)) ||
+			((ds_readw(ACTION) == 131) && (ds_readb(DNG_MAP_SIZE) != 16)))
 		{
 			done = 1;
 		}
@@ -597,7 +597,7 @@ signed short select_teleport_dest(void)
 
 	} while (done == 0);
 
-	l_di = (ds_readb(0xbd94) == 16) ?
+	l_di = (ds_readb(DNG_MAP_SIZE) == 16) ?
 		get_mapval_small(ds_readws(0x7de5), ds_readws(0x7de7)) :
 		get_mapval_large(ds_readws(0x7de5), ds_readws(0x7de7));
 

@@ -38,7 +38,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 			!hero_dead(hero))
 		{
 
-			if (test_skill(hero, 14, mod) <= 0) {
+			if (test_skill(hero, TA_SCHWIMMEN, mod) <= 0) {
 				/* swimming failed */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_dtp(0xa8),
@@ -63,7 +63,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 	}
 
 	ds_writew(X_TARGET, dest_x);
-	ds_writews(0xe482, -1);
+	ds_writews(DNG_REFRESH_DIRECTION, -1);
 
 }
 
@@ -189,7 +189,7 @@ void DNG15_riddle(void)
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 8);
 
-	ptr = p_datseg + 0xbd95;
+	ptr = p_datseg + DNG_MAP;
 
 	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 

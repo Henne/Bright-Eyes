@@ -44,7 +44,7 @@ signed short DNG10_handler(void)
 	Bit8u *amap_ptr;
 	Bit32s p_money;
 
-	amap_ptr = p_datseg + 0xbd95;
+	amap_ptr = p_datseg + DNG_MAP;
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 7);
 
@@ -74,7 +74,7 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x801 && target_pos != ds_readws(0x330e))
 	{
 		/* another hole in a wall with a lever for a trap */
-		if ((ds_readb(DNG10_LEVER_FOUND) != 0) || test_skill(hero, 51, 7) > 0)
+		if ((ds_readb(DNG10_LEVER_FOUND) != 0) || test_skill(hero, TA_SINNESSCHAERFE, 7) > 0)
 		{
 			or_ds_bs(DNG10_LEVER_FOUND, 1);
 
@@ -122,7 +122,7 @@ signed short DNG10_handler(void)
 			ds_readbs(DIRECTION) == 3)
 	{
 		/* TRAP: a loose stone in a wall */
-		if (ds_readb(DNG10_HOLE_STATE) != 0 || test_skill(hero, 51, 5) > 0)
+		if (ds_readb(DNG10_HOLE_STATE) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
 		{
 			/* Original-Bug: ??? */
 			ds_writeb(DNG10_HOLE_STATE, 1);
@@ -166,14 +166,14 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x108 && target_pos != ds_readws(0x330e))
 	{
 		/* TRAP: a floorplate */
-		if (ds_readb(DNG10_FLOORPLATE_FOUND) != 0 || test_skill(hero, 51, 5) > 0)
+		if (ds_readb(DNG10_FLOORPLATE_FOUND) != 0 || test_skill(hero, TA_SINNESSCHAERFE, 5) > 0)
 		{
 			ds_writeb(DNG10_FLOORPLATE_FOUND, 1);
 
 			/* Original-Bug: ???*/
 			/* Damage only happens here when the leader of the group tries to disable this trap.
 			   If the trap is not found or left alone nobody gets damaged. Weird! */
-			if (GUI_bool(get_dtp(0x34)) && test_skill(hero, 48, 7) <= 0)
+			if (GUI_bool(get_dtp(0x34)) && test_skill(hero, TA_SCHLOESSER, 7) <= 0)
 			{
 				if (ds_readb(DNG10_FLOORPLATE_LOADS) != 0)
 				{
@@ -229,7 +229,7 @@ signed short DNG10_handler(void)
 			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0xa0d))));
 			ds_writew(0x330e, 0);
 
-			if (!do_fight(253))
+			if (!do_fight(FIGHTS_F129_17))
 			{
 				ds_writeb(DNG10_HESHTOT, 1);
 			}
@@ -285,7 +285,7 @@ signed short DNG10_handler(void)
 		ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x1533));
 		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x1c13));
 		ds_writew(FIG_DISCARD, 1);
-		do_fight(111);
+		do_fight(FIGHTS_F129_21);
 
 	} else if (target_pos == 0x110c && target_pos != ds_readws(0x330e) && ds_readbs(DIRECTION) == 2)
 	{
@@ -297,7 +297,7 @@ signed short DNG10_handler(void)
 		/* FIGHT: get PLATINKEY for the dragon */
 		ds_writew((0xd325 + 0), ds_writew((0xd325 + 6), 0x190a));
 		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x190a));
-		do_fight(117);
+		do_fight(FIGHTS_F129_29);
 
 	} else if (target_pos == 0x2c0c && target_pos != ds_readws(0x330e))
 	{
@@ -337,7 +337,7 @@ signed short DNG10_handler(void)
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
-						test_skill(hero, 13, host_readbs(hero + HERO_RS_BONUS1) + 3) <= 0)
+						test_skill(hero, TA_SCHLEICHEN, host_readbs(hero + HERO_RS_BONUS1) + 3) <= 0)
 					{
 						result++;
 					}
@@ -417,7 +417,7 @@ signed short DNG10_handler(void)
 	{
 		leave_dungeon();
 
-		ds_writeb(CURRENT_TOWN, ds_readbs(0x4338));
+		ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
 		ds_writew(X_TARGET, ds_readws(0x433a));
 		ds_writew(Y_TARGET, ds_readws(0x433c));
 		ds_writeb(LOCATION, 0);
@@ -425,7 +425,7 @@ signed short DNG10_handler(void)
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xa0),
-			(char*)get_ltx(4 * (ds_readw(0x434a) + 0xeb)));
+			(char*)get_ltx(4 * (ds_readw(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 

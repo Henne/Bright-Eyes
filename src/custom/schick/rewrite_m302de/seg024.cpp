@@ -52,15 +52,15 @@ void diary_show(void)
 
 	ds_writeb(0x45b8, 1);
 	ds_writew(WALLCLOCK_UPDATE, 0);
-	ds_writew(0x2ccb, 0xffff);
-	ds_writed(0xcecb, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
+	ds_writew(AREA_PREPARED, 0xffff);
+	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
 
 	load_pp20(ARCHIVE_FILE_BUCH_DAT);
 	ds_writeb(PP20_INDEX, ARCHIVE_FILE_BUCH_DAT);
 
 	get_textcolor(&fg_bak, &bg_bak);
 
-	ds_writed(0xd2fb, ds_readd(BUFFER9_PTR));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER9_PTR));
 	bak1 = ds_readw(0xd2d5);
 	bak2 = ds_readw(0xd2d9);
 	txt_tabpos1_bak = ds_readw(TXT_TABPOS1);
@@ -83,7 +83,7 @@ void diary_show(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	update_mouse_cursor();
 
@@ -95,7 +95,7 @@ void diary_show(void)
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(PIC_COPY_DST, ds_writed(0xd2fb, ds_readd(0xd2ff)));
+	ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR)));
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);

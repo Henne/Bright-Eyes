@@ -217,7 +217,7 @@ signed short plan_alchemy(Bit8u *hero)
 							retval = 0;
 					} else {
 
-						if ((ds_readbs(LOCATION) == 7) && (ds_readbs(SLEEP_QUALITY) == -1)) {
+						if ((ds_readbs(LOCATION) == LOCATION_INN) && (ds_readbs(SLEEP_QUALITY) == -1)) {
 
 							GUI_output(get_ltx(0x568));
 
@@ -225,7 +225,7 @@ signed short plan_alchemy(Bit8u *hero)
 						}
 
 						/* check if the alchemic process takes more than 8h */
-						if ((ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != 7)) {
+						if ((ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_dtp(0xb0),
 									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
@@ -235,7 +235,7 @@ signed short plan_alchemy(Bit8u *hero)
 									retval = 0;
 						} else {
 							if ((ds_readbs(TOTAL_HERO_COUNTER) > 1) &&
-								(ds_readbs(LOCATION) != 6) &&
+								(ds_readbs(LOCATION) != LOCATION_WILDCAMP) &&
 								(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8))
 							{
 
@@ -265,7 +265,7 @@ signed short plan_alchemy(Bit8u *hero)
 							if (l4 == 1) {
 								timewarp(ds_readbs((ALCHEMY_RECIPES+27) + recipe_index *28) * 0x1518L);
 
-								if (ds_readbs(LOCATION) != 6) {
+								if (ds_readbs(LOCATION) != LOCATION_WILDCAMP) {
 									hero_p = get_hero(0);
 									for (i = 0; i <= 6; i++, hero_p += SIZEOF_HERO) {
 										if ((host_readbs(hero_p + HERO_TYPE) != HERO_TYPE_NONE) &&
@@ -427,9 +427,9 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			/* set timer */
 			host_writed(patient + HERO_HEAL_TIMER, 0x5460);
 
-			if ((flag != 0) || (test_skill(healer, 45, (signed char)handycap) > 0)) {
+			if ((flag != 0) || (test_skill(healer, TA_HEILEN_KRANKH, (signed char)handycap) > 0)) {
 
-				if (((retval = test_skill(healer, 45, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
+				if (((retval = test_skill(healer, TA_HEILEN_KRANKH, ds_readbs(DISEASE_PRICES + 2 * disease) + handycap)) > 0) &&
 					(disease != 1) && (disease != 3))
 				{
 
@@ -546,12 +546,12 @@ signed short get_skilled_hero_pos(signed short skill)
 			(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)))
 		{
 
-			cur =	host_readbs(hero + HERO_MU + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
-				host_readbs(hero + HERO_MU + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
-				host_readbs(hero + HERO_MU_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
+			cur =	host_readbs(hero + HERO_ATTRIB + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs(SKILL_DESCRIPTIONS + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 1) + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
+				host_readbs(hero + HERO_ATTRIB_MOD + 3 * (ds_readbs((SKILL_DESCRIPTIONS + 2) + 4 * skill))) +
 				host_readbs(hero + HERO_TA_FIGHT + skill);
 
 			if (cur > max) {

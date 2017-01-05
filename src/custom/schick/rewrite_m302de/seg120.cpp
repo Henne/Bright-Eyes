@@ -130,7 +130,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 					/* one of the other heros must pass CH+0 */
 					if ((l_di != hero_pos) &&
-						(test_attrib(get_hero(l_di), 2, 0) != 0))
+						(test_attrib(get_hero(l_di), ATTRIB_CH, 0) != 0))
 					{
 						done = 1;
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -289,7 +289,7 @@ signed short init_memory(void)
 	}
 
 	/* set the pointer for the framebuffer */
-	ds_writed(0xd2fb, ds_writed(0xd2ff, (Bit32u)RealMake(0xa000, 0x0000)));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0xa000, 0x0000)));
 
 	/* allocate small chunks of memory */
 	ds_writed(ITEMSNAME,		(Bit32u)schick_alloc_emu(1016));
@@ -301,9 +301,9 @@ signed short init_memory(void)
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_MON,		(Bit32u)schick_alloc_emu(432));
 	ds_writed(HEROS,		(Bit32u)schick_alloc_emu(7 * SIZEOF_HERO));
-	ds_writed(0xe494,		(Bit32u)schick_alloc_emu(630));
-	ds_writed(0xe49c,		(Bit32u)schick_alloc_emu(225));
-	ds_writed(0xe498,		(Bit32u)schick_alloc_emu(80));
+	ds_writed(DUNGEON_FIGHTS_BUF,		(Bit32u)schick_alloc_emu(630));
+	ds_writed(DUNGEON_DOORS_BUF,		(Bit32u)schick_alloc_emu(225));
+	ds_writed(DUNGEON_STAIRS_BUF,		(Bit32u)schick_alloc_emu(80));
 	ds_writed(BUF_FONT6,		(Bit32u)schick_alloc_emu(592));
 	ds_writed(SPLASH_BUFFER,		(Bit32u)schick_alloc_emu(1000));
 	ds_writed(0xd299,		(Bit32u)schick_alloc_emu(500));
@@ -407,7 +407,7 @@ void init_game_state(void)
 
 	ds_writeb(0x2d9f, 0);
 	/* Travia Temple in Thorwal */
-	ds_writeb(LOCATION, 2);
+	ds_writeb(LOCATION, LOCATION_TEMPLE);
 	ds_writew(TYPEINDEX, 1);
 	ds_writew(0x2d83, 9);
 	ds_writew(0x2d85, 9);
@@ -430,7 +430,7 @@ void init_game_state(void)
 	ds_writeb(MONTH, 1);
 	ds_writeb(YEAR, 15);
 
-	ds_writed(PIC_COPY_DST, ds_readd(0xd2ff));
+	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	load_objects_nvf();
 	passages_init();
@@ -694,13 +694,13 @@ void game_over_screen(void)
 	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
 
-	bc_memcpy((RealPt)ds_readd(0xd2ff), (RealPt)ds_readd(BUFFER1_PTR), 64000);
+	bc_memcpy((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(BUFFER1_PTR), 64000);
 
 	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64002, 0x00, 0x40);
 
 	wait_for_keypress();
 
-	bc_memset((RealPt)ds_readd(0xd2ff), 0, 64000);
+	bc_memset((RealPt)ds_readd(FRAMEBUF_PTR), 0, 64000);
 
 	wait_for_vsync();
 
