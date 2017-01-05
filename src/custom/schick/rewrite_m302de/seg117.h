@@ -2,7 +2,6 @@
 namespace M302de {
 #endif
 
-
 #if !defined(__BORLANDC__)
 /* static */
 void pause_traveling(signed short);

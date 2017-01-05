@@ -90,6 +90,9 @@ Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
  * \return              the first byte of the sequence from ANI.DAT {0,1,2,3,4}
  */
 /* Borlandified and identical */
+#if defined(__BORLANDC__)
+static
+#endif
 Bit8s get_seq_header(Bit16s ani)
 {
 	Bit8u *p_start, *p_seq;

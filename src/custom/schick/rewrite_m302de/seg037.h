@@ -3,6 +3,7 @@ namespace M302de {
 #endif
 
 #if !defined(__BORLANDC__)
+/* static */
 signed short copy_ani_stuff(Bit8u*, signed short, signed short);
 #endif
 
