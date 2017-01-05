@@ -3,9 +3,9 @@
 
 	public _decomp_pp20
 
-pp20		segment	dword public 'CODE'
+pp20		segment	byte public 'CODE'
 		assume cs:pp20
-		assume es:nothing, ss:nothing, ds:@DATA
+		assume es:nothing, ss:@DATA, ds:@DATA
 
 NOP3		MACRO
 		nop

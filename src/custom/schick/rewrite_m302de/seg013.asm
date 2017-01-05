@@ -1,4 +1,5 @@
-.MODEL LARGE
+.186
+.model large
 
 ; define a macro for generating the request sections
 GEN_REQ	MACRO dummy1, function, redbook, dummy4, dummy6
@@ -15,10 +16,11 @@ GEN_REQ	MACRO dummy1, function, redbook, dummy4, dummy6
 		db 7 dup (0)
 	ENDM
 
-.FARDATA
 	public _req
 	public _cd_buf1
 	public _cd_buf2
+
+.FARDATA
 
 ;genterate the request sections
 _req db 16h, 0, 85h, 0h, 0h, 0h,0h,0h,0h,0h,0h,0h,0h, 0h, 0h,0h,0h,0h, 0h, 0h,0h, 0h,0h,0h,0h,0h,0h,0h
@@ -44,4 +46,4 @@ req8 db 16h, 0, 0ch, 0h, 0h, 0h,0h,0h,0h,0h,0h,0h,0h, 0h, 0h,0h,0h,0h, 1h, 0h,0h
 _cd_buf1 db 804 dup (0)			;another buffer
 _cd_buf2 db 20 dup (0)			;buffer for IOCTL
 
-END
+end

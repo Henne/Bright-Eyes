@@ -25,7 +25,7 @@
 
 Rasterlib	segment	byte public 'CODE'
 		assume cs:Rasterlib
-		assume es:nothing, ss:nothing, ds:@DATA
+		assume es:nothing, ss:@DATA, ds:@DATA
 
 
 _swap_u16	proc far

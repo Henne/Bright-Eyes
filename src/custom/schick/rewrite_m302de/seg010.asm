@@ -10,9 +10,8 @@
 ;	TODO:	- Two calls to F_LXULSH
 ;		- Adresses of variables
 
-DOSSEG
-
-.MODEL LARGE
+.186
+.model large
 
 ;EXTRN EMS_SEG:WORD, EMS_OFF:WORD, EMM_SIG:BYTE
 EMM_SIG	EQU 4BA2h
@@ -26,9 +25,9 @@ EMS_SEG EQU 4BACh
 	public _EMS_norm_ptr
 	public _EMS_init
 
-.DATA
-
-.CODE
+EMS_lib	segment byte public 'CODE'
+	assume cs:EMS_lib
+	assume es:nothing, ss:@DATA, ds:@DATA
 
 EMS_installed PROC NEAR
 	push bp
@@ -231,4 +230,5 @@ _done4:
 	pop bp
 	retf
 _EMS_init ENDP
+EMS_lib		ends
 	END
