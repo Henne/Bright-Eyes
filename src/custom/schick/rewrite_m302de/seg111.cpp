@@ -32,11 +32,11 @@ namespace M302de {
 
 void tevent_053(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 1) > 0 && !ds_readb(0x3dc6)) ||
-		ds_readbs(0x3dc6) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 1) > 0 && !ds_readb(TEVENT053_FLAG)) ||
+		ds_readbs(TEVENT053_FLAG) != 0)
 	{
 		TRV_found_camp_place(0);
-		ds_writeb(0x3dc6, 1);
+		ds_writeb(TEVENT053_FLAG, 1);
 	}
 
 }
@@ -148,11 +148,11 @@ void tevent_057(void)
 
 void tevent_058(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3dc7)) ||
-		ds_readbs(0x3dc7) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT058_FLAG)) ||
+		ds_readbs(TEVENT058_FLAG) != 0)
 	{
 		TRV_found_replenish_place(0);
-		ds_writeb(0x3dc7, 1);
+		ds_writeb(TEVENT058_FLAG, 1);
 	}
 
 }
@@ -384,9 +384,9 @@ void tevent_061(void)
 
 	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 6) > 0 &&
 		test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 3) > 0 &&
-		!ds_readb(0x3dc8))
+		!ds_readb(TEVENT061_FLAG))
 	{
-		ds_writeb(0x3dc8, 1);
+		ds_writeb(TEVENT061_FLAG, 1);
 
 		/* TODO: is this correct ? */
 		if (!TRV_follow_trail_question()) {
@@ -408,7 +408,7 @@ void tevent_061(void)
 			}
 		}
 
-	} else if (ds_readb(0x3dc8) != 0) {
+	} else if (ds_readb(TEVENT061_FLAG) != 0) {
 
 		load_in_head(53);
 
@@ -488,45 +488,45 @@ void tevent_063(void)
 /* Gorahs place */
 void tevent_064(void)
 {
-	signed short l_si;
-	signed short l_di;
+	signed short answer;
+	signed short result;
 	signed short i;
-	signed short l3;
-	signed short l4;
+	signed short approach_flag;
+	signed short silentium_flag;
 	Bit8u *hero;
 
-	l3 = 0;
-	l4 = 0;
+	approach_flag = 0;
+	silentium_flag = 0;
 
-	if (!ds_readb(0x3dc9) && ds_readb(UMBRIK_QUEST_GORAH) != 0) {
+	if (!ds_readb(TEVENT064_FLAG) && ds_readb(UMBRIK_QUEST_GORAH) != 0) {
 
 		do {
 
 			do {
-				l_si = GUI_radio(l4 != 0 ? get_city(0x198) : get_city(0xc4), 3,
+				answer = GUI_radio(silentium_flag != 0 ? get_city(0x198) : get_city(0xc4), 3,
 							get_city(0xc8),
 							get_city(0xcc),
 							get_city(0xd0));
-			} while (l_si == -1);
+			} while (answer == -1);
 
-			if (l_si == 1) {
+			if (answer == 1) {
 
 				hero = get_hero(select_hero_ok_forced(get_ltx(0x4f4)));
 
 				if (host_readbs(hero + HERO_TYPE) < 7) {
 					GUI_output(get_ltx(0x528));
 				} else {
-					l3 = 1;
+					approach_flag = 1;
 				}
 
-				if (l3 == 0) {
-					l3 = 1;
+				if (approach_flag == 0) {
+					approach_flag = 1;
 				} else {
 					if (test_spell(hero, 84, 0) > 0) {
 
 						sub_ae_splash(hero, 2);
 
-						ds_writeb(0x3dd3, 1);
+						ds_writeb(TEVENT064_SILENT_FLAG, 1);
 
 						GUI_output(get_city(0xd4));
 					} else {
@@ -536,138 +536,139 @@ void tevent_064(void)
 					}
 				}
 
-			} else if (l_si == 2) {
+			} else if (answer == 2) {
 
-				l3 = 1;
+				approach_flag = 1;
 
 				GUI_output(get_city(0xd8));
 
 				hero = get_hero(0);
 
-				for (i = l_di = 0; i <= 6; i++, hero += SIZEOF_HERO) {
+				for (i = result = 0; i <= 6; i++, hero += SIZEOF_HERO) {
 
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero) &&
 						test_skill(hero, TA_SCHLEICHEN, 0) <= 0)
 					{
-						l_di++;
+						result++;
 					}
 				}
 
-				if (l_di > 1) {
-					ds_writeb(0x3dd3, 1);
+				if (result > 1) {
+				    /* test failed for at least one hero */
+					ds_writeb(TEVENT064_SILENT_FLAG, 1);
 				}
 
 			} else {
 
-				l3 = 1;
+				approach_flag = 1;
 
 				do {
-					l_si = GUI_radio(get_city(0xdc), 2,
+					answer = GUI_radio(get_city(0xdc), 2,
 							get_city(0xe0),
 							get_city(0xe4));
-				} while (l_si == -1);
+				} while (answer == -1);
 
-				if (l_si == 2)  return;
+				if (answer == 2)  return;
 			}
 
-		} while (l3 == 0);
+		} while (approach_flag == 0);
 
 		do {
-			l_si = GUI_radio(get_city(0xe8), 2,
+			answer = GUI_radio(get_city(0xe8), 2,
 					get_city(0xec),
 					get_city(0xf0));
-		} while (l_si == -1);
+		} while (answer == -1);
 
-		if (l_si == 1) {
+		if (answer == 1) {
 
-			if (!ds_readb(0x3dd3)) {
+			if (!ds_readb(TEVENT064_SILENT_FLAG)) {
 				GUI_output(get_city(0xf4));
 			}
 
 			GUI_output(get_city(0xf8));
 
-			l_di = TRV_fight_event(FIGHTS_F064, 64);
+			result = TRV_fight_event(FIGHTS_F064, 64);
 
-			ds_writeb(0x3dd3, 1);
+			ds_writeb(TEVENT064_SILENT_FLAG, 1);
 
 		} else {
-			GUI_output(ds_readb(0x3dd3) != 0 ? get_city(0xf8) : get_city(0xfc));
-			l_di = TRV_fight_event(FIGHTS_F064, 64);
+			GUI_output(ds_readb(TEVENT064_SILENT_FLAG) != 0 ? get_city(0xf8) : get_city(0xfc));
+			result = TRV_fight_event(FIGHTS_F064, 64);
 		}
 
-		if (!l_di) {
-			ds_writeb(0x3dc9, 1);
+		if (!result) {
+			ds_writeb(TEVENT064_FLAG, 1);
 
 			add_hero_ap_all(100);
 
 			do {
 				do {
-					l_si = GUI_radio(get_city(0x100), 2,
+					answer = GUI_radio(get_city(0x100), 2,
 							get_city(0x104),
 							get_city(0x108));
-				} while (l_si == -1);
+				} while (answer == -1);
 
-				if (l_si == 1) {
+				if (answer == 1) {
 
-					loot_multi_chest(p_datseg + TEVENT64_HUT_CONTENT, get_city(0x11c));
+					loot_multi_chest(p_datseg + TEVENT064_HUT_CONTENT, get_city(0x11c));
 
 					do {
-						l_si = GUI_radio(get_city(0x10c), 2,
+						answer = GUI_radio(get_city(0x10c), 2,
 							get_city(0x110),
 							get_city(0x114));
-					} while (l_si == -1);
+					} while (answer == -1);
 
-					if (l_si == 1) {
+					if (answer == 1) {
 						use_lockpicks_on_chest((RealPt)RealMake(datseg, 0xb154));
 					}
 				}
 
-			} while (l_si != 2);
+			} while (answer != 2);
 
 			GUI_output(get_city(0x118));
 
 			ds_writews(TRV_RETURN, ds_readws(TRV_RETURN) == 0 ? 1 : -1);
 		}
 
-	} else if (ds_readb(0x3dc9) != 0) {
+	} else if (ds_readb(TEVENT064_FLAG) != 0) {
 
 		do {
 			do {
-				l_si = GUI_radio(get_city(0x100), 2,
+				answer = GUI_radio(get_city(0x100), 2,
 					get_city(0x104),
 					get_ltx(0xcb8));
 
-			} while (l_si == -1);
+			} while (answer == -1);
 
-			if (l_si == 1) {
+			if (answer == 1) {
 
-				loot_multi_chest(p_datseg + TEVENT64_HUT_CONTENT, get_city(0x11c));
+				loot_multi_chest(p_datseg + TEVENT064_HUT_CONTENT, get_city(0x11c));
 
-				if (ds_readbs(TEVENT64_CHEST) != -1) {
+				if (ds_readbs(TEVENT064_CHEST) != -1) {
 
 					do {
-						l_si = GUI_radio(get_city(0x10c), 2,
+						answer = GUI_radio(get_city(0x10c), 2,
 							get_city(0x110),
 							get_ltx(0xcb8));
 
-					} while (l_si == -1);
+					} while (answer == -1);
 
-					if (l_si == 1) {
+					if (answer == 1) {
 						use_lockpicks_on_chest((RealPt)RealMake(datseg, 0xb154));
 					}
 				}
 			}
 
-		} while (l_si != 2);
+		} while (answer != 2);
 
 	}
 }
 
 void tevent_064_chest(void)
 {
-	loot_multi_chest(p_datseg + TEVENT64_CHEST, get_city(0x128));
+	loot_multi_chest(p_datseg + TEVENT064_CHEST, get_city(0x128));
 }
 
 /* The rider Orvil <-> Ala */
@@ -714,13 +715,13 @@ void tevent_066(void)
 	signed short count;
 	Bit8u *hero;
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3dca)) ||
-		ds_readbs(0x3dca) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT066_FLAG)) ||
+		ds_readbs(TEVENT066_FLAG) != 0)
 	{
 		TRV_found_replenish_place(0);
-		ds_writeb(0x3dca, 1);
+		ds_writeb(TEVENT066_FLAG, 1);
 
-		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 4) > 0 && !ds_readb(0x3dcb)))
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 4) > 0 && !ds_readb(TEVENT066_TRACK_FLAG)))
 		{
 
 			do {
@@ -764,7 +765,7 @@ void tevent_066(void)
 				}
 
 				if (!do_fight(FIGHTS_F066)) {
-					ds_writeb(0x3dcb, 1);
+					ds_writeb(TEVENT066_TRACK_FLAG, 1);
 					add_hero_ap_all(50);
 				}
 			}

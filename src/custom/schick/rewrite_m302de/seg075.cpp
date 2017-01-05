@@ -1013,8 +1013,8 @@ mark2:			   goto mark1;
 			dir = 0;
 			level = 0;
 
-			ds_writeb(0x434d, 0);
-			ds_writeb(0x434e, (signed char)count_heroes_in_group());
+			ds_writeb(DNG13_COLLAPSECOUNT, 0);
+			ds_writeb(DNG13_HEROCOUNT, (signed char)count_heroes_in_group());
 			break;
 		}
 		case 14: {

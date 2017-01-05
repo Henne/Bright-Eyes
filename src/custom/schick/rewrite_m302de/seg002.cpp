@@ -1775,7 +1775,7 @@ void game_loop(void)
 			do_town();
 		} else if (ds_readbs(DUNGEON_INDEX) != 0) {
 			do_dungeon();
-		} else if (ds_readbs(TRAVELING) != 0) {
+		} else if (ds_readbs(SHOW_TRAVEL_MAP) != 0) {
 			do_travel_mode();
 		}
 
@@ -2050,7 +2050,7 @@ void dawning(void)
 			/* not in a location */
 			!ds_readbs(LOCATION) &&
 			/* not in a travel mode */
-			!ds_readb(TRAVELING) &&
+			!ds_readb(SHOW_TRAVEL_MAP) &&
 			/* no event animation */
 			!ds_readb(EVENT_ANI_BUSY) &&
 			/* unknown */
@@ -2092,7 +2092,7 @@ void nightfall(void)
 			/* not in a location */
 			!ds_readbs(LOCATION) &&
 			/* not in a travel mode */
-			!ds_readb(TRAVELING) &&
+			!ds_readb(SHOW_TRAVEL_MAP) &&
 			/* no event animation */
 			!ds_readb(EVENT_ANI_BUSY) &&
 			/* unknown */
@@ -2821,7 +2821,7 @@ void magical_chainmail_damage(void)
 		return;
 	}
 
-	ds_writeb(0x4649, (ds_readb(TRAVELING) != 0) ? 1 : 2);
+	ds_writeb(0x4649, (ds_readb(SHOW_TRAVEL_MAP) != 0) ? 1 : 2);
 
 	for (i = 0; i <= 6; i++) {
 
@@ -2937,7 +2937,7 @@ void herokeeping(void)
 			/* check for magic waterskin in group */
 			if ((get_first_hero_with_item_in_group(0xb9, host_readbs(hero + HERO_GROUP_NO)) == -1) &&
 				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(TRAVELING) != 0))) ||
+				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(SHOW_TRAVEL_MAP) != 0))) ||
 				((host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 				!ds_readbs(GROUPS_TOWN + host_readbs(hero + HERO_GROUP_NO)))))) {
 
@@ -3020,7 +3020,7 @@ void herokeeping(void)
 			if ((host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
-				(!ds_readb(TRAVELING) || ds_readb(FOOD_MESSAGE_SHOWN + i) != ds_readb(FOOD_MESSAGE + i))) {
+				(!ds_readb(SHOW_TRAVEL_MAP) || ds_readb(FOOD_MESSAGE_SHOWN + i) != ds_readb(FOOD_MESSAGE + i))) {
 
 					sprintf(buffer,
 						(ds_readb(FOOD_MESSAGE + i) == 1) ? (char*)get_ltx(0x380):
@@ -3116,7 +3116,7 @@ void seg002_37c4(void)
 	p2 = (RealPt)ds_readd(BUFFER6_PTR) + 2100;
 	p3 = (RealPt)ds_readd(BUFFER6_PTR) + 1000;
 
-	if ((ds_readws(TRV_MENU_SELECTION) != 0) && (ds_readb(TRAVELING))) {
+	if ((ds_readws(TRV_MENU_SELECTION) != 0) && (ds_readb(SHOW_TRAVEL_MAP))) {
 
 		ds_writew(SELECTED_TOWN_ANIX,
 				ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
@@ -3194,7 +3194,7 @@ void seg002_37c4(void)
 		ds_writew(CURRENT_TOWN_OVERY, ds_readw(CURRENT_TOWN_ANIY));
 		l_si = 0;
 
-		if ((ds_readws(MENU_INPUT_BUSY) != 0) && (ds_readb(TRAVELING))) {
+		if ((ds_readws(MENU_INPUT_BUSY) != 0) && (ds_readb(SHOW_TRAVEL_MAP))) {
 
 			ds_writew(SELECTED_TOWN_ANIX,
 					ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
@@ -4325,7 +4325,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				}
 			}
 
-			if ((ds_readb(SEA_TRAVEL) != 0)
+			if ((ds_readb(TRAVELING) != 0)
 				&& (ds_readw(IN_FIGHT) == 0) &&
 				(!count_heroes_available_in_group() ||
 				((count_heroes_available_in_group() == 1) && (is_hero_available_in_group(get_hero(6))))))

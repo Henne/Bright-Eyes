@@ -277,9 +277,9 @@ unsigned short passage_arrival(void)
 
 		/* set the position of the party */
 		si = host_readw(buildings + 4);
-		ds_writew(0x433a, (si >> 8) & 0xff);
-		ds_writew(0x433c, si & 0x0f);
-		ds_writew(0x433e, (si >> 4) & 0x0f);
+		ds_writew(ARRIVAL_X_TARGET, (si >> 8) & 0xff);
+		ds_writew(ARRIVAL_Y_TARGET, si & 0x0f);
+		ds_writew(ARRIVAL_DIRECTION, (si >> 4) & 0x0f);
 
 		/* restore the old town area / TODO: a bit bogus */
 		ds_writeb(CURRENT_TOWN, (unsigned char)tmp);

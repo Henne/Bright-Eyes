@@ -127,9 +127,9 @@ void do_harbour(void)
 					/* meet SWAFNILD */
 					do_talk(12, 0);
 
-					if (ds_readb(0x7c9c) != 0) {
+					if (ds_readb(SWAFNILD_TRAVELLED) != 0) {
 
-						ds_writeb(0x7c9c, 0);
+						ds_writeb(SWAFNILD_TRAVELLED, 0);
 
 						turnaround();
 
@@ -358,14 +358,14 @@ void do_harbour(void)
 				ds_writew(WALLCLOCK_UPDATE, ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writeb(0x42ae, 0))));
 				ds_writews(CURRENT_ANI, ds_writebs(CITY_AREA_LOADED, ds_writebs(PP20_INDEX, (signed char)(ARCHIVE_FILE_DNGS + 13))));
 				ds_writew(REQUEST_REFRESH, 1);
-				ds_writeb(TRAVELING, 0);
+				ds_writeb(SHOW_TRAVEL_MAP, 0);
 
 				if (!ds_readb(0x4333)) {
 
 					ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
-					ds_writew(X_TARGET_BAK, ds_readw(0x433a));
-					ds_writew(Y_TARGET_BAK, ds_readw(0x433c));
-					ds_writeb(DIRECTION, (ds_readws(0x433e) + 2) & 3);
+					ds_writew(X_TARGET_BAK, ds_readw(ARRIVAL_X_TARGET));
+					ds_writew(Y_TARGET_BAK, ds_readw(ARRIVAL_Y_TARGET));
+					ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
 
 				} else {
 					done = 1;
@@ -430,7 +430,7 @@ void sea_travel(signed short passage, signed short dir)
 	struct dummy7 a = *(struct dummy7*)(p_datseg + 0x707f);
 #endif
 
-	ds_writeb(SEA_TRAVEL, 1);
+	ds_writeb(TRAVELING, 1);
 
 	ds_writehp(0x4266, (passage < 7 ? F_PADD(ds_readd(BUFFER9_PTR), 7600) : F_PADD(ds_readd(BUFFER9_PTR), 11400)));
 	ds_writew(0x4236, passage < 7 ? 7 : 38);
@@ -608,7 +608,7 @@ void sea_travel(signed short passage, signed short dir)
 		refresh_screen_size();
 	}
 
-	ds_writeb(SEA_TRAVEL, 0);
+	ds_writeb(TRAVELING, 0);
 }
 
 signed short get_srout_len(Bit8u *ptr)

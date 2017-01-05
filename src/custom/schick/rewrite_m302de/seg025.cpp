@@ -260,7 +260,7 @@ void enter_map(void)
 	ds_writew(TYPEINDEX, ds_readbs(CURRENT_TOWN));
 
 	ds_writeb(LOCATION, ds_writeb(CURRENT_TOWN, 0));
-	ds_writeb(TRAVELING, 1);
+	ds_writeb(SHOW_TRAVEL_MAP, 1);
 }
 
 void show_treasure_map(void)
@@ -706,14 +706,14 @@ void do_location(void)
 	signed short tm_bak;
 	void (*func)(void);
 
-	tm_bak = ds_readb(TRAVELING);
+	tm_bak = ds_readb(SHOW_TRAVEL_MAP);
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	bak1 = ds_readws(BASEPOS_X);
 	bak2 = ds_readws(BASEPOS_Y);
 
 	ds_writew(BASEPOS_X, 0);
 	ds_writew(BASEPOS_Y, 0);
-	ds_writeb(TRAVELING, 0);
+	ds_writeb(SHOW_TRAVEL_MAP, 0);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
 #if !defined(__BORLANDC__)
@@ -732,8 +732,8 @@ void do_location(void)
 	ds_writew(BASEPOS_Y, bak2);
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
-	if (!ds_readb(TRAVELING)) {
-		ds_writeb(TRAVELING, tm_bak);
+	if (!ds_readb(SHOW_TRAVEL_MAP)) {
+		ds_writeb(SHOW_TRAVEL_MAP, tm_bak);
 	}
 
 	ds_writebs(0x2ca8, -1);

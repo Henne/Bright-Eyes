@@ -151,7 +151,8 @@ signed short DNG13_handler(void)
 
 	} else if (pos == 0x70f && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		add_hero_ap_all(ds_readb(0x434d) * (ds_readb(0x434e) == count_heroes_in_group() ? 8 : 5));
+        /* AP depending on number of collapsed ceilings and lost heroes */
+		add_hero_ap_all(ds_readb(DNG13_COLLAPSECOUNT) * (ds_readb(DNG13_HEROCOUNT) == count_heroes_in_group() ? 8 : 5));
 
 		leave_dungeon();
 
@@ -266,7 +267,7 @@ void DNG13_collapsing_ceiling(void)
 	signed short has_items;
 	Bit8u *hero;
 
-	inc_ds_bs_post(0x434d);
+	inc_ds_bs_post(DNG13_COLLAPSECOUNT);
 
 	hero = get_hero(0);
 	for (i = fails = 0; i <= 6; i++, hero += SIZEOF_HERO)
@@ -316,7 +317,7 @@ void DNG13_collapsing_ceiling_easy(void)
 	signed short has_items;
 	Bit8u *hero;
 
-	inc_ds_bs_post(0x434d);
+	inc_ds_bs_post(DNG13_COLLAPSECOUNT);
 
 	hero = get_hero(0);
 	for (i = fails = 0; i <= 6; i++, hero += SIZEOF_HERO)

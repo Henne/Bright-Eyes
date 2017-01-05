@@ -271,7 +271,7 @@
 #define TLK_TAV_TESTDRUNK	(0x3611)	/* unsigned char */
 #define CURRENT_INFORMER	(0x3612)	/* unsigned char {0,1,6,7,8,14} */
 #define DUNGEON_LIGHT	(0x3613)	/* unsigned char (0 = light is on, 1, 2 = light is off) */
-#define TRAVELING	(0x3614)	/* unsigned char {0,1} */
+#define SHOW_TRAVEL_MAP	(0x3614)	/* unsigned char {0,1} */
 #define HERMIT_VISITED	(0x3615)	/* unsigned char {0,1} */
 #define DUNGEON_TYPE	(0x3616)	/* unsigned char { 0 = SHIPS, 1 = MARBLES, 2 = STONES } */
 #define ESTORIK_KNOWN	(0x3617)	/* unsigned char {0,1} */
@@ -332,16 +332,127 @@
 #define DNG08_SECRET_DOOR	(0x3ccb)	/* signed char {0,1 = found,2 = opened} */
 #define DNG08_CHEST0_LOOTED	(0x3ccc)	/* unsigned char {0,1} */
 #define DNG08_CHEST35_LOOTED	(0x3ccd)	/* unsigned char {0,1,2,3} */
+#define TEVENT004_FLAG	(0x3da2)	/* unsigned char {0,1} */
+#define TEVENT005_FLAG	(0x3da3)	/* unsigned char {0,1} */
+#define TEVENT008_FLAG	(0x3da4)	/* unsigned char {0,1} */
+#define TEVENT009_FLAG	(0x3da5)	/* unsigned char {0,1} */
+#define TEVENT011_FLAG	(0x3da6)	/* unsigned char {0,1} */
+#define TEVENT013_FLAG	(0x3da7)	/* unsigned char {0,1} */
+#define TEVENT014_FLAG	(0x3da8)	/* unsigned char {0,1} */
+#define TEVENT016_FLAG	(0x3da9)	/* unsigned char {0,1} */
+#define TEVENT017_FLAG	(0x3daa)	/* unsigned char {0,1} */
+#define TEVENT020_FLAG	(0x3dab)	/* unsigned char {0,1} */
+#define TEVENT021_FLAG	(0x3dac)	/* unsigned char {0,1} */
+#define TEVENT022_FLAG	(0x3dad)	/* unsigned char {0,1} */
+#define TEVENT022_TRACK_FLAG	(0x3dae)	/* unsigned char {0,1} */
+#define TEVENT024_FLAG	(0x3daf)	/* unsigned char {0,1} */
+#define TEVENT025_FLAG	(0x3db0)	/* unsigned char {0,1} */
+#define TEVENT028_FLAG	(0x3db1)	/* unsigned char {0,1} */
+#define TEVENT030_FLAG	(0x3db2)	/* unsigned char {0,1} */
+#define TEVENT031_FLAG	(0x3db3)	/* unsigned char {0,1} */
+#define TEVENT032_FLAG	(0x3db4)	/* unsigned char {0,1} */
+#define TEVENT032_HERB_FLAG	(0x3db5)	/* unsigned char {0,1} */
+#define TEVENT034_FLAG	(0x3db6)	/* unsigned char {0,1} */
+#define TEVENT035_FLAG	(0x3db7)	/* unsigned char {0,1} */
+#define TEVENT036_FLAG	(0x3db8)	/* unsigned char {0,1} */
+#define TEVENT036_HERB_FLAG	(0x3db9)	/* unsigned char {0,1} */
+#define TEVENT037_FLAG	(0x3dba)	/* unsigned char {0,1} */
+#define TEVENT039_FLAG	(0x3dbb)	/* unsigned char {0,1} */
+#define TEVENT040_FLAG	(0x3dbc)	/* unsigned char {0,1} */
+#define TEVENT041_FLAG	(0x3dbd)	/* unsigned char {0,1} */
+#define TEVENT042_FLAG	(0x3dbe)	/* unsigned char {0,1} */
+#define TEVENT043_FLAG	(0x3dbf)	/* unsigned char {0,1} */
+#define TEVENT048_FLAG	(0x3dc0)	/* unsigned char {0,1} */
+#define TEVENT048_TRACK_FLAG	(0x3dc1)	/* unsigned char {0,1} */
+#define TEVENT049_FLAG	(0x3dc2)	/* unsigned char {0,1} */
+#define TEVENT050_FLAG	(0x3dc3)	/* unsigned char {0,1} */
+#define TEVENT050_HERB_FLAG	(0x3dc4)	/* unsigned char {0,1} */
+#define TEVENT051_FLAG	(0x3dc5)	/* unsigned char {0,1} */
+#define TEVENT053_FLAG	(0x3dc6)	/* unsigned char {0,1} */
+#define TEVENT058_FLAG	(0x3dc7)	/* unsigned char {0,1} */
+#define TEVENT061_FLAG	(0x3dc8)	/* unsigned char {0,1} */
+#define TEVENT064_FLAG	(0x3dc9)	/* unsigned char {0,1} */
+#define TEVENT066_FLAG	(0x3dca)	/* unsigned char {0,1} */
+#define TEVENT066_TRACK_FLAG	(0x3dcb)	/* unsigned char {0,1} */
+#define TEVENT067_FLAG	(0x3dcc)	/* unsigned char {0,1} */
+#define TEVENT069_FLAG	(0x3dcd)	/* unsigned char {0,1} */
+#define TEVENT070_FLAG	(0x3dce)	/* unsigned char {0,1} */
+#define TEVENT070_HERB_FLAG	(0x3dcf)	/* unsigned char {0,1} */
+#define TEVENT070_TRAIL_FLAG	(0x3dd0)	/* unsigned char {0,1} */
+#define TEVENT071_FLAG	(0x3dd1)	/* unsigned char {0,1} */
+#define TEVENTU01_FLAG	(0x3dd2)	/* unsigned char {0,1} */
+#define TEVENT064_SILENT_FLAG	(0x3dd3)	/* unsigned char {0,1} */
+#define TEVENTU02_FLAG	(0x3dd5)	/* unsigned char {0,1} */
+#define TEVENTU03_FLAG	(0x3dd6)	/* unsigned char {0,1} */
+#define TEVENTU04_FLAG	(0x3dd7)	/* unsigned char {0,1} */
+#define TEVENTU05_FLAG	(0x3dd8)	/* unsigned char {0,1} */
+#define TEVENTU06_FLAG	(0x3dd9)	/* unsigned char {0,1} */
+#define TEVENT071_ORCSTATUE	(0x3dda)	/* unsigned char {0,1} */
+#define MET_UNICORN_FLAG	(0x3ddb)	/* unsigned char {0,1} */
 #define FIND_HYGGELIK	(0x3ddc)	/* unsigned char {0,1} you are now able to find Hyggelik */
-#define TATZELWURM	(0x3de5)	/* unsigned char {0, 1, 2} */
-#define HERMIT_HERBPLACE_FLAG	(0x3e08)	/* unsigned char {0,1} */
-#define HERMIT_SMALLLAKE_FLAG	(0x3e09)	/* unsigned char {0,1} */
+#define TEVENT072_FLAG	(0x3ddd)	/* unsigned char {0,1} */
+#define TEVENT073_FLAG	(0x3dde)	/* unsigned char {0,1} */
+#define TEVENT074_FLAG	(0x3ddf)	/* unsigned char {0,1} */
+#define TEVENT075_FLAG	(0x3de0)	/* unsigned char {0,1} */
+#define TEVENT076_FLAG	(0x3de1)	/* unsigned char {0,1} */
+#define TEVENT077_FLAG	(0x3de2)	/* unsigned char {0,1} */
+#define TEVENT079_FLAG	(0x3de3)	/* unsigned char {0,1} */
+#define TEVENT080_FLAG	(0x3de4)	/* unsigned char {0,1} */
+#define TEVENT080_TATZELWURM	(0x3de5)	/* unsigned char {0, 1, 2} */
+#define TEVENT081_FLAG	(0x3de6)	/* unsigned char {0,1} */
+#define TEVENT083_FLAG	(0x3de7)	/* unsigned char {0,1} */
+#define TEVENT084_FLAG	(0x3de8)	/* unsigned char {0,1} */
+#define TEVENT085_FLAG	(0x3de9)	/* unsigned char {0,1} */
+#define TEVENT085_HERB_FLAG	(0x3dea)	/* unsigned char {0,1} */
+#define TEVENT086_FLAG	(0x3deb)	/* unsigned char {0,5,15} */
+#define TEVENT088_FLAG	(0x3dec)	/* unsigned char {0,1} */
+#define TEVENT091_FLAG	(0x3ded)	/* unsigned char {0,1} */
+#define TEVENT093_FLAG	(0x3dee)	/* unsigned char {0,1} */
+#define TEVENT094_FLAG	(0x3def)	/* unsigned char {0,1} */
+#define TEVENTU07_FLAG	(0x3df0)	/* unsigned char {0,1} */
+#define TEVENTU08_FLAG	(0x3df1)	/* unsigned char {0,1} */
+#define TEVENT099_FLAG	(0x3df2)	/* unsigned char {0,1} */
+#define TEVENT100_FLAG	(0x3df3)	/* unsigned char {0,1} */
+#define TEVENT101_FLAG	(0x3df4)	/* unsigned char {0,1} */
+#define TEVENT106_FLAG	(0x3df5)	/* unsigned char {0,1} */
+#define TEVENT108_FLAG	(0x3df6)	/* unsigned char {0,1} */
+#define TEVENT109_FLAG	(0x3df7)	/* unsigned char {0,1} */
+#define TEVENT111_FLAG	(0x3df8)	/* unsigned char {0,1} */
+#define TEVENT112_FLAG	(0x3df9)	/* unsigned char {0,1} */
+#define TEVENT112_HERB_FLAG	(0x3dfa)	/* unsigned char {0,1} */
+#define TEVENT115_FLAG	(0x3dfb)	/* unsigned char {0,1} */
+#define TEVENT116_FLAG	(0x3dfc)	/* unsigned char {0,1} */
+#define TEVENT118_FLAG	(0x3dfd)	/* unsigned char {0,1} */
+#define TEVENT119_FLAG	(0x3dfe)	/* unsigned char {0,1} */
+#define TEVENT120_FLAG	(0x3dff)	/* unsigned char {0,1} */
+#define TEVENT122_FLAG	(0x3e00)	/* unsigned char {0,1} */
+#define TEVENT128_FLAG	(0x3e02)	/* unsigned char {0,1} */
+#define TEVENT128_REPLEN_FLAG	(0x3e03)	/* unsigned char {0,1} */
+#define TEVENT129_FLAG	(0x3e04)	/* unsigned char {0,1} */
+#define TEVENT131_FLAG	(0x3e05)	/* unsigned char {0,1} */
+#define TEVENT132_FLAG	(0x3e06)	/* unsigned char {0,1} */
+#define TEVENT132_HERB_FLAG	(0x3e07)	/* unsigned char {0,1} */
+#define TEVENT134_FLAG	(0x3e08)	/* unsigned char {0,1} */
+#define TEVENT137_FLAG	(0x3e09)	/* unsigned char {0,1} */
+#define TEVENT138_FLAG	(0x3e0a)	/* unsigned char {0,1} */
+#define TEVENTU09_FLAG	(0x3e0b)	/* unsigned char {0,1} */
+#define TEVENT140_FLAG	(0x3e0c)	/* unsigned char {0,1} */
+#define TEVENT140_HERB_FLAG	(0x3e0d)	/* unsigned char {0,1} */
+#define TEVENT141_FLAG	(0x3e0e)	/* unsigned char {0,1} */
+#define TEVENT142_FLAG	(0x3e0f)	/* unsigned char {0,1} */
+#define TEVENTU10_FLAG	(0x3e11)	/* unsigned char {0,1} */
+#define TEVENTU11_FLAG	(0x3e12)	/* unsigned char {0,1} */
+#define TEVENTU12_FLAG	(0x3e13)	/* unsigned char {0,1} */
+#define TEVENTU13_FLAG	(0x3e14)	/* unsigned char {0,1} */
+#define TEVENT114_OLIMONE_FLAG	(0x3e15)	/* unsigned char {0,1} */
+#define TEVENT074_FIGHT_FLAG	(0x3e16)	/* unsigned char {0,1} */
+#define TEVENT077_FIGHT_FLAG	(0x3e17)	/* unsigned char {0,1} */
 #define RANDOM_TLK_HERO	(0x3e18)	/* RealPt */
 #define RUIN_HERO	(0x3e1c)	/* RealPt */
 #define MAIN_ACTING_HERO	(0x3e20)	/* RealPt */
-#define TEVENT73_CORPSE	(0x3e24)	/* unsigned char[7] */
-#define TEVENT64_HUT_CONTENT	(0x3e2b)	/* unsigned char[19] */
-#define TEVENT64_CHEST	(0x3e3e)	/* unsigned char[21] */
+#define TEVENT073_CORPSE	(0x3e24)	/* unsigned char[7] */
+#define TEVENT064_HUT_CONTENT	(0x3e2b)	/* unsigned char[19] */
+#define TEVENT064_CHEST	(0x3e3e)	/* unsigned char[21] */
 #define NEED_LETTER	(0x3f73)	/* unsigned char {0,1} */
 #define GREMOB_INVITED	(0x3f74)	/* unsigned char {0,1} */
 #define HARLOT_DATE	(0x3f75)	/* unsigned char {0,1} */
@@ -494,11 +605,21 @@
 #define SEA_TRAVEL_MENU_PASSAGES	(0x42b2)	/* (struct of length 12)[10] */
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
 #define TRV_DEST_REACHED	(0x4338)	/* unsigned short */
+#define ARRIVAL_X_TARGET	(0x433a)	/* unsigned short */
+#define ARRIVAL_Y_TARGET	(0x433c)	/* unsigned short */
+#define ARRIVAL_DIRECTION	(0x433e)	/* signed short */
+#define TM_UNUSED1_PTR	(0x4340)	/* RealPt */
 #define TRV_MENU_TOWNS	(0x4344)	/* unsigned char[6] */
 #define TRV_DESTINATION	(0x434a)	/* unsigned short */
 #define DNG08_WATERBARREL	(0x434c)	/* signed char {0,1} */
+#define DNG13_COLLAPSECOUNT	(0x434d)	/* unsigned char */
+#define DNG13_HEROCOUNT	(0x434e)	/* unsigned char */
 #define CAMP_INCIDENT	(0x434f)	/* signed short, -1 = not determined or will not happen, 0,1,2 = guard that will be affected */
 #define KNOWN_MONSTERS	(0x4351)	/* signed short[82] */
+#define NAMELESS_DESTROYED	(0x439f)	/* unsigned char {0,1} */
+#define DEADSHIP_FINAL	(0x43a0)	/* unsigned char {0,1} */
+#define DNG09_LEVER_FAST	(0x43a1)	/* unsigned char {0,1} */
+#define DNG11_SOUP_SUPPLY	(0x43a2)	/* unsigned char */
 #define ARSENAL_MONEY	(0x43a3)	/* signed short {-1, 0 - 60 } */
 #define ANNOUNCE_DAY	(0x43a5)	/* signed char, UNUSED */
 #define KNOWN_PERSONS	(0x43a6)	/* signed short[14] */
@@ -654,7 +775,9 @@
 #define STR_OBVIOUSLY_CLOSED	(0x7c7d)	/* char[28] = "OFFENSICHTLICH GESCHLOSSEN!" */
 #define TMAP_DOUBLE1	(0x7c9a)	/* ?8 1 = unicorn brought a piece you already have */
 #define TMAP_DOUBLE2	(0x7c9b)	/* ?8 1 = you got a piece you already have from the unicorn */
-#define MAX_GOSSIP	(0x7c9d)	/* s8[52], maximum of different gossips per town */
+#define SWAFNILD_TRAVELLED	(0x7c9c)	/* unsigned char {0,1} */
+#define TOWNS_GOSSIP_MAX	(0x7c9d)	/* unsigned char[52] */
+#define TOWNS_GOSSIP_OFF	(0x7cd1)	/* unsigned char[52] */
 #define GOSSIP_STR_TRIPLE_WILDCARD	(0x7d06)	/* char[8] = "%s %s%s" */
 #define DNG_STUB6_STR_COMMA	(0x92cc)	/* char[3] = ", " */
 #define DNG_STUB6_STR_AND	(0x92cf)	/* char[6] = " UND " */
@@ -665,7 +788,7 @@
 #define DNG12_OBSTACLE_TRIES	(0x9d43)	/* signed short */
 #define DNG12_WATERTRAP_BAK	(0x9d45)	/* signed short */
 #define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
-#define SEA_TRAVEL	(0xa842)	/* unsigned char {0,1} */
+#define TRAVELING	(0xa842)	/* unsigned char {0,1} */
 #define GRAMMAR_BUF_NO	(0xa9eb)	/* unsigned short */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
 #define SPELL_SELECT_STR_KEY	(0xac20)	/* char[5] = "\xf2%s\xf0" */

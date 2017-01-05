@@ -418,10 +418,10 @@ signed short DNG10_handler(void)
 		leave_dungeon();
 
 		ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
-		ds_writew(X_TARGET, ds_readws(0x433a));
-		ds_writew(Y_TARGET, ds_readws(0x433c));
+		ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
+		ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
 		ds_writeb(LOCATION, 0);
-		ds_writeb(DIRECTION, (ds_readbs(0x433e) + 2) & 0x03);
+		ds_writeb(DIRECTION, (ds_readbs(ARRIVAL_DIRECTION) + 2) & 0x03);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xa0),

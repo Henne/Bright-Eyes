@@ -275,10 +275,10 @@ signed short DNG07_handler(void)
 			leave_dungeon();
 
 			ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
-			ds_writew(X_TARGET, ds_readws(0x433a));
-			ds_writew(Y_TARGET, ds_readws(0x433c));
+			ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
+			ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
 			ds_writeb(LOCATION, 0);
-			ds_writeb(DIRECTION, (ds_readb(0x433e) + 2) & 3);
+			ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 3);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0x38),
@@ -329,7 +329,7 @@ void DNG09_statues(signed short prob, signed short bonus)
 			{
 				if (random_schick(100) < 50 &&
 					!hero_dummy4(hero) &&
-					!ds_readb(0x439f))
+					!ds_readb(NAMELESS_DESTROYED))
 				{
 					/* increase one attribute of the leader permanently */
 					randval = random_schick(7) - 1;
@@ -384,8 +384,8 @@ void DNG09_statues(signed short prob, signed short bonus)
 				}
 			}
 
-			/* all staues can't be used anymore */
-			ds_writeb(0x439f, 1);
+			/* no statue can be praised any longer */
+			ds_writeb(NAMELESS_DESTROYED, 1);
 		}
 	}
 }

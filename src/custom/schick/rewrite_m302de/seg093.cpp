@@ -51,7 +51,7 @@ signed short do_travel_mode(void)
 		ds_writeb(FOOD_MESSAGE_SHOWN + handle, 0);
 	}
 
-	if (ds_readb(0x2ca8) != ds_readb(TRAVELING))
+	if (ds_readb(0x2ca8) != ds_readb(SHOW_TRAVEL_MAP))
 	{
 		load_map();
 	}
@@ -77,7 +77,7 @@ signed short do_travel_mode(void)
 		{
 			update_mouse_cursor();
 
-			if (ds_readb(0x2ca8) != ds_readb(TRAVELING))
+			if (ds_readb(0x2ca8) != ds_readb(SHOW_TRAVEL_MAP))
 			{
 				load_map();
 			}
@@ -137,7 +137,7 @@ signed short do_travel_mode(void)
 
 					if (handle - 1 == l3 || l3 == -2)
 					{
-						ds_writeb(TRAVELING, 0);
+						ds_writeb(SHOW_TRAVEL_MAP, 0);
 						ds_writeb(DIRECTION, (ds_readb(DIRECTION) + 2) & 3);
 						break;
 					}
@@ -180,9 +180,9 @@ signed short do_travel_mode(void)
 					if (!ds_readb(0x4333) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 					{
 						ds_writeb(CURRENT_TOWN, (signed char)ds_readw(TRV_DEST_REACHED));
-						ds_writew(X_TARGET_BAK, ds_readw(0x433a));
-						ds_writew(Y_TARGET_BAK, ds_readw(0x433c));
-						ds_writeb(DIRECTION, (ds_readb(0x433e) + 2) & 3);
+						ds_writew(X_TARGET_BAK, ds_readw(ARRIVAL_X_TARGET));
+						ds_writew(Y_TARGET_BAK, ds_readw(ARRIVAL_Y_TARGET));
+						ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 3);
 
 					} else if (ds_readw(GAME_STATE) == GAME_STATE_MAIN && ds_readb(0x4333) != 99)
 					{
@@ -245,7 +245,7 @@ signed short do_travel_mode(void)
 	read_archive_file(handle, Real2Host(ds_readd(BUFFER6_PTR)), 5000);
 	bc_close(handle);
 
-	ds_writeb(TRAVELING, (signed char)ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writew(CURRENT_TOWN_OVER, ds_writew(TRV_MENU_SELECTION, 0)))));
+	ds_writeb(SHOW_TRAVEL_MAP, (signed char)ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writew(CURRENT_TOWN_OVER, ds_writew(TRV_MENU_SELECTION, 0)))));
 
 	if (!ds_readb(0x4333))
 	{

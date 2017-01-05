@@ -54,7 +54,7 @@ void pause_traveling(signed short ani_nr)
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
 
 	/* c = b = a = 0 */
-	ds_writeb(TRAVELING, (unsigned char)ds_writew(BASEPOS_X, ds_writew(WALLCLOCK_UPDATE, 0)));
+	ds_writeb(SHOW_TRAVEL_MAP, (unsigned char)ds_writew(BASEPOS_X, ds_writew(WALLCLOCK_UPDATE, 0)));
 
 	ds_writew(BASEPOS_Y, ani_nr == 21 ? 60: 70);
 	ds_writew(TEXTBOX_WIDTH, 9);
@@ -70,7 +70,7 @@ void resume_traveling(void)
 
 	set_var_to_zero();
 
-	ds_writew(REQUEST_REFRESH, ds_writeb(TRAVELING, 1));
+	ds_writew(REQUEST_REFRESH, ds_writeb(SHOW_TRAVEL_MAP, 1));
 
 	ds_writeb(EVENT_ANI_BUSY, 0);
 	ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
@@ -522,7 +522,7 @@ void do_wild8_fight(void)
 	ds_writew(WALLCLOCK_UPDATE_BAK, ds_readws(WALLCLOCK_UPDATE));
 	ds_writew(BASEPOS_X, 0);
 	ds_writew(BASEPOS_Y, 0);
-	ds_writeb(TRAVELING, 0);
+	ds_writeb(SHOW_TRAVEL_MAP, 0);
 
 	ds_writew(MAX_ENEMIES, random_interval(5, 10));
 	ds_writew(FIG_DISCARD, 1);
@@ -530,7 +530,7 @@ void do_wild8_fight(void)
 	do_fight(FIGHTS_WILD8);
 
 	ds_writew(0x4248, 0);
-	ds_writeb(TRAVELING, 1);
+	ds_writeb(SHOW_TRAVEL_MAP, 1);
 	ds_writew(BASEPOS_X, bak1);
 	ds_writew(BASEPOS_Y, bak2);
 }
@@ -564,7 +564,7 @@ void random_encounter(signed short arg)
 
 		if ((ds_readb(0xb1b9 + 7 * i + arg) <= randval) && (ds_readb(0xb1b9 + 7 * i + arg) != 0)) {
 
-			ds_writeb(TRAVELING, (signed char)ds_writew(WALLCLOCK_UPDATE, 0));
+			ds_writeb(SHOW_TRAVEL_MAP, (signed char)ds_writew(WALLCLOCK_UPDATE, 0));
 			ds_writeb(TRAVEL_EVENT_ACTIVE, 1);
 			ds_writew(FIG_DISCARD, 1);
 
@@ -652,7 +652,7 @@ void random_encounter(signed short arg)
 			}
 
 			ds_writew(FIG_DISCARD, 0);
-			ds_writeb(TRAVELING, 1);
+			ds_writeb(SHOW_TRAVEL_MAP, 1);
 			ds_writeb(TRAVEL_EVENT_ACTIVE, 0);
 			break;
 		}
@@ -673,7 +673,7 @@ void search_ruin1(void)
 void tevent_115(void)
 {
 	if (ds_readb(FIND_HYGGELIK) != 0) {
-		ds_writeb(0x3dfb, 1);
+		ds_writeb(TEVENT115_FLAG, 1);
 		do_talk(17, 0);
 		set_var_to_zero();
 	}
@@ -688,7 +688,7 @@ void TLK_way_to_ruin(signed short state)
 	hero2 = Real2Host(get_first_hero_available_in_group());
 
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x3dfb) != 0 ? 45 : 66);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(TEVENT115_FLAG) != 0 ? 45 : 66);
 		ds_writew(0xb21b, 0);
 	} else if (state == 66 || state == 45) {
 		show_treasure_map();
@@ -806,9 +806,9 @@ void TLK_way_to_ruin(signed short state)
 
 void tevent_087(void)
 {
-	if (!ds_readb(0x3ddb) && ds_readws(GOT_MAIN_QUEST) != 0) {
+	if (!ds_readb(MET_UNICORN_FLAG) && ds_readws(GOT_MAIN_QUEST) != 0) {
 		do_talk(11, 2);
-		ds_writeb(0x3ddb, 1);
+		ds_writeb(MET_UNICORN_FLAG, 1);
 	}
 }
 

@@ -407,7 +407,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		damage *= 2;
 	}
 
-	if ((ds_readbs(0x3dda) != 0) &&
+	if ((ds_readbs(TEVENT071_ORCSTATUE) != 0) &&
 		(host_readbs(hero + HERO_TYPE) == HERO_TYPE_DWARF) &&
 		(attack_hero == 0) &&
 		(host_readbs(enemy_p + ENEMY_SHEET_GFX_ID) == 0x18))

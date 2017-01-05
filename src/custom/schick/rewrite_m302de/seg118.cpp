@@ -42,7 +42,7 @@ void tevent_037(void)
 
 	done = 0;
 
-	if (!ds_readb(0x3dba))
+	if (!ds_readb(TEVENT037_FLAG))
 	{
 		ds_writeb(EVENT_ANI_BUSY, 1);
 
@@ -141,7 +141,7 @@ void tevent_037(void)
 				if (answer == 1)
 				{
 					/* offer a deposit */
-					ds_writeb(0x3dba, 1);
+					ds_writeb(TEVENT037_FLAG, 1);
 
 					/* select a hero randomly */
 					hero = get_hero(answer = get_random_hero());
@@ -250,10 +250,10 @@ void tevent_037(void)
 /* unicorn 1st time */
 void tevent_038(void)
 {
-	if (!ds_readb(0x3ddb) && ds_readws(GOT_MAIN_QUEST) != 0)
+	if (!ds_readb(MET_UNICORN_FLAG) && ds_readws(GOT_MAIN_QUEST) != 0)
 	{
 		do_talk(11, 2);
-		ds_writeb(0x3ddb, 1);
+		ds_writeb(MET_UNICORN_FLAG, 1);
 	}
 }
 
@@ -371,11 +371,11 @@ void tevent_078(void)
 
 void tevent_079(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 4) > 0 && !ds_readb(0x3de3)) ||
-		ds_readb(0x3de3) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 4) > 0 && !ds_readb(TEVENT079_FLAG)) ||
+		ds_readb(TEVENT079_FLAG) != 0)
 	{
 		TRV_found_camp_place(0);
-		ds_writeb(0x3de3, 1);
+		ds_writeb(TEVENT079_FLAG, 1);
 	}
 }
 
@@ -383,9 +383,9 @@ void tevent_051(void)
 {
 	signed short answer;
 
-	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 4) > 0 && !ds_readb(0x3dc5))
+	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 4) > 0 && !ds_readb(TEVENT051_FLAG))
 	{
-		ds_writeb(0x3dc5, 1);
+		ds_writeb(TEVENT051_FLAG, 1);
 
 		if (!TRV_follow_trail_question())
 		{
@@ -407,7 +407,7 @@ void tevent_051(void)
 			}
 		}
 
-	} else if (ds_readb(0x3dc5) != 0) {
+	} else if (ds_readb(TEVENT051_FLAG) != 0) {
 
 		load_in_head(53);
 
@@ -477,10 +477,10 @@ void tevent_052(void)
 
 void tevent_120(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(0x3dff)) ||
-		ds_readb(0x3dff) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(TEVENT120_FLAG)) ||
+		ds_readb(TEVENT120_FLAG) != 0)
 	{
-		ds_writeb(0x3dff, 1);
+		ds_writeb(TEVENT120_FLAG, 1);
 		TRV_found_camp_place(1);
 	}
 }

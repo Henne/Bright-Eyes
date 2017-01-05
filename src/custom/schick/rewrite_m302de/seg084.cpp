@@ -280,7 +280,7 @@ signed short DNG09_handler(void)
 		}
 
 	} else if (target_pos == 0x170d && target_pos != ds_readws(DNG_HANDLED_POS) &&
-			!ds_readb(0x43a1))
+			!ds_readb(DNG09_LEVER_FAST))
 	{
 		do {
 			i = GUI_radio(get_dtp(0x9c), 3,
@@ -321,7 +321,7 @@ signed short DNG09_handler(void)
 					inc_ds_bs_post(GROUP_MEMBER_COUNTS + l3);
 					dec_ds_bs_post(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP));
 					GRP_save_pos(l3);
-					ds_writeb(0x43a1, 1);
+					ds_writeb(DNG09_LEVER_FAST, 1);
 				}
 			} else
 			{
@@ -350,7 +350,7 @@ signed short DNG09_handler(void)
 		{
 			or_ptr_bs(amap_ptr + 0x54, 0xf0);
 			and_ptr_bs(amap_ptr + 0x53, 0x0f);
-			ds_writeb(0x43a1, 0);
+			ds_writeb(DNG09_LEVER_FAST, 0);
 		}
 
 	} else if (target_pos == 0x1502 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG09_ALTAR_FLAG))
@@ -466,10 +466,10 @@ signed short DNG09_handler(void)
 	{
 		leave_dungeon();
 		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
-		ds_writews(X_TARGET, ds_readws(0x433a));
-		ds_writews(Y_TARGET, ds_readws(0x433c));
+		ds_writews(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
+		ds_writews(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
 		ds_writeb(LOCATION, 0);
-		ds_writeb(DIRECTION, (ds_readws(0x433e) + 2) & 3);
+		ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xdc),

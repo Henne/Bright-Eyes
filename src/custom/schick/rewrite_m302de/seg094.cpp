@@ -93,7 +93,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 	signed short l5;
 	signed short answer;
 
-	ds_writeb(SEA_TRAVEL, 1);
+	ds_writeb(TRAVELING, 1);
 	l5 = -1;
 	ds_writefp(0x425a, (RealPt)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (route_nr - 1))), 0xec)));
 	fb_start = ds_readfp(FRAMEBUF_PTR);
@@ -315,7 +315,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 					{
 						TRV_event(ds_readws((0x4272 + 2) + 4 * (l5 = ds_readws(0x4228))));
 
-						if (!ds_readbs(SEA_TRAVEL + ds_readws((0x4272 + 2) + 4 * ds_readws(0x4228))))
+						if (!ds_readbs(TRAVELING + ds_readws((0x4272 + 2) + 4 * ds_readws(0x4228))))
 						{
 							ds_writeb(0xe4c9 + ds_readws(0x4228), 1);
 						} else if (ds_readws(TRV_RETURN) == 0)
@@ -463,7 +463,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 		refresh_screen_size();
 	}
 
-	ds_writeb(SEA_TRAVEL, 0);
+	ds_writeb(TRAVELING, 0);
 }
 
 signed short TM_unused1(RealPt ptr, signed short off)
@@ -503,7 +503,7 @@ signed short TM_unused1(RealPt ptr, signed short off)
 					ds_writeb(TRV_MENU_TOWNS + l5, (signed char)l7);
 					array[l5] = get_ltx(0x88c);
 					l5++;
-					ds_writefp(0x4340, ptr);
+					ds_writefp(TM_UNUSED1_PTR, ptr);
 
 					set_textbox_positions(l7);
 					answer = GUI_radio(get_ltx(0x888), (signed char)l5,
@@ -603,9 +603,9 @@ signed short TM_enter_target_town(void)
 			}
 
 			l_si = host_readws(ptr2 + 4);
-			ds_writew(0x433a, (l_si >> 8) & 0xff);
-			ds_writew(0x433c, l_si & 0xf);
-			ds_writew(0x433e, TM_get_looking_direction(host_readws(ptr2)));
+			ds_writew(ARRIVAL_X_TARGET, (l_si >> 8) & 0xff);
+			ds_writew(ARRIVAL_Y_TARGET, l_si & 0xf);
+			ds_writew(ARRIVAL_DIRECTION, TM_get_looking_direction(host_readws(ptr2)));
 
 			ds_writeb(CURRENT_TOWN, (signed char)l3);
 
@@ -626,9 +626,9 @@ signed short TM_get_looking_direction(signed short coordinates)
 	x = (coordinates >> 8) & 0xff;
 	y = coordinates & 0xf;
 
-	retval = (ds_readws(0x433a) < x ? EAST :
-			(ds_readws(0x433a) > x ? WEST :
-			(ds_readws(0x433c) < y ? SOUTH : NORTH)));
+	retval = (ds_readws(ARRIVAL_X_TARGET) < x ? EAST :
+			(ds_readws(ARRIVAL_X_TARGET) > x ? WEST :
+			(ds_readws(ARRIVAL_Y_TARGET) < y ? SOUTH : NORTH)));
 
 	return retval;
 }

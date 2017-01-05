@@ -1028,7 +1028,7 @@ signed short do_fight(signed short fight_id)
 
 				ds_writew(GAME_STATE, GAME_STATE_MAIN);
 
-				if (ds_readbs(SEA_TRAVEL) != 0) {
+				if (ds_readbs(TRAVELING) != 0) {
 
 					ds_writeb(0x4333, 99);
 					ptr = get_hero(0);
@@ -1194,14 +1194,14 @@ signed short do_fight(signed short fight_id)
 
 	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
 
-	if (!ds_readb(TRAVELING)) {
+	if (!ds_readb(SHOW_TRAVEL_MAP)) {
 		seg028_0555(ds_readbs(DUNGEON_INDEX) != 0 ? 0 : 1);
 	}
 
 	load_objects_nvf();
 	refresh_screen_size();
 
-	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(TRAVELING)) {
+	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(SHOW_TRAVEL_MAP)) {
 		ds_writeb(0x4475, 3);
 	}
 

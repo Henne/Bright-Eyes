@@ -64,7 +64,7 @@ signed short DNG01_handler(void)
 	{
 		DNG_stub6();
 
-	} else if (target_pos == 0x3e07)
+	} else if (target_pos == TEVENT132_HERB_FLAG)
 	{
 		DNG_fallpit_test(6);
 
@@ -196,10 +196,10 @@ signed short DNG01_handler(void)
 		{
 			leave_dungeon();
 			ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
-			ds_writew(X_TARGET, ds_readws(0x433a));
-			ds_writew(Y_TARGET, ds_readws(0x433c));
+			ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
+			ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
 			ds_writeb(LOCATION, 0);
-			ds_writeb(DIRECTION, (ds_readws(0x433e) + 2) & 3);
+			ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
 
 			GUI_output(get_dtp(0x3c));
 
@@ -341,9 +341,9 @@ void DNG01_chest6_x1(RealPt chest)
 
 void DNG01_chest0_x1(RealPt chest)
 {
-	if (!ds_readb(0x43a0) && GUI_bool(get_dtp(0x04)))
+	if (!ds_readb(DEADSHIP_FINAL) && GUI_bool(get_dtp(0x04)))
 	{
-		ds_writeb(0x43a0, 1);
+		ds_writeb(DEADSHIP_FINAL, 1);
 
 		/* enable deathtrap */
 		ds_writew(DEATHTRAP_STEPS, 30);

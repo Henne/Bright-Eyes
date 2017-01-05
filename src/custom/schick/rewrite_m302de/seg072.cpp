@@ -121,7 +121,7 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 		if (!state) {
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(INFORMER_FLAGS + INFORMER_YASMA) == 2 ? 1 : 2);
 		} else if (state == 15) {
-			ds_writeb(0x3df3, 1);
+			ds_writeb(TEVENT100_FLAG, 1);
 		} else if (state == 22) {
 			/* make HJORE AHRENSSON known */
 			if (!ds_readb(INFORMER_FLAGS + INFORMER_HJORE)) ds_writeb(INFORMER_FLAGS + INFORMER_HJORE, 1);
@@ -797,7 +797,7 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 			}
 
 			ds_writeb(LOCATION_BAK, 0);
-			ds_writeb(0x7c9c, 1);
+			ds_writeb(SWAFNILD_TRAVELLED, 1);
 
 			timewarp_until_midnight();
 		} else if (state == 42) {

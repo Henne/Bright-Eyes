@@ -349,7 +349,7 @@ signed short DNG15_handler(void)
 	{
 		DNG15_collapsing_ceiling(p_datseg + (DNG15_CEILINGS_A + 10));
 
-	} else if (target_pos == 0x3e02 && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb((DNG15_CURSED_MONEY_A + 3)))
+	} else if (target_pos == TEVENT128_FLAG && target_pos != ds_readws(DNG_HANDLED_POS) && !ds_readb((DNG15_CURSED_MONEY_A + 3)))
 	{
 		DNG15_cursed_money(p_datseg + (DNG15_CURSED_MONEY_A + 3));
 
@@ -398,10 +398,10 @@ signed short DNG15_handler(void)
 		/* FIGHT: */
 		if (ds_readb(DNG15_UNDEAD_FIGHT) != 2)
 		{
-			ds_writew((0xd325 + 0), 0x3d03);
-			ds_writew((0xd325 + 2), 0x3e15);
-			ds_writew((0xd325 + 4), 0x3a2a);
-			ds_writew((0xd325 + 6), 0x3903);
+			ds_writew((0xd325 + 0), 0x03d03);
+			ds_writew((0xd325 + 2), 0x03e15);
+			ds_writew((0xd325 + 4), 0x03a2a);
+			ds_writew((0xd325 + 6), 0x03903);
 
 			if (!do_fight(!ds_readb(DNG15_UNDEAD_FIGHT) ? 137 : 136))
 			{
@@ -465,10 +465,10 @@ signed short DNG15_handler(void)
 			leave_dungeon();
 
 			ds_writeb(CURRENT_TOWN, ds_readbs(TRV_DEST_REACHED));
-			ds_writew(X_TARGET, ds_readws(0x433a));
-			ds_writew(Y_TARGET, ds_readws(0x433c));
+			ds_writew(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
+			ds_writew(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
 			ds_writeb(LOCATION, 0);
-			ds_writeb(DIRECTION, (ds_readbs(0x433e) + 2) & 0x03);
+			ds_writeb(DIRECTION, (ds_readbs(ARRIVAL_DIRECTION) + 2) & 0x03);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_dtp(0xdc),

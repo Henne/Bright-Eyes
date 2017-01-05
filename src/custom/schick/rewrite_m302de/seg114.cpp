@@ -109,10 +109,10 @@ void tevent_111(void)
 	signed short unlucky_tests;
 	Bit8u *hero;
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 1) > 0 && !ds_readb(0x3df8)) ||
-		ds_readb(0x3df8) == 1)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 1) > 0 && !ds_readb(TEVENT111_FLAG)) ||
+		ds_readb(TEVENT111_FLAG) == 1)
 	{
-		ds_writeb(0x3df8, 1);
+		ds_writeb(TEVENT111_FLAG, 1);
 		ds_writeb(EVENT_ANI_BUSY, 1);
 
 		load_ani(33);
@@ -209,7 +209,7 @@ void tevent_111(void)
 
 					get_item(45, 1, 200);
 
-					ds_writeb(0x3df8, 2);
+					ds_writeb(TEVENT111_FLAG, 2);
 
 				} else if (counter == 2 || unlucky_tests == 1 || counter == 1)
 				{
@@ -251,7 +251,7 @@ void tevent_111(void)
 						}
 
 						get_item(45, 1, 180);
-						ds_writeb(0x3df8, 2);
+						ds_writeb(TEVENT111_FLAG, 2);
 					}
 
 				} else {
@@ -289,15 +289,15 @@ void tevent_111(void)
 /* a camp place */
 void tevent_112(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3df9)) ||
-		ds_readb(0x3df9) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT112_FLAG)) ||
+		ds_readb(TEVENT112_FLAG) != 0)
 	{
-		ds_writeb(0x3df9, 1);
+		ds_writeb(TEVENT112_FLAG, 1);
 
-		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 2) > 0 && !ds_readb(0x3dfa)) ||
-			ds_readb(0x3dfa) != 0)
+		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 2) > 0 && !ds_readb(TEVENT112_HERB_FLAG)) ||
+			ds_readb(TEVENT112_HERB_FLAG) != 0)
 		{
-			ds_writeb(0x3dfa, 1);
+			ds_writeb(TEVENT112_HERB_FLAG, 1);
 
 			ds_writeb(0x66d0, 131);
 			TRV_found_camp_place(2);
@@ -427,7 +427,7 @@ void tevent_114(void)
 				}
 			}
 
-			if (!ds_readb(0x3e15))
+			if (!ds_readb(TEVENT114_OLIMONE_FLAG))
 			{
 				/* meet OLIMONE */
 				GUI_output(get_city(0x60));
@@ -461,7 +461,7 @@ void tevent_114(void)
 					}
 				}
 
-				ds_writeb(0x3e15, (signed char)(done = 1));
+				ds_writeb(TEVENT114_OLIMONE_FLAG, (signed char)(done = 1));
 
 			} else {
 				GUI_output(get_city(0x100));
@@ -488,10 +488,10 @@ void tevent_114(void)
 /* a camp place */
 void tevent_116(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 6) > 0 && !ds_readb(0x3dfc)) ||
-		ds_readb(0x3dfc) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 6) > 0 && !ds_readb(TEVENT116_FLAG)) ||
+		ds_readb(TEVENT116_FLAG) != 0)
 	{
-		ds_writeb(0x3dfc, 1);
+		ds_writeb(TEVENT116_FLAG, 1);
 		TRV_found_camp_place(1);
 	}
 }
@@ -527,23 +527,23 @@ void tevent_117(void)
 /* a herb place */
 void tevent_118(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 3) > 0 && !ds_readb(0x3dfd)) ||
-		ds_readb(0x3dfd) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 3) > 0 && !ds_readb(TEVENT118_FLAG)) ||
+		ds_readb(TEVENT118_FLAG) != 0)
 	{
 		ds_writeb(0x66d0, 60);
 		TRV_found_herb_place(0);
 		ds_writeb(0x66d0, -1);
-		ds_writeb(0x3dfd, 1);
+		ds_writeb(TEVENT118_FLAG, 1);
 	}
 }
 
 /* a camp place */
 void tevent_119(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(0x3dfe)) ||
-		ds_readb(0x3dfe) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 2) > 0 && !ds_readb(TEVENT119_FLAG)) ||
+		ds_readb(TEVENT119_FLAG) != 0)
 	{
-		ds_writeb(0x3dfe, 1);
+		ds_writeb(TEVENT119_FLAG, 1);
 		TRV_found_camp_place(0);
 	}
 }
@@ -553,7 +553,7 @@ void tevent_122(void)
 {
 	signed short answer;
 
-	if (!ds_readb(0x3e00))
+	if (!ds_readb(TEVENT122_FLAG))
 	{
 		do {
 			answer = GUI_radio(get_city(0x88), 2,
@@ -565,7 +565,7 @@ void tevent_122(void)
 		{
 			if (!TRV_fight_event(FIGHTS_F122, 122))
 			{
-				ds_writeb(0x3e00, 1);
+				ds_writeb(TEVENT122_FLAG, 1);
 				add_hero_ap_all(10);
 
 				load_in_head(4);

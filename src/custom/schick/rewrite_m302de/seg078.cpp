@@ -543,10 +543,10 @@ signed short DNG02_handler(void)
 	{
 		leave_dungeon();
 		ds_writebs(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
-		ds_writews(X_TARGET, ds_readws(0x433a));
-		ds_writews(Y_TARGET, ds_readws(0x433c));
+		ds_writews(X_TARGET, ds_readws(ARRIVAL_X_TARGET));
+		ds_writews(Y_TARGET, ds_readws(ARRIVAL_Y_TARGET));
 		ds_writeb(LOCATION, 0);
-		ds_writeb(DIRECTION, (ds_readws(0x433e) + 2) & 3);
+		ds_writeb(DIRECTION, (ds_readws(ARRIVAL_DIRECTION) + 2) & 3);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)get_dtp(0xb0),

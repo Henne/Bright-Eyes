@@ -555,7 +555,7 @@ signed short DNG14_handler(void)
 
 		GUI_output(get_dtp(0x8c));
 
-	} else if (((pos == 0x3a0a && ds_readbs(DIRECTION) == 1) || (pos == 0x3e0a && ds_readbs(DIRECTION) == 3)) &&
+	} else if (((pos == 0x3a0a && ds_readbs(DIRECTION) == 1) || (pos == TEVENT138_FLAG && ds_readbs(DIRECTION) == 3)) &&
 			pos != ds_readws(DNG_HANDLED_POS))
 	{
 		if (GUI_bool(get_dtp(0x98))) {
