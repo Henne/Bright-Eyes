@@ -45,7 +45,7 @@ void load_pp20(signed short index)
 
 			/* already buffered, just decomp */
 			decomp_pp20(Real2Host(ds_readd(PP20_BUFFERS + bi * 4)),
-				Real2Host(ds_readd(BUFFER1_PTR)),
+				Real2Host(ds_readd(RENDERBUF_PTR)),
 #if !defined(__BORLANDC__)
 				Real2Host(ds_readd(PP20_BUFFERS) + 4 + bi) + 4,
 #else
@@ -72,7 +72,7 @@ void load_pp20(signed short index)
 
 				/* decompress */
 				decomp_pp20(Real2Host(ds_readd(PP20_BUFFERS + bi * 4)),
-					Real2Host(ds_readd(BUFFER1_PTR)),
+					Real2Host(ds_readd(RENDERBUF_PTR)),
 #if !defined(__BORLANDC__)
 					Real2Host(ds_readd(PP20_BUFFERS + 4 + bi)) + 4,
 #else
@@ -87,17 +87,17 @@ void load_pp20(signed short index)
 
 				/* read it directly */
 				read_archive_file(fd,
-					Real2Host(ds_readd(BUFFER1_PTR)) -8,
+					Real2Host(ds_readd(RENDERBUF_PTR)) -8,
 					64000);
 
 				/* decompress it */
-				decomp_pp20(Real2Host(ds_readd(BUFFER1_PTR)) -8,
-					Real2Host(ds_readd(BUFFER1_PTR)),
+				decomp_pp20(Real2Host(ds_readd(RENDERBUF_PTR)) -8,
+					Real2Host(ds_readd(RENDERBUF_PTR)),
 #if !defined(__BORLANDC__)
-					Real2Host(ds_readd(BUFFER1_PTR)) -8 +4,
+					Real2Host(ds_readd(RENDERBUF_PTR)) -8 +4,
 #else
-					FP_OFF((RealPt)ds_readd(BUFFER1_PTR) -8) +4,
-					FP_SEG((RealPt)ds_readd(BUFFER1_PTR) -8),
+					FP_OFF((RealPt)ds_readd(RENDERBUF_PTR) -8) +4,
+					FP_SEG((RealPt)ds_readd(RENDERBUF_PTR) -8),
 #endif
 					get_readlength2(fd));
 
@@ -109,16 +109,16 @@ void load_pp20(signed short index)
 
 		fd = load_archive_file(index);
 
-		read_archive_file(fd, Real2Host(ds_readd(BUFFER1_PTR)) - 8, 64000);
+		read_archive_file(fd, Real2Host(ds_readd(RENDERBUF_PTR)) - 8, 64000);
 
 		/* decompress it */
-		decomp_pp20(Real2Host(ds_readd(BUFFER1_PTR)) -8,
-			Real2Host(ds_readd(BUFFER1_PTR)),
+		decomp_pp20(Real2Host(ds_readd(RENDERBUF_PTR)) -8,
+			Real2Host(ds_readd(RENDERBUF_PTR)),
 #if !defined(__BORLANDC__)
-			Real2Host(ds_readd(BUFFER1_PTR) - 8 + 4),
+			Real2Host(ds_readd(RENDERBUF_PTR) - 8 + 4),
 #else
-			FP_OFF((RealPt)ds_readd(BUFFER1_PTR) - 8) + 4,
-			FP_SEG((RealPt)ds_readd(BUFFER1_PTR) - 8),
+			FP_OFF((RealPt)ds_readd(RENDERBUF_PTR) - 8) + 4,
+			FP_SEG((RealPt)ds_readd(RENDERBUF_PTR) - 8),
 #endif
 			get_readlength2(fd));
 
@@ -425,7 +425,7 @@ void load_ani(const signed short nr)
 		len_3 = swap_u32(len_3) >> 8;
 
 		decomp_pp20(Real2Host(ds_readd(ANI_MAIN_PTR)),
-			Real2Host(ds_readd(BUFFER1_PTR)),
+			Real2Host(ds_readd(RENDERBUF_PTR)),
 #if !defined(__BORLANDC__)
 			Real2Host(ds_readd(ANI_MAIN_PTR) + 4),
 #else
@@ -441,7 +441,7 @@ void load_ani(const signed short nr)
 		memcpy(p6 + offset, dst, len);
 
 		memcpy(Real2Host(ds_readd(ANI_MAIN_PTR)),
-			Real2Host(ds_readd(BUFFER1_PTR)), len_3);
+			Real2Host(ds_readd(RENDERBUF_PTR)), len_3);
 		dst += offset;
 		memcpy(dst, p6 + offset, len);
 
@@ -481,7 +481,7 @@ void load_ani(const signed short nr)
 			area_size = swap_u32(area_size) >> 8;
 
 			decomp_pp20(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), p4)),
-				Real2Host(ds_readd(BUFFER1_PTR)),
+				Real2Host(ds_readd(RENDERBUF_PTR)),
 #if !defined(__BORLANDC__)
 				Real2Host(ds_readd(BUFFER9_PTR)) + p4 + 4,
 #else
@@ -500,7 +500,7 @@ void load_ani(const signed short nr)
 			memcpy(p6 + offset_2, dst, (unsigned short)len);
 
 			memcpy(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), p4)),
-				Real2Host(ds_readd(BUFFER1_PTR)), (unsigned short)area_size);
+				Real2Host(ds_readd(RENDERBUF_PTR)), (unsigned short)area_size);
 			dst += offset_2;
 			memcpy(dst, p6 + offset_2, (unsigned short)len);
 #if !defined(__BORLANDC__)

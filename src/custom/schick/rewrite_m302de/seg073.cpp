@@ -461,9 +461,9 @@ RealPt get_drinkmate(void)
 
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(char*)p_datseg + GOSSIP_STR_TRIPLE_WILDCARD, /* "%s %s%s" */
-		get_dtp(name * 4),
-		get_dtp(surname * 4),
-		get_dtp(((ds_readb(TLK_TAV_INFORMERSEX) - 1) == 0 ? 0xcf : 0xd0) * 4));
+		get_tx(name * 4),
+		get_tx(surname * 4),
+		get_tx(((ds_readb(TLK_TAV_INFORMERSEX) - 1) == 0 ? 0xcf : 0xd0) * 4));
 
 	return (RealPt)ds_readd(TEXT_OUTPUT_BUF);
 }
@@ -480,7 +480,7 @@ signed short tavern_quest_infos(void)
 	if (ds_readws(HEARD_ANNOUNCE) == 0) {
 
 		/* print the announcement from the hetman */
-		GUI_output(get_dtp(0x348));
+		GUI_output(get_tx(0x348));
 
 		/* remember you heard the announcement */
 		ds_writews(HEARD_ANNOUNCE, 1);
@@ -501,7 +501,7 @@ signed short tavern_quest_infos(void)
 			(ds_readws(TYPEINDEX) == 6))
 	{
 		/* print the message about a ghost ship */
-		GUI_output(get_dtp(0x344));
+		GUI_output(get_tx(0x344));
 
 		/* remember that */
 		ds_writeb(QUEST_DEADSHIP, (unsigned char)(l_si = 1));

@@ -37,13 +37,13 @@ void tevent_067(void)
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 6) > 0 && !ds_readb(TEVENT067_FLAG)) ||
 		ds_readb(TEVENT067_FLAG) != 0)
 	{
-		GUI_output(get_city(0x168));
+		GUI_output(get_tx2(0x168));
 
 		do {
-			answer = GUI_radio(get_city(0x16c), 3,
-						get_city(0x170),
-						get_city(0x174),
-						get_city(0x178));
+			answer = GUI_radio(get_tx2(0x16c), 3,
+						get_tx2(0x170),
+						get_tx2(0x174),
+						get_tx2(0x178));
 		} while (answer == -1);
 
 		if (answer == 2) {
@@ -68,9 +68,9 @@ void tevent_067(void)
 
 			if (!ds_readb(TEVENT067_FLAG) && count >= 3) {
 
-				loot_multi_chest(p_datseg + 0xb16a, get_city(0x180));
+				loot_multi_chest(p_datseg + 0xb16a, get_tx2(0x180));
 
-				GUI_output(get_city(0x184));
+				GUI_output(get_tx2(0x184));
 
 				hero = Real2Host(get_first_hero_available_in_group());
 
@@ -81,7 +81,7 @@ void tevent_067(void)
 				ds_writeb(LOCATION, 0);
 			} else {
 
-				GUI_output(get_city(0x17c));
+				GUI_output(get_tx2(0x17c));
 
 				hero = get_hero(0);
 				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -104,12 +104,12 @@ void tevent_067(void)
 		}
 	} else {
 
-		GUI_output(get_city(0x168));
+		GUI_output(get_tx2(0x168));
 
 		do {
-			answer = GUI_radio(get_city(0x148), 2,
-						get_city(0x170),
-						get_city(0x174));
+			answer = GUI_radio(get_tx2(0x148), 2,
+						get_tx2(0x170),
+						get_tx2(0x174));
 		} while (answer == -1);
 
 		if (answer == 2) {
@@ -165,7 +165,7 @@ void tevent_070(void)
 			if (!TRV_follow_trail_question()) {
 
 				do {
-					l_si = GUI_radio(get_city(0x00), 2, get_city(0x04), get_city(0x08));
+					l_si = GUI_radio(get_tx2(0x00), 2, get_tx2(0x04), get_tx2(0x08));
 
 				} while (l_si == -1);
 
@@ -197,7 +197,7 @@ void tevent_071(void)
 		if (test_skill(hero, TA_FAEHRTENSUCHEN, 4) > 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_city(0x34),
+				(char*)get_tx2(0x34),
 				(char*)hero + HERO_NAME2,
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
@@ -205,18 +205,18 @@ void tevent_071(void)
 
 			do {
 				l_si = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-						get_city(0x38),
-						get_city(0x3c));
+						get_tx2(0x38),
+						get_tx2(0x3c));
 			} while (l_si == -1);
 
 			if (l_si == 2) {
 				/* investigate */
 
 				do {
-					l_si = GUI_radio(get_city(0x40), 3,
-							get_city(0x44),
-							get_city(0x48),
-							get_city(0x4c));
+					l_si = GUI_radio(get_tx2(0x40), 3,
+							get_tx2(0x44),
+							get_tx2(0x48),
+							get_tx2(0x4c));
 				} while (l_si == -1);
 
 				if (l_si == 1) {
@@ -235,18 +235,18 @@ void tevent_071(void)
 				if (l_si == 1 || l_si == 2) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_city(0x58),
+						(char*)get_tx2(0x58),
 						(char*)hero + HERO_NAME2);
 					do {
 						l_si = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-								get_city(0x5c),
-								get_city(0x60));
+								get_tx2(0x5c),
+								get_tx2(0x60));
 					} while (l_si == -1);
 
 					if (l_si == 1) {
 						/* destroy monolith */
 
-						GUI_output(get_city(0x64));
+						GUI_output(get_tx2(0x64));
 
 						/* REWARD: get gods estimation + 500 for each god */
 						for (i = 1; i <= 14; i++) {
@@ -270,9 +270,9 @@ void tevent_071(void)
 					i = (!have_raft ? 1 : 2);
 
 					do {
-						l_si = GUI_radio(get_city(0x68), (signed char)i,
-								get_city(0x6c),
-								get_city(0x70));
+						l_si = GUI_radio(get_tx2(0x68), (signed char)i,
+								get_tx2(0x6c),
+								get_tx2(0x70));
 					} while (l_si == -1);
 
 					if (l_si == 1) {
@@ -311,17 +311,17 @@ void TRV_swimm(signed short mod, signed short percent)
 
 				hero_disease_test(hero, 2, 20 - (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))));
 
-				loose_random_item(hero, percent, get_ltx(0x7e8));
+				loose_random_item(hero, percent, get_ttx(0x7e8));
 
 				sub_hero_le(hero, random_schick(5));
 
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0x54),
+					(char*)get_tx2(0x54),
 					(char*)hero + HERO_NAME2);
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0x50),
+					(char*)get_tx2(0x50),
 					(char*)hero + HERO_NAME2);
 			}
 
@@ -349,7 +349,7 @@ void tevent_unused01(void)
 		ds_writeb(TEVENTU01_FLAG, 1);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_city(0x74),
+			(char*)get_tx2(0x74),
 			(char*)hero + HERO_NAME2,
 			(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 			(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
@@ -357,17 +357,17 @@ void tevent_unused01(void)
 
 		do {
 			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-					get_city(0x78),
-					get_city(0x7c));
+					get_tx2(0x78),
+					get_tx2(0x7c));
 		} while (answer == -1);
 
 		if (answer == 2) {
 
 			do {
-				answer = GUI_radio(get_city(0x80), 3,
-						get_city(0x84),
-						get_city(0x88),
-						get_city(0x8c));
+				answer = GUI_radio(get_tx2(0x80), 3,
+						get_tx2(0x84),
+						get_tx2(0x88),
+						get_tx2(0x8c));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -383,7 +383,7 @@ void tevent_unused01(void)
 
 			if (answer == 1 || answer == 2) {
 
-				GUI_output(get_city(0x98));
+				GUI_output(get_tx2(0x98));
 
 				ds_writeb(0x66d0, 63);
 				TRV_inside_herb_place();
@@ -392,9 +392,9 @@ void tevent_unused01(void)
 				options = (!has_raft ? 1 : 2);
 
 				do {
-					answer = GUI_radio(get_city(0x9c), (signed char)options,
-								get_city(0xa0),
-								get_city(0xa4));
+					answer = GUI_radio(get_tx2(0x9c), (signed char)options,
+								get_tx2(0xa0),
+								get_tx2(0xa4));
 				} while (answer == -1);
 
 				if (answer == 1) {
@@ -432,15 +432,15 @@ void tevent_073(void)
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-							get_city(0xa8), 2,
-							get_city(0xac), get_city(0xb0));
+							get_tx2(0xa8), 2,
+							get_tx2(0xac), get_tx2(0xb0));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
-			GUI_dialog_na(0, get_city(0xb4));
+			GUI_dialog_na(0, get_tx2(0xb4));
 
-			loot_multi_chest(p_datseg + TEVENT073_CORPSE, get_city(0x1a4));
+			loot_multi_chest(p_datseg + TEVENT073_CORPSE, get_tx2(0x1a4));
 
 			ds_writeb(TEVENT073_FLAG, 1);
 		}
@@ -462,10 +462,10 @@ void tevent_074(void)
 		load_in_head(49);
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4), get_city(0xb8), 3,
-						get_city(0xbc),
-						get_city(0xc0),
-						get_city(0xc4));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc4), get_tx2(0xb8), 3,
+						get_tx2(0xbc),
+						get_tx2(0xc0),
+						get_tx2(0xc4));
 		} while (answer == -1);
 
 		if (answer == 1) {
@@ -500,10 +500,10 @@ void tevent_074(void)
 				hero = get_hero(answer);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-					(char*)get_city(0xd8),
+					(char*)get_tx2(0xd8),
 					(char*)hero + HERO_NAME2);
 
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4),
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc4),
 						Real2Host(ds_readd(DTP2)) + 0x400, 0);
 
 				/* this hero gets a damage of 2W6+4 */
@@ -513,10 +513,10 @@ void tevent_074(void)
 
 			/* try to make a deal */
 			do {
-				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4), get_city(0xc8), 3,
-							get_city(0xcc),
-							get_city(0xd0),
-							get_city(0xd4));
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc4), get_tx2(0xc8), 3,
+							get_tx2(0xcc),
+							get_tx2(0xd0),
+							get_tx2(0xd4));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -565,18 +565,18 @@ void tevent_075(void)
 	if (!ds_readb(TEVENT075_FLAG)) {
 
 		do {
-			answer = GUI_radio(get_city(0xdc), 2,
-						get_city(0xe0),
-						get_city(0xe4));
+			answer = GUI_radio(get_tx2(0xdc), 2,
+						get_tx2(0xe0),
+						get_tx2(0xe4));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
 			do {
-				answer = GUI_radio(get_city(0xe8), 3,
-							get_city(0xec),
-							get_city(0xf0),
-							get_city(0xf4));
+				answer = GUI_radio(get_tx2(0xe8), 3,
+							get_tx2(0xec),
+							get_tx2(0xf0),
+							get_tx2(0xf4));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -616,7 +616,7 @@ void tevent_075(void)
 
 				if (answer > 1) {
 
-					GUI_output(get_city(0xf8));
+					GUI_output(get_tx2(0xf8));
 
 					ds_writeb(FIG_INITIATIVE, 1);
 
@@ -658,13 +658,13 @@ void tevent_076(void)
 		{
 			ds_writeb(TEVENT076_FLAG, 1);
 
-			GUI_dialog_na(53, get_city(0xfc));
+			GUI_dialog_na(53, get_tx2(0xfc));
 
 			do {
 				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-								get_city(0x100), 2,
-								get_city(0x104),
-								get_city(0x108));
+								get_tx2(0x100), 2,
+								get_tx2(0x104),
+								get_tx2(0x108));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -678,9 +678,9 @@ void tevent_076(void)
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-							get_city(0x10c), 2,
-							get_city(0x110),
-							get_city(0x114));
+							get_tx2(0x10c), 2,
+							get_tx2(0x110),
+							get_tx2(0x114));
 		} while (answer == -1);
 
 		if (answer == 1) {
@@ -704,11 +704,11 @@ void tevent_077(void)
 		load_in_head(4);
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8),
-						get_city(0x118), 3,
-						get_city(0x11c),
-						get_city(0x120),
-						get_city(0x124));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc8),
+						get_tx2(0x118), 3,
+						get_tx2(0x11c),
+						get_tx2(0x120),
+						get_tx2(0x124));
 		} while (answer == -1);
 
 		if (answer == 1) {
@@ -741,10 +741,10 @@ void tevent_077(void)
 				hero = get_hero(answer);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-					(char*)get_city(0xd8),
+					(char*)get_tx2(0xd8),
 					(char*)hero + HERO_NAME2);
 
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8),
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc8),
 						Real2Host(ds_readd(DTP2)) + 0x400, 0);
 
 				/* the last hero looses between 6 and 16 LE */
@@ -755,10 +755,10 @@ void tevent_077(void)
 
 			/* try to make a deal */
 			do {
-				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8), get_city(0x128), 3,
-							get_city(0x12c),
-							get_city(0x130),
-							get_city(0x134));
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc8), get_tx2(0x128), 3,
+							get_tx2(0x12c),
+							get_tx2(0x130),
+							get_tx2(0x134));
 			} while (answer == -1);
 
 			if (answer == 1) {

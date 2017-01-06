@@ -79,7 +79,7 @@ void city_event_1(void)
 		 *		Or, at least some changes on the code are neccessary.
 		 */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(4 * (random_schick(4) - 1)),
+			(char*)get_tx(4 * (random_schick(4) - 1)),
 			(char*)Real2Host(hero) + HERO_NAME2,
 			randval);
 
@@ -95,28 +95,28 @@ void city_event_1(void)
 	} else {
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(4 * (random_schick(4) + 3)),
+			(char*)get_tx(4 * (random_schick(4) + 3)),
 			(char*)Real2Host(hero) + HERO_NAME2,
 			(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 1)));
 
 		answer = GUI_dialogbox(hero + HERO_PORTRAIT, Real2Host(hero) + HERO_NAME2, Real2Host(ds_readd(DTP2)), 3,
-				get_dtp(4 * (random_schick(4) + 7)),
-				get_dtp(4 * (random_schick(4) + 11)),
-				get_dtp(4 * (random_schick(4) + 15)));
+				get_tx(4 * (random_schick(4) + 7)),
+				get_tx(4 * (random_schick(4) + 11)),
+				get_tx(4 * (random_schick(4) + 15)));
 
 		if (answer == 1) {
-			GUI_output(get_dtp(4 * (random_schick(4) + 19)));
+			GUI_output(get_tx(4 * (random_schick(4) + 19)));
 		} else {
 
 			randval = random_schick(5) - 1;
 
 			if (randval == 2) {
-				GUI_output(get_dtp(0x68));
-				GUI_output(get_dtp(0x6c));
-				GUI_output(get_dtp(0x70));
+				GUI_output(get_tx(0x68));
+				GUI_output(get_tx(0x6c));
+				GUI_output(get_tx(0x70));
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(4 * (randval + 24)),
+					(char*)get_tx(4 * (randval + 24)),
 					(char*)Real2Host(hero) + HERO_NAME2);
 				GUI_output(Real2Host(ds_readd(DTP2)));
 			}
@@ -140,7 +140,7 @@ void city_event_2(void)
 		host_writeds(Real2Host(hero) + HERO_MONEY, 0);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(4 * (random_schick(4) + 30)),
+			(char*)get_tx(4 * (random_schick(4) + 30)),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		GUI_dialogbox(hero + HERO_PORTRAIT, Real2Host(hero) + HERO_NAME2, Real2Host(ds_readd(DTP2)), 0);
@@ -148,20 +148,20 @@ void city_event_2(void)
 	} else {
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(4 * (random_schick(4) + 34)),
+			(char*)get_tx(4 * (random_schick(4) + 34)),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		answer = GUI_dialogbox(hero + HERO_PORTRAIT, Real2Host(hero) + HERO_NAME2, Real2Host(ds_readd(DTP2)), 3,
-				get_dtp(4 * (random_schick(4) + 38)),
-				get_dtp(4 * (random_schick(4) + 42)),
-				get_dtp(4 * (random_schick(4) + 46)));
+				get_tx(4 * (random_schick(4) + 38)),
+				get_tx(4 * (random_schick(4) + 42)),
+				get_tx(4 * (random_schick(4) + 46)));
 
 		if (answer == 1) {
-			GUI_output(get_dtp(4 * (random_schick(4) + 50)));
+			GUI_output(get_tx(4 * (random_schick(4) + 50)));
 		} else {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(4 * (random_schick(4) + 54)),
+				(char*)get_tx(4 * (random_schick(4) + 54)),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -183,13 +183,13 @@ void city_event_3(void)
 
 	answer = money >= 100 ? 3 : 2;
 
-	answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 58)), answer,
-			get_dtp(4 * (random_schick(4) + 62)),
-			get_dtp(4 * (random_schick(4) + 66)),
-			get_dtp(4 * (random_schick(4) + 70)));
+	answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(4 * (random_schick(4) + 58)), answer,
+			get_tx(4 * (random_schick(4) + 62)),
+			get_tx(4 * (random_schick(4) + 66)),
+			get_tx(4 * (random_schick(4) + 70)));
 
 	if (answer == 3) {
-		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 74)), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(4 * (random_schick(4) + 74)), 0);
 		money -= 100;
 		set_party_money(money);
 	}
@@ -209,20 +209,20 @@ void city_event_4(void)
 
 	answer = money >= 100 ? 3 : 2;
 
-	answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 58)), answer,
-			get_dtp(4 * (random_schick(4) + 78)),
-			get_dtp(4 * (random_schick(4) + 82)),
-			get_dtp(4 * (random_schick(4) + 86)));
+	answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(4 * (random_schick(4) + 58)), answer,
+			get_tx(4 * (random_schick(4) + 78)),
+			get_tx(4 * (random_schick(4) + 82)),
+			get_tx(4 * (random_schick(4) + 86)));
 
 	if (answer == 3) {
 		money -= 100;
 		set_party_money(money);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 90)), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(4 * (random_schick(4) + 90)), 0);
 
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(4 * (random_schick(4) + 94)),
+			(char*)get_tx(4 * (random_schick(4) + 94)),
 			(char*)Real2Host(load_current_town_gossip()));
 
 		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
@@ -247,12 +247,12 @@ void city_event_5(void)
 		hero = get_first_hero_available_in_group();
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(4 * (randval + 99)),
+			(char*)get_tx(4 * (randval + 99)),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
 	} else {
-		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (randval + 99)), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(4 * (randval + 99)), 0);
 	}
 
 	ds_writews(TEXTBOX_WIDTH, tw_bak);
@@ -271,16 +271,16 @@ void city_event_6(void)
 		load_in_head(4);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(4 * (random_schick(4) + 102)),
+			(char*)get_tx(4 * (random_schick(4) + 102)),
 			(char*)get_hero(get_random_hero()) + HERO_NAME2);
 
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 3,
-			get_dtp(4 * (random_schick(4) + 106)),
-			get_dtp(4 * (random_schick(4) + 110)),
-			get_dtp(4 * (random_schick(4) + 114)));
+			get_tx(4 * (random_schick(4) + 106)),
+			get_tx(4 * (random_schick(4) + 110)),
+			get_tx(4 * (random_schick(4) + 114)));
 
 		if (answer == 1 || answer == 2) {
-			GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(4 * (random_schick(4) + 118)), 0);
+			GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(4 * (random_schick(4) + 118)), 0);
 		} else if (answer == 3) {
 			location_bak = ds_readbs(LOCATION);
 			ds_writeb(LOCATION, LOCATION_MERCHANT);
@@ -305,7 +305,7 @@ void city_event_7(void)
 	if (!randval) {
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(0x1ec),
+			(char*)get_tx(0x1ec),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		GUI_dialogbox(hero + HERO_PORTRAIT, Real2Host(hero) + HERO_NAME2, Real2Host(ds_readd(DTP2)) + 0x400, 0);
@@ -315,13 +315,13 @@ void city_event_7(void)
 		load_in_head(12);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(0x1f0),
+			(char*)get_tx(0x1f0),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(0x1f4),
+			(char*)get_tx(0x1f4),
 			(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 3)));
 
 		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
@@ -330,21 +330,21 @@ void city_event_7(void)
 
 		load_in_head(47);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(0x1f8), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(0x1f8), 0);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(0x1fc),
+			(char*)get_tx(0x1fc),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-			(char*)get_dtp(0x200),
+			(char*)get_tx(0x200),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, Real2Host(ds_readd(DTP2)) + 0x400, 0);
 	} else {
-		GUI_output(get_dtp(0x204));
+		GUI_output(get_tx(0x204));
 	}
 }
 
@@ -361,21 +361,21 @@ void city_event_8(void)
 
 	if (!randval) {
 
-		GUI_output(get_dtp(0x208));
+		GUI_output(get_tx(0x208));
 
 	} else if (randval == 1) {
 
 		load_in_head(12);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(0x20c), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(0x20c), 0);
 
-		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_dtp(0x210), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), NULL, get_tx(0x210), 0);
 
 	} else if (randval == 3) {
-		GUI_output(get_dtp(0x214));
+		GUI_output(get_tx(0x214));
 	} else {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(0x218),
+			(char*)get_tx(0x218),
 			(char*)Real2Host(hero) + HERO_NAME2);
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -390,14 +390,14 @@ void city_event_9(void)
 	signed short randval = random_schick(4) - 1;
 
 	if (!randval) {
-		GUI_output(get_dtp(0x21c));
+		GUI_output(get_tx(0x21c));
 	} else if (randval == 1) {
-		GUI_output(get_dtp(0x220));
+		GUI_output(get_tx(0x220));
 	} else if (randval == 2) {
-		GUI_output(get_dtp(0x224));
+		GUI_output(get_tx(0x224));
 	} else {
-		GUI_output(get_dtp(0x228));
-		GUI_output(get_dtp(0x22c));
+		GUI_output(get_tx(0x228));
+		GUI_output(get_tx(0x22c));
 	}
 }
 

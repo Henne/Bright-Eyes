@@ -101,7 +101,7 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 		if (txt_id_raw != -1) {
 
 			txt_id = (4 * host_readw(state_ptr) + txt_id_rand) & 0x7fff;
-			fmt = (char*)get_dtp(4 * (txt_id + txt_offset));
+			fmt = (char*)get_tx(4 * (txt_id + txt_offset));
 
 			if (ds_readws(TLK_ID) == 15) {
 
@@ -168,9 +168,9 @@ void do_random_talk(signed short talk_id, signed short informer_id)
 			}
 
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), dialog_title, (Bit8u*)dst, optioncount,
-					get_dtp(4 * options[0].txt),
-					get_dtp(4 * options[1].txt),
-					get_dtp(4 * options[2].txt));
+					get_tx(4 * options[0].txt),
+					get_tx(4 * options[1].txt),
+					get_tx(4 * options[2].txt));
 
 		} else {
 			options[0].goto_state = host_readb(state_ptr + 5);
@@ -224,7 +224,7 @@ RealPt get_informer_forename(void)
 		if (host_readbs(p_info + 2) == ds_readbs(CURRENT_TOWN)) {
 
 			i = 0;
-			informer_name = get_ltx(4 * host_readws(p_info));
+			informer_name = get_ttx(4 * host_readws(p_info));
 
 			do {
 				tmp = host_readbs(informer_name);
@@ -232,7 +232,7 @@ RealPt get_informer_forename(void)
 				i++;
 			} while (tmp != ' ');
 
-			strncpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(4 * host_readws(p_info)), i);
+			strncpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(4 * host_readws(p_info)), i);
 #ifdef M302de_ORIGINAL_BUGFIX
 			break;
 #endif
@@ -277,11 +277,11 @@ RealPt get_informer_hint(void)
 	ptr = p_datseg + INFORMER_TAB;
 	for (i = 0; i < 15; i++, ptr += 4) {
 		if (host_readb(ptr + 2) == ds_readb(CURRENT_TOWN)) {
-			return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + 4 * (i + 0x2cb));
+			return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 4 * (i + 0x2cb));
 		}
 	}
 
-	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xb54);
+	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xb54);
 }
 
 /**
@@ -290,7 +290,7 @@ RealPt get_informer_hint(void)
  */
 RealPt get_informer_name(void)
 {
-	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) + ds_readw(INFORMER_TAB - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
+	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + ds_readw(INFORMER_TAB - 4 + ds_readb(CURRENT_INFORMER) * 4) * 4);
 }
 
 /**
@@ -300,7 +300,7 @@ RealPt get_informer_name(void)
  */
 RealPt get_informer_name2(void)
 {
-	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX)) +
+	return (RealPt)host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) +
 			ds_readw(INFORMER_TAB + get_town_lookup_entry() * 4) * 4);
 }
 
@@ -336,7 +336,7 @@ RealPt get_random_tavern_message(void)
 
 	randval = random_schick(20) - 1;
 
-	ptr = (RealPt)host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + 4 * (randval + 147));
+	ptr = (RealPt)host_readd(Real2Host(ds_readd(TX_INDEX)) + 4 * (randval + 147));
 
 	if (!randval || randval == 19) {
 
@@ -350,7 +350,7 @@ RealPt get_random_tavern_message(void)
 
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)Real2Host(ptr),
-			(char*)get_ltx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
+			(char*)get_ttx(4 * (ds_readbs(CURRENT_TOWN) + 235)));
 
 		return (RealPt)ds_readd(TEXT_OUTPUT_BUF);
 	} else {

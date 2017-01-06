@@ -45,7 +45,7 @@ void do_tavern(void)
 	done = 0;
 	tav_ptr = p_datseg + 0x6c84 + 4 * ds_readws(TYPEINDEX);
 
-	GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
+	GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
 
 	ds_writew(REQUEST_REFRESH, 1);
 
@@ -53,14 +53,14 @@ void do_tavern(void)
 
 		if (ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
-			GUI_output(get_ltx(0xc84));
+			GUI_output(get_ttx(0xc84));
 			turnaround();
 			return;
 		}
 
 	} else if (ds_readds(DAY_TIMER) < HOURS(16) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
-			GUI_output(get_ltx(0x784));
+			GUI_output(get_ttx(0x784));
 			turnaround();
 			return;
 	}
@@ -75,7 +75,7 @@ void do_tavern(void)
 			set_var_to_zero();
 			load_ani(27);
 			init_ani(0);
-			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
 			set_audio_track(ARCHIVE_FILE_INN_XMI);
 			ds_writew(REQUEST_REFRESH, 0);
 		}
@@ -84,26 +84,26 @@ void do_tavern(void)
 
 		if (ds_readbs(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
 
-			GUI_output(get_ltx(0x760));
+			GUI_output(get_ttx(0x760));
 			done = 1;
 			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
 		if (ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
 
-			GUI_output(get_ltx(0x24));
+			GUI_output(get_ttx(0x24));
 			done = 1;
 			ds_writew(MOUSE2_EVENT, ds_writew(ACTION, 0));
 		}
 
 		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			answer = GUI_radio(get_ltx(0x754), ds_readw(COMBO_MODE) == 0 ? 4 : 5,
-						get_ltx(0x55c),
-						get_ltx(0x758),
-						get_ltx(0x350),
-						get_ltx(0x75c),
-						get_ltx(0xce0)) - 1;
+			answer = GUI_radio(get_ttx(0x754), ds_readw(COMBO_MODE) == 0 ? 4 : 5,
+						get_ttx(0x55c),
+						get_ttx(0x758),
+						get_ttx(0x350),
+						get_ttx(0x75c),
+						get_ttx(0xce0)) - 1;
 
 			if (answer != -2) {
 				ds_writew(ACTION, answer + 129);
@@ -121,7 +121,7 @@ void do_tavern(void)
 
 				make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_money_before - p_money_after);
 
-				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0xce4),
+				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0xce4),
 					(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -142,13 +142,13 @@ void do_tavern(void)
 
 			p_money_after += host_readws(tav_ptr + 2) * p_money_after / 100;
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x764),
+				(char*)get_ttx(0x764),
 				(signed short)p_money_after);
 
 			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 
-				GUI_output(host_readws(tav_ptr) < 5 ? get_ltx(0x76c) : (
-						host_readws(tav_ptr) < 15 ? get_ltx(0x770) : get_ltx(0x774)));
+				GUI_output(host_readws(tav_ptr) < 5 ? get_ttx(0x76c) : (
+						host_readws(tav_ptr) < 15 ? get_ttx(0x770) : get_ttx(0x774)));
 
 				timewarp(HOURS(1));
 
@@ -190,7 +190,7 @@ void do_tavern(void)
 
 				if (p_money_before < p_money_after) {
 
-					GUI_output(get_ltx(0x768));
+					GUI_output(get_ttx(0x768));
 
 					ds_writeb(TAV_CHEATED_FLAGS + ds_readws(TYPEINDEX), 1);
 					done = 1;
@@ -210,7 +210,7 @@ void do_tavern(void)
 
 			bonus = (timeval - ds_readds(LAST_SAVE_TIME)) > 120 ? 0 : 50;
 
-			if (GUI_use_skill2(bonus, get_ltx(0x62c)) == -1) {
+			if (GUI_use_skill2(bonus, get_ttx(0x62c)) == -1) {
 				done = 1;
 				ds_writew(COMBO_MODE, 0);
 			}
@@ -267,11 +267,11 @@ void enter_ghostship(void)
 
 	load_tx(ARCHIVE_FILE_DNGS_DTX + 1);
 
-	GUI_output(get_dtp(0x48));
-	GUI_output(get_dtp(0x4c));
+	GUI_output(get_tx(0x48));
+	GUI_output(get_tx(0x4c));
 
 	do {
-		answer = GUI_radio(get_dtp(0x50), 2, get_dtp(0x54), get_dtp(0x58));
+		answer = GUI_radio(get_tx(0x50), 2, get_tx(0x54), get_tx(0x58));
 
 	} while (answer == -1);
 

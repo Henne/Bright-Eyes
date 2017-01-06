@@ -79,7 +79,7 @@ void show_entrance(void)
 	load_ani(34);
 	init_ani(1);
 
-	if (GUI_bool(get_ltx(0xbe0))) {
+	if (GUI_bool(get_ttx(0xbe0))) {
 
 		init_ani_busy_loop(2);
 		DNG_enter_dungeon(ds_readws(TYPEINDEX));
@@ -107,7 +107,7 @@ void show_citizen(void)
 			init_ani(ds_writew(REQUEST_REFRESH, 0));
 
 			strcpy((char*)Real2Host((RealPt)ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_dtp(ds_readw(CITYINDEX) * 4));
+				(char*)get_tx(ds_readw(CITYINDEX) * 4));
 
 			if (ds_readbs(YEAR) == 15 && ds_readbs(MONTH) == 1 && random_schick(100) <= 20) {
 
@@ -142,9 +142,9 @@ void do_house(void)
 	Bit8u *hero;
 
 	/* prepare the question */
-	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_dtp(4 * ds_readws(CITYINDEX)));
+	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx(4 * ds_readws(CITYINDEX)));
 
-	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x9bc));
+	strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x9bc));
 
 	ds_writew(MENU_DEFAULT_SELECT, 1);
 
@@ -157,7 +157,7 @@ void do_house(void)
 		init_ani(0);
 
 		/* print a randomized text */
-		GUI_output(get_ltx(4 * (random_schick(8) + 623)));
+		GUI_output(get_ttx(4 * (random_schick(8) + 623)));
 
 		hero = get_hero(0);
 
@@ -176,7 +176,7 @@ void do_house(void)
 
 					/* sneak test failed in a town with guards */
 
-					GUI_output(get_ltx(0x9e0));
+					GUI_output(get_ttx(0x9e0));
 
 					l_di = 0;
 
@@ -211,7 +211,7 @@ void do_house(void)
 
 						timewarp_until(HOURS(6));
 
-						GUI_output(get_ltx(0x9e4));
+						GUI_output(get_ttx(0x9e4));
 					}
 				}
 				break;
@@ -283,7 +283,7 @@ void show_treasure_map(void)
 
 	if (count == 0) {
 		/* no treasure map parts found */
-		GUI_output(get_ltx(0x984));
+		GUI_output(get_ttx(0x984));
 	} else {
 		ds_writeb(0x45b8, 1);
 		pp20_index_bak = ds_readbs(PP20_INDEX);
@@ -351,7 +351,7 @@ void show_treasure_map(void)
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			GUI_output(get_ltx(0xca0));
+			GUI_output(get_ttx(0xca0));
 
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			ds_writeb(TMAP_DOUBLE1, 0);
@@ -362,7 +362,7 @@ void show_treasure_map(void)
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 3);
 
-			GUI_output(get_ltx(0xca4));
+			GUI_output(get_ttx(0xca4));
 
 			ds_writew(TEXTBOX_WIDTH, tw_bak);
 			ds_writeb(TMAP_DOUBLE2, 0);
@@ -376,7 +376,7 @@ void show_treasure_map(void)
 
 			/* */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ltx(0xb5c),
+				(char*)get_ttx(0xb5c),
 				(char*)get_hero(get_random_hero()) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -393,13 +393,13 @@ void show_treasure_map(void)
 			ds_writew(PIC_COPY_Y1, 0);
 			ds_writew(PIC_COPY_X2, 319);
 			ds_writew(PIC_COPY_Y2, 199);
-			ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+			ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 			ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 			update_mouse_cursor();
 			wait_for_vsync();
 
-			set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64000 + 2, 0, 0x20);
+			set_palette(Real2Host(ds_readd(RENDERBUF_PTR)) + 64000 + 2, 0, 0x20);
 
 			do_pic_copy(0);
 
@@ -444,7 +444,7 @@ signed short game_options(void)
 
 	get_textcolor(&fg_bak, &bg_bak);
 
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER9_PTR));
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(BUFFER9_PTR));
 
 	bak1 = ds_readws(0xd2d5);
 	bak2 = ds_readws(0xd2d9);
@@ -464,7 +464,7 @@ signed short game_options(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 61);
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER9_PTR));
-	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 9600));
+	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(RENDERBUF_PTR) + 9600));
 	do_pic_copy(2);
 
 	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 28000);
@@ -473,7 +473,7 @@ signed short game_options(void)
 		/* if the party is in a town */
 		load_tx(ARCHIVE_FILE_MAPTEXT_LTX);
 
-		GUI_print_header(get_dtp(4 * (ds_readbs(CURRENT_TOWN) - 1)));
+		GUI_print_header(get_tx(4 * (ds_readbs(CURRENT_TOWN) - 1)));
 
 		load_tx(ds_readbs(CURRENT_TOWN) + (ARCHIVE_FILE_CITY_DAT-1));
 
@@ -482,7 +482,7 @@ signed short game_options(void)
 		ds_writew(PIC_COPY_X2, 319);
 		ds_writew(PIC_COPY_Y2, 86);
 		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER9_PTR));
-		ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(BUFFER1_PTR) + 22400));
+		ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(RENDERBUF_PTR) + 22400));
 		do_pic_copy(2);
 	}
 
@@ -501,20 +501,20 @@ signed short game_options(void)
 	ds_writew(PIC_COPY_Y1, 0);
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	update_mouse_cursor();
 	wait_for_vsync();
 
-	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64002, 0, 32);
+	set_palette(Real2Host(ds_readd(RENDERBUF_PTR)) + 64002, 0, 32);
 
 	do_pic_copy(0);
 	refresh_screen_size();
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR)));
+	ds_writed(PIC_COPY_DST, ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR)));
 
 	ds_writew(0xd2d9, bak2);
 	ds_writew(0xd2d5, bak1);
@@ -528,16 +528,16 @@ signed short game_options(void)
 		if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			/* use the radio menu */
-			answer = GUI_radio(get_ltx(0x938), 9,
-						get_ltx(0x390),
-						get_ltx(0x394),
-						get_ltx(0x494),
-						get_ltx(0x980),
-						get_ltx(0xcf8),
-						get_ltx(0xcf0),
-						get_ltx(0xcfc),
-						get_ltx(0x930),
-						get_ltx(0x934)) - 1;
+			answer = GUI_radio(get_ttx(0x938), 9,
+						get_ttx(0x390),
+						get_ttx(0x394),
+						get_ttx(0x494),
+						get_ttx(0x980),
+						get_ttx(0xcf8),
+						get_ttx(0xcf0),
+						get_ttx(0xcfc),
+						get_ttx(0x930),
+						get_ttx(0x934)) - 1;
 
 			if (answer != -2) {
 				ds_writew(ACTION, answer + 129);
@@ -579,7 +579,7 @@ signed short game_options(void)
 		} else if (ds_readws(ACTION) == 134) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xcec),
+				(char*)get_ttx(0xcec),
 				ds_readws(DELAY_FACTOR));
 
 			new_delay = GUI_input(Real2Host(ds_readd(DTP2)), 2);
@@ -594,7 +594,7 @@ signed short game_options(void)
 
 		} else if (ds_readws(ACTION) == 136) {
 
-			if (GUI_bool(get_ltx(0x4ac))) {
+			if (GUI_bool(get_ttx(0x4ac))) {
 
 				done = -1;
 				ds_writew(GAME_STATE, GAME_STATE_QUIT);
@@ -606,7 +606,7 @@ signed short game_options(void)
 
 	} while (!done);
 
-	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
+	ds_writed(0xbff9, ds_readd(RENDERBUF_PTR));
 
 	ds_writews(FIG_FIGURE1, ds_writews(FIG_FIGURE2, ds_writews(CURRENT_ANI, ds_writebs(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13)))));
 	ds_writew(REQUEST_REFRESH, 1);
@@ -641,7 +641,7 @@ void draw_icon(signed short id, signed short x, signed short y)
 	ds_writew(PIC_COPY_Y1, y);
 	ds_writew(PIC_COPY_X2, x + 23);
 	ds_writew(PIC_COPY_Y2, y + 23);
-	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
 	do_pic_copy(2);
 
 	ds_writed(PIC_COPY_DST, (Bit32u)ptr_bak);
@@ -665,7 +665,7 @@ signed short show_storytext(void)
 
 	person = random_schick(17) - 1;
 
-	ptr = get_dtp(4 * person);
+	ptr = get_tx(4 * person);
 
 	switch (person) {
 
@@ -769,12 +769,12 @@ void leave_dungeon(void)
 	DNG_lights();
 	ptr = Real2Host(ds_readd(TEXT_OUTPUT_BUF));
 
-	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0xc0);
+	memset(Real2Host(ds_readd(RENDERBUF_PTR)), 0, 0xc0);
 
 	for (i = 0; i < 64; i++) {
 
-		pal_fade(ptr, Real2Host(ds_readd(BUFFER1_PTR)));
-		pal_fade(ptr + 0x60, Real2Host(ds_readd(BUFFER1_PTR)) + 0x60);
+		pal_fade(ptr, Real2Host(ds_readd(RENDERBUF_PTR)));
+		pal_fade(ptr + 0x60, Real2Host(ds_readd(RENDERBUF_PTR)) + 0x60);
 		wait_for_vsync();
 		set_palette(ptr, 0x80, 0x40);
 	}
@@ -786,20 +786,20 @@ void leave_dungeon(void)
 	ds_writebs(CITY_AREA_LOADED, -1);
 	ds_writeb(0x4475, ds_writew(REQUEST_REFRESH, 1));
 
-	do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 0, 319, 199, 0);
+	do_fill_rect((RealPt)ds_readd(RENDERBUF_PTR), 0, 0, 319, 199, 0);
 
 	ds_writew(PIC_COPY_X1, 0);
 	ds_writew(PIC_COPY_Y1, 0);
 	ds_writew(PIC_COPY_X2, 240);
 	ds_writew(PIC_COPY_Y2, 136);
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
 	update_mouse_cursor();
 
 	do_pic_copy(1);
 	refresh_screen_size();
 	wait_for_vsync();
-	set_palette(Real2Host(ds_readd(BUFFER1_PTR)), 0 , 0x20);
+	set_palette(Real2Host(ds_readd(RENDERBUF_PTR)), 0 , 0x20);
 
 	/* disable the deathtrap */
 	ds_writew(DEATHTRAP, 0);
@@ -816,7 +816,7 @@ void tumult(void)
 	ds_writew(TEXTBOX_WIDTH, 7);
 
 	/* print message */
-	GUI_output(get_ltx(0xbf0));
+	GUI_output(get_ttx(0xbf0));
 
 	/* each hero in the group looses 1W6 LE */
 	sub_group_le(random_schick(6));
@@ -824,12 +824,12 @@ void tumult(void)
 
 	/* the guards or a mob */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_ltx(0xbf4),
+		(char*)get_ttx(0xbf4),
 		((ds_readb(CURRENT_TOWN) == 39 ||	/* PREM */
 			ds_readb(CURRENT_TOWN) == 18 ||	/* PHEXCAER */
 			ds_readb(CURRENT_TOWN) == 1 ||	/* THORWAL */
 			ds_readb(CURRENT_TOWN) == 17)	/* OBERORKEN */
-				? (char*)get_ltx(0xbf8) : (char*)get_ltx(0xbfc)));
+				? (char*)get_ttx(0xbf8) : (char*)get_ttx(0xbfc)));
 
 	GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -844,19 +844,19 @@ void fade_into(void)
 	Bit8u *ptr;
 	signed short i;
 
-	ptr = Real2Host(ds_readd(BUFFER1_PTR)) + 0xfa00;
+	ptr = Real2Host(ds_readd(RENDERBUF_PTR)) + 0xfa00;
 
-	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0xc0);
+	memset(Real2Host(ds_readd(RENDERBUF_PTR)), 0, 0xc0);
 
 	wait_for_vsync();
 
-	set_palette(Real2Host(ds_readd(BUFFER1_PTR)), 0x80, 0x40);
+	set_palette(Real2Host(ds_readd(RENDERBUF_PTR)), 0x80, 0x40);
 
 	for (i = 0; i < 0x20; i++) {
 
-		pal_fade(ptr, Real2Host(ds_readd(BUFFER1_PTR)));
+		pal_fade(ptr, Real2Host(ds_readd(RENDERBUF_PTR)));
 
-		pal_fade(ptr, Real2Host(ds_readd(BUFFER1_PTR)));
+		pal_fade(ptr, Real2Host(ds_readd(RENDERBUF_PTR)));
 
 		wait_for_vsync();
 
@@ -868,7 +868,7 @@ void fade_into(void)
 
 void copy_palette(void)
 {
-	memcpy(Real2Host(ds_readd(BUFFER1_PTR)) + 0xfa00, Real2Host(ds_readd(0xce3b)), 0x60);
+	memcpy(Real2Host(ds_readd(RENDERBUF_PTR)) + 0xfa00, Real2Host(ds_readd(0xce3b)), 0x60);
 	ds_writeb(0x4475, 2);
 }
 

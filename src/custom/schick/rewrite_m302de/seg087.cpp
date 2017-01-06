@@ -65,7 +65,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x204 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_MONEY_FLAG)) {
 
-		if (GUI_bool(get_dtp(0x04))) {
+		if (GUI_bool(get_tx(0x04))) {
 
 			/* mark as visited */
 			ds_writeb(DNG14_MONEY_FLAG, 1);
@@ -78,14 +78,14 @@ signed short DNG14_handler(void)
 			/* set gods estimation for PHEX to -100 */
 			ds_writed(GODS_ESTIMATION + 4 * 9, -100);
 
-			GUI_output(get_dtp(0x08));
+			GUI_output(get_tx(0x08));
 		}
 
 	} else if (pos == 0x503 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_ALARM_FLAG)) {
 
 		if (test_skill(hero, TA_SINNESSCHAERFE, 6) <= 0) {
 
-			GUI_output(get_dtp(0x0c));
+			GUI_output(get_tx(0x0c));
 
 			ds_writeb(DNG14_ALARM_FLAG, 1);
 		}
@@ -98,11 +98,11 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x706 && pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DIRECTION) == 0) {
 
-		loot_multi_chest(p_datseg + DNG14_CHEST_PANTRY, get_dtp(0x10));
+		loot_multi_chest(p_datseg + DNG14_CHEST_PANTRY, get_tx(0x10));
 
 	} else if (pos == 0x60b && pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DIRECTION) == 1) {
 
-		loot_multi_chest(p_datseg + DNG14_CHEST_GEAR, get_dtp(0x14));
+		loot_multi_chest(p_datseg + DNG14_CHEST_GEAR, get_tx(0x14));
 
 	} else if ((pos == 0x90d || pos == 0x909) && pos != ds_readws(DNG_HANDLED_POS) && random_schick(100) <= 20) {
 
@@ -120,13 +120,13 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0xb0e && pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DIRECTION) == 1) {
 
-		GUI_output(get_dtp(0x18));
+		GUI_output(get_tx(0x18));
 
 	} else if (pos == 0xd07 && pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG14_POISONTRAP) != 0) {
 
-		GUI_output(get_dtp(0x28));
+		GUI_output(get_tx(0x28));
 
-		GUI_output(get_dtp(0x2c));
+		GUI_output(get_tx(0x2c));
 
 		ds_writeb(DNG14_POISONTRAP, 2);
 
@@ -144,7 +144,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0xa03 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0x30));
+		GUI_output(get_tx(0x30));
 
 	} else if (pos == 0x40b &&
 			(pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
@@ -156,11 +156,11 @@ signed short DNG14_handler(void)
 			ds_writeb(DNG14_SECRETDOOR1, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x1c),
+				(char*)get_tx(0x1c),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, -6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, -6)) > 0 ? get_tx(0x20): get_tx(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -187,11 +187,11 @@ signed short DNG14_handler(void)
 			ds_writeb(DNG14_SECRETDOOR2, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x1c),
+				(char*)get_tx(0x1c),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 6)) > 0 ? get_dtp(0x20): get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 6)) > 0 ? get_tx(0x20): get_tx(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -234,9 +234,9 @@ signed short DNG14_handler(void)
 
 		/* a Ladder */
 
-		if (GUI_bool(get_dtp(0x34))) {
+		if (GUI_bool(get_tx(0x34))) {
 
-			GUI_output(get_dtp(0x38));
+			GUI_output(get_tx(0x38));
 
 			inc_ds_ws(Y_TARGET);
 			ds_writebs(DIRECTION, 2);
@@ -258,7 +258,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x1809 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0x3c));
+		GUI_output(get_tx(0x3c));
 
 	} else if (pos == 0x1a06 && pos != ds_readws(DNG_HANDLED_POS) && random_schick(100) <= 50) {
 
@@ -270,30 +270,30 @@ signed short DNG14_handler(void)
 
 	} else if ((pos == 0x1802 || pos == 0x1805) && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 3) {
 
-		GUI_output(get_dtp(0x40));
+		GUI_output(get_tx(0x40));
 
 	} else if (pos == 0x1c02 && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 1) {
 
-		GUI_output(get_dtp(0x40));
+		GUI_output(get_tx(0x40));
 
 	} else if (pos == 0x1c06 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0x40));
+		GUI_output(get_tx(0x40));
 
 		if (!ds_readb(DNG14_BOOTY_FLAG)) {
 
-			loot_multi_chest(p_datseg + DNG14_CHEST_BARREL, get_dtp(0x44));
+			loot_multi_chest(p_datseg + DNG14_CHEST_BARREL, get_tx(0x44));
 
 			ds_writeb(DNG14_BOOTY_FLAG, 1);
 		}
 
 	} else if (pos == 0x1c0a && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0x48));
+		GUI_output(get_tx(0x48));
 
 	} else if (pos == 0x1d0a && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_UGDALF_DONE)) {
 
-		GUI_output(get_dtp(0x4c));
+		GUI_output(get_tx(0x4c));
 
 		ds_writeb(DNG14_UGDALF_DONE, 1);
 
@@ -310,11 +310,11 @@ signed short DNG14_handler(void)
 			ds_writeb(DNG14_SECRETDOOR3, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x1c),
+				(char*)get_tx(0x1c),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, -6)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, -6)) > 0 ? get_tx(0x20) : get_tx(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -342,11 +342,11 @@ signed short DNG14_handler(void)
 			ds_writeb(DNG14_SECRETDOOR4, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x1c),
+				(char*)get_tx(0x1c),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 7)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 7)) > 0 ? get_tx(0x20) : get_tx(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -365,12 +365,12 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x2306 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0x50));
+		GUI_output(get_tx(0x50));
 
 
 	} else if (pos == 0x240d && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		if (GUI_bool(get_dtp(0x54))) {
+		if (GUI_bool(get_tx(0x54))) {
 
 			l_di = group_count_item(121);
 			l_di += group_count_item(32);
@@ -390,10 +390,10 @@ signed short DNG14_handler(void)
 			}
 
 			do {
-				hero_pos = GUI_radio(get_dtp(0x58), (l_di >= 5 ? 3 : 2),
-							get_dtp(0x5c),
-							get_dtp(0x60),
-							get_dtp(0x64));
+				hero_pos = GUI_radio(get_tx(0x58), (l_di >= 5 ? 3 : 2),
+							get_tx(0x5c),
+							get_tx(0x60),
+							get_tx(0x64));
 			} while (hero_pos == -1);
 
 			if (hero_pos == 3) {
@@ -407,7 +407,7 @@ signed short DNG14_handler(void)
 						test_skill(hero, TA_KLETTERN, 0) <= 0)
 					{
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0x68),
+							(char*)get_tx(0x68),
 							(char*)hero + HERO_NAME2,
 							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 2)));
 
@@ -433,7 +433,7 @@ signed short DNG14_handler(void)
 						test_skill(hero, TA_KLETTERN, 4) <= 0)
 					{
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0x6c),
+							(char*)get_tx(0x6c),
 							(char*)hero + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
@@ -451,7 +451,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x220e && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_TORCHES_FLAG)) {
 
-		if (GUI_bool(get_dtp(0x70))) {
+		if (GUI_bool(get_tx(0x70))) {
 
 			ds_writeb(DNG14_TORCHES_FLAG, 1);
 
@@ -462,7 +462,7 @@ signed short DNG14_handler(void)
 
 		ds_writeb(DNG14_SPOOKY_FLAG, 1);
 
-		GUI_output(get_dtp(0x74));
+		GUI_output(get_tx(0x74));
 
 		hero = get_hero(0);
 		for (hero_pos = 0; hero_pos <= 6; hero_pos++, hero += SIZEOF_HERO) {
@@ -480,7 +480,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x2102 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_SPEAR_FLAG)) {
 
-		if (GUI_bool(get_dtp(0x78))) {
+		if (GUI_bool(get_tx(0x78))) {
 
 			ds_writeb(DNG14_SPEAR_FLAG, 1);
 
@@ -490,11 +490,11 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x2907 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		if (GUI_bool(get_dtp(0x7c))) {
+		if (GUI_bool(get_tx(0x7c))) {
 
 			timewarp(HOURS(12));
 
-			GUI_output(get_dtp(0x80));
+			GUI_output(get_tx(0x80));
 		}
 
 		ds_writews(X_TARGET, ds_readws(X_TARGET_BAK));
@@ -502,22 +502,22 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x2707 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_dialog_na(60, get_dtp(0x84));
+		GUI_dialog_na(60, get_tx(0x84));
 
 	} else if (pos == 0x2d07 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_dialog_na(60, get_dtp(0x88));
+		GUI_dialog_na(60, get_tx(0x88));
 
 	} else if (pos == 0x2e05 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0x90));
+		GUI_output(get_tx(0x90));
 
 		/* each hero gets 2W6 damage */
 		sub_group_le(dice_roll(2, 6, 0));
 
 	} else if (pos == 0x2e03 && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 0) {
 
-		GUI_output(get_dtp(0x94));
+		GUI_output(get_tx(0x94));
 
 	} else if (pos == 0x2e05 &&
 			(pos != ds_readws(DNG_HANDLED_POS) || ds_readbs(DIRECTION) != ds_readbs(DIRECTION_BAK)) &&
@@ -528,11 +528,11 @@ signed short DNG14_handler(void)
 			ds_writeb(DNG14_SECRETDOOR5, 1);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x1c),
+				(char*)get_tx(0x1c),
 				(char*)hero + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 4)) > 0 ? get_dtp(0x20) : get_dtp(0x24)),
+				(char*)((l_di = test_skill(hero, TA_SCHLOESSER, 4)) > 0 ? get_tx(0x20) : get_tx(0x24)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
 			strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -553,24 +553,24 @@ signed short DNG14_handler(void)
 
 	if (pos == 0x340c && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0x8c));
+		GUI_output(get_tx(0x8c));
 
 	} else if (((pos == 0x3a0a && ds_readbs(DIRECTION) == 1) || (pos == TEVENT138_FLAG && ds_readbs(DIRECTION) == 3)) &&
 			pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_dtp(0x98))) {
+		if (GUI_bool(get_tx(0x98))) {
 
 			if (get_first_hero_with_item(121) != - 1 || get_first_hero_with_item(32) != -1)
 			{
 
-				if ((hero_pos = select_hero_ok(get_dtp(0x9c))) != -1) {
+				if ((hero_pos = select_hero_ok(get_tx(0x9c))) != -1) {
 
 					hero = get_hero(hero_pos);
 
 					if (test_skill(hero, TA_SCHWIMMEN, 8) <= 0) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0xa0),
+							(char*)get_tx(0xa0),
 							(char*)hero + HERO_NAME2,
 							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
@@ -584,7 +584,7 @@ signed short DNG14_handler(void)
 						if (hero_dead(hero)) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_dtp(0xfc),
+								(char*)get_tx(0xfc),
 								(char*)hero + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
@@ -593,7 +593,7 @@ signed short DNG14_handler(void)
 						}
 					} else {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0xa4),
+							(char*)get_tx(0xa4),
 							(char*)hero + HERO_NAME2,
 							(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
 
@@ -610,19 +610,19 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x0360b && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_dialog_na(55, get_dtp(0xb0));
+		GUI_dialog_na(55, get_tx(0xb0));
 
 	} else if ((pos == 0x3401 || pos == 0x3c07 || pos == 0x3103 || pos == 0x3607) && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0xb4));
+		GUI_output(get_tx(0xb4));
 
 	} else if (pos == 0x340d && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		GUI_output(get_dtp(0xbc));
+		GUI_output(get_tx(0xbc));
 
 	} else if (pos == 0x3303 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_HATCHET_FLAG)) {
 
-		if (GUI_bool(get_dtp(0xb8))) {
+		if (GUI_bool(get_tx(0xb8))) {
 
 			ds_writeb(DNG14_HATCHET_FLAG, 1);
 
@@ -631,12 +631,12 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x3b0d && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 1) {
 
-		GUI_output(get_dtp(0xc0));
+		GUI_output(get_tx(0xc0));
 
 	} else if (pos == 0x3c0c && pos != ds_readws(DNG_HANDLED_POS)) {
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(0xc4),
+			(char*)get_tx(0xc4),
 			(char*)hero + HERO_NAME2,
 			(char*)hero + HERO_NAME2);
 
@@ -647,7 +647,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x3703 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_RING_FLAG)) {
 
-		if (GUI_bool(get_dtp(0xc8))) {
+		if (GUI_bool(get_tx(0xc8))) {
 
 			ds_writeb(DNG14_RING_FLAG, 1);
 
@@ -656,15 +656,15 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x3b01 && pos != ds_readws(DNG_HANDLED_POS)) {
 
-		if (GUI_bool(get_dtp(0xcc))) {
+		if (GUI_bool(get_tx(0xcc))) {
 
-			GUI_output(get_dtp(0xd0));
+			GUI_output(get_tx(0xd0));
 
 			if (!ds_readb(DNG14_CELLAREXIT_FLAG)) {
 
-				GUI_output(get_dtp(0xd4));
-				GUI_output(get_dtp(0xd8));
-				GUI_output(get_dtp(0xdc));
+				GUI_output(get_tx(0xd4));
+				GUI_output(get_tx(0xd8));
+				GUI_output(get_tx(0xdc));
 
 				drink_while_drinking(100);
 
@@ -680,7 +680,7 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x450d && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG14_ORKNASE_FLAG)) {
 
-		if (GUI_bool(get_dtp(0xe4))) {
+		if (GUI_bool(get_tx(0xe4))) {
 
 			ds_writeb(DNG14_ORKNASE_FLAG, 1);
 
@@ -689,16 +689,16 @@ signed short DNG14_handler(void)
 
 	} else if (pos == 0x4c09 && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 2) {
 
-		GUI_output(get_dtp(0xe8));
+		GUI_output(get_tx(0xe8));
 
 	} else if (pos == 0x4509 && pos != ds_readws(DNG_HANDLED_POS) && ds_readbs(DIRECTION) == 0) {
 
-		if (!GUI_bool(get_dtp(0xec))) {
+		if (!GUI_bool(get_tx(0xec))) {
 
 			ds_writew(X_TARGET, ds_readws(X_TARGET_BAK));
 			ds_writew(Y_TARGET, ds_readws(Y_TARGET_BAK));
 
-			GUI_output(get_dtp(0xf0));
+			GUI_output(get_tx(0xf0));
 		}
 
 	} else if (pos == 0x000e && pos != ds_readws(DNG_HANDLED_POS)) {

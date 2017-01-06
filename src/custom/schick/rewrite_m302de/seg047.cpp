@@ -158,7 +158,7 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 #if !defined(__BORLANDC__)
 		D1_INFO("%s erkrankt an %s\n",
 			(char*)hero + HERO_NAME2,
-			(char*)get_ltx((disease + 0x193) * 4));
+			(char*)get_ttx((disease + 0x193) * 4));
 #endif
 
 		host_writeb(hero + disease * 5 + 0xae, 0xff);
@@ -270,7 +270,7 @@ void make_valuta_str(char *dst, Bit32s money) {
 		money -= 10;
 	}
 
-	sprintf(dst, (char*)get_ltx(0xbb0), d, s, (short)money);
+	sprintf(dst, (char*)get_ttx(0xbb0), d, s, (short)money);
 }
 
 /**
@@ -300,7 +300,7 @@ void update_atpa(Bit8u *hero)
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x20), host_readbs(hero + HERO_ATPA_BASIS));
+			(char*)get_ttx(0x20), host_readbs(hero + HERO_ATPA_BASIS));
 
 		/* print message */
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -348,11 +348,11 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 		i = a;
 		if (entries > 10) {
 			ds_writed(RADIO_NAME_LIST + 4 * i,
-				host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX) + 0x48c)));
+				host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX_INDEX) + 0x48c)));
 			i++;
 		}
 
-		answer = GUI_radio( (mode == -1) ? get_ltx(0x8dc) : get_ltx(0x490),
+		answer = GUI_radio( (mode == -1) ? get_ttx(0x8dc) : get_ttx(0x490),
 				(signed char)i,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),

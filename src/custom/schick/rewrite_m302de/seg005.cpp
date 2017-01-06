@@ -192,9 +192,9 @@ unsigned short fight_printer(void)
 		f_action = ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4);
 		if (f_action != 0) {
 
-			gfx_pos_bak = (RealPt)ds_readd(TMP_FRAMEBUF_PTR);
+			gfx_pos_bak = (RealPt)ds_readd(PRINT_STRING_BUFFER);
 
-			ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
+			ds_writed(PRINT_STRING_BUFFER, ds_readd(RENDERBUF_PTR));
 			get_textcolor(&fg_bak, &bg_bak);
 
 			FIG_set_star_color(Real2Host(ds_readd(0xd29d)),
@@ -205,7 +205,7 @@ unsigned short fight_printer(void)
 			ds_writew(PIC_COPY_X2, 75);
 			ds_writew(PIC_COPY_Y2, 198);
 			ds_writed(PIC_COPY_SRC, ds_readd(0xd29d));
-			ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+			ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
 			gfx_dst_bak = (RealPt)ds_readd(PIC_COPY_DST);
 			do_pic_copy(2);
 
@@ -237,7 +237,7 @@ unsigned short fight_printer(void)
 //					case 3: /* enemy attack fails */
 
 					sprintf(getString(ds_readd(TEXT_OUTPUT_BUF)),
-						(char*)get_dtp(idx * 4),
+						(char*)get_tx(idx * 4),
 					getString(FIG_name_3rd_case(ds_readw(FIG_ACTOR_GRAMMAR_TYPE), ds_readw(FIG_ACTOR_GRAMMAR_ID))));
 				} else if (f_action == 2 || f_action == 4 || f_action == 7) {
 //					case 2: /* hero parade fails */
@@ -245,7 +245,7 @@ unsigned short fight_printer(void)
 //					case 7:	/* hero get unconscious */
 
 					sprintf(getString(ds_readd(TEXT_OUTPUT_BUF)),
-						(char*)get_dtp(idx * 4),
+						(char*)get_tx(idx * 4),
 					getString(FIG_name_3rd_case(ds_readw(FIG_TARGET_GRAMMAR_TYPE), ds_readw(FIG_TARGET_GRAMMAR_ID))));
 
 
@@ -254,19 +254,19 @@ unsigned short fight_printer(void)
 //					case 11:	/* hero hits enemy */
 
 					sprintf(getString(ds_readd(TEXT_OUTPUT_BUF)),
-						(char*)get_dtp(idx * 4),
+						(char*)get_tx(idx * 4),
 					getString(FIG_name_1st_case(ds_readw(FIG_ACTOR_GRAMMAR_TYPE), ds_readw(FIG_ACTOR_GRAMMAR_ID))),
 					getString(FIG_name_4th_case(ds_readw(FIG_TARGET_GRAMMAR_TYPE), ds_readw(FIG_TARGET_GRAMMAR_ID))));
 				} else {
 					/* case 5: hero successful parade */
 					/* case 6: weapon broke */
-					strcpy(getString(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_dtp(idx * 4));
+					strcpy(getString(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_tx(idx * 4));
 				}
 
 				GUI_print_string(Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					1, 194);
 			}
-			ds_writed(TMP_FRAMEBUF_PTR, (Bit32u)gfx_pos_bak);
+			ds_writed(PRINT_STRING_BUFFER, (Bit32u)gfx_pos_bak);
 			set_textcolor(fg_bak, bg_bak);
 		}
 		ds_writeb(FIG_STAR_LAST_COUNT, ds_readbs(FIG_STAR_COUNTER));
@@ -400,14 +400,14 @@ void draw_fight_screen(Bit16u val)
 
 		FIG_draw_figures();
 
-		memcpy(Real2Host(ds_readd(BUFFER8_PTR)), Real2Host(ds_readd(BUFFER1_PTR)), 64000);
+		memcpy(Real2Host(ds_readd(BUFFER8_PTR)), Real2Host(ds_readd(RENDERBUF_PTR)), 64000);
 	}
 
 	while (flag != 0) {
 
 		set_delay_timer();
 
-		ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR)));
+		ds_writed(PIC_COPY_DST, ds_writed(PRINT_STRING_BUFFER, ds_readd(RENDERBUF_PTR)));
 
 
 		for (list_i = Real2Host(ds_readd(FIG_LIST_HEAD)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
@@ -913,14 +913,14 @@ void draw_fight_screen(Bit16u val)
 		ds_writew(PIC_COPY_X2, 319);
 		ds_writew(PIC_COPY_Y2, 199);
 
-		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+		ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 		ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 		fight_delay();
 
 		do_pic_copy(0);
 
-		ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+		ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
 	}
 
 	for (list_i = Real2Host(ds_readd(FIG_LIST_HEAD)); NOT_NULL(list_i); list_i = Real2Host(host_readd(list_i + 0x1b))) {
@@ -940,7 +940,7 @@ void draw_fight_screen(Bit16u val)
 		ds_writew(PIC_COPY_X2, 319);
 		ds_writew(PIC_COPY_Y2, 199);
 
-		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+		ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 		ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 		do_pic_copy(0);
@@ -961,7 +961,7 @@ to the DOSBox-CPU and may run the timer.
 				ds_writew(PIC_COPY_X2, 319);
 				ds_writew(PIC_COPY_Y2, 199);
 
-				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+				ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 				ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 				do_pic_copy(0);
@@ -977,7 +977,7 @@ to the DOSBox-CPU and may run the timer.
 	bc__read(handle, Real2Host(ds_readd(BUFFER8_PTR)), 64000);
 	bc_close(handle);
 
-	ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR)));
+	ds_writed(PIC_COPY_DST, ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR)));
 }
 
 //static

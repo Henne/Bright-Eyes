@@ -37,7 +37,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 		done = 1;
 		for (i = 0; i < arg2; i++) {
 			if (ds_readd(SEA_TRAVEL_MENU_PASSAGES + i * 12)
-				== host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4)) {
+				== host_readd(Real2Host(ds_readd(TX_INDEX)) + name * 4)) {
 				done = 0;
 				break;
 			}
@@ -45,7 +45,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 
 	} while (!done);
 
-	return (RealPt)host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4);
+	return (RealPt)host_readd(Real2Host(ds_readd(TX_INDEX)) + name * 4);
 }
 
 /**

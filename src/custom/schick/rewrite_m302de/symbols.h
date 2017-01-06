@@ -87,7 +87,7 @@
 #define MOUSE_POINTER_OFFSETY	(0x29a8)	/* unsigned short */
 #define MOUSE_POINTER_OFFSETX_BAK	(0x29aa)	/* unsigned short */
 #define MOUSE_POINTER_OFFSETY_BAK	(0x29ac)	/* unsigned short */
-#define ANI_ENABLED	(0x29ae)	/* ?16 {0,1} if the animation is enabled */
+#define ANI_ENABLED	(0x29ae)	/* unsigned short {0,1} */
 #define INTEMPLE	(0x29b6)	/* unsigned short {0,1}, 0 while in temple, writeonly */
 #define INTEMPLE2	(0x29b8)	/* unsigned short {0,1}, copy of INTEMPLE */
 #define ALWAYS_ZERO3	(0x29ba)	/* unsigned short, writeonly (0) */
@@ -121,11 +121,11 @@
 #define FIGHT_ROUND	(0x2cd7)
 #define SKILLED_HERO_POS	(0x2cdb)	/* s16 {-1, 0..6} */
 #define GUI_BUTTONS_POS	(0x2cdd)	/* (struct { unsigned short x,y; })[9] */
-#define HERO_PIC_POSX	(0x2d01)	/* unsigned short[7] */
+#define HERO_PIC_POSX	(0x2d01)	/* unsigned short[7] = { 3, 46, 89, 132, 175, 218, 275 */
 #define LEVELUP_TA_RISE	(0x2d0e)	/* signed char[13] */
 #define LEVELUP_SP_RISE	(0x2d1b)	/* signed char[6] */
 #define LEVELUP_SPTA_CONV	(0x2d21)	/* signed char[6] = { 5, 5, 5, 0, 0, 0 } */
-#define MR_MODIFICATORS	(0x2d27)	/* signed char[13] */
+#define MR_MODIFICATORS	(0x2d27)	/* signed char[13] = { 0, 2, 0, 0, 2, -2, 2, 2, 2, 2, 3, 4, 3 } */
 
 /*
  * Here starts the status area of the datseg,
@@ -450,7 +450,8 @@
 #define RANDOM_TLK_HERO	(0x3e18)	/* RealPt */
 #define RUIN_HERO	(0x3e1c)	/* RealPt */
 #define MAIN_ACTING_HERO	(0x3e20)	/* RealPt */
-#define TEVENT073_CORPSE	(0x3e24)	/* unsigned char[7] */
+#define TEVENT073_CORPSE	(0x3e24)	/* unsigned char[3] */
+#define TEVENT014_CHEST	(0x3e27)	/* unsigned char[4] */
 #define TEVENT064_HUT_CONTENT	(0x3e2b)	/* unsigned char[19] */
 #define TEVENT064_CHEST	(0x3e3e)	/* unsigned char[21] */
 #define PALETTE_FLOOR	(0x3e53)	/* (struct { unsigned char r,g,b; })[32] */
@@ -554,6 +555,12 @@
 #define DNG09_ALTAR_FLAG	(0x40ff)	/* unsigned char {0,1} */
 #define DNG09_SECRETDOOR1	(0x4100)	/* unsigned char {0, 1 = found, 2 = unlocked} */
 #define DNG09_SECRETDOOR2	(0x4101)	/* unsigned char {0, 1 = found, 2 = unlocked} */
+#define DNG09_CHEST0	(0x4102)	/* unsigned char[12] */
+#define DNG09_CHEST1	(0x410e)	/* unsigned char[10] */
+#define DNG09_CHEST2	(0x4118)	/* unsigned char[8] */
+#define DNG09_CHEST3	(0x4120)	/* unsigned char[21] */
+#define DNG09_CHEST5	(0x4135)	/* unsigned char[4] */
+#define DNG09_CHEST6	(0x4139)	/* unsigned char[7] */
 #define DNG10_CORPSE_LOOTED	(0x4140)	/* unsgiend char {0,1} */
 #define DNG10_LEVER_FOUND	(0x4141)	/* unsigned char {0, 1, 3} ; default = 0 */
 #define DNG10_HOLE_STATE	(0x4142)	/* unsigned char {0, 1, 2} ; default = 0 */
@@ -584,6 +591,18 @@
 #define DNG11_LEVER_FLAG	(0x4168)	/* unsigned char {0-5} */
 #define DNG11_PROVIANT1_FLAG	(0x4169)	/* unsigned char {0,1} */
 #define DNG11_PROVIANT2_FLAG	(0x416a)	/* unsigned char {0,1} */
+#define DNG11_CHEST3	(0x416b)	/* unsigned char[15] */
+#define DNG11_CHEST4	(0x417a)	/* unsigned char[11] */
+#define DNG11_CHEST5	(0x4185)	/* unsigned char[5] */
+#define DNG11_CHEST6	(0x418a)	/* unsigned char[7] */
+#define DNG11_CHEST7	(0x4191)	/* unsigned char[1] */
+#define DNG11_CHEST8	(0x4192)	/* unsigned char[6] */
+#define DNG11_CHEST9	(0x4198)	/* unsigned char[6] */
+#define DNG11_CHEST10	(0x419e)	/* unsigned char[11] */
+#define DNG11_CHEST11	(0x41a9)	/* unsigned char[4] */
+#define DNG11_CHEST12	(0x41ad)	/* unsigned char[13] */
+#define DNG11_CHEST13	(0x41ba)	/* unsigned char[6] */
+#define DNG11_CHEST14	(0x41c0)	/* unsigned char[6] */
 #define DNG15_TOOK_CURSED_MONEY	(0x41c6)	/* unsigned char {0,1} */
 #define DNG15_UNKNOWN_FLAG	(0x41c7)	/* unsigned char {0,1} */
 #define DNG15_REACHED_HANDS	(0x41c8)	/* unsigned char {0,1} */
@@ -834,9 +853,11 @@
 #define DNG12_WATERTRAP_BAK	(0x9d45)	/* signed short */
 #define DNG_CHESTTABS	(0x9d84)	/* RealPt[16] */
 #define STR_SINGLE_SPACE	(0x9dc4)	/* char[2] = " " */
-#define ROUTES_TAB	(0x9dc6)	/* (struct { char from, to, length, speed_mod, encounters, u1, u2, fights, u3; })[58] */
+#define ROUTES_TAB	(0x9dc6)	/* (struct { char from, to, length, speed_mod, encounters, u1, u2, fights, u3; })[59] */
+#define DIRSIGN_ROUTES	(0x9fd9)	/* 105 char arrays, each terminated by -1 */
 #define DIRECTION_SIGNS	(0xa0b4)	/* (struct { char town, type_id; RealPt routes; })[106] */
-#define HARBORS	(0xa3a3)	/* (struct { char town, type_id; RealPt routes; })[19] */
+#define HARBOR_PASSAGES	(0xa330)	/* 18 char arrays, each terminated by -1 */
+#define HARBORS	(0xa3a3)	/* (struct { char town, type_id; RealPt passages; })[19] */
 #define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
 #define ACTION_TABLE_TRAVELMAP	(0xa50f)	/* (struct of size 10)[35] */
 #define TEVENTS_TAB	(0xa66d)	/* (struct { char route_id, place, tevent_id; })[35] */
@@ -863,6 +884,7 @@
 #define EMPTY_STRING10	(0xb13b)	/* char[1] = "" */
 #define EMPTY_STRING11	(0xb13c)	/* char[1] = "" */
 #define EMPTY_STRING12	(0xb13d)	/* char[1] = "" */
+#define TEVENT014_CORPSE	(0xb13e)	/* struct of size 22 */
 #define STR_BACKSLASH_TEMP	(0xb311)	/* char[6] = "\\TEMP" */
 #define STR_NOT_ENOUGH_MEM	(0xb317)	/* char[124] = "Not enough memory!\x0a\"Realms of Arkania - Blade of Destiny\" needs %ld Byte more memory!\x0aPlease uninstall resident programs!" */
 #define STR_DRIVE_X	(0xb393)	/* char[4] = "X:\" */
@@ -933,9 +955,9 @@
 #define PIC_COPY_V4	(0xc023)	/* unsigned short */
 #define LOCATIONS_TAB	(0xc025)	/* (struct { short pos; char loc, type; short id; })[150] */
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
-#define CITY_LTX	(0xc3ad)
-#define DIALOG_TEXT	(0xc3b1)
-#define TEXT_LTX	(0xc3b5)
+#define TX2_INDEX	(0xc3ad)	/* RealPt to index table of secondary text file */
+#define TX_INDEX	(0xc3b1)	/* RealPt to index table of primary text file */
+#define TEXT_LTX_INDEX	(0xc3b5)	/* RealPt to index table of TEXT.LTX */
 #define RANDOM_SCHICK_SEED2	(0xc3bf)	/* signed short */
 #define GAME_STATE	(0xc3c1)	/* signed short, see enum GAME_STATE_* */
 #define HAVE_MOUSE	(0xc3c7)	/* unsigned short {0,2} */
@@ -965,7 +987,7 @@
 #define POPUP	(0xd2ad)	/* RealPt */
 #define BUFFER6_PTR	(0xd2b1)	/* RealPt to buffer of size 2200, used for NVF */
 #define BUFFER7_PTR	(0xd2b5)	/* RealPt to buffer of size 10000, used for NVF and text */
-#define BUFFER2_PTR	(0xd2b9)	/* RealPt to buffer of size 30500 */
+#define TEXT_LTX_BUFFER	(0xd2b9)	/* RealPt to buffer of size 30500 */
 #define SPLASH_BUFFER	(0xd2bd)	/* RealPt to buffer of size 1000, used for Splashes */
 #define BUF_FONT6	(0xd2c1)	/* RealPt */
 #define TEXTCOLOR	(0xd2c5)
@@ -979,9 +1001,10 @@
 #define TEXT_INPUT_BUF	(0xd2ef)	/* RealPt to buffer of size 24 */
 #define DTP2	(0xd2f3)
 #define ICON	(0xd2f7)	/* RealPt */
-#define TMP_FRAMEBUF_PTR	(0xd2fb)	/* RealPt */
+#define PRINT_STRING_BUFFER	(0xd2fb)	/* RealPt */
 #define FRAMEBUF_PTR	(0xd2ff)	/* RealPt */
-#define BUFFER1_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
+#define RENDERBUF_PTR	(0xd303)	/* RealPt to buffer of size 65000 */
+#define GAMEINIT_FLAG	(0xd309)	/* unsigned short, writeonly (1) */
 #define VIDEO_PAGE_BAK	(0xd30b)	/* signed short */
 #define VIDEO_MODE_BAK	(0xd30d)	/* signed short */
 #define TXT_TABPOS1	(0xd313)	/* signed short */

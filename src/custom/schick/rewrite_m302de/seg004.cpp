@@ -488,7 +488,7 @@ void draw_bar(unsigned short type, signed short hero, signed short pts_cur, sign
 	} else {
 		x = type * 4 + 36;
 		y_min = 42;
-		dst = (RealPt)ds_readd(BUFFER1_PTR);
+		dst = (RealPt)ds_readd(RENDERBUF_PTR);
 	}
 
 	if (pts_cur == 0) {
@@ -699,10 +699,10 @@ void load_objects_nvf(void)
 	unsigned short fd;
 
 	fd = load_archive_file(ARCHIVE_FILE_OBJECTS_NVF);
-	read_archive_file(fd, Real2Host(ds_readd(BUFFER1_PTR)), 2000);
+	read_archive_file(fd, Real2Host(ds_readd(RENDERBUF_PTR)), 2000);
 	bc_close(fd);
 
-	nvf.src = Real2Host(ds_readd(BUFFER1_PTR));
+	nvf.src = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.type = 0;
 	nvf.width = (Bit8u*)&fd;
 	nvf.height = (Bit8u*)&fd;

@@ -811,14 +811,14 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 			if (!l_si) {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x30), l13);
+					(char*)get_tx(0x30), l13);
 			}
 
 
-			GUI_print_string(l_si == 1 ? get_dtp(0x34) :
-						(l_si == 3 ? get_dtp(0x78) :
-						(l_si == 2 ? get_dtp(0x80) :
-						(l_si == 4 ? get_dtp(0xc0) : Real2Host(ds_readd(DTP2))))),
+			GUI_print_string(l_si == 1 ? get_tx(0x34) :
+						(l_si == 3 ? get_tx(0x78) :
+						(l_si == 2 ? get_tx(0x80) :
+						(l_si == 4 ? get_tx(0xc0) : Real2Host(ds_readd(DTP2))))),
 					 5, 190);
 
 			set_textcolor(fg_bak, bg_bak);
@@ -843,7 +843,7 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 
 			if (l_si == 1) {
 
-				if (GUI_bool(get_dtp(0x8c))) {
+				if (GUI_bool(get_tx(0x8c))) {
 					host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
 					l_si = 0;
 				} else {
@@ -867,9 +867,9 @@ void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 			}
 
 		} else if (l_si == 3) {
-			GUI_output(get_dtp(0xc4));
+			GUI_output(get_tx(0xc4));
 		} else if (l_si == 4) {
-			GUI_output(get_dtp(0xc8));
+			GUI_output(get_tx(0xc8));
 		}
 	}
 

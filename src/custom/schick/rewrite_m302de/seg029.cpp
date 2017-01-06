@@ -69,7 +69,7 @@ void draw_playmask(void)
 	ds_writew(PIC_COPY_Y1, 0);
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
 	do_pic_copy(0);
 
@@ -193,7 +193,7 @@ void draw_status_line(void)
 					load_in_head(head_bak);
 			} else {
 
-				dst = Real2Host(ds_readd(BUFFER1_PTR));
+				dst = Real2Host(ds_readd(RENDERBUF_PTR));
 				head_bak = -1;
 
 				/* load skull if hero is dead */
@@ -214,7 +214,7 @@ void draw_status_line(void)
 				ds_writew(PIC_COPY_Y1, 157);
 				ds_writew(PIC_COPY_X2, ds_readw(HERO_PIC_POSX + 2 * i) + 31);
 				ds_writew(PIC_COPY_Y2, 188);
-				ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+				ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
 				do_pic_copy(0);
 

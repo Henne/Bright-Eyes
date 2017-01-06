@@ -872,16 +872,16 @@ static inline Bit8u *get_monname(unsigned short off)
 	return Real2Host(host_readd(Real2Host(ds_readd(MONNAMES) + off * 4)));
 }
 
-static inline Bit8u *get_city(unsigned short off) {
-	return Real2Host(host_readd(Real2Host(ds_readd(CITY_LTX) + off)));
+static inline Bit8u *get_tx2(unsigned short off) {
+	return Real2Host(host_readd(Real2Host(ds_readd(TX2_INDEX) + off)));
 }
 
-static inline Bit8u *get_ltx(unsigned short off) {
-	return Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX) + off)));
+static inline Bit8u *get_ttx(unsigned short off) {
+	return Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX) + off)));
 }
 
-static inline Bit8u *get_dtp(unsigned short off) {
-	return Real2Host(host_readd(Real2Host(ds_readd(DIALOG_TEXT) + off)));
+static inline Bit8u *get_tx(unsigned short off) {
+	return Real2Host(host_readd(Real2Host(ds_readd(TX_INDEX) + off)));
 }
 
 static inline signed char get_cb_val(signed short x, signed short y) {
@@ -1062,9 +1062,9 @@ extern char ds[0xf7af];
 #define ds_writeb_z(addr, val) (ds_writeb(addr, val))
 #endif
 
-extern Bit8u* text_ltx[];
-extern Bit8u* dialog_text[];
-extern Bit8u* city_ltx[];
+extern Bit8u* text_ltx_index[];
+extern Bit8u* tx_index[];
+extern Bit8u* tx2_index[];
 
 #define Real2Phys(p) ((Bit8u*)(p))
 #define Real2Host(p) ((Bit8u*)(p))
@@ -1169,9 +1169,9 @@ struct bittest {
 
 #define get_itemuser() ((Bit8u*)ds_readfp(ITEMUSER))
 
-#define get_ltx(nr) (char*)(host_readd(ds_readfp(TEXT_LTX) + (nr)))
-#define get_dtp(nr) (char*)(host_readd(ds_readfp(DIALOG_TEXT) + (nr)))
-#define get_city(nr) (char*)(host_readd(ds_readfp(CITY_LTX) + (nr)))
+#define get_ttx(nr) (char*)(host_readd(ds_readfp(TEXT_LTX_INDEX) + (nr)))
+#define get_tx(nr) (char*)(host_readd(ds_readfp(TX_INDEX) + (nr)))
+#define get_tx2(nr) (char*)(host_readd(ds_readfp(TX2_INDEX) + (nr)))
 #define get_monname(nr) ((char*)(host_readd(ds_readfp(MONNAMES) + 4 * (nr))))
 #define get_itemsdat(nr) ((char*)(ds_readfp(ITEMSDAT) + 12 * (nr)))
 #define get_itemname(nr) ((char*)(host_readd(ds_readfp(ITEMSNAME) + 4 * (nr))))

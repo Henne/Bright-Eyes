@@ -176,7 +176,7 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
 			height = 135 - y;
 		}
 
-		p2 = Real2Host(ds_readd(BUFFER1_PTR)) + 208 * y + x;
+		p2 = Real2Host(ds_readd(RENDERBUF_PTR)) + 208 * y + x;
 
 		copy_solid(p2, p1, width, height, 208, l1, 0);
 	}
@@ -193,7 +193,7 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 	signed short answer;
 
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-		(char*)(!host_readbs(flag) ? get_ltx(0x82c) : get_ltx(0x83c)),
+		(char*)(!host_readbs(flag) ? get_ttx(0x82c) : get_ttx(0x83c)),
 		text);
 
 	if (!host_readbs(flag))
@@ -201,9 +201,9 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 		ds_writew(TEXTBOX_WIDTH, 7);
 
 		answer = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 3,
-					get_ltx(0x830),
-					get_ltx(0x834),
-					get_ltx(0x838)) - 1;
+					get_ttx(0x830),
+					get_ttx(0x834),
+					get_ttx(0x838)) - 1;
 
 		ds_writew(TEXTBOX_WIDTH, 3);
 

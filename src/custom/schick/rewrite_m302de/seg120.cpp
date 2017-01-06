@@ -75,17 +75,17 @@ void rabies(RealPt hero, signed short hero_pos)
 		if (count_heroes_available_in_group() > 1) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xb94),
+				(char*)get_ttx(0xb94),
 				(char*)Real2Host(hero) + HERO_NAME2,
 				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)));
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 500,
-				(char*)get_ltx(0xb98),
+				(char*)get_ttx(0xb98),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 600,
-				(char*)get_ltx(0xb9c),
+				(char*)get_ttx(0xb9c),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
@@ -97,7 +97,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						3,
 						Real2Host(ds_readd(DTP2)) + 500,
 						Real2Host(ds_readd(DTP2)) + 600,
-						get_ltx(0xba0));
+						get_ttx(0xba0));
 
 			ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
@@ -107,14 +107,14 @@ void rabies(RealPt hero, signed short hero_pos)
 				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) / 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0xba4),
+					(char*)get_ttx(0xba4),
 					(char*)Real2Host(hero) + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
 				ds_writeb(0x64a2, (signed char)hero_pos);
 
-				answer = select_hero_ok(get_ltx(0x62c));
+				answer = select_hero_ok(get_ttx(0x62c));
 
 				if (answer != -1) {
 
@@ -134,14 +134,14 @@ void rabies(RealPt hero, signed short hero_pos)
 					{
 						done = 1;
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0xba8),
+							(char*)get_ttx(0xba8),
 							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
 						ds_writeb(0x64a2, (signed char)hero_pos);
 
-						answer = select_hero_ok(get_ltx(0x62c));
+						answer = select_hero_ok(get_ttx(0x62c));
 
 						if (answer != -1) {
 							skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
@@ -154,7 +154,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 				ds_writeb(0x64a2, (signed char)hero_pos);
 
-				answer = select_hero_ok(get_ltx(0x354));
+				answer = select_hero_ok(get_ttx(0x354));
 
 				if (answer != -1) {
 
@@ -174,14 +174,14 @@ void rabies(RealPt hero, signed short hero_pos)
 								sub_ae_splash(hero2, 15);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_ltx(0xba8),
+									(char*)get_ttx(0xba8),
 									(char*)Real2Host(hero) + HERO_NAME2);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
 								ds_writeb(0x64a2, (signed char)hero_pos);
 
-								answer = select_hero_ok(get_ltx(0x62c));
+								answer = select_hero_ok(get_ttx(0x62c));
 
 								if ((answer != -1) && (answer != hero_pos)) {
 									skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
@@ -189,7 +189,7 @@ void rabies(RealPt hero, signed short hero_pos)
 							}
 						} else {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(0x97c),
+								(char*)get_ttx(0x97c),
 								(char*)hero2 + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
@@ -202,7 +202,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			/* Hero has rabies / Tollwut */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xbac),
+				(char*)get_ttx(0xbac),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -227,7 +227,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			/* hero has berserker fury / Berserkerwut */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xc5c),
+				(char*)get_ttx(0xc5c),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -251,14 +251,14 @@ void init_global_buffer(void)
 {
 
 	ds_writed(GLOBAL_BUFFER_PTR, (Bit32u)schick_alloc_emu(ds_readd(BUFFERSIZE)));
-	ds_writed(BUFFER1_PTR, (Bit32u)F_PADD(ds_readd(GLOBAL_BUFFER_PTR), 8));
-	ds_writed(BUFFER2_PTR, (Bit32u)F_PADD(ds_readd(BUFFER1_PTR), 65000));
+	ds_writed(RENDERBUF_PTR, (Bit32u)F_PADD(ds_readd(GLOBAL_BUFFER_PTR), 8));
+	ds_writed(TEXT_LTX_BUFFER, (Bit32u)F_PADD(ds_readd(RENDERBUF_PTR), 65000));
 
-	ds_writed(TEXT_LTX, (Bit32u)F_PADD(ds_readd(BUFFER2_PTR), 30500));
-	ds_writed(DIALOG_TEXT, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3360));
-	ds_writed(CITY_LTX, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3960));
+	ds_writed(TEXT_LTX_INDEX, (Bit32u)F_PADD(ds_readd(TEXT_LTX_BUFFER), 30500));
+	ds_writed(TX_INDEX, (Bit32u)((RealPt)ds_readd(TEXT_LTX_INDEX) + 3360));
+	ds_writed(TX2_INDEX, (Bit32u)((RealPt)ds_readd(TEXT_LTX_INDEX) + 3960));
 
-	ds_writed(OBJECTS_NVF_BUF, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
+	ds_writed(OBJECTS_NVF_BUF, (Bit32u)(F_PADD(ds_readd(TEXT_LTX_INDEX), 4760)));
 	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(OBJECTS_NVF_BUF), 3400)));
 	ds_writed(TEXT_INPUT_BUF, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
 	ds_writed(TEXT_OUTPUT_BUF, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
@@ -289,7 +289,7 @@ signed short init_memory(void)
 	}
 
 	/* set the pointer for the framebuffer */
-	ds_writed(TMP_FRAMEBUF_PTR, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0x0a000, 0x0000)));
+	ds_writed(PRINT_STRING_BUFFER, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0x0a000, 0x0000)));
 
 	/* allocate small chunks of memory */
 	ds_writed(ITEMSNAME,		(Bit32u)schick_alloc_emu(1016));
@@ -438,7 +438,7 @@ void init_game_state(void)
 	ds_writew(CURRENT_ANI, -1);
 	ds_writew(WALLCLOCK_UPDATE, 1);
 
-	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
+	ds_writed(0xbff9, ds_readd(RENDERBUF_PTR));
 	load_splashes();
 }
 
@@ -557,7 +557,7 @@ void prepare_dirs(void)
 		l_di = bc__open(((char*)&blk) + 30, 0x8004);
 #endif
 
-		bc__read(l_di, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
+		bc__read(l_di, Real2Host(ds_readd(RENDERBUF_PTR)), SIZEOF_HERO);
 
 		bc_close(l_di);
 
@@ -567,7 +567,7 @@ void prepare_dirs(void)
 
 		l_di = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 
-		bc__write(l_di, (RealPt)ds_readd(BUFFER1_PTR), SIZEOF_HERO);
+		bc__write(l_di, (RealPt)ds_readd(RENDERBUF_PTR), SIZEOF_HERO);
 
 		bc_close(l_di);
 
@@ -681,7 +681,7 @@ void game_over_screen(void)
 	/* load SKULL.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_SKULL_NVF);
 
-	read_archive_file(handle, Real2Host(ds_readd(BUFFER1_PTR)), 64200);
+	read_archive_file(handle, Real2Host(ds_readd(RENDERBUF_PTR)), 64200);
 
 	bc_close(handle);
 
@@ -694,9 +694,9 @@ void game_over_screen(void)
 	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
 
-	bc_memcpy((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(BUFFER1_PTR), 64000);
+	bc_memcpy((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(RENDERBUF_PTR), 64000);
 
-	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64002, 0x00, 0x40);
+	set_palette(Real2Host(ds_readd(RENDERBUF_PTR)) + 64002, 0x00, 0x40);
 
 	wait_for_keypress();
 

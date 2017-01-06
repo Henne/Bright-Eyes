@@ -32,10 +32,10 @@ void init_text(void)
 	bc_close(handle);
 
 	handle = load_archive_file(ARCHIVE_FILE_TEXT_LTX);
-	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(BUFFER2_PTR)), 64000);
+	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(TEXT_LTX_BUFFER)), 64000);
 	bc_close(handle);
 
-	split_textbuffer(Real2Host(ds_readd(TEXT_LTX)), (RealPt)ds_readd(BUFFER2_PTR), len);
+	split_textbuffer(Real2Host(ds_readd(TEXT_LTX_INDEX)), (RealPt)ds_readd(TEXT_LTX_BUFFER), len);
 
 	handle = load_archive_file(ARCHIVE_FILE_ITEMNAME);
 	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(BUFFER5_PTR)), 5000);
@@ -65,7 +65,7 @@ void load_tx(signed short index)
 
 	bc_close(archive_file_handle);
 
-	split_textbuffer(Real2Host(ds_readd(DIALOG_TEXT)), (RealPt)ds_readd(BUFFER7_PTR), archive_file_len);
+	split_textbuffer(Real2Host(ds_readd(TX_INDEX)), (RealPt)ds_readd(BUFFER7_PTR), archive_file_len);
 
 	ds_writew(TX_FILE_INDEX, index);
 }
@@ -83,7 +83,7 @@ void load_city_ltx(signed short index)
 	len = (signed short)read_archive_file(fd, Real2Host(ds_readd(BUFFER8_PTR)), 12000);
 	bc_close(fd);
 
-	split_textbuffer(Real2Host(ds_readd(CITY_LTX)), (RealPt)ds_readd(BUFFER8_PTR), len);
+	split_textbuffer(Real2Host(ds_readd(TX2_INDEX)), (RealPt)ds_readd(BUFFER8_PTR), len);
 }
 
 void load_ltx(unsigned short index)
@@ -207,13 +207,13 @@ signed short load_game_state(void)
 	retval = 0;
 
 	/* select a game state */
-	answer = GUI_radio(get_ltx(0), 6,
+	answer = GUI_radio(get_ttx(0), 6,
 			p_datseg + (SAVEGAME_NAMES + 0),
 			p_datseg + (SAVEGAME_NAMES + 9),
 			p_datseg + (SAVEGAME_NAMES + 18),
 			p_datseg + (SAVEGAME_NAMES + 27),
 			p_datseg + (SAVEGAME_NAMES + 36),
-			get_ltx(0xb84)) -1;
+			get_ttx(0xb84)) -1;
 
 	/* sanity check if answer is in range */
 	if (answer != -2 && answer != 5) {
@@ -224,7 +224,7 @@ signed short load_game_state(void)
 
 		/* open the game state file */
 		if ((handle_gs = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8001)) == -1) {
-			GUI_output(get_ltx(0x9ec));
+			GUI_output(get_ttx(0x9ec));
 			retval = -1;
 			return retval;
 		}
@@ -302,8 +302,8 @@ signed short load_game_state(void)
 
 				handle = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 
-				bc__read(handle_gs, Real2Host(ds_readd(BUFFER1_PTR)), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * i));
-				bc__write(handle, (RealPt)ds_readd(BUFFER1_PTR), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * i));
+				bc__read(handle_gs, Real2Host(ds_readd(RENDERBUF_PTR)), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * i));
+				bc__write(handle, (RealPt)ds_readd(RENDERBUF_PTR), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * i));
 				bc_close(handle);
 			}
 		}
@@ -314,7 +314,7 @@ signed short load_game_state(void)
 			memset(Real2Host(hero_i), 0, SIZEOF_HERO);
 		}
 
-		hero_i = (RealPt)ds_readd(BUFFER1_PTR);
+		hero_i = (RealPt)ds_readd(RENDERBUF_PTR);
 
 		do {
 			l3 = bc__read(handle_gs, Real2Host(hero_i), SIZEOF_HERO);
@@ -380,11 +380,11 @@ signed short load_game_state(void)
 #else
 				handle = bc__open((char*)(&blk) + 30, 0x8004);
 #endif
-				bc__read(handle, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
+				bc__read(handle, Real2Host(ds_readd(RENDERBUF_PTR)), SIZEOF_HERO);
 				bc_close(handle);
 
 				handle_gs = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
-				bc__write(handle_gs, (RealPt)ds_readd(BUFFER1_PTR), SIZEOF_HERO);
+				bc__write(handle_gs, (RealPt)ds_readd(RENDERBUF_PTR), SIZEOF_HERO);
 			} else {
 				/* Yes, indeed! */
 			}
@@ -452,7 +452,7 @@ signed short save_game_state(void)
 	if (ds_readws(GAME_STATE) == GAME_STATE_VICTORY) {
 
 		/* game done */
-		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ltx(0xca8));
+		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_ttx(0xca8));
 
 	} else {
 
@@ -461,19 +461,19 @@ signed short save_game_state(void)
 			/* save outside the temple */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xcb4),
+				(char*)get_ttx(0xcb4),
 				1,
-				get_ltx(0x620),
+				get_ttx(0x620),
 				p_datseg + EMPTY_STRING1);
 
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ltx(4),
+				(char*)get_ttx(4),
 				(char*)Real2Host(ds_readd(DTP2)));
 		} else {
 
 			/* save inside a temple */
 			sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-				(char*)get_ltx(4),
+				(char*)get_ttx(4),
 				(char*)p_datseg + EMPTY_STRING2);
 		}
 	}
@@ -485,7 +485,7 @@ signed short save_game_state(void)
 			p_datseg + (SAVEGAME_NAMES + 9 * 2),
 			p_datseg + (SAVEGAME_NAMES + 9 * 3),
 			p_datseg + (SAVEGAME_NAMES + 9 * 4),
-			get_ltx(0xb84)) - 1;
+			get_ttx(0xb84)) - 1;
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 
@@ -498,7 +498,7 @@ signed short save_game_state(void)
 			/* ask for filename */
 			ds_writew(GUI_ENTERING_SAVEGAME, 1);
 			strcpy((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + SAVEGAME_NAMES + 9 * slot);
-			GUI_input(get_ltx(0x9e8), 8);
+			GUI_input(get_ttx(0x9e8), 8);
 			ds_writew(GUI_ENTERING_SAVEGAME, 0);
 
 			if (host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF))) == 0) {
@@ -515,7 +515,7 @@ signed short save_game_state(void)
 
 				if (slot != tw_bak && !strcmp((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50)) {
 
-					GUI_output(get_ltx(0xc98));
+					GUI_output(get_ttx(0xc98));
 					flag = 1;
 				}
 			}
@@ -567,7 +567,7 @@ signed short save_game_state(void)
 		strcat((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)p_datseg + SAVEGAME_SUFFIX3);
 
 		while ((l_di = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0)) == -1) {
-			GUI_output(get_ltx(0x570));
+			GUI_output(get_ttx(0x570));
 			return 0;
 		}
 
@@ -612,7 +612,7 @@ signed short save_game_state(void)
 
 		/* check if enough bytes were written */
 		if (status_len + 16 + 4L != filepos) {
-			GUI_output(get_ltx(0x570));
+			GUI_output(get_ttx(0x570));
 			bc_close(l_di);
 			return 0;
 		}
@@ -622,7 +622,7 @@ signed short save_game_state(void)
 		filepos += len;
 
 		if (len != 4 * 286) {
-			GUI_output(get_ltx(0x570));
+			GUI_output(get_ttx(0x570));
 			bc_close(l_di);
 			return 0;
 		}
@@ -641,14 +641,14 @@ signed short save_game_state(void)
 
 				handle = load_archive_file(tw_bak + 0x8000);
 				host_writed(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * tw_bak, get_readlength2(handle));
-				bc__read(handle, Real2Host(ds_readd(BUFFER1_PTR)), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * tw_bak));
+				bc__read(handle, Real2Host(ds_readd(RENDERBUF_PTR)), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * tw_bak));
 				bc_close(handle);
 
-				len = (Bit16u)bc__write(l_di, (RealPt)ds_readd(BUFFER1_PTR), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * tw_bak));
+				len = (Bit16u)bc__write(l_di, (RealPt)ds_readd(RENDERBUF_PTR), (unsigned short)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * tw_bak));
 				filepos += len;
 
 				if ((Bit16u)host_readd(Real2Host(ds_readd(SAVED_FILES_BUF)) + 4 * tw_bak) != len) {
-					GUI_output(get_ltx(0x570));
+					GUI_output(get_ttx(0x570));
 					bc_close(l_di);
 					return 0;
 				}
@@ -695,14 +695,14 @@ signed short save_game_state(void)
 
 			/* read the CHR file from temp */
 			handle = bc__open((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0x8004);
-			bc__read(handle, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
+			bc__read(handle, Real2Host(ds_readd(RENDERBUF_PTR)), SIZEOF_HERO);
 			bc_close(handle);
 
 			/* append it */
-			len = bc__write(l_di, (RealPt)ds_readd(BUFFER1_PTR), SIZEOF_HERO);
+			len = bc__write(l_di, (RealPt)ds_readd(RENDERBUF_PTR), SIZEOF_HERO);
 
 			if (len != SIZEOF_HERO) {
-				GUI_output(get_ltx(0x570));
+				GUI_output(get_ttx(0x570));
 				bc_close(l_di);
 				return 0;
 			}
@@ -777,7 +777,7 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 		}
 
 	} else {
-		GUI_output(get_ltx(0x10));
+		GUI_output(get_ttx(0x10));
 		return 0;
 	}
 
@@ -819,7 +819,7 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 	Bit8u *buf;
 	struct ffblk blk;
 
-	buf = Real2Host(ds_readd(BUFFER1_PTR)) + 60000;
+	buf = Real2Host(ds_readd(RENDERBUF_PTR)) + 60000;
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 		(char*)Real2Host(ds_readd(STR_TEMP_XX_PTR2)),
 		(char*)p_datseg + ALL_CHR_WILDCARD3);

@@ -135,7 +135,7 @@ void DNG_door(signed short action)
 
 					if (ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1903 && ds_readb(DNG15_UNKNOWN_FLAG) != 0)
 					{
-						GUI_output(get_dtp(0x48));
+						GUI_output(get_tx(0x48));
 
 					} else if (!(ds_readb(DUNGEON_INDEX) == 11 && pos == 0xc08 && ds_readb(DNG11_LEVER_FLAG) != 4) &&
 							!(ds_readb(DUNGEON_INDEX) == 6 && pos == 0xb01 && ds_readb(DNG06_PITDOOR_FLAG)) &&
@@ -225,7 +225,7 @@ void DNG_door(signed short action)
 						{
 							/* LOCKPICK breaks if the test was unlucky,
 								or when tried three times without moving */
-							print_msg_with_first_hero(get_ltx(0x854));
+							print_msg_with_first_hero(get_ttx(0x854));
 
 							or_ptr_bs(hero + 14 * lockpick_pos + (HERO_ITEM_HEAD + 4), 1);
 
@@ -234,7 +234,7 @@ void DNG_door(signed short action)
 						} else if (lockpick_result <= 0) {
 
 							/* just failed */
-							print_msg_with_first_hero(get_ltx(0x850));
+							print_msg_with_first_hero(get_ttx(0x850));
 
 						} else {
 							/* success => the door opens */
@@ -251,18 +251,18 @@ void DNG_door(signed short action)
 
 					} else {
 						/* all LOCKPICKS are broken */
-						print_msg_with_first_hero(get_ltx(0x84c));
+						print_msg_with_first_hero(get_ttx(0x84c));
 					}
 				} else {
 					/* the leader has no LOCKPICKS */
-					print_msg_with_first_hero(get_ltx(0x848));
+					print_msg_with_first_hero(get_ttx(0x848));
 				}
 			}
 
 			if (action == 137)
 			{
 				/* use magic */
-				hero_pos = select_hero_ok(get_ltx(0x4f4));
+				hero_pos = select_hero_ok(get_ttx(0x4f4));
 
 				if (hero_pos != -1)
 				{
@@ -270,7 +270,7 @@ void DNG_door(signed short action)
 
 					if (host_readbs(hero + HERO_TYPE) < 7)
 					{
-						GUI_output(get_ltx(0x528));
+						GUI_output(get_ttx(0x528));
 					} else {
 						spell_result = test_spell(hero, 28, host_readbs((Bit8u*)ptr + 4));
 
@@ -278,7 +278,7 @@ void DNG_door(signed short action)
 						{
 							/* unlucky => just print a message */
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(0x97c),
+								(char*)get_ttx(0x97c),
 								(char*)hero + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
@@ -342,7 +342,7 @@ void DNG_fallpit_test(signed short max_damage)
 	if (ds_readb(DUNGEON_LIGHT) != 0)
 	{
 		/* light is on */
-		GUI_output(get_ltx(0x814));
+		GUI_output(get_ttx(0x814));
 
 		/* drop one level down */
 		DNG_inc_level();
@@ -423,7 +423,7 @@ signed short DNG_step(void)
 	if (ds_readw(REQUEST_REFRESH) != 0)
 	{
 		draw_main_screen();
-		GUI_print_loc_line(get_dtp(0x00));
+		GUI_print_loc_line(get_tx(0x00));
 		ds_writew(REQUEST_REFRESH, ds_writew(0xd013, 0));
 		ds_writew(DNG_REFRESH_X_TARGET, -1);
 	}
@@ -470,20 +470,20 @@ signed short DNG_step(void)
 			}
 		}
 
-		l_di = GUI_radio(get_ltx(0x858), (signed char)retval,
-					get_ltx(0x85c),
-					get_ltx(0x860),
-					get_ltx(0x864),
-					get_ltx(0x868),
-					get_ltx(0x86c),
-					get_ltx(0x354),
-					ds_readws(0xd011) == 0 ? get_ltx(0x4c8) :(
-						ds_readws(0xd011) == 1 ? get_ltx(0x870) :(
-						ds_readws(0xd011) == 3 ? get_ltx(0xc4c) :(
-						ds_readws(0xd011) == 5 ? get_ltx(0x878) :(
-						ds_readws(0xd011) == 4 ? get_ltx(0x8ac) : get_ltx(0x874))))),
-					get_ltx(0x87c),
-					get_ltx(0x880)) - 1;
+		l_di = GUI_radio(get_ttx(0x858), (signed char)retval,
+					get_ttx(0x85c),
+					get_ttx(0x860),
+					get_ttx(0x864),
+					get_ttx(0x868),
+					get_ttx(0x86c),
+					get_ttx(0x354),
+					ds_readws(0xd011) == 0 ? get_ttx(0x4c8) :(
+						ds_readws(0xd011) == 1 ? get_ttx(0x870) :(
+						ds_readws(0xd011) == 3 ? get_ttx(0xc4c) :(
+						ds_readws(0xd011) == 5 ? get_ttx(0x878) :(
+						ds_readws(0xd011) == 4 ? get_ttx(0x8ac) : get_ttx(0x874))))),
+					get_ttx(0x87c),
+					get_ttx(0x880)) - 1;
 
 		if (l_di != -2)
 		{
@@ -507,7 +507,7 @@ signed short DNG_step(void)
 
 		if ((ds_readb(DUNGEON_INDEX) == 15 && pos == 0x1801) || pos == 0x1805)
 		{
-			GUI_output(get_dtp(0x84));
+			GUI_output(get_tx(0x84));
 
 			ds_writeb(DNG15_REACHED_HANDS, 1);
 		} else {
@@ -847,13 +847,13 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 
 	do {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0xc34),
+			(char*)get_ttx(0xc34),
 			host_readb(unit_ptr));
 
 		answer = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
-						get_ltx(0xc38),
-						get_ltx(0xc3c),
-						get_ltx(0xc40));
+						get_ttx(0xc38),
+						get_ttx(0xc3c),
+						get_ttx(0xc40));
 
 		if (answer == 1)
 		{
@@ -881,7 +881,7 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 
 						host_writeb(unit_ptr, 0);
 
-						GUI_output(get_ltx(0xc44));
+						GUI_output(get_ttx(0xc44));
 
 						break;
 					} else {
@@ -933,7 +933,7 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 								if (host_readb(unit_ptr) <= units_needed)
 								{
 									/* empty the barrel completely */
-									GUI_output(get_ltx(0xc44));
+									GUI_output(get_ttx(0xc44));
 									host_writeb(unit_ptr, 0);
 
 								} else {
@@ -954,7 +954,7 @@ void DNG_waterbarrel(Bit8u *unit_ptr)
 			/* print a message if no hero used the barrel */
 			if (hero_refilled_counter == 0)
 			{
-				GUI_output(get_ltx(0xc48));
+				GUI_output(get_ttx(0xc48));
 			}
 
 			done = 1;

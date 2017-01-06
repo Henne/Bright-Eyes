@@ -123,7 +123,7 @@ signed short enter_location_daspota(void)
 
 			if (host_readb(ptr + 2) != 12) {
 
-				GUI_print_loc_line(get_dtp(4 * host_readw(ptr + 4)));
+				GUI_print_loc_line(get_tx(4 * host_readw(ptr + 4)));
 
 				if (!ds_readb(DASPOTA_FIGHTFLAGS + host_readw(ptr + 4))) {
 
@@ -139,12 +139,12 @@ signed short enter_location_daspota(void)
 				set_var_to_zero();
 
 				load_ani(10);
-				GUI_print_loc_line(get_dtp(4 * host_readw(ptr + 4)));
+				GUI_print_loc_line(get_tx(4 * host_readw(ptr + 4)));
 				init_ani(0);
 
 				if (ds_readd(0x71fa + 4 * host_readw(ptr + 4))) {
 
-					loot_multi_chest(Real2Host((RealPt)ds_readd(0x71fa + 4 * host_readw(ptr + 4))), get_dtp(0x54));
+					loot_multi_chest(Real2Host((RealPt)ds_readd(0x71fa + 4 * host_readw(ptr + 4))), get_tx(0x54));
 
 				} else {
 
@@ -220,17 +220,17 @@ void do_special_buildings(void)
 		} else if (type == 34) {
 			THO_botschaft();
 		} else if (type == 35) {
-			GUI_output(get_city(0x118));
+			GUI_output(get_tx2(0x118));
 		} else if (type == 36) {
-			GUI_output(get_city(0x11c));
+			GUI_output(get_tx2(0x11c));
 		} else if (type == 37) {
 			THO_bank();
 		} else if (type == 38) {
-			GUI_output(get_city(0x148));
+			GUI_output(get_tx2(0x148));
 		} else if (type == 39) {
-			GUI_output(get_city(0x14c));
+			GUI_output(get_tx2(0x14c));
 		} else if (type == 40) {
-			GUI_output(get_city(0x150));
+			GUI_output(get_tx2(0x150));
 		} else if (type == 41) {
 			THO_arsenal();
 		} else if (type == 42) {
@@ -346,7 +346,7 @@ void refresh_floor_and_sky(void)
 	signed short height;
 	struct nvf_desc nvf;
 
-	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 	nvf.src = Real2Host(ds_readd(TEX_SKY));
 	nvf.nr = 0;
 	nvf.type = 3;
@@ -361,7 +361,7 @@ void refresh_floor_and_sky(void)
 	height = host_readws((Bit8u*)&height);
 #endif
 
-	nvf.dst = Real2Host(ds_readd(BUFFER1_PTR)) + 208 * height;
+	nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR)) + 208 * height;
 	nvf.src = Real2Host(ds_readd(TEX_FLOOR));
 	nvf.nr = 0;
 	nvf.type = 3;
@@ -783,7 +783,7 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 
 	v4 -= 184;
 
-	nvf.dst = src = Real2Host(ds_readd(BUFFER1_PTR)) + 30000;
+	nvf.dst = src = Real2Host(ds_readd(RENDERBUF_PTR)) + 30000;
 	nvf.src = Real2Host(ds_readd(TEX_FLOOR + v4 * 4));
 
 	if (v4 == 48 || v4 == 49) {
@@ -832,7 +832,7 @@ void load_city_texture(signed short v1, signed short v2, signed short nvf_nr,
 			copy_height = 135 - v2;
 		}
 
-		dst = Real2Host(ds_readd(BUFFER1_PTR)) + v2 * 208 + v1;
+		dst = Real2Host(ds_readd(RENDERBUF_PTR)) + v2 * 208 + v1;
 
 		copy_solid(dst, src, copy_width, copy_height, 208, width,
 			v4 == 0 ? 0 : 128);
@@ -872,7 +872,7 @@ signed short city_step(void)
 	if (ds_readws(REQUEST_REFRESH) != 0) {
 
 		draw_main_screen();
-		GUI_print_loc_line(get_dtp(0x00));
+		GUI_print_loc_line(get_tx(0x00));
 
 		ds_writew(REQUEST_REFRESH, ds_writews(0xd013, 0));
 		ds_writews(CITY_REFRESH_X_TARGET, -1);
@@ -911,10 +911,10 @@ signed short city_step(void)
 			}
 		}
 
-		i = GUI_radio(get_ltx(0x8e8), (signed char)options,
-				get_ltx(0x85c), get_ltx(0x860), get_ltx(0x864),
-				get_ltx(0x868), get_ltx(0x86c), get_ltx(0x354),
-				get_ltx(0x4c8), get_ltx(0x8e4)) - 1;
+		i = GUI_radio(get_ttx(0x8e8), (signed char)options,
+				get_ttx(0x85c), get_ttx(0x860), get_ttx(0x864),
+				get_ttx(0x868), get_ttx(0x86c), get_ttx(0x354),
+				get_ttx(0x4c8), get_ttx(0x8e4)) - 1;
 
 		if (i != -2) {
 			ds_writew(ACTION, i + 129);
@@ -1121,7 +1121,7 @@ void city_fade_and_colors(void)
 	ds_writew(PIC_COPY_Y1, ds_readws(0xce3f));
 	ds_writew(PIC_COPY_X2, ds_readws(0xce41) + 207);
 	ds_writew(PIC_COPY_Y2, ds_readws(0xce3f) + 134);
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
 	ds_writeb(0x45b8, 0);
 
@@ -1134,10 +1134,10 @@ void city_fade_and_colors(void)
 
 	if (ds_readb(0x4475) != 0) {
 
-		dst = Real2Host(ds_readd(BUFFER1_PTR)) + 500;
-		pal_ptr = Real2Host(ds_readd(BUFFER1_PTR));
+		dst = Real2Host(ds_readd(RENDERBUF_PTR)) + 500;
+		pal_ptr = Real2Host(ds_readd(RENDERBUF_PTR));
 
-		memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0x120);
+		memset(Real2Host(ds_readd(RENDERBUF_PTR)), 0, 0x120);
 		memcpy(dst, p_datseg + PALETTE_FLOOR, 0x120);
 
 		for (i = 0; i < 64; i += 2) {

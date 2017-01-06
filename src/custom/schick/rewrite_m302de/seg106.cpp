@@ -108,7 +108,7 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 			v3 = 0;
 
 			if ((item1 == 0) && (item2 == 0)) {
-				GUI_output(get_ltx(0x344));
+				GUI_output(get_ttx(0x344));
 			} else {
 				if (item2 != 0) {
 					/* item have the same ids and are stackable */
@@ -128,9 +128,9 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 					} else {
 						if (!can_hero_use_item(hero, item2)) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(0x374),
+								(char*)get_ttx(0x374),
 								(char*)hero + HERO_NAME2,
-								(char*)get_ltx( ((host_readbs(hero + HERO_SEX) != 0 ? 0x251 : 0x9) + host_readbs(hero + HERO_TYPE)) * 4),
+								(char*)get_ttx( ((host_readbs(hero + HERO_SEX) != 0 ? 0x251 : 0x9) + host_readbs(hero + HERO_TYPE)) * 4),
 								(char*)Real2Host(GUI_names_grammar(2, item2, 0)));
 
 
@@ -139,20 +139,20 @@ void move_item(signed short pos1, signed short pos2, Bit8u *hero)
 							if (!can_item_at_pos(item2, pos1)) {
 								if (is_in_word_array(item2, (signed short*)(p_datseg + ITEMS_PLURALWORDS)))
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
-										(char*)get_ltx(0x378),
+										(char*)get_ttx(0x378),
 										(char*)Real2Host(GUI_names_grammar(0x4000, item2, 0)),
-										(char*)get_ltx(0x8b4));
+										(char*)get_ttx(0x8b4));
 								else
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
-										(char*)get_ltx(0x378),
+										(char*)get_ttx(0x378),
 										(char*)Real2Host(GUI_names_grammar(0, item2, 0)),
-										(char*)get_ltx(0x8b0));
+										(char*)get_ttx(0x8b0));
 								GUI_output(Real2Host(ds_readd(DTP2)));
 							} else {
 								if (two_hand_collision(hero, item2, pos1)) {
 
 									sprintf((char*)Real2Host(ds_readd(DTP2)),
-										(char*)get_ltx(0xcf4),
+										(char*)get_ttx(0xcf4),
 										(char*)hero + HERO_NAME2);
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
@@ -226,49 +226,49 @@ void print_item_description(Bit8u *hero, signed short pos)
 			is_in_word_array(host_readw(item_p), (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
 			/* more than one item or special */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_city(0x120),
-				get_ltx(0x4c4),
+				(char*)get_tx2(0x120),
+				get_ttx(0x4c4),
 				Real2Host(GUI_names_grammar(0x4004, host_readw(item_p), 0)));
 		} else {
 			/* one item */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_city(0x2c),
-				get_ltx(0x4c0),
+				(char*)get_tx2(0x2c),
+				get_ttx(0x4c0),
 				Real2Host(GUI_names_grammar(0, host_readw(item_p), 0)));
 		}
 	} else {
 		/* no item */
-		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x344));
+		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x344));
 	}
 
 
 	/* broken */
 	if (ks_broken(item_p)) {
-		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x778));
+		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x778));
 	}
 
 	/* magic */
 	if (ks_magic_hidden(item_p) &&	/* is magic */
 		ks_magic_known(item_p)) { /* and you know it */
-		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x77c));
+		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x77c));
 	}
 
 	/* used */
 	if (host_readb(item_p + 7) != 0) {
-		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x780));
+		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x780));
 	}
 
 	/* poisoned */
 	if (host_readw(item_p) == 0xc1 || host_readw(item_p) == 0xc8 ||
 		ks_poison1(item_p) || ks_poison2(item_p) ||
 		host_readb(hero + HERO_ITEM_HEAD + 9 + pos * 14) != 0) {
-		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x890));
+		strcat((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x890));
 	}
 
 	/* staff */
 	if (host_readw(item_p) == 0x85) {
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-			(char*)get_city(0xd4),
+			(char*)get_tx2(0xd4),
 			host_readbs(hero + HERO_STAFFSPELL_LVL));
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -297,7 +297,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 	/* check if item1 is an item */
 	if (item1 == 0) {
-		GUI_output(get_ltx(0x344));
+		GUI_output(get_ttx(0x344));
 		return;
 	}
 
@@ -309,7 +309,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 	if (item_undropable(item1_desc)) {
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x718),
+			(char*)get_ttx(0x718),
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item1, 0)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -319,7 +319,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 	if (item_undropable(item2_desc)) {
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x718),
+			(char*)get_ttx(0x718),
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item2, 0)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -332,9 +332,9 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		if (!can_hero_use_item(hero2, item1)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x374),
+				(char*)get_ttx(0x374),
 				(char*)(hero2 + HERO_NAME2),
-				(char*)get_ltx(((host_readbs(hero2 + HERO_SEX) ? 593 : 9) + host_readbs(hero2 + HERO_TYPE)) * 4),
+				(char*)get_ttx(((host_readbs(hero2 + HERO_SEX) ? 593 : 9) + host_readbs(hero2 + HERO_TYPE)) * 4),
 				(char*)Real2Host(GUI_names_grammar(2, item1, 0)));
 
 
@@ -346,14 +346,14 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			if (is_in_word_array(item1, (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0x378),
+					(char*)get_ttx(0x378),
 					(char*)Real2Host(GUI_names_grammar(0x4000, item1, 0)),
-					(char*)get_ltx(0x8b4));
+					(char*)get_ttx(0x8b4));
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0x378),
+					(char*)get_ttx(0x378),
 					(char*)Real2Host(GUI_names_grammar(0, item1, 0)),
-					(char*)get_ltx(0x8b0));
+					(char*)get_ttx(0x8b0));
 			}
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -362,7 +362,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		} else if (two_hand_collision(hero2, item1, pos2)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_city(0x10c),
+				(char*)get_tx2(0x10c),
 				(char*)(hero2 + HERO_NAME2));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -381,9 +381,9 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		if (!can_hero_use_item(hero1, item2)) {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x374),
+				(char*)get_ttx(0x374),
 				(char*)(hero1 + HERO_NAME2),
-				(char*)get_ltx(((host_readbs(hero1 + HERO_SEX) ? 593 : 9) + host_readbs(hero1 + HERO_TYPE)) * 4),
+				(char*)get_ttx(((host_readbs(hero1 + HERO_SEX) ? 593 : 9) + host_readbs(hero1 + HERO_TYPE)) * 4),
 				(char*)Real2Host(GUI_names_grammar(2, item2, 0)));
 
 #if defined(__BORLANDC__)
@@ -398,14 +398,14 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			if (is_in_word_array(item2, (signed short*)(p_datseg + ITEMS_PLURALWORDS))) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0x378),
+					(char*)get_ttx(0x378),
 					(char*)Real2Host(GUI_names_grammar(0x4000, item2, 0)),
-					(char*)get_ltx(0x8b4));
+					(char*)get_ttx(0x8b4));
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0x378),
+					(char*)get_ttx(0x378),
 					(char*)Real2Host(GUI_names_grammar(0, item2, 0)),
-					(char*)get_ltx(0x8b0));
+					(char*)get_ttx(0x8b0));
 			}
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -427,7 +427,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) > 1) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0x348),
+					(char*)get_ttx(0x348),
 					host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM),
 					(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
 					(char*)hero2 + HERO_NAME2);
@@ -456,7 +456,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 					drop_item(hero1, pos1, l_di);
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ltx(0xc2c),
+						(char*)get_ttx(0xc2c),
 						(char*)hero2 + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -476,7 +476,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 			if (host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + desc1_5 - desc2_5) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0xc2c),
+					(char*)get_ttx(0xc2c),
 					(char*)hero2 + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -552,7 +552,7 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 		if (host_readws(hero1 + (HERO_ITEM_HEAD+2) + pos1 * SIZEOF_KS_ITEM) > 1) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x348),
+				(char*)get_ttx(0x348),
 				host_readws(hero1+ (HERO_ITEM_HEAD + 2) + pos1 * SIZEOF_KS_ITEM),
 				(char*)Real2Host(GUI_names_grammar(6, item1, 0)),
 				(char*)hero2 + HERO_NAME2);
@@ -583,13 +583,13 @@ void pass_item(Bit8u *hero1, signed short old_pos1, Bit8u *hero2, signed short p
 
 		} else {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xc2c),
+				(char*)get_ttx(0xc2c),
 				(char*)hero2 + HERO_NAME2);
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
 	} else if (host_readbs(hero2 + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 100 <= host_readws(hero2 + HERO_LOAD) + host_readws(item1_desc + 5)) {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0xc2c),
+			(char*)get_ttx(0xc2c),
 			(char*)hero2 + HERO_NAME2);
 		GUI_output(Real2Host(ds_readd(DTP2)));
 	} else {
@@ -806,7 +806,7 @@ void equip_belt_ani(void)
 
 	for (i = 0; i < 12; i++) {
 
-		nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+		nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 		nvf.src = Real2Host(ds_readd(BUFFER9_PTR));
 		nvf.nr = i;
 		nvf.type = 3;
@@ -824,7 +824,7 @@ void equip_belt_ani(void)
 		ds_writew(PIC_COPY_Y1, 50);
 		ds_writew(PIC_COPY_X2, width + 159);
 		ds_writew(PIC_COPY_Y2, height + 49);
-		ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+		ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
 		wait_for_vsync();
 		wait_for_vsync();

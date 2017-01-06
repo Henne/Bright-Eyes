@@ -246,14 +246,14 @@ void TM_func1(signed short route_no, signed short backwards)
 		{
 			if (!ds_readb(FORCEDMARCH_TIMER))
 			{
-				answer = GUI_radio(get_ltx(0xcbc), 3,
-							get_dtp(0x128),
-							get_ltx(0xcc0),
-							get_ltx(0x994));
+				answer = GUI_radio(get_ttx(0xcbc), 3,
+							get_tx(0x128),
+							get_ttx(0xcc0),
+							get_ttx(0x994));
 			} else {
-				answer = GUI_radio(get_ltx(0xcbc), 2,
-							get_ltx(0xcc0),
-							get_ltx(0x994));
+				answer = GUI_radio(get_ttx(0xcbc), 2,
+							get_ttx(0xcc0),
+							get_ttx(0x994));
 			}
 
 			if (answer == 1 && !ds_readb(FORCEDMARCH_TIMER))
@@ -361,7 +361,7 @@ void TM_func1(signed short route_no, signed short backwards)
 				load_map();
 			}
 
-			GUI_input(get_dtp(0x118), 0);
+			GUI_input(get_tx(0x118), 0);
 
 			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
@@ -436,7 +436,7 @@ void TM_func1(signed short route_no, signed short backwards)
 			if (ds_readws(REQUEST_REFRESH) == 2 && route_no != 59)
 			{
 			    /* Return or continue? */
-				if (GUI_radio(get_dtp(0x11c), 2, get_dtp(0x120), get_dtp(0x124)) == 2)
+				if (GUI_radio(get_tx(0x11c), 2, get_tx(0x120), get_tx(0x124)) == 2)
 				{
 					ds_writew(TRV_RETURN, ds_readws(TRV_RETURN) == 0 ? 1 : -1);
 
@@ -515,7 +515,7 @@ signed short TM_unused1(RealPt dir_sign_ptr, signed short old_route_no)
 					{
 						if (route_no2 != route_no1)
 						{
-							destinations_tab[town_i++] = get_ltx(4 * (0xeb + ds_writebs(TRV_MENU_TOWNS + town_i,
+							destinations_tab[town_i++] = get_ttx(4 * (0xeb + ds_writebs(TRV_MENU_TOWNS + town_i,
                                 ((answer = ds_readb((ROUTES_TAB - 9) + 9 * route_id)) != ds_readbs(CURRENT_TOWN) ?
                                     (unsigned char)answer : ds_readb((ROUTES_TAB - 9 + 1) + 9 * route_id))
                             )));
@@ -524,12 +524,12 @@ signed short TM_unused1(RealPt dir_sign_ptr, signed short old_route_no)
 					}
 
 					ds_writeb(TRV_MENU_TOWNS + town_i, (signed char)town);
-					destinations_tab[town_i] = get_ltx(0x88c);
+					destinations_tab[town_i] = get_ttx(0x88c);
 					town_i++;
 					ds_writefp(TM_UNUSED1_PTR, dir_sign_ptr);
 
 					set_textbox_positions(town);
-					answer = GUI_radio(get_ltx(0x888), (signed char)town_i,
+					answer = GUI_radio(get_ttx(0x888), (signed char)town_i,
 								destinations_tab[0],
 								destinations_tab[1],
 								destinations_tab[2],

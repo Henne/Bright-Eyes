@@ -90,13 +90,13 @@ void show_automap(void)
 			if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
 				if (ds_readb(DNG_MAP_SIZE) == 16) {
-					l_di = GUI_radio(get_ltx(0x990), 1, get_ltx(0x994)) - 1;
+					l_di = GUI_radio(get_ttx(0x990), 1, get_ttx(0x994)) - 1;
 				} else {
 					ds_writew(MENU_DEFAULT_SELECT, 2);
-					l_di = GUI_radio(get_ltx(0x990), 3,
-								 get_ltx(0x998),
-								 get_ltx(0x99c),
-								 get_ltx(0x994)) - 1;
+					l_di = GUI_radio(get_ttx(0x990), 3,
+								 get_ttx(0x998),
+								 get_ttx(0x99c),
+								 get_ttx(0x994)) - 1;
 				}
 
 				if (l_di != -2) {
@@ -136,7 +136,7 @@ void show_automap(void)
 		clear_ani_pal();
 
 	} else {
-		GUI_output(get_ltx(0xc10));
+		GUI_output(get_ttx(0xc10));
 	}
 }
 
@@ -213,7 +213,7 @@ void seg074_305(signed short x_off)
 	ds_writew(PIC_COPY_Y2, 6);
 
 	/* set buffer to 0 */
-	memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 64000);
+	memset(Real2Host(ds_readd(RENDERBUF_PTR)), 0, 64000);
 
 	for (y = 0; y < 16; y++) {
 		for (x = 0; x < 16; x++) {
@@ -317,7 +317,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 	l_di <<= 3;
 	l_di *= 320;
 
-	dst = (RealPt)ds_readd(BUFFER1_PTR) + l_di + 8 * x + 0xca8;
+	dst = (RealPt)ds_readd(RENDERBUF_PTR) + l_di + 8 * x + 0xca8;
 
 	for (i = 0; i < 49; i++) {
 		array[i] = (signed char)color;
@@ -408,7 +408,7 @@ void draw_automap_entrance(signed short x, signed short y, signed short dir)
 	l_si <<= 3;
 	l_si *= 320;
 
-	dst = Real2Host(ds_readd(BUFFER1_PTR)) + l_si + 8 * x + 0xca8;
+	dst = Real2Host(ds_readd(RENDERBUF_PTR)) + l_si + 8 * x + 0xca8;
 
 	if (!d) {
 		dst += 2;
@@ -450,7 +450,7 @@ void draw_automap_to_screen(void)
 	ds_writew((PIC_COPY_DS_RECT + 6), ds_readw(0xce41) + 208);
 	ds_writew((PIC_COPY_DS_RECT + 4), ds_readw(0xce3f) + 135);
 
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
 	ds_writew(PIC_COPY_X1, 0);
 	ds_writew(PIC_COPY_Y1, 0);
@@ -529,12 +529,12 @@ signed short select_teleport_dest(void)
 		if ((ds_readw(MOUSE2_EVENT) != 0) || (ds_readw(ACTION) == 73)) {
 
 			if (ds_readb(DNG_MAP_SIZE) == 16) {
-				answer = GUI_radio(get_ltx(0x9a0), 1, get_ltx(0x9a4)) - 1;
+				answer = GUI_radio(get_ttx(0x9a0), 1, get_ttx(0x9a4)) - 1;
 			} else {
-				answer = GUI_radio(get_ltx(0x9a0), 3,
-							 get_ltx(0x998),
-							 get_ltx(0x99c),
-							 get_ltx(0x9a4)) - 1;
+				answer = GUI_radio(get_ttx(0x9a0), 3,
+							 get_ttx(0x998),
+							 get_ttx(0x99c),
+							 get_ttx(0x9a4)) - 1;
 			}
 
 			if (answer != -2) {
@@ -619,7 +619,7 @@ signed short select_teleport_dest(void)
 			((ds_readbs(CURRENT_TOWN) != 0) && (((l_di >= 2) && (l_di <= 5)) ||
 			(l_di == 6))))
 	{
-		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x98c));
+		strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x98c));
 		ae_costs = -2;
 	} else {
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);

@@ -1192,7 +1192,7 @@ signed short do_fight(signed short fight_id)
 
 	refresh_colors();
 
-	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
+	ds_writed(0xbff9, ds_readd(RENDERBUF_PTR));
 
 	if (!ds_readb(SHOW_TRAVEL_MAP)) {
 		seg028_0555(ds_readbs(DUNGEON_INDEX) != 0 ? 0 : 1);

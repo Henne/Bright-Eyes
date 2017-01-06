@@ -519,7 +519,7 @@ void GUI_font_to_buf(Bit8u *fc)
 void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width)
 {
 	/* screen_start */
-	RealPt dst = ((RealPt)ds_readd(TMP_FRAMEBUF_PTR)) + y * 320 + x;
+	RealPt dst = ((RealPt)ds_readd(PRINT_STRING_BUFFER)) + y * 320 + x;
 
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }

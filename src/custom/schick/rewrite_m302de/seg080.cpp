@@ -55,9 +55,9 @@ signed short DNG04_handler(void)
 	{
 		/* do you want to grab into the gap ? */
 		do {
-			i = GUI_radio(get_dtp(0x08), 2,
-						get_dtp(0x0c),
-						get_dtp(0x10));
+			i = GUI_radio(get_tx(0x08), 2,
+						get_tx(0x0c),
+						get_tx(0x10));
 		} while (i == -1);
 
 		if (i == 2)
@@ -65,7 +65,7 @@ signed short DNG04_handler(void)
 			hero = Real2Host(get_first_hero_available_in_group());
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x14),
+				(char*)get_tx(0x14),
 				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -81,7 +81,7 @@ signed short DNG04_handler(void)
 	} else if (pos == 0x50b && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG04_HELMET_FLAG))
 	{
 		/* do you want the SILVER HELMET? */
-		if (GUI_bool(get_dtp(0x1c)))
+		if (GUI_bool(get_tx(0x1c)))
 		{
 			/* get a SILVER HELMET */
 			if (get_item(213, 1, 1))
@@ -99,7 +99,7 @@ signed short DNG04_handler(void)
 	} else if (pos == 0x803 && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* the ceiling may drop on your head */
-		GUI_output(get_dtp(0x24));
+		GUI_output(get_tx(0x24));
 
 		hero = get_hero(0);
 		for (i = 0; i <= 6 ; i++, hero += SIZEOF_HERO)
@@ -110,7 +110,7 @@ signed short DNG04_handler(void)
 				test_skill(hero, TA_SCHLEICHEN, 2) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x28),
+					(char*)get_tx(0x28),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -123,18 +123,18 @@ signed short DNG04_handler(void)
 
 	} else if (pos == 0x703 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_dtp(0x2c));
+		GUI_output(get_tx(0x2c));
 
 	} else if (pos == 0x505 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_dtp(0x30));
+		GUI_output(get_tx(0x30));
 
 	} else if (pos == 0xa0d && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* dig into a heap of dirt? */
-		if (GUI_bool(get_dtp(0x34)) && GUI_bool(get_dtp(0x38)))
+		if (GUI_bool(get_tx(0x34)) && GUI_bool(get_tx(0x38)))
 		{
-			GUI_output(get_dtp(0x3c));
+			GUI_output(get_tx(0x3c));
 
 			i = get_free_mod_slot();
 
@@ -146,7 +146,7 @@ signed short DNG04_handler(void)
 	} else if (pos == 0xe0e && pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* the ceiling may drop on your head */
-		GUI_output(get_dtp(0x24));
+		GUI_output(get_tx(0x24));
 
 		hero = get_hero(0);
 		for (i = 0; i <= 6 ; i++, hero += SIZEOF_HERO)
@@ -157,7 +157,7 @@ signed short DNG04_handler(void)
 				test_skill(hero, TA_SCHLEICHEN, 4) <= 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x28),
+					(char*)get_tx(0x28),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -171,7 +171,7 @@ signed short DNG04_handler(void)
 	} else if (pos == 0xa06 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG04_LANTERN_FLAG))
 	{
 		/* do you want a LANTERN? */
-		if (GUI_bool(get_dtp(0x40)))
+		if (GUI_bool(get_tx(0x40)))
 		{
 			/* get a LANTERN */
 			if (get_item(25, 1, 1))
@@ -191,7 +191,7 @@ signed short DNG04_handler(void)
 		{
 			ds_writeb(DNG04_DEEPGAP_FLAG, 1);
 
-			i = GUI_bool(get_dtp(0x44));
+			i = GUI_bool(get_tx(0x44));
 		}
 
 		if (i)
@@ -199,7 +199,7 @@ signed short DNG04_handler(void)
 			if (test_attrib(hero, ATTRIB_GE, 0) > 0)
 			{
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x48),
+					(char*)get_tx(0x48),
 					(char*)hero + HERO_NAME2,
 					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)),
 					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
@@ -209,7 +209,7 @@ signed short DNG04_handler(void)
 			} else {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x4c),
+					(char*)get_tx(0x4c),
 					(char*)hero + HERO_NAME2,
 					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 					(char*)hero + HERO_NAME2);
@@ -242,7 +242,7 @@ signed short DNG04_handler(void)
 					sub_hero_le(hero, 2);
 
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-						(char*)get_dtp(0x54),
+						(char*)get_tx(0x54),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -266,7 +266,7 @@ signed short DNG04_handler(void)
 					sub_hero_le(hero, 2);
 
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-						(char*)get_dtp(0x64),
+						(char*)get_tx(0x64),
 						(char*)hero + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -286,8 +286,8 @@ signed short DNG04_handler(void)
 		ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 0x03);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(0x68),
-			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
+			(char*)get_tx(0x68),
+			(char*)get_ttx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -304,17 +304,17 @@ signed short DNG04_handler(void)
 
 void DNG04_corpse0(RealPt ptr)
 {
-	loot_corpse(ptr, get_dtp(0x04), p_datseg + DNG04_CORPSE0_FLAG);
+	loot_corpse(ptr, get_tx(0x04), p_datseg + DNG04_CORPSE0_FLAG);
 }
 
 void DNG04_corpse1(RealPt ptr)
 {
-	loot_corpse(ptr, get_dtp(0x20), p_datseg + DNG04_CORPSE1_FLAG);
+	loot_corpse(ptr, get_tx(0x20), p_datseg + DNG04_CORPSE1_FLAG);
 }
 
 void DNG04_corpse2(RealPt ptr)
 {
-	loot_corpse(ptr, get_dtp(0x50), p_datseg + DNG04_CORPSE2_FLAG);
+	loot_corpse(ptr, get_tx(0x50), p_datseg + DNG04_CORPSE2_FLAG);
 }
 
 void DNG04_corpse0_chest(RealPt chest)
@@ -324,7 +324,7 @@ void DNG04_corpse0_chest(RealPt chest)
 	bak = (RealPt)host_readd(Real2Host(chest) + 11);
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG04_CHEST_CORPSE0));
 
-	loot_chest(Real2Host(chest), get_dtp(0x58), get_dtp(0x18));
+	loot_chest(Real2Host(chest), get_tx(0x58), get_tx(0x18));
 
 	host_writed(Real2Host(chest) + 11, (Bit32u)bak);
 }
@@ -336,7 +336,7 @@ void DNG04_corpse1_chest(RealPt chest)
 	bak = (RealPt)host_readd(Real2Host(chest) + 11);
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG04_CHEST_CORPSE1));
 
-	loot_chest(Real2Host(chest), get_dtp(0x5c), get_dtp(0x18));
+	loot_chest(Real2Host(chest), get_tx(0x5c), get_tx(0x18));
 
 	host_writed(Real2Host(chest) + 11, (Bit32u)bak);
 }
@@ -348,7 +348,7 @@ void DNG04_corpse2_chest(RealPt chest)
 	bak = (RealPt)host_readd(Real2Host(chest) + 11);
 	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG04_CHEST_CORPSE2));
 
-	loot_chest(Real2Host(chest), get_dtp(0x60), get_dtp(0x18));
+	loot_chest(Real2Host(chest), get_tx(0x60), get_tx(0x18));
 
 	host_writed(Real2Host(chest) + 11, (Bit32u)bak);
 }
@@ -370,13 +370,13 @@ signed short DNG05_handler(void)
 
 	if (pos == 0x70e && pos != ds_readws(DNG_HANDLED_POS) && ds_readw(0x960e) == 0)
 	{
-		if (GUI_bool(get_dtp(0x04)) && GUI_bool(get_dtp(0x3c)))
+		if (GUI_bool(get_tx(0x04)) && GUI_bool(get_tx(0x3c)))
 		{
 			ds_writew(0x960e, 1);
 
 			hero = Real2Host(get_first_hero_available_in_group());
 
-			GUI_output(get_dtp(0x40));
+			GUI_output(get_tx(0x40));
 
 			tmp = get_free_mod_slot();
 			set_mod_slot(tmp, DAYS(1), hero + (HERO_ATTRIB + 3 * ATTRIB_CH), -5, 0);
@@ -386,9 +386,9 @@ signed short DNG05_handler(void)
 
 	} else if (pos == 0x50c && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG05_PROVIANT_FLAG))
 	{
-		if (GUI_bool(get_dtp(0x08)))
+		if (GUI_bool(get_tx(0x08)))
 		{
-			GUI_output(get_dtp(0x0c));
+			GUI_output(get_tx(0x0c));
 
 			get_item(45, 1, 10);
 
@@ -397,9 +397,9 @@ signed short DNG05_handler(void)
 
 	} else if (pos == 0x907 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG05_BATS_FLAG))
 	{
-		if (GUI_bool(get_dtp(0x10)))
+		if (GUI_bool(get_tx(0x10)))
 		{
-			GUI_output(get_dtp(0x14));
+			GUI_output(get_tx(0x14));
 
 			ds_writeb(DNG05_BATS_FLAG, 1);
 		}
@@ -407,14 +407,14 @@ signed short DNG05_handler(void)
 	} else if (pos == 0x309 && pos != ds_readws(DNG_HANDLED_POS) && !ds_readb(DNG05_GOD_FLAG))
 	{
 		do {
-			tmp = GUI_radio(get_dtp(0x18), 2,
-						get_dtp(0x1c),
-						get_dtp(0x20));
+			tmp = GUI_radio(get_tx(0x18), 2,
+						get_tx(0x1c),
+						get_tx(0x20));
 		} while (tmp == -1);
 
 		add_ds_ds((GODS_ESTIMATION + 4 * 4), tmp == 1 ? -15 : 15);
 
-		GUI_output(get_dtp(0x24));
+		GUI_output(get_tx(0x24));
 
 		ds_writeb(DNG05_GOD_FLAG, 1);
 
@@ -433,16 +433,16 @@ signed short DNG05_handler(void)
 
 	} else if (pos == 0xb01 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		GUI_output(get_dtp(0x2c));
+		GUI_output(get_tx(0x2c));
 
 	} else if (pos == 0x601 && pos != ds_readws(DNG_HANDLED_POS))
 	{
-		if (GUI_bool(get_dtp(0x30)))
+		if (GUI_bool(get_tx(0x30)))
 		{
 			hero = Real2Host(get_first_hero_available_in_group());
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x34),
+				(char*)get_tx(0x34),
 				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -457,7 +457,7 @@ signed short DNG05_handler(void)
 		load_ani(32);
 		init_ani(1);
 
-		GUI_output(get_dtp(0x38));
+		GUI_output(get_tx(0x38));
 
 		set_var_to_zero();
 
@@ -476,8 +476,8 @@ signed short DNG05_handler(void)
 		ds_writeb(DIRECTION, (ds_readb(ARRIVAL_DIRECTION) + 2) & 0x03);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_dtp(0x44),
-			(char*)get_ltx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
+			(char*)get_tx(0x44),
+			(char*)get_ttx(4 * (ds_readws(TRV_DESTINATION) + 0xeb)));
 
 		GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -500,7 +500,7 @@ signed short DNG05_handler(void)
 void DNG5_fight_intro(signed short fight_id)
 {
 	if (fight_id == 76) {
-		GUI_output(get_dtp(0x28));
+		GUI_output(get_tx(0x28));
 	}
 }
 

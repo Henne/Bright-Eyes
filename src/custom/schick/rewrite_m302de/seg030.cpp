@@ -58,7 +58,7 @@ RealPt seg030_0000(signed short arg0)
 			i = random_schick(15);
 		} while (i == 10 || i == 12 || i == 13 || !ds_readb((INFORMER_FLAGS - 1) + i)|| i == arg0);
 
-		return (RealPt)host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX) + (0x291 + i) * 4));
+		return (RealPt)host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX_INDEX) + (0x291 + i) * 4));
 	}
 }
 
@@ -88,7 +88,7 @@ RealPt seg030_008d(signed short arg0)
 		} while (i == 10 || i == 12 || i == 13 || ds_readb((INFORMER_FLAGS - 1) + i)|| i == arg0);
 		ds_writeb((INFORMER_FLAGS - 1) + i, 1);
 
-		return (RealPt)host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX) + (0x291 + i) * 4));
+		return (RealPt)host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX_INDEX) + (0x291 + i) * 4));
 	}
 }
 
@@ -117,24 +117,24 @@ void prepare_date_str(void)
 	if (ds_readbs(DAY_OF_MONTH) < 0) {
 		/* Days of the nameless */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x61c),
-			get_ltx((0x15d + ds_readbs(DAY_OF_WEEK)) * 4),
+			(char*)get_ttx(0x61c),
+			get_ttx((0x15d + ds_readbs(DAY_OF_WEEK)) * 4),
 			ds_readbs(YEAR), hour);
 	} else {
 		/* Normal day */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x590),
-			get_ltx((0x15d + ds_readbs(DAY_OF_WEEK)) * 4),
+			(char*)get_ttx(0x590),
+			get_ttx((0x15d + ds_readbs(DAY_OF_WEEK)) * 4),
 			ds_readbs(DAY_OF_MONTH),
-			get_ltx((0x15 + ds_readbs(MONTH)) * 4),
-			get_ltx((0x227 + get_current_season()) * 4),
+			get_ttx((0x15 + ds_readbs(MONTH)) * 4),
+			get_ttx((0x227 + get_current_season()) * 4),
 			ds_readbs(YEAR), hour);
 	}
 
 	if (ds_readbs(SPECIAL_DAY) != 0) {
 		sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-			(char*)get_ltx(0x594),
-			get_ltx((0x165 + ds_readbs(SPECIAL_DAY)) * 4));
+			(char*)get_ttx(0x594),
+			get_ttx((0x165 + ds_readbs(SPECIAL_DAY)) * 4));
 
 		strcat((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
@@ -195,7 +195,7 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 			txt_id = host_readws(state_ptr) & 0x7fff;
 
-			fmt = (char*)get_city(4 * (txt_id + txt_offset));
+			fmt = (char*)get_tx2(4 * (txt_id + txt_offset));
 
 			if (ds_readws(TLK_ID) == 11) {
 				if (ds_readws(DIALOG_INFORMER) == 2) {
@@ -260,15 +260,15 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 					if (txt_id == 21) {
 
-						sprintf(dst, fmt, (char*)get_ltx(0xa48));
+						sprintf(dst, fmt, (char*)get_ttx(0xa48));
 
 					} else if (txt_id == 22) {
 
-						sprintf(dst, fmt, (char*)get_ltx(0xa58));
+						sprintf(dst, fmt, (char*)get_ttx(0xa58));
 
 					} else if (txt_id == 23) {
 
-						sprintf(dst, fmt, (char*)get_ltx(0xa54));
+						sprintf(dst, fmt, (char*)get_ttx(0xa54));
 
 					} else if (txt_id == 29) {
 
@@ -326,23 +326,23 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 
 						} else if (txt_id == 28) {
 
-							sprintf(dst, fmt, (char*)get_ltx(0xa5c));
+							sprintf(dst, fmt, (char*)get_ttx(0xa5c));
 
 						} else if (txt_id == 29) {
 
-							sprintf(dst, fmt, (char*)get_ltx(0xa60));
+							sprintf(dst, fmt, (char*)get_ttx(0xa60));
 
 						} else if (txt_id == 30) {
 
-							sprintf(dst, fmt, (char*)get_ltx(0xa80));
+							sprintf(dst, fmt, (char*)get_ttx(0xa80));
 
 						} else if (txt_id == 38) {
 
-							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP4))));
+							sprintf(dst, fmt, (char*)get_ttx(4 * (235 + ds_readb(SWAFNILD_TP4))));
 
 						} else if (txt_id == 49) {
 
-							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP4))));
+							sprintf(dst, fmt, (char*)get_ttx(4 * (235 + ds_readb(SWAFNILD_TP4))));
 
 							ds_writebs(CURRENT_TOWN, ds_readbs(SWAFNILD_TP4));
 
@@ -352,13 +352,13 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 						} else if (txt_id == 52) {
 
 							sprintf(dst, fmt,
-								(char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP1))),
-								(char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP2))),
-								(char*)get_ltx(4 * (235 + ds_readb(SWAFNILD_TP3))));
+								(char*)get_ttx(4 * (235 + ds_readb(SWAFNILD_TP1))),
+								(char*)get_ttx(4 * (235 + ds_readb(SWAFNILD_TP2))),
+								(char*)get_ttx(4 * (235 + ds_readb(SWAFNILD_TP3))));
 
 						} else if (txt_id == 59) {
 
-							sprintf(dst, fmt, (char*)get_ltx(4 * (235 + (
+							sprintf(dst, fmt, (char*)get_ttx(4 * (235 + (
 							    ds_readb(SWAFNILD_DESTINATION) == 1 ?
                                     ds_readb(SWAFNILD_TP1)
                                 : (ds_readb(SWAFNILD_DESTINATION) == 2 ?
@@ -497,9 +497,9 @@ void do_talk(signed short talk_id, signed short tlk_informer)
 			}
 
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), Real2Host(ds_readd(DIALOG_TITLE)), (Bit8u*)dst, optioncount,
-					get_city(4 * (host_readb(state_ptr + 2) + txt_offset)),
-					get_city(4 * (host_readb(state_ptr + 3) + txt_offset)),
-					get_city(4 * (host_readb(state_ptr + 4) + txt_offset)));
+					get_tx2(4 * (host_readb(state_ptr + 2) + txt_offset)),
+					get_tx2(4 * (host_readb(state_ptr + 3) + txt_offset)),
+					get_tx2(4 * (host_readb(state_ptr + 4) + txt_offset)));
 		}
 
 
@@ -554,7 +554,7 @@ void talk_switch(void)
 				ds_writew(FIG_DISCARD, 1);
 
 				if (!do_fight(FIGHTS_DASP1A)) {
-					if (GUI_bool(get_dtp(0x58))) {
+					if (GUI_bool(get_tx(0x58))) {
 
 						ds_writew(FIG_DISCARD, 0);
 
