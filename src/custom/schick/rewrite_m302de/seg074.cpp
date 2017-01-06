@@ -658,7 +658,7 @@ signed short seg074_bbb(signed short x, signed short y)
 		}
 	}
 
-	p = p_datseg + 0xc025;
+	p = p_datseg + LOCATIONS_TAB;
 
 	do {
 

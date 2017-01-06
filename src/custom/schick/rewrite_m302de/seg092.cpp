@@ -366,6 +366,7 @@ struct chest {
 	signed short food;
 };
 
+/* handle special chest */
 void seg092_06b4(signed short a1)
 {
 	signed short x;
@@ -375,7 +376,7 @@ void seg092_06b4(signed short a1)
 	RealPt chest_ptr;
 	Bit8u *ptr;
 
-	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
+	chest_ptr = (RealPt)ds_readd(DNG_CHESTTABS + 4 * ds_readbs(DUNGEON_INDEX));
 	ptr = p_datseg + DNG_MAP;
 	ds_writew(GET_EXTRA_LOOT, 0);
 	x = ds_readws(X_TARGET);
@@ -601,7 +602,7 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 			{
 				my_itoa(l_si, names[item_nr], 10);
 
-				strcat(names[item_nr], (char*)p_datseg + 0x9dc4);
+				strcat(names[item_nr], (char*)p_datseg + STR_SINGLE_SPACE);
 			}
 
 			strcat(names[item_nr++], (char*)Real2Host(GUI_name_plural( ((signed short)(l_si > 1 ? (unsigned short)1 : (unsigned short)0)) ? 4 : 0, (Bit8u*)get_itemname(item_cnt))));

@@ -404,7 +404,7 @@ void tevent_061(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(0x4333, 4);
+				ds_writeb(TRAVEL_DETOUR, 4);
 			}
 		}
 
@@ -420,7 +420,7 @@ void tevent_061(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 4);
+			ds_writeb(TRAVEL_DETOUR, 4);
 		}
 	}
 }

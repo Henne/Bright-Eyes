@@ -529,7 +529,7 @@ void do_wild8_fight(void)
 
 	do_fight(FIGHTS_WILD8);
 
-	ds_writew(0x4248, 0);
+	ds_writew(ROUTE_FIGHT_FLAG, 0);
 	ds_writeb(SHOW_TRAVEL_MAP, 1);
 	ds_writew(BASEPOS_X, bak1);
 	ds_writew(BASEPOS_Y, bak2);
@@ -781,7 +781,7 @@ void TLK_way_to_ruin(signed short state)
 	} else if (state == 42 || state == 60) {
 		timewarp(MINUTES(150));
 	} else if (state == 67 || state == 44) {
-		ds_writeb(0x4333, 15);
+		ds_writeb(TRAVEL_DETOUR, 15);
 
 	} else if (state == 48) {
 

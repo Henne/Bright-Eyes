@@ -869,7 +869,7 @@ void tevent_108(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 8);
+			ds_writeb(TRAVEL_DETOUR, 8);
 		}
 
 	} else if (ds_readb(TEVENT108_FLAG) != 0) {
@@ -883,7 +883,7 @@ void tevent_108(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 8);
+			ds_writeb(TRAVEL_DETOUR, 8);
 		}
 	}
 }

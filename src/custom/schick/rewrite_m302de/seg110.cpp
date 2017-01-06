@@ -134,7 +134,7 @@ void TRV_swim2(signed char mod, signed short percent)
 
 }
 
-/* a path between SERSKE and PEILINEN */
+/* Path east from the route Rovamund-Peilinen. */
 /* should be static */
 void TRV_a_path(void)
 {
@@ -149,8 +149,8 @@ void TRV_a_path(void)
 	if (answer == 1)
 	{
 		/* follow the path */
-		ds_writeb(0xe4a2, (ds_readb(CURRENT_TOWN) == 4 ? 2 : 4));
-		ds_writeb(0x4333, 1);
+		ds_writeb(ROUTE59_FLAG, (ds_readb(CURRENT_TOWN) == TOWNS_PEILINEN ? 2 : 4));
+		ds_writeb(TRAVEL_DETOUR, 1);
 	} else {
 		/* swim back */
 
@@ -234,12 +234,13 @@ void tevent_017(void)
 	}
 }
 
+/* Path west from the route Kravik-Skelellen. */
 void tevent_020(void)
 {
 	signed short answer;
 	Bit8u *hero;
 
-	if ((test_skill((hero = Real2Host(get_first_hero_available_in_group())), 51, 7) > 0 && !ds_readb(TEVENT020_FLAG)) ||
+	if ((test_skill((hero = Real2Host(get_first_hero_available_in_group())), TA_SINNESSCHAERFE, 7) > 0 && !ds_readb(TEVENT020_FLAG)) ||
 		ds_readb(TEVENT020_FLAG) != 0)
 	{
 		ds_writeb(TEVENT020_FLAG, 1);
@@ -264,8 +265,9 @@ void tevent_020(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(0xe4a2, (ds_readb(CURRENT_TOWN) == 4 ? 1 : 3));
-				ds_writeb(0x4333, 1);
+			    /* TODO: Original-Bug: CURRENT_TOWN is either Kravik or Skelellen. */
+				ds_writeb(ROUTE59_FLAG, (ds_readb(CURRENT_TOWN) == TOWNS_PEILINEN ? 1 : 3));
+				ds_writeb(TRAVEL_DETOUR, 1);
 			}
 		}
 
@@ -734,7 +736,7 @@ void tevent_046(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(0x4333, 2);
+				ds_writeb(TRAVEL_DETOUR, 2);
 				enter_inn = 1;
 			}
 		}
@@ -759,7 +761,7 @@ void tevent_046(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(0x4333, 2);
+				ds_writeb(TRAVEL_DETOUR, 2);
 			}
 		}
 	}

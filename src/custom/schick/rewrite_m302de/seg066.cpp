@@ -57,7 +57,7 @@ signed short enter_location(signed short town_id)
 	}
 
 	map_pos = 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
-	ptr = p_datseg + 0xc025;
+	ptr = p_datseg + LOCATIONS_TAB;
 	ds_writeb(0xe10c, 0);
 
 	do {
@@ -112,7 +112,7 @@ signed short enter_location_daspota(void)
 	}
 
 	map_pos = 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
-	ptr = p_datseg + 0xc025;
+	ptr = p_datseg + LOCATIONS_TAB;
 	ds_writeb(0xe10c, 0);
 
 	do {
@@ -1138,7 +1138,7 @@ void city_fade_and_colors(void)
 		pal_ptr = Real2Host(ds_readd(BUFFER1_PTR));
 
 		memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0x120);
-		memcpy(dst, p_datseg + 0x3e53, 0x120);
+		memcpy(dst, p_datseg + PALETTE_FLOOR, 0x120);
 
 		for (i = 0; i < 64; i += 2) {
 
@@ -1157,8 +1157,8 @@ void city_fade_and_colors(void)
 
 		wait_for_vsync();
 
-		set_palette(p_datseg + 0x3e53, 0x00, 0x20);
-		set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+		set_palette(p_datseg + PALETTE_FLOOR, 0x00, 0x20);
+		set_palette(p_datseg + PALETTE_BUILDINGS, 0x80, 0x40);
 	}
 }
 

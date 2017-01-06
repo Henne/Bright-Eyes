@@ -2037,11 +2037,11 @@ void dawning(void)
 	{
 
 		/* floor */
-		pal_fade(p_datseg + 0x3e53, Real2Host(ds_readd(TOWNPAL_BUF)));
+		pal_fade(p_datseg + PALETTE_FLOOR, Real2Host(ds_readd(TOWNPAL_BUF)));
 		/* buildings */
-		pal_fade(p_datseg + 0x3eb3, Real2Host(ds_readd(TOWNPAL_BUF)) + 0x60);
+		pal_fade(p_datseg + PALETTE_BUILDINGS, Real2Host(ds_readd(TOWNPAL_BUF)) + 0x60);
 		/* sky */
-		pal_fade(p_datseg + 0x3f13, Real2Host(ds_readd(TOWNPAL_BUF)) + 0xc0);
+		pal_fade(p_datseg + PALETTE_SKY, Real2Host(ds_readd(TOWNPAL_BUF)) + 0xc0);
 
 		/* in a town */
 		if (ds_readbs(CURRENT_TOWN) &&
@@ -2060,8 +2060,8 @@ void dawning(void)
 		{
 			wait_for_vsync();
 
-			set_palette(p_datseg + 0x3e53, 0, 0x20);
-			set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+			set_palette(p_datseg + PALETTE_FLOOR, 0, 0x20);
+			set_palette(p_datseg + PALETTE_BUILDINGS, 0x80, 0x40);
 		}
 	}
 }
@@ -2079,11 +2079,11 @@ void nightfall(void)
 	{
 
 		/* floor */
-		pal_fade(p_datseg + 0x3e53, p_datseg + 0x4498);
+		pal_fade(p_datseg + PALETTE_FLOOR, p_datseg + 0x4498);
 		/* buildings */
-		pal_fade(p_datseg + 0x3eb3, p_datseg + 0x44f8);
+		pal_fade(p_datseg + PALETTE_BUILDINGS, p_datseg + 0x44f8);
 		/* sky */
-		pal_fade(p_datseg + 0x3f13, p_datseg + 0x4558);
+		pal_fade(p_datseg + PALETTE_SKY, p_datseg + 0x4558);
 
 		/* in a town */
 		if (ds_readbs(CURRENT_TOWN) &&
@@ -2102,8 +2102,8 @@ void nightfall(void)
 		{
 			wait_for_vsync();
 
-			set_palette(p_datseg + 0x3e53, 0, 0x20);
-			set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+			set_palette(p_datseg + PALETTE_FLOOR, 0, 0x20);
+			set_palette(p_datseg + PALETTE_BUILDINGS, 0x80, 0x40);
 		}
 	}
 }
@@ -2381,8 +2381,8 @@ void do_timers(void)
 		}
 
 		/* unknown timer */
-		if (ds_readb(0x4332) != 0) {
-			dec_ds_bs_post(0x4332);
+		if (ds_readb(FORCEDMARCH_TIMER) != 0) {
+			dec_ds_bs_post(FORCEDMARCH_TIMER);
 		}
 
 		/* calendar */
@@ -3305,8 +3305,8 @@ void passages_recalc(void)
 	}
 
 	/* If a passage is hired decrement Passage days timer */
-	if (ds_readb(0x42ae) == 0xaa) {
-		dec_ds_bs_post(0x42af);
+	if (ds_readb(SEA_TRAVEL_PSGBOOKED_FLAG) == 0xaa) {
+		dec_ds_bs_post(SEA_TRAVEL_PSGBOOKED_TIMER);
 	}
 }
 
@@ -3329,8 +3329,8 @@ void passages_reset(void)
 	}
 
 	/* If a passage is hired and the timer is zero, reset the passage */
-	if ((ds_readb(0x42ae) == 0xaa) && !ds_readb(0x42af)) {
-		ds_writeb(0x42ae, 0);
+	if ((ds_readb(SEA_TRAVEL_PSGBOOKED_FLAG) == 0xaa) && !ds_readb(SEA_TRAVEL_PSGBOOKED_TIMER)) {
+		ds_writeb(SEA_TRAVEL_PSGBOOKED_FLAG, 0);
 	}
 }
 
@@ -4331,7 +4331,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 				((count_heroes_available_in_group() == 1) && (is_hero_available_in_group(get_hero(6))))))
 			{
 
-				ds_writeb(0x4333, 99);
+				ds_writeb(TRAVEL_DETOUR, 99);
 
 				hero_i = get_hero(0);
 				for (i = 0; i <=6; i++, hero_i += SIZEOF_HERO) {

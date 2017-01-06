@@ -289,7 +289,7 @@ signed short init_memory(void)
 	}
 
 	/* set the pointer for the framebuffer */
-	ds_writed(TMP_FRAMEBUF_PTR, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0xa000, 0x0000)));
+	ds_writed(TMP_FRAMEBUF_PTR, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0x0a000, 0x0000)));
 
 	/* allocate small chunks of memory */
 	ds_writed(ITEMSNAME,		(Bit32u)schick_alloc_emu(1016));
@@ -306,7 +306,7 @@ signed short init_memory(void)
 	ds_writed(DUNGEON_STAIRS_BUF,		(Bit32u)schick_alloc_emu(80));
 	ds_writed(BUF_FONT6,		(Bit32u)schick_alloc_emu(592));
 	ds_writed(SPLASH_BUFFER,		(Bit32u)schick_alloc_emu(1000));
-	ds_writed(0xd299,		(Bit32u)schick_alloc_emu(500));
+	ds_writed(TRV_TRACK_PIXEL_BAK,		(Bit32u)schick_alloc_emu(500));
 	ds_writed(CHESSBOARD,		(Bit32u)schick_alloc_emu(625));
 	ds_writed(POPUP,		(Bit32u)(schick_alloc_emu(1673) + 8));
 	ds_writed(ICON,			(Bit32u)(schick_alloc_emu(1500) + 8));

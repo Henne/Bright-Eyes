@@ -1041,7 +1041,7 @@ mark2:			   goto mark1;
 
 		ptr = Real2Host(ds_readd(BUFFER1_PTR)) + 0x1f4;
 		memset(Real2Host(ds_readd(BUFFER1_PTR)), 0, 0x120);
-		memcpy(Real2Host(ds_readd(BUFFER1_PTR)) + 0x1f4, p_datseg + 0x3e53, 0x120);
+		memcpy(Real2Host(ds_readd(BUFFER1_PTR)) + 0x1f4, p_datseg + PALETTE_FLOOR, 0x120);
 
 		for (i = 0; i < 0x40; i++) {
 

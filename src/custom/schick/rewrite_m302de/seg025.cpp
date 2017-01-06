@@ -255,7 +255,7 @@ void do_informer(void)
 
 void enter_map(void)
 {
-	ds_writew(0x4334, ds_readw(TYPEINDEX));
+	ds_writew(CURRENT_DIRSIGN, ds_readw(TYPEINDEX));
 
 	ds_writew(TYPEINDEX, ds_readbs(CURRENT_TOWN));
 

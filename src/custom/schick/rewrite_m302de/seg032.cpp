@@ -1030,7 +1030,7 @@ signed short do_fight(signed short fight_id)
 
 				if (ds_readbs(TRAVELING) != 0) {
 
-					ds_writeb(0x4333, 99);
+					ds_writeb(TRAVEL_DETOUR, 99);
 					ptr = get_hero(0);
 					for (l1 = 0; l1 <=6; l1++, ptr += SIZEOF_HERO) {
 
@@ -1168,7 +1168,7 @@ signed short do_fight(signed short fight_id)
 		}
 
 	} else {
-		ds_writeb(0x4333, 99);
+		ds_writeb(TRAVEL_DETOUR, 99);
 		retval = 4;
 	}
 

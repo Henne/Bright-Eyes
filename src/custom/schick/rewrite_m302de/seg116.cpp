@@ -103,7 +103,7 @@ void tevent_131(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 11);
+			ds_writeb(TRAVEL_DETOUR, 11);
 		}
 
 	} else {
@@ -117,7 +117,7 @@ void tevent_131(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(0x4333, 11);
+				ds_writeb(TRAVEL_DETOUR, 11);
 			}
 		}
 	}

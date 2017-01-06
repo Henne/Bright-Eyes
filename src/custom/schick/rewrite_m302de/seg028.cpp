@@ -177,7 +177,7 @@ void seg028_0224(void)
 		{
 			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 
-			memcpy(p_datseg + 0x3eb3, Real2Host(ds_readd(BUFFER11_PTR)), 0xc0);
+			memcpy(p_datseg + PALETTE_BUILDINGS, Real2Host(ds_readd(BUFFER11_PTR)), 0xc0);
 		} else {
 			ds_writed(TEX_SKY, (Bit32u) seg028_0444(ARCHIVE_FILE_TDIVERSE_NVF, 0x80, 0x40, 0));
 		}
@@ -186,7 +186,7 @@ void seg028_0224(void)
 
 		if ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(20)))
 		{
-			memcpy(p_datseg + 0x3e53, Real2Host(ds_readd(BUFFER11_PTR)), 0x60);
+			memcpy(p_datseg + PALETTE_FLOOR, Real2Host(ds_readd(BUFFER11_PTR)), 0x60);
 		}
 
 		ds_writew(AREA_PREPARED, 1);
@@ -292,7 +292,7 @@ void load_area_description(signed short type)
 			/* write automap tiles */
 			bc__write(fd, RealMake(datseg, AUTOMAP_BUF), 64);
 			/* write something unknown */
-			bc__write(fd, RealMake(datseg, 0xc025),
+			bc__write(fd, RealMake(datseg, LOCATIONS_TAB),
 				ds_readw(0x5eb8));
 
 			bc_close(fd);
@@ -332,10 +332,10 @@ void load_area_description(signed short type)
 			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
 
 			/* TODO: is that neccessary ? */
-			memset(p_datseg + 0xc025, -1, 900);
+			memset(p_datseg + LOCATIONS_TAB, -1, 900);
 
 			ds_writew(0x5eb8,
-				bc__read(fd, p_datseg + 0xc025, 1000));
+				bc__read(fd, p_datseg + LOCATIONS_TAB, 1000));
 
 			ds_writeb(DNG_MAP_SIZE, 0x20);
 		} else {
@@ -349,9 +349,9 @@ void load_area_description(signed short type)
 
 			if (!ds_readbs(DUNGEON_INDEX)) {
 				/* TODO: is that neccessary ? */
-				memset(p_datseg + 0xc025, -1, 900);
+				memset(p_datseg + LOCATIONS_TAB, -1, 900);
 				ds_writew(0x5eb8,
-					bc__read(fd, p_datseg + 0xc025, 1000));
+					bc__read(fd, p_datseg + LOCATIONS_TAB, 1000));
 			}
 
 			ds_writeb(DNG_MAP_SIZE, 0x10);
@@ -462,12 +462,12 @@ void load_map(void)
 		EMS_map_memory(ds_readw(0xbd90), 2, 2);
 		EMS_map_memory(ds_readw(0xbd90), 3, 3);
 		/* set map pointer to EMS */
-		ds_writed(0x432e, ds_readd(0x4baa));
+		ds_writed(TRAVEL_MAP_PTR, ds_readd(0x4baa));
 	} else {
 		/* or read KARTE.DAT from file */
 		fd = load_archive_file(ARCHIVE_FILE_KARTE_DAT);
 
-		read_archive_file(fd, Real2Host(ds_writed(0x432e, ds_readd(BUFFER1_PTR))), 64098);
+		read_archive_file(fd, Real2Host(ds_writed(TRAVEL_MAP_PTR, ds_readd(BUFFER1_PTR))), 64098);
 		bc_close(fd);
 
 		if (ds_readb(EMS_ENABLED) != 0) {

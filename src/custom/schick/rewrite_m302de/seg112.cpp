@@ -668,7 +668,7 @@ void tevent_076(void)
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(0x4333, 5);
+				ds_writeb(TRAVEL_DETOUR, 5);
 			}
 		}
 
@@ -684,7 +684,7 @@ void tevent_076(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 5);
+			ds_writeb(TRAVEL_DETOUR, 5);
 		}
 	}
 }

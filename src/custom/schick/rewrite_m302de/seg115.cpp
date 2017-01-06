@@ -217,7 +217,7 @@ void tevent_094(void)
 
 		if (answer == 1) {
 			/* enter daspota dungeon */
-			ds_writeb(0x4333, 6);
+			ds_writeb(TRAVEL_DETOUR, 6);
 		}
 	}
 }
@@ -465,7 +465,7 @@ void tevent_126(void)
 
 		if (answer == 1)
 		{
-			ds_writeb(0x4333, 9);
+			ds_writeb(TRAVEL_DETOUR, 9);
 		}
 	}
 }
@@ -531,7 +531,7 @@ void tevent_129(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 10);
+			ds_writeb(TRAVEL_DETOUR, 10);
 		}
 
 	} else if (ds_readb(TEVENT129_FLAG) != 0) {
@@ -546,7 +546,7 @@ void tevent_129(void)
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 10);
+			ds_writeb(TRAVEL_DETOUR, 10);
 		}
 	}
 }
@@ -648,7 +648,7 @@ void tevent_047(void)
 							ds_writew(Y_TARGET, 10);
 						}
 
-						ds_writeb(0x4333, 99);
+						ds_writeb(TRAVEL_DETOUR, 99);
 					}
 				} else {
 					do {
@@ -670,7 +670,7 @@ void tevent_047(void)
 						ds_writeb(CURRENT_TOWN, 43);
 						ds_writew(X_TARGET, 4);
 						ds_writew(Y_TARGET, 10);
-						ds_writeb(0x4333, 99);
+						ds_writeb(TRAVEL_DETOUR, 99);
 					}
 				}
 			}
@@ -712,7 +712,7 @@ void tevent_100(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(0x4333, 7);
+				ds_writeb(TRAVEL_DETOUR, 7);
 			} else {
 
 				GUI_output(get_city(0x10c));

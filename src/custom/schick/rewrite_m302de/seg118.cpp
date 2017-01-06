@@ -403,7 +403,7 @@ void tevent_051(void)
 
 			if (answer == 1)
 			{
-				ds_writeb(0x4333, 3);
+				ds_writeb(TRAVEL_DETOUR, 3);
 			}
 		}
 
@@ -419,7 +419,7 @@ void tevent_051(void)
 
 		if (answer == 1)
 		{
-			ds_writeb(0x4333, 3);
+			ds_writeb(TRAVEL_DETOUR, 3);
 		}
 	}
 }
@@ -592,13 +592,14 @@ void tevent_125(void)
 	}
 }
 
+/* Reach street (either Kravik-Skelellen or Peilinen-Rovamund). */
 void tevent_145(void)
 {
 	signed short answer;
 
 	load_area_description(0);
 
-	if (!(cast_u16(ds_readb(0xe4a2)) & 1))
+	if (!(cast_u16(ds_readb(ROUTE59_FLAG)) & 1))
 	{
 		do {
 			answer = GUI_radio(get_city(0xa8), 2,
@@ -608,12 +609,12 @@ void tevent_145(void)
 
 		if (answer == 1)
 		{
-			ds_writew(TRV_DESTINATION, 7);
-			ds_writeb(CURRENT_TOWN, 8);
+			ds_writew(TRV_DESTINATION, TOWNS_KRAVIK);
+			ds_writeb(CURRENT_TOWN, TOWNS_SKELELLE);
 
 		} else {
-			ds_writew(TRV_DESTINATION, 8);
-			ds_writeb(CURRENT_TOWN, 7);
+			ds_writew(TRV_DESTINATION, TOWNS_SKELELLE);
+			ds_writeb(CURRENT_TOWN, TOWNS_KRAVIK);
 		}
 
 	} else {
@@ -625,12 +626,12 @@ void tevent_145(void)
 
 		if (answer == 1)
 		{
-			ds_writew(TRV_DESTINATION, 4);
-			ds_writeb(CURRENT_TOWN, 5);
+			ds_writew(TRV_DESTINATION, TOWNS_PEILINEN);
+			ds_writeb(CURRENT_TOWN, TOWNS_ROVAMUND);
 
 		} else {
-			ds_writew(TRV_DESTINATION, 5);
-			ds_writeb(CURRENT_TOWN, 4);
+			ds_writew(TRV_DESTINATION, TOWNS_ROVAMUND);
+			ds_writeb(CURRENT_TOWN, TOWNS_PEILINEN);
 		}
 	}
 

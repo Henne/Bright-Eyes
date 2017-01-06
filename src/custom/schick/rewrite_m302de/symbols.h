@@ -453,6 +453,9 @@
 #define TEVENT073_CORPSE	(0x3e24)	/* unsigned char[7] */
 #define TEVENT064_HUT_CONTENT	(0x3e2b)	/* unsigned char[19] */
 #define TEVENT064_CHEST	(0x3e3e)	/* unsigned char[21] */
+#define PALETTE_FLOOR	(0x3e53)	/* (struct { unsigned char r,g,b; })[32] */
+#define PALETTE_BUILDINGS	(0x3eb3)	/* (struct { unsigned char r,g,b; })[32] */
+#define PALETTE_SKY	(0x3f13)	/* (struct { unsigned char r,g,b; })[32] */
 #define NEED_LETTER	(0x3f73)	/* unsigned char {0,1} */
 #define GREMOB_INVITED	(0x3f74)	/* unsigned char {0,1} */
 #define HARLOT_DATE	(0x3f75)	/* unsigned char {0,1} */
@@ -602,7 +605,49 @@
 #define TYPEINDEX	(0x4224)
 #define DNG03_HIGHPRIEST_KILLED	(0x4226)	/* unsigned char {0, 14 = in fight 224, 16 = in fight 222} */
 #define DNG03_CHEST12_LOADS	(0x4227)	/* unsigned char {0,1,...,6} */
+#define TRV_I	(0x4228)	/* unsigned short */
+#define ROUTE_STEPCOUNT	(0x422a)	/* unsigned short */
+#define FORCEDMARCH_LE_COST	(0x422c)	/* unsigned short */
+#define ROUTE_TOTAL_STEPS	(0x422e)	/* unsigned short */
+#define ROUTE_LENGTH	(0x4230)	/* unsigned short */
+#define ROUTE_DURATION	(0x4232)	/* unsigned short */
+#define ROUTE_TIMEDELTA	(0x4234)	/* unsigned short */
+#define ROUTE_MOUSEHOVER	(0x4236)	/* unsigned short {0,1} */
+#define ROUTE_PROGRESS	(0x4238)	/* unsigned short */
+#define ROUTE_STEPSIZE	(0x423a)	/* unsigned short */
+#define ROUTE_DAYPROGRESS	(0x423c)	/* unsigned short */
+#define SEA_TRAVEL_PASSAGE_NO	(0x423e)	/* unsigned short */
+#define ROUTE_ENCOUNTER_FLAG	(0x4240)	/* unsigned short {0,1} */
+#define ROUTE_ENCOUNTER_TIME	(0x4242)	/* unsigned short */
+#define ROUTE_INFORMER_FLAG	(0x4244)	/* unsigned short {0,1} */
+#define ROUTE_INFORMER_TIME	(0x4246)	/* unsigned short */
+#define ROUTE_FIGHT_FLAG	(0x4248)	/* unsigned short {0,1} */
+#define ROUTE_FIGHT_TIME	(0x424a)	/* unsigned short */
+#define TRAVEL_SPEED	(0x424c)	/* unsigned short */
+#define PASSAGE_DEADSHIP_FLAG	(0x424e)	/* unsigned short {0,1} */
+#define PASSAGE_DEADSHIP_TIME	(0x4250)	/* unsigned short */
+#define PASSAGE_OCTOPUS_FLAG	(0x4252)	/* unsigned short {0,1} */
+#define PASSAGE_OCTOPUS_TIME	(0x4254)	/* unsigned short */
+#define PASSAGE_PIRATES_FLAG	(0x4256)	/* unsigned short {0,1} */
+#define PASSAGE_PIRATES_TIME	(0x4258)	/* unsigned short */
+#define ROUTE_COURSE_PTR	(0x425a)	/* signed short */
+#define ROUTE_COURSE_START	(0x425e)	/* RealPt */
+#define ROUTE_COURSE_PTR2	(0x4262)	/* RealPt */
+#define SEA_TRAVEL_COURSES	(0x4266)	/* RealPt */
+#define TEVENTS_TAB_PTR	(0x426a)	/* unsigned long */
+#define TRAVEL_ROUTE_PTR	(0x426e)	/* unsigned long */
+#define ROUTE_TEVENTS	(0x4272)	/* (struct { short place, event_id; })[15] */
+#define SEA_TRAVEL_PSGBOOKED_FLAG	(0x42ae)	/* signed char */
+#define SEA_TRAVEL_PSGBOOKED_TIMER	(0x42af)	/* signed char */
+#define SEA_TRAVEL_PASSAGE_UNKN1	(0x42b0)	/* signed char */
+#define SEA_TRAVEL_PASSAGE_ID	(0x42b1)	/* signed char */
 #define SEA_TRAVEL_MENU_PASSAGES	(0x42b2)	/* (struct of length 12)[10] */
+#define SEA_TRAVEL_PASSAGE_PRICE	(0x432a)	/* signed short */
+#define SEA_TRAVEL_PASSAGE_UNKN2	(0x432c)	/* signed short */
+#define TRAVEL_MAP_PTR	(0x432e)	/* RealPt */
+#define FORCEDMARCH_TIMER	(0x4332)	/* unsigned char */
+#define TRAVEL_DETOUR	(0x4333)	/* unsigned char */
+#define CURRENT_DIRSIGN	(0x4334)	/* unsigned short */
 #define TRV_RETURN	(0x4336)	/* signed short {-1, 0, 1, 2} + ? */
 #define TRV_DEST_REACHED	(0x4338)	/* unsigned short */
 #define ARRIVAL_X_TARGET	(0x433a)	/* unsigned short */
@@ -787,8 +832,16 @@
 #define DNG08_STR_TAIRACH	(0x9725)	/* char[8] = "TAIRACH" */
 #define DNG12_OBSTACLE_TRIES	(0x9d43)	/* signed short */
 #define DNG12_WATERTRAP_BAK	(0x9d45)	/* signed short */
+#define DNG_CHESTTABS	(0x9d84)	/* RealPt[16] */
+#define STR_SINGLE_SPACE	(0x9dc4)	/* char[2] = " " */
+#define ROUTES_TAB	(0x9dc6)	/* (struct { char from, to, length, speed_mod, encounters, u1, u2, fights, u3; })[58] */
+#define DIRECTION_SIGNS	(0xa0b4)	/* (struct { char town, type_id; RealPt routes; })[106] */
+#define HARBORS	(0xa3a3)	/* (struct { char town, type_id; RealPt routes; })[19] */
 #define TOWN_POSITIONS	(0xa43b)	/* (struct { signed short x, y; })[53] */
+#define ACTION_TABLE_TRAVELMAP	(0xa50f)	/* (struct of size 10)[35] */
+#define TEVENTS_TAB	(0xa66d)	/* (struct { char route_id, place, tevent_id; })[35] */
 #define TRAVELING	(0xa842)	/* unsigned char {0,1} */
+#define TEVENTS_REPEATABLE	(0xa843)	/* unsigned char[145], {0,1} */
 #define GRAMMAR_BUF_NO	(0xa9eb)	/* unsigned short */
 #define SPELL_SELECT_STR_KEYVAL	(0xac1a)	/* char[6] = "%s~%d" */
 #define SPELL_SELECT_STR_KEY	(0xac20)	/* char[5] = "\xf2%s\xf0" */
@@ -878,6 +931,7 @@
 #define PIC_COPY_V2	(0xc01f)	/* unsigned short */
 #define PIC_COPY_V3	(0xc021)	/* unsigned short */
 #define PIC_COPY_V4	(0xc023)	/* unsigned short */
+#define LOCATIONS_TAB	(0xc025)	/* (struct { short pos; char loc, type; short id; })[150] */
 #define BUFFER8_PTR	(0xc3a9)	/* RealPt to buffer of size 12008 */
 #define CITY_LTX	(0xc3ad)
 #define DIALOG_TEXT	(0xc3b1)
@@ -905,6 +959,7 @@
 #define BUFFER_WFIGS_TAB	(0xd0ad)	/* unsigned long[43] */
 #define BUFFER_MFIGS_TAB	(0xd159)	/* unsigned long[43] */
 #define BUFFER_ANIS_TAB	(0xd205)	/* unsigned long[37] */
+#define TRV_TRACK_PIXEL_BAK	(0xd299)	/* RealPt to buffer of size 500 */
 #define BUFFER5_PTR	(0xd2a5)	/* RealPt to buffer of size 3880 */
 #define BUFFER10_PTR	(0xd2a9)	/* RealPt to buffer of size 16771, used for NVF and text */
 #define POPUP	(0xd2ad)	/* RealPt */
@@ -1029,6 +1084,7 @@
 #define DUNGEON_STAIRS_BUF	(0xe498)	/* RealPt to buffer of size 80 */
 #define DUNGEON_DOORS_BUF	(0xe49c)	/* RealPt to buffer of size 225 */
 #define GET_EXTRA_LOOT	(0xe4a0)	/* signed short {0,1} */
+#define ROUTE59_FLAG	(0xe4a2)	/* unsigned char {0, 1 = from Kravik, 2 = from Peilinen, 3 = from Skelellen, 4 = from Rovamund} */
 #define TRV_MENU_SELECTION	(0xe4a3)	/* unsigned short */
 #define CURRENT_TOWN_OVER	(0xe4a5)	/* unsigned short {0,1} */
 #define CURRENT_TOWN_OVERY	(0xe4a7)	/* unsigned short */
@@ -1037,8 +1093,9 @@
 #define SELECTED_TOWN_ANIX	(0xe4ad)	/* unsigned short */
 #define CURRENT_TOWN_ANIY	(0xe4af)	/* unsigned short */
 #define CURRENT_TOWN_ANIX	(0xe4b1)	/* unsigned short */
-#define TRV_TRACK_PIXEL_BAK	(0xe4b4)	/* unsigned char[20] */
+#define TRV_DETOUR_PIXEL_BAK	(0xe4b4)	/* unsigned char[20] */
 #define GOOD_CAMP_PLACE	(0xe4c8)	/* unsigned char */
+#define ROUTE_TEVENT_FLAGS	(0xe4c9)	/* unsigned char[15] */
 #define GUI_PRINT_CHAR	(0xe4d8)	/* unsigned char */
 #define DIALOGBOX_INDENT_HEIGHT	(0xe4d9)	/* unsigned short */
 #define DIALOGBOX_INDENT_WIDTH	(0xe4db)	/* signed short */

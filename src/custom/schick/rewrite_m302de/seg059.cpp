@@ -277,7 +277,7 @@ void enter_ghostship(void)
 
 	if (answer == 1) {
 		ds_writew(REQUEST_REFRESH, 0);
-		ds_writeb(0x4333, 1);
+		ds_writeb(TRAVEL_DETOUR, 1);
 	} else {
 		ds_writew(REQUEST_REFRESH, 1);
 	}
