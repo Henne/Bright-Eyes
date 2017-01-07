@@ -70,7 +70,7 @@ if [ "${USE_KVM}" = "true" ]; then
 else
 
 	# copy all source files to DRIVE_C
-	cp *.cpp *.h *.asm RESP ${DRIVE_C}/src
+	cp *.cpp *.h *.asm TLINK.RES ${DRIVE_C}/src
 	cp -r AIL ${DRIVE_C}/src
 
 	# copy c_ready.bat as compile.bat
@@ -85,7 +85,7 @@ else
 	rm -rf ${DRIVE_C}/src/*.cpp
 	rm -rf ${DRIVE_C}/src/*.h
 	rm -rf ${DRIVE_C}/src/*.asm
-	rm -rf ${DRIVE_C}/src/RESP
+	rm -rf ${DRIVE_C}/src/TLINK.RES
 	rm -rf ${DRIVE_C}/src/compile.bat
 	rm -rf ${DRIVE_C}/src/AIL
 
