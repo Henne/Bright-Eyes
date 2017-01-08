@@ -621,7 +621,7 @@ void tevent_064(void)
 					} while (answer == -1);
 
 					if (answer == 1) {
-						use_lockpicks_on_chest((RealPt)RealMake(datseg, 0xb154));
+						use_lockpicks_on_chest((RealPt)RealMake(datseg, TEVENT064_CHEST_DESCR));
 					}
 				}
 
@@ -656,7 +656,7 @@ void tevent_064(void)
 					} while (answer == -1);
 
 					if (answer == 1) {
-						use_lockpicks_on_chest((RealPt)RealMake(datseg, 0xb154));
+						use_lockpicks_on_chest((RealPt)RealMake(datseg, TEVENT064_CHEST_DESCR));
 					}
 				}
 			}

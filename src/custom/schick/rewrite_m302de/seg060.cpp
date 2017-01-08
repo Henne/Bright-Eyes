@@ -129,7 +129,7 @@ void talk_tavern(void)
 
 			} else if (txt_id == 114) {
 
-				food_quality = ds_readws(0x6c84 + 4 * ds_readws(TYPEINDEX) + 0);
+				food_quality = ds_readws(TAVERN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX) + 0);
 
 				/* print quality [-1, 2..20]  2 = best, 20 = worse */
 				sprintf(text_buffer, format,
@@ -592,8 +592,8 @@ void TLK_tavern(signed short answer)
 
 	} else if (old_state == 130) {
 
-		tmp = count_heroes_in_group() * (6 - ds_readws(0x6c84 + 4 * ds_readws(TYPEINDEX)) / 4);
-		tmp += (tmp * ds_readws(0x6c84 + 2 + 4 * ds_readws(TYPEINDEX))) / 100;
+		tmp = count_heroes_in_group() * (6 - ds_readws(TAVERN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX)) / 4);
+		tmp += (tmp * ds_readws(TAVERN_DESCR_TABLE + 2 + 4 * ds_readws(TYPEINDEX))) / 100;
 		p_money = get_party_money();
 		p_money -= tmp;
 		set_party_money(p_money);

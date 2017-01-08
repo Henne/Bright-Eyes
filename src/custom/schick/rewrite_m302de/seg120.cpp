@@ -112,7 +112,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				ds_writeb(0x64a2, (signed char)hero_pos);
+				ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 				answer = select_hero_ok(get_ttx(0x62c));
 
@@ -139,7 +139,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
-						ds_writeb(0x64a2, (signed char)hero_pos);
+						ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 						answer = select_hero_ok(get_ttx(0x62c));
 
@@ -152,7 +152,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			} else if (answer == 3) {
 				/* cast a spell */
 
-				ds_writeb(0x64a2, (signed char)hero_pos);
+				ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 				answer = select_hero_ok(get_ttx(0x354));
 
@@ -179,7 +179,7 @@ void rabies(RealPt hero, signed short hero_pos)
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
-								ds_writeb(0x64a2, (signed char)hero_pos);
+								ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 								answer = select_hero_ok(get_ttx(0x62c));
 
@@ -269,7 +269,7 @@ void init_global_buffer(void)
 	ds_writed(BUFFER9_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER7_PTR), 22008)));
 
 	ds_writed(BUFFER9_PTR3, ds_writed(BUFFER9_PTR2, ds_readd(BUFFER9_PTR)));
-	ds_writed(0xce43, 0);
+	ds_writed(ANI_UNKNOWN4, 0);
 
 }
 
@@ -294,8 +294,8 @@ signed short init_memory(void)
 	/* allocate small chunks of memory */
 	ds_writed(ITEMSNAME,		(Bit32u)schick_alloc_emu(1016));
 	ds_writed(ITEMSDAT,		(Bit32u)schick_alloc_emu(3060));
-	ds_writed(0xd2a1,		(Bit32u)schick_alloc_emu(950));
-	ds_writed(MONNAMES,		(Bit32u)schick_alloc_emu(308));
+	ds_writed(MONNAMES_BUFFER,		(Bit32u)schick_alloc_emu(950));
+	ds_writed(MONNAMES_INDEX,		(Bit32u)schick_alloc_emu(308));
 	ds_writed(MEM_SLOTS_ANIS,		(Bit32u)schick_alloc_emu(296));
 	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
@@ -354,8 +354,8 @@ signed short init_memory(void)
 /* Borlandified and identical */
 void refresh_colors(void)
 {
-	set_color(p_datseg + 0xb22d, 0);
-	set_color(p_datseg + 0xb22a, 0xff);
+	set_color(p_datseg + COLOR_BLACK, 0);
+	set_color(p_datseg + COLOR_WHITE, 0xff);
 	set_palette(p_datseg + 0xb230, 0xd8, 8);
 
 	set_palette(p_datseg + 0xb248, 0xc8, 3);
@@ -395,14 +395,14 @@ void init_game_state(void)
 
 	refresh_colors();
 
-	ds_writew(0xd2cb, 0xc8);
-	ds_writew(0xd2cd, 0xc9);
-	ds_writew(0xd2cf, 0xca);
+	ds_writew(INIT_COLOR1, 0xc8);
+	ds_writew(INIT_COLOR2, 0xc9);
+	ds_writew(INIT_COLOR3, 0xca);
 
 	set_to_ff();
 
 	for (i = 0; i < 0xfe; i++) {
-		ds_writeb(0xe12d + i, 0);
+		ds_writeb(MARKET_ITEMSALDO_TABLE + i, 0);
 	}
 
 	ds_writeb(LOCATION_BAK, 0);
@@ -438,7 +438,7 @@ void init_game_state(void)
 	ds_writew(CURRENT_ANI, -1);
 	ds_writew(WALLCLOCK_UPDATE, 1);
 
-	ds_writed(0xbff9, ds_readd(RENDERBUF_PTR));
+	ds_writed(GUI_BUFFER_UNKN, ds_readd(RENDERBUF_PTR));
 	load_splashes();
 }
 
@@ -632,8 +632,8 @@ void cleanup_game(void)
 		}
 
 		/* free map memory */
-		if (ds_readw(0xbd90) != 0) {
-			EMS_free_pages(ds_readw(0xbd90));
+		if (ds_readw(EMS_TRAVEL_MAP) != 0) {
+			EMS_free_pages(ds_readw(EMS_TRAVEL_MAP));
 		}
 	}
 
@@ -709,7 +709,7 @@ void game_over_screen(void)
 
 	refresh_screen_size();
 
-	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+	ds_writeb(PP20_INDEX, 0xff);
 }
 
 /* Borlandified and identical */

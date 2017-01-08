@@ -869,7 +869,7 @@ static inline Bit8u *get_fname(unsigned short off) {
 
 static inline Bit8u *get_monname(unsigned short off)
 {
-	return Real2Host(host_readd(Real2Host(ds_readd(MONNAMES) + off * 4)));
+	return Real2Host(host_readd(Real2Host(ds_readd(MONNAMES_INDEX) + off * 4)));
 }
 
 static inline Bit8u *get_tx2(unsigned short off) {
@@ -1172,7 +1172,7 @@ struct bittest {
 #define get_ttx(nr) (char*)(host_readd(ds_readfp(TEXT_LTX_INDEX) + (nr)))
 #define get_tx(nr) (char*)(host_readd(ds_readfp(TX_INDEX) + (nr)))
 #define get_tx2(nr) (char*)(host_readd(ds_readfp(TX2_INDEX) + (nr)))
-#define get_monname(nr) ((char*)(host_readd(ds_readfp(MONNAMES) + 4 * (nr))))
+#define get_monname(nr) ((char*)(host_readd(ds_readfp(MONNAMES_INDEX) + 4 * (nr))))
 #define get_itemsdat(nr) ((char*)(ds_readfp(ITEMSDAT) + 12 * (nr)))
 #define get_itemname(nr) ((char*)(host_readd(ds_readfp(ITEMSNAME) + 4 * (nr))))
 

@@ -216,8 +216,8 @@ signed short DNG08_handler(void)
 
 			add_hero_ap_all(10);
 
-			ds_writew((0xd325 + 0), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x227)));
-			ds_writew((0xd325 + 2), 0x613);
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x227)));
+			ds_writew((FIG_FLEE_POSITION + 2), 0x613);
 
 			do_fight(FIGHTS_F108_3B);
 		}
@@ -232,8 +232,8 @@ signed short DNG08_handler(void)
 
 			add_hero_ap_all(10);
 
-			ds_writew((0xd325 + 0), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x227)));
-			ds_writew((0xd325 + 2), 0x613);
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x227)));
+			ds_writew((FIG_FLEE_POSITION + 2), 0x613);
 
 			do_fight(FIGHTS_F108_3B);
 		}
@@ -395,7 +395,7 @@ signed short DNG08_handler(void)
 
 		timewarp(HOURS(3));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 

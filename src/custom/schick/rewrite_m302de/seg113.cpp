@@ -119,9 +119,9 @@ void tevent_083(void)
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 6) > 0 && !ds_readb(TEVENT083_FLAG)) ||
 		 ds_readb(TEVENT083_FLAG) != 0)
 	{
-		ds_writeb(0x66d0, 61);
+		ds_writeb(GATHER_HERBS_SPECIAL, 61);
 		TRV_found_herb_place(0);
-		ds_writeb(0x66d0, -1);
+		ds_writeb(GATHER_HERBS_SPECIAL, -1);
 		ds_writeb(TEVENT083_FLAG, 1);
 	}
 }
@@ -174,9 +174,9 @@ void tevent_085(void)
 			 ds_readb(TEVENT085_HERB_FLAG) != 0)
 		{
 			ds_writeb(TEVENT085_HERB_FLAG, 1);
-			ds_writebs(0x66d0, 124);
+			ds_writebs(GATHER_HERBS_SPECIAL, 124);
 			TRV_found_camp_place(2);
-			ds_writebs(0x66d0, -1);
+			ds_writebs(GATHER_HERBS_SPECIAL, -1);
 		} else {
 			TRV_found_camp_place(0);
 		}

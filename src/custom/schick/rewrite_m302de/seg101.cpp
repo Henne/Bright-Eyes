@@ -29,7 +29,7 @@ namespace M302de {
 void spell_adler(void)
 {
 	/* triggers the "spell failed" messages */
-	ds_writew(0xac0e, -2);
+	ds_writew(SPELL_SPECIAL_AECOST, -2);
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Adler, Wolf und Hammerhai\" ist nicht implementiert\n");
 #endif
@@ -90,7 +90,7 @@ void spell_armatrutz(void)
 	if (boni != -1) {
 
 		pos = get_hero_index(get_spelluser());
-		ds_writew(0xac0e, boni * boni);
+		ds_writew(SPELL_SPECIAL_AECOST, boni * boni);
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, MINUTES(5),
 			get_spelluser() + HERO_RS_BONUS1,
@@ -105,7 +105,7 @@ void spell_armatrutz(void)
 	} else {
 		/* spell canceled */
 		/* set AE to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 		/* avoid the textbox output */
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);
 	}
@@ -126,7 +126,7 @@ void spell_inc_ch(void)
 	if (get_spelltarget() == get_spelluser()) {
 
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 		/* copy message text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -179,7 +179,7 @@ void spell_feuerbann(void)
 			(char*)get_spelluser() + HERO_NAME2);
 	} else {
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 	}
 }
 
@@ -198,7 +198,7 @@ void spell_inc_ff(void)
 	if (get_spelltarget() == get_spelluser()) {
 
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 		/* copy message text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -244,7 +244,7 @@ void spell_inc_ge(void)
 	if (get_spelltarget() == get_spelluser()) {
 
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 		/* copy message text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -290,7 +290,7 @@ void spell_inc_in(void)
 	if (get_spelltarget() == get_spelluser()) {
 
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 		/* copy message text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -336,7 +336,7 @@ void spell_inc_kk(void)
 	if (get_spelltarget() == get_spelluser()) {
 
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 		/* copy message text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -382,7 +382,7 @@ void spell_inc_kl(void)
 	if (get_spelltarget() == get_spelluser()) {
 
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 		/* copy message text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -428,7 +428,7 @@ void spell_inc_mu(void)
 	if (get_spelltarget() == get_spelluser()) {
 
 		/* set AP costs to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 		/* copy message text */
 		strcpy((char*)Real2Host(ds_readd(DTP2)),
@@ -462,7 +462,7 @@ void spell_inc_mu(void)
 void spell_mutabili(void)
 {
 	/* triggers the "spell failed" messages */
-	ds_writew(0xac0e, -2);
+	ds_writew(SPELL_SPECIAL_AECOST, -2);
 #if !defined(__BORLANDC__)
 	D1_INFO("Zauberspruch \"Mutabili\" ist nicht implementiert\n");
 #endif
@@ -476,7 +476,7 @@ void spell_paral(void)
 
 		/* BC-TODO: calculation of ptr could be better */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
+			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* set the enemy to stoned */
 		or_ptr_bs(get_spelltarget_e() + 0x31, 0x04);
@@ -497,7 +497,7 @@ void spell_paral(void)
 			if (get_spelltarget() == get_spelluser()) {
 
 				/* never cast yourself */
-				ds_writew(0xac0e, 0);
+				ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 				strcpy((char*)Real2Host(ds_readd(DTP2)),
 					(char*)get_tx(0x1c0));
@@ -512,7 +512,7 @@ void spell_paral(void)
 			}
 		} else {
 			/* set AE to 0 */
-			ds_writew(0xac0e, 0);
+			ds_writew(SPELL_SPECIAL_AECOST, 0);
 		}
 	}
 }
@@ -523,7 +523,7 @@ void spell_salander(void)
 
 	/* BC-TODO: calculation of ptr could be better */
 	/* set a pointer */
-	ds_writed(SPELLTARGET_E, (Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
+	ds_writed(SPELLTARGET_E, (Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 	/* read a value from that struct */
 	ae_cost = host_readbs(get_spelltarget_e() + 0x19) * 3;
@@ -542,7 +542,7 @@ void spell_salander(void)
 			(char*)Real2Host(GUI_names_grammar((signed short)0x8000, host_readbs(get_spelltarget_e()), 1)));
 
 		/* set AE cost */
-		ds_writew(0xac0e, ae_cost);
+		ds_writew(SPELL_SPECIAL_AECOST, ae_cost);
 	} else {
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -550,7 +550,7 @@ void spell_salander(void)
 			(char*)Real2Host(ds_readd(SPELLUSER)) + HERO_NAME2);
 
 		/* no AE cost */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 	}
 }
 
@@ -576,7 +576,7 @@ void spell_visibili(void)
 	if ((rounds <= 0) || (host_readb(get_spelluser() + HERO_INVISIBLE) != 0)) {
 
 		/* set AE to 0 */
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 		/* clear output string */
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
@@ -586,7 +586,7 @@ void spell_visibili(void)
 	/* check if the hero has enough AE */
 	if (rounds * 5 <= host_readws(get_spelluser() + HERO_AE)) {
 
-		ds_writew(0xac0e, rounds * 5);
+		ds_writew(SPELL_SPECIAL_AECOST, rounds * 5);
 		pos = (signed short)get_hero_index(get_spelluser());
 		slot = get_free_mod_slot();
 		set_mod_slot(slot, (Bit32s)rounds * MINUTES(5), get_spelluser() + HERO_INVISIBLE, 1, (signed char)pos);
@@ -600,7 +600,7 @@ void spell_visibili(void)
 			(char*)get_ttx(0x97c),
 			(char*)get_spelluser() + HERO_NAME2);
 
-		ds_writew(0xac0e, 0);
+		ds_writew(SPELL_SPECIAL_AECOST, 0);
 	}
 
 }
@@ -632,7 +632,7 @@ void spell_brenne(void)
 	torch_pos = -1;
 	lantern_pos = -1;
 
-	ds_writew(0xac0e, 0);
+	ds_writew(SPELL_SPECIAL_AECOST, 0);
 
 	if (ds_readw(LIGHT_TYPE) == 1) {
 		torch_pos = get_item_pos(get_spelluser(), 0x41);
@@ -678,7 +678,7 @@ void spell_brenne(void)
 		host_writeb(get_spelluser() + HERO_ITEM_HEAD  + 8 + torch_pos * 14, 10);
 
 		/* set AP cost */
-		ds_writew(0xac0e, random_schick(20));
+		ds_writew(SPELL_SPECIAL_AECOST, random_schick(20));
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -705,7 +705,7 @@ void spell_brenne(void)
 			give_hero_new_item(get_spelluser(), 0x2a, 0, 1);
 
 			/* set AP cost */
-			ds_writew(0xac0e, random_schick(20));
+			ds_writew(SPELL_SPECIAL_AECOST, random_schick(20));
 
 			/* prepare message */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
@@ -800,7 +800,7 @@ void spell_silentium(void)
 	}
 
 	/* set AP cost */
-	ds_writew(0xac0e, 5);
+	ds_writew(SPELL_SPECIAL_AECOST, 5);
 
 	/* copy message text */
 	strcpy((char*)Real2Host(ds_readd(DTP2)),

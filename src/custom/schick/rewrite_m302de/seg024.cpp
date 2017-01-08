@@ -50,7 +50,7 @@ void diary_show(void)
 	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
-	ds_writeb(0x45b8, 1);
+	ds_writeb(SPECIAL_SCREEN, 1);
 	ds_writew(WALLCLOCK_UPDATE, 0);
 	ds_writew(AREA_PREPARED, 0xffff);
 	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
@@ -61,12 +61,12 @@ void diary_show(void)
 	get_textcolor(&fg_bak, &bg_bak);
 
 	ds_writed(PRINT_STRING_BUFFER, ds_readd(BUFFER9_PTR));
-	bak1 = ds_readw(0xd2d5);
-	bak2 = ds_readw(0xd2d9);
+	bak1 = ds_readw(TEXTLINE_MAXLEN);
+	bak2 = ds_readw(TEXTLINE_POSX);
 	txt_tabpos1_bak = ds_readw(TXT_TABPOS1);
 	txt_tabpos2_bak = ds_readw(TXT_TABPOS2);
-	ds_writew(0xd2d5, 200);
-	ds_writew(0xd2d9, 65);
+	ds_writew(TEXTLINE_MAXLEN, 200);
+	ds_writew(TEXTLINE_POSX, 65);
 	ds_writew(TXT_TABPOS1, 83);
 	ds_writew(TXT_TABPOS2, 130);
 
@@ -97,8 +97,8 @@ void diary_show(void)
 
 	ds_writed(PIC_COPY_DST, ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR)));
 
-	ds_writew(0xd2d9, bak2);
-	ds_writew(0xd2d5, bak1);
+	ds_writew(TEXTLINE_POSX, bak2);
+	ds_writew(TEXTLINE_MAXLEN, bak1);
 	ds_writew(TXT_TABPOS1, txt_tabpos1_bak);
 	ds_writew(TXT_TABPOS2, txt_tabpos2_bak);
 	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);

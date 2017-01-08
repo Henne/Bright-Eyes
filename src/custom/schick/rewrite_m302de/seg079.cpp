@@ -277,8 +277,8 @@ signed short DNG03_handler(void)
 	} else if ((target_pos == 0x120a || target_pos == 0x130d) &&
 		target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writews((0xd325 + 0), ds_writews((0xd325 + 6), 0x1208));
-		ds_writews((0xd325 + 2), ds_writews((0xd325 + 4), 0x150d));
+		ds_writews((FIG_FLEE_POSITION + 0), ds_writews((0xd325 + 6), 0x1208));
+		ds_writews((FIG_FLEE_POSITION + 2), ds_writews((0xd325 + 4), 0x150d));
 
 		if (!ds_readb(DNG03_HIGHPRIEST_KILLED))
 		{
@@ -290,8 +290,8 @@ signed short DNG03_handler(void)
 	} else if ((target_pos == 0x1204 || target_pos == 0x1502) &&
 		target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writews((0xd325 + 0), ds_writews((0xd325 + 2), 0x1702));
-		ds_writews((0xd325 + 4), ds_writews((0xd325 + 6), 0x1206));
+		ds_writews((FIG_FLEE_POSITION + 0), ds_writews((0xd325 + 2), 0x1702));
+		ds_writews((FIG_FLEE_POSITION + 4), ds_writews((0xd325 + 6), 0x1206));
 
 		if (!ds_readb(DNG03_HIGHPRIEST_KILLED))
 		{
@@ -323,10 +323,10 @@ signed short DNG03_handler(void)
 		{
 			GUI_output(get_tx(0x44));
 
-			ds_writews((0xd325 + 0),
-				ds_writews((0xd325 + 2),
-				ds_writews((0xd325 + 4),
-				ds_writews((0xd325 + 6), 0x150d))));
+			ds_writews((FIG_FLEE_POSITION + 0),
+				ds_writews((FIG_FLEE_POSITION + 2),
+				ds_writews((FIG_FLEE_POSITION + 4),
+				ds_writews((FIG_FLEE_POSITION + 6), 0x150d))));
 
 			/* drop all crystals from the heros of that group */
 			i = get_first_hero_with_item(225);
@@ -410,7 +410,7 @@ signed short DNG03_handler(void)
 
 		timewarp(HOURS(3));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);

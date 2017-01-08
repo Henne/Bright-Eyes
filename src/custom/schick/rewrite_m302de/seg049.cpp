@@ -180,7 +180,7 @@ void GRP_split(void)
 		}
 
 		do {
-			ds_writeb(0x64a2, 6);
+			ds_writeb(HERO_SEL_EXCLUDE, 6);
 			answer = select_hero_from_group(get_ttx(0x80c));
 
 			if (answer == -1) {
@@ -397,7 +397,7 @@ void GRP_swap_heros(void)
 	signed char i;
 	signed char tmp[SIZEOF_HERO];
 
-	if ((ds_readw(0x29b4) == 0) || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
+	if ((ds_readw(HEROSWAP_ALLOWED) == 0) || !ds_readbs(GROUP_MEMBER_COUNTS + ds_readbs(CURRENT_GROUP))) {
 		return;
 	}
 

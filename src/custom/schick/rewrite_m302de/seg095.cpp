@@ -105,7 +105,7 @@ void npc_farewell(void)
 	if (host_readb(get_hero(6) + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))
 		return;
 
-	/* The NPC will be removed after 99 Months ingame time. Weird! */
+	/* Unconscious or dead NPCs cannot be removed automatically (99 means manual). */
 	if (check_hero(get_hero(6)) == 0 && ds_readws(NPC_MONTHS) < 99)
 		return;
 
@@ -482,7 +482,7 @@ void remove_npc(signed short head_index, signed char days,
 		signed short index, Bit8u* name, Bit8u *text)
 {
 
-	if (ds_readb(0x4475) != 0)
+	if (ds_readb(FADING_STATE) != 0)
 		refresh_colors();
 
 	/* reset NPCs groups position */
@@ -510,7 +510,7 @@ void remove_npc(signed short head_index, signed char days,
 	/* dec global hero counter */
 	dec_ds_bs_post(TOTAL_HERO_COUNTER);
 
-	ds_writeb(0x46df, 1);
+	ds_writeb(REFRESH_STATUS_LINE, 1);
 
 	/* TODO:	check_hero() will now, after memset() return 0,
 			so the parameter days is useless */

@@ -134,9 +134,9 @@ void tevent_132(void)
 
 		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 1) > 0 && !ds_readb(TEVENT132_HERB_FLAG)) || ds_readb(TEVENT132_HERB_FLAG) != 0) {
 			ds_writeb(TEVENT132_HERB_FLAG, 1);
-			ds_writebs(0x66d0, 61);
+			ds_writebs(GATHER_HERBS_SPECIAL, 61);
 			TRV_found_camp_place(2);
-			ds_writebs(0x66d0, -1);
+			ds_writebs(GATHER_HERBS_SPECIAL, -1);
 		} else {
 			TRV_found_camp_place(0);
 		}
@@ -201,9 +201,9 @@ void tevent_134(void)
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 6) > 0 && !ds_readb(TEVENT134_FLAG)) ||
 		ds_readb(TEVENT134_FLAG) != 0)
 	{
-		ds_writeb(0x66d0, 157);
+		ds_writeb(GATHER_HERBS_SPECIAL, 157);
 		TRV_found_herb_place(0);
-		ds_writeb(0x66d0, -1);
+		ds_writeb(GATHER_HERBS_SPECIAL, -1);
 		ds_writeb(TEVENT134_FLAG, 1);
 	}
 }
@@ -319,7 +319,7 @@ void tevent_135(void)
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				l_di = random_interval(ds_readb(0xb172 + 2 * l_si), host_readb((p_datseg + 0xb172 + 1) + (2 * l_si)));
+				l_di = random_interval(ds_readb(TEVENT135_CLIMB_DAMAGE + 2 * l_si), host_readb((p_datseg + 0xb172 + 1) + (2 * l_si)));
 				l_si = host_readws(hero + HERO_LE);
 				l_si -= l_di;
 
@@ -476,9 +476,9 @@ void tevent_140(void)
 
 		if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 4) > 0 && !ds_readb(TEVENT140_HERB_FLAG)) || ds_readb(TEVENT140_HERB_FLAG) != 0) {
 			ds_writeb(TEVENT140_HERB_FLAG, 1);
-			ds_writebs(0x66d0, -126);
+			ds_writebs(GATHER_HERBS_SPECIAL, -126);
 			TRV_found_camp_place(2);
-			ds_writebs(0x66d0, -1);
+			ds_writebs(GATHER_HERBS_SPECIAL, -1);
 		} else {
 			TRV_found_camp_place(0);
 		}

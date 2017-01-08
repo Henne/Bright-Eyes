@@ -41,7 +41,7 @@ signed short update_direction(unsigned char mod)
 	/* set new direction */
 	ds_writeb(DIRECTION, (ds_readb(DIRECTION) + mod) & 0x3);
 	/* set bogus variable to 1 */
-	ds_writeb(0xbd4f, 0x1);
+	ds_writeb(DIRECTION_UNKN, 0x1);
 
 	return -1;
 }
@@ -107,20 +107,20 @@ void move(void)
 
 	if (ds_readb(DNG_MAP_SIZE) == 0x10) {
 		/* dungeon mode */
-		ds_writeb(0xbd4d, host_readb(p1 +
+		ds_writeb(STEPTARGET_FRONT, host_readb(p1 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 4) +
 			ds_readw(X_TARGET) + host_readbs(p3)));
 
-		ds_writeb(0xbd4e, host_readb(p1 +
+		ds_writeb(STEPTARGET_BACK, host_readb(p1 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 4) +
 			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
 	} else {
 		/* city mode */
-		ds_writeb(0xbd4d, host_readb(p2 +
+		ds_writeb(STEPTARGET_FRONT, host_readb(p2 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 5) +
 			 ds_readw(X_TARGET) + host_readbs(p3)));
 
-		ds_writeb(0xbd4e, host_readb(p2 +
+		ds_writeb(STEPTARGET_BACK, host_readb(p2 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 5) +
 			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
 	}

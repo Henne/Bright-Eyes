@@ -376,7 +376,7 @@ void seg092_06b4(signed short a1)
 	RealPt chest_ptr;
 	Bit8u *ptr;
 
-	chest_ptr = (RealPt)ds_readd(DNG_CHESTTABS + 4 * ds_readbs(DUNGEON_INDEX));
+	chest_ptr = (RealPt)ds_readd(DNG_SPECIALCHEST_INDEX + 4 * ds_readbs(DUNGEON_INDEX));
 	ptr = p_datseg + DNG_MAP;
 	ds_writew(GET_EXTRA_LOOT, 0);
 	x = ds_readws(X_TARGET);
@@ -580,9 +580,9 @@ void use_key_on_chest(RealPt chest_ptr)
 
 void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 {
-	unsigned short l_si;
-	signed short item_nr;
-	signed short item_cnt;
+	unsigned short item_cnt;
+	signed short item_no;
+	signed short i;
 	signed short tw_bak;
 	char temp_str[10];
 	signed short len;
@@ -593,76 +593,76 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 
 	do {
 
-		item_nr = 0;
-		while ((item_cnt = host_readb((item_nr + item_nr) + chest)) != 255) {
+		item_no = 0;
+		while ((i = host_readb((item_no + item_no) + chest)) != 255) {
 
-			names[item_nr][0] = '\0';
+			names[item_no][0] = '\0';
 
-			if ((l_si = chest[item_nr + item_nr + 1]) > 1)
+			if ((item_cnt = chest[item_no + item_no + 1]) > 1)
 			{
-				my_itoa(l_si, names[item_nr], 10);
+				my_itoa(item_cnt, names[item_no], 10);
 
-				strcat(names[item_nr], (char*)p_datseg + STR_SINGLE_SPACE);
+				strcat(names[item_no], (char*)p_datseg + STR_SINGLE_SPACE);
 			}
 
-			strcat(names[item_nr++], (char*)Real2Host(GUI_name_plural( ((signed short)(l_si > 1 ? (unsigned short)1 : (unsigned short)0)) ? 4 : 0, (Bit8u*)get_itemname(item_cnt))));
+			strcat(names[item_no++], (char*)Real2Host(GUI_name_plural( ((signed short)(item_cnt > 1 ? (unsigned short)1 : (unsigned short)0)) ? 4 : 0, (Bit8u*)get_itemname(i))));
 		}
 
-		if (item_nr != 0) {
+		if (item_no != 0) {
 
-			item_nr = GUI_radio(msg, (signed char)item_nr,
+			item_no = GUI_radio(msg, (signed char)item_no,
 				names[0], names[1], names[2], names[3],
 				names[4], names[5], names[6], names[7],
 				names[8], names[9], names[10], names[11],
 				names[12], names[13], names[14], names[15],
 				names[16], names[17], names[18], names[19]) - 1;
 
-			if (item_nr != -2) {
-				item_nr += item_nr;
+			if (item_no != -2) {
+				item_no += item_no;
 
-				my_itoa(chest[item_nr + 1], temp_str, 10);
+				my_itoa(chest[item_no + 1], temp_str, 10);
 
 				len = strlen(temp_str);
 
 				do {
-					item_cnt = (l_si = chest[item_nr + 1]) > 1 ? GUI_input(get_ttx(0x944), len) : l_si;
+					i = (item_cnt = chest[item_no + 1]) > 1 ? GUI_input(get_ttx(0x944), len) : item_cnt;
 
-				} while (item_cnt < 0);
+				} while (i < 0);
 
-				if (item_cnt > l_si) {
-					item_cnt = l_si;
+				if (i > item_cnt) {
+					i = item_cnt;
 				}
 
-				if (item_cnt != 0) {
+				if (i != 0) {
 
-					if (chest[item_nr] == 250) {
-						add_party_money(item_cnt * 100L);
+					if (chest[item_no] == 250) {
+						add_party_money(i * 100L);
 					} else {
-						item_cnt = get_item(chest[item_nr], 1, item_cnt);
+						i = get_item(chest[item_no], 1, i);
 					}
 
-					if (item_cnt == l_si) {
+					if (i == item_cnt) {
 
 						do {
-							chest[item_nr] = (unsigned char)(item_cnt = chest[item_nr + 2]);
-							chest[item_nr + 1] = chest[item_nr + 3];
-							item_nr += 2;
-						} while (item_cnt != 255);
+							chest[item_no] = (unsigned char)(i = chest[item_no + 2]);
+							chest[item_no + 1] = chest[item_no + 3];
+							item_no += 2;
+						} while (i != 255);
 
-					} else if (item_cnt != 0) {
-						chest[item_nr + 1] -= item_cnt;
+					} else if (i != 0) {
+						chest[item_no + 1] -= i;
 					} else {
-						item_nr = -2;
+						item_no = -2;
 					}
 				}
 			}
 
 
 		} else {
-			item_nr = -2;
+			item_no = -2;
 		}
 
-	} while (item_nr != -2);
+	} while (item_no != -2);
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }

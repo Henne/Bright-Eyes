@@ -21,7 +21,7 @@ signed short copy_chr_names(Bit8u*, signed short);
 //0x48
 void load_in_head(signed short);
 //0x4d
-void load_city_ltx(signed short);
+void load_tx2(signed short);
 //0x57
 void load_tx(signed short);
 //0x57

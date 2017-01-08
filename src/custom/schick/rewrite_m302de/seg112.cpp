@@ -68,7 +68,7 @@ void tevent_067(void)
 
 			if (!ds_readb(TEVENT067_FLAG) && count >= 3) {
 
-				loot_multi_chest(p_datseg + 0xb16a, get_tx2(0x180));
+				loot_multi_chest(p_datseg + TEVENT067_CHEST, get_tx2(0x180));
 
 				GUI_output(get_tx2(0x184));
 
@@ -150,9 +150,9 @@ void tevent_070(void)
 			ds_readb(TEVENT070_HERB_FLAG) != 0)
 		{
 			ds_writeb(TEVENT070_HERB_FLAG, 1);
-			ds_writeb(0x66d0, 130);
+			ds_writeb(GATHER_HERBS_SPECIAL, 130);
 			l_si = TRV_found_camp_place(2);
-			ds_writeb(0x66d0, -1);
+			ds_writeb(GATHER_HERBS_SPECIAL, -1);
 		} else {
 			l_si = TRV_found_camp_place(0);
 		}
@@ -385,9 +385,9 @@ void tevent_unused01(void)
 
 				GUI_output(get_tx2(0x98));
 
-				ds_writeb(0x66d0, 63);
+				ds_writeb(GATHER_HERBS_SPECIAL, 63);
 				TRV_inside_herb_place();
-				ds_writeb(0x66d0, -1);
+				ds_writeb(GATHER_HERBS_SPECIAL, -1);
 
 				options = (!has_raft ? 1 : 2);
 

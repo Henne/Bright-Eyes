@@ -63,9 +63,9 @@ void do_market(void)
 		} else {
 
 			/* set up parameters for this merchant */
-			ds_writeb(0x6870 + 90 * 9 + 0, ds_readb((0x70a8 + 2) + 8 * ds_readws(TYPEINDEX)));
-			ds_writeb(0x6870 + 90 * 9 + 2, ds_readb((0x70a8 + 6) + 8 * ds_readws(TYPEINDEX)));
-			ds_writeb(0x6870 + 90 * 9 + 1, (signed char)answer);
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 0, ds_readb((MARKET_DESCR_TABLE + 2) + 8 * ds_readws(TYPEINDEX)));
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 2, ds_readb((MARKET_DESCR_TABLE + 6) + 8 * ds_readws(TYPEINDEX)));
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 1, (signed char)answer);
 			type_bak = ds_readws(TYPEINDEX);
 			ds_writew(TYPEINDEX, 90);
 
@@ -79,9 +79,9 @@ void do_market(void)
 			ds_writew(TYPEINDEX, type_bak);
 			ds_writeb(DIRECTION_BAK, (signed char)bak1);
 			ds_writeb(DIRECTION, (signed char)dir_bak);
-			ds_writeb(0x6870 + 90 * 9 + 0, 0);
-			ds_writeb(0x6870 + 90 * 9 + 2, 0);
-			ds_writeb(0x6870 + 90 * 9 + 1, 0);
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 0, 0);
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 2, 0);
+			ds_writeb(SHOP_DESCR_TABLE + 90 * 9 + 1, 0);
 		}
 
 	} while (!done);
@@ -298,7 +298,7 @@ void show_hyggelik_ani(void)
 		hyg_ani_2(array + 6 * 8, 145, 39);
 		hyg_ani_2(array + 7 * 8, 142, 86);
 		hyg_ani_2(array + 20 * 8, 186, 67);
-		hyg_ani_2(array + 10 * 8 + 8 * i, ds_readb(0x71b8 + i), 67);
+		hyg_ani_2(array + 10 * 8 + 8 * i, ds_readb(HYG_ANI_X0 + i), 67);
 		hyg_ani_4();
 		delay_or_keypress(3);
 	}
@@ -306,25 +306,25 @@ void show_hyggelik_ani(void)
 	hyg_ani_3();
 	hyg_ani_2(array + 5 * 8, 145, 39);
 	hyg_ani_2(array + 7 * 8, 142, 86);
-	hyg_ani_2(array + 15 * 8, ds_readb(0x71bd), 67);
-	hyg_ani_2(array + 20 * 8, ds_readb(0x71c2), 67);
+	hyg_ani_2(array + 15 * 8, ds_readb(HYG_ANI_X1), 67);
+	hyg_ani_2(array + 20 * 8, ds_readb(HYG_ANI_X5), 67);
 	hyg_ani_4();
 	delay_or_keypress(3);
 
 	hyg_ani_3();
 	hyg_ani_2(array + 5 * 8, 145, 39);
 	hyg_ani_2(array + 7 * 8, 142, 86);
-	hyg_ani_2(array + 16 * 8, ds_readb(0x71be), 67);
-	hyg_ani_2(array + 21 * 8, ds_readb(0x71c3), 67);
+	hyg_ani_2(array + 16 * 8, ds_readb(HYG_ANI_X2), 67);
+	hyg_ani_2(array + 21 * 8, ds_readb(HYG_ANI_X6), 67);
 	hyg_ani_4();
 	delay_or_keypress(3);
 
 	for (i = 0; i < 3; i++) {
 		hyg_ani_3();
 		hyg_ani_2(array + 6 * 8, 145, 39);
-		hyg_ani_2(array + 8 * 8, 144, ds_readb(0x71c7 + i));
-		hyg_ani_2(array + 17 * 8 + 8 * i, ds_readb(0x71bf + i), 67);
-		hyg_ani_2(array + 22 * 8 + 8 * i, ds_readb(0x71c4 + i), 67);
+		hyg_ani_2(array + 8 * 8, 144, ds_readb(HYG_ANI_X9 + i));
+		hyg_ani_2(array + 17 * 8 + 8 * i, ds_readb(HYG_ANI_X3 + i), 67);
+		hyg_ani_2(array + 22 * 8 + 8 * i, ds_readb(HYG_ANI_X7 + i), 67);
 		hyg_ani_4();
 		delay_or_keypress(3);
 	}
@@ -332,8 +332,8 @@ void show_hyggelik_ani(void)
 	hyg_ani_3();
 	hyg_ani_2(array + 6 * 8, 145, 39);
 	hyg_ani_2(array + 9 * 8, 125, 104);
-	hyg_ani_2(array + 19 * 8, ds_readb(0x71c1), 67);
-	hyg_ani_2(array + 24 * 8, ds_readb(0x71c6), 67);
+	hyg_ani_2(array + 19 * 8, ds_readb(HYG_ANI_X4), 67);
+	hyg_ani_2(array + 24 * 8, ds_readb(HYG_ANI_X8), 67);
 	hyg_ani_4();
 	delay_or_keypress(100);
 
@@ -367,7 +367,7 @@ void show_times_up(void)
 	signed short bak2;
 
 	fi_bak = ds_readws(TEXT_FILE_INDEX);
-	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
+	load_tx2(ARCHIVE_FILE_CHARTEXT_LTX);
 	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
 	set_var_to_zero();
 	draw_main_screen();
@@ -396,7 +396,7 @@ void show_times_up(void)
 	if (fi_bak != -1 && fi_bak != ARCHIVE_FILE_CHARTEXT_LTX
 	    && fi_bak != ARCHIVE_FILE_TAVERN_TLK
 	    && !(fi_bak >= 156 && fi_bak <= 176)) {
-		load_city_ltx(fi_bak);
+		load_tx2(fi_bak);
 	}
 }
 
@@ -416,7 +416,7 @@ void show_outro(void)
 	ds_writew(BASEPOS_X, 0);
 	ds_writew(BASEPOS_Y, 60);
 
-	load_city_ltx(ARCHIVE_FILE_CHARTEXT_LTX);
+	load_tx2(ARCHIVE_FILE_CHARTEXT_LTX);
 	set_audio_track(ARCHIVE_FILE_VICTORY_XMI);
 	set_var_to_zero();
 

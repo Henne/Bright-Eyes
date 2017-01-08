@@ -102,7 +102,7 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 	ds_writeb((0xd8ce + 242), host_readbs(hero + HERO_SPRITE_NO));
 
 	ptr1 = p_datseg + (0xd8ce + 1);
-	ptr2 = Real2Host(ds_readd(0x2555 + 4 * host_readbs(hero + HERO_SPRITE_NO)));
+	ptr2 = Real2Host(ds_readd(GFX_ANI_INDEX + 4 * host_readbs(hero + HERO_SPRITE_NO)));
 
 	i = 0;
 
@@ -160,8 +160,8 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 
 	host_writeb(ptr1, -1);
 	FIG_call_draw_pic();
-	FIG_remove_from_list(ds_readbs(0xe38e), 0);
-	ds_writeb(0xe38e, -1);
+	FIG_remove_from_list(ds_readbs(FIG_CB_MAKRER_ID), 0);
+	ds_writeb(FIG_CB_MAKRER_ID, -1);
 	FIG_set_0e(host_readbs(hero + HERO_FIGHTER_ID), 0);
 	draw_fight_screen(0);
 	memset(p_datseg + 0xd8ce, -1, 0xf3);
@@ -252,8 +252,8 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 			) || (
 
 			((target >= 10) && (target < 30) &&
-				!enemy_dead(p_datseg + 0xd0df + target * SIZEOF_ENEMY_SHEET) &&
-				enemy_bb(p_datseg + 0xd0df + target * SIZEOF_ENEMY_SHEET))))
+				!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + target * SIZEOF_ENEMY_SHEET) &&
+				enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + target * SIZEOF_ENEMY_SHEET))))
 		{
 			return 1;
 		} else {
@@ -263,7 +263,7 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 	} else if (!mode) {
 		/* target is an enemy */
 		if ((target >= 10) && (target < 30) &&
-			!enemy_dead(p_datseg + 0xd0df + target * SIZEOF_ENEMY_SHEET))
+			!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + target * SIZEOF_ENEMY_SHEET))
 		{
 			return 1;
 		} else {
@@ -340,17 +340,17 @@ signed short KI_search_spell_target(signed short x, signed short y,
 				!hero_unc(get_hero(obj_id - 1))
 				) || (
 				(obj_id >= 10) && (obj_id < 30) &&
-					!enemy_dead(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET) &&
-					enemy_bb(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET))
+					!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET) &&
+					enemy_bb(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET))
 				)
 			{
 				will_attack = 1;
 				done = 1;
 
 			} else if ( (obj_id != 0) && (((obj_id >= 10) && (obj_id < 30) &&
-					!enemy_dead(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET)
+					!enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET)
 					) || ((obj_id >= 50) &&
-						!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46)))
+						!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + CB_OBJ_NONOBSTACLE)))
 					))
 				{
 					done = 1;
@@ -359,7 +359,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 		} else if (cursed == 0) {
 
 			/* attack only enemies */
-			if ((obj_id >= 10) && (obj_id < 30) && !enemy_dead(p_datseg + 0xd0df + obj_id * SIZEOF_ENEMY_SHEET))
+			if ((obj_id >= 10) && (obj_id < 30) && !enemy_dead(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + obj_id * SIZEOF_ENEMY_SHEET))
 			{
 				will_attack = 1;
 				done = 1;
@@ -373,7 +373,7 @@ signed short KI_search_spell_target(signed short x, signed short y,
 						!hero_unc(get_hero(obj_id - 1))
 						) || (
 							(obj_id >= 50) &&
-							!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + 0x5f46))
+							!is_in_word_array(obj_id - 50, (signed short*)(p_datseg + CB_OBJ_NONOBSTACLE))
 						))
 					)
 				)
@@ -572,7 +572,7 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 	a.a[3].x = 0;
 	a.a[3].y = 1;
 #else
-	struct dummy a = *(struct dummy*)(p_datseg + 0x5fb7);
+	struct dummy a = *(struct dummy*)(p_datseg + VIEWDIR_OFFSETS3);
 #endif
 
 	retval = 0;
@@ -795,7 +795,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 	a.a[3].x = 0;
 	a.a[3].y = 1;
 #else
-	struct dummy a = *(struct dummy*)(p_datseg + 0x5fc7);
+	struct dummy a = *(struct dummy*)(p_datseg + VIEWDIR_OFFSETS4);
 #endif
 
 	done = 0;
@@ -836,7 +836,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 					}
 				} else if (FIG_get_range_weapon_type(hero) == -1)
 				{
-					host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
+					host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 				}
 			}
 
@@ -845,36 +845,36 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 			if ((host_readws(hero + HERO_LE) < 10) &&
 				(host_readws(hero + HERO_AE) < 10))
 			{
-				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 			}
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_ARDORA) {
 
 			if (host_readws(hero + HERO_LE) < 8)
 			{
-				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 			}
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_GARSVIK) {
 
 			if (!KI_count_heros(hero_pos)) {
-				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 			}
 
 		} else if (host_readbs(hero + HERO_NPC_ID) == NPC_ERWO) {
 
 			if (host_readws(hero + HERO_LE) < 15)
 			{
-				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
+				host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 			}
 
 		}
 
 		if (FIG_get_first_active_hero() == 6) {
-			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN1);
+			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_FLEE);
 		}
 
-		if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1) {
+		if (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE) {
 
 			FIG_search_obj_on_cb(hero_pos + 1, &hero_x, &hero_y);
 
@@ -904,7 +904,7 @@ void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 
 		seg001_02c4();
 
-		if ((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
+		if ((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
 			if (!hero_unkn2(hero)) {
 

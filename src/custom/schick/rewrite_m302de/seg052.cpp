@@ -233,7 +233,7 @@ void do_citycamp(void)
 
 						ds_writew(CAMP_INCIDENT, -1);
 
-						if (ds_readb(0xbd27) == 0) {
+						if (ds_readb(CITYCAMP_CITY) == 0) {
 							/* in a dungeon */
 
 							ds_writeb(FIG_INITIATIVE, 1);

@@ -42,7 +42,7 @@ void show_automap(void)
 		((ds_readbs(DUNGEON_LIGHT) == 1) && (test_skill(Real2Host(get_first_hero_available_in_group()), TA_ORIENTIERUNG, 6) > 0)))
 	{
 
-		ds_writeb(0x45b8, 1);
+		ds_writeb(SPECIAL_SCREEN, 1);
 
 		dungeon = ds_readbs(DUNGEON_INDEX);
 		town = ds_readbs(CURRENT_TOWN);
@@ -142,7 +142,7 @@ void show_automap(void)
 
 unsigned short is_discovered(signed short x, signed short y)
 {
-	return ds_readb(AUTOMAP_BUF + (4 * y) + (x >> 3)) & (ds_readb(0x7d4a + (x & 7)));
+	return ds_readb(AUTOMAP_BUF + (4 * y) + (x >> 3)) & (ds_readb(AUTOMAP_BITMASK + (x & 7)));
 }
 
 /**
@@ -199,6 +199,7 @@ signed short is_group_in_prison(signed short group_nr)
 	return 0;
 }
 
+/* render_automap */
 void seg074_305(signed short x_off)
 {
 	signed short l_si;
@@ -292,9 +293,9 @@ void seg074_305(signed short x_off)
 		}
 	}
 
-	if (((ds_readws(0x7de5) - x_off) >= 0) && ((ds_readws(0x7de5) - x_off) <= 16)) {
+	if (((ds_readws(AUTOMAP_SELX) - x_off) >= 0) && ((ds_readws(0x7de5) - x_off) <= 16)) {
 
-		draw_automap_square(ds_readws(0x7de5) - x_off,	ds_readws(0x7de7), 7, -1);
+		draw_automap_square(ds_readws(AUTOMAP_SELX) - x_off,	ds_readws(AUTOMAP_SELY), 7, -1);
 	}
 }
 
@@ -304,7 +305,7 @@ void seg074_305(signed short x_off)
  * \param x	x-coordinate on the automap
  * \param y	y-coordiante on the automap
  * \param color	the color
- * \param dir	directory of the entrance, -1 for none
+ * \param dir	direction of the entrance, -1 for none
  */
 void draw_automap_square(signed short x, signed short y, signed short color, signed short dir)
 {
@@ -327,22 +328,22 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 
 		if (dir == 0) {
 
-			memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_datseg + 0x7d52, 49);
+			memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_datseg + AUTOMAP_TILE_ARROWUP, 49);
 
 		} else if (dir == 2) {
 
 			for (i = 0; i < 49; i++) {
-				host_writeb(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i, ds_readb(0x7d52 + (48 - i)));
+				host_writeb(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i, ds_readb(AUTOMAP_TILE_ARROWUP + (48 - i)));
 			}
 
 		} else if (dir == 1) {
 
-			memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_datseg + 0x7d83, 49);
+			memcpy(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), p_datseg + AUTOMAP_TILE_ARROWRIGHT, 49);
 
 		} else {
 
 			for (i = 0; i < 49; i++) {
-				host_writeb(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i, ds_readb(0x7d83 + (48 - i)));
+				host_writeb(Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i, ds_readb(AUTOMAP_TILE_ARROWRIGHT + (48 - i)));
 			}
 		}
 
@@ -356,7 +357,7 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 	if (color == 7) {
 
 		for (i = 0; i < 49; i++) {
-			if (!ds_readb(0x7db4 + i)) {
+			if (!ds_readb(AUTOMAP_TILE_CROSS + i)) {
 				array[i] = 0;
 			} else {
 				array[i] = (signed char)color;
@@ -447,8 +448,8 @@ void draw_automap_to_screen(void)
 
 	/* set the screen coordinates */
 	ds_writew((PIC_COPY_DS_RECT + 2), ds_writew(PIC_COPY_DS_RECT, 0));
-	ds_writew((PIC_COPY_DS_RECT + 6), ds_readw(0xce41) + 208);
-	ds_writew((PIC_COPY_DS_RECT + 4), ds_readw(0xce3f) + 135);
+	ds_writew((PIC_COPY_DS_RECT + 6), ds_readw(ANI_POSX) + 208);
+	ds_writew((PIC_COPY_DS_RECT + 4), ds_readw(ANI_POSY) + 135);
 
 	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
@@ -457,7 +458,7 @@ void draw_automap_to_screen(void)
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 134);
 
-	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(FRAMEBUF_PTR) + ds_readws(0xce41) + 320 * ds_readws(0xce3f)));
+	ds_writed(PIC_COPY_DST, (Bit32u)((RealPt)ds_readd(FRAMEBUF_PTR) + ds_readws(ANI_POSX) + 320 * ds_readws(ANI_POSY)));
 
 	update_mouse_cursor();
 
@@ -500,8 +501,8 @@ signed short select_teleport_dest(void)
 			((ds_readws(X_TARGET) - 8 < 0) ? 0 :
 			((ds_readws(X_TARGET) - 8 > 15) ? 16 : ds_readws(X_TARGET) - 8)));
 
-	ds_writew(0x7de5, ds_readws(X_TARGET));
-	ds_writew(0x7de7, ds_readws(Y_TARGET));
+	ds_writew(AUTOMAP_SELX, ds_readws(X_TARGET));
+	ds_writew(AUTOMAP_SELY, ds_readws(Y_TARGET));
 	ds_writeb(DUNGEON_INDEX, (signed char)dungeon);
 	ds_writeb(CURRENT_TOWN, (signed char)town);
 	textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
@@ -543,34 +544,34 @@ signed short select_teleport_dest(void)
 		}
 
 		if ((ds_readw(ACTION) == 75) &&
-			(ds_readws(0x7de5) > 0) &&
-			is_discovered(ds_readws(0x7de5) - 1, ds_readws(0x7de7)))
+			(ds_readws(AUTOMAP_SELX) > 0) &&
+			is_discovered(ds_readws(AUTOMAP_SELX) - 1, ds_readws(AUTOMAP_SELY)))
 		{
-			dec_ds_ws(0x7de5);
+			dec_ds_ws(AUTOMAP_SELX);
 			seg074_305(l_si);
 			draw_automap_to_screen();
 
 		} else if ((ds_readw(ACTION) == 72) &&
-			(ds_readws(0x7de7) > 0) &&
-			is_discovered(ds_readws(0x7de5), ds_readws(0x7de7) - 1))
+			(ds_readws(AUTOMAP_SELY) > 0) &&
+			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) - 1))
 		{
-			dec_ds_ws(0x7de7);
+			dec_ds_ws(AUTOMAP_SELY);
 			seg074_305(l_si);
 			draw_automap_to_screen();
 
 		} else if ((ds_readw(ACTION) == 77) &&
-			(ds_readb(DNG_MAP_SIZE) - 1 > ds_readws(0x7de5)) &&
-			is_discovered(ds_readws(0x7de5) + 1, ds_readws(0x7de7)))
+			(ds_readb(DNG_MAP_SIZE) - 1 > ds_readws(AUTOMAP_SELX)) &&
+			is_discovered(ds_readws(AUTOMAP_SELX) + 1, ds_readws(AUTOMAP_SELY)))
 		{
-			inc_ds_ws(0x7de5);
+			inc_ds_ws(AUTOMAP_SELX);
 			seg074_305(l_si);
 			draw_automap_to_screen();
 
 		} else if ((ds_readw(ACTION) == 80) &&
-			(ds_readws(0x7de7) < 16) &&
-			is_discovered(ds_readws(0x7de5), ds_readws(0x7de7) + 1))
+			(ds_readws(AUTOMAP_SELY) < 16) &&
+			is_discovered(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY) + 1))
 		{
-			inc_ds_ws(0x7de7);
+			inc_ds_ws(AUTOMAP_SELY);
 			seg074_305(l_si);
 			draw_automap_to_screen();
 		}
@@ -598,8 +599,8 @@ signed short select_teleport_dest(void)
 	} while (done == 0);
 
 	l_di = (ds_readb(DNG_MAP_SIZE) == 16) ?
-		get_mapval_small(ds_readws(0x7de5), ds_readws(0x7de7)) :
-		get_mapval_large(ds_readws(0x7de5), ds_readws(0x7de7));
+		get_mapval_small(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY)) :
+		get_mapval_large(ds_readws(AUTOMAP_SELX), ds_readws(AUTOMAP_SELY));
 
 	if (ds_readbs(CURRENT_TOWN) != 0) {
 		l_di = get_border_index(l_di);
@@ -609,8 +610,8 @@ signed short select_teleport_dest(void)
 
 	ae_costs = 0;
 
-	if ((ds_readws(0x7de5) == ds_readws(X_TARGET)) &&
-		(ds_readws(0x7de7) == ds_readws(Y_TARGET)))
+	if ((ds_readws(AUTOMAP_SELX) == ds_readws(X_TARGET)) &&
+		(ds_readws(AUTOMAP_SELY) == ds_readws(Y_TARGET)))
 	{
 		ae_costs = 0;
 		host_writeb(Real2Host(ds_readd(DTP2)), 0);

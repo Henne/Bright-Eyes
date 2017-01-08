@@ -230,7 +230,7 @@ RealPt seg028_0444(signed short index, signed short firstcol, signed short color
 
 		ds_writed(BUFFER11_PTR, (Bit32u)(ptr + v2 - 3 * colors));
 
-		if ((ref != 0) && (!ds_readb(0x4475))) {
+		if ((ref != 0) && (!ds_readb(FADING_STATE))) {
 
 			wait_for_vsync();
 
@@ -279,25 +279,25 @@ void load_area_description(signed short type)
 	signed short f_index;
 	signed short fd;
 
-	if (ds_readw(0x5ebc) != 0) {
+	if (ds_readw(AREADESCR_FILEID) != 0) {
 		if (type != 2) {
-			fd = load_archive_file(ds_readw(0x5ebc) + 0x8000);
+			fd = load_archive_file(ds_readw(AREADESCR_FILEID) + 0x8000);
 
-			if ((ds_readw(0x5ebe) == 0) && (ds_readb(DNG_MAP_SIZE) == 0x20)) {
+			if ((ds_readw(AREADESCR_DNG_FLAG) == 0) && (ds_readb(DNG_MAP_SIZE) == 0x20)) {
 				bc__write(fd, RealMake(datseg, DNG_MAP), 0x200);
 			} else {
-				bc_lseek(fd, ds_readws(0x5eba) * 0x140, 0);
+				bc_lseek(fd, ds_readws(AREADESCR_DNG_LEVEL) * 0x140, 0);
 				bc__write(fd, RealMake(datseg, DNG_MAP), 0x100);
 			}
 			/* write automap tiles */
 			bc__write(fd, RealMake(datseg, AUTOMAP_BUF), 64);
-			/* write something unknown */
+			/* write location information */
 			bc__write(fd, RealMake(datseg, LOCATIONS_TAB),
-				ds_readw(0x5eb8));
+				ds_readw(LOCATIONS_TAB_SIZE));
 
 			bc_close(fd);
 
-			ds_writew(0x5ebc, ds_writew(0x5eba, ds_writew(0x5eb8, ds_writew(0x5ebe, 0))));
+			ds_writew(AREADESCR_FILEID, ds_writew(AREADESCR_DNG_LEVEL, ds_writew(LOCATIONS_TAB_SIZE, ds_writew(AREADESCR_DNG_FLAG, 0))));
 		}
 	}
 
@@ -306,17 +306,17 @@ void load_area_description(signed short type)
 		/* calc archive file index */
 		if (ds_readbs(DUNGEON_INDEX) != 0) {
 			/* dungeon */
-			ds_writew(0x5ebc, f_index = ds_readbs(DUNGEON_INDEX) + (ARCHIVE_FILE_DNGS-1));
+			ds_writew(AREADESCR_FILEID, f_index = ds_readbs(DUNGEON_INDEX) + (ARCHIVE_FILE_DNGS-1));
 		} else {
 			/* city */
-			ds_writew(0x5ebc, f_index = ds_readbs(CURRENT_TOWN) + 0x19);
+			ds_writew(AREADESCR_FILEID, f_index = ds_readbs(CURRENT_TOWN) + (ARCHIVE_FILE_CITY_DAT-1));
 		}
 
 		/* save dungeon level */
-		ds_writew(0x5eba, ds_readbs(DUNGEON_LEVEL));
+		ds_writew(AREADESCR_DNG_LEVEL, ds_readbs(DUNGEON_LEVEL));
 
 		/* save if we are in a dungeon */
-		ds_writew(0x5ebe, ds_readbs(DUNGEON_INDEX) != 0 ? 1 : 0);
+		ds_writew(AREADESCR_DNG_FLAG, ds_readbs(DUNGEON_INDEX) != 0 ? 1 : 0);
 
 		/* load DAT or DNG file */
 		fd = load_archive_file(f_index + 0x8000);
@@ -334,7 +334,7 @@ void load_area_description(signed short type)
 			/* TODO: is that neccessary ? */
 			memset(p_datseg + LOCATIONS_TAB, -1, 900);
 
-			ds_writew(0x5eb8,
+			ds_writew(LOCATIONS_TAB_SIZE,
 				bc__read(fd, p_datseg + LOCATIONS_TAB, 1000));
 
 			ds_writeb(DNG_MAP_SIZE, 0x20);
@@ -345,12 +345,12 @@ void load_area_description(signed short type)
 
 			/* read automap tiles */
 			bc__read(fd, p_datseg + AUTOMAP_BUF, 0x40);
-			ds_writew(0x5eb8, 0);
+			ds_writew(LOCATIONS_TAB_SIZE, 0);
 
 			if (!ds_readbs(DUNGEON_INDEX)) {
 				/* TODO: is that neccessary ? */
 				memset(p_datseg + LOCATIONS_TAB, -1, 900);
-				ds_writew(0x5eb8,
+				ds_writew(LOCATIONS_TAB_SIZE,
 					bc__read(fd, p_datseg + LOCATIONS_TAB, 1000));
 			}
 
@@ -393,7 +393,7 @@ void unused_store(signed short nr)
 	EMS_map_memory(ds_readws(0xbd92), 0, 3);
 
 	size = width * height;
-	memmove(Real2Host((RealPt)ds_readd(0x4baa) + ds_readws(0x5ec2)),
+	memmove(Real2Host((RealPt)ds_readd(EMS_FRAME_PTR) + ds_readws(0x5ec2)),
 			Real2Host((RealPt)ds_readd(RENDERBUF_PTR) + 0x7530),
 			size);
 
@@ -420,7 +420,7 @@ RealPt unused_load(signed short nr)
 	EMS_map_memory(ds_readws(0xbd92), l_si + 1, 1);
 	EMS_map_memory(ds_readws(0xbd92), l_si + 2, 2);
 
-	return (RealPt)ds_readd(0x4baa) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr + 1);
+	return (RealPt)ds_readd(EMS_FRAME_PTR) + 256 * host_readb(Real2Host(ds_readd(0xbd8c)) + 5 * nr + 1);
 }
 
 void load_map(void)
@@ -455,14 +455,14 @@ void load_map(void)
 	ds_writeb(PP20_INDEX, ARCHIVE_FILE_KARTE_DAT);
 
 	/* if the ems_map_hanlder exists */
-	if (ds_readw(0xbd90) != 0) {
+	if (ds_readw(EMS_TRAVEL_MAP) != 0) {
 		/* get data from EMS */
-		EMS_map_memory(ds_readw(0xbd90), 0, 0);
-		EMS_map_memory(ds_readw(0xbd90), 1, 1);
-		EMS_map_memory(ds_readw(0xbd90), 2, 2);
-		EMS_map_memory(ds_readw(0xbd90), 3, 3);
+		EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 0, 0);
+		EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 1, 1);
+		EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 2, 2);
+		EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 3, 3);
 		/* set map pointer to EMS */
-		ds_writed(TRAVEL_MAP_PTR, ds_readd(0x4baa));
+		ds_writed(TRAVEL_MAP_PTR, ds_readd(EMS_FRAME_PTR));
 	} else {
 		/* or read KARTE.DAT from file */
 		fd = load_archive_file(ARCHIVE_FILE_KARTE_DAT);
@@ -472,13 +472,13 @@ void load_map(void)
 
 		if (ds_readb(EMS_ENABLED) != 0) {
 
-			if ((ds_writew(0xbd90, alloc_EMS(64100)))) {
+			if ((ds_writew(EMS_TRAVEL_MAP, alloc_EMS(64100)))) {
 				/* map the map into EMS */
-				EMS_map_memory(ds_readw(0xbd90), 0, 0);
-				EMS_map_memory(ds_readw(0xbd90), 1, 1);
-				EMS_map_memory(ds_readw(0xbd90), 2, 2);
-				EMS_map_memory(ds_readw(0xbd90), 3, 3);
-				bc_memmove((RealPt)ds_readd(0x4baa),
+				EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 0, 0);
+				EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 1, 1);
+				EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 2, 2);
+				EMS_map_memory(ds_readw(EMS_TRAVEL_MAP), 3, 3);
+				bc_memmove((RealPt)ds_readd(EMS_FRAME_PTR),
 					(RealPt)ds_readd(RENDERBUF_PTR), 64098);
 			}
 		}

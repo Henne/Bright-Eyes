@@ -71,7 +71,7 @@ void do_merchant(void)
 	}
 
 	if (ds_readb(MERCHANT_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0) {
-		if (ds_readbs((0x6870 + 1) + 9 * ds_readws(TYPEINDEX)) != 3) {
+		if (ds_readbs((SHOP_DESCR_TABLE + 1) + 9 * ds_readws(TYPEINDEX)) != 3) {
 			talk_merchant();
 			turnaround();
 			return;
@@ -88,7 +88,7 @@ void do_merchant(void)
 	ds_writed(BUYITEMS, ds_readd(FIG_FIGURE1_BUF));
 	memset(Real2Host(ds_readd(BUYITEMS)), 0, 3500);
 	ds_writew(PRICE_MODIFICATOR, 4);
-	shop_p = p_datseg + 0x6870 + 9 * ds_readws(TYPEINDEX);
+	shop_p = p_datseg + SHOP_DESCR_TABLE + 9 * ds_readws(TYPEINDEX);
 
 	for (l_si = 0; l_si < 100; l_si++) {
 		host_writews(Real2Host(ds_readd(BUYITEMS)) + 7 * l_si, 0);
@@ -271,7 +271,7 @@ void talk_merchant(void)
 {
 	signed short tlk_id;
 
-	switch (ds_readbs(0x6870 + 9 * ds_readws(TYPEINDEX) + 1)) {
+	switch (ds_readbs(SHOP_DESCR_TABLE + 9 * ds_readws(TYPEINDEX) + 1)) {
 		case 1: tlk_id = 16; break;
 		case 2: tlk_id = 15; break;
 		case 3: tlk_id = 14; break;

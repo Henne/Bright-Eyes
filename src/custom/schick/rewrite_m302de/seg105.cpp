@@ -190,7 +190,7 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 #endif
 
 	/* calculate the address of the class forbidden items array */
-	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd(WEARABLE_ITEMS + host_readbs(hero + HERO_TYPE) * 4))))
+	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd((WEARABLE_ITEMS_INDEX - 4) + host_readbs(hero + HERO_TYPE) * 4))))
 		return 0;
 	else
 		return 1;

@@ -198,10 +198,10 @@ void TRV_load_textfile(signed short travel_event)
 	load_tx(ARCHIVE_FILE_FEATURE_LTX);
 
 	if (travel_event == -1) {
-		travel_event = ds_readws(0xb133);
+		travel_event = ds_readws(TRAVEL_EVENT_TX2);
 	}
 
-	load_city_ltx( (travel_event == 37 || travel_event == 47 || travel_event == 100) ? ARCHIVE_FILE_FEATURE9_LTX :
+	load_tx2( (travel_event == 37 || travel_event == 47 || travel_event == 100) ? ARCHIVE_FILE_FEATURE9_LTX :
 			( travel_event == 16 ? ARCHIVE_FILE_FEATURE8_LTX :
 			( travel_event < 30 ? ARCHIVE_FILE_FEATURE1_LTX :
 			( travel_event < 54 ? ARCHIVE_FILE_FEATURE2_LTX :
@@ -211,7 +211,7 @@ void TRV_load_textfile(signed short travel_event)
 			( travel_event < 126 ? ARCHIVE_FILE_FEATURE6_LTX :
 			( travel_event < 143 ? ARCHIVE_FILE_FEATURE7_LTX : ARCHIVE_FILE_FEATURE8_LTX)))))))));
 
-	ds_writews(0xb133, travel_event);
+	ds_writews(TRAVEL_EVENT_TX2, travel_event);
 }
 
 void TRV_event(signed short travel_event)
@@ -313,12 +313,12 @@ void TRV_inside_herb_place(void)
 		hours = GUI_input(get_ttx(0x51c), 1);
 
 		if (hours > 0) {
-			bak = ds_readbs(0x45b8);
-			ds_writebs(0x45b8, 1);
+			bak = ds_readbs(SPECIAL_SCREEN);
+			ds_writebs(SPECIAL_SCREEN, 1);
 
 			gather_herbs(get_hero(hero_pos), hours - 1, -3);
 
-			ds_writebs(0x45b8, (signed char)bak);
+			ds_writebs(SPECIAL_SCREEN, (signed char)bak);
 		}
 	}
 
@@ -886,14 +886,14 @@ void TRV_barrier(signed short text_start)
 				l_di = 1;
 
 				do {
-					if (get_first_hero_with_item(ds_readb(0xb135 + i)) != -1)
+					if (get_first_hero_with_item(ds_readb(TRAVEL_EVENT_AXES + i)) != -1)
 					{
 						l_di = 0;
 					}
 
 					i++;
 
-				} while (l_di && ds_readbs(0xb135 + i) != -1);
+				} while (l_di && ds_readbs(TRAVEL_EVENT_AXES + i) != -1);
 
 				if (l_di || get_first_hero_with_item(27) == -1) {
 
@@ -965,9 +965,9 @@ void tevent_009(void)
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 4) > 0 && !ds_readb(TEVENT009_FLAG)) ||
 		ds_readb(TEVENT009_FLAG) != 0)
 	{
-		ds_writeb(0x66d0, 60);
+		ds_writeb(GATHER_HERBS_SPECIAL, 60);
 		TRV_found_herb_place(0);
-		ds_writeb(0x66d0, 255);
+		ds_writeb(GATHER_HERBS_SPECIAL, 255);
 		ds_writeb(TEVENT009_FLAG, 1);
 	}
 }

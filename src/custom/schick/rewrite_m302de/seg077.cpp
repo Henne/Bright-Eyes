@@ -213,9 +213,9 @@ signed short DNG01_handler(void)
 				GUI_output(get_tx(0x44));
 			}
 
-			ds_writeb(0x45b8, 1);
+			ds_writeb(SPECIAL_SCREEN, 1);
 			timewarp(HOURS(6));
-			ds_writeb(0x4475, 3);
+			ds_writeb(FADING_STATE, 3);
 		}
 	}
 
@@ -350,7 +350,7 @@ void DNG01_chest0_x1(RealPt chest)
 		ds_writew(DEATHTRAP, 1);
 
 		/* fight the demon */
-		ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1d3a))));
+		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1d3a))));
 
 		if (!do_fight(FIGHTS_SHIP10_1))
 		{

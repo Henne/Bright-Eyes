@@ -479,7 +479,7 @@ signed short DNG09_handler(void)
 
 		timewarp(HOURS(3));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
@@ -641,10 +641,10 @@ void DNG09_chest6_x1(RealPt chest)
 
 void DNG09_chest4_x2(RealPt chest)
 {
-	ds_writew((0xd325 + 0),
-		ds_writew((0xd325 + 2),
-		ds_writew((0xd325 + 4),
-		ds_writew((0xd325 + 6), 0x1a2b))));
+	ds_writew((FIG_FLEE_POSITION + 0),
+		ds_writew((FIG_FLEE_POSITION + 2),
+		ds_writew((FIG_FLEE_POSITION + 4),
+		ds_writew((FIG_FLEE_POSITION + 6), 0x1a2b))));
 
 	do_fight(FIGHTS_F126_22);
 }

@@ -387,11 +387,11 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 
 	timewarp(HOURS((hours + 1)));
 
-	ptr = p_datseg + 0x669c;
+	ptr = p_datseg + GATHER_HERBS_TABLE;
 
 	for (herbs = i = 0; i < 12; i++, ptr += 4) {
 
-		if (host_readb(ptr) == ds_readb(0x66d0)) {
+		if (host_readb(ptr) == ds_readb(GATHER_HERBS_SPECIAL)) {
 			add_ptr_bs(ptr + 1, 10);
 			inc_ptr_bs(ptr + 2);
 		}
@@ -406,7 +406,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 			}
 		}
 
-		if (host_readb(ptr) == ds_readb(0x66d0)) {
+		if (host_readb(ptr) == ds_readb(GATHER_HERBS_SPECIAL)) {
 			sub_ptr_bs(ptr + 1, 10);
 			dec_ptr_bs(ptr + 2);
 		}
@@ -426,7 +426,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)p_datseg + GATHER_HERBS_STR_FOUND, /* "%d %s" */
 					herb_count[i],
-					Real2Host(GUI_names_grammar((herb_count[i] > 1 ? 4 : 0) + 0x4002, ds_readb(0x669c + 4 * i), 0)));
+					Real2Host(GUI_names_grammar((herb_count[i] > 1 ? 4 : 0) + 0x4002, ds_readb(GATHER_HERBS_TABLE + 4 * i), 0)));
 
 				strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 

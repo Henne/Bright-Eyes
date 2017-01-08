@@ -58,7 +58,7 @@ signed short enter_location(signed short town_id)
 
 	map_pos = 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 	ptr = p_datseg + LOCATIONS_TAB;
-	ds_writeb(0xe10c, 0);
+	ds_writeb(LOCATION_MARKET_FLAG, 0);
 
 	do {
 		if (host_readws(ptr) == map_pos) {
@@ -71,7 +71,7 @@ signed short enter_location(signed short town_id)
 
 			if (ds_readbs(LOCATION) == LOCATION_MARKET) {
 				ds_writebs(LOCATION, 0);
-				ds_writeb(0xe10c, 1);
+				ds_writeb(LOCATION_MARKET_FLAG, 1);
 			}
 
 			return 1;
@@ -86,7 +86,7 @@ signed short enter_location(signed short town_id)
 	if ((b_index = get_border_index(cast_u16(ds_readbs((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(LOCATION_BAK, 0);
-		ds_writew(CITYINDEX, ds_readb(0x71c9 + town_id));
+		ds_writew(CITYINDEX, ds_readb(TOWNS_CITYINDEX_TABLE + town_id));
 
 		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
 			ds_writebs(LOCATION, LOCATION_CITIZEN);
@@ -113,7 +113,7 @@ signed short enter_location_daspota(void)
 
 	map_pos = 256 * ds_readws(X_TARGET) + ds_readws(Y_TARGET);
 	ptr = p_datseg + LOCATIONS_TAB;
-	ds_writeb(0xe10c, 0);
+	ds_writeb(LOCATION_MARKET_FLAG, 0);
 
 	do {
 
@@ -142,9 +142,9 @@ signed short enter_location_daspota(void)
 				GUI_print_loc_line(get_tx(4 * host_readw(ptr + 4)));
 				init_ani(0);
 
-				if (ds_readd(0x71fa + 4 * host_readw(ptr + 4))) {
+				if (ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(ptr + 4))) {
 
-					loot_multi_chest(Real2Host((RealPt)ds_readd(0x71fa + 4 * host_readw(ptr + 4))), get_tx(0x54));
+					loot_multi_chest(Real2Host((RealPt)ds_readd((DASPOTA_LOCLOOT_INDEX - 4) + 4 * host_readw(ptr + 4))), get_tx(0x54));
 
 				} else {
 
@@ -202,7 +202,7 @@ void do_special_buildings(void)
 	if (ds_readb(CURRENT_TOWN) == 1) {
 		/* THORWAL */
 
-		load_city_ltx(type < 41 ? ARCHIVE_FILE_THORWAL1_LTX : ARCHIVE_FILE_THORWAL2_LTX);
+		load_tx2(type < 41 ? ARCHIVE_FILE_THORWAL1_LTX : ARCHIVE_FILE_THORWAL2_LTX);
 		ds_writew(TEXTBOX_WIDTH, 9);
 
 		if (type == 28) {
@@ -250,7 +250,7 @@ void do_special_buildings(void)
 	} else if (ds_readb(CURRENT_TOWN) == 18) {
 		/* PHEXCAER */
 
-		load_city_ltx(type <= 3 ? ARCHIVE_FILE_PHEX2_LTX : ARCHIVE_FILE_PHEX1_LTX);
+		load_tx2(type <= 3 ? ARCHIVE_FILE_PHEX2_LTX : ARCHIVE_FILE_PHEX1_LTX);
 		ds_writew(TEXTBOX_WIDTH, 9);
 
 		if (type == 1) {
@@ -855,32 +855,32 @@ signed short city_step(void)
 	signed short options;
 	signed short l4;
 
-	ds_writebs((0xbd38 + 0), 12);
-	l4 = ds_readbs((0xbd38 + 1));
-	ds_writebs((0xbd38 + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? 45 : 15);
+	ds_writebs((NEW_MENU_ICONS + 0), 12);
+	l4 = ds_readbs((NEW_MENU_ICONS + 1));
+	ds_writebs((NEW_MENU_ICONS + 1), ds_readbs(CAN_MERGE_GROUP) == -1 ? 45 : 15);
 
-	if (ds_readbs((0xbd38 + 1)) != l4) {
-		ds_writew(0xd013, 1);
+	if (ds_readbs((NEW_MENU_ICONS + 1)) != l4) {
+		ds_writew(REDRAW_MENUICONS, 1);
 	}
 
-	ds_writebs((0xbd38 + 2), 29);
-	ds_writebs((0xbd38 + 3), 37);
-	ds_writebs((0xbd38 + 4), 39);
-	ds_writebs((0xbd38 + 5), 11);
-	ds_writebs((0xbd38 + 6), 54);
+	ds_writebs((NEW_MENU_ICONS + 2), 29);
+	ds_writebs((NEW_MENU_ICONS + 3), 37);
+	ds_writebs((NEW_MENU_ICONS + 4), 39);
+	ds_writebs((NEW_MENU_ICONS + 5), 11);
+	ds_writebs((NEW_MENU_ICONS + 6), 54);
 
 	if (ds_readws(REQUEST_REFRESH) != 0) {
 
 		draw_main_screen();
 		GUI_print_loc_line(get_tx(0x00));
 
-		ds_writew(REQUEST_REFRESH, ds_writews(0xd013, 0));
+		ds_writew(REQUEST_REFRESH, ds_writews(REDRAW_MENUICONS, 0));
 		ds_writews(CITY_REFRESH_X_TARGET, -1);
 	}
 
-	if (ds_readw(0xd013) != 0 && ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
+	if (ds_readw(REDRAW_MENUICONS) != 0 && ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 		draw_icons();
-		ds_writews(0xd013, 0);
+		ds_writews(REDRAW_MENUICONS, 0);
 	}
 
 	/* check if position or direction has changed */
@@ -906,7 +906,7 @@ signed short city_step(void)
 	if (ds_readw(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 		for (i = options = 0; i < 9; i++) {
-			if (ds_readbs(0xbd38 + i) != -1) {
+			if (ds_readbs(NEW_MENU_ICONS + i) != -1) {
 				options++;
 			}
 		}
@@ -953,10 +953,10 @@ signed short city_step(void)
 	} else if (ds_readws(ACTION) == 135) {
 
 		ds_writebs(LOCATION, LOCATION_CITYCAMP);
-		ds_writeb(0xbd27, 1);
+		ds_writeb(CITYCAMP_CITY, 1);
 		i = 1;
 
-	} else if (ds_readws(ACTION) == 136 && ds_readbs((0xbd38 + 7)) != -1) {
+	} else if (ds_readws(ACTION) == 136 && ds_readbs((NEW_MENU_ICONS + 7)) != -1) {
 
 		ds_writebs(LOCATION, LOCATION_MARKET);
 		i = 1;
@@ -971,7 +971,7 @@ signed short city_step(void)
 
 	} else if (ds_readws(ACTION) == 72) {
 
-		bi = get_border_index(ds_readb(0xbd4d));
+		bi = get_border_index(ds_readb(STEPTARGET_FRONT));
 
 		if (!bi || bi == 7 || bi == 8) {
 			seg066_14dd(1);
@@ -983,7 +983,7 @@ signed short city_step(void)
 
 	} else if (ds_readws(ACTION) == 80) {
 
-		bi = get_border_index(ds_readb(0xbd4e));
+		bi = get_border_index(ds_readb(STEPTARGET_BACK));
 
 		if (!bi || bi == 7 || bi == 8) {
 			seg066_14dd(-1);
@@ -1015,20 +1015,20 @@ signed short city_step(void)
 			}
 		}
 
-		if (ds_readb(0xe10c) != 0 && ds_readb((0xbd38 + 7)) != 43) {
+		if (ds_readb(LOCATION_MARKET_FLAG) != 0 && ds_readb((NEW_MENU_ICONS + 7)) != 43) {
 
-			if (((i = ds_readws((0x70a8 + 4) + 8 * ds_readws(TYPEINDEX))) == -1 ||
+			if (((i = ds_readws((MARKET_DESCR_TABLE + 4) + 8 * ds_readws(TYPEINDEX))) == -1 ||
 				ds_readbs(DAY_OF_WEEK) == i) &&
 				ds_readds(DAY_TIMER) >= HOURS(6) &&
 				ds_readds(DAY_TIMER) <= HOURS(16))
 			{
-				ds_writebs((0xbd38 + 7), 43);
+				ds_writebs((NEW_MENU_ICONS + 7), 43);
 				draw_icons();
 			}
 
-		} else if (!ds_readbs(0xe10c) && ds_readbs((0xbd38 + 7)) == 43) {
+		} else if (!ds_readbs(LOCATION_MARKET_FLAG) && ds_readbs((NEW_MENU_ICONS + 7)) == 43) {
 
-			ds_writebs((0xbd38 + 7), -1);
+			ds_writebs((NEW_MENU_ICONS + 7), -1);
 			draw_icons();
 		}
 	}
@@ -1099,31 +1099,31 @@ void city_fade_and_colors(void)
 	Bit8u *dst;
 	Bit8u *pal_ptr;
 
-	if (ds_readb(0x4475) == 2) {
+	if (ds_readb(FADING_STATE) == 2) {
 
 		fade_into();
-		ds_writeb(0x4475, 1);
+		ds_writeb(FADING_STATE, 1);
 
 	}
 
-	if (ds_readb(0x4475) == 3) {
+	if (ds_readb(FADING_STATE) == 3) {
 
 		set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 		set_palette(p_datseg + 0x26c3, 0x80, 0x20);
 		set_palette(p_datseg + 0x26c3, 0xa0, 0x20);
 
-		ds_writeb(0x4475, 1);
+		ds_writeb(FADING_STATE, 1);
 	}
 
 	draw_compass();
 
-	ds_writew(PIC_COPY_X1, ds_readws(0xce41));
-	ds_writew(PIC_COPY_Y1, ds_readws(0xce3f));
-	ds_writew(PIC_COPY_X2, ds_readws(0xce41) + 207);
-	ds_writew(PIC_COPY_Y2, ds_readws(0xce3f) + 134);
+	ds_writew(PIC_COPY_X1, ds_readws(ANI_POSX));
+	ds_writew(PIC_COPY_Y1, ds_readws(ANI_POSY));
+	ds_writew(PIC_COPY_X2, ds_readws(ANI_POSX) + 207);
+	ds_writew(PIC_COPY_Y2, ds_readws(ANI_POSY) + 134);
 	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
-	ds_writeb(0x45b8, 0);
+	ds_writeb(SPECIAL_SCREEN, 0);
 
 	update_mouse_cursor();
 	wait_for_vsync();
@@ -1132,7 +1132,7 @@ void city_fade_and_colors(void)
 
 	refresh_screen_size();
 
-	if (ds_readb(0x4475) != 0) {
+	if (ds_readb(FADING_STATE) != 0) {
 
 		dst = Real2Host(ds_readd(RENDERBUF_PTR)) + 500;
 		pal_ptr = Real2Host(ds_readd(RENDERBUF_PTR));
@@ -1151,7 +1151,7 @@ void city_fade_and_colors(void)
 			set_palette(pal_ptr + 0x60, 0x80, 0x40);
 		}
 
-		ds_writeb(0x4475, 0);
+		ds_writeb(FADING_STATE, 0);
 
 	} else {
 

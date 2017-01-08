@@ -43,7 +43,7 @@ void do_tavern(void)
 	time_t timeval;
 
 	done = 0;
-	tav_ptr = p_datseg + 0x6c84 + 4 * ds_readws(TYPEINDEX);
+	tav_ptr = p_datseg + TAVERN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX);
 
 	GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
 

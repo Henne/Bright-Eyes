@@ -362,8 +362,8 @@ signed short DNG15_handler(void)
 		/* FIGHT: */
 		if (random_schick(100) < 10)
 		{
-			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 6), 0x3932)));
-			ds_writew((0xd325 + 4), 0x3d25);
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 6), 0x3932)));
+			ds_writew((FIG_FLEE_POSITION + 4), 0x3d25);
 
 			if (!do_fight(FIGHTS_DFIN26))
 			{
@@ -376,7 +376,7 @@ signed short DNG15_handler(void)
 		/* FIGHT: */
 		if (random_schick(100) < 10)
 		{
-			ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x3d25))));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x3d25))));
 
 			if (!do_fight(FIGHTS_DFIN26))
 			{
@@ -387,9 +387,9 @@ signed short DNG15_handler(void)
 	} else if ((target_pos == 0x2809 || target_pos == 0x2909) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
 		/* FIGHT: */
-		ds_writew((0xd325 + 0), 0x2907);
-		ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), 0x2c1b));
-		ds_writew((0xd325 + 6), 0x2639);
+		ds_writew((FIG_FLEE_POSITION + 0), 0x2907);
+		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), 0x2c1b));
+		ds_writew((FIG_FLEE_POSITION + 6), 0x2639);
 
 		do_fight(!ds_readb(DNG15_UNDEAD_FIGHT) ? 134 : 133);
 
@@ -398,10 +398,10 @@ signed short DNG15_handler(void)
 		/* FIGHT: */
 		if (ds_readb(DNG15_UNDEAD_FIGHT) != 2)
 		{
-			ds_writew((0xd325 + 0), 0x03d03);
-			ds_writew((0xd325 + 2), 0x03e15);
-			ds_writew((0xd325 + 4), 0x03a2a);
-			ds_writew((0xd325 + 6), 0x03903);
+			ds_writew((FIG_FLEE_POSITION + 0), 0x03d03);
+			ds_writew((FIG_FLEE_POSITION + 2), 0x03e15);
+			ds_writew((FIG_FLEE_POSITION + 4), 0x03a2a);
+			ds_writew((FIG_FLEE_POSITION + 6), 0x03903);
 
 			if (!do_fight(!ds_readb(DNG15_UNDEAD_FIGHT) ? 137 : 136))
 			{
@@ -421,10 +421,10 @@ signed short DNG15_handler(void)
 		} else if (!ds_readb(GOT_GRIMRING)) {
 
 			/* fight the zombies */
-			ds_writew((0xd325 + 0),
-				ds_writew((0xd325 + 2),
-				ds_writew((0xd325 + 4),
-				ds_writew((0xd325 + 6), 0x3a0a))));
+			ds_writew((FIG_FLEE_POSITION + 0),
+				ds_writew((FIG_FLEE_POSITION + 2),
+				ds_writew((FIG_FLEE_POSITION + 4),
+				ds_writew((FIG_FLEE_POSITION + 6), 0x3a0a))));
 
 			if (!do_fight(FIGHTS_DFIN28))
 			{
@@ -478,7 +478,7 @@ signed short DNG15_handler(void)
 
 			timewarp(HOURS(2));
 
-			ds_writeb(0x4475, 3);
+			ds_writeb(FADING_STATE, 3);
 		}
 	}
 

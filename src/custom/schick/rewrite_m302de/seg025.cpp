@@ -285,9 +285,9 @@ void show_treasure_map(void)
 		/* no treasure map parts found */
 		GUI_output(get_ttx(0x984));
 	} else {
-		ds_writeb(0x45b8, 1);
+		ds_writeb(SPECIAL_SCREEN, 1);
 		pp20_index_bak = ds_readbs(PP20_INDEX);
-		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+		ds_writeb(PP20_INDEX, 0xff);
 		set_var_to_zero();
 
 		/* load SKARTE.NVF */
@@ -387,7 +387,7 @@ void show_treasure_map(void)
 
 		delay_or_keypress(1000);
 
-		if (ds_readb(0x4c3a) != 0) {
+		if (ds_readb(RENDERBUF_IN_USE_FLAG) != 0) {
 			/* copy to screen */
 			ds_writew(PIC_COPY_X1, 0);
 			ds_writew(PIC_COPY_Y1, 0);
@@ -405,14 +405,14 @@ void show_treasure_map(void)
 
 			refresh_screen_size();
 
-			ds_writeb(0x4c3a, 0);
-			ds_writeb(0x45b8, 0);
+			ds_writeb(RENDERBUF_IN_USE_FLAG, 0);
+			ds_writeb(SPECIAL_SCREEN, 0);
 			ds_writeb(PP20_INDEX, pp20_index_bak);
 		} else {
 			ds_writew(CURRENT_ANI, -1);
 			ds_writew(REQUEST_REFRESH, 1);
 			ds_writew(AREA_PREPARED, -1);
-			ds_writeb(0x45b8, 0);
+			ds_writeb(SPECIAL_SCREEN, 0);
 			draw_main_screen();
 		}
 	}
@@ -434,7 +434,7 @@ signed short game_options(void)
 
 	tw_bak = ds_readws(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
-	ds_writeb(0x45b8, 1);
+	ds_writeb(SPECIAL_SCREEN, 1);
 	ds_writew(WALLCLOCK_UPDATE, 0);
 	ds_writew(AREA_PREPARED, -1);
 	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
@@ -446,10 +446,10 @@ signed short game_options(void)
 
 	ds_writed(PRINT_STRING_BUFFER, ds_readd(BUFFER9_PTR));
 
-	bak1 = ds_readws(0xd2d5);
-	bak2 = ds_readws(0xd2d9);
-	ds_writew(0xd2d5, 200);
-	ds_writew(0xd2d9, 70);
+	bak1 = ds_readws(TEXTLINE_MAXLEN);
+	bak2 = ds_readws(TEXTLINE_POSX);
+	ds_writew(TEXTLINE_MAXLEN, 200);
+	ds_writew(TEXTLINE_POSX, 70);
 
 	set_textcolor(4, 0);
 
@@ -516,9 +516,9 @@ signed short game_options(void)
 
 	ds_writed(PIC_COPY_DST, ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR)));
 
-	ds_writew(0xd2d9, bak2);
-	ds_writew(0xd2d5, bak1);
-	ds_writed(0xbff9, ds_readd(BUFFER9_PTR));
+	ds_writew(TEXTLINE_POSX, bak2);
+	ds_writew(TEXTLINE_MAXLEN, bak1);
+	ds_writed(GUI_BUFFER_UNKN, ds_readd(BUFFER9_PTR));
 
 	do {
 		ds_writed(ACTION_TABLE_SECONDARY, (Bit32u)RealMake(datseg, ACTION_TABLE_OPTIONS));
@@ -562,15 +562,15 @@ signed short game_options(void)
 
 		} else if (ds_readws(ACTION) == 131) {
 
-			ds_writeb(0x4c3a, 1);
+			ds_writeb(RENDERBUF_IN_USE_FLAG, 1);
 			char_erase();
-			ds_writeb(0x4c3a, 0);
+			ds_writeb(RENDERBUF_IN_USE_FLAG, 0);
 
 		} else if (ds_readws(ACTION) == 132) {
 
-			ds_writeb(0x4c3a, 1);
+			ds_writeb(RENDERBUF_IN_USE_FLAG, 1);
 			show_treasure_map();
-			ds_writeb(0x45b8, 1);
+			ds_writeb(SPECIAL_SCREEN, 1);
 
 		} else if (ds_readws(ACTION) == 133) {
 
@@ -606,14 +606,14 @@ signed short game_options(void)
 
 	} while (!done);
 
-	ds_writed(0xbff9, ds_readd(RENDERBUF_PTR));
+	ds_writed(GUI_BUFFER_UNKN, ds_readd(RENDERBUF_PTR));
 
-	ds_writews(FIG_FIGURE1, ds_writews(FIG_FIGURE2, ds_writews(CURRENT_ANI, ds_writebs(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13)))));
+	ds_writews(FIG_FIGURE1, ds_writews(FIG_FIGURE2, ds_writews(CURRENT_ANI, ds_writebs(PP20_INDEX, 0xff))));
 	ds_writew(REQUEST_REFRESH, 1);
-	ds_writeb(0x45b8, 0);
+	ds_writeb(SPECIAL_SCREEN, 0);
 
 	if (ds_readbs(CURRENT_TOWN) != 0) {
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
@@ -736,7 +736,7 @@ void do_location(void)
 		ds_writeb(SHOW_TRAVEL_MAP, tm_bak);
 	}
 
-	ds_writebs(0x2ca8, -1);
+	ds_writebs(TRAVEL_MAP_LOADED, -1);
 }
 
 /**
@@ -758,7 +758,7 @@ void turnaround(void)
 
 	set_to_ff();
 
-	ds_writew(REQUEST_REFRESH, ds_writebs(0x45b8, 1));
+	ds_writew(REQUEST_REFRESH, ds_writebs(SPECIAL_SCREEN, 1));
 }
 
 void leave_dungeon(void)
@@ -784,7 +784,7 @@ void leave_dungeon(void)
 	ds_writeb(DUNGEON_INDEX_BAK, ds_readb(DUNGEON_INDEX));
 	ds_writeb(DUNGEON_INDEX, ds_writeb(DUNGEON_LEVEL, ds_writeb(DUNGEON_LIGHT, 0)));
 	ds_writebs(CITY_AREA_LOADED, -1);
-	ds_writeb(0x4475, ds_writew(REQUEST_REFRESH, 1));
+	ds_writeb(FADING_STATE, ds_writew(REQUEST_REFRESH, 1));
 
 	do_fill_rect((RealPt)ds_readd(RENDERBUF_PTR), 0, 0, 319, 199, 0);
 
@@ -868,8 +868,8 @@ void fade_into(void)
 
 void copy_palette(void)
 {
-	memcpy(Real2Host(ds_readd(RENDERBUF_PTR)) + 0xfa00, Real2Host(ds_readd(0xce3b)), 0x60);
-	ds_writeb(0x4475, 2);
+	memcpy(Real2Host(ds_readd(RENDERBUF_PTR)) + 0xfa00, Real2Host(ds_readd(ANI_PALETTE)), 0x60);
+	ds_writeb(FADING_STATE, 2);
 }
 
 #if !defined(__BORLANDC__)

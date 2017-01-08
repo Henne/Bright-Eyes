@@ -140,8 +140,8 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_H);
 	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_S);
 	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_D);
-	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6c73);
-	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6c79);
+	struct dummy3 array3 = *(struct dummy3*)(p_datseg + SMITH_ITEMS_POSX);
+	struct dummy5 array5 = *(struct dummy5*)(p_datseg + SMITH_ITEMS_POSY);
 #endif
 
 	Bit32s price;
@@ -174,7 +174,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	} else {
 
 		set_var_to_zero();
-		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+		ds_writeb(PP20_INDEX, 0xff);
 
 		draw_loc_icons(5, 23, 26, 27, 28, 8);
 		draw_main_screen();
@@ -476,7 +476,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 		set_textcolor(fg_bak, bg_bak);
 		ds_writew(REQUEST_REFRESH, 1);
-		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+		ds_writeb(PP20_INDEX, 0xff);
 	}
 }
 
@@ -507,7 +507,7 @@ void do_smith(void)
 
 	load_ggsts_nvf();
 	ds_writew(REQUEST_REFRESH, 1);
-	smith_ptr = p_datseg + 0x6c10 + 2 * ds_readws(TYPEINDEX);
+	smith_ptr = p_datseg + SMITH_DESCR_TABLE + 2 * ds_readws(TYPEINDEX);
 	ds_writew(PRICE_MODIFICATOR, 4);
 
 	while (!done) {

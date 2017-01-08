@@ -268,7 +268,7 @@ signed short select_skill(void)
 		a.a[nr_skills] = TA_AKROBATIK;
 		nr_skills++;
 
-		if (ds_readws(0x6532) == 0) {
+		if (ds_readws(CHEATSKILL_USABLE) == 0) {
 			a.a[nr_skills] = TA_FALSCHSPIEL;
 			nr_skills++;
 		}
@@ -329,7 +329,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 
 		switch(skill) {
 		case 44 : {
-			ds_writeb(0x64a2, (signed char)hero_pos);
+			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(0x730));
 
@@ -436,7 +436,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 			break;
 		}
 		case 45 : {
-			ds_writeb(0x64a2, (signed char)hero_pos);
+			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(0x730));
 
@@ -448,7 +448,7 @@ signed short use_skill(signed short hero_pos, signed char bonus, signed short sk
 			break;
 		}
 		case 46 : {
-			ds_writeb(0x64a2, (signed char)hero_pos);
+			ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
 			patient_pos = select_hero_from_group(get_ttx(0x730));
 

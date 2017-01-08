@@ -117,7 +117,7 @@ signed short DNG06_handler(void)
 		}
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)(l3 == 1 ? p_datseg + 0x964f : p_datseg + 0x9657),
+			(char*)(l3 == 1 ? p_datseg + STR_S_WAR : p_datseg + STR_S_UND_S_WAREN),
 			(char*)hero_first + HERO_NAME2,
 			(char*)hero_second + HERO_NAME2);
 
@@ -441,8 +441,8 @@ signed short DNG06_handler(void)
 
 	} else if (target_pos == 0x180e && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writew(0xd325, ds_writew((0xd325 + 6), 0x163e));
-		ds_writew((0xd325 + 4), ds_writew((0xd325 + 2), 0x1d0d));
+		ds_writew(FIG_FLEE_POSITION, ds_writew((0xd325 + 6), 0x163e));
+		ds_writew((FIG_FLEE_POSITION + 4), ds_writew((0xd325 + 2), 0x1d0d));
 
 		if (!do_fight(FIGHTS_F094_19))
 		{
@@ -467,7 +467,7 @@ signed short DNG06_handler(void)
 
 		timewarp(HOURS(2));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);

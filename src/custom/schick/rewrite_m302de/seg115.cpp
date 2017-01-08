@@ -181,9 +181,9 @@ void tevent_091(void)
 	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 5) > 0 && !ds_readb(TEVENT091_FLAG)) ||
 		ds_readb(TEVENT091_FLAG) != 0)
 	{
-		ds_writeb(0x66d0, 122);
+		ds_writeb(GATHER_HERBS_SPECIAL, 122);
 		TRV_found_herb_place(0);
-		ds_writeb(0x66d0, -1);
+		ds_writeb(GATHER_HERBS_SPECIAL, -1);
 		ds_writeb(TEVENT091_FLAG, 1);
 	}
 }

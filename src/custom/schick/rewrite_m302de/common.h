@@ -243,7 +243,7 @@ enum {
     FIG_ACTION_QUIT_AND_LOAD = 12,
     FIG_ACTION_REPEAT_OPTION = 13,
     FIG_ACTION_RANGE_ATTACK = 15,
-    FIG_ACTION_UNKNOWN1 = 16,
+    FIG_ACTION_FLEE = 16,
     FIG_ACTION_UNKNOWN2 = 100
 };
 
@@ -396,14 +396,14 @@ enum {
     ENEMY_SHEET_BP              = 0x23,
     ENEMY_SHEET_MAGIC           = 0x24,
     ENEMY_SHEET_MAG_ID          = 0x25,
-    ENEMY_SHEET_LIST_POS        = 0x26,
+    ENEMY_SHEET_FIGHTER_ID      = 0x26,
     ENEMY_SHEET_VIEWDIR         = 0x27,
     ENEMY_SHEET_DUMMY2          = 0x28,
     ENEMY_SHEET_LEVEL           = 0x29,
     ENEMY_SHEET_DUMMY3          = 0x2a,
-    ENEMY_SHEET_DUMMY4          = 0x2b,
+    ENEMY_SHEET_ACTION_ID       = 0x2b,
     ENEMY_SHEET_CUR_SPELL       = 0x2c,
-    ENEMY_SHEET_FIGHTER_ID        = 0x2d,
+    ENEMY_SHEET_ENEMY_ID        = 0x2d,
     ENEMY_SHEET_DUMMY5          = 0x2e,
     ENEMY_SHEET_BLIND           = 0x2f,
     ENEMY_SHEET_BROKEN          = 0x30, /* 0 = no, 1 = yes */

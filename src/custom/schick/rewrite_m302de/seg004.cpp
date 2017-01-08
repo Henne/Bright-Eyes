@@ -58,9 +58,9 @@ void init_ani(Bit16u v1)
 		}
 
 		if (v1 & 0x80)
-			ds_writeb(0x2cca, 0);
+			ds_writeb(ANI_UNKNOWN_FLAG, 0);
 		else
-			ds_writeb(0x2cca, 1);
+			ds_writeb(ANI_UNKNOWN_FLAG, 1);
 
 		update_mouse_cursor();
 
@@ -69,13 +69,13 @@ void init_ani(Bit16u v1)
 		/* set flag for pic_copy() */
 		ds_writew(PIC_COPY_FLAG, 1);
 
-		/* set uppter left coordinates */
-		ds_writew(PIC_COPY_X1, ds_readw(0xce41));
-		ds_writew(PIC_COPY_Y1, ds_readw(0xce3f));
+		/* set upper left coordinates */
+		ds_writew(PIC_COPY_X1, ds_readw(ANI_POSX));
+		ds_writew(PIC_COPY_Y1, ds_readw(ANI_POSY));
 
 		/* set lower right coordinates */
-		ds_writew(PIC_COPY_X2, ds_readw(0xce41) + ds_readw(0xc3e7) - 1);
-		ds_writew(PIC_COPY_Y2, ds_readw(0xce3f) + ds_readb(0xc3ed) - 1);
+		ds_writew(PIC_COPY_X2, ds_readw(ANI_POSX) + ds_readw(ANI_WIDTH) - 1);
+		ds_writew(PIC_COPY_Y2, ds_readw(ANI_POSY) + ds_readb(ANI_HEIGHT) - 1);
 
 		/* copy pointer */
 		ds_writed(PIC_COPY_SRC, ds_readd(ANI_MAIN_PTR));
@@ -83,7 +83,7 @@ void init_ani(Bit16u v1)
 		/* copy the main ani picture */
 		do_pic_copy(1);
 
-		set_ani_pal(Real2Host(ds_readd(0xce3b)));
+		set_ani_pal(Real2Host(ds_readd(ANI_PALETTE)));
 
 		/* reset flag for pic_copy() */
 		ds_writew(PIC_COPY_FLAG, 0);
@@ -124,29 +124,29 @@ void clear_ani(void)
 {
 	signed short i, j;
 
-	ds_writew(0xc3e7, 0);
-	ds_writeb(0xc3ed, 0);
-	ds_writeb(0xc3ee, 0);
+	ds_writew(ANI_WIDTH, 0);
+	ds_writeb(ANI_HEIGHT, 0);
+	ds_writeb(ANI_AREACOUNT, 0);
 	ds_writed(ANI_MAIN_PTR, 0);
-	ds_writew(0xce3d, 0);
-	ds_writew(0xce3b, 0);
+	ds_writew(ANI_UNKNOWN3, 0);
+	ds_writew(ANI_PALETTE, 0);
 
 	for (i = 0; i < 10; i++) {
-		ds_writew((0xc3ef + 5) + i * 0x107, 0);
-		ds_writeb((0xc3ef + 7) + i * 0x107, 0);
-		ds_writew((0xc3ef + 9) + i * 0x107, 0);
-		ds_writeb((0xc3ef + 8) + i * 0x107, 0);
-		ds_writeb((0xc3ef + 11) + i * 0x107, 0);
-		ds_writeb((0xc3ef + 12) + i * 0x107, 0);
-		ds_writew((0xc3ef + 93) + i * 0x107, 0);
-		ds_writeb((0xc3ef + 4) + i * 0x107, 0);
+		ds_writew((ANI_AREA_TABLE + 5) + i * 0x107, 0);
+		ds_writeb((ANI_AREA_TABLE + 7) + i * 0x107, 0);
+		ds_writew((ANI_AREA_TABLE + 9) + i * 0x107, 0);
+		ds_writeb((ANI_AREA_TABLE + 8) + i * 0x107, 0);
+		ds_writeb((ANI_AREA_TABLE + 11) + i * 0x107, 0);
+		ds_writeb((ANI_AREA_TABLE + 12) + i * 0x107, 0);
+		ds_writew((ANI_AREA_TABLE + 93) + i * 0x107, 0);
+		ds_writeb((ANI_AREA_TABLE + 4) + i * 0x107, 0);
 
 		for (j = 0; j < 20; j++)
-			ds_writed((0xc3ef + 13) + i * 0x107 + (j << 2), 0);
+			ds_writed((ANI_AREA_TABLE + 13) + i * 0x107 + (j << 2), 0);
 
 		for (j = 0; j < 42; j++) {
-			ds_writew((0xc3ef + 95) + i * 0x107 + (j << 2), 0);
-			ds_writew((0xc3ef + 97) + i * 0x107 + (j << 2), 0);
+			ds_writew((ANI_AREA_TABLE + 95) + i * 0x107 + (j << 2), 0);
+			ds_writew((ANI_AREA_TABLE + 97) + i * 0x107 + (j << 2), 0);
 		}
 	 }
 }
@@ -194,7 +194,7 @@ void interrupt timer_isr(void)
 		dec_ds_ws(FIG_STAR_TIMER);
 	}
 
-	if (!ds_readbs(0xbcda)) {
+	if (!ds_readbs(FREEZE_TIMERS)) {
 		do_timers();
 	}
 
@@ -208,13 +208,13 @@ void interrupt timer_isr(void)
 		/* disable interrupts */
 		asm { cli; }
 
-		ds_writew((PIC_COPY_DS_RECT + 0), ds_readw(0xce3f));
-		ds_writew((PIC_COPY_DS_RECT + 2), ds_readw(0xce41));
-		ds_writew((PIC_COPY_DS_RECT + 4), ds_readw(0xce3f) + 135);
-		ds_writew((PIC_COPY_DS_RECT + 6), ds_readw(0xce41) + 208);
+		ds_writew((PIC_COPY_DS_RECT + 0), ds_readw(ANI_POSY));
+		ds_writew((PIC_COPY_DS_RECT + 2), ds_readw(ANI_POSX));
+		ds_writew((PIC_COPY_DS_RECT + 4), ds_readw(ANI_POSY) + 135);
+		ds_writew((PIC_COPY_DS_RECT + 6), ds_readw(ANI_POSX) + 208);
 		a = *(struct dummy*)(p_datseg + PIC_COPY_DST);
 
-		l_di = ds_readbs(0xc3ee);
+		l_di = ds_readbs(ANI_AREACOUNT);
 
 		if (!l_di && (ds_readw(ANI_BUSY))) {
 
@@ -224,7 +224,7 @@ void interrupt timer_isr(void)
 
 		for (i = 0; i < l_di; i++) {
 
-			ptr = p_datseg + 0xc3ef + 0x107 * i;
+			ptr = p_datseg + ANI_AREA_TABLE + 0x107 * i;
 
 			if (host_readws(ptr + 0x5d)) {
 				sub_ds_ws(0xe260 + 2 * i, 5);
@@ -259,10 +259,10 @@ void interrupt timer_isr(void)
 
 					flag = 0;
 
-					if ((ds_readws(MOUSE_POSX) >= ds_readws(0xce41)) &&
-						(ds_readws(0xce41) + ds_readws(0xc3e7) >= ds_readws(MOUSE_POSX)) &&
-						(ds_readws(MOUSE_POSY) >= ds_readws(0xce3f)) &&
-						(ds_readws(0xce3f) + ds_readb(0xc3ed) >= ds_readws(MOUSE_POSY) ))
+					if ((ds_readws(MOUSE_POSX) >= ds_readws(ANI_POSX)) &&
+						(ds_readws(ANI_POSX) + ds_readws(ANI_WIDTH) >= ds_readws(MOUSE_POSX)) &&
+						(ds_readws(MOUSE_POSY) >= ds_readws(ANI_POSY)) &&
+						(ds_readws(ANI_POSY) + ds_readb(ANI_HEIGHT) >= ds_readws(MOUSE_POSY) ))
 					{
 						flag = 1;
 						update_mouse_cursor();
@@ -270,13 +270,13 @@ void interrupt timer_isr(void)
 
 					/* set screen coordinates */
 					ds_writew(PIC_COPY_X1,
-						ds_readws(0xce41) + host_readw(ptr + 5));
+						ds_readws(ANI_POSX) + host_readw(ptr + 5));
 					ds_writew(PIC_COPY_Y1,
-						ds_readws(0xce3f) + host_readb(ptr + 7));
+						ds_readws(ANI_POSY) + host_readb(ptr + 7));
 					ds_writew(PIC_COPY_X2,
-						ds_readws(0xce41) + host_readw(ptr + 5) + host_readw(ptr + 9) - 1);
+						ds_readws(ANI_POSX) + host_readw(ptr + 5) + host_readw(ptr + 9) - 1);
 					ds_writew(PIC_COPY_Y2,
-						ds_readws(0xce3f) + host_readb(ptr + 7) + host_readb(ptr + 8) - 1);
+						ds_readws(ANI_POSY) + host_readb(ptr + 7) + host_readb(ptr + 8) - 1);
 					ds_writed(PIC_COPY_SRC,
 						host_readd(ptr + 0xd + 4 *(host_readws(ptr + 0x5f + 4 * ds_readw(0xe24c + 2 * i)) -1)));
 
@@ -317,7 +317,7 @@ void update_status_bars(void)
 	signed short i;
 	Bit8u *hero;
 
-	ds_writew(0xc3c9, 0);
+	ds_writew(UNUSED_SPINLOCK_FLAG, 0);
 
 	if (ds_readw(UPDATE_STATUSLINE) != 0) {
 
@@ -749,9 +749,9 @@ void update_wallclock(void)
 			}
 		}
 
-		if (((d % 771) != ds_readws(WALLCLOCK_POS)) || (ds_readw(0xe10d) != 0)) {
+		if (((d % 771) != ds_readws(WALLCLOCK_POS)) || (ds_readw(WALLCLOCK_REDRAW) != 0)) {
 
-			ds_writew(0xe10d, 0);
+			ds_writew(WALLCLOCK_REDRAW, 0);
 			night = ((ds_readds(DAY_TIMER) >= HOURS(7)) && (ds_readds(DAY_TIMER) <= HOURS(19))) ? 0 : 1;
 			draw_wallclock((signed short)(d / 771), night);
 			ds_writew(WALLCLOCK_POS, (signed short)(d / 771));
@@ -918,7 +918,7 @@ struct dummy4 {
 
 void clear_ani_pal(void)
 {
-	struct dummy4 pal = *(struct dummy4*)(p_datseg + 0x4b06);
+	struct dummy4 pal = *(struct dummy4*)(p_datseg + PALETTE_ALLBLACK);
 
 	wait_for_vsync();
 

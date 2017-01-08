@@ -93,7 +93,7 @@ void do_harbour(void)
 #if !defined(__BORLANDC__)
 	struct dummy7 a = { { -2, 0, 5, 4, 3, 1, 0 } };
 #else
-	struct dummy7 a = *(struct dummy7*)(p_datseg + 0x7071);
+	struct dummy7 a = *(struct dummy7*)(p_datseg + SEA_TRAVEL_SLEEPBONUS_TABLE1);
 #endif
 	flag = 1;
 
@@ -180,16 +180,16 @@ void do_harbour(void)
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
 						(char*)get_tx(0x40),
 
-						(char*)get_tx(4 * ds_readws(0x6ef0 + 2 * host_readbs(psg_ptr + 9))),
+						(char*)get_tx(4 * ds_readws(SEA_TRAVEL_TX_SHIP + 2 * host_readbs(psg_ptr + 9))),
 						(char*)Real2Host(host_readds(psg_ptr + 0)),
 
 						(char*)(!host_readbs(psg_ptr + 8) ? get_tx(0x14) : get_tx(0x18)),
 
-						(char*)get_tx(4 * ds_readws(0x6ec2 + 2 * ds_readbs(0x6ed0 + 4 * host_readbs(psg_ptr + 9)))),
+						(char*)get_tx(4 * ds_readws(SEA_TRAVEL_TX_CLASS + 2 * ds_readbs(SEA_TRAVEL_QUALITY_TABLE + 4 * host_readbs(psg_ptr + 9)))),
 						(char*)get_ttx(4 * (host_readb(psg_ptr + 10) + 235)),
-						get_passage_travel_hours(host_readb(Real2Host(host_readd(psg_ptr + 4)) + 2), ds_readbs(0x6ed0 + 3 + 4 * host_readbs(psg_ptr + 9))),
+						get_passage_travel_hours(host_readb(Real2Host(host_readd(psg_ptr + 4)) + 2), ds_readbs(SEA_TRAVEL_QUALITY_TABLE + 3 + 4 * host_readbs(psg_ptr + 9))),
 
-						Real2Host(print_passage_price(ds_readbs(0x6ed0 + 2 + 4 * host_readbs(psg_ptr + 9)), Real2Host(host_readds(psg_ptr + 4)))));
+						Real2Host(print_passage_price(ds_readbs(SEA_TRAVEL_QUALITY_TABLE + 2 + 4 * host_readbs(psg_ptr + 9)), Real2Host(host_readds(psg_ptr + 4)))));
 
 					l_si = ds_readws(TEXTBOX_WIDTH);
 					ds_writew(TEXTBOX_WIDTH, 5);
@@ -208,7 +208,7 @@ void do_harbour(void)
 
 						} else {
 
-							ds_writeb(0xe3fa, ds_readb(0x6ed0 + 4 * host_readbs(psg_ptr +9)));
+							ds_writeb(SEA_TRAVEL_SLEEP_QUALITY, ds_readb(SEA_TRAVEL_QUALITY_TABLE + 4 * host_readbs(psg_ptr +9)));
 							money -= ds_readws(SEA_TRAVEL_PASSAGE_PRICE);
 							set_party_money(money);
 
@@ -304,7 +304,7 @@ void do_harbour(void)
 
 				GUI_output(get_tx(0x54));
 
-				ds_writeb(0x4497, 1);
+				ds_writeb(TRAVEL_HEROKEEPING, 1);
 
 				timewarp_until(HOURS(9));
 
@@ -318,7 +318,7 @@ void do_harbour(void)
 						if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 							host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 						{
-							GRP_hero_sleep(hero, a.a[ds_readbs(0xe3fa)]);
+							GRP_hero_sleep(hero, a.a[ds_readbs(SEA_TRAVEL_SLEEP_QUALITY)]);
 
 							host_writebs(hero + HERO_HUNGER,
 								host_writebs(hero + HERO_THIRST, 0));
@@ -326,7 +326,7 @@ void do_harbour(void)
 					}
 				}
 
-				ds_writeb(0x4497, 0);
+				ds_writeb(TRAVEL_HEROKEEPING, 0);
 
 				for (l_si = 0; l_si < 6; l_si++) {
 					ds_writeb(FOOD_MESSAGE_SHOWN + l_si, 0);
@@ -356,7 +356,7 @@ void do_harbour(void)
 				passage_arrival();
 
 				ds_writew(WALLCLOCK_UPDATE, ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, ds_writeb(SEA_TRAVEL_PSGBOOKED_FLAG, 0))));
-				ds_writews(CURRENT_ANI, ds_writebs(CITY_AREA_LOADED, ds_writebs(PP20_INDEX, (signed char)(ARCHIVE_FILE_DNGS + 13))));
+				ds_writews(CURRENT_ANI, ds_writebs(CITY_AREA_LOADED, ds_writebs(PP20_INDEX, (signed char)0xff)));
 				ds_writew(REQUEST_REFRESH, 1);
 				ds_writeb(SHOW_TRAVEL_MAP, 0);
 
@@ -427,7 +427,7 @@ void sea_travel(signed short passage, signed short dir)
 #if !defined(__BORLANDC__)
 	struct dummy7 a =  { { -2, 0, 5, 4, 3, 1, 0 } };
 #else
-	struct dummy7 a = *(struct dummy7*)(p_datseg + 0x707f);
+	struct dummy7 a = *(struct dummy7*)(p_datseg + SEA_TRAVEL_SLEEPBONUS_TABLE2);
 #endif
 
 	ds_writeb(TRAVELING, 1);
@@ -486,7 +486,7 @@ void sea_travel(signed short passage, signed short dir)
 	}
 
 	ds_writew(ROUTE_STEPCOUNT, ds_writew(ROUTE_PROGRESS, ds_writew(ROUTE_DAYPROGRESS, ds_writeb(TRAVEL_DETOUR, 0))));
-	ds_writeb(0x4497, 1);
+	ds_writeb(TRAVEL_HEROKEEPING, 1);
 
 	while (host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2 * ds_writew(ROUTE_MOUSEHOVER, 0)) != -1 && !ds_readb(TRAVEL_DETOUR))
 	{
@@ -545,7 +545,7 @@ void sea_travel(signed short passage, signed short dir)
 				if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 					host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
-					GRP_hero_sleep(hero, a.a[ds_readbs(0xe3fa)]);
+					GRP_hero_sleep(hero, a.a[ds_readbs(SEA_TRAVEL_SLEEP_QUALITY)]);
 					host_writeb(hero + HERO_HUNGER, host_writebs(hero + HERO_THIRST, 0));
 				}
 			}
@@ -587,7 +587,7 @@ void sea_travel(signed short passage, signed short dir)
 		add_ds_fp(ROUTE_COURSE_PTR, 2 * (!dir ? 2 : -2));
 	}
 
-	ds_writeb(0x4497, 0);
+	ds_writeb(TRAVEL_HEROKEEPING, 0);
 
 	if (!ds_readb(TRAVEL_DETOUR)) {
 

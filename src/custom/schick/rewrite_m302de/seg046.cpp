@@ -120,9 +120,9 @@ void status_show_skills(Bit8u *hero) {
 		while (ds_readbs(SKILLS_INDEX + skill_category * 2) + ds_readbs((SKILLS_INDEX + 1) + skill_category * 2) > skill_nr) {
 			status_show_skill(hero, skill_nr,
 				ds_readbs(SKILLS_INDEX + skill_category * 2),
-				ds_readw(0x6476 + skill_category * 6),
-				ds_readw((0x6476 + 2) + skill_category * 6),
-				ds_readw((0x6476 + 4) + skill_category * 6));
+				ds_readw(STATUSPAGE_SKILLS_XY + skill_category * 6),
+				ds_readw((STATUSPAGE_SKILLS_XY + 2) + skill_category * 6),
+				ds_readw((STATUSPAGE_SKILLS_XY + 4) + skill_category * 6));
 			skill_nr++;
 		}
 	}
@@ -198,7 +198,7 @@ void status_show(Bit16u index)
 		ds_writeb(PP20_INDEX, ARCHIVE_FILE_ZUSTA_UK);
 		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 		wait_for_vsync();
-		set_palette(p_datseg + 0x6372, 0, 0x20);
+		set_palette(p_datseg + STATUSPAGE_PALETTE, 0, 0x20);
 	}
 
 	ds_writed(ACTION_TABLE_PRIMARY, (Bit32u)RealMake(datseg, ACTION_TABLE_STATUS));
@@ -242,10 +242,10 @@ void status_show(Bit16u index)
 			process_nvf(&nvf);
 
 			/* draw the item icon */
-			ds_writew(PIC_COPY_X1, ds_readw(0x63d2 + i * 4));
-			ds_writew(PIC_COPY_Y1, ds_readw(0x63d2 + i * 4 + 2));
-			ds_writew(PIC_COPY_X2, ds_readw(0x63d2 + i * 4) + 15);
-			ds_writew(PIC_COPY_Y2, ds_readw(0x63d2 + i * 4 + 2) + 15);
+			ds_writew(PIC_COPY_X1, ds_readw(INVSLOT_ICONXY_TABLE + i * 4));
+			ds_writew(PIC_COPY_Y1, ds_readw(INVSLOT_ICONXY_TABLE + i * 4 + 2));
+			ds_writew(PIC_COPY_X2, ds_readw(INVSLOT_ICONXY_TABLE + i * 4) + 15);
+			ds_writew(PIC_COPY_Y2, ds_readw(INVSLOT_ICONXY_TABLE + i * 4 + 2) + 15);
 			ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
 			ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 			do_pic_copy(0);
@@ -260,8 +260,8 @@ void status_show(Bit16u index)
 					(char*)Real2Host(ds_readd(DTP2)), 10);
 
 				GUI_print_string(Real2Host(ds_readd(DTP2)),
-					ds_readw(0x63d2 + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),
-					ds_readw(0x63d2 + i * 4 + 2) + 9);
+					ds_readw(INVSLOT_ICONXY_TABLE + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),
+					ds_readw(INVSLOT_ICONXY_TABLE + i * 4 + 2) + 9);
 
 				set_textcolor(0, 2);
 			}
@@ -679,9 +679,9 @@ void status_show(Bit16u index)
 					status_show_spell(Real2Host(hero),
 						i,
 						ds_readbs(SPELLS_INDEX + j * 2),
-						ds_readws(0x642e + 0 + j * 6),
-						ds_readws(0x642e + 2 + j * 6),
-						ds_readws(0x642e + 4 + j * 6));
+						ds_readws(STATUSPAGE_SPELLS_XY + 0 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS_XY + 2 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS_XY + 4 + j * 6));
 					i++;
 				}
 			}
@@ -725,9 +725,9 @@ void status_show(Bit16u index)
 					status_show_spell(Real2Host(hero),
 						i,
 						ds_readbs(SPELLS_INDEX2 + j * 2),
-						ds_readws(0x645e + 0 + j * 6),
-						ds_readws(0x645e + 2 + j * 6),
-						ds_readws(0x645e + 4 + j * 6));
+						ds_readws(STATUSPAGE_SPELLS2_XY + 0 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS2_XY + 2 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS2_XY + 4 + j * 6));
 					i++;
 				}
 			}

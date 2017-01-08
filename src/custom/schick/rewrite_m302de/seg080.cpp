@@ -293,7 +293,7 @@ signed short DNG04_handler(void)
 
 		timewarp(HOURS(2));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
@@ -368,11 +368,11 @@ signed short DNG05_handler(void)
 
 	pos = (ds_readbs(DUNGEON_LEVEL) << 12) + (ds_readws(X_TARGET) << 8) + ds_readws(Y_TARGET);
 
-	if (pos == 0x70e && pos != ds_readws(DNG_HANDLED_POS) && ds_readw(0x960e) == 0)
+	if (pos == 0x70e && pos != ds_readws(DNG_HANDLED_POS) && ds_readw(DNG05_TRASH_FLAG) == 0)
 	{
 		if (GUI_bool(get_tx(0x04)) && GUI_bool(get_tx(0x3c)))
 		{
-			ds_writew(0x960e, 1);
+			ds_writew(DNG05_TRASH_FLAG, 1);
 
 			hero = Real2Host(get_first_hero_available_in_group());
 
@@ -423,10 +423,10 @@ signed short DNG05_handler(void)
 		if (random_schick(100) < 30)
 		{
 			ds_writew(MAX_ENEMIES, random_schick(100) < 10 ? 3 : 2);
-			ds_writew((0xd325 + 0),
-				 ds_writew((0xd325 + 2),
-				 ds_writew((0xd325 + 4),
-				 ds_writew((0xd325 + 6), 0x827))));
+			ds_writew((FIG_FLEE_POSITION + 0),
+				 ds_writew((FIG_FLEE_POSITION + 2),
+				 ds_writew((FIG_FLEE_POSITION + 4),
+				 ds_writew((FIG_FLEE_POSITION + 6), 0x827))));
 
 			do_fight(FIGHTS_F061_4B);
 		}
@@ -483,7 +483,7 @@ signed short DNG05_handler(void)
 
 		timewarp(HOURS(2));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);

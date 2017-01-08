@@ -371,7 +371,7 @@ void PHX_alrik_derondan(void)
 	signed short l_di = 0;
 	Bit32s money;
 
-	load_city_ltx(ARCHIVE_FILE_PHEX2_LTX);
+	load_tx2(ARCHIVE_FILE_PHEX2_LTX);
 
 	/* load the picture of ALRIK DERONDAN */
 	load_in_head(3);

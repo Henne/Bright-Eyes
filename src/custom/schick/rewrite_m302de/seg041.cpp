@@ -197,7 +197,7 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 
 		} else if ((ds_readw(CURRENT_FIG_NR) == 192) &&
 				(host_readb(enemy) == 0x48) &&
-				!ds_readbs(0x5f30))
+				!ds_readbs(FINALFIGHT_TUMULT))
 		{
 			/* slaying the orc champion, ends the fight */
 				ds_writew(IN_FIGHT, 0);

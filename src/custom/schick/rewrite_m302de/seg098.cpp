@@ -147,7 +147,7 @@ struct dummy1 {
 void magic_heal_ani(Bit8u *hero)
 {
 	signed short target_nr;
-	struct dummy1 a = *(struct dummy1*)(p_datseg + 0xac10);
+	struct dummy1 a = *(struct dummy1*)(p_datseg + ANI_HEAL_PICSTARS);
 	RealPt target;
 	signed short fd;
 	signed short i;
@@ -243,7 +243,7 @@ void FIG_do_spell_damage(signed short le)
 
 		/* set a pointer to the enemy */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
+			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		/* do the damage */
 		FIG_damage_enemy(get_spelltarget_e(), le, 0);
@@ -286,7 +286,7 @@ signed short get_attackee_parade(void)
 
 		/* set a global pointer to the target */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
+			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		return host_readbs(get_spelltarget_e() + 0x1d);
 	}
@@ -315,7 +315,7 @@ signed short get_attackee_rs(void)
 
 		/* set a global pointer to the target */
 		ds_writed(SPELLTARGET_E,
-			(Bit32u)RealMake(datseg, 0xd0df + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
+			(Bit32u)RealMake(datseg, (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + host_readbs(get_spelluser() + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET));
 
 		return host_readbs(get_spelltarget_e() + 0x02);
 	}
@@ -745,9 +745,9 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 
 		if (host_readbs(hero + HERO_ENEMY_ID) >= 10) {
 
-			bonus += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (0xd0df + 25));
+			bonus += ds_readbs(host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 25));
 
-			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + (0xd0df + 49))) {
+			if (test_bit6(p_datseg + host_readbs(hero + HERO_ENEMY_ID) * SIZEOF_ENEMY_SHEET + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49))) {
 				return 0;
 			}
 		} else {
@@ -919,7 +919,7 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				ae_cost = get_spell_cost(l_di, 0);
 
-				ds_writew(0xac0e, -1);
+				ds_writew(SPELL_SPECIAL_AECOST, -1);
 
 				host_writeb(Real2Host(ds_readd(DTP2)), 0);
 
@@ -939,19 +939,19 @@ signed short use_spell(RealPt hero, signed short a2, signed char bonus)
 
 				retval = 1;
 
-				if (ds_readws(0xac0e) == 0) {
+				if (ds_readws(SPELL_SPECIAL_AECOST) == 0) {
 					retval = -1;
 
 					if (!host_readbs(Real2Host(ds_readd(DTP2)))) {
 						strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x978));
 					}
-				} else if (ds_readws(0xac0e) == -2) {
+				} else if (ds_readws(SPELL_SPECIAL_AECOST) == -2) {
 
 					strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x978));
 					sub_ae_splash(Real2Host(hero), get_spell_cost(l_di, 1));
 					retval = 0;
-				} else if (ds_readws(0xac0e) != -1) {
-					sub_ae_splash(Real2Host(hero), ds_readws(0xac0e));
+				} else if (ds_readws(SPELL_SPECIAL_AECOST) != -1) {
+					sub_ae_splash(Real2Host(hero), ds_readws(SPELL_SPECIAL_AECOST));
 				} else {
 					sub_ae_splash(Real2Host(hero), ae_cost);
 				}

@@ -44,10 +44,10 @@ void init_text(void)
 	split_textbuffer(Real2Host(ds_readd(ITEMSNAME)), (RealPt)ds_readd(BUFFER5_PTR), len);
 
 	handle = load_archive_file(ARCHIVE_FILE_MONNAMES);
-	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(0xd2a1)), 5000);
+	len = (signed short)read_archive_file(handle, Real2Host(ds_readd(MONNAMES_BUFFER)), 5000);
 	bc_close(handle);
 
-	split_textbuffer(Real2Host(ds_readd(MONNAMES)), (RealPt)ds_readd(0xd2a1), len);
+	split_textbuffer(Real2Host(ds_readd(MONNAMES_INDEX)), (RealPt)ds_readd(MONNAMES_BUFFER), len);
 
 }
 
@@ -70,7 +70,7 @@ void load_tx(signed short index)
 	ds_writew(TX_FILE_INDEX, index);
 }
 
-void load_city_ltx(signed short index)
+void load_tx2(signed short index)
 {
 	Bit32s len;
 	register signed short fd;
@@ -145,7 +145,7 @@ void prepare_chr_name(char *dst, char *src)
 			break;
 
 		/* maybe !isalnum(tmp_str[i]) */
-		if (!(ds_readbs(0xb4e9 + tmp_str[i]) & 0x0e)) {
+		if (!(ds_readbs(CHAR_TYPE_TABLE + tmp_str[i]) & 0x0e)) {
 			tmp_str[i] = 0x5f;
 		}
 	}
@@ -175,7 +175,7 @@ void prepare_sg_name(char *dst, char *src)
 		}
 
 		/* maybe !isalnum(tmp_str[i]) */
-		if (!(ds_readbs(0xb4e9 + tmp_str[i]) & 0x0e)) {
+		if (!(ds_readbs(CHAR_TYPE_TABLE + tmp_str[i]) & 0x0e)) {
 			tmp_str[i] = 0x5f;
 		}
 		i++;
@@ -285,7 +285,7 @@ signed short load_game_state(void)
 
 		bc__read(handle_gs, p_datseg + DATSEG_STATUS_START, status_length);
 
-		ds_writeb(0x45b8, 1);
+		ds_writeb(SPECIAL_SCREEN, 1);
 
 		/* read file table */
 		bc__read(handle_gs, Real2Host(ds_readd(SAVED_FILES_BUF)), 286 * 4);
@@ -408,10 +408,10 @@ signed short load_game_state(void)
 		ds_writew(REQUEST_REFRESH, retval = 1);
 		ds_writew(CHECK_DISEASE, 0);
 		ds_writew(CHECK_POISON, 0);
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 
 		if (ds_readbs(LOCATION) != LOCATION_TEMPLE) {
-			ds_writebs((0xbd38 + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
 		}
 
 		load_area_description(2);
@@ -875,7 +875,7 @@ void load_in_head(signed short head)
 
 		bc_close(handle);
 
-		ds_writew(0x515c, head);
+		ds_writew(LOADED_HEAD_ID, head);
 	}
 }
 

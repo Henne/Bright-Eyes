@@ -162,17 +162,17 @@ void tevent_037(void)
 					GUI_input(get_tx2(0xbc), 10);
 
 					/* check if the answer is "RAD" 1st */
-					if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + 0xb21e))
+					if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + STR_RAD1))
 					{
 						GUI_input(get_tx2(0xc0), 10);
 
 						/* check if the answer is "RAD" 2nd */
-						if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + 0xb222))
+						if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + STR_RAD2))
 						{
 							GUI_input(get_tx2(0xc4), 10);
 
 							/* check if the answer is "RAD" 3rd */
-							if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + 0xb226))
+							if (strcmp((char*)Real2Host(ds_readd(TEXT_INPUT_BUF)), (char*)p_datseg + STR_RAD3))
 							{
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
 									(char*)get_tx2(0xc8),
@@ -455,12 +455,12 @@ void tevent_052(void)
 
 			do {
 				/* check for a chopping tool */
-				if (get_first_hero_with_item(ds_readb(0xb135 + i)) != -1)
+				if (get_first_hero_with_item(ds_readb(TRAVEL_EVENT_AXES + i)) != -1)
 				{
 					done = 1;
 				}
 
-			} while(!done && ds_readb(0xb135 + ++i) != 255);
+			} while(!done && ds_readb(TRAVEL_EVENT_AXES + ++i) != 255);
 
 			if (done)
 			{

@@ -75,8 +75,8 @@ void sell_screen(Bit8u *shop_ptr)
 	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_H);
 	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_S);
 	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + SELL_SCREEN_STR_MONEY_D);
-	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6bff);
-	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6c05);
+	struct dummy3 array3 = *(struct dummy3*)(p_datseg + SELL_SCREEN_ITEMS_POSX);
+	struct dummy5 array5 = *(struct dummy5*)(p_datseg + SELL_SCREEN_ITEMS_POSY);
 #endif
 	Bit32s p_money;
 	Bit32s price = 0;
@@ -91,7 +91,7 @@ void sell_screen(Bit8u *shop_ptr)
 	signed short tmp[7][23];
 
 
-	ds_writew(0x29b4, 0);
+	ds_writew(HEROSWAP_ALLOWED, 0);
 	l8 = ds_writews(REQUEST_REFRESH, 1);
 	ds_writed(SELLITEMS, (Bit32u)((RealPt)ds_readd(FIG_FIGURE1_BUF) + 2100));
 
@@ -100,7 +100,7 @@ void sell_screen(Bit8u *shop_ptr)
 		if (ds_readws(REQUEST_REFRESH) != 0) {
 
 			set_var_to_zero();
-			ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+			ds_writeb(PP20_INDEX, 0xff);
 			memset(Real2Host(ds_readd(SELLITEMS)), 0, 2100);
 
 			for (items_x = 0; items_x <= 6; items_x++) {
@@ -470,10 +470,10 @@ void sell_screen(Bit8u *shop_ptr)
 							if (tmp[items_x][l_di] != 0) {
 								item_id = host_readws(hero3 + HERO_ITEM_HEAD + 14 * l_di);
 								drop_item(hero3, l_di, tmp[items_x][l_di]);
-								ds_writeb(0xe12d + item_id, ds_readbs(0xe12d + item_id) - tmp[items_x][l_di]);
+								ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) - tmp[items_x][l_di]);
 
-								if (ds_readbs(0xe12d + item_id) <= -10) {
-									ds_writeb(0xe12d + item_id, 0);
+								if (ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) <= -10) {
+									ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, 0);
 									sub_ptr_ws(get_itemsdat(item_id) + 8, host_readws(get_itemsdat(item_id) + 8) * 10 / 100);
 								}
 							}
@@ -553,8 +553,8 @@ void sell_screen(Bit8u *shop_ptr)
 
 	set_textcolor(fg_bak, bg_bak);
 	ds_writew(REQUEST_REFRESH, 1);
-	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
-	ds_writew(0x29b4, 1);
+	ds_writeb(PP20_INDEX, 0xff);
+	ds_writew(HEROSWAP_ALLOWED, 1);
 }
 
 #if !defined(__BORLANDC__)

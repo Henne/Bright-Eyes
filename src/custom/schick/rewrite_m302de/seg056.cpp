@@ -96,8 +96,8 @@ void buy_screen(void)
 	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_H);
 	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_S);
 	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + BUY_SCREEN_STR_MONEY_D);
-	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6bd7);
-	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6bdd);
+	struct dummy3 array3 = *(struct dummy3*)(p_datseg + BUY_SCREEN_ITEMS_POSX);
+	struct dummy5 array5 = *(struct dummy5*)(p_datseg + BUY_SCREEN_ITEMS_POSY);
 #endif
 	Bit32s price = 0;
 	Bit32s l9;
@@ -115,7 +115,7 @@ void buy_screen(void)
 #if !defined(__BORLANDC__)
 	struct dummy_c6 fmt_d_s = { "%d %s" };
 #else
-	struct dummy_c6 fmt_d_s = *(struct dummy_c6*)(p_datseg + 0x6be7);
+	struct dummy_c6 fmt_d_s = *(struct dummy_c6*)(p_datseg + BUY_SCREEN_STR_D_S);
 #endif
 	signed short l15 = 0;
 	signed short l16;
@@ -148,7 +148,7 @@ void buy_screen(void)
 
 			set_var_to_zero();
 
-			ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+			ds_writeb(PP20_INDEX, 0xff);
 			draw_loc_icons(4, 23, 26, 27, 8);
 			draw_main_screen();
 
@@ -317,7 +317,7 @@ void buy_screen(void)
 						set_textcolor(111, 0);
 					} else {
 
-						if (!is_in_word_array(item_id, (short*)Real2Host((ds_readds(WEARABLE_ITEMS + 4 * host_readbs(hero1 + HERO_TYPE)))))) {
+						if (!is_in_word_array(item_id, (short*)Real2Host((ds_readds((WEARABLE_ITEMS_INDEX - 4) + 4 * host_readbs(hero1 + HERO_TYPE)))))) {
 							set_textcolor(201, 0);
 						}
 					}
@@ -554,11 +554,11 @@ void buy_screen(void)
 						item_id = host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di);
 						given_items = get_item(item_id, 1, host_readws(Real2Host(ds_readd(BUY_SHOPPING_CART)) + 4 * l_di + 2));
 
-						ds_writeb(0xe12d + item_id, ds_readbs(0xe12d + item_id) + given_items);
+						ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) + given_items);
 
-						if (ds_readbs(0xe12d + item_id) >= 10) {
+						if (ds_readbs(MARKET_ITEMSALDO_TABLE + item_id) >= 10) {
 
-							ds_writeb(0xe12d + item_id, 0);
+							ds_writeb(MARKET_ITEMSALDO_TABLE + item_id, 0);
 
 							add_ptr_ws(get_itemsdat(item_id) + 8, host_readws(get_itemsdat(item_id) + 8) * 10 / 100);
 						}
@@ -617,7 +617,7 @@ void buy_screen(void)
 
 	set_textcolor(fg_bak, bg_bak);
 	ds_writew(REQUEST_REFRESH, 1);
-	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+	ds_writeb(PP20_INDEX, 0xff);
 }
 
 /**

@@ -107,7 +107,7 @@ RealPt EMS_norm_ptr(RealPt p) {
 unsigned short EMS_init() {
 
 	if (EMS_installed()) {
-		ds_writed(0x4baa, EMS_get_frame_ptr());
+		ds_writed(EMS_FRAME_PTR, EMS_get_frame_ptr());
 		return 1;
 	}
 

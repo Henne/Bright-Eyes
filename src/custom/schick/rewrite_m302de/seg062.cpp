@@ -51,7 +51,7 @@ void ask_miracle(void)
 	l3 = 0;
 	fi_bak = ds_readws(TEXT_FILE_INDEX);
 
-	load_city_ltx(ARCHIVE_FILE_WONDER_LTX);
+	load_tx2(ARCHIVE_FILE_WONDER_LTX);
 
 	strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_tx2(0));
 
@@ -481,7 +481,7 @@ void ask_miracle(void)
 	if (fi_bak != -1 && fi_bak != ARCHIVE_FILE_WONDER_LTX
 	    && fi_bak != ARCHIVE_FILE_TAVERN_TLK
 	    && (fi_bak < 156 || fi_bak > 176)) {
-		load_city_ltx(fi_bak);
+		load_tx2(fi_bak);
 	}
 }
 

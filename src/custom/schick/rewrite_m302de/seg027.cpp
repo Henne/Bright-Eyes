@@ -391,31 +391,31 @@ void load_ani(const signed short nr)
 	ds_writed(ANI_MAIN_PTR,
 		(Bit32u)(F_PADD(ani_buffer, host_readd(Real2Host(ds_readd(BUFFER9_PTR))))));
 	/* set start of palette */
-	ds_writed(0xce3b,
+	ds_writed(ANI_PALETTE,
 		(Bit32u)(F_PADD(F_PADD(ani_buffer, host_readd(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 4L)))), 6L)));
 	//	(Bit32u)(host_readd(Real2Host(ds_readd(BUFFER9_PTR)) + 4) + ani_buffer + 6));
 
 	/* read some bytes between data and palette */
-	ds_writew(0xc3e9,
-		host_readw(Real2Host(F_PADD(ds_readd(0xce3b), -6))));
-	ds_writew(0xc3eb,
-		host_readw(Real2Host(F_PADD(ds_readd(0xce3b), -4))));
+	ds_writew(ANI_UNKNOWN1,
+		host_readw(Real2Host(F_PADD(ds_readd(ANI_PALETTE), -6))));
+	ds_writew(ANI_UNKNOWN2,
+		host_readw(Real2Host(F_PADD(ds_readd(ANI_PALETTE), -4))));
 	/* compression type */
-	ds_writeb(0xce39,
-		host_readb(Real2Host(F_PADD(ds_readd(0xce3b), -1))));
-	ds_writeb(0xce3a,
-		host_readb(Real2Host(F_PADD(ds_readd(0xce3b), -2))));
+	ds_writeb(ANI_COMPR_FLAG,
+		host_readb(Real2Host(F_PADD(ds_readd(ANI_PALETTE), -1))));
+	ds_writeb(ANI_COMPR_TYPE,
+		host_readb(Real2Host(F_PADD(ds_readd(ANI_PALETTE), -2))));
 
-	p6 = Real2Host(F_PADD(ds_readd(0xce3b), 3 * ds_readb(0xce3a)));
+	p6 = Real2Host(F_PADD(ds_readd(ANI_PALETTE), 3 * ds_readb(ANI_COMPR_TYPE)));
 
 	/* set picture size */
-	ds_writew(0xc3e7, host_readw(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 8))));
-	ds_writeb(0xc3ed, host_readb(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 10))));
+	ds_writew(ANI_WIDTH, host_readw(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 8))));
+	ds_writeb(ANI_HEIGHT, host_readb(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 10))));
 	/* set number of areas */
-	ds_writeb(0xc3ee, host_readb(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 11))));
+	ds_writeb(ANI_AREACOUNT, host_readb(Real2Host(F_PADD(ds_readd(BUFFER9_PTR), 11))));
 
 	/* Process Main Picture */
-	if (ds_readb(0xce39) != 0) {
+	if (ds_readb(ANI_COMPR_FLAG) != 0) {
 		len_4 = host_readd(Real2Host(ds_readd(ANI_MAIN_PTR)));
 		p1 = Real2Host(ds_readd(ANI_MAIN_PTR));
 
@@ -446,17 +446,17 @@ void load_ani(const signed short nr)
 		memcpy(dst, p6 + offset, len);
 
 #if !defined(__BORLANDC__)
-		ds_writed(0xce3b, ds_readd(0xce3b) + offset);
+		ds_writed(ANI_PALETTE, ds_readd(0xce3b) + offset);
 #else
-		*(HugePt*)(p_datseg + 0xce3b) += offset;
+		*(HugePt*)(p_datseg + ANI_PALETTE) += offset;
 #endif
 
 		p6 += offset;
 	}
 
 	/* Process the Areas */
-	for (i_area = 0; ds_readbs(0xc3ee) > i_area; i_area++) {
-		p5 = Real2Host(RealMake(datseg, 0xc3ef + i_area * 0x107));
+	for (i_area = 0; ds_readbs(ANI_AREACOUNT) > i_area; i_area++) {
+		p5 = Real2Host(RealMake(datseg, ANI_AREA_TABLE + i_area * 0x107));
 		p3 = host_readd(Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), 4 * i_area), 0xc)));
 		p_area = Real2Host(F_PADD(ds_readd(BUFFER9_PTR), p3));
 		strncpy((char*)p5, (char*)p_area, 4);
@@ -469,7 +469,7 @@ void load_ani(const signed short nr)
 
 		host_writeb(p5 + 0x0c, (signed char)(area_pics = host_readbs(p_area + 0x0b)));
 
-		if (ds_readb(0xce39) != 0) {
+		if (ds_readb(ANI_COMPR_FLAG) != 0) {
 
 			p4 = host_readd(p_area + 0xc);
 			p4 += offset;
@@ -504,9 +504,9 @@ void load_ani(const signed short nr)
 			dst += offset_2;
 			memcpy(dst, p6 + offset_2, (unsigned short)len);
 #if !defined(__BORLANDC__)
-		ds_writed(0xce3b, ds_readd(0xce3b) + offset_2);
+		ds_writed(ANI_PALETTE, ds_readd(0xce3b) + offset_2);
 #else
-		*(HugePt*)(p_datseg + 0xce3b) += offset_2;
+		*(HugePt*)(p_datseg + ANI_PALETTE) += offset_2;
 #endif
 			p6 += offset_2;
 			area_size = (unsigned char)host_readb(p5 + 8)
@@ -537,7 +537,7 @@ void load_ani(const signed short nr)
 
 	ani_len = p6 - Real2Host(ds_readd(BUFFER9_PTR));
 	/* this is always true */
-	if (ani_len > (Bit32s)ds_readd(0xce43)) {
+	if (ani_len > (Bit32s)ds_readd(ANI_UNKNOWN4)) {
 		ds_writew(AREA_PREPARED, 0xffff);
 	}
 }

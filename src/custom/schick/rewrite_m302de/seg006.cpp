@@ -190,7 +190,7 @@ RealPt seg006_033c(signed short v)
 	signed short i;
 
 	for (i = 0; i < 20; i++) {
-		if (v == ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_LIST_POS + (i * SIZEOF_ENEMY_SHEET)))
+		if (v == ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_FIGHTER_ID + (i * SIZEOF_ENEMY_SHEET)))
 #if !defined(__BORLANDC__)
 			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * SIZEOF_ENEMY_SHEET);
 #else
@@ -244,7 +244,7 @@ void FIG_reset_12_13(signed char fighter_id)
 
 		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-		while (ds_readb(0xe35a + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
+		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
 			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
 		}
 		host_writeb(ptr2 + 0x12, 0);
@@ -272,7 +272,7 @@ void FIG_set_12_13(signed short fighter_id)
 
 		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-		while (ds_readb(0xe35a + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
+		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
 
 			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
 
@@ -412,13 +412,17 @@ signed char FIG_add_to_list(signed char fighter_id)
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	if (ds_readbs((FIG_LIST_ELEM+17)) != -1) {
+	/* The list is filled in the order of rendering, i.e. from rear to front:
+	 * (x1,y1) is rendered before (x2,y2) if (x1 < x2) || (x1 == x2 && y1 > y2)
+	 * On the same chessboard field, lower z is rendered before larger z.
+	 */
+	if (ds_readbs((FIG_LIST_ELEM + 0x11)) != -1) {
 		while ((host_readbs(Real2Host(p2) + 3) <= x) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) >= y) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) != y ||
-		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs((FIG_LIST_ELEM+17))))
+		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs((FIG_LIST_ELEM + 0x11))))
 		{
 
 			/* p2->next != NULL */
@@ -528,11 +532,11 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 	p1 = F_PADD((RealPt)(ds_readd(BUFFER8_PTR)), -1288);
 
-	p_enemy = p_datseg + 0xd0df + id * SIZEOF_ENEMY_SHEET;
+	p_enemy = p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + id * SIZEOF_ENEMY_SHEET;
 
-	if (ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
+	if (ds_readbs(GFXTAB_FIGURES_MAIN + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
 
-		nvf.src = Real2Host(load_fight_figs(ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5)));
+		nvf.src = Real2Host(load_fight_figs(ds_readbs(GFXTAB_FIGURES_MAIN + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5)));
 		nvf.dst = Real2Host(p1);
 		nvf.nr = 1;
 		nvf.type = 0;
@@ -542,7 +546,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 		process_nvf(&nvf);
 
 		ds_writew(FIGHT_FIGS_INDEX,
-			ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5));
+			ds_readbs(GFXTAB_FIGURES_MAIN + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5));
 	}
 
 	/* save and set text colors */

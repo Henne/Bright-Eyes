@@ -58,7 +58,7 @@ signed short DNG11_handler(void)
 
 			if (random_schick(100) <= 50)
 			{
-				ds_writew((0xd325 + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x82f))));
+				ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x82f))));
 				do_fight(FIGHTS_F131_01B);
 			}
 		}
@@ -301,7 +301,7 @@ signed short DNG11_handler(void)
 
 		timewarp(HOURS(3));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 	}
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);

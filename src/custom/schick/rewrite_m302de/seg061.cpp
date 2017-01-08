@@ -54,7 +54,7 @@ void do_temple(void)
 			/* search which god owns this temple */
 			ds_writew(TEMPLE_GOD, 1);
 			for (l_si = 1; l_si < 15; l_si++) {
-				if (is_in_byte_array((signed char)ds_readws(TYPEINDEX), Real2Host(ds_readd(0x6e36 + 4 * l_si))))
+				if (is_in_byte_array((signed char)ds_readws(TYPEINDEX), Real2Host(ds_readd(GOD_TEMPLES_INDEX + 4 * l_si))))
 				{
 					ds_writew(TEMPLE_GOD, l_si);
 					break;
@@ -348,7 +348,7 @@ signed short char_erase(void)
 	signed short unlink_ret;
 	RealPt ptr;
 
-	if (ds_readbs(0x4c3a) != 0) {
+	if (ds_readbs(RENDERBUF_IN_USE_FLAG) != 0) {
 		ptr = F_PADD((HugePt)ds_readd(BUFFER9_PTR), 30000);
 	} else {
 		ptr = (RealPt)ds_readd(RENDERBUF_PTR) + 50000;

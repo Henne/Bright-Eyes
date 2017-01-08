@@ -7100,8 +7100,8 @@ static int seg026(unsigned short offs) {
 	}
 	case 0x4d: {
 		Bit16s index = CPU_Pop16();
-		D1_LOG("load_city_ltx(%s)\n", get_fname(index));
-		load_city_ltx(index);
+		D1_LOG("load_tx2(%s)\n", get_fname(index));
+		load_tx2(index);
 		CPU_Push16(index);
 		return 1;
 	}

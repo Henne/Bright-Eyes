@@ -56,10 +56,10 @@ signed short DNG02_handler(void)
 		{
 		} else {
 
-			ds_writew((0xd325 + 0),
-				ds_writew((0xd325 + 2),
-				ds_writew((0xd325 + 4),
-				ds_writew((0xd325 + 6), 0x206))));
+			ds_writew((FIG_FLEE_POSITION + 0),
+				ds_writew((FIG_FLEE_POSITION + 2),
+				ds_writew((FIG_FLEE_POSITION + 4),
+				ds_writew((FIG_FLEE_POSITION + 6), 0x206))));
 
 			do_fight(FIGHTS_F046_01);
 		}
@@ -403,10 +403,10 @@ signed short DNG02_handler(void)
 
 	} else if ((target_pos == 0xc0b || target_pos == 0xe0b || target_pos == 0xd0a || target_pos == 0xd0c) && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writew((0xd325 + 0),
-			ds_writew((0xd325 + 2),
-			ds_writew((0xd325 + 4),
-			ds_writew((0xd325 + 6), 0xc0b))));
+		ds_writew((FIG_FLEE_POSITION + 0),
+			ds_writew((FIG_FLEE_POSITION + 2),
+			ds_writew((FIG_FLEE_POSITION + 4),
+			ds_writew((FIG_FLEE_POSITION + 6), 0xc0b))));
 
 		if (!do_fight(FIGHTS_F046_31))
 		{
@@ -556,7 +556,7 @@ signed short DNG02_handler(void)
 
 		timewarp(HOURS(3));
 
-		ds_writeb(0x4475, 3);
+		ds_writeb(FADING_STATE, 3);
 
 	}
 

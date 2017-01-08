@@ -180,7 +180,7 @@ void do_inn(void)
 			refresh = 0;
 		}
 
-		inn_ptr = p_datseg + 0x673c + 4 * ds_readws(TYPEINDEX);
+		inn_ptr = p_datseg + INN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX);
 
 		handle_gui_input();
 
@@ -421,7 +421,7 @@ void do_inn(void)
 
 		} else if (ds_readws(ACTION) == 136 && ds_readws(COMBO_MODE) != 0) {
 
-			tavern_ptr = p_datseg + 0x6c84 + 4 * ds_readws(TYPEINDEX);
+			tavern_ptr = p_datseg + TAVERN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX);
 
 			if (host_readws(tavern_ptr) >= 6 && host_readws(tavern_ptr) <= 13 &&
 				ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {

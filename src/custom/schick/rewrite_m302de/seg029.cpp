@@ -35,7 +35,7 @@ static const struct coord icon_pos[9] = {
 	{241, 111}, {268, 111}, {295, 111}
 };
 
-/* DS:0x5ecc - DS:0x5ed4 */
+/* DS:LOADED_MENU_ICONS - DS:0x5ed4 */
 static signed char icon_array[9] = {
 	-2, -2, -2,
 	-2, -2, -2,
@@ -75,19 +75,19 @@ void draw_playmask(void)
 
 	wait_for_vsync();
 
-	set_color(p_datseg + 0xb22d, 0);
+	set_color(p_datseg + COLOR_BLACK, 0);
 
 	set_palette(p_datseg + 0x27e3, 0xe0, 0x20);
 
-	ds_writew(0xce41, 16);
-	ds_writew(0xce3f, 2);
+	ds_writew(ANI_POSX, 16);
+	ds_writew(ANI_POSY, 2);
 
 	set_textcolor(0x1f, 0x1b);
 
-	ds_writew(0xd2d9, 196);
-	ds_writew(0xd2d7, 12);
-	ds_writew(0xd2d3, 103);
-	ds_writew(0xd2d5, 113);
+	ds_writew(TEXTLINE_POSX, 196);
+	ds_writew(TEXTLINE_POSY, 12);
+	ds_writew(TEXTLINE_UNKNOWN, 103);
+	ds_writew(TEXTLINE_MAXLEN, 113);
 
 	ds_writew(TXT_TABPOS1, 205);
 #if !defined(__BORLANDC__)
@@ -179,7 +179,7 @@ void draw_status_line(void)
 
 				/* load skull if hero is dead */
 				if (hero_dead(get_hero(i))) {
-					head_bak = ds_readw(0x515c);
+					head_bak = ds_readw(LOADED_HEAD_ID);
 					load_in_head(41);
 				}
 
@@ -198,7 +198,7 @@ void draw_status_line(void)
 
 				/* load skull if hero is dead */
 				if (hero_dead(get_hero(i))) {
-					head_bak = ds_readw(0x515c);
+					head_bak = ds_readw(LOADED_HEAD_ID);
 					load_in_head(41);
 				}
 
@@ -271,7 +271,7 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 	bc_close(fd);
 
 	/* set a real or blank icon */
-	ds_writeb(0x5ecc + pos, (fileindex == 0x0f) ? icon : -1);
+	ds_writeb(LOADED_MENU_ICONS + pos, (fileindex == ARCHIVE_FILE_ICONS) ? icon : -1);
 }
 
 /**
@@ -294,11 +294,11 @@ void draw_icons(void)
 		ds_writew(PIC_COPY_Y2, ds_readw(GUI_BUTTONS_POS + i * 4 + 2) + 23);
 		ds_writed(PIC_COPY_SRC, (Bit32u)((RealPt)ds_readd(BUF_ICON) + i * 576));
 
-		if (ds_readbs(0xbd38 + i) != -1) {
-			if (ds_readbs(0x5ecc + i) != ds_readbs(0xbd38 + i))
-				load_icon(ARCHIVE_FILE_ICONS, ds_readbs(0xbd38 + i), i);
+		if (ds_readbs(NEW_MENU_ICONS + i) != -1) {
+			if (ds_readbs(LOADED_MENU_ICONS + i) != ds_readbs(NEW_MENU_ICONS + i))
+				load_icon(ARCHIVE_FILE_ICONS, ds_readbs(NEW_MENU_ICONS + i), i);
 		} else {
-			if (ds_readbs(0x5ecc + i) != -1)
+			if (ds_readbs(LOADED_MENU_ICONS + i) != -1)
 				load_icon(ARCHIVE_FILE_BICONS, i, i);
 		}
 
@@ -330,7 +330,7 @@ void draw_main_screen(void)
 
 	draw_compass();
 
-	ds_writew(WALLCLOCK_UPDATE, ds_writew(0xe10d, 1));
+	ds_writew(WALLCLOCK_UPDATE, ds_writew(WALLCLOCK_REDRAW, 1));
 
 	set_textcolor(0x1f, 0x1b);
 }
