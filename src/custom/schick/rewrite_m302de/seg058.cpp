@@ -140,8 +140,8 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	struct dummy_c5 fmt_h = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_H);
 	struct dummy_c5 fmt_s = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_S);
 	struct dummy_c5 fmt_d = *(struct dummy_c5*)(p_datseg + SMITH_STR_MONEY_D);
-	struct dummy3 array3 = *(struct dummy3*)(p_datseg + 0x6c73);
-	struct dummy5 array5 = *(struct dummy5*)(p_datseg + 0x6c79);
+	struct dummy3 array3 = *(struct dummy3*)(p_datseg + SMITH_ITEMS_POSX);
+	struct dummy5 array5 = *(struct dummy5*)(p_datseg + SMITH_ITEMS_POSY);
 #endif
 
 	Bit32s price;
@@ -158,12 +158,12 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 		if (ds_readds(SMITH_REPAIRITEMS + 2 + 6 * a1) > ds_readds(DAY_TIMER)) {
 			/* not ready yet */
-			GUI_output(get_ltx(0x794));
+			GUI_output(get_ttx(0x794));
 
 		} else if (get_item(ds_readws(SMITH_REPAIRITEMS + 6 * a1), 1, 1)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x798),
+				(char*)get_ttx(0x798),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, ds_readws(SMITH_REPAIRITEMS + 6 * a1), 0)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -174,7 +174,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	} else {
 
 		set_var_to_zero();
-		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+		ds_writeb(PP20_INDEX, 0xff);
 
 		draw_loc_icons(5, 23, 26, 27, 28, 8);
 		draw_main_screen();
@@ -208,7 +208,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 				if (l10 != 0) {
 
-					hero_pos = select_hero_ok(get_ltx(0x7bc));
+					hero_pos = select_hero_ok(get_ttx(0x7bc));
 
 					hero2 = get_hero(hero_pos);
 
@@ -251,7 +251,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 				do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 87, 35, 131, -1);
 				do_v_line((RealPt)ds_readd(FRAMEBUF_PTR), 152, 35, 131, -1);
 
-				nvf.dst = Real2Host(ds_readd(BUFFER1_PTR));
+				nvf.dst = Real2Host(ds_readd(RENDERBUF_PTR));
 				nvf.src = Real2Host(ds_readd(BUFFER10_PTR));
 				nvf.type = 0;
 				nvf.width =  (Bit8u*)&width;
@@ -269,7 +269,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 							ds_writew(PIC_COPY_Y1, array5.a[l_si]);
 							ds_writew(PIC_COPY_X2, array3.a[items_x] + 15);
 							ds_writew(PIC_COPY_Y2, array5.a[l_si] + 15);
-							ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+							ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 
 							nvf.nr = host_readws(get_itemsdat(j));
 
@@ -344,11 +344,11 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 			if (ds_readws(MOUSE2_EVENT) != 0  || ds_readws(ACTION) == 73) {
 
 				answer = GUI_radio(NULL, 5,
-						get_ltx(0x6c4),
-						get_ltx(0x6cc),
-						get_ltx(0x6d0),
-						get_ltx(0x6f8),
-						get_ltx(0x6d4)) - 1;
+						get_ttx(0x6c4),
+						get_ttx(0x6cc),
+						get_ttx(0x6d0),
+						get_ttx(0x6f8),
+						get_ttx(0x6d4)) - 1;
 
 				if (answer != -2) {
 					ds_writew(ACTION, answer + 129);
@@ -370,7 +370,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 				p_money = get_party_money();
 
 				if (host_readws(Real2Host(ds_readd(SELLITEMS)) + 7 * (l7 + item) + 2) == 0) {
-					GUI_output(get_ltx(0x79c));
+					GUI_output(get_ttx(0x79c));
 				} else {
 
 
@@ -385,7 +385,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), price);
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0x7a0),
+							(char*)get_ttx(0x7a0),
 							(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item_id, 0)),
 							(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
@@ -398,7 +398,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						price -= (percent * price) / 100L;
 
 						if (percent == 0 && p_money > price) {
-							GUI_output(get_ltx(0x7a4));
+							GUI_output(get_ttx(0x7a4));
 							l12 = 2;
 						} else if (percent >= percent_old) {
 							j = 2;
@@ -406,7 +406,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 							break;
 						} else {
 
-							answer = select_hero_ok_forced(get_ltx(0x6e8));
+							answer = select_hero_ok_forced(get_ttx(0x6e8));
 
 							hero1 = get_hero(answer);
 
@@ -416,20 +416,20 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 						if (l12 > 0) {
 
 							if (p_money < price) {
-								GUI_output(get_ltx(0x644));
+								GUI_output(get_ttx(0x644));
 							} else {
 								if (l12 != 2) {
-									GUI_output(get_ltx(0x7b0));
+									GUI_output(get_ttx(0x7b0));
 								}
 
 								ds_writew(SMITH_REPAIRITEMS + 6 * a1, item_id);
 
 								if (ds_readds(DAY_TIMER) > HOURS(14)) {
 									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, HOURS(23));
-									GUI_output(get_ltx(0x7a8));
+									GUI_output(get_ttx(0x7a8));
 								} else {
 									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, ds_readd(DAY_TIMER) + HOURS(6));
-									GUI_output(get_ltx(0x7ac));
+									GUI_output(get_ttx(0x7ac));
 								}
 
 								drop_item(hero2, host_readbs(Real2Host(ds_readd(SELLITEMS)) + 6 + 7 * (l7 + item)), 1);
@@ -442,10 +442,10 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 						}
 						 if (j == 2) {
-							GUI_output(get_ltx(0x7b4));
+							GUI_output(get_ttx(0x7b4));
 							done = 1;
 						} else {
-							GUI_output(get_ltx(0x7b8));
+							GUI_output(get_ttx(0x7b8));
 							percent_old = percent;
 						}
 
@@ -476,7 +476,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 
 		set_textcolor(fg_bak, bg_bak);
 		ds_writew(REQUEST_REFRESH, 1);
-		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+		ds_writeb(PP20_INDEX, 0xff);
 	}
 }
 
@@ -491,14 +491,14 @@ void do_smith(void)
 
 	if (ds_readds(DAY_TIMER) < HOURS(6) || ds_readds(DAY_TIMER) > HOURS(20)) {
 
-		GUI_output(get_ltx(0x78c));
+		GUI_output(get_ttx(0x78c));
 		turnaround();
 		return;
 	}
 
-	if (ds_readbs(0x3472 + ds_readws(TYPEINDEX)) != 0 ||
-		ds_readbs(0x34a4 + ds_readws(TYPEINDEX)) != 0 ||
-		(ds_readws(TYPEINDEX) == 1 && ds_readb(0x3fc6))) {
+	if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
+		ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
+		(ds_readws(TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG))) {
 
 		talk_smith();
 		turnaround();
@@ -507,7 +507,7 @@ void do_smith(void)
 
 	load_ggsts_nvf();
 	ds_writew(REQUEST_REFRESH, 1);
-	smith_ptr = p_datseg + 0x6c10 + 2 * ds_readws(TYPEINDEX);
+	smith_ptr = p_datseg + SMITH_DESCR_TABLE + 2 * ds_readws(TYPEINDEX);
 	ds_writew(PRICE_MODIFICATOR, 4);
 
 	while (!done) {
@@ -519,7 +519,7 @@ void do_smith(void)
 			set_var_to_zero();
 			load_ani(5);
 			init_ani(0);
-			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
 			set_audio_track(ARCHIVE_FILE_SMITH_XMI);
 			ds_writew(REQUEST_REFRESH, 0);
 		}
@@ -530,10 +530,10 @@ void do_smith(void)
 
 			ds_writew(TEXTBOX_WIDTH, 4);
 
-			answer = GUI_radio(get_ltx(0x7c0), 3,
-						get_ltx(0x55c),
-						get_ltx(0x7c4),
-						get_ltx(0x7c8)) - 1;
+			answer = GUI_radio(get_ttx(0x7c0), 3,
+						get_ttx(0x55c),
+						get_ttx(0x7c4),
+						get_ttx(0x7c8)) - 1;
 
 			/* TODO: why should it be 3??? Better make a backup */
 			ds_writew(TEXTBOX_WIDTH, 3);
@@ -550,8 +550,8 @@ void do_smith(void)
 			talk_smith();
 			ds_writew(REQUEST_REFRESH, 1);
 
-			if (ds_readbs(0x3472 + ds_readws(TYPEINDEX)) != 0 ||
-				ds_readbs(0x34a4 + ds_readws(TYPEINDEX)) != 0 ||
+			if (ds_readbs(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
+				ds_readbs(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ||
 				ds_readbs(DUNGEON_INDEX) != 0)
 			{
 				done = 1;
@@ -573,26 +573,26 @@ void talk_smith(void)
 void TLK_schmied(signed short state)
 {
 	if (!state) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x3472 + ds_readws(TYPEINDEX)) != 0 ? 1 :
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 1 :
 					(ds_readws(TYPEINDEX) == 17 ? 27 :
-					(ds_readws(TYPEINDEX) == 1 && ds_readb(0x3fc6) != 0 ? 28 : 4)));
+					(ds_readws(TYPEINDEX) == 1 && ds_readb(DNG14_CELLAREXIT_FLAG) != 0 ? 28 : 4)));
 	} else if (state == 1) {
-		ds_writew(DIALOG_NEXT_STATE, ds_readb(0x34a4 + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
+		ds_writew(DIALOG_NEXT_STATE, ds_readb(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 2 : 3);
 	} else if (state == 3) {
-		ds_writeb(0x34a4 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX), 1);
 	} else if (state == 6 || state == 26) {
 		tumult();
-		ds_writeb(0x3472 + ds_readws(TYPEINDEX), ds_writeb(0x34a4 + ds_readws(TYPEINDEX), 1));
+		ds_writeb(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX), ds_writeb(SMITH_FLOGGED_FLAGS + ds_readws(TYPEINDEX), 1));
 	} else if (state == 11 || state == 14 || state == 16 || state == 23) {
-		ds_writeb(0x3472 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(SMITH_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 	} else if (state == 19 || state == 31) {
 		ds_writew(PRICE_MODIFICATOR, 3);
 	} else if (state == 30) {
 
 		DNG_enter_dungeon(14);
 		ds_writeb(DUNGEON_LEVEL, 3);
-		ds_writews(0x2d83, ds_writews(X_TARGET, 11));
-		ds_writews(0x2d85, ds_writews(Y_TARGET, 2));
+		ds_writews(X_TARGET_BAK, ds_writews(X_TARGET, 11));
+		ds_writews(Y_TARGET_BAK, ds_writews(Y_TARGET, 2));
 		ds_writeb(DIRECTION, 2);
 	}
 }

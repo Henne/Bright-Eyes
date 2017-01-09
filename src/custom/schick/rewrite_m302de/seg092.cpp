@@ -34,7 +34,7 @@ namespace M302de {
 void chest_protected_normal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x818));
+	print_msg_with_first_hero(get_ttx(0x818));
 
 	/* the first hero gets wounded with 1W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), random_schick(6));
@@ -43,13 +43,13 @@ void chest_protected_normal(void)
 void chest_closed(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x81c));
+	print_msg_with_first_hero(get_ttx(0x81c));
 }
 
 void chest_protected_heavy(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x820));
+	print_msg_with_first_hero(get_ttx(0x820));
 
 	/* the first hero gets wounded with 2W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
@@ -58,43 +58,43 @@ void chest_protected_heavy(void)
 void chest_poisoned1(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x820));
+	print_msg_with_first_hero(get_ttx(0x820));
 
 	/* the first hero gets wounded with 2W6 */
-	sub_hero_le(Real2Host((RealPt)(ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
+	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
 
 	/* and gets poisoned */
-	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 1);
+	hero_gets_poisoned(Real2Host(ds_readd(MAIN_ACTING_HERO)), 1);
 }
 
 void chest_poisoned2(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x820));
+	print_msg_with_first_hero(get_ttx(0x820));
 
 	/* the first hero gets wounded with 2W6 */
-	sub_hero_le(Real2Host((RealPt)(ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
+	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(2, 6, 0));
 
 	/* and gets poisoned */
-	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 2);
+	hero_gets_poisoned(Real2Host(ds_readd(MAIN_ACTING_HERO)), 2);
 }
 
 void chest_poisoned3(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x820));
+	print_msg_with_first_hero(get_ttx(0x820));
 
 	/* the first hero gets wounded with 1W6 */
-	sub_hero_le(Real2Host((RealPt)(ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group()))), dice_roll(1, 6, 0));
+	sub_hero_le(Real2Host((RealPt)(ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group()))), dice_roll(1, 6, 0));
 
 	/* and gets poisoned */
-	hero_gets_poisoned(Real2Host(ds_readd(0x3e20)), 8);
+	hero_gets_poisoned(Real2Host(ds_readd(MAIN_ACTING_HERO)), 8);
 }
 
 void chest_protected_brutal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x820));
+	print_msg_with_first_hero(get_ttx(0x820));
 
 	/* the first hero gets wounded with 4W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
@@ -103,19 +103,19 @@ void chest_protected_brutal(void)
 void chest_stoned(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0xc20));
+	print_msg_with_first_hero(get_ttx(0xc20));
 
 	/* save pointer of the first hero */
-	ds_writed(0x3e20, (Bit32u)get_first_hero_available_in_group());
+	ds_writed(MAIN_ACTING_HERO, (Bit32u)get_first_hero_available_in_group());
 
 	/* and make him stoned */
-	or_ptr_bs(Real2Host(ds_readd(0x3e20)) + 0xaa, 0x04);
+	or_ptr_bs(Real2Host(ds_readd(MAIN_ACTING_HERO)) + 0xaa, 0x04);
 }
 
 void chest_ignifax_normal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0xc24));
+	print_msg_with_first_hero(get_ttx(0xc24));
 
 	/* the first hero gets wounded with 2W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 0));
@@ -124,7 +124,7 @@ void chest_ignifax_normal(void)
 void chest_ignifax_brutal(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0xc24));
+	print_msg_with_first_hero(get_ttx(0xc24));
 
 	/* the first hero gets wounded with 4W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 0));
@@ -133,7 +133,7 @@ void chest_ignifax_brutal(void)
 void chest_ignifax_heavy(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0xc24));
+	print_msg_with_first_hero(get_ttx(0xc24));
 
 	/* the first hero gets wounded with 3W6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(3, 6, 0));
@@ -142,7 +142,7 @@ void chest_ignifax_heavy(void)
 void chest_crossbow_bolts(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0xc50));
+	print_msg_with_first_hero(get_ttx(0xc50));
 
 	/* the first hero gets wounded with 2W6+6 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(2, 6, 6));
@@ -167,14 +167,14 @@ void chest_cursed(void)
 		}
 
 		/* print a message */
-		print_msg_with_first_hero(get_ltx(0x8cc));
+		print_msg_with_first_hero(get_ttx(0x8cc));
 	}
 }
 
 void chest_fulminictus(void)
 {
 	/* a protected chest */
-	print_msg_with_first_hero(get_ltx(0x8d0));
+	print_msg_with_first_hero(get_ttx(0x8d0));
 
 	/* the first hero gets wounded with 4W6+5 */
 	sub_hero_le(Real2Host(get_first_hero_available_in_group()), dice_roll(4, 6, 5));
@@ -211,12 +211,12 @@ void loot_simple_chest(Bit8u *chest)
 
 		if (item_nr == 0) {
 			/* this chest is empty */
-			GUI_output(get_ltx(0x828));
+			GUI_output(get_ttx(0x828));
 			break;
 		} else {
 
 			/* show radio menu with item names */
-			item_nr = GUI_radio(get_ltx(0x824), (signed char)item_nr,
+			item_nr = GUI_radio(get_ttx(0x824), (signed char)item_nr,
 						names[0], names[1], names[2], names[3],
 						names[4], names[5], names[6], names[7],
 						names[8], names[9], names[10], names[11],
@@ -366,6 +366,7 @@ struct chest {
 	signed short food;
 };
 
+/* handle special chest */
 void seg092_06b4(signed short a1)
 {
 	signed short x;
@@ -375,7 +376,7 @@ void seg092_06b4(signed short a1)
 	RealPt chest_ptr;
 	Bit8u *ptr;
 
-	chest_ptr = (RealPt)ds_readd(0x9d84 + 4 * ds_readbs(DUNGEON_INDEX));
+	chest_ptr = (RealPt)ds_readd(DNG_SPECIALCHEST_INDEX + 4 * ds_readbs(DUNGEON_INDEX));
 	ptr = p_datseg + DNG_MAP;
 	ds_writew(GET_EXTRA_LOOT, 0);
 	x = ds_readws(X_TARGET);
@@ -450,7 +451,7 @@ void seg092_06b4(signed short a1)
 			/* There is money in the chest */
 			make_valuta_str((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), host_readw(Real2Host(chest_ptr) + 17));
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xc64),
+				(char*)get_ttx(0xc64),
 				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -481,7 +482,7 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 			if (l_di == -99) {
 				/* unlucky, your lockpicks break... */
 
-				print_msg_with_first_hero(get_ltx(0x854));
+				print_msg_with_first_hero(get_ttx(0x854));
 				or_ptr_bs(hero + (HERO_ITEM_HEAD+4) + 14 * l_si, 1);
 
 				/* ... and you trigger the trap */
@@ -539,10 +540,10 @@ void use_lockpicks_on_chest(RealPt chest_ptr)
 			}
 
 		} else {
-			print_msg_with_first_hero(get_ltx(0x84c));
+			print_msg_with_first_hero(get_ttx(0x84c));
 		}
 	} else {
-		print_msg_with_first_hero(get_ltx(0x848));
+		print_msg_with_first_hero(get_ttx(0x848));
 	}
 }
 
@@ -579,9 +580,9 @@ void use_key_on_chest(RealPt chest_ptr)
 
 void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 {
-	unsigned short l_si;
-	signed short item_nr;
-	signed short item_cnt;
+	unsigned short item_cnt;
+	signed short item_no;
+	signed short i;
 	signed short tw_bak;
 	char temp_str[10];
 	signed short len;
@@ -592,76 +593,76 @@ void loot_multi_chest(Bit8u *chest, Bit8u *msg)
 
 	do {
 
-		item_nr = 0;
-		while ((item_cnt = host_readb((item_nr + item_nr) + chest)) != 255) {
+		item_no = 0;
+		while ((i = host_readb((item_no + item_no) + chest)) != 255) {
 
-			names[item_nr][0] = '\0';
+			names[item_no][0] = '\0';
 
-			if ((l_si = chest[item_nr + item_nr + 1]) > 1)
+			if ((item_cnt = chest[item_no + item_no + 1]) > 1)
 			{
-				my_itoa(l_si, names[item_nr], 10);
+				my_itoa(item_cnt, names[item_no], 10);
 
-				strcat(names[item_nr], (char*)p_datseg + 0x9dc4);
+				strcat(names[item_no], (char*)p_datseg + STR_SINGLE_SPACE);
 			}
 
-			strcat(names[item_nr++], (char*)Real2Host(GUI_name_plural( ((signed short)(l_si > 1 ? (unsigned short)1 : (unsigned short)0)) ? 4 : 0, (Bit8u*)get_itemname(item_cnt))));
+			strcat(names[item_no++], (char*)Real2Host(GUI_name_plural( ((signed short)(item_cnt > 1 ? (unsigned short)1 : (unsigned short)0)) ? 4 : 0, (Bit8u*)get_itemname(i))));
 		}
 
-		if (item_nr != 0) {
+		if (item_no != 0) {
 
-			item_nr = GUI_radio(msg, (signed char)item_nr,
+			item_no = GUI_radio(msg, (signed char)item_no,
 				names[0], names[1], names[2], names[3],
 				names[4], names[5], names[6], names[7],
 				names[8], names[9], names[10], names[11],
 				names[12], names[13], names[14], names[15],
 				names[16], names[17], names[18], names[19]) - 1;
 
-			if (item_nr != -2) {
-				item_nr += item_nr;
+			if (item_no != -2) {
+				item_no += item_no;
 
-				my_itoa(chest[item_nr + 1], temp_str, 10);
+				my_itoa(chest[item_no + 1], temp_str, 10);
 
 				len = strlen(temp_str);
 
 				do {
-					item_cnt = (l_si = chest[item_nr + 1]) > 1 ? GUI_input(get_ltx(0x944), len) : l_si;
+					i = (item_cnt = chest[item_no + 1]) > 1 ? GUI_input(get_ttx(0x944), len) : item_cnt;
 
-				} while (item_cnt < 0);
+				} while (i < 0);
 
-				if (item_cnt > l_si) {
-					item_cnt = l_si;
+				if (i > item_cnt) {
+					i = item_cnt;
 				}
 
-				if (item_cnt != 0) {
+				if (i != 0) {
 
-					if (chest[item_nr] == 250) {
-						add_party_money(item_cnt * 100L);
+					if (chest[item_no] == 250) {
+						add_party_money(i * 100L);
 					} else {
-						item_cnt = get_item(chest[item_nr], 1, item_cnt);
+						i = get_item(chest[item_no], 1, i);
 					}
 
-					if (item_cnt == l_si) {
+					if (i == item_cnt) {
 
 						do {
-							chest[item_nr] = (unsigned char)(item_cnt = chest[item_nr + 2]);
-							chest[item_nr + 1] = chest[item_nr + 3];
-							item_nr += 2;
-						} while (item_cnt != 255);
+							chest[item_no] = (unsigned char)(i = chest[item_no + 2]);
+							chest[item_no + 1] = chest[item_no + 3];
+							item_no += 2;
+						} while (i != 255);
 
-					} else if (item_cnt != 0) {
-						chest[item_nr + 1] -= item_cnt;
+					} else if (i != 0) {
+						chest[item_no + 1] -= i;
 					} else {
-						item_nr = -2;
+						item_no = -2;
 					}
 				}
 			}
 
 
 		} else {
-			item_nr = -2;
+			item_no = -2;
 		}
 
-	} while (item_nr != -2);
+	} while (item_no != -2);
 
 	ds_writew(TEXTBOX_WIDTH, tw_bak);
 }

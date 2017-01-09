@@ -52,7 +52,7 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 #if !defined(__BORLANDC__)
 	struct dummy lp5 = { {0x1000, 0x2000, 0x3000} };
 #else
-	struct dummy lp5 = *(struct dummy*)(p_datseg + 0xa9ed);
+	struct dummy lp5 = *(struct dummy*)(p_datseg + GRAMMAR_GENDER_BITMASKS);
 #endif
 
 	if (type == 0) {
@@ -77,14 +77,14 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		flag += lp5.a[ds_readbs(MONNAME_GENDERS + index)];
 	}
 
-	lp1 = (flag & 0x8000) ? (signed short*)(p_datseg + 0xa953 + (flag & 0xf) * 6) :
-			((flag & 0x4000) ? (signed short*)(p_datseg + 0xa9b3) :
-				(signed short*)(p_datseg + 0xa983 + (flag & 0xf) * 6));
+	lp1 = (flag & 0x8000) ? (signed short*)(p_datseg + GRAMMAR_DEF_TABLE + (flag & 0xf) * 6) :
+			((flag & 0x4000) ? (signed short*)(p_datseg + GRAMMAR_NOARTICLE_TABLE) :
+				(signed short*)(p_datseg + GRAMMAR_INDEF_TABLE + (flag & 0xf) * 6));
 
 
 	sprintf((char*)p_datseg + GRAMMAR_BUFS + ds_readw(GRAMMAR_BUF_NO) * 40,
-		(l2 == 0) ? (char*)Real2Host(ds_readd(0xa9e3)) : (char*)Real2Host(ds_readd(0xa9e7)),
-		(char*)Real2Host(ds_readd(0xa917 + 4 * host_readws((Bit8u*)lp1 + 2 * (((flag & 0x3000) - 1) >> 12)))),
+		(l2 == 0) ? (char*)Real2Host(ds_readd(STR_S_S_PTR)) : (char*)Real2Host(ds_readd(STR_VON_S_S_PTR)),
+		(char*)Real2Host(ds_readd(GRAMMAR_ARTICLES_INDEX + 4 * host_readws((Bit8u*)lp1 + 2 * (((flag & 0x3000) - 1) >> 12)))),
 		(char*)Real2Host(GUI_name_plural(flag, p_name)));
 
 	p_name = p_datseg + ds_readw(GRAMMAR_BUF_NO) * 40 + GRAMMAR_BUFS;
@@ -155,13 +155,16 @@ RealPt GUI_name_singular(Bit8u *s)
 }
 
 //2f2
-RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
+/*
+ * GUI_2f2() - return a pointer to the pronoun
+ */
+RealPt GUI_2f2(signed short v1, signed short word_id, signed short type)
 {
-	signed short l;
+	signed short genus;
 
-	l = (v3 == 0) ? ds_readbs(ITEMS_GENDERS + v2) : ds_readbs(v2 + MONNAME_GENDERS);
+	genus = (type == 0) ? ds_readbs(ITEMS_GENDERS + word_id) : ds_readbs(word_id + MONNAME_GENDERS);
 
-	return (RealPt)ds_readd(0xaa14 + 4 * ds_readbs(0xaa30 + v1 * 3 + l));
+	return (RealPt)ds_readd(GRAMMAR_PRONOUNS_INDEX + 4 * ds_readbs(GRAMMAR_PRONOUNS_TABLE2 + v1 * 3 + genus));
 }
 
 //330
@@ -173,15 +176,15 @@ RealPt GUI_2f2(signed short v1, signed short v2, signed short v3)
 RealPt GUI_get_ptr(signed short genus, signed short causus)
 {
 	if (genus == 0) {
-		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa9f3) :
-				((causus == 1) ? (RealPt)RealMake(datseg, 0xa9fd) :
-				((causus == 3) ? (RealPt)RealMake(datseg, 0xaa0a) :
-					(RealPt)RealMake(datseg, 0xaa06)));
+		return (causus == 0) ? (RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_ER) :
+				((causus == 1) ? (RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_SEIN) :
+				((causus == 3) ? (RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_IHM) :
+					(RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_IHN)));
 	} else {
-		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa9f6) :
-				((causus == 1) ? (RealPt)RealMake(datseg, 0xaa02) :
-				((causus == 3) ? (RealPt)RealMake(datseg, 0xaa02) :
-					(RealPt)RealMake(datseg, 0xa9f6)));
+		return (causus == 0) ? (RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_SIE) :
+				((causus == 1) ? (RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_IHR) :
+				((causus == 3) ? (RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_IHR) :
+					(RealPt)RealMake(datseg, GRAMMAR_PRONOUNS_SIE)));
 	}
 }
 
@@ -191,14 +194,14 @@ RealPt GUI_get_ptr(signed short genus, signed short causus)
 RealPt GUI_get_ptr2(signed short genus, signed short causus)
 {
 	if (genus == 0) {
-		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa8d4) :
+		return (causus == 0) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLES_TABLE) :
 				((causus == 1) ? (RealPt)RealMake(datseg, 0xa8e0) :
 				((causus == 3) ? (RealPt)RealMake(datseg, 0xa8e8) :
 					(RealPt)RealMake(datseg, 0xa8e4)));
 	} else {
 		return (causus == 0) ? (RealPt)RealMake(datseg, 0xa8d8) :
-				((causus == 1) ? (RealPt)RealMake(datseg, 0xa8d4) :
-				((causus == 3) ? (RealPt)RealMake(datseg, 0xa8d4) :
+				((causus == 1) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLES_TABLE) :
+				((causus == 3) ? (RealPt)RealMake(datseg, GRAMMAR_ARTICLES_TABLE) :
 					(RealPt)RealMake(datseg, 0xa8d8)));
 	}
 }
@@ -246,10 +249,10 @@ unsigned short GUI_count_lines(Bit8u *str)
 
 	str_loc = str;
 	si = di = v6 = 0;
-	max_line_width = ds_readw(0xd2d5);
+	max_line_width = ds_readw(TEXTLINE_MAXLEN);
 
 	if (ds_readw(DIALOGBOX_INDENT_WIDTH) != 0)
-		sub_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
+		sub_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 
 	width_line = 0;
 
@@ -262,7 +265,7 @@ unsigned short GUI_count_lines(Bit8u *str)
 #endif
 		width_line += width_char;
 
-		if (width_line >=  ds_readws(0xd2d5)) {
+		if (width_line >=  ds_readws(TEXTLINE_MAXLEN)) {
 			if (di != v6) {
 				/* TODO: this caused a crash on
 					no_way() in the city */
@@ -274,7 +277,7 @@ unsigned short GUI_count_lines(Bit8u *str)
 			}
 
 			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
-				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
+				add_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 
 			v6 = si = di = width_line = 0;
 		}
@@ -287,22 +290,22 @@ unsigned short GUI_count_lines(Bit8u *str)
 			si = -1;
 			v6 = di = width_line = 0;
 			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
-				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
+				add_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 		}
 	}
 
-	if (width_line >= ds_readws(0xd2d5)) {
+	if (width_line >= ds_readws(TEXTLINE_MAXLEN)) {
 
 		if (v6 == di)
 			str_loc[si - 1] = 0;
 		else {
 			str_loc[di] = 0x0d;
 			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
-				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
+				add_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 		}
 	}
 
-	ds_writew(0xd2d5, max_line_width);
+	ds_writew(TEXTLINE_MAXLEN, max_line_width);
 	return ++lines;
 }
 
@@ -313,7 +316,7 @@ signed short GUI_print_header(Bit8u *str)
 
 	update_mouse_cursor();
 	retval = GUI_count_lines(str);
-	GUI_print_string(str, ds_readws(0xd2d9), ds_readws(0xd2d7));
+	GUI_print_string(str, ds_readws(TEXTLINE_POSX), ds_readws(TEXTLINE_POSY));
 	refresh_screen_size();
 
 	return retval;
@@ -331,20 +334,20 @@ void GUI_print_loc_line(Bit8u * str)
 	get_textcolor(&tmp1, &tmp2);
 	set_textcolor(0xff, 0);
 
-	l1 = ds_readws(0xd2d9);
-	l2 = ds_readws(0xd2d7);
-	l3 = ds_readws(0xd2d5);
+	l1 = ds_readws(TEXTLINE_POSX);
+	l2 = ds_readws(TEXTLINE_POSY);
+	l3 = ds_readws(TEXTLINE_MAXLEN);
 
-	ds_writew(0xd2d9, 6);
-	ds_writew(0xd2d7, 143);
-	ds_writew(0xd2d5, 307);
+	ds_writew(TEXTLINE_POSX, 6);
+	ds_writew(TEXTLINE_POSY, 143);
+	ds_writew(TEXTLINE_MAXLEN, 307);
 
 	clear_loc_line();
 	GUI_print_header(str);
 
-	ds_writew(0xd2d9, l1);
-	ds_writew(0xd2d7, l2);
-	ds_writew(0xd2d5, l3);
+	ds_writew(TEXTLINE_POSX, l1);
+	ds_writew(TEXTLINE_POSY, l2);
+	ds_writew(TEXTLINE_MAXLEN, l3);
 
 	set_textcolor(tmp1, tmp2);
 }
@@ -362,8 +365,8 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 
 	update_mouse_cursor();
 
-	if (ds_readws(0xd2d1) == 1) {
-		x = GUI_get_first_pos_centered(str, x, ds_readws(0xd2d5), 0);
+	if (ds_readws(GUI_TEXT_CENTERED) == 1) {
+		x = GUI_get_first_pos_centered(str, x, ds_readws(TEXTLINE_MAXLEN), 0);
 	} else
 		if (ds_readws(DIALOGBOX_INDENT_WIDTH))
 			x += ds_readws(DIALOGBOX_INDENT_WIDTH);
@@ -375,13 +378,13 @@ void GUI_print_string(Bit8u *str, signed short x, signed short y)
 		if ((l4 == 0x0d) || (l4 == 0x40)) {
 
 			if (++l1 == ds_readws(DIALOGBOX_INDENT_HEIGHT)) {
-				add_ds_ws(0xd2d5, ds_readws(DIALOGBOX_INDENT_WIDTH));
+				add_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 				l3 -= ds_readws(DIALOGBOX_INDENT_WIDTH);
 			}
 
 			y += 7;
-			x = (ds_readw(0xd2d1) == 1) ?
-				GUI_get_first_pos_centered(str + l2, ds_readws(0xd2d9), ds_readws(0xd2d5), 0) : l3;
+			x = (ds_readw(GUI_TEXT_CENTERED) == 1) ?
+				GUI_get_first_pos_centered(str + l2, ds_readws(TEXTLINE_POSX), ds_readws(TEXTLINE_MAXLEN), 0) : l3;
 
 		} else	if (l4 == '~') {
 
@@ -448,12 +451,12 @@ signed short GUI_lookup_char_width(signed char c, signed short *p)
 
 	for (i = 0; i != 75 * 3; i += 3) {
 
-		if (c == ds_readbs(0xaa51 + i)) {
+		if (c == ds_readbs(GUI_CHAR_WIDTH + i)) {
 
 			host_writew((Bit8u*)p,
-				ds_readbs(0xaa51 + i + 2) & 0xff);
+				ds_readbs(GUI_CHAR_WIDTH + i + 2) & 0xff);
 
-			return ds_readbs(0xaa51 + i + 1) & 0xff;
+			return ds_readbs(GUI_CHAR_WIDTH + i + 1) & 0xff;
 		}
 	}
 
@@ -519,7 +522,7 @@ void GUI_font_to_buf(Bit8u *fc)
 void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned short char_height, unsigned short char_width)
 {
 	/* screen_start */
-	RealPt dst = ((RealPt)ds_readd(TMP_FRAMEBUF_PTR)) + y * 320 + x;
+	RealPt dst = ((RealPt)ds_readd(PRINT_STRING_BUFFER)) + y * 320 + x;
 
 	GUI_write_char_to_screen(dst, char_height, char_width);
 }

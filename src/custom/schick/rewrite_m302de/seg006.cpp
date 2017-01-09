@@ -78,7 +78,7 @@ void FIG_draw_figures(void)
 	l2 = 118;
 
 	gfx_dst_bak = (RealPt)ds_readd(PIC_COPY_DST);
-	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
 
 	/* backup a structure */
 	screen_mode = *((struct screen_rect*)(p_datseg + PIC_COPY_DS_RECT));
@@ -145,7 +145,7 @@ void FIG_set_gfx(void)
 	ds_writew(PIC_COPY_Y1, 0);
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 	update_mouse_cursor();
 	do_pic_copy(0);
@@ -161,7 +161,7 @@ void FIG_call_draw_pic(void)
 
 void FIG_draw_pic(void)
 {
-	mem_memcpy(Real2Phys(ds_readd(BUFFER1_PTR)),
+	mem_memcpy(Real2Phys(ds_readd(RENDERBUF_PTR)),
 		Real2Phys(ds_readd(BUFFER8_PTR)), 64000);
 
 	ds_writew(ALWAYS_ONE, 1);
@@ -190,7 +190,7 @@ RealPt seg006_033c(signed short v)
 	signed short i;
 
 	for (i = 0; i < 20; i++) {
-		if (v == ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_LIST_POS + (i * SIZEOF_ENEMY_SHEET)))
+		if (v == ds_readbs(ENEMY_SHEETS + ENEMY_SHEET_FIGHTER_ID + (i * SIZEOF_ENEMY_SHEET)))
 #if !defined(__BORLANDC__)
 			return (RealPt)RealMake(datseg, ENEMY_SHEETS + i * SIZEOF_ENEMY_SHEET);
 #else
@@ -244,7 +244,7 @@ void FIG_reset_12_13(signed char fighter_id)
 
 		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-		while (ds_readb(0xe35a + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
+		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
 			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
 		}
 		host_writeb(ptr2 + 0x12, 0);
@@ -272,7 +272,7 @@ void FIG_set_12_13(signed short fighter_id)
 
 		ptr2 = Real2Host(ds_readd(FIG_LIST_HEAD));
 
-		while (ds_readb(0xe35a + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
+		while (ds_readb(FIG_TWOFIELDED_TABLE + host_readbs(ptr1 + 0x13)) != host_readb(ptr2 + 0x10)) {
 
 			ptr2 = Real2Host(host_readd(ptr2 + 0x1b));
 
@@ -412,13 +412,17 @@ signed char FIG_add_to_list(signed char fighter_id)
 
 	p2 = (RealPt)ds_readd(FIG_LIST_HEAD);
 
-	if (ds_readbs((FIG_LIST_ELEM+17)) != -1) {
+	/* The list is filled in the order of rendering, i.e. from rear to front:
+	 * (x1,y1) is rendered before (x2,y2) if (x1 < x2) || (x1 == x2 && y1 > y2)
+	 * On the same chessboard field, lower z is rendered before larger z.
+	 */
+	if (ds_readbs((FIG_LIST_ELEM + 0x11)) != -1) {
 		while ((host_readbs(Real2Host(p2) + 3) <= x) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) >= y) &&
 		(host_readbs(Real2Host(p2) + 3) != x ||
 		host_readbs(Real2Host(p2) + 4) != y ||
-		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs((FIG_LIST_ELEM+17))))
+		host_readbs(Real2Host(p2) + 0x11) <= ds_readbs((FIG_LIST_ELEM + 0x11))))
 		{
 
 			/* p2->next != NULL */
@@ -480,12 +484,12 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 	get_textcolor(&fg_bak, &bg_bak);
 	set_textcolor(0xff, 0);
 
-	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(RENDERBUF_PTR));
 
 	if (loc == 0) {
 
-		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 9, 34, 42, 29);
+		do_border((RealPt)ds_readd(RENDERBUF_PTR), 1, 9, 34, 42, 29);
 		ds_writew(PIC_COPY_X1, 2);
 		ds_writew(PIC_COPY_Y1, 10);
 		ds_writew(PIC_COPY_X2, 33);
@@ -498,7 +502,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 		draw_bar(1, 0, host_readw(Real2Host(hero) + HERO_AE),
 			host_readw(Real2Host(hero) + HERO_AE_ORIG), 1);
 	} else {
-		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 157, 34, 190, 29);
+		do_border((RealPt)ds_readd(RENDERBUF_PTR), 1, 157, 34, 190, 29);
 		ds_writew(PIC_COPY_X1, 2);
 		ds_writew(PIC_COPY_Y1, 158);
 		ds_writew(PIC_COPY_X2, 33);
@@ -508,7 +512,7 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 
 	do_pic_copy(0);
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR));
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR));
 	set_textcolor(fg_bak, bg_bak);
 }
 
@@ -528,11 +532,11 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 
 	p1 = F_PADD((RealPt)(ds_readd(BUFFER8_PTR)), -1288);
 
-	p_enemy = p_datseg + 0xd0df + id * SIZEOF_ENEMY_SHEET;
+	p_enemy = p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + id * SIZEOF_ENEMY_SHEET;
 
-	if (ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
+	if (ds_readbs(GFXTAB_FIGURES_MAIN + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5) != ds_readws(FIGHT_FIGS_INDEX)) {
 
-		nvf.src = Real2Host(load_fight_figs(ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5)));
+		nvf.src = Real2Host(load_fight_figs(ds_readbs(GFXTAB_FIGURES_MAIN + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5)));
 		nvf.dst = Real2Host(p1);
 		nvf.nr = 1;
 		nvf.type = 0;
@@ -542,7 +546,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 		process_nvf(&nvf);
 
 		ds_writew(FIGHT_FIGS_INDEX,
-			ds_readbs(0x12c0 + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5));
+			ds_readbs(GFXTAB_FIGURES_MAIN + host_readbs(p_enemy + ENEMY_SHEET_GFX_ID) * 5));
 	}
 
 	/* save and set text colors */
@@ -550,11 +554,11 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 	set_textcolor(0xff, 0);
 
 	/* set gfx address */
-	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(RENDERBUF_PTR));
 
 	if (loc == 0) {
-		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 9, 34, 50, 0x1d);
+		do_border((RealPt)ds_readd(RENDERBUF_PTR), 1, 9, 34, 50, 0x1d);
 		ds_writew(PIC_COPY_X1, 2);
 		ds_writew(PIC_COPY_Y1, 10);
 		ds_writew(PIC_COPY_X2, 33);
@@ -563,7 +567,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 		do_pic_copy(0);
 		GUI_print_string(Real2Host(GUI_name_singular(get_monname(host_readbs(p_enemy)))), 1, 1);
 	} else {
-		do_border((RealPt)ds_readd(BUFFER1_PTR), 1, 149, 34, 190, 0x1d);
+		do_border((RealPt)ds_readd(RENDERBUF_PTR), 1, 149, 34, 190, 0x1d);
 		ds_writew(PIC_COPY_X1, 2);
 		ds_writew(PIC_COPY_Y1, 150);
 		ds_writew(PIC_COPY_X2, 33);
@@ -574,7 +578,7 @@ void FIG_draw_enemy_pic(signed short loc, signed short id)
 	}
 
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR));
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR));
 
 	set_textcolor(fg_bak, bg_bak);
 }

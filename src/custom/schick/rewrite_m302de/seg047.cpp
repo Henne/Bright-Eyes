@@ -158,7 +158,7 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 #if !defined(__BORLANDC__)
 		D1_INFO("%s erkrankt an %s\n",
 			(char*)hero + HERO_NAME2,
-			(char*)get_ltx((disease + 0x193) * 4));
+			(char*)get_ttx((disease + 0x193) * 4));
 #endif
 
 		host_writeb(hero + disease * 5 + 0xae, 0xff);
@@ -270,7 +270,7 @@ void make_valuta_str(char *dst, Bit32s money) {
 		money -= 10;
 	}
 
-	sprintf(dst, (char*)get_ltx(0xbb0), d, s, (short)money);
+	sprintf(dst, (char*)get_ttx(0xbb0), d, s, (short)money);
 }
 
 /**
@@ -300,7 +300,7 @@ void update_atpa(Bit8u *hero)
 
 		/* prepare message */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x20), host_readbs(hero + HERO_ATPA_BASIS));
+			(char*)get_ttx(0x20), host_readbs(hero + HERO_ATPA_BASIS));
 
 		/* print message */
 		GUI_output(Real2Host(ds_readd(DTP2)));
@@ -329,30 +329,30 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 {
 	signed short i;
 	signed short answer;
-	signed short a;
-	signed short l_di;
+	signed short i_max;
+	signed short i_min;
 
 	answer = 0;
-	l_di = 0;
+	i_min = 0;
 
 	while (answer != -1) {
 
-		a = (l_di + 10 < entries) ? 10 : entries - l_di;
+		i_max = (i_min + 10 < entries) ? 10 : entries - i_min;
 
 		/* fill a pointer array with the pointer to the names */
-		for (i = 0; i < a; i++) {
+		for (i = 0; i < i_max; i++) {
 			ds_writed(RADIO_NAME_LIST + 4 * i,
-				(Bit32u)((i + l_di) * 32 + ptr + 0x10));
+				(Bit32u)((i + i_min) * 32 + ptr + 0x10));
 		}
 
-		i = a;
+		i = i_max;
 		if (entries > 10) {
 			ds_writed(RADIO_NAME_LIST + 4 * i,
-				host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX) + 0x48c)));
+				host_readd(Real2Host((RealPt)ds_readd(TEXT_LTX_INDEX) + 0x48c)));
 			i++;
 		}
 
-		answer = GUI_radio( (mode == -1) ? get_ltx(0x8dc) : get_ltx(0x490),
+		answer = GUI_radio( (mode == -1) ? get_ttx(0x8dc) : get_ttx(0x490),
 				(signed char)i,
 				Real2Host(ds_readd(RADIO_NAME_LIST)),
 				Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
@@ -368,16 +368,16 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 				Real2Host(ds_readd((RADIO_NAME_LIST + 11 * 4))));
 
 		if ((entries > 10) && (answer == i)) {
-			l_di += 10;
+			i_min += 10;
 
-			if (l_di > entries) {
-				l_di = 0;
+			if (i_min > entries) {
+				i_min = 0;
 			}
 
 		} else {
 
 			if (answer != -1) {
-				return l_di + answer - 1;
+				return i_min + answer - 1;
 			}
 		}
 	}
@@ -421,7 +421,7 @@ signed short select_hero_from_group(Bit8u *title)
 		if (host_readb(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE &&
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 				/* TODO: find out what that means */
-				ds_readbs(0x64a2) != i) {
+				ds_readbs(HERO_SEL_EXCLUDE) != i) {
 
 			/* save pointer to the name of the hero */
 			ds_writed(RADIO_NAME_LIST + cnt * 4, (Bit32u)(hero + HERO_NAME2));
@@ -431,7 +431,7 @@ signed short select_hero_from_group(Bit8u *title)
 	}
 
 
-	ds_writeb(0x64a2, -1);
+	ds_writeb(HERO_SEL_EXCLUDE, -1);
 
 	if (cnt != 0) {
 		bak_2 = ds_readw(BASEPOS_X);
@@ -497,7 +497,7 @@ signed short select_hero_ok(Bit8u *title)
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			check_hero(Real2Host(hero)) &&
 				/* TODO: find out what that means */
-				ds_readbs(0x64a2) != i) {
+				ds_readbs(HERO_SEL_EXCLUDE) != i) {
 
 			/* save pointer to the name of the hero */
 			ds_writed(RADIO_NAME_LIST + cnt * 4, (Bit32u)(hero + HERO_NAME2));
@@ -506,7 +506,7 @@ signed short select_hero_ok(Bit8u *title)
 		}
 	}
 
-	ds_writeb(0x64a2, -1);
+	ds_writeb(HERO_SEL_EXCLUDE, -1);
 
 	if (cnt != 0) {
 		bak_2 = ds_readw(BASEPOS_X);
@@ -575,7 +575,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 			host_readb(Real2Host(hero) + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP) &&
 			check_hero(Real2Host(hero)) &&
 				/* TODO: find out what that means */
-				ds_readbs(0x64a2) != i) {
+				ds_readbs(HERO_SEL_EXCLUDE) != i) {
 
 			/* save pointer to the name of the hero */
 			ds_writed(RADIO_NAME_LIST + cnt * 4, (Bit32u)(hero + HERO_NAME2));
@@ -584,7 +584,7 @@ signed short select_hero_ok_forced(Bit8u *title)
 		}
 	}
 
-	ds_writeb(0x64a2, -1);
+	ds_writeb(HERO_SEL_EXCLUDE, -1);
 
 	if (cnt != 0) {
 		do {

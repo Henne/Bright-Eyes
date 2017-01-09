@@ -44,7 +44,7 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 	group = spell - fsig;
 
 	/* print spellname */
-	GUI_print_string(get_ltx((spell + 0x6a) * 4), x1, gy + group * 7);
+	GUI_print_string(get_ttx((spell + 0x6a) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
 	my_itoa(host_readbs(hero + HERO_SPELLS + spell) , str, 10);
@@ -71,7 +71,7 @@ void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
 	group = skill - ftig;
 
 	/* print skillname */
-	GUI_print_string(get_ltx((skill + 0x30) * 4), x1, gy + group * 7);
+	GUI_print_string(get_ttx((skill + 0x30) * 4), x1, gy + group * 7);
 
 	/* convert value to string */
 	my_itoa(host_readbs(hero + HERO_TA_FIGHT + skill) , str, 10);
@@ -92,26 +92,26 @@ void status_show_skills(Bit8u *hero) {
 	set_textcolor(0xff, 2);
 
 	/* print skill category names */
-	GUI_print_string(get_ltx(0x190),
-		GUI_get_first_pos_centered(get_ltx(0x190), 5, 100, 0), 55);
+	GUI_print_string(get_ttx(0x190),
+		GUI_get_first_pos_centered(get_ttx(0x190), 5, 100, 0), 55);
 
-	GUI_print_string(get_ltx(0x1a0),
-		GUI_get_first_pos_centered(get_ltx(0x1a0), 110, 100, 0), 55);
+	GUI_print_string(get_ttx(0x1a0),
+		GUI_get_first_pos_centered(get_ttx(0x1a0), 110, 100, 0), 55);
 
-	GUI_print_string(get_ltx(0x194),
-		GUI_get_first_pos_centered(get_ltx(0x194), 215, 100, 0), 55);
+	GUI_print_string(get_ttx(0x194),
+		GUI_get_first_pos_centered(get_ttx(0x194), 215, 100, 0), 55);
 
-	GUI_print_string(get_ltx(0x1a4),
-		GUI_get_first_pos_centered(get_ltx(0x1a4), 5, 100, 0), 125);
+	GUI_print_string(get_ttx(0x1a4),
+		GUI_get_first_pos_centered(get_ttx(0x1a4), 5, 100, 0), 125);
 
-	GUI_print_string(get_ltx(0x19c),
-		GUI_get_first_pos_centered(get_ltx(0x19c), 110, 100, 0), 125);
+	GUI_print_string(get_ttx(0x19c),
+		GUI_get_first_pos_centered(get_ttx(0x19c), 110, 100, 0), 125);
 
-	GUI_print_string(get_ltx(0x198),
-		GUI_get_first_pos_centered(get_ltx(0x198), 215, 100, 0), 132);
+	GUI_print_string(get_ttx(0x198),
+		GUI_get_first_pos_centered(get_ttx(0x198), 215, 100, 0), 132);
 
-	GUI_print_string(get_ltx(0x1a8),
-		GUI_get_first_pos_centered(get_ltx(0x1a8), 5, 100, 0), 174);
+	GUI_print_string(get_ttx(0x1a8),
+		GUI_get_first_pos_centered(get_ttx(0x1a8), 5, 100, 0), 174);
 
 	set_textcolor(0, 2);
 
@@ -120,9 +120,9 @@ void status_show_skills(Bit8u *hero) {
 		while (ds_readbs(SKILLS_INDEX + skill_category * 2) + ds_readbs((SKILLS_INDEX + 1) + skill_category * 2) > skill_nr) {
 			status_show_skill(hero, skill_nr,
 				ds_readbs(SKILLS_INDEX + skill_category * 2),
-				ds_readw(0x6476 + skill_category * 6),
-				ds_readw((0x6476 + 2) + skill_category * 6),
-				ds_readw((0x6476 + 4) + skill_category * 6));
+				ds_readw(STATUSPAGE_SKILLS_XY + skill_category * 6),
+				ds_readw((STATUSPAGE_SKILLS_XY + 2) + skill_category * 6),
+				ds_readw((STATUSPAGE_SKILLS_XY + 4) + skill_category * 6));
 			skill_nr++;
 		}
 	}
@@ -198,12 +198,12 @@ void status_show(Bit16u index)
 		ds_writeb(PP20_INDEX, ARCHIVE_FILE_ZUSTA_UK);
 		do_fill_rect((RealPt)ds_readd(FRAMEBUF_PTR), 0, 0, 319, 199, 0);
 		wait_for_vsync();
-		set_palette(p_datseg + 0x6372, 0, 0x20);
+		set_palette(p_datseg + STATUSPAGE_PALETTE, 0, 0x20);
 	}
 
 	ds_writed(ACTION_TABLE_PRIMARY, (Bit32u)RealMake(datseg, ACTION_TABLE_STATUS));
 	ds_writed(ACTION_TABLE_SECONDARY, 0);
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER1_PTR));
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(RENDERBUF_PTR));
 	set_textcolor(0, 2);
 
 	/* load and draw the background */
@@ -214,7 +214,7 @@ void status_show(Bit16u index)
 	ds_writew(PIC_COPY_Y1, 9);
 	ds_writew(PIC_COPY_X2, 47);
 	ds_writew(PIC_COPY_Y2, 40);
-	ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
 	/* the source must be passed here as RealPt */
 	ds_writed(PIC_COPY_SRC, (Bit32u)(hero + HERO_PORTRAIT));
 	do_pic_copy(0);
@@ -242,11 +242,11 @@ void status_show(Bit16u index)
 			process_nvf(&nvf);
 
 			/* draw the item icon */
-			ds_writew(PIC_COPY_X1, ds_readw(0x63d2 + i * 4));
-			ds_writew(PIC_COPY_Y1, ds_readw(0x63d2 + i * 4 + 2));
-			ds_writew(PIC_COPY_X2, ds_readw(0x63d2 + i * 4) + 15);
-			ds_writew(PIC_COPY_Y2, ds_readw(0x63d2 + i * 4 + 2) + 15);
-			ds_writed(PIC_COPY_DST, ds_readd(BUFFER1_PTR));
+			ds_writew(PIC_COPY_X1, ds_readw(INVSLOT_ICONXY_TABLE + i * 4));
+			ds_writew(PIC_COPY_Y1, ds_readw(INVSLOT_ICONXY_TABLE + i * 4 + 2));
+			ds_writew(PIC_COPY_X2, ds_readw(INVSLOT_ICONXY_TABLE + i * 4) + 15);
+			ds_writew(PIC_COPY_Y2, ds_readw(INVSLOT_ICONXY_TABLE + i * 4 + 2) + 15);
+			ds_writed(PIC_COPY_DST, ds_readd(RENDERBUF_PTR));
 			ds_writed(PIC_COPY_SRC, ds_readd(ICON));
 			do_pic_copy(0);
 
@@ -260,8 +260,8 @@ void status_show(Bit16u index)
 					(char*)Real2Host(ds_readd(DTP2)), 10);
 
 				GUI_print_string(Real2Host(ds_readd(DTP2)),
-					ds_readw(0x63d2 + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),
-					ds_readw(0x63d2 + i * 4 + 2) + 9);
+					ds_readw(INVSLOT_ICONXY_TABLE + i * 4) + 16 - GUI_get_space_for_string(Real2Host(ds_readd(DTP2)), 0),
+					ds_readw(INVSLOT_ICONXY_TABLE + i * 4 + 2) + 9);
 
 				set_textcolor(0, 2);
 			}
@@ -269,17 +269,17 @@ void status_show(Bit16u index)
 
 		/* print height */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_city(0x84),
+			(char*)get_tx2(0x84),
 			host_readb(Real2Host(hero) + HERO_HEIGHT));
 		GUI_print_string(Real2Host(ds_readd(DTP2)), 158, 116);
 
 		/* print weight */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_city(0x88),
+			(char*)get_tx2(0x88),
 			host_readw(Real2Host(hero) + HERO_WEIGHT));
 		GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 179);
 	} else {
-		do_fill_rect((RealPt)ds_readd(BUFFER1_PTR), 0, 50, 319, 191, 2);
+		do_fill_rect((RealPt)ds_readd(RENDERBUF_PTR), 0, 50, 319, 191, 2);
 	}
 
 	ds_writew(TXT_TABPOS1, 0x5f);
@@ -291,19 +291,19 @@ void status_show(Bit16u index)
 	/* print typus */
 	set_textcolor(0, 2);
 
-	GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (
+	GUI_print_string(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + (
 	((host_readb(Real2Host(hero) + HERO_SEX)) ? 0x251 : 0x9) + host_readbs(Real2Host(hero) + HERO_TYPE)) * 4)), 59, 16);
 
 
 	/* show AP */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x9ac)),
+		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x9ac)),
 		host_readd(Real2Host(hero) + HERO_AP));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 26);
 
 	/* print level */
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)get_city(0x1c),
+		(char*)get_tx2(0x1c),
 		host_readbs(Real2Host(hero) + HERO_LEVEL));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 33);
 
@@ -312,41 +312,41 @@ void status_show(Bit16u index)
 		host_readd(Real2Host(hero) + HERO_MONEY));
 
 	sprintf((char*)Real2Host(ds_readd(DTP2)),
-		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x4b0)),
+		(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x4b0)),
 		(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 	GUI_print_string(Real2Host(ds_readd(DTP2)), 59, 43);
 
 	/* dead, unconscious or drunk */
 	if (hero_dead(Real2Host(hero)))
 		/* print if dead */
-		GUI_print_string(get_city(0x00), 155, 9);
+		GUI_print_string(get_tx2(0x00), 155, 9);
 	else if (hero_unc(Real2Host(hero)))
 		/* print if uncounscious */
-		GUI_print_string(get_city(0x18), 155, 9);
+		GUI_print_string(get_tx2(0x18), 155, 9);
 	else if (host_readb(Real2Host(hero) + HERO_DRUNK))
 		/* print if drunk */
-		GUI_print_string(get_city(0xd8), 155, 9);
+		GUI_print_string(get_tx2(0xd8), 155, 9);
 
 	/* print sleeps */
 	if (hero_sleeps(Real2Host(hero)))
-		GUI_print_string(get_city(0x04), 155, 16);
+		GUI_print_string(get_tx2(0x04), 155, 16);
 
 	/* print stoned */
 	if (hero_stoned(Real2Host(hero)))
-		GUI_print_string(get_city(0x08), 155, 23);
+		GUI_print_string(get_tx2(0x08), 155, 23);
 
 	/* print diseased */
 	if (hero_is_diseased(Real2Host(hero)))
-		GUI_print_string(get_city(0x10), 155, 30);
+		GUI_print_string(get_tx2(0x10), 155, 30);
 
 	/* print poison */
 	if (hero_is_poisoned(Real2Host(hero)))
-		GUI_print_string(get_city(0x0c), 155, 37);
+		GUI_print_string(get_tx2(0x0c), 155, 37);
 
 	/* print hunger */
-	GUI_print_string(get_city(0x20), 220, 36);
+	GUI_print_string(get_tx2(0x20), 220, 36);
 	/* print thirst */
-	GUI_print_string(get_city(0x24), 220, 43);
+	GUI_print_string(get_tx2(0x24), 220, 43);
 
 
 	/* print page content */
@@ -358,8 +358,8 @@ void status_show(Bit16u index)
 			ds_writew(TXT_TABPOS1, 265);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0x28),
-					(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + (host_readbs(Real2Host(hero) + HERO_GOD) + 0x15) * 4)));
+					(char*)get_tx2(0x28),
+					(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + (host_readbs(Real2Host(hero) + HERO_GOD) + 0x15) * 4)));
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 55);
 
 			/* show attributes */
@@ -373,19 +373,19 @@ void status_show(Bit16u index)
 					+ host_readbs(Real2Host(hero) + i * 3 + HERO_ATTRIB_MOD);
 
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + i * 10,
-					(char*)get_city(0xcc),
+					(char*)get_tx2(0xcc),
 					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
-						(char*)get_city(0xc4) :
+						(char*)get_tx2(0xc4) :
 						(char*)p_datseg + EMPTY_STRING6,
 					val,
 					host_readbs(Real2Host(hero) + i * 3 + 0x34) != val ?
-						(char*)get_city(0xc8) :
+						(char*)get_tx2(0xc8) :
 						(char*)p_datseg + EMPTY_STRING7,
 					host_readbs(Real2Host(hero) + i * 3 + 0x34));
 
 			}
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_city(0x30),
+				(char*)get_tx2(0x30),
 				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 70,
 				(char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 10,
@@ -418,7 +418,7 @@ void status_show(Bit16u index)
 #ifdef M302de_ORIGINAL_BUGFIX
 				/* Original-Bugfix: show permanent damage red */
 				char le_fix[10];
-				set_status_string((char*)get_city(0x34));
+				set_status_string((char*)get_tx2(0x34));
 
 				if (host_readb(Real2Host(hero) + HERO_LE_MOD)) {
 					/* print max LE in red if hero has permanent damage */
@@ -429,7 +429,7 @@ void status_show(Bit16u index)
 				}
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0x34),
+					(char*)get_tx2(0x34),
 					host_readw(Real2Host(hero) + HERO_LE), le_fix,			/* LE */
 					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
@@ -438,13 +438,13 @@ void status_show(Bit16u index)
 						host_readbs(Real2Host(hero) + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK)),		/* Ausdauer*/
 					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
-				reset_status_string((char*)get_city(0x34));
+				reset_status_string((char*)get_tx2(0x34));
 				/* Original-Bugfix end */
 #else
 
 				/* Original Behaviour: print max LE in black */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0x34),
+					(char*)get_tx2(0x34),
 					host_readw(Real2Host(hero) + HERO_LE), host_readw(Real2Host(hero) + HERO_LE_ORIG),	/* LE */
 					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					host_readbs(Real2Host(hero) + HERO_MR),			/* MR */
@@ -493,7 +493,7 @@ void status_show(Bit16u index)
 					pa = 0;
 #ifdef M302de_ORIGINAL_BUGFIX
 				/* Original-Bugfix: show permanent damage in red */
-				set_status_string((char*)get_city(0xd0));
+				set_status_string((char*)get_tx2(0xd0));
 
 				if (host_readb(Real2Host(hero) + HERO_LE_MOD)) {
 					/* print max LE in red if hero has permanent damage */
@@ -505,7 +505,7 @@ void status_show(Bit16u index)
 
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0xd0),
+					(char*)get_tx2(0xd0),
 					host_readw(Real2Host(hero) + HERO_LE), le_fix,			/* LE */
 					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					at, pa,							/* AT PA */
@@ -516,11 +516,11 @@ void status_show(Bit16u index)
 					host_readw(Real2Host(hero) + HERO_LOAD),				/* Last */
 					bp);							/* BP */
 
-				reset_status_string((char*)get_city(0xd0));
+				reset_status_string((char*)get_tx2(0xd0));
 				/* Original-Bugfix end */
 #else
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0xd0),
+					(char*)get_tx2(0xd0),
 					host_readw(Real2Host(hero) + HERO_LE), host_readw(Real2Host(hero) + HERO_LE_ORIG),	/* LE */
 					host_readw(Real2Host(hero) + HERO_AE), host_readw(Real2Host(hero) + HERO_AE_ORIG),	/* AE */
 					at, pa,							/* AT PA */
@@ -575,43 +575,43 @@ void status_show(Bit16u index)
 				pa = 0;
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_city(0x14),
+				(char*)get_tx2(0x14),
 				host_readbs(Real2Host(hero) + HERO_ATPA_BASIS),
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc0)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xc0)),
 
 				host_readbs(Real2Host(hero) + HERO_AT) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				host_readbs(Real2Host(hero) + HERO_PA) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc4)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xc4)),
 
 				host_readbs(Real2Host(hero) + (HERO_AT + 1)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				host_readbs(Real2Host(hero) + (HERO_PA + 1)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xc8)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xc8)),
 
 				host_readbs(Real2Host(hero) + (HERO_AT + 2)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				host_readbs(Real2Host(hero) + (HERO_PA + 2)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xcc)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xcc)),
 
 				host_readbs(Real2Host(hero) + (HERO_AT + 3)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				host_readbs(Real2Host(hero) + (HERO_PA + 3)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd0)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xd0)),
 
 				host_readbs(Real2Host(hero) + (HERO_AT + 4)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				host_readbs(Real2Host(hero) + (HERO_PA + 4)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd4)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xd4)),
 
 				host_readbs(Real2Host(hero) + (HERO_AT + 5)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				host_readbs(Real2Host(hero) + (HERO_PA + 5)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xd8)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xd8)),
 
 				host_readbs(Real2Host(hero) + (HERO_AT + 6)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				host_readbs(Real2Host(hero) + (HERO_PA + 6)) - host_readbs(Real2Host(hero) + HERO_RS_BE) / 2,
 				at,
 				pa,
 
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xdc)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xdc)),
 				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + 7)) + j,
 
-				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xe0)),
+				(char*)Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xe0)),
 				host_readbs(Real2Host(hero) + (HERO_TA_FIGHT + 8)) + j);
 
 			GUI_print_string(Real2Host(ds_readd(DTP2)), 200, 60);
@@ -628,43 +628,43 @@ void status_show(Bit16u index)
 			set_textcolor(0xff, 2);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x300)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x300)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x300)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x300)), 5, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x308)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x308)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x308)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x308)), 110, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x314)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x314)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x314)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x314)), 215, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x304)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x304)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x304)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x304)), 5, 100, 0),
 				97);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x30c)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x30c)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x30c)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x30c)), 110, 100, 0),
 				104);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x318)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x318)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x318)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x318)), 215, 100, 0),
 				97);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x310)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x310)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x310)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x310)), 110, 100, 0),
 				132);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x31c)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x31c)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x31c)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x31c)), 215, 100, 0),
 				153);
 
 			/* print values */
@@ -679,9 +679,9 @@ void status_show(Bit16u index)
 					status_show_spell(Real2Host(hero),
 						i,
 						ds_readbs(SPELLS_INDEX + j * 2),
-						ds_readws(0x642e + 0 + j * 6),
-						ds_readws(0x642e + 2 + j * 6),
-						ds_readws(0x642e + 4 + j * 6));
+						ds_readws(STATUSPAGE_SPELLS_XY + 0 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS_XY + 2 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS_XY + 4 + j * 6));
 					i++;
 				}
 			}
@@ -693,23 +693,23 @@ void status_show(Bit16u index)
 			set_textcolor(0xff, 2);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x190)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x190)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x190)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x190)), 5, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x324)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x324)), 5, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x324)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x324)), 5, 100, 0),
 				129);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x328)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x328)), 110, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x328)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x328)), 110, 100, 0),
 				55);
 
 			GUI_print_string(
-				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x32c)),
-				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0x32c)), 215, 100, 0),
+				Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x32c)),
+				GUI_get_first_pos_centered(Real2Host(host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0x32c)), 215, 100, 0),
 				55);
 
 
@@ -725,9 +725,9 @@ void status_show(Bit16u index)
 					status_show_spell(Real2Host(hero),
 						i,
 						ds_readbs(SPELLS_INDEX2 + j * 2),
-						ds_readws(0x645e + 0 + j * 6),
-						ds_readws(0x645e + 2 + j * 6),
-						ds_readws(0x645e + 4 + j * 6));
+						ds_readws(STATUSPAGE_SPELLS2_XY + 0 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS2_XY + 2 + j * 6),
+						ds_readws(STATUSPAGE_SPELLS2_XY + 4 + j * 6));
 					i++;
 				}
 			}
@@ -739,7 +739,7 @@ void status_show(Bit16u index)
 	ds_writew(PIC_COPY_Y1, 0);
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 	do_pic_copy(0);
 
 	ds_writew(UPDATE_STATUSLINE, 1);
@@ -754,7 +754,7 @@ void status_show(Bit16u index)
 	ds_writew(TXT_TABPOS3, txt_tabpos3_bak);
 	ds_writew(TXT_TABPOS4, txt_tabpos4_bak);
 
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR));
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR));
 
 	refresh_screen_size();
 }

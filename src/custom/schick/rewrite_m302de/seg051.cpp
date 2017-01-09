@@ -74,13 +74,13 @@ void do_wildcamp(void)
 			set_var_to_zero();
 			load_ani(2);
 			init_ani(0);
-			GUI_print_loc_line(get_ltx(0x4c8));
+			GUI_print_loc_line(get_ttx(0x4c8));
 			set_audio_track(ARCHIVE_FILE_CAMP_XMI);
 			ds_writew(REQUEST_REFRESH, l_di = 0);
 		}
 
 		if (l_di) {
-			GUI_print_loc_line(get_ltx(0x4c8));
+			GUI_print_loc_line(get_ttx(0x4c8));
 			l_di = 0;
 		}
 
@@ -90,11 +90,11 @@ void do_wildcamp(void)
 
 			i = !ds_readb(GOOD_CAMP_PLACE) ? 6 : 7;
 
-			answer = GUI_radio(get_ltx(0x4cc), (signed char)i,
-						get_ltx(0x4d0), get_ltx(0x4d4),
-						get_ltx(0x350), get_ltx(0x4d8),
-						get_ltx(0x4ec), get_ltx(0x4f0),
-						get_ltx(0xcb8)) -1;
+			answer = GUI_radio(get_ttx(0x4cc), (signed char)i,
+						get_ttx(0x4d0), get_ttx(0x4d4),
+						get_ttx(0x350), get_ttx(0x4d8),
+						get_ttx(0x4ec), get_ttx(0x4f0),
+						get_ttx(0xcb8)) -1;
 
 			if (answer != -2) {
 				ds_writews(ACTION, answer + 129);
@@ -116,12 +116,12 @@ void do_wildcamp(void)
 			}
 
 			if (answer == -1) {
-				GUI_output(get_ltx(0x530));
+				GUI_output(get_ttx(0x530));
 			} else {
 
 				for (i = 0; i < 3; i++) {
 
-					sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x504), i + 1);
+					sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x504), i + 1);
 
 					do {
 						answer = select_hero_ok(Real2Host(ds_readd(DTP2)));
@@ -131,13 +131,13 @@ void do_wildcamp(void)
 							ds_readbs(WILDCAMP_HERBSTATUS + answer) != 0 ||
 							ds_readbs(WILDCAMP_REPLSTATUS + answer) != 0)
 						{
-							GUI_output(get_ltx(0x52c));
+							GUI_output(get_ttx(0x52c));
 							answer = -1;
 						}
 
 						if (answer != -1) {
 							if (hero_busy(get_hero(answer))) {
-								GUI_output(get_ltx(0xb68));
+								GUI_output(get_ttx(0xb68));
 								answer = -1;
 							}
 						}
@@ -163,15 +163,15 @@ void do_wildcamp(void)
 
 		} else if (ds_readws(ACTION) == 131) {
 
-			GUI_use_skill2(0, get_ltx(0x62c));
+			GUI_use_skill2(0, get_ttx(0x62c));
 
 		} else if (ds_readws(ACTION) == 132) {
 
-			answer = select_hero_ok(get_ltx(0x4f4));
+			answer = select_hero_ok(get_ttx(0x4f4));
 
 			if (answer != -1) {
 				if (hero_busy(get_hero(answer))) {
-					GUI_output(get_ltx(0xb68));
+					GUI_output(get_ttx(0xb68));
 					answer = -1;
 				}
 			}
@@ -187,18 +187,18 @@ void do_wildcamp(void)
 						ds_readbs(WILDCAMP_HERBSTATUS + answer) != 0 ||
 						ds_readbs(WILDCAMP_REPLSTATUS + answer) != 0)
 					{
-						GUI_output(get_ltx(0x52c));
+						GUI_output(get_ttx(0x52c));
 
 					} else {
 
 						if (ds_readbs(WILDCAMP_MAGICSTATUS + answer) != 0) {
-							GUI_output(get_ltx(0x538));
+							GUI_output(get_ttx(0x538));
 						} else {
 							ds_writebs(WILDCAMP_MAGICSTATUS + answer, (signed char)use_magic(hero));
 						}
 					}
 				} else {
-					GUI_output(get_ltx(0x528));
+					GUI_output(get_ttx(0x528));
 				}
 			}
 
@@ -207,10 +207,10 @@ void do_wildcamp(void)
 
 			ds_writews(SKILLED_HERO_POS, get_skilled_hero_pos(TA_PFLANZENKUNDE));
 
-			answer = select_hero_ok(get_ltx(0x518));
+			answer = select_hero_ok(get_ttx(0x518));
 
 			if (answer != -1 && hero_busy(get_hero(answer))) {
-				GUI_output(get_ltx(0xb68));
+				GUI_output(get_ttx(0xb68));
 				answer = -1;
 			}
 
@@ -220,7 +220,7 @@ void do_wildcamp(void)
 				{
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ltx(0xc8c),
+						(char*)get_ttx(0xc8c),
 						(char*)get_hero(answer) + HERO_NAME2);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -229,7 +229,7 @@ void do_wildcamp(void)
 						ds_readbs(WILDCAMP_REPLSTATUS + answer) != 0 ||
 						ds_readbs(WILDCAMP_MAGICSTATUS + answer) != 0)
 				{
-					GUI_output(get_ltx(0x52c));
+					GUI_output(get_ttx(0x52c));
 
 				} else {
 
@@ -237,7 +237,7 @@ void do_wildcamp(void)
 					{
 						hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * answer;
 
-						herb_hours = (signed char)GUI_input(get_ltx(0x51c), 1);
+						herb_hours = (signed char)GUI_input(get_ttx(0x51c), 1);
 
 						if (herb_hours > 0)
 						{
@@ -250,13 +250,13 @@ void do_wildcamp(void)
 							}
 						}
 					} else {
-						GUI_output(get_ltx(0x540));
+						GUI_output(get_ttx(0x540));
 					}
 				}
 			}
 		} else if (ds_readws(ACTION) == 134) {
 
-			if (GUI_bool(get_ltx(0x4f8))) {
+			if (GUI_bool(get_ttx(0x4f8))) {
 
 				l3 = (signed char)(ds_readds(DAY_TIMER) / HOURS(1));
 
@@ -283,7 +283,7 @@ void do_wildcamp(void)
 				if (ds_readbs(WILDCAMP_GUARDS + l_si) != -1) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ltx(0xc18),
+						(char*)get_ttx(0xc18),
 						(char*)get_hero(ds_readbs(WILDCAMP_GUARDS + l_si)) + HERO_NAME2);
 
 					GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -310,7 +310,7 @@ void do_wildcamp(void)
 						if (ds_readbs(WILDCAMP_GUARDS + l_si) != -1) {
 
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(0xc18),
+								(char*)get_ttx(0xc18),
 								(char*)get_hero(ds_readbs(WILDCAMP_GUARDS + l_si)) + HERO_NAME2);
 
 							GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -341,13 +341,13 @@ void do_wildcamp(void)
 
 					do_fight(ds_readws((CAMPFIGHTS-2) + 2 * random_schick(4)));
 
-					if (ds_readb(0x4333) != 99 && ds_readw(GAME_STATE) == GAME_STATE_MAIN) {
+					if (ds_readb(TRAVEL_DETOUR) != 99 && ds_readw(GAME_STATE) == GAME_STATE_MAIN) {
 
 						draw_main_screen();
 						set_var_to_zero();
 						load_ani(2);
 						init_ani(0);
-						GUI_print_loc_line(get_ltx(0x4c8));
+						GUI_print_loc_line(get_ttx(0x4c8));
 						set_audio_track(ARCHIVE_FILE_CAMP_XMI);
 
 						ds_writew(REQUEST_REFRESH, l_di = 0);
@@ -387,11 +387,11 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 
 	timewarp(HOURS((hours + 1)));
 
-	ptr = p_datseg + 0x669c;
+	ptr = p_datseg + GATHER_HERBS_TABLE;
 
 	for (herbs = i = 0; i < 12; i++, ptr += 4) {
 
-		if (host_readb(ptr) == ds_readb(0x66d0)) {
+		if (host_readb(ptr) == ds_readb(GATHER_HERBS_SPECIAL)) {
 			add_ptr_bs(ptr + 1, 10);
 			inc_ptr_bs(ptr + 2);
 		}
@@ -406,7 +406,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 			}
 		}
 
-		if (host_readb(ptr) == ds_readb(0x66d0)) {
+		if (host_readb(ptr) == ds_readb(GATHER_HERBS_SPECIAL)) {
 			sub_ptr_bs(ptr + 1, 10);
 			dec_ptr_bs(ptr + 2);
 		}
@@ -416,7 +416,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 
 		/* print a sentence with all the herb names */
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x520),
+			(char*)get_ttx(0x520),
 			(char*)hero + HERO_NAME2);
 
 		for (i = 0; i < 12; i++) {
@@ -426,7 +426,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 				sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 					(char*)p_datseg + GATHER_HERBS_STR_FOUND, /* "%d %s" */
 					herb_count[i],
-					Real2Host(GUI_names_grammar((herb_count[i] > 1 ? 4 : 0) + 0x4002, ds_readb(0x669c + 4 * i), 0)));
+					Real2Host(GUI_names_grammar((herb_count[i] > 1 ? 4 : 0) + 0x4002, ds_readb(GATHER_HERBS_TABLE + 4 * i), 0)));
 
 				strcat((char*)Real2Host(ds_readd(DTP2)), (char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)));
 
@@ -448,7 +448,7 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 		/* no herbs found */
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0x558),
+			(char*)get_ttx(0x558),
 			(char*)hero + HERO_NAME2);
 	}
 
@@ -476,10 +476,10 @@ signed short replenish_stocks(signed short mod, signed short tries)
 	mod += 5;
 
 	ds_writews(SKILLED_HERO_POS, get_skilled_hero_pos(TA_WILDNISLEBEN));
-	hero_pos = select_hero_ok(get_ltx(0x508));
+	hero_pos = select_hero_ok(get_ttx(0x508));
 
 	if (hero_pos != -1 && hero_busy(get_hero(hero_pos))) {
-		GUI_output(get_ltx(0xb68));
+		GUI_output(get_ttx(0xb68));
 		hero_pos = -1;
 	}
 
@@ -488,7 +488,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 		if (ds_readb(WILDCAMP_REPLSTATUS + hero_pos) != 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xc88),
+				(char*)get_ttx(0xc88),
 				(char*)get_hero(hero_pos) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -499,14 +499,14 @@ signed short replenish_stocks(signed short mod, signed short tries)
 				ds_readb(WILDCAMP_MAGICSTATUS + hero_pos) != 0 ||
 				ds_readb(WILDCAMP_GUARDSTATUS + hero_pos) != 0)
 			{
-				GUI_output(get_ltx(0x52c));
+				GUI_output(get_ttx(0x52c));
 
 			} else {
 
 				if (tries < 2) {
 
 					timewarp(HOURS(1));
-					ds_writed(0x3e20, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
+					ds_writed(MAIN_ACTING_HERO, (Bit32u)(hero = (RealPt)ds_readd(HEROS) + SIZEOF_HERO * hero_pos));
 					ds_writeb(WILDCAMP_REPLSTATUS + hero_pos, 1);
 					retval = 1;
 
@@ -515,7 +515,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 
 						/* found water */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0x510),
+							(char*)get_ttx(0x510),
 							(char*)Real2Host(hero) + HERO_NAME2);
 
 						/* fill up all waterskins and remove thirst of all living heros in the current group */
@@ -538,7 +538,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					} else {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0x550),
+							(char*)get_ttx(0x550),
 							(char*)Real2Host(hero) + HERO_NAME2);
 					}
 
@@ -561,18 +561,18 @@ signed short replenish_stocks(signed short mod, signed short tries)
 
 						/* the group may get three food packages */
 						if (!get_item(45, 1, 3)) {
-							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0x4c8));
+							strcpy((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0x4c8));
 							ds_writew(REQUEST_REFRESH, 1);
 						} else {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(0x514),
+								(char*)get_ttx(0x514),
 								(char*)Real2Host(hero) + HERO_NAME2);
 						}
 
 					} else {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0x554),
+							(char*)get_ttx(0x554),
 							(char*)Real2Host(hero) + HERO_NAME2);
 					}
 
@@ -580,7 +580,7 @@ signed short replenish_stocks(signed short mod, signed short tries)
 					delay_or_keypress(200);
 
 				} else {
-					GUI_output(get_ltx(0x50c));
+					GUI_output(get_ttx(0x50c));
 				}
 			}
 		}

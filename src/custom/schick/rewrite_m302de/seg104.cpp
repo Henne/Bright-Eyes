@@ -116,7 +116,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 		give_hero_new_item(hero, host_readws(r_ptr + 0x16), 1, 1);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0xb6c),
+			(char*)get_ttx(0xb6c),
 			hero + HERO_NAME2,
 			Real2Host(GUI_names_grammar(1, host_readws(r_ptr + 0x16), 0)));
 
@@ -129,7 +129,7 @@ signed short do_alchemy(Bit8u* hero, signed short recipe_index, signed short fla
 		give_hero_new_item(hero, host_readws(r_ptr + 2), 1, 1);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0xb70),
+			(char*)get_ttx(0xb70),
 			hero + HERO_NAME2,
 			Real2Host(GUI_names_grammar(2, host_readws(r_ptr + 0x16), 0)));
 
@@ -159,7 +159,7 @@ signed short plan_alchemy(Bit8u *hero)
 	item_pos = get_item_pos(hero, 47);
 	if (item_pos == -1) {
 		/* no alchemyset */
-		GUI_output(get_dtp(0xa8));
+		GUI_output(get_tx(0xa8));
 		retval = 0;
 	} else {
 
@@ -181,7 +181,7 @@ signed short plan_alchemy(Bit8u *hero)
 			l7 = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 7);
 
-			answer = GUI_radio(get_dtp(0xac), (signed char)recipes,
+			answer = GUI_radio(get_tx(0xac), (signed char)recipes,
 						Real2Host(ds_readd(RADIO_NAME_LIST)),
 						Real2Host(ds_readd((RADIO_NAME_LIST + 4))),
 						Real2Host(ds_readd((RADIO_NAME_LIST + 2 * 4))),
@@ -209,7 +209,7 @@ signed short plan_alchemy(Bit8u *hero)
 					if (ds_readws((ALCHEMY_RECIPES+24) + recipe_index * 28) > host_readws(hero + HERO_AE)) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0x97c),
+							(char*)get_ttx(0x97c),
 							(char*)hero + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
@@ -219,7 +219,7 @@ signed short plan_alchemy(Bit8u *hero)
 
 						if ((ds_readbs(LOCATION) == LOCATION_INN) && (ds_readbs(SLEEP_QUALITY) == -1)) {
 
-							GUI_output(get_ltx(0x568));
+							GUI_output(get_ttx(0x568));
 
 							return 0;
 						}
@@ -227,7 +227,7 @@ signed short plan_alchemy(Bit8u *hero)
 						/* check if the alchemic process takes more than 8h */
 						if ((ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28) > 8) && (ds_readbs(LOCATION) != LOCATION_INN)) {
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_dtp(0xb0),
+									(char*)get_tx(0xb0),
 									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
 
 									GUI_output(Real2Host(ds_readd(DTP2)));
@@ -240,20 +240,20 @@ signed short plan_alchemy(Bit8u *hero)
 							{
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_dtp(0xb4),
+									(char*)get_tx(0xb4),
 									ds_readbs((ALCHEMY_RECIPES+27) + recipe_index * 28));
 
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-									(char*)get_dtp(0xbc),
+									(char*)get_tx(0xbc),
 									(char*)hero + HERO_NAME2);
 
 								ds_writew(TEXTBOX_WIDTH, 7);
 
 								do {
 									l4 = GUI_radio(Real2Host(ds_readd(DTP2)), 3,
-											get_dtp(0xb8),
+											get_tx(0xb8),
 											Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-											get_dtp(0xc0));
+											get_tx(0xc0));
 								} while (l4 == -1);
 
 								ds_writew(TEXTBOX_WIDTH, 3);
@@ -307,7 +307,7 @@ signed short plan_alchemy(Bit8u *hero)
 				} else {
 					/* not all ingrendients */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_dtp(0xc4),
+						(char*)get_tx(0xc4),
 						(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(ds_readws(ALCHEMY_MISSING_ITEM)))));
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -316,7 +316,7 @@ signed short plan_alchemy(Bit8u *hero)
 		} else {
 			/* no recipes */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0xc8),
+				(char*)get_tx(0xc8),
 				(char*)hero + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -398,7 +398,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			/* not diseased */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x738),
+				(char*)get_ttx(0x738),
 				(char*)patient + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -408,7 +408,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			/* recently tried to cure with skill */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xae4),
+				(char*)get_ttx(0xae4),
 				(char*)patient + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -417,7 +417,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			/* no herb for this disease */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x1d8),
+				(char*)get_tx(0x1d8),
 				(char*)healer + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -436,7 +436,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 					add_hero_le(patient, retval);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ltx(0xadc),
+						(char*)get_ttx(0xadc),
 						(char*)healer + HERO_NAME2,
 						(char*)patient + HERO_NAME2,
 						(char*)Real2Host(GUI_get_ptr(host_readbs(patient + 0x22), 3)),
@@ -468,7 +468,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 					sub_hero_le(patient, damage);
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ltx(0xad8),
+						(char*)get_ttx(0xad8),
 						(char*)patient + HERO_NAME2, damage);
 
 					GUI_output(Real2Host(ds_readd(DTP2)));
@@ -477,7 +477,7 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 			} else {
 				/* failed to heal */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0xae0),
+					(char*)get_ttx(0xae0),
 					(char*)healer + HERO_NAME2,
 					(char*)patient + HERO_NAME2);
 

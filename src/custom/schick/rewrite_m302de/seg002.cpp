@@ -84,7 +84,7 @@ void set_audio_track(Bit16u index)
 
 		ds_writew(MUSIC_CURRENT_TRACK, index);
 
-		if (ds_readw(0xbcfd) != 0) {
+		if (ds_readw(USE_CDAUDIO_FLAG) != 0) {
 			/* we use CD */
 			CD_set_track(index);
 		} else {
@@ -129,7 +129,7 @@ void sound_menu(void)
 
 	if (ds_readb(MUSIC_ENABLED) == 0) {
 		/* music disabled */
-		if (ds_readw(0xbcfd) != 0) {
+		if (ds_readw(USE_CDAUDIO_FLAG) != 0) {
 			CD_audio_pause();
 		} else {
 			stop_midi_playback();
@@ -137,7 +137,7 @@ void sound_menu(void)
 	} else {
 		if (ds_readws(MUSIC_CURRENT_TRACK) != -1) {
 			/* music enabled */
-			if (ds_readw(0xbcfd) != 0) {
+			if (ds_readw(USE_CDAUDIO_FLAG) != 0) {
 				CD_audio_play();
 			} else {
 				play_music_file(ds_readws(MUSIC_CURRENT_TRACK));
@@ -172,7 +172,7 @@ void read_sound_cfg(void)
 #endif
 
 		/* enable useage of audio-CD */
-		ds_writew(0xbcfd, ds_writew(0xbcff, 1));
+		ds_writew(USE_CDAUDIO_FLAG, ds_writew(LOAD_SOUND_DRIVER, 1));
 
 		/* disable loading of the music driver */
 		if (0) {
@@ -192,18 +192,18 @@ void read_sound_cfg(void)
 
 		if (l3 != 0) {
 
-			if (ds_readw(0x447c) != 0) {
+			if (ds_readw(SND_VOC_ENABLED) != 0) {
 
 				if (!load_digi_driver((RealPt)RealMake(datseg, FNAME_DIGI_ADV), 2, l3, l4)) {
-					ds_writew(0x447c, 0);
+					ds_writew(SND_VOC_ENABLED, 0);
 				}
 			} else {
 				/* print that sound effects are disabled */
 				GUI_output(p_datseg + SND_TXT_DISABLED_MEM);
-				ds_writew(0x447c, 0);
+				ds_writew(SND_VOC_ENABLED, 0);
 			}
 		} else {
-			ds_writew(0x447c, 0);
+			ds_writew(SND_VOC_ENABLED, 0);
 		}
 
 	}
@@ -213,7 +213,7 @@ void init_AIL(Bit32u size)
 {
 	if (NOT_NULL(Real2Host((RealPt)ds_writed(AIL_MIDI_BUFFER, (Bit32u)schick_alloc_emu(size))))) {
 		AIL_startup();
-		ds_writew(0xbcff, 1);
+		ds_writew(LOAD_SOUND_DRIVER, 1);
 	}
 }
 
@@ -240,7 +240,7 @@ void exit_AIL(void)
 	/* set all pointers to NULL */
 	ds_writed(AIL_TIMBRE_CACHE, ds_writed(AIL_STATE_TABLE, ds_writed(AIL_MIDI_BUFFER, ds_writed(AIL_MUSIC_DRIVER_BUF2, 0))));
 
-	if (ds_readw(0x447c) != 0) {
+	if (ds_readw(SND_VOC_ENABLED) != 0) {
 		free_voc_buffer();
 	}
 
@@ -402,7 +402,7 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 					}
 				}
 
-				ds_writew(0xbcff, 0);
+				ds_writew(LOAD_SOUND_DRIVER, 0);
 				return 1;
 			} else {
 
@@ -413,14 +413,14 @@ signed short load_music_driver(RealPt fname, signed short type, signed short por
 		}
 	}
 
-	ds_writew(0xbcff, 1);
+	ds_writew(LOAD_SOUND_DRIVER, 1);
 	return 0;
 }
 
 /* static */
 void do_play_music_file(signed short index)
 {
-	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3)) {
+	if ((ds_readw(LOAD_SOUND_DRIVER) == 0) && (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3)) {
 
 		stop_midi_playback();
 		load_midi_file(index);
@@ -431,7 +431,7 @@ void do_play_music_file(signed short index)
 /* static */
 void stop_midi_playback(void)
 {
-	if ((ds_readw(0xbcff) == 0) && (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
+	if ((ds_readw(LOAD_SOUND_DRIVER) == 0) && (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
 	{
 		AIL_stop_sequence(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE));
 		AIL_release_sequence_handle(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE));
@@ -440,7 +440,7 @@ void stop_midi_playback(void)
 
 void start_midi_playback_IRQ(void)
 {
-	if ((ds_readw(0xbcff) == 0) &&
+	if ((ds_readw(LOAD_SOUND_DRIVER) == 0) &&
 		(ds_readb(MUSIC_ENABLED) != 0) &&
 		(host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
 	{
@@ -453,7 +453,7 @@ void start_midi_playback_IRQ(void)
 /* These function is never called */
 void cruft_1(void)
 {
-	if ((ds_readw(0xbcff) == 0) &&
+	if ((ds_readw(LOAD_SOUND_DRIVER) == 0) &&
 		(host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3))
 	{
 		AIL_start_sequence(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE));
@@ -463,7 +463,7 @@ void cruft_1(void)
 /* These function is never called */
 void cruft_2(signed short volume)
 {
-	if (ds_readw(0xbcff) == 0) {
+	if (ds_readw(LOAD_SOUND_DRIVER) == 0) {
 
 		if (host_readw(Real2Host(ds_readd(AIL_MUSIC_DRIVER_DESCR)) + 2) == 3) {
 			AIL_set_relative_volume(ds_readws(AIL_MUSIC_DRIVER_ID), ds_readws(AIL_SEQUENCE), volume, 0);
@@ -492,7 +492,7 @@ signed short have_mem_for_sound(void)
 
 			if ((Bit32u)(size + 25000L) < bc_farcoreleft()) {
 
-				ds_writew(0x447c, 1);
+				ds_writew(SND_VOC_ENABLED, 1);
 			}
 		} else {
 			retval = 0;
@@ -502,7 +502,7 @@ signed short have_mem_for_sound(void)
 		retval = 1;
 
 		if (25000L < bc_farcoreleft()) {
-			ds_writew(0x447c, 1);
+			ds_writew(SND_VOC_ENABLED, 1);
 		}
 	}
 
@@ -511,7 +511,7 @@ signed short have_mem_for_sound(void)
 
 void play_voc(signed short index)
 {
-	if (ds_readw(0x447c) && ds_readb(SND_EFFECTS_ENABLED)) {
+	if (ds_readw(SND_VOC_ENABLED) && ds_readb(SND_EFFECTS_ENABLED)) {
 		SND_set_volume(90);
 		SND_play_voc(index);
 	}
@@ -519,7 +519,7 @@ void play_voc(signed short index)
 
 void play_voc_delay(signed short index)
 {
-	if (ds_readw(0x447c) && ds_readb(SND_EFFECTS_ENABLED)) {
+	if (ds_readw(SND_VOC_ENABLED) && ds_readb(SND_EFFECTS_ENABLED)) {
 		SND_set_volume(90);
 		SND_play_voc(index);
 
@@ -531,7 +531,7 @@ void play_voc_delay(signed short index)
 
 void alloc_voc_buffer(Bit32u size)
 {
-	if (ds_readw(0x447c)) {
+	if (ds_readw(SND_VOC_ENABLED)) {
 		if (NOT_NULL(Real2Host(ds_writed(AIL_VOC_BUFFER, (Bit32u)schick_alloc_emu(size))))) ;
 	}
 }
@@ -539,7 +539,7 @@ void alloc_voc_buffer(Bit32u size)
 /* static */
 void free_voc_buffer(void)
 {
-	if (ds_readw(0x447c) != 0) {
+	if (ds_readw(SND_VOC_ENABLED) != 0) {
 
 		if (ds_readd(AIL_VOC_BUFFER) != 0) {
 			bc_farfree((RealPt)ds_readd(AIL_VOC_BUFFER));
@@ -584,7 +584,7 @@ signed short read_voc_file(signed short index)
 
 void SND_play_voc(signed short index)
 {
-	if (ds_readw(0x447c)) {
+	if (ds_readw(SND_VOC_ENABLED)) {
 
 		AIL_stop_digital_playback(ds_readw(AIL_DIGI_DRIVER_ID));
 		read_new_voc_file(index);
@@ -595,14 +595,14 @@ void SND_play_voc(signed short index)
 
 void SND_stop_digi(void)
 {
-	if (ds_readw(0x447c)) {
+	if (ds_readw(SND_VOC_ENABLED)) {
 		AIL_stop_digital_playback(ds_readw(AIL_DIGI_DRIVER_ID));
 	}
 }
 
 void SND_set_volume(unsigned short volume)
 {
-	if (ds_readw(0x447c)) {
+	if (ds_readw(SND_VOC_ENABLED)) {
 
 		AIL_set_digital_playback_volume(ds_readw(AIL_DIGI_DRIVER_ID), volume);
 
@@ -778,9 +778,9 @@ signed short load_regular_file(Bit16u index)
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
 			(char*)Real2Host(ds_readd(STR_FILE_MISSING_PTR)),
 			(char*)Real2Host(ds_readd(FNAMES + index * 4)));
-		ds_writeb(0x2ca1, 1);
+		ds_writeb(MISSING_FILE_GUILOCK, 1);
 		GUI_output(Real2Host(ds_readd(DTP2)));
-		ds_writeb(0x2ca1, 0);
+		ds_writeb(MISSING_FILE_GUILOCK, 0);
 	}
 
 	return handle;
@@ -846,9 +846,9 @@ void copy_from_archive_to_temp(unsigned short index, RealPt fname)
 		handle2 = bc__creat(fname, 0);
 
 		/* copy it */
-		while ( (len = read_archive_file(handle1, Real2Host(ds_readd(BUFFER1_PTR)), 60000)) && (len != -1))
+		while ( (len = read_archive_file(handle1, Real2Host(ds_readd(RENDERBUF_PTR)), 60000)) && (len != -1))
 		{
-			bc__write(handle2, (RealPt)ds_readd(BUFFER1_PTR), len);
+			bc__write(handle2, (RealPt)ds_readd(RENDERBUF_PTR), len);
 		}
 
 		bc_close(handle1);
@@ -868,9 +868,9 @@ void copy_file_to_temp(RealPt src_file, RealPt fname)
 		handle2 = bc__creat(fname, 0);
 
 		/* copy it */
-		while ( (len = bc__read(handle1, Real2Host(ds_readd(BUFFER1_PTR)), 60000)) && (len != -1))
+		while ( (len = bc__read(handle1, Real2Host(ds_readd(RENDERBUF_PTR)), 60000)) && (len != -1))
 		{
-			bc__write(handle2, (RealPt)ds_readd(BUFFER1_PTR), len);
+			bc__write(handle2, (RealPt)ds_readd(RENDERBUF_PTR), len);
 		}
 
 		bc_close(handle1);
@@ -1321,12 +1321,12 @@ void mouse_irq_init(signed short irq_nr, void interrupt *(isr))
 	l5 = 0x1742;
 	l6 = 0x51e;
 
-	ds_writed(0xbcdb, (Bit32u)bc__dos_getvect(0x78));
+	ds_writed(MOUSE_HANDLER_BAK, (Bit32u)bc__dos_getvect(0x78));
 	bc__dos_setvect(0x78, (INTCAST)isr);
 
 	mouse_action((Bit8u*)&l1, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5, (Bit8u*)&l6);
 
-	ds_writew(0x4484, 1);
+	ds_writew(MOUSE_IRQ_INIT, 1);
 }
 #endif
 
@@ -1339,7 +1339,7 @@ void mouse_reset_ehandler(void)
 	signed short l4;
 	signed short l5;
 
-	bc__dos_setvect(0x78, (INTCAST) ds_readd(0xbcdb));
+	bc__dos_setvect(0x78, (INTCAST) ds_readd(MOUSE_HANDLER_BAK));
 
 	l1 = 12;
 	l3 = 0;
@@ -1348,7 +1348,7 @@ void mouse_reset_ehandler(void)
 
 	mouse_action((Bit8u*)&l1, (Bit8u*)&l2, (Bit8u*)&l3, (Bit8u*)&l4, (Bit8u*)&l5);
 
-	ds_writew(0x4484, 0);
+	ds_writew(MOUSE_IRQ_INIT, 0);
 }
 
 /**
@@ -1437,13 +1437,13 @@ void update_mouse_cursor1(void)
 {
 	if (ds_readw(MOUSE_LOCKED) == 0) {
 
-		if  (ds_readw(0x299a) == 0) {
+		if  (ds_readw(MOUSE_REFRESH_FLAG) == 0) {
 			ds_writew(MOUSE_LOCKED, 1);
 			restore_mouse_bg();
 			ds_writew(MOUSE_LOCKED, 0);
 		}
 
-		dec_ds_ws(0x299a);
+		dec_ds_ws(MOUSE_REFRESH_FLAG);
 	}
 }
 
@@ -1452,9 +1452,9 @@ void refresh_screen_size1(void)
 	/* check lock */
 	if (ds_readw(MOUSE_LOCKED) == 0) {
 
-		inc_ds_ws(0x299a);
+		inc_ds_ws(MOUSE_REFRESH_FLAG);
 
-		if (ds_readw(0x299a) == 0) {
+		if (ds_readw(MOUSE_REFRESH_FLAG) == 0) {
 
 			/* get lock */
 			ds_writew(MOUSE_LOCKED, 1);
@@ -1527,7 +1527,7 @@ void handle_gui_input(void)
 			l_si = 0x2c;
 		}
 
-		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(0xbd25) == 0)) {
+		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(PREGAME_STATE) == 0)) {
 			cleanup_game();
 			bc_exit(0);
 		}
@@ -1555,19 +1555,19 @@ void handle_gui_input(void)
 		}
 
 		if ((ds_readw(BIOSKEY_EVENT) == 0x10) &&
-			(ds_readws(0xc3c5) == 0) &&
+			(ds_readws(BIOSKEY_EVENT10) == 0) &&
 			!ds_readbs(DIALOGBOX_LOCK) &&
-			(ds_readws(0xbd25) == 0))
+			(ds_readws(PREGAME_STATE) == 0))
 		{
-			ds_writew(0xc3c5, 1);
+			ds_writew(BIOSKEY_EVENT10, 1);
 			inc_ds_ws(TIMERS_DISABLED);
-			ds_writew(0xd2d1, 1);
+			ds_writew(GUI_TEXT_CENTERED, 1);
 			l_di = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 2);
 			GUI_output(p_datseg + PAUSE_STRING);		/* P A U S E */
 			ds_writew(TEXTBOX_WIDTH, l_di);
-			ds_writew(0xd2d1, 0);
-			ds_writew(0xc3c5, l_si = ds_writew(BIOSKEY_EVENT, 0));
+			ds_writew(GUI_TEXT_CENTERED, 0);
+			ds_writew(BIOSKEY_EVENT10, l_si = ds_writew(BIOSKEY_EVENT, 0));
 			dec_ds_ws(TIMERS_DISABLED);
 		}
 	} else {
@@ -1612,7 +1612,7 @@ void handle_gui_input(void)
 					ds_writew(MOUSE1_EVENT2, 0);
 				}
 			} else {
-				if ((ds_readws(0x29b4) != 0) &&
+				if ((ds_readws(HEROSWAP_ALLOWED) != 0) &&
 					(host_readbs(get_hero(l_si - 241) + HERO_TYPE) != HERO_TYPE_NONE) &&
 						host_readbs(get_hero(l_si - 241) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP))
 				{
@@ -1628,9 +1628,9 @@ void handle_gui_input(void)
 			l_si = 0;
 			l_di = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 5);
-			ds_writew(0xd2d1, 1);
-			GUI_output(get_ltx(0x628));
-			ds_writew(0xd2d1, 0);
+			ds_writew(GUI_TEXT_CENTERED, 1);
+			GUI_output(get_ttx(0x628));
+			ds_writew(GUI_TEXT_CENTERED, 0);
 			ds_writew(TEXTBOX_WIDTH, l_di);
 
 		} else if (l_si == 0xfc) {
@@ -1638,10 +1638,10 @@ void handle_gui_input(void)
 			l_si = 0;
 			l_di = ds_readws(TEXTBOX_WIDTH);
 			ds_writew(TEXTBOX_WIDTH, 5);
-			ds_writew(0xd2d1, 1);
+			ds_writew(GUI_TEXT_CENTERED, 1);
 			prepare_date_str();
 			GUI_output(Real2Host(ds_readd(DTP2)));
-			ds_writew(0xd2d1, 0);
+			ds_writew(GUI_TEXT_CENTERED, 0);
 			ds_writew(TEXTBOX_WIDTH, l_di);
 
 		}
@@ -1688,7 +1688,7 @@ void handle_input(void)
 			l_si = 0x2c;
 		}
 
-		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(0xbd25) == 0)) {
+		if ((ds_readw(BIOSKEY_EVENT) == 0x11) && (ds_readw(PREGAME_STATE) == 0)) {
 			cleanup_game();
 			bc_exit(0);
 		}
@@ -1704,20 +1704,20 @@ void handle_input(void)
 		}
 
 		if ((ds_readw(BIOSKEY_EVENT) == 0x10) &&
-			(ds_readws(0xc3c5) == 0) &&
+			(ds_readws(BIOSKEY_EVENT10) == 0) &&
 			!ds_readbs(DIALOGBOX_LOCK) &&
-			(ds_readws(0xbd25) == 0))
+			(ds_readws(PREGAME_STATE) == 0))
 		{
 			inc_ds_ws(TIMERS_DISABLED);
-			ds_writew(0xc3c5, 1);
-			ds_writew(0xd2d1, 1);
+			ds_writew(BIOSKEY_EVENT10, 1);
+			ds_writew(GUI_TEXT_CENTERED, 1);
 			ds_writew(TEXTBOX_WIDTH, 2);
 			GUI_output(p_datseg + PAUSE_STRING);		/* P A U S E */
 			ds_writew(TEXTBOX_WIDTH, 3);
-			ds_writew(0xd2d1, 0);
+			ds_writew(GUI_TEXT_CENTERED, 0);
 			dec_ds_ws(TIMERS_DISABLED);
 
-			ds_writew(0xc3c5, l_si = ds_writew(BIOSKEY_EVENT, 0));
+			ds_writew(BIOSKEY_EVENT10, l_si = ds_writew(BIOSKEY_EVENT, 0));
 		}
 	} else {
 		play_voc(ARCHIVE_FILE_FX1_VOC);
@@ -1775,7 +1775,7 @@ void game_loop(void)
 			do_town();
 		} else if (ds_readbs(DUNGEON_INDEX) != 0) {
 			do_dungeon();
-		} else if (ds_readbs(TRAVELING) != 0) {
+		} else if (ds_readbs(SHOW_TRAVEL_MAP) != 0) {
 			do_travel_mode();
 		}
 
@@ -1813,10 +1813,10 @@ void game_loop(void)
 		if ((host_readbs(get_hero(6) + HERO_TYPE) != HERO_TYPE_NONE) &&
 			((ds_readbs(CURRENT_TOWN) != 0) || (ds_readws(GAME_STATE) == GAME_STATE_VICTORY)) &&
 			(ds_readws(NPC_MONTHS) >= 1) &&
-			(ds_readbs(0x4494) != ds_readws(NPC_MONTHS)))
+			(ds_readbs(NPC_LAST_FAREWELLCHECK) != ds_readws(NPC_MONTHS)))
 		{
 			npc_farewell();
-			ds_writeb(0x4494, (signed short)ds_readws(NPC_MONTHS));
+			ds_writeb(NPC_LAST_FAREWELLCHECK, (signed short)ds_readws(NPC_MONTHS));
 		}
 
 		if ((ds_readws(IN_FIGHT) == 0) &&
@@ -1826,16 +1826,16 @@ void game_loop(void)
 			check_level_up();
 		}
 
-		if (ds_readbs(0x46df) != 0) {
+		if (ds_readbs(REFRESH_STATUS_LINE) != 0) {
 
-			ds_writeb(0x46df, 0);
+			ds_writeb(REFRESH_STATUS_LINE, 0);
 
 			if (ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
 				draw_status_line();
 			}
 		}
 
-		if ((ds_readws(GAME_STATE) != GAME_STATE_MAIN) && (ds_readbs(0x4475) != 0)) {
+		if ((ds_readws(GAME_STATE) != GAME_STATE_MAIN) && (ds_readbs(FADING_STATE) != 0)) {
 			refresh_colors();
 		}
 
@@ -1891,7 +1891,7 @@ void timers_daily(void)
 
 	/* reset insulted merchants */
 	for (i = 0; i < 94; i++) {
-		ds_writeb(0x3592 + i, 0);
+		ds_writeb(MERCHANT_OFFENDED_FLAGS + i, 0);
 	}
 
 	hero_i = get_hero(0);
@@ -1939,10 +1939,10 @@ void seg002_2177(void)
 {
 	signed short i;
 
-	for (i = 0; ds_readws(0x70a8 + i * 8) != -1; i++) {
+	for (i = 0; ds_readws(MARKET_DESCR_TABLE + i * 8) != -1; i++) {
 
-		ds_writew((0x70a8 + 6) + i * 8,
-			random_interval(ds_readws(0x70a8 + i * 8), 20));
+		ds_writew((MARKET_DESCR_TABLE + 6) + i * 8,
+			random_interval(ds_readws(MARKET_DESCR_TABLE + i * 8), 20));
 	}
 }
 
@@ -2037,11 +2037,11 @@ void dawning(void)
 	{
 
 		/* floor */
-		pal_fade(p_datseg + 0x3e53, Real2Host(ds_readd(TOWNPAL_BUF)));
+		pal_fade(p_datseg + PALETTE_FLOOR, Real2Host(ds_readd(TOWNPAL_BUF)));
 		/* buildings */
-		pal_fade(p_datseg + 0x3eb3, Real2Host(ds_readd(TOWNPAL_BUF)) + 0x60);
+		pal_fade(p_datseg + PALETTE_BUILDINGS, Real2Host(ds_readd(TOWNPAL_BUF)) + 0x60);
 		/* sky */
-		pal_fade(p_datseg + 0x3f13, Real2Host(ds_readd(TOWNPAL_BUF)) + 0xc0);
+		pal_fade(p_datseg + PALETTE_SKY, Real2Host(ds_readd(TOWNPAL_BUF)) + 0xc0);
 
 		/* in a town */
 		if (ds_readbs(CURRENT_TOWN) &&
@@ -2050,18 +2050,18 @@ void dawning(void)
 			/* not in a location */
 			!ds_readbs(LOCATION) &&
 			/* not in a travel mode */
-			!ds_readb(TRAVELING) &&
+			!ds_readb(SHOW_TRAVEL_MAP) &&
 			/* no event animation */
 			!ds_readb(EVENT_ANI_BUSY) &&
 			/* unknown */
-			!ds_readbs(0x45b8) &&
+			!ds_readbs(SPECIAL_SCREEN) &&
 			/* unknown */
 			(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
 		{
 			wait_for_vsync();
 
-			set_palette(p_datseg + 0x3e53, 0, 0x20);
-			set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+			set_palette(p_datseg + PALETTE_FLOOR, 0, 0x20);
+			set_palette(p_datseg + PALETTE_BUILDINGS, 0x80, 0x40);
 		}
 	}
 }
@@ -2079,11 +2079,11 @@ void nightfall(void)
 	{
 
 		/* floor */
-		pal_fade(p_datseg + 0x3e53, p_datseg + 0x4498);
+		pal_fade(p_datseg + PALETTE_FLOOR, p_datseg + FLOOR_FADE_PALETTE);
 		/* buildings */
-		pal_fade(p_datseg + 0x3eb3, p_datseg + 0x44f8);
+		pal_fade(p_datseg + PALETTE_BUILDINGS, p_datseg + BUILDING_FADE_PALETTE);
 		/* sky */
-		pal_fade(p_datseg + 0x3f13, p_datseg + 0x4558);
+		pal_fade(p_datseg + PALETTE_SKY, p_datseg + SKY_FADE_PALETTE);
 
 		/* in a town */
 		if (ds_readbs(CURRENT_TOWN) &&
@@ -2092,18 +2092,18 @@ void nightfall(void)
 			/* not in a location */
 			!ds_readbs(LOCATION) &&
 			/* not in a travel mode */
-			!ds_readb(TRAVELING) &&
+			!ds_readb(SHOW_TRAVEL_MAP) &&
 			/* no event animation */
 			!ds_readb(EVENT_ANI_BUSY) &&
 			/* unknown */
-			!ds_readbs(0x45b8) &&
+			!ds_readbs(SPECIAL_SCREEN) &&
 			/* unknown */
 			(ds_readbs(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK))
 		{
 			wait_for_vsync();
 
-			set_palette(p_datseg + 0x3e53, 0, 0x20);
-			set_palette(p_datseg + 0x3eb3, 0x80, 0x40);
+			set_palette(p_datseg + PALETTE_FLOOR, 0, 0x20);
+			set_palette(p_datseg + PALETTE_BUILDINGS, 0x80, 0x40);
 		}
 	}
 }
@@ -2197,12 +2197,12 @@ void do_timers(void)
 	/* inc day timer */
 	add_ds_ds(DAY_TIMER, 1);
 
-	if (!ds_readbs(0xbcda)) {
+	if (!ds_readbs(FREEZE_TIMERS)) {
 		sub_ingame_timers(1);
 		sub_mod_timers(1);
 	}
 
-	if (!ds_readbs(0xbcda)) {
+	if (!ds_readbs(FREEZE_TIMERS)) {
 
 		/* set day timer to pm */
 		/* TODO: afternoon is useless */
@@ -2268,12 +2268,12 @@ void do_timers(void)
 				host_writeb(hero_i + HERO_JAIL, 0);
 
 				ds_writeb(GROUPS_LOCATION + host_readbs(hero_i + HERO_GROUP_NO),
-					ds_readb(0x2da0 + host_readbs(hero_i + HERO_GROUP_NO)));
+					ds_readb(GROUPS_LOCATION_BAK + host_readbs(hero_i + HERO_GROUP_NO)));
 
 				ds_writew(GROUPS_X_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
-					ds_readw(0x2d87 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
+					ds_readw(GROUPS_X_TARGET_BAK + host_readbs(hero_i + HERO_GROUP_NO) * 2));
 				ds_writew(GROUPS_Y_TARGET + host_readbs(hero_i + HERO_GROUP_NO) * 2,
-					ds_readw(0x2d93 + host_readbs(hero_i + HERO_GROUP_NO) * 2));
+					ds_readw(GROUPS_Y_TARGET_BAK + host_readbs(hero_i + HERO_GROUP_NO) * 2));
 			}
 		}
 	}
@@ -2381,8 +2381,8 @@ void do_timers(void)
 		}
 
 		/* unknown timer */
-		if (ds_readb(0x4332) != 0) {
-			dec_ds_bs_post(0x4332);
+		if (ds_readb(FORCEDMARCH_TIMER) != 0) {
+			dec_ds_bs_post(FORCEDMARCH_TIMER);
 		}
 
 		/* calendar */
@@ -2821,7 +2821,7 @@ void magical_chainmail_damage(void)
 		return;
 	}
 
-	ds_writeb(0x4649, (ds_readb(TRAVELING) != 0) ? 1 : 2);
+	ds_writeb(HEROKEEPING_FLAG, (ds_readb(SHOW_TRAVEL_MAP) != 0) ? 1 : 2);
 
 	for (i = 0; i <= 6; i++) {
 
@@ -2861,10 +2861,10 @@ void herokeeping(void)
 
 		/* consume food and set messages */
 		if (host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE &&
-			ds_readb(0x4649) != 0 &&
+			ds_readb(HEROKEEPING_FLAG) != 0 &&
 			check_hero_no3(hero) &&			/* must be vital */
 			!host_readbs(hero + HERO_JAIL) &&
-			!ds_readbs(0x4497))
+			!ds_readbs(TRAVEL_HEROKEEPING))
 		{
 			/* Do the eating */
 
@@ -2937,7 +2937,7 @@ void herokeeping(void)
 			/* check for magic waterskin in group */
 			if ((get_first_hero_with_item_in_group(0xb9, host_readbs(hero + HERO_GROUP_NO)) == -1) &&
 				((host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
-				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(TRAVELING) != 0))) ||
+				(!ds_readbs(CURRENT_TOWN) || (ds_readbs(CURRENT_TOWN) != 0 && ds_readb(SHOW_TRAVEL_MAP) != 0))) ||
 				((host_readbs(hero + HERO_GROUP_NO) != ds_readbs(CURRENT_GROUP) &&
 				!ds_readbs(GROUPS_TOWN + host_readbs(hero + HERO_GROUP_NO)))))) {
 
@@ -3014,21 +3014,21 @@ void herokeeping(void)
 		if ((ds_readb(FOOD_MESSAGE + i) != 0) &&
 			!ds_readbs(DIALOGBOX_LOCK) &&
 			(ds_readw(IN_FIGHT) == 0) &&
-			!ds_readbs(0xbcda))
+			!ds_readbs(FREEZE_TIMERS))
 		{
 
 			if ((host_readb(hero + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
 				!hero_dead(hero) &&
-				(!ds_readb(TRAVELING) || ds_readb(FOOD_MESSAGE_SHOWN + i) != ds_readb(FOOD_MESSAGE + i))) {
+				(!ds_readb(SHOW_TRAVEL_MAP) || ds_readb(FOOD_MESSAGE_SHOWN + i) != ds_readb(FOOD_MESSAGE + i))) {
 
 					sprintf(buffer,
-						(ds_readb(FOOD_MESSAGE + i) == 1) ? (char*)get_ltx(0x380):
-							((ds_readb(FOOD_MESSAGE + i) == 2) ? (char*)get_ltx(0x37c) :
-							((ds_readb(FOOD_MESSAGE + i) == 3) ? (char*)get_ltx(0xc74) :
-							((ds_readb(FOOD_MESSAGE + i) == 4) ? (char*)get_ltx(0xc78) :
-							((ds_readb(FOOD_MESSAGE + i) == 5) ? (char*)get_ltx(0xc7c) :
-							(char*)get_ltx(0xc80))))),
+						(ds_readb(FOOD_MESSAGE + i) == 1) ? (char*)get_ttx(0x380):
+							((ds_readb(FOOD_MESSAGE + i) == 2) ? (char*)get_ttx(0x37c) :
+							((ds_readb(FOOD_MESSAGE + i) == 3) ? (char*)get_ttx(0xc74) :
+							((ds_readb(FOOD_MESSAGE + i) == 4) ? (char*)get_ttx(0xc78) :
+							((ds_readb(FOOD_MESSAGE + i) == 5) ? (char*)get_ttx(0xc7c) :
+							(char*)get_ttx(0xc80))))),
 
 						(char*)hero + HERO_NAME2, (char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 1)));
 
@@ -3053,7 +3053,7 @@ void herokeeping(void)
 				!hero_dead(hero)) {
 
 					/* prepare output */
-					sprintf(buffer, (char*)get_ltx(0xc54),
+					sprintf(buffer, (char*)get_ttx(0xc54),
 						(char*)hero + HERO_NAME2);
 
 					/* print output */
@@ -3069,7 +3069,7 @@ void herokeeping(void)
 		}
 	}
 
-	ds_writeb(0x4649, 0);
+	ds_writeb(HEROKEEPING_FLAG, 0);
 }
 
 void check_level_up(void)
@@ -3116,7 +3116,7 @@ void seg002_37c4(void)
 	p2 = (RealPt)ds_readd(BUFFER6_PTR) + 2100;
 	p3 = (RealPt)ds_readd(BUFFER6_PTR) + 1000;
 
-	if ((ds_readws(TRV_MENU_SELECTION) != 0) && (ds_readb(TRAVELING))) {
+	if ((ds_readws(TRV_MENU_SELECTION) != 0) && (ds_readb(SHOW_TRAVEL_MAP))) {
 
 		ds_writew(SELECTED_TOWN_ANIX,
 				ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
@@ -3194,7 +3194,7 @@ void seg002_37c4(void)
 		ds_writew(CURRENT_TOWN_OVERY, ds_readw(CURRENT_TOWN_ANIY));
 		l_si = 0;
 
-		if ((ds_readws(MENU_INPUT_BUSY) != 0) && (ds_readb(TRAVELING))) {
+		if ((ds_readws(MENU_INPUT_BUSY) != 0) && (ds_readb(SHOW_TRAVEL_MAP))) {
 
 			ds_writew(SELECTED_TOWN_ANIX,
 					ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
@@ -3247,7 +3247,7 @@ void seg002_37c4(void)
 	}
 
 
-	ds_writew(0xbcd6, 0);
+	ds_writew(SPINLOCK_FLAG, 0);
 	inc_ds_ws(MAP_TOWNMARK_STATE);
 
 	mod_ds_ws(MAP_TOWNMARK_STATE, 5);
@@ -3257,9 +3257,9 @@ void seg002_37c4(void)
 
 void set_and_spin_lock(void)
 {
-	ds_writew(0xbcd6, 1);
+	ds_writew(SPINLOCK_FLAG, 1);
 
-	while (ds_readw(0xbcd6)) {
+	while (ds_readw(SPINLOCK_FLAG)) {
 #if !defined(__BORLANDC__)
 		/* deadlock avoidance */
 		static int cnt = 0;
@@ -3305,8 +3305,8 @@ void passages_recalc(void)
 	}
 
 	/* If a passage is hired decrement Passage days timer */
-	if (ds_readb(0x42ae) == 0xaa) {
-		dec_ds_bs_post(0x42af);
+	if (ds_readb(SEA_TRAVEL_PSGBOOKED_FLAG) == 0xaa) {
+		dec_ds_bs_post(SEA_TRAVEL_PSGBOOKED_TIMER);
 	}
 }
 
@@ -3329,8 +3329,8 @@ void passages_reset(void)
 	}
 
 	/* If a passage is hired and the timer is zero, reset the passage */
-	if ((ds_readb(0x42ae) == 0xaa) && !ds_readb(0x42af)) {
-		ds_writeb(0x42ae, 0);
+	if ((ds_readb(SEA_TRAVEL_PSGBOOKED_FLAG) == 0xaa) && !ds_readb(SEA_TRAVEL_PSGBOOKED_TIMER)) {
+		ds_writeb(SEA_TRAVEL_PSGBOOKED_FLAG, 0);
 	}
 }
 
@@ -3351,7 +3351,7 @@ void timewarp(Bit32s time)
 	td_bak = ds_readw(TIMERS_DISABLED);
 	ds_writew(TIMERS_DISABLED, 0);
 
-	ds_writeb(0xbcda, 1);
+	ds_writeb(FREEZE_TIMERS, 1);
 
 	for (i = 0; i < time; i++) {
 		do_timers();
@@ -3387,7 +3387,7 @@ void timewarp(Bit32s time)
 	}
 
 	/* restore variables */
-	ds_writeb(0xbcda, 0);
+	ds_writeb(FREEZE_TIMERS, 0);
 	ds_writew(TIMERS_DISABLED, td_bak);
 }
 
@@ -3410,7 +3410,7 @@ void timewarp_until(Bit32s time)
 	td_bak = ds_readw(TIMERS_DISABLED);
 	ds_writew(TIMERS_DISABLED, 0);
 
-	ds_writeb(0xbcda, 1);
+	ds_writeb(FREEZE_TIMERS, 1);
 
 	do {
 		do_timers();
@@ -3447,7 +3447,7 @@ void timewarp_until(Bit32s time)
 	}
 
 	/* restore variables */
-	ds_writeb(0xbcda, 0);
+	ds_writeb(FREEZE_TIMERS, 0);
 	ds_writew(TIMERS_DISABLED, td_bak);
 }
 
@@ -3463,8 +3463,8 @@ void dec_splash(void)
 		/* I have no clue */
 		if (!ds_readbs(DIALOGBOX_LOCK) &&
 			/* Check if splash timer is 0 */
-			(ds_readbs(0xbccf + i) != 0) &&
-			!add_ds_bu(0xbccf + i, -1) &&
+			(ds_readbs(HERO_SPLASH_TIMER + i) != 0) &&
+			!add_ds_bu(HERO_SPLASH_TIMER + i, -1) &&
 			/* Check splash timer again if 0 */
 			/* I have no clue */
 			/* Could be in fight */
@@ -3494,7 +3494,7 @@ void draw_splash(signed short hero_pos, signed short type)
 		restore_rect_rle((RealPt)ds_readd(FRAMEBUF_PTR), splash, ds_readw(HERO_PIC_POSX + 2 * hero_pos), 157, 32, 32, 2);
 
 		/* how long the splash should be displayed */
-		ds_writeb(0xbccf + hero_pos, 10);
+		ds_writeb(HERO_SPLASH_TIMER + hero_pos, 10);
 	}
 }
 
@@ -3560,7 +3560,7 @@ void wait_for_keypress(void)
 			si = bc_bioskey(0);
 
 			if (((si & 0xff) == 0x20) &&
-				(ds_readw(0xc3c5) == 0))
+				(ds_readw(BIOSKEY_EVENT10) == 0))
 			{
 
 				seg002_47e2();
@@ -3592,9 +3592,9 @@ void delay_or_keypress(signed short duration)
 
 	while (counter < duration) {
 
-		ds_writeb(0x46a2, 1);
+		ds_writeb(DELAY_OR_KEYPRESS_FLAG, 1);
 		handle_input();
-		ds_writeb(0x46a2, 0);
+		ds_writeb(DELAY_OR_KEYPRESS_FLAG, 0);
 
 		if (ds_readb(C_EVENT_ACTIVE) != 0) {
 
@@ -3671,9 +3671,9 @@ void unused_delay(signed short nr)
 /* unused */
 void unused_spinlock(void)
 {
-	ds_writew(0xc3c9, 1);
+	ds_writew(UNUSED_SPINLOCK_FLAG, 1);
 
-	while (ds_readw(0xc3c9) != 0) {
+	while (ds_readw(UNUSED_SPINLOCK_FLAG) != 0) {
 	}
 }
 
@@ -3756,7 +3756,7 @@ void from_EMS(RealPt dst, signed short handle, Bit32s bytes)
 
 		bytes -= 0x4000;
 
-		bc_memmove(EMS_norm_ptr(ptr), (RealPt)ds_readd(0x4baa), v2);
+		bc_memmove(EMS_norm_ptr(ptr), (RealPt)ds_readd(EMS_FRAME_PTR), v2);
 
 	} while (--di != 0);
 
@@ -3781,7 +3781,7 @@ void to_EMS(signed short handle, RealPt src, Bit32s bytes)
 
 		bytes -= 0x4000;
 
-		bc_memmove((RealPt)ds_readd(0x4baa), EMS_norm_ptr(ptr), v2);
+		bc_memmove((RealPt)ds_readd(EMS_FRAME_PTR), EMS_norm_ptr(ptr), v2);
 
 	} while (--di != 0);
 
@@ -3792,7 +3792,7 @@ void set_to_ff(void)
 	signed short i;
 
 	for (i = 0; i < 9; i++) {
-		ds_writeb(0xbd38 + i, -1);
+		ds_writeb(NEW_MENU_ICONS + i, -1);
 	}
 }
 
@@ -3811,16 +3811,16 @@ void draw_loc_icons(signed short icons, ...)
 
 	/* save icon ids in local variable */
 	for (i = 0; i < 9; i++) {
-		icons_bak[i] = ds_readbs(0xbd38 + i);
-		ds_writeb(0xbd38 + i, -1);
+		icons_bak[i] = ds_readbs(NEW_MENU_ICONS + i);
+		ds_writeb(NEW_MENU_ICONS + i, -1);
 	}
 
 	va_start(arguments, icons);
 
 	for (i = 0; i < icons; i++) {
-		ds_writeb(0xbd38 + i, va_arg(arguments, int));
+		ds_writeb(NEW_MENU_ICONS + i, va_arg(arguments, int));
 
-		if (ds_readbs(0xbd38 + i) != icons_bak[i]) {
+		if (ds_readbs(NEW_MENU_ICONS + i) != icons_bak[i]) {
 			changed = 1;
 		}
 	}
@@ -3853,7 +3853,7 @@ void draw_compass(void)
 		/* Not in town or dungeon */
 		((ds_readbs(DUNGEON_INDEX) != 0) || (ds_readbs(CURRENT_TOWN) != 0)) &&
 		/* I have no clue */
-		(ds_readb(0x4475) != 2))
+		(ds_readb(FADING_STATE) != 2))
 	{
 
 		/* set src */
@@ -3932,16 +3932,15 @@ void select_with_mouse(Bit8u *p1, Bit8u *p2)
 {
 	signed short i;
 
-	/* something mouse related */
 	if (ds_readw(HAVE_MOUSE) != 2) {
 		return;
 	}
 
 	for (i = 0; i < 15; i++) {
-		if ((ds_readws(0x46a3 + i * 2) <= ds_readws(MOUSE_POSX)) &&
-			(ds_readws(0x46a3 + i * 2) + 50 >= ds_readws(MOUSE_POSX)) &&
-			(ds_readws(0x46c1 + i * 2) <= ds_readws(MOUSE_POSY)) &&
-			(ds_readws(0x46c1 + i * 2) + 17 >= ds_readws(MOUSE_POSY)) &&
+		if ((ds_readws(MERCHANT_ITEMS_POSX + i * 2) <= ds_readws(MOUSE_POSX)) &&
+			(ds_readws(MERCHANT_ITEMS_POSX + i * 2) + 50 >= ds_readws(MOUSE_POSX)) &&
+			(ds_readws(MERCHANT_ITEMS_POSY + i * 2) <= ds_readws(MOUSE_POSY)) &&
+			(ds_readws(MERCHANT_ITEMS_POSY + i * 2) + 17 >= ds_readws(MOUSE_POSY)) &&
 			(host_readws(p2 + i * 7) != 0))
 		{
 			host_writew(p1, i);
@@ -4005,7 +4004,7 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 */
 void set_automap_tile(signed short x, signed short y)
 {
-	or_ds_bs(AUTOMAP_BUF + (4 * y + (x >> 3)), ds_readb(0x7d4a + (x & 0x7)));
+	or_ds_bs(AUTOMAP_BUF + (4 * y + (x >> 3)), ds_readb(AUTOMAP_BITMASK + (x & 0x7)));
 }
 
 /**
@@ -4072,7 +4071,7 @@ void seg002_47e2(void)
 	/* set destination */
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 	/* set source */
-	ds_writed(PIC_COPY_SRC, (Bit32u)RealMake(datseg, 0xbc63));
+	ds_writed(PIC_COPY_SRC, (Bit32u)RealMake(datseg, GFXBUF_WAIT_KEYPRESS));
 
 	do_save_rect();
 
@@ -4098,7 +4097,7 @@ void seg002_484f(void)
 	/* set destination */
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 	/* set source */
-	ds_writed(PIC_COPY_SRC, (Bit32u)RealMake(datseg, 0xbc63));
+	ds_writed(PIC_COPY_SRC, (Bit32u)RealMake(datseg, GFXBUF_WAIT_KEYPRESS));
 
 	do_pic_copy(0);
 
@@ -4123,7 +4122,7 @@ signed short check_hero(Bit8u *hero)
 		hero_unc(hero) ||
 		hero_cursed(hero) ||
 		/* Check if ??? */
-		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1))
+		(host_readb(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE))
 	{
 		return 0;
 	}
@@ -4302,7 +4301,7 @@ void sub_hero_le(Bit8u *hero, signed short le)
 			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_UNKNOWN2);
 
 			if (ds_readb(PP20_INDEX) == ARCHIVE_FILE_PLAYM_UK) {
-				ds_writeb(0x46df, 1);
+				ds_writeb(REFRESH_STATUS_LINE, 1);
 			}
 
 			/* reset sickness */
@@ -4319,19 +4318,19 @@ void sub_hero_le(Bit8u *hero, signed short le)
 
 			/* FINAL FIGHT */
 			if (ds_readw(CURRENT_FIG_NR) == 192) {
-				if (hero == Real2Host(ds_readd(0x3e20))) {
+				if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 					ds_writew(GAME_STATE, GAME_STATE_DEAD);
 					ds_writew(IN_FIGHT, 0);
 				}
 			}
 
-			if ((ds_readb(SEA_TRAVEL) != 0)
+			if ((ds_readb(TRAVELING) != 0)
 				&& (ds_readw(IN_FIGHT) == 0) &&
 				(!count_heroes_available_in_group() ||
 				((count_heroes_available_in_group() == 1) && (is_hero_available_in_group(get_hero(6))))))
 			{
 
-				ds_writeb(0x4333, 99);
+				ds_writeb(TRAVEL_DETOUR, 99);
 
 				hero_i = get_hero(0);
 				for (i = 0; i <=6; i++, hero_i += SIZEOF_HERO) {
@@ -4361,22 +4360,22 @@ void sub_hero_le(Bit8u *hero, signed short le)
 					ptr = Real2Host(FIG_get_ptr(host_readb(hero + HERO_FIGHTER_ID)));
 
 					host_writeb(ptr + 2,
-						ds_readb(0x11e4 + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
+						ds_readb(NVFTAB_FIGURES_UNCONSCIOUS + host_readbs(hero + HERO_SPRITE_NO) * 2) + host_readbs(hero + HERO_VIEWDIR));
 
 					host_writeb(ptr + 0x0d, -1);
 
 					host_writeb(ptr + 5,
-						ds_readb(0x1210 + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
+						ds_readb(GFXTAB_OFFSETS_UNCONSCIOUS + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 					host_writeb(ptr + 6,
-						ds_readb((0x1210 + 1) + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
+						ds_readb((GFXTAB_OFFSETS_UNCONSCIOUS + 1) + host_readbs(hero + HERO_SPRITE_NO) * 8 + host_readbs(hero + HERO_VIEWDIR) * 2));
 
 
 					FIG_add_msg(7, 0);
 
 					/* FINAL FIGHT */
 					if (ds_readw(CURRENT_FIG_NR) == 192) {
-						if (hero == Real2Host(ds_readd(0x3e20))) {
+						if (hero == Real2Host(ds_readd(MAIN_ACTING_HERO))) {
 							ds_writew(GAME_STATE, GAME_STATE_DEAD);
 							ds_writew(IN_FIGHT, 0);
 						}
@@ -4431,7 +4430,7 @@ void add_hero_le(Bit8u *hero, signed short le)
 				ret = FIG_get_range_weapon_type(hero);
 
 				if (ret != -1) {
-					host_writeb(ptr + 2, ds_readb((0x10dc - 12) +
+					host_writeb(ptr + 2, ds_readb((NVFTAB_FIGURES_RANGEWEAPON - 12) +
 						host_readbs(hero + HERO_SPRITE_NO) * 12 + 4 * ret + host_readbs(hero + HERO_VIEWDIR)));
 				} else {
 					host_writeb(ptr + 2, host_readb(hero + HERO_VIEWDIR));
@@ -5135,7 +5134,7 @@ int schick_main(int argc, char** argv)
 	signed short savegame;
 	signed short len;
 
-	ds_writew(0xbd25, 1);
+	ds_writew(PREGAME_STATE, 1);
 	ds_writeb(PLAYMASK_US, 1);
 
 	init_AIL(16000);
@@ -5147,7 +5146,7 @@ int schick_main(int argc, char** argv)
 
 	if (!init_memory()) {
 
-		ds_writew(0xd309, 1);
+		ds_writew(GAMEINIT_FLAG, 1);
 
 		schick_set_video();
 
@@ -5156,7 +5155,7 @@ int schick_main(int argc, char** argv)
 		mouse_init();
 
 		if (ds_readw(HAVE_MOUSE) == 0) {
-			ds_writew(0x299a, -10);
+			ds_writew(MOUSE_REFRESH_FLAG, -10);
 		}
 
 		init_game_state();
@@ -5212,7 +5211,7 @@ int schick_main(int argc, char** argv)
 		ds_writew(GAME_MODE, -1);
 
 		while (ds_readws(GAME_MODE) == -1) {
-			ds_writew(GAME_MODE, GUI_radio(get_ltx(0x14), 2, get_ltx(0x18), get_ltx(0x1c)));
+			ds_writew(GAME_MODE, GUI_radio(get_ttx(0x14), 2, get_ttx(0x18), get_ttx(0x1c)));
 		}
 
 		if (copy_protection()) {
@@ -5223,7 +5222,7 @@ int schick_main(int argc, char** argv)
 
 			if (l3 < 0) {
 
-				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ltx(0xc9c), -l3);
+				sprintf((char*)Real2Host(ds_readd(DTP2)), (char*)get_ttx(0xc9c), -l3);
 				GUI_output(Real2Host(ds_readd(DTP2)));
 				cleanup_game();
 
@@ -5231,7 +5230,7 @@ int schick_main(int argc, char** argv)
 
 				/* ask for generation or game */
 				do {
-					l_di = GUI_radio(get_ltx(0xcd0), 2, get_ltx(0xcd4), get_ltx(0xcd8)) - 1;
+					l_di = GUI_radio(get_ttx(0xcd0), 2, get_ttx(0xcd4), get_ttx(0xcd8)) - 1;
 
 				} while (l_di == -1);
 
@@ -5247,7 +5246,7 @@ int schick_main(int argc, char** argv)
 					savegame = load_game_state();
 				} while (savegame == -1);
 
-				ds_writew(0xbd25, 0);
+				ds_writew(PREGAME_STATE, 0);
 
 				/* start the game */
 				game_loop();
@@ -5301,7 +5300,7 @@ signed short copy_protection(void)
 
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0x9c),
+				(char*)get_tx(0x9c),
 				ds_readbs((QUESTIONS_HANDBOOK + 3) + 19 * l_di),
 				ds_readbs((QUESTIONS_HANDBOOK + 2) + 19 * l_di),
 				ds_readbs((QUESTIONS_HANDBOOK + 1) + 19 * l_di),
@@ -5332,9 +5331,9 @@ signed short copy_protection(void)
 
 			/* prepare the string */
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_dtp(0xa0),
-				get_dtp(4 * (0x29 + ds_readbs((QUESTIONS_MAP + 0) + 3 * l_di))),
-				get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 1) + 3 * l_di))));
+				(char*)get_tx(0xa0),
+				get_tx(4 * (0x29 + ds_readbs((QUESTIONS_MAP + 0) + 3 * l_di))),
+				get_ttx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 1) + 3 * l_di))));
 
 			/* print version number */
 			GUI_print_string(p_datseg + GAME_VERSION, 290, 190);
@@ -5350,7 +5349,7 @@ signed short copy_protection(void)
 					toupper(host_readbs(Real2Host(ds_readd(TEXT_INPUT_BUF)) + i)));
 			}
 
-			if (!strcmp((char*)get_ltx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
+			if (!strcmp((char*)get_ttx(4 * (0xeb + ds_readbs((QUESTIONS_MAP + 2) + 3 * l_di))), (char*)Real2Host(ds_readd(TEXT_INPUT_BUF)))) {
 				return 1;
 			}
 		}

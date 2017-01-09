@@ -87,7 +87,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 			if (arg != 2) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x20),
+					(char*)get_tx(0x20),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -108,7 +108,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 			if (arg != 2) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x24),
+					(char*)get_tx(0x24),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -127,7 +127,7 @@ signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 			if (arg != 2) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x28),
+					(char*)get_tx(0x28),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -193,11 +193,11 @@ void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 		if ((ds_readw(CURRENT_FIG_NR) == 94) && (host_readb(enemy) == 0x38)) {
 			/* slaying a special cultist */
 			/* set a flag in the status area */
-			ds_writeb(0x40f9, 0);
+			ds_writeb(DNG09_CULTIST_FLAG, 0);
 
 		} else if ((ds_readw(CURRENT_FIG_NR) == 192) &&
 				(host_readb(enemy) == 0x48) &&
-				!ds_readbs(0x5f30))
+				!ds_readbs(FINALFIGHT_TUMULT))
 		{
 			/* slaying the orc champion, ends the fight */
 				ds_writew(IN_FIGHT, 0);
@@ -407,7 +407,7 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 		damage *= 2;
 	}
 
-	if ((ds_readbs(0x3dda) != 0) &&
+	if ((ds_readbs(TEVENT071_ORCSTATUE) != 0) &&
 		(host_readbs(hero + HERO_TYPE) == HERO_TYPE_DWARF) &&
 		(attack_hero == 0) &&
 		(host_readbs(enemy_p + ENEMY_SHEET_GFX_ID) == 0x18))
@@ -493,7 +493,7 @@ signed short FIG_get_enemy_attack_damage(Bit8u *attacker, Bit8u *attacked, signe
 			/* 5% chance to loose this item */
 			if (random_schick(100) < 5) {
 				drop_item(hero, pos, 1);
-				GUI_output(get_dtp(0x2c));
+				GUI_output(get_tx(0x2c));
 			}
 		}
 

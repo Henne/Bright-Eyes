@@ -41,7 +41,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 			if (test_skill(hero, TA_SCHWIMMEN, mod) <= 0) {
 				/* swimming failed */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0xa8),
+					(char*)get_tx(0xa8),
 					(char*)hero + HERO_NAME2,
 					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 					(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)));
@@ -54,7 +54,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 				/* swimming succeeded */
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0xac),
+					(char*)get_tx(0xac),
 					(char*)hero + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
@@ -75,7 +75,7 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 void DNG14_fight_intro(signed short fight_id)
 {
 	if ((fight_id == 172) || (fight_id == 174)) {
-		GUI_output(get_dtp(0xe0));
+		GUI_output(get_tx(0xe0));
 	}
 }
 
@@ -84,7 +84,7 @@ void DNG14_chest_x1(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x3fe4));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG14_CHEST_X1));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -94,14 +94,14 @@ void DNG14_chest_x2(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x3feb));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG14_CHEST_X2));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
 
 void DNG14_chest_x3(RealPt chest)
 {
-	loot_multi_chest(p_datseg + 0x3ffb, get_dtp(0xf8));
+	loot_multi_chest(p_datseg + DNG14_CHEST_X3, get_tx(0xf8));
 }
 
 void DNG14_chest_x4(RealPt chest)
@@ -109,7 +109,7 @@ void DNG14_chest_x4(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4006));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG14_CHEST_X4));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -119,7 +119,7 @@ void DNG14_chest_x5(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4014));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG14_CHEST_X5));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -131,15 +131,15 @@ void DNG14_chest_x6(RealPt chest)
 	unsigned char y;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x401e));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG14_CHEST_X6));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 
-	if (ds_readb(0x403a) != 0) {
+	if (ds_readb(DNG14_FULLMAP_FLAG) != 0) {
 
-		ds_writeb(0x403a, 0);
+		ds_writeb(DNG14_FULLMAP_FLAG, 0);
 
-		GUI_output(get_dtp(0x100));
+		GUI_output(get_tx(0x100));
 
 		for (x = 0; x < 16; x++) {
 			for (y = 0; y < 16; y++) {
@@ -154,7 +154,7 @@ void DNG14_chest_x7(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x4026));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG14_CHEST_X7));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -164,7 +164,7 @@ void DNG14_chest_x8(RealPt chest)
 	RealPt ptr_bak;
 
 	ptr_bak = (RealPt)host_readd(Real2Host(chest) + 11);
-	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, 0x402d));
+	host_writed(Real2Host(chest) + 11, (Bit32u)RealMake(datseg, DNG14_CHEST_X8));
 	loot_simple_chest(Real2Host(chest));
 	host_writed(Real2Host(chest) + 11, (Bit32u)ptr_bak);
 }
@@ -174,7 +174,7 @@ void DNG14_chest_x9(void)
 	Bit8u *hero;
 
 	hero = Real2Host(get_first_hero_available_in_group());
-	print_msg_with_first_hero(get_dtp(0xf4));
+	print_msg_with_first_hero(get_tx(0xf4));
 	sub_hero_le(hero, dice_roll(2, 6, 0));
 }
 
@@ -212,15 +212,15 @@ void DNG15_riddle(void)
 	if (!l_di || !ds_readb(DNG15_REACHED_HANDS)) {
 
 		/* INFO: you hear a soft cracking noise */
-		GUI_output(get_dtp(0x70));
+		GUI_output(get_tx(0x70));
 
 	} else {
 
 		/* ask which lever should be pulled */
 		do {
-			i = GUI_radio(get_dtp(0x74), 2,
-					get_dtp(0x78),
-					get_dtp(0x7c));
+			i = GUI_radio(get_tx(0x74), 2,
+					get_tx(0x78),
+					get_tx(0x7c));
 		} while (i == -1);
 
 		if (i == 2) {
@@ -236,19 +236,19 @@ void DNG15_riddle(void)
 			if (ds_readb(DNG15_LEVER_SOUTH) != 0 && ds_readb(DNG15_LEVER_NORTH) != 0)
 			{
 				/* riddle solved: remove the door from the map */
-				GUI_output(get_dtp(0x80));
+				GUI_output(get_tx(0x80));
 
 				host_writeb(ptr + 0x39, 0x20);
 
 				add_hero_ap_all(10);
 			} else {
 				/* INFO: you hear a soft cracking noise */
-				GUI_output(get_dtp(0x70));
+				GUI_output(get_tx(0x70));
 			}
 		} else {
 			/* pull on the this side */
 			/* INFO: you hear a soft cracking noise */
-			GUI_output(get_dtp(0x70));
+			GUI_output(get_tx(0x70));
 		}
 	}
 

@@ -76,7 +76,7 @@ void draw_fight_screen_pal(signed short mode)
 	FIG_draw_pic();
 
 	/* check for palette update */
-	if (ds_readb(PP20_INDEX) != (ARCHIVE_FILE_DNGS + 13)) {
+	if (ds_readb(PP20_INDEX) != 0xff) {
 
 		update_mouse_cursor();
 
@@ -96,7 +96,7 @@ void draw_fight_screen_pal(signed short mode)
 		set_palette(p_datseg + 0x7d0e, 0x80, 0x14);
 		set_palette(Real2Host((RealPt)ds_readd(BUFFER8_PTR) + 0xfa02), 0x60, 0x20);
 
-		ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+		ds_writeb(PP20_INDEX, 0xff);
 
 		refresh_screen_size();
 	}
@@ -327,7 +327,7 @@ signed short FIG_get_first_active_hero(void)
 }
 
 /**
- *	seg032_02db -	currently unknown
+ *	seg032_02db -	1 if all (active) heroes in group withdrew from the fight
  *
  *	Returns 1 if FIG_get_first_active_hero() returns -1
  *	and at least one hero in the group is not dead and has
@@ -346,7 +346,7 @@ unsigned short seg032_02db(void)
 			if ((host_readb(hero_i + HERO_TYPE) != HERO_TYPE_NONE) &&
 				(host_readb(hero_i + HERO_GROUP_NO) == ds_readb(CURRENT_GROUP)) &&
 				!hero_dead(hero_i) &&
-				(host_readb(hero_i + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1))
+				(host_readb(hero_i + HERO_ACTION_ID) == FIG_ACTION_FLEE))
 			{
 				return 1;
 			}
@@ -363,7 +363,7 @@ unsigned short FIG_fight_continues(void)
 {
 
 	if (seg032_02db()) {
-		ds_writew(0x5f14, 1);
+		ds_writew(FIG_ALL_HEROES_WITHDRAWN, 1);
 		return 0;
 	}
 
@@ -412,7 +412,7 @@ void FIG_do_round(void)
 
 		if ((host_readbs(Real2Host(hero) + HERO_TYPE) != HERO_TYPE_NONE) &&
 			(host_readbs(Real2Host(hero) + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP)) &&
-			(host_readbs(Real2Host(hero) + HERO_ACTION_ID) != FIG_ACTION_UNKNOWN1))
+			(host_readbs(Real2Host(hero) + HERO_ACTION_ID) != FIG_ACTION_FLEE))
 		{
 			/* set #attacks to 1 */
 			host_writeb(Real2Host(hero) + HERO_ACTIONS, 1);
@@ -470,7 +470,7 @@ void FIG_do_round(void)
 		/* set BP */
 		ds_writeb((ENEMY_SHEETS + ENEMY_SHEET_BP) + SIZEOF_ENEMY_SHEET * i, ds_readbs((ENEMY_SHEETS + ENEMY_SHEET_BP_ORIG) + SIZEOF_ENEMY_SHEET * i));
 
-		ds_writeb(0xd837 + i, 0);
+		ds_writeb(FIG_MONSTERS_UNKN + i, 0);
 	}
 
 	l3 = 0;
@@ -583,9 +583,9 @@ void FIG_do_round(void)
 								sub_ptr_bs(Real2Host(hero) + HERO_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)))
+							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)))
 							{
-								if (is_in_byte_array(host_readbs(p_datseg + (0xd0df + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 
 									FIG_search_obj_on_cb(host_readbs(Real2Host(hero) + HERO_ENEMY_ID) + 20, &x, &y);
@@ -597,8 +597,8 @@ void FIG_do_round(void)
 #endif
 
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + (0xd0df + 38) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
-									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_FIGHTER_ID) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID))));
+									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + 0x13))));
 
 									if (host_readbs(p1 + 0x14) >= 0) {
 										FIG_set_cb_field(y, x, host_readbs(p1 + 0x14));
@@ -647,30 +647,30 @@ void FIG_do_round(void)
 
 					ds_writew(FIG_ENEMY_PIC, pos + 10);
 
-					host_writebs(Real2Host(monster) + ENEMY_SHEET_DUMMY4, 1);
+					host_writebs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID, 1);
 
 					enemy_turn(Real2Host(monster), pos, x_coord, y_coord);
 
-					if ((host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 2) ||
-						(host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 4) ||
-						(host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 5) ||
-						(host_readbs(Real2Host(monster) + ENEMY_SHEET_DUMMY4) == 15))
+					if ((host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_ATTACK) ||
+						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_SPELL) ||
+						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_USE_ITEM) ||
+						(host_readbs(Real2Host(monster) + ENEMY_SHEET_ACTION_ID) == FIG_ACTION_RANGE_ATTACK))
 					{
 
 						FIG_do_monster_action(monster, pos);
 
-						if (host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID) >= 10) {
+						if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) >= 10) {
 
-							if (host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID) >= 30) {
-								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID, 20);
+							if (host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) >= 30) {
+								sub_ptr_bs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID, 20);
 							}
 
-							if (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID)))
+							if (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)))
 							{
-								if (is_in_byte_array(host_readbs(p_datseg + (0xd0df + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
+								if (is_in_byte_array(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 1) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID)), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
 
-									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID) + 20, &x, &y);
+									FIG_search_obj_on_cb(host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID) + 20, &x, &y);
 
 #if !defined(__BORLANDC__)
 									/* BE-fix */
@@ -678,8 +678,8 @@ void FIG_do_round(void)
 									y = host_readws((Bit8u*)&y);
 #endif
 
-									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + (0xd0df + 38) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_FIGHTER_ID))));
-									p1 = Real2Host(FIG_get_ptr(ds_readbs(0xe35a + host_readbs(p1 + 0x13))));
+									p1 = Real2Host(FIG_get_ptr(host_readbs(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 38) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(monster) + ENEMY_SHEET_ENEMY_ID))));
+									p1 = Real2Host(FIG_get_ptr(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p1 + 0x13))));
 
 									if (host_readbs(p1 + 0x14) >= 0) {
 										FIG_set_cb_field(y, x, host_readbs(p1 + 0x14));
@@ -706,16 +706,16 @@ void FIG_do_round(void)
 
 		l3--;
 
-		if (ds_readbs(0xe38e) != -1) {
+		if (ds_readbs(FIG_CB_MAKRER_ID) != -1) {
 
-			FIG_remove_from_list(ds_readbs(0xe38e), 0);
-			ds_writeb(0xe38e, -1);
+			FIG_remove_from_list(ds_readbs(FIG_CB_MAKRER_ID), 0);
+			ds_writeb(FIG_CB_MAKRER_ID, -1);
 		}
 
-		if (ds_readbs(0xe38f) != -1) {
+		if (ds_readbs(FIG_CB_SELECTOR_ID) != -1) {
 
-			FIG_remove_from_list(ds_readbs(0xe38f), 0);
-			ds_writeb(0xe38f, -1);
+			FIG_remove_from_list(ds_readbs(FIG_CB_SELECTOR_ID), 0);
+			ds_writeb(FIG_CB_SELECTOR_ID, -1);
 		}
 
 	}
@@ -753,16 +753,16 @@ void FIG_load_ship_sprites(void)
 
 				l_si -= 50;
 
-			if (NOT_NULL(Real2Host(host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si)))) {
+			if (NOT_NULL(Real2Host(host_readd(Real2Host(ds_readd(FIGOBJ_GFXBUF_TABLE)) + 4 * l_si)))) {
 
 				/* this sprite has already been buffered */
 
-				ptr = Real2Host(host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si));
+				ptr = Real2Host(host_readd(Real2Host(ds_readd(FIGOBJ_GFXBUF_TABLE)) + 4 * l_si));
 
 			} else {
 				/* this sprite has not been used yet */
 
-				ptr = Real2Host(ds_readfp(0xd86e));
+				ptr = Real2Host(ds_readfp(FIGHTOBJ_BUF_SEEK_PTR));
 
 				nvf.dst = ptr;
 				nvf.src = Real2Host(ds_readd(FIGHTOBJ_BUF));
@@ -779,36 +779,36 @@ void FIG_load_ship_sprites(void)
 #endif
 
 				/* buffer this picture */
-				host_writed(Real2Host(ds_readd(0xe388)) + 4 * l_si, (Bit32u)ds_readfp(0xd86e));
-				host_writew(Real2Host(ds_readd(0xe384)) + 2 * l_si, width);
-				host_writew(Real2Host(ds_readd(0xe380)) + 2 * l_si, height);
+				host_writed(Real2Host(ds_readd(FIGOBJ_GFXBUF_TABLE)) + 4 * l_si, (Bit32u)ds_readfp(FIGHTOBJ_BUF_SEEK_PTR));
+				host_writew(Real2Host(ds_readd(FIGOBJ_GFXWIDTH_TABLE)) + 2 * l_si, width);
+				host_writew(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + 2 * l_si, height);
 
 				/* adjust the pointer */
-				add_ds_fp(0xd86e, width * height + 8);
+				add_ds_fp(FIGHTOBJ_BUF_SEEK_PTR, width * height + 8);
 
 				/* adjust the counter */
-				sub_ds_ds(0xe370, width * height + 8L);
+				sub_ds_ds(FIGHTOBJ_BUF_FREESPACE, width * height + 8L);
 
 				/* check for error */
-				if (ds_readds(0xe370) < 0L) {
+				if (ds_readds(FIGHTOBJ_BUF_FREESPACE) < 0L) {
 					GUI_input(p_datseg + STR_ERROR_ON_OBJ_MALLOC, 0);
 				}
 			}
 
 
 			/* calculate screen coordinates */
-			l3 = const1 - host_readws(Real2Host(ds_readd(0xe384)) + 2 * l_si) / 2 + 10 * (l_di + i);
-			l4 = const2 - host_readws(Real2Host(ds_readd(0xe380)) + 2 * l_si) + 5 * (l_di - i);
+			l3 = const1 - host_readws(Real2Host(ds_readd(FIGOBJ_GFXWIDTH_TABLE)) + 2 * l_si) / 2 + 10 * (l_di + i);
+			l4 = const2 - host_readws(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + 2 * l_si) + 5 * (l_di - i);
 
-			l3 += ds_readws(0x6060 + 2 * l_si);
-			l4 += ds_readws(0x60de + 2 * l_si);
+			l3 += ds_readws(GFXTAB_OBJ_OFFSET_X + 2 * l_si);
+			l4 += ds_readws(GFXTAB_OBJ_OFFSET_Y + 2 * l_si);
 
 			/* set screen coordinates */
 			ds_writew(PIC_COPY_X1, l3);
 			ds_writew(PIC_COPY_Y1, l4);
-			ds_writew(PIC_COPY_X2, l3 + host_readws(Real2Host(ds_readd(0xe384)) + 2 * l_si) - 1);
-			ds_writew(PIC_COPY_Y2, l4 + host_readws(Real2Host(ds_readd(0xe380)) + 2 * l_si) - 1);
-			ds_writed(PIC_COPY_SRC, host_readd(Real2Host(ds_readd(0xe388)) + 4 * l_si));
+			ds_writew(PIC_COPY_X2, l3 + host_readws(Real2Host(ds_readd(FIGOBJ_GFXWIDTH_TABLE)) + 2 * l_si) - 1);
+			ds_writew(PIC_COPY_Y2, l4 + host_readws(Real2Host(ds_readd(FIGOBJ_GFXHEIGHT_TABLE)) + 2 * l_si) - 1);
+			ds_writed(PIC_COPY_SRC, host_readd(Real2Host(ds_readd(FIGOBJ_GFXBUF_TABLE)) + 4 * l_si));
 			ds_writed(PIC_COPY_DST, ds_readd(BUFFER8_PTR));
 
 			do_pic_copy(2);
@@ -893,7 +893,7 @@ signed short do_fight(signed short fight_id)
 	ds_writew(IN_FIGHT, 1);
 
 	/* set some vars to 0 */
-	ds_writew(AUTOFIGHT, ds_writew(FIGHT_ROUND, ds_writew(0x5f14, 0)));
+	ds_writew(AUTOFIGHT, ds_writew(FIGHT_ROUND, ds_writew(FIG_ALL_HEROES_WITHDRAWN, 0)));
 	/* set some vars to -1 */
 	ds_writew(FIG_FIGURE1, ds_writew(FIG_FIGURE2, -1));
 	ds_writew(FIGHT_FIGS_INDEX, -1);
@@ -996,7 +996,7 @@ signed short do_fight(signed short fight_id)
 
 	if (ds_readws(HAVE_MOUSE) == 2) {
 
-		while (ds_readws(0x299a) < 0) {
+		while (ds_readws(MOUSE_REFRESH_FLAG) < 0) {
 			refresh_screen_size();
 		}
 	}
@@ -1028,9 +1028,9 @@ signed short do_fight(signed short fight_id)
 
 				ds_writew(GAME_STATE, GAME_STATE_MAIN);
 
-				if (ds_readbs(SEA_TRAVEL) != 0) {
+				if (ds_readbs(TRAVELING) != 0) {
 
-					ds_writeb(0x4333, 99);
+					ds_writeb(TRAVEL_DETOUR, 99);
 					ptr = get_hero(0);
 					for (l1 = 0; l1 <=6; l1++, ptr += SIZEOF_HERO) {
 
@@ -1045,14 +1045,14 @@ signed short do_fight(signed short fight_id)
 				GRP_switch_to_next(2);
 
 				if (ds_readbs(CURRENT_TOWN) != 0) {
-					ds_writeb(0x4475, 3);
+					ds_writeb(FADING_STATE, 3);
 				}
 			}
 
 			retval = 2;
 		}
 
-		if (ds_readws(0x5f14) != 0) {
+		if (ds_readws(FIG_ALL_HEROES_WITHDRAWN) != 0) {
 			retval = 1;
 		}
 
@@ -1158,17 +1158,17 @@ signed short do_fight(signed short fight_id)
 				ds_writew(Y_TARGET, tmp[l_di] & 0x0f);
 				ds_writeb(DIRECTION, (tmp[l_di] & 0xf0) >> 4);
 
-				ds_writebs(0x2db4, ds_readbs(DUNGEON_LEVEL));
+				ds_writebs(DUNGEON_LEVEL_BAK, ds_readbs(DUNGEON_LEVEL));
 				ds_writeb(DUNGEON_LEVEL, tmp[l_di] >> 12);
 
-				if (ds_readbs(DUNGEON_LEVEL) != ds_readbs(0x2db4)) {
+				if (ds_readbs(DUNGEON_LEVEL) != ds_readbs(DUNGEON_LEVEL_BAK)) {
 					load_area_description(1);
 				}
 			}
 		}
 
 	} else {
-		ds_writeb(0x4333, 99);
+		ds_writeb(TRAVEL_DETOUR, 99);
 		retval = 4;
 	}
 
@@ -1192,17 +1192,17 @@ signed short do_fight(signed short fight_id)
 
 	refresh_colors();
 
-	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
+	ds_writed(GUI_BUFFER_UNKN, ds_readd(RENDERBUF_PTR));
 
-	if (!ds_readb(TRAVELING)) {
+	if (!ds_readb(SHOW_TRAVEL_MAP)) {
 		seg028_0555(ds_readbs(DUNGEON_INDEX) != 0 ? 0 : 1);
 	}
 
 	load_objects_nvf();
 	refresh_screen_size();
 
-	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(TRAVELING)) {
-		ds_writeb(0x4475, 3);
+	if ((ds_readbs(CURRENT_TOWN) != 0) && !ds_readb(SHOW_TRAVEL_MAP)) {
+		ds_writeb(FADING_STATE, 3);
 	}
 
 

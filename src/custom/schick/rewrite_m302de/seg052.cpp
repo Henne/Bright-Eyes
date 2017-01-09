@@ -67,13 +67,13 @@ void do_citycamp(void)
 			set_var_to_zero();
 			load_ani(36);
 			init_ani(0);
-			GUI_print_loc_line(get_ltx(0x4c8));
+			GUI_print_loc_line(get_ttx(0x4c8));
 			set_audio_track(ARCHIVE_FILE_CAMP_XMI);
 			ds_writew(REQUEST_REFRESH, l3 = 0);
 		}
 
 		if (l3 != 0) {
-			GUI_print_loc_line(get_ltx(0x4c8));
+			GUI_print_loc_line(get_ttx(0x4c8));
 			l3 = 0;
 		}
 
@@ -82,12 +82,12 @@ void do_citycamp(void)
 		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
 			/* open citycamp radio menu */
-			answer = GUI_radio(get_ltx(0x4cc), 5,
-						get_ltx(0x4d0),
-						get_ltx(0x350),
-						get_ltx(0x4d8),
-						get_ltx(0x4f0),
-						get_ltx(0x75c)) - 1;
+			answer = GUI_radio(get_ttx(0x4cc), 5,
+						get_ttx(0x4d0),
+						get_ttx(0x350),
+						get_ttx(0x4d8),
+						get_ttx(0x4f0),
+						get_ttx(0x75c)) - 1;
 
 			/* set action on a valid answer */
 			if (answer != -2) {
@@ -108,13 +108,13 @@ void do_citycamp(void)
 			}
 
 			if (answer == -1) {
-				GUI_output(get_ltx(0x530));
+				GUI_output(get_ttx(0x530));
 			} else {
 
 				for (l_si = 0; l_si < 3; l_si++) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ltx(0x504),
+						(char*)get_ttx(0x504),
 						l_si + 1);
 
 					do {
@@ -122,12 +122,12 @@ void do_citycamp(void)
 						answer = select_hero_ok(Real2Host(ds_readd(DTP2)));
 
 						if (answer != -1 && ds_readbs(CITYCAMP_MAGICSTATUS + answer) != 0) {
-							GUI_output(get_ltx(0x52c));
+							GUI_output(get_ttx(0x52c));
 							answer = -1;
 						}
 
 						if (answer != -1 && hero_busy(get_hero(answer))) {
-							GUI_output(get_ltx(0xb68));
+							GUI_output(get_ttx(0xb68));
 							answer = -1;
 						}
 
@@ -140,14 +140,14 @@ void do_citycamp(void)
 
 		} else if (ds_readws(ACTION) == 130) {
 
-			GUI_use_skill2(0, get_ltx(0x62c));
+			GUI_use_skill2(0, get_ttx(0x62c));
 
 		} else if (ds_readws(ACTION) == 131) {
 
-			answer = select_hero_ok(get_ltx(0x4f4));
+			answer = select_hero_ok(get_ttx(0x4f4));
 
 			if (answer != -1 && hero_busy(get_hero(answer))) {
-				GUI_output(get_ltx(0xb68));
+				GUI_output(get_ttx(0xb68));
 				answer = -1;
 			}
 
@@ -158,23 +158,23 @@ void do_citycamp(void)
 				if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
 
 					if (ds_readb(CITYCAMP_GUARDSTATUS + answer) != 0) {
-						GUI_output(get_ltx(0x52c));
+						GUI_output(get_ttx(0x52c));
 					} else {
 						if (ds_readb(CITYCAMP_MAGICSTATUS + answer) != 0) {
-							GUI_output(get_ltx(0x538));
+							GUI_output(get_ttx(0x538));
 						} else {
 							ds_writebs(CITYCAMP_MAGICSTATUS + answer, (signed char)use_magic(hero));
 						}
 					}
 				} else {
-					GUI_output(get_ltx(0x528));
+					GUI_output(get_ttx(0x528));
 				}
 			}
 		} else if (ds_readws(ACTION) == 132) {
 
-			if (GUI_bool(get_ltx(0x4f8))) {
+			if (GUI_bool(get_ttx(0x4f8))) {
 
-				hours = (signed char)GUI_input(get_ltx(0xd04), 1);
+				hours = (signed char)GUI_input(get_ttx(0xd04), 1);
 
 				if (hours > 0) {
 					l5 = hours / 3;
@@ -193,7 +193,7 @@ void do_citycamp(void)
 					if (ds_readbs(CITYCAMP_GUARDS + l_di) != -1) {
 
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0xc18),
+							(char*)get_ttx(0xc18),
 							(char*)get_hero(ds_readbs(CITYCAMP_GUARDS + l_di)) + 0x10);
 
 						GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -220,7 +220,7 @@ void do_citycamp(void)
 							if (ds_readbs(CITYCAMP_GUARDS + l_di) != -1) {
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_ltx(0xc18),
+									(char*)get_ttx(0xc18),
 									(char*)get_hero(ds_readbs(CITYCAMP_GUARDS + l_di)) + 0x10);
 
 								GUI_print_loc_line(Real2Host(ds_readd(DTP2)));
@@ -233,7 +233,7 @@ void do_citycamp(void)
 
 						ds_writew(CAMP_INCIDENT, -1);
 
-						if (ds_readb(0xbd27) == 0) {
+						if (ds_readb(CITYCAMP_CITY) == 0) {
 							/* in a dungeon */
 
 							ds_writeb(FIG_INITIATIVE, 1);
@@ -246,7 +246,7 @@ void do_citycamp(void)
 								set_var_to_zero();
 								load_ani(36);
 								init_ani(0);
-								GUI_print_loc_line(get_ltx(0x4c8));
+								GUI_print_loc_line(get_ttx(0x4c8));
 								set_audio_track(ARCHIVE_FILE_CAMP_XMI);
 								ds_writew(REQUEST_REFRESH, l3 = 0);
 							}
@@ -254,7 +254,7 @@ void do_citycamp(void)
 						} else {
 							/* in a city */
 							done = 0;
-							loose_random_item(get_hero(get_random_hero()), 100, get_ltx(0xd00));
+							loose_random_item(get_hero(get_random_hero()), 100, get_ttx(0xd00));
 						}
 
 						if (l7 > 0) {
@@ -287,7 +287,7 @@ void do_citycamp(void)
 		}
 	}
 
-	ds_writeb(0x2d9f, 0);
+	ds_writeb(LOCATION_BAK, 0);
 	turnaround();
 }
 

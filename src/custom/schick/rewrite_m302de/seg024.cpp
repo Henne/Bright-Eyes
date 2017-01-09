@@ -50,7 +50,7 @@ void diary_show(void)
 	textbox_width_bak = ds_readw(TEXTBOX_WIDTH);
 	ds_writew(TEXTBOX_WIDTH, 3);
 
-	ds_writeb(0x45b8, 1);
+	ds_writeb(SPECIAL_SCREEN, 1);
 	ds_writew(WALLCLOCK_UPDATE, 0);
 	ds_writew(AREA_PREPARED, 0xffff);
 	ds_writed(CURRENT_CURSOR, (Bit32u)RealMake(datseg, DEFAULT_MOUSE_CURSOR));
@@ -60,13 +60,13 @@ void diary_show(void)
 
 	get_textcolor(&fg_bak, &bg_bak);
 
-	ds_writed(TMP_FRAMEBUF_PTR, ds_readd(BUFFER9_PTR));
-	bak1 = ds_readw(0xd2d5);
-	bak2 = ds_readw(0xd2d9);
+	ds_writed(PRINT_STRING_BUFFER, ds_readd(BUFFER9_PTR));
+	bak1 = ds_readw(TEXTLINE_MAXLEN);
+	bak2 = ds_readw(TEXTLINE_POSX);
 	txt_tabpos1_bak = ds_readw(TXT_TABPOS1);
 	txt_tabpos2_bak = ds_readw(TXT_TABPOS2);
-	ds_writew(0xd2d5, 200);
-	ds_writew(0xd2d9, 65);
+	ds_writew(TEXTLINE_MAXLEN, 200);
+	ds_writew(TEXTLINE_POSX, 65);
 	ds_writew(TXT_TABPOS1, 83);
 	ds_writew(TXT_TABPOS2, 130);
 
@@ -82,12 +82,12 @@ void diary_show(void)
 	ds_writew(PIC_COPY_Y1, 0);
 	ds_writew(PIC_COPY_X2, 319);
 	ds_writew(PIC_COPY_Y2, 199);
-	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER1_PTR));
+	ds_writed(PIC_COPY_SRC, ds_readd(RENDERBUF_PTR));
 	ds_writed(PIC_COPY_DST, ds_readd(FRAMEBUF_PTR));
 
 	update_mouse_cursor();
 
-	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 0xfa02, 0, 0x20);
+	set_palette(Real2Host(ds_readd(RENDERBUF_PTR)) + 0xfa02, 0, 0x20);
 
 	do_pic_copy(0);
 
@@ -95,10 +95,10 @@ void diary_show(void)
 
 	set_textcolor(fg_bak, bg_bak);
 
-	ds_writed(PIC_COPY_DST, ds_writed(TMP_FRAMEBUF_PTR, ds_readd(FRAMEBUF_PTR)));
+	ds_writed(PIC_COPY_DST, ds_writed(PRINT_STRING_BUFFER, ds_readd(FRAMEBUF_PTR)));
 
-	ds_writew(0xd2d9, bak2);
-	ds_writew(0xd2d5, bak1);
+	ds_writew(TEXTLINE_POSX, bak2);
+	ds_writew(TEXTLINE_MAXLEN, bak1);
 	ds_writew(TXT_TABPOS1, txt_tabpos1_bak);
 	ds_writew(TXT_TABPOS2, txt_tabpos2_bak);
 	ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
@@ -161,26 +161,26 @@ Bit16u diary_print_entry(Bit16u line)
 	do {
 		day = host_readw(ptr);
 		month = host_readw(ptr + 2);
-		city_name = (char*)get_ltx((host_readw(ptr + 6) + 0xeb) * 4);
+		city_name = (char*)get_ttx((host_readw(ptr + 6) + 0xeb) * 4);
 
 		if (di == 0) {
 			if ((signed short)strlen(city_name) > 24) {
 				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + DIARY_STRING1),
 					host_readw(ptr),
-					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
+					(char*)get_ttx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			} else if ((signed short)strlen(city_name) > 15 ) {
 				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + DIARY_STRING2),
 					host_readw(ptr),
-					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
+					(char*)get_ttx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			} else {
 				sprintf(getString(ds_readd(DTP2)),
 					(char*)(p_datseg + DIARY_STRING3),
 					host_readw(ptr),
-					(char*)get_ltx((host_readw(ptr + 2) + 0x15) * 4),
+					(char*)get_ttx((host_readw(ptr + 2) + 0x15) * 4),
 					city_name);
 			}
 		} else {
@@ -217,13 +217,13 @@ Bit16u diary_print_entry(Bit16u line)
 	ds_writed(PIC_COPY_SRC, ds_readd(BUFFER9_PTR));
 #if !defined(__BORLANDC__)
 	ds_writed(PIC_COPY_DST,
-		(Bit32u)(((RealPt)ds_readd(BUFFER1_PTR) + startline * 2240) + 9600));
+		(Bit32u)(((RealPt)ds_readd(RENDERBUF_PTR) + startline * 2240) + 9600));
 #else
 	/* TODO: ugly hack */
 	/*	this calculation of the address of
 		a twodimiensional array is done
 		here with inline assembly */
-	calc_twodim_array_ptr(BUFFER1_PTR, 0x8c0, startline, 9600, PIC_COPY_DST);
+	calc_twodim_array_ptr(RENDERBUF_PTR, 0x8c0, startline, 9600, PIC_COPY_DST);
 #endif
 	do_pic_copy(2);
 

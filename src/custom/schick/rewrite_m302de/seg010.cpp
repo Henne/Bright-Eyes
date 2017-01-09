@@ -39,7 +39,7 @@ static unsigned short EMS_installed() {
 
 static RealPt EMS_get_frame_ptr() {
 
-	reg_ax = 0x4100;
+	reg_ax = DNG09_SECRETDOOR1;
 	CALLBACK_RunRealInt(0x67);
 
 	if (reg_ax == 0)
@@ -50,7 +50,7 @@ static RealPt EMS_get_frame_ptr() {
 
 signed short EMS_get_num_pages_unalloced(void) {
 
-	reg_ax = 0x4200;
+	reg_ax = 0x04200;
 	CALLBACK_RunRealInt(0x67);
 
 	if (reg_ax == 0)
@@ -107,7 +107,7 @@ RealPt EMS_norm_ptr(RealPt p) {
 unsigned short EMS_init() {
 
 	if (EMS_installed()) {
-		ds_writed(0x4baa, EMS_get_frame_ptr());
+		ds_writed(EMS_FRAME_PTR, EMS_get_frame_ptr());
 		return 1;
 	}
 

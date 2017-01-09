@@ -88,12 +88,12 @@ void FIG_init_list_elem(signed short obj)
 	ds_writeb((FIG_LIST_ELEM + 15), -1);
 	ds_writeb((FIG_LIST_ELEM + 14), -1);
 
-	ds_writed((FIG_LIST_ELEM + 23), ds_readd(0xd862));
+	ds_writed((FIG_LIST_ELEM + 23), ds_readd(FIG_CB_MARKER_BUF));
 	ds_writeb((FIG_LIST_ELEM + 17), 0);
 	ds_writeb((FIG_LIST_ELEM + 18), 1);
 	ds_writeb((FIG_LIST_ELEM + 19), -1);
 
-	ds_writeb(0xe38e, FIG_add_to_list(-1));
+	ds_writeb(FIG_CB_MAKRER_ID, FIG_add_to_list(-1));
 }
 
 void FIG_unused(signed short a1, signed short a2,  Bit8u *p1, Bit8u *p2)
@@ -142,11 +142,11 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 
 #if !defined(__BORLANDC__)
 	for (int i = 0; i < 4; i++) {
-		dst.o[i].x = host_readws(p_datseg + 0x5ff8 + 4 * i);
-		dst.o[i].y = host_readws(p_datseg + 0x5ff8 + 4 * i + 2);
+		dst.o[i].x = host_readws(p_datseg + VIEWDIR_INVOFFSETS1 + 4 * i);
+		dst.o[i].y = host_readws(p_datseg + VIEWDIR_INVOFFSETS1 + 4 * i + 2);
 	}
 #else
-	dst = *((struct dummy*)(p_datseg + 0x5ff8));
+	dst = *((struct dummy*)(p_datseg + VIEWDIR_INVOFFSETS1));
 #endif
 
 	found = 0;
@@ -202,9 +202,9 @@ void FIG_backtrack(Bit8u *in_ptr, signed short target_x, signed short target_y,
 					if ((obj_id == bp_needed)	&&
 						((!arg7 ) ||
 						(arg7 &&
-							((!host_readbs(Real2Host(ds_readd(0xe356)) + (lvar8 * 25) + lvar7)) ||
-							(host_readbs(Real2Host(ds_readd(0xe356)) + (lvar8 * 25) + lvar7) == (arg8 + 10)) ||
-							(host_readbs(Real2Host(ds_readd(0xe356)) + (lvar8 * 25) + lvar7) == (arg8 + 30))) &&
+							((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7)) ||
+							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7) == (arg8 + 10)) ||
+							(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (lvar8 * 25) + lvar7) == (arg8 + 30))) &&
 							(lvar8 < 24) && (lvar8 >= 0) && (lvar7 < 24) && (lvar7 >= 0))))
 					{
 						target_y = lvar3;
@@ -339,11 +339,11 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 
 #if !defined(__BORLANDC__)
 	for (int i = 0; i < 4; i++) {
-		dst.o[i].x = host_readws(p_datseg + 0x6008 + 4 * i);
-		dst.o[i].y = host_readws(p_datseg + 0x6008 + 4 * i + 2);
+		dst.o[i].x = host_readws(p_datseg + VIEWDIR_OFFSETS7 + 4 * i);
+		dst.o[i].y = host_readws(p_datseg + VIEWDIR_OFFSETS7 + 4 * i + 2);
 	}
 #else
-	dst = *((struct dummy*)(p_datseg + 0x6008));
+	dst = *((struct dummy*)(p_datseg + VIEWDIR_OFFSETS7));
 #endif
 
 	ptr3 = NULL;
@@ -359,11 +359,11 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 	}
 
 	ptr2 = Real2Host(ds_readd(DTP2));
-	ds_writed(0xe356, (Bit32u)((RealPt)ds_readd(DTP2) + 600));
+	ds_writed(CHESSBOARD_CPY, (Bit32u)((RealPt)ds_readd(DTP2) + 600));
 	l_var3 = 1;
 	memset(ptr2, -1, 600);
 	host_writeb(ptr2 + (y_in * 25) + x_in, 0);
-	memcpy(Real2Host(ds_readd(0xe356)), Real2Host(ds_readd(CHESSBOARD)), 600);
+	memcpy(Real2Host(ds_readd(CHESSBOARD_CPY)), Real2Host(ds_readd(CHESSBOARD)), 600);
 
 	for (i = 0; i < 10; i++) {
 		arr1[i] = arr2[i] = arr3[i] = 0;
@@ -373,15 +373,15 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 	for (l_var7 = 0; l_var7 < 24; l_var7++) {
 		for (l_var6 = 0; l_var6 < 24; l_var6++) {
 
-			obj_id = host_readbs(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6);
+			obj_id = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6);
 
 			if (obj_id > 0) {
 				if ((obj_id < 10) && (hero_dead(get_hero(obj_id - 1)) || hero_unc(get_hero(obj_id - 1))))
 				{
-					host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
-				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + (0xd0df + 49) + obj_id * SIZEOF_ENEMY_SHEET)))
+					host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6, 0);
+				} else if ((obj_id >= 10) && (obj_id < 30) && (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49) + obj_id * SIZEOF_ENEMY_SHEET)))
 				{
-						host_writeb(Real2Host(ds_readd(0xe356)) + (l_var7 * 25) + l_var6, 0);
+						host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var7 * 25) + l_var6, 0);
 				}
 			}
 		}
@@ -422,9 +422,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 							{
 								l_var17 = 1;
 							} else {
-								if (!host_readbs(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4))
+								if (!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4))
 								{
-									host_writeb(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4, 9);
+									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4, 9);
 								} else {
 									l_var17 = 1;
 								}
@@ -469,9 +469,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 							{
 								l_var17 =1;
 							} else {
-								if (!host_readbs(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4))
+								if (!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4))
 								{
-									host_writeb(Real2Host(ds_readd(0xe356)) + (25 * l_var5) + l_var4, 49);
+									host_writeb(Real2Host(ds_readd(CHESSBOARD_CPY)) + (25 * l_var5) + l_var4, 49);
 								} else {
 									l_var17 = 1;
 								}
@@ -514,7 +514,7 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 						if ((l_var5 < 24) && (l_var5 >= 0) && (l_var4 < 24) && (l_var4 >= 0)) {
 
 							obj_id = host_readbs(ptr2 + (l_var5 * 25) + l_var4);
-							l_var15 = host_readbs(Real2Host(ds_readd(0xe356)) + (l_var5 * 25) + l_var4);
+							l_var15 = host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var5 * 25) + l_var4);
 
 							if (obj_id < 0) {
 
@@ -523,9 +523,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 									if (!NOT_NULL(ptr3) ||
 										(NOT_NULL(ptr3) && (!two_fields ||
 													((two_fields != 0) &&
-														((!host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8)) ||
-														(host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
-														(host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
+														((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) ||
+														(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
+														(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
 														((l_var9 < 24) && (l_var9 >= 0) && (l_var8 < 24) && (l_var8 >= 0))))))
 									{
 										host_writebs(ptr2 + (l_var5 * 25) + l_var4, (signed char)l_var2);
@@ -569,9 +569,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 											if (((a4 == 0) || (a4 == 1)) && (!NOT_NULL(ptr3) ||
 												(NOT_NULL(ptr3) && (!two_fields ||
 															((two_fields != 0) &&
-																((!host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8)) ||
-																(host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
-																(host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
+																((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) ||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
 																((l_var9 < 24) && (l_var9 >= 0) && (l_var8 < 24) && (l_var8 >= 0)))))))
 											{
 												arr3[l_si] = 1;
@@ -596,9 +596,9 @@ signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed sh
 											if (((a4 == 2) || (a4 == 3)) && (l_var15 < 30) && (!NOT_NULL(ptr3) ||
 												(NOT_NULL(ptr3) && (!two_fields ||
 															((two_fields != 0) &&
-																((!host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8)) ||
-																(host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
-																(host_readbs(Real2Host(ds_readd(0xe356)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
+																((!host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) ||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8))  == (a1 + 10)||
+																(host_readbs(Real2Host(ds_readd(CHESSBOARD_CPY)) + (l_var9 * 25) + l_var8)) == (a1 + 30)) &&
 																((l_var9 < 24) && (l_var9 >= 0) && (l_var8 < 24) && (l_var8 >= 0)))))))
 											{
 												arr3[l_si] = 1;

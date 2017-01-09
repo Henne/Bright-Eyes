@@ -37,11 +37,11 @@ static const char no_way_msg[][41] = {
 signed short update_direction(unsigned char mod)
 {
 	/* save old direction */
-	ds_writeb(0x2d7c, ds_readb(DIRECTION));
+	ds_writeb(DIRECTION_BAK, ds_readb(DIRECTION));
 	/* set new direction */
 	ds_writeb(DIRECTION, (ds_readb(DIRECTION) + mod) & 0x3);
 	/* set bogus variable to 1 */
-	ds_writeb(0xbd4f, 0x1);
+	ds_writeb(DIRECTION_UNKN, 0x1);
 
 	return -1;
 }
@@ -107,20 +107,20 @@ void move(void)
 
 	if (ds_readb(DNG_MAP_SIZE) == 0x10) {
 		/* dungeon mode */
-		ds_writeb(0xbd4d, host_readb(p1 +
+		ds_writeb(STEPTARGET_FRONT, host_readb(p1 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 4) +
 			ds_readw(X_TARGET) + host_readbs(p3)));
 
-		ds_writeb(0xbd4e, host_readb(p1 +
+		ds_writeb(STEPTARGET_BACK, host_readb(p1 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 4) +
 			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
 	} else {
 		/* city mode */
-		ds_writeb(0xbd4d, host_readb(p2 +
+		ds_writeb(STEPTARGET_FRONT, host_readb(p2 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 1)) << 5) +
 			 ds_readw(X_TARGET) + host_readbs(p3)));
 
-		ds_writeb(0xbd4e, host_readb(p2 +
+		ds_writeb(STEPTARGET_BACK, host_readb(p2 +
 			((ds_readw(Y_TARGET) + host_readbs(p3 + 3)) << 5) +
 			ds_readw(X_TARGET) + host_readbs(p3 + 2)));
 	}
@@ -176,7 +176,7 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
 			height = 135 - y;
 		}
 
-		p2 = Real2Host(ds_readd(BUFFER1_PTR)) + 208 * y + x;
+		p2 = Real2Host(ds_readd(RENDERBUF_PTR)) + 208 * y + x;
 
 		copy_solid(p2, p1, width, height, 208, l1, 0);
 	}
@@ -193,7 +193,7 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 	signed short answer;
 
 	sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-		(char*)(!host_readbs(flag) ? get_ltx(0x82c) : get_ltx(0x83c)),
+		(char*)(!host_readbs(flag) ? get_ttx(0x82c) : get_ttx(0x83c)),
 		text);
 
 	if (!host_readbs(flag))
@@ -201,9 +201,9 @@ void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 		ds_writew(TEXTBOX_WIDTH, 7);
 
 		answer = GUI_radio(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 3,
-					get_ltx(0x830),
-					get_ltx(0x834),
-					get_ltx(0x838)) - 1;
+					get_ttx(0x830),
+					get_ttx(0x834),
+					get_ttx(0x838)) - 1;
 
 		ds_writew(TEXTBOX_WIDTH, 3);
 

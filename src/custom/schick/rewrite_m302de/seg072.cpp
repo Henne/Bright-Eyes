@@ -121,7 +121,7 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 		if (!state) {
 			ds_writew(DIALOG_NEXT_STATE, ds_readb(INFORMER_FLAGS + INFORMER_YASMA) == 2 ? 1 : 2);
 		} else if (state == 15) {
-			ds_writeb(0x3df3, 1);
+			ds_writeb(TEVENT100_FLAG, 1);
 		} else if (state == 22) {
 			/* make HJORE AHRENSSON known */
 			if (!ds_readb(INFORMER_FLAGS + INFORMER_HJORE)) ds_writeb(INFORMER_FLAGS + INFORMER_HJORE, 1);
@@ -293,7 +293,7 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 				/* copy the picture of the NPC */
 				memcpy(Real2Host(ds_readd(DTP2)), get_hero(6) + HERO_PORTRAIT, 0x400);
 				/* remove the NPC from the group */
-				remove_npc(24, 31, 231, get_ltx(0xbd8), (Bit8u*)0);
+				remove_npc(24, 31, 231, get_ttx(0xbd8), (Bit8u*)0);
 
 				ds_writew(REQUEST_REFRESH, 1);
 
@@ -788,16 +788,16 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
                 : ds_readb(SWAFNILD_TP3));
 
 			switch (ds_readbs(CURRENT_TOWN)) {
-				case 39: ds_writew(0x2d83, 22); ds_writew(0x2d85,  8); break;
-				case 33: ds_writew(0x2d83,  4); ds_writew(0x2d85,  3); break;
-				case 37: ds_writew(0x2d83,  9); ds_writew(0x2d85, 10); break;
-				case 38: ds_writew(0x2d83, 11); ds_writew(0x2d85, 11); break;
-				case 34: ds_writew(0x2d83,  4); ds_writew(0x2d85, 12); break;
-				case 36: ds_writew(0x2d83,  6); ds_writew(0x2d85,  6); break;
+				case 39: ds_writew(X_TARGET_BAK, 22); ds_writew(Y_TARGET_BAK,  8); break;
+				case 33: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK,  3); break;
+				case 37: ds_writew(X_TARGET_BAK,  9); ds_writew(Y_TARGET_BAK, 10); break;
+				case 38: ds_writew(X_TARGET_BAK, 11); ds_writew(Y_TARGET_BAK, 11); break;
+				case 34: ds_writew(X_TARGET_BAK,  4); ds_writew(Y_TARGET_BAK, 12); break;
+				case 36: ds_writew(X_TARGET_BAK,  6); ds_writew(Y_TARGET_BAK,  6); break;
 			}
 
-			ds_writeb(0x2d9f, 0);
-			ds_writeb(0x7c9c, 1);
+			ds_writeb(LOCATION_BAK, 0);
+			ds_writeb(SWAFNILD_TRAVELLED, 1);
 
 			timewarp_until_midnight();
 		} else if (state == 42) {

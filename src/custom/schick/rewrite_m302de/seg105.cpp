@@ -190,7 +190,7 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 #endif
 
 	/* calculate the address of the class forbidden items array */
-	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd(WEARABLE_ITEMS + host_readbs(hero + HERO_TYPE) * 4))))
+	if (is_in_word_array(item, (signed short*)Real2Host(ds_readd((WEARABLE_ITEMS_INDEX - 4) + host_readbs(hero + HERO_TYPE) * 4))))
 		return 0;
 	else
 		return 1;
@@ -322,7 +322,7 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 
 		if (mode != 0) {
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xc2c),
+				(char*)get_ttx(0xc2c),
 				(char*)(hero + HERO_NAME2));
 			GUI_output(Real2Host(ds_readd(DTP2)));
 		}
@@ -499,7 +499,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 			/* this item is not droppable */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x718),
+				(char*)get_ttx(0x718),
 				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, item, 0)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -509,7 +509,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 			if (item_stackable(p_item)) {
 				if (nr == -1) {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_ltx(0x36c),
+						(char*)get_ttx(0x36c),
 						(char*)Real2Host(GUI_names_grammar(6, item, 0)));
 
 					do {
@@ -541,7 +541,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 
 				retval = 1;
 			} else {
-				if (!(nr != -1 || GUI_bool(get_ltx(0x370)))) {
+				if (!(nr != -1 || GUI_bool(get_ttx(0x370)))) {
 				} else {
 
 					/* check if item is equipped */
@@ -578,7 +578,7 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 		if ((item == 0x66 || item == 0x61) && ds_readb(DUNGEON_INDEX) == 11 &&
 			ds_readw(X_TARGET) == 9 && ds_readw(Y_TARGET) == 9)
 		{
-			ds_writeb(EFFERD_SACRIFICE, 1);
+			ds_writeb(DNG11_EFFERD_SACRIFICE, 1);
 		}
 
 		/* check for the mine in oberorken to bring ingerimm a gift */
@@ -636,12 +636,12 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 			ds_writew(AUTOFIGHT, 0);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x894),
+				(char*)get_ttx(0x894),
 				(char*)Real2Host(GUI_names_grammar(((nr > 1) ? 4 : 0) + 2, id, 0)));
 
 			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
 
-				dropper = select_hero_ok(get_ltx(0x898));
+				dropper = select_hero_ok(get_ttx(0x898));
 
 				if (dropper != -1) {
 					hero_i = get_hero(dropper);
@@ -774,7 +774,7 @@ signed short select_item_to_drop(Bit8u *hero)
 
 	if (v6 == 0) {
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_ltx(0xbb8),
+			(char*)get_ttx(0xbb8),
 			(char*)(hero + HERO_NAME2));
 		GUI_output(Real2Host(ds_readd(DTP2)));
 		return -1;
@@ -788,13 +788,13 @@ signed short select_item_to_drop(Bit8u *hero)
 				va = i - 1;
 				ptr = (RealPt)ds_readd(RADIO_NAME_LIST + 4 * va);
 				ds_writed(RADIO_NAME_LIST + 4 * va,
-					host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xbbc));
+					host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xbbc));
 			} else {
 				i = v6 + 1;
 				va = i - 1;
 				ptr = (RealPt)ds_readd(RADIO_NAME_LIST + 4 * va);
 				ds_writed(RADIO_NAME_LIST + 4 * va,
-					host_readd(Real2Host(ds_readd(TEXT_LTX)) + 0xbbc));
+					host_readd(Real2Host(ds_readd(TEXT_LTX_INDEX)) + 0xbbc));
 				i -= di;
 			}
 		} else {
@@ -805,7 +805,7 @@ signed short select_item_to_drop(Bit8u *hero)
 		bak3 = ds_readw(BASEPOS_Y);
 		ds_writew(TEXTBOX_WIDTH, 6);
 		ds_writew(BASEPOS_X, ds_writew(BASEPOS_Y, 0));
-		v4 = GUI_radio((Bit8u*)get_ltx(0xbc0), (signed char)i,
+		v4 = GUI_radio((Bit8u*)get_ttx(0xbc0), (signed char)i,
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x00 + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x04 + di * 4)),
 			Real2Host(ds_readd(RADIO_NAME_LIST + 0x08 + di * 4)),

@@ -75,7 +75,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 	signed short l16 = 0;
 	signed short l17 = 0;
 	signed short fighter_id;
-	struct dummy dst = *(struct dummy*)(p_datseg + 0x6178);
+	struct dummy dst = *(struct dummy*)(p_datseg + VIEWDIR_INVOFFSETS2);
 	signed short hero_x;
 	signed short hero_y;
 	signed short target_x;
@@ -109,7 +109,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 				l17 = 1;
 			}
 
-			target_monster = p_datseg + 0xd0df + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID);
+			target_monster = p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + SIZEOF_ENEMY_SHEET * host_readbs(Real2Host(hero) + HERO_ENEMY_ID);
 
 			and_ptr_bs(target_monster + ENEMY_SHEET_STATUS1, 0xfd);
 
@@ -161,8 +161,8 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						if ((fighter_id >= 50) ||
 							((fighter_id < 10) && !hero_dead(get_hero(fighter_id - 1))) ||
-							((fighter_id >= 10) && (fighter_id < 30) && !enemy_dead((p_datseg + 0xd0df) + (SIZEOF_ENEMY_SHEET * fighter_id))) ||
-							((fighter_id >= 30) && (fighter_id < 50) && !enemy_dead((p_datseg + 0xcc07) + (SIZEOF_ENEMY_SHEET * fighter_id))))
+							((fighter_id >= 10) && (fighter_id < 30) && !enemy_dead((p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET)) + (SIZEOF_ENEMY_SHEET * fighter_id))) ||
+							((fighter_id >= 30) && (fighter_id < 50) && !enemy_dead((p_datseg + (ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET)) + (SIZEOF_ENEMY_SHEET * fighter_id))))
 						{
 							l16 = 1;
 						}
@@ -227,7 +227,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 			}
 
 			/* after destroying the orc statuette between Oberorken and Felsteyn, dwarfs get a PA-bonus against orcs */
-			if ((ds_readbs(0x3dda) != 0) &&
+			if ((ds_readbs(TEVENT071_ORCSTATUE) != 0) &&
 				(host_readbs(Real2Host(hero) + HERO_TYPE) == HERO_TYPE_DWARF) &&
 				(attack_hero == 0) &&
 				(host_readbs(target_monster + ENEMY_SHEET_GFX_ID) == 24))
@@ -631,11 +631,11 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 					if (l13 != 0) {
 
-						FIG_set_0e(ds_readbs(0xe38d), 7);
+						FIG_set_0e(ds_readbs(FIG_SHOT_BOLT_ID), 7);
 
 						draw_fight_screen(l13 == 0 && ds_readws(DEFENDER_DEAD) == 0 ? 0 : 1);
 
-						FIG_reset_12_13(ds_readbs(0xe38d));
+						FIG_reset_12_13(ds_readbs(FIG_SHOT_BOLT_ID));
 					}
 
 					ds_writew(FIG_CONTINUE_PRINT, 1);
@@ -693,7 +693,7 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)p_datseg + STRING_CASTS_SPELL,		/* "%s ZAUBERT %s" */
 						(char*)Real2Host(hero) + HERO_NAME2,
-						(char*)get_ltx(4 * (host_readbs(Real2Host(hero) + HERO_SPELL_ID) + 0x6a)));
+						(char*)get_ttx(4 * (host_readbs(Real2Host(hero) + HERO_SPELL_ID) + 0x6a)));
 
 					GUI_print_string(Real2Host(ds_readd(TEXT_OUTPUT_BUF)), 1, 194);
 
@@ -770,22 +770,22 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 
 						if (l13 != 0) {
 
-							FIG_set_0e(ds_readbs(0xe38d), 7);
+							FIG_set_0e(ds_readbs(FIG_SHOT_BOLT_ID), 7);
 
 							draw_fight_screen(1);
 
-							FIG_reset_12_13(ds_readbs(0xe38d));
+							FIG_reset_12_13(ds_readbs(FIG_SHOT_BOLT_ID));
 						}
 
 						if (l6 > 0) {
 
 							if (l6 != 4) {
-								FIG_set_0e(ds_readbs(0xe38c), 6);
+								FIG_set_0e(ds_readbs(FIG_SPELLGFX_ID), 6);
 							} else {
 
 								FIG_call_draw_pic();
 
-								FIG_remove_from_list(host_readbs(target_monster + ENEMY_SHEET_LIST_POS), 1);
+								FIG_remove_from_list(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID), 1);
 
 
 								nvf.dst = Real2Host(ds_readd((FIG_LIST_ELEM + 0x17)));
@@ -812,20 +812,20 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 								ds_writeb((FIG_LIST_ELEM + 12), (signed char)(height - 1));
 								ds_writeb((FIG_LIST_ELEM + 13), 0);
 
-								FIG_add_to_list(host_readbs(target_monster + ENEMY_SHEET_LIST_POS));
+								FIG_add_to_list(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID));
 
 							}
 						} else {
 
 							if (attack_hero == 0) {
 
-								FIG_set_0e(host_readbs(target_monster + ENEMY_SHEET_LIST_POS), 1);
+								FIG_set_0e(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID), 1);
 
 								if (is_in_byte_array(host_readbs(target_monster + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
-									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_LIST_POS)));
+									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID)));
 
-									FIG_set_0e(ds_readbs(0xe35a + host_readbs(p3 + 0x13)), 3);
+									FIG_set_0e(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)), 3);
 								}
 
 							} else {
@@ -842,20 +842,20 @@ void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 						draw_fight_screen(1);
 
 						if (l6 > 0) {
-							FIG_reset_12_13(ds_readbs(0xe38d));
+							FIG_reset_12_13(ds_readbs(FIG_SHOT_BOLT_ID));
 						}
 
 						if (ds_readws(SPELL_ILLUSIONEN) != 0) {
 
 							if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) >= 10) {
 
-								FIG_reset_12_13(host_readbs(target_monster + ENEMY_SHEET_LIST_POS));
+								FIG_reset_12_13(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID));
 
 								if (is_in_byte_array(host_readbs(target_monster + 1), p_datseg + TWO_FIELDED_SPRITE_ID))
 								{
-									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_LIST_POS)));
+									p3 = Real2Host(FIG_get_ptr(host_readbs(target_monster + ENEMY_SHEET_FIGHTER_ID)));
 
-									FIG_reset_12_13(ds_readbs(0xe35a + host_readbs(p3 + 0x13)));
+									FIG_reset_12_13(ds_readbs(FIG_TWOFIELDED_TABLE + host_readbs(p3 + 0x13)));
 								}
 							} else {
 								if (host_readbs(Real2Host(hero) + HERO_ENEMY_ID) > 0) {

@@ -75,17 +75,17 @@ void rabies(RealPt hero, signed short hero_pos)
 		if (count_heroes_available_in_group() > 1) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xb94),
+				(char*)get_ttx(0xb94),
 				(char*)Real2Host(hero) + HERO_NAME2,
 				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(Real2Host(hero) + HERO_SEX), 2)));
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 500,
-				(char*)get_ltx(0xb98),
+				(char*)get_ttx(0xb98),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 600,
-				(char*)get_ltx(0xb9c),
+				(char*)get_ttx(0xb9c),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			textbox_width_bak = ds_readws(TEXTBOX_WIDTH);
@@ -97,7 +97,7 @@ void rabies(RealPt hero, signed short hero_pos)
 						3,
 						Real2Host(ds_readd(DTP2)) + 500,
 						Real2Host(ds_readd(DTP2)) + 600,
-						get_ltx(0xba0));
+						get_ttx(0xba0));
 
 			ds_writew(TEXTBOX_WIDTH, textbox_width_bak);
 
@@ -107,14 +107,14 @@ void rabies(RealPt hero, signed short hero_pos)
 				sub_hero_le(Real2Host(hero), host_readws(Real2Host(hero) + HERO_LE) / 2);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0xba4),
+					(char*)get_ttx(0xba4),
 					(char*)Real2Host(hero) + HERO_NAME2);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				ds_writeb(0x64a2, (signed char)hero_pos);
+				ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-				answer = select_hero_ok(get_ltx(0x62c));
+				answer = select_hero_ok(get_ttx(0x62c));
 
 				if (answer != -1) {
 
@@ -134,14 +134,14 @@ void rabies(RealPt hero, signed short hero_pos)
 					{
 						done = 1;
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0xba8),
+							(char*)get_ttx(0xba8),
 							(char*)Real2Host(hero) + HERO_NAME2);
 
 						GUI_output(Real2Host(ds_readd(DTP2)));
 
-						ds_writeb(0x64a2, (signed char)hero_pos);
+						ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-						answer = select_hero_ok(get_ltx(0x62c));
+						answer = select_hero_ok(get_ttx(0x62c));
 
 						if (answer != -1) {
 							skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
@@ -152,9 +152,9 @@ void rabies(RealPt hero, signed short hero_pos)
 			} else if (answer == 3) {
 				/* cast a spell */
 
-				ds_writeb(0x64a2, (signed char)hero_pos);
+				ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-				answer = select_hero_ok(get_ltx(0x354));
+				answer = select_hero_ok(get_ttx(0x354));
 
 				if (answer != -1) {
 
@@ -174,14 +174,14 @@ void rabies(RealPt hero, signed short hero_pos)
 								sub_ae_splash(hero2, 15);
 
 								sprintf((char*)Real2Host(ds_readd(DTP2)),
-									(char*)get_ltx(0xba8),
+									(char*)get_ttx(0xba8),
 									(char*)Real2Host(hero) + HERO_NAME2);
 
 								GUI_output(Real2Host(ds_readd(DTP2)));
 
-								ds_writeb(0x64a2, (signed char)hero_pos);
+								ds_writeb(HERO_SEL_EXCLUDE, (signed char)hero_pos);
 
-								answer = select_hero_ok(get_ltx(0x62c));
+								answer = select_hero_ok(get_ttx(0x62c));
 
 								if ((answer != -1) && (answer != hero_pos)) {
 									skill_cure_disease(get_hero(answer), Real2Host(hero), 10, 1);
@@ -189,7 +189,7 @@ void rabies(RealPt hero, signed short hero_pos)
 							}
 						} else {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(0x97c),
+								(char*)get_ttx(0x97c),
 								(char*)hero2 + HERO_NAME2);
 
 							GUI_output(Real2Host(ds_readd(DTP2)));
@@ -202,7 +202,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			/* Hero has rabies / Tollwut */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xbac),
+				(char*)get_ttx(0xbac),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -227,7 +227,7 @@ void rabies(RealPt hero, signed short hero_pos)
 			/* hero has berserker fury / Berserkerwut */
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xc5c),
+				(char*)get_ttx(0xc5c),
 				(char*)Real2Host(hero) + HERO_NAME2);
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
@@ -251,14 +251,14 @@ void init_global_buffer(void)
 {
 
 	ds_writed(GLOBAL_BUFFER_PTR, (Bit32u)schick_alloc_emu(ds_readd(BUFFERSIZE)));
-	ds_writed(BUFFER1_PTR, (Bit32u)F_PADD(ds_readd(GLOBAL_BUFFER_PTR), 8));
-	ds_writed(BUFFER2_PTR, (Bit32u)F_PADD(ds_readd(BUFFER1_PTR), 65000));
+	ds_writed(RENDERBUF_PTR, (Bit32u)F_PADD(ds_readd(GLOBAL_BUFFER_PTR), 8));
+	ds_writed(TEXT_LTX_BUFFER, (Bit32u)F_PADD(ds_readd(RENDERBUF_PTR), 65000));
 
-	ds_writed(TEXT_LTX, (Bit32u)F_PADD(ds_readd(BUFFER2_PTR), 30500));
-	ds_writed(DIALOG_TEXT, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3360));
-	ds_writed(CITY_LTX, (Bit32u)((RealPt)ds_readd(TEXT_LTX) + 3960));
+	ds_writed(TEXT_LTX_INDEX, (Bit32u)F_PADD(ds_readd(TEXT_LTX_BUFFER), 30500));
+	ds_writed(TX_INDEX, (Bit32u)((RealPt)ds_readd(TEXT_LTX_INDEX) + 3360));
+	ds_writed(TX2_INDEX, (Bit32u)((RealPt)ds_readd(TEXT_LTX_INDEX) + 3960));
 
-	ds_writed(OBJECTS_NVF_BUF, (Bit32u)(F_PADD(ds_readd(TEXT_LTX), 4760)));
+	ds_writed(OBJECTS_NVF_BUF, (Bit32u)(F_PADD(ds_readd(TEXT_LTX_INDEX), 4760)));
 	ds_writed(DTP2, (Bit32u)(F_PADD(ds_readd(OBJECTS_NVF_BUF), 3400)));
 	ds_writed(TEXT_INPUT_BUF, (Bit32u)((RealPt)ds_readd(DTP2) + 1500));
 	ds_writed(TEXT_OUTPUT_BUF, (Bit32u)(F_PADD(ds_readd(DTP2), 1524)));
@@ -269,7 +269,7 @@ void init_global_buffer(void)
 	ds_writed(BUFFER9_PTR, (Bit32u)(F_PADD(ds_readd(BUFFER7_PTR), 22008)));
 
 	ds_writed(BUFFER9_PTR3, ds_writed(BUFFER9_PTR2, ds_readd(BUFFER9_PTR)));
-	ds_writed(0xce43, 0);
+	ds_writed(ANI_UNKNOWN4, 0);
 
 }
 
@@ -289,13 +289,13 @@ signed short init_memory(void)
 	}
 
 	/* set the pointer for the framebuffer */
-	ds_writed(TMP_FRAMEBUF_PTR, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0xa000, 0x0000)));
+	ds_writed(PRINT_STRING_BUFFER, ds_writed(FRAMEBUF_PTR, (Bit32u)RealMake(0x0a000, 0x0000)));
 
 	/* allocate small chunks of memory */
 	ds_writed(ITEMSNAME,		(Bit32u)schick_alloc_emu(1016));
 	ds_writed(ITEMSDAT,		(Bit32u)schick_alloc_emu(3060));
-	ds_writed(0xd2a1,		(Bit32u)schick_alloc_emu(950));
-	ds_writed(MONNAMES,		(Bit32u)schick_alloc_emu(308));
+	ds_writed(MONNAMES_BUFFER,		(Bit32u)schick_alloc_emu(950));
+	ds_writed(MONNAMES_INDEX,		(Bit32u)schick_alloc_emu(308));
 	ds_writed(MEM_SLOTS_ANIS,		(Bit32u)schick_alloc_emu(296));
 	ds_writed(MEM_SLOTS_MFIG,	(Bit32u)schick_alloc_emu(516));
 	ds_writed(MEM_SLOTS_WFIG,	(Bit32u)schick_alloc_emu(516));
@@ -306,7 +306,7 @@ signed short init_memory(void)
 	ds_writed(DUNGEON_STAIRS_BUF,		(Bit32u)schick_alloc_emu(80));
 	ds_writed(BUF_FONT6,		(Bit32u)schick_alloc_emu(592));
 	ds_writed(SPLASH_BUFFER,		(Bit32u)schick_alloc_emu(1000));
-	ds_writed(0xd299,		(Bit32u)schick_alloc_emu(500));
+	ds_writed(TRV_TRACK_PIXEL_BAK,		(Bit32u)schick_alloc_emu(500));
 	ds_writed(CHESSBOARD,		(Bit32u)schick_alloc_emu(625));
 	ds_writed(POPUP,		(Bit32u)(schick_alloc_emu(1673) + 8));
 	ds_writed(ICON,			(Bit32u)(schick_alloc_emu(1500) + 8));
@@ -354,8 +354,8 @@ signed short init_memory(void)
 /* Borlandified and identical */
 void refresh_colors(void)
 {
-	set_color(p_datseg + 0xb22d, 0);
-	set_color(p_datseg + 0xb22a, 0xff);
+	set_color(p_datseg + COLOR_BLACK, 0);
+	set_color(p_datseg + COLOR_WHITE, 0xff);
 	set_palette(p_datseg + 0xb230, 0xd8, 8);
 
 	set_palette(p_datseg + 0xb248, 0xc8, 3);
@@ -395,29 +395,29 @@ void init_game_state(void)
 
 	refresh_colors();
 
-	ds_writew(0xd2cb, 0xc8);
-	ds_writew(0xd2cd, 0xc9);
-	ds_writew(0xd2cf, 0xca);
+	ds_writew(INIT_COLOR1, 0xc8);
+	ds_writew(INIT_COLOR2, 0xc9);
+	ds_writew(INIT_COLOR3, 0xca);
 
 	set_to_ff();
 
 	for (i = 0; i < 0xfe; i++) {
-		ds_writeb(0xe12d + i, 0);
+		ds_writeb(MARKET_ITEMSALDO_TABLE + i, 0);
 	}
 
-	ds_writeb(0x2d9f, 0);
+	ds_writeb(LOCATION_BAK, 0);
 	/* Travia Temple in Thorwal */
 	ds_writeb(LOCATION, LOCATION_TEMPLE);
 	ds_writew(TYPEINDEX, 1);
-	ds_writew(0x2d83, 9);
-	ds_writew(0x2d85, 9);
+	ds_writew(X_TARGET_BAK, 9);
+	ds_writew(Y_TARGET_BAK, 9);
 	ds_writew(X_TARGET, 9);
 	ds_writew(Y_TARGET, 8);
-	ds_writeb(0x2d7c, 0);
+	ds_writeb(DIRECTION_BAK, 0);
 	ds_writeb(DIRECTION, 0);
 	ds_writeb(DUNGEON_INDEX, 0);
 
-	ds_writeb(0x2da6, ds_writeb(CURRENT_TOWN, 1));
+	ds_writeb(CURRENT_TOWN_BAK, ds_writeb(CURRENT_TOWN, 1));
 
 	ds_writew(TEXTBOX_WIDTH, 3);
 
@@ -438,7 +438,7 @@ void init_game_state(void)
 	ds_writew(CURRENT_ANI, -1);
 	ds_writew(WALLCLOCK_UPDATE, 1);
 
-	ds_writed(0xbff9, ds_readd(BUFFER1_PTR));
+	ds_writed(GUI_BUFFER_UNKN, ds_readd(RENDERBUF_PTR));
 	load_splashes();
 }
 
@@ -557,7 +557,7 @@ void prepare_dirs(void)
 		l_di = bc__open(((char*)&blk) + 30, 0x8004);
 #endif
 
-		bc__read(l_di, Real2Host(ds_readd(BUFFER1_PTR)), SIZEOF_HERO);
+		bc__read(l_di, Real2Host(ds_readd(RENDERBUF_PTR)), SIZEOF_HERO);
 
 		bc_close(l_di);
 
@@ -567,7 +567,7 @@ void prepare_dirs(void)
 
 		l_di = bc__creat((RealPt)ds_readd(TEXT_OUTPUT_BUF), 0);
 
-		bc__write(l_di, (RealPt)ds_readd(BUFFER1_PTR), SIZEOF_HERO);
+		bc__write(l_di, (RealPt)ds_readd(RENDERBUF_PTR), SIZEOF_HERO);
 
 		bc_close(l_di);
 
@@ -632,8 +632,8 @@ void cleanup_game(void)
 		}
 
 		/* free map memory */
-		if (ds_readw(0xbd90) != 0) {
-			EMS_free_pages(ds_readw(0xbd90));
+		if (ds_readw(EMS_TRAVEL_MAP) != 0) {
+			EMS_free_pages(ds_readw(EMS_TRAVEL_MAP));
 		}
 	}
 
@@ -681,7 +681,7 @@ void game_over_screen(void)
 	/* load SKULL.NVF */
 	handle = load_archive_file(ARCHIVE_FILE_SKULL_NVF);
 
-	read_archive_file(handle, Real2Host(ds_readd(BUFFER1_PTR)), 64200);
+	read_archive_file(handle, Real2Host(ds_readd(RENDERBUF_PTR)), 64200);
 
 	bc_close(handle);
 
@@ -694,9 +694,9 @@ void game_over_screen(void)
 	set_palette(p_datseg + 0x26c3, 0x00, 0x20);
 	set_palette(p_datseg + 0x26c3, 0x20, 0x20);
 
-	bc_memcpy((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(BUFFER1_PTR), 64000);
+	bc_memcpy((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(RENDERBUF_PTR), 64000);
 
-	set_palette(Real2Host(ds_readd(BUFFER1_PTR)) + 64002, 0x00, 0x40);
+	set_palette(Real2Host(ds_readd(RENDERBUF_PTR)) + 64002, 0x00, 0x40);
 
 	wait_for_keypress();
 
@@ -709,7 +709,7 @@ void game_over_screen(void)
 
 	refresh_screen_size();
 
-	ds_writeb(PP20_INDEX, (ARCHIVE_FILE_DNGS + 13));
+	ds_writeb(PP20_INDEX, 0xff);
 }
 
 /* Borlandified and identical */

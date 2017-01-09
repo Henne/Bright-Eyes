@@ -34,16 +34,16 @@ void tevent_067(void)
 	signed short count;
 	Bit8u *hero;
 
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 6) > 0 && !ds_readb(0x3dcc)) ||
-		ds_readb(0x3dcc) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 6) > 0 && !ds_readb(TEVENT067_FLAG)) ||
+		ds_readb(TEVENT067_FLAG) != 0)
 	{
-		GUI_output(get_city(0x168));
+		GUI_output(get_tx2(0x168));
 
 		do {
-			answer = GUI_radio(get_city(0x16c), 3,
-						get_city(0x170),
-						get_city(0x174),
-						get_city(0x178));
+			answer = GUI_radio(get_tx2(0x16c), 3,
+						get_tx2(0x170),
+						get_tx2(0x174),
+						get_tx2(0x178));
 		} while (answer == -1);
 
 		if (answer == 2) {
@@ -66,11 +66,11 @@ void tevent_067(void)
 				}
 			}
 
-			if (!ds_readb(0x3dcc) && count >= 3) {
+			if (!ds_readb(TEVENT067_FLAG) && count >= 3) {
 
-				loot_multi_chest(p_datseg + 0xb16a, get_city(0x180));
+				loot_multi_chest(p_datseg + TEVENT067_CHEST, get_tx2(0x180));
 
-				GUI_output(get_city(0x184));
+				GUI_output(get_tx2(0x184));
 
 				hero = Real2Host(get_first_hero_available_in_group());
 
@@ -81,7 +81,7 @@ void tevent_067(void)
 				ds_writeb(LOCATION, 0);
 			} else {
 
-				GUI_output(get_city(0x17c));
+				GUI_output(get_tx2(0x17c));
 
 				hero = get_hero(0);
 				for (i = 0; i <= 6; i++, hero += SIZEOF_HERO) {
@@ -100,16 +100,16 @@ void tevent_067(void)
 				TRV_load_textfile(-1);
 			}
 
-			ds_writeb(0x3dcc, 1);
+			ds_writeb(TEVENT067_FLAG, 1);
 		}
 	} else {
 
-		GUI_output(get_city(0x168));
+		GUI_output(get_tx2(0x168));
 
 		do {
-			answer = GUI_radio(get_city(0x148), 2,
-						get_city(0x170),
-						get_city(0x174));
+			answer = GUI_radio(get_tx2(0x148), 2,
+						get_tx2(0x170),
+						get_tx2(0x174));
 		} while (answer == -1);
 
 		if (answer == 2) {
@@ -129,11 +129,11 @@ void tevent_068(void)
 
 void tevent_069(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 5) > 0 && !ds_readb(0x3dcd)) ||
-		ds_readb(0x3dcd) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 5) > 0 && !ds_readb(TEVENT069_FLAG)) ||
+		ds_readb(TEVENT069_FLAG) != 0)
 	{
 		TRV_found_camp_place(0);
-		ds_writeb(0x3dcd, 1);
+		ds_writeb(TEVENT069_FLAG, 1);
 	}
 }
 
@@ -142,30 +142,30 @@ void tevent_070(void)
 	signed short l_si;
 
 	if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 ||
-		ds_readb(0x3dce) != 0)
+		ds_readb(TEVENT070_FLAG) != 0)
 	{
-		ds_writeb(0x3dce, 1);
+		ds_writeb(TEVENT070_FLAG, 1);
 
 		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_PFLANZENKUNDE, 4) > 0 ||
-			ds_readb(0x3dcf) != 0)
+			ds_readb(TEVENT070_HERB_FLAG) != 0)
 		{
-			ds_writeb(0x3dcf, 1);
-			ds_writeb(0x66d0, 130);
+			ds_writeb(TEVENT070_HERB_FLAG, 1);
+			ds_writeb(GATHER_HERBS_SPECIAL, 130);
 			l_si = TRV_found_camp_place(2);
-			ds_writeb(0x66d0, -1);
+			ds_writeb(GATHER_HERBS_SPECIAL, -1);
 		} else {
 			l_si = TRV_found_camp_place(0);
 		}
 
-		if ((l_si && !ds_readb(0x3dd0) && test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 0) > 0) ||
-			ds_readb(0x3dd0) != 0) {
+		if ((l_si && !ds_readb(TEVENT070_TRAIL_FLAG) && test_skill(Real2Host(get_first_hero_available_in_group()), TA_FAEHRTENSUCHEN, 0) > 0) ||
+			ds_readb(TEVENT070_TRAIL_FLAG) != 0) {
 
-			ds_writeb(0x3dd0, 1);
+			ds_writeb(TEVENT070_TRAIL_FLAG, 1);
 
 			if (!TRV_follow_trail_question()) {
 
 				do {
-					l_si = GUI_radio(get_city(0x00), 2, get_city(0x04), get_city(0x08));
+					l_si = GUI_radio(get_tx2(0x00), 2, get_tx2(0x04), get_tx2(0x08));
 
 				} while (l_si == -1);
 
@@ -189,15 +189,15 @@ void tevent_071(void)
 
 	/* Perception + 8, Sinnesschaerfe + 8 */
 	if (test_skill(hero = Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 8) > 0 &&
-		!ds_readb(0x3dd1))
+		!ds_readb(TEVENT071_FLAG))
 	{
-		ds_writeb(0x3dd1, 1);
+		ds_writeb(TEVENT071_FLAG, 1);
 
 		/* Track + 4, Faehrtensuche + 4 */
 		if (test_skill(hero, TA_FAEHRTENSUCHEN, 4) > 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_city(0x34),
+				(char*)get_tx2(0x34),
 				(char*)hero + HERO_NAME2,
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 				(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
@@ -205,18 +205,18 @@ void tevent_071(void)
 
 			do {
 				l_si = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-						get_city(0x38),
-						get_city(0x3c));
+						get_tx2(0x38),
+						get_tx2(0x3c));
 			} while (l_si == -1);
 
 			if (l_si == 2) {
 				/* investigate */
 
 				do {
-					l_si = GUI_radio(get_city(0x40), 3,
-							get_city(0x44),
-							get_city(0x48),
-							get_city(0x4c));
+					l_si = GUI_radio(get_tx2(0x40), 3,
+							get_tx2(0x44),
+							get_tx2(0x48),
+							get_tx2(0x4c));
 				} while (l_si == -1);
 
 				if (l_si == 1) {
@@ -235,18 +235,18 @@ void tevent_071(void)
 				if (l_si == 1 || l_si == 2) {
 
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_city(0x58),
+						(char*)get_tx2(0x58),
 						(char*)hero + HERO_NAME2);
 					do {
 						l_si = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-								get_city(0x5c),
-								get_city(0x60));
+								get_tx2(0x5c),
+								get_tx2(0x60));
 					} while (l_si == -1);
 
 					if (l_si == 1) {
 						/* destroy monolith */
 
-						GUI_output(get_city(0x64));
+						GUI_output(get_tx2(0x64));
 
 						/* REWARD: get gods estimation + 500 for each god */
 						for (i = 1; i <= 14; i++) {
@@ -254,7 +254,7 @@ void tevent_071(void)
 						}
 
 						/* mark the statuette as destroyed => has effects in fights */
-						ds_writeb(0x3dda, 1);
+						ds_writeb(TEVENT071_ORCSTATUE, 1);
 
 						add_hero_ap_all(10);
 
@@ -270,9 +270,9 @@ void tevent_071(void)
 					i = (!have_raft ? 1 : 2);
 
 					do {
-						l_si = GUI_radio(get_city(0x68), (signed char)i,
-								get_city(0x6c),
-								get_city(0x70));
+						l_si = GUI_radio(get_tx2(0x68), (signed char)i,
+								get_tx2(0x6c),
+								get_tx2(0x70));
 					} while (l_si == -1);
 
 					if (l_si == 1) {
@@ -311,17 +311,17 @@ void TRV_swimm(signed short mod, signed short percent)
 
 				hero_disease_test(hero, 2, 20 - (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) + host_readbs(hero + (HERO_ATTRIB_MOD + 3 * ATTRIB_KK))));
 
-				loose_random_item(hero, percent, get_ltx(0x7e8));
+				loose_random_item(hero, percent, get_ttx(0x7e8));
 
 				sub_hero_le(hero, random_schick(5));
 
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0x54),
+					(char*)get_tx2(0x54),
 					(char*)hero + HERO_NAME2);
 			} else {
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_city(0x50),
+					(char*)get_tx2(0x50),
 					(char*)hero + HERO_NAME2);
 			}
 
@@ -342,14 +342,14 @@ void tevent_unused01(void)
 
 	hero = Real2Host(get_first_hero_available_in_group());
 
-	if ((test_skill(hero, TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(0x3dd2)) ||
-		ds_readb(0x3dd2) != 0)
+	if ((test_skill(hero, TA_SINNESSCHAERFE, 8) > 0 && !ds_readb(TEVENTU01_FLAG)) ||
+		ds_readb(TEVENTU01_FLAG) != 0)
 	{
 
-		ds_writeb(0x3dd2, 1);
+		ds_writeb(TEVENTU01_FLAG, 1);
 
 		sprintf((char*)Real2Host(ds_readd(DTP2)),
-			(char*)get_city(0x74),
+			(char*)get_tx2(0x74),
 			(char*)hero + HERO_NAME2,
 			(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 0)),
 			(char*)Real2Host(GUI_get_ptr(host_readbs(hero + HERO_SEX), 3)));
@@ -357,17 +357,17 @@ void tevent_unused01(void)
 
 		do {
 			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2,
-					get_city(0x78),
-					get_city(0x7c));
+					get_tx2(0x78),
+					get_tx2(0x7c));
 		} while (answer == -1);
 
 		if (answer == 2) {
 
 			do {
-				answer = GUI_radio(get_city(0x80), 3,
-						get_city(0x84),
-						get_city(0x88),
-						get_city(0x8c));
+				answer = GUI_radio(get_tx2(0x80), 3,
+						get_tx2(0x84),
+						get_tx2(0x88),
+						get_tx2(0x8c));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -383,18 +383,18 @@ void tevent_unused01(void)
 
 			if (answer == 1 || answer == 2) {
 
-				GUI_output(get_city(0x98));
+				GUI_output(get_tx2(0x98));
 
-				ds_writeb(0x66d0, 63);
+				ds_writeb(GATHER_HERBS_SPECIAL, 63);
 				TRV_inside_herb_place();
-				ds_writeb(0x66d0, -1);
+				ds_writeb(GATHER_HERBS_SPECIAL, -1);
 
 				options = (!has_raft ? 1 : 2);
 
 				do {
-					answer = GUI_radio(get_city(0x9c), (signed char)options,
-								get_city(0xa0),
-								get_city(0xa4));
+					answer = GUI_radio(get_tx2(0x9c), (signed char)options,
+								get_tx2(0xa0),
+								get_tx2(0xa4));
 				} while (answer == -1);
 
 				if (answer == 1) {
@@ -413,11 +413,11 @@ void tevent_unused01(void)
 
 void tevent_072(void)
 {
-	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(0x3ddd)) ||
-		ds_readb(0x3ddd) != 0)
+	if ((test_skill(Real2Host(get_first_hero_available_in_group()), TA_WILDNISLEBEN, 3) > 0 && !ds_readb(TEVENT072_FLAG)) ||
+		ds_readb(TEVENT072_FLAG) != 0)
 	{
 		TRV_found_camp_place(1);
-		ds_writeb(0x3ddd, 1);
+		ds_writeb(TEVENT072_FLAG, 1);
 	}
 }
 
@@ -426,23 +426,23 @@ void tevent_073(void)
 {
 	signed short answer;
 
-	if (!ds_readb(0x3dde)) {
+	if (!ds_readb(TEVENT073_FLAG)) {
 
 		load_in_head(55);
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-							get_city(0xa8), 2,
-							get_city(0xac), get_city(0xb0));
+							get_tx2(0xa8), 2,
+							get_tx2(0xac), get_tx2(0xb0));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
-			GUI_dialog_na(0, get_city(0xb4));
+			GUI_dialog_na(0, get_tx2(0xb4));
 
-			loot_multi_chest(p_datseg + 0x3e24, get_city(0x1a4));
+			loot_multi_chest(p_datseg + TEVENT073_CORPSE, get_tx2(0x1a4));
 
-			ds_writeb(0x3dde, 1);
+			ds_writeb(TEVENT073_FLAG, 1);
 		}
 	}
 }
@@ -455,23 +455,23 @@ void tevent_074(void)
 	Bit32s p_money;
 	Bit8u *hero;
 
-	if (!ds_readb(0x3ddf)) {
+	if (!ds_readb(TEVENT074_FLAG)) {
 
-		ds_writeb(0x3ddf, 1);
+		ds_writeb(TEVENT074_FLAG, 1);
 
 		load_in_head(49);
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4), get_city(0xb8), 3,
-						get_city(0xbc),
-						get_city(0xc0),
-						get_city(0xc4));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc4), get_tx2(0xb8), 3,
+						get_tx2(0xbc),
+						get_tx2(0xc0),
+						get_tx2(0xc4));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
 			/* fight */
-			ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
+			ds_writeb(TEVENT074_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 
 		} else if (answer == 2) {
 
@@ -481,7 +481,7 @@ void tevent_074(void)
 			{
 				/* failed, so fight */
 				ds_writeb(FIG_INITIATIVE, 1);
-				ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
+				ds_writeb(TEVENT074_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 
 			} else {
 
@@ -500,10 +500,10 @@ void tevent_074(void)
 				hero = get_hero(answer);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-					(char*)get_city(0xd8),
+					(char*)get_tx2(0xd8),
 					(char*)hero + HERO_NAME2);
 
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4),
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc4),
 						Real2Host(ds_readd(DTP2)) + 0x400, 0);
 
 				/* this hero gets a damage of 2W6+4 */
@@ -513,10 +513,10 @@ void tevent_074(void)
 
 			/* try to make a deal */
 			do {
-				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc4), get_city(0xc8), 3,
-							get_city(0xcc),
-							get_city(0xd0),
-							get_city(0xd4));
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc4), get_tx2(0xc8), 3,
+							get_tx2(0xcc),
+							get_tx2(0xd0),
+							get_tx2(0xd4));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -525,7 +525,7 @@ void tevent_074(void)
 
 				if (p_money < 1500) {
 					/* not enough money, so fight */
-					ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
+					ds_writeb(TEVENT074_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 				} else {
 					/* pay 1500 */
 					p_money -= 1500;
@@ -535,7 +535,7 @@ void tevent_074(void)
 			} else if (answer == 2) {
 
 				/* fight */
-				ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
+				ds_writeb(TEVENT074_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 
 			} else {
 
@@ -546,7 +546,7 @@ void tevent_074(void)
 				{
 					/* fight */
 					ds_writeb(FIG_INITIATIVE, 1);
-					ds_writeb(0x3e16, (signed char)TRV_fight_event(FIGHTS_F074, 74));
+					ds_writeb(TEVENT074_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F074, 74));
 				}
 			}
 		}
@@ -562,21 +562,21 @@ void tevent_075(void)
 
 	ret = -1;
 
-	if (!ds_readb(0x3de0)) {
+	if (!ds_readb(TEVENT075_FLAG)) {
 
 		do {
-			answer = GUI_radio(get_city(0xdc), 2,
-						get_city(0xe0),
-						get_city(0xe4));
+			answer = GUI_radio(get_tx2(0xdc), 2,
+						get_tx2(0xe0),
+						get_tx2(0xe4));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
 			do {
-				answer = GUI_radio(get_city(0xe8), 3,
-							get_city(0xec),
-							get_city(0xf0),
-							get_city(0xf4));
+				answer = GUI_radio(get_tx2(0xe8), 3,
+							get_tx2(0xec),
+							get_tx2(0xf0),
+							get_tx2(0xf4));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -589,11 +589,11 @@ void tevent_075(void)
 
 				i = FIGHTS_F075_B;
 
-				if (!ds_readb(0x3e16) && !ds_readb(0x3e17)) {
+				if (!ds_readb(TEVENT074_FIGHT_FLAG) && !ds_readb(TEVENT077_FIGHT_FLAG)) {
 
 					i = FIGHTS_F075_A;
 
-				} else if (ds_readb(0x3e16) != 0 && ds_readb(0x3e17) != 0) {
+				} else if (ds_readb(TEVENT074_FIGHT_FLAG) != 0 && ds_readb(TEVENT077_FIGHT_FLAG) != 0) {
 
 					i = FIGHTS_F075_C;
 				}
@@ -616,17 +616,17 @@ void tevent_075(void)
 
 				if (answer > 1) {
 
-					GUI_output(get_city(0xf8));
+					GUI_output(get_tx2(0xf8));
 
 					ds_writeb(FIG_INITIATIVE, 1);
 
 					i = FIGHTS_F075_B;
 
-					if (!ds_readb(0x3e16) && !ds_readb(0x3e17)) {
+					if (!ds_readb(TEVENT074_FIGHT_FLAG) && !ds_readb(TEVENT077_FIGHT_FLAG)) {
 
 						i = FIGHTS_F075_A;
 
-					} else if (ds_readb(0x3e16) != 0 && ds_readb(0x3e17) != 0) {
+					} else if (ds_readb(TEVENT074_FIGHT_FLAG) != 0 && ds_readb(TEVENT077_FIGHT_FLAG) != 0) {
 
 						i = FIGHTS_F075_C;
 					}
@@ -642,7 +642,7 @@ void tevent_075(void)
 		}
 
 		if (ret == 0) {
-			ds_writeb(0x3de0, 1);
+			ds_writeb(TEVENT075_FLAG, 1);
 		}
 	}
 }
@@ -652,23 +652,23 @@ void tevent_076(void)
 {
 	signed short answer;
 
-	if (!ds_readb(0x3de1)) {
+	if (!ds_readb(TEVENT076_FLAG)) {
 
 		if (test_skill(Real2Host(get_first_hero_available_in_group()), TA_SINNESSCHAERFE, 5) > 0)
 		{
-			ds_writeb(0x3de1, 1);
+			ds_writeb(TEVENT076_FLAG, 1);
 
-			GUI_dialog_na(53, get_city(0xfc));
+			GUI_dialog_na(53, get_tx2(0xfc));
 
 			do {
 				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-								get_city(0x100), 2,
-								get_city(0x104),
-								get_city(0x108));
+								get_tx2(0x100), 2,
+								get_tx2(0x104),
+								get_tx2(0x108));
 			} while (answer == -1);
 
 			if (answer == 1) {
-				ds_writeb(0x4333, 5);
+				ds_writeb(TRAVEL_DETOUR, 5);
 			}
 		}
 
@@ -678,13 +678,13 @@ void tevent_076(void)
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), NULL,
-							get_city(0x10c), 2,
-							get_city(0x110),
-							get_city(0x114));
+							get_tx2(0x10c), 2,
+							get_tx2(0x110),
+							get_tx2(0x114));
 		} while (answer == -1);
 
 		if (answer == 1) {
-			ds_writeb(0x4333, 5);
+			ds_writeb(TRAVEL_DETOUR, 5);
 		}
 	}
 }
@@ -697,24 +697,24 @@ void tevent_077(void)
 	Bit32s p_money;
 	Bit8u *hero;
 
-	if (!ds_readb(0x3de2)) {
+	if (!ds_readb(TEVENT077_FLAG)) {
 
-		ds_writeb(0x3de2, 1);
+		ds_writeb(TEVENT077_FLAG, 1);
 
 		load_in_head(4);
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8),
-						get_city(0x118), 3,
-						get_city(0x11c),
-						get_city(0x120),
-						get_city(0x124));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc8),
+						get_tx2(0x118), 3,
+						get_tx2(0x11c),
+						get_tx2(0x120),
+						get_tx2(0x124));
 		} while (answer == -1);
 
 		if (answer == 1) {
 
 			/* fight */
-			ds_writeb(0x3e17, (signed char)TRV_fight_event(186, 77));
+			ds_writeb(TEVENT077_FIGHT_FLAG, (signed char)TRV_fight_event(186, 77));
 
 		} else if (answer == 2) {
 
@@ -722,7 +722,7 @@ void tevent_077(void)
 
 				/* test failed, so fight */
 				ds_writeb(FIG_INITIATIVE, 1);
-				ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
+				ds_writeb(TEVENT077_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 
 			} else {
 
@@ -741,10 +741,10 @@ void tevent_077(void)
 				hero = get_hero(answer);
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)) + 0x400,
-					(char*)get_city(0xd8),
+					(char*)get_tx2(0xd8),
 					(char*)hero + HERO_NAME2);
 
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8),
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc8),
 						Real2Host(ds_readd(DTP2)) + 0x400, 0);
 
 				/* the last hero looses between 6 and 16 LE */
@@ -755,10 +755,10 @@ void tevent_077(void)
 
 			/* try to make a deal */
 			do {
-				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_dtp(0xc8), get_city(0x128), 3,
-							get_city(0x12c),
-							get_city(0x130),
-							get_city(0x134));
+				answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_tx(0xc8), get_tx2(0x128), 3,
+							get_tx2(0x12c),
+							get_tx2(0x130),
+							get_tx2(0x134));
 			} while (answer == -1);
 
 			if (answer == 1) {
@@ -767,7 +767,7 @@ void tevent_077(void)
 
 				if (p_money < 1500) {
 					/* not enough money, so fight */
-					ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
+					ds_writeb(TEVENT077_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 				} else {
 					/* pay 1500 */
 					p_money -= 1500;
@@ -777,7 +777,7 @@ void tevent_077(void)
 			} else if (answer == 2) {
 
 				/* fight */
-				ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
+				ds_writeb(TEVENT077_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 
 			} else {
 
@@ -788,7 +788,7 @@ void tevent_077(void)
 				{
 					/* fight */
 					ds_writeb(FIG_INITIATIVE, 1);
-					ds_writeb(0x3e17, (signed char)TRV_fight_event(FIGHTS_F077, 77));
+					ds_writeb(TEVENT077_FIGHT_FLAG, (signed char)TRV_fight_event(FIGHTS_F077, 77));
 				}
 			}
 		}

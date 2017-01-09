@@ -37,7 +37,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 		done = 1;
 		for (i = 0; i < arg2; i++) {
 			if (ds_readd(SEA_TRAVEL_MENU_PASSAGES + i * 12)
-				== host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4)) {
+				== host_readd(Real2Host(ds_readd(TX_INDEX)) + name * 4)) {
 				done = 0;
 				break;
 			}
@@ -45,7 +45,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 
 	} while (!done);
 
-	return (RealPt)host_readd(Real2Host(ds_readd(DIALOG_TEXT)) + name * 4);
+	return (RealPt)host_readd(Real2Host(ds_readd(TX_INDEX)) + name * 4);
 }
 
 /**
@@ -135,7 +135,7 @@ RealPt print_passage_price(signed short price, Bit8u *entry)
 		strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 			(char*)p_datseg + SEA_TRAVEL_STR_NOTHING);
 	}
-	ds_writew(0x432a, price);
+	ds_writew(SEA_TRAVEL_PASSAGE_PRICE, price);
 
 	return (RealPt)ds_readd(TEXT_OUTPUT_BUF);
 
@@ -149,10 +149,10 @@ unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 
 	/*	WEATHER1 = random(6)
 	 *	WEATHER2 = random(7) */
-	ds_writew(0x432c,
+	ds_writew(SEA_TRAVEL_PASSAGE_UNKN2,
 		(arg2 * (ds_readw(WEATHER2) + 6) * (ds_readw(WEATHER1) * 15 + 100) + 499L) / 1000L);
 
-	hours = (ds_readws(0x432c) + 4) / 10;
+	hours = (ds_readws(SEA_TRAVEL_PASSAGE_UNKN2) + 4) / 10;
 
 	if (hours == 0)
 		hours = 1;
@@ -224,40 +224,40 @@ unsigned short get_next_passages(unsigned short type)
 unsigned short passage_arrival(void)
 {
 	signed short tmp;
-	Bit8u *p1;
+	Bit8u *harbor_ptr;
 	Bit8u *buildings;
 	Bit8u *p_sched;
 	signed short si;
-	signed short di;
+	signed short harbor_id;
 
-	di = 0;
-	p1 = p_datseg + 0xa3a3;
+	harbor_id = 0;
+	harbor_ptr = p_datseg + HARBORS;
 
-	p_sched = p_datseg + SEA_TRAVEL_PASSAGES + ds_readb(0x42b1) * 8;
+	p_sched = p_datseg + SEA_TRAVEL_PASSAGES + ds_readb(SEA_TRAVEL_PASSAGE_ID) * 8;
 
 	/* write the destination to a global variable (assignement in condition)*/
 	if ((ds_writew(TRV_DEST_REACHED, host_readb(p_sched))) == ds_readbs(CURRENT_TOWN))
 		ds_writew(TRV_DEST_REACHED, host_readb(p_sched + 1));
 
 	do {
-		if (host_readb(p1) == ds_readw(TRV_DEST_REACHED)) {
+		if (host_readb(harbor_ptr) == ds_readw(TRV_DEST_REACHED)) {
 			si = 0;
 			do {
-				tmp = host_readb(Real2Host(host_readd(p1 + 2)) + si) - 1;
+				tmp = host_readb(Real2Host(host_readd(harbor_ptr + 2)) + si) - 1;
 				if (host_readb(p_datseg + SEA_TRAVEL_PASSAGES + tmp * 8) == ds_readb(CURRENT_TOWN) ||
 					host_readb(p_datseg + SEA_TRAVEL_PASSAGES + tmp * 8 + 1) == ds_readb(CURRENT_TOWN)) {
-					di = (unsigned char)host_readb(p1 + 1);
+					harbor_id = (unsigned char)host_readb(harbor_ptr + 1);
 					break;
 				}
 
 				si++;
-			} while (host_readb(Real2Host(host_readd(p1 + 2)) + si) != 0xff);
+			} while (host_readb(Real2Host(host_readd(harbor_ptr + 2)) + si) != 0xff);
 		}
 		/* set pointer to the next structure */
-		p1 += 6;
-	} while (di == 0 && host_readb(p1) != 0xff);
+		harbor_ptr += 6;
+	} while (harbor_id == 0 && host_readb(harbor_ptr) != 0xff);
 
-	if (di != 0) {
+	if (harbor_id != 0) {
 
 		/* save the old town in tmp */
 		tmp = (signed char)ds_readb(CURRENT_TOWN);
@@ -269,17 +269,17 @@ unsigned short passage_arrival(void)
 
 
 		/* search for the harbour in the map */
-		buildings = p_datseg + 0xc025;
+		buildings = p_datseg + LOCATIONS_TAB;
 		while ((host_readb(buildings + 2) != 0x0b) ||
-				(host_readb(buildings + 3) != di)) {
+				(host_readb(buildings + 3) != harbor_id)) {
 			buildings += 6;
 		}
 
 		/* set the position of the party */
 		si = host_readw(buildings + 4);
-		ds_writew(0x433a, (si >> 8) & 0xff);
-		ds_writew(0x433c, si & 0x0f);
-		ds_writew(0x433e, (si >> 4) & 0x0f);
+		ds_writew(ARRIVAL_X_TARGET, (si >> 8) & 0xff);
+		ds_writew(ARRIVAL_Y_TARGET, si & 0x0f);
+		ds_writew(ARRIVAL_DIRECTION, (si >> 4) & 0x0f);
 
 		/* restore the old town area / TODO: a bit bogus */
 		ds_writeb(CURRENT_TOWN, (unsigned char)tmp);

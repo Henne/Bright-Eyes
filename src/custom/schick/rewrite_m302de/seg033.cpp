@@ -71,15 +71,15 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 	while ((done == 0) && (host_readbs(hero + HERO_BP_LEFT) > 0)) {
 
-		if (ds_readbs(0xe38e) != -1) {
-			FIG_remove_from_list(ds_readbs(0xe38e), 0);
-			ds_writeb(0xe38e, -1);
+		if (ds_readbs(FIG_CB_MAKRER_ID) != -1) {
+			FIG_remove_from_list(ds_readbs(FIG_CB_MAKRER_ID), 0);
+			ds_writeb(FIG_CB_MAKRER_ID, -1);
 		}
 
 		FIG_init_list_elem(hero_pos + 1);
 		draw_fight_screen_pal(0);
 
-		if ((hero_unkn3(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_UNKNOWN1)) {
+		if ((hero_unkn3(hero)) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_FLEE)) {
 
 			and_ptr_bs(hero + HERO_STATUS1, 0x7f);
 			and_ptr_bs(hero + HERO_STATUS1, 0xfb);
@@ -93,7 +93,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 			host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 
-			if (((ds_readws(CURRENT_FIG_NR) != 192) || (ds_readbs(0x5f30) != 0)) &&
+			if (((ds_readws(CURRENT_FIG_NR) != 192) || (ds_readbs(FINALFIGHT_TUMULT) != 0)) &&
 				(host_readbs(hero + HERO_BP_LEFT) >= 3))
 			{
 				KI_hero(hero, hero_pos, x, y);
@@ -108,7 +108,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				/* prepare question with BP */
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x48),
+					(char*)get_tx(0x48),
 					host_readbs(hero + HERO_BP_LEFT));
 
 				txt_tabpos_bak = ds_readws(TXT_TABPOS1);
@@ -122,37 +122,37 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					/* no weapon or weapon broken, use red color for "change weapon" */
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
 						(char*)p_datseg + RED_STRING1,
-						get_dtp(0x60));
+						get_tx(0x60));
 				} else {
 					/* good weapon, no special color */
-					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_dtp(0x60));
+					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)), (char*)get_tx(0x60));
 				}
 
 				if (host_readbs(hero + (HERO_ATTRIB + 3 * ATTRIB_KK)) * 110 <= host_readws(hero + HERO_LOAD)) {
 					/* too much weight, use red color for "drop item" */
 					sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
 						(char*)p_datseg + RED_STRING2,
-						get_dtp(0xb8));
+						get_tx(0xb8));
 				} else {
 					/* weight ok, no special color */
-					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50, (char*)get_dtp(0xb8));
+					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50, (char*)get_tx(0xb8));
 				}
 
 				/* show radion menu */
 				selected = GUI_radio(Real2Host(ds_readd(DTP2)), l1 != 0 ? 13 : 12,
-							get_dtp(0x4c),
-							get_dtp(0x50),
-							get_dtp(0x54),
-							get_dtp(0x58),
-							get_dtp(0x5c),
+							get_tx(0x4c),
+							get_tx(0x50),
+							get_tx(0x54),
+							get_tx(0x58),
+							get_tx(0x5c),
 							Real2Host(ds_readd(TEXT_OUTPUT_BUF)) + 50,
 							Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-							get_dtp(0x40),
-							get_dtp(0x68),
-							get_dtp(0x64),
-							get_dtp(0x88),
-							get_dtp(0xcc),
-							get_dtp(0x6c));
+							get_tx(0x40),
+							get_tx(0x68),
+							get_tx(0x64),
+							get_tx(0x88),
+							get_tx(0xcc),
+							get_tx(0x6c));
 
 				update_mouse_cursor();
 				ds_writew(TXT_TABPOS1, txt_tabpos_bak);
@@ -205,14 +205,14 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					} else {
 						/* no BP left */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0x44),
+							(char*)get_tx(0x44),
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
 
 				} else {
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_dtp(0x1c),
+						(char*)get_tx(0x1c),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -261,20 +261,20 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					if (target_id != -5) {
 
 						if ((target_id <= 0) || (target_id >= 50)) {
-							GUI_output(get_dtp(0x70));
+							GUI_output(get_tx(0x70));
 						} else if (target_id == (hero_pos + 1)) {
-							GUI_output(get_dtp(0x0c));
+							GUI_output(get_tx(0x0c));
 						} else if (((target_id < 10) && hero_dead(get_hero(target_id - 1))) ||
 								((target_id >= 10) && (target_id < 30) &&
 										/* unconscious or dead */
-										(test_bit0(p_datseg + (0xd0df + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
-										test_bit6(p_datseg + (0xd0df + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))) ||
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))) ||
 								((target_id >= 30) &&
 										/* unconscious or dead */
-										(test_bit0(p_datseg + (0xcc07 + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
-										test_bit6(p_datseg + (0xcc07 + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))))
+										(test_bit0(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id) ||
+										test_bit6(p_datseg + ((ENEMY_SHEETS - 30*SIZEOF_ENEMY_SHEET) + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * target_id))))
 						{
-							GUI_output(get_dtp(0x74));
+							GUI_output(get_tx(0x74));
 
 							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
@@ -283,7 +283,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						} else if ((range_weapon != -1) && (calc_beeline(x, y, target_x, target_y) < 2)) {
 
-							GUI_output(get_ltx(0x7f0));
+							GUI_output(get_ttx(0x7f0));
 
 							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 
@@ -300,10 +300,10 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								do {
 									refresh_screen_size();
 
-									selected = GUI_radio(get_ltx(0x920), 3,
-											get_ltx(0x924),
-											get_ltx(0x928),
-											get_ltx(0x92c));
+									selected = GUI_radio(get_ttx(0x920), 3,
+											get_ttx(0x924),
+											get_ttx(0x928),
+											get_ttx(0x92c));
 									update_mouse_cursor();
 								} while (selected == -1);
 
@@ -321,7 +321,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				} else {
 					/* no BP left */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_dtp(0x44),
+						(char*)get_tx(0x44),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -339,7 +339,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				} else {
 					/* no BP left */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_dtp(0x44),
+						(char*)get_tx(0x44),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -349,7 +349,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				if (host_readbs(hero + HERO_TYPE) < 7) {
 					/* not a magic user */
-					GUI_output(get_ltx(0x35c));
+					GUI_output(get_ttx(0x35c));
 				} else {
 
 					if (host_readbs(hero + HERO_BP_LEFT) >= 5) {
@@ -368,7 +368,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							if (host_readbs(spell + 5) == -1) {
 
 								/* not a combat spell */
-								GUI_output(get_ltx(0x940));
+								GUI_output(get_ttx(0x940));
 
 							} else {
 
@@ -397,24 +397,24 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 									if (target_id != -99) {
 
 										if (target_id < 0) {
-											GUI_output(get_dtp(0x70));
+											GUI_output(get_tx(0x70));
 
 										} else if ((target_id == 0) &&
 											(host_readbs(spell + 7) != 4))
 										{
-											GUI_output(get_dtp(0x10));
+											GUI_output(get_tx(0x10));
 
 										} else if ((target_id < 10) &&
 											(host_readbs(spell + 7) != 2) &&
 											(host_readbs(spell + 7) != 3))
 										{
-											GUI_output(get_dtp(0x14));
+											GUI_output(get_tx(0x14));
 										} else if ((target_id >= 10) &&
 											(target_id < 50) &&
 											(host_readbs(spell + 7) != 1) &&
 											(host_readbs(spell + 7) != 3))
 										{
-											GUI_output(get_dtp(0x18));
+											GUI_output(get_tx(0x18));
 
 										} else {
 											host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_SPELL);
@@ -435,14 +435,14 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(get_spell_cost(host_readbs(hero + HERO_SPELL_ID), 1) > host_readws(hero + HERO_AE)))
 						{
 							/* not enough AE */
-							GUI_output(get_ltx(0x544));
+							GUI_output(get_ttx(0x544));
 							host_writeb(hero + HERO_ACTION_ID, FIG_ACTION_MOVE);
 							done = 0;
 						}
 					} else {
 						/* no BP left */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0x44),
+							(char*)get_tx(0x44),
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
@@ -476,7 +476,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						if ((host_readbs(hero + HERO_ENEMY_ID) < 0) || host_readbs(hero + HERO_ENEMY_ID) >= 50) {
 							host_writeb(hero + HERO_ENEMY_ID, 0);
-							GUI_output(get_dtp(0x70));
+							GUI_output(get_tx(0x70));
 						} else {
 							/* set BP to 0 */
 							host_writeb(hero + HERO_BP_LEFT, 0);
@@ -487,7 +487,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					} else {
 						/* no BP left */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0x44),
+							(char*)get_tx(0x44),
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
@@ -517,17 +517,17 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						if (radio_i == 0) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_ltx(0xbb8),
+								(char*)get_ttx(0xbb8),
 								(char*)hero + HERO_NAME2);
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
 							if (host_readws(hero + HERO_ITEM_LEFT) == 0) {
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-									(char*)get_dtp(0xf0),
+									(char*)get_tx(0xf0),
 									(char*)hero + HERO_NAME2);
 							} else {
 								sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-									(char*)get_dtp(0x7c),
+									(char*)get_tx(0x7c),
 									(char*)hero + HERO_NAME2,
 									(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_ITEM_LEFT), 0)));
 							}
@@ -568,7 +568,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					} else {
 						/* no BP left */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0x44),
+							(char*)get_tx(0x44),
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
@@ -592,7 +592,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 								sprintf((char*)Real2Host(ds_readd(RADIO_NAME_LIST + 4 * radio_i)),
 									(char*)p_datseg + SPACE_SEPARATED_STRINGS, /* "%s %s" */
 									(char*)Real2Host(GUI_name_singular((Bit8u*)get_itemname(weapon_id))),
-									ks_broken(hero + HERO_ITEM_HEAD + 14 * slot_nr) ? get_ltx(0x778) : p_datseg + EMPTY_STRING3);
+									ks_broken(hero + HERO_ITEM_HEAD + 14 * slot_nr) ? get_ttx(0x778) : p_datseg + EMPTY_STRING3);
 
 								radio_i++;
 							}
@@ -600,12 +600,12 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 						if (radio_i == 0) {
 							sprintf((char*)Real2Host(ds_readd(DTP2)),
-								(char*)get_dtp(0x4),
+								(char*)get_tx(0x4),
 								(char*)hero + HERO_NAME2);
 							GUI_output(Real2Host(ds_readd(DTP2)));
 						} else {
 							sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-								(char*)get_dtp(0x8),
+								(char*)get_tx(0x8),
 								(char*)hero + HERO_NAME2,
 								(char*)Real2Host(GUI_names_grammar((signed short)0x8002, host_readws(hero + HERO_ITEM_RIGHT), 0)));
 
@@ -652,7 +652,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 									if (rwt2 != -1) {
 										host_writeb(ptr + 2,
-										ds_readbs((0x10dc - 12) + 12 * host_readbs(hero + HERO_SPRITE_NO) + 4 * rwt2 + host_readbs(hero + HERO_VIEWDIR)));
+										ds_readbs((NVFTAB_FIGURES_RANGEWEAPON - 12) + 12 * host_readbs(hero + HERO_SPRITE_NO) + 4 * rwt2 + host_readbs(hero + HERO_VIEWDIR)));
 									} else {
 										host_writeb(ptr + 2, host_readbs(hero + HERO_VIEWDIR));
 									}
@@ -666,7 +666,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					} else {
 						/* no BP left */
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_dtp(0x44),
+							(char*)get_tx(0x44),
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					}
@@ -760,11 +760,11 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				}
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_dtp(0x0),
+					(char*)get_tx(0x0),
 					/* name */
 					(char*)hero + HERO_NAME2,
 					/* typus */
-					get_ltx(4 * ((host_readbs(hero + HERO_SEX) != 0 ? 0x251 : 9) + host_readbs(hero + HERO_TYPE))),
+					get_ttx(4 * ((host_readbs(hero + HERO_SEX) != 0 ? 0x251 : 9) + host_readbs(hero + HERO_TYPE))),
 					/* level */
 					host_readbs(hero + HERO_LEVEL),
 					/* AT and PA value */
@@ -780,9 +780,9 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					/* AE */
 					host_readws(hero + HERO_AE), host_readws(hero + HERO_AE_ORIG),
 					/* poison */
-					hero_is_poisoned(hero) ? get_dtp(0x90) : p_datseg + EMPTY_STRING4,
+					hero_is_poisoned(hero) ? get_tx(0x90) : p_datseg + EMPTY_STRING4,
 					/* cursed */
-					hero_cursed(hero) == 1 ? get_dtp(0x98) : p_datseg + EMPTY_STRING5);
+					hero_cursed(hero) == 1 ? get_tx(0x98) : p_datseg + EMPTY_STRING5);
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
@@ -804,7 +804,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 					refresh_screen_size();
 
 					/* use magic in autofight */
-					ds_writeb(AUTOFIGHT_MAGIC, GUI_bool(get_dtp(0xd4)));
+					ds_writeb(AUTOFIGHT_MAGIC, GUI_bool(get_tx(0xd4)));
 
 					update_mouse_cursor();
 
@@ -837,12 +837,12 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					if (radio_i == 0) {
 						sprintf((char*)Real2Host(ds_readd(DTP2)),
-							(char*)get_ltx(0xbb8),
+							(char*)get_ttx(0xbb8),
 							(char*)hero + HERO_NAME2);
 						GUI_output(Real2Host(ds_readd(DTP2)));
 					} else {
 						sprintf((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),
-							(char*)get_dtp(0xbc),
+							(char*)get_tx(0xbc),
 							(char*)hero + HERO_NAME2);
 
 						refresh_screen_size();
@@ -882,7 +882,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 				} else {
 					/* no BP left */
 					sprintf((char*)Real2Host(ds_readd(DTP2)),
-						(char*)get_dtp(0x44),
+						(char*)get_tx(0x44),
 						(char*)hero + HERO_NAME2);
 					GUI_output(Real2Host(ds_readd(DTP2)));
 				}
@@ -892,7 +892,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 				refresh_screen_size();
 
-				if (GUI_bool(get_dtp(0xd0))) {
+				if (GUI_bool(get_tx(0xd0))) {
 					done = 1;
 					ds_writew(IN_FIGHT, 0);
 					ds_writew(GAME_STATE, GAME_STATE_FIGQUIT);
@@ -913,24 +913,24 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 
 					/* TODO: check fighter_id upper bound */
 					if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit0(p_datseg + (0xd0df + 49) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit0(p_datseg + ((ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 49) + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_dead(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
 
-						GUI_output(get_dtp(0x74));
+						GUI_output(get_tx(0x74));
 						host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 						host_writebs(hero + HERO_ENEMY_ID, 0);
 						done = 0;
 
 					/* TODO: check fighter_id upper bound */
 					} else if (((host_readbs(hero + HERO_ENEMY_ID) >= 10)
-						&& (test_bit2(p_datseg + 0xd0df + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
+						&& (test_bit2(p_datseg + (ENEMY_SHEETS - 10*SIZEOF_ENEMY_SHEET) + 0x32 + SIZEOF_ENEMY_SHEET * host_readbs(hero + HERO_ENEMY_ID)))) ||
 						((host_readbs(hero + HERO_ENEMY_ID) < 10)
 						&& (hero_unkn3(get_hero(host_readbs(hero + HERO_ENEMY_ID) - 1)))))
 					{
 
-						/* GUI_output(get_dtp(0x74)); */
+						/* GUI_output(get_tx(0x74)); */
 						host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 						host_writebs(hero + HERO_ENEMY_ID, 0);
 						done = 0;
@@ -938,7 +938,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 							(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK)) &&
 							!check_hero_range_attack(hero, hero_pos))
 					{
-						/* GUI_output(get_dtp(0x74)); */
+						/* GUI_output(get_tx(0x74)); */
 						host_writebs(hero + HERO_ACTION_ID, FIG_ACTION_WAIT);
 						host_writebs(hero + HERO_ENEMY_ID, 0);
 						done = 0;
@@ -949,7 +949,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 	}
 
 	if ((ds_readws(CURRENT_FIG_NR) == 192) &&
-		(get_hero_index(Real2Host(ds_readd(0x3e20))) != hero_pos) &&
+		(get_hero_index(Real2Host(ds_readd(MAIN_ACTING_HERO))) != hero_pos) &&
 		((host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_ATTACK) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_RANGE_ATTACK) ||
 		(host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_SPELL) || (host_readbs(hero + HERO_ACTION_ID) == FIG_ACTION_USE_ITEM)))
 	{
@@ -957,7 +957,7 @@ void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y
 			and_ds_bs((ENEMY_SHEETS + ENEMY_SHEET_STATUS1) + SIZEOF_ENEMY_SHEET * slot_nr, (signed char)0xdf);
 		}
 
-		ds_writeb(0x5f30, 1);
+		ds_writeb(FINALFIGHT_TUMULT, 1);
 	}
 }
 

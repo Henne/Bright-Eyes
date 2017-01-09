@@ -80,194 +80,207 @@ void set_textbox_positions(signed short town_id)
 
 /**
  * \brief - ???
- * \param route_nr	number of the route
+ * \param route_no	number of the route
  * \param backwards	0 = travel the route forwards, 1 = travel backwards
  */
-void TM_func1(signed short route_nr, signed short backwards)
+void TM_func1(signed short route_no, signed short backwards)
 {
 	RealPt fb_start;
 	Bit8u *hero;
-	Bit8u *ptr;
+	Bit8u *tevent_ptr;
 	signed short bak1;
 	signed short bak2;
-	signed short l5;
+	signed short last_tevent_no;
 	signed short answer;
 
-	ds_writeb(SEA_TRAVEL, 1);
-	l5 = -1;
-	ds_writefp(0x425a, (RealPt)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (route_nr - 1))), 0xec)));
+	ds_writeb(TRAVELING, 1);
+	last_tevent_no = -1;
+	ds_writefp(ROUTE_COURSE_PTR, (RealPt)(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (route_no - 1))), 0xec)));
 	fb_start = ds_readfp(FRAMEBUF_PTR);
-	add_ds_fp(0x425a, 4);
+	add_ds_fp(ROUTE_COURSE_PTR, 4);
 
-	memset((void*)Real2Host(ds_readfp(0xd299)), 170, 500);
-	ds_writefp(0x426e, (RealPt)RealMake(datseg, 0x9dbd + 9 * route_nr));
-	ds_writew(0x424c, 166);
-	ds_writew(0x422e, TM_get_track_length(Real2Host(ds_readfp(0x425a))));
-	ds_writew(0x4230, host_readb(Real2Host(ds_readd(0x426e)) + 2) * 100);
-	ds_writew(0x4232, ds_readws(0x4230) / (ds_readws(0x424c) + host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c) / 10) * 60);
-	ds_writew(0x4234, ds_readws(0x4232) / ds_readws(0x422e));
-	ds_writew(0x423a, ds_readws(0x4230) / ds_readws(0x422e));
+	memset((void*)Real2Host(ds_readfp(TRV_TRACK_PIXEL_BAK)), 0xaa, 500);
+	ds_writefp(TRAVEL_ROUTE_PTR, (RealPt)RealMake(datseg, (ROUTES_TAB - 9) + 9 * route_no));
+	ds_writew(TRAVEL_SPEED, 166);
+	ds_writew(ROUTE_TOTAL_STEPS, TM_get_track_length(Real2Host(ds_readfp(ROUTE_COURSE_PTR))));
+	ds_writew(ROUTE_LENGTH, host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 2) * 100);
+	ds_writew(ROUTE_DURATION, ds_readws(ROUTE_LENGTH) / (
+        ds_readws(TRAVEL_SPEED) + host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED) / 10
+    ) * 60);
+	ds_writew(ROUTE_TIMEDELTA, ds_readws(ROUTE_DURATION) / ds_readws(ROUTE_TOTAL_STEPS));
+	ds_writew(ROUTE_STEPSIZE, ds_readws(ROUTE_LENGTH) / ds_readws(ROUTE_TOTAL_STEPS));
 
-	if (ds_readws(0x423a) == 0)
+	if (ds_readws(ROUTE_STEPSIZE) == 0)
 	{
-		ds_writew(0x423a, 1);
+		ds_writew(ROUTE_STEPSIZE, 1);
 	}
 
 	if (backwards)
 	{
-		while (host_readws(Real2Host(ds_readfp(0x425a))) != -1)
+		while (host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR))) != -1)
 		{
-			add_ds_fp(0x425a, 4);
+			add_ds_fp(ROUTE_COURSE_PTR, 4);
 		}
-		sub_ds_fp(0x425a, 4);
+		sub_ds_fp(ROUTE_COURSE_PTR, 4);
 	}
 
-	memset((void*)(p_datseg + 0x4272), ds_writews(0x422a, 0), 60);
-	memset((void*)(p_datseg + 0xe4c9), 0, 15);
+	memset((void*)(p_datseg + ROUTE_TEVENTS), ds_writews(ROUTE_STEPCOUNT, 0), 60);
+	memset((void*)(p_datseg + ROUTE_TEVENT_FLAGS), 0, 15);
 
-	ds_writefp(0x426a, (RealPt)RealMake(datseg, 0xa66d));
-	while (host_readb(Real2Host(ds_readd(0x426a))) != route_nr && host_readbs(Real2Host(ds_readd(0x426a))) != -1)
+	ds_writefp(TEVENTS_TAB_PTR, (RealPt)RealMake(datseg, TEVENTS_TAB));
+
+	/* Forward pointer to entries associated with current route. */
+	while (host_readb(Real2Host(ds_readd(TEVENTS_TAB_PTR))) != route_no && host_readbs(Real2Host(ds_readd(TEVENTS_TAB_PTR))) != -1)
 	{
-		add_ds_fp(0x426a, 3);
+		add_ds_fp(TEVENTS_TAB_PTR, 3);
 	}
 
 	ds_writew(TRV_RETURN, 0);
-	ds_writefp(0x425e, ds_readfp(0x425a));
-	ds_writew(0x423c, (ds_readws(0x424c) + host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c) / 10) * 18);
+	ds_writefp(ROUTE_COURSE_START, ds_readfp(ROUTE_COURSE_PTR));
+	ds_writew(ROUTE_DAYPROGRESS, (
+	    ds_readws(TRAVEL_SPEED) + host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED) / 10
+    ) * 18);
 
 	/* random section starts */
 	if (ds_readws(QUESTED_MONTHS) > 3)
 	{
-		if ((ds_writew(0x4244, (random_schick(100) <= 2 ? 1 : 0))) != 0)
+		if ((ds_writew(ROUTE_INFORMER_FLAG, (random_schick(100) <= 2 ? 1 : 0))) != 0)
 		{
-			ds_writew(0x4246, random_schick(ds_readws(0x423c)));
+			ds_writew(ROUTE_INFORMER_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 		}
 	} else {
-		ds_writew(0x4244, 0);
+		ds_writew(ROUTE_INFORMER_FLAG, 0);
 	}
 
-	if ((ds_writew(0x4240, (random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 4) ? 1: 0))) != 0)
+	if ((ds_writew(ROUTE_ENCOUNTER_FLAG, (random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 4) ? 1 : 0))) != 0)
 	{
-		ds_writew(0x4242, random_schick(ds_readws(0x423c)));
+		ds_writew(ROUTE_ENCOUNTER_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 	}
 
-	if ((ds_writew(0x4248, (random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 7) / 3 ? 1: 0))) != 0)
+	if ((ds_writew(ROUTE_FIGHT_FLAG, (random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 7) / 3 ? 1 : 0))) != 0)
 	{
-		ds_writew(0x424a, random_schick(ds_readws(0x423c)));
+		ds_writew(ROUTE_FIGHT_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 	}
 
-	ds_writew(0x423c, 0);
+	ds_writew(ROUTE_DAYPROGRESS, 0);
 	/* random section ends */
 
-	while (host_readbs(Real2Host(ds_readfp(0x426a))) != -1 && host_readb(Real2Host(ds_readfp(0x426a))) == route_nr)
+	while (host_readbs(Real2Host(ds_readfp(TEVENTS_TAB_PTR))) != -1 && host_readb(Real2Host(ds_readfp(TEVENTS_TAB_PTR))) == route_no)
 	{
-		ptr = p_datseg + 0x4272 + 4 * ds_readws(0x422a);
-		host_writew(ptr, host_readb(Real2Host(ds_readfp(0x426a)) + 1));
-		host_writew(ptr + 2, host_readb(Real2Host(ds_readfp(0x426a)) + 2));
+		tevent_ptr = p_datseg + ROUTE_TEVENTS + 4 * ds_readws(ROUTE_STEPCOUNT);
+		host_writew(tevent_ptr, host_readb(Real2Host(ds_readfp(TEVENTS_TAB_PTR)) + 1));
+		host_writew(tevent_ptr + 2, host_readb(Real2Host(ds_readfp(TEVENTS_TAB_PTR)) + 2));
 
 		if (backwards)
 		{
-			host_writew(ptr, host_readb(Real2Host(ds_readd(0x426e)) + 2) - host_readws(ptr));
+			host_writew(tevent_ptr, host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 2) - host_readws(tevent_ptr));
 		}
 
-		mul_ptr_ws(ptr, 100);
+		mul_ptr_ws(tevent_ptr, 100);
 
-		add_ds_fp(0x426a, 3);
-		inc_ds_ws(0x422a);
+		add_ds_fp(TEVENTS_TAB_PTR, 3);
+		inc_ds_ws(ROUTE_STEPCOUNT);
 	}
 
-	ds_writew(0x422a, ds_writew(0x4238, ds_writeb(0x4333, 0)));
+	ds_writew(ROUTE_STEPCOUNT, ds_writew(ROUTE_PROGRESS, ds_writeb(TRAVEL_DETOUR, 0)));
 
-	while (host_readws(Real2Host(ds_readfp(0x425a)) + 2 * ds_writew(0x4236, 0)) != -1 &&
-		!ds_readb(0x4333) &&
+	while (host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2 * ds_writew(ROUTE_MOUSEHOVER, 0)) != -1 &&
+		!ds_readb(TRAVEL_DETOUR) &&
 		ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 	{
-		if (is_mouse_in_rect(host_readws(Real2Host(ds_readfp(0x425a))) - 16,
-					host_readws(Real2Host(ds_readfp(0x425a)) + 2) - 16,
-					host_readws(Real2Host(ds_readfp(0x425a))) + 16,
-					host_readws(Real2Host(ds_readfp(0x425a)) + 2) + 16))
+		if (is_mouse_in_rect(host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR))) - 16,
+					host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2) - 16,
+					host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR))) + 16,
+					host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2) + 16))
 		{
 			update_mouse_cursor();
-			ds_writew(0x4236, 1);
+			ds_writew(ROUTE_MOUSEHOVER, 1);
 		}
 
 		if (ds_readws(TRV_RETURN) == 2)
 		{
-			dec_ds_ws(0x422a);
+			dec_ds_ws(ROUTE_STEPCOUNT);
 
-			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a))),
-				host_readb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a)));
+            /* restore the pixel from the map */
+			mem_writeb(Real2Phys(fb_start) +
+			    host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2) * 320
+			    + host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR))),
+				host_readb(Real2Host(ds_readd(TRV_TRACK_PIXEL_BAK)) + ds_readws(ROUTE_STEPCOUNT)));
 
-			mem_writeb(Real2Phys(ds_readd(0xd299)) + ds_readws(0x422a), 0xaa);
+			mem_writeb(Real2Phys(ds_readd(TRV_TRACK_PIXEL_BAK)) + ds_readws(ROUTE_STEPCOUNT), 0xaa);
 		} else {
+		    /* save the old pixel from the map */
+			host_writeb(Real2Host(ds_readd(TRV_TRACK_PIXEL_BAK)) + ds_readws(ROUTE_STEPCOUNT),
+				mem_readb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2) * 320 + host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)))));
 
-			host_writeb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a),
-				mem_readb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a)))));
+			inc_ds_ws(ROUTE_STEPCOUNT);
 
-			inc_ds_ws(0x422a);
-
-			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a))), 0x1c);
+			/* write a new pixel */
+			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2) * 320 + host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR))), 0x1c);
 		}
 
-		if (ds_readw(0x4236) != 0)
+		if (ds_readw(ROUTE_MOUSEHOVER) != 0)
 		{
 			refresh_screen_size();
 		}
 
-		ds_writew(0x4228, 0);
-		while (ds_readws(0x4234) / 2 > ds_readws(0x4228))
+		ds_writew(TRV_I, 0);
+		while (ds_readws(ROUTE_TIMEDELTA) / 2 > ds_readws(TRV_I))
 		{
 			handle_input();
 
-			if (ds_readws(0x4228) % 2)
+			if (ds_readws(TRV_I) % 2)
 			{
 				wait_for_vsync();
 			}
 
 			timewarp(MINUTES(2));
 
-			inc_ds_ws(0x4228);
+			inc_ds_ws(TRV_I);
 		}
 
-		add_ds_ws(0x4238, (ds_readws(TRV_RETURN) == 2 ? -ds_readws(0x423a) : ds_readws(0x423a)));
-		add_ds_ws(0x423c, ds_readws(0x423a));
+		add_ds_ws(ROUTE_PROGRESS, (ds_readws(TRV_RETURN) == 2 ? -ds_readws(ROUTE_STEPSIZE) : ds_readws(ROUTE_STEPSIZE)));
+		add_ds_ws(ROUTE_DAYPROGRESS, ds_readws(ROUTE_STEPSIZE));
 
 		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73)
 		{
-			if (!ds_readb(0x4332))
+			if (!ds_readb(FORCEDMARCH_TIMER))
 			{
-				answer = GUI_radio(get_ltx(0xcbc), 3,
-							get_dtp(0x128),
-							get_ltx(0xcc0),
-							get_ltx(0x994));
+				answer = GUI_radio(get_ttx(0xcbc), 3,
+							get_tx(0x128),
+							get_ttx(0xcc0),
+							get_ttx(0x994));
 			} else {
-				answer = GUI_radio(get_ltx(0xcbc), 2,
-							get_ltx(0xcc0),
-							get_ltx(0x994));
+				answer = GUI_radio(get_ttx(0xcbc), 2,
+							get_ttx(0xcc0),
+							get_ttx(0x994));
 			}
 
-			if (answer == 1 && !ds_readb(0x4332))
+			if (answer == 1 && !ds_readb(FORCEDMARCH_TIMER))
 			{
-				ds_writew(0x422c, random_schick(10));
-				ds_writew(0x424c, ds_readws(0x422a) + 197);
-				ds_writeb(0x4332, 2);
-				ds_writew(0x4232, ds_readws(0x4230) / (ds_readws(0x424c) + (host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c)) / 10) * 60);
-				ds_writew(0x4234, ds_readws(0x4232) / ds_readws(0x422e));
-				shr_ds_ws(0x422c, 1);
+			    /* do forced march for 2 days */
+				ds_writew(FORCEDMARCH_LE_COST, random_schick(10));
+				ds_writew(TRAVEL_SPEED, ds_readws(ROUTE_STEPCOUNT) + 197);
+				ds_writeb(FORCEDMARCH_TIMER, 2);
+				ds_writew(ROUTE_DURATION, ds_readws(ROUTE_LENGTH) / (
+				    ds_readws(TRAVEL_SPEED) + (host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED)) / 10
+                ) * 60);
+				ds_writew(ROUTE_TIMEDELTA, ds_readws(ROUTE_DURATION) / ds_readws(ROUTE_TOTAL_STEPS));
+				shr_ds_ws(FORCEDMARCH_LE_COST, 1);
 
 				hero = get_hero(0);
-				for (ds_writew(0x4228, 0); ds_readws(0x4228) <= 6; inc_ds_ws(0x4228), hero += SIZEOF_HERO)
+				for (ds_writew(TRV_I, 0); ds_readws(TRV_I) <= 6; inc_ds_ws(TRV_I), hero += SIZEOF_HERO)
 				{
 					if (host_readbs(hero + HERO_TYPE) != HERO_TYPE_NONE &&
 						host_readbs(hero + HERO_GROUP_NO) == ds_readbs(CURRENT_GROUP) &&
 						!hero_dead(hero))
 					{
-						sub_hero_le(hero, ds_readws(0x422c));
+						sub_hero_le(hero, ds_readws(FORCEDMARCH_LE_COST));
 					}
 				}
 
-			} else if ((answer == 1 && ds_readb(0x4332) != 0) ||
-					(answer == 2 && !ds_readb(0x4332)))
+			} else if ((answer == 1 && ds_readb(FORCEDMARCH_TIMER) != 0) ||
+					(answer == 2 && !ds_readb(FORCEDMARCH_TIMER)))
 			{
 				ds_writew(WILDCAMP_SLEEP_QUALITY, -3);
 				ds_writeb(GOOD_CAMP_PLACE, 99);
@@ -279,16 +292,16 @@ void TM_func1(signed short route_nr, signed short backwards)
 			}
 		}
 
-		if (ds_readw(0x4240) != 0 && ds_readws(0x423c) >= ds_readws(0x4242) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
+		if (ds_readw(ROUTE_ENCOUNTER_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(ROUTE_ENCOUNTER_TIME) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
-			random_encounter(route_nr);
-			ds_writew(0x4240, 0);
+			random_encounter(route_no);
+			ds_writew(ROUTE_ENCOUNTER_FLAG, 0);
 
-		} else if (ds_readw(0x4248) != 0 && ds_readws(0x423c) >= ds_readws(0x424a) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
+		} else if (ds_readw(ROUTE_FIGHT_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(ROUTE_FIGHT_TIME) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			do_wild8_fight();
 
-		} else if (ds_readw(0x4244) != 0 && ds_readws(0x423c) >= ds_readws(0x4246) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
+		} else if (ds_readw(ROUTE_INFORMER_FLAG) != 0 && ds_readws(ROUTE_DAYPROGRESS) >= ds_readws(ROUTE_INFORMER_TIME) && ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			ds_writew(TYPEINDEX, random_schick(100) <= 50 ? 10 : 12);
 			bak1 = ds_readws(BASEPOS_X);
@@ -302,30 +315,30 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 		if (ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 		{
-			for (ds_writew(0x4228, 0); ds_readws(0x4228) < 15; inc_ds_ws(0x4228))
+			for (ds_writew(TRV_I, 0); ds_readws(TRV_I) < 15; inc_ds_ws(TRV_I))
 			{
-				if ((ds_readws(0x4272 + 4 * ds_readws(0x4228)) <= ds_readws(0x4238) &&
+				if ((ds_readws(ROUTE_TEVENTS + 4 * ds_readws(TRV_I)) <= ds_readws(ROUTE_PROGRESS) &&
 					ds_readws(TRV_RETURN) == 0 &&
-					!ds_readb(0xe4c9 + ds_readws(0x4228))) ||
-					(ds_readws(0x4272 + 4 * ds_readws(0x4228)) >= ds_readws(0x4238) &&
+					!ds_readb(ROUTE_TEVENT_FLAGS + ds_readws(TRV_I))) ||
+					(ds_readws(ROUTE_TEVENTS + 4 * ds_readws(TRV_I)) >= ds_readws(ROUTE_PROGRESS) &&
 					ds_readws(TRV_RETURN) == 2 &&
-					ds_readbs(0xe4c9 + ds_readws(0x4228)) == 2))
+					ds_readbs(ROUTE_TEVENT_FLAGS + ds_readws(TRV_I)) == 2))
 				{
-					if (ds_readws((0x4272 + 2) + 4 * ds_readws(0x4228)) != 0)
+					if (ds_readws((ROUTE_TEVENTS + 2) + 4 * ds_readws(TRV_I)) != 0)
 					{
-						TRV_event(ds_readws((0x4272 + 2) + 4 * (l5 = ds_readws(0x4228))));
+						TRV_event(ds_readws((ROUTE_TEVENTS + 2) + 4 * (last_tevent_no = ds_readws(TRV_I))));
 
-						if (!ds_readbs(SEA_TRAVEL + ds_readws((0x4272 + 2) + 4 * ds_readws(0x4228))))
+						if (!ds_readbs((TEVENTS_REPEATABLE-1) + ds_readws((ROUTE_TEVENTS + 2) + 4 * ds_readws(TRV_I))))
 						{
-							ds_writeb(0xe4c9 + ds_readws(0x4228), 1);
+							ds_writeb(ROUTE_TEVENT_FLAGS + ds_readws(TRV_I), 1);
 						} else if (ds_readws(TRV_RETURN) == 0)
 						{
-							ds_writeb(0xe4c9 + ds_readws(0x4228), 2);
+							ds_writeb(ROUTE_TEVENT_FLAGS + ds_readws(TRV_I), 2);
 						} else {
-							ds_writeb(0xe4c9 + ds_readws(0x4228), 0);
+							ds_writeb(ROUTE_TEVENT_FLAGS + ds_readws(TRV_I), 0);
 						}
 
-						if (ds_readws(REQUEST_REFRESH) != 0 && !ds_readb(0x4333))
+						if (ds_readws(REQUEST_REFRESH) != 0 && !ds_readb(TRAVEL_DETOUR))
 						{
 							ds_writew(WALLCLOCK_UPDATE, 0);
 						}
@@ -334,11 +347,12 @@ void TM_func1(signed short route_nr, signed short backwards)
 			}
 		}
 
+        /* night camp */
 		if (ds_readds(DAY_TIMER) >= HOURS(20) &&
-			!ds_readb(0x4333) &&
+			!ds_readb(TRAVEL_DETOUR) &&
 			ds_readws(GAME_STATE) == GAME_STATE_MAIN &&
-			2 * ds_readws(0x423a) < ds_readws(0x4238) &&
-			ds_readws(0x4230) - 2 * ds_readws(0x423a) > ds_readws(0x4238))
+			2 * ds_readws(ROUTE_STEPSIZE) < ds_readws(ROUTE_PROGRESS) &&
+			ds_readws(ROUTE_LENGTH) - 2 * ds_readws(ROUTE_STEPSIZE) > ds_readws(ROUTE_PROGRESS))
 		{
 			ds_writew(WALLCLOCK_UPDATE, 0);
 
@@ -347,7 +361,7 @@ void TM_func1(signed short route_nr, signed short backwards)
 				load_map();
 			}
 
-			GUI_input(get_dtp(0x118), 0);
+			GUI_input(get_tx(0x118), 0);
 
 			ds_writeb(LOCATION, LOCATION_WILDCAMP);
 			do_location();
@@ -358,72 +372,77 @@ void TM_func1(signed short route_nr, signed short backwards)
 
 			if (ds_readws(GAME_STATE) == GAME_STATE_MAIN)
 			{
-				ds_writew(0x423c, (ds_readws(0x424c) + (host_readbs(Real2Host(ds_readd(0x426e)) + 3) * ds_readws(0x424c) / 10)) * 18);
+			    /* figure out encounters etc. for next day */
+				ds_writew(ROUTE_DAYPROGRESS, (
+				    ds_readws(TRAVEL_SPEED) + (host_readbs(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 3) * ds_readws(TRAVEL_SPEED) / 10)
+                ) * 18);
 
-				if ((ds_writew(0x4240, random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 4) ? 1 : 0)) != 0)
+				if ((ds_writew(ROUTE_ENCOUNTER_FLAG, random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 4) ? 1 : 0)) != 0)
 				{
-					ds_writew(0x4242, random_schick(ds_readws(0x423c)));
+					ds_writew(ROUTE_ENCOUNTER_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 				}
 
-				if ((ds_writew(0x4248, random_schick(100) <= host_readb(Real2Host(ds_readd(0x426e)) + 7) / 3 ? 1 : 0)) != 0)
+				if ((ds_writew(ROUTE_FIGHT_FLAG, random_schick(100) <= host_readb(Real2Host(ds_readd(TRAVEL_ROUTE_PTR)) + 7) / 3 ? 1 : 0)) != 0)
 				{
-					ds_writew(0x424a, random_schick(ds_readws(0x423c)));
+					ds_writew(ROUTE_FIGHT_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 				}
 
 				if (ds_readws(QUESTED_MONTHS) > 3)
 				{
-					if ((ds_writew(0x4244, random_schick(100) <= 2 ? 1 : 0)) != 0)
+					if ((ds_writew(ROUTE_INFORMER_FLAG, random_schick(100) <= 2 ? 1 : 0)) != 0)
 					{
-						ds_writew(0x4246, random_schick(ds_readws(0x423c)));
+						ds_writew(ROUTE_INFORMER_TIME, random_schick(ds_readws(ROUTE_DAYPROGRESS)));
 					}
 				} else {
-					ds_writew(0x4244, 0);
+					ds_writew(ROUTE_INFORMER_FLAG, 0);
 				}
 
-				ds_writew(0x423c, 0);
+				ds_writew(ROUTE_DAYPROGRESS, 0);
 			}
 		}
 
-		if (ds_readw(CHECK_DISEASE) != 0 && !ds_readb(0x4333) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
+		if (ds_readw(CHECK_DISEASE) != 0 && !ds_readb(TRAVEL_DETOUR) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			disease_effect();
 		}
 
-		if (ds_readw(REQUEST_REFRESH) != 0 && !ds_readb(0x4333) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
+		if (ds_readw(REQUEST_REFRESH) != 0 && !ds_readb(TRAVEL_DETOUR) && ds_readw(GAME_STATE) == GAME_STATE_MAIN)
 		{
 			update_mouse_cursor();
 			load_map();
-			bc_memmove((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(0x432e), 64000);
+			bc_memmove((RealPt)ds_readd(FRAMEBUF_PTR), (RealPt)ds_readd(TRAVEL_MAP_PTR), 64000);
 
 			wait_for_vsync();
-			set_palette(Real2Host(ds_readd(0x432e)) + 64000 + 2, 0, 0x20);
+			set_palette(Real2Host(ds_readd(TRAVEL_MAP_PTR)) + 64000 + 2, 0, 0x20);
 
 			ds_writeb(PP20_INDEX, 5);
-			ds_writew(0x4228, 0);
-			ds_writefp(0x4262, ds_readfp(0x425e));
+			ds_writew(TRV_I, 0);
+			ds_writefp(ROUTE_COURSE_PTR2, ds_readfp(ROUTE_COURSE_START));
 
-			if (route_nr == 59)
+			if (route_no == 59)
 			{
 				TM_func8(0);
 			}
 
-			while (host_readb(Real2Host(ds_readd(0xd299)) + inc_ds_ws_post(0x4228)) != 0xaa)
+            /* Redraw the track on the map */
+			while (host_readb(Real2Host(ds_readd(TRV_TRACK_PIXEL_BAK)) + inc_ds_ws_post(TRV_I)) != 0xaa)
 			{
-				mem_writeb(Real2Phys(fb_start) + 320 * host_readws(Real2Host(ds_readd(0x4262)) + 2) + host_readws(Real2Host(ds_readd(0x4262))), 0x1c);
-				add_ds_fp(0x4262, 2 * (!backwards ? 2 : -2));
+				mem_writeb(Real2Phys(fb_start) + 320 * host_readws(Real2Host(ds_readd(ROUTE_COURSE_PTR2)) + 2) + host_readws(Real2Host(ds_readd(ROUTE_COURSE_PTR2))), 0x1c);
+				add_ds_fp(ROUTE_COURSE_PTR2, 2 * (!backwards ? 2 : -2));
 			}
 
 			refresh_screen_size();
 
-			if (ds_readws(REQUEST_REFRESH) == 2 && route_nr != 59)
+			if (ds_readws(REQUEST_REFRESH) == 2 && route_no != 59)
 			{
-				if (GUI_radio(get_dtp(0x11c), 2, get_dtp(0x120), get_dtp(0x124)) == 2)
+			    /* Return or continue? */
+				if (GUI_radio(get_tx(0x11c), 2, get_tx(0x120), get_tx(0x124)) == 2)
 				{
 					ds_writew(TRV_RETURN, ds_readws(TRV_RETURN) == 0 ? 1 : -1);
 
-					if (l5 != -1)
+					if (last_tevent_no != -1)
 					{
-						ds_writeb(0xe4c9 + l5, ds_readws(TRV_RETURN) == 1 ? 0 : 2);
+						ds_writeb(ROUTE_TEVENT_FLAGS + last_tevent_no, ds_readws(TRV_RETURN) == 1 ? 0 : 2);
 					}
 				}
 			}
@@ -437,25 +456,25 @@ void TM_func1(signed short route_nr, signed short backwards)
 		{
 			ds_writew(TRV_RETURN, ds_readws(TRV_RETURN) == 1 ? 2: 0);
 
-			add_ds_fp(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? -2 : 2));
+			add_ds_fp(ROUTE_COURSE_PTR, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? -2 : 2));
 		}
 
-		add_ds_fp(0x425a, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? 2 : -2));
+		add_ds_fp(ROUTE_COURSE_PTR, 2 * ((!backwards && ds_readws(TRV_RETURN) == 0) || (backwards && ds_readws(TRV_RETURN) != 0) ? 2 : -2));
 	}
 
-	if (ds_readw(GAME_STATE) == GAME_STATE_MAIN && !ds_readb(0x4333) && ds_readw(TRV_RETURN) != 2)
+	if (ds_readw(GAME_STATE) == GAME_STATE_MAIN && !ds_readb(TRAVEL_DETOUR) && ds_readw(TRV_RETURN) != 2)
 	{
 		update_mouse_cursor();
 
 		do {
-			add_ds_fp(0x425a, 2 * (!backwards ? -2 : 2));
-			dec_ds_ws(0x422a);
-			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(0x425a)) + 2) * 320 + host_readws(Real2Host(ds_readfp(0x425a))),
-				host_readb(Real2Host(ds_readd(0xd299)) + ds_readws(0x422a)));
+			add_ds_fp(ROUTE_COURSE_PTR, 2 * (!backwards ? -2 : 2));
+			dec_ds_ws(ROUTE_STEPCOUNT);
+			mem_writeb(Real2Phys(fb_start) + host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR)) + 2) * 320 + host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR))),
+				host_readb(Real2Host(ds_readd(TRV_TRACK_PIXEL_BAK)) + ds_readws(ROUTE_STEPCOUNT)));
 
-		} while (host_readws(Real2Host(ds_readfp(0x425a))) != -1);
+		} while (host_readws(Real2Host(ds_readfp(ROUTE_COURSE_PTR))) != -1);
 
-		if (route_nr == 59)
+		if (route_no == 59)
 		{
 			TM_func8(1);
 		}
@@ -463,73 +482,77 @@ void TM_func1(signed short route_nr, signed short backwards)
 		refresh_screen_size();
 	}
 
-	ds_writeb(SEA_TRAVEL, 0);
+	ds_writeb(TRAVELING, 0);
 }
 
-signed short TM_unused1(RealPt ptr, signed short off)
+/* continue travel after arrival while still on map */
+signed short TM_unused1(RealPt dir_sign_ptr, signed short old_route_no)
 {
-	signed short l_di;
-	signed short l4;
+	signed short route_no1;
+	signed short route_id;
 	signed short answer;
-	signed short l5;
-	signed short l6;
-	signed short l7;
-	signed short l8;
-	Bit8u *array[7];
+	signed short town_i;
+	signed short route_no2;
+	signed short town;
+	signed short old_route_id;
+	Bit8u *destinations_tab[7];
 
-	l8 = host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + off) - 1;
-	ds_writeb(CURRENT_TOWN, (signed char)(l7 = ds_readws(TRV_DESTINATION)));
-	ptr = (RealPt)RealMake(datseg, 0xa0b4);
+	old_route_id = host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + old_route_no) - 1;
+	ds_writeb(CURRENT_TOWN, (signed char)(town = ds_readws(TRV_DESTINATION)));
+	dir_sign_ptr = (RealPt)RealMake(datseg, DIRECTION_SIGNS);
 
 	do {
-		if (host_readb(Real2Host(ptr)) == l7)
+		if (host_readb(Real2Host(dir_sign_ptr)) == town)
 		{
-			l_di = 0;
-			while (host_readbs(Real2Host(host_readd(Real2Host(ptr) + 2)) + l_di) != -1)
+			route_no1 = 0;
+			while (host_readbs(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + route_no1) != -1)
 			{
-				if (host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + l_di) - 1 == l8 &&
-					(l_di || host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + (l_di + 1)) != 255))
+				if (host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + route_no1) - 1 == old_route_id &&
+					(route_no1 || host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + (route_no1 + 1)) != 255))
 				{
-					l5 = l6 = 0;
-					while ((l4 = host_readb(Real2Host(host_readd(Real2Host(ptr) + 2)) + l6)) != 255)
+					town_i = route_no2 = 0;
+					while ((route_id = host_readb(Real2Host(host_readd(Real2Host(dir_sign_ptr) + 2)) + route_no2)) != 255)
 					{
-						if (l6 != l_di)
+						if (route_no2 != route_no1)
 						{
-							array[l5++] = get_ltx(4 * (0xeb + ds_writebs(TRV_MENU_TOWNS + l5, ((answer = ds_readb(0x9dbd + 9 * l4)) != ds_readbs(CURRENT_TOWN) ? (unsigned char)answer : ds_readb(0x9dbe + 9 * l4)))));
+							destinations_tab[town_i++] = get_ttx(4 * (0xeb + ds_writebs(TRV_MENU_TOWNS + town_i,
+                                ((answer = ds_readb((ROUTES_TAB - 9) + 9 * route_id)) != ds_readbs(CURRENT_TOWN) ?
+                                    (unsigned char)answer : ds_readb((ROUTES_TAB - 9 + 1) + 9 * route_id))
+                            )));
 						}
-						l6++;
+						route_no2++;
 					}
 
-					ds_writeb(TRV_MENU_TOWNS + l5, (signed char)l7);
-					array[l5] = get_ltx(0x88c);
-					l5++;
-					ds_writefp(0x4340, ptr);
+					ds_writeb(TRV_MENU_TOWNS + town_i, (signed char)town);
+					destinations_tab[town_i] = get_ttx(0x88c);
+					town_i++;
+					ds_writefp(TM_UNUSED1_PTR, dir_sign_ptr);
 
-					set_textbox_positions(l7);
-					answer = GUI_radio(get_ltx(0x888), (signed char)l5,
-								array[0],
-								array[1],
-								array[2],
-								array[3],
-								array[4],
-								array[5]);
+					set_textbox_positions(town);
+					answer = GUI_radio(get_ttx(0x888), (signed char)town_i,
+								destinations_tab[0],
+								destinations_tab[1],
+								destinations_tab[2],
+								destinations_tab[3],
+								destinations_tab[4],
+								destinations_tab[5]);
 
 					if (answer == -1)
 					{
-						answer = l5;
+						answer = town_i;
 					}
 
 					ds_writew(TRV_DESTINATION, ds_readbs((TRV_MENU_TOWNS - 1) + answer));
 					return answer;
 				}
 
-				l_di++;
+				route_no1++;
 			}
 		}
 
-		ptr += 6;
+		dir_sign_ptr += 6;
 
-	} while (host_readbs(Real2Host(ptr)) != -1);
+	} while (host_readbs(Real2Host(dir_sign_ptr)) != -1);
 
 	return -1;
 }
@@ -550,64 +573,64 @@ signed short TM_get_track_length(Bit8u *track)
 
 signed short TM_enter_target_town(void)
 {
-	signed short l_si;
-	signed short l_di;
-	signed short l3;
-	Bit8u *ptr1;
-	Bit8u *ptr2;
+	signed short tmp;
+	signed short dir_sign_id;
+	signed short tmp2;
+	Bit8u *dir_sign_ptr;
+	Bit8u *loctab_ptr;
 
-	l_di = 0;
+	dir_sign_id = 0;
 	ds_writew(TRV_DEST_REACHED, ds_readw(TRV_DESTINATION));
-	l_di = 1;
+	dir_sign_id = 1;
 
-	if (l_di)
+	if (dir_sign_id)
 	{
-		ptr1 = p_datseg + 0xa0b4;
-		l_di = 0;
+		dir_sign_ptr = p_datseg + DIRECTION_SIGNS;
+		dir_sign_id = 0;
 		do {
-			if (host_readb(ptr1) == ds_readw(TRV_DEST_REACHED))
+			if (host_readb(dir_sign_ptr) == ds_readw(TRV_DEST_REACHED))
 			{
-				l_si = 0;
+				tmp = 0;
 
 				do {
-					l3 = host_readb(Real2Host(host_readd(ptr1 + 2)) + l_si) - 1;
+					tmp2 = host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + tmp) - 1;
 
-					if (ds_readbs(0x9dc6 + 9 * l3) == ds_readbs(CURRENT_TOWN) || ds_readbs(0x9dc7 + 9 * l3) == ds_readbs(CURRENT_TOWN))
+					if (ds_readbs(ROUTES_TAB + 9 * tmp2) == ds_readbs(CURRENT_TOWN) || ds_readbs((ROUTES_TAB + 1) + 9 * tmp2) == ds_readbs(CURRENT_TOWN))
 					{
-						l_di = host_readb(ptr1 + 1);
+						dir_sign_id = host_readb(dir_sign_ptr + 1);
 						break;
 					}
 
-					l_si++;
+					tmp++;
 
-				} while (host_readb(Real2Host(host_readd(ptr1 + 2)) + l_si) != 255);
+				} while (host_readb(Real2Host(host_readd(dir_sign_ptr + 2)) + tmp) != 255);
 			}
 
-			ptr1 += 6;
+			dir_sign_ptr += 6;
 
-		} while (!l_di && host_readb(ptr1) != 255);
+		} while (!dir_sign_id && host_readb(dir_sign_ptr) != 255);
 
-		if (l_di)
+		if (dir_sign_id)
 		{
 			/* set the target town as current town */
-			l3 = ds_readbs(CURRENT_TOWN);
+			tmp2 = ds_readbs(CURRENT_TOWN);
 			ds_writeb(CURRENT_TOWN, (signed char)ds_readws(TRV_DEST_REACHED));
 
 			/* load the map */
 			call_load_area(1);
 
-			ptr2 = p_datseg + 0xc025;
-			while (host_readb(ptr2 + 2) != 12 || host_readb(ptr2 + 3) != l_di)
+			loctab_ptr = p_datseg + LOCATIONS_TAB;
+			while (host_readb(loctab_ptr + 2) != 12 || host_readb(loctab_ptr + 3) != dir_sign_id)
 			{
-				ptr2 += 6;
+				loctab_ptr += 6;
 			}
 
-			l_si = host_readws(ptr2 + 4);
-			ds_writew(0x433a, (l_si >> 8) & 0xff);
-			ds_writew(0x433c, l_si & 0xf);
-			ds_writew(0x433e, TM_get_looking_direction(host_readws(ptr2)));
+			tmp = host_readws(loctab_ptr + 4);
+			ds_writew(ARRIVAL_X_TARGET, (tmp >> 8) & 0xff);
+			ds_writew(ARRIVAL_Y_TARGET, tmp & 0xf);
+			ds_writew(ARRIVAL_DIRECTION, TM_get_looking_direction(host_readws(loctab_ptr)));
 
-			ds_writeb(CURRENT_TOWN, (signed char)l3);
+			ds_writeb(CURRENT_TOWN, (signed char)tmp2);
 
 			/* load the map */
 			call_load_area(1);
@@ -626,14 +649,14 @@ signed short TM_get_looking_direction(signed short coordinates)
 	x = (coordinates >> 8) & 0xff;
 	y = coordinates & 0xf;
 
-	retval = (ds_readws(0x433a) < x ? EAST :
-			(ds_readws(0x433a) > x ? WEST :
-			(ds_readws(0x433c) < y ? SOUTH : NORTH)));
+	retval = (ds_readws(ARRIVAL_X_TARGET) < x ? EAST :
+			(ds_readws(ARRIVAL_X_TARGET) > x ? WEST :
+			(ds_readws(ARRIVAL_Y_TARGET) < y ? SOUTH : NORTH)));
 
 	return retval;
 }
 
-void TM_draw_track(signed short a1, signed short a2, signed short a3, signed short a4)
+void TM_draw_track(signed short a1, signed short length, signed short direction, signed short restore)
 {
 	signed short i;
 	Bit8u *ptr;
@@ -643,7 +666,7 @@ void TM_draw_track(signed short a1, signed short a2, signed short a3, signed sho
 	ptr = Real2Host(F_PADD(F_PADD(ds_readd(BUFFER9_PTR), host_readws(Real2Host(ds_readd(BUFFER9_PTR)) + 4 * (a1 - 1))), 0xec));
 	ptr += 4;
 
-	if (a3)
+	if (direction)
 	{
 		/* move ptr to the last valid value */
 		while (host_readws(ptr) != -1)
@@ -654,26 +677,26 @@ void TM_draw_track(signed short a1, signed short a2, signed short a3, signed sho
 		ptr -= 4;
 	}
 
-	for (i = 0; i < a2; i++)
+	for (i = 0; i < length; i++)
 	{
-		if (a4 == 0)
+		if (restore == 0)
 		{
 			/* save the old pixel from the map */
-			ds_writeb(TRV_TRACK_PIXEL_BAK + i,
+			ds_writeb(TRV_DETOUR_PIXEL_BAK + i,
 				mem_readb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr)));
 
 			/* write a new one */
 			mem_writeb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr), 0x1c);
 
 			/* move the pointer */
-			ptr += 2 * ((!a3 ? 2 : -2));
+			ptr += 2 * ((!direction ? 2 : -2));
 		} else {
 			/* move the pointer */
-			ptr += 2 * ((!a3 ? 2 : -2));
+			ptr += 2 * ((!direction ? 2 : -2));
 
 			/* restore the pixel from the map */
 			mem_writeb(Real2Phys(fb_start) + 320 * host_readws(ptr + 2) + host_readws(ptr),
-				ds_readb(TRV_TRACK_PIXEL_BAK + i));
+				ds_readb(TRV_DETOUR_PIXEL_BAK + i));
 		}
 	}
 }
@@ -685,16 +708,16 @@ void TM_unused2(void)
 
 void TM_func8(signed short a1)
 {
-	if (!(ds_readb(0xe4a2) & 1))
+	if (!(ds_readb(ROUTE59_FLAG) & 1))
 	{
-		if (ds_readbs(CURRENT_TOWN) == 4)
+		if (ds_readbs(CURRENT_TOWN) == TOWNS_PEILINEN)
 		{
 			TM_draw_track(11, 9, 0, a1);
 		} else {
 			TM_draw_track(11, 17, 1, a1);
 		}
 	} else {
-		if (ds_readbs(CURRENT_TOWN) == 7)
+		if (ds_readbs(CURRENT_TOWN) == TOWNS_KRAVIK)
 		{
 			TM_draw_track(14, 8, 0, a1);
 		} else {
@@ -705,7 +728,7 @@ void TM_func8(signed short a1)
 
 void TM_func9(void)
 {
-	TM_func1(59, ds_readb(0xe4a2) & 1);
+	TM_func1(59, ds_readb(ROUTE59_FLAG) & 1);
 
 	TRV_event(145);
 }

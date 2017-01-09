@@ -97,12 +97,12 @@ void do_inn(void)
 			if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
 
 				sprintf((char*)Real2Host(ds_readd(DTP2)),
-					(char*)get_ltx(0xb74),
+					(char*)get_ttx(0xb74),
 					(char*)Real2Host(hero) + HERO_NAME2,
 					host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
-					(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
+					(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(0xb7c) : get_ttx(0xb80)));
 
-				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ltx(0xb78), get_ltx(0x864));
+				answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(0xb78), get_ttx(0x864));
 
 				if (answer == 1) {
 					do_alchemy(Real2Host(hero), host_readbs(Real2Host(hero) + HERO_RECIPE_ID), 1);
@@ -123,15 +123,15 @@ void do_inn(void)
 		if (host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) != 0) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0xb74),
+				(char*)get_ttx(0xb74),
 				(char*)Real2Host(hero) + HERO_NAME2,
 				host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER),
-				(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ltx(0xb7c) : get_ltx(0xb80)));
+				(char*)(host_readbs(Real2Host(hero) + HERO_RECIPE_TIMER) < 2 ? get_ttx(0xb7c) : get_ttx(0xb80)));
 
 			tw_bak = ds_readws(TEXTBOX_WIDTH);
 			ds_writews(TEXTBOX_WIDTH, 4);
 
-			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ltx(0xb78), get_ltx(0x8c8));
+			answer = GUI_radio(Real2Host(ds_readd(DTP2)), 2, get_ttx(0xb78), get_ttx(0x8c8));
 
 			ds_writews(TEXTBOX_WIDTH, tw_bak);
 
@@ -168,29 +168,29 @@ void do_inn(void)
 
 			init_ani(0);
 
-			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
 
 			ds_writews(REQUEST_REFRESH, refresh = 0);
 		}
 
 		if (refresh != 0) {
 
-			GUI_print_loc_line(get_dtp(4 * ds_readws(CITYINDEX)));
+			GUI_print_loc_line(get_tx(4 * ds_readws(CITYINDEX)));
 
 			refresh = 0;
 		}
 
-		inn_ptr = p_datseg + 0x673c + 4 * ds_readws(TYPEINDEX);
+		inn_ptr = p_datseg + INN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX);
 
 		handle_gui_input();
 
 		if (ds_readws(MOUSE2_EVENT) != 0 || ds_readws(ACTION) == 73) {
 
-			answer = GUI_radio(get_ltx(0x564), ds_readws(COMBO_MODE) == 0 ? 7 : 8,
-						get_ltx(0x55c), get_ltx(0x758),
-						get_ltx(0x560), get_ltx(0x350),
-						get_ltx(0x4d8), get_ltx(0x4f0),
-						get_ltx(0x56c), get_ltx(0xcdc)) - 1;
+			answer = GUI_radio(get_ttx(0x564), ds_readws(COMBO_MODE) == 0 ? 7 : 8,
+						get_ttx(0x55c), get_ttx(0x758),
+						get_ttx(0x560), get_ttx(0x350),
+						get_ttx(0x4d8), get_ttx(0x4f0),
+						get_ttx(0x56c), get_ttx(0xcdc)) - 1;
 
 			if (answer != -2) {
 				ds_writews(ACTION, answer + 129);
@@ -206,7 +206,7 @@ void do_inn(void)
 			price += (price * host_readws(inn_ptr + 2)) / 100L;
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x764),
+				(char*)get_ttx(0x764),
 				(signed short)price);
 
 			if (GUI_bool(Real2Host(ds_readd(DTP2)))) {
@@ -219,11 +219,11 @@ void do_inn(void)
 				}
 
 				if (party_money < price) {
-					GUI_output(get_ltx(0x644));
+					GUI_output(get_ttx(0x644));
 				} else {
 
-					GUI_output(host_readws(inn_ptr) < 5 ? get_ltx(0x76c) :
-							(host_readws(inn_ptr) < 15 ? get_ltx(0x770) : get_ltx(0x774)));
+					GUI_output(host_readws(inn_ptr) < 5 ? get_ttx(0x76c) :
+							(host_readws(inn_ptr) < 15 ? get_ttx(0x770) : get_ttx(0x774)));
 
 					for (i = 0, hero2 = get_hero(0); i <= 6; i++, hero2 += SIZEOF_HERO) {
 
@@ -273,24 +273,24 @@ void do_inn(void)
 			ds_writews(TEXTBOX_WIDTH, 5);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
-				(char*)get_ltx(0x634),
+				(char*)get_ttx(0x634),
 				(signed short)l8);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 50,
-				(char*)get_ltx(0x638),
+				(char*)get_ttx(0x638),
 				(signed short)l9);
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)) + 100,
-				(char*)get_ltx(0x63c),
+				(char*)get_ttx(0x63c),
 				(signed short)l10);
 
-			ds_writebs(SLEEP_QUALITY, (signed char)GUI_radio(get_ltx(0x630), 3,
+			ds_writebs(SLEEP_QUALITY, (signed char)GUI_radio(get_ttx(0x630), 3,
 							Real2Host(ds_readd(DTP2)),
 							Real2Host(ds_readd(DTP2)) + 50,
 							Real2Host(ds_readd(DTP2)) + 100));
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
-				ds_writebs(BOOKED_INN_DAYS, (signed char)GUI_input(get_ltx(0xce8), 2));
+				ds_writebs(BOOKED_INN_DAYS, (signed char)GUI_input(get_ttx(0xce8), 2));
 			}
 
 			if (ds_readbs(BOOKED_INN_DAYS) <= 0) {
@@ -317,29 +317,29 @@ void do_inn(void)
 				}
 
 				if (party_money < price) {
-					GUI_output(get_ltx(0x644));
+					GUI_output(get_ttx(0x644));
 					ds_writebs(SLEEP_QUALITY, -1);
 				} else {
 					party_money -= price;
 					set_party_money(party_money);
-					GUI_output(get_ltx(0x648));
+					GUI_output(get_ttx(0x648));
 				}
 			}
 
 		} else if (ds_readws(ACTION) == 132) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
-				GUI_use_skill2(0, get_ltx(0x62c));
+				GUI_use_skill2(0, get_ttx(0x62c));
 				refresh = 1;
 			} else {
-				GUI_output(get_ltx(0x568));
+				GUI_output(get_ttx(0x568));
 			}
 
 		} else if (ds_readws(ACTION) == 133) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
 
-				answer = select_hero_ok(get_ltx(0x4f4));
+				answer = select_hero_ok(get_ttx(0x4f4));
 
 				if (answer != -1) {
 
@@ -348,23 +348,23 @@ void do_inn(void)
 					if (host_readbs(Real2Host(hero) + HERO_TYPE) >= 7) {
 
 						if (magic_act[answer] != 0) {
-							GUI_output(get_ltx(0x538));
+							GUI_output(get_ttx(0x538));
 						} else {
 							magic_act[answer] = (signed char)use_magic(hero);
 						}
 					} else {
-						GUI_output(get_ltx(0x528));
+						GUI_output(get_ttx(0x528));
 					}
 				}
 			} else {
-				GUI_output(get_ltx(0x568));
+				GUI_output(get_ttx(0x568));
 			}
 
 		} else if (ds_readws(ACTION) == 134) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1 && ds_readbs(BOOKED_INN_DAYS) > 0) {
 
-				if (GUI_bool(get_ltx(0x4f8))) {
+				if (GUI_bool(get_ttx(0x4f8))) {
 					booked_days = ds_readbs(BOOKED_INN_DAYS);
 
 					if (host_readws(inn_ptr) < 8) {
@@ -404,13 +404,13 @@ void do_inn(void)
 					}
 				}
 			} else {
-				GUI_output(get_ltx(0x568));
+				GUI_output(get_ttx(0x568));
 			}
 		} else if (ds_readws(ACTION) == 135) {
 
 			if (ds_readbs(SLEEP_QUALITY) != -1) {
 
-				if (GUI_bool(get_ltx(0x640))) {
+				if (GUI_bool(get_ttx(0x640))) {
 					done = 1;
 					ds_writews(COMBO_MODE, 0);
 				}
@@ -421,17 +421,17 @@ void do_inn(void)
 
 		} else if (ds_readws(ACTION) == 136 && ds_readws(COMBO_MODE) != 0) {
 
-			tavern_ptr = p_datseg + 0x6c84 + 4 * ds_readws(TYPEINDEX);
+			tavern_ptr = p_datseg + TAVERN_DESCR_TABLE + 4 * ds_readws(TYPEINDEX);
 
 			if (host_readws(tavern_ptr) >= 6 && host_readws(tavern_ptr) <= 13 &&
 				ds_readds(DAY_TIMER) < HOURS(11) && ds_readds(DAY_TIMER) > HOURS(3)) {
-				GUI_output(get_ltx(0xc84));
+				GUI_output(get_ttx(0xc84));
 			} else if ((host_readws(tavern_ptr) < 6 || host_readws(tavern_ptr) > 13) &&
 				ds_readds(DAY_TIMER) < HOURS(16) && ds_readds(DAY_TIMER) > HOURS(3)) {
-				GUI_output(get_ltx(0x784));
+				GUI_output(get_ttx(0x784));
 			} else if (ds_readbs(SLEEP_QUALITY) != -1) {
 
-				if (GUI_bool(get_ltx(0x640))) {
+				if (GUI_bool(get_ttx(0x640))) {
 					done = 1;
 					ds_writews(COMBO_MODE, 2);
 				}
@@ -456,13 +456,13 @@ void TLK_herberg(signed short state)
 	Bit8u *hero = Real2Host(get_first_hero_available_in_group());
 
 	if (!state) {
-		ds_writews(DIALOG_NEXT_STATE, ds_readb(0x3400 + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
+		ds_writews(DIALOG_NEXT_STATE, ds_readb(HERBERG_KICKED_FLAGS + ds_readws(TYPEINDEX)) != 0 ? 1 : 2);
 	} else if (state == 1 || state == 14) {
-		ds_writeb(0x3400 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(HERBERG_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 	} else if (state == 11) {
 		tumult();
-		ds_writeb(0x33cc + ds_readbs(CURRENT_TOWN), 1);
-		ds_writeb(0x3400 + ds_readws(TYPEINDEX), 1);
+		ds_writeb(TOWN_OUTLAWED_FLAGS + ds_readbs(CURRENT_TOWN), 1);
+		ds_writeb(HERBERG_KICKED_FLAGS + ds_readws(TYPEINDEX), 1);
 	} else if (state == 12) {
 		/* CH + 5 */
 		ds_writews(DIALOG_NEXT_STATE, test_attrib(hero, ATTRIB_CH, 5) > 0 ? 14 : 11);

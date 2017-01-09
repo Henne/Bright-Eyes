@@ -10,6 +10,8 @@
 
 #include "schick.h"
 
+#include "v302de.h"
+
 #include "seg000.h"
 
 namespace M302de {
@@ -232,7 +234,7 @@ void bc__dos_setvect(Bit8u __interruptno, RealPt handler)
 
 Bit32s bc_lseek(Bit16u handle, Bit32u offset, Bit16s whence) {
 
-	ds_writew(0xb788 + handle * 2, ds_readw(0xb788 + handle * 2) & 0xfdff);
+	ds_writew(BC_FILEHANDLE_FLAGS + handle * 2, ds_readw(0xb788 + handle * 2) & 0xfdff);
 
 	if (!DOS_SeekFile(handle, &offset, whence))
 		return -1;
@@ -250,7 +252,7 @@ void bc_srand(Bit16u seed)
 
 Bit16s bc__read(Bit16u handle, Bit8u *buf, Bit16u count) {
 
-	if ((ds_readw(0xb788 + handle * 2) & 2))
+	if ((ds_readw(BC_FILEHANDLE_FLAGS + handle * 2) & 2))
 		return -1;
 
 	if (!DOS_ReadFile(handle, buf, &count))

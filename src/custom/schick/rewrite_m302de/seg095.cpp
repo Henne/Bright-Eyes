@@ -105,7 +105,7 @@ void npc_farewell(void)
 	if (host_readb(get_hero(6) + HERO_GROUP_NO) != ds_readb(CURRENT_GROUP))
 		return;
 
-	/* The NPC will be removed after 99 Months ingame time. Weird! */
+	/* Unconscious or dead NPCs cannot be removed automatically (99 means manual). */
 	if (check_hero(get_hero(6)) == 0 && ds_readws(NPC_MONTHS) < 99)
 		return;
 
@@ -116,7 +116,7 @@ void npc_farewell(void)
 		case NPC_NARIELL: {
 			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x14, 0x1f, 0xe2,
-					get_ltx(0xbc4), get_dtp(0x24));
+					get_ttx(0xbc4), get_tx(0x24));
 			break;
 		}
 		case NPC_HARIKA: {
@@ -128,7 +128,7 @@ void npc_farewell(void)
 					ds_readb(CURRENT_TOWN) == 0x11) {
 
 					remove_npc(0x16, 0x1f, 0xe3,
-						get_ltx(0xbc8), get_dtp(0x4c));
+						get_ttx(0xbc8), get_tx(0x4c));
 
 					hero_i = get_hero(0);
 					for (i = 0; i < 6; i++, hero_i += SIZEOF_HERO) {
@@ -148,25 +148,25 @@ void npc_farewell(void)
 		case NPC_CURIAN: {
 			if (ds_readws(NPC_MONTHS) >= 6)
 				remove_npc(0x19, 0x40, 0xe4,
-					get_ltx(0xbcc), get_dtp(0x74));
+					get_ttx(0xbcc), get_tx(0x74));
 			break;
 		}
 		case NPC_ARDORA: {
 			if (ds_readws(NPC_MONTHS) >= 1)
 				remove_npc(0x15, 0x1f, 0xe5,
-					get_ltx(0xbd0), get_dtp(0xac));
+					get_ttx(0xbd0), get_tx(0xac));
 			break;
 		}
 		case NPC_GARSVIK: {
 			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x17, 0x1f, 0xe6,
-					get_ltx(0xbd4), get_dtp(0xd4));
+					get_ttx(0xbd4), get_tx(0xd4));
 			break;
 		}
 		case NPC_ERWO: {
 			if (ds_readws(NPC_MONTHS) >= 2)
 				remove_npc(0x18, 0x1f, 0xe7,
-					get_ltx(0xbd8), get_dtp(0xfc));
+					get_ttx(0xbd8), get_tx(0xfc));
 			break;
 		}
 	}
@@ -189,23 +189,23 @@ void npc_nariell(void)
 	/* show dialog window */
 	do {
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-				get_ltx(0xbc4), get_dtp(0x00),
+				get_ttx(0xbc4), get_tx(0x00),
 				3,
-				get_dtp(0x04), get_dtp(0x08),
-				get_dtp(0x0c));
+				get_tx(0x04), get_tx(0x08),
+				get_tx(0x0c));
 	} while (answer == -1);
 
 	/* process the answer */
 	if (answer == 1) {
 		GUI_dialogbox((RealPt)ds_readd(DTP2),
-			get_ltx(0xbc4), get_dtp(0x10), 0);
+			get_ttx(0xbc4), get_tx(0x10), 0);
 	} else {
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-					get_ltx(0xbc4),
-					(answer == 2) ? get_dtp(0x14): get_dtp(0x18),
-					2, get_dtp(0x1c),
-					get_dtp(0x20));
+					get_ttx(0xbc4),
+					(answer == 2) ? get_tx(0x14): get_tx(0x18),
+					2, get_tx(0x1c),
+					get_tx(0x20));
 		} while (answer == -1);
 
 		/* add nariell */
@@ -231,15 +231,15 @@ void npc_harika(void)
 	/* show dialog window */
 	do {
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-				get_ltx(0xbc8), get_dtp(0x28),
+				get_ttx(0xbc8), get_tx(0x28),
 				3,
-				get_dtp(0x2c), get_dtp(0x30),
-				get_dtp(0x34));
+				get_tx(0x2c), get_tx(0x30),
+				get_tx(0x34));
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbc8),
-			get_dtp(0x38), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbc8),
+			get_tx(0x38), 0);
 	} else if (answer == 2) {
 		money = get_party_money();
 
@@ -247,9 +247,9 @@ void npc_harika(void)
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-					get_ltx(0xbc8), get_dtp(0x3c),
+					get_ttx(0xbc8), get_tx(0x3c),
 					answer,
-					get_dtp(0x44), get_dtp(0x48));
+					get_tx(0x44), get_tx(0x48));
 		} while (answer == -1);
 
 		/* hire her for 20D */
@@ -268,9 +268,9 @@ void npc_harika(void)
 
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-					get_ltx(0xbc8), get_dtp(0x40),
+					get_ttx(0xbc8), get_tx(0x40),
 					answer,
-					get_dtp(0x44), get_dtp(0x48));
+					get_tx(0x44), get_tx(0x48));
 		} while (answer == -1);
 
 		/* hire her for 15D */
@@ -300,22 +300,22 @@ void npc_curian(void)
 	/* show dialog window */
 	do {
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-				get_ltx(0xbcc), get_dtp(0x50),
+				get_ttx(0xbcc), get_tx(0x50),
 				3,
-				get_dtp(0x54), get_dtp(0x58),
-				get_dtp(0x5c));
+				get_tx(0x54), get_tx(0x58),
+				get_tx(0x5c));
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbcc),
-			get_dtp(0x60), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbcc),
+			get_tx(0x60), 0);
 	} else {
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-					get_ltx(0xbcc),
-					(answer == 2) ? get_dtp(0x64): get_dtp(0x68),
+					get_ttx(0xbcc),
+					(answer == 2) ? get_tx(0x64): get_tx(0x68),
 					2,
-					get_dtp(0x6c), get_dtp(0x70));
+					get_tx(0x6c), get_tx(0x70));
 		} while (answer == -1);
 
 		/* add NPC */
@@ -341,55 +341,55 @@ void npc_ardora(void)
 	/* show dialog window */
 	do {
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-				get_ltx(0xbd0), get_dtp(0x78),
+				get_ttx(0xbd0), get_tx(0x78),
 				3,
-				get_dtp(0x7c), get_dtp(0x80),
-				get_dtp(0x84));
+				get_tx(0x7c), get_tx(0x80),
+				get_tx(0x84));
 	} while (answer == -1);
 
 	if (answer == 1) {
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-					get_ltx(0xbd0), get_dtp(0x88),
+					get_ttx(0xbd0), get_tx(0x88),
 					2,
-					get_dtp(0x8c), get_dtp(0x90));
+					get_tx(0x8c), get_tx(0x90));
 		} while (answer == -1);
 
 		if (answer == 2) {
-			GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbd0),
-				get_dtp(0x94), 0);
+			GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbd0),
+				get_tx(0x94), 0);
 		} else {
 			do {
 				answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-						get_ltx(0xbd0), get_dtp(0x9c),
+						get_ttx(0xbd0), get_tx(0x9c),
 						2,
-						get_dtp(0xa0), get_dtp(0xa4));
+						get_tx(0xa0), get_tx(0xa4));
 			} while (answer == -1);
 
 			if (answer == 1) {
 				add_npc(0xe5);
 			} else {
-				GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbd0),
-					get_dtp(0xa8), 0);
+				GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbd0),
+					get_tx(0xa8), 0);
 			}
 		}
 	} else {
 		if (answer == 2) {
-			GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbd0),
-				get_dtp(0x98), 0);
+			GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbd0),
+				get_tx(0x98), 0);
 		}
 
 		do {
-			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbd0),
-					get_dtp(0x9c), 2,
-					get_dtp(0xa0), get_dtp(0xa4));
+			answer = GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbd0),
+					get_tx(0x9c), 2,
+					get_tx(0xa0), get_tx(0xa4));
 		} while (answer == -1);
 
 		if (answer == 1) {
 			add_npc(0xe5);
 		} else {
-			GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbd0),
-				get_dtp(0xa8), 0);
+			GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbd0),
+				get_tx(0xa8), 0);
 		}
 	}
 
@@ -410,22 +410,22 @@ void npc_garsvik(void)
 	/* show dialog window */
 	do {
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-				get_ltx(0xbd4), get_dtp(0xb0),
+				get_ttx(0xbd4), get_tx(0xb0),
 				3,
-				get_dtp(0xb4), get_dtp(0xb8),
-				get_dtp(0xbc));
+				get_tx(0xb4), get_tx(0xb8),
+				get_tx(0xbc));
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbd4),
-			get_dtp(0xc0), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbd4),
+			get_tx(0xc0), 0);
 	} else {
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-					get_ltx(0xbd4),
-					(answer == 2) ? get_dtp(0xc4): get_dtp(0xc8),
+					get_ttx(0xbd4),
+					(answer == 2) ? get_tx(0xc4): get_tx(0xc8),
 					2,
-					get_dtp(0xcc), get_dtp(0xd0));
+					get_tx(0xcc), get_tx(0xd0));
 		} while (answer == -1);
 
 		/* add NPC */
@@ -451,22 +451,22 @@ void npc_erwo(void)
 	/* show dialog window */
 	do {
 		answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-				get_ltx(0xbd8), get_dtp(0xd8),
+				get_ttx(0xbd8), get_tx(0xd8),
 				3,
-				get_dtp(0xdc), get_dtp(0xe0),
-				get_dtp(0xe4));
+				get_tx(0xdc), get_tx(0xe0),
+				get_tx(0xe4));
 	} while (answer == -1);
 
 	if (answer == 1) {
-		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ltx(0xbd8),
-			get_dtp(0xe8), 0);
+		GUI_dialogbox((RealPt)ds_readd(DTP2), get_ttx(0xbd8),
+			get_tx(0xe8), 0);
 	} else {
 		do {
 			answer = GUI_dialogbox((RealPt)ds_readd(DTP2),
-					get_ltx(0xbd8),
-					(answer == 2) ? get_dtp(0xec): get_dtp(0xf0),
+					get_ttx(0xbd8),
+					(answer == 2) ? get_tx(0xec): get_tx(0xf0),
 					2,
-					get_dtp(0xf4), get_dtp(0xf8));
+					get_tx(0xf4), get_tx(0xf8));
 		} while (answer == -1);
 
 		/* add NPC */
@@ -482,7 +482,7 @@ void remove_npc(signed short head_index, signed char days,
 		signed short index, Bit8u* name, Bit8u *text)
 {
 
-	if (ds_readb(0x4475) != 0)
+	if (ds_readb(FADING_STATE) != 0)
 		refresh_colors();
 
 	/* reset NPCs groups position */
@@ -510,14 +510,14 @@ void remove_npc(signed short head_index, signed char days,
 	/* dec global hero counter */
 	dec_ds_bs_post(TOTAL_HERO_COUNTER);
 
-	ds_writeb(0x46df, 1);
+	ds_writeb(REFRESH_STATUS_LINE, 1);
 
 	/* TODO:	check_hero() will now, after memset() return 0,
 			so the parameter days is useless */
 	if (check_hero(get_hero(6)) != 0)
-		ds_writeb(0x3520 + index, days);
+		ds_writeb(NPC_UNKNOWN_FLAGS + index, days);
 	else
-		ds_writeb(0x3520 + index, -1);
+		ds_writeb(NPC_UNKNOWN_FLAGS + index, -1);
 
 }
 
