@@ -6,7 +6,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg096.cpp
  *
-*/
+ */
 #include <stdio.h>
 #include <string.h>
 
@@ -38,11 +38,11 @@ struct dummy2 {
 
 //000
 /**
-	GUI_names_grammar - makes a grammatical wordgroup
-	@flag:
-	@index: index of the word of which a worgroup should be made
-	@type: if index is true the index is an enemy, if not it is an item
-*/
+ * \brief   makes a grammatical wordgroup
+ *
+ * \param   flag        * \param   index        index of the word of which a worgroup should be made
+ * \param   type        if index is true the index is an enemy, if not it is an item
+ */
 RealPt GUI_names_grammar(signed short flag, signed short index, signed short type)
 {
 	signed short *lp1;
@@ -155,8 +155,8 @@ RealPt GUI_name_singular(Bit8u *s)
 }
 
 //2f2
-/*
- * GUI_2f2() - return a pointer to the pronoun
+/**
+ * \brief   return a pointer to the pronoun
  */
 RealPt GUI_2f2(signed short v1, signed short word_id, signed short type)
 {
@@ -169,10 +169,11 @@ RealPt GUI_2f2(signed short v1, signed short word_id, signed short type)
 
 //330
 /**
- * GUI_get_ptr() - return a pointer to the personalpronomen
- * @genus:	gender of the hero
- * @causus:	the grammatical causus
-*/
+ * \brief   return a pointer to the personalpronomen
+ *
+ * \param   genus       gender of the hero
+ * \param   causus      the grammatical causus
+ */
 RealPt GUI_get_ptr(signed short genus, signed short causus)
 {
 	if (genus == 0) {
@@ -190,7 +191,7 @@ RealPt GUI_get_ptr(signed short genus, signed short causus)
 
 //394
 /**
-*/
+ */
 RealPt GUI_get_ptr2(signed short genus, signed short causus)
 {
 	if (genus == 0) {
@@ -223,8 +224,8 @@ void GUI_write_char_to_screen(RealPt dst, signed short char_width, signed short 
 
 //442
 /**
-	GUI_count_lines - return the number of lines a string needs on a screen
-*/
+ * \brief   return the number of lines a string needs on a screen
+ */
 unsigned short GUI_count_lines(Bit8u *str)
 {
 	signed short si;
@@ -482,8 +483,8 @@ void GUI_write_fonti_to_screen(unsigned short font_index, unsigned short char_wi
 }
 //8c5
 /**
-	GUI_blank_char() - sets the area of a char to a color
-*/
+ * \brief   sets the area of a char to a color
+ */
 void GUI_blank_char(void)
 {
 	PhysPt ptr = (PhysPt)PhysMake(datseg, GUI_TEXT_BUFFER);
@@ -528,9 +529,10 @@ void GUI_write_char_to_screen_xy(unsigned short x, unsigned short y, unsigned sh
 }
 
 /**
- * set_textcolor() - sets the textcolor
- * @fg:	foreground color index
- * @bg: background color index
+ * \brief   sets the textcolor
+ *
+ * \param   fg          foreground color index
+ * \param   bg          background color index
  */
 void set_textcolor(signed short fg, signed short bg)
 {
@@ -539,9 +541,10 @@ void set_textcolor(signed short fg, signed short bg)
 }
 
 /**
- * get_textcolor() - gets the textcolor
- * @fg:	foreground color index
- * @bg: background color index
+ * \brief   gets the textcolor
+ *
+ * \param   fg          foreground color index
+ * \param   bg          background color index
  *
  */
 void get_textcolor(signed short *fg, signed short *bg)
@@ -611,10 +614,11 @@ signed short GUI_get_first_pos_centered(Bit8u *p, signed short x, signed short v
 
 //A93
 /**
-	GUI_draw_popup_line - draws a line of a popup window
-	@line: number of the current line
-	@type: type of line 0 = top / 1 = middle normal / 2 = middle radio / 3 =bottom
-*/
+ * \brief   draws a line of a popup window
+ *
+ * \param   line        number of the current line
+ * \param   type        type of line 0 = top / 1 = middle normal / 2 = middle radio / 3 =bottom
+ */
 void GUI_draw_popup_line(signed short line, signed short type)
 {
 	short popup_left;

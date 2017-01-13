@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg053.cpp
-*/
+ */
 
 #include <stdio.h>
 
@@ -26,10 +26,10 @@ namespace M302de {
 #endif
 
 /**
- * is_hero_healable() - check if hero can healed by a healer
- * @hero:	pointer to hero
+ * \brief   check if hero can healed by a healer
  *
- * Returns 1 if hero can be healed, else 0.
+ * \param   hero        pointer to hero
+ * \return              1 if hero can be healed, else 0.
  */
 unsigned short is_hero_healable(Bit8u *hero)
 {

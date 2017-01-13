@@ -32,7 +32,7 @@ namespace M302de {
 #endif
 
 /**
- * \brief	dungeon handler of the wolfcave
+ * \brief   dungeon handler of the wolfcave
  */
 signed short DNG04_handler(void)
 {
@@ -354,7 +354,7 @@ void DNG04_corpse2_chest(RealPt chest)
 }
 
 /**
- * \brief	dungeon handler of a cave
+ * \brief   dungeon handler of a cave
  */
 signed short DNG05_handler(void)
 {
@@ -493,9 +493,9 @@ signed short DNG05_handler(void)
 }
 
 /**
- * \brief print introductions of dungeon #5 fights
+ * \brief   print introductions of dungeon #5 fights
  *
- * \param fight_id	ID of the fight
+ * \param   fight_id    ID of the fight
  */
 void DNG5_fight_intro(signed short fight_id)
 {

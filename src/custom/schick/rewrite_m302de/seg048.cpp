@@ -2,7 +2,7 @@
  *      Rewrite of DSA1 v3.02_de functions of seg048 (status menu)
  *      Functions rewritten: 3/3 (complete)
  *
-*/
+ */
 #include <stdio.h>
 #include <string.h>
 

@@ -47,9 +47,9 @@ namespace M302de {
 #endif
 
 /**
- * \brief	check if cdrom-drives are installed
+ * \brief   check if cdrom-drives are installed
  *
- * Returns: 0 - no drive, 1 - at least one drive
+ * \return              0 - no drive, 1 - at least one drive
  */
 /* Borlandified and identical */
 static unsigned short CD_has_drives(void)
@@ -176,9 +176,9 @@ static void CD_unused1(void)
 }
 
 /**
- * \brief	get time of day
+ * \brief   get time of day
  *
- * \return clock ticks since midnight, the system time.
+ * \return              clock ticks since midnight, the system time.
  *
  * TODO: produces a compiler warning and is a bit hacky
  */

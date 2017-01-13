@@ -7,7 +7,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg102.cpp
-*/
+ */
 
 #include <stdio.h>
 
@@ -156,13 +156,14 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
 
 
 /**
- * MON_test_skill() -	skill test for monsters
- * @monster:		pointer to monster
- * @t1:			nr of 1st attribute
- * @t2:			nr of 2nd attribute
- * @t3:			nr of 3rd attribute
- * @bonus:		modificator
-*/
+ * \brief   skill test for monsters
+ *
+ * \param   monster     pointer to monster
+ * \param   t1          nr of 1st attribute
+ * \param   t2          nr of 2nd attribute
+ * \param   t3          nr of 3rd attribute
+ * \param   bonus       modificator
+ */
 
 signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, signed short t3, signed char bonus)
 {

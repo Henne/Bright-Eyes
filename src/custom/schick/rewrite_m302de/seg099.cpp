@@ -8,7 +8,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg099.cpp
  *
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>

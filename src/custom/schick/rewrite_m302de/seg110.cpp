@@ -83,9 +83,10 @@ void tevent_011(void)
 }
 
 /**
- * \brief	all members of the current group try to swim
- * \param	mod	modificator for the swim test
- * \param	percent probability to loose an item
+ * \brief   all members of the current group try to swim
+ *
+ * \param   mod         modificator for the swim test
+ * \param   percent     probability to loose an item
  *
  * In seg112.cpp exists a similiar function called TRV_swim() for that purpose.
  */

@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg108.cpp
-*/
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -24,10 +24,11 @@ namespace M302de {
 #endif
 
 /**
- * consume() - owner gives consumer an item from his inventory
- * @owner:	the owner
- * @consumer:	the consumer
- * @pos:	the position in the inventory of the owner
+ * \brief   owner gives consumer an item from his inventory
+ *
+ * \param   owner       the owner
+ * \param   consumer    the consumer
+ * \param   pos         the position in the inventory of the owner
  */
 void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 {

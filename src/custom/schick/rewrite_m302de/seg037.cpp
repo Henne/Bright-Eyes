@@ -6,7 +6,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg037.cpp
  *
-*/
+ */
 
 #include <string.h>
 
@@ -23,12 +23,12 @@ namespace M302de {
 #endif
 
 /**
- * copy_ani_stuff() - copies something from ANI.DAT
- * @dst:	destination
- * @nr:		which record to copy
- * @mode:	3 for WEAPANI.DAT, anything else is ANI.DAT
+ * \brief   copies something from ANI.DAT
  *
- * Returns the number of copied bytes.
+ * \param   dst         destination
+ * \param   nr          which record to copy
+ * \param   mode        3 for WEAPANI.DAT, anything else is ANI.DAT
+ * \return              the number of copied bytes.
  */
 signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 {
@@ -185,14 +185,14 @@ void seg037_00ae(Bit8u *enemy, signed short enemy_nr)
 
 
 /**
- * test_foe_melee_attack() - checks if range attack is possible
- * @x:		x - coordinate of attacker
- * @y:		y - coordinate of attacker
- * @dx:		delta to x (looking direction)
- * @dy:		delta to y (looking direction)
- * @mode:	0 = common, 1 = attack enemies only, 2 = attack heroes only
+ * \brief   checks if range attack is possible
  *
- * The return value is 0 if theres nothing to attack else 1
+ * \param   x           x - coordinate of attacker
+ * \param   y           y - coordinate of attacker
+ * \param   dx          delta to x (looking direction)
+ * \param   dy          delta to y (looking direction)
+ * \param   mode        0 = common, 1 = attack enemies only, 2 = attack heroes only
+ * \return              0 if theres nothing to attack else 1
  */
 unsigned short test_foe_melee_attack(signed short x, signed short y,
 		signed short dx, signed short dy, signed short mode)
@@ -242,19 +242,19 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
 }
 
 /**
- * test_foe_range_attack() - checks if range attack is possible
- * @x:	x - coordinate of attacker
- * @y:	y - coordinate of attacker
- * @dir:	looking direction
- * @mode:	0 = common, 1 = attack enemies only, 2 = attack heroes only
+ * \brief   checks if range attack is possible
  *
- * The return value is 0 if theres nothing to attack in that direction
- * or the ID of the attackee.
+ * \param   x           x - coordinate of attacker
+ * \param   y           y - coordinate of attacker
+ * \param   dir         looking direction
+ * \param   mode        0 = common, 1 = attack enemies only, 2 = attack heroes only
+ * \return              0 if theres nothing to attack in that direction
+ *                      or the ID of the attackee.
  */
 
 /*
  * Original-Bug: range attack of foes is possible with direct contact
-*/
+ */
 signed short test_foe_range_attack(signed short x, signed short y, const signed short dir, signed short mode)
 {
 	signed short done;

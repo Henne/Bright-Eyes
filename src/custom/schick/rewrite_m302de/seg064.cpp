@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg064.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -20,10 +20,10 @@ namespace M302de {
 #endif
 
 /**
- *	get_ship_name() - returns a pointer to the name of a ship
- *	@ship_type:	eg 0 = longship, 5= coastal ship,
- *				6= cutter,7= fishing boat
- *	@arg2:		???
+ * \brief   returns a pointer to the name of a ship
+ *
+ * \param   ship_type   eg 0 = longship, 5 = coastal ship, 6 = cutter,7 = fishing boat
+ * \param   arg2        ???
  */
 RealPt get_ship_name(signed char ship_type, signed short arg2)
 {
@@ -49,8 +49,7 @@ RealPt get_ship_name(signed char ship_type, signed short arg2)
 }
 
 /**
- *	prepare_passages()	-
- */
+ * \brief   */
 unsigned short prepare_passages(void)
 {
 	signed short prepared;
@@ -109,11 +108,11 @@ unsigned short prepare_passages(void)
 }
 
 /**
- *	print_passage_price()	- calculates the price and prints to buffer
- *	@price:	a price factor
- *	@entry:	pointer to the schedule
+ * \brief   calculates the price and prints to buffer
  *
- *	Returns a pointer to the buffer.
+ * \param   price       a price factor
+ * \param   entry       pointer to the schedule
+ * \return              a pointer to the buffer.
  */
 RealPt print_passage_price(signed short price, Bit8u *entry)
 {
@@ -163,8 +162,9 @@ unsigned short get_passage_travel_hours(signed short arg1, signed short arg2)
 }
 
 /**
- *	get_next_passages() -	get destination harbours
- *	@type:	1 = passages next days / 2 = all passages
+ * \brief   get destination harbours
+ *
+ * \param   type        1 = passages next days / 2 = all passages
  */
 unsigned short get_next_passages(unsigned short type)
 {

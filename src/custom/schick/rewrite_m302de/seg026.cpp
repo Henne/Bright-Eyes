@@ -426,8 +426,9 @@ signed short load_game_state(void)
 }
 
 /**
- * \brief writes a game state file
- * \return 1 = OK, 0 = error
+ * \brief   writes a game state file
+ *
+ * \return              1 = OK, 0 = error
  */
 signed short save_game_state(void)
 {
@@ -725,12 +726,13 @@ signed short save_game_state(void)
 }
 
 /**
- * \brief reads a CHR file from TEMP-dir
- * \param fname		filename
- * \param hero_pos	position of the hero
- * \param a2		???
- * \return 1 = OK, 0 = Error
-*/
+ * \brief   reads a CHR file from TEMP-dir
+ *
+ * \param   fname       filename
+ * \param   hero_pos    position of the hero
+ * \param   a2          ???
+ * \return              1 = OK, 0 = Error
+ */
 signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 {
 	signed short handle;
@@ -786,8 +788,9 @@ signed short read_chr_temp(RealPt fname, signed short hero_pos, signed short a2)
 }
 
 /**
- * \brief	writes a CHR file to temp
- * \param hero_pos	position of the hero
+ * \brief   writes a CHR file to temp
+ *
+ * \param   hero_pos    position of the hero
  */
 void write_chr_temp(unsigned short hero_pos)
 {
@@ -806,10 +809,11 @@ void write_chr_temp(unsigned short hero_pos)
 }
 
 /**
- * \brief		copy the names from CHR file
- * \param ptr		pointer
- * \param temple_id	> 0 the id of the temple, -1 on delete mode
- * \return # of CHR-files in TEMP-dir
+ * \brief   copy the names from CHR file
+ *
+ * \param   ptr         pointer
+ * \param   temple_id   > 0 the id of the temple, -1 on delete mode
+ * \return              # of CHR-files in TEMP-dir
  */
 signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 {
@@ -858,8 +862,9 @@ signed short copy_chr_names(Bit8u *ptr, signed short temple_id)
 }
 
 /**
- * \brief	loads a head icon from IN_HEADS.NVF
- * \param head	index of the desired head
+ * \brief   loads a head icon from IN_HEADS.NVF
+ *
+ * \param   head        index of the desired head
  */
 void load_in_head(signed short head)
 {
@@ -880,8 +885,9 @@ void load_in_head(signed short head)
 }
 
 /**
- * \brief	load a temple icon
- * \param nr	the number of the icon
+ * \brief   load a temple icon
+ *
+ * \param   nr          the number of the icon
  */
 void load_tempicon(signed short nr)
 {

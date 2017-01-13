@@ -5,7 +5,7 @@
  *
  *	Remark: In the original game the EMS functions were written
  *		with Turbo assembler, so look in seg010.asm
-*/
+ */
 #include <string.h>
 
 #if !defined(__BORLANDC__)

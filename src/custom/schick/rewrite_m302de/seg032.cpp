@@ -6,7 +6,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg032.cpp
  *
-*/
+ */
 #include <stdlib.h>
 #include <string.h>
 
@@ -42,10 +42,11 @@ namespace M302de {
 #endif
 
 /**
- *	FIG_set_cb_field - sets an object to a chessboard position
- *	@y:		the Y-Coordinate on the chessboard
- *	@x:		the X-Coordinate on the chessboard
- *	@object:	number of the object
+ * \brief   sets an object to a chessboard position
+ *
+ * \param   y           the Y-Coordinate on the chessboard
+ * \param   x           the X-Coordinate on the chessboard
+ * \param   object      number of the object
  *			0=free, 1-6=heroes, >10=enemies,
  *			>50walls, trees, etc
  *			-3 = flee
@@ -56,7 +57,7 @@ namespace M302de {
  */
 /* The functions in this file need object to be signed short.
  * All other callers use signed short from the header.
-*/
+ */
 #if !defined(__BORLANDC__)
 void FIG_set_cb_field(signed short y, signed short x, signed short object)
 #else
@@ -105,9 +106,9 @@ void draw_fight_screen_pal(signed short mode)
 }
 
 /**
- *	FIG_choose_next_hero	-	chooses the next hero on turn
+ * \brief   chooses the next hero on turn
  *
- *	This is simply done randomly.
+ *          This is simply done randomly.
  */
 signed short FIG_choose_next_hero(void)
 {
@@ -175,9 +176,10 @@ signed short FIG_choose_next_hero(void)
 	return retval;
 }
 /**
- *	FIG_choose_next_enemy	-	chooses the next enemy on turn
+ * \brief   chooses the next enemy on turn
  *
- *	This is simply done randomly.
+ *          This is simply done randomly.
+ *
  *	Orig_BUG: I had this loop running infinitely.
  */
 signed short FIG_choose_next_enemy(void)
@@ -247,7 +249,7 @@ signed short FIG_choose_next_enemy(void)
 }
 
 /**
- *	FIG_count_active_enemies -	return the number of active enemies
+ * \brief   return the number of active enemies
  *
  */
 signed short FIG_count_active_enemies(void)
@@ -275,10 +277,10 @@ signed short FIG_count_active_enemies(void)
 }
 
 /**
- *	FIG_is_enemy_active -	checks if an enemy is active
- *	@enemy:	pointer to the enemy sheet
+ * \brief   checks if an enemy is active
  *
- *	Returns 1 if enemy can act or 0 if not.
+ * \param   enemy       pointer to the enemy sheet
+ * \return              1 if enemy can act or 0 if not.
  */
 //static
 signed short FIG_is_enemy_active(Bit8u *enemy)
@@ -299,9 +301,9 @@ signed short FIG_is_enemy_active(Bit8u *enemy)
 }
 
 /**
- *	FIG_get_first_active_hero -	returns the first active hero
+ * \brief   returns the first active hero
  *
- *	Returns the index of the firsta active hero.
+ * \return              the index of the firsta active hero.
  */
 signed short FIG_get_first_active_hero(void)
 {
@@ -327,9 +329,9 @@ signed short FIG_get_first_active_hero(void)
 }
 
 /**
- *	seg032_02db -	1 if all (active) heroes in group withdrew from the fight
+ * \brief   1 if all (active) heroes in group withdrew from the fight
  *
- *	Returns 1 if FIG_get_first_active_hero() returns -1
+ * \return              1 if FIG_get_first_active_hero() returns -1
  *	and at least one hero in the group is not dead and has
  *	something at offset HERO_ACTION_ID set (maybe sleeping).
  *
@@ -726,8 +728,8 @@ void FIG_do_round(void)
 }
 
 
-/*
- * \brief	loads some special textures for the ghost ship
+/**
+ * \brief   loads some special textures for the ghost ship
  */
 void FIG_load_ship_sprites(void)
 {
@@ -821,11 +823,10 @@ void FIG_load_ship_sprites(void)
 }
 
 /**
- * \brief	the heros encounter a fight
+ * \brief   the heros encounter a fight
  *
- * \param	fight_id	number of the fight
- *
- * \return 0 = ???, 1 = no monsters in the fight, 2 = , 3 = sneaked arround
+ * \param   fight_id    number of the fight
+ * \return              0 = ???, 1 = no monsters in the fight, 2 = , 3 = sneaked arround
  */
 signed short do_fight(signed short fight_id)
 {

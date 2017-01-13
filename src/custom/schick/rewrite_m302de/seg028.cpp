@@ -8,7 +8,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg028.cpp
-*/
+ */
 
 #include <string.h>
 
@@ -267,13 +267,14 @@ void seg028_0555(signed short town)
 }
 
 /**
- *	load_area_description() - writes the old area and reads a new one
- *	@type:		either 0,1,2
+ * \brief   writes the old area and reads a new one
+ *
+ * \param   type        either 0,1,2
  *
  *	0 = only write old area
  *	1 = do both
  *	2 = only read new area (loading a savegame)
-*/
+ */
 void load_area_description(signed short type)
 {
 	signed short f_index;

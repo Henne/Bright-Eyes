@@ -25,8 +25,8 @@ unsigned short _rotl(unsigned short op, unsigned char count) {
 #endif
 
 /**
-	random_interval - generates a random number between lo and hi
-*/
+ * \brief   generates a random number between lo and hi
+ */
 int random_interval(const int lo, const int hi)
 {
 
@@ -34,8 +34,8 @@ int random_interval(const int lo, const int hi)
 }
 
 /**
-	random_schick - generates a u16 random number
-*/
+ * \brief   generates a u16 random number
+ */
 int random_schick(const int val)
 {
 	signed short retval;
@@ -60,8 +60,8 @@ int random_schick(const int val)
 }
 
 /**
-	dice_roll - rolls a dice: n*Wm+x
-*/
+ * \brief   rolls a dice: n*Wm+x
+ */
 int dice_roll(const int n, const int m, const int x)
 {
 	int sum = 0;
@@ -77,8 +77,8 @@ int dice_roll(const int n, const int m, const int x)
 }
 
 /**
-	calc_damage_range - calculate min/max damage of a weapon
-*/
+ * \brief   calculate min/max damage of a weapon
+ */
 void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u *max)
 {
 	host_writew(min, n+x);
@@ -86,8 +86,8 @@ void calc_damage_range(const int n, const int m, const int x, Bit8u *min, Bit8u 
 }
 
 /**
-	is_in_word_array - checks if val is in a word array
-*/
+ * \brief   checks if val is in a word array
+ */
 int is_in_word_array(const int val, signed short *p)
 {
 
@@ -102,8 +102,8 @@ int is_in_word_array(const int val, signed short *p)
 }
 
 /**
-	is_in_byte_array - checks if val is in a byte array
-*/
+ * \brief   checks if val is in a byte array
+ */
 int is_in_byte_array(const signed char val, Bit8u *p)
 {
 	int i;
@@ -117,8 +117,8 @@ int is_in_byte_array(const signed char val, Bit8u *p)
 }
 
 /**
-	dice_template - rolls a dice from enemy templates
-*/
+ * \brief   rolls a dice from enemy templates
+ */
 int dice_template(const unsigned short val)
 {
 	signed short n;
@@ -145,8 +145,8 @@ int dice_template(const unsigned short val)
 }
 
 /**
-	damage_range_template - writes damage range from enemy templates to mem
-*/
+ * \brief   writes damage range from enemy templates to mem
+ */
 void damage_range_template(unsigned short val, Bit8u *min, Bit8u *max)
 {
 	signed short n, m;

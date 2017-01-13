@@ -68,9 +68,9 @@ void DNG14_dive(signed short diver_pos, signed char mod, signed short dest_x)
 }
 
 /**
- * \brief print introductions of dungeon #14 fights
+ * \brief   print introductions of dungeon #14 fights
  *
- * \param fight_id	ID of the fight
+ * \param   fight_id    ID of the fight
  */
 void DNG14_fight_intro(signed short fight_id)
 {

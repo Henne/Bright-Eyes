@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg024.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -140,8 +140,9 @@ void diary_new_entry(void)
 }
 
 /**
- *	diary_print_entry() - print a diary entry
- *	@line:	the line to start the entry
+ * \brief   print a diary entry
+ *
+ * \param   line        the line to start the entry
  */
 Bit16u diary_print_entry(Bit16u line)
 {

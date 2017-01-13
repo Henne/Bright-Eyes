@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg046.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,13 +27,14 @@ namespace M302de {
 #endif
 
 /**
- *	status_show_spell -	prints spellname and value
- *	@hero:	the hero the spell is from
- *	@spell:	spellnumber
- *	@fsig:	the first spell in the spellgroup
- *	@x1:	the leftmost x coordinate
- *	@x2:	the rightmost x coordinate
- *	@gy:	the upper y coordinate of this spellgroup
+ * \brief   prints spellname and value
+ *
+ * \param   hero        the hero the spell is from
+ * \param   spell       spellnumber
+ * \param   fsig        the first spell in the spellgroup
+ * \param   x1          the leftmost x coordinate
+ * \param   x2          the rightmost x coordinate
+ * \param   gy          the upper y coordinate of this spellgroup
  */
 /* Borlandified and identical */
 void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
@@ -54,13 +55,14 @@ void status_show_spell(Bit8u *hero, unsigned short spell, unsigned short fsig,
 }
 
 /**
- *	status_show_skill -	prints skillname and value
- *	@hero:	the hero the skill is from
- *	@talen:	skillnumber
- *	@ftig:	the first skill in the skillgroup
- *	@x1:	the leftmost x coordinate
- *	@x2:	the rightmost x coordinate
- *	@gy:	the upper y coordinate of this skillgroup
+ * \brief   prints skillname and value
+ *
+ * \param   hero        the hero the skill is from
+ * \param   talen       skillnumber
+ * \param   ftig        the first skill in the skillgroup
+ * \param   x1          the leftmost x coordinate
+ * \param   x2          the rightmost x coordinate
+ * \param   gy          the upper y coordinate of this skillgroup
  */
 /* Borlandified and identical */
 void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
@@ -81,8 +83,9 @@ void status_show_skill(Bit8u *hero, unsigned short skill, unsigned short ftig,
 }
 
 /**
- *	status_show_skills -	shows all skills and their values
- *	@hero:	the hero whose skills should be shown
+ * \brief   shows all skills and their values
+ *
+ * \param   hero        the hero whose skills should be shown
  */
 /* Borlandified and identical */
 void status_show_skills(Bit8u *hero) {
@@ -130,8 +133,9 @@ void status_show_skills(Bit8u *hero) {
 
 #ifdef M302de_ORIGINAL_BUGFIX
 /**
- * set_status_string() - a helper for an Original Bugfix
- * @fmt:	format string
+ * \brief   a helper for an Original Bugfix
+ *
+ * \param   fmt         format string
  *
  * This makes changes to the max LE visible by changing the format string.
  */
@@ -145,8 +149,9 @@ static void set_status_string(char *fmt)
 }
 
 /**
- * reset_status_string() - a helper for an Original Bugfix
- * @fmt:	format string
+ * \brief   a helper for an Original Bugfix
+ *
+ * \param   fmt         format string
  *
  * This makes changes to the max LE visible by changing the format string.
  */
@@ -161,9 +166,10 @@ static void reset_status_string(char *fmt)
 #endif
 
 /**
- * status_show() - shows the status screen of a hero
- * @index:	index of the hero
-*/
+ * \brief   shows the status screen of a hero
+ *
+ * \param   index       index of the hero
+ */
 void status_show(Bit16u index)
 {
 #ifdef M302de_ORIGINAL_BUGFIX

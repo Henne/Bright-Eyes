@@ -8,7 +8,7 @@
  *
  *	Remark:		Needs header of AIL (Miles Sound System)
  *
-*/
+ */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -675,10 +675,10 @@ RealPt read_digi_driver(RealPt fname)
 }
 
 /**
- * open_and_seek_dat - opens SCHICK.DAT and seeks to desired position
- * @fileindex: the index of the file in SCHICK.DAT
+ * \brief   opens SCHICK.DAT and seeks to desired position
  *
- * Returns the filehandle or 0xffff.
+ * \param   fileindex   the index of the file in SCHICK.DAT
+ * \return              the filehandle or 0xffff.
  */
 /* static */
 signed short open_and_seek_dat(unsigned short fileindex)
@@ -722,13 +722,12 @@ Bit32u get_readlength2(signed short index)
 }
 
 /**
- * \brief	reads len bytes from the current position in SCHICK.DAT
+ * \brief   reads len bytes from the current position in SCHICK.DAT
  *
- * \param handle	handle returned by load_archive_file
- * \param buffer	target buffer for the data
- * \param len	number of bytes to read
- *
- * \return number of bytes read
+ * \param   handle      handle returned by load_archive_file
+ * \param   buffer      target buffer for the data
+ * \param   len         number of bytes to read
+ * \return              number of bytes read
  */
 unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 {
@@ -749,10 +748,10 @@ unsigned short read_archive_file(Bit16u handle, Bit8u *buffer, Bit16u len)
 }
 
 /**
- * \brief	seeks to a position in a file in SCHICK.DAT
+ * \brief   seeks to a position in a file in SCHICK.DAT
  *
- * \param handle	handle returned by load_archive_file
- * \param off	position to seek for
+ * \param   handle      handle returned by load_archive_file
+ * \param   off         position to seek for
  */
 void seek_archive_file(Bit16u handle, Bit32s off, ...)
 {
@@ -787,11 +786,10 @@ signed short load_regular_file(Bit16u index)
 }
 
 /**
- * \brief	opens a file stored in temp or in SCHICK.DAT
+ * \brief   opens a file stored in temp or in SCHICK.DAT
  *
- * \param	index	index of the file in SCHICK.DAT or in temp (bitwise or 0x8000)
- *
- * \return a file handle that can be used with read_archive_file etc.
+ * \param   index       index of the file in SCHICK.DAT or in temp (bitwise or 0x8000)
+ * \return              a file handle that can be used with read_archive_file etc.
  */
 signed short load_archive_file(Bit16u index)
 {
@@ -1017,12 +1015,13 @@ Bit32s process_nvf(struct nvf_desc *nvf)
 }
 
 /**
- * mouse_action -	does mouse programming
- * @p1:		function AX
- * @p2:		depends on AX
- * @p3:		depends on AX
- * @p4:		depends on AX
- * @p5:		depends on AX
+ * \brief   does mouse programming
+ *
+ * \param   p1          function AX
+ * \param   p2          depends on AX
+ * \param   p3          depends on AX
+ * \param   p4          depends on AX
+ * \param   p5          depends on AX
  *
  * This function differs a bit. Borlands C-Library has a special function
  * to call interrupts. We use the one of DOSBox, which means, that we
@@ -1221,14 +1220,13 @@ void interrupt mouse_isr(void)
 #endif
 
 /**
- * \brief	checks if the mouse cursor is in a rectangle
+ * \brief   checks if the mouse cursor is in a rectangle
  *
- * \param x1	upper left x coordinate
- * \param y1	upper left y coordinate
- * \param x2	bottom right x coordinate
- * \param y2	bottom right y coordinate
- *
- * \return 1 if the pointer is in this rectangle, otherwise 0
+ * \param   x1          upper left x coordinate
+ * \param   y1          upper left y coordinate
+ * \param   x2          bottom right x coordinate
+ * \param   y2          bottom right y coordinate
+ * \return              1 if the pointer is in this rectangle, otherwise 0
  */
 signed short is_mouse_in_rect(signed short x1, signed short y1,
 				signed short x2, signed short y2)
@@ -1352,10 +1350,10 @@ void mouse_reset_ehandler(void)
 }
 
 /**
- * \brief	move the mouse cursor to a position on the screen
+ * \brief   move the mouse cursor to a position on the screen
  *
- * \param x	X - coordinate
- * \param y	Y - coordinate
+ * \param   x           X - coordinate
+ * \param   y           Y - coordinate
  */
 void mouse_move_cursor(signed short x, signed short y)
 {
@@ -1394,9 +1392,10 @@ void seg002_1880(signed short a1)
 
 
 /**
-	make_ggst_cursor - makes a mouse cursor from a selected item
-	@p:	pointer to the icon of the item
-*/
+ * \brief   makes a mouse cursor from a selected item
+ *
+ * \param   p           pointer to the icon of the item
+ */
 void make_ggst_cursor(Bit8u *icon)
 {
 	signed short y;
@@ -2025,7 +2024,7 @@ void pal_fade_in(Bit8u *dst, Bit8u *p2, signed short v3, signed short colors)
 }
 
 /**
- * \brief	adjusts palettes in the morning
+ * \brief   adjusts palettes in the morning
  *
  */
 void dawning(void)
@@ -2067,7 +2066,7 @@ void dawning(void)
 }
 
 /**
- * \brief	adjusts palettes in the evening
+ * \brief   adjusts palettes in the evening
  *
  */
 void nightfall(void)
@@ -2109,8 +2108,9 @@ void nightfall(void)
 }
 
 /**
- * \brief get season
- * \return number of the season {0 = WINTER, 1,2,3}
+ * \brief   get season
+ *
+ * \return              number of the season {0 = WINTER, 1,2,3}
  */
 signed short get_current_season(void)
 {
@@ -2127,10 +2127,10 @@ signed short get_current_season(void)
 
 
 /**
- * \brief	calc census for the bank depot
+ * \brief   calc census for the bank depot
  *
- * If you put money on the bank, you get 5%.
- * If you borrowed money you pay 15%.
+ *          If you put money on the bank, you get 5%.
+ *          If you borrowed money you pay 15%.
  */
 /* static */
 void do_census(void)
@@ -2451,9 +2451,10 @@ void do_timers(void)
 }
 
 /**
- * \brief	subtracts val from the ingame timers
- * \param val	vaule to subtract from the ingame timers
-*/
+ * \brief   subtracts val from the ingame timers
+ *
+ * \param   val         vaule to subtract from the ingame timers
+ */
 void sub_ingame_timers(Bit32s val)
 {
 	signed short i = 0;
@@ -2478,9 +2479,10 @@ void sub_ingame_timers(Bit32s val)
 }
 
 /**
- * \brief	subtracts val from the modification timers
- * \param val	vaule to subtract from the modification timers
-*/
+ * \brief   subtracts val from the modification timers
+ *
+ * \param   val         vaule to subtract from the modification timers
+ */
 void sub_mod_timers(Bit32s val)
 {
 	signed short i;
@@ -2597,9 +2599,9 @@ void sub_mod_timers(Bit32s val)
 }
 
 /**
- * \brief	get a free modification slot
+ * \brief   get a free modification slot
  *
- * \return	number of the modification slot
+ * \return              number of the modification slot
  */
 signed short get_free_mod_slot(void)
 {
@@ -2687,7 +2689,7 @@ void set_mod_slot(signed short slot_nr, Bit32s timer_value, Bit8u *ptr,
 
 /**
  *
- *	@fmin:	five minutes
+ * \param   fmin        five minutes
  */
 void seg002_2f7a(Bit32s fmin)
 {
@@ -2740,14 +2742,14 @@ void seg002_2f7a(Bit32s fmin)
 }
 
 /**
- * \brief		decrements the light timers
+ * \brief   decrements the light timers
  *
- * \param quarter	the time in quarters of an hour
+ * \param   quarter     the time in quarters of an hour
  *
  *	This function decrements the timers of burning torches and lanterns.
  *	If the time of the lightsource is up the toch is removed from the
  *	inventory and the lantern is turned off.
-*/
+ */
 void sub_light_timers(Bit32s quarter)
 {
 	signed short j;
@@ -2809,7 +2811,7 @@ void sub_light_timers(Bit32s quarter)
 }
 
 /**
- * \brief	damage if a cursed chainmail is worn
+ * \brief   damage if a cursed chainmail is worn
  *
  */
 void magical_chainmail_damage(void)
@@ -2842,7 +2844,7 @@ void magical_chainmail_damage(void)
 }
 
 /**
- * \brief	consume food if needed and print warnings to the user
+ * \brief   consume food if needed and print warnings to the user
  *
  */
 void herokeeping(void)
@@ -3335,8 +3337,9 @@ void passages_reset(void)
 }
 
 /**
- * \brief	forwards the ingame time
- * \param time	ticks to forward
+ * \brief   forwards the ingame time
+ *
+ * \param   time        ticks to forward
  */
 void timewarp(Bit32s time)
 {
@@ -3392,8 +3395,9 @@ void timewarp(Bit32s time)
 }
 
 /**
- * timewarp_until() -	forwards the ingame time
- * @time:	ticks to forward to e.g 6 AM
+ * \brief   forwards the ingame time
+ *
+ * \param   time        ticks to forward to e.g 6 AM
  */
 void timewarp_until(Bit32s time)
 {
@@ -3452,8 +3456,8 @@ void timewarp_until(Bit32s time)
 }
 
 /**
- * \brief	decrements splash timer and restores picture
-*/
+ * \brief   decrements splash timer and restores picture
+ */
 void dec_splash(void)
 {
 	signed short i;
@@ -3478,11 +3482,11 @@ void dec_splash(void)
 }
 
 /**
- * \brief		draws a splash on a hero portrait
+ * \brief   draws a splash on a hero portrait
  *
- * \param hero_pos	on which slot the splash is drawn
- * \param type		kind of damage (0 = red,LE / !0 = yellow,AE)
-*/
+ * \param   hero_pos    on which slot the splash is drawn
+ * \param   type        kind of damage (0 = red,LE / !0 = yellow,AE)
+ */
 /* static */
 void draw_splash(signed short hero_pos, signed short type)
 {
@@ -3500,7 +3504,7 @@ void draw_splash(signed short hero_pos, signed short type)
 
 
 /**
- * \brief	fast forward the ingame time to midnight
+ * \brief   fast forward the ingame time to midnight
  */
 void timewarp_until_midnight(void)
 {
@@ -3581,9 +3585,9 @@ void wait_for_keypress(void)
 }
 
 /**
- * \brief	wait until duration time is elapsed or a key is pressed
+ * \brief   wait until duration time is elapsed or a key is pressed
  *
- * \param	duration	the maximal time to wait (1 = 15ms, 66 = 1s)
+ * \param   duration    the maximal time to wait (1 = 15ms, 66 = 1s)
  */
 void delay_or_keypress(signed short duration)
 {
@@ -3678,9 +3682,10 @@ void unused_spinlock(void)
 }
 
 /**
- * \brief	calculates a 32bit BigEndian value into LittleEndian
- * \param v	32bit BE value
- * \return	32bit LE value
+ * \brief   calculates a 32bit BigEndian value into LittleEndian
+ *
+ * \param   v           32bit BE value
+ * \return              32bit LE value
  */
 Bit32u swap_u32(Bit32u v)
 {
@@ -3713,10 +3718,10 @@ Bit32u swap_u32_unused(Bit32u v)
 }
 
 /**
- *	alloc_EMS -	allocates EMS memory
- *	@bytes:		bytes to allocate
+ * \brief   allocates EMS memory
  *
- *	Returns an EMS handle, to access the memory.
+ * \param   bytes       bytes to allocate
+ * \return              an EMS handle, to access the memory.
  */
 signed short alloc_EMS(Bit32s bytes)
 {
@@ -3797,9 +3802,10 @@ void set_to_ff(void)
 }
 
 /**
- * \brief	draws the icons of locations
- * \param icons	number of icons
- * \param ...	icon ids
+ * \brief   draws the icons of locations
+ *
+ * \param   icons       number of icons
+ * \param   ...         icon ids
  */
 void draw_loc_icons(signed short icons, ...)
 {
@@ -3998,21 +4004,22 @@ void select_with_keyboard(Bit8u *p1, Bit8u *p2)
 }
 
 /**
- * \brief	marks a tile in the automap as seen
- * \param x	X coordinate
- * \param y	Y coordinate
-*/
+ * \brief   marks a tile in the automap as seen
+ *
+ * \param   x           X coordinate
+ * \param   y           Y coordinate
+ */
 void set_automap_tile(signed short x, signed short y)
 {
 	or_ds_bs(AUTOMAP_BUF + (4 * y + (x >> 3)), ds_readb(AUTOMAP_BITMASK + (x & 0x7)));
 }
 
 /**
- * \brief	marks all sourrounding tiles in the automap as seen
+ * \brief   marks all sourrounding tiles in the automap as seen
  *
- * \param x	X xoordinate
- * \param y	Y xoordinate
-*/
+ * \param   x           X xoordinate
+ * \param   y           Y xoordinate
+ */
 void set_automap_tiles(signed short x, signed short y)
 {
 	/* set upper line */
@@ -4055,8 +4062,7 @@ void set_automap_tiles(signed short x, signed short y)
 }
 
 /**
- * \brief
-*/
+ * \brief   */
 void seg002_47e2(void)
 {
 	/* save gfx settings to stack */
@@ -4082,7 +4088,7 @@ void seg002_47e2(void)
 }
 
 /**
-*/
+ */
 void seg002_484f(void)
 {
 	/* save gfx settings to stack */
@@ -4106,11 +4112,10 @@ void seg002_484f(void)
 }
 
 /**
- * \brief	returns true if heros not dead, stoned or unconscious
+ * \brief   returns true if heros not dead, stoned or unconscious
  *
- * \param hero	pointer to the hero
- *
- * \return {0, 1}
+ * \param   hero        pointer to the hero
+ * \return              {0, 1}
  */
 /* should be static */
 signed short check_hero(Bit8u *hero)
@@ -4131,8 +4136,8 @@ signed short check_hero(Bit8u *hero)
 }
 
 /**
- * \brief	returns true if heros not dead, stoned or unconscious
-*/
+ * \brief   returns true if heros not dead, stoned or unconscious
+ */
 /* should be static */
 signed short check_hero_no2(Bit8u *hero)
 {
@@ -4150,9 +4155,10 @@ signed short check_hero_no2(Bit8u *hero)
 }
 
 /**
- * \brief check if hero is not dead, stoned or unconscious
- * \param hero	pointer to the hero
- * \return {0, 1}
+ * \brief   check if hero is not dead, stoned or unconscious
+ *
+ * \param   hero        pointer to the hero
+ * \return              {0, 1}
  */
 /* should be static */
 signed short check_hero_no3(Bit8u *hero)
@@ -4179,9 +4185,10 @@ signed short is_hero_available_in_group(Bit8u *hero)
 }
 
 /**
- * \brief	subtract current ae with a splash
- * \param hero	the magicuser
- * \param ae	astralenergy to subtract
+ * \brief   subtract current ae with a splash
+ *
+ * \param   hero        the magicuser
+ * \param   ae          astralenergy to subtract
  */
 void sub_ae_splash(Bit8u *hero, signed short ae)
 {
@@ -4223,8 +4230,8 @@ void sub_ae_splash(Bit8u *hero, signed short ae)
 }
 
 /**
- * \brief	add AE points to heros current AE
-*/
+ * \brief   add AE points to heros current AE
+ */
 void add_hero_ae(Bit8u* hero, signed short ae)
 {
 	/* dont add AE if hero is dead or ae = 0 */
@@ -4246,10 +4253,10 @@ void add_hero_ae(Bit8u* hero, signed short ae)
 }
 
 /**
- * \brief	subtracts LE from a hero
+ * \brief   subtracts LE from a hero
  *
- * \param hero	pointer to the hero
- * \param le	LE the hero looses
+ * \param   hero        pointer to the hero
+ * \param   le          LE the hero looses
  */
 void sub_hero_le(Bit8u *hero, signed short le)
 {
@@ -4393,9 +4400,10 @@ void sub_hero_le(Bit8u *hero, signed short le)
 }
 
 /**
- * \brief	regenerates LE of a hero
- * \param hero	pointer to the hero
- * \param le	LE to be regenerated
+ * \brief   regenerates LE of a hero
+ *
+ * \param   hero        pointer to the hero
+ * \param   le          LE to be regenerated
  *
  * This functions does some magic in fights, when a hero awakes.
  */
@@ -4447,9 +4455,9 @@ void add_hero_le(Bit8u *hero, signed short le)
 }
 
 /**
- * \brief	regenerates LE of a group
+ * \brief   regenerates LE of a group
  *
- * \param le	LE to be regenerated
+ * \param   le          LE to be regenerated
  */
 void add_group_le(signed short le)
 {
@@ -4469,11 +4477,11 @@ void add_group_le(signed short le)
 }
 
 /**
- * \brief	damages starving heros
+ * \brief   damages starving heros
  *
- * \param hero	a pointer to the hero
- * \param index	the index number of the hero
- * \param type	the type of message which should be printed (0 = hunger / 1 = thirst)
+ * \param   hero        a pointer to the hero
+ * \param   index       the index number of the hero
+ * \param   type        the type of message which should be printed (0 = hunger / 1 = thirst)
  */
 void do_starve_damage(Bit8u *hero, signed short index, signed short type)
 {
@@ -4523,13 +4531,12 @@ signed short compare_name(Bit8u *name)
 }
 
 /**
- * \brief		make an attribute test
+ * \brief   make an attribute test
  *
- * \param hero		pointer to the hero
- * \param attrib	number of the attribute
- * \param bonus		handicap
- *
- * \return the result of the test, successful if greater than zero.
+ * \param   hero        pointer to the hero
+ * \param   attrib      number of the attribute
+ * \param   bonus       handicap
+ * \return              the result of the test, successful if greater than zero.
  */
 signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 {
@@ -4562,15 +4569,14 @@ signed short test_attrib(Bit8u* hero, signed short attrib, signed short bonus)
 }
 
 /**
- * \brief		make three attribute tests
+ * \brief   make three attribute tests
  *
- * \param hero		pointer to the hero
- * \param attrib1	attribute 1
- * \param attrib2	attribute 2
- * \param attrib3	attribute 3
- * \param bonus		handycap
- *
- * \return		a test is positive if the return value is greater than zero
+ * \param   hero        pointer to the hero
+ * \param   attrib1     attribute 1
+ * \param   attrib2     attribute 2
+ * \param   attrib3     attribute 3
+ * \param   bonus       handycap
+ * \return              a test is positive if the return value is greater than zero
  */
 signed short test_attrib3(Bit8u* hero, signed short attrib1, signed short attrib2, signed short attrib3, signed char bonus)
 {
@@ -4643,10 +4649,10 @@ signed short unused_cruft(void)
 }
 
 /**
- * \brief	selects a hero randomly
+ * \brief   selects a hero randomly
  *
- * \return position of a randomly choosen hero
-*/
+ * \return              position of a randomly choosen hero
+ */
 /* Original-Bug: can loop forever if the position is greater than the
 	number of heroes in the group */
 signed short get_random_hero(void)
@@ -4687,10 +4693,10 @@ signed short get_random_hero(void)
 }
 
 /**
- * \brief	get the money of the current group
+ * \brief   get the money of the current group
  *
- * \return	the sum of the money of all heros in the current group
-*/
+ * \return              the sum of the money of all heros in the current group
+ */
 Bit32s get_party_money(void)
 {
 	signed short i;
@@ -4711,13 +4717,13 @@ Bit32s get_party_money(void)
 }
 
 /**
- * \brief	shares money between current party members
+ * \brief   shares money between current party members
  *
- * \param money	the money to share
+ * \param   money       the money to share
  *
  *	If only a NPC is in that party, he gets all the money.
  *	If a hero is dead and in the current party, his money is set to 0.
-*/
+ */
 void set_party_money(Bit32s money)
 {
 	signed short heroes = 0;
@@ -4771,29 +4777,30 @@ void set_party_money(Bit32s money)
 }
 
 /**
- * \brief	adds money to the current group
+ * \brief   adds money to the current group
  *
- * \param money	money to add
-*/
+ * \param   money       money to add
+ */
 void add_party_money(Bit32s money)
 {
 	set_party_money(get_party_money() + money);
 }
 
 /**
- * \brief	add AP to a hero
+ * \brief   add AP to a hero
  *
- * \param hero	pointer to the hero
- * \param ap	AP the hero should get
-*/
+ * \param   hero        pointer to the hero
+ * \param   ap          AP the hero should get
+ */
 void add_hero_ap(Bit8u *hero, Bit32s ap)
 {
 	add_ptr_ds(hero + HERO_AP, ap);
 }
 
 /**
- * \brief	shares AP in the current group
- * \param ap	AP to share
+ * \brief   shares AP in the current group
+ *
+ * \param   ap          AP to share
  */
 void add_group_ap(Bit32s ap)
 {
@@ -4820,10 +4827,10 @@ void add_group_ap(Bit32s ap)
 }
 
 /**
- * \brief	add AP to every hero in the group
+ * \brief   add AP to every hero in the group
  *
- * \param ap	AP to add
-*/
+ * \param   ap          AP to add
+ */
 void add_hero_ap_all(signed short ap)
 {
 	Bit8u *hero_i;
@@ -4849,10 +4856,10 @@ void add_hero_ap_all(signed short ap)
 }
 
 /**
- * \brief	subtracts AP from every hero in the group
+ * \brief   subtracts AP from every hero in the group
  *
- * \param ap	AP to subtract
-*/
+ * \param   ap          AP to subtract
+ */
 void sub_hero_ap_all(signed short ap)
 {
 	signed short i;
@@ -4884,12 +4891,11 @@ void sub_hero_ap_all(signed short ap)
 }
 
 /**
- * \brief	gets the position of a hero
+ * \brief   gets the position of a hero
  *
- * \param hero	pointer to the hero
- *
- * \return	position of the hero
-*/
+ * \param   hero        pointer to the hero
+ * \return              position of the hero
+ */
 signed short get_hero_index(Bit8u *hero)
 {
 	signed short i = 0;
@@ -4905,13 +4911,12 @@ signed short get_hero_index(Bit8u *hero)
 }
 
 /**
- * \brief	gets item position
+ * \brief   gets item position
  *
- * \param hero	pointer to the hero
- * \param item	item ID to look for
- *
- * \return position of the item or -1 if the item is not in the inventory.
-*/
+ * \param   hero        pointer to the hero
+ * \param   item        item ID to look for
+ * \return              position of the item or -1 if the item is not in the inventory.
+ */
 signed short get_item_pos(Bit8u *hero, signed short item)
 {
 
@@ -4927,12 +4932,11 @@ signed short get_item_pos(Bit8u *hero, signed short item)
 }
 
 /**
- * \brief	gets the position of the first hero with an item
+ * \brief   gets the position of the first hero with an item
  *
- * \param item	item ID to look for
- *
- * \return position of the hero or -1 if nobody of the group has this item
-*/
+ * \param   item        item ID to look for
+ * \return              position of the hero or -1 if nobody of the group has this item
+ */
 signed short get_first_hero_with_item(signed short item)
 {
 	signed short j;
@@ -4957,13 +4961,12 @@ signed short get_first_hero_with_item(signed short item)
 }
 
 /**
- * \brief	gets the position of the first hero with an item in a specified group
+ * \brief   gets the position of the first hero with an item in a specified group
  *
- * \param item	item ID to look for
- * \param group	group number
- *
- * \return position of the hero or -1 if nobody in the specified group has this item
-*/
+ * \param   item        item ID to look for
+ * \param   group       group number
+ * \return              position of the hero or -1 if nobody in the specified group has this item
+ */
 signed short get_first_hero_with_item_in_group(signed short item, signed short group)
 {
 	signed short j;
@@ -4989,9 +4992,9 @@ signed short get_first_hero_with_item_in_group(signed short item, signed short g
 
 
 /**
- * \brief	subtracts LE from every group member
+ * \brief   subtracts LE from every group member
  *
- * \param le	LE to subtract
+ * \param   le          LE to subtract
  */
 void sub_group_le(signed short le)
 {
@@ -5011,9 +5014,9 @@ void sub_group_le(signed short le)
 }
 
 /**
- * \brief return a pointer to the first available hero
+ * \brief   return a pointer to the first available hero
  *
- * \return a pointer to the first available hero. If none in available it returns a pointer to the first hero.
+ * \return              a pointer to the first available hero. If none in available it returns a pointer to the first hero.
  */
 RealPt get_first_hero_available_in_group(void)
 {
@@ -5036,9 +5039,9 @@ RealPt get_first_hero_available_in_group(void)
 }
 
 /**
- * \brief return a pointer to the second available hero in the group
+ * \brief   return a pointer to the second available hero in the group
  *
- * \return a pointer to the second available hero in the group or NULL.
+ * \return              a pointer to the second available hero in the group or NULL.
  */
 RealPt get_second_hero_available_in_group(void)
 {
@@ -5066,9 +5069,9 @@ RealPt get_second_hero_available_in_group(void)
 }
 
 /**
- * \brief	count available heros
+ * \brief   count available heros
  *
- * \ return	number of available heros in all groups
+ * \return              number of available heros in all groups
  */
 signed short count_heros_available(void)
 {
@@ -5092,8 +5095,8 @@ signed short count_heros_available(void)
 }
 
 /**
- * \brief	TODO
-*/
+ * \brief   TODO
+ */
 signed short count_heroes_available_in_group(void)
 {
 	signed short heroes = 0;

@@ -168,9 +168,10 @@ signed short DNG13_handler(void)
 }
 
 /**
- * \brief		unblock a passage if its blocked
- * \param	text	text for the output
- * \param	flag	pointer to the flag (0 = blocked / 1 = free)
+ * \brief   unblock a passage if its blocked
+ *
+ * \param   text        text for the output
+ * \param   flag        pointer to the flag (0 = blocked / 1 = free)
  */
 void DNG13_unblock_passage(Bit8u* text, Bit8u* flag)
 {
@@ -248,9 +249,9 @@ void DNG13_chest1(RealPt chest)
 }
 
 /**
- * \brief print introductions of dungeon #13 fights
+ * \brief   print introductions of dungeon #13 fights
  *
- * \param fight_id	ID of the fight
+ * \param   fight_id    ID of the fight
  */
 void DNG13_fight_intro(signed short fight_id)
 {

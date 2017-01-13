@@ -41,10 +41,10 @@ struct msg {
 };
 
 /**
- * \brief	execute the fight action of a monster
+ * \brief   execute the fight action of a monster
  *
- * \param	monster		pointer to a monster datasheet
- * \param	monster_pos	position of the monster (fighter_id = monster_pos + 10)
+ * \param   monster     pointer to a monster datasheet
+ * \param   monster_pos position of the monster (fighter_id = monster_pos + 10)
  */
 void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 {
@@ -744,13 +744,13 @@ void FIG_do_monster_action(RealPt monster, signed short monster_pos)
 }
 
 /**
- * \brief
+ * \brief   *
  *
- * \param hero			pointer to the hero who uses the item
- * \param target_monster	pointer to the monster
- * \param target_hero		pointer to the hero
- * \param flag			bool value, used when a hero attacks a hero
- * \param hero_pos		position of the hero
+ * \param   hero        pointer to the hero who uses the item
+ * \param   target_monster pointer to the monster
+ * \param   target_hero pointer to the hero
+ * \param   flag        bool value, used when a hero attacks a hero
+ * \param   hero_pos    position of the hero
  */
 void FIG_use_item(Bit8u *hero, Bit8u *target_monster, Bit8u *target_hero, signed short flag, signed short hero_pos)
 {

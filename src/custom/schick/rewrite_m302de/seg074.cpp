@@ -146,12 +146,11 @@ unsigned short is_discovered(signed short x, signed short y)
 }
 
 /**
- * \brief	get value of automap field from small (16x16) maps
+ * \brief   get value of automap field from small (16x16) maps
  *
- * \param	x	x-coordinate
- * \param	y	y-coordinate
- *
- * \return	value of the field at (x,y)
+ * \param   x           x-coordinate
+ * \param   y           y-coordinate
+ * \return              value of the field at (x,y)
  */
 unsigned short get_mapval_small(signed short x, signed short y)
 {
@@ -161,12 +160,11 @@ unsigned short get_mapval_small(signed short x, signed short y)
 }
 
 /**
- * \brief	get value of automap field from small (32x16) maps
+ * \brief   get value of automap field from small (32x16) maps
  *
- * \param	x	x-coordinate
- * \param	y	y-coordinate
- *
- * \return	value of the field at (x,y)
+ * \param   x           x-coordinate
+ * \param   y           y-coordinate
+ * \return              value of the field at (x,y)
  */
 unsigned short get_mapval_large(signed short x, signed short y)
 {
@@ -176,11 +174,10 @@ unsigned short get_mapval_large(signed short x, signed short y)
 }
 
 /**
- * \brief	checks if the group is in prison
+ * \brief   checks if the group is in prison
  *
- * \param group_nr	number of the group
- *
- * \return	the value of the "in_prison" flag
+ * \param   group_nr    number of the group
+ * \return              the value of the "in_prison" flag
  */
 signed short is_group_in_prison(signed short group_nr)
 {
@@ -300,12 +297,12 @@ void seg074_305(signed short x_off)
 }
 
 /**
- * \brief	draws a building on the automap
+ * \brief   draws a building on the automap
  *
- * \param x	x-coordinate on the automap
- * \param y	y-coordiante on the automap
- * \param color	the color
- * \param dir	direction of the entrance, -1 for none
+ * \param   x           x-coordinate on the automap
+ * \param   y           y-coordiante on the automap
+ * \param   color       the color
+ * \param   dir         direction of the entrance, -1 for none
  */
 void draw_automap_square(signed short x, signed short y, signed short color, signed short dir)
 {
@@ -393,11 +390,11 @@ void draw_automap_square(signed short x, signed short y, signed short color, sig
 }
 
 /**
- * \brief	draws the entrance of a automap building
+ * \brief   draws the entrance of a automap building
  *
- * \param	x	x-coordinate of the building
- * \param	y	y-coordinate of the building
- * \param	dir	direction of the entrance, 0 = NORTH, 1 = EAST,...
+ * \param   x           x-coordinate of the building
+ * \param   y           y-coordinate of the building
+ * \param   dir         direction of the entrance, 0 = NORTH, 1 = EAST,...
  */
 void draw_automap_entrance(signed short x, signed short y, signed short dir)
 {
@@ -475,9 +472,9 @@ void draw_automap_to_screen(void)
 }
 
 /**
- * \brief	select a teleport destination
+ * \brief   select a teleport destination
  *
- * \return	costs for teleport in AE
+ * \return              costs for teleport in AE
  */
 signed short select_teleport_dest(void)
 {

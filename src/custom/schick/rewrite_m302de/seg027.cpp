@@ -6,7 +6,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg027.cpp
  *
-*/
+ */
 
 #include <string.h>
 
@@ -127,10 +127,10 @@ void load_pp20(signed short index)
 }
 
 /**
- * load_fight_figs() - load fight sprites of actors
- * @fig_old:	the fig number
+ * \brief   load fight sprites of actors
  *
- * Returns a pointer to the location where the data is.
+ * \param   fig_old     the fig number
+ * \return              a pointer to the location where the data is.
  *
  */
 /* Original-Bug: when using EMS for caching something strage happens. */
@@ -282,8 +282,9 @@ RealPt load_fight_figs(signed short fig)
 }
 
 /**
- *	load_ani() -	loads an animation
- *	@nr:	number of the animation
+ * \brief   loads an animation
+ *
+ * \param   nr          number of the animation
  */
 void load_ani(const signed short nr)
 {
@@ -543,9 +544,9 @@ void load_ani(const signed short nr)
 }
 
 /**
- * \brief	reads an entry in SCENARIO.LST and stores it in SCENARIO_BUF
+ * \brief   reads an entry in SCENARIO.LST and stores it in SCENARIO_BUF
  *
- * \param scenario_id  number of the scenario in SCENARIO.LST
+ * \param   scenario_id number of the scenario in SCENARIO.LST
  */
 void load_scenario(signed short scenario_id)
 {
@@ -578,12 +579,12 @@ void load_scenario(signed short scenario_id)
 }
 
 /**
- * \brief	counts the number of enemies that are present in the first round
- *          according to the information stored in FIGHT.LST
+ * \brief   counts the number of enemies that are present in the first round
  *
- * \param fight_id  number of the fight in FIGHT.LST
+ *          This information is stored in FIGHT.LST.
  *
- * \return  number of enemies present in first round
+ * \param   fight_id    number of the fight in FIGHT.LST
+ * \return              number of enemies present in first round
  */
 signed short count_fight_enemies(signed short fight_id)
 {
@@ -635,9 +636,9 @@ signed short count_fight_enemies(signed short fight_id)
 }
 
 /**
- * \brief	reads an entry in FIGHT.LST and stores it in CURRENT_FIGHT
+ * \brief   reads an entry in FIGHT.LST and stores it in CURRENT_FIGHT
  *
- * \param fight_id  number of the fight in FIGHT.LST
+ * \param   fight_id    number of the fight in FIGHT.LST
  */
 void read_fight_lst(signed short fight_id)
 {
@@ -681,7 +682,7 @@ void read_fight_lst(signed short fight_id)
 }
 
 /**
- * \brief	writes the data in CURRENT_FIGHT to FIGHT.LST
+ * \brief   writes the data in CURRENT_FIGHT to FIGHT.LST
  */
 void write_fight_lst(void)
 {

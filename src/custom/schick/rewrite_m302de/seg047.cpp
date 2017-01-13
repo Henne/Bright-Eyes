@@ -25,9 +25,9 @@ struct helper {
 };
 
 /**
- * get_hero_CH_best - get the index of the hero with the best CH value
+ * \brief   get the index of the hero with the best CH value
  *
- * Returns the index of the hero with the highest unmodified CH value.
+ * \return              the index of the hero with the highest unmodified CH value.
  * The hero must be alive and in the current group.
  */
 unsigned short get_hero_CH_best()
@@ -59,9 +59,9 @@ unsigned short get_hero_CH_best()
 }
 
 /**
- * get_hero_KK_best - get the index of the hero with the best KK value
+ * \brief   get the index of the hero with the best KK value
  *
- * Returns the index of the hero with the highest unmodified KK value.
+ * \return              the index of the hero with the highest unmodified KK value.
  * The hero must be alive and in the current group.
  */
 unsigned short get_hero_KK_best() {
@@ -90,8 +90,9 @@ unsigned short get_hero_KK_best() {
 }
 
 /**
- * hero_is_diseased - returns the disease number the hero has
- * @hero:	the hero which should be checked
+ * \brief   returns the disease number the hero has
+ *
+ * \param   hero        the hero which should be checked
  *
  * Only the first disease is returned here.
  */
@@ -107,8 +108,9 @@ unsigned short hero_is_diseased(Bit8u *hero)
 }
 
 /**
- * hero_is_poisoned - returns the poison number the hero has
- * @hero:	the hero which should be checked
+ * \brief   returns the poison number the hero has
+ *
+ * \param   hero        the hero which should be checked
  *
  * Only the first poison is returned here.
  */
@@ -125,9 +127,10 @@ unsigned short hero_is_poisoned(Bit8u *hero)
 }
 
 /**
- * hero_gets_poisoned - poison a hero
- * @hero:	the hero which gets poisoned
- * @poison:	the kind of poison
+ * \brief   poison a hero
+ *
+ * \param   hero        the hero which gets poisoned
+ * \param   poison      the kind of poison
  */
 void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 
@@ -142,9 +145,10 @@ void hero_gets_poisoned(Bit8u *hero, unsigned short poison) {
 }
 
 /**
- * hero_gets_diseased - diseases a hero
- * @hero:	the hero which gets diseased
- * @disease:	the kind of disease
+ * \brief   diseases a hero
+ *
+ * \param   hero        the hero which gets diseased
+ * \param   disease     the kind of disease
  */
 void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 {
@@ -170,10 +174,11 @@ void hero_gets_diseased(Bit8u *hero, unsigned short disease)
 }
 
 /**
- * hero_disease_test - the hero may get a disease
- * @hero:	the hero which may gets diseased
- * @disease:	the kind of disease
- * @probability: the probability to get diseased in percent
+ * \brief   the hero may get a disease
+ *
+ * \param   hero        the hero which may gets diseased
+ * \param   disease     the kind of disease
+ * \param   probability the probability to get diseased in percent
  */
 void hero_disease_test(Bit8u *hero, unsigned short disease, signed short probability) {
 
@@ -206,7 +211,7 @@ short check_hero_KK_unused(short val)
 
 /**
  *	check_heros_KK
- *	@val:	value to compare KK with
+ * \param   val         value to compare KK with
  *
  *	This function, like hero_check_KK_unused, is buggy!
  *	It does not check if the first slot is a valid hero.
@@ -237,9 +242,10 @@ short check_heros_KK(short val) {
 }
 
 /**
- *	make_valuta_str	-	makes a valuta string
- *	@dst:	the destination
- *	@money:	the money in Heller
+ * \brief   makes a valuta string
+ *
+ * \param   dst         the destination
+ * \param   money       the money in Heller
  *
  *	This funcion is buggy.
  */
@@ -274,7 +280,7 @@ void make_valuta_str(char *dst, Bit32s money) {
 }
 
 /**
- *	update_atpa() -	recalculates the AT PA values
+ * \brief   recalculates the AT PA values
  *
  */
 void update_atpa(Bit8u *hero)
@@ -317,12 +323,12 @@ void update_atpa(Bit8u *hero)
 }
 
 /**
- * menu_enter_delete() - selects a hero to enter / get deleted
- * @ptr:	pointer
- * @entries:	how many heros
- * @mode:	1 = enter / -1 = delete
+ * \brief   selects a hero to enter / get deleted
  *
- * Returns: the number of the selected hero.
+ * \param   ptr         pointer
+ * \param   entries     how many heros
+ * \param   mode        1 = enter / -1 = delete
+ * \return              the number of the selected hero.
  * Used only in temples.
  */
 signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mode)
@@ -386,10 +392,10 @@ signed short menu_enter_delete(RealPt ptr, signed short entries, signed short mo
 }
 
 /**
- * select_hero_from_group() - menu for selecting a hero
- * @title:	titlestring for the menu
+ * \brief   menu for selecting a hero
  *
- * Returns: index of the hero or -1 (ESC).
+ * \param   title       titlestring for the menu
+ * \return              index of the hero or -1 (ESC).
  * Remark: The available heros must be in the group only.
  */
 signed short select_hero_from_group(Bit8u *title)
@@ -463,10 +469,10 @@ signed short select_hero_from_group(Bit8u *title)
 }
 
 /**
- * select_hero_ok() - menu for selecting a hero
- * @title:	titlestring for the menu
+ * \brief   menu for selecting a hero
  *
- * Returns: index of the hero or -1 (ESC).
+ * \param   title       titlestring for the menu
+ * \return              index of the hero or -1 (ESC).
  * Remark: The available heros must be in the group and pass check_hero().
  */
 signed short select_hero_ok(Bit8u *title)
@@ -540,10 +546,10 @@ signed short select_hero_ok(Bit8u *title)
 }
 
 /**
- * select_hero_ok_forced() - menu for selecting a hero
- * @title:	titlestring for the menu
+ * \brief   menu for selecting a hero
  *
- * Returns: index of the hero or -1 (ESC).
+ * \param   title       titlestring for the menu
+ * \return              index of the hero or -1 (ESC).
  * Remark: The available heros must be in the group, pass check_hero() and
  *		you are forced to select a hero.
  */
@@ -619,9 +625,9 @@ signed short select_hero_ok_forced(Bit8u *title)
 }
 
 /**
- * count_heroes_in_group() - counts the heroes in the current group
+ * \brief   counts the heroes in the current group
  *
- * Returns how many alive heros are in the group.
+ * \return              how many alive heros are in the group.
  */
 signed short count_heroes_in_group(void)
 {
@@ -645,8 +651,9 @@ signed short count_heroes_in_group(void)
 }
 
 /**
- * hero_get_drunken() - let the hero feel the result of too much alcohol
- * @hero:	the hero
+ * \brief   let the hero feel the result of too much alcohol
+ *
+ * \param   hero        the hero
  */
 void hero_get_drunken(Bit8u *hero)
 {
@@ -684,8 +691,9 @@ void hero_get_drunken(Bit8u *hero)
 }
 
 /**
- *	hero_get_sober	-	makes a drunken hero sober
- *	@hero:	pointer to the hero
+ * \brief   makes a drunken hero sober
+ *
+ * \param   hero        pointer to the hero
  *
  */
 void hero_get_sober(Bit8u *hero) {

@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg051.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -458,10 +458,11 @@ signed short gather_herbs(Bit8u *hero, signed short hours, signed short mod)
 }
 
 /**
- * \brief	replenish the stocks (water and food)
- * \param mod	modificator for the skill test
- * \param tries	how often was tried to replenish stocks
- * \returns 0 if replenish was not possible or 1 if replenish was possible
+ * \brief   replenish the stocks (water and food)
+ *
+ * \param   mod         modificator for the skill test
+ * \param   tries       how often was tried to replenish stocks
+ * \return              0 if replenish was not possible or 1 if replenish was possible
  */
 signed short replenish_stocks(signed short mod, signed short tries)
 {

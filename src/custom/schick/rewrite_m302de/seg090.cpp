@@ -503,9 +503,9 @@ void DNG_oberorken_chest(RealPt chest)
 }
 
 /**
- * \brief print introductions of dungeon #12 fights
+ * \brief   print introductions of dungeon #12 fights
  *
- * \param fight_id	ID of the fight
+ * \param   fight_id    ID of the fight
  */
 void DNG12_fight_intro(signed short fight_id)
 {

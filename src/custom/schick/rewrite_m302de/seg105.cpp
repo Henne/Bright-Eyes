@@ -8,7 +8,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg105.cpp
  *
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -27,9 +27,11 @@ namespace M302de {
 #endif
 
 /**
- *	@hero:	the hero
- *	@item:	the item which gets unequipped
- *	@pos:	the position of the item
+ * \brief   TODO
+ *
+ * \param   hero        the hero
+ * \param   item        the item which gets unequipped
+ * \param   pos         the position of the item
  */
 void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 {
@@ -78,12 +80,13 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
 
 
 /**
- * add_equip_boni() - account boni of special items when equipped
- * @owner:	the owner of the item
- * @equipper:	the one who equips the item
- * @item:	the item ID
- * @pos_i:	the position in the inventory of the owner
- * @pos_b:	the position in the inventory of the equipper
+ * \brief   account boni of special items when equipped
+ *
+ * \param   owner       the owner of the item
+ * \param   equipper    the one who equips the item
+ * \param   item        the item ID
+ * \param   pos_i       the position in the inventory of the owner
+ * \param   pos_b       the position in the inventory of the equipper
  *
  */
 void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed short pos_i, signed short pos_b)
@@ -174,11 +177,11 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 }
 
 /**
- * can_hero_use_item -	checks if a hero can use an item
- * @hero:	the hero
- * @item:	the item
+ * \brief   checks if a hero can use an item
  *
- * Returns 1 if the hero can use the item and 0 if not.
+ * \param   hero        the hero
+ * \param   item        the item
+ * \return              1 if the hero can use the item and 0 if not.
  */
 unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 {
@@ -197,11 +200,11 @@ unsigned short can_hero_use_item(Bit8u *hero, unsigned short item)
 }
 
 /**
- * can_item_at_pos - checks if an item is equipable at a body position
- * @item:	the item
- * @pos:	ths position at the body
+ * \brief   checks if an item is equipable at a body position
  *
- * Returns 1 if equipping is possible or 0 if not.
+ * \param   item        the item
+ * \param   pos         ths position at the body
+ * \return              1 if equipping is possible or 0 if not.
  */
 unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
 {
@@ -250,11 +253,11 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
 }
 
 /**
- * has_hero_equipped - returns the position of an equipped item
- * @hero:	the hero
- * @item:	the item
+ * \brief   returns the position of an equipped item
  *
- * Returns the position of item, if equipped, otherwise -1.
+ * \param   hero        the hero
+ * \param   item        the item
+ * \return              the position of item, if equipped, otherwise -1.
  * Is not used in the game.
  */
 signed short has_hero_equipped(Bit8u *hero, unsigned short item)
@@ -269,11 +272,11 @@ signed short has_hero_equipped(Bit8u *hero, unsigned short item)
 }
 
 /**
- * has_hero_stacked - returns the posotion of a non-full item stack
- * @hero:	the hero
- * @item:	the item
+ * \brief   returns the posotion of a non-full item stack
  *
- * Returns the postition of a non-full (<99) item stack or -1 if
+ * \param   hero        the hero
+ * \param   item        the item
+ * \return              the postition of a non-full (<99) item stack or -1 if
  * the hero doesn't own this item or has only full stacks of them.
  */
 //static
@@ -293,17 +296,18 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item)
 }
 
 /**
- * give_hero_new_item() - generates an item and gives it to hero
- * @hero:	the hero who should get the item
- * @item:	id of the item
- * @mode:	0 = quiet / 1 = warn / 2 = ignore
- * @nr:		number of item the hero should get
+ * \brief   generates an item and gives it to hero
+ *
+ * \param   hero        the hero who should get the item
+ * \param   item        id of the item
+ * \param   mode        0 = quiet / 1 = warn / 2 = ignore
+ * \param   nr          number of item the hero should get
  *
  * The mode parameter works that way: If the weight the hero carries
  * is greater than KK*10 mode 0 and 1 will not give the hero that item.
  * The difference is, that mode = 1 prints a warning, mode = 0 is quiet.
  * mode = 2 ignores the carry weight completely.
-*/
+ */
 signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short nr)
 {
 	signed short l1;
@@ -449,8 +453,9 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
 }
 
 /**
- * item_pleasing_ingerimm - checks if Ingerimm accepts this item as sacrifice
- * @item:	the item
+ * \brief   checks if Ingerimm accepts this item as sacrifice
+ *
+ * \param   item        the item
  *
  */
 //static
@@ -471,12 +476,12 @@ unsigned short item_pleasing_ingerimm(unsigned short item)
 }
 
 /**
- *	drop_item()	-	tries to drop an item
- *	@hero:		pointer to the hero
- *	@pos:		position of the item to be dropped
- *	@nr:		number of stacked items to be dropped / -1 to ask
+ * \brief   tries to drop an item
  *
- *	returns true if the item has been dropped or false if not
+ * \param   hero        pointer to the hero
+ * \param   pos         position of the item to be dropped
+ * \param   nr          number of stacked items to be dropped / -1 to ask
+ * \return              true if the item has been dropped or false if not
  *
  *	TODO: This function can be tuned a bit
  */
@@ -594,12 +599,12 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 }
 
 /**
- * get_item()	- gives one item to the party
- * @id:		ID of the item
- * @unused:	unused parameter
- * @nr:		number of items
+ * \brief   gives one item to the party
  *
- * Returns the number of given items.
+ * \param   id          ID of the item
+ * \param   unused      unused parameter
+ * \param   nr          number of items
+ * \return              the number of given items.
  */
 signed short get_item(signed short id, signed short unused, signed short nr)
 {
@@ -666,9 +671,10 @@ signed short get_item(signed short id, signed short unused, signed short nr)
 }
 
 /**
- * hero_count_item -	returns how many items of one type the hero has
- * @hero:	the hero
- * @item:	the item
+ * \brief   returns how many items of one type the hero has
+ *
+ * \param   hero        the hero
+ * \param   item        the item
  */
 signed short hero_count_item(Bit8u *hero, unsigned short item) {
 
@@ -683,9 +689,10 @@ signed short hero_count_item(Bit8u *hero, unsigned short item) {
 }
 
 /**
- * \brief	count the number of items of one type the current group has
- * \param item	the item-ID
- * \return	the number of items
+ * \brief   count the number of items of one type the current group has
+ *
+ * \param   item        the item-ID
+ * \return              the number of items
  */
 signed short group_count_item(signed short item)
 {
@@ -709,10 +716,11 @@ signed short group_count_item(signed short item)
 }
 
 /**
- *	loose_random_item() - a hero will loose an item
- *	@hero:		the hero
- *	@percent:	probability to loose
- *	@text:		the displayed text
+ * \brief   a hero will loose an item
+ *
+ * \param   hero        the hero
+ * \param   percent     probability to loose
+ * \param   text        the displayed text
  *
  */
 void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)

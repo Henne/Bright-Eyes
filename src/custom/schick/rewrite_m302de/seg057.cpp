@@ -41,7 +41,7 @@ struct dummy_c5 {
 };
 
 /**
- * \brief	shows the sell-screen an provides interaction
+ * \brief   shows the sell-screen an provides interaction
  */
 void sell_screen(Bit8u *shop_ptr)
 {

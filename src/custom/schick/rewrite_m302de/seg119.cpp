@@ -35,7 +35,7 @@ namespace M302de {
  */
 
 /**
- * \brief Effects of diseases
+ * \brief   Effects of diseases
  */
 void disease_effect(void)
 {

@@ -83,10 +83,11 @@ void FIG_remove_smth(void)
 }
 
 /**
- * FIG_copy_it() - copies chunks of 3 bytes
- * @dst:	pointer to destination
- * @src:	pointer to sources
- * @term:	termination sign
+ * \brief   copies chunks of 3 bytes
+ *
+ * \param   dst         pointer to destination
+ * \param   src         pointer to sources
+ * \param   term        termination sign
  */
 signed short FIG_copy_it(Bit8u *dst, Bit8u *src, signed char term)
 {

@@ -35,11 +35,12 @@ namespace M302de {
 #endif
 
 /**
- * \brief	add all items of a hero to the repair list
- * \param smith_ptr	pointer to the smith description
- * \param hero		pointer to the hero
- * \param item_pos	the position of the item in the inventory
- * \param smith_pos	the position of the item in the repair list
+ * \brief   add all items of a hero to the repair list
+ *
+ * \param   smith_ptr   pointer to the smith description
+ * \param   hero        pointer to the hero
+ * \param   item_pos    the position of the item in the inventory
+ * \param   smith_pos   the position of the item in the repair list
  */
 void add_item_to_smith(Bit8u *smith_ptr, Bit8u *hero, signed short item_pos, signed short smith_pos)
 {
@@ -104,9 +105,10 @@ struct dummy_c5 {
 };
 
 /**
- * \brief		shows the repair-screen an provides interaction
- * \param smith_ptr	pointer to the smith descriptor
- * \param a1		???
+ * \brief   shows the repair-screen an provides interaction
+ *
+ * \param   smith_ptr   pointer to the smith descriptor
+ * \param   a1          ???
  */
 void repair_screen(Bit8u *smith_ptr, signed short a1)
 {
@@ -481,7 +483,7 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 }
 
 /**
- * \brief	handler for entering smith location
+ * \brief   handler for entering smith location
  */
 void do_smith(void)
 {

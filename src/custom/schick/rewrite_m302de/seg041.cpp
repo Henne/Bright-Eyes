@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg041.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,12 +34,11 @@ static unsigned short msg_counter;
 #endif
 
 /**
- * \brief	check if a range attack can be done
+ * \brief   check if a range attack can be done
  *
- * \param hero	the hero who attacks
- * \param arg	0 = drop one unit, 1 = just check, 2 = check with output
- *
- * \return	0 = no ammo / 1 = have ammo
+ * \param   hero        the hero who attacks
+ * \param   arg         0 = drop one unit, 1 = just check, 2 = check with output
+ * \return              0 = no ammo / 1 = have ammo
  */
 signed short range_attack_check_ammo(Bit8u *hero, signed short arg)
 {
@@ -152,8 +151,8 @@ void FIG_output(Bit8u *str)
 }
 
 /**
- *	FIG_clear_msgs() - clears the fight messages buffer
-*/
+ * \brief   clears the fight messages buffer
+ */
 void FIG_clear_msgs(void)
 {
 	memset(p_datseg + FIG_MSG_DATA, 0 , 20);
@@ -169,10 +168,11 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
 }
 
 /**
- * FIG_damage_enemy() -	damages an enemy
- * @enemy:	pointer to the enemy
- * @damage:	the damage
- * @flag:	unknown
+ * \brief   damages an enemy
+ *
+ * \param   enemy       pointer to the enemy
+ * \param   damage      the damage
+ * \param   flag        unknown
  *
  * This function has some tweaks, dependent on the fight number.
  */
@@ -445,10 +445,11 @@ signed short FIG_get_hero_melee_attack_damage(Bit8u* hero, Bit8u* target, signed
 }
 
 /**
- *	FIG_get_enemy_attack_damage() - calculates attack damage from an enemy
- *	@attacker:	the enemy which attacks
- *	@attacked:	the enemy/hero which gets attacked
- *	@is_enemy:	1 = if attacked is an enemy / 0 = attacked is a hero
+ * \brief   calculates attack damage from an enemy
+ *
+ * \param   attacker    the enemy which attacks
+ * \param   attacked    the enemy/hero which gets attacked
+ * \param   is_enemy    1 = if attacked is an enemy / 0 = attacked is a hero
  *
  */
 
@@ -538,11 +539,12 @@ void seg041_8c8(void)
 }
 
 /**
- *	weapon_check()	-	check if a hero is equipped with a vaild weapon
- *	@hero:	pointer to hero
+ * \brief   check if a hero is equipped with a vaild weapon
+ *
+ * \param   hero        pointer to hero
  *
  *	Returns: -1 not a useful weapon, 0 = knive weapon, 1 = force weapon, 2 = everything else
-*/
+ */
 signed short weapon_check(Bit8u *hero)
 {
 	Bit8u *item_p;

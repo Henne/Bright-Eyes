@@ -1,7 +1,7 @@
 /*
 	Rewrite of DSA1 v3.02_de functions of seg106 (inventory misc)
 	Functions rewritten: 8/8 (complete)
-*/
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,10 +23,11 @@ namespace M302de {
 #endif
 
 /**
- * two_hand_collision() - check for a two hand collision
- * @hero:	the hero
- * @item:	the item which should be equipped
- * @pos:	the position the item should be placed
+ * \brief   check for a two hand collision
+ *
+ * \param   hero        the hero
+ * \param   item        the item which should be equipped
+ * \param   pos         the position the item should be placed
  *
  * A hero can not equip a two-handed weapon if one hand is in use,
  * nor can he equip something in his free hand if he has a two-handed weapon
@@ -691,7 +692,7 @@ void startup_equipment(Bit8u *hero)
 }
 
 /**
- * \brief	get the maximum time of a burning lightsource
+ * \brief   get the maximum time of a burning lightsource
  *
  */
 /* Borlandified and identical */
@@ -734,9 +735,9 @@ signed short get_max_light_time(void)
 }
 
 /**
- * \brief	shows an animation of a man equipping a belt
+ * \brief   shows an animation of a man equipping a belt
  *
- * This is only executed when equipping a skullbelt.
+ *          This is only executed when equipping a skullbelt.
  */
 /* Borlandified and identical */
 void equip_belt_ani(void)
@@ -841,9 +842,10 @@ void equip_belt_ani(void)
 }
 
 /**
- * \brief	search for a full waterskin
- * \param hero	pointer to the hero
- * \return	position of a non-empty waterskin
+ * \brief   search for a full waterskin
+ *
+ * \param   hero        pointer to the hero
+ * \return              position of a non-empty waterskin
  */
 /* Borlandified and identical */
 signed short get_full_waterskin_pos(Bit8u *hero)

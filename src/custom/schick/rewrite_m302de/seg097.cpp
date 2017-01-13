@@ -8,7 +8,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg097.cpp
-*/
+ */
 
 #include <string.h>
 #include <stdlib.h>
@@ -789,8 +789,9 @@ signed short GUI_radio(Bit8u *text, signed char options, ...)
 }
 
 /**
- * \brief	shows a fight intro message
- * \param	fight_id	ID of the fight
+ * \brief   shows a fight intro message
+ *
+ * \param   fight_id    ID of the fight
  */
 void GUI_print_fight_intro_msg(signed short fight_id)
 {
@@ -826,9 +827,10 @@ void GUI_print_fight_intro_msg(signed short fight_id)
 }
 
 /**
- *	GUI_dialog_na() - print a Dialog windows without answers
- *	@head_index:	the number of a head, if another should be loaded
- *	@text:		the text
+ * \brief   print a Dialog windows without answers
+ *
+ * \param   head_index  the number of a head, if another should be loaded
+ * \param   text        the text
  */
 void GUI_dialog_na(unsigned short head_index, Bit8u *text)
 {

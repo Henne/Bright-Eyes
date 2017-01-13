@@ -187,12 +187,12 @@ void PHX_drogentempel(void)
 }
 
 /**
- * \brief the Phextemple of Phexcaer
+ * \brief   the Phextemple of Phexcaer
  *
- * This function shows how to enter a temple manually.
- * Also there is some code, which will never be executed,
- * because PTEMPLE_CLOSED is initially 0 and never changes.
-*/
+ *          This function shows how to enter a temple manually.
+ *          Also there is some code, which will never be executed,
+ *          because PTEMPLE_CLOSED is initially 0 and never changes.
+ */
 void PHX_phextempel(void)
 {
 	signed short answer;		/* the selected answer from the dialogs */
@@ -362,9 +362,9 @@ void PHX_phextempel(void)
 }
 
 /**
- * \brief the dialog with ALRIK DERONDAN
+ * \brief   the dialog with ALRIK DERONDAN
  *
-*/
+ */
 void PHX_alrik_derondan(void)
 {
 	signed short answer;

@@ -7,7 +7,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg100.cpp
  *
-*/
+ */
 
 #include <stdio.h>
 #include <stdlib.h>

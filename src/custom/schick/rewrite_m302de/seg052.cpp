@@ -30,7 +30,7 @@ namespace M302de {
 #endif
 
 /**
- * \brief	camp in a city or a dungeon
+ * \brief   camp in a city or a dungeon
  */
 void do_citycamp(void)
 {

@@ -11,7 +11,7 @@
  *
  *	Take a look at seg008.asm
  *
-*/
+ */
 
 #if !defined(__BORLANDC__)
 #include "paging.h"

@@ -35,7 +35,7 @@ void talk_inn(void)
 }
 
 /**
- * \brief	returns a pointer to the first busy hero, who is not in this group, but in this location
+ * \brief   returns a pointer to the first busy hero, who is not in this group, but in this location
  */
 RealPt get_first_busy_hero(void)
 {
@@ -57,7 +57,7 @@ RealPt get_first_busy_hero(void)
 }
 
 /**
- * \brief	location handler for inns
+ * \brief   location handler for inns
  */
 void do_inn(void)
 {

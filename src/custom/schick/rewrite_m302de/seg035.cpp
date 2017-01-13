@@ -36,7 +36,7 @@ struct dummy62 {
 };
 
 /**
- * \brief compress monsters
+ * \brief   compress monsters
  */
 void FIG_tidy_monsters(void)
 {
@@ -202,7 +202,7 @@ void FIG_loot_monsters(void)
 }
 
 /**
- * \brief	give the group the AP after a fight
+ * \brief   give the group the AP after a fight
  */
 void FIG_split_ap(void)
 {
@@ -264,12 +264,11 @@ void FIG_split_ap(void)
 }
 
 /**
- * \brief		test if a range attack is possible
+ * \brief   test if a range attack is possible
  *
- * \param hero		pointer to the hero
- * \param hero_pos	position of the hero
- *
- * \return		1 = range attack is possible, 0 = ... not possible
+ * \param   hero        pointer to the hero
+ * \param   hero_pos    position of the hero
+ * \return              1 = range attack is possible, 0 = ... not possible
  */
 signed short check_hero_range_attack(Bit8u *hero, signed short hero_pos)
 {

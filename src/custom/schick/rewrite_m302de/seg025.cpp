@@ -90,7 +90,7 @@ void show_entrance(void)
 }
 
 /**
- * \brief	the screen when entering a house in the city
+ * \brief   the screen when entering a house in the city
  */
 void show_citizen(void)
 {
@@ -133,7 +133,7 @@ void show_citizen(void)
 }
 
 /**
- * \brief	break into a house
+ * \brief   break into a house
  */
 void do_house(void)
 {
@@ -649,9 +649,9 @@ void draw_icon(signed short id, signed short x, signed short y)
 
 /* 0xd54 */
 /**
- * \brief	show storytexts
+ * \brief   show storytexts
  *
- * \returns	1 if dialog was shown / 0 if had already been shown
+ * \return              1 if dialog was shown / 0 if had already been shown
  * These were introduced in V3.00 (de and en) to find better into the story.
  */
 /* static */
@@ -740,7 +740,7 @@ void do_location(void)
 }
 
 /**
- * \brief	turn around in a pseudo 3d-view
+ * \brief   turn around in a pseudo 3d-view
  */
 void turnaround(void)
 {
@@ -806,7 +806,7 @@ void leave_dungeon(void)
 }
 
 /**
- * \brief	party gets 1W6 LE damage
+ * \brief   party gets 1W6 LE damage
  */
 void tumult(void)
 {
@@ -837,7 +837,7 @@ void tumult(void)
 }
 
 /**
- * \brief	fade when leaving a location
+ * \brief   fade when leaving a location
  */
 void fade_into(void)
 {

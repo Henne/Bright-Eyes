@@ -511,10 +511,10 @@ void DNG_stub5(void)
 }
 
 /**
- * is_staff_lvl2_in_group() - check for stafflevel >= in current group
+ * \brief   check for stafflevel >= in current group
  *
- * returns 0 = false, 1 = true
-*/
+ * \return              0 = false, 1 = true
+ */
 signed short is_staff_lvl2_in_group(void)
 {
 	Bit8u *hero_i;

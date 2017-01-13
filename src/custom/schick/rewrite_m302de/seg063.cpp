@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg063.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -397,8 +397,7 @@ void do_harbour(void)
 }
 
 /**
- * \brief
- * \param town_id	ID of the town
+ * \brief   * \param town_id	ID of the town
  */
 void mod_clock_pos(signed short town_id)
 {

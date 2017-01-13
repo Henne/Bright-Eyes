@@ -489,9 +489,9 @@ signed short DNG09_handler(void)
 }
 
 /**
- * \brief print introductions of dungeon #9 fights
+ * \brief   print introductions of dungeon #9 fights
  *
- * \param fight_id	ID of the fight
+ * \param   fight_id    ID of the fight
  */
 void DNG09_fight_intro(signed short fight_id)
 {

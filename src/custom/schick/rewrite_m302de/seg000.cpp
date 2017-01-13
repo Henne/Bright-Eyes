@@ -1,7 +1,7 @@
 /*
  *	Rewrite of DSA1 v3.02_de functions of seg000 (Borland C-Lib)
  *	Functions rewritten: 0/0
-*/
+ */
 #include "dosbox.h"
 #include "regs.h"
 #include "callback.h"

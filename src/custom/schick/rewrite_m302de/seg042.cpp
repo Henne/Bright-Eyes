@@ -43,10 +43,10 @@ struct msg {
 };
 
 /**
- * \brief	executes the fight action of hero
+ * \brief   executes the fight action of hero
  *
- * \param hero		pointer to the hero
- * \param hero_pos	position in the group (fighter_id = hero_pos + 1)
+ * \param   hero        pointer to the hero
+ * \param   hero_pos    position in the group (fighter_id = hero_pos + 1)
  */
 void FIG_do_hero_action(RealPt hero, const signed short hero_pos)
 {

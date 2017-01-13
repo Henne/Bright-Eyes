@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg109.cpp
-*/
+ */
 
 #include <stdio.h>
 
@@ -254,10 +254,11 @@ void TRV_event(signed short travel_event)
 }
 
 /**
- * \brief	executes a fight and load a textfile
- * \param fight_id	ID of the fight
- * \param travel_event	ID of the travel event
- * \return return value of the fight
+ * \brief   executes a fight and load a textfile
+ *
+ * \param   fight_id    ID of the fight
+ * \param   travel_event ID of the travel event
+ * \return              return value of the fight
  */
 signed short TRV_fight_event(signed short fight_id, signed short travel_event)
 {
@@ -447,8 +448,9 @@ void TRV_found_inn(signed short city, signed short type)
 }
 
 /**
- * \brief	question if you want to rest in a hut
- * \return the answer 0 = no, 1 = yes
+ * \brief   question if you want to rest in a hut
+ *
+ * \return              the answer 0 = no, 1 = yes
  */
 signed short TRV_enter_hut_question(void)
 {

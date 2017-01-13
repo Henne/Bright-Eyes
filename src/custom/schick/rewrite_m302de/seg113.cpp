@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg113.cpp
-*/
+ */
 
 #include <stdio.h>
 
@@ -254,9 +254,9 @@ void tevent_097(void)
 }
 
 /**
- * \brief travelevent 98: a gap
+ * \brief   travelevent 98: a gap
  *
- * disappeared heros can be found in the efferd temple in liskor
+ *          disappeared heros can be found in the efferd temple in liskor
  */
 void tevent_098(void)
 {

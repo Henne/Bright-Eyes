@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg029.cpp
-*/
+ */
 
 #include "v302de.h"
 
@@ -44,7 +44,7 @@ static signed char icon_array[9] = {
 #endif
 
 /**
- *	draw_playmask() - loads and draws the playmask to the screen
+ * \brief   loads and draws the playmask to the screen
  */
 //static
 void draw_playmask(void)
@@ -104,9 +104,10 @@ void draw_playmask(void)
 }
 
 /**
- * copy_forename - copys the forename from a name
- * @dst:	wheres the forename should be stored
- * @name:	the full name
+ * \brief   copys the forename from a name
+ *
+ * \param   dst         wheres the forename should be stored
+ * \param   name        the full name
  *
  * A forename has a maximum length of 7 characters.
  */
@@ -128,7 +129,7 @@ void copy_forename(Bit8u *dst, Bit8u *name)
 }
 
 /**
- *	draw_status_line() - draws the status line (pictures and names)
+ * \brief   draws the status line (pictures and names)
  */
 void draw_status_line(void)
 {
@@ -235,8 +236,9 @@ void draw_status_line(void)
 }
 
 /**
- * clear_hero_icon - fills hero icon and bars with black color
- * @pos:	position of the hero
+ * \brief   fills hero icon and bars with black color
+ *
+ * \param   pos         position of the hero
  */
 void clear_hero_icon(unsigned short pos)
 {
@@ -252,10 +254,11 @@ void clear_hero_icon(unsigned short pos)
 }
 
 /**
- * load_icon - loads an icon to the icoc_buffer
- * @fileindex:	index of the icon file (ICONS or BICONS)
- * @icon:	index if the icon in the file
- * @pos:	position of the icon (0-8)
+ * \brief   loads an icon to the icoc_buffer
+ *
+ * \param   fileindex   index of the icon file (ICONS or BICONS)
+ * \param   icon        index if the icon in the file
+ * \param   pos         position of the icon (0-8)
  */
 //static
 void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
@@ -275,7 +278,7 @@ void load_icon(Bit16u fileindex, Bit16s icon, Bit16s pos)
 }
 
 /**
- *	draw_icons() - draws all icons
+ * \brief   draws all icons
  */
 void draw_icons(void)
 {
@@ -309,7 +312,7 @@ void draw_icons(void)
 }
 
 /**
- *	draw_main_screen() - draws the main screen
+ * \brief   draws the main screen
  */
 void draw_main_screen(void)
 {
@@ -343,8 +346,9 @@ void clear_loc_line(void)
 }
 
 /**
- * select_hero_icon - marks a heros icon in the playmask
- * @pos:	position of the hero
+ * \brief   marks a heros icon in the playmask
+ *
+ * \param   pos         position of the hero
  *
  * This function is only used from sell- and repair screens.
  */
@@ -382,8 +386,9 @@ void select_hero_icon(unsigned short pos) {
 }
 
 /**
- * deselect_hero_icon - deselect a heros icon in the playmask
- * @pos:	position of the hero
+ * \brief   deselect a heros icon in the playmask
+ *
+ * \param   pos         position of the hero
  *
  * This function is only used from sell- and repair screens.
  */
