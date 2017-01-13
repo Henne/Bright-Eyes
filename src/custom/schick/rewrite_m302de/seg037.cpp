@@ -251,7 +251,6 @@ unsigned short test_foe_melee_attack(signed short x, signed short y,
  * \return              0 if theres nothing to attack in that direction
  *                      or the ID of the attackee.
  */
-
 /*
  * Original-Bug: range attack of foes is possible with direct contact
  */

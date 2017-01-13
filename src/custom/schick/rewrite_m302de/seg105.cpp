@@ -87,7 +87,6 @@ void unequip(Bit8u *hero, unsigned short item, unsigned short pos)
  * \param   item        the item ID
  * \param   pos_i       the position in the inventory of the owner
  * \param   pos_b       the position in the inventory of the equipper
- *
  */
 void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed short pos_i, signed short pos_b)
 {
@@ -456,7 +455,6 @@ signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mod
  * \brief   checks if Ingerimm accepts this item as sacrifice
  *
  * \param   item        the item
- *
  */
 //static
 unsigned short item_pleasing_ingerimm(unsigned short item)
@@ -721,7 +719,6 @@ signed short group_count_item(signed short item)
  * \param   hero        the hero
  * \param   percent     probability to loose
  * \param   text        the displayed text
- *
  */
 void loose_random_item(Bit8u *hero, signed short percent, Bit8u *text)
 {

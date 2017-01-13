@@ -363,7 +363,6 @@ void PHX_phextempel(void)
 
 /**
  * \brief   the dialog with ALRIK DERONDAN
- *
  */
 void PHX_alrik_derondan(void)
 {

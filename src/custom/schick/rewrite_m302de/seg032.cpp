@@ -250,7 +250,6 @@ signed short FIG_choose_next_enemy(void)
 
 /**
  * \brief   return the number of active enemies
- *
  */
 signed short FIG_count_active_enemies(void)
 {
@@ -332,9 +331,8 @@ signed short FIG_get_first_active_hero(void)
  * \brief   1 if all (active) heroes in group withdrew from the fight
  *
  * \return              1 if FIG_get_first_active_hero() returns -1
- *	and at least one hero in the group is not dead and has
- *	something at offset HERO_ACTION_ID set (maybe sleeping).
- *
+ *                      and at least one hero in the group is not dead and has
+ *                      something at offset HERO_ACTION_ID set (maybe sleeping).
  */
 //static
 unsigned short seg032_02db(void)

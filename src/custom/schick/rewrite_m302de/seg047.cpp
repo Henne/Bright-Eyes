@@ -281,7 +281,6 @@ void make_valuta_str(char *dst, Bit32s money) {
 
 /**
  * \brief   recalculates the AT PA values
- *
  */
 void update_atpa(Bit8u *hero)
 {
@@ -694,7 +693,6 @@ void hero_get_drunken(Bit8u *hero)
  * \brief   makes a drunken hero sober
  *
  * \param   hero        pointer to the hero
- *
  */
 void hero_get_sober(Bit8u *hero) {
 	/* This is checked twice */

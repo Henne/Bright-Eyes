@@ -693,7 +693,6 @@ void startup_equipment(Bit8u *hero)
 
 /**
  * \brief   get the maximum time of a burning lightsource
- *
  */
 /* Borlandified and identical */
 signed short get_max_light_time(void)

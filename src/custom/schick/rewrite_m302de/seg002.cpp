@@ -2025,7 +2025,6 @@ void pal_fade_in(Bit8u *dst, Bit8u *p2, signed short v3, signed short colors)
 
 /**
  * \brief   adjusts palettes in the morning
- *
  */
 void dawning(void)
 {
@@ -2067,7 +2066,6 @@ void dawning(void)
 
 /**
  * \brief   adjusts palettes in the evening
- *
  */
 void nightfall(void)
 {
@@ -2812,7 +2810,6 @@ void sub_light_timers(Bit32s quarter)
 
 /**
  * \brief   damage if a cursed chainmail is worn
- *
  */
 void magical_chainmail_damage(void)
 {
@@ -2845,7 +2842,6 @@ void magical_chainmail_damage(void)
 
 /**
  * \brief   consume food if needed and print warnings to the user
- *
  */
 void herokeeping(void)
 {

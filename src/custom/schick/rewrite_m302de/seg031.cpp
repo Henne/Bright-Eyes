@@ -298,7 +298,6 @@ RealPt get_informer_name(void)
  * \brief   get the name of the informer in this town
  *
  * \return              a pointer to the name of the informer
- *
  */
 RealPt get_informer_name2(void)
 {

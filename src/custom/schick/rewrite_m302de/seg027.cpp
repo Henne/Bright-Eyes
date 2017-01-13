@@ -131,7 +131,6 @@ void load_pp20(signed short index)
  *
  * \param   fig_old     the fig number
  * \return              a pointer to the location where the data is.
- *
  */
 /* Original-Bug: when using EMS for caching something strage happens. */
 RealPt load_fight_figs(signed short fig)

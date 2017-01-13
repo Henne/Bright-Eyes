@@ -545,7 +545,6 @@ void set_textcolor(signed short fg, signed short bg)
  *
  * \param   fg          foreground color index
  * \param   bg          background color index
- *
  */
 void get_textcolor(signed short *fg, signed short *bg)
 {

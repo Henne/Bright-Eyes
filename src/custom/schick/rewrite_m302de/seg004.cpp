@@ -1122,7 +1122,6 @@ void wait_for_vsync(void)
  * \brief   the snow effect for the map screen
  *
  * \param   src         pointer to a picture
- *
  */
 void map_effect(Bit8u *src)
 {

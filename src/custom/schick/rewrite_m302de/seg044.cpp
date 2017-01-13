@@ -130,9 +130,7 @@ Bit8s get_seq_header(Bit16s ani)
  * \param   hero        pointer to hero
  * \param   weapon_type the type of weapon for the animation [-1, 5], 3,4,5 are range weapons
  * \param   action_type {2, 15, 100, 102, 103}
- *
  */
-
 /* Borlandified and identical */
 void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapon_type, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
 {
@@ -338,7 +336,6 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 /**
  * \brief   prepares the animation sequence of a hero in fights
  */
-
 /* Borlandified and identical */
 void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
 {
@@ -724,7 +721,6 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
  *
  * This is used for "Blitz", "Fulminictus", "Ignifaxius"
  */
-
 /* Borlandified and identical */
 void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target, signed short caster,
 								signed short v5)

@@ -143,7 +143,6 @@ struct dummy1 {
  * \brief   show some stars on the picture of a healed hero
  *
  * \param   hero        the hero who heals
- *
  */
 void magic_heal_ani(Bit8u *hero)
 {

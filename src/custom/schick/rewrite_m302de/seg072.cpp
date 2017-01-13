@@ -862,7 +862,6 @@ signed short count_map_parts(void)
  * \brief   check if a hero in the group has the letter of introduction
  *
  * \return              0 = no letter, 1 = have the letter
- *
  */
 signed short has_intro_letter(void)
 {

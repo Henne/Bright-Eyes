@@ -164,7 +164,6 @@ signed short MON_get_spell_cost(signed short mspell_nr, signed short flag)
  * \param   t3          nr of 3rd attribute
  * \param   bonus       modificator
  */
-
 signed short MON_test_attrib3(Bit8u *monster, signed short t1, signed short t2, signed short t3, signed char bonus)
 {
 	signed short randval;
