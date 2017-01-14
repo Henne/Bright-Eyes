@@ -264,10 +264,10 @@ signed short get_town_lookup_entry(void)
 /**
  * \brief   gives a hint where a informer lives
  *
- * \return              a pointer to the string.
+ *          Game Info: You can ask in some towns where informers live.
+ *          This function returns a pointer to the answer or to an empty string.
  *
- * Game Info: You can ask in some towns where informers live.
- * This function returns a pointer to the answer or to an empty string.
+ * \return              a pointer to the string.
  */
 RealPt get_informer_hint(void)
 {
@@ -366,11 +366,10 @@ RealPt get_random_tavern_message(void)
  *
  * \param   amount      how much amount fluid you get
  *
- * TODO:
- * This function is only called while sitting in a tavern.
- * When you enter a tavern and order food another function is called.
- * Also this function is called in taverns with amount = 10,
- * and in the thorwalian dungeon with 100.
+ * \todo    This function is only called while sitting in a tavern.
+ *          When you enter a tavern and order food another function is called.
+ *          Also this function is called in taverns with amount = 10,
+ *          and in the thorwalian dungeon with 100.
  */
 void drink_while_drinking(signed short amount)
 {
@@ -400,11 +399,10 @@ void drink_while_drinking(signed short amount)
  *
  * \param   amount      how much food you get
  *
- * TODO:
- * This function is only called while sitting in a tavern.
- * When you enter a tavern and order food another function is called.
- * Also this function is called only at one play with amount = 100,
- * so there is space for tuning.
+ * \todo    This function is only called while sitting in a tavern.
+ *          When you enter a tavern and order food another function is called.
+ *          Also this function is called only at one play with amount = 100,
+ *          so there is space for tuning.
  */
 void eat_while_drinking(signed short amount)
 {

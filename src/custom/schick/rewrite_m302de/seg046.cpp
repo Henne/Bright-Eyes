@@ -135,9 +135,9 @@ void status_show_skills(Bit8u *hero) {
 /**
  * \brief   a helper for an Original Bugfix
  *
- * \param   fmt         format string
+ *          This makes changes to the max LE visible by changing the format string.
  *
- * This makes changes to the max LE visible by changing the format string.
+ * \param   fmt         format string
  */
 static void set_status_string(char *fmt)
 {
@@ -151,9 +151,9 @@ static void set_status_string(char *fmt)
 /**
  * \brief   a helper for an Original Bugfix
  *
- * \param   fmt         format string
+ *          This makes changes to the max LE visible by changing the format string.
  *
- * This makes changes to the max LE visible by changing the format string.
+ * \param   fmt         format string
  */
 static void reset_status_string(char *fmt)
 {

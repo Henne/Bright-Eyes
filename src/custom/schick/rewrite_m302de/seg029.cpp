@@ -106,10 +106,10 @@ void draw_playmask(void)
 /**
  * \brief   copys the forename from a name
  *
+ *          A forename has a maximum length of 7 characters.
+ *
  * \param   dst         wheres the forename should be stored
  * \param   name        the full name
- *
- * A forename has a maximum length of 7 characters.
  */
 void copy_forename(Bit8u *dst, Bit8u *name)
 {
@@ -348,9 +348,9 @@ void clear_loc_line(void)
 /**
  * \brief   marks a heros icon in the playmask
  *
- * \param   pos         position of the hero
+ *          This function is only used from sell- and repair screens.
  *
- * This function is only used from sell- and repair screens.
+ * \param   pos         position of the hero
  */
 void select_hero_icon(unsigned short pos) {
 
@@ -388,9 +388,9 @@ void select_hero_icon(unsigned short pos) {
 /**
  * \brief   deselect a heros icon in the playmask
  *
- * \param   pos         position of the hero
+ *          This function is only used from sell- and repair screens.
  *
- * This function is only used from sell- and repair screens.
+ * \param   pos         position of the hero
  */
 /* TODO: this function an select_hero_icon() can be merged into one. */
 void deselect_hero_icon(unsigned short pos) {

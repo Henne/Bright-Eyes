@@ -297,15 +297,15 @@ signed short has_hero_stacked(Bit8u *hero, unsigned short item)
 /**
  * \brief   generates an item and gives it to hero
  *
+ *          The mode parameter works that way: If the weight the hero carries
+ *          is greater than KK*10 mode 0 and 1 will not give the hero that item.
+ *          The difference is, that mode = 1 prints a warning, mode = 0 is quiet.
+ *          mode = 2 ignores the carry weight completely.
+ *
  * \param   hero        the hero who should get the item
  * \param   item        id of the item
  * \param   mode        0 = quiet / 1 = warn / 2 = ignore
  * \param   nr          number of item the hero should get
- *
- * The mode parameter works that way: If the weight the hero carries
- * is greater than KK*10 mode 0 and 1 will not give the hero that item.
- * The difference is, that mode = 1 prints a warning, mode = 0 is quiet.
- * mode = 2 ignores the carry weight completely.
  */
 signed short give_hero_new_item(Bit8u *hero, signed short item, signed short mode, signed short nr)
 {

@@ -526,9 +526,9 @@ void DNG15_small_wounds(void)
 /**
  * \brief   group find debris
  *
- * \param   ladder      (0 = no ladder, 1 = ladder)
+ *          The group may find a ladder to descent to the next dungeon level.
  *
- * The group may find a ladder to descent to the next dungeon level.
+ * \param   ladder      (0 = no ladder, 1 = ladder)
  */
 void DNG15_debris(signed short ladder)
 {

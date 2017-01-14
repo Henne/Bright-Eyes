@@ -170,11 +170,11 @@ void FIG_add_msg(unsigned short f_action, unsigned short damage)
 /**
  * \brief   damages an enemy
  *
+ *          This function has some tweaks, dependent on the fight number.
+ *
  * \param   enemy       pointer to the enemy
  * \param   damage      the damage
  * \param   flag        unknown
- *
- * This function has some tweaks, dependent on the fight number.
  */
 void FIG_damage_enemy(Bit8u *enemy, Bit16s damage, signed short flag)
 {

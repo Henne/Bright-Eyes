@@ -24,9 +24,9 @@ namespace M302de {
 /**
  * \brief   get gossip in taverns
  *
- * \return              index of the gossip message
+ *          This sets also some informers and camp grounds as known.
  *
- * This sets also some informers and camp grounds as known.
+ * \return              index of the gossip message
  */
 unsigned short get_tavern_gossip(void)
 {

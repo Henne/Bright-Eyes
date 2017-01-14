@@ -92,9 +92,10 @@ unsigned short get_hero_KK_best() {
 /**
  * \brief   returns the disease number the hero has
  *
- * \param   hero        the hero which should be checked
+ *          Only the first disease is returned here.
  *
- * Only the first disease is returned here.
+ * \param   hero        the hero which should be checked
+ * \return              number of the first disease the hero has
  */
 unsigned short hero_is_diseased(Bit8u *hero)
 {
@@ -110,9 +111,10 @@ unsigned short hero_is_diseased(Bit8u *hero)
 /**
  * \brief   returns the poison number the hero has
  *
- * \param   hero        the hero which should be checked
+ *          Only the first poison is returned here.
  *
- * Only the first poison is returned here.
+ * \param   hero        the hero which should be checked
+ * \return              number of the first poisoning the hero has
  */
 unsigned short hero_is_poisoned(Bit8u *hero)
 {

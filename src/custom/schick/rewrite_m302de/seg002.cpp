@@ -4398,10 +4398,10 @@ void sub_hero_le(Bit8u *hero, signed short le)
 /**
  * \brief   regenerates LE of a hero
  *
+ *          This functions does some magic in fights, when a hero awakes.
+ *
  * \param   hero        pointer to the hero
  * \param   le          LE to be regenerated
- *
- * This functions does some magic in fights, when a hero awakes.
  */
 void add_hero_le(Bit8u *hero, signed short le)
 {

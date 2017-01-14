@@ -712,14 +712,14 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 /**
  * \brief   prepares a spell animation
  *
+ *          This is used for "Blitz", "Fulminictus", "Ignifaxius"
+ *
  * \param   v1          0 or 1
  * \param   p           ????
  * \param   v2          4 of 99
  * \param   target      the id of the target
  * \param   caster      the id of the caster
  * \param   v5          0 or 1
- *
- * This is used for "Blitz", "Fulminictus", "Ignifaxius"
  */
 /* Borlandified and identical */
 void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target, signed short caster,

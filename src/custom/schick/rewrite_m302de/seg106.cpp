@@ -25,14 +25,14 @@ namespace M302de {
 /**
  * \brief   check for a two hand collision
  *
+ *          A hero can not equip a two-handed weapon if one hand is in use,
+ *          nor can he equip something in his free hand if he has a two-handed weapon
+ *          in the other.
+ *          If such a collision is detected this function returns 1 else 0.
+ *
  * \param   hero        the hero
  * \param   item        the item which should be equipped
  * \param   pos         the position the item should be placed
- *
- * A hero can not equip a two-handed weapon if one hand is in use,
- * nor can he equip something in his free hand if he has a two-handed weapon
- * in the other.
- * If such a collision is detected this function returns 1 else 0.
  */
 /* Borlandified and identical */
 signed short two_hand_collision(Bit8u* hero, signed short item, signed short pos)

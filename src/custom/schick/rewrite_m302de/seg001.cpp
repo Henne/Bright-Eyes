@@ -180,7 +180,7 @@ static void CD_unused1(void)
  *
  * \return              clock ticks since midnight, the system time.
  *
- * TODO: produces a compiler warning and is a bit hacky
+ * \todo    produces a compiler warning and is a bit hacky
  */
 /* Borlandified and identical */
 Bit32s CD_get_tod(void)
