@@ -86,8 +86,9 @@ static signed short (*DNG_handler[])(void) = {
 #endif
 
 /**
- * \brief	opening doors logic
- * \param	action	how to try to open the door (smash / lockpicks / magic)
+ * \brief   opening doors logic
+ *
+ * \param   action      how to try to open the door (smash / lockpicks / magic)
  */
 void DNG_door(signed short action)
 {
@@ -326,8 +327,9 @@ void print_msg_with_first_hero(Bit8u *msg)
 }
 
 /**
- * \brief		fallpit logic for the current group in dungeons
- * \param max_damage	maximum damage if a hero drops in the fallpit
+ * \brief   fallpit logic for the current group in dungeons
+ *
+ * \param   max_damage  maximum damage if a hero drops in the fallpit
  */
 void DNG_fallpit_test(signed short max_damage)
 {
@@ -827,8 +829,9 @@ void DNG_fight(void)
 }
 
 /**
- * \brief		the group finds a barrel of water
- * \param unit_ptr	pointer to the number of water units
+ * \brief   the group finds a barrel of water
+ *
+ * \param   unit_ptr    pointer to the number of water units
  */
 void DNG_waterbarrel(Bit8u *unit_ptr)
 {

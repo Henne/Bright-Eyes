@@ -285,7 +285,7 @@ void DNG01_chest6_x3(RealPt chest)
 	get_item(219, 1, 1);
 
 /* Original-Bug: The string 14 from SHIP.DTX needs a pointer to the name of the hero, not an integer.
-*/
+ */
 #ifdef M302de_ORIGINAL_BUGFIX
 	sprintf((char*)Real2Host(ds_readfp(TEXT_OUTPUT_BUF)),
 		(char*)get_tx(0x38),

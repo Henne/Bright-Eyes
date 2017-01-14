@@ -33,12 +33,12 @@
 namespace M302de {
 #endif
 /**
- * \brief	combat menu
+ * \brief   combat menu
  *
- * \param hero		pointer to the hero
- * \param hero_pos	position of the hero
- * \param x		x-coordinate on the chessboard
- * \param y		y-coordinate on the chessboard
+ * \param   hero        pointer to the hero
+ * \param   hero_pos    position of the hero
+ * \param   x           x-coordinate on the chessboard
+ * \param   y           y-coordinate on the chessboard
  */
 void FIG_menu(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 {

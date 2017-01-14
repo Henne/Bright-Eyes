@@ -489,10 +489,10 @@ signed short DNG15_handler(void)
 }
 
 /**
- * \brief	heros may get small wounds
+ * \brief   heros may get small wounds
  *
- * Each alive hero in the group makes a GE-3 test.
- * If it fails he looses 1 LE.
+ *          Each alive hero in the group makes a GE-3 test.
+ *          If it fails he looses 1 LE.
  */
 void DNG15_small_wounds(void)
 {
@@ -524,10 +524,11 @@ void DNG15_small_wounds(void)
 }
 
 /**
- * \brief	group find debris
- * \param	ladder	(0 = no ladder, 1 = ladder)
+ * \brief   group find debris
  *
- * The group may find a ladder to descent to the next dungeon level.
+ *          The group may find a ladder to descent to the next dungeon level.
+ *
+ * \param   ladder      (0 = no ladder, 1 = ladder)
  */
 void DNG15_debris(signed short ladder)
 {
@@ -761,10 +762,10 @@ void DNG15_cursed_money(Bit8u* ptr)
 }
 
 /**
- * \brief
- * \param text		pointer to the output text
- * \param wounds	group may get wounds (0/1)
- * \param ladder	here is a ladder to the next level
+ * \brief   * \param text		pointer to the output text
+ *
+ * \param   wounds      group may get wounds (0/1)
+ * \param   ladder      here is a ladder to the next level
  */
 void DNG15_wounds_and_ladders(Bit8u* text, signed short wounds, signed short ladder)
 {

@@ -28,9 +28,10 @@ namespace M302de {
 #endif
 
 /**
- * \brief dialog logic for the informers hjore and jurge
- * \param informer	0 = jurge, 1 = hjore
- * \param state		state of the dialog
+ * \brief   dialog logic for the informers hjore and jurge
+ *
+ * \param   informer    0 = jurge, 1 = hjore
+ * \param   state       state of the dialog
  */
 void INF_jurge_hjore(signed short informer, signed short state)
 {
@@ -107,9 +108,10 @@ void INF_jurge_hjore(signed short informer, signed short state)
 }
 
 /**
- * \brief dialog logic for the informers yasma, umbrik and isleif
- * \param informer	0 = yasma, 1 = umbrik, 2 = isleif
- * \param state		state of the dialog
+ * \brief   dialog logic for the informers yasma, umbrik and isleif
+ *
+ * \param   informer    0 = yasma, 1 = umbrik, 2 = isleif
+ * \param   state       state of the dialog
  */
 void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 {
@@ -206,9 +208,10 @@ void INF_yasma_umbrik_isleif(signed short informer, signed short state)
 }
 
 /**
- * \brief dialog logic for the informers ragna, beorn and algrid
- * \param informer	0 = ragna, 1 = beorn, 2 = algrid
- * \param state		state of the dialog
+ * \brief   dialog logic for the informers ragna, beorn and algrid
+ *
+ * \param   informer    0 = ragna, 1 = beorn, 2 = algrid
+ * \param   state       state of the dialog
  */
 void INF_ragna_beorn_algrid(signed short informer, signed short state)
 {
@@ -382,9 +385,10 @@ void INF_ragna_beorn_algrid(signed short informer, signed short state)
 }
 
 /**
- * \brief dialog logic for the informers eliane and tiomar
- * \param informer	0 = eliane, 1 = tiomar
- * \param state		state of the dialog
+ * \brief   dialog logic for the informers eliane and tiomar
+ *
+ * \param   informer    0 = eliane, 1 = tiomar
+ * \param   state       state of the dialog
  */
 void INF_eliane_tiomar(signed short informer, signed short state)
 {
@@ -478,9 +482,10 @@ void INF_eliane_tiomar(signed short informer, signed short state)
 }
 
 /**
- * \brief dialog logic for the informers olvir and asgrimm
- * \param informer	0 = olvir, 1 = asgrimm
- * \param state		state of the dialog
+ * \brief   dialog logic for the informers olvir and asgrimm
+ *
+ * \param   informer    0 = olvir, 1 = asgrimm
+ * \param   state       state of the dialog
  */
 void INF_olvir_asgrimm(signed short informer, signed short state)
 {
@@ -573,9 +578,10 @@ void INF_olvir_asgrimm(signed short informer, signed short state)
 }
 
 /**
- * \brief dialog logic for the informers treborn and unicorn (1st meeting)
- * \param informer	0 = treborn, 1 = treborn, 2 = unicorn
- * \param state		state of the dialog
+ * \brief   dialog logic for the informers treborn and unicorn (1st meeting)
+ *
+ * \param   informer    0 = treborn, 1 = treborn, 2 = unicorn
+ * \param   state       state of the dialog
  */
 void INF_treborn_unicorn(signed short informer, signed short state)
 {
@@ -716,9 +722,10 @@ void INF_treborn_unicorn(signed short informer, signed short state)
 }
 
 /**
- * \brief dialog logic for the informers swafnild and unicorn (2nd meeting)
- * \param informer	0 = treborn, 1 = unicorn
- * \param state		state of the dialog
+ * \brief   dialog logic for the informers swafnild and unicorn (2nd meeting)
+ *
+ * \param   informer    0 = treborn, 1 = unicorn
+ * \param   state       state of the dialog
  */
 void INF_swafnild_unicorn(signed short informer, signed short state)
 {
@@ -834,8 +841,9 @@ void INF_swafnild_unicorn(signed short informer, signed short state)
 }
 
 /**
- * \brief counts the collected parts of the treasure map
- * \return the number of map parts
+ * \brief   counts the collected parts of the treasure map
+ *
+ * \return              the number of map parts
  */
 signed short count_map_parts(void)
 {
@@ -851,9 +859,9 @@ signed short count_map_parts(void)
 }
 
 /**
- * \brief check if a hero in the group has the letter of introduction
- * \return 0 = no letter, 1 = have the letter
+ * \brief   check if a hero in the group has the letter of introduction
  *
+ * \return              0 = no letter, 1 = have the letter
  */
 signed short has_intro_letter(void)
 {

@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg039.cpp
-*/
+ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -24,16 +24,16 @@ namespace M302de {
 #endif
 
 /**
- * \brief	calculates the beeline
+ * \brief   calculates the beeline
  *
- *		This function calculates the between two points on the chessboard.
- *		It is also used as a heuristic.
- * \param x1	x-coordinate of the first point
- * \param y1	y-coordinate of the first point
- * \param x2	x-coordinate of the second point
- * \param y2	y-coordinate of the seconn point
+ *          This function calculates the between two points on the chessboard.
+ *          It is also used as a heuristic.
  *
- * \return		beeline between the two points
+ * \param   x1          x-coordinate of the first point
+ * \param   y1          y-coordinate of the first point
+ * \param   x2          x-coordinate of the second point
+ * \param   y2          y-coordinate of the seconn point
+ * \return              beeline between the two points
  */
 signed short calc_beeline(signed short x1, signed short y1, signed short x2, signed short y2)
 {
@@ -42,11 +42,11 @@ signed short calc_beeline(signed short x1, signed short y1, signed short x2, sig
 
 
 /**
- * \brief get the type of the range weapon of a hero
- * \param hero	pointer to hero
+ * \brief   get the type of the range weapon of a hero
  *
- * \return range weapon type {-1, 3, 4, 5}: -1 = none, 3 = shooting, 4 = throwing, 5 = spear weapon
-*/
+ * \param   hero        pointer to hero
+ * \return              range weapon type {-1, 3, 4, 5}: -1 = none, 3 = shooting, 4 = throwing, 5 = spear weapon
+ */
 signed short FIG_get_range_weapon_type(Bit8u *hero)
 {
 	Bit8u *ptr;
@@ -79,10 +79,11 @@ signed short FIG_get_range_weapon_type(Bit8u *hero)
 }
 
 /**
- * \brief fills an enemies sheet from a template
- * \param sheet_nr	the number of the sheet
- * \param enemy_id	the ID of the enemy (MONSTER.DAT)
- * \param round		the fight round the enemy appears
+ * \brief   fills an enemies sheet from a template
+ *
+ * \param   sheet_nr    the number of the sheet
+ * \param   enemy_id    the ID of the enemy (MONSTER.DAT)
+ * \param   round       the fight round the enemy appears
  */
 void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned char round)
 {
@@ -185,14 +186,14 @@ void fill_enemy_sheet(unsigned short sheet_nr, signed char enemy_id, unsigned ch
 }
 
 /**
- *	\brief		places an object on the chessboard
- *	\param	x	X-Coordinate
- *	\param	y	Y-Coordinate
- *	\param	object	object ID
- *	\param	type	typus for heros, monster_id for enemies
- *	\param	dir	looking direction
+ * \brief   places an object on the chessboard
  *
- *	\return 1 if the placement was successful or 0 if not.
+ * \param   x           X-Coordinate
+ * \param   y           Y-Coordinate
+ * \param   object      object ID
+ * \param   type        typus for heros, monster_id for enemies
+ * \param   dir         looking direction
+ * \return              1 if the placement was successful or 0 if not.
  */
 unsigned short place_obj_on_cb(signed short x, signed short y, signed short object, signed char type, signed char dir)
 {
@@ -256,11 +257,11 @@ unsigned short place_obj_on_cb(signed short x, signed short y, signed short obje
 }
 
 /**
- * \brief load the sprites from monsters
+ * \brief   load the sprites from monsters
  *
- * \param ptr	pointer to a monster datasheet
- * \param x	x-coordinate on the chessboard
- * \param y	y-coordinate on the chessboard
+ * \param   ptr         pointer to a monster datasheet
+ * \param   x           x-coordinate on the chessboard
+ * \param   y           y-coordinate on the chessboard
  */
 void FIG_load_enemy_sprites(Bit8u *ptr, signed short x, signed short y)
 {

@@ -26,7 +26,7 @@ namespace M302de {
 #endif
 
 /**
- * \brief	select a random city event type
+ * \brief   select a random city event type
  */
 void city_event_switch(void)
 {
@@ -60,7 +60,7 @@ void city_event_switch(void)
 }
 
 /**
- * \brief	a hero may loose W20 S to a pickpocket
+ * \brief   a hero may loose W20 S to a pickpocket
  */
 void city_event_1(void)
 {
@@ -125,7 +125,7 @@ void city_event_1(void)
 }
 
 /**
- * \brief	a hero may loose all money to a pickpocket
+ * \brief   a hero may loose all money to a pickpocket
  */
 void city_event_2(void)
 {
@@ -170,7 +170,7 @@ void city_event_2(void)
 }
 
 /**
- * \brief	a beggar asks for 1D
+ * \brief   a beggar asks for 1D
  */
 void city_event_3(void)
 {
@@ -196,7 +196,7 @@ void city_event_3(void)
 }
 
 /**
- * \brief	a beggar asks for 1D and tells some gossip
+ * \brief   a beggar asks for 1D and tells some gossip
  */
 void city_event_4(void)
 {
@@ -259,7 +259,7 @@ void city_event_5(void)
 }
 
 /**
- * \brief	meet a merchant
+ * \brief   meet a merchant
  */
 void city_event_6(void)
 {
@@ -292,7 +292,7 @@ void city_event_6(void)
 }
 
 /**
- * \brief	some harmless events
+ * \brief   some harmless events
  */
 void city_event_7(void)
 {
@@ -349,7 +349,7 @@ void city_event_7(void)
 }
 
 /**
- * \brief	some harmless events
+ * \brief   some harmless events
  */
 void city_event_8(void)
 {
@@ -383,7 +383,7 @@ void city_event_8(void)
 }
 
 /**
- * \brief	some harmless events
+ * \brief   some harmless events
  */
 void city_event_9(void)
 {
@@ -402,7 +402,7 @@ void city_event_9(void)
 }
 
 /**
- * \brief	return a pointer to a weapon related information
+ * \brief   return a pointer to a weapon related information
  */
 RealPt waffinfo_weapons(void)
 {
@@ -419,7 +419,7 @@ RealPt waffinfo_weapons(void)
 }
 
 /**
- * \brief	return a pointer to a herb related information
+ * \brief   return a pointer to a herb related information
  */
 RealPt waffinfo_herbs(void)
 {
@@ -436,7 +436,7 @@ RealPt waffinfo_herbs(void)
 }
 
 /**
- * \brief	return a pointer to a general information
+ * \brief   return a pointer to a general information
  */
 RealPt waffinfo_general(void)
 {

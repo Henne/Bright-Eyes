@@ -672,9 +672,9 @@ void DNG02_chest06_func3(RealPt chest)
 }
 
 /**
- * \brief print introductions of dungeon #2 fights
+ * \brief   print introductions of dungeon #2 fights
  *
- * \param fight_id	ID of the fight
+ * \param   fight_id    ID of the fight
  */
 void DNG02_fight_intro(signed short fight_id)
 {

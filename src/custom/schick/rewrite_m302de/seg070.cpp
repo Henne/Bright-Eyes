@@ -28,7 +28,7 @@ namespace M302de {
 #endif
 
 /**
- * \brief		carriage station
+ * \brief   carriage station
  */
 void PHX_fuhrhaus(void)
 {
@@ -72,7 +72,7 @@ void PHX_fuhrhaus(void)
 }
 
 /**
- * \brief	stadthaus of Phexcaer
+ * \brief   stadthaus of Phexcaer
  */
 void PHX_stadthaus(void)
 {
@@ -140,7 +140,7 @@ void PHX_stadthaus(void)
 }
 
 /**
- * \brief	spielhaus of Phexcaer
+ * \brief   spielhaus of Phexcaer
  */
 void PHX_spielhaus(void)
 {
@@ -246,7 +246,7 @@ void PHX_spielhaus(void)
 }
 
 /**
- * \brief	the villa of Ektor Gremob
+ * \brief   the villa of Ektor Gremob
  */
 void PHX_villa_gremob(void)
 {
@@ -258,7 +258,7 @@ void PHX_villa_gremob(void)
 }
 
 /**
- * \brief	the brothel
+ * \brief   the brothel
  */
 void PHX_bordell(void)
 {
@@ -309,7 +309,7 @@ void PHX_bordell(void)
 }
 
 /**
- * \brief	the pharmacy
+ * \brief   the pharmacy
  */
 void PHX_apotheke(void)
 {
@@ -464,7 +464,7 @@ void PHX_apotheke(void)
 }
 
 /**
- * \brief	the healer
+ * \brief   the healer
  */
 void PHX_healer(void)
 {

@@ -613,7 +613,7 @@ void seg066_0bad(void)
 }
 
 /**
- *  \brief	draws water and grass textures
+ * \brief   draws water and grass textures
  */
 void city_water_and_grass(void)
 {
@@ -664,7 +664,7 @@ void city_water_and_grass(void)
 }
 
 /**
- *  \brief	draws building textures
+ * \brief   draws building textures
  */
 void city_building_textures(void)
 {

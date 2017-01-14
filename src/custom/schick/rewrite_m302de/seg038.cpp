@@ -8,7 +8,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg038.cpp
-*/
+ */
 
 #include <string.h>
 
@@ -23,12 +23,12 @@ namespace M302de {
 #endif
 
 /**
- * FIG_search_obj_on_cb - searches an object on the chessboard
- * @obj:	number of the object
- * @px:		pointer where x should be stored
- * @py:		pointer where y should be stored
+ * \brief   searches an object on the chessboard
  *
- * Returns 0 if the object was not found. If the object was
+ * \param   obj         number of the object
+ * \param   px          pointer where x should be stored
+ * \param   py          pointer where y should be stored
+ * \return              0 if the object was not found. If the object was
  * found it returns 1 and stores the coordinates at the pointers.
  */
 unsigned short FIG_search_obj_on_cb(signed short obj, signed short *px, signed short *py)
@@ -295,16 +295,15 @@ signed short FIG_count_smth(signed char *p)
 }
 
 /**
- * \brief		TODO
+ * \brief   TODO
  *
- * \param in_ptr	pointer to hero or monster, depends on value of a4
- * \param a1		nr of hero or monster
- * \param x_in		x-coordinate
- * \param y_in		y-coordinate
- * \param a4		fight_action
- *
- * \return {-1,1}
-*/
+ * \param   in_ptr      pointer to hero or monster, depends on value of a4
+ * \param   a1          nr of hero or monster
+ * \param   x_in        x-coordinate
+ * \param   y_in        y-coordinate
+ * \param   a4          fight_action
+ * \return              {-1,1}
+ */
 signed short seg038(Bit8u *in_ptr, signed short a1, signed short x_in, signed short y_in, signed short a4)
 {
 	signed short l_si;

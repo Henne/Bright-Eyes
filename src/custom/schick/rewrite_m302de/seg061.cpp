@@ -401,9 +401,10 @@ signed short char_erase(void)
 }
 
 /**
- * \brief		MIRACLE heal one hero
- * \param le_in		healable LE maximum
- * \param str		a format-string for the output
+ * \brief   MIRACLE heal one hero
+ *
+ * \param   le_in       healable LE maximum
+ * \param   str         a format-string for the output
  */
 void miracle_heal_hero(signed short le_in, Bit8u *str)
 {
@@ -489,10 +490,11 @@ void miracle_resurrect(Bit8u *str)
 }
 
 /**
- * \brief		MIRACLE modify all living group members
- * \param offset	offset in the datasheet
- * \param timer_value	how long should the modification last
- * \param mod		modification value
+ * \brief   MIRACLE modify all living group members
+ *
+ * \param   offset      offset in the datasheet
+ * \param   timer_value how long should the modification last
+ * \param   mod         modification value
  */
 void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 {
@@ -518,9 +520,10 @@ void miracle_modify(unsigned short offset, Bit32s timer_value, signed short mod)
 }
 
 /**
- * \brief		MIRACLE repair or magicise weapon
- * \param str		format string for output
- * \param mode		0 = magic, != 0 repair
+ * \brief   MIRACLE repair or magicise weapon
+ *
+ * \param   str         format string for output
+ * \param   mode        0 = magic, != 0 repair
  */
 void miracle_weapon(Bit8u *str, signed short mode)
 {

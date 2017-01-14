@@ -36,11 +36,11 @@ namespace M302de {
 
 /**
  *
- *	@p:	pointer to an object 35 byte
- *	@x:	x coordinate on the screen
- *	@y:	y coordinate on the screen
+ * \param   p           pointer to an object 35 byte
+ * \param   x           x coordinate on the screen
+ * \param   y           y coordinate on the screen
  *
-*/
+ */
 unsigned short FIG_obj_needs_refresh(Bit8u *p, signed short x, signed short y)
 {
 	Bit8u *i;
@@ -85,13 +85,14 @@ damn_label:
 }
 
 /**
- * \brief	set the color of the star in fights
- *		Sets the color of the star which shows fight activities,
- *		like damage, in fights.
+ * \brief   set the color of the star in fights
  *
- * \param	ptr	pointer to the star template
- * \count	number of bytes the star has
- * \color	1=red/2=green/3=blue/4=yellow/11=darkbrown/12=lightbrown/13=pink
+ *          Sets the color of the star which shows fight activities,
+ *          like damage, in fights.
+ *
+ * \param   ptr         pointer to the star template
+ * \param   count       number of bytes the star has
+ * \param   color       1=red/2=green/3=blue/4=yellow/11=darkbrown/12=lightbrown/13=pink
  *
  */
 void FIG_set_star_color(Bit8u *ptr, unsigned short count, unsigned char color)
@@ -107,13 +108,13 @@ void FIG_set_star_color(Bit8u *ptr, unsigned short count, unsigned char color)
 	}
 }
 
-/*
- *	FIG_name_3rd_case - returns name in the 3rd german case
- *	@type:	1 = enemy / 2 = hero
- *	@pos:	position
+/**
+ * \brief   returns name in the 3rd german case
  *
- *	Would return "einem Magier" if the enemy is a "Magier".
-*/
+ * \param   type        1 = enemy / 2 = hero
+ * \param   pos         position
+ * \return              "einem Magier" if the enemy is a "Magier".
+ */
 //static
 RealPt FIG_name_3rd_case(unsigned short type, volatile unsigned short pos)
 {
@@ -124,13 +125,13 @@ RealPt FIG_name_3rd_case(unsigned short type, volatile unsigned short pos)
 	}
 }
 
-/*
- *	FIG_name_4th_case - returns name in the 4th german case
- *	@type:	1 = enemy / 2 = hero
- *	@pos:	position
+/**
+ * \brief   returns name in the 4th german case
  *
- *	Would return "einen Magier" if the enemy is a "Magier".
-*/
+ * \param   type        1 = enemy / 2 = hero
+ * \param   pos         position
+ * \return              "einen Magier" if the enemy is a "Magier".
+ */
 //static
 RealPt FIG_name_4th_case(unsigned short type, volatile unsigned short pos)
 {
@@ -141,13 +142,13 @@ RealPt FIG_name_4th_case(unsigned short type, volatile unsigned short pos)
 		return GUI_names_grammar(2, pos, 1);
 }
 
-/*
- *	FIG_name_1st_case - returns name in the 1st german case
- *	@type:	1 = enemy / 2 = hero
- *	@pos:	position
+/**
+ * \brief   returns name in the 1st german case
  *
- *	Would return "ein Magier" if the enemy is a "Magier".
-*/
+ * \param   type        1 = enemy / 2 = hero
+ * \param   pos         position
+ * \return              "ein Magier" if the enemy is a "Magier".
+ */
 //static
 RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
 {
@@ -951,7 +952,7 @@ void draw_fight_screen(Bit16u val)
 when the Timer IRQ cannot set ds:FIG_CONTINUE_PRINT to 0.
 So this call to wait_for_vsync() passes control
 to the DOSBox-CPU and may run the timer.
-*/
+ */
 #ifdef M302de_SPEEDFIX
 			wait_for_vsync();
 #endif

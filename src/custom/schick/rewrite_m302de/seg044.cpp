@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg044.cpp
-*/
+ */
 
 #include "string.h"
 
@@ -22,13 +22,12 @@ namespace M302de {
 #endif
 
 /**
- * \brief copies an animation sequence
+ * \brief   copies an animation sequence
  *
- * \param dst	where to copy the sequence
- * \param ani	the number of the animation sequence
- * \param type	type of animation (3 = WEAPANI.DAT else ANI.DAT)
- *
- * \return	the number of copied bytes
+ * \param   dst         where to copy the sequence
+ * \param   ani         the number of the animation sequence
+ * \param   type        type of animation (3 = WEAPANI.DAT else ANI.DAT)
+ * \return              the number of copied bytes
  */
 /* Borlandified and identical */
 Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
@@ -82,9 +81,10 @@ Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 }
 
 /**
- * \brief	TODO
- * \param	ani	the number of the animation sequence
- * \return	the first byte of the sequence from ANI.DAT {0,1,2,3,4}
+ * \brief   TODO
+ *
+ * \param   ani         the number of the animation sequence
+ * \return              the first byte of the sequence from ANI.DAT {0,1,2,3,4}
  */
 /* Borlandified and identical */
 Bit8s get_seq_header(Bit16s ani)
@@ -124,14 +124,13 @@ Bit8s get_seq_header(Bit16s ani)
 }
 
 /**
- *	FIG_prepare_hero_fight_ani()	- prepares the animation sequence of a hero in fights
- *	@a1:	[0, 1]
- *	@hero:	pointer to hero
- *	@weapon_type:	the type of weapon for the animation [-1, 5], 3,4,5 are range weapons
- *	@action_type:	{2, 15, 100, 102, 103}
+ * \brief   prepares the animation sequence of a hero in fights
  *
-*/
-
+ * \param   a1          [0, 1]
+ * \param   hero        pointer to hero
+ * \param   weapon_type the type of weapon for the animation [-1, 5], 3,4,5 are range weapons
+ * \param   action_type {2, 15, 100, 102, 103}
+ */
 /* Borlandified and identical */
 void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapon_type, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
 {
@@ -335,9 +334,8 @@ void FIG_prepare_hero_fight_ani(signed short a1, Bit8u *hero, signed short weapo
 }
 
 /**
- *	FIG_prepare_enemy_fight_ani()	- prepares the animation sequence of a hero in fights
-*/
-
+ * \brief   prepares the animation sequence of a hero in fights
+ */
 /* Borlandified and identical */
 void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_action, signed short fid_attacker, signed short fid_target, signed short a7)
 {
@@ -573,13 +571,11 @@ void FIG_prepare_enemy_fight_ani(signed short a1, Bit8u *enemy, signed short f_a
 
 /**
  *
- * @v1: 0 or 1
- * @hero: pointer to a hero
- * @v2: 99 or 4
- * @obj1:
- * @obj2:
- * @v5: -1 or a var
- * @v6: 0 or 1
+ * \param   v1          0 or 1
+ * \param   hero        pointer to a hero
+ * \param   v2          99 or 4
+ * \param   obj1        * \param obj2	* \param v5	-1 or a var
+ * \param   v6          0 or 1
  */
 
 /* Borlandified and identical */
@@ -714,18 +710,17 @@ void seg044_002a(Bit16u v1, Bit8u *hero, Bit16u v2, Bit16s obj1, Bit16s obj2,
 
 
 /**
- * seg044_002f() - prepares a spell animation
- * @v1:		0 or 1
- * @p:		????
- * @v2:		4 of 99
- * @target:	the id of the target
- * @caster:	the id of the caster
- * @v5:		0 or 1
+ * \brief   prepares a spell animation
  *
- * This is used for "Blitz", "Fulminictus", "Ignifaxius"
-
+ *          This is used for "Blitz", "Fulminictus", "Ignifaxius"
+ *
+ * \param   v1          0 or 1
+ * \param   p           ????
+ * \param   v2          4 of 99
+ * \param   target      the id of the target
+ * \param   caster      the id of the caster
+ * \param   v5          0 or 1
  */
-
 /* Borlandified and identical */
 void seg044_002f(signed short v1, Bit8u *p, signed short v2, signed short target, signed short caster,
 								signed short v5)

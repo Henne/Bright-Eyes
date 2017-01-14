@@ -667,7 +667,7 @@ void cleanup_game(void)
 }
 
 /**
- * \brief	shows the game over screen
+ * \brief   shows the game over screen
  */
 /* Borlandified and identical */
 void game_over_screen(void)

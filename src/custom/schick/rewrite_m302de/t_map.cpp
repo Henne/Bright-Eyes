@@ -43,10 +43,11 @@ static inline void D1_TREAS(...) { }
 namespace M302de {
 
 /**
- * \brief returns a function pointer from a treasure description
- * \param ptr	RealMode pointer to the treasure description
- * \param off	offset of the pointer in the treasure description
- * \return pointer to the tresure function
+ * \brief   returns a function pointer from a treasure description
+ *
+ * \param   ptr         RealMode pointer to the treasure description
+ * \param   off         offset of the pointer in the treasure description
+ * \return              pointer to the tresure function
  */
 treasure_type t_map(RealPt ptr, const int off)
 {

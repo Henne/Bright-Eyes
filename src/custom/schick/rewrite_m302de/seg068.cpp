@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg058.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -727,10 +727,11 @@ void THO_academy(void)
 }
 
 /**
- * \brief	check if you can pay the price with an item
- * \param	price	price you want to pay
- * \return	-2 = enough money, -1 no item found or the item_id
-*/
+ * \brief   check if you can pay the price with an item
+ *
+ * \param   price       price you want to pay
+ * \return              -2 = enough money, -1 no item found or the item_id
+ */
 /* should be static */
 signed short academy_get_equal_item(signed short price)
 {

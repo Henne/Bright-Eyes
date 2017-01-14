@@ -140,10 +140,10 @@ struct dummy1 {
 };
 
 /**
- * magic_heal_ani() - show some stars on the picture of a healed hero
- * @hero:	the hero who heals
+ * \brief   show some stars on the picture of a healed hero
  *
-*/
+ * \param   hero        the hero who heals
+ */
 void magic_heal_ani(Bit8u *hero)
 {
 	signed short target_nr;
@@ -206,9 +206,10 @@ void magic_heal_ani(Bit8u *hero)
 }
 
 /**
- * FIG_do_spell_damage() - account physical spell damage in fight
- * @le:	LE someone looses
-*/
+ * \brief   account physical spell damage in fight
+ *
+ * \param   le          LE someone looses
+ */
 void FIG_do_spell_damage(signed short le)
 {
 
@@ -258,10 +259,10 @@ void FIG_do_spell_damage(signed short le)
 }
 
 /**
- * get_attackee_parade()  - calculates the PA value of one who is attacked
+ * \brief   calculates the PA value of one who is attacked
  *
- * This function is only used by the spell Kraehenruf.
-*/
+ *          This function is only used by the spell Kraehenruf.
+ */
 signed short get_attackee_parade(void)
 {
 
@@ -293,10 +294,10 @@ signed short get_attackee_parade(void)
 }
 
 /**
- * get_attackee_rs()  - calculates the RS value of one who is attacked
+ * \brief   calculates the RS value of one who is attacked
  *
- * This function is unused.
-*/
+ *          This function is unused.
+ */
 signed short get_attackee_rs(void)
 {
 	/* check if enemy or hero is attacked */
@@ -322,10 +323,11 @@ signed short get_attackee_rs(void)
 }
 
 /**
- *	get_spell_cost() - get the amount of AE-Points needed for a spell
- *	@spell:		numberof the spell
- *	@half cost:	the caster needs only half AE
-*/
+ * \brief   get the amount of AE-Points needed for a spell
+ *
+ * \param   spell       numberof the spell
+ * \param   half        cost    	the caster needs only half AE
+ */
 signed short get_spell_cost(signed short spell, signed short half_cost)
 {
 	signed char ret;
@@ -348,11 +350,10 @@ signed short get_spell_cost(signed short spell, signed short half_cost)
 }
 
 /**
- * \brief use magic menu, meditation and staffspell logic
+ * \brief   use magic menu, meditation and staffspell logic
  *
- * \param hero	pointer to the hero
- *
- * \return {0, 1, 2}
+ * \param   hero        pointer to the hero
+ * \return              {0, 1, 2}
  */
 signed short use_magic(RealPt hero)
 {
@@ -499,13 +500,12 @@ signed short use_magic(RealPt hero)
 }
 
 /**
- * \brief check if a spellclass can be used
+ * \brief   check if a spellclass can be used
  *
- * \param hero		pointer to the hero
- * \param spellclass_nr	the number of the spellclass
- *
- * \return 0 = can't be used, 1 = can be used
-*/
+ * \param   hero        pointer to the hero
+ * \param   spellclass_nr the number of the spellclass
+ * \return              0 = can't be used, 1 = can be used
+ */
 signed short can_use_spellclass(Bit8u *hero, signed short spellclass_nr)
 {
 	signed short i;
@@ -721,8 +721,8 @@ signed short select_spell(Bit8u *hero, signed short show_vals)
 }
 
 /**
-	test_spell - makes a spell test
-*/
+ * \brief   makes a spell test
+ */
 signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 {
 	signed short retval;
@@ -777,8 +777,8 @@ signed short test_spell(Bit8u *hero, signed short spell_nr, signed char bonus)
 }
 
 /**
-	test_spell_group - makes a spell test for all magic users in the current group
-*/
+ * \brief   makes a spell test for all magic users in the current group
+ */
 signed short test_spell_group(signed short spell, signed char bonus)
 {
 

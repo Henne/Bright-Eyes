@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg031.cpp
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -242,9 +242,9 @@ RealPt get_informer_forename(void)
 }
 
 /**
- * \brief ?
+ * \brief   ?
  *
- * return a value between 0 and 15
+ * \return              a value between 0 and 15
  */
 signed short get_town_lookup_entry(void)
 {
@@ -262,12 +262,12 @@ signed short get_town_lookup_entry(void)
 }
 
 /**
- * \brief	gives a hint where a informer lives
+ * \brief   gives a hint where a informer lives
  *
- * \return	a pointer to the string.
+ *          Game Info: You can ask in some towns where informers live.
+ *          This function returns a pointer to the answer or to an empty string.
  *
- * Game Info: You can ask in some towns where informers live.
- * This function returns a pointer to the answer or to an empty string.
+ * \return              a pointer to the string.
  */
 RealPt get_informer_hint(void)
 {
@@ -285,8 +285,9 @@ RealPt get_informer_hint(void)
 }
 
 /**
- * \brief	get the name on the current informer
- * \return	a pointer to the name of the informer
+ * \brief   get the name on the current informer
+ *
+ * \return              a pointer to the name of the informer
  */
 RealPt get_informer_name(void)
 {
@@ -294,9 +295,9 @@ RealPt get_informer_name(void)
 }
 
 /**
- * \brief	get the name of the informer in this town
- * \return	a pointer to the name of the informer
+ * \brief   get the name of the informer in this town
  *
+ * \return              a pointer to the name of the informer
  */
 RealPt get_informer_name2(void)
 {
@@ -305,8 +306,9 @@ RealPt get_informer_name2(void)
 }
 
 /**
- * \brief	loads a gossip message from the current town
- * \return	a pointer to the message.
+ * \brief   loads a gossip message from the current town
+ *
+ * \return              a pointer to the message.
  */
 RealPt load_current_town_gossip(void)
 {
@@ -360,14 +362,14 @@ RealPt get_random_tavern_message(void)
 
 /* 0x70b */
 /**
- * \brief		drink while sitting in a tavern
- * \param amount	how much amount fluid you get
+ * \brief   drink while sitting in a tavern
  *
- * TODO:
- * This function is only called while sitting in a tavern.
- * When you enter a tavern and order food another function is called.
- * Also this function is called in taverns with amount = 10,
- * and in the thorwalian dungeon with 100.
+ * \param   amount      how much amount fluid you get
+ *
+ * \todo    This function is only called while sitting in a tavern.
+ *          When you enter a tavern and order food another function is called.
+ *          Also this function is called in taverns with amount = 10,
+ *          and in the thorwalian dungeon with 100.
  */
 void drink_while_drinking(signed short amount)
 {
@@ -393,14 +395,14 @@ void drink_while_drinking(signed short amount)
 }
 
 /**
- * \brief		eat food while sitting in a tavern
- * \param amount	how much food you get
+ * \brief   eat food while sitting in a tavern
  *
- * TODO:
- * This function is only called while sitting in a tavern.
- * When you enter a tavern and order food another function is called.
- * Also this function is called only at one play with amount = 100,
- * so there is space for tuning.
+ * \param   amount      how much food you get
+ *
+ * \todo    This function is only called while sitting in a tavern.
+ *          When you enter a tavern and order food another function is called.
+ *          Also this function is called only at one play with amount = 100,
+ *          so there is space for tuning.
  */
 void eat_while_drinking(signed short amount)
 {

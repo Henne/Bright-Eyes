@@ -182,8 +182,9 @@ void chest_fulminictus(void)
 
 
 /**
- * \brief loot a chest, with standard text messages
- * \param chest			pointer to the chest
+ * \brief   loot a chest, with standard text messages
+ *
+ * \param   chest       pointer to the chest
  */
 void loot_simple_chest(Bit8u *chest)
 {
@@ -242,9 +243,10 @@ void loot_simple_chest(Bit8u *chest)
 }
 
 /**
- * \brief deletes an item from a chest
- * \param chest		pointer to the chest
- * \param item_nr	the number of the item to be deleted
+ * \brief   deletes an item from a chest
+ *
+ * \param   chest       pointer to the chest
+ * \param   item_nr     the number of the item to be deleted
  */
 void delete_chest_item(Bit8u *chest, signed short item_nr)
 {
@@ -264,10 +266,11 @@ void delete_chest_item(Bit8u *chest, signed short item_nr)
 }
 
 /**
- * \brief loot a chest, with different text messages
- * \param chest			pointer to the chest
- * \param text_non_empty	shown text if chest is not empty
- * \param text_empty		shown text if chest is empty
+ * \brief   loot a chest, with different text messages
+ *
+ * \param   chest       pointer to the chest
+ * \param   text_non_empty shown text if chest is not empty
+ * \param   text_empty  shown text if chest is empty
  */
 void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 {
@@ -326,9 +329,10 @@ void loot_chest(Bit8u *chest, Bit8u *text_non_empty, Bit8u *text_empty)
 }
 
 /**
- * \brief	check if a hero has lockpicks
- * \param hero	pointer to the hero
- * \return	-1 = no lockpicks, -2 = all lockpicks are broken, else position of the lockpicks
+ * \brief   check if a hero has lockpicks
+ *
+ * \param   hero        pointer to the hero
+ * \return              -1 = no lockpicks, -2 = all lockpicks are broken, else position of the lockpicks
  */
 signed short hero_has_lockpicks(Bit8u *hero)
 {

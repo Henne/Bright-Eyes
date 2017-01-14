@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg006.cpp
-*/
+ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -25,9 +25,10 @@ namespace M302de {
 #endif
 
 /**
- * \brief	get the pointer to the fighter with id fighter_id
- * \param	fighter_id	id of the fighter
- * \return	a pointer to the fighter with id fighter_id
+ * \brief   get the pointer to the fighter with id fighter_id
+ *
+ * \param   fighter_id  id of the fighter
+ * \return              a pointer to the fighter with id fighter_id
  */
 RealPt FIG_get_ptr(signed char fighter_id)
 {
@@ -303,9 +304,10 @@ struct dummy {
 };
 
 /**
- * \brief		removes an element from the FIG_LIST
- * \param fighter_id		identificates the element to remove
- * \param keep_in_memory	whether to save the removed element in FIG_LIST_ELEM, useful for moving element to end of list
+ * \brief   removes an element from the FIG_LIST
+ *
+ * \param   fighter_id  identificates the element to remove
+ * \param   keep_in_memory whether to save the removed element in FIG_LIST_ELEM, useful for moving element to end of list
  */
 void FIG_remove_from_list(signed char fighter_id, signed char keep_in_memory)
 {
@@ -360,9 +362,10 @@ void FIG_remove_from_list(signed char fighter_id, signed char keep_in_memory)
 }
 
 /**
- * \brief		adds FIG_LIST_ELEM to FIG_LIST
- * \param fighter_id		id to assign to the new element (-1 = assign a new id)
- * \return  the new element's fighter_id (position in FIG_LIST_ARRAY)
+ * \brief   adds FIG_LIST_ELEM to FIG_LIST
+ *
+ * \param   fighter_id  id to assign to the new element (-1 = assign a new id)
+ * \return              the new element's fighter_id (position in FIG_LIST_ARRAY)
  */
 signed char FIG_add_to_list(signed char fighter_id)
 {
@@ -469,10 +472,11 @@ signed char FIG_add_to_list(signed char fighter_id)
 }
 
 /**
- * \brief		draws the heroes picture to the fight screen
- * \param loc		0 = upper left, 1 = lower left
- * \param hero_pos	position of the hero
-*/
+ * \brief   draws the heroes picture to the fight screen
+ *
+ * \param   loc         0 = upper left, 1 = lower left
+ * \param   hero_pos    position of the hero
+ */
 void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 {
 	RealPt hero;
@@ -517,9 +521,10 @@ void FIG_draw_char_pic(signed short loc, signed short hero_pos)
 }
 
 /**
- * \brief	draws a picture of the monster, when on turn
- * \param loc	0 = left side, 1 = right side
- * \param id	ID of the enemy
+ * \brief   draws a picture of the monster, when on turn
+ *
+ * \param   loc         0 = left side, 1 = right side
+ * \param   id          ID of the enemy
  */
 void FIG_draw_enemy_pic(signed short loc, signed short id)
 {

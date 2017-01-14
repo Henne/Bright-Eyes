@@ -6,7 +6,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg122.cpp
  *
-*/
+ */
 
 #include "v302de.h"
 

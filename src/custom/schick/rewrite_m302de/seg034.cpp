@@ -26,16 +26,16 @@ namespace M302de {
 #endif
 
 /**
- * \brief	TODO
- * \param x_hero	x-coordinate of the hero
- * \param y_hero	y-coordinate of the hero
- * \param x		x-coordinate of the last position
- * \param y		y-coordinate of the last position
- * \param x_diff	x-coordinate difference {-1, 0, 1}
- * \param y_diff	y-coordinate difference {-1, 0, 1}
- * \param max_range	maximal range for the weapon
+ * \brief   TODO
  *
- * \return	TODO {0, 1}
+ * \param   x_hero      x-coordinate of the hero
+ * \param   y_hero      y-coordinate of the hero
+ * \param   x           x-coordinate of the last position
+ * \param   y           y-coordinate of the last position
+ * \param   x_diff      x-coordinate difference {-1, 0, 1}
+ * \param   y_diff      y-coordinate difference {-1, 0, 1}
+ * \param   max_range   maximal range for the weapon
+ * \return              TODO {0, 1}
  **/
 signed short seg034_000(signed short x_hero, signed short y_hero,
 			signed short x, signed short y,
@@ -140,13 +140,12 @@ signed short seg034_000(signed short x_hero, signed short y_hero,
 }
 
 /**
- * \brief	select a target for the fight action of the current actor
+ * \brief   select a target for the fight action of the current actor
  *
- * \param px	x-coordinate of actor
- * \param py	y-coordinate of actor
- * \param max_range	maximal range for the weapon
- *
- * \return	fight-id of the target
+ * \param   px          x-coordinate of actor
+ * \param   py          y-coordinate of actor
+ * \param   max_range   maximal range for the weapon
+ * \return              fight-id of the target
  */
 signed char FIG_cb_select_target(Bit8u *px, Bit8u *py, const signed short max_range)
 {
@@ -419,7 +418,7 @@ void seg034_718(signed short x, signed short y, Bit8u *px, Bit8u *py, signed sho
 }
 
 /**
- * \brief	add monsters to the fight, which appear in later rounds
+ * \brief   add monsters to the fight, which appear in later rounds
  */
 void FIG_latecomers(void)
 {
@@ -537,12 +536,12 @@ signed short seg034_aec(void)
 }
 
 /**
- * \brief Moves a hero on the chessboard
+ * \brief   Moves a hero on the chessboard
  *
- * \param hero		pointer to the hero
- * \param hero_pos	position of the hero in the group
- * \param px		pointer to the x-coordinate on the chessboard
- * \param py		pointer to the y-coordinate on the chessboard
+ * \param   hero        pointer to the hero
+ * \param   hero_pos    position of the hero in the group
+ * \param   px          pointer to the x-coordinate on the chessboard
+ * \param   py          pointer to the y-coordinate on the chessboard
  */
 void FIG_move_hero(Bit8u *hero, signed short hero_pos, Bit8u *px, Bit8u *py)
 {

@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg050.cpp
-*/
+ */
 #include <stdio.h>
 
 #include "v302de.h"
@@ -35,9 +35,10 @@ struct dummy {
 };
 
 /**
- * \brief		tries to increase a spell in advanced mode
- * \param	hero	pointer to the hero
- * \param	spell	number of the spell
+ * \brief   tries to increase a spell in advanced mode
+ *
+ * \param   hero        pointer to the hero
+ * \param   spell       number of the spell
  */
 void inc_spell_advanced(Bit8u *hero, signed short spell)
 {
@@ -133,9 +134,10 @@ void inc_spell_advanced(Bit8u *hero, signed short spell)
 }
 
 /**
- * \brief		tries to increase a skill in advanced mode
- * \param	hero	pointer to the hero
- * \param	skill	number of the skill
+ * \brief   tries to increase a skill in advanced mode
+ *
+ * \param   hero        pointer to the hero
+ * \param   skill       number of the skill
  */
 void inc_skill_advanced(Bit8u *hero, signed short skill)
 {
@@ -221,13 +223,14 @@ void inc_skill_advanced(Bit8u *hero, signed short skill)
 }
 
 /**
- * \brief		tries to increase a skill in novice mode
- * \param	hero	pointer to the hero
- * \param	skill	number of the skill
+ * \brief   tries to increase a skill in novice mode
  *
- * This function is quiet and does not check how many times
- *	a skill can be increased. So the correct rules come
- *	from the array which contain the skills.
+ *          This function is quiet and does not check how many times
+ *          a skill can be increased. So the correct rules come
+ *          from the array which contain the skills.
+ *
+ * \param   hero        pointer to the hero
+ * \param   skill       number of the skill
  */
 void inc_skill_novice(Bit8u *hero, signed short skill)
 {
@@ -290,13 +293,14 @@ void inc_skill_novice(Bit8u *hero, signed short skill)
 }
 
 /**
- * \brief		tries to increase a spell in novice mode
- * \param	hero	pointer to the hero
- * \param	spell	number of the spell
+ * \brief   tries to increase a spell in novice mode
  *
- * This function is quiet and does not check how many times
- *	a spell can be increased. So the correct rules come
- *	from the array which contain the spells.
+ *          This function is quiet and does not check how many times
+ *          a spell can be increased. So the correct rules come
+ *          from the array which contain the spells.
+ *
+ * \param   hero        pointer to the hero
+ * \param   spell       number of the spell
  */
 void inc_spell_novice(Bit8u *hero, signed short spell)
 {
@@ -347,9 +351,10 @@ void inc_spell_novice(Bit8u *hero, signed short spell)
 	}
 }
 
-/*
- * \brief		brings your hero to the next level
- * \param hero_pos	the position of the hero
+/**
+ * \brief   brings your hero to the next level
+ *
+ * \param   hero_pos    the position of the hero
  */
 void level_up(signed short hero_pos)
 {

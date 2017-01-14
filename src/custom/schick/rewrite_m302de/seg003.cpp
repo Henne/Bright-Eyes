@@ -6,7 +6,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg003.cpp
  *
-*/
+ */
 
 #include <stdio.h>
 
@@ -183,10 +183,11 @@ void door_frame(signed short nr, signed short x, signed short y, signed short fr
 }
 
 /**
- * \brief	looting of a corpse
- * \param	chest_ptr	a pointer to the chest description
- * \param	text		output text
- * \param	flag		to mark this chest as done
+ * \brief   looting of a corpse
+ *
+ * \param   chest_ptr   a pointer to the chest description
+ * \param   text        output text
+ * \param   flag        to mark this chest as done
  */
 void loot_corpse(RealPt chest_ptr, Bit8u *text, Bit8u *flag)
 {

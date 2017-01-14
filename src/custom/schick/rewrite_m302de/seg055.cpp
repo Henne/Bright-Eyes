@@ -30,10 +30,11 @@ namespace M302de {
 #endif
 
 /**
- * \brief		add an item to the shop
- * \param shop_ptr	pointer to the shop descrition
- * \param item_id	item_id
- * \param pos		position in the shop
+ * \brief   add an item to the shop
+ *
+ * \param   shop_ptr    pointer to the shop descrition
+ * \param   item_id     item_id
+ * \param   pos         position in the shop
  */
 void add_item_to_shop(Bit8u *shop_ptr, signed short item_id, signed short pos)
 {

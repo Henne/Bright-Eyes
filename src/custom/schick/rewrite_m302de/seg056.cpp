@@ -28,10 +28,11 @@ namespace M302de {
 #endif
 
 /**
- * \brief	compare function for qsort()
- * \param p1_in first pointer
- * \param p2_in second pointer
- * \return -1 -> p1 < p2; 0 -> p1 == p2; 1 -> p1 > p1
+ * \brief   compare function for qsort()
+ *
+ * \param   p1_in       first pointer
+ * \param   p2_in       second pointer
+ * \return              -1 -> p1 < p2; 0 -> p1 == p2; 1 -> p1 > p1
  */
 int shop_compar(const void *p1_in, const void *p2_in)
 {
@@ -67,7 +68,7 @@ struct dummy_c6 {
 
 
 /**
- * \brief	shows the buy-screen an provides interaction
+ * \brief   shows the buy-screen an provides interaction
  */
 void buy_screen(void)
 {
@@ -621,11 +622,12 @@ void buy_screen(void)
 }
 
 /**
- * \brief		inserts the items of the hero into a sales array
- * \param shop_ptr	pointer to the shop description
- * \param hero		pointer to the hero
- * \param item_pos	position of the item in the heros inventory
- * \param shop_pos	position if the item in the sales array
+ * \brief   inserts the items of the hero into a sales array
+ *
+ * \param   shop_ptr    pointer to the shop description
+ * \param   hero        pointer to the hero
+ * \param   item_pos    position of the item in the heros inventory
+ * \param   shop_pos    position if the item in the sales array
  */
 void insert_sell_items(Bit8u *shop_ptr, Bit8u *hero, signed short item_pos, signed short shop_pos)
 {

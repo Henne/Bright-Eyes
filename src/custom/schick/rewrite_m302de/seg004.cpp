@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Y seg004.cpp
-*/
+ */
 
 #if !defined(__BORLANDC__)
 #include "mem.h"
@@ -458,18 +458,18 @@ void update_status_bars(void)
 }
 
 /**
- * \brief	draws a bar to visualize LE or AE
+ * \brief   draws a bar to visualize LE or AE
  *
- * \param type		type of bar, 0 = LE / 1 = AE
- * \param hero		number of hero when mode is zero
- * \param pts_cur	current points
- * \param pts_max	maximum points
- * \param mode		0 on game mask, 1 in fight
-*/
+ * \param   type        type of bar, 0 = LE / 1 = AE
+ * \param   hero        number of hero when mode is zero
+ * \param   pts_cur     current points
+ * \param   pts_max     maximum points
+ * \param   mode        0 on game mask, 1 in fight
+ */
 /* Remark:
 	It should be used, either hero or mode is zero,
 	since in fight mode only the active hero is shown.
-*/
+ */
 void draw_bar(unsigned short type, signed short hero, signed short pts_cur, signed short pts_max, signed short mode)
 {
 	signed short i;
@@ -764,10 +764,10 @@ struct dummy2 {
 };
 
 /**
- * \brief	draws the clock in day- or nighttime
+ * \brief   draws the clock in day- or nighttime
  *
- * \param pos	position of the sun/moon
- * \param night	0 = day / 1 = night
+ * \param   pos         position of the sun/moon
+ * \param   night       0 = day / 1 = night
  *
  */
 void draw_wallclock(signed short pos, signed short night)
@@ -871,13 +871,13 @@ void draw_wallclock(signed short pos, signed short night)
 }
 
 /**
- * \brief	adds op to each element of an array
+ * \brief   adds op to each element of an array
  *
- * \param dst	pointer to array
- * \param len	length of array
- * \param op	operator
- * \param flag	if 2, op will not be added if array element is 0
-*/
+ * \param   dst         pointer to array
+ * \param   len         length of array
+ * \param   op          operator
+ * \param   flag        if 2, op will not be added if array element is 0
+ */
 void array_add(Bit8u *dst, signed short len, signed short op, signed short flag)
 {
 	signed short i;
@@ -1119,9 +1119,9 @@ void wait_for_vsync(void)
 }
 
 /**
- * \brief	the snow effect for the map screen
- * \src:	pointer to a picture
+ * \brief   the snow effect for the map screen
  *
+ * \param   src         pointer to a picture
  */
 void map_effect(Bit8u *src)
 {

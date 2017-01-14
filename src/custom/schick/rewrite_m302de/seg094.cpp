@@ -79,9 +79,10 @@ void set_textbox_positions(signed short town_id)
 }
 
 /**
- * \brief - ???
- * \param route_no	number of the route
- * \param backwards	0 = travel the route forwards, 1 = travel backwards
+ * \brief   ???
+ *
+ * \param   route_no    number of the route
+ * \param   backwards   0 = travel the route forwards, 1 = travel backwards
  */
 void TM_func1(signed short route_no, signed short backwards)
 {

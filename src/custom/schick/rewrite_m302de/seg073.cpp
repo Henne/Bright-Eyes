@@ -5,7 +5,7 @@
  *	Borlandified and identical
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg073.cpp
-*/
+ */
 
 #include <stdio.h>
 
@@ -22,12 +22,12 @@ namespace M302de {
 #endif
 
 /**
- * \brief	get gossip in taverns
+ * \brief   get gossip in taverns
  *
- * \return	index of the gossip message
+ *          This sets also some informers and camp grounds as known.
  *
- * This sets also some informers and camp grounds as known.
-*/
+ * \return              index of the gossip message
+ */
 unsigned short get_tavern_gossip(void)
 {
 	/* Orig-Bug: Informants can be reenabled if they had been set to 2 */
@@ -444,7 +444,7 @@ unsigned short get_tavern_gossip(void)
 }
 
 /**
- * \brief generates the name of a drinkmate and copies it to a buffer
+ * \brief   generates the name of a drinkmate and copies it to a buffer
  */
 RealPt get_drinkmate(void)
 {
@@ -469,9 +469,9 @@ RealPt get_drinkmate(void)
 }
 
 /**
- * \brief	get quest information in taverns / meet informants
+ * \brief   get quest information in taverns / meet informants
  *
- * \return	TODO {0, 1}
+ * \return              TODO {0, 1}
  */
 signed short tavern_quest_infos(void)
 {
@@ -578,7 +578,7 @@ signed short tavern_quest_infos(void)
 }
 
 /**
- * \brief	follow a informer from the tavern to his/her home
+ * \brief   follow a informer from the tavern to his/her home
  */
 void tavern_follow_informer(void)
 {

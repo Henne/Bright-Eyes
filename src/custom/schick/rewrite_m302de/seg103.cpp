@@ -6,7 +6,7 @@
  *	Compiler:	Borland C++ 3.1
  *	Call:		BCC.EXE -mlarge -O- -c -1 -Yo seg103.cpp
  *
-*/
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -117,9 +117,10 @@ signed short LVL_select_skill(Bit8u *hero, signed short show_values)
 }
 
 /**
-	get_proper_hero - returns hero which seems best for a skill
-	@skill:		skill
-*/
+ * \brief   returns hero which seems best for a skill
+ *
+ * \param   skill       skill
+ */
 RealPt get_proper_hero(signed short skill)
 {
 	signed short i;
@@ -171,11 +172,12 @@ RealPt get_proper_hero(signed short skill)
 }
 
 /**
-	test_skill - performs a skill test
-	@hero:	hero which should be tested
-	@skill:	the skill to test
-	@bonus: the modification
-*/
+ * \brief   performs a skill test
+ *
+ * \param   hero        hero which should be tested
+ * \param   skill       the skill to test
+ * \param   bonus       the modification
+ */
 signed short test_skill(Bit8u *hero, signed short skill, signed char bonus)
 {
 	signed short randval;
@@ -720,14 +722,14 @@ signed short GUI_use_skill2(signed short bonus, Bit8u *msg)
 }
 
 /**
- *	bargain -	does a bargain throw
- *	@hero:		the hero who bargain
- *	@items:		the number of different goods
- *	@price:		the total price
- *	@percent:	how many percent the player wants to get
- *	@mod_init:	initial value for the modificator
+ * \brief   does a bargain throw
  *
- *	Returns the result of the throw. A value greater than zero
+ * \param   hero        the hero who bargain
+ * \param   items       the number of different goods
+ * \param   price       the total price
+ * \param   percent     how many percent the player wants to get
+ * \param   mod_init    initial value for the modificator
+ * \return              the result of the throw. A value greater than zero
  *	means success, below or zero means failed.
  */
 signed short bargain(Bit8u *hero, signed short items, Bit32s price,

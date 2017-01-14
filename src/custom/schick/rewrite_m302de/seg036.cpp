@@ -28,12 +28,11 @@ namespace M302de {
 #endif
 
 /**
- * KI_copy_ani_sequence() - copies an ani sequence
- * @dst:	destination pointer for data
- * @ani_nr:
- * @mode:	DAT-File to use 3 = WEAPANI.DAT, else ANI.DAT
+ * \brief   copies an ani sequence
  *
- * Returns the length of the sequence in bytes.
+ * \param   dst         destination pointer for data
+ * \param   ani_nr      * \param mode	DAT-File to use 3 = WEAPANI.DAT, else ANI.DAT
+ * \return              the length of the sequence in bytes.
  */
 /* static */
 signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short mode)
@@ -169,11 +168,11 @@ void seg036_00ae(Bit8u *hero, signed short hero_pos)
 }
 
 /**
- * \brief	changes the weapon of a hero
- * \param hero	pointer to the hero with a broken weapon
+ * \brief   changes the weapon of a hero
  *
- * \return	1 if a weapon was found, 0 if the hero fights now with bare hands
-*/
+ * \param   hero        pointer to the hero with a broken weapon
+ * \return              1 if a weapon was found, 0 if the hero fights now with bare hands
+ */
 signed short KI_change_hero_weapon(Bit8u *hero)
 {
 	signed short pos;
@@ -229,14 +228,14 @@ signed short KI_change_hero_weapon(Bit8u *hero)
 }
 
 /**
- * KI_can_attack_neighbour() - check if a neighbour can be attacked
- * @start_x:	X-Coordinate of the hero
- * @start_y:	Y-Coordinate of the hero
- * @offset_x:	X-Direction -1/0/+1
- * @offset_y:	Y-Direction -1/0/+1
- * @mode:	0 = Attack only Enemies / 1 = Attack heroes and enemies / 2 = Attack only Heros
+ * \brief   check if a neighbour can be attacked
  *
- * Returns 1 if an attack is possible in that mode, else 0.
+ * \param   start_x     X-Coordinate of the hero
+ * \param   start_y     Y-Coordinate of the hero
+ * \param   offset_x    X-Direction -1/0/+1
+ * \param   offset_y    Y-Direction -1/0/+1
+ * \param   mode        0 = Attack only Enemies / 1 = Attack heroes and enemies / 2 = Attack only Heros
+ * \return              1 if an attack is possible in that mode, else 0.
  */
 signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 			signed short offset_x, signed short offset_y,
@@ -285,14 +284,13 @@ signed short KI_can_attack_neighbour(signed short start_x, signed short start_y,
 }
 
 /**
- * \brief		TODO
+ * \brief   TODO
  *
- * \param x		x-coordinate of the hero
- * \param y		y-coordinate of the hero
- * \param dir		looking direction of the hero
- * \param cursed	0 = hero is not cursed, 1 = hero is cursed
- *
- * \return		0 = no target found, fight-id of the target
+ * \param   x           x-coordinate of the hero
+ * \param   y           y-coordinate of the hero
+ * \param   dir         looking direction of the hero
+ * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \return              0 = no target found, fight-id of the target
  */
 signed short KI_search_spell_target(signed short x, signed short y,
 				signed short dir, signed short cursed)
@@ -391,15 +389,14 @@ signed short KI_search_spell_target(signed short x, signed short y,
 }
 
 /**
- * \brief		selects a target to be attacked from hero with a spell
+ * \brief   selects a target to be attacked from hero with a spell
  *
- * \param hero		pointer to the hero
- * \param hero_pos	position of the hero in the party
- * \param cursed	0 = hero is not cursed, 1 = hero is cursed
- * \param x		x-coordinate of the hero
- * \param y		y-coordinate of the hero
- *
- * \return		0 = no target found, 1 = target_found (long distance), 2 = target fount (short distance)
+ * \param   hero        pointer to the hero
+ * \param   hero_pos    position of the hero in the party
+ * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \param   x           x-coordinate of the hero
+ * \param   y           y-coordinate of the hero
+ * \return              0 = no target found, 1 = target_found (long distance), 2 = target fount (short distance)
  */
 signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
 {
@@ -498,12 +495,11 @@ signed short KI_select_spell_target(Bit8u *hero, signed short hero_pos, signed s
 }
 
 /**
- * \brief		TODO
+ * \brief   TODO
  *
- * \param spell		spell index
- * \param cursed	0 = hero is not cursed, 1 = hero is cursed
- *
- * \return		TODO	{-1, 0, 1, 2}
+ * \param   spell       spell index
+ * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \return              TODO	{-1, 0, 1, 2}
  */
 signed short KI_get_spell(signed short spell, signed short cursed)
 {
@@ -540,15 +536,14 @@ struct dummy {
 };
 
 /**
- * \brief		TODO
+ * \brief   TODO
  *
- * \param hero		pointer to the hero
- * \param hero_pos	position of the hero in the party
- * \param cursed	0 = hero is not cursed, 1 = hero is cursed
- * \param x		x-coordinate of the hero
- * \param y		y-coordinate of the hero
- *
- * \return		{0, 1}
+ * \param   hero        pointer to the hero
+ * \param   hero_pos    position of the hero in the party
+ * \param   cursed      0 = hero is not cursed, 1 = hero is cursed
+ * \param   x           x-coordinate of the hero
+ * \param   y           y-coordinate of the hero
+ * \return              {0, 1}
  */
 signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed, signed short x, signed short y)
 {
@@ -741,11 +736,10 @@ signed short seg036_8cf(Bit8u *hero, signed short hero_pos, signed short cursed,
 }
 
 /**
- * \brief	count the other heros in the current group
+ * \brief   count the other heros in the current group
  *
- * \param	hero_pos	position of the calling hero
- *
- * \return	number of heros in the group - 1
+ * \param   hero_pos    position of the calling hero
+ * \return              number of heros in the group - 1
  */
 signed short KI_count_heros(signed short hero_pos)
 {
@@ -764,12 +758,12 @@ signed short KI_count_heros(signed short hero_pos)
 }
 
 /**
- * \brief		TODO
+ * \brief   TODO
  *
- * \param hero		pointer to the hero
- * \param hero_pos	position of the hero in the party
- * \param x		x-coordinate of the hero
- * \param y		y-coordinate of the hero
+ * \param   hero        pointer to the hero
+ * \param   hero_pos    position of the hero in the party
+ * \param   x           x-coordinate of the hero
+ * \param   y           y-coordinate of the hero
  */
 void KI_hero(Bit8u *hero, signed short hero_pos, signed short x, signed short y)
 {
