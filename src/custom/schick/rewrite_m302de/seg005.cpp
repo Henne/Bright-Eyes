@@ -159,7 +159,7 @@ RealPt FIG_name_1st_case(unsigned short type, volatile unsigned short pos)
 		return GUI_names_grammar(0, pos, 1);
 }
 
-#define idx (ds_readw(FIG_MSG_DTPS + ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4) * 2))
+#define idx (ds_readw(((FIG_MSG_DTPS-2)) + ds_readw(FIG_MSG_DATA + ds_readbs(FIG_STAR_COUNTER) * 4) * 2))
 
 unsigned short fight_printer(void)
 {
@@ -199,7 +199,7 @@ unsigned short fight_printer(void)
 			get_textcolor(&fg_bak, &bg_bak);
 
 			FIG_set_star_color(Real2Host(ds_readd(FIG_STAR_GFX)),
-				3724, ds_readb(FIG_STAR_COLORS + f_action));
+				3724, ds_readb((FIG_STAR_COLORS-1) + f_action));
 
 			ds_writew(PIC_COPY_X1, 0);
 			ds_writew(PIC_COPY_Y1, 150);
@@ -214,7 +214,7 @@ unsigned short fight_printer(void)
 
 			/* print number into the star */
 			if (ds_readw((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4) != 0) {
-				set_textcolor(0xff, ds_readbs(FIG_STAR_COLORS + f_action) + 0x80);
+				set_textcolor(0xff, ds_readbs((FIG_STAR_COLORS-1) + f_action) + 0x80);
 
 				my_itoa(ds_readws((FIG_MSG_DATA + 2) + ds_readbs(FIG_STAR_COUNTER) * 4), str, 10);
 
@@ -223,7 +223,7 @@ unsigned short fight_printer(void)
 			}
 
 			/* Generate textmessage */
-			if (ds_readw(FIG_MSG_DTPS + f_action * 2) != 0) {
+			if (ds_readw(((FIG_MSG_DTPS-2)) + f_action * 2) != 0) {
 				ds_writew(PIC_COPY_X1, ds_writew(PIC_COPY_V1, 0));
 				ds_writew(PIC_COPY_Y1, ds_writew(PIC_COPY_V2, 194));
 				ds_writew(PIC_COPY_X2, 318);

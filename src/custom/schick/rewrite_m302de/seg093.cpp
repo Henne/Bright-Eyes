@@ -200,8 +200,8 @@ signed short do_travel_mode(void)
 					{
 						if (is_mouse_in_rect(l_di - 4,
 									answer - 4,
-							    (l_di = ds_readws((TOWN_POSITIONS + 4) + 4 * i)) + 4,
-							    (answer = ds_readws((TOWN_POSITIONS + 6) + 4 * i)) + 4))
+							    (l_di = ds_readws(TOWN_POSITIONS + 4 * i)) + 4,
+							    (answer = ds_readws((TOWN_POSITIONS + 2) + 4 * i)) + 4))
 						{
 							l4 = i;
 							break;

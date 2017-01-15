@@ -86,7 +86,7 @@ signed short enter_location(signed short town_id)
 	if ((b_index = get_border_index(cast_u16(ds_readbs((0xbd6e + 1))))) >= 2 && b_index <= 5) {
 
 		ds_writeb(LOCATION_BAK, 0);
-		ds_writew(CITYINDEX, ds_readb(TOWNS_CITYINDEX_TABLE + town_id));
+		ds_writew(CITYINDEX, ds_readb((TOWNS_CITYINDEX_TABLE-1) + town_id));
 
 		if (!((ds_readbs(DIRECTION) + ds_readws(X_TARGET) + ds_readws(Y_TARGET)) & 1)) {
 			ds_writebs(LOCATION, LOCATION_CITIZEN);
@@ -647,7 +647,7 @@ void city_water_and_grass(void)
 
 				if (c1 != -1) {
 
-					ptr = c1 * 18 + p_datseg + 0x74f8;
+					ptr = c1 * 18 + p_datseg + (0x750a - 18);
 
 					if ((nvf_nr = host_readws(ptr + 4)) != -1) {
 
@@ -704,7 +704,7 @@ void city_building_textures(void)
 
 				if (c1 != -1) {
 
-					ptr = 18 * c1 + p_datseg + 0x74f8;
+					ptr = 18 * c1 + p_datseg + (0x750a - 18);
 
 					l4 =	bi == 2 ? 186 : (
 						bi == 3 ? 187 : (

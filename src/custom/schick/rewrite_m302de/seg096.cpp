@@ -82,12 +82,12 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 				(signed short*)(p_datseg + GRAMMAR_INDEF_TABLE + (flag & 0xf) * 6));
 
 
-	sprintf((char*)p_datseg + GRAMMAR_BUFS + ds_readw(GRAMMAR_BUF_NO) * 40,
+	sprintf((char*)p_datseg + (GRAMMAR_BUFS+40) + ds_readw(GRAMMAR_BUF_NO) * 40,
 		(l2 == 0) ? (char*)Real2Host(ds_readd(STR_S_S_PTR)) : (char*)Real2Host(ds_readd(STR_VON_S_S_PTR)),
 		(char*)Real2Host(ds_readd(GRAMMAR_ARTICLES_INDEX + 4 * host_readws((Bit8u*)lp1 + 2 * (((flag & 0x3000) - 1) >> 12)))),
 		(char*)Real2Host(GUI_name_plural(flag, p_name)));
 
-	p_name = p_datseg + ds_readw(GRAMMAR_BUF_NO) * 40 + GRAMMAR_BUFS;
+	p_name = p_datseg + ds_readw(GRAMMAR_BUF_NO) * 40 + (GRAMMAR_BUFS+40);
 
 	if (host_readb(p_name) == 0x20) {
 		do {
@@ -102,10 +102,10 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 		ds_writew(GRAMMAR_BUF_NO, 0);
 
 #if !defined(__BORLANDC__)
-	return (RealPt)RealMake(datseg, GRAMMAR_BUFS + (l4 * 40));
+	return (RealPt)RealMake(datseg, (GRAMMAR_BUFS+40) + (l4 * 40));
 #else
 	/* TODO: Sorry dear ! */
-	return (RealPt) (&((struct dummy2*)(p_datseg + GRAMMAR_BUFS))[l4]);
+	return (RealPt) (&((struct dummy2*)(p_datseg + (GRAMMAR_BUFS+40)))[l4]);
 #endif
 
 }
@@ -113,7 +113,7 @@ RealPt GUI_names_grammar(signed short flag, signed short index, signed short typ
 //1a7
 RealPt GUI_name_plural(signed short v1, Bit8u *s)
 {
-	Bit8u *p = p_datseg + GRAMMAR_STRING;
+	Bit8u *p = p_datseg + GRAMMAR_BUFS;
 	char tmp;
 
 	while ((tmp = *s++) && (tmp != 0x2e))
@@ -135,13 +135,13 @@ RealPt GUI_name_plural(signed short v1, Bit8u *s)
 	}
 
 	host_writeb(p, 0);
-	return (RealPt)RealMake(datseg, GRAMMAR_STRING);
+	return (RealPt)RealMake(datseg, GRAMMAR_BUFS);
 }
 
 //290
 RealPt GUI_name_singular(Bit8u *s)
 {
-	Bit8u *p = p_datseg + GRAMMAR_STRING;
+	Bit8u *p = p_datseg + GRAMMAR_BUFS;
 	char tmp;
 
 	while ((tmp = *s++) && (tmp != 0x2e))
@@ -151,7 +151,7 @@ RealPt GUI_name_singular(Bit8u *s)
 		host_writeb(p++, *s++);
 
 	host_writeb(p, 0);
-	return (RealPt)RealMake(datseg, GRAMMAR_STRING);
+	return (RealPt)RealMake(datseg, GRAMMAR_BUFS);
 }
 
 //2f2

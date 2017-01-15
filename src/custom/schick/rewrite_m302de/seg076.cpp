@@ -628,7 +628,7 @@ signed short DNG_step(void)
 		DNG_see_lever();
 
 #if defined(__BORLANDC__)
-		dungeon_handler = (signed short (*)(void))ds_readd(DNG_HANDLERS + 4 * ds_readbs(DUNGEON_INDEX));
+		dungeon_handler = (signed short (*)(void))ds_readd((DNG_HANDLERS-4) + 4 * ds_readbs(DUNGEON_INDEX));
 #else
 		dungeon_handler = DNG_handler[ds_readbs(DUNGEON_INDEX)];
 #endif

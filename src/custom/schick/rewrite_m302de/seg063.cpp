@@ -405,8 +405,8 @@ void mod_clock_pos(signed short town_id)
 	signed short map_x;
 	signed short map_y;
 
-	map_x = ds_readws(TOWN_POSITIONS + 4 * town_id);
-	map_y = ds_readws(TOWN_POSITIONS + 4 * town_id + 2);
+	map_x = ds_readws((TOWN_POSITIONS-4) + 4 * town_id);
+	map_y = ds_readws((TOWN_POSITIONS-4) + 4 * town_id + 2);
 
 	val = map_x >= 0 && map_x <= 159 ?
 		(map_y >= 0 && map_y <= 99 ? 3 : 1) :

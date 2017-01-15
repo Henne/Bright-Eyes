@@ -556,7 +556,7 @@ void random_encounter(signed short arg)
 	ds_writew(BASEPOS_X, 0);
 	ds_writew(BASEPOS_Y, 0);
 
-	arg = ds_readb(RANDOM_ENCOUNTER_INDEX + arg);
+	arg = ds_readb((RANDOM_ENCOUNTER_INDEX-1) + arg);
 
 	randval = random_schick(100);
 
