@@ -319,7 +319,7 @@ void tevent_135(void)
 
 				GUI_output(Real2Host(ds_readd(DTP2)));
 
-				l_di = random_interval(ds_readb(TEVENT135_CLIMB_DAMAGE + 2 * l_si), host_readb((p_datseg + 0xb172 + 1) + (2 * l_si)));
+				l_di = random_interval(ds_readb(TEVENT135_CLIMB_DAMAGE + 2 * l_si), host_readb((p_datseg + TEVENT135_CLIMB_DAMAGE + 1) + (2 * l_si)));
 				l_si = host_readws(hero + HERO_LE);
 				l_si -= l_di;
 

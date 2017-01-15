@@ -161,7 +161,7 @@ void DNG_door(signed short action)
 								ds_writeb(STEPTARGET_FRONT, host_readb(Real2Host(ds_readd(DNG_MAP_PTR)) + (y << 4) + x));
 								DNG_open_door();
 
-								ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+								ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
 								ds_writew(REDRAW_MENUICONS, 1);
 								ds_writew(DNG_EXTRA_ACTION, 3);
 							} else {
@@ -246,7 +246,7 @@ void DNG_door(signed short action)
 
 							add_hero_ap(hero, 1L);
 
-							ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+							ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
 							ds_writew(REDRAW_MENUICONS, 1);
 						}
 
@@ -302,7 +302,7 @@ void DNG_door(signed short action)
 
 							add_hero_ap(hero, 1L);
 
-							ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+							ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
 							ds_writew(REDRAW_MENUICONS, 1);
 						}
 					}
@@ -544,12 +544,12 @@ signed short DNG_step(void)
 	} else if (ds_readws(ACTION) == 75)
 	{
 		update_direction(3);
-		ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+		ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
 
 	} else if (ds_readws(ACTION) == 77)
 	{
 		update_direction(1);
-		ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+		ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
 
 	} else if (ds_readws(ACTION) == 72)
 	{
@@ -590,7 +590,7 @@ signed short DNG_step(void)
 			ds_readws(ACTION) <= 137 &&
 			ds_readbs((NEW_MENU_ICONS - 129) + ds_readws(ACTION)) != -1)
 	{
-		if (ds_readw(DNG_EXTRA_ACTION) == 1 || ds_readw(0xd011) == 3 || ds_readw(0xd011) == 5)
+		if (ds_readw(DNG_EXTRA_ACTION) == 1 || ds_readw(DNG_EXTRA_ACTION) == 3 || ds_readw(0xd011) == 5)
 		{
 			DNG_door(ds_readws(ACTION));
 		} else if (ds_readws(ACTION) == 135 && ds_readw(DNG_EXTRA_ACTION) == 2)
@@ -704,7 +704,7 @@ void DNG_see_door(void)
 	if ((l_si = div16(ds_readb(STEPTARGET_FRONT))) == 1 || l_si == 2)
 	{
 		/* standing direct in front of a door with view to it */
-		if (ds_readbs((NEW_MENU_ICONS + 6)) != 0x21 && ds_readbs((0xbd38 + 6)) != 0x22)
+		if (ds_readbs((NEW_MENU_ICONS + 6)) != 0x21 && ds_readbs((NEW_MENU_ICONS + 6)) != 0x22)
 		{
 			ds_writebs((NEW_MENU_ICONS + 6), 0x21);
 			ds_writew(REDRAW_MENUICONS, 1);
@@ -717,10 +717,10 @@ void DNG_see_door(void)
 
 	} else {
 		if (ds_readbs((NEW_MENU_ICONS + 6)) != -1 &&
-			(ds_readws(DNG_EXTRA_ACTION) == 1 || ds_readws(0xd011) == 3 || ds_readws(0xd011) == 5))
+			(ds_readws(DNG_EXTRA_ACTION) == 1 || ds_readws(DNG_EXTRA_ACTION) == 3 || ds_readws(0xd011) == 5))
 		{
 			/* standing two fields before a door with view to it */
-			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
 			ds_writew(REDRAW_MENUICONS, 1);
 			ds_writew(DNG_EXTRA_ACTION, 0);
 		}
@@ -743,7 +743,7 @@ void DNG_see_chest(void)
 		if (ds_readbs((NEW_MENU_ICONS + 6)) != -1 && ds_readws(DNG_EXTRA_ACTION) == 2)
 		{
 			/* standing two fields before a treasure chest with view to it */
-			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((0xbd38 + 7), ds_writebs((0xbd38 + 8), -1)));
+			ds_writebs((NEW_MENU_ICONS + 6), ds_writebs((NEW_MENU_ICONS + 7), ds_writebs((0xbd38 + 8), -1)));
 			ds_writew(REDRAW_MENUICONS, 1);
 			ds_writew(DNG_EXTRA_ACTION, 0);
 		}

@@ -290,7 +290,7 @@ void seg074_305(signed short x_off)
 		}
 	}
 
-	if (((ds_readws(AUTOMAP_SELX) - x_off) >= 0) && ((ds_readws(0x7de5) - x_off) <= 16)) {
+	if (((ds_readws(AUTOMAP_SELX) - x_off) >= 0) && ((ds_readws(AUTOMAP_SELX) - x_off) <= 16)) {
 
 		draw_automap_square(ds_readws(AUTOMAP_SELX) - x_off,	ds_readws(AUTOMAP_SELY), 7, -1);
 	}

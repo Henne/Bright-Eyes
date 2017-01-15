@@ -446,7 +446,7 @@ void load_ani(const signed short nr)
 		memcpy(dst, p6 + offset, len);
 
 #if !defined(__BORLANDC__)
-		ds_writed(ANI_PALETTE, ds_readd(0xce3b) + offset);
+		ds_writed(ANI_PALETTE, ds_readd(ANI_PALETTE) + offset);
 #else
 		*(HugePt*)(p_datseg + ANI_PALETTE) += offset;
 #endif
@@ -504,7 +504,7 @@ void load_ani(const signed short nr)
 			dst += offset_2;
 			memcpy(dst, p6 + offset_2, (unsigned short)len);
 #if !defined(__BORLANDC__)
-		ds_writed(ANI_PALETTE, ds_readd(0xce3b) + offset_2);
+		ds_writed(ANI_PALETTE, ds_readd(ANI_PALETTE) + offset_2);
 #else
 		*(HugePt*)(p_datseg + ANI_PALETTE) += offset_2;
 #endif
