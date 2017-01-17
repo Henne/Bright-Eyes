@@ -9,7 +9,10 @@
 #if !defined SYMBOLS_H
 #define SYMBOLS_H
 
-// ?149
+// ?4
+#define STR_BORLAND_CPP                 (0x0004)    /* char[43]; "Borland C++ - Copyright 1991 Borland Intl." */
+#define STR_DIVIDE_ERROR                (0x002f)    /* char[45]; "Divide error\r\nAbnormal program termination\r\n" */
+// ?57
 #define CD_INIT_SUCCESSFUL              (0x0095)    /* unsigned short; {0,1} */
 // ?4
 #define CD_AUDIO_REPEAT                 (0x009b)    /* unsigned short; {0,1} */
@@ -69,7 +72,7 @@
 #define EMS_ENABLED                     (0x26ab)    /* char */
 #define FIG_INITIATIVE                  (0x26ac)    /* signed char; 0 = random, 1 = enemies, 2 = heroes (attack first) */
 #define FIG_MSG_COUNTER                 (0x26ad)    /* signed short */
-#define ALWAYS_ONE                      (0x26af)    /* unsigned short; = 1, write only */
+#define ALWAYS_ONE                      (0x26af)    /* unsigned short; writeonly (1) */
 #define FIG_CONTINUE_PRINT              (0x26b1)    /* unsigned short; {0,1} */
 #define FIG_CHAR_PIC                    (0x26b3)    /* unsigned short */
 #define FIG_ENEMY_PIC                   (0x26b5)    /* unsigned short */
@@ -111,7 +114,7 @@
 // ?2
 #define STATUSMENU_ALLOWED              (0x29b2)    /* unsigned short; {0,1}, readonly */
 #define HEROSWAP_ALLOWED                (0x29b4)    /* unsigned short; {0,1} */
-#define INTEMPLE                        (0x29b6)    /* unsigned short; {0,1}, 0 while in temple, writeonly */
+#define INTEMPLE                        (0x29b6)    /* unsigned short; writeonly (0,1), 0 while in temple */
 #define INTEMPLE2                       (0x29b8)    /* unsigned short; {0,1}, copy of INTEMPLE */
 #define ALWAYS_ZERO3                    (0x29ba)    /* unsigned short; writeonly (0) */
 // ?16
@@ -132,15 +135,15 @@
 #define STATUS_PAGE_HERO                (0x2c9d)    /* signed short */
 #define STATUS_PAGE_HUNGER              (0x2c9f)    /* signed char */
 #define STATUS_PAGE_THIRST              (0x2ca0)    /* signed char */
-#define MISSING_FILE_GUILOCK            (0x2ca1)    /* unsigned char; {0,1}, write only */
+#define MISSING_FILE_GUILOCK            (0x2ca1)    /* unsigned char; writeonly (0,1) */
 #define BASEPOS_X                       (0x2ca2)    /* signed short */
 #define BASEPOS_Y                       (0x2ca4)    /* signed short */
 #define DNG_AREA_LOADED                 (0x2ca6)    /* unsigned char */
 #define CITY_AREA_LOADED                (0x2ca7)    /* unsigned char */
 #define TRAVEL_MAP_LOADED               (0x2ca8)    /* signed char */
 // ?33
-#define ANI_UNKNOWN_FLAG                (0x2cca)    /* unsigned char; writeonly {0,1} */
-#define AREA_PREPARED                   (0x2ccb)    /* signed short; : -1 = unprepared, 0 = dungeon, 1 = town */
+#define ANI_UNKNOWN_FLAG                (0x2cca)    /* unsigned char; writeonly (0,1) */
+#define AREA_PREPARED                   (0x2ccb)    /* signed short; -1 = unprepared, 0 = dungeon, 1 = town */
 // ?1
 #define ALWAYS_ZERO4                    (0x2cce)    /* char; writeonly (0) */
 #define CURRENT_ANI                     (0x2ccf)    /* short */
@@ -222,7 +225,7 @@
 #define OTTA_WINDRIDERS                 (0x3344)    /* unsigned short */
 #define OTTA_STORMCHILDREN              (0x3346)    /* unsigned short */
 #define OTTA_GARALDSSON                 (0x3348)    /* unsigned short */
-#define HEARD_ANNOUNCE                  (0x334a)    /* signed short; : 0 = not heard, 1 = heard, 3 = spoke with hetman */
+#define HEARD_ANNOUNCE                  (0x334a)    /* signed short; {0 = not heard, 1 = heard, 3 = spoke with hetman} */
 #define GOT_MAIN_QUEST                  (0x334c)    /* signed short; {0,1} */
 #define QUESTED_MONTHS                  (0x334e)    /* short */
 #define MONTHLY_CREDIT                  (0x3350)    /* signed short */
@@ -284,7 +287,7 @@
 #define QUEST_DEADSHIP                  (0x35f0)    /* unsigned char; {0,1} */
 // ?1
 #define QUEST_DEADSHIP_DONE             (0x35f2)    /* unsigned char; {0,1} */
-#define ALWAYS_ONE2                     (0x35f3)    /* unsigned char; = 1, write only */
+#define ALWAYS_ONE2                     (0x35f3)    /* unsigned char;  writeonly (1) */
 #define DNG03_SPIDEREGGS_BURNED         (0x35f4)    /* unsigned char; {0,1} */
 // ?2
 #define DNG06_DASPTREAS_FOUND           (0x35f7)    /* unsigned char; {0,1} */
@@ -310,8 +313,8 @@
 #define HERMIT_VISITED                  (0x3615)    /* unsigned char; {0,1} */
 #define DUNGEON_TYPE                    (0x3616)    /* unsigned char; { 0 = SHIPS, 1 = MARBLES, 2 = STONES } */
 #define ESTORIK_KNOWN                   (0x3617)    /* unsigned char; {0,1} */
-#define DIALOG_PARTNERS                 (0x3618)    /* struct(38)[10]; (struct of size 38)[10] */
-#define DIALOG_STATES                   (0x3794)    /* struct(8)[160]; (struct of size 8)[160] */
+#define DIALOG_PARTNERS                 (0x3618)    /* struct(38)[10] */
+#define DIALOG_STATES                   (0x3794)    /* struct(8)[160] */
 #define DNG02_SPHERE_KNOWN              (0x3c94)    /* unsigned char; {0,1} */
 #define DNG02_CORPSE                    (0x3c95)    /* unsigned char; {0,1} */
 #define DNG02_APPARATURE_DESTROYED      (0x3c96)    /* unsigned char; {0,1} */
@@ -439,7 +442,7 @@
 #define TEVENTU06_FLAG                  (0x3dd9)    /* unsigned char; {0,1} */
 #define TEVENT071_ORCSTATUE             (0x3dda)    /* unsigned char; {0,1} */
 #define MET_UNICORN_FLAG                (0x3ddb)    /* unsigned char; {0,1} */
-#define FIND_HYGGELIK                   (0x3ddc)    /* unsigned char; {0,1} you are now able to find Hyggelik */
+#define FIND_HYGGELIK                   (0x3ddc)    /* unsigned char; {0,1 = you are able to find Hyggelik} */
 #define TEVENT072_FLAG                  (0x3ddd)    /* unsigned char; {0,1} */
 #define TEVENT073_FLAG                  (0x3dde)    /* unsigned char; {0,1} */
 #define TEVENT074_FLAG                  (0x3ddf)    /* unsigned char; {0,1} */
@@ -714,7 +717,7 @@
 #define SEA_TRAVEL_PSGBOOKED_TIMER      (0x42af)    /* signed char */
 #define SEA_TRAVEL_PASSAGE_UNKN1        (0x42b0)    /* signed char */
 #define SEA_TRAVEL_PASSAGE_ID           (0x42b1)    /* signed char */
-#define SEA_TRAVEL_MENU_PASSAGES        (0x42b2)    /* struct(12)[10]; (struct of length 12)[10] */
+#define SEA_TRAVEL_MENU_PASSAGES        (0x42b2)    /* struct(12)[10] */
 #define SEA_TRAVEL_PASSAGE_PRICE        (0x432a)    /* signed short */
 #define SEA_TRAVEL_PASSAGE_UNKN2        (0x432c)    /* signed short */
 #define TRAVEL_MAP_PTR                  (0x432e)    /* RealPt */
@@ -752,7 +755,7 @@
 #define MUSIC_CURRENT_TRACK             (0x447a)    /* signed short */
 #define SND_VOC_ENABLED                 (0x447c)    /* unsigned short; {0,1} */
 // ?2
-#define STR_FILE_MISSING_PTR            (0x4480)    /* unsigned long; == RealMake(datseg, STR_FILE_MISSING) */
+#define STR_FILE_MISSING_PTR            (0x4480)    /* RealPt; to STR_FILE_MISSING */
 #define MOUSE_IRQ_INIT                  (0x4484)    /* unsigned short */
 // ?4
 #define PAUSE_STRING                    (0x448a)    /* char[10]; "P A U S E" */
@@ -773,7 +776,7 @@
 #define HEROKEEPING_FLAG                (0x4649)    /* unsigned char; {0,1,2} */
 // ?4
 #define LEVEL_AP_TAB                    (0x464e)    /* signed long[21] */
-#define DELAY_OR_KEYPRESS_FLAG          (0x46a2)    /* unsigned char; {0,1}, write only */
+#define DELAY_OR_KEYPRESS_FLAG          (0x46a2)    /* unsigned char; writeonly (0,1) */
 #define MERCHANT_ITEMS_POSX             (0x46a3)    /* signed short[15] */
 #define MERCHANT_ITEMS_POSY             (0x46c1)    /* signed short[15] */
 #define REFRESH_STATUS_LINE             (0x46df)    /* signed char; {0,1} */
@@ -784,8 +787,8 @@
 #define VERSION_TOKEN2                  (0x46f9)    /* unsigned char; = 1 */
 #define VERSION_TOKEN3                  (0x46fa)    /* unsigned char; = 1 */
 #define VERSION_TOKEN4                  (0x46fb)    /* unsigned char; = 1 */
-#define QUESTIONS_HANDBOOK              (0x46fc)    /* struct(19)[10]; (struct of size 19)[10] */
-#define QUESTIONS_MAP                   (0x47ba)    /* struct(3)[10]; (struct of size 3)[10] */
+#define QUESTIONS_HANDBOOK              (0x46fc)    /* struct(19)[10] */
+#define QUESTIONS_MAP                   (0x47ba)    /* struct(3)[10] */
 #define SND_MENU_QUESTION               (0x47d8)    /* char[17]; "BITTE AUSW\x8eHLEN:" */
 #define SND_MENU_RADIO1                 (0x47e9)    /* char[12]; "KEINE MUSIK" */
 #define SND_MENU_RADIO2                 (0x47f5)    /* char[10]; "NUR MUSIK" */
@@ -817,7 +820,7 @@
 #define NOWAY_STRING                    (0x4a68)    /* char[40]; "IN DIESE RICHTUNG GEHT ES NICHT WEITER." */
 #define ANI_BUSY                        (0x4a90)    /* unsigned short; {0,1} */
 #define PIC_COPY_FLAG                   (0x4a92)    /* unsigned short; {0,1} */
-#define STATUS_BAR_COLORS               (0x4a94)    /* char[4]; 4 s: le_color, 0, ae_color, 0 */
+#define STATUS_BAR_COLORS               (0x4a94)    /* char[4]; {le_color, 0, ae_color, 0} */
 // ?2
 #define STATUS_PAGE_HUNGER_MAX_COUNTER  (0x4a9a)    /* signed char */
 #define STATUS_PAGE_HUNGER_MAX_COLOR    (0x4a9b)    /* signed char */
@@ -849,7 +852,7 @@
 #define RENDERBUF_IN_USE_FLAG           (0x4c3a)    /* unsigned char; {0,1} */
 #define LOCATION_HANDLERS               (0x4c3b)    /* RealPt[19]; (void (*)(void))[19] */
 // ?1
-#define STR_TEMP_XX_PTR2                (0x4c88)    /* unsigned long; == RealMake(datseg, 0x515e) == 0x14fc'515e */
+#define STR_TEMP_XX_PTR2                (0x4c88)    /* RealPt; to STR_TEMP_XX2 */
 #define FNAMES                          (0x4c8c)    /* long[308] */
 #define LOADED_HEAD_ID                  (0x515c)    /* unsigned short */
 #define STR_TEMP_XX2                    (0x515e)    /* char[8]; "TEMP\XX" */
@@ -877,10 +880,10 @@
 // ?8
 #define LOADED_MENU_ICONS               (0x5ecc)    /* signed char[9]; { -2, -2, -2, -2, -2, -2, -2, -2, -2 } */
 // ?1
-#define INFORMER_TAB                    (0x5ed6)    /* struct(4)[15]; struct{short name_id; char town, unkn;}; [15] */
+#define INFORMER_TAB                    (0x5ed6)    /* struct(4)[15]; struct{short name_id; char town, unkn;} */
 #define FIG_DROPPED_COUNTER             (0x5f12)    /* signed short */
 #define FIG_ALL_HEROES_WITHDRAWN        (0x5f14)    /* unsigned short; {0,1} */
-#define MAX_ENEMIES                     (0x5f16)    /* signed short; : an upper bound for the number of enemies */
+#define MAX_ENEMIES                     (0x5f16)    /* signed short; an upper bound for the number of enemies */
 #define STR_ERROR_ON_OBJ_MALLOC         (0x5f18)    /* char[23]; "ERROR ON OBJECT MALLOC" */
 // ?1
 #define FINALFIGHT_TUMULT               (0x5f30)    /* unsigned char; {0,1} */
@@ -1008,7 +1011,7 @@
 #define SEA_TRAVEL_TX_CLASS             (0x6ec2)    /* signed short[7] */
 #define SEA_TRAVEL_QUALITY_TABLE        (0x6ed0)    /* struct(4)[8]; struct{unsigned char class,unkn,price,speed;} */
 #define SEA_TRAVEL_TX_SHIP              (0x6ef0)    /* signed short[8] */
-#define SEA_TRAVEL_PASSAGES             (0x6f00)    /* struct(8)[46]; (struct of size 8)[45] */
+#define SEA_TRAVEL_PASSAGES             (0x6f00)    /* struct(8)[46] */
 #define TRAVEL_BY_SHIP                  (0x7070)    /* unsigned char; 0 = on land, 1 = at the ship */
 #define SEA_TRAVEL_SLEEPBONUS_TABLE1    (0x7071)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */
 #define SEA_TRAVEL_SLEEPBONUS_TABLE2    (0x707f)    /* signed short[7]; { -2, 0, 5, 4, 3, 1, 0 } */
@@ -1043,7 +1046,7 @@
 //define TEXTURES_BUILDING?             (0x73ae)    /* struct(4)[29]; struct{signed short x,y;} */
 //define TEXTURES_BUILDING?             (0x7422)    /* struct(4)[29]; struct{signed short x,y;} */
 //define TEXTURES_WATER_GRASS?          (0x7496)    /* struct(4)[29]; struct{signed short x,y;} */
-//define TEXTURES?                      (0x750a)    /* struct(18)[101]; (struct of size 18)[101] */
+//define TEXTURES?                      (0x750a)    /* struct(18)[101] */
 //define TEXTURES?                      (0x7c24)    /* signed char[29] */
 #define CAN_MERGE_GROUP                 (0x7c41)    /* signed char; {-1,1} */
 #define C_EVENT_ACTIVE                  (0x7c42)    /* unsigned char; 0 = default, 1 = city event active */
@@ -1066,9 +1069,9 @@
 #define AUTOMAP_SELX                    (0x7de5)    /* signed short */
 #define AUTOMAP_SELY                    (0x7de7)    /* signed short */
 // ?1
-#define DNG_GFXTAB_SHIPS                (0x7dea)    /* struct(18)[88]; (struct of size 18)[88] */
-#define DNG_GFXTAB_STONES               (0x841a)    /* struct(18)[88]; (struct of size 18)[88] */
-#define DNG_GFXTAB_MARBLES              (0x8a4a)    /* struct(18)[88]; (struct of size 18)[88] */
+#define DNG_GFXTAB_SHIPS                (0x7dea)    /* struct(18)[88] */
+#define DNG_GFXTAB_STONES               (0x841a)    /* struct(18)[88] */
+#define DNG_GFXTAB_MARBLES              (0x8a4a)    /* struct(18)[88] */
 #define DNG_STUB3_UNKN0                 (0x907a)    /* unsigned char[22] */
 #define DNG_STUB3_UNKN1                 (0x9090)    /* unsigned char[22] */
 #define DNG_STUB3_UNKN2                 (0x90a6)    /* unsigned char[22] */
@@ -1089,35 +1092,35 @@
 // ?1
 #define DNG_HANDLERS                    (0x92d6)    /* RealPt[15] */
 #define DNG_LEVEL_CHANGED               (0x9312)    /* unsigned short; {1,0} */
-#define DNG01_SPECIALCHESTS             (0x9314)    /* struct(21)[9]; (struct of size 21)[9] */
+#define DNG01_SPECIALCHESTS             (0x9314)    /* struct(21)[9] */
 #define DNG01_STR_MARBO                 (0x93d1)    /* char[6] */
 // ?1
-#define DNG02_SPECIALCHESTS             (0x93d8)    /* struct(21)[8]; (struct of size 21)[8] */
-#define DNG03_SPECIALCHESTS             (0x9480)    /* struct(21)[14]; (struct of size 21)[14] */
+#define DNG02_SPECIALCHESTS             (0x93d8)    /* struct(21)[8] */
+#define DNG03_SPECIALCHESTS             (0x9480)    /* struct(21)[14] */
 #define DNG03_STR_SPINNENNETZ           (0x95a6)    /* char[12]; "SPINNENNETZ" */
 #define DNG03_STR_MACTANS               (0x95b2)    /* char[8]; "MACTANS" */
-#define DNG04_SPECIALCHESTS             (0x95ba)    /* struct(21)[4]; (struct of size 21)[4] */
+#define DNG04_SPECIALCHESTS             (0x95ba)    /* struct(21)[4] */
 #define DNG05_TRASH_FLAG                (0x960e)    /* short; {0,1} */
-#define DNG06_SPECIALCHESTS             (0x9610)    /* struct(21)[3]; (struct of size 21)[3] */
+#define DNG06_SPECIALCHESTS             (0x9610)    /* struct(21)[3] */
 #define STR_S_WAR                       (0x964f)    /* char[8]; "%s WAR " */
 #define STR_S_UND_S_WAREN               (0x9657)    /* char[17]; "%s UND %s WAREN " */
-#define DNG07_SPECIALCHESTS             (0x9668)    /* struct(21)[2]; (struct of size 21)[2] */
-#define DNG08_SPECIALCHESTS             (0x9692)    /* struct(21)[7]; (struct of size 21)[7] */
+#define DNG07_SPECIALCHESTS             (0x9668)    /* struct(21)[2] */
+#define DNG08_SPECIALCHESTS             (0x9692)    /* struct(21)[7] */
 #define DNG08_STR_TAIRACH               (0x9725)    /* char[8]; "TAIRACH" */
 // ?1
-#define DNG09_SPECIALCHESTS             (0x972e)    /* struct(21)[8]; (struct of size 21)[8] */
-#define DNG10_SPECIALCHESTS             (0x97d6)    /* struct(21)[6]; (struct of size 21)[6] */
-#define DNG11_SPECIALCHESTS             (0x9854)    /* struct(21)[15]; (struct of size 21)[?] */
+#define DNG09_SPECIALCHESTS             (0x972e)    /* struct(21)[8] */
+#define DNG10_SPECIALCHESTS             (0x97d6)    /* struct(21)[6] */
+#define DNG11_SPECIALCHESTS             (0x9854)    /* struct(21)[15] */
 // ?1
-#define DNG14_SPECIALCHESTS             (0x9990)    /* struct(21)[9]; (struct of size 21)[9] */
+#define DNG14_SPECIALCHESTS             (0x9990)    /* struct(21)[9] */
 // ?1
-#define DNG15_SPECIALCHESTS             (0x9a4e)    /* struct(21)[33]; (struct of size 21)[?] */
+#define DNG15_SPECIALCHESTS             (0x9a4e)    /* struct(21)[33] */
 // ?1
-#define DNG12_SPECIALCHESTS             (0x9d04)    /* struct(21)[3]; (struct of size 21)[3] */
+#define DNG12_SPECIALCHESTS             (0x9d04)    /* struct(21)[3] */
 #define DNG12_OBSTACLE_TRIES            (0x9d43)    /* signed short */
 #define DNG12_WATERTRAP_BAK             (0x9d45)    /* signed short */
 // ?1
-#define DNG13_SPECIALCHESTS             (0x9d48)    /* struct(21)[2]; (struct of size 21)[2] */
+#define DNG13_SPECIALCHESTS             (0x9d48)    /* struct(21)[2] */
 // ?18
 #define DNG_SPECIALCHEST_INDEX          (0x9d84)    /* RealPt[16] */
 #define STR_SINGLE_SPACE                (0x9dc4)    /* char[2]; " " */
@@ -1127,7 +1130,7 @@
 #define HARBOR_PASSAGES                 (0xa330)    /* char[115]; 18 arrays, each terminated by -1 */
 #define HARBORS                         (0xa3a3)    /* struct(6)[26]; struct{char town, type_id; RealPt passages;} */
 #define TOWN_POSITIONS                  (0xa43f)    /* struct(4)[52]; struct{signed short x, y;} */
-#define ACTION_TABLE_TRAVELMAP          (0xa50f)    /* struct(10)[35]; (struct of size 10)[35] */
+#define ACTION_TABLE_TRAVELMAP          (0xa50f)    /* struct(10)[35] */
 #define TEVENTS_TAB                     (0xa66d)    /* struct(3)[155]; struct{char route_id, place, tevent_id;} */
 // ?4
 #define TRAVELING                       (0xa842)    /* unsigned char; {0,1} */
@@ -1170,10 +1173,10 @@
 #define MONSTER_SPELL_COST              (0xaccc)    /* signed short */
 #define SELECT_SKILL_LVLUP              (0xacce)    /* char[6]; "%s~%d" */
 #define SELECT_SKILL_DEFAULTS           (0xacd4)    /* signed char[6]; {44, 45, 46, -1, -1, -1} */
-#define ALCHEMY_RECIPES                 (0xacda)    /* struct(28)[13]; (struct of size 28)[12?] */
+#define ALCHEMY_RECIPES                 (0xacda)    /* struct(28)[13] */
 #define PREVENT_DROP_EQUIPPED_ITEMS     (0xae46)    /* unsigned char; {0,1} */
 // ?1
-#define HERO_STARTUP_ITEMS              (0xae48)    /* struct(8)[12]; (struct of size 8)[12] */
+#define HERO_STARTUP_ITEMS              (0xae48)    /* struct(8)[12] */
 #define HERO_STARTUP_ITEMS_ALL          (0xaea8)    /* signed short[4] */
 #define USE_SPECIAL_ITEM_HANDLERS       (0xaeb0)    /* long[14] */
 #define LIGHT_TYPE                      (0xaee8)    /* unsigned short; 0 = none, 1 = torch, 2 = lantern */
@@ -1184,12 +1187,12 @@
 #define EMPTY_STRING10                  (0xb13b)    /* char; "" */
 #define EMPTY_STRING11                  (0xb13c)    /* char; "" */
 #define EMPTY_STRING12                  (0xb13d)    /* char; "" */
-#define TEVENT014_CORPSE                (0xb13e)    /* struct(22); struct of size 22 */
-#define TEVENT064_CHEST_DESCR           (0xb154)    /* struct(22); struct of size 22 */
+#define TEVENT014_CORPSE                (0xb13e)    /* struct(22) */
+#define TEVENT064_CHEST_DESCR           (0xb154)    /* struct(22) */
 #define TEVENT067_CHEST                 (0xb16a)    /* char[8] */
 #define TEVENT135_CLIMB_DAMAGE          (0xb172)    /* struct(2)[6]; struct{unsigned char damage_min,damage_max;}; { {0xff,0}, {1,5}, {4,13}, {7,21}, {10,32}, {15,40} } */
 #define RANDOM_ENCOUNTER_INDEX          (0xb17e)    /* unsigned char[59] */
-#define RANDOM_ENCOUNTER_DESCR          (0xb1b9)    /* struct(7)[14]; (struct of size 7)[14] */
+#define RANDOM_ENCOUNTER_DESCR          (0xb1b9)    /* struct(7)[14] */
 #define TLK_RUIN_HERO_COUNTER           (0xb21b)    /* signed short */
 // ?1
 #define STR_RAD1                        (0xb21e)    /* char[4]; "RAD" */
@@ -1317,15 +1320,15 @@
 #define MOUSE2_EVENT                    (0xc3d3)    /* unsigned short; {0,1} */
 #define MOUSE1_EVENT2                   (0xc3d5)    /* unsigned short; {0,1} */
 #define BIOSKEY_EVENT                   (0xc3d7)    /* unsigned short */
-#define ACTION                          (0xc3d9)    /* short; ? */
+#define ACTION                          (0xc3d9)    /* unsigned short */
 #define BUFFER9_PTR                     (0xc3db)    /* RealPt; to buffer of size 180000 (or 203000 if LARGE_BUF), used for NVF */
 // ?8
-#define ANI_WIDTH                       (0xc3e7)    /* short */
+#define ANI_WIDTH                       (0xc3e7)    /* unsigned short */
 #define ANI_UNKNOWN1                    (0xc3e9)    /* unsigned short */
 #define ANI_UNKNOWN2                    (0xc3eb)    /* unsigned short */
 #define ANI_HEIGHT                      (0xc3ed)    /* unsigned char */
 #define ANI_AREACOUNT                   (0xc3ee)    /* unsigned char */
-#define ANI_AREA_TABLE                  (0xc3ef)    /* struct(263)[10]; (struct of size 263)[10] */
+#define ANI_AREA_TABLE                  (0xc3ef)    /* struct(263)[10] */
 #define ANI_MAIN_PTR                    (0xce35)    /* RealPt */
 #define ANI_COMPR_FLAG                  (0xce39)    /* unsigned char; {0,1 = compressed} */
 #define ANI_COMPR_TYPE                  (0xce3a)    /* unsigned char */
@@ -1414,8 +1417,8 @@
 #define FIGHTOBJ_BUF_SEEK_PTR           (0xd86e)    /* RealPt; points to end of FIGHTOBJ buffer */
 #define NR_OF_ENEMIES                   (0xd872)    /* short; ? */
 #define FIGHTOBJ_LIST                   (0xd874)    /* unsigned char[90] */
-//define FIGHTANI_SHEETS                (0xd8ce)    /* struct(243)[8]; (struct of size 243)[8] */
-#define FIG_LIST_ELEM                   (0xe066)    /* struct(35); struct of size 35 */
+//define FIGHTANI_SHEETS                (0xd8ce)    /* struct(243)[8] */
+#define FIG_LIST_ELEM                   (0xe066)    /* struct(35) */
 #define FIG_LIST_ARRAY                  (0xe089)    /* unsigned char[127] */
 #define FIG_LIST_HEAD                   (0xe108)    /* RealPt; to a list */
 #define LOCATION_MARKET_FLAG            (0xe10c)    /* unsigned char; {0,1} */
@@ -1577,6 +1580,6 @@
 #define BUFFERSIZE                      (0xe5dc)    /* unsigned long; size of the global buffer */
 #define GLOBAL_BUFFER_PTR               (0xe5e0)    /* RealPt; points to the start of the global buffer */
 #define LARGE_BUF                       (0xe5e4)    /* signed char; {0,1} */
-/* Unknown Bytes: 919, Undetermined symbols: 47/1476 */
+/* Unknown Bytes: 831, Undetermined symbols: 47/1478 */
 
 #endif
