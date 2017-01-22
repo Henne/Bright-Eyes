@@ -3782,7 +3782,7 @@ void from_EMS(RealPt dst, signed short handle, Bit32s bytes)
 
 	do {
 		EMS_map_memory(handle, v1++, 0);
-		ptr = F_PADD(dst, (((Bit32s)si) << 0x0e));
+		ptr = (RealPt)F_PADD(dst, (((Bit32s)si) << 0x0e));
 		si++;
 
 		v2 = (bytes - 0x4000 > 0) ? 0x4000 : (signed short)bytes;
@@ -3807,7 +3807,7 @@ void to_EMS(signed short handle, RealPt src, Bit32s bytes)
 
 	do {
 		EMS_map_memory(handle, v1++, 0);
-		ptr = F_PADD(src, ((((Bit32s)si) << 0x0e)));
+		ptr = (RealPt)F_PADD(src, ((((Bit32s)si) << 0x0e)));
 		si++;
 
 		v2 = (bytes - 0x4000 > 0) ? 0x4000 : (signed short)bytes;
