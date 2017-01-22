@@ -665,9 +665,9 @@ void startup_equipment(Bit8u *hero)
 	}
 
 	i = 0;
-	while (ds_readws(HERO_STARTUP_ITEMS + 8 * host_readbs(hero + HERO_TYPE) + 2 * i) != -1 && (i < 4)) {
+	while (ds_readws((HERO_STARTUP_ITEMS-8) + 8 * host_readbs(hero + HERO_TYPE) + 2 * i) != -1 && (i < 4)) {
 
-		give_hero_new_item(hero, ds_readws(HERO_STARTUP_ITEMS + 8 * host_readbs(hero + HERO_TYPE) + 2 * i++), 1, 1);
+		give_hero_new_item(hero, ds_readws((HERO_STARTUP_ITEMS-8) + 8 * host_readbs(hero + HERO_TYPE) + 2 * i++), 1, 1);
 
 		if (i == 1) {
 			move_item(3, 9, hero);

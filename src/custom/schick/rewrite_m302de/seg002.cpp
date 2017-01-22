@@ -3117,9 +3117,9 @@ void seg002_37c4(void)
 	if ((ds_readws(TRV_MENU_SELECTION) != 0) && (ds_readb(SHOW_TRAVEL_MAP))) {
 
 		ds_writew(SELECTED_TOWN_ANIX,
-				ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
+				ds_readws((TOWN_POSITIONS-4) + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
 		ds_writew(SELECTED_TOWN_ANIY,
-				ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
+				ds_readws((TOWN_POSITIONS-4) + 2 + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(TRV_MENU_SELECTION))));
 
 		ds_writew(PIC_COPY_X1, ds_readws(SELECTED_TOWN_ANIX) - 4);
 		ds_writew(PIC_COPY_Y1, ds_readws(SELECTED_TOWN_ANIY) - 4);
@@ -3195,9 +3195,9 @@ void seg002_37c4(void)
 		if ((ds_readws(MENU_INPUT_BUSY) != 0) && (ds_readb(SHOW_TRAVEL_MAP))) {
 
 			ds_writew(SELECTED_TOWN_ANIX,
-					ds_readws(TOWN_POSITIONS + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
+					ds_readws((TOWN_POSITIONS-4) + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
 			ds_writew(SELECTED_TOWN_ANIY,
-					ds_readws(TOWN_POSITIONS + 2 + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
+					ds_readws((TOWN_POSITIONS-4) + 2 + 4 * ds_readbs((TRV_MENU_TOWNS - 1) + ds_readws(MENU_SELECTED))));
 
 			ds_writew(PIC_COPY_X1, ds_readws(SELECTED_TOWN_ANIX) - 4);
 			ds_writew(PIC_COPY_Y1, ds_readws(SELECTED_TOWN_ANIY) - 4);

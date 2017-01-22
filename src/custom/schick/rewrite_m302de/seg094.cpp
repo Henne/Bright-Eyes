@@ -67,8 +67,8 @@ void set_textbox_positions(signed short town_id)
 	ds_writew(CURRENT_TOWN_OVER, ds_writew(TRV_MENU_SELECTION, ds_writew(SELECTED_TOWN_ANIX, ds_writew(SELECTED_TOWN_ANIY, 0))));
 
 
-	x = ds_writews(CURRENT_TOWN_ANIX, ds_readws(TOWN_POSITIONS + 4 * town_id));
-	y = ds_writews(CURRENT_TOWN_ANIY, ds_readws(TOWN_POSITIONS + 4 * town_id + 2));
+	x = ds_writews(CURRENT_TOWN_ANIX, ds_readws((TOWN_POSITIONS-4) + 4 * town_id));
+	y = ds_writews(CURRENT_TOWN_ANIY, ds_readws((TOWN_POSITIONS-4) + 4 * town_id + 2));
 
 	r_dx = (x >= 0 && x <= 159) ?
 			(y >= 0 && y <= 99 ? 3 : 1) :

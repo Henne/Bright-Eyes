@@ -11,7 +11,7 @@ IFS=$'\n'
 for line in $(egrep "^#define " symbols.h | egrep "\(0x[0-9a-f]{4}\)"); do
 
 	# extract the name and the position
-	NAME=$(echo ${line} | cut -d " " -f 2 | cut -d $'\t' -f 1)
+	NAME=$(echo ${line} | cut -d " " -f 2 | cut -d " " -f 1)
 	POS=$(echo ${line} | cut -d "(" -f 2 | cut -d ")" -f 1)
 
 #	echo "$line"

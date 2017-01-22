@@ -556,13 +556,13 @@ void random_encounter(signed short arg)
 	ds_writew(BASEPOS_X, 0);
 	ds_writew(BASEPOS_Y, 0);
 
-	arg = ds_readb(RANDOM_ENCOUNTER_INDEX + arg);
+	arg = ds_readb((RANDOM_ENCOUNTER_INDEX-1) + arg);
 
 	randval = random_schick(100);
 
 	for (i = 0; i < 14; i++) {
 
-		if ((ds_readb(RANDOM_ENCOUNTER_DESCR + 7 * i + arg) <= randval) && (ds_readb(0xb1b9 + 7 * i + arg) != 0)) {
+		if ((ds_readb(RANDOM_ENCOUNTER_DESCR + 7 * i + arg) <= randval) && (ds_readb(RANDOM_ENCOUNTER_DESCR + 7 * i + arg) != 0)) {
 
 			ds_writeb(SHOW_TRAVEL_MAP, (signed char)ds_writew(WALLCLOCK_UPDATE, 0));
 			ds_writeb(TRAVEL_EVENT_ACTIVE, 1);

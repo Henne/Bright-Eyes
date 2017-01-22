@@ -562,7 +562,7 @@ void level_up(signed short hero_pos)
 
 
 	/* add skill increasements */
-	add_ptr_bs(hero + HERO_TA_RISE, ds_readbs(LEVELUP_TA_RISE + host_readbs(hero + HERO_TYPE)));
+	add_ptr_bs(hero + HERO_TA_RISE, ds_readbs((LEVELUP_TA_RISE-1) + host_readbs(hero + HERO_TYPE)));
 
 	/* roll how many LE points the hero may get */
 	i = random_schick(6);

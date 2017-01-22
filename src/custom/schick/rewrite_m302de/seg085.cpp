@@ -226,7 +226,7 @@ signed short DNG10_handler(void)
 		/* FIGHT: scared heshtot */
 		if (GUI_bool(get_tx(0x58)))
 		{
-			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0xa0d))));
+			ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0xa0d))));
 			ds_writew(DNG_HANDLED_POS, 0);
 
 			if (!do_fight(FIGHTS_F129_17))
@@ -282,8 +282,8 @@ signed short DNG10_handler(void)
 	} else if ((target_pos == 0x1a03 || target_pos == 0x1703) && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_MUMMY_LEVER) != 0)
 	{
 		/* FIGHT: four mummies again and again */
-		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 6), 0x1533));
-		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), 0x1c13));
+		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 6), 0x1533));
+		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), 0x1c13));
 		ds_writew(FIG_DISCARD, 1);
 		do_fight(FIGHTS_F129_21);
 
@@ -295,8 +295,8 @@ signed short DNG10_handler(void)
 	} else if (target_pos == 0x190c && target_pos != ds_readws(DNG_HANDLED_POS) && ds_readb(DNG10_DRAGON_QUEST) != 0)
 	{
 		/* FIGHT: get PLATINKEY for the dragon */
-		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 6), 0x190a));
-		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), 0x190a));
+		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 6), 0x190a));
+		ds_writew((FIG_FLEE_POSITION + 2), ds_writew((FIG_FLEE_POSITION + 4), 0x190a));
 		do_fight(FIGHTS_F129_29);
 
 	} else if (target_pos == 0x2c0c && target_pos != ds_readws(DNG_HANDLED_POS))

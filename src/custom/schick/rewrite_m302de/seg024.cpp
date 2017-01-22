@@ -112,18 +112,18 @@ void diary_new_entry(void)
 
 	/* move all entries if the list is full */
 	if (ds_readw(DIARY_ENTRY_COUNTER) == 23) {
-		memcpy(p_datseg + (DIARY_ENTRIES+8), p_datseg + (DIARY_ENTRIES+16), (22*8));
+		memcpy(p_datseg + DIARY_ENTRIES, p_datseg + DIARY_ENTRIES+8, (22*8));
 		dec_ds_ws(DIARY_ENTRY_COUNTER);
 	}
 
 	/* make a pointer to the last entry */
-	ptr = p_datseg + DIARY_ENTRIES + ds_readw(DIARY_ENTRY_COUNTER) * 8;
+	ptr = p_datseg + (DIARY_ENTRIES-8) + ds_readw(DIARY_ENTRY_COUNTER) * 8;
 
 	/* avoid double entries for the same town */
 	if (ds_readbs(CURRENT_TOWN) != host_readw(ptr + 6)) {
 
 		/* make a pointer to the current entry */
-		ptr = p_datseg + (DIARY_ENTRIES+8) + ds_readw(DIARY_ENTRY_COUNTER) * 8;
+		ptr = p_datseg + DIARY_ENTRIES + ds_readw(DIARY_ENTRY_COUNTER) * 8;
 
 		/* deccrement entry counter */
 		inc_ds_ws(DIARY_ENTRY_COUNTER);
@@ -155,7 +155,7 @@ Bit16u diary_print_entry(Bit16u line)
 
 	memset(Real2Host(ds_readd(BUFFER9_PTR)), 0, 64000);
 
-	ptr = p_datseg + (DIARY_ENTRIES+8) + line * 8;
+	ptr = p_datseg + DIARY_ENTRIES + line * 8;
 
 	startline = line;
 

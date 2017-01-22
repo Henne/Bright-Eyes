@@ -332,8 +332,8 @@ void show_hyggelik_ani(void)
 	hyg_ani_3();
 	hyg_ani_2(array + 6 * 8, 145, 39);
 	hyg_ani_2(array + 9 * 8, 125, 104);
-	hyg_ani_2(array + 19 * 8, ds_readb(HYG_ANI_X4), 67);
-	hyg_ani_2(array + 24 * 8, ds_readb(HYG_ANI_X8), 67);
+	hyg_ani_2(array + 19 * 8, ds_readb((HYG_ANI_X3+2)), 67);
+	hyg_ani_2(array + 24 * 8, ds_readb((HYG_ANI_X7+2)), 67);
 	hyg_ani_4();
 	delay_or_keypress(100);
 

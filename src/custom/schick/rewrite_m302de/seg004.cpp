@@ -128,7 +128,7 @@ void clear_ani(void)
 	ds_writeb(ANI_HEIGHT, 0);
 	ds_writeb(ANI_AREACOUNT, 0);
 	ds_writed(ANI_MAIN_PTR, 0);
-	ds_writew(ANI_UNKNOWN3, 0);
+	ds_writew((ANI_PALETTE+2), 0);
 	ds_writew(ANI_PALETTE, 0);
 
 	for (i = 0; i < 10; i++) {

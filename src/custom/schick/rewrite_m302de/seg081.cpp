@@ -441,8 +441,8 @@ signed short DNG06_handler(void)
 
 	} else if (target_pos == 0x180e && target_pos != ds_readws(DNG_HANDLED_POS))
 	{
-		ds_writew(FIG_FLEE_POSITION, ds_writew((0xd325 + 6), 0x163e));
-		ds_writew((FIG_FLEE_POSITION + 4), ds_writew((0xd325 + 2), 0x1d0d));
+		ds_writew(FIG_FLEE_POSITION, ds_writew((FIG_FLEE_POSITION + 6), 0x163e));
+		ds_writew((FIG_FLEE_POSITION + 4), ds_writew((FIG_FLEE_POSITION + 2), 0x1d0d));
 
 		if (!do_fight(FIGHTS_F094_19))
 		{

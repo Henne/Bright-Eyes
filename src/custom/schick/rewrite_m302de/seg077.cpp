@@ -350,7 +350,7 @@ void DNG01_chest0_x1(RealPt chest)
 		ds_writew(DEATHTRAP, 1);
 
 		/* fight the demon */
-		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((0xd325 + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1d3a))));
+		ds_writew((FIG_FLEE_POSITION + 0), ds_writew((FIG_FLEE_POSITION + 2), ds_writew((0xd325 + 4), ds_writew((0xd325 + 6), 0x1d3a))));
 
 		if (!do_fight(FIGHTS_SHIP10_1))
 		{
