@@ -3,9 +3,9 @@ namespace M302de {
 #endif
 
 #if !defined(__BORLANDC__)
-/* is static */
+/* static */
 Bit16s copy_ani_seq(Bit8u*, Bit16s, Bit16u);
-/* is static */
+/* static */
 Bit8s get_seq_header(Bit16s);
 #endif
 

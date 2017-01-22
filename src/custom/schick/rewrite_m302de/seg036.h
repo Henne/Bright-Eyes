@@ -2,9 +2,6 @@
 namespace M302de {
 #endif
 
-/* is static */
-signed short KI_copy_ani_sequence(Bit8u*, signed short, signed short);
-
 /* 0x20 */
 void seg036_00ae(Bit8u*, signed short);
 

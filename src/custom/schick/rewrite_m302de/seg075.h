@@ -59,8 +59,10 @@ signed short DNG_check_climb_tools(void);
 /* 0x7a */
 void DNG_enter_dungeon(signed short);
 
+#if !defined(__BORLANDC__)
 /* static */
 void DNG_turn(void);
+#endif
 
 #if !defined(__BORLANDC__)
 }

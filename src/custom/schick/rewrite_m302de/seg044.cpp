@@ -30,6 +30,9 @@ namespace M302de {
  * \return              the number of copied bytes
  */
 /* Borlandified and identical */
+#if defined(__BORLANDC__)
+static
+#endif
 Bit16s copy_ani_seq(Bit8u *dst, Bit16s ani, Bit16u type)
 {
 	Bit8u *p_start, *p_seq;

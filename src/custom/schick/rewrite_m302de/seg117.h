@@ -1,11 +1,15 @@
 #if !defined(__BORLANDC__)
 namespace M302de {
 #endif
-/* are static */
+
+
+#if !defined(__BORLANDC__)
+/* static */
 void pause_traveling(signed short);
 
-/* are static */
+/* static */
 void resume_traveling(void);
+#endif
 
 /* 0x20 */
 void hunt_karen(void);

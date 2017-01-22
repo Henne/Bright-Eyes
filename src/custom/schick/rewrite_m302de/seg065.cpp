@@ -176,6 +176,9 @@ void final_intro(void)
 	refresh_screen_size();
 }
 
+#if defined(__BORLANDC__)
+static
+#endif
 RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
 {
 	HugePt retval;
@@ -196,6 +199,9 @@ RealPt hyg_ani_1(signed short nvf_nr, Bit8u *ptr)
 	return (RealPt)retval;
 }
 
+#if defined(__BORLANDC__)
+static
+#endif
 void hyg_ani_2(Bit8u *ptr, signed short x, signed short y)
 {
 	ds_writew(PIC_COPY_X1, x);
@@ -209,6 +215,9 @@ void hyg_ani_2(Bit8u *ptr, signed short x, signed short y)
 	do_pic_copy(2);
 }
 
+#if defined(__BORLANDC__)
+static
+#endif
 void hyg_ani_3(void)
 {
 	ds_writew(PIC_COPY_X1, 0);
@@ -221,6 +230,9 @@ void hyg_ani_3(void)
 	do_pic_copy(0);
 }
 
+#if defined(__BORLANDC__)
+static
+#endif
 void hyg_ani_4(void)
 {
 	ds_writew(PIC_COPY_X1, 0);

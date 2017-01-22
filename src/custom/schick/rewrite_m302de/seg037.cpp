@@ -30,6 +30,9 @@ namespace M302de {
  * \param   mode        3 for WEAPANI.DAT, anything else is ANI.DAT
  * \return              the number of copied bytes.
  */
+#if defined(__BORLANDC__)
+static
+#endif
 signed short copy_ani_stuff(Bit8u *dst, signed short nr, signed short mode)
 {
 	Bit8u *buffer, *src;

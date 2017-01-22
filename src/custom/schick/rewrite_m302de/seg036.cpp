@@ -34,7 +34,9 @@ namespace M302de {
  * \param   ani_nr      * \param mode	DAT-File to use 3 = WEAPANI.DAT, else ANI.DAT
  * \return              the length of the sequence in bytes.
  */
-/* static */
+#if defined(__BORLANDC__)
+static
+#endif
 signed short KI_copy_ani_sequence(Bit8u *dst, signed short ani_nr, signed short mode)
 {
 	Bit8u *p_datbuffer;

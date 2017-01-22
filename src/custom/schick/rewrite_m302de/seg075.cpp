@@ -62,7 +62,9 @@ void DNG_floor_ceil(void)
 
 }
 
-/* static */
+#if defined(__BORLANDC__)
+static
+#endif
 void DNG_turn(void)
 {
 	signed short tmp;

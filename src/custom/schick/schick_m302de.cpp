@@ -1547,6 +1547,7 @@ static int n_seg036(unsigned offs)
 {
 	switch (offs) {
 	case 0x000: {
+#if 0
 		RealPt p = CPU_Pop32();
 		Bit16s v1 = CPU_Pop16();
 		Bit16s v2 = CPU_Pop16();
@@ -1559,6 +1560,9 @@ static int n_seg036(unsigned offs)
 			p, v1, v2, (signed char)reg_ax);
 
 		return 1;
+#else
+		return 0;
+#endif
 	}
 	case 0x0ae: {
 		RealPt in_ptr = CPU_Pop32();

@@ -2,6 +2,7 @@
 namespace M302de {
 #endif
 
+#if !defined(__BORLANDC__)
 /* static */
 RealPt hyg_ani_1(signed short, Bit8u*);
 /* static */
@@ -10,6 +11,7 @@ void hyg_ani_2(Bit8u*, signed short, signed short);
 void hyg_ani_3(void);
 /* static */
 void hyg_ani_4(void);
+#endif
 
 /* 0x20 */
 void do_market(void);
@@ -21,7 +23,6 @@ void show_hyggelik_ani(void);
 void show_times_up(void);
 /* 0x34 */
 void show_outro(void);
-
 
 #if !defined(__BORLANDC__)
 }

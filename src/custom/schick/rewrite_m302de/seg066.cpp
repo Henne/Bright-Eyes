@@ -339,7 +339,9 @@ void do_town(void)
 	city_step();
 }
 
-/* static */
+#if defined(__BORLANDC__)
+static
+#endif
 void refresh_floor_and_sky(void)
 {
 	signed short width;

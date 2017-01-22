@@ -2,31 +2,32 @@
 namespace M302de {
 #endif
 
-/* NOT EXPORTED */
+#if !defined(__BORLANDC__)
 signed short copy_ani_stuff(Bit8u*, signed short, signed short);
+#endif
 
 /* 0x20 */
-/* static */
+/* should be static */
 void seg037_00ae(Bit8u*, signed short);
 
 /* 0x25 */
-/* static */
+/* should be static */
 unsigned short test_foe_melee_attack(signed short, signed short, signed short, signed short, signed short);
 
 /* 0x2a */
-/* static */
+/* should be static */
 signed short test_foe_range_attack(signed short, signed short, const signed short, signed short);
 
 /* 0x2f */
-/* static */
+/* should be static */
 signed short get_foe_attack_mode(signed short, signed short);
 
 /* 0x34 */
-/* static */
+/* should be static */
 signed short seg037_0791(Bit8u*, signed short, signed short, signed short, signed short);
 
 /* 0x39 */
-/* static */
+/* should be static */
 signed short seg037_0b3e(Bit8u*, signed short, signed short, signed short, signed short);
 
 /* 0x3e */

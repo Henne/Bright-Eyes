@@ -32,7 +32,9 @@
 namespace M302de {
 #endif
 
-/* static */
+#if defined(__BORLANDC__)
+static
+#endif
 void pause_traveling(signed short ani_nr)
 {
 
@@ -60,7 +62,9 @@ void pause_traveling(signed short ani_nr)
 	ds_writew(TEXTBOX_WIDTH, 9);
 }
 
-/* static */
+#if defined(__BORLANDC__)
+static
+#endif
 void resume_traveling(void)
 {
 	ds_writew(BASEPOS_X, ds_readw(BASEPOS_X_BAK));
