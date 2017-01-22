@@ -3715,7 +3715,7 @@ void unused_spinlock(void)
  * \param   v           32bit BE value
  * \return              32bit LE value
  */
-Bit32u swap_u32(Bit32u v)
+Bit32s swap_u32(Bit32u v)
 {
 	register signed short tmp;
 	signed short a[2];

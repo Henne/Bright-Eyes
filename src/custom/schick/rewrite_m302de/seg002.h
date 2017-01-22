@@ -133,7 +133,7 @@ void wait_for_keypress(void);
 void delay_or_keypress(signed short);
 void unused_delay(signed short);
 void unused_spinlock(void);
-Bit32u swap_u32(Bit32u);
+Bit32s swap_u32(Bit32u);
 Bit32u swap_u32_unused(Bit32u);
 signed short alloc_EMS(Bit32s);
 void from_EMS(RealPt, signed short, Bit32s);
