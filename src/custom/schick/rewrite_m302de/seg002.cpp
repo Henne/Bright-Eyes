@@ -2247,8 +2247,8 @@ void do_timers(void)
 		}
 
 		/* every 15 minutes ingame */
-		if (!(ds_readds(DAY_TIMER) % 0x546)) {
-			sub_light_timers(1);
+		if (!(ds_readds(DAY_TIMER) % MINUTES(15))) {
+			sub_light_timers(1L);
 		}
 		/* every hour ingame */
 		if (!(ds_readds(DAY_TIMER) % 0x1518)) {
@@ -3398,7 +3398,7 @@ void timewarp(Bit32s time)
 
 	seg002_2f7a(time / 0x1c2);
 
-	sub_light_timers(time / 0x546);
+	sub_light_timers(time / MINUTES(15));
 
 	/* calculate hours */
 	hour_old = (signed short)(timer_bak / 0x1518);
@@ -3459,7 +3459,7 @@ void timewarp_until(Bit32s time)
 
 	seg002_2f7a(i / 0x1c2);
 
-	sub_light_timers(i / 0x546);
+	sub_light_timers(i / MINUTES(15));
 
 	/* calculate hours */
 	hour_old = (signed short)(timer_bak / 0x1518);
