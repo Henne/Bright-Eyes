@@ -177,24 +177,29 @@ void read_sound_cfg(void)
 #endif
 
 #if !defined(__BORLANDC__)
-
+		/* menu to select the music source */
 		const Bit16s tw_bak = ds_readws(TEXTBOX_WIDTH);
-		ds_writews(TEXTBOX_WIDTH, 7);
-		do {
-			handle = GUI_radio((Bit8u*)"WELCHE MUSIKWIEDERGABE?", 2,
-						"AUDIO-CD",
-						"MIDI");
+		Bit8u question[] = "WIE SOLL DIE MUSIK WIEDERGEGEBEN WERDEN?";
+		Bit8u opt1[] = "AUDIO-CD";
+		Bit8u opt2[] = "MIDI";
+		signed short answer;
 
-		} while (handle == -1);
+		ds_writews(TEXTBOX_WIDTH, 3);
+		do {
+			answer = GUI_radio(question, 2, opt1, opt2);
+
+		} while (answer == -1);
 		ds_writews(TEXTBOX_WIDTH, tw_bak);
 
-		if (handle == 1)
+		if (answer == 1)
 		{
+			/* AUDIO-CD selected */
 			ds_writew(USE_CDAUDIO_FLAG, 1);
 			ds_writew(LOAD_SOUND_DRIVER, 1);
 
-		} else if (handle == 2) {
-
+		} else if (answer == 2)
+		{
+			/* MIDI selected */
 			ds_writew(USE_CDAUDIO_FLAG, 0);
 			ds_writew(LOAD_SOUND_DRIVER, 0);
 		}
