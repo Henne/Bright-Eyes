@@ -168,7 +168,7 @@ static void CD_unused1(void)
 #if defined(__BORLANDC__)
 	req[3].status = 0;
 	req[3].ptr = cd_buf1;
-	cd_buf1[0] = 0x0c;
+	cd_buf1[252] = 0x0c;
 	CD_driver_request(&req[3]);
 #else
 	//DUMMY
