@@ -222,17 +222,24 @@ void GUI_write_char_to_screen(RealPt dst, signed short char_width, signed short 
 	}
 }
 
-//442
 /**
- * \brief   return the number of lines a string needs on a screen
+ * \brief   return the number of lines the input string needs on a screen
+ *
+ * \param   str		the input string
+ * \return		the number of lines on the screen
+ *
+ * \warning The input string str may be modified if it does not
+ *          fit on the screen. So EVERY string in this sourcecode,
+ *	    which should be printed on screen must not be constant.
+ *	    Otherwise this application may crash.
  */
 unsigned short GUI_count_lines(Bit8u *str)
 {
-	signed short si;
-	signed short di;
+	signed short current_pos;
+	signed short last_ws;
 
 	Bit8u *str_loc;
-	signed short v6;
+	signed short always_zero;
 	signed short lines;
 	signed short max_line_width;
 	signed short width_char;
@@ -243,13 +250,13 @@ unsigned short GUI_count_lines(Bit8u *str)
 	if (!NOT_NULL(str))
 		return 0;
 
-	/* replace all CR and CL with Whitespaces */
+	/* replace all CR and LF in the input string with whitespaces */
 	for (str_loc = str; *str_loc; str_loc++)
 		if (*str_loc == 0x0d || *str_loc == 0x0a)
 			*str_loc = 0x20;
 
 	str_loc = str;
-	si = di = v6 = 0;
+	current_pos = last_ws = always_zero = 0;
 	max_line_width = ds_readw(TEXTLINE_MAXLEN);
 
 	if (ds_readw(DIALOGBOX_INDENT_WIDTH) != 0)
@@ -257,39 +264,45 @@ unsigned short GUI_count_lines(Bit8u *str)
 
 	width_line = 0;
 
-	for ( ; str_loc[si]; si++) {
+	for (; str_loc[current_pos]; current_pos++) {
 
-		GUI_lookup_char_width(str_loc[si], &width_char);
+		GUI_lookup_char_width(str_loc[current_pos], &width_char);
 #if !defined(__BORLANDC__)
 		/* BE-fix */
 		width_char = host_readws((Bit8u*)&width_char);
 #endif
 		width_line += width_char;
 
+		/* check if the input string str is to long for the line */
 		if (width_line >=  ds_readws(TEXTLINE_MAXLEN)) {
-			if (di != v6) {
-				/* TODO: this caused a crash on
-					no_way() in the city */
-				str_loc[di] = 0x0d;
-				str_loc = str_loc + di;
+			if (last_ws != always_zero) {
+				/* 	if a whitespace existed on the current line,
+					do a linebreak there */
+				str_loc[last_ws] = 0x0d;
+				str_loc = str_loc + last_ws;
 			} else {
-				str_loc[si] = 0x0d;
-				str_loc = &str_loc[si + 1];
+				/* 	if no whitespace existed on the current line,
+					break at current pos and overwrite str_loc[current_pos] with CR */
+				str_loc[current_pos] = 0x0d;
+				str_loc = &str_loc[current_pos + 1];
 			}
 
 			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
 				add_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 
-			v6 = si = di = width_line = 0;
+			/* reset variables */
+			always_zero = current_pos = last_ws = width_line = 0;
 		}
 
-		if (str_loc[si] == 0x20)
-			di = si;
+		/* remember the position of the last whitespace for linebreaks */
+		if (str_loc[current_pos] == 0x20)
+			last_ws = current_pos;
 
-		if (str_loc[si] == 0x40) {
-			str_loc = &str_loc[si + 1];
-			si = -1;
-			v6 = di = width_line = 0;
+		/* a forced break in the text with '@' */
+		if (str_loc[current_pos] == 0x40) {
+			str_loc = &str_loc[current_pos + 1];
+			current_pos = -1;
+			always_zero = last_ws = width_line = 0;
 			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
 				add_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 		}
@@ -297,10 +310,10 @@ unsigned short GUI_count_lines(Bit8u *str)
 
 	if (width_line >= ds_readws(TEXTLINE_MAXLEN)) {
 
-		if (v6 == di)
-			str_loc[si - 1] = 0;
+		if (always_zero == last_ws)
+			str_loc[current_pos - 1] = 0;
 		else {
-			str_loc[di] = 0x0d;
+			str_loc[last_ws] = 0x0d;
 			if (++lines == ds_readw(DIALOGBOX_INDENT_HEIGHT))
 				add_ds_ws(TEXTLINE_MAXLEN, ds_readws(DIALOGBOX_INDENT_WIDTH));
 		}
