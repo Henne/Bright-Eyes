@@ -108,9 +108,9 @@ struct dummy_c5 {
  * \brief   shows the repair-screen an provides interaction
  *
  * \param   smith_ptr   pointer to the smith descriptor
- * \param   a1          ???
+ * \param   smith_id    ID of the smith [0,...,49]
  */
-void repair_screen(Bit8u *smith_ptr, signed short a1)
+void repair_screen(Bit8u *smith_ptr, signed short smith_id)
 {
 	signed short l_si;
 	signed short j;
@@ -156,22 +156,22 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 	struct nvf_desc nvf;
 
 	/* check if this smith has an item in repair */
-	if (ds_readws(SMITH_REPAIRITEMS + 6 * a1) != 0) {
+	if (ds_readws(SMITH_REPAIRITEMS + 6 * smith_id) != 0) {
 
-		if (ds_readds(SMITH_REPAIRITEMS + 2 + 6 * a1) > ds_readds(DAY_TIMER)) {
+		if (ds_readds(SMITH_REPAIRITEMS + 2 + 6 * smith_id) > ds_readds(DAY_TIMER)) {
 			/* not ready yet */
 			GUI_output(get_ttx(485));
 
-		} else if (get_item(ds_readws(SMITH_REPAIRITEMS + 6 * a1), 1, 1)) {
+		} else if (get_item(ds_readws(SMITH_REPAIRITEMS + 6 * smith_id), 1, 1)) {
 
 			sprintf((char*)Real2Host(ds_readd(DTP2)),
 				(char*)get_ttx(486),
-				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, ds_readws(SMITH_REPAIRITEMS + 6 * a1), 0)));
+				(char*)Real2Host(GUI_names_grammar((signed short)0x8002, ds_readws(SMITH_REPAIRITEMS + 6 * smith_id), 0)));
 
 			GUI_output(Real2Host(ds_readd(DTP2)));
 
-			ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, 0);
-			ds_writew(SMITH_REPAIRITEMS + 6 * a1, 0);
+			ds_writed(SMITH_REPAIRITEMS + 2 + 6 * smith_id, 0);
+			ds_writew(SMITH_REPAIRITEMS + 6 * smith_id, 0);
 		}
 	} else {
 
@@ -424,13 +424,13 @@ void repair_screen(Bit8u *smith_ptr, signed short a1)
 									GUI_output(get_ttx(492));
 								}
 
-								ds_writew(SMITH_REPAIRITEMS + 6 * a1, item_id);
+								ds_writew(SMITH_REPAIRITEMS + 6 * smith_id, item_id);
 
 								if (ds_readds(DAY_TIMER) > HOURS(14)) {
-									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, HOURS(23));
+									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * smith_id, HOURS(23));
 									GUI_output(get_ttx(490));
 								} else {
-									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * a1, ds_readd(DAY_TIMER) + HOURS(6));
+									ds_writed(SMITH_REPAIRITEMS + 2 + 6 * smith_id, ds_readd(DAY_TIMER) + HOURS(6));
 									GUI_output(get_ttx(491));
 								}
 
