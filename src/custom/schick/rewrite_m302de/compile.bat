@@ -16,6 +16,8 @@
 @REM option -Fc can be enabled explicit	(generate communal variables)
 @REM option -Ff must be disabled	(generate far variables)
 @REM option -Fs must be disabled	(assume ss == ds), but only 4 files are affected
+@REM option -O is not enabled
+@REM option -Od can be enabled		(disable optimization)
 @REM ..\BIN\BCC.EXE -mlarge -O- -c -1 -Yo SEG106.CPP
 @REM
 @REM --the compiling cases
