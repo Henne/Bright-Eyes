@@ -42,7 +42,7 @@
 FALSE           equ 0
 TRUE            equ -1
 
-DIGPAK          equ TRUE                ;TRUE to assemble DIGPAK support code
+DIGPAK          equ FALSE                ;TRUE to assemble DIGPAK support code
 DIGPAK_SHARE    equ FALSE               ;FALSE to disable DIGPAK timer sharing
 
 USE_INT8        equ TRUE                ;FALSE to use real-time clock INT 70H
@@ -2695,4 +2695,3 @@ DP_get_VOC_status PROC H
 
 ;*****************************************************************************
                 END
-
