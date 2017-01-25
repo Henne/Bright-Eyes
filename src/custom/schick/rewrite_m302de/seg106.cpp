@@ -660,7 +660,7 @@ void startup_equipment(Bit8u *hero)
 	move_item(5, 9, hero);
 
 	if (host_readbs(hero + HERO_SEX) != 0 && host_readbs(hero + HERO_TYPE) != HERO_TYPE_WARRIOR && host_readbs(hero + HERO_TYPE) != HERO_TYPE_MAGE) {
-		give_hero_new_item(hero, 48, 1, 1);
+		give_hero_new_item(hero, ITEM_SHIRT, 1, 1);
 		move_item(2, 9, hero);
 	}
 
@@ -675,19 +675,19 @@ void startup_equipment(Bit8u *hero)
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_WARRIOR) {
-		move_item(2, get_item_pos(hero, 53), hero);
+		move_item(2, get_item_pos(hero, ITEM_ARMOR_LEATHER), hero);
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_MAGE) {
-		move_item(2, get_item_pos(hero, 75), hero);
+		move_item(2, get_item_pos(hero, ITEM_ROBE_GREEN), hero);
 	}
 
 	if (host_readbs(hero + HERO_TYPE) == HERO_TYPE_HUNTER ||
 		host_readbs(hero + HERO_TYPE) == HERO_TYPE_GREEN_ELF ||
 		host_readbs(hero + HERO_TYPE) == HERO_TYPE_SYLVAN_ELF)
 	{
-		give_hero_new_item(hero, 10, 1, 20);
-		move_item(4, get_item_pos(hero, 10), hero);
+		give_hero_new_item(hero, ITEM_ARROWS, 1, 20);
+		move_item(4, get_item_pos(hero, ITEM_ARROWS), hero);
 	}
 }
 
@@ -715,12 +715,12 @@ signed short get_max_light_time(void)
 		for (j = 0; j < 23; j++) {
 
 			/* search for a burning torch */
-			if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0x16) {
+			if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == ITEM_TORCH_ON) {
 
 				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) > retval) {
 					retval = host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8);
 				}
-			} else if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == 0xf9) {
+			} else if (host_readw(hero + HERO_ITEM_HEAD + j * 14) == ITEM_LANTERN_ON) {
 				/* search for a burning lantern */
 
 				if (host_readbs(hero + j * 14 + HERO_ITEM_HEAD + 8) / 10 > retval) {

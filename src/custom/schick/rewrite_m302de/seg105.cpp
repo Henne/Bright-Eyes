@@ -127,34 +127,34 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		}
 
 		/* Girdle of might / Kraftguertel */
-		if (item == 0xb7) {
+		if (item == ITEM_GIRDLE_MIGHT) {
 			/* KK + 5 */
 			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_KK),
 				host_readb(equipper + (HERO_ATTRIB + 3 * ATTRIB_KK)) + 5);
 		}
 
 		/* Helmet / Helm */
-		if (item == 0xc4) {
+		if (item == ITEM_HELMET) {
 			/* dec CH */
 			dec_ptr_bs(equipper + (HERO_ATTRIB + 3 * ATTRIB_CH));
 		}
 
 		/* Silver Jewelry / Silberschmuckstueck (magisch) */
-		if (item == 0xd7) {
+		if (item == ITEM_JEWELRY_SILVER) {
 			/* TA - 2 */
 			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
 				host_readbs(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA)) - 2);
 		}
 
 		/* Coronet or Ring / Stirnreif oder Ring */
-		if (item == 0xd9 || item == 0xa5) {
+		if (item == ITEM_CORONET_BLUE || item == ITEM_RING_RED) {
 			/* MR + 2 */
 			host_writeb(equipper + HERO_MR,
 				host_readb(equipper + HERO_MR) + 2);
 		}
 
 		/* Death-Head belt / Totenkopfguertel */
-		if (item == 0xb6) {
+		if (item == ITEM_BELT_SKULL) {
 
 			/* TA - 4 */
 			host_writeb(equipper + (HERO_ATTRIB + 3 * ATTRIB_TA),
@@ -166,7 +166,7 @@ void add_equip_boni(Bit8u *owner, Bit8u *equipper, signed short item, signed sho
 		}
 
 		/* Crystal ball / Kristalkugel */
-		if (item == 0x46) {
+		if (item == ITEM_BALL_CRYSTAL) {
 
 			/* Sinnesschaerfe + 2 */
 			host_writeb(equipper + HERO_TA_INTUITION,
@@ -234,7 +234,7 @@ unsigned short can_item_at_pos(unsigned short item, unsigned short pos)
 	} else {
 
 		/* Stirnreif (3 types) can be weared at the head */
-		if ((item == 217 || item == 171 || item == 245)
+		if ((item == ITEM_CORONET_BLUE || item == ITEM_CORONET_SILVER || item == ITEM_CORONET_GREEN)
 			&& (pos == 0))
 		{
 			return 1;
@@ -559,13 +559,13 @@ unsigned short drop_item(Bit8u *hero, signed short pos, signed short nr)
 
 					/* check special items */
 					/* item: SICHEL Pflanzenkunde -3 */
-					if (item == 0xa1) {
+					if (item == ITEM_SICKLE) {
 						host_writeb(hero + (HERO_TA_NATURE+3),
 							host_readbs(hero + (HERO_TA_NATURE+3)) - 3);
 					}
 
 					/* item:  AMULETT MR -5 */
-					if (item == 0xa3) {
+					if (item == ITEM_AMULET_BLUE) {
 						host_writeb(hero + HERO_MR,
 							host_readbs(hero + HERO_MR) - 5);
 					}

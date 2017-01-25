@@ -380,7 +380,7 @@ void consume(Bit8u *owner, Bit8u *consumer, signed short pos)
 					add_hero_le(consumer, l_si);
 
 					/* give owner a copperbottle */
-					give_hero_new_item(owner, 0x2a, 2, 1);
+					give_hero_new_item(owner, ITEM_FLASK_BRONZE, 2, 1);
 
 					/* singular POINT/ PUNKT */
 					strcpy((char*)Real2Host(ds_readd(TEXT_OUTPUT_BUF)),

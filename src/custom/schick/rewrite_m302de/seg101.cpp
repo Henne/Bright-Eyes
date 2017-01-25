@@ -634,15 +634,15 @@ void spell_brenne(void)
 
 	ds_writew(SPELL_SPECIAL_AECOST, 0);
 
-	if (ds_readw(LIGHT_TYPE) == 1) {
-		torch_pos = get_item_pos(get_spelluser(), 0x41);
+	if (ds_readw(LIGHT_TYPE) == IS_TORCH) {
+		torch_pos = get_item_pos(get_spelluser(), ITEM_TORCH_OFF);
 	} else {
-		if (ds_readw(LIGHT_TYPE) == 2) {
+		if (ds_readw(LIGHT_TYPE) == IS_LANTERN) {
 		} else {
-			torch_pos = get_item_pos(get_spelluser(), 0x41);
+			torch_pos = get_item_pos(get_spelluser(), ITEM_TORCH_OFF);
 		}
 
-		lantern_pos = get_item_pos(get_spelluser(), 0x19);
+		lantern_pos = get_item_pos(get_spelluser(), ITEM_LANTERN_ON);
 	}
 
 	if (torch_pos != -1) {
@@ -655,8 +655,8 @@ void spell_brenne(void)
 
 			answer = GUI_radio(Real2Host(ds_readd(DTP2)),
 					2,
-					(char*)Real2Host(GUI_names_grammar(0x4000, 0x41, 0)),
-					(char*)Real2Host(GUI_names_grammar(0x4000, 0x19, 0)));
+					(char*)Real2Host(GUI_names_grammar(0x4000, ITEM_TORCH_OFF, 0)),
+					(char*)Real2Host(GUI_names_grammar(0x4000, ITEM_LANTERN_OFF, 0)));
 
 			if (answer == -1) {
 				/* abort */
@@ -672,7 +672,7 @@ void spell_brenne(void)
 	if (torch_pos != -1) {
 
 		/* change torch to burning torch */
-		host_writew(get_spelluser() + HERO_ITEM_HEAD + torch_pos * 14, 0x16);
+		host_writew(get_spelluser() + HERO_ITEM_HEAD + torch_pos * 14, ITEM_TORCH_ON);
 
 		/* set counter to 10 */
 		host_writeb(get_spelluser() + HERO_ITEM_HEAD  + 8 + torch_pos * 14, 10);
@@ -688,12 +688,12 @@ void spell_brenne(void)
 	} else if (lantern_pos != -1) {
 
 		/* get position of oil */
-		oil_pos = get_item_pos(get_spelluser(), 0x29);
+		oil_pos = get_item_pos(get_spelluser(), ITEM_OIL);
 
 		if (oil_pos != -1) {
 
 			/* change torch to burning lantern */
-			host_writew(get_spelluser() + HERO_ITEM_HEAD + lantern_pos * 14, 0xf9);
+			host_writew(get_spelluser() + HERO_ITEM_HEAD + lantern_pos * 14, ITEM_LANTERN_ON);
 
 			/* set counter to 100 */
 			host_writeb(get_spelluser() + HERO_ITEM_HEAD  + 8 + lantern_pos * 14, 100);
@@ -702,7 +702,7 @@ void spell_brenne(void)
 			drop_item(get_spelluser(), oil_pos, 1);
 
 			/* give bronze flask */
-			give_hero_new_item(get_spelluser(), 0x2a, 0, 1);
+			give_hero_new_item(get_spelluser(), ITEM_FLASK_BRONZE, 0, 1);
 
 			/* set AP cost */
 			ds_writew(SPELL_SPECIAL_AECOST, random_schick(20));

@@ -2804,7 +2804,7 @@ void sub_light_timers(Bit32s quarter)
 
 			for (j = 0; j < 23; j++) {
 
-				if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == 0x16) {
+				if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == ITEM_TORCH_ON) {
 
 					/* Torch, burning */
 
@@ -2823,7 +2823,7 @@ void sub_light_timers(Bit32s quarter)
 						memset(hero_i + HERO_ITEM_HEAD + 14 * j, 0, 14);
 					}
 
-				} else if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == 0xf9) {
+				} else if (host_readw(hero_i + HERO_ITEM_HEAD + 14 * j) == ITEM_LANTERN_ON) {
 
 					/* Lantern, burning */
 					sub_ptr_bs(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, tmp);
@@ -2832,7 +2832,7 @@ void sub_light_timers(Bit32s quarter)
 						/* Set timer to 0 */
 						host_writeb(hero_i + HERO_ITEM_HEAD + 8 + 14 * j, 0);
 						/* Set burning lantern to a not burning lantern */
-						host_writew(hero_i + HERO_ITEM_HEAD + 14 * j, 0x19);
+						host_writew(hero_i + HERO_ITEM_HEAD + 14 * j, ITEM_LANTERN_OFF);
 					}
 				}
 			}
