@@ -79,16 +79,16 @@ void hero_use_ingrendients(Bit8u *hero, signed short recipe_index)
 		drop_item(hero, item_pos, 1);
 
 		/* exchange wine- or brandybottles into glass flask */
-		if ((host_readws(r_ptr + i * 2 + 2) == 0x5b) ||
-			(host_readws(r_ptr + i * 2 + 2) == 0x5c))
+		if ((host_readws(r_ptr + i * 2 + 2) == ITEM_WINE) ||
+			(host_readws(r_ptr + i * 2 + 2) == ITEM_BRANDY))
 		{
-			give_hero_new_item(hero, 0x1f, 1, 1);
+			give_hero_new_item(hero, ITEM_FLASK_GLASS, 1, 1);
 		}
 
 		/* exchange oil into bronze flask */
-		if (host_readws(r_ptr + i * 2 + 2) == 0x29)
+		if (host_readws(r_ptr + i * 2 + 2) == ITEM_OIL)
 		{
-			give_hero_new_item(hero, 0x2a, 1, 1);
+			give_hero_new_item(hero, ITEM_FLASK_BRONZE, 1, 1);
 		}
 
 		i++;
@@ -338,35 +338,49 @@ signed short has_herb_for_disease(Bit8u *hero, signed short disease)
 	}
 	case 2: {
 		/* a subset of herbs */
-		if (get_item_pos(hero, 123) != -1) retval = 123;
-		else if (get_item_pos(hero, 61) != -1) retval = 61;
-		else if (get_item_pos(hero, 60) != -1) retval = 60;
-		else if (get_item_pos(hero, 64) != -1) retval = 64;
-		else if (get_item_pos(hero, 124) != -1) retval = 124;
-		else if (get_item_pos(hero, 129) != -1) retval = 129;
-		else if (get_item_pos(hero, 125) != -1) retval = 125;
-		else if (get_item_pos(hero, 156) != -1) retval = 156;
-		else if (get_item_pos(hero, 130) != -1) retval = 130;
+		if (get_item_pos(hero, ITEM_BELMART)          != -1)
+      retval = ITEM_BELMART;
+		else if (get_item_pos(hero, ITEM_WHIRLWEED)   != -1)
+      retval = ITEM_WHIRLWEED;
+		else if (get_item_pos(hero, ITEM_EINBEERE)    != -1)
+      retval = ITEM_EINBEERE;
+		else if (get_item_pos(hero, ITEM_TARNELE)     != -1)
+      retval = ITEM_TARNELE;
+		else if (get_item_pos(hero, ITEM_DONF_SPRING) != -1)
+      retval = ITEM_DONF_SPRING;
+		else if (get_item_pos(hero, ITEM_FINAGE_TREE) != -1)
+      retval = ITEM_FINAGE_TREE;
+		else if (get_item_pos(hero, ITEM_MENCHAL)     != -1)
+      retval = ITEM_MENCHAL;
+		else if (get_item_pos(hero, ITEM_OLGIN_ROOT)  != -1)
+      retval = ITEM_OLGIN_ROOT;
+		else if (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1)
+      retval = ITEM_JORUGA_ROOT;
 		break;
 	}
 	case 4: {
 		/* DONF SPRING */
-		if (get_item_pos(hero, 124) != -1) retval = 124;
+		if (get_item_pos(hero, ITEM_DONF_SPRING) != -1)
+      retval = ITEM_DONF_SPRING;
 		break;
 	}
 	case 5: {
 		/* JORUGA ROOT & GULMOND LEAF */
-		if ((get_item_pos(hero, 130) != -1) && (get_item_pos(hero, 63) != -1)) retval = 999;
+    if ( (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1)
+         && (get_item_pos(hero, ITEM_GULMOND_LEAF) != -1))
+      retval = 999;
 		break;
 	}
 	case 6: {
 		/* WHIRLWEED */
-		if (get_item_pos(hero, 61) != -1) retval = 61;
+		if (get_item_pos(hero, ITEM_WHIRLWEED) != -1)
+      retval = ITEM_WHIRLWEED;
 		break;
 	}
 	case 7: {
 		/* JORUGA ROOT */
-		if (get_item_pos(hero, 130) != -1) retval = 130;
+		if (get_item_pos(hero, ITEM_JORUGA_ROOT) != -1)
+      retval = ITEM_JORUGA_ROOT;
 		break;
 	}
 	}
@@ -449,9 +463,9 @@ signed short skill_cure_disease(Bit8u *healer, Bit8u *patient, signed short hand
 					host_writeb(patient + 0xaf + disease * 5, 0);
 
 					if (herb == 999) {
-						/* drop JOGURA & GULMOND LEAF */
-						drop_item(healer, get_item_pos(healer, 130), 1);
-						drop_item(healer, get_item_pos(healer, 63), 1);
+						/* drop JORUGA & GULMOND LEAF */
+						drop_item(healer, get_item_pos(healer, ITEM_JORUGA_ROOT), 1);
+						drop_item(healer, get_item_pos(healer, ITEM_GULMOND_LEAF), 1);
 					} else {
 						/* drop the herb */
 						drop_item(healer, get_item_pos(healer, herb), 1);
